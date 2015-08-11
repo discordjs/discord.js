@@ -41,4 +41,5 @@ myBot.login("discord email", "discord password", function(e) {
 ```
 ### TODO
 * Documentation
+* Better error handling
 * Being able to cache new servers and channels as well as ones that are deleted - this is currently only done when a bot is created

@@ -161,6 +161,9 @@ exports.Client.prototype.connectWebsocket = function(cb) {
     }
     this.websocket.keepAlive = function() {
 
+        if(this.readyState !== 1)
+            return false;
+
         this.sendPacket({
             op: 1,
             d: Date.now()
