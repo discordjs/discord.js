@@ -4,6 +4,7 @@ var Server = require("./lib/server.js").Server;
 var Message = require("./lib/message.js").Message;
 var User = require("./lib/user.js").User;
 var Channel = require("./lib/channel.js").Channel;
+var List = require("./lib/list.js").List;
 var WebSocket = require('ws');
 
 exports.Client = function(options) {
@@ -14,7 +15,8 @@ exports.Client = function(options) {
     this.websocket = null;
     this.events = {};
     this.user = null;
-    this.channelCache = {};
+
+    this.serverList = new List("id");
 
 }
 
@@ -36,22 +38,35 @@ exports.Client.prototype.off = function(name) {
     this.events[name] = function() {};
 }
 
-exports.Client.prototype.cacheChannel = function(id, cb) {
+exports.Client.prototype.cacheServer = function(id, cb, members) {
 
-    if (this.channelCache[id]) {
-        cb(this.channelCache[id]);
+    if ( this.serverList.filter("id", id).length > 0 ) {
         return;
     }
 
     var self = this;
 
     request
-        .get(Endpoints.CHANNELS + "/" + id)
+        .get(Endpoints.SERVERS + "/" + id)
         .set("authorization", this.token)
         .end(function(err, res) {
             var dat = res.body;
-            self.channelCache[id] = new Channel(dat.name, dat.guild_id, dat.type, dat.id, dat.is_private);
-            cb(self.channelCache[id]);
+            var server = new Server(dat.region, dat.owner_id, dat.name, dat.roles[0].id, members || dat.members);
+
+            request
+            .get(Endpoints.SERVERS + "/" + id + "/channels")
+            .set("authorization", self.token)
+            .end(function(err, res){
+
+                var channelList = res.body;
+                for(channel of channelList){
+                    server.channels.add( new Channel(channel, server) );
+                }
+
+                self.serverList.add(server);
+
+                cb(server);
+            });
         });
 
 }
@@ -107,24 +122,28 @@ exports.Client.prototype.connectWebsocket = function(cb) {
 
                     var _servers = data.guilds,
                         servers = [];
+
+                    var cached = 0, toCache = _servers.length;
+
                     for (x in _servers) {
                         _server = _servers[x];
-                        servers.push(new Server(_server.region, _server.owner_id, _server.name, _server.roles[0].id, _server.members));
+                        client.cacheServer(_server.roles[0].id, function(server) {
+                            cached++;
+                            if(cached >= toCache){
+                                client.triggerEvent("ready");
+                            }
+                        }, _server.members);
                     }
 
-                    client.servers = servers;
-
                     client.user = new User(data.user.username, data.user.id, data.user.discriminator, data.user.avatar);
-
-                    client.triggerEvent("ready");
                 } else if (dat.t === "MESSAGE_CREATE") {
 
                     var data = dat.d;
 
-                    client.cacheChannel(data.channel_id, function(channel) {
-                        var message = new Message(data.timestamp, data.author, data.content, channel, data.id, data.mentions);
-                        client.triggerEvent("message", [message]);
-                    });
+                    var channel = client.channelFromId(data.channel_id);
+
+                    var message = new Message(data, channel);
+                    client.triggerEvent("message", [message]);
 
                 }
                 break;
@@ -195,23 +214,83 @@ exports.Client.prototype.createServer = function(details, cb) {
 
 }
 
-exports.Client.prototype.sendMessage = function(channelId, message, _mentions){
+exports.Client.prototype.sendMessage = function(channel, message, cb, _mentions) {
 
-    for(mention in _mentions){
+    var cb = cb || function(){};
+
+    for (mention in _mentions) {
         _mentions[mention] = _mentions[mention].id;
     }
 
     var client = this;
     var details = {
-        content : message,
-        mentions : _mentions || []
+        content: message.substring(0,2000),
+        mentions: _mentions || []
     };
 
     request
-        .post(Endpoints.CHANNELS + "/" + channelId.id + "/messages")
+        .post(Endpoints.CHANNELS + "/" + channel.id + "/messages")
         .set("authorization", client.token)
         .send(details)
-        .end(function(err, res){
+        .end(function(err, res) {
+            cb(new Message(res.body, client.channelFromId(res.body.channel_id)));
+        });
+}
+
+exports.Client.prototype.deleteMessage = function(message) {
+
+    var client = this;
+
+    request
+        .del(Endpoints.CHANNELS + "/" + message.channel.id + "/messages/" + message.id)
+        .set("authorization", client.token)
+        .end(function(err, res) {
 
         });
+}
+
+
+exports.Client.prototype.logFile = function(name, url){
+
+    var fs = require("fs");
+
+    request
+        .get(url)
+        .set("authorization", this.token)
+        .end(function(err, res){
+            fs.writeFile("./log/"+name+".json", JSON.stringify(res.body, null, "\t"), function(err) {
+                if (err) {
+                    return console.log(err);
+                }
+            });
+        });
+}
+
+exports.Client.prototype.channelFromId = function(id){
+    var channelList = this.serverList.concatSublists("channels", "id");
+    var channel = channelList.filter("id", id, true);
+
+    return channel;
+}
+
+exports.Client.prototype.getChannelLogs = function(channel, amount, cb){
+
+    amount = amount || 0;
+    var client = this;
+
+    request
+    .get(Endpoints.CHANNELS + "/" + channel.id + "/messages?limit="+amount)
+    .set("authorization", client.token)
+    .end(function(err, res){
+
+        var datList = new List("id");
+
+        for(item of res.body){
+            datList.add( new Message(item, channel) );
+        }
+
+        cb(datList);
+
+    });
+
 }
