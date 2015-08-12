@@ -71,7 +71,7 @@ exports.Client.prototype.cacheServer = function(id, cb, members) {
 
 }
 
-exports.Client.prototype.login = function(email, password, cb) {
+exports.Client.prototype.login = function(email, password) {
 
     var client = this;
 
@@ -274,7 +274,7 @@ exports.Client.prototype.channelFromId = function(id){
 
 exports.Client.prototype.getChannelLogs = function(channel, amount, cb){
 
-    amount = amount+1 || 0;
+    amount = amount || 0;
     var client = this;
 
     request
@@ -292,9 +292,7 @@ exports.Client.prototype.getChannelLogs = function(channel, amount, cb){
         for(item of res.body){
             datList.add( new Message(item, channel) );
         }
-
-        datList.removeIndex(0);
-
+        
         cb(datList);
 
     });
