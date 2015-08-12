@@ -85,11 +85,13 @@ exports.Client.prototype.login = function(email, password, cb) {
         .send(details)
         .end(function(err, res) {
             if (!res.ok) {
-                cb(err);
+                client.triggerEvent("disconnected", {
+                    reason : "failed to log in",
+                    error : err
+                });
             } else {
                 client.token = res.body.token;
                 client.loggedIn = true;
-                cb();
                 client.connectWebsocket();
             }
         });
@@ -102,7 +104,10 @@ exports.Client.prototype.connectWebsocket = function(cb) {
 
     this.websocket = new WebSocket(Endpoints.WEBSOCKET_HUB);
     this.websocket.onclose = function(e) {
-        client.triggerEvent("disconnected", [e]);
+        client.triggerEvent("disconnected", {
+            reason : "websocket disconnected",
+            error : e
+        });
     };
     this.websocket.onmessage = function(e) {
 
