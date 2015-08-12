@@ -16,15 +16,15 @@ myBot.on( "message", function( message ) {
     var channel = message.channel;
 
     // Find all the arguments to the command.
-    var arguments = message.content.split(" ");
+    var arguments = message.content.split( " " );
 
     // Get the first argument specifically, as it contains the username
     // to be queried for.
-    var username = arguments[1];
+    var username = arguments.slice( 1 ).join( " " );
 
     // Exit the event handler unless the user exists.
     if( !username ) {
-      myBot.sendMessage(channel, "That user doesn't exist!");
+      myBot.sendMessage( channel, "That user doesn't exist!" );
       return;
     }
 
@@ -39,11 +39,11 @@ myBot.on( "message", function( message ) {
 
       // Only continue if the message has been found
       if( message ) {
-        myBot.sendMessage(channel, "The last message from user " + username +
-            " is: \"" + message.content + "\".").
+        myBot.sendMessage( channel, "The last message from user " + username +
+            " is: \"" + message.content + "\"." ).
       } else {
-        myBot.sendMessage("That user has not sent a message " +
-            "for the last 100 messages!")
+        myBot.sendMessage( "That user has not sent a message " +
+            "for the last 100 messages!" )
       }
     } );
 	}
