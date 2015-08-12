@@ -238,17 +238,18 @@ exports.Client.prototype.createServer = function( _name, _region, cb ) {
 
 }
 
-exports.Client.prototype.leaveServer = function( server, cb ){
+exports.Client.prototype.leaveServer = function( server, cb ) {
 
 	var client = this;
 
 	request
-		.del( Endpoints.SERVERS + "/" + server.id)
+		.del( Endpoints.SERVERS + "/" + server.id )
 		.set( "authorization", client.token )
-		.end( function(err, res){
+		.end( function( err, res ) {
 			if ( !res.ok ) {
 				cb( err );
 			} else {
+				client.serverList.removeElement( server );
 				cb( null );
 			}
 		} );
@@ -277,7 +278,7 @@ exports.Client.prototype.createInvite = function( channel, options, cb ) {
 			if ( !res.ok ) {
 				cb( err );
 			} else {
-				cb( false, new Invite(res.body) );
+				cb( false, new Invite( res.body ) );
 			}
 		} )
 
