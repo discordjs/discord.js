@@ -4,7 +4,7 @@
  * starts up or shuts down, respectively.
  */
 
-var Discord = require( "discord.js" );
+var Discord = require( "../" );
 var myBot = new Discord.Client();
 
 myBot.login( "hello@example.com", "password1" );
@@ -19,6 +19,6 @@ myBot.on( "ready", function() {
 // ended.
 // It is also triggered when the connection attempt fails, for example due
 // to a wrong password.
-myBot.on( "disconnected", function() {
-  console.log( "Bot disconnected from Discord." );
+myBot.on( "disconnected", function(e) {
+  console.log( "Bot disconnected from Discord -", e.reason );
 } );

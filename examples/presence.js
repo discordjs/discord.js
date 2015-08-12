@@ -3,10 +3,16 @@
  * joining or leaving.
  */
 
-var Discord = require( "discord.js" );
+var Discord = require( "../" );
 var myBot = new Discord.Client();
 
 myBot.login( "hello@example.com", "password1" );
+
+// The "ready" event is triggered after the bot successfully connected to
+// Discord and is ready to send messages.
+myBot.on( "ready", function() {
+  console.log( "Bot connected successfully." );
+} );
 
 // The "presence" event is triggered when a user joins a server, leaves it or
 // goes away.
@@ -14,5 +20,7 @@ myBot.login( "hello@example.com", "password1" );
 myBot.on( "presence", function( user, status, server ) {
 	// Send a message on the default channel of the server, as presence updates
 	// are not restricted to one channel.
-	bot.sendMessage( server.getDefaultChannel(), user.mention() + " is " + status + "!" );
+    var message = user.mention() + " is " + status + " in " + server.name + "!";
+    console.log(message);
+	this.sendMessage( server.getDefaultChannel(), message );
 } );

@@ -3,10 +3,16 @@
  * access user avatars.
  */
 
-var Discord = require( "discord.js" );
+var Discord = require( "../" );
 var myBot = new Discord.Client();
 
 myBot.login( "hello@example.com", "password1" );
+
+// The "ready" event is triggered after the bot successfully connected to
+// Discord and is ready to send messages.
+myBot.on( "ready", function() {
+  console.log( "Bot connected successfully." );
+} );
 
 myBot.on( "message", function( message ) {
 	// React to all messages with the content "$avatar"
@@ -22,10 +28,10 @@ myBot.on( "message", function( message ) {
 			// A user can be mentioned in a message by inserting the string obtained
 			// by user.mention() into the message.
 			// Note that simply writing "@user" will NOT work.
-			bot.sendMessage( message.channel, message.author.mention() + ", here's your avatar: " + url );
+			this.sendMessage( message.channel, message.author.mention() + ", here's your avatar: " + url );
 		} else {
 			// Nothing should be done if the user has not set an avatar.
-			bot.sendMessage( message.channel, message.author.mention() + ", you don't have an avatar!" );
+			this.sendMessage( message.channel, message.author.mention() + ", you don't have an avatar!" );
 		}
 	}
 } );

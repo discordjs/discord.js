@@ -85,10 +85,10 @@ exports.Client.prototype.login = function( email, password ) {
 		.send( details )
 		.end( function( err, res ) {
 			if ( !res.ok ) {
-				client.triggerEvent( "disconnected", {
+				client.triggerEvent( "disconnected", [{
 					reason: "failed to log in",
 					error: err
-				} );
+				}] );
 			} else {
 				client.token = res.body.token;
 				client.loggedIn = true;
@@ -104,10 +104,10 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 
 	this.websocket = new WebSocket( Endpoints.WEBSOCKET_HUB );
 	this.websocket.onclose = function( e ) {
-		client.triggerEvent( "disconnected", {
+		client.triggerEvent( "disconnected", [{
 			reason: "websocket disconnected",
 			error: e
-		} );
+		}] );
 	};
 	this.websocket.onmessage = function( e ) {
 
@@ -265,6 +265,12 @@ exports.Client.prototype.sendMessage = function( channel, message, cb, _mentions
 		.set( "authorization", client.token )
 		.send( details )
 		.end( function( err, res ) {
+
+			if(err){
+				cb(err);
+				return;
+			}
+
 			var msg = new Message( res.body, client.channelFromId( res.body.channel_id ) );
 			if ( options.selfDestruct ) {
 				setTimeout( function() {
