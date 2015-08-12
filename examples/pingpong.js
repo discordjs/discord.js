@@ -5,13 +5,19 @@
  * This bot responds to every "ping" message with a "pong".
  */
 
-var Discord = require( "discord.js" );
+var Discord = require( "../" );
 
 // Create the bot
 var myBot = new Discord.Client();
 
 // Login with an example email and password
 myBot.login( "hello@example.com", "password1" );
+
+// The "ready" event is triggered after the bot successfully connected to
+// Discord and is ready to send messages.
+myBot.on( "ready", function() {
+	console.log( "Bot connected successfully." );
+} );
 
 // Add a listener to the "message" event, which triggers upon receiving
 // any message
