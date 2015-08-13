@@ -4,27 +4,21 @@
  * 100 messages.
  */
 
-var Discord = require( "../" );
+var Discord = require( "discord.js" );
 var myBot = new Discord.Client();
 
 myBot.login( "hello@example.com", "password1" );
 
-// The "ready" event is triggered after the bot successfully connected to
-// Discord and is ready to send messages.
-myBot.on( "ready", function() {
-	console.log( "Bot connected successfully." );
-} );
-
 myBot.on( "message", function( message ) {
 	// React to all messages starting with "$query".
-	if ( message.content.split(" ")[0] === "$query") {
+	if ( message.content.startsWith( "$query" ) ) {
 		// Obtain the channel for which logs should be accessed.
 		var channel = message.channel;
 
 		// Find all the arguments to the command.
 		var arguments = message.content.split( " " );
 
-		// Get the arguments, as they contains the username
+		// Get the first argument specifically, as it contains the username
 		// to be queried for.
 		var username = arguments.slice( 1 ).join( " " );
 
@@ -36,20 +30,32 @@ myBot.on( "message", function( message ) {
 
 		// The getChannelLogs() function takes the channel that should be accessed,
 		// the amount of messages to query and a callback as its arguments.
-		myBot.getChannelLogs( channel, 1000, function( messageList ) {
+		myBot.getChannelLogs( channel, 100, function( error, messageList ) {
 			// filter() takes three arguments, the key to be filtered for (in this
 			// case the username, so "username"), the value to look for, and whether
 			// only the first finding should be returned (true) or a list of all
 			// findings (false).
-			var message = messageList.deepFilter( ["author", "username"], username, true );
+
+			// Check to see if there is an error, if there isn't this will be null,
+			// which equates to false in a conditional.
+			if ( error ) {
+				// There was an error, so stop proceeding as if there is an error
+				// retrieving logs, no logs are returned. We should tell the
+				// users that there was an error retrieving logs and return.
+				myBot.sendMessage( channel, "There was an error retrieving logs!" );
+				return;
+			}
+
+			var message = messageList.filter( "username", username, true );
 
 			// Only continue if the message has been found
 			if ( message ) {
-				myBot.sendMessage( channel, "The last message from user " + username + " is:\n_" + message.content + "_" );
+				myBot.sendMessage( channel, "The last message from user " + username +
+					" is: \"" + message.content + "\"." ).
 			} else {
-				myBot.sendMessage( channel, "That user has not sent a message for the last 1,000 messages!" );
+				myBot.sendMessage( "That user has not sent a message " +
+					"for the last 100 messages!" )
 			}
 		} );
 	}
-
 } );
