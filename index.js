@@ -6,6 +6,7 @@ var User = require( "./lib/user.js" ).User;
 var Channel = require( "./lib/channel.js" ).Channel;
 var List = require( "./lib/list.js" ).List;
 var Invite = require( "./lib/invite.js" ).Invite;
+var PMChannel = require( "./lib/PMChannel.js" ).PMChannel;
 var WebSocket = require( 'ws' );
 
 exports.Client = function( options ) {
@@ -18,6 +19,7 @@ exports.Client = function( options ) {
 	this.user = null;
 
 	this.serverList = new List( "id" );
+	this.PMList = new List( "id" );
 
 }
 
@@ -112,6 +114,8 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 	};
 	this.websocket.onmessage = function( e ) {
 
+		client.triggerEvent( "raw", [ e ] );
+
 		var dat = JSON.parse( e.data );
 		switch ( dat.op ) {
 
@@ -133,12 +137,25 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 
 					for ( x in _servers ) {
 						_server = _servers[ x ];
-						client.cacheServer( _server.roles[ 0 ].id, function( server ) {
+
+						var sID = "";
+						for ( role of _server.roles ) {
+							if ( role.name === "@everyone" ) {
+								sID = role.id;
+								break;
+							}
+						}
+
+						client.cacheServer( sID, function( server ) {
 							cached++;
 							if ( cached >= toCache ) {
 								client.triggerEvent( "ready" );
 							}
 						}, _server.members );
+					}
+
+					for ( x in data.private_channels ) {
+						client.PMList.add( new PMChannel( data.private_channels[ x ].recipient, data.private_channels[ x ].id ) );
 					}
 
 					client.user = new User( data.user );
@@ -156,6 +173,51 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 					var data = dat.d;
 
 					client.triggerEvent( "presence", [ new User( data.user ), data.status, client.serverList.filter( "id", data.guild_id, true ) ] );
+
+				} else if ( dat.t === "GUILD_DELETE" ) {
+
+					var deletedServer = client.serverList.filter( "id", dat.d.id, true );
+
+					if ( deletedServer ) {
+						client.triggerEvent( "serverDelete", [ deletedServer ] );
+					}
+
+				} else if ( dat.t === "CHANNEL_DELETE" ) {
+
+					var delServer = client.serverList.filter( "id", dat.d.guild_id, true );
+
+					if ( delServer ) {
+						var channel = delServer.channels.filter( "id", dat.d.id, true );
+
+						if ( channel ) {
+							client.triggerEvent( "channelDelete", [ channel ] );
+						}
+					}
+
+				} else if ( dat.t === "GUILD_CREATE" ) {
+
+					if ( !client.serverList.filter( "id", dat.d.id, true ) ) {
+						client.cacheServer( dat.d.id, function( server ) {
+							client.triggerEvent( "serverJoin", [ server ] );
+						}, dat.d.members );
+					}
+
+				} else if ( dat.t === "CHANNEL_CREATE" ) {
+
+					var srv = client.serverList.filter( "id", dat.d.guild_id, true );
+
+					if ( srv ) {
+
+						if ( !srv.channels.filter( "id", dat.d.d, true ) ) {
+
+							var chann = new Channel(dat.d, srv);
+
+							srv.channels.add( new Channel( dat.d, srv ) );
+							client.triggerEvent( "channelCreate", [ chann ] );
+
+						}
+
+					}
 
 				}
 				break;
@@ -284,9 +346,42 @@ exports.Client.prototype.createInvite = function( channel, options, cb ) {
 
 }
 
+exports.Client.prototype.startPM = function( user, message, cb, _mentions, options ) {
+
+	var client = this;
+
+	request
+		.post( Endpoints.USERS + "/" + client.user.id + "/channels" )
+		.set( "authorization", client.token )
+		.send( {
+			recipient_id: user.id
+		} )
+		.end( function( err, res ) {
+			if ( !res.ok ) {
+				cb( err );
+			} else {
+				client.PMList.add( new PMChannel( res.body.recipient, res.body.id ) );
+				client.sendMessage( user, message, cb, _mentions, options );
+			}
+		} );
+
+}
+
 exports.Client.prototype.sendMessage = function( channel, message, cb, _mentions, options ) {
 
 	options = options || {};
+
+	var thisLoopId = Math.floor( Math.random() * 1000 );
+
+	if ( channel instanceof User ) {
+		if ( !this.PMList.deepFilter( [ "user", "id" ], channel.id, true ) ) {
+			//user does not exist! omgomgomg
+			this.startPM( channel, message, cb, _mentions, options, true );
+			return;
+		} else {
+			channel.id = this.PMList.deepFilter( [ "user", "id" ], channel.id, true ).id;
+		}
+	}
 
 	var cb = cb || function() {};
 
@@ -333,8 +428,9 @@ exports.Client.prototype.sendMessage = function( channel, message, cb, _mentions
 					client.deleteMessage( msg );
 				}, options.selfDestruct );
 			}
-			cb( msg );
+			cb( null, msg );
 		} );
+
 }
 
 exports.Client.prototype.deleteMessage = function( message ) {
@@ -347,7 +443,7 @@ exports.Client.prototype.deleteMessage = function( message ) {
 	request
 		.del( Endpoints.CHANNELS + "/" + message.channel.id + "/messages/" + message.id )
 		.set( "authorization", client.token )
-		.end();
+		.end( function( err, res ) {} );
 }
 
 exports.Client.prototype.channelFromId = function( id ) {
@@ -379,4 +475,70 @@ exports.Client.prototype.getChannelLogs = function( channel, amount, cb ) {
 
 			cb( datList );
 		} );
+}
+
+exports.Client.prototype.createChannel = function( server, serverName, serverType, cb ) {
+
+	var client = this;
+
+	request
+		.post( Endpoints.SERVERS + "/" + server.id + "/channels" )
+		.set( "authorization", client.token )
+		.send( {
+			name: serverName,
+			type: serverType
+		} )
+		.end( function( err, res ) {
+			if ( !res.ok ) {
+				cb( err );
+			} else {
+				var chann = new Channel( res.body, server );
+				client.serverList.filter( "id", server.id, true ).channels.add( chann );
+				cb( null, chann );
+			}
+		} );
+}
+
+exports.Client.prototype.deleteChannel = function( channel, cb ) {
+
+	var client = this;
+
+	request
+		.del( Endpoints.CHANNELS + "/" + channel.id )
+		.set( "authorization", client.token )
+		.end( function( err, res ) {
+			if ( !res.ok ) {
+				cb( err );
+			} else {
+
+				client.serverList.filter( "id", channel.server.id, true ).channels.removeElement( channel );
+
+				client.triggerEvent( "channelDelete", [ channel ] );
+
+				cb( null );
+			}
+		} );
+
+}
+
+exports.Client.prototype.deleteServer = function( server, cb ) {
+
+	var client = this;
+
+	request
+		.del( Endpoints.SERVERS + "/" + server.id )
+		.set( "authorization", client.token )
+		.end( function( err, res ) {
+			if ( !res.ok ) {
+				cb( err );
+			} else {
+
+				client.serverList.removeElement( server );
+
+				client.triggerEvent( "serverDelete", [ server ] );
+
+				cb( null );
+			}
+		} );
+
 }
