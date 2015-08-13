@@ -17,13 +17,17 @@ exports.Client = function( options ) {
 	this.websocket = null;
 	this.events = {};
 	this.user = null;
-
+	this.ready = false;
 	this.serverList = new List( "id" );
 	this.PMList = new List( "id" );
 
 }
 
 exports.Client.prototype.triggerEvent = function( event, args ) {
+
+	if ( !this.ready ) { //if we're not even loaded yet, don't try doing anything because it always ends badly!
+		return;
+	}
 
 	if ( this.events[ event ] ) {
 		this.events[ event ].apply( this, args );
@@ -149,6 +153,7 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 						client.cacheServer( sID, function( server ) {
 							cached++;
 							if ( cached >= toCache ) {
+								client.ready = true;
 								client.triggerEvent( "ready" );
 							}
 						}, _server.members );
@@ -210,7 +215,7 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 
 						if ( !srv.channels.filter( "id", dat.d.d, true ) ) {
 
-							var chann = new Channel(dat.d, srv);
+							var chann = new Channel( dat.d, srv );
 
 							srv.channels.add( new Channel( dat.d, srv ) );
 							client.triggerEvent( "channelCreate", [ chann ] );
@@ -383,6 +388,18 @@ exports.Client.prototype.sendMessage = function( channel, message, cb, _mentions
 		}
 	}
 
+	if ( channel instanceof Message ) { //if the channel is actually a message, get the channel
+		channel = channel.channel;
+	}
+
+	if ( typeof channel === 'string' || channel instanceof String || !isNaN( channel ) ) {
+		//Channel is an ID
+		var chanId = channel;
+		channel = {
+			id: chanId
+		}
+	}
+
 	var cb = cb || function() {};
 
 	if ( _mentions === false ) {
@@ -462,8 +479,8 @@ exports.Client.prototype.getChannelLogs = function( channel, amount, cb ) {
 		.set( "authorization", client.token )
 		.end( function( err, res ) {
 
-			if ( err ) {
-				cb( new List( "id" ) );
+			if ( !res.ok ) {
+				cb( err );
 				return;
 			}
 
@@ -473,7 +490,7 @@ exports.Client.prototype.getChannelLogs = function( channel, amount, cb ) {
 				datList.add( new Message( item, channel ) );
 			}
 
-			cb( datList );
+			cb( null, datList );
 		} );
 }
 
