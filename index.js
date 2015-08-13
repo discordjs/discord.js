@@ -17,13 +17,17 @@ exports.Client = function( options ) {
 	this.websocket = null;
 	this.events = {};
 	this.user = null;
-
+	this.ready = false;
 	this.serverList = new List( "id" );
 	this.PMList = new List( "id" );
 
 }
 
 exports.Client.prototype.triggerEvent = function( event, args ) {
+
+	if ( !this.ready ) { //if we're not even loaded yet, don't try doing anything because it always ends badly!
+		return;
+	}
 
 	if ( this.events[ event ] ) {
 		this.events[ event ].apply( this, args );
@@ -149,6 +153,7 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 						client.cacheServer( sID, function( server ) {
 							cached++;
 							if ( cached >= toCache ) {
+								client.ready = true;
 								client.triggerEvent( "ready" );
 							}
 						}, _server.members );
@@ -391,7 +396,7 @@ exports.Client.prototype.sendMessage = function( channel, message, cb, _mentions
 		//Channel is an ID
 		var chanId = channel;
 		channel = {
-			id : chanId
+			id: chanId
 		}
 	}
 
