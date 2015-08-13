@@ -383,6 +383,10 @@ exports.Client.prototype.sendMessage = function( channel, message, cb, _mentions
 		}
 	}
 
+	if( channel instanceof Message ){
+		channel = channel.channel;
+	}
+
 	var cb = cb || function() {};
 
 	if ( _mentions === false ) {
