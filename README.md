@@ -8,6 +8,15 @@ The aim of this API is to make it *really* simple to start developing your bots.
 ### Installation
 ``npm install discord.js``
 
+### Features
+
+* Send, Receive and Delete messages from channels _and_ DMs! Auto-initiates DMs for you!
+* Create, Delete and Leave servers and channels
+* Create invites for Servers
+* Silent Mention - trigger mention notification without actually @mentioning a user!
+* Get complete metadata on users, channels and servers - including avatars.
+* Get limitless logs from channels.
+
 ### Example usage
 ```js
 /*
@@ -44,6 +53,5 @@ myBot.on( "message", function( message ) {
 } );
 ```
 ### TODO
-* Documentation
-* Better error handling
-* Being able to cache new servers and channels as well as ones that are deleted - this is currently only done when a bot is created
+* Joining servers from an invite
+* Stealthy Ninja support
