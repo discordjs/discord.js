@@ -462,8 +462,8 @@ exports.Client.prototype.getChannelLogs = function( channel, amount, cb ) {
 		.set( "authorization", client.token )
 		.end( function( err, res ) {
 
-			if ( err ) {
-				cb( new List( "id" ) );
+			if ( !res.ok ) {
+				cb( err );
 				return;
 			}
 
@@ -473,7 +473,7 @@ exports.Client.prototype.getChannelLogs = function( channel, amount, cb ) {
 				datList.add( new Message( item, channel ) );
 			}
 
-			cb( datList );
+			cb( null, datList );
 		} );
 }
 
