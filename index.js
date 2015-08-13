@@ -210,7 +210,7 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 
 						if ( !srv.channels.filter( "id", dat.d.d, true ) ) {
 
-							var chann = new Channel(dat.d, srv);
+							var chann = new Channel( dat.d, srv );
 
 							srv.channels.add( new Channel( dat.d, srv ) );
 							client.triggerEvent( "channelCreate", [ chann ] );
@@ -383,8 +383,16 @@ exports.Client.prototype.sendMessage = function( channel, message, cb, _mentions
 		}
 	}
 
-	if( channel instanceof Message ){
+	if ( channel instanceof Message ) { //if the channel is actually a message, get the channel
 		channel = channel.channel;
+	}
+
+	if ( typeof channel === 'string' || channel instanceof String || !isNaN( channel ) ) {
+		//Channel is an ID
+		var chanId = channel;
+		channel = {
+			id : chanId
+		}
 	}
 
 	var cb = cb || function() {};
