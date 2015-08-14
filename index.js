@@ -9,6 +9,10 @@ var Invite = require( "./lib/invite.js" ).Invite;
 var PMChannel = require( "./lib/PMChannel.js" ).PMChannel;
 var WebSocket = require( 'ws' );
 
+exports.prototype.isUserID = function(id){
+	return ((id + "").length === 17 && !isNaN(id));
+}
+
 exports.Client = function( options ) {
 
 	this.options = options || {};
