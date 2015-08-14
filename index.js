@@ -60,7 +60,7 @@ exports.Client.prototype.off = function( name ) {
 
 exports.Client.prototype.cacheServer = function( id, cb, members ) {
 	var self = this;
-	var serverInput;
+	var serverInput = {};
 
 	if ( typeof id === 'string' || id instanceof String ) {
 		//actually an ID
@@ -111,7 +111,7 @@ exports.Client.prototype.cacheServer = function( id, cb, members ) {
 	var server;
 
 	function makeServer( dat ) {
-		server = new Server( dat.region, dat.owner_id, dat.name, id, members || dat.members, dat.icon, dat.afk_timeout, dat.afk_channel_id );
+		server = new Server( dat.region, dat.owner_id, dat.name, id, serverInput.members || dat.members, dat.icon, dat.afk_timeout, dat.afk_channel_id );
 		if ( dat.channels )
 			cacheChannels(dat.channels);
 		else
@@ -208,21 +208,13 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 					for ( x in _servers ) {
 						_server = _servers[ x ];
 
-						/*var sID = "";
-						for ( role of _server.roles ) {
-							if ( role.name === "@everyone" ) {
-								sID = role.id;
-								break;
-							}
-						}*/
 						client.cacheServer( _server, function( server ) {
-							console.log(server.name + " has " + server.members.length() + " members");
 							cached++;
 							if ( cached >= toCache ) {
 								client.ready = true;
 								client.triggerEvent( "ready" );
 							}
-						}, _server.members );
+						} );
 					}
 
 					for ( x in data.private_channels ) {
@@ -268,9 +260,9 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 				} else if ( dat.t === "GUILD_CREATE" ) {
 
 					if ( !client.serverList.filter( "id", dat.d.id, true ) ) {
-						client.cacheServer( dat.d.id, function( server ) {
+						client.cacheServer( dat.d, function( server ) {
 							client.triggerEvent( "serverJoin", [ server ] );
-						}, dat.d.members );
+						});
 					}
 
 				} else if ( dat.t === "CHANNEL_CREATE" ) {
