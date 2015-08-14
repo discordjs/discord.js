@@ -58,40 +58,81 @@ exports.Client.prototype.off = function( name ) {
 	this.events[ name ] = function() {};
 }
 
-exports.Client.prototype.cacheServer = function( id, cb, members ) {
+exports.Client.prototype.cacheServer = function( id, cb, members, channelInfo ) {
 
-	if ( this.serverList.filter( "id", id ).length > 0 ) {
-		return;
-	}
+	console.log("caching!");
 
 	var self = this;
+	var serverInput;
 
-	request
-		.get( Endpoints.SERVERS + "/" + id )
-		.set( "authorization", this.token )
-		.end( function( err, res ) {
-			var dat = res.body;
-			var server = new Server( dat.region, dat.owner_id, dat.name, id, members || dat.members, dat.icon, dat.afk_timeout, dat.afk_channel_id );
+	if ( typeof id === 'string' || id instanceof String ) {
+		//actually an ID
 
-			request
-				.get( Endpoints.SERVERS + "/" + id + "/channels" )
-				.set( "authorization", self.token )
-				.end( function( err, res ) {
+		if ( this.serverList.filter( "id", id ).length > 0 ) {
+			return;
+		}
 
-					if(err){
-						throw err;
-					}
+		console.log("test");
 
-					var channelList = res.body;
-					for ( channel of channelList ) {
-						server.channels.add( new Channel( channel, server ) );
-					}
+		request
+			.get( Endpoints.SERVERS + "/" + id )
+			.set( "authorization", self.token )
+			.end( function( err, res ) {
 
-					self.serverList.add( server );
+				if ( err ) {
+					throw err;
+				}
 
-					cb( server );
-				} );
-		} );
+				var dat = res.body;
+
+				makeServer( dat );
+
+			} );
+
+	} else {
+		// got objects because SPEEEDDDD
+
+		if ( this.serverList.filter( "id", id.id ).length > 0 ) {
+			return;
+		}
+		serverInput = id;
+		id = id.id;
+		makeServer( serverInput );
+
+	}
+
+	function channelsFromHTTP() {
+		request
+			.get( Endpoints.SERVERS + "/" + id + "/channels" )
+			.set( "authorization", self.token )
+			.end( function( err, res ) {
+				if ( err )
+					throw err;
+
+				cacheChannels( res.body );
+			} );
+	}
+
+	var server;
+
+	function makeServer( dat ) {
+		server = new Server( dat.region, dat.owner_id, dat.name, id, members || dat.members, dat.icon, dat.afk_timeout, dat.afk_channel_id );
+		console.log(server.id);
+		if ( !channelInfo )
+			channelsFromHTTP();
+	}
+
+	function cacheChannels( dat ) {
+
+		var channelList = dat;
+		for ( channel of channelList ) {
+			server.channels.add( new Channel( channel, server ) );
+		}
+
+		self.serverList.add( server );
+
+		cb( server );
+	}
 
 }
 
