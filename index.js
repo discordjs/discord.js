@@ -9,6 +9,15 @@ var Invite = require( "./lib/invite.js" ).Invite;
 var PMChannel = require( "./lib/PMChannel.js" ).PMChannel;
 var WebSocket = require( 'ws' );
 
+exports.Endpoints = Endpoints;
+exports.Server = Server;
+exports.Message = Message;
+exports.User = User;
+exports.Channel = Channel;
+exports.List = List;
+exports.Invite = Invite;
+exports.PMChannel = PMChannel;
+
 exports.isUserID = function(id){
 	return ((id + "").length === 17 && !isNaN(id));
 }
@@ -478,6 +487,12 @@ exports.Client.prototype.deleteMessage = function( message, cb ) {
 exports.Client.prototype.channelFromId = function( id ) {
 	var channelList = this.serverList.concatSublists( "channels", "id" );
 	var channel = channelList.filter( "id", id, true );
+
+	if(!channel){
+
+		channel = this.PMList.filter( "id", id, true);
+
+	}
 
 	return channel;
 }
