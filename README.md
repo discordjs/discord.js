@@ -6,7 +6,7 @@ The aim of this API is to make it *really* simple to start developing your bots.
 **[For more information, click here.](https://github.com/hydrabolt/discord.js/wiki)**
 
 ### Installation
-``npm install discord.js``
+``npm install --save discord.js``
 
 ### Features
 
@@ -16,6 +16,7 @@ The aim of this API is to make it *really* simple to start developing your bots.
 * Silent Mention - trigger mention notification without actually @mentioning a user!
 * Get complete metadata on users, channels and servers - including avatars.
 * Get limitless logs from channels.
+* Fast and efficient caching
 
 ### Example usage
 ```js
