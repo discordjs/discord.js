@@ -4,6 +4,8 @@
 var Discord = require( "../" );
 exports.Discord = Discord;
 
+exports.LOL = "CHING CHONG UNTOUCHED";
+
 // Load the config file. If you have not already, make one that follows the
 // structure : { "email" : "discordEmail", "password" : "discordPassword" }
 var BotConfig = require( "./config.json" );
@@ -37,6 +39,7 @@ hydrabot.on( "ready", function() {
 hydrabot.on( "disconnected", function( obj ) {
 	// Say we couldn't connect and then exit
 	console.log( "Disconnected - " + obj.reason );
+	console.log(obj.error);
 	process.exit( 0 );
 } );
 
@@ -69,20 +72,23 @@ hydrabot.on( "message", function( message ) {
 } );
 
 function handleMessage( command, params, message ) {
+
 	if ( Commands[ command ] ) {
 
-		console.log( Authority.getLevel( message.author ) );
 		if ( Authority.getLevel( message.author ) >= Commands[ command ].oplevel ) {
 			//user has authority to do this
 			Commands[ command ].fn( hydrabot, params, message );
 
 		} else {
 			//user doesn't have authority
-			hydrabot.reply( message, "you don't have authority to do this!" );
+			hydrabot.reply( message, exports.AUTH_ERROR );
 		}
 
 	} else {
-		hydrabot.reply( message, "that command was not found!" );
+		hydrabot.reply( message, exports.NOT_FOUND );
 	}
 
 }
+
+exports.AUTH_ERROR = "you don't have authority to do this!";
+exports.NOT_FOUND = "that command was not found!";

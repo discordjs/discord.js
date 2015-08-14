@@ -18,8 +18,8 @@ exports.List = List;
 exports.Invite = Invite;
 exports.PMChannel = PMChannel;
 
-exports.isUserID = function(id){
-	return ((id + "").length === 17 && !isNaN(id));
+exports.isUserID = function( id ) {
+	return ( ( id + "" ).length === 17 && !isNaN( id ) );
 }
 
 exports.Client = function( options ) {
@@ -104,7 +104,7 @@ exports.Client.prototype.login = function( email, password ) {
 		.post( Endpoints.LOGIN )
 		.send( details )
 		.end( function( err, res ) {
-			if ( !res.ok ) {
+			if ( err ) {
 				client.triggerEvent( "disconnected", [ {
 					reason: "failed to log in",
 					error: err
@@ -118,15 +118,15 @@ exports.Client.prototype.login = function( email, password ) {
 
 }
 
-exports.Client.prototype.reply = function(){
+exports.Client.prototype.reply = function() {
 
-	if(arguments[1] instanceof Array){
-		arguments[1] = arguments[1].join("\n");
+	if ( arguments[ 1 ] instanceof Array ) {
+		arguments[ 1 ] = arguments[ 1 ].join( "\n" );
 	}
 
-	arguments[1] = arguments[0].author.mention() + ", " + arguments[1];
+	arguments[ 1 ] = arguments[ 0 ].author.mention() + ", " + arguments[ 1 ];
 
-	this.sendMessage.apply(this, arguments);
+	this.sendMessage.apply( this, arguments );
 
 }
 
@@ -317,7 +317,7 @@ exports.Client.prototype.createServer = function( _name, _region, cb ) {
 		.set( "authorization", client.token )
 		.send( details )
 		.end( function( err, res ) {
-			if ( !res.ok ) {
+			if ( err ) {
 				cb( err );
 			} else {
 				client.cacheServer( res.body.id, function( server ) {
@@ -338,7 +338,7 @@ exports.Client.prototype.leaveServer = function( server, cb ) {
 		.del( Endpoints.SERVERS + "/" + server.id )
 		.set( "authorization", client.token )
 		.end( function( err, res ) {
-			if ( !res.ok ) {
+			if ( err ) {
 				cb( err );
 			} else {
 				client.serverList.removeElement( server );
@@ -367,7 +367,7 @@ exports.Client.prototype.createInvite = function( channel, options, cb ) {
 		.set( "authorization", client.token )
 		.send( options )
 		.end( function( err, res ) {
-			if ( !res.ok ) {
+			if ( err ) {
 				cb( err );
 			} else {
 				cb( false, new Invite( res.body ) );
@@ -387,7 +387,7 @@ exports.Client.prototype.startPM = function( user, message, cb, _mentions, optio
 			recipient_id: user.id
 		} )
 		.end( function( err, res ) {
-			if ( !res.ok ) {
+			if ( err ) {
 				cb( err );
 			} else {
 				client.PMList.add( new PMChannel( res.body.recipient, res.body.id ) );
@@ -401,8 +401,8 @@ exports.Client.prototype.sendMessage = function( channel, message, cb, _mentions
 
 	options = options || {};
 
-	if(message instanceof Array){
-		message = message.join("\n");
+	if ( message instanceof Array ) {
+		message = message.join( "\n" );
 	}
 
 	var thisLoopId = Math.floor( Math.random() * 1000 );
@@ -496,9 +496,9 @@ exports.Client.prototype.channelFromId = function( id ) {
 	var channelList = this.serverList.concatSublists( "channels", "id" );
 	var channel = channelList.filter( "id", id, true );
 
-	if(!channel){
+	if ( !channel ) {
 
-		channel = this.PMList.filter( "id", id, true);
+		channel = this.PMList.filter( "id", id, true );
 
 	}
 
@@ -514,7 +514,7 @@ exports.Client.prototype.getChannelLogs = function( channel, amount, cb ) {
 		.set( "authorization", client.token )
 		.end( function( err, res ) {
 
-			if ( !res.ok ) {
+			if ( err ) {
 				cb( err );
 				return;
 			}
@@ -541,7 +541,7 @@ exports.Client.prototype.createChannel = function( server, serverName, serverTyp
 			type: serverType
 		} )
 		.end( function( err, res ) {
-			if ( !res.ok ) {
+			if ( err ) {
 				cb( err );
 			} else {
 				var chann = new Channel( res.body, server );
@@ -559,7 +559,7 @@ exports.Client.prototype.deleteChannel = function( channel, cb ) {
 		.del( Endpoints.CHANNELS + "/" + channel.id )
 		.set( "authorization", client.token )
 		.end( function( err, res ) {
-			if ( !res.ok ) {
+			if ( err ) {
 				cb( err );
 			} else {
 
@@ -581,7 +581,7 @@ exports.Client.prototype.deleteServer = function( server, cb ) {
 		.del( Endpoints.SERVERS + "/" + server.id )
 		.set( "authorization", client.token )
 		.end( function( err, res ) {
-			if ( !res.ok ) {
+			if ( err ) {
 				cb( err );
 			} else {
 

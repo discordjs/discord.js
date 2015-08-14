@@ -1,5 +1,6 @@
 var Authority = require( "./authority.js" );
-var Discord = require( "./hydrabot.js" ).Discord;
+var BotClass = require( "./hydrabot.js" );
+var Discord = BotClass.Discord;
 
 Commands = [];
 
@@ -35,7 +36,7 @@ Commands[ "echo" ] = {
 }
 
 Commands[ "auth" ] = {
-	oplevel: 2,
+	oplevel: 0,
 	fn: function( bot, params, message ) {
 
 		var level = getKey( params, "level", "0" );
@@ -47,8 +48,10 @@ Commands[ "auth" ] = {
 				bot.reply( message, "that authority level is too high for you to set!" );
 			} else if ( user.equals( message.author ) ) {
 				bot.reply( message, "you can't alter your own authority level!" );
-			} else if ( authLevel( user ) > authLevel( message.author ) ) {
-				bot.reply( message, "that user has a higher OP level than you!" );
+			} else if ( authLevel( user ) >= authLevel( message.author ) ) {
+				bot.reply( message, "that user has a higher or equal OP level to you!" );
+            } else if ( level < 0 ) {
+                bot.reply( message, "that level's a bit too low :P");
 			} else {
 				setAuthLevel( user, level );
 				bot.reply( message, "I set the authority of " + user.mention() + " to **" + level + "**" );
@@ -61,8 +64,15 @@ Commands[ "auth" ] = {
 }
 
 Commands[ "clear" ] = {
-	oplevel: 1,
+	oplevel: 0,
 	fn: function( bot, params, message ) {
+
+        if(!message.isPM()){
+            if(authLevel(message.author) < 1){
+                bot.reply(message, BotClass.AUTH_ERROR);
+                return;
+            }
+        }
 
 		var initMessage = false,
 			cleared = false;
@@ -126,18 +136,76 @@ Commands[ "clear" ] = {
 
 Commands[ "leave" ] = {
 	oplevel: 3,
-	fn: function( bot, params, message) {
+	fn: function( bot, params, message ) {
 
-        if(message.isPM()){
-            bot.reply(message, "Umm... I can't leave PMs... How awkward...");
-        }else{
-            bot.reply(message, "Ok ;( I'm leaving!");
-            bot.leaveServer(message.channel.server, function(err){
-                if(err){
-                    bot.reply(message, "There was an error leaving... how awkward.");
-                }
-            });
+		var silent = hasFlag( params, "s" ) || hasFlag( params, "silent" );
+
+		if ( message.isPM() ) {
+			bot.reply( message, "Umm... I can't leave PMs... How awkward..." );
+		} else {
+
+			if ( !silent )
+				bot.reply( message, "Ok ;( I'm leaving!" );
+
+			bot.leaveServer( message.channel.server, function( err ) {
+				if ( err ) {
+					bot.reply( message, "There was an error leaving... how awkward." );
+				}
+			} );
+		}
+	}
+}
+
+Commands[ "avatar" ] = {
+	oplevel: 0,
+	fn: function( bot, params, message ) {
+
+		var user = getUser( message, params );
+
+		if ( !user.avatar ) {
+			bot.sendMessage( message.channel, user.mention() + " does not have an avatar!" );
+		} else {
+			bot.reply( message, user.getAvatarURL() );
+		}
+	}
+}
+
+Commands[ "icon" ] = {
+	oplevel: 0,
+	fn: function( bot, params, message ) {
+
+		if ( message.isPM() ) {
+			bot.reply( message, "PMs don't have avatars!" );
+			return;
+		}
+
+		if ( !message.channel.server.icon ) {
+			bot.reply( message, "this server does not have an icon!" );
+			return;
+		}
+
+		bot.reply( message, message.channel.server.getIconURL() );
+
+	}
+}
+
+Commands[ "remind" ] = {
+	oplevel: 0,
+	fn: function( bot, params, message ) {
+
+        var time = parseInt(getKey(params, "t") || getKey(params, "time")) * 1000 || 21000;
+        var msg = getKey(params, "m") || getKey(params, "msg") || getKey(params, "message");
+
+        bot.reply( message, "I'll remind you to *"+msg+"* in *"+time/1000+"* seconds.", false, true, {
+            selfDestruct : time
+        });
+
+        setTimeout(send, time);
+
+        function send(){
+            bot.sendMessage( message.author, time + " seconds are up! **"+msg+"**." );
         }
+
 	}
 }
 
