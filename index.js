@@ -199,6 +199,8 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 						self.keepAlive.apply( self );
 					}, data.heartbeat_interval );
 
+					client.user = new User( data.user );
+
 					var _servers = data.guilds,
 						servers = [];
 
@@ -221,7 +223,6 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 						client.PMList.add( new PMChannel( data.private_channels[ x ].recipient, data.private_channels[ x ].id ) );
 					}
 
-					client.user = new User( data.user );
 				} else if ( dat.t === "MESSAGE_CREATE" ) {
 					var data = dat.d;
 
