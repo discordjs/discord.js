@@ -120,6 +120,10 @@ exports.Client.prototype.login = function( email, password ) {
 
 exports.Client.prototype.reply = function(){
 
+	if(arguments[1] instanceof Array){
+		arguments[1] = arguments[1].join("\n");
+	}
+
 	arguments[1] = arguments[0].author.mention() + ", " + arguments[1];
 
 	this.sendMessage.apply(this, arguments);

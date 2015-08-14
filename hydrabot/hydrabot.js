@@ -2,6 +2,7 @@
 // and then run `npm install --save discord.js` in the same directory as this
 // file. The bot should then run.
 var Discord = require( "../" );
+exports.Discord = Discord;
 
 // Load the config file. If you have not already, make one that follows the
 // structure : { "email" : "discordEmail", "password" : "discordPassword" }
@@ -68,20 +69,16 @@ hydrabot.on( "message", function( message ) {
 } );
 
 function handleMessage( command, params, message ) {
-	var channel = message.channel; // set the channel variable to message.channel
-	var sender = message.author; // set the sender variable to the author of the message
-	var isPM = ( message.channel instanceof Discord.PMChannel ); // set isPM to true if the channel is a Private Message Channel.
-
 	if ( Commands[ command ] ) {
 
-		console.log(Authority.getLevel( message.author ));
+		console.log( Authority.getLevel( message.author ) );
 		if ( Authority.getLevel( message.author ) >= Commands[ command ].oplevel ) {
 			//user has authority to do this
 			Commands[ command ].fn( hydrabot, params, message );
 
 		} else {
 			//user doesn't have authority
-			hydrabolt.reply( message, "you don't have authority to do this!" );
+			hydrabot.reply( message, "you don't have authority to do this!" );
 		}
 
 	} else {
