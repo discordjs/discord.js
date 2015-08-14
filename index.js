@@ -29,7 +29,7 @@ exports.Client = function( options ) {
 
 exports.Client.prototype.triggerEvent = function( event, args ) {
 
-	if ( !this.ready && event !== "raw" ) { //if we're not even loaded yet, don't try doing anything because it always ends badly!
+	if ( !this.ready && event !== "raw" && event !== "disconnected" ) { //if we're not even loaded yet, don't try doing anything because it always ends badly!
 		return;
 	}
 
