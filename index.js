@@ -78,6 +78,10 @@ exports.Client.prototype.cacheServer = function( id, cb, members ) {
 				.set( "authorization", self.token )
 				.end( function( err, res ) {
 
+					if(err){
+						throw err;
+					}
+
 					var channelList = res.body;
 					for ( channel of channelList ) {
 						server.channels.add( new Channel( channel, server ) );

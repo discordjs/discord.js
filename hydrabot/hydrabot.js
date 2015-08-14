@@ -4,8 +4,6 @@
 var Discord = require( "../" );
 exports.Discord = Discord;
 
-exports.LOL = "CHING CHONG UNTOUCHED";
-
 // Load the config file. If you have not already, make one that follows the
 // structure : { "email" : "discordEmail", "password" : "discordPassword" }
 var BotConfig = require( "./config.json" );
@@ -30,9 +28,11 @@ hydrabot.login( BotConfig.email, BotConfig.password );
 
 console.log( "Starting up..." );
 
+var time = Date.now();
+
 // When the bot is ready to go, output to the console
 hydrabot.on( "ready", function() {
-	console.log( "Ready!" );
+	console.log( "Ready in "+ (Date.now() - time) +"ms!" );
 } );
 
 // When the bot gets disconnected, exit.
