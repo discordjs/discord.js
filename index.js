@@ -437,7 +437,7 @@ exports.Client.prototype.sendMessage = function( channel, message, cb, _mentions
 	} else if ( _mentions === true || _mentions === "auto" || _mentions == null || _mentions == undefined ) {
 		//want to auto sort mentions
 		_mentions = [];
-		var mentionsArray = message.match( /<[^>]*>/g ) || [];
+		var mentionsArray = message.match( /<@[^>]*>/g ) || [];
 		for ( mention of mentionsArray ) {
 			_mentions.push( mention.substring( 2, mention.length - 1 ) );
 		}

@@ -28,8 +28,10 @@ Commands[ "echo" ] = {
 	fn: function( bot, params, message ) {
 
 		bot.sendMessage( message, params.join( " " ), function( err, msg ) {
-			if ( err )
+			if ( err ){
 				bot.sendMessage( message, "Unable to echo!" );
+                console.log(err);
+            }
 		} );
 
 	}
