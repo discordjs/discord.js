@@ -1,6 +1,7 @@
 # Created by https://www.gitignore.io
 
 hydrabot/config.json
+hydrabot/authority.json
 
 ### Node ###
 # Logs

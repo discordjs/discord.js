@@ -397,6 +397,10 @@ exports.Client.prototype.sendMessage = function( channel, message, cb, _mentions
 
 	options = options || {};
 
+	if(message instanceof Array){
+		message = message.join("\n");
+	}
+
 	var thisLoopId = Math.floor( Math.random() * 1000 );
 
 	if ( channel instanceof User ) {
