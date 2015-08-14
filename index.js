@@ -414,6 +414,8 @@ exports.Client.prototype.startPM = function( user, message, cb, _mentions, optio
 
 	var client = this;
 
+	cb = cb || function(){};
+
 	request
 		.post( Endpoints.USERS + "/" + client.user.id + "/channels" )
 		.set( "authorization", client.token )

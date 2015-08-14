@@ -28,10 +28,10 @@ Commands[ "echo" ] = {
 	fn: function( bot, params, message ) {
 
 		bot.sendMessage( message, params.join( " " ), function( err, msg ) {
-			if ( err ){
+			if ( err ) {
 				bot.sendMessage( message, "Unable to echo!" );
-                console.log(err);
-            }
+				console.log( err );
+			}
 		} );
 
 	}
@@ -211,47 +211,61 @@ Commands[ "remind" ] = {
 	}
 }
 
+Commands[ "annoy" ] = {
+	oplevel: 0,
+	fn: function( bot, params, message ) {
+
+		var user = getUser( message, params );
+
+		bot.sendMessage( user, "Ha I'm annoying you on " + message.author.mention() + "'s request!" );
+
+	}
+}
+
 Commands[ "activity" ] = {
 	oplevel: 0,
 	fn: function( bot, params, message ) {
 
-        var amount = getKey(params, "amount") || getKey(params, "n") || 250;
-        var limit = getKey(params, "limit") || getKey(params, "l") || 10;
+		var amount = getKey( params, "amount" ) || getKey( params, "n" ) || 250;
+		var limit = getKey( params, "limit" ) || getKey( params, "l" ) || 10;
 
-        bot.getChannelLogs(message.channel, amount, function(err, logs){
+		bot.getChannelLogs( message.channel, amount, function( err, logs ) {
 
-            if(err){
-                bot.reply(message, "error gettings logs.");
-            }else{
+			if ( err ) {
+				bot.reply( message, "error gettings logs." );
+			} else {
 
-                var activity = {}, count = 0;
-                for(msg of logs.contents){
+				var activity = {},
+					count = 0;
+				for ( msg of logs.contents ) {
 
-                    count = logs.length();
+					count = logs.length();
 
-                    if(!activity[msg.author.id])
-                        activity[msg.author.id] = 0;
-                    activity[msg.author.id]++;
-                }
+					if ( !activity[ msg.author.id ] )
+						activity[ msg.author.id ] = 0;
+					activity[ msg.author.id ]++;
+				}
 
-                var report = "here's a list of activity over the last "+count+" messages :\n\n";
+				var report = "here's a list of activity over the last " + count + " messages :\n\n";
 
-                var users = {};
+				var users = {};
 
-                for(id in activity){
-                    users[id] = message.channel.server.members.filter("id", id, true);
-                }
+				for ( id in activity ) {
+					users[ id ] = message.channel.server.members.filter( "id", id, true );
+				}
 
-                activity = Object.keys(activity).sort(function(a,b){return activity[a]-activity[b]});
+				activity = Object.keys( activity ).sort( function( a, b ) {
+					return activity[ a ] - activity[ b ]
+				} );
 
-                for(id in activity){
-                    report += id + " | "+activity[id]+" | **"+ Math.round( (activity[id] / count) * 100 ) +"%**.\n";
-                }
+				for ( id in activity ) {
+					report += id + " | " + activity[ id ] + " | **" + Math.round( ( activity[ id ] / count ) * 100 ) + "%**.\n";
+				}
 
-                bot.reply(message, report, false, false);
-            }
+				bot.reply( message, report, false, false );
+			}
 
-        });
+		} );
 
 	}
 }
