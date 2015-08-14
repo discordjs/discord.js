@@ -59,35 +59,76 @@ exports.Client.prototype.off = function( name ) {
 }
 
 exports.Client.prototype.cacheServer = function( id, cb, members ) {
+	var self = this;
+	var serverInput = {};
 
-	if ( this.serverList.filter( "id", id ).length > 0 ) {
-		return;
+	if ( typeof id === 'string' || id instanceof String ) {
+		//actually an ID
+
+		if ( this.serverList.filter( "id", id ).length > 0 ) {
+			return;
+		}
+
+		request
+			.get( Endpoints.SERVERS + "/" + id )
+			.set( "authorization", self.token )
+			.end( function( err, res ) {
+
+				if ( err ) {
+					throw err;
+				}
+
+				var dat = res.body;
+
+				makeServer( dat );
+
+			} );
+
+	} else {
+		// got objects because SPEEEDDDD
+
+		if ( this.serverList.filter( "id", id.id ).length > 0 ) {
+			return;
+		}
+		serverInput = id;
+		id = id.id;
+		makeServer( serverInput );
+
 	}
 
-	var self = this;
+	function channelsFromHTTP() {
+		request
+			.get( Endpoints.SERVERS + "/" + id + "/channels" )
+			.set( "authorization", self.token )
+			.end( function( err, res ) {
+				if ( err )
+					throw err;
 
-	request
-		.get( Endpoints.SERVERS + "/" + id )
-		.set( "authorization", this.token )
-		.end( function( err, res ) {
-			var dat = res.body;
-			var server = new Server( dat.region, dat.owner_id, dat.name, id, members || dat.members, dat.icon, dat.afk_timeout, dat.afk_channel_id );
+				cacheChannels( res.body );
+			} );
+	}
 
-			request
-				.get( Endpoints.SERVERS + "/" + id + "/channels" )
-				.set( "authorization", self.token )
-				.end( function( err, res ) {
+	var server;
 
-					var channelList = res.body;
-					for ( channel of channelList ) {
-						server.channels.add( new Channel( channel, server ) );
-					}
+	function makeServer( dat ) {
+		server = new Server( dat.region, dat.owner_id, dat.name, id, serverInput.members || dat.members, dat.icon, dat.afk_timeout, dat.afk_channel_id );
+		if ( dat.channels )
+			cacheChannels(dat.channels);
+		else
+			channelsFromHTTP();
+	}
 
-					self.serverList.add( server );
+	function cacheChannels( dat ) {
 
-					cb( server );
-				} );
-		} );
+		var channelList = dat;
+		for ( channel of channelList ) {
+			server.channels.add( new Channel( channel, server ) );
+		}
+
+		self.serverList.add( server );
+
+		cb( server );
+	}
 
 }
 
@@ -167,21 +208,13 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 					for ( x in _servers ) {
 						_server = _servers[ x ];
 
-						var sID = "";
-						for ( role of _server.roles ) {
-							if ( role.name === "@everyone" ) {
-								sID = role.id;
-								break;
-							}
-						}
-
-						client.cacheServer( sID, function( server ) {
+						client.cacheServer( _server, function( server ) {
 							cached++;
 							if ( cached >= toCache ) {
 								client.ready = true;
 								client.triggerEvent( "ready" );
 							}
-						}, _server.members );
+						} );
 					}
 
 					for ( x in data.private_channels ) {
@@ -227,9 +260,9 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 				} else if ( dat.t === "GUILD_CREATE" ) {
 
 					if ( !client.serverList.filter( "id", dat.d.id, true ) ) {
-						client.cacheServer( dat.d.id, function( server ) {
+						client.cacheServer( dat.d, function( server ) {
 							client.triggerEvent( "serverJoin", [ server ] );
-						}, dat.d.members );
+						});
 					}
 
 				} else if ( dat.t === "CHANNEL_CREATE" ) {
