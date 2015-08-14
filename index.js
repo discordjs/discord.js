@@ -58,10 +58,7 @@ exports.Client.prototype.off = function( name ) {
 	this.events[ name ] = function() {};
 }
 
-exports.Client.prototype.cacheServer = function( id, cb, members, channelInfo ) {
-
-	console.log("caching!");
-
+exports.Client.prototype.cacheServer = function( id, cb, members ) {
 	var self = this;
 	var serverInput;
 
@@ -71,8 +68,6 @@ exports.Client.prototype.cacheServer = function( id, cb, members, channelInfo ) 
 		if ( this.serverList.filter( "id", id ).length > 0 ) {
 			return;
 		}
-
-		console.log("test");
 
 		request
 			.get( Endpoints.SERVERS + "/" + id )
@@ -117,8 +112,9 @@ exports.Client.prototype.cacheServer = function( id, cb, members, channelInfo ) 
 
 	function makeServer( dat ) {
 		server = new Server( dat.region, dat.owner_id, dat.name, id, members || dat.members, dat.icon, dat.afk_timeout, dat.afk_channel_id );
-		console.log(server.id);
-		if ( !channelInfo )
+		if ( dat.channels )
+			cacheChannels(dat.channels);
+		else
 			channelsFromHTTP();
 	}
 
@@ -212,15 +208,15 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 					for ( x in _servers ) {
 						_server = _servers[ x ];
 
-						var sID = "";
+						/*var sID = "";
 						for ( role of _server.roles ) {
 							if ( role.name === "@everyone" ) {
 								sID = role.id;
 								break;
 							}
-						}
-
-						client.cacheServer( sID, function( server ) {
+						}*/
+						client.cacheServer( _server, function( server ) {
+							console.log(server.name + " has " + server.members.length() + " members");
 							cached++;
 							if ( cached >= toCache ) {
 								client.ready = true;
