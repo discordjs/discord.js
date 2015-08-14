@@ -9,6 +9,10 @@ var Invite = require( "./lib/invite.js" ).Invite;
 var PMChannel = require( "./lib/PMChannel.js" ).PMChannel;
 var WebSocket = require( 'ws' );
 
+exports.prototype.isUserID = function(id){
+	return ((id + "").length === 17 && !isNaN(id));
+}
+
 exports.Client = function( options ) {
 
 	this.options = options || {};
@@ -25,7 +29,7 @@ exports.Client = function( options ) {
 
 exports.Client.prototype.triggerEvent = function( event, args ) {
 
-	if ( !this.ready ) { //if we're not even loaded yet, don't try doing anything because it always ends badly!
+	if ( !this.ready && event !== "raw" ) { //if we're not even loaded yet, don't try doing anything because it always ends badly!
 		return;
 	}
 
@@ -58,7 +62,7 @@ exports.Client.prototype.cacheServer = function( id, cb, members ) {
 		.set( "authorization", this.token )
 		.end( function( err, res ) {
 			var dat = res.body;
-			var server = new Server( dat.region, dat.owner_id, dat.name, dat.roles[ 0 ].id, members || dat.members );
+			var server = new Server( dat.region, dat.owner_id, dat.name, id, members || dat.members, dat.icon, dat.afk_timeout, dat.afk_channel_id );
 
 			request
 				.get( Endpoints.SERVERS + "/" + id + "/channels" )
@@ -102,6 +106,14 @@ exports.Client.prototype.login = function( email, password ) {
 				client.connectWebsocket();
 			}
 		} );
+
+}
+
+exports.Client.prototype.reply = function(){
+
+	arguments[1] = arguments[0].author.mention() + ", " + arguments[1];
+
+	this.sendMessage.apply(this, arguments);
 
 }
 
@@ -450,7 +462,7 @@ exports.Client.prototype.sendMessage = function( channel, message, cb, _mentions
 
 }
 
-exports.Client.prototype.deleteMessage = function( message ) {
+exports.Client.prototype.deleteMessage = function( message, cb ) {
 
 	if ( !message )
 		return false;
@@ -460,7 +472,7 @@ exports.Client.prototype.deleteMessage = function( message ) {
 	request
 		.del( Endpoints.CHANNELS + "/" + message.channel.id + "/messages/" + message.id )
 		.set( "authorization", client.token )
-		.end( function( err, res ) {} );
+		.end( cb );
 }
 
 exports.Client.prototype.channelFromId = function( id ) {
