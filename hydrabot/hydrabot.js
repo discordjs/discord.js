@@ -11,9 +11,9 @@ var BotConfig = require( "./config.json" );
 var hydrabot = new Discord.Client();
 
 // Log the client in using the auth details in config.json
-hydrabot.login( BotConfig.email, BotConfig.password+"a" );
+hydrabot.login( BotConfig.email, BotConfig.password );
 
-console.log("Starting up...");
+console.log( "Starting up..." );
 
 // When the bot is ready to go, output to the console
 hydrabot.on( "ready", function() {
@@ -22,5 +22,13 @@ hydrabot.on( "ready", function() {
 
 // When the bot gets disconnected, exit.
 hydrabot.on( "disconnected", function( obj ) {
-	console.log( "Disconnected", obj.reason );
+	// Say we couldn't connect and then exit
+	console.log( "Disconnected - " + obj.reason );
+	process.exit( 0 );
+} );
+
+hydrabot.on( "message", function( message ) {
+
+	console.log( message );
+
 } );
