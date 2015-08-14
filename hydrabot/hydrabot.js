@@ -7,8 +7,20 @@ var Discord = require( "../" );
 // structure : { "email" : "discordEmail", "password" : "discordPassword" }
 var BotConfig = require( "./config.json" );
 
+// Load the commands file
+var Commands = require( "./commands.js" ).Commands;
+
+// Load the Authority handler
+var Authority = require( "./authority.js" );
+
+// Initialise it
+Authority.init();
+
 // Create a new Discord Client
 var hydrabot = new Discord.Client();
+
+// An array of single character prefixes the bot will respond to
+var commandPrefixes = [ "$", "£", "`" ];
 
 // Log the client in using the auth details in config.json
 hydrabot.login( BotConfig.email, BotConfig.password );
@@ -29,6 +41,51 @@ hydrabot.on( "disconnected", function( obj ) {
 
 hydrabot.on( "message", function( message ) {
 
-	console.log( message );
+	// if the message doesn't begin with a valid command prefix exit
+	if ( commandPrefixes.indexOf( message.content.charAt( 0 ) ) == -1 )
+		return;
+
+	var command = "",
+		params = []; //set the message details
+
+	// remove the prefix from the start of the message
+	message.content = message.content.substr( 1 );
+
+	// split the message by slashes. This will yield something
+	// like: ["command", "a", "b", "c"].
+	var chunks = message.content.split( "/" );
+
+	for ( key in chunks ) { //loop through the chunks and trim them
+		chunks[ key ] = chunks[ key ].trim();
+	}
+
+	command = chunks[ 0 ]; //the first param will be the command
+	params = chunks.slice( 1 );
+
+	// it's less messy if we outsource to another function
+	handleMessage( command, params, message );
 
 } );
+
+function handleMessage( command, params, message ) {
+	var channel = message.channel; // set the channel variable to message.channel
+	var sender = message.author; // set the sender variable to the author of the message
+	var isPM = ( message.channel instanceof Discord.PMChannel ); // set isPM to true if the channel is a Private Message Channel.
+
+	if ( Commands[ command ] ) {
+
+		console.log(Authority.getLevel( message.author ));
+		if ( Authority.getLevel( message.author ) >= Commands[ command ].oplevel ) {
+			//user has authority to do this
+			Commands[ command ].fn( hydrabot, params, message );
+
+		} else {
+			//user doesn't have authority
+			hydrabolt.reply( message, "you don't have authority to do this!" );
+		}
+
+	} else {
+		hydrabot.reply( message, "that command was not found!" );
+	}
+
+}
