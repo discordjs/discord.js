@@ -1,5 +1,7 @@
 # Created by https://www.gitignore.io
 
+hydrabot/config.json
+
 ### Node ###
 # Logs
 logs
