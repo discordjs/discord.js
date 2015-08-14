@@ -8,4 +8,12 @@ If you don't want to clone the repo but instead just use this folder, you need t
 
 ### Setting up credentials
 
-Edit `config.json` to use your Discord email and password, and then run `node hydrabot.js`.
+Create `config.json` to use your Discord email and password, and then run `node hydrabot.js`.
+
+What config.json should look like:
+```js
+{
+    "email" : "your email",
+    "password" : "your password"
+}
+```
