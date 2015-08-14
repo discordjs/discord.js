@@ -50,8 +50,8 @@ Commands[ "auth" ] = {
 				bot.reply( message, "you can't alter your own authority level!" );
 			} else if ( authLevel( user ) >= authLevel( message.author ) ) {
 				bot.reply( message, "that user has a higher or equal OP level to you!" );
-            } else if ( level < 0 ) {
-                bot.reply( message, "that level's a bit too low :P");
+			} else if ( level < 0 ) {
+				bot.reply( message, "that level's a bit too low :P" );
 			} else {
 				setAuthLevel( user, level );
 				bot.reply( message, "I set the authority of " + user.mention() + " to **" + level + "**" );
@@ -67,12 +67,12 @@ Commands[ "clear" ] = {
 	oplevel: 0,
 	fn: function( bot, params, message ) {
 
-        if(!message.isPM()){
-            if(authLevel(message.author) < 1){
-                bot.reply(message, BotClass.AUTH_ERROR);
-                return;
-            }
-        }
+		if ( !message.isPM() ) {
+			if ( authLevel( message.author ) < 1 ) {
+				bot.reply( message, BotClass.AUTH_ERROR );
+				return;
+			}
+		}
 
 		var initMessage = false,
 			cleared = false;
@@ -86,9 +86,9 @@ Commands[ "clear" ] = {
 				var deletedCount = 0,
 					failedCount = 0,
 					todo = logs.length();
-				for ( message of logs.contents ) {
-					if ( message.author.equals( bot.user ) ) {
-						bot.deleteMessage( message, function( err ) {
+				for ( msg of logs.contents ) {
+					if ( msg.author.equals( bot.user ) ) {
+						bot.deleteMessage( msg, function( err ) {
 							todo--;
 							if ( err )
 								failedCount++;
@@ -97,7 +97,7 @@ Commands[ "clear" ] = {
 
 							if ( todo === 0 ) {
 								bot.reply(
-									message,
+									msg,
 									"Done! " + deletedCount + " message(s) were deleted, with " + failedCount + " error(s).",
 									false,
 									true, {
@@ -193,18 +193,63 @@ Commands[ "remind" ] = {
 	oplevel: 0,
 	fn: function( bot, params, message ) {
 
-        var time = parseInt(getKey(params, "t") || getKey(params, "time")) * 1000 || 21000;
-        var msg = getKey(params, "m") || getKey(params, "msg") || getKey(params, "message");
+		var time = parseInt( getKey( params, "t" ) || getKey( params, "time" ) ) * 1000 || 21000;
+		var msg = getKey( params, "m" ) || getKey( params, "msg" ) || getKey( params, "message" );
 
-        bot.reply( message, "I'll remind you to *"+msg+"* in *"+time/1000+"* seconds.", false, true, {
-            selfDestruct : time
+		bot.reply( message, "I'll remind you to *" + msg + "* in *" + time / 1000 + "* seconds.", false, true, {
+			selfDestruct: time
+		} );
+
+		setTimeout( send, time );
+
+		function send() {
+			bot.sendMessage( message.author, time + " seconds are up! **" + msg + "**." );
+		}
+
+	}
+}
+
+Commands[ "activity" ] = {
+	oplevel: 0,
+	fn: function( bot, params, message ) {
+
+        var amount = getKey(params, "amount") || getKey(params, "n") || 250;
+        var limit = getKey(params, "limit") || getKey(params, "l") || 10;
+
+        bot.getChannelLogs(message.channel, amount, function(err, logs){
+
+            if(err){
+                bot.reply(message, "error gettings logs.");
+            }else{
+
+                var activity = {}, count = 0;
+                for(msg of logs.contents){
+
+                    count = logs.length();
+
+                    if(!activity[msg.author.id])
+                        activity[msg.author.id] = 0;
+                    activity[msg.author.id]++;
+                }
+
+                var report = "here's a list of activity over the last "+count+" messages :\n\n";
+
+                var users = {};
+
+                for(id in activity){
+                    users[id] = message.channel.server.members.filter("id", id, true);
+                }
+
+                activity = Object.keys(activity).sort(function(a,b){return activity[a]-activity[b]});
+
+                for(id in activity){
+                    report += id + " | "+activity[id]+" | **"+ Math.round( (activity[id] / count) * 100 ) +"%**.\n";
+                }
+
+                bot.reply(message, report, false, false);
+            }
+
         });
-
-        setTimeout(send, time);
-
-        function send(){
-            bot.sendMessage( message.author, time + " seconds are up! **"+msg+"**." );
-        }
 
 	}
 }
