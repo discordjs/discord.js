@@ -58,7 +58,7 @@ exports.Client.prototype.cacheServer = function( id, cb, members ) {
 		.set( "authorization", this.token )
 		.end( function( err, res ) {
 			var dat = res.body;
-			var server = new Server( dat.region, dat.owner_id, dat.name, dat.roles[ 0 ].id, members || dat.members, dat.icon, dat.afk_timeout, dat.afk_channel_id );
+			var server = new Server( dat.region, dat.owner_id, dat.name, id, members || dat.members, dat.icon, dat.afk_timeout, dat.afk_channel_id );
 
 			request
 				.get( Endpoints.SERVERS + "/" + id + "/channels" )
@@ -458,7 +458,7 @@ exports.Client.prototype.sendMessage = function( channel, message, cb, _mentions
 
 }
 
-exports.Client.prototype.deleteMessage = function( message ) {
+exports.Client.prototype.deleteMessage = function( message, cb ) {
 
 	if ( !message )
 		return false;
@@ -468,7 +468,7 @@ exports.Client.prototype.deleteMessage = function( message ) {
 	request
 		.del( Endpoints.CHANNELS + "/" + message.channel.id + "/messages/" + message.id )
 		.set( "authorization", client.token )
-		.end( function( err, res ) {} );
+		.end( cb );
 }
 
 exports.Client.prototype.channelFromId = function( id ) {
