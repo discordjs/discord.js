@@ -40,7 +40,6 @@ hydrabot.on( "ready", function() {
 hydrabot.on( "disconnected", function( obj ) {
 	// Say we couldn't connect and then exit
 	console.log( "Disconnected - " + obj.reason );
-	console.log(obj.error);
 	process.exit( 0 );
 } );
 

@@ -14,13 +14,14 @@ This node module is still in alpha, and some methods and functions may change or
 
 ### Features
 
-* Send, Receive and Delete messages from channels _and_ DMs! Auto-initiates DMs for you!
+* Send, Receive Delete and **Edit** messages from channels _and_ DMs! Auto-initiates DMs for you!
 * Create, Delete and Leave servers and channels
 * Create invites for Servers
 * Silent Mention - trigger mention notification without actually @mentioning a user!
 * Get complete metadata on users, channels and servers - including avatars.
 * Get limitless logs from channels.
 * Fast and efficient caching
+* Auto-cache messages
 
 ### Example usage
 ```js
