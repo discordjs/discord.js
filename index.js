@@ -228,7 +228,6 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 								console.log("Took "+ (Date.now() - time) +" ms to prepare!");
 							}
 						} );
-						console.log("-", x, Date.now() - time)
 					}
 
 				} else if ( dat.t === "MESSAGE_CREATE" ) {
@@ -369,6 +368,7 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 
 			connDat.d.properties = Internal.WebSocket.properties;
 			this.sendPacket( connDat );
+			time = Date.now();
 		}
 	}
 }
