@@ -11,6 +11,8 @@ Commands[ "info" ] = {
 		var verbose = hasFlag( params, "verbose" ) || hasFlag( params, "v" );
 		var user = getUser( message, params );
 
+		console.log( "INFO", params );
+
 		bot.reply( message, [
 			"here's some info on " + user.mention() + ":",
 			"In channel **#" + message.channel.name + "**" + ( verbose ? " - ID *" + message.channel.id + "*" : "" ), ( message.isPM() ?
@@ -18,7 +20,85 @@ Commands[ "info" ] = {
 			),
 			"User ID is *" + user.id + "*",
 			"Authority/OP Level to me is **" + Authority.getLevel( user ) + "**"
-		] );
+		], function( err ) {
+			console.log( err );
+		} );
+
+	}
+}
+
+Commands[ "loading" ] = {
+	oplevel:0,
+	fn: function(bot, params, message){
+
+		var progress = 0;
+		var currentMessage;
+		var bars = 20;
+
+		function getM(){
+			var before = progress;
+			var after = bars - progress;
+			var ret = "";
+			for(x=0; x < before; x++){
+				ret += "-";
+			}
+			ret += "**#**";
+			for(y=0; y < after; y++){
+				ret += "-";
+			}
+			return ret;
+		}
+
+		function doProg(){
+			if(progress === (bars + 1)){
+				progress = 0;
+			}
+
+			if(currentMessage){
+				bot.updateMessage(currentMessage, getM(), function(err, msg){
+					if(!err)
+						currentMessage = msg;
+				});
+				progress++;
+			}
+
+		}
+
+		bot.sendMessage(message.channel, getM(), function(err, message){
+			currentMessage = message;
+			setInterval(doProg, 200);
+		});
+
+	}
+}
+
+Commands[ "flashy" ] = {
+	oplevel:0,
+	fn: function(bot, params, message){
+
+		var phase = 0;
+		var msg;
+
+		var textToSay = getKey(params, "m", "FLASH");
+		var speed = parseInt( getKey(params, "s", "500") );
+
+		function change(){
+			if(msg){
+
+				var highlighting = ((phase % 2) === 0 ? "**" : "");
+				phase++;
+				bot.updateMessage(msg, highlighting + textToSay + highlighting, function(err, message){
+					if(!err){
+						msg = message;
+					}
+				});
+			}
+		}
+
+		bot.sendMessage(message.channel, textToSay, function(err, message){
+			msg = message;
+			setInterval(change, speed);
+		});
 
 	}
 }
@@ -99,10 +179,9 @@ Commands[ "clear" ] = {
 
 							if ( todo === 0 ) {
 								bot.reply(
-									msg,
+									message,
 									"Done! " + deletedCount + " message(s) were deleted, with " + failedCount + " error(s).",
-									false,
-									true, {
+									false, {
 										selfDestruct: 5000
 									}
 								);
@@ -189,6 +268,59 @@ Commands[ "icon" ] = {
 		bot.reply( message, message.channel.server.getIconURL() );
 
 	}
+}
+
+Commands[ "feedback" ] = {
+
+	oplevel: 0,
+	fn: function( bot, params, message ) {
+
+		var amount = getKey( params, "amount" ) || getKey( params, "n" ) || 1000;
+
+		bot.getChannelLogs( message.channel, amount, function( err, logs ) {
+
+			console.log(logs);
+
+			if ( err ) {
+				bot.reply( message, "an error occurred when grabbing the logs.", false, {
+					selfDestruct: 3000
+				} );
+			} else {
+
+				var found = [];
+				for ( msg of logs.contents ) {
+
+					if ( ~msg.content.indexOf( "[request" ) || ~msg.content.indexOf( "[feature" || ~msg.content.indexOf( "[suggestion") ) ) {
+						if(msg.content.length > 10){
+							found.push( msg );
+						}
+					}
+
+				}
+
+				bot.sendMessage( message.author, "Ok, here's a rundown of all feature requests so far:", function( err, ms ) {
+
+					if (!err)
+						gothroughit();
+
+				} );
+
+				bot.reply( message, "I found " + found.length + " result(s) that matched this. I'll send it to you in a PM.", false, {
+					selfDestruct : 3000
+				} );
+
+				function gothroughit() {
+					for ( msg of found ) {
+
+						bot.sendMessage( message.author, "**" + msg.author.username + "** said:\n    " + msg.content );
+
+					}
+				}
+			}
+		} );
+
+	}
+
 }
 
 Commands[ "remind" ] = {

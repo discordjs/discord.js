@@ -33,6 +33,7 @@ var time = Date.now();
 // When the bot is ready to go, output to the console
 hydrabot.on( "ready", function() {
 	console.log( "Ready in "+ (Date.now() - time) +"ms!" );
+	console.log(Commands);
 } );
 
 // When the bot gets disconnected, exit.
@@ -43,9 +44,31 @@ hydrabot.on( "disconnected", function( obj ) {
 	process.exit( 0 );
 } );
 
+hydrabot.on("messageDelete", function(message){
+	console.log(message);
+})
+
+hydrabot.on("messageUpdate", function(former, edit){
+
+	if(former.author.equals(this.user)){
+		return;
+	}
+
+	if(former){
+
+		var seconds = Math.round((Date.now() - former.time) / 1000);
+
+		var channel = former.channel;
+		hydrabot.sendMessage(channel, "**"+former.author.username + "** (edit from message "+seconds+" seconds ago):\n    " + former.content);
+
+	}
+
+})
+
 hydrabot.on( "message", function( message ) {
 
 	// if the message doesn't begin with a valid command prefix exit
+
 	if ( commandPrefixes.indexOf( message.content.charAt( 0 ) ) == -1 )
 		return;
 
