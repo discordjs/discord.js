@@ -52,7 +52,7 @@ exports.Client.prototype.getChannel = function( id ) {
 
 exports.Client.prototype.triggerEvent = function( event, args ) {
 
-	if ( !this.ready && event !== "raw" && event !== "disconnected" ) { //if we're not even loaded yet, don't try doing anything because it always ends badly!
+	if ( !this.ready && event !== "raw" && event !== "disconnected" && event !== "debug" ) { //if we're not even loaded yet, don't try doing anything because it always ends badly!
 		return;
 	}
 
@@ -363,6 +363,8 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 }
 
 exports.Client.prototype.logout = function( callback ) {
+
+	callback = callback || function(){};
 
 	var self = this;
 
