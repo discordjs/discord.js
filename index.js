@@ -136,6 +136,8 @@ exports.Client.prototype.login = function( email, password ) {
 
 	var self = this;
 
+	self.connectWebsocket();
+
 	Internal.XHR.login( email, password, function( err, token ) {
 
 		if ( err ) {
@@ -143,10 +145,11 @@ exports.Client.prototype.login = function( email, password ) {
 				reason: "failed to log in",
 				error: err
 			} ] );
+			self.websocket.close();
 		} else {
 			self.token = token;
+			self.websocket.sendData();
 			self.loggedIn = true;
-			self.connectWebsocket();
 		}
 
 	} );
@@ -167,6 +170,8 @@ exports.Client.prototype.reply = function( destination, toSend, callback, option
 exports.Client.prototype.connectWebsocket = function( cb ) {
 
 	var self = this;
+
+	var sentInitData = false;
 
 	this.websocket = new WebSocket( Endpoints.WEBSOCKET_HUB );
 	this.websocket.onclose = function( e ) {
@@ -210,7 +215,7 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 
 						self.cacheServer( _server, function( server ) {
 							cached++;
-							if ( cached >= toCache ) {
+							if ( cached === toCache ) {
 								self.ready = true;
 								self.triggerEvent( "ready" );
 							}
@@ -337,17 +342,23 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 	}
 	this.websocket.onopen = function() {
 
-		var connDat = {
-			op: 2,
-			d: {
-				token: self.token,
-				v: 2
-			}
-		};
+		this.sendData("onopen");
 
-		connDat.d.properties = Internal.WebSocket.properties;
+	}
+	this.websocket.sendData = function(why){
+		if(this.readyState == 1 && !sentInitData && self.token){
+			sentInitData = true;
+			var connDat = {
+				op: 2,
+				d: {
+					token: self.token,
+					v: 2
+				}
+			};
 
-		this.sendPacket( connDat );
+			connDat.d.properties = Internal.WebSocket.properties;
+			this.sendPacket( connDat );
+		}
 	}
 }
 
