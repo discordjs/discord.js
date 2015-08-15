@@ -11,6 +11,8 @@ Commands[ "info" ] = {
 		var verbose = hasFlag( params, "verbose" ) || hasFlag( params, "v" );
 		var user = getUser( message, params );
 
+		console.log("INFO", params);
+
 		bot.reply( message, [
 			"here's some info on " + user.mention() + ":",
 			"In channel **#" + message.channel.name + "**" + ( verbose ? " - ID *" + message.channel.id + "*" : "" ), ( message.isPM() ?

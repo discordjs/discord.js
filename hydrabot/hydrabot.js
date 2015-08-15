@@ -46,6 +46,7 @@ hydrabot.on( "disconnected", function( obj ) {
 hydrabot.on( "message", function( message ) {
 
 	// if the message doesn't begin with a valid command prefix exit
+
 	if ( commandPrefixes.indexOf( message.content.charAt( 0 ) ) == -1 )
 		return;
 
