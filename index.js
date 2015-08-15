@@ -25,6 +25,7 @@ exports.isUserID = function( id ) {
 exports.Client = function( options ) {
 
 	this.options = options || {};
+	this.options.maxmessage = 5000;
 	this.token = "";
 	this.loggedIn = false;
 	this.websocket = null;
@@ -35,6 +36,23 @@ exports.Client = function( options ) {
 	this.PMList = new List( "id" );
 
 }
+
+exports.Client.prototype.getServers = function() {
+	return this.serverList;
+}
+
+exports.Client.prototype.getChannels = function() {
+	return this.serverList.concatSublists( "channels", "id" );
+}
+
+exports.Client.prototype.getServer = function(id) {
+	return this.getServers().filter("id", id, true);
+}
+
+exports.Client.prototype.getChannel = function(id) {
+	return this.getChannels().filter("id", id, true);
+}
+
 
 exports.Client.prototype.triggerEvent = function( event, args ) {
 
@@ -113,7 +131,7 @@ exports.Client.prototype.cacheServer = function( id, cb, members ) {
 	function makeServer( dat ) {
 		server = new Server( dat.region, dat.owner_id, dat.name, id, serverInput.members || dat.members, dat.icon, dat.afk_timeout, dat.afk_channel_id );
 		if ( dat.channels )
-			cacheChannels(dat.channels);
+			cacheChannels( dat.channels );
 		else
 			channelsFromHTTP();
 	}
@@ -263,7 +281,7 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 					if ( !client.serverList.filter( "id", dat.d.id, true ) ) {
 						client.cacheServer( dat.d, function( server ) {
 							client.triggerEvent( "serverJoin", [ server ] );
-						});
+						} );
 					}
 
 				} else if ( dat.t === "CHANNEL_CREATE" ) {
@@ -414,7 +432,7 @@ exports.Client.prototype.startPM = function( user, message, cb, _mentions, optio
 
 	var client = this;
 
-	cb = cb || function(){};
+	cb = cb || function() {};
 
 	request
 		.post( Endpoints.USERS + "/" + client.user.id + "/channels" )
