@@ -5,6 +5,10 @@ The aim of this API is to make it *really* simple to start developing your bots.
 
 **[For more information, click here.](https://github.com/hydrabolt/discord.js/wiki)**
 
+### This module is still in alpha!
+
+This node module is still in alpha, and some methods and functions may change or completely disappear!
+
 ### Installation
 ``npm install --save discord.js``
 

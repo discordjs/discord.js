@@ -18,10 +18,6 @@ exports.List = List;
 exports.Invite = Invite;
 exports.PMChannel = PMChannel;
 
-exports.isUserID = function( id ) {
-	return ( ( id + "" ).length === 17 && !isNaN( id ) );
-}
-
 exports.Client = function( options ) {
 
 	this.options = options || {};
@@ -35,45 +31,6 @@ exports.Client = function( options ) {
 	this.serverList = new List( "id" );
 	this.PMList = new List( "id" );
 
-}
-
-exports.Client.prototype.getServers = function() {
-	return this.serverList;
-}
-
-exports.Client.prototype.getChannels = function() {
-	return this.serverList.concatSublists( "channels", "id" );
-}
-
-exports.Client.prototype.getServer = function(id) {
-	return this.getServers().filter("id", id, true);
-}
-
-exports.Client.prototype.getChannel = function(id) {
-	return this.getChannels().filter("id", id, true);
-}
-
-
-exports.Client.prototype.triggerEvent = function( event, args ) {
-
-	if ( !this.ready && event !== "raw" && event !== "disconnected" ) { //if we're not even loaded yet, don't try doing anything because it always ends badly!
-		return;
-	}
-
-	if ( this.events[ event ] ) {
-		this.events[ event ].apply( this, args );
-	} else {
-		return false;
-	}
-
-}
-
-exports.Client.prototype.on = function( name, fn ) {
-	this.events[ name ] = fn;
-}
-
-exports.Client.prototype.off = function( name ) {
-	this.events[ name ] = function() {};
 }
 
 exports.Client.prototype.cacheServer = function( id, cb, members ) {
@@ -451,6 +408,50 @@ exports.Client.prototype.startPM = function( user, message, cb, _mentions, optio
 
 }
 
+exports.Client.prototype.editMessage = function( originalMessage, newContent, cb, _mentions ){
+
+	if ( _mentions === false ) {
+		//mentions is false, explicitly don't want to mention someone
+		_mentions = [];
+	} else if ( _mentions === true || _mentions === "auto" || _mentions == null || _mentions == undefined ) {
+		//want to auto sort mentions
+		_mentions = [];
+		var mentionsArray = message.match( /<@[^>]*>/g ) || [];
+		for ( mention of mentionsArray ) {
+			_mentions.push( mention.substring( 2, mention.length - 1 ) );
+		}
+
+	} else if ( _mentions instanceof Array ) {
+		//specific mentions
+		for ( mention in _mentions ) {
+			_mentions[ mention ] = _mentions[ mention ].id;
+		}
+	} else {
+
+	}
+
+	request
+		.patch( Endpoints.CHANNELS + "/" + originalMessage.channel.id + "/messages/" + originalMessage.id )
+		.set( "authorization", client.token )
+		.send( {} )
+		.end( function( err, res ) {
+
+			if ( err ) {
+				cb( err );
+				return;
+			}
+
+			var msg = new Message( res.body, client.channelFromId( res.body.channel_id ) );
+			if ( options.selfDestruct ) {
+				setTimeout( function() {
+					client.deleteMessage( msg );
+				}, options.selfDestruct );
+			}
+			cb( null, msg );
+		} );
+
+}
+
 exports.Client.prototype.sendMessage = function( channel, message, cb, _mentions, options ) {
 
 	options = options || {};
@@ -485,25 +486,7 @@ exports.Client.prototype.sendMessage = function( channel, message, cb, _mentions
 
 	var cb = cb || function() {};
 
-	if ( _mentions === false ) {
-		//mentions is false, explicitly don't want to mention someone
-		_mentions = [];
-	} else if ( _mentions === true || _mentions === "auto" || _mentions == null || _mentions == undefined ) {
-		//want to auto sort mentions
-		_mentions = [];
-		var mentionsArray = message.match( /<@[^>]*>/g ) || [];
-		for ( mention of mentionsArray ) {
-			_mentions.push( mention.substring( 2, mention.length - 1 ) );
-		}
-
-	} else if ( _mentions instanceof Array ) {
-		//specific mentions
-		for ( mention in _mentions ) {
-			_mentions[ mention ] = _mentions[ mention ].id;
-		}
-	} else {
-
-	}
+	_mentions = createMentions(_mentions, message);
 
 	var client = this;
 	var details = {
@@ -544,19 +527,6 @@ exports.Client.prototype.deleteMessage = function( message, cb ) {
 		.del( Endpoints.CHANNELS + "/" + message.channel.id + "/messages/" + message.id )
 		.set( "authorization", client.token )
 		.end( cb );
-}
-
-exports.Client.prototype.channelFromId = function( id ) {
-	var channelList = this.serverList.concatSublists( "channels", "id" );
-	var channel = channelList.filter( "id", id, true );
-
-	if ( !channel ) {
-
-		channel = this.PMList.filter( "id", id, true );
-
-	}
-
-	return channel;
 }
 
 exports.Client.prototype.getChannelLogs = function( channel, amount, cb ) {
@@ -646,5 +616,129 @@ exports.Client.prototype.deleteServer = function( server, cb ) {
 				cb( null );
 			}
 		} );
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+	##############################################
+						UTILS
+	##############################################
+ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+exports.isUserID = function( id ) {
+	return ( ( id + "" ).length === 17 && !isNaN( id ) );
+}
+
+exports.Client.prototype.channelFromId = function( id ) {
+	var channelList = this.serverList.concatSublists( "channels", "id" );
+	var channel = channelList.filter( "id", id, true );
+
+	if ( !channel ) {
+
+		channel = this.PMList.filter( "id", id, true );
+
+	}
+
+	return channel;
+}
+
+exports.Client.prototype.getServers = function() {
+	return this.serverList;
+}
+
+exports.Client.prototype.getChannels = function() {
+	return this.serverList.concatSublists( "channels", "id" );
+}
+
+exports.Client.prototype.getUsers = function() {
+	return this.getServers().concatSublists( "members", "id" );
+}
+
+exports.Client.prototype.getServer = function( id ) {
+	return this.getServers().filter( "id", id, true );
+}
+
+exports.Client.prototype.getChannel = function( id ) {
+	return this.getChannels().filter( "id", id, true );
+}
+
+exports.Client.prototype.getUser = function( id ) {
+	return this.getUsers().filter( "id", id, true );
+}
+
+exports.Client.prototype.triggerEvent = function( event, args ) {
+
+	if ( !this.ready && event !== "raw" && event !== "disconnected" ) { //if we're not even loaded yet, don't try doing anything because it always ends badly!
+		return;
+	}
+
+	if ( this.events[ event ] ) {
+		this.events[ event ].apply( this, args );
+	} else {
+		return false;
+	}
+
+}
+
+exports.Client.prototype.on = function( name, fn ) {
+	this.events[ name ] = fn;
+}
+
+exports.Client.prototype.off = function( name ) {
+	this.events[ name ] = function() {};
+}
+
+function createMentions(_mentions, message){
+
+	if ( _mentions === false ) {
+		//mentions is false, explicitly don't want to mention someone
+		return [];
+	} else if ( _mentions === true || _mentions === "auto" || _mentions == null || _mentions == undefined ) {
+		//want to auto sort mentions
+		_mentions = [];
+		var mentionsArray = message.match( /<@[^>]*>/g ) || [];
+		for ( mention of mentionsArray ) {
+			_mentions.push( mention.substring( 2, mention.length - 1 ) );
+		}
+		return mentionsArray;
+
+	} else if ( _mentions instanceof Array ) {
+		//specific mentions
+		for ( mention in _mentions ) {
+			_mentions[ mention ] = _mentions[ mention ].id;
+		}
+		return _mentions;
+	} else {
+		return [];
+	}
 
 }
