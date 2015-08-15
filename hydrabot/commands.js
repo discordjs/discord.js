@@ -27,7 +27,81 @@ Commands[ "info" ] = {
 	}
 }
 
-Commands[ "" ]
+Commands[ "loading" ] = {
+	oplevel:0,
+	fn: function(bot, params, message){
+
+		var progress = 0;
+		var currentMessage;
+		var bars = 20;
+
+		function getM(){
+			var before = progress;
+			var after = bars - progress;
+			var ret = "";
+			for(x=0; x < before; x++){
+				ret += "-";
+			}
+			ret += "**#**";
+			for(y=0; y < after; y++){
+				ret += "-";
+			}
+			return ret;
+		}
+
+		function doProg(){
+			if(progress === (bars + 1)){
+				progress = 0;
+			}
+
+			if(currentMessage){
+				bot.updateMessage(currentMessage, getM(), function(err, msg){
+					if(!err)
+						currentMessage = msg;
+				});
+				progress++;
+			}
+
+		}
+
+		bot.sendMessage(message.channel, getM(), function(err, message){
+			currentMessage = message;
+			setInterval(doProg, 200);
+		});
+
+	}
+}
+
+Commands[ "flashy" ] = {
+	oplevel:0,
+	fn: function(bot, params, message){
+
+		var phase = 0;
+		var msg;
+
+		var textToSay = getKey(params, "m", "FLASH");
+		var speed = parseInt( getKey(params, "s", "500") );
+
+		function change(){
+			if(msg){
+
+				var highlighting = ((phase % 2) === 0 ? "**" : "");
+				phase++;
+				bot.updateMessage(msg, highlighting + textToSay + highlighting, function(err, message){
+					if(!err){
+						msg = message;
+					}
+				});
+			}
+		}
+
+		bot.sendMessage(message.channel, textToSay, function(err, message){
+			msg = message;
+			setInterval(change, speed);
+		});
+
+	}
+}
 
 Commands[ "echo" ] = {
 	oplevel: 0,

@@ -222,8 +222,47 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 
 					var channel = self.getChannel( data.channel_id );
 					var message = new Message( data, channel );
-
 					self.triggerEvent( "message", [ message ] );
+					if ( channel.messages )
+						channel.messages.add( message );
+
+				} else if ( dat.t === "MESSAGE_DELETE" ) {
+					var data = dat.d;
+
+					var channel = self.getChannel( data.channel_id );
+
+					if ( !channel.messages )
+						return;
+
+					var _msg = channel.messages.filter( "id", data.id, true );
+
+					if ( _msg ) {
+						self.triggerEvent( "messageDelete", [ _msg ] );
+						channel.messages.removeElement( _msg );
+					}
+
+				} else if ( dat.t === "MESSAGE_UPDATE" ) {
+
+					var data = dat.d;
+					if ( !self.ready )
+						return;
+
+					var formerMessage = false;
+
+					var channel = self.getChannel( data.channel_id );
+
+					if ( channel ) {
+
+						formerMessage = channel.messages.filter( "id", data.id, true );
+						newMessage = new Message( data, channel );
+						self.triggerEvent( "messageUpdate", [ formerMessage, newMessage ] );
+
+						if ( formerMessage )
+							channel.messages.updateElement( formerMessage, newMessage );
+						else
+							channel.messages.add( newMessage );
+
+					}
 
 				} else if ( dat.t === "PRESENCE_UPDATE" ) {
 
@@ -527,13 +566,38 @@ exports.Client.prototype.deleteMessage = function( message, callback ) {
 	Internal.XHR.deleteMessage( self.token, message.channel.id, message.id, callback );
 }
 
+exports.Client.prototype.updateMessage = function(oldMessage, newContent, callback, options){
+
+	var self = this;
+	var channel = oldMessage.channel;
+	options = options || {};
+
+	Internal.XHR.updateMessage(self.token, channel.id, oldMessage.id, {
+		content : newContent,
+		mentions : []
+	}, function(err, data){
+		if(err){
+			callback(err);
+			return;
+		}
+		var msg = new Message( data, self.getChannel( data.channel_id ) );
+		if ( options.selfDestruct ) {
+			setTimeout( function() {
+				self.deleteMessage( msg );
+			}, options.selfDestruct );
+		}
+		callback( null, msg );
+	});
+
+}
+
 exports.Client.prototype.getChannelLogs = function( channel, amount, callback ) {
 	var self = this;
 
 	Internal.XHR.getChannelLogs( self.token, channel.id, ( amount || 50 ), function( err, data ) {
 
-		if(err){
-			callback(err);
+		if ( err ) {
+			callback( err );
 			return;
 		}
 
