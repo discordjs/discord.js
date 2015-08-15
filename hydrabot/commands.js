@@ -20,7 +20,9 @@ Commands[ "info" ] = {
 			),
 			"User ID is *" + user.id + "*",
 			"Authority/OP Level to me is **" + Authority.getLevel( user ) + "**"
-		] );
+		], function(err){
+			console.log(err);
+		} );
 
 	}
 }

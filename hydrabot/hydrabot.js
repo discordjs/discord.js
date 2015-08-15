@@ -33,6 +33,7 @@ var time = Date.now();
 // When the bot is ready to go, output to the console
 hydrabot.on( "ready", function() {
 	console.log( "Ready in "+ (Date.now() - time) +"ms!" );
+	console.log(hydrabot.PMList);
 } );
 
 // When the bot gets disconnected, exit.

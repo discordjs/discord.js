@@ -56,7 +56,6 @@ exports.Client.prototype.triggerEvent = function( event, args ) {
 		return;
 	}
 
-	console.log(this.events[event]);
 	if ( this.events[ event ] ) {
 		this.events[ event ].apply( this, args );
 	} else {
@@ -84,11 +83,11 @@ exports.Client.prototype.cacheServer = function( id, cb, members ) {
 			return;
 		}
 
-		Internal.XHR.getServer(self.token, id, function(err, data){
-			if(!err){
+		Internal.XHR.getServer( self.token, id, function( err, data ) {
+			if ( !err ) {
 				makeServer( data );
 			}
-		})
+		} )
 
 	} else {
 		// got objects because SPEEEDDDD
@@ -103,10 +102,10 @@ exports.Client.prototype.cacheServer = function( id, cb, members ) {
 	}
 
 	function channelsFromHTTP() {
-		Internal.XHR.getChannel(self.token, id, function(err){
-			if(!err)
+		Internal.XHR.getChannel( self.token, id, function( err ) {
+			if ( !err )
 				cacheChannels( res.body );
-		})
+		} )
 	}
 
 	var server;
@@ -153,15 +152,15 @@ exports.Client.prototype.login = function( email, password ) {
 	} );
 }
 
-exports.Client.prototype.reply = function() {
+exports.Client.prototype.reply = function( destination, toSend, callback, options ) {
 
-	if ( arguments[ 1 ] instanceof Array ) {
-		arguments[ 1 ] = arguments[ 1 ].join( "\n" );
+	if ( toSend instanceof Array ) {
+		toSend = toSend.join( "\n" );
 	}
 
-	arguments[ 1 ] = arguments[ 0 ].author.mention() + ", " + arguments[ 1 ];
+	toSend = destination.author.mention() + ", " + toSend;
 
-	this.sendMessage.apply( this, arguments );
+	this.sendMessage( destination, toSend, callback, options );
 
 }
 
@@ -181,6 +180,8 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 		self.triggerEvent( "raw", [ e ] );
 
 		var dat = JSON.parse( e.data );
+		var webself = this;
+
 		switch ( dat.op ) {
 
 			case 0:
@@ -188,9 +189,8 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 
 					var data = dat.d;
 
-					webself = this;
 					setInterval( function() {
-						webself.keepAlive.apply( self );
+						webself.keepAlive.apply( webself );
 					}, data.heartbeat_interval );
 
 					self.user = new User( data.user );
@@ -200,6 +200,10 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 
 					var cached = 0,
 						toCache = _servers.length;
+
+					for ( x in data.private_channels ) {
+						self.PMList.add( new PMChannel( data.private_channels[ x ].recipient, data.private_channels[ x ].id ) );
+					}
 
 					for ( x in _servers ) {
 						_server = _servers[ x ];
@@ -211,10 +215,6 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 								self.triggerEvent( "ready" );
 							}
 						} );
-					}
-
-					for ( x in data.private_channels ) {
-						self.PMList.add( new PMChannel( data.private_channels[ x ].recipient, data.private_channels[ x ].id ) );
 					}
 
 				} else if ( dat.t === "MESSAGE_CREATE" ) {
@@ -424,12 +424,13 @@ exports.Client.prototype.sendMessage = function( destination, toSend, callback, 
 	mentions = resolveMentions( message, options.mention );
 
 	if ( channel_id ) {
-		sendMessage();
+		send();
 	} else {
 		//a channel is being sorted
 	}
 
-	function sendMessage() {
+	function send() {
+
 		Internal.XHR.sendMessage( self.token, channel_id, {
 			content: message,
 			mentions: mentions
@@ -437,7 +438,7 @@ exports.Client.prototype.sendMessage = function( destination, toSend, callback, 
 			if ( err ) {
 				callback( err );
 			} else {
-				var msg = new Message( data, self.channelFromId( data.channel_id ) );
+				var msg = new Message( data, self.getChannel( data.channel_id ) );
 				if ( options.selfDestruct ) {
 					setTimeout( function() {
 						self.deleteMessage( msg );
@@ -464,24 +465,27 @@ exports.Client.prototype.sendMessage = function( destination, toSend, callback, 
 			channel_id = destination.channel.id;
 		} else if ( destination instanceof User ) {
 			var destId = self.PMList.deepFilter( [ "user", "id" ], destination.id, true );
+				console.log(destId);
 			if ( destId ) {
-				channel_id = destId;
+				channel_id = destId.id;
 			} else {
 				//start a PM and then get that use that
 				self.startPM( destination, function( err, channel ) {
 					if ( err ) {
 						callback( err );
 					} else {
+						self.PMList.add( new PMChannel( channel.recipient, channel.id ) );
 						setChannId( channel.id );
-						sendMessage();
+						send();
 					}
 				} );
+				return false;
 			}
 		} else {
 			channel_id = destination;
 		}
+		return channel_id;
 	}
-	return channel_id;
 
 	function resolveMessage( toSend ) {
 		var message;
@@ -588,7 +592,7 @@ exports.Client.prototype.deleteServer = function( server, callback ) {
  */
 
 exports.Client.prototype.getServers = function() {
- 	return this.serverList;
+	return this.serverList;
 }
 
 exports.Client.prototype.getChannels = function() {
@@ -611,6 +615,10 @@ exports.Client.prototype.getUser = function( id ) {
 	return this.getUsers().filter( "id", id, true );
 }
 
- exports.isUserID = function( id ) {
- 	return ( ( id + "" ).length === 17 && !isNaN( id ) );
- }
+exports.isUserID = function( id ) {
+	return ( ( id + "" ).length === 17 && !isNaN( id ) );
+}
+
+exports.Client.prototype.addPM = function( pm ) {
+	this.PMList.add( pm );
+}
