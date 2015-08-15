@@ -3,6 +3,8 @@ Discord.js is a node module that allows you to interface with the [Discord](http
 
 The aim of this API is to make it *really* simple to start developing your bots. This API has server, channel and user tracking, as well as tools to make identification really simple.
 
+New update features **big speed boosts** (everything cached and sorted with around 1 second of calling the login function) upon connection and allows editing of messages!
+
 **[For more information, click here.](https://github.com/hydrabolt/discord.js/wiki)**
 
 ### This module is still in alpha!
