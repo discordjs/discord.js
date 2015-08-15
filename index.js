@@ -136,6 +136,8 @@ exports.Client.prototype.login = function( email, password ) {
 
 	var self = this;
 
+	var time = Date.now();
+
 	Internal.XHR.login( email, password, function( err, token ) {
 
 		if ( err ) {
@@ -147,6 +149,7 @@ exports.Client.prototype.login = function( email, password ) {
 			self.token = token;
 			self.loggedIn = true;
 			self.connectWebsocket();
+			console.log("Took "+ (Date.now() - time) +" ms to login!");
 		}
 
 	} );
@@ -168,6 +171,8 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 
 	var self = this;
 
+	var time = Date.now();
+
 	this.websocket = new WebSocket( Endpoints.WEBSOCKET_HUB );
 	this.websocket.onclose = function( e ) {
 		self.triggerEvent( "disconnected", [ {
@@ -188,6 +193,9 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 				if ( dat.t === "READY" ) {
 
 					var data = dat.d;
+
+					console.log("Took "+ (Date.now() - time) +" ms to get READY!");
+					time = Date.now();
 
 					setInterval( function() {
 						webself.keepAlive.apply( webself );
@@ -213,8 +221,10 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 							if ( cached >= toCache ) {
 								self.ready = true;
 								self.triggerEvent( "ready" );
+								console.log("Took "+ (Date.now() - time) +" ms to prepare!");
 							}
 						} );
+						console.log("-", x, Date.now() - time)
 					}
 
 				} else if ( dat.t === "MESSAGE_CREATE" ) {
@@ -348,6 +358,8 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 		connDat.d.properties = Internal.WebSocket.properties;
 
 		this.sendPacket( connDat );
+		console.log("Took "+ (Date.now() - time) +" ms to open WS connection!");
+		time = Date.now();
 	}
 }
 
