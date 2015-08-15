@@ -465,7 +465,7 @@ exports.Client.prototype.sendMessage = function( destination, toSend, callback, 
 			channel_id = destination.channel.id;
 		} else if ( destination instanceof User ) {
 			var destId = self.PMList.deepFilter( [ "user", "id" ], destination.id, true );
-				
+
 			if ( destId ) {
 				channel_id = destId.id;
 			} else {
@@ -531,6 +531,11 @@ exports.Client.prototype.getChannelLogs = function( channel, amount, callback ) 
 	var self = this;
 
 	Internal.XHR.getChannelLogs( self.token, channel.id, ( amount || 50 ), function( err, data ) {
+
+		if(err){
+			callback(err);
+			return;
+		}
 
 		var logs = new List( "id" );
 		for ( message of data ) {

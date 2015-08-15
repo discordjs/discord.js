@@ -205,6 +205,8 @@ Commands[ "feedback" ] = {
 
 		bot.getChannelLogs( message.channel, amount, function( err, logs ) {
 
+			console.log(logs);
+
 			if ( err ) {
 				bot.reply( message, "an error occurred when grabbing the logs.", false, {
 					selfDestruct: 3000
@@ -215,7 +217,7 @@ Commands[ "feedback" ] = {
 				for ( msg of logs.contents ) {
 
 					if ( ~msg.content.indexOf( "[request" ) || ~msg.content.indexOf( "[feature" || ~msg.content.indexOf( "[suggestion") ) ) {
-						if(msg.content.length > 15){
+						if(msg.content.length > 10){
 							found.push( msg );
 						}
 					}
@@ -229,7 +231,9 @@ Commands[ "feedback" ] = {
 
 				} );
 
-				bot.reply( message, "I found " + found.length + " result(s) that matched this. I'll send it to you in a PM." );
+				bot.reply( message, "I found " + found.length + " result(s) that matched this. I'll send it to you in a PM.", false, {
+					selfDestruct : 3000
+				} );
 
 				function gothroughit() {
 					for ( msg of found ) {
