@@ -11,7 +11,7 @@ Commands[ "info" ] = {
 		var verbose = hasFlag( params, "verbose" ) || hasFlag( params, "v" );
 		var user = getUser( message, params );
 
-		console.log("INFO", params);
+		console.log( "INFO", params );
 
 		bot.reply( message, [
 			"here's some info on " + user.mention() + ":",
@@ -20,12 +20,14 @@ Commands[ "info" ] = {
 			),
 			"User ID is *" + user.id + "*",
 			"Authority/OP Level to me is **" + Authority.getLevel( user ) + "**"
-		], function(err){
-			console.log(err);
+		], function( err ) {
+			console.log( err );
 		} );
 
 	}
 }
+
+Commands[ "" ]
 
 Commands[ "echo" ] = {
 	oplevel: 0,
@@ -103,10 +105,9 @@ Commands[ "clear" ] = {
 
 							if ( todo === 0 ) {
 								bot.reply(
-									msg,
+									message,
 									"Done! " + deletedCount + " message(s) were deleted, with " + failedCount + " error(s).",
-									false,
-									true, {
+									false, {
 										selfDestruct: 5000
 									}
 								);
@@ -193,6 +194,55 @@ Commands[ "icon" ] = {
 		bot.reply( message, message.channel.server.getIconURL() );
 
 	}
+}
+
+Commands[ "feedback" ] = {
+
+	oplevel: 0,
+	fn: function( bot, params, message ) {
+
+		var amount = getKey( params, "amount" ) || getKey( params, "n" ) || 1000;
+
+		bot.getChannelLogs( message.channel, amount, function( err, logs ) {
+
+			if ( err ) {
+				bot.reply( message, "an error occurred when grabbing the logs.", false, {
+					selfDestruct: 3000
+				} );
+			} else {
+
+				var found = [];
+				for ( msg of logs.contents ) {
+
+					if ( ~msg.content.indexOf( "[request" ) || ~msg.content.indexOf( "[feature" || ~msg.content.indexOf( "[suggestion") ) ) {
+						if(msg.content.length > 15){
+							found.push( msg );
+						}
+					}
+
+				}
+
+				bot.sendMessage( message.author, "Ok, here's a rundown of all feature requests so far:", function( err, ms ) {
+
+					if (!err)
+						gothroughit();
+
+				} );
+
+				bot.reply( message, "I found " + found.length + " result(s) that matched this. I'll send it to you in a PM." );
+
+				function gothroughit() {
+					for ( msg of found ) {
+
+						bot.sendMessage( message.author, "**" + msg.author.username + "** said:\n    " + msg.content );
+
+					}
+				}
+			}
+		} );
+
+	}
+
 }
 
 Commands[ "remind" ] = {
