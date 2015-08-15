@@ -136,8 +136,6 @@ exports.Client.prototype.login = function( email, password ) {
 
 	var self = this;
 
-	var time = Date.now();
-
 	self.connectWebsocket();
 
 	Internal.XHR.login( email, password, function( err, token ) {
@@ -147,11 +145,11 @@ exports.Client.prototype.login = function( email, password ) {
 				reason: "failed to log in",
 				error: err
 			} ] );
+			self.websocket.close();
 		} else {
 			self.token = token;
-			self.loggedIn = true;
-			console.log("Took "+ (Date.now() - time) +" ms to login!");
 			self.websocket.sendData();
+			self.loggedIn = true;
 		}
 
 	} );
@@ -172,8 +170,6 @@ exports.Client.prototype.reply = function( destination, toSend, callback, option
 exports.Client.prototype.connectWebsocket = function( cb ) {
 
 	var self = this;
-
-	var time = Date.now();
 
 	var sentInitData = false;
 
@@ -198,9 +194,6 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 
 					var data = dat.d;
 
-					console.log("Took "+ (Date.now() - time) +" ms to get READY!");
-					time = Date.now();
-
 					setInterval( function() {
 						webself.keepAlive.apply( webself );
 					}, data.heartbeat_interval );
@@ -222,10 +215,9 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 
 						self.cacheServer( _server, function( server ) {
 							cached++;
-							if ( cached >= toCache ) {
+							if ( cached === toCache ) {
 								self.ready = true;
 								self.triggerEvent( "ready" );
-								console.log("Took "+ (Date.now() - time) +" ms to prepare!");
 							}
 						} );
 					}
@@ -350,12 +342,10 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 	}
 	this.websocket.onopen = function() {
 
-		this.sendData();
+		this.sendData("onopen");
 
-		console.log("Took "+ (Date.now() - time) +" ms to open WS connection!");
-		time = Date.now();
 	}
-	this.websocket.sendData = function(){
+	this.websocket.sendData = function(why){
 		if(this.readyState == 1 && !sentInitData && self.token){
 			sentInitData = true;
 			var connDat = {
@@ -368,7 +358,6 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 
 			connDat.d.properties = Internal.WebSocket.properties;
 			this.sendPacket( connDat );
-			time = Date.now();
 		}
 	}
 }
