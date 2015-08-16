@@ -8,18 +8,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hydrabolt/discord.js.git"
+    "url": "git+https://github.com/discord-js/discord.js.git"
   },
   "keywords": [
     "discord",
-    "api"
+    "api",
+    "bot",
+    "client"
   ],
   "author": "Amish Shah <amishshah.2k@gmail.com>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/hydrabolt/discord.js/issues"
+    "url": "https://github.com/discord-js/discord.js/issues"
   },
-  "homepage": "https://github.com/hydrabolt/discord.js#readme",
+  "homepage": "https://github.com/discord-js/discord.js#readme",
   "dependencies": {
     "superagent": "^1.3.0",
     "ws": "^0.7.2"
