@@ -138,8 +138,9 @@ exports.Client.prototype.login = function( email, password ) {
 
 	self.connectWebsocket();
 
+	var time = Date.now();
 	Internal.XHR.login( email, password, function( err, token ) {
-
+		console.log(Date.now() - time);
 		if ( err ) {
 			self.triggerEvent( "disconnected", [ {
 				reason: "failed to log in",
