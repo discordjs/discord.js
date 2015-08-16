@@ -379,18 +379,13 @@ Commands[ "activity" ] = {
 
 				var report = "here's a list of activity over the last " + count + " messages :\n\n";
 
-				var users = {};
-
-				for ( id in activity ) {
-					users[ id ] = message.channel.server.members.filter( "id", id, true );
+				var usernames = {};
+				for( id in activity ){
+					usernames[id] = bot.getUser(id).username;
 				}
 
-				activity = Object.keys( activity ).sort( function( a, b ) {
-					return activity[ a ] - activity[ b ]
-				} );
-
 				for ( id in activity ) {
-					report += id + " | " + activity[ id ] + " | **" + Math.round( ( activity[ id ] / count ) * 100 ) + "%**.\n";
+					report += usernames[id] + " | " + activity[ id ] + " | **" + Math.round( ( activity[ id ] / count ) * 100 ) + "%**.\n";
 				}
 
 				bot.reply( message, report, false, false );

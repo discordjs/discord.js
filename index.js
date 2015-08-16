@@ -10,6 +10,13 @@ var PMChannel = require( "./lib/PMChannel.js" ).PMChannel;
 var WebSocket = require( 'ws' );
 var Internal = require( "./lib/internal.js" ).Internal;
 
+/**
+ * The wrapper module for the Discord Client, also provides some helpful objects.
+ *
+ * @module Discord
+ */
+exports;
+
 exports.Endpoints = Endpoints;
 exports.Server = Server;
 exports.Message = Message;
@@ -19,55 +26,156 @@ exports.List = List;
 exports.Invite = Invite;
 exports.PMChannel = PMChannel;
 
+/**
+ * The Discord Client used to interface with the Discord API.
+ * @class Client
+ * @constructor
+ * @param {Object} options An object containing configurable options.
+ * @param {Number} [options.maxmessage=5000] The maximum amount of messages to be stored per channel.
+ */
 exports.Client = function( options ) {
 
+	/**
+	 * Contains the options of the client
+	 * @attribute options
+	 * @type {Object}
+	 */
 	this.options = options || {};
 	this.options.maxmessage = 5000;
+	/**
+	 * Contains the token used to authorise HTTP requests and WebSocket connection. Received when login was successful.
+	 * @attribute token
+	 * @readonly
+	 * @type {String}
+	 */
 	this.token = "";
+	/**
+	 * Indicates whether the client is logged in or not. Does not indicate whether the client is ready.
+	 * @attribute loggedIn
+	 * @readonly
+	 * @type {Boolean}
+	 */
 	this.loggedIn = false;
+	/**
+	 * The WebSocket used when receiving message and other event updates.
+	 * @type {WebSocket}
+	 * @attribute websocket
+	 * @readonly
+	 */
 	this.websocket = null;
+	/**
+	 * An Object containing the functions tied to events. These should be set using Client.on();
+	 * @type {Object}
+	 * @attribute events
+	 */
 	this.events = {};
+	/**
+	 * The User of the Client class, set when the initial startup is complete.
+	 * @attribute user
+	 * @type {User}
+	 * @readonly
+	 */
 	this.user = null;
+	/**
+	 * Indicates whether the Client is ready and has cached all servers it as aware of.
+	 * @type {Boolean}
+	 * @attribute ready
+	 * @readonly
+	 */
 	this.ready = false;
+	/**
+	 * A List containing all the Servers the Client has access to.
+	 * @attribute serverList
+	 * @type {List}
+	 * @readonly
+	 */
 	this.serverList = new List( "id" );
+	/**
+	 * A List containing all the PMChannels the Client has access to.
+	 * @attribute PMList
+	 * @type {List}
+	 * @readonly
+	 */
 	this.PMList = new List( "id" );
 
 }
 
+/**
+ * Returns a list of all servers that the Discord Client has access to.
+ *
+ * @method getServers
+ * @return {List} ServerList
+ */
 exports.Client.prototype.getServers = function() {
 	return this.serverList;
 }
 
+/**
+ * Returns a list of all servers that the Discord Client has access to.
+ * @method getChannels
+ * @return {List} Channelist
+ */
 exports.Client.prototype.getChannels = function() {
 	return this.serverList.concatSublists( "channels", "id" );
 }
 
+/**
+ * Returns a Server matching the given id, or false if not found. Will return false if the server is not cached or not available.
+ * @method getServer
+ * @param  {String/Number} id The ID of the Server
+ * @return {Server} The Server matching the ID
+ */
 exports.Client.prototype.getServer = function( id ) {
 	return this.getServers().filter( "id", id, true );
 }
 
+/**
+ * Returns a Channel matching the given id, or false if not found. Will return false if the Channel is not cached or not available.
+ * @method getChannel
+ * @param  {String/Number} id The ID of the Channel
+ * @return {Server} The Channel matching the ID
+ */
 exports.Client.prototype.getChannel = function( id ) {
 	return this.getChannels().filter( "id", id, true );
 }
 
+/**
+ * Triggers an .on() event.
+ * @param  {String} event The event to be triggered
+ * @param  {Array} args The arguments to be passed onto the method
+ * @return {Boolean} whether the event was triggered successfully.
+ * @private
+ */
 exports.Client.prototype.triggerEvent = function( event, args ) {
 
 	if ( !this.ready && event !== "raw" && event !== "disconnected" && event !== "debug" ) { //if we're not even loaded yet, don't try doing anything because it always ends badly!
-		return;
+		return false;
 	}
 
 	if ( this.events[ event ] ) {
 		this.events[ event ].apply( this, args );
+		return true;
 	} else {
 		return false;
 	}
 
 }
 
+/**
+ * Binds a function to an event
+ * @param  {String} name The event name which the function should be bound to.
+ * @param  {Function} fn The function that should be bound to the event.
+ * @method on
+ */
 exports.Client.prototype.on = function( name, fn ) {
 	this.events[ name ] = fn;
 }
 
+/**
+ * Unbinds a function from an event
+ * @param  {String} name The event name which should be cleared
+ * @method off
+ */
 exports.Client.prototype.off = function( name ) {
 	this.events[ name ] = function() {};
 }
@@ -132,15 +240,29 @@ exports.Client.prototype.cacheServer = function( id, cb, members ) {
 
 }
 
-exports.Client.prototype.login = function( email, password ) {
+/**
+ * Logs the Client in with the specified credentials and begins initialising it.
+ * @async
+ * @method login
+ * @param  {String} email The Discord email.
+ * @param  {String} password The Discord password.
+ * @param  {Function} [callback] Called when received reply from authentication server.
+ * @param {Object} callback.error Set to null if there was no error logging in, otherwise is an Object that
+ * can be evaluated as true.
+ * @param {String} callback.error.reason The reason why there was an error
+ * @param {Object} callback.error.error The raw XHR error.
+ * @param {String} callback.token The token received when logging in
+ */
+exports.Client.prototype.login = function( email, password, callback ) {
 
 	var self = this;
+	callback = callback || function() {};
 
 	self.connectWebsocket();
 
 	var time = Date.now();
 	Internal.XHR.login( email, password, function( err, token ) {
-		console.log(Date.now() - time);
+		console.log( Date.now() - time );
 		if ( err ) {
 			self.triggerEvent( "disconnected", [ {
 				reason: "failed to log in",
@@ -151,6 +273,7 @@ exports.Client.prototype.login = function( email, password ) {
 			self.token = token;
 			self.websocket.sendData();
 			self.loggedIn = true;
+			callback( null, token );
 		}
 
 	} );
@@ -343,11 +466,11 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 	}
 	this.websocket.onopen = function() {
 
-		this.sendData("onopen");
+		this.sendData( "onopen" );
 
 	}
-	this.websocket.sendData = function(why){
-		if(this.readyState == 1 && !sentInitData && self.token){
+	this.websocket.sendData = function( why ) {
+		if ( this.readyState == 1 && !sentInitData && self.token ) {
 			sentInitData = true;
 			var connDat = {
 				op: 2,
@@ -365,7 +488,7 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 
 exports.Client.prototype.logout = function( callback ) {
 
-	callback = callback || function(){};
+	callback = callback || function() {};
 
 	var self = this;
 
@@ -580,18 +703,18 @@ exports.Client.prototype.deleteMessage = function( message, callback ) {
 	Internal.XHR.deleteMessage( self.token, message.channel.id, message.id, callback );
 }
 
-exports.Client.prototype.updateMessage = function(oldMessage, newContent, callback, options){
+exports.Client.prototype.updateMessage = function( oldMessage, newContent, callback, options ) {
 
 	var self = this;
 	var channel = oldMessage.channel;
 	options = options || {};
 
-	Internal.XHR.updateMessage(self.token, channel.id, oldMessage.id, {
-		content : newContent,
-		mentions : []
-	}, function(err, data){
-		if(err){
-			callback(err);
+	Internal.XHR.updateMessage( self.token, channel.id, oldMessage.id, {
+		content: newContent,
+		mentions: []
+	}, function( err, data ) {
+		if ( err ) {
+			callback( err );
 			return;
 		}
 		var msg = new Message( data, self.getChannel( data.channel_id ) );
@@ -601,7 +724,7 @@ exports.Client.prototype.updateMessage = function(oldMessage, newContent, callba
 			}, options.selfDestruct );
 		}
 		callback( null, msg );
-	});
+	} );
 
 }
 
@@ -666,13 +789,6 @@ exports.Client.prototype.deleteServer = function( server, callback ) {
 	} );
 
 }
-
-/**
- UTILS
- UTILS
- UTILS
- did I mention UTILS?
- */
 
 exports.Client.prototype.getServers = function() {
 	return this.serverList;
