@@ -27,10 +27,11 @@ exports.Invite = Invite;
 exports.PMChannel = PMChannel;
 
 /**
- * The Discord Client used to interface with the Discord API.
+ * The Discord Client used to interface with the Discord API. Instantiate this to start writing code
+ * with discord.js
  * @class Client
  * @constructor
- * @param {Object} options An object containing configurable options.
+ * @param {Object} [options] An object containing configurable options.
  * @param {Number} [options.maxmessage=5000] The maximum amount of messages to be stored per channel.
  */
 exports.Client = function( options ) {
@@ -144,6 +145,7 @@ exports.Client.prototype.getChannel = function( id ) {
  * @param  {String} event The event to be triggered
  * @param  {Array} args The arguments to be passed onto the method
  * @return {Boolean} whether the event was triggered successfully.
+ * @method triggerEvent
  * @private
  */
 exports.Client.prototype.triggerEvent = function( event, args ) {
@@ -279,6 +281,17 @@ exports.Client.prototype.login = function( email, password, callback ) {
 	} );
 }
 
+/**
+ * Replies to a message with a given message
+ * @param  {Message/User/Channel/Server/String} destination Where the message should be sent. Channel IDs can also be used here.
+ * @param  {String/Message/Array} toSend If a message, the message's content will be sent. If an array, a message will be sent of
+ * the array seperated by a newline. If a String, the string will be sent.
+ * @param  {Function} callback Called when a response from the API has been received, the message has either been sent or not.
+ * @param {Object} callback.error If there was an error, this would be an XHR Error object. Otherwise, it will be null.
+ * @param {Message} callback.message If there were no errors, this will be the sent message in Message form.
+ * @param  {Object} options see sendMessage(options)
+ * @method reply
+ */
 exports.Client.prototype.reply = function( destination, toSend, callback, options ) {
 
 	if ( toSend instanceof Array ) {
@@ -383,7 +396,18 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 					if ( channel ) {
 
 						formerMessage = channel.messages.filter( "id", data.id, true );
+						var newMessage;
+
+						data.author = data.author || formerMessage.author;
+						data.timestamp = data.time || formerMessage.time;
+						data.content = data.content || formerMessage.content;
+						data.channel = data.channel || formerMessage.channel;
+						data.id = data.id || formerMessage.id;
+						data.mentions = data.mentions || formerMessage.mentions;
+						data.mention_everyone = data.mention_everyone || formerMessage.everyoneMentioned;
+
 						newMessage = new Message( data, channel );
+
 						self.triggerEvent( "messageUpdate", [ formerMessage, newMessage ] );
 
 						if ( formerMessage )
@@ -486,6 +510,12 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 	}
 }
 
+/**
+ * Logs the current Client out of Discord and closes any connections.
+ * @param  {Function} callback Called after a response is obtained.
+ * @param {Object} callback.error Null unless there was an error, in which case is an XHR error.
+ * @method logout
+ */
 exports.Client.prototype.logout = function( callback ) {
 
 	callback = callback || function() {};
@@ -493,12 +523,25 @@ exports.Client.prototype.logout = function( callback ) {
 	var self = this;
 
 	Internal.XHR.logout( self.token, function( err ) {
-		callback( err ); //if there isn't an error it'll be null anyway so...
-		self.loggedIn = Boolean( err );
+		if ( err ) {
+			callback( err );
+		}
+		self.loggedIn = false;
+		self.websocket.close();
 	} );
 
 }
 
+/**
+ * Creates a server with the specified name and region and returns it
+ * @param  {String} name The name of the server
+ * @param  {String} region The region of the server
+ * @param  {Function} callback Called when the request is made.
+ * @param {Object} callback.error An XHR error or null if there were no errors.
+ * @param {Server} callback.server A Server object representing the created server.
+ * @method createServer
+ * @async
+ */
 exports.Client.prototype.createServer = function( name, region, cb ) {
 
 	var self = this;
@@ -519,6 +562,15 @@ exports.Client.prototype.createServer = function( name, region, cb ) {
 
 }
 
+/**
+ * Makes the Client leave the Server
+ * @param  {Server} server A server object. The server you want to leave.
+ * @param  {Function} callback Called when the leave request is made.
+ * @param {Object} callback.error An XHR error or null if there were no errors.
+ * @param {Server} callback.server A Server object representing the deleted server.
+ * @method leaveServer
+ * @async
+ */
 exports.Client.prototype.leaveServer = function( server, callback ) {
 
 	var self = this;
@@ -532,13 +584,26 @@ exports.Client.prototype.leaveServer = function( server, callback ) {
 			callback( err );
 		} else {
 			self.serverList.removeElement( server );
-			callback( null );
+			callback( null, server );
 		}
 
 	} );
 
 }
 
+/**
+ * Creates an Invite to the specified channel/server with the specified options
+ * @param  {Channel/Server} channel The channel/server the invite is to be made to.
+ * @param  {Object} [options] The options for the invite
+ * @param {Number} [options.max_age=0] When the invite will expire in seconds
+ * @param {Number} [options.max_uses=0] How many uses the invite has
+ * @param {Boolean} [options.temporary=false] Whether the invite is temporary
+ * @param {Boolean} [options.xkcdpass=false] Whether the invite's code should be composed of words.
+ * @param  {Function} callback Called when the invite request has been made
+ * @param {Object} callback.error An XHR Error or null if there were no errors.
+ * @param {Invite} callback.invite An invite object representing the created invite.
+ * @method createInvite
+ */
 exports.Client.prototype.createInvite = function( channel, options, callback ) {
 
 	var self = this;
@@ -588,6 +653,21 @@ exports.Client.prototype.startPM = function( user, callback ) {
 
 }
 
+/**
+ * Sends a message to the specified destination.
+ * @param  {Server/Channel/PMChannel/Message/User/String} destination Where the message should be sent. If this is a String, the String should be a channel ID.
+ * @param  {String/Array/Message} toSend The message to send. If an array, the array will be seperated into new lines and then sent.
+ * @param  {Function} callback Called when the message has been sent.
+ * @param {Object} error An XHR Error or null if there were no errors.
+ * @param {Message} message A message object representing the sent object.
+ * @param  {Object} [options] An object containing options for the message.
+ * @param {Array/Boolean/String} [options.mentions=true] If an Array, it should be an array of User IDs. If a boolean, false will
+ * notify no-one, and true will figure out who should be mentioned based on the message. If a String, should be a User
+ * ID.
+ * @param {Number} [options.selfDestruct=false] If specified, should be the amount of milliseconds at which the message should
+ * delete itself after being sent.
+ * @method sendMessage
+ */
 exports.Client.prototype.sendMessage = function( destination, toSend, callback, options ) {
 
 	options = options || {};
@@ -695,6 +775,14 @@ exports.Client.prototype.sendMessage = function( destination, toSend, callback, 
 	}
 }
 
+/**
+ * Deletes the specified message if the bot has authority
+ * @param {Message} message The message to delete
+ * @param  {Function} callback Called after the message deletion request is sent.
+ * @param {Object} callback.error If there was an error, this would be an XHR Error object. Otherwise, it will be null.
+ * @param {Message} callback.message A message object representing the deleted object.
+ * @method deleteMessage
+ */
 exports.Client.prototype.deleteMessage = function( message, callback ) {
 	callback = callback || function() {};
 
