@@ -19,7 +19,7 @@ Commands[ "info" ] = {
 			"User ID is *" + user.id + "*",
 			"Authority/OP Level to me is **" + Authority.getLevel( user ) + "**"
 		], function( err ) {
-			if(err)
+			if ( err )
 				console.log( err );
 		} );
 
@@ -27,77 +27,77 @@ Commands[ "info" ] = {
 }
 
 Commands[ "loading" ] = {
-	oplevel:0,
-	fn: function(bot, params, message){
+	oplevel: 0,
+	fn: function( bot, params, message ) {
 
 		var progress = 0;
 		var currentMessage;
 		var bars = 20;
 
-		function getM(){
+		function getM() {
 			var before = progress;
 			var after = bars - progress;
 			var ret = "";
-			for(x=0; x < before; x++){
+			for ( x = 0; x < before; x++ ) {
 				ret += "-";
 			}
 			ret += "**#**";
-			for(y=0; y < after; y++){
+			for ( y = 0; y < after; y++ ) {
 				ret += "-";
 			}
 			return ret;
 		}
 
-		function doProg(){
-			if(progress === (bars + 1)){
+		function doProg() {
+			if ( progress === ( bars + 1 ) ) {
 				progress = 0;
 			}
 
-			if(currentMessage){
-				bot.updateMessage(currentMessage, getM(), function(err, msg){
-					if(!err)
+			if ( currentMessage ) {
+				bot.updateMessage( currentMessage, getM(), function( err, msg ) {
+					if ( !err )
 						currentMessage = msg;
-				});
+				} );
 				progress++;
 			}
 
 		}
 
-		bot.sendMessage(message.channel, getM(), function(err, message){
+		bot.sendMessage( message.channel, getM(), function( err, message ) {
 			currentMessage = message;
-			setInterval(doProg, 200);
-		});
+			setInterval( doProg, 200 );
+		} );
 
 	}
 }
 
 Commands[ "flashy" ] = {
-	oplevel:0,
-	fn: function(bot, params, message){
+	oplevel: 0,
+	fn: function( bot, params, message ) {
 
 		var phase = 0;
 		var msg;
 
-		var textToSay = getKey(params, "m", "FLASH");
-		var speed = parseInt( getKey(params, "s", "500") );
+		var textToSay = getKey( params, "m", "FLASH" );
+		var speed = parseInt( getKey( params, "s", "500" ) );
 
-		function change(){
-			if(msg){
+		function change() {
+			if ( msg ) {
 
-				var highlighting = ((phase % 2) === 0 ? "**" : "");
+				var highlighting = ( ( phase % 2 ) === 0 ? "**" : "" );
 				phase++;
-				bot.updateMessage(msg, highlighting + textToSay + highlighting, function(err, message){
-					if(!err){
+				bot.updateMessage( msg, highlighting + textToSay + highlighting, function( err, message ) {
+					if ( !err ) {
 						msg = message;
 					}
-				});
+				} );
 			}
 		}
 
-		bot.sendMessage(message.channel, textToSay, function(err, message){
+		bot.sendMessage( message.channel, textToSay, function( err, message ) {
 			msg = message;
-			setInterval(change, speed);
-		});
+			setInterval( change, speed );
+		} );
 
 	}
 }
@@ -278,7 +278,7 @@ Commands[ "feedback" ] = {
 
 		bot.getChannelLogs( message.channel, amount, function( err, logs ) {
 
-			console.log(logs);
+			console.log( logs );
 
 			if ( err ) {
 				bot.reply( message, "an error occurred when grabbing the logs.", false, {
@@ -289,8 +289,8 @@ Commands[ "feedback" ] = {
 				var found = [];
 				for ( msg of logs.contents ) {
 
-					if ( ~msg.content.indexOf( "[request" ) || ~msg.content.indexOf( "[feature" || ~msg.content.indexOf( "[suggestion") ) ) {
-						if(msg.content.length > 10){
+					if ( ~msg.content.indexOf( "[request" ) || ~msg.content.indexOf( "[feature" || ~msg.content.indexOf( "[suggestion" ) ) ) {
+						if ( msg.content.length > 10 ) {
 							found.push( msg );
 						}
 					}
@@ -299,13 +299,13 @@ Commands[ "feedback" ] = {
 
 				bot.sendMessage( message.author, "Ok, here's a rundown of all feature requests so far:", function( err, ms ) {
 
-					if (!err)
+					if ( !err )
 						gothroughit();
 
 				} );
 
 				bot.reply( message, "I found " + found.length + " result(s) that matched this. I'll send it to you in a PM.", false, {
-					selfDestruct : 3000
+					selfDestruct: 3000
 				} );
 
 				function gothroughit() {
@@ -320,6 +320,23 @@ Commands[ "feedback" ] = {
 
 	}
 
+}
+
+Commands[ "acceptinvite" ] = {
+	oplevel: 0,
+	fn: function( bot, params, message ) {
+
+		var inv = getKey(params, "i");
+
+		bot.joinServer(inv, function(err, server){
+			if(err){
+				bot.reply(message, "I couldn't join that server :(");
+			}else{
+				bot.reply(message, "I joined **"+ server.name +"**, a server with "+server.channels.length()+" channels and "+server.members.length()+" members.");
+			}
+		});
+
+	}
 }
 
 Commands[ "remind" ] = {
@@ -380,12 +397,12 @@ Commands[ "activity" ] = {
 				var report = "here's a list of activity over the last " + count + " messages :\n\n";
 
 				var usernames = {};
-				for( id in activity ){
-					usernames[id] = bot.getUser(id).username;
+				for ( id in activity ) {
+					usernames[ id ] = bot.getUser( id ).username;
 				}
 
 				for ( id in activity ) {
-					report += usernames[id] + " | " + activity[ id ] + " | **" + Math.round( ( activity[ id ] / count ) * 100 ) + "%**.\n";
+					report += usernames[ id ] + " | " + activity[ id ] + " | **" + Math.round( ( activity[ id ] / count ) * 100 ) + "%**.\n";
 				}
 
 				bot.reply( message, report, false, false );

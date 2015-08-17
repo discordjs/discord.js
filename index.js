@@ -10,6 +10,8 @@ var PMChannel = require( "./lib/PMChannel.js" ).PMChannel;
 var WebSocket = require( 'ws' );
 var Internal = require( "./lib/internal.js" ).Internal;
 
+var serverCreateRequests = [];
+
 /**
  * The wrapper module for the Discord Client, also provides some helpful objects.
  *
@@ -34,6 +36,7 @@ exports.PMChannel = PMChannel;
  * @param {Object} [options] An object containing configurable options.
  * @param {Number} [options.maxmessage=5000] The maximum amount of messages to be stored per channel.
  */
+
 exports.Client = function( options ) {
 
 	/**
@@ -405,6 +408,7 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 						data.id = data.id || formerMessage.id;
 						data.mentions = data.mentions || formerMessage.mentions;
 						data.mention_everyone = data.mention_everyone || formerMessage.everyoneMentioned;
+						data.embeds = data.embeds || formerMessage.embeds;
 
 						newMessage = new Message( data, channel );
 
@@ -447,7 +451,12 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 
 					if ( !self.serverList.filter( "id", dat.d.id, true ) ) {
 						self.cacheServer( dat.d, function( server ) {
-							self.triggerEvent( "serverJoin", [ server ] );
+							if ( serverCreateRequests[ server.id ] ) {
+								serverCreateRequests[ server.id ]( null, server );
+								serverCreateRequests[ server.id ] = null;
+							} else {
+								self.triggerEvent( "serverJoin", [ server ] );
+							}
 						} );
 					}
 
@@ -873,6 +882,24 @@ exports.Client.prototype.deleteServer = function( server, callback ) {
 		self.serverList.removeElement( server );
 		self.triggerEvent( "serverDelete", [ server ] );
 		callback( null );
+
+	} );
+
+}
+
+exports.Client.prototype.joinServer = function( invite, callback ) {
+
+	var self = this;
+
+	var code = ( invite instanceof Invite ? invite.code : invite );
+
+	Internal.XHR.acceptInvite( self.token, code, function( err, inviteData ) {
+
+		if ( err ) {
+			callback( err );
+		} else {
+			serverCreateRequests[inviteData.guild.id] = callback;
+		}
 
 	} );
 

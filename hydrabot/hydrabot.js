@@ -24,6 +24,7 @@ var hydrabot = new Discord.Client();
 var commandPrefixes = [ "$", "£", "`" ];
 
 // Log the client in using the auth details in config.json
+console.time("hydrabotbenchmark");
 hydrabot.login( BotConfig.email, BotConfig.password );
 
 console.log( "Starting up..." );
@@ -32,7 +33,7 @@ var time = Date.now();
 
 // When the bot is ready to go, output to the console
 hydrabot.on( "ready", function() {
-	console.log( "Ready in "+ (Date.now() - time) +"ms!" );
+	console.timeEnd("hydrabotbenchmark");
 } );
 
 // When the bot gets disconnected, exit.
@@ -48,11 +49,11 @@ hydrabot.on("messageDelete", function(message){
 
 hydrabot.on("messageUpdate", function(former, edit){
 
-	if(former.author.equals(this.user)){
-		return;
-	}
-
 	if(former){
+
+		if(former.author.equals(this.user) || former.content === edit.content){
+			return;
+		}
 
 		var seconds = Math.round((Date.now() - former.time) / 1000);
 
