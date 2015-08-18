@@ -11,7 +11,11 @@ var WebSocket = require( 'ws' );
 var Internal = require( "./lib/internal.js" ).Internal;
 var TokenManager = require( "./lib/TokenManager.js" ).TokenManager;
 
-var serverCreateRequests = [];
+var serverCreateRequests = []. globalLoginTime = Date.now();
+
+function tp(time){
+	return Date.now() - time;
+}
 
 /**
  * The wrapper module for the Discord Client, also provides some helpful objects.
@@ -262,6 +266,10 @@ exports.Client.prototype.cacheServer = function( id, cb, members ) {
  */
 exports.Client.prototype.login = function( email, password, callback, noCache ) {
 
+	globalLoginTime = Date.now();
+
+	this.debug("login called at " + globalLoginTime);
+
 	var self = this;
 	callback = callback || function() {};
 
@@ -273,6 +281,7 @@ exports.Client.prototype.login = function( email, password, callback, noCache ) 
 
 	if ( this.tokenManager.exists( email ) && !noCache ) {
 		done( this.tokenManager.getToken( email, password ) );
+		self.debug("loaded token from caches in "+tp(globalLoginTime));
 		return;
 	}
 
@@ -284,10 +293,12 @@ exports.Client.prototype.login = function( email, password, callback, noCache ) 
 				error: err
 			} ] );
 			self.websocket.close();
+			self.debug("failed to login in "+tp(globalLoginTime));
 		} else {
 			if ( !noCache ) {
 				self.tokenManager.addToken( email, token, password );
 			}
+			self.debug("loaded token from auth servers in "+tp(globalLoginTime));
 			done( token );
 		}
 
@@ -349,11 +360,9 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 			case 0:
 				if ( dat.t === "READY" ) {
 
-					var data = dat.d;
+					self.debug("got ready packet");
 
-					setInterval( function() {
-						webself.keepAlive.apply( webself );
-					}, data.heartbeat_interval );
+					var data = dat.d;
 
 					self.user = new User( data.user );
 
@@ -375,9 +384,14 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 							if ( cached === toCache ) {
 								self.ready = true;
 								self.triggerEvent( "ready" );
+								self.debug("ready triggered");
 							}
 						} );
 					}
+
+					setInterval( function() {
+						webself.keepAlive.apply( webself );
+					}, data.heartbeat_interval );
 
 				} else if ( dat.t === "MESSAGE_CREATE" ) {
 					var data = dat.d;
@@ -516,6 +530,7 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 	}
 	this.websocket.onopen = function() {
 
+		self.debug("websocket conn open");
 		this.sendData( "onopen" );
 
 	}
@@ -534,6 +549,10 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 			this.sendPacket( connDat );
 		}
 	}
+}
+
+exports.Client.prototype.debug = function(msg){
+	this.triggerEvent("debug", ["[SL "+ tp(globalLoginTime) +"]   " + msg]);
 }
 
 /**

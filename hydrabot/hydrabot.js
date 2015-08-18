@@ -24,6 +24,11 @@ var hydrabot = new Discord.Client();
 var commandPrefixes = [ "$", "£", "`" ];
 
 // Log the client in using the auth details in config.json
+
+hydrabot.on("debug", function(m){
+	console.log("debug", m);
+})
+
 console.time("hydrabotbenchmark");
 hydrabot.login( BotConfig.email, BotConfig.password );
 
