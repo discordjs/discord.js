@@ -9,6 +9,7 @@ var Invite = require( "./lib/invite.js" ).Invite;
 var PMChannel = require( "./lib/PMChannel.js" ).PMChannel;
 var WebSocket = require( 'ws' );
 var Internal = require( "./lib/internal.js" ).Internal;
+var TokenManager = require( "./lib/TokenManager.js" ).TokenManager;
 
 var serverCreateRequests = [];
 
@@ -46,6 +47,7 @@ exports.Client = function( options ) {
 	 */
 	this.options = options || {};
 	this.options.maxmessage = 5000;
+	this.tokenManager = new TokenManager( "./", "tokencache.json" );
 	/**
 	 * Contains the token used to authorise HTTP requests and WebSocket connection. Received when login was successful.
 	 * @attribute token
@@ -258,16 +260,24 @@ exports.Client.prototype.cacheServer = function( id, cb, members ) {
  * @param {Object} callback.error.error The raw XHR error.
  * @param {String} callback.token The token received when logging in
  */
-exports.Client.prototype.login = function( email, password, callback ) {
+exports.Client.prototype.login = function( email, password, callback, noCache ) {
 
 	var self = this;
 	callback = callback || function() {};
 
+	if ( noCache == undefined || noCache == null ) {
+		noCache = false;
+	}
+
 	self.connectWebsocket();
+
+	if ( this.tokenManager.exists( email ) && !noCache ) {
+		done( this.tokenManager.getToken( email, password ) );
+		return;
+	}
 
 	var time = Date.now();
 	Internal.XHR.login( email, password, function( err, token ) {
-		console.log( Date.now() - time );
 		if ( err ) {
 			self.triggerEvent( "disconnected", [ {
 				reason: "failed to log in",
@@ -275,13 +285,20 @@ exports.Client.prototype.login = function( email, password, callback ) {
 			} ] );
 			self.websocket.close();
 		} else {
-			self.token = token;
-			self.websocket.sendData();
-			self.loggedIn = true;
-			callback( null, token );
+			if ( !noCache ) {
+				self.tokenManager.addToken( email, token, password );
+			}
+			done( token );
 		}
 
 	} );
+
+	function done( token ) {
+		self.token = token;
+		self.websocket.sendData();
+		self.loggedIn = true;
+		callback( null, token );
+	}
 }
 
 /**
@@ -898,7 +915,7 @@ exports.Client.prototype.joinServer = function( invite, callback ) {
 		if ( err ) {
 			callback( err );
 		} else {
-			serverCreateRequests[inviteData.guild.id] = callback;
+			serverCreateRequests[ inviteData.guild.id ] = callback;
 		}
 
 	} );

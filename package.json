@@ -1,6 +1,6 @@
 {
   "name": "discord.js",
-  "version": "2.6.0",
+  "version": "2.6.1",
   "description": "A way to interface with the Discord API",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,8 @@
     "api",
     "bot",
     "client",
-    "node"
+    "node",
+    "discordapp"
   ],
   "author": "Amish Shah <amishshah.2k@gmail.com>",
   "license": "Apache-2.0",
@@ -24,6 +25,7 @@
   },
   "homepage": "https://github.com/discord-js/discord.js#readme",
   "dependencies": {
+    "md5": "^2.0.0",
     "superagent": "^1.3.0",
     "ws": "^0.7.2"
   }
