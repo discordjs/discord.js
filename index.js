@@ -280,9 +280,15 @@ exports.Client.prototype.login = function( email, password, callback, noCache ) 
 	self.connectWebsocket();
 
 	if ( this.tokenManager.exists( email ) && !noCache ) {
-		done( this.tokenManager.getToken( email, password ) );
-		self.debug("loaded token from caches in "+tp(globalLoginTime));
-		return;
+
+		var token = this.tokenManager.getToken( email, password );
+		if(!token.match(/[^\w.-]+/g)){
+			done( this.tokenManager.getToken( email, password ) );
+			self.debug("loaded token from caches in "+tp(globalLoginTime));
+			return;
+		}else{
+			self.debug("error getting token from caches, using default auth");
+		}
 	}
 
 	var time = Date.now();
@@ -305,6 +311,7 @@ exports.Client.prototype.login = function( email, password, callback, noCache ) 
 	} );
 
 	function done( token ) {
+		self.debug("using token " + token);
 		self.token = token;
 		self.websocket.sendData();
 		self.loggedIn = true;
