@@ -326,15 +326,32 @@ Commands[ "acceptinvite" ] = {
 	oplevel: 0,
 	fn: function( bot, params, message ) {
 
-		var inv = getKey(params, "i");
+		var inv = getKey( params, "i" );
 
-		bot.joinServer(inv, function(err, server){
-			if(err){
-				bot.reply(message, "I couldn't join that server :(");
-			}else{
-				bot.reply(message, "I joined **"+ server.name +"**, a server with "+server.channels.length()+" channels and "+server.members.length()+" members.");
+		bot.joinServer( inv, function( err, server ) {
+			if ( err ) {
+				bot.reply( message, "I couldn't join that server :(" );
+			} else {
+				bot.reply( message, "I joined **" + server.name + "**, a server with " + server.channels.length() + " channels and " + server.members.length() + " members." );
 			}
-		});
+		} );
+
+	}
+}
+
+Commands[ "filtertest" ] = {
+	oplevel: 0,
+	fn: function( bot, params, message ) {
+		console.log( message.channel.server.members.filter( "username", "HYDRABOLT" ) );
+		console.log( message.channel.server.members.filter( "username", "HYDRABOLT", false, true ) );
+	}
+}
+
+Commands[ "test" ] = {
+	oplevel: 0,
+	fn: function( bot, params, message ) {
+
+		console.log( message.channel.server.channels.filter( "name", "a", true ) );
 
 	}
 }

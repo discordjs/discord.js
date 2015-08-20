@@ -448,7 +448,12 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 						data.mention_everyone = data.mention_everyone || formerMessage.everyoneMentioned;
 						data.embeds = data.embeds || formerMessage.embeds;
 
-						newMessage = new Message( data, channel );
+						try{
+							newMessage = new Message( data, channel );
+						}catch(e){
+							self.debug("dropped a message update packet");
+							return;
+						}
 
 						self.triggerEvent( "messageUpdate", [ formerMessage, newMessage ] );
 
