@@ -11,9 +11,9 @@ var WebSocket = require( 'ws' );
 var Internal = require( "./lib/internal.js" ).Internal;
 var TokenManager = require( "./lib/TokenManager.js" ).TokenManager;
 
-var serverCreateRequests = []. globalLoginTime = Date.now();
+var serverCreateRequests = [].globalLoginTime = Date.now();
 
-function tp(time){
+function tp( time ) {
 	return Date.now() - time;
 }
 
@@ -267,7 +267,7 @@ exports.Client.prototype.login = function( email, password, callback, noCache ) 
 
 	globalLoginTime = Date.now();
 
-	this.debug("login called at " + globalLoginTime);
+	this.debug( "login called at " + globalLoginTime );
 
 	var self = this;
 	callback = callback || function() {};
@@ -281,12 +281,12 @@ exports.Client.prototype.login = function( email, password, callback, noCache ) 
 	if ( this.tokenManager.exists( email ) && !noCache ) {
 
 		var token = this.tokenManager.getToken( email, password );
-		if(!token.match(/[^\w.-]+/g)){
+		if ( !token.match( /[^\w.-]+/g ) ) {
 			done( this.tokenManager.getToken( email, password ) );
-			self.debug("loaded token from caches in "+tp(globalLoginTime));
+			self.debug( "loaded token from caches in " + tp( globalLoginTime ) );
 			return;
-		}else{
-			self.debug("error getting token from caches, using default auth");
+		} else {
+			self.debug( "error getting token from caches, using default auth" );
 		}
 	}
 
@@ -298,19 +298,21 @@ exports.Client.prototype.login = function( email, password, callback, noCache ) 
 				error: err
 			} ] );
 			self.websocket.close();
-			self.debug("failed to login in "+tp(globalLoginTime));
+			self.debug( "failed to login in " + tp( globalLoginTime ) );
 		} else {
 			if ( !noCache ) {
 				self.tokenManager.addToken( email, token, password );
 			}
-			self.debug("loaded token from auth servers in "+tp(globalLoginTime));
+			self.debug( "loaded token from auth servers in " + tp( globalLoginTime ) );
 			done( token );
 		}
 
 	} );
 
 	function done( token ) {
-		self.debug("using token " + token);
+		self.email = email;
+		self.password = password;
+		self.debug( "using token " + token );
 		self.token = token;
 		self.websocket.sendData();
 		self.loggedIn = true;
@@ -366,7 +368,7 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 			case 0:
 				if ( dat.t === "READY" ) {
 
-					self.debug("got ready packet");
+					self.debug( "got ready packet" );
 
 					var data = dat.d;
 
@@ -390,7 +392,7 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 							if ( cached === toCache ) {
 								self.ready = true;
 								self.triggerEvent( "ready" );
-								self.debug("ready triggered");
+								self.debug( "ready triggered" );
 							}
 						} );
 					}
@@ -447,10 +449,10 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 						data.mention_everyone = data.mention_everyone || formerMessage.everyoneMentioned;
 						data.embeds = data.embeds || formerMessage.embeds;
 
-						try{
+						try {
 							newMessage = new Message( data, channel );
-						}catch(e){
-							self.debug("dropped a message update packet");
+						} catch ( e ) {
+							self.debug( "dropped a message update packet" );
 							return;
 						}
 
@@ -519,6 +521,13 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 
 					}
 
+				} else if ( dat.t === "USER_UPDATE" ) {
+
+					if ( dat.d.id === self.user.id ) {
+						self.user.username = dat.d.username;
+						self.user.avatar = dat.d.avatar;
+					}
+
 				}
 				break;
 
@@ -541,7 +550,7 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 	}
 	this.websocket.onopen = function() {
 
-		self.debug("websocket conn open");
+		self.debug( "websocket conn open" );
 		this.sendData( "onopen" );
 
 	}
@@ -562,8 +571,8 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 	}
 }
 
-exports.Client.prototype.debug = function(msg){
-	this.triggerEvent("debug", ["[SL "+ tp(globalLoginTime) +"]   " + msg]);
+exports.Client.prototype.debug = function( msg ) {
+	this.triggerEvent( "debug", [ "[SL " + tp( globalLoginTime ) + "]   " + msg ] );
 }
 
 /**
@@ -872,6 +881,18 @@ exports.Client.prototype.updateMessage = function( oldMessage, newContent, callb
 
 }
 
+exports.Client.prototype.setUsername = function( username, callback ) {
+
+	var self = this;
+
+	Internal.XHR.setUsername( self.token, self.user.avatar, self.email, null, self.password, username, function( err ) {
+
+		callback( err );
+
+	} );
+
+}
+
 exports.Client.prototype.getChannelLogs = function( channel, amount, callback ) {
 	var self = this;
 
@@ -970,7 +991,7 @@ exports.Client.prototype.getServer = function( id ) {
 
 exports.Client.prototype.getChannel = function( id ) {
 	var normalChan = this.getChannels().filter( "id", id, true );
-	return normalChan || this.PMList.filter("id", id, true);
+	return normalChan || this.PMList.filter( "id", id, true );
 }
 
 exports.Client.prototype.getUser = function( id ) {

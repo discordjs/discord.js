@@ -31,9 +31,6 @@ hydrabot.on("debug", function(m){
 
 console.time("hydrabotbenchmark");
 hydrabot.login( BotConfig.email, BotConfig.password );
-
-console.log( "Starting up..." );
-
 var time = Date.now();
 
 // When the bot is ready to go, output to the console

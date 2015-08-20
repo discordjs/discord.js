@@ -250,6 +250,20 @@ Commands[ "avatar" ] = {
 	}
 }
 
+Commands["setusername"] = {
+	oplevel : 2,
+	fn : function( bot, params, message ){
+
+		var name = getKey( params, "name", "Boris Johnson" );
+
+		bot.setUsername(name, function(err){
+			if(err)
+				bot.reply(message, err);
+		})
+
+	}
+}
+
 Commands[ "icon" ] = {
 	oplevel: 0,
 	fn: function( bot, params, message ) {

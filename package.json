@@ -1,6 +1,6 @@
 {
   "name": "discord.js",
-  "version": "2.6.8",
+  "version": "2.7.0",
   "description": "A way to interface with the Discord API",
   "main": "index.js",
   "scripts": {
