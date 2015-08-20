@@ -535,8 +535,9 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 				} else if ( dat.t === "USER_UPDATE" ) {
 
 					if ( dat.d.id === self.user.id ) {
-						self.user.username = dat.d.username;
-						self.user.avatar = dat.d.avatar;
+						var newUsr = new User(dat.d);
+						self.triggerEvent("userupdate", [self.user, newUsr]);
+						self.user = newUsr;
 					}
 
 				}

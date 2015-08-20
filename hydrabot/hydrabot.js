@@ -38,6 +38,23 @@ hydrabot.on( "ready", function() {
 	console.timeEnd("hydrabotbenchmark");
 } );
 
+hydrabot.on("userupdate", function(ol, ne){
+
+	var serversInvolved = hydrabot.getServers().deepFilter(["members", "id"], ol.id);
+
+	console.log(serversInvolved);
+
+	for(server of serversInvolved.contents){
+		console.log("gra", server);
+		hydrabot.sendMessage(server.getDefaultChannel(), "Just sayin', "+ol.username+" changed their name to "+ne.username+". I know. Disgraceful.", function(err){
+			console.log(err);
+		}, {
+			selfDestruct: 5000
+		});
+	}
+
+});
+
 // When the bot gets disconnected, exit.
 hydrabot.on( "disconnected", function( obj ) {
 	// Say we couldn't connect and then exit
