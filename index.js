@@ -786,7 +786,7 @@ exports.Client.prototype.sendMessage = function( destination, toSend, callback, 
 					if ( err ) {
 						callback( err );
 					} else {
-						self.PMList.add( new PMChannel( channel.recipient, channel.id ) );
+						self.PMList.add( new PMChannel( channel.user, channel.id ) );
 						setChannId( channel.id );
 						send();
 					}

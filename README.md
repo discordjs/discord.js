@@ -7,7 +7,7 @@ New update features **big speed boosts** (everything cached and sorted with arou
 
 **[For more information, click here.](https://github.com/hydrabolt/discord.js/wiki)**
 
-### This module is still in alpha!
+### This module is still in alpha - especially the newer versions!
 
 This node module is still in alpha, and some methods and functions may change or completely disappear!
 
