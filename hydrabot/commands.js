@@ -269,6 +269,16 @@ Commands[ "icon" ] = {
 	}
 }
 
+Commands["avataritup"] = {
+	oplevel : 2,
+	fn : function( bot, params, message ){
+
+		console.log(message.channel);
+		bot.sendMessage( message, message.channel.server.members.getValues("avatar").join("\n") );
+
+	}
+}
+
 Commands[ "feedback" ] = {
 
 	oplevel: 0,
@@ -466,7 +476,7 @@ function getUser( message, params, bot ) {
 		if ( wantedUser ) {
 			if(bot){
 				console.log(bot.getUsers().length());
-				return bot.getUsers().filter("username", wantedUser);
+				return bot.getUsers().filter("username", wantedUser, true);
 			}
 			usr = message.channel.server.members.filter( Discord.isUserID( wantedUser ) ? "id" : "username", wantedUser, true );
 		}

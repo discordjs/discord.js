@@ -243,7 +243,6 @@ exports.Client.prototype.cacheServer = function( id, cb, members ) {
 		for ( channel of channelList ) {
 			server.channels.add( new Channel( channel, server ) );
 		}
-
 		self.serverList.add( server );
 
 		cb( server );
