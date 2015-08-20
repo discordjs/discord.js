@@ -1017,7 +1017,7 @@ exports.Client.prototype.getChannel = function( id ) {
 }
 
 exports.Client.prototype.getChannelByName = function( name ) {
-	var normalChan = this.getChannels().filter( "name", name, true );
+	return this.getChannels().filter( "name", name, true );
 }
 
 exports.Client.prototype.getUser = function( id ) {
