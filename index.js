@@ -969,7 +969,8 @@ exports.Client.prototype.getServer = function( id ) {
 }
 
 exports.Client.prototype.getChannel = function( id ) {
-	return this.getChannels().filter( "id", id, true );
+	var normalChan = this.getChannels().filter( "id", id, true );
+	return normalChan || this.PMList.filter("id", id, true);
 }
 
 exports.Client.prototype.getUser = function( id ) {

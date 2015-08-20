@@ -27,6 +27,6 @@ myBot.on( "message", function( message ) {
 	if ( message.content === "ping" ) {
 		// Send a message ("pong") to the channel the message was sent in,
 		// which is accessed by message.channel.
-		this.sendMessage( message.channel, "pong" );
+		this.sendMessage( message, "pong" );
 	}
 } );
