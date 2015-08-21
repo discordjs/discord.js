@@ -468,15 +468,15 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 				} else if ( dat.t === "PRESENCE_UPDATE" ) {
 
 					var data = dat.d;
-					var getUser = self.getUser(data.user.id);
+					var getUser = self.getUser( data.user.id );
 					if ( getUser ) {
 						//user already exists
 						var usr = new User( data.user );
 						if ( usr.equalsStrict( getUser ) ) {
 							//no changes, actually a presence.
 						} else {
-							if(self.updateUserReferences( data.user.id, getUser, new User( data.user ) )){
-								self.triggerEvent("userupdate", [getUser, usr]);
+							if ( self.updateUserReferences( data.user.id, getUser, new User( data.user ) ) ) {
+								self.triggerEvent( "userupdate", [ getUser, usr ] );
 							}
 						}
 					}
@@ -535,8 +535,8 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 				} else if ( dat.t === "USER_UPDATE" ) {
 
 					if ( dat.d.id === self.user.id ) {
-						var newUsr = new User(dat.d);
-						self.triggerEvent("userupdate", [self.user, newUsr]);
+						var newUsr = new User( dat.d );
+						self.triggerEvent( "userupdate", [ self.user, newUsr ] );
 						self.user = newUsr;
 					}
 
@@ -745,7 +745,14 @@ exports.Client.prototype.startPM = function( user, callback ) {
  * delete itself after being sent.
  * @method sendMessage
  */
-exports.Client.prototype.sendMessage = function( destination, toSend, callback, options ) {
+
+exports.Client.prototype.sendFile = function( destination, toSend, fileName, callback, options ) {
+
+	this.sendMessage( destination, toSend, callback, options, fileName );
+
+}
+
+exports.Client.prototype.sendMessage = function( destination, toSend, callback, options, fileName ) {
 
 	options = options || {};
 	callback = callback || function() {};
@@ -753,8 +760,10 @@ exports.Client.prototype.sendMessage = function( destination, toSend, callback, 
 	var channel_id, message, mentions, self = this;
 
 	channel_id = resolveChannel( destination, self );
-	message = resolveMessage( toSend );
-	mentions = resolveMentions( message, options.mention );
+	if ( !fileName ) {
+		message = resolveMessage( toSend );
+		mentions = resolveMentions( message, options.mention );
+	}
 
 	if ( channel_id ) {
 		send();
@@ -763,6 +772,15 @@ exports.Client.prototype.sendMessage = function( destination, toSend, callback, 
 	}
 
 	function send() {
+
+		if(fileName){
+			Internal.XHR.sendFile( self.token, channel_id, toSend, fileName, function(err){
+
+				callback(err);
+
+			} );
+			return;
+		}
 
 		Internal.XHR.sendMessage( self.token, channel_id, {
 			content: message,

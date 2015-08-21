@@ -250,16 +250,30 @@ Commands[ "avatar" ] = {
 	}
 }
 
-Commands["setusername"] = {
-	oplevel : 3,
-	fn : function( bot, params, message ){
+Commands[ "setusername" ] = {
+	oplevel: 3,
+	fn: function( bot, params, message ) {
 
 		var name = getKey( params, "name", "Boris Johnson" );
 
-		bot.setUsername(name, function(err){
-			if(err)
-				bot.reply(message, err);
-		})
+		bot.setUsername( name, function( err ) {
+			if ( err )
+				bot.reply( message, err );
+		} )
+
+	}
+}
+
+Commands[ "cat" ] = {
+	oplevel: 0,
+	fn: function( bot, params, message ) {
+
+		var http = require( "http" );
+		var request = require( 'request' );
+
+		bot.sendFile( message, request("http://thewallpaperhost.com/wp-content/uploads/2014/12/cool-hd-wallpaper.jpg"), "cat.jpg", function( err ) {
+			bot.reply( message, err );
+		} );
 
 	}
 }
@@ -283,12 +297,12 @@ Commands[ "icon" ] = {
 	}
 }
 
-Commands["avataritup"] = {
-	oplevel : 2,
-	fn : function( bot, params, message ){
+Commands[ "avataritup" ] = {
+	oplevel: 2,
+	fn: function( bot, params, message ) {
 
-		console.log(message.channel);
-		bot.sendMessage( message, message.channel.server.members.getValues("avatar").join("\n") );
+		console.log( message.channel );
+		bot.sendMessage( message, message.channel.server.members.getValues( "avatar" ).join( "\n" ) );
 
 	}
 }
@@ -488,9 +502,9 @@ function getUser( message, params, bot ) {
 	if ( !message.isPM() ) {
 		var wantedUser = getKey( params, "user", false ) || getKey( params, "u", false );
 		if ( wantedUser ) {
-			if(bot){
-				console.log(bot.getUsers().length());
-				return bot.getUsers().filter("username", wantedUser, true);
+			if ( bot ) {
+				console.log( bot.getUsers().length() );
+				return bot.getUsers().filter( "username", wantedUser, true );
 			}
 			usr = message.channel.server.members.filter( Discord.isUserID( wantedUser ) ? "id" : "username", wantedUser, true );
 		}
