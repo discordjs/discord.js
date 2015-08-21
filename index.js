@@ -150,6 +150,16 @@ exports.Client.prototype.getChannel = function( id ) {
 }
 
 /**
+ * Returns a Channel matching the given name, or false if not found. Will return false if the Channel is not cached or not available.
+ * @method getChannelByName
+ * @param  {String/Number} name The Name of the Channel
+ * @return {Server} The Channel matching the Name
+ */
+exports.Client.prototype.getChannelByName = function( name ) {
+	return this.getChannels().filter( "name", name, true );
+}
+
+/**
  * Triggers an .on() event.
  * @param  {String} event The event to be triggered
  * @param  {Array} args The arguments to be passed onto the method
@@ -1022,6 +1032,10 @@ exports.Client.prototype.getServer = function( id ) {
 exports.Client.prototype.getChannel = function( id ) {
 	var normalChan = this.getChannels().filter( "id", id, true );
 	return normalChan || this.PMList.filter( "id", id, true );
+}
+
+exports.Client.prototype.getChannelByName = function( name ) {
+	return this.getChannels().filter( "name", name, true );
 }
 
 exports.Client.prototype.getUser = function( id ) {
