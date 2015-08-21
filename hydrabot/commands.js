@@ -271,8 +271,9 @@ Commands[ "cat" ] = {
 		var http = require( "http" );
 		var request = require( 'request' );
 
-		bot.sendFile( message, request("http://thewallpaperhost.com/wp-content/uploads/2014/12/cool-hd-wallpaper.jpg"), "cat.jpg", function( err ) {
-			bot.reply( message, err );
+		bot.sendFile( message, request("http://thecatapi.com/api/images/get?type=jpg"), "cat.jpg", function( err ) {
+			if(err)
+				bot.reply( message, err );
 		} );
 
 	}

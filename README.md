@@ -5,6 +5,9 @@ The aim of this API is to make it *really* simple to start developing your bots.
 
 New update features **big speed boosts** (everything cached and sorted with around 1 second of calling the login function) upon connection and allows editing of messages!
 
+**[Find the website here.](discord-js.github.io)**
+
+
 **[For more information, click here.](https://github.com/hydrabolt/discord.js/wiki)**
 
 ### This module is still in alpha - especially the newer versions!

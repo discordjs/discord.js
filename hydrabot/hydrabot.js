@@ -42,10 +42,7 @@ hydrabot.on("userupdate", function(ol, ne){
 
 	var serversInvolved = hydrabot.getServers().deepFilter(["members", "id"], ol.id);
 
-	console.log(serversInvolved);
-
 	for(server of serversInvolved.contents){
-		console.log("gra", server);
 		hydrabot.sendMessage(server.getDefaultChannel(), "Just sayin', "+ol.username+" changed their name to "+ne.username+". I know. Disgraceful.", function(err){
 			console.log(err);
 		}, {
