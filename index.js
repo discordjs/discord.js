@@ -11,7 +11,7 @@ var WebSocket = require( 'ws' );
 var Internal = require( "./lib/internal.js" ).Internal;
 var TokenManager = require( "./lib/TokenManager.js" ).TokenManager;
 
-var serverCreateRequests = [].globalLoginTime = Date.now();
+var serverCreateRequests = [], globalLoginTime = Date.now();
 
 function tp( time ) {
 	return Date.now() - time;
