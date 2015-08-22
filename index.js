@@ -550,6 +550,24 @@ exports.Client.prototype.connectWebsocket = function( cb ) {
 						self.user = newUsr;
 					}
 
+				} else if (dat.t === "GUILD_MEMBER_ADD"){
+
+					var srv = self.getServer( dat.d.guild_id );
+					if(srv){
+						var usr = new User(dat.d.user);
+						srv.members.add( usr );
+						self.triggerEvent("serverMemberAdd", [usr]);
+					}
+
+				} else if (dat.t === "GUILD_MEMBER_REMOVE"){
+
+					var srv = self.getServer( dat.d.guild_id );
+					if(srv){
+						var usr = new User(dat.d.user);
+						srv.members.removeElement( usr );
+						self.triggerEvent("serverMemberRemove", [usr]);
+					}
+
 				}
 				break;
 
