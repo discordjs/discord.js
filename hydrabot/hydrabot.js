@@ -64,7 +64,7 @@ hydrabot.on("messageDelete", function(message){
 })
 
 hydrabot.on("messageUpdate", function(former, edit){
-
+	/*
 	if(former){
 
 		if(former.author.equals(this.user) || former.content === edit.content){
@@ -77,7 +77,7 @@ hydrabot.on("messageUpdate", function(former, edit){
 		hydrabot.sendMessage(channel, "**"+former.author.username + "** (edit from message "+seconds+" seconds ago):\n    " + former.content);
 
 	}
-
+	*/
 })
 
 hydrabot.on( "message", function( message ) {

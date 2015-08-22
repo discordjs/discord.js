@@ -1,20 +1,21 @@
-var request = require( "superagent" );
-var Endpoints = require( "./lib/endpoints.js" );
-var Server = require( "./lib/server.js" ).Server;
-var Message = require( "./lib/message.js" ).Message;
-var User = require( "./lib/user.js" ).User;
-var Channel = require( "./lib/channel.js" ).Channel;
-var List = require( "./lib/list.js" ).List;
-var Invite = require( "./lib/invite.js" ).Invite;
-var PMChannel = require( "./lib/PMChannel.js" ).PMChannel;
-var WebSocket = require( 'ws' );
-var Internal = require( "./lib/internal.js" ).Internal;
-var TokenManager = require( "./lib/TokenManager.js" ).TokenManager;
+var request = require("superagent");
+var Endpoints = require("./lib/endpoints.js");
+var Server = require("./lib/server.js").Server;
+var Message = require("./lib/message.js").Message;
+var User = require("./lib/user.js").User;
+var Channel = require("./lib/channel.js").Channel;
+var List = require("./lib/list.js").List;
+var Invite = require("./lib/invite.js").Invite;
+var PMChannel = require("./lib/PMChannel.js").PMChannel;
+var WebSocket = require('ws');
+var Internal = require("./lib/internal.js").Internal;
+var TokenManager = require("./lib/TokenManager.js").TokenManager;
 
-var serverCreateRequests = [].globalLoginTime = Date.now();
+var serverCreateRequests = [],
+    globalLoginTime = Date.now();
 
-function tp( time ) {
-	return Date.now() - time;
+function tp(time) {
+    return Date.now() - time;
 }
 
 /**
@@ -42,71 +43,70 @@ exports.PMChannel = PMChannel;
  * @param {Number} [options.maxmessage=5000] The maximum amount of messages to be stored per channel.
  */
 
-exports.Client = function( options ) {
+exports.Client = function (shouldUseTokenManager) {
 
-	/**
-	 * Contains the options of the client
-	 * @attribute options
-	 * @type {Object}
-	 */
-	this.options = options || {};
-	this.options.maxmessage = 5000;
-	this.tokenManager = new TokenManager( "./", "tokencache.json" );
-	/**
-	 * Contains the token used to authorise HTTP requests and WebSocket connection. Received when login was successful.
-	 * @attribute token
-	 * @readonly
-	 * @type {String}
-	 */
-	this.token = "";
-	/**
-	 * Indicates whether the client is logged in or not. Does not indicate whether the client is ready.
-	 * @attribute loggedIn
-	 * @readonly
-	 * @type {Boolean}
-	 */
-	this.loggedIn = false;
-	/**
-	 * The WebSocket used when receiving message and other event updates.
-	 * @type {WebSocket}
-	 * @attribute websocket
-	 * @readonly
-	 */
-	this.websocket = null;
-	/**
-	 * An Object containing the functions tied to events. These should be set using Client.on();
-	 * @type {Object}
-	 * @attribute events
-	 */
-	this.events = {};
-	/**
-	 * The User of the Client class, set when the initial startup is complete.
-	 * @attribute user
-	 * @type {User}
-	 * @readonly
-	 */
-	this.user = null;
-	/**
-	 * Indicates whether the Client is ready and has cached all servers it as aware of.
-	 * @type {Boolean}
-	 * @attribute ready
-	 * @readonly
-	 */
-	this.ready = false;
-	/**
-	 * A List containing all the Servers the Client has access to.
-	 * @attribute serverList
-	 * @type {List}
-	 * @readonly
-	 */
-	this.serverList = new List( "id" );
-	/**
-	 * A List containing all the PMChannels the Client has access to.
-	 * @attribute PMList
-	 * @type {List}
-	 * @readonly
-	 */
-	this.PMList = new List( "id" );
+    /**
+     * Contains the options of the client
+     * @attribute options
+     * @type {Object}
+     */
+    if (shouldUseTokenManager)
+        this.tokenManager = new TokenManager("./", "tokencache.json");
+    /**
+     * Contains the token used to authorise HTTP requests and WebSocket connection. Received when login was successful.
+     * @attribute token
+     * @readonly
+     * @type {String}
+     */
+    this.token = "";
+    /**
+     * Indicates whether the client is logged in or not. Does not indicate whether the client is ready.
+     * @attribute loggedIn
+     * @readonly
+     * @type {Boolean}
+     */
+    this.loggedIn = false;
+    /**
+     * The WebSocket used when receiving message and other event updates.
+     * @type {WebSocket}
+     * @attribute websocket
+     * @readonly
+     */
+    this.websocket = null;
+    /**
+     * An Object containing the functions tied to events. These should be set using Client.on();
+     * @type {Object}
+     * @attribute events
+     */
+    this.events = {};
+    /**
+     * The User of the Client class, set when the initial startup is complete.
+     * @attribute user
+     * @type {User}
+     * @readonly
+     */
+    this.user = null;
+    /**
+     * Indicates whether the Client is ready and has cached all servers it as aware of.
+     * @type {Boolean}
+     * @attribute ready
+     * @readonly
+     */
+    this.ready = false;
+    /**
+     * A List containing all the Servers the Client has access to.
+     * @attribute serverList
+     * @type {List}
+     * @readonly
+     */
+    this.serverList = new List("id");
+    /**
+     * A List containing all the PMChannels the Client has access to.
+     * @attribute PMList
+     * @type {List}
+     * @readonly
+     */
+    this.PMList = new List("id");
 
 }
 
@@ -116,8 +116,8 @@ exports.Client = function( options ) {
  * @method getServers
  * @return {List} ServerList
  */
-exports.Client.prototype.getServers = function() {
-	return this.serverList;
+exports.Client.prototype.getServers = function () {
+    return this.serverList;
 }
 
 /**
@@ -125,8 +125,8 @@ exports.Client.prototype.getServers = function() {
  * @method getChannels
  * @return {List} Channelist
  */
-exports.Client.prototype.getChannels = function() {
-	return this.serverList.concatSublists( "channels", "id" );
+exports.Client.prototype.getChannels = function () {
+    return this.serverList.concatSublists("channels", "id");
 }
 
 /**
@@ -135,8 +135,8 @@ exports.Client.prototype.getChannels = function() {
  * @param  {String/Number} id The ID of the Server
  * @return {Server} The Server matching the ID
  */
-exports.Client.prototype.getServer = function( id ) {
-	return this.getServers().filter( "id", id, true );
+exports.Client.prototype.getServer = function (id) {
+    return this.getServers().filter("id", id, true);
 }
 
 /**
@@ -145,8 +145,8 @@ exports.Client.prototype.getServer = function( id ) {
  * @param  {String/Number} id The ID of the Channel
  * @return {Server} The Channel matching the ID
  */
-exports.Client.prototype.getChannel = function( id ) {
-	return this.getChannels().filter( "id", id, true );
+exports.Client.prototype.getChannel = function (id) {
+    return this.getChannels().filter("id", id, true);
 }
 
 /**
@@ -155,8 +155,8 @@ exports.Client.prototype.getChannel = function( id ) {
  * @param  {String/Number} name The Name of the Channel
  * @return {Server} The Channel matching the Name
  */
-exports.Client.prototype.getChannelByName = function( name ) {
-	return this.getChannels().filter( "name", name, true );
+exports.Client.prototype.getChannelByName = function (name) {
+    return this.getChannels().filter("name", name, true);
 }
 
 /**
@@ -167,18 +167,18 @@ exports.Client.prototype.getChannelByName = function( name ) {
  * @method triggerEvent
  * @private
  */
-exports.Client.prototype.triggerEvent = function( event, args ) {
+exports.Client.prototype.triggerEvent = function (event, args) {
 
-	if ( !this.ready && event !== "raw" && event !== "disconnected" && event !== "debug" ) { //if we're not even loaded yet, don't try doing anything because it always ends badly!
-		return false;
-	}
+    if (!this.ready && event !== "raw" && event !== "disconnected" && event !== "debug") { //if we're not even loaded yet, don't try doing anything because it always ends badly!
+        return false;
+    }
 
-	if ( this.events[ event ] ) {
-		this.events[ event ].apply( this, args );
-		return true;
-	} else {
-		return false;
-	}
+    if (this.events[event]) {
+        this.events[event].apply(this, args);
+        return true;
+    } else {
+        return false;
+    }
 
 }
 
@@ -188,8 +188,8 @@ exports.Client.prototype.triggerEvent = function( event, args ) {
  * @param  {Function} fn The function that should be bound to the event.
  * @method on
  */
-exports.Client.prototype.on = function( name, fn ) {
-	this.events[ name ] = fn;
+exports.Client.prototype.on = function (name, fn) {
+    this.events[name] = fn;
 }
 
 /**
@@ -197,66 +197,66 @@ exports.Client.prototype.on = function( name, fn ) {
  * @param  {String} name The event name which should be cleared
  * @method off
  */
-exports.Client.prototype.off = function( name ) {
-	this.events[ name ] = function() {};
+exports.Client.prototype.off = function (name) {
+    this.events[name] = function () { };
 }
 
-exports.Client.prototype.cacheServer = function( id, cb, members ) {
-	var self = this;
-	var serverInput = {};
+exports.Client.prototype.cacheServer = function (id, cb, members) {
+    var self = this;
+    var serverInput = {};
 
-	if ( typeof id === 'string' || id instanceof String ) {
-		//actually an ID
+    if (typeof id === 'string' || id instanceof String) {
+        //actually an ID
 
-		if ( this.serverList.filter( "id", id ).length > 0 ) {
-			return;
-		}
+        if (this.serverList.filter("id", id).length > 0) {
+            return;
+        }
 
-		Internal.XHR.getServer( self.token, id, function( err, data ) {
-			if ( !err ) {
-				makeServer( data );
-			}
-		} )
+        Internal.XHR.getServer(self.token, id, function (err, data) {
+            if (!err) {
+                makeServer(data);
+            }
+        })
 
-	} else {
-		// got objects because SPEEEDDDD
+    } else {
+        // got objects because SPEEEDDDD
 
-		if ( this.serverList.filter( "id", id.id ).length > 0 ) {
-			return;
-		}
-		serverInput = id;
-		id = id.id;
-		makeServer( serverInput );
+        if (this.serverList.filter("id", id.id).length > 0) {
+            return;
+        }
+        serverInput = id;
+        id = id.id;
+        makeServer(serverInput);
 
-	}
+    }
 
-	function channelsFromHTTP() {
-		Internal.XHR.getChannel( self.token, id, function( err ) {
-			if ( !err )
-				cacheChannels( res.body );
-		} )
-	}
+    function channelsFromHTTP() {
+        Internal.XHR.getChannel(self.token, id, function (err) {
+            if (!err)
+                cacheChannels(res.body);
+        })
+    }
 
-	var server;
+    var server;
 
-	function makeServer( dat ) {
-		server = new Server( dat.region, dat.owner_id, dat.name, id, serverInput.members || dat.members, dat.icon, dat.afk_timeout, dat.afk_channel_id );
-		if ( dat.channels )
-			cacheChannels( dat.channels );
-		else
-			channelsFromHTTP();
-	}
+    function makeServer(dat) {
+        server = new Server(dat.region, dat.owner_id, dat.name, id, serverInput.members || dat.members, dat.icon, dat.afk_timeout, dat.afk_channel_id);
+        if (dat.channels)
+            cacheChannels(dat.channels);
+        else
+            channelsFromHTTP();
+    }
 
-	function cacheChannels( dat ) {
+    function cacheChannels(dat) {
 
-		var channelList = dat;
-		for ( channel of channelList ) {
-			server.channels.add( new Channel( channel, server ) );
-		}
-		self.serverList.add( server );
+        var channelList = dat;
+        for (var channel of channelList) {
+            server.channels.add(new Channel(channel, server));
+        }
+        self.serverList.add(server);
 
-		cb( server );
-	}
+        cb(server);
+    }
 
 }
 
@@ -273,61 +273,62 @@ exports.Client.prototype.cacheServer = function( id, cb, members ) {
  * @param {Object} callback.error.error The raw XHR error.
  * @param {String} callback.token The token received when logging in
  */
-exports.Client.prototype.login = function( email, password, callback, noCache ) {
+exports.Client.prototype.login = function (email, password, callback, noCache) {
 
-	globalLoginTime = Date.now();
+    globalLoginTime = Date.now();
 
-	this.debug( "login called at " + globalLoginTime );
+    this.debug("login called at " + globalLoginTime);
 
-	var self = this;
-	callback = callback || function() {};
+    var self = this;
+    callback = callback || function () { };
 
-	if ( noCache == undefined || noCache == null ) {
-		noCache = false;
-	}
+    if (noCache == undefined || noCache == null) {
+        noCache = false;
+    }
 
-	self.connectWebsocket();
+    self.connectWebsocket();
 
-	if ( this.tokenManager.exists( email ) && !noCache ) {
+    if (this.tokenManager) {
+        if (this.tokenManager.exists(email) && !noCache) {
 
-		var token = this.tokenManager.getToken( email, password );
-		if ( !token.match( /[^\w.-]+/g ) ) {
-			done( this.tokenManager.getToken( email, password ) );
-			self.debug( "loaded token from caches in " + tp( globalLoginTime ) );
-			return;
-		} else {
-			self.debug( "error getting token from caches, using default auth" );
-		}
-	}
+            var token = this.tokenManager.getToken(email, password);
+            if (!token.match(/[^\w.-]+/g)) {
+                done(this.tokenManager.getToken(email, password));
+                self.debug("loaded token from caches in " + tp(globalLoginTime));
+                return;
+            } else {
+                self.debug("error getting token from caches, using default auth");
+            }
+        }
+    }
+    var time = Date.now();
+    Internal.XHR.login(email, password, function (err, token) {
+        if (err) {
+            self.triggerEvent("disconnected", [{
+                reason: "failed to log in",
+                error: err
+            }]);
+            self.websocket.close();
+            self.debug("failed to login in " + tp(globalLoginTime));
+        } else {
+            if (!noCache) {
+                self.tokenManager.addToken(email, token, password);
+            }
+            self.debug("loaded token from auth servers in " + tp(globalLoginTime));
+            done(token);
+        }
 
-	var time = Date.now();
-	Internal.XHR.login( email, password, function( err, token ) {
-		if ( err ) {
-			self.triggerEvent( "disconnected", [ {
-				reason: "failed to log in",
-				error: err
-			} ] );
-			self.websocket.close();
-			self.debug( "failed to login in " + tp( globalLoginTime ) );
-		} else {
-			if ( !noCache ) {
-				self.tokenManager.addToken( email, token, password );
-			}
-			self.debug( "loaded token from auth servers in " + tp( globalLoginTime ) );
-			done( token );
-		}
+    });
 
-	} );
-
-	function done( token ) {
-		self.email = email;
-		self.password = password;
-		self.debug( "using token " + token );
-		self.token = token;
-		self.websocket.sendData();
-		self.loggedIn = true;
-		callback( null, token );
-	}
+    function done(token) {
+        self.email = email;
+        self.password = password;
+        self.debug("using token " + token);
+        self.token = token;
+        self.websocket.sendData();
+        self.loggedIn = true;
+        callback(null, token);
+    }
 }
 
 /**
@@ -341,260 +342,278 @@ exports.Client.prototype.login = function( email, password, callback, noCache ) 
  * @param  {Object} options see sendMessage(options)
  * @method reply
  */
-exports.Client.prototype.reply = function( destination, toSend, callback, options ) {
+exports.Client.prototype.reply = function (destination, toSend, callback, options) {
 
-	if ( toSend instanceof Array ) {
-		toSend = toSend.join( "\n" );
-	}
+    if (toSend instanceof Array) {
+        toSend = toSend.join("\n");
+    }
 
-	toSend = destination.author.mention() + ", " + toSend;
+    toSend = destination.author.mention() + ", " + toSend;
 
-	this.sendMessage( destination, toSend, callback, options );
+    this.sendMessage(destination, toSend, callback, options);
 
 }
 
-exports.Client.prototype.connectWebsocket = function( cb ) {
+exports.Client.prototype.connectWebsocket = function (cb) {
 
-	var self = this;
+    var self = this;
 
-	var sentInitData = false;
+    var sentInitData = false;
 
-	this.websocket = new WebSocket( Endpoints.WEBSOCKET_HUB );
-	this.websocket.onclose = function( e ) {
-		self.triggerEvent( "disconnected", [ {
-			reason: "websocket disconnected",
-			error: e
-		} ] );
-	};
-	this.websocket.onmessage = function( e ) {
+    this.websocket = new WebSocket(Endpoints.WEBSOCKET_HUB);
+    this.websocket.onclose = function (e) {
+        self.triggerEvent("disconnected", [{
+            reason: "websocket disconnected",
+            error: e
+        }]);
+    };
+    this.websocket.onmessage = function (e) {
 
-		self.triggerEvent( "raw", [ e ] );
+        self.triggerEvent("raw", [e]);
 
-		var dat = JSON.parse( e.data );
-		var webself = this;
+        var dat = JSON.parse(e.data);
+        var webself = this;
 
-		switch ( dat.op ) {
+        switch (dat.op) {
 
-			case 0:
-				if ( dat.t === "READY" ) {
+            case 0:
+                if (dat.t === "READY") {
 
-					self.debug( "got ready packet" );
+                    self.debug("got ready packet");
 
-					var data = dat.d;
+                    var data = dat.d;
 
-					self.user = new User( data.user );
+                    self.user = new User(data.user);
 
-					var _servers = data.guilds,
-						servers = [];
+                    var _servers = data.guilds,
+                        servers = [];
 
-					var cached = 0,
-						toCache = _servers.length;
+                    var cached = 0,
+                        toCache = _servers.length;
 
-					for ( x in data.private_channels ) {
-						self.PMList.add( new PMChannel( data.private_channels[ x ].recipient, data.private_channels[ x ].id ) );
-					}
+                    for (x in data.private_channels) {
+                        self.PMList.add(new PMChannel(data.private_channels[x].recipient, data.private_channels[x].id));
+                    }
 
-					for ( x in _servers ) {
-						_server = _servers[ x ];
+                    for (x in _servers) {
+                        _server = _servers[x];
 
-						self.cacheServer( _server, function( server ) {
-							cached++;
-							if ( cached === toCache ) {
-								self.ready = true;
-								self.triggerEvent( "ready" );
-								self.debug( "ready triggered" );
-							}
-						} );
-					}
+                        self.cacheServer(_server, function (server) {
+                            cached++;
+                            if (cached === toCache) {
+                                self.ready = true;
+                                self.triggerEvent("ready");
+                                self.debug("ready triggered");
+                            }
+                        });
+                    }
 
-					setInterval( function() {
-						webself.keepAlive.apply( webself );
-					}, data.heartbeat_interval );
+                    setInterval(function () {
+                        webself.keepAlive.apply(webself);
+                    }, data.heartbeat_interval);
 
-				} else if ( dat.t === "MESSAGE_CREATE" ) {
-					var data = dat.d;
+                } else if (dat.t === "MESSAGE_CREATE") {
+                    var data = dat.d;
 
-					var channel = self.getChannel( data.channel_id );
-					var message = new Message( data, channel );
-					self.triggerEvent( "message", [ message ] );
-					if ( channel.messages )
-						channel.messages.add( message );
+                    var channel = self.getChannel(data.channel_id);
+                    var message = new Message(data, channel);
+                    self.triggerEvent("message", [message]);
+                    if (channel.messages)
+                        channel.messages.add(message);
 
-				} else if ( dat.t === "MESSAGE_DELETE" ) {
-					var data = dat.d;
+                } else if (dat.t === "MESSAGE_DELETE") {
+                    var data = dat.d;
 
-					var channel = self.getChannel( data.channel_id );
+                    var channel = self.getChannel(data.channel_id);
 
-					if ( !channel.messages )
-						return;
+                    if (!channel.messages)
+                        return;
 
-					var _msg = channel.messages.filter( "id", data.id, true );
+                    var _msg = channel.messages.filter("id", data.id, true);
 
-					if ( _msg ) {
-						self.triggerEvent( "messageDelete", [ _msg ] );
-						channel.messages.removeElement( _msg );
-					}
+                    if (_msg) {
+                        self.triggerEvent("messageDelete", [_msg]);
+                        channel.messages.removeElement(_msg);
+                    }
 
-				} else if ( dat.t === "MESSAGE_UPDATE" ) {
+                } else if (dat.t === "MESSAGE_UPDATE") {
 
-					var data = dat.d;
-					if ( !self.ready )
-						return;
+                    var data = dat.d;
+                    if (!self.ready)
+                        return;
 
-					var formerMessage = false;
+                    var formerMessage = false;
 
-					var channel = self.getChannel( data.channel_id );
+                    var channel = self.getChannel(data.channel_id);
 
-					if ( channel ) {
+                    if (channel) {
 
-						formerMessage = channel.messages.filter( "id", data.id, true );
-						var newMessage;
+                        formerMessage = channel.messages.filter("id", data.id, true);
+                        var newMessage;
 
-						data.author = data.author || formerMessage.author;
-						data.timestamp = data.time || formerMessage.time;
-						data.content = data.content || formerMessage.content;
-						data.channel = data.channel || formerMessage.channel;
-						data.id = data.id || formerMessage.id;
-						data.mentions = data.mentions || formerMessage.mentions;
-						data.mention_everyone = data.mention_everyone || formerMessage.everyoneMentioned;
-						data.embeds = data.embeds || formerMessage.embeds;
+                        data.author = data.author || formerMessage.author;
+                        data.timestamp = data.time || formerMessage.time;
+                        data.content = data.content || formerMessage.content;
+                        data.channel = data.channel || formerMessage.channel;
+                        data.id = data.id || formerMessage.id;
+                        data.mentions = data.mentions || formerMessage.mentions;
+                        data.mention_everyone = data.mention_everyone || formerMessage.everyoneMentioned;
+                        data.embeds = data.embeds || formerMessage.embeds;
 
-						try {
-							newMessage = new Message( data, channel );
-						} catch ( e ) {
-							self.debug( "dropped a message update packet" );
-							return;
-						}
+                        try {
+                            newMessage = new Message(data, channel);
+                        } catch (e) {
+                            self.debug("dropped a message update packet");
+                            return;
+                        }
 
-						self.triggerEvent( "messageUpdate", [ formerMessage, newMessage ] );
+                        self.triggerEvent("messageUpdate", [formerMessage, newMessage]);
 
-						if ( formerMessage )
-							channel.messages.updateElement( formerMessage, newMessage );
-						else
-							channel.messages.add( newMessage );
+                        if (formerMessage)
+                            channel.messages.updateElement(formerMessage, newMessage);
+                        else
+                            channel.messages.add(newMessage);
 
-					}
+                    }
 
-				} else if ( dat.t === "PRESENCE_UPDATE" ) {
+                } else if (dat.t === "PRESENCE_UPDATE") {
 
-					var data = dat.d;
-					var getUser = self.getUser( data.user.id );
-					if ( getUser ) {
-						//user already exists
-						var usr = new User( data.user );
-						if ( usr.equalsStrict( getUser ) ) {
-							//no changes, actually a presence.
-						} else {
-							if ( self.updateUserReferences( data.user.id, getUser, new User( data.user ) ) ) {
-								self.triggerEvent( "userupdate", [ getUser, usr ] );
-							}
-						}
-					}
-					self.triggerEvent( "presence", [ new User( data.user ), data.status, self.serverList.filter( "id", data.guild_id, true ) ] );
-
-				} else if ( dat.t === "GUILD_DELETE" ) {
-
-					var deletedServer = self.serverList.filter( "id", dat.d.id, true );
-
-					if ( deletedServer ) {
-						self.triggerEvent( "serverDelete", [ deletedServer ] );
-					}
-
-				} else if ( dat.t === "CHANNEL_DELETE" ) {
-
-					var delServer = self.serverList.filter( "id", dat.d.guild_id, true );
-
-					if ( delServer ) {
-						var channel = delServer.channels.filter( "id", dat.d.id, true );
-
-						if ( channel ) {
-							self.triggerEvent( "channelDelete", [ channel ] );
-						}
-					}
-
-				} else if ( dat.t === "GUILD_CREATE" ) {
-
-					if ( !self.serverList.filter( "id", dat.d.id, true ) ) {
-						self.cacheServer( dat.d, function( server ) {
-							if ( serverCreateRequests[ server.id ] ) {
-								serverCreateRequests[ server.id ]( null, server );
-								serverCreateRequests[ server.id ] = null;
-							} else {
-								self.triggerEvent( "serverJoin", [ server ] );
-							}
-						} );
-					}
-
-				} else if ( dat.t === "CHANNEL_CREATE" ) {
-
-					var srv = self.serverList.filter( "id", dat.d.guild_id, true );
-
-					if ( srv ) {
-
-						if ( !srv.channels.filter( "id", dat.d.d, true ) ) {
-
-							var chann = new Channel( dat.d, srv );
-
-							srv.channels.add( new Channel( dat.d, srv ) );
-							self.triggerEvent( "channelCreate", [ chann ] );
-
-						}
-
-					}
-
-				} else if ( dat.t === "USER_UPDATE" ) {
-
-					if ( dat.d.id === self.user.id ) {
-						var newUsr = new User( dat.d );
-						self.triggerEvent( "userupdate", [ self.user, newUsr ] );
-						self.user = newUsr;
-					}
-
-				}
-				break;
-
-		}
-
-	};
-	this.websocket.sendPacket = function( p ) {
-		this.send( JSON.stringify( p ) );
-	}
-	this.websocket.keepAlive = function() {
-
-		if ( this.readyState !== 1 )
-			return false;
-
-		this.sendPacket( {
-			op: 1,
-			d: Date.now()
-		} );
-
-	}
-	this.websocket.onopen = function() {
-
-		self.debug( "websocket conn open" );
-		this.sendData( "onopen" );
-
-	}
-	this.websocket.sendData = function( why ) {
-		if ( this.readyState == 1 && !sentInitData && self.token ) {
-			sentInitData = true;
-			var connDat = {
-				op: 2,
-				d: {
-					token: self.token,
-					v: 2
-				}
-			};
-
-			connDat.d.properties = Internal.WebSocket.properties;
-			this.sendPacket( connDat );
-		}
-	}
+                    var data = dat.d;
+                    var getUser = self.getUser(data.user.id);
+                    if (getUser) {
+                        //user already exists
+                        var usr = new User(data.user);
+                        if (usr.equalsStrict(getUser)) {
+                            //no changes, actually a presence.
+                        } else {
+                            if (self.updateUserReferences(data.user.id, getUser, new User(data.user))) {
+                                self.triggerEvent("userupdate", [getUser, usr]);
+                            }
+                        }
+                    }
+                    self.triggerEvent("presence", [new User(data.user), data.status, self.serverList.filter("id", data.guild_id, true)]);
+
+                } else if (dat.t === "GUILD_DELETE") {
+
+                    var deletedServer = self.serverList.filter("id", dat.d.id, true);
+
+                    if (deletedServer) {
+                        self.triggerEvent("serverDelete", [deletedServer]);
+                    }
+
+                } else if (dat.t === "CHANNEL_DELETE") {
+
+                    var delServer = self.serverList.filter("id", dat.d.guild_id, true);
+
+                    if (delServer) {
+                        var channel = delServer.channels.filter("id", dat.d.id, true);
+
+                        if (channel) {
+                            self.triggerEvent("channelDelete", [channel]);
+                        }
+                    }
+
+                } else if (dat.t === "GUILD_CREATE") {
+
+                    if (!self.serverList.filter("id", dat.d.id, true)) {
+                        self.cacheServer(dat.d, function (server) {
+                            if (serverCreateRequests[server.id]) {
+                                serverCreateRequests[server.id](null, server);
+                                serverCreateRequests[server.id] = null;
+                            } else {
+                                self.triggerEvent("serverJoin", [server]);
+                            }
+                        });
+                    }
+
+                } else if (dat.t === "CHANNEL_CREATE") {
+
+                    var srv = self.serverList.filter("id", dat.d.guild_id, true);
+
+                    if (srv) {
+
+                        if (!srv.channels.filter("id", dat.d.d, true)) {
+
+                            var chann = new Channel(dat.d, srv);
+
+                            srv.channels.add(new Channel(dat.d, srv));
+                            self.triggerEvent("channelCreate", [chann]);
+
+                        }
+
+                    }
+
+                } else if (dat.t === "USER_UPDATE") {
+
+                    if (dat.d.id === self.user.id) {
+                        var newUsr = new User(dat.d);
+                        self.triggerEvent("userupdate", [self.user, newUsr]);
+                        self.user = newUsr;
+                    }
+
+                } else if (dat.t === "GUILD_MEMBER_ADD") {
+
+                    var srv = self.getServer(dat.d.guild_id);
+                    if (srv) {
+                        var usr = new User(dat.d.user);
+                        srv.members.add(usr);
+                        self.triggerEvent("serverMemberAdd", [usr]);
+                    }
+
+                } else if (dat.t === "GUILD_MEMBER_REMOVE") {
+
+                    var srv = self.getServer(dat.d.guild_id);
+                    if (srv) {
+                        var usr = new User(dat.d.user);
+                        srv.members.removeElement(usr);
+                        self.triggerEvent("serverMemberRemove", [usr]);
+                    }
+
+                }
+                break;
+
+        }
+
+    };
+    this.websocket.sendPacket = function (p) {
+        this.send(JSON.stringify(p));
+    }
+    this.websocket.keepAlive = function () {
+
+        if (this.readyState !== 1)
+            return false;
+
+        this.sendPacket({
+            op: 1,
+            d: Date.now()
+        });
+
+    }
+    this.websocket.onopen = function () {
+
+        self.debug("websocket conn open");
+        this.sendData("onopen");
+
+    }
+    this.websocket.sendData = function (why) {
+        if (this.readyState == 1 && !sentInitData && self.token) {
+            sentInitData = true;
+            var connDat = {
+                op: 2,
+                d: {
+                    token: self.token,
+                    v: 2
+                }
+            };
+
+            connDat.d.properties = Internal.WebSocket.properties;
+            this.sendPacket(connDat);
+        }
+    }
 }
 
-exports.Client.prototype.debug = function( msg ) {
-	this.triggerEvent( "debug", [ "[SL " + tp( globalLoginTime ) + "]   " + msg ] );
+exports.Client.prototype.debug = function (msg) {
+    this.triggerEvent("debug", ["[SL " + tp(globalLoginTime) + "]   " + msg]);
 }
 
 /**
@@ -603,19 +622,19 @@ exports.Client.prototype.debug = function( msg ) {
  * @param {Object} callback.error Null unless there was an error, in which case is an XHR error.
  * @method logout
  */
-exports.Client.prototype.logout = function( callback ) {
+exports.Client.prototype.logout = function (callback) {
 
-	callback = callback || function() {};
+    callback = callback || function () { };
 
-	var self = this;
+    var self = this;
 
-	Internal.XHR.logout( self.token, function( err ) {
-		if ( err ) {
-			callback( err );
-		}
-		self.loggedIn = false;
-		self.websocket.close();
-	} );
+    Internal.XHR.logout(self.token, function (err) {
+        if (err) {
+            callback(err);
+        }
+        self.loggedIn = false;
+        self.websocket.close();
+    });
 
 }
 
@@ -629,23 +648,23 @@ exports.Client.prototype.logout = function( callback ) {
  * @method createServer
  * @async
  */
-exports.Client.prototype.createServer = function( name, region, cb ) {
+exports.Client.prototype.createServer = function (name, region, cb) {
 
-	var self = this;
+    var self = this;
 
-	Internal.XHR.createServer( self.token, name, region, function( err, data ) {
+    Internal.XHR.createServer(self.token, name, region, function (err, data) {
 
-		if ( err ) {
-			cb( err );
-		} else {
+        if (err) {
+            cb(err);
+        } else {
 
-			self.cacheServer( data, function( server ) {
-				cb( null, server );
-			} );
+            self.cacheServer(data, function (server) {
+                cb(null, server);
+            });
 
-		}
+        }
 
-	} );
+    });
 
 }
 
@@ -658,23 +677,23 @@ exports.Client.prototype.createServer = function( name, region, cb ) {
  * @method leaveServer
  * @async
  */
-exports.Client.prototype.leaveServer = function( server, callback ) {
+exports.Client.prototype.leaveServer = function (server, callback) {
 
-	var self = this;
+    var self = this;
 
-	// callback is not necessary for this function
-	callback = callback || function() {};
+    // callback is not necessary for this function
+    callback = callback || function () { };
 
-	Internal.XHR.leaveServer( self.token, server.id, function( err ) {
+    Internal.XHR.leaveServer(self.token, server.id, function (err) {
 
-		if ( err ) {
-			callback( err );
-		} else {
-			self.serverList.removeElement( server );
-			callback( null, server );
-		}
+        if (err) {
+            callback(err);
+        } else {
+            self.serverList.removeElement(server);
+            callback(null, server);
+        }
 
-	} );
+    });
 
 }
 
@@ -691,52 +710,52 @@ exports.Client.prototype.leaveServer = function( server, callback ) {
  * @param {Invite} callback.invite An invite object representing the created invite.
  * @method createInvite
  */
-exports.Client.prototype.createInvite = function( channel, options, callback ) {
+exports.Client.prototype.createInvite = function (channel, options, callback) {
 
-	var self = this;
-	var options = options || {};
+    var self = this;
+    var options = options || {};
 
-	// callback is not necessary for this function
-	callback = callback || function() {};
+    // callback is not necessary for this function
+    callback = callback || function () { };
 
-	if ( channel instanceof Server ) {
-		channel = channel.getDefaultChannel();
-	}
+    if (channel instanceof Server) {
+        channel = channel.getDefaultChannel();
+    }
 
-	options.max_age = options.max_age || 0;
-	options.max_uses = options.max_uses || 0;
-	options.temporary = options.temporary || false;
-	options.xkcdpass = options.xkcd || false;
+    options.max_age = options.max_age || 0;
+    options.max_uses = options.max_uses || 0;
+    options.temporary = options.temporary || false;
+    options.xkcdpass = options.xkcd || false;
 
-	Internal.XHR.createInvite( self.token, channel.id, options, function( err, data ) {
+    Internal.XHR.createInvite(self.token, channel.id, options, function (err, data) {
 
-		if ( err ) {
-			callback( err );
-		} else {
-			callback( null, new Invite( data ) );
-		}
+        if (err) {
+            callback(err);
+        } else {
+            callback(null, new Invite(data));
+        }
 
-	} );
+    });
 
 }
 
-exports.Client.prototype.startPM = function( user, callback ) {
+exports.Client.prototype.startPM = function (user, callback) {
 
-	var self = this;
+    var self = this;
 
-	callback = callback || function() {};
+    callback = callback || function () { };
 
-	Internal.XHR.startPM( self.token, self.user.id, user.id, function( err, data ) {
+    Internal.XHR.startPM(self.token, self.user.id, user.id, function (err, data) {
 
-		if ( err ) {
-			callback( err );
-		} else {
-			var channel = new PMChannel( data.recipient, data.id );
-			self.PMList.add( channel );
-			callback( null, channel );
-		}
+        if (err) {
+            callback(err);
+        } else {
+            var channel = new PMChannel(data.recipient, data.id);
+            self.PMList.add(channel);
+            callback(null, channel);
+        }
 
-	} );
+    });
 
 }
 
@@ -756,128 +775,128 @@ exports.Client.prototype.startPM = function( user, callback ) {
  * @method sendMessage
  */
 
-exports.Client.prototype.sendFile = function( destination, toSend, fileName, callback, options ) {
+exports.Client.prototype.sendFile = function (destination, toSend, fileName, callback, options) {
 
-	this.sendMessage( destination, toSend, callback, options, fileName );
+    this.sendMessage(destination, toSend, callback, options, fileName);
 
 }
 
-exports.Client.prototype.sendMessage = function( destination, toSend, callback, options, fileName ) {
+exports.Client.prototype.sendMessage = function (destination, toSend, callback, options, fileName) {
 
-	options = options || {};
-	callback = callback || function() {};
+    options = options || {};
+    callback = callback || function () { };
 
-	var channel_id, message, mentions, self = this;
+    var channel_id, message, mentions, self = this;
 
-	channel_id = resolveChannel( destination, self );
-	if ( !fileName ) {
-		message = resolveMessage( toSend );
-		mentions = resolveMentions( message, options.mention );
-	}
+    channel_id = resolveChannel(destination, self);
+    if (!fileName) {
+        message = resolveMessage(toSend);
+        mentions = resolveMentions(message, options.mention);
+    }
 
-	if ( channel_id ) {
-		send();
-	} else {
-		//a channel is being sorted
-	}
+    if (channel_id) {
+        send();
+    } else {
+        //a channel is being sorted
+    }
 
-	function send() {
+    function send() {
 
-		if(fileName){
-			Internal.XHR.sendFile( self.token, channel_id, toSend, fileName, function(err){
+        if (fileName) {
+            Internal.XHR.sendFile(self.token, channel_id, toSend, fileName, function (err) {
 
-				callback(err);
+                callback(err);
 
-			} );
-			return;
-		}
+            });
+            return;
+        }
 
-		Internal.XHR.sendMessage( self.token, channel_id, {
-			content: message,
-			mentions: mentions
-		}, function( err, data ) {
-			if ( err ) {
-				callback( err );
-			} else {
-				var msg = new Message( data, self.getChannel( data.channel_id ) );
-				if ( options.selfDestruct ) {
-					setTimeout( function() {
-						self.deleteMessage( msg );
-					}, options.selfDestruct );
-				}
-				callback( null, msg );
-			}
-		} );
-	}
+        Internal.XHR.sendMessage(self.token, channel_id, {
+            content: message,
+            mentions: mentions
+        }, function (err, data) {
+            if (err) {
+                callback(err);
+            } else {
+                var msg = new Message(data, self.getChannel(data.channel_id));
+                if (options.selfDestruct) {
+                    setTimeout(function () {
+                        self.deleteMessage(msg);
+                    }, options.selfDestruct);
+                }
+                callback(null, msg);
+            }
+        });
+    }
 
-	function setChannId( id ) {
-		channel_id = id;
-	}
+    function setChannId(id) {
+        channel_id = id;
+    }
 
-	function resolveChannel( destination, self ) {
-		var channel_id = false;
-		if ( destination instanceof Server ) {
-			channel_id = destination.getDefaultChannel().id;
-		} else if ( destination instanceof Channel ) {
-			channel_id = destination.id;
-		} else if ( destination instanceof PMChannel ) {
-			channel_id = destination.id;
-		} else if ( destination instanceof Message ) {
-			channel_id = destination.channel.id;
-		} else if ( destination instanceof User ) {
-			var destId = self.PMList.deepFilter( [ "user", "id" ], destination.id, true );
+    function resolveChannel(destination, self) {
+        var channel_id = false;
+        if (destination instanceof Server) {
+            channel_id = destination.getDefaultChannel().id;
+        } else if (destination instanceof Channel) {
+            channel_id = destination.id;
+        } else if (destination instanceof PMChannel) {
+            channel_id = destination.id;
+        } else if (destination instanceof Message) {
+            channel_id = destination.channel.id;
+        } else if (destination instanceof User) {
+            var destId = self.PMList.deepFilter(["user", "id"], destination.id, true);
 
-			if ( destId ) {
-				channel_id = destId.id;
-			} else {
-				//start a PM and then get that use that
-				self.startPM( destination, function( err, channel ) {
-					if ( err ) {
-						callback( err );
-					} else {
-						self.PMList.add( new PMChannel( channel.user, channel.id ) );
-						setChannId( channel.id );
-						send();
-					}
-				} );
-				return false;
-			}
-		} else {
-			channel_id = destination;
-		}
-		return channel_id;
-	}
+            if (destId) {
+                channel_id = destId.id;
+            } else {
+                //start a PM and then get that use that
+                self.startPM(destination, function (err, channel) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        self.PMList.add(new PMChannel(channel.user, channel.id));
+                        setChannId(channel.id);
+                        send();
+                    }
+                });
+                return false;
+            }
+        } else {
+            channel_id = destination;
+        }
+        return channel_id;
+    }
 
-	function resolveMessage( toSend ) {
-		var message;
-		if ( typeof toSend === "string" || toSend instanceof String )
-			message = toSend;
-		else if ( toSend instanceof Array )
-			message = toSend.join( "\n" );
-		else if ( toSend instanceof Message )
-			message = toSend.content;
-		else
-			message = toSend;
-		return message.substring( 0, 2000 );
-	}
+    function resolveMessage(toSend) {
+        var message;
+        if (typeof toSend === "string" || toSend instanceof String)
+            message = toSend;
+        else if (toSend instanceof Array)
+            message = toSend.join("\n");
+        else if (toSend instanceof Message)
+            message = toSend.content;
+        else
+            message = toSend;
+        return message.substring(0, 2000);
+    }
 
-	function resolveMentions( message, mentionsOpt ) {
-		var mentions = [];
-		if ( mentionsOpt === false ) {} else if ( mentionsOpt || mentionsOpt === "auto" || mentionsOpt == null || mentionsOpt == undefined ) {
-			for ( mention of( message.match( /<@[^>]*>/g ) || [] ) ) {
-				mentions.push( mention.substring( 2, mention.length - 1 ) );
-			}
-		} else if ( mentionsOpt instanceof Array ) {
-			for ( mention of mentionsOpt ) {
-				if ( mention instanceof User ) {
-					mentions.push( mention.id );
-				} else {
-					mentions.push( mention );
-				}
-			}
-		}
-		return mentions;
-	}
+    function resolveMentions(message, mentionsOpt) {
+        var mentions = [];
+        if (mentionsOpt === false) { } else if (mentionsOpt || mentionsOpt === "auto" || mentionsOpt == null || mentionsOpt == undefined) {
+            for (mention of (message.match(/<@[^>]*>/g) || [])) {
+                mentions.push(mention.substring(2, mention.length - 1));
+            }
+        } else if (mentionsOpt instanceof Array) {
+            for (mention of mentionsOpt) {
+                if (mention instanceof User) {
+                    mentions.push(mention.id);
+                } else {
+                    mentions.push(mention);
+                }
+            }
+        }
+        return mentions;
+    }
 }
 
 /**
@@ -888,181 +907,181 @@ exports.Client.prototype.sendMessage = function( destination, toSend, callback, 
  * @param {Message} callback.message A message object representing the deleted object.
  * @method deleteMessage
  */
-exports.Client.prototype.deleteMessage = function( message, callback ) {
-	callback = callback || function() {};
+exports.Client.prototype.deleteMessage = function (message, callback) {
+    callback = callback || function () { };
 
-	var self = this;
+    var self = this;
 
-	Internal.XHR.deleteMessage( self.token, message.channel.id, message.id, callback );
+    Internal.XHR.deleteMessage(self.token, message.channel.id, message.id, callback);
 }
 
-exports.Client.prototype.updateMessage = function( oldMessage, newContent, callback, options ) {
+exports.Client.prototype.updateMessage = function (oldMessage, newContent, callback, options) {
 
-	var self = this;
-	var channel = oldMessage.channel;
-	options = options || {};
+    var self = this;
+    var channel = oldMessage.channel;
+    options = options || {};
 
-	Internal.XHR.updateMessage( self.token, channel.id, oldMessage.id, {
-		content: newContent,
-		mentions: []
-	}, function( err, data ) {
-		if ( err ) {
-			callback( err );
-			return;
-		}
-		var msg = new Message( data, self.getChannel( data.channel_id ) );
-		if ( options.selfDestruct ) {
-			setTimeout( function() {
-				self.deleteMessage( msg );
-			}, options.selfDestruct );
-		}
-		callback( null, msg );
-	} );
-
-}
-
-exports.Client.prototype.setUsername = function( username, callback ) {
-
-	var self = this;
-
-	Internal.XHR.setUsername( self.token, self.user.avatar, self.email, null, self.password, username, function( err ) {
-
-		callback( err );
-
-	} );
+    Internal.XHR.updateMessage(self.token, channel.id, oldMessage.id, {
+        content: newContent,
+        mentions: []
+    }, function (err, data) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        var msg = new Message(data, self.getChannel(data.channel_id));
+        if (options.selfDestruct) {
+            setTimeout(function () {
+                self.deleteMessage(msg);
+            }, options.selfDestruct);
+        }
+        callback(null, msg);
+    });
 
 }
 
-exports.Client.prototype.getChannelLogs = function( channel, amount, callback ) {
-	var self = this;
+exports.Client.prototype.setUsername = function (username, callback) {
 
-	Internal.XHR.getChannelLogs( self.token, channel.id, ( amount || 50 ), function( err, data ) {
+    var self = this;
 
-		if ( err ) {
-			callback( err );
-			return;
-		}
+    Internal.XHR.setUsername(self.token, self.user.avatar, self.email, null, self.password, username, function (err) {
 
-		var logs = new List( "id" );
-		for ( message of data ) {
-			logs.add( new Message( message, channel ) );
-		}
-		callback( null, logs );
+        callback(err);
 
-	} );
-}
-
-exports.Client.prototype.createChannel = function( server, name, type, callback ) {
-
-	var self = this;
-
-	Internal.XHR.createChannel( self.token, server.id, name, type, function( err, data ) {
-
-		if ( err ) {
-			callback( err );
-		} else {
-			var chann = new Channel( data, server );
-			server.channels.add( chann );
-			callback( null, chann );
-		}
-
-	} );
-}
-
-exports.Client.prototype.deleteChannel = function( channel, callback ) {
-	var self = this;
-
-	Internal.XHR.deleteChannel( self.token, channel.id, function( err ) {
-
-		channel.server.channels.removeElement( channel );
-		self.triggerEvent( "channelDelete", [ channel ] );
-		callback( null );
-
-	} );
-}
-
-exports.Client.prototype.deleteServer = function( server, callback ) {
-
-	var self = this;
-
-	Internal.XHR.deleteServer( self.token, server.id, function( err ) {
-
-		self.serverList.removeElement( server );
-		self.triggerEvent( "serverDelete", [ server ] );
-		callback( null );
-
-	} );
+    });
 
 }
 
-exports.Client.prototype.joinServer = function( invite, callback ) {
+exports.Client.prototype.getChannelLogs = function (channel, amount, callback) {
+    var self = this;
 
-	var self = this;
+    Internal.XHR.getChannelLogs(self.token, channel.id, (amount || 50), function (err, data) {
 
-	var code = ( invite instanceof Invite ? invite.code : invite );
+        if (err) {
+            callback(err);
+            return;
+        }
 
-	Internal.XHR.acceptInvite( self.token, code, function( err, inviteData ) {
+        var logs = new List("id");
+        for (message of data) {
+            logs.add(new Message(message, channel));
+        }
+        callback(null, logs);
 
-		if ( err ) {
-			callback( err );
-		} else {
-			serverCreateRequests[ inviteData.guild.id ] = callback;
-		}
+    });
+}
 
-	} );
+exports.Client.prototype.createChannel = function (server, name, type, callback) {
+
+    var self = this;
+
+    Internal.XHR.createChannel(self.token, server.id, name, type, function (err, data) {
+
+        if (err) {
+            callback(err);
+        } else {
+            var chann = new Channel(data, server);
+            server.channels.add(chann);
+            callback(null, chann);
+        }
+
+    });
+}
+
+exports.Client.prototype.deleteChannel = function (channel, callback) {
+    var self = this;
+
+    Internal.XHR.deleteChannel(self.token, channel.id, function (err) {
+
+        channel.server.channels.removeElement(channel);
+        self.triggerEvent("channelDelete", [channel]);
+        callback(null);
+
+    });
+}
+
+exports.Client.prototype.deleteServer = function (server, callback) {
+
+    var self = this;
+
+    Internal.XHR.deleteServer(self.token, server.id, function (err) {
+
+        self.serverList.removeElement(server);
+        self.triggerEvent("serverDelete", [server]);
+        callback(null);
+
+    });
 
 }
 
-exports.Client.prototype.getServers = function() {
-	return this.serverList;
-}
+exports.Client.prototype.joinServer = function (invite, callback) {
 
-exports.Client.prototype.getChannels = function() {
-	return this.serverList.concatSublists( "channels", "id" );
-}
+    var self = this;
 
-exports.Client.prototype.getUsers = function() {
-	return this.getServers().concatSublists( "members", "id" );
-}
+    var code = (invite instanceof Invite ? invite.code : invite);
 
-exports.Client.prototype.getServer = function( id ) {
-	return this.getServers().filter( "id", id, true );
-}
+    Internal.XHR.acceptInvite(self.token, code, function (err, inviteData) {
 
-exports.Client.prototype.getChannel = function( id ) {
-	var normalChan = this.getChannels().filter( "id", id, true );
-	return normalChan || this.PMList.filter( "id", id, true );
-}
+        if (err) {
+            callback(err);
+        } else {
+            serverCreateRequests[inviteData.guild.id] = callback;
+        }
 
-exports.Client.prototype.getChannelByName = function( name ) {
-	return this.getChannels().filter( "name", name, true );
-}
-
-exports.Client.prototype.getUser = function( id ) {
-	return this.getUsers().filter( "id", id, true );
-}
-
-exports.isUserID = function( id ) {
-	return ( ( id + "" ).length === 17 && !isNaN( id ) );
-}
-
-exports.Client.prototype.updateUserReferences = function( id, oldUser, user ) {
-
-	if ( oldUser.equalsStrict( user ) ) {
-		return false;
-	}
-
-	for ( server of this.serverList.contents ) {
-
-		server.members.updateElement( oldUser, user );
-
-	}
-
-	this.debug( "Updated references to " + oldUser.username + " to " + this.getUser( id ).username );
-	return true;
+    });
 
 }
 
-exports.Client.prototype.addPM = function( pm ) {
-	this.PMList.add( pm );
+exports.Client.prototype.getServers = function () {
+    return this.serverList;
+}
+
+exports.Client.prototype.getChannels = function () {
+    return this.serverList.concatSublists("channels", "id");
+}
+
+exports.Client.prototype.getUsers = function () {
+    return this.getServers().concatSublists("members", "id");
+}
+
+exports.Client.prototype.getServer = function (id) {
+    return this.getServers().filter("id", id, true);
+}
+
+exports.Client.prototype.getChannel = function (id) {
+    var normalChan = this.getChannels().filter("id", id, true);
+    return normalChan || this.PMList.filter("id", id, true);
+}
+
+exports.Client.prototype.getChannelByName = function (name) {
+    return this.getChannels().filter("name", name, true);
+}
+
+exports.Client.prototype.getUser = function (id) {
+    return this.getUsers().filter("id", id, true);
+}
+
+exports.isUserID = function (id) {
+    return ((id + "").length === 17 && !isNaN(id));
+}
+
+exports.Client.prototype.updateUserReferences = function (id, oldUser, user) {
+
+    if (oldUser.equalsStrict(user)) {
+        return false;
+    }
+
+    for (server of this.serverList.contents) {
+
+        server.members.updateElement(oldUser, user);
+
+    }
+
+    this.debug("Updated references to " + oldUser.username + " to " + this.getUser(id).username);
+    return true;
+
+}
+
+exports.Client.prototype.addPM = function (pm) {
+    this.PMList.add(pm);
 }
