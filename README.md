@@ -5,6 +5,9 @@ The aim of this API is to make it *really* simple to start developing your bots.
 
 New update features **big speed boosts** (everything cached and sorted with around 1 second of calling the login function) upon connection and allows editing of messages!
 
+## PLEASE BE AWARE - I'm currently rewriting this _entire_ module in ECMAScript 6 and then using Babel to compile it so it works in node. That means for a few days I won't be adding features, but after that features will come out faster and better than ever!
+back to 
+
 **[Find the website here.](http://discord-js.github.io)**
 
 
