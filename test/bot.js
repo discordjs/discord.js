@@ -1,8 +1,8 @@
 var Discord = require("../lib/index.js");
-
+var Auth = require("./auth.json");
 var mybot = new Discord.Client();
 
-mybot.login("email", "pass", function(err, res){
+mybot.login(Auth.email, Auth.password, function(err, res){
 	
 });
 
