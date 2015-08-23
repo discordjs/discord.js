@@ -44,6 +44,18 @@ class Client {
 	get ready() {
 		return this.state === 3;
 	}
+	
+	get servers() {
+		return this.serverCache;
+	}
+	
+	get channels() {
+		return this.channelCache;
+	}
+	
+	get users() {
+		return this.userCache;
+	}
 
 
 	//def debug
@@ -51,13 +63,28 @@ class Client {
 		console.log(message);
 	}
 	
+	on(event, fn){
+		this.events.set(event, fn);
+	}
+	
+	off(event, fn){
+		this.events.delete(event);
+	}
+	
 	//def trigger
 	trigger(event) {
-
+		var args = [];
+		for(var arg in arguments){
+			args.push(arguments[arg]);
+		}
+		var evt = this.events.get(event);
+		if(evt){
+			evt.apply(this, args.slice(1));
+		}
 	}
 	
 	//def login
-	login(email = "foo@bar.com", password = "pass1234s", callback = function () { }) {
+	login(email = "foo@bar.com", password = "pass1234", callback = function () { }) {
 
 		var self = this;
 
@@ -133,6 +160,13 @@ class Client {
 					
 					self.user = self.addUser( data.user );
 					
+					for(var _server of data.guilds){
+						
+						self.addServer(_server);
+						
+					}
+					self.trigger("ready");
+					self.debug(`cached ${self.serverCache.size} servers, ${self.channelCache.size} channels and ${self.userCache.size} users.`);
 
 					break;
 				default:
@@ -155,9 +189,9 @@ class Client {
 	}
 	
 	//def addChannel
-	addChannel(data) {
+	addChannel(data, serverId) {
 		if (!this.channelCache.has(data.id)){
-			this.channelCache.set(data.id, new Channel(data, SERVER));	
+			this.channelCache.set(data.id, new Channel(data, this.getServer("id", serverId)));	
 		}
 		return this.channelCache.get(data.id);
 	}
@@ -172,13 +206,34 @@ class Client {
 	
 	//def getUser
 	getUser(key, value){
-		for (var userRow of this.userCache) {
-			var user = userRow[1];
-			if (user[key] === value) {
-				return user;
+		for (var row of this.userCache) {
+			var obj = row[1];
+			if (obj[key] === value) {
+				return obj;
 			}
 		}
+		return null;
+	}
 
+	//def getChannel
+	getChannel(key, value){
+		for (var row of this.channelCache) {
+			var obj = row[1];
+			if (obj[key] === value) {
+				return obj;
+			}
+		}
+		return null;
+	}
+
+	//def getServer
+	getServer(key, value){
+		for (var row of this.serverCache) {
+			var obj = row[1];
+			if (obj[key] === value) {
+				return obj;
+			}
+		}
 		return null;
 	}
 

@@ -18,12 +18,12 @@ class Server {
 			// get a user from this server's member list,
 			// it will be identical (unless an async change occurred)
 			// to the client's cache.
-			this.members.add(client.addUser(member));
+			this.members.add(client.addUser(member.user));
 
 		}
 
 		for (var channel of data.channels) {
-			this.channels.add(client.addChannel(channel));
+			this.channels.add(client.addChannel(channel, this.id));
 		}
 	}
 
