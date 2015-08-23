@@ -1,5 +1,6 @@
 //discord.js modules
 var Endpoints = require("./Endpoints.js");
+var User = require("./User.js");
 
 //node modules
 var request = require("superagent");
@@ -32,13 +33,24 @@ class Client {
 			3 - ready
 			4 - disconnected
 		*/
+
+		this.userCache = new Map();
+		this.channelCache = new Map();
+		this.serverCache = new Map();
 	}
 
 	get ready() {
 		return this.state === 3;
 	}
 
+
+	//def debug
 	debug(message) {
+		console.log(message);
+	}
+	
+	//def trigger
+	trigger(event) {
 
 	}
 	
@@ -46,6 +58,8 @@ class Client {
 	login(email = "foo@bar.com", password = "pass1234s", callback = function () { }) {
 
 		var self = this;
+
+		this.createws();
 
 		if (this.state === 0 || this.state === 4) {
 
@@ -60,6 +74,8 @@ class Client {
 
 					if (err) {
 						self.state = 4; //set state to disconnected
+						self.trigger("disconnected");
+						self.websocket.close();
 						callback(err);
 					} else {
 						self.state = 2; //set state to logged in (not yet ready)
@@ -83,18 +99,66 @@ class Client {
 		
 		//good to go
 		this.websocket = new WebSocket(Endpoints.WEBSOCKET_HUB);
+		
+		//open
 		this.websocket.onopen = function () {
 			self.trySendConnData(); //try connecting
 		};
+		
+		//close
+		this.websocket.onclose = function () {
+			self.trigger("disconnected");
+		}
+		
+		//message
+		this.websocket.onmessage = function (e) {
+
+			var dat = false, data = false;
+
+			try {
+				dat = JSON.parse(e.data);
+				data = dat.d;
+			} catch (err) {
+				self.trigger("error", err, e);
+				return;
+			}
+			
+			//valid message
+			switch (dat.t) {
+
+				case "READY":
+					self.debug("received ready packet");
+					
+					self.user = self.addUser( data.user );
+					
+
+					break;
+				default:
+					self.debug("received unknown packet");
+					self.trigger("unknown", dat);
+					break;
+
+			}
+
+		}
+
+	}
+	
+	//def addUser
+	addUser(data) {
+		if (!this.userCache.has(data.id)){
+			this.userCache.set(data.id, new User(data));
+		}
+		return this.userCache.get(data.id);
 	}
 
 	//def trySendConnData
 	trySendConnData() {
 
 		if (this.token && this.websocket.readyState === WebSocket.OPEN && !this.alreadySentData) {
-			
+
 			this.alreadySentData = true;
-			
+
 			var data = {
 				op: 2,
 				d: {
@@ -114,3 +178,5 @@ class Client {
 	}
 
 }
+
+module.exports = Client;
