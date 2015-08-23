@@ -57,6 +57,11 @@ class Client {
 		return this.userCache;
 	}
 
+	sendPacket(JSONObject){
+		if(this.websocket.readyState === 1){
+			this.websocket.send(JSON.stringify(JSONObject));
+		}
+	}
 
 	//def debug
 	debug(message) {
@@ -69,6 +74,14 @@ class Client {
 	
 	off(event, fn){
 		this.events.delete(event);
+	}
+	
+	keepAlive(){
+		this.debug("keep alive triggered");
+		this.sendPacket({
+			op: 1,
+			d: Date.now()
+		});
 	}
 	
 	//def trigger
@@ -167,6 +180,10 @@ class Client {
 					}
 					self.trigger("ready");
 					self.debug(`cached ${self.serverCache.size} servers, ${self.channelCache.size} channels and ${self.userCache.size} users.`);
+					
+					setInterval(function () {
+                        self.keepAlive.apply(self);
+                    }, data.heartbeat_interval);
 
 					break;
 				default:
