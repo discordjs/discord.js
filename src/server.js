@@ -44,6 +44,10 @@ class Server {
 		return this.getChannel("name", "general");
 	}
 	
+	get owner() {
+		return this.client.getUser("id", this.ownerID);
+	}
+	
 	// get/set
 	getChannel(key, value) {
 		for (var channel of this.channels) {

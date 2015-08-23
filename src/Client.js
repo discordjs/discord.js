@@ -1,6 +1,8 @@
 //discord.js modules
 var Endpoints = require("./Endpoints.js");
 var User = require("./User.js");
+var Server = require("./Server.js");
+var Channel = require("./Channel.js");
 
 //node modules
 var request = require("superagent");
@@ -150,6 +152,34 @@ class Client {
 			this.userCache.set(data.id, new User(data));
 		}
 		return this.userCache.get(data.id);
+	}
+	
+	//def addChannel
+	addChannel(data) {
+		if (!this.channelCache.has(data.id)){
+			this.channelCache.set(data.id, new Channel(data, SERVER));	
+		}
+		return this.channelCache.get(data.id);
+	}
+	
+	//def addServer
+	addServer(data){
+		if(!this.serverCache.has(data.id)){
+			this.serverCache.set(data.id, new Server(data, this));
+		}
+		return this.serverCache.get(data.id);
+	}
+	
+	//def getUser
+	getUser(key, value){
+		for (var userRow of this.userCache) {
+			var user = userRow[1];
+			if (user[key] === value) {
+				return user;
+			}
+		}
+
+		return null;
 	}
 
 	//def trySendConnData
