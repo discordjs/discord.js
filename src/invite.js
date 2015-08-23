@@ -1,8 +1,6 @@
-"use strict";
-
 var User = require("./user.js").User;
 
-exports.Invite = function (json) {
+exports.Invite = function(json){
 
     this.max_age = json.max_age;
     this.code = json.code;
@@ -15,9 +13,9 @@ exports.Invite = function (json) {
     this.inviter = new User(json.inviter);
     this.xkcdpass = json.xkcdpass;
     this.channel = json.channel;
-};
+}
 
-exports.Invite.prototype.generateInviteURL = function (xkcd) {
-    var code = xkcd ? this.xkcdpass : this.code;
-    return "https://discord.gg/" + code;
-};
+exports.Invite.prototype.generateInviteURL = function(xkcd){
+    var code = (xkcd ? this.xkcdpass : this.code);
+    return "https://discord.gg/"+code;
+}

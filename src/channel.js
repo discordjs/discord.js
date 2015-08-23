@@ -1,11 +1,8 @@
-"use strict";
-
 var List = require("./list.js").List;
 
-exports.Channel = function (name, server, type, id, isPrivate) {
+exports.Channel = function(name, server, type, id, isPrivate){
 
-    if (!type) {
-        //there's no second argument
+    if(!type){ //there's no second argument
         var channel = name;
         name = channel.name;
         server = server;
@@ -20,12 +17,12 @@ exports.Channel = function (name, server, type, id, isPrivate) {
     this.id = id;
     this.isPrivate = isPrivate;
     this.messages = new List("id", 5000);
-};
+}
 
-exports.Channel.equals = function (otherChannel) {
-    if (otherChannel.id === this.id) {
+exports.Channel.equals = function(otherChannel){
+    if(otherChannel.id === this.id){
         return true;
     } else {
         return false;
     }
-};
+}
