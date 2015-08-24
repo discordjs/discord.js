@@ -175,13 +175,15 @@ class Client {
 					
 					for(var _server of data.guilds){
 						
-						self.addServer(_server);
+						var server = self.addServer(_server);
+						
+						for(var channel of _server.channels){
+							server.channels.push( self.addChannel(channel, server.id) );
+						}
 						
 					}
 					self.trigger("ready");
 					self.debug(`cached ${self.serverCache.length} servers, ${self.channelCache.length} channels and ${self.userCache.length} users.`);
-					
-					console.log(self.channelCache[0]);
 					
 					setInterval(function () {
                         self.keepAlive.apply(self);

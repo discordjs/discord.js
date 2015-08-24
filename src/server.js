@@ -5,8 +5,8 @@ class Server {
 		this.ownerID = data.owner_id;
 		this.name = data.name;
 		this.id = data.id;
-		this.members = new Set();
-		this.channels = new Set();
+		this.members = [];
+		this.channels = [];
 		this.icon = data.icon;
 		this.afkTimeout = data.afk_timeout;
 		this.afkChannelId = data.afk_channel_id;
@@ -18,12 +18,8 @@ class Server {
 			// get a user from this server's member list,
 			// it will be identical (unless an async change occurred)
 			// to the client's cache.
-			this.members.add(client.addUser(member.user));
+			this.members.push(client.addUser(member.user));
 
-		}
-
-		for (var channel of data.channels) {
-			this.channels.add(client.addChannel(channel, this.id));
 		}
 	}
 
