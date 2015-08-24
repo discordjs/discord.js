@@ -376,6 +376,24 @@ class Client {
 				
 					break;
 
+				case "USER_UPDATE":
+				
+					if(self.user && data.id === self.user.id){
+						
+						var newUser = new User(data); //not actually adding to the cache
+						
+						self.trigger("userUpdate", newUser, self.user);
+						
+						if( ~self.userCache.indexOf(self.user) ){
+							self.userCache[self.userCache.indexOf(self.user)] = newUser;
+						}
+						
+						self.user = newUser;
+						
+					}
+				
+					break;
+
 				default:
 					self.debug("received unknown packet");
 					self.trigger("unknown", dat);

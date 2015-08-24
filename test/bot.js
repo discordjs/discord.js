@@ -24,4 +24,11 @@ mybot.on("messageUpdate", function(message, formerMessage){
 	
 	console.log(message.author.username, "changed", formerMessage.content, "to", message.content);
 	
-})
+});
+
+mybot.on("serverNewMember", function(user){
+	console.log("new user", user.username);
+});
+mybot.on("serverRemoveMember", function(user){
+	console.log("left user", user.username);
+});
