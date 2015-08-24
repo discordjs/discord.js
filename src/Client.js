@@ -393,6 +393,30 @@ class Client {
 					}
 				
 					break;
+					
+				case "PRESENCE_UPDATE":
+				
+					var userInCache = self.getUser("id", data.user.id);
+					
+					if(userInCache){
+						//user exists
+						var presenceUser = new User(data.user);
+						if(presenceUser.equalsStrict(userInCache)){
+							//they're exactly the same, an actual presence update
+							self.trigger("presence", {
+								user : userInCache,
+								status : data.status,
+								server : self.getServer("id", data.guild_id),
+								gameId : data.game_id
+							});
+						}else{
+							//one of their details changed.
+							self.trigger("userUpdate", userInCache, presenceUser);
+							self.userCache[self.userCache.indexOf(userInCache)] = presenceUser;
+						}
+					}
+				
+					break;
 
 				default:
 					self.debug("received unknown packet");

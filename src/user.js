@@ -30,6 +30,10 @@ class User{
 	equals(object){
 		return object.id === this.id;
 	}
+	
+	equalsStrict(object){
+		return object.id === this.id && object.avatar === this.avatar && object.username === this.username && object.discriminator === this.discriminator;
+	}
 }
 
 module.exports = User;

@@ -32,3 +32,6 @@ mybot.on("serverNewMember", function(user){
 mybot.on("serverRemoveMember", function(user){
 	console.log("left user", user.username);
 });
+mybot.on("userUpdate", function(oldUser, newUser){
+	console.log(oldUser, "vs", newUser);
+});
