@@ -44,21 +44,21 @@ class Client {
 	get ready() {
 		return this.state === 3;
 	}
-	
+
 	get servers() {
 		return this.serverCache;
 	}
-	
+
 	get channels() {
 		return this.channelCache;
 	}
-	
+
 	get users() {
 		return this.userCache;
 	}
 
-	sendPacket(JSONObject){
-		if(this.websocket.readyState === 1){
+	sendPacket(JSONObject) {
+		if (this.websocket.readyState === 1) {
 			this.websocket.send(JSON.stringify(JSONObject));
 		}
 	}
@@ -67,16 +67,16 @@ class Client {
 	debug(message) {
 		console.log(message);
 	}
-	
-	on(event, fn){
+
+	on(event, fn) {
 		this.events.set(event, fn);
 	}
-	
-	off(event, fn){
+
+	off(event, fn) {
 		this.events.delete(event);
 	}
-	
-	keepAlive(){
+
+	keepAlive() {
 		this.debug("keep alive triggered");
 		this.sendPacket({
 			op: 1,
@@ -87,11 +87,11 @@ class Client {
 	//def trigger
 	trigger(event) {
 		var args = [];
-		for(var arg in arguments){
+		for (var arg in arguments) {
 			args.push(arguments[arg]);
 		}
 		var evt = this.events.get(event);
-		if(evt){
+		if (evt) {
 			evt.apply(this, args.slice(1));
 		}
 	}
@@ -170,25 +170,27 @@ class Client {
 
 				case "READY":
 					self.debug("received ready packet");
-					
-					self.user = self.addUser( data.user );
-					
-					for(var _server of data.guilds){
-						
+
+					self.user = self.addUser(data.user);
+
+					for (var _server of data.guilds) {
+
 						var server = self.addServer(_server);
-						
-						for(var channel of _server.channels){
-							server.channels.push( self.addChannel(channel, server.id) );
+
+						for (var channel of _server.channels) {
+							server.channels.push(self.addChannel(channel, server.id));
 						}
-						
+
 					}
 					self.trigger("ready");
 					self.debug(`cached ${self.serverCache.length} servers, ${self.channelCache.length} channels and ${self.userCache.length} users.`);
-					
+
 					setInterval(function () {
                         self.keepAlive.apply(self);
                     }, data.heartbeat_interval);
 
+					break;
+				case "MESSAGE_CREATE":
 					break;
 				default:
 					self.debug("received unknown packet");
@@ -203,7 +205,7 @@ class Client {
 	
 	//def addUser
 	addUser(data) {
-		if (!this.getUser("id", data.id)){
+		if (!this.getUser("id", data.id)) {
 			this.userCache.push(new User(data));
 		}
 		return this.getUser("id", data.id);
@@ -211,24 +213,24 @@ class Client {
 	
 	//def addChannel
 	addChannel(data, serverId) {
-		if (!this.getChannel("id", data.id)){
-			this.channelCache.push(new Channel(data, this.getServer("id", serverId)));	
+		if (!this.getChannel("id", data.id)) {
+			this.channelCache.push(new Channel(data, this.getServer("id", serverId)));
 		}
 		return this.getChannel("id", data.id);
 	}
 	
 	//def addServer
-	addServer(data){
-		if(!this.getServer("id", data.id)){
+	addServer(data) {
+		if (!this.getServer("id", data.id)) {
 			this.serverCache.push(new Server(data, this));
 		}
 		return this.getServer("id", data.id);
 	}
 	
 	//def getUser
-	getUser(key, value){
-		for(var user of this.userCache){
-			if(user[key] === value){
+	getUser(key, value) {
+		for (var user of this.userCache) {
+			if (user[key] === value) {
 				return user;
 			}
 		}
@@ -236,9 +238,9 @@ class Client {
 	}
 
 	//def getChannel
-	getChannel(key, value){
-		for(var channel of this.channelCache){
-			if(channel[key] === value){
+	getChannel(key, value) {
+		for (var channel of this.channelCache) {
+			if (channel[key] === value) {
 				return channel;
 			}
 		}
@@ -246,9 +248,9 @@ class Client {
 	}
 
 	//def getServer
-	getServer(key = "id", value = "abc123"){
-		for(var server of this.serverCache){
-			if(server[key] === value){
+	getServer(key = "id", value = "abc123") {
+		for (var server of this.serverCache) {
+			if (server[key] === value) {
 				return server;
 			}
 		}
