@@ -1,6 +1,8 @@
 //discord.js modules
 var Endpoints = require("./Endpoints.js");
 var User = require("./User.js");
+var Server = require("./Server.js");
+var Channel = require("./Channel.js");
 
 //node modules
 var request = require("superagent");
@@ -34,28 +36,68 @@ class Client {
 			4 - disconnected
 		*/
 
-		this.userCache = new Map();
-		this.channelCache = new Map();
-		this.serverCache = new Map();
+		this.userCache = [];
+		this.channelCache = [];
+		this.serverCache = [];
 	}
 
 	get ready() {
 		return this.state === 3;
 	}
+	
+	get servers() {
+		return this.serverCache;
+	}
+	
+	get channels() {
+		return this.channelCache;
+	}
+	
+	get users() {
+		return this.userCache;
+	}
 
+	sendPacket(JSONObject){
+		if(this.websocket.readyState === 1){
+			this.websocket.send(JSON.stringify(JSONObject));
+		}
+	}
 
 	//def debug
 	debug(message) {
 		console.log(message);
 	}
 	
+	on(event, fn){
+		this.events.set(event, fn);
+	}
+	
+	off(event, fn){
+		this.events.delete(event);
+	}
+	
+	keepAlive(){
+		this.debug("keep alive triggered");
+		this.sendPacket({
+			op: 1,
+			d: Date.now()
+		});
+	}
+	
 	//def trigger
 	trigger(event) {
-
+		var args = [];
+		for(var arg in arguments){
+			args.push(arguments[arg]);
+		}
+		var evt = this.events.get(event);
+		if(evt){
+			evt.apply(this, args.slice(1));
+		}
 	}
 	
 	//def login
-	login(email = "foo@bar.com", password = "pass1234s", callback = function () { }) {
+	login(email = "foo@bar.com", password = "pass1234", callback = function () { }) {
 
 		var self = this;
 
@@ -131,6 +173,19 @@ class Client {
 					
 					self.user = self.addUser( data.user );
 					
+					for(var _server of data.guilds){
+						
+						self.addServer(_server);
+						
+					}
+					self.trigger("ready");
+					self.debug(`cached ${self.serverCache.length} servers, ${self.channelCache.length} channels and ${self.userCache.length} users.`);
+					
+					console.log(self.channelCache[0]);
+					
+					setInterval(function () {
+                        self.keepAlive.apply(self);
+                    }, data.heartbeat_interval);
 
 					break;
 				default:
@@ -146,10 +201,56 @@ class Client {
 	
 	//def addUser
 	addUser(data) {
-		if (!this.userCache.has(data.id)){
-			this.userCache.set(data.id, new User(data));
+		if (!this.getUser("id", data.id)){
+			this.userCache.push(new User(data));
 		}
-		return this.userCache.get(data.id);
+		return this.getUser("id", data.id);
+	}
+	
+	//def addChannel
+	addChannel(data, serverId) {
+		if (!this.getChannel("id", data.id)){
+			this.channelCache.push(new Channel(data, this.getServer("id", serverId)));	
+		}
+		return this.getChannel("id", data.id);
+	}
+	
+	//def addServer
+	addServer(data){
+		if(!this.getServer("id", data.id)){
+			this.serverCache.push(new Server(data, this));
+		}
+		return this.getServer("id", data.id);
+	}
+	
+	//def getUser
+	getUser(key, value){
+		for(var user of this.userCache){
+			if(user[key] === value){
+				return user;
+			}
+		}
+		return null;
+	}
+
+	//def getChannel
+	getChannel(key, value){
+		for(var channel of this.channelCache){
+			if(channel[key] === value){
+				return channel;
+			}
+		}
+		return null;
+	}
+
+	//def getServer
+	getServer(key = "id", value = "abc123"){
+		for(var server of this.serverCache){
+			if(server[key] === value){
+				return server;
+			}
+		}
+		return null;
 	}
 
 	//def trySendConnData
