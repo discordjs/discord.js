@@ -341,6 +341,40 @@ class Client {
 					}
 				
 					break;
+					
+				case "GUILD_MEMBER_ADD":
+				
+					var server = self.getServer("id", data.guild_id);
+					
+					if(server){
+						
+						var user = self.addUser(data.user); //if for whatever reason it doesn't exist..
+						
+						if( !~server.members.indexOf(user) ){
+							server.members.push(user);
+						}
+						
+						self.trigger("serverNewMember", user);
+					}
+				
+					break;
+					
+				case "GUILD_MEMBER_REMOVE":
+				
+					var server = self.getServer("id", data.guild_id);
+					
+					if(server){
+						
+						var user = self.addUser(data.user); //if for whatever reason it doesn't exist..
+						
+						if( ~server.members.indexOf(user) ){
+							server.members.splice( server.members.indexOf(user), 1 );
+						}
+						
+						self.trigger("serverRemoveMember", user);
+					}
+				
+					break;
 
 				default:
 					self.debug("received unknown packet");
