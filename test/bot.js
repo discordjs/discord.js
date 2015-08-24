@@ -11,7 +11,7 @@ mybot.on("ready", function(){
 })
 
 mybot.on("message", function(msg){
-	console.log("Another message by "+msg.author.username+"... now I have "+mybot.messages.length);
+	console.log("Another message by "+msg.author.username+"... now I have "+mybot.messages.length + " I have been online for " + mybot.uptime);
 })
 
 mybot.on("messageDelete", function(channel, message){

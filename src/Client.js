@@ -40,6 +40,13 @@ class Client {
 		this.userCache = [];
 		this.channelCache = [];
 		this.serverCache = [];
+		this.readyTime = null;
+	}
+	
+	get uptime(){
+		
+		return (this.readyTime ? Date.now() - this.readyTime : null);
+		
 	}
 
 	get ready() {
@@ -194,6 +201,7 @@ class Client {
 
 					}
 					self.trigger("ready");
+					self.readyTime = Date.now();
 					self.debug(`cached ${self.serverCache.length} servers, ${self.channelCache.length} channels and ${self.userCache.length} users.`);
 
 					setInterval(function () {
@@ -275,6 +283,28 @@ class Client {
 					}
 				
 					break;
+					
+				case "CHANNEL_DELETE":
+					
+					var channel = self.getChannel("id", data.id);
+					
+					if(channel){
+						
+						var server = channel.server;
+						
+						if(server){
+							
+							server.channels.splice( server.channels.indexOf(channel), 1 );
+							
+						}
+						
+						self.trigger("channelDelete", channel);
+						
+						self.serverCache.splice( self.serverCache.indexOf(channel), 1 );
+						
+					}
+					
+					break;
 
 				default:
 					self.debug("received unknown packet");
@@ -332,7 +362,7 @@ class Client {
 	}
 
 	//def getServer
-	getServer(key = "id", value = "abc123") {
+	getServer(key, value) {
 		for (var server of this.serverCache) {
 			if (server[key] === value) {
 				return server;
