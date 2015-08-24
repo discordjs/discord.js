@@ -248,12 +248,12 @@ class Client {
 						}
 
 						var mentions = [];
-						for (var mention of data.mentions) {
+						for (var mention of info.mentions) {
 							mentions.push(self.addUser(mention));
 						}
 
 						var newMessage = new Message(info, channel, mentions, formerMessage.author);
-						
+
 						self.trigger("messageUpdate", newMessage, formerMessage);
 
 						channel.messages[channel.messages.indexOf(formerMessage)] = newMessage;
@@ -264,6 +264,18 @@ class Client {
 					// all hell to break loose... best to just act as if nothing happened
 					
 					break;
+
+				case "GUILD_DELETE":
+				
+					var server = self.getServer("id", data.id);
+					
+					if(server){
+						self.serverCache.splice(self.serverCache.indexOf(server), 1);
+						self.trigger("serverDelete", server);
+					}
+				
+					break;
+
 				default:
 					self.debug("received unknown packet");
 					self.trigger("unknown", dat);
