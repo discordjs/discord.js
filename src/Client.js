@@ -306,6 +306,42 @@ class Client {
 					
 					break;
 
+				case "GUILD_CREATE":
+				
+					var server = self.getServer("id", data.id);
+					
+					if(!server){
+						//if server doesn't already exist because duh
+						
+						var serv = self.addServer(data);
+						
+						for (var channel of data.channels) {
+							serv.channels.push(self.addChannel(channel, serv.id));
+						}
+						
+					}
+					
+					self.trigger("serverCreate", server);
+				
+					break;
+					
+				case "CHANNEL_CREATE":
+				
+					var channel = self.getChannel("id", data.id);
+					
+					if(!channel){
+						
+						var chann = self.addChannel( data, data.guild_id );
+						var srv = self.getServer( "id", data.guild_id );
+						if(srv){
+							srv.channels.push( chann );
+						}
+						self.trigger("channelCreate", chann);
+						
+					}
+				
+					break;
+
 				default:
 					self.debug("received unknown packet");
 					self.trigger("unknown", dat);
