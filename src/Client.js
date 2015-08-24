@@ -256,6 +256,8 @@ class Client {
 						
 						self.trigger("messageUpdate", newMessage, formerMessage);
 
+						channel.messages[channel.messages.indexOf(formerMessage)] = newMessage;
+
 					}
 					
 					// message isn't in cache, and if it's a partial it could cause
