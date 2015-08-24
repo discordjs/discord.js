@@ -2,38 +2,39 @@ var User = require( "./user.js" ).User;
 var List = require( "./list.js" ).List;
 var PMChannel = require( "./PMChannel.js" ).PMChannel;
 
-exports.Message = function( time, author, content, channel, id, mentions, everyoneMentioned, embeds ) {
-
-	if ( !content ) {
-		message = time;
-		channel = author;
-		time = message.timestamp;
-		author = message.author;
-		content = message.content;
-		id = message.id;
-		mentions = message.mentions;
-		everyoneMentioned = message.mention_everyone;
-		embeds = message.embeds;
+class Message{
+	constructor(data, channel, mentions, author){
+		this.tts = data.tts;
+		this.timestamp = Date.parse(data.timestamp);
+		this.nonce = data.nonce;
+		this.mentions = mentions;
+		this.everyoneMentioned = data.mention_everyone;
+		this.id = data.id;
+		this.embeds = data.embeds;
+		this.editedTimestamp = data.edited_timestamp;
+		this.content = data.content.trim();
+		this.channel = channel;
+		this.author = author;
+		this.attachments = data.attachments;
 	}
-
-	this.time = Date.parse( time );
-	this.author = new User( author );
-	this.content = content.replace( /\s+/g, ' ' ).trim(); //content.replace(/<[^>]*>/g, "").replace(/\s+/g, ' ').trim();
-	this.channel = channel;
-	this.id = id;
-	this.mentions = new List( "id" );
-	this.everyoneMentioned = everyoneMentioned;
-	this.embeds = embeds;
-	for ( x in mentions ) {
-		var _mention = mentions[ x ];
-		this.mentions.add( new User( _mention ) );
+	
+	isMentioned( user ){
+		var id = (user.id ? user.id : user);
+		for(var mention of this.mentions){
+			if(mention.id === id){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	get sender(){
+		return this.author;
 	}
 }
 
-exports.Message.prototype.isPM = function() {
+/*exports.Message.prototype.isPM = function() {
 	return ( this.channel instanceof PMChannel );
-}
+}*/
 
-exports.Message.prototype.isMentioned = function( user ) {
-	return ( this.mentions.filter( "id", user.id ).length > 0 );
-}
+module.exports = Message;

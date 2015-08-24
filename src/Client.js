@@ -3,6 +3,7 @@ var Endpoints = require("./Endpoints.js");
 var User = require("./User.js");
 var Server = require("./Server.js");
 var Channel = require("./Channel.js");
+var Message = require("./Message.js");
 
 //node modules
 var request = require("superagent");
@@ -55,6 +56,16 @@ class Client {
 
 	get users() {
 		return this.userCache;
+	}
+
+	get messages() {
+
+		var msgs = [];
+		for (var channel of this.channelCache) {
+			msgs = msgs.concat(channel.messages);
+		}
+		return msgs;
+
 	}
 
 	sendPacket(JSONObject) {
@@ -191,6 +202,32 @@ class Client {
 
 					break;
 				case "MESSAGE_CREATE":
+					self.debug("received message");
+
+					var mentions = [];
+					for (var mention of data.mentions) {
+						mentions.push(self.addUser(mention));
+					}
+
+					var channel = self.getChannel("id", data.channel_id);
+					var msg = channel.addMessage(new Message(data, channel, mentions, self.addUser(data.author)));
+
+					self.trigger("message", msg);
+
+					break;
+				case "MESSAGE_DELETE":
+					self.debug("message deleted");
+
+					var channel = self.getChannel("id", data.channel_id);
+					var message = channel.getMessage("id", data.id);
+					if (message) {
+						self.trigger("messageDelete", channel, message);
+						channel.messages.splice(channel.messages.indexOf(message), 1);
+					}else{
+						//don't have the cache of that message ;(
+						self.trigger("messageDelete", channel);
+					}
+
 					break;
 				default:
 					self.debug("received unknown packet");
