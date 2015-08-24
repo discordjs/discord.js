@@ -166,7 +166,7 @@ class Client {
 		//message
 		this.websocket.onmessage = function (e) {
 
-			var dat = false, data = false;
+			var dat = false, data = {};
 
 			try {
 				dat = JSON.parse(e.data);
@@ -223,11 +223,44 @@ class Client {
 					if (message) {
 						self.trigger("messageDelete", channel, message);
 						channel.messages.splice(channel.messages.indexOf(message), 1);
-					}else{
+					} else {
 						//don't have the cache of that message ;(
 						self.trigger("messageDelete", channel);
 					}
+					break;
+				case "MESSAGE_UPDATE":
+					self.debug("message updated");
 
+					var channel = self.getChannel("id", data.channel_id);
+					var formerMessage = channel.getMessage("id", data.id);
+
+					if (formerMessage) {
+
+						//new message might be partial, so we need to fill it with whatever the old message was.
+						var info = {};
+
+						for (var key in formerMessage) {
+							info[key] = formerMessage[key];
+						}
+
+						for (var key in data) {
+							info[key] = data[key];
+						}
+
+						var mentions = [];
+						for (var mention of data.mentions) {
+							mentions.push(self.addUser(mention));
+						}
+
+						var newMessage = new Message(info, channel, mentions, formerMessage.author);
+						
+						self.trigger("messageUpdate", newMessage, formerMessage);
+
+					}
+					
+					// message isn't in cache, and if it's a partial it could cause
+					// all hell to break loose... best to just act as if nothing happened
+					
 					break;
 				default:
 					self.debug("received unknown packet");

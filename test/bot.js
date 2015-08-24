@@ -19,3 +19,9 @@ mybot.on("messageDelete", function(channel, message){
 	console.log("MESSAGE WAS DELETED BY " + ( message ? message.author.username : channel.name ));
 	
 });
+
+mybot.on("messageUpdate", function(message, formerMessage){
+	
+	console.log(message.author.username, "changed", formerMessage.content, "to", message.content);
+	
+})
