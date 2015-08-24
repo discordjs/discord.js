@@ -247,12 +247,7 @@ class Client {
 							info[key] = data[key];
 						}
 
-						var mentions = [];
-						for (var mention of data.mentions) {
-							mentions.push(self.addUser(mention));
-						}
-
-						var newMessage = new Message(info, channel, mentions, formerMessage.author);
+						var newMessage = new Message(info, channel, data.mentions.map(self.addUser), formerMessage.author);
 						
 						self.trigger("messageUpdate", newMessage, formerMessage);
 
