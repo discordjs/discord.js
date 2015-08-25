@@ -72,6 +72,10 @@ class Client {
 	get users() {
 		return this.userCache;
 	}
+	
+	get PMChannels() {
+		return this.pmChannelCache;
+	}
 
 	get messages() {
 
@@ -181,7 +185,8 @@ class Client {
 						callback(err);
 						reject(err);
 					} else {
-						callback(null);
+						self.state = 4;
+						callback();
 						resolve();
 					}
 				});
@@ -266,10 +271,9 @@ class Client {
 						callback(err);
 						reject(err);
 					} else {
-						var srv = self.getServer("id", self.resolveServerID(server));
-						callback(null, srv);
-						resolve(srv);
-						self.serverCache.splice(self.serverCache.indexOf(srv), 1);
+						self.serverCache.splice(self.serverCache.indexOf(server), 1);
+						callback(null);
+						resolve();
 					}
 
 				});
@@ -690,7 +694,7 @@ class Client {
 					self.trigger("ready");
 					self.readyTime = Date.now();
 					self.debug(`cached ${self.serverCache.length} servers, ${self.channelCache.length} channels, ${self.pmChannelCache.length} PMs and ${self.userCache.length} users.`);
-
+					self.state = 3;
 					setInterval(function () {
                         self.keepAlive.apply(self);
                     }, data.heartbeat_interval);
