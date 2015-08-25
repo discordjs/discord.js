@@ -12,15 +12,6 @@ mybot.login(Auth.email, Auth.password)
 
 mybot.on("ready", function () {
 	console.log("Ready!");
-	
-	mybot.createServer("myServer", "london").then(function(server){
-		console.log("New server! Based in "+server.region+" and is called "+server.name);
-		
-		mybot.createChannel(server, "wooof", "text", function(err, chann){
-			console.log(chann.name);
-		});
-		
-	});
 })
 
 mybot.on("message", function (msg) {

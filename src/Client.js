@@ -4,6 +4,7 @@ var User = require("./User.js");
 var Server = require("./Server.js");
 var Channel = require("./Channel.js");
 var Message = require("./Message.js");
+var Invite = require("./Invite.js");
 
 //node modules
 var request = require("superagent");
@@ -262,6 +263,46 @@ class Client {
 		});
 
 	}
+
+	createInvite(serverOrChannel, options, callback = function (err, invite) { }) {
+
+		var self = this;
+
+		return new Promise(function (resolve, reject) {
+			
+			var destination;
+			
+			if (serverOrChannel instanceof Server) {
+				destination = serverOrChannel.id;
+			} else if (serverOrChannel instanceof Channel) {
+				destination = serverOrChannel.id;
+			} else {
+				destination = serverOrChannel;
+			}
+
+			options = options || {};
+			options.max_age = options.maxAge || 0;
+			options.max_uses = options.maxUses || 0;
+			options.temporary = options.temporary || false;
+			options.xkcdpass = options.xkcd || false;
+
+			request
+				.post(`${Endpoints.CHANNELS}/${destination}/invites`)
+				.set("authorization", self.token)
+				.send(options)
+				.end(function (err, res) {
+					if(err){
+						callback(err);
+						reject(err);
+					}else{
+						var inv = new Invite(res.body, self);
+						callback(null, inv);
+						resolve(inv);
+					}
+				});
+		});
+
+	}
 	
 	//def createws
 	createws() {
@@ -423,9 +464,15 @@ class Client {
 
 					if (!server) {
 						//if server doesn't already exist because duh
-						
 						var serv = self.addServer(data);
-
+					}else if(server.channels.length === 0){
+						
+						var srv = new Server(data, self);
+						for(channel of data.channels){
+							srv.channels.push(new Channel(channel, data.id));
+						}
+						self.serverCache[self.serverCache.indexOf(server)] = srv;
+						
 					}
 
 					self.trigger("serverCreate", server);

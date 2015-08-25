@@ -17,13 +17,14 @@ class Server {
 		}
 
 		for (var member of data.members) {
-		
+			
 			// first we cache the user in our Discord Client,
 			// then we add it to our list. This way when we
 			// get a user from this server's member list,
 			// it will be identical (unless an async change occurred)
 			// to the client's cache.
-			this.members.push(client.addUser(member.user));
+			if(member.user)
+				this.members.push(client.addUser(member.user));
 
 		}
 	}

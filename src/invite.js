@@ -1,21 +1,24 @@
 var User = require("./user.js").User;
 
-exports.Invite = function(json){
+class Invite {
+    constructor(data, client) {
+        this.max_age = data.max_age;
+        this.code = data.code;
+        this.server = client.getServer("id", data.guild.id);
+        this.revoked = data.revoked;
+        this.created_at = Date.parse(data.created_at);
+        this.temporary = data.temporary;
+        this.uses = data.uses;
+        this.max_uses = data.uses;
+        this.inviter = client.addUser(data.inviter);
+        this.xkcd = data.xkcdpass;
+        this.channel = client.getChannel("id", data.channel.id);
+    }
 
-    this.max_age = json.max_age;
-    this.code = json.code;
-    this.server = json.guild;
-    this.revoked = json.revoked;
-    this.created_at = Date.parse(json.created_at);
-    this.temporary = json.temporary;
-    this.uses = json.uses;
-    this.max_uses = json.uses;
-    this.inviter = new User(json.inviter);
-    this.xkcdpass = json.xkcdpass;
-    this.channel = json.channel;
+    get inviteURL() {
+        var code = (this.xkcd ? this.xkcdpass : this.code);
+        return "https://discord.gg/" + code;
+    }
 }
 
-exports.Invite.prototype.generateInviteURL = function(xkcd){
-    var code = (xkcd ? this.xkcdpass : this.code);
-    return "https://discord.gg/"+code;
-}
+module.exports = Invite;
