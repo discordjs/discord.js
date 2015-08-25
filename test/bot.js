@@ -15,8 +15,12 @@ mybot.on("ready", function () {
 })
 
 mybot.on("message", function (msg) {
-	console.log("Another message by " + msg.author.username + "... now I have " + mybot.messages.length + " I have been online for " + mybot.uptime);
-})
+	
+	if(msg.content === "pmme"){
+		mybot.sendMessage(msg.channel, "You know what "+msg.sender+"? NO");
+	}
+	
+});
 
 mybot.on("messageDelete", function (channel, message) {
 

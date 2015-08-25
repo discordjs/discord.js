@@ -5,6 +5,7 @@ var Server = require("./Server.js");
 var Channel = require("./Channel.js");
 var Message = require("./Message.js");
 var Invite = require("./Invite.js");
+var PMChannel = require("./PMChannel.js");
 
 //node modules
 var request = require("superagent");
@@ -42,6 +43,7 @@ class Client {
 		this.userCache = [];
 		this.channelCache = [];
 		this.serverCache = [];
+		this.pmChannelCache = [];
 		this.readyTime = null;
 	}
 
@@ -274,9 +276,9 @@ class Client {
 		var self = this;
 
 		return new Promise(function (resolve, reject) {
-			
+
 			var destination;
-			
+
 			if (serverOrChannel instanceof Server) {
 				destination = serverOrChannel.id;
 			} else if (serverOrChannel instanceof Channel) {
@@ -296,10 +298,10 @@ class Client {
 				.set("authorization", self.token)
 				.send(options)
 				.end(function (err, res) {
-					if(err){
+					if (err) {
 						callback(err);
 						reject(err);
-					}else{
+					} else {
 						var inv = new Invite(res.body, self);
 						callback(null, inv);
 						resolve(inv);
@@ -307,6 +309,132 @@ class Client {
 				});
 		});
 
+	}
+
+	startPM(user) {
+
+		var self = this;
+
+		return new Promise(function (resolve, reject) {
+			var userId = user;
+			if (user instanceof User) {
+				userId = user.id;
+			}
+			request
+				.post(`${Endpoints.USERS}/${self.user.id}/channels`)
+				.set("authorization", self.token)
+				.send({
+					recipient_id: userId
+				})
+				.end(function (err, res) {
+					if (err) {
+						reject(err);
+					} else {
+						resolve(self.addPMChannel(res.body));
+					}
+				});
+		});
+
+	}
+
+	sendMessage(destination, message, callback = function (err, msg) { }) {
+
+		var self = this;
+
+		return new Promise(function (resolve, reject) {
+
+			message = resolveMessage(message);
+			var mentions = resolveMentions();
+			destination = resolveDestination(destination);
+
+			if (destination)
+				send();
+
+			function send() {
+
+				request
+					.post(`${Endpoints.CHANNELS}/${destination}/messages`)
+					.set("authorization", self.token)
+					.send({
+						content: message,
+						mentions: mentions
+					})
+					.end(function (err, res) {
+
+						if (err) {
+							callback(err);
+							reject(err);
+						} else {
+							var data = res.body;
+
+							var mentions = [];
+
+							data.mentions = data.mentions || []; //for some reason this was not defined at some point?
+							
+							for (var mention of data.mentions) {
+								mentions.push(self.addUser(mention));
+							}
+
+							var channel = self.getChannel("id", data.channel_id);
+							if (channel) {
+								var msg = channel.addMessage(new Message(data, channel, mentions, self.addUser(data.author)));
+								callback(null, msg);
+								resolve(msg);
+							}
+						}
+
+					});
+
+			}
+
+			function resolveDestination() {
+				var channId = false;
+
+				if (destination instanceof Server) {
+					channId = destination.id; //general is the same as server id
+				} else if (destination instanceof Channel) {
+					channId = destination.id;
+				} else if (destination instanceof Message) {
+					channId = destination.channel.id;
+				} else if (destination instanceof User) {
+					
+					//check if we have a PM
+					for (var pmc of self.pmChannelCache) {
+						if (pmc.user.equals(destination)) {
+							return pmc.id;
+						}
+					}
+					
+					//we don't, at this point we're late
+					self.startPM(destination).then(function (pmc) {
+						destination = pmc.id;
+						send();
+					});
+
+				} else {
+					channId = destination;
+				}
+
+				return channId;
+			}
+
+			function resolveMessage() {
+				var msg = message;
+				if (message instanceof Array) {
+					msg = message.join("\n");
+				}
+				return msg;
+			}
+
+			function resolveMentions() {
+				var _mentions = [];
+				for (var mention of (message.match(/<@[^>]*>/g) || [])) {
+					_mentions.push(mention.substring(2, mention.length - 1));
+				}
+				return _mentions;
+			}
+
+		});
 	}
 	
 	//def createws
@@ -355,9 +483,14 @@ class Client {
 						var server = self.addServer(_server);
 
 					}
+
+					for (var _pmc of data.private_channels) {
+						var pmc = self.addPMChannel(_pmc);
+					}
+
 					self.trigger("ready");
 					self.readyTime = Date.now();
-					self.debug(`cached ${self.serverCache.length} servers, ${self.channelCache.length} channels and ${self.userCache.length} users.`);
+					self.debug(`cached ${self.serverCache.length} servers, ${self.channelCache.length} channels, ${self.pmChannelCache.length} PMs and ${self.userCache.length} users.`);
 
 					setInterval(function () {
                         self.keepAlive.apply(self);
@@ -480,7 +613,7 @@ class Client {
 						
 					}*/
 
-					if(self.serverCreateListener.get(data.id)){
+					if (self.serverCreateListener.get(data.id)) {
 						var cbs = self.serverCreateListener.get(data.id);
 						cbs[0](server); //promise then callback
 						cbs[1](null, server); //legacy callback
@@ -609,6 +742,13 @@ class Client {
 		}
 		return this.getChannel("id", data.id);
 	}
+
+	addPMChannel(data) {
+		if (!this.getPMChannel("id", data.id)) {
+			this.pmChannelCache.push(new PMChannel(data, this));
+		}
+		return this.getPMChannel("id", data.id);
+	}
 	
 	//def addServer
 	addServer(data) {
@@ -641,6 +781,15 @@ class Client {
 	//def getChannel
 	getChannel(key, value) {
 		for (var channel of this.channelCache) {
+			if (channel[key] === value) {
+				return channel;
+			}
+		}
+		return this.getPMChannel(key, value); //might be a PM
+	}
+
+	getPMChannel(key, value) {
+		for (var channel of this.pmChannelCache) {
 			if (channel[key] === value) {
 				return channel;
 			}
