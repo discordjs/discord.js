@@ -18,8 +18,11 @@ mybot.on("message", function (msg) {
 	
 	if(msg.content === "pmme"){
 		console.log("yes we found it!");
+		mybot.setUsername("hydrabot").catch(function(err){
+			console.log(err);
+		});
 		mybot.reply(msg, "You know what "+msg.sender+"? NO").then(function(msg){
-			mybot.deleteMessage(msg, 5000);
+			mybot.updateMessage(msg, "wat");
 		});
 	}
 	

@@ -31,6 +31,10 @@ class Client {
 		this.user = null;
 		this.alreadySentData = false;
 		this.serverCreateListener = new Map();
+		
+		this.email = "abc";
+		this.password = "abc";
+		
 		/*
 			State values:
 			0 - idle
@@ -128,6 +132,9 @@ class Client {
 			if (self.state === 0 || self.state === 4) {
 
 				self.state = 1; //set the state to logging in
+				
+				self.email = email;
+				self.password = password;
 			
 				request
 					.post(Endpoints.LOGIN)
@@ -357,7 +364,7 @@ class Client {
 		return new Promise(function (resolve, reject) {
 			if (timeout) {
 				setTimeout(remove, timeout)
-			}else{
+			} else {
 				remove();
 			}
 
@@ -375,6 +382,60 @@ class Client {
 						}
 					});
 			}
+		});
+	}
+
+	updateMessage(message, content, callback = function (err, msg) { }) {
+
+		var self = this;
+
+		return new Promise(function (resolve, reject) {
+
+			request
+				.patch(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
+				.set("authorization", self.token)
+				.send({
+					content: content,
+					mentions: []
+				})
+				.end(function (err, res) {
+					if (err) {
+						callback(err);
+						reject(err);
+					} else {
+						var msg = new Message(res.body, message.channel, message.mentions, message.sender);
+						callback(null, msg);
+						resolve(msg);
+
+						message.channel.messages[message.channel.messages.indexOf(message)] = msg;
+					}
+				});
+
+		});
+	}
+
+	setUsername(newName, callback = function (err) { }) {
+
+		var self = this;
+
+		return new Promise(function (resolve, reject) {
+			request
+				.patch(`${Endpoints.API}/users/@me`)
+				.set("authorization", self.token)
+				.send({
+					avatar: self.user.avatar,
+					email: self.email,
+					new_password: null,
+					password: self.password,
+					username: newName
+				})
+				.end(function (err) {
+					callback(err);
+					if (err)
+						reject(err);
+					else
+						resolve();
+				});
 		});
 	}
 
