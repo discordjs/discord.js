@@ -15,7 +15,7 @@ class Invite {
         this.channel = client.getChannel("id", data.channel.id);
     }
 
-    get inviteURL() {
+    get URL() {
         var code = (this.xkcd ? this.xkcdpass : this.code);
         return "https://discord.gg/" + code;
     }

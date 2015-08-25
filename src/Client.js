@@ -29,6 +29,7 @@ class Client {
 		this.events = new Map();
 		this.user = null;
 		this.alreadySentData = false;
+		this.serverCreateListener = new Map();
 		/*
 			State values:
 			0 - idle
@@ -196,9 +197,13 @@ class Client {
 						callback(err);
 						reject(err);
 					} else {
-						var srv = self.addServer(res.body);
+						// potentially redundant in future
+						// creating here does NOT give us the channels of the server
+						// so we must wait for the guild_create event.
+						self.serverCreateListener.set(res.body.id, [resolve, callback]);
+						/*var srv = self.addServer(res.body);
 						callback(null, srv);
-						resolve(srv);
+						resolve(srv);*/
 					}
 				});
 
@@ -464,8 +469,8 @@ class Client {
 
 					if (!server) {
 						//if server doesn't already exist because duh
-						var serv = self.addServer(data);
-					}else if(server.channels.length === 0){
+						server = self.addServer(data);
+					}/*else if(server.channels.length === 0){
 						
 						var srv = new Server(data, self);
 						for(channel of data.channels){
@@ -473,6 +478,12 @@ class Client {
 						}
 						self.serverCache[self.serverCache.indexOf(server)] = srv;
 						
+					}*/
+
+					if(self.serverCreateListener.get(data.id)){
+						var cbs = self.serverCreateListener.get(data.id);
+						cbs[0](server); //promise then callback
+						cbs[1](null, server); //legacy callback
 					}
 
 					self.trigger("serverCreate", server);
