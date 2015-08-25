@@ -381,8 +381,8 @@ class Client {
 							callback(err);
 							reject(err);
 						} else {
-							callback(null, message);
-							resolve(message);
+							callback(null);
+							resolve();
 						}
 					});
 			}
@@ -394,6 +394,8 @@ class Client {
 		var self = this;
 
 		return new Promise(function (resolve, reject) {
+
+			content = (content instanceof Array ? content.join("\n") : content);
 
 			request
 				.patch(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
