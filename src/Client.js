@@ -336,18 +336,46 @@ class Client {
 		});
 
 	}
-	
-	reply(destination, message, callback = function(err, msg){}){
-		
+
+	reply(destination, message, callback = function (err, msg) { }) {
+
 		var self = this;
-		
-		return new Promise(function(response, reject){
-			
+
+		return new Promise(function (response, reject) {
+
 			var user = destination.sender;
 			self.sendMessage(destination, message, callback, user + ", ").then(response).catch(reject);
-			
+
 		});
-		
+
+	}
+
+	deleteMessage(message, timeout, callback = function (err, msg) { }) {
+
+		var self = this;
+
+		return new Promise(function (resolve, reject) {
+			if (timeout) {
+				setTimeout(remove, timeout)
+			}else{
+				remove();
+			}
+
+			function remove() {
+				request
+					.del(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
+					.set("authorization", self.token)
+					.end(function (err, res) {
+						if (err) {
+							callback(err);
+							reject(err);
+						} else {
+							callback(null, message);
+							resolve(message);
+						}
+					});
+			}
+		});
 	}
 
 	sendMessage(destination, message, callback = function (err, msg) { }, premessage = "") {

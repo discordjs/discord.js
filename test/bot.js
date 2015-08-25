@@ -18,7 +18,9 @@ mybot.on("message", function (msg) {
 	
 	if(msg.content === "pmme"){
 		console.log("yes we found it!");
-		mybot.reply(msg, "You know what "+msg.sender+"? NO");
+		mybot.reply(msg, "You know what "+msg.sender+"? NO").then(function(msg){
+			mybot.deleteMessage(msg, 5000);
+		});
 	}
 	
 });
