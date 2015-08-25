@@ -42,11 +42,11 @@ class Client {
 		this.serverCache = [];
 		this.readyTime = null;
 	}
-	
-	get uptime(){
-		
+
+	get uptime() {
+
 		return (this.readyTime ? Date.now() - this.readyTime : null);
-		
+
 	}
 
 	get ready() {
@@ -115,39 +115,64 @@ class Client {
 	}
 	
 	//def login
-	login(email = "foo@bar.com", password = "pass1234", callback = function () { }) {
+	login(email = "foo@bar.com", password = "pass1234") {
 
 		var self = this;
 
 		this.createws();
+		return new Promise(function (resolve, reject) {
+			if (self.state === 0 || self.state === 4) {
+				
+				self.state = 1; //set the state to logging in
+			
+				request
+					.post(Endpoints.LOGIN)
+					.send({
+						email: email,
+						password: password
+					}).end(function (err, res) {
 
-		if (this.state === 0 || this.state === 4) {
+						if (err) {
+							self.state = 4; //set state to disconnected
+							self.trigger("disconnected");
+							self.websocket.close();
+							reject(err);
+						} else {
+							self.state = 2; //set state to logged in (not yet ready)
+							self.token = res.body.token; //set our token
+							self.trySendConnData();
+							resolve(self.token);
+						}
 
-			this.state = 1; //set the state to logging in
+					});
+
+			}else{
+				reject(new Error("Client already logging in or ready"));
+			}
+		});
+
+	}
+	
+	logout(){
+		
+		var self = this;
+		
+		return new Promise(function(resolve, reject){
 			
 			request
-				.post(Endpoints.LOGIN)
-				.send({
-					email: email,
-					password: password
-				}).end(function (err, res) {
-
-					if (err) {
-						self.state = 4; //set state to disconnected
-						self.trigger("disconnected");
-						self.websocket.close();
-						callback(err);
-					} else {
-						self.state = 2; //set state to logged in (not yet ready)
-						self.token = res.body.token; //set our token
-						self.trySendConnData();
-						callback(null, self.token);
-					}
-
+				.post(Endpoints.LOGOUT)
+				.set( "authorization", self.token )
+				.end(function(err, res){
+					
+					if(err)
+						reject(err);
+					else
+						resolve();
+					
 				});
-
-		}
-
+			
+		});
+		
 	}
 	
 	//def createws
@@ -274,148 +299,148 @@ class Client {
 					break;
 
 				case "GUILD_DELETE":
-				
+
 					var server = self.getServer("id", data.id);
-					
-					if(server){
+
+					if (server) {
 						self.serverCache.splice(self.serverCache.indexOf(server), 1);
 						self.trigger("serverDelete", server);
 					}
-				
+
 					break;
-					
+
 				case "CHANNEL_DELETE":
-					
+
 					var channel = self.getChannel("id", data.id);
-					
-					if(channel){
-						
+
+					if (channel) {
+
 						var server = channel.server;
-						
-						if(server){
-							
-							server.channels.splice( server.channels.indexOf(channel), 1 );
-							
+
+						if (server) {
+
+							server.channels.splice(server.channels.indexOf(channel), 1);
+
 						}
-						
+
 						self.trigger("channelDelete", channel);
-						
-						self.serverCache.splice( self.serverCache.indexOf(channel), 1 );
-						
+
+						self.serverCache.splice(self.serverCache.indexOf(channel), 1);
+
 					}
-					
+
 					break;
 
 				case "GUILD_CREATE":
-				
+
 					var server = self.getServer("id", data.id);
-					
-					if(!server){
+
+					if (!server) {
 						//if server doesn't already exist because duh
 						
 						var serv = self.addServer(data);
-						
+
 						for (var channel of data.channels) {
 							serv.channels.push(self.addChannel(channel, serv.id));
 						}
-						
+
 					}
-					
+
 					self.trigger("serverCreate", server);
-				
+
 					break;
-					
+
 				case "CHANNEL_CREATE":
-				
+
 					var channel = self.getChannel("id", data.id);
-					
-					if(!channel){
-						
-						var chann = self.addChannel( data, data.guild_id );
-						var srv = self.getServer( "id", data.guild_id );
-						if(srv){
-							srv.channels.push( chann );
+
+					if (!channel) {
+
+						var chann = self.addChannel(data, data.guild_id);
+						var srv = self.getServer("id", data.guild_id);
+						if (srv) {
+							srv.channels.push(chann);
 						}
 						self.trigger("channelCreate", chann);
-						
+
 					}
-				
+
 					break;
-					
+
 				case "GUILD_MEMBER_ADD":
-				
+
 					var server = self.getServer("id", data.guild_id);
-					
-					if(server){
-						
+
+					if (server) {
+
 						var user = self.addUser(data.user); //if for whatever reason it doesn't exist..
 						
-						if( !~server.members.indexOf(user) ){
+						if (!~server.members.indexOf(user)) {
 							server.members.push(user);
 						}
-						
+
 						self.trigger("serverNewMember", user);
 					}
-				
+
 					break;
-					
+
 				case "GUILD_MEMBER_REMOVE":
-				
+
 					var server = self.getServer("id", data.guild_id);
-					
-					if(server){
-						
+
+					if (server) {
+
 						var user = self.addUser(data.user); //if for whatever reason it doesn't exist..
 						
-						if( ~server.members.indexOf(user) ){
-							server.members.splice( server.members.indexOf(user), 1 );
+						if (~server.members.indexOf(user)) {
+							server.members.splice(server.members.indexOf(user), 1);
 						}
-						
+
 						self.trigger("serverRemoveMember", user);
 					}
-				
+
 					break;
 
 				case "USER_UPDATE":
-				
-					if(self.user && data.id === self.user.id){
-						
+
+					if (self.user && data.id === self.user.id) {
+
 						var newUser = new User(data); //not actually adding to the cache
 						
 						self.trigger("userUpdate", newUser, self.user);
-						
-						if( ~self.userCache.indexOf(self.user) ){
+
+						if (~self.userCache.indexOf(self.user)) {
 							self.userCache[self.userCache.indexOf(self.user)] = newUser;
 						}
-						
+
 						self.user = newUser;
-						
+
 					}
-				
+
 					break;
-					
+
 				case "PRESENCE_UPDATE":
-				
+
 					var userInCache = self.getUser("id", data.user.id);
-					
-					if(userInCache){
+
+					if (userInCache) {
 						//user exists
 						var presenceUser = new User(data.user);
-						if(presenceUser.equalsStrict(userInCache)){
+						if (presenceUser.equalsStrict(userInCache)) {
 							//they're exactly the same, an actual presence update
 							self.trigger("presence", {
-								user : userInCache,
-								status : data.status,
-								server : self.getServer("id", data.guild_id),
-								gameId : data.game_id
+								user: userInCache,
+								status: data.status,
+								server: self.getServer("id", data.guild_id),
+								gameId: data.game_id
 							});
-						}else{
+						} else {
 							//one of their details changed.
 							self.trigger("userUpdate", userInCache, presenceUser);
 							self.userCache[self.userCache.indexOf(userInCache)] = presenceUser;
 						}
 					}
-				
+
 					break;
 
 				default:
