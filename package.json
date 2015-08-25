@@ -1,8 +1,8 @@
 {
   "name": "discord.js",
-  "version": "2.7.2",
+  "version": "3",
   "description": "A way to interface with the Discord API",
-  "main": "index.js",
+  "main": "./lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -25,7 +25,6 @@
   },
   "homepage": "https://github.com/discord-js/discord.js#readme",
   "dependencies": {
-    "md5": "^2.0.0",
     "superagent": "^1.3.0",
     "ws": "^0.7.2"
   }
