@@ -115,14 +115,14 @@ class Client {
 	}
 	
 	//def login
-	login(email = "foo@bar.com", password = "pass1234") {
+	login(email = "foo@bar.com", password = "pass1234", callback = function(err, token){}) {
 
 		var self = this;
 
 		this.createws();
 		return new Promise(function (resolve, reject) {
 			if (self.state === 0 || self.state === 4) {
-				
+
 				self.state = 1; //set the state to logging in
 			
 				request
@@ -136,43 +136,104 @@ class Client {
 							self.state = 4; //set state to disconnected
 							self.trigger("disconnected");
 							self.websocket.close();
+							callback(err);
 							reject(err);
 						} else {
 							self.state = 2; //set state to logged in (not yet ready)
 							self.token = res.body.token; //set our token
 							self.trySendConnData();
+							callback(null, self.token);
 							resolve(self.token);
 						}
 
 					});
 
-			}else{
+			} else {
 				reject(new Error("Client already logging in or ready"));
 			}
 		});
 
 	}
-	
-	logout(){
-		
+
+	logout(callback = function(err){}) {
+
 		var self = this;
-		
-		return new Promise(function(resolve, reject){
-			
+
+		return new Promise(function (resolve, reject) {
+
 			request
 				.post(Endpoints.LOGOUT)
-				.set( "authorization", self.token )
-				.end(function(err, res){
-					
-					if(err)
+				.set("authorization", self.token)
+				.end(function (err, res) {
+
+					if (err){
+						callback(err);
 						reject(err);
-					else
+					}else{
+						callback(null);
 						resolve();
-					
+					}
 				});
-			
+
 		});
-		
+
+	}
+
+	createServer(name, region, callback = function(err, server){}) {
+		var self = this;
+		return new Promise(function (resolve, reject) {
+
+			request
+				.post(Endpoints.SERVERS)
+				.set("authorization", self.token)
+				.send({
+					name: name,
+					region: region
+				})
+				.end(function (err, res) {
+					if (err) {
+						callback(err);
+						reject(err);
+					} else {
+						var srv = self.addServer(res.body);
+						callback(null, srv);
+						resolve(srv);
+					}
+				});
+
+		});
+	}
+
+	createChannel(server, channelName, channelType, callback = function(err, chann){}) {
+
+		var self = this;
+
+		return new Promise(function (resolve, reject) {
+
+			request
+				.post(`${Endpoints.SERVERS}/${self.resolveServerID(server) }/channels`)
+				.set("authorization", self.token)
+				.send({
+					name: channelName,
+					type: channelType
+				})
+				.end(function (err, res) {
+
+					if (err) {
+						callback(err);
+						reject(err);
+					} else {
+						var server = self.getServer("id", res.body.guild_id);
+						var chann = self.addChannel(res.body, res.body.guild_id);
+						server.addChannel(chann);
+						callback(null, chann);
+						resolve(chann);
+					}
+
+				})
+
+		});
+
 	}
 	
 	//def createws
@@ -219,10 +280,6 @@ class Client {
 					for (var _server of data.guilds) {
 
 						var server = self.addServer(_server);
-
-						for (var channel of _server.channels) {
-							server.channels.push(self.addChannel(channel, server.id));
-						}
 
 					}
 					self.trigger("ready");
@@ -340,10 +397,6 @@ class Client {
 						
 						var serv = self.addServer(data);
 
-						for (var channel of data.channels) {
-							serv.channels.push(self.addChannel(channel, serv.id));
-						}
-
 					}
 
 					self.trigger("serverCreate", server);
@@ -359,7 +412,7 @@ class Client {
 						var chann = self.addChannel(data, data.guild_id);
 						var srv = self.getServer("id", data.guild_id);
 						if (srv) {
-							srv.channels.push(chann);
+							srv.addChannel(chann);
 						}
 						self.trigger("channelCreate", chann);
 
@@ -472,10 +525,20 @@ class Client {
 	
 	//def addServer
 	addServer(data) {
-		if (!this.getServer("id", data.id)) {
-			this.serverCache.push(new Server(data, this));
+
+		var server = this.getServer("id", data.id);
+
+		if (!server) {
+			server = new Server(data, this);
+			if (data.channels) {
+				for (var channel of data.channels) {
+					server.channels.push(this.addChannel(channel, server.id));
+				}
+			}
+			this.serverCache.push(server);
 		}
-		return this.getServer("id", data.id);
+
+		return server;
 	}
 	
 	//def getUser
@@ -531,6 +594,16 @@ class Client {
 			};
 			this.websocket.send(JSON.stringify(data));
 		}
+	}
+
+	resolveServerID(resource) {
+
+		if (resource instanceof Server) {
+			return resource.id;
+		} else if (!isNaN(resource) && resource.length && resource.length === 17) {
+			return resource;
+		}
+
 	}
 
 }

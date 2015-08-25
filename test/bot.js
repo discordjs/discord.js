@@ -2,7 +2,7 @@ var Discord = require("../lib/index.js");
 var Auth = require("./auth.json");
 var mybot = new Discord.Client();
 
-mybot.login(Auth.email+"a", Auth.password)
+mybot.login(Auth.email, Auth.password)
 
 	.then(function (token) {
 		console.log("wooo!");
@@ -12,6 +12,15 @@ mybot.login(Auth.email+"a", Auth.password)
 
 mybot.on("ready", function () {
 	console.log("Ready!");
+	
+	mybot.createServer("myServer", "london").then(function(server){
+		console.log("New server! Based in "+server.region+" and is called "+server.name);
+		
+		mybot.createChannel(server, "wooof", "text", function(err, chann){
+			console.log(chann.name);
+		});
+		
+	});
 })
 
 mybot.on("message", function (msg) {
@@ -39,3 +48,7 @@ mybot.on("serverRemoveMember", function (user) {
 mybot.on("userUpdate", function (oldUser, newUser) {
 	console.log(oldUser, "vs", newUser);
 });
+
+mybot.on("channelCreate", function(chann){
+	console.log(chann);
+})

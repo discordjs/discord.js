@@ -11,6 +11,11 @@ class Server {
 		this.afkTimeout = data.afk_timeout;
 		this.afkChannelId = data.afk_channel_id;
 
+		if(!data.members){
+			data.members = [ client.user ];
+			return;
+		}
+
 		for (var member of data.members) {
 		
 			// first we cache the user in our Discord Client,
@@ -63,6 +68,20 @@ class Server {
 		}
 
 		return null;
+	}
+	
+	addChannel(chann) {
+		if (!this.getChannel("id", chann.id)) {
+			this.channels.push(chann);
+		}
+		return chann;
+	}
+	
+	addMember(member){
+		if (!this.getMember("id", member.id)){
+			this.members.push(member);
+		}
+		return member;
 	}
 }
 
