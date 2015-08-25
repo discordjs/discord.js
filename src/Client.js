@@ -31,7 +31,7 @@ class Client {
 		this.user = null;
 		this.alreadySentData = false;
 		this.serverCreateListener = new Map();
-		
+
 		this.email = "abc";
 		this.password = "abc";
 		
@@ -135,7 +135,7 @@ class Client {
 				
 				self.email = email;
 				self.password = password;
-			
+
 				request
 					.post(Endpoints.LOGIN)
 					.send({
@@ -437,6 +437,51 @@ class Client {
 						resolve();
 				});
 		});
+	}
+
+	getChannelLogs(channel, amount = 500, callback = function (err, logs) { }) {
+
+		var self = this;
+
+		return new Promise(function (resolve, reject) {
+
+			var channelID = channel;
+			if (channel instanceof Channel) {
+				channelID = channel.id;
+			}
+
+			request
+				.get(`${Endpoints.CHANNELS}/${channelID}/messages?limit=${amount}`)
+				.set("authorization", self.token)
+				.end(function (err, res) {
+
+					if (err) {
+						callback(err);
+						reject(err);
+					} else {
+						var logs = [];
+						
+						var channel = self.getChannel("id", channelID);
+						
+						for (var message of res.body) {
+							
+							var mentions = [];
+							for(var mention of message.mentions){
+								mentions.push( self.addUser(mention) );
+							}
+							
+							var author = self.addUser(message.author);
+							
+							logs.push(new Message(message, channel, mentions, author));
+						}
+						callback(null, logs);
+						resolve(logs);
+					}
+
+				});
+
+		});
+
 	}
 
 	sendMessage(destination, message, callback = function (err, msg) { }, premessage = "") {
@@ -859,12 +904,12 @@ class Client {
 
 		if (!server) {
 			server = new Server(data, this);
+			this.serverCache.push(server);
 			if (data.channels) {
 				for (var channel of data.channels) {
 					server.channels.push(this.addChannel(channel, server.id));
 				}
 			}
-			this.serverCache.push(server);
 		}
 
 		return server;

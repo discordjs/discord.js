@@ -22,7 +22,12 @@ mybot.on("message", function (msg) {
 			console.log(err);
 		});
 		mybot.reply(msg, "You know what "+msg.sender+"? NO").then(function(msg){
-			mybot.updateMessage(msg, "wat");
+			mybot.updateMessage(msg, "wat i sed nothin m8");
+		});
+		mybot.getChannelLogs(msg.channel).then(function(logs){
+			console.log(logs[0]);
+		}).catch(function(error){
+			console.log(error);
 		});
 	}
 	
