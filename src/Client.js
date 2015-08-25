@@ -460,24 +460,76 @@ class Client {
 						reject(err);
 					} else {
 						var logs = [];
-						
+
 						var channel = self.getChannel("id", channelID);
-						
+
 						for (var message of res.body) {
-							
+
 							var mentions = [];
-							for(var mention of message.mentions){
-								mentions.push( self.addUser(mention) );
+							for (var mention of message.mentions) {
+								mentions.push(self.addUser(mention));
 							}
-							
+
 							var author = self.addUser(message.author);
-							
+
 							logs.push(new Message(message, channel, mentions, author));
 						}
 						callback(null, logs);
 						resolve(logs);
 					}
 
+				});
+
+		});
+
+	}
+
+	deleteChannel(channel, callback = function (err) { }) {
+
+		var self = this;
+
+		return new Promise(function (resolve, reject) {
+
+			var channelID = channel;
+			if (channel instanceof Channel) {
+				channelID = channel.id;
+			}
+
+			request
+				.del(`${Endpoints.CHANNELS}/${channelID}`)
+				.set("authorization", self.token)
+				.end(function (err) {
+					if (err) {
+						callback(err);
+						reject(err);
+					} else {
+						callback(null);
+						resolve();
+					}
+				});
+
+		});
+
+	}
+
+	joinServer(invite, callback = function (err, server) { }) {
+
+		var self = this;
+
+		return new Promise(function (resolve, reject) {
+
+			var id = (invite instanceof Invite ? invite.code : invite);
+
+			request
+				.post(`${Endpoints.API}/invite/${id}`)
+				.set("authorization", self.token)
+				.end(function (err, res) {
+					if (err) {
+						callback(err);
+						reject(err);
+					} else {
+						self.serverCreateListener.set(res.body.guild.id, [resolve, callback]);
+					}
 				});
 
 		});
@@ -764,6 +816,7 @@ class Client {
 						var cbs = self.serverCreateListener.get(data.id);
 						cbs[0](server); //promise then callback
 						cbs[1](null, server); //legacy callback
+						self.serverCreateListener.delete(data.id);
 					}
 
 					self.trigger("serverCreate", server);
