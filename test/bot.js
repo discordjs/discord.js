@@ -17,7 +17,8 @@ mybot.on("ready", function () {
 mybot.on("message", function (msg) {
 	
 	if(msg.content === "pmme"){
-		mybot.sendMessage(msg.channel, "You know what "+msg.sender+"? NO");
+		console.log("yes we found it!");
+		mybot.reply(msg, "You know what "+msg.sender+"? NO");
 	}
 	
 });

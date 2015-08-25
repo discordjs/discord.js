@@ -336,14 +336,27 @@ class Client {
 		});
 
 	}
+	
+	reply(destination, message, callback = function(err, msg){}){
+		
+		var self = this;
+		
+		return new Promise(function(response, reject){
+			
+			var user = destination.sender;
+			self.sendMessage(destination, message, callback, user + ", ").then(response).catch(reject);
+			
+		});
+		
+	}
 
-	sendMessage(destination, message, callback = function (err, msg) { }) {
+	sendMessage(destination, message, callback = function (err, msg) { }, premessage = "") {
 
 		var self = this;
 
 		return new Promise(function (resolve, reject) {
 
-			message = resolveMessage(message);
+			message = premessage + resolveMessage(message);
 			var mentions = resolveMentions();
 			destination = resolveDestination(destination);
 
