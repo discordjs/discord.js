@@ -115,7 +115,7 @@ class Client {
 	}
 	
 	//def login
-	login(email = "foo@bar.com", password = "pass1234", callback = function(err, token){}) {
+	login(email = "foo@bar.com", password = "pass1234", callback = function (err, token) { }) {
 
 		var self = this;
 
@@ -155,7 +155,7 @@ class Client {
 
 	}
 
-	logout(callback = function(err){}) {
+	logout(callback = function (err) { }) {
 
 		var self = this;
 
@@ -166,10 +166,10 @@ class Client {
 				.set("authorization", self.token)
 				.end(function (err, res) {
 
-					if (err){
+					if (err) {
 						callback(err);
 						reject(err);
-					}else{
+					} else {
 						callback(null);
 						resolve();
 					}
@@ -179,7 +179,7 @@ class Client {
 
 	}
 
-	createServer(name, region, callback = function(err, server){}) {
+	createServer(name, region, callback = function (err, server) { }) {
 		var self = this;
 		return new Promise(function (resolve, reject) {
 
@@ -204,7 +204,7 @@ class Client {
 		});
 	}
 
-	createChannel(server, channelName, channelType, callback = function(err, chann){}) {
+	createChannel(server, channelName, channelType, callback = function (err, chann) { }) {
 
 		var self = this;
 
@@ -231,6 +231,33 @@ class Client {
 					}
 
 				})
+
+		});
+
+	}
+
+	leaveServer(server, callback = function (err, server) { }) {
+
+		var self = this;
+
+		return new Promise(function (resolve, reject) {
+
+			request
+				.del(`${Endpoints.SERVERS}/${self.resolveServerID(server) }`)
+				.set("authorization", self.token)
+				.end(function (err, res) {
+
+					if (err) {
+						callback(err);
+						reject(err);
+					} else {
+						var srv = self.getServer("id", self.resolveServerID(server));
+						callback(null, srv);
+						resolve(srv);
+						self.serverCache.splice(self.serverCache.indexOf(srv), 1);
+					}
+
+				});
 
 		});
 
@@ -295,14 +322,16 @@ class Client {
 					self.debug("received message");
 
 					var mentions = [];
+					data.mentions = data.mentions || []; //for some reason this was not defined at some point?
 					for (var mention of data.mentions) {
 						mentions.push(self.addUser(mention));
 					}
 
 					var channel = self.getChannel("id", data.channel_id);
-					var msg = channel.addMessage(new Message(data, channel, mentions, self.addUser(data.author)));
-
-					self.trigger("message", msg);
+					if (channel) {
+						var msg = channel.addMessage(new Message(data, channel, mentions, self.addUser(data.author)));
+						self.trigger("message", msg);
+					}
 
 					break;
 				case "MESSAGE_DELETE":
