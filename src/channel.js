@@ -33,6 +33,9 @@ class Channel {
 		return null;
 	}
 
+    toString(){
+        return "#" + this.name;
+    }
 }
 
 module.exports = Channel;

@@ -84,6 +84,10 @@ class Server {
 		}
 		return member;
 	}
+	
+	toString(){
+		return this.name;
+	}
 }
 
 module.exports = Server;
