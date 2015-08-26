@@ -1,5 +1,5 @@
 //discord.js modules
-var Endpoints = require("./endpoints.js");
+var Endpoints = require("./Endpoints.js");
 var User = require("./user.js");
 var Server = require("./server.js");
 var Channel = require("./channel.js");
