@@ -79,11 +79,18 @@ function success12(_server){
 
 function success13(){
 	console.log("test 12 successful");
-	mybot.leaveServer(server).then(success14).catch(error);
+	mybot.sendFile(server, "./test/image.png").then(function(msg){
+		mybot.deleteMessage(msg).then(success14).catch(error);
+	}).catch(error);
 }
 
-function success14(){
+function success14(msg){
 	console.log("test 13 successful");
+	mybot.leaveServer(server).then(success15).catch(error);
+}
+
+function success15(){
+	console.log("test 14 successful");
 	mybot.logout().then(done).catch(error);
 }
 

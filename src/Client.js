@@ -558,15 +558,34 @@ class Client {
 			} else {
 				fstream = file;
 			}
-			
+
 			self.resolveDestination(destination).then(send).catch(error);
 
 			function send(destination) {
 				request
 					.post(`${Endpoints.CHANNELS}/${destination}/messages`)
+					.set("authorization", self.token)
+					.attach("file", fstream, fileName)
+					.end(function (err, res) {
+
+						if (err) {
+							error(err);
+						} else {
+
+							var chann = self.getChannel("id", destination);
+							if (chann) {
+								var msg = chann.addMessage(new Message(res.body, chann, [], self.user));
+								callback(null, msg);
+								resolve(msg);
+							}
+
+
+						}
+
+					});
 			}
-			
-			function error(err){
+
+			function error(err) {
 				callback(err);
 				reject(err);
 			}
@@ -585,7 +604,7 @@ class Client {
 			var mentions = resolveMentions();
 			self.resolveDestination(destination).then(send).catch(error);
 
-			function error(err){
+			function error(err) {
 				callback(err);
 				reject(err);
 			}
