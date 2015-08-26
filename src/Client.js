@@ -95,7 +95,7 @@ class Client {
 
 	//def debug
 	debug(message) {
-		console.log(message);
+		this.trigger("debug", message);
 	}
 
 	on(event, fn) {
@@ -185,6 +185,7 @@ class Client {
 						callback(err);
 						reject(err);
 					} else {
+						self.websocket.close();
 						self.state = 4;
 						callback();
 						resolve();
