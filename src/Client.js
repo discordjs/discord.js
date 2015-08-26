@@ -555,12 +555,9 @@ class Client {
 
 			message = premessage + resolveMessage(message);
 			var mentions = resolveMentions();
-			destination = self.resolveDestination(destination);
+			self.resolveDestination(destination).then(send).catch(reject);
 
-			if (destination)
-				send();
-
-			function send() {
+			function send(destination) {
 
 				request
 					.post(`${Endpoints.CHANNELS}/${destination}/messages`)
