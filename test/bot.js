@@ -64,7 +64,7 @@ function success10(){
 
 function success11(){
 	console.log("test 10 succesful");
-	mybot.joinServer(process.env["ds-invite"]).then(success12).catch(error);
+	mybot.joinServer(process.env["ds_invite"]).then(success12).catch(error);
 }
 
 function success12(_server){
@@ -116,4 +116,4 @@ mybot.on("message", function(message){
 	
 });
 
-mybot.login(process.env["ds-email"], process.env["ds-password"]).then(success1).catch(error);
+mybot.login(process.env["ds_email"], process.env["ds_password"]).then(success1).catch(error);
