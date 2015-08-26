@@ -1,4 +1,6 @@
 var request = require("superagent");
-var Client = require("./Client.js");
+var Endpoints = require("./endpoints.js");
+var Client = require("./client.js");
 
+exports.Endpoints = Endpoints;
 exports.Client = Client;
