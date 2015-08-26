@@ -4,7 +4,7 @@
   "description": "A way to interface with the Discord API",
   "main": "./lib/index.js",
   "scripts": {
-    "test": "node test/bot.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
