@@ -544,7 +544,7 @@ class Client {
 
 	}
 
-	sendFile(destination, file, callback = function (err, msg) { }) {
+	sendFile(destination, file, fileName = "image.png", callback = function (err, msg) { }) {
 
 		var self = this;
 
@@ -554,6 +554,7 @@ class Client {
 
 			if (typeof file === "string" || file instanceof String) {
 				fstream = fs.createReadStream(file);
+				fileName = file;
 			} else {
 				fstream = file;
 			}
@@ -582,7 +583,12 @@ class Client {
 
 			message = premessage + resolveMessage(message);
 			var mentions = resolveMentions();
-			self.resolveDestination(destination).then(send).catch(reject);
+			self.resolveDestination(destination).then(send).catch(error);
+
+			function error(err){
+				callback(err);
+				reject(err);
+			}
 
 			function send(destination) {
 
