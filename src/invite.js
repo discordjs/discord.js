@@ -1,5 +1,3 @@
-var User = require("./user.js").User;
-
 class Invite {
     constructor(data, client) {
         this.max_age = data.max_age;

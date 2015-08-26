@@ -1,7 +1,3 @@
-var User = require( "./user.js" ).User;
-var List = require( "./list.js" ).List;
-var PMChannel = require( "./PMChannel.js" ).PMChannel;
-
 class Message{
 	constructor(data, channel, mentions, author){
 		this.tts = data.tts;
