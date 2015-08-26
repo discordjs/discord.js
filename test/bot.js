@@ -1,3 +1,7 @@
+/*
+
+*/
+
 var Discord = require("../lib/index.js");
 var Auth = require("./auth.json");
 var mybot = new Discord.Client();
