@@ -543,8 +543,14 @@ class Client {
 
 	}
 
-	sendFile(destination) {
-
+	sendFile(destination, file, callback = function (err, msg) { }) {
+		
+		var self = this;
+		
+		return new Promise(function(resolve, reject){
+			
+		});
+		
 	}
 
 	sendMessage(destination, message, callback = function (err, msg) { }, premessage = "") {
@@ -1047,7 +1053,7 @@ class Client {
 			} else {
 				channId = destination;
 			}
-			if(channId)
+			if (channId)
 				resolve(channId);
 		});
 	}
