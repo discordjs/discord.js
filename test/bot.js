@@ -116,4 +116,6 @@ mybot.on("message", function(message){
 	
 });
 
+console.log(process.env);
+
 mybot.login(process.env["ds_email"], process.env["ds_password"]).then(success1).catch(error);
