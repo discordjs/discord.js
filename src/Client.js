@@ -10,6 +10,7 @@ var PMChannel = require("./PMChannel.js");
 //node modules
 var request = require("superagent");
 var WebSocket = require("ws");
+var fs = require("fs");
 
 var defaultOptions = {
 	cache_tokens: false
@@ -548,6 +549,16 @@ class Client {
 		var self = this;
 		
 		return new Promise(function(resolve, reject){
+			
+			var fstream;
+			
+			if(typeof file === "string" || file instanceof String){
+				fstream = fs.createReadStream(file);
+			}else{
+				fstream = file;
+			}
+			
+			
 			
 		});
 		
