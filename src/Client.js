@@ -1,10 +1,10 @@
 //discord.js modules
-var Endpoints = require("./Endpoints.js");
-var User = require("./User.js");
-var Server = require("./Server.js");
-var Channel = require("./Channel.js");
-var Message = require("./Message.js");
-var Invite = require("./Invite.js");
+var Endpoints = require("./endpoints.js");
+var User = require("./user.js");
+var Server = require("./server.js");
+var Channel = require("./channel.js");
+var Message = require("./message.js");
+var Invite = require("./invite.js");
 var PMChannel = require("./PMChannel.js");
 
 //node modules
