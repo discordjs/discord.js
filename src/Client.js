@@ -72,7 +72,7 @@ class Client {
 	get users() {
 		return this.userCache;
 	}
-	
+
 	get PMChannels() {
 		return this.pmChannelCache;
 	}
@@ -543,6 +543,10 @@ class Client {
 
 	}
 
+	sendFile(destination) {
+
+	}
+
 	sendMessage(destination, message, callback = function (err, msg) { }, premessage = "") {
 
 		var self = this;
@@ -551,7 +555,7 @@ class Client {
 
 			message = premessage + resolveMessage(message);
 			var mentions = resolveMentions();
-			destination = resolveDestination(destination);
+			destination = self.resolveDestination(destination);
 
 			if (destination)
 				send();
@@ -591,37 +595,6 @@ class Client {
 
 					});
 
-			}
-
-			function resolveDestination() {
-				var channId = false;
-
-				if (destination instanceof Server) {
-					channId = destination.id; //general is the same as server id
-				} else if (destination instanceof Channel) {
-					channId = destination.id;
-				} else if (destination instanceof Message) {
-					channId = destination.channel.id;
-				} else if (destination instanceof User) {
-					
-					//check if we have a PM
-					for (var pmc of self.pmChannelCache) {
-						if (pmc.user.equals(destination)) {
-							return pmc.id;
-						}
-					}
-					
-					//we don't, at this point we're late
-					self.startPM(destination).then(function (pmc) {
-						destination = pmc.id;
-						send();
-					});
-
-				} else {
-					channId = destination;
-				}
-
-				return channId;
 			}
 
 			function resolveMessage() {
@@ -1047,6 +1020,39 @@ class Client {
 			return resource;
 		}
 
+	}
+
+	resolveDestination(destination) {
+		var channId = false;
+		var self = this;
+
+		return new Promise(function (resolve, reject) {
+			if (destination instanceof Server) {
+				channId = destination.id; //general is the same as server id
+			} else if (destination instanceof Channel) {
+				channId = destination.id;
+			} else if (destination instanceof Message) {
+				channId = destination.channel.id;
+			} else if (destination instanceof User) {
+					
+				//check if we have a PM
+				for (var pmc of self.pmChannelCache) {
+					if (pmc.user.equals(destination)) {
+						return pmc.id;
+					}
+				}
+					
+				//we don't, at this point we're late
+				self.startPM(destination).then(function (pmc) {
+					resolve(pmc.id);
+				}).catch(reject);
+
+			} else {
+				channId = destination;
+			}
+			if(channId)
+				resolve(channId);
+		});
 	}
 
 }
