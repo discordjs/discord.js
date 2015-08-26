@@ -545,23 +545,33 @@ class Client {
 	}
 
 	sendFile(destination, file, callback = function (err, msg) { }) {
-		
+
 		var self = this;
-		
-		return new Promise(function(resolve, reject){
-			
+
+		return new Promise(function (resolve, reject) {
+
 			var fstream;
-			
-			if(typeof file === "string" || file instanceof String){
+
+			if (typeof file === "string" || file instanceof String) {
 				fstream = fs.createReadStream(file);
-			}else{
+			} else {
 				fstream = file;
 			}
 			
+			self.resolveDestination(destination).then(send).catch(error);
+
+			function send(destination) {
+				request
+					.post(`${Endpoints.CHANNELS}/${destination}/messages`)
+			}
 			
-			
+			function error(err){
+				callback(err);
+				reject(err);
+			}
+
 		});
-		
+
 	}
 
 	sendMessage(destination, message, callback = function (err, msg) { }, premessage = "") {
