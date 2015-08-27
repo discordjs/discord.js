@@ -7,8 +7,16 @@ var mybot = new Discord.Client();
 
 var server, channel, message, sentMessage = false;
 
-function success1(){ //make server
+function init(){
 	console.log("preparing...");
+}
+
+mybot.on("ready", function(){
+	console.log("ready! beginning tests");
+	success1();
+});
+
+function success1(){ //make server
 	mybot.createServer("test-server", "london").then(success2).catch(error);
 }
 
@@ -123,4 +131,4 @@ mybot.on("message", function(message){
 	
 });
 
-mybot.login(process.env["ds_email"], process.env["ds_password"]).then(success1).catch(error);
+mybot.login(process.env["ds_email"], process.env["ds_password"]).then(init).catch(error);
