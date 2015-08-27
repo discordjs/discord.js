@@ -1045,7 +1045,7 @@ class Client {
 	//def trySendConnData
 	trySendConnData() {
 
-		if (this.token && this.websocket.readyState === WebSocket.OPEN && !this.alreadySentData) {
+		if (this.token && !this.alreadySentData) {
 
 			this.alreadySentData = true;
 
