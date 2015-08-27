@@ -4,6 +4,8 @@ hydrabot/config.json
 hydrabot/authority.json
 hydrabot/tokencache.json
 
+.tmp/
+
 ### Node ###
 # Logs
 logs
