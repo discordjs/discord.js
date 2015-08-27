@@ -6,6 +6,9 @@ discord.js is a node module used as a way of interfacing with
 [Discord](https://discordapp.com/). It is a very useful module for creating
 bots.
 
+**Updating to 3.1.1 is essential as it has new changes to be compatible with Discord's API,
+and to make sure your application still works an update is a good idea.**
+
 ### Installation
 `npm install --save discord.js`
 
