@@ -1,6 +1,6 @@
 # discord.js
 
-[![Build Status](https://travis-ci.org/discord-js/discord.js.svg)](https://travis-ci.org/discord-js/discord.js)
+[![Build Status](https://travis-ci.org/hydrabolt/discord.js.svg)](https://travis-ci.org/hydrabolt/discord.js)
 
 discord.js is a node module used as a way of interfacing with
 [Discord](https://discordapp.com/). It is a very useful module for creating
