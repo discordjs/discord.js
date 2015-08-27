@@ -132,7 +132,6 @@ class Client {
 
 		var self = this;
 
-		this.createws();
 		return new Promise(function (resolve, reject) {
 			if (self.state === 0 || self.state === 4) {
 
@@ -157,9 +156,16 @@ class Client {
 						} else {
 							self.state = 2; //set state to logged in (not yet ready)
 							self.token = res.body.token; //set our token
-							self.trySendConnData();
-							callback(null, self.token);
-							resolve(self.token);
+							
+							getGateway().then(function (url) {
+								self.createws(url);
+								callback(null, self.token);
+								resolve(self.token);
+							}).catch(function (err) {
+								callback(err);
+								reject(err);
+							});
+
 						}
 
 					});
@@ -666,14 +672,14 @@ class Client {
 	}
 	
 	//def createws
-	createws() {
+	createws(url) {
 		if (this.websocket)
 			return false;
 
 		var self = this;
 		
 		//good to go
-		this.websocket = new WebSocket(Endpoints.WEBSOCKET_HUB);
+		this.websocket = new WebSocket(url);
 		
 		//open
 		this.websocket.onopen = function () {
@@ -1103,6 +1109,24 @@ class Client {
 				resolve(channId);
 		});
 	}
+
+}
+
+function getGateway() {
+
+	var self = this;
+
+	return new Promise(function (resolve, reject) {
+		request
+			.get(`${Endpoints.API}/gateway`)
+			.end(function (err, res) {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(res.body.url);
+				}
+			});
+	});
 
 }
 
