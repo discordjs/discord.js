@@ -9,7 +9,7 @@ body{
 }
 
 #nav{
-    position:absolute;
+    position:fixed;
     top:0;
     left:0;
     right:0;
@@ -18,6 +18,7 @@ body{
     color:white;
     line-height: 48px;
     padding:0 16px;
+    box-shadow: 0 2px 5px black;
 }
 
 #nav .title{
@@ -27,7 +28,6 @@ body{
     padding:0px 16px;
     background: #3089cb;
     cursor: pointer;
-    box-shadow: 0px -2.5px 10px black;
 }
 
 #nav .title:hover{
@@ -36,7 +36,7 @@ body{
 
 .slide{
     padding:96px;
-    background:#222222;
+    background:#24577c;
     color:white;
     text-align:center;
     line-height: 26px;
@@ -212,13 +212,17 @@ p{
     }
     
     .slide{
-        padding:48px;
+        padding:48px 24px;
     }
     
     .banner{
         padding:2em;
         font-size:0.75em;
         font-weight:bolder;
+    }
+    
+    h1{
+        font-size:2em !important;   
     }
     
     p{
@@ -230,6 +234,11 @@ p{
         padding-top: 1em;
         font-size:1em;
         font-weight: bolder;
+    }
+    
+    #nav{
+        position:absolute;
+        box-shadow: none;
     }
 }
 
