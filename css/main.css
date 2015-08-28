@@ -196,6 +196,10 @@ p{
         flex-direction: row;
     }
     
+    .column{
+        flex-basis: 260px !important;
+    }
+    
     .slide2{
         background: #dedede url(../res/discord.png); 
         background-repeat: no-repeat;
@@ -245,6 +249,11 @@ p{
         position:absolute;
         box-shadow: none;
     }
+    
+    .column{
+        padding:0;
+        flex-basis: auto !important;
+    }
 }
 
 a.white{
@@ -286,7 +295,7 @@ a.github, #nav a{
 
 .column{
     flex:1;
-    flex-basis: 260px;
+    flex-basis: auto;
     text-align: center;
     background:white;
     color:black !important;
