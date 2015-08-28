@@ -542,7 +542,11 @@ class Client {
 						callback(err);
 						reject(err);
 					} else {
-						self.serverCreateListener.set(res.body.guild.id, [resolve, callback]);
+						if (self.getServer("id", res.body.guild.id)) {
+							resolve(self.getServer("id", res.body.guild.id));
+						} else {
+							self.serverCreateListener.set(res.body.guild.id, [resolve, callback]);
+						}
 					}
 				});
 

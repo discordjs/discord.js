@@ -14,7 +14,7 @@ class Channel {
     }
 
     equals(object) {
-        return object.id === this.id;
+        return (object && object.id === this.id);
     }
     
     addMessage(data){
