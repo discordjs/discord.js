@@ -146,6 +146,11 @@ input.t{
     color: #222222;
 }
 
+.slide3{
+    background: #25b1d3;
+    color: white;
+}
+
 p{
     font-size:20px;
 }
@@ -267,7 +272,38 @@ a.white:hover{
     font-size:2em;   
 }
 
-a.github{
+a.github, #nav a{
     text-decoration: none;
     color:white;
+}
+
+.column-wrap{
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-content: stretch;
+}
+
+.column{
+    flex:1;
+    flex-basis: 260px;
+    text-align: center;
+    background:white;
+    color:black !important;
+}
+
+.column{
+    background:white;
+    color:black !important;
+}
+
+.column h3, .column h4{
+    color:black;
+    text-transform: uppercase;
+}
+
+.column a{
+    text-decoration: none;
+    color:#25b1d3;
+    font-weight: bolder;
 }
