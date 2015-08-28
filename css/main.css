@@ -1,0 +1,202 @@
+@import url(https://fonts.googleapis.com/css?family=Raleway:400,700,900,300);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
+
+body{
+    font-family: 'Raleway', sans-serif;
+    margin:0;
+    margin-top:48px;
+    text-rendering: optimizeLegibility;
+}
+
+#nav{
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    height:48px;
+    background:#272727;
+    color:white;
+    line-height: 48px;
+    padding:0 16px;
+}
+
+#nav .title{
+    font-weight:700;
+    display:block;
+    float:left;
+    padding:0px 16px;
+    background: #3089cb;
+    cursor: pointer;
+    box-shadow: 0px -2.5px 10px black;
+}
+
+#nav .title:hover{
+    background: #339be8;
+}
+
+.slide{
+    padding:96px;
+    background:#007996;
+    color:white;
+    text-align:center;
+    line-height: 26px;
+}
+
+.slide h1{
+    font-size:3em;
+}
+
+.banner{
+    padding:48px;   
+    color: #343434;
+    text-align: center;
+    font-weight: 700;
+    background: #f7f7f7;
+}
+
+.column-wrap{
+    display:flex;
+    flex-direction: column;
+}
+
+.column{
+    padding:32px;
+    flex:1;
+    margin:32px;
+    text-align: left;
+}
+
+.banner code{
+    font-size: 2em;
+    font-weight: 300;
+}
+
+pre{
+    text-align: left;
+    font-size:16px;
+    overflow: hidden;
+}
+
+pre code{
+    background:#222222 !important;   
+    overflow: hidden;
+}
+
+a.button{
+    text-decoration: inherit;
+    color:#25b1d3;
+    padding:12px;
+    text-transform: uppercase;
+    font-weight: 700;
+    border-radius: 8px;
+    border: 2px solid;
+    font-family: 'Open Sans', sans-serif;
+    background:white;
+}
+
+#terminalOutput{
+    background:black;
+    width:100%;
+    padding:16px;
+    color:white;
+    font-family: monospace;
+    height:300px;
+    text-align: left;
+    font-size: 16px;
+    position: relative;
+}
+
+#startButton{
+    position: absolute;
+    bottom:16px;
+    left:32px;
+    right:32px;
+    text-align: center;
+    padding:24px 32px;
+    font-family: "Open Sans", sans-serif;
+    text-transform: uppercase;
+    color: #25b1d3;
+    border: 2px solid #25b1d3;
+    cursor:pointer;
+}
+
+input.t{
+    border:0;
+    font-family: "Open Sans", sans-serif;
+    background: #0b0b0b;
+    color:white;
+}
+
+.nopad{
+    padding:0;
+    margin:0;
+}
+
+.inputText{
+    background:black;
+    border:0;
+    color:white;
+    padding:8px;
+    font-family: monospace;
+    width:400px
+}
+
+.slide2{
+    background: #dedede;
+    color: #222222;
+}
+
+@media only screen and (min-width:1100px){
+    #nav{
+        padding:0 128px;
+    }
+    
+
+    .banner{
+        padding: 72px;
+    }
+    
+    .slide{
+        padding:160px 48px;
+    }
+    
+    .slide h1{
+        font-size:5em;
+    }
+    
+    .slide h3{
+        font-size:2em;
+        color:#ededed;
+    }
+    
+    p{
+        width:1000px;
+        display:inline-block;
+        font-size: 24px;
+        line-height: 36px;
+    }
+    
+    .column-wrap{
+        flex-direction: row;
+    }
+    
+    .slide2{
+        background: #dedede url(../res/discord.png); 
+        background-repeat: no-repeat;
+        background-position: -120px center;
+    }
+
+}
+
+/*phones "'n" stuff*/
+@media only screen and (max-width:500px){
+    .slide{
+        padding:48px;
+    }
+    
+    .banner{
+        padding:2em;
+        font-size:0.75em;
+        font-weight:bolder;
+    }
+}
