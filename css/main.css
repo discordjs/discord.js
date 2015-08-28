@@ -36,7 +36,7 @@ body{
 
 .slide{
     padding:96px;
-    background:#007996;
+    background:#222222;
     color:white;
     text-align:center;
     line-height: 26px;
@@ -146,6 +146,17 @@ input.t{
     color: #222222;
 }
 
+p{
+    font-size:20px;
+}
+
+#dl-count{
+    display:block;
+    padding-top: 1em;
+    font-size:2em;
+    font-weight: 300;
+}
+
 @media only screen and (min-width:1100px){
     #nav{
         padding:0 128px;
@@ -185,11 +196,21 @@ input.t{
         background-repeat: no-repeat;
         background-position: -120px center;
     }
+    
+    
 
+}
+
+.mobile-only{
+    display:none;
 }
 
 /*phones "'n" stuff*/
 @media only screen and (max-width:500px){
+    .mobile-only{
+        display:block;   
+    }
+    
     .slide{
         padding:48px;
     }
@@ -199,4 +220,45 @@ input.t{
         font-size:0.75em;
         font-weight:bolder;
     }
+    
+    p{
+        font-size: 18px;
+    }
+    
+    #dl-count{
+        display:block;
+        padding-top: 1em;
+        font-size:1em;
+        font-weight: bolder;
+    }
+}
+
+a.white{
+    text-decoration: inherit;
+    color:white;
+}
+
+a.white:hover{
+    text-shadow: 0px 0px 10px black;
+    color:#FDD835;
+}
+
+.right{
+    float:right;
+    margin-right:12px;
+    padding:0px 16px;
+    background: #3089cb;
+}
+
+.right:hover{
+    background: #339be8;
+}
+
+.x2{
+    font-size:2em;   
+}
+
+a.github{
+    text-decoration: none;
+    color:white;
 }
