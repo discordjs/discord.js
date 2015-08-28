@@ -530,7 +530,11 @@ var Client = (function () {
 						callback(err);
 						reject(err);
 					} else {
-						self.serverCreateListener.set(res.body.guild.id, [resolve, callback]);
+						if (self.getServer("id", res.body.guild.id)) {
+							resolve(self.getServer("id", res.body.guild.id));
+						} else {
+							self.serverCreateListener.set(res.body.guild.id, [resolve, callback]);
+						}
 					}
 				});
 			});
@@ -1435,7 +1439,6 @@ function getGateway() {
 }
 
 module.exports = Client;
-
 },{"./Endpoints.js":2,"./PMChannel.js":3,"./channel.js":4,"./invite.js":6,"./message.js":7,"./server.js":8,"./user.js":9,"fs":10,"superagent":11,"ws":14}],2:[function(require,module,exports){
 "use strict";
 
@@ -1450,7 +1453,6 @@ exports.LOGOUT = exports.AUTH + "/logout";
 exports.USERS = exports.API + "/users";
 exports.SERVERS = exports.API + "/guilds";
 exports.CHANNELS = exports.API + "/channels";
-
 },{}],3:[function(require,module,exports){
 "use strict";
 
@@ -1513,7 +1515,6 @@ var PMChannel = (function () {
 })();
 
 module.exports = PMChannel;
-
 },{}],4:[function(require,module,exports){
 "use strict";
 
@@ -1536,7 +1537,7 @@ var Channel = (function () {
     _createClass(Channel, [{
         key: "equals",
         value: function equals(object) {
-            return object.id === this.id;
+            return object && object.id === this.id;
         }
     }, {
         key: "addMessage",
@@ -1594,7 +1595,6 @@ var Channel = (function () {
 })();
 
 module.exports = Channel;
-
 },{}],5:[function(require,module,exports){
 "use strict";
 
@@ -1608,7 +1608,6 @@ var Discord = {
 };
 
 module.exports = Discord;
-
 },{"./Client.js":1,"./Endpoints.js":2,"superagent":11}],6:[function(require,module,exports){
 "use strict";
 
@@ -1645,7 +1644,6 @@ var Invite = (function () {
 })();
 
 module.exports = Invite;
-
 },{}],7:[function(require,module,exports){
 "use strict";
 
@@ -1719,7 +1717,6 @@ var Message = (function () {
 })();
 
 module.exports = Message;
-
 },{}],8:[function(require,module,exports){
 "use strict";
 
@@ -1894,7 +1891,6 @@ var Server = (function () {
 })();
 
 module.exports = Server;
-
 },{}],9:[function(require,module,exports){
 "use strict";
 
@@ -1952,7 +1948,6 @@ var User = (function () {
 })();
 
 module.exports = User;
-
 },{}],10:[function(require,module,exports){
 
 },{}],11:[function(require,module,exports){
