@@ -13,7 +13,7 @@ var WebSocket = require("ws");
 var fs = require("fs");
 
 var defaultOptions = {
-	cache_tokens: false
+	queue: false
 }
 
 class Client {
@@ -25,6 +25,7 @@ class Client {
 			further efforts will be made to connect.
 		*/
         this.options = options;
+		this.options.queue = this.options.queue || false;
 		this.token = token;
 		this.state = 0;
 		this.websocket = null;
@@ -50,6 +51,7 @@ class Client {
 		this.serverCache = [];
 		this.pmChannelCache = [];
 		this.readyTime = null;
+		this.optionsQueue = {};
 	}
 
 	get uptime() {
@@ -620,7 +622,10 @@ class Client {
 			}
 
 			function send(destination) {
-
+				
+				if(self.options.queue){
+					//we're QUEUEING messages, so sending them sequentially based on servers.
+				}
 				request
 					.post(`${Endpoints.CHANNELS}/${destination}/messages`)
 					.set("authorization", self.token)
