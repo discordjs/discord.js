@@ -51,7 +51,8 @@ class Client {
 		this.serverCache = [];
 		this.pmChannelCache = [];
 		this.readyTime = null;
-		this.optionsQueue = {};
+		this.checkingQueue = {};
+		this.messageQueue = {};
 	}
 
 	get uptime() {
@@ -625,7 +626,18 @@ class Client {
 				
 				if(self.options.queue){
 					//we're QUEUEING messages, so sending them sequentially based on servers.
-					self.addMessageQueue(destination);
+					if(!self.messageQueue[destination]){
+						self.messageQueue[destination] = [];
+					}
+						
+					self.messageQueue[destination].push({
+						content : message,
+						mentions : mentions,
+						then : [resolve, callback],
+						error : [reject, callback]
+					});
+					
+					self.checkQueue(destination);
 				}else{
 					self._sendMessage(destination, message, mentions).then(mgood).catch(mbad);
 				}
@@ -1138,7 +1150,43 @@ class Client {
 		});
 		
 	}
-
+	
+	checkQueue(channelID){
+		
+		var self = this;
+		
+		if(!this.checkingQueue[channelID]){
+			//if we aren't already checking this queue.
+			this.checkingQueue[channelID] = true;
+			doNext();
+			
+			function doNext(){
+				if(self.messageQueue[channelID].length === 0){
+					done();
+					return;
+				}
+				var msgToSend = self.messageQueue[channelID][0];
+				self._sendMessage(channelID, msgToSend.content, msgToSend.mentions)
+					.then(function(msg){
+						msgToSend.then[0](msg);
+						msgToSend.then[1](null, msg);
+						self.messageQueue[channelID].shift();
+						doNext();
+					})
+					.catch(function(err){
+						msgToSend.catch[0](err);
+						msgToSend.catch[1](err);
+						self.messageQueue[channelID].shift();
+						doNext();
+					});
+			}
+			
+			function done(){
+				self.checkingQueue[channelID] = false;
+				return;	
+			}
+		}
+	}
 }
 
 function getGateway() {
