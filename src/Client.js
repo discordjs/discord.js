@@ -13,7 +13,7 @@ var WebSocket = require("ws");
 var fs = require("fs");
 
 var defaultOptions = {
-	queue: false
+	queue: []
 }
 
 class Client {
@@ -25,7 +25,7 @@ class Client {
 			further efforts will be made to connect.
 		*/
         this.options = options;
-		this.options.queue = this.options.queue || false;
+		this.options.queue = this.options.queue || [];
 		this.token = token;
 		this.state = 0;
 		this.websocket = null;
@@ -623,33 +623,33 @@ class Client {
 			}
 
 			function send(destination) {
-				
-				if(self.options.queue){
+				if (~self.options.queue.indexOf("sendMessage")) {
 					//we're QUEUEING messages, so sending them sequentially based on servers.
-					if(!self.messageQueue[destination]){
+					if (!self.messageQueue[destination]) {
 						self.messageQueue[destination] = [];
 					}
-						
+
 					self.messageQueue[destination].push({
-						content : message,
-						mentions : mentions,
-						then : [resolve, callback],
-						error : [reject, callback]
+						action: "sendMessage",
+						content: message,
+						mentions: mentions,
+						then: [resolve, callback],
+						error: [reject, callback]
 					});
-					
+
 					self.checkQueue(destination);
-				}else{
+				} else {
 					self._sendMessage(destination, message, mentions).then(mgood).catch(mbad);
 				}
-				
+
 			}
-			
-			function mgood(msg){
+
+			function mgood(msg) {
 				callback(null, msg);
 				resolve(msg);
 			}
-			
-			function mbad(error){
+
+			function mbad(error) {
 				callback(error);
 				reject(error);
 			}
@@ -1111,79 +1111,87 @@ class Client {
 				resolve(channId);
 		});
 	}
-	
-	_sendMessage(destination, content, mentions){
-		
+
+	_sendMessage(destination, content, mentions) {
+
 		var self = this;
-		
-		return new Promise(function(resolve, reject){
+
+		return new Promise(function (resolve, reject) {
 			request
-					.post(`${Endpoints.CHANNELS}/${destination}/messages`)
-					.set("authorization", self.token)
-					.send({
-						content: content,
-						mentions: mentions
-					})
-					.end(function (err, res) {
+				.post(`${Endpoints.CHANNELS}/${destination}/messages`)
+				.set("authorization", self.token)
+				.send({
+					content: content,
+					mentions: mentions
+				})
+				.end(function (err, res) {
 
-						if (err) {
-							reject(err);
-						} else {
-							var data = res.body;
+					if (err) {
+						reject(err);
+					} else {
+						var data = res.body;
 
-							var mentions = [];
+						var mentions = [];
 
-							data.mentions = data.mentions || []; //for some reason this was not defined at some point?
+						data.mentions = data.mentions || []; //for some reason this was not defined at some point?
 							
-							for (var mention of data.mentions) {
-								mentions.push(self.addUser(mention));
-							}
-
-							var channel = self.getChannel("id", data.channel_id);
-							if (channel) {
-								var msg = channel.addMessage(new Message(data, channel, mentions, self.addUser(data.author)));
-								resolve(msg);
-							}
+						for (var mention of data.mentions) {
+							mentions.push(self.addUser(mention));
 						}
 
-					});
+						var channel = self.getChannel("id", data.channel_id);
+						if (channel) {
+							var msg = channel.addMessage(new Message(data, channel, mentions, self.addUser(data.author)));
+							resolve(msg);
+						}
+					}
+
+				});
 		});
-		
+
 	}
-	
-	checkQueue(channelID){
-		
+
+	checkQueue(channelID) {
+
 		var self = this;
 		
-		if(!this.checkingQueue[channelID]){
+		if (!this.checkingQueue[channelID]) {
 			//if we aren't already checking this queue.
 			this.checkingQueue[channelID] = true;
 			doNext();
-			
-			function doNext(){
-				if(self.messageQueue[channelID].length === 0){
+
+			function doNext() {
+				if (self.messageQueue[channelID].length === 0) {
 					done();
 					return;
 				}
-				var msgToSend = self.messageQueue[channelID][0];
-				self._sendMessage(channelID, msgToSend.content, msgToSend.mentions)
-					.then(function(msg){
-						msgToSend.then[0](msg);
-						msgToSend.then[1](null, msg);
-						self.messageQueue[channelID].shift();
-						doNext();
-					})
-					.catch(function(err){
-						msgToSend.catch[0](err);
-						msgToSend.catch[1](err);
-						self.messageQueue[channelID].shift();
-						doNext();
-					});
+				var queuedEvent = self.messageQueue[channelID][0];
+				switch (queuedEvent.action) {
+					case "sendMessage":
+						var msgToSend = queuedEvent;
+						self._sendMessage(channelID, msgToSend.content, msgToSend.mentions)
+							.then(function (msg) {
+								msgToSend.then[0](msg);
+								msgToSend.then[1](null, msg);
+								self.messageQueue[channelID].shift();
+								doNext();
+							})
+							.catch(function (err) {
+								msgToSend.catch[0](err);
+								msgToSend.catch[1](err);
+								self.messageQueue[channelID].shift();
+								doNext();
+							});
+						break;
+					default:
+						done();
+						break;
+				}
 			}
-			
-			function done(){
+
+			function done() {
 				self.checkingQueue[channelID] = false;
-				return;	
+				return;
 			}
 		}
 	}
