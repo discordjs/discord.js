@@ -625,40 +625,11 @@ class Client {
 				
 				if(self.options.queue){
 					//we're QUEUEING messages, so sending them sequentially based on servers.
+					self.addMessageQueue(destination);
+				}else{
+					self._sendMessage("text", destination, message, mentions);
 				}
-				request
-					.post(`${Endpoints.CHANNELS}/${destination}/messages`)
-					.set("authorization", self.token)
-					.send({
-						content: message,
-						mentions: mentions
-					})
-					.end(function (err, res) {
-
-						if (err) {
-							callback(err);
-							reject(err);
-						} else {
-							var data = res.body;
-
-							var mentions = [];
-
-							data.mentions = data.mentions || []; //for some reason this was not defined at some point?
-							
-							for (var mention of data.mentions) {
-								mentions.push(self.addUser(mention));
-							}
-
-							var channel = self.getChannel("id", data.channel_id);
-							if (channel) {
-								var msg = channel.addMessage(new Message(data, channel, mentions, self.addUser(data.author)));
-								callback(null, msg);
-								resolve(msg);
-							}
-						}
-
-					});
-
+				
 			}
 
 			function resolveMessage() {
@@ -1117,6 +1088,16 @@ class Client {
 			if (channId)
 				resolve(channId);
 		});
+	}
+	
+	_sendMessage(messageType, destination, content, mentions){
+		
+		var self = this;
+		
+		return new Promise(function(resolve, reject){
+			
+		});
+		
 	}
 
 }
