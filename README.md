@@ -1,68 +1,74 @@
 # discord.js
-Discord.js is a node module that allows you to interface with the [Discord](https://discordapp.com/) API for creation of things such as bots or loggers.
 
-The aim of this API is to make it *really* simple to start developing your bots. This API has server, channel and user tracking, as well as tools to make identification really simple.
+[![Build Status](https://travis-ci.org/hydrabolt/discord.js.svg)](https://travis-ci.org/hydrabolt/discord.js)
 
-New update features **big speed boosts** (everything cached and sorted with around 1 second of calling the login function) upon connection and allows editing of messages!
+discord.js is a node module used as a way of interfacing with
+[Discord](https://discordapp.com/). It is a very useful module for creating
+bots.
 
-**[Find the website here.](http://discord-js.github.io)**
-
-
-**[For more information, click here.](https://github.com/hydrabolt/discord.js/wiki)**
-
-### This module is still in alpha - especially the newer versions!
-
-This node module is still in alpha, and some methods and functions may change or completely disappear!
+**Updating to 3.1.1 is essential as it has new changes to be compatible with Discord's API,
+and to make sure your application still works an update is a good idea.**
 
 ### Installation
-``npm install --save discord.js``
+`npm install --save discord.js`
 
-### Features
+---
 
-* Send, Receive Delete and **Edit** messages from channels _and_ DMs! Auto-initiates DMs for you!
-* Create, Delete and Leave servers and channels
-* Create invites for Servers
-* Silent Mention - trigger mention notification without actually @mentioning a user!
-* Get complete metadata on users, channels and servers - including avatars.
-* Get limitless logs from channels.
-* Fast and efficient caching
-* Auto-cache messages
-
-### Example usage
+### Example
 ```js
-/*
- * A basic bot that shows how to connect to a Discord account,
- * how to listen to messages and how to send messages.
- *
- * This bot responds to every "ping" message with a "pong".
- */
+var Discord = require("discord.js");
 
-var Discord = require( "discord.js" );
+var mybot = new Discord.Client();
 
-// Create the bot
-var myBot = new Discord.Client();
+mybot.on("message", function(message){
+	
+	if(message.content === "ping")
+		mybot.reply(message, "pong");
+	
+});
 
-// Login with an example email and password
-myBot.login( "hello@example.com", "password1" );
-
-// The "ready" event is triggered after the bot successfully connected to
-// Discord and is ready to send messages.
-myBot.on( "ready", function() {
-	console.log( "Bot connected successfully." );
-} );
-
-// Add a listener to the "message" event, which triggers upon receiving
-// any message
-myBot.on( "message", function( message ) {
-	// message.content accesses the content of the message as a string.
-	// If it is equal to "ping", then the bot should respond with "pong".
-	if ( message.content === "ping" ) {
-		// Send a message ("pong") to the channel the message was sent in,
-		// which is accessed by message.channel.
-		this.sendMessage( message.channel, "pong" );
-	}
-} );
+mybot.login("email", "password");
 ```
-### TODO
-* Joining servers from an invite
-* Stealthy Ninja support
+---
+
+### Related Projects
+
+Here is a list of other Discord APIs:
+
+#### Java:
+[Discord4J](https://github.com/nerd/Discord4J)
+#### .NET:
+[Discord.Net](https://github.com/RogueException/Discord.Net)
+
+[DiscordSharp](https://github.com/Luigifan/DiscordSharp)
+#### NodeJS
+[node-discord](https://github.com/izy521/node-discord) (similar to discord.js but lower level)
+
+#### PHP
+[DiscordPHP](https://github.com/teamreflex/DiscordPHP)
+
+#### Python
+[discord.py](https://github.com/Rapptz/discord.py)
+
+#### Ruby
+[discordrb](https://github.com/meew0/discordrb)
+
+---
+
+### Links
+**[Documentation](https://github.com/discord-js/discord.js/wiki/Documentation)**
+
+**[GitHub](https://github.com/discord-js/discord.js)**
+
+**[Wiki](https://github.com/discord-js/discord.js/wiki)**
+
+**[Website](http://discord-js.github.io/)**
+
+**[NPM](npmjs.com/package/discord.js)**
+
+---
+
+### Contact
+
+If you would like to contact me, you can create an issue on the GitHub repo
+or send a DM to **hydrabolt** in [Discord API](https://discord.gg/0SBTUU1wZTY66OLO).
