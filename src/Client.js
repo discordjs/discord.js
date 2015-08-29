@@ -627,9 +627,19 @@ class Client {
 					//we're QUEUEING messages, so sending them sequentially based on servers.
 					self.addMessageQueue(destination);
 				}else{
-					self._sendMessage("text", destination, message, mentions);
+					self._sendMessage(destination, message, mentions).then(mgood).catch(mbad);
 				}
 				
+			}
+			
+			function mgood(msg){
+				callback(null, msg);
+				resolve(msg);
+			}
+			
+			function mbad(error){
+				callback(error);
+				reject(error);
 			}
 
 			function resolveMessage() {
@@ -1090,12 +1100,41 @@ class Client {
 		});
 	}
 	
-	_sendMessage(messageType, destination, content, mentions){
+	_sendMessage(destination, content, mentions){
 		
 		var self = this;
 		
 		return new Promise(function(resolve, reject){
-			
+			request
+					.post(`${Endpoints.CHANNELS}/${destination}/messages`)
+					.set("authorization", self.token)
+					.send({
+						content: content,
+						mentions: mentions
+					})
+					.end(function (err, res) {
+
+						if (err) {
+							reject(err);
+						} else {
+							var data = res.body;
+
+							var mentions = [];
+
+							data.mentions = data.mentions || []; //for some reason this was not defined at some point?
+							
+							for (var mention of data.mentions) {
+								mentions.push(self.addUser(mention));
+							}
+
+							var channel = self.getChannel("id", data.channel_id);
+							if (channel) {
+								var msg = channel.addMessage(new Message(data, channel, mentions, self.addUser(data.author)));
+								resolve(msg);
+							}
+						}
+
+					});
 		});
 		
 	}
