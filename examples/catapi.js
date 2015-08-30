@@ -1,7 +1,6 @@
 /*
-	this bot is a ping pong bot, and every time a message
-	beginning with "ping" is sent, it will reply with
-	"pong".
+	this bot will send an image of a cat to a channel.
+	may be slow depending on your internet connection.
 */
 
 var Discord = require("../");
@@ -23,7 +22,7 @@ bot.on("disconnected", function () {
 });
 
 bot.on("message", function (msg) {
-	if (msg.content.substring(0, 4) === "ping") {
+	if (msg.content === "$cat") {
 		
 		//send a message to the channel the ping message was sent in.
 		bot.sendMessage(msg.channel, "pong!");
