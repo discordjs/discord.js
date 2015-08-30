@@ -406,31 +406,42 @@ class Client {
 
 		var self = this;
 
-		return new Promise(function (resolve, reject) {
+		var prom = new Promise(function (resolve, reject) {
 
 			content = (content instanceof Array ? content.join("\n") : content);
 
-			request
-				.patch(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
-				.set("authorization", self.token)
-				.send({
+			if(self.options.queue){
+				if (!self.queue[message.channel.id]) {
+					self.queue[message.channel.id] = [];
+				}
+				self.queue[message.channel.id].push({
+					action: "updateMessage",
+					message: message,
 					content: content,
-					mentions: []
-				})
-				.end(function (err, res) {
-					if (err) {
-						callback(err);
-						reject(err);
-					} else {
-						var msg = new Message(res.body, message.channel, message.mentions, message.sender);
-						callback(null, msg);
-						resolve(msg);
-
-						message.channel.messages[message.channel.messages.indexOf(message)] = msg;
-					}
+					then: good,
+					error: bad
 				});
+				
+				self.checkQueue(message.channel.id);
+			}else{
+				self._updateMessage(message, content).then(good).catch(bad);
+			}
+		
+		function good(msg){
+			prom.message = msg;
+			callback(null, msg);
+			resolve(msg);
+		}
+		
+		function bad(error){
+			prom.error = error;
+			callback(error);
+			reject(error);
+		}
 
 		});
+		
+		return prom;
 	}
 
 	setUsername(newName, callback = function (err) { }) {
@@ -563,7 +574,7 @@ class Client {
 
 		var self = this;
 
-		return new Promise(function (resolve, reject) {
+		var prom = new Promise(function (resolve, reject) {
 
 			var fstream;
 
@@ -577,7 +588,7 @@ class Client {
 			self.resolveDestination(destination).then(send).catch(error);
 
 			function send(destination) {
-				if(~self.options.queue.indexOf("send")){
+				if(self.options.queue){
 					//queue send file too
 					if (!self.queue[destination]) {
 						self.queue[destination] = [];
@@ -599,16 +610,20 @@ class Client {
 			}
 
 			function good(msg) {
+				prom.message = msg;
 				callback(null, msg);
 				resolve(msg);
 			}
 
 			function bad(err) {
+				prom.error = err;
 				callback(err);
 				reject(err);
 			}
 
 		});
+		
+		return prom;
 
 	}
 
@@ -628,7 +643,7 @@ class Client {
 			}
 
 			function send(destination) {
-				if (~self.options.queue.indexOf("send")) {
+				if (self.options.queue) {
 					//we're QUEUEING messages, so sending them sequentially based on servers.
 					if (!self.queue[destination]) {
 						self.queue[destination] = [];
@@ -1188,6 +1203,28 @@ class Client {
 		});
 		
 	}
+	
+	_updateMessage(message, content){
+		var self = this;
+		return new Promise(function(resolve, reject){
+			request
+				.patch(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
+				.set("authorization", self.token)
+				.send({
+					content: content,
+					mentions: []
+				})
+				.end(function (err, res) {
+					if (err) {
+						reject(err);
+					} else {
+						var msg = new Message(res.body, message.channel, message.mentions, message.sender);
+						resolve(msg);
+						message.channel.messages[message.channel.messages.indexOf(message)] = msg;
+					}
+				});
+		});
+	}
 
 	checkQueue(channelID) {
 
@@ -1214,7 +1251,7 @@ class Client {
 								doNext();
 							})
 							.catch(function (err) {
-								msgToSend.catch(err);
+								msgToSend.error(err);
 								self.queue[channelID].shift();
 								doNext();
 							});
@@ -1228,10 +1265,24 @@ class Client {
 								doNext();
 							})
 							.catch(function(err){
-								fileToSend.catch(err);
+								fileToSend.error(err);
 								self.queue[channelID].shift();
 								doNext();
 							});
+						break;
+					case "updateMessage":
+						var msgToUpd = queuedEvent;
+						self._updateMessage(msgToUpd.message, msgToUpd.content)
+						.then(function(msg){
+							msgToUpd.then(msg);
+							self.queue[channelID].shift();
+							doNext();
+						})
+						.catch(function(err){
+							msgToUpd.error(err);
+							self.queue[channelID].shift();
+							doNext();
+						});
 						break;
 					default:
 						done();
