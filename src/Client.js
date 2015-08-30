@@ -384,18 +384,33 @@ class Client {
 			}
 
 			function remove() {
-				request
-					.del(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
-					.set("authorization", self.token)
-					.end(function (err, res) {
-						if (err) {
-							callback(err);
-							reject(err);
-						} else {
-							callback(null);
-							resolve();
-						}
+				if(self.options.queue){
+					if (!self.queue[message.channel.id]) {
+						self.queue[message.channel.id] = [];
+					}
+					self.queue[message.channel.id].push({
+						action: "deleteMessage",
+						message: message,
+						then: good,
+						error: bad
 					});
+					
+					self.checkQueue(message.channel.id);
+				}else{
+					self._deleteMessage(message).then(good).catch(bad);
+				}
+			}
+			
+			function good(){
+				prom.success = true;
+				callback(null);
+				resolve();
+			}
+			
+			function bad(err){
+				prom.error = err;
+				callback(err);
+				reject(err);
 			}
 		});
 		
@@ -1225,6 +1240,22 @@ class Client {
 				});
 		});
 	}
+	
+	_deleteMessage(message){
+		var self = this;
+		return new Promise(function(resolve, reject){
+			request
+					.del(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
+					.set("authorization", self.token)
+					.end(function (err, res) {
+						if (err) {
+							reject(err);
+						} else {
+							resolve();
+						}
+					});
+		});
+	}
 
 	checkQueue(channelID) {
 
@@ -1280,6 +1311,20 @@ class Client {
 						})
 						.catch(function(err){
 							msgToUpd.error(err);
+							self.queue[channelID].shift();
+							doNext();
+						});
+						break;
+					case "deleteMessage":
+						var msgToDel = queuedEvent;
+						self._deleteMessage(msgToDel.message)
+						.then(function(msg){
+							msgToDel.then(msg);
+							self.queue[channelID].shift();
+							doNext();
+						})
+						.catch(function(err){
+							msgToDel.error(err);
 							self.queue[channelID].shift();
 							doNext();
 						});
