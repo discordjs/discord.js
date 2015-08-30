@@ -52,7 +52,7 @@ class Client {
 		this.pmChannelCache = [];
 		this.readyTime = null;
 		this.checkingQueue = {};
-		this.messageQueue = {};
+		this.queue = {};
 	}
 
 	get uptime() {
@@ -577,30 +577,33 @@ class Client {
 			self.resolveDestination(destination).then(send).catch(error);
 
 			function send(destination) {
-				request
-					.post(`${Endpoints.CHANNELS}/${destination}/messages`)
-					.set("authorization", self.token)
-					.attach("file", fstream, fileName)
-					.end(function (err, res) {
+				if(~self.options.queue.indexOf("send")){
+					//queue send file too
+					if (!self.queue[destination]) {
+						self.queue[destination] = [];
+					}
 
-						if (err) {
-							error(err);
-						} else {
-
-							var chann = self.getChannel("id", destination);
-							if (chann) {
-								var msg = chann.addMessage(new Message(res.body, chann, [], self.user));
-								callback(null, msg);
-								resolve(msg);
-							}
-
-
-						}
-
+					self.queue[destination].push({
+						action: "sendFile",
+						attachment : fstream,
+						attachmentName : fileName,
+						then: good,
+						error: bad
 					});
+
+					self.checkQueue(destination);
+				}else{
+					//not queue
+					self._sendFile(destination, fstream, fileName).then(good).catch(bad);
+				}
 			}
 
-			function error(err) {
+			function good(msg) {
+				callback(null, msg);
+				resolve(msg);
+			}
+
+			function bad(err) {
 				callback(err);
 				reject(err);
 			}
@@ -625,18 +628,18 @@ class Client {
 			}
 
 			function send(destination) {
-				if (~self.options.queue.indexOf("sendMessage")) {
+				if (~self.options.queue.indexOf("send")) {
 					//we're QUEUEING messages, so sending them sequentially based on servers.
-					if (!self.messageQueue[destination]) {
-						self.messageQueue[destination] = [];
+					if (!self.queue[destination]) {
+						self.queue[destination] = [];
 					}
 
-					self.messageQueue[destination].push({
+					self.queue[destination].push({
 						action: "sendMessage",
 						content: message,
 						mentions: mentions,
-						then: [mgood],
-						error: [mbad]
+						then: mgood,
+						error: mbad
 					});
 
 					self.checkQueue(destination);
@@ -1156,6 +1159,35 @@ class Client {
 		});
 
 	}
+	
+	_sendFile(destination, attachment, attachmentName = "DEFAULT BECAUSE YOU DIDN'T SPECIFY WHY.png"){
+		
+		var self = this;
+		
+		return new Promise(function(resolve, reject){
+				request
+					.post(`${Endpoints.CHANNELS}/${destination}/messages`)
+					.set("authorization", self.token)
+					.attach("file", attachment, attachmentName)
+					.end(function (err, res) {
+
+						if (err) {
+							reject(err);
+						} else {
+
+							var chann = self.getChannel("id", destination);
+							if (chann) {
+								var msg = chann.addMessage(new Message(res.body, chann, [], self.user));
+								resolve(msg);
+							}
+
+
+						}
+
+					});
+		});
+		
+	}
 
 	checkQueue(channelID) {
 
@@ -1167,23 +1199,37 @@ class Client {
 			doNext();
 
 			function doNext() {
-				if (self.messageQueue[channelID].length === 0) {
+				if (self.queue[channelID].length === 0) {
 					done();
 					return;
 				}
-				var queuedEvent = self.messageQueue[channelID][0];
+				var queuedEvent = self.queue[channelID][0];
 				switch (queuedEvent.action) {
 					case "sendMessage":
 						var msgToSend = queuedEvent;
 						self._sendMessage(channelID, msgToSend.content, msgToSend.mentions)
 							.then(function (msg) {
-								msgToSend.then[0](msg);
-								self.messageQueue[channelID].shift();
+								msgToSend.then(msg);
+								self.queue[channelID].shift();
 								doNext();
 							})
 							.catch(function (err) {
-								msgToSend.catch[0](err);
-								self.messageQueue[channelID].shift();
+								msgToSend.catch(err);
+								self.queue[channelID].shift();
+								doNext();
+							});
+						break;
+					case "sendFile":
+						var fileToSend = queuedEvent;
+						self._sendFile(channelID, fileToSend.attachment, fileToSend.attachmentName)
+							.then(function (msg){
+								fileToSend.then(msg);
+								self.queue[channelID].shift();
+								doNext();
+							})
+							.catch(function(err){
+								fileToSend.catch(err);
+								self.queue[channelID].shift();
 								doNext();
 							});
 						break;
