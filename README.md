@@ -71,4 +71,4 @@ Here is a list of other Discord APIs:
 ### Contact
 
 If you would like to contact me, you can create an issue on the GitHub repo
-or send a DM to **hydrabolt** in [Discord API](https://discord.gg/0SBTUU1wZTY66OLO).
+or send a DM to **hydrabolt** in [Discord API](https://discord.gg/0SBTUU1wZTYd2XyW).
