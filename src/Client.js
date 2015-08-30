@@ -611,7 +611,7 @@ class Client {
 
 		var self = this;
 
-		return new Promise(function (resolve, reject) {
+		var prom = new Promise(function (resolve, reject) {
 
 			message = premessage + resolveMessage(message);
 			var mentions = resolveMentions();
@@ -633,8 +633,8 @@ class Client {
 						action: "sendMessage",
 						content: message,
 						mentions: mentions,
-						then: [resolve, callback],
-						error: [reject, callback]
+						then: [mgood],
+						error: [mbad]
 					});
 
 					self.checkQueue(destination);
@@ -645,11 +645,13 @@ class Client {
 			}
 
 			function mgood(msg) {
+				prom.message = msg;
 				callback(null, msg);
 				resolve(msg);
 			}
 
 			function mbad(error) {
+				prom.error = error;
 				callback(error);
 				reject(error);
 			}
@@ -671,6 +673,8 @@ class Client {
 			}
 
 		});
+		
+		return prom;
 	}
 	
 	//def createws
@@ -1172,13 +1176,11 @@ class Client {
 						self._sendMessage(channelID, msgToSend.content, msgToSend.mentions)
 							.then(function (msg) {
 								msgToSend.then[0](msg);
-								msgToSend.then[1](null, msg);
 								self.messageQueue[channelID].shift();
 								doNext();
 							})
 							.catch(function (err) {
 								msgToSend.catch[0](err);
-								msgToSend.catch[1](err);
 								self.messageQueue[channelID].shift();
 								doNext();
 							});

@@ -7,10 +7,15 @@ var server, channel, message, sentMessage = false;
 
 mybot.on("message", function(message){
 	
-	if(message.content === "$$$"){
-		for(var x=1;x<=10;x++){
-			mybot.sendMessage(message.channel, "this is message " + x);	
-		}
+	if( mybot.user.equals(message.sender) ){
+		return;
+	}
+	
+	var action1 = mybot.sendMessage(message.channel, "this is message " + 1);
+	var action2 = mybot.sendMessage(message.channel, "this is message " + 2).then(log);
+	
+	function log(){
+		mybot.sendMessage(message.channel, action1.message ? action1.message : action1.error);
 	}
 	
 });
