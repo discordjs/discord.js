@@ -600,7 +600,7 @@ class Client {
 				fstream = file;
 			}
 
-			self.resolveDestination(destination).then(send).catch(error);
+			self.resolveDestination(destination).then(send).catch(bad);
 
 			function send(destination) {
 				if(self.options.queue){
