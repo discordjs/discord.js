@@ -13,7 +13,7 @@ var WebSocket = require("ws");
 var fs = require("fs");
 
 var defaultOptions = {
-	queue: []
+	queue: false
 }
 
 class Client {
@@ -25,7 +25,7 @@ class Client {
 			further efforts will be made to connect.
 		*/
         this.options = options;
-		this.options.queue = this.options.queue || [];
+		this.options.queue = this.options.queue;
 		this.token = token;
 		this.state = 0;
 		this.websocket = null;

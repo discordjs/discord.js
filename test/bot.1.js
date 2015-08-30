@@ -1,6 +1,6 @@
 var Discord = require("../");
 var mybot = new Discord.Client({
-	queue: ["send"]
+	queue: true
 });
 var fs = require("fs");
 
