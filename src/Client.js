@@ -13,7 +13,7 @@ var WebSocket = require("ws");
 var fs = require("fs");
 
 var defaultOptions = {
-	cache_tokens: false
+	queue: []
 }
 
 class Client {
@@ -25,6 +25,7 @@ class Client {
 			further efforts will be made to connect.
 		*/
         this.options = options;
+		this.options.queue = this.options.queue || [];
 		this.token = token;
 		this.state = 0;
 		this.websocket = null;
@@ -50,6 +51,8 @@ class Client {
 		this.serverCache = [];
 		this.pmChannelCache = [];
 		this.readyTime = null;
+		this.checkingQueue = {};
+		this.messageQueue = {};
 	}
 
 	get uptime() {
@@ -372,8 +375,8 @@ class Client {
 	deleteMessage(message, timeout, callback = function (err, msg) { }) {
 
 		var self = this;
-
-		return new Promise(function (resolve, reject) {
+		
+		var prom = new Promise(function (resolve, reject) {
 			if (timeout) {
 				setTimeout(remove, timeout)
 			} else {
@@ -395,6 +398,8 @@ class Client {
 					});
 			}
 		});
+		
+		return prom;
 	}
 
 	updateMessage(message, content, callback = function (err, msg) { }) {
@@ -608,7 +613,7 @@ class Client {
 
 		var self = this;
 
-		return new Promise(function (resolve, reject) {
+		var prom = new Promise(function (resolve, reject) {
 
 			message = premessage + resolveMessage(message);
 			var mentions = resolveMentions();
@@ -620,40 +625,37 @@ class Client {
 			}
 
 			function send(destination) {
+				if (~self.options.queue.indexOf("sendMessage")) {
+					//we're QUEUEING messages, so sending them sequentially based on servers.
+					if (!self.messageQueue[destination]) {
+						self.messageQueue[destination] = [];
+					}
 
-				request
-					.post(`${Endpoints.CHANNELS}/${destination}/messages`)
-					.set("authorization", self.token)
-					.send({
+					self.messageQueue[destination].push({
+						action: "sendMessage",
 						content: message,
-						mentions: mentions
-					})
-					.end(function (err, res) {
-
-						if (err) {
-							callback(err);
-							reject(err);
-						} else {
-							var data = res.body;
-
-							var mentions = [];
-
-							data.mentions = data.mentions || []; //for some reason this was not defined at some point?
-							
-							for (var mention of data.mentions) {
-								mentions.push(self.addUser(mention));
-							}
-
-							var channel = self.getChannel("id", data.channel_id);
-							if (channel) {
-								var msg = channel.addMessage(new Message(data, channel, mentions, self.addUser(data.author)));
-								callback(null, msg);
-								resolve(msg);
-							}
-						}
-
+						mentions: mentions,
+						then: [mgood],
+						error: [mbad]
 					});
 
+					self.checkQueue(destination);
+				} else {
+					self._sendMessage(destination, message, mentions).then(mgood).catch(mbad);
+				}
+
+			}
+
+			function mgood(msg) {
+				prom.message = msg;
+				callback(null, msg);
+				resolve(msg);
+			}
+
+			function mbad(error) {
+				prom.error = error;
+				callback(error);
+				reject(error);
 			}
 
 			function resolveMessage() {
@@ -673,6 +675,8 @@ class Client {
 			}
 
 		});
+		
+		return prom;
 	}
 	
 	//def createws
@@ -1114,6 +1118,87 @@ class Client {
 		});
 	}
 
+	_sendMessage(destination, content, mentions) {
+
+		var self = this;
+
+		return new Promise(function (resolve, reject) {
+			request
+				.post(`${Endpoints.CHANNELS}/${destination}/messages`)
+				.set("authorization", self.token)
+				.send({
+					content: content,
+					mentions: mentions
+				})
+				.end(function (err, res) {
+
+					if (err) {
+						reject(err);
+					} else {
+						var data = res.body;
+
+						var mentions = [];
+
+						data.mentions = data.mentions || []; //for some reason this was not defined at some point?
+							
+						for (var mention of data.mentions) {
+							mentions.push(self.addUser(mention));
+						}
+
+						var channel = self.getChannel("id", data.channel_id);
+						if (channel) {
+							var msg = channel.addMessage(new Message(data, channel, mentions, self.addUser(data.author)));
+							resolve(msg);
+						}
+					}
+
+				});
+		});
+
+	}
+
+	checkQueue(channelID) {
+
+		var self = this;
+		
+		if (!this.checkingQueue[channelID]) {
+			//if we aren't already checking this queue.
+			this.checkingQueue[channelID] = true;
+			doNext();
+
+			function doNext() {
+				if (self.messageQueue[channelID].length === 0) {
+					done();
+					return;
+				}
+				var queuedEvent = self.messageQueue[channelID][0];
+				switch (queuedEvent.action) {
+					case "sendMessage":
+						var msgToSend = queuedEvent;
+						self._sendMessage(channelID, msgToSend.content, msgToSend.mentions)
+							.then(function (msg) {
+								msgToSend.then[0](msg);
+								self.messageQueue[channelID].shift();
+								doNext();
+							})
+							.catch(function (err) {
+								msgToSend.catch[0](err);
+								self.messageQueue[channelID].shift();
+								doNext();
+							});
+						break;
+					default:
+						done();
+						break;
+				}
+			}
+
+			function done() {
+				self.checkingQueue[channelID] = false;
+				return;
+			}
+		}
+	}
 }
 
 function getGateway() {
