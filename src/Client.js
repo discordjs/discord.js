@@ -375,8 +375,8 @@ class Client {
 	deleteMessage(message, timeout, callback = function (err, msg) { }) {
 
 		var self = this;
-
-		return new Promise(function (resolve, reject) {
+		
+		var prom = new Promise(function (resolve, reject) {
 			if (timeout) {
 				setTimeout(remove, timeout)
 			} else {
@@ -398,6 +398,8 @@ class Client {
 					});
 			}
 		});
+		
+		return prom;
 	}
 
 	updateMessage(message, content, callback = function (err, msg) { }) {
