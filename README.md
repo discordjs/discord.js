@@ -55,6 +55,40 @@ Here is a list of other Discord APIs:
 
 ---
 
+### Changes in 3.1.4
+
+No, not π. But instead, pseduo-synchronous messaging was added! This means that
+you can tell your Client to make a queue of "actions" per channel, and it will
+work through them one by one. This is a really useful tool if you need to send
+messages in a specific order without callback hell.
+
+It also allows you to store responses - such as created messages - in the returned
+promise - named action. Example:
+
+```js
+var mybot = new Discord.Client({
+    	queue : true //enable queueing, disabled by default
+});
+
+mybot.on("message", function(msg){
+	
+	mybot.sendMessage(msg.channel, "this is message 1");
+	var action = mybot.sendMessage(msg.channel, "this is message 2");
+	mybot.sendMessage(msg.channel, "this is message 3").then(rmv);
+	
+	function rmv(){
+	    if(!action.error){
+			mybot.deleteMessage(action.message);	
+		}	
+	}
+	
+});
+```
+
+This is still in development, and will see many more enhancements in future.
+
+---
+
 ### Links
 **[Documentation](https://github.com/discord-js/discord.js/wiki/Documentation)**
 

@@ -13,7 +13,7 @@ var WebSocket = require("ws");
 var fs = require("fs");
 
 var defaultOptions = {
-	queue: []
+	queue: false
 }
 
 class Client {
@@ -25,7 +25,7 @@ class Client {
 			further efforts will be made to connect.
 		*/
         this.options = options;
-		this.options.queue = this.options.queue || [];
+		this.options.queue = this.options.queue;
 		this.token = token;
 		this.state = 0;
 		this.websocket = null;
@@ -52,7 +52,7 @@ class Client {
 		this.pmChannelCache = [];
 		this.readyTime = null;
 		this.checkingQueue = {};
-		this.messageQueue = {};
+		this.queue = {};
 	}
 
 	get uptime() {
@@ -384,18 +384,33 @@ class Client {
 			}
 
 			function remove() {
-				request
-					.del(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
-					.set("authorization", self.token)
-					.end(function (err, res) {
-						if (err) {
-							callback(err);
-							reject(err);
-						} else {
-							callback(null);
-							resolve();
-						}
+				if(self.options.queue){
+					if (!self.queue[message.channel.id]) {
+						self.queue[message.channel.id] = [];
+					}
+					self.queue[message.channel.id].push({
+						action: "deleteMessage",
+						message: message,
+						then: good,
+						error: bad
 					});
+					
+					self.checkQueue(message.channel.id);
+				}else{
+					self._deleteMessage(message).then(good).catch(bad);
+				}
+			}
+			
+			function good(){
+				prom.success = true;
+				callback(null);
+				resolve();
+			}
+			
+			function bad(err){
+				prom.error = err;
+				callback(err);
+				reject(err);
 			}
 		});
 		
@@ -406,31 +421,42 @@ class Client {
 
 		var self = this;
 
-		return new Promise(function (resolve, reject) {
+		var prom = new Promise(function (resolve, reject) {
 
 			content = (content instanceof Array ? content.join("\n") : content);
 
-			request
-				.patch(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
-				.set("authorization", self.token)
-				.send({
+			if(self.options.queue){
+				if (!self.queue[message.channel.id]) {
+					self.queue[message.channel.id] = [];
+				}
+				self.queue[message.channel.id].push({
+					action: "updateMessage",
+					message: message,
 					content: content,
-					mentions: []
-				})
-				.end(function (err, res) {
-					if (err) {
-						callback(err);
-						reject(err);
-					} else {
-						var msg = new Message(res.body, message.channel, message.mentions, message.sender);
-						callback(null, msg);
-						resolve(msg);
-
-						message.channel.messages[message.channel.messages.indexOf(message)] = msg;
-					}
+					then: good,
+					error: bad
 				});
+				
+				self.checkQueue(message.channel.id);
+			}else{
+				self._updateMessage(message, content).then(good).catch(bad);
+			}
+		
+		function good(msg){
+			prom.message = msg;
+			callback(null, msg);
+			resolve(msg);
+		}
+		
+		function bad(error){
+			prom.error = error;
+			callback(error);
+			reject(error);
+		}
 
 		});
+		
+		return prom;
 	}
 
 	setUsername(newName, callback = function (err) { }) {
@@ -563,7 +589,7 @@ class Client {
 
 		var self = this;
 
-		return new Promise(function (resolve, reject) {
+		var prom = new Promise(function (resolve, reject) {
 
 			var fstream;
 
@@ -577,35 +603,42 @@ class Client {
 			self.resolveDestination(destination).then(send).catch(error);
 
 			function send(destination) {
-				request
-					.post(`${Endpoints.CHANNELS}/${destination}/messages`)
-					.set("authorization", self.token)
-					.attach("file", fstream, fileName)
-					.end(function (err, res) {
+				if(self.options.queue){
+					//queue send file too
+					if (!self.queue[destination]) {
+						self.queue[destination] = [];
+					}
 
-						if (err) {
-							error(err);
-						} else {
-
-							var chann = self.getChannel("id", destination);
-							if (chann) {
-								var msg = chann.addMessage(new Message(res.body, chann, [], self.user));
-								callback(null, msg);
-								resolve(msg);
-							}
-
-
-						}
-
+					self.queue[destination].push({
+						action: "sendFile",
+						attachment : fstream,
+						attachmentName : fileName,
+						then: good,
+						error: bad
 					});
+
+					self.checkQueue(destination);
+				}else{
+					//not queue
+					self._sendFile(destination, fstream, fileName).then(good).catch(bad);
+				}
 			}
 
-			function error(err) {
+			function good(msg) {
+				prom.message = msg;
+				callback(null, msg);
+				resolve(msg);
+			}
+
+			function bad(err) {
+				prom.error = err;
 				callback(err);
 				reject(err);
 			}
 
 		});
+		
+		return prom;
 
 	}
 
@@ -625,18 +658,18 @@ class Client {
 			}
 
 			function send(destination) {
-				if (~self.options.queue.indexOf("sendMessage")) {
+				if (self.options.queue) {
 					//we're QUEUEING messages, so sending them sequentially based on servers.
-					if (!self.messageQueue[destination]) {
-						self.messageQueue[destination] = [];
+					if (!self.queue[destination]) {
+						self.queue[destination] = [];
 					}
 
-					self.messageQueue[destination].push({
+					self.queue[destination].push({
 						action: "sendMessage",
 						content: message,
 						mentions: mentions,
-						then: [mgood],
-						error: [mbad]
+						then: mgood,
+						error: mbad
 					});
 
 					self.checkQueue(destination);
@@ -1156,6 +1189,73 @@ class Client {
 		});
 
 	}
+	
+	_sendFile(destination, attachment, attachmentName = "DEFAULT BECAUSE YOU DIDN'T SPECIFY WHY.png"){
+		
+		var self = this;
+		
+		return new Promise(function(resolve, reject){
+				request
+					.post(`${Endpoints.CHANNELS}/${destination}/messages`)
+					.set("authorization", self.token)
+					.attach("file", attachment, attachmentName)
+					.end(function (err, res) {
+
+						if (err) {
+							reject(err);
+						} else {
+
+							var chann = self.getChannel("id", destination);
+							if (chann) {
+								var msg = chann.addMessage(new Message(res.body, chann, [], self.user));
+								resolve(msg);
+							}
+
+
+						}
+
+					});
+		});
+		
+	}
+	
+	_updateMessage(message, content){
+		var self = this;
+		return new Promise(function(resolve, reject){
+			request
+				.patch(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
+				.set("authorization", self.token)
+				.send({
+					content: content,
+					mentions: []
+				})
+				.end(function (err, res) {
+					if (err) {
+						reject(err);
+					} else {
+						var msg = new Message(res.body, message.channel, message.mentions, message.sender);
+						resolve(msg);
+						message.channel.messages[message.channel.messages.indexOf(message)] = msg;
+					}
+				});
+		});
+	}
+	
+	_deleteMessage(message){
+		var self = this;
+		return new Promise(function(resolve, reject){
+			request
+					.del(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
+					.set("authorization", self.token)
+					.end(function (err, res) {
+						if (err) {
+							reject(err);
+						} else {
+							resolve();
+						}
+					});
+		});
+	}
 
 	checkQueue(channelID) {
 
@@ -1167,25 +1267,67 @@ class Client {
 			doNext();
 
 			function doNext() {
-				if (self.messageQueue[channelID].length === 0) {
+				if (self.queue[channelID].length === 0) {
 					done();
 					return;
 				}
-				var queuedEvent = self.messageQueue[channelID][0];
+				var queuedEvent = self.queue[channelID][0];
 				switch (queuedEvent.action) {
 					case "sendMessage":
 						var msgToSend = queuedEvent;
 						self._sendMessage(channelID, msgToSend.content, msgToSend.mentions)
 							.then(function (msg) {
-								msgToSend.then[0](msg);
-								self.messageQueue[channelID].shift();
+								msgToSend.then(msg);
+								self.queue[channelID].shift();
 								doNext();
 							})
 							.catch(function (err) {
-								msgToSend.catch[0](err);
-								self.messageQueue[channelID].shift();
+								msgToSend.error(err);
+								self.queue[channelID].shift();
 								doNext();
 							});
+						break;
+					case "sendFile":
+						var fileToSend = queuedEvent;
+						self._sendFile(channelID, fileToSend.attachment, fileToSend.attachmentName)
+							.then(function (msg){
+								fileToSend.then(msg);
+								self.queue[channelID].shift();
+								doNext();
+							})
+							.catch(function(err){
+								fileToSend.error(err);
+								self.queue[channelID].shift();
+								doNext();
+							});
+						break;
+					case "updateMessage":
+						var msgToUpd = queuedEvent;
+						self._updateMessage(msgToUpd.message, msgToUpd.content)
+						.then(function(msg){
+							msgToUpd.then(msg);
+							self.queue[channelID].shift();
+							doNext();
+						})
+						.catch(function(err){
+							msgToUpd.error(err);
+							self.queue[channelID].shift();
+							doNext();
+						});
+						break;
+					case "deleteMessage":
+						var msgToDel = queuedEvent;
+						self._deleteMessage(msgToDel.message)
+						.then(function(msg){
+							msgToDel.then(msg);
+							self.queue[channelID].shift();
+							doNext();
+						})
+						.catch(function(err){
+							msgToDel.error(err);
+							self.queue[channelID].shift();
+							doNext();
+						});
 						break;
 					default:
 						done();

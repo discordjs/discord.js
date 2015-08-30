@@ -1,7 +1,5 @@
 /*
-	this bot is a ping pong bot, and every time a message
-	beginning with "ping" is sent, it will reply with
-	"pong".
+	this bot is an avatar bot, and will give a user their avatar's URL
 */
 
 var Discord = require("../");
@@ -23,13 +21,19 @@ bot.on("disconnected", function () {
 });
 
 bot.on("message", function (msg) {
-	if (msg.content.substring(0, 4) === "ping") {
+	if (msg.content === "$avatar") {
 		
-		//send a message to the channel the ping message was sent in.
-		bot.sendMessage(msg.channel, "pong!");
+		//see if the user has an avatar
+		if( msg.sender.avatarURL ){
+			bot.reply(msg, msg.sender.avatarURL);
+		}else{
+			//using reply with a message automatically does:
+			// '@sender, ' for you!
+			bot.reply(msg, "you don't have an avatar!");
+		}
 		
 		//alert the console
-		console.log("pong-ed " + msg.sender.username);
+		console.log("served " + msg.sender.username);
 
 	}
 });
