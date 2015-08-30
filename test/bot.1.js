@@ -16,7 +16,7 @@ mybot.on("message", function (message) {
 		return;
 	}
 
-	var action1 = mybot.sendMessage(message.channel, "this is message " + 1);
+	var action1  = mybot.sendMessage(message.channel, "this is message " + 1);
 	var action2 = mybot.sendMessage(message.channel, "this is message " + 2).then(log);
 
 	function log() {
