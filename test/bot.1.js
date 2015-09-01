@@ -27,6 +27,13 @@ mybot.on("message", function (message) {
 	}
 });
 
+mybot.on("ready", function(){
+	console.log("im ready");
+	setInterval(function(){
+		console.log(mybot.websocket.state, "state");
+	}, 2000);
+})
+
 function dump(msg) {
 	console.log(msg);
 }
