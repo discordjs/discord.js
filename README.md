@@ -1,4 +1,8 @@
-# discord.js
+<p align="center">
+  <a href="https://hydrabolt.github.io/discord.js">
+    <img alt="discord.js" src="http://hydrabolt.github.io/discord.js/res/logo.png" width="546">
+  </a>
+</p>
 
 [![Build Status](https://travis-ci.org/hydrabolt/discord.js.svg)](https://travis-ci.org/hydrabolt/discord.js)
 
