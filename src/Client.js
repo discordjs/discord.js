@@ -153,7 +153,9 @@ class Client {
 						if (err) {
 							self.state = 4; //set state to disconnected
 							self.trigger("disconnected");
-							self.websocket.close();
+							if(self.websocket){
+								self.websocket.close();
+							}
 							callback(err);
 							reject(err);
 						} else {
