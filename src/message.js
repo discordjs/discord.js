@@ -1,3 +1,5 @@
+var PMChannel = require("./PMChannel.js");
+
 class Message{
 	constructor(data, channel, mentions, author){
 		this.tts = data.tts;
@@ -26,6 +28,10 @@ class Message{
 	
 	get sender(){
 		return this.author;
+	}
+	
+	get isPrivate(){
+		return this.channel.isPrivate;
 	}
 }
 
