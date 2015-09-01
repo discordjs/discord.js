@@ -36,6 +36,10 @@ class Channel {
     toString(){
         return "#" + this.name;
     }
+    
+    get isPrivate(){
+        return false;
+    }
 }
 
 module.exports = Channel;

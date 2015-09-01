@@ -20,6 +20,10 @@ class PMChannel {
 		}
 		return null;
 	}
+	
+    get isPrivate(){
+        return true;
+    }
 }
 
 module.exports = PMChannel;
