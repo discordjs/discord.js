@@ -29,7 +29,7 @@ class Client {
 		this.token = token;
 		this.state = 0;
 		this.websocket = null;
-		this.events = new Map();
+		this.events = {};
 		this.user = null;
 		this.alreadySentData = false;
 		this.serverCreateListener = new Map();
@@ -103,11 +103,11 @@ class Client {
 	}
 
 	on(event, fn) {
-		this.events.set(event, fn);
+		this.events[event] = fn;
 	}
 
-	off(event, fn) {
-		this.events.delete(event);
+	off(event) {
+		this.events[event] = null;
 	}
 
 	keepAlive() {
@@ -124,7 +124,7 @@ class Client {
 		for (var arg in arguments) {
 			args.push(arguments[arg]);
 		}
-		var evt = this.events.get(event);
+		var evt = this.events[event];
 		if (evt) {
 			evt.apply(this, args.slice(1));
 		}
