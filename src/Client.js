@@ -361,11 +361,17 @@ class Client {
 
 	}
 
-	reply(destination, message, callback = function (err, msg) { }) {
+	reply(destination, message, tts, callback = function (err, msg) { }) {
 
 		var self = this;
 
 		return new Promise(function (response, reject) {
+
+			if(typeof tts === "function"){
+				// tts is a function, which means the developer wants this to be the callback
+				callback = tts;
+				tts = false;
+			}
 
 			var user = destination.sender;
 			self.sendMessage(destination, message, callback, user + ", ").then(response).catch(reject);
@@ -644,12 +650,18 @@ class Client {
 
 	}
 
-	sendMessage(destination, message, callback = function (err, msg) { }, premessage = "") {
+	sendMessage(destination, message, tts, callback = function (err, msg) { }, premessage = "") {
 
 		var self = this;
 
 		var prom = new Promise(function (resolve, reject) {
-
+			
+			if(typeof tts === "function"){
+				// tts is a function, which means the developer wants this to be the callback
+				callback = tts;
+				tts = false;
+			}
+			
 			message = premessage + resolveMessage(message);
 			var mentions = resolveMentions();
 			self.resolveDestination(destination).then(send).catch(error);
@@ -670,13 +682,14 @@ class Client {
 						action: "sendMessage",
 						content: message,
 						mentions: mentions,
+						tts : !!tts, //incase it's not a boolean
 						then: mgood,
 						error: mbad
 					});
 
 					self.checkQueue(destination);
 				} else {
-					self._sendMessage(destination, message, mentions).then(mgood).catch(mbad);
+					self._sendMessage(destination, message, tts, mentions).then(mgood).catch(mbad);
 				}
 
 			}
@@ -1153,7 +1166,7 @@ class Client {
 		});
 	}
 
-	_sendMessage(destination, content, mentions) {
+	_sendMessage(destination, content, tts, mentions) {
 
 		var self = this;
 
@@ -1163,7 +1176,8 @@ class Client {
 				.set("authorization", self.token)
 				.send({
 					content: content,
-					mentions: mentions
+					mentions: mentions,
+					tts : tts
 				})
 				.end(function (err, res) {
 
@@ -1277,7 +1291,7 @@ class Client {
 				switch (queuedEvent.action) {
 					case "sendMessage":
 						var msgToSend = queuedEvent;
-						self._sendMessage(channelID, msgToSend.content, msgToSend.mentions)
+						self._sendMessage(channelID, msgToSend.content, msgToSend.tts, msgToSend.mentions)
 							.then(function (msg) {
 								msgToSend.then(msg);
 								self.queue[channelID].shift();

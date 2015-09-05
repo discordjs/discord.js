@@ -16,7 +16,7 @@ mybot.on("message", function (message) {
 		return;
 	}
 
-	var action1  = mybot.sendMessage(message.channel, "this is message " + 1);
+	var action1  = mybot.sendMessage(message.channel, "this is message " + 1, true);
 	var action2 = mybot.sendMessage(message.channel, "this is message " + 2).then(log);
 
 	function log() {
@@ -29,9 +29,6 @@ mybot.on("message", function (message) {
 
 mybot.on("ready", function(){
 	console.log("im ready");
-	setInterval(function(){
-		console.log(mybot.websocket.state, "state");
-	}, 2000);
 })
 
 function dump(msg) {
