@@ -16,18 +16,12 @@ mybot.on("message", function (message) {
 		return;
 	}
 
-	var action1  = mybot.sendMessage(message.channel, "this is message " + 1, true);
-	var action2 = mybot.sendMessage(message.channel, "this is message " + 2).then(log);
-
-	function log() {
-		mybot.updateMessage(action1.message, "blurg");
-		mybot.sendMessage(message.channel, "This is message 3 million minus the million so basically just 3");
-		mybot.deleteMessage(action1.message);
-		mybot.sendMessage(message.channel, "This is message RJNGEIKGNER").then(log2);
-	}
+	// we can go ahead :)
+	console.log(message.sender.username);
+	mybot.sendMessage(message.channel, message.sender.username);
 });
 
-mybot.on("ready", function(){
+mybot.on("ready", function () {
 	console.log("im ready");
 })
 
