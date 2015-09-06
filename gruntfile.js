@@ -31,7 +31,7 @@ module.exports = function (grunt) {
         uglify: {
             min: {
                 files: {
-                    "./web-dist/discord.min.<%= pkg.version %>.js": "./web-dist/discord.js"
+                    "./web-dist/discord.min.<%= pkg.version %>.js": "./web-dist/discord.<%= pkg.version %>.js"
                 }
             }
         }
