@@ -943,7 +943,7 @@ class Client {
 							server.members.push(user);
 						}
 
-						self.trigger("serverNewMember", user);
+						self.trigger("serverNewMember", user, server);
 					}
 
 					break;
@@ -960,7 +960,7 @@ class Client {
 							server.members.splice(server.members.indexOf(user), 1);
 						}
 
-						self.trigger("serverRemoveMember", user);
+						self.trigger("serverRemoveMember", user, server);
 					}
 
 					break;
@@ -1155,6 +1155,7 @@ class Client {
 					
 				//we don't, at this point we're late
 				self.startPM(destination).then(function (pmc) {
+					console.log(pmc);
 					resolve(pmc.id);
 				}).catch(reject);
 
@@ -1260,6 +1261,7 @@ class Client {
 	_deleteMessage(message){
 		var self = this;
 		return new Promise(function(resolve, reject){
+			
 			request
 					.del(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
 					.set("authorization", self.token)

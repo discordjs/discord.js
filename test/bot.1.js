@@ -17,8 +17,7 @@ mybot.on("message", function (message) {
 	}
 
 	// we can go ahead :)
-	console.log(message.sender.username);
-	mybot.sendMessage(message.channel, message.sender.username);
+	mybot.sendMessage(message.author, message.sender.username);
 });
 
 mybot.on("ready", function () {
