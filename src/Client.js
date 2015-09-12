@@ -1149,7 +1149,8 @@ class Client {
 				//check if we have a PM
 				for (var pmc of self.pmChannelCache) {
 					if (pmc.user.equals(destination)) {
-						return pmc.id;
+						resolve(pmc.id);
+						return;
 					}
 				}
 					
