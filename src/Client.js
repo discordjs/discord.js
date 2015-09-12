@@ -374,7 +374,7 @@ class Client {
 			}
 
 			var user = destination.sender;
-			self.sendMessage(destination, message, callback, user + ", ").then(response).catch(reject);
+			self.sendMessage(destination, message, tts, callback, user + ", ").then(response).catch(reject);
 
 		});
 
