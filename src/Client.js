@@ -153,7 +153,7 @@ class Client {
 						if (err) {
 							self.state = 4; //set state to disconnected
 							self.trigger("disconnected");
-							if(self.websocket){
+							if (self.websocket) {
 								self.websocket.close();
 							}
 							callback(err);
@@ -162,7 +162,7 @@ class Client {
 							self.state = 2; //set state to logged in (not yet ready)
 							self.token = res.body.token; //set our token
 							
-							getGateway().then(function (url) {
+							self.getGateway().then(function (url) {
 								self.createws(url);
 								callback(null, self.token);
 								resolve(self.token);
@@ -367,7 +367,7 @@ class Client {
 
 		return new Promise(function (response, reject) {
 
-			if(typeof tts === "function"){
+			if (typeof tts === "function") {
 				// tts is a function, which means the developer wants this to be the callback
 				callback = tts;
 				tts = false;
@@ -383,7 +383,7 @@ class Client {
 	deleteMessage(message, timeout, callback = function (err, msg) { }) {
 
 		var self = this;
-		
+
 		var prom = new Promise(function (resolve, reject) {
 			if (timeout) {
 				setTimeout(remove, timeout)
@@ -392,7 +392,7 @@ class Client {
 			}
 
 			function remove() {
-				if(self.options.queue){
+				if (self.options.queue) {
 					if (!self.queue[message.channel.id]) {
 						self.queue[message.channel.id] = [];
 					}
@@ -402,26 +402,26 @@ class Client {
 						then: good,
 						error: bad
 					});
-					
+
 					self.checkQueue(message.channel.id);
-				}else{
+				} else {
 					self._deleteMessage(message).then(good).catch(bad);
 				}
 			}
-			
-			function good(){
+
+			function good() {
 				prom.success = true;
 				callback(null);
 				resolve();
 			}
-			
-			function bad(err){
+
+			function bad(err) {
 				prom.error = err;
 				callback(err);
 				reject(err);
 			}
 		});
-		
+
 		return prom;
 	}
 
@@ -433,7 +433,7 @@ class Client {
 
 			content = (content instanceof Array ? content.join("\n") : content);
 
-			if(self.options.queue){
+			if (self.options.queue) {
 				if (!self.queue[message.channel.id]) {
 					self.queue[message.channel.id] = [];
 				}
@@ -444,26 +444,26 @@ class Client {
 					then: good,
 					error: bad
 				});
-				
+
 				self.checkQueue(message.channel.id);
-			}else{
+			} else {
 				self._updateMessage(message, content).then(good).catch(bad);
 			}
-		
-		function good(msg){
-			prom.message = msg;
-			callback(null, msg);
-			resolve(msg);
-		}
-		
-		function bad(error){
-			prom.error = error;
-			callback(error);
-			reject(error);
-		}
+
+			function good(msg) {
+				prom.message = msg;
+				callback(null, msg);
+				resolve(msg);
+			}
+
+			function bad(error) {
+				prom.error = error;
+				callback(error);
+				reject(error);
+			}
 
 		});
-		
+
 		return prom;
 	}
 
@@ -611,7 +611,7 @@ class Client {
 			self.resolveDestination(destination).then(send).catch(bad);
 
 			function send(destination) {
-				if(self.options.queue){
+				if (self.options.queue) {
 					//queue send file too
 					if (!self.queue[destination]) {
 						self.queue[destination] = [];
@@ -619,14 +619,14 @@ class Client {
 
 					self.queue[destination].push({
 						action: "sendFile",
-						attachment : fstream,
-						attachmentName : fileName,
+						attachment: fstream,
+						attachmentName: fileName,
 						then: good,
 						error: bad
 					});
 
 					self.checkQueue(destination);
-				}else{
+				} else {
 					//not queue
 					self._sendFile(destination, fstream, fileName).then(good).catch(bad);
 				}
@@ -645,7 +645,7 @@ class Client {
 			}
 
 		});
-		
+
 		return prom;
 
 	}
@@ -655,13 +655,13 @@ class Client {
 		var self = this;
 
 		var prom = new Promise(function (resolve, reject) {
-			
-			if(typeof tts === "function"){
+
+			if (typeof tts === "function") {
 				// tts is a function, which means the developer wants this to be the callback
 				callback = tts;
 				tts = false;
 			}
-			
+
 			message = premessage + resolveMessage(message);
 			var mentions = resolveMentions();
 			self.resolveDestination(destination).then(send).catch(error);
@@ -682,7 +682,7 @@ class Client {
 						action: "sendMessage",
 						content: message,
 						mentions: mentions,
-						tts : !!tts, //incase it's not a boolean
+						tts: !!tts, //incase it's not a boolean
 						then: mgood,
 						error: mbad
 					});
@@ -723,7 +723,7 @@ class Client {
 			}
 
 		});
-		
+
 		return prom;
 	}
 	
@@ -1179,7 +1179,7 @@ class Client {
 				.send({
 					content: content,
 					mentions: mentions,
-					tts : tts
+					tts: tts
 				})
 				.end(function (err, res) {
 
@@ -1207,39 +1207,39 @@ class Client {
 		});
 
 	}
-	
-	_sendFile(destination, attachment, attachmentName = "DEFAULT BECAUSE YOU DIDN'T SPECIFY WHY.png"){
-		
+
+	_sendFile(destination, attachment, attachmentName = "DEFAULT BECAUSE YOU DIDN'T SPECIFY WHY.png") {
+
 		var self = this;
-		
-		return new Promise(function(resolve, reject){
-				request
-					.post(`${Endpoints.CHANNELS}/${destination}/messages`)
-					.set("authorization", self.token)
-					.attach("file", attachment, attachmentName)
-					.end(function (err, res) {
 
-						if (err) {
-							reject(err);
-						} else {
+		return new Promise(function (resolve, reject) {
+			request
+				.post(`${Endpoints.CHANNELS}/${destination}/messages`)
+				.set("authorization", self.token)
+				.attach("file", attachment, attachmentName)
+				.end(function (err, res) {
 
-							var chann = self.getChannel("id", destination);
-							if (chann) {
-								var msg = chann.addMessage(new Message(res.body, chann, [], self.user));
-								resolve(msg);
-							}
+					if (err) {
+						reject(err);
+					} else {
 
-
+						var chann = self.getChannel("id", destination);
+						if (chann) {
+							var msg = chann.addMessage(new Message(res.body, chann, [], self.user));
+							resolve(msg);
 						}
 
-					});
+
+					}
+
+				});
 		});
-		
+
 	}
-	
-	_updateMessage(message, content){
+
+	_updateMessage(message, content) {
 		var self = this;
-		return new Promise(function(resolve, reject){
+		return new Promise(function (resolve, reject) {
 			request
 				.patch(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
 				.set("authorization", self.token)
@@ -1258,28 +1258,28 @@ class Client {
 				});
 		});
 	}
-	
-	_deleteMessage(message){
+
+	_deleteMessage(message) {
 		var self = this;
-		return new Promise(function(resolve, reject){
-			
+		return new Promise(function (resolve, reject) {
+
 			request
-					.del(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
-					.set("authorization", self.token)
-					.end(function (err, res) {
-						if (err) {
-							reject(err);
-						} else {
-							resolve();
-						}
-					});
+				.del(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
+				.set("authorization", self.token)
+				.end(function (err, res) {
+					if (err) {
+						reject(err);
+					} else {
+						resolve();
+					}
+				});
 		});
 	}
 
 	checkQueue(channelID) {
 
 		var self = this;
-		
+
 		if (!this.checkingQueue[channelID]) {
 			//if we aren't already checking this queue.
 			this.checkingQueue[channelID] = true;
@@ -1309,12 +1309,12 @@ class Client {
 					case "sendFile":
 						var fileToSend = queuedEvent;
 						self._sendFile(channelID, fileToSend.attachment, fileToSend.attachmentName)
-							.then(function (msg){
+							.then(function (msg) {
 								fileToSend.then(msg);
 								self.queue[channelID].shift();
 								doNext();
 							})
-							.catch(function(err){
+							.catch(function (err) {
 								fileToSend.error(err);
 								self.queue[channelID].shift();
 								doNext();
@@ -1323,30 +1323,30 @@ class Client {
 					case "updateMessage":
 						var msgToUpd = queuedEvent;
 						self._updateMessage(msgToUpd.message, msgToUpd.content)
-						.then(function(msg){
-							msgToUpd.then(msg);
-							self.queue[channelID].shift();
-							doNext();
-						})
-						.catch(function(err){
-							msgToUpd.error(err);
-							self.queue[channelID].shift();
-							doNext();
-						});
+							.then(function (msg) {
+								msgToUpd.then(msg);
+								self.queue[channelID].shift();
+								doNext();
+							})
+							.catch(function (err) {
+								msgToUpd.error(err);
+								self.queue[channelID].shift();
+								doNext();
+							});
 						break;
 					case "deleteMessage":
 						var msgToDel = queuedEvent;
 						self._deleteMessage(msgToDel.message)
-						.then(function(msg){
-							msgToDel.then(msg);
-							self.queue[channelID].shift();
-							doNext();
-						})
-						.catch(function(err){
-							msgToDel.error(err);
-							self.queue[channelID].shift();
-							doNext();
-						});
+							.then(function (msg) {
+								msgToDel.then(msg);
+								self.queue[channelID].shift();
+								doNext();
+							})
+							.catch(function (err) {
+								msgToDel.error(err);
+								self.queue[channelID].shift();
+								doNext();
+							});
 						break;
 					default:
 						done();
@@ -1360,24 +1360,22 @@ class Client {
 			}
 		}
 	}
-}
 
-function getGateway() {
-
-	var self = this;
-
-	return new Promise(function (resolve, reject) {
-		request
-			.get(`${Endpoints.API}/gateway`)
-			.end(function (err, res) {
-				if (err) {
-					reject(err);
-				} else {
-					resolve(res.body.url);
-				}
-			});
-	});
-
+	getGateway() {
+		var self = this;
+		return new Promise(function (resolve, reject) {
+			request
+				.get(`${Endpoints.API}/gateway`)
+				.set("authorization", self.token)
+				.end(function (err, res) {
+					if (err) {
+						reject(err);
+					} else {
+						resolve(res.body.url);
+					}
+				});
+		});
+	}
 }
 
 module.exports = Client;
