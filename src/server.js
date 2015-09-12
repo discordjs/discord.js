@@ -50,6 +50,10 @@ class Server {
 		return this.client.getUser("id", this.ownerID);
 	}
 	
+	get users() {
+		return this.members;
+	}
+	
 	// get/set
 	getChannel(key, value) {
 		for (var channel of this.channels) {
