@@ -34,7 +34,7 @@ class Channel {
 	}
 
     toString(){
-        return "#" + this.name;
+        return "<#" + this.id + ">";
     }
     
     get isPrivate(){
