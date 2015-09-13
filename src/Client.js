@@ -32,7 +32,7 @@ class Client {
 		this.events = {};
 		this.user = null;
 		this.alreadySentData = false;
-		this.serverCreateListener = new Map();
+		this.serverCreateListener = {};
 
 		this.email = "abc";
 		this.password = "abc";
@@ -227,7 +227,7 @@ class Client {
 						// potentially redundant in future
 						// creating here does NOT give us the channels of the server
 						// so we must wait for the guild_create event.
-						self.serverCreateListener.set(res.body.id, [resolve, callback]);
+						self.serverCreateListener[res.body.id] = [resolve, callback];
 						/*var srv = self.addServer(res.body);
 						callback(null, srv);
 						resolve(srv);*/
@@ -584,7 +584,7 @@ class Client {
 						if (self.getServer("id", res.body.guild.id)) {
 							resolve(self.getServer("id", res.body.guild.id));
 						} else {
-							self.serverCreateListener.set(res.body.guild.id, [resolve, callback]);
+							self.serverCreateListener[res.body.guild.id] = [resolve, callback];
 						}
 					}
 				});
@@ -903,11 +903,11 @@ class Client {
 						
 					}*/
 
-					if (self.serverCreateListener.get(data.id)) {
-						var cbs = self.serverCreateListener.get(data.id);
+					if (self.serverCreateListener[data.id]) {
+						var cbs = self.serverCreateListener[data.id];
 						cbs[0](server); //promise then callback
 						cbs[1](null, server); //legacy callback
-						self.serverCreateListener.delete(data.id);
+						self.serverCreateListener[data.id] = null;
 					}
 
 					self.trigger("serverCreate", server);
