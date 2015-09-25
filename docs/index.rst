@@ -15,6 +15,8 @@ Contents:
 
 .. toctree::
    get_started
+   troubleshooting
+   create_simple_bot
 
 
 
