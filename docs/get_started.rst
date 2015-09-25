@@ -19,7 +19,7 @@ After you have obtained these tools, you need to run ``npm install discord.js --
 
 Cloning the Repo
 ----------------
-If you want to try some examples or make your own changes to discord.js, you can `clone the repo`_.
+If you want to try some examples or make your own changes to discord.js, you can `clone the repo`_. After that run ``npm install`` to install dependencies.
 
 Running Examples
 ~~~~~~~~~~~~~~~~
