@@ -6,6 +6,11 @@
 Welcome to discord.js's documentation!
 ======================================
 
+discord.js is an easy-to-use and intuitive JavaScript API for Discord_. It should be able to
+run in node.js / io.js and in the browser.
+
+.. note:: This documentation is still a work-in-progress, apologies if something isn't yet documented!
+
 Contents:
 
 .. toctree::
@@ -17,6 +22,6 @@ Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
 
+.. _Discord : https://discordapp.com/
