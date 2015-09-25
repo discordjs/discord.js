@@ -9,7 +9,6 @@ Welcome to discord.js's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 2
    get_started
 
 
