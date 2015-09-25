@@ -15,4 +15,6 @@ Unfortunately, the Windows installation process is a little more lengthy. You ne
 
 After you have obtained these tools, you need to run ``npm install discord.js --save --msvs_version=2015`` in your working directory. Hopefully this should all go well!
 
+.. note:: If you are using another version of Visual Studio, such as 2012, replace the flag with ``--msvs_version=2012``
+
 .. _`Visual Studio Express`: https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx
