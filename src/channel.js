@@ -46,6 +46,14 @@ class Channel {
     get isPrivate(){
         return false;
     }
+    
+    get users(){
+        return this.server.members;
+    }
+    
+    get members(){
+        return this.server.members;
+    }
 }
 
 module.exports = Channel;
