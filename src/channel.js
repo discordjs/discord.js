@@ -18,9 +18,15 @@ class Channel {
     }
     
     addMessage(data){
+        
+        if(this.messages.length > 1000){
+            this.messages.splice(0,1);
+        }
+        
 		if(!this.getMessage("id", data.id)){
 			this.messages.push(data);
 		}
+        
 		return this.getMessage("id", data.id);
 	}
     
