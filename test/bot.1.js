@@ -1,13 +1,12 @@
 var Discord = require("../");
-var mybot = new Discord.Client({
-	queue: true
-});
+var mybot = new Discord.Client();
 var fs = require("fs");
 
 var server, channel, message, sentMessage = false;
 
 mybot.on("message", function (message) {
-
+	
+	console.log("Everyone mentioned? " + message.everyoneMentioned);
 	if (mybot.user.equals(message.sender)) {
 		return;
 	}
@@ -17,7 +16,14 @@ mybot.on("message", function (message) {
 	}
 
 	// we can go ahead :)
-	mybot.reply(message, message.channel);
+	
+	var onlineUsers = 0;
+	for(user of message.channel.users){
+		if(user.status === "online" || user.status === "idle")
+			onlineUsers++;
+	}
+	
+	mybot.reply(message, onlineUsers);
 });
 
 mybot.on("ready", function () {
