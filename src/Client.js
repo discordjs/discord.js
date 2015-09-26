@@ -1391,8 +1391,29 @@ class Client {
 		this.setStatus("online");
 	}
 	
-	setStatus(){
+	setStatusActive(){
+		this.setStatusOnline();
+	}
+	
+	setStatusHere(){
+		this.setStatusOnline();
+	}
+	
+	setStatusAway(){
+		this.setStatusIdle();
+	}
+	
+	setStatus(stat){
 		
+		var idleTime = (stat === "online" ? null : Date.now());
+		
+		this.websocket.send(JSON.stringify({
+			op : 3,
+			d : {
+				idle_since : idleTime,
+				game_id : null
+			}
+		}));
 	}
 }
 

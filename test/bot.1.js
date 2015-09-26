@@ -18,12 +18,14 @@ mybot.on("message", function (message) {
 	// we can go ahead :)
 	
 	var onlineUsers = 0;
-	for(user of message.channel.users){
-		if(user.status === "online" || user.status === "idle")
-			onlineUsers++;
-	}
+	
+	mybot.setStatusIdle();
 	
 	mybot.reply(message, onlineUsers);
+	
+	setTimeout(function(){
+		mybot.setStatusOnline();
+	},5000);
 });
 
 mybot.on("ready", function () {
