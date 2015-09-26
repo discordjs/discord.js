@@ -4,8 +4,8 @@ Client Documentation
 Attributes
 ----------
 
-``options``
-~~~~~~~~~~~
+options
+~~~~~~~
 An `Object` containing a configuration for the Client. Currently can only be configured like so:
 
 .. code-block:: js
@@ -15,12 +15,12 @@ An `Object` containing a configuration for the Client. Currently can only be con
                       // just send straight away.
     }
 
-``token``
-~~~~~~~~~
+token
+~~~~~
 A `String` that is the token received after logging in. It is used to authorise the Client when joining WebSockets or making HTTP requests.
 
-``state``
-~~~~~~~~~
+state
+~~~~~
 An `Integer` representing what state of connection the Client is in.
 
 - **0** is idle, meaning the Client has been created but no login attempts have been made.
