@@ -992,6 +992,7 @@ class Client {
 						var presenceUser = new User(data.user);
 						if (presenceUser.equalsStrict(userInCache)) {
 							//they're exactly the same, an actual presence update
+							userInCache.status = data.status;
 							self.trigger("presence", {
 								user: userInCache,
 								status: data.status,
