@@ -1044,6 +1044,7 @@ class Client {
 	//def addServer
 	addServer(data) {
 
+		var self = this;
 		var server = this.getServer("id", data.id);
 
 		if (!server) {
@@ -1054,6 +1055,10 @@ class Client {
 					server.channels.push(this.addChannel(channel, server.id));
 				}
 			}
+		}
+		
+		for(var presence of data.presences){
+			self.getUser("id", presence.user.id).status = presence.status;
 		}
 
 		return server;
