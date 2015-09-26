@@ -33,7 +33,7 @@ class Client {
 		this.user = null;
 		this.alreadySentData = false;
 		this.serverCreateListener = {};
-
+		this.typingIntervals = {};
 		this.email = "abc";
 		this.password = "abc";
 		
@@ -1115,7 +1115,7 @@ class Client {
 				op: 2,
 				d: {
 					token: this.token,
-					v: 2,
+					v: 3,
 					properties: {
 						"$os": "discord.js",
 						"$browser": "discord.js",
@@ -1401,6 +1401,49 @@ class Client {
 	
 	setStatusAway(){
 		this.setStatusIdle();
+	}
+	
+	startTyping(chann){
+		var self = this;
+		
+		this.resolveDestination(chann).then(next);
+		
+		function next(channel){
+			if(self.typingIntervals[channel]){
+				return;
+			}
+			
+			var fn = function(){
+				console.log(`${Endpoints.CHANNELS}/${channel}/typing`);
+				request
+				.post(`${Endpoints.CHANNELS}/${channel}/typing`)
+				.set("authorization", self.token)
+				.end();
+			};
+			
+			fn();
+			
+			var interval = setInterval(fn, 3000);
+			
+			self.typingIntervals[channel] = interval;
+		}
+	}
+	
+	stopTyping(chann){
+		var self = this;
+		
+		this.resolveDestination(chann).then(next);
+		
+		function next(channel){
+			if(!self.typingIntervals[channel]){
+				return;
+			}
+			
+			clearInterval(self.typingIntervals[channel]);
+			
+			delete self.typingIntervals[channel];
+			
+		}
 	}
 	
 	setStatus(stat){

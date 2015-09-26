@@ -19,13 +19,13 @@ mybot.on("message", function (message) {
 	
 	var onlineUsers = 0;
 	
-	mybot.setStatusIdle();
-	
-	mybot.reply(message, onlineUsers);
+	mybot.startTyping(message.channel);
 	
 	setTimeout(function(){
-		mybot.setStatusOnline();
-	},5000);
+		mybot.reply(message, "stopping now k");
+		mybot.stopTyping(message.channel);
+	}, 6000);
+	
 });
 
 mybot.on("ready", function () {
