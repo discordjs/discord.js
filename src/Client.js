@@ -1382,6 +1382,18 @@ class Client {
 				});
 		});
 	}
+	
+	setStatusIdle(){
+		this.setStatus("idle");
+	}
+	
+	setStatusOnline(){
+		this.setStatus("online");
+	}
+	
+	setStatus(){
+		
+	}
 }
 
 module.exports = Client;
