@@ -19,12 +19,7 @@ mybot.on("message", function (message) {
 	
 	var onlineUsers = 0;
 	
-	mybot.startTyping(message.channel);
-	
-	setTimeout(function(){
-		mybot.reply(message, "stopping now k");
-		mybot.stopTyping(message.channel);
-	}, 6000);
+	mybot.startTyping(message.channel, 6000);
 	
 });
 

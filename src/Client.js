@@ -1469,7 +1469,7 @@ class Client {
 		this.setStatusIdle();
 	}
 	
-	startTyping(chann){
+	startTyping(chann, stopTypeTime){
 		var self = this;
 		
 		this.resolveDestination(chann).then(next);
@@ -1491,6 +1491,12 @@ class Client {
 			var interval = setInterval(fn, 3000);
 			
 			self.typingIntervals[channel] = interval;
+			
+			if(stopTypeTime){
+				setTimeout(function(){
+					self.stopTyping(channel);
+				}, stopTypeTime);
+			}
 		}
 	}
 	
