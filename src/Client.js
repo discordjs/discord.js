@@ -1168,7 +1168,6 @@ class Client {
 					
 				//we don't, at this point we're late
 				self.startPM(destination).then(function (pmc) {
-					console.log(pmc);
 					resolve(pmc.id);
 				}).catch(reject);
 
@@ -1420,7 +1419,6 @@ class Client {
 			}
 			
 			var fn = function(){
-				console.log(`${Endpoints.CHANNELS}/${channel}/typing`);
 				request
 				.post(`${Endpoints.CHANNELS}/${channel}/typing`)
 				.set("authorization", self.token)
