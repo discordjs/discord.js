@@ -103,7 +103,6 @@ Functions
 ---------
 
 .. note :: Any functions used here that take callbacks as an optional parameter can also be used as Promises_. For example, you can do:
-
 .. code-block:: js
 
     bot.login(email, password).then(success).catch(err);
