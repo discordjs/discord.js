@@ -12,7 +12,7 @@ A Channel Resolvable is data that can be resolved to a channel ID. Here is what 
 
 - A Channel_ object
 - A Server_ object (the #general channel of the server will be used)
-- A String_ representing the channel ID
+- A `String` representing the channel ID
 - A Message_ (the channel the message was sent in will be used)
 - A User_ (will get the PM channel with the specified user)
 
