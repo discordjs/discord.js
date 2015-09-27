@@ -1,3 +1,5 @@
+.. include:: ./vars.rst
+
 Client Documentation
 ====================
 
@@ -79,11 +81,11 @@ A `Boolean` that is true if the client is ready. A shortcut to checking if ``bot
 
 servers
 ~~~~~~~
-An `Array` of Server_ objects that the client has access to. Represents the servers the client is in.
+An `Array` of Server_ objects that the client has access to.
 
 channels
 ~~~~~~~~
-An `Array` of Channel_ objects that the client has access to. Represents the channels the client can access.
+An `Array` of Channel_ objects that the client has access to.
 
 users
 ~~~~~
@@ -99,9 +101,3 @@ An `Array` of Message_ objects the client has received over its uptime.
 
 Functions
 ---------
-
-.. _User : #user
-.. _ready : #ready
-.. _Server : #server
-.. _Channel : #channel
-.. _Message : #message
