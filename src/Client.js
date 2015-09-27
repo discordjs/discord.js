@@ -1044,6 +1044,46 @@ class Client {
 		return this.getPMChannel("id", data.id);
 	}
 	
+	setTopic(channel, topic, callback = function(err){}){
+		
+		var self = this;
+		
+		return new Promise(function(resolve, reject){
+			
+			self.resolveDestination(channel).then(next).catch(error);
+			
+			function error(e){
+				callback(e);
+				reject(e);
+			}
+			
+			function next(destination){
+				
+				var asChan = self.getChannel("id", destination);
+				
+				request
+					.patch(`${Endpoints.CHANNELS}/${destination}`)
+					.set("authorization", self.token)
+					.send({
+						name : asChan.name,
+						position : 0,
+						topic : topic
+					})
+					.end(function(err, res){
+						if(err){
+							error(err);
+						}else{
+							asChan.topic = res.body.topic;
+							resolve();
+							callback();
+						}
+					});	
+			}
+			
+		});
+		
+	}
+	
 	//def addServer
 	addServer(data) {
 
@@ -1178,6 +1218,8 @@ class Client {
 			}
 			if (channId)
 				resolve(channId);
+			else
+				reject();
 		});
 	}
 

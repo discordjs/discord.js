@@ -30,6 +30,10 @@ mybot.on("message", function (message) {
 
 mybot.on("ready", function () {
 	console.log("im ready");
+	
+	for(var chann of mybot.channels){
+		mybot.setTopic(chann, "HELLO I AM A BOT BOOP BOOP");
+	}
 });
 
 mybot.on("debug", function(info){
