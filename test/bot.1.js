@@ -32,7 +32,7 @@ mybot.on("ready", function () {
 	console.log("im ready");
 	
 	for(var chann of mybot.channels){
-		mybot.setTopic(chann, "HELLO I AM A BOT BOOP BOOP");
+		mybot.setTopic(chann, "THINGS");
 	}
 });
 
@@ -43,6 +43,12 @@ mybot.on("debug", function(info){
 mybot.on("unknown", function(info){
 	console.log("warning!", info);
 })
+
+mybot.on("channelUpdate", function(oldChan, newChan){
+	
+	console.log(oldChan.topic + " vs " + newChan.topic);
+	
+});
 
 function dump(msg) {
 	console.log(msg);
