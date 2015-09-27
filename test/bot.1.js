@@ -30,6 +30,14 @@ mybot.on("message", function (message) {
 
 mybot.on("ready", function () {
 	console.log("im ready");
+});
+
+mybot.on("debug", function(info){
+	console.log(info);
+})
+
+mybot.on("unavailable", function(info){
+	console.log("warning!", info);
 })
 
 function dump(msg) {

@@ -1048,6 +1048,12 @@ class Client {
 		var self = this;
 		var server = this.getServer("id", data.id);
 
+		if(data.unavailable){
+			self.trigger("unavailable", data);
+			self.debug("Server ID" +  + " has been marked unavailable by Discord. It was not cached.");
+			return;
+		}
+
 		if (!server) {
 			server = new Server(data, this);
 			this.serverCache.push(server);
