@@ -760,6 +760,8 @@ class Client {
 				return;
 			}
 			
+			self.trigger("raw", dat);
+			
 			//valid message
 			switch (dat.t) {
 
@@ -1050,7 +1052,7 @@ class Client {
 
 		if(data.unavailable){
 			self.trigger("unavailable", data);
-			self.debug("Server ID" +  + " has been marked unavailable by Discord. It was not cached.");
+			self.debug("Server ID " + data.id + " has been marked unavailable by Discord. It was not cached.");
 			return;
 		}
 

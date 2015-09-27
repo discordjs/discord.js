@@ -36,7 +36,7 @@ mybot.on("debug", function(info){
 	console.log(info);
 })
 
-mybot.on("unavailable", function(info){
+mybot.on("unknown", function(info){
 	console.log("warning!", info);
 })
 
