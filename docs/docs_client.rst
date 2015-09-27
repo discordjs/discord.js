@@ -127,10 +127,20 @@ Functions
 login(email, password, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-`Parameters`:
+Logs the client in to set it up. Use this after registering your event listeners to ensure they are called.
 
 - **email** - A `String` which is the email you want to sign in with.
 - **password** - A `String` which is the password you want to sign in with.
 - **callback** - A `function` that can take the following parameters:
+
     - **error** - null if there was no error, otherwise it is set.
     - **token** - if successful, it is the received authorisation token.
+    
+logout(`callback`)
+~~~~~~~~~~~~~~~~~~
+
+Logs the client out if it is logged in. If successful, ``bot.state == 4``.
+
+- **callback** - A `function` that can take the following parameters:
+
+    - **error** - null if there was no error, otherwise it is set.
