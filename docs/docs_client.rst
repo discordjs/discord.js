@@ -102,13 +102,34 @@ An `Array` of Message_ objects the client has received over its uptime.
 Functions
 ---------
 
-.. note :: Any functions used here that take callbacks as an optional parameter can also be used as Promises_. For example, you can do:
+.. note :: Any functions used here that take callbacks as an optional parameter can also be used as Promises_. Promises take the exact same parameters for each use case, except errors are moved to catch statements instead of then. For example, you can do:
+
 .. code-block:: js
 
     bot.login(email, password).then(success).catch(err);
     
+    function success(token){
+    
+    }
+    
+    function err(error){
+    
+    }
+    
     // OR use callbacks:
     
-    bot.login(email, password, function(err, token){
+    bot.login(email, password, function(error, token){
     
     });
+    
+-----
+
+login(email, password, `callback`)
+~~~~~
+
+``Parameters``:
+- `email` - A `String` which is the email you want to sign in with.
+- `password` - A `String` which is the password you want to sign in with.
+- `callback` - A `function` that can take the following parameters:
+    - `error` - null if there was no error, otherwise it is set.
+    - `token` - if successful, it is the received authorisation token.
