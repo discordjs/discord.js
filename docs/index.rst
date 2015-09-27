@@ -16,6 +16,7 @@ Contents:
 .. _general-docs:
 
 .. toctree::
+   :maxdepth: 2
    :caption: General
    
    get_started
@@ -25,9 +26,11 @@ Contents:
 .. _docs:
 
 .. toctree::
+   :maxdepth: 2
    :caption: Documentation
 
    docs_client
+   docs_resolvable
 
 
 

@@ -3,3 +3,4 @@
 .. _Server : #server
 .. _Channel : #channel
 .. _Message : #message
+.. _PMChannel : #PMChannel

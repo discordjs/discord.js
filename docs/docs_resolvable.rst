@@ -1,3 +1,5 @@
+.. include:: ./vars.rst
+
 Resolvable Documentation
 ========================
 
@@ -7,3 +9,11 @@ Channel Resolvable
 ------------------
 
 A Channel Resolvable is data that can be resolved to a channel ID. Here is what is currently supported:
+
+- A Channel_ object
+- A Server_ object (the #general channel of the server will be used)
+- A String_ representing the channel ID
+- A Message_ (the channel the message was sent in will be used)
+- A User_ (will get the PM channel with the specified user)
+
+.. note:: A User cannot always be specified in certain cases. For example, if using `bot.setTopic`, a User or PM Channel can't be specified as these do not support channel topics.
