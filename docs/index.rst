@@ -13,10 +13,20 @@ run in node.js / io.js and in the browser.
 
 Contents:
 
+.. _general-docs:
+
 .. toctree::
+   :caption: General
+   
    get_started
    troubleshooting
    create_simple_bot
+   
+.. _docs:
+
+.. toctree::
+   :caption: Documentation
+
    docs_client
 
 
