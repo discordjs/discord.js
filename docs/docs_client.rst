@@ -127,9 +127,11 @@ Functions
 login(email, password, `callback`)
 ~~~~~
 
-``Parameters``:
+`Parameters`:
+
 - `email` - A `String` which is the email you want to sign in with.
 - `password` - A `String` which is the password you want to sign in with.
 - `callback` - A `function` that can take the following parameters:
+
     - `error` - null if there was no error, otherwise it is set.
     - `token` - if successful, it is the received authorisation token.
