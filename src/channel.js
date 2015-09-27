@@ -4,6 +4,7 @@ class Channel {
         this.server = server;
         this.name = data.name;
         this.type = data.type;
+        this.topic = data.topic;
         this.id = data.id;
         this.messages = [];
         //this.isPrivate = isPrivate; //not sure about the implementation of this...
