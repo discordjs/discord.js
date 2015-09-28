@@ -347,6 +347,56 @@ Sets the topic of the specified channel
 
     - **error** - An error if one occurred, otherwise it is null.
 
+getUser(key, value)
+~~~~~~~~~~~~~~~~~~~
+
+Gets a User_ that matches the specified criteria. E.g:
+
+.. code-block:: js
+
+    bot.getUser("id", 1243987349) // returns a user where user.id === 1243987349
+    
+- **key** - a `String` that is the key
+- **value** - a `String` that is the value
+
+getServer(key, value)
+~~~~~~~~~~~~~~~~~~~~~
+
+Gets a Server_ that matches the specified criteria. E.g:
+
+.. code-block:: js
+
+    bot.getServer("id", 1243987349) // returns a server where server.id === 1243987349
+    
+- **key** - a `String` that is the key
+- **value** - a `String` that is the value
+
+
+getChannel(key, value)
+~~~~~~~~~~~~~~~~~~~~~~
+
+Gets a Channel_ that matches the specified criteria. E.g:
+
+.. code-block:: js
+
+    bot.getChannel("id", 1243987349) // returns a Channel where channel.id === 1243987349
+    
+- **key** - a `String` that is the key
+- **value** - a `String` that is the value
+
+
+getPMChannel(key, value)
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Gets a PMChannel_ that matches the specified criteria. E.g:
+
+.. code-block:: js
+
+    bot.getPMChannel("id", 1243987349) // returns a PMChannel where pmchannel.id === 1243987349
+    
+- **key** - a `String` that is the key
+- **value** - a `String` that is the value
+
 -----
 
 Events
