@@ -201,6 +201,100 @@ Creates an invite for the given channel and returns an Invite_.
         xkcd : false //boolean - whether the invite's URL should be human-readable
     }
     
- 
+createChannel(server, channelName, channelType, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Creates a channel in the given server.
+
+- **server** - A `Server Resolvable`_ that will be the server the channel is created in.
+- **channelName** - A `String` that is the name of the channel.
+- **channelType** - A `String` that is the type of the channel, either **voice** or **text**.
+- **callback** - A `function` that can take the following parameters:
+
+    - **error** - An error if one occurred, otherwise it is null.
+    - **channel** - An Channel_ object that represents the created channel.
+    
+deleteChannel(channel, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Deletes the specified channel.
+
+- **channel** - A `Channel Resolvable`_ that will be the channel to delete.
+- **callback** - A `function` that can take the following parameters:
+
+    - **error** - An error if one occurred, otherwise it is null.
+    
+getChannelLogs(channel, `amount`, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Gets previous messages from the specified channel.
+
+- **channel** - A `Channel Resolvable`_ to take logs from.
+- **amount** - A `Number` that defaults to **500**. This is the amount of messages to try and get.
+- **callback** - A `function` that can take the following parameters:
+
+    - **error** - An error if one occurred, otherwise it is null.
+    - **logs** - An `Array` of Message_ objects that represent the previous messages.
+    
+.. warning:: If the logs contain messages from a user who is no longer in the server, the user object *MAY* be malformed.
+
+sendMessage(channel, message, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sends a message to the specified channel.
+
+- **channel** - A `Channel Resolvable`_ to send the message to.
+- **message** - A `String` or an Array of strings. If an Array, the array will be joined with a new line as a delimiter and this will be the message to be sent.
+- **callback** - A `function` that can take the following parameters:
+
+    - **error** - An error if one occurred, otherwise it is null.
+    - **message** - A Message_ representing the sent message.
+    
+sendFile(channel, file, `fileName`, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sends a file to the specified channel. Note that **fileName is necessary in certain cases** for when a file other than an image is sent. For example, if you send a file containing JS code, fileName should be something like ``myCode.js``.
+
+- **channel** - A `Channel Resolvable`_ to send the file to.
+- **file** - The file to send, either a `Buffer` or `String` - if a String, it should be a relative (`./`) or absolute path to a file.
+- **fileName** - A `String` containing the file's name and extension, used by Discord (I didn't make this please don't shoot me :s) Examples include `picture.png`, `text.txt`, `wowanamazingscript.js`
+
+- **callback** - A `function` that can take the following parameters:
+
+    - **error** - An error if one occurred, otherwise it is null.
+    - **message** - A Message_ representing the sent file.
+    
+updateMessage(message, content, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Updates/edits a message with new content.
+
+- **message** - A Message_ that should be updated.
+- **content** - A `String` or an Array of strings. If an Array, the array will be joined with a new line as a delimiter and this will be the message to be sent.
+- **callback** - A `function` that can take the following parameters:
+
+    - **error** - An error if one occurred, otherwise it is null.
+    - **message** - A Message_ representing the updated message.
+    
+reply(message, yourMessage, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Alias for sendMessage, but prepends a mention to whoever sent the specified mention. Useful shortcut for directing a message at a user.
+
+.. code-block:: js
+
+    // example usage:
+    
+    the user 'bob' sent a message
+    
+    bot.reply(message, "hello");
+    // will send the message '@bob, hello' to the channel the message that bob sent was in.
+    
+- **message** - A Message_ that should be replied to.
+- **yourMessage** - A `String` or an Array of strings. If an Array, the array will be joined with a new line as a delimiter and this will be the message to be sent.
+- **callback** - A `function` that can take the following parameters:
+
+    - **error** - An error if one occurred, otherwise it is null.
+    - **message** - A Message_ representing the sent message.
 
 .. _official API here : https://discordapp.com/api/voice/regions
