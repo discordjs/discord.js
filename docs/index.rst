@@ -29,8 +29,9 @@ Contents:
    :maxdepth: 2
    :caption: Documentation
 
-   docs_client
    docs_resolvable
+   docs_client
+   docs_user
 
 
 

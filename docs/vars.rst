@@ -1,4 +1,4 @@
-.. _User : #user
+.. _User : ./docs_user.html
 .. _ready : #ready
 .. _Server : #server
 .. _Channel : #channel
