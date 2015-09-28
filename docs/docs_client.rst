@@ -5,6 +5,8 @@ Client Documentation
 
 This page contains documentation on the `Discord.Client` class. This should be used when you want to start creating things with the API.
 
+It might be beneficial to use CTRL+F to search for what you're looking for, or use the navigation provided by readthedocs on the left.
+
 Attributes
 ----------
 
