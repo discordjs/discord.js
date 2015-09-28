@@ -399,7 +399,33 @@ Gets a PMChannel_ that matches the specified criteria. E.g:
 
 -----
 
-Events
-------
+Event Management
+----------------
+
+Events are a useful way of listening to events and are available in every API.
+
+Registering Events
+~~~~~~~~~~~~~~~~~~
+
+.. code-block:: js
+
+    bot.on("eventName", function(arg1, arg2...){
+        // code here is called when eventName is emitted.
+    })
+    
+.. note:: You can only have one listening function per event
+
+Unregistering Events
+~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: js
+
+    bot.off("eventName")
+    // eventName is no longer listened for
+    
+Event Types
+-----------
+
+
 
 .. _official API here : https://discordapp.com/api/voice/regions
