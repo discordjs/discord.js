@@ -473,9 +473,114 @@ Called when a message has been deleted.
 **Parameters**
 
 - **channel** - The Channel_ that the deleted message was in.
-- ***message*** - *May* be available. If the message wasn't previously cached, this will not be supplied and all you would know is that a message was deleted in the channel. If it is available, it will be in the format of a Message_.
+- **message** - *May* be available. If the message wasn't previously cached, this will not be supplied and all you would know is that a message was deleted in the channel. If it is available, it will be in the format of a Message_.
 
 messageUpdate
 ~~~~~~~~~~~~~
+
+Called when a message has been updated.
+
+**Parameters**
+
+- **newMessage** - The updated Message_.
+- **oldMessage** - The old Message_ before it was updated.
+
+serverDelete
+~~~~~~~~~~~~
+
+Called when a server is deleted.
+
+**Parameters**
+
+- **server** - The deleted Server_.
+
+channelDelete
+~~~~~~~~~~~~~
+
+Called when a channel is deleted.
+
+**Parameters**
+
+- **channel** - The deleted Channel_.
+
+serverCreate
+~~~~~~~~~~~~
+
+Called when a server is created/joined.
+
+**Parameters**
+
+- **server** - The created Server_.
+
+channelCreate
+~~~~~~~~~~~~
+
+Called when a channel is created.
+
+**Parameters**
+
+- **channel** - The created Channel_.
+
+serverNewMember
+~~~~~~~~~~~~~~~
+
+Called when a new member is added to a server.
+
+**Parameters**
+
+- **user** - The User_ that was added.
+- **server** - The Server_ that the user was added to.
+
+serverRemoveMember
+~~~~~~~~~~~~~~~~~~
+
+Called when a member of a server leaves or is kicked out.
+
+**Parameters**
+
+- **user** - The User_ that was removed.
+- **server** - The Server_ that the user was removed from.
+
+userUpdate
+~~~~~~~~~~
+
+Called when information about a user changes, such as their username.
+
+**Parameters**
+
+- **newUser** - A User_ object representing the changes to the old user (this will be in the cache)
+- **oldUser** - A User_ object representing the user before the update.
+
+presence
+~~~~~~~~
+
+Called when a user goes online/offline/away or starts/stops playing a game.
+
+**Parameters**
+
+- **dataObject** - Instead of separate arguments, presence update takes an object containing the following information:
+
+    - **user** - A User_ representing the User that had a presence update
+    - **status** - The status change as a `String`.
+    - **server** - The Server_ that the presence change occurred in.
+    - **gameId** - A `Number` representing the game they are playing if any. Currently, discord.js has no internal support for converting this into a game name.
+    
+unknown
+~~~~~~~
+
+Called when an unknown packet was received or there is no handler for it.
+
+**Parameters**
+
+- **data** - A `JSON Object` which is the message received over WebSocket.
+
+raw
+~~~
+
+Called when a WebSocket message is received and it gives you the message.
+
+**Parameters**
+
+- **data** - A `JSON Object` which is the message received over WebSocket.
 
 .. _official API here : https://discordapp.com/api/voice/regions
