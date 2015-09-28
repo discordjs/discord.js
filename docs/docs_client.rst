@@ -151,10 +151,56 @@ createServer(name, region, `callback`)
 Creates a server with the specified name or region. See valid regions below:
 
 - **name** - A `String` that will be the name of your server.
-- **region** - A `String` that is a valid Discord region. Currently **``us-west``**, **``us-east``**, **``singapore``**, **``london``**, **``sydney``** or **``amsterdam``**. Providing an invalid region will result in an error. To find the latest available regions, check the `official API here`_.
+- **region** - A `String` that is a valid Discord region. Currently **us-west**, **us-east**, **singapore**, **london**, **sydney** or **amsterdam**. Providing an invalid region will result in an error. To find the latest available regions, check the `official API here`_.
 - **callback** - A `function` that can take the following parameters:
 
     - **error** - An error if one occurred, otherwise it is null.
     - **server** - A Server_ that represents the created Server.
+    
+joinServer(invite, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Accepts a given invite to join a server. The server is automatically cached ASAP.
+
+- **invite** - An `Invite Resolvable`_ which is the invite that should be accepted.
+- **callback** - A `function` that can take the following parameters:
+
+    - **error** - An error if one occurred, otherwise it is null.
+    - **server** - A Server_ that represents the joined Server.
+    
+leaveServer(server, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Leaves the given server.
+
+- **server** -  A `Server Resolvable`_ that represents the server you want to leave.
+- **callback** - A `function` that can take the following parameters:
+
+    - **error** - An error if one occurred, otherwise it is null.
+    
+createInvite(channel, options, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Creates an invite for the given channel and returns an Invite_.
+
+- **channel** - A `Channel Resolvable`_ that is the channel you want to create an invite for.
+- **options** - An `object` containing configurable options for the invite. See below for possible configurations.
+- **callback** - A `function` that can take the following parameters:
+
+    - **error** - An error if one occurred, otherwise it is null.
+    - **invite** - An Invite_ object that contains the details about the created invite.
+    
+.. code-block:: js
+
+    // default configuration of the options variable:
+
+    options = {
+        max_age : 0, //A number signifying the expiry time for the invite. 0 means infinite.
+        max_uses : 0, //A number signifying the amount of uses of the invite. 0 means infinite.
+        temporary : false, //boolean - whether users who use it are kicked unless promoted within 24h.
+        xkcd : false //boolean - whether the invite's URL should be human-readable
+    }
+    
+ 
 
 .. _official API here : https://discordapp.com/api/voice/regions
