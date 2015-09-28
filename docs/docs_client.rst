@@ -296,5 +296,60 @@ Alias for sendMessage, but prepends a mention to whoever sent the specified ment
 
     - **error** - An error if one occurred, otherwise it is null.
     - **message** - A Message_ representing the sent message.
+    
+setUsername(newName, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sets the username of the logged in client.
+
+- **newName** - The new name of the client, a `String`.
+- **callback** - A `function` that can take the following parameters:
+
+    - **error** - An error if one occurred, otherwise it is null.
+    
+startTyping(channel, *stopTime*)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Makes the client appear to be typing in the specified channel.
+
+- **channel** - A `Channel Resolvable`_ that should be the channel to start typing in
+- **stopTime** - A `Number` in ms which should make the client stop typing after. Allow 5 seconds.
+
+stopTyping(channel)
+~~~~~~~~~~~~~~~~~~~
+
+Makes the client stop typing in a specified channel.
+
+- **channel** - A `Channel Resolvable`_ that should be the channel to stop typing in.
+
+setStatusOnline()
+~~~~~~~~~~~~~~~~~
+
+**Aliases**: ``setStatusActive()`` and ``setStatusHere()``
+
+Sets the client's status to online; green.
+
+setStatusIdle()
+~~~~~~~~~~~~~~~~~
+
+**Aliases**: ``setStatusAway()``
+
+Sets the client's status to idle; orange.
+
+setTopic(channel, topic, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sets the topic of the specified channel
+
+- **channel** - A `Channel Resolvable`_ that is the channel you want to change the topic of
+- **topic** - A `String` that is the topic you want
+- **callback** - A `function` that can take the following parameters:
+
+    - **error** - An error if one occurred, otherwise it is null.
+
+-----
+
+Events
+------
 
 .. _official API here : https://discordapp.com/api/voice/regions
