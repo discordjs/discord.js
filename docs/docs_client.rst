@@ -133,7 +133,7 @@ Logs the client in to set it up. Use this after registering your event listeners
 - **password** - A `String` which is the password you want to sign in with.
 - **callback** - A `function` that can take the following parameters:
 
-    - **error** - null if there was no error, otherwise it is set.
+    - **error** - An error if one occurred, otherwise it is null.
     - **token** - if successful, it is the received authorisation token.
     
 logout(`callback`)
@@ -143,4 +143,18 @@ Logs the client out if it is logged in. If successful, ``bot.state == 4``.
 
 - **callback** - A `function` that can take the following parameters:
 
-    - **error** - null if there was no error, otherwise it is set.
+    - **error** - An error if one occurred, otherwise it is null.
+    
+createServer(name, region, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Creates a server with the specified name or region. See valid regions below:
+
+- **name** - A `String` that will be the name of your server.
+- **region** - A `String` that is a valid Discord region. Currently **``us-west``**, **``us-east``**, **``singapore``**, **``london``**, **``sydney``** or **``amsterdam``**. Providing an invalid region will result in an error. To find the latest available regions, check the `official API here`_.
+- **callback** - A `function` that can take the following parameters:
+
+    - **error** - An error if one occurred, otherwise it is null.
+    - **server** - A Server_ that represents the created Server.
+
+.. _official API here : https://discordapp.com/api/voice/regions
