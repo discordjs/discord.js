@@ -426,6 +426,56 @@ Unregistering Events
 Event Types
 -----------
 
+ready
+~~~~~
 
+Called when the bot is ready and you can begin working with it.
+
+disconnected
+~~~~~~~~~~~~
+
+Called when the bot is disconnected for whatever reason.
+
+error
+~~~~~
+
+Called whenever there is an error.
+
+**Parameters**
+
+- **error** - the encountered error
+
+.. note:: There may be more parameters supplied depending on the errors. Use the ``arguments`` variable to check for this for advanced debugging.
+
+debug
+~~~~~
+
+Called when the client debugs some information that might be useful for a developer but not for an end user.
+
+**Parameters**
+
+- **message** - the debug message as a `String`
+
+message
+~~~~~~~
+
+Called when a message has been received by the client.
+
+**Parameters**
+
+- **message** - the received Message_.
+
+messageDelete
+~~~~~~~~~~~~~
+
+Called when a message has been deleted.
+
+**Parameters**
+
+- **channel** - The Channel_ that the deleted message was in.
+- ***message*** - *May* be available. If the message wasn't previously cached, this will not be supplied and all you would know is that a message was deleted in the channel. If it is available, it will be in the format of a Message_.
+
+messageUpdate
+~~~~~~~~~~~~~
 
 .. _official API here : https://discordapp.com/api/voice/regions
