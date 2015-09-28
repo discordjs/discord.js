@@ -92,6 +92,10 @@ class Server {
 	toString(){
 		return this.name;
 	}
+	
+	equals(object){
+		return object.id === this.id;
+	}
 }
 
 module.exports = Server;

@@ -32,6 +32,7 @@ Contents:
    docs_resolvable
    docs_client
    docs_user
+   docs_server
 
 
 
