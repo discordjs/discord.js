@@ -33,6 +33,7 @@ Contents:
    docs_client
    docs_user
    docs_server
+   docs_channel
 
 
 
