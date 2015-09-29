@@ -3,7 +3,7 @@
 .. _ready : #ready
 .. _Server : ./docs_server.html
 .. _Channel : ./docs_channel.html
-.. _Message : #message
+.. _Message : ./docs_message.html
 .. _PMChannel : #PMChannel
 .. _Invite : #invite
 .. _Channel Resolvable : ./docs_resolvable.html#channel-resolvable
