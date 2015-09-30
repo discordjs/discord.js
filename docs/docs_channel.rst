@@ -64,7 +64,7 @@ Gets a Message_ from the channel that matches the specified criteria. E.g:
 
 .. code-block:: js
 
-    channel.getMessage("id", 1243987349) // returns a Channel where message.id === 1243987349
+    channel.getMessage("id", 1243987349) // returns a Message where message.id === 1243987349
     
 - **key** - a `String` that is the key
 - **value** - a `String` that is the value

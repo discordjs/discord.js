@@ -13,6 +13,11 @@ class PMChannel {
 	}
     
     getMessage(key, value){
+		
+		if(this.messages.length > 1000){
+            this.messages.splice(0,1);
+        }
+		
 		for(var message of this.messages){
 			if(message[key] === value){
 				return message;

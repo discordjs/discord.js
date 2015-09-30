@@ -4,7 +4,7 @@
 .. _Server : ./docs_server.html
 .. _Channel : ./docs_channel.html
 .. _Message : ./docs_message.html
-.. _PMChannel : #PMChannel
+.. _PMChannel : ./docs_pmchannel.html
 .. _Invite : #invite
 .. _Channel Resolvable : ./docs_resolvable.html#channel-resolvable
 .. _Invite Resolvable : ./docs_resolvable.html#invite-resolvable

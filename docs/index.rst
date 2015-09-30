@@ -34,6 +34,7 @@ Contents:
    docs_user
    docs_server
    docs_channel
+   docs_pmchannel
    docs_message
 
 
