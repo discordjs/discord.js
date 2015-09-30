@@ -399,6 +399,13 @@ Gets a PMChannel_ that matches the specified criteria. E.g:
 - **key** - a `String` that is the key
 - **value** - a `String` that is the value
 
+setPlayingGame(id)
+~~~~~~~~~~~~~~~~~~
+
+Sets the client as playing the specified game name/id.
+
+- **id** - Either a `Number` or a `String`. If it's a Number, it's assumed that you are using the Discord Game ID
+
 -----
 
 Event Management

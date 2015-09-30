@@ -4,6 +4,8 @@ var fs = require("fs");
 
 var server, channel, message, sentMessage = false;
 
+counter = 1;
+
 mybot.on("message", function (message) {
 	
 	console.log("Everyone mentioned? " + message.everyoneMentioned);
@@ -19,16 +21,14 @@ mybot.on("message", function (message) {
 	
 	var onlineUsers = 0;
 	
-	mybot.startTyping(message.channel, 6000);
+	counter++;
+
+	mybot.playingGame( "Minecraft" );
 	
 });
 
 mybot.on("ready", function () {
 	console.log("im ready");
-	
-	for(var chann of mybot.channels){
-		mybot.setTopic(chann, "THINGS");
-	}
 });
 
 mybot.on("debug", function(info){

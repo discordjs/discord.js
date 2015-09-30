@@ -7,6 +7,8 @@ var Message = require("./message.js");
 var Invite = require("./invite.js");
 var PMChannel = require("./PMChannel.js");
 
+var gameMap = require("../ref/gameMap.json");
+
 //node modules
 var request = require("superagent");
 var WebSocket = require("ws");
@@ -53,6 +55,9 @@ class Client {
 		this.readyTime = null;
 		this.checkingQueue = {};
 		this.queue = {};
+		
+		this.__idleTime = null;
+		this.__gameId = null;
 	}
 
 	get uptime() {
@@ -1521,13 +1526,55 @@ class Client {
 		
 		var idleTime = (stat === "online" ? null : Date.now());
 		
+		this.__idleTime = idleTime;
+		
 		this.websocket.send(JSON.stringify({
 			op : 3,
 			d : {
-				idle_since : idleTime,
-				game_id : null
+				idle_since : this.__idleTime,
+				game_id : this.__gameId
 			}
 		}));
+	}
+	
+	setPlayingGame(id){
+		
+		if( id instanceof String || typeof id === `string` ){
+			
+			// working on names
+			var gid = id.trim().toUpperCase();
+			
+			id = null;
+			
+			for( var game of gameMap ){
+				
+				if(game.name.trim().toUpperCase() === gid){
+					
+					id = game.id;
+					break;
+					
+				}
+				
+			}
+			
+		}
+		
+		this.__gameId = id;
+		
+		this.websocket.send(JSON.stringify({
+			op : 3,
+			d : {
+				idle_since : this.__idleTime,
+				game_id : this.__gameId
+			}
+		}));
+		
+	}
+	
+	playingGame(id){
+		
+		this.setPlayingGame(id);
+		
 	}
 }
 
