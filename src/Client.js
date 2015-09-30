@@ -1571,6 +1571,10 @@ class Client {
 		
 	}
 	
+	playGame(id){
+		this.setPlayingGame(id);
+	}
+	
 	playingGame(id){
 		
 		this.setPlayingGame(id);

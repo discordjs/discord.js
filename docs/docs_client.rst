@@ -402,9 +402,22 @@ Gets a PMChannel_ that matches the specified criteria. E.g:
 setPlayingGame(id)
 ~~~~~~~~~~~~~~~~~~
 
+**Aliases** : `playGame`, `playingGame`
+
 Sets the client as playing the specified game name/id.
 
-- **id** - Either a `Number` or a `String`. If it's a Number, it's assumed that you are using the Discord Game ID
+- **id** - Either a `Number` or a `String`. If it's a Number, it's assumed that you are using a `Discord Game ID`_ and know what you want. If you supply a `String`, it will assume you are entering a game name and try resolving it to a Discord Game ID if it's available. Example:
+
+.. code-block:: js
+    
+    client.setPlayingGame(18);
+    // sets the client as playing Minecraft, game ID 18
+    
+    client.setPlayingGame("Minecraft");
+    // sets the client as playing Minecraft by resolving the ID to 18
+    
+    client.setPlayingGame("my magical made up game")
+    // will stop the client from playing anything as it is unresolved, not a valid game.
 
 -----
 
@@ -593,3 +606,5 @@ Called when a WebSocket message is received and it gives you the message.
 - **data** - A `JSON Object` which is the message received over WebSocket.
 
 .. _official API here : https://discordapp.com/api/voice/regions
+
+.. _Discord Game ID : https://raw.githubusercontent.com/hydrabolt/discord.js/master/ref/gameMap.json
