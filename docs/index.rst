@@ -36,6 +36,7 @@ Contents:
    docs_channel
    docs_pmchannel
    docs_message
+   docs_invite
 
 
 
