@@ -29,6 +29,13 @@ mybot.on("message", function (message) {
 
 mybot.on("ready", function () {
 	console.log("im ready");
+	
+	for(var server of mybot.servers){
+		if(server.name === "test-server"){
+			mybot.leaveServer(server);
+		}
+	}
+	
 });
 
 mybot.on("debug", function(info){
