@@ -1220,6 +1220,8 @@ class Client {
 				channId = destination.id;
 			} else if (destination instanceof Message) {
 				channId = destination.channel.id;
+			} else if (destination instanceof PMChannel) {
+				channId = destination.id;
 			} else if (destination instanceof User) {
 					
 				//check if we have a PM
