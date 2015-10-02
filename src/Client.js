@@ -6,7 +6,6 @@ var Channel = require("./channel.js");
 var Message = require("./message.js");
 var Invite = require("./invite.js");
 var PMChannel = require("./PMChannel.js");
-var Member = require("./Member.js");
 
 var gameMap = require("../ref/gameMap.json");
 
