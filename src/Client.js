@@ -6,6 +6,7 @@ var Channel = require("./channel.js");
 var Message = require("./message.js");
 var Invite = require("./invite.js");
 var PMChannel = require("./PMChannel.js");
+var Member = require("./Member.js");
 
 var gameMap = require("../ref/gameMap.json");
 
@@ -1220,6 +1221,8 @@ class Client {
 				channId = destination.id;
 			} else if (destination instanceof Message) {
 				channId = destination.channel.id;
+			} else if (destination instanceof PMChannel) {
+				channId = destination.id;
 			} else if (destination instanceof User) {
 					
 				//check if we have a PM
