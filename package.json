@@ -4,6 +4,7 @@
   "description": "A way to interface with the Discord API",
   "main": "./lib/index.js",
   "scripts": {
+    "prepublish": "grunt dist"
     "test": "node ./test/bot.js"
   },
   "repository": {
