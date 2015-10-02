@@ -168,7 +168,7 @@ class Client {
 							self.token = res.body.token; //set our token
 							
 							self.getGateway().then(function (url) {
-								self.createws(url.replace("discord.gg", "discordapp.net"));
+								self.createws(url);
 								callback(null, self.token);
 								resolve(self.token);
 							}).catch(function (err) {
