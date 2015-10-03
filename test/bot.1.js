@@ -24,7 +24,11 @@ mybot.on("message", function (message) {
 	
 	console.log("the ID is ", user.id);
 	
-	mybot.reply(message, user + "'s evaluated permissions in this channel are " + JSON.stringify(message.channel.permissionsOf(user), null, 4).replace(/true/g, "**true**"));
+	for(key in message.channel.permissionsOf(user)){
+		console.log(key);
+	}
+	
+	mybot.reply(message, user + "'s evaluated permissions in this channel are " + message.channel.permissionsOf(user).attachFiles);
 	
 });
 

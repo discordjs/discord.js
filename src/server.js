@@ -89,8 +89,11 @@ class Server {
 		
 		if(oldRole){
 			
-			oldRole.packed = data.permissions;
-			oldRole.name = data.name;
+			var index = this.roles.indexOf(oldRole);
+			this.roles[index] = new ServerPermissions(permissionGroup);
+			
+			
+			return this.roles[index];
 			
 		}else{
 			return false;

@@ -1053,6 +1053,16 @@ class Client {
 					server.removeRole(role.id);
 					
 					break;
+					
+				case "GUILD_ROLE_UPDATE":
+				
+					var server = self.getServer("id", data.guild_id);
+					var role = server.getRole(data.role.id);
+					var newRole = server.updateRole(data.role);
+					
+					self.trigger("serverRoleUpdate", server, role, newRole);
+					
+					break;
 
 				default:
 					self.debug("received unknown packet");
