@@ -11,8 +11,7 @@ class ServerPermissions {
 		this.packed = data.permissions;
 		this.name = data.name;
 		this.id = data.id;
-		
-		this.createInstantInvite = getBit(0);
+
 		this.banMembers = getBit(1);
 		this.kickMembers = getBit(2);
 		this.manageRoles = getBit(3);
@@ -35,6 +34,9 @@ class ServerPermissions {
 		this.voiceUseVoiceActivation = getBit(25);
 
 	}
+	
+	get createInstantInvite(){return this.getBit(0);}
+	set createInstantInvite(val){this.setBit(0, val);}
 
 	getBit(x) {
 		return ((this.packed >>> x) & 1) === 1;

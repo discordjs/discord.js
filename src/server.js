@@ -83,7 +83,18 @@ class Server {
 		return null;
 	}
 	
-	updateRole(){
+	updateRole(data){
+		
+		var oldRole = this.getRole(data.id);
+		
+		if(oldRole){
+			
+			oldRole.packed = data.permissions;
+			oldRole.name = data.name;
+			
+		}else{
+			return false;
+		}
 		
 	}
 	
