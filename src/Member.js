@@ -4,9 +4,6 @@ class Member extends User{
 	
 	constructor(data){
 		super(data);
-		
-		
-		
 	}
 	
 }
