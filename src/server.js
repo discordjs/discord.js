@@ -1,4 +1,5 @@
 var ServerPermissions = require("./ServerPermissions.js");
+var Member = require("./Member.js");
 
 class Server {
 	constructor(data, client) {
@@ -94,11 +95,12 @@ class Server {
 		return chann;
 	}
 	
-	addMember(member){
-		if (!this.getMember("id", member.id)){
-			this.members.push(member);
+	addMember(user){
+		if (!this.getMember("id", user.id)){
+			var mem = new Member(user, this);
+			this.members.push(mem);
 		}
-		return member;
+		return mem;
 	}
 	
 	toString(){
