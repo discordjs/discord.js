@@ -9,10 +9,6 @@ counter = 1;
 mybot.on("message", function (message) {
 	
 	console.log("Everyone mentioned? " + message.everyoneMentioned);
-	if (mybot.user.equals(message.sender)) {
-		return;
-	}
-
 	if (message.content !== "$$$") {
 		return;
 	}
@@ -43,8 +39,6 @@ mybot.on("unknown", function(info){
 })
 
 mybot.on("channelUpdate", function(oldChan, newChan){
-	
-	console.log(oldChan.topic + " vs " + newChan.topic);
 	
 });
 

@@ -83,6 +83,26 @@ class Server {
 		return null;
 	}
 	
+	updateRole(){
+		
+	}
+	
+	removeRole(id){
+		for (var roleId in this.roles) {
+			if (this.roles[roleId].id === id) {
+				this.roles.splice(roleId, 1);
+			}
+		}
+		
+		for(var member of this.members){
+			for(var roleId in member.rawRoles){
+				if(member.rawRoles[roleId] === id){
+					member.rawRoles.splice(roleId, 1);
+				}
+			}
+		}
+	}
+	
 	getChannel(key, value) {
 		for (var channel of this.channels) {
 			if (channel[key] === value) {

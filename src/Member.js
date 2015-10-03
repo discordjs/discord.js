@@ -48,11 +48,15 @@ class Member extends User{
 			}
 		}
 		
-		if(affectingOverwrites.length === 0){
+		for(var perm of affectingOverwrites){
+			console.log("hey", perm.attachFiles);
+		}
+		
+		if(affectingOverwrites.length === 0 && affectingMemberOverwrites.length === 0){
 			return new EvaluatedPermissions(this.evalPerms.packed);
 		}
 		
-		var finalPacked = affectingOverwrites[0].packed;
+		var finalPacked = (affectingOverwrites.length !== 0 ? affectingOverwrites[0].packed : affectingMemberOverwrites[0].packed);
 		
 		for(var overwrite of affectingOverwrites){
 			finalPacked = finalPacked & ~overwrite.deny;

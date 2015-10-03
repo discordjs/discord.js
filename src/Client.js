@@ -1042,6 +1042,17 @@ class Client {
 					}, 6000);
 
 					break;
+					
+				case "GUILD_ROLE_DELETE":
+				
+					var server = self.getServer("id", data.guild_id);
+					var role = server.getRole(data.role_id);
+					
+					self.trigger("serverRoleDelete", server, role);
+					
+					server.removeRole(role.id);
+					
+					break;
 
 				default:
 					self.debug("received unknown packet");
