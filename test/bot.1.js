@@ -19,7 +19,7 @@ mybot.on("message", function (message) {
 
 	// we can go ahead :)
 	
-	mybot.reply(message, "\n\n"+JSON.stringify(message.channel.server.roles));
+	mybot.reply(message, message.sender.roles);
 	
 });
 

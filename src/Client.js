@@ -938,12 +938,8 @@ class Client {
 					if (server) {
 
 						var user = self.addUser(data.user); //if for whatever reason it doesn't exist..
-						
-						if (!~server.members.indexOf(user)) {
-							server.members.push(user);
-						}
 
-						self.trigger("serverNewMember", user, server);
+						self.trigger("serverNewMember", server.addMember(user, data.roles), server);
 					}
 
 					break;
@@ -956,10 +952,8 @@ class Client {
 
 						var user = self.addUser(data.user); //if for whatever reason it doesn't exist..
 						
-						if (~server.members.indexOf(user)) {
-							server.members.splice(server.members.indexOf(user), 1);
-						}
-
+						server.removeMember("id", user.id);
+						
 						self.trigger("serverRemoveMember", user, server);
 					}
 

@@ -33,7 +33,7 @@ class Server {
 			// it will be identical (unless an async change occurred)
 			// to the client's cache.
 			if(member.user)
-				this.members.push(client.addUser(member.user));
+				this.addMember(client.addUser(member.user), member.roles);
 
 		}
 	}
@@ -68,6 +68,17 @@ class Server {
 	}
 	
 	// get/set
+	
+	getRole(id){
+		for (var role of this.roles) {
+			if (role.id === id) {
+				return role;
+			}
+		}
+
+		return null;
+	}
+	
 	getChannel(key, value) {
 		for (var channel of this.channels) {
 			if (channel[key] === value) {
@@ -88,6 +99,17 @@ class Server {
 		return null;
 	}
 	
+	removeMember(key, value){
+		for (var member of this.members) {
+			if (member[key] === value) {
+				this.members.splice(key, 1);
+				return member;
+			}
+		}
+
+		return false;
+	}
+	
 	addChannel(chann) {
 		if (!this.getChannel("id", chann.id)) {
 			this.channels.push(chann);
@@ -95,9 +117,9 @@ class Server {
 		return chann;
 	}
 	
-	addMember(user){
+	addMember(user, roles){
 		if (!this.getMember("id", user.id)){
-			var mem = new Member(user, this);
+			var mem = new Member(user, this, roles);
 			this.members.push(mem);
 		}
 		return mem;
