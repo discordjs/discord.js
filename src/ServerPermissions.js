@@ -1,4 +1,4 @@
-class Permission {
+class ServerPermissions {
 
 	constructor(packedPermissions) {
 
@@ -28,7 +28,7 @@ class Permission {
 		this.voiceMuteMembers = getBit(22);
 		this.voiceDeafenMembers = getBit(23);
 		this.voiceMoveMembers = getBit(24);
-		this.voiceUseVoiceActivation = getBit(26);
+		this.voiceUseVoiceActivation = getBit(25);
 
 	}
 

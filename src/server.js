@@ -10,6 +10,8 @@ class Server {
 		this.icon = data.icon;
 		this.afkTimeout = data.afk_timeout;
 		this.afkChannelId = data.afk_channel_id;
+		
+		this.roles = [];
 
 		if(!data.members){
 			data.members = [ client.user ];
