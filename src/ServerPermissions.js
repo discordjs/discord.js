@@ -12,8 +12,6 @@ class ServerPermissions {
 		this.name = data.name;
 		this.id = data.id;
 		
-		
-		
 		this.createInstantInvite = getBit(0);
 		this.banMembers = getBit(1);
 		this.kickMembers = getBit(2);
@@ -40,6 +38,10 @@ class ServerPermissions {
 
 	getBit(x) {
 		return ((this.packed >>> x) & 1) === 1;
+	}
+	
+	toString(){
+		return this.name;
 	}
 }
 
