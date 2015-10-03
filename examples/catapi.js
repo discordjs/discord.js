@@ -1,5 +1,6 @@
 /*
-	this bot is an avatar bot, and will give a user their avatar's URL
+	this bot will send an image of a cat to a channel.
+	may be slow depending on your internet connection.
 */
 
 var Discord = require("../");
@@ -21,19 +22,13 @@ bot.on("disconnected", function () {
 });
 
 bot.on("message", function (msg) {
-	if (msg.content === "$avatar") {
+	if (msg.content === "$cat") {
 		
-		//see if the user has an avatar
-		if( msg.sender.avatarURL ){
-			bot.reply(msg, msg.sender.avatarURL);
-		}else{
-			//using reply with a message automatically does:
-			// '@sender, ' for you!
-			bot.reply(msg, "you don't have an avatar!");
-		}
+		//send a message to the channel the ping message was sent in.
+		bot.sendMessage(msg.channel, "pong!");
 		
 		//alert the console
-		console.log("served " + msg.sender.username);
+		console.log("pong-ed " + msg.sender.username);
 
 	}
 });

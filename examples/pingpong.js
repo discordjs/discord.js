@@ -1,32 +1,37 @@
 /*
- * A basic bot that shows how to connect to a Discord account,
- * how to listen to messages and how to send messages.
- *
- * This bot responds to every "ping" message with a "pong".
- */
+	this bot is a ping pong bot, and every time a message
+	beginning with "ping" is sent, it will reply with
+	"pong".
+*/
 
-var Discord = require( "../" );
+var Discord = require("../");
 
-// Create the bot
-var myBot = new Discord.Client();
+// Get the email and password
+var AuthDetails = require("./auth.json");
 
-// Login with an example email and password
-myBot.login( "hello@example.com", "password1" );
+var bot = new Discord.Client();
 
-// The "ready" event is triggered after the bot successfully connected to
-// Discord and is ready to send messages.
-myBot.on( "ready", function() {
-	console.log( "Bot connected successfully." );
-} );
+bot.on("ready", function () {
+	console.log("Ready to begin! Serving in " + bot.channels.length + " channels");
+});
 
-// Add a listener to the "message" event, which triggers upon receiving
-// any message
-myBot.on( "message", function( message ) {
-	// message.content accesses the content of the message as a string.
-	// If it is equal to "ping", then the bot should respond with "pong".
-	if ( message.content === "ping" ) {
-		// Send a message ("pong") to the channel the message was sent in,
-		// which is accessed by message.channel.
-		this.sendMessage( message, "pong" );
+bot.on("disconnected", function () {
+
+	console.log("Disconnected!");
+	process.exit(1); //exit node.js with an error
+	
+});
+
+bot.on("message", function (msg) {
+	if (msg.content.substring(0, 4) === "ping") {
+		
+		//send a message to the channel the ping message was sent in.
+		bot.sendMessage(msg.channel, "pong!");
+		
+		//alert the console
+		console.log("pong-ed " + msg.sender.username);
+
 	}
-} );
+});
+
+bot.login(AuthDetails.email, AuthDetails.password);
