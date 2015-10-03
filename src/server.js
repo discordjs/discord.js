@@ -41,6 +41,10 @@ class Server {
 	get permissionGroups(){
 		return this.roles;
 	}
+	
+	get permissions(){
+		return this.roles;
+	}
 
 	get iconURL() {
 		if (!this.icon)
