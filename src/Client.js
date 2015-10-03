@@ -54,6 +54,7 @@ class Client {
 		this.pmChannelCache = [];
 		this.readyTime = null;
 		this.checkingQueue = {};
+		this.userTypingListener = {};
 		this.queue = {};
 		
 		this.__idleTime = null;
@@ -1021,6 +1022,30 @@ class Client {
 						
 						self.channelCache[ self.channelCache.indexOf(channelInCache) ] = newChann;
 					}
+					
+					break;
+					
+				case "TYPING_START":
+				
+					var userInCache = self.getUser("id", data.user_id);
+					var channelInCache = self.getChannel("id", data.channel_id);
+					
+					if(!self.userTypingListener[data.user_id] || self.userTypingListener[data.user_id] === -1){
+						self.trigger("startTyping", userInCache, channelInCache);
+					}
+					
+					self.userTypingListener[data.user_id] = Date.now();
+					
+					setTimeout(function(){
+						if(self.userTypingListener[data.user_id] === -1){
+							return;
+						}
+						if( Date.now() - self.userTypingListener[data.user_id] > 6000 ){
+							// stopped typing
+							self.trigger("stopTyping", userInCache, channelInCache);
+							self.userTypingListener[data.user_id] = -1;
+						}
+					}, 6000);
 					
 					break;
 
