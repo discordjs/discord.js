@@ -13,7 +13,7 @@ class Channel {
 
         for (var role of data.permission_overwrites) {
             
-            this.roles.push( new ChannelPermissions() );
+            this.roles.push( new ChannelPermissions(role) );
             
         }
         
