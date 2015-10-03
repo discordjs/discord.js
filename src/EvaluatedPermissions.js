@@ -1,26 +1,13 @@
-class ChannelPermissions{
-	constructor(data, channel){
+class EvaluatedPermissions{
+	constructor(data){
 		
 		var self = this;
 		
 		function getBit(x) {
 			return ((self.packed >>> x) & 1) === 1;
 		}
-		
-		this.type = data.type; //either member or role
-		this.id = data.id;
-		
-		if(this.type === "member"){
-			this.packed = channel.server.getMember("id", data.id).evalPerms.packed;	
-		}else{
-			this.packed = channel.server.getRole(data.id).packed;	
-		}
-		
-		this.packed = this.packed & ~data.deny;
-		this.packed = this.packed | data.allow;
-		
-		this.deny = data.deny;
-		this.allow = data.allow;
+	
+		this.packed = data;
 		
 		this.createInstantInvite = getBit(0);
 		//this.banMembers = getBit(1);
@@ -51,4 +38,4 @@ class ChannelPermissions{
 	}
 }
 
-module.exports = ChannelPermissions;
+module.exports = EvaluatedPermissions;
