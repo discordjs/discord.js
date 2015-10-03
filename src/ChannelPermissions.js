@@ -1,6 +1,10 @@
 class ChannelPermissions{
 	constructor(data){
 		
+		function getBit(x) {
+			return ((this.packed >>> x) & 1) === 1;
+		}
+		
 		this.type = data.type; //either member or role
 		
 		this.id = data.id;
@@ -9,6 +13,10 @@ class ChannelPermissions{
 		
 		this.allow = data.allow;
 		
+	}
+	
+	getBit(x) {
+		return ((this.packed >>> x) & 1) === 1;
 	}
 }
 
