@@ -389,7 +389,7 @@ class Client {
 
 		var self = this;
 
-		var prom = new Promise(function (resolve, reject) {
+		return new Promise(function (resolve, reject) {
 			if (timeout) {
 				setTimeout(remove, timeout)
 			} else {
@@ -397,37 +397,29 @@ class Client {
 			}
 
 			function remove() {
-				if (self.options.queue) {
-					if (!self.queue[message.channel.id]) {
-						self.queue[message.channel.id] = [];
+				request
+				.del(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
+				.set("authorization", self.token)
+				.end(function (err, res) {
+					if(err){
+						bad();
+					}else{
+						good();
 					}
-					self.queue[message.channel.id].push({
-						action: "deleteMessage",
-						message: message,
-						then: good,
-						error: bad
-					});
-
-					self.checkQueue(message.channel.id);
-				} else {
-					self._deleteMessage(message).then(good).catch(bad);
-				}
+				});
 			}
 
 			function good() {
-				prom.success = true;
-				callback(null);
+				callback();
 				resolve();
 			}
 
 			function bad(err) {
-				prom.error = err;
 				callback(err);
 				reject(err);
 			}
 		});
-
-		return prom;
+		
 	}
 
 	updateMessage(message, content, callback = function (err, msg) { }) {
@@ -1333,23 +1325,6 @@ class Client {
 						var msg = new Message(res.body, message.channel, message.mentions, message.sender);
 						resolve(msg);
 						message.channel.messages[message.channel.messages.indexOf(message)] = msg;
-					}
-				});
-		});
-	}
-
-	_deleteMessage(message) {
-		var self = this;
-		return new Promise(function (resolve, reject) {
-
-			request
-				.del(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
-				.set("authorization", self.token)
-				.end(function (err, res) {
-					if (err) {
-						reject(err);
-					} else {
-						resolve();
 					}
 				});
 		});
