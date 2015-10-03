@@ -44,6 +44,6 @@ module.exports = function (grunt) {
     // register at least this one task
     grunt.registerTask('default', ['babel']);
     grunt.registerTask('web', ['browserify', "uglify"]);
-    grunt.registerTask('dist', ["babel", "browserify", "uglify"])
+    grunt.registerTask("dist", ["babel", "browserify", "uglify"])
 
 };

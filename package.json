@@ -1,10 +1,9 @@
 {
   "name": "discord.js",
-  "version": "3.6.3",
+  "version": "3.8.0",
   "description": "A way to interface with the Discord API",
   "main": "./lib/index.js",
   "scripts": {
-    "prepublish" : "grunt dist",
     "test": "node ./test/bot.js"
   },
   "repository": {
