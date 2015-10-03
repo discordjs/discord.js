@@ -1,12 +1,18 @@
 class ServerPermissions {
 
-	constructor(packedPermissions) {
+	constructor(data) {
+
+		var self = this;
 
 		function getBit(x) {
-			return ((this.packed >>> x) & 1) === 1;
+			return ((self.packed >>> x) & 1) === 1;
 		}
 
-		this.packed = packedPermissions;
+		this.packed = data.permissions;
+		this.name = data.name;
+		this.id = data.id;
+		
+		
 		
 		this.createInstantInvite = getBit(0);
 		this.banMembers = getBit(1);
@@ -36,3 +42,5 @@ class ServerPermissions {
 		return ((this.packed >>> x) & 1) === 1;
 	}
 }
+
+module.exports = ServerPermissions;

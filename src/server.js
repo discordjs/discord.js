@@ -1,3 +1,5 @@
+var ServerPermissions = require("./ServerPermissions.js");
+
 class Server {
 	constructor(data, client) {
 		this.client = client;
@@ -12,6 +14,10 @@ class Server {
 		this.afkChannelId = data.afk_channel_id;
 		
 		this.roles = [];
+		
+		for(var permissionGroup of data.roles){
+			this.roles.push( new ServerPermissions(permissionGroup) );
+		}
 
 		if(!data.members){
 			data.members = [ client.user ];
@@ -29,6 +35,10 @@ class Server {
 				this.members.push(client.addUser(member.user));
 
 		}
+	}
+	
+	get permissionGroups(){
+		return this.roles;
 	}
 
 	get iconURL() {

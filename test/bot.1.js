@@ -19,11 +19,7 @@ mybot.on("message", function (message) {
 
 	// we can go ahead :)
 	
-	var onlineUsers = 0;
-	
-	counter++;
-
-	mybot.playingGame( "Minecraft" );
+	mybot.reply(message, "\n\n"+JSON.stringify(message.channel.server.roles));
 	
 });
 
