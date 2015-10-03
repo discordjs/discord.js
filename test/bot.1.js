@@ -28,7 +28,7 @@ mybot.on("message", function (message) {
 		console.log(key);
 	}
 	
-	mybot.reply(message, user + "'s evaluated permissions in this channel are " + message.channel.permissionsOf(user).attachFiles);
+	mybot.reply(message, user + "'s evaluated permissions in this channel are " + message.channel.permissionsOf(user).sendTTSMessages);
 	
 });
 

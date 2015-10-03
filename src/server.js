@@ -90,7 +90,7 @@ class Server {
 		if(oldRole){
 			
 			var index = this.roles.indexOf(oldRole);
-			this.roles[index] = new ServerPermissions(permissionGroup);
+			this.roles[index] = new ServerPermissions(data);
 			
 			
 			return this.roles[index];
