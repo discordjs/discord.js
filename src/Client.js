@@ -56,7 +56,7 @@ class Client {
 		this.checkingQueue = {};
 		this.userTypingListener = {};
 		this.queue = {};
-		
+
 		this.__idleTime = null;
 		this.__gameId = null;
 	}
@@ -399,15 +399,15 @@ class Client {
 
 			function remove() {
 				request
-				.del(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
-				.set("authorization", self.token)
-				.end(function (err, res) {
-					if(err){
-						bad();
-					}else{
-						good();
-					}
-				});
+					.del(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
+					.set("authorization", self.token)
+					.end(function (err, res) {
+						if (err) {
+							bad();
+						} else {
+							good();
+						}
+					});
 			}
 
 			function good() {
@@ -420,7 +420,7 @@ class Client {
 				reject(err);
 			}
 		});
-		
+
 	}
 
 	updateMessage(message, content, callback = function (err, msg) { }) {
@@ -757,7 +757,7 @@ class Client {
 				self.trigger("error", err, e);
 				return;
 			}
-			
+
 			self.trigger("raw", dat);
 			
 			//valid message
@@ -1007,46 +1007,46 @@ class Client {
 					}
 
 					break;
-					
+
 				case "CHANNEL_UPDATE":
-					
+
 					var channelInCache = self.getChannel("id", data.id),
 						serverInCache = self.getServer("id", data.guild_id);
-					
-					if(channelInCache && serverInCache){
-						
+
+					if (channelInCache && serverInCache) {
+
 						var newChann = new Channel(data, serverInCache);
 						newChann.messages = channelInCache.messages;
-						
+
 						self.trigger("channelUpdate", channelInCache, newChann);
-						
-						self.channelCache[ self.channelCache.indexOf(channelInCache) ] = newChann;
+
+						self.channelCache[self.channelCache.indexOf(channelInCache)] = newChann;
 					}
-					
+
 					break;
-					
+
 				case "TYPING_START":
-				
+
 					var userInCache = self.getUser("id", data.user_id);
 					var channelInCache = self.getChannel("id", data.channel_id);
-					
-					if(!self.userTypingListener[data.user_id] || self.userTypingListener[data.user_id] === -1){
+
+					if (!self.userTypingListener[data.user_id] || self.userTypingListener[data.user_id] === -1) {
 						self.trigger("startTyping", userInCache, channelInCache);
 					}
-					
+
 					self.userTypingListener[data.user_id] = Date.now();
-					
-					setTimeout(function(){
-						if(self.userTypingListener[data.user_id] === -1){
+
+					setTimeout(function () {
+						if (self.userTypingListener[data.user_id] === -1) {
 							return;
 						}
-						if( Date.now() - self.userTypingListener[data.user_id] > 6000 ){
+						if (Date.now() - self.userTypingListener[data.user_id] > 6000) {
 							// stopped typing
 							self.trigger("stopTyping", userInCache, channelInCache);
 							self.userTypingListener[data.user_id] = -1;
 						}
 					}, 6000);
-					
+
 					break;
 
 				default:
@@ -1082,45 +1082,45 @@ class Client {
 		}
 		return this.getPMChannel("id", data.id);
 	}
-	
-	setTopic(channel, topic, callback = function(err){}){
-		
+
+	setTopic(channel, topic, callback = function (err) { }) {
+
 		var self = this;
-		
-		return new Promise(function(resolve, reject){
-			
+
+		return new Promise(function (resolve, reject) {
+
 			self.resolveDestination(channel).then(next).catch(error);
-			
-			function error(e){
+
+			function error(e) {
 				callback(e);
 				reject(e);
 			}
-			
-			function next(destination){
-				
+
+			function next(destination) {
+
 				var asChan = self.getChannel("id", destination);
-				
+
 				request
 					.patch(`${Endpoints.CHANNELS}/${destination}`)
 					.set("authorization", self.token)
 					.send({
-						name : asChan.name,
-						position : 0,
-						topic : topic
+						name: asChan.name,
+						position: 0,
+						topic: topic
 					})
-					.end(function(err, res){
-						if(err){
+					.end(function (err, res) {
+						if (err) {
 							error(err);
-						}else{
+						} else {
 							asChan.topic = res.body.topic;
 							resolve();
 							callback();
 						}
-					});	
+					});
 			}
-			
+
 		});
-		
+
 	}
 	
 	//def addServer
@@ -1129,7 +1129,7 @@ class Client {
 		var self = this;
 		var server = this.getServer("id", data.id);
 
-		if(data.unavailable){
+		if (data.unavailable) {
 			self.trigger("unavailable", data);
 			self.debug("Server ID " + data.id + " has been marked unavailable by Discord. It was not cached.");
 			return;
@@ -1144,8 +1144,8 @@ class Client {
 				}
 			}
 		}
-		
-		for(var presence of data.presences){
+
+		for (var presence of data.presences) {
 			self.getUser("id", presence.user.id).status = presence.status;
 		}
 
@@ -1370,132 +1370,132 @@ class Client {
 				});
 		});
 	}
-	
-	setStatusIdle(){
+
+	setStatusIdle() {
 		this.setStatus("idle");
 	}
-	
-	setStatusOnline(){
+
+	setStatusOnline() {
 		this.setStatus("online");
 	}
-	
-	setStatusActive(){
+
+	setStatusActive() {
 		this.setStatusOnline();
 	}
-	
-	setStatusHere(){
+
+	setStatusHere() {
 		this.setStatusOnline();
 	}
-	
-	setStatusAway(){
+
+	setStatusAway() {
 		this.setStatusIdle();
 	}
-	
-	startTyping(chann, stopTypeTime){
+
+	startTyping(chann, stopTypeTime) {
 		var self = this;
-		
+
 		this.resolveDestination(chann).then(next);
-		
-		function next(channel){
-			if(self.typingIntervals[channel]){
+
+		function next(channel) {
+			if (self.typingIntervals[channel]) {
 				return;
 			}
-			
-			var fn = function(){
+
+			var fn = function () {
 				request
-				.post(`${Endpoints.CHANNELS}/${channel}/typing`)
-				.set("authorization", self.token)
-				.end();
+					.post(`${Endpoints.CHANNELS}/${channel}/typing`)
+					.set("authorization", self.token)
+					.end();
 			};
-			
+
 			fn();
-			
+
 			var interval = setInterval(fn, 3000);
-			
+
 			self.typingIntervals[channel] = interval;
-			
-			if(stopTypeTime){
-				setTimeout(function(){
+
+			if (stopTypeTime) {
+				setTimeout(function () {
 					self.stopTyping(channel);
 				}, stopTypeTime);
 			}
 		}
 	}
-	
-	stopTyping(chann){
+
+	stopTyping(chann) {
 		var self = this;
-		
+
 		this.resolveDestination(chann).then(next);
-		
-		function next(channel){
-			if(!self.typingIntervals[channel]){
+
+		function next(channel) {
+			if (!self.typingIntervals[channel]) {
 				return;
 			}
-			
+
 			clearInterval(self.typingIntervals[channel]);
-			
+
 			delete self.typingIntervals[channel];
-			
+
 		}
 	}
-	
-	setStatus(stat){
-		
+
+	setStatus(stat) {
+
 		var idleTime = (stat === "online" ? null : Date.now());
-		
+
 		this.__idleTime = idleTime;
-		
+
 		this.websocket.send(JSON.stringify({
-			op : 3,
-			d : {
-				idle_since : this.__idleTime,
-				game_id : this.__gameId
+			op: 3,
+			d: {
+				idle_since: this.__idleTime,
+				game_id: this.__gameId
 			}
 		}));
 	}
-	
-	setPlayingGame(id){
-		
-		if( id instanceof String || typeof id === `string` ){
+
+	setPlayingGame(id) {
+
+		if (id instanceof String || typeof id === `string`) {
 			
 			// working on names
 			var gid = id.trim().toUpperCase();
-			
+
 			id = null;
-			
-			for( var game of gameMap ){
-				
-				if(game.name.trim().toUpperCase() === gid){
-					
+
+			for (var game of gameMap) {
+
+				if (game.name.trim().toUpperCase() === gid) {
+
 					id = game.id;
 					break;
-					
+
 				}
-				
+
 			}
-			
+
 		}
-		
+
 		this.__gameId = id;
-		
+
 		this.websocket.send(JSON.stringify({
-			op : 3,
-			d : {
-				idle_since : this.__idleTime,
-				game_id : this.__gameId
+			op: 3,
+			d: {
+				idle_since: this.__idleTime,
+				game_id: this.__gameId
 			}
 		}));
-		
+
 	}
-	
-	playGame(id){
+
+	playGame(id) {
 		this.setPlayingGame(id);
 	}
-	
-	playingGame(id){
-		
+
+	playingGame(id) {
+
 		this.setPlayingGame(id);
-		
+
 	}
 }
 
