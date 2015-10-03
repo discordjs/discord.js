@@ -7,7 +7,16 @@ class Channel {
         this.topic = data.topic;
         this.id = data.id;
         this.messages = [];
+        this.roles = [];
         //this.isPrivate = isPrivate; //not sure about the implementation of this...
+    }
+    
+    get permissionOverwrites(){
+        return this.roles;
+    }
+    
+    get permissions(){
+        return this.roles;
     }
 
     get client() {
