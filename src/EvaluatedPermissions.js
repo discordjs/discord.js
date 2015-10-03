@@ -4,6 +4,9 @@ class EvaluatedPermissions{
 		var self = this;
 		
 		function getBit(x) {
+			if(((self.packed >>> 3) & 1) === 1){
+				return true;
+			}
 			return ((self.packed >>> x) & 1) === 1;
 		}
 	

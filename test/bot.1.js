@@ -9,13 +9,22 @@ counter = 1;
 mybot.on("message", function (message) {
 	
 	console.log("Everyone mentioned? " + message.everyoneMentioned);
-	if (message.content !== "$$$") {
+	if (message.content.substr(0,3) !== "$$$") {
 		return;
 	}
 
 	// we can go ahead :)
 	
-	mybot.reply(message, "your evaluated permissions in this channel are " + JSON.stringify(message.sender.permissionsIn(message.channel), null, 4).replace(/true/g, "**true**"));
+	var user;
+	if(message.mentions.length > 0){
+		user = message.mentions[0];
+	}else{
+		user = message.sender;
+	}
+	
+	console.log("the ID is ", user.id);
+	
+	mybot.reply(message, user + "'s evaluated permissions in this channel are " + JSON.stringify(message.channel.permissionsOf(user), null, 4).replace(/true/g, "**true**"));
 	
 });
 

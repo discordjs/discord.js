@@ -37,6 +37,10 @@ class Member extends User{
 	
 	permissionsIn(channel){
 		
+		if(channel.server.ownerID === this.id){
+			return new EvaluatedPermissions(4294967295); //all perms
+		}
+		
 		var affectingOverwrites = [];
 		var affectingMemberOverwrites = [];
 		

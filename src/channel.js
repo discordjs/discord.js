@@ -32,6 +32,18 @@ class Channel {
         return this.server.client;
     }
 
+    permissionsOf(member){
+        
+        var mem = this.server.getMember("id", member.id);
+        
+        if(mem){
+            return mem.permissionsIn(this);
+        }else{
+            return null;
+        }
+        
+    }
+
     equals(object) {
         return (object && object.id === this.id);
     }
