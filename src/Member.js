@@ -1,4 +1,5 @@
 var User = require("./user.js");
+var ServerPermissions = require("./ServerPermissions.js");
 
 class Member extends User{
 	
@@ -10,13 +11,29 @@ class Member extends User{
 	
 	get roles(){
 		
-		var ufRoles = [];
+		var ufRoles = [ this.server.getRole(this.server.id) ];
 		
+		console.log(this.rawRoles);
 		for(var rawRole of this.rawRoles){
 			ufRoles.push( this.server.getRole(rawRole) );
 		}
 		
 		return ufRoles;
+		
+	}
+	
+	get evalPerms(){
+		
+		var basePerms = this.roles, //cache roles as it can be slightly expensive
+			basePerm = basePerms[0].packed;
+			
+		for(var perm of basePerms){
+			basePerm = basePerm | perm.packed;
+		}
+		
+		return new ServerPermissions({
+			permissions : basePerm
+		});
 		
 	}
 	

@@ -19,7 +19,7 @@ mybot.on("message", function (message) {
 
 	// we can go ahead :)
 	
-	mybot.reply(message, message.sender.roles);
+	mybot.reply(message, "your evaluated server-wide permissions are " + JSON.stringify(message.sender.evalPerms, null, 4).replace(/true/g, "**true**"));
 	
 });
 
