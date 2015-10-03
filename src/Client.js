@@ -54,6 +54,7 @@ class Client {
 		this.pmChannelCache = [];
 		this.readyTime = null;
 		this.checkingQueue = {};
+		this.userTypingListener = {};
 		this.queue = {};
 		
 		this.__idleTime = null;
@@ -389,7 +390,7 @@ class Client {
 
 		var self = this;
 
-		var prom = new Promise(function (resolve, reject) {
+		return new Promise(function (resolve, reject) {
 			if (timeout) {
 				setTimeout(remove, timeout)
 			} else {
@@ -397,37 +398,29 @@ class Client {
 			}
 
 			function remove() {
-				if (self.options.queue) {
-					if (!self.queue[message.channel.id]) {
-						self.queue[message.channel.id] = [];
+				request
+				.del(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
+				.set("authorization", self.token)
+				.end(function (err, res) {
+					if(err){
+						bad();
+					}else{
+						good();
 					}
-					self.queue[message.channel.id].push({
-						action: "deleteMessage",
-						message: message,
-						then: good,
-						error: bad
-					});
-
-					self.checkQueue(message.channel.id);
-				} else {
-					self._deleteMessage(message).then(good).catch(bad);
-				}
+				});
 			}
 
 			function good() {
-				prom.success = true;
-				callback(null);
+				callback();
 				resolve();
 			}
 
 			function bad(err) {
-				prom.error = err;
 				callback(err);
 				reject(err);
 			}
 		});
-
-		return prom;
+		
 	}
 
 	updateMessage(message, content, callback = function (err, msg) { }) {
@@ -1031,6 +1024,30 @@ class Client {
 					}
 					
 					break;
+					
+				case "TYPING_START":
+				
+					var userInCache = self.getUser("id", data.user_id);
+					var channelInCache = self.getChannel("id", data.channel_id);
+					
+					if(!self.userTypingListener[data.user_id] || self.userTypingListener[data.user_id] === -1){
+						self.trigger("startTyping", userInCache, channelInCache);
+					}
+					
+					self.userTypingListener[data.user_id] = Date.now();
+					
+					setTimeout(function(){
+						if(self.userTypingListener[data.user_id] === -1){
+							return;
+						}
+						if( Date.now() - self.userTypingListener[data.user_id] > 6000 ){
+							// stopped typing
+							self.trigger("stopTyping", userInCache, channelInCache);
+							self.userTypingListener[data.user_id] = -1;
+						}
+					}, 6000);
+					
+					break;
 
 				default:
 					self.debug("received unknown packet");
@@ -1336,108 +1353,6 @@ class Client {
 					}
 				});
 		});
-	}
-
-	_deleteMessage(message) {
-		var self = this;
-		return new Promise(function (resolve, reject) {
-
-			request
-				.del(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
-				.set("authorization", self.token)
-				.end(function (err, res) {
-					if (err) {
-						reject(err);
-					} else {
-						resolve();
-					}
-				});
-		});
-	}
-
-	checkQueue(channelID) {
-
-		var self = this;
-
-		if (!this.checkingQueue[channelID]) {
-			//if we aren't already checking this queue.
-			this.checkingQueue[channelID] = true;
-			doNext();
-
-			function doNext() {
-				if (self.queue[channelID].length === 0) {
-					done();
-					return;
-				}
-				var queuedEvent = self.queue[channelID][0];
-				switch (queuedEvent.action) {
-					case "sendMessage":
-						var msgToSend = queuedEvent;
-						self._sendMessage(channelID, msgToSend.content, msgToSend.tts, msgToSend.mentions)
-							.then(function (msg) {
-								msgToSend.then(msg);
-								self.queue[channelID].shift();
-								doNext();
-							})
-							.catch(function (err) {
-								msgToSend.error(err);
-								self.queue[channelID].shift();
-								doNext();
-							});
-						break;
-					case "sendFile":
-						var fileToSend = queuedEvent;
-						self._sendFile(channelID, fileToSend.attachment, fileToSend.attachmentName)
-							.then(function (msg) {
-								fileToSend.then(msg);
-								self.queue[channelID].shift();
-								doNext();
-							})
-							.catch(function (err) {
-								fileToSend.error(err);
-								self.queue[channelID].shift();
-								doNext();
-							});
-						break;
-					case "updateMessage":
-						var msgToUpd = queuedEvent;
-						self._updateMessage(msgToUpd.message, msgToUpd.content)
-							.then(function (msg) {
-								msgToUpd.then(msg);
-								self.queue[channelID].shift();
-								doNext();
-							})
-							.catch(function (err) {
-								msgToUpd.error(err);
-								self.queue[channelID].shift();
-								doNext();
-							});
-						break;
-					case "deleteMessage":
-						var msgToDel = queuedEvent;
-						self._deleteMessage(msgToDel.message)
-							.then(function (msg) {
-								msgToDel.then(msg);
-								self.queue[channelID].shift();
-								doNext();
-							})
-							.catch(function (err) {
-								msgToDel.error(err);
-								self.queue[channelID].shift();
-								doNext();
-							});
-						break;
-					default:
-						done();
-						break;
-				}
-			}
-
-			function done() {
-				self.checkingQueue[channelID] = false;
-				return;
-			}
-		}
 	}
 
 	getGateway() {
