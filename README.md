@@ -11,6 +11,8 @@ discord.js is a node module used as a way of interfacing with
 [Discord](https://discordapp.com/). It is a very useful module for creating
 bots.
 
+**The examples in the repo are in EC6, either update your node or compile them down to babel yourself if you want to use them!**
+
 ### Installation
 `npm install --save discord.js`
 
