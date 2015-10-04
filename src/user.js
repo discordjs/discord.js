@@ -4,7 +4,7 @@ class User{
 		this.discriminator = data.discriminator;
 		this.id = data.id;
 		this.avatar = data.avatar;
-		this.status = "offline";
+		this.status = data.status || "offline";
 	}
 	
 	// access using user.avatarURL;

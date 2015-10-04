@@ -9,21 +9,26 @@ counter = 1;
 mybot.on("message", function (message) {
 	
 	console.log("Everyone mentioned? " + message.everyoneMentioned);
-	if (mybot.user.equals(message.sender)) {
-		return;
-	}
-
-	if (message.content !== "$$$") {
+	if (message.content.substr(0,3) !== "$$$") {
 		return;
 	}
 
 	// we can go ahead :)
 	
-	var onlineUsers = 0;
+	var user;
+	if(message.mentions.length > 0){
+		user = message.mentions[0];
+	}else{
+		user = message.sender;
+	}
 	
-	counter++;
-
-	mybot.playingGame( "Minecraft" );
+	console.log("the ID is ", user.id);
+	
+	for(key in message.channel.permissionsOf(user)){
+		console.log(key);
+	}
+	
+	mybot.reply(message, user + "'s evaluated permissions in this channel are " + message.channel.permissionsOf(user).sendTTSMessages);
 	
 });
 
@@ -47,8 +52,6 @@ mybot.on("unknown", function(info){
 })
 
 mybot.on("channelUpdate", function(oldChan, newChan){
-	
-	console.log(oldChan.topic + " vs " + newChan.topic);
 	
 });
 
