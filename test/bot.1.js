@@ -44,7 +44,7 @@ mybot.on("ready", function () {
 });
 
 mybot.on("debug", function(info){
-	console.log(info);
+	
 })
 
 mybot.on("unknown", function(info){
@@ -55,12 +55,6 @@ mybot.on("channelUpdate", function(oldChan, newChan){
 	
 });
 
-mybot.on("startTyping", function(user, channel){
-	console.log("start", user);
-});
-mybot.on("stopTyping", function(user, channel){
-	console.log("stop", user);
-});
 
 function dump(msg) {
 	console.log(msg);

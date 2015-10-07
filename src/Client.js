@@ -983,6 +983,12 @@ class Client {
 
 					if (userInCache) {
 						//user exists
+						
+						data.user.username = data.user.username || userInCache.username;
+						data.user.id = data.user.id || userInCache.id;
+						data.user.discriminator = data.user.discriminator || userInCache.discriminator;
+						data.user.avatar = data.user.avatar || userInCache.avatar;
+						
 						var presenceUser = new User(data.user);
 						if (presenceUser.equalsStrict(userInCache)) {
 							//they're exactly the same, an actual presence update
@@ -995,8 +1001,8 @@ class Client {
 							});
 						} else {
 							//one of their details changed.
-							self.trigger("userUpdate", userInCache, presenceUser);
 							self.userCache[self.userCache.indexOf(userInCache)] = presenceUser;
+							self.trigger("userUpdate", userInCache, presenceUser);
 						}
 					}
 
