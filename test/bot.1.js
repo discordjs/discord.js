@@ -22,13 +22,9 @@ mybot.on("message", function (message) {
 		user = message.sender;
 	}
 	
-	console.log("the ID is ", user.id);
+	console.log( mybot.getUser("username", "meew0") );
 	
-	for(key in message.channel.permissionsOf(user)){
-		console.log(key);
-	}
-	
-	mybot.reply(message, user + "'s evaluated permissions in this channel are " + message.channel.permissionsOf(user).sendTTSMessages);
+	mybot.reply(message, JSON.stringify(message.mentions, null, 4));
 	
 });
 

@@ -11,11 +11,10 @@ class Channel {
         this.messages = [];
         this.roles = [];
 
-        for (var role of data.permission_overwrites) {
-            
-            this.roles.push( new ChannelPermissions(role, this) );
-            
-        }
+        if(data.permission_overwrites)
+            for (var role of data.permission_overwrites) {
+                this.roles.push( new ChannelPermissions(role, this) );
+            }
         
         //this.isPrivate = isPrivate; //not sure about the implementation of this...
     }

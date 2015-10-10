@@ -12,7 +12,13 @@ class Message{
 		this.editedTimestamp = data.edited_timestamp;
 		this.content = data.content.trim();
 		this.channel = channel;
-		this.author = this.channel.server.getMember("id", author.id);
+		
+		if(this.isPrivate){
+			this.author = this.channel.client.getUser("id", author.id);
+		}else{
+			this.author = this.channel.server.getMember("id", author.id) || this.channel.client.getUser("id", author.id);
+		}
+		
 		this.attachments = data.attachments;
 	}
 	

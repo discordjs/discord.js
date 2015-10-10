@@ -3,6 +3,7 @@ class PMChannel {
         this.user = client.getUser("id", data.recipient.id);
         this.id = data.id;
 		this.messages = [];
+		this.client = client;
     }
     
     addMessage(data){
