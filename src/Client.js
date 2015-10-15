@@ -920,7 +920,12 @@ class Client {
 
 					if (!channel) {
 
-						var chann = self.addChannel(data, data.guild_id);
+						var chann;
+						if (data.is_private) {
+							chann = self.addPMChannel(data);
+						} else {
+							chann = self.addChannel(data, data.guild_id);
+						}
 						var srv = self.getServer("id", data.guild_id);
 						if (srv) {
 							srv.addChannel(chann);
@@ -1268,7 +1273,7 @@ class Client {
 					
 				//check if we have a PM
 				for (var pmc of self.pmChannelCache) {
-					if (pmc.user.equals(destination)) {
+					if (pmc.user && pmc.user.equals(destination)) {
 						resolve(pmc.id);
 						return;
 					}
