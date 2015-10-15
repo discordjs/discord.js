@@ -1000,6 +1000,7 @@ class Client {
 								gameId: data.game_id
 							});
 							userInCache.status = data.status;
+							userInCache.gameId = data.game_id;
 						} else {
 							//one of their details changed.
 							self.userCache[self.userCache.indexOf(userInCache)] = presenceUser;
@@ -1168,7 +1169,9 @@ class Client {
 		}
 
 		for (var presence of data.presences) {
-			self.getUser("id", presence.user.id).status = presence.status;
+			var user = self.getUser("id", presence.user.id);
+			user.status = presence.status;
+			user.gameId = presence.game_id;
 		}
 
 		return server;
