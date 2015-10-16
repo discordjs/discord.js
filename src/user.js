@@ -5,6 +5,7 @@ class User{
 		this.id = data.id;
 		this.avatar = data.avatar;
 		this.status = data.status || "offline";
+		this.gameId = data.game_id || null;
 	}
 	
 	// access using user.avatarURL;

@@ -920,7 +920,12 @@ class Client {
 
 					if (!channel) {
 
-						var chann = self.addChannel(data, data.guild_id);
+						var chann;
+						if (data.is_private) {
+							chann = self.addPMChannel(data);
+						} else {
+							chann = self.addChannel(data, data.guild_id);
+						}
 						var srv = self.getServer("id", data.guild_id);
 						if (srv) {
 							srv.addChannel(chann);
@@ -1000,6 +1005,7 @@ class Client {
 								gameId: data.game_id
 							});
 							userInCache.status = data.status;
+							userInCache.gameId = data.game_id;
 						} else {
 							//one of their details changed.
 							self.userCache[self.userCache.indexOf(userInCache)] = presenceUser;
@@ -1168,7 +1174,9 @@ class Client {
 		}
 
 		for (var presence of data.presences) {
-			self.getUser("id", presence.user.id).status = presence.status;
+			var user = self.getUser("id", presence.user.id);
+			user.status = presence.status;
+			user.gameId = presence.game_id;
 		}
 
 		return server;
@@ -1265,7 +1273,7 @@ class Client {
 					
 				//check if we have a PM
 				for (var pmc of self.pmChannelCache) {
-					if (pmc.user.equals(destination)) {
+					if (pmc.user && pmc.user.equals(destination)) {
 						resolve(pmc.id);
 						return;
 					}
