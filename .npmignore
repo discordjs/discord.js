@@ -1,0 +1,5 @@
+.vscode/
+docs/
+examples/
+web-dist/
+.travis.yml
