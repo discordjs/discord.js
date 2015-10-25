@@ -35,6 +35,33 @@ mybot.login("email", "password");
 ```
 ---
 
+### What's new in 3.9.0?
+
+Amongst some fixes to web distribution creation, you can now opt for easier string formatting! However, it does modify String globally so you'll have to run:
+
+```js
+Discord.patchStrings()
+```
+
+After you have run this, you can do:
+```
+
+"message".bold.underline.italic
+// generates "*__**message**__*"
+
+```
+
+A full list of modifiers (all chainable):
+
+* bold `**`
+* italic `*`
+* underline `__`
+* strike `~`
+* code ` ` `
+* codeblock` ``` `
+
+---
+
 ### Related Projects
 
 Here is a list of other Discord APIs:

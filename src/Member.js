@@ -52,9 +52,6 @@ class Member extends User{
 			}
 		}
 		
-		for(var perm of affectingOverwrites){
-			console.log("hey", perm.attachFiles);
-		}
 		
 		if(affectingOverwrites.length === 0 && affectingMemberOverwrites.length === 0){
 			return new EvaluatedPermissions(this.evalPerms.packed);

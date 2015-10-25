@@ -2,6 +2,8 @@ var Discord = require("../");
 var mybot = new Discord.Client();
 var fs = require("fs");
 
+Discord.patchStrings();
+
 var server, channel, message, sentMessage = false;
 
 counter = 1;
@@ -28,7 +30,7 @@ mybot.on("message", function (message) {
 	perms = JSON.parse(perms);
 	
 	mybot.sendMessage(message,
-		JSON.stringify(perms, null, 4).replace(new RegExp("true", "g"), "**true**")
+		"one" + "two".italic + "three"
 	);
 	
 });
