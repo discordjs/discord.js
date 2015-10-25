@@ -6,6 +6,10 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON("package.json"),
         // define source files and their destinations
         babel: {
+            options: {
+                loose: "all",
+                compact: true
+            },
             dist: {
                 files: [{
                     expand: true,
