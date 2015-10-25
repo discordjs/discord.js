@@ -1,3 +1,6 @@
+var ServerPermissions = require("./ServerPermissions.js");
+var Member = require("./Member.js");
+
 class Server {
 	constructor(data, client) {
 		this.client = client;
@@ -10,6 +13,12 @@ class Server {
 		this.icon = data.icon;
 		this.afkTimeout = data.afk_timeout;
 		this.afkChannelId = data.afk_channel_id;
+		
+		this.roles = [];
+		
+		for(var permissionGroup of data.roles){
+			this.roles.push( new ServerPermissions(permissionGroup) );
+		}
 
 		if(!data.members){
 			data.members = [ client.user ];
@@ -24,9 +33,17 @@ class Server {
 			// it will be identical (unless an async change occurred)
 			// to the client's cache.
 			if(member.user)
-				this.members.push(client.addUser(member.user));
+				this.addMember(client.addUser(member.user), member.roles);
 
 		}
+	}
+	
+	get permissionGroups(){
+		return this.roles;
+	}
+	
+	get permissions(){
+		return this.roles;
 	}
 
 	get iconURL() {
@@ -50,7 +67,56 @@ class Server {
 		return this.client.getUser("id", this.ownerID);
 	}
 	
+	get users() {
+		return this.members;
+	}
+	
 	// get/set
+	
+	getRole(id){
+		for (var role of this.roles) {
+			if (role.id === id) {
+				return role;
+			}
+		}
+
+		return null;
+	}
+	
+	updateRole(data){
+		
+		var oldRole = this.getRole(data.id);
+		
+		if(oldRole){
+			
+			var index = this.roles.indexOf(oldRole);
+			this.roles[index] = new ServerPermissions(data);
+			
+			
+			return this.roles[index];
+			
+		}else{
+			return false;
+		}
+		
+	}
+	
+	removeRole(id){
+		for (var roleId in this.roles) {
+			if (this.roles[roleId].id === id) {
+				this.roles.splice(roleId, 1);
+			}
+		}
+		
+		for(var member of this.members){
+			for(var roleId in member.rawRoles){
+				if(member.rawRoles[roleId] === id){
+					member.rawRoles.splice(roleId, 1);
+				}
+			}
+		}
+	}
+	
 	getChannel(key, value) {
 		for (var channel of this.channels) {
 			if (channel[key] === value) {
@@ -71,6 +137,17 @@ class Server {
 		return null;
 	}
 	
+	removeMember(key, value){
+		for (var member of this.members) {
+			if (member[key] === value) {
+				this.members.splice(key, 1);
+				return member;
+			}
+		}
+
+		return false;
+	}
+	
 	addChannel(chann) {
 		if (!this.getChannel("id", chann.id)) {
 			this.channels.push(chann);
@@ -78,15 +155,20 @@ class Server {
 		return chann;
 	}
 	
-	addMember(member){
-		if (!this.getMember("id", member.id)){
-			this.members.push(member);
+	addMember(user, roles){
+		if (!this.getMember("id", user.id)){
+			var mem = new Member(user, this, roles);
+			this.members.push(mem);
 		}
-		return member;
+		return mem;
 	}
 	
 	toString(){
 		return this.name;
+	}
+	
+	equals(object){
+		return object.id === this.id;
 	}
 }
 

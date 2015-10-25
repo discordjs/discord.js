@@ -3,9 +3,13 @@ module.exports = function (grunt) {
     require('load-grunt-tasks')(grunt);
 
     grunt.initConfig({
-
+        pkg: grunt.file.readJSON("package.json"),
         // define source files and their destinations
         babel: {
+            options: {
+                loose: "all",
+                compact: true
+            },
             dist: {
                 files: [{
                     expand: true,
@@ -19,7 +23,7 @@ module.exports = function (grunt) {
         browserify: {
             dist: {
                 files: {
-                    'web-dist/discord.js': ["lib/index.js"],
+                    'web-dist/discord.<%= pkg.version %>.js': ["lib/index.js"],
                 },
                 options: {
                     browserifyOptions: {
@@ -31,7 +35,7 @@ module.exports = function (grunt) {
         uglify: {
             min: {
                 files: {
-                    "./web-dist/discord.min.js": "./web-dist/discord.js"
+                    "./web-dist/discord.min.<%= pkg.version %>.js": "./web-dist/discord.<%= pkg.version %>.js"
                 }
             }
         }
@@ -44,5 +48,6 @@ module.exports = function (grunt) {
     // register at least this one task
     grunt.registerTask('default', ['babel']);
     grunt.registerTask('web', ['browserify', "uglify"]);
+    grunt.registerTask("dist", ["babel", "browserify", "uglify"])
 
 };

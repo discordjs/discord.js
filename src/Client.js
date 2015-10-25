@@ -7,6 +7,8 @@ var Message = require("./message.js");
 var Invite = require("./invite.js");
 var PMChannel = require("./PMChannel.js");
 
+var gameMap = require("../ref/gameMap.json");
+
 //node modules
 var request = require("superagent");
 var WebSocket = require("ws");
@@ -29,11 +31,11 @@ class Client {
 		this.token = token;
 		this.state = 0;
 		this.websocket = null;
-		this.events = new Map();
+		this.events = {};
 		this.user = null;
 		this.alreadySentData = false;
-		this.serverCreateListener = new Map();
-
+		this.serverCreateListener = {};
+		this.typingIntervals = {};
 		this.email = "abc";
 		this.password = "abc";
 		
@@ -52,7 +54,11 @@ class Client {
 		this.pmChannelCache = [];
 		this.readyTime = null;
 		this.checkingQueue = {};
+		this.userTypingListener = {};
 		this.queue = {};
+
+		this.__idleTime = null;
+		this.__gameId = null;
 	}
 
 	get uptime() {
@@ -103,11 +109,11 @@ class Client {
 	}
 
 	on(event, fn) {
-		this.events.set(event, fn);
+		this.events[event] = fn;
 	}
 
-	off(event, fn) {
-		this.events.delete(event);
+	off(event) {
+		this.events[event] = null;
 	}
 
 	keepAlive() {
@@ -124,7 +130,7 @@ class Client {
 		for (var arg in arguments) {
 			args.push(arguments[arg]);
 		}
-		var evt = this.events.get(event);
+		var evt = this.events[event];
 		if (evt) {
 			evt.apply(this, args.slice(1));
 		}
@@ -153,14 +159,16 @@ class Client {
 						if (err) {
 							self.state = 4; //set state to disconnected
 							self.trigger("disconnected");
-							self.websocket.close();
+							if (self.websocket) {
+								self.websocket.close();
+							}
 							callback(err);
 							reject(err);
 						} else {
 							self.state = 2; //set state to logged in (not yet ready)
 							self.token = res.body.token; //set our token
 							
-							getGateway().then(function (url) {
+							self.getGateway().then(function (url) {
 								self.createws(url);
 								callback(null, self.token);
 								resolve(self.token);
@@ -225,7 +233,7 @@ class Client {
 						// potentially redundant in future
 						// creating here does NOT give us the channels of the server
 						// so we must wait for the guild_create event.
-						self.serverCreateListener.set(res.body.id, [resolve, callback]);
+						self.serverCreateListener[res.body.id] = [resolve, callback];
 						/*var srv = self.addServer(res.body);
 						callback(null, srv);
 						resolve(srv);*/
@@ -359,14 +367,20 @@ class Client {
 
 	}
 
-	reply(destination, message, callback = function (err, msg) { }) {
+	reply(destination, message, tts, callback = function (err, msg) { }) {
 
 		var self = this;
 
 		return new Promise(function (response, reject) {
 
+			if (typeof tts === "function") {
+				// tts is a function, which means the developer wants this to be the callback
+				callback = tts;
+				tts = false;
+			}
+
 			var user = destination.sender;
-			self.sendMessage(destination, message, callback, user + ", ").then(response).catch(reject);
+			self.sendMessage(destination, message, tts, callback, user + ", ").then(response).catch(reject);
 
 		});
 
@@ -375,8 +389,8 @@ class Client {
 	deleteMessage(message, timeout, callback = function (err, msg) { }) {
 
 		var self = this;
-		
-		var prom = new Promise(function (resolve, reject) {
+
+		return new Promise(function (resolve, reject) {
 			if (timeout) {
 				setTimeout(remove, timeout)
 			} else {
@@ -384,37 +398,29 @@ class Client {
 			}
 
 			function remove() {
-				if(self.options.queue){
-					if (!self.queue[message.channel.id]) {
-						self.queue[message.channel.id] = [];
-					}
-					self.queue[message.channel.id].push({
-						action: "deleteMessage",
-						message: message,
-						then: good,
-						error: bad
+				request
+					.del(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
+					.set("authorization", self.token)
+					.end(function (err, res) {
+						if (err) {
+							bad();
+						} else {
+							good();
+						}
 					});
-					
-					self.checkQueue(message.channel.id);
-				}else{
-					self._deleteMessage(message).then(good).catch(bad);
-				}
 			}
-			
-			function good(){
-				prom.success = true;
-				callback(null);
+
+			function good() {
+				callback();
 				resolve();
 			}
-			
-			function bad(err){
-				prom.error = err;
+
+			function bad(err) {
 				callback(err);
 				reject(err);
 			}
 		});
-		
-		return prom;
+
 	}
 
 	updateMessage(message, content, callback = function (err, msg) { }) {
@@ -425,7 +431,7 @@ class Client {
 
 			content = (content instanceof Array ? content.join("\n") : content);
 
-			if(self.options.queue){
+			if (self.options.queue) {
 				if (!self.queue[message.channel.id]) {
 					self.queue[message.channel.id] = [];
 				}
@@ -436,26 +442,26 @@ class Client {
 					then: good,
 					error: bad
 				});
-				
+
 				self.checkQueue(message.channel.id);
-			}else{
+			} else {
 				self._updateMessage(message, content).then(good).catch(bad);
 			}
-		
-		function good(msg){
-			prom.message = msg;
-			callback(null, msg);
-			resolve(msg);
-		}
-		
-		function bad(error){
-			prom.error = error;
-			callback(error);
-			reject(error);
-		}
+
+			function good(msg) {
+				prom.message = msg;
+				callback(null, msg);
+				resolve(msg);
+			}
+
+			function bad(error) {
+				prom.error = error;
+				callback(error);
+				reject(error);
+			}
 
 		});
-		
+
 		return prom;
 	}
 
@@ -576,9 +582,41 @@ class Client {
 						if (self.getServer("id", res.body.guild.id)) {
 							resolve(self.getServer("id", res.body.guild.id));
 						} else {
-							self.serverCreateListener.set(res.body.guild.id, [resolve, callback]);
+							self.serverCreateListener[res.body.guild.id] = [resolve, callback];
 						}
 					}
+				});
+
+		});
+
+	}
+
+	setAvatar(resource, callback = function (err) { }) {
+
+		var self = this;
+
+		return new Promise(function (resolve, reject) {
+			if (resource instanceof Buffer) {
+				resource = resource.toString("base64");
+				resource = "data:image/jpg;base64," + resource;
+			}
+
+			request
+				.patch(`${Endpoints.API}/users/@me`)
+				.set("authorization", self.token)
+				.send({
+					avatar: resource,
+					email: self.email,
+					new_password: null,
+					password: self.password,
+					username: self.user.username
+				})
+				.end(function (err) {
+					callback(err);
+					if (err)
+						reject(err);
+					else
+						resolve();
 				});
 
 		});
@@ -603,7 +641,7 @@ class Client {
 			self.resolveDestination(destination).then(send).catch(bad);
 
 			function send(destination) {
-				if(self.options.queue){
+				if (self.options.queue) {
 					//queue send file too
 					if (!self.queue[destination]) {
 						self.queue[destination] = [];
@@ -611,14 +649,14 @@ class Client {
 
 					self.queue[destination].push({
 						action: "sendFile",
-						attachment : fstream,
-						attachmentName : fileName,
+						attachment: fstream,
+						attachmentName: fileName,
 						then: good,
 						error: bad
 					});
 
 					self.checkQueue(destination);
-				}else{
+				} else {
 					//not queue
 					self._sendFile(destination, fstream, fileName).then(good).catch(bad);
 				}
@@ -637,16 +675,22 @@ class Client {
 			}
 
 		});
-		
+
 		return prom;
 
 	}
 
-	sendMessage(destination, message, callback = function (err, msg) { }, premessage = "") {
+	sendMessage(destination, message, tts, callback = function (err, msg) { }, premessage = "") {
 
 		var self = this;
 
 		var prom = new Promise(function (resolve, reject) {
+
+			if (typeof tts === "function") {
+				// tts is a function, which means the developer wants this to be the callback
+				callback = tts;
+				tts = false;
+			}
 
 			message = premessage + resolveMessage(message);
 			var mentions = resolveMentions();
@@ -668,13 +712,14 @@ class Client {
 						action: "sendMessage",
 						content: message,
 						mentions: mentions,
+						tts: !!tts, //incase it's not a boolean
 						then: mgood,
 						error: mbad
 					});
 
 					self.checkQueue(destination);
 				} else {
-					self._sendMessage(destination, message, mentions).then(mgood).catch(mbad);
+					self._sendMessage(destination, message, tts, mentions).then(mgood).catch(mbad);
 				}
 
 			}
@@ -708,7 +753,7 @@ class Client {
 			}
 
 		});
-		
+
 		return prom;
 	}
 	
@@ -744,6 +789,8 @@ class Client {
 				self.trigger("error", err, e);
 				return;
 			}
+
+			self.trigger("raw", dat);
 			
 			//valid message
 			switch (dat.t) {
@@ -888,11 +935,11 @@ class Client {
 						
 					}*/
 
-					if (self.serverCreateListener.get(data.id)) {
-						var cbs = self.serverCreateListener.get(data.id);
+					if (self.serverCreateListener[data.id]) {
+						var cbs = self.serverCreateListener[data.id];
 						cbs[0](server); //promise then callback
 						cbs[1](null, server); //legacy callback
-						self.serverCreateListener.delete(data.id);
+						self.serverCreateListener[data.id] = null;
 					}
 
 					self.trigger("serverCreate", server);
@@ -905,7 +952,12 @@ class Client {
 
 					if (!channel) {
 
-						var chann = self.addChannel(data, data.guild_id);
+						var chann;
+						if (data.is_private) {
+							chann = self.addPMChannel(data);
+						} else {
+							chann = self.addChannel(data, data.guild_id);
+						}
 						var srv = self.getServer("id", data.guild_id);
 						if (srv) {
 							srv.addChannel(chann);
@@ -923,12 +975,8 @@ class Client {
 					if (server) {
 
 						var user = self.addUser(data.user); //if for whatever reason it doesn't exist..
-						
-						if (!~server.members.indexOf(user)) {
-							server.members.push(user);
-						}
 
-						self.trigger("serverNewMember", user);
+						self.trigger("serverNewMember", server.addMember(user, data.roles), server);
 					}
 
 					break;
@@ -941,11 +989,9 @@ class Client {
 
 						var user = self.addUser(data.user); //if for whatever reason it doesn't exist..
 						
-						if (~server.members.indexOf(user)) {
-							server.members.splice(server.members.indexOf(user), 1);
-						}
+						server.removeMember("id", user.id);
 
-						self.trigger("serverRemoveMember", user);
+						self.trigger("serverRemoveMember", user, server);
 					}
 
 					break;
@@ -974,21 +1020,92 @@ class Client {
 
 					if (userInCache) {
 						//user exists
+						
+						data.user.username = data.user.username || userInCache.username;
+						data.user.id = data.user.id || userInCache.id;
+						data.user.discriminator = data.user.discriminator || userInCache.discriminator;
+						data.user.avatar = data.user.avatar || userInCache.avatar;
+
 						var presenceUser = new User(data.user);
 						if (presenceUser.equalsStrict(userInCache)) {
 							//they're exactly the same, an actual presence update
 							self.trigger("presence", {
 								user: userInCache,
+								oldStatus: userInCache.status,
 								status: data.status,
 								server: self.getServer("id", data.guild_id),
 								gameId: data.game_id
 							});
+							userInCache.status = data.status;
+							userInCache.gameId = data.game_id;
 						} else {
 							//one of their details changed.
-							self.trigger("userUpdate", userInCache, presenceUser);
 							self.userCache[self.userCache.indexOf(userInCache)] = presenceUser;
+							self.trigger("userUpdate", userInCache, presenceUser);
 						}
 					}
+
+					break;
+
+				case "CHANNEL_UPDATE":
+
+					var channelInCache = self.getChannel("id", data.id),
+						serverInCache = self.getServer("id", data.guild_id);
+
+					if (channelInCache && serverInCache) {
+
+						var newChann = new Channel(data, serverInCache);
+						newChann.messages = channelInCache.messages;
+
+						self.trigger("channelUpdate", channelInCache, newChann);
+
+						self.channelCache[self.channelCache.indexOf(channelInCache)] = newChann;
+					}
+
+					break;
+
+				case "TYPING_START":
+
+					var userInCache = self.getUser("id", data.user_id);
+					var channelInCache = self.getChannel("id", data.channel_id);
+
+					if (!self.userTypingListener[data.user_id] || self.userTypingListener[data.user_id] === -1) {
+						self.trigger("startTyping", userInCache, channelInCache);
+					}
+
+					self.userTypingListener[data.user_id] = Date.now();
+
+					setTimeout(function () {
+						if (self.userTypingListener[data.user_id] === -1) {
+							return;
+						}
+						if (Date.now() - self.userTypingListener[data.user_id] > 6000) {
+							// stopped typing
+							self.trigger("stopTyping", userInCache, channelInCache);
+							self.userTypingListener[data.user_id] = -1;
+						}
+					}, 6000);
+
+					break;
+
+				case "GUILD_ROLE_DELETE":
+
+					var server = self.getServer("id", data.guild_id);
+					var role = server.getRole(data.role_id);
+
+					self.trigger("serverRoleDelete", server, role);
+
+					server.removeRole(role.id);
+
+					break;
+
+				case "GUILD_ROLE_UPDATE":
+
+					var server = self.getServer("id", data.guild_id);
+					var role = server.getRole(data.role.id);
+					var newRole = server.updateRole(data.role);
+
+					self.trigger("serverRoleUpdate", server, role, newRole);
 
 					break;
 
@@ -1025,11 +1142,58 @@ class Client {
 		}
 		return this.getPMChannel("id", data.id);
 	}
+
+	setTopic(channel, topic, callback = function (err) { }) {
+
+		var self = this;
+
+		return new Promise(function (resolve, reject) {
+
+			self.resolveDestination(channel).then(next).catch(error);
+
+			function error(e) {
+				callback(e);
+				reject(e);
+			}
+
+			function next(destination) {
+
+				var asChan = self.getChannel("id", destination);
+
+				request
+					.patch(`${Endpoints.CHANNELS}/${destination}`)
+					.set("authorization", self.token)
+					.send({
+						name: asChan.name,
+						position: 0,
+						topic: topic
+					})
+					.end(function (err, res) {
+						if (err) {
+							error(err);
+						} else {
+							asChan.topic = res.body.topic;
+							resolve();
+							callback();
+						}
+					});
+			}
+
+		});
+
+	}
 	
 	//def addServer
 	addServer(data) {
 
+		var self = this;
 		var server = this.getServer("id", data.id);
+
+		if (data.unavailable) {
+			self.trigger("unavailable", data);
+			self.debug("Server ID " + data.id + " has been marked unavailable by Discord. It was not cached.");
+			return;
+		}
 
 		if (!server) {
 			server = new Server(data, this);
@@ -1039,6 +1203,12 @@ class Client {
 					server.channels.push(this.addChannel(channel, server.id));
 				}
 			}
+		}
+
+		for (var presence of data.presences) {
+			var user = self.getUser("id", presence.user.id);
+			user.status = presence.status;
+			user.gameId = presence.game_id;
 		}
 
 		return server;
@@ -1094,7 +1264,7 @@ class Client {
 				op: 2,
 				d: {
 					token: this.token,
-					v: 2,
+					v: 3,
 					properties: {
 						"$os": "discord.js",
 						"$browser": "discord.js",
@@ -1129,12 +1299,15 @@ class Client {
 				channId = destination.id;
 			} else if (destination instanceof Message) {
 				channId = destination.channel.id;
+			} else if (destination instanceof PMChannel) {
+				channId = destination.id;
 			} else if (destination instanceof User) {
 					
 				//check if we have a PM
 				for (var pmc of self.pmChannelCache) {
-					if (pmc.user.equals(destination)) {
-						return pmc.id;
+					if (pmc.user && pmc.user.equals(destination)) {
+						resolve(pmc.id);
+						return;
 					}
 				}
 					
@@ -1148,10 +1321,12 @@ class Client {
 			}
 			if (channId)
 				resolve(channId);
+			else
+				reject();
 		});
 	}
 
-	_sendMessage(destination, content, mentions) {
+	_sendMessage(destination, content, tts, mentions) {
 
 		var self = this;
 
@@ -1161,7 +1336,8 @@ class Client {
 				.set("authorization", self.token)
 				.send({
 					content: content,
-					mentions: mentions
+					mentions: mentions,
+					tts: tts
 				})
 				.end(function (err, res) {
 
@@ -1189,39 +1365,39 @@ class Client {
 		});
 
 	}
-	
-	_sendFile(destination, attachment, attachmentName = "DEFAULT BECAUSE YOU DIDN'T SPECIFY WHY.png"){
-		
+
+	_sendFile(destination, attachment, attachmentName = "DEFAULT BECAUSE YOU DIDN'T SPECIFY WHY.png") {
+
 		var self = this;
-		
-		return new Promise(function(resolve, reject){
-				request
-					.post(`${Endpoints.CHANNELS}/${destination}/messages`)
-					.set("authorization", self.token)
-					.attach("file", attachment, attachmentName)
-					.end(function (err, res) {
 
-						if (err) {
-							reject(err);
-						} else {
+		return new Promise(function (resolve, reject) {
+			request
+				.post(`${Endpoints.CHANNELS}/${destination}/messages`)
+				.set("authorization", self.token)
+				.attach("file", attachment, attachmentName)
+				.end(function (err, res) {
 
-							var chann = self.getChannel("id", destination);
-							if (chann) {
-								var msg = chann.addMessage(new Message(res.body, chann, [], self.user));
-								resolve(msg);
-							}
+					if (err) {
+						reject(err);
+					} else {
 
-
+						var chann = self.getChannel("id", destination);
+						if (chann) {
+							var msg = chann.addMessage(new Message(res.body, chann, [], self.user));
+							resolve(msg);
 						}
 
-					});
+
+					}
+
+				});
 		});
-		
+
 	}
-	
-	_updateMessage(message, content){
+
+	_updateMessage(message, content) {
 		var self = this;
-		return new Promise(function(resolve, reject){
+		return new Promise(function (resolve, reject) {
 			request
 				.patch(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
 				.set("authorization", self.token)
@@ -1240,125 +1416,149 @@ class Client {
 				});
 		});
 	}
-	
-	_deleteMessage(message){
+
+	getGateway() {
 		var self = this;
-		return new Promise(function(resolve, reject){
+		return new Promise(function (resolve, reject) {
 			request
-					.del(`${Endpoints.CHANNELS}/${message.channel.id}/messages/${message.id}`)
-					.set("authorization", self.token)
-					.end(function (err, res) {
-						if (err) {
-							reject(err);
-						} else {
-							resolve();
-						}
-					});
+				.get(`${Endpoints.API}/gateway`)
+				.set("authorization", self.token)
+				.end(function (err, res) {
+					if (err) {
+						reject(err);
+					} else {
+						resolve(res.body.url);
+					}
+				});
 		});
 	}
 
-	checkQueue(channelID) {
+	setStatusIdle() {
+		this.setStatus("idle");
+	}
 
+	setStatusOnline() {
+		this.setStatus("online");
+	}
+
+	setStatusActive() {
+		this.setStatusOnline();
+	}
+
+	setStatusHere() {
+		this.setStatusOnline();
+	}
+
+	setStatusAway() {
+		this.setStatusIdle();
+	}
+
+	startTyping(chann, stopTypeTime) {
 		var self = this;
-		
-		if (!this.checkingQueue[channelID]) {
-			//if we aren't already checking this queue.
-			this.checkingQueue[channelID] = true;
-			doNext();
 
-			function doNext() {
-				if (self.queue[channelID].length === 0) {
-					done();
-					return;
-				}
-				var queuedEvent = self.queue[channelID][0];
-				switch (queuedEvent.action) {
-					case "sendMessage":
-						var msgToSend = queuedEvent;
-						self._sendMessage(channelID, msgToSend.content, msgToSend.mentions)
-							.then(function (msg) {
-								msgToSend.then(msg);
-								self.queue[channelID].shift();
-								doNext();
-							})
-							.catch(function (err) {
-								msgToSend.error(err);
-								self.queue[channelID].shift();
-								doNext();
-							});
-						break;
-					case "sendFile":
-						var fileToSend = queuedEvent;
-						self._sendFile(channelID, fileToSend.attachment, fileToSend.attachmentName)
-							.then(function (msg){
-								fileToSend.then(msg);
-								self.queue[channelID].shift();
-								doNext();
-							})
-							.catch(function(err){
-								fileToSend.error(err);
-								self.queue[channelID].shift();
-								doNext();
-							});
-						break;
-					case "updateMessage":
-						var msgToUpd = queuedEvent;
-						self._updateMessage(msgToUpd.message, msgToUpd.content)
-						.then(function(msg){
-							msgToUpd.then(msg);
-							self.queue[channelID].shift();
-							doNext();
-						})
-						.catch(function(err){
-							msgToUpd.error(err);
-							self.queue[channelID].shift();
-							doNext();
-						});
-						break;
-					case "deleteMessage":
-						var msgToDel = queuedEvent;
-						self._deleteMessage(msgToDel.message)
-						.then(function(msg){
-							msgToDel.then(msg);
-							self.queue[channelID].shift();
-							doNext();
-						})
-						.catch(function(err){
-							msgToDel.error(err);
-							self.queue[channelID].shift();
-							doNext();
-						});
-						break;
-					default:
-						done();
-						break;
-				}
+		this.resolveDestination(chann).then(next);
+
+		function next(channel) {
+			if (self.typingIntervals[channel]) {
+				return;
 			}
 
-			function done() {
-				self.checkingQueue[channelID] = false;
-				return;
+			var fn = function () {
+				request
+					.post(`${Endpoints.CHANNELS}/${channel}/typing`)
+					.set("authorization", self.token)
+					.end();
+			};
+
+			fn();
+
+			var interval = setInterval(fn, 3000);
+
+			self.typingIntervals[channel] = interval;
+
+			if (stopTypeTime) {
+				setTimeout(function () {
+					self.stopTyping(channel);
+				}, stopTypeTime);
 			}
 		}
 	}
-}
 
-function getGateway() {
+	stopTyping(chann) {
+		var self = this;
 
-	var self = this;
+		this.resolveDestination(chann).then(next);
 
-	return new Promise(function (resolve, reject) {
-		request
-			.get(`${Endpoints.API}/gateway`)
-			.end(function (err, res) {
-				if (err) {
-					reject(err);
-				} else {
-					resolve(res.body.url);
+		function next(channel) {
+			if (!self.typingIntervals[channel]) {
+				return;
+			}
+
+			clearInterval(self.typingIntervals[channel]);
+
+			delete self.typingIntervals[channel];
+
+		}
+	}
+
+	setStatus(stat) {
+
+		var idleTime = (stat === "online" ? null : Date.now());
+
+		this.__idleTime = idleTime;
+
+		this.websocket.send(JSON.stringify({
+			op: 3,
+			d: {
+				idle_since: this.__idleTime,
+				game_id: this.__gameId
+			}
+		}));
+	}
+
+	setPlayingGame(id) {
+
+		if (id instanceof String || typeof id === `string`) {
+			
+			// working on names
+			var gid = id.trim().toUpperCase();
+
+			id = null;
+
+			for (var game of gameMap) {
+
+				if (game.name.trim().toUpperCase() === gid) {
+
+					id = game.id;
+					break;
+
 				}
-			});
-	});
 
+			}
+
+		}
+
+		this.__gameId = id;
+
+		this.websocket.send(JSON.stringify({
+			op: 3,
+			d: {
+				idle_since: this.__idleTime,
+				game_id: this.__gameId
+			}
+		}));
+
+	}
+
+	playGame(id) {
+		this.setPlayingGame(id);
+	}
+
+	playingGame(id) {
+
+		this.setPlayingGame(id);
+
+	}
 }
 
 module.exports = Client;

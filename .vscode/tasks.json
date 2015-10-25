@@ -19,7 +19,7 @@
 			"isBuildCommand": true,
 			"isWatching": true,
 			"args": [
-				"src", "--out-dir", "lib", "-w"
+				"src", "--out-dir", "lib", "-w", "--loose=all"
 			]
 		}
 	]

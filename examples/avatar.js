@@ -4,38 +4,28 @@
 
 var Discord = require("../");
 
-// Get the email and password
 var AuthDetails = require("./auth.json");
 
 var bot = new Discord.Client();
 
-bot.on("ready", function () {
+bot.on("ready", () => {
 	console.log("Ready to begin! Serving in " + bot.channels.length + " channels");
 });
 
-bot.on("disconnected", function () {
+bot.on("disconnected", () => {
 
 	console.log("Disconnected!");
 	process.exit(1); //exit node.js with an error
 	
 });
 
-bot.on("message", function (msg) {
-	if (msg.content === "$avatar") {
-		
-		//see if the user has an avatar
-		if( msg.sender.avatarURL ){
-			bot.reply(msg, msg.sender.avatarURL);
-		}else{
-			//using reply with a message automatically does:
-			// '@sender, ' for you!
-			bot.reply(msg, "you don't have an avatar!");
-		}
-		
-		//alert the console
-		console.log("served " + msg.sender.username);
-
+bot.on("message", (msg) => {
+	
+	if( msg.content === "avatar" ){
+		// if the message was avatar
+		bot.reply( msg, msg.sender.avatarURL );
 	}
+	
 });
 
 bot.login(AuthDetails.email, AuthDetails.password);

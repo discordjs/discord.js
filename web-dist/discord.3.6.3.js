@@ -14,13 +14,15 @@ var Message = require("./message.js");
 var Invite = require("./invite.js");
 var PMChannel = require("./PMChannel.js");
 
+var gameMap = require("../ref/gameMap.json");
+
 //node modules
 var request = require("superagent");
 var WebSocket = require("ws");
 var fs = require("fs");
 
 var defaultOptions = {
-	cache_tokens: false
+	queue: false
 };
 
 var Client = (function () {
@@ -36,14 +38,15 @@ var Client = (function () {
   	further efforts will be made to connect.
   */
 		this.options = options;
+		this.options.queue = this.options.queue;
 		this.token = token;
 		this.state = 0;
 		this.websocket = null;
-		this.events = new Map();
+		this.events = {};
 		this.user = null;
 		this.alreadySentData = false;
-		this.serverCreateListener = new Map();
-
+		this.serverCreateListener = {};
+		this.typingIntervals = {};
 		this.email = "abc";
 		this.password = "abc";
 
@@ -61,6 +64,11 @@ var Client = (function () {
 		this.serverCache = [];
 		this.pmChannelCache = [];
 		this.readyTime = null;
+		this.checkingQueue = {};
+		this.queue = {};
+
+		this.__idleTime = null;
+		this.__gameId = null;
 	}
 
 	_createClass(Client, [{
@@ -80,12 +88,12 @@ var Client = (function () {
 	}, {
 		key: "on",
 		value: function on(event, fn) {
-			this.events.set(event, fn);
+			this.events[event] = fn;
 		}
 	}, {
 		key: "off",
-		value: function off(event, fn) {
-			this.events["delete"](event);
+		value: function off(event) {
+			this.events[event] = null;
 		}
 	}, {
 		key: "keepAlive",
@@ -105,7 +113,7 @@ var Client = (function () {
 			for (var arg in arguments) {
 				args.push(arguments[arg]);
 			}
-			var evt = this.events.get(event);
+			var evt = this.events[event];
 			if (evt) {
 				evt.apply(this, args.slice(1));
 			}
@@ -137,14 +145,16 @@ var Client = (function () {
 						if (err) {
 							self.state = 4; //set state to disconnected
 							self.trigger("disconnected");
-							self.websocket.close();
+							if (self.websocket) {
+								self.websocket.close();
+							}
 							callback(err);
 							reject(err);
 						} else {
 							self.state = 2; //set state to logged in (not yet ready)
 							self.token = res.body.token; //set our token
 
-							getGateway().then(function (url) {
+							self.getGateway().then(function (url) {
 								self.createws(url);
 								callback(null, self.token);
 								resolve(self.token);
@@ -201,7 +211,7 @@ var Client = (function () {
 						// potentially redundant in future
 						// creating here does NOT give us the channels of the server
 						// so we must wait for the guild_create event.
-						self.serverCreateListener.set(res.body.id, [resolve, callback]);
+						self.serverCreateListener[res.body.id] = [resolve, callback];
 						/*var srv = self.addServer(res.body);
       callback(null, srv);
       resolve(srv);*/
@@ -319,15 +329,21 @@ var Client = (function () {
 		}
 	}, {
 		key: "reply",
-		value: function reply(destination, message) {
-			var callback = arguments.length <= 2 || arguments[2] === undefined ? function (err, msg) {} : arguments[2];
+		value: function reply(destination, message, tts) {
+			var callback = arguments.length <= 3 || arguments[3] === undefined ? function (err, msg) {} : arguments[3];
 
 			var self = this;
 
 			return new Promise(function (response, reject) {
 
+				if (typeof tts === "function") {
+					// tts is a function, which means the developer wants this to be the callback
+					callback = tts;
+					tts = false;
+				}
+
 				var user = destination.sender;
-				self.sendMessage(destination, message, callback, user + ", ").then(response)["catch"](reject);
+				self.sendMessage(destination, message, tts, callback, user + ", ").then(response)["catch"](reject);
 			});
 		}
 	}, {
@@ -337,7 +353,7 @@ var Client = (function () {
 
 			var self = this;
 
-			return new Promise(function (resolve, reject) {
+			var prom = new Promise(function (resolve, reject) {
 				if (timeout) {
 					setTimeout(remove, timeout);
 				} else {
@@ -345,17 +361,37 @@ var Client = (function () {
 				}
 
 				function remove() {
-					request.del(Endpoints.CHANNELS + "/" + message.channel.id + "/messages/" + message.id).set("authorization", self.token).end(function (err, res) {
-						if (err) {
-							callback(err);
-							reject(err);
-						} else {
-							callback(null);
-							resolve();
+					if (self.options.queue) {
+						if (!self.queue[message.channel.id]) {
+							self.queue[message.channel.id] = [];
 						}
-					});
+						self.queue[message.channel.id].push({
+							action: "deleteMessage",
+							message: message,
+							then: good,
+							error: bad
+						});
+
+						self.checkQueue(message.channel.id);
+					} else {
+						self._deleteMessage(message).then(good)["catch"](bad);
+					}
+				}
+
+				function good() {
+					prom.success = true;
+					callback(null);
+					resolve();
+				}
+
+				function bad(err) {
+					prom.error = err;
+					callback(err);
+					reject(err);
 				}
 			});
+
+			return prom;
 		}
 	}, {
 		key: "updateMessage",
@@ -364,26 +400,41 @@ var Client = (function () {
 
 			var self = this;
 
-			return new Promise(function (resolve, reject) {
+			var prom = new Promise(function (resolve, reject) {
 
 				content = content instanceof Array ? content.join("\n") : content;
 
-				request.patch(Endpoints.CHANNELS + "/" + message.channel.id + "/messages/" + message.id).set("authorization", self.token).send({
-					content: content,
-					mentions: []
-				}).end(function (err, res) {
-					if (err) {
-						callback(err);
-						reject(err);
-					} else {
-						var msg = new Message(res.body, message.channel, message.mentions, message.sender);
-						callback(null, msg);
-						resolve(msg);
-
-						message.channel.messages[message.channel.messages.indexOf(message)] = msg;
+				if (self.options.queue) {
+					if (!self.queue[message.channel.id]) {
+						self.queue[message.channel.id] = [];
 					}
-				});
+					self.queue[message.channel.id].push({
+						action: "updateMessage",
+						message: message,
+						content: content,
+						then: good,
+						error: bad
+					});
+
+					self.checkQueue(message.channel.id);
+				} else {
+					self._updateMessage(message, content).then(good)["catch"](bad);
+				}
+
+				function good(msg) {
+					prom.message = msg;
+					callback(null, msg);
+					resolve(msg);
+				}
+
+				function bad(error) {
+					prom.error = error;
+					callback(error);
+					reject(error);
+				}
 			});
+
+			return prom;
 		}
 	}, {
 		key: "setUsername",
@@ -533,7 +584,7 @@ var Client = (function () {
 						if (self.getServer("id", res.body.guild.id)) {
 							resolve(self.getServer("id", res.body.guild.id));
 						} else {
-							self.serverCreateListener.set(res.body.guild.id, [resolve, callback]);
+							self.serverCreateListener[res.body.guild.id] = [resolve, callback];
 						}
 					}
 				});
@@ -547,7 +598,7 @@ var Client = (function () {
 
 			var self = this;
 
-			return new Promise(function (resolve, reject) {
+			var prom = new Promise(function (resolve, reject) {
 
 				var fstream;
 
@@ -558,40 +609,60 @@ var Client = (function () {
 					fstream = file;
 				}
 
-				self.resolveDestination(destination).then(send)["catch"](error);
+				self.resolveDestination(destination).then(send)["catch"](bad);
 
 				function send(destination) {
-					request.post(Endpoints.CHANNELS + "/" + destination + "/messages").set("authorization", self.token).attach("file", fstream, fileName).end(function (err, res) {
-
-						if (err) {
-							error(err);
-						} else {
-
-							var chann = self.getChannel("id", destination);
-							if (chann) {
-								var msg = chann.addMessage(new Message(res.body, chann, [], self.user));
-								callback(null, msg);
-								resolve(msg);
-							}
+					if (self.options.queue) {
+						//queue send file too
+						if (!self.queue[destination]) {
+							self.queue[destination] = [];
 						}
-					});
+
+						self.queue[destination].push({
+							action: "sendFile",
+							attachment: fstream,
+							attachmentName: fileName,
+							then: good,
+							error: bad
+						});
+
+						self.checkQueue(destination);
+					} else {
+						//not queue
+						self._sendFile(destination, fstream, fileName).then(good)["catch"](bad);
+					}
 				}
 
-				function error(err) {
+				function good(msg) {
+					prom.message = msg;
+					callback(null, msg);
+					resolve(msg);
+				}
+
+				function bad(err) {
+					prom.error = err;
 					callback(err);
 					reject(err);
 				}
 			});
+
+			return prom;
 		}
 	}, {
 		key: "sendMessage",
-		value: function sendMessage(destination, message) {
-			var callback = arguments.length <= 2 || arguments[2] === undefined ? function (err, msg) {} : arguments[2];
-			var premessage = arguments.length <= 3 || arguments[3] === undefined ? "" : arguments[3];
+		value: function sendMessage(destination, message, tts) {
+			var callback = arguments.length <= 3 || arguments[3] === undefined ? function (err, msg) {} : arguments[3];
+			var premessage = arguments.length <= 4 || arguments[4] === undefined ? "" : arguments[4];
 
 			var self = this;
 
-			return new Promise(function (resolve, reject) {
+			var prom = new Promise(function (resolve, reject) {
+
+				if (typeof tts === "function") {
+					// tts is a function, which means the developer wants this to be the callback
+					callback = tts;
+					tts = false;
+				}
 
 				message = premessage + resolveMessage(message);
 				var mentions = resolveMentions();
@@ -603,55 +674,37 @@ var Client = (function () {
 				}
 
 				function send(destination) {
-
-					request.post(Endpoints.CHANNELS + "/" + destination + "/messages").set("authorization", self.token).send({
-						content: message,
-						mentions: mentions
-					}).end(function (err, res) {
-
-						if (err) {
-							callback(err);
-							reject(err);
-						} else {
-							var data = res.body;
-
-							var mentions = [];
-
-							data.mentions = data.mentions || []; //for some reason this was not defined at some point?
-
-							var _iteratorNormalCompletion3 = true;
-							var _didIteratorError3 = false;
-							var _iteratorError3 = undefined;
-
-							try {
-								for (var _iterator3 = data.mentions[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-									var mention = _step3.value;
-
-									mentions.push(self.addUser(mention));
-								}
-							} catch (err) {
-								_didIteratorError3 = true;
-								_iteratorError3 = err;
-							} finally {
-								try {
-									if (!_iteratorNormalCompletion3 && _iterator3["return"]) {
-										_iterator3["return"]();
-									}
-								} finally {
-									if (_didIteratorError3) {
-										throw _iteratorError3;
-									}
-								}
-							}
-
-							var channel = self.getChannel("id", data.channel_id);
-							if (channel) {
-								var msg = channel.addMessage(new Message(data, channel, mentions, self.addUser(data.author)));
-								callback(null, msg);
-								resolve(msg);
-							}
+					if (self.options.queue) {
+						//we're QUEUEING messages, so sending them sequentially based on servers.
+						if (!self.queue[destination]) {
+							self.queue[destination] = [];
 						}
-					});
+
+						self.queue[destination].push({
+							action: "sendMessage",
+							content: message,
+							mentions: mentions,
+							tts: !!tts, //incase it's not a boolean
+							then: mgood,
+							error: mbad
+						});
+
+						self.checkQueue(destination);
+					} else {
+						self._sendMessage(destination, message, tts, mentions).then(mgood)["catch"](mbad);
+					}
+				}
+
+				function mgood(msg) {
+					prom.message = msg;
+					callback(null, msg);
+					resolve(msg);
+				}
+
+				function mbad(error) {
+					prom.error = error;
+					callback(error);
+					reject(error);
 				}
 
 				function resolveMessage() {
@@ -664,27 +717,27 @@ var Client = (function () {
 
 				function resolveMentions() {
 					var _mentions = [];
-					var _iteratorNormalCompletion4 = true;
-					var _didIteratorError4 = false;
-					var _iteratorError4 = undefined;
+					var _iteratorNormalCompletion3 = true;
+					var _didIteratorError3 = false;
+					var _iteratorError3 = undefined;
 
 					try {
-						for (var _iterator4 = (message.match(/<@[^>]*>/g) || [])[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-							var mention = _step4.value;
+						for (var _iterator3 = (message.match(/<@[^>]*>/g) || [])[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+							var mention = _step3.value;
 
 							_mentions.push(mention.substring(2, mention.length - 1));
 						}
 					} catch (err) {
-						_didIteratorError4 = true;
-						_iteratorError4 = err;
+						_didIteratorError3 = true;
+						_iteratorError3 = err;
 					} finally {
 						try {
-							if (!_iteratorNormalCompletion4 && _iterator4["return"]) {
-								_iterator4["return"]();
+							if (!_iteratorNormalCompletion3 && _iterator3["return"]) {
+								_iterator3["return"]();
 							}
 						} finally {
-							if (_didIteratorError4) {
-								throw _iteratorError4;
+							if (_didIteratorError3) {
+								throw _iteratorError3;
 							}
 						}
 					}
@@ -692,6 +745,8 @@ var Client = (function () {
 					return _mentions;
 				}
 			});
+
+			return prom;
 		}
 
 		//def createws
@@ -729,6 +784,8 @@ var Client = (function () {
 					return;
 				}
 
+				self.trigger("raw", dat);
+
 				//valid message
 				switch (dat.t) {
 
@@ -737,15 +794,40 @@ var Client = (function () {
 
 						self.user = self.addUser(data.user);
 
+						var _iteratorNormalCompletion4 = true;
+						var _didIteratorError4 = false;
+						var _iteratorError4 = undefined;
+
+						try {
+							for (var _iterator4 = data.guilds[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+								var _server = _step4.value;
+
+								var server = self.addServer(_server);
+							}
+						} catch (err) {
+							_didIteratorError4 = true;
+							_iteratorError4 = err;
+						} finally {
+							try {
+								if (!_iteratorNormalCompletion4 && _iterator4["return"]) {
+									_iterator4["return"]();
+								}
+							} finally {
+								if (_didIteratorError4) {
+									throw _iteratorError4;
+								}
+							}
+						}
+
 						var _iteratorNormalCompletion5 = true;
 						var _didIteratorError5 = false;
 						var _iteratorError5 = undefined;
 
 						try {
-							for (var _iterator5 = data.guilds[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-								var _server = _step5.value;
+							for (var _iterator5 = data.private_channels[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+								var _pmc = _step5.value;
 
-								var server = self.addServer(_server);
+								var pmc = self.addPMChannel(_pmc);
 							}
 						} catch (err) {
 							_didIteratorError5 = true;
@@ -758,31 +840,6 @@ var Client = (function () {
 							} finally {
 								if (_didIteratorError5) {
 									throw _iteratorError5;
-								}
-							}
-						}
-
-						var _iteratorNormalCompletion6 = true;
-						var _didIteratorError6 = false;
-						var _iteratorError6 = undefined;
-
-						try {
-							for (var _iterator6 = data.private_channels[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-								var _pmc = _step6.value;
-
-								var pmc = self.addPMChannel(_pmc);
-							}
-						} catch (err) {
-							_didIteratorError6 = true;
-							_iteratorError6 = err;
-						} finally {
-							try {
-								if (!_iteratorNormalCompletion6 && _iterator6["return"]) {
-									_iterator6["return"]();
-								}
-							} finally {
-								if (_didIteratorError6) {
-									throw _iteratorError6;
 								}
 							}
 						}
@@ -801,27 +858,27 @@ var Client = (function () {
 
 						var mentions = [];
 						data.mentions = data.mentions || []; //for some reason this was not defined at some point?
-						var _iteratorNormalCompletion7 = true;
-						var _didIteratorError7 = false;
-						var _iteratorError7 = undefined;
+						var _iteratorNormalCompletion6 = true;
+						var _didIteratorError6 = false;
+						var _iteratorError6 = undefined;
 
 						try {
-							for (var _iterator7 = data.mentions[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
-								var mention = _step7.value;
+							for (var _iterator6 = data.mentions[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+								var mention = _step6.value;
 
 								mentions.push(self.addUser(mention));
 							}
 						} catch (err) {
-							_didIteratorError7 = true;
-							_iteratorError7 = err;
+							_didIteratorError6 = true;
+							_iteratorError6 = err;
 						} finally {
 							try {
-								if (!_iteratorNormalCompletion7 && _iterator7["return"]) {
-									_iterator7["return"]();
+								if (!_iteratorNormalCompletion6 && _iterator6["return"]) {
+									_iterator6["return"]();
 								}
 							} finally {
-								if (_didIteratorError7) {
-									throw _iteratorError7;
+								if (_didIteratorError6) {
+									throw _iteratorError6;
 								}
 							}
 						}
@@ -866,27 +923,27 @@ var Client = (function () {
 							}
 
 							var mentions = [];
-							var _iteratorNormalCompletion8 = true;
-							var _didIteratorError8 = false;
-							var _iteratorError8 = undefined;
+							var _iteratorNormalCompletion7 = true;
+							var _didIteratorError7 = false;
+							var _iteratorError7 = undefined;
 
 							try {
-								for (var _iterator8 = info.mentions[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
-									var mention = _step8.value;
+								for (var _iterator7 = info.mentions[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+									var mention = _step7.value;
 
 									mentions.push(self.addUser(mention));
 								}
 							} catch (err) {
-								_didIteratorError8 = true;
-								_iteratorError8 = err;
+								_didIteratorError7 = true;
+								_iteratorError7 = err;
 							} finally {
 								try {
-									if (!_iteratorNormalCompletion8 && _iterator8["return"]) {
-										_iterator8["return"]();
+									if (!_iteratorNormalCompletion7 && _iterator7["return"]) {
+										_iterator7["return"]();
 									}
 								} finally {
-									if (_didIteratorError8) {
-										throw _iteratorError8;
+									if (_didIteratorError7) {
+										throw _iteratorError7;
 									}
 								}
 							}
@@ -951,11 +1008,11 @@ var Client = (function () {
         
         }*/
 
-						if (self.serverCreateListener.get(data.id)) {
-							var cbs = self.serverCreateListener.get(data.id);
+						if (self.serverCreateListener[data.id]) {
+							var cbs = self.serverCreateListener[data.id];
 							cbs[0](server); //promise then callback
 							cbs[1](null, server); //legacy callback
-							self.serverCreateListener["delete"](data.id);
+							self.serverCreateListener[data.id] = null;
 						}
 
 						self.trigger("serverCreate", server);
@@ -990,7 +1047,7 @@ var Client = (function () {
 								server.members.push(user);
 							}
 
-							self.trigger("serverNewMember", user);
+							self.trigger("serverNewMember", user, server);
 						}
 
 						break;
@@ -1007,7 +1064,7 @@ var Client = (function () {
 								server.members.splice(server.members.indexOf(user), 1);
 							}
 
-							self.trigger("serverRemoveMember", user);
+							self.trigger("serverRemoveMember", user, server);
 						}
 
 						break;
@@ -1038,6 +1095,7 @@ var Client = (function () {
 							var presenceUser = new User(data.user);
 							if (presenceUser.equalsStrict(userInCache)) {
 								//they're exactly the same, an actual presence update
+								userInCache.status = data.status;
 								self.trigger("presence", {
 									user: userInCache,
 									status: data.status,
@@ -1049,6 +1107,23 @@ var Client = (function () {
 								self.trigger("userUpdate", userInCache, presenceUser);
 								self.userCache[self.userCache.indexOf(userInCache)] = presenceUser;
 							}
+						}
+
+						break;
+
+					case "CHANNEL_UPDATE":
+
+						var channelInCache = self.getChannel("id", data.id),
+						    serverInCache = self.getServer("id", data.guild_id);
+
+						if (channelInCache && serverInCache) {
+
+							var newChann = new Channel(data, serverInCache);
+							newChann.messages = channelInCache.messages;
+
+							self.trigger("channelUpdate", channelInCache, newChann);
+
+							self.channelCache[self.channelCache.indexOf(channelInCache)] = newChann;
 						}
 
 						break;
@@ -1089,41 +1164,109 @@ var Client = (function () {
 			}
 			return this.getPMChannel("id", data.id);
 		}
+	}, {
+		key: "setTopic",
+		value: function setTopic(channel, topic) {
+			var callback = arguments.length <= 2 || arguments[2] === undefined ? function (err) {} : arguments[2];
+
+			var self = this;
+
+			return new Promise(function (resolve, reject) {
+
+				self.resolveDestination(channel).then(next)["catch"](error);
+
+				function error(e) {
+					callback(e);
+					reject(e);
+				}
+
+				function next(destination) {
+
+					var asChan = self.getChannel("id", destination);
+
+					request.patch(Endpoints.CHANNELS + "/" + destination).set("authorization", self.token).send({
+						name: asChan.name,
+						position: 0,
+						topic: topic
+					}).end(function (err, res) {
+						if (err) {
+							error(err);
+						} else {
+							asChan.topic = res.body.topic;
+							resolve();
+							callback();
+						}
+					});
+				}
+			});
+		}
 
 		//def addServer
 	}, {
 		key: "addServer",
 		value: function addServer(data) {
 
+			var self = this;
 			var server = this.getServer("id", data.id);
+
+			if (data.unavailable) {
+				self.trigger("unavailable", data);
+				self.debug("Server ID " + data.id + " has been marked unavailable by Discord. It was not cached.");
+				return;
+			}
 
 			if (!server) {
 				server = new Server(data, this);
 				this.serverCache.push(server);
 				if (data.channels) {
-					var _iteratorNormalCompletion9 = true;
-					var _didIteratorError9 = false;
-					var _iteratorError9 = undefined;
+					var _iteratorNormalCompletion8 = true;
+					var _didIteratorError8 = false;
+					var _iteratorError8 = undefined;
 
 					try {
-						for (var _iterator9 = data.channels[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
-							var channel = _step9.value;
+						for (var _iterator8 = data.channels[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+							var channel = _step8.value;
 
 							server.channels.push(this.addChannel(channel, server.id));
 						}
 					} catch (err) {
-						_didIteratorError9 = true;
-						_iteratorError9 = err;
+						_didIteratorError8 = true;
+						_iteratorError8 = err;
 					} finally {
 						try {
-							if (!_iteratorNormalCompletion9 && _iterator9["return"]) {
-								_iterator9["return"]();
+							if (!_iteratorNormalCompletion8 && _iterator8["return"]) {
+								_iterator8["return"]();
 							}
 						} finally {
-							if (_didIteratorError9) {
-								throw _iteratorError9;
+							if (_didIteratorError8) {
+								throw _iteratorError8;
 							}
 						}
+					}
+				}
+			}
+
+			var _iteratorNormalCompletion9 = true;
+			var _didIteratorError9 = false;
+			var _iteratorError9 = undefined;
+
+			try {
+				for (var _iterator9 = data.presences[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+					var presence = _step9.value;
+
+					self.getUser("id", presence.user.id).status = presence.status;
+				}
+			} catch (err) {
+				_didIteratorError9 = true;
+				_iteratorError9 = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion9 && _iterator9["return"]) {
+						_iterator9["return"]();
+					}
+				} finally {
+					if (_didIteratorError9) {
+						throw _iteratorError9;
 					}
 				}
 			}
@@ -1278,7 +1421,7 @@ var Client = (function () {
 					op: 2,
 					d: {
 						token: this.token,
-						v: 2,
+						v: 3,
 						properties: {
 							"$os": "discord.js",
 							"$browser": "discord.js",
@@ -1314,6 +1457,8 @@ var Client = (function () {
 						channId = destination.id;
 					} else if (destination instanceof Message) {
 						channId = destination.channel.id;
+					} else if (destination instanceof PMChannel) {
+						channId = destination.id;
 					} else if (destination instanceof User) {
 
 						//check if we have a PM
@@ -1326,7 +1471,8 @@ var Client = (function () {
 								var pmc = _step14.value;
 
 								if (pmc.user.equals(destination)) {
-									return pmc.id;
+									resolve(pmc.id);
+									return;
 								}
 							}
 
@@ -1352,8 +1498,365 @@ var Client = (function () {
 					} else {
 						channId = destination;
 					}
-				if (channId) resolve(channId);
+				if (channId) resolve(channId);else reject();
 			});
+		}
+	}, {
+		key: "_sendMessage",
+		value: function _sendMessage(destination, content, tts, mentions) {
+
+			var self = this;
+
+			return new Promise(function (resolve, reject) {
+				request.post(Endpoints.CHANNELS + "/" + destination + "/messages").set("authorization", self.token).send({
+					content: content,
+					mentions: mentions,
+					tts: tts
+				}).end(function (err, res) {
+
+					if (err) {
+						reject(err);
+					} else {
+						var data = res.body;
+
+						var mentions = [];
+
+						data.mentions = data.mentions || []; //for some reason this was not defined at some point?
+
+						var _iteratorNormalCompletion15 = true;
+						var _didIteratorError15 = false;
+						var _iteratorError15 = undefined;
+
+						try {
+							for (var _iterator15 = data.mentions[Symbol.iterator](), _step15; !(_iteratorNormalCompletion15 = (_step15 = _iterator15.next()).done); _iteratorNormalCompletion15 = true) {
+								var mention = _step15.value;
+
+								mentions.push(self.addUser(mention));
+							}
+						} catch (err) {
+							_didIteratorError15 = true;
+							_iteratorError15 = err;
+						} finally {
+							try {
+								if (!_iteratorNormalCompletion15 && _iterator15["return"]) {
+									_iterator15["return"]();
+								}
+							} finally {
+								if (_didIteratorError15) {
+									throw _iteratorError15;
+								}
+							}
+						}
+
+						var channel = self.getChannel("id", data.channel_id);
+						if (channel) {
+							var msg = channel.addMessage(new Message(data, channel, mentions, self.addUser(data.author)));
+							resolve(msg);
+						}
+					}
+				});
+			});
+		}
+	}, {
+		key: "_sendFile",
+		value: function _sendFile(destination, attachment) {
+			var attachmentName = arguments.length <= 2 || arguments[2] === undefined ? "DEFAULT BECAUSE YOU DIDN'T SPECIFY WHY.png" : arguments[2];
+
+			var self = this;
+
+			return new Promise(function (resolve, reject) {
+				request.post(Endpoints.CHANNELS + "/" + destination + "/messages").set("authorization", self.token).attach("file", attachment, attachmentName).end(function (err, res) {
+
+					if (err) {
+						reject(err);
+					} else {
+
+						var chann = self.getChannel("id", destination);
+						if (chann) {
+							var msg = chann.addMessage(new Message(res.body, chann, [], self.user));
+							resolve(msg);
+						}
+					}
+				});
+			});
+		}
+	}, {
+		key: "_updateMessage",
+		value: function _updateMessage(message, content) {
+			var self = this;
+			return new Promise(function (resolve, reject) {
+				request.patch(Endpoints.CHANNELS + "/" + message.channel.id + "/messages/" + message.id).set("authorization", self.token).send({
+					content: content,
+					mentions: []
+				}).end(function (err, res) {
+					if (err) {
+						reject(err);
+					} else {
+						var msg = new Message(res.body, message.channel, message.mentions, message.sender);
+						resolve(msg);
+						message.channel.messages[message.channel.messages.indexOf(message)] = msg;
+					}
+				});
+			});
+		}
+	}, {
+		key: "_deleteMessage",
+		value: function _deleteMessage(message) {
+			var self = this;
+			return new Promise(function (resolve, reject) {
+
+				request.del(Endpoints.CHANNELS + "/" + message.channel.id + "/messages/" + message.id).set("authorization", self.token).end(function (err, res) {
+					if (err) {
+						reject(err);
+					} else {
+						resolve();
+					}
+				});
+			});
+		}
+	}, {
+		key: "checkQueue",
+		value: function checkQueue(channelID) {
+			var _this = this;
+
+			var self = this;
+
+			if (!this.checkingQueue[channelID]) {
+				(function () {
+					var doNext = function doNext() {
+						if (self.queue[channelID].length === 0) {
+							done();
+							return;
+						}
+						var queuedEvent = self.queue[channelID][0];
+						switch (queuedEvent.action) {
+							case "sendMessage":
+								var msgToSend = queuedEvent;
+								self._sendMessage(channelID, msgToSend.content, msgToSend.tts, msgToSend.mentions).then(function (msg) {
+									msgToSend.then(msg);
+									self.queue[channelID].shift();
+									doNext();
+								})["catch"](function (err) {
+									msgToSend.error(err);
+									self.queue[channelID].shift();
+									doNext();
+								});
+								break;
+							case "sendFile":
+								var fileToSend = queuedEvent;
+								self._sendFile(channelID, fileToSend.attachment, fileToSend.attachmentName).then(function (msg) {
+									fileToSend.then(msg);
+									self.queue[channelID].shift();
+									doNext();
+								})["catch"](function (err) {
+									fileToSend.error(err);
+									self.queue[channelID].shift();
+									doNext();
+								});
+								break;
+							case "updateMessage":
+								var msgToUpd = queuedEvent;
+								self._updateMessage(msgToUpd.message, msgToUpd.content).then(function (msg) {
+									msgToUpd.then(msg);
+									self.queue[channelID].shift();
+									doNext();
+								})["catch"](function (err) {
+									msgToUpd.error(err);
+									self.queue[channelID].shift();
+									doNext();
+								});
+								break;
+							case "deleteMessage":
+								var msgToDel = queuedEvent;
+								self._deleteMessage(msgToDel.message).then(function (msg) {
+									msgToDel.then(msg);
+									self.queue[channelID].shift();
+									doNext();
+								})["catch"](function (err) {
+									msgToDel.error(err);
+									self.queue[channelID].shift();
+									doNext();
+								});
+								break;
+							default:
+								done();
+								break;
+						}
+					};
+
+					var done = function done() {
+						self.checkingQueue[channelID] = false;
+						return;
+					};
+
+					//if we aren't already checking this queue.
+					_this.checkingQueue[channelID] = true;
+					doNext();
+				})();
+			}
+		}
+	}, {
+		key: "getGateway",
+		value: function getGateway() {
+			var self = this;
+			return new Promise(function (resolve, reject) {
+				request.get(Endpoints.API + "/gateway").set("authorization", self.token).end(function (err, res) {
+					if (err) {
+						reject(err);
+					} else {
+						resolve(res.body.url);
+					}
+				});
+			});
+		}
+	}, {
+		key: "setStatusIdle",
+		value: function setStatusIdle() {
+			this.setStatus("idle");
+		}
+	}, {
+		key: "setStatusOnline",
+		value: function setStatusOnline() {
+			this.setStatus("online");
+		}
+	}, {
+		key: "setStatusActive",
+		value: function setStatusActive() {
+			this.setStatusOnline();
+		}
+	}, {
+		key: "setStatusHere",
+		value: function setStatusHere() {
+			this.setStatusOnline();
+		}
+	}, {
+		key: "setStatusAway",
+		value: function setStatusAway() {
+			this.setStatusIdle();
+		}
+	}, {
+		key: "startTyping",
+		value: function startTyping(chann, stopTypeTime) {
+			var self = this;
+
+			this.resolveDestination(chann).then(next);
+
+			function next(channel) {
+				if (self.typingIntervals[channel]) {
+					return;
+				}
+
+				var fn = function fn() {
+					request.post(Endpoints.CHANNELS + "/" + channel + "/typing").set("authorization", self.token).end();
+				};
+
+				fn();
+
+				var interval = setInterval(fn, 3000);
+
+				self.typingIntervals[channel] = interval;
+
+				if (stopTypeTime) {
+					setTimeout(function () {
+						self.stopTyping(channel);
+					}, stopTypeTime);
+				}
+			}
+		}
+	}, {
+		key: "stopTyping",
+		value: function stopTyping(chann) {
+			var self = this;
+
+			this.resolveDestination(chann).then(next);
+
+			function next(channel) {
+				if (!self.typingIntervals[channel]) {
+					return;
+				}
+
+				clearInterval(self.typingIntervals[channel]);
+
+				delete self.typingIntervals[channel];
+			}
+		}
+	}, {
+		key: "setStatus",
+		value: function setStatus(stat) {
+
+			var idleTime = stat === "online" ? null : Date.now();
+
+			this.__idleTime = idleTime;
+
+			this.websocket.send(JSON.stringify({
+				op: 3,
+				d: {
+					idle_since: this.__idleTime,
+					game_id: this.__gameId
+				}
+			}));
+		}
+	}, {
+		key: "setPlayingGame",
+		value: function setPlayingGame(id) {
+
+			if (id instanceof String || typeof id === "string") {
+
+				// working on names
+				var gid = id.trim().toUpperCase();
+
+				id = null;
+
+				var _iteratorNormalCompletion16 = true;
+				var _didIteratorError16 = false;
+				var _iteratorError16 = undefined;
+
+				try {
+					for (var _iterator16 = gameMap[Symbol.iterator](), _step16; !(_iteratorNormalCompletion16 = (_step16 = _iterator16.next()).done); _iteratorNormalCompletion16 = true) {
+						var game = _step16.value;
+
+						if (game.name.trim().toUpperCase() === gid) {
+
+							id = game.id;
+							break;
+						}
+					}
+				} catch (err) {
+					_didIteratorError16 = true;
+					_iteratorError16 = err;
+				} finally {
+					try {
+						if (!_iteratorNormalCompletion16 && _iterator16["return"]) {
+							_iterator16["return"]();
+						}
+					} finally {
+						if (_didIteratorError16) {
+							throw _iteratorError16;
+						}
+					}
+				}
+			}
+
+			this.__gameId = id;
+
+			this.websocket.send(JSON.stringify({
+				op: 3,
+				d: {
+					idle_since: this.__idleTime,
+					game_id: this.__gameId
+				}
+			}));
+		}
+	}, {
+		key: "playGame",
+		value: function playGame(id) {
+			this.setPlayingGame(id);
+		}
+	}, {
+		key: "playingGame",
+		value: function playingGame(id) {
+
+			this.setPlayingGame(id);
 		}
 	}, {
 		key: "uptime",
@@ -1391,27 +1894,27 @@ var Client = (function () {
 		get: function get() {
 
 			var msgs = [];
-			var _iteratorNormalCompletion15 = true;
-			var _didIteratorError15 = false;
-			var _iteratorError15 = undefined;
+			var _iteratorNormalCompletion17 = true;
+			var _didIteratorError17 = false;
+			var _iteratorError17 = undefined;
 
 			try {
-				for (var _iterator15 = this.channelCache[Symbol.iterator](), _step15; !(_iteratorNormalCompletion15 = (_step15 = _iterator15.next()).done); _iteratorNormalCompletion15 = true) {
-					var channel = _step15.value;
+				for (var _iterator17 = this.channelCache[Symbol.iterator](), _step17; !(_iteratorNormalCompletion17 = (_step17 = _iterator17.next()).done); _iteratorNormalCompletion17 = true) {
+					var channel = _step17.value;
 
 					msgs = msgs.concat(channel.messages);
 				}
 			} catch (err) {
-				_didIteratorError15 = true;
-				_iteratorError15 = err;
+				_didIteratorError17 = true;
+				_iteratorError17 = err;
 			} finally {
 				try {
-					if (!_iteratorNormalCompletion15 && _iterator15["return"]) {
-						_iterator15["return"]();
+					if (!_iteratorNormalCompletion17 && _iterator17["return"]) {
+						_iterator17["return"]();
 					}
 				} finally {
-					if (_didIteratorError15) {
-						throw _iteratorError15;
+					if (_didIteratorError17) {
+						throw _iteratorError17;
 					}
 				}
 			}
@@ -1423,23 +1926,9 @@ var Client = (function () {
 	return Client;
 })();
 
-function getGateway() {
-
-	var self = this;
-
-	return new Promise(function (resolve, reject) {
-		request.get(Endpoints.API + "/gateway").end(function (err, res) {
-			if (err) {
-				reject(err);
-			} else {
-				resolve(res.body.url);
-			}
-		});
-	});
-}
-
 module.exports = Client;
-},{"./Endpoints.js":2,"./PMChannel.js":3,"./channel.js":4,"./invite.js":6,"./message.js":7,"./server.js":8,"./user.js":9,"fs":10,"superagent":11,"ws":14}],2:[function(require,module,exports){
+
+},{"../ref/gameMap.json":15,"./Endpoints.js":2,"./PMChannel.js":3,"./channel.js":4,"./invite.js":6,"./message.js":7,"./server.js":8,"./user.js":9,"fs":10,"superagent":11,"ws":14}],2:[function(require,module,exports){
 "use strict";
 
 exports.BASE_DOMAIN = "discordapp.com";
@@ -1453,6 +1942,7 @@ exports.LOGOUT = exports.AUTH + "/logout";
 exports.USERS = exports.API + "/users";
 exports.SERVERS = exports.API + "/guilds";
 exports.CHANNELS = exports.API + "/channels";
+
 },{}],3:[function(require,module,exports){
 "use strict";
 
@@ -1480,6 +1970,11 @@ var PMChannel = (function () {
 	}, {
 		key: "getMessage",
 		value: function getMessage(key, value) {
+
+			if (this.messages.length > 1000) {
+				this.messages.splice(0, 1);
+			}
+
 			var _iteratorNormalCompletion = true;
 			var _didIteratorError = false;
 			var _iteratorError = undefined;
@@ -1509,12 +2004,18 @@ var PMChannel = (function () {
 
 			return null;
 		}
+	}, {
+		key: "isPrivate",
+		get: function get() {
+			return true;
+		}
 	}]);
 
 	return PMChannel;
 })();
 
 module.exports = PMChannel;
+
 },{}],4:[function(require,module,exports){
 "use strict";
 
@@ -1529,6 +2030,7 @@ var Channel = (function () {
         this.server = server;
         this.name = data.name;
         this.type = data.type;
+        this.topic = data.topic;
         this.id = data.id;
         this.messages = [];
         //this.isPrivate = isPrivate; //not sure about the implementation of this...
@@ -1542,9 +2044,15 @@ var Channel = (function () {
     }, {
         key: "addMessage",
         value: function addMessage(data) {
+
+            if (this.messages.length > 1000) {
+                this.messages.splice(0, 1);
+            }
+
             if (!this.getMessage("id", data.id)) {
                 this.messages.push(data);
             }
+
             return this.getMessage("id", data.id);
         }
     }, {
@@ -1582,12 +2090,27 @@ var Channel = (function () {
     }, {
         key: "toString",
         value: function toString() {
-            return "#" + this.name;
+            return "<#" + this.id + ">";
         }
     }, {
         key: "client",
         get: function get() {
             return this.server.client;
+        }
+    }, {
+        key: "isPrivate",
+        get: function get() {
+            return false;
+        }
+    }, {
+        key: "users",
+        get: function get() {
+            return this.server.members;
+        }
+    }, {
+        key: "members",
+        get: function get() {
+            return this.server.members;
         }
     }]);
 
@@ -1595,6 +2118,7 @@ var Channel = (function () {
 })();
 
 module.exports = Channel;
+
 },{}],5:[function(require,module,exports){
 "use strict";
 
@@ -1608,6 +2132,7 @@ var Discord = {
 };
 
 module.exports = Discord;
+
 },{"./Client.js":1,"./Endpoints.js":2,"superagent":11}],6:[function(require,module,exports){
 "use strict";
 
@@ -1644,12 +2169,15 @@ var Invite = (function () {
 })();
 
 module.exports = Invite;
+
 },{}],7:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var PMChannel = require("./PMChannel.js");
 
 var Message = (function () {
 	function Message(data, channel, mentions, author) {
@@ -1711,13 +2239,19 @@ var Message = (function () {
 		get: function get() {
 			return this.author;
 		}
+	}, {
+		key: "isPrivate",
+		get: function get() {
+			return this.channel.isPrivate;
+		}
 	}]);
 
 	return Message;
 })();
 
 module.exports = Message;
-},{}],8:[function(require,module,exports){
+
+},{"./PMChannel.js":3}],8:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1863,6 +2397,11 @@ var Server = (function () {
 			return this.name;
 		}
 	}, {
+		key: "equals",
+		value: function equals(object) {
+			return object.id === this.id;
+		}
+	}, {
 		key: "iconURL",
 		get: function get() {
 			if (!this.icon) return null;
@@ -1885,12 +2424,18 @@ var Server = (function () {
 		get: function get() {
 			return this.client.getUser("id", this.ownerID);
 		}
+	}, {
+		key: "users",
+		get: function get() {
+			return this.members;
+		}
 	}]);
 
 	return Server;
 })();
 
 module.exports = Server;
+
 },{}],9:[function(require,module,exports){
 "use strict";
 
@@ -1906,6 +2451,7 @@ var User = (function () {
 		this.discriminator = data.discriminator;
 		this.id = data.id;
 		this.avatar = data.avatar;
+		this.status = "offline";
 	}
 
 	// access using user.avatarURL;
@@ -1948,6 +2494,7 @@ var User = (function () {
 })();
 
 module.exports = User;
+
 },{}],10:[function(require,module,exports){
 
 },{}],11:[function(require,module,exports){
@@ -3326,5 +3873,7 @@ function ws(uri, protocols, opts) {
 
 if (WebSocket) ws.prototype = WebSocket.prototype;
 
+},{}],15:[function(require,module,exports){
+module.exports=[{"executables":{"win32":["pol.exe"]},"id":0,"name":"FINAL FANTASY XI"},{"executables":{"win32":["ffxiv.exe","ffxiv_dx11.exe"]},"id":1,"name":"FINAL FANTASY XIV"},{"executables":{"win32":["Wow.exe","Wow-64.exe"]},"id":3,"name":"World of Warcraft"},{"executables":{"darwin":["LoLLauncher.app"],"win32":["LolClient.exe","League of Legends.exe"]},"id":4,"name":"League of Legends"},{"executables":{"darwin":["Diablo%20III.app"],"win32":["Diablo III.exe"]},"id":5,"name":"Diablo 3"},{"executables":{"darwin":["dota_osx.app"],"win32":["dota2.exe"]},"id":6,"name":"DOTA 2"},{"executables":{"darwin":["Heroes.app"],"win32":["Heroes of the Storm.exe","HeroesOfTheStorm_x64.exe","HeroesOfTheStorm.exe"]},"id":7,"name":"Heroes of the Storm"},{"executables":{"darwin":["Hearthstone.app"],"win32":["Hearthstone.exe"]},"id":8,"name":"Hearthstone"},{"executables":{"win32":["csgo.exe"]},"id":9,"name":"Counter-Strike: Global Offensive"},{"executables":{"win32":["WorldOfTanks.exe"]},"id":10,"name":"World of Tanks"},{"executables":{"darwin":["gw2.app"],"win32":["gw2.exe"]},"id":11,"name":"Guild Wars 2"},{"executables":{"win32":["dayz.exe"]},"id":12,"name":"Day Z"},{"executables":{"darwin":["starcraft%20ii.app"],"win32":["starcraft ii.exe","SC2_x64.exe","SC2.exe"]},"id":13,"name":"Starcraft II"},{"executables":{"win32":["diablo.exe"]},"id":14,"name":"Diablo"},{"executables":{"win32":["diablo ii.exe"]},"id":15,"name":"Diablo 2"},{"executables":{"win32":["left4dead.exe"]},"id":17,"name":"Left 4 Dead"},{"executables":{"darwin":["minecraft.app"],"win32":["minecraft.exe"]},"id":18,"name":"Minecraft"},{"executables":{"win32":["smite.exe"]},"id":19,"name":"Smite"},{"executables":{"win32":["bf4.exe"]},"id":20,"name":"Battlefield 4"},{"executables":{"win32":["AoK HD.exe","empires2.exe"]},"id":101,"name":"Age of Empire II"},{"executables":{"win32":["age3y.exe"]},"id":102,"name":"Age of Empire III"},{"executables":{"win32":["AlanWake.exe"]},"id":104,"name":"Alan Wake"},{"executables":{"win32":["alan_wakes_american_nightmare.exe"]},"id":105,"name":"Alan Wake's American Nightmare"},{"executables":{"win32":["AlienBreed2Assault.exe"]},"id":106,"name":"Alien Breed 2: Assault"},{"executables":{"win32":["Amnesia.exe"]},"id":107,"name":"Amnesia: The Dark Descent"},{"executables":{"win32":["UDK.exe"]},"id":108,"name":"Antichamber"},{"executables":{"win32":["ArcheAge.exe"]},"id":109,"name":"ArcheAge"},{"executables":{"win32":["arma3.exe"]},"id":110,"name":"Arma III"},{"executables":{"win32":["AC3SP.exe"]},"id":111,"name":"Assassin's Creed 3"},{"executables":{"win32":["Bastion.exe"]},"id":112,"name":"Bastion"},{"executables":{"win32":["BF2.exe"]},"id":113,"name":"Battlefield 2"},{"executables":{"win32":["bf3.exe"]},"id":114,"name":"Battlefield 3"},{"executables":{"win32":["Besiege.exe"]},"id":116,"name":"Besiege"},{"executables":{"win32":["Bioshock.exe"]},"id":117,"name":"Bioshock"},{"executables":{"win32":["Bioshock2.exe"]},"id":118,"name":"BioShock II"},{"executables":{"win32":["BioShockInfinite.exe"]},"id":119,"name":"BioShock Infinite"},{"executables":{"win32":["Borderlands2.exe"]},"id":122,"name":"Borderlands 2"},{"executables":{"win32":["braid.exe"]},"id":123,"name":"Braid"},{"executables":{"win32":["ShippingPC-StormGame.exe"]},"id":124,"name":"Bulletstorm"},{"executables":{},"id":125,"name":"Cabal 2"},{"executables":{"win32":["CabalMain.exe"]},"id":126,"name":"Cabal Online"},{"executables":{"win32":["iw4mp.exe","iw4sp.exe"]},"id":127,"name":"Call of Duty: Modern Warfare 2"},{"executables":{"win32":["t6sp.exe"]},"id":128,"name":"Call of Duty: Black Ops"},{"executables":{"win32":["iw5mp.exe"]},"id":129,"name":"Call of Duty: Modern Warfare 3"},{"executables":{"win32":["RelicCOH.exe"]},"id":132,"name":"Company of Heroes"},{"executables":{"win32":["Crysis64.exe"]},"id":135,"name":"Crysis"},{"executables":{"win32":["Crysis2.exe"]},"id":136,"name":"Crysis 2"},{"executables":{"win32":["Crysis3.exe"]},"id":137,"name":"Crysis 3"},{"executables":{"win32":["Crysis.exe"]},"id":138,"name":"Crysis 4  "},{"executables":{"win32":["DATA.exe"]},"id":140,"name":"Dark Souls"},{"executables":{"win32":["DarkSoulsII.exe"]},"id":141,"name":"Dark Souls II"},{"executables":{"win32":["dfuw.exe"]},"id":142,"name":"Darkfall: Unholy Wars"},{"executables":{"win32":["DCGAME.exe"]},"id":144,"name":"DC Universe Online"},{"executables":{"win32":["DeadIslandGame.exe"]},"id":145,"name":"Dead Island"},{"executables":{"win32":["deadspace2.exe"]},"id":146,"name":"Dead Space 2"},{"executables":{"win32":["LOTDGame.exe"]},"id":147,"name":"Deadlight"},{"executables":{"win32":["dxhr.exe"]},"id":148,"name":"Deus Ex: Human Revolution"},{"executables":{"win32":["DeviMayCry4.exe"]},"id":149,"name":"Devil May Cry 4"},{"executables":{"win32":["DMC-DevilMayCry.exe"]},"id":150,"name":"DmC Devil May Cry"},{"executables":{"win32":["dirt2_game.exe"]},"id":154,"name":"DiRT 2"},{"executables":{"win32":["dirt3_game.exe"]},"id":155,"name":"DiRT 3"},{"executables":{"win32":["dota.exe"]},"id":156,"name":"DOTA"},{"executables":{"win32":["DoubleDragon.exe"]},"id":158,"name":"Double Dragon Neon"},{"executables":{"win32":["DragonAge2.exe"]},"id":159,"name":"Dragon Age II"},{"executables":{"win32":["DragonAgeInquisition.exe"]},"id":160,"name":"Dragon Age: Inquisition"},{"executables":{"win32":["daorigins.exe"]},"id":161,"name":"Dragon Age: Origins"},{"executables":{"win32":["DBXV.exe"]},"id":162,"name":"Dragon Ball XenoVerse"},{"executables":{"win32":["DukeForever.exe"]},"id":163,"name":"Duke Nukem Forever"},{"executables":{"darwin":["Dustforce.app"],"win32":["dustforce.exe"]},"id":164,"name":"Dustforce"},{"executables":{"win32":["EliteDangerous32.exe"]},"id":165,"name":"Elite: Dangerous"},{"executables":{"win32":["exefile.exe"]},"id":166,"name":"Eve Online"},{"executables":{"win32":["eqgame.exe"]},"id":167,"name":"EverQuest"},{"executables":{"win32":["EverQuest2.exe"]},"id":168,"name":"EverQuest II"},{"executables":{},"id":169,"name":"EverQuest Next"},{"executables":{"win32":["Engine.exe"]},"id":170,"name":"F.E.A.R."},{"executables":{"win32":["FEAR2.exe"]},"id":171,"name":"F.E.A.R. 2: Project Origin"},{"executables":{"win32":["fallout3.exe"]},"id":172,"name":"Fallout 3"},{"executables":{"win32":["FalloutNV.exe"]},"id":174,"name":"Fallout: New Vegas"},{"executables":{"win32":["farcry3.exe"]},"id":175,"name":"Far Cry 3"},{"executables":{"win32":["fifa15.exe"]},"id":176,"name":"FIFA 15"},{"executables":{"win32":["FTLGame.exe"]},"id":180,"name":"FTL: Faster Than Light"},{"executables":{"win32":["GTAIV.exe"]},"id":181,"name":"Grand Theft Auto 4"},{"executables":{"win32":["GTA5.exe"]},"id":182,"name":"Grand Theft Auto 5"},{"executables":{"win32":["Gw.exe"]},"id":183,"name":"Guild Wars"},{"executables":{"win32":["H1Z1.exe"]},"id":186,"name":"H1Z1"},{"executables":{"win32":["HL2HL2.exe","hl2.exe"]},"id":188,"name":"Half Life 2"},{"executables":{"win32":["HOMEFRONT.exe"]},"id":195,"name":"Homefront"},{"executables":{"win32":["invisibleinc.exe"]},"id":196,"name":"Invisible Inc."},{"executables":{"win32":["LANoire.exe"]},"id":197,"name":"L.A. Noire"},{"executables":{"win32":["Landmark64.exe"]},"id":198,"name":"Landmark"},{"executables":{"win32":["left4dead2.exe"]},"id":201,"name":"Left 4 Dead 2"},{"executables":{"win32":["lineage.exe"]},"id":203,"name":"Lineage"},{"executables":{"win32":["Magicka.exe"]},"id":206,"name":"Magicka"},{"executables":{"win32":["MapleStory.exe"]},"id":208,"name":"MapleStory"},{"executables":{},"id":209,"name":"Mark of the Ninja"},{"executables":{"win32":["MassEffect.exe"]},"id":210,"name":"Mass Effect"},{"executables":{"win32":["MassEffect2.exe"]},"id":211,"name":"Mass Effect 2"},{"executables":{"win32":["MassEffect3Demo.exe"]},"id":212,"name":"Mass Effect 3"},{"executables":{"win32":["METAL GEAR RISING REVENGEANCE.exe"]},"id":214,"name":"Metal Gear Rising: Revengeance"},{"executables":{"win32":["metro2033.exe"]},"id":215,"name":"Metro 2033"},{"executables":{"win32":["MetroLL.exe"]},"id":216,"name":"Metro Last Light"},{"executables":{"win32":["MK10.exe"]},"id":218,"name":"Mortal Kombat X"},{"executables":{"win32":["speed.exe"]},"id":219,"name":"Need For Speed Most Wanted"},{"executables":{},"id":220,"name":"Neverwinder"},{"executables":{"darwin":["Outlast.app"],"win32":["OLGame.exe"]},"id":221,"name":"Outlast"},{"executables":{"win32":["PapersPlease.exe"]},"id":222,"name":"Papers, Please"},{"executables":{"win32":["payday_win32_release.exe"]},"id":223,"name":"PAYDAY"},{"executables":{"win32":["payday2_win32_release.exe"]},"id":224,"name":"PAYDAY2"},{"executables":{"win32":["PillarsOfEternity.exe"]},"id":225,"name":"Pillars of Eternity"},{"executables":{"win32":["PA.exe"]},"id":226,"name":"Planetary Annihilation"},{"executables":{"win32":["planetside2_x86.exe"]},"id":227,"name":"Planetside 2"},{"executables":{"win32":["hl2P.exe"]},"id":228,"name":"Portal"},{"executables":{"win32":["portal2.exe"]},"id":229,"name":"Portal 2"},{"executables":{"win32":["PrimalCarnageGame.exe"]},"id":231,"name":"Primal Cargnage"},{"executables":{"win32":["pCARS.exe"]},"id":232,"name":"Project Cars"},{"executables":{"win32":["RaceTheSun.exe"]},"id":233,"name":"Race The Sun"},{"executables":{"win32":["Rage.exe"]},"id":234,"name":"RAGE"},{"executables":{"win32":["ragexe.exe"]},"id":235,"name":"Ragnarok Online"},{"executables":{"win32":["rift.exe"]},"id":236,"name":"Rift"},{"executables":{"win32":["Rocksmith2014.exe"]},"id":237,"name":"Rocksmith 2014"},{"executables":{"win32":["SwiftKit-RS.exe","JagexLauncher.exe"]},"id":238,"name":"RuneScape"},{"executables":{"win32":["Shadowgrounds.exe"]},"id":239,"name":"Shadowgrounds"},{"executables":{"win32":["survivor.exe"]},"id":240,"name":"Shadowgrounds: Survivor"},{"executables":{"win32":["ShovelKnight.exe"]},"id":241,"name":"Shovel Knight"},{"executables":{"win32":["SimCity.exe"]},"id":242,"name":"SimCity"},{"executables":{"win32":["SporeApp.exe"]},"id":245,"name":"Spore"},{"executables":{"win32":["StarCitizen.exe"]},"id":246,"name":"Star Citizen"},{"executables":{},"id":247,"name":"Star Trek Online"},{"executables":{"win32":["battlefront.exe"]},"id":248,"name":"Star Wars Battlefront"},{"executables":{"win32":["swtor.exe"]},"id":249,"name":"Star Wars: The Old Republic"},{"executables":{"win32":["starbound.exe","starbound_opengl.exe"]},"id":250,"name":"Starbound"},{"executables":{"win32":["starcraft.exe"]},"id":251,"name":"Starcraft"},{"executables":{"win32":["SSFIV.exe"]},"id":253,"name":"Ultra Street Fighter IV"},{"executables":{"win32":["superhexagon.exe"]},"id":254,"name":"Super Hexagon"},{"executables":{"win32":["swordandsworcery_pc.exe"]},"id":255,"name":"Superbrothers: Sword & Sworcery EP"},{"executables":{"win32":["hl2TF.exe"]},"id":256,"name":"Team Fortress 2"},{"executables":{"win32":["TERA.exe"]},"id":258,"name":"TERA"},{"executables":{"win32":["Terraria.exe"]},"id":259,"name":"Terraria"},{"executables":{"win32":["Bethesda.net_Launcher.exe"]},"id":260,"name":"The Elder Scrolls Online"},{"executables":{"win32":["TESV.exe"]},"id":261,"name":"The Elder Scrolls V: Skyrim"},{"executables":{"win32":["TheSecretWorld.exe"]},"id":262,"name":"The Secret World"},{"executables":{"win32":["TS3.exe","ts3w.exe"]},"id":264,"name":"The Sims 3"},{"executables":{"win32":["WALKINGDEAD101.EXE"]},"id":265,"name":"The Walking Dead"},{"executables":{"win32":["TheWalkingDead2.exe"]},"id":266,"name":"The Walking Dead Season Two"},{"executables":{"win32":["witcher3.exe"]},"id":267,"name":"The Witcher 3"},{"executables":{"win32":["Future Soldier.exe"]},"id":268,"name":"Tom Clancy's Ghost Recon: Future Solider"},{"executables":{"win32":["TombRaider.exe"]},"id":269,"name":"Tomb Raider (2013)"},{"executables":{"win32":["Torchlight.exe"]},"id":271,"name":"Torchlight"},{"executables":{"win32":["Torchlight2.exe"]},"id":272,"name":"Torchlight 2"},{"executables":{"win32":["Shogun2.exe"]},"id":273,"name":"Total War: Shogun 2"},{"executables":{"win32":["Transistor.exe"]},"id":274,"name":"Transistor"},{"executables":{"win32":["trine.exe"]},"id":275,"name":"Trine"},{"executables":{"win32":["trine2_32bit.exe"]},"id":276,"name":"Trine 2"},{"executables":{"win32":["UOKR.exe"]},"id":277,"name":"Ultima Online"},{"executables":{"win32":["aces.exe"]},"id":279,"name":"War Thunder"},{"executables":{"win32":["Warcraft III.exe","wc3.exe"]},"id":281,"name":"Warcraft 3: Reign of Chaos"},{"executables":{"win32":["Warcraft II BNE.exe"]},"id":282,"name":"Warcraft II"},{"executables":{"win32":["Warframe.x64.exe","Warframe.exe"]},"id":283,"name":"Warframe"},{"executables":{"win32":["watch_dogs.exe"]},"id":284,"name":"Watch Dogs"},{"executables":{"win32":["WildStar64.exe"]},"id":285,"name":"WildStar"},{"executables":{"win32":["XComGame.exe"]},"id":288,"name":"XCOM: Enemy Unknown"},{"executables":{"win32":["DFO.exe","dfo.exe"]},"id":289,"name":"Dungeon Fighter Online"},{"executables":{"win32":["aclauncher.exe","acclient.exe"]},"id":290,"name":"Asheron's Call"},{"executables":{"win32":["MapleStory2.exe"]},"id":291,"name":"MapleStory 2"},{"executables":{"win32":["ksp.exe"]},"id":292,"name":"Kerbal Space Program"},{"executables":{"win32":["PINBALL.EXE"]},"id":293,"name":"3D Pinball: Space Cadet"},{"executables":{"win32":["dave.exe"]},"id":294,"name":"Dangerous Dave"},{"executables":{"win32":["iwbtgbeta(slomo).exe","iwbtgbeta(fs).exe"]},"id":295,"name":"I Wanna Be The Guy"},{"executables":{"win32":["MechWarriorOnline.exe "]},"id":296,"name":"Mech Warrior Online"},{"executables":{"win32":["dontstarve_steam.exe"]},"id":297,"name":"Don't Starve"},{"executables":{"win32":["GalCiv3.exe"]},"id":298,"name":"Galactic Civilization 3"},{"executables":{"win32":["Risk of Rain.exe"]},"id":299,"name":"Risk of Rain"},{"executables":{"win32":["Binding_of_Isaac.exe","Isaac-ng.exe"]},"id":300,"name":"The Binding of Isaac"},{"executables":{"win32":["RustClient.exe"]},"id":301,"name":"Rust"},{"executables":{"win32":["Clicker Heroes.exe"]},"id":302,"name":"Clicker Heroes"},{"executables":{"win32":["Brawlhalla.exe"]},"id":303,"name":"Brawlhalla"},{"executables":{"win32":["TownOfSalem.exe"]},"id":304,"name":"Town of Salem"},{"executables":{"win32":["osu!.exe"]},"id":305,"name":"osu!"},{"executables":{"win32":["PathOfExileSteam.exe","PathOfExile.exe"]},"id":306,"name":"Path of Exile"},{"executables":{"win32":["Dolphin.exe"]},"id":307,"name":"Dolphin"},{"executables":{"win32":["RocketLeague.exe"]},"id":308,"name":"Rocket League"},{"executables":{"win32":["TJPP.exe"]},"id":309,"name":"Jackbox Party Pack"},{"executables":{"win32":["KFGame.exe"]},"id":310,"name":"Killing Floor 2"},{"executables":{"win32":["ShooterGame.exe"]},"id":311,"name":"Ark: Survival Evolved"},{"executables":{"win32":["LifeIsStrange.exe"]},"id":312,"name":"Life Is Strange"},{"executables":{"win32":["Client_tos.exe"]},"id":313,"name":"Tree of Savior"},{"executables":{"win32":["olliolli2.exe"]},"id":314,"name":"OlliOlli2"},{"executables":{"win32":["cw.exe"]},"id":315,"name":"Closers Dimension Conflict"},{"executables":{"win32":["ESSTEAM.exe","elsword.exe","x2.exe"]},"id":316,"name":"Elsword"},{"executables":{"win32":["ori.exe"]},"id":317,"name":"Ori and the Blind Forest"},{"executables":{"win32":["Skyforge.exe"]},"id":318,"name":"Skyforge"},{"executables":{"win32":["projectzomboid64.exe","projectzomboid32.exe"]},"id":319,"name":"Project Zomboid"},{"executables":{"win32":["From_The_Depths.exe"]},"id":320,"name":"The Depths"},{"executables":{"win32":["TheCrew.exe"]},"id":321,"name":"The Crew"},{"executables":{"win32":["MarvelHeroes2015.exe"]},"id":322,"name":"Marvel Heroes 2015"},{"executables":{"win32":["timeclickers.exe"]},"id":324,"name":"Time Clickers"},{"executables":{"win32":["eurotrucks2.exe"]},"id":325,"name":"Euro Truck Simulator 2"},{"executables":{"win32":["FarmingSimulator2015Game.exe"]},"id":326,"name":"Farming Simulator 15"},{"executables":{"win32":["strife.exe"]},"id":327,"name":"Strife"},{"executables":{"win32":["Awesomenauts.exe"]},"id":328,"name":"Awesomenauts"},{"executables":{"win32":["Dofus.exe"]},"id":329,"name":"Dofus"},{"executables":{"win32":["Boid.exe"]},"id":330,"name":"Boid"},{"executables":{"win32":["adventure-capitalist.exe"]},"id":331,"name":"AdVenture Capitalist"},{"executables":{"win32":["OrcsMustDie2.exe"]},"id":332,"name":"Orcs Must Die! 2"},{"executables":{"win32":["Mountain.exe"]},"id":333,"name":"Mountain"},{"executables":{"win32":["Valkyria.exe"]},"id":335,"name":"Valkyria Chronicles"},{"executables":{"win32":["ffxiiiimg.exe"]},"id":336,"name":"Final Fantasy XIII"},{"executables":{"win32":["TLR.exe"]},"id":337,"name":"The Last Remnant"},{"executables":{"win32":["Cities.exe"]},"id":339,"name":"Cities Skylines"},{"executables":{"win32":["worldofwarships.exe","WoWSLauncher.exe"]},"id":341,"name":"World of Warships"},{"executables":{"win32":["spacegame-Win64-shipping.exe"]},"id":342,"name":"Fractured Space"},{"executables":{"win32":["thespacegame.exe"]},"id":343,"name":"Ascent - The Space Game"},{"executables":{"win32":["DuckGame.exe"]},"id":344,"name":"Duck Game"},{"executables":{"win32":["PPSSPPWindows.exe"]},"id":345,"name":"PPSSPP"},{"executables":{"win32":["MBAA.exe"]},"id":346,"name":"Melty Blood Actress Again: Current Code"},{"executables":{"win32":["TheWolfAmongUs.exe"]},"id":347,"name":"The Wolf Among Us"},{"executables":{"win32":["SpaceEngineers.exe"]},"id":348,"name":"Space Engineers"},{"executables":{"win32":["Borderlands.exe"]},"id":349,"name":"Borderlands"},{"executables":{"win32":["100orange.exe"]},"id":351,"name":"100% Orange Juice"},{"executables":{"win32":["reflex.exe"]},"id":354,"name":"Reflex"},{"executables":{"win32":["pso2.exe"]},"id":355,"name":"Phantasy Star Online 2"},{"executables":{"win32":["AssettoCorsa.exe"]},"id":356,"name":"Assetto Corsa"},{"executables":{"win32":["iw3mp.exe","iw3sp.exe"]},"id":357,"name":"Call of Duty 4: Modern Warfare"},{"executables":{"win32":["WolfOldBlood_x64.exe"]},"id":358,"name":"Wolfenstein: The Old Blood"},{"executables":{"win32":["castle.exe"]},"id":359,"name":"Castle Crashers"},{"executables":{"win32":["vindictus.exe"]},"id":360,"name":"Vindictus"},{"executables":{"win32":["ShooterGame-Win32-Shipping.exe"]},"id":361,"name":"Dirty Bomb"},{"executables":{"win32":["BatmanAK.exe"]},"id":362,"name":"Batman Arkham Knight"},{"executables":{"win32":["drt.exe"]},"id":363,"name":"Dirt Rally"},{"executables":{"win32":["rFactor.exe"]},"id":364,"name":"rFactor"},{"executables":{"win32":["clonk.exe"]},"id":365,"name":"Clonk Rage"},{"executables":{"win32":["SRHK.exe"]},"id":366,"name":"Shadowrun: Hong Kong"},{"executables":{"win32":["Insurgency.exe"]},"id":367,"name":"Insurgency"},{"executables":{"win32":["StepMania.exe"]},"id":368,"name":"Step Mania"},{"executables":{"win32":["FirefallCLient.exe"]},"id":369,"name":"Firefall"},{"executables":{"win32":["mirrorsedge.exe"]},"id":370,"name":"Mirrors Edge"},{"executables":{"win32":["MgsGroundZeroes.exe"]},"id":371,"name":"Metal Gear Solid V: Ground Zeroes"},{"executables":{"win32":["mgsvtpp.exe"]},"id":372,"name":"Metal Gear Solid V: The Phantom Pain"},{"executables":{"win32":["tld.exe"]},"id":373,"name":"The Long Dark"},{"executables":{"win32":["TKOM.exe"]},"id":374,"name":"Take On Mars"},{"executables":{"win32":["robloxplayerlauncher.exe","Roblox.exe"]},"id":375,"name":"Roblox"},{"executables":{"win32":["eu4.exe"]},"id":376,"name":"Europa Universalis 4"},{"executables":{"win32":["APB.exe"]},"id":377,"name":"APB Reloaded"},{"executables":{"win32":["Robocraft.exe"]},"id":378,"name":"Robocraft"},{"executables":{"win32":["Unity.exe"]},"id":379,"name":"Unity"},{"executables":{"win32":["Simpsons.exe"]},"id":380,"name":"The Simpsons: Hit & Run"},{"executables":{"win32":["Dnlauncher.exe","DragonNest.exe"]},"id":381,"name":"Dragon Nest"},{"executables":{"win32":["Trove.exe"]},"id":382,"name":"Trove"},{"executables":{"win32":["EndlessLegend.exe"]},"id":383,"name":"Endless Legend"},{"executables":{"win32":["TurbineLauncher.exe","dndclient.exe"]},"id":384,"name":"Dungeons & Dragons Online"},{"executables":{"win32":["quakelive.exe","quakelive_steam.exe"]},"id":385,"name":"Quake Live"},{"executables":{"win32":["7DaysToDie.exe"]},"id":386,"name":"7DaysToDie"},{"executables":{"win32":["SpeedRunners.exe"]},"id":387,"name":"SpeedRunners"},{"executables":{"win32":["gamemd.exe"]},"id":388,"name":"Command & Conquer: Red Alert 2"},{"executables":{"win32":["generals.exe"]},"id":389,"name":"Command & Conquer Generals: Zero Hour"},{"executables":{"win32":["Oblivion.exe"]},"id":390,"name":"The Elder Scrolls 4: Oblivion"},{"executables":{"win32":["mgsi.exe"]},"id":391,"name":"Metal Gear Solid"},{"executables":{"win32":["EoCApp.exe"]},"id":392,"name":"Divinity - Original Sin"},{"executables":{"win32":["Torment.exe"]},"id":393,"name":"Planescape: Torment"},{"executables":{"win32":["HexPatch.exe"]},"id":394,"name":"Hex: Shards of Fate"},{"executables":{"win32":["NS3FB.exe"]},"id":395,"name":"Naruto Shippuden Ultimate Ninja Storm 3 Full Burst"},{"executables":{"win32":["NSUNSR.exe"]},"id":396,"name":"Naruto Shippuden Ultimate Ninja Storm Revolution"},{"executables":{"win32":["SaintsRowIV.exe"]},"id":397,"name":"Saints Row IV"},{"executables":{"win32":["Shadowrun.exe"]},"id":398,"name":"Shadowrun"},{"executables":{"win32":["DungeonoftheEndless.exe"]},"id":399,"name":"Dungeon of the Endless"},{"executables":{"win32":["Hon.exe"]},"id":400,"name":"Heroes of Newerth"},{"executables":{"win32":["mabinogi.exe"]},"id":401,"name":"Mabinogi"},{"executables":{"win32":["CoD2MP_s.exe","CoDSP_s.exe"]},"id":402,"name":"Call of Duty 2:"},{"executables":{"win32":["CoDWaWmp.exe","CoDWaw.exe"]},"id":403,"name":"Call of Duty: World at War"},{"executables":{"win32":["heroes.exe"]},"id":404,"name":"Mabinogi Heroes (Vindictus)  "},{"executables":{"win32":["KanColleViewer.exe"]},"id":405,"name":"KanColle "},{"executables":{"win32":["cyphers.exe"]},"id":406,"name":"Cyphers"},{"executables":{"win32":["RelicCoH2.exe"]},"id":407,"name":"Company of Heroes 2"},{"executables":{"win32":["MJ.exe"]},"id":408,"name":"セガNET麻雀MJ"},{"executables":{"win32":["ge.exe"]},"id":409,"name":"Granado Espada"},{"executables":{"win32":["NovaRO.exe"]},"id":410,"name":"Nova Ragnarok Online"},{"executables":{"win32":["RivalsofAether.exe"]},"id":411,"name":"Rivals of Aether"},{"executables":{"win32":["bfh.exe"]},"id":412,"name":"Battlefield Hardline"},{"executables":{"win32":["GrowHome.exe"]},"id":413,"name":"Grow Home"},{"executables":{"win32":["patriots.exe"]},"id":414,"name":"Rise of Nations Extended"},{"executables":{"win32":["Railroads.exe"]},"id":415,"name":"Sid Meier's Railroads!"},{"executables":{"win32":["Empire.exe"]},"id":416,"name":"Empire: Total War"},{"executables":{"win32":["Napoleon.exe"]},"id":417,"name":"Napoleon: Total War"},{"executables":{"win32":["gta_sa.exe"]},"id":418,"name":"Grand Theft Auto: San Andreas"},{"executables":{"win32":["MadMax.exe"]},"id":419,"name":"Mad Max"},{"executables":{"win32":["Titanfall.exe"]},"id":420,"name":"Titanfall"},{"executables":{"win32":["age2_x1.exe"]},"id":421,"name":"Age of Empires II: The Conquerors"},{"executables":{"win32":["Rome2.exe"]},"id":422,"name":"Total War: ROME 2"},{"executables":{"win32":["ShadowOfMordor.exe"]},"id":423,"name":"Middle-earth: Shadow of Mordor"},{"executables":{"win32":["Subnautica.exe"]},"id":424,"name":"Subnautica"},{"executables":{"win32":["anno5.exe"]},"id":425,"name":"Anno 2070"},{"executables":{"win32":["carrier.exe"]},"id":426,"name":"Carrier Command Gaea Mission"},{"executables":{"win32":["DarksidersPC.exe"]},"id":427,"name":"Darksiders"},{"executables":{"win32":["Darksiders2.exe"]},"id":428,"name":"Darksiders 2"},{"executables":{"win32":["mudlet.exe"]},"id":429,"name":"Mudlet"},{"executables":{"win32":["DunDefLauncher.exe"]},"id":430,"name":"Dungeon Defenders II"},{"executables":{"win32":["hng.exe"]},"id":431,"name":"Heroes and Generals"},{"executables":{"win32":["WFTOGame.exe"]},"id":432,"name":"War of the Overworld"},{"executables":{"win32":["Talisman.exe"]},"id":433,"name":"Talisman: Digital Edition"},{"executables":{"win32":["limbo.exe"]},"id":434,"name":"Limbo"},{"executables":{"win32":["ibbobb.exe"]},"id":435,"name":"ibb & obb"},{"executables":{"win32":["BattleBlockTheater.exe"]},"id":436,"name":"BattleBlock Theater"},{"executables":{"win32":["iracinglauncher.exe","iracingsim.exe","iracingsim64.exe"]},"id":437,"name":"iRacing"},{"executables":{"win32":["CivilizationV_DX11.exe"]},"id":438,"name":"Civilization V"}]
 },{}]},{},[5])(5)
 });

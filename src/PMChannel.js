@@ -3,6 +3,7 @@ class PMChannel {
         this.user = client.getUser("id", data.recipient.id);
         this.id = data.id;
 		this.messages = [];
+		this.client = client;
     }
     
     addMessage(data){
@@ -13,6 +14,11 @@ class PMChannel {
 	}
     
     getMessage(key, value){
+		
+		if(this.messages.length > 1000){
+            this.messages.splice(0,1);
+        }
+		
 		for(var message of this.messages){
 			if(message[key] === value){
 				return message;
@@ -20,6 +26,10 @@ class PMChannel {
 		}
 		return null;
 	}
+	
+    get isPrivate(){
+        return true;
+    }
 }
 
 module.exports = PMChannel;
