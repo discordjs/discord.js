@@ -24,7 +24,12 @@ mybot.on("message", function (message) {
 	
 	console.log( mybot.getUser("username", "meew0") );
 	
-	mybot.reply(message, JSON.stringify(message.mentions, null, 4));
+	var perms = JSON.stringify(message.channel.permissionsOf(user).serialise(), null, 4);
+	perms = JSON.parse(perms);
+	
+	mybot.sendMessage(message,
+		JSON.stringify(perms, null, 4).replace(new RegExp("true", "g"), "**true**")
+	);
 	
 });
 

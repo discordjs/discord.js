@@ -2,15 +2,33 @@ class EvaluatedPermissions {
 	constructor(data) {
 
 		var self = this;
-
-		function getBit(x) {
-			if (((self.packed >>> 3) & 1) === 1) {
-				return true;
-			}
-			return ((self.packed >>> x) & 1) === 1;
-		}
-
+		
 		this.packed = data;
+		
+		if(this.getBit(3))
+			this.packed = 4294967295;
+	}
+
+	serialise() {
+		return {
+			createInstantInvite : this.createInstantInvite,
+			manageRoles : this.manageRoles,
+			manageChannels : this.manageChannels,
+			readMessages : this.readMessages,
+			sendMessages : this.sendMessage,
+			sendTTSMessages : this.sendTTSMessages,
+			manageMessages : this.manageMessages,
+			embedLinks : this.embedLinks,
+			attachFiles : this.attachFiles,
+			readMessageHistory : this.readMessageHistory,
+			mentionEveryone : this.mentionEveryone,
+			voiceConnect : this.voiceConnect,
+			voiceSpeak : this.voiceSpeak,
+			voiceMuteMembers : this.voiceMuteMembers,
+			voiceDeafenMembers : this.voiceDeafenMembers,
+			voiceMoveMember : this.voiceMoveMembers,
+			voiceUseVoiceActivation : this.voiceUseVoiceActivation
+		}
 	}
 
 	get createInstantInvite() { return this.getBit(0); }
