@@ -591,6 +591,38 @@ class Client {
 
 	}
 
+	setAvatar(resource, callback = function (err) { }) {
+
+		var self = this;
+
+		return new Promise(function (resolve, reject) {
+			if (resource instanceof Buffer) {
+				resource = resource.toString("base64");
+				resource = "data:image/jpg;base64," + resource;
+			}
+
+			request
+				.patch(`${Endpoints.API}/users/@me`)
+				.set("authorization", self.token)
+				.send({
+					avatar: resource,
+					email: self.email,
+					new_password: null,
+					password: self.password,
+					username: self.user.username
+				})
+				.end(function (err) {
+					callback(err);
+					if (err)
+						reject(err);
+					else
+						resolve();
+				});
+
+		});
+
+	}
+
 	sendFile(destination, file, fileName = "image.png", callback = function (err, msg) { }) {
 
 		var self = this;
@@ -958,7 +990,7 @@ class Client {
 						var user = self.addUser(data.user); //if for whatever reason it doesn't exist..
 						
 						server.removeMember("id", user.id);
-						
+
 						self.trigger("serverRemoveMember", user, server);
 					}
 
@@ -993,13 +1025,13 @@ class Client {
 						data.user.id = data.user.id || userInCache.id;
 						data.user.discriminator = data.user.discriminator || userInCache.discriminator;
 						data.user.avatar = data.user.avatar || userInCache.avatar;
-						
+
 						var presenceUser = new User(data.user);
 						if (presenceUser.equalsStrict(userInCache)) {
 							//they're exactly the same, an actual presence update
 							self.trigger("presence", {
 								user: userInCache,
-								oldStatus : userInCache.status,
+								oldStatus: userInCache.status,
 								status: data.status,
 								server: self.getServer("id", data.guild_id),
 								gameId: data.game_id
@@ -1055,26 +1087,26 @@ class Client {
 					}, 6000);
 
 					break;
-					
+
 				case "GUILD_ROLE_DELETE":
-				
+
 					var server = self.getServer("id", data.guild_id);
 					var role = server.getRole(data.role_id);
-					
+
 					self.trigger("serverRoleDelete", server, role);
-					
+
 					server.removeRole(role.id);
-					
+
 					break;
-					
+
 				case "GUILD_ROLE_UPDATE":
-				
+
 					var server = self.getServer("id", data.guild_id);
 					var role = server.getRole(data.role.id);
 					var newRole = server.updateRole(data.role);
-					
+
 					self.trigger("serverRoleUpdate", server, role, newRole);
-					
+
 					break;
 
 				default:

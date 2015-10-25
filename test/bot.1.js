@@ -1,6 +1,7 @@
 var Discord = require("../");
 var mybot = new Discord.Client();
 var fs = require("fs");
+var request = require("request").defaults({ encoding: null });
 
 Discord.patchStrings();
 
@@ -29,14 +30,11 @@ mybot.on("message", function (message) {
 	var perms = JSON.stringify(message.channel.permissionsOf(user).serialise(), null, 4);
 	perms = JSON.parse(perms);
 	
-	mybot.sendMessage(message,
-		"bold".bold.newline +
-		"italic".italic.newline +
-		"underline".underline.newline +
-		"strike".strike.newline +
-		"code".code.newline +
-		"codeblock".codeblock.newline
-	);
+	request.get(message.sender.avatarURL, function(err, resp, body){
+		mybot.setAvatar( new Buffer(body) ).catch(error).then(() => {
+			mybot.reply(message, "I have your avatar now!");	
+		});
+	});
 	
 });
 
