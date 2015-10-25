@@ -30,7 +30,12 @@ mybot.on("message", function (message) {
 	perms = JSON.parse(perms);
 	
 	mybot.sendMessage(message,
-		"one" + "two".italic + "three"
+		"bold".bold.newline +
+		"italic".italic.newline +
+		"underline".underline.newline +
+		"strike".strike.newline +
+		"code".code.newline +
+		"codeblock".codeblock.newline
 	);
 	
 });
