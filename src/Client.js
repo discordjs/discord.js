@@ -6,7 +6,7 @@ var Channel = require("./channel.js");
 var Message = require("./message.js");
 var Invite = require("./invite.js");
 var PMChannel = require("./PMChannel.js");
-
+var ServerPermissions = require("./ServerPermissions.js");
 var gameMap = require("../ref/gameMap.json");
 
 //node modules
@@ -757,16 +757,16 @@ class Client {
 		return prom;
 	}
 
-	createRole(server, cb = function (err, perm) { }) {
+	createRole(dest, cb = function (err, perm) { }) {
 
 		var self = this;
 
 		return new Promise(function (resolve, reject) {
 
-			server = self.resolveServerID(server);
+			var ddest = self.resolveServerID(dest);
 
 			request
-				.post(`${Endpoints.SERVERS}/${server}/roles`)
+				.post(`${Endpoints.SERVERS}/${ddest}/roles`)
 				.set("authorization", self.token)
 				.end(function (err, res) {
 
@@ -775,9 +775,10 @@ class Client {
 						reject(err);
 					} else {
 
-						var data = self.getServer("id", server).addRole(res.body);
-						resolve(data);
-						cb(null, data);
+						var perms = self.getServer("id", ddest).addRole(res.body);
+						
+						resolve(perms);
+						cb(null, perms);
 
 					}
 
@@ -785,6 +786,40 @@ class Client {
 
 		});
 
+	}
+	
+	updateRole(server, role, cb=function(err,perm){}){
+		
+		var self = this;
+		
+		return new Promise(function(resolve, reject){
+			
+			server = self.resolveServerID(server);
+			
+			request
+				.patch(`${Endpoints.SERVERS}/${server}/roles/${role.id}`)
+				.set("authorization", self.token)
+				.send({
+					color : role.color,
+					hoist : role.hoist,
+					name : role.name,
+					permissions : role.packed
+				})
+				.end(function(err, res){
+					if (err) {
+						cb(err);
+						reject(err);
+					} else {
+
+						var data = self.getServer("id", server).updateRole(res.body);
+						resolve(data);
+						cb(null, data);
+
+					}
+				});
+			
+		});
+		
 	}
 	
 	//def createws
@@ -1124,8 +1159,6 @@ class Client {
 					var role = data.role;
 
 					self.trigger("serverRoleCreate", server, server.addRole(role));
-
-					server.removeRole(role.id);
 
 					break;
 

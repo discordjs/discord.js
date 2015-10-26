@@ -75,11 +75,11 @@ class Server {
 	
 	getRole(id){
 		for (var role of this.roles) {
-			if (role.id === id) {
+			if (role.id == id) {
 				return role;
 			}
 		}
-
+		
 		return null;
 	}
 	
@@ -96,14 +96,12 @@ class Server {
 	}
 	
 	updateRole(data){
-		
+	
 		var oldRole = this.getRole(data.id);
 		
 		if(oldRole){
-			
 			var index = this.roles.indexOf(oldRole);
 			this.roles[index] = new ServerPermissions(data);
-			
 			
 			return this.roles[index];
 			
