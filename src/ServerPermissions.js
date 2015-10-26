@@ -8,10 +8,19 @@ class ServerPermissions {
 			return ((self.packed >>> x) & 1) === 1;
 		}
 
+		this.managed = data.managed;
+		this.position = data.position || 1;
+		this.hoist = data.hoist;
+		this.color = data.color;
 		this.packed = data.permissions;
 		this.name = data.name;
 		this.id = data.id;
 
+	}
+	
+	get colour(){
+		// screw the american spelling
+		return this.color;
 	}
 	
 	serialise() {
