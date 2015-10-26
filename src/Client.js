@@ -1309,6 +1309,16 @@ class Client {
 					}
 
 					break;
+					
+				case "GUILD_MEMBER_UPDATE":
+					
+					var user = self.addUser(data.user);
+					var server = self.getServer("id", data.guild_id);
+					var member = server.getMember("id", user.id);
+					self.trigger("serverMemberUpdate", member, data.roles);
+					server.getMember("id", user.id).rawRoles = data.roles;
+					
+					break;
 
 				case "USER_UPDATE":
 

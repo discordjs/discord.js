@@ -25,13 +25,20 @@ mybot.on("message", function (message) {
 	} else {
 		user = message.sender;
 	}
-	for(var role of message.channel.server.roles){
-		
-		mybot.overwritePermissions(message.channel, message.sender, {
-			sendMessages : false
-		}).catch(error);
-		
-	}
+	
+	this.createRole( message.channel.server, {
+		hoist : true,
+		color : true,
+		manageRoles : true,
+		name : "discord users"
+	} ).then(
+		(perm) => {
+			
+			mybot.addMemberToRole( user, perm );
+			
+		}
+	)
+	
 });
 
 mybot.on("ready", function () {
