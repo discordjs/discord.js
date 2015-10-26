@@ -97,11 +97,21 @@ class ServerPermissions {
 	set voiceUseVoiceActivation(val){this.setBit(25, val);}
 
 	getBit(x) {
+		if( ((this.packed >>> 3) & 1) === 1 ){
+			return true;
+		}
 		return ((this.packed >>> x) & 1) === 1;
 	}
 	
-	setBit(){
-		//dummy function for now
+	setBit(location, value){
+		
+		if(value){
+			// allow that permission
+			
+		}else{
+			// not allowed
+		}
+
 	}
 	
 	toString(){

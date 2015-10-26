@@ -83,6 +83,9 @@ class EvaluatedPermissions {
 	set voiceUseVoiceActivation(val) { this.setBit(25, val); }
 
 	getBit(x) {
+		if( ((this.packed >>> 3) & 1) === 1 ){
+			return true;
+		}
 		return ((this.packed >>> x) & 1) === 1;
 	}
 
