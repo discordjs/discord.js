@@ -1,10 +1,12 @@
 var request = require("superagent");
 var Endpoints = require("./Endpoints.js"); 
 var Client = require("./Client.js");
+var Colors = require("../ref/colours.js");
 
 var Discord = {
 	Endpoints : Endpoints,
-	Client : Client
+	Client : Client,
+	Colors : Colors
 }
 
 Discord.patchStrings = function () {

@@ -25,7 +25,8 @@ class Member extends User{
 	get evalPerms(){
 		var basePerms = this.roles, //cache roles as it can be slightly expensive
 			basePerm = basePerms[0].packed;
-			
+		
+		basePerms = basePerms || [];
 		for(var perm of basePerms){
 			basePerm = basePerm | perm.packed;
 		}
@@ -33,6 +34,25 @@ class Member extends User{
 		return new ServerPermissions({
 			permissions : basePerm
 		});
+	}
+	
+	removeRole(role){
+		this.rawRoles.splice(this.rawRoles.indexOf(role.id), 1);
+	}
+	
+	addRole(role){
+		if(this.rawRoles.indexOf(role.id) == -1){
+			console.log("wanted to add", role.id, this.rawRoles.indexOf(role.id));
+			this.rawRoles.push(role.id);
+		}
+	}
+	
+	hasRole(role){
+		for(var _role of this.roles){
+			if(role.id === _role.id)
+				return true;
+		}
+		return false;
 	}
 	
 	permissionsIn(channel){

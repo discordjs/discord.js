@@ -17,7 +17,7 @@ class Server {
 		this.roles = [];
 		
 		for(var permissionGroup of data.roles){
-			this.roles.push( new ServerPermissions(permissionGroup) );
+			this.roles.push( new ServerPermissions(permissionGroup, this) );
 		}
 
 		if(!data.members){
@@ -75,23 +75,33 @@ class Server {
 	
 	getRole(id){
 		for (var role of this.roles) {
-			if (role.id === id) {
+			if (role.id == id) {
 				return role;
 			}
 		}
-
+		
 		return null;
 	}
 	
-	updateRole(data){
+	addRole(data){
 		
+		if(this.getRole(data.id)){
+			return this.getRole(data.id);
+		}
+		
+		var perms = new ServerPermissions(data);
+		this.roles.push(perms);
+		return perms;
+		
+	}
+	
+	updateRole(data){
+	
 		var oldRole = this.getRole(data.id);
 		
 		if(oldRole){
-			
 			var index = this.roles.indexOf(oldRole);
-			this.roles[index] = new ServerPermissions(data);
-			
+			this.roles[index] = new ServerPermissions(data, this);
 			
 			return this.roles[index];
 			

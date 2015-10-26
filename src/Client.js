@@ -6,7 +6,7 @@ var Channel = require("./channel.js");
 var Message = require("./message.js");
 var Invite = require("./invite.js");
 var PMChannel = require("./PMChannel.js");
-
+var ServerPermissions = require("./ServerPermissions.js");
 var gameMap = require("../ref/gameMap.json");
 
 //node modules
@@ -56,7 +56,7 @@ class Client {
 		this.checkingQueue = {};
 		this.userTypingListener = {};
 		this.queue = {};
-
+		this.guildRoleCreateIgnoreList = {};
 		this.__idleTime = null;
 		this.__gameId = null;
 	}
@@ -518,10 +518,18 @@ class Client {
 
 							var mentions = [];
 							for (var mention of message.mentions) {
-								mentions.push(self.addUser(mention));
+								var user = self.addUser(mention);
+								if(channel.server)
+									mentions.push(channel.server.getMember("id", user.id) || user);
+								else
+									mentions.push(user);
 							}
 
-							var author = self.addUser(message.author);
+							var authorRaw = self.addUser(message.author), author;
+							if(channel.server)
+								author = channel.server.getMember("id", authorRaw.id) || authorRaw;
+							else
+								author = authorRaw;
 
 							logs.push(new Message(message, channel, mentions, author));
 						}
@@ -756,6 +764,302 @@ class Client {
 
 		return prom;
 	}
+
+	createRole(dest, data, cb = function (err, perm) { }) {
+
+		var self = this;
+
+		return new Promise(function (resolve, reject) {
+
+			var ddest = self.resolveServerID(dest);
+			var server = self.getServer("id", ddest);
+
+			request
+				.post(`${Endpoints.SERVERS}/${ddest}/roles`)
+				.set("authorization", self.token)
+				.end(function (err, res) {
+
+					if (err) {
+						cb(err);
+						reject(err);
+					} else {
+
+						var moddedPerm = new ServerPermissions(res.body, server);
+
+						for (var key in data) {
+							moddedPerm[key] = data[key];
+						}
+
+						var perms = server.addRole(res.body);
+						self.guildRoleCreateIgnoreList[res.body.id] = function () {
+							self.updateRole(server, moddedPerm)
+								.then((perm) => {
+									cb(null, perm);
+									resolve(perm);
+								})
+								.catch((err) => {
+									cb(err);
+									reject(err);
+								});
+
+						}
+
+
+					}
+
+				});
+
+		});
+
+	}
+
+	updateRole(server, role, cb = function (err, perm) { }) {
+
+		var self = this;
+
+		return new Promise(function (resolve, reject) {
+
+			server = self.resolveServerID(server);
+
+			request
+				.patch(`${Endpoints.SERVERS}/${server}/roles/${role.id}`)
+				.set("authorization", self.token)
+				.send({
+					color: role.color,
+					hoist: role.hoist,
+					name: role.name,
+					permissions: role.packed
+				})
+				.end(function (err, res) {
+					if (err) {
+						cb(err);
+						reject(err);
+					} else {
+
+						var data = self.getServer("id", server).updateRole(res.body);
+						resolve(data);
+						cb(null, data);
+
+					}
+				});
+
+		});
+
+	}
+	
+	deleteRole(role, callback = function(err){}){
+		
+		// role is a ServerPermissions
+		var self = this;
+		
+		return new Promise(function(resolve, reject){
+			
+			request
+				.del(`${Endpoints.SERVERS}/${role.server.id}/roles/${role.id}`)
+				.set("authorization", self.token)
+				.end(function(err){
+					if(err){
+						reject(err);
+						callback(err);
+					}else{
+						resolve();
+						callback();
+					}
+				})
+			
+		});
+		
+	}
+
+	addMemberToRole(member, role, callback = function (err) { }) {
+		var self = this;
+
+		return new Promise(function (resolve, reject) {
+			try{
+			var serverId = self.resolveServerID(member.server);
+			var memberId = self.resolveUserID(member);
+
+			var acServer = self.getServer("id", serverId);
+			var acMember = acServer.getMember("id", memberId);
+			
+			if(acMember.rawRoles.indexOf(role.id) !== -1){
+				// user already has role
+				return;
+			}
+
+			request
+				.patch(`https://discordapp.com/api/guilds/${serverId}/members/${memberId}`)
+				.set("authorization", self.token)
+				.send({
+					roles: acMember.rawRoles.concat(role.id)
+				})
+				.end(function (err) {
+					if (err) {
+						reject(err);
+						callback(err);
+					} else {
+						acMember.addRole(role);
+						resolve();
+						callback();
+					}
+
+				});
+			}catch(e){
+				reject(e);
+			}
+		});
+	}
+	
+	removeMemberFromRole(member, role, callback = function (err) { }) {
+		var self = this;
+
+		return new Promise(function (resolve, reject) {
+			try{
+			var serverId = self.resolveServerID(member.server);
+			var memberId = self.resolveUserID(member);
+
+			var acServer = self.getServer("id", serverId);
+			var acMember = acServer.getMember("id", memberId);
+
+			if(~acMember.rawRoles.indexOf(role.id)){
+				acMember.removeRole(role);
+			}
+
+			console.log("remainder: ",acMember.rawRoles, "wanting", role.id);
+
+			request
+				.patch(`https://discordapp.com/api/guilds/${serverId}/members/${memberId}`)
+				.set("authorization", self.token)
+				.send({
+					roles: acMember.rawRoles
+				})
+				.end(function (err) {
+					if (err) {
+						reject(err);
+						callback(err);
+					} else {
+						acMember.addRole(role);
+						resolve();
+						callback();
+					}
+
+				});
+			}catch(e){
+				reject(e);
+			}
+		});
+	}
+	
+	overwritePermissions(channel, role, updatedStuff, callback=function(err){}){
+		
+		var self = this;
+		
+		return new Promise(function(resolve, reject){
+			
+			var data;
+			
+			if( role instanceof ServerPermissions || role.type === "role" ){
+				data = ad(updatedStuff);
+				data.id = role.id;
+				data.type = "role";
+			}else{
+				
+				data = ad(updatedStuff);
+				data.id = role.id;
+				data.type = "member";
+				
+			}
+			request
+				.put(`${Endpoints.CHANNELS}/${channel.id}/permissions/${role.id}`)
+				.set("authorization", self.token)
+				.send(data)
+				.end(function(err){
+					if (err) {
+						reject(err);
+						callback(err);
+					} else {
+						resolve();
+						callback();
+					}
+				});
+			
+		});
+		
+		function ad(data){
+			var allow = 0, disallow = 0;
+			function bitit(value, position){
+				if (value) {
+					allow |= (1 << position);
+				} else {
+					disallow |= (1 << position);
+				}	
+			}
+		
+			for(var perm in data){
+				switch(perm){
+					case "canCreateInstantInvite":
+						bitit(data[perm], 0);
+						break;
+					case "manageRoles":
+						bitit(data[perm], 3);
+						break;
+					case "manageChannels":
+						bitit(data[perm], 4);
+						break;
+					case "readMessages":
+						bitit(data[perm], 10);
+						break;
+					case "sendMessages":
+						bitit(data[perm], 11);
+						break;
+					case "sendTTSMessages":
+						bitit(data[perm], 12);
+						break;
+					case "manageMessages":
+						bitit(data[perm], 13);
+						break;
+					case "embedLinks":
+						bitit(data[perm], 14);
+						break;
+					case "attachFiles":
+						bitit(data[perm], 15);
+						break;
+					case "readMessageHistory":
+						bitit(data[perm], 16);
+						break;
+					case "mentionEveryone":
+						bitit(data[perm], 17);
+						break;
+					case "voiceConnect":
+						bitit(data[perm], 20);
+						break;
+					case "voiceSpeak":
+						bitit(data[perm], 21);
+						break;
+					case "voiceMuteMembers":
+						bitit(data[perm], 22);
+						break;
+					case "voiceDeafenMembers":
+						bitit(data[perm], 23);
+						break;
+					case "voiceMoveMembers":
+						bitit(data[perm], 24);
+						break;
+					case "voiceUseVoiceActivation":
+						bitit(data[perm], 25);
+						break;
+					default:
+						break;
+				}
+			}
+	
+			return {
+				allow: allow,
+				deny: disallow
+			};
+		}
+		
+	}
 	
 	//def createws
 	createws(url) {
@@ -824,13 +1128,18 @@ class Client {
 
 					var mentions = [];
 					data.mentions = data.mentions || []; //for some reason this was not defined at some point?
-					for (var mention of data.mentions) {
-						mentions.push(self.addUser(mention));
-					}
 
 					var channel = self.getChannel("id", data.channel_id);
+					for (var mention of data.mentions) {
+						var user = self.addUser(mention);
+						if(channel.server)
+							mentions.push(channel.server.getMember("id", user.id) || user);
+						else
+							mentions.push(user);
+					}
+
 					if (channel) {
-						var msg = channel.addMessage(new Message(data, channel, mentions, self.addUser(data.author)));
+						var msg = channel.addMessage(new Message(data, channel, mentions, data.author));
 						self.trigger("message", msg);
 					}
 
@@ -867,9 +1176,15 @@ class Client {
 							info[key] = data[key];
 						}
 
+						data.mentions = data.mentions || [];
 						var mentions = [];
-						for (var mention of info.mentions) {
-							mentions.push(self.addUser(mention));
+						
+						for (var mention of data.mentions) {
+							var user = self.addUser(mention);
+							if(channel.server)
+								mentions.push(channel.server.getMember("id", user.id) || user);
+							else
+								mentions.push(user);
 						}
 
 						var newMessage = new Message(info, channel, mentions, formerMessage.author);
@@ -995,6 +1310,16 @@ class Client {
 					}
 
 					break;
+					
+				case "GUILD_MEMBER_UPDATE":
+					
+					var user = self.addUser(data.user);
+					var server = self.getServer("id", data.guild_id);
+					var member = server.getMember("id", user.id);
+					self.trigger("serverMemberUpdate", member, data.roles);
+					server.getMember("id", user.id).rawRoles = data.roles;
+					
+					break;
 
 				case "USER_UPDATE":
 
@@ -1085,6 +1410,22 @@ class Client {
 							self.userTypingListener[data.user_id] = -1;
 						}
 					}, 6000);
+
+					break;
+
+				case "GUILD_ROLE_CREATE":
+
+					var server = self.getServer("id", data.guild_id);
+					var role = data.role;
+
+					if (self.guildRoleCreateIgnoreList[data.role.id]) {
+						server.addRole(role);
+						self.guildRoleCreateIgnoreList[data.role.id]();
+						self.guildRoleCreateIgnoreList[data.role.id] = null;
+						break;
+					}
+
+					self.trigger("serverRoleCreate", server, server.addRole(role));
 
 					break;
 
@@ -1282,10 +1623,18 @@ class Client {
 
 		if (resource instanceof Server) {
 			return resource.id;
-		} else if (!isNaN(resource) && resource.length && resource.length === 17) {
+		} else {
 			return resource;
 		}
 
+	}
+
+	resolveUserID(resource) {
+		if (resource instanceof User) { // also accounts for Member
+			return resource.id;
+		} else {
+			return resource;
+		}
 	}
 
 	resolveDestination(destination) {
@@ -1349,14 +1698,19 @@ class Client {
 						var mentions = [];
 
 						data.mentions = data.mentions || []; //for some reason this was not defined at some point?
-							
-						for (var mention of data.mentions) {
-							mentions.push(self.addUser(mention));
-						}
 
 						var channel = self.getChannel("id", data.channel_id);
+
+						for (var mention of data.mentions) {
+							var user = self.addUser(mention);
+							if(channel.server)
+								mentions.push(channel.server.getMember("id", user.id) || user);
+							else
+								mentions.push(user);
+						}
+
 						if (channel) {
-							var msg = channel.addMessage(new Message(data, channel, mentions, self.addUser(data.author)));
+							var msg = channel.addMessage(new Message(data, channel, mentions, {id:data.author.id}));
 							resolve(msg);
 						}
 					}
