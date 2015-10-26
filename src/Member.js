@@ -35,6 +35,12 @@ class Member extends User{
 		});
 	}
 	
+	addRole(role){
+		if(!~this.rawRoles.indexOf(role)){
+			this.rawRoles.push(role);
+		}
+	}
+	
 	permissionsIn(channel){
 		
 		if(channel.server.ownerID === this.id){

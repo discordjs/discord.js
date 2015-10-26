@@ -36,11 +36,12 @@ mybot.on("message", function (message) {
 		setTimeout(() => {
 			permission.manageRoles = true;
 			permission.name="asdfasdf";
-			permission.color = Discord.Colors.GREEN;
+			permission.color = Discord.Colors.PURPLE;
 
 			mybot.updateRole(message.channel.server, permission).then((perm) => {
-				mybot.reply(message, JSON.stringify(perm.serialise(), null, 4));
-			});
+				console.log(message.sender.rawRoles);
+				mybot.addMemberToRole(message.channel.server, perm, message.sender).catch(error);
+			}).catch(error);
 		}, 3000);
 
 

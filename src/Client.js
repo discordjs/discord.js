@@ -822,6 +822,39 @@ class Client {
 		
 	}
 	
+	addMemberToRole(server, role, member, callback=function(err){}){
+		var self = this;
+		
+		return new Promise(function(resolve, reject){
+			
+			var serverId = self.resolveServerID(server);
+			var memberId = self.resolveUserID(member);
+			
+			var acServer = self.getServer("id", serverId);
+			var acMember = acServer.getMember("id", memberId);
+			
+			request
+				.patch(`https://discordapp.com/api/guilds/${serverId}/members/${memberId}`)
+				.set("authorization", self.token)
+				.send({
+					roles : acMember.rawRoles.concat(role.id)
+				})
+				.end(function(err){
+					
+					if(err){
+						reject(err);
+						callback(err);
+					}else{
+						acMember.addRole(role);
+						resolve();
+						callback();
+					}
+					
+				});
+			
+		});
+	}
+	
 	//def createws
 	createws(url) {
 		if (this.websocket)
@@ -1360,6 +1393,14 @@ class Client {
 			return resource;
 		}
 
+	}
+	
+	resolveUserID(resource) {
+		if (resource instanceof User) { // also accounts for Member
+			return resource.id;
+		} else if (!isNaN(resource) && resource.length && resource.length === 17) {
+			return resource;
+		}
 	}
 
 	resolveDestination(destination) {
