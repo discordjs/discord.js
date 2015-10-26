@@ -56,7 +56,7 @@ class Client {
 		this.checkingQueue = {};
 		this.userTypingListener = {};
 		this.queue = {};
-
+		this.guildRoleCreateIgnoreList = {};
 		this.__idleTime = null;
 		this.__gameId = null;
 	}
@@ -759,13 +759,14 @@ class Client {
 		return prom;
 	}
 
-	createRole(dest, cb = function (err, perm) { }) {
+	createRole(dest, data, cb = function (err, perm) { }) {
 
 		var self = this;
 
 		return new Promise(function (resolve, reject) {
 
 			var ddest = self.resolveServerID(dest);
+			var server = self.getServer("id", ddest);
 
 			request
 				.post(`${Endpoints.SERVERS}/${ddest}/roles`)
@@ -777,10 +778,27 @@ class Client {
 						reject(err);
 					} else {
 
-						var perms = self.getServer("id", ddest).addRole(res.body);
+						var moddedPerm = new ServerPermissions(res.body, server);
 
-						resolve(perms);
-						cb(null, perms);
+						for (var key in data) {
+							moddedPerm[key] = data[key];
+						}
+
+						var perms = server.addRole(res.body);
+						self.guildRoleCreateIgnoreList[res.body.id] = function () {
+
+							self.updateRole(server, moddedPerm)
+								.then((perm) => {
+									cb(null, perm);
+									resolve(perm);
+								})
+								.catch((err) => {
+									cb(err);
+									reject(err);
+								});
+
+						}
+
 
 					}
 
@@ -926,12 +944,12 @@ class Client {
 					data.mentions = data.mentions || []; //for some reason this was not defined at some point?
 
 					var channel = self.getChannel("id", data.channel_id);
-					
+
 					for (var mention of data.mentions) {
 						var user = self.addUser(mention);
-						mentions.push( channel.server.getMember("id", user.id) || user );
+						mentions.push(channel.server.getMember("id", user.id) || user);
 					}
-					
+
 					if (channel) {
 						var msg = channel.addMessage(new Message(data, channel, mentions, channel.server.getMember("id", self.addUser(data.author).id)));
 						self.trigger("message", msg);
@@ -973,7 +991,7 @@ class Client {
 						var mentions = [];
 						for (var mention of data.mentions) {
 							var user = self.addUser(mention);
-							mentions.push( channel.server.getMember("id", user.id) || user );
+							mentions.push(channel.server.getMember("id", user.id) || user);
 						}
 
 						var newMessage = new Message(info, channel, mentions, formerMessage.author);
@@ -1196,6 +1214,13 @@ class Client {
 
 					var server = self.getServer("id", data.guild_id);
 					var role = data.role;
+
+					if (self.guildRoleCreateIgnoreList[data.role.id]) {
+						server.addRole(role);
+						self.guildRoleCreateIgnoreList[data.role.id]();
+						self.guildRoleCreateIgnoreList[data.role.id] = null;
+						break;
+					}
 
 					self.trigger("serverRoleCreate", server, server.addRole(role));
 
@@ -1472,14 +1497,14 @@ class Client {
 						data.mentions = data.mentions || []; //for some reason this was not defined at some point?
 
 						var channel = self.getChannel("id", data.channel_id);
-													
+
 						for (var mention of data.mentions) {
 							var user = self.addUser(mention);
 							mentions.push(channel.server.getMember("id", user.id) || user);
 						}
 
 						if (channel) {
-							var msg = channel.addMessage(new Message(data, channel, mentions, channel.server.getMember("id",data.author.id)));
+							var msg = channel.addMessage(new Message(data, channel, mentions, channel.server.getMember("id", data.author.id)));
 							resolve(msg);
 						}
 					}

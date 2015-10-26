@@ -30,7 +30,11 @@ mybot.on("message", function (message) {
 	var perms = JSON.stringify(message.channel.permissionsOf(user).serialise(), null, 4);
 	perms = JSON.parse(perms);
 
-	mybot.reply(message, message.sender.server.name);
+	mybot.createRole(message.channel.server, {
+		color : Discord.Colors.GREEN
+	}).then((perm) => {
+		mybot.addMemberToRole(message.channel.server, perm, message.sender).then(console.log).catch(error);
+	}).catch(error);
 
 });
 
