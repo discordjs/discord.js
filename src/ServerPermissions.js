@@ -1,6 +1,6 @@
 class ServerPermissions {
 
-	constructor(data) {
+	constructor(data, server) {
 
 		var self = this;
 
@@ -8,14 +8,14 @@ class ServerPermissions {
 			return ((self.packed >>> x) & 1) === 1;
 		}
 
-		this.managed = data.managed;
+		this.managed = data.managed || false;
 		this.position = data.position || 1;
-		this.hoist = data.hoist;
-		this.color = data.color;
-		this.packed = data.permissions;
-		this.name = data.name;
-		this.id = data.id;
-
+		this.hoist = data.hoist || false;
+		this.color = data.color || 0;
+		this.packed = data.permissions || 36953089;
+		this.name = data.name || "new role";
+		this.id = data.id || null;
+		this.server = server;
 	}
 
 	serialise() {
