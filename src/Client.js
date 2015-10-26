@@ -195,7 +195,7 @@ class Client {
 
 	}
 	
-	banMember(user, server, daysToDeleteMessage, cb=function(err){}){
+	banMember(user, server, daysToDeleteMessage=1, cb=function(err){}){
 		
 		var self = this;
 		
@@ -212,7 +212,7 @@ class Client {
 					if(err){
 						reject(err);
 					}else{
-						resolve(err);
+						resolve();
 					}
 				});
 			
