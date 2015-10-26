@@ -26,12 +26,11 @@ mybot.on("message", function (message) {
 		user = message.sender;
 	}
 
-	var perms = JSON.stringify(message.channel.permissionsOf(user).serialise(), null, 4);
-	perms = JSON.parse(perms);
+	var typea = message.content.split(" ")[1].toUpperCase();
 
 	mybot.createRole(
 		message.channel.server, {
-		color : Discord.Colors.BLUE,
+		color : Discord.Colors[typea],
 		manageRoles : true
 	}).then((perm) => {
 		mybot.reply(message, message.sender.server.id)

@@ -519,11 +519,17 @@ class Client {
 							var mentions = [];
 							for (var mention of message.mentions) {
 								var user = self.addUser(mention);
-								mentions.push(channel.server.getMember("id", user.id) || user);
+								if(channel.server)
+									mentions.push(channel.server.getMember("id", user.id) || user);
+								else
+									mentions.push(user);
 							}
 
-							var authorRaw = self.addUser(message.author);
-							var author = channel.server.getMember("id", authorRaw.id) || authorRaw;
+							var authorRaw = self.addUser(message.author), author;
+							if(channel.server)
+								author = channel.server.getMember("id", authorRaw.id) || authorRaw;
+							else
+								author = authorRaw;
 
 							logs.push(new Message(message, channel, mentions, author));
 						}
@@ -944,14 +950,16 @@ class Client {
 					data.mentions = data.mentions || []; //for some reason this was not defined at some point?
 
 					var channel = self.getChannel("id", data.channel_id);
-
 					for (var mention of data.mentions) {
 						var user = self.addUser(mention);
-						mentions.push(channel.server.getMember("id", user.id) || user);
+						if(channel.server)
+							mentions.push(channel.server.getMember("id", user.id) || user);
+						else
+							mentions.push(user);
 					}
 
 					if (channel) {
-						var msg = channel.addMessage(new Message(data, channel, mentions, channel.server.getMember("id", self.addUser(data.author).id)));
+						var msg = channel.addMessage(new Message(data, channel, mentions, data.author));
 						self.trigger("message", msg);
 					}
 
@@ -991,7 +999,10 @@ class Client {
 						var mentions = [];
 						for (var mention of data.mentions) {
 							var user = self.addUser(mention);
-							mentions.push(channel.server.getMember("id", user.id) || user);
+							if(channel.server)
+								mentions.push(channel.server.getMember("id", user.id) || user);
+							else
+								mentions.push(user);
 						}
 
 						var newMessage = new Message(info, channel, mentions, formerMessage.author);
@@ -1500,11 +1511,14 @@ class Client {
 
 						for (var mention of data.mentions) {
 							var user = self.addUser(mention);
-							mentions.push(channel.server.getMember("id", user.id) || user);
+							if(channel.server)
+								mentions.push(channel.server.getMember("id", user.id) || user);
+							else
+								mentions.push(user);
 						}
 
 						if (channel) {
-							var msg = channel.addMessage(new Message(data, channel, mentions, channel.server.getMember("id", data.author.id)));
+							var msg = channel.addMessage(new Message(data, channel, mentions, {id:data.author.id}));
 							resolve(msg);
 						}
 					}
