@@ -98,4 +98,4 @@ bot.on("message", function (msg) {
 	
 });
 
-bot.login("riftes@outlook.com", "bananaman");
+bot.login(AuthDetails.email, AuthDetails.password);
