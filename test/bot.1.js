@@ -30,10 +30,8 @@ mybot.on("message", function (message) {
 	var perms = JSON.stringify(message.channel.permissionsOf(user).serialise(), null, 4);
 	perms = JSON.parse(perms);
 	
-	request.get(message.sender.avatarURL, function(err, resp, body){
-		mybot.setAvatar( new Buffer(body) ).catch(error).then(() => {
-			mybot.reply(message, "I have your avatar now!");	
-		});
+	this.createRole(message.channel.server).catch(error).then((data) => {
+		mybot.reply(message, JSON.stringify(data.serialise(), null, 4));
 	});
 	
 });

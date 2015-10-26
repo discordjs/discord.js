@@ -24,6 +24,28 @@ class ChannelPermissions{
 		
 	}
 	
+	serialise() {
+		return {
+			createInstantInvite : this.createInstantInvite,
+			manageRoles : this.manageRoles,
+			manageChannels : this.manageChannels,
+			readMessages : this.readMessages,
+			sendMessages : this.sendMessage,
+			sendTTSMessages : this.sendTTSMessages,
+			manageMessages : this.manageMessages,
+			embedLinks : this.embedLinks,
+			attachFiles : this.attachFiles,
+			readMessageHistory : this.readMessageHistory,
+			mentionEveryone : this.mentionEveryone,
+			voiceConnect : this.voiceConnect,
+			voiceSpeak : this.voiceSpeak,
+			voiceMuteMembers : this.voiceMuteMembers,
+			voiceDeafenMembers : this.voiceDeafenMembers,
+			voiceMoveMember : this.voiceMoveMembers,
+			voiceUseVoiceActivation : this.voiceUseVoiceActivation
+		}
+	}
+	
 	get createInstantInvite(){return this.getBit(0);}
 	set createInstantInvite(val){this.setBit(0, val);}
 	

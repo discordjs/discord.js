@@ -757,6 +757,36 @@ class Client {
 		return prom;
 	}
 	
+	createRole(server, cb = function(err, perm){}){
+		
+		var self = this;
+		
+		return new Promise(function(resolve, reject){
+			
+			server = self.resolveServerID(server);
+			
+			request
+				.post(`${Endpoints.SERVERS}/${server}/roles`)
+				.set("authorization", self.token)
+				.end(function(err, res){
+					
+					if(err){
+						cb(err);
+						reject(err);
+					}else{
+						
+						var data = self.getServer("id", server).addRole(res.body);
+						resolve(data);
+						cb(null, data);
+						
+					}
+					
+				});
+			
+		});
+			
+	}
+	
 	//def createws
 	createws(url) {
 		if (this.websocket)
@@ -1088,6 +1118,17 @@ class Client {
 
 					break;
 
+				case "GUILD_ROLE_CREATE":
+
+					var server = self.getServer("id", data.guild_id);
+					var role = data.role;
+
+					self.trigger("serverRoleCreate", server, server.addRole(role));
+
+					server.removeRole(role.id);
+
+					break;
+					
 				case "GUILD_ROLE_DELETE":
 
 					var server = self.getServer("id", data.guild_id);

@@ -83,6 +83,18 @@ class Server {
 		return null;
 	}
 	
+	addRole(data){
+		
+		if(this.getRole(data.id)){
+			return this.getRole(data.id);
+		}
+		
+		var perms = new ServerPermissions(data);
+		this.roles.push(perms);
+		return perms;
+		
+	}
+	
 	updateRole(data){
 		
 		var oldRole = this.getRole(data.id);
