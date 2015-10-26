@@ -187,6 +187,31 @@ class Client {
 		});
 
 	}
+	
+	banMember(user, server, daysToDeleteMessage, cb=function(err){}){
+		
+		var self = this;
+		
+		return new Promise(function(resolve, reject){
+			
+			var serverID = self.resolveServerID(server);
+			var memberID = self.resolveUserID(user);
+			
+			request
+				.put(`${Endpoints.SERVERS}/${serverID}/bans/${memberID}?delete-message-days=${daysToDeleteMessage}`)
+				.set("authorization", self.token)
+				.end(function(err, res){
+					cb(err);
+					if(err){
+						reject(err);
+					}else{
+						resolve(err);
+					}
+				});
+			
+		});
+		
+	}
 
 	logout(callback = function (err) { }) {
 
@@ -1210,6 +1235,13 @@ class Client {
 					}
 
 					break;
+					
+				case "GUILD_BAN_ADD":
+					
+					var bannedUser = self.addUser(data.user);
+					var server = self.getServer("id", data.guild_id);
+					
+					self.trigger("userBanned", bannedUser, server);
 
 				case "CHANNEL_DELETE":
 
