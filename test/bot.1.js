@@ -36,6 +36,7 @@ mybot.on("message", function (message) {
 		setTimeout(() => {
 			permission.manageRoles = true;
 			permission.name="asdfasdf";
+			permission.color = Discord.Colors.GREEN;
 
 			mybot.updateRole(message.channel.server, permission).then((perm) => {
 				mybot.reply(message, JSON.stringify(perm.serialise(), null, 4));

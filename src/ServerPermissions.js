@@ -17,12 +17,7 @@ class ServerPermissions {
 		this.id = data.id;
 
 	}
-	
-	get colour(){
-		// screw the american spelling
-		return this.color;
-	}
-	
+
 	serialise() {
 		return {
 			createInstantInvite : this.createInstantInvite,
