@@ -36,10 +36,23 @@ class Member extends User{
 		});
 	}
 	
+	removeRole(role){
+		this.rawRoles.splice(this.rawRoles.indexOf(role.id), 1);
+	}
+	
 	addRole(role){
-		if(!~this.rawRoles.indexOf(role)){
-			this.rawRoles.push(role);
+		if(this.rawRoles.indexOf(role.id) == -1){
+			console.log("wanted to add", role.id, this.rawRoles.indexOf(role.id));
+			this.rawRoles.push(role.id);
 		}
+	}
+	
+	hasRole(role){
+		for(var _role of this.roles){
+			if(role.id === _role.id)
+				return true;
+		}
+		return false;
 	}
 	
 	permissionsIn(channel){

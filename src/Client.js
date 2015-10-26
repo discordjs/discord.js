@@ -881,6 +881,11 @@ class Client {
 
 			var acServer = self.getServer("id", serverId);
 			var acMember = acServer.getMember("id", memberId);
+			
+			if(acMember.rawRoles.indexOf(role.id) !== -1){
+				// user already has role
+				return;
+			}
 
 			request
 				.patch(`https://discordapp.com/api/guilds/${serverId}/members/${memberId}`)
@@ -916,11 +921,11 @@ class Client {
 			var acServer = self.getServer("id", serverId);
 			var acMember = acServer.getMember("id", memberId);
 
-			for(var safeRole in acMember.rawRoles){
-				if(acMember.rawRoles[safeRole] == role.id){
-					acMember.rawRoles.splice(safeRole, 1);
-				}
+			if(~acMember.rawRoles.indexOf(role.id)){
+				acMember.removeRole(role);
 			}
+
+			console.log("remainder: ",acMember.rawRoles, "wanting", role.id);
 
 			request
 				.patch(`https://discordapp.com/api/guilds/${serverId}/members/${memberId}`)
