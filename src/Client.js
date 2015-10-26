@@ -518,10 +518,12 @@ class Client {
 
 							var mentions = [];
 							for (var mention of message.mentions) {
-								mentions.push(self.addUser(mention));
+								var user = self.addUser(mention);
+								mentions.push(channel.server.getMember("id", user.id) || user);
 							}
 
-							var author = self.addUser(message.author);
+							var authorRaw = self.addUser(message.author);
+							var author = channel.server.getMember("id", authorRaw.id) || authorRaw;
 
 							logs.push(new Message(message, channel, mentions, author));
 						}
@@ -776,7 +778,7 @@ class Client {
 					} else {
 
 						var perms = self.getServer("id", ddest).addRole(res.body);
-						
+
 						resolve(perms);
 						cb(null, perms);
 
@@ -787,25 +789,25 @@ class Client {
 		});
 
 	}
-	
-	updateRole(server, role, cb=function(err,perm){}){
-		
+
+	updateRole(server, role, cb = function (err, perm) { }) {
+
 		var self = this;
-		
-		return new Promise(function(resolve, reject){
-			
+
+		return new Promise(function (resolve, reject) {
+
 			server = self.resolveServerID(server);
-			
+
 			request
 				.patch(`${Endpoints.SERVERS}/${server}/roles/${role.id}`)
 				.set("authorization", self.token)
 				.send({
-					color : role.color,
-					hoist : role.hoist,
-					name : role.name,
-					permissions : role.packed
+					color: role.color,
+					hoist: role.hoist,
+					name: role.name,
+					permissions: role.packed
 				})
-				.end(function(err, res){
+				.end(function (err, res) {
 					if (err) {
 						cb(err);
 						reject(err);
@@ -817,41 +819,41 @@ class Client {
 
 					}
 				});
-			
+
 		});
-		
+
 	}
-	
-	addMemberToRole(server, role, member, callback=function(err){}){
+
+	addMemberToRole(server, role, member, callback = function (err) { }) {
 		var self = this;
-		
-		return new Promise(function(resolve, reject){
-			
+
+		return new Promise(function (resolve, reject) {
+
 			var serverId = self.resolveServerID(server);
 			var memberId = self.resolveUserID(member);
-			
+
 			var acServer = self.getServer("id", serverId);
 			var acMember = acServer.getMember("id", memberId);
-			
+
 			request
 				.patch(`https://discordapp.com/api/guilds/${serverId}/members/${memberId}`)
 				.set("authorization", self.token)
 				.send({
-					roles : acMember.rawRoles.concat(role.id)
+					roles: acMember.rawRoles.concat(role.id)
 				})
-				.end(function(err){
-					
-					if(err){
+				.end(function (err) {
+
+					if (err) {
 						reject(err);
 						callback(err);
-					}else{
+					} else {
 						acMember.addRole(role);
 						resolve();
 						callback();
 					}
-					
+
 				});
-			
+
 		});
 	}
 	
@@ -922,13 +924,16 @@ class Client {
 
 					var mentions = [];
 					data.mentions = data.mentions || []; //for some reason this was not defined at some point?
-					for (var mention of data.mentions) {
-						mentions.push(self.addUser(mention));
-					}
 
 					var channel = self.getChannel("id", data.channel_id);
+					
+					for (var mention of data.mentions) {
+						var user = self.addUser(mention);
+						mentions.push( channel.server.getMember("id", user.id) || user );
+					}
+					
 					if (channel) {
-						var msg = channel.addMessage(new Message(data, channel, mentions, self.addUser(data.author)));
+						var msg = channel.addMessage(new Message(data, channel, mentions, channel.server.getMember("id", self.addUser(data.author).id)));
 						self.trigger("message", msg);
 					}
 
@@ -966,8 +971,9 @@ class Client {
 						}
 
 						var mentions = [];
-						for (var mention of info.mentions) {
-							mentions.push(self.addUser(mention));
+						for (var mention of data.mentions) {
+							var user = self.addUser(mention);
+							mentions.push( channel.server.getMember("id", user.id) || user );
 						}
 
 						var newMessage = new Message(info, channel, mentions, formerMessage.author);
@@ -1394,7 +1400,7 @@ class Client {
 		}
 
 	}
-	
+
 	resolveUserID(resource) {
 		if (resource instanceof User) { // also accounts for Member
 			return resource.id;
@@ -1464,14 +1470,16 @@ class Client {
 						var mentions = [];
 
 						data.mentions = data.mentions || []; //for some reason this was not defined at some point?
-							
-						for (var mention of data.mentions) {
-							mentions.push(self.addUser(mention));
-						}
 
 						var channel = self.getChannel("id", data.channel_id);
+													
+						for (var mention of data.mentions) {
+							var user = self.addUser(mention);
+							mentions.push(channel.server.getMember("id", user.id) || user);
+						}
+
 						if (channel) {
-							var msg = channel.addMessage(new Message(data, channel, mentions, self.addUser(data.author)));
+							var msg = channel.addMessage(new Message(data, channel, mentions, channel.server.getMember("id",data.author.id)));
 							resolve(msg);
 						}
 					}
