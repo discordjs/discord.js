@@ -954,10 +954,6 @@ class Client {
 			var data;
 			
 			if( role instanceof ServerPermissions || role.type === "role" ){
-				for(var key in updatedStuff){
-					role[key] = updatedStuff[key];
-				}
-				
 				data = ad(updatedStuff);
 				data.id = role.id;
 				data.type = "role";

@@ -25,7 +25,8 @@ class Member extends User{
 	get evalPerms(){
 		var basePerms = this.roles, //cache roles as it can be slightly expensive
 			basePerm = basePerms[0].packed;
-			
+		
+		basePerms = basePerms || [];
 		for(var perm of basePerms){
 			basePerm = basePerm | perm.packed;
 		}
