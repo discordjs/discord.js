@@ -25,19 +25,15 @@ mybot.on("message", function (message) {
 	} else {
 		user = message.sender;
 	}
-
-	var typea = message.content.split(" ")[1].toUpperCase();
-
-	mybot.createRole(
-		message.channel.server, {
-		color : Discord.Colors[typea],
-		manageRoles : true
-	}).then((perm) => {
-		mybot.reply(message, message.sender.server.id)
-		mybot.addMemberToRole(message.sender, perm).then(console.log).catch(error);
-		mybot.reply(message, "done! " + JSON.stringify(perm.server));
-	});
-
+	try{
+	for(var role of message.channel.server.roles){
+		
+		mybot.deleteRole(role).catch(error);
+		
+	}
+	}catch(e){
+		console.log(e);
+	}
 });
 
 mybot.on("ready", function () {

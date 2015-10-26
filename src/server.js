@@ -17,7 +17,7 @@ class Server {
 		this.roles = [];
 		
 		for(var permissionGroup of data.roles){
-			this.roles.push( new ServerPermissions(permissionGroup) );
+			this.roles.push( new ServerPermissions(permissionGroup, this) );
 		}
 
 		if(!data.members){

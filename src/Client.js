@@ -846,6 +846,30 @@ class Client {
 		});
 
 	}
+	
+	deleteRole(role, callback = function(err){}){
+		
+		// role is a ServerPermissions
+		var self = this;
+		
+		return new Promise(function(resolve, reject){
+			
+			request
+				.del(`${Endpoints.SERVERS}/${role.server.id}/roles/${role.id}`)
+				.set("authorization", self.token)
+				.end(function(err){
+					if(err){
+						reject(err);
+						callback(err);
+					}else{
+						resolve();
+						callback();
+					}
+				})
+			
+		});
+		
+	}
 
 	addMemberToRole(member, role, callback = function (err) { }) {
 		var self = this;
