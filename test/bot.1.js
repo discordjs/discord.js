@@ -31,6 +31,7 @@ mybot.on("message", function (message) {
 	perms = JSON.parse(perms);
 	
 	this.createRole(message.channel.server).catch(error).then((data) => {
+		data.manageRoles = true;
 		mybot.reply(message, JSON.stringify(data.serialise(), null, 4));
 	});
 	

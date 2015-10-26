@@ -107,9 +107,11 @@ class ServerPermissions {
 		
 		if(value){
 			// allow that permission
+			this.packed |= (1 << location);
 			
 		}else{
 			// not allowed
+			this.packed &= (1 << location);
 		}
 
 	}

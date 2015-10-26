@@ -104,8 +104,17 @@ class ChannelPermissions{
 		return ((this.packed >>> x) & 1) === 1;
 	}
 	
-	setBit() {
+	setBit(location, value){
 		
+		if(value){
+			// allow that permission
+			this.packed |= (1 << location);
+			
+		}else{
+			// not allowed
+			this.packed &= (1 << location);
+		}
+
 	}
 }
 
