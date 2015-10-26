@@ -786,7 +786,6 @@ class Client {
 
 						var perms = server.addRole(res.body);
 						self.guildRoleCreateIgnoreList[res.body.id] = function () {
-
 							self.updateRole(server, moddedPerm)
 								.then((perm) => {
 									cb(null, perm);
@@ -842,12 +841,12 @@ class Client {
 
 	}
 
-	addMemberToRole(server, role, member, callback = function (err) { }) {
+	addMemberToRole(member, role, callback = function (err) { }) {
 		var self = this;
 
 		return new Promise(function (resolve, reject) {
-
-			var serverId = self.resolveServerID(server);
+			try{
+			var serverId = self.resolveServerID(member.server);
 			var memberId = self.resolveUserID(member);
 
 			var acServer = self.getServer("id", serverId);
@@ -860,7 +859,6 @@ class Client {
 					roles: acMember.rawRoles.concat(role.id)
 				})
 				.end(function (err) {
-
 					if (err) {
 						reject(err);
 						callback(err);
@@ -871,7 +869,9 @@ class Client {
 					}
 
 				});
-
+			}catch(e){
+				reject(e);
+			}
 		});
 	}
 	
@@ -1420,7 +1420,7 @@ class Client {
 
 		if (resource instanceof Server) {
 			return resource.id;
-		} else if (!isNaN(resource) && resource.length && resource.length === 17) {
+		} else {
 			return resource;
 		}
 
@@ -1429,7 +1429,7 @@ class Client {
 	resolveUserID(resource) {
 		if (resource instanceof User) { // also accounts for Member
 			return resource.id;
-		} else if (!isNaN(resource) && resource.length && resource.length === 17) {
+		} else {
 			return resource;
 		}
 	}

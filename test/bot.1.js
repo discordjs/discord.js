@@ -1,4 +1,5 @@
 var Discord = require("../");
+var Member = require("../lib/Member.js");
 var mybot = new Discord.Client();
 var fs = require("fs");
 var request = require("request").defaults({ encoding: null });
@@ -25,16 +26,18 @@ mybot.on("message", function (message) {
 		user = message.sender;
 	}
 
-	console.log(mybot.getUser("username", "meew0"));
-
 	var perms = JSON.stringify(message.channel.permissionsOf(user).serialise(), null, 4);
 	perms = JSON.parse(perms);
 
-	mybot.createRole(message.channel.server, {
-		color : Discord.Colors.GREEN
+	mybot.createRole(
+		message.channel.server, {
+		color : Discord.Colors.BLUE,
+		manageRoles : true
 	}).then((perm) => {
-		mybot.addMemberToRole(message.channel.server, perm, message.sender).then(console.log).catch(error);
-	}).catch(error);
+		mybot.reply(message, message.sender.server.id)
+		mybot.addMemberToRole(message.sender, perm).then(console.log).catch(error);
+		mybot.reply(message, "done! " + JSON.stringify(perm.server));
+	});
 
 });
 
@@ -67,7 +70,7 @@ function dump(msg) {
 }
 
 function error(err) {
-	console.log("error", err);
+	console.log(err);
 }
 
 mybot.login(process.env["ds_email"], process.env["ds_password"]).catch(error);
