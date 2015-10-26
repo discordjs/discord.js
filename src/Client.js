@@ -905,6 +905,46 @@ class Client {
 		});
 	}
 	
+	removeMemberFromRole(member, role, callback = function (err) { }) {
+		var self = this;
+
+		return new Promise(function (resolve, reject) {
+			try{
+			var serverId = self.resolveServerID(member.server);
+			var memberId = self.resolveUserID(member);
+
+			var acServer = self.getServer("id", serverId);
+			var acMember = acServer.getMember("id", memberId);
+
+			for(var safeRole in acMember.rawRoles){
+				if(acMember.rawRoles[safeRole] == role.id){
+					acMember.rawRoles.splice(safeRole, 1);
+				}
+			}
+
+			request
+				.patch(`https://discordapp.com/api/guilds/${serverId}/members/${memberId}`)
+				.set("authorization", self.token)
+				.send({
+					roles: acMember.rawRoles
+				})
+				.end(function (err) {
+					if (err) {
+						reject(err);
+						callback(err);
+					} else {
+						acMember.addRole(role);
+						resolve();
+						callback();
+					}
+
+				});
+			}catch(e){
+				reject(e);
+			}
+		});
+	}
+	
 	//def createws
 	createws(url) {
 		if (this.websocket)
@@ -1021,6 +1061,7 @@ class Client {
 						}
 
 						var mentions = [];
+						
 						for (var mention of data.mentions) {
 							var user = self.addUser(mention);
 							if(channel.server)

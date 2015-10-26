@@ -25,14 +25,8 @@ mybot.on("message", function (message) {
 	} else {
 		user = message.sender;
 	}
-	try{
-	for(var role of message.channel.server.roles){
-		
-		mybot.deleteRole(role).catch(error);
-		
-	}
-	}catch(e){
-		console.log(e);
+	for(var role of message.sender.roles){
+		mybot.removeMemberFromRole(message.sender, role).catch(error);
 	}
 });
 
