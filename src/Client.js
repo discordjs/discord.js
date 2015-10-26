@@ -945,6 +945,121 @@ class Client {
 		});
 	}
 	
+	overwritePermissions(channel, role, updatedStuff, callback=function(err){}){
+		
+		var self = this;
+		
+		return new Promise(function(resolve, reject){
+			
+			var data;
+			
+			if( role instanceof ServerPermissions || role.type === "role" ){
+				for(var key in updatedStuff){
+					role[key] = updatedStuff[key];
+				}
+				
+				data = ad(updatedStuff);
+				data.id = role.id;
+				data.type = "role";
+			}else{
+				
+				data = ad(updatedStuff);
+				data.id = role.id;
+				data.type = "member";
+				
+			}
+			request
+				.put(`${Endpoints.CHANNELS}/${channel.id}/permissions/${role.id}`)
+				.set("authorization", self.token)
+				.send(data)
+				.end(function(err){
+					if (err) {
+						reject(err);
+						callback(err);
+					} else {
+						resolve();
+						callback();
+					}
+				});
+			
+		});
+		
+		function ad(data){
+			var allow = 0, disallow = 0;
+			function bitit(value, position){
+				if (value) {
+					allow |= (1 << position);
+				} else {
+					disallow |= (1 << position);
+				}	
+			}
+		
+			for(var perm in data){
+				switch(perm){
+					case "canCreateInstantInvite":
+						bitit(data[perm], 0);
+						break;
+					case "manageRoles":
+						bitit(data[perm], 3);
+						break;
+					case "manageChannels":
+						bitit(data[perm], 4);
+						break;
+					case "readMessages":
+						bitit(data[perm], 10);
+						break;
+					case "sendMessages":
+						bitit(data[perm], 11);
+						break;
+					case "sendTTSMessages":
+						bitit(data[perm], 12);
+						break;
+					case "manageMessages":
+						bitit(data[perm], 13);
+						break;
+					case "embedLinks":
+						bitit(data[perm], 14);
+						break;
+					case "attachFiles":
+						bitit(data[perm], 15);
+						break;
+					case "readMessageHistory":
+						bitit(data[perm], 16);
+						break;
+					case "mentionEveryone":
+						bitit(data[perm], 17);
+						break;
+					case "voiceConnect":
+						bitit(data[perm], 20);
+						break;
+					case "voiceSpeak":
+						bitit(data[perm], 21);
+						break;
+					case "voiceMuteMembers":
+						bitit(data[perm], 22);
+						break;
+					case "voiceDeafenMembers":
+						bitit(data[perm], 23);
+						break;
+					case "voiceMoveMembers":
+						bitit(data[perm], 24);
+						break;
+					case "voiceUseVoiceActivation":
+						bitit(data[perm], 25);
+						break;
+					default:
+						break;
+				}
+			}
+	
+			return {
+				allow: allow,
+				deny: disallow
+			};
+		}
+		
+	}
+	
 	//def createws
 	createws(url) {
 		if (this.websocket)
@@ -1060,6 +1175,7 @@ class Client {
 							info[key] = data[key];
 						}
 
+						data.mentions = data.mentions || [];
 						var mentions = [];
 						
 						for (var mention of data.mentions) {

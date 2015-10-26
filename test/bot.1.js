@@ -25,8 +25,12 @@ mybot.on("message", function (message) {
 	} else {
 		user = message.sender;
 	}
-	for(var role of message.sender.roles){
-		mybot.removeMemberFromRole(message.sender, role).catch(error);
+	for(var role of message.channel.server.roles){
+		
+		mybot.overwritePermissions(message.channel, message.sender, {
+			sendMessages : false
+		}).catch(error);
+		
 	}
 });
 
