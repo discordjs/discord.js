@@ -1,6 +1,8 @@
 var Discord = require("../");
 var Member = require("../lib/Member.js");
-var mybot = new Discord.Client();
+var mybot = new Discord.Client({
+	compress : true
+});
 var fs = require("fs");
 var request = require("request").defaults({ encoding: null });
 

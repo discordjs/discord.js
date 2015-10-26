@@ -8,6 +8,7 @@ var Invite = require("./invite.js");
 var PMChannel = require("./PMChannel.js");
 var ServerPermissions = require("./ServerPermissions.js");
 var gameMap = require("../ref/gameMap.json");
+var zlib;
 
 //node modules
 var request = require("superagent");
@@ -27,7 +28,13 @@ class Client {
 			further efforts will be made to connect.
 		*/
         this.options = options;
-		this.options.queue = this.options.queue;
+		this.options.compress = options.compress;
+		
+		if(this.options.compress){
+			// only require zlib if necessary
+			zlib = require("zlib");
+		}
+		
 		this.token = token;
 		this.state = 0;
 		this.websocket = null;
@@ -1108,7 +1115,14 @@ class Client {
 		
 		//message
 		this.websocket.onmessage = function (e) {
-
+			
+			if(e.type === "Binary"){
+				if(!zlib)
+					zlib = require("zlib");
+				
+				e.data = zlib.inflateSync(e.data).toString();
+			}
+			
 			var dat = false, data = {};
 
 			try {
@@ -1628,7 +1642,7 @@ class Client {
 
 	//def trySendConnData
 	trySendConnData() {
-
+		var self = this;
 		if (this.token && !this.alreadySentData) {
 
 			this.alreadySentData = true;
@@ -1644,7 +1658,8 @@ class Client {
 						"$device": "discord.js",
 						"$referrer": "",
 						"$referring_domain": ""
-					}
+					},
+					compress : self.options.compress
 				}
 			};
 			this.websocket.send(JSON.stringify(data));
