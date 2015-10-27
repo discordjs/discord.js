@@ -78,3 +78,75 @@ serialize()
 **Aliases** : *serialise()*
 
 To get a valid `Object` of the actual permissions of the object, just do `serverPermissions.serialise()` to get an object with the above mentioned permissions
+
+ChannelPermissions
+------------------
+
+ChannelPermissions are based from a ServerPermissions object (although not actually extending them, none of the Permissions objects extend each other). It represents an override/overwrite of a server permission.
+
+Actual Permissions:
+~~~~~~~~~~~~~~~~~~~
+
+{
+	createInstantInvite,
+	manageRoles,
+	manageChannels,
+	readMessages,
+	sendMessages,
+	sendTTSMessages,
+	manageMessages,
+	embedLinks,
+	attachFiles,
+	readMessageHistory,
+	mentionEveryone,
+	voiceConnect,
+	voiceSpeak,
+	voiceMuteMembers,
+	voiceDeafenMembers,
+	voiceMoveMember,
+	voiceUseVoiceActivation
+}
+
+serialize()
+~~~~~~~~~~~
+
+**Aliases** : *serialise()*
+
+To get a valid `Object` of the actual permissions of the object, just do `channelPermissions.serialise()` to get an object with the above mentioned permissions
+
+EvaluatedPermissions
+--------------------
+
+EvaluatedPermissions represents the permissions of a user in a channel, taking into account all roles and overwrites active on them; an evaluation of their permissions.
+
+Actual Permissions:
+~~~~~~~~~~~~~~~~~~~
+
+EvaluatedPermissions has the same permissions as ChannelPermissions.
+
+{
+	createInstantInvite,
+	manageRoles,
+	manageChannels,
+	readMessages,
+	sendMessages,
+	sendTTSMessages,
+	manageMessages,
+	embedLinks,
+	attachFiles,
+	readMessageHistory,
+	mentionEveryone,
+	voiceConnect,
+	voiceSpeak,
+	voiceMuteMembers,
+	voiceDeafenMembers,
+	voiceMoveMember,
+	voiceUseVoiceActivation
+}
+
+serialize()
+~~~~~~~~~~~
+
+**Aliases** : *serialise()*
+
+To get a valid `Object` of the actual permissions of the object, just do `channelPermissions.serialise()` to get an object with the above mentioned permissions

@@ -37,6 +37,7 @@ Contents:
    docs_pmchannel
    docs_message
    docs_invite
+   docs_permissions
 
 
 

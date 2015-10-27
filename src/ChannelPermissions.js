@@ -45,6 +45,10 @@ class ChannelPermissions {
 			voiceUseVoiceActivation: this.voiceUseVoiceActivation
 		}
 	}
+	
+	serialize(){
+		return this.serialise();
+	}
 
 	get asAllowDisallow() {
 
