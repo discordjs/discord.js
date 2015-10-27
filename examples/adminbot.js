@@ -27,75 +27,61 @@ bot.on("message", function (msg) {
 		
 		//stop the user from speaking in the channel:
 		bot.overwritePermissions(msg.channel, msg.sender, {
-			sendMessages : false
+			sendMessages: false
 		});
 		
 		// send a barely funny message ;)
 		bot.reply(msg, "how dare you mention that!");
 
 	}
-	
+
 	if (msg.content === "discord") {
 		
-		// see if there is a permission called 'good people' in the server already
-		var found = false;
-		
-		for(var role of msg.channel.server.roles){
-			if(role.name === "good people"){
-				found = role;
-				break;
-			}
-		}
-		
 		// if the role doesn't exist, make it
-		if(!found){
-			bot.createRole(msg.channel.server, {
-				name : "good people",
-				color : Discord.Colors.BLUE, // colour of blue
-				hoist : true // make a seperate category in the users list
-			}).then(addUserToList);
-		}else{
-			addUserToList(role);
-		}
-		
-		function addUserToList(role){
-			
+		bot.createRoleIfNotExists(msg.channel.server, {
+			name: "good people",
+			color: Discord.Colors.BLUE, // colour of blue
+			hoist: true // make a seperate category in the users list
+		}).then(addUserToList).catch(console.log);
+
+		function addUserToList(role, alreadyExists) {
+			console.log(arguments);
 			bot.addMemberToRole(msg.sender, role);
-			bot.reply(msg, "welcome to the good people!");
-			
+			bot.reply(msg, "welcome to the good people! " + alreadyExists);
+
 		}
-		
+
 	}
-	
-	if( msg.content === "remove me" ){
+
+	if (msg.content === "remove me") {
 		// remove the user from the good people list, if it exists
 		var found = false;
-		
-		for(var role of msg.channel.server.roles){
-			if(role.name === "good people"){
+
+		for (var role of msg.channel.server.roles) {
+			if (role.name === "good people") {
 				found = role;
 				break;
 			}
 		}
-		
-		if(found){
+
+		if (found) {
 			// if the role exists
 			
-			if( msg.sender.hasRole(role) ){
+			if (msg.sender.hasRole(role)) {
 				// remove the member from the role
 				bot.removeMemberFromRole(msg.sender, role);
 				bot.reply(msg, "removed!")
-			}else{
+			} else {
 				bot.reply(msg, "you're not in the role!");
 			}
-			
-		}else{
+
+		} else {
 			// role doesn't exist
 			bot.reply(msg, "the role doesn't even exist!");
 		}
-		
+
 	}
-	
+
 });
 
 bot.login(AuthDetails.email, AuthDetails.password);

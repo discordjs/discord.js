@@ -797,7 +797,41 @@ class Client {
 		return prom;
 	}
 
-	createRole(dest, data, cb = function (err, perm) { }) {
+	createRoleIfNotExists(dest, data, cb = function(err, role){}){
+		
+		var self = this;
+		
+		return new Promise(function(resolve, reject){
+			
+			var serverID = self.resolveServerID(dest);
+			var server = self.getServer("id", serverID);
+			
+			var baseRole = new ServerPermissions({}, server);
+			for(var key in data){
+				baseRole[key] = data[key];
+			}
+			
+			for(var role of server.roles){
+				if(baseRole.name == role.name && baseRole.packed == role.packed && baseRole.color == role.color){
+					resolve(role);
+					cb(null, role);
+					return false;
+				}
+			}
+			
+			self.createRole(dest, data).then( (role) => {
+				cb(null, role);
+				resolve(role);
+			}).catch((e) => {
+				cb(e);
+				reject(e);
+			});
+			
+		});
+		
+	}
+
+	createRole(dest, data, cb = function (err, role) { }) {
 
 		var self = this;
 
@@ -956,8 +990,6 @@ class Client {
 			if(~acMember.rawRoles.indexOf(role.id)){
 				acMember.removeRole(role);
 			}
-
-			console.log("remainder: ",acMember.rawRoles, "wanting", role.id);
 
 			request
 				.patch(`https://discordapp.com/api/guilds/${serverId}/members/${memberId}`)

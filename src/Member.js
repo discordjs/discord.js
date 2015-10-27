@@ -42,7 +42,6 @@ class Member extends User{
 	
 	addRole(role){
 		if(this.rawRoles.indexOf(role.id) == -1){
-			console.log("wanted to add", role.id, this.rawRoles.indexOf(role.id));
 			this.rawRoles.push(role.id);
 		}
 	}
