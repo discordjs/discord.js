@@ -4,10 +4,10 @@
 	change in the future.
 */
 
-var Discord = require("../");
+var Discord = require("../../");
 
 // Get the email and password
-var AuthDetails = require("./auth.json");
+var AuthDetails = require("../auth.json");
 
 var bot = new Discord.Client();
 
