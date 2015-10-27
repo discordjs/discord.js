@@ -12,3 +12,4 @@
 .. _ServerPermissions : ./docs_permissions.html#id1
 .. _ChannelPermissions : ./docs_permissions.html#id3
 .. _EvaluatedPermissions : ./docs_permissions.html#id6
+.. _Member : ./docs_member.html

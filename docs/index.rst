@@ -32,6 +32,7 @@ Contents:
    docs_resolvable
    docs_client
    docs_user
+   docs_member
    docs_server
    docs_channel
    docs_pmchannel
