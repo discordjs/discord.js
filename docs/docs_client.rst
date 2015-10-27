@@ -19,8 +19,7 @@ An `Object` containing a configuration for the Client. Currently can only be con
 .. code-block:: js
 
     {
-        queue : false // whether messages should be sent one after the other or
-                      // just send straight away.
+        compress : false // whether packets >50kb should be received compressed and later decompressed
     }
 
 token
