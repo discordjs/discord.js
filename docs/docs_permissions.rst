@@ -87,25 +87,27 @@ ChannelPermissions are based from a ServerPermissions object (although not actua
 Actual Permissions:
 ~~~~~~~~~~~~~~~~~~~
 
-{
-	createInstantInvite,
-	manageRoles,
-	manageChannels,
-	readMessages,
-	sendMessages,
-	sendTTSMessages,
-	manageMessages,
-	embedLinks,
-	attachFiles,
-	readMessageHistory,
-	mentionEveryone,
-	voiceConnect,
-	voiceSpeak,
-	voiceMuteMembers,
-	voiceDeafenMembers,
-	voiceMoveMember,
-	voiceUseVoiceActivation
-}
+.. code-block:: js
+
+	{
+		createInstantInvite,
+		manageRoles,
+		manageChannels,
+		readMessages,
+		sendMessages,
+		sendTTSMessages,
+		manageMessages,
+		embedLinks,
+		attachFiles,
+		readMessageHistory,
+		mentionEveryone,
+		voiceConnect,
+		voiceSpeak,
+		voiceMuteMembers,
+		voiceDeafenMembers,
+		voiceMoveMember,
+		voiceUseVoiceActivation
+	}
 
 serialize()
 ~~~~~~~~~~~
@@ -124,25 +126,27 @@ Actual Permissions:
 
 EvaluatedPermissions has the same permissions as ChannelPermissions.
 
-{
-	createInstantInvite,
-	manageRoles,
-	manageChannels,
-	readMessages,
-	sendMessages,
-	sendTTSMessages,
-	manageMessages,
-	embedLinks,
-	attachFiles,
-	readMessageHistory,
-	mentionEveryone,
-	voiceConnect,
-	voiceSpeak,
-	voiceMuteMembers,
-	voiceDeafenMembers,
-	voiceMoveMember,
-	voiceUseVoiceActivation
-}
+.. code-block:: js
+
+	{
+		createInstantInvite,
+		manageRoles,
+		manageChannels,
+		readMessages,
+		sendMessages,
+		sendTTSMessages,
+		manageMessages,
+		embedLinks,
+		attachFiles,
+		readMessageHistory,
+		mentionEveryone,
+		voiceConnect,
+		voiceSpeak,
+		voiceMuteMembers,
+		voiceDeafenMembers,
+		voiceMoveMember,
+		voiceUseVoiceActivation
+	}
 
 serialize()
 ~~~~~~~~~~~
