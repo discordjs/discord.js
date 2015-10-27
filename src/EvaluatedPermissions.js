@@ -30,6 +30,10 @@ class EvaluatedPermissions {
 			voiceUseVoiceActivation : this.voiceUseVoiceActivation
 		}
 	}
+	
+	serialize(){
+		return this.serialise();
+	}
 
 	get createInstantInvite() { return this.getBit(0); }
 	set createInstantInvite(val) { this.setBit(0, val); }
