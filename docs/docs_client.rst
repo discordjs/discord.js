@@ -358,6 +358,122 @@ Sets the topic of the specified channel
 - **callback** - A `function` that can take the following parameters:
 
     - **error** - An error if one occurred, otherwise it is null.
+    
+createRole(server, data, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Creates a role (or set of permissions) in a given server.
+
+- **server** - A `Server Resolvable`_ where the role should be created.
+- **data** - An `Object` containing values available in any `ServerPermissions`_ object.
+ - **callback** - A `function` that can take the following parameters:
+
+    - **error** - An error if one occurred, otherwise it is null.
+    - **role** - If no errors occurred, this will be a `ServerPermissions`_ object representing the created role.
+    
+.. code-block:: js
+
+    // example usage:
+    
+    bot.createRole(server, {
+        name : "My Role",
+        color : Discord.Colors.RED,
+        sendMessages : false
+    });
+    
+createRoleIfNotExists(server, data, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Identical to createRole_ but it only executes if a role with the same name, permissions and color exists in the given server.
+
+- **server** - A `Server Resolvable`_ where the role should be created.
+- **data** - An `Object` containing values available in any `ServerPermissions`_ object.
+- **callback** - A `function` that can take the following parameters:
+
+    - **error** - An error if one occurred, otherwise it is null.
+    - **role** - If no errors occurred, this will be a `ServerPermissions`_ object representing the created role.
+    
+.. code-block:: js
+
+    // example usage:
+    
+    bot.createRoleIfNotExists(server, {
+        name : "My Role",
+        color : Discord.Colors.RED,
+        sendMessages : false
+    }) // would execute, role doesn't exist in the server yet
+    
+    .then(function(){
+        bot.createRoleIfNotExists(server, {
+            name : "My Role",
+            color : Discord.Colors.RED,
+            sendMessages : false
+        }); // would not execute, role already exists
+    });
+    
+.. warning :: Due to the asynchronous nature of the code, if you ran the same code twice without putting one in a callback, both would execute as at the point of execution, neither are existant.
+
+deleteRole(role, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Deletes a Role
+
+- **role** - The `ServerPermissions` that you want to delete.
+- **callback** - A `function` that can take the following parameters:
+
+    - **error** - An error if one occurred, otherwise it is null.
+
+updateRole(role, data, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Updates a role existing in a server to have new permissions, order, color, name or to have `hoist` (whether it should be its own category in the users list)
+
+- **role** - A `ServerPermissions`_ which represents the role to edit.
+- **data** - An `Object` containing values available in any `ServerPermissions`_ object.
+- **callback** - A `function` that can take the following parameters:
+
+    - **error** - An error if one occurred, otherwise it is null.
+    - **role** - If no errors occurred, this will be a `ServerPermissions`_ object representing the edited role.
+    
+.. code-block:: js
+
+    bot.updateRole(alreadyExistantRole, {
+        name : "this is a new role name"
+    });
+    
+addMemberToRole(member, role, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Adds a Member to a Server Role.
+
+- **member** - The `Member`_ you would like to add to the role.
+- **role** - The `ServerPermissions`_ (or role) you would like to add the member to.
+- **callback** - A `function` that can take the following parameters:
+
+    - **error** - An error if one occurred, otherwise it is null.
+    
+removeMemberFromRole(member, role, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Removes a Member from a Server Role.
+
+- **member** - The `Member`_ you would like to remove from the role.
+- **role** - The `ServerPermissions`_ (or role) you would like to remove the member from.
+- **callback** - A `function` that can take the following parameters:
+
+    - **error** - An error if one occurred, otherwise it is null.
+    
+overwritePermissions(channel, role, overwrites, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Overrides/overwrites a role in a specific channel.
+
+- **channel** - A `Channel Resolvable`_ where the permissions should be overridden.
+- **role** - A `ServerPermissions`_ role that you want to override
+- **overwrites** - An `Object` containing any values in a `ChannelPermissions`_
+- **callback** - A `function` that can take the following parameters:
+
+    - **error** - An error if one occurred, otherwise it is null.
 
 getUser(key, value)
 ~~~~~~~~~~~~~~~~~~~
@@ -620,3 +736,5 @@ Called when a WebSocket message is received and it gives you the message.
 .. _Discord Game ID : https://raw.githubusercontent.com/hydrabolt/discord.js/master/ref/gameMap.json
 
 .. _EventEmitter : https://nodejs.org/api/events.html#events_class_events_eventemitter
+
+.. _createRole : #createRole
