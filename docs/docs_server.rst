@@ -92,11 +92,11 @@ Gets a Channel_ that matches the specified criteria. E.g:
 getMember(key, value)
 ~~~~~~~~~~~~~~~~~~~~~
 
-Gets a User_ that matches the specified criteria. E.g:
+Gets a Member_ that matches the specified criteria. E.g:
 
 .. code-block:: js
 
-    bot.getUser("id", 1243987349) // returns a user where user.id === 1243987349
+    server.getMember("id", 1243987349) // returns a Member where member.id === 1243987349
     
 - **key** - a `String` that is the key
 - **value** - a `String` that is the value

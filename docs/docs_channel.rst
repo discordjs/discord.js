@@ -69,6 +69,13 @@ Gets a Message_ from the channel that matches the specified criteria. E.g:
 - **key** - a `String` that is the key
 - **value** - a `String` that is the value
 
+permissionsOf(user)
+~~~~~~~~~~~~~~~~~~~
+
+Gets the EvaluatedPermissions_ of a User in the channel.
+
+- **user** - A User_ or Member_ you want to get the permissions of.
+
 equals(object)
 ~~~~~~~~~~~~~~
 

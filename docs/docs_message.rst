@@ -21,7 +21,7 @@ A `unix timestamp` as a `Number` representing when the message was sent.
 mentions
 ~~~~~~~~
 
-An `Array` of User_ objects that represent the users mentioned in the message.
+An `Array` of Member_ and User_ objects that represent the users mentioned in the message. The only way that the User_ objects would exist in the Array is if the message is from a log, where the mentioned users may have left the server afterwards.
 
 everyoneMentioned
 ~~~~~~~~~~~~~~~~~
@@ -60,7 +60,7 @@ author
 
 **Aliases** : `sender`
 
-The User_ that sent the message.
+The Member or User_ that sent the message. May be a User_ if from a log, it depends on whether the sender left the server after sending the message. If received in realtime, always a Member.
 
 attachments
 ~~~~~~~~~~~
