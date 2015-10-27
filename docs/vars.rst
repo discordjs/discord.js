@@ -9,3 +9,6 @@
 .. _Channel Resolvable : ./docs_resolvable.html#channel-resolvable
 .. _Invite Resolvable : ./docs_resolvable.html#invite-resolvable
 .. _Promises : https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise
+.. _ServerPermissions : ./docs_permissions.html#ServerPermissions
+.. _ChannelPermissions : ./docs_permissions.html#ChannelPermissions
+.. _EvaluatedPermissions : ./docs_permissions.html#EvaluatedPermissions

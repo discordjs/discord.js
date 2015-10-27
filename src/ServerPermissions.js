@@ -35,9 +35,13 @@ class ServerPermissions {
 			voiceSpeak: this.voiceSpeak,
 			voiceMuteMembers: this.voiceMuteMembers,
 			voiceDeafenMembers: this.voiceDeafenMembers,
-			voiceMoveMember: this.voiceMoveMembers,
+			voiceMoveMembers: this.voiceMoveMembers,
 			voiceUseVoiceActivation: this.voiceUseVoiceActivation
 		}
+	}
+	
+	serialize(){
+		return this.serialise();
 	}
 
 	get createInstantInvite() { return this.getBit(0); }
