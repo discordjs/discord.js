@@ -5,15 +5,26 @@ Get Started
 Installation
 ------------
 
-Linux / OS X
-~~~~~~~~~~~~
-Run ``npm install discord.js --save`` in your project's directory and you should be good to go!
+Linux
+~~~~~~
+
+Install Python 2.x.x and then run ``npm install discord.js --save`` in your project's directory and you should be good to go!
+
+OS X
+~~~~
+
+Python 2.x.x and **potentially** X Code, try building without first.
 
 Windows
 ~~~~~~~~~~~~
+
+**TL;DR You need Visual Studio Community and Python 2.x.x**
+
 Unfortunately, the Windows installation process is a little more lengthy. You need to have `Visual Studio Express`_ (or any of the other distributions of it). This is necessary for build tools for the WebSocket dependency.
 
 .. note:: If you are using another version of Visual Studio, such as 2012, replace the flag with ``--msvs_version=2012``
+
+After you have installed Visual Studio, you then need to install any Python setups that are version 2.
 
 After you have obtained these tools, you need to run ``npm install discord.js --save --msvs_version=2015`` in your working directory. Hopefully this should all go well!
 
