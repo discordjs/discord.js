@@ -10,6 +10,8 @@ var ServerPermissions = require("./ServerPermissions.js");
 var gameMap = require("../ref/gameMap.json");
 var zlib;
 
+var EventEmitter = require('events');
+
 //node modules
 var request = require("superagent");
 var WebSocket = require("ws");
@@ -19,14 +21,17 @@ var defaultOptions = {
 	queue: false
 }
 
-class Client {
+class Client extends EventEmitter{
 
-	constructor(options = defaultOptions, token = undefined) {
+	constructor(options = defaultOptions, token = undefined){
+		
 		/*
 			When created, if a token is specified the Client will
 			try connecting with it. If the token is incorrect, no
 			further efforts will be made to connect.
 		*/
+		super();
+		
         this.options = options;
 		this.options.compress = options.compress;
 		
@@ -38,7 +43,6 @@ class Client {
 		this.token = token;
 		this.state = 0;
 		this.websocket = null;
-		this.events = {};
 		this.user = null;
 		this.alreadySentData = false;
 		this.serverCreateListener = {};
@@ -112,35 +116,15 @@ class Client {
 
 	//def debug
 	debug(message) {
-		this.trigger("debug", message);
-	}
-
-	on(event, fn) {
-		this.events[event] = fn;
-	}
-
-	off(event) {
-		this.events[event] = null;
+		this.emit("debug", message);
 	}
 
 	keepAlive() {
-		this.debug("keep alive triggered");
+		this.debug("keep alive emitted");
 		this.sendPacket({
 			op: 1,
 			d: Date.now()
 		});
-	}
-	
-	//def trigger
-	trigger(event) {
-		var args = [];
-		for (var arg in arguments) {
-			args.push(arguments[arg]);
-		}
-		var evt = this.events[event];
-		if (evt) {
-			evt.apply(this, args.slice(1));
-		}
 	}
 	
 	//def login
@@ -165,7 +149,7 @@ class Client {
 
 						if (err) {
 							self.state = 4; //set state to disconnected
-							self.trigger("disconnected");
+							self.emit("disconnected");
 							if (self.websocket) {
 								self.websocket.close();
 							}
@@ -399,20 +383,20 @@ class Client {
 
 	}
 
-	reply(destination, message, tts, callback = function (err, msg) { }) {
+	reply(destination, message, options, callback = function (err, msg) { }) {
 
 		var self = this;
 
 		return new Promise(function (response, reject) {
 
-			if (typeof tts === "function") {
-				// tts is a function, which means the developer wants this to be the callback
-				callback = tts;
-				tts = false;
+			if (typeof options === "function") {
+				// options is a function, which means the developer wants this to be the callback
+				callback = options;
+				options = false;
 			}
 
 			var user = destination.sender;
-			self.sendMessage(destination, message, tts, callback, user + ", ").then(response).catch(reject);
+			self.sendMessage(destination, message, options, callback, user + ", ").then(response).catch(reject);
 
 		});
 
@@ -720,16 +704,20 @@ class Client {
 
 	}
 
-	sendMessage(destination, message, tts, callback = function (err, msg) { }, premessage = "") {
+	sendMessage(destination, message, options, callback = function (err, msg) { }, premessage = "") {
 
 		var self = this;
 
 		var prom = new Promise(function (resolve, reject) {
 
-			if (typeof tts === "function") {
-				// tts is a function, which means the developer wants this to be the callback
-				callback = tts;
-				tts = false;
+			if (typeof options === "function") {
+				// options is a function, which means the developer wants this to be the callback
+				callback = options;
+				options = {tts : false};
+			}
+			
+			if(!options){
+				options = {tts:false};
 			}
 
 			message = premessage + resolveMessage(message);
@@ -752,14 +740,14 @@ class Client {
 						action: "sendMessage",
 						content: message,
 						mentions: mentions,
-						tts: !!tts, //incase it's not a boolean
+						tts: options.tts, //incase it's not a boolean
 						then: mgood,
 						error: mbad
 					});
 
 					self.checkQueue(destination);
 				} else {
-					self._sendMessage(destination, message, tts, mentions).then(mgood).catch(mbad);
+					self._sendMessage(destination, message, options, mentions).then(mgood).catch(mbad);
 				}
 
 			}
@@ -1142,7 +1130,7 @@ class Client {
 		
 		//close
 		this.websocket.onclose = function () {
-			self.trigger("disconnected");
+			self.emit("disconnected");
 		}
 		
 		//message
@@ -1161,11 +1149,11 @@ class Client {
 				dat = JSON.parse(e.data);
 				data = dat.d;
 			} catch (err) {
-				self.trigger("error", err, e);
+				self.emit("error", err, e);
 				return;
 			}
 
-			self.trigger("raw", dat);
+			self.emit("raw", dat);
 			
 			//valid message
 			switch (dat.t) {
@@ -1185,7 +1173,7 @@ class Client {
 						var pmc = self.addPMChannel(_pmc);
 					}
 
-					self.trigger("ready");
+					self.emit("ready");
 					self.readyTime = Date.now();
 					self.debug(`cached ${self.serverCache.length} servers, ${self.channelCache.length} channels, ${self.pmChannelCache.length} PMs and ${self.userCache.length} users.`);
 					self.state = 3;
@@ -1211,7 +1199,7 @@ class Client {
 
 					if (channel) {
 						var msg = channel.addMessage(new Message(data, channel, mentions, data.author));
-						self.trigger("message", msg);
+						self.emit("message", msg);
 					}
 
 					break;
@@ -1221,11 +1209,11 @@ class Client {
 					var channel = self.getChannel("id", data.channel_id);
 					var message = channel.getMessage("id", data.id);
 					if (message) {
-						self.trigger("messageDelete", channel, message);
+						self.emit("messageDelete", channel, message);
 						channel.messages.splice(channel.messages.indexOf(message), 1);
 					} else {
 						//don't have the cache of that message ;(
-						self.trigger("messageDelete", channel);
+						self.emit("messageDelete", channel);
 					}
 					break;
 				case "MESSAGE_UPDATE":
@@ -1260,7 +1248,7 @@ class Client {
 
 						var newMessage = new Message(info, channel, mentions, formerMessage.author);
 
-						self.trigger("messageUpdate", newMessage, formerMessage);
+						self.emit("messageUpdate", newMessage, formerMessage);
 
 						channel.messages[channel.messages.indexOf(formerMessage)] = newMessage;
 
@@ -1277,7 +1265,7 @@ class Client {
 
 					if (server) {
 						self.serverCache.splice(self.serverCache.indexOf(server), 1);
-						self.trigger("serverDelete", server);
+						self.emit("serverDelete", server);
 					}
 
 					break;
@@ -1287,7 +1275,7 @@ class Client {
 					var bannedUser = self.addUser(data.user);
 					var server = self.getServer("id", data.guild_id);
 					
-					self.trigger("userBanned", bannedUser, server);
+					self.emit("userBanned", bannedUser, server);
 
 				case "CHANNEL_DELETE":
 
@@ -1303,7 +1291,7 @@ class Client {
 
 						}
 
-						self.trigger("channelDelete", channel);
+						self.emit("channelDelete", channel);
 
 						self.serverCache.splice(self.serverCache.indexOf(channel), 1);
 
@@ -1335,7 +1323,7 @@ class Client {
 						self.serverCreateListener[data.id] = null;
 					}
 
-					self.trigger("serverCreate", server);
+					self.emit("serverCreate", server);
 
 					break;
 
@@ -1355,7 +1343,7 @@ class Client {
 						if (srv) {
 							srv.addChannel(chann);
 						}
-						self.trigger("channelCreate", chann);
+						self.emit("channelCreate", chann);
 
 					}
 
@@ -1369,7 +1357,7 @@ class Client {
 
 						var user = self.addUser(data.user); //if for whatever reason it doesn't exist..
 
-						self.trigger("serverNewMember", server.addMember(user, data.roles), server);
+						self.emit("serverNewMember", server.addMember(user, data.roles), server);
 					}
 
 					break;
@@ -1384,7 +1372,7 @@ class Client {
 						
 						server.removeMember("id", user.id);
 
-						self.trigger("serverRemoveMember", user, server);
+						self.emit("serverRemoveMember", user, server);
 					}
 
 					break;
@@ -1394,7 +1382,7 @@ class Client {
 					var user = self.addUser(data.user);
 					var server = self.getServer("id", data.guild_id);
 					var member = server.getMember("id", user.id);
-					self.trigger("serverMemberUpdate", member, data.roles);
+					self.emit("serverMemberUpdate", member, data.roles);
 					server.getMember("id", user.id).rawRoles = data.roles;
 					
 					break;
@@ -1405,7 +1393,7 @@ class Client {
 
 						var newUser = new User(data); //not actually adding to the cache
 						
-						self.trigger("userUpdate", newUser, self.user);
+						self.emit("userUpdate", newUser, self.user);
 
 						if (~self.userCache.indexOf(self.user)) {
 							self.userCache[self.userCache.indexOf(self.user)] = newUser;
@@ -1432,7 +1420,7 @@ class Client {
 						var presenceUser = new User(data.user);
 						if (presenceUser.equalsStrict(userInCache)) {
 							//they're exactly the same, an actual presence update
-							self.trigger("presence", {
+							self.emit("presence", {
 								user: userInCache,
 								oldStatus: userInCache.status,
 								status: data.status,
@@ -1444,7 +1432,7 @@ class Client {
 						} else {
 							//one of their details changed.
 							self.userCache[self.userCache.indexOf(userInCache)] = presenceUser;
-							self.trigger("userUpdate", userInCache, presenceUser);
+							self.emit("userUpdate", userInCache, presenceUser);
 						}
 					}
 
@@ -1460,7 +1448,7 @@ class Client {
 						var newChann = new Channel(data, serverInCache);
 						newChann.messages = channelInCache.messages;
 
-						self.trigger("channelUpdate", channelInCache, newChann);
+						self.emit("channelUpdate", channelInCache, newChann);
 
 						self.channelCache[self.channelCache.indexOf(channelInCache)] = newChann;
 					}
@@ -1473,7 +1461,7 @@ class Client {
 					var channelInCache = self.getChannel("id", data.channel_id);
 
 					if (!self.userTypingListener[data.user_id] || self.userTypingListener[data.user_id] === -1) {
-						self.trigger("startTyping", userInCache, channelInCache);
+						self.emit("startTyping", userInCache, channelInCache);
 					}
 
 					self.userTypingListener[data.user_id] = Date.now();
@@ -1484,7 +1472,7 @@ class Client {
 						}
 						if (Date.now() - self.userTypingListener[data.user_id] > 6000) {
 							// stopped typing
-							self.trigger("stopTyping", userInCache, channelInCache);
+							self.emit("stopTyping", userInCache, channelInCache);
 							self.userTypingListener[data.user_id] = -1;
 						}
 					}, 6000);
@@ -1503,7 +1491,7 @@ class Client {
 						break;
 					}
 
-					self.trigger("serverRoleCreate", server, server.addRole(role));
+					self.emit("serverRoleCreate", server, server.addRole(role));
 
 					break;
 
@@ -1512,7 +1500,7 @@ class Client {
 					var server = self.getServer("id", data.guild_id);
 					var role = server.getRole(data.role_id);
 
-					self.trigger("serverRoleDelete", server, role);
+					self.emit("serverRoleDelete", server, role);
 
 					server.removeRole(role.id);
 
@@ -1524,13 +1512,13 @@ class Client {
 					var role = server.getRole(data.role.id);
 					var newRole = server.updateRole(data.role);
 
-					self.trigger("serverRoleUpdate", server, role, newRole);
+					self.emit("serverRoleUpdate", server, role, newRole);
 
 					break;
 
 				default:
 					self.debug("received unknown packet");
-					self.trigger("unknown", dat);
+					self.emit("unknown", dat);
 					break;
 
 			}
@@ -1609,7 +1597,7 @@ class Client {
 		var server = this.getServer("id", data.id);
 
 		if (data.unavailable) {
-			self.trigger("unavailable", data);
+			self.emit("unavailable", data);
 			self.debug("Server ID " + data.id + " has been marked unavailable by Discord. It was not cached.");
 			return;
 		}
@@ -1754,7 +1742,7 @@ class Client {
 		});
 	}
 
-	_sendMessage(destination, content, tts, mentions) {
+	_sendMessage(destination, content, options, mentions) {
 
 		var self = this;
 
@@ -1765,7 +1753,7 @@ class Client {
 				.send({
 					content: content,
 					mentions: mentions,
-					tts: tts
+					tts: options.tts
 				})
 				.end(function (err, res) {
 

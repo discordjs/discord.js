@@ -7,6 +7,8 @@ This page contains documentation on the `Discord.Client` class. This should be u
 
 It might be beneficial to use CTRL+F to search for what you're looking for, or use the navigation provided by readthedocs on the left.
 
+As of 3.10.1, Discord.Client extends EventEmitter_. In previous versions, the only available methods were `on` and `off`.
+
 Attributes
 ----------
 
@@ -240,13 +242,17 @@ Gets previous messages from the specified channel.
     
 .. warning:: If the logs contain messages from a user who is no longer in the server, the user object *MAY* be malformed.
 
-sendMessage(channel, message, `callback`)
+sendMessage(channel, message, `options`, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sends a message to the specified channel.
 
 - **channel** - A `Channel Resolvable`_ to send the message to.
 - **message** - A `String` or an Array of strings. If an Array, the array will be joined with a new line as a delimiter and this will be the message to be sent.
+- **options** - An `Object` that can contain the following parameters:
+    
+    - **tts** - Whether the message should be text-to-speech (defaults to false)
+    
 - **callback** - A `function` that can take the following parameters:
 
     - **error** - An error if one occurred, otherwise it is null.
@@ -278,7 +284,7 @@ Updates/edits a message with new content.
     - **error** - An error if one occurred, otherwise it is null.
     - **message** - A Message_ representing the updated message.
     
-reply(message, yourMessage, `callback`)
+reply(message, yourMessage, `options`, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Alias for sendMessage, but prepends a mention to whoever sent the specified mention. Useful shortcut for directing a message at a user.
@@ -294,6 +300,10 @@ Alias for sendMessage, but prepends a mention to whoever sent the specified ment
     
 - **message** - A Message_ that should be replied to.
 - **yourMessage** - A `String` or an Array of strings. If an Array, the array will be joined with a new line as a delimiter and this will be the message to be sent.
+- **options** - An `Object` that can contain the following parameters:
+    
+    - **tts** - Whether the message should be text-to-speech (defaults to false)
+    
 - **callback** - A `function` that can take the following parameters:
 
     - **error** - An error if one occurred, otherwise it is null.
@@ -608,3 +618,5 @@ Called when a WebSocket message is received and it gives you the message.
 .. _official API here : https://discordapp.com/api/voice/regions
 
 .. _Discord Game ID : https://raw.githubusercontent.com/hydrabolt/discord.js/master/ref/gameMap.json
+
+.. _EventEmitter : https://nodejs.org/api/events.html#events_class_events_eventemitter

@@ -11,7 +11,7 @@ function init(){
 	console.log("preparing...");
 }
 
-mybot.on("ready", function(){
+mybot.once("ready", function(){
 	console.log("ready! beginning tests");
 	success1();
 });

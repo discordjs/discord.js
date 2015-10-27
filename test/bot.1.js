@@ -28,27 +28,11 @@ mybot.on("message", function (message) {
 		user = message.sender;
 	}
 
-	this.createRole(message.channel.server, {
-		hoist: true,
-		color: true,
-		name: "discord users"
-	}).then(
-		(perm) => {
-
-			mybot.addMemberToRole(user, perm).then(
-				() => {
-					mybot.overwritePermissions(message.channel, perm, {
-						sendMessages : false		
-					});
-				}
-			)
-			
-		}
-	)
+	mybot.reply(message, "this is tts", {tts:true}).catch(error);
 	
 });
 
-mybot.on("ready", function () {
+mybot.once("ready", function () {
 	console.log("im ready");
 
 	for (var server of mybot.servers) {
