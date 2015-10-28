@@ -24,7 +24,7 @@ class ServerPermissions {
 			manageRoles: this.manageRoles,
 			manageChannels: this.manageChannels,
 			readMessages: this.readMessages,
-			sendMessages: this.sendMessage,
+			sendMessages: this.sendMessages,
 			sendTTSMessages: this.sendTTSMessages,
 			manageMessages: this.manageMessages,
 			embedLinks: this.embedLinks,
@@ -119,7 +119,7 @@ class ServerPermissions {
 
 		} else {
 			// not allowed
-			this.packed &= (1 << location);
+			this.packed &= ~(1 << location);
 		}
 
 	}

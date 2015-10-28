@@ -844,18 +844,19 @@ class Client extends EventEmitter {
 						if(data.color)
 							data.color = Color.toDec(data.color);
 						
-						self.guildRoleCreateIgnoreList[res.body.id] = function () {
-							self.updateRole(perm, data)
-								.then((perm) => {
-									cb(null, perm);
-									resolve(perm);
-								})
-								.catch((err) => {
-									cb(err);
-									reject(err);
-								});
-
-						}
+						self.guildRoleCreateIgnoreList[res.body.id] = true;
+						
+						server.addRole(res.body);
+						
+						self.updateRole(perm, data)
+							.then((perm) => {
+								cb(null, perm);
+								resolve(perm);
+							})
+							.catch((err) => {
+							cb(err);
+							reject(err);
+						});
 
 
 					}
@@ -873,6 +874,11 @@ class Client extends EventEmitter {
 		return new Promise(function (resolve, reject) {
 
 			var server = role.server.id;
+			
+			var tempRole = role;
+			for(var key in data){
+				tempRole[key] = data[key];
+			}
 
 			if(isNaN(Color.toDec(data.color))){
 				var err = new Error("Invalid Color");
@@ -885,10 +891,10 @@ class Client extends EventEmitter {
 				.patch(`${Endpoints.SERVERS}/${server}/roles/${role.id}`)
 				.set("authorization", self.token)
 				.send({
-					color: Color.toDec(data.color) || role.color,
-					hoist: data.hoist || role.hoist,
-					name: data.name || role.name,
-					permissions: data.packed || role.packed
+					color: tempRole.color,
+					hoist: tempRole.hoist,
+					name: tempRole.name,
+					permissions: tempRole.packed
 				})
 				.end(function (err, res) {
 					if (err) {
@@ -1331,14 +1337,20 @@ class Client extends EventEmitter {
 						
 					}*/
 
-					if (self.serverCreateListener[data.id]) {
-						var cbs = self.serverCreateListener[data.id];
-						cbs[0](server); //promise then callback
-						cbs[1](null, server); //legacy callback
-						self.serverCreateListener[data.id] = null;
+					if(data.owner_id === self.user.id){
+						var keepCheck = setInterval(() => {
+							if (self.serverCreateListener[data.id]) {
+								var cbs = self.serverCreateListener[data.id];
+								cbs[0](server); //promise then callback
+								cbs[1](null, server); //legacy callback
+								self.serverCreateListener[data.id] = null;
+								self.emit("serverCreate", server);
+								clearInterval(keepCheck);
+							}
+						}, 50);
+					}else{
+						self.emit("serverCreate", server);	
 					}
-
-					self.emit("serverCreate", server);
 
 					break;
 
@@ -1500,8 +1512,6 @@ class Client extends EventEmitter {
 					var role = data.role;
 
 					if (self.guildRoleCreateIgnoreList[data.role.id]) {
-						server.addRole(role);
-						self.guildRoleCreateIgnoreList[data.role.id]();
 						self.guildRoleCreateIgnoreList[data.role.id] = null;
 						break;
 					}

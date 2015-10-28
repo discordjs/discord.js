@@ -1,134 +1,132 @@
+/* global process */
 /*
 	this file should be used for travis builds only
+	or testing local builds
 */
 
 var Discord = require("../");
 var mybot = new Discord.Client();
 
-var server, channel, message, sentMessage = false;
+var server, channel, message, role, sentMessage = false, actions = [], current = -1;
 
-function init(){
+function next() {
+	current++;
+	if (current !== 0) {
+		console.log("Success on test", current, actions[current]);
+	}
+	if (current === actions.length)
+		done();
+	else
+		actions[current].apply(this, arguments);
+}
+
+function init() {
 	console.log("preparing...");
 }
 
-mybot.once("ready", function(){
-	console.log("ready! beginning tests");
-	success1();
+actions.push(() => {
+	mybot.createServer("test-server", "london").then(next).catch(error);
 });
 
-function success1(){ //make server
-	mybot.createServer("test-server", "london").then(success2).catch(error);
-}
-
-function success2(_server){ //make channel
-	console.log("test 1 successful");
+actions.push((_server) => {
 	server = _server;
-	mybot.createChannel(server, "test-channel", "text").then(success3).catch(error);
-}
+	mybot.createChannel(server, "test-channel", "text").then(next).catch(error);
+});
 
-function success3(_channel){ //send message
-	console.log("test 2 successful");
+actions.push((_channel) => {
 	channel = _channel;
-	mybot.sendMessage(channel, [mybot.user.avatarURL, "an", "array", "of", "messages"]).then(success4).catch(error);
-}
+	mybot.sendMessage(channel, [mybot.user.avatarURL, "an", "array", "of", "messages"]).then(next).catch(error);
+});
 
-function success4(_message){ //delete message
-	console.log("test 3 successful");
-	message = _message;
-	mybot.deleteMessage(message).then(success5).catch(error);
-}
+actions.push((message) => {
+	mybot.deleteMessage(message).then(next).catch(error);
+});
 
-function success5(){ //send ping
-	console.log("test 4 successful");
-	mybot.sendMessage(channel, "ping").then(function(msg){
-		message = msg;
-	}).catch(error);
-	setTimeout(checkError, 30 * 1000);
-}
+actions.push(() => {
+	mybot.createRole(server, {
+		name: "Custom Role",
+		color: 0xff0000,
+		sendMessages: false
+	}).then(next).catch(error);
+});
 
-function success7(){
-	console.log("test 6 successful");
-	mybot.deleteChannel(channel).then(success8).catch(error);
-}
-
-function success8(){
-	console.log("test 7 successful");
-	mybot.createInvite(server).then(success9).catch(error);
-}
-
-function success9(invite){
-	console.log("test 8 successful");
-	if(invite.code){
-		success10();
-	}else{
-		error("reference error");
+actions.push((_role) => {
+	role = _role;
+	if (role.name === "Custom Role" && !role.sendMessages) {
+		next();
+	} else {
+		error(new Error("bad role; " + role));
 	}
-}
+});
 
-function success10(){
-	console.log("test 9 succesful");
-	mybot.leaveServer(server).then(success11).catch(error);
-}
+actions.push(() => {
+	mybot.deleteRole(role).then(next).catch(error);
+});
 
-function success11(){
-	console.log("test 10 succesful");
-	mybot.joinServer(process.env["ds_invite"]).then(success12).catch(error);
-}
+actions.push(() => {
+	mybot.sendMessage(channel, "ping").catch(error);
+});
 
-function success12(_server){
-	console.log("test 11 successful");
-	server = mybot.getServer("id", _server.id);
-	if(server){
-		success13();
-	}else{
-		error("reference error");
-	}
-}
+actions.push((message) => {
+	mybot.updateMessage(message, "pong").then(next).catch(error);
+});
 
-function success13(){
-	console.log("test 12 successful");
-	mybot.sendFile(server, "./test/image.png").then(function(msg){
-		mybot.deleteMessage(msg).then(success14).catch(error);
-	}).catch(error);
-}
+actions.push((message) => {
+	mybot.deleteMessage(message).then(next).catch(error);
+})
 
-function success14(msg){
-	console.log("test 13 successful");
-	mybot.leaveServer(server).then(success15).catch(error);
-}
+actions.push(() => {
+	mybot.sendFile(server, "./test/image.png").then(next).catch(error);
+})
 
-function success15(){
-	console.log("test 14 successful");
-	mybot.logout().then(done).catch(error);
-}
+actions.push(() => {
+	mybot.leaveServer(server).then(next).catch(error);
+});
 
-function done(){
-	console.log("All tests completed succesfully.");
-	process.exit(0);
-}
+// phase 2
 
-function checkError(){
-	if(!sentMessage){
-		error("failure receiving messages");
-	}
-}
+actions.push(() => {
+	mybot.joinServer(process.env["ds_invite"]).then(next).catch(error);
+});
 
-function error(err){
-	console.log("error", err);
-	process.exit(1);
-}
+actions.push((_server) => {
+	server = _server;
+	mybot.sendMessage(server.getMember("username", "hydrabolt"), "Travis Build test").then(next).catch(error);
+});
 
-mybot.on("message", function(message){
-	
-	if(message.channel.equals(channel)){
-		if(message.content === "ping"){
-			console.log("test 5 successful");
-			sentMessage = true;
-			
-			mybot.updateMessage(message, "pong").then(success7).catch(error);
+actions.push((_message) => {
+	mybot.deleteMessage(_message).then(next).catch(error);
+});
+
+actions.push(() => {
+	mybot.logout().then(next).catch(error);
+});
+
+mybot.on("message", function (message) {
+	if(!message.isPrivate){
+		if (message.channel.equals(channel)) {
+			if (message.content === "ping") {
+				sentMessage = true;
+				next(message);
+			}
 		}
 	}
-	
+})
+
+mybot.once("ready", function () {
+	console.log("ready! beginning tests");
+	next();
 });
 
 mybot.login(process.env["ds_email"], process.env["ds_password"]).then(init).catch(error);
+
+function done() {
+	console.log("Finished! Build successful.");
+	process.exit(0);
+}
+
+function error(e) {
+	console.log("FAILED DURING TEST", current);
+	console.log(e.stack);
+	process.exit(1);
+}
