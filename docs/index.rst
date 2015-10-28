@@ -6,8 +6,10 @@
 Welcome to discord.js's documentation!
 ======================================
 
-discord.js is an easy-to-use and intuitive JavaScript API for Discord_. It should be able to
-run in node.js / io.js and in the browser.
+discord.js is an easy-to-use and intuitive JavaScript API for Discord_. It's fairly high level, so if you're
+looking for something low level, check out `discord.io`_.
+
+Feel free to make any contributions you want, whether it be through creating an issue, giving a suggestion or making a pull request!
 
 .. note:: This documentation is still a work-in-progress, apologies if something isn't yet documented!
 
@@ -50,3 +52,4 @@ Indices and tables
 * :ref:`search`
 
 .. _Discord : https://discordapp.com/
+.. _discord.io : https://github.com/izy521/discord.io

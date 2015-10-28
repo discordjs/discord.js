@@ -569,8 +569,6 @@ Registering Events
     bot.on("eventName", function(arg1, arg2...){
         // code here is called when eventName is emitted.
     })
-    
-.. note:: You can only have one listening function per event
 
 Unregistering Events
 ~~~~~~~~~~~~~~~~~~~~
