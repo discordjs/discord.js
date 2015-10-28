@@ -14,3 +14,4 @@
 .. _ChannelPermissions : ./docs_permissions.html#id3
 .. _EvaluatedPermissions : ./docs_permissions.html#id6
 .. _Member : ./docs_member.html
+.. _Colors : ./docs_module.html#discord-colors

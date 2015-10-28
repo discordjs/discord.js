@@ -380,6 +380,16 @@ Creates a role (or set of permissions) in a given server.
         sendMessages : false
     });
     
+    // or you can use a hex string for colours
+    
+    bot.createRole(server, {
+        name : "My Role",
+        color : "#ff0000",
+        sendMessages : false
+    });
+    
+.. note:: Check the Colors_ helper to find out more about valid Role Colors.
+    
 createRoleIfNotExists(server, data, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
