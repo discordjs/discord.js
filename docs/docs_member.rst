@@ -3,7 +3,18 @@
 Members
 =======
 
-The Member Class is used to represent a User_ but specific to a server. **Any attributes/functions available in User_ are omitted.**
+The Member Class is used to represent a User_ but specific to a server. **Any attributes/functions available in the User class are omitted.**
+
+How do I get a Member from a User?
+----------------------------------
+
+Sometimes you might want a Member object, but instead you are given a User_ object. Since Members belong to servers, you can just do:
+
+.. code-block:: js
+	
+	server.getMember("id", user.id);
+	
+This code will either return `false` if no member is found, or a Member if one is found. This method will work if you are given either a User OR Member object.
 
 Attributes
 ----------

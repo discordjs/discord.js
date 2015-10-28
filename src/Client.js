@@ -837,16 +837,14 @@ class Client extends EventEmitter {
 						cb(err);
 						reject(err);
 					} else {
-
-						var moddedPerm = new ServerPermissions(res.body, server);
-
-						for (var key in data) {
-							moddedPerm[key] = data[key];
-						}
-
-						var perms = server.addRole(res.body);
+						
+						var perm = server.addRole(res.body);
+						
+						if(data.color)
+							data.color = Color.toDec(data.color);
+						
 						self.guildRoleCreateIgnoreList[res.body.id] = function () {
-							self.updateRole(server, moddedPerm)
+							self.updateRole(perm, data)
 								.then((perm) => {
 									cb(null, perm);
 									resolve(perm);

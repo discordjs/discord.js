@@ -7,7 +7,7 @@ This page contains documentation on the `Discord.Client` class. This should be u
 
 It might be beneficial to use CTRL+F to search for what you're looking for, or use the navigation provided by readthedocs on the left.
 
-As of 3.10.1, Discord.Client extends EventEmitter_. In previous versions, the only available methods were `on` and `off`.
+.. note:: As of 3.10.1, Discord.Client extends EventEmitter_. In previous versions, the only available methods were `on` and `off`.
 
 Attributes
 ----------

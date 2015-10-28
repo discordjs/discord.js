@@ -1,5 +1,5 @@
 /*
-    credits to izy521 for the colour list]
+    credits to izy521 for the colour list
     https://github.com/izy521/discord.io/blob/master/docs/colors.md
 */
 module.exports = {
@@ -24,4 +24,27 @@ module.exports = {
     DARK_GREY: 9936031,
     LIGHT_GREY: 12370112,
     DARK_NAVY: 2899536
+}
+
+exports.toDec = function(data){
+    var hextest = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/;
+    
+    var num;
+    
+    if(hextest.test(data)){
+        // it's a hex number with a # in front
+        num = data.substr(1).toString(10);
+    }else if(hextest.test("#" + data)){
+        // it's a hex number with no # in front
+        num = data.toString(10);
+    }else{
+        num = data.toString(10);
+    }
+    return num;
+}
+
+exports.toHex = function(data){
+    
+    return "#" + data.toString(16);
+    
 }

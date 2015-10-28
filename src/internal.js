@@ -1,3 +1,8 @@
+/*
+	this file is deprecated and should only be used as
+	reference.
+*/
+
 var request = require( "superagent" );
 var Endpoints = require( "./endpoints.js" );
 

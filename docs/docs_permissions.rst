@@ -18,7 +18,7 @@ name
 color
 ~~~~~
 
-`Number` that is the color of role, use Discord.Color to resolve (see source code under refs/colors.js)
+`Number` that represents a colour in base 10. To resolve it to a hex colour, just do: ``permission.color.toString(16)``
 
 hoist
 ~~~~~

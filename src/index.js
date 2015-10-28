@@ -6,7 +6,18 @@ var Colors = require("../ref/colours.js");
 var Discord = {
 	Endpoints : Endpoints,
 	Client : Client,
-	Colors : Colors
+	Colors : Colors,
+	User : require("./user.js"),
+	Server : require("./server.js"),
+	Channel : require("./channel.js"),
+	Message : require("./message.js"),
+	Invite : require("./invite.js"),
+	PMChannel : require("./PMChannel.js"),
+	ServerPermissions : require("./ServerPermissions.js"),
+	ChannelPermissions : require("./ChannelPermissions.js"),
+	EvaluatedPermissiosn : require("./EvaluatedPermissions.js"),
+	VoiceChannel : require("./VoiceChannel.js"),
+	gameMap : require("../ref/gameMap.json")
 }
 
 Discord.patchStrings = function () {
