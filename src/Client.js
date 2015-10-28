@@ -1337,20 +1337,16 @@ class Client extends EventEmitter {
 						
 					}*/
 
-					if(data.owner_id === self.user.id){
-						var keepCheck = setInterval(() => {
-							if (self.serverCreateListener[data.id]) {
-								var cbs = self.serverCreateListener[data.id];
-								cbs[0](server); //promise then callback
-								cbs[1](null, server); //legacy callback
-								self.serverCreateListener[data.id] = null;
-								self.emit("serverCreate", server);
-								clearInterval(keepCheck);
-							}
-						}, 50);
-					}else{
-						self.emit("serverCreate", server);	
-					}
+					var keepCheck = setInterval(() => {
+						if (self.serverCreateListener[data.id]) {
+							var cbs = self.serverCreateListener[data.id];
+							cbs[0](server); //promise then callback
+							cbs[1](null, server); //legacy callback
+							self.serverCreateListener[data.id] = null;
+							self.emit("serverCreate", server);
+							clearInterval(keepCheck);
+						}
+					}, 50);
 
 					break;
 
