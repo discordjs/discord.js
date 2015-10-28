@@ -91,6 +91,10 @@
                 document.getElementById("pingpongoutput").innerHTML += "> "+t+"<br/>"
             }
             
+            function error(e){
+                output(e + " - <i><u>are you sure your credentials are correct?</u></i>");
+            }
+            
             pingPongClient = new Discord.Client();
             
             pingPongClient.once("ready", function(){
@@ -111,7 +115,7 @@
             
          
             
-            pingPongClient.login(getEmail(), getPassword()).catch(output);
+            pingPongClient.login(getEmail(), getPassword()).catch(error);
             output("logging in...");
             
         }
