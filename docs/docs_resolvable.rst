@@ -23,5 +23,17 @@ A Channel Resolvable is data that can be resolved to a channel ID. Here is what 
 Server Resolvable
 -----------------
 
+A Server Resolvable is anything that can be resolved to a server ID. Here is what you can use:
+
+- A Server_ object
+- A Channel_ object
+- A Message_ object
+- A `String` representing the ID of the server
+
 Invite Resolvable
 -----------------
+
+An Invite Resolvable is anything that resolves to an invite code. Here is what you can use:
+
+- An Invite_ object
+- A `String` which is either the code or an invite URL containing it (e.g. ``https://discord.gg/0SCTAU1wZTZtIopF``)

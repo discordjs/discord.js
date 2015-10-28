@@ -594,7 +594,7 @@ class Client extends EventEmitter {
 
 		return new Promise(function (resolve, reject) {
 
-			var id = (invite instanceof Invite ? invite.code : invite);
+			var id = self.resolveInvite(invite);
 
 			request
 				.post(`${Endpoints.API}/invite/${id}`)
@@ -1705,6 +1705,10 @@ class Client extends EventEmitter {
 
 		if (resource instanceof Server) {
 			return resource.id;
+		} else if (resource instanceof Channel) {
+			return resource.server.id;
+		} else if (resource instanceof Message) {
+			return resource.channel.server.id;
 		} else {
 			return resource;
 		}
@@ -1994,6 +1998,23 @@ class Client extends EventEmitter {
 
 		this.setPlayingGame(id);
 
+	}
+	
+	resolveInvite(resource){
+		
+		if(resource instanceof Invite){
+			return resource.code;
+		}else if(typeof resource == "string" || resource instanceof String){
+			
+			if(resource.indexOf("http") === 0){
+				var split = resource.split("/");
+				return split.pop();
+			}else{
+				return resource;
+			}
+			
+		}
+		
 	}
 }
 

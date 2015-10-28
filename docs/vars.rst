@@ -7,6 +7,7 @@
 .. _PMChannel : ./docs_pmchannel.html
 .. _Invite : ./docs_invite.html
 .. _Channel Resolvable : ./docs_resolvable.html#channel-resolvable
+.. _Server Resolvable : ./docs_resolvable.html#channel-resolvable
 .. _Invite Resolvable : ./docs_resolvable.html#invite-resolvable
 .. _Promises : https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise
 .. _ServerPermissions : ./docs_permissions.html#id1
