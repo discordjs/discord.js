@@ -73,9 +73,9 @@ class Server {
 	
 	// get/set
 	
-	getRole(id){
+	getRole(key, value){
 		for (var role of this.roles) {
-			if (role.id == id) {
+			if (role[key] === value) {
 				return role;
 			}
 		}
@@ -85,11 +85,11 @@ class Server {
 	
 	addRole(data){
 		
-		if(this.getRole(data.id)){
-			return this.getRole(data.id);
+		if(this.getRole("id", data.id)){
+			return this.getRole("id", data.id);
 		}
 		
-		var perms = new ServerPermissions(data);
+		var perms = new ServerPermissions(data, this);
 		this.roles.push(perms);
 		return perms;
 		
@@ -97,7 +97,7 @@ class Server {
 	
 	updateRole(data){
 	
-		var oldRole = this.getRole(data.id);
+		var oldRole = this.getRole("id", data.id);
 		
 		if(oldRole){
 			var index = this.roles.indexOf(oldRole);

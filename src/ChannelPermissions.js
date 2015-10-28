@@ -13,7 +13,7 @@ class ChannelPermissions {
 		if (this.type === "member") {
 			this.packed = channel.server.getMember("id", data.id).evalPerms.packed;
 		} else {
-			this.packed = channel.server.getRole(data.id).packed;
+			this.packed = channel.server.getRole("id", data.id).packed;
 		}
 
 		this.packed = this.packed & ~data.deny;

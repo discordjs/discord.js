@@ -8,6 +8,7 @@ var Invite = require("./invite.js");
 var PMChannel = require("./PMChannel.js");
 var ServerPermissions = require("./ServerPermissions.js");
 var gameMap = require("../ref/gameMap.json");
+var Color = require("../ref/colours.js");
 var zlib;
 
 var EventEmitter = require('events');
@@ -873,26 +874,21 @@ class Client extends EventEmitter {
 
 			var server = role.server.id;
 
-			var modRole = role;
-			for (var key in data) {
-				modRole[key] = data[key];
-			}
-
 			request
 				.patch(`${Endpoints.SERVERS}/${server}/roles/${role.id}`)
 				.set("authorization", self.token)
 				.send({
-					color: modRole.color,
-					hoist: modRole.hoist,
-					name: modRole.name,
-					permissions: modRole.packed
+					color: Color.toDec(data.color) || role.color,
+					hoist: data.hoist || role.hoist,
+					name: data.name || role.name,
+					permissions: data.packed || role.packed
 				})
 				.end(function (err, res) {
 					if (err) {
 						cb(err);
 						reject(err);
 					} else {
-
+						
 						var data = self.getServer("id", server).updateRole(res.body);
 						resolve(data);
 						cb(null, data);
@@ -1510,7 +1506,7 @@ class Client extends EventEmitter {
 				case "GUILD_ROLE_DELETE":
 
 					var server = self.getServer("id", data.guild_id);
-					var role = server.getRole(data.role_id);
+					var role = server.getRole("id", data.role_id);
 
 					self.emit("serverRoleDelete", server, role);
 
@@ -1521,7 +1517,7 @@ class Client extends EventEmitter {
 				case "GUILD_ROLE_UPDATE":
 
 					var server = self.getServer("id", data.guild_id);
-					var role = server.getRole(data.role.id);
+					var role = server.getRole("id", data.role.id);
 					var newRole = server.updateRole(data.role);
 
 					self.emit("serverRoleUpdate", server, role, newRole);

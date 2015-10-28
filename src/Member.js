@@ -12,10 +12,10 @@ class Member extends User{
 	
 	get roles(){
 		
-		var ufRoles = [ this.server.getRole(this.server.id) ];
+		var ufRoles = [ this.server.getRole("id", this.server.id) ];
 	
 		for(var rawRole of this.rawRoles){
-			ufRoles.push( this.server.getRole(rawRole) );
+			ufRoles.push( this.server.getRole("id", rawRole) );
 		}
 		
 		return ufRoles;
