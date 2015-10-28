@@ -874,6 +874,13 @@ class Client extends EventEmitter {
 
 			var server = role.server.id;
 
+			if(isNaN(Color.toDec(data.color))){
+				var err = new Error("Invalid Color");
+				reject(err);
+				cb(err);
+				return;
+			}
+
 			request
 				.patch(`${Endpoints.SERVERS}/${server}/roles/${role.id}`)
 				.set("authorization", self.token)

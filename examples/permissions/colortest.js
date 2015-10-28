@@ -22,85 +22,81 @@ bot.on("disconnected", function () {
 });
 
 bot.on("message", function (msg) {
+	
+	// to use this example, you first have to send 'create role'
+	// you can then change colors afterwards.
+	
 	if (msg.content === "create role") {
 		// create the role and add the user to it
 		
 		bot.createRoleIfNotExists(msg.channel.server, {
-			name : "Custom Colors",
-			hoist : true, // so it is visible in the members list
-		}).then(function(permission){
+			name: "Custom Colors",
+			hoist: true, // so it is visible in the members list
+		}).then(function (permission) {
+			// this is executed when the role has been created or exists
 			
-			bot.addMemberToRole(msg.sender, permission).then(function(){
-				
+			// adds the sender to the role
+			bot.addMemberToRole(msg.sender, permission).then(function () {
 				bot.reply(msg, "added you to the role!");
-				
 			});
-				
+
 		});
-		
+
 	}
 
 	if (msg.content.indexOf("preset color") === 0) {
 		
 		// set the role to a preset color
 		var colorName = msg.content.split(" ")[2];
-		var role = msg.channel.server.getRole("name", "Custom Colors");
 		
-		if(Discord.Color[colorName]){ // if the color is a preset
+		// get the role by its name
+		var role = msg.channel.server.getRole("name", "Custom Colors");
+
+		// if the color exists as a preset
+		if (Discord.Color[colorName]) {
 			
+			// update the role with the new color
 			bot.updateRole(role, {
-				color : Discord.Color[colorName]
-			}).then(function(){
-				bot.reply(msg, "done!");
+				color: Discord.Color[colorName]
+			}).then(function (role) {
+				// this executes if the change was correct
+				bot.reply(msg, "done! using the color " + Discord.Color.toHex(role.color));
 			});
-			
-		}else{
+
+		} else {
 			bot.reply(msg, "that color isn't a preset color!");
 		}
 
 	}
-	
+
 	if (msg.content.indexOf("custom color") === 0) {
-		
+
+		// valid custom colors must follow the format of any of the following:
+		/*
+			#ff0000 <- valid 7 digit hex (including #)
+			ff0000 <- valid 6 digit hex
+			16711680 <- valid decimal number (this if #ff0000 as a decimal)
+		*/
+
 		var colorName = msg.content.split(" ")[2];
+		
+		// get the role by its name
 		var role = msg.channel.server.getRole("name", "Custom Colors");
-		
+
+		// updates the role with the given color
 		bot.updateRole(role, {
-			color : colorName
-		}).then(function(){
-			bot.reply(msg, "done!");
-		}).catch(function(e){
-			bot.reply(msg, "an error occurred. Was that a valid hex/dec color?");
-		})
-		
-	}
-
-	if (msg.content === "remove me") {
-		// remove the user from the good people list, if it exists
-		var found = false;
-
-		for (var role of msg.channel.server.roles) {
-			if (role.name === "good people") {
-				found = role;
-				break;
-			}
-		}
-
-		if (found) {
-			// if the role exists
+			color: colorName
+		}).then(function (role) {
 			
-			if (msg.sender.hasRole(role)) {
-				// remove the member from the role
-				bot.removeMemberFromRole(msg.sender, role);
-				bot.reply(msg, "removed!")
-			} else {
-				bot.reply(msg, "you're not in the role!");
-			}
-
-		} else {
-			// role doesn't exist
-			bot.reply(msg, "the role doesn't even exist!");
-		}
+			// this executes if the change was successful
+			bot.reply(msg, "done! using the color " + Discord.Color.toHex(role.color));
+		
+		}).catch(function (e) {
+			
+			// this executes if it wasn't successful
+			bot.reply(msg, "an error occurred. Was that a valid hex/dec color?");
+		
+		})
 
 	}
 

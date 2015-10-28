@@ -2,6 +2,8 @@
 
 var Discord = require("../../");
 
+Discord.patchStrings();
+
 var AuthDetails = require("../auth.json");
 
 var bot = new Discord.Client();
@@ -20,9 +22,9 @@ bot.on("message", (msg) => {
 		var permissions = msg.channel.permissionsOf(user);
 		
 		if(permissions.sendTTSMessages){
-			bot.reply(msg, "You *can* send TTS messages.");
+			bot.reply(msg, "You " + "can".italic.bold + " send TTS messages.");
 		}else{
-			bot.reply(msg, "You *can't* send TTS messages.");	
+			bot.reply(msg, "You " + "can't".italic.bold + " send TTS messages.");	
 		}
 		
 	}else if(msg.content === "what are my full permissions?"){

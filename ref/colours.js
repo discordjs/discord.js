@@ -57,6 +57,12 @@ exports.toDec = function (data) {
 
 exports.toHex = function (data) {
 
-    return "#" + data.toString(16);
+    var text = data.toString(16);
+    
+    while(text.length < 6){
+        text = "0" + text;
+    }
+
+    return "#" + text;
 
 }
