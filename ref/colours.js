@@ -28,6 +28,9 @@ exports.toDec = function (data) {
     var hextest = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i;
 
     var num;
+    
+    if(!data)
+        return 0;
 
     if (hextest.test(data)) {
         // it's a hex number with a # in front
@@ -45,12 +48,15 @@ exports.toDec = function (data) {
         num = parseInt(data.substr(1), 16).toString(10);
     } else if (hextest.test("#" + data)) {
         // it's a hex number with no # in front
-        num = parseInt(data, 16).toString(10);
+        if(data.charAt(0) === "0"){
+            var tdata = data.split("");
+            tdata[0] = 1;
+            data = tdata.join("");
+        }
+        num = parseInt(data, 16);
     } else {
         num = data.toString(10);
     }
-    
-    console.log(num);
     
     return parseInt(num);
 }
