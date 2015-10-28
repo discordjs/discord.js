@@ -1,7 +1,7 @@
 .. include:: ./vars.rst
 
-Channel Documentation
-=====================
+Channels
+========
 
 The Channel Class is used to represent data about a Channel.
 

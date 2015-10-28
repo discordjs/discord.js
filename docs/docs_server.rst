@@ -1,7 +1,7 @@
 .. include:: ./vars.rst
 
-Server Documentation
-==================
+Servers
+=======
 
 The Server Class is used to represent data about a server.
 

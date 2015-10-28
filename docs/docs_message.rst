@@ -1,7 +1,7 @@
 .. include:: ./vars.rst
 
-Message Documentation
-=====================
+Messages
+========
 
 The Message Class is used to represent data about a Message.
 

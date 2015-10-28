@@ -1,7 +1,7 @@
 .. include:: ./vars.rst
 
-Permissions Documentation
-=========================
+Permissions
+===========
 
 The Permissions Class represents data of permissions/roles.
 

@@ -1,7 +1,7 @@
 .. include:: ./vars.rst
 
-Invite Documentation
-====================
+Invites
+=======
 
 The Invite Class is used to represent data about an Invite.
 

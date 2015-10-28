@@ -1,7 +1,7 @@
 .. include:: ./vars.rst
 
-Member Documentation
-==================
+Members
+=======
 
 The Member Class is used to represent a User_ but specific to a server. **Any attributes/functions available in User_ are omitted.**
 

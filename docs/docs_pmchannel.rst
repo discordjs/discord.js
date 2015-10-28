@@ -1,7 +1,7 @@
 .. include:: ./vars.rst
 
-PMChannel Documentation
-=======================
+PMChannel
+=========
 
 The PMChannel Class is used to represent data about a Private Message Channel.
 

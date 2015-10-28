@@ -1,7 +1,7 @@
 .. include:: ./vars.rst
 
-User Documentation
-==================
+Users
+=====
 
 The User Class is used to represent data about users.
 
