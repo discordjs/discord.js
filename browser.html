@@ -79,7 +79,10 @@
             pingPongClient = new Discord.Client();
             
             pingPongClient.once("ready", function(){
-               output("ready!"); 
+               output("ready! send the message <u><i>ping</i></u> in any of the following servers:"); 
+               for(var sid in pingPongClient.servers){
+                   output("<span class='light'> " + pingPongClient.servers[sid].name + "</span>");
+               }
             });
             
             pingPongClient.on("message", function(msg){
