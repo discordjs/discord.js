@@ -40,7 +40,7 @@
             <div class="column">
                 <h1>Ping-Pong</h1>
                 <p>A simple example, if you send ping to any of the channels the logged-in client has access to, it will reply 'pong!'</p>
-                <div class="startButton" onclick="toggleStateOfPingPong()">RUN</div>
+                <div class="startButton" onclick="toggleStateOfPingPong()" id="pingpongbutton">RUN</div>
             </div>
             <div class="column">
                 <div class="outputConsole" id="pingpongoutput">
@@ -55,18 +55,32 @@
         var pingPongRunning = false, pingPongClient;
         
         function getEmail(){
-            return document.getElementById("email").value;
+            if(document.getElementById("email").value)
+                return document.getElementById("email").value;
+            else
+                return prompt("Email?")
         }
         
         function getPassword(){
-            return document.getElementById("password").value;
+            if(document.getElementById("password").value)
+                return document.getElementById("password").value;
+            else
+                return prompt("Password?")
         }
         
         function toggleStateOfPingPong(){
             if(pingPongRunning){
                 pingPongClient.logout();
+                pingPongClient = null;
+                document.getElementById("pingpongoutput").innerHTML = "";
+                pingPongRunning = false;
+                document.getElementById("pingpongbutton").innerHTML = "RUN";
+                document.getElementById("pingpongbutton").className = "startButton";
             }else{
                 startPingPong();
+                pingPongRunning = true;
+                document.getElementById("pingpongbutton").innerHTML = "STOP";
+                document.getElementById("pingpongbutton").className = "stopButton";
             }
         }
         
@@ -94,9 +108,10 @@
                 
             });
             
-            output("logging in...");
+         
             
             pingPongClient.login(getEmail(), getPassword()).catch(output);
+            output("logging in...");
             
         }
         
