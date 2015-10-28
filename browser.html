@@ -72,7 +72,7 @@
             if(pingPongRunning){
                 pingPongClient.logout();
                 pingPongClient = null;
-                document.getElementById("pingpongoutput").innerHTML = "";
+                document.getElementById("pingpongoutput").innerHTML = "Client terminated...";
                 pingPongRunning = false;
                 document.getElementById("pingpongbutton").innerHTML = "RUN";
                 document.getElementById("pingpongbutton").className = "startButton";
