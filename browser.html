@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>discord.js | Browser Exampless</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/browser.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/railscasts.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+    <script>
+        hljs.initHighlightingOnLoad();
+    </script>
+    <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/discord.min.3.10.2.js"></script>
+    <meta name="description" content="discord.js is a high-level and easy-to-use interface for discord. Running both in the browser and natively, you can be sure your bots will live anywhere!">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <div id="nav">
+        <a href="http://hydrabolt.github.io/discord.js/"><span class="title">discord.js</span></a>
+        <a href="https://github.com/hydrabolt/discord.js" class="github">
+            <div class="right x2">
+                <i class="github fa fa-github"></i>
+            </div>
+        </a>
+    </div>
+    <div class="slide slide1">
+        <h1>Examples</h1>
+        <p>You can run these examples right in your browser (experimental). You need to enter valid Discord credentials however:</p>
+    </div>
+    <div class="banner">
+        <input placeholder="email" type="email" id="email">
+        <input placeholder="password" type="password" id="password">
+    </div>
+    <div class="slide slide_1">
+        <div class="column-wrap">
+            <div class="column">
+                <h1>Ping-Pong</h1>
+                <p>A simple example, if you send ping to any of the channels the logged-in client has access to, it will reply 'pong!'</p>
+                <div class="startButton" onclick="toggleStateOfPingPong()">RUN</div>
+            </div>
+            <div class="column">
+                <div class="outputConsole" id="pingpongoutput">
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var classes = document.getElementsByClassName("outputConsole");
+        
+        var pingPongRunning = false, pingPongClient;
+        
+        function getEmail(){
+            return document.getElementById("email").value;
+        }
+        
+        function getPassword(){
+            return document.getElementById("password").value;
+        }
+        
+        function toggleStateOfPingPong(){
+            if(pingPongRunning){
+                pingPongClient.logout();
+            }else{
+                startPingPong();
+            }
+        }
+        
+        function startPingPong(){
+            
+            function output(t){
+                document.getElementById("pingpongoutput").innerHTML += "> "+t+"<br/>"
+            }
+            
+            pingPongClient = new Discord.Client();
+            
+            pingPongClient.once("ready", function(){
+               output("ready!"); 
+            });
+            
+            pingPongClient.on("message", function(msg){
+               
+               if(msg.content === "ping"){
+                   this.reply(msg, "pong!");
+                   output("pong'd <b>" + msg.sender.username+"</b>");
+               }
+                
+            });
+            
+            pingPongClient.login(getEmail(), getPassword()).catch(output);
+            
+        }
+        
+        var fn = function(){
+            this.innerHTML = "";
+        }
+
+        for(var i = 0; i < classes.length; i++){
+            classes[i].addEventListener("dblclick", fn, false);
+        }
+        
+    </script>
+</body>
+
+</html>

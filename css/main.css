@@ -19,6 +19,7 @@ body{
     line-height: 48px;
     padding:0 16px;
     box-shadow: 0 2px 5px black;
+    z-index:1000;
 }
 
 #nav .title{
@@ -40,6 +41,7 @@ body{
     color:white;
     text-align:center;
     line-height: 26px;
+    z-index:900;
 }
 
 .slide h1{
@@ -92,6 +94,11 @@ a.button{
     border: 2px solid;
     font-family: 'Open Sans', sans-serif;
     background:white;
+    transition:0.1s background;
+}
+
+a.button:hover{
+    background:#333;
 }
 
 #terminalOutput{
@@ -298,12 +305,12 @@ a.github, #nav a{
     flex-basis: auto;
     text-align: center;
     background:white;
-    color:black !important;
+    color:black;
 }
 
 .column{
     background:white;
-    color:black !important;
+    color:black;
 }
 
 .column h3, .column h4{

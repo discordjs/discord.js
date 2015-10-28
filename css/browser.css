@@ -1,0 +1,93 @@
+input[type=text], input[type=email], input[type=password]{
+	
+	padding:0.5rem;
+	font-family: "Open Sans", sans-serif;
+	font-size: 1.5rem;
+	width:40%;
+	margin-left:4%;
+	margin-right:4%;
+	border:0;
+	border-bottom: 2px solid silver;
+	background: rgba(0,0,0,0.1);
+	
+}
+
+.slide_1{
+	background:#333;
+	text-align: left;
+}
+
+.slide_1 .column{
+	color:white;
+}
+
+.column{
+	background:inherit;
+	position: relative;
+}
+
+.column p{
+	width:100%;
+	font-size: 1rem;
+}
+
+div.startButton{
+	display: inline-block;
+	background: #099940;
+	border-bottom: 5px solid #0B7A36;
+	padding:1rem;
+	border-radius: 0.5rem;
+	font-weight: bold;
+	cursor:pointer;
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+div.startButton:hover{
+	background: #0BBF50;
+}
+
+div.startButton:active{
+	background:#0A6E30;
+}
+
+@media only screen and (max-width:1100px){
+	.outputConsole{
+		background:#222;
+		display:block;
+		height:100%;
+		padding:8px;
+		font-family: monospace;
+		text-align: left;
+		max-height: 15em;
+		overflow: auto;
+		min-height:2em;
+	}
+	
+	input{
+		display:inline-block;
+		margin:4px;
+		width:90%;
+	}
+}
+
+@media only screen and (min-width:1100px){
+    .outputConsole{
+		background:#222;
+		display:block;
+		height:100%;
+		position:absolute;
+		top:0;
+		bottom:0;
+		left:0;
+		right:0;
+		padding:8px;
+		font-family: monospace;
+		text-align: left;
+		overflow: auto;
+	}
+}
