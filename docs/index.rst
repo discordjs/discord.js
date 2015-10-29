@@ -42,7 +42,7 @@ Contents:
    docs_message
    docs_invite
    docs_permissions
-
+   docs_embed
 
 
 Indices and tables

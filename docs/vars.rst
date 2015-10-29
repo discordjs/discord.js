@@ -16,3 +16,4 @@
 .. _EvaluatedPermissions : ./docs_permissions.html#id6
 .. _Member : ./docs_member.html
 .. _Colors : ./docs_module.html#discord-colors
+.. _Embed : ./docs_embed.html

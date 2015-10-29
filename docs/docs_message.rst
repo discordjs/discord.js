@@ -38,7 +38,7 @@ A `String` UUID of the message, will never change.
 embeds
 ~~~~~~
 
-A raw, unhandled `JSON object` that will contain embeds of the message - if any.
+An `Array` of Embed_ objects.
 
 editedTimestamp
 ~~~~~~~~~~~~~~~

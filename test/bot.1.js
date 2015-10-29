@@ -45,7 +45,7 @@ mybot.once("ready", function () {
 });
 
 mybot.on("messageUpdate", function(newMessage, oldMessage){
-	// links and videos will create a loop
+	mybot.reply(newMessage, JSON.stringify(newMessage.embeds));
 })
 
 mybot.on("serverUpdate", function (oldserver, newserver) {
