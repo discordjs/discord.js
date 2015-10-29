@@ -59,6 +59,7 @@ A full list of modifiers (all chainable):
 * strike `~`
 * code `` ` ``
 * codeblock ```` ``` ````
+* newline `\n`
 
 ---
 

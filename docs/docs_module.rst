@@ -10,6 +10,8 @@ Discord.Colors
 
 Currently Colors are only usable in Roles_. You can't use any colour in messages, unless it's syntax highlighting from codeblocks.
 
+.. note:: There is currently an unresolved bug in Discord, long story short any hex colors provided that start with a 0 (e.g. #00FF00) will be changed to #10FF00 to ensure they render properly.
+
 Example Usage
 ~~~~~~~~~~~~~
 
