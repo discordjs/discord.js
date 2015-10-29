@@ -82,9 +82,9 @@ Attributes
 .. code-block:: js
 
 	{
-		url, // the URL of the image
-		type : "image",
-		title, // title of the embed/image
+		url, // the URL of the video
+		type : "video",
+		title, // title of the embed/video
 		thumbnail : {
 			width, // the width of the thumbnail in pixels
 			height, // the height of the thumbnail in pixels
