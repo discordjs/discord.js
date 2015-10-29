@@ -57,8 +57,8 @@ A full list of modifiers (all chainable):
 * italic `*`
 * underline `__`
 * strike `~`
-* code ` ` `
-* codeblock` ``` `
+* code `` ` ``
+* codeblock ```` ``` ````
 
 ---
 
