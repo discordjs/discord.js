@@ -9,6 +9,28 @@ It might be beneficial to use CTRL+F to search for what you're looking for, or u
 
 .. note:: As of 3.10.1, Discord.Client extends EventEmitter_. In previous versions, the only available methods were `on` and `off`.
 
+Missed Messages
+---------------
+
+As of version 4.1.0, Clients now have the ability to find all the messages they missed and then emit them as `message` events. To opt-in for catching up on messages, just instantiate your client like so:
+
+.. code-block:: js
+
+    var client = new Discord.Client({
+        catchup : "all"
+        /* this setup will force the client to get ALL
+           the messages the client has missed */
+    });
+    
+    var client = new Discord.Client({
+        catchup : "fast"
+        /* this setup will get the last 2500
+           missed messages, which can be faster
+           and easier on resources */
+    });
+
+Messages that have been caught up with will be emitted as a `message` event with the extra parameter `caughtup` which will be true. This allows you to differentiate real-time messages and caught-up ones.
+
 Attributes
 ----------
 
@@ -20,6 +42,7 @@ An `Object` containing a configuration for the Client. Currently can only be con
 
     {
         compress : false // whether packets >50kb should be received compressed and later decompressed
+        catchup : false // read above ^^
     }
 
 token
