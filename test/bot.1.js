@@ -26,7 +26,11 @@ mybot.on("message", function (message) {
 		user = message.sender;
 	}
 
-	mybot.reply(message, JSON.stringify(message.sender.permissionsIn(message.channel), null, 4));
+	mybot.getChannelLogs(message.channel, 5000).then((messages)=>{
+		for(var msg of messages){
+			mybot.deleteMessage(msg);
+		}
+	}) 
 });
 
 mybot.once("ready", function () {

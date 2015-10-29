@@ -31,14 +31,14 @@ class Member extends User{
 		var basePerms = this.roles, //cache roles as it can be slightly expensive
 			basePerm = basePerms[0].packed;
 		
+		
 		basePerms = basePerms || [];
 		for(var perm of basePerms){
 			basePerm = basePerm | perm.packed;
+			console.log(perm.name +" - "+perm.mentionEveryone);
 		}
 		
-		return new ServerPermissions({
-			permissions : basePerm
-		});
+		return new EvaluatedPermissions(basePerm);
 	}
 	
 	removeRole(role){
@@ -78,24 +78,22 @@ class Member extends User{
 		
 		
 		if(affectingOverwrites.length === 0 && affectingMemberOverwrites.length === 0){
-			return new EvaluatedPermissions(this.evalPerms.packed);
+			return this.evalPerms;
 		}
 		
 		var finalPacked = (affectingOverwrites.length !== 0 ? affectingOverwrites[0].packed : affectingMemberOverwrites[0].packed);
 		
-		for(var overwrite of affectingOverwrites){
-			finalPacked = finalPacked & ~overwrite.deny;
-		}
+		console.log(affectingOverwrites);
+		console.log("\n\n\n");
+		console.log(affectingMemberOverwrites);
 		
 		for(var overwrite of affectingOverwrites){
+			finalPacked = finalPacked & ~overwrite.deny;
 			finalPacked = finalPacked | overwrite.allow;
 		}
 		
 		for(var overwrite of affectingMemberOverwrites){
 			finalPacked = finalPacked & ~overwrite.deny;
-		}
-		
-		for(var overwrite of affectingMemberOverwrites){
 			finalPacked = finalPacked | overwrite.allow;
 		}
 		
