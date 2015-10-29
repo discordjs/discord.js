@@ -6,8 +6,13 @@ class Member extends User{
 	
 	constructor(user, server, roles){
 		super(user); // should work, we are basically creating a Member that has the same properties as user and a few more
-		this.server = server;
+		this.serverID = server.id;
+		this.client = server.client;
 		this.rawRoles = roles;
+	}
+	
+	get server(){
+		return this.client.getServer("id", this.serverID);
 	}
 	
 	get roles(){
@@ -80,11 +85,17 @@ class Member extends User{
 		
 		for(var overwrite of affectingOverwrites){
 			finalPacked = finalPacked & ~overwrite.deny;
+		}
+		
+		for(var overwrite of affectingOverwrites){
 			finalPacked = finalPacked | overwrite.allow;
 		}
 		
 		for(var overwrite of affectingMemberOverwrites){
 			finalPacked = finalPacked & ~overwrite.deny;
+		}
+		
+		for(var overwrite of affectingMemberOverwrites){
 			finalPacked = finalPacked | overwrite.allow;
 		}
 		

@@ -3,7 +3,8 @@ var ChannelPermissions = require("./ChannelPermissions.js");
 class Channel {
 
     constructor(data, server) {
-        this.server = server;
+        this.serverID = server.id;
+        this.client = server.client;
         this.name = data.name;
         this.type = data.type;
         this.topic = data.topic;
@@ -18,6 +19,10 @@ class Channel {
         
         //this.isPrivate = isPrivate; //not sure about the implementation of this...
     }
+    
+    get server(){
+        return this.client.getServer("id", this.serverID);
+    }
 
     get permissionOverwrites() {
         return this.roles;
@@ -25,10 +30,6 @@ class Channel {
 
     get permissions() {
         return this.roles;
-    }
-
-    get client() {
-        return this.server.client;
     }
 
     permissionsOf(member){

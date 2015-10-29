@@ -10,8 +10,6 @@ Discord.patchStrings();
 
 var server, channel, message, sentMessage = false;
 
-counter = 1;
-
 mybot.on("message", function (message) {
 
 	console.log("Everyone mentioned? " + message.everyoneMentioned);
@@ -28,8 +26,7 @@ mybot.on("message", function (message) {
 		user = message.sender;
 	}
 
-	mybot.reply(message, "this is tts", {tts:true}).catch(error);
-	
+	mybot.reply(message, JSON.stringify(message.sender.permissionsIn(message.channel), null, 4));
 });
 
 mybot.once("ready", function () {

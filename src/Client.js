@@ -154,17 +154,20 @@ class Client extends EventEmitter {
 							if (self.websocket) {
 								self.websocket.close();
 							}
+							self.debug("error logging in - " + err);
 							callback(err);
 							reject(err);
 						} else {
 							self.state = 2; //set state to logged in (not yet ready)
 							self.token = res.body.token; //set our token
-							
+							self.debug("client logged in w/ token " + self.token);
 							self.getGateway().then(function (url) {
+								self.debug("gateway response successful");
 								self.createws(url);
 								callback(null, self.token);
 								resolve(self.token);
 							}).catch(function (err) {
+								self.debug("unable to connect to gateways - " + err);
 								callback(err);
 								reject(err);
 							});
