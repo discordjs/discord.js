@@ -35,6 +35,7 @@ class Client extends EventEmitter {
 		super();
 
         this.options = options;
+		this.options.catchup = options.catchup;
 		this.options.compress = options.compress;
 
 		if (this.options.compress) {
@@ -72,6 +73,7 @@ class Client extends EventEmitter {
 		this.guildRoleCreateIgnoreList = {};
 		this.__idleTime = null;
 		this.__gameId = null;
+		this.timeoffset = 0;
 	}
 
 	get uptime() {
@@ -511,7 +513,7 @@ class Client extends EventEmitter {
 		});
 	}
 
-	getChannelLogs(channel, amount = 500, callback = function (err, logs) { }) {
+	getChannelLogs(channel, amount = 500, options = {}, callback = function (err, logs) { }) {
 
 		var self = this;
 
@@ -522,8 +524,20 @@ class Client extends EventEmitter {
 				channelID = channel.id;
 			}
 
+			var params = [];
+			if (options.before) {
+				params.push("before=" + (options.before instanceof Message ? options.before.id : options.before));
+			}
+			if (options.after) {
+				params.push("after=" + (options.after instanceof Message ? options.after.id : options.after));
+			}
+
+			var joinedParams = params.join();
+			if (joinedParams !== "")
+				joinedParams = "&" + params.join();
+
 			request
-				.get(`${Endpoints.CHANNELS}/${channelID}/messages?limit=${amount}`)
+				.get(`${Endpoints.CHANNELS}/${channelID}/messages?limit=${amount}${joinedParams}`)
 				.set("authorization", self.token)
 				.end(function (err, res) {
 
@@ -559,7 +573,6 @@ class Client extends EventEmitter {
 					}
 
 				});
-
 		});
 
 	}
@@ -1137,39 +1150,39 @@ class Client extends EventEmitter {
 		}
 
 	}
-	
-	getBans(serverResource, callback=function(err, arrayOfBans){}){
-		
+
+	getBans(serverResource, callback = function (err, arrayOfBans) { }) {
+
 		var self = this;
-		return new Promise(function(resolve, reject){
-			
+		return new Promise(function (resolve, reject) {
+
 			var serverID = self.resolveServerID(serverResource);
-			
+
 			request
 				.get(`${Endpoints.SERVERS}/${serverID}/bans`)
 				.set("authorization", self.token)
-				.end(function(err, res){
-					
-					if(err){
+				.end(function (err, res) {
+
+					if (err) {
 						callback(err);
 						reject(err);
-					}else{
-						
+					} else {
+
 						var banList = [];
-						
-						for(var user of res.body){
-							banList.push( self.addUser(user.user) );
+
+						for (var user of res.body) {
+							banList.push(self.addUser(user.user));
 						}
-						
+
 						callback(null, banList);
 						resolve(banList);
-						
+
 					}
-					
+
 				});
-			
+
 		});
-		
+
 	}
 	
 	//def createws
@@ -1218,7 +1231,7 @@ class Client extends EventEmitter {
 			switch (dat.t) {
 
 				case "READY":
-				
+
 					self.debug("received ready packet");
 
 					self.user = self.addUser(data.user);
@@ -1240,7 +1253,7 @@ class Client extends EventEmitter {
 					setInterval(function () {
                         self.keepAlive.apply(self);
                     }, data.heartbeat_interval);
-
+					self.checkCatchUp(data.read_state);
 					break;
 				case "MESSAGE_CREATE":
 					self.debug("received message");
@@ -1261,6 +1274,8 @@ class Client extends EventEmitter {
 						var msg = channel.addMessage(new Message(data, channel, mentions, data.author));
 						self.emit("message", msg);
 					}
+
+					self.ack(msg);
 
 					break;
 				case "MESSAGE_DELETE":
@@ -1361,15 +1376,15 @@ class Client extends EventEmitter {
 					}
 
 					break;
-					
+
 				case "GUILD_UPDATE":
-					
+
 					var server = self.getServer("id", data.id);
 					var newserver = self.addServer(data, true);
-					
+
 					self.serverCache.splice(self.serverCache.indexOf(server), 1);
 					self.emit("serverUpdate", server, newserver);
-					
+
 					break;
 				case "GUILD_CREATE":
 
@@ -1663,7 +1678,7 @@ class Client extends EventEmitter {
 	}
 	
 	//def addServer
-	addServer(data, force=false) {
+	addServer(data, force = false) {
 
 		var self = this;
 		var server = this.getServer("id", data.id);
@@ -1682,7 +1697,7 @@ class Client extends EventEmitter {
 					server.channels.push(this.addChannel(channel, server.id));
 				}
 			}
-			if(data.presences){
+			if (data.presences) {
 				for (var presence of data.presences) {
 					var user = self.getUser("id", presence.user.id);
 					user.status = presence.status;
@@ -1819,11 +1834,24 @@ class Client extends EventEmitter {
 		});
 	}
 
+	ack(msg) {
+		request
+			.post(`${Endpoints.CHANNELS}/${msg.channel.id}/messages/${msg.id}/ack`)
+			.set("authorization", this.token)
+			.end(function (err, res) {
+				if (err) {
+					console.log(err);
+					process.exit();
+				}
+			});
+	}
+
 	_sendMessage(destination, content, options, mentions) {
 
 		var self = this;
 
 		return new Promise(function (resolve, reject) {
+			var lag = Date.now();
 			request
 				.post(`${Endpoints.CHANNELS}/${destination}/messages`)
 				.set("authorization", self.token)
@@ -1837,6 +1865,10 @@ class Client extends EventEmitter {
 					if (err) {
 						reject(err);
 					} else {
+						
+						lag -= Date.parse(res.body.timestamp);
+						self.timeoffset = lag;
+						
 						var data = res.body;
 
 						var mentions = [];
@@ -2073,6 +2105,42 @@ class Client extends EventEmitter {
 
 		}
 
+	}
+
+	checkCatchUp(rstate) {
+		var self = this;
+		if (self.options.catchup) {
+			// mention_count, last_message_id, id
+			rstate.forEach(function (catchup, index) {
+				if(self.options.catchup === "all"){
+					self.getChannelLogs(catchup.id, 100000,
+						{
+							after:catchup.last_message_id
+						}
+					).then((results) => {
+	
+						for (var m of results) {
+							self.emit("message", m, true);
+						}
+	
+						self.ack(results[0]);
+	
+					});
+				}else if(self.options.catchup){
+					self.getChannelLogs(catchup.id, 2500).then((results) => {
+	
+						for (var m of results) {
+							if(m.id == catchup.last_message_id)
+								break;
+							self.emit("message", m, true);
+						}
+	
+						self.ack(results[0]);
+	
+					});
+				}
+			});
+		}
 	}
 }
 

@@ -10,7 +10,6 @@ class Message {
 		this.everyoneMentioned = data.mention_everyone;
 		this.id = data.id;
 		this.embeds = [];
-
 		if (data.embeds) {
 			for (var embed of data.embeds) {
 				this.embeds.push( Embeddable.createEmbed(embed) );
