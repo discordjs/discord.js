@@ -838,25 +838,25 @@ class Client extends EventEmitter {
 						cb(err);
 						reject(err);
 					} else {
-						
+
 						var perm = server.addRole(res.body);
-						
-						if(data.color)
+
+						if (data.color)
 							data.color = Color.toDec(data.color);
-						
+
 						self.guildRoleCreateIgnoreList[res.body.id] = true;
-						
+
 						server.addRole(res.body);
-						
+
 						self.updateRole(perm, data)
 							.then((perm) => {
 								cb(null, perm);
 								resolve(perm);
 							})
 							.catch((err) => {
-							cb(err);
-							reject(err);
-						});
+								cb(err);
+								reject(err);
+							});
 
 
 					}
@@ -874,13 +874,13 @@ class Client extends EventEmitter {
 		return new Promise(function (resolve, reject) {
 
 			var server = role.server.id;
-			
+
 			var tempRole = role;
-			for(var key in data){
+			for (var key in data) {
 				tempRole[key] = data[key];
 			}
 
-			if(isNaN(Color.toDec(data.color))){
+			if (isNaN(Color.toDec(data.color))) {
 				var err = new Error("Invalid Color");
 				reject(err);
 				cb(err);
@@ -901,7 +901,7 @@ class Client extends EventEmitter {
 						cb(err);
 						reject(err);
 					} else {
-						
+
 						var data = self.getServer("id", server).updateRole(res.body);
 						resolve(data);
 						cb(null, data);
@@ -1134,6 +1134,40 @@ class Client extends EventEmitter {
 
 	}
 	
+	getBans(serverResource, callback=function(err, arrayOfBans){}){
+		
+		var self = this;
+		return new Promise(function(resolve, reject){
+			
+			var serverID = self.resolveServerID(serverResource);
+			
+			request
+				.get(`${Endpoints.SERVERS}/${serverID}/bans`)
+				.set("authorization", self.token)
+				.end(function(err, res){
+					
+					if(err){
+						callback(err);
+						reject(err);
+					}else{
+						
+						var banList = [];
+						
+						for(var user of res.body){
+							banList.push( self.addUser(user.user) );
+						}
+						
+						callback(null, banList);
+						resolve(banList);
+						
+					}
+					
+				});
+			
+		});
+		
+	}
+	
 	//def createws
 	createws(url) {
 		if (this.websocket)
@@ -1180,6 +1214,7 @@ class Client extends EventEmitter {
 			switch (dat.t) {
 
 				case "READY":
+				
 					self.debug("received ready packet");
 
 					self.user = self.addUser(data.user);
@@ -1297,13 +1332,23 @@ class Client extends EventEmitter {
 					var server = self.getServer("id", data.guild_id);
 
 					self.emit("userBanned", bannedUser, server);
+					break;
+
+				case "GUILD_BAN_REMOVE":
+
+					var bannedUser = self.addUser(data.user);
+					var server = self.getServer("id", data.guild_id);
+
+					self.emiter("userUnbanned", bannedUser, server);
+
+					break;
 
 				case "CHANNEL_DELETE":
 
 					var channel = self.getChannel("id", data.id);
 
 					if (channel) {
-							
+
 						self.channelCache.splice(self.channelCache.indexOf(channel), 1);
 						server.channels.splice(server.channels.indexOf(channel), 1);
 
@@ -1312,7 +1357,16 @@ class Client extends EventEmitter {
 					}
 
 					break;
-
+					
+				case "GUILD_UPDATE":
+					
+					var server = self.getServer("id", data.id);
+					var newserver = self.addServer(data, true);
+					
+					self.serverCache.splice(self.serverCache.indexOf(server), 1);
+					self.emit("serverUpdate", server, newserver);
+					
+					break;
 				case "GUILD_CREATE":
 
 					var server = self.getServer("id", data.id);
@@ -1605,7 +1659,7 @@ class Client extends EventEmitter {
 	}
 	
 	//def addServer
-	addServer(data) {
+	addServer(data, force=false) {
 
 		var self = this;
 		var server = this.getServer("id", data.id);
@@ -1616,7 +1670,7 @@ class Client extends EventEmitter {
 			return;
 		}
 
-		if (!server) {
+		if (!server || force) {
 			server = new Server(data, this);
 			this.serverCache.push(server);
 			if (data.channels) {
@@ -1624,12 +1678,13 @@ class Client extends EventEmitter {
 					server.channels.push(this.addChannel(channel, server.id));
 				}
 			}
-		}
-
-		for (var presence of data.presences) {
-			var user = self.getUser("id", presence.user.id);
-			user.status = presence.status;
-			user.gameId = presence.game_id;
+			if(data.presences){
+				for (var presence of data.presences) {
+					var user = self.getUser("id", presence.user.id);
+					user.status = presence.status;
+					user.gameId = presence.game_id;
+				}
+			}
 		}
 
 		return server;
@@ -1998,22 +2053,22 @@ class Client extends EventEmitter {
 		this.setPlayingGame(id);
 
 	}
-	
-	resolveInvite(resource){
-		
-		if(resource instanceof Invite){
+
+	resolveInvite(resource) {
+
+		if (resource instanceof Invite) {
 			return resource.code;
-		}else if(typeof resource == "string" || resource instanceof String){
-			
-			if(resource.indexOf("http") === 0){
+		} else if (typeof resource == "string" || resource instanceof String) {
+
+			if (resource.indexOf("http") === 0) {
 				var split = resource.split("/");
 				return split.pop();
-			}else{
+			} else {
 				return resource;
 			}
-			
+
 		}
-		
+
 	}
 }
 

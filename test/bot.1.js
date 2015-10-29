@@ -43,12 +43,12 @@ mybot.once("ready", function () {
 
 });
 
-mybot.on("debug", function (info) {
-
+mybot.on("serverUpdate", function (oldserver, newserver) {
+	console.log("server changed! " + mybot.servers.length);
 })
 
 mybot.on("unknown", function (info) {
-	console.log("warning!", info);
+	console.log("unknown!", info);
 })
 
 mybot.on("channelUpdate", function (oldChan, newChan) {
