@@ -35,7 +35,6 @@ class Member extends User{
 		basePerms = basePerms || [];
 		for(var perm of basePerms){
 			basePerm = basePerm | perm.packed;
-			console.log(perm.name +" - "+perm.mentionEveryone);
 		}
 		
 		return new EvaluatedPermissions(basePerm);
@@ -82,10 +81,6 @@ class Member extends User{
 		}
 		
 		var finalPacked = (affectingOverwrites.length !== 0 ? affectingOverwrites[0].packed : affectingMemberOverwrites[0].packed);
-		
-		console.log(affectingOverwrites);
-		console.log("\n\n\n");
-		console.log(affectingMemberOverwrites);
 		
 		for(var overwrite of affectingOverwrites){
 			finalPacked = finalPacked & ~overwrite.deny;

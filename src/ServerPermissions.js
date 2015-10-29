@@ -12,7 +12,7 @@ class ServerPermissions {
 		this.position = data.position || 1;
 		this.hoist = data.hoist || false;
 		this.color = data.color || 0;
-		this.packed = data.permissions || (data.name === "@everyone" ? 36953089 : 0));
+		this.packed = data.permissions || (data.name === "@everyone" ? 36953089 : 0);
 		this.name = data.name || "new role";
 		this.id = data.id || null;
 		this.server = server;
