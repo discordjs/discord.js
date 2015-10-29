@@ -250,13 +250,18 @@ Deletes the specified channel.
 
     - **error** - An error if one occurred, otherwise it is null.
     
-getChannelLogs(channel, `amount`, `callback`)
+getChannelLogs(channel, `amount`, `options`, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Gets previous messages from the specified channel.
 
 - **channel** - A `Channel Resolvable`_ to take logs from.
 - **amount** - A `Number` that defaults to **500**. This is the amount of messages to try and get.
+- **options** - An `Object` containing the following values:
+
+    - **before** - A Message_ (or String ID) which will make the function return messages before this message.
+    - **after** - A Message_ (or String ID) which will make the function return messages after this message.
+
 - **callback** - A `function` that can take the following parameters:
 
     - **error** - An error if one occurred, otherwise it is null.
