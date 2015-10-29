@@ -1232,8 +1232,6 @@ class Client extends EventEmitter {
 
 				case "READY":
 
-					var fs = require("fs"); fs.writeFileSync("c:/users/amish/desktop/crapatack.json", JSON.stringify(data));
-
 					self.debug("received ready packet");
 
 					self.user = self.addUser(data.user);

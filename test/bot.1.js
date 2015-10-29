@@ -2,7 +2,7 @@ var Discord = require("../");
 var Member = require("../lib/Member.js");
 var mybot = new Discord.Client({
 	compress : true,
-	catchup : "isolate"
+	catchup : "all"
 });
 var fs = require("fs");
 var request = require("request").defaults({ encoding: null });
