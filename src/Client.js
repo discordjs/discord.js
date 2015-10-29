@@ -35,6 +35,7 @@ class Client extends EventEmitter {
 		super();
 
         this.options = options;
+		this.options.catchup options.catchup;
 		this.options.compress = options.compress;
 
 		if (this.options.compress) {
@@ -1240,7 +1241,7 @@ class Client extends EventEmitter {
 					setInterval(function () {
                         self.keepAlive.apply(self);
                     }, data.heartbeat_interval);
-
+					self.checkCatchUp();
 					break;
 				case "MESSAGE_CREATE":
 					self.debug("received message");
@@ -2073,6 +2074,10 @@ class Client extends EventEmitter {
 
 		}
 
+	}
+	
+	checkCatchUp(){
+		
 	}
 }
 
