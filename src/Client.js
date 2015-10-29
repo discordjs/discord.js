@@ -2114,29 +2114,27 @@ class Client extends EventEmitter {
 		if (self.options.catchup) {
 			// mention_count, last_message_id, id
 			rstate.forEach(function (catchup, index) {
-				if(self.options.catchupAll){
-					self.getChannelLogs(catchup.id, 100000, {after:catchup.last_message_id}).then((results) => {
+				if(self.options.catchup === "all"){
+					self.getChannelLogs(catchup.id, 100000,
+						{
+							after:catchup.last_message_id
+						}
+					).then((results) => {
 	
 						for (var m of results) {
-							if(self.options.catchupIsolate)
-								self.emit("catchupMessage", m);
-							else
-								self.emit("message", m);
+							self.emit("message", m, true);
 						}
 	
 						self.ack(results[0]);
 	
 					});
-				}else{
+				}else if(self.options.catchup){
 					self.getChannelLogs(catchup.id, 2500).then((results) => {
 	
 						for (var m of results) {
 							if(m.id == catchup.last_message_id)
 								break;
-							if(self.options.catchupIsolate)
-								self.emit("catchupMessage", m);
-							else
-								self.emit("message", m);
+							self.emit("message", m, true);
 						}
 	
 						self.ack(results[0]);
