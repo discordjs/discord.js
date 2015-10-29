@@ -1,7 +1,8 @@
 var Discord = require("../");
 var Member = require("../lib/Member.js");
 var mybot = new Discord.Client({
-	compress : true
+	compress : true,
+	catchup : true
 });
 var fs = require("fs");
 var request = require("request").defaults({ encoding: null });
@@ -12,7 +13,8 @@ var server, channel, message, sentMessage = false;
 
 mybot.on("message", function (message) {
 
-	console.log("Everyone mentioned? " + message.everyoneMentioned);
+	console.log("Everyone mentioned? " + doned);
+	doned++;
 	if (message.content.substr(0, 3) !== "$$$") {
 		return;
 	}
@@ -26,12 +28,10 @@ mybot.on("message", function (message) {
 		user = message.sender;
 	}
 
-	mybot.getChannelLogs(message.channel, 5000).then((messages)=>{
-		for(var msg of messages){
-			mybot.deleteMessage(msg);
-		}
-	}) 
+	mybot.reply(message, "Hello! It has been " + ((Date.now() - message.timestamp) - this.timeoffset) + "ms since you sent that.");
 });
+
+var doned = 0;
 
 mybot.once("ready", function () {
 	console.log("im ready");
@@ -46,16 +46,12 @@ mybot.once("ready", function () {
 
 mybot.on("messageUpdate", function(newMessage, oldMessage){
 	// links and videos will create a loop
-	mybot.reply(newMessage, JSON.stringify(newMessage.embeds, null, 4));
 })
 
 mybot.on("serverUpdate", function (oldserver, newserver) {
 	console.log("server changed! " + mybot.servers.length);
 })
 
-mybot.on("unknown", function (info) {
-	console.log("unknown!", info);
-})
 
 mybot.on("channelUpdate", function (oldChan, newChan) {
 
