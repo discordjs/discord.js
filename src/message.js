@@ -23,7 +23,7 @@ class Message {
 		if (this.isPrivate) {
 			this.author = this.channel.client.getUser("id", author.id);
 		} else {
-			this.author = this.channel.server.getMember("id", author.id) || this.channel.client.getUser("id", author.id);
+			this.author = this.channel.server ? this.channel.server.getMember("id", author.id) : this.channel.client.getUser("id", author.id);
 		}
 
 		this.attachments = data.attachments;
