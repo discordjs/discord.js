@@ -66,7 +66,14 @@ class Member extends User{
 		
 		var affectingOverwrites = [];
 		var affectingMemberOverwrites = [];
-		
+
+		for(var overwrite of channel.roles) {
+			if(overwrite.id == this.serverID) { // @everyone for channel
+				affectingOverwrites.push(overwrite);
+				break;
+			}
+		}
+
 		for(var overwrite of channel.roles){
 			if(overwrite.id === this.id && overwrite.type === "member"){
 				affectingMemberOverwrites.push(overwrite);
@@ -74,14 +81,13 @@ class Member extends User{
 				affectingOverwrites.push(overwrite);
 			}
 		}
-		
-		
+
 		if(affectingOverwrites.length === 0 && affectingMemberOverwrites.length === 0){
 			return this.evalPerms;
 		}
 		
 		var finalPacked = (affectingOverwrites.length !== 0 ? affectingOverwrites[0].packed : affectingMemberOverwrites[0].packed);
-		
+
 		for(var overwrite of affectingOverwrites){
 			finalPacked = finalPacked & ~overwrite.deny;
 			finalPacked = finalPacked | overwrite.allow;
