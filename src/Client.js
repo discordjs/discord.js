@@ -1369,7 +1369,10 @@ class Client extends EventEmitter {
 					if (channel) {
 
 						self.channelCache.splice(self.channelCache.indexOf(channel), 1);
-						server.channels.splice(server.channels.indexOf(channel), 1);
+						var server = self.getServer("id", data.guild_id);
+						if (server) {
+							server.channels.splice(server.channels.indexOf(channel), 1);
+						}
 
 						self.emit("channelDelete", channel);
 
