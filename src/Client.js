@@ -313,6 +313,9 @@ class Client extends EventEmitter {
 						callback(err);
 						reject(err);
 					} else {
+						for(var channel of server.channels){
+							self.channelCache.splice(self.channelCache.indexOf(channel), 1);
+						}
 						self.serverCache.splice(self.serverCache.indexOf(server), 1);
 						callback(null);
 						resolve();
@@ -1339,6 +1342,9 @@ class Client extends EventEmitter {
 					var server = self.getServer("id", data.id);
 
 					if (server) {
+						for(var channel of server.channels){
+							self.channelCache.splice(self.channelCache.indexOf(channel), 1);
+						}
 						self.serverCache.splice(self.serverCache.indexOf(server), 1);
 						self.emit("serverDelete", server);
 					}
