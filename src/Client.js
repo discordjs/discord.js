@@ -1358,7 +1358,7 @@ class Client extends EventEmitter {
 					var bannedUser = self.addUser(data.user);
 					var server = self.getServer("id", data.guild_id);
 
-					self.emiter("userUnbanned", bannedUser, server);
+					self.emit("userUnbanned", bannedUser, server);
 
 					break;
 
