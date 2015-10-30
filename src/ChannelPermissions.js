@@ -62,7 +62,7 @@ class ChannelPermissions {
 			}
 		}
 
-		ad(this.canCreateInstantInvite, 0);
+		ad(this.createInstantInvite, 0);
 		ad(this.manageRoles, 3);
 		ad(this.manageChannels, 4);
 		ad(this.readMessages, 10);
