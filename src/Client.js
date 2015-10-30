@@ -860,7 +860,7 @@ class Client extends EventEmitter {
 
 						var perm = server.addRole(res.body);
 
-						if (data.color)
+						if (data && data.color)
 							data.color = Color.toDec(data.color);
 
 						self.guildRoleCreateIgnoreList[res.body.id] = true;
@@ -899,7 +899,7 @@ class Client extends EventEmitter {
 				tempRole[key] = data[key];
 			}
 
-			if (isNaN(Color.toDec(data.color))) {
+			if (data && isNaN(Color.toDec(data.color))) {
 				var err = new Error("Invalid Color");
 				reject(err);
 				cb(err);
