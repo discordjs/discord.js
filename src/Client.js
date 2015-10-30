@@ -624,8 +624,10 @@ class Client extends EventEmitter {
 						callback(err);
 						reject(err);
 					} else {
-						if (self.getServer("id", res.body.guild.id)) {
-							resolve(self.getServer("id", res.body.guild.id));
+						var server = self.getServer("id", res.body.guild.id);
+						if (server) {
+							callback(null, server);
+							resolve(server);
 						} else {
 							self.serverCreateListener[res.body.guild.id] = [resolve, callback];
 						}
@@ -861,7 +863,7 @@ class Client extends EventEmitter {
 
 						var perm = server.addRole(res.body);
 
-						if (data.color)
+						if (data && data.color)
 							data.color = Color.toDec(data.color);
 
 						self.guildRoleCreateIgnoreList[res.body.id] = true;
@@ -900,7 +902,7 @@ class Client extends EventEmitter {
 				tempRole[key] = data[key];
 			}
 
-			if (isNaN(Color.toDec(data.color))) {
+			if (data && isNaN(Color.toDec(data.color))) {
 				var err = new Error("Invalid Color");
 				reject(err);
 				cb(err);
@@ -1375,7 +1377,10 @@ class Client extends EventEmitter {
 					if (channel) {
 
 						self.channelCache.splice(self.channelCache.indexOf(channel), 1);
-						server.channels.splice(server.channels.indexOf(channel), 1);
+						var server = self.getServer("id", data.guild_id);
+						if (server) {
+							server.channels.splice(server.channels.indexOf(channel), 1);
+						}
 
 						self.emit("channelDelete", channel);
 
