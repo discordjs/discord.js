@@ -621,8 +621,10 @@ class Client extends EventEmitter {
 						callback(err);
 						reject(err);
 					} else {
-						if (self.getServer("id", res.body.guild.id)) {
-							resolve(self.getServer("id", res.body.guild.id));
+						var server = self.getServer("id", res.body.guild.id);
+						if (server) {
+							callback(null, server);
+							resolve(server);
 						} else {
 							self.serverCreateListener[res.body.guild.id] = [resolve, callback];
 						}
