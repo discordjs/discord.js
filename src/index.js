@@ -3,4 +3,4 @@ module.exports = {
 }
 
 var a = new module.exports.Client();
-a.login("email", "password").catch((e)=>console.log(e));
+a.login(process.env["discordEmail"], process.env["discordPass"]).catch((e)=>console.log(e));

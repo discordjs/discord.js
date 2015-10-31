@@ -1,12 +1,12 @@
 var API = "https://discordapp.com/api";
 var Endpoints = {
-	
 	// general endpoints
 	LOGIN: `${API}/auth/login`,
 	LOGOUT: `${API}/auth/logout`,
 	ME: `${API}/users/@me`,
 	GATEWAY: `${API}/gateway`,
 	USER_CHANNELS: (userID) => `${API}/users/${userID}/channels`,
+	AVATAR : (userID, avatar) => `${API}/users/${userID}/avatars/${avatar}.jpg`,
 	
 	// servers
 	SERVERS: `${API}/guilds`,
@@ -28,8 +28,12 @@ var Endpoints = {
 	CHANNEL_INVITES: (channelID) => `${Endpoints.CHANNEL(channelID) }/invites`,
 	CHANNEL_TYPING: (channelID) => `${Endpoints.CHANNEL(channelID) }/typing`,
 	CHANNEL_PERMISSIONS: (channelID) => `${Endpoints.CHANNEL(channelID) }/permissions`,
+};
 
+var PacketType = {
+	READY : "READY"
 }
 
 exports.API_ENDPOINT = API;
 exports.Endpoints = Endpoints;
+exports.PacketType = PacketType;

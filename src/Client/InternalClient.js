@@ -2,9 +2,21 @@
 
 var EventEmitter = require("events");
 var request = require("superagent");
+var WebSocket = require("ws");
 var ConnectionState = require("./ConnectionState.js");
+
 var Constants = require("../Constants.js"),
-	Endpoints = Constants.Endpoints;
+	Endpoints = Constants.Endpoints,
+	PacketType = Constants.PacketType;
+	
+var Cache = require("../Util/Cache.js");
+
+var User = require("../Structures/User.js"),
+	Channel = require("../Structures/Channel.js"),
+	TextChannel = require("../Structures/TextChannel.js"),
+	VoiceChannel = require("../Structures/VoiceChannel.js"),
+	PMChannel = require("../Structures/PMChannel.js"),
+	Server = require("../Structures/Server.js");
 
 var zlib;
 
@@ -17,6 +29,12 @@ class InternalClient {
 		if (this.client.options.compress) {
 			zlib = require("zlib");
 		}
+		
+		// creates 4 caches with discriminators based on ID
+		this.users = new Cache();
+		this.channels = new Cache();
+		this.servers = new Cache();
+		this.private_channels = new Cache();
 	}
 
 	login(email, password) {
@@ -85,6 +103,7 @@ class InternalClient {
 
 	createWS(url) {
 		var self = this;
+		var client = self.client;
 
 		if (this.websocket)
 			return false;
@@ -113,12 +132,13 @@ class InternalClient {
 		this.websocket.onclose = () => {
 			self.websocket = null;
 			self.state = ConnectionState.DISCONNECTED;
-			self.client.emit("disconnected");
+			client.emit("disconnected");
 		}
 
 		this.websocket.onmessage = (e) => {
 
 			if (e.type === "Binary") {
+				if(!zlib) zlib = require("zlib");
 				e.data = zlib.inflateSync(e.data).toString();
 			}
 
@@ -127,17 +147,28 @@ class InternalClient {
 				packet = JSON.parse(e.data);
 				data = packet.d;
 			} catch (e) {
-				self.client.emit("error", e);
+				client.emit("error", e);
+				return;
 			}
-			
-			self.emit("raw", packet);
-			
-			switch(packet.t){
-				
-			}
-			
-		}
 
+			client.emit("raw", packet);
+
+			switch (packet.t) {
+
+				case PacketType.READY:
+					
+					self.users.add(new User(data.user, client));
+					
+					data.guilds.forEach((server) => {
+						self.servers.add(new Server(server, client));
+					});
+					
+					console.log(self.servers);
+					
+					break;
+
+			}
+		}
 	}
 }
 

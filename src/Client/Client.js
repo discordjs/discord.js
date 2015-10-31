@@ -9,7 +9,8 @@ class Client extends EventEmitter{
 		client.
 	*/
 	constructor(options){
-		super(options);
+		super();
+		this.options = options || {};
 		this.internal = new InternalClient(this);
 	}
 	
