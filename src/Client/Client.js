@@ -129,7 +129,7 @@ class Client extends EventEmitter {
 				});
 		});
 	}
-
+	// def deleteMessage
 	deleteMessage(msg, options = {}, callback = function (e) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
@@ -148,6 +148,27 @@ class Client extends EventEmitter {
 					reject(e);
 				});
 
+		});
+	}
+	//def updateMessage
+	updateMessage(msg, content, options = {}, callback = function(err, msg){}) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+			if (typeof options === "function") {
+				// options is the callback
+				callback = options;
+			}
+			
+			self.internal.updateMessage(msg, content, options)
+				.then(msg => {
+					callback(null, msg);
+					resolve(msg);
+				})
+				.catch(e => {
+					callback(e);
+					reject(e);
+				});
+			
 		});
 	}
 }

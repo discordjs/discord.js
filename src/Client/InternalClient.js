@@ -202,7 +202,7 @@ class InternalClient {
 
 		});
 	}
-
+	// def deleteMessage
 	deleteMessage(_message, options = {}) {
 		var self = this;
 		return new Promise((resolve, reject) => {
@@ -211,13 +211,13 @@ class InternalClient {
 
 			if (message) {
 
-				if(options.wait){
+				if (options.wait) {
 					setTimeout(deleteMsg, options.wait);
-				}else{
+				} else {
 					deleteMsg();
 				}
 
-				function deleteMsg(){
+				function deleteMsg() {
 					request
 						.del(Endpoints.CHANNEL_MESSAGE(message.channel.id, message.id))
 						.set("authorization", self.token)
@@ -230,12 +230,52 @@ class InternalClient {
 							}
 						});
 				}
-				
-			}else {
+
+			} else {
 				reject(new Error("Supplied message did not resolve to a message!"));
 			}
 
 		});
+	}
+	
+	// def updateMessage
+	updateMessage(msg, _content, options = {}) {
+
+		var self = this;
+		return new Promise((resolve, reject) => {
+
+			var message = self.resolver.resolveMessage(msg);
+
+			if (message) {
+
+				var content = self.resolver.resolveString(_content);
+				var mentions = self.resolver.resolveMentions(content);
+
+				request
+					.patch(Endpoints.CHANNEL_MESSAGE(message.channel.id, message.id))
+					.set("authorization", self.token)
+					.send({
+						content: content,
+						tts: options.tts,
+						mentions: mentions
+					})
+					.end((err, res) => {
+						if (err) {
+							reject(new Error(err.response.text));
+						} else {
+							resolve(
+								message.channel.messages.update
+								(message, new Message(res.body, message.channel, self.client)
+								));
+						}
+					})
+
+			} else {
+				reject(new Error("Supplied message did not resolve to a message!"));
+			}
+
+		});
+
 	}
 
 	sendWS(object) {

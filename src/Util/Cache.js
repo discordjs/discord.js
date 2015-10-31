@@ -1,61 +1,71 @@
 "use strict";
 
-class Cache extends Array{
-	constructor(discrim, limit){
+class Cache extends Array {
+	constructor(discrim, limit) {
 		super();
 		this.discrim = discrim || "id";
 	}
-	
-	get(key, value){
+
+	get(key, value) {
 		var found = null;
-		this.forEach( (val, index, array) => {
-			if(val.hasOwnProperty(key) && val[key] == value){
+		this.forEach((val, index, array) => {
+			if (val.hasOwnProperty(key) && val[key] == value) {
 				found = val;
 				return;
 			}
-		} );
+		});
 		return found;
 	}
-	
-	getAll(key, value){
+
+	getAll(key, value) {
 		var found = [];
-		this.forEach( (val, index, array) => {
-			if(val.hasOwnProperty(key) && val[key] == value){
+		this.forEach((val, index, array) => {
+			if (val.hasOwnProperty(key) && val[key] == value) {
 				found.push(val);
 				return;
 			}
-		} );
+		});
 		return found;
 	}
-	
-	add(data){
+
+	add(data) {
 		var exit = false;
-		for(var item of this){
-			if(item[this.discrim] === data[this.discrim]){
+		for (var item of this) {
+			if (item[this.discrim] === data[this.discrim]) {
 				exit = item;
 				break;
 			}
 		}
-		if(exit){
+		if (exit) {
 			return exit;
-		}else{
-			if(this.limit && this.length >= this.limit){
+		} else {
+			if (this.limit && this.length >= this.limit) {
 				this.splice(0, 1);
 			}
 			this.push(data);
 			return data;
 		}
 	}
-	
-	remove(data){
+
+	update(old, data) {
+		var index = this.get(this.discrim, old);
+		if (~index) {
+			this[index] = data;
+			return this[index];
+		} else {
+			return false;
+		}
+	}
+
+	remove(data) {
 		var index = this.indexOf(data);
-		if(~index){
+		if (~index) {
 			this.splice(index, 1);
-		}else{
-			var item = this.get("id", data.id);
-			if(item){
+		} else {
+			var item = this.get(this.discrim, data.id);
+			if (item) {
 				this.splice(this.indexOf(item), 1);
-			}	
+			}
 		}
 		return false;
 	}

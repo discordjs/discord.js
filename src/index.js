@@ -9,7 +9,9 @@ a.on("message", m => {
 	if(m.content === "$$$")
 		a.reply(m, "hi man!")
 			.then( m => {
-				a.deleteMessage(m);
+				a.updateMessage(m, "!!!").then( m => {
+					a.updateMessage(m, "the old content was " + m.content);	
+				});
 			});
 });
 
