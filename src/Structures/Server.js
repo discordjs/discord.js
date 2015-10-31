@@ -7,6 +7,7 @@ var User = require("./User.js");
 var Member = require("./Member.js");
 var TextChannel = require("./TextChannel.js");
 var VoiceChannel = require("./VoiceChannel.js");
+var Role = require("./Role.js");
 
 class Server extends Equality {
 	constructor(data, client) {
@@ -33,7 +34,6 @@ class Server extends Equality {
 		} );
 		
 		data.channels.forEach( (dataChannel) => {
-			
 			if(dataChannel.type === "text"){
 				var channel = client.internal.channels.add(new TextChannel(dataChannel, client));
 				this.channels.add(channel);
@@ -41,7 +41,10 @@ class Server extends Equality {
 				var channel = client.internal.channels.add(new VoiceChannel(dataChannel, client));
 				this.channels.add(channel);
 			}
-			
+		} );
+		
+		data.roles.forEach( (dataRole) => {
+			this.roles.add( new Role(dataRole, this) );
 		} );
 	}
 

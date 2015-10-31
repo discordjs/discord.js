@@ -14,13 +14,17 @@ class Client extends EventEmitter{
 		this.internal = new InternalClient(this);
 	}
 	
+	/*
+		def login
+	*/
 	login(email, password, cb=function(err, token){}){
 		var self = this;
 		return new Promise(function(resolve, reject){
 			
 			self.internal.login(email, password)
 				.then((token)=>{
-					
+					cb(null, token);
+					resolve(token);
 				})
 				.catch((e)=>{
 					cb(e);
@@ -29,6 +33,10 @@ class Client extends EventEmitter{
 			
 		});
 	}
+	
+	/*
+	
+	*/
 	
 }
 

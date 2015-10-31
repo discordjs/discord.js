@@ -163,8 +163,6 @@ class InternalClient {
 						self.servers.add(new Server(server, client));
 					});
 					
-					console.log(self.servers);
-					
 					break;
 
 			}
