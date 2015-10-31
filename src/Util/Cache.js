@@ -46,6 +46,19 @@ class Cache extends Array{
 			return data;
 		}
 	}
+	
+	remove(data){
+		var index = this.indexOf(data);
+		if(~index){
+			this.splice(index, 1);
+		}else{
+			var item = this.get("id", data.id);
+			if(item){
+				this.splice(this.indexOf(item), 1);
+			}	
+		}
+		return false;
+	}
 }
 
 module.exports = Cache;

@@ -7,7 +7,10 @@ a.on("debug", (m) => console.log("[debug]",m));
 
 a.on("message", m => {
 	if(m.content === "$$$")
-		a.reply(m, "hi man!").catch(e => console.log(e.stack));
+		a.reply(m, "hi man!")
+			.then( m => {
+				a.deleteMessage(m);
+			});
 });
 
 a.login(process.env["discordEmail"], process.env["discordPass"]).catch((e)=>console.log(e));

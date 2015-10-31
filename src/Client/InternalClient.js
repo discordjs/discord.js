@@ -163,7 +163,7 @@ class InternalClient {
 	}
 	
 	// def sendMessage
-	sendMessage(where, _content, options={}) {
+	sendMessage(where, _content, options = {}) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 
@@ -180,9 +180,9 @@ class InternalClient {
 					.post(Endpoints.CHANNEL_MESSAGES(destination.id))
 					.set("authorization", self.token)
 					.send({
-						content : content,
-						mentions : mentions,
-						tts : options.tts
+						content: content,
+						mentions: mentions,
+						tts: options.tts
 					})
 					.end((err, res) => {
 						if (err) {
@@ -198,6 +198,41 @@ class InternalClient {
 						}
 					});
 
+			}
+
+		});
+	}
+
+	deleteMessage(_message, options = {}) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+
+			var message = self.resolver.resolveMessage(_message);
+
+			if (message) {
+
+				if(options.wait){
+					setTimeout(deleteMsg, options.wait);
+				}else{
+					deleteMsg();
+				}
+
+				function deleteMsg(){
+					request
+						.del(Endpoints.CHANNEL_MESSAGE(message.channel.id, message.id))
+						.set("authorization", self.token)
+						.end((err, res) => {
+							if (err) {
+								reject(new Error(err.response.text));
+							} else {
+								message.channel.messages.remove(message);
+								resolve();
+							}
+						});
+				}
+				
+			}else {
+				reject(new Error("Supplied message did not resolve to a message!"));
 			}
 
 		});
