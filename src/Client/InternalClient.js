@@ -10,6 +10,7 @@ var Constants = require("../Constants.js"),
 	PacketType = Constants.PacketType;
 	
 var Cache = require("../Util/Cache.js");
+var Resolver = require("./Resolver/Resolver.js");
 
 var User = require("../Structures/User.js"),
 	Channel = require("../Structures/Channel.js"),
@@ -36,6 +37,7 @@ class InternalClient {
 		this.channels = new Cache();
 		this.servers = new Cache();
 		this.private_channels = new Cache();
+		this.resolver = new Resolver(this);
 	}
 	// def login
 	login(email, password) {
@@ -83,6 +85,7 @@ class InternalClient {
 		});
 	}
 
+	// def logout
 	logout() {
 		var self = this;
 		return new Promise((resolve, reject)=>{
@@ -110,6 +113,33 @@ class InternalClient {
 						resolve();
 					}
 				});
+			
+		});
+	}
+	
+	// def startPM
+	startPM(resUser){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			var user = self.resolver.resolveUser(resUser);
+		
+			if(user){
+				
+				// start the PM
+				request
+					.post(`${Endpoints.USER_CHANNELS(user.id)}`)
+					.set("authorization", self.token)
+					.end((err, res) => {
+						if(err){
+							reject(new Error(err.response.text));
+						}else{
+							resolve(self.private_channels.add(new PMChannel(res.body, self.client)));
+						}
+					});
+				
+			}else{
+				reject(new Error("Unable to resolve resUser to a User"));
+			}
 			
 		});
 	}
@@ -212,13 +242,10 @@ class InternalClient {
 					// format: https://discordapi.readthedocs.org/en/latest/reference/channels/messages.html#message-format
 					var channel = self.channels.get("id", data.channel_id);
 					if(channel){
-						
-						channel.messages.add( new Message(data, channel, client) );
-						
+						channel.messages.add( new Message(data, channel, client) );	
 					}else{
 						client.emit("warn", "message created but channel is not cached");
 					}
-					
 					break;
 
 			}
