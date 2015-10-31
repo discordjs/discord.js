@@ -129,6 +129,9 @@ class InternalClient {
 				request
 					.post(`${Endpoints.USER_CHANNELS(user.id) }`)
 					.set("authorization", self.token)
+					.send({
+						recipient_id: user.id
+					})
 					.end((err, res) => {
 						if (err) {
 							reject(new Error(err.response.text));
@@ -169,7 +172,7 @@ class InternalClient {
 
 			self.resolver.resolveChannel(where)
 				.then(next)
-				.catch(e => reject(new Error("Error resolving destination")));
+				.catch(e => reject(new Error("Error resolving destination - "+e)));
 
 			function next(destination) {
 				//var destination;

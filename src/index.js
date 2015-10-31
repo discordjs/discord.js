@@ -7,12 +7,7 @@ a.on("debug", (m) => console.log("[debug]",m));
 
 a.on("message", m => {
 	if(m.content === "$$$")
-		a.reply(m, "hi man!")
-			.then( m => {
-				a.updateMessage(m, "!!!").then( m => {
-					a.updateMessage(m, "the old content was " + m.content);	
-				});
-			});
+		a.sendMessage(m.author, "hi!").catch(e => console.log(e));
 });
 
 a.login(process.env["discordEmail"], process.env["discordPass"]).catch((e)=>console.log(e));

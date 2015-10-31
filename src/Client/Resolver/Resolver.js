@@ -10,8 +10,8 @@ var User = require("../../Structures/User.js"),
 	Message = require("../../Structures/Message.js");
 
 class Resolver {
-	constructor(client) {
-		this.client = client;
+	constructor(internal) {
+		this.internal = internal;
 	}
 
 	resolveMentions(resource) {
@@ -41,7 +41,9 @@ class Resolver {
 			accepts a Message, Channel, Server, String ID, User, PMChannel
 		*/
 		var found = null;
-		if (resource instanceof Message) {
+		if( resource instanceof User ){
+			found = resource;	
+		}else if (resource instanceof Message) {
 			found = resource.author;
 		} else if (resource instanceof TextChannel) {
 			var lmsg = resource.lastMessage;
@@ -87,11 +89,11 @@ class Resolver {
 			} else if (resource instanceof Server) {
 				found = resource.channels.get("id", resource.id);
 			} else if (resource instanceof String || typeof resource === "string") {
-				found = self.client.internal.channels.get("id", resource);
+				found = self.internal.channels.get("id", resource);
 			} else if (resource instanceof User) {
 				// see if a PM exists
 				var chatFound = false;
-				for (var pmchat of self.client.internal.private_channels) {
+				for (var pmchat of self.internal.private_channels) {
 					if (pmchat.recipient.equals(resource)) {
 						chatFound = pmchat;
 						break;
@@ -102,7 +104,7 @@ class Resolver {
 					found = chatFound;
 				} else {
 					// PM does not exist :\
-					self.client.internal.startPM(resource)
+					self.internal.startPM(resource)
 						.then(pmchannel => resolve(pmchannel))
 						.catch(e => reject(e));
 					return;
