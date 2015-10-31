@@ -172,7 +172,7 @@ class InternalClient {
 
 			self.resolver.resolveChannel(where)
 				.then(next)
-				.catch(e => reject(new Error("Error resolving destination - "+e)));
+				.catch(e => reject(new Error("Error resolving destination - " + e)));
 
 			function next(destination) {
 				//var destination;
@@ -268,8 +268,8 @@ class InternalClient {
 						} else {
 							resolve(
 								message.channel.messages.update
-								(message, new Message(res.body, message.channel, self.client)
-								));
+									(message, new Message(res.body, message.channel, self.client)
+									));
 						}
 					})
 
@@ -279,6 +279,51 @@ class InternalClient {
 
 		});
 
+	}
+
+	getChannelLogs(_channel, limit = 500, options = {}) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+
+			self.resolver.resolveChannel(_channel)
+				.then(next)
+				.catch(e => reject(new Error("couldn't resolve to channel - " + e)));
+
+			function next(channel) {
+
+				if (options.before)
+					options.before = self.resolver.resolveMessage(options.before);
+				if (options.after)
+					options.after = self.resolver.resolveMessage(options.after);
+
+				var params = [];
+				if (options.before)
+					params.push("before=" + options.before.id);
+				if (options.after)
+					params.push("after=" + options.after.id);
+
+				var joinedParams = params.join();
+				if (joinedParams !== "")
+					joinedParams = "&" + params.join();
+					
+				request
+					.get(`${Endpoints.CHANNEL_MESSAGES(channel.id)}?limit=${limit}${joinedParams}`)
+					.set("authorization", self.token)
+					.end((err, res) => {
+						if(err){
+							reject(new Error(err.response.text));
+						}else{
+							var logs = [];
+							res.body.forEach((msg) => {
+								logs.push( channel.messages.add(new Message(msg, channel, self.client)) );
+							});
+							resolve(logs);
+						}
+					});
+
+			}
+
+		});
 	}
 
 	sendWS(object) {

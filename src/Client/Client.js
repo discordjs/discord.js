@@ -171,6 +171,29 @@ class Client extends EventEmitter {
 			
 		});
 	}
+	
+	// def getChannelLogs
+	getChannelLogs(where, limit=500, options={}, callback=function(err, logs){}){
+		
+		var self = this;
+		return new Promise((resolve, reject) => {
+			if (typeof options === "function") {
+				// options is the callback
+				callback = options;
+			}
+			self.internal.getChannelLogs(where, limit, options)
+				.then( logs => {
+					callback(null, logs);
+					resolve(logs);
+				})
+				.catch( e => {
+					callback(e);
+					reject(e);
+				});
+			
+		});
+		
+	}
 }
 
 module.exports = Client;
