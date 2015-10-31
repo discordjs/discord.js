@@ -8,7 +8,7 @@ var ConnectionState = require("./ConnectionState.js");
 var Constants = require("../Constants.js"),
 	Endpoints = Constants.Endpoints,
 	PacketType = Constants.PacketType;
-	
+
 var Cache = require("../Util/Cache.js");
 var Resolver = require("./Resolver/Resolver.js");
 
@@ -88,21 +88,21 @@ class InternalClient {
 	// def logout
 	logout() {
 		var self = this;
-		return new Promise((resolve, reject)=>{
-			
-			if(self.state === ConnectionState.DISCONNECTED || self.state === ConnectionState.IDLE){
+		return new Promise((resolve, reject) => {
+
+			if (self.state === ConnectionState.DISCONNECTED || self.state === ConnectionState.IDLE) {
 				reject(new Error("Client is not logged in!"));
 				return;
 			}
-			
+
 			request
 				.post(Endpoints.LOGOUT)
 				.set("authorization", self.token)
 				.end((err, res) => {
-					if(err){
+					if (err) {
 						reject(new Error(err.response.text));
-					}else{
-						if(this.websocket){
+					} else {
+						if (this.websocket) {
 							this.websocket.close();
 							this.websocket = null;
 						}
@@ -113,34 +113,34 @@ class InternalClient {
 						resolve();
 					}
 				});
-			
+
 		});
 	}
 	
 	// def startPM
-	startPM(resUser){
+	startPM(resUser) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 			var user = self.resolver.resolveUser(resUser);
-		
-			if(user){
+
+			if (user) {
 				
 				// start the PM
 				request
-					.post(`${Endpoints.USER_CHANNELS(user.id)}`)
+					.post(`${Endpoints.USER_CHANNELS(user.id) }`)
 					.set("authorization", self.token)
 					.end((err, res) => {
-						if(err){
+						if (err) {
 							reject(new Error(err.response.text));
-						}else{
+						} else {
 							resolve(self.private_channels.add(new PMChannel(res.body, self.client)));
 						}
 					});
-				
-			}else{
+
+			} else {
 				reject(new Error("Unable to resolve resUser to a User"));
 			}
-			
+
 		});
 	}
 
@@ -158,6 +158,47 @@ class InternalClient {
 					else
 						resolve(res.body.url);
 				});
+
+		});
+	}
+	
+	// def sendMessage
+	sendMessage(where, _content, options={}) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+
+			self.resolver.resolveChannel(where)
+				.then(next)
+				.catch(e => reject(new Error("Error resolving destination")));
+
+			function next(destination) {
+				//var destination;
+				var content = self.resolver.resolveString(_content);
+				var mentions = self.resolver.resolveMentions(content);
+
+				request
+					.post(Endpoints.CHANNEL_MESSAGES(destination.id))
+					.set("authorization", self.token)
+					.send({
+						content : content,
+						mentions : mentions,
+						tts : options.tts
+					})
+					.end((err, res) => {
+						if (err) {
+							reject(new Error(err.response.text));
+						} else {
+
+							resolve(
+								destination.messages.add(
+									new Message(res.body, destination, self.client)
+									)
+								);
+
+						}
+					});
+
+			}
 
 		});
 	}
@@ -203,7 +244,7 @@ class InternalClient {
 		this.websocket.onmessage = (e) => {
 
 			if (e.type === "Binary") {
-				if(!zlib) zlib = require("zlib");
+				if (!zlib) zlib = require("zlib");
 				e.data = zlib.inflateSync(e.data).toString();
 			}
 
@@ -230,20 +271,21 @@ class InternalClient {
 						self.private_channels.add(new PMChannel(pm, client));
 					});
 					self.state = ConnectionState.READY;
-					
-					setInterval( ()=> self.sendWS({op : 1, d : Date.now()}), data.heartbeat_interval);
-					
+
+					setInterval(() => self.sendWS({ op: 1, d: Date.now() }), data.heartbeat_interval);
+
 					client.emit("ready");
 					client.emit("debug", `ready packet took ${Date.now() - startTime}ms to process`);
 					client.emit("debug", `ready with ${self.servers.length} servers, ${self.channels.length} channels and ${self.users.length} users cached.`);
 					break;
-				
+
 				case PacketType.MESSAGE_CREATE:
 					// format: https://discordapi.readthedocs.org/en/latest/reference/channels/messages.html#message-format
 					var channel = self.channels.get("id", data.channel_id);
-					if(channel){
-						channel.messages.add( new Message(data, channel, client) );	
-					}else{
+					if (channel) {
+						var msg = channel.messages.add(new Message(data, channel, client));
+						client.emit("message", msg);
+					} else {
 						client.emit("warn", "message created but channel is not cached");
 					}
 					break;

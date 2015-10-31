@@ -4,4 +4,10 @@ module.exports = {
 
 var a = new module.exports.Client();
 a.on("debug", (m) => console.log("[debug]",m));
+
+a.on("message", m => {
+	if(m.content === "$$$")
+		a.reply(m, "hi man!").catch(e => console.log(e.stack));
+});
+
 a.login(process.env["discordEmail"], process.env["discordPass"]).catch((e)=>console.log(e));

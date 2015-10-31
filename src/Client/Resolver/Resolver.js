@@ -4,6 +4,7 @@ var User = require("../../Structures/User.js"),
 	Channel = require("../../Structures/Channel.js"),
 	TextChannel = require("../../Structures/TextChannel.js"),
 	VoiceChannel = require("../../Structures/VoiceChannel.js"),
+	ServerChannel = require("../../Structures/ServerChannel.js"),
 	PMChannel = require("../../Structures/PMChannel.js"),
 	Server = require("../../Structures/Server.js"),
 	Message = require("../../Structures/Message.js");
@@ -12,25 +13,60 @@ class Resolver {
 	constructor(client) {
 		this.client = client;
 	}
-	
+
+	resolveMentions(resource) {
+		// resource is a string
+		var _mentions = [];
+		for (var mention of (resource.match(/<@[^>]*>/g) || [])) {
+			_mentions.push(mention.substring(2, mention.length - 1));
+		}
+		return _mentions;
+	}
+
+	resolveString(resource) {
+		
+		// accepts Array, Channel, Server, User, Message, String and anything
+		// toString()-able
+		
+		var final = resource;
+		if (resource instanceof Array) {
+			final = resource.join("\n");
+		}
+
+		return final.toString();
+	}
+
 	resolveUser(resource) {
 		/*
 			accepts a Message, Channel, Server, String ID, User, PMChannel
 		*/
 		var found = null;
-		if(resource instanceof Message){
+		if (resource instanceof Message) {
 			found = resource.author;
-		}else if(resource instanceof TextChannel){
+		} else if (resource instanceof TextChannel) {
 			var lmsg = resource.lastMessage;
-			if(lmsg){
+			if (lmsg) {
 				found = lmsg.author;
 			}
-		}else if(resource instanceof Server){
+		} else if (resource instanceof Server) {
 			found = resource.owner;
-		}else if(resource instanceof PMChannel){
+		} else if (resource instanceof PMChannel) {
 			found = resource.recipient;
-		}else if(resource instanceof String || typeof resource === "string"){
+		} else if (resource instanceof String || typeof resource === "string") {
 			found = this.client.internal.users.get("id", resource);
+		}
+
+		return found;
+	}
+	
+	resolveMessage(resource) {
+		// accepts a Message, PMChannel & TextChannel
+		var found = null;
+		
+		if( resource instanceof TextChannel || resource instanceof PMChannel ){
+			found = resource.lastMessage;
+		}else if( resource instanceof Message ){
+			found = resource;
 		}
 		
 		return found;
@@ -55,24 +91,24 @@ class Resolver {
 			} else if (resource instanceof User) {
 				// see if a PM exists
 				var chatFound = false;
-				for(var pmchat of self.client.internal.private_channels){
-					if(pmchat.recipient.equals(resource)){
+				for (var pmchat of self.client.internal.private_channels) {
+					if (pmchat.recipient.equals(resource)) {
 						chatFound = pmchat;
 						break;
 					}
 				}
-				if(chatFound){
+				if (chatFound) {
 					// a PM already exists!
 					found = chatFound;
-				}else{
+				} else {
 					// PM does not exist :\
 					self.client.internal.startPM(resource)
-						.then( pmchannel => resolve(pmchannel) )
-						.catch( e => reject(e) );
+						.then(pmchannel => resolve(pmchannel))
+						.catch(e => reject(e));
 					return;
 				}
 			}
-			if(found)
+			if (found)
 				resolve(found);
 			else
 				reject();

@@ -18,6 +18,10 @@ class PMChannel extends Equality{
 	get lastMessage(){
 		return this.messages.get("id", this.lastMessageID);
 	}
+	
+	toString(){
+		return this.recipient.toString();
+	}
 }
 
 module.exports = PMChannel;

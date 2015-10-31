@@ -26,9 +26,12 @@ class Message{
 			// this is .add and not .get because it allows the bot to cache
 			// users from messages from logs who may have left the server and were
 			// not previously cached.
-			console.log(mention);
 			this.mentions.add(client.internal.users.add(new User(mention, client)));
 		});
+	}
+	
+	toString(){
+		return this.content;
 	}
 }
 
