@@ -1,8 +1,8 @@
 "use strict";
 
-var Channel = require("./Channel.js");
+var ServerChannel = require("./ServerChannel.js");
 
-class VoiceChannel extends Channel{
+class VoiceChannel extends ServerChannel{
 	constructor(data, client){
 		super(data, client);
 	}

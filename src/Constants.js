@@ -60,7 +60,8 @@ var Permissions = {
 };
 
 var PacketType = {
-	READY : "READY"
+	READY : "READY",
+	MESSAGE_CREATE : "MESSAGE_CREATE"
 }
 
 exports.API_ENDPOINT = API;

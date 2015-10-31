@@ -16,7 +16,8 @@ var User = require("../Structures/User.js"),
 	TextChannel = require("../Structures/TextChannel.js"),
 	VoiceChannel = require("../Structures/VoiceChannel.js"),
 	PMChannel = require("../Structures/PMChannel.js"),
-	Server = require("../Structures/Server.js");
+	Server = require("../Structures/Server.js"),
+	Message = require("../Structures/Message.js");
 
 var zlib;
 
@@ -36,7 +37,7 @@ class InternalClient {
 		this.servers = new Cache();
 		this.private_channels = new Cache();
 	}
-
+	// def login
 	login(email, password) {
 		var self = this;
 		var client = self.client;
@@ -59,6 +60,8 @@ class InternalClient {
 							var token = res.body.token;
 							self.state = ConnectionState.LOGGED_IN;
 							self.token = token;
+							self.email = email;
+							self.password = password;
 
 							self.getGateway().then((url) => {
 
@@ -80,6 +83,38 @@ class InternalClient {
 		});
 	}
 
+	logout() {
+		var self = this;
+		return new Promise((resolve, reject)=>{
+			
+			if(self.state === ConnectionState.DISCONNECTED || self.state === ConnectionState.IDLE){
+				reject(new Error("Client is not logged in!"));
+				return;
+			}
+			
+			request
+				.post(Endpoints.LOGOUT)
+				.set("authorization", self.token)
+				.end((err, res) => {
+					if(err){
+						reject(new Error(err.response.text));
+					}else{
+						if(this.websocket){
+							this.websocket.close();
+							this.websocket = null;
+						}
+						self.token = null;
+						self.email = null;
+						self.password = null;
+						self.state = ConnectionState.DISCONNECTED;
+						resolve();
+					}
+				});
+			
+		});
+	}
+
+	// def getGateway
 	getGateway() {
 		var self = this;
 		return new Promise((resolve, reject) => {
@@ -156,12 +191,33 @@ class InternalClient {
 			switch (packet.t) {
 
 				case PacketType.READY:
-					
+					var startTime = Date.now();
 					self.users.add(new User(data.user, client));
-					
 					data.guilds.forEach((server) => {
 						self.servers.add(new Server(server, client));
 					});
+					data.private_channels.forEach((pm) => {
+						self.private_channels.add(new PMChannel(pm, client));
+					});
+					self.state = ConnectionState.READY;
+					
+					setInterval( ()=> self.sendWS({op : 1, d : Date.now()}), data.heartbeat_interval);
+					
+					client.emit("ready");
+					client.emit("debug", `ready packet took ${Date.now() - startTime}ms to process`);
+					client.emit("debug", `ready with ${self.servers.length} servers, ${self.channels.length} channels and ${self.users.length} users cached.`);
+					break;
+				
+				case PacketType.MESSAGE_CREATE:
+					// format: https://discordapi.readthedocs.org/en/latest/reference/channels/messages.html#message-format
+					var channel = self.channels.get("id", data.channel_id);
+					if(channel){
+						
+						channel.messages.add( new Message(data, channel, client) );
+						
+					}else{
+						client.emit("warn", "message created but channel is not cached");
+					}
 					
 					break;
 

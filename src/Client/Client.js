@@ -35,7 +35,7 @@ class Client extends EventEmitter{
 	}
 	
 	/*
-	
+		def logout
 	*/
 	
 }

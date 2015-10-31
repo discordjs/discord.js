@@ -4,7 +4,6 @@ var Equality = require("../Util/Equality.js");
 var Endpoints = require("../Constants.js").Endpoints;
 var Cache = require("../Util/Cache.js");
 var User = require("./User.js");
-var Member = require("./Member.js");
 var TextChannel = require("./TextChannel.js");
 var VoiceChannel = require("./VoiceChannel.js");
 var Role = require("./Role.js");
@@ -27,10 +26,17 @@ class Server extends Equality {
 		this.icon = data.icon;
 		this.afkTimeout = data.afkTimeout;
 		this.afkChannelID = data.afk_channel_id;
+		this.memberMap = {};
 		
 		data.members.forEach( (dataUser) => {
-			var user = client.internal.users.add(new User(dataUser, client));
-			this.members.add( new Member(dataUser, client, self) );
+			this.memberMap[dataUser.user.id] = {
+				roles : dataUser.roles,
+				mute : dataUser.mute,
+				deaf : dataUser.deaf,
+				joinedAt : Date.parse(dataUser.joined_at)	
+			};
+			var user = client.internal.users.add(new User(dataUser.user, client));
+			this.members.add( user );
 		} );
 		
 		data.channels.forEach( (dataChannel) => {

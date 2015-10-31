@@ -1,10 +1,9 @@
 "use strict";
 
-var Channel = require("./Channel.js");
+var ServerChannel = require("./ServerChannel.js");
 var Cache = require("../Util/Cache.js");
-var PermissionOverwrite = require("./PermissionOverwrite.js");
 
-class TextChannel extends Channel{
+class TextChannel extends ServerChannel{
 	constructor(data, client){
 		super(data, client);
 		
@@ -13,11 +12,6 @@ class TextChannel extends Channel{
 		this.position = data.position;
 		this.lastMessageID = data.last_message_id;
 		this.messages = new Cache("id", client.options.maximumMessages);
-		
-		this.permissionOverwrites = new Cache();
-		data.permission_overwrites.forEach((permission) => {
-			this.permissionOverwrites.add( new PermissionOverwrite(permission) );
-		});
 	}
 	
 	/* warning! may return null */

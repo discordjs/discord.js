@@ -1,14 +1,15 @@
 "use strict";
 
 var Equality = require("../Util/Equality.js");
+var Cache = require("../Util/Cache.js");
+var PermissionOverwrite = require("./PermissionOverwrite.js");
 
 class Channel extends Equality{
 	
 	constructor(data, client){
 		super();
-		this.type = data.type || "text";
 		this.id = data.id;
-		this.client = client;	
+		this.client = client;
 	}
 	
 }
