@@ -1,5 +1,7 @@
 "use strict";
 
+var fs = require("fs");
+
 var User = require("../../Structures/User.js"),
 	Channel = require("../../Structures/Channel.js"),
 	TextChannel = require("../../Structures/TextChannel.js"),
@@ -12,6 +14,14 @@ var User = require("../../Structures/User.js"),
 class Resolver {
 	constructor(internal) {
 		this.internal = internal;
+	}
+
+	resolveFile(resource) {
+		if (typeof resource === "string" || resource instanceof String) {
+			return fs.createReadStream(resource);
+		} else {
+			return resource;
+		}
 	}
 
 	resolveMentions(resource) {
@@ -41,9 +51,9 @@ class Resolver {
 			accepts a Message, Channel, Server, String ID, User, PMChannel
 		*/
 		var found = null;
-		if( resource instanceof User ){
-			found = resource;	
-		}else if (resource instanceof Message) {
+		if (resource instanceof User) {
+			found = resource;
+		} else if (resource instanceof Message) {
 			found = resource.author;
 		} else if (resource instanceof TextChannel) {
 			var lmsg = resource.lastMessage;
@@ -60,17 +70,17 @@ class Resolver {
 
 		return found;
 	}
-	
+
 	resolveMessage(resource) {
 		// accepts a Message, PMChannel & TextChannel
 		var found = null;
-		
-		if( resource instanceof TextChannel || resource instanceof PMChannel ){
+
+		if (resource instanceof TextChannel || resource instanceof PMChannel) {
 			found = resource.lastMessage;
-		}else if( resource instanceof Message ){
+		} else if (resource instanceof Message) {
 			found = resource;
 		}
-		
+
 		return found;
 	}
 

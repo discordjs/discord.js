@@ -138,7 +138,7 @@ class Client extends EventEmitter {
 				callback = options;
 			}
 
-			self.internal.deleteMessage(msg)
+			self.internal.deleteMessage(msg, options)
 				.then(() => {
 					callback();
 					resolve();
@@ -193,6 +193,23 @@ class Client extends EventEmitter {
 			
 		});
 		
+	}
+	
+	// def sendFile
+	sendFile(where, attachment, name="image.png", callback=function(err, m){}){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			self.internal.sendFile(where, attachment, name)
+				.then( m => {
+					callback(null, m);
+					resolve(m);
+				})
+				.catch( e => {
+					callback(e);
+					reject(e);
+				});
+			
+		});
 	}
 }
 

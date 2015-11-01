@@ -280,7 +280,37 @@ class InternalClient {
 		});
 
 	}
+	
+	sendFile(where, _file, name="image.png"){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			self.resolver.resolveChannel(where)
+				.then(next)
+				.catch(e => reject(new Error("couldn't resolve to channel - " + e)));
 
+			function next(channel) {
+				
+				var file = self.resolver.resolveFile(_file);
+				
+				request
+					.post(Endpoints.CHANNEL_MESSAGES(channel.id))
+					.set("authorization", self.token)
+					.attach("file", file, name)
+					.end((err, res) => {
+						
+						if(err){
+							reject(new Error(err.response.text));
+						}else{
+							resolve(channel.messages.add(new Message(res.body, channel, self.client)));
+						}
+						
+					});
+				
+			}
+		});
+	}
+
+	// def getChannelLogs
 	getChannelLogs(_channel, limit = 500, options = {}) {
 		var self = this;
 		return new Promise((resolve, reject) => {
