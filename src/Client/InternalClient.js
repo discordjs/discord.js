@@ -41,22 +41,22 @@ class InternalClient {
 		this.resolver = new Resolver(this);
 	}
 	// def createServer
-	createServer(name, region="london") {
+	createServer(name, region = "london") {
 		var self = this;
 		return new Promise((resolve, reject) => {
 			name = self.resolver.resolveString(name);
-			
+
 			request
 				.post(Endpoints.SERVERS)
 				.set("authorization", self.token)
-				.send({name, region})
-				.end((err, res)=>{
-					if(err){
+				.send({ name, region })
+				.end((err, res) => {
+					if (err) {
 						reject(new Error(err.response.text));
-					}else{
+					} else {
 						// valid server, wait until it is cached
 						var inter = setInterval(() => {
-							if(self.servers.get("id", res.body.id)){
+							if (self.servers.get("id", res.body.id)) {
 								clearInterval(inter);
 								resolve(self.servers.get("id", res.body.id));
 							}
@@ -71,17 +71,17 @@ class InternalClient {
 		var self = this;
 		return new Promise((resolve, reject) => {
 			var server = self.resolver.resolveServer(srv);
-			if(server){
-				
+			if (server) {
+
 				request
 					.del(Endpoints.SERVER(server.id))
 					.set("authorization", self.token)
 					.end((err, res) => {
-						if(err){
+						if (err) {
 							reject(new Error(err.response.text));
-						}else{
+						} else {
 							// remove channels of server then the server
-							for(var chan of server.channels){
+							for (var chan of server.channels) {
 								self.channels.remove(chan);
 							}
 							// remove server
@@ -89,8 +89,8 @@ class InternalClient {
 							resolve();
 						}
 					});
-				
-			}else{
+
+			} else {
 				reject(new Error("server did not resolve"));
 			}
 		});
@@ -339,7 +339,7 @@ class InternalClient {
 	}
 	
 	// def sendFile
-	sendFile(where, _file, name="image.png"){
+	sendFile(where, _file, name = "image.png") {
 		var self = this;
 		return new Promise((resolve, reject) => {
 			self.resolver.resolveChannel(where)
@@ -347,23 +347,23 @@ class InternalClient {
 				.catch(e => reject(new Error("couldn't resolve to channel - " + e)));
 
 			function next(channel) {
-				
+
 				var file = self.resolver.resolveFile(_file);
-				
+
 				request
 					.post(Endpoints.CHANNEL_MESSAGES(channel.id))
 					.set("authorization", self.token)
 					.attach("file", file, name)
 					.end((err, res) => {
-						
-						if(err){
+
+						if (err) {
 							reject(new Error(err.response.text));
-						}else{
+						} else {
 							resolve(channel.messages.add(new Message(res.body, channel, self.client)));
 						}
-						
+
 					});
-				
+
 			}
 		});
 	}
@@ -393,17 +393,17 @@ class InternalClient {
 				var joinedParams = params.join();
 				if (joinedParams !== "")
 					joinedParams = "&" + params.join();
-					
+
 				request
-					.get(`${Endpoints.CHANNEL_MESSAGES(channel.id)}?limit=${limit}${joinedParams}`)
+					.get(`${Endpoints.CHANNEL_MESSAGES(channel.id) }?limit=${limit}${joinedParams}`)
 					.set("authorization", self.token)
 					.end((err, res) => {
-						if(err){
+						if (err) {
 							reject(new Error(err.response.text));
-						}else{
+						} else {
 							var logs = [];
 							res.body.forEach((msg) => {
-								logs.push( channel.messages.add(new Message(msg, channel, self.client)) );
+								logs.push(channel.messages.add(new Message(msg, channel, self.client)));
 							});
 							resolve(logs);
 						}
@@ -507,7 +507,7 @@ class InternalClient {
 						// potentially blank
 						var msg = channel.messages.get("id", data.id);
 						client.emit("messageDeleted", msg);
-						if(msg){
+						if (msg) {
 							channel.messages.remove(msg);
 						}
 					} else {
@@ -520,9 +520,9 @@ class InternalClient {
 					if (channel) {
 						// potentially blank
 						var msg = channel.messages.get("id", data.id);
-						
-						
-						if(msg){
+
+
+						if (msg) {
 							// old message exists
 							data.nonce = data.nonce || msg.nonce;
 							data.attachments = data.attachments || msg.attachments;
@@ -542,29 +542,29 @@ class InternalClient {
 					break;
 				case PacketType.SERVER_CREATE:
 					var server = self.servers.get("id", data.id);
-					if(!server){
+					if (!server) {
 						self.servers.add(new Server(data, client));
 						client.emit("serverCreated", server);
 					}
 					break;
 				case PacketType.SERVER_DELETE:
 					var server = self.servers.get("id", data.id);
-					if(server){
-						
-						for(var channel of server.channels){
+					if (server) {
+
+						for (var channel of server.channels) {
 							self.channels.remove(channel);
 						}
-						
+
 						self.servers.remove(server);
 						client.emit("serverDeleted", server);
-						
-					}else{
+
+					} else {
 						client.emit("warn", "server was deleted but it was not in the cache");
 					}
 					break;
 				case PacketType.SERVER_UPDATE:
 					var server = self.servers.get("id", data.id);
-					if(server){
+					if (server) {
 						// server exists
 						data.members = data.members || [];
 						data.channels = data.channels || [];
@@ -572,131 +572,166 @@ class InternalClient {
 						newserver.members = server.members;
 						newserver.memberMap = server.memberMap;
 						newserver.channels = server.channels;
-						if(newserver.equalsStrict(server)){
+						if (newserver.equalsStrict(server)) {
 							// already the same don't do anything
 							client.emit("debug", "received server update but server already updated");
-						}else{
+						} else {
 							self.servers.update(server, newserver);
 							client.emit("serverUpdated", server, newserver);
 						}
-					}else if(!server){
+					} else if (!server) {
 						client.emit("warn", "server was updated but it was not in the cache");
-						self.servers.add( new Server(data, self) );
+						self.servers.add(new Server(data, self));
 						client.emit("serverCreated", server);
 					}
 					break;
 				case PacketType.CHANNEL_CREATE:
 
 					var channel = self.channels.get("id", data.id);
-					
-					if(!channel){
-						
+
+					if (!channel) {
+
 						var server = self.servers.get("id", data.guild_id);
-						if(server){
-							if(data.is_private){
-								client.emit("channelCreated", self.private_channels.add( new PMChannel(data, client) ));
-							}else{
+						if (server) {
+							if (data.is_private) {
+								client.emit("channelCreated", self.private_channels.add(new PMChannel(data, client)));
+							} else {
 								var chan = null;
-								if(data.type === "text"){
+								if (data.type === "text") {
 									chan = self.channels.add(new TextChannel(data, client, server));
-								}else{
+								} else {
 									chan = self.channels.add(new VoiceChannel(data, client, server));
 								}
 								client.emit("channelCreated", server.channels.add(chan));
 							}
-						}else{
+						} else {
 							client.emit("warn", "channel created but server does not exist");
 						}
-						
-					}else{
+
+					} else {
 						client.emit("warn", "channel created but already in cache");
 					}
 
 					break;
 				case PacketType.CHANNEL_DELETE:
 					var channel = self.channels.get("id", data.id);
-					if(channel){
-						
-						if(channel.server) // accounts for PMs
+					if (channel) {
+
+						if (channel.server) // accounts for PMs
 							channel.server.channels.remove(channel);
-							
+
 						self.channels.remove(channel);
 						client.emit("channelDeleted", channel);
-						
-					}else{
+
+					} else {
 						client.emit("warn", "channel deleted but already out of cache?");
 					}
 					break;
 				case PacketType.CHANNEL_UPDATE:
 					var channel = self.channels.get("id", data.id) || self.private_channels.get("id", data.id);
-					if(channel){
-						
-						if(channel instanceof PMChannel){
+					if (channel) {
+
+						if (channel instanceof PMChannel) {
 							//PM CHANNEL
 							client.emit("channelUpdated", self.private_channels.update(
 								channel,
 								new PMChannel(data, client)
-							));
-						}else{
-							if(channel.server){
-								if(channel.type === "text"){
+								));
+						} else {
+							if (channel.server) {
+								if (channel.type === "text") {
 									//TEXT CHANNEL
 									var chan = new TextChannel(data, client, channel.server);
 									chan.messages = channel.messages;
 									channel.server.channels.update(channel, chan);
 									self.channels.update(channel, chan);
 									client.emit("channelUpdated", channel, chan);
-								}else{
+								} else {
 									//VOICE CHANNEL
 									var chan = new VoiceChannel(data, client, channel.server);
 									channel.server.channels.update(channel, chan);
 									self.channels.update(channel, chan);
 									client.emit("channelUpdated", channel, chan);
 								}
-							}else{
+							} else {
 								client.emit("warn", "channel updated but server non-existant");
 							}
 						}
-						
-					}else{
+
+					} else {
 						client.emit("warn", "channel updated but not in cache");
 					}
 					break;
 				case PacketType.SERVER_ROLE_CREATE:
 					var server = self.servers.get("id", data.guild_id);
-					if(server){
+					if (server) {
 						client.emit("serverRoleCreated", server.roles.add(new Role(data.role, server, client)), server);
-					}else{
+					} else {
 						client.emit("warn", "server role made but server not in cache");
 					}
 					break;
 				case PacketType.SERVER_ROLE_DELETE:
 					var server = self.servers.get("id", data.guild_id);
-					if(server){
+					if (server) {
 						var role = server.roles.get("id", data.role_id);
-						if(role){
+						if (role) {
 							server.roles.remove(role);
 							client.emit("serverRoleDeleted", role);
-						}else{
+						} else {
 							client.emit("warn", "server role deleted but role not in cache");
 						}
-					}else{
+					} else {
 						client.emit("warn", "server role deleted but server not in cache");
 					}
 					break;
 				case PacketType.SERVER_ROLE_UPDATE:
 					var server = self.servers.get("id", data.guild_id);
-					if(server){
+					if (server) {
 						var role = server.roles.get("id", data.role.id);
-						if(role){
+						if (role) {
 							var newRole = new Role(data.role, server, client);
-						    server.roles.update(role, newRole)
+							server.roles.update(role, newRole)
 							client.emit("serverRoleUpdated", role, newRole);
-						}else{
+						} else {
 							client.emit("warn", "server role updated but role not in cache");
 						}
-					}else{
+					} else {
 						client.emit("warn", "server role updated but server not in cache");
+					}
+					break;
+				case PacketType.SERVER_MEMBER_ADD:
+					var server = self.servers.get("id", data.guild_id);
+					if (server) {
+						
+						server.memberMap[data.user.id] = {
+							roles: data.roles,
+							mute: false,
+							deaf: false,
+							joinedAt: Date.parse(data.joined_at)
+						};
+
+						client.emit(
+							"serverNewMember",
+							server,
+							server.members.add(self.users.add(new User(data.user, client)))
+						);
+
+					} else {
+						client.emit("warn", "server member added but server doesn't exist in cache");
+					}
+					break;
+				case PacketType.SERVER_MEMBER_REMOVE:
+					var server = self.servers.get("id", data.guild_id);
+					if(server){
+						var user = self.users.get("id", data.user.id);
+						if(user){
+							server.members.remove(user);
+							client.emit("serverMemberRemoved", server, user);
+						}else{
+							client.emit("warn", "server member removed but user doesn't exist in cache");
+						}
+					}else{
+						client.emit("warn", "server member removed but server doesn't exist in cache");
 					}
 					break;
 			}

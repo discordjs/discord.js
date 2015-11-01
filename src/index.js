@@ -13,7 +13,7 @@ a.on("message", m => {
 			a.reply(m, srv);
 		});
 });
-a.on("serverRoleUpdated", (r, s) => {
+a.on("serverMemberRemoved", (r, s) => {
 	console.log(r, s);
 });
 
