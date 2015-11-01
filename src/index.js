@@ -13,8 +13,8 @@ a.on("message", m => {
 			a.reply(m, srv);
 		});
 });
-a.on("channelUpdated", (o, n) => {
-	a.sendMessage(o, o.name + " v " + n.name);
+a.on("serverRoleCreated", (r, s) => {
+	console.log(r);
 });
 
 a.login(process.env["discordEmail"], process.env["discordPass"]).catch((e)=>console.log(e));

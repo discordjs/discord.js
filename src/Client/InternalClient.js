@@ -18,7 +18,8 @@ var User = require("../Structures/User.js"),
 	VoiceChannel = require("../Structures/VoiceChannel.js"),
 	PMChannel = require("../Structures/PMChannel.js"),
 	Server = require("../Structures/Server.js"),
-	Message = require("../Structures/Message.js");
+	Message = require("../Structures/Message.js"),
+	Role = require("../Structures/Role.js");
 
 var zlib;
 
@@ -659,6 +660,14 @@ class InternalClient {
 						
 					}else{
 						client.emit("warn", "channel updated but not in cache");
+					}
+					break;
+				case PacketType.SERVER_ROLE_CREATE:
+					var server = self.servers.get("id", data.guild_id);
+					if(server){
+						client.emit("serverRoleCreated", server.roles.add(new Role(data.role, server, client)), server);
+					}else{
+						client.emit("warn", "server role made but server not in cache");
 					}
 					break;
 			}

@@ -29,7 +29,7 @@ const DefaultRole = [
 ].reduce( (previous, current) => previous | current, 0 );
 
 class Role{
-	constructor(data, serverID, client){
+	constructor(data, server, client){
 		this.position = data.position || -1;
 		this.permissions = data.permissions || DefaultRole;
 		this.name = data.name || "@everyone";
@@ -37,12 +37,8 @@ class Role{
 		this.id = data.id;
 		this.hoist = data.hoist || false;
 		this.color = data.color || 0;
-		this.serverID = serverID;
+		this.server = server;
 		this.client = client;
-	}
-	
-	get server(){
-		return this.client.internal.servers.get("id", this.serverID);
 	}
 	
 	serialise(explicit){

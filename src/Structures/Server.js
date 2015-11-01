@@ -54,7 +54,7 @@ class Server extends Equality {
 		} );
 		
 		data.roles.forEach( (dataRole) => {
-			this.roles.add( new Role(dataRole, this) );
+			this.roles.add( new Role(dataRole, this, client) );
 		} );
 	}
 
