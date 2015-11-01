@@ -32,9 +32,15 @@ class Server extends Equality {
 		this.afkChannelID = data.afk_channel_id;
 		this.memberMap = {};
 		
+		var self = this;
+		
+		data.roles.forEach( (dataRole) => {
+			this.roles.add( new Role(dataRole, this, client) );
+		} );
+		
 		data.members.forEach( (dataUser) => {
 			this.memberMap[dataUser.user.id] = {
-				roles : dataUser.roles,
+				roles : dataUser.roles.map((pid) => self.roles.get("id", pid)),
 				mute : dataUser.mute,
 				deaf : dataUser.deaf,
 				joinedAt : Date.parse(dataUser.joined_at)	
@@ -51,10 +57,6 @@ class Server extends Equality {
 				var channel = client.internal.channels.add(new VoiceChannel(dataChannel, client, this));
 				this.channels.add(channel);
 			}
-		} );
-		
-		data.roles.forEach( (dataRole) => {
-			this.roles.add( new Role(dataRole, this, client) );
 		} );
 	}
 

@@ -704,7 +704,7 @@ class InternalClient {
 					if (server) {
 						
 						server.memberMap[data.user.id] = {
-							roles: data.roles,
+							roles: data.roles.map((pid) => server.roles.get("id", pid)),
 							mute: false,
 							deaf: false,
 							joinedAt: Date.parse(data.joined_at)
@@ -725,6 +725,7 @@ class InternalClient {
 					if(server){
 						var user = self.users.get("id", data.user.id);
 						if(user){
+							server.memberMap[data.user.id] = null;
 							server.members.remove(user);
 							client.emit("serverMemberRemoved", server, user);
 						}else{
@@ -732,6 +733,22 @@ class InternalClient {
 						}
 					}else{
 						client.emit("warn", "server member removed but server doesn't exist in cache");
+					}
+					break;
+				case PacketType.SERVER_MEMBER_UPDATE:
+					var server = self.servers.get("id", data.guild_id);
+					if(server){
+						var user = self.users.get("id", data.user.id);
+						if(user){
+							server.memberMap[data.user.id].roles = data.roles.map((pid) => server.roles.get("id", pid));
+							server.memberMap[data.user.id].mute = data.mute;
+							server.memberMap[data.user.id].deaf = data.deaf;
+							client.emit("serverMemberUpdated", server, user);
+						}else{
+							client.emit("warn", "server member removed but user doesn't exist in cache");
+						}
+					}else{
+						client.emit("warn", "server member updated but server doesn't exist in cache");
 					}
 					break;
 			}
