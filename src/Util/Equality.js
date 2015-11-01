@@ -24,6 +24,11 @@ class Equality{
 		}
 		return false;
 	}
+	
+	equalsStrict(object){
+		// override per class type
+		return;
+	}
 }
 
 module.exports = Equality;

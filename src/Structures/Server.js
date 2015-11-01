@@ -8,6 +8,10 @@ var TextChannel = require("./TextChannel.js");
 var VoiceChannel = require("./VoiceChannel.js");
 var Role = require("./Role.js");
 
+var strictKeys = [
+	"region", "ownerID", "name", "id", "icon", "afkTimeout", "afkChannelID"
+];
+
 class Server extends Equality {
 	constructor(data, client) {
 		
@@ -76,6 +80,19 @@ class Server extends Equality {
 	
 	toString() {
 		return this.name;
+	}
+	
+	equalsStrict(obj){
+		if(obj instanceof Server){
+			for(var key of strictKeys){
+				if(obj[key] !== this[key]){
+					return false;
+				}
+			}	
+		}else{
+			return false;
+		}
+		return true;
 	}
 	
 }

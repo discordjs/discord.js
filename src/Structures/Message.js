@@ -7,7 +7,6 @@ class Message{
 	constructor(data, channel, client){
 		this.channel = channel;
 		this.client = client;
-		console.log("update", data);
 		this.nonce = data.nonce;
 		this.attachments = data.attachments;
 		this.tts = data.tts;

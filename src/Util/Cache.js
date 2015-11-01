@@ -48,8 +48,9 @@ class Cache extends Array {
 	}
 
 	update(old, data) {
-		var index = this.get(this.discrim, old);
-		if (~index) {
+		var item = this.get(this.discrim, old[this.discrim]);
+		if (item) {
+			var index = this.indexOf(item);
 			this[index] = data;
 			return this[index];
 		} else {
@@ -62,7 +63,7 @@ class Cache extends Array {
 		if (~index) {
 			this.splice(index, 1);
 		} else {
-			var item = this.get(this.discrim, data.id);
+			var item = this.get(this.discrim, data[this.discrim]);
 			if (item) {
 				this.splice(this.indexOf(item), 1);
 			}

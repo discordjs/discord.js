@@ -4,6 +4,7 @@ module.exports = {
 
 var a = new module.exports.Client();
 a.on("debug", (m) => console.log("[debug]",m));
+a.on("warn", (m) => console.log("[warn]", m));
 
 a.on("message", m => {
 	if(m.content === "$$$")
@@ -11,6 +12,9 @@ a.on("message", m => {
 			console.log(srv);
 			a.reply(m, srv);
 		});
+});
+a.on("serverUpdated", (oldsrv, newsrv) => {
+	console.log(oldsrv.name, "v", newsrv.name);
 });
 
 a.login(process.env["discordEmail"], process.env["discordPass"]).catch((e)=>console.log(e));

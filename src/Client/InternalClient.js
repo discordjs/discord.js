@@ -561,7 +561,31 @@ class InternalClient {
 						client.emit("warn", "server was deleted but it was not in the cache");
 					}
 					break;
-					
+				case PacketType.SERVER_UPDATE:
+					var server = self.servers.get("id", data.id);
+					if(server && !server.inasync){
+						// server exists
+						server.inasync = true;
+						data.members = data.members || [];
+						data.channels = data.channels || [];
+						var newserver = new Server(data, self);
+						newserver.members = server.members;
+						newserver.memberMap = server.memberMap;
+						newserver.channels = server.channels;
+						if(newserver.equalsStrict(server)){
+							// already the same don't do anything
+							client.emit("debug", "received server update but server already updated");
+						}else{
+							self.servers.update(server, newserver);
+							client.emit("serverUpdated", server, newserver);
+						}
+						server.inasync = false;
+					}else if(!server){
+						client.emit("warn", "server was updated but it was not in the cache");
+						self.servers.add( new Server(data, self) );
+						client.emit("serverCreated", server);
+					}
+					break;
 			}
 		}
 	}
