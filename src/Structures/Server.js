@@ -14,7 +14,7 @@ var strictKeys = [
 
 class Server extends Equality {
 	constructor(data, client) {
-		
+
 		super();
 
 		var self = this;
@@ -31,45 +31,55 @@ class Server extends Equality {
 		this.afkTimeout = data.afkTimeout;
 		this.afkChannelID = data.afk_channel_id;
 		this.memberMap = {};
-		
+
 		var self = this;
-		
-		data.roles.forEach( (dataRole) => {
-			this.roles.add( new Role(dataRole, this, client) );
-		} );
-		
-		data.members.forEach( (dataUser) => {
+
+		data.roles.forEach((dataRole) => {
+			this.roles.add(new Role(dataRole, this, client));
+		});
+
+		data.members.forEach((dataUser) => {
 			this.memberMap[dataUser.user.id] = {
-				roles : dataUser.roles.map((pid) => self.roles.get("id", pid)),
-				mute : dataUser.mute,
-				deaf : dataUser.deaf,
-				joinedAt : Date.parse(dataUser.joined_at)	
+				roles: dataUser.roles.map((pid) => self.roles.get("id", pid)),
+				mute: dataUser.mute,
+				deaf: dataUser.deaf,
+				joinedAt: Date.parse(dataUser.joined_at)
 			};
 			var user = client.internal.users.add(new User(dataUser.user, client));
-			this.members.add( user );
-		} );
-		
-		data.channels.forEach( (dataChannel) => {
-			if(dataChannel.type === "text"){
+			this.members.add(user);
+		});
+
+		data.channels.forEach((dataChannel) => {
+			if (dataChannel.type === "text") {
 				var channel = client.internal.channels.add(new TextChannel(dataChannel, client, this));
 				this.channels.add(channel);
-			}else{
+			} else {
 				var channel = client.internal.channels.add(new VoiceChannel(dataChannel, client, this));
 				this.channels.add(channel);
 			}
-		} );
+		});
+
+		if (data.presences) {
+			for (var presence of data.presences) {
+				var user = client.internal.users.get("id", presence.user.id);
+				if (user) {
+					user.status = presence.status;
+					user.gameId = presence.game_id;
+				}
+			}
+		}
 	}
-	
-	rolesOfUser(user){
+
+	rolesOfUser(user) {
 		user = this.client.internal.resolver.resolveUser(user);
-		if(user){
+		if (user) {
 			return (this.memberMap[user.id] ? this.memberMap[user.id].roles : []);
-		}else{
+		} else {
 			return null;
 		}
 	}
-	
-	rolesOf(user){
+
+	rolesOf(user) {
 		return this.rolesOfUser(user);
 	}
 
@@ -80,36 +90,36 @@ class Server extends Equality {
 			return Endpoints.SERVER_ICON(this.id, this.icon);
 		}
 	}
-	
+
 	get afkChannel() {
 		return this.channels.get("id", this.afkChannelID);
 	}
-	
+
 	get defaultChannel() {
 		return this.channels.get("id", this.id);
 	}
-	
+
 	get owner() {
 		return this.members.get("id", this.ownerID);
 	}
-	
+
 	toString() {
 		return this.name;
 	}
-	
-	equalsStrict(obj){
-		if(obj instanceof Server){
-			for(var key of strictKeys){
-				if(obj[key] !== this[key]){
+
+	equalsStrict(obj) {
+		if (obj instanceof Server) {
+			for (var key of strictKeys) {
+				if (obj[key] !== this[key]) {
 					return false;
 				}
-			}	
-		}else{
+			}
+		} else {
 			return false;
 		}
 		return true;
 	}
-	
+
 }
 
 module.exports = Server;
