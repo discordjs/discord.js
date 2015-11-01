@@ -81,7 +81,7 @@ class InternalClient {
 						}else{
 							// remove channels of server then the server
 							for(var chan of server.channels){
-								server.channels.remove(chan);
+								self.channels.remove(chan);
 							}
 							// remove server
 							self.servers.remove(server);
@@ -543,8 +543,25 @@ class InternalClient {
 					var server = self.servers.get("id", data.id);
 					if(!server){
 						self.servers.add(new Server(data, client));
+						client.emit("serverCreated", server);
 					}
 					break;
+				case PacketType.SERVER_DELETE:
+					var server = self.servers.get("id", data.id);
+					if(server){
+						
+						for(var channel of server.channels){
+							self.channels.remove(channel);
+						}
+						
+						self.servers.remove(server);
+						client.emit("serverDeleted", server);
+						
+					}else{
+						client.emit("warn", "server was deleted but it was not in the cache");
+					}
+					break;
+					
 			}
 		}
 	}
