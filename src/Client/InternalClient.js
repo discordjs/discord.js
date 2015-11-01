@@ -39,6 +39,32 @@ class InternalClient {
 		this.private_channels = new Cache();
 		this.resolver = new Resolver(this);
 	}
+	// def createServer
+	createServer(name, region="london") {
+		var self = this;
+		return new Promise((resolve, reject) => {
+			name = self.resolver.resolveString(name);
+			
+			request
+				.post(Endpoints.SERVERS)
+				.set("authorization", self.token)
+				.send({name, region})
+				.end((err, res)=>{
+					if(err){
+						reject(new Error(err.response.text));
+					}else{
+						// valid server, wait until it is cached
+						var inter = setInterval(() => {
+							if(self.servers.get("id", res.body.id)){
+								clearInterval(inter);
+								resolve(self.servers.get("id", res.body.id));
+							}
+						}, 20);
+					}
+				});
+		});
+	}
+	
 	// def login
 	login(email, password) {
 		var self = this;
@@ -281,6 +307,7 @@ class InternalClient {
 
 	}
 	
+	// def sendFile
 	sendFile(where, _file, name="image.png"){
 		var self = this;
 		return new Promise((resolve, reject) => {
@@ -442,7 +469,52 @@ class InternalClient {
 						client.emit("warn", "message created but channel is not cached");
 					}
 					break;
-
+				case PacketType.MESSAGE_DELETE:
+					// format https://discordapi.readthedocs.org/en/latest/reference/channels/messages.html#message-delete
+					var channel = self.channels.get("id", data.channel_id);
+					if (channel) {
+						// potentially blank
+						var msg = channel.messages.get("id", data.id);
+						client.emit("messageDeleted", msg);
+						if(msg){
+							channel.messages.remove(msg);
+						}
+					} else {
+						client.emit("warn", "message was deleted but channel is not cached");
+					}
+					break;
+				case PacketType.MESSAGE_UPDATE:
+					// format https://discordapi.readthedocs.org/en/latest/reference/channels/messages.html#message-format
+					var channel = self.channels.get("id", data.channel_id);
+					if (channel) {
+						// potentially blank
+						var msg = channel.messages.get("id", data.id);
+						
+						
+						if(msg){
+							// old message exists
+							data.nonce = data.nonce || msg.nonce;
+							data.attachments = data.attachments || msg.attachments;
+							data.tts = data.tts || msg.tts;
+							data.embeds = data.embeds || msg.embeds;
+							data.timestamp = data.timestamp || msg.timestamp;
+							data.mention_everyone = data.mention_everyone || msg.everyoneMentioned;
+							data.content = data.content || msg.content;
+							data.mentions = data.mentions || msg.mentions;
+							data.author = data.author || msg.author;
+							var nmsg = channel.messages.update(msg, new Message(data, channel, client));
+							client.emit("messageUpdated", nmsg, msg);
+						}
+					} else {
+						client.emit("warn", "message was updated but channel is not cached");
+					}
+					break;
+				case PacketType.SERVER_CREATE:
+					var server = self.servers.get("id", data.id);
+					if(!server){
+						self.servers.add(new Server(data, client));
+					}
+					break;
 			}
 		}
 	}

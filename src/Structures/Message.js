@@ -7,7 +7,7 @@ class Message{
 	constructor(data, channel, client){
 		this.channel = channel;
 		this.client = client;
-		
+		console.log("update", data);
 		this.nonce = data.nonce;
 		this.attachments = data.attachments;
 		this.tts = data.tts;
@@ -18,7 +18,12 @@ class Message{
 		
 		if(data.edited_timestamp)
 			this.editedTimestamp = Date.parse(data.edited_timestamp);
-		this.author = client.internal.users.add(new User(data.author, client));
+		
+		if(data.author instanceof User)
+			this.author = data.author;
+		else
+			this.author = client.internal.users.add(new User(data.author, client));
+		
 		this.content = data.content;
 		this.mentions = new Cache();
 		
@@ -26,7 +31,10 @@ class Message{
 			// this is .add and not .get because it allows the bot to cache
 			// users from messages from logs who may have left the server and were
 			// not previously cached.
-			this.mentions.add(client.internal.users.add(new User(mention, client)));
+			if(mention instanceof User)
+				this.mentions.push(mention);
+			else
+				this.mentions.add(client.internal.users.add(new User(mention, client)));
 		});
 	}
 	
