@@ -612,6 +612,18 @@ class InternalClient {
 					}
 
 					break;
+				case PacketType.CHANNEL_DELETE:
+					var channel = self.channels.get("id", data.id);
+					if(channel){
+						
+						channel.server.channels.remove(channel);
+						self.channels.remove(channel);
+						client.emit("channelDeleted", channel);
+						
+					}else{
+						client.emit("warn", "channel deleted but already out of cache?");
+					}
+					break;
 			}
 		}
 	}
