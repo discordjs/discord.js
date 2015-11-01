@@ -59,6 +59,19 @@ class Server extends Equality {
 			}
 		} );
 	}
+	
+	rolesOfUser(user){
+		user = this.client.internal.resolver.resolveUser(user);
+		if(user){
+			return (this.memberMap[user.id] ? this.memberMap[user.id].roles : []);
+		}else{
+			return null;
+		}
+	}
+	
+	rolesOf(user){
+		return this.rolesOfUser(user);
+	}
 
 	get iconURL() {
 		if (!this.icon) {

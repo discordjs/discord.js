@@ -31,7 +31,7 @@ const DefaultRole = [
 class Role{
 	constructor(data, server, client){
 		this.position = data.position || -1;
-		this.permissions = data.permissions || DefaultRole;
+		this.permissions = data.permissions || (data.name === "@everyone" ? DefaultRole : 0 );
 		this.name = data.name || "@everyone";
 		this.managed = data.managed || false;
 		this.id = data.id;

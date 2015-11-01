@@ -8,10 +8,15 @@ a.on("warn", (m) => console.log("[warn]", m));
 
 a.on("message", m => {
 	if(m.content === "$$$")
-		a.internal.createServer("H a h").then(srv => {
-			console.log(srv);
-			a.reply(m, srv);
-		});
+		a.reply(m, 
+			"you have the roles:\n" + m.channel.server.rolesOfUser(m.author)
+			.map(v => "**"+v.name+"**   "+v.id+"\n")
+		);
+	if(m.content === "$$")
+		a.reply(m, JSON.stringify(
+			m.channel.permissionsOf(m.author).serialise()
+			, null, 4
+		).replace(/true/g, "**true**"))
 });
 a.on("serverMemberRemoved", (r, s) => {
 	console.log(r, s);
