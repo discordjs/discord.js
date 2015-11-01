@@ -226,6 +226,21 @@ class Client extends EventEmitter {
 				})
 		});
 	}
+	
+	leaveServer(server, callback=function(err){}){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			self.internal.leaveServer(server)
+				.then(() => {
+					callback(); resolve();
+				})
+				.catch(e => {
+					callback(e); reject(e);
+				})
+			
+		});
+	}
 }
 
 module.exports = Client;

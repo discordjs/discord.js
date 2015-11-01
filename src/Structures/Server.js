@@ -41,10 +41,10 @@ class Server extends Equality {
 		
 		data.channels.forEach( (dataChannel) => {
 			if(dataChannel.type === "text"){
-				var channel = client.internal.channels.add(new TextChannel(dataChannel, client));
+				var channel = client.internal.channels.add(new TextChannel(dataChannel, client, this));
 				this.channels.add(channel);
 			}else{
-				var channel = client.internal.channels.add(new VoiceChannel(dataChannel, client));
+				var channel = client.internal.channels.add(new VoiceChannel(dataChannel, client, this));
 				this.channels.add(channel);
 			}
 		} );

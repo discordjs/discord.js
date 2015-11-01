@@ -4,8 +4,8 @@ var ServerChannel = require("./ServerChannel.js");
 var Cache = require("../Util/Cache.js");
 
 class TextChannel extends ServerChannel{
-	constructor(data, client){
-		super(data, client);
+	constructor(data, client, server){
+		super(data, client, server);
 		
 		this.name = data.name;
 		this.topic = data.topic;

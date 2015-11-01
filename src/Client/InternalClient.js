@@ -65,6 +65,36 @@ class InternalClient {
 		});
 	}
 	
+	//def leaveServer
+	leaveServer(srv) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+			var server = self.resolver.resolveServer(srv);
+			if(server){
+				
+				request
+					.del(Endpoints.SERVER(server.id))
+					.set("authorization", self.token)
+					.end((err, res) => {
+						if(err){
+							reject(new Error(err.response.text));
+						}else{
+							// remove channels of server then the server
+							for(var chan of server.channels){
+								server.channels.remove(chan);
+							}
+							// remove server
+							self.servers.remove(server);
+							resolve();
+						}
+					});
+				
+			}else{
+				reject(new Error("server did not resolve"));
+			}
+		});
+	}
+	
 	// def login
 	login(email, password) {
 		var self = this;

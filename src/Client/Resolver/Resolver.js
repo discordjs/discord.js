@@ -15,6 +15,21 @@ class Resolver {
 	constructor(internal) {
 		this.internal = internal;
 	}
+	
+	resolveServer(resource){
+		if(resource instanceof Server){
+			return resource;
+		}else if(resource instanceof ServerChannel){
+			return resource.server;
+		}else if(resource instanceof String || typeof resource === "string"){
+			return this.internal.servers.get("id", resource);
+		}else if(resource instanceof Message){
+			if(resource.channel instanceof TextChannel){
+				return resource.server;
+			}
+		}
+		return null;
+	}
 
 	resolveFile(resource) {
 		if (typeof resource === "string" || resource instanceof String) {

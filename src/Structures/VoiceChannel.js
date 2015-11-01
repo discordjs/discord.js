@@ -3,8 +3,8 @@
 var ServerChannel = require("./ServerChannel.js");
 
 class VoiceChannel extends ServerChannel{
-	constructor(data, client){
-		super(data, client);
+	constructor(data, client, server){
+		super(data, client, server);
 	}
 }
 
