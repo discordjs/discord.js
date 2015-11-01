@@ -584,6 +584,34 @@ class InternalClient {
 						client.emit("serverCreated", server);
 					}
 					break;
+				case PacketType.CHANNEL_CREATE:
+
+					var channel = self.channels.get("id", data.id);
+					
+					if(!channel){
+						
+						var server = self.servers.get("id", data.guild_id);
+						if(server){
+							if(data.is_private){
+								client.emit("channelCreated", self.private_channels.add( new PMChannel(data, client) ));
+							}else{
+								var chan = null;
+								if(data.type === "text"){
+									chan = self.channels.add(new TextChannel(data, client, server));
+								}else{
+									chan = self.channels.add(new VoiceChannel(data, client, server));
+								}
+								client.emit("channelCreated", server.channels.add(chan));
+							}
+						}else{
+							client.emit("warn", "channel created but server does not exist");
+						}
+						
+					}else{
+						client.emit("warn", "channel created but already in cache");
+					}
+
+					break;
 			}
 		}
 	}
