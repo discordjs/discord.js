@@ -261,6 +261,23 @@ class Client extends EventEmitter {
 			
 		});
 	}
+	
+	// def deleteChannel
+	deleteChannel(channel, callback=function(err){}){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			self.internal.deleteChannel(channel)
+				.then( () => {
+					callback();
+					resolve();
+				})
+				.catch( e => {
+					callback(e); reject(e);
+				})
+			
+		});
+	}
 }
 
 module.exports = Client;

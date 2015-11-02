@@ -443,8 +443,33 @@ class InternalClient {
 				})
 
 		});
-
 	}
+	
+	// def deleteChannel
+	deleteChannel(_channel){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			self.resolver.resolveChannel(_channel).then(next).catch(reject);
+			
+			function next(channel){
+				request
+					.del(Endpoints.CHANNEL(channel.id))
+					.set("authorization", self.token)
+					.end(function(err, res){
+						if(err){
+							reject(err);
+						}else{
+							channel.server.channels.remove(channel);
+							self.channels.remove(channel);
+							resolve();
+						}
+					});
+			}
+		});
+	}
+	
+	
 
 	sendWS(object) {
 		if (this.websocket)
