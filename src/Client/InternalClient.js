@@ -469,6 +469,26 @@ class InternalClient {
 		});
 	}
 	
+	// def banMember
+	banMember(user, server, length=1){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			user = self.resolver.resolveUser(user);
+			server = self.resolver.resolveServer(server);
+			
+			request
+				.put(`${Endpoints.SERVER_BANS(server.id)}/${user.id}/?delete-message-days=${length}`)
+				.set("authorization", self.token)
+				.end((err, res) => {
+					if(err){
+						reject(err);
+					}else{
+						resolve();
+					}
+				});
+		});
+	}
 	
 
 	sendWS(object) {

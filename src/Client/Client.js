@@ -278,6 +278,26 @@ class Client extends EventEmitter {
 			
 		});
 	}
+	
+	//def banMember
+	banMember(user, server, length=1, callback=function(err){}){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			if (typeof length === "function") {
+				// length is the callback
+				callback = length;
+			}
+			self.internal.banMember(user, server, length)
+				.then( () => {
+					callback();
+					resolve();
+				})
+				.catch( e => {
+					callback(e); reject(e);
+				})
+			
+		});
+	}
 }
 
 module.exports = Client;
