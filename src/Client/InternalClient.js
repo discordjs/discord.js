@@ -532,7 +532,7 @@ class InternalClient {
 
 				case PacketType.READY:
 					var startTime = Date.now();
-					self.users.add(new User(data.user, client));
+					self.user = self.users.add(new User(data.user, client));
 					data.guilds.forEach((server) => {
 						self.servers.add(new Server(server, client));
 					});
