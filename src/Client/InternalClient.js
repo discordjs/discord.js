@@ -413,9 +413,41 @@ class InternalClient {
 
 		});
 	}
+	
+	// def createChannel
+	createChannel(server, name, type = "text") {
+		var self = this;
+
+		return new Promise((resolve, reject) => {
+
+			server = self.resolver.resolveServer(server);
+
+			request
+				.post(Endpoints.SERVER_CHANNELS(server.id))
+				.set("authorization", self.token)
+				.send({
+					name, type
+				})
+				.end((err, res) => {
+					if (err) {
+						reject(err);
+					} else {
+						var channel;
+						if (res.body.type === "text") {
+							channel = new TextChannel(res.body, self.client, server);
+						} else {
+							channel = new VoiceChannel(res.body, self.client, server);
+						}
+						resolve(server.channels.add(self.channels.add(channel)));
+					}
+				})
+
+		});
+
+	}
 
 	sendWS(object) {
-		if(this.websocket)
+		if (this.websocket)
 			this.websocket.send(JSON.stringify(object));
 	}
 
@@ -703,7 +735,7 @@ class InternalClient {
 				case PacketType.SERVER_MEMBER_ADD:
 					var server = self.servers.get("id", data.guild_id);
 					if (server) {
-						
+
 						server.memberMap[data.user.id] = {
 							roles: data.roles.map((pid) => server.roles.get("id", pid)),
 							mute: false,
@@ -715,7 +747,7 @@ class InternalClient {
 							"serverNewMember",
 							server,
 							server.members.add(self.users.add(new User(data.user, client)))
-						);
+							);
 
 					} else {
 						client.emit("warn", "server member added but server doesn't exist in cache");
@@ -723,106 +755,109 @@ class InternalClient {
 					break;
 				case PacketType.SERVER_MEMBER_REMOVE:
 					var server = self.servers.get("id", data.guild_id);
-					if(server){
+					if (server) {
 						var user = self.users.get("id", data.user.id);
-						if(user){
+						if (user) {
 							server.memberMap[data.user.id] = null;
 							server.members.remove(user);
 							client.emit("serverMemberRemoved", server, user);
-						}else{
+						} else {
 							client.emit("warn", "server member removed but user doesn't exist in cache");
 						}
-					}else{
+					} else {
 						client.emit("warn", "server member removed but server doesn't exist in cache");
 					}
 					break;
 				case PacketType.SERVER_MEMBER_UPDATE:
 					var server = self.servers.get("id", data.guild_id);
-					if(server){
+					if (server) {
 						var user = self.users.get("id", data.user.id);
-						if(user){
+						if (user) {
 							server.memberMap[data.user.id].roles = data.roles.map((pid) => server.roles.get("id", pid));
 							server.memberMap[data.user.id].mute = data.mute;
 							server.memberMap[data.user.id].deaf = data.deaf;
 							client.emit("serverMemberUpdated", server, user);
-						}else{
+						} else {
 							client.emit("warn", "server member removed but user doesn't exist in cache");
 						}
-					}else{
+					} else {
 						client.emit("warn", "server member updated but server doesn't exist in cache");
 					}
 					break;
 				case PacketType.PRESENCE_UPDATE:
-					
+
 					var user = self.users.get("id", data.user.id);
-					
-					if(user){
-						
+
+					if (user) {
+
 						data.user.username = data.user.username || user.username;
 						data.user.id = data.user.id || user.id;
 						data.user.avatar = data.user.avatar || user.avatar;
 						data.user.discriminator = data.user.discriminator || user.discriminator;
-						
+
 						var presenceUser = new User(data.user, client);
-						
-						if(presenceUser.equalsStrict(user)){
+
+						if (presenceUser.equalsStrict(user)) {
 							// a real presence update
 							client.emit("presence", user, data.status, data.game_id);
 							user.status = data.status;
 							user.gameID = data.game_id;
-							
-						}else{
+
+						} else {
 							// a name change or avatar change
 							client.emit("userUpdate", user, presenceUser);
 							self.users.update(user, presenceUser);
 						}
-						
-					}else{
+
+					} else {
 						client.emit("warn", "presence update but user not in cache");
 					}
-					
+
 					break;
 				case PacketType.TYPING:
-					
+
 					var user = self.users.get("id", data.user_id);
 					var channel = self.channels.get("id", data.channel_id);
-					
-					if(user && channel){
-						
-						user.typing.since = Date.now();
-						user.typing.channel = channel;
-						client.emit("userTypingStart", user, channel);
-						
-						setTimeout( () => {
-							if(Date.now() - user.typing.since > 5990){
+
+					if (user && channel) {
+						if (user.typing.since) {
+							user.typing.since = Date.now();
+							user.typing.channel = channel;
+						} else {
+							user.typing.since = Date.now();
+							user.typing.channel = channel;
+							client.emit("userTypingStart", user, channel);
+						}
+						setTimeout(() => {
+							if (Date.now() - user.typing.since > 5990) {
 								// they haven't typed since
 								user.typing.since = null;
 								user.typing.channel = null;
 								client.emit("userTypingStop", user, channel);
 							}
 						}, 6000);
-						
-					}else{
+
+					} else {
 						client.emit("warn", "user typing but user or channel not existant in cache");
 					}
 					break;
 				case PacketType.SERVER_BAN_ADD:
 					var user = self.users.get("id", data.user.id);
 					var server = self.servers.get("id", data.guild_id);
-					
-					if(user && server){
+
+					if (user && server) {
 						client.emit("userBanned", user, server);
-					}else{
+					} else {
 						client.emit("warn", "user banned but user/server not in cache.");
 					}
 					break;
 				case PacketType.SERVER_BAN_REMOVE:
 					var user = self.users.get("id", data.user.id);
 					var server = self.servers.get("id", data.guild_id);
-					
-					if(user && server){
+
+					if (user && server) {
 						client.emit("userUnbanned", user, server);
-					}else{
+					} else {
 						client.emit("warn", "user unbanned but user/server not in cache.");
 					}
 					break;

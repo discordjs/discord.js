@@ -8,7 +8,11 @@ a.on("warn", (m) => console.log("[warn]", m));
 
 a.on("message", m => {
 	if(m.content === "$$$")
-		a.reply(m, "I have you cached as being " + m.author.status);
+		a.createChannel(m.channel.server, "quackducks").then( c => {
+			
+			a.sendMessage(c, "I'm alive!");
+			
+		} );
 });
 a.on("userTypingStart", (user, chan) => {
 	console.log(user.username + " typing");

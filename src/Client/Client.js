@@ -227,6 +227,7 @@ class Client extends EventEmitter {
 		});
 	}
 	
+	// def leaveServer
 	leaveServer(server, callback=function(err){}){
 		var self = this;
 		return new Promise((resolve, reject) => {
@@ -234,6 +235,25 @@ class Client extends EventEmitter {
 			self.internal.leaveServer(server)
 				.then(() => {
 					callback(); resolve();
+				})
+				.catch(e => {
+					callback(e); reject(e);
+				})
+			
+		});
+	}
+	
+	// def createChannel
+	createChannel(server, name, type="text", callback=function(err,channel){}){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			if (typeof type === "function") {
+				// options is the callback
+				callback = type;
+			}
+			self.internal.createChannel(server, name, type)
+				.then((channel) => {
+					callback(channel); resolve(channel);
 				})
 				.catch(e => {
 					callback(e); reject(e);
