@@ -10,8 +10,12 @@ a.on("message", m => {
 	if(m.content === "$$$")
 		a.reply(m, "I have you cached as being " + m.author.status);
 });
-a.on("serverMemberRemoved", (r, s) => {
-	console.log(r, s);
+a.on("userTypingStart", (user, chan) => {
+	console.log(user.username + " typing");
 });
+a.on("userTypingStop", (user, chan) => {
+	console.log(user.username + " stopped typing");
+});
+
 
 a.login(process.env["discordEmail"], process.env["discordPass"]).catch((e)=>console.log(e));
