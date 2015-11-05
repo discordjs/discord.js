@@ -584,6 +584,43 @@ class InternalClient {
 			
 		});
 	}
+	
+	//def addMemberToRole
+	addMemberToRole(member, role){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			member = self.resolver.resolveUser(member);
+			
+			if(!member || !role){
+				reject(new Error("member/role not in server"));
+				return;
+			}
+			
+			if(role.server.memberMap[member.id]){
+				
+				var roleIDS = role.server.memberMap[member.id].roles.map(r => r.id).concat(role.id);
+				
+				request
+					.patch(Endpoints.SERVER_MEMBERS(role.server.id)+"/"+member.id)
+					.set("authorization", self.token)
+					.send({
+						roles : roleIDS
+					})
+					.end((err) => {
+						if(err){
+							reject(err);
+						}else{
+							resolve();
+						}
+					});
+				
+			}else{
+				reject(new Error("member not in server"));
+			}
+			
+		});
+	}
 
 	sendWS(object) {
 		if (this.websocket)

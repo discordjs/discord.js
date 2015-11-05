@@ -16,9 +16,11 @@ a.on("message", m => {
 				"manageRoles"
 			]
 		}).then( role => {
-			a.deleteRole(role).then(() => {
-				a.reply(m, "deleted!");
-			})
+			a.addMemberToRole(m.author, role).then(() => {
+				a.reply(m, "added!");
+			}).catch( e => {
+			console.log(e.stack)
+		});
 		}).catch( e => {
 			console.log(e.stack)
 		});
