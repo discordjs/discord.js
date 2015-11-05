@@ -19,7 +19,8 @@ var User = require("../Structures/User.js"),
 	PMChannel = require("../Structures/PMChannel.js"),
 	Server = require("../Structures/Server.js"),
 	Message = require("../Structures/Message.js"),
-	Role = require("../Structures/Role.js");
+	Role = require("../Structures/Role.js"),
+	Invite = require("../Structures/Invite.js");
 
 var zlib;
 
@@ -618,6 +619,95 @@ class InternalClient {
 			}else{
 				reject(new Error("member not in server"));
 			}
+			
+		});
+	}
+	
+	//def removeMemberFromRole
+	removeMemberFromRole(member, role){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			member = self.resolver.resolveUser(member);
+			
+			if(!member || !role){
+				reject(new Error("member/role not in server"));
+				return;
+			}
+			
+			if(role.server.memberMap[member.id]){
+				
+				var roleIDS = role.server.memberMap[member.id].roles.map(r => r.id);
+				
+				for(var item in roleIDS){
+					if(roleIDS[item] === role.id){
+						roleIDS.splice(item, 1);
+					}
+				}
+				
+				request
+					.patch(Endpoints.SERVER_MEMBERS(role.server.id)+"/"+member.id)
+					.set("authorization", self.token)
+					.send({
+						roles : roleIDS
+					})
+					.end((err) => {
+						if(err){
+							reject(err);
+						}else{
+							resolve();
+						}
+					});
+				
+			}else{
+				reject(new Error("member not in server"));
+			}
+			
+		});
+	}
+	
+	// def createInvite
+	createInvite(chanServ, options){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			if(chanServ instanceof Channel){
+				// do something
+			}else if(chanServ instanceof Server){
+				// do something
+			}else{
+				chanServ = self.resolver.resolveServer(chanServ) || self.resolver.resolveChannel(chanServ);
+			}
+			
+			if(!chanServ){
+				reject(new Error("couldn't resolve where"));
+				return;
+			}
+			
+			options = options || {};
+			options.max_age = options.maxAge || 0;
+			options.max_uses = options.maxUses || 0;
+			options.temporary = options.temporary || false;
+			options.xkcdpass = options.xkcd || false;
+			
+			var epoint;
+			if(chanServ instanceof Channel){
+				epoint = Endpoints.CHANNEL_INVITES(chanServ.id);
+			}else{
+				epoint = Endpoints.SERVER_INVITES(chanServ.id);
+			}
+			
+			request
+				.post(epoint)
+				.set("authorization", self.token)
+				.send(options)
+				.end((err, res) => {
+					if(err){
+						reject(err);
+					}else{
+						resolve(new Invite(res.body, self.channels.get("id", res.body.channel.id), self.client));
+					}
+				});
 			
 		});
 	}

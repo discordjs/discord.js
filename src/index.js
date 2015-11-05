@@ -8,22 +8,7 @@ a.on("warn", (m) => console.log("[warn]", m));
 
 a.on("message", m => {
 	if(m.content === "$$$"){
-		a.createRole(m.channel.server, {
-			name : "a_role!",
-			color : 0xFF0000,
-			hoist : true,
-			permissions : [
-				"manageRoles"
-			]
-		}).then( role => {
-			a.addMemberToRole(m.author, role).then(() => {
-				a.reply(m, "added!");
-			}).catch( e => {
-			console.log(e.stack)
-		});
-		}).catch( e => {
-			console.log(e.stack)
-		});
+		a.createInvite(m.channel).then(invite => a.reply(m, invite)).catch(e => console.log(e.stack));
 	}
 });
 a.on("userTypingStart", (user, chan) => {

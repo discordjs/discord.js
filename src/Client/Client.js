@@ -357,6 +357,56 @@ class Client extends EventEmitter {
 			
 		});
 	}
+	
+	// def addUserToRole
+	addUserToRole(member, role, callback=function(err){}){
+		return this.addMemberToRole(member, role, callback);
+	}
+	
+	// def removeMemberFromRole
+	removeMemberFromRole(member, role, callback=function(err){}){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			self.internal.removeMemberFromRole(member, role)
+				.then(() => {
+					callback();
+					resolve();
+				})
+				.catch(e => {
+					callback(e);
+					reject(e);	
+				});
+			
+		});
+	}
+	
+	// def removeUserFromRole
+	removeUserFromRole(member, role, callback=function(err){}){
+		return this.removeUserFromRole(member, role, callback);
+	}
+	
+	// def createInvite
+	createInvite(chanServ, options, callback=function(err,invite){}){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			if (typeof options === "function") {
+				// length is the callback
+				callback = options;
+			}
+			
+			self.internal.createInvite(chanServ, options)
+				.then(invite => {
+					callback(null, invite);
+					resolve(invite);
+				})
+				.catch(e => {
+					callback(e);
+					reject(e);	
+				});
+			
+		});
+	}
 }
 
 module.exports = Client;
