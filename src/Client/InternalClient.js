@@ -490,6 +490,100 @@ class InternalClient {
 		});
 	}
 	
+	// def createRole
+	createRole(server, data){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			server = self.resolver.resolveServer(server);
+			
+			request
+				.post(Endpoints.SERVER_ROLES(server.id))
+				.set("authorization", self.token)
+				.end( (err, res) => {
+					if(err){
+						reject(err);
+					}else{
+						
+						var role = server.roles.add(new Role(res.body, server, self.client));
+						
+						if(data){
+							
+							self.updateRole(role, data)
+								.then(resolve)
+								.catch(reject);
+							
+						}else{
+							resolve(role);
+						}
+						
+					}
+				});
+			
+		});
+	}
+	// def updateRole
+	updateRole(role, data){
+		var self = this;
+		data = data || {};
+		data.permissions = data.permissions || [];
+		return new Promise((resolve, reject) => {
+			
+			var server = self.resolver.resolveServer(role.server);
+			
+			var permissions = 0;
+			for(var perm of data.permissions){
+				if(perm instanceof String || typeof perm === "string"){
+					permissions |= (Constants.Permissions[perm] || 0);
+				}else{
+					permissions |= perm;
+				}
+			}
+			
+			data.color = data.color || 0;
+			
+			request
+				.patch(Endpoints.SERVER_ROLES(server.id)+"/"+role.id)
+				.set("authorization", self.token)
+				.send({
+					color : data.color || role.color,
+					hoist : data.hoist || role.hoist,
+					name : data.name || role.name,
+					permissions : permissions
+				})
+				.end((err, res) => {
+					if(err){
+						reject(err);
+					}else{
+						var nrole = new Role(res.body, server, self.client);
+						resolve(
+							server.roles.update(role, nrole)
+						);
+					}
+				});
+			
+		});
+	}
+	// def deleteRole
+	deleteRole(role){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			request
+				.del(Endpoints.SERVER_ROLES(role.server.id)+"/"+role.id)
+				.set("authorization", self.token)
+				.end((err, res) => {
+					if(err){
+						reject(err);
+					}else{
+						resolve();
+						// the ws cache will handle it
+						// role.server.roles.remove(role);
+					}
+				});
+			
+		});
+	}
 
 	sendWS(object) {
 		if (this.websocket)
@@ -874,7 +968,7 @@ class InternalClient {
 							client.emit("userTypingStart", user, channel);
 						}
 						setTimeout(() => {
-							if (Date.now() - user.typing.since > 5990) {
+							if (Date.now() - user.typing.since > 5500) {
 								// they haven't typed since
 								user.typing.since = null;
 								user.typing.channel = null;

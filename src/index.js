@@ -7,12 +7,22 @@ a.on("debug", (m) => console.log("[debug]",m));
 a.on("warn", (m) => console.log("[warn]", m));
 
 a.on("message", m => {
-	if(m.content === "$$$")
-		a.createChannel(m.channel.server, "quackducks").then( c => {
-			
-			a.sendMessage(c, "I'm alive!");
-			
-		} );
+	if(m.content === "$$$"){
+		a.createRole(m.channel.server, {
+			name : "a_role!",
+			color : 0xFF0000,
+			hoist : true,
+			permissions : [
+				"manageRoles"
+			]
+		}).then( role => {
+			a.deleteRole(role).then(() => {
+				a.reply(m, "deleted!");
+			})
+		}).catch( e => {
+			console.log(e.stack)
+		});
+	}
 });
 a.on("userTypingStart", (user, chan) => {
 	console.log(user.username + " typing");

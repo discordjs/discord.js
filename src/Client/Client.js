@@ -298,6 +298,47 @@ class Client extends EventEmitter {
 			
 		});
 	}
+	
+	//def createRole
+	createRole(server, data=null, callback=function(err,res){}){
+		var self = this;
+		return new Promise((resolve, reject)=>{
+			if (typeof data === "function") {
+				// data is the callback
+				callback = data;
+			}
+			self.internal.createRole(server, data)
+				.then((role) => {
+					callback(null, role);
+					resolve(role);
+				})
+				.catch(e => {
+					callback(e);
+					reject(e);
+				});
+			
+		});
+	}
+	
+	//def deleteRole
+	deleteRole(role, callback=function(err){}){
+		
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			self.internal.deleteRole(role)
+				.then(() => {
+					callback();
+					resolve();
+				})
+				.catch(e => {
+					callback(e);
+					reject(e);	
+				});
+			
+		});
+		
+	}
 }
 
 module.exports = Client;
