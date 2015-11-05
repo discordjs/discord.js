@@ -14,6 +14,22 @@ class Client extends EventEmitter {
 		this.internal = new InternalClient(this);
 	}
 	
+	get users(){
+		return this.internal.users;
+	}
+	
+	get channels(){
+		return this.internal.channels;
+	}
+	
+	get servers(){
+		return this.internal.servers;
+	}
+	
+	get privateChannels(){
+		return this.internal.private_channels;
+	}
+	
 	// def login
 	login(email, password, cb = function (err, token) { }) {
 		var self = this;

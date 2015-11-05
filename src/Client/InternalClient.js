@@ -714,6 +714,63 @@ class InternalClient {
 			
 		});
 	}
+	
+	//def overwritePermissions
+	overwritePermissions(channel, role, updated){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			channel = self.resolver.resolveChannel(channel).catch(reject).then(next);
+			function next(channel){
+				var user = self.resolver.resolverUser(role);
+				
+				var data = {};
+				data.allow = 0;
+				data.deny = 0;
+				
+				updated.allow = updated.allow || [];
+				updated.deny = updated.deny || [];
+				
+				if(role instanceof Role){
+					data.id = role.id;
+					data.type = "role";
+				}else if(user){
+					data.id = user.id;
+					data.type = "member";
+				}else{
+					reject(new Error("role incorrect"));
+					return;
+				}
+				
+				for(var perm of updated.allow){
+					if(perm instanceof String || typeof perm === "string"){
+						data.allow |= (Constants.Permissions[perm] || 0);
+					}else{
+						data.allow |= perm;
+					}
+				}
+				
+				for(var perm of updated.deny){
+					if(perm instanceof String || typeof perm === "string"){
+						data.deny |= (Constants.Permissions[perm] || 0);
+					}else{
+						data.deny |= perm;
+					}
+				}
+				
+				request
+					.put(Endpoints.CHANNEL_PERMISSIONS(channel)+"/"+data.id)
+					.set("authorization", self.token)
+					.send(data)
+					.end(function (err) {
+						if (err) {
+							reject(err);
+						} else {
+							resolve();
+						}
+					});
+				}
+		});
+	}
 
 	sendWS(object) {
 		if (this.websocket)
