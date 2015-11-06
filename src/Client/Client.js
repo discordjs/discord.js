@@ -441,6 +441,24 @@ class Client extends EventEmitter {
 			
 		});
 	}
+	
+	// def setTopic
+	setTopic(channel, topic, callback=function(err){}){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			self.internal.setTopic(channel, topic)
+				.then(() => {
+					callback();
+					resolve();
+				})
+				.catch(e => {
+					callback(e);
+					reject(e);
+				});
+			
+		})
+	}
 }
 
 module.exports = Client;

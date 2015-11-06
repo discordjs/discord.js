@@ -776,6 +776,37 @@ class InternalClient {
 				}
 		});
 	}
+	
+	//def setTopic
+	setTopic(chann, topic=""){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			self.resolver.resolveChannel(chann).then(next).catch(reject);
+			
+			function next(channel){
+				
+				request
+					.patch(Endpoints.CHANNEL(channel.id))
+					.set("authorization", self.token)
+					.send({
+						name : channel.name,
+						position : 0,
+						topic : topic
+					})
+					.end((err, res) => {
+						if(err){
+							reject(err);
+						}else{
+							channel.topic = res.body.topic;
+							resolve();
+						}
+					})
+				
+			}
+			
+		});
+	}
 
 	sendWS(object) {
 		if (this.websocket)
