@@ -52,25 +52,24 @@ class InternalClient {
 			var channel = self.resolver.resolveVoiceChannel(chann);
 			
 			if(channel){
-				if(self.voiceConnections[channel]){
+				if(!self.voiceConnections[channel]){
 					
 					self.voiceConnections[channel] = {};
 					
-					var session, token, serverID, endpoint, fired = 0;
+					var session, token, server = channel.server, endpoint, fired = 0;
 					
 					var check = (m) => {
 						var data = JSON.parse(m);
 						
 						if(data.t === "VOICE_STATE_UPDATE"){
 							session = data.d.session_id;
-							fired++;
 						}else if(data.t === "VOICE_SERVER_UPDATE"){
 							token = data.d.token;
-							serverID = data.d.guild_id;
 							endpoint = data.d.endpoint;
-							fired++;
+							
+							self.voiceConnections[channel] = new VoiceConnection(channel, self.client, session, token, server, endpoint);
+							
 						}
-						
 						if(fired >= 2){
 							self.websocket.removeListener('message', check);
 						}
@@ -81,7 +80,7 @@ class InternalClient {
 					self.sendWS({
 						op : 4,
 						d : {
-							"guild_id" : serverID,
+							"guild_id" : server.id,
 							"channel_id" : channel.id,
 							"self_mute" : false,
 							"self_deaf" : false

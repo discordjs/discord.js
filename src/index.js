@@ -2,31 +2,25 @@ module.exports = {
 	Client : require("./Client/Client.js")
 }
 
+var VoiceChannel = require("./Structures/VoiceChannel.js");
+
 var a = new module.exports.Client();
 a.on("debug", (m) => console.log("[debug]",m));
 a.on("warn", (m) => console.log("[warn]", m));
 var start = Date.now();
 a.on("message", m => {
 	if(m.content === "$$$"){
-		a.internal.setTopic(m.channel, "a channel topic!");
-	}
-});
-a.on("userTypingStart", (user, chan) => {
-	console.log(user.username + " typing");
-});
-a.on("userTypingStop", (user, chan) => {
-	console.log(user.username + " stopped typing");
-});
-a.on("ready", () => {
-	for(var server of a.internal.servers){
-		if(server.name === "craptown"){
-			a.leaveServer(server);
+		for(var channel of m.channel.server.channels){
+			if(channel instanceof VoiceChannel){
+				a.internal.joinVoiceChannel(channel).catch(error);
+				break;
+			}
 		}
 	}
 });
 
 function error(e){
-	throw e;
+	console.log(e);
 	process.exit(0);
 }
 
