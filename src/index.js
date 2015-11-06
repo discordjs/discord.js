@@ -8,9 +8,7 @@ a.on("warn", (m) => console.log("[warn]", m));
 var start = Date.now();
 a.on("message", m => {
 	if(m.content === "$$$"){
-		a.internal.overwritePermissions(m.channel, m.author, {
-			manageRoles : true
-		}).catch(error).then(()=>console.log("hihihihihi!"));
+		a.internal.setTopic(m.channel, "a channel topic!");
 	}
 });
 a.on("userTypingStart", (user, chan) => {

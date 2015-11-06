@@ -807,6 +807,72 @@ class InternalClient {
 			
 		});
 	}
+	//def setChannelName
+	setChannelName(chann, name="discordjs_is_the_best"){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			self.resolver.resolveChannel(chann).then(next).catch(reject);
+			
+			function next(channel){
+				
+				request
+					.patch(Endpoints.CHANNEL(channel.id))
+					.set("authorization", self.token)
+					.send({
+						name : name,
+						position : 0,
+						topic : channel.topic
+					})
+					.end((err, res) => {
+						if(err){
+							reject(err);
+						}else{
+							channel.name = res.body.name;
+							resolve();
+						}
+					})
+				
+			}
+			
+		});
+	}
+	//def setChannelNameAndTopic
+	setChannelNameAndTopic(chann, name="discordjs_is_the_best", topic=""){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			self.resolver.resolveChannel(chann).then(next).catch(reject);
+			
+			function next(channel){
+				
+				request
+					.patch(Endpoints.CHANNEL(channel.id))
+					.set("authorization", self.token)
+					.send({
+						name : name,
+						position : 0,
+						topic : topic
+					})
+					.end((err, res) => {
+						if(err){
+							reject(err);
+						}else{
+							channel.name = res.body.name;
+							channel.topic = res.body.topic;
+							resolve();
+						}
+					})
+				
+			}
+			
+		});
+	}
+	
+	//def updateChannel
+	updateChannel(chann, data){
+		return this.setChannelNameAndTopic(chann, data.name, data.topic);
+	}
 
 	sendWS(object) {
 		if (this.websocket)

@@ -459,6 +459,60 @@ class Client extends EventEmitter {
 			
 		})
 	}
+	
+	//def setChannelName
+	setChannelName(channel, topic, callback=function(err){}){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			self.internal.setChannelName(channel, topic)
+				.then(() => {
+					callback();
+					resolve();
+				})
+				.catch(e => {
+					callback(e);
+					reject(e);
+				});
+			
+		})
+	}
+	
+	//def setChannelNameAndTopic
+	setChannelNameAndTopic(channel, name, topic, callback=function(err){}){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			self.internal.setChannelNameAndTopic(channel, name, topic)
+				.then(() => {
+					callback();
+					resolve();
+				})
+				.catch(e => {
+					callback(e);
+					reject(e);
+				});
+			
+		})
+	}
+	
+	//def updateChannel
+	updateChannel(channel, data, callback=function(err){}){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			self.internal.updateChannel(channel, data)
+				.then(() => {
+					callback();
+					resolve();
+				})
+				.catch(e => {
+					callback(e);
+					reject(e);
+				});
+			
+		})
+	}
 }
 
 module.exports = Client;
