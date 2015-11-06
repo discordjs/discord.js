@@ -721,7 +721,11 @@ class InternalClient {
 		return new Promise((resolve, reject) => {
 			channel = self.resolver.resolveChannel(channel).catch(reject).then(next);
 			function next(channel){
-				var user = self.resolver.resolverUser(role);
+				
+				var user;
+				if(role instanceof User){
+					user = role;
+				}
 				
 				var data = {};
 				data.allow = 0;
@@ -741,27 +745,28 @@ class InternalClient {
 					return;
 				}
 				
-				for(var perm of updated.allow){
-					if(perm instanceof String || typeof perm === "string"){
-						data.allow |= (Constants.Permissions[perm] || 0);
+				for(var perm in updated){
+					if(updated[perm]){
+						if(perm instanceof String || typeof perm === "string"){
+							data.allow |= (Constants.Permissions[perm] || 0);
+						}else{
+							data.allow |= perm;
+						}
 					}else{
-						data.allow |= perm;
-					}
-				}
-				
-				for(var perm of updated.deny){
-					if(perm instanceof String || typeof perm === "string"){
-						data.deny |= (Constants.Permissions[perm] || 0);
-					}else{
-						data.deny |= perm;
+						if(perm instanceof String || typeof perm === "string"){
+							data.deny |= (Constants.Permissions[perm] || 0);
+						}else{
+							data.deny |= perm;
+						}
 					}
 				}
 				
 				request
-					.put(Endpoints.CHANNEL_PERMISSIONS(channel)+"/"+data.id)
+					.put(Endpoints.CHANNEL_PERMISSIONS(channel.id)+"/"+data.id)
 					.set("authorization", self.token)
 					.send(data)
 					.end(function (err) {
+						console.log(err);
 						if (err) {
 							reject(err);
 						} else {

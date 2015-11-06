@@ -7,24 +7,10 @@ a.on("debug", (m) => console.log("[debug]",m));
 a.on("warn", (m) => console.log("[warn]", m));
 var start = Date.now();
 a.on("message", m => {
-	console.log("msgmsgmsg");
 	if(m.content === "$$$"){
-		a.createServer("pongping", "london")
-			.then( server => {
-				a.createChannel(server, "pingpong", "text")
-					.then( channel => {
-						a.sendMessage(channel, "$$$")
-							.then( msg => {
-								a.leaveServer(msg.channel.server)
-									.then(() => {
-										console.log("!!! " + (Date.now() - start));
-									});
-							})
-							.catch(error);
-					})
-					.catch(error);	
-			})
-			.catch(error)
+		a.internal.overwritePermissions(m.channel, m.author, {
+			manageRoles : true
+		}).catch(error).then(()=>console.log("hihihihihi!"));
 	}
 });
 a.on("userTypingStart", (user, chan) => {

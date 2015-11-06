@@ -423,6 +423,24 @@ class Client extends EventEmitter {
 			
 		});
 	}
+	
+	// def overwritePermissions
+	overwritePermissions(channel, role, options={}, callback=function(err){}){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			self.internal.overwritePermissions(channel, role, options)
+				.then(() => {
+					callback();
+					resolve();
+				})
+				.catch(e => {
+					callback(e);
+					reject(e);
+				})
+			
+		});
+	}
 }
 
 module.exports = Client;
