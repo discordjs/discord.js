@@ -20,7 +20,8 @@ var User = require("../Structures/User.js"),
 	Server = require("../Structures/Server.js"),
 	Message = require("../Structures/Message.js"),
 	Role = require("../Structures/Role.js"),
-	Invite = require("../Structures/Invite.js");
+	Invite = require("../Structures/Invite.js"),
+	VoiceConnection = require("../Voice/VoiceConnection.js");
 
 var zlib;
 
@@ -42,6 +43,61 @@ class InternalClient {
 		this.voiceConnections = new Cache();
 		this.resolver = new Resolver(this);
 	}
+	
+	//def joinVoiceChannel()
+	joinVoiceChannel(chann){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			var channel = self.resolver.resolveVoiceChannel(chann);
+			
+			if(channel){
+				if(self.voiceConnections[channel]){
+					
+					self.voiceConnections[channel] = {};
+					
+					var session, token, serverID, endpoint, fired = 0;
+					
+					var check = (m) => {
+						var data = JSON.parse(m);
+						
+						if(data.t === "VOICE_STATE_UPDATE"){
+							session = data.d.session_id;
+							fired++;
+						}else if(data.t === "VOICE_SERVER_UPDATE"){
+							token = data.d.token;
+							serverID = data.d.guild_id;
+							endpoint = data.d.endpoint;
+							fired++;
+						}
+						
+						if(fired >= 2){
+							self.websocket.removeListener('message', check);
+						}
+						
+					};
+					
+					self.websocket.on("message", check);
+					self.sendWS({
+						op : 4,
+						d : {
+							"guild_id" : serverID,
+							"channel_id" : channel.id,
+							"self_mute" : false,
+							"self_deaf" : false
+						}
+					});
+				
+				}else{
+					reject(new Error("voice channel connection exists"));
+				}
+			}else{
+				reject(new Error("voice channel does not exist"));
+			}
+			
+		});
+	}
+	
 	// def createServer
 	createServer(name, region = "london") {
 		var self = this;
