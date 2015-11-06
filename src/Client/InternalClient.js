@@ -39,6 +39,7 @@ class InternalClient {
 		this.channels = new Cache();
 		this.servers = new Cache();
 		this.private_channels = new Cache();
+		this.voiceConnections = new Cache();
 		this.resolver = new Resolver(this);
 	}
 	// def createServer
