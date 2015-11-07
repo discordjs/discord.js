@@ -7,23 +7,9 @@ var Lame = require("lame");
 var Opus = require('node-opus');
 var Wav = require('wav');
 var fs = require("fs");
-
-function VoicePacket(packet, sequence, timestamp, ssrc) {
-	var audioBuffer = packet;
-	var retBuff = new Buffer(audioBuffer.length + 12);
-	retBuff.fill(0);
-	retBuff[0] = 0x80;
-	retBuff[1] = 0x78;
-	retBuff.writeUIntBE(sequence, 2, 2);
-	retBuff.writeUIntBE(timestamp, 4, 4);
-	retBuff.writeUIntBE(ssrc, 8, 4);
-
-	for (var i = 0; i < audioBuffer.length; i++) {
-		retBuff[i + 12] = audioBuffer[i];
-	}
-
-	return retBuff;
-}
+var ffmpeg = require('fluent-ffmpeg');
+var AudioEncoder = require("./AudioEncoder.js");
+var VoicePacket = require("./VoicePacket.js");
 
 class VoiceConnection {
 	constructor(channel, client, session, token, server, endpoint) {
@@ -36,71 +22,100 @@ class VoiceConnection {
 		this.vWS = null; // vWS means voice websocket
 		this.ready = false;
 		this.vWSData = {};
+		this.opus = new Opus.OpusEncoder(48000, 1);
+		this.encoder = new AudioEncoder();
+		this.udp = null;
 		this.init();
+	}
+	
+	playRawStream(stream){
+		
+		var self = this;
+		self.playing = true;
+		
+		var startTime = Date.now();
+		var sequence = 0;
+		var time = 0;
+		var count = 0;
+		
+		var length = 20;
+		
+		function send(){
+			try{
+				count++;
+				sequence + 10 < 65535 ? sequence += 1 : sequence = 0; 
+				time + 9600 < 4294967295 ? time += 960 : time = 0;
+				
+				self.sendBuffer(stream.read(1920), sequence, time, (e) => {
+					console.log(e);
+				});
+				
+				var nextTime = startTime + (count * length);
+				
+				setTimeout(function() {
+					send();
+				}, length + (nextTime - Date.now()));
+				
+			}catch(e){
+				
+			}
+		}
+		
+		self.vWS.send(JSON.stringify({
+			op : 5,
+			d : {
+				speaking : true,
+				delay : 0
+			}
+		}));
+		send();
+		
+		
+	}
+	
+	sendPacket(packet, callback=function(err){}){
+		var self = this;
+		self.playing = true;
+		try{
+			self.udp.send(packet, 0, packet.length, self.vWSData.port, self.endpoint, callback);
+			
+		}catch(e){
+			self.playing = false;
+			callback(e);
+			return false;
+		}
+	}
+	
+	sendBuffer(buffer, sequence, timestamp, callback){
+		var self = this;
+		self.playing = true;
+		try{
+			
+			var buffer = self.encoder.opusBuffer(buffer);
+			var packet = new VoicePacket(buffer, sequence, timestamp, self.vWSData.ssrc);
+			
+			return self.sendPacket(packet, callback);
+		
+		}catch(e){
+			self.playing = false;
+			console.log("etype", e.stack);
+			return false;
+		}
 	}
 
 	test() {
 		var self = this;
-		var startTime = Date.now();
-		var cnt = 0;
-		function sendAudio(sequence, timestamp, opusEncoder, wavOutput, udpClient, vWS) {
-			cnt++;
-			var buff = wavOutput.read(1920);
-			if (buff && buff.length === 1920) {
-				sequence + 20 < 65535 ? sequence += 1 : sequence = 0;
-				timestamp + 9600 < 4294967295 ? timestamp += 960 : timestamp = 0;
-
-				var encoded = opusEncoder.encode(buff, 1920);
-				var audioPacket = VoicePacket(encoded, sequence, timestamp, self.vWSData.ssrc);
-
-				var nextTime = startTime + cnt * 20;
-
-				udpClient.send(audioPacket, 0, audioPacket.length, self.vWSData.port, self.endpoint, function (err) { });
-				setTimeout(function () {
-					sendAudio(sequence, timestamp, opusEncoder, wavOutput, udpClient, vWS);
-				}, 20 + (nextTime - new Date().getTime()));
-			} else {
-				var speaking = {
-					"op": 5,
-					"d": {
-						"speaking": false,
-						"delay": 0
-					}
-				}
-				vWS.send(JSON.stringify(speaking));
-			}
+		this.encoder
+			.encodeFile("C:/users/amish/desktop/audio.mp3")
+			.catch(error)
+			.then( stream => {
+				
+				self.playRawStream(stream);
+				
+			} );
+		function error(){
+			console.log("ERROR!");
 		}
-
-		var speaking = {
-			"op": 5,
-			"d": {
-				"speaking": true,
-				"delay": 0
-			}
-		}
-
-		var vWS = self.vWS;
-		var stream = fs.createReadStream("c:/users/amish/desktop/audio.wav");
-
-		vWS.send(JSON.stringify(speaking));
-
-		var rate = 48000;
-		var opusEncoder = new Opus.OpusEncoder(48000, 1);
-		var wavReader = new Wav.Reader();
-wavReader.on('format', function (format) {
-console.log(format);
-});
-		var wavOutput = stream.pipe(wavReader);
-		
-		var sequence = 0;
-		var timestamp = 0;
-		
-		wavOutput.on('readable', function () {
-			console.log("readable!");
-			sendAudio(sequence, timestamp, opusEncoder, wavOutput, self.udp, vWS);
-		});
-
-
 	}
 
 	init() {
