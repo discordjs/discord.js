@@ -44,7 +44,26 @@ class InternalClient {
 		this.resolver = new Resolver(this);
 	}
 	
-	//def joinVoiceChannel()
+	//def leaveVoiceChannel
+	leaveVoiceChannel(chann){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			var channel = self.resolver.resolveVoiceChannel(chann);
+			
+			if(channel){
+				if(self.voiceConnections[channel]){
+					var chan = self.voiceConnections[channel];
+					chan.stopPlaying();
+					self.voiceConnections.remove(chan);
+					resolve();
+				}
+			}else{
+				reject(new Error("voice channel does not exist"));
+			}
+		});
+	}
+	
+	//def joinVoiceChannel
 	joinVoiceChannel(chann){
 		var self = this;
 		return new Promise((resolve, reject) => {
@@ -52,9 +71,7 @@ class InternalClient {
 			var channel = self.resolver.resolveVoiceChannel(chann);
 			
 			if(channel){
-				if(!self.voiceConnections[channel]){
-					
-					self.voiceConnections[channel] = {};
+				if(!self.voiceConnections.get("id", channel.id)){
 					
 					var session, token, server = channel.server, endpoint, fired = 0;
 					
@@ -67,7 +84,7 @@ class InternalClient {
 							token = data.d.token;
 							endpoint = data.d.endpoint;
 							
-							var chan = self.voiceConnections[channel] = new VoiceConnection(channel, self.client, session, token, server, endpoint);
+							var chan = self.voiceConnections.add(new VoiceConnection(channel, self.client, session, token, server, endpoint));
 							
 							chan.on("ready", resolve);
 							chan.on("error", reject);

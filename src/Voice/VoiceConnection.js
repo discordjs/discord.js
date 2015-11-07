@@ -17,6 +17,7 @@ class VoiceConnection extends EventEmitter{
 		if(!Opus){
 			console.log("HEY! WATCH OUT\n\n   discord.js needs node-opus, you don't have it installed.");
 		}
+		this.id = channel.id;
 		this.voiceChannel = channel;
 		this.client = client;
 		this.session = session;
@@ -57,13 +58,13 @@ class VoiceConnection extends EventEmitter{
 		if (self.playingIntent) {
 			self.stopPlaying();
 		}
-
+		self.playing = true;
 		var retStream = new StreamIntent();
 		var onWarning = false;
 		self.playingIntent = retStream;
 
 		function send() {
-			if (!self.playingIntent) {
+			if (!self.playingIntent || !self.playing) {
 				self.setSpeaking(false);
 				retStream.emit("end");
 				return;
