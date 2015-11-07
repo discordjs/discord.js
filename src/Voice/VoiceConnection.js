@@ -11,9 +11,11 @@ var ffmpeg = require('fluent-ffmpeg');
 var AudioEncoder = require("./AudioEncoder.js");
 var VoicePacket = require("./VoicePacket.js");
 var StreamIntent = require("./StreamIntent.js");
+var EventEmitter = require("events");
 
-class VoiceConnection {
+class VoiceConnection extends EventEmitter{
 	constructor(channel, client, session, token, server, endpoint) {
+		super();
 		this.voiceChannel = channel;
 		this.client = client;
 		this.session = session;
@@ -56,21 +58,19 @@ class VoiceConnection {
 		self.playingIntent = retStream;
 
 		function send() {
-			if (self.playingIntent && self.playingIntent !== retStream) {
-				console.log("ending it!");
+			if (!self.playingIntent) {
 				self.setSpeaking(false);
 				retStream.emit("end");
 				return;
 			}
 			try {
-
 				var buffer = stream.read(1920);
-
+				
 				if (!buffer) {
 					setTimeout(send, length * 10); // give chance for some data in 200ms to appear
 					return;
 				}
-
+				
 				if (buffer.length !== 1920) {
 					if (onWarning) {
 						retStream.emit("end");
@@ -146,7 +146,7 @@ class VoiceConnection {
 
 		} catch (e) {
 			self.playing = false;
-			console.log("etype", e.stack);
+			self.emit("error", e);
 			return false;
 		}
 	}
@@ -211,7 +211,6 @@ class VoiceConnection {
                             }
                         }
                     }
-					console.log("success!!!");
                     vWS.send(JSON.stringify(wsDiscPayload));
                     firstPacket = false;
                 }
@@ -247,16 +246,15 @@ class VoiceConnection {
 						var udpPacket = new Buffer(70);
 						udpPacket.writeUIntBE(data.d.ssrc, 0, 4);
 						udpClient.send(udpPacket, 0, udpPacket.length, data.d.port, self.endpoint, err => {
-							console.log("err", err);
+							if(err)
+								self.emit("error", err)
 						});
 						break;
 					case 4:
 
 						self.ready = true;
 						self.mode = data.d.mode;
-						console.log("ready!!!");
-
-						self.test();
+						self.emit("ready", self);
 
 						break;
 				}
