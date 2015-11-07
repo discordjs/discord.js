@@ -10,6 +10,7 @@ var fs = require("fs");
 var ffmpeg = require('fluent-ffmpeg');
 var AudioEncoder = require("./AudioEncoder.js");
 var VoicePacket = require("./VoicePacket.js");
+var StreamIntent = require("./StreamIntent.js");
 
 class VoiceConnection {
 	constructor(channel, client, session, token, server, endpoint) {
@@ -25,78 +26,111 @@ class VoiceConnection {
 		this.opus = new Opus.OpusEncoder(48000, 1);
 		this.encoder = new AudioEncoder();
 		this.udp = null;
+		this.playingIntent = null;
+		this.playing = false;
 		this.init();
 	}
 	
-	playRawStream(stream){
-		
+	stopPlaying(){
+		this.playingIntent = null;
+	}
+
+	playRawStream(stream) {
+
 		var self = this;
-		self.playing = true;
-		
+
 		var startTime = Date.now();
 		var sequence = 0;
 		var time = 0;
 		var count = 0;
-		
+
 		var length = 20;
 		
-		function send(){
-			try{
-				count++;
-				sequence + 10 < 65535 ? sequence += 1 : sequence = 0; 
-				time + 9600 < 4294967295 ? time += 960 : time = 0;
-				
-				self.sendBuffer(stream.read(1920), sequence, time, (e) => {
-					console.log(e);
-				});
-				
-				var nextTime = startTime + (count * length);
-				
-				setTimeout(function() {
-					send();
-				}, length + (nextTime - Date.now()));
-				
-			}catch(e){
-				
-			}
+		if(self.playingIntent){
+			self.stopPlaying();
 		}
 		
-		self.vWS.send(JSON.stringify({
-			op : 5,
-			d : {
-				speaking : true,
-				delay : 0
+		var retStream = new StreamIntent();
+		self.playingIntent = retStream;
+		
+		function send() {
+			if(self.playingIntent && self.playingIntent !== retStream){
+				console.log("ending it!");
+				self.setSpeaking(false);
+				retStream.emit("end");
+				return;
 			}
-		}));
+			try {
+
+				var buffer = stream.read(1920);
+				
+				if(!buffer){
+					setTimeout(send, length * 10); // give chance for some data in 200ms to appear
+				}
+				
+				if (buffer && buffer.length === 1920) {
+					count++;
+					sequence + 10 < 65535 ? sequence += 1 : sequence = 0;
+					time + 9600 < 4294967295 ? time += 960 : time = 0;
+
+					self.sendBuffer(buffer, sequence, time, (e) => { });
+					
+					var nextTime = startTime + (count * length);
+
+					setTimeout(function () {
+						send();
+					}, length + (nextTime - Date.now()));
+					if(!self.playing)
+						self.setSpeaking(true);
+				}else{
+					retStream.emit("end");
+					self.setSpeaking(false);
+				}
+
+			} catch (e) {
+				retStream.emit("error", e);
+			}
+		}
+		self.setSpeaking(true);
 		send();
 		
-		
+		return retStream;
 	}
 	
-	sendPacket(packet, callback=function(err){}){
+	setSpeaking(value){
+		this.playing = value;
+		this.vWS.send(JSON.stringify({
+			op: 5,
+			d: {
+				speaking: value,
+				delay: 0
+			}
+		}));
+	}
+
+	sendPacket(packet, callback = function (err) { }) {
 		var self = this;
 		self.playing = true;
-		try{
+		try {
 			self.udp.send(packet, 0, packet.length, self.vWSData.port, self.endpoint, callback);
-			
-		}catch(e){
+
+		} catch (e) {
 			self.playing = false;
 			callback(e);
 			return false;
 		}
 	}
-	
-	sendBuffer(buffer, sequence, timestamp, callback){
+
+	sendBuffer(rawbuffer, sequence, timestamp, callback) {
 		var self = this;
 		self.playing = true;
-		try{
-			
-			var buffer = self.encoder.opusBuffer(buffer);
+		try {
+
+			var buffer = self.encoder.opusBuffer(rawbuffer);
 			var packet = new VoicePacket(buffer, sequence, timestamp, self.vWSData.ssrc);
-			
 			return self.sendPacket(packet, callback);
-		
-		}catch(e){
+
+		} catch (e) {
 			self.playing = false;
 			console.log("etype", e.stack);
 			return false;
@@ -108,12 +142,16 @@ class VoiceConnection {
 		this.encoder
 			.encodeFile("C:/users/amish/desktop/audio.mp3")
 			.catch(error)
-			.then( stream => {
+			.then(stream => {
 				
-				self.playRawStream(stream);
-				
-			} );
-		function error(){
+				var intent = self.playRawStream(stream);
+
+				intent.on("end", ()=>{
+					console.log("stream ended");
+				});
+
+			});
+		function error() {
 			console.log("ERROR!");
 		}
 	}
