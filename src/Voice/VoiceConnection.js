@@ -3,9 +3,7 @@
 var WebSocket = require("ws");
 var dns = require("dns");
 var udp = require("dgram");
-var Lame = require("lame");
 var Opus = require('node-opus');
-var Wav = require('wav');
 var fs = require("fs");
 var ffmpeg = require('fluent-ffmpeg');
 var AudioEncoder = require("./AudioEncoder.js");
@@ -16,6 +14,9 @@ var EventEmitter = require("events");
 class VoiceConnection extends EventEmitter{
 	constructor(channel, client, session, token, server, endpoint) {
 		super();
+		if(!Opus){
+			console.log("HEY! WATCH OUT\n\n   discord.js needs node-opus, you don't have it installed.");
+		}
 		this.voiceChannel = channel;
 		this.client = client;
 		this.session = session;
