@@ -22,7 +22,7 @@ class AudioEncoder{
 				"-i", file,
 				"-f", "s16le",
 				"-ar", "48000",
-				"-ac", "1",
+				"-ac", "1", // this can be 2 but there's no point, discord makes it mono on playback, wasted bandwidth.
 				"-af", "volume=1",
 				"pipe:1"
 			]);
