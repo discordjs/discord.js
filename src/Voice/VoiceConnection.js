@@ -1,4 +1,11 @@
 "use strict";
+/*
+	Major credit to izy521 who is the creator of
+	https://github.com/izy521/discord.io,
+	
+	without his help voice chat in discord.js would not have
+	been possible!
+*/
 
 var WebSocket = require("ws");
 var dns = require("dns");
