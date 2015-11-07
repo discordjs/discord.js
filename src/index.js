@@ -12,7 +12,10 @@ a.on("message", m => {
 	if(m.content === "&init"){
 		for(var channel of m.channel.server.channels){
 			if(channel instanceof VoiceChannel){
-				a.internal.joinVoiceChannel(channel).catch(error);
+				a.joinVoiceChannel(channel).catch(error)
+					.then(connection => {
+						connection.playFile("C:/users/amish/desktop/asdf.mp3");
+					});
 				break;
 			}
 		}
@@ -26,14 +29,14 @@ a.on("message", m => {
 			}
 		}
 		if(a.internal.voiceConnections[chan]){
-			connection = a.internal.voiceConnections[chan];
-			connection
+			var connection = a.internal.voiceConnections[chan];
+			connection.playFile("C:/users/amish/desktop/audio.mp3");
 		}
 	}
 });
 
 function error(e){
-	console.log(e);
+	console.log(e.stack);
 	process.exit(0);
 }
 

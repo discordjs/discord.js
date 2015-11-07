@@ -27,8 +27,6 @@ class AudioEncoder{
 				"pipe:1"
 			]);
 			
-			var rcvd = 0;
-			
 			enc.stdout.on("readable", function() {
 				callback(null, enc.stdout);
 				resolve(enc.stdout)

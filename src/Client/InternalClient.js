@@ -67,7 +67,10 @@ class InternalClient {
 							token = data.d.token;
 							endpoint = data.d.endpoint;
 							
-							self.voiceConnections[channel] = new VoiceConnection(channel, self.client, session, token, server, endpoint);
+							var chan = self.voiceConnections[channel] = new VoiceConnection(channel, self.client, session, token, server, endpoint);
+							
+							chan.on("ready", resolve);
+							chan.on("error", reject);
 							
 						}
 						if(fired >= 2){
@@ -822,7 +825,6 @@ class InternalClient {
 					.set("authorization", self.token)
 					.send(data)
 					.end(function (err) {
-						console.log(err);
 						if (err) {
 							reject(err);
 						} else {
