@@ -4,6 +4,8 @@
   </a>
 </p>
 
+# The API is being rewritten for stability, have a look [here](https://github.com/hydrabolt/discord.js/tree/rewrite) for more. It will feature voice!
+
 [![Build Status](https://travis-ci.org/hydrabolt/discord.js.svg)](https://travis-ci.org/hydrabolt/discord.js) [![Documentation Status](https://readthedocs.org/projects/discordjs/badge/?version=latest)](http://discordjs.readthedocs.org/en/latest/?badge=latest)
     
 
