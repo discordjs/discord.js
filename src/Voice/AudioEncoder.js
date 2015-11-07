@@ -28,8 +28,14 @@ class AudioEncoder{
 			]);
 			
 			enc.stdout.on("readable", function() {
-				callback(null, enc.stdout);
-				resolve(enc.stdout)
+				callback(null, {
+					proc : enc,
+					stream : enc.stdout
+				});
+				resolve({
+					proc : enc,
+					stream : enc.stdout
+				});
 			});
 	
 			enc.stdout.on("end", function() {

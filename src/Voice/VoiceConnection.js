@@ -31,11 +31,15 @@ class VoiceConnection extends EventEmitter{
 		this.playingIntent = null;
 		this.playing = false;
 		this.streamTime = 0;
+		this.streamProc = null;
 		this.init();
 	}
 
 	stopPlaying() {
+		this.playing=false;
 		this.playingIntent = null;
+		if(this.streamProc)
+			this.streamProc.kill();
 	}
 
 	playRawStream(stream) {
@@ -166,9 +170,10 @@ class VoiceConnection extends EventEmitter{
 			this.encoder
 				.encodeFile(stream)
 				.catch(error)
-				.then(stream => {
-
-					var intent = self.playRawStream(stream);
+				.then(data => {
+					
+					self.streamProc = data.proc;
+					var intent = self.playRawStream(data.stream);
 					resolve(intent);
 					callback(null, intent);
 

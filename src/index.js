@@ -20,6 +20,19 @@ a.on("message", m => {
 			}
 		}
 	}
+	if(m.content.startsWith("$$$ stop")){
+		for(var channel of m.channel.server.channels){
+			if(channel instanceof VoiceChannel){
+				chan = channel;
+				break;
+			}
+		}
+		if(a.internal.voiceConnections[chan]){
+			var connection = a.internal.voiceConnections[chan];
+			connection.stopPlaying();
+		}
+		return;
+	}
 	if(m.content.startsWith("$$$")){
 		var chan;
 		for(var channel of m.channel.server.channels){
@@ -30,7 +43,7 @@ a.on("message", m => {
 		}
 		if(a.internal.voiceConnections[chan]){
 			var connection = a.internal.voiceConnections[chan];
-			connection.playFile("C:/users/amish/desktop/audio.mp3");
+			connection.playFile("C:/users/amish/desktop/asdf.mp3");
 		}
 	}
 });
