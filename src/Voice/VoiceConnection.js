@@ -10,9 +10,7 @@
 var WebSocket = require("ws");
 var dns = require("dns");
 var udp = require("dgram");
-var Opus = require('node-opus');
 var fs = require("fs");
-var ffmpeg = require('fluent-ffmpeg');
 var AudioEncoder = require("./AudioEncoder.js");
 var VoicePacket = require("./VoicePacket.js");
 var StreamIntent = require("./StreamIntent.js");
@@ -21,9 +19,6 @@ var EventEmitter = require("events");
 class VoiceConnection extends EventEmitter {
 	constructor(channel, client, session, token, server, endpoint) {
 		super();
-		if (!Opus) {
-			console.log("HEY! WATCH OUT\n\n   discord.js needs node-opus, you don't have it installed.");
-		}
 		this.id = channel.id;
 		this.voiceChannel = channel;
 		this.client = client;
@@ -34,7 +29,6 @@ class VoiceConnection extends EventEmitter {
 		this.vWS = null; // vWS means voice websocket
 		this.ready = false;
 		this.vWSData = {};
-		this.opus = new Opus.OpusEncoder(48000, 1);
 		this.encoder = new AudioEncoder();
 		this.udp = null;
 		this.playingIntent = null;
@@ -162,7 +156,12 @@ class VoiceConnection extends EventEmitter {
 		var self = this;
 		self.playing = true;
 		try {
-
+			if(!self.encoder.opus){
+				self.playing=false;
+				self.emit("error", "No Opus!");
+				self.emit("debug", "Tried to use node-opus, but opus not available - install it!");
+				return;
+			}
 			var buffer = self.encoder.opusBuffer(rawbuffer);
 			var packet = new VoicePacket(buffer, sequence, timestamp, self.vWSData.ssrc);
 			return self.sendPacket(packet, callback);

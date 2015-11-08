@@ -1,12 +1,20 @@
 "use strict";
 
 var cpoc = require("child_process");
-var opus = require("node-opus");
+
+var opus;
+try{
+	opus = require("node-opus");
+}catch(e){
+	// no opus!
+}
 var VoicePacket = require("./VoicePacket.js");
 
 class AudioEncoder{
 	constructor(){
-		this.opus = new opus.OpusEncoder(48000, 1);
+		if(opus){	
+			this.opus = new opus.OpusEncoder(48000, 1);
+		}
 	}
 	
 	opusBuffer(buffer){
