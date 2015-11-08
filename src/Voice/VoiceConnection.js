@@ -190,7 +190,6 @@ class VoiceConnection extends EventEmitter {
 				.encodeFile(stream)
 				.catch(error)
 				.then(data => {
-
 					self.streamProc = data.proc;
 					var intent = self.playRawStream(data.stream);
 					resolve(intent);

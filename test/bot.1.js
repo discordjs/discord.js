@@ -24,6 +24,7 @@ client.on("message", m => {
 		rest.splice(0, 1);
 		rest = rest.join(" ");
 		if(client.internal.voiceConnection){
+			client.reply(m, "ok, I'll play that for you");
 			var connection = client.internal.voiceConnection;
 			connection.playFile("C:/users/amish/desktop/"+rest);
 		}
