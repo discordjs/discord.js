@@ -50,8 +50,11 @@ class VoiceConnection extends EventEmitter {
 	stopPlaying() {
 		this.playing = false;
 		this.playingIntent = null;
-		if (this.streamProc)
-			this.streamProc.kill();
+		if(this.instream){
+			console.log(this.instream);
+			this.instream.unpipe(this.streamProc);
+		}if (this.streamProc)
+			this.streamProc.destroy();
 	}
 
 	playRawStream(stream) {
@@ -74,14 +77,15 @@ class VoiceConnection extends EventEmitter {
 		self.playingIntent = retStream;
 
 		function send() {
+			
 			if (!self.playingIntent || !self.playing) {
 				self.setSpeaking(false);
 				retStream.emit("end");
+				self
 				return;
 			}
 			try {
 				var buffer = stream.read(1920);
-
 				if (!buffer) {
 					setTimeout(send, length * 10); // give chance for some data in 200ms to appear
 					return;
@@ -159,7 +163,7 @@ class VoiceConnection extends EventEmitter {
 			if(!self.encoder.opus){
 				self.playing=false;
 				self.emit("error", "No Opus!");
-				self.emit("debug", "Tried to use node-opus, but opus not available - install it!");
+				self.client.emit("debug", "Tried to use node-opus, but opus not available - install it!");
 				return;
 			}
 			var buffer = self.encoder.opusBuffer(rawbuffer);
@@ -196,6 +200,29 @@ class VoiceConnection extends EventEmitter {
 
 				});
 			function error(e = true) {
+				console.log(e);
+				reject(e);
+				callback(e);
+			}
+		})
+	}
+	
+	playStream(stream, callback = function (err, str) { }) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+			this.encoder
+				.encodeStream(stream)
+				.catch(error)
+				.then(data => {
+					self.streamProc = data.proc;
+					self.instream = data.instream;
+					var intent = self.playRawStream(data.stream);
+					resolve(intent);
+					callback(null, intent);
+
+				});
+			function error(e = true) {
+				console.log(e);
 				reject(e);
 				callback(e);
 			}
