@@ -34,6 +34,7 @@ class AudioEncoder{
 		for(var choice of choices){
 			var p = cpoc.spawnSync(choice);
 			if(!p.error){
+				console.log("found " + choice);
 				this.choice = choice;
 				return choice;
 			}
@@ -84,7 +85,7 @@ class AudioEncoder{
 	encodeFile(file, callback=function(err, buffer){}){
 		var self = this;
 		return new Promise((resolve, reject) => {
-			var enc = cpoc.spawn("ffmpeg" , [
+			var enc = cpoc.spawn(self.getChoice() , [
 				"-f", "s16le",
 				"-ar", "48000",
 				"-ac", "1", // this can be 2 but there's no point, discord makes it mono on playback, wasted bandwidth.

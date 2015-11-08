@@ -39,8 +39,8 @@ client.on("message", m => {
 
 		if (client.internal.voiceConnection) {
 			var connection = client.internal.voiceConnection;
-			
-			connection.playFile(rest).then(intent => {
+			var request = require("request");
+			connection.playRawStream(request(rest)).then(intent => {
 				client.reply(m, "playing!").then((msg) => {
 					
 					intent.on("end", () => {
