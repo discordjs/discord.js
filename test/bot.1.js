@@ -4,6 +4,7 @@ var request = require("superagent");
 client.on("debug", (m) => console.log("[debug]", m));
 client.on("warn", (m) => console.log("[warn]", m));
 var start = Date.now();
+
 client.on("message", m => {
 	if (m.content === "&init") {
 		for (var channel of m.channel.server.channels) {
@@ -38,10 +39,8 @@ client.on("message", m => {
 		if (client.internal.voiceConnection) {
 			client.reply(m, "ok, I'll play that for you " + rest);
 			var connection = client.internal.voiceConnection;
-
-			var request = require("request");
 			
-			connection.playStream(request(rest));
+			connection.playFile(rest);
 		}
 	}
 });

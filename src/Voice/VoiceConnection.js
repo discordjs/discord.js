@@ -56,7 +56,7 @@ class VoiceConnection extends EventEmitter {
 		}
 	}
 
-	playRawStream(stream) {
+	playStream(stream) {
 
 		var self = this;
 
@@ -193,20 +193,19 @@ class VoiceConnection extends EventEmitter {
 				.catch(error)
 				.then(data => {
 					self.streamProc = data.proc;
-					var intent = self.playRawStream(data.stream);
+					var intent = self.playStream(data.stream);
 					resolve(intent);
 					callback(null, intent);
 
 				});
 			function error(e = true) {
-				console.log(e);
 				reject(e);
 				callback(e);
 			}
 		})
 	}
 	
-	playStream(stream, callback = function (err, str) { }) {
+	playRawStream(stream, callback = function (err, str) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 			this.encoder
@@ -215,13 +214,12 @@ class VoiceConnection extends EventEmitter {
 				.then(data => {
 					self.streamProc = data.proc;
 					self.instream = data.instream;
-					var intent = self.playRawStream(data.stream);
+					var intent = self.playStream(data.stream);
 					resolve(intent);
 					callback(null, intent);
 
 				});
 			function error(e = true) {
-				console.log(e);
 				reject(e);
 				callback(e);
 			}
