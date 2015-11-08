@@ -98,6 +98,14 @@ class Resolver {
 
 		return found;
 	}
+	
+	resolveVoiceChannel(resource) {
+		// resolveChannel will also work but this is more apt
+		if(resource instanceof VoiceChannel){
+			return resource;
+		}
+		return null;
+	}
 
 	resolveChannel(resource) {
 		/*

@@ -20,7 +20,8 @@ var User = require("../Structures/User.js"),
 	Server = require("../Structures/Server.js"),
 	Message = require("../Structures/Message.js"),
 	Role = require("../Structures/Role.js"),
-	Invite = require("../Structures/Invite.js");
+	Invite = require("../Structures/Invite.js"),
+	VoiceConnection = require("../Voice/VoiceConnection.js");
 
 var zlib;
 
@@ -39,8 +40,74 @@ class InternalClient {
 		this.channels = new Cache();
 		this.servers = new Cache();
 		this.private_channels = new Cache();
+		this.voiceConnection = null;
 		this.resolver = new Resolver(this);
 	}
+	
+	//def leaveVoiceChannel
+	leaveVoiceChannel(){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			if(self.voiceConnection){
+				self.voiceConnection.destroy();
+				self.voiceConnection = null;
+				resolve();
+			}else{
+				resolve();
+			}
+		});
+	}
+	
+	//def joinVoiceChannel
+	joinVoiceChannel(chann){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			var channel = self.resolver.resolveVoiceChannel(chann);
+			
+			if(channel){
+					
+					self.leaveVoiceChannel().then(next);
+					
+					function next(){
+						var session, token, server = channel.server, endpoint;
+						
+						var check = (m) => {
+							var data = JSON.parse(m);
+							if(data.t === "VOICE_STATE_UPDATE"){
+								session = data.d.session_id;
+							}else if(data.t === "VOICE_SERVER_UPDATE"){
+								token = data.d.token;
+								endpoint = data.d.endpoint;
+								var chan = self.voiceConnection = new VoiceConnection(channel, self.client, session, token, server, endpoint);
+								
+								chan.on("ready", resolve);
+								chan.on("error", reject);
+								
+								self.client.emit("debug", "removed temporary voice websocket listeners");
+								self.websocket.removeListener("message", check);
+								
+							}
+						};
+						
+						self.websocket.on("message", check);
+						self.sendWS({
+							op : 4,
+							d : {
+								"guild_id" : server.id,
+								"channel_id" : channel.id,
+								"self_mute" : false,
+								"self_deaf" : false
+							}
+						});
+					}
+			}else{
+				reject(new Error("voice channel does not exist"));
+			}
+			
+		});
+	}
+	
 	// def createServer
 	createServer(name, region = "london") {
 		var self = this;
@@ -766,7 +833,6 @@ class InternalClient {
 					.set("authorization", self.token)
 					.send(data)
 					.end(function (err) {
-						console.log(err);
 						if (err) {
 							reject(err);
 						} else {

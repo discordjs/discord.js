@@ -1,34 +1,15 @@
 module.exports = {
-	Client : require("./Client/Client.js")
+	Client : require("./Client/Client"),
+	Channel : require("./Structures/Channel"),
+	ChannelPermissions : require("./Structures/ChannelPermissions"),
+	Invite : require("./Structures/Invite"),
+	Message : require("./Structures/Message"),
+	PermissionOverwrite : require("./Structures/PermissionOverwrite"),
+	PMChannel : require("./Structures/PMChannel"),
+	Role : require("./Structures/Role"),
+	Server : require("./Structures/Server"),
+	ServerChannel : require("./Structures/ServerChannel"),
+	TextChannel : require("./Structures/TextChannel"),
+	User : require("./Structures/User"),
+	VoiceChannel : require("./Structures/VoiceChannel"),
 }
-
-var a = new module.exports.Client();
-a.on("debug", (m) => console.log("[debug]",m));
-a.on("warn", (m) => console.log("[warn]", m));
-var start = Date.now();
-a.on("message", m => {
-	if(m.content === "$$$"){
-		a.internal.setTopic(m.channel, "a channel topic!");
-	}
-});
-a.on("userTypingStart", (user, chan) => {
-	console.log(user.username + " typing");
-});
-a.on("userTypingStop", (user, chan) => {
-	console.log(user.username + " stopped typing");
-});
-a.on("ready", () => {
-	for(var server of a.internal.servers){
-		if(server.name === "craptown"){
-			a.leaveServer(server);
-		}
-	}
-});
-
-function error(e){
-	throw e;
-	process.exit(0);
-}
-
-
-a.login(process.env["discordEmail"], process.env["discordPass"]).catch((e)=>console.log(e));
