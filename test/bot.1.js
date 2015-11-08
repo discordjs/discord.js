@@ -9,6 +9,7 @@ client.on("message", m => {
 	if (m.content === "&init") {
 		for (var channel of m.channel.server.channels) {
 			if (channel instanceof Discord.VoiceChannel) {
+				client.reply(m, channel.name + " - " + channel.id);
 				client.joinVoiceChannel(channel).catch(error);
 				break;
 			}
@@ -30,17 +31,25 @@ client.on("message", m => {
 			var connection = client.internal.voiceConnection;
 			connection.playFile("C:/users/amish/desktop/" + rest);
 		}
-	} if (m.content.startsWith("$pipebitch")) {
+	} if (m.content.startsWith("pipeit")) {
 		var chan;
 		var rest = m.content.split(" ");
 		rest.splice(0, 1);
 		rest = rest.join(" ");
 
 		if (client.internal.voiceConnection) {
-			client.reply(m, "ok, I'll play that for you " + rest);
 			var connection = client.internal.voiceConnection;
 			
-			connection.playFile(rest);
+			connection.playFile(rest).then(intent => {
+				client.reply(m, "playing!").then((msg) => {
+					
+					intent.on("end", () => {
+						client.updateMessage(msg, "that song has finished now.");
+					});
+					
+				});
+				
+			});
 		}
 	}
 });
