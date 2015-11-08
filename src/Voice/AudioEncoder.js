@@ -34,7 +34,6 @@ class AudioEncoder{
 		for(var choice of choices){
 			var p = cpoc.spawnSync(choice);
 			if(!p.error){
-				console.log("found " + choice);
 				this.choice = choice;
 				return choice;
 			}
