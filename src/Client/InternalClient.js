@@ -120,7 +120,7 @@ class InternalClient {
 				.send({ name, region })
 				.end((err, res) => {
 					if (err) {
-						reject(new Error(err.response.text));
+						reject(new Error(err));
 					} else {
 						// valid server, wait until it is cached
 						var inter = setInterval(() => {
@@ -146,7 +146,7 @@ class InternalClient {
 					.set("authorization", self.token)
 					.end((err, res) => {
 						if (err) {
-							reject(new Error(err.response.text));
+							reject(new Error(err));
 						} else {
 							// remove channels of server then the server
 							for (var chan of server.channels) {
@@ -182,7 +182,7 @@ class InternalClient {
 							self.state = ConnectionState.DISCONNECTED;
 							self.websocket = null;
 							client.emit("disconnected");
-							reject(new Error(err.response.text));
+							reject(new Error(err));
 						} else {
 							var token = res.body.token;
 							self.state = ConnectionState.LOGGED_IN;
@@ -198,7 +198,7 @@ class InternalClient {
 							}).catch((e) => {
 								self.state = ConnectionState.DISCONNECTED;
 								client.emit("disconnected");
-								reject(new Error(err.response.text));
+								reject(new Error(err));
 							});
 						}
 
@@ -225,7 +225,7 @@ class InternalClient {
 				.set("authorization", self.token)
 				.end((err, res) => {
 					if (err) {
-						reject(new Error(err.response.text));
+						reject(new Error(err));
 					} else {
 						if (this.websocket) {
 							this.websocket.close();
@@ -259,7 +259,7 @@ class InternalClient {
 					})
 					.end((err, res) => {
 						if (err) {
-							reject(new Error(err.response.text));
+							reject(new Error(err));
 						} else {
 							resolve(self.private_channels.add(new PMChannel(res.body, self.client)));
 						}
@@ -314,7 +314,7 @@ class InternalClient {
 					})
 					.end((err, res) => {
 						if (err) {
-							reject(new Error(err.response.text));
+							reject(new Error(err));
 						} else {
 
 							resolve(
@@ -351,7 +351,7 @@ class InternalClient {
 						.set("authorization", self.token)
 						.end((err, res) => {
 							if (err) {
-								reject(new Error(err.response.text));
+								reject(new Error(err));
 							} else {
 								message.channel.messages.remove(message);
 								resolve();
@@ -389,7 +389,7 @@ class InternalClient {
 					})
 					.end((err, res) => {
 						if (err) {
-							reject(new Error(err.response.text));
+							reject(new Error(err));
 						} else {
 							resolve(
 								message.channel.messages.update
@@ -425,7 +425,7 @@ class InternalClient {
 					.end((err, res) => {
 
 						if (err) {
-							reject(new Error(err.response.text));
+							reject(new Error(err));
 						} else {
 							resolve(channel.messages.add(new Message(res.body, channel, self.client)));
 						}
@@ -467,7 +467,7 @@ class InternalClient {
 					.set("authorization", self.token)
 					.end((err, res) => {
 						if (err) {
-							reject(new Error(err.response.text));
+							reject(new Error(err));
 						} else {
 							var logs = [];
 							res.body.forEach((msg) => {
