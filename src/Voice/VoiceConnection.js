@@ -51,10 +51,9 @@ class VoiceConnection extends EventEmitter {
 		this.playing = false;
 		this.playingIntent = null;
 		if(this.instream){
-			console.log(this.instream);
-			this.instream.unpipe(this.streamProc);
-		}if (this.streamProc)
-			this.streamProc.destroy();
+			this.instream.end();
+			this.instream.destroy();
+		}
 	}
 
 	playRawStream(stream) {
