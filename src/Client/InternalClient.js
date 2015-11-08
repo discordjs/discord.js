@@ -1019,7 +1019,7 @@ class InternalClient {
 
 				case PacketType.MESSAGE_CREATE:
 					// format: https://discordapi.readthedocs.org/en/latest/reference/channels/messages.html#message-format
-					var channel = self.channels.get("id", data.channel_id);
+					var channel = self.channels.get("id", data.channel_id) || self.private_channels.get("id", data.channel_id);
 					if (channel) {
 						var msg = channel.messages.add(new Message(data, channel, client));
 						client.emit("message", msg);
@@ -1029,7 +1029,7 @@ class InternalClient {
 					break;
 				case PacketType.MESSAGE_DELETE:
 					// format https://discordapi.readthedocs.org/en/latest/reference/channels/messages.html#message-delete
-					var channel = self.channels.get("id", data.channel_id);
+					var channel = self.channels.get("id", data.channel_id) || self.private_channels.get("id", data.channel_id);
 					if (channel) {
 						// potentially blank
 						var msg = channel.messages.get("id", data.id);
@@ -1043,7 +1043,7 @@ class InternalClient {
 					break;
 				case PacketType.MESSAGE_UPDATE:
 					// format https://discordapi.readthedocs.org/en/latest/reference/channels/messages.html#message-format
-					var channel = self.channels.get("id", data.channel_id);
+					var channel = self.channels.get("id", data.channel_id)|| self.private_channels.get("id", data.channel_id);
 					if (channel) {
 						// potentially blank
 						var msg = channel.messages.get("id", data.id);
@@ -1311,7 +1311,7 @@ class InternalClient {
 				case PacketType.TYPING:
 
 					var user = self.users.get("id", data.user_id);
-					var channel = self.channels.get("id", data.channel_id);
+					var channel = self.channels.get("id", data.channel_id) || self.private_channels.get("id", data.channel_id);
 
 					if (user && channel) {
 						if (user.typing.since) {
