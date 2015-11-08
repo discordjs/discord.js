@@ -18,10 +18,10 @@ var VoicePacket = require("./VoicePacket.js");
 var StreamIntent = require("./StreamIntent.js");
 var EventEmitter = require("events");
 
-class VoiceConnection extends EventEmitter{
+class VoiceConnection extends EventEmitter {
 	constructor(channel, client, session, token, server, endpoint) {
 		super();
-		if(!Opus){
+		if (!Opus) {
 			console.log("HEY! WATCH OUT\n\n   discord.js needs node-opus, you don't have it installed.");
 		}
 		this.id = channel.id;
@@ -41,13 +41,22 @@ class VoiceConnection extends EventEmitter{
 		this.playing = false;
 		this.streamTime = 0;
 		this.streamProc = null;
+		this.KAI = null;
 		this.init();
 	}
 
+	destroy() {
+		this.stopPlaying();
+		if(this.KAI)
+			clearInterval(this.KAI);
+		this.vWS.close();
+		this.udp.close();
+	}
+
 	stopPlaying() {
-		this.playing=false;
+		this.playing = false;
 		this.playingIntent = null;
-		if(this.streamProc)
+		if (this.streamProc)
 			this.streamProc.kill();
 	}
 
@@ -78,12 +87,12 @@ class VoiceConnection extends EventEmitter{
 			}
 			try {
 				var buffer = stream.read(1920);
-				
+
 				if (!buffer) {
 					setTimeout(send, length * 10); // give chance for some data in 200ms to appear
 					return;
 				}
-				
+
 				if (buffer.length !== 1920) {
 					if (onWarning) {
 						retStream.emit("end");
@@ -126,21 +135,22 @@ class VoiceConnection extends EventEmitter{
 
 	setSpeaking(value) {
 		this.playing = value;
-		this.vWS.send(JSON.stringify({
-			op: 5,
-			d: {
-				speaking: value,
-				delay: 0
-			}
-		}));
+		if (this.vWS.readyState === WebSocket.OPEN)
+			this.vWS.send(JSON.stringify({
+				op: 5,
+				d: {
+					speaking: value,
+					delay: 0
+				}
+			}));
 	}
 
 	sendPacket(packet, callback = function (err) { }) {
 		var self = this;
 		self.playing = true;
 		try {
-			self.udp.send(packet, 0, packet.length, self.vWSData.port, self.endpoint, callback);
-
+			if (self.vWS.readyState === WebSocket.OPEN)
+				self.udp.send(packet, 0, packet.length, self.vWSData.port, self.endpoint, callback);
 		} catch (e) {
 			self.playing = false;
 			callback(e);
@@ -180,7 +190,7 @@ class VoiceConnection extends EventEmitter{
 				.encodeFile(stream)
 				.catch(error)
 				.then(data => {
-					
+
 					self.streamProc = data.proc;
 					var intent = self.playRawStream(data.stream);
 					resolve(intent);
@@ -251,16 +261,18 @@ class VoiceConnection extends EventEmitter{
 						self.vWSData = data.d;
 
 						KAI = setInterval(() => {
-							vWS.send(JSON.stringify({
-								op: 3,
-								d: null
-							}));
+							if (vWS.readyState === WebSocket.OPEN)
+								vWS.send(JSON.stringify({
+									op: 3,
+									d: null
+								}));
 						}, data.d.heartbeat_interval);
+						self.KAI = KAI;
 
 						var udpPacket = new Buffer(70);
 						udpPacket.writeUIntBE(data.d.ssrc, 0, 4);
 						udpClient.send(udpPacket, 0, udpPacket.length, data.d.port, self.endpoint, err => {
-							if(err)
+							if (err)
 								self.emit("error", err)
 						});
 						break;

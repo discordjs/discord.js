@@ -7,38 +7,25 @@ client.on("message", m => {
 	if(m.content === "&init"){
 		for(var channel of m.channel.server.channels){
 			if(channel instanceof Discord.VoiceChannel){
-				client.joinVoiceChannel(channel).catch(error)
-					.then(connection => {
-						connection.playFile("C:/users/amish/desktop/Developers.mp3");
-					});
+				client.joinVoiceChannel(channel).catch(error);
 				break;
 			}
 		}
 	}
 	if(m.content.startsWith("$$$ stop")){
-		for(var channel of m.channel.server.channels){
-			if(channel instanceof Discord.VoiceChannel){
-				chan = channel;
-				break;
-			}
-		}
-		if(client.internal.voiceConnections.get("id", chan.id)){
-			var connection = client.internal.voiceConnections.get("id", chan.id);
-			connection.stopPlaying();
+		if(client.internal.voiceConnection){
+			client.internal.voiceConnection.stopPlaying();
 		}
 		return;
 	}
 	if(m.content.startsWith("$$$")){
 		var chan;
-		for(var channel of m.channel.server.channels){
-			if(channel instanceof Discord.VoiceChannel){
-				chan = channel;
-				break;
-			}
-		}
-		if(client.internal.voiceConnections.get("id", chan.id)){
-			var connection = client.internal.voiceConnections.get("id", chan.id);
-			connection.playFile("C:/users/amish/desktop/Developers.mp3");
+		var rest = m.content.split(" ");
+		rest.splice(0, 1);
+		rest = rest.join(" ");
+		if(client.internal.voiceConnection){
+			var connection = client.internal.voiceConnection;
+			connection.playFile("C:/users/amish/desktop/"+rest);
 		}
 	}
 });

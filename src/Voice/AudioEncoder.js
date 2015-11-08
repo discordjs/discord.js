@@ -27,7 +27,7 @@ class AudioEncoder{
 				"pipe:1"
 			]);
 			
-			enc.stdout.on("readable", function() {
+			enc.stdout.once("readable", function() {
 				callback(null, {
 					proc : enc,
 					stream : enc.stdout
