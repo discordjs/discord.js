@@ -45,66 +45,66 @@ class InternalClient {
 	}
 	
 	//def leaveVoiceChannel
-	leaveVoiceChannel(){
+	leaveVoiceChannel() {
 		var self = this;
 		return new Promise((resolve, reject) => {
-			if(self.voiceConnection){
+			if (self.voiceConnection) {
 				self.voiceConnection.destroy();
 				self.voiceConnection = null;
 				resolve();
-			}else{
+			} else {
 				resolve();
 			}
 		});
 	}
 	
 	//def joinVoiceChannel
-	joinVoiceChannel(chann){
+	joinVoiceChannel(chann) {
 		var self = this;
 		return new Promise((resolve, reject) => {
-			
+
 			var channel = self.resolver.resolveVoiceChannel(chann);
-			
-			if(channel){
-					
-					self.leaveVoiceChannel().then(next);
-					
-					function next(){
-						var session, token, server = channel.server, endpoint;
-						
-						var check = (m) => {
-							var data = JSON.parse(m);
-							if(data.t === "VOICE_STATE_UPDATE"){
-								session = data.d.session_id;
-							}else if(data.t === "VOICE_SERVER_UPDATE"){
-								token = data.d.token;
-								endpoint = data.d.endpoint;
-								var chan = self.voiceConnection = new VoiceConnection(channel, self.client, session, token, server, endpoint);
-								
-								chan.on("ready", resolve);
-								chan.on("error", reject);
-								
-								self.client.emit("debug", "removed temporary voice websocket listeners");
-								self.websocket.removeListener("message", check);
-								
-							}
-						};
-						
-						self.websocket.on("message", check);
-						self.sendWS({
-							op : 4,
-							d : {
-								"guild_id" : server.id,
-								"channel_id" : channel.id,
-								"self_mute" : false,
-								"self_deaf" : false
-							}
-						});
-					}
-			}else{
+
+			if (channel) {
+
+				self.leaveVoiceChannel().then(next);
+
+				function next() {
+					var session, token, server = channel.server, endpoint;
+
+					var check = (m) => {
+						var data = JSON.parse(m);
+						if (data.t === "VOICE_STATE_UPDATE") {
+							session = data.d.session_id;
+						} else if (data.t === "VOICE_SERVER_UPDATE") {
+							token = data.d.token;
+							endpoint = data.d.endpoint;
+							var chan = self.voiceConnection = new VoiceConnection(channel, self.client, session, token, server, endpoint);
+
+							chan.on("ready", resolve);
+							chan.on("error", reject);
+
+							self.client.emit("debug", "removed temporary voice websocket listeners");
+							self.websocket.removeListener("message", check);
+
+						}
+					};
+
+					self.websocket.on("message", check);
+					self.sendWS({
+						op: 4,
+						d: {
+							"guild_id": server.id,
+							"channel_id": channel.id,
+							"self_mute": false,
+							"self_deaf": false
+						}
+					});
+				}
+			} else {
 				reject(new Error("voice channel does not exist"));
 			}
-			
+
 		});
 	}
 	
@@ -514,20 +514,20 @@ class InternalClient {
 	}
 	
 	// def deleteChannel
-	deleteChannel(_channel){
+	deleteChannel(_channel) {
 		var self = this;
 		return new Promise((resolve, reject) => {
-			
+
 			self.resolver.resolveChannel(_channel).then(next).catch(reject);
-			
-			function next(channel){
+
+			function next(channel) {
 				request
 					.del(Endpoints.CHANNEL(channel.id))
 					.set("authorization", self.token)
-					.end(function(err, res){
-						if(err){
+					.end(function (err, res) {
+						if (err) {
 							reject(err);
-						}else{
+						} else {
 							channel.server.channels.remove(channel);
 							self.channels.remove(channel);
 							resolve();
@@ -538,20 +538,20 @@ class InternalClient {
 	}
 	
 	// def banMember
-	banMember(user, server, length=1){
+	banMember(user, server, length = 1) {
 		var self = this;
 		return new Promise((resolve, reject) => {
-			
+
 			user = self.resolver.resolveUser(user);
 			server = self.resolver.resolveServer(server);
-			
+
 			request
-				.put(`${Endpoints.SERVER_BANS(server.id)}/${user.id}/?delete-message-days=${length}`)
+				.put(`${Endpoints.SERVER_BANS(server.id) }/${user.id}/?delete-message-days=${length}`)
 				.set("authorization", self.token)
 				.end((err, res) => {
-					if(err){
+					if (err) {
 						reject(err);
-					}else{
+					} else {
 						resolve();
 					}
 				});
@@ -559,277 +559,277 @@ class InternalClient {
 	}
 	
 	// def createRole
-	createRole(server, data){
+	createRole(server, data) {
 		var self = this;
 		return new Promise((resolve, reject) => {
-			
+
 			server = self.resolver.resolveServer(server);
-			
+
 			request
 				.post(Endpoints.SERVER_ROLES(server.id))
 				.set("authorization", self.token)
-				.end( (err, res) => {
-					if(err){
+				.end((err, res) => {
+					if (err) {
 						reject(err);
-					}else{
-						
+					} else {
+
 						var role = server.roles.add(new Role(res.body, server, self.client));
-						
-						if(data){
-							
+
+						if (data) {
+
 							self.updateRole(role, data)
 								.then(resolve)
 								.catch(reject);
-							
-						}else{
+
+						} else {
 							resolve(role);
 						}
-						
+
 					}
 				});
-			
+
 		});
 	}
 	// def updateRole
-	updateRole(role, data){
+	updateRole(role, data) {
 		var self = this;
 		data = data || {};
 		data.permissions = data.permissions || [];
 		return new Promise((resolve, reject) => {
-			
+
 			var server = self.resolver.resolveServer(role.server);
-			
+
 			var permissions = 0;
-			for(var perm of data.permissions){
-				if(perm instanceof String || typeof perm === "string"){
+			for (var perm of data.permissions) {
+				if (perm instanceof String || typeof perm === "string") {
 					permissions |= (Constants.Permissions[perm] || 0);
-				}else{
+				} else {
 					permissions |= perm;
 				}
 			}
-			
+
 			data.color = data.color || 0;
-			
+
 			request
-				.patch(Endpoints.SERVER_ROLES(server.id)+"/"+role.id)
+				.patch(Endpoints.SERVER_ROLES(server.id) + "/" + role.id)
 				.set("authorization", self.token)
 				.send({
-					color : data.color || role.color,
-					hoist : data.hoist || role.hoist,
-					name : data.name || role.name,
-					permissions : permissions
+					color: data.color || role.color,
+					hoist: data.hoist || role.hoist,
+					name: data.name || role.name,
+					permissions: permissions
 				})
 				.end((err, res) => {
-					if(err){
+					if (err) {
 						reject(err);
-					}else{
+					} else {
 						var nrole = new Role(res.body, server, self.client);
 						resolve(
 							server.roles.update(role, nrole)
-						);
+							);
 					}
 				});
-			
+
 		});
 	}
 	// def deleteRole
-	deleteRole(role){
+	deleteRole(role) {
 		var self = this;
 		return new Promise((resolve, reject) => {
-			
+
 			request
-				.del(Endpoints.SERVER_ROLES(role.server.id)+"/"+role.id)
+				.del(Endpoints.SERVER_ROLES(role.server.id) + "/" + role.id)
 				.set("authorization", self.token)
 				.end((err, res) => {
-					if(err){
+					if (err) {
 						reject(err);
-					}else{
+					} else {
 						resolve();
 						// the ws cache will handle it
 						// role.server.roles.remove(role);
 					}
 				});
-			
+
 		});
 	}
 	
 	//def addMemberToRole
-	addMemberToRole(member, role){
+	addMemberToRole(member, role) {
 		var self = this;
 		return new Promise((resolve, reject) => {
-			
+
 			member = self.resolver.resolveUser(member);
-			
-			if(!member || !role){
+
+			if (!member || !role) {
 				reject(new Error("member/role not in server"));
 				return;
 			}
-			
-			if(role.server.memberMap[member.id]){
-				
+
+			if (role.server.memberMap[member.id]) {
+
 				var roleIDS = role.server.memberMap[member.id].roles.map(r => r.id).concat(role.id);
-				
+
 				request
-					.patch(Endpoints.SERVER_MEMBERS(role.server.id)+"/"+member.id)
+					.patch(Endpoints.SERVER_MEMBERS(role.server.id) + "/" + member.id)
 					.set("authorization", self.token)
 					.send({
-						roles : roleIDS
+						roles: roleIDS
 					})
 					.end((err) => {
-						if(err){
+						if (err) {
 							reject(err);
-						}else{
+						} else {
 							resolve();
 						}
 					});
-				
-			}else{
+
+			} else {
 				reject(new Error("member not in server"));
 			}
-			
+
 		});
 	}
 	
 	//def removeMemberFromRole
-	removeMemberFromRole(member, role){
+	removeMemberFromRole(member, role) {
 		var self = this;
 		return new Promise((resolve, reject) => {
-			
+
 			member = self.resolver.resolveUser(member);
-			
-			if(!member || !role){
+
+			if (!member || !role) {
 				reject(new Error("member/role not in server"));
 				return;
 			}
-			
-			if(role.server.memberMap[member.id]){
-				
+
+			if (role.server.memberMap[member.id]) {
+
 				var roleIDS = role.server.memberMap[member.id].roles.map(r => r.id);
-				
-				for(var item in roleIDS){
-					if(roleIDS[item] === role.id){
+
+				for (var item in roleIDS) {
+					if (roleIDS[item] === role.id) {
 						roleIDS.splice(item, 1);
 					}
 				}
-				
+
 				request
-					.patch(Endpoints.SERVER_MEMBERS(role.server.id)+"/"+member.id)
+					.patch(Endpoints.SERVER_MEMBERS(role.server.id) + "/" + member.id)
 					.set("authorization", self.token)
 					.send({
-						roles : roleIDS
+						roles: roleIDS
 					})
 					.end((err) => {
-						if(err){
+						if (err) {
 							reject(err);
-						}else{
+						} else {
 							resolve();
 						}
 					});
-				
-			}else{
+
+			} else {
 				reject(new Error("member not in server"));
 			}
-			
+
 		});
 	}
 	
 	// def createInvite
-	createInvite(chanServ, options){
+	createInvite(chanServ, options) {
 		var self = this;
 		return new Promise((resolve, reject) => {
-			
-			if(chanServ instanceof Channel){
+
+			if (chanServ instanceof Channel) {
 				// do something
-			}else if(chanServ instanceof Server){
+			} else if (chanServ instanceof Server) {
 				// do something
-			}else{
+			} else {
 				chanServ = self.resolver.resolveServer(chanServ) || self.resolver.resolveChannel(chanServ);
 			}
-			
-			if(!chanServ){
+
+			if (!chanServ) {
 				reject(new Error("couldn't resolve where"));
 				return;
 			}
-			
-			if(!options){
-				options = {validate:null};
-			}else{
+
+			if (!options) {
+				options = { validate: null };
+			} else {
 				options.max_age = options.maxAge || 0;
 				options.max_uses = options.maxUses || 0;
 				options.temporary = options.temporary || false;
 				options.xkcdpass = options.xkcd || false;
 			}
-			
+
 			var epoint;
-			if(chanServ instanceof Channel){
+			if (chanServ instanceof Channel) {
 				epoint = Endpoints.CHANNEL_INVITES(chanServ.id);
-			}else{
+			} else {
 				epoint = Endpoints.SERVER_INVITES(chanServ.id);
 			}
-			
+
 			request
 				.post(epoint)
 				.set("authorization", self.token)
 				.send(options)
 				.end((err, res) => {
-					if(err){
+					if (err) {
 						reject(err);
-					}else{
+					} else {
 						resolve(new Invite(res.body, self.channels.get("id", res.body.channel.id), self.client));
 					}
 				});
-			
+
 		});
 	}
 	
 	//def overwritePermissions
-	overwritePermissions(channel, role, updated){
+	overwritePermissions(channel, role, updated) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 			channel = self.resolver.resolveChannel(channel).catch(reject).then(next);
-			function next(channel){
-				
+			function next(channel) {
+
 				var user;
-				if(role instanceof User){
+				if (role instanceof User) {
 					user = role;
 				}
-				
+
 				var data = {};
 				data.allow = 0;
 				data.deny = 0;
-				
+
 				updated.allow = updated.allow || [];
 				updated.deny = updated.deny || [];
-				
-				if(role instanceof Role){
+
+				if (role instanceof Role) {
 					data.id = role.id;
 					data.type = "role";
-				}else if(user){
+				} else if (user) {
 					data.id = user.id;
 					data.type = "member";
-				}else{
+				} else {
 					reject(new Error("role incorrect"));
 					return;
 				}
-				
-				for(var perm in updated){
-					if(updated[perm]){
-						if(perm instanceof String || typeof perm === "string"){
+
+				for (var perm in updated) {
+					if (updated[perm]) {
+						if (perm instanceof String || typeof perm === "string") {
 							data.allow |= (Constants.Permissions[perm] || 0);
-						}else{
+						} else {
 							data.allow |= perm;
 						}
-					}else{
-						if(perm instanceof String || typeof perm === "string"){
+					} else {
+						if (perm instanceof String || typeof perm === "string") {
 							data.deny |= (Constants.Permissions[perm] || 0);
-						}else{
+						} else {
 							data.deny |= perm;
 						}
 					}
 				}
-				
+
 				request
-					.put(Endpoints.CHANNEL_PERMISSIONS(channel.id)+"/"+data.id)
+					.put(Endpoints.CHANNEL_PERMISSIONS(channel.id) + "/" + data.id)
 					.set("authorization", self.token)
 					.send(data)
 					.end(function (err) {
@@ -839,104 +839,104 @@ class InternalClient {
 							resolve();
 						}
 					});
-				}
+			}
 		});
 	}
 	
 	//def setTopic
-	setTopic(chann, topic=""){
+	setTopic(chann, topic = "") {
 		var self = this;
 		return new Promise((resolve, reject) => {
-			
+
 			self.resolver.resolveChannel(chann).then(next).catch(reject);
-			
-			function next(channel){
-				
+
+			function next(channel) {
+
 				request
 					.patch(Endpoints.CHANNEL(channel.id))
 					.set("authorization", self.token)
 					.send({
-						name : channel.name,
-						position : 0,
-						topic : topic
+						name: channel.name,
+						position: 0,
+						topic: topic
 					})
 					.end((err, res) => {
-						if(err){
+						if (err) {
 							reject(err);
-						}else{
+						} else {
 							channel.topic = res.body.topic;
 							resolve();
 						}
 					})
-				
+
 			}
-			
+
 		});
 	}
 	//def setChannelName
-	setChannelName(chann, name="discordjs_is_the_best"){
+	setChannelName(chann, name = "discordjs_is_the_best") {
 		var self = this;
 		return new Promise((resolve, reject) => {
-			
+
 			self.resolver.resolveChannel(chann).then(next).catch(reject);
-			
-			function next(channel){
-				
+
+			function next(channel) {
+
 				request
 					.patch(Endpoints.CHANNEL(channel.id))
 					.set("authorization", self.token)
 					.send({
-						name : name,
-						position : 0,
-						topic : channel.topic
+						name: name,
+						position: 0,
+						topic: channel.topic
 					})
 					.end((err, res) => {
-						if(err){
+						if (err) {
 							reject(err);
-						}else{
+						} else {
 							channel.name = res.body.name;
 							resolve();
 						}
 					})
-				
+
 			}
-			
+
 		});
 	}
 	//def setChannelNameAndTopic
-	setChannelNameAndTopic(chann, name="discordjs_is_the_best", topic=""){
+	setChannelNameAndTopic(chann, name = "discordjs_is_the_best", topic = "") {
 		var self = this;
 		return new Promise((resolve, reject) => {
-			
+
 			self.resolver.resolveChannel(chann).then(next).catch(reject);
-			
-			function next(channel){
-				
+
+			function next(channel) {
+
 				request
 					.patch(Endpoints.CHANNEL(channel.id))
 					.set("authorization", self.token)
 					.send({
-						name : name,
-						position : 0,
-						topic : topic
+						name: name,
+						position: 0,
+						topic: topic
 					})
 					.end((err, res) => {
-						if(err){
+						if (err) {
 							reject(err);
-						}else{
+						} else {
 							channel.name = res.body.name;
 							channel.topic = res.body.topic;
 							resolve();
 						}
 					})
-				
+
 			}
-			
+
 		});
 	}
 	
 	//def updateChannel
-	updateChannel(chann, data){
+	updateChannel(chann, data) {
 		return this.setChannelNameAndTopic(chann, data.name, data.topic);
 	}
 
