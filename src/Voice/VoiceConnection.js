@@ -283,7 +283,7 @@ class VoiceConnection extends EventEmitter {
 						self.vWSData = data.d;
 
 						KAI = setInterval(() => {
-							if (vWS.readyState === WebSocket.OPEN)
+							if (vWS && vWS.readyState === WebSocket.OPEN)
 								vWS.send(JSON.stringify({
 									op: 3,
 									d: null
