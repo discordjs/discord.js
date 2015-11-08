@@ -15,6 +15,7 @@ class AudioEncoder{
 		if(opus){	
 			this.opus = new opus.OpusEncoder(48000, 1);
 		}
+		this.choice = false;
 	}
 	
 	opusBuffer(buffer){
@@ -23,10 +24,28 @@ class AudioEncoder{
 		
 	}
 	
+	getCommand(force){
+		
+		if(this.choice && force)
+			return choice;
+		
+		var choices = ["avconv", "ffmpeg"];
+		
+		for(var choice of choices){
+			var p = cpoc.spawnSync(choice);
+			if(!p.error){
+				this.choice = choice;
+				return choice;
+			}
+		}
+		
+		return "help";
+	}
+	
 	encodeStream(stream, callback=function(err, buffer){}){
 		var self = this;
 		return new Promise((resolve, reject) => {
-			var enc = cpoc.spawn("ffmpeg" , [
+			var enc = cpoc.spawn(self.getCommand() , [
 				"-f", "s16le",
 				"-ar", "48000",
 				"-ac", "1", // this can be 2 but there's no point, discord makes it mono on playback, wasted bandwidth.
