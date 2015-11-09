@@ -20,6 +20,9 @@ client.on("message", m => {
 			client.internal.voiceConnection.stopPlaying();
 		}
 		return;
+	}if (m.content.startsWith("$$$ leave")) {
+		client.internal.leaveVoiceChannel();
+		return;
 	}
 	if (m.content.startsWith("$$$")) {
 		var chan;

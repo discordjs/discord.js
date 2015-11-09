@@ -40,11 +40,23 @@ class VoiceConnection extends EventEmitter {
 	}
 
 	destroy() {
+		console.log("you wanted to destroy _me_?!");
 		this.stopPlaying();
 		if(this.KAI)
 			clearInterval(this.KAI);
 		this.vWS.close();
 		this.udp.close();
+		this.client.internal.sendWS(
+			{
+				op : 4,
+				d : {
+					guild_id : null,
+					channel_id : null,
+					self_mute : true,
+					self_deaf : false
+				}
+			}
+		);
 	}
 
 	stopPlaying() {
