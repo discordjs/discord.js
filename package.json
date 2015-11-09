@@ -2,7 +2,7 @@
   "name": "discord.js",
   "version": "4.1.1",
   "description": "A way to interface with the Discord API",
-  "main": "./lib/index.js",
+  "main": "./entrypoint.js",
   "scripts": {
     "test": "node ./test/bot.js"
   },
