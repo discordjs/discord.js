@@ -6,11 +6,11 @@ class ChannelPermissions{
 	constructor(permissions){
 		this.permissions = permissions;
 	}
-	
+
 	serialise(explicit){
-		
+
 		var hp = (perm) => this.hasPermission(perm, explicit);
-		
+
 		return {
 			// general
 			createInstantInvite : hp( Permissions.createInstantInvite ),
@@ -37,12 +37,12 @@ class ChannelPermissions{
 			voiceUseVAD : hp( Permissions.voiceUseVAD )
 		};
 	}
-	
+
 	serialize(){
 		// ;n;
 		return this.serialise();
 	}
-	
+
 	hasPermission(perm, explicit=false){
 		if( perm instanceof String || typeof perm === "string" ){
 			perm = Permissions[perm];

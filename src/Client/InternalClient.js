@@ -34,7 +34,7 @@ class InternalClient {
 		if (this.client.options.compress) {
 			zlib = require("zlib");
 		}
-		
+
 		// creates 4 caches with discriminators based on ID
 		this.users = new Cache();
 		this.channels = new Cache();
@@ -43,7 +43,7 @@ class InternalClient {
 		this.voiceConnection = null;
 		this.resolver = new Resolver(this);
 	}
-	
+
 	//def leaveVoiceChannel
 	leaveVoiceChannel() {
 		var self = this;
@@ -57,7 +57,7 @@ class InternalClient {
 			}
 		});
 	}
-	
+
 	//def joinVoiceChannel
 	joinVoiceChannel(chann) {
 		var self = this;
@@ -107,7 +107,7 @@ class InternalClient {
 
 		});
 	}
-	
+
 	// def createServer
 	createServer(name, region = "london") {
 		var self = this;
@@ -133,7 +133,7 @@ class InternalClient {
 				});
 		});
 	}
-	
+
 	//def leaveServer
 	leaveServer(srv) {
 		var self = this;
@@ -163,7 +163,7 @@ class InternalClient {
 			}
 		});
 	}
-	
+
 	// def login
 	login(email, password) {
 		var self = this;
@@ -241,7 +241,7 @@ class InternalClient {
 
 		});
 	}
-	
+
 	// def startPM
 	startPM(resUser) {
 		var self = this;
@@ -249,7 +249,7 @@ class InternalClient {
 			var user = self.resolver.resolveUser(resUser);
 
 			if (user) {
-				
+
 				// start the PM
 				request
 					.post(`${Endpoints.USER_CHANNELS(user.id) }`)
@@ -289,7 +289,7 @@ class InternalClient {
 
 		});
 	}
-	
+
 	// def sendMessage
 	sendMessage(where, _content, options = {}) {
 		var self = this;
@@ -365,7 +365,7 @@ class InternalClient {
 
 		});
 	}
-	
+
 	// def updateMessage
 	updateMessage(msg, _content, options = {}) {
 
@@ -405,7 +405,7 @@ class InternalClient {
 		});
 
 	}
-	
+
 	// def sendFile
 	sendFile(where, _file, name = "image.png") {
 		var self = this;
@@ -481,7 +481,32 @@ class InternalClient {
 
 		});
 	}
-	
+
+	// def getBans
+	getBans(server) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+
+			server = self.resolver.resolveChannel(server);
+
+			request
+				.del(`${Endpoints.SERVER_BANS(channel.id) }`)
+				.set("authorization", self.token)
+				.end((err, res) => {
+					if (err) {
+						reject(new Error(err));
+					} else {
+						var bans = [];
+						res.body.forEach((ban) => {
+							bans.push(ban.user);
+						});
+						resolve(bans);
+					}
+				});
+
+		});
+	}
+
 	// def createChannel
 	createChannel(server, name, type = "text") {
 		var self = this;
@@ -512,7 +537,7 @@ class InternalClient {
 
 		});
 	}
-	
+
 	// def deleteChannel
 	deleteChannel(_channel) {
 		var self = this;
@@ -536,7 +561,7 @@ class InternalClient {
 			}
 		});
 	}
-	
+
 	// def banMember
 	banMember(user, server, length = 1) {
 		var self = this;
@@ -557,7 +582,48 @@ class InternalClient {
 				});
 		});
 	}
-	
+
+	// def unbanMember
+	unbanMember(user, server) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+
+			server = self.resolver.resolveServer(server);
+
+			request
+				.delete(`${Endpoints.SERVER_BANS(server.id) }/${user.id}`)
+				.set("authorization", self.token)
+				.end((err, res) => {
+					if (err) {
+						reject(err);
+					} else {
+						resolve();
+					}
+				});
+		});
+	}
+
+	// def kickMember
+	kickMember(user, server) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+
+			user = self.resolver.resolveUser(user);
+			server = self.resolver.resolveServer(server);
+
+			request
+				.delete(`${Endpoints.SERVER_MEMBERS(server.id) }/${user.id}`)
+				.set("authorization", self.token)
+				.end((err, res) => {
+					if (err) {
+						reject(err);
+					} else {
+						resolve();
+					}
+				});
+		});
+	}
+
 	// def createRole
 	createRole(server, data) {
 		var self = this;
@@ -652,7 +718,7 @@ class InternalClient {
 
 		});
 	}
-	
+
 	//def addMemberToRole
 	addMemberToRole(member, role) {
 		var self = this;
@@ -689,7 +755,7 @@ class InternalClient {
 
 		});
 	}
-	
+
 	//def removeMemberFromRole
 	removeMemberFromRole(member, role) {
 		var self = this;
@@ -732,7 +798,7 @@ class InternalClient {
 
 		});
 	}
-	
+
 	// def createInvite
 	createInvite(chanServ, options) {
 		var self = this;
@@ -781,7 +847,7 @@ class InternalClient {
 
 		});
 	}
-	
+
 	//def overwritePermissions
 	overwritePermissions(channel, role, updated) {
 		var self = this;
@@ -842,7 +908,7 @@ class InternalClient {
 			}
 		});
 	}
-	
+
 	//def setTopic
 	setTopic(chann, topic = "") {
 		var self = this;
@@ -934,7 +1000,7 @@ class InternalClient {
 
 		});
 	}
-	
+
 	//def updateChannel
 	updateChannel(chann, data) {
 		return this.setChannelNameAndTopic(chann, data.name, data.topic);

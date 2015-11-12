@@ -14,18 +14,18 @@ class Message{
 		this.timestamp = Date.parse(data.timestamp);
 		this.everyoneMentioned = data.mention_everyone;
 		this.id = data.id;
-		
+
 		if(data.edited_timestamp)
 			this.editedTimestamp = Date.parse(data.edited_timestamp);
-		
+
 		if(data.author instanceof User)
 			this.author = data.author;
 		else
 			this.author = client.internal.users.add(new User(data.author, client));
-		
+
 		this.content = data.content;
 		this.mentions = new Cache();
-		
+
 		data.mentions.forEach((mention) => {
 			// this is .add and not .get because it allows the bot to cache
 			// users from messages from logs who may have left the server and were
@@ -36,7 +36,7 @@ class Message{
 				this.mentions.add(client.internal.users.add(new User(mention, client)));
 		});
 	}
-	
+
 	toString(){
 		return this.content;
 	}

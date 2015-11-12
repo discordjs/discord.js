@@ -40,11 +40,11 @@ class Role{
 		this.server = server;
 		this.client = client;
 	}
-	
+
 	serialise(explicit){
-		
+
 		var hp = (perm) => this.hasPermission(perm, explicit);
-		
+
 		return {
 			// general
 			createInstantInvite : hp( Permissions.createInstantInvite ),
@@ -71,12 +71,12 @@ class Role{
 			voiceUseVAD : hp( Permissions.voiceUseVAD )
 		};
 	}
-	
+
 	serialize(){
 		// ;n;
 		return this.serialise();
 	}
-	
+
 	hasPermission(perm, explicit=false){
 		if( perm instanceof String || typeof perm === "string" ){
 			perm = Permissions[perm];
@@ -93,10 +93,10 @@ class Role{
 		// e.g.
 		// !!(36953089 & Permissions.manageRoles) = not allowed to manage roles
 		// !!(36953089 & (1 << 21)) = voice speak allowed
-		
+
 		return !!(this.permissions & perm);
 	}
-	
+
 	setPermission(permission, value){
 		if( permission instanceof String || typeof permission === "string" ){
 			permission = Permissions[permission];
@@ -110,7 +110,7 @@ class Role{
 			}
 		}
 	}
-	
+
 	setPermissions(obj){
 		obj.forEach((value, permission) => {
 			if( permission instanceof String || typeof permission === "string" ){
@@ -122,7 +122,7 @@ class Role{
 			}
 		});
 	}
-	
+
 	colorAsHex(){
 		var val = this.color.toString();
 		while(val.length < 6){

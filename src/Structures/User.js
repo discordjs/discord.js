@@ -18,7 +18,7 @@ class User extends Equality{
 			channel : null
 		};
 	}
-	
+
 	get avatarURL(){
 		if(!this.avatar){
 			return null;
@@ -26,15 +26,15 @@ class User extends Equality{
 			return Endpoints.AVATAR(this.id, this.avatar);
 		}
 	}
-	
+
 	mention(){
 		return `<@${this.id}>`;
 	}
-	
+
 	toString(){
 		return this.mention();
 	}
-	
+
 	equalsStrict(obj){
 		if(obj instanceof User)
 			return (

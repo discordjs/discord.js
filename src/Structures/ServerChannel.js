@@ -16,7 +16,7 @@ class ServerChannel extends Channel{
 			this.permissionOverwrites.add( new PermissionOverwrite(permission) );
 		});
 	}
-	
+
 	permissionsOf(user){
 		user = this.client.internal.resolver.resolveUser(user);
 		if(user){
@@ -24,11 +24,11 @@ class ServerChannel extends Channel{
 				return new ChannelPermissions(4294967295);
 			}
 			var everyoneRole = this.server.roles.get("name", "@everyone");
-			
+
 			var userRoles = [everyoneRole].concat(this.server.rolesOf(user) || []);
 			var userRolesID = userRoles.map((v) => v.id);
 			var roleOverwrites = [], memberOverwrites = [];
-			
+
 			this.permissionOverwrites.forEach((overwrite) => {
 				if(overwrite.type === "member" && overwrite.id === user.id){
 					memberOverwrites.push(overwrite);
@@ -36,29 +36,29 @@ class ServerChannel extends Channel{
 					roleOverwrites.push(overwrite);
 				}
 			});
-			
+
 			var permissions = 0;
-			
+
 			for(var serverRole of userRoles){
 				permissions |= serverRole.permissions;
 			}
-			
+
 			for(var overwrite of roleOverwrites.concat(memberOverwrites)){
 				permissions = permissions & ~overwrite.deny;
 				permissions = permissions | overwrite.allow;
 			}
-			
+
 			return new ChannelPermissions(permissions);
-			
+
 		}else{
 			return null;
 		}
 	}
-	
+
 	permsOf(user){
 		return this.permissionsOf(user);
 	}
-	
+
 	toString(){
 		return this.name;
 	}

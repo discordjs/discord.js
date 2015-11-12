@@ -15,7 +15,7 @@ class Resolver {
 	constructor(internal) {
 		this.internal = internal;
 	}
-	
+
 	resolveServer(resource){
 		if(resource instanceof Server){
 			return resource;
@@ -49,10 +49,10 @@ class Resolver {
 	}
 
 	resolveString(resource) {
-		
+
 		// accepts Array, Channel, Server, User, Message, String and anything
 		// toString()-able
-		
+
 		var final = resource;
 		if (resource instanceof Array) {
 			final = resource.join("\n");
@@ -98,7 +98,7 @@ class Resolver {
 
 		return found;
 	}
-	
+
 	resolveVoiceChannel(resource) {
 		// resolveChannel will also work but this is more apt
 		if(resource instanceof VoiceChannel){
