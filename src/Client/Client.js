@@ -29,6 +29,10 @@ class Client extends EventEmitter {
 	get privateChannels(){
 		return this.internal.private_channels;
 	}
+	
+	get voiceConnection(){
+		return this.internal.voiceConnection;
+	}
 
 	// def login
 	login(email, password, cb = function (err, token) { }) {

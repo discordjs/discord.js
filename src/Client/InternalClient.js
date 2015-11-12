@@ -487,10 +487,10 @@ class InternalClient {
 		var self = this;
 		return new Promise((resolve, reject) => {
 
-			server = self.resolver.resolveChannel(server);
+			server = self.resolver.resolveServer(server);
 
 			request
-				.del(`${Endpoints.SERVER_BANS(channel.id) }`)
+				.del(`${Endpoints.SERVER_BANS(server.id) }`)
 				.set("authorization", self.token)
 				.end((err, res) => {
 					if (err) {
@@ -498,7 +498,7 @@ class InternalClient {
 					} else {
 						var bans = [];
 						res.body.forEach((ban) => {
-							bans.push(ban.user);
+							bans.push(self.users.add(new User(ban.user, self.client)));
 						});
 						resolve(bans);
 					}
@@ -589,9 +589,10 @@ class InternalClient {
 		return new Promise((resolve, reject) => {
 
 			server = self.resolver.resolveServer(server);
+			user = self.resolver.resolveUser(user);
 
 			request
-				.delete(`${Endpoints.SERVER_BANS(server.id) }/${user.id}`)
+				.del(`${Endpoints.SERVER_BANS(server.id) }/${user.id}`)
 				.set("authorization", self.token)
 				.end((err, res) => {
 					if (err) {
@@ -612,7 +613,7 @@ class InternalClient {
 			server = self.resolver.resolveServer(server);
 
 			request
-				.delete(`${Endpoints.SERVER_MEMBERS(server.id) }/${user.id}`)
+				.del(`${Endpoints.SERVER_MEMBERS(server.id) }/${user.id}`)
 				.set("authorization", self.token)
 				.end((err, res) => {
 					if (err) {
