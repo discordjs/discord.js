@@ -211,6 +211,25 @@ class Client extends EventEmitter {
 
 	}
 
+	// def getBans
+	getBans(where, callback=function(err, bans){}){
+
+		var self = this;
+		return new Promise((resolve, reject) => {
+			self.internal.getBans(where)
+				.then( bans => {
+					callback(null, bans);
+					resolve(bans);
+				})
+				.catch( e => {
+					callback(e);
+					reject(e);
+				});
+
+		});
+
+	}
+
 	// def sendFile
 	sendFile(where, attachment, name="image.png", callback=function(err, m){}){
 		var self = this;

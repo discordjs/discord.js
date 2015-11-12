@@ -482,6 +482,31 @@ class InternalClient {
 		});
 	}
 
+	// def getBans
+	getBans(server) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+
+			server = self.resolver.resolveChannel(server);
+
+			request
+				.del(`${Endpoints.SERVER_BANS(channel.id) }`)
+				.set("authorization", self.token)
+				.end((err, res) => {
+					if (err) {
+						reject(new Error(err));
+					} else {
+						var bans = [];
+						res.body.forEach((ban) => {
+							bans.push(ban.user);
+						});
+						resolve(bans);
+					}
+				});
+
+		});
+	}
+
 	// def createChannel
 	createChannel(server, name, type = "text") {
 		var self = this;
@@ -563,7 +588,6 @@ class InternalClient {
 		var self = this;
 		return new Promise((resolve, reject) => {
 
-			user = self.resolver.resolveUser(user);
 			server = self.resolver.resolveServer(server);
 
 			request
