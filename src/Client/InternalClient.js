@@ -490,7 +490,7 @@ class InternalClient {
 			server = self.resolver.resolveServer(server);
 
 			request
-				.del(`${Endpoints.SERVER_BANS(server.id) }`)
+				.get(`${Endpoints.SERVER_BANS(server.id) }`)
 				.set("authorization", self.token)
 				.end((err, res) => {
 					if (err) {
