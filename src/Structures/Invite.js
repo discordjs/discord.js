@@ -17,7 +17,7 @@ class Invite{
         this.inviter = client.internal.users.get("id", data.inviter.id);
         this.xkcd = data.xkcdpass;
 	}
-    
+
     toString(){
         return `https://discord.gg/${this.code}`;
     }

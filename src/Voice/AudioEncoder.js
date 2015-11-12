@@ -12,25 +12,25 @@ var VoicePacket = require("./VoicePacket.js");
 
 class AudioEncoder{
 	constructor(){
-		if(opus){	
+		if(opus){
 			this.opus = new opus.OpusEncoder(48000, 1);
 		}
 		this.choice = false;
 	}
-	
+
 	opusBuffer(buffer){
-		
+
 		return this.opus.encode(buffer, 1920);
-		
+
 	}
-	
+
 	getCommand(force){
-		
+
 		if(this.choice && force)
 			return choice;
-		
+
 		var choices = ["avconv", "ffmpeg"];
-		
+
 		for(var choice of choices){
 			var p = cpoc.spawnSync(choice);
 			if(!p.error){
@@ -38,10 +38,10 @@ class AudioEncoder{
 				return choice;
 			}
 		}
-		
+
 		return "help";
 	}
-	
+
 	encodeStream(stream, callback=function(err, buffer){}){
 		var self = this;
 		return new Promise((resolve, reject) => {
@@ -53,9 +53,9 @@ class AudioEncoder{
 				"pipe:1",
 				"-i", "-"
 			]);
-			
+
 			stream.pipe(enc.stdin);
-			
+
 			enc.stdout.once("readable", function() {
 				callback(null, {
 					proc : enc,
@@ -68,19 +68,19 @@ class AudioEncoder{
 					instream : stream
 				});
 			});
-			
+
 			enc.stdout.on("end", function() {
 				callback("end");
 				reject("end");
 			});
-						
+
 			enc.stdout.on("close", function() {
 				callback("close");
 				reject("close");
 			});
 		});
 	}
-	
+
 	encodeFile(file, callback=function(err, buffer){}){
 		var self = this;
 		return new Promise((resolve, reject) => {
@@ -92,7 +92,7 @@ class AudioEncoder{
 				"pipe:1",
 				"-i", file
 			]);
-			
+
 			enc.stdout.once("readable", function() {
 				callback(null, {
 					proc : enc,
@@ -103,12 +103,12 @@ class AudioEncoder{
 					stream : enc.stdout
 				});
 			});
-			
+
 			enc.stdout.on("end", function() {
 				callback("end");
 				reject("end");
 			});
-						
+
 			enc.stdout.on("close", function() {
 				callback("close");
 				reject("close");

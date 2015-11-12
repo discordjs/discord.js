@@ -7,7 +7,7 @@ var Endpoints = {
 	GATEWAY: `${API}/gateway`,
 	USER_CHANNELS: (userID) => `${API}/users/${userID}/channels`,
 	AVATAR : (userID, avatar) => `${API}/users/${userID}/avatars/${avatar}.jpg`,
-	
+
 	// servers
 	SERVERS: `${API}/guilds`,
 	SERVER: (serverID) => `${Endpoints.SERVERS}/${serverID}`,
@@ -20,7 +20,7 @@ var Endpoints = {
 	SERVER_INTEGRATIONS: (serverID) => `${Endpoints.SERVER(serverID) }/integrations`,
 	SERVER_MEMBERS: (serverID) => `${Endpoints.SERVER(serverID) }/members`,
 	SERVER_CHANNELS: (serverID) => `${Endpoints.SERVER(serverID) }/channels`,
-	
+
 	// channels
 	CHANNELS: `${API}/channels`,
 	CHANNEL: (channelID) => `${Endpoints.CHANNELS}/${channelID}`,
@@ -57,7 +57,7 @@ var Permissions = {
 	voiceDeafenMembers: 1 << 23,
 	voiceMoveMembers: 1 << 24,
 	voiceUseVAD: 1 << 25
-	
+
 };
 
 var PacketType = {

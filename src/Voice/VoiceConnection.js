@@ -2,7 +2,7 @@
 /*
 	Major credit to izy521 who is the creator of
 	https://github.com/izy521/discord.io,
-	
+
 	without his help voice chat in discord.js would not have
 	been possible!
 */
@@ -88,7 +88,7 @@ class VoiceConnection extends EventEmitter {
 		self.playingIntent = retStream;
 
 		function send() {
-			
+
 			if (!self.playingIntent || !self.playing) {
 				self.setSpeaking(false);
 				retStream.emit("end");
@@ -216,7 +216,7 @@ class VoiceConnection extends EventEmitter {
 			}
 		})
 	}
-	
+
 	playRawStream(stream, callback = function (err, str) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {

@@ -3,7 +3,7 @@
 var Permissions = require("../Constants.js").Permissions;
 
 class PermissionOverwrite {
-	
+
 	constructor(data) {
 		this.id = data.id;
 		this.type = data.type; // member or role
@@ -19,14 +19,14 @@ class PermissionOverwrite {
 				// these permissions do not exist in overwrites.
 				continue;
 			}
-			
+
 			if(!!(this.allow & Permissions[permName])){
 				allowed.push(permName);
 			}
 		}
 		return allowed;
 	}
-	
+
 	// returns an array of denied permissions
 	get denied(){
 		var denied = [];
@@ -35,14 +35,14 @@ class PermissionOverwrite {
 				// these permissions do not exist in overwrites.
 				continue;
 			}
-			
+
 			if(!!(this.deny & Permissions[permName])){
 				denied.push(permName);
 			}
 		}
 		return denied;
 	}
-	
+
 	setAllowed(allowedArray){
 		allowedArray.forEach( (permission) => {
 			if(permission instanceof String || typeof permission === "string"){
@@ -53,7 +53,7 @@ class PermissionOverwrite {
 			}
 		} );
 	}
-	
+
 	setDenied(deniedArray){
 		deniedArray.forEach( (permission) => {
 			if(permission instanceof String || typeof permission === "string"){
@@ -64,7 +64,7 @@ class PermissionOverwrite {
 			}
 		} );
 	}
-	
+
 }
 
 module.exports = PermissionOverwrite;
