@@ -40,7 +40,6 @@ class VoiceConnection extends EventEmitter {
 	}
 
 	destroy() {
-		console.log("you wanted to destroy _me_?!");
 		this.stopPlaying();
 		if(this.KAI)
 			clearInterval(this.KAI);
