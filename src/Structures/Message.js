@@ -2,6 +2,7 @@
 
 var Cache = require("../Util/Cache.js");
 var User = require("./User.js");
+var reg = require("../Util/ArgumentRegulariser.js").reg;
 
 class Message{
 	constructor(data, channel, client){
