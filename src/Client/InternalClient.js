@@ -42,6 +42,11 @@ class InternalClient {
 		this.private_channels = new Cache();
 		this.voiceConnection = null;
 		this.resolver = new Resolver(this);
+		this.readyTime = null;
+	}
+
+	get uptime() {
+		return (this.readyTime ? Date.now() - this.readyTime : null);
 	}
 
 	//def leaveVoiceChannel
@@ -699,6 +704,7 @@ class InternalClient {
 
 		});
 	}
+
 	// def deleteRole
 	deleteRole(role) {
 		var self = this;
@@ -910,6 +916,57 @@ class InternalClient {
 		});
 	}
 
+	//def setStatus
+	setStatus(idleStatus, gameID) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+
+			var packet = {
+				op: 3,
+				d: {
+					idle_since: null,
+					game_id: null
+				}
+			};
+
+			if (idleStatus) {
+				packet.d.idle_since = Date.now();
+			}
+			if (typeof gameID === "number") {
+				packet.d.game_id = gameID;
+			}
+
+			self.sendWS(packet);
+
+			resolve();
+		});
+	}
+
+	//def sendTyping
+	sendTyping(channel) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+
+			self.resolver.resolveChannel(channel).then(next).catch(reject);
+
+			function next(channel) {
+
+				request
+					.post(Endpoints.CHANNEL(channel.id) + "/typing")
+					.set("authorization", self.token)
+					.end((err, res) => {
+						if (err) {
+							reject(err);
+						} else {
+							resolve();
+						}
+					})
+
+			}
+
+		});
+	}
+
 	//def setTopic
 	setTopic(chann, topic = "") {
 		var self = this;
@@ -924,7 +981,7 @@ class InternalClient {
 					.set("authorization", self.token)
 					.send({
 						name: channel.name,
-						position: 0,
+						position: channel.position,
 						topic: topic
 					})
 					.end((err, res) => {
@@ -940,6 +997,7 @@ class InternalClient {
 
 		});
 	}
+
 	//def setChannelName
 	setChannelName(chann, name = "discordjs_is_the_best") {
 		var self = this;
@@ -954,7 +1012,7 @@ class InternalClient {
 					.set("authorization", self.token)
 					.send({
 						name: name,
-						position: 0,
+						position: channel.position,
 						topic: channel.topic
 					})
 					.end((err, res) => {
@@ -970,6 +1028,7 @@ class InternalClient {
 
 		});
 	}
+
 	//def setChannelNameAndTopic
 	setChannelNameAndTopic(chann, name = "discordjs_is_the_best", topic = "") {
 		var self = this;
@@ -984,7 +1043,7 @@ class InternalClient {
 					.set("authorization", self.token)
 					.send({
 						name: name,
-						position: 0,
+						position: channel.position,
 						topic: topic
 					})
 					.end((err, res) => {
@@ -1046,6 +1105,10 @@ class InternalClient {
 			client.emit("disconnected");
 		}
 
+		this.websocket.onerror = (e) => {
+			console.log(e);
+		}
+
 		this.websocket.onmessage = (e) => {
 
 			if (e.type === "Binary") {
@@ -1082,6 +1145,8 @@ class InternalClient {
 					client.emit("ready");
 					client.emit("debug", `ready packet took ${Date.now() - startTime}ms to process`);
 					client.emit("debug", `ready with ${self.servers.length} servers, ${self.channels.length} channels and ${self.users.length} users cached.`);
+
+					self.readyTime = Date.now();
 					break;
 
 				case PacketType.MESSAGE_CREATE:
