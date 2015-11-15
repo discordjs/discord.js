@@ -47,7 +47,7 @@ class Message{
 	}
 	
 	update(){
-		return this.client.update.apply(this.client, reg(this, arguments));
+		return this.client.updateMessage.apply(this.client, reg(this, arguments));
 	}
 	
 	reply(){
