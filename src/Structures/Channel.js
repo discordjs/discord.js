@@ -13,7 +13,7 @@ class Channel extends Equality{
 	}
 
 	delete(){
-		return this.client.internal.deleteChannel(this);
+		return this.client.deleteChannel.apply(this, arguments);
 	}
 
 }
