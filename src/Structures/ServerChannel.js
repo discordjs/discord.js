@@ -62,6 +62,10 @@ class ServerChannel extends Channel{
 	toString(){
 		return this.name;
 	}
+	
+	setName(){
+		return this.client.setChannelName.apply(this.client, reg(this, arguments));
+	}
 }
 
 module.exports = ServerChannel;
