@@ -31,6 +31,14 @@ class TextChannel extends ServerChannel{
 	update(){
 		return this.client.updateChannel.apply(this.client, reg(this, arguments));
 	}
+	
+	sendMessage(){
+		return this.client.sendMessage.apply(this.client, reg(this, arguments));
+	}
+	
+	sendTTSMessage(){
+		return this.client.sendTTSMessage.apply(this.client, reg(this, arguments));
+	}
 }
 
 module.exports = TextChannel;

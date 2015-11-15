@@ -4,6 +4,7 @@ var Channel = require("./Channel.js");
 var User = require("./User.js");
 var Equality = require("../Util/Equality.js");
 var Cache = require("../Util/Cache.js");
+var reg = require("../Util/ArgumentRegulariser.js").reg;
 
 class PMChannel extends Equality{
 	constructor(data, client){
@@ -24,6 +25,14 @@ class PMChannel extends Equality{
 
 	toString(){
 		return this.recipient.toString();
+	}
+	
+	sendMessage(){
+		return this.client.sendMessage.apply(this.client, reg(this, arguments));
+	}
+	
+	sendTTSMessage(){
+		return this.client.sendTTSMessage.apply(this.client, reg(this, arguments));
 	}
 }
 
