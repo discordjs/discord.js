@@ -41,6 +41,22 @@ class Message{
 	toString(){
 		return this.content;
 	}
+	
+	delete(){
+		return this.client.deleteMessage.apply(this.client, reg(this, arguments));
+	}
+	
+	update(){
+		return this.client.update.apply(this.client, reg(this, arguments));
+	}
+	
+	reply(){
+		return this.client.reply.apply(this.client, reg(this, arguments));
+	}
+	
+	replyTTS(){
+		return this.client.replyTTS.apply(this.client, reg(this, arguments));
+	}
 }
 
 module.exports = Message;
