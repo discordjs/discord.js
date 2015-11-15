@@ -4,6 +4,7 @@ var Channel = require("./Channel.js");
 var Cache = require("../Util/Cache.js");
 var PermissionOverwrite = require("./PermissionOverwrite.js");
 var ChannelPermissions = require("./ChannelPermissions.js");
+var reg = require("../Util/ArgumentRegulariser.js").reg;
 
 class ServerChannel extends Channel{
 	constructor(data, client, server){
