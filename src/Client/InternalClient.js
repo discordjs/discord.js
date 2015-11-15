@@ -1065,6 +1065,33 @@ class InternalClient {
 	updateChannel(chann, data) {
 		return this.setChannelNameAndTopic(chann, data.name, data.topic);
 	}
+	
+	//def ack
+	ack(msg){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			msg = self.resolver.resolveMessage(msg);
+			
+			if(msg){
+				
+				request		
+					.post(Endpoints.CHANNEL_MESSAGE(msg.channel.id, msg.id)+"/ack")
+					.set("authorization", self.token)
+					.end((err) => {
+						if(err){
+							reject(err);
+						}else{
+							resolve();
+						}
+					});
+				
+			}else{
+				reject(new Error("Message does not exist"));
+			}
+			
+		});
+	}
 
 	sendWS(object) {
 		if (this.websocket)
@@ -1155,6 +1182,7 @@ class InternalClient {
 					if (channel) {
 						var msg = channel.messages.add(new Message(data, channel, client));
 						client.emit("message", msg);
+						self.ack(msg);
 					} else {
 						client.emit("warn", "message created but channel is not cached");
 					}

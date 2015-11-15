@@ -2,6 +2,7 @@
 
 var Cache = require("../Util/Cache.js");
 var User = require("./User.js");
+var reg = require("../Util/ArgumentRegulariser.js").reg;
 
 class Message{
 	constructor(data, channel, client){
@@ -39,6 +40,22 @@ class Message{
 
 	toString(){
 		return this.content;
+	}
+	
+	delete(){
+		return this.client.deleteMessage.apply(this.client, reg(this, arguments));
+	}
+	
+	update(){
+		return this.client.updateMessage.apply(this.client, reg(this, arguments));
+	}
+	
+	reply(){
+		return this.client.reply.apply(this.client, reg(this, arguments));
+	}
+	
+	replyTTS(){
+		return this.client.replyTTS.apply(this.client, reg(this, arguments));
 	}
 }
 
