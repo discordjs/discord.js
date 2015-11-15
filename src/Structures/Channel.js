@@ -12,6 +12,10 @@ class Channel extends Equality{
 		this.client = client;
 	}
 
+	delete(){
+		return this.client.internal.deleteChannel(this);
+	}
+
 }
 
 module.exports = Channel;
