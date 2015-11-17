@@ -29,9 +29,17 @@ class Client extends EventEmitter {
 	get privateChannels(){
 		return this.internal.private_channels;
 	}
-	
+
 	get voiceConnection(){
 		return this.internal.voiceConnection;
+	}
+
+	get readyTime(){
+		return this.internal.readyTime;
+	}
+
+	get uptime(){
+		return this.internal.uptime;
 	}
 
 	// def login
@@ -495,6 +503,50 @@ class Client extends EventEmitter {
 				})
 
 		});
+	}
+
+	//def setStatus
+	setStatus(idleStatus, gameID, callback=function(err){}){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			if (typeof gameID === "function") {
+				// gameID is the callback
+				callback = gameID;
+			}
+			else if (typeof idleStatus === "function") {
+				// idleStatus is the callback
+				callback = idleStatus;
+			}
+
+			self.internal.setStatus(idleStatus, gameID)
+				.then(() => {
+					callback();
+					resolve();
+				})
+				.catch(e => {
+					callback(e);
+					reject(e);
+				});
+
+		})
+	}
+
+	//def sendTyping
+	sendTyping(channel, callback=function(err){}){
+		var self = this;
+		return new Promise((resolve, reject) => {
+
+			self.internal.sendTyping(channel)
+				.then(() => {
+					callback();
+					resolve();
+				})
+				.catch(e => {
+					callback(e);
+					reject(e);
+				});
+
+		})
 	}
 
 	// def setTopic

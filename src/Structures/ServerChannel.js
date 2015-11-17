@@ -11,6 +11,7 @@ class ServerChannel extends Channel{
 		super(data, client);
 		this.name = data.name;
 		this.type = data.type;
+		this.position = data.position;
 		this.permissionOverwrites = new Cache();
 		this.server = server;
 		data.permission_overwrites.forEach((permission) => {
