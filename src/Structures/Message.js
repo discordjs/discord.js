@@ -41,7 +41,7 @@ class Message{
 	isMentioned(user){
 		user = this.client.internal.resolver.resolveUser(user);
 		if (user) {
-			return this.mentions.has(user);
+			return this.mentions.has("id", user.id);
 		} else {
 			return false;
 		}
