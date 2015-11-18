@@ -143,17 +143,16 @@ class InternalClient {
 	joinServer(invite) {
 		var self = this;
 		return new Promise((resolve, reject) => {
-			
-			invite = self.resolver.resolveInvite(invite);
-			if(invite){
-				
+
+			invite = self.resolver.resolveInviteID(invite);
+			if (invite) {
 				request
-					.post(Endpoints.INVITE(invite.id))
+					.post(Endpoints.INVITE(invite))
 					.set("authorization", self.token)
 					.end((err, res) => {
-						if(err){
+						if (err) {
 							reject(err);
-						}else{
+						} else {
 							// valid server, wait until it is received via ws and cached
 							var inter = setInterval(() => {
 								if (self.servers.get("id", res.body.guild.id)) {
@@ -163,11 +162,11 @@ class InternalClient {
 							}, 20);
 						}
 					});
-				
-			}else{
+
+			} else {
 				reject(new Error("Not a valid invite"));
 			}
-			
+
 		});
 	}
 
@@ -1099,29 +1098,29 @@ class InternalClient {
 	}
 	
 	//def ack
-	ack(msg){
+	ack(msg) {
 		var self = this;
 		return new Promise((resolve, reject) => {
-			
+
 			msg = self.resolver.resolveMessage(msg);
-			
-			if(msg){
-				
-				request		
-					.post(Endpoints.CHANNEL_MESSAGE(msg.channel.id, msg.id)+"/ack")
+
+			if (msg) {
+
+				request
+					.post(Endpoints.CHANNEL_MESSAGE(msg.channel.id, msg.id) + "/ack")
 					.set("authorization", self.token)
 					.end((err) => {
-						if(err){
+						if (err) {
 							reject(err);
-						}else{
+						} else {
 							resolve();
 						}
 					});
-				
-			}else{
+
+			} else {
 				reject(new Error("Message does not exist"));
 			}
-			
+
 		});
 	}
 
@@ -1165,7 +1164,7 @@ class InternalClient {
 		}
 
 		this.websocket.onerror = (e) => {
-			console.log(e);
+			client.emit("error", e);
 		}
 
 		this.websocket.onmessage = (e) => {
@@ -1235,7 +1234,7 @@ class InternalClient {
 					break;
 				case PacketType.MESSAGE_UPDATE:
 					// format https://discordapi.readthedocs.org/en/latest/reference/channels/messages.html#message-format
-					var channel = self.channels.get("id", data.channel_id)|| self.private_channels.get("id", data.channel_id);
+					var channel = self.channels.get("id", data.channel_id) || self.private_channels.get("id", data.channel_id);
 					if (channel) {
 						// potentially blank
 						var msg = channel.messages.get("id", data.id);

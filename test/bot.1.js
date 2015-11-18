@@ -9,6 +9,10 @@ client.on("message", m => {
 	if(m.content === "death"){
 		m.channel.delete();
 	}
+	if (m.content.startsWith("join: ")) {
+		var invite = m.content.split(" ")[1];
+		client.joinServer(invite).then(console.log).catch(console.log);
+	}
 	if (m.content === "&init") {
 		for (var channel of m.channel.server.channels) {
 			if (channel instanceof Discord.VoiceChannel) {

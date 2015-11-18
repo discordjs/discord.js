@@ -17,9 +17,9 @@ class Resolver {
 		this.internal = internal;
 	}
 	
-	resolveInvite(resource){
+	resolveInviteID(resource){
 		if(resource instanceof Invite){
-			return resource;
+			return resource.id;
 		}else if (typeof resource == "string" || resource instanceof String) {
 
 			if (resource.indexOf("http") === 0) {

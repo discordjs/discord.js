@@ -41,6 +41,10 @@ class Client extends EventEmitter {
 	get uptime(){
 		return this.internal.uptime;
 	}
+	
+	get user() {
+		return this.internal.user;
+	}
 
 	// def login
 	login(email, password, cb = function (err, token) { }) {
@@ -259,6 +263,23 @@ class Client extends EventEmitter {
 		});
 	}
 
+	// def joinServer
+	joinServer(invite, callback = function (err, srv) { }) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+			self.internal.joinServer(invite)
+				.then(srv => {
+					callback(null, srv);
+					resolve(srv);
+				})
+				.catch(e => {
+					callback(e);
+					reject(e);
+				});
+		});
+	}
+
+	// def createServer
 	createServer(name, region="london", callback=function(err, srv){}){
 		var self = this;
 		return new Promise((resolve, reject) => {

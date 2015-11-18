@@ -64,7 +64,7 @@ class Server extends Equality {
 				var user = client.internal.users.get("id", presence.user.id);
 				if (user) {
 					user.status = presence.status;
-					user.gameId = presence.game_id;
+					user.gameID = presence.game_id;
 				}
 			}
 		}
