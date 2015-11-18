@@ -7,6 +7,7 @@ var Endpoints = {
 	GATEWAY: `${API}/gateway`,
 	USER_CHANNELS: (userID) => `${API}/users/${userID}/channels`,
 	AVATAR : (userID, avatar) => `${API}/users/${userID}/avatars/${avatar}.jpg`,
+	INVITE: (id) => `${API}/invite/${id}`,
 
 	// servers
 	SERVERS: `${API}/guilds`,

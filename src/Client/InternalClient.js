@@ -138,6 +138,38 @@ class InternalClient {
 				});
 		});
 	}
+	
+	//def joinServer
+	joinServer(invite) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			invite = self.resolver.resolveInvite(invite);
+			if(invite){
+				
+				request
+					.post(Endpoints.INVITE(invite.id))
+					.set("authorization", self.token)
+					.end((err, res) => {
+						if(err){
+							reject(err);
+						}else{
+							// valid server, wait until it is received via ws and cached
+							var inter = setInterval(() => {
+								if (self.servers.get("id", res.body.guild.id)) {
+									clearInterval(inter);
+									resolve(self.servers.get("id", res.body.guild.id));
+								}
+							}, 20);
+						}
+					});
+				
+			}else{
+				reject(new Error("Not a valid invite"));
+			}
+			
+		});
+	}
 
 	//def leaveServer
 	leaveServer(srv) {

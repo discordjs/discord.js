@@ -9,11 +9,28 @@ var User = require("../../Structures/User.js"),
 	ServerChannel = require("../../Structures/ServerChannel.js"),
 	PMChannel = require("../../Structures/PMChannel.js"),
 	Server = require("../../Structures/Server.js"),
-	Message = require("../../Structures/Message.js");
+	Message = require("../../Structures/Message.js"),
+	Invite = require("../../Structures/Invite.js");
 
 class Resolver {
 	constructor(internal) {
 		this.internal = internal;
+	}
+	
+	resolveInvite(resource){
+		if(resource instanceof Invite){
+			return resource;
+		}else if (typeof resource == "string" || resource instanceof String) {
+
+			if (resource.indexOf("http") === 0) {
+				var split = resource.split("/");
+				return split.pop();
+			} else {
+				return resource;
+			}
+
+		}
+		return null;
 	}
 
 	resolveServer(resource){
