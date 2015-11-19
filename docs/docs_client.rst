@@ -341,3 +341,78 @@ Sets the name and topic of a channel
 - **callback** - `function` taking the following:
 
 	- **error** - error if any occurred
+
+startTyping(channel, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Marks the client as typing in a channel.
+
+- **channel** - A `Channel Resolvable`_
+- **callback** - `function` taking the following:
+
+	- **error** - error if any occurred
+	
+stopTyping(channel, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Marks the client as not typing in a channel (takes a few seconds to go active).
+
+- **channel** - A `Channel Resolvable`_
+- **callback** - `function` taking the following:
+
+	- **error** - error if any occurred
+	
+updateDetails(details, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Updates the details of the client
+
+- **details** - `object` containing any of the following:
+
+	- **avatar** - `Base64 Resolvable`_, new avatar of the client
+	- **email** - `String`, new email of the client
+	- **newPassword** - `String`, new password of the client
+	- **username** - `String`, new username of the client
+- **callback** - `function` taking the following:
+
+	- **error** - error if any occurred
+	
+setAvatar(avatar, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sets the avatar of the client
+
+- **avatar** - `Base64 Resolvable`_, new avatar of the client
+- **callback** - `function` taking the following:
+
+	- **error** - error if any occurred
+	
+setUsername(name, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sets the username of the client
+
+- **username** - `String`, new username of the Client
+- **callback** - `function` taking the following:
+
+	- **error** - error if any occurred
+	
+joinVoiceChannel(channel, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Joins a Voice Channel to begin transmitting audio
+
+- **channel** - A `VoiceChannel Resolvable`_
+- **callback** - `function` that takes the following:
+
+	- **error** - error if any occurred
+	- **connection** - VoiceConnection_, the created Voice Connection.
+	
+leaveVoiceChannel(`callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Leaves the currently connected Voice Channel if connected
+
+- **callback** - `function` that takes the following:
+
+	- **error** - error if any occurred

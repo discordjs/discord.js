@@ -743,6 +743,22 @@ class Client extends EventEmitter {
 
 		});
 	}
+	
+	// def leaveVoiceChannel
+	leaveVoiceChannel(callback = function (err) { }) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+			self.internal.leaveVoiceChannel()
+				.then(() => {
+					callback();
+					resolve();
+				})
+				.catch(err => {
+					callback(err);
+					reject(err);
+				});
+		});
+	}
 }
 
 module.exports = Client;

@@ -87,7 +87,7 @@ class InternalClient {
 							endpoint = data.d.endpoint;
 							var chan = self.voiceConnection = new VoiceConnection(channel, self.client, session, token, server, endpoint);
 
-							chan.on("ready", resolve);
+							chan.on("ready", () => resolve(chan));
 							chan.on("error", reject);
 
 							self.client.emit("debug", "removed temporary voice websocket listeners");
@@ -1058,7 +1058,7 @@ class InternalClient {
 				.send({
 					avatar: self.resolver.resolveToBase64(data.avatar) || self.user.avatar,
 					email : data.email || self.email,
-					new_password : data.new_password || null,
+					new_password : data.newPassword || null,
 					password : data.password || self.password,
 					username : data.username || self.user.username
 				})
