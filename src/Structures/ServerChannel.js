@@ -60,7 +60,7 @@ class ServerChannel extends Channel{
 	permsOf(user){
 		return this.permissionsOf(user);
 	}
-	
+
 	mention(){
 		return `<#${this.id}>`;
 	}
@@ -68,7 +68,7 @@ class ServerChannel extends Channel{
 	toString(){
 		return this.mention();
 	}
-	
+
 	setName(){
 		return this.client.setChannelName.apply(this.client, reg(this, arguments));
 	}

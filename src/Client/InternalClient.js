@@ -139,7 +139,7 @@ class InternalClient {
 				});
 		});
 	}
-	
+
 	//def joinServer
 	joinServer(invite) {
 		var self = this;
@@ -728,9 +728,7 @@ class InternalClient {
 						reject(err);
 					} else {
 						var nrole = new Role(res.body, server, self.client);
-						resolve(
-							server.roles.update(role, nrole)
-							);
+						resolve(server.roles.update(role, nrole));
 					}
 				});
 
@@ -887,6 +885,31 @@ class InternalClient {
 		});
 	}
 
+	//def deleteInvite
+	deleteInvite(invite) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+
+			invite = self.resolver.resolveInviteID(invite);
+			if (invite) {
+				request
+					.del(Endpoints.INVITE(invite))
+					.set("authorization", self.token)
+					.end((err, res) => {
+						if (err) {
+							reject(err);
+						} else {
+							resolve();
+						}
+					});
+
+			} else {
+				reject(new Error("Not a valid invite"));
+			}
+
+		});
+	}
+
 	//def overwritePermissions
 	overwritePermissions(channel, role, updated) {
 		var self = this;
@@ -998,56 +1021,56 @@ class InternalClient {
 
 		});
 	}
-	
+
 	//def startTyping
 	startTyping(channel){
 		var self = this;
 		return new Promise((resolve, reject) => {
-			
+
 			self.resolver.resolveChannel(channel).then(next).catch(reject);
-			
+
 			function next(channel) {
-				
+
 				if(self.typingIntervals[channel.id]){
 					// typing interval already exists, leave it alone
 					reject(new Error("Already typing in that channel"));
 					return;
 				}
-				
+
 				self.sendTyping(channel);
-				
+
 				self.typingIntervals[channel.id] = setInterval(
 					() => self.sendTyping(channel), 4000
 				);
-			
+
 			}
-			
+
 		});
 	}
-	
+
 	//def stopTyping
 	stopTyping(channel){
 		var self = this;
 		return new Promise((resolve, reject) => {
-			
+
 			self.resolver.resolveChannel(channel).then(next).catch(reject);
-			
+
 			function next(channel) {
-				
+
 				if(!self.typingIntervals[channel.id]){
 					// typing interval doesn't exist
 					reject(new Error("Not typing in that channel"));
 					return;
 				}
-				
+
 				clearInterval(self.typingIntervals[channel.id]);
 				self.typingIntervals[channel.id] = false;
-			
+
 			}
-			
+
 		});
 	}
-	
+
 	//def updateDetails
 	updateDetails(data) {
 		var self = this;
@@ -1071,12 +1094,12 @@ class InternalClient {
 				});
 		});
 	}
-	
+
 	//def setAvatar
 	setAvatar(avatar) {
 		return this.updateDetails({avatar});
 	}
-	
+
 	//def setUsername
 	setUsername(username) {
 		return this.updateDetails({username});
@@ -1180,7 +1203,7 @@ class InternalClient {
 	updateChannel(chann, data) {
 		return this.setChannelNameAndTopic(chann, data.name, data.topic);
 	}
-	
+
 	//def ack
 	ack(msg) {
 		var self = this;

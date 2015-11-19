@@ -26,11 +26,11 @@ class PMChannel extends Equality{
 	toString(){
 		return this.recipient.toString();
 	}
-	
+
 	sendMessage(){
 		return this.client.sendMessage.apply(this.client, reg(this, arguments));
 	}
-	
+
 	sendTTSMessage(){
 		return this.client.sendTTSMessage.apply(this.client, reg(this, arguments));
 	}

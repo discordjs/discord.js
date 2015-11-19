@@ -420,6 +420,27 @@ class Client extends EventEmitter {
 		});
 	}
 
+	//def updateRole
+	updateRole(role, data = null, callback = function (err, res) { }) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+			if (typeof data === "function") {
+				// data is the callback
+				callback = data;
+			}
+			self.internal.updateRole(role, data)
+				.then((role) => {
+					callback(null, role);
+					resolve(role);
+				})
+				.catch(e => {
+					callback(e);
+					reject(e);
+				});
+
+		});
+	}
+
 	//def deleteRole
 	deleteRole(role, callback = function (err) { }) {
 
@@ -505,6 +526,22 @@ class Client extends EventEmitter {
 					reject(e);
 				});
 
+		});
+	}
+
+	// def deleteInvite
+	deleteInvite(invite, callback = function (err) { }) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+			self.internal.deleteInvite(invite)
+				.then(() => {
+					callback();
+					resolve();
+				})
+				.catch(e => {
+					callback(e);
+					reject(e);
+				});
 		});
 	}
 
@@ -641,7 +678,7 @@ class Client extends EventEmitter {
 
 		})
 	}
-	
+
 	//def startTyping
 	startTyping(channel, callback = function (err) { }) {
 		var self = this;
@@ -659,7 +696,7 @@ class Client extends EventEmitter {
 
 		});
 	}
-	
+
 	//def stopTyping
 	stopTyping(channel, callback = function (err) { }) {
 		var self = this;
@@ -677,7 +714,7 @@ class Client extends EventEmitter {
 
 		});
 	}
-	
+
 	//def updateDetails
 	updateDetails(details, callback = function (err) { }) {
 		var self = this;
@@ -693,7 +730,7 @@ class Client extends EventEmitter {
 				});
 		});
 	}
-	
+
 	//def setUsername
 	setUsername(name, callback = function (err) { }) {
 		var self = this;
@@ -725,7 +762,7 @@ class Client extends EventEmitter {
 				});
 		});
 	}
-	
+
 	//def joinVoiceChannel
 	joinVoiceChannel(channel, callback = function (err) { }) {
 		var self = this;
