@@ -497,3 +497,36 @@ Overwrites the permissions of a role or a user in a channel
 		"sendMessages" : false,
 		"attachFiles" : true
 	}
+	
+Events
+------
+
+`Discord.Client` is an EventEmitter, so you can use `.on()` and `.off()` to add and remove events.
+
+ready
+~~~~~
+
+Emitted when the client is ready to use
+
+debug
+~~~~~
+
+Emitted when the client debugs or wants to log something internally
+
+message
+~~~~~~~
+
+Emitted when the client receives a message, supplies a Message_ object.
+
+warn
+~~~~
+
+Emitted when the client has encountered a small error that can be avoided.
+
+messageDeleted
+~~~~~~~~~~~~~~
+
+Emitted when a message has been deleted and the Client finds out, supplies a Message_ object IF available.
+
+messageUpdated
+~~~~~~~~~~~~~~
