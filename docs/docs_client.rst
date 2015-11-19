@@ -566,3 +566,5 @@ Emitted when a message has been deleted and the Client finds out, supplies a Mes
 
 messageUpdated
 ~~~~~~~~~~~~~~
+
+Emitted when a message has been updated and the client finds out. Supplies two Message_ objects, the first being the new updated messages, the latter being the old message.
