@@ -163,7 +163,7 @@ class Resolver {
 			if (found)
 				resolve(found);
 			else
-				reject();
+				reject(new Error("not found anything"));
 		});
 
 	}
