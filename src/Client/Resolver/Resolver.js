@@ -1,4 +1,5 @@
 "use strict";
+/* global Buffer */
 
 var fs = require("fs");
 
@@ -16,11 +17,19 @@ class Resolver {
 	constructor(internal) {
 		this.internal = internal;
 	}
-	
-	resolveInviteID(resource){
-		if(resource instanceof Invite){
+
+	resolveToBase64(resource) {
+		if (resource instanceof Buffer) {
+			resource = resource.toString("base64");
+			resource = "data:image/jpg;base64," + resource;
+		}
+		return resource;
+	}
+
+	resolveInviteID(resource) {
+		if (resource instanceof Invite) {
 			return resource.id;
-		}else if (typeof resource == "string" || resource instanceof String) {
+		} else if (typeof resource == "string" || resource instanceof String) {
 
 			if (resource.indexOf("http") === 0) {
 				var split = resource.split("/");
@@ -33,15 +42,15 @@ class Resolver {
 		return null;
 	}
 
-	resolveServer(resource){
-		if(resource instanceof Server){
+	resolveServer(resource) {
+		if (resource instanceof Server) {
 			return resource;
-		}else if(resource instanceof ServerChannel){
+		} else if (resource instanceof ServerChannel) {
 			return resource.server;
-		}else if(resource instanceof String || typeof resource === "string"){
+		} else if (resource instanceof String || typeof resource === "string") {
 			return this.internal.servers.get("id", resource);
-		}else if(resource instanceof Message){
-			if(resource.channel instanceof TextChannel){
+		} else if (resource instanceof Message) {
+			if (resource.channel instanceof TextChannel) {
 				return resource.server;
 			}
 		}
@@ -118,7 +127,7 @@ class Resolver {
 
 	resolveVoiceChannel(resource) {
 		// resolveChannel will also work but this is more apt
-		if(resource instanceof VoiceChannel){
+		if (resource instanceof VoiceChannel) {
 			return resource;
 		}
 		return null;

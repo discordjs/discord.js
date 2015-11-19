@@ -13,6 +13,9 @@ client.on("message", m => {
 		client.stopTyping(m.channel);
 	} else if (m.content === "changename") {
 		client.setUsername("Hydrabot!");
+	} else if (m.content === "setav") {
+		var fs = require("fs");
+		client.setAvatar(fs.readFileSync("./test/image.png"));
 	}
 
 });

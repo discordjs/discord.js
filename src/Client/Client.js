@@ -710,6 +710,22 @@ class Client extends EventEmitter {
 		});
 	}
 
+	//def setAvatar
+	setAvatar(avatar, callback = function (err) { }) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+			self.internal.setAvatar(avatar)
+				.then(() => {
+					callback();
+					resolve();
+				})
+				.catch(err => {
+					callback(err);
+					reject(err);
+				});
+		});
+	}
+	
 	//def joinVoiceChannel
 	joinVoiceChannel(channel, callback = function (err) { }) {
 		var self = this;

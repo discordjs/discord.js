@@ -1056,7 +1056,7 @@ class InternalClient {
 				.patch(Endpoints.ME)
 				.set("authorization", self.token)
 				.send({
-					avatar: data.avatar || self.user.avatar,
+					avatar: self.resolver.resolveToBase64(data.avatar) || self.user.avatar,
 					email : data.email || self.email,
 					new_password : data.new_password || null,
 					password : data.password || self.password,
@@ -1070,6 +1070,11 @@ class InternalClient {
 					}
 				});
 		});
+	}
+	
+	//def setAvatar
+	setAvatar(avatar) {
+		return this.updateDetails({avatar});
 	}
 	
 	//def setUsername
