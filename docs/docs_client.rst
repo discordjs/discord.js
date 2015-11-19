@@ -1,0 +1,4 @@
+.. include:: ./vars.rst
+
+Client
+======
