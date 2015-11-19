@@ -416,3 +416,84 @@ Leaves the currently connected Voice Channel if connected
 - **callback** - `function` that takes the following:
 
 	- **error** - error if any occurred
+
+createRole(server, `data`, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Creates a new role in a server.
+
+- **server** - a `Server Resolvable`_
+- **data** - `object` containing the structure below
+- **callback** - `function` that takes the following:
+
+	- **error** - error if any occurred
+	- **role** - the created Role_
+	
+.. code-block:: js
+	
+	// structure of data parameter (all attrs optional):
+	
+	{
+		color : 0xFF0000,
+		hoist : false,
+		name : "A New Role!",
+		permissions : [
+			// see the constants documentation for full permissions
+			"attachFiles", "sendMessages"
+		]
+	}
+	
+deleteRole(role, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Deletes a role from a server
+
+- **role** - The Role_ to delete
+- **callback** - `function` that takes the following:
+
+	- **error** - error if any occurred
+	
+addMemberToRole(member, role, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Aliases** : `addUserToRole`
+
+Adds a member of a server to a role in the server
+
+- **member** - A `User Resolvable`_
+- **role** - A Role_
+- **callback** - `function` that takes the following:
+
+	- **error** - error if any occurred
+	
+removeMemberFromRole(member, role, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Aliases** : `removeUserFromRole`
+
+Removes a member of a server from a role in the server
+
+- **member** - A `User Resolvable`_
+- **role** - A Role_
+- **callback** - `function` that takes the following:
+
+	- **error** - error if any occurred
+	
+overwritePermissions(channel, roleOrUser, options, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Overwrites the permissions of a role or a user in a channel
+
+- **channel** - a `Channel Resolvable`_
+- **roleOrUser** - a Role_ or a User_ object
+- **options** - an `object` containing a structure as shown below
+- **callback** - `function` that takes the following:
+
+	- **error** - error if any occurred
+	
+.. code-block:: js
+
+	{
+		"sendMessages" : false,
+		"attachFiles" : true
+	}
