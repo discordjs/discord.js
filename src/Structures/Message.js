@@ -37,7 +37,7 @@ class Message{
 				this.mentions.add(client.internal.users.add(new User(mention, client)));
 		});
 	}
-	
+
 	isMentioned(user){
 		user = this.client.internal.resolver.resolveUser(user);
 		if (user) {
@@ -50,19 +50,19 @@ class Message{
 	toString(){
 		return this.content;
 	}
-	
+
 	delete(){
 		return this.client.deleteMessage.apply(this.client, reg(this, arguments));
 	}
-	
+
 	update(){
 		return this.client.updateMessage.apply(this.client, reg(this, arguments));
 	}
-	
+
 	reply(){
 		return this.client.reply.apply(this.client, reg(this, arguments));
 	}
-	
+
 	replyTTS(){
 		return this.client.replyTTS.apply(this.client, reg(this, arguments));
 	}

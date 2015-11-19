@@ -16,7 +16,7 @@ class Cache extends Array {
 		});
 		return found;
 	}
-	
+
 	has(key, value) {
 		return !!this.get(key, value);
 	}
