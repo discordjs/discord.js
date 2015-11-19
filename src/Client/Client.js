@@ -589,11 +589,11 @@ class Client extends EventEmitter {
 	}
 
 	//def setChannelName
-	setChannelName(channel, topic, callback = function (err) { }) {
+	setChannelName(channel, name, callback = function (err) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 
-			self.internal.setChannelName(channel, topic)
+			self.internal.setChannelName(channel, name)
 				.then(() => {
 					callback();
 					resolve();

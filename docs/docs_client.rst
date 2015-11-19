@@ -279,3 +279,65 @@ Removes a user from a server
 - **callback** - `function` taking the following:
 
 	- **error** - error if any occurred.
+	
+createInvite(channel, `options`, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Creates an invite for the specified channel (or server)
+
+- **channel** - A `Channel Resolvable`_
+- **options** - `object` containing:
+		
+	- **maxAge** - `Number` for maximum time in seconds for invite's validity
+	- **maxUses** - `Number`, maximum uses of invite
+	- **temporary** - `Boolean`, whether the invite should be temporary
+	- **xkcd** - `Boolean`, whether the invite should be human-readable-friendly.
+- **callback** - `function` taking the following:
+
+	- **error** - error if any occurred
+	- **invite** - the created Invite_
+	
+setStatus(status, `game`, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sets the Discord Status of the Client
+
+- **status** - `String`, either `online` or `idle`
+- **game** - `String/Number`, ID of Discord Game being played
+- **callback** - `function` taking the following:
+
+	- **error** - error if any occurred
+	
+setTopic(channel, topic, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sets the topic of a channel
+
+- **channel** - A `Channel Resolvable`_
+- **topic** - A `String`
+- **callback** - `function` taking the following:
+
+	- **error** - error if any occurred
+	
+setChannelName(channel, name, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sets the name of a channel
+
+- **channel** - A `Channel Resolvable`_
+- **name** - A `String`
+- **callback** - `function` taking the following:
+
+	- **error** - error if any occurred
+	
+setChannelNameAndTopic(channel, name, topic, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sets the name and topic of a channel
+
+- **channel** - A `Channel Resolvable`_
+- **name** - A `String`
+- **topic** - A `String`
+- **callback** - `function` taking the following:
+
+	- **error** - error if any occurred
