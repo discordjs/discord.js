@@ -190,3 +190,92 @@ Gets a list of banned users in a server.
 	- **error** - error if any occurred
 	- **users** - `array` of banned users in the server
 	
+joinServer(invite, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Joins a server from the given invite
+
+- **invite** - an `Invite Resolvable`_
+- **callback** - `function` taking the following:
+
+	- **error** - error if any occurred
+	- **server** - the joined Server_
+	
+createServer(name, region, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Creates a server
+
+- **name** - `String`, name of the server
+- **region** - `String`, region of the server, currently **us-west, us-east, singapore, london, sydney** or **amsterdam**
+- **callback** - `function` taking the following:
+	
+	- **error** - error if any occurred
+	- **server** - the created Server_
+	
+leaveServer(server, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Leaves/deletes a server that the client is in
+
+- **server** - a `Server Resolvable`_
+- **callback** - `function` taking the following:
+	
+	- **error** - error if any occurred
+	
+createChannel(server, name, `type`, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Creates a channel in a server
+
+- **server** - a `Server Resolvable`_
+- **name** - `String`, name of the channel. Spaces not allowed.
+- **type** -  defaults to `text`, but can also be `voice`
+- **callback** - `function` taking the following:
+	
+	- **error** - error if any occurred
+	- **channel** - the created ServerChannel_
+	
+deleteChannel(channel, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Deletes a channel in a server.
+
+- **channel** - a `Channel Resolvable`_ to delete
+- **callback** - `function` taking the following:
+
+	- **error** - error if any occurred.
+	
+banMember(user, server, `length`, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Bans a user from a server.
+
+- **user** - A `User Resolvable`_ to ban
+- **server** - A `Server Resolvable`_ to ban the user from
+- **length** - `Number`, how many days to go back and delete messages from that user
+- **callback** - `function` taking the following:
+
+	- **error** - error if any occurred.
+	
+unbanMember(user, server, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Unbans a user from a server.
+
+- **user** - A `User Resolvable`_ to unban
+- **server** - A `Server Resolvable`_ to unban the user from
+- **callback** - `function` taking the following:
+
+	- **error** - error if any occurred.
+	
+kickMember(user, server, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Removes a user from a server
+
+- **user** - A `User Resolvable`_ to kick
+- **server** - A `Server Resolvable`_ to kick the user from
+- **callback** - `function` taking the following:
+
+	- **error** - error if any occurred.
