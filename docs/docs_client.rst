@@ -497,6 +497,42 @@ Overwrites the permissions of a role or a user in a channel
 		"sendMessages" : false,
 		"attachFiles" : true
 	}
+
+updateRole(role, data, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Updates a role in a server.
+
+- **role** - a Role_
+- **data** - an `object` taking the structure shown below
+- **callback** - a `function` taking the following:
+
+	- **error** - error if any occurred
+	- **role** - the updated Role_
+
+.. code-block:: js
+	
+	// structure of data parameter (all attrs optional):
+	
+	{
+		color : 0xFF0000,
+		hoist : false,
+		name : "A New Role!",
+		permissions : [
+			// see the constants documentation for full permissions
+			"attachFiles", "sendMessages"
+		]
+	}
+	
+deleteInvite(invite, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Deletes an invite
+
+- **invite** - An `Invite ID Resolvable`_
+- **callback** - a `function` taking the following:
+
+	- **error** - error if any occurred
 	
 Events
 ------
