@@ -107,6 +107,19 @@ Sends a message to the specified channel.
 	- **error** - error object if any occurred
 	- **message** - the sent Message_
 	
+sendFile(channel, attachment, name, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sends a file to the specified channel.
+
+- **channel** - a `Channel Resolvable`_
+- **attachment** - A ReadableStream, String or Buffer
+- **name** - `String`, name of the file containing the extension
+- **callback** - `function` taking the following:
+
+	- **error** - error if any occurred
+	- **message** - the sent Message_
+	
 reply(message, content, `options`, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -149,3 +162,31 @@ Updates the content of a previously sent message
 
 	- **error** - error object if any occurred
 	- **message** - the sent Message_
+	
+getChannelLogs(channel, `limit`, `options`, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Gets a list of previously sent messages in a channel.
+
+- **channel** - The Channel_ to get messages from
+- **limit** - The maximum amount of messages to retrieve - defaults to 500. A `Number`
+- **options** - An `object` containing either of the following:
+
+	- **before** - A `Message Resolvable` - gets messages before this message.
+	- **after** - A `Message Resolvable` - gets messages after this message.
+- **callback** - `function` taking the following:
+
+	- **error** - error if any occurred
+	- **messages** - `array` of Message_ objects sent in channel
+	
+getBans(server, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Gets a list of banned users in a server.
+
+- **server** - `Server Resolvable` - The server to get banned users of
+- **callback** - `function` taking the following:
+
+	- **error** - error if any occurred
+	- **users** - `array` of banned users in the server
+	
