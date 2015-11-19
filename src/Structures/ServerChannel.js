@@ -62,7 +62,7 @@ class ServerChannel extends Channel{
 	}
 
 	toString(){
-		return this.name;
+		return `<#${this.id}>`;
 	}
 	
 	setName(){
