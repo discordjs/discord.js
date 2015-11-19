@@ -40,6 +40,7 @@ class InternalClient {
 		this.channels = new Cache();
 		this.servers = new Cache();
 		this.private_channels = new Cache();
+		this.typingIntervals = [];
 		this.voiceConnection = null;
 		this.resolver = new Resolver(this);
 		this.readyTime = null;
@@ -995,6 +996,55 @@ class InternalClient {
 
 			}
 
+		});
+	}
+	
+	//def startTyping
+	startTyping(channel){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			self.resolver.resolveChannel(channel).then(next).catch(reject);
+			
+			function next(channel) {
+				
+				if(self.typingIntervals[channel.id]){
+					// typing interval already exists, leave it alone
+					reject(new Error("Already typing in that channel"));
+					return;
+				}
+				
+				self.sendTyping(channel);
+				
+				self.typingIntervals[channel.id] = setInterval(
+					() => self.sendTyping(channel), 4000
+				);
+			
+			}
+			
+		});
+	}
+	
+	//def stopTyping
+	stopTyping(channel){
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			self.resolver.resolveChannel(channel).then(next).catch(reject);
+			
+			function next(channel) {
+				
+				if(!self.typingIntervals[channel.id]){
+					// typing interval doesn't exist
+					reject(new Error("Not typing in that channel"));
+					return;
+				}
+				
+				clearInterval(self.typingIntervals[channel.id]);
+				self.typingIntervals[channel.id] = false;
+			
+			}
+			
 		});
 	}
 

@@ -641,6 +641,42 @@ class Client extends EventEmitter {
 
 		})
 	}
+	
+	//def startTyping
+	startTyping(channel, callback = function (err) { }) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			self.internal.startTyping(channel)
+				.then(() => {
+					callback(null);
+					resolve();
+				})
+				.catch(e => {
+					callback(e);
+					reject(e);
+				});
+			
+		});
+	}
+	
+	//def stopTyping
+	stopTyping(channel, callback = function (err) { }) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+			
+			self.internal.stopTyping(channel)
+				.then(() => {
+					callback(null);
+					resolve();
+				})
+				.catch(e => {
+					callback(e);
+					reject(e);
+				});
+			
+		});
+	}
 
 	//def joinVoiceChannel
 	joinVoiceChannel(channel, callback=function(err){}){

@@ -60,9 +60,13 @@ class ServerChannel extends Channel{
 	permsOf(user){
 		return this.permissionsOf(user);
 	}
+	
+	mention(){
+		return `<#${this.id}>`;
+	}
 
 	toString(){
-		return `<#${this.id}>`;
+		return this.mention();
 	}
 	
 	setName(){
