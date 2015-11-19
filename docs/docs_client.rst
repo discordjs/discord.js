@@ -106,3 +106,46 @@ Sends a message to the specified channel.
 
 	- **error** - error object if any occurred
 	- **message** - the sent Message_
+	
+reply(message, content, `options`, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Shortcut to `sendMessage` but prepends a mention to the sender of the original message to the start of your message.
+
+- **message** - The Message_ to reply to
+- **content** - a `String Resolvable`_ - the message you want to send
+- **options** - `object` containing:
+
+	- **tts** - `Boolean`, should message be text-to-speech
+- **callback** - `function` that takes the following parameters:
+
+	- **error** - error object if any occurred
+	- **message** - the sent Message_
+	
+deleteMessage(message, `options`, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Attempts to delete a message
+
+- **message** - The Message_ to delete
+- **options** - `object` containing the following:
+
+	- **wait** - Milliseconds as a `number` to wait before deleting the message
+- **callback**
+
+	- **error** - error object if any occurred
+	
+updateMessage(message, content, `options`, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Updates the content of a previously sent message
+
+- **message** - The Message_ to update
+- **content** - a `String Resolvable`_ - the content you want to update the message with
+- **options** - `object` containing:
+
+	- **tts** - `Boolean`, should message be text-to-speech
+- **callback** - `function` that takes the following parameters:
+
+	- **error** - error object if any occurred
+	- **message** - the sent Message_
