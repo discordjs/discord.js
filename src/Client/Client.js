@@ -14,34 +14,34 @@ class Client extends EventEmitter {
 		this.internal = new InternalClient(this);
 	}
 
-	get users(){
+	get users() {
 		return this.internal.users;
 	}
 
-	get channels(){
+	get channels() {
 		return this.internal.channels;
 	}
 
-	get servers(){
+	get servers() {
 		return this.internal.servers;
 	}
 
-	get privateChannels(){
+	get privateChannels() {
 		return this.internal.private_channels;
 	}
 
-	get voiceConnection(){
+	get voiceConnection() {
 		return this.internal.voiceConnection;
 	}
 
-	get readyTime(){
+	get readyTime() {
 		return this.internal.readyTime;
 	}
 
-	get uptime(){
+	get uptime() {
 		return this.internal.uptime;
 	}
-	
+
 	get user() {
 		return this.internal.user;
 	}
@@ -183,7 +183,7 @@ class Client extends EventEmitter {
 		});
 	}
 	//def updateMessage
-	updateMessage(msg, content, options = {}, callback = function(err, msg){}) {
+	updateMessage(msg, content, options = {}, callback = function (err, msg) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 			if (typeof options === "function") {
@@ -205,7 +205,7 @@ class Client extends EventEmitter {
 	}
 
 	// def getChannelLogs
-	getChannelLogs(where, limit=500, options={}, callback=function(err, logs){}){
+	getChannelLogs(where, limit = 500, options = {}, callback = function (err, logs) { }) {
 
 		var self = this;
 		return new Promise((resolve, reject) => {
@@ -214,11 +214,11 @@ class Client extends EventEmitter {
 				callback = options;
 			}
 			self.internal.getChannelLogs(where, limit, options)
-				.then( logs => {
+				.then(logs => {
 					callback(null, logs);
 					resolve(logs);
 				})
-				.catch( e => {
+				.catch(e => {
 					callback(e);
 					reject(e);
 				});
@@ -228,16 +228,16 @@ class Client extends EventEmitter {
 	}
 
 	// def getBans
-	getBans(where, callback=function(err, bans){}){
+	getBans(where, callback = function (err, bans) { }) {
 
 		var self = this;
 		return new Promise((resolve, reject) => {
 			self.internal.getBans(where)
-				.then( bans => {
+				.then(bans => {
 					callback(null, bans);
 					resolve(bans);
 				})
-				.catch( e => {
+				.catch(e => {
 					callback(e);
 					reject(e);
 				});
@@ -247,15 +247,15 @@ class Client extends EventEmitter {
 	}
 
 	// def sendFile
-	sendFile(where, attachment, name="image.png", callback=function(err, m){}){
+	sendFile(where, attachment, name = "image.png", callback = function (err, m) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 			self.internal.sendFile(where, attachment, name)
-				.then( m => {
+				.then(m => {
 					callback(null, m);
 					resolve(m);
 				})
-				.catch( e => {
+				.catch(e => {
 					callback(e);
 					reject(e);
 				});
@@ -280,7 +280,7 @@ class Client extends EventEmitter {
 	}
 
 	// def createServer
-	createServer(name, region="london", callback=function(err, srv){}){
+	createServer(name, region = "london", callback = function (err, srv) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 			self.internal.createServer(name, region)
@@ -296,7 +296,7 @@ class Client extends EventEmitter {
 	}
 
 	// def leaveServer
-	leaveServer(server, callback=function(err){}){
+	leaveServer(server, callback = function (err) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 
@@ -312,7 +312,7 @@ class Client extends EventEmitter {
 	}
 
 	// def createChannel
-	createChannel(server, name, type="text", callback=function(err,channel){}){
+	createChannel(server, name, type = "text", callback = function (err, channel) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 			if (typeof type === "function") {
@@ -331,16 +331,16 @@ class Client extends EventEmitter {
 	}
 
 	// def deleteChannel
-	deleteChannel(channel, callback=function(err){}){
+	deleteChannel(channel, callback = function (err) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 
 			self.internal.deleteChannel(channel)
-				.then( () => {
+				.then(() => {
 					callback();
 					resolve();
 				})
-				.catch( e => {
+				.catch(e => {
 					callback(e); reject(e);
 				})
 
@@ -348,7 +348,7 @@ class Client extends EventEmitter {
 	}
 
 	//def banMember
-	banMember(user, server, length=1, callback=function(err){}){
+	banMember(user, server, length = 1, callback = function (err) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 			if (typeof length === "function") {
@@ -356,11 +356,11 @@ class Client extends EventEmitter {
 				callback = length;
 			}
 			self.internal.banMember(user, server, length)
-				.then( () => {
+				.then(() => {
 					callback();
 					resolve();
 				})
-				.catch( e => {
+				.catch(e => {
 					callback(e); reject(e);
 				})
 
@@ -368,15 +368,15 @@ class Client extends EventEmitter {
 	}
 
 	//def unbanMember
-	unbanMember(user, server, callback=function(err){}){
+	unbanMember(user, server, callback = function (err) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 			self.internal.unbanMember(user, server)
-				.then( () => {
+				.then(() => {
 					callback();
 					resolve();
 				})
-				.catch( e => {
+				.catch(e => {
 					callback(e); reject(e);
 				})
 
@@ -384,15 +384,15 @@ class Client extends EventEmitter {
 	}
 
 	//def kickMember
-	kickMember(user, server, callback=function(err){}){
+	kickMember(user, server, callback = function (err) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 			self.internal.kickMember(user, server)
-				.then( () => {
+				.then(() => {
 					callback();
 					resolve();
 				})
-				.catch( e => {
+				.catch(e => {
 					callback(e); reject(e);
 				})
 
@@ -400,9 +400,9 @@ class Client extends EventEmitter {
 	}
 
 	//def createRole
-	createRole(server, data=null, callback=function(err,res){}){
+	createRole(server, data = null, callback = function (err, res) { }) {
 		var self = this;
-		return new Promise((resolve, reject)=>{
+		return new Promise((resolve, reject) => {
 			if (typeof data === "function") {
 				// data is the callback
 				callback = data;
@@ -421,7 +421,7 @@ class Client extends EventEmitter {
 	}
 
 	//def deleteRole
-	deleteRole(role, callback=function(err){}){
+	deleteRole(role, callback = function (err) { }) {
 
 		var self = this;
 		return new Promise((resolve, reject) => {
@@ -441,7 +441,7 @@ class Client extends EventEmitter {
 	}
 
 	//def addMemberToRole
-	addMemberToRole(member, role, callback=function(err){}){
+	addMemberToRole(member, role, callback = function (err) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 
@@ -459,12 +459,12 @@ class Client extends EventEmitter {
 	}
 
 	// def addUserToRole
-	addUserToRole(member, role, callback=function(err){}){
+	addUserToRole(member, role, callback = function (err) { }) {
 		return this.addMemberToRole(member, role, callback);
 	}
 
 	// def removeMemberFromRole
-	removeMemberFromRole(member, role, callback=function(err){}){
+	removeMemberFromRole(member, role, callback = function (err) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 
@@ -482,12 +482,12 @@ class Client extends EventEmitter {
 	}
 
 	// def removeUserFromRole
-	removeUserFromRole(member, role, callback=function(err){}){
+	removeUserFromRole(member, role, callback = function (err) { }) {
 		return this.removeUserFromRole(member, role, callback);
 	}
 
 	// def createInvite
-	createInvite(chanServ, options, callback=function(err,invite){}){
+	createInvite(chanServ, options, callback = function (err, invite) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 			if (typeof options === "function") {
@@ -509,7 +509,7 @@ class Client extends EventEmitter {
 	}
 
 	// def overwritePermissions
-	overwritePermissions(channel, role, options={}, callback=function(err){}){
+	overwritePermissions(channel, role, options = {}, callback = function (err) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 
@@ -527,7 +527,7 @@ class Client extends EventEmitter {
 	}
 
 	//def setStatus
-	setStatus(idleStatus, gameID, callback=function(err){}){
+	setStatus(idleStatus, gameID, callback = function (err) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 			if (typeof gameID === "function") {
@@ -553,7 +553,7 @@ class Client extends EventEmitter {
 	}
 
 	//def sendTyping
-	sendTyping(channel, callback=function(err){}){
+	sendTyping(channel, callback = function (err) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 
@@ -571,7 +571,7 @@ class Client extends EventEmitter {
 	}
 
 	// def setTopic
-	setTopic(channel, topic, callback=function(err){}){
+	setTopic(channel, topic, callback = function (err) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 
@@ -589,7 +589,7 @@ class Client extends EventEmitter {
 	}
 
 	//def setChannelName
-	setChannelName(channel, topic, callback=function(err){}){
+	setChannelName(channel, topic, callback = function (err) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 
@@ -607,7 +607,7 @@ class Client extends EventEmitter {
 	}
 
 	//def setChannelNameAndTopic
-	setChannelNameAndTopic(channel, name, topic, callback=function(err){}){
+	setChannelNameAndTopic(channel, name, topic, callback = function (err) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 
@@ -625,7 +625,7 @@ class Client extends EventEmitter {
 	}
 
 	//def updateChannel
-	updateChannel(channel, data, callback=function(err){}){
+	updateChannel(channel, data, callback = function (err) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 
@@ -646,7 +646,7 @@ class Client extends EventEmitter {
 	startTyping(channel, callback = function (err) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
-			
+
 			self.internal.startTyping(channel)
 				.then(() => {
 					callback(null);
@@ -656,7 +656,7 @@ class Client extends EventEmitter {
 					callback(e);
 					reject(e);
 				});
-			
+
 		});
 	}
 	
@@ -664,7 +664,7 @@ class Client extends EventEmitter {
 	stopTyping(channel, callback = function (err) { }) {
 		var self = this;
 		return new Promise((resolve, reject) => {
-			
+
 			self.internal.stopTyping(channel)
 				.then(() => {
 					callback(null);
@@ -674,14 +674,46 @@ class Client extends EventEmitter {
 					callback(e);
 					reject(e);
 				});
-			
+
+		});
+	}
+	
+	//def updateDetails
+	updateDetails(details, callback = function (err) { }) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+			self.internal.updateDetails(details)
+				.then(() => {
+					callback();
+					resolve();
+				})
+				.catch(err => {
+					callback(err);
+					reject(err);
+				});
+		});
+	}
+	
+	//def setUsername
+	setUsername(name, callback = function (err) { }) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+			self.internal.setUsername(name)
+				.then(() => {
+					callback();
+					resolve();
+				})
+				.catch(err => {
+					callback(err);
+					reject(err);
+				});
 		});
 	}
 
 	//def joinVoiceChannel
-	joinVoiceChannel(channel, callback=function(err){}){
+	joinVoiceChannel(channel, callback = function (err) { }) {
 		var self = this;
-		return new Promise((resolve, reject)=>{
+		return new Promise((resolve, reject) => {
 
 			self.internal.joinVoiceChannel(channel)
 				.then(chan => {

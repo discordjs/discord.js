@@ -1047,6 +1047,35 @@ class InternalClient {
 			
 		});
 	}
+	
+	//def updateDetails
+	updateDetails(data) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+			request
+				.patch(Endpoints.ME)
+				.set("authorization", self.token)
+				.send({
+					avatar: data.avatar || self.user.avatar,
+					email : data.email || self.email,
+					new_password : data.new_password || null,
+					password : data.password || self.password,
+					username : data.username || self.user.username
+				})
+				.end( err => {
+					if(err){
+						reject(err);
+					}else{
+						resolve();
+					}
+				});
+		});
+	}
+	
+	//def setUsername
+	setUsername(username) {
+		return this.updateDetails({username});
+	}
 
 	//def setTopic
 	setTopic(chann, topic = "") {

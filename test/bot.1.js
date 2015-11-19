@@ -11,6 +11,8 @@ client.on("message", m => {
 		client.startTyping(m.channel);
 	} else if (m.content === "!!") {
 		client.stopTyping(m.channel);
+	} else if (m.content === "changename") {
+		client.setUsername("Hydrabot!");
 	}
 
 });
