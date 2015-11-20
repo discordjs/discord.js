@@ -54,6 +54,7 @@ Contents:
 
    docs_cache
    docs_equality
+   docs_resolvables
 
 
 Indices and tables
