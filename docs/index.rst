@@ -37,12 +37,14 @@ Contents:
    docs_server
    docs_user
    docs_message
+   docs_invite
    
 .. toctree::
    :maxdepth: 2
    :caption: Util Documentation
 
    docs_cache
+   docs_equality
 
 
 Indices and tables

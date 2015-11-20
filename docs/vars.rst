@@ -8,5 +8,7 @@
 .. _VoiceChannel : ./docs_voicechannel.html
 .. _PMChannel : ./docs_pmchannel.html
 .. _Message : ./docs_message.html
+.. _Invite : ./docs_invite.html
+.. _Equality : ./docs_equality.html
 .. _Promises : https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise
 .. _EventEmitter : https://nodejs.org/api/events.html#events_class_events_eventemitter
