@@ -10,6 +10,8 @@ A Message object is used to represent the data of a message.
 Attributes
 ----------
 
+-------
+
 channel
 ~~~~~~~
 

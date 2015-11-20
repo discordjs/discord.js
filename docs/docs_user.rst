@@ -10,6 +10,8 @@ Stores information about users.
 Attributes
 ----------
 
+--------
+
 client
 ~~~~~~
 

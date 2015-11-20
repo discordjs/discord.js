@@ -10,6 +10,8 @@ Stores information about a Discord Server.
 Attributes
 ----------
 
+--------
+
 client
 ~~~~~~
 

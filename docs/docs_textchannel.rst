@@ -12,6 +12,8 @@ A text channel of a server.
 Attributes
 ----------
 
+--------
+
 topic
 ~~~~~
 

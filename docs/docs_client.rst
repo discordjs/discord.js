@@ -10,6 +10,8 @@ This page contains documentation on the `Discord.Client` class. This should be u
 Attributes
 ----------
 
+--------
+
 users
 ~~~~~
 
