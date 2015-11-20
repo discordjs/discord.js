@@ -22,7 +22,7 @@ class Cache extends Array {
 	}
 
 	getAll(key, value) {
-		var found = [];
+		var found = new Cache(this.discrim);
 		this.forEach((val, index, array) => {
 			if (val.hasOwnProperty(key) && val[key] == value) {
 				found.push(val);

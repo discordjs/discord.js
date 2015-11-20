@@ -1,107 +1,90 @@
 .. include:: ./vars.rst
 
-Servers
-=======
+Server
+======
 
-The Server Class is used to represent data about a server.
+**extends** Equality_
+
+Stores information about a Discord Server.
 
 Attributes
 ----------
 
+--------
+
 client
 ~~~~~~
 
-The Discord Client_ that the Server was cached by.
+The Client_ that cached the Server.
 
 region
 ~~~~~~
 
-The region that the server is in, a `String`.
+`String`, region of the server.
 
 name
 ~~~~
 
-The server's name, as a `String`.
+`String`, name of the server.
 
 id
 ~~
 
-The server's id, as a `String`.
+`String`, ID of the server - never changes.
 
 members
 ~~~~~~~
 
-**Aliases** : `users`
-
-The members in a server, an `Array` of User_ objects.
+Members of the server, a Cache_ of User_ objects.
 
 channels
 ~~~~~~~~
 
-The channels in a server, an `Array` of Channel_ objects.
+Channels in the server, a Cache_ of ServerChannel_ objects.
+
+roles
+~~~~~
+
+Roles of the server, a Cache_ of Role_ objects.
 
 icon
 ~~~~
 
-The icon ID of the server if it has one as a `String`, otherwise it is `null`.
-
-iconURL
-~~~~~~~
-
-A `String` that is the URL of the server icon if it has one, otherwise it is `null`.
+ID/Hash of server icon, use ``server.iconURL`` for an URL to the icon.
 
 afkTimeout
 ~~~~~~~~~~
 
-A `Number` that is the AFK Timeout of the Server.
+`Number`, the AFK timeout in seconds before a user is classed as AFK. If there isn't an AFK timeout, this will be null.
 
 afkChannel
 ~~~~~~~~~~
 
-A Channel_ that represents the AFK Channel of the server if it has one, otherwise it is `null`.
+The channel where AFK users are moved to, ServerChannel_ object. If one isn't set, this will be null.
 
 defaultChannel
 ~~~~~~~~~~~~~~
 
-The **#general** Channel_ of the server.
+The ``#general`` ServerChannel_ of the server.
 
 owner
 ~~~~~
 
-A User_ object representing the user that owns the server.
+The founder of the server, a User_ object.
+
+iconURL
+~~~~~~~
+
+The URL of the Server's icon. If the server doesn't have an icon, this will be null.
 
 -----
 
 Functions
 ---------
 
-.. note:: When concatenated with a String, the object will become the server's name, e.g. ``"this is " + server`` would be ``this is Discord API`` if the server was called `Discord API`.
+rolesOfUser(user)
+~~~~~~~~~~~~~~~~~
 
-getChannel(key, value)
-~~~~~~~~~~~~~~~~~~~~~~
+**Aliases**: `rolesOf`
 
-Gets a Channel_ that matches the specified criteria. E.g:
-
-.. code-block:: js
-
-    server.getChannel("id", 1243987349) // returns a Channel where channel.id === 1243987349
-    
-- **key** - a `String` that is the key
-- **value** - a `String` that is the value
-
-getMember(key, value)
-~~~~~~~~~~~~~~~~~~~~~
-
-Gets a Member_ that matches the specified criteria. E.g:
-
-.. code-block:: js
-
-    server.getMember("id", 1243987349) // returns a Member where member.id === 1243987349
-    
-- **key** - a `String` that is the key
-- **value** - a `String` that is the value
-
-equals(object)
-~~~~~~~~~~~~~~
-
-Returns a `Boolean` depending on whether the Server's ID (``server.id``) equals the object's ID (``object.id``). You should **always**, always use this if you want to compare servers. **NEVER** do ``server1 == server2``.
+Returns an array of the roles affecting a user server-wide.
