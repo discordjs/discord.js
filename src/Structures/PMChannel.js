@@ -6,13 +6,11 @@ var Equality = require("../Util/Equality.js");
 var Cache = require("../Util/Cache.js");
 var reg = require("../Util/ArgumentRegulariser.js").reg;
 
-class PMChannel extends Equality{
+class PMChannel extends Channel{
 	constructor(data, client){
-		super();
-		this.client = client;
+		super(data, client);
 
 		this.type = data.type || "text";
-		this.id = data.id;
 		this.lastMessageId = data.last_message_id;
 		this.messages = new Cache("id", 1000);
 		this.recipient = this.client.internal.users.add(new User(data.recipient, this.client));

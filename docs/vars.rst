@@ -3,5 +3,7 @@
 .. _User : ./docs_user.html
 .. _Server : ./docs_server.html
 .. _Channel : ./docs_channel.html
+.. _ServerChannel : ./docs_serverchannel.html
+.. _TextChannel : ./docs_textchannel.html
 .. _Promises : https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise
 .. _EventEmitter : https://nodejs.org/api/events.html#events_class_events_eventemitter

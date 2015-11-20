@@ -8,9 +8,7 @@ class TextChannel extends ServerChannel{
 	constructor(data, client, server){
 		super(data, client, server);
 
-		this.name = data.name;
 		this.topic = data.topic;
-		this.position = data.position;
 		this.lastMessageID = data.last_message_id;
 		this.messages = new Cache("id", client.options.maximumMessages);
 	}

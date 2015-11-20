@@ -24,6 +24,10 @@ Contents:
    :caption: Channel Documentation
 
    docs_channel
+   docs_pmchannel
+   docs_serverchannel
+   docs_textchannel
+   docs_voicechannel
 
 .. toctree::
    :maxdepth: 2
