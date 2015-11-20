@@ -21,6 +21,12 @@ Contents:
 
 .. toctree::
    :maxdepth: 2
+   :caption: Channel Documentation
+
+   docs_channel
+
+.. toctree::
+   :maxdepth: 2
    :caption: Documentation
 
    docs_client
