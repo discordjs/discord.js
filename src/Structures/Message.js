@@ -3,9 +3,11 @@
 var Cache = require("../Util/Cache.js");
 var User = require("./User.js");
 var reg = require("../Util/ArgumentRegulariser.js").reg;
+var Equality = require("../Util/Equality");
 
-class Message{
-	constructor(data, channel, client){
+class Message extends Equality{
+	constructor(data, channel, client) {
+		super();
 		this.channel = channel;
 		this.client = client;
 		this.nonce = data.nonce;

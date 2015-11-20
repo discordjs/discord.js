@@ -36,6 +36,7 @@ Contents:
    docs_client
    docs_server
    docs_user
+   docs_message
    
 .. toctree::
    :maxdepth: 2
