@@ -17,3 +17,11 @@
 .. _Resolvables : ./docs_resolvables.html
 .. _Promises : https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise
 .. _EventEmitter : https://nodejs.org/api/events.html#events_class_events_eventemitter
+.. _Channel Resolvable : http://discordjs.readthedocs.org/en/rewrite-docs/docs_resolvables.html#channel-resolvable
+.. _String Resolvable : http://discordjs.readthedocs.org/en/rewrite-docs/docs_resolvables.html#string-resolvable
+.. _Message Resolvable : http://discordjs.readthedocs.org/en/rewrite-docs/docs_resolvables.html#message-resolvable
+.. _Server Resolvable : http://discordjs.readthedocs.org/en/rewrite-docs/docs_resolvables.html#server-resolvable
+.. _Invite Resolvable : http://discordjs.readthedocs.org/en/rewrite-docs/docs_resolvables.html#invite-id-resolvable
+.. _User Resolvable : http://discordjs.readthedocs.org/en/rewrite-docs/docs_resolvables.html#user-resolvable
+.. _Base64 Resolvable : http://discordjs.readthedocs.org/en/rewrite-docs/docs_resolvables.html#base64-resolvable
+.. _VoiceChannel Resolvable : http://discordjs.readthedocs.org/en/rewrite-docs/docs_resolvables.html#voice-channel-resolvable

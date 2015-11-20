@@ -178,8 +178,8 @@ Gets a list of previously sent messages in a channel.
 - **limit** - The maximum amount of messages to retrieve - defaults to 500. A `Number`
 - **options** - An `object` containing either of the following:
 
-	- **before** - A `Message Resolvable` - gets messages before this message.
-	- **after** - A `Message Resolvable` - gets messages after this message.
+	- **before** - A `Message Resolvable`_ - gets messages before this message.
+	- **after** - A `Message Resolvable`_ - gets messages after this message.
 - **callback** - `function` taking the following:
 
 	- **error** - error if any occurred
@@ -190,7 +190,7 @@ getBans(server, `callback`)
 
 Gets a list of banned users in a server.
 
-- **server** - `Server Resolvable` - The server to get banned users of
+- **server** - `Server Resolvable`_ - The server to get banned users of
 - **callback** - `function` taking the following:
 
 	- **error** - error if any occurred
