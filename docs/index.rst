@@ -24,6 +24,7 @@ Contents:
    :caption: Documentation
 
    docs_client
+   docs_user
    
 .. toctree::
    :maxdepth: 2

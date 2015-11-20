@@ -3,7 +3,7 @@
 Client
 ======
 
-**extends EventEmitter_**
+**extends** EventEmitter_
 
 This page contains documentation on the `Discord.Client` class. This should be used when you want to start creating things with the API.
 
