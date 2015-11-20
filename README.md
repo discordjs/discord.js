@@ -4,7 +4,7 @@
   </a>
 </p>
 
-# Did v5.0.0 break your code? [Look here.](http://discordjs.readthedocs.org/en/rewrite-docs/migrating.html)
+# The API is being rewritten for stability, have a look [here](https://github.com/hydrabolt/discord.js/tree/rewrite) for more. It will feature voice!
 
 [![Build Status](https://travis-ci.org/hydrabolt/discord.js.svg)](https://travis-ci.org/hydrabolt/discord.js) [![Documentation Status](https://readthedocs.org/projects/discordjs/badge/?version=latest)](http://discordjs.readthedocs.org/en/latest/?badge=latest)
     
@@ -37,11 +37,31 @@ mybot.login("email", "password");
 ```
 ---
 
-### What's new in 5.0.0?
+### What's new in 3.9.0?
 
-Stability in general! The API has been rewritten completely for much better stability, and it seems to have worked! There are now no random crashes and everything caches properly. The API is also a bit cleaner!
+Amongst some fixes to web distribution creation, you can now opt for easier string formatting! However, it does modify String globally so you'll have to run:
 
-However, it is a breaking change if you are updating (potentially, basic code should be fine) you should look [here](http://discordjs.readthedocs.org/en/rewrite-docs/migrating.html) for help updating.
+```js
+Discord.patchStrings()
+```
+
+After you have run this, you can do:
+```
+
+"message".bold.underline.italic
+// generates "*__**message**__*"
+
+```
+
+A full list of modifiers (all chainable):
+
+* bold `**`
+* italic `*`
+* underline `__`
+* strike `~`
+* code `` ` ``
+* codeblock ```` ``` ````
+* newline `\n`
 
 ---
 

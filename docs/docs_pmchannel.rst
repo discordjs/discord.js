@@ -3,28 +3,39 @@
 PMChannel
 =========
 
-**extends** Channel_
+The PMChannel Class is used to represent data about a Private Message Channel.
 
-A PMChannel is a Private/Direct channel between the Client and another user.
-
-------
+.. note:: Beware! The PMChannel class does `not` extend the Channel_ class.
 
 Attributes
 ----------
 
---------
+user
+~~~~
+
+The recipient User_ of the PM Channel.
+
+id
+~~
+
+`String` UUID of the PM Channel.
 
 messages
 ~~~~~~~~
 
-A Cache_ of Message_ objects.
+An `Array` of Message_ objects. Contains all the cached messages sent in this channel up to a limit of 1000. If the limit is reached, the oldest message is removed first to make space for it.
 
-recipient
-~~~~~~~~~
+Functions
+---------
 
-The User_ that is the recipient of the Channel.
+getMessage(key, value)
+~~~~~~~~~~~~~~~~~~~~~~
 
-lastMessage
-~~~~~~~~~~~
+Gets a Message_ from the PM Channel that matches the specified criteria. E.g:
 
-The last Message_ sent in the channel, may be null if no messages have been sent during the time the bound Client_ has been online.
+.. code-block:: js
+
+    pmchannel.getMessage("id", 1243987349) // returns a Message where message.id === 1243987349
+    
+- **key** - a `String` that is the key
+- **value** - a `String` that is the value

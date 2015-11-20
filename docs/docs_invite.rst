@@ -1,66 +1,64 @@
 .. include:: ./vars.rst
 
-Invite
-======
+Invites
+=======
 
-Used to represent data of an invite.
+The Invite Class is used to represent data about an Invite.
 
 Attributes
 ----------
 
---------
+max_age
+~~~~~~~
 
-maxAge
-~~~~~~
-
-`Number`, how long (in seconds) the invite has since creation before expiring.
+A `Number` in minutes for how long the Invite should be valid for. E.g. a value of ``3600`` is equal to 30 minutes.
 
 code
 ~~~~
 
-`String`, the invite code.
-
-server
-~~~~~~
-
-The Server_ the invite is for.
-
-channel
-~~~~~~~
-
-The ServerChannel_ the invite is for.
+`String` an alphanumeric code for the Invite.
 
 revoked
 ~~~~~~~
 
-`Boolean`, whether the invite has been revoked or not.
+`Boolean` that dictates whether the Invite has been cancelled or not
 
-createdAt
-~~~~~~~~~
+created_at
+~~~~~~~~~~
 
-`Number`, timestamp of when the invite was created.
+A unix timestamp as a `Number` which is the time that the invite was created.
 
 temporary
 ~~~~~~~~~
 
-`Boolean`, whether the invite is temporary or not.
+`Boolean` that dictates whether the invite is temporary.
 
 uses
 ~~~~
 
-`Number`, uses of the invite remaining.
+`Number` the number of uses of the Invite, a value of ``0`` is none.
 
-maxUses
-~~~~~~~
+max_uses
+~~~~~~~~
 
-`Number`, maximum uses of the invite.
+`Number` that is the maximum amount of uses of the invite, ``0`` is unlimited.
 
 inviter
 ~~~~~~~
 
-User_ who sent/created the invite.
+The User_ that created the invite.
 
 xkcd
 ~~~~
 
-`Boolean`, whether the invite is intended to be easy to read and remember by a human.
+`Boolean` that is true if the invite should be human-readable.
+
+channel
+~~~~~~~
+
+The Channel_ that the invite is inviting to.
+
+URL
+~~~
+
+A `String` that generates a clickable link to the invite.
