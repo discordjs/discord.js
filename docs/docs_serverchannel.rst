@@ -3,6 +3,8 @@
 ServerChannel
 =============
 
+**extends** Channel_
+
 A ServerChannel is a Channel_ that belongs to a Server_.
 
 Attributes
