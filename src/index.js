@@ -11,5 +11,6 @@ module.exports = {
 	ServerChannel : require("./Structures/ServerChannel"),
 	TextChannel : require("./Structures/TextChannel"),
 	User : require("./Structures/User"),
-	VoiceChannel : require("./Structures/VoiceChannel"),
+	VoiceChannel: require("./Structures/VoiceChannel"),
+	Constants : require("./Constants.js")
 }
