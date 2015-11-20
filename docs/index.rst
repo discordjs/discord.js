@@ -38,7 +38,13 @@ Contents:
    docs_user
    docs_message
    docs_invite
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Permission Documentation
+
    docs_role
+   docs_permissionoverwrite
    
 .. toctree::
    :maxdepth: 2

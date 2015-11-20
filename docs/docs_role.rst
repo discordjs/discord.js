@@ -72,3 +72,8 @@ hasPermission(permission)
 Sees whether the role has the permission given.
 
 - **permission** - See `Permission Constants`_ for valid permission names.
+
+colorAsHex()
+~~~~~~~~~~~~
+
+Returns the role's colour as hex, e.g. ``#FF0000``.
