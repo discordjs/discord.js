@@ -15,6 +15,7 @@
 .. _PermissionOverwrite : ./docs_permissionoverwrite.html
 .. _Permission Constants : ./docs_permissionconstants.html
 .. _Resolvables : ./docs_resolvables.html
+.. _VoiceConnection : ./docs_voiceconnection.html
 .. _Promises : https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise
 .. _EventEmitter : https://nodejs.org/api/events.html#events_class_events_eventemitter
 .. _Channel Resolvable : http://discordjs.readthedocs.org/en/rewrite-docs/docs_resolvables.html#channel-resolvable

@@ -34,6 +34,7 @@ Contents:
    docs_serverchannel
    docs_textchannel
    docs_voicechannel
+   docs_voiceconnection
 
 .. toctree::
    :maxdepth: 1
