@@ -568,3 +568,108 @@ messageUpdated
 ~~~~~~~~~~~~~~
 
 Emitted when a message has been updated and the client finds out. Supplies two Message_ objects, the first being the new updated messages, the latter being the old message.
+
+disconnected
+~~~~~~~~~~~~
+
+Emitted when the client is disconnected from the Discord server.
+
+error
+~~~~~
+
+Emitted when the client runs into a big problem, supplies an error object.
+
+raw
+~~~
+
+Emitted when a message over WebSocket is received, it supplies one `object` containing the raw data from the WebSocket.
+
+serverCreated
+~~~~~~~~~~~~~
+
+Emitted when a server is joined by the Client, supplies a Server_ object.
+
+serverDeleted
+~~~~~~~~~~~~~
+
+Emitted when the client leaves a server, supplies a Server_ object.
+
+serverUpdated
+~~~~~~~~~~~~~
+
+Emitted when a server is updated (e.g. name change). Supplies two Server_ objects, the first being the server before the update, the second being the new, updated server.
+
+channelCreated
+~~~~~~~~~~~~~~
+
+Emitted when a channel is created, supplies a Channel_ object (includes PM chats as well as server channels).
+
+channelDeleted
+~~~~~~~~~~~~~~
+
+Emitted when a channel is deleted, supplies a Channel_ object.
+
+channelUpdated
+~~~~~~~~~~~~~~
+
+Emitted when a channel is updated (e.g. name/topic change). Supplies a Channel_ object.
+
+serverRoleCreated
+~~~~~~~~~~~~~~~~~
+
+Emitted when a role is created in a server, supplies a Role_ object.
+
+serverRoleDeleted
+~~~~~~~~~~~~~~~~~
+
+Emitted when a role is deleted from a server, supplies a Role_ object.
+
+serverRoleUpdated
+~~~~~~~~~~~~~~~~~
+
+Emitted when a role is updated in a server, supplies two Role_ objects. The first is the old role, the second is the updated role.
+
+serverNewMember
+~~~~~~~~~~~~~~~
+
+Emitted when a user joins a server, supplies a Server_ object and a User_ object.
+
+serverMemberRemoved
+~~~~~~~~~~~~~~~~~~~
+
+Emitted when a member is removed from a server. Supplies a Server_ object and a User_ object.
+
+serverMemberUpdated
+~~~~~~~~~~~~~~~~~~~
+
+Emitted when a member in a server is updated. Supplies a Server_ object and a User_ object.
+
+presence
+~~~~~~~~
+
+Emitted when a user goes online/offline/idle or starts/stops playing a game. Supplies 3 parameters, the first being the User_ object, the second being the status, the third being the game ID they are playing.
+
+userUpdated
+~~~~~~~~~~~
+
+Emitted when a user changes their name, avatar or similar. Supplies two User_ objects, the first being the user before being updated, the second being the updated user.
+
+userTypingStart
+~~~~~~~~~~~~~~~
+
+Emitted when a user starts typing in a channel. Supplies two parameters, a User_ object and a Channel_ object.
+
+userTypingStop
+~~~~~~~~~~~~~~
+
+Emitted when a user stop typing in a channel. Supplies two parameters, a User_ object and a Channel_ object.
+
+userBanned
+~~~~~~~~~~
+
+Emitted when a user is banned from a server. Supplies two parameters, a User_ object and a Server_ object.
+
+userUnbanned
+~~~~~~~~~~
+
+Emitted when a user is unbanned from a server. Supplies two parameters, a User_ object and a Server_ object.

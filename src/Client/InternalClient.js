@@ -1458,7 +1458,7 @@ class InternalClient {
 
 						if (channel instanceof PMChannel) {
 							//PM CHANNEL
-							client.emit("channelUpdated", self.private_channels.update(
+							client.emit("channelUpdated", channel, self.private_channels.update(
 								channel,
 								new PMChannel(data, client)
 								));
