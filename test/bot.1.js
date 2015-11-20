@@ -1,69 +1,29 @@
 var Discord = require("../");
-var Member = require("../lib/Member.js");
-var mybot = new Discord.Client({
-	compress : true,
-	catchup : "all"
-});
-var fs = require("fs");
-var request = require("request").defaults({ encoding: null });
+var client = new Discord.Client();
+var request = require("superagent");
+client.on("debug", (m) => console.log("[debug]", m));
+client.on("warn", (m) => console.log("[warn]", m));
+var start = Date.now();
 
-Discord.patchStrings();
+client.on("message", m => {
 
-var server, channel, message, sentMessage = false;
-
-mybot.on("message", function (message) {
-
-	console.log("Everyone mentioned? " + doned);
-	doned++;
-	if (message.content.substr(0, 3) !== "$$$") {
-		return;
-	}
-
-	// we can go ahead :)
-	
-	var user;
-	if (message.mentions.length > 0) {
-		user = message.mentions[0];
-	} else {
-		user = message.sender;
-	}
-
-	mybot.reply(message, "Hello! It has been " + ((Date.now() - message.timestamp) - this.timeoffset) + "ms since you sent that.");
-});
-
-var doned = 0;
-
-mybot.once("ready", function () {
-	console.log("im ready");
-
-	for (var server of mybot.servers) {
-		if (server.name === "test-server") {
-			mybot.leaveServer(server);
-		}
+	if (m.content === "$$") {
+		client.startTyping(m.channel);
+	} else if (m.content === "!!") {
+		client.stopTyping(m.channel);
+	} else if (m.content === "changename") {
+		client.setUsername("Hydrabot!");
+	} else if (m.content === "setav") {
+		var fs = require("fs");
+		client.setAvatar(fs.readFileSync("./test/image.png"));
 	}
 
 });
 
-mybot.on("messageUpdate", function(newMessage, oldMessage){
-	mybot.reply(newMessage, JSON.stringify(newMessage.embeds));
-})
-
-mybot.on("serverUpdate", function (oldserver, newserver) {
-	console.log("server changed! " + mybot.servers.length);
-})
-
-
-mybot.on("channelUpdate", function (oldChan, newChan) {
-
-});
-
-
-function dump(msg) {
-	console.log("dump", msg);
+function error(e) {
+	console.log(e.stack);
+	process.exit(0);
 }
 
-function error(err) {
-	console.log(err);
-}
 
-mybot.login(process.env["ds_email"], process.env["ds_password"]).catch(error);
+client.login(process.env["discordEmail"], process.env["discordPass"]).catch((e) => console.log(e));

@@ -1,42 +1,68 @@
 .. include:: ./vars.rst
 
-Users
-=====
+User
+====
 
-The User Class is used to represent data about users.
+**extends** Equality_
+
+Stores information about users.
 
 Attributes
 ----------
 
+--------
+
+client
+~~~~~~
+
+The Client_ that created the user.
+
 username
 ~~~~~~~~
 
-A `String` that is the username of the user.
+`String`, username of the User.
 
 discriminator
 ~~~~~~~~~~~~~
 
-Used to differentiate users with the same username, provided by Discord. If you want to differentiate users, we'd recommend using the `id` attribute.
+`Integer` from 0-9999, don't use this to identify users. Used to separate the user from the 9998 others that may have the same username. Made redundant by ``user.id``.
 
 id
 ~~
 
-A `String` UUID of the user, will never change.
+`String` (do not parse to an Integer, will become inaccurate). The ID of a user, never changes.
 
 avatar
 ~~~~~~
 
-A `String` that is the user's avatar's ID, or if they don't have one this is `null`.
-
-avatarURL
-~~~~~~~~~
-
-A `String` that points to the user's avatar's URL, or if they don't have an avatar this is `null`.
+`String`, the ID/hash of a user's avatar. To get a path to their avatar, see ``user.avatarURL``.
 
 status
 ~~~~~~
 
-The status of the user as a `String`; offline/online/idle.
+The status of a user, `String`. Either ``online``, ``offline`` or ``idle``.
+
+gameID
+~~~~~~
+
+The ID of the game a user is playing, `Number`.
+
+typing
+~~~~~~
+
+`Object` containing the following values;
+
+.. code-block:: js
+
+	{
+		since : 1448038288519, //timestamp of when
+		channel : <Channel Object> // channel they are typing in.
+	}
+	
+avatarURL
+~~~~~~~~~
+
+A valid URL to the user's avatar if they have one, otherwise null.
 
 -----
 
@@ -46,22 +72,4 @@ Functions
 mention()
 ~~~~~~~~~
 
-Returns a `String`. This function will generate the mention string for the user, which when sent will preview as a mention. E.g:
-
-.. code-block:: js
-
-	user.mention(); // something like <@3245982345035>
-	
-This is mainly used internally by the API to correct mentions when sending messages, however you can use it.
-
-.. note:: You can also just concatenate a User object with strings to get the mention code, as the `toString()` method points to this. This is useful when sending messages.
-
-equals(object)
-~~~~~~~~~~~~~~
-
-Returns a `Boolean` depending on whether the User's ID (``user.id``) equals the object's ID (``object.id``). You should **always**, always use this if you want to compare users. **NEVER** do ``user1 == user2``.
-
-equalsStrict(object)
-~~~~~~~~~~~~~~~~~~~~
-
-Sees if the supplied object has the same username, ID, avatar and discriminator of the user. Mainly used internally. Returns a `Boolean` depending on the result.
+Returns a valid string that can be sent in a message to mention the user. By default, ``user.toString()`` does this so by adding a user object to a string, e.g. ``user + ""``, their mention code will be retrieved.

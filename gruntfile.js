@@ -8,13 +8,13 @@ module.exports = function (grunt) {
         babel: {
             options: {
                 loose: "all",
-                compact: true
+                compact: !grunt.option('dev')
             },
             dist: {
                 files: [{
                     expand: true,
                     cwd: "src/",
-                    src: ["**.*"],
+                    src: ["**/**.*"],
                     dest: "lib/",
                     ext: ".js"
                 }]

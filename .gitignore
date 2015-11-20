@@ -36,3 +36,4 @@ build/Release
 node_modules
 test/auth.json
 examples/auth.json
+test/spotify.js

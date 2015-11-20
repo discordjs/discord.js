@@ -1,8 +1,8 @@
 {
   "name": "discord.js",
-  "version": "4.1.1",
+  "version": "5.0.0",
   "description": "A way to interface with the Discord API",
-  "main": "./lib/index.js",
+  "main": "./entrypoint.js",
   "scripts": {
     "test": "node ./test/bot.js"
   },
@@ -34,5 +34,8 @@
     "grunt-browserify": "^4.0.0",
     "grunt-contrib-uglify": "^0.9.2",
     "load-grunt-tasks": "^3.2.0"
+  },
+  "optionalDependencies": {
+    "node-opus": "^0.1.11"
   }
 }
