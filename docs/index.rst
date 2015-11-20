@@ -45,6 +45,7 @@ Contents:
 
    docs_role
    docs_permissionoverwrite
+   docs_channelpermissions
    
 .. toctree::
    :maxdepth: 2
