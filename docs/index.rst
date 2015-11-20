@@ -20,7 +20,7 @@ Contents:
 .. _docs:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Channel Documentation
 
    docs_channel
@@ -30,7 +30,7 @@ Contents:
    docs_voicechannel
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Documentation
 
    docs_client
@@ -40,15 +40,16 @@ Contents:
    docs_invite
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Permission Documentation
 
+   docs_permissionconstants
    docs_role
    docs_permissionoverwrite
    docs_channelpermissions
    
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Util Documentation
 
    docs_cache
