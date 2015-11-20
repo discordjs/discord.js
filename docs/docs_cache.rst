@@ -7,6 +7,8 @@ Cache
 
 A Cache object extends an Array (so it can be used like a regular array) but introduces helper functions to make it more useful when developing with discord.js. Unlike a regular array, it doesn't care about the instance or prototype of an object, it works purely on properties.
 
+-----
+
 Functions
 ---------
 

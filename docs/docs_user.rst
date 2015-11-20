@@ -62,6 +62,8 @@ avatarURL
 
 A valid URL to the user's avatar if they have one, otherwise null.
 
+-----
+
 Functions
 ---------
 

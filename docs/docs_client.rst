@@ -50,6 +50,8 @@ user
 
 A User_ object representing the logged in client's user.
 
+-----
+
 Functions
 ---------
 
