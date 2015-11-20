@@ -38,6 +38,7 @@ Contents:
    docs_user
    docs_message
    docs_invite
+   docs_role
    
 .. toctree::
    :maxdepth: 2

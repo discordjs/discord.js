@@ -10,5 +10,6 @@
 .. _Message : ./docs_message.html
 .. _Invite : ./docs_invite.html
 .. _Equality : ./docs_equality.html
+.. _Role : ./docs_role.html
 .. _Promises : https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise
 .. _EventEmitter : https://nodejs.org/api/events.html#events_class_events_eventemitter
