@@ -24,6 +24,7 @@ Contents:
    :caption: Documentation
 
    docs_client
+   docs_server
    docs_user
    
 .. toctree::
