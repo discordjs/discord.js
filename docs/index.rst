@@ -24,6 +24,12 @@ Contents:
    :caption: Documentation
 
    docs_client
+   
+.. toctree::
+   :maxdepth: 2
+   :caption: Util Documentation
+
+   docs_cache
 
 
 Indices and tables
