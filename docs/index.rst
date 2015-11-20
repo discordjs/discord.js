@@ -21,6 +21,12 @@ Contents:
 
 .. toctree::
    :maxdepth: 1
+   :caption: General
+
+   migrating
+
+.. toctree::
+   :maxdepth: 1
    :caption: Channel Documentation
 
    docs_channel
