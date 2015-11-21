@@ -44,6 +44,8 @@ class InternalClient {
 		this.voiceConnection = null;
 		this.resolver = new Resolver(this);
 		this.readyTime = null;
+		
+		this.messageAwaits = {};
 	}
 
 	get uptime() {
@@ -61,6 +63,28 @@ class InternalClient {
 			} else {
 				resolve();
 			}
+		});
+	}
+	
+	//def awaitResponse
+	awaitResponse(msg){
+		return new Promise((resolve, reject) => {
+			
+			msg = this.resolver.resolveMessage(msg);
+			
+			if(!msg){
+				reject(new Error("message undefined"));
+				return;
+			}
+			
+			var awaitID = msg.channel.id + msg.id;
+			
+			if( !this.messageAwaits[awaitID] ){
+				this.messageAwaits[awaitID] = [];
+			}
+			
+			this.messageAwaits[awaitID].push(resolve);
+	
 		});
 	}
 
@@ -1325,7 +1349,14 @@ class InternalClient {
 					var channel = self.channels.get("id", data.channel_id) || self.private_channels.get("id", data.channel_id);
 					if (channel) {
 						var msg = channel.messages.add(new Message(data, channel, client));
-						client.emit("message", msg);
+						
+						if(self.messageAwaits[channel.id + msg.id]){
+							self.messageAwaits[channel.id + msg.id].map( fn => fn() );
+							self.messageAwaits[channel.id + msg.id] = null;
+							client.emit("message", msg, true); //2nd param is isAwaitedMessage
+						}else{
+							client.emit("message", msg);
+						}
 						self.ack(msg);
 					} else {
 						client.emit("warn", "message created but channel is not cached");
