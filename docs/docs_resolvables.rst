@@ -5,6 +5,8 @@ Resolvables
 
 In discord.js, the aim is to allow the end developer to have freedom in what sort of data types they supply. References to any sort of resolvable basically mean what types of data you can provide. The different resolvables are shown before:
 
+--------
+
 Channel Resolvable
 ------------------
 

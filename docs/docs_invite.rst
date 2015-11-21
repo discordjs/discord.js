@@ -5,10 +5,10 @@ Invite
 
 Used to represent data of an invite.
 
+--------
+
 Attributes
 ----------
-
---------
 
 maxAge
 ~~~~~~

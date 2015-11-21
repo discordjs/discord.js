@@ -10,8 +10,6 @@ PermissionOverwrite is used to represent data about permission overwrites for ro
 Attributes
 ----------
 
---------
-
 id
 ~~
 

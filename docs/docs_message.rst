@@ -7,10 +7,10 @@ Message
 
 A Message object is used to represent the data of a message.
 
+--------
+
 Attributes
 ----------
-
--------
 
 channel
 ~~~~~~~
@@ -71,8 +71,6 @@ mentions
 ~~~~~~~~
 
 A Cache_ of User_ objects that were mentioned in the message.
-
-------
 
 Functions
 ---------

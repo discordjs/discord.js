@@ -5,12 +5,10 @@ Role
 
 Represents data for a Server Role.
 
------------
+--------
 
 Attributes
 ----------
-
---------
 
 position
 ~~~~~~~~
@@ -52,12 +50,8 @@ client
 
 The Client_ that cached the role.
 
-------
-
 Functions
 ---------
-
--------
 
 serialise()
 ~~~~~~~~~~~

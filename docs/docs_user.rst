@@ -7,10 +7,10 @@ User
 
 Stores information about users.
 
+--------
+
 Attributes
 ----------
-
---------
 
 client
 ~~~~~~
@@ -58,13 +58,11 @@ typing
 		since : 1448038288519, //timestamp of when
 		channel : <Channel Object> // channel they are typing in.
 	}
-	
+
 avatarURL
 ~~~~~~~~~
 
 A valid URL to the user's avatar if they have one, otherwise null.
-
------
 
 Functions
 ---------

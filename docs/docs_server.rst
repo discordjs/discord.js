@@ -7,10 +7,10 @@ Server
 
 Stores information about a Discord Server.
 
+--------
+
 Attributes
 ----------
-
---------
 
 client
 ~~~~~~
@@ -76,8 +76,6 @@ iconURL
 ~~~~~~~
 
 The URL of the Server's icon. If the server doesn't have an icon, this will be null.
-
------
 
 Functions
 ---------

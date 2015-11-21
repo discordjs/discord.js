@@ -7,12 +7,10 @@ PMChannel
 
 A PMChannel is a Private/Direct channel between the Client and another user.
 
-------
+--------
 
 Attributes
 ----------
-
---------
 
 messages
 ~~~~~~~~

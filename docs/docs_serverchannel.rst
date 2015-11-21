@@ -7,10 +7,10 @@ ServerChannel
 
 A ServerChannel is a Channel_ that belongs to a Server_.
 
+--------
+
 Attributes
 ----------
-
---------
 
 name
 ~~~~

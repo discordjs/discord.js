@@ -1,8 +1,3 @@
-.. discord.js documentation master file, created by
-   sphinx-quickstart on Fri Sep 25 17:25:49 2015.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-   
 .. include:: ./vars.rst
 
 Welcome to discord.js's documentation!
@@ -15,8 +10,6 @@ Feel free to make any contributions you want, whether it be through creating an 
 
 .. note:: This documentation is still a work-in-progress, apologies if something isn't yet documented!
 
-Contents:
-   
 .. _docs:
 
 .. toctree::
@@ -24,16 +17,6 @@ Contents:
    :caption: General
 
    migrating
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Channel Documentation
-
-   docs_channel
-   docs_pmchannel
-   docs_serverchannel
-   docs_textchannel
-   docs_voicechannel
 
 .. toctree::
    :maxdepth: 1
@@ -48,13 +31,23 @@ Contents:
 
 .. toctree::
    :maxdepth: 1
+   :caption: Channel Documentation
+
+   docs_channel
+   docs_pmchannel
+   docs_serverchannel
+   docs_textchannel
+   docs_voicechannel
+
+.. toctree::
+   :maxdepth: 1
    :caption: Permission Documentation
 
    docs_permissionconstants
    docs_role
    docs_permissionoverwrite
    docs_channelpermissions
-   
+
 .. toctree::
    :maxdepth: 1
    :caption: Util Documentation
@@ -62,13 +55,6 @@ Contents:
    docs_cache
    docs_equality
    docs_resolvables
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`search`
 
 .. _Discord : https://discordapp.com/
 .. _discord.io : https://github.com/izy521/discord.io

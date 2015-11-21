@@ -5,6 +5,8 @@ Permission Constants
 
 In discord.js, you can handle permissions in two ways. The preferred way is to just use the string name of the permission, alternatively you can use ``Discord.Constants.Permissions["permission name"]``.
 
+--------
+
 Valid Permission Names
 ----------------------
 
@@ -37,7 +39,7 @@ Valid Permission Names
 		voiceMoveMembers,
 		voiceUseVAD
 	};
-	
+
 Preferred Way
 -------------
 

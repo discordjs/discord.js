@@ -7,10 +7,10 @@ Channel
 
 The Channel class is the base class for all types of channel.
 
+--------
+
 Attributes
 ----------
-
---------
 
 id
 ~~
