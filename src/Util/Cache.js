@@ -61,6 +61,10 @@ class Cache extends Array {
 			return false;
 		}
 	}
+	
+	random() {
+		return this[Math.floor(Math.random()*this.length)];
+	}
 
 	remove(data) {
 		var index = this.indexOf(data);
