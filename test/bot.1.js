@@ -16,6 +16,12 @@ client.on("message", m => {
 	} else if (m.content === "setav") {
 		var fs = require("fs");
 		client.setAvatar(fs.readFileSync("./test/image.png"));
+	} else if (m.content.startsWith("startplaying")) {
+		var game = m.content.split(" ").slice(1).join(" ");
+		client.setPlayingGame(game);
+	} else if (m.content.startsWith("setstatus")) {
+		var game = m.content.split(" ").slice(1).join(" ");
+		client.setStatus(game);
 	}
 
 });

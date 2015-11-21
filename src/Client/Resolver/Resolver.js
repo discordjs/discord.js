@@ -11,11 +11,28 @@ var User = require("../../Structures/User.js"),
 	PMChannel = require("../../Structures/PMChannel.js"),
 	Server = require("../../Structures/Server.js"),
 	Message = require("../../Structures/Message.js"),
-	Invite = require("../../Structures/Invite.js");
+	Invite = require("../../Structures/Invite.js"),
+	Games = require("../../../ref/gameMap.js");
 
 class Resolver {
 	constructor(internal) {
 		this.internal = internal;
+	}
+	
+	resolveGameID(resource) {
+		if (!isNaN(resource) && parseInt(resource) % 1 === 0) {
+			return resource;
+		} else if (typeof resource == "string" || resource instanceof String) {
+			
+			for (var game of Games) {
+				if (game.name.toUpperCase() === resource.toUpperCase()) {
+					return game.id;
+				}
+			}
+			
+		}
+		
+		return null;
 	}
 
 	resolveToBase64(resource) {

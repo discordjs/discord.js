@@ -974,21 +974,27 @@ class InternalClient {
 	//def setStatus
 	setStatus(idleStatus, gameID) {
 		var self = this;
+		
+		self.idleStatus = idleStatus || self.idleStatus || null;
+		if(idleStatus){
+			if(idleStatus == "online" || idleStatus == "here" || idleStatus == "available"){
+				self.idleStatus = null;
+			}
+		}
+		self.gameID = self.resolver.resolveGameID(gameID) || self.gameID || null;
+		
 		return new Promise((resolve, reject) => {
 
 			var packet = {
 				op: 3,
 				d: {
-					idle_since: null,
-					game_id: null
+					idle_since: self.idleStatus,
+					game_id: self.gameID
 				}
 			};
 
-			if (idleStatus) {
+			if (self.idleStatus == "idle" || self.idleStatus == "away") {
 				packet.d.idle_since = Date.now();
-			}
-			if (typeof gameID === "number") {
-				packet.d.game_id = gameID;
 			}
 
 			self.sendWS(packet);

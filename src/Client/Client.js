@@ -796,6 +796,30 @@ class Client extends EventEmitter {
 				});
 		});
 	}
+	
+	setStatusIdle() {
+		this.setStatus("idle");
+	}
+
+	setStatusOnline(cb = function (err) { }) {
+		this.setStatus("online");
+	}
+
+	setStatusActive() {
+		this.setStatusOnline();
+	}
+
+	setStatusHere() {
+		this.setStatusOnline();
+	}
+
+	setStatusAway() {
+		this.setStatusIdle();
+	}
+	
+	setPlayingGame(game) {
+		this.setStatus(null, game);
+	}
 }
 
 module.exports = Client;

@@ -12,6 +12,10 @@ class Channel extends Equality{
 		this.id = data.id;
 		this.client = client;
 	}
+	
+	get isPrivate() {
+		return !!this.server;
+	}
 
 	delete(){
 		return this.client.deleteChannel.apply(this.client, reg(this, arguments));
