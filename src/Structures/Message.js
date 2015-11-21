@@ -68,6 +68,10 @@ class Message extends Equality{
 	replyTTS(){
 		return this.client.replyTTS.apply(this.client, reg(this, arguments));
 	}
+
+	get sender(){
+		return this.author;
+	}
 }
 
 module.exports = Message;
