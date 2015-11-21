@@ -60,6 +60,8 @@ Timestamp on when the message was last edited, `Number`. Potentially null.
 author
 ~~~~~~
 
+**Alias:** `sender`
+
 The User_ that sent the message.
 
 content

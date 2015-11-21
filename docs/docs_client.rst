@@ -295,10 +295,24 @@ setStatus(status, `game`, `callback`)
 
 Sets the Discord Status of the Client
 
-- **status** - `String`, either `online` or `idle`
+- **status** - `String`, either ``online, here, active, available`` or ``idle, away``
 - **game** - `String/Number`, ID of Discord Game being played
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
+    
+setStatusIdle()
+~~~~~~~~~~~~~~~
+
+**Alias:** `setStatusAway`
+
+Sets the status of the Client to Idle/Away
+    
+setStatusOnline()
+~~~~~~~~~~~~~~~
+
+**Aliases:** `setStatusHere`, `setStatusActive`, `setStatusAvailable`
+
+Sets the status of the Client to Online
 
 setTopic(channel, topic, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

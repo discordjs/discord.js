@@ -813,6 +813,10 @@ class Client extends EventEmitter {
 		this.setStatusOnline();
 	}
 
+	setStatusAvailable() {
+		this.setStatusOnline();
+	}
+	
 	setStatusAway() {
 		this.setStatusIdle();
 	}
