@@ -798,24 +798,56 @@ class Client extends EventEmitter {
 	}
 	
 	// def awaitResponse
-	awaitResponse(msg, callback = function (e, newMsg) { }) {
+	awaitResponse(msg, toSend = null, options = null, callback = function (e, newMsg) { }) {
+		
+		var self = this;
 		
 		return new Promise((resolve, reject) => {
-			
-			this.internal.awaitResponse(msg)
-				.then(newMsg => {
-					resolve(newMsg);
-					callback(null, newMsg);
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				});
-			
-		})
-		
+
+			function error(e) {
+				callback(e);
+				reject(e);
+			}
+
+			if (toSend) {
+				if (typeof toSend === "function") {
+					// (msg, callback)
+					callback = toSend;
+					final();
+				} else {
+					// (msg, toSend, ...)
+					if (options) {
+						if (typeof options === "function") {
+							//(msg, toSend, callback)
+							callback = options;
+							this.sendMessage(msg, toSend).then(final).catch(error);
+						} else {
+							//(msg, toSend, options, callback)
+							this.sendMessage(msg, toSend, options).then(final).catch(error);
+						}
+					} else {
+						// (msg, toSend) promise
+						this.sendMessage(msg, toSend).then(final).catch(error);
+					}
+				}
+			} else {
+				// (msg) promise
+				final();
+			}
+
+			function final() {
+				self.internal.awaitResponse(msg)
+					.then(newMsg => {
+						resolve(newMsg);
+						callback(null, newMsg);
+					})
+					.catch(error);
+			}
+
+		});
+
 	}
-	
+
 	setStatusIdle() {
 		this.setStatus("idle");
 	}
@@ -835,11 +867,11 @@ class Client extends EventEmitter {
 	setStatusAvailable() {
 		this.setStatusOnline();
 	}
-	
+
 	setStatusAway() {
 		this.setStatusIdle();
 	}
-	
+
 	setPlayingGame(game) {
 		this.setStatus(null, game);
 	}

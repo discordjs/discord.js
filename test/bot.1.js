@@ -25,10 +25,7 @@ client.on("message", m => {
 	}
 	
 	if (m.content === "ask me a question") {
-		
-		m.reply("do you like polar bears?");
-		
-		client.awaitResponse(m).then(newMsg => {
+		client.awaitResponse(m, "do you like polar bears?").then(newMsg => {
 			newMsg.reply("I see! you said " + newMsg.content);
 		});
 		
