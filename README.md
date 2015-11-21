@@ -4,7 +4,7 @@
   </a>
 </p>
 
-# Did v5.0.0 break your code? [Look here.](http://discordjs.readthedocs.org/en/rewrite-docs/migrating.html)
+# Did v5.0.0 break your code? [Look here.](http://discordjs.readthedocs.org/en/latest/migrating.html)
 
 [![Build Status](https://travis-ci.org/hydrabolt/discord.js.svg)](https://travis-ci.org/hydrabolt/discord.js) [![Documentation Status](https://readthedocs.org/projects/discordjs/badge/?version=latest)](http://discordjs.readthedocs.org/en/latest/?badge=latest)
 
