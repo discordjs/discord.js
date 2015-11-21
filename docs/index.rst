@@ -51,7 +51,7 @@ Feel free to make any contributions you want, whether it be through creating an 
 
 .. toctree::
    :maxdepth: 1
-   :caption: Util Documentation
+   :caption: Utility Documentation
 
    docs_cache
    docs_equality
