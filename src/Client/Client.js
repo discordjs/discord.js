@@ -797,6 +797,25 @@ class Client extends EventEmitter {
 		});
 	}
 	
+	// def awaitResponse
+	awaitResponse(msg, callback = function (e, newMsg) { }) {
+		
+		return new Promise((resolve, reject) => {
+			
+			this.internal.awaitResponse(msg)
+				.then(newMsg => {
+					resolve(newMsg);
+					callback(null, newMsg);
+				})
+				.catch(e => {
+					callback(e);
+					reject(e);
+				});
+			
+		})
+		
+	}
+	
 	setStatusIdle() {
 		this.setStatus("idle");
 	}

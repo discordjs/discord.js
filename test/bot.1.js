@@ -23,6 +23,16 @@ client.on("message", m => {
 		var game = m.content.split(" ").slice(1).join(" ");
 		client.setStatus(game);
 	}
+	
+	if (m.content === "ask me a question") {
+		
+		m.reply("do you like polar bears?");
+		
+		client.awaitResponse(m).then(newMsg => {
+			newMsg.reply("I see! you said " + newMsg.content);
+		});
+		
+	}
 
 });
 

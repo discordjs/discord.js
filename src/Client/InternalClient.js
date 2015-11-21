@@ -77,13 +77,14 @@ class InternalClient {
 				return;
 			}
 			
-			var awaitID = msg.channel.id + msg.id;
+			var awaitID = msg.channel.id + msg.author.id;
 			
 			if( !this.messageAwaits[awaitID] ){
 				this.messageAwaits[awaitID] = [];
 			}
 			
 			this.messageAwaits[awaitID].push(resolve);
+			
 	
 		});
 	}
@@ -1350,9 +1351,9 @@ class InternalClient {
 					if (channel) {
 						var msg = channel.messages.add(new Message(data, channel, client));
 						
-						if(self.messageAwaits[channel.id + msg.id]){
-							self.messageAwaits[channel.id + msg.id].map( fn => fn() );
-							self.messageAwaits[channel.id + msg.id] = null;
+						if(self.messageAwaits[channel.id + msg.author.id]){
+							self.messageAwaits[channel.id + msg.author.id].map( fn => fn(msg) );
+							self.messageAwaits[channel.id + msg.author.id] = null;
 							client.emit("message", msg, true); //2nd param is isAwaitedMessage
 						}else{
 							client.emit("message", msg);
