@@ -125,6 +125,7 @@ class VoiceConnection extends EventEmitter {
 				self.streamTime = count * length;
 
 				setTimeout(send, length + (nextTime - Date.now()));
+				
 				if (!self.playing)
 					self.setSpeaking(true);
 
