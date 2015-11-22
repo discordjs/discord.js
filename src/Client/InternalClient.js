@@ -633,7 +633,7 @@ class InternalClient {
 			server = self.resolver.resolveServer(server);
 
 			request
-				.put(`${Endpoints.SERVER_BANS(server.id) }/${user.id}/?delete-message-days=${length}`)
+				.put(`${Endpoints.SERVER_BANS(server.id)}/${user.id}?delete-message-days=${length}`)
 				.set("authorization", self.token)
 				.end((err, res) => {
 					if (err) {
