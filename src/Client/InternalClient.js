@@ -723,31 +723,32 @@ class InternalClient {
 	updateRole(role, data) {
 		var self = this;
 		data = data || {};
-		data.permissions = data.permissions || [];
 		return new Promise((resolve, reject) => {
 
 			var server = self.resolver.resolveServer(role.server);
 
-			var permissions = 0;
-			for (var perm of data.permissions) {
-				if (perm instanceof String || typeof perm === "string") {
-					permissions |= (Constants.Permissions[perm] || 0);
-				} else {
-					permissions |= perm;
+			var newData = {
+				color: data.color || role.color,
+				hoist: data.hoist || role.hoist,
+				name: data.name || role.name,
+				permissions: role.permissions || 0
+			};
+
+			if(data.permissions) {
+				newData.permissions = 0;
+				for (var perm of data.permissions) {
+					if (perm instanceof String || typeof perm === "string") {
+						newData.permissions |= (Constants.Permissions[perm] || 0);
+					} else {
+						newData.permissions |= perm;
+					}
 				}
 			}
-
-			data.color = data.color || 0;
 
 			request
 				.patch(Endpoints.SERVER_ROLES(server.id) + "/" + role.id)
 				.set("authorization", self.token)
-				.send({
-					color: data.color || role.color,
-					hoist: data.hoist || role.hoist,
-					name: data.name || role.name,
-					permissions: permissions
-				})
+				.send(newData)
 				.end((err, res) => {
 					if (err) {
 						reject(err);
