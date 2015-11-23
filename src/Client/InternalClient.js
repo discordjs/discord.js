@@ -1627,7 +1627,7 @@ class InternalClient {
 
 						var presenceUser = new User(data.user, client);
 
-						if (presenceUser.equalsStrict(user)) {
+						if (presenceUser.equals(user)) {
 							// a real presence update
 							client.emit("presence", user, data.status, data.game_id);
 							user.status = data.status;
@@ -1635,7 +1635,7 @@ class InternalClient {
 
 						} else {
 							// a name change or avatar change
-							client.emit("userUpdate", user, presenceUser);
+							client.emit("userUpdated", user, presenceUser);
 							self.users.update(user, presenceUser);
 						}
 
@@ -1656,14 +1656,14 @@ class InternalClient {
 						} else {
 							user.typing.since = Date.now();
 							user.typing.channel = channel;
-							client.emit("userTypingStart", user, channel);
+							client.emit("userTypingStarted", user, channel);
 						}
 						setTimeout(() => {
 							if (Date.now() - user.typing.since > 5500) {
 								// they haven't typed since
 								user.typing.since = null;
 								user.typing.channel = null;
-								client.emit("userTypingStop", user, channel);
+								client.emit("userTypingStopped", user, channel);
 							}
 						}, 6000);
 

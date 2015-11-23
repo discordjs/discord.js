@@ -48,6 +48,18 @@ class User extends Equality{
 		else
 			return false;
 	}
+
+	equals(obj){
+		if(obj instanceof User)
+			return (
+				this.id === obj.id &&
+				this.username === obj.username &&
+				this.discriminator === obj.discriminator &&
+				this.avatar === obj.avatar
+			);
+		else
+			return false;
+	}
 }
 
 module.exports = User;
