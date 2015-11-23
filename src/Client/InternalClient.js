@@ -44,7 +44,7 @@ class InternalClient {
 		this.voiceConnection = null;
 		this.resolver = new Resolver(this);
 		this.readyTime = null;
-		
+
 		this.messageAwaits = {};
 	}
 
@@ -65,27 +65,27 @@ class InternalClient {
 			}
 		});
 	}
-	
+
 	//def awaitResponse
 	awaitResponse(msg){
 		return new Promise((resolve, reject) => {
-			
+
 			msg = this.resolver.resolveMessage(msg);
-			
+
 			if(!msg){
 				reject(new Error("message undefined"));
 				return;
 			}
-			
+
 			var awaitID = msg.channel.id + msg.author.id;
-			
+
 			if( !this.messageAwaits[awaitID] ){
 				this.messageAwaits[awaitID] = [];
 			}
-			
+
 			this.messageAwaits[awaitID].push(resolve);
-			
-	
+
+
 		});
 	}
 
@@ -999,7 +999,7 @@ class InternalClient {
 	//def setStatus
 	setStatus(idleStatus, gameID) {
 		var self = this;
-		
+
 		self.idleStatus = idleStatus || self.idleStatus || null;
 		if(idleStatus){
 			if(idleStatus == "online" || idleStatus == "here" || idleStatus == "available"){
@@ -1007,7 +1007,7 @@ class InternalClient {
 			}
 		}
 		self.gameID = self.resolver.resolveGameID(gameID) || self.gameID || null;
-		
+
 		return new Promise((resolve, reject) => {
 
 			var packet = {
@@ -1350,7 +1350,7 @@ class InternalClient {
 					var channel = self.channels.get("id", data.channel_id) || self.private_channels.get("id", data.channel_id);
 					if (channel) {
 						var msg = channel.messages.add(new Message(data, channel, client));
-						
+
 						if(self.messageAwaits[channel.id + msg.author.id]){
 							self.messageAwaits[channel.id + msg.author.id].map( fn => fn(msg) );
 							self.messageAwaits[channel.id + msg.author.id] = null;
@@ -1369,7 +1369,7 @@ class InternalClient {
 					if (channel) {
 						// potentially blank
 						var msg = channel.messages.get("id", data.id);
-						client.emit("messageDeleted", msg);
+						client.emit("messageDeleted", msg, channel);
 						if (msg) {
 							channel.messages.remove(msg);
 						}
