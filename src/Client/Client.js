@@ -56,7 +56,7 @@ class Client extends EventEmitter {
 	// def login
 	login(email, password, callback = (/*err, token*/) => {}) {
 		return this.internal.login(email, password)
-		.then((token) => {
+		.then(token => {
 			callback(null, token);
 			return token;
 		}, errCB(callback));
@@ -206,7 +206,7 @@ class Client extends EventEmitter {
 			callback = type;
 		}
 		return this.internal.createChannel(server, name, type)
-		.then((channel) => {
+		.then(channel => {
 			callback(channel);
 			return channel;
 		}, errCB(callback));
@@ -248,7 +248,7 @@ class Client extends EventEmitter {
 			callback = data;
 		}
 		return this.internal.createRole(server, data)
-		.then((role) => {
+		.then(role => {
 			callback(null, role);
 			return role;
 		}, errCB(callback));
@@ -261,7 +261,7 @@ class Client extends EventEmitter {
 			callback = data;
 		}
 		return this.internal.updateRole(role, data)
-		.then((role) => {
+		.then(role => {
 			callback(null, role);
 			return role;
 		}, errCB(callback));
@@ -281,7 +281,7 @@ class Client extends EventEmitter {
 
 	// def addUserToRole
 	addUserToRole(member, role, callback = (/*err*/) => {}) {
-		return this.addMemberToRole(member, role, errCB(callback));
+		return this.addMemberToRole(member, role, callback);
 	}
 
 	// def removeMemberFromRole
@@ -292,7 +292,7 @@ class Client extends EventEmitter {
 
 	// def removeUserFromRole
 	removeUserFromRole(member, role, callback = (/*err*/) => {}) {
-		return this.removeUserFromRole(member, role, errCB(callback));
+		return this.removeMemberFromRole(member, role, callback);
 	}
 
 	// def createInvite
@@ -443,7 +443,7 @@ class Client extends EventEmitter {
 		}
 		// (msg) promise
 		return ret.then(() => this.internal.awaitResponse(msg))
-		.then((newMsg) => {
+		.then(newMsg => {
 			callback(null, newMsg);
 			return newMsg;
 		}, errCB(callback));
