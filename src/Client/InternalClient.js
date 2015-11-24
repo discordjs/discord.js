@@ -1,9 +1,9 @@
 "use strict";
 
-var EventEmitter = require("events");
 var request = require("superagent");
 var WebSocket = require("ws");
 var ConnectionState = require("./ConnectionState.js");
+var qs = require("querystring");
 
 var Constants = require("../Constants.js"),
 	Endpoints = Constants.Endpoints,
@@ -24,6 +24,43 @@ var User = require("../Structures/User.js"),
 	VoiceConnection = require("../Voice/VoiceConnection.js");
 
 var zlib;
+
+//todo: move this somewhere else
+var originalEnd = request.Request.prototype.prototype.end;
+request.Request.prototype.prototype.end = function(callback) {
+	return new Promise((resolve, reject) => {
+		originalEnd.call(this, (err, response) => {
+			if (callback) {
+				callback(err, response);
+			}
+
+			if (err) {
+				return reject(err);
+			}
+			resolve(response);
+		});
+	});
+};
+
+function waitFor(condition, value = condition, interval = 20) {
+	return new Promise(resolve => {
+		var int = setInterval(() => {
+			var isDone = condition();
+			if(isDone) {
+				if(condition === value) {
+					resolve(isDone);
+				} else {
+					resolve(value(isDone));
+				}
+				return clearInterval(int);
+			}
+		}, interval);
+	});
+}
+
+function delay(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 class InternalClient {
 	constructor(discordClient) {
@@ -54,9 +91,9 @@ class InternalClient {
 
 	//def leaveVoiceChannel
 	leaveVoiceChannel() {
-		if (self.voiceConnection) {
-			self.voiceConnection.destroy();
-			self.voiceConnection = null;
+		if (this.voiceConnection) {
+			this.voiceConnection.destroy();
+			this.voiceConnection = null;
 		}
 		return Promise.resolve();
 	}
@@ -79,43 +116,43 @@ class InternalClient {
 			}
 
 			this.messageAwaits[awaitID].push(resolve);
-
-
 		});
 	}
 
 	//def joinVoiceChannel
 	joinVoiceChannel(chann) {
-		var channel = self.resolver.resolveVoiceChannel(chann);
+		var channel = this.resolver.resolveVoiceChannel(chann);
 
 		if (!channel) {
 			return Promise.reject(new Error("voice channel does not exist"));
 		}
-		return self.leaveVoiceChannel()
+		return this.leaveVoiceChannel()
 		.then(() => {
 			return new Promise((resolve, reject) => {
 				var session, token, server = channel.server, endpoint;
 
-				var check = (m) => {
+				var check = m => {
 					var data = JSON.parse(m);
 					if (data.t === "VOICE_STATE_UPDATE") {
 						session = data.d.session_id;
 					} else if (data.t === "VOICE_SERVER_UPDATE") {
 						token = data.d.token;
 						endpoint = data.d.endpoint;
-						var chan = self.voiceConnection = new VoiceConnection(channel, self.client, session, token, server, endpoint);
+						var chan = this.voiceConnection = new VoiceConnection(
+							channel, this.client, session, token, server, endpoint
+						);
 
 						chan.on("ready", () => resolve(chan));
 						chan.on("error", reject);
 
-						self.client.emit("debug", "removed temporary voice websocket listeners");
-						self.websocket.removeListener("message", check);
+						this.client.emit("debug", "removed temporary voice websocket listeners");
+						this.websocket.removeListener("message", check);
 
 					}
 				};
 
-				self.websocket.on("message", check);
-				self.sendWS({
+				this.websocket.on("message", check);
+				this.sendWS({
 					op: 4,
 					d: {
 						"guild_id": server.id,
@@ -130,990 +167,661 @@ class InternalClient {
 
 	// def createServer
 	createServer(name, region = "london") {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			name = self.resolver.resolveString(name);
+		name = this.resolver.resolveString(name);
 
-			request
-				.post(Endpoints.SERVERS)
-				.set("authorization", self.token)
-				.send({ name, region })
-				.end((err, res) => {
-					if (err) {
-						reject(new Error(err));
-					} else {
-						// valid server, wait until it is cached
-						var inter = setInterval(() => {
-							if (self.servers.get("id", res.body.id)) {
-								clearInterval(inter);
-								resolve(self.servers.get("id", res.body.id));
-							}
-						}, 20);
-					}
-				});
+		return request
+		.post(Endpoints.SERVERS)
+		.set("authorization", this.token)
+		.send({ name, region })
+		.end()
+		.then(res => {
+			// valid server, wait until it is cached
+			return waitFor(() => this.servers.get("id", res.body.guild.id));
 		});
 	}
 
 	//def joinServer
 	joinServer(invite) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			invite = self.resolver.resolveInviteID(invite);
-			if (invite) {
-				request
-					.post(Endpoints.INVITE(invite))
-					.set("authorization", self.token)
-					.end((err, res) => {
-						if (err) {
-							reject(err);
-						} else {
-							// valid server, wait until it is received via ws and cached
-							var inter = setInterval(() => {
-								if (self.servers.get("id", res.body.guild.id)) {
-									clearInterval(inter);
-									resolve(self.servers.get("id", res.body.guild.id));
-								}
-							}, 20);
-						}
-					});
-
-			} else {
-				reject(new Error("Not a valid invite"));
-			}
-
+		invite = this.resolver.resolveInviteID(invite);
+		if(!invite) {
+			return Promise.reject(new Error("Not a valid invite"));
+		}
+		return request
+		.post(Endpoints.INVITE(invite))
+		.set("authorization", this.token)
+		.end()
+		.then(res => {
+			// valid server, wait until it is received via ws and cached
+			return waitFor(() => this.servers.get("id", res.body.guild.id));
 		});
+
 	}
 
 	//def leaveServer
 	leaveServer(srv) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			var server = self.resolver.resolveServer(srv);
-			if (server) {
+		var server = this.resolver.resolveServer(srv);
+		if(!server) {
+			return Promise.reject(new Error("server did not resolve"));
+		}
 
-				request
-					.del(Endpoints.SERVER(server.id))
-					.set("authorization", self.token)
-					.end((err, res) => {
-						if (err) {
-							reject(new Error(err));
-						} else {
-							// remove channels of server then the server
-							for (var chan of server.channels) {
-								self.channels.remove(chan);
-							}
-							// remove server
-							self.servers.remove(server);
-							resolve();
-						}
-					});
-
-			} else {
-				reject(new Error("server did not resolve"));
+		return request
+		.del(Endpoints.SERVER(server.id))
+		.set("authorization", this.token)
+		.end()
+		.then(() => {
+			// remove channels of server then the server
+			for (var chan of server.channels) {
+				this.channels.remove(chan);
 			}
+			// remove server
+			this.servers.remove(server);
 		});
 	}
 
 	// def login
 	login(email, password) {
-		var self = this;
-		var client = self.client;
-		return new Promise((resolve, reject) => {
-			if (self.state === ConnectionState.DISCONNECTED || self.state === ConnectionState.IDLE) {
+		var client = this.client;
+		if(this.state !== ConnectionState.DISCONNECTED && this.state !== ConnectionState.IDLE) {
+			return Promise.reject(new Error("already logging in/logged in/ready!"));
+		}
 
-				self.state = ConnectionState.LOGGING_IN;
+		this.state = ConnectionState.LOGGING_IN;
 
-				request
-					.post(Endpoints.LOGIN)
-					.send({ email, password })
-					.end(function (err, res) {
+		return request
+		.post(Endpoints.LOGIN)
+		.send({
+			email,
+			password
+		})
+		.end()
+		.then(res => {
+			var token = res.body.token;
+			this.state = ConnectionState.LOGGED_IN;
+			this.token = token;
+			this.email = email;
+			this.password = password;
 
-						if (err) {
-							self.state = ConnectionState.DISCONNECTED;
-							self.websocket = null;
-							client.emit("disconnected");
-							reject(new Error(err));
-						} else {
-							var token = res.body.token;
-							self.state = ConnectionState.LOGGED_IN;
-							self.token = token;
-							self.email = email;
-							self.password = password;
-
-							self.getGateway().then((url) => {
-
-								self.createWS(url);
-								resolve(token);
-
-							}).catch((e) => {
-								self.state = ConnectionState.DISCONNECTED;
-								client.emit("disconnected");
-								reject(new Error(err));
-							});
-						}
-
-					});
-
-			} else {
-				reject(new Error("already logging in/logged in/ready!"));
-			}
+			return this.getGateway()
+			.then(url => {
+				this.createWS(url);
+				return token;
+			});
+		}, error => {
+			this.websocket = null;
+			throw error;
+		})
+		.catch(error => {
+			this.state = ConnectionState.DISCONNECTED;
+			client.emit("disconnected");
+			throw error;
 		});
 	}
 
 	// def logout
 	logout() {
-		var self = this;
-		return new Promise((resolve, reject) => {
+		if (this.state === ConnectionState.DISCONNECTED || this.state === ConnectionState.IDLE) {
+			return Promise.reject(new Error("Client is not logged in!"));
+		}
 
-			if (self.state === ConnectionState.DISCONNECTED || self.state === ConnectionState.IDLE) {
-				reject(new Error("Client is not logged in!"));
-				return;
+		return request
+		.post(Endpoints.LOGOUT)
+		.set("authorization", this.token)
+		.end()
+		.then(() => {
+			if (this.websocket) {
+				this.websocket.close();
+				this.websocket = null;
 			}
-
-			request
-				.post(Endpoints.LOGOUT)
-				.set("authorization", self.token)
-				.end((err, res) => {
-					if (err) {
-						reject(new Error(err));
-					} else {
-						if (this.websocket) {
-							this.websocket.close();
-							this.websocket = null;
-						}
-						self.token = null;
-						self.email = null;
-						self.password = null;
-						self.state = ConnectionState.DISCONNECTED;
-						resolve();
-					}
-				});
-
+			this.token = null;
+			this.email = null;
+			this.password = null;
+			this.state = ConnectionState.DISCONNECTED;
 		});
 	}
 
 	// def startPM
 	startPM(resUser) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			var user = self.resolver.resolveUser(resUser);
-
-			if (user) {
-
+		var user = this.resolver.resolveUser(resUser);
+		if(!user) {
+			return Promise.reject(new Error("Unable to resolve resUser to a User"));
+		}
 				// start the PM
-				request
-					.post(`${Endpoints.USER_CHANNELS(user.id) }`)
-					.set("authorization", self.token)
-					.send({
-						recipient_id: user.id
-					})
-					.end((err, res) => {
-						if (err) {
-							reject(new Error(err));
-						} else {
-							resolve(self.private_channels.add(new PMChannel(res.body, self.client)));
-						}
-					});
-
-			} else {
-				reject(new Error("Unable to resolve resUser to a User"));
-			}
-
+		return request
+		.post(`${Endpoints.USER_CHANNELS(user.id) }`)
+		.set("authorization", this.token)
+		.send({
+			recipient_id: user.id
+		})
+		.end()
+		.then(res => {
+			return this.private_channels.add(new PMChannel(res.body, this.client));
 		});
 	}
 
 	// def getGateway
 	getGateway() {
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			request
-				.get(Endpoints.GATEWAY)
-				.set("authorization", self.token)
-				.end(function (err, res) {
-					if (err)
-						reject(err);
-					else
-						resolve(res.body.url);
-				});
-
-		});
+		return request
+		.get(Endpoints.GATEWAY)
+		.set("authorization", this.token)
+		.end()
+		.then(res => res.body.url);
 	}
 
 	// def sendMessage
 	sendMessage(where, _content, options = {}) {
-		var self = this;
-		return new Promise((resolve, reject) => {
 
-			self.resolver.resolveChannel(where)
-				.then(next)
-				.catch(e => reject(new Error("Error resolving destination - " + e)));
+		return this.resolver.resolveChannel(where)
+		.catch(error => {
+			error.message = "Error resolving destination - " + error.toString();
+			throw error;
+		})
+		.then(destination => {
+			//var destination;
+			var content = this.resolver.resolveString(_content);
+			var mentions = this.resolver.resolveMentions(content);
 
-			function next(destination) {
-				//var destination;
-				var content = self.resolver.resolveString(_content);
-				var mentions = self.resolver.resolveMentions(content);
-
-				request
-					.post(Endpoints.CHANNEL_MESSAGES(destination.id))
-					.set("authorization", self.token)
-					.send({
-						content: content,
-						mentions: mentions,
-						tts: options.tts
-					})
-					.end((err, res) => {
-						if (err) {
-							reject(new Error(err));
-						} else {
-
-							resolve(
-								destination.messages.add(
-									new Message(res.body, destination, self.client)
-									)
-								);
-
-						}
-					});
-
-			}
-
+			return request
+			.post(Endpoints.CHANNEL_MESSAGES(destination.id))
+			.set("authorization", this.token)
+			.send({
+				content: content,
+				mentions: mentions,
+				tts: options.tts
+			})
+			.end()
+			.then(res =>
+				destination.messages.add(new Message(res.body, destination, this.client))
+			);
 		});
+
 	}
 	// def deleteMessage
 	deleteMessage(_message, options = {}) {
-		var self = this;
-		return new Promise((resolve, reject) => {
 
-			var message = self.resolver.resolveMessage(_message);
+		var message = this.resolver.resolveMessage(_message);
+		if(!message) {
+			return Promise.reject(new Error("Supplied message did not resolve to a message!"));
+		}
 
-			if (message) {
-
-				if (options.wait) {
-					setTimeout(deleteMsg, options.wait);
-				} else {
-					deleteMsg();
-				}
-
-				function deleteMsg() {
-					request
-						.del(Endpoints.CHANNEL_MESSAGE(message.channel.id, message.id))
-						.set("authorization", self.token)
-						.end((err, res) => {
-							if (err) {
-								reject(new Error(err));
-							} else {
-								message.channel.messages.remove(message);
-								resolve();
-							}
-						});
-				}
-
-			} else {
-				reject(new Error("Supplied message did not resolve to a message!"));
-			}
-
-		});
+		var chain = options.wait ? delay(options.wait) : Promise.resolve();
+		return chain.then(() =>
+			request
+			.del(Endpoints.CHANNEL_MESSAGE(message.channel.id, message.id))
+			.set("authorization", this.token)
+			.end()
+		)
+		.then(() => message.channel.messages.remove(message));
 	}
 
 	// def updateMessage
 	updateMessage(msg, _content, options = {}) {
 
-		var self = this;
-		return new Promise((resolve, reject) => {
+		var message = this.resolver.resolveMessage(msg);
 
-			var message = self.resolver.resolveMessage(msg);
+		if(!message) {
+			return Promise.reject(new Error("Supplied message did not resolve to a message!"));
+		}
 
-			if (message) {
+		var content = this.resolver.resolveString(_content);
+		var mentions = this.resolver.resolveMentions(content);
 
-				var content = self.resolver.resolveString(_content);
-				var mentions = self.resolver.resolveMentions(content);
-
-				request
-					.patch(Endpoints.CHANNEL_MESSAGE(message.channel.id, message.id))
-					.set("authorization", self.token)
-					.send({
-						content: content,
-						tts: options.tts,
-						mentions: mentions
-					})
-					.end((err, res) => {
-						if (err) {
-							reject(new Error(err));
-						} else {
-							resolve(
-								message.channel.messages.update
-									(message, new Message(res.body, message.channel, self.client)
-									));
-						}
-					})
-
-			} else {
-				reject(new Error("Supplied message did not resolve to a message!"));
-			}
-
-		});
-
+		return request
+		.patch(Endpoints.CHANNEL_MESSAGE(message.channel.id, message.id))
+		.set("authorization", this.token)
+		.send({
+			content: content,
+			tts: options.tts,
+			mentions: mentions
+		})
+		.end()
+		.then(res => message.channel.messages.update(
+			message,
+			new Message(res.body, message.channel, this.client)
+		));
 	}
 
 	// def sendFile
 	sendFile(where, _file, name = "image.png") {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			self.resolver.resolveChannel(where)
-				.then(next)
-				.catch(e => reject(new Error("couldn't resolve to channel - " + e)));
-
-			function next(channel) {
-
-				var file = self.resolver.resolveFile(_file);
-
-				request
-					.post(Endpoints.CHANNEL_MESSAGES(channel.id))
-					.set("authorization", self.token)
-					.attach("file", file, name)
-					.end((err, res) => {
-
-						if (err) {
-							reject(new Error(err));
-						} else {
-							resolve(channel.messages.add(new Message(res.body, channel, self.client)));
-						}
-
-					});
-
-			}
-		});
+		return this.resolver.resolveChannel(where)
+		.catch(error => {
+			error.message = "Couldn't resolve to channel - " + error.toString();
+			throw error;
+		})
+		.then(channel =>
+			request
+			.post(Endpoints.CHANNEL_MESSAGES(channel.id))
+			.set("authorization", this.token)
+			.attach("file", this.resolver.resolveFile(_file), name)
+			.end()
+			.then(res => channel.messages.add(new Message(res.body, channel, this.client)))
+		);
 	}
 
 	// def getChannelLogs
 	getChannelLogs(_channel, limit = 500, options = {}) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			self.resolver.resolveChannel(_channel)
-				.then(next)
-				.catch(e => reject(new Error("couldn't resolve to channel - " + e)));
-
-			function next(channel) {
-
-				if (options.before)
-					options.before = self.resolver.resolveMessage(options.before);
-				if (options.after)
-					options.after = self.resolver.resolveMessage(options.after);
-
-				var params = [];
-				if (options.before)
-					params.push("before=" + options.before.id);
-				if (options.after)
-					params.push("after=" + options.after.id);
-
-				var joinedParams = params.join();
-				if (joinedParams !== "")
-					joinedParams = "&" + params.join();
-
-				request
-					.get(`${Endpoints.CHANNEL_MESSAGES(channel.id) }?limit=${limit}${joinedParams}`)
-					.set("authorization", self.token)
-					.end((err, res) => {
-						if (err) {
-							reject(new Error(err));
-						} else {
-							var logs = [];
-							res.body.forEach((msg) => {
-								logs.push(channel.messages.add(new Message(msg, channel, self.client)));
-							});
-							resolve(logs);
-						}
-					});
-
+		return this.resolver.resolveChannel(_channel)
+		.catch(error => {
+			error.message = "Couldn't resolve to channel - " + error.toString();
+			throw error;
+		})
+		.then(channel => {
+			var qsObject = {limit};
+			if (options.before) {
+				const res = this.resolver.resolveMessage(options.before);
+				if(res) {
+					qsObject.before = res;
+				}
+			}
+			if (options.after) {
+				const res = this.resolver.resolveMessage(options.after);
+				if(res) {
+					qsObject.after = res;
+				}
 			}
 
+			return request
+			.get(Endpoints.CHANNEL_MESSAGES(channel.id) + "?" + qs.stringify(qsObject))
+			.set("authorization", this.token)
+			.end()
+			.then(res => res.body.map(
+				msg => channel.messages.add(new Message(msg, channel, this.client))
+			));
 		});
 	}
 
 	// def getBans
 	getBans(server) {
-		var self = this;
-		return new Promise((resolve, reject) => {
+		server = this.resolver.resolveServer(server);
 
-			server = self.resolver.resolveServer(server);
-
-			request
-				.get(`${Endpoints.SERVER_BANS(server.id) }`)
-				.set("authorization", self.token)
-				.end((err, res) => {
-					if (err) {
-						reject(new Error(err));
-					} else {
-						var bans = [];
-						res.body.forEach((ban) => {
-							bans.push(self.users.add(new User(ban.user, self.client)));
-						});
-						resolve(bans);
-					}
-				});
-
+		return request
+		.get(`${Endpoints.SERVER_BANS(server.id) }`)
+		.set("authorization", this.token)
+		.end()
+		.then(res => {
+			res.body.map(ban => {
+				return this.users.add(new User(ban.user, this.client));
+			});
 		});
 	}
 
 	// def createChannel
 	createChannel(server, name, type = "text") {
-		var self = this;
 
-		return new Promise((resolve, reject) => {
+		server = this.resolver.resolveServer(server);
 
-			server = self.resolver.resolveServer(server);
-
-			request
-				.post(Endpoints.SERVER_CHANNELS(server.id))
-				.set("authorization", self.token)
-				.send({
-					name, type
-				})
-				.end((err, res) => {
-					if (err) {
-						reject(err);
-					} else {
-						var channel;
-						if (res.body.type === "text") {
-							channel = new TextChannel(res.body, self.client, server);
-						} else {
-							channel = new VoiceChannel(res.body, self.client, server);
-						}
-						resolve(server.channels.add(self.channels.add(channel)));
-					}
-				})
-
+		return request
+		.post(Endpoints.SERVER_CHANNELS(server.id))
+		.set("authorization", this.token)
+		.send({
+			name,
+			type
+		})
+		.end()
+		.then(res => {
+			var channel;
+			if (res.body.type === "text") {
+				channel = new TextChannel(res.body, this.client, server);
+			}
+			channel = new VoiceChannel(res.body, this.client, server);
+			return server.channels.add(this.channels.add(channel));
 		});
 	}
 
 	// def deleteChannel
 	deleteChannel(_channel) {
-		var self = this;
-		return new Promise((resolve, reject) => {
 
-			self.resolver.resolveChannel(_channel).then(next).catch(reject);
-
-			function next(channel) {
-				request
-					.del(Endpoints.CHANNEL(channel.id))
-					.set("authorization", self.token)
-					.end(function (err, res) {
-						if (err) {
-							reject(err);
-						} else {
-							channel.server.channels.remove(channel);
-							self.channels.remove(channel);
-							resolve();
-						}
-					});
-			}
+		return this.resolver.resolveChannel(_channel)
+		.then(channel =>
+			request
+			.del(Endpoints.CHANNEL(channel.id))
+			.set("authorization", this.token)
+			.end()
+			.then(() => {
+				channel.server.channels.remove(channel);
+				this.channels.remove(channel);
+			}), error => {
+			error.message = "Couldn't resolve to channel - " + error.toString();
+			throw error;
 		});
 	}
 
 	// def banMember
 	banMember(user, server, length = 1) {
-		var self = this;
-		return new Promise((resolve, reject) => {
+		user = this.resolver.resolveUser(user);
+		server = this.resolver.resolveServer(server);
 
-			user = self.resolver.resolveUser(user);
-			server = self.resolver.resolveServer(server);
-
-			request
-				.put(`${Endpoints.SERVER_BANS(server.id)}/${user.id}?delete-message-days=${length}`)
-				.set("authorization", self.token)
-				.end((err, res) => {
-					if (err) {
-						reject(err);
-					} else {
-						resolve();
-					}
-				});
-		});
+		return request
+		.put(`${Endpoints.SERVER_BANS(server.id)}/${user.id}?delete-message-days=${length}`)
+		.set("authorization", this.token)
+		.end();//will expose api result, probably not bad tho
 	}
 
 	// def unbanMember
 	unbanMember(user, server) {
-		var self = this;
-		return new Promise((resolve, reject) => {
 
-			server = self.resolver.resolveServer(server);
-			user = self.resolver.resolveUser(user);
+		server = this.resolver.resolveServer(server);
+		user = this.resolver.resolveUser(user);
 
-			request
-				.del(`${Endpoints.SERVER_BANS(server.id) }/${user.id}`)
-				.set("authorization", self.token)
-				.end((err, res) => {
-					if (err) {
-						reject(err);
-					} else {
-						resolve();
-					}
-				});
-		});
+		return request
+		.del(`${Endpoints.SERVER_BANS(server.id) }/${user.id}`)
+		.set("authorization", this.token)
+		.end();//will expose api result, probably not bad tho
 	}
 
 	// def kickMember
 	kickMember(user, server) {
-		var self = this;
-		return new Promise((resolve, reject) => {
+		user = this.resolver.resolveUser(user);
+		server = this.resolver.resolveServer(server);
 
-			user = self.resolver.resolveUser(user);
-			server = self.resolver.resolveServer(server);
-
-			request
-				.del(`${Endpoints.SERVER_MEMBERS(server.id) }/${user.id}`)
-				.set("authorization", self.token)
-				.end((err, res) => {
-					if (err) {
-						reject(err);
-					} else {
-						resolve();
-					}
-				});
-		});
+		return request
+		.del(`${Endpoints.SERVER_MEMBERS(server.id) }/${user.id}`)
+		.set("authorization", this.token)
+		.end();
 	}
 
 	// def createRole
 	createRole(server, data) {
-		var self = this;
-		return new Promise((resolve, reject) => {
+		server = this.resolver.resolveServer(server);
 
-			server = self.resolver.resolveServer(server);
+		return request
+		.post(Endpoints.SERVER_ROLES(server.id))
+		.set("authorization", this.token)
+		.end()
+		.then(res => {
+			var role = server.roles.add(new Role(res.body, server, this.client));
 
-			request
-				.post(Endpoints.SERVER_ROLES(server.id))
-				.set("authorization", self.token)
-				.end((err, res) => {
-					if (err) {
-						reject(err);
-					} else {
-
-						var role = server.roles.add(new Role(res.body, server, self.client));
-
-						if (data) {
-
-							self.updateRole(role, data)
-								.then(resolve)
-								.catch(reject);
-
-						} else {
-							resolve(role);
-						}
-
-					}
-				});
+			if (data) {
+				return this.updateRole(role, data);
+			}
+			return role;
 
 		});
 	}
 	// def updateRole
 	updateRole(role, data) {
-		var self = this;
-		data = data || {};
-		return new Promise((resolve, reject) => {
 
-			var server = self.resolver.resolveServer(role.server);
+		var server = this.resolver.resolveServer(role.server);
 
-			var newData = {
-				color: data.color || role.color,
-				hoist: data.hoist || role.hoist,
-				name: data.name || role.name,
-				permissions: role.permissions || 0
-			};
+		var newData = {
+			color: data.color || role.color,
+			hoist: data.hoist || role.hoist,
+			name: data.name || role.name,
+			permissions: role.permissions || 0
+		};
 
-			if(data.permissions) {
-				newData.permissions = 0;
-				for (var perm of data.permissions) {
-					if (perm instanceof String || typeof perm === "string") {
-						newData.permissions |= (Constants.Permissions[perm] || 0);
-					} else {
-						newData.permissions |= perm;
-					}
+		if(data.permissions) {
+			newData.permissions = 0;
+			for (var perm of data.permissions) {
+				if (perm instanceof String || typeof perm === "string") {
+					newData.permissions |= (Constants.Permissions[perm] || 0);
+				} else {
+					newData.permissions |= perm;
 				}
 			}
+		}
 
-			request
-				.patch(Endpoints.SERVER_ROLES(server.id) + "/" + role.id)
-				.set("authorization", self.token)
-				.send(newData)
-				.end((err, res) => {
-					if (err) {
-						reject(err);
-					} else {
-						var nrole = new Role(res.body, server, self.client);
-						resolve(server.roles.update(role, nrole));
-					}
-				});
-
+		return request
+		.patch(Endpoints.SERVER_ROLES(server.id) + "/" + role.id)
+		.set("authorization", this.token)
+		.send(newData)
+		.end()
+		.then(res => {
+			return server.roles.update(role, new Role(res.body, server, this.client));
 		});
 	}
 
 	// def deleteRole
 	deleteRole(role) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			request
-				.del(Endpoints.SERVER_ROLES(role.server.id) + "/" + role.id)
-				.set("authorization", self.token)
-				.end((err, res) => {
-					if (err) {
-						reject(err);
-					} else {
-						resolve();
-						// the ws cache will handle it
-						// role.server.roles.remove(role);
-					}
-				});
-
-		});
+		return request
+		.del(Endpoints.SERVER_ROLES(role.server.id) + "/" + role.id)
+		.set("authorization", this.token)
+		.end();
 	}
 
 	//def addMemberToRole
 	addMemberToRole(member, role) {
-		var self = this;
-		return new Promise((resolve, reject) => {
+		member = this.resolver.resolveUser(member);
 
-			member = self.resolver.resolveUser(member);
+		if (!member || !role) {
+			return Promise.reject(new Error("member/role not in server"));
+		}
 
-			if (!member || !role) {
-				reject(new Error("member/role not in server"));
-				return;
-			}
+		if (!role.server.memberMap[member.id]) {
+			return Promise.reject(new Error("member not in server"));
+		}
 
-			if (role.server.memberMap[member.id]) {
+		var roleIDS = role.server.memberMap[member.id].roles.map(r => r.id).concat(role.id);
 
-				var roleIDS = role.server.memberMap[member.id].roles.map(r => r.id).concat(role.id);
-
-				request
-					.patch(Endpoints.SERVER_MEMBERS(role.server.id) + "/" + member.id)
-					.set("authorization", self.token)
-					.send({
-						roles: roleIDS
-					})
-					.end((err) => {
-						if (err) {
-							reject(err);
-						} else {
-							resolve();
-						}
-					});
-
-			} else {
-				reject(new Error("member not in server"));
-			}
-
-		});
+		return request
+		.patch(Endpoints.SERVER_MEMBERS(role.server.id) + "/" + member.id)
+		.set("authorization", this.token)
+		.send({
+			roles: roleIDS
+		})
+		.end();
 	}
 
 	//def removeMemberFromRole
 	removeMemberFromRole(member, role) {
-		var self = this;
-		return new Promise((resolve, reject) => {
+		member = this.resolver.resolveUser(member);
 
-			member = self.resolver.resolveUser(member);
+		if (!member || !role) {
+			return Promise.reject(new Error("member/role not in server"));
+		}
 
-			if (!member || !role) {
-				reject(new Error("member/role not in server"));
-				return;
+		if (!role.server.memberMap[member.id]) {
+			return Promise.reject(new Error("member not in server"));
+		}
+
+		var roleIDS = role.server.memberMap[member.id].roles.map(r => r.id);
+
+		for (var item in roleIDS) {
+			if (roleIDS[item] === role.id) {
+				roleIDS.splice(item, 1);
+				//missing break?
 			}
+		}
 
-			if (role.server.memberMap[member.id]) {
+		return request
+		.patch(Endpoints.SERVER_MEMBERS(role.server.id) + "/" + member.id)
+		.set("authorization", this.token)
+		.send({
+			roles: roleIDS
+		})
+		.end();
 
-				var roleIDS = role.server.memberMap[member.id].roles.map(r => r.id);
-
-				for (var item in roleIDS) {
-					if (roleIDS[item] === role.id) {
-						roleIDS.splice(item, 1);
-					}
-				}
-
-				request
-					.patch(Endpoints.SERVER_MEMBERS(role.server.id) + "/" + member.id)
-					.set("authorization", self.token)
-					.send({
-						roles: roleIDS
-					})
-					.end((err) => {
-						if (err) {
-							reject(err);
-						} else {
-							resolve();
-						}
-					});
-
-			} else {
-				reject(new Error("member not in server"));
-			}
-
-		});
 	}
 
 	// def createInvite
 	createInvite(chanServ, options) {
-		var self = this;
-		return new Promise((resolve, reject) => {
+		if (chanServ instanceof Channel) {
+			// do something
+		} else if (chanServ instanceof Server) {
+			// do something
+		} else {
+			chanServ = this.resolver.resolveServer(chanServ) || this.resolver.resolveChannel(chanServ);
+		}
 
-			if (chanServ instanceof Channel) {
-				// do something
-			} else if (chanServ instanceof Server) {
-				// do something
-			} else {
-				chanServ = self.resolver.resolveServer(chanServ) || self.resolver.resolveChannel(chanServ);
-			}
+		if (!chanServ) {
+			throw new Error("couldn't resolve where");
+		}
 
-			if (!chanServ) {
-				reject(new Error("couldn't resolve where"));
-				return;
-			}
+		if (!options) {
+			options = {
+				validate: null
+			};
+		} else {
+			options.max_age = options.maxAge || 0;
+			options.max_uses = options.maxUses || 0;
+			options.temporary = options.temporary || false;
+			options.xkcdpass = options.xkcd || false;
+		}
 
-			if (!options) {
-				options = { validate: null };
-			} else {
-				options.max_age = options.maxAge || 0;
-				options.max_uses = options.maxUses || 0;
-				options.temporary = options.temporary || false;
-				options.xkcdpass = options.xkcd || false;
-			}
+		var epoint;
+		if (chanServ instanceof Channel) {
+			epoint = Endpoints.CHANNEL_INVITES(chanServ.id);
+		} else {
+			epoint = Endpoints.SERVER_INVITES(chanServ.id);
+		}
 
-			var epoint;
-			if (chanServ instanceof Channel) {
-				epoint = Endpoints.CHANNEL_INVITES(chanServ.id);
-			} else {
-				epoint = Endpoints.SERVER_INVITES(chanServ.id);
-			}
-
-			request
-				.post(epoint)
-				.set("authorization", self.token)
-				.send(options)
-				.end((err, res) => {
-					if (err) {
-						reject(err);
-					} else {
-						resolve(new Invite(res.body, self.channels.get("id", res.body.channel.id), self.client));
-					}
-				});
-
-		});
+		return request
+		.post(epoint)
+		.set("authorization", this.token)
+		.send(options)
+		.end()
+		.then(res => new Invite(res.body, this.channels.get("id", res.body.channel.id), this.client));
 	}
 
 	//def deleteInvite
 	deleteInvite(invite) {
-		var self = this;
-		return new Promise((resolve, reject) => {
 
-			invite = self.resolver.resolveInviteID(invite);
-			if (invite) {
-				request
-					.del(Endpoints.INVITE(invite))
-					.set("authorization", self.token)
-					.end((err, res) => {
-						if (err) {
-							reject(err);
-						} else {
-							resolve();
-						}
-					});
-
-			} else {
-				reject(new Error("Not a valid invite"));
-			}
-
-		});
+		invite = this.resolver.resolveInviteID(invite);
+		if(!invite) {
+			throw new Error("Not a valid invite");
+		}
+		return request
+		.del(Endpoints.INVITE(invite))
+		.set("authorization", this.token)
+		.end();
 	}
 
 	//def overwritePermissions
 	overwritePermissions(channel, role, updated) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			channel = self.resolver.resolveChannel(channel).catch(reject).then(next);
-			function next(channel) {
+		return this.resolver.resolveChannel(channel)
+		.then(channel => {
+			var user;
+			if (role instanceof User) {
+				user = role;
+			}
 
-				var user;
-				if (role instanceof User) {
-					user = role;
-				}
+			var data = {};
+			data.allow = 0;
+			data.deny = 0;
 
-				var data = {};
-				data.allow = 0;
-				data.deny = 0;
+			updated.allow = updated.allow || [];
+			updated.deny = updated.deny || [];
 
-				updated.allow = updated.allow || [];
-				updated.deny = updated.deny || [];
+			if (role instanceof Role) {
+				data.id = role.id;
+				data.type = "role";
+			} else if (user) {
+				data.id = user.id;
+				data.type = "member";
+			} else {
+				throw new Error("role incorrect");
+			}
 
-				if (role instanceof Role) {
-					data.id = role.id;
-					data.type = "role";
-				} else if (user) {
-					data.id = user.id;
-					data.type = "member";
-				} else {
-					reject(new Error("role incorrect"));
-					return;
-				}
-
-				for (var perm in updated) {
-					if (updated[perm]) {
-						if (perm instanceof String || typeof perm === "string") {
-							data.allow |= (Constants.Permissions[perm] || 0);
-						} else {
-							data.allow |= perm;
-						}
+			for (var perm in updated) {
+				if (updated[perm]) {
+					if (perm instanceof String || typeof perm === "string") {
+						data.allow |= (Constants.Permissions[perm] || 0);
 					} else {
-						if (perm instanceof String || typeof perm === "string") {
-							data.deny |= (Constants.Permissions[perm] || 0);
-						} else {
-							data.deny |= perm;
-						}
+						data.allow |= perm;
+					}
+				} else {
+					if (perm instanceof String || typeof perm === "string") {
+						data.deny |= (Constants.Permissions[perm] || 0);
+					} else {
+						data.deny |= perm;
 					}
 				}
-
-				request
-					.put(Endpoints.CHANNEL_PERMISSIONS(channel.id) + "/" + data.id)
-					.set("authorization", self.token)
-					.send(data)
-					.end(function (err) {
-						if (err) {
-							reject(err);
-						} else {
-							resolve();
-						}
-					});
 			}
+
+			return request
+			.put(Endpoints.CHANNEL_PERMISSIONS(channel.id) + "/" + data.id)
+			.set("authorization", this.token)
+			.send(data)
+			.end();
 		});
 	}
 
 	//def setStatus
 	setStatus(idleStatus, gameID) {
-		var self = this;
 
-		self.idleStatus = idleStatus || self.idleStatus || null;
+		this.idleStatus = idleStatus || this.idleStatus || null;
 		if(idleStatus){
-			if(idleStatus == "online" || idleStatus == "here" || idleStatus == "available"){
-				self.idleStatus = null;
+			if(idleStatus === "online" || idleStatus === "here" || idleStatus === "available"){
+				this.idleStatus = null;
 			}
 		}
-		self.gameID = self.resolver.resolveGameID(gameID) || self.gameID || null;
+		this.gameID = this.resolver.resolveGameID(gameID) || this.gameID || null;
 
-		return new Promise((resolve, reject) => {
-
-			var packet = {
-				op: 3,
-				d: {
-					idle_since: self.idleStatus,
-					game_id: self.gameID
-				}
-			};
-
-			if (self.idleStatus == "idle" || self.idleStatus == "away") {
-				packet.d.idle_since = Date.now();
+		var packet = {
+			op: 3,
+			d: {
+				idle_since: this.idleStatus,
+				game_id: this.gameID
 			}
+		};
 
-			self.sendWS(packet);
+		if (this.idleStatus === "idle" || this.idleStatus === "away") {
+			packet.d.idle_since = Date.now();
+		}
 
-			resolve();
-		});
+		this.sendWS(packet);
+
+		return Promise.resolve();//why?
+
 	}
 
 	//def sendTyping
 	sendTyping(channel) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			self.resolver.resolveChannel(channel).then(next).catch(reject);
-
-			function next(channel) {
-
-				request
-					.post(Endpoints.CHANNEL(channel.id) + "/typing")
-					.set("authorization", self.token)
-					.end((err, res) => {
-						if (err) {
-							reject(err);
-						} else {
-							resolve();
-						}
-					})
-
-			}
-
-		});
+		return this.resolver.resolveChannel(channel).then(channel =>
+			request
+			.post(Endpoints.CHANNEL(channel.id) + "/typing")
+			.set("authorization", this.token)
+			.end()
+		);
 	}
 
 	//def startTyping
 	startTyping(channel){
-		var self = this;
-		return new Promise((resolve, reject) => {
+		return this.resolver.resolveChannel(channel).then(channel => {
 
-			self.resolver.resolveChannel(channel).then(next).catch(reject);
-
-			function next(channel) {
-
-				if(self.typingIntervals[channel.id]){
-					// typing interval already exists, leave it alone
-					reject(new Error("Already typing in that channel"));
-					return;
-				}
-
-				self.sendTyping(channel);
-
-				self.typingIntervals[channel.id] = setInterval(
-					() => self.sendTyping(channel), 4000
-				);
-
+			if(this.typingIntervals[channel.id]){
+				// typing interval already exists, leave it alone
+				throw new Error("Already typing in that channel");
 			}
 
+			this.typingIntervals[channel.id] = setInterval(
+				() => this.sendTyping(channel).catch(error => this.emit("error", error)),
+				4000
+			);
+
+			return this.sendTyping(channel);
 		});
+
 	}
 
 	//def stopTyping
 	stopTyping(channel){
-		var self = this;
-		return new Promise((resolve, reject) => {
+		return this.resolver.resolveChannel(channel)
+		.then(channel => {
 
-			self.resolver.resolveChannel(channel).then(next).catch(reject);
-
-			function next(channel) {
-
-				if(!self.typingIntervals[channel.id]){
-					// typing interval doesn't exist
-					reject(new Error("Not typing in that channel"));
-					return;
-				}
-
-				clearInterval(self.typingIntervals[channel.id]);
-				self.typingIntervals[channel.id] = false;
-
+			if(!this.typingIntervals[channel.id]){
+				// typing interval doesn't exist
+				throw new Error("Not typing in that channel");
 			}
+
+			clearInterval(this.typingIntervals[channel.id]);
+			this.typingIntervals[channel.id] = false;
 
 		});
 	}
 
 	//def updateDetails
 	updateDetails(data) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			request
-				.patch(Endpoints.ME)
-				.set("authorization", self.token)
-				.send({
-					avatar: self.resolver.resolveToBase64(data.avatar) || self.user.avatar,
-					email : data.email || self.email,
-					new_password : data.newPassword || null,
-					password : data.password || self.password,
-					username : data.username || self.user.username
-				})
-				.end( err => {
-					if(err){
-						reject(err);
-					}else{
-						resolve();
-					}
-				});
-		});
+		return request
+		.patch(Endpoints.ME)
+		.set("authorization", this.token)
+		.send({
+			avatar: this.resolver.resolveToBase64(data.avatar) || this.user.avatar,
+			email : data.email || this.email,
+			new_password : data.newPassword || null,
+			password : data.password || this.password,
+			username : data.username || this.user.username
+		})
+		.end();
 	}
 
 	//def setAvatar
@@ -1128,96 +836,56 @@ class InternalClient {
 
 	//def setTopic
 	setTopic(chann, topic = "") {
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			self.resolver.resolveChannel(chann).then(next).catch(reject);
-
-			function next(channel) {
-
-				request
-					.patch(Endpoints.CHANNEL(channel.id))
-					.set("authorization", self.token)
-					.send({
-						name: channel.name,
-						position: channel.position,
-						topic: topic
-					})
-					.end((err, res) => {
-						if (err) {
-							reject(err);
-						} else {
-							channel.topic = res.body.topic;
-							resolve();
-						}
-					})
-
-			}
-
-		});
+		return this.resolver.resolveChannel(chann)
+		.then(channel =>
+			request
+			.patch(Endpoints.CHANNEL(channel.id))
+			.set("authorization", this.token)
+			.send({
+				name: channel.name,
+				position: channel.position,
+				topic: topic
+			})
+			.end()
+			.then(res => channel.topic = res.body.topic)
+		);
 	}
 
 	//def setChannelName
 	setChannelName(chann, name = "discordjs_is_the_best") {
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			self.resolver.resolveChannel(chann).then(next).catch(reject);
-
-			function next(channel) {
-
-				request
-					.patch(Endpoints.CHANNEL(channel.id))
-					.set("authorization", self.token)
-					.send({
-						name: name,
-						position: channel.position,
-						topic: channel.topic
-					})
-					.end((err, res) => {
-						if (err) {
-							reject(err);
-						} else {
-							channel.name = res.body.name;
-							resolve();
-						}
-					})
-
-			}
-
-		});
+		return this.resolver.resolveChannel(chann)
+		.then(channel =>
+			request
+			.patch(Endpoints.CHANNEL(channel.id))
+			.set("authorization", this.token)
+			.send({
+				name: name,
+				position: channel.position,
+				topic: channel.topic
+			})
+			.end()
+			.then(res => channel.name = res.body.name)
+		);
 	}
 
 	//def setChannelNameAndTopic
 	setChannelNameAndTopic(chann, name = "discordjs_is_the_best", topic = "") {
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			self.resolver.resolveChannel(chann).then(next).catch(reject);
-
-			function next(channel) {
-
-				request
-					.patch(Endpoints.CHANNEL(channel.id))
-					.set("authorization", self.token)
-					.send({
-						name: name,
-						position: channel.position,
-						topic: topic
-					})
-					.end((err, res) => {
-						if (err) {
-							reject(err);
-						} else {
-							channel.name = res.body.name;
-							channel.topic = res.body.topic;
-							resolve();
-						}
-					})
-
-			}
-
-		});
+		return this.resolver.resolveChannel(chann)
+		.then(channel =>
+			request
+			.patch(Endpoints.CHANNEL(channel.id))
+			.set("authorization", this.token)
+			.send({
+				name: name,
+				position: channel.position,
+				topic: topic
+			})
+			.end()
+			.then(res => {
+				channel.name = res.body.name;
+				channel.topic = res.body.topic;
+			})
+		);
 	}
 
 	//def updateChannel
@@ -1227,42 +895,31 @@ class InternalClient {
 
 	//def ack
 	ack(msg) {
-		var self = this;
-		return new Promise((resolve, reject) => {
+		msg = this.resolver.resolveMessage(msg);
 
-			msg = self.resolver.resolveMessage(msg);
+		if(!msg) {
+			Promise.reject(new Error("Message does not exist"));
+		}
 
-			if (msg) {
-
-				request
-					.post(Endpoints.CHANNEL_MESSAGE(msg.channel.id, msg.id) + "/ack")
-					.set("authorization", self.token)
-					.end((err) => {
-						if (err) {
-							reject(err);
-						} else {
-							resolve();
-						}
-					});
-
-			} else {
-				reject(new Error("Message does not exist"));
-			}
-
-		});
+		return request
+		.post(Endpoints.CHANNEL_MESSAGE(msg.channel.id, msg.id) + "/ack")
+		.set("authorization", this.token)
+		.end();
 	}
 
 	sendWS(object) {
-		if (this.websocket)
+		if (this.websocket) {
 			this.websocket.send(JSON.stringify(object));
+		}
 	}
 
 	createWS(url) {
 		var self = this;
 		var client = self.client;
 
-		if (this.websocket)
+		if (this.websocket) {
 			return false;
+		}
 
 		this.websocket = new WebSocket(url);
 
@@ -1283,19 +940,19 @@ class InternalClient {
 					}
 				}
 			});
-		}
+		};
 
 		this.websocket.onclose = () => {
 			self.websocket = null;
 			self.state = ConnectionState.DISCONNECTED;
 			client.emit("disconnected");
-		}
+		};
 
-		this.websocket.onerror = (e) => {
+		this.websocket.onerror = e => {
 			client.emit("error", e);
-		}
+		};
 
-		this.websocket.onmessage = (e) => {
+		this.websocket.onmessage = e => {
 
 			if (e.type === "Binary") {
 				if (!zlib) zlib = require("zlib");
@@ -1318,10 +975,10 @@ class InternalClient {
 				case PacketType.READY:
 					var startTime = Date.now();
 					self.user = self.users.add(new User(data.user, client));
-					data.guilds.forEach((server) => {
+					data.guilds.forEach(server => {
 						self.servers.add(new Server(server, client));
 					});
-					data.private_channels.forEach((pm) => {
+					data.private_channels.forEach(pm => {
 						self.private_channels.add(new PMChannel(pm, client));
 					});
 					self.state = ConnectionState.READY;
@@ -1543,7 +1200,7 @@ class InternalClient {
 						var role = server.roles.get("id", data.role.id);
 						if (role) {
 							var newRole = new Role(data.role, server, client);
-							server.roles.update(role, newRole)
+							server.roles.update(role, newRole);
 							client.emit("serverRoleUpdated", role, newRole);
 						} else {
 							client.emit("warn", "server role updated but role not in cache");
@@ -1557,7 +1214,7 @@ class InternalClient {
 					if (server) {
 
 						server.memberMap[data.user.id] = {
-							roles: data.roles.map((pid) => server.roles.get("id", pid)),
+							roles: data.roles.map(pid => server.roles.get("id", pid)),
 							mute: false,
 							deaf: false,
 							joinedAt: Date.parse(data.joined_at)
@@ -1593,7 +1250,7 @@ class InternalClient {
 					if (server) {
 						var user = self.users.get("id", data.user.id);
 						if (user) {
-							server.memberMap[data.user.id].roles = data.roles.map((pid) => server.roles.get("id", pid));
+							server.memberMap[data.user.id].roles = data.roles.map(pid => server.roles.get("id", pid));
 							server.memberMap[data.user.id].mute = data.mute;
 							server.memberMap[data.user.id].deaf = data.deaf;
 							client.emit("serverMemberUpdated", server, user);
@@ -1682,7 +1339,7 @@ class InternalClient {
 					}
 					break;
 			}
-		}
+		};
 	}
 }
 
