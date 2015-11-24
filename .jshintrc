@@ -1,0 +1,90 @@
+{
+
+    "maxerr"        : 50,
+
+
+    "bitwise"       : false,
+    "camelcase"     : false,
+    "curly"         : true,
+    "eqeqeq"        : true,
+    "forin"         : true,
+    "freeze"        : true,
+    "immed"         : false,
+    "indent"        : 4,
+    "latedef"       : true,
+    "newcap"        : true,
+    "noarg"         : true,
+    "noempty"       : true,
+    "nonbsp"        : true,
+    "nonew"         : true,
+    "plusplus"      : false,
+    "quotmark"      : "double",
+
+
+
+
+    "undef"         : true,
+    "unused"        : true,
+
+
+
+    "strict"        : true,
+    "maxparams"     : 5,
+    "maxdepth"      : 6,
+    "maxstatements" : 100,
+    "maxcomplexity" : 100,
+    "maxlen"        : 120,
+    "varstmt"       : false,
+
+
+    "asi"           : false,
+    "boss"          : false,
+    "debug"         : false,
+    "eqnull"        : false,
+    "esnext"        : true,
+    "moz"           : false,
+
+    "evil"          : false,
+    "expr"          : false,
+    "funcscope"     : false,
+    "globalstrict"  : false,
+    "iterator"      : false,
+    "lastsemic"     : false,
+    "laxbreak"      : false,
+    "laxcomma"      : false,
+    "loopfunc"      : false,
+    "multistr"      : false,
+    "noyield"       : false,
+    "notypeof"      : false,
+    "proto"         : false,
+    "scripturl"     : false,
+    "shadow"        : false,
+    "sub"           : false,
+    "supernew"      : false,
+    "validthis"     : false,
+
+
+    "browser"       : false,
+    "browserify"    : false,
+    "couch"         : false,
+    "devel"         : true,
+    "dojo"          : false,
+    "jasmine"       : false,
+    "jquery"        : false,
+    "mocha"         : true,
+    "mootools"      : false,
+    "node"          : true,
+    "nonstandard"   : false,
+    "phantom"       : false,
+    "prototypejs"   : false,
+    "qunit"         : false,
+    "rhino"         : false,
+    "shelljs"       : false,
+    "typed"         : false,
+    "worker"        : false,
+    "wsh"           : false,
+    "yui"           : false,
+
+
+    "globals"       : {}
+}

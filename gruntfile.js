@@ -1,53 +1,64 @@
+"use strict";
+
 module.exports = function (grunt) {
 
-    require('load-grunt-tasks')(grunt);
+require("load-grunt-tasks")(grunt);
 
-    grunt.initConfig({
-        pkg: grunt.file.readJSON("package.json"),
-        // define source files and their destinations
-        babel: {
-            options: {
-                loose: "all",
-                compact: !grunt.option('dev')
-            },
-            dist: {
-                files: [{
-                    expand: true,
-                    cwd: "src/",
-                    src: ["**/**.*"],
-                    dest: "lib/",
-                    ext: ".js"
-                }]
-            }
-        },
-        browserify: {
-            dist: {
-                files: {
-                    'web-dist/discord.<%= pkg.version %>.js': ["lib/index.js"],
-                },
-                options: {
-                    browserifyOptions: {
-                        standalone: "Discord"
-                    }
-                }
-            }
-        },
-        uglify: {
-            min: {
-                files: {
-                    "./web-dist/discord.min.<%= pkg.version %>.js": "./web-dist/discord.<%= pkg.version %>.js"
-                }
-            }
-        }
-    });
+grunt.initConfig({
+		pkg: grunt.file.readJSON("package.json"),
+		// define source files and their destinations
+		jshint: {
+			files: [
+				"src/**/*.js", "entrypoint.js", "gruntfile.js", "examples/**/*.js", "test/**/*.js"
+			],
+			options: {
+				jshintrc: true
+			}
+		},
+		babel: {
+			options: {
+				loose: "all",
+				compact: !grunt.option("dev")
+			},
+			dist: {
+				files: [{
+					expand: true,
+					cwd: "src/",
+					src: ["**/**.*"],
+					dest: "lib/",
+					ext: ".js"
+				}]
+			}
+		},
+		browserify: {
+			dist: {
+				files: {
+					"web-dist/discord.<%= pkg.version %>.js": ["lib/index.js"],
+				},
+				options: {
+					browserifyOptions: {
+						standalone: "Discord"
+					}
+				}
+			}
+		},
+		uglify: {
+			min: {
+				files: {
+					"./web-dist/discord.min.<%= pkg.version %>.js": "./web-dist/discord.<%= pkg.version %>.js"
+				}
+			}
+		}
+	});
 
-    // load plugins
-    grunt.loadNpmTasks('grunt-browserify');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
+	// load plugins
+	grunt.loadNpmTasks("grunt-browserify");
+	grunt.loadNpmTasks("grunt-contrib-uglify");
+	grunt.loadNpmTasks("grunt-contrib-jshint");
 
-    // register at least this one task
-    grunt.registerTask('default', ['babel']);
-    grunt.registerTask('web', ['browserify', "uglify"]);
-    grunt.registerTask("dist", ["babel", "browserify", "uglify"])
+	// register at least this one task
+	grunt.registerTask("default", ["babel"]);
+	grunt.registerTask("web", ["browserify", "uglify"]);
+	grunt.registerTask("dist", ["babel", "browserify", "uglify"]);
 
 };
