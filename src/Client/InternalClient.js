@@ -54,16 +54,11 @@ class InternalClient {
 
 	//def leaveVoiceChannel
 	leaveVoiceChannel() {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			if (self.voiceConnection) {
-				self.voiceConnection.destroy();
-				self.voiceConnection = null;
-				resolve();
-			} else {
-				resolve();
-			}
-		});
+		if (self.voiceConnection) {
+			self.voiceConnection.destroy();
+			self.voiceConnection = null;
+		}
+		return Promise.resolve();
 	}
 
 	//def awaitResponse
@@ -91,51 +86,45 @@ class InternalClient {
 
 	//def joinVoiceChannel
 	joinVoiceChannel(chann) {
-		var self = this;
-		return new Promise((resolve, reject) => {
+		var channel = self.resolver.resolveVoiceChannel(chann);
 
-			var channel = self.resolver.resolveVoiceChannel(chann);
+		if (!channel) {
+			return Promise.reject(new Error("voice channel does not exist"));
+		}
+		return self.leaveVoiceChannel()
+		.then(() => {
+			return new Promise((resolve, reject) => {
+				var session, token, server = channel.server, endpoint;
 
-			if (channel) {
+				var check = (m) => {
+					var data = JSON.parse(m);
+					if (data.t === "VOICE_STATE_UPDATE") {
+						session = data.d.session_id;
+					} else if (data.t === "VOICE_SERVER_UPDATE") {
+						token = data.d.token;
+						endpoint = data.d.endpoint;
+						var chan = self.voiceConnection = new VoiceConnection(channel, self.client, session, token, server, endpoint);
 
-				self.leaveVoiceChannel().then(next);
+						chan.on("ready", () => resolve(chan));
+						chan.on("error", reject);
 
-				function next() {
-					var session, token, server = channel.server, endpoint;
+						self.client.emit("debug", "removed temporary voice websocket listeners");
+						self.websocket.removeListener("message", check);
 
-					var check = (m) => {
-						var data = JSON.parse(m);
-						if (data.t === "VOICE_STATE_UPDATE") {
-							session = data.d.session_id;
-						} else if (data.t === "VOICE_SERVER_UPDATE") {
-							token = data.d.token;
-							endpoint = data.d.endpoint;
-							var chan = self.voiceConnection = new VoiceConnection(channel, self.client, session, token, server, endpoint);
+					}
+				};
 
-							chan.on("ready", () => resolve(chan));
-							chan.on("error", reject);
-
-							self.client.emit("debug", "removed temporary voice websocket listeners");
-							self.websocket.removeListener("message", check);
-
-						}
-					};
-
-					self.websocket.on("message", check);
-					self.sendWS({
-						op: 4,
-						d: {
-							"guild_id": server.id,
-							"channel_id": channel.id,
-							"self_mute": false,
-							"self_deaf": false
-						}
-					});
-				}
-			} else {
-				reject(new Error("voice channel does not exist"));
-			}
-
+				self.websocket.on("message", check);
+				self.sendWS({
+					op: 4,
+					d: {
+						"guild_id": server.id,
+						"channel_id": channel.id,
+						"self_mute": false,
+						"self_deaf": false
+					}
+				});
+			});
 		});
 	}
 
