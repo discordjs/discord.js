@@ -3,6 +3,13 @@
 var InternalClient = require("./InternalClient.js");
 var EventEmitter = require("events");
 
+function errCB(callback) {
+	return error => {
+		callback(error);
+		throw error;
+	};
+}
+
 class Client extends EventEmitter {
 	/*
 		this class is an interface for the internal
@@ -52,13 +59,13 @@ class Client extends EventEmitter {
 		.then((token) => {
 			callback(null, token);
 			return token;
-		}, callback);
+		}, errCB(callback));
 	}
 
 	// def logout
 	logout(callback = (/*err*/) => {}) {
 		return this.internal.logout()
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 	// def sendMessage
 	sendMessage(where, content, options = {}, callback = (/*e, m*/) => {}) {
@@ -71,7 +78,7 @@ class Client extends EventEmitter {
 		.then(m => {
 			callback(null, m);
 			return m;
-		}, callback);
+		}, errCB(callback));
 	}
 
 	// def sendTTSMessage
@@ -80,7 +87,7 @@ class Client extends EventEmitter {
 		.then(m => {
 			callback(null, m);
 			return m;
-		}, callback);
+		}, errCB(callback));
 	}
 	// def reply
 	reply(where, content, options = {}, callback = (/*e, m*/) => {}) {
@@ -97,7 +104,7 @@ class Client extends EventEmitter {
 			.then(m => {
 				callback(null, m);
 				return m;
-			}, callback);
+			}, errCB(callback));
 		}
 		var err = new Error("Destination not resolvable to a message!");
 		callback(err);
@@ -110,7 +117,7 @@ class Client extends EventEmitter {
 		.then(m => {
 			callback(null, m);
 			return m;
-		}, callback);
+		}, errCB(callback));
 	}
 	// def deleteMessage
 	deleteMessage(msg, options = {}, callback = (/*e*/) => {}) {
@@ -120,9 +127,7 @@ class Client extends EventEmitter {
 		}
 
 		return this.internal.deleteMessage(msg, options)
-		.then(() => {
-			callback(null);
-		}, callback);
+		.then(callback, errCB(callback));
 	}
 	//def updateMessage
 	updateMessage(msg, content, options = {}, callback = (/*err, msg*/) => {}) {
@@ -135,7 +140,7 @@ class Client extends EventEmitter {
 		.then(msg => {
 			callback(null, msg);
 			return msg;
-		}, callback);
+		}, errCB(callback));
 	}
 
 	// def getChannelLogs
@@ -149,7 +154,7 @@ class Client extends EventEmitter {
 		.then(logs => {
 			callback(null, logs);
 			return logs;
-		}, callback);
+		}, errCB(callback));
 	}
 
 	// def getBans
@@ -158,40 +163,40 @@ class Client extends EventEmitter {
 		.then(bans => {
 			callback(null, bans);
 			return bans;
-		}, callback);
+		}, errCB(callback));
 	}
 
 	// def sendFile
 	sendFile(where, attachment, name = "image.png", callback = (/*err, m*/) => {}) {
-		this.internal.sendFile(where, attachment, name)
+		return this.internal.sendFile(where, attachment, name)
 		.then(m => {
 			callback(null, m);
 			return m;
-		}, callback);
+		}, errCB(callback));
 	}
 
 	// def joinServer
 	joinServer(invite, callback = (/*err, srv*/) => {}) {
-		this.internal.joinServer(invite)
+		return this.internal.joinServer(invite)
 		.then(srv => {
 			callback(null, srv);
 			return srv;
-		}, callback);
+		}, errCB(callback));
 	}
 
 	// def createServer
 	createServer(name, region = "london", callback = (/*err, srv*/) => {}) {
-		this.internal.createServer(name, region)
+		return this.internal.createServer(name, region)
 		.then(srv => {
 			callback(null, srv);
 			return srv;
-		}, callback);
+		}, errCB(callback));
 	}
 
 	// def leaveServer
 	leaveServer(server, callback = (/*err*/) => {}) {
 		return this.internal.leaveServer(server)
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 
 	// def createChannel
@@ -204,13 +209,13 @@ class Client extends EventEmitter {
 		.then((channel) => {
 			callback(channel);
 			return channel;
-		}, callback);
+		}, errCB(callback));
 	}
 
 	// def deleteChannel
 	deleteChannel(channel, callback = (/*err*/) => {}) {
 		return this.internal.deleteChannel(channel)
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 
 	//def banMember
@@ -221,19 +226,19 @@ class Client extends EventEmitter {
 			callback = length;
 		}
 		return this.internal.banMember(user, server, length)
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 
 	//def unbanMember
 	unbanMember(user, server, callback = (/*err*/) => {}) {
 		return this.internal.unbanMember(user, server)
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 
 	//def kickMember
 	kickMember(user, server, callback = (/*err*/) => {}) {
 		return this.internal.kickMember(user, server)
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 
 	//def createRole
@@ -246,7 +251,7 @@ class Client extends EventEmitter {
 		.then((role) => {
 			callback(null, role);
 			return role;
-		}, callback);
+		}, errCB(callback));
 	}
 
 	//def updateRole
@@ -259,35 +264,35 @@ class Client extends EventEmitter {
 		.then((role) => {
 			callback(null, role);
 			return role;
-		}, callback);
+		}, errCB(callback));
 	}
 
 	//def deleteRole
 	deleteRole(role, callback = (/*err*/) => {}) {
 		return this.internal.deleteRole(role)
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 
 	//def addMemberToRole
 	addMemberToRole(member, role, callback = (/*err*/) => {}) {
 		return this.internal.addMemberToRole(member, role)
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 
 	// def addUserToRole
 	addUserToRole(member, role, callback = (/*err*/) => {}) {
-		return this.addMemberToRole(member, role, callback);
+		return this.addMemberToRole(member, role, errCB(callback));
 	}
 
 	// def removeMemberFromRole
 	removeMemberFromRole(member, role, callback = (/*err*/) => {}) {
 		return this.internal.removeMemberFromRole(member, role)
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 
 	// def removeUserFromRole
 	removeUserFromRole(member, role, callback = (/*err*/) => {}) {
-		return this.removeUserFromRole(member, role, callback);
+		return this.removeUserFromRole(member, role, errCB(callback));
 	}
 
 	// def createInvite
@@ -301,19 +306,19 @@ class Client extends EventEmitter {
 		return this.internal.createInvite(chanServ, options)
 		.then(invite => {
 			callback(null, invite);
-		}, callback);
+		}, errCB(callback));
 	}
 
 	// def deleteInvite
 	deleteInvite(invite, callback = (/*err*/) => {}) {
-		this.internal.deleteInvite(invite)
-		.then(callback, callback);
+		return this.internal.deleteInvite(invite)
+		.then(callback, errCB(callback));
 	}
 
 	// def overwritePermissions
 	overwritePermissions(channel, role, options = {}, callback = (/*err*/) => {}) {
 		return this.internal.overwritePermissions(channel, role, options)
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 
 	//def setStatus
@@ -328,67 +333,67 @@ class Client extends EventEmitter {
 		}
 
 		return this.internal.setStatus(idleStatus, gameID)
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 
 	//def sendTyping
 	sendTyping(channel, callback = (/*err*/) => {}) {
 		return this.internal.sendTyping(channel)
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 
 	// def setTopic
 	setTopic(channel, topic, callback = (/*err*/) => {}) {
 		return this.internal.setTopic(channel, topic)
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 
 	//def setChannelName
 	setChannelName(channel, name, callback = (/*err*/) => {}) {
 		return this.internal.setChannelName(channel, name)
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 
 	//def setChannelNameAndTopic
 	setChannelNameAndTopic(channel, name, topic, callback = (/*err*/) => {}) {
 		return this.internal.setChannelNameAndTopic(channel, name, topic)
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 
 	//def updateChannel
 	updateChannel(channel, data, callback = (/*err*/) => {}) {
 		return this.internal.updateChannel(channel, data)
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 
 	//def startTyping
 	startTyping(channel, callback = (/*err*/) => {}) {
 		return this.internal.startTyping(channel)
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 
 	//def stopTyping
 	stopTyping(channel, callback = (/*err*/) => {}) {
 		return this.internal.stopTyping(channel)
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 
 	//def updateDetails
 	updateDetails(details, callback = (/*err*/) => {}) {
 		return this.internal.updateDetails(details)
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 
 	//def setUsername
 	setUsername(name, callback = (/*err*/) => {}) {
 		return this.internal.setUsername(name)
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 
 	//def setAvatar
 	setAvatar(avatar, callback = (/*err*/) => {}) {
 		return this.internal.setAvatar(avatar)
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 
 	//def joinVoiceChannel
@@ -397,23 +402,17 @@ class Client extends EventEmitter {
 		.then(chan => {
 			callback(null, chan);
 			return chan;
-		}, callback);
+		}, errCB(callback));
 	}
 
 	// def leaveVoiceChannel
 	leaveVoiceChannel(callback = (/*err*/) => {}) {
 		return this.internal.leaveVoiceChannel()
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 
 	// def awaitResponse
 	awaitResponse(msg, toSend = null, options = null, callback = (/*e, newMsg*/) => {}) {
-
-		const final = () =>
-			this.internal.awaitResponse(msg)
-			.then(newMsg => {
-				callback(null, newMsg);
-			});
 
 		var ret;
 
@@ -443,17 +442,21 @@ class Client extends EventEmitter {
 			ret = Promise.resolve();
 		}
 		// (msg) promise
-		return ret.then(final).catch(callback);
+		return ret.then(() => this.internal.awaitResponse(msg))
+		.then((newMsg) => {
+			callback(null, newMsg);
+			return newMsg;
+		}, errCB(callback));
 	}
 
 	setStatusIdle(callback = (/*err*/) => {}) {
 		return this.internal.setStatus("idle")
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 
 	setStatusOnline(callback = (/*err*/) => {}) {
 		return this.internal.setStatus("online")
-		.then(callback, callback);
+		.then(callback, errCB(callback));
 	}
 
 	setStatusActive(callback) {
