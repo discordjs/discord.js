@@ -33,7 +33,7 @@
     "maxdepth"      : 6,
     "maxstatements" : 100,
     "maxcomplexity" : 100,
-    "maxlen"        : 100,
+    "maxlen"        : 120,
     "varstmt"       : false,
 
 
