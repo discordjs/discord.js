@@ -47,833 +47,433 @@ class Client extends EventEmitter {
 	}
 
 	// def login
-	login(email, password, cb = function (err, token) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			self.internal.login(email, password)
-				.then((token) => {
-					cb(null, token);
-					resolve(token);
-				})
-				.catch((e) => {
-					cb(e);
-					reject(e);
-				});
-
-		});
+	login(email, password, callback = (/*err, token*/) => {}) {
+		return this.internal.login(email, password)
+		.then((token) => {
+			callback(null, token);
+			return token;
+		}, callback);
 	}
 
 	// def logout
-	logout(cb = function (err) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			self.internal.logout()
-				.then(() => {
-					cb();
-					resolve();
-				})
-				.catch((e) => {
-					cb(e);
-					reject(e);
-				})
-
-		})
+	logout(callback = (/*err*/) => {}) {
+		return this.internal.logout()
+		.then(callback, callback);
 	}
 	// def sendMessage
-	sendMessage(where, content, options = {}, callback = function (e, m) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
+	sendMessage(where, content, options = {}, callback = (/*e, m*/) => {}) {
+		if (typeof options === "function") {
+			// options is the callback
+			callback = options;
+		}
 
-			if (typeof options === "function") {
-				// options is the callback
-				callback = options;
-			}
-
-			self.internal.sendMessage(where, content, options)
-				.then(m => {
-					callback(null, m);
-					resolve(m);
-				}).catch(e => {
-					callback(e);
-					reject(e);
-				});
-
-		});
+		return this.internal.sendMessage(where, content, options)
+		.then(m => {
+			callback(null, m);
+			return m;
+		}, callback);
 	}
 
 	// def sendTTSMessage
-	sendTTSMessage(where, content, callback = function (e, m) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			self.sendMessage(where, content, { tts: true })
-				.then(m => {
-					callback(null, m);
-					resolve(m);
-				}).catch(e => {
-					callback(e);
-					reject(e);
-				});
-
-		});
+	sendTTSMessage(where, content, callback = (/*e, m*/) => {}) {
+		return this.sendMessage(where, content, { tts: true })
+		.then(m => {
+			callback(null, m);
+			return m;
+		}, callback);
 	}
 	// def reply
-	reply(where, content, options = {}, callback = function (e, m) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
+	reply(where, content, options = {}, callback = (/*e, m*/) => {}) {
 
-			if (typeof options === "function") {
-				// options is the callback
-				callback = options;
-			}
+		if (typeof options === "function") {
+			// options is the callback
+			callback = options;
+		}
 
-			var msg = self.internal.resolver.resolveMessage(where);
-			if (msg) {
-				content = msg.author + ", " + content;
-				self.internal.sendMessage(msg, content, options)
-					.then(m => {
-						callback(null, m);
-						resolve(m);
-					}).catch(e => {
-						callback(e);
-						reject(e);
-					});
-			} else {
-				var err = new Error("Destination not resolvable to a message!");
-				callback(err);
-				reject(err);
-			}
-
-		});
+		var msg = this.internal.resolver.resolveMessage(where);
+		if (msg) {
+			content = msg.author + ", " + content;
+			return this.internal.sendMessage(msg, content, options)
+			.then(m => {
+				callback(null, m);
+				return m;
+			}, callback);
+		}
+		var err = new Error("Destination not resolvable to a message!");
+		callback(err);
+		return Promise.reject(err);
 	}
 
 	// def replyTTS
-	replyTTS(where, content, callback = function () { }) {
-		return new Promise((resolve, reject) => {
-			self.reply(where, content, { tts: true })
-				.then(m => {
-					callback(null, m);
-					resolve(m);
-				}).catch(e => {
-					callback(e);
-					reject(e);
-				});
-		});
+	replyTTS(where, content, callback = (/**/) => {}) {
+		return this.reply(where, content, { tts: true })
+		.then(m => {
+			callback(null, m);
+			return m;
+		}, callback);
 	}
 	// def deleteMessage
-	deleteMessage(msg, options = {}, callback = function (e) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			if (typeof options === "function") {
-				// options is the callback
-				callback = options;
-			}
+	deleteMessage(msg, options = {}, callback = (/*e*/) => {}) {
+		if (typeof options === "function") {
+			// options is the callback
+			callback = options;
+		}
 
-			self.internal.deleteMessage(msg, options)
-				.then(() => {
-					callback();
-					resolve();
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				});
-
-		});
+		return this.internal.deleteMessage(msg, options)
+		.then(() => {
+			callback(null);
+		}, callback);
 	}
 	//def updateMessage
-	updateMessage(msg, content, options = {}, callback = function (err, msg) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			if (typeof options === "function") {
-				// options is the callback
-				callback = options;
-			}
+	updateMessage(msg, content, options = {}, callback = (/*err, msg*/) => {}) {
+		if (typeof options === "function") {
+			// options is the callback
+			callback = options;
+		}
 
-			self.internal.updateMessage(msg, content, options)
-				.then(msg => {
-					callback(null, msg);
-					resolve(msg);
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				});
-
-		});
+		return this.internal.updateMessage(msg, content, options)
+		.then(msg => {
+			callback(null, msg);
+			return msg;
+		}, callback);
 	}
 
 	// def getChannelLogs
-	getChannelLogs(where, limit = 500, options = {}, callback = function (err, logs) { }) {
+	getChannelLogs(where, limit = 500, options = {}, callback = (/*err, logs*/) => {}) {
+		if (typeof options === "function") {
+			// options is the callback
+			callback = options;
+		}
 
-		var self = this;
-		return new Promise((resolve, reject) => {
-			if (typeof options === "function") {
-				// options is the callback
-				callback = options;
-			}
-			self.internal.getChannelLogs(where, limit, options)
-				.then(logs => {
-					callback(null, logs);
-					resolve(logs);
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				});
-
-		});
-
+		return this.internal.getChannelLogs(where, limit, options)
+		.then(logs => {
+			callback(null, logs);
+			return logs;
+		}, callback);
 	}
 
 	// def getBans
-	getBans(where, callback = function (err, bans) { }) {
-
-		var self = this;
-		return new Promise((resolve, reject) => {
-			self.internal.getBans(where)
-				.then(bans => {
-					callback(null, bans);
-					resolve(bans);
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				});
-
-		});
-
+	getBans(where, callback = (/*err, bans*/) => {}) {
+		return this.internal.getBans(where)
+		.then(bans => {
+			callback(null, bans);
+			return bans;
+		}, callback);
 	}
 
 	// def sendFile
-	sendFile(where, attachment, name = "image.png", callback = function (err, m) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			self.internal.sendFile(where, attachment, name)
-				.then(m => {
-					callback(null, m);
-					resolve(m);
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				});
-
-		});
+	sendFile(where, attachment, name = "image.png", callback = (/*err, m*/) => {}) {
+		this.internal.sendFile(where, attachment, name)
+		.then(m => {
+			callback(null, m);
+			return m;
+		}, callback);
 	}
 
 	// def joinServer
-	joinServer(invite, callback = function (err, srv) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			self.internal.joinServer(invite)
-				.then(srv => {
-					callback(null, srv);
-					resolve(srv);
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				});
-		});
+	joinServer(invite, callback = (/*err, srv*/) => {}) {
+		this.internal.joinServer(invite)
+		.then(srv => {
+			callback(null, srv);
+			return srv;
+		}, callback);
 	}
 
 	// def createServer
-	createServer(name, region = "london", callback = function (err, srv) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			self.internal.createServer(name, region)
-				.then(srv => {
-					callback(null, srv);
-					resolve(srv);
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				})
-		});
+	createServer(name, region = "london", callback = (/*err, srv*/) => {}) {
+		this.internal.createServer(name, region)
+		.then(srv => {
+			callback(null, srv);
+			return srv;
+		}, callback);
 	}
 
 	// def leaveServer
-	leaveServer(server, callback = function (err) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			self.internal.leaveServer(server)
-				.then(() => {
-					callback(); resolve();
-				})
-				.catch(e => {
-					callback(e); reject(e);
-				})
-
-		});
+	leaveServer(server, callback = (/*err*/) => {}) {
+		return this.internal.leaveServer(server)
+		.then(callback, callback);
 	}
 
 	// def createChannel
-	createChannel(server, name, type = "text", callback = function (err, channel) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			if (typeof type === "function") {
-				// options is the callback
-				callback = type;
-			}
-			self.internal.createChannel(server, name, type)
-				.then((channel) => {
-					callback(channel); resolve(channel);
-				})
-				.catch(e => {
-					callback(e); reject(e);
-				})
-
-		});
+	createChannel(server, name, type = "text", callback = (/*err, channel*/) => {}) {
+		if (typeof type === "function") {
+			// options is the callback
+			callback = type;
+		}
+		return this.internal.createChannel(server, name, type)
+		.then((channel) => {
+			callback(channel);
+			return channel;
+		}, callback);
 	}
 
 	// def deleteChannel
-	deleteChannel(channel, callback = function (err) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			self.internal.deleteChannel(channel)
-				.then(() => {
-					callback();
-					resolve();
-				})
-				.catch(e => {
-					callback(e); reject(e);
-				})
-
-		});
+	deleteChannel(channel, callback = (/*err*/) => {}) {
+		return this.internal.deleteChannel(channel)
+		.then(callback, callback);
 	}
 
 	//def banMember
-	banMember(user, server, length = 1, callback = function (err) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			if (typeof length === "function") {
-				// length is the callback
-				callback = length;
-			}
-			self.internal.banMember(user, server, length)
-				.then(() => {
-					callback();
-					resolve();
-				})
-				.catch(e => {
-					callback(e); reject(e);
-				})
+	banMember(user, server, length = 1, callback = (/*err*/) => {}) {
 
-		});
+		if (typeof length === "function") {
+			// length is the callback
+			callback = length;
+		}
+		return this.internal.banMember(user, server, length)
+		.then(callback, callback);
 	}
 
 	//def unbanMember
-	unbanMember(user, server, callback = function (err) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			self.internal.unbanMember(user, server)
-				.then(() => {
-					callback();
-					resolve();
-				})
-				.catch(e => {
-					callback(e); reject(e);
-				})
-
-		});
+	unbanMember(user, server, callback = (/*err*/) => {}) {
+		return this.internal.unbanMember(user, server)
+		.then(callback, callback);
 	}
 
 	//def kickMember
-	kickMember(user, server, callback = function (err) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			self.internal.kickMember(user, server)
-				.then(() => {
-					callback();
-					resolve();
-				})
-				.catch(e => {
-					callback(e); reject(e);
-				})
-
-		});
+	kickMember(user, server, callback = (/*err*/) => {}) {
+		return this.internal.kickMember(user, server)
+		.then(callback, callback);
 	}
 
 	//def createRole
-	createRole(server, data = null, callback = function (err, res) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			if (typeof data === "function") {
-				// data is the callback
-				callback = data;
-			}
-			self.internal.createRole(server, data)
-				.then((role) => {
-					callback(null, role);
-					resolve(role);
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				});
-
-		});
+	createRole(server, data = null, callback = (/*err, res*/) => {}) {
+		if (typeof data === "function") {
+			// data is the callback
+			callback = data;
+		}
+		return this.internal.createRole(server, data)
+		.then((role) => {
+			callback(null, role);
+			return role;
+		}, callback);
 	}
 
 	//def updateRole
-	updateRole(role, data = null, callback = function (err, res) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			if (typeof data === "function") {
-				// data is the callback
-				callback = data;
-			}
-			self.internal.updateRole(role, data)
-				.then((role) => {
-					callback(null, role);
-					resolve(role);
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				});
-
-		});
+	updateRole(role, data = null, callback = (/*err, res*/) => {}) {
+		if (typeof data === "function") {
+			// data is the callback
+			callback = data;
+		}
+		return this.internal.updateRole(role, data)
+		.then((role) => {
+			callback(null, role);
+			return role;
+		}, callback);
 	}
 
 	//def deleteRole
-	deleteRole(role, callback = function (err) { }) {
-
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			self.internal.deleteRole(role)
-				.then(() => {
-					callback();
-					resolve();
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				});
-
-		});
-
+	deleteRole(role, callback = (/*err*/) => {}) {
+		return this.internal.deleteRole(role)
+		.then(callback, callback);
 	}
 
 	//def addMemberToRole
-	addMemberToRole(member, role, callback = function (err) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			self.internal.addMemberToRole(member, role)
-				.then(() => {
-					callback();
-					resolve();
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				});
-
-		});
+	addMemberToRole(member, role, callback = (/*err*/) => {}) {
+		return this.internal.addMemberToRole(member, role)
+		.then(callback, callback);
 	}
 
 	// def addUserToRole
-	addUserToRole(member, role, callback = function (err) { }) {
+	addUserToRole(member, role, callback = (/*err*/) => {}) {
 		return this.addMemberToRole(member, role, callback);
 	}
 
 	// def removeMemberFromRole
-	removeMemberFromRole(member, role, callback = function (err) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			self.internal.removeMemberFromRole(member, role)
-				.then(() => {
-					callback();
-					resolve();
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				});
-
-		});
+	removeMemberFromRole(member, role, callback = (/*err*/) => {}) {
+		return this.internal.removeMemberFromRole(member, role)
+		.then(callback, callback);
 	}
 
 	// def removeUserFromRole
-	removeUserFromRole(member, role, callback = function (err) { }) {
+	removeUserFromRole(member, role, callback = (/*err*/) => {}) {
 		return this.removeUserFromRole(member, role, callback);
 	}
 
 	// def createInvite
-	createInvite(chanServ, options, callback = function (err, invite) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			if (typeof options === "function") {
-				// length is the callback
-				callback = options;
-			}
+	createInvite(chanServ, options, callback = (/*err, invite*/) => {}) {
 
-			self.internal.createInvite(chanServ, options)
-				.then(invite => {
-					callback(null, invite);
-					resolve(invite);
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				});
+		if (typeof options === "function") {
+			// length is the callback
+			callback = options;
+		}
 
-		});
+		return this.internal.createInvite(chanServ, options)
+		.then(invite => {
+			callback(null, invite);
+		}, callback);
 	}
 
 	// def deleteInvite
-	deleteInvite(invite, callback = function (err) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			self.internal.deleteInvite(invite)
-				.then(() => {
-					callback();
-					resolve();
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				});
-		});
+	deleteInvite(invite, callback = (/*err*/) => {}) {
+		this.internal.deleteInvite(invite)
+		.then(callback, callback);
 	}
 
 	// def overwritePermissions
-	overwritePermissions(channel, role, options = {}, callback = function (err) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			self.internal.overwritePermissions(channel, role, options)
-				.then(() => {
-					callback();
-					resolve();
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				})
-
-		});
+	overwritePermissions(channel, role, options = {}, callback = (/*err*/) => {}) {
+		return this.internal.overwritePermissions(channel, role, options)
+		.then(callback, callback);
 	}
 
 	//def setStatus
-	setStatus(idleStatus, gameID, callback = function (err) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			if (typeof gameID === "function") {
-				// gameID is the callback
-				callback = gameID;
-			}
-			else if (typeof idleStatus === "function") {
-				// idleStatus is the callback
-				callback = idleStatus;
-			}
+	setStatus(idleStatus, gameID, callback = (/*err*/) => {}) {
 
-			self.internal.setStatus(idleStatus, gameID)
-				.then(() => {
-					callback();
-					resolve();
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				});
+		if (typeof gameID === "function") {
+			// gameID is the callback
+			callback = gameID;
+		} else if (typeof idleStatus === "function") {
+			// idleStatus is the callback
+			callback = idleStatus;
+		}
 
-		})
+		return this.internal.setStatus(idleStatus, gameID)
+		.then(callback, callback);
 	}
 
 	//def sendTyping
-	sendTyping(channel, callback = function (err) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			self.internal.sendTyping(channel)
-				.then(() => {
-					callback();
-					resolve();
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				});
-
-		})
+	sendTyping(channel, callback = (/*err*/) => {}) {
+		return this.internal.sendTyping(channel)
+		.then(callback, callback);
 	}
 
 	// def setTopic
-	setTopic(channel, topic, callback = function (err) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			self.internal.setTopic(channel, topic)
-				.then(() => {
-					callback();
-					resolve();
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				});
-
-		})
+	setTopic(channel, topic, callback = (/*err*/) => {}) {
+		return this.internal.setTopic(channel, topic)
+		.then(callback, callback);
 	}
 
 	//def setChannelName
-	setChannelName(channel, name, callback = function (err) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			self.internal.setChannelName(channel, name)
-				.then(() => {
-					callback();
-					resolve();
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				});
-
-		})
+	setChannelName(channel, name, callback = (/*err*/) => {}) {
+		return this.internal.setChannelName(channel, name)
+		.then(callback, callback);
 	}
 
 	//def setChannelNameAndTopic
-	setChannelNameAndTopic(channel, name, topic, callback = function (err) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			self.internal.setChannelNameAndTopic(channel, name, topic)
-				.then(() => {
-					callback();
-					resolve();
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				});
-
-		})
+	setChannelNameAndTopic(channel, name, topic, callback = (/*err*/) => {}) {
+		return this.internal.setChannelNameAndTopic(channel, name, topic)
+		.then(callback, callback);
 	}
 
 	//def updateChannel
-	updateChannel(channel, data, callback = function (err) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			self.internal.updateChannel(channel, data)
-				.then(() => {
-					callback();
-					resolve();
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				});
-
-		})
+	updateChannel(channel, data, callback = (/*err*/) => {}) {
+		return this.internal.updateChannel(channel, data)
+		.then(callback, callback);
 	}
 
 	//def startTyping
-	startTyping(channel, callback = function (err) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			self.internal.startTyping(channel)
-				.then(() => {
-					callback(null);
-					resolve();
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				});
-
-		});
+	startTyping(channel, callback = (/*err*/) => {}) {
+		return this.internal.startTyping(channel)
+		.then(callback, callback);
 	}
 
 	//def stopTyping
-	stopTyping(channel, callback = function (err) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			self.internal.stopTyping(channel)
-				.then(() => {
-					callback(null);
-					resolve();
-				})
-				.catch(e => {
-					callback(e);
-					reject(e);
-				});
-
-		});
+	stopTyping(channel, callback = (/*err*/) => {}) {
+		return this.internal.stopTyping(channel)
+		.then(callback, callback);
 	}
 
 	//def updateDetails
-	updateDetails(details, callback = function (err) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			self.internal.updateDetails(details)
-				.then(() => {
-					callback();
-					resolve();
-				})
-				.catch(err => {
-					callback(err);
-					reject(err);
-				});
-		});
+	updateDetails(details, callback = (/*err*/) => {}) {
+		return this.internal.updateDetails(details)
+		.then(callback, callback);
 	}
 
 	//def setUsername
-	setUsername(name, callback = function (err) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			self.internal.setUsername(name)
-				.then(() => {
-					callback();
-					resolve();
-				})
-				.catch(err => {
-					callback(err);
-					reject(err);
-				});
-		});
+	setUsername(name, callback = (/*err*/) => {}) {
+		return this.internal.setUsername(name)
+		.then(callback, callback);
 	}
 
 	//def setAvatar
-	setAvatar(avatar, callback = function (err) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			self.internal.setAvatar(avatar)
-				.then(() => {
-					callback();
-					resolve();
-				})
-				.catch(err => {
-					callback(err);
-					reject(err);
-				});
-		});
+	setAvatar(avatar, callback = (/*err*/) => {}) {
+		return this.internal.setAvatar(avatar)
+		.then(callback, callback);
 	}
 
 	//def joinVoiceChannel
-	joinVoiceChannel(channel, callback = function (err) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-
-			self.internal.joinVoiceChannel(channel)
-				.then(chan => {
-					callback(null, chan);
-					resolve(chan);
-				})
-				.catch(err => {
-					callback(err);
-					reject(err);
-				});
-
-		});
+	joinVoiceChannel(channel, callback = (/*err*/) => {}) {
+		return this.internal.joinVoiceChannel(channel)
+		.then(chan => {
+			callback(null, chan);
+			return chan;
+		}, callback);
 	}
-	
+
 	// def leaveVoiceChannel
-	leaveVoiceChannel(callback = function (err) { }) {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			self.internal.leaveVoiceChannel()
-				.then(() => {
-					callback();
-					resolve();
-				})
-				.catch(err => {
-					callback(err);
-					reject(err);
-				});
-		});
+	leaveVoiceChannel(callback = (/*err*/) => {}) {
+		return this.internal.leaveVoiceChannel()
+		.then(callback, callback);
 	}
-	
+
 	// def awaitResponse
-	awaitResponse(msg, toSend = null, options = null, callback = function (e, newMsg) { }) {
-		
-		var self = this;
-		
-		return new Promise((resolve, reject) => {
+	awaitResponse(msg, toSend = null, options = null, callback = (/*e, newMsg*/) => {}) {
 
-			function error(e) {
-				callback(e);
-				reject(e);
-			}
+		const final = () =>
+			this.internal.awaitResponse(msg)
+			.then(newMsg => {
+				callback(null, newMsg);
+			});
 
-			if (toSend) {
-				if (typeof toSend === "function") {
-					// (msg, callback)
-					callback = toSend;
-					final();
-				} else {
-					// (msg, toSend, ...)
-					if (options) {
-						if (typeof options === "function") {
-							//(msg, toSend, callback)
-							callback = options;
-							this.sendMessage(msg, toSend).then(final).catch(error);
-						} else {
-							//(msg, toSend, options, callback)
-							this.sendMessage(msg, toSend, options).then(final).catch(error);
-						}
-					} else {
-						// (msg, toSend) promise
-						this.sendMessage(msg, toSend).then(final).catch(error);
-					}
-				}
+		var ret;
+
+		if (toSend) {
+			if (typeof toSend === "function") {
+				// (msg, callback)
+				callback = toSend;
 			} else {
-				// (msg) promise
-				final();
+				// (msg, toSend, ...)
+				if (options) {
+					if (typeof options === "function") {
+						//(msg, toSend, callback)
+						callback = options;
+						ret = this.sendMessage(msg, toSend);
+					} else {
+						//(msg, toSend, options, callback)
+						ret = this.sendMessage(msg, toSend, options);
+					}
+				} else {
+					// (msg, toSend) promise
+					ret = this.sendMessage(msg, toSend);
+				}
 			}
+		}
 
-			function final() {
-				self.internal.awaitResponse(msg)
-					.then(newMsg => {
-						resolve(newMsg);
-						callback(null, newMsg);
-					})
-					.catch(error);
-			}
-
-		});
-
+		if (!ret) {
+			ret = Promise.resolve();
+		}
+		// (msg) promise
+		return ret.then(final).catch(callback);
 	}
 
-	setStatusIdle() {
-		this.setStatus("idle");
+	setStatusIdle(callback = (/*err*/) => {}) {
+		return this.internal.setStatus("idle")
+		.then(callback, callback);
 	}
 
-	setStatusOnline(cb = function (err) { }) {
-		this.setStatus("online");
+	setStatusOnline(callback = (/*err*/) => {}) {
+		return this.internal.setStatus("online")
+		.then(callback, callback);
 	}
 
-	setStatusActive() {
-		this.setStatusOnline();
+	setStatusActive(callback) {
+		return this.setStatusOnline(callback);
 	}
 
-	setStatusHere() {
-		this.setStatusOnline();
+	setStatusHere(callback) {
+		return this.setStatusOnline(callback);
 	}
 
-	setStatusAvailable() {
-		this.setStatusOnline();
+	setStatusAvailable(callback) {
+		return this.setStatusOnline(callback);
 	}
 
-	setStatusAway() {
-		this.setStatusIdle();
+	setStatusAway(callback) {
+		return this.setStatusIdle(callback);
 	}
 
 	setPlayingGame(game) {
-		this.setStatus(null, game);
+		return this.setStatus(null, game);
 	}
 }
 
