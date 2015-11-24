@@ -41,7 +41,6 @@
     "boss"          : false,
     "debug"         : false,
     "eqnull"        : false,
-    "es5"           : true,
     "esnext"        : true,
     "moz"           : false,
 
