@@ -95,24 +95,26 @@ class VoiceConnection extends EventEmitter {
 				return;
 			}
 			try {
-				var buffer = stream.read(1920);
-				if (!buffer) {
-					setTimeout(send, length * 10); // give chance for some data in 200ms to appear
-					return;
-				}
 
-				if (buffer.length !== 1920) {
-					if (onWarning) {
-						retStream.emit("end");
-						stream.destroy();
-						self.setSpeaking(false);
-						return;
-					} else {
-						onWarning = true;
-						setTimeout(send, length * 10); // give chance for some data in 200ms to appear
-						return;
-					}
-				}
+					var buffer = stream.read(1920);
+
+					if (!buffer) {
+						if (onWarning) {
+								retStream.emit("end");
+								self.setSpeaking(false);
+								return;
+						  } else {
+								onWarning = true;
+								setTimeout(send, length * 10); // give chance for some data in 200ms to appear
+								return;
+						}
+					 }
+
+					 if(buffer.length !== 1920) {
+						var newBuffer = new Buffer(1920).fill(0);
+						buffer.copy(newBuffer);
+						buffer = newBuffer;
+					 }
 
 				count++;
 				sequence + 10 < 65535 ? sequence += 1 : sequence = 0;
@@ -125,7 +127,7 @@ class VoiceConnection extends EventEmitter {
 				self.streamTime = count * length;
 
 				setTimeout(send, length + (nextTime - Date.now()));
-				
+
 				if (!self.playing)
 					self.setSpeaking(true);
 
@@ -250,29 +252,29 @@ class VoiceConnection extends EventEmitter {
 			var discordIP = "", discordPort = "";
 
 			udpClient.bind({ exclusive: true });
-            udpClient.on('message', function (msg, rinfo) {
-                var buffArr = JSON.parse(JSON.stringify(msg)).data;
-                if (firstPacket === true) {
-                    for (var i = 4; i < buffArr.indexOf(0, i); i++) {
-                        discordIP += String.fromCharCode(buffArr[i]);
-                    }
-                    discordPort = msg.readUIntLE(msg.length - 2, 2).toString(10);
+			udpClient.on('message', function (msg, rinfo) {
+				var buffArr = JSON.parse(JSON.stringify(msg)).data;
+				if (firstPacket === true) {
+					for (var i = 4; i < buffArr.indexOf(0, i); i++) {
+						discordIP += String.fromCharCode(buffArr[i]);
+					}
+					discordPort = msg.readUIntLE(msg.length - 2, 2).toString(10);
 
-                    var wsDiscPayload = {
-                        "op": 1,
-                        "d": {
-                            "protocol": "udp",
-                            "data": {
-                                "address": discordIP,
-                                "port": Number(discordPort),
-                                "mode": self.vWSData.modes[0] //Plain
-                            }
-                        }
-                    }
-                    vWS.send(JSON.stringify(wsDiscPayload));
-                    firstPacket = false;
-                }
-            });
+					var wsDiscPayload = {
+						"op": 1,
+						"d": {
+							"protocol": "udp",
+							"data": {
+								"address": discordIP,
+								"port": Number(discordPort),
+								"mode": self.vWSData.modes[0] //Plain
+							}
+						}
+					}
+					vWS.send(JSON.stringify(wsDiscPayload));
+					firstPacket = false;
+				}
+			});
 
 			vWS.on("open", () => {
 				vWS.send(JSON.stringify({
