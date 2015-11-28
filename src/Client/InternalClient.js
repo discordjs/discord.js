@@ -1,27 +1,25 @@
 "use strict";
 
-var request = require("superagent");
-var WebSocket = require("ws");
-var ConnectionState = require("./ConnectionState.js");
-var qs = require("querystring");
+import request from "superagent";
+import WebSocket from "ws";
+import ConnectionState from "./ConnectionState";
+import qs from "querystring";
 
-var Constants = require("../Constants.js"),
-	Endpoints = Constants.Endpoints,
-	PacketType = Constants.PacketType;
+import {Endpoints, PacketType, Permissions} from "../Constants";
 
-var Cache = require("../Util/Cache.js");
-var Resolver = require("./Resolver/Resolver.js");
+import Cache from "../Util/Cache";
+import Resolver from "./Resolver/Resolver";
 
-var User = require("../Structures/User.js"),
-	Channel = require("../Structures/Channel.js"),
-	TextChannel = require("../Structures/TextChannel.js"),
-	VoiceChannel = require("../Structures/VoiceChannel.js"),
-	PMChannel = require("../Structures/PMChannel.js"),
-	Server = require("../Structures/Server.js"),
-	Message = require("../Structures/Message.js"),
-	Role = require("../Structures/Role.js"),
-	Invite = require("../Structures/Invite.js"),
-	VoiceConnection = require("../Voice/VoiceConnection.js");
+import User from "../Structures/User";
+import Channel from "../Structures/Channel";
+import TextChannel from "../Structures/TextChannel";
+import VoiceChannel from "../Structures/VoiceChannel";
+import PMChannel from "../Structures/PMChannel";
+import Server from "../Structures/Server";
+import Message from "../Structures/Message";
+import Role from "../Structures/Role";
+import Invite from "../Structures/Invite";
+import VoiceConnection from "../Voice/VoiceConnection";
 
 var zlib;
 
@@ -62,7 +60,7 @@ function delay(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-class InternalClient {
+export default class InternalClient {
 	constructor(discordClient) {
 		this.client = discordClient;
 		this.state = ConnectionState.IDLE;
@@ -553,7 +551,7 @@ class InternalClient {
 			newData.permissions = 0;
 			for (var perm of data.permissions) {
 				if (perm instanceof String || typeof perm === "string") {
-					newData.permissions |= (Constants.Permissions[perm] || 0);
+					newData.permissions |= (Permissions[perm] || 0);
 				} else {
 					newData.permissions |= perm;
 				}
@@ -714,13 +712,13 @@ class InternalClient {
 			for (var perm in updated) {
 				if (updated[perm]) {
 					if (perm instanceof String || typeof perm === "string") {
-						data.allow |= (Constants.Permissions[perm] || 0);
+						data.allow |= (Permissions[perm] || 0);
 					} else {
 						data.allow |= perm;
 					}
 				} else {
 					if (perm instanceof String || typeof perm === "string") {
-						data.deny |= (Constants.Permissions[perm] || 0);
+						data.deny |= (Permissions[perm] || 0);
 					} else {
 						data.deny |= perm;
 					}
@@ -1342,5 +1340,3 @@ class InternalClient {
 		};
 	}
 }
-
-module.exports = InternalClient;

@@ -1,6 +1,6 @@
 "use strict";
 
-var cpoc = require("child_process");
+import cpoc from "child_process";
 
 var opus;
 try{
@@ -8,9 +8,8 @@ try{
 }catch(e){
 	// no opus!
 }
-var VoicePacket = require("./VoicePacket.js");
 
-class AudioEncoder{
+export default class AudioEncoder {
 	constructor(){
 		if(opus){
 			this.opus = new opus.OpusEncoder(48000, 1);
@@ -116,5 +115,3 @@ class AudioEncoder{
 		});
 	}
 }
-
-module.exports = AudioEncoder;

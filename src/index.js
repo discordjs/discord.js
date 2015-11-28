@@ -1,16 +1,33 @@
-module.exports = {
-	Client : require("./Client/Client"),
-	Channel : require("./Structures/Channel"),
-	ChannelPermissions : require("./Structures/ChannelPermissions"),
-	Invite : require("./Structures/Invite"),
-	Message : require("./Structures/Message"),
-	PermissionOverwrite : require("./Structures/PermissionOverwrite"),
-	PMChannel : require("./Structures/PMChannel"),
-	Role : require("./Structures/Role"),
-	Server : require("./Structures/Server"),
-	ServerChannel : require("./Structures/ServerChannel"),
-	TextChannel : require("./Structures/TextChannel"),
-	User : require("./Structures/User"),
-	VoiceChannel: require("./Structures/VoiceChannel"),
-	Constants : require("./Constants.js")
-}
+"use strict";
+
+import Client from "./Client/Client";
+import Channel from "./Structures/Channel";
+import ChannelPermissions from "./Structures/ChannelPermissions";
+import Invite from "./Structures/Invite";
+import Message from "./Structures/Message";
+import PermissionOverwrite from "./Structures/PermissionOverwrite";
+import PMChannel from "./Structures/PMChannel";
+import Role from "./Structures/Role";
+import Server from "./Structures/Server";
+import ServerChannel from "./Structures/ServerChannel";
+import TextChannel from "./Structures/TextChannel";
+import User from "./Structures/User";
+import VoiceChannel from "./Structures/VoiceChannel";
+import Constants from "./Constants";
+
+export default {
+	Client,
+	Channel,
+	ChannelPermissions,
+	Invite,
+	Message,
+	PermissionOverwrite,
+	PMChannel,
+	Role,
+	Server,
+	ServerChannel,
+	TextChannel,
+	User,
+	VoiceChannel,
+	Constants
+};

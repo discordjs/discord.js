@@ -7,16 +7,15 @@
 	been possible!
 */
 
-var WebSocket = require("ws");
-var dns = require("dns");
-var udp = require("dgram");
-var fs = require("fs");
-var AudioEncoder = require("./AudioEncoder.js");
-var VoicePacket = require("./VoicePacket.js");
-var StreamIntent = require("./StreamIntent.js");
-var EventEmitter = require("events");
+import WebSocket from "ws";
+import dns from "dns";
+import udp from "dgram";
+import AudioEncoder from "./AudioEncoder";
+import VoicePacket from "./VoicePacket";
+import StreamIntent from "./StreamIntent";
+import EventEmitter from "events";
 
-class VoiceConnection extends EventEmitter {
+export default class VoiceConnection extends EventEmitter {
 	constructor(channel, client, session, token, server, endpoint) {
 		super();
 		this.id = channel.id;
@@ -325,5 +324,3 @@ class VoiceConnection extends EventEmitter {
 		});
 	}
 }
-
-module.exports = VoiceConnection;

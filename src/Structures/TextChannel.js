@@ -1,10 +1,10 @@
 "use strict";
 
-var ServerChannel = require("./ServerChannel.js");
-var Cache = require("../Util/Cache.js");
-var reg = require("../Util/ArgumentRegulariser.js").reg;
+import ServerChannel from "./ServerChannel";
+import Cache from "../Util/Cache";
+import {reg} from "../Util/ArgumentRegulariser";
 
-class TextChannel extends ServerChannel{
+export default class TextChannel extends ServerChannel{
 	constructor(data, client, server){
 		super(data, client, server);
 
@@ -38,5 +38,3 @@ class TextChannel extends ServerChannel{
 		return this.client.sendTTSMessage.apply(this.client, reg(this, arguments));
 	}
 }
-
-module.exports = TextChannel;

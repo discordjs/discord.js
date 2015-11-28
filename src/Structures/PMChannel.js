@@ -1,12 +1,11 @@
 "use strict";
 
-var Channel = require("./Channel.js");
-var User = require("./User.js");
-var Equality = require("../Util/Equality.js");
-var Cache = require("../Util/Cache.js");
-var reg = require("../Util/ArgumentRegulariser.js").reg;
+import Channel from "./Channel";
+import User from "./User";
+import Cache from "../Util/Cache";
+import {reg} from "../Util/ArgumentRegulariser";
 
-class PMChannel extends Channel{
+export default class PMChannel extends Channel {
 	constructor(data, client){
 		super(data, client);
 
@@ -33,5 +32,3 @@ class PMChannel extends Channel{
 		return this.client.sendTTSMessage.apply(this.client, reg(this, arguments));
 	}
 }
-
-module.exports = PMChannel;

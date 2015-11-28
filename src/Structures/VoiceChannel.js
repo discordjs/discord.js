@@ -1,11 +1,9 @@
 "use strict";
 
-var ServerChannel = require("./ServerChannel.js");
+import ServerChannel from "./ServerChannel";
 
-class VoiceChannel extends ServerChannel{
+export default class VoiceChannel extends ServerChannel{
 	constructor(data, client, server){
 		super(data, client, server);
 	}
 }
-
-module.exports = VoiceChannel;

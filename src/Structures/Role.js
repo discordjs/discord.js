@@ -1,5 +1,5 @@
 "use strict";
-var Permissions = require("../Constants.js").Permissions;
+import {Permissions} from "../Constants";
 /*
 
 example data
@@ -28,7 +28,7 @@ const DefaultRole = [
 	Permissions.voiceUseVAD
 ].reduce( (previous, current) => previous | current, 0 );
 
-class Role{
+export default class Role {
 	constructor(data, server, client){
 		this.position = data.position || -1;
 		this.permissions = data.permissions || (data.name === "@everyone" ? DefaultRole : 0 );
@@ -131,5 +131,3 @@ class Role{
 		return "#"+val;
 	}
 }
-
-module.exports = Role;

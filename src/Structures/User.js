@@ -1,9 +1,9 @@
 "use strict";
 
-var Equality = require("../Util/Equality.js");
-var Endpoints = require("../Constants.js").Endpoints;
+import Equality from "../Util/Equality";
+import {Endpoints} from "../Constants";
 
-class User extends Equality{
+export default class User extends Equality{
 	constructor(data, client){
 		super();
 		this.client = client;
@@ -61,5 +61,3 @@ class User extends Equality{
 			return false;
 	}
 }
-
-module.exports = User;

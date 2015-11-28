@@ -1,18 +1,18 @@
 "use strict";
 
-var Equality = require("../Util/Equality.js");
-var Endpoints = require("../Constants.js").Endpoints;
-var Cache = require("../Util/Cache.js");
-var User = require("./User.js");
-var TextChannel = require("./TextChannel.js");
-var VoiceChannel = require("./VoiceChannel.js");
-var Role = require("./Role.js");
+import Equality from "../Util/Equality";
+import {Endpoints} from "../Constants";
+import Cache from "../Util/Cache";
+import User from "./User";
+import TextChannel from "./TextChannel";
+import VoiceChannel from "./VoiceChannel";
+import Role from "./Role";
 
 var strictKeys = [
 	"region", "ownerID", "name", "id", "icon", "afkTimeout", "afkChannelID"
 ];
 
-class Server extends Equality {
+export default class Server extends Equality {
 	constructor(data, client) {
 
 		super();
@@ -121,5 +121,3 @@ class Server extends Equality {
 	}
 
 }
-
-module.exports = Server;

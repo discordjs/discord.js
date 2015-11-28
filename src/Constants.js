@@ -1,5 +1,7 @@
-var API = "https://discordapp.com/api";
-var Endpoints = {
+"use strict";
+
+export const API = "https://discordapp.com/api";
+export const Endpoints = {
 	// general endpoints
 	LOGIN: `${API}/auth/login`,
 	LOGOUT: `${API}/auth/logout`,
@@ -32,7 +34,7 @@ var Endpoints = {
 	CHANNEL_MESSAGE: (channelID, messageID) => `${Endpoints.CHANNEL_MESSAGES(channelID)}/${messageID}`
 };
 
-var Permissions = {
+export const Permissions = {
 	// general
 	createInstantInvite: 1 << 0,
 	kickMembers: 1 << 1,
@@ -61,7 +63,7 @@ var Permissions = {
 
 };
 
-var PacketType = {
+export const PacketType = {
 	READY : "READY",
 	MESSAGE_CREATE : "MESSAGE_CREATE",
 	MESSAGE_UPDATE : "MESSAGE_UPDATE",
@@ -82,9 +84,4 @@ var PacketType = {
 	TYPING : "TYPING_START",
 	SERVER_BAN_ADD : "GUILD_BAN_ADD",
 	SERVER_BAN_REMOVE : "GUILD_BAN_REMOVE"
-}
-
-exports.API_ENDPOINT = API;
-exports.Endpoints = Endpoints;
-exports.PacketType = PacketType;
-exports.Permissions = Permissions;
+};
