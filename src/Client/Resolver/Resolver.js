@@ -22,14 +22,13 @@ export default class Resolver {
 	resolveGameID(resource) {
 		if (!isNaN(resource) && parseInt(resource) % 1 === 0) {
 			return resource;
-		} else if (typeof resource == "string" || resource instanceof String) {
-
-			for (var game of Games) {
-				if (game.name.toUpperCase() === resource.toUpperCase()) {
-					return game.id;
-				}
+		}
+		if (typeof resource === "string" || resource instanceof String) {
+			var gameName = resource.toLowerCase();
+			var found = Games.find(game => game.name.toLowerCase() === gameName);
+			if(found) {
+				return found.id;
 			}
-
 		}
 
 		return null;
@@ -46,15 +45,13 @@ export default class Resolver {
 	resolveInviteID(resource) {
 		if (resource instanceof Invite) {
 			return resource.id;
-		} else if (typeof resource == "string" || resource instanceof String) {
-
+		}
+		if (typeof resource === "string" || resource instanceof String) {
 			if (resource.indexOf("http") === 0) {
 				var split = resource.split("/");
 				return split.pop();
-			} else {
-				return resource;
 			}
-
+			return resource;
 		}
 		return null;
 	}
@@ -62,11 +59,14 @@ export default class Resolver {
 	resolveServer(resource) {
 		if (resource instanceof Server) {
 			return resource;
-		} else if (resource instanceof ServerChannel) {
+		}
+		if (resource instanceof ServerChannel) {
 			return resource.server;
-		} else if (resource instanceof String || typeof resource === "string") {
+		}
+		if (resource instanceof String || typeof resource === "string") {
 			return this.internal.servers.get("id", resource);
-		} else if (resource instanceof Message) {
+		}
+		if (resource instanceof Message) {
 			if (resource.channel instanceof TextChannel) {
 				return resource.server;
 			}
@@ -77,9 +77,8 @@ export default class Resolver {
 	resolveFile(resource) {
 		if (typeof resource === "string" || resource instanceof String) {
 			return fs.createReadStream(resource);
-		} else {
-			return resource;
 		}
+		return resource;
 	}
 
 	resolveMentions(resource) {
@@ -108,38 +107,42 @@ export default class Resolver {
 		/*
 			accepts a Message, Channel, Server, String ID, User, PMChannel
 		*/
-		var found = null;
 		if (resource instanceof User) {
-			found = resource;
-		} else if (resource instanceof Message) {
-			found = resource.author;
-		} else if (resource instanceof TextChannel) {
+			return resource;
+		}
+		if (resource instanceof Message) {
+			return resource.author;
+		}
+		if (resource instanceof TextChannel) {
 			var lmsg = resource.lastMessage;
 			if (lmsg) {
-				found = lmsg.author;
+				return lmsg.author;
 			}
-		} else if (resource instanceof Server) {
-			found = resource.owner;
-		} else if (resource instanceof PMChannel) {
-			found = resource.recipient;
-		} else if (resource instanceof String || typeof resource === "string") {
-			found = this.client.internal.users.get("id", resource);
+		}
+		if (resource instanceof Server) {
+			return resource.owner;
+		}
+		if (resource instanceof PMChannel) {
+			return resource.recipient;
+		}
+		if (resource instanceof String || typeof resource === "string") {
+			return this.client.internal.users.get("id", resource);
 		}
 
-		return found;
+		return null;
 	}
 
 	resolveMessage(resource) {
 		// accepts a Message, PMChannel & TextChannel
-		var found = null;
 
 		if (resource instanceof TextChannel || resource instanceof PMChannel) {
-			found = resource.lastMessage;
-		} else if (resource instanceof Message) {
-			found = resource;
+			return resource.lastMessage;
+		}
+		if (resource instanceof Message) {
+			return resource;
 		}
 
-		return found;
+		return null;
 	}
 
 	resolveVoiceChannel(resource) {
@@ -153,44 +156,34 @@ export default class Resolver {
 	resolveChannel(resource) {
 		/*
 			accepts a Message, Channel, Server, String ID, User
-		 */
-		var self = this;
+		*/
 
-		return new Promise((resolve, reject) => {
-			var found = null;
-			if (resource instanceof Message) {
-				found = resource.channel;
-			} else if (resource instanceof Channel) {
-				found = resource;
-			} else if (resource instanceof Server) {
-				found = resource.channels.get("id", resource.id);
-			} else if (resource instanceof String || typeof resource === "string") {
-				found = self.internal.channels.get("id", resource);
-			} else if (resource instanceof User) {
-				// see if a PM exists
-				var chatFound = false;
-				for (var pmchat of self.internal.private_channels) {
-					if (pmchat.recipient.equals(resource)) {
-						chatFound = pmchat;
-						break;
-					}
-				}
-				if (chatFound) {
-					// a PM already exists!
-					found = chatFound;
-				} else {
-					// PM does not exist :\
-					self.internal.startPM(resource)
-						.then(pmchannel => resolve(pmchannel))
-						.catch(e => reject(e));
-					return;
-				}
+		if (resource instanceof Message) {
+			return Promise.resolve(resource.channel);
+		}
+		if (resource instanceof Channel) {
+			return Promise.resolve(resource);
+		}
+		if (resource instanceof Server) {
+			return Promise.resolve(resource.channels.get("id", resource.id));
+		}
+		if (resource instanceof String || typeof resource === "string") {
+			return Promise.resolve(this.internal.channels.get("id", resource));
+		}
+		if (resource instanceof User) {
+			// see if a PM exists
+			var chatFound = this.internal.private_channels.find(
+				pmchat => pmchat.recipient.equals(resource)
+			);
+			if (chatFound) {
+				// a PM already exists!
+				return Promise.resolve(chatFound);
 			}
-			if (found)
-				resolve(found);
-			else
-				reject(new Error("Didn't found anything"));
-		});
-
+			// PM does not exist :\
+			return this.internal.startPM(resource);
+		}
+		var error = new Error("Could not resolve channel");
+		error.resource = resource;
+		return Promise.reject(error);
 	}
 }
