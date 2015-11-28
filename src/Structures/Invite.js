@@ -1,9 +1,6 @@
 "use strict";
 
-var Server = require("./Server.js");
-var ServerChannel = require("./ServerChannel.js");
-
-class Invite{
+export default class Invite {
 	constructor(data, chan, client){
 		this.maxAge = data.max_age;
         this.code = data.code;
@@ -22,5 +19,3 @@ class Invite{
         return `https://discord.gg/${this.code}`;
     }
 }
-
-module.exports = Invite;

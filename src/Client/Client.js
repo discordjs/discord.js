@@ -1,7 +1,7 @@
 "use strict";
 
-var InternalClient = require("./InternalClient.js");
-var EventEmitter = require("events");
+import InternalClient from "./InternalClient";
+import EventEmitter from "events";
 
 function errCB(callback) {
 	return error => {
@@ -10,7 +10,7 @@ function errCB(callback) {
 	};
 }
 
-class Client extends EventEmitter {
+export default class Client extends EventEmitter {
 	/*
 		this class is an interface for the internal
 		client.
@@ -479,5 +479,3 @@ class Client extends EventEmitter {
 		return this.setStatus(null, game);
 	}
 }
-
-module.exports = Client;

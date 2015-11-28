@@ -9,7 +9,7 @@
 
 	Instead, use objectThatExtendsEquality.equals()
 */
-class Equality{
+export default class Equality{
 	constructor(){
 
 	}
@@ -30,5 +30,3 @@ class Equality{
 		return;
 	}
 }
-
-module.exports = Equality;

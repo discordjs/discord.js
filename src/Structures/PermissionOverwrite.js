@@ -1,8 +1,8 @@
 "use strict";
 
-var Permissions = require("../Constants.js").Permissions;
+import {Permissions} from "../Constants";
 
-class PermissionOverwrite {
+export default class PermissionOverwrite {
 
 	constructor(data) {
 		this.id = data.id;
@@ -64,7 +64,4 @@ class PermissionOverwrite {
 			}
 		} );
 	}
-
 }
-
-module.exports = PermissionOverwrite;

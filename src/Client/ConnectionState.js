@@ -1,5 +1,7 @@
-exports.IDLE = 0;
-exports.LOGGING_IN = 1;
-exports.LOGGED_IN = 2;
-exports.READY = 3;
-exports.DISCONNECTED = 4;
+export default {
+	IDLE: 0,
+	LOGGING_IN: 1,
+	LOGGED_IN: 2,
+	READY: 3,
+	DISCONNECTED: 4
+};

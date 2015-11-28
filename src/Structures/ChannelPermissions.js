@@ -1,8 +1,8 @@
 "use strict";
 
-var Permissions = require("../Constants.js").Permissions;
+import {Permissions} from "../Constants";
 
-class ChannelPermissions{
+export default class ChannelPermissions {
 	constructor(permissions){
 		this.permissions = permissions;
 	}
@@ -59,5 +59,3 @@ class ChannelPermissions{
 		return !!(this.permissions & perm);
 	}
 }
-
-module.exports = ChannelPermissions;

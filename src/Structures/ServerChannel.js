@@ -1,12 +1,12 @@
 "use strict";
 
-var Channel = require("./Channel.js");
-var Cache = require("../Util/Cache.js");
-var PermissionOverwrite = require("./PermissionOverwrite.js");
-var ChannelPermissions = require("./ChannelPermissions.js");
-var reg = require("../Util/ArgumentRegulariser.js").reg;
+import Channel from "./Channel";
+import Cache from "../Util/Cache";
+import PermissionOverwrite from "./PermissionOverwrite";
+import ChannelPermissions from "./ChannelPermissions";
+import {reg} from "../Util/ArgumentRegulariser";
 
-class ServerChannel extends Channel{
+export default class ServerChannel extends Channel{
 	constructor(data, client, server){
 		super(data, client);
 		this.name = data.name;
@@ -73,5 +73,3 @@ class ServerChannel extends Channel{
 		return this.client.setChannelName.apply(this.client, reg(this, arguments));
 	}
 }
-
-module.exports = ServerChannel;

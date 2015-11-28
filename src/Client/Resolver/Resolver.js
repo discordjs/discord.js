@@ -1,37 +1,37 @@
 "use strict";
 /* global Buffer */
 
-var fs = require("fs");
+import fs from "fs";
 
-var User = require("../../Structures/User.js"),
-	Channel = require("../../Structures/Channel.js"),
-	TextChannel = require("../../Structures/TextChannel.js"),
-	VoiceChannel = require("../../Structures/VoiceChannel.js"),
-	ServerChannel = require("../../Structures/ServerChannel.js"),
-	PMChannel = require("../../Structures/PMChannel.js"),
-	Server = require("../../Structures/Server.js"),
-	Message = require("../../Structures/Message.js"),
-	Invite = require("../../Structures/Invite.js"),
-	Games = require("../../../ref/gameMap.js");
+import User from "../../Structures/User";
+import Channel from "../../Structures/Channel";
+import TextChannel from "../../Structures/TextChannel";
+import VoiceChannel from "../../Structures/VoiceChannel";
+import ServerChannel from "../../Structures/ServerChannel";
+import PMChannel from "../../Structures/PMChannel";
+import Server from "../../Structures/Server";
+import Message from "../../Structures/Message";
+import Invite from "../../Structures/Invite";
+import Games from "../../../ref/gameMap";
 
-class Resolver {
+export default class Resolver {
 	constructor(internal) {
 		this.internal = internal;
 	}
-	
+
 	resolveGameID(resource) {
 		if (!isNaN(resource) && parseInt(resource) % 1 === 0) {
 			return resource;
 		} else if (typeof resource == "string" || resource instanceof String) {
-			
+
 			for (var game of Games) {
 				if (game.name.toUpperCase() === resource.toUpperCase()) {
 					return game.id;
 				}
 			}
-			
+
 		}
-		
+
 		return null;
 	}
 
@@ -194,4 +194,3 @@ class Resolver {
 
 	}
 }
-module.exports = Resolver;

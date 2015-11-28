@@ -1,11 +1,11 @@
 "use strict";
 
-var Cache = require("../Util/Cache.js");
-var User = require("./User.js");
-var reg = require("../Util/ArgumentRegulariser.js").reg;
-var Equality = require("../Util/Equality");
+import Cache from "../Util/Cache";
+import User from "./User";
+import {reg} from "../Util/ArgumentRegulariser";
+import Equality from "../Util/Equality";
 
-class Message extends Equality{
+export default class Message extends Equality{
 	constructor(data, channel, client) {
 		super();
 		this.channel = channel;
@@ -73,5 +73,3 @@ class Message extends Equality{
 		return this.author;
 	}
 }
-
-module.exports = Message;

@@ -1,6 +1,6 @@
 "use strict";
 
-class Cache extends Array {
+export default class Cache extends Array {
 	constructor(discrim, limit) {
 		super();
 		this.discrim = discrim || "id";
@@ -61,7 +61,7 @@ class Cache extends Array {
 			return false;
 		}
 	}
-	
+
 	random() {
 		return this[Math.floor(Math.random()*this.length)];
 	}
@@ -79,5 +79,3 @@ class Cache extends Array {
 		return false;
 	}
 }
-
-module.exports = Cache;

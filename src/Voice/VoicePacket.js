@@ -1,6 +1,6 @@
 "use strict";
 
-class VoicePacket{
+export default class VoicePacket {
 	constructor(data, sequence, time, ssrc){
 
 		var audioBuffer = data,
@@ -22,5 +22,3 @@ class VoicePacket{
 
 	}
 }
-
-module.exports = VoicePacket;
