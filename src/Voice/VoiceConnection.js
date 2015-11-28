@@ -61,8 +61,15 @@ export default class VoiceConnection extends EventEmitter {
 		this.playing = false;
 		this.playingIntent = null;
 		if(this.instream){
-			this.instream.end();
-			this.instream.destroy();
+			//not all streams implement these...
+			//and even file stream don't seem to implement them properly...
+			if(this.instream.end) {
+				this.instream.end();
+			}
+			if(this.instream.destroy) {
+				this.instream.destroy();
+			}
+			this.instream = null;
 		}
 	}
 
