@@ -1,9 +1,12 @@
 language: node_js
 node_js:
-  - "stable"
+  - stable
 cache:
-    directories:
+  directories:
     - node_modules
 branches:
   only:
     - master
+before_install: npm install -g grunt-cli
+install: npm install
+before_script: grunt --dev
