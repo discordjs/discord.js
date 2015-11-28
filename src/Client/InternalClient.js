@@ -24,8 +24,8 @@ import VoiceConnection from "../Voice/VoiceConnection";
 var zlib;
 
 //todo: move this somewhere else
-var originalEnd = request.Request.prototype.prototype.end;
-request.Request.prototype.prototype.end = function(callback) {
+var originalEnd = request.Request.prototype.end;
+request.Request.prototype.end = function(callback) {
 	return new Promise((resolve, reject) => {
 		originalEnd.call(this, (err, response) => {
 			if (callback) {
