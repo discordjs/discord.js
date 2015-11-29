@@ -21,3 +21,8 @@ client
 ~~~~~~
 
 The Client_ that cached the channel.
+
+isPrivate
+~~~~~~~~~
+
+Indicates whether the channel is PM channel, is `Boolean`.
