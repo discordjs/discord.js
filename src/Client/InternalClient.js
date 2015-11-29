@@ -309,10 +309,6 @@ export default class InternalClient {
 	sendMessage(where, _content, options = {}) {
 
 		return this.resolver.resolveChannel(where)
-		.catch(error => {
-			error.message = "Error resolving destination - " + error.toString();
-			throw error;
-		})
 		.then(destination => {
 			//var destination;
 			var content = this.resolver.resolveString(_content);
@@ -381,10 +377,6 @@ export default class InternalClient {
 	// def sendFile
 	sendFile(where, _file, name = "image.png") {
 		return this.resolver.resolveChannel(where)
-		.catch(error => {
-			error.message = "Couldn't resolve to channel - " + error.toString();
-			throw error;
-		})
 		.then(channel =>
 			request
 			.post(Endpoints.CHANNEL_MESSAGES(channel.id))
@@ -398,10 +390,6 @@ export default class InternalClient {
 	// def getChannelLogs
 	getChannelLogs(_channel, limit = 500, options = {}) {
 		return this.resolver.resolveChannel(_channel)
-		.catch(error => {
-			error.message = "Couldn't resolve to channel - " + error.toString();
-			throw error;
-		})
 		.then(channel => {
 			var qsObject = {limit};
 			if (options.before) {
@@ -774,7 +762,8 @@ export default class InternalClient {
 
 	//def startTyping
 	startTyping(channel){
-		return this.resolver.resolveChannel(channel).then(channel => {
+		return this.resolver.resolveChannel(channel)
+		.then(channel => {
 
 			if(this.typingIntervals[channel.id]){
 				// typing interval already exists, leave it alone
@@ -782,7 +771,8 @@ export default class InternalClient {
 			}
 
 			this.typingIntervals[channel.id] = setInterval(
-				() => this.sendTyping(channel).catch(error => this.emit("error", error)),
+				() => this.sendTyping(channel)
+				.catch(error => this.emit("error", error)),
 				4000
 			);
 
