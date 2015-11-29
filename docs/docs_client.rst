@@ -539,7 +539,7 @@ Emitted when the client has encountered a small error that can be avoided.
 messageDeleted
 ~~~~~~~~~~~~~~
 
-Emitted when a message has been deleted and the Client finds out, supplies a Message_ object IF available.
+Emitted when a message has been deleted and the Client finds out, supplies a Message_ object IF available, and a Channel_ object.
 
 messageUpdated
 ~~~~~~~~~~~~~~
@@ -631,12 +631,12 @@ userUpdated
 
 Emitted when a user changes their name, avatar or similar. Supplies two User_ objects, the first being the user before being updated, the second being the updated user.
 
-userTypingStart
+userTypingStarted
 ~~~~~~~~~~~~~~~
 
 Emitted when a user starts typing in a channel. Supplies two parameters, a User_ object and a Channel_ object.
 
-userTypingStop
+userTypingStopped
 ~~~~~~~~~~~~~~
 
 Emitted when a user stop typing in a channel. Supplies two parameters, a User_ object and a Channel_ object.
