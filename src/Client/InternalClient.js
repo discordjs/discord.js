@@ -174,7 +174,7 @@ export default class InternalClient {
 		.end()
 		.then(res => {
 			// valid server, wait until it is cached
-			return waitFor(() => this.servers.get("id", res.body.guild.id));
+			return waitFor(() => this.servers.get("id", res.body.id));
 		});
 	}
 
@@ -447,8 +447,9 @@ export default class InternalClient {
 			var channel;
 			if (res.body.type === "text") {
 				channel = new TextChannel(res.body, this.client, server);
+			}else{
+				channel = new VoiceChannel(res.body, this.client, server);
 			}
-			channel = new VoiceChannel(res.body, this.client, server);
 			return server.channels.add(this.channels.add(channel));
 		});
 	}
@@ -941,7 +942,6 @@ export default class InternalClient {
 		};
 
 		this.websocket.onmessage = e => {
-
 			if (e.type === "Binary") {
 				if (!zlib) zlib = require("zlib");
 				e.data = zlib.inflateSync(e.data).toString();
@@ -957,7 +957,6 @@ export default class InternalClient {
 			}
 
 			client.emit("raw", packet);
-
 			switch (packet.t) {
 
 				case PacketType.READY:
