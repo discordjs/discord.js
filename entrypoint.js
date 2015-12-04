@@ -17,7 +17,16 @@ var major = parseInt(v[0]),
 	minor = parseInt(v[1]),
 	patch = parseInt(v[2]);
 
-// at the moment no node version has full ES6 support	
+if((major == 0 && minor < 12) || (major == 0 && patch < 7)) {
+  console.log("discord.js doesn't support node versions less than 0.12.7.");
+	console.log("If you /really/ want to run it on this node (" + v +
+		"), then remove the check from entrypoint.js.");
+	console.log("However, this is unsupported and WILL cause problems.");
+	console.log("Exiting now.");
+	process.exit(1);
+}
+
+// at the moment no node version has full ES6 support
 use5();
 
 function use6(){
