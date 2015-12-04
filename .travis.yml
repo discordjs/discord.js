@@ -7,6 +7,6 @@ cache:
 branches:
   only:
     - master
-before_install: npm install -g grunt-cli
+before_install: npm install -g grunt-cli eslint
 install: npm install
 before_script: grunt --dev
