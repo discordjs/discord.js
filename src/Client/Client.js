@@ -198,6 +198,12 @@ export default class Client extends EventEmitter {
 		return this.internal.leaveServer(server)
 		.then(callback, errCB(callback));
 	}
+	
+	// def deleteServer
+	deleteServer(server, callback = (/*err*/) => {}) {
+		return this.internal.leaveServer(server)
+		.then(callback, errCB(callback));
+	}
 
 	// def createChannel
 	createChannel(server, name, type = "text", callback = (/*err, channel*/) => {}) {

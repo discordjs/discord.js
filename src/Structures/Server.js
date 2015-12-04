@@ -69,6 +69,19 @@ export default class Server extends Equality {
 			}
 		}
 	}
+	
+	details(user) {
+		user = this.client.internal.resolver.resolveUser(user);
+		if (user) {
+			return this.memberMap[user.id];
+		} else {
+			return {};
+		}
+	}
+	
+	detailsOf(user) {
+		return this.details(user);
+	}
 
 	rolesOfUser(user) {
 		user = this.client.internal.resolver.resolveUser(user);
