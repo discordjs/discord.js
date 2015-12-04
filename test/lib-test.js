@@ -4,6 +4,7 @@
 var Discord = require("../");
 var client = new Discord.Client();
 var colors = require("colors");
+var fs = require("fs");
 
 var passes = 0, fails = 0;
 
@@ -17,6 +18,7 @@ function pass(msg) {
 
 function err(msg) {
 	console.log("      ✗ ".red + msg);
+	process.exit(1);
 }
 
 console.log("Beginning Lib Test".yellow);
@@ -95,15 +97,15 @@ function makeChannel() {
 		pass("valid channel name & type");
 
 		channel = chann;
-		
+
 		editChannel();
 
 	});
 }
 
 function editChannel() {
-	section("Channel Editting");
-	
+	section("Channel Manipulation");
+
 	client.setChannelNameAndTopic(channel, "testing", "a testing channel - temporary").then(() => {
 
 		if (channel.name !== "testing" || channel.topic !== "a testing channel - temporary") {
@@ -122,42 +124,136 @@ function editChannel() {
 
 function sendMsg() {
 	section("Message Creation");
-	
+
 	client.sendMessage(channel, "test message!", { tts: true }).then(msg => {
-		
+
 		if (!msg) {
 			err("message not passed");
 			return;
 		}
-		
+
 		if (msg.content !== "test message!" || !msg.sender.equals(client.user) || !msg.channel.equals(channel)) {
 			err("invalid content, sender or channel assigned to message");
 			return;
 		}
-		
+
 		if (!msg.tts) {
 			err("message wasn't TTS on response, even though on request it was");
 			return;
 		}
-		
+
 		pass("message successfully created");
 		pass("correct parameters in message");
-		
+
 		message = msg;
-		
+
 		editMsg();
-		
+
 	}).catch(e => {
 		err("error sending message: " + e)
 	});
 }
 
 function editMsg() {
-	
+
 	section("Message Manipulation");
-	
+
 	client.updateMessage(message, client.user + channel + server).then(msg => {
 
+		if (!msg) {
+			err("message not passed back on update");
+			return;
+		}
+
+		if (msg.content !== client.user.mention() + channel.mention() + server.name) {
+			err("message content not what expected");
+			return;
+		}
+
+		pass("message updated");
+		pass("message content was as expected - complex");
+
+		client.deleteMessage(message).then(() => {
+			pass("message deleted");
+			sendFile();
+		}).catch(e => {
+			err("error deleting message: " + e)
+		});
+
+	}).catch(e => {
+		err("error updating message: " + e)
+	});
+
+}
+
+function sendFile() {
+	section("File Sending & Deletion");
+
+	client.sendFile(channel, "./test/image.png", "image.png").then(file => {
+
+		if (!file) {
+			err("file not passed");
+			return;
+		}
+
+		if (file.attachments.length === 0) {
+			err("attachment not added");
+			return;
+		}
+
+		pass("sent attachment file");
+
+		client.deleteMessage(file).then(() => {
+			pass("message deleted");
+			deleteAll();
+		}).catch(e => {
+			err("error deleting message: " + e)
+		});
+
+	}).catch(e => {
+		err("error sending file: " + e);
+	});
+}
+
+function deleteAll() {
+
+	section("Clean Up");
+
+	client.deleteChannel(channel).then(() => {
+
+		pass("deleted temporary channel");
+
+		client.leaveServer(server).then(() => {
+			
+			pass("deleted temporary server");
+			
+			exit();
+			
+		}).catch(e => {
+			err("error deleting server: " + e);
+		});
+
+	}).catch(e => {
+		err("error deleting channel: " + e);
+	});
+
+}
+
+function exit() {
+	
+	section("Exiting");
+	
+	client.logout().then(() => {
+		pass("logged out");
+		done();
+	}).catch(e => {
+		err("couldn't log out: " + e);
 	});
 	
+}
+
+function done() {
+	section("Report");
+	pass("all tests done");
+	process.exit(0);
 }
