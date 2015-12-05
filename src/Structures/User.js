@@ -89,4 +89,8 @@ export default class User extends Equality{
 	removeFrom(role, callback) {
 		return this.client.removeMemberFromRole.apply(this.client, [this, role, callback]);
 	}
+	
+	getLogs() {
+		return this.client.getChannelLogs.apply(this.client, reg(this, arguments));
+	}
 }

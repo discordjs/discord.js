@@ -49,4 +49,8 @@ export default class TextChannel extends ServerChannel{
 	sendFile() {
 		return this.client.sendFile.apply(this.client, reg(this, arguments));
 	}
+	
+	getLogs() {
+		return this.client.getChannelLogs.apply(this.client, reg(this, arguments));
+	}
 }

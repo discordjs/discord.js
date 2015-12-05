@@ -43,4 +43,8 @@ export default class PMChannel extends Channel {
 	sendFile() {
 		return this.client.sendFile.apply(this.client, reg(this, arguments));
 	}
+	
+	getLogs() {
+		return this.client.getChannelLogs.apply(this.client, reg(this, arguments));
+	}
 }
