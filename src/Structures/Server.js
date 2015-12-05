@@ -149,5 +149,45 @@ export default class Server extends Equality {
 	createRole() {
 		return this.client.createRole.apply(this.client, reg(this, arguments));
 	}
+	
+	banMember(user, tlength, callback) {
+		return this.client.banMember.apply(this.client, [user, this, tlength, callback]);
+	}
+	
+	banUser(user, tlength, callback) {
+		return this.client.banMember.apply(this.client, [user, this, tlength, callback]);
+	}
+	
+	ban(user, tlength, callback) {
+		return this.client.banMember.apply(this.client, [user, this, tlength, callback]);
+	}
+	
+	unbanMember(user, callback) {
+		return this.client.unbanMember.apply(this.client, [user, this, callback]);
+	}
+	
+	unbanUser(user, callback) {
+		return this.client.unbanMember.apply(this.client, [user, this, callback]);
+	}
+	
+	unban(user, callback) {
+		return this.client.unbanMember.apply(this.client, [user, this, callback]);
+	}
+	
+	kickMember(user, callback) {
+		return this.client.kickMember.apply(this.client, [user, this, callback]);
+	}
+	
+	kickUser(user, callback) {
+		return this.client.kickMember.apply(this.client, [user, this, callback]);
+	}
+	
+	kick(user, callback) {
+		return this.client.kickMember.apply(this.client, [user, this, callback]);
+	}
+	
+	getBans(callback) {
+		return this.client.getBans.apply(this.client, [this, callback]);
+	}
 
 }
