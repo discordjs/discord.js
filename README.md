@@ -4,8 +4,6 @@
   </a>
 </p>
 
-# Did v5.0.0 break your code? [Look here.](http://discordjs.readthedocs.org/en/latest/migrating.html)
-
 [![Build Status](https://travis-ci.org/hydrabolt/discord.js.svg)](https://travis-ci.org/hydrabolt/discord.js) [![Documentation Status](https://readthedocs.org/projects/discordjs/badge/?version=latest)](http://discordjs.readthedocs.org/en/latest/?badge=latest)
 
 [![NPM](https://nodei.co/npm/discord.js.png?downloads=true&stars=true)](https://nodei.co/npm/discord.js/)
@@ -13,9 +11,10 @@
 
 discord.js is a node module used as a way of interfacing with [Discord](https://discordapp.com/). It is a very useful module for creating bots.
 
-**The examples in the repo are in ES6**
-
 ### Installation
+
+**Requires node 0.12+**
+
 `npm install --save discord.js`
 
 ---
@@ -35,11 +34,11 @@ mybot.login("email", "password");
 ```
 ---
 
-### What's new in 5.0.0?
+### Contributing
 
-Stability in general! The API has been rewritten completely for much better stability, and it seems to have worked! There are now no random crashes and everything caches properly. The API is also a bit cleaner!
+Feel free to contribute! Just clone the repo and edit the files in the **src folder, not the lib folder.** 
 
-However, it is a breaking change if you are updating (potentially, basic code should be fine) you should look [here](http://discordjs.readthedocs.org/en/rewrite-docs/migrating.html) for help updating.
+Whenever you come to making a pull request, make sure it's to the *indev* branch and that you have built the lib files by running `grunt --dev`
 
 ---
 
