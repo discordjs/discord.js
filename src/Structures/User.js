@@ -61,11 +61,11 @@ export default class User extends Equality{
 		else
 			return false;
 	}
-	
+
 	sendMessage(){
 		return this.client.sendMessage.apply(this.client, reg(this, arguments));
 	}
-	
+
 	send() {
 		return this.client.sendMessage.apply(this.client, reg(this, arguments));
 	}
@@ -73,31 +73,31 @@ export default class User extends Equality{
 	sendTTSMessage(){
 		return this.client.sendTTSMessage.apply(this.client, reg(this, arguments));
 	}
-	
+
 	sendTTS() {
 		return this.client.sendTTSMessage.apply(this.client, reg(this, arguments));
 	}
-	
+
 	sendFile() {
 		return this.client.sendFile.apply(this.client, reg(this, arguments));
 	}
-	
+
 	startTyping() {
 		return this.client.startTyping.apply(this.client, reg(this, arguments));
 	}
-	
+
 	stopTyping() {
-		return this.client.startTyping.apply(this.client, reg(this, arguments));
+		return this.client.stopTyping.apply(this.client, reg(this, arguments));
 	}
-	
+
 	addTo(role, callback) {
 		return this.client.addMemberToRole.apply(this.client, [this, role, callback]);
 	}
-	
+
 	removeFrom(role, callback) {
 		return this.client.removeMemberFromRole.apply(this.client, [this, role, callback]);
 	}
-	
+
 	getLogs() {
 		return this.client.getChannelLogs.apply(this.client, reg(this, arguments));
 	}

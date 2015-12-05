@@ -18,4 +18,12 @@ export default class Invite {
     toString(){
         return `https://discord.gg/${this.code}`;
     }
+
+    delete(){
+        return this.client.deleteInvite.apply(this.client, reg(this, arguments));
+    }
+
+    join(){
+        return this.client.joinServer.apply(this.client, reg(this, arguments));
+    }
 }

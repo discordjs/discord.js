@@ -33,7 +33,7 @@ export default class TextChannel extends ServerChannel{
 	sendMessage(){
 		return this.client.sendMessage.apply(this.client, reg(this, arguments));
 	}
-	
+
 	send() {
 		return this.client.sendMessage.apply(this.client, reg(this, arguments));
 	}
@@ -41,24 +41,24 @@ export default class TextChannel extends ServerChannel{
 	sendTTSMessage(){
 		return this.client.sendTTSMessage.apply(this.client, reg(this, arguments));
 	}
-	
+
 	sendTTS() {
 		return this.client.sendTTSMessage.apply(this.client, reg(this, arguments));
 	}
-	
+
 	sendFile() {
 		return this.client.sendFile.apply(this.client, reg(this, arguments));
 	}
-	
+
 	getLogs() {
 		return this.client.getChannelLogs.apply(this.client, reg(this, arguments));
 	}
-	
+
 	startTyping() {
 		return this.client.startTyping.apply(this.client, reg(this, arguments));
 	}
-	
+
 	stopTyping() {
-		return this.client.startTyping.apply(this.client, reg(this, arguments));
+		return this.client.stopTyping.apply(this.client, reg(this, arguments));
 	}
 }

@@ -70,7 +70,7 @@ export default class Server extends Equality {
 			}
 		}
 	}
-	
+
 	details(user) {
 		user = this.client.internal.resolver.resolveUser(user);
 		if (user) {
@@ -79,7 +79,7 @@ export default class Server extends Equality {
 			return {};
 		}
 	}
-	
+
 	detailsOf(user) {
 		return this.details(user);
 	}
@@ -112,11 +112,11 @@ export default class Server extends Equality {
 	get defaultChannel() {
 		return this.channels.get("id", this.id);
 	}
-	
+
 	get generalChannel() {
 		return this.defaultChannel;
 	}
-	
+
 	get general() {
 		return this.defaultChannel;
 	}
@@ -141,63 +141,63 @@ export default class Server extends Equality {
 		}
 		return true;
 	}
-	
+
 	leave() {
 		return this.client.leaveServer.apply(this.client, reg(this, arguments));
 	}
-	
+
 	delete() {
 		return this.client.leaveServer.apply(this.client, reg(this, arguments));
 	}
-	
+
 	createInvite() {
 		return this.client.createInvite.apply(this.client, reg(this, arguments));
 	}
-	
+
 	createRole() {
 		return this.client.createRole.apply(this.client, reg(this, arguments));
 	}
-	
+
 	banMember(user, tlength, callback) {
 		return this.client.banMember.apply(this.client, [user, this, tlength, callback]);
 	}
-	
+
 	banUser(user, tlength, callback) {
-		return this.client.banMember.apply(this.client, [user, this, tlength, callback]);
+		return this.banMember;
 	}
-	
+
 	ban(user, tlength, callback) {
-		return this.client.banMember.apply(this.client, [user, this, tlength, callback]);
+		return this.banMember;
 	}
-	
+
 	unbanMember(user, callback) {
 		return this.client.unbanMember.apply(this.client, [user, this, callback]);
 	}
-	
+
 	unbanUser(user, callback) {
-		return this.client.unbanMember.apply(this.client, [user, this, callback]);
+		return this.unbanMember;
 	}
-	
+
 	unban(user, callback) {
-		return this.client.unbanMember.apply(this.client, [user, this, callback]);
+		return this.unbanMember;
 	}
-	
+
 	kickMember(user, callback) {
 		return this.client.kickMember.apply(this.client, [user, this, callback]);
 	}
-	
+
 	kickUser(user, callback) {
-		return this.client.kickMember.apply(this.client, [user, this, callback]);
+		return this.kickMember;
 	}
-	
+
 	kick(user, callback) {
-		return this.client.kickMember.apply(this.client, [user, this, callback]);
+		return this.kickMember;
 	}
-	
+
 	getBans(callback) {
 		return this.client.getBans.apply(this.client, [this, callback]);
 	}
-	
+
 	createChannel() {
 		return this.client.createChannel.apply(this.client, reg(this, arguments));
 	}

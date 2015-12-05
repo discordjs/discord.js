@@ -217,7 +217,7 @@ function sendFile() {
 
 function roleCreate() {
 	section("Role Management");
-	
+
 	client.createRole(server, {
 		name: "test role",
 		hoist: true,
@@ -226,25 +226,25 @@ function roleCreate() {
 			"kickMembers"
 		]
 	}).then(_role => {
-		
+
 		role = _role;
-		
+
 		pass("created role");
-		
+
 		if (role.name !== "test role" || role.color !== 0xFF0000 || !role.hoist){
 			err("bad role name, color or hoist");
 			return;
 		}
-		
+
 		if (!role.hasPermission("kickMembers")) {
 			err("role doesn't have kick members permission");
 			return;
 		}
 
 		pass("correct role metadata");
-		
+
 		joinInvite();
-		
+
 	}).catch(e => {
 		err("error creating role: " + e)
 	});
@@ -252,20 +252,20 @@ function roleCreate() {
 
 function joinInvite() {
 	section("Joining Servers");
-	
+
 	client.joinServer(process.env["ds_invite"]).then(srv => {
-		
+
 		invserver = srv;
 		pass("passed back server");
-		
+
 		if (srv.name !== "d.j s _ t s" || srv.region !== "london") {
 			err("incorrect server name or region");
 			return;
 		}
-		
+
 		pass("correct server name and region");
 		sendPM();
-		
+
 	}).catch(e => {
 		err("error joining server: " + e)
 	});
@@ -273,18 +273,18 @@ function joinInvite() {
 
 function sendPM() {
 	section("Sending PMs");
-	
+
 	client.sendMessage(invserver.owner, "hello, this is a test!").then(msg => {
-		
+
 		pass("sent PM");
-		
+
 		client.deleteMessage(msg).then(() => {
 			pass("deleted PM");
 			deleteAll();
 		}).catch(e => {
 			err("error deleting PM message: " + e);
 		});
-		
+
 	}).catch(e => {
 		err("error sending a PM: " + e)
 	})
@@ -299,11 +299,11 @@ function deleteAll() {
 		pass("deleted temporary channel");
 
 		client.leaveServer(server).then(() => {
-			
+
 			pass("deleted temporary server");
-			
+
 			exit();
-			
+
 		}).catch(e => {
 			err("error deleting server: " + e);
 		});
@@ -315,16 +315,16 @@ function deleteAll() {
 }
 
 function exit() {
-	
+
 	section("Exiting");
-	
+
 	client.logout().then(() => {
 		pass("logged out");
 		done();
 	}).catch(e => {
 		err("couldn't log out: " + e);
 	});
-	
+
 }
 
 function done() {

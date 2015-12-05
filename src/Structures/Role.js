@@ -131,32 +131,32 @@ export default class Role {
 		}
 		return "#"+val;
 	}
-	
+
 	delete() {
 		return this.client.deleteRole.apply(this.client, reg(this, arguments));
 	}
-	
+
 	edit() {
 		return this.client.updateRole.apply(this.client, reg(this, arguments));
 	}
-	
+
 	update() {
 		return this.client.updateRole.apply(this.client, reg(this, arguments));
 	}
-	
+
 	addMember(member, callback) {
 		return this.client.addMemberToRole.apply(this.client, [member, this, callback]);
 	}
-	
+
 	addUser(member, callback) {
-		return this.client.addMemberToRole.apply(this.client, [member, this, callback]);
+		return this.client.addUserToRole.apply(this.client, [member, this, callback]);
 	}
-	
+
 	removeMember(member, callback) {
 		return this.client.removeMemberFromRole.apply(this.client, [member, this, callback]);
 	}
-	
+
 	removeUser(member, callback) {
-		return this.client.removeMemberFromRole.apply(this.client, [member, this, callback]);
+		return this.client.removeUserFromRole.apply(this.client, [member, this, callback]);
 	}
 }
