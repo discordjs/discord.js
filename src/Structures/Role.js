@@ -1,5 +1,6 @@
 "use strict";
 import {Permissions} from "../Constants";
+import {reg} from "../Util/ArgumentRegulariser";
 /*
 
 example data
@@ -129,5 +130,33 @@ export default class Role {
 			val = "0" + val;
 		}
 		return "#"+val;
+	}
+	
+	delete() {
+		return this.client.deleteRole.apply(this.client, reg(this, arguments));
+	}
+	
+	edit() {
+		return this.client.updateRole.apply(this.client, reg(this, arguments));
+	}
+	
+	update() {
+		return this.client.updateRole.apply(this.client, reg(this, arguments));
+	}
+	
+	addMember(member, callback) {
+		return this.client.addMemberToRole.apply(this.client, [member, this, callback]);
+	}
+	
+	addUser(member, callback) {
+		return this.client.addMemberToRole.apply(this.client, [member, this, callback]);
+	}
+	
+	removeMember(member, callback) {
+		return this.client.removeMemberFromRole.apply(this.client, [member, this, callback]);
+	}
+	
+	removeUser(member, callback) {
+		return this.client.removeMemberFromRole.apply(this.client, [member, this, callback]);
 	}
 }

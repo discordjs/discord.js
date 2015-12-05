@@ -2,6 +2,7 @@
 
 import Equality from "../Util/Equality";
 import {Endpoints} from "../Constants";
+import {reg} from "../Util/ArgumentRegulariser";
 
 export default class User extends Equality{
 	constructor(data, client){
@@ -59,5 +60,21 @@ export default class User extends Equality{
 			);
 		else
 			return false;
+	}
+	
+	sendMessage(){
+		return this.client.sendMessage.apply(this.client, reg(this, arguments));
+	}
+	
+	send() {
+		return this.client.sendMessage.apply(this.client, reg(this, arguments));
+	}
+
+	sendTTSMessage(){
+		return this.client.sendTTSMessage.apply(this.client, reg(this, arguments));
+	}
+	
+	sendTTS() {
+		return this.client.sendTTSMessage.apply(this.client, reg(this, arguments));
 	}
 }
