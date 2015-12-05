@@ -588,6 +588,36 @@ export default class InternalClient {
 		.end();
 	}
 
+	//def addMemberToRole
+	addMemberToRoles(member, roles) {
+		member = this.resolver.resolveUser(member);
+
+		if (!member) {
+			return Promise.reject(new Error("member not in server"));
+		}
+
+		if (!Array.isArray(roles) || roles.length === 0) {
+			return Promise.reject(new Error("invalid array of roles"));
+		}
+
+		var roleIDS = roles[0].server.memberMap[member.id].roles.map(r => r.id);
+
+		for(var role of roles) {
+			if (!role.server.memberMap[member.id]) {
+				return Promise.reject(new Error("member not in server"));
+			}
+			roleIDS.concat(role.id);
+		}
+
+		return request
+		.patch(Endpoints.SERVER_MEMBERS(role.server.id) + "/" + member.id)
+		.set("authorization", this.token)
+		.send({
+			roles: roleIDS
+		})
+		.end();
+	}
+
 	//def removeMemberFromRole
 	removeMemberFromRole(member, role) {
 		member = this.resolver.resolveUser(member);
@@ -605,7 +635,7 @@ export default class InternalClient {
 		for (var item in roleIDS) {
 			if (roleIDS[item] === role.id) {
 				roleIDS.splice(item, 1);
-				//missing break?
+				break;
 			}
 		}
 
@@ -616,7 +646,41 @@ export default class InternalClient {
 			roles: roleIDS
 		})
 		.end();
+	}
 
+	//def removeMemberFromRoles
+	removeMemberFromRoles(member, roles) {
+		member = this.resolver.resolveUser(member);
+
+		if (!member) {
+			return Promise.reject(new Error("member not in server"));
+		}
+
+		if (!Array.isArray(roles) || roles.length === 0) {
+			return Promise.reject(new Error("invalid array of roles"));
+		}
+
+		var roleIDS = roles[0].server.memberMap[member.id].roles.map(r => r.id);
+
+		for(var role of roles) {
+			if (!role.server.memberMap[member.id]) {
+				return Promise.reject(new Error("member not in server"));
+			}
+			for (var item in roleIDS) {
+				if (roleIDS[item] === role.id) {
+					roleIDS.splice(item, 1);
+					break;
+				}
+			}
+		}
+
+		return request
+		.patch(Endpoints.SERVER_MEMBERS(role.server.id) + "/" + member.id)
+		.set("authorization", this.token)
+		.send({
+			roles: roleIDS
+		})
+		.end();
 	}
 
 	// def createInvite

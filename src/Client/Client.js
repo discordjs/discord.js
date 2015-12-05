@@ -301,6 +301,28 @@ export default class Client extends EventEmitter {
 		return this.removeMemberFromRole(member, role, callback);
 	}
 
+	//def addMemberToRole
+	addMemberToRoles(member, roles, callback = (/*err*/) => {}) {
+		return this.internal.addMemberToRoles(member, roles)
+		.then(callback, errCB(callback));
+	}
+
+	// def addUserToRole
+	addUserToRoles(member, roles, callback = (/*err*/) => {}) {
+		return this.addMemberToRoles(member, roles, callback);
+	}
+
+	// def removeMemberFromRole
+	removeMemberFromRoles(member, roles, callback = (/*err*/) => {}) {
+		return this.internal.removeMemberFromRoles(member, roles)
+		.then(callback, errCB(callback));
+	}
+
+	// def removeUserFromRole
+	removeUserFromRoles(member, roles, callback = (/*err*/) => {}) {
+		return this.removeMemberFromRoles(member, roles, callback);
+	}
+
 	// def createInvite
 	createInvite(chanServ, options, callback = (/*err, invite*/) => {}) {
 
