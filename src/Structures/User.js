@@ -77,4 +77,12 @@ export default class User extends Equality{
 	sendTTS() {
 		return this.client.sendTTSMessage.apply(this.client, reg(this, arguments));
 	}
+	
+	addTo(role, callback) {
+		return this.client.addMemberToRole.apply(this.client, [this, role, callback]);
+	}
+	
+	removeFrom(role, callback) {
+		return this.client.removeMemberFromRole.apply(this.client, [this, role, callback]);
+	}
 }

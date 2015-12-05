@@ -7,6 +7,7 @@ import User from "./User";
 import TextChannel from "./TextChannel";
 import VoiceChannel from "./VoiceChannel";
 import Role from "./Role";
+import {reg} from "../Util/ArgumentRegulariser";
 
 var strictKeys = [
 	"region", "ownerID", "name", "id", "icon", "afkTimeout", "afkChannelID"
@@ -131,6 +132,22 @@ export default class Server extends Equality {
 			return false;
 		}
 		return true;
+	}
+	
+	leave() {
+		return this.client.leaveServer.apply(this.client, reg(this, arguments));
+	}
+	
+	delete() {
+		return this.client.leaveServer.apply(this.client, reg(this, arguments));
+	}
+	
+	createInvite() {
+		return this.client.createInvite.apply(this.client, reg(this, arguments));
+	}
+	
+	createRole() {
+		return this.client.createRole.apply(this.client, reg(this, arguments));
 	}
 
 }
