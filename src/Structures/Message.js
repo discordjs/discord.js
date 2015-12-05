@@ -60,6 +60,10 @@ export default class Message extends Equality{
 	update(){
 		return this.client.updateMessage.apply(this.client, reg(this, arguments));
 	}
+	
+	edit() {
+		return this.client.updateMessage.apply(this.client, reg(this, arguments));
+	}
 
 	reply(){
 		return this.client.reply.apply(this.client, reg(this, arguments));

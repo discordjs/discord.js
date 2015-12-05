@@ -27,8 +27,16 @@ export default class PMChannel extends Channel {
 	sendMessage(){
 		return this.client.sendMessage.apply(this.client, reg(this, arguments));
 	}
+	
+	send() {
+		return this.client.sendMessage.apply(this.client, reg(this, arguments));
+	}
 
 	sendTTSMessage(){
+		return this.client.sendTTSMessage.apply(this.client, reg(this, arguments));
+	}
+	
+	sendTTS() {
 		return this.client.sendTTSMessage.apply(this.client, reg(this, arguments));
 	}
 }
