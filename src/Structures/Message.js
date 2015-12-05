@@ -40,6 +40,10 @@ export default class Message extends Equality{
 		});
 	}
 
+	get sender(){
+		return this.author;
+	}
+
 	isMentioned(user){
 		user = this.client.internal.resolver.resolveUser(user);
 		if (user) {
@@ -71,9 +75,5 @@ export default class Message extends Equality{
 
 	replyTTS(){
 		return this.client.replyTTS.apply(this.client, reg(this, arguments));
-	}
-
-	get sender(){
-		return this.author;
 	}
 }

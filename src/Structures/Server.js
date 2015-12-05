@@ -163,11 +163,11 @@ export default class Server extends Equality {
 	}
 
 	banUser(user, tlength, callback) {
-		return this.banMember;
+		return this.client.banMember.apply(this.client, [user, this, tlength, callback]);
 	}
 
 	ban(user, tlength, callback) {
-		return this.banMember;
+		return this.client.banMember.apply(this.client, [user, this, tlength, callback]);
 	}
 
 	unbanMember(user, callback) {
@@ -175,11 +175,11 @@ export default class Server extends Equality {
 	}
 
 	unbanUser(user, callback) {
-		return this.unbanMember;
+		return this.client.unbanMember.apply(this.client, [user, this, callback]);
 	}
 
 	unban(user, callback) {
-		return this.unbanMember;
+		return this.client.unbanMember.apply(this.client, [user, this, callback]);
 	}
 
 	kickMember(user, callback) {
@@ -187,15 +187,15 @@ export default class Server extends Equality {
 	}
 
 	kickUser(user, callback) {
-		return this.kickMember;
+		return this.client.kickMember.apply(this.client, [user, this, callback]);
 	}
 
 	kick(user, callback) {
-		return this.kickMember;
+		return this.client.kickMember.apply(this.client, [user, this, callback]);
 	}
 
-	getBans(callback) {
-		return this.client.getBans.apply(this.client, [this, callback]);
+	getBans() {
+		return this.client.getBans.apply(this.client, reg(this, arguments));
 	}
 
 	createChannel() {
