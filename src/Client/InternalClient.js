@@ -824,7 +824,7 @@ export default class InternalClient {
 	}
 
 	//def setTopic
-	setTopic(chann, topic = "") {
+	setChannelTopic(chann, topic = "") {
 		return this.resolver.resolveChannel(chann)
 		.then(channel =>
 			request

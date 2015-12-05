@@ -349,8 +349,8 @@ export default class Client extends EventEmitter {
 	}
 
 	// def setTopic
-	setTopic(channel, topic, callback = (/*err*/) => {}) {
-		return this.internal.setTopic(channel, topic)
+	setChannelTopic(channel, topic, callback = (/*err*/) => {}) {
+		return this.internal.setChannelTopic(channel, topic)
 		.then(callback, errCB(callback));
 	}
 

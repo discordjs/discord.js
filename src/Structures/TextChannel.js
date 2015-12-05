@@ -19,7 +19,7 @@ export default class TextChannel extends ServerChannel{
 	}
 
 	setTopic(){
-		return this.client.setTopic.apply(this.client, reg(this, arguments));
+		return this.client.setChannelTopic.apply(this.client, reg(this, arguments));
 	}
 
 	setNameAndTopic(){
