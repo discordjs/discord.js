@@ -9,15 +9,15 @@ var fs = require("fs");
 var passes = 0, fails = 0;
 
 function section(s) {
-	console.log("\n    " + s.yellow);
+	console.log("\n    " + s.yellow.bold.underline);
 }
 
 function pass(msg) {
-	console.log("      ✓ ".green + msg);
+	console.log("      ✓ ".green + msg.italic);
 }
 
 function err(msg) {
-	console.log("      ✗ ".red + msg);
+	console.log("      ✗ ".red + msg.italic);
 	process.exit(1);
 }
 
@@ -42,7 +42,7 @@ client.login(process.env["ds_email"], process.env["ds_password"]).then(token => 
 
 }).catch(e => err("error logging in: " + e));
 
-var server, channel, message;
+var server, channel, message, role, invserver;
 
 function makeServer() {
 
@@ -205,7 +205,7 @@ function sendFile() {
 
 		client.deleteMessage(file).then(() => {
 			pass("message deleted");
-			deleteAll();
+			roleCreate();
 		}).catch(e => {
 			err("error deleting message: " + e)
 		});
@@ -213,6 +213,81 @@ function sendFile() {
 	}).catch(e => {
 		err("error sending file: " + e);
 	});
+}
+
+function roleCreate() {
+	section("Role Management");
+	
+	client.createRole(server, {
+		name: "test role",
+		hoist: true,
+		color: 0xFF0000,
+		permissions: [
+			"kickMembers"
+		]
+	}).then(_role => {
+		
+		role = _role;
+		
+		pass("created role");
+		
+		if (role.name !== "test role" || role.color !== 0xFF0000 || !role.hoist){
+			err("bad role name, color or hoist");
+			return;
+		}
+		
+		if (!role.hasPermission("kickMembers")) {
+			err("role doesn't have kick members permission");
+			return;
+		}
+
+		pass("correct role metadata");
+		
+		joinInvite();
+		
+	}).catch(e => {
+		err("error creating role: " + e)
+	});
+}
+
+function joinInvite() {
+	section("Joining Servers");
+	
+	client.joinServer(process.env["ds_invite"]).then(srv => {
+		
+		invserver = srv;
+		pass("passed back server");
+		
+		if (srv.name !== "d.j s _ t s" || srv.region !== "london") {
+			err("incorrect server name or region");
+			return;
+		}
+		
+		pass("correct server name and region");
+		sendPM();
+		
+	}).catch(e => {
+		err("error joining server: " + e)
+	});
+}
+
+function sendPM() {
+	section("Sending PMs");
+	
+	client.sendMessage(invserver.owner, "hello, this is a test!").then(msg => {
+		
+		pass("sent PM");
+		
+		client.deleteMessage(msg).then(() => {
+			pass("deleted PM");
+			deleteAll();
+		}).catch(e => {
+			err("error deleting PM message: " + e);
+		});
+		
+	}).catch(e => {
+		err("error sending a PM: " + e)
+	})
 }
 
 function deleteAll() {
