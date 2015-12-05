@@ -12,7 +12,7 @@ try {
 export default class AudioEncoder {
 	constructor() {
 		if (opus) {
-			this.opus = new opus.OpusEncoder(48000, 1);
+			this.opus = new opus.OpusEncoder(48000, 2);
 		}
 		this.choice = false;
 	}
@@ -48,7 +48,7 @@ export default class AudioEncoder {
 				'-i', "-",
 				'-f', 's16le',
 				'-ar', '48000',
-				'-ac', 1,
+				'-ac', 2,
 				'pipe:1'
 			]);
 
@@ -58,12 +58,14 @@ export default class AudioEncoder {
 				callback(null, {
 					proc: enc,
 					stream: enc.stdout,
-					instream: stream
+					instream: stream,
+					channels : 2
 				});
 				resolve({
 					proc: enc,
 					stream: enc.stdout,
-					instream: stream
+					instream: stream,
+					channels : 2
 				});
 			});
 
@@ -86,18 +88,20 @@ export default class AudioEncoder {
 				'-i', file,
 				'-f', 's16le',
 				'-ar', '48000',
-				'-ac', 1,
+				'-ac', 2,
 				'pipe:1'
 			]);
 
 			enc.stdout.once("readable", function () {
 				callback(null, {
 					proc: enc,
-					stream: enc.stdout
+					stream: enc.stdout,
+					channels : 2
 				});
 				resolve({
 					proc: enc,
-					stream: enc.stdout
+					stream: enc.stdout,
+					channels : 2
 				});
 			});
 

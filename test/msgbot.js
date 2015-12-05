@@ -3,7 +3,7 @@
 
 var Discord = require("../");
 var client = new Discord.Client();
-var request = require("request");
+var request = require("superagent");
 
 client.on("ready", () => {
 	console.log("ready");
@@ -21,7 +21,9 @@ client.on("message", msg => {
 	if (msg.content.startsWith("$play")) {
 		var url = msg.content.split(" ")[1];
 
-		client.voiceConnection.playRawStream(request(url));
+		client.voiceConnection.playFile(url);
+
+		console.log(request.get(url).end());
 
 	}
 
