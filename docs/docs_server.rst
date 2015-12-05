@@ -89,6 +89,25 @@ rolesOfUser(user)
 
 Returns an array of the roles affecting a user server-wide.
 
+------
+
+detailsOfUser(user)
+~~~~~~~~~~~~~~~~~~~
+
+**Aliases** `detailsOf`
+
+Returns an object containing metadata of a user within the server, containing a structure similar to the following:
+
+.. code-block:: js
+
+	{
+		joinedAt : 1449339323747,
+		mute : false,
+		deaf : false
+	}
+
+----------
+
 leave()
 ~~~~~~~
 

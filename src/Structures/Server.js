@@ -71,7 +71,7 @@ export default class Server extends Equality {
 		}
 	}
 
-	details(user) {
+	detailsOf(user) {
 		user = this.client.internal.resolver.resolveUser(user);
 		if (user) {
 			return this.memberMap[user.id];
@@ -80,7 +80,7 @@ export default class Server extends Equality {
 		}
 	}
 
-	detailsOf(user) {
+	detailsOfUser(user) {
 		return this.details(user);
 	}
 
