@@ -36,5 +36,4 @@ build/Release
 node_modules
 test/auth.json
 examples/auth.json
-test/msgbot.js
 docs/_build

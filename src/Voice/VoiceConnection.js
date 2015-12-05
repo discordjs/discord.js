@@ -93,11 +93,10 @@ export default class VoiceConnection extends EventEmitter {
 		self.playingIntent = retStream;
 
 		function send() {
-
 			if (!self.playingIntent || !self.playing) {
 				self.setSpeaking(false);
 				retStream.emit("end");
-				self
+				console.log("ending 1");
 				return;
 			}
 			try {
@@ -108,6 +107,7 @@ export default class VoiceConnection extends EventEmitter {
 						if (onWarning) {
 								retStream.emit("end");
 								self.setSpeaking(false);
+								console.log("ending 2");
 								return;
 						  } else {
 								onWarning = true;
