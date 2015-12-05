@@ -877,6 +877,23 @@ export default class InternalClient {
 		);
 	}
 
+	//def setTopic
+	setChannelPosition(chann, position = 0) {
+		return this.resolver.resolveChannel(chann)
+		.then(channel =>
+			request
+			.patch(Endpoints.CHANNEL(channel.id))
+			.set("authorization", this.token)
+			.send({
+				name: channel.name,
+				position: position,
+				topic: channel.topic
+			})
+			.end()
+			.then(res => channel.position = res.body.position)
+		);
+	}
+
 	//def updateChannel
 	updateChannel(chann, data) {
 		return this.setChannelNameAndTopic(chann, data.name, data.topic);

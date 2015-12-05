@@ -72,4 +72,8 @@ export default class ServerChannel extends Channel{
 	setName(){
 		return this.client.setChannelName.apply(this.client, reg(this, arguments));
 	}
+
+	setPosition(){
+		return this.client.setChannelPosition.apply(this.client, reg(this, arguments));
+	}
 }

@@ -366,6 +366,12 @@ export default class Client extends EventEmitter {
 		.then(callback, errCB(callback));
 	}
 
+	//def setChannelPosition
+	setChannelPosition(channel, position, callback = (/*err*/) => {}) {
+		return this.internal.setChannelPosition(channel, position)
+		.then(callback, errCB(callback));
+	}
+
 	//def updateChannel
 	updateChannel(channel, data, callback = (/*err*/) => {}) {
 		return this.internal.updateChannel(channel, data)
