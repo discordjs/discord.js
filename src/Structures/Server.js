@@ -197,5 +197,9 @@ export default class Server extends Equality {
 	getBans(callback) {
 		return this.client.getBans.apply(this.client, [this, callback]);
 	}
+	
+	createChannel() {
+		return this.client.createChannel.apply(this.client, reg(this, arguments));
+	}
 
 }

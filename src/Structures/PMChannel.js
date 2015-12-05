@@ -44,6 +44,14 @@ export default class PMChannel extends Channel {
 		return this.client.sendFile.apply(this.client, reg(this, arguments));
 	}
 	
+	startTyping() {
+		return this.client.startTyping.apply(this.client, reg(this, arguments));
+	}
+	
+	stopTyping() {
+		return this.client.startTyping.apply(this.client, reg(this, arguments));
+	}
+	
 	getLogs() {
 		return this.client.getChannelLogs.apply(this.client, reg(this, arguments));
 	}

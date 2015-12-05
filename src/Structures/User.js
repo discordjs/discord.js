@@ -82,6 +82,14 @@ export default class User extends Equality{
 		return this.client.sendFile.apply(this.client, reg(this, arguments));
 	}
 	
+	startTyping() {
+		return this.client.startTyping.apply(this.client, reg(this, arguments));
+	}
+	
+	stopTyping() {
+		return this.client.startTyping.apply(this.client, reg(this, arguments));
+	}
+	
 	addTo(role, callback) {
 		return this.client.addMemberToRole.apply(this.client, [this, role, callback]);
 	}

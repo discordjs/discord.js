@@ -19,4 +19,6 @@ export default class Channel extends Equality {
 		return this.client.deleteChannel.apply(this.client, reg(this, arguments));
 	}
 
+	
+	
 }
