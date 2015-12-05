@@ -1040,7 +1040,8 @@ export default class InternalClient {
 				case PacketType.SERVER_CREATE:
 					var server = self.servers.get("id", data.id);
 					if (!server) {
-						self.servers.add(new Server(data, client));
+						server = new Server(data, client)
+						self.servers.add(server);
 						client.emit("serverCreated", server);
 					}
 					break;
