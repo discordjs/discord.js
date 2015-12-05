@@ -112,6 +112,10 @@ export default class Server extends Equality {
 	get defaultChannel() {
 		return this.channels.get("id", this.id);
 	}
+	
+	get generalChannel() {
+		return this.defaultChannel;
+	}
 
 	get owner() {
 		return this.members.get("id", this.ownerID);

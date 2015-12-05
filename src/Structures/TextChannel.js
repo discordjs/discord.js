@@ -45,4 +45,8 @@ export default class TextChannel extends ServerChannel{
 	sendTTS() {
 		return this.client.sendTTSMessage.apply(this.client, reg(this, arguments));
 	}
+	
+	sendFile() {
+		return this.client.sendFile.apply(this.client, reg(this, arguments));
+	}
 }
