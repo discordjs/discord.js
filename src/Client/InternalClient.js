@@ -1055,7 +1055,7 @@ export default class InternalClient {
 		};
 
 		this.websocket.onmessage = e => {
-			if (e.type === "Binary") {
+			if (e.data instanceof Buffer) {
 				if (!zlib) zlib = require("zlib");
 				e.data = zlib.inflateSync(e.data).toString();
 			}
