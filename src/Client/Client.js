@@ -15,7 +15,7 @@ export default class Client extends EventEmitter {
 		this class is an interface for the internal
 		client.
 	*/
-	constructor(options) {
+	constructor(options = {}) {
 		super();
 		this.options = options || {};
 		this.options.compress = options.compress || true;
@@ -69,6 +69,15 @@ export default class Client extends EventEmitter {
 		return this.internal.logout()
 		.then(callback, errCB(callback));
 	}
+
+	// def destroy
+	destroy(callback = (/*err*/) => { }) {
+		this.internal.logout()
+			.then(() => {
+				this.internal.disconnected(true);
+			});
+	}
+
 	// def sendMessage
 	sendMessage(where, content, options = {}, callback = (/*e, m*/) => {}) {
 		if (typeof options === "function") {

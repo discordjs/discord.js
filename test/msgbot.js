@@ -2,7 +2,7 @@
 /* global process */
 
 var Discord = require("../");
-var client = new Discord.Client();
+var client = new Discord.Client({autoRevive : true});
 var request = require("superagent");
 
 client.on("ready", () => {
@@ -10,8 +10,12 @@ client.on("ready", () => {
 
 	setTimeout(() => {
 		client.internal.websocket.close();
-	}, 3000);
+	}, 10000);
 
+});
+
+client.on("autoRevive", () => {
+	console.log("auto revived");
 });
 
 client.on("message", msg => {
@@ -21,6 +25,10 @@ client.on("message", msg => {
 
 	if (msg.content === "$bind") {
 		msg.channel.server.channels.get("type", "voice").join();
+	}
+
+	if (msg.content === "end") {
+		client.destroy();
 	}
 
 	if (msg.content.startsWith("$play")) {

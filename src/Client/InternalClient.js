@@ -62,6 +62,11 @@ function delay(ms) {
 
 export default class InternalClient {
 	constructor(discordClient) {
+		this.setup(discordClient);
+	}
+
+	setup(discordClient) {
+		discordClient = discordClient || this.client;
 		this.client = discordClient;
 		this.state = ConnectionState.IDLE;
 		this.websocket = null;
@@ -94,6 +99,20 @@ export default class InternalClient {
 				clearInterval(interval);
 			}
 		}
+	}
+
+	disconnected(forced = false){
+
+		this.cleanIntervals();
+
+		this.leaveVoiceChannel();
+
+		if(this.client.options.autoRevive && !forced){
+			this.setup();
+			this.login(this.email, this.password);
+		}
+
+		this.client.emit("disconnected");
 	}
 
 	get uptime() {
@@ -1028,11 +1047,7 @@ export default class InternalClient {
 		this.websocket.onclose = () => {
 			self.websocket = null;
 			self.state = ConnectionState.DISCONNECTED;
-			client.emit("disconnected");
-			self.cleanIntervals();
-			if(self.voiceConnection){
-				self.leaveVoiceChannel();
-			}
+			self.disconnected();
 		};
 
 		this.websocket.onerror = e => {
