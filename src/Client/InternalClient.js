@@ -107,7 +107,7 @@ export default class InternalClient {
 
 		this.leaveVoiceChannel();
 
-		if(this.client.options.autoRevive && !forced){
+		if(this.client.options.revive && !forced){
 			this.setup();
 			this.login(this.email, this.password);
 		}

@@ -2,15 +2,16 @@
 /* global process */
 
 var Discord = require("../");
-var client = new Discord.Client({autoRevive : true});
+var client = new Discord.Client({revive : true});
 var request = require("superagent");
 
 client.on("ready", () => {
 	console.log("ready");
 
 	setTimeout(() => {
-		client.internal.websocket.close();
-	}, 10000);
+		if(client.internal.websocket)
+			client.internal.websocket.close();
+	}, 5000);
 
 });
 
@@ -51,3 +52,7 @@ console.log("INIT");
 client.on("debug", console.log)
 
 client.login(process.env["ds_email"], process.env["ds_password"]).catch(console.log);
+
+
+var chan1, chan2;
+var msg1, msg2;
