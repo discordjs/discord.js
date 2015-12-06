@@ -302,14 +302,13 @@ export default class VoiceConnection extends EventEmitter {
 					case 2:
 						self.vWSData = data.d;
 
-						KAI = setInterval(() => {
+						self.KAI = KAI = self.client.internal.intervals.misc["voiceKAI"] = setInterval(() => {
 							if (vWS && vWS.readyState === WebSocket.OPEN)
 								vWS.send(JSON.stringify({
 									op: 3,
 									d: null
 								}));
 						}, data.d.heartbeat_interval);
-						self.KAI = KAI;
 
 						var udpPacket = new Buffer(70);
 						udpPacket.writeUIntBE(data.d.ssrc, 0, 4);

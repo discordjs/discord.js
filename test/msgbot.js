@@ -7,6 +7,11 @@ var request = require("superagent");
 
 client.on("ready", () => {
 	console.log("ready");
+
+	setTimeout(() => {
+		client.internal.websocket.close();
+	}, 3000);
+
 });
 
 client.on("message", msg => {
