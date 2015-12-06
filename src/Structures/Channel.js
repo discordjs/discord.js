@@ -12,7 +12,7 @@ export default class Channel extends Equality {
 	}
 
 	get isPrivate() {
-		return !!this.server;
+		return !this.server;
 	}
 
 	delete(){
