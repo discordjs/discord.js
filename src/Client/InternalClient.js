@@ -1030,6 +1030,9 @@ export default class InternalClient {
 			self.state = ConnectionState.DISCONNECTED;
 			client.emit("disconnected");
 			self.cleanIntervals();
+			if(self.voiceConnection){
+				self.leaveVoiceChannel();
+			}
 		};
 
 		this.websocket.onerror = e => {
