@@ -33,6 +33,8 @@ export default class Server extends Equality {
 		this.afkChannelID = data.afk_channel_id;
 		this.memberMap = {};
 
+		this.members.setHighPerformance();
+
 		var self = this;
 
 		data.roles.forEach((dataRole) => {
@@ -69,6 +71,8 @@ export default class Server extends Equality {
 				}
 			}
 		}
+
+		this.members.setNormalPerformance();
 	}
 
 	detailsOf(user) {

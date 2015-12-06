@@ -4,12 +4,23 @@ export default class Cache extends Array {
 	constructor(discrim, limit) {
 		super();
 		this.discrim = discrim || "id";
+		this.discrimCache = [];
+		this.highPerformance = false;
+	}
+
+	setHighPerformance() {
+		this.highPerformance = true;
+	}
+
+	setNormalPerformance() {
+		this.discrimCache = [];
+		this.highPerformance = false;
 	}
 
 	get(key, value) {
 		var found = null;
 		this.forEach((val, index, array) => {
-			if (val.hasOwnProperty(key) && val[key] == value) {
+			if (val[key] == value) {
 				found = val;
 				return;
 			}
@@ -34,19 +45,15 @@ export default class Cache extends Array {
 
 	add(data) {
 		var exit = false;
-		for (var item of this) {
-			if (item[this.discrim] === data[this.discrim]) {
-				exit = item;
-				break;
-			}
-		}
+		exit = ~this.discrimCache.indexOf(data[this.discrim]);
 		if (exit) {
-			return exit;
+			return data;
 		} else {
 			if (this.limit && this.length >= this.limit) {
 				this.splice(0, 1);
 			}
 			this.push(data);
+			this.discrimCache.push(data[this.discrim]);
 			return data;
 		}
 	}

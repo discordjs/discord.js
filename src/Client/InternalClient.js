@@ -1074,6 +1074,13 @@ export default class InternalClient {
 
 				case PacketType.READY:
 					var startTime = Date.now();
+					self.intervals.kai = setInterval(() => self.sendWS({ op: 1, d: Date.now() }), data.heartbeat_interval);
+
+					self.users.setHighPerformance();
+					self.servers.setHighPerformance();
+					self.channels.setHighPerformance();
+					self.private_channels.setHighPerformance();
+
 					self.user = self.users.add(new User(data.user, client));
 					data.guilds.forEach(server => {
 						self.servers.add(new Server(server, client));
@@ -1083,7 +1090,10 @@ export default class InternalClient {
 					});
 					self.state = ConnectionState.READY;
 
-					self.intervals.kai = setInterval(() => self.sendWS({ op: 1, d: Date.now() }), data.heartbeat_interval);
+					self.users.setNormalPerformance();
+					self.servers.setNormalPerformance();
+					self.channels.setNormalPerformance();
+					self.private_channels.setNormalPerformance();
 
 					client.emit("ready");
 					client.emit("debug", `ready packet took ${Date.now() - startTime}ms to process`);
