@@ -73,7 +73,7 @@ export default class VoiceConnection extends EventEmitter {
 		}
 	}
 
-	playStream(stream) {
+	playStream(stream, channels=2) {
 
 		var self = this;
 
@@ -93,21 +93,21 @@ export default class VoiceConnection extends EventEmitter {
 		self.playingIntent = retStream;
 
 		function send() {
-
 			if (!self.playingIntent || !self.playing) {
 				self.setSpeaking(false);
 				retStream.emit("end");
-				self
+				console.log("ending 1");
 				return;
 			}
 			try {
 
-					var buffer = stream.read(1920);
+					var buffer = stream.read(1920 * channels);
 
 					if (!buffer) {
 						if (onWarning) {
 								retStream.emit("end");
 								self.setSpeaking(false);
+								console.log("ending 2");
 								return;
 						  } else {
 								onWarning = true;
@@ -116,8 +116,8 @@ export default class VoiceConnection extends EventEmitter {
 						}
 					 }
 
-					 if(buffer.length !== 1920) {
-						var newBuffer = new Buffer(1920).fill(0);
+					 if(buffer.length !== 1920 * channels) {
+						var newBuffer = new Buffer(1920 * channels).fill(0);
 						buffer.copy(newBuffer);
 						buffer = newBuffer;
 					 }
@@ -213,7 +213,7 @@ export default class VoiceConnection extends EventEmitter {
 				.catch(error)
 				.then(data => {
 					self.streamProc = data.proc;
-					var intent = self.playStream(data.stream);
+					var intent = self.playStream(data.stream, 2);
 					resolve(intent);
 					callback(null, intent);
 
