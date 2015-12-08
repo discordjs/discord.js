@@ -18,12 +18,13 @@ var major = parseInt(v[0]),
 	patch = parseInt(v[2]);
 
 if((major == 0 && minor < 12) || (major == 0 && minor == 12 && patch < 7)) {
-  console.log("discord.js doesn't support node versions less than 0.12.7.");
-	console.log("If you /really/ want to run it on this node (" +
-		process.version + "), then remove the check from entrypoint.js.");
-	console.log("However, this is unsupported and WILL cause problems.");
-	console.log("Exiting now.");
-	process.exit(1);
+	if(!env.OVERRIDE_DISCORD_MIN_VERSION) {
+		throw new Error(
+			`discord.js doesn't support node versions less than 0.12.7.
+			If you /really/ want to run it on this node (${process.version}), then set OVERRIDE_DISCORD_MIN_VERSION as enviroment variable.
+			However, this is unsupported and WILL cause problems`.replace(/\t/g, '')
+		)
+	}
 }
 
 // at the moment no node version has full ES6 support
