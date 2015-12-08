@@ -18,7 +18,7 @@ var major = parseInt(v[0]),
 	patch = parseInt(v[2]);
 
 if((major == 0 && minor < 12) || (major == 0 && minor == 12 && patch < 7)) {
-	if(!env.OVERRIDE_DISCORD_MIN_VERSION) {
+	if(!process.env.OVERRIDE_DISCORD_MIN_VERSION) {
 		throw new Error(
 			`discord.js doesn't support node versions less than 0.12.7.
 			If you /really/ want to run it on this node (${process.version}), then set OVERRIDE_DISCORD_MIN_VERSION as enviroment variable.
