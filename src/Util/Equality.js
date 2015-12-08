@@ -19,10 +19,7 @@ export default class Equality{
 	}
 
 	equals(object){
-		if(object && object[this.eqDiscriminator] == this[this.eqDiscriminator]){
-			return true;
-		}
-		return false;
+		return object && object[this.eqDiscriminator] === this[this.eqDiscriminator];
 	}
 
 	equalsStrict(object){
