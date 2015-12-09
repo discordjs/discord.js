@@ -42,7 +42,7 @@ client.on("message", msg => {
 	}
 
 	if (msg.content === "$$$") {
-		client.sendMessage(msg.sender, "hi!");
+		client.reply(msg, "hi!");
 	}
 
 });
