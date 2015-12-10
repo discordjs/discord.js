@@ -24,24 +24,6 @@ import VoiceConnection from "../Voice/VoiceConnection";
 var zlib;
 var libVersion = require('../../package.json').version;
 
-//todo: move this somewhere else
-var originalEnd = request.Request.prototype.end;
-request.Request.prototype.end = function(callback) {
-	this.set('User-Agent', 'DiscordBot (https://github.com/hydrabolt/discord.js, ' + libVersion + ')');
-	return new Promise((resolve, reject) => {
-		originalEnd.call(this, (err, response) => {
-			if (callback) {
-				callback(err, response);
-			}
-
-			if (err) {
-				return reject(err);
-			}
-			resolve(response);
-		});
-	});
-};
-
 function waitFor(condition, value = condition, interval = 20) {
 	return new Promise(resolve => {
 		var int = setInterval(() => {
@@ -67,11 +49,37 @@ export default class InternalClient {
 		this.setup(discordClient);
 	}
 
+	apiRequest(method, url, useAuth, data, file) {
+		let ret = request[method](url);
+		if(useAuth) {
+			ret.set("authorization", this.token);
+		}
+		if(data) {
+			ret.send(data);
+		}
+		if(file) {
+			ret.attach("file", file.file, file.name);
+		}
+		ret.set('User-Agent', this.userAgentInfo.full);
+		return new Promise((resolve, reject) => {
+			ret.end((error, data) => {
+				if(error) {
+					return reject(error);
+				}
+				resolve(data.body);
+			});
+		});
+	}
+
 	setup(discordClient) {
 		discordClient = discordClient || this.client;
 		this.client = discordClient;
 		this.state = ConnectionState.IDLE;
 		this.websocket = null;
+		this.userAgent = {
+			url: 'https://github.com/hydrabolt/discord.js',
+			version: require('../../package.json').version
+		};
 
 		if (this.client.options.compress) {
 			zlib = require("zlib");
@@ -119,6 +127,15 @@ export default class InternalClient {
 
 	get uptime() {
 		return (this.readyTime ? Date.now() - this.readyTime : null);
+	}
+
+	set userAgent(info) {
+		info.full = `DiscordBot (${info.url}, ${info.version})`;
+		this.userAgentInfo = info;
+	}
+
+	get userAgent() {
+		return this.userAgentInfo;
 	}
 
 	//def leaveVoiceChannel
@@ -201,14 +218,10 @@ export default class InternalClient {
 	createServer(name, region = "london") {
 		name = this.resolver.resolveString(name);
 
-		return request
-		.post(Endpoints.SERVERS)
-		.set("authorization", this.token)
-		.send({ name, region })
-		.end()
+		return this.apiRequest('post', Endpoints.SERVERS, true, { name, region })
 		.then(res => {
 			// valid server, wait until it is cached
-			return waitFor(() => this.servers.get("id", res.body.id));
+			return waitFor(() => this.servers.get("id", res.id));
 		});
 	}
 
@@ -218,13 +231,10 @@ export default class InternalClient {
 		if(!invite) {
 			return Promise.reject(new Error("Not a valid invite"));
 		}
-		return request
-		.post(Endpoints.INVITE(invite))
-		.set("authorization", this.token)
-		.end()
+		return this.apiRequest("post", Endpoints.INVITE(invite), true)
 		.then(res => {
 			// valid server, wait until it is received via ws and cached
-			return waitFor(() => this.servers.get("id", res.body.guild.id));
+			return waitFor(() => this.servers.get("id", res.guild.id));
 		});
 
 	}
@@ -236,10 +246,7 @@ export default class InternalClient {
 			return Promise.reject(new Error("server did not resolve"));
 		}
 
-		return request
-		.del(Endpoints.SERVER(server.id))
-		.set("authorization", this.token)
-		.end()
+		return this.apiRequest("del", Endpoints.SERVER(server.id), true)
 		.then(() => {
 			// remove channels of server then the server
 			for (var chan of server.channels) {
@@ -259,15 +266,12 @@ export default class InternalClient {
 
 		this.state = ConnectionState.LOGGING_IN;
 
-		return request
-		.post(Endpoints.LOGIN)
-		.send({
+		return this.apiRequest("post", Endpoints.LOGIN, false, {
 			email,
 			password
 		})
-		.end()
 		.then(res => {
-			var token = res.body.token;
+			var token = res.token;
 			this.state = ConnectionState.LOGGED_IN;
 			this.token = token;
 			this.email = email;
@@ -295,10 +299,7 @@ export default class InternalClient {
 			return Promise.reject(new Error("Client is not logged in!"));
 		}
 
-		return request
-		.post(Endpoints.LOGOUT)
-		.set("authorization", this.token)
-		.end()
+		return this.apiRequest("post", Endpoints.LOGOUT, true)
 		.then(() => {
 			if (this.websocket) {
 				this.websocket.close();
@@ -318,25 +319,18 @@ export default class InternalClient {
 			return Promise.reject(new Error("Unable to resolve resUser to a User"));
 		}
 				// start the PM
-		return request
-		.post(`${Endpoints.USER_CHANNELS(user.id) }`)
-		.set("authorization", this.token)
-		.send({
+		return this.apiRequest("post", Endpoints.USER_CHANNELS(user.id), true, {
 			recipient_id: user.id
 		})
-		.end()
 		.then(res => {
-			return this.private_channels.add(new PMChannel(res.body, this.client));
+			return this.private_channels.add(new PMChannel(res, this.client));
 		});
 	}
 
 	// def getGateway
 	getGateway() {
-		return request
-		.get(Endpoints.GATEWAY)
-		.set("authorization", this.token)
-		.end()
-		.then(res => res.body.url);
+		return this.apiRequest("get", Endpoints.GATEWAY, true)
+		.then(res => res.url);
 	}
 
 	// def sendMessage
@@ -348,17 +342,13 @@ export default class InternalClient {
 			var content = this.resolver.resolveString(_content);
 			var mentions = this.resolver.resolveMentions(content);
 
-			return request
-			.post(Endpoints.CHANNEL_MESSAGES(destination.id))
-			.set("authorization", this.token)
-			.send({
+			return this.apiRequest("post", Endpoints.CHANNEL_MESSAGES(destination.id), true, {
 				content: content,
 				mentions: mentions,
 				tts: options.tts
 			})
-			.end()
 			.then(res =>
-				destination.messages.add(new Message(res.body, destination, this.client))
+				destination.messages.add(new Message(res, destination, this.client))
 			);
 		});
 
@@ -373,10 +363,7 @@ export default class InternalClient {
 
 		var chain = options.wait ? delay(options.wait) : Promise.resolve();
 		return chain.then(() =>
-			request
-			.del(Endpoints.CHANNEL_MESSAGE(message.channel.id, message.id))
-			.set("authorization", this.token)
-			.end()
+			this.apiRequest("del", Endpoints.CHANNEL_MESSAGE(message.channel.id, message.id), true)
 		)
 		.then(() => message.channel.messages.remove(message));
 	}
@@ -393,18 +380,19 @@ export default class InternalClient {
 		var content = this.resolver.resolveString(_content);
 		var mentions = this.resolver.resolveMentions(content);
 
-		return request
-		.patch(Endpoints.CHANNEL_MESSAGE(message.channel.id, message.id))
-		.set("authorization", this.token)
-		.send({
-			content: content,
-			tts: options.tts,
-			mentions: mentions
-		})
-		.end()
+		return this.apiRequest(
+			"patch",
+			Endpoints.CHANNEL_MESSAGE(message.channel.id, message.id),
+			true,
+			{
+				content: content,
+				tts: options.tts,
+				mentions: mentions
+			}
+		)
 		.then(res => message.channel.messages.update(
 			message,
-			new Message(res.body, message.channel, this.client)
+			new Message(res, message.channel, this.client)
 		));
 	}
 
@@ -412,12 +400,11 @@ export default class InternalClient {
 	sendFile(where, _file, name = "image.png") {
 		return this.resolver.resolveChannel(where)
 		.then(channel =>
-			request
-			.post(Endpoints.CHANNEL_MESSAGES(channel.id))
-			.set("authorization", this.token)
-			.attach("file", this.resolver.resolveFile(_file), name)
-			.end()
-			.then(res => channel.messages.add(new Message(res.body, channel, this.client)))
+			this.apiRequest("post", Endpoints.CHANNEL_MESSAGES(channel.id), true, null, {
+				name,
+				file: this.resolver.resolveFile(_file)
+			})
+			.then(res => channel.messages.add(new Message(res, channel, this.client)))
 		);
 	}
 
@@ -439,11 +426,12 @@ export default class InternalClient {
 				}
 			}
 
-			return request
-			.get(Endpoints.CHANNEL_MESSAGES(channel.id) + "?" + qs.stringify(qsObject))
-			.set("authorization", this.token)
-			.end()
-			.then(res => res.body.map(
+			return this.apiRequest(
+				"get",
+				`Endpoints.CHANNEL_MESSAGES(channel.id)?${qs.stringify(qsObject)}`,
+				true
+			)
+			.then(res => res.map(
 				msg => channel.messages.add(new Message(msg, channel, this.client))
 			));
 		});
@@ -453,12 +441,9 @@ export default class InternalClient {
 	getBans(server) {
 		server = this.resolver.resolveServer(server);
 
-		return request
-		.get(`${Endpoints.SERVER_BANS(server.id) }`)
-		.set("authorization", this.token)
-		.end()
+		return this.apiRequest("get", Endpoints.SERVER_BANS(server.id), true)
 		.then(res => {
-			res.body.map(ban => {
+			res.map(ban => {
 				return this.users.add(new User(ban.user, this.client));
 			});
 		});
@@ -469,20 +454,16 @@ export default class InternalClient {
 
 		server = this.resolver.resolveServer(server);
 
-		return request
-		.post(Endpoints.SERVER_CHANNELS(server.id))
-		.set("authorization", this.token)
-		.send({
+		return this.apiRequest("post", Endpoints.SERVER_CHANNELS(server.id), true, {
 			name,
 			type
 		})
-		.end()
 		.then(res => {
 			var channel;
-			if (res.body.type === "text") {
-				channel = new TextChannel(res.body, this.client, server);
-			}else{
-				channel = new VoiceChannel(res.body, this.client, server);
+			if (res.type === "text") {
+				channel = new TextChannel(res, this.client, server);
+			} else {
+				channel = new VoiceChannel(res, this.client, server);
 			}
 			return server.channels.add(this.channels.add(channel));
 		});
@@ -493,17 +474,12 @@ export default class InternalClient {
 
 		return this.resolver.resolveChannel(_channel)
 		.then(channel =>
-			request
-			.del(Endpoints.CHANNEL(channel.id))
-			.set("authorization", this.token)
-			.end()
+			this.apiRequest("del", Endpoints.CHANNEL(channel.id), true)
 			.then(() => {
 				channel.server.channels.remove(channel);
 				this.channels.remove(channel);
-			}), error => {
-			error.message = "Couldn't resolve to channel - " + error.toString();
-			throw error;
-		});
+			})
+		);
 	}
 
 	// def banMember
@@ -511,10 +487,11 @@ export default class InternalClient {
 		user = this.resolver.resolveUser(user);
 		server = this.resolver.resolveServer(server);
 
-		return request
-		.put(`${Endpoints.SERVER_BANS(server.id)}/${user.id}?delete-message-days=${length}`)
-		.set("authorization", this.token)
-		.end();//will expose api result, probably not bad tho
+		return this.apiRequest(
+			"put",
+			`${Endpoints.SERVER_BANS(server.id)}/${user.id}?delete-message-days=${length}`,
+			true
+		);
 	}
 
 	// def unbanMember
@@ -523,10 +500,7 @@ export default class InternalClient {
 		server = this.resolver.resolveServer(server);
 		user = this.resolver.resolveUser(user);
 
-		return request
-		.del(`${Endpoints.SERVER_BANS(server.id) }/${user.id}`)
-		.set("authorization", this.token)
-		.end();//will expose api result, probably not bad tho
+		return this.apiRequest("del", `${Endpoints.SERVER_BANS(server.id)}/${user.id}`, true)
 	}
 
 	// def kickMember
@@ -534,28 +508,21 @@ export default class InternalClient {
 		user = this.resolver.resolveUser(user);
 		server = this.resolver.resolveServer(server);
 
-		return request
-		.del(`${Endpoints.SERVER_MEMBERS(server.id) }/${user.id}`)
-		.set("authorization", this.token)
-		.end();
+		return this.apiRequest("del", `${Endpoints.SERVER_MEMBERS(server.id) }/${user.id}`, true);
 	}
 
 	// def createRole
 	createRole(server, data) {
 		server = this.resolver.resolveServer(server);
 
-		return request
-		.post(Endpoints.SERVER_ROLES(server.id))
-		.set("authorization", this.token)
-		.end()
+		return this.apiRequest("post", Endpoints.SERVER_ROLES(server.id), true)
 		.then(res => {
-			var role = server.roles.add(new Role(res.body, server, this.client));
+			var role = server.roles.add(new Role(res, server, this.client));
 
 			if (data) {
 				return this.updateRole(role, data);
 			}
 			return role;
-
 		});
 	}
 	// def updateRole
@@ -581,22 +548,15 @@ export default class InternalClient {
 			}
 		}
 
-		return request
-		.patch(Endpoints.SERVER_ROLES(server.id) + "/" + role.id)
-		.set("authorization", this.token)
-		.send(newData)
-		.end()
+		return this.apiRequest("patch", `${Endpoints.SERVER_ROLES(server.id)}/${role.id}`, true, newData)
 		.then(res => {
-			return server.roles.update(role, new Role(res.body, server, this.client));
+			return server.roles.update(role, new Role(res, server, this.client));
 		});
 	}
 
 	// def deleteRole
 	deleteRole(role) {
-		return request
-		.del(Endpoints.SERVER_ROLES(role.server.id) + "/" + role.id)
-		.set("authorization", this.token)
-		.end();
+		return this.apiRequest("del", `${Endpoints.SERVER_ROLES(role.server.id)}/${role.id}`, true)
 	}
 
 	//def addMemberToRole
@@ -613,13 +573,14 @@ export default class InternalClient {
 
 		var roleIDS = role.server.memberMap[member.id].roles.map(r => r.id).concat(role.id);
 
-		return request
-		.patch(Endpoints.SERVER_MEMBERS(role.server.id) + "/" + member.id)
-		.set("authorization", this.token)
-		.send({
-			roles: roleIDS
-		})
-		.end();
+		return this.apiRequest(
+			"patch",
+			`${Endpoints.SERVER_MEMBERS(role.server.id)}/${member.id}`,
+			true,
+			{
+				roles: roleIDS
+			}
+		);
 	}
 
 	//def addMemberToRole
@@ -643,13 +604,14 @@ export default class InternalClient {
 			roleIDS.concat(role.id);
 		}
 
-		return request
-		.patch(Endpoints.SERVER_MEMBERS(role.server.id) + "/" + member.id)
-		.set("authorization", this.token)
-		.send({
-			roles: roleIDS
-		})
-		.end();
+		return this.apiRequest(
+			"patch",
+			`${Endpoints.SERVER_MEMBERS(role.server.id)}/${member.id}`,
+			true,
+			{
+				roles: roleIDS
+			}
+		);
 	}
 
 	//def removeMemberFromRole
@@ -673,13 +635,14 @@ export default class InternalClient {
 			}
 		}
 
-		return request
-		.patch(Endpoints.SERVER_MEMBERS(role.server.id) + "/" + member.id)
-		.set("authorization", this.token)
-		.send({
-			roles: roleIDS
-		})
-		.end();
+		return this.apiRequest(
+			"patch",
+			`${Endpoints.SERVER_MEMBERS(role.server.id)}/${member.id}`,
+			true,
+			{
+				roles: roleIDS
+			}
+		);
 	}
 
 	//def removeMemberFromRoles
@@ -708,13 +671,14 @@ export default class InternalClient {
 			}
 		}
 
-		return request
-		.patch(Endpoints.SERVER_MEMBERS(role.server.id) + "/" + member.id)
-		.set("authorization", this.token)
-		.send({
-			roles: roleIDS
-		})
-		.end();
+		return this.apiRequest(
+			"patch",
+			`${Endpoints.SERVER_MEMBERS(role.server.id)}/${member.id}`,
+			true,
+			{
+				roles: roleIDS
+			}
+		);
 	}
 
 	// def createInvite
@@ -749,12 +713,8 @@ export default class InternalClient {
 			epoint = Endpoints.SERVER_INVITES(chanServ.id);
 		}
 
-		return request
-		.post(epoint)
-		.set("authorization", this.token)
-		.send(options)
-		.end()
-		.then(res => new Invite(res.body, this.channels.get("id", res.body.channel.id), this.client));
+		return this.apiRequest("post", epoint, true, options)
+		.then(res => new Invite(res, this.channels.get("id", res.channel.id), this.client));
 	}
 
 	//def deleteInvite
@@ -764,10 +724,7 @@ export default class InternalClient {
 		if(!invite) {
 			throw new Error("Not a valid invite");
 		}
-		return request
-		.del(Endpoints.INVITE(invite))
-		.set("authorization", this.token)
-		.end();
+		return this.apiRequest("del", Endpoints.INVITE(invite), true);
 	}
 
 	//def overwritePermissions
@@ -812,11 +769,12 @@ export default class InternalClient {
 				}
 			}
 
-			return request
-			.put(Endpoints.CHANNEL_PERMISSIONS(channel.id) + "/" + data.id)
-			.set("authorization", this.token)
-			.send(data)
-			.end();
+			return this.apiRequest(
+				"put",
+				`${Endpoints.CHANNEL_PERMISSIONS(channel.id)}/${data.id}`,
+				true,
+				data
+			);
 		});
 	}
 
@@ -852,10 +810,7 @@ export default class InternalClient {
 	//def sendTyping
 	sendTyping(channel) {
 		return this.resolver.resolveChannel(channel).then(channel =>
-			request
-			.post(Endpoints.CHANNEL(channel.id) + "/typing")
-			.set("authorization", this.token)
-			.end()
+			this.apiRequest("post", Endpoints.CHANNEL(channel.id) + "/typing", true)
 		);
 	}
 
@@ -886,7 +841,7 @@ export default class InternalClient {
 		.then(channel => {
 
 			if(!this.intervals.typing[channel.id]){
-				// typing interval doesn't exist
+				// typing interval doesn"t exist
 				throw new Error("Not typing in that channel");
 			}
 
@@ -898,17 +853,13 @@ export default class InternalClient {
 
 	//def updateDetails
 	updateDetails(data) {
-		return request
-		.patch(Endpoints.ME)
-		.set("authorization", this.token)
-		.send({
+		return this.apiRequest("patch", Endpoints.ME, true, {
 			avatar: this.resolver.resolveToBase64(data.avatar) || this.user.avatar,
-			email : data.email || this.email,
-			new_password : data.newPassword || null,
-			password : data.password || this.password,
-			username : data.username || this.user.username
-		})
-		.end();
+			email: data.email || this.email,
+			new_password: data.newPassword || null,
+			password: data.password || this.password,
+			username: data.username || this.user.username
+		});
 	}
 
 	//def setAvatar
@@ -925,16 +876,12 @@ export default class InternalClient {
 	setChannelTopic(chann, topic = "") {
 		return this.resolver.resolveChannel(chann)
 		.then(channel =>
-			request
-			.patch(Endpoints.CHANNEL(channel.id))
-			.set("authorization", this.token)
-			.send({
+			this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
 				name: channel.name,
 				position: channel.position,
 				topic: topic
 			})
-			.end()
-			.then(res => channel.topic = res.body.topic)
+			.then(res => channel.topic = res.topic)
 		);
 	}
 
@@ -942,16 +889,12 @@ export default class InternalClient {
 	setChannelName(chann, name = "discordjs_is_the_best") {
 		return this.resolver.resolveChannel(chann)
 		.then(channel =>
-			request
-			.patch(Endpoints.CHANNEL(channel.id))
-			.set("authorization", this.token)
-			.send({
+			this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
 				name: name,
 				position: channel.position,
 				topic: channel.topic
 			})
-			.end()
-			.then(res => channel.name = res.body.name)
+			.then(res => channel.name = res.name)
 		);
 	}
 
@@ -959,18 +902,14 @@ export default class InternalClient {
 	setChannelNameAndTopic(chann, name = "discordjs_is_the_best", topic = "") {
 		return this.resolver.resolveChannel(chann)
 		.then(channel =>
-			request
-			.patch(Endpoints.CHANNEL(channel.id))
-			.set("authorization", this.token)
-			.send({
+			this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
 				name: name,
 				position: channel.position,
 				topic: topic
 			})
-			.end()
 			.then(res => {
-				channel.name = res.body.name;
-				channel.topic = res.body.topic;
+				channel.name = res.name;
+				channel.topic = res.topic;
 			})
 		);
 	}
@@ -979,16 +918,12 @@ export default class InternalClient {
 	setChannelPosition(chann, position = 0) {
 		return this.resolver.resolveChannel(chann)
 		.then(channel =>
-			request
-			.patch(Endpoints.CHANNEL(channel.id))
-			.set("authorization", this.token)
-			.send({
+			this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
 				name: channel.name,
 				position: position,
 				topic: channel.topic
 			})
-			.end()
-			.then(res => channel.position = res.body.position)
+			.then(res => channel.position = res.position)
 		);
 	}
 
@@ -1005,10 +940,7 @@ export default class InternalClient {
 			Promise.reject(new Error("Message does not exist"));
 		}
 
-		return request
-		.post(Endpoints.CHANNEL_MESSAGE(msg.channel.id, msg.id) + "/ack")
-		.set("authorization", this.token)
-		.end();
+		return this.apiRequest("post", Endpoints.CHANNEL_MESSAGE(msg.channel.id, msg.id) + "/ack", true);
 	}
 
 	sendWS(object) {
