@@ -24,6 +24,7 @@ export default class Client extends EventEmitter {
 		this.internal = new InternalClient(this);
 	}
 
+
 	get users() {
 		return this.internal.users;
 	}
@@ -54,6 +55,14 @@ export default class Client extends EventEmitter {
 
 	get user() {
 		return this.internal.user;
+	}
+
+	get userAgent() {
+		return this.internal.userAgent;
+	}
+
+	set userAgent(userAgent) {
+		this.internal.userAgent = userAgent;
 	}
 
 	// def login
