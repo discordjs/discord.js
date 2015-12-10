@@ -4,28 +4,18 @@ export default class Cache extends Array {
 	constructor(discrim, limit) {
 		super();
 		this.discrim = discrim || "id";
-		this.discrimCache = [];
-		this.highPerformance = false;
-	}
-
-	setHighPerformance() {
-		this.highPerformance = true;
-	}
-
-	setNormalPerformance() {
-		this.discrimCache = [];
-		this.highPerformance = false;
+		this.discrimCache = {};
 	}
 
 	get(key, value) {
-		var found = null;
-		this.forEach((val, index, array) => {
-			if (val[key] == value) {
-				found = val;
-				return;
-			}
-		});
-		return found;
+		if (key === this.discrim)
+			return this.discrimCache[value] || null;
+
+		var l = this.length;
+		for (var i = 0; i < l; i++)
+			if (this[i][key] == value)
+				return this[i];
+		return null;
 	}
 
 	has(object) {
@@ -44,18 +34,16 @@ export default class Cache extends Array {
 	}
 
 	add(data) {
-		var exit = false;
-		exit = ~this.discrimCache.indexOf(data[this.discrim]);
-		if (exit) {
-			return data;
-		} else {
-			if (this.limit && this.length >= this.limit) {
-				this.splice(0, 1);
-			}
-			this.push(data);
-			this.discrimCache.push(data[this.discrim]);
-			return data;
+		var cacheKey = this.discrim === "id" ? data.id : data[this.discrim];
+		if (this.discrimCache[cacheKey]) {
+			return this.discrimCache[cacheKey];
 		}
+		if (this.limit && this.length >= this.limit) {
+			this.splice(0, 1);
+		}
+		this.push(data);
+		this.discrimCache[cacheKey] = data;
+		return data;
 	}
 
 	update(old, data) {
@@ -63,6 +51,7 @@ export default class Cache extends Array {
 		if (item) {
 			var index = this.indexOf(item);
 			this[index] = data;
+			this.discrimCache[data[this.discrim]] = data;
 			return this[index];
 		} else {
 			return false;
@@ -74,6 +63,7 @@ export default class Cache extends Array {
 	}
 
 	remove(data) {
+		delete this.discrimCache[data[this.discrim]];
 		var index = this.indexOf(data);
 		if (~index) {
 			this.splice(index, 1);
