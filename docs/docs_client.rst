@@ -52,6 +52,16 @@ user
 
 A User_ object representing the logged in client's user.
 
+userAgent
+~~~~~~~~~
+
+An object containing `url`, `version` and `full`.
+Setting this property allows the discord developers to keep track of active bots,
+it defaults to the discord.js git repo and the current version of the package.
+`url` should be the repository/homepage of the creator.
+`version` should be the version of your bot.
+`full` is read only and will be automatically generated upon setting.
+
 -----
 
 Functions
@@ -299,14 +309,14 @@ Sets the Discord Status of the Client
 - **game** - `String/Number`, ID of Discord Game being played
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
-    
+
 setStatusIdle()
 ~~~~~~~~~~~~~~~
 
 **Alias:** `setStatusAway`
 
 Sets the status of the Client to Idle/Away
-    
+
 setStatusOnline()
 ~~~~~~~~~~~~~~~
 
