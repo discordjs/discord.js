@@ -22,10 +22,12 @@ import Invite from "../Structures/Invite";
 import VoiceConnection from "../Voice/VoiceConnection";
 
 var zlib;
+var libVersion = require('../../package.json').version;
 
 //todo: move this somewhere else
 var originalEnd = request.Request.prototype.end;
 request.Request.prototype.end = function(callback) {
+	this.set('User-Agent', 'DiscordBot (https://github.com/hydrabolt/discord.js, ' + libVersion + ')');
 	return new Promise((resolve, reject) => {
 		originalEnd.call(this, (err, response) => {
 			if (callback) {
