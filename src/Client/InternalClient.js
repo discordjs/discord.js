@@ -597,11 +597,8 @@ export default class InternalClient {
 
 		var roleIDS = roles[0].server.memberMap[member.id].roles.map(r => r.id);
 
-		for(var role of roles) {
-			if (!role.server.memberMap[member.id]) {
-				return Promise.reject(new Error("member not in server"));
-			}
-			roleIDS.concat(role.id);
+		if(roles.any(role => !role.server.memberMap[member.id])) {
+			return Promise.reject(new Error("Role does not exist on same server as member"));
 		}
 
 		return this.apiRequest(
