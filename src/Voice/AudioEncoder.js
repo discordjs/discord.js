@@ -45,12 +45,13 @@ export default class AudioEncoder {
 		var self = this;
 		return new Promise((resolve, reject) => {
 			var enc = cpoc.spawn(self.getCommand(), [
-				'-i', "-",
+				'-loglevel', '0',
+				'-i', '-',
 				'-f', 's16le',
 				'-ar', '48000',
 				'-ac', 2,
 				'pipe:1'
-			]);
+			], {stdio: ['pipe', 'pipe', 'ignore']});
 
 			stream.pipe(enc.stdin);
 
