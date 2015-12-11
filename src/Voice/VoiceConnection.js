@@ -24,7 +24,7 @@ export default class VoiceConnection extends EventEmitter {
 		this.session = session;
 		this.token = token;
 		this.server = server;
-		this.endpoint = endpoint.replace(":80", "");
+		this.endpoint = endpoint.split(":")[0];
 		this.vWS = null; // vWS means voice websocket
 		this.ready = false;
 		this.vWSData = {};
@@ -35,6 +35,8 @@ export default class VoiceConnection extends EventEmitter {
 		this.streamTime = 0;
 		this.streamProc = null;
 		this.KAI = null;
+		this.timestamp = 0;
+		this.sequence = 0;
 		this.init();
 	}
 
@@ -78,8 +80,6 @@ export default class VoiceConnection extends EventEmitter {
 		var self = this;
 
 		var startTime = Date.now();
-		var sequence = 0;
-		var time = 0;
 		var count = 0;
 
 		var length = 20;
@@ -123,10 +123,10 @@ export default class VoiceConnection extends EventEmitter {
 					 }
 
 				count++;
-				sequence + 10 < 65535 ? sequence += 1 : sequence = 0;
-				time + 9600 < 4294967295 ? time += 960 : time = 0;
+				self.sequence + 1 < 65535 ? self.sequence += 1 : self.sequence = 0;
+				self.timestamp + 960 < 4294967295 ? self.timestamp += 960 : self.timestamp = 0;
 
-				self.sendBuffer(buffer, sequence, time, (e) => { });
+				self.sendBuffer(buffer, self.sequence, self.timestamp, (e) => { });
 
 				var nextTime = startTime + (count * length);
 
