@@ -63,6 +63,8 @@ export default class VoiceConnection extends EventEmitter {
 		this.playing = false;
 		this.playingIntent = null;
 		if (this.streamProc) {
+			this.streamProc.stdin.pause();
+			this.streamProc.kill("SIGINT");
 			this.streamProc.kill();
 		}
 		if(this.instream){
@@ -99,7 +101,7 @@ export default class VoiceConnection extends EventEmitter {
 			if (!self.playingIntent || !self.playing) {
 				self.setSpeaking(false);
 				retStream.emit("end");
-				console.log("ending 1");
+				//console.log("ending 1");
 				return;
 			}
 			try {
@@ -110,7 +112,7 @@ export default class VoiceConnection extends EventEmitter {
 						if (onWarning) {
 								retStream.emit("end");
 								self.setSpeaking(false);
-								console.log("ending 2");
+								//console.log("ending 2");
 								return;
 						  } else {
 								onWarning = true;
