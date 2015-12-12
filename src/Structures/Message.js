@@ -47,7 +47,7 @@ export default class Message extends Equality{
 	isMentioned(user){
 		user = this.client.internal.resolver.resolveUser(user);
 		if (user) {
-			return this.mentions.has("id", user.id);
+			return this.mentions.has(user);
 		} else {
 			return false;
 		}

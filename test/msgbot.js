@@ -30,6 +30,11 @@ client.on("message", msg => {
 		client.destroy();
 	}
 
+	if (msg.content === "$perms") {
+		
+	}
+
+
 	if (msg.content.startsWith("$play")) {
 		var url = msg.content.split(" ")[1];
 
