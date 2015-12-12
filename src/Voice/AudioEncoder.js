@@ -41,7 +41,7 @@ export default class AudioEncoder {
 		return "help";
 	}
 
-	encodeStream(stream, callback = function (err, buffer) { }) {
+	encodeStream(stream, options) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 			var enc = cpoc.spawn(self.getCommand(), [
@@ -50,18 +50,13 @@ export default class AudioEncoder {
 				'-f', 's16le',
 				'-ar', '48000',
 				'-ac', 2,
-				'pipe:1'
+				'pipe:1',
+				'-af', 'volume=' + (options.volume || 1)
 			], {stdio: ['pipe', 'pipe', 'ignore']});
 
 			stream.pipe(enc.stdin);
 
 			enc.stdout.once("readable", function () {
-				callback(null, {
-					proc: enc,
-					stream: enc.stdout,
-					instream: stream,
-					channels : 2
-				});
 				resolve({
 					proc: enc,
 					stream: enc.stdout,
@@ -71,18 +66,16 @@ export default class AudioEncoder {
 			});
 
 			enc.stdout.on("end", function () {
-				callback("end");
 				reject("end");
 			});
 
 			enc.stdout.on("close", function () {
-				callback("close");
 				reject("close");
 			});
 		});
 	}
 
-	encodeFile(file, callback = function (err, buffer) { }) {
+	encodeFile(file, options) {
 		var self = this;
 		return new Promise((resolve, reject) => {
 			var enc = cpoc.spawn(self.getCommand(), [
@@ -91,15 +84,21 @@ export default class AudioEncoder {
 				'-f', 's16le',
 				'-ar', '48000',
 				'-ac', 2,
-				'pipe:1'
-			], {stdio: ['pipe', 'pipe', 'ignore']});
+				'pipe:1',
+				'-af', '"volume=' + (options.volume || 1)+'"'
+			], { stdio: ['pipe', 'pipe', 'ignore'] });
+
+			console.log([
+				'-loglevel', '0',
+				'-i', file,
+				'-f', 's16le',
+				'-ar', '48000',
+				'-af', '"volume=' + (options.volume || 1) + '"',
+				'-ac', 2,
+				'pipe:1',
+			].join(" "));
 
 			enc.stdout.once("readable", function () {
-				callback(null, {
-					proc: enc,
-					stream: enc.stdout,
-					channels : 2
-				});
 				resolve({
 					proc: enc,
 					stream: enc.stdout,
@@ -109,13 +108,11 @@ export default class AudioEncoder {
 
 			enc.stdout.on("end", function () {
 				console.log("end");
-				callback("end");
 				reject("end");
 			});
 
 			enc.stdout.on("close", function () {
 				console.log("close");
-				callback("close");
 				reject("close");
 			});
 		});

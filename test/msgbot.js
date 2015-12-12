@@ -33,9 +33,9 @@ client.on("message", msg => {
 	if (msg.content.startsWith("$play")) {
 		var url = msg.content.split(" ")[1];
 
-		client.voiceConnection.playFile(url);
-
-		console.log(request.get(url).end());
+		client.voiceConnection.playFile(url, {
+			volume : 0.1
+		});
 
 	}
 
@@ -48,10 +48,6 @@ client.on("message", msg => {
 console.log("INIT");
 
 client.on("debug", console.log);
-
-client.on("unknown", p => {
-	console.log(p);
-});
 
 client.login(process.env["ds_email"], process.env["ds_password"]).catch(console.log);
 

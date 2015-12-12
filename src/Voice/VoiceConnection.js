@@ -205,11 +205,16 @@ export default class VoiceConnection extends EventEmitter {
 			})
 	}
 
-	playFile(stream, callback = function (err, str) { }) {
+	playFile(stream, options=false, callback = function (err, str) { }) {
 		var self = this;
+		if (typeof options === "function") {
+			// options is the callback
+			callback = options;
+			options = {};
+		}
 		return new Promise((resolve, reject) => {
 			this.encoder
-				.encodeFile(stream)
+				.encodeFile(stream, options)
 				.catch(error)
 				.then(data => {
 					self.streamProc = data.proc;
@@ -225,11 +230,16 @@ export default class VoiceConnection extends EventEmitter {
 		})
 	}
 
-	playRawStream(stream, callback = function (err, str) { }) {
+	playRawStream(stream, options=false, callback = function (err, str) { }) {
 		var self = this;
+		if (typeof options === "function") {
+			// options is the callback
+			callback = options;
+			options = {};
+		}
 		return new Promise((resolve, reject) => {
 			this.encoder
-				.encodeStream(stream)
+				.encodeStream(stream, options)
 				.catch(error)
 				.then(data => {
 					self.streamProc = data.proc;
