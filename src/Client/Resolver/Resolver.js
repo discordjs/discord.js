@@ -126,7 +126,7 @@ export default class Resolver {
 			return resource.recipient;
 		}
 		if (resource instanceof String || typeof resource === "string") {
-			return this.client.internal.users.get("id", resource);
+			return this.internal.users.get("id", resource);
 		}
 
 		return null;
