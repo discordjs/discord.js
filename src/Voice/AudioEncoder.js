@@ -88,16 +88,6 @@ export default class AudioEncoder {
 				'-af', '"volume=' + (options.volume || 1)+'"'
 			], { stdio: ['pipe', 'pipe', 'ignore'] });
 
-			console.log([
-				'-loglevel', '0',
-				'-i', file,
-				'-f', 's16le',
-				'-ar', '48000',
-				'-af', '"volume=' + (options.volume || 1) + '"',
-				'-ac', 2,
-				'pipe:1',
-			].join(" "));
-
 			enc.stdout.once("readable", function () {
 				resolve({
 					proc: enc,

@@ -62,6 +62,9 @@ export default class VoiceConnection extends EventEmitter {
 	stopPlaying() {
 		this.playing = false;
 		this.playingIntent = null;
+		if (this.streamProc) {
+			this.streamProc.kill();
+		}
 		if(this.instream){
 			//not all streams implement these...
 			//and even file stream don't seem to implement them properly...
@@ -196,17 +199,9 @@ export default class VoiceConnection extends EventEmitter {
 		}
 	}
 
-	test() {
-		this.playFile("C:/users/amish/desktop/audio.mp3")
-			.then(stream => {
-				stream.on("time", time => {
-					console.log("Time", time);
-				})
-			})
-	}
-
 	playFile(stream, options=false, callback = function (err, str) { }) {
 		var self = this;
+		self.stopPlaying();
 		if (typeof options === "function") {
 			// options is the callback
 			callback = options;
@@ -232,6 +227,7 @@ export default class VoiceConnection extends EventEmitter {
 
 	playRawStream(stream, options=false, callback = function (err, str) { }) {
 		var self = this;
+		self.stopPlaying();
 		if (typeof options === "function") {
 			// options is the callback
 			callback = options;
