@@ -1370,6 +1370,9 @@ export default class InternalClient {
 						client.emit("warn", "user unbanned but user/server not in cache.");
 					}
 					break;
+				default:
+					client.emit("unknown", packet);
+					break;
 			}
 		};
 	}

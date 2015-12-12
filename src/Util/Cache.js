@@ -1,15 +1,18 @@
 "use strict";
 
+var discrimS = Symbol();
+var discrimCacheS = Symbol();
+
 export default class Cache extends Array {
 	constructor(discrim, limit) {
 		super();
-		this["discrim"] = discrim || "id";
-		this["discrimCache"] = {};
+		this[discrimS] = discrim || "id";
+		this[discrimCacheS] = {};
 	}
 
 	get(key, value) {
-		if (key === this.discrim)
-			return this.discrimCache[value] || null;
+		if (key === this[discrimS])
+			return this[discrimCacheS][value] || null;
 
 		var l = this.length;
 		for (var i = 0; i < l; i++)
@@ -19,11 +22,11 @@ export default class Cache extends Array {
 	}
 
 	has(object) {
-		return !!this.get(this.discrim, object[this.discrim]);
+		return !!this.get(this[discrimS], object[this[discrimS]]);
 	}
 
 	getAll(key, value) {
-		var found = new Cache(this.discrim);
+		var found = new Cache(this[discrimS]);
 		this.forEach((val, index, array) => {
 			if (val.hasOwnProperty(key) && val[key] == value) {
 				found.push(val);
@@ -34,24 +37,24 @@ export default class Cache extends Array {
 	}
 
 	add(data) {
-		var cacheKey = this.discrim === "id" ? data.id : data[this.discrim];
-		if (this.discrimCache[cacheKey]) {
-			return this.discrimCache[cacheKey];
+		var cacheKey = this[discrimS] === "id" ? data.id : data[this[discrimS]];
+		if (this[discrimCacheS][cacheKey]) {
+			return this[discrimCacheS][cacheKey];
 		}
 		if (this.limit && this.length >= this.limit) {
 			this.splice(0, 1);
 		}
 		this.push(data);
-		this.discrimCache[cacheKey] = data;
+		this[discrimCacheS][cacheKey] = data;
 		return data;
 	}
 
 	update(old, data) {
-		var item = this.get(this.discrim, old[this.discrim]);
+		var item = this.get(this[discrimS], old[this[discrimS]]);
 		if (item) {
 			var index = this.indexOf(item);
 			this[index] = data;
-			this.discrimCache[data[this.discrim]] = this[index];
+			this[discrimCacheS][data[this[discrimS]]] = this[index];
 			return this[index];
 		} else {
 			return false;
@@ -63,12 +66,12 @@ export default class Cache extends Array {
 	}
 
 	remove(data) {
-		delete this.discrimCache[data[this.discrim]];
+		delete this[discrimCacheS][data[this[discrimS]]];
 		var index = this.indexOf(data);
 		if (~index) {
 			this.splice(index, 1);
 		} else {
-			var item = this.get(this.discrim, data[this.discrim]);
+			var item = this.get(this[discrimS], data[this[discrimS]]);
 			if (item) {
 				this.splice(this.indexOf(item), 1);
 			}

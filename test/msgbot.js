@@ -7,15 +7,9 @@ var request = require("superagent");
 
 client.on("ready", () => {
 	console.log("ready");
-	for (var server of client.servers) {
-		if (!(server instanceof Discord.Server)) {
-			console.log("FOUNDED");
-		}
+	for (var server in client.servers) {
+		console.log(server);
 	}
-	setTimeout(() => {
-		if(client.internal.websocket)
-			client.internal.websocket.close();
-	}, 5000);
 
 });
 
@@ -53,7 +47,11 @@ client.on("message", msg => {
 
 console.log("INIT");
 
-client.on("debug", console.log)
+client.on("debug", console.log);
+
+client.on("unknown", p => {
+	console.log(p);
+});
 
 client.login(process.env["ds_email"], process.env["ds_password"]).catch(console.log);
 
