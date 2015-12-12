@@ -7,7 +7,11 @@ var request = require("superagent");
 
 client.on("ready", () => {
 	console.log("ready");
-
+	for (var server of client.servers) {
+		if (!(server instanceof Discord.Server)) {
+			console.log("FOUNDED");
+		}
+	}
 	setTimeout(() => {
 		if(client.internal.websocket)
 			client.internal.websocket.close();

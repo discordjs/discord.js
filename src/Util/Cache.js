@@ -3,8 +3,8 @@
 export default class Cache extends Array {
 	constructor(discrim, limit) {
 		super();
-		this.discrim = discrim || "id";
-		this.discrimCache = {};
+		this["discrim"] = discrim || "id";
+		this["discrimCache"] = {};
 	}
 
 	get(key, value) {
@@ -51,7 +51,7 @@ export default class Cache extends Array {
 		if (item) {
 			var index = this.indexOf(item);
 			this[index] = data;
-			this.discrimCache[data[this.discrim]] = data;
+			this.discrimCache[data[this.discrim]] = this[index];
 			return this[index];
 		} else {
 			return false;
