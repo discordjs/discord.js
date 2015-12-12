@@ -87,7 +87,7 @@ export default class AudioEncoder {
 		return new Promise((resolve, reject) => {
 			var enc = cpoc.spawn(self.getCommand(), [
 				'-loglevel', '0',
-				'-i', '-',
+				'-i', file,
 				'-f', 's16le',
 				'-ar', '48000',
 				'-ac', 2,
