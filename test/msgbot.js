@@ -6,10 +6,7 @@ var client = new Discord.Client({revive : true});
 var request = require("superagent");
 
 client.on("ready", () => {
-	console.log("ready");
-	for (var server in client.servers) {
-		console.log(server);
-	}
+	console.log("ready - " + client.internal.token);
 
 });
 
@@ -31,7 +28,7 @@ client.on("message", msg => {
 	}
 
 	if (msg.content === "$perms") {
-		
+
 	}
 
 

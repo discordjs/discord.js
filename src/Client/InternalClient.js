@@ -20,6 +20,7 @@ import Message from "../Structures/Message";
 import Role from "../Structures/Role";
 import Invite from "../Structures/Invite";
 import VoiceConnection from "../Voice/VoiceConnection";
+import TokenCacher from "../Util/TokenCacher";
 
 var zlib;
 var libVersion = require('../../package.json').version;
@@ -101,6 +102,9 @@ export default class InternalClient {
 		this.resolver = new Resolver(this);
 		this.readyTime = null;
 		this.messageAwaits = {};
+
+		this.tokenCacher = new TokenCacher(this.client);
+		this.tokenCacher.init(0);
 	}
 
 	cleanIntervals(){
@@ -260,6 +264,18 @@ export default class InternalClient {
 	// def login
 	login(email, password) {
 		var client = this.client;
+
+		console.log(this.tokenCacher.done);
+		if(!this.tokenCacher.done){
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					this.login(email, password).then(resolve).catch(reject);
+				}, 20);
+			});
+		}else{
+			console.log("Cached - " + this.tokenCacher.getToken(email, password));
+		}
+
 		if(this.state !== ConnectionState.DISCONNECTED && this.state !== ConnectionState.IDLE) {
 			return Promise.reject(new Error("already logging in/logged in/ready!"));
 		}
@@ -272,6 +288,7 @@ export default class InternalClient {
 		})
 		.then(res => {
 			var token = res.token;
+			this.tokenCacher.setToken(email, password, token);
 			this.state = ConnectionState.LOGGED_IN;
 			this.token = token;
 			this.email = email;

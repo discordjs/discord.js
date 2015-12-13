@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/hydrabolt/discord.js#readme",
   "dependencies": {
+    "fs-extra": "^0.26.2",
     "superagent": "^1.5.0",
     "ws": "^0.8.1"
   },
