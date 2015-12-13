@@ -428,7 +428,7 @@ export default class InternalClient {
 
 			return this.apiRequest(
 				"get",
-				`Endpoints.CHANNEL_MESSAGES(channel.id)?${qs.stringify(qsObject)}`,
+				`${Endpoints.CHANNEL_MESSAGES(channel.id)}?${qs.stringify(qsObject)}`,
 				true
 			)
 			.then(res => res.map(
