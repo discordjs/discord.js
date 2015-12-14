@@ -6,11 +6,16 @@ import EventEmitter from "events";
 import crypto from "crypto";
 
 var savePaths = [
-	process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + 'Library/Preference' : '/var/local'),
-	process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME']
+	process.env.APPDATA || (process.platform == "darwin" ? process.env.HOME + "Library/Preference" : "/var/local"),
+	process.env[(process.platform == "win32") ? "USERPROFILE" : "HOME"],
+	process.cwd()
 ];
 
 var algo = "aes-256-ctr";
+
+function secureEmail(email, password) {
+	return new Buffer(crypto.createHash("sha256").update(email + password, "utf8").digest()).toString("hex");
+}
 
 export default class TokenCacher extends EventEmitter {
 
@@ -24,10 +29,10 @@ export default class TokenCacher extends EventEmitter {
 	}
 
 	setToken(email, password, token) {
-		console.log("wanting to cache", token);
+		email = secureEmail(email, password);
 		var cipher = crypto.createCipher(algo, password)
-		var crypted = cipher.update("valid" + token, 'utf8', 'hex')
-		crypted += cipher.final('hex');
+		var crypted = cipher.update("valid" + token, "utf8", "hex")
+		crypted += cipher.final("hex");
 		this.data[email] = crypted;
 		this.save();
 	}
@@ -38,12 +43,14 @@ export default class TokenCacher extends EventEmitter {
 
 	getToken(email, password) {
 
+		email = secureEmail(email, password);
+
 		if (this.data[email]) {
 
 			try {
 				var decipher = crypto.createDecipher(algo, password)
-				var dec = decipher.update(this.data[email], "hex", 'utf8');
-				dec += decipher.final('utf8');
+				var dec = decipher.update(this.data[email], "hex", "utf8");
+				dec += decipher.final("utf8");
 				return (dec.indexOf("valid") === 0 ? dec.substr(5) : false);
 			} catch (e) {
 				// not a valid token
