@@ -25,10 +25,9 @@ export default class TokenCacher extends EventEmitter {
 
 	setToken(email, password, token) {
 		console.log("wanting to cache", token);
-		token = new Buffer(token).toString("base64");
-		var cipher = crypto.createCipher(algo,password)
-		var crypted = cipher.update(token,'utf8','base64')
-		crypted += cipher.final('base64');
+		var cipher = crypto.createCipher(algo, password)
+		var crypted = cipher.update("valid" + token, 'utf8', 'hex')
+		crypted += cipher.final('hex');
 		this.data[email] = crypted;
 		this.save();
 	}
@@ -37,16 +36,17 @@ export default class TokenCacher extends EventEmitter {
 		fs.writeJson(this.savePath, this.data);
 	}
 
-	getToken(email, password){
+	getToken(email, password) {
 
 		if (this.data[email]) {
 
 			try {
 				var decipher = crypto.createDecipher(algo, password)
-				var dec = decipher.update(this.data[email], "base64", 'utf8')
+				var dec = decipher.update(this.data[email], "hex", 'utf8');
 				dec += decipher.final('utf8');
-				return new Buffer(dec, "base64").toString("ascii");
+				return (dec.indexOf("valid") === 0 ? dec.substr(5) : false);
 			} catch (e) {
+				// not a valid token
 				return null;
 			}
 

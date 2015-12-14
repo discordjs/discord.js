@@ -14,10 +14,11 @@ export default class Cache extends Array {
 		if (key === this[discrimS])
 			return this[discrimCacheS][value] || null;
 
-		var l = this.length;
-		for (var i = 0; i < l; i++)
-			if (this[i][key] == value)
-				return this[i];
+		for(var item of this){
+			if(item[key] == value){
+				return item;
+			}
+		}
 		return null;
 	}
 

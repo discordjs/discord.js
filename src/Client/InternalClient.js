@@ -265,15 +265,29 @@ export default class InternalClient {
 	login(email, password) {
 		var client = this.client;
 
-		console.log(this.tokenCacher.done);
 		if(!this.tokenCacher.done){
 			return new Promise((resolve, reject) => {
 				setTimeout(() => {
 					this.login(email, password).then(resolve).catch(reject);
 				}, 20);
 			});
-		}else{
-			console.log("Cached - " + this.tokenCacher.getToken(email, password));
+		} else {
+			var tk = this.tokenCacher.getToken(email, password);
+			if( tk ){
+				return new Promise((resolve, reject) => {
+					this.client.emit("debug", "bypassed direct API login, used cached token");
+					this.state = ConnectionState.LOGGED_IN;
+					this.token = tk;
+					this.email = email;
+					this.password = password;
+
+					return this.getGateway()
+						.then(url => {
+							this.createWS(url);
+							return tk;
+						});
+				});
+			}
 		}
 
 		if(this.state !== ConnectionState.DISCONNECTED && this.state !== ConnectionState.IDLE) {
@@ -287,6 +301,7 @@ export default class InternalClient {
 			password
 		})
 		.then(res => {
+			this.client.emit("debug", "direct API login, cached token was unavailable");
 			var token = res.token;
 			this.tokenCacher.setToken(email, password, token);
 			this.state = ConnectionState.LOGGED_IN;

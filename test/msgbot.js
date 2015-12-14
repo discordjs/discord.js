@@ -7,7 +7,6 @@ var request = require("superagent");
 
 client.on("ready", () => {
 	console.log("ready - " + client.internal.token);
-
 });
 
 client.on("autoRevive", () => {
@@ -28,7 +27,7 @@ client.on("message", msg => {
 	}
 
 	if (msg.content === "$perms") {
-
+		msg.reply(client.channels.get("id", msg.channel.id));
 	}
 
 
@@ -49,7 +48,7 @@ client.on("message", msg => {
 
 console.log("INIT");
 
-client.on("debug", console.log);
+client.on("debug", msg => console.log("[debug]", msg));
 
 client.login(process.env["ds_email"], process.env["ds_password"]).catch(console.log);
 
