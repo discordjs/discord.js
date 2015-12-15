@@ -20,9 +20,9 @@ var major = parseInt(v[0]),
 if((major == 0 && minor < 12) || (major == 0 && minor == 12 && patch < 7)) {
 	if(!process.env.OVERRIDE_DISCORD_MIN_VERSION) {
 		throw new Error(
-			`discord.js doesn't support node versions less than 0.12.7.
-			If you /really/ want to run it on this node (${process.version}), then set OVERRIDE_DISCORD_MIN_VERSION as enviroment variable.
-			However, this is unsupported and WILL cause problems`.replace(/\t/g, '')
+			"discord.js doesn't support node versions less than 0.12.7.\n"+
+			"If you /really/ want to run it on this node " + process.version + ", then set OVERRIDE_DISCORD_MIN_VERSION enviroment variable.\n"+
+			"However, this is unsupported and WILL cause problems."
 		)
 	}
 }
