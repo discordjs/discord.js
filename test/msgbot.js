@@ -41,7 +41,8 @@ client.on("message", msg => {
 	}
 
 	if (msg.content === "$$$") {
-		client.reply(msg, "hi!");
+		for(var x = 0; x < 60; x++)
+			client.reply(msg, x);
 	}
 
 });

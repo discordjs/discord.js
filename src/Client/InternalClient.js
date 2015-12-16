@@ -65,6 +65,7 @@ export default class InternalClient {
 		return new Promise((resolve, reject) => {
 			ret.end((error, data) => {
 				if (error) {
+					error.response.error.status = 429;
 					if (error.response && error.response.error && error.response.error.status && error.response.error.status === 429) {
 						if(data.headers["retry-after"] || data.headers["Retry-After"]){
 							var toWait = data.headers["retry-after"] || data.headers["Retry-After"];
@@ -72,6 +73,8 @@ export default class InternalClient {
 							setTimeout(() => {
 								this.apiRequest.apply(this, arguments).then(resolve).catch(reject);
 							}, toWait);
+						} else {
+							return reject(error);
 						}
 					} else {
 						return reject(error);
