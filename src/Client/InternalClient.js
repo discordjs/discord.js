@@ -66,7 +66,13 @@ export default class InternalClient {
 			ret.end((error, data) => {
 				if (error) {
 					error.response.error.status = 429;
-					if (error.response && error.response.error && error.response.error.status && error.response.error.status === 429) {
+					if (!this.client.options.rate_limit_as_error &&
+						error.response &&
+						error.response.error &&
+						error.response.error.status
+						&& error.response.error.status === 429
+					) {
+
 						if(data.headers["retry-after"] || data.headers["Retry-After"]){
 							var toWait = data.headers["retry-after"] || data.headers["Retry-After"];
 							toWait = parseInt(toWait);
@@ -76,6 +82,7 @@ export default class InternalClient {
 						} else {
 							return reject(error);
 						}
+
 					} else {
 						return reject(error);
 					}

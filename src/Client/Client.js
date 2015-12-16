@@ -21,6 +21,7 @@ export default class Client extends EventEmitter {
 		this.options = options || {};
 		this.options.compress = options.compress || true;
 		this.options.revive = options.revive || false;
+		this.options.rate_limit_as_error = options.rate_limit_as_error || false;
 		this.internal = new InternalClient(this);
 	}
 
