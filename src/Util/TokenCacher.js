@@ -28,7 +28,7 @@ export default class TokenCacher extends EventEmitter {
 		this.data = {};
 	}
 
-	setToken(email, password, token) {
+	setToken(email="", password="", token="") {
 		email = secureEmail(email, password);
 		var cipher = crypto.createCipher(algo, password)
 		var crypted = cipher.update("valid" + token, "utf8", "hex")
@@ -41,7 +41,7 @@ export default class TokenCacher extends EventEmitter {
 		fs.writeJson(this.savePath, this.data);
 	}
 
-	getToken(email, password) {
+	getToken(email="", password="") {
 
 		email = secureEmail(email, password);
 

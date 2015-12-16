@@ -64,10 +64,21 @@ export default class InternalClient {
 		ret.set('User-Agent', this.userAgentInfo.full);
 		return new Promise((resolve, reject) => {
 			ret.end((error, data) => {
-				if(error) {
-					return reject(error);
-				}
+				if (error) {
+					if (error.response && error.response.error && error.response.error.status && error.response.error.status === 429) {
+						if(data.headers["retry-after"] || data.headers["Retry-After"]){
+							var toWait = data.headers["retry-after"] || data.headers["Retry-After"];
+							toWait = parseInt(toWait);
+							setTimeout(() => {
+								this.apiRequest.apply(this, arguments).then(resolve).catch(reject);
+							}, toWait);
+						}
+					} else {
+						return reject(error);
+					}
+				}else{
 				resolve(data.body);
+				}
 			});
 		});
 	}
