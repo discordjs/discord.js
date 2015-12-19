@@ -26,6 +26,10 @@ client.on("message", msg => {
 		client.destroy();
 	}
 
+	if(msg.content === "replyme"){
+		msg.reply("hi");
+	}
+
 	if (msg.content === "$perms") {
 		msg.reply(client.channels.get("id", msg.channel.id));
 	}

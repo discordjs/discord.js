@@ -256,9 +256,10 @@ export default class VoiceConnection extends EventEmitter {
 
 	init() {
 		var self = this;
+		console.log("\n\nendpoint:", this.endpoint, "\n\n");
 		dns.lookup(this.endpoint, (err, address, family) => {
-			this.endpoint = address;
 			var vWS = self.vWS = new WebSocket("wss://" + this.endpoint, null, { rejectUnauthorized: false });
+			this.endpoint = address;
 			var udpClient = self.udp = udp.createSocket("udp4");
 
 			var firstPacket = true;

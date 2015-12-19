@@ -84,10 +84,13 @@ export default class Resolver {
 	resolveMentions(resource) {
 		// resource is a string
 		var _mentions = [];
+		var changed = resource;
 		for (var mention of (resource.match(/<@[^>]*>/g) || [])) {
-			_mentions.push(mention.substring(2, mention.length - 1));
+			let userID = mention.substring(2, mention.length - 1);
+			_mentions.push(userID);
+			changed = changed.replace(new RegExp(mention, "g"), `@${this.internal.client.users.get("id", userID).username}`);
 		}
-		return _mentions;
+		return [_mentions, changed];
 	}
 
 	resolveString(resource) {

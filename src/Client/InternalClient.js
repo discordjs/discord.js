@@ -393,7 +393,9 @@ export default class InternalClient {
 		.then(destination => {
 			//var destination;
 			var content = this.resolver.resolveString(_content);
-			var mentions = this.resolver.resolveMentions(content);
+			var resolved = this.resolver.resolveMentions(content);
+
+			var mentions = resolved[0], content = resolved[1];
 
 			return this.apiRequest("post", Endpoints.CHANNEL_MESSAGES(destination.id), true, {
 				content: content,
