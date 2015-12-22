@@ -1189,9 +1189,6 @@ export default class InternalClient {
 
 						var server = self.servers.get("id", data.guild_id);
 						if (server) {
-							if (data.is_private) {
-								client.emit("channelCreated", self.private_channels.add(new PMChannel(data, client)));
-							} else {
 								var chan = null;
 								if (data.type === "text") {
 									chan = self.channels.add(new TextChannel(data, client, server));
@@ -1199,8 +1196,9 @@ export default class InternalClient {
 									chan = self.channels.add(new VoiceChannel(data, client, server));
 								}
 								client.emit("channelCreated", server.channels.add(chan));
-							}
-						} else {
+						} else if(data.is_private){
+							client.emit("channelCreated", self.private_channels.add(new PMChannel(data, client)));
+						}else{
 							client.emit("warn", "channel created but server does not exist");
 						}
 
