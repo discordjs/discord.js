@@ -65,7 +65,6 @@ export default class InternalClient {
 		return new Promise((resolve, reject) => {
 			ret.end((error, data) => {
 				if (error) {
-					error.response.error.status = 429;
 					if (!this.client.options.rate_limit_as_error &&
 						error.response &&
 						error.response.error &&
