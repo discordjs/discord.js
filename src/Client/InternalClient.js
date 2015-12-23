@@ -392,13 +392,9 @@ export default class InternalClient {
 		.then(destination => {
 			//var destination;
 			var content = this.resolver.resolveString(_content);
-			var resolved = this.resolver.resolveMentions(content);
-
-			var mentions = resolved[0], content = resolved[1];
 
 			return this.apiRequest("post", Endpoints.CHANNEL_MESSAGES(destination.id), true, {
 				content: content,
-				mentions: mentions,
 				tts: options.tts
 			})
 			.then(res =>
@@ -432,7 +428,6 @@ export default class InternalClient {
 		}
 
 		var content = this.resolver.resolveString(_content);
-		var mentions = this.resolver.resolveMentions(content);
 
 		return this.apiRequest(
 			"patch",
@@ -440,8 +435,7 @@ export default class InternalClient {
 			true,
 			{
 				content: content,
-				tts: options.tts,
-				mentions: mentions
+				tts: options.tts
 			}
 		)
 		.then(res => message.channel.messages.update(
