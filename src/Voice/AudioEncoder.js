@@ -107,4 +107,37 @@ export default class AudioEncoder {
 			});
 		});
 	}
+
+	encodeArbitraryFFmpeg(ffmpegOptions) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+			// add options discord.js needs
+			var options = ffmpegOptions.concat([
+				'-loglevel', '0',
+				'-f', 's16le',
+				'-ar', '48000',
+				'-ac', 2,
+				'pipe:1'
+			]);
+			var enc = cpoc.spawn(self.getCommand(), options, { stdio: ['pipe', 'pipe', 'ignore'] });
+
+			enc.stdout.once("readable", function () {
+				resolve({
+					proc: enc,
+					stream: enc.stdout,
+					channels : 2
+				});
+			});
+
+			enc.stdout.on("end", function () {
+				console.log("end");
+				reject("end");
+			});
+
+			enc.stdout.on("close", function () {
+				console.log("close");
+				reject("close");
+			});
+		});
+	}
 }
