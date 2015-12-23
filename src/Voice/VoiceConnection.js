@@ -65,7 +65,6 @@ export default class VoiceConnection extends EventEmitter {
 		if (this.streamProc) {
 			this.streamProc.stdin.pause();
 			this.streamProc.kill("SIGINT");
-			this.streamProc.kill();
 		}
 		if(this.instream){
 			//not all streams implement these...
