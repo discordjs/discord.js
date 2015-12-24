@@ -1418,6 +1418,16 @@ export default class InternalClient {
 						client.emit("warn", "user unbanned but user/server not in cache.");
 					}
 					break;
+				case PacketType.VOICE_STATE_UPDATE:
+					var user = self.users.get("id", data.user_id);
+					var server = self.servers.get("id", data.guild_id);
+					if(data.channel_id == null)
+					{
+						user.voiceChannel = null;
+					}
+					else
+						user.voiceChannel = server.channels.get("id", data.channel_id);
+					break;
 				default:
 					client.emit("unknown", packet);
 					break;

@@ -60,6 +60,12 @@ export default class Server extends Equality {
 			}
 		});
 
+		data.voice_states.forEach((voiceState) => {
+			var channel = this.channels.get("id", voiceState.channel_id);
+			var user = client.internal.users.get("id", voiceState.user_id);
+			user.voiceChannel = channel;
+		});
+
 		if (data.presences) {
 			for (var presence of data.presences) {
 				var user = client.internal.users.get("id", presence.user.id);

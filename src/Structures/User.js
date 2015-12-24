@@ -14,6 +14,7 @@ export default class User extends Equality{
 		this.avatar = data.avatar;
 		this.status = data.status || "offline";
 		this.gameID = data.game_id || null;
+		this.voiceChannel = null;
 		this.typing = {
 			since : null,
 			channel : null
