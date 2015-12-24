@@ -12,26 +12,10 @@ import PMChannel from "../../Structures/PMChannel";
 import Server from "../../Structures/Server";
 import Message from "../../Structures/Message";
 import Invite from "../../Structures/Invite";
-import Games from "../../../ref/gameMap";
 
 export default class Resolver {
 	constructor(internal) {
 		this.internal = internal;
-	}
-
-	resolveGameID(resource) {
-		if (!isNaN(resource) && parseInt(resource) % 1 === 0) {
-			return resource;
-		}
-		if (typeof resource === "string" || resource instanceof String) {
-			var gameName = resource.toLowerCase();
-			var found = Games.find(game => game.name.toLowerCase() === gameName);
-			if(found) {
-				return found.id;
-			}
-		}
-
-		return null;
 	}
 
 	resolveToBase64(resource) {

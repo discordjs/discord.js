@@ -824,31 +824,33 @@ export default class InternalClient {
 	}
 
 	//def setStatus
-	setStatus(idleStatus, gameID) {
+	setStatus(idleStatus, game) {
 
-		this.idleStatus = idleStatus || this.idleStatus || null;
-		if(idleStatus){
-			if(idleStatus === "online" || idleStatus === "here" || idleStatus === "available"){
-				this.idleStatus = null;
-			}
+		if(idleStatus === "online" || idleStatus === "here" || idleStatus === "available"){
+			this.idleStatus = null;
 		}
-		this.gameID = this.resolver.resolveGameID(gameID) || this.gameID || null;
+		else if (this.idleStatus === "idle" || this.idleStatus === "away") {
+			packet.d.idle_since = Date.now();
+		}
+		else {
+			this.idleStatus = this.idleStatus || null; //undefineds
+		}
+
+		this.game = game === null ? null : game || this.game;
 
 		var packet = {
 			op: 3,
 			d: {
 				idle_since: this.idleStatus,
-				game_id: this.gameID
+				game: {
+					name: this.game
+				}
 			}
 		};
 
-		if (this.idleStatus === "idle" || this.idleStatus === "away") {
-			packet.d.idle_since = Date.now();
-		}
-
 		this.sendWS(packet);
 
-		return Promise.resolve();//why?
+		return Promise.resolve();
 
 	}
 
