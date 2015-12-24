@@ -294,19 +294,19 @@ export default class InternalClient {
 		} else {
 			var tk = this.tokenCacher.getToken(email, password);
 			if( tk ){
-				return new Promise((resolve, reject) => {
-					this.client.emit("debug", "bypassed direct API login, used cached token");
-					this.state = ConnectionState.LOGGED_IN;
-					this.token = tk;
-					this.email = email;
-					this.password = password;
+				this.client.emit("debug", "bypassed direct API login, used cached token");
+				this.state = ConnectionState.LOGGED_IN;
+				this.token = tk;
+				this.email = email;
+				this.password = password;
 
-					return this.getGateway()
-						.then(url => {
-							this.createWS(url);
-							return tk;
-						});
+				return this.getGateway()
+				.then(url => {
+					this.createWS(url);
+					return tk;
 				});
+
+				return Promise.resolve(tk);
 			}
 		}
 
