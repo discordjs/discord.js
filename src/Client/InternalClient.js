@@ -1423,8 +1423,9 @@ export default class InternalClient {
 					var server = self.servers.get("id", data.guild_id);
 					if(data.channel_id == null)
 					{
-						client.emit("userVoiceUpdate", user, user.voiceChannel);
+						var channel = user.voiceChannel;
 						user.voiceChannel = null;
+						client.emit("userVoiceUpdate", user, channel);
 					}
 					else
 					{
