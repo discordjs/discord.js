@@ -64,11 +64,6 @@ avatarURL
 
 A valid URL to the user's avatar if they have one, otherwise null.
 
-voiceChannel
-~~~~~~~~~~~~
-
-The voice channel that the user is currently in, or null.
-
 Functions
 ---------
 

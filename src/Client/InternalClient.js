@@ -1423,14 +1423,14 @@ export default class InternalClient {
 					var server = self.servers.get("id", data.guild_id);
 					if(data.channel_id == null)
 					{
-						var channel = user.voiceChannel;
-						user.voiceChannel = null;
+						var channel = server.memberMap[user.id].voiceChannel;
+						server.memberMap[user.id].voiceChannel = null;
 						client.emit("userVoiceUpdate", user, channel);
 					}
 					else
 					{
-						user.voiceChannel = server.channels.get("id", data.channel_id);
-						client.emit("userVoiceUpdate", user, user.voiceChannel);
+						server.memberMap[user.id].voiceChannel = server.channels.get("id", data.channel_id);
+						client.emit("userVoiceUpdate", user, server.memberMap[user.id].voiceChannel);
 					}
 					break;
 				default:

@@ -63,7 +63,7 @@ export default class Server extends Equality {
 		data.voice_states.forEach((voiceState) => {
 			var channel = this.channels.get("id", voiceState.channel_id);
 			var user = client.internal.users.get("id", voiceState.user_id);
-			user.voiceChannel = channel;
+			this.memberMap[user.id].voiceChannel = channel;
 		});
 
 		if (data.presences) {
