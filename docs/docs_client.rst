@@ -660,3 +660,8 @@ userUnbanned
 ~~~~~~~~~~
 
 Emitted when a user is unbanned from a server. Supplies two parameters, a User_ object and a Server_ object.
+
+userVoiceUpdate
+~~~~~~~~~~~~~~~
+
+Emitted when a user enters or leaves a voice channel. Supplies two parameters, a User_ object and a VoiceChannel_ object.

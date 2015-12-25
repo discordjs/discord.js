@@ -44,14 +44,17 @@ export default class AudioEncoder {
 	encodeStream(stream, options) {
 		var self = this;
 		return new Promise((resolve, reject) => {
+			var volume = options.volume;
+			if(volume === undefined)
+				volume = 1;
 			var enc = cpoc.spawn(self.getCommand(), [
 				'-loglevel', '0',
 				'-i', '-',
 				'-f', 's16le',
+				'-af', 'volume=' + volume,
 				'-ar', '48000',
 				'-ac', 2,
 				'pipe:1',
-				'-af', 'volume=' + (options.volume || 1)
 			], {stdio: ['pipe', 'pipe', 'ignore']});
 
 			stream.pipe(enc.stdin);
@@ -78,14 +81,17 @@ export default class AudioEncoder {
 	encodeFile(file, options) {
 		var self = this;
 		return new Promise((resolve, reject) => {
+			var volume = options.volume;
+			if(volume === undefined)
+				volume = 1;
 			var enc = cpoc.spawn(self.getCommand(), [
 				'-loglevel', '0',
 				'-i', file,
 				'-f', 's16le',
+				'-af', 'volume=' + volume,
 				'-ar', '48000',
 				'-ac', 2,
 				'pipe:1',
-				'-af', '"volume=' + (options.volume || 1)+'"'
 			], { stdio: ['pipe', 'pipe', 'ignore'] });
 
 			enc.stdout.once("readable", function () {
