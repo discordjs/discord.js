@@ -49,6 +49,15 @@ Here is a list of other Discord APIs:
 #### Java:
 [Discord4J](https://github.com/nerd/Discord4J)
 
+[JDiscord](https://github.com/NotGGhost/jDiscord)
+
+[JDA](https://github.com/DV8FromTheWorld/JDA)
+
+#### Go:
+[Go-Discord](https://github.com/gdraynz/go-discord)
+
+[DiscordGo](https://github.com/bwmarrin/discordgo)
+
 #### .NET:
 [Discord.Net](https://github.com/RogueException/Discord.Net)
 
@@ -61,6 +70,8 @@ Here is a list of other Discord APIs:
 
 #### PHP
 [DiscordPHP](https://github.com/teamreflex/DiscordPHP)
+
+[Discord-PHP](https://github.com/Cleanse/discord-php)
 
 #### Python
 [discord.py](https://github.com/Rapptz/discord.py)
