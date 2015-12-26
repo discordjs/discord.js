@@ -13,6 +13,14 @@ client.on("autoRevive", () => {
 	console.log("auto revived");
 });
 
+client.on("voiceJoin", (user, channel) => {
+	console.log(`VOICE ${user.username} joined ${channel}!`);
+});
+
+client.on("voiceLeave", (user, channel) => {
+	console.log(`VOICE ${user.username} left ${channel}!`);
+});
+
 client.on("message", msg => {
 
 	if(!msg.sender.equals(client.user))

@@ -129,6 +129,32 @@ export default class Server extends Equality {
 		return this.name;
 	}
 
+	eventStartSpeaking(user, channel){
+		channel = this.channels.get("id", channel.id);
+		if(channel){
+			// good
+
+			// removes from other speaking channels first
+			this.eventStopSpeaking(user);
+
+			channel.speaking.add(user);
+			return true;
+		}else{
+			// bad
+			return false;
+		}
+	}
+
+	eventStopSpeaking(user){
+		for(let chan of this.channels.getAll("type", "voice")){
+			if(chan.speaking.has(user)){
+				chan.speaking.remove(user);
+				return chan;
+			}
+		}
+		return this;
+	}
+
 	equalsStrict(obj) {
 		if (obj instanceof Server) {
 			for (var key of strictKeys) {
