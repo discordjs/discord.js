@@ -14,6 +14,7 @@ import AudioEncoder from "./AudioEncoder";
 import VoicePacket from "./VoicePacket";
 import StreamIntent from "./StreamIntent";
 import EventEmitter from "events";
+import unpipe from "unpipe";
 
 export default class VoiceConnection extends EventEmitter {
 	constructor(channel, client, session, token, server, endpoint) {
@@ -62,13 +63,10 @@ export default class VoiceConnection extends EventEmitter {
 	stopPlaying() {
 		this.playing = false;
 		this.playingIntent = null;
-		if (this.streamProc) {
-			this.streamProc.stdin.pause();
-			this.streamProc.kill("SIGINT");
-		}
-		if(this.instream){
+		if (this.instream) {
 			//not all streams implement these...
 			//and even file stream don't seem to implement them properly...
+			unpipe(this.instream);
 			if(this.instream.end) {
 				this.instream.end();
 			}
@@ -76,6 +74,11 @@ export default class VoiceConnection extends EventEmitter {
 				this.instream.destroy();
 			}
 			this.instream = null;
+		}
+		if (this.streamProc) {
+			this.streamProc.stdin.pause();
+			this.streamProc.kill("SIGINT");
+			this.streamProc = null;
 		}
 	}
 
@@ -88,9 +91,6 @@ export default class VoiceConnection extends EventEmitter {
 
 		var length = 20;
 
-		if (self.playingIntent) {
-			self.stopPlaying();
-		}
 		self.playing = true;
 		var retStream = new StreamIntent();
 		var onWarning = false;
@@ -282,7 +282,6 @@ export default class VoiceConnection extends EventEmitter {
 
 	init() {
 		var self = this;
-		console.log("\n\nendpoint:", this.endpoint, "\n\n");
 		dns.lookup(this.endpoint, (err, address, family) => {
 			var vWS = self.vWS = new WebSocket("wss://" + this.endpoint, null, { rejectUnauthorized: false });
 			this.endpoint = address;

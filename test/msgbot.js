@@ -3,7 +3,7 @@
 
 var Discord = require("../");
 var client = new Discord.Client({revive : true});
-var request = require("superagent");
+var request = require("request");
 
 client.on("ready", () => {
 	console.log("ready - " + client.internal.token);
@@ -30,11 +30,19 @@ client.on("message", msg => {
 		msg.channel.server.channels.get("type", "voice").join();
 	}
 
-	if (msg.content === "end") {
+	if (msg.content === "$end$") {
 		client.destroy();
 	}
 
-	if (msg.content === "who tf is speaking") {
+	if (msg.content === "$stop_playing") {
+		client.voiceConnection.stopPlaying();
+	}
+
+	if (msg.content === "where am I speaking") {
+		msg.reply(msg.sender.voiceChannel);
+	}
+
+	if (msg.content === "who is speaking") {
 		for (var chan of msg.channel.server.channels.getAll("type", "voice")) {
 			msg.channel.send(`${chan} : ${chan.speaking}`);
 		}
@@ -52,7 +60,7 @@ client.on("message", msg => {
 	if (msg.content.startsWith("$play")) {
 		var url = msg.content.split(" ")[1];
 
-		client.voiceConnection.playFile(url, {
+		client.voiceConnection.playRawStream(request(url), {
 			volume : 0.1
 		});
 

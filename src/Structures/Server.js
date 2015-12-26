@@ -150,6 +150,7 @@ export default class Server extends Equality {
 			this.eventStopSpeaking(user);
 
 			channel.speaking.add(user);
+			user.voiceChannel = channel;
 			return true;
 		}else{
 			// bad
@@ -161,6 +162,7 @@ export default class Server extends Equality {
 		for(let chan of this.channels.getAll("type", "voice")){
 			if(chan.speaking.has(user)){
 				chan.speaking.remove(user);
+				user.voiceChannel = null;
 				return chan;
 			}
 		}

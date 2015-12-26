@@ -97,12 +97,10 @@ export default class AudioEncoder {
 			});
 
 			enc.stdout.on("end", function () {
-				console.log("end");
 				reject("end");
 			});
 
 			enc.stdout.on("close", function () {
-				console.log("close");
 				reject("close");
 			});
 		});
@@ -130,12 +128,10 @@ export default class AudioEncoder {
 			});
 
 			enc.stdout.on("end", function () {
-				console.log("end");
 				reject("end");
 			});
 
 			enc.stdout.on("close", function () {
-				console.log("close");
 				reject("close");
 			});
 		});
