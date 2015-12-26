@@ -93,7 +93,11 @@ export default class Server extends Equality {
 	}
 
 	detailsOfUser(user) {
-		return this.details(user);
+		return this.detailsOf(user);
+	}
+
+	details(user) {
+		return this.detailsOf(user);
 	}
 
 	rolesOfUser(user) {
