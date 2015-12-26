@@ -7,7 +7,7 @@ import {reg} from "../Util/ArgumentRegulariser";
 export default class VoiceChannel extends ServerChannel{
 	constructor(data, client, server){
 		super(data, client, server);
-		this.speaking = new Cache();
+		this.members = new Cache();
 	}
 
 	join(callback = function () { }) {

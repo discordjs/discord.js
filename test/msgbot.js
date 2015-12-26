@@ -44,7 +44,7 @@ client.on("message", msg => {
 
 	if (msg.content === "who is speaking") {
 		for (var chan of msg.channel.server.channels.getAll("type", "voice")) {
-			msg.channel.send(`${chan} : ${chan.speaking}`);
+			msg.channel.send(`${chan} : ${chan.members}`);
 		}
 	}
 

@@ -13,7 +13,7 @@ A voice channel of a server. Currently, the voice channel class has no differenc
 Attributes
 ----------
 
-speaking
+members
 ~~~~~~~~
 
-A Cache_ of Users_ that are speaking in the voice channel
+A Cache_ of Users_ that are connected to the voice channel
