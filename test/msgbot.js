@@ -34,6 +34,12 @@ client.on("message", msg => {
 		client.destroy();
 	}
 
+	if (msg.content === "who tf is speaking") {
+		for (var chan of msg.channel.server.channels.getAll("type", "voice")) {
+			msg.channel.send(`${chan} : ${chan.speaking}`);
+		}
+	}
+
 	if(msg.content === "replyme"){
 		msg.reply("hi");
 	}

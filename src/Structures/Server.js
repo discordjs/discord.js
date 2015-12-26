@@ -69,6 +69,18 @@ export default class Server extends Equality {
 				}
 			}
 		}
+
+		if (data.voice_states) {
+			for (var voiceState of data.voice_states) {
+				let user = this.members.get("id", voiceState.user_id);
+				let channel = this.channels.get("id", voiceState.channel_id);
+				if (user && channel) {
+					this.eventStartSpeaking(user, channel);
+				} else {
+					this.client.emit("warn", "user doesn't exist even though READY expects them to");
+				}
+			}
+		}
 	}
 
 	detailsOf(user) {
