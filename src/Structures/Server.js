@@ -147,7 +147,7 @@ export default class Server extends Equality {
 
 	eventStartSpeaking(user, channel){
 		channel = this.channels.get("id", channel.id);
-		if(channel){
+		if(channel && channel.type === "voice"){
 			// good
 
 			// removes from other speaking channels first
