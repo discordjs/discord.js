@@ -1,6 +1,7 @@
 .. _Client : ./docs_client.html
 .. _Cache : ./docs_cache.html
 .. _User : ./docs_user.html
+.. _Users : ./docs_user.html
 .. _Server : ./docs_server.html
 .. _Channel : ./docs_channel.html
 .. _ServerChannel : ./docs_serverchannel.html

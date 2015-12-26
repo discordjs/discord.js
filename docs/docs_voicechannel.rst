@@ -16,4 +16,4 @@ Attributes
 speaking
 ~~~~~~~~
 
-A Cache_ of User_s that are speaking in the voice channel
+A Cache_ of Users_ that are speaking in the voice channel
