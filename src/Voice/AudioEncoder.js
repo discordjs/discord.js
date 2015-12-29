@@ -15,6 +15,22 @@ export default class AudioEncoder {
 			this.opus = new opus.OpusEncoder(48000, 2);
 		}
 		this.choice = false;
+		this.sanityCheckPassed = undefined;
+	}
+
+	sanityCheck() {
+		var _opus = this.opus;
+		var encodeZeroes = function() {
+			try {
+				var zeroes = new Buffer(1920);
+				zeroes.fill(0);
+				return _opus.encode(zeroes, 1920).readUIntBE(0, 3);
+			} catch(err) {
+				return false;
+			}
+		};
+		if(this.sanityCheckPassed === undefined) this.sanityCheckPassed = (encodeZeroes() === 16056318);
+		return this.sanityCheckPassed;
 	}
 
 	opusBuffer(buffer) {

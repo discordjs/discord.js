@@ -189,6 +189,14 @@ export default class VoiceConnection extends EventEmitter {
 				self.client.emit("debug", "Tried to use node-opus, but opus not available - install it!");
 				return;
 			}
+
+			if (!self.encoder.sanityCheck()) {
+				self.playing = false;
+				self.emit("error", "Opus sanity check failed!");
+				self.client.emit("debug", "Opus sanity check failed - opus is installed but not correctly! Please reinstall opus and make sure it's installed correctly.");
+				return;
+			}
+
 			var buffer = self.encoder.opusBuffer(rawbuffer);
 			var packet = new VoicePacket(buffer, sequence, timestamp, self.vWSData.ssrc);
 			return self.sendPacket(packet, callback);
