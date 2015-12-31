@@ -94,9 +94,8 @@ export default class Client extends EventEmitter {
 	// def destroy
 	destroy(callback = (/*err, {}*/) => { }) {
 		this.internal.logout()
-			.then(() => {
-				this.internal.disconnected(true);
-			});
+			.then(() => this.internal.disconnected(true))
+			.then(dataCallback(callback), errorCallback(callback));
 	}
 
 	// def sendMessage
