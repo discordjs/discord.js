@@ -490,11 +490,9 @@ export default class InternalClient {
 		server = this.resolver.resolveServer(server);
 
 		return this.apiRequest("get", Endpoints.SERVER_BANS(server.id), true)
-		.then(res => {
-			res.map(ban => {
-				return this.users.add(new User(ban.user, this.client));
-			});
-		});
+			.then(res => res.map(
+				ban => this.users.add(new User(ban.user, this.client))
+			));
 	}
 
 	// def createChannel
