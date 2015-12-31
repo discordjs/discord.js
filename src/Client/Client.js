@@ -498,7 +498,7 @@ export default class Client extends EventEmitter {
 		return this.setStatusIdle(callback);
 	}
 
-	setPlayingGame(game) {
-		return this.setStatus(null, game);
+	setPlayingGame(game, callback) {
+		return this.setStatus(null, game, callback);
 	}
 }
