@@ -226,7 +226,7 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	//def banMember
+	// def banMember
 	banMember(user, server, length = 1, callback = (/*err, {}*/) => { }) {
 		if (typeof length === "function") {
 			// length is the callback
@@ -237,19 +237,19 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	//def unbanMember
+	// def unbanMember
 	unbanMember(user, server, callback = (/*err, {}*/) => { }) {
 		return this.internal.unbanMember(user, server)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	//def kickMember
+	// def kickMember
 	kickMember(user, server, callback = (/*err, {}*/) => { }) {
 		return this.internal.kickMember(user, server)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	//def createRole
+	// def createRole
 	createRole(server, data = null, callback = (/*err, role*/) => { }) {
 		if (typeof data === "function") {
 			// data is the callback
@@ -260,7 +260,7 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	//def updateRole
+	// def updateRole
 	updateRole(role, data = null, callback = (/*err, role*/) => { }) {
 		if (typeof data === "function") {
 			// data is the callback
@@ -270,13 +270,13 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	//def deleteRole
+	// def deleteRole
 	deleteRole(role, callback = (/*err, {}*/) => { }) {
 		return this.internal.deleteRole(role)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	//def addMemberToRole
+	// def addMemberToRole
 	addMemberToRole(member, role, callback = (/*err, {}*/) => { }) {
 		return this.internal.addMemberToRole(member, role)
 			.then(dataCallback(callback), errorCallback(callback));
@@ -298,7 +298,7 @@ export default class Client extends EventEmitter {
 		return this.removeMemberFromRole(member, role, callback);
 	}
 
-	//def addMemberToRole
+	// def addMemberToRole
 	addMemberToRoles(member, roles, callback = (/*err, {}*/) => { }) {
 		return this.internal.addMemberToRoles(member, roles)
 			.then(dataCallback(callback), errorCallback(callback));
@@ -343,7 +343,7 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	//def setStatus
+	// def setStatus
 	setStatus(idleStatus, gameID, callback = (/*err, {}*/) => { }) {
 		if (typeof gameID === "function") {
 			// gameID is the callback
@@ -357,7 +357,7 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	//def sendTyping
+	// def sendTyping
 	sendTyping(channel, callback = (/*err, {}*/) => { }) {
 		return this.internal.sendTyping(channel)
 			.then(dataCallback(callback), errorCallback(callback));
@@ -369,61 +369,61 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	//def setChannelName
+	// def setChannelName
 	setChannelName(channel, name, callback = (/*err, {}*/) => { }) {
 		return this.internal.setChannelName(channel, name)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	//def setChannelNameAndTopic
+	// def setChannelNameAndTopic
 	setChannelNameAndTopic(channel, name, topic, callback = (/*err, {}*/) => { }) {
 		return this.internal.setChannelNameAndTopic(channel, name, topic)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	//def setChannelPosition
+	// def setChannelPosition
 	setChannelPosition(channel, position, callback = (/*err, {}*/) => { }) {
 		return this.internal.setChannelPosition(channel, position)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	//def updateChannel
+	// def updateChannel
 	updateChannel(channel, data, callback = (/*err, {}*/) => { }) {
 		return this.internal.updateChannel(channel, data)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	//def startTyping
+	// def startTyping
 	startTyping(channel, callback = (/*err, {}*/) => { }) {
 		return this.internal.startTyping(channel)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	//def stopTyping
+	// def stopTyping
 	stopTyping(channel, callback = (/*err, {}*/) => { }) {
 		return this.internal.stopTyping(channel)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	//def updateDetails
+	// def updateDetails
 	updateDetails(details, callback = (/*err, {}*/) => { }) {
 		return this.internal.updateDetails(details)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	//def setUsername
+	// def setUsername
 	setUsername(name, callback = (/*err, {}*/) => { }) {
 		return this.internal.setUsername(name)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	//def setAvatar
+	// def setAvatar
 	setAvatar(avatar, callback = (/*err, {}*/) => { }) {
 		return this.internal.setAvatar(avatar)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	//def joinVoiceChannel
+	// def joinVoiceChannel
 	joinVoiceChannel(channel, callback = (/*err, channel*/) => { }) {
 		return this.internal.joinVoiceChannel(channel)
 			.then(dataCallback(callback), errorCallback(callback));
