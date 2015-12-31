@@ -4,6 +4,9 @@ import InternalClient from "./InternalClient";
 import EventEmitter from "events";
 import PMChannel from "../Structures/PMChannel";
 
+// This utility function creates an anonymous error handling wrapper function
+// for a given callback. It is used to allow error handling inside the callback
+// and using other means.
 function constructErrorCallback(callback) {
 	return error => {
 		callback(error);
