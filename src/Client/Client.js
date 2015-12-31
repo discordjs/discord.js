@@ -14,6 +14,16 @@ function constructErrorCallback(callback) {
 	};
 }
 
+// This utility function creates an anonymous handler function to separate the
+// error and the data arguments inside a callback and return the data if it is
+// eventually done (for promise propagation).
+function dataCallback(callback) {
+	return data => {
+		callback(null, data);
+		return data;
+	}
+}
+
 export default class Client extends EventEmitter {
 	/*
 		this class is an interface for the internal
@@ -253,25 +263,25 @@ export default class Client extends EventEmitter {
 
 	//def banMember
 	banMember(user, server, length = 1, callback = (/*err*/) => { }) {
-
 		if (typeof length === "function") {
 			// length is the callback
 			callback = length;
 		}
+
 		return this.internal.banMember(user, server, length)
-			.then(callback, constructErrorCallback(callback));
+			.then(() => {}, constructErrorCallback(callback));
 	}
 
 	//def unbanMember
 	unbanMember(user, server, callback = (/*err*/) => { }) {
 		return this.internal.unbanMember(user, server)
-			.then(callback, constructErrorCallback(callback));
+			.then(() => {}, constructErrorCallback(callback));
 	}
 
 	//def kickMember
 	kickMember(user, server, callback = (/*err*/) => { }) {
 		return this.internal.kickMember(user, server)
-			.then(callback, constructErrorCallback(callback));
+			.then(() => {}, constructErrorCallback(callback));
 	}
 
 	//def createRole
