@@ -436,7 +436,7 @@ export default class Client extends EventEmitter {
 	}
 
 	// def awaitResponse
-	awaitResponse(msg, toSend = null, options = null, callback = (/*e, newMsg*/) => { }) {
+	awaitResponse(msg, toSend = null, options = null, callback = (/*err, newMsg*/) => { }) {
 		var ret;
 
 		if (toSend) {
@@ -466,10 +466,7 @@ export default class Client extends EventEmitter {
 		}
 		// (msg) promise
 		return ret.then(() => this.internal.awaitResponse(msg))
-			.then(newMsg => {
-				callback(null, newMsg);
-				return newMsg;
-			}, errorCallback(callback));
+			.then(dataCallback(callback), errorCallback(callback));
 	}
 
 	setStatusIdle(callback = (/*err, {}*/) => { }) {
