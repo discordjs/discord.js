@@ -7,7 +7,7 @@ import PMChannel from "../Structures/PMChannel";
 // This utility function creates an anonymous error handling wrapper function
 // for a given callback. It is used to allow error handling inside the callback
 // and using other means.
-function constructErrorCallback(callback) {
+function errorCallback(callback) {
 	return error => {
 		callback(error);
 		throw error;
@@ -85,13 +85,13 @@ export default class Client extends EventEmitter {
 			.then(token => {
 				callback(null, token);
 				return token;
-			}, constructErrorCallback(callback));
+			}, errorCallback(callback));
 	}
 
 	// def logout
 	logout(callback = (/*err*/) => { }) {
 		return this.internal.logout()
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	// def destroy
@@ -113,7 +113,7 @@ export default class Client extends EventEmitter {
 			.then(m => {
 				callback(null, m);
 				return m;
-			}, constructErrorCallback(callback));
+			}, errorCallback(callback));
 	}
 
 	// def sendTTSMessage
@@ -122,7 +122,7 @@ export default class Client extends EventEmitter {
 			.then(m => {
 				callback(null, m);
 				return m;
-			}, constructErrorCallback(callback));
+			}, errorCallback(callback));
 	}
 	// def reply
 	reply(where, content, options = {}, callback = (/*e, m*/) => { }) {
@@ -141,7 +141,7 @@ export default class Client extends EventEmitter {
 				.then(m => {
 					callback(null, m);
 					return m;
-				}, constructErrorCallback(callback));
+				}, errorCallback(callback));
 		}
 		var err = new Error("Destination not resolvable to a message!");
 		callback(err);
@@ -154,7 +154,7 @@ export default class Client extends EventEmitter {
 			.then(m => {
 				callback(null, m);
 				return m;
-			}, constructErrorCallback(callback));
+			}, errorCallback(callback));
 	}
 	// def deleteMessage
 	deleteMessage(msg, options = {}, callback = (/*e*/) => { }) {
@@ -164,7 +164,7 @@ export default class Client extends EventEmitter {
 		}
 
 		return this.internal.deleteMessage(msg, options)
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 	//def updateMessage
 	updateMessage(msg, content, options = {}, callback = (/*err, msg*/) => { }) {
@@ -177,7 +177,7 @@ export default class Client extends EventEmitter {
 			.then(msg => {
 				callback(null, msg);
 				return msg;
-			}, constructErrorCallback(callback));
+			}, errorCallback(callback));
 	}
 
 	// def getChannelLogs
@@ -191,7 +191,7 @@ export default class Client extends EventEmitter {
 			.then(logs => {
 				callback(null, logs);
 				return logs;
-			}, constructErrorCallback(callback));
+			}, errorCallback(callback));
 	}
 
 	// def getBans
@@ -200,7 +200,7 @@ export default class Client extends EventEmitter {
 			.then(bans => {
 				callback(null, bans);
 				return bans;
-			}, constructErrorCallback(callback));
+			}, errorCallback(callback));
 	}
 
 	// def sendFile
@@ -209,7 +209,7 @@ export default class Client extends EventEmitter {
 			.then(m => {
 				callback(null, m);
 				return m;
-			}, constructErrorCallback(callback));
+			}, errorCallback(callback));
 	}
 
 	// def joinServer
@@ -218,7 +218,7 @@ export default class Client extends EventEmitter {
 			.then(srv => {
 				callback(null, srv);
 				return srv;
-			}, constructErrorCallback(callback));
+			}, errorCallback(callback));
 	}
 
 	// def createServer
@@ -227,19 +227,19 @@ export default class Client extends EventEmitter {
 			.then(srv => {
 				callback(null, srv);
 				return srv;
-			}, constructErrorCallback(callback));
+			}, errorCallback(callback));
 	}
 
 	// def leaveServer
 	leaveServer(server, callback = (/*err*/) => { }) {
 		return this.internal.leaveServer(server)
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	// def deleteServer
 	deleteServer(server, callback = (/*err*/) => { }) {
 		return this.internal.leaveServer(server)
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	// def createChannel
@@ -252,13 +252,13 @@ export default class Client extends EventEmitter {
 			.then(channel => {
 				callback(channel);
 				return channel;
-			}, constructErrorCallback(callback));
+			}, errorCallback(callback));
 	}
 
 	// def deleteChannel
 	deleteChannel(channel, callback = (/*err*/) => { }) {
 		return this.internal.deleteChannel(channel)
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	//def banMember
@@ -269,19 +269,19 @@ export default class Client extends EventEmitter {
 		}
 
 		return this.internal.banMember(user, server, length)
-			.then(() => {}, constructErrorCallback(callback));
+			.then(() => {}, errorCallback(callback));
 	}
 
 	//def unbanMember
 	unbanMember(user, server, callback = (/*err*/) => { }) {
 		return this.internal.unbanMember(user, server)
-			.then(() => {}, constructErrorCallback(callback));
+			.then(() => {}, errorCallback(callback));
 	}
 
 	//def kickMember
 	kickMember(user, server, callback = (/*err*/) => { }) {
 		return this.internal.kickMember(user, server)
-			.then(() => {}, constructErrorCallback(callback));
+			.then(() => {}, errorCallback(callback));
 	}
 
 	//def createRole
@@ -294,7 +294,7 @@ export default class Client extends EventEmitter {
 			.then(role => {
 				callback(null, role);
 				return role;
-			}, constructErrorCallback(callback));
+			}, errorCallback(callback));
 	}
 
 	//def updateRole
@@ -307,19 +307,19 @@ export default class Client extends EventEmitter {
 			.then(role => {
 				callback(null, role);
 				return role;
-			}, constructErrorCallback(callback));
+			}, errorCallback(callback));
 	}
 
 	//def deleteRole
 	deleteRole(role, callback = (/*err*/) => { }) {
 		return this.internal.deleteRole(role)
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	//def addMemberToRole
 	addMemberToRole(member, role, callback = (/*err*/) => { }) {
 		return this.internal.addMemberToRole(member, role)
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	// def addUserToRole
@@ -330,7 +330,7 @@ export default class Client extends EventEmitter {
 	// def removeMemberFromRole
 	removeMemberFromRole(member, role, callback = (/*err*/) => { }) {
 		return this.internal.removeMemberFromRole(member, role)
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	// def removeUserFromRole
@@ -341,7 +341,7 @@ export default class Client extends EventEmitter {
 	//def addMemberToRole
 	addMemberToRoles(member, roles, callback = (/*err*/) => { }) {
 		return this.internal.addMemberToRoles(member, roles)
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	// def addUserToRole
@@ -352,7 +352,7 @@ export default class Client extends EventEmitter {
 	// def removeMemberFromRole
 	removeMemberFromRoles(member, roles, callback = (/*err*/) => { }) {
 		return this.internal.removeMemberFromRoles(member, roles)
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	// def removeUserFromRole
@@ -371,19 +371,19 @@ export default class Client extends EventEmitter {
 		return this.internal.createInvite(chanServ, options)
 			.then(invite => {
 				callback(null, invite);
-			}, constructErrorCallback(callback));
+			}, errorCallback(callback));
 	}
 
 	// def deleteInvite
 	deleteInvite(invite, callback = (/*err*/) => { }) {
 		return this.internal.deleteInvite(invite)
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	// def overwritePermissions
 	overwritePermissions(channel, role, options = {}, callback = (/*err*/) => { }) {
 		return this.internal.overwritePermissions(channel, role, options)
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	//def setStatus
@@ -398,73 +398,73 @@ export default class Client extends EventEmitter {
 		}
 
 		return this.internal.setStatus(idleStatus, gameID)
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	//def sendTyping
 	sendTyping(channel, callback = (/*err*/) => { }) {
 		return this.internal.sendTyping(channel)
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	// def setTopic
 	setChannelTopic(channel, topic, callback = (/*err*/) => { }) {
 		return this.internal.setChannelTopic(channel, topic)
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	//def setChannelName
 	setChannelName(channel, name, callback = (/*err*/) => { }) {
 		return this.internal.setChannelName(channel, name)
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	//def setChannelNameAndTopic
 	setChannelNameAndTopic(channel, name, topic, callback = (/*err*/) => { }) {
 		return this.internal.setChannelNameAndTopic(channel, name, topic)
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	//def setChannelPosition
 	setChannelPosition(channel, position, callback = (/*err*/) => { }) {
 		return this.internal.setChannelPosition(channel, position)
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	//def updateChannel
 	updateChannel(channel, data, callback = (/*err*/) => { }) {
 		return this.internal.updateChannel(channel, data)
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	//def startTyping
 	startTyping(channel, callback = (/*err*/) => { }) {
 		return this.internal.startTyping(channel)
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	//def stopTyping
 	stopTyping(channel, callback = (/*err*/) => { }) {
 		return this.internal.stopTyping(channel)
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	//def updateDetails
 	updateDetails(details, callback = (/*err*/) => { }) {
 		return this.internal.updateDetails(details)
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	//def setUsername
 	setUsername(name, callback = (/*err*/) => { }) {
 		return this.internal.setUsername(name)
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	//def setAvatar
 	setAvatar(avatar, callback = (/*err*/) => { }) {
 		return this.internal.setAvatar(avatar)
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	//def joinVoiceChannel
@@ -473,13 +473,13 @@ export default class Client extends EventEmitter {
 			.then(chan => {
 				callback(null, chan);
 				return chan;
-			}, constructErrorCallback(callback));
+			}, errorCallback(callback));
 	}
 
 	// def leaveVoiceChannel
 	leaveVoiceChannel(callback = (/*err*/) => { }) {
 		return this.internal.leaveVoiceChannel()
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	// def awaitResponse
@@ -517,17 +517,17 @@ export default class Client extends EventEmitter {
 			.then(newMsg => {
 				callback(null, newMsg);
 				return newMsg;
-			}, constructErrorCallback(callback));
+			}, errorCallback(callback));
 	}
 
 	setStatusIdle(callback = (/*err*/) => { }) {
 		return this.internal.setStatus("idle")
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	setStatusOnline(callback = (/*err*/) => { }) {
 		return this.internal.setStatus("online")
-			.then(callback, constructErrorCallback(callback));
+			.then(callback, errorCallback(callback));
 	}
 
 	setStatusActive(callback) {
