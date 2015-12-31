@@ -269,19 +269,19 @@ export default class Client extends EventEmitter {
 		}
 
 		return this.internal.banMember(user, server, length)
-			.then(() => {}, errorCallback(callback));
+			.then(dataCallback(callback), errorCallback(callback));
 	}
 
 	//def unbanMember
 	unbanMember(user, server, callback = (/*err*/) => { }) {
 		return this.internal.unbanMember(user, server)
-			.then(() => {}, errorCallback(callback));
+			.then(dataCallback(callback), errorCallback(callback));
 	}
 
 	//def kickMember
 	kickMember(user, server, callback = (/*err*/) => { }) {
 		return this.internal.kickMember(user, server)
-			.then(() => {}, errorCallback(callback));
+			.then(dataCallback(callback), errorCallback(callback));
 	}
 
 	//def createRole
