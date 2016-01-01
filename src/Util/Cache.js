@@ -52,9 +52,10 @@ export default class Cache extends Array {
 
 	update(old, data) {
 		var item = this.get(this[discrimS], old[this[discrimS]]);
+
 		if (item) {
 			var index = this.indexOf(item);
-			this[index] = data;
+			Object.assign(this[index], data);
 			this[discrimCacheS][data[this[discrimS]]] = this[index];
 			return this[index];
 		} else {

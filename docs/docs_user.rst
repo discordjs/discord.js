@@ -20,6 +20,8 @@ The Client_ that created the user.
 username
 ~~~~~~~~
 
+_Alias_ : ``name``
+
 `String`, username of the User.
 
 discriminator

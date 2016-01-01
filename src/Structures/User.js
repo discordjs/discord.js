@@ -29,6 +29,10 @@ export default class User extends Equality{
 		}
 	}
 
+	get name() {
+		return this.username;
+	}
+
 	mention(){
 		return `<@${this.id}>`;
 	}

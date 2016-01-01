@@ -48,6 +48,10 @@ client.on("message", msg => {
 		}
 	}
 
+	if (msg.content === "what is my name") {
+		msg.reply(msg.channel.server.members.get("id", msg.sender.id));
+	}
+
 	if(msg.content === "replyme"){
 		msg.reply("hi");
 	}
