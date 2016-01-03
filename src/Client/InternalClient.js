@@ -255,12 +255,12 @@ export default class InternalClient {
 		if(!invite) {
 			return Promise.reject(new Error("Not a valid invite"));
 		}
+
 		return this.apiRequest("post", Endpoints.INVITE(invite), true)
 		.then(res => {
 			// valid server, wait until it is received via ws and cached
 			return waitFor(() => this.servers.get("id", res.guild.id));
 		});
-
 	}
 
 	//def leaveServer
@@ -762,12 +762,22 @@ export default class InternalClient {
 
 	//def deleteInvite
 	deleteInvite(invite) {
-
 		invite = this.resolver.resolveInviteID(invite);
 		if(!invite) {
 			throw new Error("Not a valid invite");
 		}
 		return this.apiRequest("del", Endpoints.INVITE(invite), true);
+	}
+
+	//def getInvite
+	getInvite(invite) {
+		invite = this.resolver.resolveInviteID(invite);
+		if(!invite) {
+			return Promise.reject(new Error("Not a valid invite"));
+		}
+
+		return this.apiRequest("get", Endpoints.INVITE(invite), true)
+		.then(res => new Invite(res, this.channels.get("id", res.channel.id), this.client));
 	}
 
 	//def overwritePermissions

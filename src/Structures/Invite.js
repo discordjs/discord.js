@@ -4,14 +4,21 @@ export default class Invite {
 	constructor(data, chan, client){
 		this.maxAge = data.max_age;
         this.code = data.code;
-        this.server = chan.server;
-		this.channel = chan;
+        if (data.chan) {
+            this.channel = chan;
+            this.server = chan.server;
+        } else {
+            this.channel = data.channel;
+            this.server = data.guild;
+        }
         this.revoked = data.revoked;
         this.createdAt = Date.parse(data.created_at);
         this.temporary = data.temporary;
         this.uses = data.uses;
-        this.maxUses = data.uses;
-        this.inviter = client.internal.users.get("id", data.inviter.id);
+        this.maxUses = data.max_uses;
+        if (data.inviter) {
+            this.inviter = client.internal.users.get("id", data.inviter.id);
+        }
         this.xkcd = data.xkcdpass;
 	}
 
