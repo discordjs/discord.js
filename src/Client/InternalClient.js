@@ -763,7 +763,7 @@ export default class InternalClient {
 	//def deleteInvite
 	deleteInvite(invite) {
 		invite = this.resolver.resolveInviteID(invite);
-		if(!invite) {
+		if (!invite) {
 			throw new Error("Not a valid invite");
 		}
 		return this.apiRequest("del", Endpoints.INVITE(invite), true);
@@ -772,12 +772,18 @@ export default class InternalClient {
 	//def getInvite
 	getInvite(invite) {
 		invite = this.resolver.resolveInviteID(invite);
-		if(!invite) {
+		if (!invite) {
 			return Promise.reject(new Error("Not a valid invite"));
 		}
 
 		return this.apiRequest("get", Endpoints.INVITE(invite), true)
-		.then(res => new Invite(res, this.channels.get("id", res.channel.id), this.client));
+		.then(res => {
+			if (!this.channels.has("id", res.channel.id)) {
+				return new Invite(res, null, this.client);
+			}
+			return this.apiRequest("post", Endpoints.CHANNEL_INVITES(res.channel.id), true, {validate: invite})
+			.then(res2 => new Invite(res2, this.channels.get("id", res.channel.id), this.client));
+		});
 	}
 
 	//def overwritePermissions

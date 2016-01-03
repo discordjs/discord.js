@@ -4,7 +4,7 @@ export default class Invite {
 	constructor(data, chan, client){
 		this.maxAge = data.max_age;
         this.code = data.code;
-        if (data.chan) {
+        if (chan) {
             this.channel = chan;
             this.server = chan.server;
         } else {
