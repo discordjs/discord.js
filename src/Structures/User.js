@@ -13,7 +13,7 @@ export default class User extends Equality{
 		this.id = data.id;
 		this.avatar = data.avatar;
 		this.status = data.status || "offline";
-		this.gameID = data.game_id || null;
+		this.game = data.game || null;
 		this.typing = {
 			since : null,
 			channel : null
