@@ -103,6 +103,7 @@ export default class Client extends EventEmitter {
 		if (typeof options === "function") {
 			// options is the callback
 			callback = options;
+			options = {};
 		}
 
 		return this.internal.sendMessage(where, content, options)
@@ -120,6 +121,7 @@ export default class Client extends EventEmitter {
 		if (typeof options === "function") {
 			// options is the callback
 			callback = options;
+			options = {};
 		}
 
 		var msg = this.internal.resolver.resolveMessage(where);
@@ -146,6 +148,7 @@ export default class Client extends EventEmitter {
 		if (typeof options === "function") {
 			// options is the callback
 			callback = options;
+			options = {};
 		}
 
 		return this.internal.deleteMessage(msg, options)
@@ -156,6 +159,7 @@ export default class Client extends EventEmitter {
 		if (typeof options === "function") {
 			// options is the callback
 			callback = options;
+			options = {};
 		}
 
 		return this.internal.updateMessage(msg, content, options)
@@ -167,6 +171,7 @@ export default class Client extends EventEmitter {
 		if (typeof options === "function") {
 			// options is the callback
 			callback = options;
+			options = {};
 		}
 
 		return this.internal.getChannelLogs(where, limit, options)
@@ -208,6 +213,7 @@ export default class Client extends EventEmitter {
 		if (typeof region === "function") {
 			// region is the callback
 			callback = region;
+			region = undefined;
 		}
 
 		return this.internal.updateServer(server, name, region)
@@ -225,6 +231,7 @@ export default class Client extends EventEmitter {
 		if (typeof type === "function") {
 			// options is the callback
 			callback = type;
+			type = "text";
 		}
 
 		return this.internal.createChannel(server, name, type)
@@ -242,6 +249,7 @@ export default class Client extends EventEmitter {
 		if (typeof length === "function") {
 			// length is the callback
 			callback = length;
+			length = 1;
 		}
 
 		return this.internal.banMember(user, server, length)
@@ -265,6 +273,7 @@ export default class Client extends EventEmitter {
 		if (typeof data === "function") {
 			// data is the callback
 			callback = data;
+			data = null;
 		}
 
 		return this.internal.createRole(server, data)
@@ -276,6 +285,7 @@ export default class Client extends EventEmitter {
 		if (typeof data === "function") {
 			// data is the callback
 			callback = data;
+			data = null;
 		}
 		return this.internal.updateRole(role, data)
 			.then(dataCallback(callback), errorCallback(callback));
@@ -336,6 +346,7 @@ export default class Client extends EventEmitter {
 		if (typeof options === "function") {
 			// options is the callback
 			callback = options;
+			options = undefined;
 		}
 
 		return this.internal.createInvite(chanServ, options)
@@ -365,9 +376,11 @@ export default class Client extends EventEmitter {
 		if (typeof game === "function") {
 			// game is the callback
 			callback = game;
+			game = null;
 		} else if (typeof idleStatus === "function") {
 			// idleStatus is the callback
 			callback = idleStatus;
+			game = null;
 		}
 
 		return this.internal.setStatus(idleStatus, game)
@@ -460,12 +473,15 @@ export default class Client extends EventEmitter {
 			if (typeof toSend === "function") {
 				// (msg, callback)
 				callback = toSend;
+				toSend = null;
+				options = null;
 			} else {
 				// (msg, toSend, ...)
 				if (options) {
 					if (typeof options === "function") {
 						//(msg, toSend, callback)
 						callback = options;
+						options = null;
 						ret = this.sendMessage(msg, toSend);
 					} else {
 						//(msg, toSend, options, callback)
