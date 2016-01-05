@@ -49,7 +49,7 @@ export default class User extends Equality{
 				this.discriminator === obj.discriminator &&
 				this.avatar === obj.avatar &&
 				this.status === obj.status &&
-				(this.game && obj.game && this.game.name === obj.game.name)
+				(this.game === obj.game || this.game && obj.game && this.game.name === obj.game.name)
 			);
 		else
 			return false;
