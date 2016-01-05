@@ -53,6 +53,8 @@ Here is a list of other Discord APIs:
 
 [JDA](https://github.com/DV8FromTheWorld/JDA)
 
+[Javacord](https://github.com/BtoBastian/Javacord)
+
 #### Go:
 [Go-Discord](https://github.com/gdraynz/go-discord)
 
