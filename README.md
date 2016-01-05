@@ -53,6 +53,8 @@ Here is a list of other Discord APIs:
 
 [JDA](https://github.com/DV8FromTheWorld/JDA)
 
+[Javacord](https://github.com/BtoBastian/Javacord)
+
 #### Go:
 [Go-Discord](https://github.com/gdraynz/go-discord)
 
@@ -71,7 +73,7 @@ Here is a list of other Discord APIs:
 #### PHP
 [DiscordPHP](https://github.com/teamreflex/DiscordPHP)
 
-[Discord-PHP](https://github.com/Cleanse/discord-php)
+[discord-hypertext](https://github.com/Cleanse/discord-hypertext)
 
 #### Python
 [discord.py](https://github.com/Rapptz/discord.py)
