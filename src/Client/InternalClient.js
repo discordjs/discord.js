@@ -933,7 +933,7 @@ export default class InternalClient {
 		return this.updateDetails({username});
 	}
 
-	//def setTopic
+	//def setChannelTopic
 	setChannelTopic(chann, topic = "") {
 		return this.resolver.resolveChannel(chann)
 		.then(channel =>

@@ -324,7 +324,7 @@ setStatusOnline()
 
 Sets the status of the Client to Online
 
-setTopic(channel, topic, `callback`)
+setChannelTopic(channel, topic, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sets the topic of a channel
