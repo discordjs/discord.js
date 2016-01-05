@@ -350,16 +350,16 @@ export default class Client extends EventEmitter {
 	}
 
 	// def setStatus
-	setStatus(idleStatus, gameID, callback = (/*err, {}*/) => { }) {
-		if (typeof gameID === "function") {
-			// gameID is the callback
-			callback = gameID;
+	setStatus(idleStatus, game, callback = (/*err, {}*/) => { }) {
+		if (typeof game === "function") {
+			// game is the callback
+			callback = game;
 		} else if (typeof idleStatus === "function") {
 			// idleStatus is the callback
 			callback = idleStatus;
 		}
 
-		return this.internal.setStatus(idleStatus, gameID)
+		return this.internal.setStatus(idleStatus, game)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 

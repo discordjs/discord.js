@@ -44,15 +44,21 @@ status
 
 The status of a user, `String`. Either ``online``, ``offline`` or ``idle``.
 
-gameID
-~~~~~~
+game
+~~~~
 
-The ID of the game a user is playing, `Number`.
+The game object of a user. `null` if not playing a game, otherwise `Object` containing the following values:
+
+.. code-block:: js
+
+	{
+		name : 'Game Name' //Name of game user is playing
+	}
 
 typing
 ~~~~~~
 
-`Object` containing the following values;
+`Object` containing the following values:
 
 .. code-block:: js
 

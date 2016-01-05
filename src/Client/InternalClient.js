@@ -1371,8 +1371,8 @@ export default class InternalClient {
 						if (presenceUser.equals(user)) {
 							// a real presence update
 							user.status = data.status;
-							user.gameID = data.game_id;
-							client.emit("presence", user, data.status, data.game_id);
+							user.game = data.game;
+							client.emit("presence", user, data.status, data.game);
 
 						} else {
 							// a name change or avatar change
