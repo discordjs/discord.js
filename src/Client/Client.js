@@ -203,6 +203,17 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
+	// def updateServer
+	updateServer(server, name, region, callback = (/*err, srv*/) => { }) {
+		if (typeof region === "function") {
+			// region is the callback
+			callback = region;
+		}
+
+		return this.internal.updateServer(server, name, region)
+			.then(dataCallback(callback), errorCallback(callback));
+	}
+
 	// def deleteServer
 	deleteServer(server, callback = (/*err, {}*/) => { }) {
 		return this.internal.leaveServer(server)
