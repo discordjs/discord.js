@@ -1097,10 +1097,9 @@ export default class InternalClient {
 							self.messageAwaits[channel.id + msg.author.id].map( fn => fn(msg) );
 							self.messageAwaits[channel.id + msg.author.id] = null;
 							client.emit("message", msg, true); //2nd param is isAwaitedMessage
-						}else{
+						} else {
 							client.emit("message", msg);
 						}
-						self.ack(msg);
 					} else {
 						client.emit("warn", "message created but channel is not cached");
 					}
