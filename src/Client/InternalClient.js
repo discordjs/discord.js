@@ -263,6 +263,21 @@ export default class InternalClient {
 		});
 	}
 
+	//def updateServer
+	updateServer(server, name, region) {
+		var server = this.resolver.resolveServer(server);
+		if(!server) {
+			return Promise.reject(new Error("server did not resolve"));
+		}
+
+		return this.apiRequest("patch", Endpoints.SERVER(server.id), true, { name: name || server.name, region: region || server.region })
+		.then(res => {
+			// wait until the name and region are updated
+			return waitFor(() =>
+				(this.servers.get("name", res.name) ? ((this.servers.get("name", res.name).region === res.region) ? this.servers.get("id", res.id) : false) : false));
+		});
+	}
+
 	//def leaveServer
 	leaveServer(srv) {
 		var server = this.resolver.resolveServer(srv);
@@ -1097,10 +1112,9 @@ export default class InternalClient {
 							self.messageAwaits[channel.id + msg.author.id].map( fn => fn(msg) );
 							self.messageAwaits[channel.id + msg.author.id] = null;
 							client.emit("message", msg, true); //2nd param is isAwaitedMessage
-						}else{
+						} else {
 							client.emit("message", msg);
 						}
-						self.ack(msg);
 					} else {
 						client.emit("warn", "message created but channel is not cached");
 					}
