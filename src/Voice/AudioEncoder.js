@@ -65,9 +65,9 @@ export default class AudioEncoder {
 				'-i', '-',
 				'-f', 's16le',
 				'-ar', '48000',
+				'-af', 'volume=' + (options.volume || 0.25),
 				'-ac', 2,
-				'pipe:1',
-				'-af', 'volume=' + (options.volume || 1)
+				'pipe:1'
 			], {stdio: ['pipe', 'pipe', 'ignore']});
 
 			stream.pipe(enc.stdin);
@@ -99,9 +99,9 @@ export default class AudioEncoder {
 				'-i', file,
 				'-f', 's16le',
 				'-ar', '48000',
+				'-af', 'volume=' + (options.volume || 0.25),
 				'-ac', 2,
-				'pipe:1',
-				'-af', '"volume=' + (options.volume || 1)+'"'
+				'pipe:1'
 			], { stdio: ['pipe', 'pipe', 'ignore'] });
 
 			enc.stdout.once("readable", function () {
