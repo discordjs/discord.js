@@ -858,11 +858,11 @@ export default class InternalClient {
 		if(idleStatus === "online" || idleStatus === "here" || idleStatus === "available"){
 			this.idleStatus = null;
 		}
-		else if (this.idleStatus === "idle" || this.idleStatus === "away") {
-			packet.d.idle_since = Date.now();
+		else if (idleStatus === "idle" || idleStatus === "away") {
+			this.idleStatus = Date.now();
 		}
 		else {
-			this.idleStatus = this.idleStatus || null; //undefineds
+			this.idleStatus = this.idleStatus || null; //undefined
 		}
 
 		this.game = game === null ? null : game || this.game;
