@@ -643,9 +643,23 @@ export default class InternalClient {
 
 		var roleIDS = roles[0].server.memberMap[member.id].roles.map(r => r.id);
 
-		if(roles.any(role => !role.server.memberMap[member.id])) {
-			return Promise.reject(new Error("Role does not exist on same server as member"));
-		}
+		var currentMemberRoles = roles[0].server.memberMap[member.id].roles;
+	    for (var i = 0; i < roles.length; i++) {
+	        var alreadyHasRole = currentMemberRoles.some(function(currentValue) {
+	            if (currentValue.id === roles[i].id) {
+	                return true;
+	            };
+	        });
+	        if (!alreadyHasRole) {
+	            roleIDS.push(roles[i].id);
+	        };
+	    };
+
+	    if (roles.some(function(role) {
+	            return !role.server.memberMap[member.id];
+	        })) {
+	        return Promise.reject(new Error("Role does not exist on same server as member"));
+	    }
 
 		return this.apiRequest(
 			"patch",
