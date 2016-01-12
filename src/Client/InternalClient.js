@@ -656,25 +656,17 @@ export default class InternalClient {
 			return Promise.reject(new Error("invalid array of roles"));
 		}
 
+		if (roles.some(role => !role.server.memberMap[member.id])) {
+			return Promise.reject(new Error("Role does not exist on same server as member"));
+		}
+
 		var roleIDS = roles[0].server.memberMap[member.id].roles.map(r => r.id);
 
-		var currentMemberRoles = roles[0].server.memberMap[member.id].roles;
 		for (var i = 0; i < roles.length; i++) {
-			var alreadyHasRole = currentMemberRoles.some(function(currentValue) {
-				if (currentValue.id === roles[i].id) {
-					return true;
-				};
-			});
-			if (!alreadyHasRole) {
+			if (!~roleIDs.indexOf(roles[i].id)) {
 				roleIDS.push(roles[i].id);
 			};
 		};
-
-		if (roles.some(function(role) {
-				return !role.server.memberMap[member.id];
-			})) {
-			return Promise.reject(new Error("Role does not exist on same server as member"));
-		}
 
 		return this.apiRequest(
 			"patch",
