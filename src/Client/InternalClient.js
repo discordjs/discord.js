@@ -1400,23 +1400,17 @@ export default class InternalClient {
 					var user = self.users.get("id", data.user.id);
 
 					if (user) {
-
 						data.user.username = data.user.username || user.username;
 						data.user.id = data.user.id || user.id;
 						data.user.avatar = data.user.avatar || user.avatar;
 						data.user.discriminator = data.user.discriminator || user.discriminator;
+						data.user.status = data.status || user.status;
+						data.user.game = data.game || user.game;
 
 						var presenceUser = new User(data.user, client);
 
-						if (presenceUser.equals(user)) {
-							// a real presence update
-							user.status = data.status;
-							user.game = data.game;
-							client.emit("presence", user, data.status, data.game);
-
-						} else {
-							// a name change or avatar change
-							client.emit("userUpdated", user, presenceUser);
+						if(!presenceUser.equalsStrict(user)) {
+							client.emit("presence", user, presenceUser);
 							self.users.update(user, presenceUser);
 						}
 
