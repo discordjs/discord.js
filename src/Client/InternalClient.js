@@ -807,6 +807,26 @@ export default class InternalClient {
 		});
 	}
 
+	//def getInvites
+	getInvites(channel) {
+		if (!(channel instanceof Channel)) {
+			var server = this.resolver.resolveServer(channel);
+			if (server) {
+				return this.apiRequest("get", Endpoints.SERVER_INVITES(server.id), true)
+				.then(res => {
+					return res.map(data => new Invite(data, this.channels.get("id", data.channel.id), this.client));
+				});
+			}
+		}
+		return this.resolver.resolveChannel(channel)
+		.then(channel => {
+			return this.apiRequest("get", Endpoints.CHANNEL_INVITES(channel.id), true)
+			.then(res => {
+				return res.map(data => new Invite(data, this.channels.get("id", data.channel.id), this.client));
+			});
+		});
+	}
+
 	//def overwritePermissions
 	overwritePermissions(channel, role, updated) {
 		return this.resolver.resolveChannel(channel)
@@ -1194,7 +1214,7 @@ export default class InternalClient {
 						// server exists
 						data.members = data.members || [];
 						data.channels = data.channels || [];
-						var newserver = new Server(data, self);
+						var newserver = new Server(data, client);
 						newserver.members = server.members;
 						newserver.memberMap = server.memberMap;
 						newserver.channels = server.channels;
@@ -1207,7 +1227,7 @@ export default class InternalClient {
 						}
 					} else if (!server) {
 						client.emit("warn", "server was updated but it was not in the cache");
-						self.servers.add(new Server(data, self));
+						self.servers.add(new Server(data, client));
 						client.emit("serverCreated", server);
 					}
 					break;

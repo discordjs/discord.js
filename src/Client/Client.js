@@ -365,6 +365,12 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
+	// def getInvites
+	getInvites(channel, callback = (/*err, inv*/) => { }) {
+		return this.internal.getInvites(channel)
+			.then(dataCallback(callback), errorCallback(callback));
+	}
+
 	// def overwritePermissions
 	overwritePermissions(channel, role, options = {}, callback = (/*err, {}*/) => { }) {
 		return this.internal.overwritePermissions(channel, role, options)
