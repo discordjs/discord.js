@@ -159,9 +159,14 @@ export default class Resolver {
 		}
 		if (resource instanceof User) {
 			// see if a PM exists
-			var chatFound = this.internal.private_channels.find(
-				pmchat => pmchat.recipient.equals(resource)
-			);
+			var chatFound = false;
+			for (var pmchat of this.internal.private_channels) {
+				if (pmchat.recipient.equals(resource)) {
+					chatFound = pmchat;
+					break;
+				}
+			}
+
 			if (chatFound) {
 				// a PM already exists!
 				return Promise.resolve(chatFound);
