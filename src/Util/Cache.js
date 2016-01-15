@@ -55,7 +55,11 @@ export default class Cache extends Array {
 
 		if (item) {
 			var index = this.indexOf(item);
-			Object.assign(this[index], data);
+			for (var dataIndex in data) {
+				if (data.hasOwnProperty(dataIndex)) {
+					this[index][dataIndex] = data[dataIndex];
+				}
+			}
 			this[discrimCacheS][data[this[discrimS]]] = this[index];
 			return this[index];
 		} else {
