@@ -35,36 +35,30 @@ export default class Server extends Equality {
 
 		var self = this;
 
-		if (data.roles) {
-			data.roles.forEach((dataRole) => {
-				this.roles.add(new Role(dataRole, this, client));
-			});
-		}
+		data.roles.forEach((dataRole) => {
+			this.roles.add(new Role(dataRole, this, client));
+		});
 
-		if (data.members) {
-			data.members.forEach((dataUser) => {
-				this.memberMap[dataUser.user.id] = {
-					roles: dataUser.roles.map((pid) => self.roles.get("id", pid)),
-					mute: dataUser.mute,
-					deaf: dataUser.deaf,
-					joinedAt: Date.parse(dataUser.joined_at)
-				};
-				var user = client.internal.users.add(new User(dataUser.user, client));
-				this.members.add(user);
-			});
-		}
+		data.members.forEach((dataUser) => {
+			this.memberMap[dataUser.user.id] = {
+				roles: dataUser.roles.map((pid) => self.roles.get("id", pid)),
+				mute: dataUser.mute,
+				deaf: dataUser.deaf,
+				joinedAt: Date.parse(dataUser.joined_at)
+			};
+			var user = client.internal.users.add(new User(dataUser.user, client));
+			this.members.add(user);
+		});
 
-		if (data.channels) {
-			data.channels.forEach((dataChannel) => {
-				if (dataChannel.type === "text") {
-					var channel = client.internal.channels.add(new TextChannel(dataChannel, client, this));
-					this.channels.add(channel);
-				} else {
-					var channel = client.internal.channels.add(new VoiceChannel(dataChannel, client, this));
-					this.channels.add(channel);
-				}
-			});
-		}
+		data.channels.forEach((dataChannel) => {
+			if (dataChannel.type === "text") {
+				var channel = client.internal.channels.add(new TextChannel(dataChannel, client, this));
+				this.channels.add(channel);
+			} else {
+				var channel = client.internal.channels.add(new VoiceChannel(dataChannel, client, this));
+				this.channels.add(channel);
+			}
+		});
 
 		if (data.presences) {
 			for (var presence of data.presences) {

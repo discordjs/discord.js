@@ -167,11 +167,16 @@ export default class Client extends EventEmitter {
 	}
 
 	// def getChannelLogs
-	getChannelLogs(where, limit = 500, options = {}, callback = (/*err, logs*/) => { }) {
+	getChannelLogs(where, limit = 50, options = {}, callback = (/*err, logs*/) => { }) {
 		if (typeof options === "function") {
 			// options is the callback
 			callback = options;
 			options = {};
+		}
+		else if (typeof limit === "function") {
+			// options is the callback
+			callback = limit;
+			limit = 50;
 		}
 
 		return this.internal.getChannelLogs(where, limit, options)

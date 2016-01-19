@@ -86,7 +86,7 @@ export default class InternalClient {
 						return reject(error);
 					}
 				}else{
-				resolve(data.body);
+					resolve(data.body);
 				}
 			});
 		});
@@ -472,7 +472,7 @@ export default class InternalClient {
 	}
 
 	// def getChannelLogs
-	getChannelLogs(_channel, limit = 500, options = {}) {
+	getChannelLogs(_channel, limit = 50, options = {}) {
 		return this.resolver.resolveChannel(_channel)
 		.then(channel => {
 			var qsObject = {limit};
@@ -1187,7 +1187,7 @@ export default class InternalClient {
 					break;
 				case PacketType.SERVER_CREATE:
 					var server = self.servers.get("id", data.id);
-					if (!server) {
+					if (!server && !data.unavailable) {
 						server = new Server(data, client)
 						self.servers.add(server);
 						client.emit("serverCreated", server);
@@ -1195,8 +1195,7 @@ export default class InternalClient {
 					break;
 				case PacketType.SERVER_DELETE:
 					var server = self.servers.get("id", data.id);
-					if (server) {
-
+					if (server && !data.unavailable) {
 						for (var channel of server.channels) {
 							self.channels.remove(channel);
 						}
