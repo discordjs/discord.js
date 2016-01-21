@@ -1178,8 +1178,9 @@ export default class InternalClient {
 							data.content = data.content || msg.content;
 							data.mentions = data.mentions || msg.mentions;
 							data.author = data.author || msg.author;
-							var nmsg = channel.messages.update(msg, new Message(data, channel, client));
+							var nmsg = new Message(data, channel, client);
 							client.emit("messageUpdated", nmsg, msg);
+							channel.messages.update(msg, nmsg);
 						}
 					} else {
 						client.emit("warn", "message was updated but channel is not cached");
