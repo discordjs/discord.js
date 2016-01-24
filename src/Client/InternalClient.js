@@ -480,13 +480,13 @@ export default class InternalClient {
 			if (options.before) {
 				const res = this.resolver.resolveMessage(options.before);
 				if(res) {
-					qsObject.before = res;
+					qsObject.before = res.id;
 				}
 			}
 			if (options.after) {
 				const res = this.resolver.resolveMessage(options.after);
 				if(res) {
-					qsObject.after = res;
+					qsObject.after = res.id;
 				}
 			}
 
@@ -1118,7 +1118,11 @@ export default class InternalClient {
 
 					self.user = self.users.add(new User(data.user, client));
 					data.guilds.forEach(server => {
-						self.servers.add(new Server(server, client));
+						if (!server.unavailable) {
+							self.servers.add(new Server(server, client));
+						} else {
+							client.emit("warn", "server was unavailable, could not create (ready)");
+						}
 					});
 					data.private_channels.forEach(pm => {
 						self.private_channels.add(new PMChannel(pm, client));
@@ -1192,22 +1196,29 @@ export default class InternalClient {
 					break;
 				case PacketType.SERVER_CREATE:
 					var server = self.servers.get("id", data.id);
-					if (!server && !data.unavailable) {
-						server = new Server(data, client)
-						self.servers.add(server);
-						client.emit("serverCreated", server);
+					if (!server) {
+						if(!data.unavailable) {
+							server = new Server(data, client)
+							self.servers.add(server);
+							client.emit("serverCreated", server);
+						} else {
+							client.emit("warn", "server was unavailable, could not create");
+						}
 					}
 					break;
 				case PacketType.SERVER_DELETE:
 					var server = self.servers.get("id", data.id);
-					if (server && !data.unavailable) {
-						for (var channel of server.channels) {
-							self.channels.remove(channel);
+					if (server) {
+						if(!data.unavailable) {
+							for (var channel of server.channels) {
+								self.channels.remove(channel);
+							}
+
+							self.servers.remove(server);
+							client.emit("serverDeleted", server);
+						} else {
+							client.emit("warn", "server was unavailable, could not update");
 						}
-
-						self.servers.remove(server);
-						client.emit("serverDeleted", server);
-
 					} else {
 						client.emit("warn", "server was deleted but it was not in the cache");
 					}
