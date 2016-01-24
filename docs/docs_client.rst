@@ -100,6 +100,19 @@ Logs the client in so it can begin initialising. Use this `after` registering yo
     - **error** - An error if any occurred
     - **token** - The token received after logging in, `String`.
 
+loginWithToken(token, email, password, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Logs the client in, using just a token. The specified email and password are optional - they're only needed when using
+`updateDetails` which requires them for authentication.
+
+- **token** - A valid Discord authentication token used to log in, `String`
+- **email** - (Optional) The e-mail used for later authentication, `String`.
+- **password** - (Optional) The password used for later authentication, `String`.
+- **callback** - `function` that takes the following parameters:
+    - **error** - An error if any occurred
+    - **token** - A `String` containing the specified token. This is only used for compatibility with `login`, this token will always be identical to the specified one.
+
 logout(`callback`)
 ~~~~~~~~~~~~~~~~~~
 
