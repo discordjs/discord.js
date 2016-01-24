@@ -143,7 +143,13 @@ export default class InternalClient {
 
 		if(this.client.options.revive && !forced){
 			this.setup();
-			this.login(this.email, this.password);
+
+			// Check whether the email is set (if not, only a token has been used for login)
+			if(this.email) {
+				this.login(this.email, this.password);
+			} else {
+				this.loginWithToken(this.token);
+			}
 		}
 
 		this.client.emit("disconnected");
@@ -296,6 +302,21 @@ export default class InternalClient {
 		});
 	}
 
+	// def loginWithToken
+	// email and password are optional
+	loginWithToken(token, email, password) {
+		this.state = ConnectionState.LOGGED_IN;
+		this.token = token;
+		this.email = email;
+		this.password = password;
+
+		return this.getGateway()
+		.then(url => {
+			this.createWS(url);
+			return token;
+		});
+	}
+
 	// def login
 	login(email, password) {
 		var client = this.client;
@@ -310,18 +331,7 @@ export default class InternalClient {
 			var tk = this.tokenCacher.getToken(email, password);
 			if( tk ){
 				this.client.emit("debug", "bypassed direct API login, used cached token");
-				this.state = ConnectionState.LOGGED_IN;
-				this.token = tk;
-				this.email = email;
-				this.password = password;
-
-				return this.getGateway()
-				.then(url => {
-					this.createWS(url);
-					return tk;
-				});
-
-				return Promise.resolve(tk);
+				return loginWithToken(tk, email, password);
 			}
 		}
 
@@ -339,16 +349,7 @@ export default class InternalClient {
 			this.client.emit("debug", "direct API login, cached token was unavailable");
 			var token = res.token;
 			this.tokenCacher.setToken(email, password, token);
-			this.state = ConnectionState.LOGGED_IN;
-			this.token = token;
-			this.email = email;
-			this.password = password;
-
-			return this.getGateway()
-			.then(url => {
-				this.createWS(url);
-				return token;
-			});
+			loginWithToken(token, email, password);
 		}, error => {
 			this.websocket = null;
 			throw error;
@@ -955,6 +956,9 @@ export default class InternalClient {
 
 	//def updateDetails
 	updateDetails(data) {
+		if(!email) {
+			throw new Error("Can't use updateDetails because only a token has been used for login!");
+		}
 		return this.apiRequest("patch", Endpoints.ME, true, {
 			avatar: this.resolver.resolveToBase64(data.avatar) || this.user.avatar,
 			email: data.email || this.email,

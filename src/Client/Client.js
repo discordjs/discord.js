@@ -79,6 +79,19 @@ export default class Client extends EventEmitter {
 		this.internal.userAgent = userAgent;
 	}
 
+	// def loginWithToken
+	loginWithToken(token, email = null, password = null, callback = (/*err, token*/) => {}) {
+		if (typeof email === "function") {
+			// email is the callback
+			callback = email;
+			email = null;
+			password = null;
+		}
+
+		return this.internal.loginWithToken(token, email, password)
+			.then(dataCallback(callback), errorCallback(callback));
+	}
+
 	// def login
 	login(email, password, callback = (/*err, token*/) => { }) {
 		return this.internal.login(email, password)
