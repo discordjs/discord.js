@@ -190,7 +190,9 @@ export default class Client extends EventEmitter {
 	}
 
 	// def sendFile
-	sendFile(where, attachment, name = "image.png", callback = (/*err, m*/) => { }) {
+	sendFile(where, attachment, name, callback = (/*err, m*/) => { }) {
+		name = name ? name : require('path').basename(attachment);
+		
 		return this.internal.sendFile(where, attachment, name)
 			.then(dataCallback(callback), errorCallback(callback));
 	}

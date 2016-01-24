@@ -460,7 +460,9 @@ export default class InternalClient {
 	}
 
 	// def sendFile
-	sendFile(where, _file, name = "image.png") {
+	sendFile(where, _file, name) {
+		name = name ? name : require('path').basename(attachment);
+		
 		return this.resolver.resolveChannel(where)
 		.then(channel =>
 			this.apiRequest("post", Endpoints.CHANNEL_MESSAGES(channel.id), true, null, {
