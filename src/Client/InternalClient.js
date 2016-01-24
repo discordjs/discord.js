@@ -572,6 +572,25 @@ export default class InternalClient {
 		return this.apiRequest("del", `${Endpoints.SERVER_MEMBERS(server.id) }/${user.id}`, true);
 	}
 
+	// def moveMember
+	moveMember(user, server, channel) {
+		user = this.resolver.resolveUser(user);
+		server = this.resolver.resolveServer(server);
+		channel = this.resolver.resolveChannel(channel);
+
+		console.log(channel.type);
+		// Make sure `channel` is a voice channel
+		if(channel.type !== "voice") {
+			throw new Error("Can't moveMember into a non-voice channel");
+		} else {
+			return this.apiRequest("patch", `${Endpoints.SERVER_MEMBERS(server.id)}/${user.id}`, true, { channel_id: channel.id })
+			.then(res => {
+				user.voiceChannel = channel;
+				return res;
+			});
+		}
+	}
+
 	// def createRole
 	createRole(server, data) {
 		server = this.resolver.resolveServer(server);
