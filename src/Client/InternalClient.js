@@ -461,7 +461,19 @@ export default class InternalClient {
 	}
 
 	// def sendFile
-	sendFile(where, _file, name = "image.png") {
+	sendFile(where, _file, name) {
+		
+		if (!name) {
+			if (_file instanceof String || typeof _file === "string") {
+				name = require("path").basename(attachment);
+			} else if (_file.path) {
+				// fs.createReadStream()'s have .path that give the path. Not sure about other streams though.
+				name = require("path").basename(_file.path);
+			} else {
+				name = "image.png"; // Just have to go with default filenames.
+			}
+		}
+		
 		return this.resolver.resolveChannel(where)
 		.then(channel =>
 			this.apiRequest("post", Endpoints.CHANNEL_MESSAGES(channel.id), true, null, {
