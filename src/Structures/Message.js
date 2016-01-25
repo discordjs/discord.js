@@ -15,7 +15,7 @@ export default class Message extends Equality{
 		this.tts = data.tts;
 		this.embeds = data.embeds;
 		this.timestamp = Date.parse(data.timestamp);
-		this.everyoneMentioned = data.mention_everyone;
+		this.everyoneMentioned = data.mention_everyone || data.everyoneMentioned;
 		this.id = data.id;
 
 		if(data.edited_timestamp)

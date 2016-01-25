@@ -10,7 +10,7 @@ export default class PMChannel extends Channel {
 		super(data, client);
 
 		this.type = data.type || "text";
-		this.lastMessageId = data.last_message_id;
+		this.lastMessageId = data.last_message_id || data.lastMessageId;
 		this.messages = new Cache("id", 1000);
 		this.recipient = this.client.internal.users.add(new User(data.recipient, this.client));
 	}

@@ -9,7 +9,7 @@ export default class TextChannel extends ServerChannel{
 		super(data, client, server);
 
 		this.topic = data.topic;
-		this.lastMessageID = data.last_message_id;
+		this.lastMessageID = data.last_message_id || data.lastMessageID;
 		this.messages = new Cache("id", client.options.maximumMessages);
 	}
 

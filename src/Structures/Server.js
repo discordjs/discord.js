@@ -22,7 +22,7 @@ export default class Server extends Equality {
 		this.client = client;
 
 		this.region = data.region;
-		this.ownerID = data.owner_id;
+		this.ownerID = data.owner_id || data.ownerID;
 		this.name = data.name;
 		this.id = data.id;
 		this.members = new Cache();
@@ -30,7 +30,7 @@ export default class Server extends Equality {
 		this.roles = new Cache();
 		this.icon = data.icon;
 		this.afkTimeout = data.afkTimeout;
-		this.afkChannelID = data.afk_channel_id;
+		this.afkChannelID = data.afk_channel_id || data.afkChannelID;
 		this.memberMap = {};
 
 		var self = this;

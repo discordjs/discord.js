@@ -12,11 +12,13 @@ export default class ServerChannel extends Channel{
 		this.name = data.name;
 		this.type = data.type;
 		this.position = data.position;
-		this.permissionOverwrites = new Cache();
+		this.permissionOverwrites = data.permissionOverwrites || new Cache();
 		this.server = server;
-		data.permission_overwrites.forEach((permission) => {
-			this.permissionOverwrites.add( new PermissionOverwrite(permission) );
-		});
+		if (!data.permissionOverwrites) {
+			data.permission_overwrites.forEach((permission) => {
+				this.permissionOverwrites.add( new PermissionOverwrite(permission) );
+			});
+		}
 	}
 
 	permissionsOf(user){

@@ -331,7 +331,7 @@ export default class InternalClient {
 			var tk = this.tokenCacher.getToken(email, password);
 			if( tk ){
 				this.client.emit("debug", "bypassed direct API login, used cached token");
-				return loginWithToken(tk, email, password);
+				return this.loginWithToken(tk, email, password);
 			}
 		}
 
@@ -462,7 +462,7 @@ export default class InternalClient {
 
 	// def sendFile
 	sendFile(where, _file, name) {
-		
+
 		if (!name) {
 			if (_file instanceof String || typeof _file === "string") {
 				name = require("path").basename(attachment);
@@ -473,7 +473,7 @@ export default class InternalClient {
 				name = "image.png"; // Just have to go with default filenames.
 			}
 		}
-		
+
 		return this.resolver.resolveChannel(where)
 		.then(channel =>
 			this.apiRequest("post", Endpoints.CHANNEL_MESSAGES(channel.id), true, null, {
@@ -1199,7 +1199,7 @@ export default class InternalClient {
 							data.mentions = data.mentions || msg.mentions;
 							data.author = data.author || msg.author;
 							var nmsg = new Message(data, channel, client);
-							client.emit("messageUpdated", nmsg, msg);
+							client.emit("messageUpdated", new Message(msg, channel, client), nmsg);
 							channel.messages.update(msg, nmsg);
 						}
 					} else {
@@ -1249,8 +1249,8 @@ export default class InternalClient {
 							// already the same don't do anything
 							client.emit("debug", "received server update but server already updated");
 						} else {
+							client.emit("serverUpdated", new Server(server, client), newserver);
 							self.servers.update(server, newserver);
-							client.emit("serverUpdated", server, newserver);
 						}
 					} else if (!server) {
 						client.emit("warn", "server was updated but it was not in the cache");
@@ -1304,25 +1304,23 @@ export default class InternalClient {
 
 						if (channel instanceof PMChannel) {
 							//PM CHANNEL
-							client.emit("channelUpdated", channel, self.private_channels.update(
-								channel,
-								new PMChannel(data, client)
-								));
+							client.emit("channelUpdated", new PMChannel(channel, client),
+								self.private_channels.update(channel, new PMChannel(data, client)));
 						} else {
 							if (channel.server) {
 								if (channel.type === "text") {
 									//TEXT CHANNEL
 									var chan = new TextChannel(data, client, channel.server);
 									chan.messages = channel.messages;
+									client.emit("channelUpdated", channel, chan);
 									channel.server.channels.update(channel, chan);
 									self.channels.update(channel, chan);
-									client.emit("channelUpdated", channel, chan);
 								} else {
 									//VOICE CHANNEL
 									var chan = new VoiceChannel(data, client, channel.server);
+									client.emit("channelUpdated", channel, chan);
 									channel.server.channels.update(channel, chan);
 									self.channels.update(channel, chan);
-									client.emit("channelUpdated", channel, chan);
 								}
 							} else {
 								client.emit("warn", "channel updated but server non-existant");
@@ -1361,8 +1359,8 @@ export default class InternalClient {
 						var role = server.roles.get("id", data.role.id);
 						if (role) {
 							var newRole = new Role(data.role, server, client);
+							client.emit("serverRoleUpdated", new Role(role, server, client), newRole);
 							server.roles.update(role, newRole);
-							client.emit("serverRoleUpdated", role, newRole);
 						} else {
 							client.emit("warn", "server role updated but role not in cache");
 						}
