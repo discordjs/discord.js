@@ -465,7 +465,7 @@ export default class InternalClient {
 
 		if (!name) {
 			if (_file instanceof String || typeof _file === "string") {
-				name = require("path").basename(attachment);
+				name = require("path").basename(_file);
 			} else if (_file.path) {
 				// fs.createReadStream()'s have .path that give the path. Not sure about other streams though.
 				name = require("path").basename(_file.path);
