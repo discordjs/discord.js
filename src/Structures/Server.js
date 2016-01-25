@@ -35,30 +35,42 @@ export default class Server extends Equality {
 
 		var self = this;
 
-		data.roles.forEach((dataRole) => {
-			this.roles.add(new Role(dataRole, this, client));
-		});
+		if (data.roles instanceof Cache) {
+			data.roles.forEach((role) => this.roles.add(role));
+		} else {
+			data.roles.forEach((dataRole) => {
+				this.roles.add(new Role(dataRole, this, client));
+			});
+		}
 
-		data.members.forEach((dataUser) => {
-			this.memberMap[dataUser.user.id] = {
-				roles: dataUser.roles.map((pid) => self.roles.get("id", pid)),
-				mute: dataUser.mute,
-				deaf: dataUser.deaf,
-				joinedAt: Date.parse(dataUser.joined_at)
-			};
-			var user = client.internal.users.add(new User(dataUser.user, client));
-			this.members.add(user);
-		});
+		if (data.members instanceof Cache) {
+			data.members.forEach((member) => this.members.add(member));
+		} else {
+			data.members.forEach((dataUser) => {
+				this.memberMap[dataUser.user.id] = {
+					roles: dataUser.roles.map((pid) => self.roles.get("id", pid)),
+					mute: dataUser.mute,
+					deaf: dataUser.deaf,
+					joinedAt: Date.parse(dataUser.joined_at)
+				};
+				var user = client.internal.users.add(new User(dataUser.user, client));
+				this.members.add(user);
+			});
+		}
 
-		data.channels.forEach((dataChannel) => {
-			if (dataChannel.type === "text") {
-				var channel = client.internal.channels.add(new TextChannel(dataChannel, client, this));
-				this.channels.add(channel);
-			} else {
-				var channel = client.internal.channels.add(new VoiceChannel(dataChannel, client, this));
-				this.channels.add(channel);
-			}
-		});
+		if (data.channels instanceof Cache) {
+			data.channels.forEach((channel) => this.channels.add(channel));
+		} else {
+			data.channels.forEach((dataChannel) => {
+				if (dataChannel.type === "text") {
+					var channel = client.internal.channels.add(new TextChannel(dataChannel, client, this));
+					this.channels.add(channel);
+				} else {
+					var channel = client.internal.channels.add(new VoiceChannel(dataChannel, client, this));
+					this.channels.add(channel);
+				}
+			});
+		}
 
 		if (data.presences) {
 			for (var presence of data.presences) {
