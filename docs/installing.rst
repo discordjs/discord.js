@@ -34,7 +34,7 @@ Linux
 
 .. code-block:: bash
 
-	$ apt-get install make build-essentials
+	$ apt-get install make build-essential
 	$ npm install --save discord.js
 	
 	
@@ -44,7 +44,7 @@ Additional Audio Support
 
 .. code-block:: bash
 
-	$ apt-get install libav-tools
+	$ apt-get install ffmpeg libopus-dev
 
 .. _Visual Studio : https://www.visualstudio.com/downloads/download-visual-studio-vs
 .. _Python 2.7 : https://www.python.org/download/releases/2.7.8/
