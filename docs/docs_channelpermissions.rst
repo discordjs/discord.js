@@ -10,7 +10,7 @@ ChannelPermissions is used to represent the final permissions of a user in a cha
 .. code-block:: js
 
 	var user_permissions = channel.permissionsOf(user);
-	
+
 	var can_mention_everyone = user_permissions.hasPermission("mentionEveryone");
 
 --------

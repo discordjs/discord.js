@@ -12,7 +12,7 @@ A Cache object extends an Array (so it can be used like a regular array) but int
 .. code-block:: js
 
 	client.users.get("id", 11238414);
-	
+
 	client.channels.getAll("name", "general");
 
 --------

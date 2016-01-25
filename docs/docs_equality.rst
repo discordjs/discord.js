@@ -10,7 +10,7 @@ If any class in Discord extends equality, it means you should never the default 
 .. code-block:: js
 
 	object1.equals(object2); // GOOD ✓
-	
+
 	object1 == object2; // BAD ✖
 
 --------

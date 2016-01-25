@@ -141,7 +141,7 @@ Sends a file to the specified channel.
 
 - **channel** - a `Channel Resolvable`_
 - **attachment** - A ReadableStream, String or Buffer
-- **name** - `String`, name of the file containing the extension
+- **name** - (Optional) `String`, name of the file containing the extension
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
     - **message** - the sent Message_
@@ -189,7 +189,7 @@ getChannelLogs(channel, `limit`, `options`, `callback`)
 Gets a list of previously sent messages in a channel.
 
 - **channel** - The Channel_ to get messages from
-- **limit** - The maximum amount of messages to retrieve - defaults to 500. A `Number`
+- **limit** - The maximum amount of messages to retrieve - defaults to 50. A `Number`
 - **options** - An `object` containing either of the following:
     - **before** - A `Message Resolvable`_ - gets messages before this message.
     - **after** - A `Message Resolvable`_ - gets messages after this message.
@@ -303,6 +303,16 @@ Creates an invite for the specified channel (or server)
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
     - **invite** - the created Invite_
+
+getInvite(invite, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Gets more info on a specific invite
+
+- **invite** - An `Invite Resolvable`_
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred
+    - **invite** - an Invite_ object
 
 deleteInvite(invite, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -504,6 +514,18 @@ Adds a member of a server to a role in the server
 - **callback** - `function` that takes the following:
     - **error** - error if any occurred
 
+addMemberToRoles(member, roles, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Aliases** : `addUserToRole`
+
+Adds a member of a server to a role in the server
+
+- **member** - A `User Resolvable`_
+- **roles** - An array of Role_ objects
+- **callback** - `function` that takes the following:
+    - **error** - error if any occurred
+
 removeMemberFromRole(member, role, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -513,6 +535,18 @@ Removes a member of a server from a role in the server
 
 - **member** - A `User Resolvable`_
 - **role** - A Role_
+- **callback** - `function` that takes the following:
+    - **error** - error if any occurred
+
+removeMemberFromRoles(member, roles, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Aliases** : `removeUserFromRole`
+
+Removes a member of a server from a role in the server
+
+- **member** - A `User Resolvable`_
+- **role** - A array of Role_ objects
 - **callback** - `function` that takes the following:
     - **error** - error if any occurred
 
@@ -567,7 +601,7 @@ Emitted when a message has been deleted and the Client finds out, supplies a Mes
 messageUpdated
 ~~~~~~~~~~~~~~
 
-Emitted when a message has been updated and the client finds out. Supplies two Message_ objects, the first being the new updated messages, the latter being the old message.
+Emitted when a message has been updated and the client finds out. Supplies two Message_ objects, the first being the message before the update, the second being the new, updated message.
 
 disconnected
 ~~~~~~~~~~~~
@@ -647,12 +681,7 @@ Emitted when a member in a server is updated. Supplies a Server_ object and a Us
 presence
 ~~~~~~~~
 
-Emitted when a user goes online/offline/idle or starts/stops playing a game. Supplies 3 parameters, the first being the User_ object, the second being the status, the third being the game ID they are playing.
-
-userUpdated
-~~~~~~~~~~~
-
-Emitted when a user changes their name, avatar or similar. Supplies two User_ objects, the first being the user before being updated, the second being the updated user.
+Emitted when a user goes online/offline/idle, starts/stops playing a game, or changes their username/avatar/similar. Supplies 2 User_ objects, the first being the old user, the second being the new, updated user.
 
 userTypingStarted
 ~~~~~~~~~~~~~~~
