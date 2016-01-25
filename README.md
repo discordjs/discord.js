@@ -14,8 +14,11 @@ discord.js is a node module used as a way of interfacing with [Discord](https://
 ### Installation
 
 **Requires node 0.12+**
-
+master:
 `npm install --save discord.js`
+
+indev:
+`npm install --save hydrabolt/discord.js#indev`
 
 ---
 
