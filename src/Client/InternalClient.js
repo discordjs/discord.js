@@ -573,10 +573,11 @@ export default class InternalClient {
 	}
 
 	// def moveMember
-	moveMember(user, server, channel) {
+	moveMember(user, channel) {
 		user = this.resolver.resolveUser(user);
-		server = this.resolver.resolveServer(server);
 		return this.resolver.resolveChannel(channel).then(channel => {
+			var server = channel.server;
+
 			// Make sure `channel` is a voice channel
 			if(channel.type !== "voice") {
 				throw new Error("Can't moveMember into a non-voice channel");
