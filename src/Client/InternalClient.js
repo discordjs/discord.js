@@ -577,9 +577,6 @@ export default class InternalClient {
 		user = this.resolver.resolveUser(user);
 		server = this.resolver.resolveServer(server);
 		return this.resolver.resolveChannel(channel).then(channel => {
-			console.log(channel.id);
-			console.log(channel.name);
-			console.log(channel.type);
 			// Make sure `channel` is a voice channel
 			if(channel.type !== "voice") {
 				throw new Error("Can't moveMember into a non-voice channel");
