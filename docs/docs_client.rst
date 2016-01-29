@@ -276,6 +276,17 @@ Removes a user from a server
 - **callback** - `function` taking the following:
     - **error** - error if any occurred.
 
+moveMember(user, server, channel, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Moves a user from one voice channel into another.
+
+- **user** - A `User Resolvable`_ that should be moved
+- **server** - A `Server Resolvable`_ in which to move the user
+- **channel** - The `Channel Resolvable`_ to move the user to
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred.
+
 createInvite(channel, `options`, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
