@@ -292,6 +292,12 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
+	// def moveMember
+	moveMember(user, channel, callback = (/*err, {}*/) => { }) {
+		return this.internal.moveMember(user, channel)
+			.then(dataCallback(callback), errorCallback(callback));
+	}
+
 	// def createRole
 	createRole(server, data = null, callback = (/*err, role*/) => { }) {
 		if (typeof data === "function") {
