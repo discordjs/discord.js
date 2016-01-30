@@ -2,6 +2,7 @@
 /* global Buffer */
 
 import fs from "fs";
+import request from "superagent";
 
 import User from "../../Structures/User";
 import Channel from "../../Structures/Channel";
@@ -76,9 +77,21 @@ export default class Resolver {
 
 	resolveFile(resource) {
 		if (typeof resource === "string" || resource instanceof String) {
-			return fs.createReadStream(resource);
+			if (/^http(s):\/\//.test(resource)) {
+				return new Promise((resolve, reject) => {
+					request.get(resource).end((err, res) => {
+						if (err) {
+							reject(err);
+						} else {
+							resolve(res.body);
+						}
+					});
+				});
+			} else {
+				return Promise.resolve(resource);
+			}
 		}
-		return resource;
+		return Promise.resolve(resource);
 	}
 
 	resolveMentions(resource) {
