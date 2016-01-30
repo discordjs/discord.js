@@ -85,16 +85,21 @@ Functions
 rolesOfUser(user)
 ~~~~~~~~~~~~~~~~~
 
-**Aliases**: `rolesOf`
+**Aliases**: `rolesOf`, `rolesOfMember`
 
 Returns an array of the roles affecting a user server-wide.
 
-------
+usersWithRole(user, role)
+~~~~~~~~~~~~~~~~~
+
+**Aliases**: `membersWithRole`
+
+Returns an array of users that have the specified role.
 
 detailsOfUser(user)
 ~~~~~~~~~~~~~~~~~~~
 
-**Aliases** `detailsOf`
+**Aliases** `detailsOf`, `detailsOfMember`
 
 Returns an object containing metadata of a user within the server, containing a structure similar to the following:
 
@@ -102,11 +107,12 @@ Returns an object containing metadata of a user within the server, containing a 
 
 	{
 		joinedAt : 1449339323747,
-		mute : false,
-		deaf : false
+        roles: [],
+        mute : false,
+        self_mute : false,
+		deaf : false,
+        self_deaf : false
 	}
-
-----------
 
 leave()
 ~~~~~~~
@@ -115,45 +121,29 @@ leave()
 | **Aliases** `delete`
 | **See** client.leaveServer_
 
-------
-
-|
-
 createInvite(`options`, `callback`)
 ~~~~~~~
 
 | **Shortcut of** ``client.createInvite(server, options, callback)``
 | **See** client.createInvite_
-|
-
-------
 
 createRole(`data`, `callback`)
 ~~~~~~~
 
 | **Shortcut of** ``client.createRole(server, data, callback)``
 | **See** client.createRole_
-|
-
-------
 
 createChannel(name, `type`, `callback`)
 ~~~~~~~
 
 | **Shortcut of** ``client.createChannel(server, name, type, callback)``
 | **See** client.createChannel_
-|
-
-------
 
 getBans(`callback`)
 ~~~~~~~~~~~~~~~~~~~
 
 | **Shortcut of** ``client.getBans(server, callback)``
 | **See** client.getBans_
-|
-
-------
 
 banMember(user, `length`, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -161,9 +151,6 @@ banMember(user, `length`, `callback`)
 | **Shortcut of** ``client.banMember(member, server, length, callback)``
 | **Aliases** `banUser, ban`
 | **See** client.banMember_
-|
-
-------
 
 unbanMember(user, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -171,9 +158,6 @@ unbanMember(user, `callback`)
 | **Shortcut of** ``client.unbanMember(member, server, callback)``
 | **Aliases** `unbanUser, unban`
 | **See** client.unbanMember_
-|
-
-------
 
 kickMember(user, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -181,9 +165,6 @@ kickMember(user, `callback`)
 | **Shortcut of** ``client.kickMember(member, server, callback)``
 | **Aliases** `kickUser, kick`
 | **See** client.kickMember_
-|
-
-------
 
 .. _client.leaveServer : ./docs_client.html#leaveserver-server-callback
 .. _client.createInvite : ./docs_client.html#createinvite-channel-options-callback

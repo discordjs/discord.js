@@ -1373,7 +1373,9 @@ export default class InternalClient {
 						server.memberMap[data.user.id] = {
 							roles: data.roles.map(pid => server.roles.get("id", pid)),
 							mute: false,
+							self_mute: false,
 							deaf: false,
+							self_deaf: false,
 							joinedAt: Date.parse(data.joined_at)
 						};
 
@@ -1409,7 +1411,9 @@ export default class InternalClient {
 						if (user) {
 							server.memberMap[data.user.id].roles = data.roles.map(pid => server.roles.get("id", pid));
 							server.memberMap[data.user.id].mute = data.mute;
+							server.memberMap[data.user.id].self_mute = data.self_mute;
 							server.memberMap[data.user.id].deaf = data.deaf;
+							server.memberMap[data.user.id].self_deaf = data.self_deaf;
 							client.emit("serverMemberUpdated", server, user);
 						} else {
 							client.emit("warn", "server member removed but user doesn't exist in cache");
@@ -1500,24 +1504,7 @@ export default class InternalClient {
 							// in voice channel
 							var channel = self.channels.get("id", data.channel_id);
 							if (channel && channel.type === "voice") {
-								var oldState = {
-									mute: user.voiceState.mute,
-									self_mute: user.voiceState.self_mute,
-									deaf: user.voiceState.deaf,
-									self_deaf: user.voiceState.self_deaf
-								};
-								user.voiceState.mute = data.mute;
-								user.voiceState.self_mute = data.self_mute;
-								user.voiceState.deaf = data.deaf;
-								user.voiceState.self_deaf = data.self_deaf;
-								if ((oldState.mute != user.voiceState.mute || oldState.self_mute != user.voiceState.self_mute
-									|| oldState.deaf != user.voiceState.deaf || oldState.self_deaf != user.voiceState.self_deaf)
-									&& oldState.mute !== undefined) {
-									client.emit("voiceStateUpdate", channel, user, oldState);
-								} else {
-									server.eventVoiceJoin(user, channel);
-									client.emit("voiceJoin", channel, user);
-								}
+								server.eventVoiceStateUpdate(channel, user, data);
 							} else {
 								client.emit("warn", "voice state channel not in cache");
 							}

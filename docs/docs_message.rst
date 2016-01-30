@@ -69,6 +69,11 @@ content
 
 `String`, content of the message.
 
+cleanContent
+~~~~~~~
+
+`String`, content of the message with valid user mentions (<@123>) replaced with "@username".
+
 mentions
 ~~~~~~~~
 

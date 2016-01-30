@@ -18,6 +18,23 @@ A Channel Resolvable allows:
 - User_ (in some instances)
 - String of Channel ID
 
+File Resolvable
+------------------
+
+A File Resolvable allows:
+
+- URL
+- Local file path
+- Readable stream
+
+Role Resolvable
+------------------
+
+A Role Resolvable allows:
+
+- Role ID
+- Role_
+
 Voice Channel Resolvable
 ------------------------
 

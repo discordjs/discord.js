@@ -49,3 +49,8 @@ remove(data)
 ~~~~~~~~~~~~
 
 Removes an object from the cache if it exists.
+
+random()
+~~~~~~~~~~~~
+
+Get a random object from the cache.

@@ -140,7 +140,7 @@ sendFile(channel, attachment, name, `callback`)
 Sends a file to the specified channel.
 
 - **channel** - a `Channel Resolvable`_
-- **attachment** - A ReadableStream, String or Buffer
+- **attachment** - A `File Resolvable`_
 - **name** - (Optional) `String`, name of the file containing the extension
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
@@ -520,21 +520,19 @@ addMemberToRole(member, role, `callback`)
 Adds a member of a server to a role in the server
 
 - **member** - A `User Resolvable`_
-- **role** - A Role_
+- **role** - A `Role Resolvable`_ or an array of `Role Resolvable`_
 - **callback** - `function` that takes the following:
     - **error** - error if any occurred
 
-addMemberToRoles(member, roles, `callback`)
+memberHasRole(member, role)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Aliases** : `addUserToRole`
+**Aliases** : `userHasRole`
 
-Adds a member of a server to a role in the server
+Returns if a user has a role
 
 - **member** - A `User Resolvable`_
-- **roles** - An array of Role_ objects
-- **callback** - `function` that takes the following:
-    - **error** - error if any occurred
+- **role** - A `Role Resolvable`_ or an array of `Role Resolvable`_
 
 removeMemberFromRole(member, role, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -544,19 +542,7 @@ removeMemberFromRole(member, role, `callback`)
 Removes a member of a server from a role in the server
 
 - **member** - A `User Resolvable`_
-- **role** - A Role_
-- **callback** - `function` that takes the following:
-    - **error** - error if any occurred
-
-removeMemberFromRoles(member, roles, `callback`)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-**Aliases** : `removeUserFromRole`
-
-Removes a member of a server from a role in the server
-
-- **member** - A `User Resolvable`_
-- **role** - A array of Role_ objects
+- **role** - A `Role Resolvable`_ or an array of `Role Resolvable`_
 - **callback** - `function` that takes the following:
     - **error** - error if any occurred
 
@@ -716,9 +702,14 @@ Emitted when a user is unbanned from a server. Supplies two parameters, a User_ 
 voiceJoin
 ~~~~~~~~
 
-Emitted when a user joins a voice channel, supplies a User_ and a VoiceChannel_
+Emitted when a user joins a voice channel, supplies a VoiceChannel_ and a User_
 
 voiceLeave
 ~~~~~~~~~~
 
-Emitted when a user leaves a voice channel, supplies a User_ and a VoiceChannel_
+Emitted when a user leaves a voice channel, supplies a VoiceChannel_ and a User_
+
+voiceStateUpdate
+~~~~~~~~~~
+
+Emitted when a user mutes/deafens, supplies a VoiceChannel_, User_, an object containing the old mute/self_mute/deaf/self_deaf properties, and an object containing the new mute/self_mute/deaf/self_deaf properties

@@ -26,3 +26,13 @@ isPrivate
 ~~~~~~~~~
 
 Indicates whether the channel is PM channel, is `Boolean`.
+
+--------
+
+Functions
+---------
+
+delete()
+~~~~~~~~~~~~~~~
+
+Deletes the channel.

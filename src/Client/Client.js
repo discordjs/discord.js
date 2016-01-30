@@ -344,8 +344,8 @@ export default class Client extends EventEmitter {
 	}
 
 	// def addUserToRole
-	userHasRole(member, role, callback = (/*err, {}*/) => { }) {
-		return this.memberHasRole(member, role, callback);
+	userHasRole(member, role) {
+		return this.memberHasRole(member, role);
 	}
 
 	// def removeMemberFromRole

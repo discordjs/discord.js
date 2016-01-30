@@ -50,7 +50,9 @@ export default class Server extends Equality {
 				this.memberMap[dataUser.user.id] = {
 					roles: dataUser.roles.map((pid) => self.roles.get("id", pid)),
 					mute: dataUser.mute,
+					self_mute: dataUser.self_mute,
 					deaf: dataUser.deaf,
+					self_deaf: dataUser.self_deaf,
 					joinedAt: Date.parse(dataUser.joined_at)
 				};
 				var user = client.internal.users.add(new User(dataUser.user, client));
@@ -105,6 +107,10 @@ export default class Server extends Equality {
 	}
 
 	detailsOfUser(user) {
+		return this.detailsOf(user);
+	}
+
+	detailsOfMember(user) {
 		return this.detailsOf(user);
 	}
 
@@ -167,6 +173,31 @@ export default class Server extends Equality {
 
 		channel.members.add(user);
 		user.voiceChannel = channel;
+	}
+
+	eventVoiceStateUpdate(channel, user, data) {
+		// removes from other speaking channels first
+		if (!this.memberMap[user.id]) {
+			this.memberMap[user.id] = {};
+		}
+		var oldState = {
+			mute: this.memberMap[user.id].mute,
+			self_mute: this.memberMap[user.id].self_mute,
+			deaf: this.memberMap[user.id].deaf,
+			self_deaf: this.memberMap[user.id].self_deaf
+		};
+		this.memberMap[user.id].mute = data.mute;
+		this.memberMap[user.id].self_mute = data.self_mute;
+		this.memberMap[user.id].deaf = data.deaf;
+		this.memberMap[user.id].self_deaf = data.self_deaf;
+		if ((oldState.mute != data.mute || oldState.self_mute != data.self_mute
+			|| oldState.deaf != data.deaf || oldState.self_deaf != data.self_deaf)
+			&& oldState.mute !== undefined) {
+			this.client.emit("voiceStateUpdate", channel, user, oldState, this.memberMap[user.id]);
+		} else {
+			this.eventVoiceJoin(user, channel);
+			this.client.emit("voiceJoin", channel, user);
+		}
 	}
 
 	eventVoiceLeave(user) {
