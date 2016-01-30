@@ -349,7 +349,7 @@ export default class InternalClient {
 			this.client.emit("debug", "direct API login, cached token was unavailable");
 			var token = res.token;
 			this.tokenCacher.setToken(email, password, token);
-			loginWithToken(token, email, password);
+			return this.loginWithToken(token, email, password);
 		}, error => {
 			this.websocket = null;
 			throw error;
