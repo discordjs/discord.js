@@ -85,7 +85,7 @@ export default class InternalClient {
 					} else {
 						return reject(error);
 					}
-				}else{
+				} else {
 					resolve(data.body);
 				}
 			});

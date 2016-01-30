@@ -82,8 +82,10 @@ export default class Resolver {
 					request.get(resource).end((err, res) => {
 						if (err) {
 							reject(err);
-						} else {
+						} else if (res.text === undefined) {
 							resolve(res.body);
+						} else {
+							resolve(new Buffer(res.text));
 						}
 					});
 				});
