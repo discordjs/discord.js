@@ -77,7 +77,7 @@ export default class Resolver {
 
 	resolveFile(resource) {
 		if (typeof resource === "string" || resource instanceof String) {
-			if (/^http(s):\/\//.test(resource)) {
+			if (/^https?:\/\//.test(resource)) {
 				return new Promise((resolve, reject) => {
 					request.get(resource).end((err, res) => {
 						if (err) {
