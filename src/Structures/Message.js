@@ -37,7 +37,7 @@ export default class Message extends Equality{
 			// users from messages from logs who may have left the server and were
 			// not previously cached.
 			if(mention instanceof User)
-				this.mentions.push(mention);
+				this.mentions.add(mention);
 			else
 				this.mentions.add(client.internal.users.add(new User(mention, client)));
 		});
@@ -49,11 +49,7 @@ export default class Message extends Equality{
 
 	isMentioned(user){
 		user = this.client.internal.resolver.resolveUser(user);
-		if (user) {
-			return this.mentions.has(user);
-		} else {
-			return false;
-		}
+		return !!(user && this.mentions.has(user));
 	}
 
 	toString(){
