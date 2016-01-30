@@ -30,16 +30,16 @@ export default class Message extends Equality{
 
 		var mentionData = client.internal.resolver.resolveMentions(data.content);
 		this.cleanContent = mentionData[1];
-		this.mentions = new Cache();
+		this.mentions = [];
 
 		mentionData[0].forEach((mention) => {
 			// this is .add and not .get because it allows the bot to cache
 			// users from messages from logs who may have left the server and were
 			// not previously cached.
 			if(mention instanceof User)
-				this.mentions.add(mention);
+				this.mentions.push(mention);
 			else
-				this.mentions.add(client.internal.users.add(new User(mention, client)));
+				this.mentions.push(client.internal.users.add(new User(mention, client)));
 		});
 	}
 
@@ -49,7 +49,7 @@ export default class Message extends Equality{
 
 	isMentioned(user){
 		user = this.client.internal.resolver.resolveUser(user);
-		return !!(user && this.mentions.has(user));
+		return !!(user && this.mentions.find(m => m.id == user.id));
 	}
 
 	toString(){
