@@ -9,6 +9,7 @@ import TextChannel from "../../Structures/TextChannel";
 import VoiceChannel from "../../Structures/VoiceChannel";
 import ServerChannel from "../../Structures/ServerChannel";
 import PMChannel from "../../Structures/PMChannel";
+import Role from "../../Structures/Role";
 import Server from "../../Structures/Server";
 import Message from "../../Structures/Message";
 import Invite from "../../Structures/Invite";
@@ -53,6 +54,21 @@ export default class Resolver {
 		if (resource instanceof Message) {
 			if (resource.channel instanceof TextChannel) {
 				return resource.server;
+			}
+		}
+		return null;
+	}
+
+	resolveRole(resource) {
+		if (resource instanceof Role) {
+			return resource;
+		}
+		if (resource instanceof String || typeof resource === "string") {
+			var role = null;
+			for (var server of this.internal.servers) {
+				if (role = server.roles.find(r => r.id == resource)) {
+					return role;
+				}
 			}
 		}
 		return null;

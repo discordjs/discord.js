@@ -621,6 +621,7 @@ export default class InternalClient {
 	// def updateRole
 	updateRole(role, data) {
 
+		role = this.resolver.resolveRole(role);
 		var server = this.resolver.resolveServer(role.server);
 
 		var newData = {
@@ -661,11 +662,14 @@ export default class InternalClient {
 		}
 
 		if (!Array.isArray(roles) || roles.length === 0) {
-			if (roles instanceof Role) {
+			roles = this.resolve.resolveRole(roles);
+			if (roles) {
 				roles = [roles];
 			} else {
 				return Promise.reject(new Error("invalid array of roles"));
 			}
+		} else {
+			roles = roles.map(r => this.resolver.resolveRole(r));
 		}
 
 		if (roles.some(role => !role.server.memberMap[member.id])) {
@@ -691,8 +695,12 @@ export default class InternalClient {
 	}
 
 	memberHasRole(member, role) {
+		role = this.resolver.resolveRole(role);
 		member = this.resolver.resolveUser(member);
 
+		if (!role) {
+			throw new Error("invalid role");
+		}
 		if (!member) {
 			throw new Error("user not found");
 		}
@@ -709,11 +717,14 @@ export default class InternalClient {
 		}
 
 		if (!Array.isArray(roles) || roles.length === 0) {
-			if (roles instanceof Role) {
+			roles = this.resolve.resolveRole(roles);
+			if (roles) {
 				roles = [roles];
 			} else {
 				return Promise.reject(new Error("invalid array of roles"));
 			}
+		} else {
+			roles = roles.map(r => this.resolver.resolveRole(r));
 		}
 
 		var roleIDS = roles[0].server.memberMap[member.id].roles.map(r => r.id);
@@ -829,6 +840,8 @@ export default class InternalClient {
 			var user;
 			if (role instanceof User) {
 				user = role;
+			} else {
+				role = this.resolver.resolveRole(role);
 			}
 
 			var data = {};
