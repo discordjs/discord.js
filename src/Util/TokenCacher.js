@@ -1,7 +1,7 @@
 "use strict";
 /* global process */
 
-import fs from "fs-extra";
+import fs from "fs";
 import EventEmitter from "events";
 import crypto from "crypto";
 
@@ -15,6 +15,16 @@ var algo = "aes-256-ctr";
 
 function secureEmail(email, password) {
 	return new Buffer(crypto.createHash("sha256").update(email + password, "utf8").digest()).toString("hex");
+}
+
+function exists(path) {
+	// Node deprecated the `fs.exists` method apparently...
+	try {
+		fs.accessSync(path);
+		return true;
+	} catch (e) {
+		return false;
+	}
 }
 
 export default class TokenCacher extends EventEmitter {
@@ -38,7 +48,7 @@ export default class TokenCacher extends EventEmitter {
 	}
 
 	save() {
-		fs.writeJson(this.savePath, this.data);
+		fs.writeFile(this.savePath, JSON.stringify(this.data));
 	}
 
 	getToken(email="", password="") {
@@ -68,55 +78,45 @@ export default class TokenCacher extends EventEmitter {
 		var self = this;
 		var savePath = savePaths[ind];
 
-		fs.ensureDir(savePath, err => {
+		// Use one async function at the beginning, so the entire function is async,
+		// then later use only sync functions to increase readability
+		fs.stat(savePath, (err, dirStats) => {
+			// Directory does not exist.
+			if (err) error(err);
+			else {
+				try {
+					var storeDirPath = savePath + "/.discordjs";
+					var filePath = storeDirPath + "/tokens.json";
 
-			if (err) {
-				error(err);
-			} else {
-				//good to go
-
-				fs.ensureFile(savePath + "/.discordjs/tokens.json", err => {
-					if (err) {
-						error(err);
-					} else {
-						//file exists
-
-						fs.readFile(savePath + "/.discordjs/tokens.json", (err, data) => {
-
-							if (err) {
-								error(err);
-							} else {
-								// can read file, is it valid JSON?
-								try {
-
-									this.data = JSON.parse(data);
-									// good to go!
-									this.savePath = savePath + "/.discordjs/tokens.json";
-									this.emit("ready");
-									this.done = true;
-
-								} catch (e) {
-									// not valid JSON, make it valid and then write
-									fs.writeJson(savePath + "/.discordjs/tokens.json", {}, err => {
-										if (err) {
-											error(err);
-										} else {
-											// good to go!
-											this.savePath = savePath + "/.discordjs/tokens.json";
-											this.emit("ready");
-											this.done = true;
-										}
-									});
-								}
-							}
-
-						});
-
+					if (!exists(storeDirPath)) {
+						// First, make sure the directory exists, otherwise the next
+						// call will fail.
+						fs.mkdirSync(storeDirPath);
 					}
-				})
+					if (!exists(filePath)) {
+						// This will create an empty file if the file doesn't exist, and error
+						// if it does exist. We previously checked that it doesn't exist so we
+						// can do this safely.
+						fs.closeSync(fs.openSync(filePath, 'wx'))
+					}
 
+					var data = fs.readFileSync(filePath);
+					try {
+						this.data = JSON.parse(data);
+						this.savePath = filePath;
+						this.emit('ready');
+						this.done = true;
+					} catch(e) {
+						// not valid JSON, make it valid and then write
+						fs.writeFileSync(filePath, '{}');
+						this.savePath = filePath;
+						this.emit("ready");
+						this.done = true;
+					}
+				} catch(e) {
+					error(e);
+				}
 			}
-
 		});
 
 		function error(e) {
