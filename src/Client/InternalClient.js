@@ -1510,7 +1510,7 @@ export default class InternalClient {
 								if ((oldState.mute != user.voiceState.mute || oldState.self_mute != user.voiceState.self_mute
 									|| oldState.deaf != user.voiceState.deaf || oldState.self_deaf != user.voiceState.self_deaf)
 									&& oldState.mute !== undefined) {
-									client.emit("voiceUserStateChange", user, oldState);
+									client.emit("voiceStateUpdate", user, oldState);
 								} else {
 									server.eventVoiceJoin(user, channel);
 									client.emit("voiceJoin", user, channel);
