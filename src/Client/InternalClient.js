@@ -1511,17 +1511,17 @@ export default class InternalClient {
 								if ((oldState.mute != user.voiceState.mute || oldState.self_mute != user.voiceState.self_mute
 									|| oldState.deaf != user.voiceState.deaf || oldState.self_deaf != user.voiceState.self_deaf)
 									&& oldState.mute !== undefined) {
-									client.emit("voiceStateUpdate", user, oldState);
+									client.emit("voiceStateUpdate", channel, user, oldState);
 								} else {
 									server.eventVoiceJoin(user, channel);
-									client.emit("voiceJoin", user, channel);
+									client.emit("voiceJoin", channel, user);
 								}
 							} else {
 								client.emit("warn", "voice state channel not in cache");
 							}
 						} else {
 							// not in voice channel
-							client.emit("voiceLeave", user, server.eventVoiceLeave(user));
+							client.emit("voiceLeave", server.eventVoiceLeave(user), user);
 						}
 
 					} else {
