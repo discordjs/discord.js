@@ -79,4 +79,44 @@ an error if the encoding fails, for playback errors, you can bind a function to 
 
 If you prefer _Promises over callbacks, this method will return a promise you can use in the same way as the callback.
 
+playRawStream(stream, `options`, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This method is used in much the same way as `playFile`, except it plays data back from a stream containing audio data instead of a file or URL.
+
+| See voiceConnection.playFile_ for usage information.
+
+playArbitraryFFmpeg(options, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This method can be used to play data obtained from an arbitrary call to ffmpeg. Note that the array of options given as the parameter will
+still be concatenated with the following options so it can be used with Discord:
+
+.. code::
+  -loglevel 0
+  -f s16le
+  -ar 48000
+  -ac 2
+  pipe:1
+
+setSpeaking(value)
+~~~~~~~~~~~~~~~~~~
+
+Sets whether or not the user is speaking (green circle around user on the official client). discord.js does this automatically when playing something,
+but you may want to spoof it or manually disable it.
+
+ - `value` - `true` or `false`: whether or not you want the bot to show as speaking
+
+stopPlaying()
+~~~~~~~~~~~~~
+
+Stops the current playback immediately. After this method has finished, it is safe to play something else.
+
+destroy()
+~~~~~~~~~
+
+Disconnects from the voice server and destroys all network connection. It's impossible to play anything on this connection afterwards, you will have to re-initiate
+a connection using `client.joinVoiceChannel`. This method also calls `stopPlaying` internally, you don't have to do that yourself.
+
 :: _Format list : https://ffmpeg.org/general.html#File-Formats
+.. _voiceConnection.playFile : ./docs_voiceconnection.html#playfile-path-options-callback
