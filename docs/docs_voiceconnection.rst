@@ -3,9 +3,11 @@
 VoiceConnection
 ===============
 
-**Warning! Still experimental!**
+discord.js currently supports sending audio data over Discord voice chat. A voice connection can be initiated using
+client.joinVoiceChannel_ and then later accessed again using the `client.voiceConnection` property. You can play something
+using the `playXYZ` methods and then later stop the playback and listen for events that tell you about the playback status.
 
-As of discord.js v5.0.0, voice support has been added. This means you can stream audio but not yet receive.
+Note that discord.js does not support receiving data from voice yet, only sending.
 
 --------
 
@@ -77,7 +79,7 @@ an error if the encoding fails, for playback errors, you can bind a function to 
  - The `end` event is emitted once playback ends. Depending on various factors, it may be emitted a couple seconds earlier than the actual stream ending, you may have to add an offset if necessary.
  - The `error` event is emitted if an error happens during playback, such as failing to send a packet.
 
-If you prefer _Promises over callbacks, this method will return a promise you can use in the same way as the callback.
+The intent can later be accessed again using the `playingIntent` property. If you prefer _Promises over callbacks, this method will return a promise you can use in the same way as the callback.
 
 playRawStream(stream, `options`, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -116,7 +118,8 @@ destroy()
 ~~~~~~~~~
 
 Disconnects from the voice server and destroys all network connection. It's impossible to play anything on this connection afterwards, you will have to re-initiate
-a connection using `client.joinVoiceChannel`. This method also calls `stopPlaying` internally, you don't have to do that yourself.
+a connection using client.joinVoiceChannel_. This method also calls `stopPlaying` internally, you don't have to do that yourself.
 
 :: _Format list : https://ffmpeg.org/general.html#File-Formats
-.. _voiceConnection.playFile : ./docs_voiceconnection.html#playfile-path-options-callback
+:: _voiceConnection.playFile : ./docs_voiceconnection.html#playfile-path-options-callback
+:: _client.joinVoiceChannel : ./docs_client.html#joinvoicechannel-channel-callback
