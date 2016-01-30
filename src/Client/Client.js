@@ -32,7 +32,7 @@ export default class Client extends EventEmitter {
 	constructor(options = {}) {
 		super();
 		this.options = options || {};
-		this.options.compress = options.compress || true;
+		this.options.compress = options.compress || (!process.browser);
 		this.options.revive = options.revive || false;
 		this.options.rate_limit_as_error = options.rate_limit_as_error || false;
 		this.internal = new InternalClient(this);
