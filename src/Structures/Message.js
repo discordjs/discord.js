@@ -27,9 +27,12 @@ export default class Message extends Equality{
 			this.author = client.internal.users.add(new User(data.author, client));
 
 		this.content = data.content;
+
+		var mentionData = client.internal.resolver.resolveMentions(data.content);
+		this.cleanContent = mentionData[1];
 		this.mentions = new Cache();
 
-		data.mentions.forEach((mention) => {
+		mentionData[0].forEach((mention) => {
 			// this is .add and not .get because it allows the bot to cache
 			// users from messages from logs who may have left the server and were
 			// not previously cached.
