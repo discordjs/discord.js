@@ -6,6 +6,8 @@ Welcome to discord.js's documentation!
 discord.js is an easy-to-use and intuitive JavaScript API for Discord_. It's fairly high level, so if you're
 looking for something low level, check out `discord.io`_.
 
+if you're having problems, check out the `troubleshooting guide`_.
+
 Feel free to make any contributions you want, whether it be through creating an issue, giving a suggestion or making a pull request!
 
 .. note:: This documentation is still a work-in-progress, apologies if something isn't yet documented!
@@ -58,4 +60,5 @@ Feel free to make any contributions you want, whether it be through creating an 
    docs_resolvables
 
 .. _Discord : https://discordapp.com/
+.. _troubleshooting guide : troubleshooting.html
 .. _discord.io : https://github.com/izy521/discord.io
