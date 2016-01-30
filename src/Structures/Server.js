@@ -87,7 +87,7 @@ export default class Server extends Equality {
 				let user = this.members.get("id", voiceState.user_id);
 				let channel = this.channels.get("id", voiceState.channel_id);
 				if (user && channel) {
-					this.eventStartSpeaking(user, channel);
+					this.eventVoiceJoin(user, channel);
 				} else {
 					this.client.emit("warn", "user doesn't exist even though READY expects them to");
 				}
@@ -161,26 +161,17 @@ export default class Server extends Equality {
 		return this.name;
 	}
 
-	eventStartSpeaking(user, channel){
-		channel = this.channels.get("id", channel.id);
-		if(channel && channel.type === "voice"){
-			// good
+	eventVoiceJoin(user, channel) {
+		// removes from other speaking channels first
+		this.eventVoiceLeave(user);
 
-			// removes from other speaking channels first
-			this.eventStopSpeaking(user);
-
-			channel.members.add(user);
-			user.voiceChannel = channel;
-			return true;
-		}else{
-			// bad
-			return false;
-		}
+		channel.members.add(user);
+		user.voiceChannel = channel;
 	}
 
-	eventStopSpeaking(user){
-		for(let chan of this.channels.getAll("type", "voice")){
-			if(chan.members.has(user)){
+	eventVoiceLeave(user) {
+		for (let chan of this.channels.getAll("type", "voice")) {
+			if (chan.members.has(user)) {
 				chan.members.remove(user);
 				user.voiceChannel = null;
 				return chan;

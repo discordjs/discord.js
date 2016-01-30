@@ -1491,25 +1491,39 @@ export default class InternalClient {
 					var user = self.users.get("id", data.user_id);
 					var server = self.servers.get("id", data.guild_id);
 
-					if(user && server){
+					if (user && server) {
 
-						if(data.channel_id){
-							// speaking
+						if (data.channel_id) {
+							// in voice channel
 							var channel = self.channels.get("id", data.channel_id);
-							if(channel){
-								if(server.eventStartSpeaking(user, channel))
+							if (channel && channel.type === "voice") {
+								var oldState = {
+									mute: user.voiceState.mute,
+									self_mute: user.voiceState.self_mute,
+									deaf: user.voiceState.deaf,
+									self_deaf: user.voiceState.self_deaf
+								};
+								user.voiceState.mute = data.mute;
+								user.voiceState.self_mute = data.self_mute;
+								user.voiceState.deaf = data.deaf;
+								user.voiceState.self_deaf = data.self_deaf;
+								if ((oldState.mute != user.voiceState.mute || oldState.self_mute != user.voiceState.self_mute
+									|| oldState.deaf != user.voiceState.deaf || oldState.self_deaf != user.voiceState.self_deaf)
+									&& oldState.mute !== undefined) {
+									client.emit("voiceUserStateChange", user, oldState);
+								} else {
+									server.eventVoiceJoin(user, channel);
 									client.emit("voiceJoin", user, channel);
-								else
-									client.emit("warn", "voice state error occurred in adding");
-							}else{
+								}
+							} else {
 								client.emit("warn", "voice state channel not in cache");
 							}
-						}else{
-							// not speaking
-							client.emit("voiceLeave", user, server.eventStopSpeaking(user));
+						} else {
+							// not in voice channel
+							client.emit("voiceLeave", user, server.eventVoiceLeave(user));
 						}
 
-					}else{
+					} else {
 						client.emit("warn", "voice state update but user or server not in cache");
 					}
 

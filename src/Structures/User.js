@@ -19,6 +19,7 @@ export default class User extends Equality{
 			channel : null
 		};
 		this.voiceChannel = null;
+		this.voiceState = {};
 	}
 
 	get avatarURL(){
