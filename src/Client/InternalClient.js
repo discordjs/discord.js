@@ -657,7 +657,7 @@ export default class InternalClient {
 		member = this.resolver.resolveUser(member);
 
 		if (!member) {
-			return Promise.reject(new Error("member not in server"));
+			return Promise.reject(new Error("user not found"));
 		}
 
 		if (!Array.isArray(roles) || roles.length === 0) {
@@ -690,12 +690,22 @@ export default class InternalClient {
 		);
 	}
 
+	memberHasRole(member, role) {
+		member = this.resolver.resolveUser(member);
+
+		if (!member) {
+			throw new Error("user not found");
+		}
+
+		return !!role.server.rolesOf(member).find(r => r.id == role.id);
+	}
+
 	//def removeMemberFromRole
 	removeMemberFromRole(member, roles) {
 		member = this.resolver.resolveUser(member);
 
 		if (!member) {
-			return Promise.reject(new Error("member not in server"));
+			return Promise.reject(new Error("user not found"));
 		}
 
 		if (!Array.isArray(roles) || roles.length === 0) {

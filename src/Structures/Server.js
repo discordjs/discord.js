@@ -121,6 +121,10 @@ export default class Server extends Equality {
 		}
 	}
 
+	rolesOfMember(member) {
+		return this.rolesOfUser(member);
+	}
+
 	rolesOf(user) {
 		return this.rolesOfUser(user);
 	}
@@ -258,4 +262,11 @@ export default class Server extends Equality {
 		return this.client.createChannel.apply(this.client, reg(this, arguments));
 	}
 
+	membersWithRole(role) {
+		return this.members.filter(m => m.hasRole(role));
+	}
+
+	usersWithRole(role) {
+		return this.membersWithRole(role);
+	}
 }

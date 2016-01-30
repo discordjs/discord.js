@@ -338,6 +338,16 @@ export default class Client extends EventEmitter {
 		return this.addMemberToRole(member, role, callback);
 	}
 
+	// def addUserToRole
+	memberHasRole(member, role) {
+		return this.internal.memberHasRole(member, role);
+	}
+
+	// def addUserToRole
+	userHasRole(member, role, callback = (/*err, {}*/) => { }) {
+		return this.memberHasRole(member, role, callback);
+	}
+
 	// def removeMemberFromRole
 	removeMemberFromRole(member, role, callback = (/*err, {}*/) => { }) {
 		return this.internal.removeMemberFromRole(member, role)
@@ -347,28 +357,6 @@ export default class Client extends EventEmitter {
 	// def removeUserFromRole
 	removeUserFromRole(member, role, callback = (/*err, {}*/) => { }) {
 		return this.removeMemberFromRole(member, role, callback);
-	}
-
-	// def addMemberToRole
-	addMemberToRoles(member, roles, callback = (/*err, {}*/) => { }) {
-		return this.internal.addMemberToRoles(member, roles)
-			.then(dataCallback(callback), errorCallback(callback));
-	}
-
-	// def addUserToRole
-	addUserToRoles(member, roles, callback = (/*err, {}*/) => { }) {
-		return this.addMemberToRoles(member, roles, callback);
-	}
-
-	// def removeMemberFromRole
-	removeMemberFromRoles(member, roles, callback = (/*err, {}*/) => { }) {
-		return this.internal.removeMemberFromRoles(member, roles)
-			.then(dataCallback(callback), errorCallback(callback));
-	}
-
-	// def removeUserFromRole
-	removeUserFromRoles(member, roles, callback = (/*err, {}*/) => { }) {
-		return this.removeMemberFromRoles(member, roles, callback);
 	}
 
 	// def createInvite
