@@ -663,7 +663,7 @@ export default class InternalClient {
 		}
 
 		if (!Array.isArray(roles) || roles.length === 0) {
-			roles = this.resolve.resolveRole(roles);
+			roles = this.resolver.resolveRole(roles);
 			if (roles) {
 				roles = [roles];
 			} else {
@@ -677,20 +677,22 @@ export default class InternalClient {
 			return Promise.reject(new Error("Role does not exist on same server as member"));
 		}
 
-		var roleIDS = roles[0].server.memberMap[member.id].roles.map(r => r.id);
+		var roleIDs = roles[0].server.memberMap[member.id].roles.map(r => r.id);
 
 		for (var i = 0; i < roles.length; i++) {
 			if (!~roleIDs.indexOf(roles[i].id)) {
-				roleIDS.push(roles[i].id);
+				roleIDs.push(roles[i].id);
 			};
 		};
 
+		console.log(roleIDs);
+
 		return this.apiRequest(
 			"patch",
-			`${Endpoints.SERVER_MEMBERS(role.server.id)}/${member.id}`,
+			`${Endpoints.SERVER_MEMBERS(roles[0].server.id)}/${member.id}`,
 			true,
 			{
-				roles: roleIDS
+				roles: roleIDs
 			}
 		);
 	}
@@ -718,7 +720,7 @@ export default class InternalClient {
 		}
 
 		if (!Array.isArray(roles) || roles.length === 0) {
-			roles = this.resolve.resolveRole(roles);
+			roles = this.resolver.resolveRole(roles);
 			if (roles) {
 				roles = [roles];
 			} else {
@@ -728,15 +730,15 @@ export default class InternalClient {
 			roles = roles.map(r => this.resolver.resolveRole(r));
 		}
 
-		var roleIDS = roles[0].server.memberMap[member.id].roles.map(r => r.id);
+		var roleIDs = roles[0].server.memberMap[member.id].roles.map(r => r.id);
 
 		for(var role of roles) {
 			if (!role.server.memberMap[member.id]) {
 				return Promise.reject(new Error("member not in server"));
 			}
-			for (var item in roleIDS) {
-				if (roleIDS[item] === role.id) {
-					roleIDS.splice(item, 1);
+			for (var item in roleIDs) {
+				if (roleIDs[item] === role.id) {
+					roleIDs.splice(item, 1);
 					break;
 				}
 			}
@@ -744,10 +746,10 @@ export default class InternalClient {
 
 		return this.apiRequest(
 			"patch",
-			`${Endpoints.SERVER_MEMBERS(role.server.id)}/${member.id}`,
+			`${Endpoints.SERVER_MEMBERS(roles[0].server.id)}/${member.id}`,
 			true,
 			{
-				roles: roleIDS
+				roles: roleIDs
 			}
 		);
 	}
