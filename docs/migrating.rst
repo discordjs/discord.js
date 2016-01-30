@@ -21,24 +21,24 @@ Change 1
 	client.users.get();
 	client.servers.get();
 	client.members.get();
-	
+
 Change 2
 --------
 
 .. code-block:: js
 
 	// OLD:
-	
+
 	client.on("serverNewMember", (member, server) => {
-	
+
 	});
-	
+
 	// NEW:
-	
+
 	client.on("serverNewMember", (server, user) => {
-	
+
 	});
-	
+
 Change 3
 ---------
 
