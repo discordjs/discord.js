@@ -44,40 +44,7 @@ Whenever you come to making a pull request, make sure it's to the *indev* branch
 
 ### Related Projects
 
-Here is a list of other Discord APIs:
-
-#### Java:
-[Discord4J](https://github.com/nerd/Discord4J)
-
-[JDiscord](https://github.com/NotGGhost/jDiscord)
-
-[JDA](https://github.com/DV8FromTheWorld/JDA)
-
-#### Go:
-[Go-Discord](https://github.com/gdraynz/go-discord)
-
-[DiscordGo](https://github.com/bwmarrin/discordgo)
-
-#### .NET:
-[Discord.Net](https://github.com/RogueException/Discord.Net)
-
-[DiscordSharp](https://github.com/Luigifan/DiscordSharp)
-
-#### NodeJS
-[discord.io](https://github.com/izy521/node-discord) (similar to discord.js but lower level)
-
-[discordie](https://github.com/qeled/discordie)
-
-#### PHP
-[DiscordPHP](https://github.com/teamreflex/DiscordPHP)
-
-[Discord-PHP](https://github.com/Cleanse/discord-php)
-
-#### Python
-[discord.py](https://github.com/Rapptz/discord.py)
-
-#### Ruby
-[discordrb](https://github.com/meew0/discordrb)
+A list of other Discord API libraries [can be found here](https://discordapi.com/unofficial/libs.html)
 
 ---
 
