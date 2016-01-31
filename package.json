@@ -25,9 +25,9 @@
   },
   "homepage": "https://github.com/hydrabolt/discord.js#readme",
   "dependencies": {
-    "superagent": "^1.5.0",
+    "superagent": "^1.7.2",
     "unpipe": "^1.0.0",
-    "ws": "^0.8.1"
+    "ws": "^1.0.1"
   },
   "devDependencies": {
     "colors": "^1.1.2",
@@ -36,11 +36,11 @@
     "grunt-babel": "<6.0.0",
     "grunt-browserify": "^4.0.1",
     "grunt-contrib-uglify": "^0.11.0",
-    "load-grunt-tasks": "^3.3.0",
-    "mocha": "^2.3.4"
+    "load-grunt-tasks": "^3.4.0",
+    "mocha": "^2.4.5"
   },
   "optionalDependencies": {
-    "node-opus": "^0.1.11"
+    "node-opus": "^0.1.12"
   },
   "engines": {
     "node": ">=0.12.7"
