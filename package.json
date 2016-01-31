@@ -4,7 +4,7 @@
   "description": "A way to interface with the Discord API",
   "main": "./entrypoint.js",
   "scripts": {
-    "test": "eslint *.js lib test && node test/lib-test.js"
+    "test": "eslint *.js src test && node test/lib-test.js"
   },
   "repository": {
     "type": "git",
