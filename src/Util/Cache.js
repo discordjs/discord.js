@@ -11,24 +11,23 @@ export default class Cache extends Array {
 	}
 
 	get(key, value) {
-		if (key === this[discrimS] && typeof value === "string") {
+		if (typeof key === 'function') {
+			var valid = key;
+			key = null;
+		} else if (key === this[discrimS] && typeof value === "string") {
 			return this[discrimCacheS][value] || null;
-		}
-
-		var valid = value;
-
-		if (value.constructor.name === 'RegExp') {
-			valid = function valid(item) {
+		} else if (value.constructor.name === 'RegExp') {
+			var valid = function valid(item) {
 				return value.test(item);
 			}
 		} else if (typeof value !== 'function') {
-			valid = function valid(item) {
+			var valid = function valid(item) {
 				return item == value;
 			}
 		}
 
 		for (var item of this) {
-			if (valid(item[key])) {
+			if (valid(key == null ? item : item[key])) {
 				return item;
 			}
 		}
@@ -43,20 +42,21 @@ export default class Cache extends Array {
 	getAll(key, value) {
 		var found = new Cache(this[discrimS]);
 
-		var valid = value;
-
-		if (value.constructor.name === 'RegExp') {
-			valid = function valid(item) {
+		if (typeof key === 'function') {
+			var valid = key;
+			key = null;
+		} else if (value.constructor.name === 'RegExp') {
+			var valid = function valid(item) {
 				return value.test(item);
 			}
 		} else if (typeof value !== 'function') {
-			valid = function valid(item) {
+			var valid = function valid(item) {
 				return item == value;
 			}
 		}
 
 		for (var item of this) {
-			if (valid(item[key])) {
+			if (valid(key == null ? item : item[key])) {
 				found.add(item);
 			}
 		}
