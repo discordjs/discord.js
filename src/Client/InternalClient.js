@@ -204,6 +204,11 @@ export default class InternalClient {
 			if (!channel) {
 				return Promise.reject(new Error("voice channel does not exist"));
 			}
+
+			if (channel.type !== 'voice') {
+				return Promise.reject(new Error("channel is not a voice channel!"));
+			}
+
 			return this.leaveVoiceChannel()
 			.then(() => {
 				return new Promise((resolve, reject) => {
