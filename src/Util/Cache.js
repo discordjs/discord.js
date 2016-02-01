@@ -11,14 +11,28 @@ export default class Cache extends Array {
 	}
 
 	get(key, value) {
-		if (key === this[discrimS])
+		if (key === this[discrimS] && typeof value === "string") {
 			return this[discrimCacheS][value] || null;
+		}
 
-		for(var item of this){
-			if(item[key] == value){
+		var valid = value;
+
+		if (value.constructor.name === 'RegExp') {
+			valid = function valid(item) {
+				return value.test(item);
+			}
+		} else if (typeof value !== 'function') {
+			valid = function valid(item) {
+				return item == value;
+			}
+		}
+
+		for (var item of this) {
+			if (valid(item[key])) {
 				return item;
 			}
 		}
+
 		return null;
 	}
 
@@ -28,12 +42,25 @@ export default class Cache extends Array {
 
 	getAll(key, value) {
 		var found = new Cache(this[discrimS]);
-		this.forEach((val, index, array) => {
-			if (val.hasOwnProperty(key) && val[key] == value) {
-				found.push(val);
-				return;
+
+		var valid = value;
+
+		if (value.constructor.name === 'RegExp') {
+			valid = function valid(item) {
+				return value.test(item);
 			}
-		});
+		} else if (typeof value !== 'function') {
+			valid = function valid(item) {
+				return item == value;
+			}
+		}
+
+		for (var item of this) {
+			if (valid(item[key])) {
+				found.add(item);
+			}
+		}
+
 		return found;
 	}
 
