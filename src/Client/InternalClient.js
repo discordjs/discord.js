@@ -200,45 +200,45 @@ export default class InternalClient {
 
 	//def joinVoiceChannel
 	joinVoiceChannel(chann) {
-		var channel = this.resolver.resolveVoiceChannel(chann);
+		return this.resolver.resolveChannel(chann).then(channel => {
+			if (!channel) {
+				return Promise.reject(new Error("voice channel does not exist"));
+			}
+			return this.leaveVoiceChannel()
+			.then(() => {
+				return new Promise((resolve, reject) => {
+					var session, token, server = channel.server, endpoint;
 
-		if (!channel) {
-			return Promise.reject(new Error("voice channel does not exist"));
-		}
-		return this.leaveVoiceChannel()
-		.then(() => {
-			return new Promise((resolve, reject) => {
-				var session, token, server = channel.server, endpoint;
+					var check = m => {
+						var data = JSON.parse(m);
+						if (data.t === "VOICE_STATE_UPDATE") {
+							session = data.d.session_id;
+						} else if (data.t === "VOICE_SERVER_UPDATE") {
+							token = data.d.token;
+							endpoint = data.d.endpoint;
+							var chan = this.voiceConnection = new VoiceConnection(
+								channel, this.client, session, token, server, endpoint
+							);
 
-				var check = m => {
-					var data = JSON.parse(m);
-					if (data.t === "VOICE_STATE_UPDATE") {
-						session = data.d.session_id;
-					} else if (data.t === "VOICE_SERVER_UPDATE") {
-						token = data.d.token;
-						endpoint = data.d.endpoint;
-						var chan = this.voiceConnection = new VoiceConnection(
-							channel, this.client, session, token, server, endpoint
-						);
+							chan.on("ready", () => resolve(chan));
+							chan.on("error", reject);
 
-						chan.on("ready", () => resolve(chan));
-						chan.on("error", reject);
+							this.client.emit("debug", "removed temporary voice websocket listeners");
+							this.websocket.removeListener("message", check);
 
-						this.client.emit("debug", "removed temporary voice websocket listeners");
-						this.websocket.removeListener("message", check);
+						}
+					};
 
-					}
-				};
-
-				this.websocket.on("message", check);
-				this.sendWS({
-					op: 4,
-					d: {
-						"guild_id": server.id,
-						"channel_id": channel.id,
-						"self_mute": false,
-						"self_deaf": false
-					}
+					this.websocket.on("message", check);
+					this.sendWS({
+						op: 4,
+						d: {
+							"guild_id": server.id,
+							"channel_id": channel.id,
+							"self_mute": false,
+							"self_deaf": false
+						}
+					});
 				});
 			});
 		});

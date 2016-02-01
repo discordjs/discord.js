@@ -166,14 +166,6 @@ export default class Resolver {
 		return null;
 	}
 
-	resolveVoiceChannel(resource) {
-		// resolveChannel will also work but this is more apt
-		if (resource instanceof VoiceChannel) {
-			return resource;
-		}
-		return null;
-	}
-
 	resolveChannel(resource) {
 		/*
 			accepts a Message, Channel, Server, String ID, User
