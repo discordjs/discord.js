@@ -690,8 +690,6 @@ export default class InternalClient {
 			};
 		};
 
-		console.log(roleIDs);
-
 		return this.apiRequest(
 			"patch",
 			`${Endpoints.SERVER_MEMBERS(roles[0].server.id)}/${member.id}`,
@@ -1169,7 +1167,6 @@ export default class InternalClient {
 					}
 					break;
 				case PacketType.MESSAGE_DELETE:
-					// format https://discordapi.readthedocs.org/en/latest/reference/channels/messages.html#message-delete
 					var channel = self.channels.get("id", data.channel_id) || self.private_channels.get("id", data.channel_id);
 					if (channel) {
 						// potentially blank
@@ -1177,6 +1174,8 @@ export default class InternalClient {
 						client.emit("messageDeleted", msg, channel);
 						if (msg) {
 							channel.messages.remove(msg);
+						} else {
+							client.emit("warn", "message was deleted but message is not cached");
 						}
 					} else {
 						client.emit("warn", "message was deleted but channel is not cached");
