@@ -208,7 +208,7 @@ export default class Server extends Equality {
 				return chan;
 			}
 		}
-		return this;
+		return {server: this};
 	}
 
 	equalsStrict(obj) {
