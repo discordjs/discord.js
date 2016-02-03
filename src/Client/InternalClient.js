@@ -1436,7 +1436,7 @@ export default class InternalClient {
 						data.user.avatar = data.user.avatar || user.avatar;
 						data.user.discriminator = data.user.discriminator || user.discriminator;
 						data.user.status = data.status || user.status;
-						data.user.game = data.game || user.game;
+						data.user.game = data.game;
 
 						var presenceUser = new User(data.user, client);
 
