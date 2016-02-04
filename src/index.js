@@ -14,6 +14,7 @@ import TextChannel from "./Structures/TextChannel";
 import User from "./Structures/User";
 import VoiceChannel from "./Structures/VoiceChannel";
 import Constants from "./Constants";
+import Cache from "./Util/Cache.js";
 
 export default {
 	Client,
@@ -29,5 +30,6 @@ export default {
 	TextChannel,
 	User,
 	VoiceChannel,
-	Constants
+	Constants,
+	Cache
 };
