@@ -54,7 +54,7 @@ export default class Resolver {
 		}
 		if (resource instanceof Message) {
 			if (resource.channel instanceof TextChannel) {
-				return resource.server;
+				return resource.channel.server;
 			}
 		}
 		return null;
