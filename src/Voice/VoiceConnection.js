@@ -83,18 +83,19 @@ export default class VoiceConnection extends EventEmitter {
 	}
 
 	playStream(stream, channels=2) {
+		var self = this,
+			startTime = Date.now(),
+			count = 0,
+			length = 20,
+			retStream = new StreamIntent(),
+			onWarning = false,
+			lastVolume = this.volume !== undefined ? this.volume.get() : 1;
 
-		var self = this;
+		this.volume = stream;
+		this.playing = true;
+		this.playingIntent = retStream;
 
-		var startTime = Date.now();
-		var count = 0;
-
-		var length = 20;
-
-		self.playing = true;
-		var retStream = new StreamIntent();
-		var onWarning = false;
-		self.playingIntent = retStream;
+		this.setVolume(lastVolume);
 
 		function send() {
 			if (!self.playingIntent || !self.playing) {
@@ -370,5 +371,29 @@ export default class VoiceConnection extends EventEmitter {
 			});
 
 		});
+	}
+
+	wrapVolume(stream) {
+		stream.pipe(this.volume);
+
+		return this.volume;
+	}
+
+	setVolume(volume) {
+		this.volume.set(volume);
+	}
+
+	getVolume() {
+		return this.volume.get();
+	}
+
+	mute() {
+		this.lastVolume = this.volume.get();
+		this.setVolume(0);
+	}
+
+	unmute() {
+		this.setVolume(this.lastVolume);
+		this.lastVolume = undefined;
 	}
 }
