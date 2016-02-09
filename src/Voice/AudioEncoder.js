@@ -22,7 +22,7 @@ export default class AudioEncoder {
 
 	sanityCheck() {
 		var _opus        = this.opus;
-		var encodeZeroes = function() {
+		var encodeZeroes = function () {
 			try {
 				var zeroes = new Buffer(1920);
 				zeroes.fill(0);
@@ -75,20 +75,20 @@ export default class AudioEncoder {
 			stream.pipe(enc.stdin);
 			enc.stdout.pipe(this.volume);
 
-			this.volume.once("readable", function() {
+			this.volume.once("readable", function () {
 				resolve({
-					proc:     enc,
-					stream:   self.volume,
+					proc: enc,
+					stream: self.volume,
 					instream: stream,
 					channels: 2
 				});
 			});
 
-			this.volume.on("end", function() {
+			this.volume.on("end", function () {
 				reject("end");
 			});
 
-			this.volume.on("close", function() {
+			this.volume.on("close", function () {
 				reject("close");
 			});
 		});
@@ -109,19 +109,19 @@ export default class AudioEncoder {
 
 			enc.stdout.pipe(this.volume);
 
-			this.volume.once("readable", function() {
+			this.volume.once("readable", function () {
 				resolve({
-					proc:     enc,
-					stream:   self.volume,
+					proc: enc,
+					stream: self.volume,
 					channels: 2
 				});
 			});
 
-			this.volume.on("end", function() {
+			this.volume.on("end", function () {
 				reject("end");
 			});
 
-			this.volume.on("close", function() {
+			this.volume.on("close", function () {
 				reject("close");
 			});
 		});
@@ -142,19 +142,19 @@ export default class AudioEncoder {
 
 			enc.stdout.pipe(this.volume);
 
-			this.volume.once("readable", function() {
+			this.volume.once("readable", function () {
 				resolve({
-					proc:     enc,
-					stream:   self.volume,
+					proc: enc,
+					stream: self.volume,
 					channels: 2
 				});
 			});
 
-			this.volume.on("end", function() {
+			this.volume.on("end", function () {
 				reject("end");
 			});
 
-			this.volume.on("close", function() {
+			this.volume.on("close", function () {
 				reject("close");
 			});
 		});

@@ -53,11 +53,11 @@ export default class VoiceConnection extends EventEmitter {
 		this.client.internal.sendWS(
 			{
 				op: 4,
-				d:  {
-					guild_id:   null,
+				d: {
+					guild_id: null,
 					channel_id: null,
-					self_mute:  true,
-					self_deaf:  false
+					self_mute: true,
+					self_deaf: false
 				}
 			}
 		);
@@ -107,11 +107,11 @@ export default class VoiceConnection extends EventEmitter {
 
 	playStream(stream, channels = 2) {
 		var self      = this,
-			startTime = Date.now(),
-			count     = 0,
-			length    = 20,
-			retStream = new StreamIntent(),
-			onWarning = false;
+		    startTime = Date.now(),
+		    count     = 0,
+		    length    = 20,
+		    retStream = new StreamIntent(),
+		    onWarning = false;
 
 		self.playing       = true;
 		self.playingIntent = retStream;
@@ -149,7 +149,8 @@ export default class VoiceConnection extends EventEmitter {
 				self.sequence + 1 < 65535 ? self.sequence += 1 : self.sequence = 0;
 				self.timestamp + 960 < 4294967295 ? self.timestamp += 960 : self.timestamp = 0;
 
-				self.sendBuffer(buffer, self.sequence, self.timestamp, (e) => { });
+				self.sendBuffer(buffer, self.sequence, self.timestamp, (e) => {
+				});
 
 				var nextTime = startTime + (count * length);
 
@@ -179,15 +180,16 @@ export default class VoiceConnection extends EventEmitter {
 		if (this.vWS.readyState === WebSocket.OPEN) {
 			this.vWS.send(JSON.stringify({
 				op: 5,
-				d:  {
+				d: {
 					speaking: value,
-					delay:    0
+					delay: 0
 				}
 			}));
 		}
 	}
 
-	sendPacket(packet, callback = function(err) { }) {
+	sendPacket(packet, callback = function (err) {
+	}) {
 		var self     = this;
 		self.playing = true;
 		try {
@@ -230,7 +232,8 @@ export default class VoiceConnection extends EventEmitter {
 		}
 	}
 
-	playFile(stream, options = false, callback = function(err, str) { }) {
+	playFile(stream, options = false, callback = function (err, str) {
+	}) {
 		var self = this;
 		self.stopPlaying();
 		if (typeof options === "function") {
@@ -256,7 +259,8 @@ export default class VoiceConnection extends EventEmitter {
 		})
 	}
 
-	playRawStream(stream, options = false, callback = function(err, str) { }) {
+	playRawStream(stream, options = false, callback = function (err, str) {
+	}) {
 		var self = this;
 		self.stopPlaying();
 		if (typeof options === "function") {
@@ -283,7 +287,8 @@ export default class VoiceConnection extends EventEmitter {
 		})
 	}
 
-	playArbitraryFFmpeg(ffmpegOptions, callback = function(err, str) { }) {
+	playArbitraryFFmpeg(ffmpegOptions, callback = function (err, str) {
+	}) {
 		var self = this;
 		self.stopPlaying();
 		if (typeof options === "function") {
@@ -322,7 +327,7 @@ export default class VoiceConnection extends EventEmitter {
 			var discordIP = "", discordPort = "";
 
 			udpClient.bind({exclusive: true});
-			udpClient.on('message', function(msg, rinfo) {
+			udpClient.on('message', function (msg, rinfo) {
 				var buffArr = JSON.parse(JSON.stringify(msg)).data;
 				if (firstPacket === true) {
 					for (var i = 4; i < buffArr.indexOf(0, i); i++) {
@@ -332,12 +337,12 @@ export default class VoiceConnection extends EventEmitter {
 
 					var wsDiscPayload = {
 						"op": 1,
-						"d":  {
+						"d": {
 							"protocol": "udp",
-							"data":     {
+							"data": {
 								"address": discordIP,
-								"port":    Number(discordPort),
-								"mode":    self.vWSData.modes[0] //Plain
+								"port": Number(discordPort),
+								"mode": self.vWSData.modes[0] //Plain
 							}
 						}
 					}
@@ -349,11 +354,11 @@ export default class VoiceConnection extends EventEmitter {
 			vWS.on("open", () => {
 				vWS.send(JSON.stringify({
 					op: 0,
-					d:  {
-						server_id:  self.server.id,
-						user_id:    self.client.internal.user.id,
+					d: {
+						server_id: self.server.id,
+						user_id: self.client.internal.user.id,
 						session_id: self.session,
-						token:      self.token
+						token: self.token
 					}
 				}));
 			});
@@ -370,7 +375,7 @@ export default class VoiceConnection extends EventEmitter {
 							if (vWS && vWS.readyState === WebSocket.OPEN) {
 								vWS.send(JSON.stringify({
 									op: 3,
-									d:  null
+									d: null
 								}));
 							}
 						}, data.d.heartbeat_interval);

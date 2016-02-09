@@ -1,11 +1,17 @@
 const Transform = require('stream').Transform;
 
 class Volume extends Transform {
-	get volume() { return this._volume === undefined ? 1 : this._volume; }
+	get volume() {
+		return this._volume === undefined ? 1 : this._volume;
+	}
 
-	set volume(value) { this._volume = value; }
+	set volume(value) {
+		this._volume = value;
+	}
 
-	get multiplier() { return Math.tan(this.volume); }
+	get multiplier() {
+		return Math.tan(this.volume);
+	}
 
 	get() {
 		return this.volume;
