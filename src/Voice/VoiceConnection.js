@@ -1,11 +1,11 @@
 "use strict";
 /*
-	Major credit to izy521 who is the creator of
-	https://github.com/izy521/discord.io,
+ Major credit to izy521 who is the creator of
+ https://github.com/izy521/discord.io,
 
-	without his help voice chat in discord.js would not have
-	been possible!
-*/
+ without his help voice chat in discord.js would not have
+ been possible!
+ */
 
 import WebSocket from "ws";
 import dns from "dns";
@@ -13,64 +13,67 @@ import udp from "dgram";
 import AudioEncoder from "./AudioEncoder";
 import VoicePacket from "./VoicePacket";
 import StreamIntent from "./StreamIntent";
+import Volume from "./Volume";
 import EventEmitter from "events";
 import unpipe from "unpipe";
 
 export default class VoiceConnection extends EventEmitter {
 	constructor(channel, client, session, token, server, endpoint) {
 		super();
-		this.id = channel.id;
+		this.id           = channel.id;
 		this.voiceChannel = channel;
-		this.client = client;
-		this.session = session;
-		this.token = token;
-		this.server = server;
-		this.endpoint = endpoint.split(":")[0];
-		this.vWS = null; // vWS means voice websocket
-		this.ready = false;
-		this.vWSData = {};
-		this.encoder = new AudioEncoder();
-		this.udp = null;
+		this.client       = client;
+		this.session      = session;
+		this.token        = token;
+		this.server       = server;
+		this.endpoint     = endpoint.split(":")[0];
+		this.vWS          = null; // vWS means voice websocket
+		this.ready         = false;
+		this.vWSData       = {};
+		this.volume        = new Volume(1);
+		this.encoder       = new AudioEncoder(this.volume);
+		this.udp           = null;
 		this.playingIntent = null;
-		this.playing = false;
-		this.streamTime = 0;
-		this.streamProc = null;
-		this.KAI = null;
-		this.timestamp = 0;
-		this.sequence = 0;
+		this.playing       = false;
+		this.streamTime    = 0;
+		this.streamProc    = null;
+		this.KAI           = null;
+		this.timestamp     = 0;
+		this.sequence      = 0;
 		this.init();
 	}
 
 	destroy() {
 		this.stopPlaying();
-		if(this.KAI)
+		if (this.KAI) {
 			clearInterval(this.KAI);
+		}
 		this.vWS.close();
 		this.udp.close();
 		this.client.internal.sendWS(
 			{
-				op : 4,
-				d : {
-					guild_id : null,
-					channel_id : null,
-					self_mute : true,
-					self_deaf : false
+				op: 4,
+				d: {
+					guild_id: null,
+					channel_id: null,
+					self_mute: true,
+					self_deaf: false
 				}
 			}
 		);
 	}
 
 	stopPlaying() {
-		this.playing = false;
+		this.playing       = false;
 		this.playingIntent = null;
 		if (this.instream) {
 			//not all streams implement these...
 			//and even file stream don't seem to implement them properly...
 			unpipe(this.instream);
-			if(this.instream.end) {
+			if (this.instream.end) {
 				this.instream.end();
 			}
-			if(this.instream.destroy) {
+			if (this.instream.destroy) {
 				this.instream.destroy();
 			}
 			this.instream = null;
@@ -82,18 +85,35 @@ export default class VoiceConnection extends EventEmitter {
 		}
 	}
 
-	playStream(stream, channels=2) {
+	wrapVolume(stream) {
+		stream.pipe(this.volume);
 
-		var self = this;
+		return this.volume;
+	}
 
-		var startTime = Date.now();
-		var count = 0;
+	setVolume(volume) {
+		this.volume.set(volume);
+	}
 
-		var length = 20;
+	mute() {
+		this.lastVolume = this.volume.get();
+		this.setVolume(0);
+	}
 
-		self.playing = true;
-		var retStream = new StreamIntent();
-		var onWarning = false;
+	unmute() {
+		this.setVolume(this.lastVolume);
+		this.lastVolume = undefined;
+	}
+
+	playStream(stream, channels = 2) {
+		var self      = this,
+		    startTime = Date.now(),
+		    count     = 0,
+		    length    = 20,
+		    retStream = new StreamIntent(),
+		    onWarning = false;
+
+		self.playing       = true;
 		self.playingIntent = retStream;
 
 		function send() {
@@ -104,33 +124,33 @@ export default class VoiceConnection extends EventEmitter {
 				return;
 			}
 			try {
+				var buffer = stream.read(1920 * channels);
 
-					var buffer = stream.read(1920 * channels);
+				if (!buffer) {
+					if (onWarning) {
+						retStream.emit("end");
+						self.setSpeaking(false);
+						//console.log("ending 2");
+						return;
+					} else {
+						onWarning = true;
+						setTimeout(send, length * 10); // give chance for some data in 200ms to appear
+						return;
+					}
+				}
 
-					if (!buffer) {
-						if (onWarning) {
-								retStream.emit("end");
-								self.setSpeaking(false);
-								//console.log("ending 2");
-								return;
-						  } else {
-								onWarning = true;
-								setTimeout(send, length * 10); // give chance for some data in 200ms to appear
-								return;
-						}
-					 }
-
-					 if(buffer.length !== 1920 * channels) {
-						var newBuffer = new Buffer(1920 * channels).fill(0);
-						buffer.copy(newBuffer);
-						buffer = newBuffer;
-					 }
+				if (buffer.length !== 1920 * channels) {
+					var newBuffer = new Buffer(1920 * channels).fill(0);
+					buffer.copy(newBuffer);
+					buffer = newBuffer;
+				}
 
 				count++;
 				self.sequence + 1 < 65535 ? self.sequence += 1 : self.sequence = 0;
 				self.timestamp + 960 < 4294967295 ? self.timestamp += 960 : self.timestamp = 0;
 
-				self.sendBuffer(buffer, self.sequence, self.timestamp, (e) => { });
+				self.sendBuffer(buffer, self.sequence, self.timestamp, (e) => {
+				});
 
 				var nextTime = startTime + (count * length);
 
@@ -138,16 +158,17 @@ export default class VoiceConnection extends EventEmitter {
 
 				setTimeout(send, length + (nextTime - Date.now()));
 
-				if (!self.playing)
+				if (!self.playing) {
 					self.setSpeaking(true);
+				}
 
 				retStream.emit("time", self.streamTime);
-
 
 			} catch (e) {
 				retStream.emit("error", e);
 			}
 		}
+
 		self.setSpeaking(true);
 		send();
 
@@ -156,7 +177,7 @@ export default class VoiceConnection extends EventEmitter {
 
 	setSpeaking(value) {
 		this.playing = value;
-		if (this.vWS.readyState === WebSocket.OPEN)
+		if (this.vWS.readyState === WebSocket.OPEN) {
 			this.vWS.send(JSON.stringify({
 				op: 5,
 				d: {
@@ -164,14 +185,17 @@ export default class VoiceConnection extends EventEmitter {
 					delay: 0
 				}
 			}));
+		}
 	}
 
-	sendPacket(packet, callback = function (err) { }) {
-		var self = this;
+	sendPacket(packet, callback = function (err) {
+	}) {
+		var self     = this;
 		self.playing = true;
 		try {
-			if (self.vWS.readyState === WebSocket.OPEN)
+			if (self.vWS.readyState === WebSocket.OPEN) {
 				self.udp.send(packet, 0, packet.length, self.vWSData.port, self.endpoint, callback);
+			}
 		} catch (e) {
 			self.playing = false;
 			callback(e);
@@ -180,11 +204,11 @@ export default class VoiceConnection extends EventEmitter {
 	}
 
 	sendBuffer(rawbuffer, sequence, timestamp, callback) {
-		var self = this;
+		var self     = this;
 		self.playing = true;
 		try {
-			if(!self.encoder.opus){
-				self.playing=false;
+			if (!self.encoder.opus) {
+				self.playing = false;
 				self.emit("error", "No Opus!");
 				self.client.emit("debug", "Tried to use node-opus, but opus not available - install it!");
 				return;
@@ -208,13 +232,14 @@ export default class VoiceConnection extends EventEmitter {
 		}
 	}
 
-	playFile(stream, options=false, callback = function (err, str) { }) {
+	playFile(stream, options = false, callback = function (err, str) {
+	}) {
 		var self = this;
 		self.stopPlaying();
 		if (typeof options === "function") {
 			// options is the callback
 			callback = options;
-			options = {};
+			options  = {};
 		}
 		return new Promise((resolve, reject) => {
 			this.encoder
@@ -222,7 +247,7 @@ export default class VoiceConnection extends EventEmitter {
 				.catch(error)
 				.then(data => {
 					self.streamProc = data.proc;
-					var intent = self.playStream(data.stream, 2);
+					var intent      = self.playStream(data.stream, 2);
 					resolve(intent);
 					callback(null, intent);
 
@@ -234,13 +259,14 @@ export default class VoiceConnection extends EventEmitter {
 		})
 	}
 
-	playRawStream(stream, options=false, callback = function (err, str) { }) {
+	playRawStream(stream, options = false, callback = function (err, str) {
+	}) {
 		var self = this;
 		self.stopPlaying();
 		if (typeof options === "function") {
 			// options is the callback
 			callback = options;
-			options = {};
+			options  = {};
 		}
 		return new Promise((resolve, reject) => {
 			this.encoder
@@ -248,8 +274,8 @@ export default class VoiceConnection extends EventEmitter {
 				.catch(error)
 				.then(data => {
 					self.streamProc = data.proc;
-					self.instream = data.instream;
-					var intent = self.playStream(data.stream);
+					self.instream   = data.instream;
+					var intent      = self.playStream(data.stream);
 					resolve(intent);
 					callback(null, intent);
 
@@ -261,13 +287,14 @@ export default class VoiceConnection extends EventEmitter {
 		})
 	}
 
-	playArbitraryFFmpeg(ffmpegOptions, callback = function (err, str) { }) {
+	playArbitraryFFmpeg(ffmpegOptions, callback = function (err, str) {
+	}) {
 		var self = this;
 		self.stopPlaying();
 		if (typeof options === "function") {
 			// options is the callback
 			callback = options;
-			options = {};
+			options  = {};
 		}
 		return new Promise((resolve, reject) => {
 			this.encoder
@@ -275,8 +302,8 @@ export default class VoiceConnection extends EventEmitter {
 				.catch(error)
 				.then(data => {
 					self.streamProc = data.proc;
-					self.instream = data.instream;
-					var intent = self.playStream(data.stream);
+					self.instream   = data.instream;
+					var intent      = self.playStream(data.stream);
 					resolve(intent);
 					callback(null, intent);
 
@@ -291,7 +318,7 @@ export default class VoiceConnection extends EventEmitter {
 	init() {
 		var self = this;
 		dns.lookup(this.endpoint, (err, address, family) => {
-			var vWS = self.vWS = new WebSocket("wss://" + this.endpoint, null, { rejectUnauthorized: false });
+			var vWS = self.vWS = new WebSocket("wss://" + this.endpoint, null, {rejectUnauthorized: false});
 			this.endpoint = address;
 			var udpClient = self.udp = udp.createSocket("udp4");
 
@@ -299,7 +326,7 @@ export default class VoiceConnection extends EventEmitter {
 
 			var discordIP = "", discordPort = "";
 
-			udpClient.bind({ exclusive: true });
+			udpClient.bind({exclusive: true});
 			udpClient.on('message', function (msg, rinfo) {
 				var buffArr = JSON.parse(JSON.stringify(msg)).data;
 				if (firstPacket === true) {
@@ -345,24 +372,26 @@ export default class VoiceConnection extends EventEmitter {
 						self.vWSData = data.d;
 
 						self.KAI = KAI = self.client.internal.intervals.misc["voiceKAI"] = setInterval(() => {
-							if (vWS && vWS.readyState === WebSocket.OPEN)
+							if (vWS && vWS.readyState === WebSocket.OPEN) {
 								vWS.send(JSON.stringify({
 									op: 3,
 									d: null
 								}));
+							}
 						}, data.d.heartbeat_interval);
 
 						var udpPacket = new Buffer(70);
 						udpPacket.writeUIntBE(data.d.ssrc, 0, 4);
 						udpClient.send(udpPacket, 0, udpPacket.length, data.d.port, self.endpoint, err => {
-							if (err)
+							if (err) {
 								self.emit("error", err)
+							}
 						});
 						break;
 					case 4:
 
 						self.ready = true;
-						self.mode = data.d.mode;
+						self.mode  = data.d.mode;
 						self.emit("ready", self);
 
 						break;
