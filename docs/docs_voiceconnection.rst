@@ -64,7 +64,7 @@ Plays a file to the voice channel. The file can be in practically any format; if
 In addition to a file path local to your computer, it can also accept a URL, however this is not recommended as the entire content of the URL will be read before any playback starts.
 This can cause delays from seconds to minutes - you can use `playRawStream` with a Stream obtained from the URL instead.
 
-The `options` object can be used to control playback properties, currently, it only allows setting the volume using the `volume` property, which can be in any of the following formats:
+The `options` object can be used to control playback properties, currently, it currently allows setting the seek (in seconds) using the `seek` property, and the volume using the `volume` property, which can be in any of the following formats:
 
  - A number representing the linear change in volume; 1 is equal to no change, 0 is completely silent, 0.5 is half the regular volume and 2 is double the regular volume.
  - A string representing the linear change in volume, if this is more convenient for you.
