@@ -125,7 +125,7 @@ export default class Role {
 	}
 
 	colorAsHex(){
-		var val = this.color.toString();
+		var val = this.color.toString(16);
 		while(val.length < 6){
 			val = "0" + val;
 		}
