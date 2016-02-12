@@ -969,7 +969,7 @@ export default class InternalClient {
 
 	//def updateDetails
 	updateDetails(data) {
-		if(!this.email) {
+		if(!this.email && !data.email) {
 			throw new Error("Can't use updateDetails because only a token has been used for login!");
 		}
 		return this.apiRequest("patch", Endpoints.ME, true, {
@@ -1086,6 +1086,7 @@ export default class InternalClient {
 					token: self.token,
 					v: 3,
 					compress: self.client.options.compress,
+					large_threshold : 250,
 					properties: {
 						"$os": "discord.js",
 						"$browser": "discord.js",

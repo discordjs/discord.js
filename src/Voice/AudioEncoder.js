@@ -67,6 +67,7 @@ export default class AudioEncoder {
 				'-i', '-',
 				'-f', 's16le',
 				'-ar', '48000',
+				'-ss', (options.seek || 0),
 				'-ac', 2,
 				'pipe:1'
 			], {stdio: ['pipe', 'pipe', 'ignore']});
@@ -102,6 +103,7 @@ export default class AudioEncoder {
 				'-i', file,
 				'-f', 's16le',
 				'-ar', '48000',
+				'-ss', (options.seek || 0),
 				'-ac', 2,
 				'pipe:1'
 			], {stdio: ['pipe', 'pipe', 'ignore']});
