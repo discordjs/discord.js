@@ -89,7 +89,7 @@ rolesOfUser(user)
 
 Returns an array of the roles affecting a user server-wide.
 
-usersWithRole(user, role)
+usersWithRole(role)
 ~~~~~~~~~~~~~~~~~
 
 **Aliases**: `membersWithRole`
