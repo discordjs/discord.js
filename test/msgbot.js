@@ -79,10 +79,13 @@ client.on("message", msg => {
 
 console.log("INIT");
 
+client.forceFetchUsers();
+
 client.on("debug", msg => console.log("[debug]", msg));
+client.on("unk", msg => console.log("[unknown]", msg));
 
 client.login(process.env["ds_email"], process.env["ds_password"]).catch(console.log);
 
-client.on("presence", (old, news) => console.log(`PRESENCE TEST ${old.username} $$ ${news.username}`))
+//client.on("presence", (old, news) => console.log(`PRESENCE TEST ${old.username} $$ ${news.username}`))
 var chan1, chan2;
 var msg1, msg2;

@@ -564,6 +564,11 @@ Overwrites the permissions of a role or a user in a channel
         "attachFiles" : true
     }
 
+forceFetchUsers()
+~~~~~~~~~~~~~~~~~
+
+As of 12/02/2016, the API will now only return the online users in a server if it has more than 250 users. If you want to be aware of ALL users in a server, use this function. As of yet, it doesn't return anything and users are just silently and gradually added to the relevant servers.
+
 Events
 ------
 

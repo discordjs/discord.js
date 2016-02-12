@@ -556,4 +556,9 @@ export default class Client extends EventEmitter {
 	setPlayingGame(game, callback = (/*err, {}*/) => { }) {
 		return this.setStatus(null, game, callback);
 	}
+
+	//def forceFetchUsers
+	forceFetchUsers(){
+		return this.internal.forceFetchUsers();
+	}
 }

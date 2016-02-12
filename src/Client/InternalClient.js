@@ -249,6 +249,18 @@ export default class InternalClient {
 		});
 	}
 
+	// def forceFetchUsers
+	forceFetchUsers(){
+		this.sendWS({
+			op : 8,
+			d : {
+				guild_id : this.servers.map(srv => srv.id),
+				query : "",
+				limit : 0
+			}
+		});
+	}
+
 	// def createServer
 	createServer(name, region = "london") {
 		name = this.resolver.resolveString(name);
@@ -1524,6 +1536,21 @@ export default class InternalClient {
 
 					} else {
 						client.emit("warn", "voice state update but user or server not in cache");
+					}
+
+					break;
+				case PacketType.SERVER_MEMBERS_CHUNK:
+
+					var server = self.servers.get("id", data.guild_id);
+
+					if(server){
+
+						for(var user of data.members){
+							server.members.add(self.users.get("id", user.id) || self.users.add(new User(user, client)));
+						}
+
+					}else{
+						client.emit("warn", "chunk update received but server not in cache");
 					}
 
 					break;
