@@ -1429,9 +1429,13 @@ export default class InternalClient {
 					break;
 				case PacketType.PRESENCE_UPDATE:
 
-					var user = self.users.get("id", data.user.id);
+					var user = self.users.add(new User(data.user, client));
+					var server = self.servers.get("id", data.guild_id);
 
-					if (user) {
+					if (user && server) {
+
+						server.members.add(user);
+
 						data.user.username = data.user.username || user.username;
 						data.user.id = data.user.id || user.id;
 						data.user.avatar = data.user.avatar || user.avatar;
@@ -1447,7 +1451,7 @@ export default class InternalClient {
 						}
 
 					} else {
-						client.emit("warn", "presence update but user not in cache");
+						client.emit("warn", "presence update but user/server not in cache");
 					}
 
 					break;
