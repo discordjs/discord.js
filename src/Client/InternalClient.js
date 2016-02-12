@@ -1086,7 +1086,7 @@ export default class InternalClient {
 					token: self.token,
 					v: 3,
 					compress: self.client.options.compress,
-					large_threshold : 250,
+					large_threshold : self.client.options.large_threshold,
 					properties: {
 						"$os": "discord.js",
 						"$browser": "discord.js",
