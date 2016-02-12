@@ -1429,7 +1429,7 @@ export default class InternalClient {
 					break;
 				case PacketType.PRESENCE_UPDATE:
 
-					var user = self.users.add(new User(data.user, client));
+					var user = self.users.get("id", data.user.id) || self.users.add(new User(data.user, client));
 					var server = self.servers.get("id", data.guild_id);
 
 					if (user && server) {
