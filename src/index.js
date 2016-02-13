@@ -17,6 +17,19 @@
  * @property {Number} [large_threshold=250] an integer between 0 and 250. When a server has more users than `options.large_threshold`, only the online/active users are cached.
 */
 
+/**
+ * Object containing properties that will be applied when deleting messages
+ * @typedef {(object)} MessageDeletionOptions
+ * @property {Number} [wait] If set, the message will be deleted after `options.wait` milliseconds.
+ */
+
+/**
+ * Object containing properties that will be used when fetching channel logs. You cannot specify _both_ `options.before` and `options.after`
+ * @typedef {(object)} ChannelLogsOptions
+ * @property {MessageResolvable} [before] When fetching logs, it will fetch from messages before `options.before` but not including it.
+ * @property {MessageResolvable} [after] When fetching logs, it will fetch from messages after `options.after` but not including it.
+ */
+
 import Client from "./Client/Client";
 import Channel from "./Structures/Channel";
 import ChannelPermissions from "./Structures/ChannelPermissions";

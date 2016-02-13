@@ -13,6 +13,10 @@
  * If given an array, turns it into a newline-separated string.
  * @typedef {(String|Array)} StringResolvable
 */
+/**
+ * Resolves supplied data type to a Message. If a channel, it is the latest message from that channel.
+ * @typedef {(Message|TextChannel|PMChannel)} MessageResolvable
+*/
 
 import fs from "fs";
 import request from "superagent";
