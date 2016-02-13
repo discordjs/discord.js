@@ -691,7 +691,28 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def createChannel
+	/**
+	 * Creates a new text or voice channel in a server
+	 * @param {ServerResolvable} server server to make the channel in
+	 * @param {string} name name of channel
+	 * @param {string} [type=text] type of channel, either `voice` or `text`
+	 * @param {function(err: Error, channel: ServerChannel)} [callback] callback for the method, channel will be TextChannel or VoiceChannel depending on specified `type`
+	 * @returns {Promise<ServerChannel, Error>} Resolves with either a TextChannel or VoiceChannel, depending on specified `type`, if successful, otherwise rejects with an Error.
+	 * @example
+	 * // make channel - callback
+	 * client.createChannel(server, "notgeneral", "text", function(err, channel){
+	 *     if(err){
+	 *         console.log("couldn't make channel!");
+	 *     }else{
+	 *         console.log("Made channel " + channel.name);
+	 *     }
+	 * });
+	 * @example
+	 * // make channel - promises
+	 * client.createChannel(server, "notgeneral", "text")
+	 *     .then(channel => console.log("Made channel " + channel.name))
+	 *     .catch(err => console.log("couldn't make channel!"));
+	 */
 	createChannel(server, name, type = "text", callback = (/*err, channel*/) => { }) {
 		if (typeof type === "function") {
 			// options is the callback
