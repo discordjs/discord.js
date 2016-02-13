@@ -64,9 +64,7 @@ client.on("message", msg => {
 	if (msg.content.startsWith("$play")) {
 		var url = msg.content.split(" ")[1];
 
-		client.voiceConnection.playRawStream(request(url), {
-			volume : 0.1
-		});
+		client.voiceConnection.playRawStream(request(url));
 
 	}
 

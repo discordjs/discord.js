@@ -560,31 +560,90 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def sendFile
-	sendFile(where, attachment, name, callback = (/*err, m*/) => { }) {
+	/**
+	 * Sends a file (embedded if possible) to the specified channel.
+	 * @param {TextChannelResolvable} destination channel to send the file to
+	 * @param {FileResolvable} attachment the file to send
+	 * @param {string} name name of the file, especially including the extension
+	 * @param {function(err: Error, msg: Message)} [callback] callback to the method
+	 * @returns {Promise<msg: Message, err: Error>} resolves with the sent file as a message if successful, otherwise rejects with an error
+	 * @example
+	 * // send a file - callback
+	 * client.sendFile(channel, new Buffer("Hello this a text file"), "file.txt", function(err, msg){
+	 *     if(err){
+	 *         console.log("Couldn't send file!");
+	 *     }
+	 * });
+	 * @example
+	 * // send a file - promises
+	 * client.sendFile(channel, "C:/path/to/file.txt", "file.txt")
+	 *     .then(msg => console.log("sent file!"))
+	 *     .catch(err => console.log("couldn't send file!"));
+	 */
+	sendFile(destination, attachment, name, callback = (/*err, m*/) => { }) {
 		if (typeof name === "function") {
 			// name is the callback
 			callback = name;
 			name = undefined; // Will get resolved into original filename in internal
 		}
 
-		return this.internal.sendFile(where, attachment, name)
+		return this.internal.sendFile(destination, attachment, name)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def joinServer
+	/**
+	 * Client accepts the specified invite to join a server. If the Client is already in the server, the promise/callback resolve immediately.
+	 * @param {InviteIDResolvable} invite invite to the server
+	 * @param {function(err: Error, server: Server)} [callback] callback to the method.
+	 * @returns {Promise<Server, Error>} resolves with the newly joined server if succesful, rejects with an error if not.
+	 * @example
+	 * // join a server - callback
+	 * client.joinServer("https://discord.gg/0BwZcrFhUKZ55bJL", function(err, server){
+	 *     if(!err){
+	 *         console.log("Joined " + server.name);
+	 *     }
+	 * });
+	 * @example
+	 * // join a server - promises
+	 * client.joinServer("https://discord.gg/0BwZcrFhUKZ55bJL")
+	 *     .then(server => console.log("Joined " + server.name))
+	 *     .catch(err => console.log("Couldn't join!"));
+	 */
 	joinServer(invite, callback = (/*err, srv*/) => { }) {
 		return this.internal.joinServer(invite)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def createServer
+	/**
+	 * Creates a Discord Server and joins it
+	 * @param {string} name the name of the server
+	 * @param {region} [region=london] the region of the server
+	 * @param {function(err: Error, server: Server)} [callback] callback to the method
+	 * @returns {Promise<Server, Error>} resolves with the newly created server if successful, rejects with an error if not.
+	 * @example
+	 * //creating a server - callback
+	 * client.createServer("discord.js", "london", function(err, server){
+	 *     if(err){
+	 *         console.log("could not create server");
+	 *     }
+	 * });
+	 * @example
+	 * //creating a server - promises
+	 * client.createServer("discord.js", "london")
+	 *      .then(server => console.log("Made server!"))
+	 *      .catch(error => console.log("Couldn't make server!"));
+	 */
 	createServer(name, region = "london", callback = (/*err, srv*/) => { }) {
 		return this.internal.createServer(name, region)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def leaveServer
+	/**
+	 * Leaves a Discord Server
+	 * @param {ServerResolvable} server the server to leave
+	 * @param {function(err: Error)} [callback] callback to the method
+	 * @returns {Promise<null, Error>} resolves null if successful, otherwise rejects with an error.
+	 */
 	leaveServer(server, callback = (/*err, {}*/) => { }) {
 		return this.internal.leaveServer(server)
 			.then(dataCallback(callback), errorCallback(callback));
@@ -602,7 +661,12 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def deleteServer
+	/**
+	 * Leaves a Discord Server, alias to `client.leaveServer`
+	 * @param {ServerResolvable} server the server to leave
+	 * @param {function(err: Error)} [callback] callback to the method
+	 * @returns {Promise<null, Error>} resolves null if successful, otherwise rejects with an error.
+	 */
 	deleteServer(server, callback = (/*err, {}*/) => { }) {
 		return this.internal.leaveServer(server)
 			.then(dataCallback(callback), errorCallback(callback));

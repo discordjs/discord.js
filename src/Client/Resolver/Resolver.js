@@ -17,6 +17,18 @@
  * Resolves supplied data type to a Message. If a channel, it is the latest message from that channel.
  * @typedef {(Message|TextChannel|PMChannel)} MessageResolvable
 */
+/**
+ * Resolves supplied data type to a Server. If a String, it should be the server's ID.
+ * @typedef {(Server|ServerChannel|Message|String)} ServerResolvable
+ */
+/**
+ * Resolves supplied data type to something that can be attached to a message. If a String, it can be an URL or a path to a local file.
+ * @typedef {(String|ReadableStream|Buffer)} FileResolvable
+ */
+/**
+ * Resolves supplied data type to an invite ID. If a String, it should be an ID or a direct URL to the invite.
+ * @typedef {(Invite|String)} InviteIDResolvable
+ */
 
 import fs from "fs";
 import request from "superagent";

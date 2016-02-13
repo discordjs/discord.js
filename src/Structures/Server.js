@@ -1,5 +1,10 @@
 "use strict";
 
+/**
+ * Types of region for a server, include: `us-west`, `us-east`, `us-south`, `us-central`, `singapore`, `london`, `sydney`, `amsterdam` and `frankfurt`
+ * @typedef {(string)} region
+ */
+
 import Equality from "../Util/Equality";
 import {Endpoints} from "../Constants";
 import Cache from "../Util/Cache";
