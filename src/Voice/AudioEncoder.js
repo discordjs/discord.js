@@ -9,6 +9,8 @@ try {
 	// no opus!
 }
 
+import VolumeTransformer from "./VolumeTransformer";
+
 export default class AudioEncoder {
 	constructor() {
 		if (opus) {
@@ -40,8 +42,7 @@ export default class AudioEncoder {
 	}
 
 	getCommand(force) {
-
-		if (this.choice && force)
+		if(this.choice && force)
 			return choice;
 
 		var choices = ["avconv", "ffmpeg"];
@@ -58,75 +59,79 @@ export default class AudioEncoder {
 	}
 
 	encodeStream(stream, options) {
-		var self = this;
 		return new Promise((resolve, reject) => {
-			var enc = cpoc.spawn(self.getCommand(), [
+			this.volume = new VolumeTransformer(options.volume || 1);
+
+			var enc = cpoc.spawn(this.getCommand(), [
 				'-loglevel', '0',
 				'-i', '-',
 				'-f', 's16le',
 				'-ar', '48000',
-				'-af', 'volume=' + (options.volume || 1),
 				'-ss', (options.seek || 0),
 				'-ac', 2,
 				'pipe:1'
 			], {stdio: ['pipe', 'pipe', 'ignore']});
 
 			stream.pipe(enc.stdin);
+			enc.stdout.pipe(this.volume);
 
-			enc.stdout.once("readable", function () {
+			this.volume.once("readable", () => {
 				resolve({
 					proc: enc,
-					stream: enc.stdout,
+					stream: this.volume,
 					instream: stream,
-					channels : 2
+					channels: 2
 				});
 			});
 
-			enc.stdout.on("end", function () {
+			this.volume.on("end", () => {
 				reject("end");
 			});
 
-			enc.stdout.on("close", function () {
+			this.volume.on("close", () => {
 				reject("close");
 			});
 		});
 	}
 
 	encodeFile(file, options) {
-		var self = this;
 		return new Promise((resolve, reject) => {
-			var enc = cpoc.spawn(self.getCommand(), [
+			this.volume = new VolumeTransformer(options.volume || 1);
+
+			var enc = cpoc.spawn(this.getCommand(), [
 				'-loglevel', '0',
 				'-i', file,
 				'-f', 's16le',
 				'-ar', '48000',
-				'-af', 'volume=' + (options.volume || 1),
 				'-ss', (options.seek || 0),
 				'-ac', 2,
 				'pipe:1'
-			], { stdio: ['pipe', 'pipe', 'ignore'] });
+			], {stdio: ['pipe', 'pipe', 'ignore']});
 
-			enc.stdout.once("readable", function () {
+			enc.stdout.pipe(this.volume);
+
+			this.volume.once("readable", () => {
 				resolve({
 					proc: enc,
-					stream: enc.stdout,
-					channels : 2
+					stream: this.volume,
+					channels: 2
 				});
 			});
 
-			enc.stdout.on("end", function () {
+			this.volume.on("end", () => {
 				reject("end");
 			});
 
-			enc.stdout.on("close", function () {
+			this.volume.on("close", () => {
 				reject("close");
 			});
 		});
 	}
 
 	encodeArbitraryFFmpeg(ffmpegOptions) {
-		var self = this;
 		return new Promise((resolve, reject) => {
+			this.volume = new VolumeTransformer(1);
+
 			// add options discord.js needs
 			var options = ffmpegOptions.concat([
 				'-loglevel', '0',
@@ -135,21 +140,23 @@ export default class AudioEncoder {
 				'-ac', 2,
 				'pipe:1'
 			]);
-			var enc = cpoc.spawn(self.getCommand(), options, { stdio: ['pipe', 'pipe', 'ignore'] });
+			var enc = cpoc.spawn(this.getCommand(), options, {stdio: ['pipe', 'pipe', 'ignore']});
 
-			enc.stdout.once("readable", function () {
+			enc.stdout.pipe(this.volume);
+
+			this.volume.once("readable", () => {
 				resolve({
 					proc: enc,
-					stream: enc.stdout,
-					channels : 2
+					stream: this.volume,
+					channels: 2
 				});
 			});
 
-			enc.stdout.on("end", function () {
+			this.volume.on("end", () => {
 				reject("end");
 			});
 
-			enc.stdout.on("close", function () {
+			this.volume.on("close", () => {
 				reject("close");
 			});
 		});
