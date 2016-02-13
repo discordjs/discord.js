@@ -649,7 +649,26 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def updateServer
+	/**
+	 * Changes a server's name or region
+	 * @param {ServerResolvable} server the server to update
+	 * @param {string} [name] new name of the server
+	 * @param {region} [region] new region of the server
+	 * @param {function(err: Error, server: Server)} [callback] callback to method
+	 * @returns {Promise<Server, Error>} resolves using the newly updated server if successful, otherwise rejects with an error.
+	 * @example
+	 * // update server - callback
+	 * client.updateServer(server, "new name", "london", function(error, server){
+	 *     if(error){
+	 *         console.log("Couldn't update server!");
+	 *     }
+	 * });
+	 * @example
+	 * // update server - promises
+	 * client.updateServer(server, "new name", "london")
+	 *     .then(server => console.log("Updated server!"))
+	 *     .catch(error => console.log("Couldn't update server!"));
+	 */
 	updateServer(server, name, region, callback = (/*err, srv*/) => { }) {
 		if (typeof region === "function") {
 			// region is the callback
