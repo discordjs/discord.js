@@ -1,5 +1,11 @@
 "use strict";
 
+/**
+ * Options that can be applied to a message before sending it.
+ * @typedef {(object)} MessageOptions
+ * @property {boolean} [tts=false] Whether or not the message should be sent as text-to-speech.
+*/
+
 import Cache from "../Util/Cache";
 import User from "./User";
 import {reg} from "../Util/ArgumentRegulariser";

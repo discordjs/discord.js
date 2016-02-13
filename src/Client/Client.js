@@ -24,63 +24,176 @@ function dataCallback(callback) {
 	}
 }
 
+/**
+ * Used to interface with the Discord API.
+ */
 export default class Client extends EventEmitter {
-	/*
-		this class is an interface for the internal
-		client.
-	*/
+	/**
+	 * Used to instantiate Discord.Client
+	 * @param {ClientOptions} [options] options that should be passed to the Client.
+	 * @example
+	 * // creates a new Client that will try to reconnect whenever it is disconnected.
+	 * var client = new Discord.Client({
+	 *		revive : true
+	 * });
+	 */
 	constructor(options = {}) {
 		super();
+		/**
+		 * Options that were passed to the client when it was instantiated.
+		 * @readonly
+		 * @type {ClientOptions}
+		 */
 		this.options = options || {};
 		this.options.compress = options.compress || (!process.browser);
 		this.options.revive = options.revive || false;
 		this.options.rate_limit_as_error = options.rate_limit_as_error || false;
 		this.options.large_threshold = options.large_threshold || 250;
+		/**
+		 * Internal Client that the Client wraps around.
+		 * @readonly
+		 * @type {InternalClient}
+		 */
 		this.internal = new InternalClient(this);
 	}
 
 
+	/**
+	 * The users that the Client is aware of. Only available after `ready` event has been emitted.
+	 * @type {Cache<User>} a Cache of the Users
+	 * @readonly
+	 * @example
+	 * // log usernames of the users that the client is aware of
+	 * for(var user of client.users){
+	 *     console.log(user.username);
+	 * }
+	 */
 	get users() {
 		return this.internal.users;
 	}
 
+	/**
+	 * The server channels the Client is aware of. Only available after `ready` event has been emitted.
+	 * @type {Cache<ServerChannel>} a Cache of the Server Channels
+	 * @readonly
+	 * @example
+	 * // log the names of the channels and the server they belong to
+	 * for(var channel of client.channels){
+	 *     console.log(`${channel.name} is part of ${channel.server.name}`)
+	 * }
+	 */
 	get channels() {
 		return this.internal.channels;
 	}
 
+	/**
+	 * The servers the Client is aware of. Only available after `ready` event has been emitted.
+	 * @type {Cache<Server>} a Cache of the Servers
+	 * @readonly
+	 * @example
+	 * // log the names of the servers
+	 * for(var server of client.servers){
+	 *     console.log(server.name)
+	 * }
+	 */
 	get servers() {
 		return this.internal.servers;
 	}
 
+	/**
+	 * The PM/DM chats the Client is aware of. Only available after `ready` event has been emitted.
+	 * @type {Cache<PMChannel>} a Cache of the PM/DM Channels.
+	 * @readonly
+	 * @example
+	 * // log the names of the users the client is participating in a PM with
+	 * for(var pm of client.privateChannels){
+	 *     console.log(`Participating in a DM with ${pm.recipient}`)
+	 * }
+	 */
 	get privateChannels() {
 		return this.internal.private_channels;
 	}
 
+	/**
+	 * The active voice connection of the Client, or null if not applicable. Only available after `ready` event has been emitted.
+	 * @type {VoiceConnection|null} the voice connection (if any).
+	 */
 	get voiceConnection() {
 		return this.internal.voiceConnection;
 	}
 
+	/**
+	 * Unix timestamp of when the Client first emitted the `ready `event. Only available after `ready` event has been emitted.
+	 * @type {Number} timestamp of ready time
+	 * @example
+	 * // output when the client was ready
+	 * console.log("I was first ready at " + client.readyTime);
+	 */
 	get readyTime() {
 		return this.internal.readyTime;
 	}
 
+	/**
+	 * How long the client has been ready for in milliseconds. Only available after `ready` event has been emitted.
+	 * @type {Number} number in milliseconds representing uptime of the client
+	 * @example
+	 * // log how long the client has been up for
+	 * console.log("I have been online for " + client.uptime + " milliseconds");
+	 */
 	get uptime() {
 		return this.internal.uptime;
 	}
 
+	/**
+	 * A User object that represents the account the client is logged into. Only available after `ready` event has been emitted.
+	 * @type {User} user representing logged in account of client.
+	 * @example
+	 * // log username of logged in account of client
+	 * console.log("Logged in as " + client.user.username);
+	 */
 	get user() {
 		return this.internal.user;
 	}
 
+	/**
+	 * Object containing user-agent information required for API requests. If not modified, it will use discord.js's defaults.
+	 * @type {UserAgent}
+	 * @example
+	 * // log the stringified user-agent:
+	 * console.log(client.userAgent.full);
+	 */
 	get userAgent() {
 		return this.internal.userAgent;
 	}
 
+	/**
+	 * Set the user-agent information provided. Follows the UserAgent typedef format excluding the `full` property.
+	 * @type {UserAgent}
+	 */
 	set userAgent(userAgent) {
 		this.internal.userAgent = userAgent;
 	}
 
-	// def loginWithToken
+	/**
+	 * Log the client in using a token. If you want to use methods such as `client.setUsername` or `client.setAvatar`, you must also pass the email and password parameters.
+	 * @param {string} token A valid token that can be used to authenticate the account.
+	 * @param {string} [email] Email of the Discord Account.
+	 * @param {string} [password] Password of the Discord Account.
+	 * @param {function(err: Error, token: string)} [callback] Callback to the method
+	 * @returns {Promise<string, Error>} Resolves with the token if the login was successful, otherwise it rejects with an error.
+	 * @example
+	 * // log the client in - callback
+	 * client.login("token123", null, null, function(error, token){
+	 *    if(!error){
+	 *       console.log(token);
+	 *    }
+	 * });
+	 * @example
+	 * // log the client in - promise
+	 * client.login("token123")
+	 *     .then(token => console.log(token))
+	 *     .catch(err => console.log(err));
+	 */
 	loginWithToken(token, email = null, password = null, callback = (/*err, token*/) => {}) {
 		if (typeof email === "function") {
 			// email is the callback
@@ -93,40 +206,144 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def login
+	/**
+	 * Log the client in using an email and password.
+	 * @param {string} email Email of the Discord Account.
+	 * @param {string} password Password of the Discord Account.
+	 * @param {function(err: Error, token: string)} [callback] Callback to the method
+	 * @returns {Promise<string, Error>} Resolves with the token if the login was successful, otherwise it rejects with an error.
+	 * @example
+	 * // log the client in - callback
+	 * client.login("jeff@gmail.com", "password", function(error, token){
+	 *    if(!error){
+	 *       console.log(token);
+	 *    }
+	 * });
+	 * @example
+	 * // log the client in - promise
+	 * client.login("jeff@gmail.com", "password")
+	 *     .then(token => console.log(token))
+	 *     .catch(err => console.log(err));
+	 */
 	login(email, password, callback = (/*err, token*/) => { }) {
 		return this.internal.login(email, password)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def logout
+	/**
+	 * Logs the client out gracefully and closes all WebSocket connections. Client still retains its Caches.
+	 * @param {function(err: Error)} [callback] Callback to the method
+	 * @returns {Promise<null, Error>} Resolves with null if the logout was successful, otherwise it rejects with an error.
+	 * @example
+	 * // log the client out - callback
+	 * client.logout(function(error){
+	 *     if(error){
+	 *         console.log("Couldn't log out.");
+	 *     }else{
+	 *         console.log("Logged out!");
+	 *     }
+	 * });
+	 * @example
+	 * // log the client out - promise
+	 * client.logout()
+	 *     .then(() => console.log("Logged out!"))
+	 *     .catch(error => console.log("Couldn't log out."));
+	 */
 	logout(callback = (/*err, {}*/) => { }) {
 		return this.internal.logout()
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def destroy
+	/**
+	 * Similar to log out but this should be used if you know you aren't going to be creating the Client again later in your program.
+	 * @param {function(err: Error)} [callback] Callback to the method
+	 * @returns {Promise<null, Error>} Resolves with null if the destruction was successful, otherwise it rejects with an error.
+	 * @example
+	 * // destroy the client - callback
+	 * client.destroy(function(error){
+	 *     if(error){
+	 *         console.log("Couldn't destroy client.");
+	 *     }else{
+	 *         console.log("Client destroyed!");
+	 *     }
+	 * });
+	 * @example
+	 * // destroy the client - promise
+	 * client.destroy()
+	 *     .then(() => console.log("Client destroyed!"))
+	 *     .catch(error => console.log("Couldn't destroy client."));
+	 */
 	destroy(callback = (/*err, {}*/) => { }) {
 		return this.internal.logout()
 			.then(() => this.internal.disconnected(true))
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def sendMessage
-	sendMessage(where, content, options = {}, callback = (/*err, msg*/) => { }) {
+	/**
+	 * Sends a text message to the specified destination.
+	 * @param {TextChannelResolvable} destination where the message should be sent
+	 * @param {StringResolvable} content message you want to send
+	 * @param {MessageOptions} [options] options you want to apply to the message
+	 * @param {function(err: Error, msg: Message)} [callback] to the method
+	 * @returns {Promise<Message, Error>} Resolves with a Message if successful, otherwise rejects with an Error.
+	 * @example
+	 * // sending messages
+	 * client.sendMessage(channel, "Hi there!");
+	 * client.sendMessage(user, "This is a PM message!");
+	 * client.sendMessage(server, "This message was sent to the #general channel of the server!");
+	 * client.sendMessage(channel, "This message is TTS.", {tts : true});
+	 * @example
+	 * // callbacks
+	 * client.sendMessage(channel, "Hi there!", function(err, msg){
+	 *     if(err){
+	 *         console.log("Couldn't send message");
+	 *     }else{
+	 *         console.log("Message sent!");
+	 *     }
+	 * });
+	 * @example
+	 * // promises
+	 * client.sendMessage(channel, "Hi there!")
+	 *    .then(msg => console.log("Message sent!"))
+	 *    .catch(err => console.log("Couldn't send message"));
+	 */
+	sendMessage(destination, content, options = {}, callback = (/*err, msg*/) => { }) {
 		if (typeof options === "function") {
 			// options is the callback
 			callback = options;
 			options = {};
 		}
 
-		return this.internal.sendMessage(where, content, options)
+		return this.internal.sendMessage(destination, content, options)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def sendTTSMessage
-	sendTTSMessage(where, content, callback = (/*err, msg*/) => { }) {
-		return this.sendMessage(where, content, { tts: true })
+	/**
+	 * Sends a TTS text message to the specified destination.
+	 * @param {TextChannelResolvable} destination where the message should be sent
+	 * @param {StringResolvable} content message you want to send
+	 * @param {function(err: Error, msg: Message)} [callback] to the method
+	 * @returns {Promise<Message, Error>} Resolves with a Message if successful, otherwise rejects with an Error.
+	 * @example
+	 * // sending messages
+	 * client.sendTTSMessage(channel, "This message is TTS.");
+	 * @example
+	 * // callbacks
+	 * client.sendTTSMessage(channel, "Hi there!", function(err, msg){
+	 *     if(err){
+	 *         console.log("Couldn't send message");
+	 *     }else{
+	 *         console.log("Message sent!");
+	 *     }
+	 * });
+	 * @example
+	 * // promises
+	 * client.sendTTSMessage(channel, "Hi there!")
+	 *    .then(msg => console.log("Message sent!"))
+	 *    .catch(err => console.log("Couldn't send message"));
+	 */
+	sendTTSMessage(destination, content, callback = (/*err, msg*/) => { }) {
+		return this.sendMessage(destination, content, { tts: true })
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 

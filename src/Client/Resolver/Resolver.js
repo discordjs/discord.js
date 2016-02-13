@@ -1,6 +1,19 @@
 "use strict";
 /* global Buffer */
 
+/**
+ * Resolves supplied data type to a Channel. If a String, it should be a Channel ID.
+ * @typedef {(Channel|Server|Message|User|String)} ChannelResolvable
+*/
+/**
+ * Resolves supplied data type to a TextChannel or PMChannel. If a String, it should be a Channel ID.
+ * @typedef {(TextChannel|PMChannel|Server|Message|User|String)} TextChannelResolvable
+*/
+/**
+ * If given an array, turns it into a newline-separated string.
+ * @typedef {(String|Array)} StringResolvable
+*/
+
 import fs from "fs";
 import request from "superagent";
 

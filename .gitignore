@@ -3,6 +3,7 @@
 hydrabot/config.json
 hydrabot/authority.json
 hydrabot/tokencache.json
+esdoc/
 
 .tmp/
 
