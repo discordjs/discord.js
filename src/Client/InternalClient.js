@@ -1468,6 +1468,28 @@ export default class InternalClient {
 					}
 
 					break;
+				case PacketType.USER_UPDATE:
+
+					var user = self.users.get("id", data.id);
+
+					if (user) {
+
+						data.username = data.username || user.username;
+						data.id = data.id || user.id;
+						data.avatar = data.avatar || user.avatar;
+						data.discriminator = data.discriminator || user.discriminator;
+						this.email = data.email || this.email;
+
+						var presenceUser = new User(data, client);
+
+						client.emit("presence", user, presenceUser);
+						self.users.update(user, presenceUser);
+
+					} else {
+						client.emit("warn", "user update but user not in cache (this should never happen)");
+					}
+
+					break;
 				case PacketType.TYPING:
 
 					var user = self.users.get("id", data.user_id);
