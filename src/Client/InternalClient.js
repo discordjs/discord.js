@@ -1424,8 +1424,9 @@ export default class InternalClient {
 				case PacketType.SERVER_MEMBER_UPDATE:
 					var server = self.servers.get("id", data.guild_id);
 					if (server) {
-						var user = self.users.get("id", data.user.id);
+						var user = self.users.add(new User(data.user, client));
 						if (user) {
+							server.memberMap[data.user.id] = server.memberMap[data.user.id] || {};
 							server.memberMap[data.user.id].roles = data.roles.map(pid => server.roles.get("id", pid));
 							server.memberMap[data.user.id].mute = data.mute;
 							server.memberMap[data.user.id].self_mute = data.self_mute;

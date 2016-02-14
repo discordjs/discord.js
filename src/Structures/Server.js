@@ -19,6 +19,7 @@ var strictKeys = [
 ];
 
 export default class Server extends Equality {
+
 	constructor(data, client) {
 
 		super();
