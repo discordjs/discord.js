@@ -951,7 +951,18 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def createInvite
+	/**
+	 * Creates an invite to a channel or server
+	 * @param {ChannelResolvable} chanServ The server or a channel of the server the invite should be generated for
+	 * @param {InviteOptions} [options] configuration for the invite
+	 * @param {(function(err: Error, invite: Invite))} [callback] callback for the method
+	 * @returns {Promise<Invite, Error>} resolves with the generated invite if successful, otherwise rejects with an error
+	 * @example
+	 * // making an invite
+	 * client.createInvite(channel, {xkcd:true})
+	 *    .then(invite => console.log("success!"))
+	 *    .catch(err => console.log("couldn't make invite!"));
+	 */
 	createInvite(chanServ, options, callback = (/*err, invite*/) => { }) {
 		if (typeof options === "function") {
 			// options is the callback
@@ -963,25 +974,78 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def deleteInvite
+	/**
+	 * Deletes an invite, making it invalid
+	 * @param {InviteIDResolvable} invite
+	 * @param {function(err: Error)} [callback] callback to the method
+	 * @returns {Promise<null, Error>} resolves with null if successful, otherwise rejects with an error
+	 * @example
+	 * // delete invite
+	 * client.deleteInvite(invite)
+	 *     .then(() => console.log("success!"))
+	 *     .catch(err => console.log("Couldn't delete invite!"));
+	 */
 	deleteInvite(invite, callback = (/*err, {}*/) => { }) {
 		return this.internal.deleteInvite(invite)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def getInvite
+	/**
+	 * Transform an Invite ID/URL into an Invite object containing more information
+	 * @param {InviteIDResolvable} invite the ID/URL to get more information on
+	 * @param {function(err: Error, invite: Invite)} [callback] callback to the method
+	 * @returns {Promise<Invite, Error>} resolves with the detailed invite if successful, otherwise it rejects with an error.
+	 * @example
+	 * // getting invite information
+	 * client.getInvite("https://discord.gg/0MzEcrDeKUTg2Xyj")
+	 *     .then(invite => console.log("success!"))
+	 *     .catch(err => console.log("couldn't get info!"));
+	 */
 	getInvite(invite, callback = (/*err, inv*/) => { }) {
 		return this.internal.getInvite(invite)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def getInvites
+    /**
+	 * Gets the list of all invites for a channel
+	 * @param {Server|ChannelResolvable} channel either a Server object (all invites for that server) or a Channel Resolvable (invites specifically for that channel)
+	 * @param {function(err: Error, invites: Array<Invite>)} [callback] callback to the method
+	 * @returns {Promise<Array<Invite>, Error>} Resolves with an array of invites if successful, otherwise it rejects with an error.
+	 * @example
+	 * // get invites for a server
+	 * client.getInvites(server)
+	 *     .then(invites => console.log("retrieved " + invites.length + " invites"))
+	 *     .catch(error => console.log("couldn't get invites for server"));
+	 */
 	getInvites(channel, callback = (/*err, inv*/) => { }) {
 		return this.internal.getInvites(channel)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def overwritePermissions
+	/**
+	 * Overwrites permissions for a role or a user in a channel
+	 * @param {ChannelResolvable} channel channel to overwrite permissions in
+	 * @param {User|RoleResolvable} role role or user to overwrite permissions for
+	 * @param {PermissionMap} [options] configuration for the overwrite
+	 * @param {function(err: Error)} [callback] callback to the method
+	 * @returns {Promise<null, Error>} resolves with null if successful, otherwise rejects with an Error.
+	 * @example
+	 * // overwrite permissions for a role
+	 * client.overwritePermissions(channel, role, {
+	 *     "attachFiles" : false,
+	 *     "kickMembers" : true
+	 * })
+	 * .then(() => console.log("done!"))
+	 * .catch(err => console.log("couldn't overwrite permissions"));
+	 * @example
+	 * // overwrite permissions for a user
+	 * client.overwritePermissions(channel, user, {
+	 *     "attachFiles" : false,
+	 *     "kickMembers" : true
+	 * })
+	 * .then(() => console.log("done!"))
+	 * .catch(err => console.log("couldn't overwrite permissions"));
+	 */
 	overwritePermissions(channel, role, options = {}, callback = (/*err, {}*/) => { }) {
 		return this.internal.overwritePermissions(channel, role, options)
 			.then(dataCallback(callback), errorCallback(callback));

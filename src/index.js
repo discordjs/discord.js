@@ -31,6 +31,23 @@
  */
 
 /**
+ * Object that maps permissions to either true (allowed) or false (disallowed) for use with permission management.
+ * @see Permission
+ * @typedef {(Object<Permission, Boolean>)} PermissionMap
+ * @example
+ * // allow members to kick and ban others
+ * {
+ *     "kickMembers" : true,
+ *     "banMembers" : true
+ * }
+ * @example
+ * // disallow attaching files
+ * {
+ *     "attachFiles" : false
+ * }
+ */
+
+/**
  * Available role and channel permissions. Available permission types are listed below:
  * @typedef {(string)} Permission
  * @example
@@ -77,6 +94,21 @@
  *         // see the constants documentation for full permissions
  *         "attachFiles", "sendMessages"
  *     ]
+ * }
+ */
+
+/**
+ * Object containing configuration information for an Invite.
+ * @typedef {(object)} InviteOptions
+ * @property {Number} [maxAge=0] maximum time in seconds that the invite will remain valid. Set to 0 for infinity.
+ * @property {Number} [maxUses=0] maximum uses of the invite before it becomes invalid. Set to 0 for infinity.
+ * @property {Boolean} [temporary=false] Whether the invite should be temporary (users are kicked if after 24 hours they are not given a role)
+ * @property {Boolean} [xkcd=false] Whether the invite should be human-friendly
+ * @example
+ * {
+ *     maxAge : 3600, // one hour
+ *     maxUses : 0, // infinite uses
+ *     xkcd : true // human friendly
  * }
  */
 
