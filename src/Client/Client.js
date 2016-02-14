@@ -724,13 +724,49 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def deleteChannel
+	/**
+	 * Deletes a channel from a server or removes a PM
+	 * @param {ChannelResolvable} channel the channel to remove
+	 * @param {function(err: Error)} [callback] callback to the method
+	 * @returns {Promise<null, Error>} resolves with null if successful, otherwise rejects with an Error.
+	 * @example
+	 * // deleting a channel - callback
+	 * client.deleteChannel(channel, function(error){
+	 *     if(error){
+	 *         console.log("Couldn't delete channel");
+	 *     }
+	 * });
+	 * @example
+	 * // deleting a channel - promises
+	 * client.deleteChannel(channel)
+	 *     .then(() => console.log("Deleted!"))
+	 *     .catch(error => console.log("Couldn't delete channel"));
+	 */
 	deleteChannel(channel, callback = (/*err, {}*/) => { }) {
 		return this.internal.deleteChannel(channel)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def banMember
+	/**
+	 * Bans a member from a server (if the client has permission to)
+	 * @param {UserResolvable} user the member of the server to ban
+	 * @param {ServerResolvable} server the server to ban the member from
+	 * @param {Number} [length=1] length in days. Will go back and delete messages from that user for the specified timelength
+	 * @param {function(err: Error)} [callback] callback to the method
+	 * @returns {Promise<null, Error>} resolves with null if successful, otherwise rejects with an Error.
+	 * @example
+	 * // banning a member and removing 10 days worth of messages - callback
+	 * client.banMember(user, server, 10, function(error){
+	 *     if(error){
+	 *         console.log("Couldn't ban member");
+	 *     }
+	 * });
+	 * @example
+	 * // banning a member and removing 10 days worth of messages - promises
+	 * client.banMember(user, server, 10)
+	 *     .then(() => console.log("Banned member"))
+	 *     .catch(error => console.log("Couldn't ban member"));
+	 */
 	banMember(user, server, length = 1, callback = (/*err, {}*/) => { }) {
 		if (typeof length === "function") {
 			// length is the callback
@@ -742,25 +778,78 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def unbanMember
+	/**
+	 * Unbans a member from a server (if the client has permission to)
+	 * @param {UserResolvable} user the user to unban
+	 * @param {ServerResolvable} server the server to unban the user from
+	 * @param {function(err: Error)} [callback] callback to the method
+	 * @returns {Promise<null, Error>} resolves with null if successful, otherwise rejects with an Error.
+	 * @example
+	 * // unbanning a member - callback
+	 * client.unbanMember(user, server, function(err){
+	 *     if(err){
+	 *         console.log("Couldn't unban member");
+	 *     }
+	 * });
+	 * @example
+	 * // unbanning a member - promises
+	 * client.unbanMember(user, server)
+	 *     .then(() => console.log("Unbanned!"))
+	 *     .catch(err => console.log("Couldn't unban member"));
+	 */
 	unbanMember(user, server, callback = (/*err, {}*/) => { }) {
 		return this.internal.unbanMember(user, server)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def kickMember
+	/**
+	 * Kick a member from a server
+	 * @param {UserResolvable} user the user to kick
+	 * @param {ServerResolvable} server the server to kick the user from
+	 * @param {function(err: Error)} [callback] callback to the method
+	 * @returns {Promise<null, Error>} resolves with null if successful, otherwise rejects with an Error.
+	 * @example
+	 * // kicking a member
+	 * client.kickMember(user, server)
+	 *     .then(() => console.log("kicked " + user.username + " from " + server.name))
+	 *     .catch(err => console.log("Couldn't kick user"));
+	 */
 	kickMember(user, server, callback = (/*err, {}*/) => { }) {
 		return this.internal.kickMember(user, server)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def moveMember
+	/**
+	 * Moves a member to another voice channel (if the client has permission to)
+	 * @param {UserResolvable} user the user to move
+	 * @param {ChannelResolvable} channel the voice channel to move the user into
+	 * @param {function(err: Error)} [callback] callback to the method
+	 * @returns {Promise<null, Error>} resolves with null if successful, otherwise rejects with an Error.
+	 * @example
+	 * // moving a member
+	 * client.moveMember(user, voiceChannel)
+	 *     .then(() => console.log("Moved!"))
+	 *     .catch(err => console.log("Couldn't move user!"));
+	 */
 	moveMember(user, channel, callback = (/*err, {}*/) => { }) {
 		return this.internal.moveMember(user, channel)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def createRole
+	/**
+	 * Creates a new role in the given server
+	 * @param {ServerResolvable} server the server to make the role in
+	 * @param {RoleData} [data] the data to set the role up with
+	 * @param {function(err: Error, role: Role)} [callback] callback to the method
+	 * @example
+	 * // creating a role
+	 * client.createRole(server, {
+	 *     name : "New Role!",
+	 *     color : 0xFF0000
+	 * })
+	 * .then(role => console.log("Done!"))
+	 * .catch(err => console.log("Couldn't make role!"));
+	 */
 	createRole(server, data = null, callback = (/*err, role*/) => { }) {
 		if (typeof data === "function") {
 			// data is the callback
@@ -772,7 +861,21 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def updateRole
+	/**
+	 * Edits the details of an existing role
+	 * @param {Role} role the role to edit
+	 * @param {RoleData} [data] the data to merge with the existing role
+	 * @param {function(err: Error, role: Role)} [callback] callback to the method, `role` is the newly updated role.
+	 * @returns {Promise<Role, Error>} resolves with the updated role if successful, otherwise rejects with an Error.
+	 * @example
+	 * // updating a role
+	 * client.updateRole(role, {
+	 *     name : "Updated Role!",
+	 *     color : 0xBB0000
+	 * })
+	 * .then(role => console.log("Done!"))
+	 * .catch(err => console.log("Couldn't update role!"));
+	 */
 	updateRole(role, data = null, callback = (/*err, role*/) => { }) {
 		if (typeof data === "function") {
 			// data is the callback
@@ -783,42 +886,69 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def deleteRole
+	/**
+	 * Deletes a role from a server (if the client has permission to)
+	 * @param {Role} role the role to delete
+	 * @param {function(err: Error)} [callback] callback to the method
+	 * @returns {Promise<null, Error>} resolves with null if successful, otherwise it rejects with an error.
+	 * @example
+	 * // deleting a role
+	 * client.deleteRole(role)
+	 *     .then(() => console.log("Deleted!"))
+	 *     .catch(err => console.log("Couldn't delete role!"));
+	 */
 	deleteRole(role, callback = (/*err, {}*/) => { }) {
 		return this.internal.deleteRole(role)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def addMemberToRole
+	/**
+	 * Adds a member of a server to a role
+	 * @param {UserResolvable} member the member being added to the role
+	 * @param {Role} role the role to add the member to
+	 * @param {function(err: Error)} [callback] the callback to the method
+	 * @returns {Promise<null, Error>} resolves with null if successful, otherwise it rejects with an error.
+	 * @example
+	 * // adding a member to a role
+	 * client.addMemberToRole(user, role)
+	 *     .then(() => console.log("Added!"))
+	 *     .catch(err => console.log("Couldn't add to role!"));
+	 */
 	addMemberToRole(member, role, callback = (/*err, {}*/) => { }) {
 		return this.internal.addMemberToRole(member, role)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
-	// def addUserToRole
-	addUserToRole(member, role, callback = (/*err, {}*/) => { }) {
-		return this.addMemberToRole(member, role, callback);
-	}
-
-	// def addUserToRole
+	/**
+	 * Sees if a member of a server has a certain role
+	 * @param {UserResolvable} member member to check
+	 * @param {Role} role role to check
+	 * @returns {Boolean} returns true if user has the role, otherwise false
+	 * @example
+	 * // see if user has admin role
+	 * if( client.memberHasRole(member, adminRole) ){
+	 *     console.log("User is admin!");
+	 * }
+	 */
 	memberHasRole(member, role) {
 		return this.internal.memberHasRole(member, role);
 	}
 
-	// def addUserToRole
-	userHasRole(member, role) {
-		return this.memberHasRole(member, role);
-	}
-
-	// def removeMemberFromRole
+	/**
+	 * Removes a member from a role
+	 * @param {UserResolvable} member member to remove from role
+	 * @param {Role} role role to remove member from
+	 * @param {function(err: Error)} [callback] callback to the method
+	 * @returns {Promise<null, Error>} resolves with null if successful, otherwise it rejects with an error.
+	 * @example
+	 * // remove member from a role
+	 * client.removeMemberFromRole(member, role)
+	 *     .then(() => console.log("success!"))
+	 *     .catch(err => console.log("couldn't remove member from role"));
+	 */
 	removeMemberFromRole(member, role, callback = (/*err, {}*/) => { }) {
 		return this.internal.removeMemberFromRole(member, role)
 			.then(dataCallback(callback), errorCallback(callback));
-	}
-
-	// def removeUserFromRole
-	removeUserFromRole(member, role, callback = (/*err, {}*/) => { }) {
-		return this.removeMemberFromRole(member, role, callback);
 	}
 
 	// def createInvite

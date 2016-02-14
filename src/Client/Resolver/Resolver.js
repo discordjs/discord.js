@@ -29,6 +29,15 @@
  * Resolves supplied data type to an invite ID. If a String, it should be an ID or a direct URL to the invite.
  * @typedef {(Invite|String)} InviteIDResolvable
  */
+/**
+ * Resolves supplied data type to a User.<br />
+ * `Message` -> author of message<br />
+ * `TextChannel` -> author of last message sent<br />
+ * `PMChannel` -> other user of PM channel<br />
+ * `Server` -> owner of Server<br />
+ * `String` -> User's ID
+ * @typedef {(User|Message|TextChannel|PMChannel|Server|String)} UserResolvable
+ */
 
 import fs from "fs";
 import request from "superagent";

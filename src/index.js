@@ -30,6 +30,56 @@
  * @property {MessageResolvable} [after] When fetching logs, it will fetch from messages after `options.after` but not including it.
  */
 
+/**
+ * Available role and channel permissions. Available permission types are listed below:
+ * @typedef {(string)} Permission
+ * @example
+ * // general
+ * "createInstantInvite"
+ * "kickMembers"
+ * "banMembers"
+ * "manageRoles"
+ * "managePermissions",
+ * "manageChannels",
+ * "manageChannel",
+ * "manageServer",
+ * // text
+ * "readMessages",
+ * "sendMessages",
+ * "sendTTSMessages",
+ * "manageMessages",
+ * "embedLinks",
+ * "attachFiles",
+ * "readMessageHistory",
+ * "mentionEveryone",
+ * // voice
+ * "voiceConnect",
+ * "voiceSpeak",
+ * "voiceMuteMembers",
+ * "voiceDeafenMembers",
+ * "voiceMoveMembers",
+ * "voiceUseVAD"
+ */
+
+/**
+ * Object containing data relating to roles
+ * @typedef {(object)} RoleData
+ * @property {string} [name=newrole] name of role, defaults to `new role`
+ * @property {boolean} [hoist=false] whether the role should appear as its own category in the user sidebar.
+ * @property {Number} [color] denary number representing the color of the role. You can use hex by passing in `0xFF0000`
+ * @property {Array<Permission>} [permissions] an array of permissions that the role has.
+ * @example
+ * {
+ *     color : 0xFF0000,
+ *     hoist : false,
+ *     name : "A New Role!",
+ *     permissions : [
+ *         // see the constants documentation for full permissions
+ *         "attachFiles", "sendMessages"
+ *     ]
+ * }
+ */
+
 import Client from "./Client/Client";
 import Channel from "./Structures/Channel";
 import ChannelPermissions from "./Structures/ChannelPermissions";
