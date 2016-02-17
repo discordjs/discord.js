@@ -77,7 +77,7 @@ cleanContent
 mentions
 ~~~~~~~~
 
-A Cache_ of User_ objects that were mentioned in the message.
+An array of User_ objects that were mentioned in the message.
 
 Functions
 ---------
