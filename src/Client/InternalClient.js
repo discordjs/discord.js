@@ -29,8 +29,8 @@ function waitFor(condition, value = condition, interval = 20) {
 	return new Promise(resolve => {
 		var int = setInterval(() => {
 			var isDone = condition();
-			if(isDone) {
-				if(condition === value) {
+			if (isDone) {
+				if (condition === value) {
 					resolve(isDone);
 				} else {
 					resolve(value(isDone));
@@ -52,13 +52,13 @@ export default class InternalClient {
 
 	apiRequest(method, url, useAuth, data, file) {
 		let ret = request[method](url);
-		if(useAuth) {
+		if (useAuth) {
 			ret.set("authorization", this.token);
 		}
-		if(data) {
+		if (data) {
 			ret.send(data);
 		}
-		if(file) {
+		if (file) {
 			ret.attach("file", file.file, file.name);
 		}
 		ret.set('User-Agent', this.userAgentInfo.full);
@@ -72,7 +72,7 @@ export default class InternalClient {
 						&& error.response.error.status === 429
 					) {
 
-						if(data.headers["retry-after"] || data.headers["Retry-After"]){
+						if (data.headers["retry-after"] || data.headers["Retry-After"]) {
 							var toWait = data.headers["retry-after"] || data.headers["Retry-After"];
 							toWait = parseInt(toWait);
 							setTimeout(() => {
@@ -127,25 +127,25 @@ export default class InternalClient {
 		this.tokenCacher.init(0);
 	}
 
-	cleanIntervals(){
-		for(let interval of this.intervals.typing.concat(this.intervals.misc).concat(this.intervals.kai)){
-			if(interval){
+	cleanIntervals() {
+		for (let interval of this.intervals.typing.concat(this.intervals.misc).concat(this.intervals.kai)) {
+			if (interval) {
 				clearInterval(interval);
 			}
 		}
 	}
 
-	disconnected(forced = false){
+	disconnected(forced = false) {
 
 		this.cleanIntervals();
 
 		this.leaveVoiceChannel();
 
-		if(this.client.options.revive && !forced){
+		if (this.client.options.revive && !forced) {
 			this.setup();
 
 			// Check whether the email is set (if not, only a token has been used for login)
-			if(this.email) {
+			if (this.email) {
 				this.login(this.email, this.password);
 			} else {
 				this.loginWithToken(this.token);
@@ -178,19 +178,19 @@ export default class InternalClient {
 	}
 
 	//def awaitResponse
-	awaitResponse(msg){
+	awaitResponse(msg) {
 		return new Promise((resolve, reject) => {
 
 			msg = this.resolver.resolveMessage(msg);
 
-			if(!msg){
+			if (!msg) {
 				reject(new Error("message undefined"));
 				return;
 			}
 
 			var awaitID = msg.channel.id + msg.author.id;
 
-			if( !this.messageAwaits[awaitID] ){
+			if ( !this.messageAwaits[awaitID] ) {
 				this.messageAwaits[awaitID] = [];
 			}
 
@@ -250,7 +250,7 @@ export default class InternalClient {
 	}
 
 	// def forceFetchUsers
-	forceFetchUsers(){
+	forceFetchUsers() {
 		this.sendWS({
 			op : 8,
 			d : {
@@ -275,7 +275,7 @@ export default class InternalClient {
 	//def joinServer
 	joinServer(invite) {
 		invite = this.resolver.resolveInviteID(invite);
-		if(!invite) {
+		if (!invite) {
 			return Promise.reject(new Error("Not a valid invite"));
 		}
 
@@ -289,7 +289,7 @@ export default class InternalClient {
 	//def updateServer
 	updateServer(server, name, region) {
 		var server = this.resolver.resolveServer(server);
-		if(!server) {
+		if (!server) {
 			return Promise.reject(new Error("server did not resolve"));
 		}
 
@@ -304,7 +304,7 @@ export default class InternalClient {
 	//def leaveServer
 	leaveServer(srv) {
 		var server = this.resolver.resolveServer(srv);
-		if(!server) {
+		if (!server) {
 			return Promise.reject(new Error("server did not resolve"));
 		}
 
@@ -338,7 +338,7 @@ export default class InternalClient {
 	login(email, password) {
 		var client = this.client;
 
-		if(!this.tokenCacher.done){
+		if (!this.tokenCacher.done) {
 			return new Promise((resolve, reject) => {
 				setTimeout(() => {
 					this.login(email, password).then(resolve).catch(reject);
@@ -346,13 +346,13 @@ export default class InternalClient {
 			});
 		} else {
 			var tk = this.tokenCacher.getToken(email, password);
-			if( tk ){
+			if ( tk ) {
 				this.client.emit("debug", "bypassed direct API login, used cached token");
 				return this.loginWithToken(tk, email, password);
 			}
 		}
 
-		if(this.state !== ConnectionState.DISCONNECTED && this.state !== ConnectionState.IDLE) {
+		if (this.state !== ConnectionState.DISCONNECTED && this.state !== ConnectionState.IDLE) {
 			return Promise.reject(new Error("already logging in/logged in/ready!"));
 		}
 
@@ -400,7 +400,7 @@ export default class InternalClient {
 	// def startPM
 	startPM(resUser) {
 		var user = this.resolver.resolveUser(resUser);
-		if(!user) {
+		if (!user) {
 			return Promise.reject(new Error("Unable to resolve resUser to a User"));
 		}
 				// start the PM
@@ -440,7 +440,7 @@ export default class InternalClient {
 	deleteMessage(_message, options = {}) {
 
 		var message = this.resolver.resolveMessage(_message);
-		if(!message) {
+		if (!message) {
 			return Promise.reject(new Error("Supplied message did not resolve to a message!"));
 		}
 
@@ -456,7 +456,7 @@ export default class InternalClient {
 
 		var message = this.resolver.resolveMessage(msg);
 
-		if(!message) {
+		if (!message) {
 			return Promise.reject(new Error("Supplied message did not resolve to a message!"));
 		}
 
@@ -509,13 +509,13 @@ export default class InternalClient {
 			var qsObject = {limit};
 			if (options.before) {
 				const res = this.resolver.resolveMessage(options.before);
-				if(res) {
+				if (res) {
 					qsObject.before = res.id;
 				}
 			}
 			if (options.after) {
 				const res = this.resolver.resolveMessage(options.after);
-				if(res) {
+				if (res) {
 					qsObject.after = res.id;
 				}
 			}
@@ -610,7 +610,7 @@ export default class InternalClient {
 			var server = channel.server;
 
 			// Make sure `channel` is a voice channel
-			if(channel.type !== "voice") {
+			if (channel.type !== "voice") {
 				throw new Error("Can't moveMember into a non-voice channel");
 			} else {
 				return this.apiRequest("patch", `${Endpoints.SERVER_MEMBERS(server.id)}/${user.id}`, true, { channel_id: channel.id })
@@ -649,7 +649,7 @@ export default class InternalClient {
 			permissions: role.permissions || 0
 		};
 
-		if(data.permissions) {
+		if (data.permissions) {
 			newData.permissions = 0;
 			for (var perm of data.permissions) {
 				if (perm instanceof String || typeof perm === "string") {
@@ -723,7 +723,11 @@ export default class InternalClient {
 			throw new Error("user not found");
 		}
 
-		return !!role.server.rolesOf(member).find(r => r.id == role.id);
+		var roledata = role.server.rolesOf(member);
+		if (roledata) {
+			return roledata.find(r => r.id == role.id);
+		}
+		return null;
 	}
 
 	//def removeMemberFromRole
@@ -747,7 +751,7 @@ export default class InternalClient {
 
 		var roleIDs = roles[0].server.memberMap[member.id].roles.map(r => r.id);
 
-		for(var role of roles) {
+		for (var role of roles) {
 			if (!role.server.memberMap[member.id]) {
 				return Promise.reject(new Error("member not in server"));
 			}
@@ -771,13 +775,7 @@ export default class InternalClient {
 
 	// def createInvite
 	createInvite(chanServ, options) {
-		if (chanServ instanceof Channel) {
-			// do something
-		} else if (chanServ instanceof Server) {
-			// do something
-		} else {
-			chanServ = this.resolver.resolveServer(chanServ) || this.resolver.resolveChannel(chanServ);
-		}
+		chanServ = this.resolver.resolveChannel(chanServ);
 
 		if (!chanServ) {
 			throw new Error("couldn't resolve where");
@@ -794,14 +792,7 @@ export default class InternalClient {
 			options.xkcdpass = options.xkcd || false;
 		}
 
-		var epoint;
-		if (chanServ instanceof Channel) {
-			epoint = Endpoints.CHANNEL_INVITES(chanServ.id);
-		} else {
-			epoint = Endpoints.SERVER_INVITES(chanServ.id);
-		}
-
-		return this.apiRequest("post", epoint, true, options)
+		return this.apiRequest("post", Endpoints.CHANNEL_INVITES(chanServ.id), true, options)
 		.then(res => new Invite(res, this.channels.get("id", res.channel.id), this.client));
 	}
 
@@ -907,7 +898,7 @@ export default class InternalClient {
 	//def setStatus
 	setStatus(idleStatus, game) {
 
-		if(idleStatus === "online" || idleStatus === "here" || idleStatus === "available"){
+		if (idleStatus === "online" || idleStatus === "here" || idleStatus === "available") {
 			this.idleStatus = null;
 		}
 		else if (idleStatus === "idle" || idleStatus === "away") {
@@ -931,6 +922,9 @@ export default class InternalClient {
 
 		this.sendWS(packet);
 
+		this.bot.user.status = this.idleStatus;
+		this.bot.user.game = this.game;
+
 		return Promise.resolve();
 
 	}
@@ -943,11 +937,11 @@ export default class InternalClient {
 	}
 
 	//def startTyping
-	startTyping(channel){
+	startTyping(channel) {
 		return this.resolver.resolveChannel(channel)
 		.then(channel => {
 
-			if(this.intervals.typing[channel.id]){
+			if (this.intervals.typing[channel.id]) {
 				// typing interval already exists, leave it alone
 				throw new Error("Already typing in that channel");
 			}
@@ -964,11 +958,11 @@ export default class InternalClient {
 	}
 
 	//def stopTyping
-	stopTyping(channel){
+	stopTyping(channel) {
 		return this.resolver.resolveChannel(channel)
 		.then(channel => {
 
-			if(!this.intervals.typing[channel.id]){
+			if (!this.intervals.typing[channel.id]) {
 				// typing interval doesn"t exist
 				throw new Error("Not typing in that channel");
 			}
@@ -981,7 +975,7 @@ export default class InternalClient {
 
 	//def updateDetails
 	updateDetails(data) {
-		if(!this.email && !data.email) {
+		if (!this.email && !data.email) {
 			throw new Error("Can't use updateDetails because only a token has been used for login!");
 		}
 		return this.apiRequest("patch", Endpoints.ME, true, {
@@ -1067,7 +1061,7 @@ export default class InternalClient {
 	ack(msg) {
 		msg = this.resolver.resolveMessage(msg);
 
-		if(!msg) {
+		if (!msg) {
 			Promise.reject(new Error("Message does not exist"));
 		}
 
@@ -1168,7 +1162,7 @@ export default class InternalClient {
 					if (channel) {
 						var msg = channel.messages.add(new Message(data, channel, client));
 
-						if(self.messageAwaits[channel.id + msg.author.id]){
+						if (self.messageAwaits[channel.id + msg.author.id]) {
 							self.messageAwaits[channel.id + msg.author.id].map( fn => fn(msg) );
 							self.messageAwaits[channel.id + msg.author.id] = null;
 							client.emit("message", msg, true); //2nd param is isAwaitedMessage
@@ -1224,7 +1218,7 @@ export default class InternalClient {
 				case PacketType.SERVER_CREATE:
 					var server = self.servers.get("id", data.id);
 					if (!server) {
-						if(!data.unavailable) {
+						if (!data.unavailable) {
 							server = new Server(data, client)
 							self.servers.add(server);
 							client.emit("serverCreated", server);
@@ -1236,7 +1230,7 @@ export default class InternalClient {
 				case PacketType.SERVER_DELETE:
 					var server = self.servers.get("id", data.id);
 					if (server) {
-						if(!data.unavailable) {
+						if (!data.unavailable) {
 							for (var channel of server.channels) {
 								self.channels.remove(channel);
 							}
@@ -1288,9 +1282,9 @@ export default class InternalClient {
 									chan = self.channels.add(new VoiceChannel(data, client, server));
 								}
 								client.emit("channelCreated", server.channels.add(chan));
-						} else if(data.is_private){
+						} else if (data.is_private) {
 							client.emit("channelCreated", self.private_channels.add(new PMChannel(data, client)));
-						}else{
+						} else {
 							client.emit("warn", "channel created but server does not exist");
 						}
 
@@ -1458,7 +1452,7 @@ export default class InternalClient {
 
 						var presenceUser = new User(data.user, client);
 
-						if(!presenceUser.equalsStrict(user)) {
+						if (!presenceUser.equalsStrict(user)) {
 							client.emit("presence", user, presenceUser);
 							self.users.update(user, presenceUser);
 						}
@@ -1566,13 +1560,13 @@ export default class InternalClient {
 
 					var server = self.servers.get("id", data.guild_id);
 
-					if(server){
+					if (server) {
 
-						for(var user of data.members){
+						for (var user of data.members) {
 							server.members.add(self.users.get("id", user.id) || self.users.add(new User(user, client)));
 						}
 
-					}else{
+					} else {
 						client.emit("warn", "chunk update received but server not in cache");
 					}
 

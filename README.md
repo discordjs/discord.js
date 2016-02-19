@@ -55,7 +55,7 @@ A list of other Discord API libraries [can be found here](https://discordapi.com
 
 **[Wiki](https://github.com/discord-js/discord.js/wiki)**
 
-**[Website](http://discord-js.github.io/)**
+**[Website](http://hydrabolt.github.io/discord.js/)**
 
 **[NPM](http://npmjs.com/package/discord.js)**
 
