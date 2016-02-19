@@ -922,8 +922,8 @@ export default class InternalClient {
 
 		this.sendWS(packet);
 
-		this.bot.user.status = this.idleStatus;
-		this.bot.user.game = this.game;
+		this.user.status = this.idleStatus;
+		this.user.game = this.game;
 
 		return Promise.resolve();
 
