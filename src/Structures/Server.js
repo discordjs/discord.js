@@ -128,7 +128,7 @@ export default class Server extends Equality {
 		if (user) {
 			return (this.memberMap[user.id] ? this.memberMap[user.id].roles : []);
 		} else {
-			return null;
+			return [];
 		}
 	}
 
