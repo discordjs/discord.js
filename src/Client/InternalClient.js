@@ -1156,14 +1156,15 @@ export default class InternalClient {
 					});
 					self.state = ConnectionState.READY;
 
-					client.emit("ready");
 					client.emit("debug", `ready packet took ${Date.now() - startTime}ms to process`);
 					client.emit("debug", `ready with ${self.servers.length} servers, ${self.channels.length} channels and ${self.users.length} users cached.`);
 
 					self.readyTime = Date.now();
 
 					if (self.client.options.forceFetchUsers) {
-						self.forceFetchUsers();
+						self.forceFetchUsers().then(() => {client.emit("ready")});
+					} else {
+						client.emit("ready");
 					}
 					break;
 
