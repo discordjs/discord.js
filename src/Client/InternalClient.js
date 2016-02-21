@@ -1575,8 +1575,6 @@ export default class InternalClient {
 						var testtime = new Date().getTime();
 
 						for (var user of data.members) {
-							if(!server.members.get('id',user.user.id))
-								count++;
 							server.members.add(self.users.add(new User(user.user, client)));
 						}
 
