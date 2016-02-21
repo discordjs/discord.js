@@ -264,7 +264,11 @@ export default class InternalClient {
 			this.chunkloaderCount[server.id] = Math.ceil(server.memberCount / 1000);
 		}
 		return new Promise((resolve, reject) => {
-			this.chunkloaderCallback = resolve;
+			if (!server) {
+				resolve();
+			} else {
+				this.chunkloaderCallback = resolve;
+			}
 		});
 	}
 
