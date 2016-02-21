@@ -38,6 +38,8 @@ export default class Server extends Equality {
 		this.afkTimeout = data.afkTimeout;
 		this.afkChannelID = data.afk_channel_id || data.afkChannelID;
 		this.memberMap = {};
+		this.memberCount = data.member_count || data.memberCount;
+		this.large = data.large || this.memberCount > 250;
 
 		var self = this;
 
@@ -61,8 +63,7 @@ export default class Server extends Equality {
 					self_deaf: dataUser.self_deaf,
 					joinedAt: Date.parse(dataUser.joined_at)
 				};
-				var user = client.internal.users.add(new User(dataUser.user, client));
-				this.members.add(user);
+				this.members.add(client.internal.users.add(new User(dataUser.user, client)));
 			});
 		}
 
@@ -71,11 +72,9 @@ export default class Server extends Equality {
 		} else {
 			data.channels.forEach((dataChannel) => {
 				if (dataChannel.type === "text") {
-					var channel = client.internal.channels.add(new TextChannel(dataChannel, client, this));
-					this.channels.add(channel);
+					this.channels.add(client.internal.channels.add(new TextChannel(dataChannel, client, this)));
 				} else {
-					var channel = client.internal.channels.add(new VoiceChannel(dataChannel, client, this));
-					this.channels.add(channel);
+					this.channels.add(client.internal.channels.add(new VoiceChannel(dataChannel, client, this)));
 				}
 			});
 		}

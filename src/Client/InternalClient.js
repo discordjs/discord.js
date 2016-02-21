@@ -254,10 +254,17 @@ export default class InternalClient {
 		this.sendWS({
 			op : 8,
 			d : {
-				guild_id : this.servers.map(srv => srv.id),
+				guild_id : this.servers.filter(srv => srv.large && srv.memberCount > srv.members.length).map(srv => srv.id),
 				query : "",
 				limit : 0
 			}
+		});
+		this.chunkloaderCount = {};
+		for (var server of this.servers.filter(srv => srv.large && srv.memberCount > srv.members.length)) {
+			this.chunkloaderCount[server.id] = Math.ceil(server.memberCount / 1000);
+		}
+		return new Promise((resolve, reject) => {
+			this.chunkloaderCallback = resolve;
 		});
 	}
 
@@ -1154,6 +1161,10 @@ export default class InternalClient {
 					client.emit("debug", `ready with ${self.servers.length} servers, ${self.channels.length} channels and ${self.users.length} users cached.`);
 
 					self.readyTime = Date.now();
+
+					if (self.client.options.forceFetchUsers) {
+						self.forceFetchUsers();
+					}
 					break;
 
 				case PacketType.MESSAGE_CREATE:
@@ -1194,7 +1205,6 @@ export default class InternalClient {
 					if (channel) {
 						// potentially blank
 						var msg = channel.messages.get("id", data.id);
-
 
 						if (msg) {
 							// old message exists
@@ -1436,7 +1446,7 @@ export default class InternalClient {
 					break;
 				case PacketType.PRESENCE_UPDATE:
 
-					var user = self.users.get("id", data.user.id) || self.users.add(new User(data.user, client));
+					var user = self.users.add(new User(data.user, client));
 					var server = self.servers.get("id", data.guild_id);
 
 					if (user && server) {
@@ -1562,9 +1572,26 @@ export default class InternalClient {
 
 					if (server) {
 
+						var testtime = new Date().getTime();
+
 						for (var user of data.members) {
-							server.members.add(self.users.get("id", user.id) || self.users.add(new User(user, client)));
+							if(!server.members.get('id',user.user.id))
+								count++;
+							server.members.add(self.users.add(new User(user.user, client)));
 						}
+
+						if (self.chunkloaderCallback && server.id in self.chunkloaderCount) {
+							self.chunkloaderCount[server.id]--;
+							if (self.chunkloaderCount[server.id] <= 0) {
+								delete self.chunkloaderCount[server.id];
+								if (Object.keys(self.chunkloaderCount).length == 0) {
+									self.chunkloaderCallback();
+									self.chunkloaderCallback = null;
+								}
+							}
+						}
+
+						client.emit("debug", (new Date().getTime() - testtime) + "ms for " + data.members.length + " user chunk for server with id " + server.id);
 
 					} else {
 						client.emit("warn", "chunk update received but server not in cache");

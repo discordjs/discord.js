@@ -8,6 +8,7 @@ export default class Cache extends Array {
 		super();
 		this[discrimS] = discrim || "id";
 		this[discrimCacheS] = {};
+		this.limit = limit;
 	}
 
 	get(key, value) {
@@ -65,7 +66,7 @@ export default class Cache extends Array {
 	}
 
 	add(data) {
-		var cacheKey = this[discrimS] === "id" ? data.id : data[this[discrimS]];
+		var cacheKey = data[this[discrimS]];
 		if (this[discrimCacheS][cacheKey]) {
 			return this[discrimCacheS][cacheKey];
 		}

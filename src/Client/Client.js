@@ -979,7 +979,7 @@ export default class Client extends EventEmitter {
 	}
 
 	//def forceFetchUsers
-	forceFetchUsers(){
-		return this.internal.forceFetchUsers();
+	forceFetchUsers(callback){
+		return this.internal.forceFetchUsers().then(callback);
 	}
 }
