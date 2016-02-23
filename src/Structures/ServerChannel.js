@@ -23,8 +23,8 @@ export default class ServerChannel extends Channel{
 
 	permissionsOf(user){
 		user = this.client.internal.resolver.resolveUser(user);
-		if(user){
-			if(this.server.owner.equals(user)){
+		if (user) {
+			if (this.server.ownerID === user.id) {
 				return new ChannelPermissions(4294967295);
 			}
 			var everyoneRole = this.server.roles.get("name", "@everyone");
