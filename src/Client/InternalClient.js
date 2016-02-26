@@ -786,25 +786,22 @@ export default class InternalClient {
 
 	// def createInvite
 	createInvite(chanServ, options) {
-		chanServ = this.resolver.resolveChannel(chanServ);
+		return this.resolver.resolveChannel(chanServ)
+		.then(channel => {
+			if (!options) {
+				options = {
+					validate: null
+				};
+			} else {
+				options.max_age = options.maxAge || 0;
+				options.max_uses = options.maxUses || 0;
+				options.temporary = options.temporary || false;
+				options.xkcdpass = options.xkcd || false;
+			}
 
-		if (!chanServ) {
-			throw new Error("couldn't resolve where");
-		}
-
-		if (!options) {
-			options = {
-				validate: null
-			};
-		} else {
-			options.max_age = options.maxAge || 0;
-			options.max_uses = options.maxUses || 0;
-			options.temporary = options.temporary || false;
-			options.xkcdpass = options.xkcd || false;
-		}
-
-		return this.apiRequest("post", Endpoints.CHANNEL_INVITES(chanServ.id), true, options)
-		.then(res => new Invite(res, this.channels.get("id", res.channel.id), this.client));
+			return this.apiRequest("post", Endpoints.CHANNEL_INVITES(channel.id), true, options)
+			.then(res => new Invite(res, this.channels.get("id", res.channel.id), this.client));
+		});
 	}
 
 	//def deleteInvite
