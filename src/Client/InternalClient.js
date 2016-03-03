@@ -930,7 +930,7 @@ export default class InternalClient {
 
 		this.sendWS(packet);
 
-		this.user.status = this.idleStatus;
+		this.user.status = this.idleStatus ? "idle" : "online";
 		this.user.game = this.game;
 
 		return Promise.resolve();
