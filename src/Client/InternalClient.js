@@ -679,7 +679,11 @@ export default class InternalClient {
 
 	// def deleteRole
 	deleteRole(role) {
-		return this.apiRequest("del", `${Endpoints.SERVER_ROLES(role.server.id)}/${role.id}`, true)
+		if (role.server.id === role.id) {
+			return Promise.reject(new Error("Stop trying to delete the @everyone role. It is futile"));
+		} else {
+			return this.apiRequest("del", `${Endpoints.SERVER_ROLES(role.server.id)}/${role.id}`, true);
+		}
 	}
 
 	//def addMemberToRole
