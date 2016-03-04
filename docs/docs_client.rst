@@ -647,7 +647,7 @@ Emitted when a channel is deleted, supplies a Channel_ object.
 channelUpdated
 ~~~~~~~~~~~~~~
 
-Emitted when a channel is updated (e.g. name/topic change). Supplies a Channel_ object.
+Emitted when a channel is updated (e.g. name/topic change). Supplies two Channel_ objects, the first being the channel before the update, the second being the new, updated channel.
 
 serverRoleCreated
 ~~~~~~~~~~~~~~~~~
