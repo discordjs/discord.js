@@ -108,14 +108,20 @@ export default class Resolver {
 		if (typeof resource === "string" || resource instanceof String) {
 			if (/^https?:\/\//.test(resource)) {
 				return new Promise((resolve, reject) => {
-					request.get(resource).end((err, res) => {
+					request.get(resource).buffer().parse((res, cb) => {
+						res.setEncoding("binary");
+						res.data = "";
+						res.on("data", (chunk) => {
+							res.data += chunk;
+						});
+						res.on("end", () => {
+							cb(null, new Buffer(res.data, "binary"));
+						});
+					}).end((err, res) => {
 						if (err) {
-							reject(err);
-						} else if (res.text === undefined) {
-							resolve(res.body);
-						} else {
-							resolve(new Buffer(res.text));
+							return reject(err);
 						}
+						return resolve(res.body);
 					});
 				});
 			} else {
