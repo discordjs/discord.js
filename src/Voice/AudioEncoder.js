@@ -63,17 +63,20 @@ export default class AudioEncoder {
 			this.volume = new VolumeTransformer(options.volume || 1);
 
 			var enc = cpoc.spawn(this.getCommand(), [
-				'-loglevel', '0',
+				'-hide_banner',
 				'-i', '-',
 				'-f', 's16le',
 				'-ar', '48000',
 				'-ss', (options.seek || 0),
 				'-ac', 2,
 				'pipe:1'
-			], {stdio: ['pipe', 'pipe', 'ignore']});
+			]);
 
 			stream.pipe(enc.stdin);
 			enc.stdout.pipe(this.volume);
+			enc.stderr.on("data", (data) => {
+				reject(new Error("FFMPEG: " + new Buffer(data).toString().trim()));
+			});
 
 			this.volume.once("readable", () => {
 				resolve({
@@ -99,16 +102,19 @@ export default class AudioEncoder {
 			this.volume = new VolumeTransformer(options.volume || 1);
 
 			var enc = cpoc.spawn(this.getCommand(), [
-				'-loglevel', '0',
+				'-hide_banner',
 				'-i', file,
 				'-f', 's16le',
 				'-ar', '48000',
 				'-ss', (options.seek || 0),
 				'-ac', 2,
 				'pipe:1'
-			], {stdio: ['pipe', 'pipe', 'ignore']});
+			]);
 
 			enc.stdout.pipe(this.volume);
+			enc.stderr.on("data", (data) => {
+				reject(new Error("FFMPEG: " + new Buffer(data).toString().trim()));
+			});
 
 			this.volume.once("readable", () => {
 				resolve({
@@ -134,15 +140,18 @@ export default class AudioEncoder {
 
 			// add options discord.js needs
 			var options = ffmpegOptions.concat([
-				'-loglevel', '0',
+				'-hide_banner',
 				'-f', 's16le',
 				'-ar', '48000',
 				'-ac', 2,
 				'pipe:1'
 			]);
-			var enc = cpoc.spawn(this.getCommand(), options, {stdio: ['pipe', 'pipe', 'ignore']});
+			var enc = cpoc.spawn(this.getCommand(), options);
 
 			enc.stdout.pipe(this.volume);
+			enc.stderr.on("data", (data) => {
+				reject(new Error("FFMPEG: " + new Buffer(data).toString().trim()));
+			});
 
 			this.volume.once("readable", () => {
 				resolve({
