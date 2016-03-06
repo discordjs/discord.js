@@ -1548,7 +1548,6 @@ export default class InternalClient {
 					}
 					break;
 				case PacketType.VOICE_STATE_UPDATE:
-
 					var user = self.users.get("id", data.user_id);
 					var server = self.servers.get("id", data.guild_id);
 
@@ -1581,6 +1580,14 @@ export default class InternalClient {
 						var testtime = new Date().getTime();
 
 						for (var user of data.members) {
+							server.memberMap[user.user.id] = {
+								roles: user.roles.map(pid => server.roles.get("id", pid)),
+								mute: user.mute,
+								self_mute: false,
+								deaf: user.deaf,
+								self_deaf: false,
+								joinedAt: Date.parse(user.joined_at)
+							};
 							server.members.add(self.users.add(new User(user.user, client)));
 						}
 

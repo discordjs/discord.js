@@ -37,7 +37,7 @@ export default class Server extends Equality {
 		this.icon = data.icon;
 		this.afkTimeout = data.afkTimeout;
 		this.afkChannelID = data.afk_channel_id || data.afkChannelID;
-		this.memberMap = {};
+		this.memberMap = data.memberMap || {};
 		this.memberCount = data.member_count || data.memberCount;
 		this.large = data.large || this.memberCount > 250;
 
@@ -105,7 +105,7 @@ export default class Server extends Equality {
 	detailsOf(user) {
 		user = this.client.internal.resolver.resolveUser(user);
 		if (user) {
-			return this.memberMap[user.id];
+			return this.memberMap[user.id] || {};
 		} else {
 			return {};
 		}
@@ -174,14 +174,20 @@ export default class Server extends Equality {
 
 	eventVoiceJoin(user, channel) {
 		// removes from other speaking channels first
-		this.eventVoiceLeave(user);
+		var oldChannel = this.eventVoiceLeave(user);
+		if (oldChannel.id) {
+			this.client.emit("voiceLeave", oldChannel, user);
+		}
 
 		channel.members.add(user);
 		user.voiceChannel = channel;
+		this.client.emit("voiceJoin", channel, user);
 	}
 
 	eventVoiceStateUpdate(channel, user, data) {
-		// removes from other speaking channels first
+		if (!user.voiceChannel || user.voiceChannel.id !== channel.id) {
+			return this.eventVoiceJoin(user, channel);
+		}
 		if (!this.memberMap[user.id]) {
 			this.memberMap[user.id] = {};
 		}
@@ -195,13 +201,11 @@ export default class Server extends Equality {
 		this.memberMap[user.id].self_mute = data.self_mute;
 		this.memberMap[user.id].deaf = data.deaf;
 		this.memberMap[user.id].self_deaf = data.self_deaf;
-		if ((oldState.mute != data.mute || oldState.self_mute != data.self_mute
-			|| oldState.deaf != data.deaf || oldState.self_deaf != data.self_deaf)
-			&& oldState.mute !== undefined) {
+		if (oldState.mute !== undefined && (oldState.mute != data.mute || oldState.self_mute != data.self_mute
+			|| oldState.deaf != data.deaf || oldState.self_deaf != data.self_deaf)) {
 			this.client.emit("voiceStateUpdate", channel, user, oldState, this.memberMap[user.id]);
 		} else {
 			this.eventVoiceJoin(user, channel);
-			this.client.emit("voiceJoin", channel, user);
 		}
 	}
 
