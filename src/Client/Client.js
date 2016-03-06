@@ -662,13 +662,13 @@ export default class Client extends EventEmitter {
 	}
 
 	/**
-	 * Leaves a Discord Server, alias to `client.leaveServer`
+	 * Deletes a Discord Server
 	 * @param {ServerResolvable} server the server to leave
 	 * @param {function(err: Error)} [callback] callback to the method
 	 * @returns {Promise<null, Error>} resolves null if successful, otherwise rejects with an error.
 	 */
 	deleteServer(server, callback = (/*err, {}*/) => { }) {
-		return this.internal.leaveServer(server)
+		return this.internal.deleteServer(server)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
