@@ -73,10 +73,18 @@ export default class AudioEncoder {
 			]);
 
 			stream.pipe(enc.stdin);
+
+			var ffmpegErrors = "";
+
 			enc.stdout.pipe(this.volume);
 			enc.stderr.on("data", (data) => {
-				reject(new Error("FFMPEG: " + new Buffer(data).toString().trim()));
+				ffmpegErrors += "\n" + new Buffer(data).toString().trim();
 			});
+			enc.once("exit", (code, signal) => {
+				if (code) {
+					reject(new Error("FFMPEG: " + ffmpegErrors));
+				}
+			})
 
 			this.volume.once("readable", () => {
 				resolve({
@@ -111,10 +119,17 @@ export default class AudioEncoder {
 				'pipe:1'
 			]);
 
+			var ffmpegErrors = "";
+
 			enc.stdout.pipe(this.volume);
 			enc.stderr.on("data", (data) => {
-				reject(new Error("FFMPEG: " + new Buffer(data).toString().trim()));
+				ffmpegErrors += "\n" + new Buffer(data).toString().trim();
 			});
+			enc.once("exit", (code, signal) => {
+				if (code) {
+					reject(new Error("FFMPEG: " + ffmpegErrors));
+				}
+			})
 
 			this.volume.once("readable", () => {
 				resolve({
@@ -148,10 +163,17 @@ export default class AudioEncoder {
 			]);
 			var enc = cpoc.spawn(this.getCommand(), options);
 
+			var ffmpegErrors = "";
+
 			enc.stdout.pipe(this.volume);
 			enc.stderr.on("data", (data) => {
-				reject(new Error("FFMPEG: " + new Buffer(data).toString().trim()));
+				ffmpegErrors += "\n" + new Buffer(data).toString().trim();
 			});
+			enc.once("exit", (code, signal) => {
+				if (code) {
+					reject(new Error("FFMPEG: " + ffmpegErrors));
+				}
+			})
 
 			this.volume.once("readable", () => {
 				resolve({
