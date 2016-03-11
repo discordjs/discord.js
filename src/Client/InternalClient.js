@@ -65,7 +65,7 @@ export default class InternalClient {
 		return new Promise((resolve, reject) => {
 			ret.end((error, data) => {
 				if (error) {
-					if (!this.client.options.rate_limit_as_error &&
+					if (!this.client.options.rateLimitAsError &&
 						error.response &&
 						error.response.error &&
 						error.response.error.status
@@ -1122,7 +1122,7 @@ export default class InternalClient {
 					token: self.token,
 					v: 3,
 					compress: self.client.options.compress,
-					large_threshold : self.client.options.large_threshold,
+					large_threshold : self.client.options.largeThreshold,
 					properties: {
 						"$os": "discord.js",
 						"$browser": "discord.js",
@@ -1270,6 +1270,13 @@ export default class InternalClient {
 							}
 
 							self.servers.remove(server);
+
+							for (var user of self.users) {
+								if (!self.servers.find((s) => !!s.members.get("id", user.id))) {
+									self.users.remove(user);
+								}
+							}
+
 							client.emit("serverDeleted", server);
 						} else {
 							client.emit("warn", "server was unavailable, could not update");
@@ -1424,6 +1431,8 @@ export default class InternalClient {
 							joinedAt: Date.parse(data.joined_at)
 						};
 
+						server.memberCount++;
+
 						client.emit(
 							"serverNewMember",
 							server,
@@ -1441,7 +1450,11 @@ export default class InternalClient {
 						if (user) {
 							server.memberMap[data.user.id] = null;
 							server.members.remove(user);
+							server.memberCount--;
 							client.emit("serverMemberRemoved", server, user);
+							if (!self.servers.find((s) => !!s.members.get("id", user.id))) {
+								self.users.remove(user);
+							}
 						} else {
 							client.emit("warn", "server member removed but user doesn't exist in cache");
 						}
