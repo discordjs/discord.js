@@ -357,6 +357,15 @@ setStatusOnline()
 
 Sets the status of the Client to Online
 
+setPlayingGame(`game`, `callback`)
+~~~~~~~~~~~~~~
+
+Sets the Discord Game Status of the Client
+
+- **game** - `String/Number`, ID of Discord Game being played
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred
+
 setChannelTopic(channel, topic, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
