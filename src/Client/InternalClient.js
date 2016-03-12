@@ -433,7 +433,7 @@ export default class InternalClient {
 			return Promise.reject(new Error("Unable to resolve resUser to a User"));
 		}
 				// start the PM
-		return this.apiRequest("post", Endpoints.USER_CHANNELS(user.id), true, {
+		return this.apiRequest("post", Endpoints.USER_CHANNELS(this.user.id), true, {
 			recipient_id: user.id
 		})
 		.then(res => {
