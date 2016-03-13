@@ -216,7 +216,12 @@ export default class Resolver {
 			return Promise.resolve(resource.defaultChannel);
 		}
 		if (resource instanceof String || typeof resource === "string") {
-			return Promise.resolve(this.internal.channels.get("id", resource) || this.internal.private_channels.get("id", resource));
+			var user = this.internal.users.get("id", resource);
+			if (user) {
+				resource = user;
+			} else {
+				return Promise.resolve(this.internal.channels.get("id", resource) || this.internal.private_channels.get("id", resource));
+			}
 		}
 		if (resource instanceof User) {
 			// see if a PM exists
