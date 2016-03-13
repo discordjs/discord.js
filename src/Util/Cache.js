@@ -100,7 +100,7 @@ export default class Cache extends Array {
 	remove(data) {
 		delete this[discrimCacheS][data[this[discrimS]]];
 		for(var i in this) {
-			if(this[i][this[discrimS]] === old[this[discrimS]]) {
+			if(this[i][this[discrimS]] === data[this[discrimS]]) {
 				this.splice(i, 1);
 				return this[i];
 			}
