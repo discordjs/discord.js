@@ -217,6 +217,9 @@ export default class VoiceConnection extends EventEmitter {
 			callback = options;
 			options = {};
 		}
+		if (options.volume != null) {
+			this.setVolume(options.volume);
+		}
 		return new Promise((resolve, reject) => {
 			this.encoder
 				.encodeFile(stream, options)
@@ -242,6 +245,9 @@ export default class VoiceConnection extends EventEmitter {
 			// options is the callback
 			callback = options;
 			options = {};
+		}
+		if (options.volume != null) {
+			this.setVolume(options.volume);
 		}
 		return new Promise((resolve, reject) => {
 			this.encoder
@@ -270,6 +276,9 @@ export default class VoiceConnection extends EventEmitter {
 			callback = options;
 			options = {};
 		}
+		if (options.volume != null) {
+			this.setVolume(options.volume);
+		}
 		return new Promise((resolve, reject) => {
 			this.encoder
 				.encodeArbitraryFFmpeg(ffmpegOptions)
@@ -280,7 +289,6 @@ export default class VoiceConnection extends EventEmitter {
 					var intent = self.playStream(data.stream);
 					resolve(intent);
 					callback(null, intent);
-
 				});
 			function error(e = true) {
 				reject(e);
