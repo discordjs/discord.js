@@ -92,7 +92,6 @@ export default class VoiceConnection extends EventEmitter {
 			onWarning = false,
 			lastVolume = this.volume !== undefined ? this.volume.get() : 1;
 
-		this.volume = stream;
 		this.playing = true;
 		this.playingIntent = retStream;
 

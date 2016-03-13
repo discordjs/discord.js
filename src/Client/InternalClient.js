@@ -1265,19 +1265,19 @@ export default class InternalClient {
 					var server = self.servers.get("id", data.id);
 					if (server) {
 						if (!data.unavailable) {
+							client.emit("serverDeleted", server);
+
 							for (var channel of server.channels) {
 								self.channels.remove(channel);
 							}
 
 							self.servers.remove(server);
 
-							for (var user of self.users) {
+							for (var user of server.members) {
 								if (!self.servers.find((s) => !!s.members.get("id", user.id))) {
 									self.users.remove(user);
 								}
 							}
-
-							client.emit("serverDeleted", server);
 						} else {
 							client.emit("warn", "server was unavailable, could not update");
 						}
@@ -1437,7 +1437,7 @@ export default class InternalClient {
 							"serverNewMember",
 							server,
 							server.members.add(self.users.add(new User(data.user, client)))
-							);
+						);
 
 					} else {
 						client.emit("warn", "server member added but server doesn't exist in cache");
@@ -1448,10 +1448,10 @@ export default class InternalClient {
 					if (server) {
 						var user = self.users.get("id", data.user.id);
 						if (user) {
+							client.emit("serverMemberRemoved", server, user);
 							server.memberMap[data.user.id] = null;
 							server.members.remove(user);
 							server.memberCount--;
-							client.emit("serverMemberRemoved", server, user);
 							if (!self.servers.find((s) => !!s.members.get("id", user.id))) {
 								self.users.remove(user);
 							}
