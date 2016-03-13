@@ -89,19 +89,16 @@ export default class VoiceConnection extends EventEmitter {
 			count = 0,
 			length = 20,
 			retStream = new StreamIntent(),
-			onWarning = false,
-			lastVolume = this.volume !== undefined ? this.volume.get() : 1;
+			onWarning = false;
 
+		this.volume = stream;
 		this.playing = true;
 		this.playingIntent = retStream;
-
-		this.setVolume(lastVolume);
 
 		function send() {
 			if (!self.playingIntent || !self.playing) {
 				self.setSpeaking(false);
 				retStream.emit("end");
-				//console.log("ending 1");
 				return;
 			}
 			try {
@@ -112,7 +109,6 @@ export default class VoiceConnection extends EventEmitter {
 					if (onWarning) {
 						retStream.emit("end");
 						self.setSpeaking(false);
-						//console.log("ending 2");
 						return;
 					} else {
 						onWarning = true;
@@ -216,9 +212,7 @@ export default class VoiceConnection extends EventEmitter {
 			callback = options;
 			options = {};
 		}
-		if (options.volume != null) {
-			this.setVolume(options.volume);
-		}
+		options.volume = options.volume !== undefined ? options.volume : this.getVolume();
 		return new Promise((resolve, reject) => {
 			this.encoder
 				.encodeFile(stream, options)
@@ -245,9 +239,7 @@ export default class VoiceConnection extends EventEmitter {
 			callback = options;
 			options = {};
 		}
-		if (options.volume != null) {
-			this.setVolume(options.volume);
-		}
+		options.volume = options.volume !== undefined ? options.volume : this.getVolume();
 		return new Promise((resolve, reject) => {
 			this.encoder
 				.encodeStream(stream, options)
@@ -275,9 +267,7 @@ export default class VoiceConnection extends EventEmitter {
 			callback = options;
 			options = {};
 		}
-		if (options.volume != null) {
-			this.setVolume(options.volume);
-		}
+		options.volume = options.volume !== undefined ? options.volume : this.getVolume();
 		return new Promise((resolve, reject) => {
 			this.encoder
 				.encodeArbitraryFFmpeg(ffmpegOptions)

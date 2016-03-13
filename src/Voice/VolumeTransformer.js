@@ -1,6 +1,11 @@
 const Transform = require('stream').Transform;
 
 class Volume extends Transform {
+	constructor(volume) {
+		super();
+		this.set(volume);
+	}
+
 	get volume() {
 		return this._volume === undefined ? 1 : this._volume;
 	}
@@ -18,7 +23,7 @@ class Volume extends Transform {
 	}
 
 	set(volume) {
-		this.volume = volume;
+		this.volume = volume === undefined ? 1 : volume;
 	}
 
 	_transform(buffer, encoding, callback) {
