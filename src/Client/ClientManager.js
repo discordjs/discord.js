@@ -31,6 +31,7 @@ class ClientManager {
 
 	setStateConnected() {
 		this.state = Constants.ConnectionState.CONNECTED;
+		this.client.websocket._resolve(this.client.token);
 		this.client.emit("connected");
 		this.client.logger.log(TAG, "state now connected");
 	}

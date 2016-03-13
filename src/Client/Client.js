@@ -3,6 +3,7 @@ const ClientAPIManager = require("./API/ClientAPI");
 const ClientManager = require("./ClientManager");
 const ClientWebSocket = require("./WebSocket/ClientWebSocket");
 const ClientLogger = require("./ClientLogger");
+const ClientDataStore = require("./ClientDataStore");
 const EventEmitter = require("events").EventEmitter;
 const MergeDefault = require("../util/MergeDefault");
 
@@ -14,10 +15,20 @@ class Client extends EventEmitter{
 		this.api = new ClientAPIManager(this);
 		this.websocket = null;
 		this.logger = new ClientLogger(this);
+		this.store = new ClientDataStore(this);
+		this.user = null;
 	}
 
 	get token() {
 		return this.api.token;
+	}
+
+	get users() {
+		return this.store.users;
+	}
+
+	get servers() {
+		return this.store.servers;
 	}
 
 	async login(email, password) {

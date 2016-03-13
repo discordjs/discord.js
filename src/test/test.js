@@ -1,18 +1,16 @@
 "use strict";
 const Discord = require("../");
-const h = new Discord.Client({
+const client = new Discord.Client({
 	logging: {
 		enabled : true
 	}
 });
+const TAG = "testscript";
 
-async function go(){
-	h.login(process.env["ds_email"], process.env["ds_password"]).then(() => setTimeout(next, 5000)).catch(console.log);
-
-	function next() {
-		console.log("nexted");
-		h.login(process.env["ds_email"], process.env["ds_password"]).then(() => setTimeout(next, 5000)).catch(console.log);
-	}
+async function go() {
+	client.login(process.env["ds_email"], process.env["ds_password"])
+		.then(token => client.logger.log(TAG, "connected with token " + token))
+		.catch(console.log);
 }
 
 go();
