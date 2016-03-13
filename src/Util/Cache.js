@@ -79,20 +79,18 @@ export default class Cache extends Array {
 	}
 
 	update(old, data) {
-		var item = this.get(this[discrimS], old[this[discrimS]]);
-
-		if (item) {
-			var index = this.indexOf(item);
-			for (var dataIndex in data) {
-				if (data.hasOwnProperty(dataIndex)) {
-					this[index][dataIndex] = data[dataIndex];
+		for(var i in this) {
+			if(this[i][this[discrimS]] === old[this[discrimS]]) {
+				for (var key in data) {
+					if (data.hasOwnProperty(key)) {
+						this[i][key] = data[key];
+					}
 				}
+				this[discrimCacheS][data[this[discrimS]]] = this[i];
+				return this[i];
 			}
-			this[discrimCacheS][data[this[discrimS]]] = this[index];
-			return this[index];
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	random() {
@@ -101,13 +99,10 @@ export default class Cache extends Array {
 
 	remove(data) {
 		delete this[discrimCacheS][data[this[discrimS]]];
-		var index = this.indexOf(data);
-		if (~index) {
-			this.splice(index, 1);
-		} else {
-			var item = this.get(this[discrimS], data[this[discrimS]]);
-			if (item) {
-				this.splice(this.indexOf(item), 1);
+		for(var i in this) {
+			if(this[i][this[discrimS]] === old[this[discrimS]]) {
+				this.splice(i, 1);
+				return this[i];
 			}
 		}
 		return false;
