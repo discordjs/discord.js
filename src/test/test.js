@@ -1,6 +1,10 @@
 "use strict";
 const Discord = require("../");
-const h = new Discord.Client();
+const h = new Discord.Client({
+	logging: {
+		enabled : true
+	}
+});
 
 async function go(){
 	h.login(process.env["ds_email"], process.env["ds_password"]).then(() => setTimeout(next, 5000)).catch(console.log);

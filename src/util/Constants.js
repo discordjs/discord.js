@@ -7,6 +7,24 @@ export const Errors = {
 	WEBSOCKET_CLOSED_BEFORE_READY: new Error("Waited for READY packet from server, but socket closed before that could happen")
 };
 
+export const DefaultOptions = {
+	logging: {
+		enabled: false,
+		as_event : true
+	},
+	ws : {
+		large_threshold : 250,
+		compress : true,
+		properties : {
+			$os: "discord.js",
+			$browser: "discord.js",
+			$device: "discord.js",
+			$referrer: "discord.js",
+			$referring_domain: "discord.js"
+		}
+	}
+}
+
 export const API = "https://discordapp.com/api";
 
 export const Endpoints = {

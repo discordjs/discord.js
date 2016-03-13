@@ -5,21 +5,48 @@
  */
 
 const Constants = require("../util/Constants");
-const ClientWebSocket = require("./ClientWebSocket");
+const ClientWebSocket = require("./WebSocket/ClientWebSocket");
+const TAG = "manager";
 
 class ClientManager {
 	constructor(client) {
 		this.client = client;
 		this.state = Constants.ConnectionState.NOT_STARTED;
 		this.gateway = null;
+		this.intervals = {
+			keepAlive: null,
+			other : []
+		};
 	}
 
 	async registerTokenAndConnect(token) {
 		return this.connectToWebSocket(this.client.api.token = token);
 	}
 
-	async disconnectedFromWebSocket() {
+	disconnectedFromWebSocket() {
 		this.state = Constants.ConnectionState.DISCONNECTED;
+		this.client.emit("disconnected");
+		this.client.logger.log(TAG, "state now disconnected");
+	}
+
+	setStateConnected() {
+		this.state = Constants.ConnectionState.CONNECTED;
+		this.client.emit("connected");
+		this.client.logger.log(TAG, "state now connected");
+	}
+
+	setupKeepAlive(interval) {
+		this.intervals.keepAlive = setInterval(() => {
+			this.client.logger.log(TAG, "sent keep alive packet");
+			if (this.client.websocket) {
+				this.client.websocket.send({
+					op: 1,
+					d: Date.now()
+				});
+			} else {
+				clearInterval(this.intervals.keepAlive);
+			}
+		}, interval);
 	}
 
 	async connectToWebSocket(token) {
@@ -40,7 +67,9 @@ class ClientManager {
 			this.state = Constants.ConnectionState.CONNECTING;
 
 			try {
+				this.client.logger.log(TAG, "finding gateway");
 				this.gateway = await this.client.api.getGateway();
+				this.client.logger.log(TAG, "connecting to gateway " + this.gateway);
 				this.client.websocket = new ClientWebSocket(this.client, this.gateway, resolve, reject);
 			} catch (e) {
 				return reject(e);
