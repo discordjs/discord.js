@@ -339,7 +339,7 @@ setStatus(status, `game`, `callback`)
 Sets the Discord Status of the Client
 
 - **status** - `String`, either ``online, here, active, available`` or ``idle, away``
-- **game** - `String/Number`, ID of Discord Game being played
+- **game** - `String`, Becomes game status, appended to `Playing `
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
 
@@ -362,7 +362,7 @@ setPlayingGame(`game`, `callback`)
 
 Sets the Discord Game Status of the Client
 
-- **game** - `String/Number`, ID of Discord Game being played
+- **game** - `String`, Becomes game status, appended to `Playing `
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
 
