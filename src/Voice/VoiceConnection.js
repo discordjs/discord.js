@@ -43,8 +43,9 @@ export default class VoiceConnection extends EventEmitter {
 
 	destroy() {
 		this.stopPlaying();
-		if(this.KAI)
+		if (this.KAI) {
 			clearInterval(this.KAI);
+		}
 		this.vWS.close();
 		this.udp.close();
 		this.client.internal.sendWS(
@@ -67,10 +68,10 @@ export default class VoiceConnection extends EventEmitter {
 			//not all streams implement these...
 			//and even file stream don't seem to implement them properly...
 			unpipe(this.instream);
-			if(this.instream.end) {
+			if (this.instream.end) {
 				this.instream.end();
 			}
-			if(this.instream.destroy) {
+			if (this.instream.destroy) {
 				this.instream.destroy();
 			}
 			this.instream = null;
@@ -106,26 +107,26 @@ export default class VoiceConnection extends EventEmitter {
 			}
 			try {
 
-					var buffer = stream.read(1920 * channels);
+				var buffer = stream.read(1920 * channels);
 
-					if (!buffer) {
-						if (onWarning) {
-								retStream.emit("end");
-								self.setSpeaking(false);
-								//console.log("ending 2");
-								return;
-						  } else {
-								onWarning = true;
-								setTimeout(send, length * 10); // give chance for some data in 200ms to appear
-								return;
-						}
-					 }
+				if (!buffer) {
+					if (onWarning) {
+						retStream.emit("end");
+						self.setSpeaking(false);
+						//console.log("ending 2");
+						return;
+					} else {
+						onWarning = true;
+						setTimeout(send, length * 10); // give chance for some data in 200ms to appear
+						return;
+					}
+				 }
 
-					 if(buffer.length !== 1920 * channels) {
-						var newBuffer = new Buffer(1920 * channels).fill(0);
-						buffer.copy(newBuffer);
-						buffer = newBuffer;
-					 }
+				 if (buffer.length !== 1920 * channels) {
+					var newBuffer = new Buffer(1920 * channels).fill(0);
+					buffer.copy(newBuffer);
+					buffer = newBuffer;
+				 }
 
 				count++;
 				self.sequence + 1 < 65535 ? self.sequence += 1 : self.sequence = 0;
@@ -143,7 +144,6 @@ export default class VoiceConnection extends EventEmitter {
 					self.setSpeaking(true);
 
 				retStream.emit("time", self.streamTime);
-
 
 			} catch (e) {
 				retStream.emit("error", e);
@@ -184,7 +184,7 @@ export default class VoiceConnection extends EventEmitter {
 		var self = this;
 		self.playing = true;
 		try {
-			if(!self.encoder.opus){
+			if (!self.encoder.opus){
 				self.playing=false;
 				self.emit("error", "No Opus!");
 				self.client.emit("debug", "Tried to use node-opus, but opus not available - install it!");
@@ -309,7 +309,7 @@ export default class VoiceConnection extends EventEmitter {
 					}
 					discordPort = msg.readUIntLE(msg.length - 2, 2).toString(10);
 
-					var wsDiscPayload = {
+					vWS.send(JSON.stringify({
 						"op": 1,
 						"d": {
 							"protocol": "udp",
@@ -319,8 +319,7 @@ export default class VoiceConnection extends EventEmitter {
 								"mode": self.vWSData.modes[0] //Plain
 							}
 						}
-					}
-					vWS.send(JSON.stringify(wsDiscPayload));
+					}));
 					firstPacket = false;
 				}
 			});

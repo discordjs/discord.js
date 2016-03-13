@@ -43,6 +43,7 @@ import Role from "../../Structures/Role";
 import Server from "../../Structures/Server";
 import Message from "../../Structures/Message";
 import Invite from "../../Structures/Invite";
+import VoiceConnection from "../../Voice/VoiceConnection";
 
 export default class Resolver {
 	constructor(internal) {
@@ -151,12 +152,11 @@ export default class Resolver {
 		// accepts Array, Channel, Server, User, Message, String and anything
 		// toString()-able
 
-		var final = resource;
 		if (resource instanceof Array) {
-			final = resource.join("\n");
+			resource = resource.join("\n");
 		}
 
-		return final.toString();
+		return resource.toString();
 	}
 
 	resolveUser(resource) {
@@ -203,7 +203,7 @@ export default class Resolver {
 
 	resolveChannel(resource) {
 		/*
-			accepts a Message, Channel, Server, String ID, User
+			accepts a Message, Channel, VoiceConnection, Server, String ID, User
 		*/
 
 		if (resource instanceof Message) {
@@ -211,6 +211,9 @@ export default class Resolver {
 		}
 		if (resource instanceof Channel) {
 			return Promise.resolve(resource);
+		}
+		if (resource instanceof VoiceConnection) {
+			return Promise.resolve(resource.voiceChannel);
 		}
 		if (resource instanceof Server) {
 			return Promise.resolve(resource.defaultChannel);
