@@ -60,7 +60,7 @@ export default class AudioEncoder {
 
 	encodeStream(stream, options) {
 		return new Promise((resolve, reject) => {
-			this.volume = new VolumeTransformer(options.volume || 1);
+			this.volume = new VolumeTransformer(options.volume);
 
 			var enc = cpoc.spawn(this.getCommand(), [
 				'-hide_banner',
@@ -107,7 +107,7 @@ export default class AudioEncoder {
 
 	encodeFile(file, options) {
 		return new Promise((resolve, reject) => {
-			this.volume = new VolumeTransformer(options.volume || 1);
+			this.volume = new VolumeTransformer(options.volume);
 
 			var enc = cpoc.spawn(this.getCommand(), [
 				'-hide_banner',

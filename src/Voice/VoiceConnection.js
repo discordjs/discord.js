@@ -12,6 +12,7 @@ import dns from "dns";
 import udp from "dgram";
 import AudioEncoder from "./AudioEncoder";
 import VoicePacket from "./VoicePacket";
+import VolumeTransformer from "./VolumeTransformer";
 import StreamIntent from "./StreamIntent";
 import EventEmitter from "events";
 import unpipe from "unpipe";
@@ -38,6 +39,7 @@ export default class VoiceConnection extends EventEmitter {
 		this.KAI = null;
 		this.timestamp = 0;
 		this.sequence = 0;
+		this.volume = new VolumeTransformer();
 		this.init();
 	}
 
@@ -107,8 +109,8 @@ export default class VoiceConnection extends EventEmitter {
 
 				if (!buffer) {
 					if (onWarning) {
-						retStream.emit("end");
 						self.setSpeaking(false);
+						retStream.emit("end");
 						return;
 					} else {
 						onWarning = true;
