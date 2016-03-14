@@ -11,6 +11,23 @@ async function go() {
 	client.login(process.env["ds_email"], process.env["ds_password"])
 		.then(token => client.logger.log(TAG, "connected with token " + token))
 		.catch(console.log);
+
+	client.on(Discord.Constants.Events.SERVER_CREATE, server => {
+		client.logger.log(TAG, "ServerCreate " + server.name);
+		amount("servers");
+	});
+	client.on(Discord.Constants.Events.SERVER_DELETE, server => {
+		client.logger.log(TAG, "ServerDelete " + server.name);
+		amount("servers");
+	});
+	client.on(Discord.Constants.Events.SERVER_UPDATE, (oldserver, server) => {
+		client.logger.log(TAG, "ServerUpdate " + oldserver.name + " became " + server.name);
+		amount("servers");
+	});
+}
+
+function amount(prop) {
+	client.logger.log(TAG, `there are ${client[prop].length} ${prop}`);
 }
 
 go();

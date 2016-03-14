@@ -1,8 +1,8 @@
-const Generic = require("./Generic");
+const GenericHandler = require("./GenericHandler");
 const Server = require("../../../../Structures/Server");
 const ClientUser = require("../../../../Structures/ClientUser");
 
-module.exports = class ReadyHandler extends Generic{
+module.exports = class ReadyHandler extends GenericHandler{
 	constructor(manager){
 		super(manager);
 	}

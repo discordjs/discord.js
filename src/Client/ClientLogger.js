@@ -1,3 +1,5 @@
+const Constants = require("../util/Constants");
+
 class ClientLogger{
 	constructor(client) {
 		this.client = client;
@@ -8,7 +10,7 @@ class ClientLogger{
 			console.log(`[LOG ${time()}] ${tag} >> ${message}`);
 		}
 		if (this.client.options.logging.as_event) {
-			this.client.emit("log", tag, message);
+			this.client.emit(Constants.Events.LOG, tag, message);
 		}
 	}
 }

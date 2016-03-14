@@ -5,6 +5,23 @@ class DataStore{
 
 	}
 
+	remove(where, object) {
+		where = "_" + where;
+		let id;
+		if (typeof object === "string" || object instanceof String) {
+			id = object;
+		} else {
+			id = object.id;
+		}
+
+		if (this[where][id]) {
+			delete this[where][id];
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	has(where, object) {
 		where = "_" + where;
 		if (typeof object === "string" || object instanceof String) {

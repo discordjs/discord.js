@@ -1,11 +1,17 @@
-const ReadyHandler = require("./Handlers/Ready");
+const ReadyHandler = require("./Handlers/ReadyHandler");
+const ServerCreateHandler = require("./Handlers/ServerCreateHandler");
+const ServerDeleteHandler = require("./Handlers/ServerDeleteHandler");
+const ServerUpdateHandler = require("./Handlers/ServerUpdateHandler");
 const TAG = "websocket";
 
 class PacketManager{
 	constructor(clientWS){
 		this.clientWS = clientWS;
 		this.handlers = {
-			"READY" : new ReadyHandler(this)
+			"READY" : new ReadyHandler(this),
+			"GUILD_CREATE": new ServerCreateHandler(this),
+			"GUILD_DELETE": new ServerDeleteHandler(this),
+			"GUILD_UPDATE": new ServerUpdateHandler(this)
 		};
 	}
 

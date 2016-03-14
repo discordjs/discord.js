@@ -37,7 +37,7 @@ class ClientWebSocket{
 
 	eventError(err) {
 		this._reject(err);
-		this.client.emit("error", err);
+		this.client.emit(Constants.Events.ERROR, err);
 		this.client.manager.disconnectedFromWebSocket();
 	}
 

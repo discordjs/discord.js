@@ -25,14 +25,14 @@ class ClientManager {
 
 	disconnectedFromWebSocket() {
 		this.state = Constants.ConnectionState.DISCONNECTED;
-		this.client.emit("disconnected");
+		this.client.emit(Constants.Events.DISCONNECTED);
 		this.client.logger.log(TAG, "state now disconnected");
 	}
 
 	setStateConnected() {
 		this.state = Constants.ConnectionState.CONNECTED;
 		this.client.websocket._resolve(this.client.token);
-		this.client.emit("connected");
+		this.client.emit(Constants.Events.CONNECTED);
 		this.client.logger.log(TAG, "state now connected");
 	}
 

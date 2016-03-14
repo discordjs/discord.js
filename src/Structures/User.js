@@ -1,13 +1,19 @@
 const Constants = require("../util/Constants");
 const DataStore = require("../util/DataStore");
 
-class User{
+class User {
 	constructor(client, data) {
 		this.client = client;
-		this.username = data.username;
-		this.id = data.id;
-		this.discriminator = data.discriminator;
-		this.avatar = data.avatar;
+		if (data) {
+			this.setup(data);
+		}
+	}
+
+	setup(data) {
+		this.username = data.username || this.username;
+		this.id = data.id || this.id;
+		this.discriminator = data.discriminator || this.discriminator;
+		this.avatar = data.avatar || this.avatar;
 	}
 }
 
