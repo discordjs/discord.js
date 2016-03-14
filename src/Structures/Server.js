@@ -1,18 +1,20 @@
 const Constants = require("../util/Constants");
 const DataStore = require("../util/DataStore");
 const User = require("./User");
+const TextChannel = require("./TextChannel");
+const VoiceChannel = require("./VoiceChannel");
 
 class ServerDataStore extends DataStore {
 	constructor() {
 		super();
-		this._members = [];
-		this._channels = [];
+		this._members = {};
+		this._channels = {};
 	}
 	get members() {
-		return Object.entries(this._members);
+		return Object.values(this._members);
 	}
 	get channels() {
-		return Object.entries(this._channels);
+		return Object.values(this._channels);
 	}
 }
 
@@ -21,6 +23,15 @@ class Server {
 		this.client = client;
 		if(data)
 			this.setup(data);
+	}
+
+	addChannel(data) {
+		let channel = this.store.get("channels", "id", data.id);
+		if (channel) {
+			return channel;
+		}
+		let construct = data.type === "text" ? TextChannel : VoiceChannel;
+		return this.store.add("channels", new construct(this.client, this, data));
 	}
 
 	setup(data) {
@@ -49,6 +60,11 @@ class Server {
 			if (data.members) {
 				for (let member of data.members) {
 					this.store.add("members", client.store.add("users", new User(this.client, member.user)));
+				}
+			}
+			if (data.channels) {
+				for (let channel of data.channels) {
+					this.addChannel(channel);
 				}
 			}
 		}

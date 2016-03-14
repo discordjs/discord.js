@@ -10,10 +10,10 @@ class ClientDataStore extends DataStore{
 	}
 
 	get users() {
-		return Object.entries(this._users);
+		return Object.values(this._users);
 	}
 	get servers() {
-		return Object.entries(this._servers);
+		return Object.values(this._servers);
 	}
 }
 

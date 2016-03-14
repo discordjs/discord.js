@@ -4,7 +4,9 @@ const User = require("./User");
 class ClientUser extends User {
 	constructor(client, data) {
 		super(client, data);
-		this.setup(data);
+		if (data) {
+			this.setup(data);
+		}
 	}
 
 	setup(data) {
