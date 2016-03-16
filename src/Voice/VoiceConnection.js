@@ -212,8 +212,10 @@ export default class VoiceConnection extends EventEmitter {
 		if (typeof options === "function") {
 			// options is the callback
 			callback = options;
-			options = {};
 		}
+        if (typeof options !== "object") {
+            options = {};
+        }
 		options.volume = options.volume !== undefined ? options.volume : this.getVolume();
 		return new Promise((resolve, reject) => {
 			this.encoder
@@ -239,8 +241,10 @@ export default class VoiceConnection extends EventEmitter {
 		if (typeof options === "function") {
 			// options is the callback
 			callback = options;
-			options = {};
 		}
+        if (typeof options !== "object") {
+            options = {};
+        }
 		options.volume = options.volume !== undefined ? options.volume : this.getVolume();
 		return new Promise((resolve, reject) => {
 			this.encoder
@@ -267,8 +271,10 @@ export default class VoiceConnection extends EventEmitter {
 		if (typeof options === "function") {
 			// options is the callback
 			callback = options;
-			options = {};
 		}
+        if (typeof options !== "object") {
+            options = {};
+        } 
 		options.volume = options.volume !== undefined ? options.volume : this.getVolume();
 		return new Promise((resolve, reject) => {
 			this.encoder
