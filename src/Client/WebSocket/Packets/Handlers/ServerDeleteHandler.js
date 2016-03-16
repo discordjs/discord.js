@@ -1,9 +1,9 @@
-const GenericHandler = require("./GenericHandler");
-const Constants = require("../../../../util/Constants");
-const Server = require("../../../../Structures/Server");
+const GenericHandler = require('./GenericHandler');
+const Constants = require('../../../../util/Constants');
+const Server = require('../../../../Structures/Server');
 
 module.exports = class ServerDeleteHandler extends GenericHandler{
-	constructor(manager){
+	constructor(manager) {
 		super(manager);
 	}
 
@@ -11,7 +11,7 @@ module.exports = class ServerDeleteHandler extends GenericHandler{
 		let data = packet.d;
 		let client = this.manager.client;
 
-		let server = client.store.get("servers", "id", data.id);
+		let server = client.store.get('servers', 'id', data.id);
 		if (server) {
 			if (data.unavailable) {
 				// server has become unavailable
@@ -19,7 +19,7 @@ module.exports = class ServerDeleteHandler extends GenericHandler{
 				client.emit(Constants.Events.SERVER_UNAVAILABLE, server);
 			} else {
 				// server was deleted
-				client.store.remove("servers", server);
+				client.store.remove('servers', server);
 				client.emit(Constants.Events.SERVER_DELETE, server);
 			}
 		} else {

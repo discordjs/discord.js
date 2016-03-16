@@ -6,4 +6,4 @@ module.exports = function CloneObject(obj) {
 
 	return cloned;
 
-}
+};

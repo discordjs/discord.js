@@ -1,5 +1,5 @@
-const Constants = require("../util/Constants");
-const DataStore = require("../util/DataStore");
+const Constants = require('../util/Constants');
+const DataStore = require('../util/DataStore');
 
 class ClientDataStore extends DataStore{
 	constructor(client) {
@@ -12,6 +12,7 @@ class ClientDataStore extends DataStore{
 	get users() {
 		return Object.values(this._users);
 	}
+
 	get servers() {
 		return Object.values(this._servers);
 	}

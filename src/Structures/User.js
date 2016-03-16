@@ -1,6 +1,3 @@
-const Constants = require("../util/Constants");
-const DataStore = require("../util/DataStore");
-
 class User {
 	constructor(client, data) {
 		this.client = client;

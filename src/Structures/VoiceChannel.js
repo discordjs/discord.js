@@ -1,12 +1,12 @@
-const Constants = require("../util/Constants");
-const ServerChannel = require("./ServerChannel");
-const User = require("./User");
+const ServerChannel = require('./ServerChannel');
 
 class VoiceChannel extends ServerChannel {
 	constructor(client, server, data) {
 		super(client, server, data);
-		if(data)
+
+		if (data) {
 			this.setup(data);
+		}
 	}
 
 	setup(data) {

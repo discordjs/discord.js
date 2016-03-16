@@ -1,7 +1,7 @@
-const WebSocket = require("ws");
-const Constants = require("../../util/Constants");
-const zlib = require("zlib");
-const PacketManager = require("./Packets/PacketManager");
+const WebSocket = require('ws');
+const Constants = require('../../util/Constants');
+const zlib = require('zlib');
+const PacketManager = require('./Packets/PacketManager');
 
 class ClientWebSocket{
 	constructor(client, gateway, resolve, reject) {
@@ -26,7 +26,7 @@ class ClientWebSocket{
 
 		this.send({
 			op: 2,
-			d : data
+			d: data,
 		});
 	}
 
@@ -47,11 +47,13 @@ class ClientWebSocket{
 			if (event.binary) {
 				event.data = zlib.inflateSync(event.data).toString();
 			}
+
 			packet = JSON.parse(event.data);
 		} catch (e) {
 			this.eventError(e);
 			return;
 		}
+
 		this.packetManager.handle(packet);
 	}
 

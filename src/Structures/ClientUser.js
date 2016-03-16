@@ -1,5 +1,5 @@
-const Constants = require("../util/Constants");
-const User = require("./User");
+const Constants = require('../util/Constants');
+const User = require('./User');
 
 class ClientUser extends User {
 	constructor(client, data) {

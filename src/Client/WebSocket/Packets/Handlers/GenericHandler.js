@@ -1,9 +1,9 @@
 module.exports = class GenericHandler{
-	constructor(packetManager){
+	constructor(packetManager) {
 		this.manager = packetManager;
 	}
 
-	handle(packet){
+	handle(packet) {
 		return false;
 	}
-}
+};

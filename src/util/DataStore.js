@@ -1,4 +1,4 @@
-const Constants = require("./Constants");
+const Constants = require('./Constants');
 
 class DataStore{
 	constructor() {
@@ -6,9 +6,9 @@ class DataStore{
 	}
 
 	remove(where, object) {
-		where = "_" + where;
+		where = '_' + where;
 		let id;
-		if (typeof object === "string" || object instanceof String) {
+		if (typeof object === 'string' || object instanceof String) {
 			id = object;
 		} else {
 			id = object.id;
@@ -23,8 +23,8 @@ class DataStore{
 	}
 
 	has(where, object) {
-		where = "_" + where;
-		if (typeof object === "string" || object instanceof String) {
+		where = '_' + where;
+		if (typeof object === 'string' || object instanceof String) {
 			return this[where][object];
 		} else {
 			return this[where][object.id];
@@ -32,8 +32,8 @@ class DataStore{
 	}
 
 	get(where, key, value) {
-		where = "_" + where;
-		if (key === "id") {
+		where = '_' + where;
+		if (key === 'id') {
 			return this[where][value];
 		}
 
@@ -47,7 +47,7 @@ class DataStore{
 	}
 
 	add(where, object) {
-		where = "_" + where;
+		where = '_' + where;
 		if (this[where][object.id]) {
 			return this[where][object.id];
 		} else {

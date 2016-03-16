@@ -1,6 +1,6 @@
-const request = require("superagent");
-const Constants = require("../../util/Constants");
-const UserAgentManager = require("./UserAgentManager");
+const request = require('superagent');
+const Constants = require('../../util/Constants');
+const UserAgentManager = require('./UserAgentManager');
 
 class ClientAPI {
 
@@ -24,27 +24,27 @@ class ClientAPI {
 
 		if (auth) {
 			if (this.token) {
-				apiRequest.set("authorization", this.token);
+				apiRequest.set('authorization', this.token);
 			} else {
 				throw Constants.Errors.NO_TOKEN;
 			}
 		}
 
-		if(data){
+		if (data) {
 			apiRequest.send(data);
 		}
 
-		if(file){
-			apiRequest.attach("file", file.file, file.name);
+		if (file) {
+			apiRequest.attach('file', file.file, file.name);
 		}
 
-		apiRequest.set("User-Agent", this.userAgent);
+		apiRequest.set('User-Agent', this.userAgent);
 
 		return new Promise((resolve, reject) => {
 			apiRequest.end((err, res) => {
-				if(err){
+				if (err) {
 					reject(err);
-				}else{
+				}else {
 					resolve(res.body);
 				}
 			});
@@ -53,13 +53,13 @@ class ClientAPI {
 
 	async getGateway() {
 		return this
-			.makeRequest("get", Constants.Endpoints.GATEWAY, true)
+			.makeRequest('get', Constants.Endpoints.GATEWAY, true)
 			.then(res => res.url);
 	}
 
-	async login(email, password){
+	async login(email, password) {
 		return this
-			.makeRequest("post", Constants.Endpoints.LOGIN, false, {email, password})
+			.makeRequest('post', Constants.Endpoints.LOGIN, false, { email, password })
 			.then(data => this.token = data.token);
 	}
 }

@@ -1,11 +1,11 @@
-const Constants = require("../util/Constants");
-const ClientAPIManager = require("./API/ClientAPI");
-const ClientManager = require("./ClientManager");
-const ClientWebSocket = require("./WebSocket/ClientWebSocket");
-const ClientLogger = require("./ClientLogger");
-const ClientDataStore = require("./ClientDataStore");
-const EventEmitter = require("events").EventEmitter;
-const MergeDefault = require("../util/MergeDefault");
+const Constants = require('../util/Constants');
+const ClientAPIManager = require('./API/ClientAPI');
+const ClientManager = require('./ClientManager');
+const ClientWebSocket = require('./WebSocket/ClientWebSocket');
+const ClientLogger = require('./ClientLogger');
+const ClientDataStore = require('./ClientDataStore');
+const EventEmitter = require('events').EventEmitter;
+const MergeDefault = require('../util/MergeDefault');
 
 class Client extends EventEmitter{
 	constructor(options) {
