@@ -1,6 +1,6 @@
 {
   "preset": "airbnb",
-  "validateIndentation": null,
+  "validateIndentation": "\t",
   "maximumLineLength": 120,
   "maxErrors": 5000,
   "excludeFiles": []
