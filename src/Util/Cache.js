@@ -79,16 +79,14 @@ export default class Cache extends Array {
 	}
 
 	update(old, data) {
-		for(var i in this) {
-			if(this[i][this[discrimS]] === old[this[discrimS]]) {
-				for (var key in data) {
-					if (data.hasOwnProperty(key)) {
-						this[i][key] = data[key];
-					}
+		var obj = this[discrimCacheS][old[this[discrimS]]];
+        if (obj) {
+			for (var key in data) {
+				if (data.hasOwnProperty(key)) {
+					obj[key] = data[key];
 				}
-				this[discrimCacheS][data[this[discrimS]]] = this[i];
-				return this[i];
 			}
+			return obj;
 		}
 		return false;
 	}
@@ -102,7 +100,7 @@ export default class Cache extends Array {
 		for(var i in this) {
 			if(this[i][this[discrimS]] === data[this[discrimS]]) {
 				this.splice(i, 1);
-				return this[i];
+				return true;
 			}
 		}
 		return false;
