@@ -18,7 +18,7 @@ class ClientAPI {
 		this.userAgentManager.set(info);
 	}
 
-	async makeRequest(method, url, auth, data, file) {
+	makeRequest(method, url, auth, data, file) {
 		let apiRequest = request[method](url);
 
 		if (auth) {
@@ -50,29 +50,34 @@ class ClientAPI {
 		});
 	}
 
-	async getGateway() {
-		return this
-			.makeRequest('get', Constants.Endpoints.GATEWAY, true)
-			.then(res => res.url);
+	getGateway() {
+		return new Promise((resolve, reject) => {
+			this.makeRequest('get', Constants.Endpoints.GATEWAY, true)
+				.then(res => resolve(res.url))
+				.catch(reject);
+		});
 	}
 
-	async login() {
-		if (arguments.length === 1) {
-			let token = arguments[0];
+	login(login, password) {
+		return new Promise((resolve, reject) => {
+			if (!password) {
+				return this.makeRequest('post', Constants.Endpoints.LOGIN, false, { token: login })
+					.then(data => {
+						this.token = data.token;
 
-			return this
-				.makeRequest('post', Constants.Endpoints.LOGIN, false, { token })
-				.then(data => this.token = data.token);
-		} else if (arguments.length === 2) {
-			let email    = arguments[0],
-			    password = arguments[1];
+						resolve(this.token);
+					})
+					.catch(reject);
+			}
 
-			return this
-				.makeRequest('post', Constants.Endpoints.LOGIN, false, { email, password })
-				.then(data => this.token = data.token);
-		} else {
-			throw new Error('Must pass either a token, or an email and password.');
-		}
+			this.makeRequest('post', Constants.Endpoints.LOGIN, false, { email: login, password })
+				.then(data => {
+					this.token = data.token;
+
+					resolve(this.token);
+				})
+				.catch(reject);
+		});
 	}
 }
 

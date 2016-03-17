@@ -19,8 +19,12 @@ class ClientManager {
 		};
 	}
 
-	async registerTokenAndConnect(token) {
-		return this.connectToWebSocket(this.client.api.token = token);
+	registerTokenAndConnect(token) {
+		return new Promise((resolve, reject) => {
+			this.client.api.token = token;
+
+			this.connectToWebSocket().then(resolve).catch(reject);
+		});
 	}
 
 	disconnectedFromWebSocket() {
@@ -50,7 +54,7 @@ class ClientManager {
 		}, interval);
 	}
 
-	async connectToWebSocket(token) {
+	connectToWebSocket() {
 		return new Promise(async (resolve, reject) => {
 			// if there is no token, fail
 			if (!this.client.api.token) {
@@ -77,7 +81,6 @@ class ClientManager {
 			} catch (e) {
 				return reject(e);
 			}
-
 		});
 	}
 }

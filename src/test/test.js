@@ -8,7 +8,8 @@ function go() {
 		? client.login(process.env.ds_token)
 		: client.login(process.env.ds_email, process.env.ds_password);
 
-	login.then(ready).catch(console.log);
+	login.then(ready)
+		.catch(console.log);
 
 	client.on(Discord.Constants.Events.SERVER_CREATE, server => {
 		client.logger.log(TAG, 'ServerCreate ' + server.name);
@@ -26,7 +27,10 @@ function go() {
 
 function ready(token) {
 	client.logger.log(TAG, 'connected with token ' + token);
-	console.log(client.servers[0].channels[0]);
+
+	console.log(client.getServersByName('#LFG Bot Server'));
+
+	//console.log(client.servers[0].channels[0]);
 }
 
 function amount(prop) {
