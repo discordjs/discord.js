@@ -1,32 +1,32 @@
-const WebSocket = require('ws');
-const Constants = require('../../util/Constants');
-const zlib = require('zlib');
-const PacketManager = require('./Packets/PacketManager');
+const WebSocket     = require('ws'),
+      Constants     = require('../../util/Constants'),
+      zlib          = require('zlib'),
+      PacketManager = require('./Packets/PacketManager');
 
-class ClientWebSocket{
+class ClientWebSocket {
 	constructor(client, gateway, resolve, reject) {
 		this.client = client;
-		this.ws = new WebSocket(gateway);
+		this.ws     = new WebSocket(gateway);
 
 		this._resolve = resolve;
-		this._reject = reject;
+		this._reject  = reject;
 
 		// arrow functions to keep scope
-		this.ws.onerror = err => this.eventError(err);
-		this.ws.onopen = () => this.eventOpen();
-		this.ws.onclose = () => this.eventClose();
+		this.ws.onerror   = err => this.eventError(err);
+		this.ws.onopen    = () => this.eventOpen();
+		this.ws.onclose   = () => this.eventClose();
 		this.ws.onmessage = e => this.eventMessage(e);
 
 		this.packetManager = new PacketManager(this);
 	}
 
 	eventOpen() {
-		let data = this.client.options.ws;
+		let data   = this.client.options.ws;
 		data.token = this.client.token;
 
 		this.send({
 			op: 2,
-			d: data,
+			d:  data
 		});
 	}
 

@@ -1,14 +1,14 @@
-const Constants = require('../util/Constants');
-const DataStore = require('../util/DataStore');
-const User = require('./User');
-const TextChannel = require('./TextChannel');
-const VoiceChannel = require('./VoiceChannel');
+const Constants    = require('../util/Constants'),
+      DataStore    = require('../util/DataStore'),
+      User         = require('./User'),
+      TextChannel  = require('./TextChannel'),
+      VoiceChannel = require('./VoiceChannel');
 
 class ServerDataStore extends DataStore {
 	constructor() {
 		super();
 
-		this._members = {};
+		this._members  = {};
 		this._channels = {};
 	}
 
@@ -49,14 +49,14 @@ class Server {
 			}
 		}
 
-		this.name = data.name || this.name;
-		this.icon = data.icon || this.icon;
-		this.region = data.region || this.region;
-		this.afk_timeout = data.afk_timeout || this.afk_timeout;
-		this.member_count = data.member_count || this.member_count;
-		this.owner_id = data.owner_id || this.owner_id;
-		this.id = data.id || this.id;
-		this.joined_at = data.joined_at || this.joined_at;
+		this.name           = data.name || this.name;
+		this.icon           = data.icon || this.icon;
+		this.region         = data.region || this.region;
+		this.afk_timeout    = data.afk_timeout || this.afk_timeout;
+		this.member_count   = data.member_count || this.member_count;
+		this.owner_id       = data.owner_id || this.owner_id;
+		this.id             = data.id || this.id;
+		this.joined_at      = data.joined_at || this.joined_at;
 		this.afk_channel_id = data.afk_channel_id || this.afk_channel_id;
 
 		if (!this.store) {

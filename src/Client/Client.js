@@ -1,22 +1,22 @@
-const Constants = require('../util/Constants');
-const ClientAPIManager = require('./API/ClientAPI');
-const ClientManager = require('./ClientManager');
-const ClientWebSocket = require('./WebSocket/ClientWebSocket');
-const ClientLogger = require('./ClientLogger');
-const ClientDataStore = require('./ClientDataStore');
-const EventEmitter = require('events').EventEmitter;
-const MergeDefault = require('../util/MergeDefault');
+const Constants        = require('../util/Constants'),
+      ClientAPIManager = require('./API/ClientAPI'),
+      ClientManager    = require('./ClientManager'),
+      ClientWebSocket  = require('./WebSocket/ClientWebSocket'),
+      ClientLogger     = require('./ClientLogger'),
+      ClientDataStore  = require('./ClientDataStore'),
+      EventEmitter     = require('events').EventEmitter,
+      MergeDefault     = require('../util/MergeDefault');
 
-class Client extends EventEmitter{
+class Client extends EventEmitter {
 	constructor(options) {
 		super();
-		this.options = MergeDefault(Constants.DefaultOptions, options);
-		this.manager = new ClientManager(this);
-		this.api = new ClientAPIManager(this);
+		this.options   = MergeDefault(Constants.DefaultOptions, options);
+		this.manager   = new ClientManager(this);
+		this.api       = new ClientAPIManager(this);
 		this.websocket = null;
-		this.logger = new ClientLogger(this);
-		this.store = new ClientDataStore(this);
-		this.user = null;
+		this.logger    = new ClientLogger(this);
+		this.store     = new ClientDataStore(this);
+		this.user      = null;
 	}
 
 	get token() {

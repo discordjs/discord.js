@@ -1,4 +1,3 @@
-const Constants = require('../util/Constants');
 const User = require('./User');
 
 class ClientUser extends User {
@@ -12,7 +11,7 @@ class ClientUser extends User {
 	setup(data) {
 		super.setup(data);
 		this.verified = data.verified || this.verified;
-		this.email = data.email || this.email;
+		this.email    = data.email || this.email;
 	}
 }
 

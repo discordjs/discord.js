@@ -1,2 +1,4 @@
-export const Client = require('./Client/Client');
-export const Constants = require('./util/Constants');
+module.exports = {
+	Client:    require('./Client/Client'),
+	Constants: require('./util/Constants')
+};

@@ -1,11 +1,10 @@
-const request = require('superagent');
-const Constants = require('../../util/Constants');
-const UserAgentManager = require('./UserAgentManager');
+const request          = require('superagent'),
+      Constants        = require('../../util/Constants'),
+      UserAgentManager = require('./UserAgentManager');
 
 class ClientAPI {
-
 	constructor(client) {
-		this.client = client;
+		this.client           = client;
 		this.userAgentManager = new UserAgentManager(this);
 
 		this.token = null;
@@ -44,7 +43,7 @@ class ClientAPI {
 			apiRequest.end((err, res) => {
 				if (err) {
 					reject(err);
-				}else {
+				} else {
 					resolve(res.body);
 				}
 			});
@@ -59,7 +58,7 @@ class ClientAPI {
 
 	async login(email, password) {
 		return this
-			.makeRequest('post', Constants.Endpoints.LOGIN, false, { email, password })
+			.makeRequest('post', Constants.Endpoints.LOGIN, false, {email, password})
 			.then(data => this.token = data.token);
 	}
 }

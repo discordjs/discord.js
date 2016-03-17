@@ -1,13 +1,9 @@
 'use strict';
-const Discord = require('../');
-const client = new Discord.Client({
-	logging: {
-		enabled: true,
-	},
-});
-const TAG = 'testscript';
+const Discord = require('../'),
+      client  = new Discord.Client({logging: {enabled: true}}),
+      TAG     = 'testscript';
 
-async function go() {
+function go() {
 	client.login(process.env.ds_email, process.env.ds_password)
 		.then(ready)
 		.catch(console.log);

@@ -1,4 +1,3 @@
-const Constants = require('../util/Constants');
 const DataStore = require('../util/DataStore');
 
 class ClientDataStore extends DataStore{

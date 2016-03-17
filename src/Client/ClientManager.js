@@ -4,18 +4,18 @@
  * shutdown of it
  */
 
-const Constants = require('../util/Constants');
-const ClientWebSocket = require('./WebSocket/ClientWebSocket');
-const TAG = 'manager';
+const Constants       = require('../util/Constants'),
+      ClientWebSocket = require('./WebSocket/ClientWebSocket'),
+      TAG             = 'manager';
 
 class ClientManager {
 	constructor(client) {
-		this.client = client;
-		this.state = Constants.ConnectionState.NOT_STARTED;
-		this.gateway = null;
+		this.client    = client;
+		this.state     = Constants.ConnectionState.NOT_STARTED;
+		this.gateway   = null;
 		this.intervals = {
 			keepAlive: null,
-			other: [],
+			other:     [],
 		};
 	}
 
@@ -42,7 +42,7 @@ class ClientManager {
 			if (this.client.websocket) {
 				this.client.websocket.send({
 					op: 1,
-					d: Date.now(),
+					d:  Date.now(),
 				});
 			} else {
 				clearInterval(this.intervals.keepAlive);
