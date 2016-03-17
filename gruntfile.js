@@ -7,7 +7,6 @@ module.exports = function(grunt) {
 		// define source files and their destinations
 		babel: {
 			options: {
-				loose: "all",
 				compact: !grunt.option('dev')
 			},
 			dist: {

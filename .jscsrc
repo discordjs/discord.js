@@ -3,5 +3,8 @@
   "validateIndentation": "\t",
   "maximumLineLength": 120,
   "maxErrors": 5000,
+  "disallowMultipleVarDecl": false,
+  "disallowSpacesInsideObjectBrackets": false,
+  "disallowMixedSpacesAndTabs": false,
   "excludeFiles": []
 }
