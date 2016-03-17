@@ -1,12 +1,14 @@
 'use strict';
 const Discord = require('../'),
-      client  = new Discord.Client({logging: {enabled: true}}),
+      client  = new Discord.Client({ logging: { enabled: true } }),
       TAG     = 'testscript';
 
 function go() {
-	client.login(process.env.ds_email, process.env.ds_password)
-		.then(ready)
-		.catch(console.log);
+	let login = process.env.ds_token
+		? client.login(process.env.ds_token)
+		: client.login(process.env.ds_email, process.env.ds_password);
+
+	login.then(ready).catch(console.log);
 
 	client.on(Discord.Constants.Events.SERVER_CREATE, server => {
 		client.logger.log(TAG, 'ServerCreate ' + server.name);

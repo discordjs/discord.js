@@ -1,4 +1,4 @@
 module.exports = {
 	Client:    require('./Client/Client'),
-	Constants: require('./util/Constants')
+	Constants: require('./util/Constants'),
 };

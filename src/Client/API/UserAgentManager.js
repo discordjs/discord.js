@@ -5,7 +5,7 @@ class UserAgentManager {
 		this.clientAPI = clientAPI;
 		this._userAgent = {
 			url: 'https://github.com/hydrabolt/discord.js',
-			version: Constants.Package.version
+			version: Constants.Package.version,
 		};
 	}
 

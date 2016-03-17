@@ -56,10 +56,23 @@ class ClientAPI {
 			.then(res => res.url);
 	}
 
-	async login(email, password) {
-		return this
-			.makeRequest('post', Constants.Endpoints.LOGIN, false, {email, password})
-			.then(data => this.token = data.token);
+	async login() {
+		if (arguments.length === 1) {
+			let token = arguments[0];
+
+			return this
+				.makeRequest('post', Constants.Endpoints.LOGIN, false, { token })
+				.then(data => this.token = data.token);
+		} else if (arguments.length === 2) {
+			let email    = arguments[0],
+			    password = arguments[1];
+
+			return this
+				.makeRequest('post', Constants.Endpoints.LOGIN, false, { email, password })
+				.then(data => this.token = data.token);
+		} else {
+			throw new Error('Must pass either a token, or an email and password.');
+		}
 	}
 }
 

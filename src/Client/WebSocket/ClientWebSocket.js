@@ -26,7 +26,7 @@ class ClientWebSocket {
 
 		this.send({
 			op: 2,
-			d:  data
+			d:  data,
 		});
 	}
 
