@@ -1,4 +1,5 @@
 const Permissions = require('../util/Constants').Permissions,
+      Callback    = require('../util/Callback'),
       DefaultRole = [
 	      Permissions.createInstantInvite,
 	      Permissions.readMessages,
@@ -24,19 +25,17 @@ class Role {
 	}
 
 	setup(data) {
-		this.position    = data.position || -1;
-		this.permissions = data.permissions || (data.name === "@everyone" ? DefaultRole : 0 );
-		this.name        = data.name || "@everyone";
-		this.managed     = data.managed || false;
 		this.id          = data.id;
-		this.hoist       = data.hoist || false;
+		this.name        = data.name || "@everyone";
 		this.color       = data.color || 0;
+		this.hoist       = data.hoist || false;
+		this.managed     = data.managed || false;
+		this.position    = data.position || -1;
+		this.permissions = data.permissions || (this.name === "@everyone" ? DefaultRole : 0 );
 	}
 
 	serialize(explicit) {
-		explicit = explicit === undefined ? false : explicit;
-
-		var hp = (perm) => this.hasPermission(perm, explicit);
+		let hp = (perm) => this.hasPermission(perm, explicit === undefined ? false : explicit);
 
 		return {
 			// general
@@ -66,8 +65,6 @@ class Role {
 	}
 
 	hasPermission(perm, explicit) {
-		explicit = explicit === undefined ? false : explicit;
-
 		if (!perm) {
 			return false;
 		}
@@ -76,12 +73,13 @@ class Role {
 			perm = Permissions[perm];
 		}
 
-		if (!explicit) { // implicit permissions allowed
+		if (explicit === undefined || !explicit) { // implicit permissions allowed
 			if (!!(this.permissions & Permissions.manageRoles)) {
 				// manageRoles allowed, they have all permissions
 				return true;
 			}
 		}
+
 		// e.g.
 		// !!(36953089 & Permissions.manageRoles) = not allowed to manage roles
 		// !!(36953089 & (1 << 21)) = voice speak allowed
@@ -122,6 +120,43 @@ class Role {
 		}
 
 		return "#" + val;
+	}
+
+
+	delete(callback) {
+		return new Promise((resolve, reject) => {
+			Callback.handle(this.server.deleteRole(this.client, this), resolve, reject, callback);
+		});
+	}
+
+	edit(data, callback) {
+		return new Promise((resolve, reject) => {
+			// Update the data inside `this`, and then hit the endpoint with the new data
+		});
+	}
+
+	update(data, callback) {
+		return this.edit(data, callback);
+	}
+
+	addUser(user, callback) {
+		return new Promise((resolve, reject) => {
+			Callback.handle(this.server.addMemberToRole(user, this), resolve, reject, callback);
+		});
+	}
+
+	addMember(member, callback) {
+		return this.addUser(member, callback)
+	}
+
+	removeUser(user, callback) {
+		return new Promise((resolve, reject) => {
+			Callback.handle(this.server.removeUserFromRole(user, this), resolve, reject, callback);
+		});
+	}
+
+	removeMember(member, callback) {
+		return this.removeUser(member, callback);
 	}
 }
 
