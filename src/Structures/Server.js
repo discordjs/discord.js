@@ -61,7 +61,7 @@ class Server {
 
 			if (data.roles) {
 				for (let role of data.roles) {
-					this.store.add('roles', new Role(this.client, role));
+					this.store.add('roles', new Role(this.client, this, role));
 				}
 			}
 		}

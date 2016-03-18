@@ -25,7 +25,7 @@ function time() {
 	    h   = prettify(now.getHours()),
 	    m   = prettify(now.getMinutes()),
 	    s   = prettify(now.getSeconds());
-	
+
 	return `${h}:${m}:${s}`;
 }
 

@@ -68,6 +68,34 @@ const Errors = {
 	),
 };
 
+const Permissions = {
+	// general
+	createInstantInvite: 1 << 0,
+	kickMembers:         1 << 1,
+	banMembers:          1 << 2,
+	manageRoles:         1 << 3,
+	managePermissions:   1 << 3,
+	manageChannels:      1 << 4,
+	manageChannel:       1 << 4,
+	manageServer:        1 << 5,
+	// text
+	readMessages:        1 << 10,
+	sendMessages:        1 << 11,
+	sendTTSMessages:     1 << 12,
+	manageMessages:      1 << 13,
+	embedLinks:          1 << 14,
+	attachFiles:         1 << 15,
+	readMessageHistory:  1 << 16,
+	mentionEveryone:     1 << 17,
+	// voice
+	voiceConnect:        1 << 20,
+	voiceSpeak:          1 << 21,
+	voiceMuteMembers:    1 << 22,
+	voiceDeafenMembers:  1 << 23,
+	voiceMoveMembers:    1 << 24,
+	voiceUseVAD:         1 << 25
+};
+
 const Events = {
 	READY:        'ready',
 	DISCONNECTED: 'disconnected',
@@ -93,4 +121,5 @@ module.exports = {
 	Errors:          Errors,
 	Events:          Events,
 	Package:         Package,
+	Permissions:     Permissions,
 };
