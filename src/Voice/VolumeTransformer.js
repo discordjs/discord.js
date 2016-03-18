@@ -1,5 +1,8 @@
 const Transform = require('stream').Transform;
 
+/**
+ * @see https://github.com/reneraab/pcm-volume/blob/master/index.js Inspired by this script
+ */
 class Volume extends Transform {
 	constructor(volume) {
 		super();
