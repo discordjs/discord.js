@@ -26,6 +26,7 @@
   "homepage": "https://github.com/hydrabolt/discord.js#readme",
   "dependencies": {
     "superagent": "^1.8.0",
+    "tweetnacl": "^0.14.1",
     "unpipe": "^1.0.0",
     "ws": "^1.0.1"
   },

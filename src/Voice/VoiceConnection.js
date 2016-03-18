@@ -17,6 +17,9 @@ import StreamIntent from "./StreamIntent";
 import EventEmitter from "events";
 import unpipe from "unpipe";
 
+const MODE_xsalsa20_poly1305 = "xsalsa20_poly1305";
+const MODE_plain = "plain";
+
 export default class VoiceConnection extends EventEmitter {
 	constructor(channel, client, session, token, server, endpoint) {
 		super();
@@ -39,6 +42,10 @@ export default class VoiceConnection extends EventEmitter {
 		this.KAI = null;
 		this.timestamp = 0;
 		this.sequence = 0;
+
+		this.mode = null;
+		this.secret = null;
+
 		this.volume = new VolumeTransformer();
 		this.init();
 	}
@@ -196,7 +203,7 @@ export default class VoiceConnection extends EventEmitter {
 			}
 
 			var buffer = self.encoder.opusBuffer(rawbuffer);
-			var packet = new VoicePacket(buffer, sequence, timestamp, self.vWSData.ssrc);
+			var packet = new VoicePacket(buffer, sequence, timestamp, self.vWSData.ssrc, self.secret);
 			return self.sendPacket(packet, callback);
 
 		} catch (e) {
@@ -314,6 +321,13 @@ export default class VoiceConnection extends EventEmitter {
 					}
 					discordPort = msg.readUIntLE(msg.length - 2, 2).toString(10);
 
+					var modes = self.vWSData.modes;
+					var mode = MODE_xsalsa20_poly1305;
+					if (modes.indexOf(MODE_xsalsa20_poly1305) < 0) {
+						mode = MODE_plain;
+						self.client.emit("debug", "Encrypted mode not reported as supported by the server, using 'plain'");
+					}
+
 					vWS.send(JSON.stringify({
 						"op": 1,
 						"d": {
@@ -321,7 +335,7 @@ export default class VoiceConnection extends EventEmitter {
 							"data": {
 								"address": discordIP,
 								"port": Number(discordPort),
-								"mode": self.vWSData.modes[0] //Plain
+								"mode": mode
 							}
 						}
 					}));
@@ -365,6 +379,13 @@ export default class VoiceConnection extends EventEmitter {
 						});
 						break;
 					case 4:
+						if (data.d.secret_key && data.d.secret_key.length > 0) {
+							const buffer = new ArrayBuffer(data.d.secret_key.length);
+							self.secret = new Uint8Array(buffer);
+							for (let i = 0; i < this.secret.length; i++) {
+								self.secret[i] = data.d.secret_key[i];
+							}
+						}
 
 						self.ready = true;
 						self.mode = data.d.mode;

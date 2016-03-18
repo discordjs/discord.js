@@ -1,10 +1,17 @@
 "use strict";
 
-export default class VoicePacket {
-	constructor(data, sequence, time, ssrc){
+import nacl from "tweetnacl";
 
-		var audioBuffer = data,
-			returnBuffer = new Buffer(audioBuffer.length + 12);
+const nonce = new Buffer(24);
+nonce.fill(0);
+
+export default class VoicePacket {
+	constructor(data, sequence, time, ssrc, secret){
+		var mac = secret ? 16 : 0;
+		var packetLength = data.length + 12 + mac;
+
+		var audioBuffer = data;
+		var returnBuffer = new Buffer(packetLength);
 
 		returnBuffer.fill(0);
 		returnBuffer[0] = 0x80;
@@ -14,7 +21,13 @@ export default class VoicePacket {
 		returnBuffer.writeUIntBE(time, 4, 4);
 		returnBuffer.writeUIntBE(ssrc, 8, 4);
 
-		for (var i=0; i<audioBuffer.length; i++) {
+		if (secret) {
+			// copy first 12 bytes
+			returnBuffer.copy(nonce, 0, 0, 12);
+			audioBuffer = nacl.secretbox(data, nonce, secret);
+		}
+
+		for (var i = 0; i < audioBuffer.length; i++) {
 			returnBuffer[i + 12] = audioBuffer[i];
 		}
 
