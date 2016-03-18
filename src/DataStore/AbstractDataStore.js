@@ -1,8 +1,10 @@
-const Constants = require('./Constants');
+const values = require('object.values');
 
-class DataStore{
+class AbstractDataStore {
 	constructor() {
-
+		if (this.constructor === AbstractDataStore) {
+			throw new Error("Can't instantiate abstract class!");
+		}
 	}
 
 	remove(where, object) {
@@ -20,6 +22,10 @@ class DataStore{
 		} else {
 			return false;
 		}
+	}
+
+	addProperty(name) {
+		this['_' + name] = {};
 	}
 
 	has(where, object) {
@@ -54,6 +60,10 @@ class DataStore{
 			return this[where][object.id] = object;
 		}
 	}
+
+	getAll(where) {
+		return values(this['_' + where]);
+	}
 }
 
-module.exports = DataStore;
+module.exports = AbstractDataStore;

@@ -55,7 +55,7 @@ class ClientManager {
 	}
 
 	connectToWebSocket() {
-		return new Promise(async (resolve, reject) => {
+		return new Promise((resolve, reject) => {
 			// if there is no token, fail
 			if (!this.client.api.token) {
 				throw Constants.Errors.NO_TOKEN;
@@ -75,9 +75,13 @@ class ClientManager {
 
 			try {
 				this.client.logger.log(TAG, 'finding gateway');
-				this.gateway = await this.client.api.getGateway();
-				this.client.logger.log(TAG, 'connecting to gateway ' + this.gateway);
-				this.client.websocket = new ClientWebSocket(this.client, this.gateway, resolve, reject);
+
+				this.client.api.getGateway()
+					.then(url => {
+						this.gateway = url;
+						this.client.logger.log(TAG, 'connecting to gateway ' + this.gateway);
+						this.client.websocket = new ClientWebSocket(this.client, this.gateway, resolve, reject);
+					});
 			} catch (e) {
 				return reject(e);
 			}

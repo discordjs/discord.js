@@ -28,7 +28,10 @@ function go() {
 function ready(token) {
 	client.logger.log(TAG, 'connected with token ' + token);
 
-	console.log(client.getServersByName('#LFG Bot Server'));
+	let server = client.getServersByName(process.argv[2])[0];
+
+	console.log("Server: ", server);
+	console.log("Roles: ", server.roles.map(role => role.name));
 
 	//console.log(client.servers[0].channels[0]);
 }

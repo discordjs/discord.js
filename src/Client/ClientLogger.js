@@ -1,6 +1,6 @@
 const Constants = require('../util/Constants');
 
-class ClientLogger{
+class ClientLogger {
 	constructor(client) {
 		this.client = client;
 	}
@@ -21,10 +21,11 @@ function prettify(n) {
 }
 
 function time() {
-	let now = new Date();
-	let h = prettify(now.getHours());
-	let m = prettify(now.getMinutes());
-	let s = prettify(now.getSeconds());
+	var now = new Date(),
+	    h   = prettify(now.getHours()),
+	    m   = prettify(now.getMinutes()),
+	    s   = prettify(now.getSeconds());
+	
 	return `${h}:${m}:${s}`;
 }
 

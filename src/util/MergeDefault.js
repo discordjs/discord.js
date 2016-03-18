@@ -5,7 +5,7 @@ module.exports = function merge(def, given) {
 
 	given = given || {};
 
-	for (let key in def) {
+	for (var key in def) {
 		if (!given.hasOwnProperty(key)) {
 			given[key] = def[key];
 		} else if (given[key] === Object(given[key])) {

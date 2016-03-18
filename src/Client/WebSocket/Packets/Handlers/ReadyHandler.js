@@ -14,7 +14,7 @@ class ReadyHandler extends GenericHandler {
 		this.client.user = this.client.store.add('users', new ClientUser(this.client, data.user));
 
 		for (let server of data.guilds) {
-			let srv = this.client.store.add('servers', new Server(this.client, server));
+			this.client.store.add('servers', new Server(this.client, server));
 		}
 
 		this.client.manager.setStateConnected();

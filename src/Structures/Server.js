@@ -1,25 +1,8 @@
-const Constants    = require('../util/Constants'),
-      DataStore    = require('../util/DataStore'),
-      User         = require('./User'),
-      TextChannel  = require('./TextChannel'),
-      VoiceChannel = require('./VoiceChannel');
-
-class ServerDataStore extends DataStore {
-	constructor() {
-		super();
-
-		this._members  = {};
-		this._channels = {};
-	}
-
-	get members() {
-		return Object.values(this._members);
-	}
-
-	get channels() {
-		return Object.values(this._channels);
-	}
-}
+const ServerDataStore = require('../DataStore/ServerDataStore'),
+      User            = require('./User'),
+      Role            = require('./Role'),
+      TextChannel     = require('./TextChannel'),
+      VoiceChannel    = require('./VoiceChannel');
 
 class Server {
 	constructor(client, data) {
@@ -75,6 +58,12 @@ class Server {
 					this.addChannel(channel);
 				}
 			}
+
+			if (data.roles) {
+				for (let role of data.roles) {
+					this.store.add('roles', new Role(this.client, role));
+				}
+			}
 		}
 	}
 
@@ -88,6 +77,10 @@ class Server {
 
 	get channels() {
 		return this.store.channels;
+	}
+
+	get roles() {
+		return this.store.roles;
 	}
 }
 

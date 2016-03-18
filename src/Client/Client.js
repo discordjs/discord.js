@@ -2,7 +2,7 @@ const Constants        = require('../util/Constants'),
       ClientAPIManager = require('./API/ClientAPI'),
       ClientManager    = require('./ClientManager'),
       ClientLogger     = require('./ClientLogger'),
-      ClientDataStore  = require('./ClientDataStore'),
+      ClientDataStore  = require('../DataStore/ClientDataStore'),
       EventEmitter     = require('events').EventEmitter,
       MergeDefault     = require('../util/MergeDefault');
 
