@@ -1,5 +1,5 @@
 'use strict';
-const Discord = require('../'),
+const Discord = require('../src'),
       client  = new Discord.Client({ logging: { enabled: true } }),
       TAG     = 'testscript';
 
