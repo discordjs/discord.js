@@ -1005,19 +1005,18 @@ export default class InternalClient {
 
 	//def updateDetails
 	updateDetails(data) {
-		if (!this.email && !data.email) {
-			return this.apiRequest("patch", Endpoints.ME, true, {
-				avatar: this.resolver.resolveToBase64(data.avatar) || this.user.avatar,
-				username: data.username || this.user.username
-			});
-		}
-		return this.apiRequest("patch", Endpoints.ME, true, {
+		var options = {
 			avatar: this.resolver.resolveToBase64(data.avatar) || this.user.avatar,
-			email: data.email || this.email,
-			new_password: data.newPassword || null,
-			password: data.password || this.password,
 			username: data.username || this.user.username
-		});
+		}
+
+		if (this.email || data.email) {
+			options.email = data.email || this.email;
+			options.new_password = data.newPassword || null;
+			options.password = data.password || this.password;
+		}
+
+		return this.apiRequest("patch", Endpoints.ME, true, options);
 	}
 
 	//def setAvatar
