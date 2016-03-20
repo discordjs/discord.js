@@ -881,7 +881,7 @@ export default class InternalClient {
 	overwritePermissions(channel, role, updated) {
 		return this.resolver.resolveChannel(channel)
 		.then(channel => {
-			if (channel instanceof ServerChannel) {
+			if (!channel instanceof ServerChannel) {
 				return Promise.reject(new Error("Not a server channel"));
 			}
 
@@ -890,18 +890,18 @@ export default class InternalClient {
 				deny: 0
 			};
 
+			if (role instanceof String || typeof role === "string") {
+				role = this.resolver.resolveUser(role) || this.resolver.resolveRole(role);
+			}
+
 			if (role instanceof User) {
 				data.id = role.id;
 				data.type = "member";
-			} else {
-				role = this.resolver.resolveRole(role);
-
-				if (!(role instanceof Role)) {
-					return Promise.reject(new Error("Role could not be resolved"));
-				}
-
+			} else if (role instanceof Role) {
 				data.id = role.id;
 				data.type = "role";
+			} else {
+				return Promise.reject(new Error("Role could not be resolved"));
 			}
 
 			var previousOverwrite = channel.permissionOverwrites.get("id", data.id);
@@ -912,12 +912,15 @@ export default class InternalClient {
 			}
 
 			for (var perm in updated) {
-				if (updated[perm]) {
+				if (updated[perm] === true) {
 					data.allow |= (Permissions[perm] || 0);
 					data.deny &= ~(Permissions[perm] || 0);
-				} else {
+				} else if (updated[perm] === false) {
 					data.allow &= ~(Permissions[perm] || 0);
 					data.deny |= (Permissions[perm] || 0);
+				} else {
+					data.allow &= ~(Permissions[perm] || 0);
+					data.deny &= ~(Permissions[perm] || 0);
 				}
 			}
 
@@ -1285,7 +1288,7 @@ export default class InternalClient {
 
 							for (var user of server.members) {
 								var found = false;
-								for (var server of self.servers) {
+								for (var s of self.servers) {
 									if (s.members.get("id", user.id)) {
 										found = true;
 										break;
@@ -1470,7 +1473,7 @@ export default class InternalClient {
 							server.members.remove(user);
 							server.memberCount--;
 							var found = false;
-							for (var server of self.servers) {
+							for (var s of self.servers) {
 								if (s.members.get("id", user.id)) {
 									found = true;
 									break;
