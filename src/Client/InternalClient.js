@@ -1006,7 +1006,10 @@ export default class InternalClient {
 	//def updateDetails
 	updateDetails(data) {
 		if (!this.email && !data.email) {
-			throw new Error("Can't use updateDetails because only a token has been used for login!");
+			return this.apiRequest("patch", Endpoints.ME, true, {
+				avatar: this.resolver.resolveToBase64(data.avatar) || this.user.avatar,
+				username: data.username || this.user.username
+			});
 		}
 		return this.apiRequest("patch", Endpoints.ME, true, {
 			avatar: this.resolver.resolveToBase64(data.avatar) || this.user.avatar,
