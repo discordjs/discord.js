@@ -12,6 +12,7 @@ import Resolver from "./Resolver/Resolver";
 
 import User from "../Structures/User";
 import Channel from "../Structures/Channel";
+import ServerChannel from "../Structures/ServerChannel";
 import TextChannel from "../Structures/TextChannel";
 import VoiceChannel from "../Structures/VoiceChannel";
 import PMChannel from "../Structures/PMChannel";
@@ -880,43 +881,41 @@ export default class InternalClient {
 	overwritePermissions(channel, role, updated) {
 		return this.resolver.resolveChannel(channel)
 		.then(channel => {
-			var user;
-			if (role instanceof User) {
-				user = role;
-			} else {
-				role = this.resolver.resolveRole(role);
+			if (channel instanceof ServerChannel) {
+				return Promise.reject(new Error("Not a server channel"));
 			}
 
-			var data = {};
-			data.allow = 0;
-			data.deny = 0;
+			var data = {
+				allow: 0,
+				deny: 0
+			};
 
-			updated.allow = updated.allow || [];
-			updated.deny = updated.deny || [];
-
-			if (role instanceof Role) {
+			if (role instanceof User) {
 				data.id = role.id;
-				data.type = "role";
-			} else if (user) {
-				data.id = user.id;
 				data.type = "member";
 			} else {
-				throw new Error("role incorrect");
+				role = this.resolver.resolveRole(role);
+
+				if (!(role instanceof Role)) {
+					return Promise.reject(new Error("Role could not be resolved"));
+				}
+
+				data.id = role.id;
+				data.type = "role";
+			}
+
+			var previousOverwrite = channel.permissionOverwrites.get("id", data.id);
+
+			if (previousOverwrite) {
+				data.allow |= previousOverwrite.allow;
+				data.deny |= previousOverwrite.deny;
 			}
 
 			for (var perm in updated) {
 				if (updated[perm]) {
-					if (perm instanceof String || typeof perm === "string") {
-						data.allow |= (Permissions[perm] || 0);
-					} else {
-						data.allow |= perm;
-					}
+					data.allow |= (Permissions[perm] || 0);
 				} else {
-					if (perm instanceof String || typeof perm === "string") {
-						data.deny |= (Permissions[perm] || 0);
-					} else {
-						data.deny |= perm;
-					}
+					data.deny |= (Permissions[perm] || 0);
 				}
 			}
 
