@@ -34,9 +34,9 @@ export default class ServerChannel extends Channel{
 			var roleOverwrites = [], memberOverwrites = [];
 
 			this.permissionOverwrites.forEach((overwrite) => {
-				if(overwrite.type === "member" && overwrite.id === user.id){
+				if (overwrite.type === "member" && overwrite.id === user.id) {
 					memberOverwrites.push(overwrite);
-				}else if(overwrite.type === "role" && overwrite.id in userRolesID){
+				} else if (overwrite.type === "role" && ~userRolesID.indexOf(overwrite.id)) {
 					roleOverwrites.push(overwrite);
 				}
 			});
