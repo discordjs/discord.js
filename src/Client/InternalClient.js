@@ -1005,6 +1005,9 @@ export default class InternalClient {
 
 	//def updateDetails
 	updateDetails(data) {
+		if (!this.bot && !(this.email || data.email)) 
+			throw new Error("Must provide email since a token was used to login");
+
 		var options = {
 			avatar: this.resolver.resolveToBase64(data.avatar) || this.user.avatar,
 			username: data.username || this.user.username
