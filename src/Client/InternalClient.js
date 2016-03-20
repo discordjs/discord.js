@@ -1387,6 +1387,7 @@ export default class InternalClient {
 									self.channels.update(channel, chan);
 								} else {
 									//VOICE CHANNEL
+									data.members = channel.members;
 									var chan = new VoiceChannel(data, client, channel.server);
 									client.emit("channelUpdated", channel, chan);
 									channel.server.channels.update(channel, chan);
