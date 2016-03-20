@@ -914,7 +914,9 @@ export default class InternalClient {
 			for (var perm in updated) {
 				if (updated[perm]) {
 					data.allow |= (Permissions[perm] || 0);
+					data.deny &= ~(Permissions[perm] || 0);
 				} else {
+					data.allow &= ~(Permissions[perm] || 0);
 					data.deny |= (Permissions[perm] || 0);
 				}
 			}
