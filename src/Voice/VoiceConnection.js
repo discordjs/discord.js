@@ -47,6 +47,7 @@ export default class VoiceConnection extends EventEmitter {
 		this.secret = null;
 
 		this.volume = new VolumeTransformer();
+		this.paused = false;
 		this.init();
 	}
 
@@ -105,6 +106,11 @@ export default class VoiceConnection extends EventEmitter {
 		this.playingIntent = retStream;
 
 		function send() {
+			if(self.paused) {
+				startTime += Date.now() - (startTime + count * length);
+				setTimeout(send, length);
+				return;
+			}
 			if (!self.playingIntent || !self.playing) {
 				self.setSpeaking(false);
 				retStream.emit("end");
@@ -281,7 +287,7 @@ export default class VoiceConnection extends EventEmitter {
 		}
         if (typeof options !== "object") {
             options = {};
-        } 
+        }
 		options.volume = options.volume !== undefined ? options.volume : this.getVolume();
 		return new Promise((resolve, reject) => {
 			this.encoder
@@ -420,5 +426,17 @@ export default class VoiceConnection extends EventEmitter {
 	unmute() {
 		this.setVolume(this.lastVolume);
 		this.lastVolume = undefined;
+	}
+
+	pause() {
+		this.paused = true;
+		this.setSpeaking(false);
+		this.playingIntent.emit("pause");
+	}
+
+	resume() {
+		this.paused = false;
+		this.setSpeaking(true);
+		this.playingIntent.emit("resume");
 	}
 }
