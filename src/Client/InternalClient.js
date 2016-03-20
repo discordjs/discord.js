@@ -758,7 +758,11 @@ export default class InternalClient {
 
 		var roledata = role.server.rolesOf(member);
 		if (roledata) {
-			return roledata.find(r => r.id == role.id);
+			for (var r of roledata) {
+				if (r.id == role.id) {
+					return r;
+				}
+			}
 		}
 		return null;
 	}
@@ -1274,7 +1278,14 @@ export default class InternalClient {
 							self.servers.remove(server);
 
 							for (var user of server.members) {
-								if (!self.servers.find((s) => !!s.members.get("id", user.id))) {
+								var found = false;
+								for (var server of self.servers) {
+									if (s.members.get("id", user.id)) {
+										found = true;
+										break;
+									}
+								}
+								if (!found) {
 									self.users.remove(user);
 								}
 							}
@@ -1452,7 +1463,14 @@ export default class InternalClient {
 							server.memberMap[data.user.id] = null;
 							server.members.remove(user);
 							server.memberCount--;
-							if (!self.servers.find((s) => !!s.members.get("id", user.id))) {
+							var found = false;
+							for (var server of self.servers) {
+								if (s.members.get("id", user.id)) {
+									found = true;
+									break;
+								}
+							}
+							if (!found) {
 								self.users.remove(user);
 							}
 						} else {
