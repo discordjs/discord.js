@@ -62,7 +62,7 @@ export default class VoiceConnection extends EventEmitter {
 			{
 				op : 4,
 				d : {
-					guild_id : null,
+					guild_id : this.server.id,
 					channel_id : null,
 					self_mute : true,
 					self_deaf : false
