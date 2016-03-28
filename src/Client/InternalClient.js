@@ -1013,7 +1013,7 @@ export default class InternalClient {
 
 	//def updateDetails
 	updateDetails(data) {
-		if (!this.bot && !(this.email || data.email)) 
+		if (!this.user.bot && !(this.email || data.email)) 
 			throw new Error("Must provide email since a token was used to login");
 
 		var options = {
