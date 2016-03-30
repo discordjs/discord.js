@@ -109,6 +109,9 @@ export default class InternalClient {
 
 		// creates 4 caches with discriminators based on ID
 		this.users = new Cache();
+		this.friends = new Cache();
+		this.outgoing_friend_requests = new Cache();
+		this.incoming_friend_requests = new Cache();
 		this.channels = new Cache();
 		this.servers = new Cache();
 		this.private_channels = new Cache();
@@ -1013,7 +1016,7 @@ export default class InternalClient {
 
 	//def updateDetails
 	updateDetails(data) {
-		if (!this.user.bot && !(this.email || data.email)) 
+		if (!this.user.bot && !(this.email || data.email))
 			throw new Error("Must provide email since a token was used to login");
 
 		var options = {
@@ -1098,6 +1101,35 @@ export default class InternalClient {
 	//def updateChannel
 	updateChannel(chann, data) {
 		return this.setChannelNameAndTopic(chann, data.name, data.topic);
+	}
+
+	//def addFriend
+	addFriend(user) {
+		if (this.user.bot) return Promise.reject(new Error("user is a bot, bot's do not have friends support"));
+
+		var id;
+		if (user instanceof String || typeof user === "string")
+			id = user;
+		else if (user instanceof User) {
+			user = this.resolver.resolveUser(user);
+			id = user.id
+		} else {
+			if (user.username && user.discriminator) // add by username and discriminator (pass in an object)
+				return this.apiRequest("put", Endpoints.FRIENDS, true, user);
+			else
+				return Promise.reject("invalid user")
+		}
+
+		return this.apiRequest("put", `${Endpoints.FRIENDS}/${id}`, true, {});
+	}
+
+	//def removeFriend
+	removeFriend(user) {
+		if (this.user.bot) return Promise.reject(new Error("user is a bot, bot's do not have friends support"));
+
+		user = this.resolver.resolveUser(user);
+
+		return this.apiRequest("delete", `${Endpoints.FRIENDS}/${user.id}`, true);
 	}
 
 	//def ack
@@ -1190,6 +1222,23 @@ export default class InternalClient {
 					data.private_channels.forEach(pm => {
 						self.private_channels.add(new PMChannel(pm, client));
 					});
+					if (!data.user.bot) { // bots dont have friends
+						data.relationships.forEach(friend => {
+							if (friend.type === 1) { // is a friend
+								self.friends.add(new User(friend.user, client));
+							} else if (friend.type === 3) { // incoming friend requests
+								self.incoming_friend_requests.add(new User(friend.user, client));
+							} else if (friend.type === 4) { // outgoing friend requests
+								self.outgoing_friend_requests.add(new User(friend.user, client));
+							} else {
+								client.emit("warn", "unknown friend type " + friend.type);
+							}
+						});
+					} else {
+						data.friends = null;
+						data.incoming_friend_requests = null;
+						data.outgoing_friend_requests = null;
+					}
 					self.state = ConnectionState.READY;
 
 					client.emit("debug", `ready packet took ${Date.now() - startTime}ms to process`);
@@ -1667,6 +1716,50 @@ export default class InternalClient {
 						client.emit("warn", "chunk update received but server not in cache");
 					}
 
+					break;
+				case PacketType.FRIEND_ADD:
+					if (data.type === 1) { // accepted/got accepted a friend request
+						var inUser = self.incoming_friend_requests.get("id", data.id);
+						if (inUser) {
+							// client accepted another user
+							self.incoming_friend_requests.remove(self.friends.add(new User(data.user, client)));
+							return;
+						}
+
+						var outUser = self.outgoing_friend_requests.get("id", data.id);
+						if (outUser) {
+							// another user accepted the client
+							self.outgoing_friend_requests.remove(self.friends.add(new User(data.user, client)));
+							client.emit("friendRequestAccepted", outUser);
+							return;
+						}
+					} else if (data.type === 3) {
+						// client received friend request
+						client.emit("friendRequestReceived", self.incoming_friend_requests.add(new User(data.user, client)));
+					} else if (data.type === 4) {
+						// client sent friend request
+						self.outgoing_friend_requests.add(new User(data.user, client));
+					}
+					break;
+				case PacketType.FRIEND_REMOVE:
+					var user = self.friends.get("id", data.id);
+					if (user) {
+						self.friends.remove(user);
+						client.emit("friendRemoved", user);
+						return;
+					}
+
+					user = self.incoming_friend_requests.get("id", data.id);
+					if (user) { // they rejected friend request
+						client.emit("friendRequestRejected", self.outgoing_friend_requests.remove(user));
+						return;
+					}
+
+					user = self.outgoing_friend_requests.get("id", data.id);
+					if (user) {// client cancelled friend request
+						self.incoming_friend_requests.remove(user);
+						return;
+					}
 					break;
 				default:
 					client.emit("unknown", packet);

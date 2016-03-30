@@ -116,6 +116,48 @@ export default class Client extends EventEmitter {
 	}
 
 	/**
+	 * The friends that the Client is aware of. Only available after `ready` event has been emitted.
+	 * @type {Cache<User>|null} a Cache of friend Users (or null if bot account)
+	 * @readonly
+	 * @example
+	 * // log names of the friends that the client is aware of
+	 * for(var user of client.friends){
+	 *     console.log(user.username);
+	 * }
+	 */
+	get friends() {
+		return this.internal.friends;
+	}
+
+	/**
+	 * The incoming friend requests that the Client is aware of. Only available after `ready` event has been emitted.
+	 * @type {Cache<User>|null} a Cache of incoming friend request Users (or null if bot account)
+	 * @readonly
+	 * @example
+	 * // log names of the incoming friend requests that the client is aware of
+	 * for(var user of client.incomingFriendRequests){
+	 *     console.log(user.username);
+	 * }
+	 */
+	get incomingFriendRequests() {
+		return this.internal.incoming_friend_requests;
+	}
+
+	/**
+	 * The outgoing friend requests that the Client is aware of. Only available after `ready` event has been emitted.
+	 * @type {Cache<User>} a Cache of outgoing friend request Users
+	 * @readonly
+	 * @example
+	 * // log names of the outgoing friend requests that the client is aware of
+	 * for(var user of client.outgoingFriendRequests){
+	 *     console.log(user.username);
+	 * }
+	 */
+	get outgoingFriendRequests() {
+		return this.internal.outgoing_friend_requests;
+	}
+
+	/**
 	 * The active voice connection of the Client, or null if not applicable. Only available after `ready` event has been emitted.
 	 * @type {VoiceConnection|null} the voice connection (if any).
 	 */
@@ -909,6 +951,18 @@ export default class Client extends EventEmitter {
 	// def leaveVoiceChannel
 	leaveVoiceChannel(callback = (/*err, {}*/) => { }) {
 		return this.internal.leaveVoiceChannel()
+			.then(dataCallback(callback), errorCallback(callback));
+	}
+
+	// def addFriend
+	addFriend(user, callback = (/*err, {}*/) => {}) {
+		return this.internal.addFriend(user)
+			.then(dataCallback(callback), errorCallback(callback));
+	}
+
+	// def removeFriend
+	removeFriend(user, callback = (/*err, {}*/) => {}) {
+		return this.internal.removeFriend(user)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
