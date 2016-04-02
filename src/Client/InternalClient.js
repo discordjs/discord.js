@@ -1013,7 +1013,7 @@ export default class InternalClient {
 
 	//def updateDetails
 	updateDetails(data) {
-		if (!this.user.bot && !(this.email || data.email)) 
+		if (!this.user.bot && !(this.email || data.email))
 			throw new Error("Must provide email since a token was used to login");
 
 		var options = {
@@ -1355,13 +1355,16 @@ export default class InternalClient {
 
 					break;
 				case PacketType.CHANNEL_DELETE:
-					var channel = self.channels.get("id", data.id);
+					var channel = self.channels.get("id", data.id) || self.private_channels.get("id", data.id);
 					if (channel) {
 
-						if (channel.server) // accounts for PMs
+						if (channel.server) { // accounts for PMs
 							channel.server.channels.remove(channel);
+							self.channels.remove(channel);
+						} else {
+							self.private_channels.remove(channel);
+						}
 
-						self.channels.remove(channel);
 						client.emit("channelDeleted", channel);
 
 					} else {
