@@ -17,6 +17,12 @@ class Volume extends Transform {
 		this._volume = value;
 	}
 
+	// Set the volume so that a value of 0.5 is half the perceived volume and
+	// 2.0 is double the perceived volume.
+	setVolumeLogarithmic(value) {
+		this.volume = Math.pow(value, 1.660964);
+	}
+
 	get multiplier() {
 		return this.volume;
 	}
