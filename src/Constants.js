@@ -32,7 +32,10 @@ export const Endpoints = {
 	CHANNEL_INVITES: (channelID) => `${Endpoints.CHANNEL(channelID) }/invites`,
 	CHANNEL_TYPING: (channelID) => `${Endpoints.CHANNEL(channelID) }/typing`,
 	CHANNEL_PERMISSIONS: (channelID) => `${Endpoints.CHANNEL(channelID) }/permissions`,
-	CHANNEL_MESSAGE: (channelID, messageID) => `${Endpoints.CHANNEL_MESSAGES(channelID)}/${messageID}`
+	CHANNEL_MESSAGE: (channelID, messageID) => `${Endpoints.CHANNEL_MESSAGES(channelID)}/${messageID}`,
+
+	// friends
+	FRIENDS: `${API}/users/@me/relationships`
 };
 
 export const Permissions = {
@@ -87,5 +90,7 @@ export const PacketType = {
 	SERVER_UPDATE : "GUILD_UPDATE",
 	TYPING : "TYPING_START",
 	USER_UPDATE : "USER_UPDATE",
-	VOICE_STATE_UPDATE : "VOICE_STATE_UPDATE"
+	VOICE_STATE_UPDATE : "VOICE_STATE_UPDATE",
+	FRIEND_ADD : "RELATIONSHIP_ADD",
+	FRIEND_REMOVE : "RELATIONSHIP_REMOVE"
 };
