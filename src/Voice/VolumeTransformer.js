@@ -18,7 +18,7 @@ class Volume extends Transform {
 	}
 
 	get multiplier() {
-		return Math.tan(this.volume);
+		return this.volume;
 	}
 
 	get() {
