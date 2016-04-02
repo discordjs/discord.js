@@ -26,7 +26,6 @@
   "homepage": "https://github.com/hydrabolt/discord.js#readme",
   "dependencies": {
     "superagent": "^1.8.0",
-    "tweetnacl": "^0.14.1",
     "unpipe": "^1.0.0",
     "ws": "^1.0.1"
   },
@@ -41,7 +40,8 @@
     "mocha": "^2.4.5"
   },
   "optionalDependencies": {
-    "node-opus": "^0.1.12"
+    "node-opus": "^0.1.12",
+    "tweetnacl": "^0.14.1"
   },
   "engines": {
     "node": ">=0.12.7"
