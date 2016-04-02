@@ -17,8 +17,19 @@ class Volume extends Transform {
 		this._volume = value;
 	}
 
+	// Set the volume so that a value of 0.5 is half the perceived volume and
+	// 2.0 is double the perceived volume.
+	setVolumeLogarithmic(value) {
+		this.volume = Math.pow(value, 1.660964);
+	}
+
+	// Set the volume to a value specified as decibels.
+	setVolumeDecibels(db) {
+		this.volume = Math.pow(10, db / 20);
+	}
+
 	get multiplier() {
-		return Math.tan(this.volume);
+		return this.volume;
 	}
 
 	get() {
