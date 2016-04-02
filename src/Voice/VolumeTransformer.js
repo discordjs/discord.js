@@ -23,6 +23,11 @@ class Volume extends Transform {
 		this.volume = Math.pow(value, 1.660964);
 	}
 
+	// Set the volume to a value specified as decibels.
+	setVolumeDecibels(db) {
+		this.volume = Math.pow(10, db / 20);
+	}
+
 	get multiplier() {
 		return this.volume;
 	}
