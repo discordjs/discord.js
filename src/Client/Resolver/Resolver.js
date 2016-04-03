@@ -97,7 +97,7 @@ export default class Resolver {
 		if (resource instanceof String || typeof resource === "string") {
 			var role = null;
 			for (var server of this.internal.servers) {
-				if (role = server.roles.find(r => r.id == resource)) {
+				if (role = server.roles.get("id", resource)) {
 					return role;
 				}
 			}
