@@ -762,6 +762,30 @@ export default class Client extends EventEmitter {
 		return this.internal.moveMember(user, channel)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
+	
+	// def muteMember
+	muteMember(user, server, callback = (/*err, {}*/) => { }) {
+		return this.internal.muteMember(user, server)
+		.then(dataCallback(callback), errorCallback(callback));
+	}
+
+	// def unmuteMember
+	unmuteMember(user, server, callback = (/*err, {}*/) => { }) {
+		return this.internal.unmuteMember(user, server)
+		.then(dataCallback(callback), errorCallback(callback));
+	}
+
+	// def deafenMember
+	deafenMember(user, server, callback = (/*err, {}*/) => { }) {
+		return this.internal.deafenMember(user, server)
+		.then(dataCallback(callback), errorCallback(callback));
+	}
+
+	// def undeafenMember
+	undeafenMember(user, server, callback = (/*err, {}*/) => { }) {
+		return this.internal.undeafenMember(user, server)
+		.then(dataCallback(callback), errorCallback(callback));
+	}
 
 	// def createRole
 	createRole(server, data = null, callback = (/*err, role*/) => { }) {
