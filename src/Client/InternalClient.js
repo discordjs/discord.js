@@ -654,6 +654,34 @@ export default class InternalClient {
 			}
 		});
 	}
+	
+	// def muteMember
+	muteMember(user, server) {
+		user = this.resolver.resolveUser(user);
+		server = this.resolver.resolveServer(server);
+		return this.apiRequest("patch", `${Endpoints.SERVER_MEMBERS(server.id)}/${user.id}`, true, { mute: true });
+	}
+	
+	// def unmuteMember
+	unmuteMember(user, server) {
+		user = this.resolver.resolveUser(user);
+		server = this.resolver.resolveServer(server);
+		return this.apiRequest("patch", `${Endpoints.SERVER_MEMBERS(server.id)}/${user.id}`, true, { mute: false });
+	}
+	
+	// def deafenMember
+	deafenMember(user, server) {
+		user = this.resolver.resolveUser(user);
+		server = this.resolver.resolveServer(server);
+		return this.apiRequest("patch", `${Endpoints.SERVER_MEMBERS(server.id)}/${user.id}`, true, { deaf: true });
+	}
+	
+	// def undeafenMember
+	undeafenMember(user, server) {
+		user = this.resolver.resolveUser(user);
+		server = this.resolver.resolveServer(server);
+		return this.apiRequest("patch", `${Endpoints.SERVER_MEMBERS(server.id)}/${user.id}`, true, { deaf: false });
+	}
 
 	// def createRole
 	createRole(server, data) {
