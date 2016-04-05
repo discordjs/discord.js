@@ -122,7 +122,7 @@ export default class InternalClient {
 			misc : []
 		};
 
-		this.voiceConnection = null;
+		this.voiceConnections = new Cache();
 		this.resolver = new Resolver(this);
 		this.readyTime = null;
 		this.messageAwaits = {};
@@ -143,7 +143,9 @@ export default class InternalClient {
 
 		this.cleanIntervals();
 
-		this.leaveVoiceChannel();
+		this.voiceConnections.forEach(vc => {
+			this.leaveVoiceChannel(vc);
+		});
 
 		if (this.client.options.revive && !forced) {
 			this.setup();
@@ -173,12 +175,45 @@ export default class InternalClient {
 	}
 
 	//def leaveVoiceChannel
-	leaveVoiceChannel() {
-		if (this.voiceConnection) {
-			this.voiceConnection.destroy();
-			this.voiceConnection = null;
+	leaveVoiceChannel(chann) {
+		if (this.user.bot) {
+			var leave = (connection) => {
+				return new Promise((resolve, reject) => {
+					connection.destroy();
+					this.voiceConnections.remove(connection);
+					resolve();
+				});
+			};
+
+			if (chann instanceof VoiceChannel) {
+				return this.resolver.resolveChannel(chann).then(channel => {
+					if (!channel) {
+						return Promise.reject(new Error("voice channel does not exist"));
+					}
+
+					if (channel.type !== 'voice') {
+						return Promise.reject(new Error("channel is not a voice channel!"));
+					}
+
+					var connection = this.voiceConnections.get("voiceChannel", channel);
+					if (!connection) {
+						return Promise.reject(new Error("not connected to that voice channel"));
+					}
+					return leave(connection);
+				});
+			} else if (chann instanceof VoiceConnection) {
+				return leave(chann);
+			} else {
+				return Promise.reject(new Error("invalid voice channel/connection to leave"))
+			}
+		} else {
+			// preserve old functionality for non-bots
+			if (this.voiceConnections[0]) {
+                this.voiceConnections[0].destroy();
+                this.voiceConnections.remove(this.voiceConnections[0])
+			}
+			return Promise.resolve();
 		}
-		return Promise.resolve();
 	}
 
 	//def awaitResponse
@@ -213,43 +248,60 @@ export default class InternalClient {
 				return Promise.reject(new Error("channel is not a voice channel!"));
 			}
 
-			return this.leaveVoiceChannel()
-			.then(() => {
+			var joinSendWS = () => {
+				this.sendWS({
+					op: 4,
+					d: {
+						"guild_id": channel.server.id,
+						"channel_id": channel.id,
+						"self_mute": false,
+						"self_deaf": false
+					}
+				});
+			}
+
+			var joinVoice = () => {
 				return new Promise((resolve, reject) => {
 					var session, token, server = channel.server, endpoint;
 
 					var check = m => {
 						var data = JSON.parse(m);
+						if (data.d.guild_id !== server.id) return // ensure it is the right server
+
 						if (data.t === "VOICE_STATE_UPDATE") {
 							session = data.d.session_id;
 						} else if (data.t === "VOICE_SERVER_UPDATE") {
 							token = data.d.token;
 							endpoint = data.d.endpoint;
-							var chan = this.voiceConnection = new VoiceConnection(
+							var chan = new VoiceConnection(
 								channel, this.client, session, token, server, endpoint
 							);
+							this.voiceConnections.add(chan);
 
 							chan.on("ready", () => resolve(chan));
 							chan.on("error", reject);
 
 							this.client.emit("debug", "removed temporary voice websocket listeners");
 							this.websocket.removeListener("message", check);
-
 						}
 					};
 
 					this.websocket.on("message", check);
-					this.sendWS({
-						op: 4,
-						d: {
-							"guild_id": server.id,
-							"channel_id": channel.id,
-							"self_mute": false,
-							"self_deaf": false
-						}
-					});
+					joinSendWS();
 				});
-			});
+			}
+
+			var existingServerConn = this.voiceConnections.get("server", channel.server); // same server connection
+			if (existingServerConn) {
+				joinSendWS(); // Just needs to update by sending via WS, movement in cache will be handled by global handler
+				return Promise.resolve(existingServerConn);
+			}
+
+			if (!this.user.bot && this.voiceConnections.length > 0) { // nonbot, one voiceconn only, just like last time just disconnect
+				return this.leaveVoiceChannel().then(joinVoice);
+			}
+
+			return joinVoice();
 		});
 	}
 
@@ -654,28 +706,28 @@ export default class InternalClient {
 			}
 		});
 	}
-	
+
 	// def muteMember
 	muteMember(user, server) {
 		user = this.resolver.resolveUser(user);
 		server = this.resolver.resolveServer(server);
 		return this.apiRequest("patch", `${Endpoints.SERVER_MEMBERS(server.id)}/${user.id}`, true, { mute: true });
 	}
-	
+
 	// def unmuteMember
 	unmuteMember(user, server) {
 		user = this.resolver.resolveUser(user);
 		server = this.resolver.resolveServer(server);
 		return this.apiRequest("patch", `${Endpoints.SERVER_MEMBERS(server.id)}/${user.id}`, true, { mute: false });
 	}
-	
+
 	// def deafenMember
 	deafenMember(user, server) {
 		user = this.resolver.resolveUser(user);
 		server = this.resolver.resolveServer(server);
 		return this.apiRequest("patch", `${Endpoints.SERVER_MEMBERS(server.id)}/${user.id}`, true, { deaf: true });
 	}
-	
+
 	// def undeafenMember
 	undeafenMember(user, server) {
 		user = this.resolver.resolveUser(user);
@@ -1692,6 +1744,7 @@ export default class InternalClient {
 				case PacketType.VOICE_STATE_UPDATE:
 					var user = self.users.get("id", data.user_id);
 					var server = self.servers.get("id", data.guild_id);
+					var connection = self.voiceConnections.get("server", server);
 
 					if (user && server) {
 
@@ -1710,6 +1763,15 @@ export default class InternalClient {
 
 					} else {
 						client.emit("warn", "voice state update but user or server not in cache");
+					}
+
+					if (connection) {
+						// existing connection, perhaps channel moved
+						if (connection.voiceChannel.id !== data.channel_id) {
+							// moved, update info
+							connection.voiceChannel = self.channels.get("id", data.channel_id);
+							client.emit("voiceMoved", connection.voiceChannel); // Moved to a new channel
+						}
 					}
 
 					break;
