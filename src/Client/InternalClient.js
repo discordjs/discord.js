@@ -246,6 +246,18 @@ export default class InternalClient {
 				return Promise.reject(new Error("channel is not a voice channel!"));
 			}
 
+			var joinSendWS = () => {
+				this.sendWS({
+					op: 4,
+					d: {
+						"guild_id": channel.server.id,
+						"channel_id": channel.id,
+						"self_mute": false,
+						"self_deaf": false
+					}
+				});
+			}
+
 			var joinVoice = new Promise((resolve, reject) => {
 				var session, token, server = channel.server, endpoint;
 
@@ -255,9 +267,6 @@ export default class InternalClient {
 
 					if (data.t === "VOICE_STATE_UPDATE") {
 						session = data.d.session_id;
-						if (existingServerConn && data.d.channel_id !== existingServerConn.voiceChannel.id) {
-							existingServerConn.voiceChannel = channel; // existing connection to that server, just channel changed. it is the same connection, just a different channel
-						}
 					} else if (data.t === "VOICE_SERVER_UPDATE") {
 						token = data.d.token;
 						endpoint = data.d.endpoint;
@@ -275,21 +284,15 @@ export default class InternalClient {
 				};
 
 				this.websocket.on("message", check);
-				this.sendWS({
-					op: 4,
-					d: {
-						"guild_id": server.id,
-						"channel_id": channel.id,
-						"self_mute": false,
-						"self_deaf": false
-					}
-				});
+				joinSendWS();
 			});
 
 			if (!this.user.bot && this.voiceConnections.length > 0) // nonbot, one voiceconn only, just like last time just disconnect
 				return this.leaveVoiceChannel(this.voiceConnections[0]).then(joinVoice);
 
 			var existingServerConn = this.voiceConnections.get("server", channel.server); // same server connection
+			if (existingServerConn)
+				joinSendWS(); // Just needs to update by sending via WS, movement in cache will be handled by global handler
 
 			return joinVoice;
 		});
@@ -1731,6 +1734,7 @@ export default class InternalClient {
 				case PacketType.VOICE_STATE_UPDATE:
 					var user = self.users.get("id", data.user_id);
 					var server = self.servers.get("id", data.guild_id);
+					var connection = self.voiceConnections.get("server", server);
 
 					if (user && server) {
 
@@ -1749,6 +1753,15 @@ export default class InternalClient {
 
 					} else {
 						client.emit("warn", "voice state update but user or server not in cache");
+					}
+
+					if (connection) {
+						// existing connection, perhaps channel moved
+						if (connection.voiceChannel.id !== data.channel_id) {
+							// moved, update info
+							connection.voiceChannel = self.channels.get("id", data.channel_id);
+							client.emit("voiceMoved", connection.voiceChannel); // Moved to a new channel
+						}
 					}
 
 					break;
