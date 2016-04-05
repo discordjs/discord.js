@@ -143,7 +143,9 @@ export default class InternalClient {
 
 		this.cleanIntervals();
 
-		this.leaveVoiceChannel();
+		this.voiceConnections.forEach(vc => {
+			this.leaveVoiceChannel(vc);
+		});
 
 		if (this.client.options.revive && !forced) {
 			this.setup();
@@ -208,7 +210,7 @@ export default class InternalClient {
 			// preserve old functionality for non-bots
 			if (this.voiceConnections[0]) {
                 this.voiceConnections[0].destroy();
-                this.voiceConnections = [];
+                this.voiceConnections.remove(this.voiceConnections[0])
 			}
 			return Promise.resolve();
 		}
@@ -258,43 +260,48 @@ export default class InternalClient {
 				});
 			}
 
-			var joinVoice = new Promise((resolve, reject) => {
-				var session, token, server = channel.server, endpoint;
+			var joinVoice = () => {
+				return new Promise((resolve, reject) => {
+					var session, token, server = channel.server, endpoint;
 
-				var check = m => {
-					var data = JSON.parse(m);
-					if (data.d.guild_id !== server.id) return // ensure it is the right server
+					var check = m => {
+						var data = JSON.parse(m);
+						if (data.d.guild_id !== server.id) return // ensure it is the right server
 
-					if (data.t === "VOICE_STATE_UPDATE") {
-						session = data.d.session_id;
-					} else if (data.t === "VOICE_SERVER_UPDATE") {
-						token = data.d.token;
-						endpoint = data.d.endpoint;
-						var chan = new VoiceConnection(
-							channel, this.client, session, token, server, endpoint
-						);
-						this.voiceConnections.add(chan);
+						if (data.t === "VOICE_STATE_UPDATE") {
+							session = data.d.session_id;
+						} else if (data.t === "VOICE_SERVER_UPDATE") {
+							token = data.d.token;
+							endpoint = data.d.endpoint;
+							var chan = new VoiceConnection(
+								channel, this.client, session, token, server, endpoint
+							);
+							this.voiceConnections.add(chan);
 
-						chan.on("ready", () => resolve(chan));
-						chan.on("error", reject);
+							chan.on("ready", () => resolve(chan));
+							chan.on("error", reject);
 
-						this.client.emit("debug", "removed temporary voice websocket listeners");
-						this.websocket.removeListener("message", check);
-					}
-				};
+							this.client.emit("debug", "removed temporary voice websocket listeners");
+							this.websocket.removeListener("message", check);
+						}
+					};
 
-				this.websocket.on("message", check);
-				joinSendWS();
-			});
-
-			if (!this.user.bot && this.voiceConnections.length > 0) // nonbot, one voiceconn only, just like last time just disconnect
-				return this.leaveVoiceChannel(this.voiceConnections[0]).then(joinVoice);
+					this.websocket.on("message", check);
+					joinSendWS();
+				});
+			}
 
 			var existingServerConn = this.voiceConnections.get("server", channel.server); // same server connection
-			if (existingServerConn)
+			if (existingServerConn) {
 				joinSendWS(); // Just needs to update by sending via WS, movement in cache will be handled by global handler
+				return Promise.resolve(existingServerConn);
+			}
 
-			return joinVoice;
+			if (!this.user.bot && this.voiceConnections.length > 0) { // nonbot, one voiceconn only, just like last time just disconnect
+				return this.leaveVoiceChannel().then(joinVoice);
+			}
+
+			return joinVoice();
 		});
 	}
 
