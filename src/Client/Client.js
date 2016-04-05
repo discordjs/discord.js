@@ -158,11 +158,11 @@ export default class Client extends EventEmitter {
 	}
 
 	/**
-	 * The active voice connection of the Client, or null if not applicable. Only available after `ready` event has been emitted.
-	 * @type {VoiceConnection|null} the voice connection (if any).
+	 * A cache of active voice connection of the Client, or null if not applicable. Only available after `ready` event has been emitted.
+	 * @type {Cache<VoiceConnection>} a Cache of Voice Connections
 	 */
-	get voiceConnection() {
-		return this.internal.voiceConnection;
+	get voiceConnections() {
+		return this.internal.voiceConnections;
 	}
 
 	/**
@@ -762,7 +762,7 @@ export default class Client extends EventEmitter {
 		return this.internal.moveMember(user, channel)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
-	
+
 	// def muteMember
 	muteMember(user, server, callback = (/*err, {}*/) => { }) {
 		return this.internal.muteMember(user, server)
@@ -973,8 +973,8 @@ export default class Client extends EventEmitter {
 	}
 
 	// def leaveVoiceChannel
-	leaveVoiceChannel(callback = (/*err, {}*/) => { }) {
-		return this.internal.leaveVoiceChannel()
+	leaveVoiceChannel(chann, callback = (/*err, {}*/) => { }) {
+		return this.internal.leaveVoiceChannel(chann)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
