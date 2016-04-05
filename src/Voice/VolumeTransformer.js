@@ -44,6 +44,13 @@ class Volume extends Transform {
 		let out = new Buffer(buffer.length);
 
 		for (let i = 0; i < buffer.length; i += 2) {
+			// Check whether the index is actually in range - sometimes it's possible
+			// that it skips ahead too far before the end condition of the for can
+			// kick in.
+			if (i >= buffer.length) {
+				break;
+			}
+
 			// Read Int16, multiple with multiplier and round down
 			//console.log(this.volume, this.multiplier, buffer.readInt16LE(i));
 			let uint = Math.floor(this.multiplier * buffer.readInt16LE(i));
