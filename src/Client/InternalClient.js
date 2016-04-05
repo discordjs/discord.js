@@ -1346,6 +1346,9 @@ export default class InternalClient {
 							server = new Server(data, client)
 							self.servers.add(server);
 							client.emit("serverCreated", server);
+							if (server.large && server.members.length < server.memberCount) {
+								this.sendWS({op: 8, d: {guild_id: server.id, query: "", limit: 0}});
+							}
 						} else {
 							client.emit("warn", "server was unavailable, could not create");
 						}
