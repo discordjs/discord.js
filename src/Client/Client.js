@@ -166,6 +166,14 @@ export default class Client extends EventEmitter {
 	}
 
 	/**
+	 * The first voice connection the bot has connected to. Available for backwards compatibility.
+	 * @type {VoiceConnection} first voice connection
+	 */
+	get voiceConnection() {
+		return this.internal.voiceConnection;
+	}
+
+	/**
 	 * Unix timestamp of when the Client first emitted the `ready `event. Only available after `ready` event has been emitted.
 	 * @type {Number} timestamp of ready time
 	 * @example

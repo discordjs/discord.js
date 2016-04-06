@@ -305,6 +305,12 @@ export default class InternalClient {
 		});
 	}
 
+	// Backwards-compatible utility getter method for the first voice connection
+	// Thanks to #q (@qeled) for suggesting this
+	get voiceConnection() {
+		return this.voiceConnections[0];
+	}
+
 	// def forceFetchUsers
 	forceFetchUsers() {
 		this.sendWS({
