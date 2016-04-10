@@ -180,7 +180,6 @@ export default class InternalClient {
 			var leave = (connection) => {
 				return new Promise((resolve, reject) => {
 					connection.destroy();
-					this.voiceConnections.remove(connection);
 					resolve();
 				});
 			};
@@ -210,7 +209,6 @@ export default class InternalClient {
 			// preserve old functionality for non-bots
 			if (this.voiceConnections[0]) {
                 this.voiceConnections[0].destroy();
-                this.voiceConnections.remove(this.voiceConnections[0])
 			}
 			return Promise.resolve();
 		}
