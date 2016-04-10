@@ -1321,9 +1321,9 @@ export default class InternalClient {
 							}
 						});
 					} else {
-						data.friends = null;
-						data.incoming_friend_requests = null;
-						data.outgoing_friend_requests = null;
+						self.friends = null;
+						self.incoming_friend_requests = null;
+						self.outgoing_friend_requests = null;
 					}
 					self.state = ConnectionState.READY;
 
