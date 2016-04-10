@@ -69,6 +69,7 @@ export default class VoiceConnection extends EventEmitter {
 				}
 			}
 		);
+		this.client.internal.voiceConnections.remove(this);
 	}
 
 	stopPlaying() {
