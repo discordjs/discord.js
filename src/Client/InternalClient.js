@@ -1321,9 +1321,9 @@ export default class InternalClient {
 							}
 						});
 					} else {
-						data.friends = null;
-						data.incoming_friend_requests = null;
-						data.outgoing_friend_requests = null;
+						self.friends = null;
+						self.incoming_friend_requests = null;
+						self.outgoing_friend_requests = null;
 					}
 					self.state = ConnectionState.READY;
 
@@ -1771,9 +1771,10 @@ export default class InternalClient {
 						client.emit("warn", "voice state update but user or server not in cache");
 					}
 
-					if (connection) {
+					if (user.id === self.user.id) { // only for detecting self user movements for connections.
+						var connection = self.voiceConnections.get("server", server);
 						// existing connection, perhaps channel moved
-						if (connection.voiceChannel.id !== data.channel_id) {
+						if (connection && connection.voiceChannel.id !== data.channel_id) {
 							// moved, update info
 							connection.voiceChannel = self.channels.get("id", data.channel_id);
 							client.emit("voiceMoved", connection.voiceChannel); // Moved to a new channel
