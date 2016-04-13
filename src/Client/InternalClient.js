@@ -52,14 +52,15 @@ export default class InternalClient {
 	}
 
 	apiRequest(method, url, useAuth, data, file) {
-		if(this.retryAfters[url]) {
-			if(this.retryAfters[url] < Date.now()) {
-				delete this.retryAfters[url];
+        var endpoint = url.replace(/\/[0-9]+/g, "/:id");
+		if(this.retryAfters[endpoint]) {
+			if(this.retryAfters[endpoint] < Date.now()) {
+				delete this.retryAfters[endpoint];
 			} else {
 				return new Promise((resolve, reject) => {
 					setTimeout(() => {
 						this.apiRequest.apply(this, arguments).then(resolve).catch(reject);
-					}, this.retryAfters[url] - Date.now());
+					}, this.retryAfters[endpoint] - Date.now());
 				});
 			}
 		}
@@ -86,11 +87,11 @@ export default class InternalClient {
 
 						if (data.headers["retry-after"] || data.headers["Retry-After"]) {
 							var toWait = data.headers["retry-after"] || data.headers["Retry-After"];
-							if(!this.retryAfters[url])
-								this.retryAfters[url] = Date.now() + parseInt(toWait);
+							if(!this.retryAfters[endpoint])
+								this.retryAfters[endpoint] = Date.now() + parseInt(toWait);
 							setTimeout(() => {
 								this.apiRequest.apply(this, arguments).then(resolve).catch(reject);
-							}, this.retryAfters[url] - Date.now());
+							}, this.retryAfters[endpoint] - Date.now());
 						} else {
 							return reject(error);
 						}
