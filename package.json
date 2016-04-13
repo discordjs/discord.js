@@ -1,6 +1,6 @@
 {
   "name": "discord.js",
-  "version": "6.1.0",
+  "version": "7.0.0",
   "description": "A way to interface with the Discord API",
   "main": "./entrypoint.js",
   "scripts": {
@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/hydrabolt/discord.js#readme",
   "dependencies": {
-    "superagent": "^1.8.0",
+    "superagent": "^1.8.3",
     "unpipe": "^1.0.0",
     "ws": "^1.0.1"
   },
@@ -41,7 +41,7 @@
   },
   "optionalDependencies": {
     "node-opus": "^0.1.12",
-    "tweetnacl": "^0.14.1"
+    "tweetnacl": "^0.14.3"
   },
   "engines": {
     "node": ">=0.12.7"
