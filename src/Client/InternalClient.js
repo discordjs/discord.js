@@ -611,7 +611,7 @@ export default class InternalClient {
 	}
 
 	// def sendFile
-	sendFile(where, _file, name) {
+	sendFile(where, _file, name, content) {
 		if (!name) {
 			if (_file instanceof String || typeof _file === "string") {
 				name = require("path").basename(_file);
@@ -629,7 +629,8 @@ export default class InternalClient {
 			.then(file =>
 				this.apiRequest("post", Endpoints.CHANNEL_MESSAGES(channel.id), true, null, {
 					name,
-					file
+					file,
+                    content
 				}).then(res => channel.messages.add(new Message(res, channel, this.client)))
 			)
 		);
