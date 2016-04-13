@@ -114,6 +114,7 @@ export default class InternalClient {
 		this.incoming_friend_requests = new Cache();
 		this.channels = new Cache();
 		this.servers = new Cache();
+		this.unavailableServers = new Cache();
 		this.private_channels = new Cache();
 
 		this.intervals = {
@@ -126,10 +127,6 @@ export default class InternalClient {
 		this.resolver = new Resolver(this);
 		this.readyTime = null;
 		this.messageAwaits = {};
-
-		this.forceFetchCount = {};
-		this.forceFetchQueue = [];
-		this.forceFetchLength = 1;
 
 		this.tokenCacher = new TokenCacher(this.client);
 		this.tokenCacher.init(0);
@@ -350,6 +347,18 @@ export default class InternalClient {
 				this.readyTime = Date.now();
 				this.client.emit("ready");
 			}
+		}
+	}
+
+	restartServerCreateTimeout() {
+		if(this.guildCreateTimeout) {
+			clearTimeout(this.guildCreateTimeout);
+			this.guildCreateTimeout = null;
+		}
+		if(!this.readyTime) {
+			this.guildCreateTimeout = setTimeout(() => {
+				this.checkReady();
+			}, 1000);
 		}
 	}
 
@@ -1317,14 +1326,20 @@ export default class InternalClient {
 					self.intervals.kai = setInterval(() => self.sendWS({ op: 1, d: Date.now() }), data.heartbeat_interval);
 
 					self.user = self.users.add(new User(data.user, client));
+
+					this.forceFetchCount = {};
+					this.forceFetchQueue = [];
+					this.forceFetchLength = 1;
+
 					data.guilds.forEach(server => {
 						if (!server.unavailable) {
 							server = self.servers.add(new Server(server, client));
-							if(self.options.forceFetchUsers && server.members && server.members.length < server.memberCount) {
+							if(self.client.options.forceFetchUsers && server.members && server.members.length < server.memberCount) {
 								self.getGuildMembers(server.id, Math.ceil(server.memberCount / 1000));
 							}
 						} else {
 							client.emit("warn", "server " + server.id + " was unavailable, could not create (ready)");
+							self.unavailableServers.add(server);
 						}
 					});
 					data.private_channels.forEach(pm => {
@@ -1352,7 +1367,8 @@ export default class InternalClient {
 					client.emit("debug", `ready packet took ${Date.now() - startTime}ms to process`);
 					client.emit("debug", `ready with ${self.servers.length} servers, ${self.channels.length} channels and ${self.users.length} users cached.`);
 
-					self.checkReady();
+					self.restartServerCreateTimeout();
+
 					break;
 
 				case PacketType.MESSAGE_CREATE:
@@ -1419,9 +1435,14 @@ export default class InternalClient {
 						if (!data.unavailable) {
 							server = self.servers.add(new Server(data, client));
 							client.emit("serverCreated", server);
-							if (self.options.forceFetchUsers && server.large && server.members.length < server.memberCount) {
+							if (self.client.options.forceFetchUsers && server.large && server.members.length < server.memberCount) {
 								self.getGuildMembers(server.id, Math.ceil(server.memberCount / 1000));
 							}
+							var unavailable = self.unavailableServers.get("id", server.id);
+							if(unavailable) {
+								self.unavailableServers.remove(unavailable);
+							}
+							self.restartServerCreateTimeout();
 						} else {
 							client.emit("warn", "server was unavailable, could not create");
 						}
@@ -1817,12 +1838,12 @@ export default class InternalClient {
 							server.members.add(self.users.add(new User(user.user, client)));
 						}
 
-						if(this.forceFetchCount.hasOwnProperty(guild.id)) {
-							if(this.forceFetchCount[guild.id] <= 1) {
-								delete this.forceFetchCount[guild.id];
-								this.checkReady();
+						if(self.forceFetchCount.hasOwnProperty(server.id)) {
+							if(self.forceFetchCount[server.id] <= 1) {
+								delete self.forceFetchCount[server.id];
+								self.checkReady();
 							} else {
-								this.forceFetchCount[guild.id]--;
+								self.forceFetchCount[server.id]--;
 							}
 						}
 
