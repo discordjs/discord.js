@@ -313,23 +313,25 @@ export default class InternalClient {
 		return this.voiceConnections[0];
 	}
 
-	getGuildMembers(guildID, chunkCount) {
-		this.forceFetchCount[guildID] = chunkCount;
-		if(this.forceFetchLength + 3 + guildID.length > 4082) { // 4096 - '{"op":8,"d":[]}'.length + 1 for lazy comma offset
+	getGuildMembers(serverID, chunkCount) {
+		this.forceFetchCount[serverID] = chunkCount;
+		if(this.forceFetchLength + 3 + serverID.length > 4082) { // 4096 - '{"op":8,"d":[]}'.length + 1 for lazy comma offset
 			this.requestGuildMembers(this.forceFetchQueue);
-			this.forceFetchQueue = [guildID];
-			this.forceFetchLength = 1 + guildID.length + 3;
+			this.forceFetchQueue = [serverID];
+			this.forceFetchLength = 1 + serverID.length + 3;
 		} else {
-			this.forceFetchQueue.push(guildID);
-			this.forceFetchLength += guildID.length + 3;
+			this.forceFetchQueue.push(serverID);
+			this.forceFetchLength += serverID.length + 3;
 		}
 	}
 
-	requestGuildMembers(guildID, query, limit) {
-		this.sendWS(OPCodes.GET_GUILD_MEMBERS, {
-			guild_id: guildID,
-			query: query || "",
-			limit: limit || 0
+	requestGuildMembers(serverID, query, limit) {
+		this.sendWS({op: 8,
+			d: {
+				guild_id: serverID,
+				query: query || "",
+				limit: limit || 0
+			}
 		});
 	}
 
@@ -346,7 +348,7 @@ export default class InternalClient {
 					}
 				}
 				this.readyTime = Date.now();
-				client.emit("ready");
+				this.client.emit("ready");
 			}
 		}
 	}
@@ -1322,7 +1324,7 @@ export default class InternalClient {
 								self.getGuildMembers(server.id, Math.ceil(server.memberCount / 1000));
 							}
 						} else {
-							client.emit("warn", "server " + guild.id + " was unavailable, could not create (ready)");
+							client.emit("warn", "server " + server.id + " was unavailable, could not create (ready)");
 						}
 					});
 					data.private_channels.forEach(pm => {
@@ -1815,33 +1817,14 @@ export default class InternalClient {
 							server.members.add(self.users.add(new User(user.user, client)));
 						}
 
-xxxx
-xxxx
-xxxx
-xxxx
-xxxx
-xxxx
-xxxx
-xxxx
-xxxx
-xxxx
-xxxx
-xxxx
-xxxx
-xxxx
-xxxx
-xxxx
-xxxx
-xxxx
-xxxx
-xxxx
-xxxx
-xxxx
-xxxx
-xxxx
-xxxx
-xxxx
-xxxx
+						if(this.forceFetchCount.hasOwnProperty(guild.id)) {
+							if(this.forceFetchCount[guild.id] <= 1) {
+								delete this.forceFetchCount[guild.id];
+								this.checkReady();
+							} else {
+								this.forceFetchCount[guild.id]--;
+							}
+						}
 
 						client.emit("debug", (new Date().getTime() - testtime) + "ms for " + data.members.length + " user chunk for server with id " + server.id);
 
