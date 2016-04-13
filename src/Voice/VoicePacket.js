@@ -1,12 +1,20 @@
 "use strict";
 
-import nacl from "tweetnacl";
+var nacl;
+try {
+	nacl = require("tweetnacl");
+} catch (e) {
+	// no tweetnacl!
+}
 
 const nonce = new Buffer(24);
 nonce.fill(0);
 
 export default class VoicePacket {
 	constructor(data, sequence, time, ssrc, secret){
+		if(!nacl) {
+			throw new Error("tweetnacl not found! Perhaps you didn't install it.");
+		}
 		var mac = secret ? 16 : 0;
 		var packetLength = data.length + 12 + mac;
 
