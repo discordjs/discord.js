@@ -492,7 +492,7 @@ Joins a Voice Channel to begin transmitting audio
 leaveVoiceChannel(channel, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Leaves the currently connected Voice Channel if connected
+Leaves the specified Voice Channel if connected
 
 - **channel** - A `VoiceChannel Resolvable`_
 - **callback** - `function` that takes the following:
