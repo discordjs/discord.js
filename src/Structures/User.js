@@ -12,7 +12,7 @@ export default class User extends Equality{
 		this.discriminator = data.discriminator;
 		this.id = data.id;
 		this.avatar = data.avatar;
-		this.bot = data.bot;
+		this.bot = !!data.bot;
 		this.status = data.status || "offline";
 		this.game = data.game || null;
 		this.typing = {

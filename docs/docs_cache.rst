@@ -23,7 +23,7 @@ Functions
 get(key, value)
 ~~~~~~~~~~~~~~~
 
-Returns a contained object where ``object[key] == value``. Returns the first object found that matches the criteria.
+Returns a contained object where ``object[key] == value``. Also works if value is a regex or a function. Returns the first object found that matches the criteria.
 
 getAll(key, value)
 ~~~~~~~~~~~~~~~~~~

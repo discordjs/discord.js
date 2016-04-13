@@ -9,6 +9,38 @@ This page contains documentation on the `Discord.Client` class. This should be u
 
 --------
 
+Parameters
+----------
+
+Client takes an options object, and supports the following properties.
+
+forceFetchUsers
+~~~~~~~~~~~~~~~
+
+Make the library get all the users in all guilds, and delay the ready event until all users are received. This will slow down ready times and increase initial network traffic.
+
+compress
+~~~~~~~~
+
+Have Discord send a compressed READY packet.
+
+largeThreshold
+~~~~~~~~~~~~~~
+
+Set a custom large_threshold (the max number of offline members Discord sends in the initial GUILD_CREATE). The maximum is 250.
+
+rateLimitAsError
+~~~~~~~~~~~~~~~~
+
+Have the lib throw a rejection Promise/callback when being ratelimited, instead of auto-retrying.
+
+maxCachedMessages
+~~~~~~~~~~~~~~~~~
+
+The maximum number of messages to cache per channel. Decreasing this leads to more missing messageUpdated/messageDeleted events, increasing this leads to more RAM usage, especially over time
+
+--------
+
 Attributes
 ----------
 
@@ -32,10 +64,20 @@ servers
 
 A Cache_ of Server_ objects that the client has cached.
 
+unavailableServers
+~~~~~~~~~~~~~~~~~~
+
+A Cache_ of Server_ objects that the client has cached that are unavailable.
+
+voiceConnections
+~~~~~~~~~~~~~~~
+
+A Cache_ of VoiceConnection_ objects that the client is in.
+
 voiceConnection
 ~~~~~~~~~~~~~~~
 
-A VoiceConnection_ object that is the current voice connection (if any).
+Returns a VoiceConnection_ object, is an alias to voiceConnections[0].
 
 readyTime
 ~~~~~~~~~
@@ -447,11 +489,12 @@ Joins a Voice Channel to begin transmitting audio
     - **error** - error if any occurred
     - **connection** - VoiceConnection_, the created Voice Connection.
 
-leaveVoiceChannel(`callback`)
+leaveVoiceChannel(channel, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Leaves the currently connected Voice Channel if connected
 
+- **channel** - A `VoiceChannel Resolvable`_
 - **callback** - `function` that takes the following:
     - **error** - error if any occurred
 
@@ -564,10 +607,45 @@ Overwrites the permissions of a role or a user in a channel
         "attachFiles" : true
     }
 
-forceFetchUsers()
-~~~~~~~~~~~~~~~~~
+muteMember(user, server, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-As of 12/02/2016, the API will now only return the online users in a server if it has more than 250 users. If you want to be aware of ALL users in a server, use this function. As of yet, it doesn't return anything and users are just silently and gradually added to the relevant servers.
+Server-mutes a member.
+
+- **user** - A `User Resolvable`_ to mute
+- **server** - A `Server Resolvable`_ to mute the user in
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred.
+
+unmuteMember(user, server, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Server-unmutes a member.
+
+- **user** - A `User Resolvable`_ to unmute
+- **server** - A `Server Resolvable`_ to unmute the user in
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred.
+
+deafenMember(user, server, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Server-deafens a member.
+
+- **user** - A `User Resolvable`_ to deafen
+- **server** - A `Server Resolvable`_ to deafen the user in
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred.
+
+undeafenMember(user, server, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Server-undeafens a member.
+
+- **user** - A `User Resolvable`_ to undeafen
+- **server** - A `Server Resolvable`_ to undeafen the user in
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred.
 
 Events
 ------

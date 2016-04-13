@@ -72,6 +72,11 @@ avatarURL
 
 A valid URL to the user's avatar if they have one, otherwise null.
 
+bot
+~~~
+
+A boolean that represents if the user is an official OAuth bot account or not.
+
 voiceChannel
 ~~~~~~~~~~~~
 

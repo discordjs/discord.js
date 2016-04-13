@@ -17,6 +17,7 @@ A Channel Resolvable allows:
 - Message_
 - User_ (in some instances)
 - String of Channel ID
+- String of User ID
 
 File Resolvable
 ------------------
@@ -41,6 +42,7 @@ Voice Channel Resolvable
 A Voice Channel Resolvable allows:
 
 - VoiceChannel_
+- Voice Channel ID
 
 Message Resolvable
 ------------------

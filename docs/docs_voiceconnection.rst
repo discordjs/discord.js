@@ -109,6 +109,16 @@ but you may want to spoof it or manually disable it.
 
  - `value` - `true` or `false`: whether or not you want the bot to show as speaking
 
+setVolume(volume)
+~~~~~~~~~~~~~
+
+Sets the current volume of the connecion. 1.0 is normal, 0.5 is half as loud, 2.0 is twice as loud.
+
+getVolume()
+~~~~~~~~~~~~~
+
+Returns the current volume. 1.0 is normal, 0.5 is half as loud, 2.0 is twice as loud.
+
 stopPlaying()
 ~~~~~~~~~~~~~
 
