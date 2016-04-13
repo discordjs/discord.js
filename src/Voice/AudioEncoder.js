@@ -63,7 +63,6 @@ export default class AudioEncoder {
 			this.volume = new VolumeTransformer(options.volume);
 
 			var enc = cpoc.spawn(this.getCommand(), [
-				'-hide_banner',
 				'-i', '-',
 				'-f', 's16le',
 				'-ar', '48000',
@@ -110,7 +109,6 @@ export default class AudioEncoder {
 			this.volume = new VolumeTransformer(options.volume);
 
 			var enc = cpoc.spawn(this.getCommand(), [
-				'-hide_banner',
 				'-i', file,
 				'-f', 's16le',
 				'-ar', '48000',
@@ -155,7 +153,6 @@ export default class AudioEncoder {
 
 			// add options discord.js needs
 			var options = ffmpegOptions.concat([
-				'-hide_banner',
 				'-f', 's16le',
 				'-ar', '48000',
 				'-ac', 2,

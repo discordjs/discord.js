@@ -52,6 +52,17 @@ export default class InternalClient {
 	}
 
 	apiRequest(method, url, useAuth, data, file) {
+		if(this.retryAfters[url]) {
+			if(this.retryAfters[url] < Date.now()) {
+				delete this.retryAfters[url];
+			} else {
+				return new Promise((resolve, reject) => {
+					setTimeout(() => {
+						this.apiRequest.apply(this, arguments).then(resolve).catch(reject);
+					}, this.retryAfters[url] - Date.now());
+				});
+			}
+		}
 		let ret = request[method](url);
 		if (useAuth) {
 			ret.set("authorization", this.token);
@@ -75,10 +86,11 @@ export default class InternalClient {
 
 						if (data.headers["retry-after"] || data.headers["Retry-After"]) {
 							var toWait = data.headers["retry-after"] || data.headers["Retry-After"];
-							toWait = parseInt(toWait);
+							if(!this.retryAfters[url])
+								this.retryAfters[url] = Date.now() + parseInt(toWait);
 							setTimeout(() => {
 								this.apiRequest.apply(this, arguments).then(resolve).catch(reject);
-							}, toWait);
+							}, this.retryAfters[url] - Date.now());
 						} else {
 							return reject(error);
 						}
@@ -127,6 +139,7 @@ export default class InternalClient {
 		this.resolver = new Resolver(this);
 		this.readyTime = null;
 		this.messageAwaits = {};
+		this.retryAfters = {};
 
 		this.tokenCacher = new TokenCacher(this.client);
 		this.tokenCacher.init(0);
@@ -506,7 +519,7 @@ export default class InternalClient {
 		return this.apiRequest("post", Endpoints.LOGOUT, true)
 		.then(() => {
 			if (this.websocket) {
-				this.websocket.close();
+				this.websocket.close(1000);
 				this.websocket = null;
 			}
 			this.token = null;
@@ -1365,7 +1378,7 @@ export default class InternalClient {
 					self.state = ConnectionState.READY;
 
 					client.emit("debug", `ready packet took ${Date.now() - startTime}ms to process`);
-					client.emit("debug", `ready with ${self.servers.length} servers, ${self.channels.length} channels and ${self.users.length} users cached.`);
+					client.emit("debug", `ready with ${self.servers.length} servers, ${self.unavailableServers.length} unavailable servers, ${self.channels.length} channels and ${self.users.length} users cached.`);
 
 					self.restartServerCreateTimeout();
 
@@ -1434,7 +1447,9 @@ export default class InternalClient {
 					if (!server) {
 						if (!data.unavailable) {
 							server = self.servers.add(new Server(data, client));
-							client.emit("serverCreated", server);
+							if(client.readyTime) {
+								client.emit("serverCreated", server);
+							}
 							if (self.client.options.forceFetchUsers && server.large && server.members.length < server.memberCount) {
 								self.getGuildMembers(server.id, Math.ceil(server.memberCount / 1000));
 							}
@@ -1824,7 +1839,7 @@ export default class InternalClient {
 
 					if (server) {
 
-						var testtime = new Date().getTime();
+						var testtime = Date.now();
 
 						for (var user of data.members) {
 							server.memberMap[user.user.id] = {
@@ -1847,7 +1862,7 @@ export default class InternalClient {
 							}
 						}
 
-						client.emit("debug", (new Date().getTime() - testtime) + "ms for " + data.members.length + " user chunk for server with id " + server.id);
+						client.emit("debug", (Date.now() - testtime) + "ms for " + data.members.length + " user chunk for server with id " + server.id);
 
 					} else {
 						client.emit("warn", "chunk update received but server not in cache");
