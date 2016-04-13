@@ -127,6 +127,10 @@ export default class InternalClient {
 		this.readyTime = null;
 		this.messageAwaits = {};
 
+		this.forceFetchCount = {};
+		this.forceFetchQueue = [];
+		this.forceFetchLength = 1;
+
 		this.tokenCacher = new TokenCacher(this.client);
 		this.tokenCacher.init(0);
 	}
@@ -208,7 +212,7 @@ export default class InternalClient {
 		} else {
 			// preserve old functionality for non-bots
 			if (this.voiceConnections[0]) {
-                this.voiceConnections[0].destroy();
+				this.voiceConnections[0].destroy();
 			}
 			return Promise.resolve();
 		}
@@ -309,27 +313,42 @@ export default class InternalClient {
 		return this.voiceConnections[0];
 	}
 
-	// def forceFetchUsers
-	forceFetchUsers() {
-		this.sendWS({
-			op : 8,
-			d : {
-				guild_id : this.servers.filter(srv => srv.large && srv.memberCount > srv.members.length).map(srv => srv.id),
-				query : "",
-				limit : 0
-			}
-		});
-		this.chunkloaderCount = {};
-		for (var server of this.servers.filter(srv => srv.large && srv.memberCount > srv.members.length)) {
-			this.chunkloaderCount[server.id] = Math.ceil(server.memberCount / 1000);
+	getGuildMembers(guildID, chunkCount) {
+		this.forceFetchCount[guildID] = chunkCount;
+		if(this.forceFetchLength + 3 + guildID.length > 4082) { // 4096 - '{"op":8,"d":[]}'.length + 1 for lazy comma offset
+			this.requestGuildMembers(this.forceFetchQueue);
+			this.forceFetchQueue = [guildID];
+			this.forceFetchLength = 1 + guildID.length + 3;
+		} else {
+			this.forceFetchQueue.push(guildID);
+			this.forceFetchLength += guildID.length + 3;
 		}
-		return new Promise((resolve, reject) => {
-			if (!server) {
-				resolve();
-			} else {
-				this.chunkloaderCallback = resolve;
-			}
+	}
+
+	requestGuildMembers(guildID, query, limit) {
+		this.sendWS(OPCodes.GET_GUILD_MEMBERS, {
+			guild_id: guildID,
+			query: query || "",
+			limit: limit || 0
 		});
+	}
+
+	checkReady() {
+		if(!this.readyTime) {
+			if(this.forceFetchQueue.length > 0) {
+				this.requestGuildMembers(this.forceFetchQueue);
+				this.forceFetchQueue = [];
+				this.forceFetchLength = 1;
+			} else {
+				for (var key in this.forceFetchCount) {
+					if (this.forceFetchCount.hasOwnProperty(key)) {
+						return;
+					}
+				}
+				this.readyTime = Date.now();
+				client.emit("ready");
+			}
+		}
 	}
 
 	// def createServer
@@ -1298,9 +1317,12 @@ export default class InternalClient {
 					self.user = self.users.add(new User(data.user, client));
 					data.guilds.forEach(server => {
 						if (!server.unavailable) {
-							self.servers.add(new Server(server, client));
+							server = self.servers.add(new Server(server, client));
+							if(self.options.forceFetchUsers && server.members && server.members.length < server.memberCount) {
+								self.getGuildMembers(server.id, Math.ceil(server.memberCount / 1000));
+							}
 						} else {
-							client.emit("warn", "server was unavailable, could not create (ready)");
+							client.emit("warn", "server " + guild.id + " was unavailable, could not create (ready)");
 						}
 					});
 					data.private_channels.forEach(pm => {
@@ -1328,13 +1350,7 @@ export default class InternalClient {
 					client.emit("debug", `ready packet took ${Date.now() - startTime}ms to process`);
 					client.emit("debug", `ready with ${self.servers.length} servers, ${self.channels.length} channels and ${self.users.length} users cached.`);
 
-					self.readyTime = Date.now();
-
-					if (self.client.options.forceFetchUsers) {
-						self.forceFetchUsers().then(() => {client.emit("ready")});
-					} else {
-						client.emit("ready");
-					}
+					self.checkReady();
 					break;
 
 				case PacketType.MESSAGE_CREATE:
@@ -1399,11 +1415,10 @@ export default class InternalClient {
 					var server = self.servers.get("id", data.id);
 					if (!server) {
 						if (!data.unavailable) {
-							server = new Server(data, client)
-							self.servers.add(server);
+							server = self.servers.add(new Server(data, client));
 							client.emit("serverCreated", server);
-							if (server.large && server.members.length < server.memberCount) {
-								self.sendWS({op: 8, d: {guild_id: server.id, query: "", limit: 0}});
+							if (self.options.forceFetchUsers && server.large && server.members.length < server.memberCount) {
+								self.getGuildMembers(server.id, Math.ceil(server.memberCount / 1000));
 							}
 						} else {
 							client.emit("warn", "server was unavailable, could not create");
@@ -1800,16 +1815,33 @@ export default class InternalClient {
 							server.members.add(self.users.add(new User(user.user, client)));
 						}
 
-						if (self.chunkloaderCallback && server.id in self.chunkloaderCount) {
-							self.chunkloaderCount[server.id]--;
-							if (self.chunkloaderCount[server.id] <= 0) {
-								delete self.chunkloaderCount[server.id];
-								if (Object.keys(self.chunkloaderCount).length == 0) {
-									self.chunkloaderCallback();
-									self.chunkloaderCallback = null;
-								}
-							}
-						}
+xxxx
+xxxx
+xxxx
+xxxx
+xxxx
+xxxx
+xxxx
+xxxx
+xxxx
+xxxx
+xxxx
+xxxx
+xxxx
+xxxx
+xxxx
+xxxx
+xxxx
+xxxx
+xxxx
+xxxx
+xxxx
+xxxx
+xxxx
+xxxx
+xxxx
+xxxx
+xxxx
 
 						client.emit("debug", (new Date().getTime() - testtime) + "ms for " + data.members.length + " user chunk for server with id " + server.id);
 
