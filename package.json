@@ -1,0 +1,56 @@
+{
+  "name": "discord.js",
+  "version": "7.0.0",
+  "description": "A way to interface with the Discord API",
+  "main": "./src/index",
+  "scripts": {
+    "test": "jscs src && node test/random"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hydrabolt/discord.js.git"
+  },
+  "keywords": [
+    "discord",
+    "api",
+    "bot",
+    "client",
+    "node",
+    "discordapp"
+  ],
+  "author": "Amish Shah <amishshah.2k@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/hydrabolt/discord.js/issues"
+  },
+  "homepage": "https://github.com/hydrabolt/discord.js#readme",
+  "dependencies": {
+    "babel-plugin-transform-runtime": "^6.6.0",
+    "object.entries": "^1.0.3",
+    "object.values": "^1.0.3",
+    "superagent": "^1.5.0",
+    "unpipe": "^1.0.0",
+    "ws": "^0.8.1"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.6.0",
+    "babel-preset-stage-3": "^6.5.0",
+    "grunt": "^0.4.5",
+    "grunt-babel": "^6.0.0",
+    "grunt-browserify": "^4.0.1",
+    "grunt-contrib-uglify": "^0.11.0",
+    "grunt-jscs": "^2.8.0",
+    "jscs": "^2.11.0",
+    "load-grunt-tasks": "^3.3.0"
+  },
+  "optionalDependencies": {
+    "node-opus": "^0.1.11"
+  },
+  "engines": {
+    "node": ">=0.12.7"
+  },
+  "browser": {
+    "./src/Util/TokenCacher.js": "./src/Util/TokenCacher-shim.js",
+    "./lib/Util/TokenCacher.js": "./lib/Util/TokenCacher-shim.js"
+  }
+}
