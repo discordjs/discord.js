@@ -136,6 +136,7 @@ export default class InternalClient {
 		this.servers = new Cache();
 		this.unavailableServers = new Cache();
 		this.private_channels = new Cache();
+		this.autoReconnectInterval = 1000;
 
 		this.intervals = {
 			typing : [],
@@ -161,7 +162,7 @@ export default class InternalClient {
 		}
 	}
 
-	disconnected(forced = false) {
+	disconnected(autoReconnect = false) {
 
 		this.cleanIntervals();
 
@@ -169,15 +170,18 @@ export default class InternalClient {
 			this.leaveVoiceChannel(vc);
 		});
 
-		if (this.client.options.revive && !forced) {
-			this.setup();
+		if (autoReconnect) {
+			this.autoReconnectInterval = Math.min(this.autoReconnectInterval * (Math.random() + 1), 60000);
+			setTimeout(() => {
+				this.setup();
 
-			// Check whether the email is set (if not, only a token has been used for login)
-			if (this.email) {
-				this.login(this.email, this.password);
-			} else {
-				this.loginWithToken(this.token);
-			}
+				// Check whether the email is set (if not, only a token has been used for login)
+				if (this.email) {
+					this.login(this.email, this.password);
+				} else {
+					this.loginWithToken(this.token);
+				}
+			}, this.autoReconnectInterval);
 		}
 
 		this.client.emit("disconnected");
@@ -544,6 +548,7 @@ export default class InternalClient {
 			throw error;
 		})
 		.catch(error => {
+			this.websocket = null;
 			this.state = ConnectionState.DISCONNECTED;
 			client.emit("disconnected");
 			throw error;
@@ -1381,14 +1386,17 @@ export default class InternalClient {
 			});
 		};
 
-		this.websocket.onclose = () => {
+		this.websocket.onclose = (code) => {
 			self.websocket = null;
 			self.state = ConnectionState.DISCONNECTED;
-			self.disconnected();
+			self.disconnected(this.client.options.autoReconnect);
 		};
 
 		this.websocket.onerror = e => {
 			client.emit("error", e);
+			self.websocket = null;
+			self.state = ConnectionState.DISCONNECTED;
+			self.disconnected(this.client.options.autoReconnect);
 		};
 
 		this.websocket.onmessage = e => {
@@ -1418,6 +1426,7 @@ export default class InternalClient {
 					this.forceFetchCount = {};
 					this.forceFetchQueue = [];
 					this.forceFetchLength = 1;
+					this.autoReconnectInterval = 1000;
 
 					data.guilds.forEach(server => {
 						if (!server.unavailable) {
