@@ -127,6 +127,7 @@ export default class InternalClient {
 		// creates 4 caches with discriminators based on ID
 		this.users = new Cache();
 		this.friends = new Cache();
+		this.blocked_users = new Cache();
 		this.outgoing_friend_requests = new Cache();
 		this.incoming_friend_requests = new Cache();
 		this.channels = new Cache();
@@ -1151,8 +1152,9 @@ export default class InternalClient {
 
 	//def updateDetails
 	updateDetails(data) {
-		if (!this.user.bot && !(this.email || data.email))
+		if (!this.user.bot && !(this.email || data.email)) {
 			throw new Error("Must provide email since a token was used to login");
+		}
 
 		var options = {
 			avatar: this.resolver.resolveToBase64(data.avatar) || this.user.avatar,
@@ -1359,7 +1361,7 @@ export default class InternalClient {
 								self.getGuildMembers(server.id, Math.ceil(server.memberCount / 1000));
 							}
 						} else {
-							client.emit("warn", "server " + server.id + " was unavailable, could not create (ready)");
+							client.emit("debug", "server " + server.id + " was unavailable, could not create (ready)");
 							self.unavailableServers.add(server);
 						}
 					});
@@ -1370,6 +1372,8 @@ export default class InternalClient {
 						data.relationships.forEach(friend => {
 							if (friend.type === 1) { // is a friend
 								self.friends.add(new User(friend.user, client));
+							} else if (friend.type === 2) { // incoming friend requests
+								self.blocked_users.add(new User(friend.user, client));
 							} else if (friend.type === 3) { // incoming friend requests
 								self.incoming_friend_requests.add(new User(friend.user, client));
 							} else if (friend.type === 4) { // outgoing friend requests
@@ -1380,6 +1384,7 @@ export default class InternalClient {
 						});
 					} else {
 						self.friends = null;
+						self.blocked_users = null;
 						self.incoming_friend_requests = null;
 						self.outgoing_friend_requests = null;
 					}
@@ -1418,7 +1423,7 @@ export default class InternalClient {
 						if (msg) {
 							channel.messages.remove(msg);
 						} else {
-							client.emit("warn", "message was deleted but message is not cached");
+							client.emit("debug", "message was deleted but message is not cached");
 						}
 					} else {
 						client.emit("warn", "message was deleted but channel is not cached");
@@ -1467,7 +1472,7 @@ export default class InternalClient {
 							}
 							self.restartServerCreateTimeout();
 						} else {
-							client.emit("warn", "server was unavailable, could not create");
+							client.emit("debug", "server was unavailable, could not create");
 						}
 					}
 					break;
@@ -1496,7 +1501,7 @@ export default class InternalClient {
 								}
 							}
 						} else {
-							client.emit("warn", "server was unavailable, could not update");
+							client.emit("debug", "server was unavailable, could not update");
 						}
 					} else {
 						client.emit("warn", "server was deleted but it was not in the cache");
@@ -1893,6 +1898,9 @@ export default class InternalClient {
 							client.emit("friendRequestAccepted", outUser);
 							return;
 						}
+					} else if (data.type === 2) {
+						// client received block
+						self.blocked_users.add(new User(data.user, client));
 					} else if (data.type === 3) {
 						// client received friend request
 						client.emit("friendRequestReceived", self.incoming_friend_requests.add(new User(data.user, client)));
@@ -1906,6 +1914,12 @@ export default class InternalClient {
 					if (user) {
 						self.friends.remove(user);
 						client.emit("friendRemoved", user);
+						return;
+					}
+
+					user = self.blocked_users.get("id", data.id);
+					if (user) { // they rejected friend request
+						self.blocked_users.remove(user);
 						return;
 					}
 
