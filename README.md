@@ -17,6 +17,10 @@ discord.js is a node module used as a way of interfacing with [Discord](https://
 
 `npm install --save discord.js`
 
+If you don't need voice support:
+
+`npm install --save --no-optional discord.js`
+
 ---
 
 ### Example: ping-pong
@@ -36,7 +40,7 @@ mybot.login("email", "password");
 
 ### Contributing
 
-Feel free to contribute! Just clone the repo and edit the files in the **src folder, not the lib folder.** 
+Feel free to contribute! Just clone the repo and edit the files in the **src folder, not the lib folder.**
 
 Whenever you come to making a pull request, make sure it's to the *indev* branch and that you have built the lib files by running `grunt --dev`
 
