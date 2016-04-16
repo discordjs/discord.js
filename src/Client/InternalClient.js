@@ -1824,7 +1824,7 @@ export default class InternalClient {
 						client.emit("warn", "voice state update but user or server not in cache");
 					}
 
-					if (user.id === self.user.id) { // only for detecting self user movements for connections.
+					if (user && user.id === self.user.id) { // only for detecting self user movements for connections.
 						var connection = self.voiceConnections.get("server", server);
 						// existing connection, perhaps channel moved
 						if (connection && connection.voiceChannel.id !== data.channel_id) {
