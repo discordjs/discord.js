@@ -364,6 +364,11 @@ export default class Client extends EventEmitter {
 			callback = options;
 			options = {};
 		}
+		if (typeof content === "object" && content.file) {
+			// content has file
+			options = content;
+			content = "";
+		}
 
 		return this.internal.sendMessage(destination, content, options)
 			.then(dataCallback(callback), errorCallback(callback));

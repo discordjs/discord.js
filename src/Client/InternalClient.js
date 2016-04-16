@@ -72,7 +72,9 @@ export default class InternalClient {
 			ret.attach("file", file.file, file.name);
 			if (data) {
 				for (var i in data) {
-					ret.field(i, data[i]);
+					if (data[i] !== undefined) {
+						ret.field(i, data[i]);
+					}
 				}
 			}
 		} else if (data) {
@@ -565,19 +567,46 @@ export default class InternalClient {
 
 	// def sendMessage
 	sendMessage(where, _content, options = {}) {
+		if (options.file) {
+			if (typeof options.file !== "object") {
+				options.file = {
+					file: options.file
+				};
+			}
+			if (!options.file.name) {
+				if (options.file.file instanceof String || typeof options.file.file === "string") {
+					options.file.name = require("path").basename(options.file.file);
+				} else if (options.file.file.path) {
+					// fs.createReadStream()'s have .path that give the path. Not sure about other streams though.
+					options.file.name = require("path").basename(options.file.file.path);
+				} else {
+					options.file.name = "default.png"; // Just have to go with default filenames.
+				}
+			}
+		}
 
 		return this.resolver.resolveChannel(where)
 		.then(destination => {
-			//var destination;
-			var content = this.resolver.resolveString(_content);
+			if (options.file) {
+				return this.resolver.resolveFile(options.file.file)
+				.then(file =>
+					this.apiRequest("post", Endpoints.CHANNEL_MESSAGES(destination.id), true, {
+						content: _content,
+						tts: options.tts
+					}, {
+						name: options.file.name,
+						file: file
+					}).then(res => destination.messages.add(new Message(res, destination, this.client)))
+				)
+			} else {
+				var content = this.resolver.resolveString(_content);
 
-			return this.apiRequest("post", Endpoints.CHANNEL_MESSAGES(destination.id), true, {
-				content: content,
-				tts: options.tts
-			})
-			.then(res =>
-				destination.messages.add(new Message(res, destination, this.client))
-			);
+				return this.apiRequest("post", Endpoints.CHANNEL_MESSAGES(destination.id), true, {
+					content: content,
+					tts: options.tts
+				})
+				.then(res => destination.messages.add(new Message(res, destination, this.client)));
+			}
 		});
 
 	}
@@ -595,13 +624,17 @@ export default class InternalClient {
 			}
 		}
 
+		if(content) {
+			content = {
+				content
+			};
+		}
+
 		return this.resolver.resolveChannel(where)
 		.then(channel =>
 			this.resolver.resolveFile(_file)
 			.then(file =>
-				this.apiRequest("post", Endpoints.CHANNEL_MESSAGES(channel.id), true, {
-                    content
-				}, {
+				this.apiRequest("post", Endpoints.CHANNEL_MESSAGES(channel.id), true, content, {
 					name,
 					file
 				}).then(res => channel.messages.add(new Message(res, channel, this.client)))
