@@ -12,32 +12,37 @@ This page contains documentation on the `Discord.Client` class. This should be u
 Parameters
 ----------
 
-Client takes an options object, and supports the following properties.
+Client takes an options object, and supports the following options:.
 
-forceFetchUsers
-~~~~~~~~~~~~~~~
+autoReconnect
+~~~~~~~~~~~~~
 
-Make the library get all the users in all guilds, and delay the ready event until all users are received. This will slow down ready times and increase initial network traffic.
+Have discord.js autoreconnect when connection is lost.
 
 compress
 ~~~~~~~~
 
 Have Discord send a compressed READY packet.
 
+forceFetchUsers
+~~~~~~~~~~~~~~~
+
+Make the library get all the users in all guilds, and delay the ready event until all users are received. This will slow down ready times and increase initial network traffic.
+
 largeThreshold
 ~~~~~~~~~~~~~~
 
 Set a custom large_threshold (the max number of offline members Discord sends in the initial GUILD_CREATE). The maximum is 250.
 
+maxCachedMessages
+~~~~~~~~~~~~~~~~~
+
+The maximum number of messages to cache per channel. Decreasing this leads to more missing messageUpdated/messageDeleted events, increasing this leads to more RAM usage, especially over time.
+
 rateLimitAsError
 ~~~~~~~~~~~~~~~~
 
 Have the lib throw a rejection Promise/callback when being ratelimited, instead of auto-retrying.
-
-maxCachedMessages
-~~~~~~~~~~~~~~~~~
-
-The maximum number of messages to cache per channel. Decreasing this leads to more missing messageUpdated/messageDeleted events, increasing this leads to more RAM usage, especially over time
 
 --------
 
@@ -70,7 +75,7 @@ unavailableServers
 A Cache_ of Server_ objects that the client has cached that are unavailable.
 
 voiceConnections
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~
 
 A Cache_ of VoiceConnection_ objects that the client is in.
 
@@ -179,6 +184,11 @@ Sends a message to the specified channel.
     - **error** - error object if any occurred
     - **message** - the sent Message_
 
+sendTTSMessage(channel, content, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+An alias for `sendMessage(channel, content, {tts: true}, callback)`
+
 sendFile(channel, attachment, name, content, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -204,6 +214,11 @@ Shortcut to `sendMessage` but prepends a mention to the sender of the original m
 - **callback** - `function` that takes the following parameters:
     - **error** - error object if any occurred
     - **message** - the sent Message_
+
+replyTTS(message, content, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+An alias for `reply(message, content, {tts: true}, callback)`
 
 updateMessage(message, content, `options`, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -522,7 +537,7 @@ Sets the username of the client
 joinVoiceChannel(channel, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Joins a Voice Channel to begin transmitting audio
+Joins a Voice Channel to begin transmitting audio. If you have an OAuth bot account, you can connect to multiple voice channels at once, but only one per guild.
 
 - **channel** - A `VoiceChannel Resolvable`_
 - **callback** - `function` that takes the following:
