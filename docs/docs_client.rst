@@ -169,21 +169,25 @@ sendMessage(channel, content, `options`, `callback`)
 Sends a message to the specified channel.
 
 - **channel** - a `Channel Resolvable`_
-- **content** - a `String Resolvable`_ - the message you want to send
-- **options** - `object` containing:
-    - **tts** - `Boolean`, should message be text-to-speech
+- **content** - (Optional if file is passed in options) a `String Resolvable`_ - the message you want to send
+- **options** - (Optional) `object` containing:
+    - **tts** - (Optional) `Boolean`, should message be text-to-speech
+    - **file** - (Optional) `object`, containing:
+        - **file** - a `File Resolvable`_
+        - **name** - (Optional) `String`, filename to upload file as
 - **callback** - `function` that takes the following parameters:
     - **error** - error object if any occurred
     - **message** - the sent Message_
 
-sendFile(channel, attachment, name, `callback`)
+sendFile(channel, attachment, name, content, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sends a file to the specified channel.
 
 - **channel** - a `Channel Resolvable`_
 - **attachment** - A `File Resolvable`_
-- **name** - (Optional) `String`, name of the file containing the extension
+- **name** - (Optional) `String`, filename to upload file as
+- **content** - (Optional) `String`, text message to send with the attachment
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
     - **message** - the sent Message_
@@ -265,15 +269,42 @@ createServer(name, region, `callback`)
 Creates a server
 
 - **name** - `String`, name of the server
-- **region** - `String`, region of the server, currently **us-west, us-east, singapore, london, sydney** or **amsterdam**
+- **region** - `String`, region of the server, currently **us-west, us-east, us-south, us-central, singapore, london, sydney, frankfurt** or **amsterdam**
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
     - **server** - the created Server_
 
-leaveServer(server, `callback`)
+updateServer(server, options, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Leaves/deletes a server that the client is in
+
+- **server** - a `Server Resolvable`_
+- **options** - `object` containing (all optional):
+    - **name** - `String`, name of the server
+    - **region** - `String`, region of the server, currently **us-west, us-east, us-south, us-central, singapore, london, sydney, frankfurt** or **amsterdam**
+    - **ownerID** - a `User Resolvable`_, user to transfer the server to (must be owner)
+    - **icon** - a `Base64 Resolvable`_
+    - **splash** - a `Base64 Resolvable`_ (VIP only)
+    - **verificationLevel** - `Number`, a verification level (0, 1, 2, 3)
+    - **afkChannelID** - a `Channel Resolvable`_, the AFK voice channel
+    - **afkTimeout** - `Number`, AFK timeout in seconds
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred
+
+deleteServer(server, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Deletes a server that the client is in
+
+- **server** - a `Server Resolvable`_
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred
+
+leaveServer(server, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Leaves a server that the client is in
 
 - **server** - a `Server Resolvable`_
 - **callback** - `function` taking the following:
@@ -381,7 +412,7 @@ setStatus(status, `game`, `callback`)
 Sets the Discord Status of the Client
 
 - **status** - `String`, either ``online, here, active, available`` or ``idle, away``
-- **game** - `String/Number`, ID of Discord Game being played
+- **game** - `String`, Name of game being played, or `null` to clear
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
 
@@ -398,6 +429,15 @@ setStatusOnline()
 **Aliases:** `setStatusHere`, `setStatusActive`, `setStatusAvailable`
 
 Sets the status of the Client to Online
+
+setPlayingGame(game, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sets the Discord Status of the Client
+
+- **game** - `String`, Name of game being played, or `null` to clear
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred
 
 setChannelTopic(channel, topic, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
