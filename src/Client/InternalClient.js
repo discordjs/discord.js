@@ -407,13 +407,20 @@ export default class InternalClient {
 	}
 
 	//def updateServer
-	updateServer(server, name, region) {
+	updateServer(server, options) {
 		var server = this.resolver.resolveServer(server);
 		if (!server) {
 			return Promise.reject(new Error("server did not resolve"));
 		}
 
-		return this.apiRequest("patch", Endpoints.SERVER(server.id), true, { name: name || server.name, region: region || server.region })
+		if (!options.name) {
+			options.name = server.name;
+		}
+		if (!options.region) {
+			options.region = server.region;
+		}
+
+		return this.apiRequest("patch", Endpoints.SERVER(server.id), true, options)
 		.then(res => {
 			// wait until the name and region are updated
 			return waitFor(() =>
