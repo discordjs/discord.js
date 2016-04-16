@@ -1,6 +1,6 @@
 {
   "name": "discord.js",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "description": "A way to interface with the Discord API",
   "main": "./entrypoint.js",
   "scripts": {
