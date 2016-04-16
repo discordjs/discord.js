@@ -6,8 +6,6 @@ class GuildDataStore extends AbstractDataStore{
 	constructor() {
 		super();
 
-		this.memberData = {};
-
 		this.register('members');
 		this.register('channels');
 	}

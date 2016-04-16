@@ -21,10 +21,12 @@ class GuildMemberRemoveHandler extends AbstractHandler {
 		let client = this.packetManager.client;
 
 		let guild = client.store.get('guilds', data.guild_id);
-		let user = client.store.get('users', data.user.id);
 
-		if (guild && user) {
-			guild._removeMember(user);
+		if (guild) {
+			let member = guild.store.get('members', data.user.id);
+			if (member) {
+				guild._removeMember(member);
+			}
 		}
 	}
 

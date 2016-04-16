@@ -1,6 +1,7 @@
 'use strict';
 
 const User = require('./User');
+const Member = require('./Member');
 const GuildDataStore = require('./datastore/GuildDataStore');
 const TextChannel = require('./TextChannel');
 const VoiceChannel = require('./VoiceChannel');
@@ -25,30 +26,25 @@ class Guild {
 	}
 
 	_addMember(guildUser) {
-		let user = this.client.store.NewUser(guildUser.user);
-		this.store.memberData[user.id] = {
-			deaf: guildUser.deaf,
-			mute: guildUser.mute,
-			joinDate: new Date(guildUser.joined_at),
-			roles: guildUser.roles,
-		};
+		guildUser.user = this.client.store.NewUser(guildUser.user);
+		let member = this.store.add('members', new Member(this, guildUser));
 		if (this.client.ws.emittedReady) {
-			this.client.emit(Constants.Events.GUILD_MEMBER_ADD, this, user);
+			this.client.emit(Constants.Events.GUILD_MEMBER_ADD, this, member);
 		}
 	}
 
-	_updateMember(currentUser, newData) {
-		let oldRoles = this.store.memberData[currentUser.id].roles;
-		this.store.currentUser[currentUser.id].roles = newData.roles;
+	_updateMember(member, data) {
+		let oldRoles = member.roles;
+		member.roles = data.roles;
 		if (this.client.ws.emittedReady) {
-			this.client.emit(Constants.Events.GUILD_MEMBER_ROLES_UPDATE, this, oldRoles, this.store.memberData[currentUser.id].roles);
+			this.client.emit(Constants.Events.GUILD_MEMBER_ROLES_UPDATE, this, oldRoles, member.roles);
 		}
 	}
 
-	_removeMember(guildUser) {
-		this.store.remove('members', guildUser);
+	_removeMember(guildMember) {
+		this.store.remove('members', guildMember);
 		if (this.client.ws.emittedReady) {
-			this.client.emit(Constants.Events.GUILD_MEMBER_REMOVE, this, guildUser);
+			this.client.emit(Constants.Events.GUILD_MEMBER_REMOVE, this, guildMember);
 		}
 	}
 
