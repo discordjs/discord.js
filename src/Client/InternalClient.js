@@ -68,11 +68,15 @@ export default class InternalClient {
 		if (useAuth) {
 			ret.set("authorization", this.token);
 		}
-		if (data) {
-			ret.send(data);
-		}
 		if (file) {
 			ret.attach("file", file.file, file.name);
+			if (data) {
+				for (var i in data) {
+					ret.field(i, data[i]);
+				}
+			}
+		} else if (data) {
+			ret.send(data);
 		}
 		ret.set('User-Agent', this.userAgentInfo.full);
 		return new Promise((resolve, reject) => {
@@ -569,6 +573,34 @@ export default class InternalClient {
 		});
 
 	}
+
+	// def sendFile
+	sendFile(where, _file, name, content) {
+		if (!name) {
+			if (_file instanceof String || typeof _file === "string") {
+				name = require("path").basename(_file);
+			} else if (_file && _file.path) {
+				// fs.createReadStream()'s have .path that give the path. Not sure about other streams though.
+				name = require("path").basename(_file.path);
+			} else {
+				name = "default.png"; // Just have to go with default filenames.
+			}
+		}
+
+		return this.resolver.resolveChannel(where)
+		.then(channel =>
+			this.resolver.resolveFile(_file)
+			.then(file =>
+				this.apiRequest("post", Endpoints.CHANNEL_MESSAGES(channel.id), true, {
+                    content
+				}, {
+					name,
+					file
+				}).then(res => channel.messages.add(new Message(res, channel, this.client)))
+			)
+		);
+	}
+
 	// def deleteMessage
 	deleteMessage(_message, options = {}) {
 
@@ -608,32 +640,6 @@ export default class InternalClient {
 			message,
 			new Message(res, message.channel, this.client)
 		));
-	}
-
-	// def sendFile
-	sendFile(where, _file, name, content) {
-		if (!name) {
-			if (_file instanceof String || typeof _file === "string") {
-				name = require("path").basename(_file);
-			} else if (_file.path) {
-				// fs.createReadStream()'s have .path that give the path. Not sure about other streams though.
-				name = require("path").basename(_file.path);
-			} else {
-				name = "default.png"; // Just have to go with default filenames.
-			}
-		}
-
-		return this.resolver.resolveChannel(where)
-		.then(channel =>
-			this.resolver.resolveFile(_file)
-			.then(file =>
-				this.apiRequest("post", Endpoints.CHANNEL_MESSAGES(channel.id), true, null, {
-					name,
-					file,
-                    content
-				}).then(res => channel.messages.add(new Message(res, channel, this.client)))
-			)
-		);
 	}
 
 	// def getChannelLogs

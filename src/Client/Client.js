@@ -631,14 +631,19 @@ export default class Client extends EventEmitter {
 	 *     .then(msg => console.log("sent file!"))
 	 *     .catch(err => console.log("couldn't send file!"));
 	 */
-	sendFile(destination, attachment, name, callback = (/*err, m*/) => { }) {
+	sendFile(destination, attachment, name, content, callback = (/*err, m*/) => { }) {
+		if (typeof content === "function") {
+			// content is the callback
+			callback = content;
+			content = undefined; // Will get resolved into original filename in internal
+		}
 		if (typeof name === "function") {
 			// name is the callback
 			callback = name;
 			name = undefined; // Will get resolved into original filename in internal
 		}
 
-		return this.internal.sendFile(destination, attachment, name)
+		return this.internal.sendFile(destination, attachment, name, content)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
