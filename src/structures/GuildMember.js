@@ -4,38 +4,35 @@ class GuildMember {
 	constructor(guild, data) {
 		this.client = guild.client;
 		this.guild = guild;
-		this._user = {};
+		this.user = {};
+		this._roles = [];
 		if (data) {
 			this.setup(data);
 		}
 	}
 
 	setup(data) {
-		this._user = data.user;
+		this.user = data.user;
 		this.deaf = data.deaf;
 		this.mute = data.mute;
 		this.joinDate = new Date(data.joined_at);
-		this.roles = data.roles;
+		this._roles = data.roles;
 	}
 
-	get username() {
-		return this._user.username;
+	get roles() {
+		let list = [];
+		for (let roleID of this._roles) {
+			let role = this.guild.store.get('roles', roleID);
+			if (role) {
+				list.push(role);
+			}
+		}
+
+		return list;
 	}
 
 	get id() {
-		return this._user.id;
-	}
-
-	get discriminator() {
-		return this._user.discriminator;
-	}
-
-	get avatar() {
-		return this._user.avatar;
-	}
-
-	get bot() {
-		return this._user.bot;
+		return this.user.id;
 	}
 }
 

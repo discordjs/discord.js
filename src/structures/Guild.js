@@ -36,7 +36,8 @@ class Guild {
 
 	_updateMember(member, data) {
 		let oldRoles = member.roles;
-		member.roles = data.roles;
+
+		member._roles = data.roles;
 		if (this.client.ws.emittedReady) {
 			this.client.emit(Constants.Events.GUILD_MEMBER_ROLES_UPDATE, this, oldRoles, member.roles);
 		}

@@ -30,11 +30,11 @@ client.on('channelUpdate', (old, chan) => {
 });
 
 client.on('guildMemberAdd', (guild, user) => {
-	console.log('new guild member', user.username, 'in', guild.name);
+	console.log('new guild member', user.user.username, 'in', guild.name);
 });
 
 client.on('guildMemberRemove', (guild, user) => {
-	console.log('dead guild member', user.username, 'in', guild.name);
+	console.log('dead guild member', user.user.username, 'in', guild.name);
 });
 
 client.on('guildRoleCreate', (guild, role) => {
