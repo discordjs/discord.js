@@ -27,10 +27,10 @@ export default class ServerChannel extends Channel{
 			if (this.server.ownerID === user.id) {
 				return new ChannelPermissions(4294967295);
 			}
-			var everyoneRole = this.server.roles.get("name", "@everyone");
+			var everyoneRole = this.server.roles.get("id", this.server.id);
 
 			var userRoles = [everyoneRole].concat(this.server.rolesOf(user) || []);
-			var userRolesID = userRoles.map((v) => v.id);
+			var userRolesID = userRoles.filter((v) => !!v).map((v) => v.id);
 			var roleOverwrites = [], memberOverwrites = [];
 
 			this.permissionOverwrites.forEach((overwrite) => {
