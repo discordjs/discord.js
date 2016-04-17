@@ -16,7 +16,6 @@ class ReadyHandler extends AbstractHandler {
 	handle(packet) {
 		let data = packet.d;
 		let client = this.packetManager.client;
-
 		client.manager.setupKeepAlive(data.heartbeat_interval);
 
 		client.store.user = client.store.add('users', new ClientUser(client, data.user));
@@ -28,6 +27,8 @@ class ReadyHandler extends AbstractHandler {
 		for (let privateDM of data.private_channels) {
 			client.store.NewChannel(privateDM);
 		}
+
+		this.packetManager.ws.checkIfReady();
 
 	}
 

@@ -8,6 +8,8 @@ const BeforeReadyWhitelist = [
 	Constants.WSEvents.GUILD_DELETE,
 ];
 
+var amount = 0;
+
 class WebSocketPacketManager {
 
 	constructor(websocketManager) {
@@ -31,6 +33,7 @@ class WebSocketPacketManager {
 		this.register(Constants.WSEvents.CHANNEL_DELETE, 'ChannelDelete');
 		this.register(Constants.WSEvents.CHANNEL_UPDATE, 'ChannelUpdate');
 		this.register(Constants.WSEvents.PRESENCE_UPDATE, 'PresenceUpdate');
+		this.register(Constants.WSEvents.USER_UPDATE, 'UserUpdate');
 	}
 
 	get client() {
@@ -50,7 +53,7 @@ class WebSocketPacketManager {
 	}
 
 	handle(packet) {
-
+		amount++;
 		if (!this.ws.emittedReady) {
 			if (BeforeReadyWhitelist.indexOf(packet.t) === -1) {
 				this.queue.push(packet);
