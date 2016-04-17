@@ -17,6 +17,10 @@ class User {
 		this.status = data.status || 'offline';
 		this.game = data.game;
 	}
+
+	toString() {
+		return `<@${this.id}>`;
+	}
 }
 
 module.exports = User;

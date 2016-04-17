@@ -34,6 +34,7 @@ class WebSocketPacketManager {
 		this.register(Constants.WSEvents.CHANNEL_UPDATE, 'ChannelUpdate');
 		this.register(Constants.WSEvents.PRESENCE_UPDATE, 'PresenceUpdate');
 		this.register(Constants.WSEvents.USER_UPDATE, 'UserUpdate');
+		this.register(Constants.WSEvents.VOICE_STATE_UPDATE, 'VoiceStateUpdate');
 	}
 
 	get client() {

@@ -93,6 +93,7 @@ const Events = exports.Events = {
 	CHANNEL_UPDATE: 'channelUpdate',
 	PRESENCE_UPDATE: 'presenceUpdate',
 	USER_UPDATE: 'userUpdate',
+	VOICE_STATE_UPDATE: 'voiceStateUpdate',
 	WARN: 'warn',
 };
 

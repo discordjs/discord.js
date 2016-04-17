@@ -52,3 +52,7 @@ client.on('guildRoleUpdate', (guild, old, newRole) => {
 client.on('presenceUpdate', (oldUser, newUser) => {
 	// console.log('presence from', oldUser.username, 'to', newUser.username);
 });
+
+client.on('voiceStateUpdate', (oldMember, newMember) => {
+	console.log('voiceState', oldMember.user.username, oldMember.voiceChannel + '', newMember.voiceChannel + '');
+});

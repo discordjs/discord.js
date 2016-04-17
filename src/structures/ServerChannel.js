@@ -17,6 +17,10 @@ class ServerChannel extends Channel{
 		this.name = data.name;
 		this.lastMessageID = data.last_message_id;
 	}
+
+	toString() {
+		return this.name;
+	}
 }
 
 module.exports = ServerChannel;

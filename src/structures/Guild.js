@@ -56,6 +56,10 @@ class Guild {
 		}
 	}
 
+	toString() {
+		return this.name;
+	}
+
 	setup(data) {
 		this.id = data.id;
 		this.available = !data.unavailable;
@@ -103,6 +107,20 @@ class Guild {
 				if (user) {
 					user.status = presence.status;
 					user.game = presence.game;
+				}
+			}
+		}
+
+		if (data.voice_states) {
+			for (let voiceState of data.voice_states) {
+				let member = this.store.get('members', voiceState.user_id);
+				if (member) {
+					member.serverMute = voiceState.mute;
+					member.serverDeaf = voiceState.deaf;
+					member.selfMute = voiceState.self_mute;
+					member.selfDeaf = voiceState.self_deaf;
+					member.voiceSessionID = voiceState.session_id;
+					member.voiceChannelID = voiceState.channel_id;
 				}
 			}
 		}

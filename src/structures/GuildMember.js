@@ -13,8 +13,12 @@ class GuildMember {
 
 	setup(data) {
 		this.user = data.user;
-		this.deaf = data.deaf;
-		this.mute = data.mute;
+		this.serverDeaf = data.deaf;
+		this.serverMute = data.mute;
+		this.selfMute = data.self_mute;
+		this.selfDeaf = data.self_deaf;
+		this.voiceSessionID = data.session_id;
+		this.voiceChannelID = data.channel_id;
 		this.joinDate = new Date(data.joined_at);
 		this._roles = data.roles;
 	}
@@ -29,6 +33,18 @@ class GuildMember {
 		}
 
 		return list;
+	}
+
+	get mute() {
+		return this.selfMute || this.serverMute;
+	}
+
+	get deaf() {
+		return this.selfDeaf || this.serverDeaf;
+	}
+
+	get voiceChannel() {
+		return this.guild.store.get('channels', this.voiceChannelID);
 	}
 
 	get id() {

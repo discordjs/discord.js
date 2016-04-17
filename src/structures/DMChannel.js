@@ -12,6 +12,10 @@ class DMChannel extends Channel{
 		this.recipient = this.client.store.add('users', new User(this.client, data.recipient));
 		this.lastMessageID = data.last_message_id;
 	}
+
+	toString() {
+		return this.recipient.toString();
+	}
 }
 
 module.exports = DMChannel;
