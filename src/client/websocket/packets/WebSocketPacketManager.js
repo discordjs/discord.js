@@ -17,6 +17,9 @@ class WebSocketPacketManager {
 		this.register(Constants.WSEvents.GUILD_MEMBER_ADD, 'GuildMemberAdd');
 		this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, 'GuildMemberRemove');
 		this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, 'GuildMemberUpdate');
+		this.register(Constants.WSEvents.GUILD_ROLE_CREATE, 'GuildRoleCreate');
+		this.register(Constants.WSEvents.GUILD_ROLE_DELETE, 'GuildRoleDelete');
+		this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, 'GuildRoleUpdate');
 		this.register(Constants.WSEvents.CHANNEL_CREATE, 'ChannelCreate');
 		this.register(Constants.WSEvents.CHANNEL_DELETE, 'ChannelDelete');
 		this.register(Constants.WSEvents.CHANNEL_UPDATE, 'ChannelUpdate');

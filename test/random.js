@@ -37,3 +37,14 @@ client.on('guildMemberRemove', (guild, user) => {
 	console.log('dead guild member', user.username, 'in', guild.name);
 });
 
+client.on('guildRoleCreate', (guild, role) => {
+	console.log('new role', role.name, 'in', guild.name);
+});
+
+client.on('guildRoleDelete', (guild, role) => {
+	console.log('dead role', role.name, 'in', guild.name);
+});
+
+client.on('guildRoleUpdate', (guild, old, newRole) => {
+	console.log('updated role', old.name, 'to', newRole.name, 'in', guild.name);
+});
