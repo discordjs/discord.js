@@ -48,3 +48,7 @@ client.on('guildRoleDelete', (guild, role) => {
 client.on('guildRoleUpdate', (guild, old, newRole) => {
 	console.log('updated role', old.name, 'to', newRole.name, 'in', guild.name);
 });
+
+client.on('presenceUpdate', (oldUser, newUser) => {
+	console.log('presence from', oldUser.username, 'to', newUser.username);
+});

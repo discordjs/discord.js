@@ -28,6 +28,7 @@ class GuildDeleteHandler extends AbstractHandler {
 			} else {
 				// delete guild
 				client.store.KillGuild(guild);
+				this.packetManager.ws.checkIfReady();
 			}
 		} else {
 			// it's not there! :(

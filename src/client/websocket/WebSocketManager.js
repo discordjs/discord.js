@@ -71,6 +71,7 @@ class WebSocketManager {
 			if (unavailableCount === 0) {
 				this.client.emit(Constants.Events.READY);
 				this.emittedReady = true;
+				this.packetManager.handleQueue();
 			}
 		}
 	}

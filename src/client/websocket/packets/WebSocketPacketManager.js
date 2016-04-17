@@ -2,11 +2,18 @@
 
 const Constants = require('../../../util/Constants');
 
+const BeforeReadyWhitelist = [
+	Constants.WSEvents.READY,
+	Constants.WSEvents.GUILD_CREATE,
+	Constants.WSEvents.GUILD_DELETE,
+];
+
 class WebSocketPacketManager {
 
 	constructor(websocketManager) {
 		this.ws = websocketManager;
 		this.handlers = {};
+		this.queue = [];
 
 		this.register(Constants.WSEvents.READY, 'Ready');
 		this.register(Constants.WSEvents.GUILD_CREATE, 'GuildCreate');
@@ -23,6 +30,7 @@ class WebSocketPacketManager {
 		this.register(Constants.WSEvents.CHANNEL_CREATE, 'ChannelCreate');
 		this.register(Constants.WSEvents.CHANNEL_DELETE, 'ChannelDelete');
 		this.register(Constants.WSEvents.CHANNEL_UPDATE, 'ChannelUpdate');
+		this.register(Constants.WSEvents.PRESENCE_UPDATE, 'PresenceUpdate');
 	}
 
 	get client() {
@@ -34,7 +42,22 @@ class WebSocketPacketManager {
 		this.handlers[event] = new Handler(this);
 	}
 
+	handleQueue() {
+		for (let packetIndex in this.queue) {
+			this.handle(this.queue[packetIndex]);
+			this.queue.splice(packetIndex, 1);
+		}
+	}
+
 	handle(packet) {
+
+		if (!this.ws.emittedReady) {
+			if (BeforeReadyWhitelist.indexOf(packet.t) === -1) {
+				this.queue.push(packet);
+				return;
+			}
+		}
+
 		if (this.handlers[packet.t]) {
 			return this.handlers[packet.t].handle(packet);
 		}

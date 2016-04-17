@@ -26,12 +26,18 @@ class Guild {
 		}
 	}
 
-	_addMember(guildUser) {
-		guildUser.user = this.client.store.NewUser(guildUser.user);
+	_addMember(guildUser, noEvent) {
+		if (!(guildUser.user instanceof User)) {
+			guildUser.user = this.client.store.NewUser(guildUser.user);
+		}
+
+		guildUser.joined_at = guildUser.joined_at || 0;
 		let member = this.store.add('members', new GuildMember(this, guildUser));
-		if (this.client.ws.emittedReady) {
+		if (this.client.ws.emittedReady && !noEvent) {
 			this.client.emit(Constants.Events.GUILD_MEMBER_ADD, this, member);
 		}
+
+		return member;
 	}
 
 	_updateMember(member, data) {
@@ -89,7 +95,17 @@ class Guild {
 			for (let role of data.roles) {
 				this.store.add('roles', new Role(this, role));
 			}
-		};
+		}
+
+		if (data.presences) {
+			for (let presence of data.presences) {
+				let user = this.client.store.get('users', presence.user.id);
+				if (user) {
+					user.status = presence.status;
+					user.game = presence.game;
+				}
+			}
+		}
 	}
 }
 

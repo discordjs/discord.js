@@ -87,9 +87,11 @@ const Events = exports.Events = {
 	GUILD_ROLE_CREATE: 'guildRoleCreate',
 	GUILD_ROLE_DELETE: 'guildRoleDelete',
 	GUILD_ROLE_UPDATE: 'guildRoleUpdate',
+	GUILD_MEMBER_AVAILABLE: 'guildMemberAvailable',
 	CHANNEL_CREATE: 'channelCreate',
 	CHANNEL_DELETE: 'channelDelete',
 	CHANNEL_UPDATE: 'channelUpdate',
+	PRESENCE_UPDATE: 'presenceUpdate',
 	WARN: 'warn',
 };
 
