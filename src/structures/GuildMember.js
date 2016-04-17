@@ -1,6 +1,6 @@
 'use strict';
 
-class Member {
+class GuildMember {
 	constructor(guild, data) {
 		this.client = guild.client;
 		this.guild = guild;
@@ -39,4 +39,4 @@ class Member {
 	}
 }
 
-module.exports = Member;
+module.exports = GuildMember;

@@ -1,11 +1,12 @@
 'use strict';
 
 const User = require('./User');
-const Member = require('./Member');
+const GuildMember = require('./GuildMember');
 const GuildDataStore = require('./datastore/GuildDataStore');
 const TextChannel = require('./TextChannel');
 const VoiceChannel = require('./VoiceChannel');
 const Constants = require('../Util/Constants');
+const Role = require('./Role');
 
 class Guild {
 	constructor(client, data) {
@@ -27,7 +28,7 @@ class Guild {
 
 	_addMember(guildUser) {
 		guildUser.user = this.client.store.NewUser(guildUser.user);
-		let member = this.store.add('members', new Member(this, guildUser));
+		let member = this.store.add('members', new GuildMember(this, guildUser));
 		if (this.client.ws.emittedReady) {
 			this.client.emit(Constants.Events.GUILD_MEMBER_ADD, this, member);
 		}
@@ -81,6 +82,13 @@ class Guild {
 				this.client.store.NewChannel(channel, this);
 			}
 		}
+
+		if (data.roles) {
+			this.store.clear('roles');
+			for (let role of data.roles) {
+				this.store.add('roles', new Role(this, role));
+			}
+		};
 	}
 }
 

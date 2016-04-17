@@ -20,6 +20,7 @@ const Errors = exports.Errors = {
 	NO_BOT_ACCOUNT: new Error('you should ideally be using a bot account!'),
 	BAD_WS_MESSAGE: new Error('a bad message was received from the websocket - bad compression or not json'),
 	TOOK_TOO_LONG: new Error('something took too long to do'),
+	NOT_A_PERMISSION: new Error('that is not a valid permission number'),
 };
 
 const API = 'https://discordapp.com/api';
@@ -116,3 +117,30 @@ const WSEvents = exports.WSEvents = {
 	FRIEND_ADD: 'RELATIONSHIP_ADD',
 	FRIEND_REMOVE: 'RELATIONSHIP_REMOVE',
 };
+
+const PermissionFlags = exports.PermissionFlags = {
+	CREATE_INSTANT_INVITE: 1 << 0,
+	KICK_MEMBERS: 1 << 1,
+	BAN_MEMBERS: 1 << 2,
+	MANAGE_ROLES: 1 << 3,
+	MANAGE_CHANNELS: 1 << 4,
+	MANAGE_GUILD: 1 << 5,
+
+	READ_MESSAGES: 1 << 10,
+	SEND_MESSAGES: 1 << 11,
+	SEND_TTS_MESSAGES: 1 << 12,
+	MANAGE_MESSAGES: 1 << 13,
+	EMBED_LINKS: 1 << 14,
+	ATTACH_FILES: 1 << 15,
+	READ_MESSAGE_HISTORY: 1 << 16,
+	MENTION_EVERYONE: 1 << 17,
+
+	CONNECT: 1 << 20,
+	SPEAK: 1 << 21,
+	MUTE_MEMBERS: 1 << 22,
+	DEAFEN_MEMBERS: 1 << 23,
+	MOVE_MEMBERS: 1 << 24,
+	USE_VAD: 1 << 25,
+};
+
+const DEFAULT_PERMISSIONS = exports.DEFAULT_PERMISSIONS = 36953089;
