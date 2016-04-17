@@ -1998,14 +1998,30 @@ export default class InternalClient {
 					}
 
 					user = self.incoming_friend_requests.get("id", data.id);
-					if (user) { // they rejected friend request
-						client.emit("friendRequestRejected", self.outgoing_friend_requests.remove(user));
+					if (user) { // they rejected outgoing friend request OR client user manually deleted incoming thru web client/other clients
+						var rejectedUser = self.outgoing_friend_requests.get("id", user.id);
+						if (rejectedUser) {
+							// other person rejected outgoing
+							client.emit("friendRequestRejected", self.outgoing_friend_requests.remove(rejectedUser));
+							return;
+						}
+
+						// incoming deleted manually
+						self.incoming_friend_requests.remove(user);
 						return;
 					}
 
 					user = self.outgoing_friend_requests.get("id", data.id);
-					if (user) {// client cancelled friend request
-						self.incoming_friend_requests.remove(user);
+					if (user) { // client cancelled incoming friend request OR client user manually deleted outgoing thru web client/other clients
+						var incomingCancel = self.incoming_friend_requests.get("id", user.id);
+						if (incomingCancel) {
+							// client cancelled incoming
+							self.incoming_friend_requests.remove(user);
+							return;
+						}
+						
+						// outgoing deleted manually
+						self.outgoing_friend_requests.remove(user);
 						return;
 					}
 					break;
