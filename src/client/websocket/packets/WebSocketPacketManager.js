@@ -39,6 +39,7 @@ class WebSocketPacketManager {
 		this.register(Constants.WSEvents.TYPING_START, 'TypingStart');
 		this.register(Constants.WSEvents.MESSAGE_CREATE, 'MessageCreate');
 		this.register(Constants.WSEvents.MESSAGE_DELETE, 'MessageDelete');
+		this.register(Constants.WSEvents.MESSAGE_UPDATE, 'MessageUpdate');
 	}
 
 	get client() {

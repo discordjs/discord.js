@@ -28,6 +28,38 @@ class Message {
 			}
 		}
 	}
+
+	patch(data) {
+		if (data.author)
+			this.author = this.guild.client.store.get('users', data.author.id);
+		if (data.content)
+			this.content = data.content;
+		if (data.timestamp)
+			this.timestamp = new Date(data.timestamp);
+		if (data.edited_timestamp)
+			this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp) : null;
+		if (data.tts)
+			this.tts = data.tts;
+		if (data.mention_everyone)
+			this.mentionEveryone = data.mention_everyone;
+		if (data.nonce)
+			this.nonce = data.nonce;
+		if (data.embeds)
+			this.embeds = data.embeds;
+		if (data.attachments)
+			this.attachments = data.attachments;
+		if (data.mentions) {
+			for (let mention of data.mentions) {
+				let user = this.guild.client.store.get('users', mention.id);
+				if (user) {
+					this.mentions.push(user);
+				}
+			}
+		}
+
+		if (data.id)
+			this.id = data.id;
+	}
 }
 
 module.exports = Message;

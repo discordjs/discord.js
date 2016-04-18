@@ -11,7 +11,7 @@ const DefaultOptions = exports.DefaultOptions = {
 		},
 	},
 	protocol_version: 4,
-	max_message_cache: 20,
+	max_message_cache: 200,
 };
 
 const Package = exports.Package = require('../../package.json');
@@ -101,6 +101,7 @@ const Events = exports.Events = {
 	GUILD_MEMBERS_CHUNK: 'guildMembersChunk',
 	MESSAGE_CREATE: 'message',
 	MESSAGE_DELETE: 'messageDelete',
+	MESSAGE_UPDATE: 'messageUpdate',
 };
 
 const WSEvents = exports.WSEvents = {

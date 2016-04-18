@@ -75,3 +75,8 @@ client.on('message', message => {
 client.on('messageDelete', message => {
 	console.log('Message deleted by', message.author.username);
 });
+
+client.on('messageUpdate', (old, message) => {
+	if (message.author.username === 'hydrabolt')
+	console.log('Message updated from', old.content, 'to', message.content);
+});
