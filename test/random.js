@@ -66,3 +66,7 @@ client.on('typingStop.', (channel, user, data) => {
 	if (user.username === 'hydrabolt')
 	console.log(user.username, 'stopped typing in', channel.name, 'after', data.elapsedTime + 'ms');
 });
+
+client.on('message', message => {
+	console.log(message.author.username, 'said', message.content, 'in', message.channel.name);
+});

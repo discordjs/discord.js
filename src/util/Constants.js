@@ -11,6 +11,7 @@ const DefaultOptions = exports.DefaultOptions = {
 		},
 	},
 	protocol_version: 4,
+	max_message_cache: 20,
 };
 
 const Package = exports.Package = require('../../package.json');
@@ -98,6 +99,7 @@ const Events = exports.Events = {
 	TYPING_STOP: 'typingStop',
 	WARN: 'warn',
 	GUILD_MEMBERS_CHUNK: 'guildMembersChunk',
+	MESSAGE_CREATE: 'message',
 };
 
 const WSEvents = exports.WSEvents = {

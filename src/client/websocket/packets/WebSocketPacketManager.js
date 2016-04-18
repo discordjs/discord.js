@@ -37,6 +37,7 @@ class WebSocketPacketManager {
 		this.register(Constants.WSEvents.USER_UPDATE, 'UserUpdate');
 		this.register(Constants.WSEvents.VOICE_STATE_UPDATE, 'VoiceStateUpdate');
 		this.register(Constants.WSEvents.TYPING_START, 'TypingStart');
+		this.register(Constants.WSEvents.MESSAGE_CREATE, 'MessageCreate');
 	}
 
 	get client() {
