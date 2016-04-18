@@ -5,8 +5,6 @@ const Structure = name => require(`../../../../structures/${name}`);
 const Constants = require('../../../../util/Constants');
 const CloneObject = require('../../../../util/CloneObject');
 
-const Role = Structure('User');
-
 class TypingData {
 	constructor(since, lastTimestamp, _timeout) {
 		this.since = since;

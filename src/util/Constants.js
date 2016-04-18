@@ -97,6 +97,7 @@ const Events = exports.Events = {
 	TYPING_START: 'typingStart',
 	TYPING_STOP: 'typingStop',
 	WARN: 'warn',
+	GUILD_MEMBERS_CHUNK: 'guildMembersChunk',
 };
 
 const WSEvents = exports.WSEvents = {
