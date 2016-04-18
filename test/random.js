@@ -57,12 +57,12 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
 	console.log('voiceState', oldMember.user.username, oldMember.voiceChannel + '', newMember.voiceChannel + '');
 });
 
-client.on('typingStart', (channel, user) => {
+client.on('typingStart.', (channel, user) => {
 	if (user.username === 'hydrabolt')
 	console.log(user.username, 'started typing in', channel.name);
 });
 
-client.on('typingStop', (channel, user, data) => {
+client.on('typingStop.', (channel, user, data) => {
 	if (user.username === 'hydrabolt')
 	console.log(user.username, 'stopped typing in', channel.name, 'after', data.elapsedTime + 'ms');
 });

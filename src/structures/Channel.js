@@ -1,10 +1,14 @@
 'use strict';
 
 class Channel {
-	constructor(client, data) {
+	constructor(client, data, guild) {
 		this.client = client;
 		this.typingMap = {};
 		this.typingTimeouts = [];
+		if (guild) {
+			this.guild = guild;
+		}
+
 		if (data) {
 			this.setup(data);
 		}
