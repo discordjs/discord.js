@@ -80,3 +80,10 @@ client.on('messageUpdate', (old, message) => {
 	if (message.author.username === 'hydrabolt')
 	console.log('Message updated from', old.content, 'to', message.content);
 });
+
+client.on('message', message => {
+	if (message.content === '?perms?') {
+		console.log(message.author.username, 'asked for perms in', message.channel.name, ':');
+		console.log(message.channel.permissionsFor(message.author).serialize());
+	}
+});

@@ -25,6 +25,12 @@ class GuildMember {
 
 	get roles() {
 		let list = [];
+		let everyoneRole = this.guild.store.get('roles', this.guild.id);
+
+		if (everyoneRole) {
+			list.push(everyoneRole);
+		}
+
 		for (let roleID of this._roles) {
 			let role = this.guild.store.get('roles', roleID);
 			if (role) {

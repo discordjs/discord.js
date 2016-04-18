@@ -1,3 +1,5 @@
+'use strict';
+
 const DefaultOptions = exports.DefaultOptions = {
 	ws: {
 		large_threshold: 250,
@@ -156,5 +158,13 @@ const PermissionFlags = exports.PermissionFlags = {
 	MOVE_MEMBERS: 1 << 24,
 	USE_VAD: 1 << 25,
 };
+
+let _ALL_PERMISSIONS = 0;
+
+for (let key in PermissionFlags) {
+	_ALL_PERMISSIONS |= PermissionFlags[key];
+}
+
+const ALL_PERMISSIONS = exports.ALL_PERMISSIONS = _ALL_PERMISSIONS;
 
 const DEFAULT_PERMISSIONS = exports.DEFAULT_PERMISSIONS = 36953089;

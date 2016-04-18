@@ -60,12 +60,15 @@ class Guild {
 		return this.name;
 	}
 
+	member(user) {
+		return this.client.resolver.ResolveGuildMember(this, user);
+	}
+
 	setup(data) {
 		this.id = data.id;
 		this.available = !data.unavailable;
 		this.splash = data.splash;
 		this.region = data.region;
-		this.ownerID = data.owner_id;
 		this.name = data.name;
 		this.memberCount = data.member_count;
 		this.large = data.large;
@@ -86,6 +89,8 @@ class Guild {
 				this._addMember(guildUser);
 			}
 		}
+
+		this.owner = this.store.get('members', data.owner_id);
 
 		if (data.channels) {
 			this.store.clear('channels');
@@ -125,6 +130,18 @@ class Guild {
 			}
 		}
 	}
+
+	get channels() { return this.store.getAsArray('channels'); }
+
+	get $channels() { return this.store.data.channels; }
+
+	get roles() { return this.store.getAsArray('roles'); }
+
+	get $roles() { return this.store.data.roles; }
+
+	get members() { return this.store.getAsArray('members'); }
+
+	get $members() { return this.store.data.members; }
 }
 
 module.exports = Guild;
