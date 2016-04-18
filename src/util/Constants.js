@@ -100,6 +100,7 @@ const Events = exports.Events = {
 	WARN: 'warn',
 	GUILD_MEMBERS_CHUNK: 'guildMembersChunk',
 	MESSAGE_CREATE: 'message',
+	MESSAGE_DELETE: 'messageDelete',
 };
 
 const WSEvents = exports.WSEvents = {

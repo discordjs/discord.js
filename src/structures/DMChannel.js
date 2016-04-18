@@ -20,8 +20,9 @@ class DMChannel extends Channel{
 		let storeKeys = Object.keys(this.store);
 		if (storeKeys.length >= maxSize) {
 			this.store.remove(storeKeys[0]);
-			this.store.add('messages', message);
 		}
+
+		this.store.add('messages', message);
 	}
 
 	setup(data) {

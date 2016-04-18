@@ -20,6 +20,7 @@ class Message {
 		this.embeds = data.embeds;
 		this.attachments = data.attachments;
 		this.mentions = [];
+		this.id = data.id;
 		for (let mention of data.mentions) {
 			let user = this.guild.client.store.get('users', mention.id);
 			if (user) {
