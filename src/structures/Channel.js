@@ -3,6 +3,8 @@
 class Channel {
 	constructor(client, data) {
 		this.client = client;
+		this.typingMap = {};
+		this.typingTimeouts = [];
 		if (data) {
 			this.setup(data);
 		}

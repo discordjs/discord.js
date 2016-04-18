@@ -94,6 +94,8 @@ const Events = exports.Events = {
 	PRESENCE_UPDATE: 'presenceUpdate',
 	USER_UPDATE: 'userUpdate',
 	VOICE_STATE_UPDATE: 'voiceStateUpdate',
+	TYPING_START: 'typingStart',
+	TYPING_STOP: 'typingStop',
 	WARN: 'warn',
 };
 
@@ -118,7 +120,7 @@ const WSEvents = exports.WSEvents = {
 	GUILD_ROLE_DELETE: 'GUILD_ROLE_DELETE',
 	GUILD_ROLE_UPDATE: 'GUILD_ROLE_UPDATE',
 	GUILD_UPDATE: 'GUILD_UPDATE',
-	TYPING: 'TYPING_START',
+	TYPING_START: 'TYPING_START',
 	USER_UPDATE: 'USER_UPDATE',
 	VOICE_STATE_UPDATE: 'VOICE_STATE_UPDATE',
 	FRIEND_ADD: 'RELATIONSHIP_ADD',
