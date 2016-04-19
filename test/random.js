@@ -4,9 +4,10 @@ const Discord = require('../');
 
 let client = new Discord.Client();
 
-client.login(require('./auth.json').token).then(token => console.log('ready!')).catch(console.log);
+client.login(require('./auth.json').token).then(token => console.log('logged in with token ' + token)).catch(console.log);
 
 client.on('ready', () => {
+	console.log('ready!');
 });
 
 client.on('guildCreate', (guild) => {

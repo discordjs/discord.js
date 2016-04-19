@@ -28,6 +28,8 @@ class ReadyHandler extends AbstractHandler {
 			client.store.NewChannel(privateDM);
 		}
 
+		this.packetManager.ws.store.sessionID = data.session_id;
+
 		this.packetManager.ws.checkIfReady();
 
 	}

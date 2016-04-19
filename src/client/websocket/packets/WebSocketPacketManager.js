@@ -8,8 +8,6 @@ const BeforeReadyWhitelist = [
 	Constants.WSEvents.GUILD_DELETE,
 ];
 
-var amount = 0;
-
 class WebSocketPacketManager {
 
 	constructor(websocketManager) {
@@ -58,8 +56,32 @@ class WebSocketPacketManager {
 		}
 	}
 
+	setSequence(s) {
+		if (s && s > this.ws.store.sequence) {
+			this.ws.store.sequence = s;
+		}
+	}
+
 	handle(packet) {
-		amount++;
+
+		if (packet.op === Constants.OPCodes.RECONNECT) {
+			this.setSequence(packet.s);
+			this.ws.tryReconnect();
+			return;
+		}
+
+		if (packet.op === Constants.OPCodes.INVALID_SESSION) {
+			this.ws._sendNewIdentify();
+			return;
+		}
+
+		if (this.ws.reconnecting) {
+			this.ws.reconnecting = false;
+			this.ws.checkIfReady();
+		}
+
+		this.setSequence(packet.s);
+
 		if (!this.ws.emittedReady) {
 			if (BeforeReadyWhitelist.indexOf(packet.t) === -1) {
 				this.queue.push(packet);

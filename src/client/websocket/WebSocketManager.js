@@ -4,6 +4,7 @@ const WebSocket = require('ws');
 const Constants = require('../../util/Constants');
 const zlib = require('zlib');
 const PacketManager = require('./packets/WebSocketPacketManager');
+const WebSocketManagerDataStore = require('../../structures/datastore/WebSocketManagerDataStore');
 
 class WebSocketManager {
 
@@ -12,9 +13,12 @@ class WebSocketManager {
 		this.ws = null;
 		this.packetManager = new PacketManager(this);
 		this.emittedReady = false;
+		this.store = new WebSocketManagerDataStore();
+		this.reconnecting = false;
 	}
 
 	connect(gateway) {
+		this.store.gateway = gateway;
 		gateway += `/?v=${this.client.options.protocol_version}`;
 		this.ws = new WebSocket(gateway);
 		this.ws.onopen = () => this.EventOpen();
@@ -24,10 +28,34 @@ class WebSocketManager {
 	}
 
 	send(data) {
-		this.ws.send(JSON.stringify(data));
+		if (this.ws.readyState === WebSocket.OPEN) {
+			this.ws.send(JSON.stringify(data));
+		}
 	}
 
 	EventOpen() {
+		if (this.reconnecting) {
+			this._sendResume();
+		} else {
+			this._sendNewIdentify();
+		}
+	}
+
+	_sendResume() {
+		let payload = {
+			token: this.client.store.token,
+			session_id: this.store.sessionID,
+			seq: this.store.sequence,
+		};
+
+		this.send({
+			op: Constants.OPCodes.RESUME,
+			d: payload,
+		});
+	}
+
+	_sendNewIdentify() {
+		this.reconnecting = false;
 		let payload = this.client.options.ws;
 		payload.token = this.client.store.token;
 
@@ -38,7 +66,9 @@ class WebSocketManager {
 	}
 
 	EventClose() {
-
+		if (!this.reconnecting) {
+			this.tryReconnect();
+		}
 	}
 
 	EventMessage(event) {
@@ -57,7 +87,7 @@ class WebSocketManager {
 	}
 
 	EventError(e) {
-
+		this.tryReconnect();
 	}
 
 	checkIfReady() {
@@ -74,6 +104,15 @@ class WebSocketManager {
 				this.packetManager.handleQueue();
 			}
 		}
+	}
+
+	tryReconnect() {
+		this.reconnecting = true;
+		this.ws.close();
+		this.packetManager.handleQueue();
+		this.client.emit(Constants.Events.RECONNECTING);
+		this.emittedReady = false;
+		this.connect(this.store.gateway);
 	}
 }
 
