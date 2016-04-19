@@ -47,13 +47,7 @@ The status of a user, `String`. Either ``online``, ``offline`` or ``idle``.
 game
 ~~~~
 
-The game object of a user. `null` if not playing a game, otherwise `Object` containing the following values:
-
-.. code-block:: js
-
-	{
-		name : 'Game Name' //Name of game user is playing
-	}
+The game of a user. `null` if not playing a game, otherwise a string.
 
 typing
 ~~~~~~

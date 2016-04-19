@@ -1005,7 +1005,7 @@ export default class InternalClient {
 
 	//def updateDetails
 	updateDetails(data) {
-		if (!this.bot && !(this.email || data.email)) 
+		if (!this.user.bot && !(this.email || data.email))
 			throw new Error("Must provide email since a token was used to login");
 
 		var options = {
@@ -1488,6 +1488,9 @@ export default class InternalClient {
 					break;
 				case PacketType.PRESENCE_UPDATE:
 
+					if (data.game instanceof Object)
+						data.game = data.game.name;
+
 					var user = self.users.add(new User(data.user, client));
 					var server = self.servers.get("id", data.guild_id);
 
@@ -1500,7 +1503,7 @@ export default class InternalClient {
 						data.user.avatar = data.user.avatar || user.avatar;
 						data.user.discriminator = data.user.discriminator || user.discriminator;
 						data.user.status = data.status || user.status;
-						data.user.game = data.game;
+						data.user.game = (typeof data.game === "string") ? data.game : null;
 
 						var presenceUser = new User(data.user, client);
 

@@ -13,7 +13,7 @@ export default class User extends Equality{
 		this.id = data.id;
 		this.avatar = data.avatar;
 		this.status = data.status || "offline";
-		this.game = data.game || null;
+		this.game = (typeof data.game === "string") ? data.game : null;
 		this.typing = {
 			since : null,
 			channel : null
@@ -50,7 +50,7 @@ export default class User extends Equality{
 				this.discriminator === obj.discriminator &&
 				this.avatar === obj.avatar &&
 				this.status === obj.status &&
-				(this.game === obj.game || this.game && obj.game && this.game.name === obj.game.name)
+				this.game === obj.game
 			);
 		else
 			return false;

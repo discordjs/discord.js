@@ -84,7 +84,7 @@ export default class Server extends Equality {
 				var user = client.internal.users.get("id", presence.user.id);
 				if (user) {
 					user.status = presence.status;
-					user.game = presence.game;
+					user.game = (presence.game instanceof Object) ? presence.game.name : null;
 				}
 			}
 		}
