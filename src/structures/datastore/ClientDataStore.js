@@ -25,7 +25,7 @@ class ClientDataStore extends AbstractDataStore{
 	}
 
 	get pastReady() {
-		return this.client.ws.emittedReady;
+		return this.client.ws.status === Constants.Status.READY;
 	}
 
 	NewGuild(data) {

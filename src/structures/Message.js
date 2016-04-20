@@ -10,7 +10,7 @@ class Message {
 	}
 
 	setup(data) {
-		this.author = this.guild.client.store.get('users', data.author.id);
+		this.author = this.guild.client.store.NewUser(data.author);
 		this.content = data.content;
 		this.timestamp = new Date(data.timestamp);
 		this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp) : null;
@@ -24,6 +24,9 @@ class Message {
 		for (let mention of data.mentions) {
 			let user = this.guild.client.store.get('users', mention.id);
 			if (user) {
+				this.mentions.push(user);
+			} else {
+				user = this.guild.client.store.NewUser(mention);
 				this.mentions.push(user);
 			}
 		}
@@ -52,6 +55,9 @@ class Message {
 			for (let mention of data.mentions) {
 				let user = this.guild.client.store.get('users', mention.id);
 				if (user) {
+					this.mentions.push(user);
+				} else {
+					user = this.guild.client.store.NewUser(mention);
 					this.mentions.push(user);
 				}
 			}

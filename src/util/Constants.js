@@ -16,6 +16,13 @@ const DefaultOptions = exports.DefaultOptions = {
 	max_message_cache: 200,
 };
 
+const Status = exports.Status = {
+	READY: 0,
+	CONNECTING: 1,
+	RECONNECTING: 2,
+	IDLE: 3,
+};
+
 const Package = exports.Package = require('../../package.json');
 
 const Errors = exports.Errors = {

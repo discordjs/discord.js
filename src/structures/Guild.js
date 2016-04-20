@@ -33,7 +33,7 @@ class Guild {
 
 		guildUser.joined_at = guildUser.joined_at || 0;
 		let member = this.store.add('members', new GuildMember(this, guildUser));
-		if (this.client.ws.emittedReady && !noEvent) {
+		if (this.client.ws.status === Constants.Status.READY && !noEvent) {
 			this.client.emit(Constants.Events.GUILD_MEMBER_ADD, this, member);
 		}
 
@@ -44,14 +44,14 @@ class Guild {
 		let oldRoles = member.roles;
 
 		member._roles = data.roles;
-		if (this.client.ws.emittedReady) {
+		if (this.client.ws.status === Constants.Status.READY) {
 			this.client.emit(Constants.Events.GUILD_MEMBER_ROLES_UPDATE, this, oldRoles, member.roles);
 		}
 	}
 
 	_removeMember(guildMember) {
 		this.store.remove('members', guildMember);
-		if (this.client.ws.emittedReady) {
+		if (this.client.ws.status === Constants.Status.READY) {
 			this.client.emit(Constants.Events.GUILD_MEMBER_REMOVE, this, guildMember);
 		}
 	}

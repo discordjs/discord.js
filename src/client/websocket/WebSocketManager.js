@@ -12,12 +12,12 @@ class WebSocketManager {
 		this.client = client;
 		this.ws = null;
 		this.packetManager = new PacketManager(this);
-		this.emittedReady = false;
 		this.store = new WebSocketManagerDataStore();
-		this.reconnecting = false;
+		this.status = Constants.Status.IDLE;
 	}
 
 	connect(gateway) {
+		this.status = Constants.Status.CONNECTING;
 		this.store.gateway = gateway;
 		gateway += `/?v=${this.client.options.protocol_version}`;
 		this.ws = new WebSocket(gateway);
@@ -91,7 +91,7 @@ class WebSocketManager {
 	}
 
 	checkIfReady() {
-		if (!this.emittedReady) {
+		if (this.status !== Constants.Status.READY) {
 			let unavailableCount = 0;
 
 			for (let guildID in this.client.store.data.guilds) {
@@ -99,19 +99,18 @@ class WebSocketManager {
 			}
 
 			if (unavailableCount === 0) {
+				this.status = Constants.Status.READY;
 				this.client.emit(Constants.Events.READY);
-				this.emittedReady = true;
 				this.packetManager.handleQueue();
 			}
 		}
 	}
 
 	tryReconnect() {
-		this.reconnecting = true;
+		this.status = Constants.Status.RECONNECTING;
 		this.ws.close();
 		this.packetManager.handleQueue();
 		this.client.emit(Constants.Events.RECONNECTING);
-		this.emittedReady = false;
 		this.connect(this.store.gateway);
 	}
 }
