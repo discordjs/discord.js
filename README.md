@@ -7,7 +7,7 @@
 [![Build Status](https://travis-ci.org/hydrabolt/discord.js.svg)](https://travis-ci.org/hydrabolt/discord.js) [![Documentation Status](https://readthedocs.org/projects/discordjs/badge/?version=latest)](http://discordjs.readthedocs.org/en/latest/?badge=latest)
 
 [![NPM](https://nodei.co/npm/discord.js.png?downloads=true&stars=true)](https://nodei.co/npm/discord.js/)
-    
+
 
 discord.js is a node module used as a way of interfacing with [Discord](https://discordapp.com/). It is a very useful module for creating bots.
 
@@ -29,12 +29,14 @@ var Discord = require("discord.js");
 
 var mybot = new Discord.Client();
 
-mybot.on("message", function(message){
-	if(message.content === "ping")
+mybot.on("message", function(message) {
+	if(message.content === "ping") {
 		mybot.reply(message, "pong");
+    }
 });
 
-mybot.login("email", "password");
+mybot.loginWithToken("token");
+// If you still need to login with email and password, use mybot.login("email", "password");
 ```
 ---
 
