@@ -69,8 +69,11 @@ client.on('typingStop.', (channel, user, data) => {
 });
 
 client.on('message', message => {
-	if (message.author.username === 'hydrabolt')
-	message.channel.sendMessage('hydrabolt said: ' + message.content).then(m => console.log(m.content)).catch(console.log);
+	if (message.author.username === 'hydrabolt') {
+		message.channel.sendMessage('test').then(msg => {
+			msg.delete();
+		});
+	}
 });
 
 client.on('messageDelete', message => {

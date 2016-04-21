@@ -50,6 +50,16 @@ class RESTMethods{
 			.catch(reject);
 		});
 	}
+
+	DeleteMessage(channel, message) {
+		return new Promise((resolve, reject) => {
+			this.rest.makeRequest('del', Constants.Endpoints.CHANNEL_MESSAGE(channel.id, message.id), true)
+				.then(() => {
+					resolve(message);
+				})
+				.catch(reject);
+		});
+	}
 }
 
 module.exports = RESTMethods;

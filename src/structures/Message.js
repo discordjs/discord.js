@@ -71,6 +71,10 @@ class Message {
 		if (data.id)
 			this.id = data.id;
 	}
+
+	delete() {
+		return this.client.rest.methods.DeleteMessage(this.channel, this);
+	}
 }
 
 module.exports = Message;

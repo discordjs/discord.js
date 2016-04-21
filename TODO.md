@@ -3,7 +3,7 @@
 - [x] sending tts messages
 - [ ] sending files
 - [ ] updating user details
-- [ ] deleting messages
+- [x] deleting messages
 - [ ] updating messages
 - [ ] leaving guilds
 - [ ] deleting guilds
