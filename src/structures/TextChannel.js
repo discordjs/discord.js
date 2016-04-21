@@ -2,6 +2,7 @@
 
 const ServerChannel = require('./ServerChannel');
 const TextChannelDataStore = require('./datastore/TextChannelDataStore');
+const TextBasedChannel = require('./interface/TextBasedChannel');
 
 class TextChannel extends ServerChannel {
 
@@ -25,5 +26,7 @@ class TextChannel extends ServerChannel {
 		this.store.add('messages', message);
 	}
 }
+
+TextBasedChannel.applyToClass(TextChannel);
 
 module.exports = TextChannel;

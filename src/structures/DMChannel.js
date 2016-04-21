@@ -1,6 +1,7 @@
 'use strict';
 
 const Channel = require('./Channel');
+const TextBasedChannel = require('./interface/TextBasedChannel');
 const User = require('./User');
 const TextChannelDataStore = require('./datastore/TextChannelDataStore');
 
@@ -26,6 +27,7 @@ class DMChannel extends Channel{
 	}
 
 	setup(data) {
+		super.setup(data);
 		this.recipient = this.client.store.add('users', new User(this.client, data.recipient));
 		this.lastMessageID = data.last_message_id;
 	}
@@ -34,5 +36,7 @@ class DMChannel extends Channel{
 		return this.recipient.toString();
 	}
 }
+
+TextBasedChannel.applyToClass(DMChannel);
 
 module.exports = DMChannel;

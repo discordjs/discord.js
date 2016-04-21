@@ -70,7 +70,7 @@ client.on('typingStop.', (channel, user, data) => {
 
 client.on('message', message => {
 	if (message.author.username === 'hydrabolt')
-	console.log(message.author.username, 'said', message.content, 'in', message.channel.name);
+	message.channel.sendMessage('hydrabolt said: ' + message.content).then(console.log).catch(console.log);
 });
 
 client.on('messageDelete', message => {

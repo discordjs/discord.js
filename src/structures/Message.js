@@ -1,16 +1,21 @@
 'use strict';
 
 class Message {
-	constructor(serverChannel, data) {
-		this.channel = serverChannel;
-		this.guild = serverChannel.guild;
+	constructor(channel, data, client) {
+		this.channel = channel;
+
+		if (channel.guild) {
+			this.guild = channel.guild;
+		}
+
+		this.client = client;
 		if (data) {
 			this.setup(data);
 		}
 	}
 
 	setup(data) {
-		this.author = this.guild.client.store.NewUser(data.author);
+		this.author = this.client.store.NewUser(data.author);
 		this.content = data.content;
 		this.timestamp = new Date(data.timestamp);
 		this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp) : null;
@@ -22,11 +27,11 @@ class Message {
 		this.mentions = [];
 		this.id = data.id;
 		for (let mention of data.mentions) {
-			let user = this.guild.client.store.get('users', mention.id);
+			let user = this.client.store.get('users', mention.id);
 			if (user) {
 				this.mentions.push(user);
 			} else {
-				user = this.guild.client.store.NewUser(mention);
+				user = this.client.store.NewUser(mention);
 				this.mentions.push(user);
 			}
 		}
@@ -34,7 +39,7 @@ class Message {
 
 	patch(data) {
 		if (data.author)
-			this.author = this.guild.client.store.get('users', data.author.id);
+			this.author = this.client.store.get('users', data.author.id);
 		if (data.content)
 			this.content = data.content;
 		if (data.timestamp)
@@ -53,11 +58,11 @@ class Message {
 			this.attachments = data.attachments;
 		if (data.mentions) {
 			for (let mention of data.mentions) {
-				let user = this.guild.client.store.get('users', mention.id);
+				let user = this.client.store.get('users', mention.id);
 				if (user) {
 					this.mentions.push(user);
 				} else {
-					user = this.guild.client.store.NewUser(mention);
+					user = this.client.store.NewUser(mention);
 					this.mentions.push(user);
 				}
 			}

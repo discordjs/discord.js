@@ -19,7 +19,7 @@ class MessageCreateHandler extends AbstractHandler {
 		let channel = client.store.get('channels', data.channel_id);
 
 		if (channel) {
-			let message = new Message(channel, data);
+			let message = new Message(channel, data, client);
 			channel._cacheMessage(message);
 			client.emit(Constants.Events.MESSAGE_CREATE, message);
 		}
