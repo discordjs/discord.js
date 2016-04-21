@@ -1,0 +1,33 @@
+# To-do list:
+- [x] sending messages
+- [x] sending tts messages
+- [ ] sending files
+- [ ] updating user details
+- [ ] deleting messages
+- [ ] updating messages
+- [ ] leaving guilds
+- [ ] deleting guilds
+- [ ] _joining guilds_
+- [ ] creating channels
+- [ ] updating channels
+- [ ] deleting channels
+- [ ] making roles
+- [ ] deleting roles
+- [ ] updating roles
+- [ ] logging out
+- [ ] modifying channel overwrites
+- [ ] fetching guild members
+- [ ] getting channel logs
+- [ ] getting bans
+- [ ] banning members
+- [ ] unbanning members
+- [ ] kicking members
+- [ ] moving voice channel members
+- [ ] muting/deafening voice channel members
+- [ ] voice support
+- [ ] adding members to roles
+- [ ] creating invites
+- [ ] updating invites
+- [ ] deleting invites
+- [ ] getting invites
+- [ ] typing simulation
