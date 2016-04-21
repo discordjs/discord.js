@@ -34,7 +34,7 @@ export default class Client extends EventEmitter {
 	 * @example
 	 * // creates a new Client that will try to reconnect whenever it is disconnected.
 	 * var client = new Discord.Client({
-	 *		revive : true
+	 *		autoReconnect : true
 	 * });
 	 */
 	constructor(options = {}) {
@@ -46,7 +46,7 @@ export default class Client extends EventEmitter {
 		 */
 		this.options = options || {};
 		this.options.compress = options.compress || (!process.browser);
-		this.options.revive = options.revive || false;
+		this.options.autoReconnect = options.autoReconnect || false;
 		this.options.rateLimitAsError = options.rateLimitAsError || false;
 		this.options.largeThreshold = options.largeThreshold || 250;
 		this.options.maxCachedMessages = options.maxCachedMessages || 1000;
