@@ -617,11 +617,13 @@ export default class InternalClient {
 
 		return this.resolver.resolveChannel(where)
 		.then(destination => {
+			var content = this.resolver.resolveString(_content);
+
 			if (options.file) {
 				return this.resolver.resolveFile(options.file.file)
 				.then(file =>
 					this.apiRequest("post", Endpoints.CHANNEL_MESSAGES(destination.id), true, {
-						content: _content,
+						content: content,
 						tts: options.tts
 					}, {
 						name: options.file.name,
@@ -629,8 +631,6 @@ export default class InternalClient {
 					}).then(res => destination.messages.add(new Message(res, destination, this.client)))
 				)
 			} else {
-				var content = this.resolver.resolveString(_content);
-
 				return this.apiRequest("post", Endpoints.CHANNEL_MESSAGES(destination.id), true, {
 					content: content,
 					tts: options.tts
@@ -642,7 +642,7 @@ export default class InternalClient {
 	}
 
 	// def sendFile
-	sendFile(where, _file, name, content) {
+	sendFile(where, _file, name, _content) {
 		if (!name) {
 			if (_file instanceof String || typeof _file === "string") {
 				name = require("path").basename(_file);
@@ -653,6 +653,8 @@ export default class InternalClient {
 				name = "default.png"; // Just have to go with default filenames.
 			}
 		}
+
+		var content = this.resolver.resolveString(_content);
 
 		if(content) {
 			content = {
@@ -2021,7 +2023,7 @@ export default class InternalClient {
 							self.incoming_friend_requests.remove(user);
 							return;
 						}
-						
+
 						// outgoing deleted manually
 						self.outgoing_friend_requests.remove(user);
 						return;
