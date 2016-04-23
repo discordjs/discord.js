@@ -173,6 +173,9 @@ export default class InternalClient {
 		if (autoReconnect) {
 			this.autoReconnectInterval = Math.min(this.autoReconnectInterval * (Math.random() + 1), 60000);
 			setTimeout(() => {
+				if(!this.email && !this.token) {
+					return;
+				}
 				this.setup();
 
 				// Check whether the email is set (if not, only a token has been used for login)
