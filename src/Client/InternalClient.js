@@ -648,7 +648,7 @@ export default class InternalClient {
 	}
 
 	// def sendFile
-	sendFile(where, _file, name, _content) {
+	sendFile(where, _file, name, content) {
 		if (!name) {
 			if (_file instanceof String || typeof _file === "string") {
 				name = require("path").basename(_file);
@@ -660,11 +660,9 @@ export default class InternalClient {
 			}
 		}
 
-		var content = this.resolver.resolveString(_content);
-
-		if(content) {
+		if (content) {
 			content = {
-				content
+				content: this.resolver.resolveString(content)
 			};
 		}
 
