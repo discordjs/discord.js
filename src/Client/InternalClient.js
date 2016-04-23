@@ -180,9 +180,9 @@ export default class InternalClient {
 
 				// Check whether the email is set (if not, only a token has been used for login)
 				if (this.email) {
-					this.login(this.email, this.password);
+					this.login(this.email, this.password).catch(() => this.disconnected(true));
 				} else {
-					this.loginWithToken(this.token);
+					this.loginWithToken(this.token).catch(() => this.disconnected(true));
 				}
 			}, this.autoReconnectInterval);
 		}
@@ -594,8 +594,11 @@ export default class InternalClient {
 
 	// def getGateway
 	getGateway() {
+		if(this.gatewayURL) {
+			return Promise.resolve(this.gatewayURL);
+		}
 		return this.apiRequest("get", Endpoints.GATEWAY, true)
-		.then(res => res.url);
+		.then(res => this.gatewayURL = res.url);
 	}
 
 	// def sendMessage
