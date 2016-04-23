@@ -6,9 +6,9 @@ export const Endpoints = {
 	LOGIN: `${API}/auth/login`,
 	LOGOUT: `${API}/auth/logout`,
 	ME: `${API}/users/@me`,
+	ME: `${API}/users/@me/channels`,
 	ME_SERVER: (serverID) => `${Endpoints.ME}/guilds/${serverID}`,
 	GATEWAY: `${API}/gateway`,
-	USER_CHANNELS: (userID) => `${API}/users/${userID}/channels`,
 	AVATAR : (userID, avatar) => `${API}/users/${userID}/avatars/${avatar}.jpg`,
 	INVITE: (id) => `${API}/invite/${id}`,
 
