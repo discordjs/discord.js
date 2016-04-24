@@ -17,15 +17,11 @@ class MessageUpdateHandler extends AbstractHandler {
 	handle(packet) {
 		let data = packet.d;
 		let client = this.packetManager.client;
-		let channel = client.store.get('channels', data.channel_id);
 
-		if (channel) {
-			let message = channel.store.get('messages', data.id);
-			if (message) {
-				let oldMessage = CloneObject(message);
-				message.patch(data);
-				client.emit(Constants.Events.MESSAGE_UPDATE, oldMessage, message);
-			}
+		let response = client.actions.MessageUpdate.handle(data);
+
+		if (response.old) {
+			client.emit(Constants.Events.MESSAGE_UPDATE, response.old, response.updated);
 		}
 
 	}

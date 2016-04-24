@@ -4,7 +4,7 @@
 - [ ] sending files
 - [ ] updating user details
 - [x] deleting messages
-- [ ] updating messages
+- [x] updating messages
 - [ ] leaving guilds
 - [ ] deleting guilds
 - [ ] _joining guilds_

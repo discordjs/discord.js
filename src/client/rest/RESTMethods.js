@@ -60,6 +60,18 @@ class RESTMethods{
 				.catch(reject);
 		});
 	}
+
+	UpdateMessage(message, content) {
+		return new Promise((resolve, reject) => {
+			this.rest.makeRequest('patch', Constants.Endpoints.CHANNEL_MESSAGE(message.channel.id, message.id), true, {
+				content,
+			})
+			.then(data => {
+				resolve(this.rest.client.actions.MessageUpdate.handle(data).updated);
+			})
+			.catch(reject);
+		});
+	}
 }
 
 module.exports = RESTMethods;

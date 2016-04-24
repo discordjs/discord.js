@@ -8,6 +8,7 @@ class ActionsManager {
 
 		this.register('MessageCreate');
 		this.register('MessageDelete');
+		this.register('MessageUpdate');
 	}
 
 	register(name) {

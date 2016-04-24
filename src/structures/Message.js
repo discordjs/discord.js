@@ -72,8 +72,39 @@ class Message {
 			this.id = data.id;
 	}
 
+	equals(message, rawData) {
+
+		let embedUpdate = !message.author && !message.attachments;
+
+		if (embedUpdate) {
+			let base = this.id === message.id &&
+				this.embeds.length === message.embeds.length;
+			return base;
+		} else {
+			let base = this.id === message.id &&
+				this.author.id === message.author.id &&
+				this.content === message.content &&
+				this.tts === message.tts &&
+				this.nonce === message.nonce &&
+				this.embeds.length === message.embeds.length &&
+				this.attachments.length === message.attachments.length;
+
+			if (base && rawData) {
+				base = this.mentionEveryone === message.mentionEveryone &&
+					this.timestamp.getTime() === new Date(data.timestamp).getTime() &&
+					this.editedTimestamp === new Date(data.edited_timestamp).getTime();
+			}
+
+			return base;
+		}
+	}
+
 	delete() {
 		return this.client.rest.methods.DeleteMessage(this);
+	}
+
+	edit(content) {
+		return this.client.rest.methods.UpdateMessage(this, content);
 	}
 }
 
