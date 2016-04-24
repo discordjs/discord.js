@@ -6,7 +6,7 @@ export const Endpoints = {
 	LOGIN: `${API}/auth/login`,
 	LOGOUT: `${API}/auth/logout`,
 	ME: `${API}/users/@me`,
-	ME: `${API}/users/@me/channels`,
+	ME_CHANNELS: `${API}/users/@me/channels`,
 	ME_SERVER: (serverID) => `${Endpoints.ME}/guilds/${serverID}`,
 	GATEWAY: `${API}/gateway`,
 	AVATAR : (userID, avatar) => `${API}/users/${userID}/avatars/${avatar}.jpg`,
