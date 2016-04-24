@@ -48,9 +48,9 @@ class RESTMethods{
 		});
 	}
 
-	DeleteMessage(channel, message) {
+	DeleteMessage(message) {
 		return new Promise((resolve, reject) => {
-			this.rest.makeRequest('del', Constants.Endpoints.CHANNEL_MESSAGE(channel.id, message.id), true)
+			this.rest.makeRequest('del', Constants.Endpoints.CHANNEL_MESSAGE(message.channel.id, message.id), true)
 				.then(data => {
 					resolve(this.rest.client.actions.MessageDelete.handle({
 						id: message.id,

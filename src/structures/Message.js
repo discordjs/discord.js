@@ -73,7 +73,7 @@ class Message {
 	}
 
 	delete() {
-		return this.client.rest.methods.DeleteMessage(this.channel, this);
+		return this.client.rest.methods.DeleteMessage(this);
 	}
 }
 
