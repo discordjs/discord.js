@@ -8,6 +8,7 @@ const ClientDataStore = require('../structures/DataStore/ClientDataStore');
 const ClientManager = require('./ClientManager');
 const ClientDataResolver = require('./ClientDataResolver');
 const WebSocketManager = require('./websocket/WebSocketManager');
+const ActionsManager = require('./actions/ActionsManager');
 
 class Client extends EventEmitter{
 
@@ -19,6 +20,7 @@ class Client extends EventEmitter{
 		this.manager = new ClientManager(this);
 		this.ws = new WebSocketManager(this);
 		this.resolver = new ClientDataResolver(this);
+		this.actions = new ActionsManager(this);
 	}
 
 	login(email, password) {

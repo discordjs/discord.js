@@ -16,15 +16,12 @@ class MessageDeleteHandler extends AbstractHandler {
 	handle(packet) {
 		let data = packet.d;
 		let client = this.packetManager.client;
-		let channel = client.store.get('channels', data.channel_id);
-		if (channel) {
-			let message = channel.store.get('messages', data.id);
-			if (message) {
-				channel.store.remove('messages', message.id);
-				client.emit(Constants.Events.MESSAGE_DELETE, message);
-			}
-		}
 
+		let response = client.actions.MessageDelete.handle(data);
+
+		if (response.m) {
+			client.emit(Constants.Events.MESSAGE_DELETE, response.m);
+		}
 	}
 
 };

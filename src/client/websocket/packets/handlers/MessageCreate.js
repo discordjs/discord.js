@@ -16,14 +16,12 @@ class MessageCreateHandler extends AbstractHandler {
 	handle(packet) {
 		let data = packet.d;
 		let client = this.packetManager.client;
-		let channel = client.store.get('channels', data.channel_id);
 
-		if (channel) {
-			let message = new Message(channel, data, client);
-			channel._cacheMessage(message);
-			client.emit(Constants.Events.MESSAGE_CREATE, message);
+		let response = client.actions.MessageCreate.handle(data);
+
+		if (response.m) {
+			client.emit(Constants.Events.MESSAGE_CREATE, response.m);
 		}
-
 	}
 
 };

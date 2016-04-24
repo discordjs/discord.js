@@ -71,7 +71,7 @@ client.on('typingStop.', (channel, user, data) => {
 client.on('message', message => {
 	if (message.author.username === 'hydrabolt') {
 		message.channel.sendMessage('test').then(msg => {
-			msg.delete();
+			msg.delete().catch(console.log);
 		});
 	}
 });

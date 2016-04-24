@@ -23,7 +23,7 @@ class TextChannel extends ServerChannel {
 			this.store.remove(storeKeys[0]);
 		}
 
-		this.store.add('messages', message);
+		return this.store.add('messages', message);
 	}
 }
 

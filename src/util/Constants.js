@@ -14,6 +14,7 @@ const DefaultOptions = exports.DefaultOptions = {
 	},
 	protocol_version: 4,
 	max_message_cache: 200,
+	rest_ws_bridge_timeout: 5000,
 };
 
 const Status = exports.Status = {

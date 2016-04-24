@@ -42,10 +42,7 @@ class RESTMethods{
 				content, tts, nonce,
 			})
 			.then(data => {
-				let message = new Message(channel, data, this.rest.client);
-				channel._cacheMessage(message);
-				resolve(message);
-				this.rest.client.emit(Constants.Events.MESSAGE_CREATE, message);
+				resolve(this.rest.client.actions.MessageCreate.handle(data).m);
 			})
 			.catch(reject);
 		});
@@ -54,8 +51,11 @@ class RESTMethods{
 	DeleteMessage(channel, message) {
 		return new Promise((resolve, reject) => {
 			this.rest.makeRequest('del', Constants.Endpoints.CHANNEL_MESSAGE(channel.id, message.id), true)
-				.then(() => {
-					resolve(message);
+				.then(data => {
+					resolve(this.rest.client.actions.MessageDelete.handle({
+						id: message.id,
+						channel_id: message.channel.id,
+					}).m);
 				})
 				.catch(reject);
 		});

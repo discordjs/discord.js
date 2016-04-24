@@ -57,7 +57,6 @@ class RESTManager{
 		let endpoint = url.replace(/\/[0-9]+/g, '/:id');
 
 		if (this.rateLimitedEndpoints[endpoint] && this.rateLimitedEndpoints[endpoint].timeout) {
-			console.log('adding to queue');
 			return new Promise((resolve, reject) => {
 				this.addRequestToQueue(method, url, auth, data, file, resolve, reject);
 			});
