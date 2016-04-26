@@ -48,7 +48,9 @@ class PresenceUpdateHandler extends AbstractHandler {
 		data.user.username = data.user.username || user.username;
 		data.user.id = data.user.id || user.id;
 		data.user.discriminator = data.user.discriminator || user.discriminator;
-		data.user.avatar = data.user.avatar || user.avatar;
+
+		// comment out avatar patching as it causes bugs (see #297)
+		// data.user.avatar = data.user.avatar || user.avatar;
 		data.user.status = data.status || user.status;
 		data.user.game = data.game;
 
