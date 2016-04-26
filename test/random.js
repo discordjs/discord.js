@@ -20,7 +20,7 @@ client.on('guildUpdate', (old, guild) => {
 	console.log(old.name, guild.name);
 });
 client.on('channelCreate', channel => {
-	console.log(channel);
+	// console.log(channel);
 });
 client.on('channelDelete', channel => {
 	console.log(channel);
@@ -70,9 +70,11 @@ client.on('typingStop.', (channel, user, data) => {
 
 client.on('message', message => {
 	if (message.author.username === 'hydrabolt') {
-		message.channel.sendMessage('test').then(msg => {
-			msg.edit('woah!');
-		});
+		if (message.content === 'makechann') {
+			if (message.channel.guild) {
+				message.channel.guild.createChannel('hi', 'text').then(console.log);
+			}
+		}
 	}
 });
 

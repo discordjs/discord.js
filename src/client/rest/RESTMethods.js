@@ -72,6 +72,19 @@ class RESTMethods{
 			.catch(reject);
 		});
 	}
+
+	CreateChannel(guild, channelName, channelType) {
+		return new Promise((resolve, reject) => {
+			this.rest.makeRequest('post', Constants.Endpoints.GUILD_CHANNELS(guild.id), true, {
+				name: channelName,
+				type: channelType,
+			})
+			.then(data => {
+				resolve(this.rest.client.actions.ChannelCreate.handle(data).channel);
+			})
+			.catch(reject);
+		});
+	}
 }
 
 module.exports = RESTMethods;

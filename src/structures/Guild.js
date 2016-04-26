@@ -131,6 +131,10 @@ class Guild {
 		}
 	}
 
+	createChannel(name, type) {
+		return this.client.rest.methods.CreateChannel(this, name, type);
+	}
+
 	get channels() { return this.store.getAsArray('channels'); }
 
 	get $channels() { return this.store.data.channels; }

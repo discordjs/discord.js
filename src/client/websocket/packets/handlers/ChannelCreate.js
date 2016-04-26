@@ -19,7 +19,11 @@ class ChannelCreateHandler extends AbstractHandler {
 		let data = packet.d;
 		let client = this.packetManager.client;
 
-		let channel = client.store.NewChannel(data);
+		let response = client.actions.ChannelCreate.handle(data);
+
+		if (response.channel) {
+			client.emit(Constants.Events.CHANNEL_CREATE, response.channel);
+		}
 
 	}
 
