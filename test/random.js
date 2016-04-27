@@ -23,7 +23,7 @@ client.on('channelCreate', channel => {
 	// console.log(channel);
 });
 client.on('channelDelete', channel => {
-	console.log(channel);
+	console.log('channDel', channel);
 });
 
 client.on('channelUpdate', (old, chan) => {
@@ -74,6 +74,10 @@ client.on('message', message => {
 			if (message.channel.guild) {
 				message.channel.guild.createChannel('hi', 'text').then(console.log);
 			}
+		}
+
+		if (message.content === 'delchann') {
+			message.channel.delete();
 		}
 	}
 });

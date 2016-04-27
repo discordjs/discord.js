@@ -87,10 +87,6 @@ class ClientDataStore extends AbstractDataStore{
 		if (channel instanceof ServerChannel) {
 			channel.guild.store.remove('channels', channel);
 		}
-
-		if (already && this.pastReady) {
-			this.client.emit(Constants.Events.CHANNEL_DELETE, channel);
-		}
 	}
 
 	UpdateGuild(currentGuild, newData) {

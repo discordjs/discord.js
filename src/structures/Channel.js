@@ -17,6 +17,10 @@ class Channel {
 	setup(data) {
 		this.id = data.id;
 	}
+
+	delete() {
+		return this.client.rest.methods.DeleteChannel(this);
+	}
 }
 
 module.exports = Channel;

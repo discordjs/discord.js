@@ -19,10 +19,10 @@ class ChannelDeleteHandler extends AbstractHandler {
 		let data = packet.d;
 		let client = this.packetManager.client;
 
-		let channel = client.store.get('channels', data.id);
+		let response = client.actions.ChannelCreate.handle(data);
 
-		if (channel) {
-			client.store.KillChannel(channel);
+		if (response.channel) {
+			client.emit(Constants.Events.CHANNEL_DELETE, response.channel);
 		}
 	}
 
