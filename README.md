@@ -50,7 +50,7 @@ Whenever you come to making a pull request, make sure it's to the *indev* branch
 
 ### Related Projects
 
-A list of other Discord API libraries [can be found here](https://discordapi.com/unofficial/libs.html)
+A list of other Discord API libraries [can be found here](https://discordapp.com/developers/docs/topics/libraries)
 
 ---
 
