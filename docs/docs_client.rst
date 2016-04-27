@@ -271,12 +271,16 @@ Gets a list of banned users in a server.
 joinServer(invite, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Joins a server from the given invite. This will not work for OAuth bot accounts.
+Joins a server from the given invite. This will not work for OAuth bot accounts, see the note below.
 
 - **invite** - an `Invite Resolvable`_
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
     - **server** - the joined Server_
+
+.. note :: To join an OAuth bot to your server, any member with the **Manage Server** permission must permit it through the Discord API.  Replace YOURID with the Client ID of the Application.
+
+  ``https://discordapp.com/oauth2/authorize?&client_id=YOURID&scope=bot``
 
 createServer(name, region, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
