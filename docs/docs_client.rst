@@ -292,7 +292,7 @@ Creates a server
 updateServer(server, options, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Leaves/deletes a server that the client is in
+Updates the information, such as name or region, of a server the client is in
 
 - **server** - a `Server Resolvable`_
 - **options** - `object` containing (all optional):
