@@ -179,11 +179,7 @@ export default class InternalClient {
 				this.setup();
 
 				// Check whether the email is set (if not, only a token has been used for login)
-				if (this.email) {
-					this.login(this.email, this.password).catch(() => this.disconnected(true));
-				} else {
-					this.loginWithToken(this.token).catch(() => this.disconnected(true));
-				}
+				this.loginWithToken(this.token, this.email, this.password).catch(() => this.disconnected(true));
 			}, this.autoReconnectInterval);
 		}
 
@@ -867,6 +863,14 @@ export default class InternalClient {
 		return this.apiRequest("patch", `${Endpoints.SERVER_MEMBERS(server.id)}/${user.id}`, true, { deaf: false });
 	}
 
+	// def setNickname
+	setNickname(server, nick, user) {
+		nick = nick || "";
+		user = this.resolver.resolveUser(user);
+		server = this.resolver.resolveServer(server);
+		return this.apiRequest("patch", `${Endpoints.SERVER_MEMBERS(server.id)}/${user.id}`, true, { nick: nick });
+	}
+
 	// def createRole
 	createRole(server, data) {
 		server = this.resolver.resolveServer(server);
@@ -1161,24 +1165,22 @@ export default class InternalClient {
 			this.idleStatus = this.idleStatus || null; //undefined
 		}
 
-		this.game = game === null ? null : game || this.game;
+		this.game = game === null ? null : !game ? this.game || null : {
+			name: game
+		};
 
 		var packet = {
 			op: 3,
 			d: {
 				idle_since: this.idleStatus,
-				game: {
-					name: this.game
-				}
+				game: this.game
 			}
 		};
 
 		this.sendWS(packet);
 
 		this.user.status = this.idleStatus ? "idle" : "online";
-		this.user.game = {
-			name: this.game
-		};
+		this.user.game = this.game;
 
 		return Promise.resolve();
 
@@ -1733,10 +1735,11 @@ export default class InternalClient {
 						server.memberMap[data.user.id] = {
 							roles: data.roles.map(pid => server.roles.get("id", pid)),
 							mute: false,
-							self_mute: false,
+							selfMute: false,
 							deaf: false,
-							self_deaf: false,
-							joinedAt: Date.parse(data.joined_at)
+							selfDeaf: false,
+							joinedAt: Date.parse(data.joined_at),
+							nick: data.nick
 						};
 
 						server.memberCount++;
@@ -1785,9 +1788,10 @@ export default class InternalClient {
 							server.memberMap[data.user.id] = server.memberMap[data.user.id] || {};
 							server.memberMap[data.user.id].roles = data.roles.map(pid => server.roles.get("id", pid));
 							server.memberMap[data.user.id].mute = data.mute;
-							server.memberMap[data.user.id].self_mute = data.self_mute;
+							server.memberMap[data.user.id].selfMute = data.self_mute;
 							server.memberMap[data.user.id].deaf = data.deaf;
-							server.memberMap[data.user.id].self_deaf = data.self_deaf;
+							server.memberMap[data.user.id].selfDeaf = data.self_deaf;
+							server.memberMap[data.user.id].nick = data.nick;
 							client.emit("serverMemberUpdated", server, user);
 						} else {
 							client.emit("warn", "server member removed but user doesn't exist in cache");
@@ -1940,10 +1944,11 @@ export default class InternalClient {
 							server.memberMap[user.user.id] = {
 								roles: user.roles.map(pid => server.roles.get("id", pid)),
 								mute: user.mute,
-								self_mute: false,
+								selfMute: false,
 								deaf: user.deaf,
-								self_deaf: false,
-								joinedAt: Date.parse(user.joined_at)
+								selfDeaf: false,
+								joinedAt: Date.parse(user.joined_at),
+								nick: user.nick
 							};
 							server.members.add(self.users.add(new User(user.user, client)));
 						}

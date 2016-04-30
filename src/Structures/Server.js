@@ -58,10 +58,11 @@ export default class Server extends Equality {
 				this.memberMap[dataUser.user.id] = {
 					roles: dataUser.roles.map((pid) => self.roles.get("id", pid)),
 					mute: dataUser.mute,
-					self_mute: dataUser.self_mute,
+					selfMute: dataUser.self_mute,
 					deaf: dataUser.deaf,
-					self_deaf: dataUser.self_deaf,
-					joinedAt: Date.parse(dataUser.joined_at)
+					selfDeaf: dataUser.self_deaf,
+					joinedAt: Date.parse(dataUser.joined_at),
+					nick: dataUser.nick
 				};
 				this.members.add(client.internal.users.add(new User(dataUser.user, client)));
 			});
@@ -291,6 +292,10 @@ export default class Server extends Equality {
 
 	createChannel() {
 		return this.client.createChannel.apply(this.client, reg(this, arguments));
+	}
+
+	setNickname() {
+		return this.client.setNickname.apply(this.client, reg(this, arguments));
 	}
 
 	membersWithRole(role) {
