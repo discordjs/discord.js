@@ -100,7 +100,6 @@ class ClientDataStore extends AbstractDataStore{
 	UpdateChannel(currentChannel, newData) {
 		let oldChannel = CloneObject(currentChannel);
 		currentChannel.setup(newData);
-		this.client.emit(Constants.Events.CHANNEL_UPDATE, oldChannel, currentChannel);
 	}
 }
 

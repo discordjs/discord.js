@@ -25,7 +25,13 @@ class MessageUpdateAction extends Action {
 					old: oldMessage,
 					updated: message,
 				};
+				client.emit(Constants.Events.MESSAGE_UPDATE, oldMessage, message);
 			}
+
+			return {
+				old: message,
+				updated: message,
+			};
 		}
 
 		return {

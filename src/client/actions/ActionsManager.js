@@ -11,6 +11,7 @@ class ActionsManager {
 		this.register('MessageUpdate');
 		this.register('ChannelCreate');
 		this.register('ChannelDelete');
+		this.register('ChannelUpdate');
 	}
 
 	register(name) {

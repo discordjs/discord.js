@@ -20,10 +20,6 @@ class MessageUpdateHandler extends AbstractHandler {
 
 		let response = client.actions.MessageUpdate.handle(data);
 
-		if (response.old) {
-			client.emit(Constants.Events.MESSAGE_UPDATE, response.old, response.updated);
-		}
-
 	}
 
 };

@@ -96,6 +96,21 @@ class RESTMethods{
 			.catch(reject);
 		});
 	}
+
+	UpdateChannel(channel, data) {
+		return new Promise((resolve, reject) => {
+			data.name = (data.name || channel.name).trim();
+			data.topic = data.topic || channel.topic;
+			data.position = data.position || channel.position;
+			data.bitrate = data.bitrate || channel.bitrate;
+
+			this.rest.makeRequest('patch', Constants.Endpoints.CHANNEL(channel.id), true, data)
+			.then(data => {
+				resolve(this.rest.client.actions.ChannelUpdate.handle(data).updated);
+			})
+			.catch(reject);
+		});
+	}
 }
 
 module.exports = RESTMethods;

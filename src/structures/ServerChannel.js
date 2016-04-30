@@ -5,6 +5,19 @@ const PermissionOverwrites = require('./PermissionOverwrites');
 const EvaluatedPermissions = require('./EvaluatedPermissions');
 const Constants = require('../util/Constants');
 
+function arraysEqual(a, b) {
+	if (a === b) return true;
+
+	for (let itemInd in a) {
+		let ind = b.indexOf(item);
+		if (ind) {
+			b.splice(ind, 1);
+		}
+	}
+
+	return b.length === 0;
+}
+
 class ServerChannel extends Channel{
 	constructor(guild, data) {
 		super(guild.client, data, guild);
@@ -18,12 +31,38 @@ class ServerChannel extends Channel{
 		this.name = data.name;
 		this.lastMessageID = data.last_message_id;
 		this.ow = data.permission_overwrites;
+		this.permissionOverwrites = [];
 		if (data.permission_overwrites) {
-			this.permissionOverwrites = [];
 			for (let overwrite of data.permission_overwrites) {
 				this.permissionOverwrites.push(new PermissionOverwrites(this, overwrite));
 			}
 		}
+	}
+
+	equals(other) {
+		let base = (
+			this.type === other.type &&
+			this.topic === other.topic &&
+			this.position === other.position &&
+			this.name === other.name &&
+			this.id === other.id
+		);
+
+		if (base) {
+			if (other.permission_overwrites && other.permission_overwrites.length === this.permissionOverwrites.length) {
+				let thisIDSet = this.permissionOverwrites.map(overwrite => overwrite.id);
+				let otherIDSet = other.permission_overwrites.map(overwrite => overwrite.id);
+				if (arraysEqual(thisIDSet, otherIDSet)) {
+					base = true;
+				} else {
+					base = false;
+				}
+			} else {
+				base = false;
+			}
+		}
+
+		return base;
 	}
 
 	permissionsFor(member) {
@@ -80,6 +119,26 @@ class ServerChannel extends Channel{
 		}
 
 		return [];
+	}
+
+	edit(data) {
+		return this.client.rest.methods.UpdateChannel(this, data);
+	}
+
+	setName(name) {
+		return this.client.rest.methods.UpdateChannel(this, { name, });
+	}
+
+	setPosition(position) {
+		return this.rest.client.rest.methods.UpdateChannel(this, { position, });
+	}
+
+	setTopic(topic) {
+		return this.rest.client.rest.methods.UpdateChannel(this, { topic, });
+	}
+
+	setBitrate() {
+		return this.rest.client.rest.methods.UpdateChannel(this, { bitrate, });
 	}
 
 	toString() {

@@ -20,12 +20,7 @@ class ChannelUpdateHandler extends AbstractHandler {
 		let data = packet.d;
 		let client = this.packetManager.client;
 
-		let channel = client.store.get('channels', data.id);
-
-		if (channel) {
-			client.store.UpdateChannel(channel, data);
-		}
-
+		client.actions.ChannelUpdate.handle(data);
 	}
 
 };

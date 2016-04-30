@@ -79,8 +79,16 @@ client.on('message', message => {
 		if (message.content === 'delchann') {
 			message.channel.delete();
 		}
+
+		if (message.content.startsWith('setname')) {
+			message.channel.setName(message.content.substr(8)).then(chanLoop).catch(console.log);
+		}
 	}
 });
+
+function chanLoop(channel) {
+	channel.setName(channel.name + 'a').then(chanLoop).catch(console.log);
+}
 
 client.on('messageDelete', message => {
 	console.log('Message deleted by', message.author.username);
