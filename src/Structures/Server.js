@@ -62,7 +62,7 @@ export default class Server extends Equality {
 					deaf: dataUser.deaf,
 					selfDeaf: dataUser.self_deaf,
 					joinedAt: Date.parse(dataUser.joined_at),
-					nick: dataUser.nick
+					nick: dataUser.nick || null
 				};
 				this.members.add(client.internal.users.add(new User(dataUser.user, client)));
 			});
