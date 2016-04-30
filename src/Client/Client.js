@@ -812,6 +812,11 @@ export default class Client extends EventEmitter {
 
 	// def setNickname
 	setNickname(server, nick, user, callback = (/*err, {}*/) => { }) {
+		if (typeof user === "function") {
+			// user is the callback
+			callback = user;
+			user = null;
+		}
 		if(!user) {
 			user = this.user;
 		}

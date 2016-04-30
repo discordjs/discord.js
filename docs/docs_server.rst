@@ -166,6 +166,12 @@ kickMember(user, `callback`)
 | **Aliases** `kickUser, kick`
 | **See** client.kickMember_
 
+setNickname(nickname, user, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.setNickname(server, nickname, user, callback)``
+| **See** client.setNickname_
+
 .. _client.leaveServer : ./docs_client.html#leaveserver-server-callback
 .. _client.createInvite : ./docs_client.html#createinvite-channel-options-callback
 .. _client.createRole : ./docs_client.html#createrole-server-data-callback
@@ -173,4 +179,5 @@ kickMember(user, `callback`)
 .. _client.banMember : ./docs_client.html#banmember-user-server-length-callback
 .. _client.unbanMember : ./docs_client.html#unbanmember-user-server-callback
 .. _client.kickMember : ./docs_client.html#kickmember-user-server-callback
+.. _client.setNickname : ./docs_client.html#setNickname-server-nickname-user-callback
 .. _client.getBans : ./docs_client.html#getbans-server-callback

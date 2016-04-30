@@ -702,6 +702,17 @@ Server-undeafens a member.
 - **callback** - `function` taking the following:
     - **error** - error if any occurred.
 
+setNickname(server, nickname, `user`, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Set the nickname of a user on a server.
+
+- **server** - A `Server Resolvable`_ to set the nickname of the user in
+- **nickname** - `string` of the nickname
+- **user** - The `User Resolvable`_ to perform the nickname change on. If no user is specified, this will change the bot user's nickname
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred.
+
 Events
 ------
 
