@@ -8,9 +8,9 @@
 - [ ] leaving guilds
 - [ ] deleting guilds
 - [ ] _joining guilds_
-- [ ] creating channels
-- [ ] updating channels
-- [ ] deleting channels
+- [x] creating channels
+- [x] updating channels
+- [x] deleting channels
 - [ ] making roles
 - [ ] deleting roles
 - [ ] updating roles
