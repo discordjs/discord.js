@@ -132,16 +132,39 @@ export default class Resolver {
 		return Promise.resolve(resource);
 	}
 
-	resolveMentions(resource) {
-		// resource is a string
+	resolveMentions(resource, channel) {
 		var _mentions = [];
 		var changed = resource;
-		for (var mention of (resource.match(/<@[0-9]+>/g) || [])) {
-			var userID = mention.substring(2, mention.length - 1);
-			var user = this.internal.client.users.get("id", userID);
-			if (user) {
-				_mentions.push(user);
-				changed = changed.replace(new RegExp(mention, "g"), `@${user.username}`);
+		for (var mention of (resource.match(/<@\!?[0-9]+>/g) || [])) { // username mention
+			if (mention[2] === '!') {
+				var user = this.internal.users.get("id", mention.substring(3, mention.length - 1));
+				if (user) {
+					_mentions.push(user);
+					var details = channel.server.detailsOf(user);
+					if (details) {
+						changed = changed.replace(new RegExp(mention, "g"), `@${details.nick || (user.username + "#" + user.discriminator)}`);
+					}
+				}
+			} else {
+				var user = this.internal.users.get("id", mention.substring(2, mention.length - 1));
+				if (user) {
+					_mentions.push(user);
+					changed = changed.replace(new RegExp(mention, "g"), `@${user.username + "#" + user.discriminator}`);
+				}
+			}
+		}
+		if(channel && channel.server && channel.server.roles) {
+			for (var mention of (resource.match(/<@&[0-9]+>/g) || [])) { // role mention
+				var role = channel.server.roles.get("id", mention.substring(3, mention.length - 1));
+				if (role) {
+					changed = changed.replace(new RegExp(mention, "g"), `@${role.name}`);
+				}
+			}
+		}
+		for (var mention of (resource.match(/<#[0-9]+>/g) || [])) { // channel mention
+			var channel = this.internal.channels.get("id", mention.substring(2, mention.length - 1));
+			if (channel) {
+				changed = changed.replace(new RegExp(mention, "g"), `#${channel.name}`);
 			}
 		}
 		return [_mentions, changed];

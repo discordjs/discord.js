@@ -36,7 +36,7 @@ export default class Message extends Equality{
 
 		this.content = data.content;
 
-		var mentionData = client.internal.resolver.resolveMentions(data.content);
+		var mentionData = client.internal.resolver.resolveMentions(data.content, channel);
 		this.cleanContent = mentionData[1];
 		this.mentions = [];
 
