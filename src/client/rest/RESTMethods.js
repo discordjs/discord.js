@@ -12,7 +12,8 @@ class RESTMethods{
 
 	LoginEmailPassword(email, password) {
 		return new Promise((resolve, reject) => {
-
+			this.rest.client.store.email = email;
+			this.rest.client.store.password = password;
 			this.rest.makeRequest('post', Constants.Endpoints.LOGIN, false, { email, password })
 				.then(data => {
 					this.rest.client.manager.connectToWebSocket(data.token, resolve, reject);
@@ -129,6 +130,25 @@ class RESTMethods{
 				.then(() => {
 					resolve(this.rest.client.actions.GuildDelete.handle({ id:guild.id }).guild);
 				})
+				.catch(reject);
+		});
+	}
+
+	UpdateCurrentUser(_data) {
+		return new Promise((resolve, reject) => {
+			let user = this.rest.client.store.user;
+			let data = {};
+
+			data.username = _data.username || user.username;
+			data.avatar = this.rest.client.resolver.ResolveBase64(_data.avatar) || user.avatar;
+			if (!user.bot) {
+				data.password = this.rest.client.store.password;
+				data.email = _data.email || this.rest.client.store.email;
+				data.new_password = _data.newPassword;
+			}
+
+			this.rest.makeRequest('patch', Constants.Endpoints.ME, true, data)
+				.then(data => resolve(this.rest.client.actions.UserUpdate.handle(data).updated))
 				.catch(reject);
 		});
 	}

@@ -54,6 +54,13 @@ class ClientDataResolver {
 
 		return guild.store.get('members', user.id);
 	}
+
+	ResolveBase64(data) {
+		if (data instanceof Buffer) {
+			return 'data:image/jpg;base64,' + data.toString('base64');
+		}
+		return data;
+	}
 }
 
 module.exports = ClientDataResolver;

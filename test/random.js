@@ -1,6 +1,7 @@
 'use strict';
 
 const Discord = require('../');
+const request = require('superagent');
 
 let client = new Discord.Client();
 
@@ -84,11 +85,28 @@ client.on('message', message => {
 			message.channel.setName(message.content.substr(8)).then(chanLoop).catch(console.log);
 		}
 
+		if (message.content.startsWith('botname')) {
+			client.user.setUsername(message.content.substr(8)).then(nameLoop).catch(console.log);
+		}
+
+		if (message.content.startsWith('botavatar')) {
+			request
+				.get('url')
+				.end((err, res) => {
+					client.user.setAvatar(res.body).catch(console.log)
+						.then(user => message.channel.sendMessage('Done!'));
+				});
+		}
+
 		if (message.content === 'leave') {
 			message.guild.leave().then(guild => console.log('left guild', guild.name)).catch(console.log);
 		}
 	}
 });
+
+function nameLoop(user) {
+	user.setUsername(user.username + 'a').then(nameLoop).catch(console.log);
+}
 
 function chanLoop(channel) {
 	channel.setName(channel.name + 'a').then(chanLoop).catch(console.log);

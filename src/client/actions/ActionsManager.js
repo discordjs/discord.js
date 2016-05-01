@@ -13,6 +13,7 @@ class ActionsManager {
 		this.register('ChannelDelete');
 		this.register('ChannelUpdate');
 		this.register('GuildDelete');
+		this.register('UserUpdate');
 	}
 
 	register(name) {

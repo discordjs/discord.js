@@ -14,12 +14,34 @@ class User {
 		this.discriminator = data.discriminator;
 		this.avatar = data.avatar;
 		this.bot = Boolean(data.bot);
-		this.status = data.status || 'offline';
-		this.game = data.game;
+		this.status = data.status || this.status || 'offline';
+		this.game = data.game || this.game;
 	}
 
 	toString() {
 		return `<@${this.id}>`;
+	}
+
+	equals(user) {
+		let base = (
+			this.username === user.username &&
+			this.id === user.id &&
+			this.discriminator === user.discriminator &&
+			this.avatar === user.avatar &&
+			this.bot === Boolean(user.bot)
+		);
+
+		if (base) {
+			if (user.status) {
+				base = this.status === user.status;
+			}
+
+			if (user.game) {
+				base = this.game === user.game;
+			}
+		}
+
+		return base;
 	}
 }
 

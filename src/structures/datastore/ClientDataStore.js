@@ -18,6 +18,8 @@ class ClientDataStore extends AbstractDataStore{
 		this.token = null;
 		this.session = null;
 		this.user = null;
+		this.email = null;
+		this.password = null;
 
 		this.register('users');
 		this.register('guilds');

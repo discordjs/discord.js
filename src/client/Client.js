@@ -33,6 +33,10 @@ class Client extends EventEmitter{
 		}
 	}
 
+	get user() {
+		return this.store.user;
+	}
+
 }
 
 module.exports = Client;
