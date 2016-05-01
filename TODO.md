@@ -2,7 +2,7 @@
 - [x] sending messages
 - [x] sending tts messages
 - [ ] sending files
-- [ ] updating user details
+- [x] updating user details
 - [x] deleting messages
 - [x] updating messages
 - [x] leaving guilds
@@ -31,3 +31,4 @@
 - [ ] deleting invites
 - [ ] getting invites
 - [ ] typing simulation
+- [ ] guild modification
