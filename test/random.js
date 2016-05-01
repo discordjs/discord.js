@@ -14,7 +14,7 @@ client.on('guildCreate', (guild) => {
 	console.log(guild);
 });
 client.on('guildDelete', (guild) => {
-	console.log(guild);
+	console.log('guilddel', guild.name);
 });
 client.on('guildUpdate', (old, guild) => {
 	console.log(old.name, guild.name);
@@ -23,7 +23,7 @@ client.on('channelCreate', channel => {
 	// console.log(channel);
 });
 client.on('channelDelete', channel => {
-	console.log('channDel', channel);
+	console.log('channDel', channel.name);
 });
 
 client.on('channelUpdate', (old, chan) => {
@@ -77,11 +77,15 @@ client.on('message', message => {
 		}
 
 		if (message.content === 'delchann') {
-			message.channel.delete();
+			message.channel.delete().then(chan => console.log('selfDelChann', chan.name));
 		}
 
 		if (message.content.startsWith('setname')) {
 			message.channel.setName(message.content.substr(8)).then(chanLoop).catch(console.log);
+		}
+
+		if (message.content === 'leave') {
+			message.guild.leave().then(guild => console.log('left guild', guild.name)).catch(console.log);
 		}
 	}
 });

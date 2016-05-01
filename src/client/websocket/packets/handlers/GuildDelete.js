@@ -18,21 +18,10 @@ class GuildDeleteHandler extends AbstractHandler {
 		let data = packet.d;
 		let client = this.packetManager.client;
 
-		let guild = client.store.get('guilds', data.id);
+		let response = client.actions.GuildDelete.handle(data);
 
-		if (guild) {
-			if (guild.available && data.unavailable) {
-				// guild is unavailable
-				guild.available = false;
-				client.emit(Constants.Events.GUILD_UNAVAILABLE, guild);
-			} else {
-				// delete guild
-				client.store.KillGuild(guild);
-				this.packetManager.ws.checkIfReady();
-			}
-		} else {
-			// it's not there! :(
-			client.emit('warn', 'guild deleted but not cached in first place. missed packet?');
+		if (response.guild) {
+			client.emit(Constants.Events.GUILD_DELETE, response.guild);
 		}
 
 	}

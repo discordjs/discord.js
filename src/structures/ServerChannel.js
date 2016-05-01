@@ -9,6 +9,7 @@ function arraysEqual(a, b) {
 	if (a === b) return true;
 
 	for (let itemInd in a) {
+		let item = a[itemInd];
 		let ind = b.indexOf(item);
 		if (ind) {
 			b.splice(ind, 1);

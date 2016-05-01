@@ -5,8 +5,8 @@
 - [ ] updating user details
 - [x] deleting messages
 - [x] updating messages
-- [ ] leaving guilds
-- [ ] deleting guilds
+- [x] leaving guilds
+- [x] deleting guilds
 - [ ] _joining guilds_
 - [x] creating channels
 - [x] updating channels

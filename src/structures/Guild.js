@@ -135,6 +135,14 @@ class Guild {
 		return this.client.rest.methods.CreateChannel(this, name, type);
 	}
 
+	leave() {
+		return this.client.rest.methods.LeaveGuild(this);
+	}
+
+	delete() {
+		return this.client.rest.methods.DeleteGuild(this);
+	}
+
 	get channels() { return this.store.getAsArray('channels'); }
 
 	get $channels() { return this.store.data.channels; }

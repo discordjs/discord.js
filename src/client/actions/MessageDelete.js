@@ -9,6 +9,7 @@ class MessageDeleteAction extends Action {
 	constructor(client) {
 		super(client);
 		this.timeouts = [];
+		this.deleted = {};
 	}
 
 	handle(data) {
@@ -16,9 +17,17 @@ class MessageDeleteAction extends Action {
 		let channel = client.store.get('channels', data.channel_id);
 		if (channel) {
 			let message = channel.store.get('messages', data.id);
-			if (message && !message._deleted) {
-				message._deleted = true;
-				this.scheduleForDeletion(channel, message.id);
+
+			if (message) {
+
+				channel.store.remove('messages', message.id);
+				this.deleted[channel.id + message.id] = message;
+				this.scheduleForDeletion(channel.id, message.id);
+
+			} else if (this.deleted[channel.id + data.id]) {
+
+				message = this.deleted[channel.id + data.id];
+
 			}
 
 			return {
@@ -31,9 +40,9 @@ class MessageDeleteAction extends Action {
 		};
 	}
 
-	scheduleForDeletion(channel, id) {
+	scheduleForDeletion(channelID, messageID) {
 		this.timeouts.push(
-			setTimeout(() => channel.store.remove('messages', id),
+			setTimeout(() => delete this.deleted[channelID + messageID],
 			this.client.options.rest_ws_bridge_timeout)
 		);
 	}

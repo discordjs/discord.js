@@ -111,6 +111,27 @@ class RESTMethods{
 			.catch(reject);
 		});
 	}
+
+	LeaveGuild(guild) {
+		return new Promise((resolve, reject) => {
+			this.rest.makeRequest('del', Constants.Endpoints.ME_GUILD(guild.id), true)
+				.then(() => {
+					resolve(this.rest.client.actions.GuildDelete.handle({ id:guild.id }).guild);
+				})
+				.catch(reject);
+		});
+	}
+
+	// untested but probably will work
+	DeleteGuild(guild) {
+		return new Promise((resolve, reject) => {
+			this.rest.makeRequest('del', Constants.Endpoints.GUILD(guild.id), true)
+				.then(() => {
+					resolve(this.rest.client.actions.GuildDelete.handle({ id:guild.id }).guild);
+				})
+				.catch(reject);
+		});
+	}
 }
 
 module.exports = RESTMethods;

@@ -12,6 +12,7 @@ class ActionsManager {
 		this.register('ChannelCreate');
 		this.register('ChannelDelete');
 		this.register('ChannelUpdate');
+		this.register('GuildDelete');
 	}
 
 	register(name) {

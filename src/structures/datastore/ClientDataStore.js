@@ -82,7 +82,6 @@ class ClientDataStore extends AbstractDataStore{
 	}
 
 	KillChannel(channel) {
-		let already = this.get('channels', channel.id);
 		this.remove('channels', channel);
 		if (channel instanceof ServerChannel) {
 			channel.guild.store.remove('channels', channel);
