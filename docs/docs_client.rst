@@ -220,6 +220,19 @@ replyTTS(message, content, `callback`)
 
 An alias for `reply(message, content, {tts: true}, callback)`
 
+awaitResponse(message, `prompt`, `options`, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Wait for a response from the same user in the same channel as an existing message.
+
+- **message** - The original Message_
+- **prompt** - a `String Resolvable`_ - a message you want to send to prompt the user
+- **options** - `object` containing:
+    - **tts** - `Boolean`, should message be text-to-speech
+- **callback** - `function` that takes the following parameters:
+    - **error** - error object if any occurred
+    - **message** - the sent Message_
+
 updateMessage(message, content, `options`, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

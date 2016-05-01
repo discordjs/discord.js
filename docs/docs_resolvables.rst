@@ -20,7 +20,7 @@ A Channel Resolvable allows:
 - String of User ID
 
 File Resolvable
-------------------
+---------------
 
 A File Resolvable allows:
 
@@ -29,7 +29,7 @@ A File Resolvable allows:
 - Readable stream
 
 Role Resolvable
-------------------
+---------------
 
 A Role Resolvable allows:
 
