@@ -254,7 +254,7 @@ Attempts to delete a message
 - **message** - The Message_ to delete
 - **options** - `object` containing the following:
     - **wait** - Milliseconds as a `number` to wait before deleting the message
-- **callback**
+- **callback** - `function` that takes the following parameters:
     - **error** - error object if any occurred
 
 getChannelLogs(channel, `limit`, `options`, `callback`)
@@ -430,7 +430,7 @@ deleteInvite(invite, `callback`)
 
 Deletes an invite
 
-- **invite** - An `Invite ID Resolvable`_
+- **invite** - An `Invite Resolvable`_
 - **callback** - a `function` taking the following:
     - **error** - error if any occurred
 

@@ -106,12 +106,12 @@ Returns an object containing metadata of a user within the server, containing a 
 .. code-block:: js
 
 	{
-		joinedAt : 1449339323747,
-        roles: [],
-        mute : false,
-        self_mute : false,
-		deaf : false,
-        self_deaf : false
+		joinedAt: 1449339323747,
+		roles: [],
+		mute: false,
+		self_mute: false,
+		deaf: false,
+		self_deaf: false
 	}
 
 leave()

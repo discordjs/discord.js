@@ -89,7 +89,7 @@ Invite ID Resolvable
 An Invite ID Resolvable allows:
 
 - Invite_
-- String_ containing either a http link to the invite or the invite code on its own.
+- String containing either a http link to the invite or the invite code on its own.
 
 Base64 Resolvable
 -----------------
