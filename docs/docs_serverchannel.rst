@@ -50,4 +50,4 @@ Returns a ChannelPermissions_ object of a user's permissions in that channel.
 mention()
 ~~~~~~~~~
 
-Returns a `string` that can be used in discord messages to mention a channel. ``serverChannel.toString()` defaults to this.
+Returns a `string` that can be used in discord messages to mention a channel. `serverChannel.toString()` defaults to this.

@@ -87,4 +87,4 @@ isMentioned(user)
 
 Returns true if the given user was mentioned in the message.
 
-- **user** : A `User Resolvable`_
+- **user** - A `User Resolvable`_
