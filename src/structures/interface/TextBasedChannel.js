@@ -11,10 +11,5 @@ function sendTTSMessage(content, options) {
 }
 
 exports.applyToClass = structure => {
-	if (structure.name !== 'TextChannel' && structure.name !== 'DMChannel') {
-		throw new Error(structure + ' cannot implement TextBasedChannel');
-	}
-
 	structure.prototype.sendMessage = sendMessage;
-
 };

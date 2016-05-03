@@ -1,5 +1,7 @@
 'use strict';
 
+const TextBasedChannel = require('./interface/TextBasedChannel');
+
 class User {
 	constructor(client, data) {
 		this.client = client;
@@ -20,6 +22,10 @@ class User {
 
 	toString() {
 		return `<@${this.id}>`;
+	}
+
+	deleteDM() {
+		return this.client.rest.methods.DeleteChannel(this);
 	}
 
 	equals(user) {
@@ -44,5 +50,7 @@ class User {
 		return base;
 	}
 }
+
+TextBasedChannel.applyToClass(User);
 
 module.exports = User;

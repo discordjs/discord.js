@@ -1,5 +1,7 @@
 'use strict';
 
+const TextBasedChannel = require('./interface/TextBasedChannel');
+
 class GuildMember {
 	constructor(guild, data) {
 		this.client = guild.client;
@@ -56,6 +58,12 @@ class GuildMember {
 	get id() {
 		return this.user.id;
 	}
+
+	deleteDM() {
+		return this.client.rest.methods.DeleteChannel(this);
+	}
 }
+
+TextBasedChannel.applyToClass(GuildMember);
 
 module.exports = GuildMember;

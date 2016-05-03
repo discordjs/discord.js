@@ -2,7 +2,8 @@
 
 const Constants = require('../../util/Constants');
 const Structure = name => require('../../structures/' + name);
-
+const User = Structure('User');
+const GuildMember = Structure('GuildMember');
 const Message = Structure('Message');
 
 class RESTMethods{
@@ -39,13 +40,24 @@ class RESTMethods{
 
 	SendMessage(channel, content, tts, nonce) {
 		return new Promise((resolve, reject) => {
-			this.rest.makeRequest('post', Constants.Endpoints.CHANNEL_MESSAGES(channel.id), true, {
-				content, tts, nonce,
-			})
-			.then(data => {
-				resolve(this.rest.client.actions.MessageCreate.handle(data).m);
-			})
-			.catch(reject);
+
+			if (channel instanceof User || channel instanceof GuildMember) {
+				this.CreateDM(channel).then(chan => {
+					channel = chan;
+					req();
+				})
+				.catch(reject);
+			}
+
+			var _this = this;
+
+			function req() {
+				_this.rest.makeRequest('post', Constants.Endpoints.CHANNEL_MESSAGES(channel.id), true, {
+					content, tts, nonce,
+				})
+				.then(data => resolve(_this.rest.client.actions.MessageCreate.handle(data).m))
+				.catch(reject);
+			}
 		});
 	}
 
@@ -87,8 +99,37 @@ class RESTMethods{
 		});
 	}
 
+	GetExistingDM(recipient) {
+		let dmChannel = this.rest.client.store.getAsArray('channels')
+			.filter(channel => channel.recipient)
+			.filter(channel => channel.recipient.id === recipient.id);
+
+		return dmChannel[0];
+	}
+
+	CreateDM(recipient) {
+		return new Promise((resolve, reject) => {
+
+			let dmChannel = this.GetExistingDM(recipient);
+
+			if (dmChannel) {
+				return resolve(dmChannel);
+			}
+
+			this.rest.makeRequest('post', Constants.Endpoints.USER_CHANNELS(this.rest.client.store.user.id), true, {
+				recipient_id: recipient.id,
+			})
+			.then(data => resolve(this.rest.client.actions.ChannelCreate.handle(data).channel))
+			.catch(reject);
+		});
+	}
+
 	DeleteChannel(channel) {
 		return new Promise((resolve, reject) => {
+			if (channel instanceof User || channel instanceof GuildMember) {
+				channel = this.GetExistingDM(channel);
+			}
+
 			this.rest.makeRequest('del', Constants.Endpoints.CHANNEL(channel.id), true)
 			.then(data => {
 				data.id = channel.id;

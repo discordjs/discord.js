@@ -70,7 +70,7 @@ client.on('typingStop.', (channel, user, data) => {
 });
 
 client.on('message', message => {
-	if (message.author.username === 'hydrabolt') {
+	if (true) {
 		if (message.content === 'makechann') {
 			if (message.channel.guild) {
 				message.channel.guild.createChannel('hi', 'text').then(console.log);
@@ -114,6 +114,15 @@ client.on('message', message => {
 			m += `I am aware of ${message.guild.members.length} members`;
 			message.channel.sendMessage(m);
 		}
+
+		if (message.content === 'messageme!') {
+			message.author.sendMessage('oh, hi there!').catch(e => console.log(e.stack));
+		}
+
+		if (message.content === 'don\'t dm me') {
+			message.author.deleteDM();
+		}
+
 	}
 });
 
