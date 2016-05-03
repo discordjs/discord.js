@@ -18,7 +18,7 @@ client.on('guildDelete', (guild) => {
 	console.log('guilddel', guild.name);
 });
 client.on('guildUpdate', (old, guild) => {
-	console.log(old.name, guild.name);
+	console.log('guildupdate', old.name, guild.name);
 });
 client.on('channelCreate', channel => {
 	// console.log(channel);
@@ -82,11 +82,11 @@ client.on('message', message => {
 		}
 
 		if (message.content.startsWith('setname')) {
-			message.channel.setName(message.content.substr(8)).then(chanLoop).catch(console.log);
+			message.channel.setName(message.content.substr(8));
 		}
 
 		if (message.content.startsWith('botname')) {
-			client.user.setUsername(message.content.substr(8)).then(nameLoop).catch(console.log);
+			client.user.setUsername(message.content.substr(8));
 		}
 
 		if (message.content.startsWith('botavatar')) {
@@ -98,14 +98,27 @@ client.on('message', message => {
 				});
 		}
 
+		if (message.content.startsWith('gn')) {
+			message.guild.setName(message.content.substr(3))
+				.then(guild => console.log('guild updated to', guild.name))
+				.catch(console.log);
+		}
+
 		if (message.content === 'leave') {
 			message.guild.leave().then(guild => console.log('left guild', guild.name)).catch(console.log);
+		}
+
+		if (message.content === 'stats') {
+			let m = '';
+			m += `I am aware of ${message.guild.channels.length} channels\n`;
+			m += `I am aware of ${message.guild.members.length} members`;
+			message.channel.sendMessage(m);
 		}
 	}
 });
 
 function nameLoop(user) {
-	user.setUsername(user.username + 'a').then(nameLoop).catch(console.log);
+	// user.setUsername(user.username + 'a').then(nameLoop).catch(console.log);
 }
 
 function chanLoop(channel) {

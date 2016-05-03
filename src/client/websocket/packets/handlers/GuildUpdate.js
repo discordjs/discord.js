@@ -19,11 +19,7 @@ class GuildUpdateHandler extends AbstractHandler {
 		let data = packet.d;
 		let client = this.packetManager.client;
 
-		let guild = client.store.get('guilds', data.id);
-
-		if (guild) {
-			client.store.UpdateGuild(guild, data);
-		}
+		let response = client.actions.GuildUpdate.handle(data);
 
 	}
 

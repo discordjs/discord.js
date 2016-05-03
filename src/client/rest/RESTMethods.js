@@ -152,6 +152,53 @@ class RESTMethods{
 				.catch(reject);
 		});
 	}
+
+	UpdateGuild(guild, _data) {
+		return new Promise((resolve, reject) => {
+			/*
+				can contain:
+				name, region, verificationLevel, afkChannel, afkTimeout, icon, owner, splash
+			 */
+
+			let data = {};
+
+			if (_data.name) {
+				data.name = _data.name;
+			}
+
+			if (_data.region) {
+				data.region = _data.region;
+			}
+
+			if (_data.verificationLevel) {
+				data.verification_level = Number(_data.verificationLevel);
+			}
+
+			if (_data.afkChannel) {
+				data.afk_channel_id = this.rest.client.resolver.ResolveChannel(_data.afkChannel).id;
+			}
+
+			if (_data.afkTimeout) {
+				data.afk_timeout = Number(_data.afkTimeout);
+			}
+
+			if (_data.icon) {
+				data.icon = this.rest.client.resolver.ResolveBase64(_data.icon);
+			}
+
+			if (_data.owner) {
+				data.owner_id = this.rest.client.resolver.ResolveUser(_data.owner).id;
+			}
+
+			if (_data.splash) {
+				data.splash = this.rest.client.resolver.ResolveBase64(_data.splash);
+			}
+
+			this.rest.makeRequest('patch', Constants.Endpoints.GUILD(guild.id), true, data)
+				.then(data => resolve(this.rest.client.actions.GuildUpdate.handle(data).updated))
+				.catch(reject);
+		});
+	}
 }
 
 module.exports = RESTMethods;

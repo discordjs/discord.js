@@ -5,6 +5,7 @@ const Structure = name => require(`../structures/${name}`);
 const User = Structure('User');
 const Message = Structure('Message');
 const Guild = Structure('Guild');
+const Channel = Structure('Channel');
 const ServerChannel = Structure('ServerChannel');
 const TextChannel = Structure('TextChannel');
 const VoiceChannel = Structure('VoiceChannel');
@@ -59,7 +60,30 @@ class ClientDataResolver {
 		if (data instanceof Buffer) {
 			return 'data:image/jpg;base64,' + data.toString('base64');
 		}
+
 		return data;
+	}
+
+	ResolveChannel(channel) {
+		if (channel instanceof Channel) {
+			return channel;
+		}
+
+		if ($string(channel)) {
+			return this.client.store.get('channels', channel);
+		}
+	}
+
+	ResolveString(data) {
+		if (data instanceof String) {
+			return data;
+		}
+
+		if (data instanceof Array) {
+			return data.join('\n');
+		}
+
+		return String(data);
 	}
 }
 

@@ -8,6 +8,21 @@ const VoiceChannel = require('./VoiceChannel');
 const Constants = require('../Util/Constants');
 const Role = require('./Role');
 
+function arraysEqual(a, b) {
+	if (a === b) return true;
+	if (a.length !== b.length) return false;
+
+	for (let itemInd in a) {
+		let item = a[itemInd];
+		let ind = b.indexOf(item);
+		if (ind) {
+			b.splice(ind, 1);
+		}
+	}
+
+	return b.length === 0;
+}
+
 class Guild {
 	constructor(client, data) {
 		this.client = client;
@@ -64,6 +79,34 @@ class Guild {
 		return this.client.resolver.ResolveGuildMember(this, user);
 	}
 
+	equals(data) {
+		let base =
+			this.id === data.id &&
+			this.available === !data.unavailable &&
+			this.splash === data.splash &&
+			this.region === data.region &&
+			this.name === data.name &&
+			this.memberCount === data.member_count &&
+			this.large === data.large &&
+			this.icon === data.icon &&
+			arraysEqual(this.features, data.features) &&
+			this.owner.id === data.owner_id &&
+			this.verificationLevel === data.verification_level &&
+			this.embedEnabled === data.embed_enabled;
+
+		if (base) {
+			if (this.embedChannel) {
+				if (this.embedChannel.id !== data.embed_channel_id) {
+					base = false;
+				}
+			} else if (data.embed_channel_id) {
+				base = false;
+			}
+		}
+
+		return base;
+	}
+
 	setup(data) {
 		this.id = data.id;
 		this.available = !data.unavailable;
@@ -79,7 +122,6 @@ class Guild {
 		this.afkTimeout = data.afk_timeout;
 		this.afkChannelID = data.afk_channel_id;
 		this.embedEnabled = data.embed_enabled;
-		this.embedChannelID = data.embed_channel_id;
 		this.verificationLevel = data.verification_level;
 		this.features = data.features || [];
 
@@ -98,6 +140,8 @@ class Guild {
 				this.client.store.NewChannel(channel, this);
 			}
 		}
+
+		this.embedChannel = this.store.get('channels', data.embed_channel_id);
 
 		if (data.roles) {
 			this.store.clear('roles');
@@ -141,6 +185,42 @@ class Guild {
 
 	delete() {
 		return this.client.rest.methods.DeleteGuild(this);
+	}
+
+	edit(data) {
+		return this.client.rest.methods.UpdateGuild(this, data);
+	}
+
+	setName(name) {
+		return this.edit({ name, });
+	}
+
+	setRegion(region) {
+		return this.edit({ region, });
+	}
+
+	setVerificationLevel(verificationLevel) {
+		return this.edit({ verificationLevel, });
+	}
+
+	setAFKChannel(afkchannel) {
+		return this.edit({ afkChannel, });
+	}
+
+	setAFKTimeout(afkTimeout) {
+		return this.edit({ afkTimeout, });
+	}
+
+	setIcon(icon) {
+		return this.edit({ icon, });
+	}
+
+	setOwner(owner) {
+		return this.edit({ owner, });
+	}
+
+	setSplash(splash) {
+		return this.edit({ splash, });
 	}
 
 	get channels() { return this.store.getAsArray('channels'); }

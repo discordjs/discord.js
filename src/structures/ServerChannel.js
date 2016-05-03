@@ -7,6 +7,7 @@ const Constants = require('../util/Constants');
 
 function arraysEqual(a, b) {
 	if (a === b) return true;
+	if (a.length !== b.length) return false;
 
 	for (let itemInd in a) {
 		let item = a[itemInd];
@@ -50,7 +51,7 @@ class ServerChannel extends Channel{
 		);
 
 		if (base) {
-			if (other.permission_overwrites && other.permission_overwrites.length === this.permissionOverwrites.length) {
+			if (other.permission_overwrites) {
 				let thisIDSet = this.permissionOverwrites.map(overwrite => overwrite.id);
 				let otherIDSet = other.permission_overwrites.map(overwrite => overwrite.id);
 				if (arraysEqual(thisIDSet, otherIDSet)) {
