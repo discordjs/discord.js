@@ -50,7 +50,6 @@ export const Permissions = {
 	manageServer: 1 << 5,
 	changeNickname: 1 << 26,
 	manageNicknames: 1 << 27,
-	manageNickname: 1 << 27
 	// text
 	readMessages: 1 << 10,
 	sendMessages: 1 << 11,
