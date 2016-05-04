@@ -48,6 +48,8 @@ export const Permissions = {
 	manageChannels: 1 << 4,
 	manageChannel: 1 << 4,
 	manageServer: 1 << 5,
+	changeNickname: 1 << 26,
+	manageNicknames: 1 << 27,
 	// text
 	readMessages: 1 << 10,
 	sendMessages: 1 << 11,
