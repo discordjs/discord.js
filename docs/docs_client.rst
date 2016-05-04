@@ -834,7 +834,7 @@ Emitted when a member is removed from a server. Supplies a Server_ object and a 
 serverMemberUpdated
 ~~~~~~~~~~~~~~~~~~~
 
-Emitted when a member in a server is updated. Supplies a Server_ object and a User_ object.
+Emitted when a member in a server is updated. Supplies 2 User_ objects, the first being the new, updated user, the second being the old one.
 
 presence
 ~~~~~~~~
