@@ -194,14 +194,14 @@ export default class Server extends Equality {
 		}
 		var oldState = {
 			mute: this.memberMap[user.id].mute,
-			self_mute: this.memberMap[user.id].self_mute,
+			selfMute: this.memberMap[user.id].self_mute,
 			deaf: this.memberMap[user.id].deaf,
-			self_deaf: this.memberMap[user.id].self_deaf
+			selfDeaf: this.memberMap[user.id].self_deaf
 		};
 		this.memberMap[user.id].mute = data.mute;
-		this.memberMap[user.id].self_mute = data.self_mute;
+		this.memberMap[user.id].selfMute = data.self_mute;
 		this.memberMap[user.id].deaf = data.deaf;
-		this.memberMap[user.id].self_deaf = data.self_deaf;
+		this.memberMap[user.id].selfDeaf = data.self_deaf;
 		if (oldState.mute !== undefined && (oldState.mute != data.mute || oldState.self_mute != data.self_mute
 			|| oldState.deaf != data.deaf || oldState.self_deaf != data.self_deaf)) {
 			this.client.emit("voiceStateUpdate", channel, user, oldState, this.memberMap[user.id]);

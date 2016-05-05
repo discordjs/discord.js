@@ -109,9 +109,9 @@ Returns an object containing metadata of a user within the server, containing a 
 		joinedAt: 1449339323747,
 		roles: [],
 		mute: false,
-		self_mute: false,
+		selfMute: false,
 		deaf: false,
-		self_deaf: false
+		selfDeaf: false
 	}
 
 leave()

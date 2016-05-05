@@ -874,4 +874,4 @@ Emitted when a user leaves a voice channel, supplies a VoiceChannel_ and a User_
 voiceStateUpdate
 ~~~~~~~~~~
 
-Emitted when a user mutes/deafens, supplies a VoiceChannel_, User_, an object containing the old mute/self_mute/deaf/self_deaf properties, and an object containing the new mute/self_mute/deaf/self_deaf properties
+Emitted when a user mutes/deafens, supplies a VoiceChannel_, User_, an object containing the old mute/selfMute/deaf/selfDeaf properties, and an object containing the new mute/selfMute/deaf/selfDeaf properties
