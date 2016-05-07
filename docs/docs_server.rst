@@ -111,7 +111,8 @@ Returns an object containing metadata of a user within the server, containing a 
 		mute: false,
 		selfMute: false,
 		deaf: false,
-		selfDeaf: false
+		selfDeaf: false,
+		nick: 'Nickname'
 	}
 
 leave()
