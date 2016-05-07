@@ -77,6 +77,11 @@ client.on('message', message => {
 			}
 		}
 
+		if (message.content === 'myperms?') {
+			message.channel.sendMessage('Your permissions are:\n' +
+				JSON.stringify(message.channel.permissionsFor(message.author).serialize(), null, 4));
+		}
+
 		if (message.content === 'delchann') {
 			message.channel.delete().then(chan => console.log('selfDelChann', chan.name));
 		}

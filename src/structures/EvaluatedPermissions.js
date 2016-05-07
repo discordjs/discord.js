@@ -27,7 +27,7 @@ class EvaluatedPermissions {
 		}
 
 		if (!explicit) {
-			if ((this.permissions & Constants.PermissionFlags.MANAGE_ROLES) > 0) {
+			if ((this.permissions & Constants.PermissionFlags.ADMINISTRATOR) > 0) {
 				return true;
 			}
 		}

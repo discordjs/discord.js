@@ -41,15 +41,17 @@ class RESTMethods{
 	SendMessage(channel, content, tts, nonce) {
 		return new Promise((resolve, reject) => {
 
+			var _this = this;
+
 			if (channel instanceof User || channel instanceof GuildMember) {
 				this.CreateDM(channel).then(chan => {
 					channel = chan;
 					req();
 				})
 				.catch(reject);
+			} else {
+				req();
 			}
-
-			var _this = this;
 
 			function req() {
 				_this.rest.makeRequest('post', Constants.Endpoints.CHANNEL_MESSAGES(channel.id), true, {

@@ -60,11 +60,7 @@ class PresenceUpdateHandler extends AbstractHandler {
 			data.user.discriminator === user.discriminator &&
 			data.user.avatar === user.avatar &&
 			data.user.status === user.status &&
-			!(
-				(data.user.game && !user.game) ||
-				(!data.user.game && user.game) ||
-				(data.user.game && user.game && data.user.game.name !== user.game.name)
-			)
+			JSON.stringify(data.user.game) === JSON.stringify(user.game)
 		);
 
 		if (!same) {

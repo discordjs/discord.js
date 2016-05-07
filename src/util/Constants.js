@@ -146,7 +146,7 @@ const PermissionFlags = exports.PermissionFlags = {
 	CREATE_INSTANT_INVITE: 1 << 0,
 	KICK_MEMBERS: 1 << 1,
 	BAN_MEMBERS: 1 << 2,
-	MANAGE_ROLES: 1 << 3,
+	ADMINISTRATOR: 1 << 3,
 	MANAGE_CHANNELS: 1 << 4,
 	MANAGE_GUILD: 1 << 5,
 
@@ -165,6 +165,10 @@ const PermissionFlags = exports.PermissionFlags = {
 	DEAFEN_MEMBERS: 1 << 23,
 	MOVE_MEMBERS: 1 << 24,
 	USE_VAD: 1 << 25,
+
+	CHANGE_NICKNAME: 1 << 26,
+	MANAGE_NICKNAMES: 1 << 27,
+	MANAGE_ROLES_OR_PERMISSIONS: 1 << 28,
 };
 
 let _ALL_PERMISSIONS = 0;
