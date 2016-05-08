@@ -94,6 +94,11 @@ export default class Server extends Equality {
 			for (var voiceState of data.voice_states) {
 				let user = this.members.get("id", voiceState.user_id);
 				let channel = this.channels.get("id", voiceState.channel_id);
+				this.memberMap[user.id] = this.memberMap[user.id] || {};
+				this.memberMap[user.id].mute = voiceState.mute || this.memberMap[user.id].mute;
+				this.memberMap[user.id].selfMute = voiceState.self_mute || this.memberMap[user.id].selfMute;
+				this.memberMap[user.id].deaf = voiceState.deaf || this.memberMap[user.id].deaf;
+				this.memberMap[user.id].selfDeaf = voiceState.self_deaf || this.memberMap[user.id].selfDeaf;
 				if (user && channel) {
 					this.eventVoiceJoin(user, channel);
 				} else {
@@ -182,10 +187,6 @@ export default class Server extends Equality {
 
 		channel.members.add(user);
 		user.voiceChannel = channel;
-		this.memberMap[user.id].mute = data.mute || this.memberMap[user.id].mute;
-		this.memberMap[user.id].selfMute = data.self_mute || this.memberMap[user.id].selfMute;
-		this.memberMap[user.id].deaf = data.deaf || this.memberMap[user.id].deaf;
-		this.memberMap[user.id].selfDeaf = data.self_deaf || this.memberMap[user.id].selfDeaf;
 		this.client.emit("voiceJoin", channel, user);
 	}
 
