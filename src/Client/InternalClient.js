@@ -1487,6 +1487,7 @@ export default class InternalClient {
 					var channel = self.channels.get("id", data.channel_id) || self.private_channels.get("id", data.channel_id);
 					if (channel) {
 						var msg = channel.messages.add(new Message(data, channel, client));
+						channel.lastMessageID = msg.id;
 
 						if (self.messageAwaits[channel.id + msg.author.id]) {
 							self.messageAwaits[channel.id + msg.author.id].map( fn => fn(msg) );
