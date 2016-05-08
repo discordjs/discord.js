@@ -1166,9 +1166,7 @@ export default class InternalClient {
 			this.idleStatus = this.idleStatus || null; //undefined
 		}
 
-		this.game = game === null ? null : !game ? this.game || null : {
-			name: game
-		};
+		this.game = game === null ? null : !game ? this.game || null : typeof game === "string" ? {name: game} : game;
 
 		var packet = {
 			op: 3,

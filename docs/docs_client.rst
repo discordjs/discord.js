@@ -440,7 +440,7 @@ setStatus(status, `game`, `callback`)
 Sets the Discord Status of the Client
 
 - **status** - `String`, either ``online, here, active, available`` or ``idle, away``
-- **game** - `String`, Name of game being played, or `null` to clear
+- **game** - `String`, Name of game being played, or `Object` with the properties `name` `url` `type`, or `null` to clear
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
 
@@ -464,6 +464,17 @@ setPlayingGame(game, `callback`)
 Sets the Discord Status of the Client
 
 - **game** - `String`, Name of game being played, or `null` to clear
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred
+
+setStreaming(name, url, type `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sets the Discord Status of the Client
+
+- **name** - `String`, Name of game being played
+- **url** - `String`, URL that it will link to
+- **type** - `Number`, `1` indicates streaming
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
 
