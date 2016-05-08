@@ -22,6 +22,8 @@ Valid Permission Names
 		manageChannels,
 		manageChannel,
 		manageServer,
+		changeNickname,
+		manageNicknames,
 		// text
 		readMessages,
 		sendMessages,

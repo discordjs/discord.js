@@ -868,7 +868,7 @@ export default class InternalClient {
 		nick = nick || "";
 		user = this.resolver.resolveUser(user);
 		server = this.resolver.resolveServer(server);
-		return this.apiRequest("patch", `${Endpoints.SERVER_MEMBERS(server.id)}/${user.id}`, true, { nick: nick });
+		return this.apiRequest("patch", `${Endpoints.SERVER_MEMBERS(server.id)}/${user.id === this.user.id ? "@me/nick" : user.id}`, true, { nick: nick });
 	}
 
 	// def createRole
