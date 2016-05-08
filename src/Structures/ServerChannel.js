@@ -44,12 +44,16 @@ export default class ServerChannel extends Channel{
 			var permissions = 0;
 
 			for(var serverRole of userRoles){
-				permissions |= serverRole.permissions;
+				if (serverRole) {
+					permissions |= serverRole.permissions;
+				}
 			}
 
 			for(var overwrite of roleOverwrites.concat(memberOverwrites)){
-				permissions = permissions & ~overwrite.deny;
-				permissions = permissions | overwrite.allow;
+				if (overwrite) {
+					permissions = permissions & ~overwrite.deny;
+					permissions = permissions | overwrite.allow;
+				}
 			}
 
 			return new ChannelPermissions(permissions);

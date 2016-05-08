@@ -1786,15 +1786,19 @@ export default class InternalClient {
 					if (server) {
 						var user = self.users.add(new User(data.user, client));
 						if (user) {
-							var oldMember = {
-								roles: server.memberMap[data.user.id].roles,
-								mute: server.memberMap[data.user.id].mute,
-								selfMute: server.memberMap[data.user.id].selfMute,
-								deaf: server.memberMap[data.user.id].deaf,
-								selfDeaf: server.memberMap[data.user.id].selfDeaf,
-								nick: server.memberMap[data.user.id].nick
-							};
-							server.memberMap[data.user.id] = server.memberMap[data.user.id] || {};
+							var oldMember = null;
+							if (server.memberMap[data.user.id]) {
+								oldMember = {
+									roles: server.memberMap[data.user.id].roles,
+									mute: server.memberMap[data.user.id].mute,
+									selfMute: server.memberMap[data.user.id].selfMute,
+									deaf: server.memberMap[data.user.id].deaf,
+									selfDeaf: server.memberMap[data.user.id].selfDeaf,
+									nick: server.memberMap[data.user.id].nick
+								};
+							} else {
+								server.memberMap[data.user.id] = {};
+							}
 							server.memberMap[data.user.id].roles = data.roles.map(pid => server.roles.get("id", pid));
 							server.memberMap[data.user.id].mute = data.mute;
 							server.memberMap[data.user.id].selfMute = data.self_mute;
