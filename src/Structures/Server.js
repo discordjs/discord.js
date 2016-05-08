@@ -182,6 +182,10 @@ export default class Server extends Equality {
 
 		channel.members.add(user);
 		user.voiceChannel = channel;
+		this.memberMap[user.id].mute = data.mute || this.memberMap[user.id].mute;
+		this.memberMap[user.id].selfMute = data.self_mute || this.memberMap[user.id].selfMute;
+		this.memberMap[user.id].deaf = data.deaf || this.memberMap[user.id].deaf;
+		this.memberMap[user.id].selfDeaf = data.self_deaf || this.memberMap[user.id].selfDeaf;
 		this.client.emit("voiceJoin", channel, user);
 	}
 
