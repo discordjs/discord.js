@@ -1094,6 +1094,10 @@ export default class Client extends EventEmitter {
 		return this.setStatus(null, game, callback);
 	}
 
+	setStreaming(name, url, type, callback = (/*err, {}*/) => { }) {
+		return this.setStatus(null, {name: name, url: url, type: type}, callback);
+	}
+
 	//def forceFetchUsers
 	forceFetchUsers(callback){
 		return this.internal.forceFetchUsers().then(callback);
