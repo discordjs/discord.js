@@ -1763,16 +1763,6 @@ export default class InternalClient {
 							server.memberMap[data.user.id] = null;
 							server.members.remove(user);
 							server.memberCount--;
-							var found = false;
-							for (var s of self.servers) {
-								if (s.members.get("id", user.id)) {
-									found = true;
-									break;
-								}
-							}
-							if (!found) {
-								self.users.remove(user);
-							}
 						} else {
 							client.emit("warn", "server member removed but user doesn't exist in cache");
 						}
