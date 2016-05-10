@@ -689,6 +689,37 @@ export default class InternalClient {
 		.then(() => message.channel.messages.remove(message));
 	}
 
+	// def deleteMessages
+	deleteMessages(_messages) {
+		if (!_messages instanceof Array)
+			return Promise.reject(new Error("Messages provided must be in an array"));
+		if (_messages.length < 1)
+			return Promise.reject(new Error("You must provide at least one message to delete"))
+
+		var messages = [];
+		var channel;
+		for (var _message of _messages) {
+			var message = this.resolver.resolveMessage(_message);
+			if (!message)
+				return Promise.reject(new Error("Something other than a message could not be resolved in the array..."));
+
+			// ensure same channel
+			if (!channel) {
+				channel = message.channel;
+			} else {
+				if (message.channel.id !== channel.id)
+					return Promise.reject(new Error("You can only bulk delete messages from the same channel at one time..."));
+			}
+
+			messages.push(message);
+		}
+
+		return this.apiRequest("post", `${Endpoints.CHANNEL_MESSAGES(channel.id)}/bulk_delete`, true, {
+			messages: messages.map(m => m.id)
+		})
+		.then(() => messages.forEach(m => channel.messages.remove(m)));
+	}
+
 	// def updateMessage
 	updateMessage(msg, _content, options = {}) {
 
