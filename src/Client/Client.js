@@ -511,6 +511,21 @@ export default class Client extends EventEmitter {
 		return this.internal.deleteMessage(message, options)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
+
+	/**
+	 * Bulk deletes messages (if the client has permission to)
+	 * @param {Array<MessageResolvable>} message the message to delete
+	 * @param {function(err: Error)} [callback] callback to the method
+	 * @returns {Promise<null, Error>} Resolves with null if the deletion was successful, otherwise rejects with an Error.
+	 * @example
+	 * // deleting messages
+	 * client.deleteMessages([message1, message2]);
+	 */
+	deleteMessages(messages, callback = (/*err, {}*/) => { }) {
+		return this.internal.deleteMessages(messages)
+			.then(dataCallback(callback), errorCallback(callback));
+	}
+
 	/**
 	 * Edits a previously sent message (if the client has permission to)
 	 * @param {MessageResolvable} message the message to edit
