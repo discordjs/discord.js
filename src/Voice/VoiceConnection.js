@@ -400,6 +400,14 @@ export default class VoiceConnection extends EventEmitter {
 				}
 			});
 
+			vWS.on("error", (err, msg) => {
+				self.emit("error", err, msg);
+			});
+
+			vWS.on("close", (code) => {
+				self.emit("close", code);
+			})
+
 		});
 	}
 
