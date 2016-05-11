@@ -251,9 +251,18 @@ deleteMessage(message, `options`, `callback`)
 
 Attempts to delete a message
 
-- **message** - The Message_ to delete
+- **message** - The `Message Resolvable`_ to delete
 - **options** - `object` containing the following:
     - **wait** - Milliseconds as a `number` to wait before deleting the message
+- **callback** - `function` that takes the following parameters:
+    - **error** - error object if any occurred
+
+deleteMessages(messages, `options`, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Attempts to bulk delete messages from the same channel
+
+- **message** - Array of `Message Resolvable`_ to delete
 - **callback** - `function` that takes the following parameters:
     - **error** - error object if any occurred
 

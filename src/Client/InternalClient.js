@@ -285,15 +285,13 @@ export default class InternalClient {
 
 			var joinVoice = () => {
 				return new Promise((resolve, reject) => {
-					var session, token, server = channel.server, endpoint;
+					var session = this.sessionID, token, server = channel.server, endpoint;
 
 					var check = m => {
 						var data = JSON.parse(m);
 						if (data.d.guild_id !== server.id) return // ensure it is the right server
 
-						if (data.t === "VOICE_STATE_UPDATE") {
-							session = data.d.session_id;
-						} else if (data.t === "VOICE_SERVER_UPDATE") {
+						if (data.t === "VOICE_SERVER_UPDATE") {
 							token = data.d.token;
 							endpoint = data.d.endpoint;
 							var chan = new VoiceConnection(
@@ -303,6 +301,7 @@ export default class InternalClient {
 
 							chan.on("ready", () => resolve(chan));
 							chan.on("error", reject);
+							chan.on("close", reject);
 
 							this.client.emit("debug", "removed temporary voice websocket listeners");
 							this.websocket.removeListener("message", check);
@@ -1467,6 +1466,7 @@ export default class InternalClient {
 					this.forceFetchQueue = [];
 					this.forceFetchLength = 1;
 					this.autoReconnectInterval = 1000;
+					this.sessionID = data.session_id;
 
 					data.guilds.forEach(server => {
 						if (!server.unavailable) {
