@@ -1821,10 +1821,10 @@ export default class InternalClient {
 							}
 							server.memberMap[data.user.id].roles = data.roles ? data.roles.map(pid => server.roles.get("id", pid)) : server.memberMap[data.user.id].roles;
 							server.memberMap[data.user.id].mute = data.mute || server.memberMap[data.user.id].mute;
-							server.memberMap[data.user.id].selfMute = data.self_mute || server.memberMap[data.user.id].selfMute;
+							server.memberMap[data.user.id].selfMute = data.self_mute === undefined ? server.memberMap[data.user.id].selfMute : data.self_mute;
 							server.memberMap[data.user.id].deaf = data.deaf || server.memberMap[data.user.id].deaf;
-							server.memberMap[data.user.id].selfDeaf = data.self_deaf || server.memberMap[data.user.id].selfDeaf;
-							server.memberMap[data.user.id].nick = data.nick || server.memberMap[data.user.id].nick || null;
+							server.memberMap[data.user.id].selfDeaf = data.self_deaf === undefined ? server.memberMap[data.user.id].selfDeaf : data.self_deaf;
+							server.memberMap[data.user.id].nick = data.nick === undefined ? server.memberMap[data.user.id].nick : data.nick || null;
 							client.emit("serverMemberUpdated", server, user, oldMember);
 						} else {
 							client.emit("warn", "server member removed but user doesn't exist in cache");
