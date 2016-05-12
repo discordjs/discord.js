@@ -36,8 +36,8 @@ export default class Cache extends Array {
 		return null;
 	}
 
-	has(object) {
-		return !!this.get(this[discrimS], object[this[discrimS]]);
+	has(key, value) {
+		return !!this.get(key, value);
 	}
 
 	getAll(key, value) {
