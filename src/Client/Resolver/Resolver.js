@@ -140,7 +140,7 @@ export default class Resolver {
 				var user = this.internal.users.get("id", mention.substring(3, mention.length - 1));
 				if (user) {
 					_mentions.push(user);
-					var details = channel.server.detailsOf(user);
+					var details = channel.server && channel.server.detailsOf(user);
 					if (details) {
 						changed = changed.replace(new RegExp(mention, "g"), `@${details.nick || (user.username + "#" + user.discriminator)}`);
 					}

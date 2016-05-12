@@ -2003,6 +2003,9 @@ export default class InternalClient {
 
 					break;
 				case PacketType.FRIEND_ADD:
+					if (this.user.bot) {
+						return;
+					}
 					if (data.type === 1) { // accepted/got accepted a friend request
 						var inUser = self.incoming_friend_requests.get("id", data.id);
 						if (inUser) {
@@ -2030,6 +2033,9 @@ export default class InternalClient {
 					}
 					break;
 				case PacketType.FRIEND_REMOVE:
+					if (this.user.bot) {
+						return;
+					}
 					var user = self.friends.get("id", data.id);
 					if (user) {
 						self.friends.remove(user);
