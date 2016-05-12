@@ -1844,7 +1844,7 @@ export default class InternalClient {
 
 						data.user.username = data.user.username || user.username;
 						data.user.id = data.user.id || user.id;
-						data.user.avatar = data.user.avatar || user.avatar;
+						data.user.avatar = data.user.avatar === undefined ? user.avatar : data.user.avatar;
 						data.user.discriminator = data.user.discriminator || user.discriminator;
 						data.user.status = data.status || user.status;
 						data.user.game = data.game;
