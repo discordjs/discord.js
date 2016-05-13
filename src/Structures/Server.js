@@ -56,7 +56,7 @@ export default class Server extends Equality {
 		} else {
 			data.members.forEach((dataUser) => {
 				this.memberMap[dataUser.user.id] = {
-					roles: dataUser.roles.map((pid) => self.roles.get("id", pid)),
+					roles: dataUser.roles,
 					mute: dataUser.mute,
 					selfMute: dataUser.self_mute,
 					deaf: dataUser.deaf,
@@ -111,7 +111,11 @@ export default class Server extends Equality {
 	detailsOf(user) {
 		user = this.client.internal.resolver.resolveUser(user);
 		if (user) {
-			return this.memberMap[user.id] || {};
+			var result = this.memberMap[user.id] || {};
+			if(result && result.roles) {
+				result.roles = result.roles.map(pid => this.roles.get("id", pid));
+			}
+			return result;
 		} else {
 			return {};
 		}
@@ -130,12 +134,7 @@ export default class Server extends Equality {
 	}
 
 	rolesOfUser(user) {
-		user = this.client.internal.resolver.resolveUser(user);
-		if (user) {
-			return (this.memberMap[user.id] ? this.memberMap[user.id].roles : []);
-		} else {
-			return [];
-		}
+		return this.detailsOf(user).roles || [];
 	}
 
 	rolesOfMember(member) {

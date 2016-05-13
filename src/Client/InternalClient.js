@@ -978,7 +978,7 @@ export default class InternalClient {
 			return Promise.reject(new Error("Role does not exist on same server as member"));
 		}
 
-		var roleIDs = roles[0].server.memberMap[member.id].roles.map(r => r.id);
+		var roleIDs = roles[0].server.memberMap[member.id].roles;
 
 		for (var i = 0; i < roles.length; i++) {
 			if (!~roleIDs.indexOf(roles[i].id)) {
@@ -1037,7 +1037,7 @@ export default class InternalClient {
 			roles = roles.map(r => this.resolver.resolveRole(r));
 		}
 
-		var roleIDs = roles[0].server.memberMap[member.id].roles.map(r => r.id);
+		var roleIDs = roles[0].server.memberMap[member.id].roles;
 
 		for (var role of roles) {
 			if (!role.server.memberMap[member.id]) {
@@ -1764,7 +1764,7 @@ export default class InternalClient {
 					if (server) {
 
 						server.memberMap[data.user.id] = {
-							roles: data.roles.map(pid => server.roles.get("id", pid)),
+							roles: data.roles,
 							mute: false,
 							selfMute: false,
 							deaf: false,
@@ -1819,7 +1819,7 @@ export default class InternalClient {
 							} else {
 								server.memberMap[data.user.id] = {};
 							}
-							server.memberMap[data.user.id].roles = data.roles ? data.roles.map(pid => server.roles.get("id", pid)) : server.memberMap[data.user.id].roles;
+							server.memberMap[data.user.id].roles = data.roles ? data.roles : server.memberMap[data.user.id].roles;
 							server.memberMap[data.user.id].mute = data.mute || server.memberMap[data.user.id].mute;
 							server.memberMap[data.user.id].selfMute = data.self_mute === undefined ? server.memberMap[data.user.id].selfMute : data.self_mute;
 							server.memberMap[data.user.id].deaf = data.deaf || server.memberMap[data.user.id].deaf;
@@ -1975,7 +1975,7 @@ export default class InternalClient {
 
 						for (var user of data.members) {
 							server.memberMap[user.user.id] = {
-								roles: user.roles.map(pid => server.roles.get("id", pid)),
+								roles: user.roles,
 								mute: user.mute,
 								selfMute: false,
 								deaf: user.deaf,
