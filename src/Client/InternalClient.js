@@ -1459,7 +1459,7 @@ export default class InternalClient {
 				case PacketType.READY:
 					var startTime = Date.now();
 					self.intervals.kai = setInterval(() => self.sendWS({ op: 1, d: Date.now() }), data.heartbeat_interval);
-
+console.log(data.read_state.filter(s=>s.mention_count>0));
 					self.user = self.users.add(new User(data.user, client));
 
 					this.forceFetchCount = {};

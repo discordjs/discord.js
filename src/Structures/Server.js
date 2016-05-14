@@ -113,7 +113,7 @@ export default class Server extends Equality {
 		if (user) {
 			var result = this.memberMap[user.id] || {};
 			if(result && result.roles) {
-				result.roles = result.roles.map(pid => this.roles.get("id", pid));
+				result.roles = result.roles.map(pid => this.roles.get("id", pid) || pid);
 			}
 			return result;
 		} else {
