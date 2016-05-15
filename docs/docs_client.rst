@@ -434,6 +434,16 @@ Gets more info on a specific invite
     - **error** - error if any occurred
     - **invite** - an Invite_ object
 
+getInvites(source, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Gets all the invites in a channel/server
+
+- **source** - A `Channel Resolvable`_ or `Server Resolvable`_
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred
+    - **invite** - Array of Invite_ objects
+
 deleteInvite(invite, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
