@@ -29,6 +29,11 @@ forceFetchUsers
 
 Make the library get all the users in all guilds, and delay the ready event until all users are received. This will slow down ready times and increase initial network traffic.
 
+guildCreateTimeout
+~~~~~~~~~~~~~~~
+
+How long in milliseconds to wait for more guilds during the initial ready stream. Default is 1000ms. Increase this number if you are getting some serverCreated events right after ready.
+
 largeThreshold
 ~~~~~~~~~~~~~~
 

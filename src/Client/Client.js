@@ -50,6 +50,7 @@ export default class Client extends EventEmitter {
 		this.options.rateLimitAsError = options.rateLimitAsError || false;
 		this.options.largeThreshold = options.largeThreshold || 250;
 		this.options.maxCachedMessages = options.maxCachedMessages || 1000;
+		this.options.guildCreateTimeout = options.guildCreateTimeout || 1000;
 		/**
 		 * Internal Client that the Client wraps around.
 		 * @readonly

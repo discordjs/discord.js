@@ -381,7 +381,7 @@ export default class InternalClient {
 		if(!this.readyTime) {
 			this.guildCreateTimeout = setTimeout(() => {
 				this.checkReady();
-			}, 1000);
+			}, this.client.options.guildCreateTimeout);
 		}
 	}
 
