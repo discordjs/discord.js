@@ -147,9 +147,9 @@ export default class AudioEncoder {
 		});
 	}
 
-	encodeArbitraryFFmpeg(ffmpegOptions) {
+	encodeArbitraryFFmpeg(ffmpegOptions, volume) {
 		return new Promise((resolve, reject) => {
-			this.volume = new VolumeTransformer(1);
+			this.volume = new VolumeTransformer(volume);
 
 			// add options discord.js needs
 			var options = ffmpegOptions.concat([

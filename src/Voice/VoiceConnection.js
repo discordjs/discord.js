@@ -277,20 +277,20 @@ export default class VoiceConnection extends EventEmitter {
 		})
 	}
 
-	playArbitraryFFmpeg(ffmpegOptions, callback = function (err, str) { }) {
+	playArbitraryFFmpeg(ffmpegOptions, volume, callback = function (err, str) { }) {
 		var self = this;
 		self.stopPlaying();
-		if (typeof options === "function") {
-			// options is the callback
-			callback = options;
+		if (typeof volume === "function") {
+			// volume is the callback
+			callback = volume;
 		}
-        if (typeof options !== "object") {
-            options = {};
+        if (!ffmpegOptions instanceof Array) {
+            ffmpegOptions = [];
         }
-		options.volume = options.volume !== undefined ? options.volume : this.getVolume();
+		var volume = volume !== undefined ? volume : this.getVolume();
 		return new Promise((resolve, reject) => {
 			this.encoder
-				.encodeArbitraryFFmpeg(ffmpegOptions)
+				.encodeArbitraryFFmpeg(ffmpegOptions, volume)
 				.catch(error)
 				.then(data => {
 					self.streamProc = data.proc;

@@ -88,7 +88,7 @@ This method is used in much the same way as `playFile`, except it plays data bac
 
 | See voiceConnection.playFile_ for usage information.
 
-playArbitraryFFmpeg(options, `callback`)
+playArbitraryFFmpeg(ffmpegOptions, `volume`, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This method can be used to play data obtained from an arbitrary call to ffmpeg. Note that the array of options given as the parameter will
