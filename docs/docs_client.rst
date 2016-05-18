@@ -869,7 +869,7 @@ Emitted when a member is removed from a server. Supplies a Server_ object and a 
 serverMemberUpdated
 ~~~~~~~~~~~~~~~~~~~
 
-Emitted when a member in a server is updated. Supplies a Server_ object and 2 User_ objects, the first being the new, updated user, the second being the old one.
+Emitted when a member in a server is updated. Supplies a Server_ object and 2 User_ objects, the first being the new, updated user, the second being the old one. The old user object could be null if the bot didn't previously have the member cached.
 
 presence
 ~~~~~~~~

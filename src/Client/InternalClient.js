@@ -1957,7 +1957,7 @@ export default class InternalClient {
 					if (user && user.id === self.user.id) { // only for detecting self user movements for connections.
 						var connection = self.voiceConnections.get("server", server);
 						// existing connection, perhaps channel moved
-						if (connection && connection.voiceChannel.id !== data.channel_id) {
+						if (connection && connection.voiceChannel && connection.voiceChannel.id !== data.channel_id) {
 							// moved, update info
 							connection.voiceChannel = self.channels.get("id", data.channel_id);
 							client.emit("voiceMoved", connection.voiceChannel); // Moved to a new channel
