@@ -491,7 +491,7 @@ Sets the Discord Status of the Client
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
 
-setStreaming(name, url, type `callback`)
+setStreaming(name, url, type, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sets the Discord Status of the Client
