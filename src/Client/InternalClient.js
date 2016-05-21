@@ -935,7 +935,8 @@ export default class InternalClient {
 			hoist: data.hoist || role.hoist,
 			name: data.name || role.name,
 			position: data.position || role.position,
-			permissions: role.permissions || 0
+			permissions: role.permissions || 0,
+			mentionable: 'mentionable' in data ? data.mentionable : role.mentionable
 		};
 
 		if (data.permissions) {
