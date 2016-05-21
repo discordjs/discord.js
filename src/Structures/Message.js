@@ -15,6 +15,7 @@ export default class Message extends Equality{
 	constructor(data, channel, client) {
 		super();
 		this.channel = channel;
+		this.server = channel.server;
 		this.client = client;
 		this.nonce = data.nonce;
 		this.attachments = data.attachments;
