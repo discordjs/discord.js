@@ -1306,7 +1306,8 @@ export default class InternalClient {
 			this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
 				name: channel.name,
 				position: channel.position,
-				topic: topic
+				topic: topic,
+				user_limit: channel.userLimit
 			})
 			.then(res => channel.topic = res.topic)
 		);
@@ -1319,7 +1320,8 @@ export default class InternalClient {
 			this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
 				name: name,
 				position: channel.position,
-				topic: channel.topic
+				topic: channel.topic,
+				user_limit: channel.userLimit
 			})
 			.then(res => channel.name = res.name)
 		);
@@ -1332,7 +1334,8 @@ export default class InternalClient {
 			this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
 				name: name,
 				position: channel.position,
-				topic: topic
+				topic: topic,
+				user_limit: channel.userLimit
 			})
 			.then(res => {
 				channel.name = res.name;
@@ -1348,15 +1351,20 @@ export default class InternalClient {
 			this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
 				name: channel.name,
 				position: position,
-				topic: channel.topic
+				topic: channel.topic,
+				user_limit: channel.userLimit
 			})
 			.then(res => channel.position = res.position)
 		);
 	}
 
-	// def setChannelUserLimit
+	//def setChannelUserLimit
 	setChannelUserLimit(channel, limit) {
 		limit = limit || 0;
+
+		if (limit < 0) {
+			return Promise.reject(new Error("User limit cannot be less than 0"));
+		}
 
 		if (limit > 99) {
 			return Promise.reject(new Error("User limit cannot be greater than 99"));
@@ -1368,6 +1376,9 @@ export default class InternalClient {
 			}
 
 			return this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
+				name: channel.name,
+				topic: channel.topic,
+				position: channel.position,
 				user_limit: limit
 			})
 			.then(res => channel.userLimit = limit);
