@@ -1362,7 +1362,7 @@ export default class InternalClient {
 
 		return this.resolver.resolveChannel(channel).then((channel) => {
 			if (channel.type !== "voice")
-				return new Promise.reject(Error("Channel must be a voice channel"));
+				return new Promise.reject(new Error("Channel must be a voice channel"));
 
 			return this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
 				user_limit: limit
