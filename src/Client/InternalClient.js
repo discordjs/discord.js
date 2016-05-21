@@ -1354,6 +1354,26 @@ export default class InternalClient {
 		);
 	}
 
+	// def setChannelUserLimit
+	setChannelUserLimit(channel, limit) {
+		limit = limit || 0;
+
+		if (limit > 99) {
+			return Promise.reject(new Error("User limit cannot be greater than 99"));
+		}
+
+		return this.resolver.resolveChannel(channel).then((channel) => {
+			if (channel.type !== "voice") {
+				return Promise.reject(new Error("Channel must be a voice channel"));
+			}
+
+			return this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
+				user_limit: limit
+			})
+			.then(res => channel.userLimit = limit);
+		});
+	}
+
 	//def updateChannel
 	updateChannel(chann, data) {
 		return this.setChannelNameAndTopic(chann, data.name, data.topic);
