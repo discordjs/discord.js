@@ -622,7 +622,8 @@ Creates a new role in a server.
         permissions : [
             // see the constants documentation for full permissions
             "attachFiles", "sendMessages"
-        ]
+        ],
+        mentionable: false
     }
 
 updateRole(role, data, `callback`)
@@ -646,7 +647,8 @@ Updates a role in a server.
         permissions : [
             // see the constants documentation for full permissions
             "attachFiles", "sendMessages"
-        ]
+        ],
+        mentionable: false
     }
 
 deleteRole(role, `callback`)

@@ -40,6 +40,7 @@ export default class Role {
 		this.color = data.color || 0;
 		this.server = server;
 		this.client = client;
+		this.mentionable = data.mentionable || false;
 	}
 
 	serialise(explicit){
