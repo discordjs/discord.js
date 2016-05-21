@@ -287,11 +287,13 @@ export default class InternalClient {
 				return new Promise((resolve, reject) => {
 					var session = this.sessionID, token, server = channel.server, endpoint;
 
+					var timeout = null;
+
 					var check = m => {
 						var data = JSON.parse(m);
-						if (data.d.guild_id !== server.id) return // ensure it is the right server
 
 						if (data.t === "VOICE_SERVER_UPDATE") {
+							if (data.d.guild_id !== server.id) return // ensure it is the right server
 							token = data.d.token;
 							endpoint = data.d.endpoint;
 							var chan = new VoiceConnection(
@@ -303,10 +305,17 @@ export default class InternalClient {
 							chan.on("error", reject);
 							chan.on("close", reject);
 
-							this.client.emit("debug", "removed temporary voice websocket listeners");
+							if(timeout) {
+								clearTimeout(timeout);
+							}
 							this.websocket.removeListener("message", check);
 						}
 					};
+
+					timeout = setTimeout(() => {
+						this.websocket.removeListener("message", check);
+						reject(new Error("No voice server details within 10 seconds"));
+					}, 10000);
 
 					this.websocket.on("message", check);
 					joinSendWS();
