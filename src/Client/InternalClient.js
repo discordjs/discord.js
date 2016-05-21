@@ -1874,10 +1874,11 @@ export default class InternalClient {
 
 						data.user.username = data.user.username || user.username;
 						data.user.id = data.user.id || user.id;
-						data.user.avatar = data.user.avatar === undefined ? user.avatar : data.user.avatar;
+						data.user.avatar = data.user.avatar !== undefined ? data.user.avatar : user.avatar;
 						data.user.discriminator = data.user.discriminator || user.discriminator;
 						data.user.status = data.status || user.status;
-						data.user.game = data.game;
+						data.user.game = data.user.game !== undefined ? data.user.game : user.game;
+						data.user.bot = data.user.bot !== undefined ? data.user.bot : user.bot;
 
 						var presenceUser = new User(data.user, client);
 
