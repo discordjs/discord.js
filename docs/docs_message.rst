@@ -20,7 +20,7 @@ The channel the message was sent in, either a TextChannel_ or PMChannel_.
 server
 ~~~~~~~
 
-The Server_ the message was sent in.
+The Server_ the message was sent in. Will be null if the message was sent in a PMChannel_.
 
 client
 ~~~~~~
