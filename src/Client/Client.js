@@ -983,6 +983,12 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
+	// def setChannelUserLimit
+	setChannelUserLimit(channel, limit, callback = (/*err, {}*/) => { }) {
+		return this.internal.setChannelUserLimit(channel, limit)
+			.then(dataCallback(callback), errorCallback(callback));
+	}
+
 	// def updateChannel
 	updateChannel(channel, data, callback = (/*err, {}*/) => { }) {
 		return this.internal.updateChannel(channel, data)

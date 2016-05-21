@@ -533,6 +533,16 @@ Sets the name and topic of a channel
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
 
+setChannelUserLimit(channel, limit, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sets the user limit of a voice channel
+
+- **channel** - A `Channel Resolvable`_
+- **limit** - A `Number`, user limit (0 - 99)
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred
+
 startTyping(channel, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
