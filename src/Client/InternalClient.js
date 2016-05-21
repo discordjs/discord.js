@@ -978,7 +978,7 @@ export default class InternalClient {
 			return Promise.reject(new Error("Role does not exist on same server as member"));
 		}
 
-		var roleIDs = roles[0].server.memberMap[member.id].roles;
+		var roleIDs = roles[0].server.memberMap[member.id].roles.map(r => (r && r.id) || r);
 
 		for (var i = 0; i < roles.length; i++) {
 			if (!~roleIDs.indexOf(roles[i].id)) {
@@ -1037,7 +1037,7 @@ export default class InternalClient {
 			roles = roles.map(r => this.resolver.resolveRole(r));
 		}
 
-		var roleIDs = roles[0].server.memberMap[member.id].roles;
+		var roleIDs = roles[0].server.memberMap[member.id].roles.map(r => (r && r.id) || r);
 
 		for (var role of roles) {
 			if (!role.server.memberMap[member.id]) {
