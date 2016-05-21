@@ -56,8 +56,6 @@ export default class VoiceConnection extends EventEmitter {
 		if (this.KAI) {
 			clearInterval(this.KAI);
 		}
-		this.vWS.close();
-		this.udp.close();
 		this.client.internal.sendWS(
 			{
 				op : 4,
@@ -70,6 +68,12 @@ export default class VoiceConnection extends EventEmitter {
 			}
 		);
 		this.client.internal.voiceConnections.remove(this);
+		try {
+			this.vWS.close();
+		} catch(e) {}
+		try {
+			this.udp.close();
+		} catch(e) {}
 	}
 
 	stopPlaying() {
