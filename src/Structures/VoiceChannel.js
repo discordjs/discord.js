@@ -18,7 +18,7 @@ export default class VoiceChannel extends ServerChannel{
 	}
 
 	setUserLimit() {
-		return this.client.setChannelUserLimit.apply(this.client, [this, arguments]);
+		return this.client.setChannelUserLimit.apply(this.client, reg(this, arguments));
 	}
 
 	setBitrate() {

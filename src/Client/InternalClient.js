@@ -1302,33 +1302,43 @@ export default class InternalClient {
 	//def setChannelTopic
 	setChannelTopic(chann, topic = "") {
 		return this.resolver.resolveChannel(chann)
-		.then(channel =>
+		.then(channel => {
+			if (channel.type !== "text") {
+				return Promise.reject(new Error("Channel must be a text channel"));
+			}
+
 			this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
 				name: channel.name,
 				position: channel.position,
 				topic: topic
 			})
 			.then(res => channel.topic = res.topic)
-		);
+		});
 	}
 
 	//def setChannelName
 	setChannelName(chann, name = "discordjs_is_the_best") {
 		return this.resolver.resolveChannel(chann)
-		.then(channel =>
+		.then(channel => {
 			this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
 				name: name,
 				position: channel.position,
-				topic: channel.topic
+				topic: channel.topic,
+				user_limit: channel.userLimit,
+				bitrate: channel.bitrate
 			})
 			.then(res => channel.name = res.name)
-		);
+		});
 	}
 
 	//def setChannelNameAndTopic
 	setChannelNameAndTopic(chann, name = "discordjs_is_the_best", topic = "") {
 		return this.resolver.resolveChannel(chann)
-		.then(channel =>
+		.then(channel => {
+			if (channel.type !== "text") {
+				return Promise.reject(new Error("Channel must be a text channel"));
+			}
+
 			this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
 				name: name,
 				position: channel.position,
@@ -1338,25 +1348,31 @@ export default class InternalClient {
 				channel.name = res.name;
 				channel.topic = res.topic;
 			})
-		);
+		});
 	}
 
-	//def setTopic
+	//def setChannelPosition
 	setChannelPosition(chann, position = 0) {
 		return this.resolver.resolveChannel(chann)
-		.then(channel =>
+		.then(channel => {
 			this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
 				name: channel.name,
 				position: position,
-				topic: channel.topic
+				topic: channel.topic,
+				user_limit: channel.userLimit,
+				bitrate: channel._bitrate
 			})
 			.then(res => channel.position = res.position)
-		);
+		});
 	}
 
-	// def setChannelUserLimit
+	//def setChannelUserLimit
 	setChannelUserLimit(channel, limit) {
-		limit = limit || 0;
+		limit = limit || 0; // default 0 = no limit
+
+		if (limit < 0) {
+			return Promise.reject(new Error("User limit cannot be less than 0"));
+		}
 
 		if (limit > 99) {
 			return Promise.reject(new Error("User limit cannot be greater than 99"));
@@ -1368,7 +1384,10 @@ export default class InternalClient {
 			}
 
 			return this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
-				user_limit: limit
+				name: channel.name,
+				position: channel.position,
+				user_limit: limit,
+				bitrate: channel._bitrate
 			})
 			.then(res => channel.userLimit = limit);
 		});
@@ -1378,12 +1397,14 @@ export default class InternalClient {
 	setChannelBitrate(channel, kbitrate) {
 		kbitrate = kbitrate || 64; // default 64kbps
 
-		if (kbitrate < 8 || kbitrate > 96)
+		if (kbitrate < 8 || kbitrate > 96) {
 			return Promise.reject(new Error("Bitrate must be between 8-96kbps"));
+		}
 
 		return this.resolver.resolveChannel(channel).then(channel => {
-			if (channel.type !== "voice")
+			if (channel.type !== "voice") {
 				return Promise.reject(new Error("Channel must be a voice channel"));
+			}
 
 			return this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
 				name: channel.name,
@@ -1391,7 +1412,10 @@ export default class InternalClient {
 				position: channel.position,
 				bitrate: kbitrate * 1000 // in bps
 			})
-			.then(() => channel.bitrate = kbitrate);
+			.then(res => {
+				channel.bitrate = kbitrate;
+				channel._bitrate = kbitrate * 1000;
+			});
 		});
 	}
 
