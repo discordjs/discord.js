@@ -23,6 +23,11 @@ userLimit
 
 The maximum amount of users that can connect to the voice channel. If it's 0, there is no limit
 
+bitrate
+~~~~~~~~
+
+The bitrate of the voice channel (in kb/s).
+
 Functions
 ---------
 
