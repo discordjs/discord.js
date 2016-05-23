@@ -1301,127 +1301,87 @@ export default class InternalClient {
 
 	//def setChannelTopic
 	setChannelTopic(chann, topic = "") {
-		return this.resolver.resolveChannel(chann)
-		.then(channel => {
-			if (channel.type !== "text") {
-				return Promise.reject(new Error("Channel must be a text channel"));
-			}
+		topic = topic || "";
 
-			this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
-				name: channel.name,
-				position: channel.position,
-				topic: topic
-			})
-			.then(res => channel.topic = res.topic)
-		});
+		return this.updateChannel(channel, {topic: topic});
 	}
 
 	//def setChannelName
-	setChannelName(chann, name = "discordjs_is_the_best") {
-		return this.resolver.resolveChannel(chann)
-		.then(channel => {
-			this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
-				name: name,
-				position: channel.position,
-				topic: channel.topic,
-				user_limit: channel.userLimit,
-				bitrate: channel.bitrate
-			})
-			.then(res => channel.name = res.name)
-		});
+	setChannelName(channel, name) {
+		name = name || "unnamed-channel";
+
+		return this.updateChannel(channel, {name: name});
 	}
 
 	//def setChannelNameAndTopic
-	setChannelNameAndTopic(chann, name = "discordjs_is_the_best", topic = "") {
-		return this.resolver.resolveChannel(chann)
-		.then(channel => {
-			if (channel.type !== "text") {
-				return Promise.reject(new Error("Channel must be a text channel"));
-			}
+	setChannelNameAndTopic(channel) {
+		name = name || "unnamed-channel";
+		topic = topic || "";
 
-			this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
-				name: name,
-				position: channel.position,
-				topic: topic
-			})
-			.then(res => {
-				channel.name = res.name;
-				channel.topic = res.topic;
-			})
-		});
+		return this.updateChannel(channel, {name: name, topic: topic});
 	}
 
 	//def setChannelPosition
-	setChannelPosition(chann, position = 0) {
-		return this.resolver.resolveChannel(chann)
-		.then(channel => {
-			this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
-				name: channel.name,
-				position: position,
-				topic: channel.topic,
-				user_limit: channel.userLimit,
-				bitrate: channel._bitrate
-			})
-			.then(res => channel.position = res.position)
-		});
+	setChannelPosition(channel, position) {
+		position = position || 0;
+
+		return this.updateChannel(channel, {position: position});
 	}
 
 	//def setChannelUserLimit
 	setChannelUserLimit(channel, limit) {
 		limit = limit || 0; // default 0 = no limit
 
-		if (limit < 0) {
-			return Promise.reject(new Error("User limit cannot be less than 0"));
-		}
-
-		if (limit > 99) {
-			return Promise.reject(new Error("User limit cannot be greater than 99"));
-		}
-
-		return this.resolver.resolveChannel(channel).then((channel) => {
-			if (channel.type !== "voice") {
-				return Promise.reject(new Error("Channel must be a voice channel"));
-			}
-
-			return this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
-				name: channel.name,
-				position: channel.position,
-				user_limit: limit,
-				bitrate: channel._bitrate
-			})
-			.then(res => channel.userLimit = limit);
-		});
+		return this.updateChannel(channel, {userLimit: limit})
 	}
 
 	//def setChannelBitrate
 	setChannelBitrate(channel, kbitrate) {
 		kbitrate = kbitrate || 64; // default 64kbps
 
-		if (kbitrate < 8 || kbitrate > 96) {
-			return Promise.reject(new Error("Bitrate must be between 8-96kbps"));
-		}
-
-		return this.resolver.resolveChannel(channel).then(channel => {
-			if (channel.type !== "voice") {
-				return Promise.reject(new Error("Channel must be a voice channel"));
-			}
-
-			return this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
-				name: channel.name,
-				user_limit: channel.userLimit,
-				position: channel.position,
-				bitrate: kbitrate * 1000 // in bps
-			})
-			.then(res => {
-				channel.bitrate = kbitrate;
-				channel._bitrate = kbitrate * 1000;
-			});
-		});
+		return this.updateChannel(channel, {bitrate: kbitrate});
 	}
 
 	//def updateChannel
-	updateChannel(chann, data) {
-		return this.setChannelNameAndTopic(chann, data.name, data.topic);
+	updateChannel(channel, data) {
+		return this.resolver.resolveChannel(channel).then(channel => {
+			if (!channel) {
+				return Promise.reject(new Error("Failed to resolve channel"));
+			}
+
+			data = {
+				name: data.name || channel.name,
+				topic: data.topic || channel.topic,
+				position: data.position || channel.position,
+				user_limit: data.userLimit || channel.userLimit,
+				bitrate: data.bitrate || channel.bitrate
+			}
+
+			if (data.position < 0) {
+				return Promise.reject(new Error("Position cannot be less than 0"));
+			}
+
+			if (data.user_limit < 0 || data.user_limit > 99) {
+				return Promise.reject(new Error("User limit must be between 0-99"));
+			}
+
+			if (data.kbitrate < 8 || data.kbitrate > 96) {
+				return Promise.reject(new Error("Bitrate must be between 8-96kbps"));
+			}
+
+
+			data.bitrate *= 1000; // convert to bits before sending
+
+			return this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, data)
+			.then(res => {
+				channel.name = data.name;
+				channel.topic = data.topic;
+				channel.position = data.position;
+				channel.userLimit = data.user_limit;
+				channel.bitrate = Math.ceil(data.bitrate / 1000);
+				channel._bitrate = data.bitrate;
+			});
+		});
 	}
 
 	//def addFriend

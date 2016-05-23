@@ -534,7 +534,7 @@ Sets the name and topic of a channel
     - **error** - error if any occurred
 
 setChannelUserLimit(channel, limit, `callback`)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sets the user limit of a voice channel
 
@@ -544,12 +544,27 @@ Sets the user limit of a voice channel
     - **error** - error if any occurred
 
 setChannelBitrate(channel, bitrate, `callback`)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sets the bitrate of a voice channel
 
 - **channel** - A `Channel Resolvable`_
 - **bitrate** - A `Number`, bitrate (in kb/s) (8 - 96)
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred
+
+updateChannel(channel, data, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Updates the settings of a channel
+
+- **channel** - A `Channel Resolvable`_
+- **details** - `object` containing any of the following:
+    - **name** - `String`, the new name of channel
+    - **topic** - `String`, the new topic of the channel (`TextChannel`_ only)
+    - **position** - `Number`, the new position of the channel
+    - **userLimit** - `Number`, the new user limit of the channel (`VoiceChannel`_ only)
+    - **bitrate** - `Number`, the new bitrate (in kb/s) of the channel (`VoiceChannel`_ only)
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
 

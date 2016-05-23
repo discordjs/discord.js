@@ -51,3 +51,9 @@ mention()
 ~~~~~~~~~
 
 Returns a `string` that can be used in discord messages to mention a channel. `serverChannel.toString()` defaults to this.
+
+update(data, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.updateChannel(channel, data, callback)``
+| **See** client.updateChannel_

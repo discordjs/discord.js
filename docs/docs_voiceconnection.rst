@@ -120,6 +120,16 @@ getVolume()
 
 Returns the current volume. 1.0 is normal, 0.5 is half as loud, 2.0 is twice as loud.
 
+pause()
+~~~~~~~
+
+Pauses the current connection's audio.
+
+resume()
+~~~~~~~~
+
+Resumes the current connection's audio.
+
 stopPlaying()
 ~~~~~~~~~~~~~
 
