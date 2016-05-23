@@ -989,6 +989,12 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
+	// def setChannelBitrate
+	setChannelBitrate(channel, kbitrate, callback = (/*err, {}*/) => { }) {
+		return this.internal.setChannelBitrate(channel, kbitrate)
+			.then(dataCallback(callback), errorCallback(callback));
+	}
+
 	// def updateChannel
 	updateChannel(channel, data, callback = (/*err, {}*/) => { }) {
 		return this.internal.updateChannel(channel, data)

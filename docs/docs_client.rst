@@ -543,6 +543,16 @@ Sets the user limit of a voice channel
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
 
+setChannelBitrate(channel, bitrate, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sets the bitrate of a voice channel
+
+- **channel** - A `Channel Resolvable`_
+- **bitrate** - A `Number`, bitrate (in kb/s) (8 - 96)
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred
+
 startTyping(channel, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

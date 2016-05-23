@@ -9,6 +9,8 @@ export default class VoiceChannel extends ServerChannel{
 		super(data, client, server);
 		this.members = data.members || new Cache();
 		this.userLimit = data.user_limit || 0;
+		this._bitrate = data.bitrate || 64000; // incase somebody wants to access the bps value???
+		this.bitrate = Math.round(this._bitrate / 1000); // store as kbps
 	}
 
 	join(callback = function () { }) {
@@ -17,5 +19,9 @@ export default class VoiceChannel extends ServerChannel{
 
 	setUserLimit() {
 		return this.client.setChannelUserLimit.apply(this.client, [this, arguments]);
+	}
+
+	setBitrate() {
+		return this.client.setChannelBitrate.apply(this.client, reg(this, arguments));
 	}
 }

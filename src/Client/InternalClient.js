@@ -1374,6 +1374,27 @@ export default class InternalClient {
 		});
 	}
 
+	//def setChannelBitrate
+	setChannelBitrate(channel, kbitrate) {
+		kbitrate = kbitrate || 64; // default 64kbps
+
+		if (kbitrate < 8 || kbitrate > 96)
+			return Promise.reject(new Error("Bitrate must be between 8-96kbps"));
+
+		return this.resolver.resolveChannel(channel).then(channel => {
+			if (channel.type !== "voice")
+				return Promise.reject(new Error("Channel must be a voice channel"));
+
+			return this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, {
+				name: channel.name,
+				user_limit: channel.userLimit,
+				position: channel.position,
+				bitrate: kbitrate * 1000 // in bps
+			})
+			.then(() => channel.bitrate = kbitrate);
+		});
+	}
+
 	//def updateChannel
 	updateChannel(chann, data) {
 		return this.setChannelNameAndTopic(chann, data.name, data.topic);
