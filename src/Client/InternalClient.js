@@ -701,8 +701,11 @@ export default class InternalClient {
 	deleteMessages(_messages) {
 		if (!_messages instanceof Array)
 			return Promise.reject(new Error("Messages provided must be in an array"));
-		if (_messages.length < 2)
-			return Promise.reject(new Error("You must provide at least two messages to delete"));
+		if (_messages.length < 1)
+			return Promise.reject(new Error("You must provide at least one message to delete"));
+		else if (_messages.length === 1) {
+			return this.deleteMessage(_messages[0]);
+		}
 
 
 		var messages = [];
@@ -712,7 +715,7 @@ export default class InternalClient {
 			if (!message)
 				return Promise.reject(new Error("Something other than a message could not be resolved in the array..."));
 
-			if(!message.server) {
+			if (!message.server) {
 				return Promise.reject(new Error("You can only bulk delete messages on guild channels"));
 			}
 
