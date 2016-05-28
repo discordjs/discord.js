@@ -73,34 +73,7 @@ export default class AudioEncoder {
 
 			stream.pipe(enc.stdin);
 
-			var ffmpegErrors = "";
-
-			enc.stdout.pipe(this.volume);
-			enc.stderr.on("data", (data) => {
-				ffmpegErrors += "\n" + new Buffer(data).toString().trim();
-			});
-			enc.once("exit", (code, signal) => {
-				if (code) {
-					reject(new Error("FFMPEG: " + ffmpegErrors));
-				}
-			})
-
-			this.volume.once("readable", () => {
-				resolve({
-					proc: enc,
-					stream: this.volume,
-					instream: stream,
-					channels: 2
-				});
-			});
-
-			this.volume.on("end", () => {
-				reject("end");
-			});
-
-			this.volume.on("close", () => {
-				reject("close");
-			});
+			hookEncodingProcess(resolve, reject, enc, stream);
 		});
 	}
 
@@ -117,33 +90,7 @@ export default class AudioEncoder {
 				'pipe:1'
 			]);
 
-			var ffmpegErrors = "";
-
-			enc.stdout.pipe(this.volume);
-			enc.stderr.on("data", (data) => {
-				ffmpegErrors += "\n" + new Buffer(data).toString().trim();
-			});
-			enc.once("exit", (code, signal) => {
-				if (code) {
-					reject(new Error("FFMPEG: " + ffmpegErrors));
-				}
-			})
-
-			this.volume.once("readable", () => {
-				resolve({
-					proc: enc,
-					stream: this.volume,
-					channels: 2
-				});
-			});
-
-			this.volume.on("end", () => {
-				reject("end");
-			});
-
-			this.volume.on("close", () => {
-				reject("close");
-			});
+			hookEncodingProcess(resolve, reject, enc);
 		});
 	}
 
@@ -160,33 +107,59 @@ export default class AudioEncoder {
 			]);
 			var enc = cpoc.spawn(this.getCommand(), options);
 
-			var ffmpegErrors = "";
+			hookEncodingProcess(resolve, reject, enc);
+		});
+	}
 
-			enc.stdout.pipe(this.volume);
-			enc.stderr.on("data", (data) => {
-				ffmpegErrors += "\n" + new Buffer(data).toString().trim();
-			});
-			enc.once("exit", (code, signal) => {
-				if (code) {
-					reject(new Error("FFMPEG: " + ffmpegErrors));
-				}
-			})
+	hookEncodingProcess(resolve, reject, enc, stream) {
+		var processKilled = false;
 
-			this.volume.once("readable", () => {
-				resolve({
-					proc: enc,
-					stream: this.volume,
-					channels: 2
-				});
-			});
+		function killProcess() {
+			if (processKilled)
+				return;
 
-			this.volume.on("end", () => {
-				reject("end");
-			});
+			enc.stdin.pause();
+			enc.kill("SIGINT");
 
-			this.volume.on("close", () => {
-				reject("close");
-			});
+			processKilled = true;
+		}
+
+		var ffmpegErrors = "";
+
+		enc.stdout.pipe(this.volume);
+		enc.stderr.on("data", (data) => {
+			ffmpegErrors += "\n" + new Buffer(data).toString().trim();
+		});
+		enc.once("exit", (code, signal) => {
+			if (code) {
+				reject(new Error("FFMPEG: " + ffmpegErrors));
+			}
+		});
+
+		this.volume.once("readable", () => {
+			var data = {
+				proc: enc,
+				stream: this.volume,
+				channels: 2
+			};
+
+			if (stream) {
+				data.instream = stream;
+			}
+
+			resolve(data);
+		});
+
+		this.volume.on("end", () => {
+			killProcess();
+
+			reject("end");
+		});
+
+		this.volume.on("close", () => {
+			killProcess();
+
+			reject("close");
 		});
 	}
 }
