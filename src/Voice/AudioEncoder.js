@@ -73,7 +73,7 @@ export default class AudioEncoder {
 
 			stream.pipe(enc.stdin);
 
-			hookEncodingProcess(resolve, reject, enc, stream);
+			this.hookEncodingProcess(resolve, reject, enc, stream);
 		});
 	}
 
@@ -90,7 +90,7 @@ export default class AudioEncoder {
 				'pipe:1'
 			]);
 
-			hookEncodingProcess(resolve, reject, enc);
+			this.hookEncodingProcess(resolve, reject, enc);
 		});
 	}
 
@@ -107,7 +107,7 @@ export default class AudioEncoder {
 			]);
 			var enc = cpoc.spawn(this.getCommand(), options);
 
-			hookEncodingProcess(resolve, reject, enc);
+			this.hookEncodingProcess(resolve, reject, enc);
 		});
 	}
 
