@@ -27,4 +27,4 @@ bot.on("message", (msg) => {
 	}
 });
 
-bot.login(AuthDetails.token);
+bot.loginWithToken(AuthDetails.token);
