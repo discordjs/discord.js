@@ -856,7 +856,7 @@ Emitted when a server is joined by the Client, supplies a Server_ object.
 serverDeleted
 ~~~~~~~~~~~~~
 
-Emitted when the client leaves a server, supplies a Server_ object.
+Emitted when a server is deleted or the client is kicked, supplies a Server_ object.
 
 serverUpdated
 ~~~~~~~~~~~~~
