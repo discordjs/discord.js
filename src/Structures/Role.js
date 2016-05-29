@@ -160,4 +160,14 @@ export default class Role {
 	removeUser(member, callback) {
 		return this.client.removeUserFromRole.apply(this.client, [member, this, callback]);
 	}
+
+	mention(){
+		if(this.mentionable)
+			return `<@&${this.id}>`;
+		return this.name;
+	}
+
+	toString(){
+		return this.mention();
+	}
 }
