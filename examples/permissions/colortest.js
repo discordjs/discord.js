@@ -18,58 +18,30 @@ bot.on("disconnected", function () {
 
 	console.log("Disconnected!");
 	process.exit(1); //exit node.js with an error
-	
+
 });
 
 bot.on("message", function (msg) {
-	
+
 	// to use this example, you first have to send 'create role'
 	// you can then change colors afterwards.
-	
+
 	if (msg.content === "create role") {
 		// create the role and add the user to it
-		
-		bot.createRoleIfNotExists(msg.channel.server, {
+
+		bot.createRole(msg.server, {
 			name: "Custom Colors",
 			hoist: true, // so it is visible in the members list
-		}).then(function (permission) {
-			// this is executed when the role has been created or exists
-			
-			// adds the sender to the role
-			bot.addMemberToRole(msg.sender, permission).then(function () {
-				bot.reply(msg, "added you to the role!");
-			});
+		}).then(createdRole => { // this is executed when the role has been created
 
+			// adds the sernder to the role
+			bot.addMemberToRole(msg.author, createdRole).then(() => {
+				bot.reply(msg, "Added you to the role!");
+			});
 		});
-
 	}
 
-	if (msg.content.indexOf("preset color") === 0) {
-		
-		// set the role to a preset color
-		var colorName = msg.content.split(" ")[2];
-		
-		// get the role by its name
-		var role = msg.channel.server.getRole("name", "Custom Colors");
-
-		// if the color exists as a preset
-		if (Discord.Color[colorName]) {
-			
-			// update the role with the new color
-			bot.updateRole(role, {
-				color: Discord.Color[colorName]
-			}).then(function (role) {
-				// this executes if the change was correct
-				bot.reply(msg, "done! using the color " + Discord.Color.toHex(role.color));
-			});
-
-		} else {
-			bot.reply(msg, "that color isn't a preset color!");
-		}
-
-	}
-
-	if (msg.content.indexOf("custom color") === 0) {
+	else if (msg.content.startsWith("custom color")) {
 
 		// valid custom colors must follow the format of any of the following:
 		/*
@@ -79,27 +51,23 @@ bot.on("message", function (msg) {
 		*/
 
 		var colorName = msg.content.split(" ")[2];
-		
+
 		// get the role by its name
-		var role = msg.channel.server.getRole("name", "Custom Colors");
+		var role = msg.server.roles.get("name", "Custom Colors");
 
 		// updates the role with the given color
 		bot.updateRole(role, {
 			color: colorName
 		}).then(function (role) {
-			
+
 			// this executes if the change was successful
-			bot.reply(msg, "done! using the color " + Discord.Color.toHex(role.color));
-		
+			bot.reply(msg, "Done! Using the color " + colorName);
 		}).catch(function (e) {
-			
+
 			// this executes if it wasn't successful
-			bot.reply(msg, "an error occurred. Was that a valid hex/dec color?");
-		
-		})
-
+			bot.reply(msg, "An error occurred. Was that a valid hex/dec color?");
+		});
 	}
-
 });
 
-bot.login(AuthDetails.email, AuthDetails.password);
+bot.loginWithToken(AuthDetails.token);
