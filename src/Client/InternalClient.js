@@ -473,15 +473,7 @@ export default class InternalClient {
 			return Promise.reject(new Error("server did not resolve"));
 		}
 
-		return this.apiRequest("del", Endpoints.ME_SERVER(server.id), true)
-		.then(() => {
-			// remove channels of server then the server
-			for (var chan of server.channels) {
-				this.channels.remove(chan);
-			}
-			// remove server
-			this.servers.remove(server);
-		});
+		return this.apiRequest("del", Endpoints.ME_SERVER(server.id), true);
 	}
 
 	//def deleteServer
@@ -491,15 +483,7 @@ export default class InternalClient {
 			return Promise.reject(new Error("server did not resolve"));
 		}
 
-		return this.apiRequest("del", Endpoints.SERVER(server.id), true)
-		.then(() => {
-			// remove channels of server then the server
-			for (var chan of server.channels) {
-				this.channels.remove(chan);
-			}
-			// remove server
-			this.servers.remove(server);
-		});
+		return this.apiRequest("del", Endpoints.SERVER(server.id), true);
 	}
 
 	// def loginWithToken
