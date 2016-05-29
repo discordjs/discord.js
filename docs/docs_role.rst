@@ -71,3 +71,7 @@ colorAsHex()
 ~~~~~~~~~~~~
 
 Returns the role's colour as hex, e.g. ``#FF0000``.
+
+mention()
+~~~~~~~~~
+
