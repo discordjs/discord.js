@@ -154,7 +154,7 @@ export default class AudioEncoder {
 			killProcess();
 
 			reject("end");
-		})
+		});
 
 		this.volume.on("end", () => {
 			killProcess();
