@@ -151,7 +151,7 @@ export default class AudioEncoder {
 		this.volume.once("readable", function () {
 			var data = {
 				proc: enc,
-				stream: _this4.volume,
+				stream: this.volume,
 				channels: 2
 			};
 
