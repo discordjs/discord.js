@@ -71,3 +71,8 @@ colorAsHex()
 ~~~~~~~~~~~~
 
 Returns the role's colour as hex, e.g. ``#FF0000``.
+
+mention()
+~~~~~~~~~
+
+Returns a valid string that can be sent in a message to mention the role. By default, ``role.toString()`` does this so by adding a role object to a string, e.g. ``role + ""``, their mention code will be retrieved. If the role isn't mentionable, its name gets returned.

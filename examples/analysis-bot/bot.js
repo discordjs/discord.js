@@ -9,10 +9,6 @@ var loose = false;
 
 bot.on("message", msg => {
 
-	if (~msg.content.indexOf("https://discord.gg/")) {
-		bot.joinServer(msg.content.substr(msg.content.indexOf("https://discord.gg/"), "https://discord.gg/".length + 16));
-	}
-
 	if (!msg.content.startsWith("$")) return;
 
 	msg.content = msg.content.substr(1);
@@ -23,40 +19,40 @@ bot.on("message", msg => {
 			`${bot.servers.length} servers`,
 			`${bot.channels.length} channels`,
 			`${bot.users.length} users`,
-		].join("\n"));
+		]);
 	}
 
-	if (msg.content.startsWith("startplaying")) {
+	else if (msg.content.startsWith("startplaying")) {
 		var game = msg.content.split(" ").slice(1).join(" ");
 		bot.setPlayingGame(game);
 	}
 
-	if (msg.content.startsWith("setname") && loose) {
+	else if (msg.content.startsWith("setname") && loose) {
 		bot.setUsername(msg.content.split(" ").slice(1).join(" ")).then(() => {
-			msg.reply("done!");
+			msg.reply("Done!");
 		});
 	}
-	
-	if (msg.content === "updateav") {
+
+	else if (msg.content === "updateav") {
 		request
 		.get("https://api.github.com/search/repositories?q=discord.js")
 		.end((err, res) => {
 			if (err) {
 				return;
 			}
-			
+
 			var text = res.body.items[0].stargazers_count
-			
+
 			bot.updateDetails({
 				username : "d.js star bot - " + text,
 				avatar: getStars(text)
 			}).then(() => {
-				msg.reply("success!");
+				msg.reply("Success!");
 			});
 		});
 	}
 
-	if (msg.content.startsWith("setavatar") && loose) {
+	else if (msg.content.startsWith("setavatar") && loose) {
 		request
 			.get(msg.content.split(" ")[1])
 			.end((err, res) => {
@@ -70,23 +66,23 @@ bot.on("message", msg => {
 			});
 	}
 
-	if (msg.content === "away") {
+	else if (msg.content === "away") {
 		bot.setStatusIdle();
 	}
 
-	if (msg.content === "here") {
+	else if (msg.content === "here") {
 		bot.setStatusOnline();
 	}
 
-	if (msg.content === "randomUser") {
+	else if (msg.content === "randomUser") {
 		var random = bot.users.random();
 		msg.reply([
 			random.username,
 			"avatar: ", random.avatarURL
-		].join("\n"));
+		]);
 	}
 
-	if (msg.content.startsWith("mimic") && loose) {
+	else if (msg.content.startsWith("mimic") && loose) {
 		var toMimic = msg.mentions[0];
 
 		if (!toMimic) {
@@ -109,7 +105,7 @@ bot.on("message", msg => {
 					avatar: res.body
 				}).then(() => {
 
-					msg.reply("done!");
+					msg.reply("Done!");
 
 				});
 			});
@@ -126,9 +122,9 @@ setInterval(() => {
 			if (err) {
 				return;
 			}
-			
+
 			var text = res.body.items[0].stargazers_count
-			
+
 			bot.updateDetails({
 				username : "d.js star bot - " + text,
 				avatar: getStars(text)
@@ -144,7 +140,7 @@ bot.on("disconnected", () => {
 	process.exit();
 })
 
-bot.login(auth.email, auth.password);
+bot.loginWithToken(auth.token);
 
 function getStars(text) {
 	var Canvas = require('canvas')
@@ -154,7 +150,7 @@ function getStars(text) {
 
 	ctx.fillStyle = "black";
 	ctx.fillRect(0, 0, 90, 90);
-		
+
 	ctx.font = '45px Arial';
 	ctx.fillStyle = "white";
 	ctx.fillText(text, (ctx.measureText(text).width / 2) - 5, 60);
