@@ -130,7 +130,7 @@ export default class AudioEncoder {
 
 		enc.stdout.pipe(this.volume);
 
-		enc.stderr.on("data", function (data) {
+		enc.stderr.on("data", (data) => {
 			ffmpegErrors += "\n" + new Buffer(data).toString().trim();
 		});
 
@@ -148,7 +148,7 @@ export default class AudioEncoder {
 			}
 		});
 
-		this.volume.once("readable", function () {
+		this.volume.once("readable", () => {
 			var data = {
 				proc: enc,
 				stream: this.volume,
