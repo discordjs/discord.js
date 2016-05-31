@@ -54,10 +54,8 @@ export default class Client extends EventEmitter {
 		this.options.shardId = options.shardId || 0;
 		this.options.shardCount = options.shardCount || 0;
 
-		if (options.shardCount && typeof options.shardId === "number") {
-			if (typeof options.shardCount === "number" && options.shardCount > 0) {
-				this.options.shard = [options.shardId, options.shardCount];
-			}
+		if (typeof options.shardCount === "number" && typeof options.shardId === "number" && options.shardCount > 0) {
+			this.options.shard = [options.shardId, options.shardCount];
 		}
 
 		/**
