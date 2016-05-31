@@ -93,7 +93,7 @@ export default class VoiceConnection extends EventEmitter {
 		}
 		if (this.streamProc) {
 			this.streamProc.stdin.pause();
-			this.streamProc.kill("SIGINT");
+			this.streamProc.kill("SIGKILL");
 			this.streamProc = null;
 		}
 	}
@@ -118,6 +118,7 @@ export default class VoiceConnection extends EventEmitter {
 			}
 			if (!self.playingIntent || !self.playing) {
 				self.setSpeaking(false);
+				self.stopPlaying();
 				retStream.emit("end");
 				return;
 			}
@@ -128,6 +129,7 @@ export default class VoiceConnection extends EventEmitter {
 				if (!buffer) {
 					if (onWarning) {
 						self.setSpeaking(false);
+						self.stopPlaying();
 						retStream.emit("end");
 						return;
 					} else {

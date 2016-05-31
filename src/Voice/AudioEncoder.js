@@ -114,14 +114,16 @@ export default class AudioEncoder {
 	hookEncodingProcess(resolve, reject, enc, stream) {
 		var processKilled = false;
 
-		function killProcess() {
+		function killProcess(cause) {
 			if (processKilled)
 				return;
 
 			enc.stdin.pause();
-			enc.kill("SIGINT");
+			enc.kill("SIGKILL");
 
 			processKilled = true;
+
+			reject(cause);
 		}
 
 		var ffmpegErrors = "";
@@ -132,10 +134,12 @@ export default class AudioEncoder {
 			ffmpegErrors += "\n" + new Buffer(data).toString().trim();
 		});
 
-		enc.stdout.on("end", () => {
-			killProcess();
+		enc.stdout.once("end", () => {
+			killProcess("end");
+		});
 
-			reject("end");
+		enc.stdout.once("error", () => {
+			enc.stdout.emit("end");
 		});
 
 		enc.once("exit", (code, signal) => {
@@ -159,21 +163,19 @@ export default class AudioEncoder {
 		});
 
 		this.volume.once("end", () => {
-			killProcess();
-
-			reject("end");
+			killProcess("end");
 		});
 
-		this.volume.on("end", () => {
-			killProcess();
+		this.volume.once("error", () => {
+			killProcess("end");
+		})
 
-			reject("end");
+		this.volume.on("end", () => {
+			killProcess("end");
 		});
 
 		this.volume.on("close", () => {
-			killProcess();
-
-			reject("close");
+			killProcess("close");
 		});
 	}
 }
