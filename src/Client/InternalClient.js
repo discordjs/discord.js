@@ -1430,8 +1430,7 @@ export default class InternalClient {
 		this.websocket = new WebSocket(url);
 
 		this.websocket.onopen = () => {
-
-			self.sendWS({
+			var data = {
 				op: 2,
 				d: {
 					token: self.token,
@@ -1446,7 +1445,13 @@ export default class InternalClient {
 						"$referring_domain": "discord.js"
 					}
 				}
-			});
+			};
+
+			if (self.client.options.shard) {
+				data.d.shard = self.client.options.shard;
+			}
+
+			self.sendWS(data);
 		};
 
 		this.websocket.onclose = (code) => {
