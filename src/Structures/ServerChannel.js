@@ -21,20 +21,20 @@ export default class ServerChannel extends Channel{
 		}
 	}
 
-	permissionsOf(user){
-		user = this.client.internal.resolver.resolveUser(user);
-		if (user) {
-			if (this.server.ownerID === user.id) {
+	permissionsOf(userOrRole){
+		userOrRole = this.client.internal.resolver.resolveUser(userOrRole);
+		if (userOrRole) {
+			if (this.server.ownerID === userOrRole.id) {
 				return new ChannelPermissions(4294967295);
 			}
 			var everyoneRole = this.server.roles.get("id", this.server.id);
 
-			var userRoles = [everyoneRole].concat(this.server.rolesOf(user) || []);
+			var userRoles = [everyoneRole].concat(this.server.rolesOf(userOrRole) || []);
 			var userRolesID = userRoles.filter((v) => !!v).map((v) => v.id);
 			var roleOverwrites = [], memberOverwrites = [];
 
 			this.permissionOverwrites.forEach((overwrite) => {
-				if (overwrite.type === "member" && overwrite.id === user.id) {
+				if (overwrite.type === "member" && overwrite.id === userOrRole.id) {
 					memberOverwrites.push(overwrite);
 				} else if (overwrite.type === "role" && ~userRolesID.indexOf(overwrite.id)) {
 					roleOverwrites.push(overwrite);
@@ -58,8 +58,20 @@ export default class ServerChannel extends Channel{
 
 			return new ChannelPermissions(permissions);
 
-		}else{
-			return null;
+		} else {
+			userOrRole = this.client.internal.resolver.resolveRole(userOrRole);
+			if (userOrRole) {
+				var permissions = this.server.roles.get("id", this.server.id).permissions | userOrRole.permissions;
+				var overwrite = this.permissionOverwrites.get("id", this.server.id);
+				permissions = (permissions & ~overwrite.deny) | overwrite.allow;
+				overwrite = this.permissionOverwrites.get("id", userOrRole.id);
+				if (overwrite) {
+					permissions = (permissions & ~overwrite.deny) | overwrite.allow;
+				}
+				return new ChannelPermissions(permissions);
+			} else {
+				return null;
+			}
 		}
 	}
 
