@@ -31,7 +31,7 @@ export default class Message extends Equality{
 
 		if(data.author instanceof User) {
 			this.author = data.author;
-		} else {
+		} else if(data.author) {
 			this.author = client.internal.users.add(new User(data.author, client));
 		}
 
