@@ -83,8 +83,10 @@ export default class Server extends Equality {
 		if (data.presences) {
 			for (var presence of data.presences) {
 				var user = client.internal.users.get("id", presence.user.id);
-				user.status = presence.status;
-				user.game = presence.game;
+				if(user) {
+					user.status = presence.status;
+					user.game = presence.game;
+				}
 			}
 		}
 
