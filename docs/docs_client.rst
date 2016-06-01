@@ -49,6 +49,16 @@ rateLimitAsError
 
 Have the lib throw a rejection Promise/callback when being ratelimited, instead of auto-retrying.
 
+shardCount
+~~~~~~~~~~
+
+The total number of shards.
+
+shardId
+~~~~~~~
+
+A zero-based integer representing the value of the current shard.
+
 --------
 
 Attributes

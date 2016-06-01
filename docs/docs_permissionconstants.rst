@@ -14,6 +14,7 @@ Valid Permission Names
 
 	{
 		// general
+		administrator,
 		createInstantInvite,
 		kickMembers,
 		banMembers,

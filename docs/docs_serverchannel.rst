@@ -40,12 +40,12 @@ Server_ the channel belongs to.
 Functions
 ---------
 
-permissionsOf(user)
+permissionsOf(userOrRole)
 ~~~~~~~~~~~~~~~~~~~
 
 **Aliases:** permsOf
 
-Returns a ChannelPermissions_ object of a user's permissions in that channel.
+Returns a ChannelPermissions_ object of a user or role's permissions in that channel.
 
 mention()
 ~~~~~~~~~

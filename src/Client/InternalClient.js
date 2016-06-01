@@ -53,8 +53,8 @@ export default class InternalClient {
 
 	apiRequest(method, url, useAuth, data, file) {
         var endpoint = url.replace(/\/[0-9]+/g, "/:id");
-		if(this.retryAfters[endpoint]) {
-			if(this.retryAfters[endpoint] < Date.now()) {
+		if (this.retryAfters[endpoint]) {
+			if (this.retryAfters[endpoint] < Date.now()) {
 				delete this.retryAfters[endpoint];
 			} else {
 				return new Promise((resolve, reject) => {
@@ -93,7 +93,7 @@ export default class InternalClient {
 
 						if (data.headers["retry-after"] || data.headers["Retry-After"]) {
 							var toWait = data.headers["retry-after"] || data.headers["Retry-After"];
-							if(!this.retryAfters[endpoint])
+							if (!this.retryAfters[endpoint])
 								this.retryAfters[endpoint] = Date.now() + parseInt(toWait);
 							setTimeout(() => {
 								this.apiRequest.apply(this, arguments).then(resolve).catch(reject);
@@ -150,8 +150,10 @@ export default class InternalClient {
 		this.messageAwaits = {};
 		this.retryAfters = {};
 
-		this.tokenCacher = new TokenCacher(this.client);
-		this.tokenCacher.init(0);
+		if (!this.tokenCacher) {
+			this.tokenCacher = new TokenCacher(this.client);
+			this.tokenCacher.init(0);
+		}
 	}
 
 	cleanIntervals() {
@@ -173,10 +175,9 @@ export default class InternalClient {
 		if (autoReconnect) {
 			this.autoReconnectInterval = Math.min(this.autoReconnectInterval * (Math.random() + 1), 60000);
 			setTimeout(() => {
-				if(!this.email && !this.token) {
+				if (!this.email && !this.token) {
 					return;
 				}
-				this.setup();
 
 				// Check whether the email is set (if not, only a token has been used for login)
 				this.loginWithToken(this.token, this.email, this.password).catch(() => this.disconnected(true));
@@ -305,7 +306,7 @@ export default class InternalClient {
 							chan.on("error", reject);
 							chan.on("close", reject);
 
-							if(timeout) {
+							if (timeout) {
 								clearTimeout(timeout);
 							}
 							this.websocket.removeListener("message", check);
@@ -344,7 +345,7 @@ export default class InternalClient {
 
 	getGuildMembers(serverID, chunkCount) {
 		this.forceFetchCount[serverID] = chunkCount;
-		if(this.forceFetchLength + 3 + serverID.length > 4082) { // 4096 - '{"op":8,"d":[]}'.length + 1 for lazy comma offset
+		if (this.forceFetchLength + 3 + serverID.length > 4082) { // 4096 - '{"op":8,"d":[]}'.length + 1 for lazy comma offset
 			this.requestGuildMembers(this.forceFetchQueue);
 			this.forceFetchQueue = [serverID];
 			this.forceFetchLength = 1 + serverID.length + 3;
@@ -365,8 +366,8 @@ export default class InternalClient {
 	}
 
 	checkReady() {
-		if(!this.readyTime) {
-			if(this.forceFetchQueue.length > 0) {
+		if (!this.readyTime) {
+			if (this.forceFetchQueue.length > 0) {
 				this.requestGuildMembers(this.forceFetchQueue);
 				this.forceFetchQueue = [];
 				this.forceFetchLength = 1;
@@ -383,11 +384,11 @@ export default class InternalClient {
 	}
 
 	restartServerCreateTimeout() {
-		if(this.guildCreateTimeout) {
+		if (this.guildCreateTimeout) {
 			clearTimeout(this.guildCreateTimeout);
 			this.guildCreateTimeout = null;
 		}
-		if(!this.readyTime) {
+		if (!this.readyTime) {
 			this.guildCreateTimeout = setTimeout(() => {
 				this.checkReady();
 			}, this.client.options.guildCreateTimeout);
@@ -489,6 +490,8 @@ export default class InternalClient {
 	// def loginWithToken
 	// email and password are optional
 	loginWithToken(token, email, password) {
+		this.setup();
+
 		this.state = ConnectionState.LOGGED_IN;
 		this.token = token;
 		this.email = email;
@@ -582,7 +585,7 @@ export default class InternalClient {
 
 	// def getGateway
 	getGateway() {
-		if(this.gatewayURL) {
+		if (this.gatewayURL) {
 			return Promise.resolve(this.gatewayURL);
 		}
 		return this.apiRequest("get", Endpoints.GATEWAY, true)
@@ -1430,8 +1433,7 @@ export default class InternalClient {
 		this.websocket = new WebSocket(url);
 
 		this.websocket.onopen = () => {
-
-			self.sendWS({
+			var data = {
 				op: 2,
 				d: {
 					token: self.token,
@@ -1446,7 +1448,13 @@ export default class InternalClient {
 						"$referring_domain": "discord.js"
 					}
 				}
-			});
+			};
+
+			if (self.client.options.shard) {
+				data.d.shard = self.client.options.shard;
+			}
+
+			self.sendWS(data);
 		};
 
 		this.websocket.onclose = (code) => {
@@ -1495,7 +1503,7 @@ export default class InternalClient {
 					data.guilds.forEach(server => {
 						if (!server.unavailable) {
 							server = self.servers.add(new Server(server, client));
-							if(self.client.options.forceFetchUsers && server.members && server.members.length < server.memberCount) {
+							if (self.client.options.forceFetchUsers && server.members && server.members.length < server.memberCount) {
 								self.getGuildMembers(server.id, Math.ceil(server.memberCount / 1000));
 							}
 						} else {
@@ -1586,8 +1594,11 @@ export default class InternalClient {
 							data.content = data.content || msg.content;
 							data.mentions = data.mentions || msg.mentions;
 							data.author = data.author || msg.author;
-							var nmsg = new Message(data, channel, client);
-							client.emit("messageUpdated", new Message(msg, channel, client), nmsg);
+							msg = new Message(msg, channel, client);
+						}
+						var nmsg = new Message(data, channel, client);
+						client.emit("messageUpdated", msg, nmsg);
+						if (msg) {
 							channel.messages.update(msg, nmsg);
 						}
 					} else {
@@ -1599,14 +1610,14 @@ export default class InternalClient {
 					if (!server) {
 						if (!data.unavailable) {
 							server = self.servers.add(new Server(data, client));
-							if(client.readyTime) {
+							if (client.readyTime) {
 								client.emit("serverCreated", server);
 							}
 							if (self.client.options.forceFetchUsers && server.large && server.members.length < server.memberCount) {
 								self.getGuildMembers(server.id, Math.ceil(server.memberCount / 1000));
 							}
 							var unavailable = self.unavailableServers.get("id", server.id);
-							if(unavailable) {
+							if (unavailable) {
 								self.unavailableServers.remove(unavailable);
 							}
 							self.restartServerCreateTimeout();
@@ -2011,8 +2022,8 @@ export default class InternalClient {
 							server.members.add(self.users.add(new User(user.user, client)));
 						}
 
-						if(self.forceFetchCount.hasOwnProperty(server.id)) {
-							if(self.forceFetchCount[server.id] <= 1) {
+						if (self.forceFetchCount.hasOwnProperty(server.id)) {
+							if (self.forceFetchCount[server.id] <= 1) {
 								delete self.forceFetchCount[server.id];
 								self.checkReady();
 							} else {
