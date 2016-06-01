@@ -1595,6 +1595,8 @@ export default class InternalClient {
 							data.mentions = data.mentions || msg.mentions;
 							data.author = data.author || msg.author;
 							msg = new Message(msg, channel, client);
+						} else if (!data.author || !data.content) {
+							break;
 						}
 						var nmsg = new Message(data, channel, client);
 						client.emit("messageUpdated", msg, nmsg);
