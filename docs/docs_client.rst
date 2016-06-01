@@ -948,6 +948,11 @@ voiceJoin
 
 Emitted when a user joins a voice channel, supplies a VoiceChannel_ and a User_
 
+voiceSwitch
+~~~~~~~~~~~
+
+Emitted when a user switches voice channels, supplies the old VoiceChannel_, the new VoiceChannel_, and a User_
+
 voiceLeave
 ~~~~~~~~~~
 
