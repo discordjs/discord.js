@@ -23,6 +23,10 @@ export default class User extends Equality{
 		this.voiceState = {};
 	}
 
+	get createdAt() {
+		return new Date((+this.id / 4194304) + 1420070400000);
+	}
+
 	get avatarURL(){
 		if(!this.avatar){
 			return null;

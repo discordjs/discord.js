@@ -50,6 +50,11 @@ client
 
 The Client_ that cached the role.
 
+createdAt
+~~~~~~~~~
+
+A `Date` referring to when the role was created.
+
 Functions
 ---------
 

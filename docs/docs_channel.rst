@@ -27,6 +27,11 @@ isPrivate
 
 Indicates whether the channel is PM channel, is `Boolean`.
 
+createdAt
+~~~~~~~~~
+
+A `Date` referring to when the channel was created.
+
 --------
 
 Functions

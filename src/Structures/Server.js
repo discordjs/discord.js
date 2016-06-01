@@ -106,6 +106,10 @@ export default class Server extends Equality {
 		}
 	}
 
+	get createdAt() {
+		return new Date((+this.id / 4194304) + 1420070400000);
+	}
+
 	detailsOf(user) {
 		user = this.client.internal.resolver.resolveUser(user);
 		if (user) {

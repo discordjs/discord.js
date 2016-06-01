@@ -43,6 +43,10 @@ export default class Role {
 		this.mentionable = data.mentionable || false;
 	}
 
+	get createdAt() {
+		return new Date((+this.id / 4194304) + 1420070400000);
+	}
+
 	serialise(explicit){
 
 		var hp = (perm) => this.hasPermission(perm, explicit);

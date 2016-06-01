@@ -82,6 +82,11 @@ voiceChannel
 
 The VoiceChannel_ the user is connected to. If they aren't in any voice channels, this will be ``null``.
 
+createdAt
+~~~~~~~~~
+
+A `Date` referring to when the user was created.
+
 Functions
 ---------
 
