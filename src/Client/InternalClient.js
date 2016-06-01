@@ -1441,11 +1441,11 @@ export default class InternalClient {
 					compress: self.client.options.compress,
 					large_threshold : self.client.options.largeThreshold,
 					properties: {
-						"$os": "discord.js",
+						"$os": process.platform,
 						"$browser": "",
 						"$device": "discord.js",
-						"$referrer": "discord.js",
-						"$referring_domain": "discord.js"
+						"$referrer": "",
+						"$referring_domain": ""
 					}
 				}
 			};
