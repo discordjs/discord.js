@@ -49,6 +49,11 @@ rateLimitAsError
 
 Have the lib throw a rejection Promise/callback when being ratelimited, instead of auto-retrying.
 
+disableEveryone
+~~~~~~~~~~~~~~~~
+
+Have the lib insert a zero width space between here and everyone mentions disabling them.
+
 shardCount
 ~~~~~~~~~~
 
@@ -195,6 +200,7 @@ Sends a message to the specified channel.
     - **file** - (Optional) `object`, containing:
         - **file** - a `File Resolvable`_
         - **name** - (Optional) `String`, filename to upload file as
+	- **disableEveryone** - (Optional) `Boolean`, disable `here` and `everyone` mentions
 - **callback** - `function` that takes the following parameters:
     - **error** - error object if any occurred
     - **message** - the sent Message_

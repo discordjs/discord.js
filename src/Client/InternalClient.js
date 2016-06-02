@@ -616,6 +616,10 @@ export default class InternalClient {
 		.then(destination => {
 			var content = this.resolver.resolveString(_content);
 
+			if (this.client.options.disableEveryone || options.disableEveryone) {
+				content = content.replace(/(@)(everyone|here)/g, '$1\u200b$2');
+			}
+
 			if (options.file) {
 				return this.resolver.resolveFile(options.file.file)
 				.then(file =>
@@ -655,6 +659,9 @@ export default class InternalClient {
 			content = {
 				content: this.resolver.resolveString(content)
 			};
+			if (this.client.options.disableEveryone) {
+				content.content = content.content.replace(/(@)(everyone|here)/g, '$1\u200b$2');
+			}
 		}
 
 		return this.resolver.resolveChannel(where)
