@@ -35,7 +35,7 @@ export default class Server extends Equality {
 		this.channels = new Cache();
 		this.roles = new Cache();
 		this.icon = data.icon;
-		this.afkTimeout = data.afkTimeout;
+		this.afkTimeout = data.afk_timeout;
 		this.afkChannelID = data.afk_channel_id || data.afkChannelID;
 		this.memberMap = data.memberMap || {};
 		this.memberCount = data.member_count || data.memberCount;
