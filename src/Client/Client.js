@@ -53,6 +53,7 @@ export default class Client extends EventEmitter {
 		this.options.guildCreateTimeout = options.guildCreateTimeout || 1000;
 		this.options.shardId = options.shardId || 0;
 		this.options.shardCount = options.shardCount || 0;
+		this.options.disableEveryone = options.disableEveryone || false;
 
 		if (typeof options.shardCount === "number" && typeof options.shardId === "number" && options.shardCount > 0) {
 			this.options.shard = [options.shardId, options.shardCount];
