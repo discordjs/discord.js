@@ -1205,6 +1205,9 @@ export default class InternalClient {
 			this.idleStatus = this.idleStatus || null; //undefined
 		}
 
+		// convert undefined and empty string to null
+		if (typeof game === "string" && !game.length) game = null;
+
 		this.game = game === null ? null : !game ? this.game || null : typeof game === "string" ? {name: game} : game;
 
 		var packet = {
