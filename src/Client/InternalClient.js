@@ -1302,7 +1302,7 @@ export default class InternalClient {
 	}
 
 	//def setChannelTopic
-	setChannelTopic(chann, topic = "") {
+	setChannelTopic(channel, topic = "") {
 		topic = topic || "";
 
 		return this.updateChannel(channel, {topic: topic});
