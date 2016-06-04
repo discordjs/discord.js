@@ -571,7 +571,7 @@ export default class InternalClient {
 			return this.apiRequest("post", Endpoints.LOGOUT, true)
 			.then(disconnect);
 		} else {
-			disconnect();
+			return disconnect();
 		}
 	}
 
