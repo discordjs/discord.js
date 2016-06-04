@@ -6,9 +6,10 @@ import EventEmitter from "events";
 import crypto from "crypto";
 
 var savePaths = [
-	process.env.APPDATA || (process.platform == "darwin" ? process.env.HOME + "Library/Preference" : "/var/local"),
+	process.env.APPDATA || (process.platform == "darwin" ? process.env.HOME + "Library/Preferences" : "/var/local"),
 	process.env[(process.platform == "win32") ? "USERPROFILE" : "HOME"],
-	process.cwd()
+	process.cwd(),
+	"/tmp"
 ];
 
 var algo = "aes-256-ctr";

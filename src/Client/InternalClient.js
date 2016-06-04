@@ -555,8 +555,7 @@ export default class InternalClient {
 			return Promise.reject(new Error("Client is not logged in!"));
 		}
 
-		return this.apiRequest("post", Endpoints.LOGOUT, true)
-		.then(() => {
+		var disconnect = () => {
 			if (this.websocket) {
 				this.websocket.close(1000);
 				this.websocket = null;
@@ -565,7 +564,15 @@ export default class InternalClient {
 			this.email = null;
 			this.password = null;
 			this.state = ConnectionState.DISCONNECTED;
-		});
+			return Promise.resolve();
+		};
+
+		if(!this.user.bot) {
+			return this.apiRequest("post", Endpoints.LOGOUT, true)
+			.then(disconnect);
+		} else {
+			disconnect();
+		}
 	}
 
 	// def startPM
@@ -1371,8 +1378,9 @@ export default class InternalClient {
 				return Promise.reject(new Error("Bitrate must be between 8-96kbps"));
 			}
 
-
-			data.bitrate *= 1000; // convert to bits before sending
+			if (data.bitrate) {
+				data.bitrate *= 1000; // convert to bits before sending
+			}
 
 			return this.apiRequest("patch", Endpoints.CHANNEL(channel.id), true, data)
 			.then(res => {
