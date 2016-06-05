@@ -156,13 +156,14 @@ Functions
             // handle error and success
         });
 
-login(email, password, `callback`)
+login(email, password, `tfaCode`, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Logs the client in so it can begin initialising. Use this `after` registering your events to ensure they are called!
 
 - **email** - The e-mail used to sign in, `String`.
 - **password** - The password used to sign in, `String`.
+- **tfaCode** - A code for the Two-Factor Authentication. This only has to be provided once and if Two-Factor Authentication is enabled on the account., `String`.
 - **callback** - `function` that takes the following parameters:
     - **error** - An error if any occurred
     - **token** - The token received after logging in, `String`.

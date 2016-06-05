@@ -267,26 +267,33 @@ export default class Client extends EventEmitter {
 	}
 
 	/**
-	 * Log the client in using an email and password.
+	 * Log the client in using an email, password (and a Two-Factor Authentication code).
 	 * @param {string} email Email of the Discord Account.
 	 * @param {string} password Password of the Discord Account.
+	 * @param {string} tfaCode Two-Factor Authentication code.
 	 * @param {function(err: Error, token: string)} [callback] callback callback to the method
 	 * @returns {Promise<string, Error>} Resolves with the token if the login was successful, otherwise it rejects with an error.
 	 * @example
 	 * // log the client in - callback
-	 * client.login("jeff@gmail.com", "password", function(error, token){
+	 * client.login("jeff@gmail.com", "password", "640582" ,function(error, token){
 	 *    if(!error){
 	 *       console.log(token);
 	 *    }
 	 * });
 	 * @example
 	 * // log the client in - promise
-	 * client.login("jeff@gmail.com", "password")
+	 * client.login("jeff@gmail.com", "password", "640582")
 	 *     .then(token => console.log(token))
 	 *     .catch(err => console.log(err));
 	 */
-	login(email, password, callback = (/*err, token*/) => { }) {
-		return this.internal.login(email, password)
+	login(email, password, tfaCode = null, callback = (/*err, token*/) => { }) {
+		if(typeof tfaCode === "function") {
+			// tfaCode is the callback
+			callback = tfaCode;
+			tfaCode = null;
+		}
+
+		return this.internal.login(email, password, tfaCode)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
