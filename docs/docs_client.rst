@@ -188,6 +188,14 @@ Logs the client out and closes the WebSocket connections.
 - **callback** - `function` that takes the following parameter:
     - **error** - An error if any occurred
 
+destroy(`callback`)
+~~~~~~~~~~~~~~~~~~~
+
+Similar to logout but should be used if you're not going to create the Client again later in your program.
+
+- **callback** - `function` that takes the following parameter:
+    - **error** - An error if any occurred
+
 sendMessage(channel, content, `options`, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
