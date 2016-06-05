@@ -290,9 +290,7 @@ export default class InternalClient {
 
 					var timeout = null;
 
-					var check = m => {
-						var data = JSON.parse(m);
-
+					var check = data => {
 						if (data.t === "VOICE_SERVER_UPDATE") {
 							if (data.d.guild_id !== server.id) return // ensure it is the right server
 							token = data.d.token;
@@ -309,16 +307,16 @@ export default class InternalClient {
 							if (timeout) {
 								clearTimeout(timeout);
 							}
-							this.websocket.removeListener("message", check);
+							this.client.removeListener("raw", check);
 						}
 					};
 
 					timeout = setTimeout(() => {
-						this.websocket.removeListener("message", check);
+						this.client.removeListener("raw", check);
 						reject(new Error("No voice server details within 10 seconds"));
 					}, 10000);
 
-					this.websocket.on("message", check);
+					this.client.on("raw", check);
 					joinSendWS();
 				});
 			}
