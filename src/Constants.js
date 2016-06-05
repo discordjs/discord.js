@@ -11,6 +11,7 @@ export const Endpoints = {
 	GATEWAY: `${API}/gateway`,
 	AVATAR : (userID, avatar) => `${API}/users/${userID}/avatars/${avatar}.jpg`,
 	INVITE: (id) => `${API}/invite/${id}`,
+	TOTP: `${API}/auth/mfa/totp`,
 
 	// servers
 	SERVERS: `${API}/guilds`,

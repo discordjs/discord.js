@@ -505,13 +505,13 @@ export default class InternalClient {
 	}
 
 	// def login
-	login(email, password) {
+	login(email, password, tfaCode) {
 		var client = this.client;
 
 		if (!this.tokenCacher.done) {
 			return new Promise((resolve, reject) => {
 				setTimeout(() => {
-					this.login(email, password).then(resolve).catch(reject);
+					this.login(email, password, tfaCode).then(resolve).catch(reject);
 				}, 20);
 			});
 		} else {
@@ -533,6 +533,31 @@ export default class InternalClient {
 			password
 		})
 		.then(res => {
+			if(res.mfa) {
+				if(!tfaCode)
+					return Promise.reject(new Error("no two factor authentication code provided, even though activated!"));
+
+				this.client.emit("debug", "detected two factor authentication");
+
+				return this.apiRequest("post", Endpoints.TOTP, false, {
+					ticket: res.ticket,
+					code: tfaCode
+				}).then(res => {
+					var token = res.token;
+					this.tokenCacher.setToken(email, password, token);
+					return this.loginWithToken(token, email, password);
+				}, error => {
+					this.websocket = null;
+					throw error;
+				})
+				.catch(error => {
+					this.websocket = null;
+					this.state = ConnectionState.DISCONNECTED;
+					client.emit("disconnected");
+					throw error;
+				});
+			}
+
 			this.client.emit("debug", "direct API login, cached token was unavailable");
 			var token = res.token;
 			this.tokenCacher.setToken(email, password, token);

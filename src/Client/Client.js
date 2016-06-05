@@ -285,8 +285,8 @@ export default class Client extends EventEmitter {
 	 *     .then(token => console.log(token))
 	 *     .catch(err => console.log(err));
 	 */
-	login(email, password, callback = (/*err, token*/) => { }) {
-		return this.internal.login(email, password)
+	login(email, password, tfaCode = null, callback = (/*err, token*/) => { }) {
+		return this.internal.login(email, password, tfaCode)
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
