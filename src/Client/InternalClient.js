@@ -292,9 +292,10 @@ export default class InternalClient {
 
 					var check = data => {
 						if (data.t === "VOICE_SERVER_UPDATE") {
-							if (data.d.guild_id !== server.id) return // ensure it is the right server
+							if (data.d.guild_id !== server.id) return; // ensure it is the right server
 							token = data.d.token;
 							endpoint = data.d.endpoint;
+							if (!token || !endpoint) return;
 							var chan = new VoiceConnection(
 								channel, this.client, session, token, server, endpoint
 							);
