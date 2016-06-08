@@ -45,7 +45,7 @@ A raw array of embed objects.
 timestamp
 ~~~~~~~~~
 
-`Number`, timestamp of when the message was sent.
+`Date`, timestamp of when the message was sent.
 
 everyoneMentioned
 ~~~~~~~~~~~~~~~~~
@@ -60,7 +60,7 @@ id
 editedTimestamp
 ~~~~~~~~~~~~~~~
 
-Timestamp on when the message was last edited, `Number`. Potentially null.
+Timestamp on when the message was last edited, `Date`. Potentially null.
 
 author
 ~~~~~~
