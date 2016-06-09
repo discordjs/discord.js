@@ -286,7 +286,7 @@ Attempts to delete a message
 - **callback** - `function` that takes the following parameters:
     - **error** - error object if any occurred
 
-deleteMessages(messages, `options`, `callback`)
+deleteMessages(messages, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Attempts to bulk delete messages from the same channel
