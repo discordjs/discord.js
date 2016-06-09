@@ -1,6 +1,6 @@
 {
   "name": "discord.js",
-  "version": "7.0.1",
+  "version": "7.1.0",
   "description": "A way to interface with the Discord API",
   "main": "./entrypoint.js",
   "scripts": {
@@ -27,7 +27,7 @@
   "dependencies": {
     "superagent": "^1.8.3",
     "unpipe": "^1.0.0",
-    "ws": "^1.0.1"
+    "ws": "^1.1.0"
   },
   "devDependencies": {
     "colors": "^1.1.2",
@@ -40,7 +40,7 @@
     "mocha": "^2.4.5"
   },
   "optionalDependencies": {
-    "node-opus": "^0.1.12",
+    "node-opus": "^0.2.0",
     "tweetnacl": "^0.14.3"
   },
   "engines": {
