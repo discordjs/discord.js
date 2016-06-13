@@ -201,14 +201,14 @@ sendMessage(channel, content, `options`, `callback`)
 
 Sends a message to the specified channel.
 
-- **channel** - a `Channel Resolvable`_
+- **channel** - a `Channel Resolvable`_ or `User Resolvable`_
 - **content** - (Optional if file is passed in options) a `String Resolvable`_ - the message you want to send
 - **options** - (Optional) `object` containing:
     - **tts** - (Optional) `Boolean`, should message be text-to-speech
+    - **disableEveryone** - (Optional) `Boolean`, disable `here` and `everyone` mentions
     - **file** - (Optional) `object`, containing:
         - **file** - a `File Resolvable`_
         - **name** - (Optional) `String`, filename to upload file as
-	- **disableEveryone** - (Optional) `Boolean`, disable `here` and `everyone` mentions
 - **callback** - `function` that takes the following parameters:
     - **error** - error object if any occurred
     - **message** - the sent Message_
@@ -223,7 +223,7 @@ sendFile(channel, attachment, name, content, `callback`)
 
 Sends a file to the specified channel.
 
-- **channel** - a `Channel Resolvable`_
+- **channel** - a `Channel Resolvable`_ or `User Resolvable`_
 - **attachment** - A `File Resolvable`_
 - **name** - (Optional) `String`, filename to upload file as
 - **content** - (Optional) `String`, text message to send with the attachment
