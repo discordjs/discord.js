@@ -71,7 +71,10 @@ export default class AudioEncoder {
 				'pipe:1'
 			]);
 
-			stream.pipe(enc.stdin);
+			var dest = stream.pipe(enc.stdin);
+
+			dest.on('unpipe', () => dest.destroy());
+			dest.on('error', err => dest.destroy());
 
 			this.hookEncodingProcess(resolve, reject, enc, stream);
 		});
