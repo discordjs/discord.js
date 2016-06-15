@@ -309,6 +309,17 @@ Gets a list of previously sent messages in a channel.
     - **error** - error if any occurred
     - **messages** - `array` of Message_ objects sent in channel
 
+getMessage(channel, messageID, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Gets a message. This also works for messages that aren't cached but will only work for OAuth bot accounts.
+
+- **channel** - The Channel_ to get the message from.
+- **messageID** - The message id to get the message object from. A `String`
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred
+    - **message** - The `Message_`
+
 getBans(server, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
