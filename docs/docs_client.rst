@@ -836,12 +836,12 @@ Set the nickname of a user on a server.
 setNote(user, note, `callback`)
 ~~~~~~~~~~~~~~~~~~~~
 
- Set the note of a user. This will only work for user accounts.
+Set the note of a user. This will only work for user accounts.
 
- - **user** - A `User Resolvable`_ to which the note is applied.
- - **note** - `String`, content of the note, or `null` to clear.
- - **callback** - `function` taking the following:
-     - **error** - error if any occurred.
+- **user** - A `User Resolvable`_ to which the note is applied.
+- **note** - `String`, content of the note, or `null` to clear.
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred.
 
 Events
 ------
