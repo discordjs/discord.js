@@ -612,6 +612,34 @@ export default class Client extends EventEmitter {
 	}
 
 	/**
+	 * Gets a single message of a server
+	 * @param {ChannelResolvable} channel to get the message from
+	 * @param {function(err: Error, msg: Message} [callback] callback to the method
+	 * @returns {Promise<Message, Error>} Resolves with a message if the request was successful, otherwise rejects with an error.
+	 * @example
+	 * // get message object off a snowflake and log its content - callback
+	 * client.getMessage(channel, '192696158886428672', function(err, msg) {
+	 *     if(!err) {
+	 *         console.log(msg.content);
+	 *     } else {
+	 *         console.log("couldn't get the message");
+	 *     }
+	 * }
+	 * @example
+	 * //get message object off a snowflake and log its content - promise
+	 * client.getMessage(channel, '192696158886428672')
+	 *     .then(msg => {
+	 *         console.log(msg.content);
+	 *     })
+	 *     .catch(err => console.log("couldn't get the message"));
+	 */
+
+	getMessage(channel, messageID, callback = (/*err, msg*/) => { }) {
+		return this.internal.getMessage(channel, messageID)
+			.then(dataCallback(callback), errorCallback(callback));
+	}
+
+	/**
 	 * Gets the banned users of a server (if the client has permission to)
 	 * @param {ServerResolvable} server server to get banned users of
 	 * @param {function(err: Error, bans: Array<User>)} [callback] callback to the method

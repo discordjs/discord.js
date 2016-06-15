@@ -309,6 +309,17 @@ Gets a list of previously sent messages in a channel.
     - **error** - error if any occurred
     - **messages** - `array` of Message_ objects sent in channel
 
+getMessage(channel, messageID, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Gets a message. This also works for messages that aren't cached but will only work for OAuth bot accounts.
+
+- **channel** - The Channel_ to get the message from.
+- **messageID** - The message id to get the message object from. A `String`
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred
+    - **message** - The `Message_`
+
 getBans(server, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -823,14 +834,14 @@ Set the nickname of a user on a server.
     - **error** - error if any occurred.
 
 setNote(user, note, `callback`)
- ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
 
- Set the note of a user. This will only work for user accounts.
+Set the note of a user. This will only work for user accounts.
 
- - **user** - A `User Resolvable`_ to which the note is applied.
- - **note** - `String`, content of the note, or `null` to clear.
- - **callback** - `function` taking the following:
-     - **error** - error if any occurred.
+- **user** - A `User Resolvable`_ to which the note is applied.
+- **note** - `String`, content of the note, or `null` to clear.
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred.
 
 Events
 ------

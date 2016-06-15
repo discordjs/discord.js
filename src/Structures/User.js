@@ -114,6 +114,10 @@ export default class User extends Equality{
 		return this.client.getChannelLogs.apply(this.client, reg(this, arguments));
 	}
 
+	getMessage() {
+		return this.client.getMessage.apply(this.client, reg(this, arguments));
+	}
+
 	hasRole(role) {
 		return this.client.memberHasRole.apply(this.client, [this, role]);
 	}

@@ -788,6 +788,34 @@ export default class InternalClient {
 		});
 	}
 
+	// def getMessage
+	getMessage(_channel, messageID) {
+		return this.resolver.resolveChannel(_channel)
+		.then(channel => {
+			if(!this.user.bot) {
+				return Promise.reject(new Error("Only OAuth bot accounts can use this function"));
+			}
+
+			if(!(channel instanceof TextChannel || channel instanceof PMChannel)) {
+				return Promise.reject(new Error("Provided channel is not a Text or PMChannel"));
+			}
+
+			var msg = channel.messages.get("id", messageID);
+			if(msg) {
+				return Promise.resolve(msg);
+			}
+
+			return this.apiRequest(
+				"get",
+				`${Endpoints.CHANNEL_MESSAGES(channel.id)}/${messageID}`,
+				true
+			)
+			.then(res => channel.messages.add(
+				new Message(res, channel, this.client)
+			));
+		})
+	}
+
 	// def getBans
 	getBans(server) {
 		server = this.resolver.resolveServer(server);

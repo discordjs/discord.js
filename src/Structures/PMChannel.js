@@ -55,4 +55,8 @@ export default class PMChannel extends Channel {
 	getLogs() {
 		return this.client.getChannelLogs.apply(this.client, reg(this, arguments));
 	}
+
+	getMessage() {
+		return this.client.getMessage.apply(this.client, reg(this, arguments));
+	}
 }

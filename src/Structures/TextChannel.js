@@ -50,6 +50,10 @@ export default class TextChannel extends ServerChannel{
 		return this.client.getChannelLogs.apply(this.client, reg(this, arguments));
 	}
 
+	getMessage() {
+		return this.client.getMessage.apply(this.client, reg(this, arguments));
+	}
+
 	startTyping(){
 		return this.client.startTyping.apply(this.client, reg(this, arguments));
 	}
