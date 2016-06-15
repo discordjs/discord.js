@@ -87,6 +87,12 @@ createdAt
 
 A `Date` referring to when the user was created.
 
+
+note
+~~~~
+
+The note of the user, `String`.
+
 Functions
 ---------
 

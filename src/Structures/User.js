@@ -19,6 +19,7 @@ export default class User extends Equality{
 			since : null,
 			channel : null
 		};
+		this.note = data.note || null;
 		this.voiceChannel = null;
 		this.voiceState = {};
 	}

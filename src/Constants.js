@@ -8,6 +8,7 @@ export const Endpoints = {
 	ME: `${API}/users/@me`,
 	ME_CHANNELS: `${API}/users/@me/channels`,
 	ME_SERVER: (serverID) => `${Endpoints.ME}/guilds/${serverID}`,
+	ME_NOTES: `${API}/users/@me/notes`,
 	GATEWAY: `${API}/gateway`,
 	AVATAR : (userID, avatar) => `${API}/users/${userID}/avatars/${avatar}.jpg`,
 	INVITE: (id) => `${API}/invite/${id}`,
@@ -93,6 +94,7 @@ export const PacketType = {
 	SERVER_UPDATE : "GUILD_UPDATE",
 	TYPING : "TYPING_START",
 	USER_UPDATE : "USER_UPDATE",
+	USER_NOTE_UPDATE: "USER_NOTE_UPDATE",
 	VOICE_STATE_UPDATE : "VOICE_STATE_UPDATE",
 	FRIEND_ADD : "RELATIONSHIP_ADD",
 	FRIEND_REMOVE : "RELATIONSHIP_REMOVE"

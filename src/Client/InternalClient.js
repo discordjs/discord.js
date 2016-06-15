@@ -915,6 +915,18 @@ export default class InternalClient {
 		return this.apiRequest("patch", `${Endpoints.SERVER_MEMBERS(server.id)}/${user.id === this.user.id ? "@me/nick" : user.id}`, true, { nick: nick });
 	}
 
+	//def setNote
+	setNote(user, note) {
+		user = this.resolver.resolveUser(user);
+		note = note || "";
+
+		if(!user) {
+			return Promise.reject(new Error("Failed to resolve user"));
+		}
+
+		return this.apiRequest("put", `${Endpoints.ME_NOTES}/${user.id}`, true, { note: note });
+	}
+
 	// def createRole
 	createRole(server, data) {
 		server = this.resolver.resolveServer(server);
@@ -1551,6 +1563,23 @@ export default class InternalClient {
 						self.incoming_friend_requests = null;
 						self.outgoing_friend_requests = null;
 					}
+
+					// add notes to users
+					if(data.notes) {
+						for(note in data.notes) {
+							var user = self.users.get("id", note);
+							if(user) {
+								var newUser = user;
+								newUser.note = data.notes[note];
+
+								self.users.update(user, newUser);
+							} else {
+								client.emit("warn", "note in ready packet but user not cached");
+							}
+						}
+					}
+
+
 					self.state = ConnectionState.READY;
 
 					client.emit("debug", `ready packet took ${Date.now() - startTime}ms to process`);
@@ -1983,6 +2012,27 @@ export default class InternalClient {
 						client.emit("userUnbanned", user, server);
 					} else {
 						client.emit("warn", "user unbanned but user/server not in cache.");
+					}
+					break;
+				case PacketType.USER_NOTE_UPDATE:
+					if(this.user.bot) {
+						return;
+					}
+					var user = self.users.get("id", data.id);
+					var oldNote = user.note;
+					var note = data.note || null;
+
+					// user in cache
+					if(user) {
+						var updatedUser = user;
+						updatedUser.note = note;
+
+						client.emit("noteUpdated", user, oldNote);
+
+						self.users.update(user, updatedUser);
+
+					} else {
+						client.emit("warn", "note updated but user not in cache");
 					}
 					break;
 				case PacketType.VOICE_STATE_UPDATE:

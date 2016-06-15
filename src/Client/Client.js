@@ -848,6 +848,12 @@ export default class Client extends EventEmitter {
 		.then(dataCallback(callback), errorCallback(callback));
 	}
 
+	// def setNote
+	setNote(user, note, callback = (/*err, {}*/) => { }) {
+		return this.internal.setNote(user,note)
+		.then(dataCallback(callback), errorCallback(callback));
+	}
+
 	// def createRole
 	createRole(server, data = null, callback = (/*err, role*/) => { }) {
 		if (typeof data === "function") {

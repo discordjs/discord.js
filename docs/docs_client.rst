@@ -822,6 +822,16 @@ Set the nickname of a user on a server.
 - **callback** - `function` taking the following:
     - **error** - error if any occurred.
 
+setNote(user, note, `callback`)
+ ~~~~~~~~~~~~~~~~~~~
+
+ Set the note of a user. This will only work for user accounts.
+
+ - **user** - A `User Resolvable`_ to which the note is applied.
+ - **note** - `String`, content of the note, or `null` to clear.
+ - **callback** - `function` taking the following:
+     - **error** - error if any occurred.
+
 Events
 ------
 
@@ -956,6 +966,11 @@ userUnbanned
 ~~~~~~~~~~
 
 Emitted when a user is unbanned from a server. Supplies two parameters, a User_ object and a Server_ object.
+
+noteUpdated
+~~~~~~~~~~~
+
+Emitted when a note is updated. Supplies a User_ object (containing the updated note) and the old note.
 
 voiceJoin
 ~~~~~~~~
