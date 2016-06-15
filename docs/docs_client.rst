@@ -834,7 +834,7 @@ Set the nickname of a user on a server.
     - **error** - error if any occurred.
 
 setNote(user, note, `callback`)
- ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
 
  Set the note of a user. This will only work for user accounts.
 
