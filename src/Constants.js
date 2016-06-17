@@ -4,7 +4,7 @@ const Constants = {};
 
 const API = Constants.API = "https://discordapp.com/api";
 
-Constants.Endpoints = {
+const Endpoints = Constants.Endpoints = {
 	// general endpoints
 	LOGIN: `${API}/auth/login`,
 	LOGOUT: `${API}/auth/logout`,
