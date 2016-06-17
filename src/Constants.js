@@ -1,7 +1,10 @@
 "use strict";
 
-export const API = "https://discordapp.com/api";
-export const Endpoints = {
+const Constants = {};
+
+const API = Constants.API = "https://discordapp.com/api";
+
+Constants.Endpoints = {
 	// general endpoints
 	LOGIN: `${API}/auth/login`,
 	LOGOUT: `${API}/auth/logout`,
@@ -39,7 +42,7 @@ export const Endpoints = {
 	FRIENDS: `${API}/users/@me/relationships`
 };
 
-export const Permissions = {
+Constants.Permissions = {
 	// general
 	createInstantInvite: 1 << 0,
 	kickMembers: 1 << 1,
@@ -71,7 +74,7 @@ export const Permissions = {
 
 };
 
-export const PacketType = {
+Constants.PacketType = {
 	CHANNEL_CREATE : "CHANNEL_CREATE",
 	CHANNEL_DELETE : "CHANNEL_DELETE",
 	CHANNEL_UPDATE : "CHANNEL_UPDATE",
@@ -99,3 +102,5 @@ export const PacketType = {
 	FRIEND_ADD : "RELATIONSHIP_ADD",
 	FRIEND_REMOVE : "RELATIONSHIP_REMOVE"
 };
+
+export default Constants;
