@@ -305,6 +305,7 @@ Gets a list of previously sent messages in a channel.
 - **options** - An `object` containing either of the following:
     - **before** - A `Message Resolvable`_ - gets messages before this message.
     - **after** - A `Message Resolvable`_ - gets messages after this message.
+    - **around** - A `Message Resolvable`_ - gets the messages around this message.
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
     - **messages** - `array` of Message_ objects sent in channel
@@ -318,7 +319,35 @@ Gets a message. This also works for messages that aren't cached but will only wo
 - **messageID** - The message id to get the message object from. A `String`
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
-    - **message** - The `Message_`
+    - **message** - The `Message`_
+
+pinMessage(message, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Pins a message to a channel.
+
+- **message** - The Message_ to pin.
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred
+
+unpinMessage(message, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Unpins a message to a channel.
+
+- **message** - The Message_ to unpin.
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred
+
+getPinnedMessages(channel, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Gets a list of all pinned messages in a channel.
+
+- **channel** - The Channel_ to get pins from
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred
+    - **messages** - `array` of Message_ objects that are pinned.
 
 getBans(server, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~

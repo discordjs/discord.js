@@ -776,6 +776,12 @@ export default class InternalClient {
 					qsObject.after = res.id;
 				}
 			}
+			if (options.around) {
+				const res = this.resolver.resolveMessage(options.around);
+				if (res) {
+					qsObject.around = res.id
+				}
+			}
 
 			return this.apiRequest(
 				"get",
@@ -813,7 +819,56 @@ export default class InternalClient {
 			.then(res => channel.messages.add(
 				new Message(res, channel, this.client)
 			));
-		})
+		});
+	}
+
+	// def pinMessage
+	pinMessage(msg) {
+		var message = this.resolver.resolveMessage(msg);
+
+		if(!message) {
+			return Promise.reject(new Error("Supplied message did not resolve to a message"));
+		}
+
+		return this.apiRequest(
+			"put",
+			`${Endpoints.CHANNEL_PIN(msg.channel.id, msg.id)}`,
+			true
+		);
+	}
+
+	// def unpinMessage
+	unpinMessage(msg) {
+		var message = this.resolver.resolveMessage(msg);
+
+		if(!message) {
+			return Promise.reject(new Error("Supplied message did not resolve to a message"));
+		}
+
+		if(!message.pinned) {
+			return Promise.reject(new Error("Supplied message is not pinned"));
+		}
+
+		return this.apiRequest(
+			"del",
+			`${Endpoints.CHANNEL_PIN(msg.channel.id, msg.id)}`,
+			true
+		);
+	}
+
+	// def getPinnedMessages
+	getPinnedMessages(_channel) {
+		return this.resolver.resolveChannel(_channel)
+		.then(channel => {
+			return this.apiRequest(
+				"get",
+				`${Endpoints.CHANNEL_PINS(channel.id)}`,
+				true
+			)
+			.then(res => res.map(
+				msg => channel.messages.add(new Message(msg, channel, this.client))
+			));
+		});
 	}
 
 	// def getBans

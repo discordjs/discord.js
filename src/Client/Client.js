@@ -640,6 +640,91 @@ export default class Client extends EventEmitter {
 	}
 
 	/**
+	 * Pins a message to a channel.
+	 * @param {MessageResolvable} message to pin.
+	 * @returns {Promise<null, Error>} resolves null if successful, otherwise rejects with an error.
+	 * @example
+	 * // pin message - callback
+	 * client.pinMessage(msg, (err) => {
+	 *     if(!err) {
+	 *         console.log("Successfully pinned message")
+	 *     } else {
+	 *         console.log("Couldn't pin the message: " + err);
+	 *     }
+	 * });
+	 * @example
+	 * // pin message - promise
+	 * client.pinMessage(msg)
+	 *     .then(() => {
+	 *         console.log("Successfully pinned message");
+	 *     })
+	 *     .catch(err => console.log("Couldn't pin the message: " + err));
+	 */
+
+	pinMessage(msg, callback = (/*err*/) => { }) {
+		return this.internal.pinMessage(msg)
+			.then(dataCallback(callback), errorCallback(callback));
+	}
+
+	/**
+	 * Unpins a message to a server.
+	 * @param {MessageResolvable} message to unpin.
+	 * @returns {Promise<null, Error>} resolves null if successful, otherwise rejects with an error.
+	 * @example
+	 * // unpin message - callback
+	 * client.unpinMessage(msg, (err) => {
+	 *     if(!err) {
+	 *         console.log("Successfully unpinned message")
+	 *     } else {
+	 *         console.log("Couldn't pin the message: " + err);
+	 *     }
+	 * });
+	 * @example
+	 * // unpin message - promise
+	 * client.unpinMessage(msg)
+	 *     .then(() => {
+	 *         console.log("Successfully unpinned message");
+	 *     })
+	 *     .catch(err => console.log("Couldn't unpin the message: " + err));
+	 */
+
+	unpinMessage(msg, callback = (/*err*/) => { }) {
+		return this.internal.unpinMessage(msg)
+			.then(dataCallback(callback), errorCallback(callback));
+	}
+
+	/**
+	 * Gets all pinned messages of a channel.
+	 * @param {TextChannelResolvable} where to get the pins from.
+	 * @returns {Promise<Array<Message>, Error>} Resolves with an array of messages if successful, otherwise rejects with an error.
+	 * @example
+	 * // log all pinned messages - callback
+	 * client.getPinnedMessages(channel, (err, messages) => {
+	 *     if(!err) {
+	 *         for(var message of messages) {
+	 *             console.log(message.content);
+	 *         }
+	 *     } else {
+	 *         console.log("Couldn't fetch pins: " + err);
+	 *     }
+	 * });
+	 * @example
+	 * // log all pinned messages - promise
+	 * client.getPinnedMessages(channel)
+	 *     .then(messages => {
+	 *         for(var message of messages) {
+	 *             console.log(message.content);
+	 *         }
+	 *     })
+	 *     .catch(err => console.log("Couldn't fetch pins: " + err));
+	 */
+
+	getPinnedMessages(channel, callback = (/*err, messages*/) => { }) {
+		return this.internal.getPinnedMessages(channel)
+			.then(dataCallback(callback), errorCallback(callback));
+	}
+
+	/**
 	 * Gets the banned users of a server (if the client has permission to)
 	 * @param {ServerResolvable} server server to get banned users of
 	 * @param {function(err: Error, bans: Array<User>)} [callback] callback to the method

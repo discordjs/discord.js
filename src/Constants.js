@@ -37,6 +37,8 @@ const Endpoints = Constants.Endpoints = {
 	CHANNEL_TYPING: (channelID) => `${Endpoints.CHANNEL(channelID) }/typing`,
 	CHANNEL_PERMISSIONS: (channelID) => `${Endpoints.CHANNEL(channelID) }/permissions`,
 	CHANNEL_MESSAGE: (channelID, messageID) => `${Endpoints.CHANNEL_MESSAGES(channelID)}/${messageID}`,
+	CHANNEL_PINS: (channelID) => `${Endpoints.CHANNEL(channelID) }/pins`,
+	CHANNEL_PIN: (channelID, messageID) => `${Endpoints.CHANNEL_PINS(channelID) }/${messageID}`,
 
 	// friends
 	FRIENDS: `${API}/users/@me/relationships`
