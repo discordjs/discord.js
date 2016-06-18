@@ -84,6 +84,11 @@ mentions
 
 A array of User_ objects that were mentioned in the message.
 
+pinned
+~~~~~~
+
+`Boolean`, true if the message is pinned to its channel.
+
 Functions
 ---------
 
