@@ -333,7 +333,7 @@ Pins a message to a channel.
 unpinMessage(message, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Unpins a message to a channel.
+Unpins a message from a channel.
 
 - **message** - The Message_ to unpin.
 - **callback** - `function` taking the following:
