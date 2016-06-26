@@ -300,7 +300,7 @@ getChannelLogs(channel, `limit`, `options`, `callback`)
 
 Gets a list of previously sent messages in a channel.
 
-- **channel** - The Channel_ to get messages from
+- **channel** - A `Channel Resolvable`_ to get messages from
 - **limit** - The maximum amount of messages to retrieve - defaults to 50. A `Number`
 - **options** - An `object` containing either of the following:
     - **before** - A `Message Resolvable`_ - gets messages before this message.
