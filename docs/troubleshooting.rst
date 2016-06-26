@@ -10,6 +10,8 @@ If there is already an issue, feel free to comment that you're also experiencing
 
 You can try reconnecting before submitting an issue, as sometimes some of the servers may be slightly different.
 
+If you're your bot or client is exiting unexpectedly with no error, this is likely caused by websocket disconnects. Make sure you have ``autoReconnect`` enabled. See `Client`_.
+
 Voice
 ------
 
@@ -22,10 +24,10 @@ Follow the steps below, one by one.
     - Linux ARM (Raspberry Pi 1 & 2)
     - Mac OS X x64
     - Windows x64
-- Did you install Python 2.7.x correctly? Is it in your PATH? ``python -V``. If not, install it correctly and try reinstalling.
+- Did you install Python 2.7.x correctly? Is it in your PATH? ``python -V``. If not, install it correctly or try reinstalling.
     - **Windows** - See https://python.org/downloads/
     - **Linux / Mac OS** - Unix systems should already have it installed, but if not, use the OS's package manager
-- Did you install FFMPEG correctly? Is it in your PATH? ``ffmpeg -version``. If not, install it correctly and try reinstalling.
+- Did you install FFMPEG correctly? Is it in your PATH? ``ffmpeg -version``. If not, install it correctly or try reinstalling.
     - **Windows** - `Follow this guide`_
     - **Linux / Mac OS** - Use your OS's package manager
 - Did you install the required C++ compiler tool for your OS? If not, install the corresponding program, **then** try reinstalling discord.js ``npm i -S discord.js``

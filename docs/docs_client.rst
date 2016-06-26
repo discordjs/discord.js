@@ -561,7 +561,7 @@ setStreaming(name, url, type, `callback`)
 Sets the Discord Status of the Client
 
 - **name** - `String`, Name of game being played
-- **url** - `String`, URL that it will link to
+- **url** - `String`, URL that it will link to, only supports `twitch.tv` urls at this time.
 - **type** - `Number`, `1` indicates streaming
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
