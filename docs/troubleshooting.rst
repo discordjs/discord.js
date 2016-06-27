@@ -1,3 +1,5 @@
+.. include:: ./vars.rst
+
 Troubleshooting
 ===============
 
