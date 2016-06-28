@@ -64,3 +64,25 @@ xkcd
 ~~~~
 
 `Boolean`, whether the invite is intended to be easy to read and remember by a human.
+
+--------
+
+Functions
+---------
+
+toString()
+~~~~~~~~~~
+
+Returns the invite URL.
+
+delete(`callback`)
+~~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.deleteInvite(invite, callback)``
+| **See** client.deleteInvite_
+
+join(`callback`)
+~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.joinServer(invite, callback)``
+| **See** client.joinServer_

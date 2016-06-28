@@ -36,3 +36,15 @@ setUserLimit(limit, `callback`)
 
 | **Shortcut of** ``client.setChannelUserLimit(channel, limit, callback)``
 | **See** client.setChannelUserLimit_
+
+setBitrate(kbitrate, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.setChannelBitrate(channel, kbitrate, callback)``
+| **See** client.setChannelBitrate_
+
+join(`callback`)
+~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.joinVoiceChannel(channel, callback)``
+| **See** client.joinVoiceChannel_

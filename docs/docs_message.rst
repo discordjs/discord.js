@@ -98,3 +98,45 @@ isMentioned(user)
 Returns true if the given user was mentioned in the message.
 
 - **user** - A `User Resolvable`_
+
+toString()
+~~~~~~~~~~
+
+Returns the content of the Message.
+
+delete(`options`, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.deleteMessage(message, options, callback``
+| **See** client.deleteMessage_
+
+update(content, `options`, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.updateMessage(message, content, options, callback)``
+| **Aliases** `edit`
+| **See** client.updateMessage_
+
+reply(content, `options`, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.reply(message, content, options, callback)``
+| **See** client.reply_
+
+replyTTS(content, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.replyTTS(message, content, callback)``
+| **See** client.replyTTS_
+
+pin(`callback`)
+~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.pinMessage(message, callback)``
+| **See** client.pinMessage_
+
+unpin(`callback`)
+~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.unpinMessage(message, callback)``
+| **See** client.unpinMessage_
