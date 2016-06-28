@@ -152,7 +152,7 @@ removeFrom(role, `callback`)
 getLogs(`limit`, `options`, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-| **Shortcut of** ``client.getChannelLogs(channel, limit, options, callback)
+| **Shortcut of** ``client.getChannelLogs(channel, limit, options, callback)``
 | **See** client.getChannelLogs_
 
 getMessage(messageID, `callback`)
@@ -166,3 +166,15 @@ hasRole(role)
 
 | **Shortcut of** ``client.memberHasRole(member, role)``
 | **See** client.memberHasRole_
+
+
+.. _client.addMemberToRole : ./docs_client.html#addmembertorole-member-role-callback
+.. _client.removeMemberFromRole : ./docs_client.html#removememberfromrole-member-role-callback
+.. _client.memberHasRole : ./docs_client.html#memberhasrole-member-role
+.. _client.sendMessage : ./docs_client.html#sendmessage-channel-content-options-callback
+.. _client.sendTTSMessage : ./docs_client.html#sendttsmessage-channel-content-callback
+.. _client.sendFile : ./docs_client.html#sendfile-channel-attachment-name-content-callback
+.. _client.startTyping : ./docs_client.html#starttyping-channel-callback
+.. _client.stopTyping : ./docs_client.html#stoptyping-channel-callback
+.. _client.getChannelLogs : ./docs_client.html#getchannellogs-channel-limit-options-callback
+.. _client.getMessage : ./docs_client.html#getmessage-channel-messageid-callback
