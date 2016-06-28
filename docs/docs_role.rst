@@ -108,3 +108,8 @@ removeMember(member, `callback`)
 | **Shortcut of** ``client.removeMemberFromRole(member, roles, callback)``
 | **Aliases** `removeUser`
 | **See** client.removeMemberFromRole_
+
+.. _client.deleteRole : ./docs_client.html#deleterole-role-callback
+.. _client.updateRole : ./docs_client.html#updaterole-role-data-callback
+.. _client.addMemberToRole : ./docs_client.html#addmembertorole-member-role-callback
+.. _client.removeMemberFromRole : ./docs_client.html#removememberfromrole-member-role-callback

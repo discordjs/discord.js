@@ -140,3 +140,10 @@ unpin(`callback`)
 
 | **Shortcut of** ``client.unpinMessage(message, callback)``
 | **See** client.unpinMessage_
+
+.. _client.deleteMessage : ./docs_client.html#deletemessage-message-options-callback
+.. _client.updateMessage : ./docs_client.html#updatemessage-message-content-options-callback
+.. _client.reply : ./docs_client.html#reply-message-content-options-callback
+.. _client.replyTTS : ./docs_client.html#replytts-message-content-callback
+.. _client.pinMessage : ./docs_client.html#pinmessage-message-callback
+.. _client.unpinMessage : ./docs_client.html#unpinmessage-message-callback

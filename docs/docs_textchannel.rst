@@ -87,3 +87,13 @@ getMessage(messageID, `callback`)
 
 | **Shortcut of** ``client.getMessage(channel, messageID, callback)``
 | **See** client.getMessage_
+
+.. _client.sendMessage : ./docs_client.html#sendmessage-channel-content-options-callback
+.. _client.sendTTSMessage : ./docs_client.html#sendttsmessage-channel-content-callback
+.. _client.sendFile : ./docs_client.html#sendfile-channel-attachment-name-content-callback
+.. _client.startTyping : ./docs_client.html#starttyping-channel-callback
+.. _client.stopTyping : ./docs_client.html#stoptyping-channel-callback
+.. _client.getChannelLogs : ./docs_client.html#getchannellogs-channel-limit-options-callback
+.. _client.getMessage : ./docs_client.html#getmessage-channel-messageid-callback
+.. _client.setChannelTopic : ./docs_client.html#setchanneltopic-channel-topic-callback
+.. _client.setChannelNameAndTopic : ./docs_client.html#setchannelnameandtopic-channel-name-topic-callback
