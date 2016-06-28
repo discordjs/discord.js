@@ -135,7 +135,7 @@ stopTyping(`callback`)
 ~~~~~~~~~~~~~~~~~~~~~~
 
 | **Shortcut of** ``client.stopTyping(channel, callback)``
-| **See** client.stopTyping
+| **See** client.stopTyping_
 
 addTo(role, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~
