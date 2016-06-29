@@ -1572,6 +1572,33 @@ export default class InternalClient {
 		this.websocket.onclose = (code) => {
 			self.websocket = null;
 			self.state = ConnectionState.DISCONNECTED;
+			if(code) {
+                client.emit("warn", "WS close: " + code);
+                var err;
+                if(code === 4001) {
+                    err = new Error("Gateway received invalid OP code");
+                } else if(code === 4005) {
+                    err = new Error("Gateway received invalid message");
+                } else if(code === 4003) {
+                    err = new Error("Not authenticated");
+                } else if(code === 4004) {
+                    err = new Error("Authentication failed");
+                } else if(code === 4005) {
+                    err = new Error("Already authenticated");
+                } if(code === 4006 || code === 4009) {
+                    err = new Error("Invalid session");
+                } else if(code === 4007) {
+                    this.seq = 0;
+                    err = new Error("Invalid sequence number");
+                } else if(code === 4008) {
+                    err = new Error("Gateway connection was ratelimited");
+                } else if(code === 4010) {
+                    err = new Error("Invalid shard key");
+                }
+                if(err) {
+                	client.emit("error", err);
+                }
+            }
 			self.disconnected(this.client.options.autoReconnect);
 		};
 
