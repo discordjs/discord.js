@@ -14,6 +14,7 @@ class ActionsManager {
 		this.register('ChannelUpdate');
 		this.register('GuildDelete');
 		this.register('GuildUpdate');
+		this.register('GuildMemberRemove');
 		this.register('UserUpdate');
 	}
 

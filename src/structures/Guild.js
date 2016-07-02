@@ -66,13 +66,14 @@ class Guild {
 
 	_removeMember(guildMember) {
 		this.store.remove('members', guildMember);
-		if (this.client.ws.status === Constants.Status.READY) {
-			this.client.emit(Constants.Events.GUILD_MEMBER_REMOVE, this, guildMember);
-		}
 	}
 
 	toString() {
 		return this.name;
+	}
+
+	kick(member) {
+		return this.member(member).kick();
 	}
 
 	member(user) {

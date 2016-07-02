@@ -62,6 +62,10 @@ class GuildMember {
 	deleteDM() {
 		return this.client.rest.methods.DeleteChannel(this);
 	}
+
+	kick() {
+		return this.client.rest.methods.KickGuildMember(this.guild, this);
+	}
 }
 
 TextBasedChannel.applyToClass(GuildMember);

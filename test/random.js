@@ -128,6 +128,13 @@ client.on('message', message => {
 			message.author.deleteDM();
 		}
 
+		if (message.content.startsWith('kick')) {
+			message.guild.member(message.mentions[0]).kick().then(member => {
+								console.log(member);
+				message.channel.sendMessage('Kicked!' + member.user.username);
+			}).catch(console.log);
+		}
+
 	}
 });
 
