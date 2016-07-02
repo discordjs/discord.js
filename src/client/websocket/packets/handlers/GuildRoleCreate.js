@@ -17,18 +17,7 @@ class GuildRoleCreateHandler extends AbstractHandler {
 		let data = packet.d;
 		let client = this.packetManager.client;
 
-		let guild = client.store.get('guilds', data.guild_id);
-
-		if (guild) {
-			let already = guild.store.get('roles', data.role.id);
-			let role = new Role(guild, data.role);
-			guild.store.add('roles', role);
-
-			if (!already) {
-				client.emit(Constants.Events.GUILD_ROLE_CREATE, guild, role);
-			}
-		}
-
+		let response = client.actions.GuildRoleCreate.handle(data);
 	}
 
 };

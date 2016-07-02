@@ -180,6 +180,10 @@ class Guild {
 		return this.client.rest.methods.CreateChannel(this, name, type);
 	}
 
+	createRole() {
+		return this.client.rest.methods.CreateGuildRole(this);
+	}
+
 	leave() {
 		return this.client.rest.methods.LeaveGuild(this);
 	}

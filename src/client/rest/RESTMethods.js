@@ -255,6 +255,19 @@ class RESTMethods{
 				.catch(reject);
 		});
 	}
+
+	CreateGuildRole(guild) {
+		return new Promise((resolve, reject) => {
+			this.rest.makeRequest('post', Constants.Endpoints.GUILD_ROLES(guild.id), true)
+				.then(role => {
+					resolve(this.rest.client.actions.GuildRoleCreate.handle({
+						guild_id : guild.id,
+						role,
+					}).role);
+				})
+				.catch(reject);
+		});
+	}
 }
 
 module.exports = RESTMethods;

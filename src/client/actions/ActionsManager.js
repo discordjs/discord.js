@@ -15,6 +15,7 @@ class ActionsManager {
 		this.register('GuildDelete');
 		this.register('GuildUpdate');
 		this.register('GuildMemberRemove');
+		this.register('GuildRoleCreate');
 		this.register('UserUpdate');
 	}
 

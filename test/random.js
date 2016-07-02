@@ -135,6 +135,11 @@ client.on('message', message => {
 			}).catch(console.log);
 		}
 
+		if (message.content === 'makerole') {
+			message.guild.createRole().then(role => {
+				message.channel.sendMessage(`Made role ${role.name}`);
+			}).catch(console.log);
+		}
 	}
 });
 
