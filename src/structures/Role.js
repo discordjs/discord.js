@@ -21,6 +21,10 @@ class Role {
 		this.managed = data.managed;
 	}
 
+	delete() {
+		return this.client.rest.methods.DeleteGuildRole(this);
+	}
+
 	serialize() {
 		let serializedPermissions = {};
 		for (let permissionName in Constants.PermissionFlags) {

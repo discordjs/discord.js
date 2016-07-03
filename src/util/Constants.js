@@ -55,6 +55,7 @@ const Endpoints = exports.Endpoints = {
 	GUILD_EMBED:        (guildID) => `${Endpoints.GUILD(guildID)}/embed`,
 	GUILD_INVITES:      (guildID) => `${Endpoints.GUILD(guildID)}/invites`,
 	GUILD_ROLES:        (guildID) => `${Endpoints.GUILD(guildID)}/roles`,
+	GUILD_ROLE:        (guildID, roleID) => `${Endpoints.GUILD_ROLES(guildID)}/${roleID}`,
 	GUILD_BANS:         (guildID) => `${Endpoints.GUILD(guildID)}/bans`,
 	GUILD_INTEGRATIONS: (guildID) => `${Endpoints.GUILD(guildID)}/integrations`,
 	GUILD_MEMBERS:      (guildID) => `${Endpoints.GUILD(guildID)}/members`,

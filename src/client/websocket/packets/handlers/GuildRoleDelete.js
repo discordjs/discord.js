@@ -17,16 +17,7 @@ class GuildRoleDeleteHandler extends AbstractHandler {
 		let data = packet.d;
 		let client = this.packetManager.client;
 
-		let guild = client.store.get('guilds', data.guild_id);
-
-		if (guild) {
-			let exists = guild.store.get('roles', data.role_id);
-			if (exists) {
-				guild.store.remove('roles', data.role_id);
-				client.emit(Constants.Events.GUILD_ROLE_DELETE, guild, exists);
-			}
-		}
-
+		let response = client.actions.GuildRoleDelete.handle(data);
 	}
 
 };

@@ -41,6 +41,7 @@ client.on('guildMemberRemove', (guild, user) => {
 
 client.on('guildRoleCreate', (guild, role) => {
 	console.log('new role', role.name, 'in', guild.name);
+	role.delete().then(role => console.log("deleted " + role.name)).catch(console.log);
 });
 
 client.on('guildRoleDelete', (guild, role) => {

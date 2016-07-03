@@ -21,10 +21,6 @@ class GuildMemberRemoveHandler extends AbstractHandler {
 		let client = this.packetManager.client;
 
 		let response = client.actions.GuildMemberRemove.handle(data);
-
-		if (response.m) {
-			client.emit(Constants.Events.GUILD_MEMBER_REMOVE, response.g, response.m);
-		}
 	}
 
 };

@@ -248,8 +248,8 @@ class RESTMethods{
 			this.rest.makeRequest('del', Constants.Endpoints.GUILD_MEMBER(guild.id, member.id), true)
 				.then(() => {
 					resolve(this.rest.client.actions.GuildMemberRemove.handle({
-						guild_id : guild.id,
-						user : member.user,
+						guild_id: guild.id,
+						user: member.user,
 					}).m);
 				})
 				.catch(reject);
@@ -261,8 +261,21 @@ class RESTMethods{
 			this.rest.makeRequest('post', Constants.Endpoints.GUILD_ROLES(guild.id), true)
 				.then(role => {
 					resolve(this.rest.client.actions.GuildRoleCreate.handle({
-						guild_id : guild.id,
+						guild_id: guild.id,
 						role,
+					}).role);
+				})
+				.catch(reject);
+		});
+	}
+
+	DeleteGuildRole(role) {
+		return new Promise((resolve, reject) => {
+			this.rest.makeRequest('del', Constants.Endpoints.GUILD_ROLE(role.guild.id, role.id), true)
+				.then(() => {
+					resolve(this.rest.client.actions.GuildRoleDelete.handle({
+						guild_id: role.guild.id,
+						role_id: role.id,
 					}).role);
 				})
 				.catch(reject);
