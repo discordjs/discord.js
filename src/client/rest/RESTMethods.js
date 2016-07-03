@@ -281,6 +281,49 @@ class RESTMethods{
 				.catch(reject);
 		});
 	}
+
+	UpdateGuildRole(role, _data) {
+		return new Promise((resolve, reject) => {
+			/*
+				can contain:
+				name, position, permissions, color, hoist
+			 */
+
+			let data = {};
+
+			data.name = _data.name || role.name;
+			data.position = _data.position || role.position;
+			data.color = _data.color || role.color;
+
+			if (typeof _data.hoist !== 'undefined') {
+				data.hoist = _data.hoist;
+			} else {
+				data.hoist = role.hoist;
+			}
+
+			if (_data.permissions) {
+				let perms = 0;
+				for (let perm of _data.permissions) {
+					if (perm instanceof String || typeof perm === 'string') {
+						perm = Constants.PermissionFlags[perm];
+					}
+					perms |= perm;
+				}
+				data.permissions = perms;
+			} else {
+				data.permissions = role.permissions;
+			}
+			console.log(data);
+			this.rest.makeRequest('patch', Constants.Endpoints.GUILD_ROLE(role.guild.id, role.id), true, data)
+				.then(_role => {
+					resolve(this.rest.client.actions.GuildRoleUpdate.handle({
+						role: _role,
+						guild_id: role.guild.id,
+					}).updated);
+				})
+				.catch(reject);
+		});
+	}
 }
 
 module.exports = RESTMethods;

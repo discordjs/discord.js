@@ -11,6 +11,18 @@ class Role {
 		}
 	}
 
+	equals(role) {
+		return (
+			this.id === role.id &&
+			this.name === role.name &&
+			this.color === role.color &&
+			this.hoist === role.hoist &&
+			this.position === role.position &&
+			this.permissions === role.permissions &&
+			this.managed === role.managed
+		);
+	}
+
 	setup(data) {
 		this.id = data.id;
 		this.name = data.name;
@@ -23,6 +35,30 @@ class Role {
 
 	delete() {
 		return this.client.rest.methods.DeleteGuildRole(this);
+	}
+
+	edit(data) {
+		return this.client.rest.methods.UpdateGuildRole(this, data);
+	}
+
+	setName(name) {
+		return this.client.rest.methods.UpdateGuildRole(this, {name,});
+	}
+
+	setColor(color) {
+		return this.client.rest.methods.UpdateGuildRole(this, {color,});
+	}
+
+	setHoist(hoist) {
+		return this.client.rest.methods.UpdateGuildRole(this, {hoist,});
+	}
+
+	setPosition(position) {
+		return this.client.rest.methods.UpdateGuildRole(this, {position,});
+	}
+
+	setPermissions(permissions) {
+		return this.client.rest.methods.UpdateGuildRole(this, {permissions,});
 	}
 
 	serialize() {
