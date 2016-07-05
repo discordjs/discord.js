@@ -1035,4 +1035,4 @@ Emitted when a user mutes/deafens, supplies a VoiceChannel_, User_, an object co
 voiceSpeaking
 ~~~~~~~~~~~
 
-Emitted when a user speaks, supplies a VoiceChannel_, User_, and a boolean indicating whether the user started or ended speaking, started being true and ended being false respectively.
+Emitted when a user starts or stops speaking, supplies a VoiceChannel_, and User_. The `speaking` property under the supplied User_ object can be used to determine whether the user started or stopped speaking.

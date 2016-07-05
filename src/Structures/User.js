@@ -4,7 +4,7 @@ import Equality from "../Util/Equality";
 import {Endpoints} from "../Constants";
 import {reg} from "../Util/ArgumentRegulariser";
 
-export default class User extends Equality{
+export default class User extends Equality {
 	constructor(data, client){
 		super();
 		this.client = client;
@@ -22,6 +22,7 @@ export default class User extends Equality{
 		this.note = data.note || null;
 		this.voiceChannel = null;
 		this.voiceState = {};
+		this.speaking = false;
 	}
 
 	get createdAt() {

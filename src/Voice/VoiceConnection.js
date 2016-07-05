@@ -411,7 +411,8 @@ export default class VoiceConnection extends EventEmitter {
 							var channel = user.voiceChannel;
 
 							if (channel){
-								self.client.emit("voiceSpeaking", channel, user, speaking);
+								user.speaking = speaking;
+								self.client.emit("voiceSpeaking", channel, user);
 							} else {
 								self.client.emit("warn", "channel doesn't exist even though SPEAKING expects them to");
 							}

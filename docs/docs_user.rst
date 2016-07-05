@@ -87,11 +87,15 @@ createdAt
 
 A `Date` referring to when the user was created.
 
-
 note
 ~~~~
 
 The note of the user, `String`.
+
+speaking
+~~~~~~~~
+
+A boolean that represents whether or not the user is speaking in a voice channel, default is `false`.
 
 Functions
 ---------
