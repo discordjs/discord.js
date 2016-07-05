@@ -1015,19 +1015,24 @@ Emitted when a note is updated. Supplies a User_ object (containing the updated 
 voiceJoin
 ~~~~~~~~
 
-Emitted when a user joins a voice channel, supplies a VoiceChannel_ and a User_
+Emitted when a user joins a voice channel, supplies a VoiceChannel_ and a User_.
 
 voiceSwitch
 ~~~~~~~~~~~
 
-Emitted when a user switches voice channels, supplies the old VoiceChannel_, the new VoiceChannel_, and a User_
+Emitted when a user switches voice channels, supplies the old VoiceChannel_, the new VoiceChannel_, and a User_.
 
 voiceLeave
 ~~~~~~~~~~
 
-Emitted when a user leaves a voice channel, supplies a VoiceChannel_ and a User_
+Emitted when a user leaves a voice channel, supplies a VoiceChannel_ and a User_.
 
 voiceStateUpdate
 ~~~~~~~~~~
 
-Emitted when a user mutes/deafens, supplies a VoiceChannel_, User_, an object containing the old mute/selfMute/deaf/selfDeaf properties, and an object containing the new mute/selfMute/deaf/selfDeaf properties
+Emitted when a user mutes/deafens, supplies a VoiceChannel_, User_, an object containing the old mute/selfMute/deaf/selfDeaf properties, and an object containing the new mute/selfMute/deaf/selfDeaf properties.
+
+voiceSpeaking
+~~~~~~~~~~~
+
+Emitted when a user speaks, supplies a VoiceChannel_, User_, and a boolean indicating whether the user started or ended speaking, started being true and ended being false respectively.
