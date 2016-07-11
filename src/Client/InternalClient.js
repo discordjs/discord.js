@@ -1457,7 +1457,7 @@ export default class InternalClient {
 				topic: data.topic || channel.topic,
 				position: (data.position ? data.position : channel.position),
 				user_limit: (data.userLimit ? data.userLimit : channel.userLimit),
-				bitrate: (data.bitrate ? data.bitrate : channel.bitrate)
+				bitrate: (data.bitrate ? data.bitrate : channel.bitrate ? channel.bitrate : undefined)
 			}
 
 			if (data.position < 0) {
