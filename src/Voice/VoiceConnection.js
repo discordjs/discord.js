@@ -231,9 +231,9 @@ export default class VoiceConnection extends EventEmitter {
 			// options is the callback
 			callback = options;
 		}
-        if (typeof options !== "object") {
-            options = {};
-        }
+		if (typeof options !== "object") {
+			options = {};
+		}
 		options.volume = options.volume !== undefined ? options.volume : this.getVolume();
 		return new Promise((resolve, reject) => {
 			this.encoder
@@ -260,9 +260,9 @@ export default class VoiceConnection extends EventEmitter {
 			// options is the callback
 			callback = options;
 		}
-        if (typeof options !== "object") {
-            options = {};
-        }
+		if (typeof options !== "object") {
+			options = {};
+		}
 		options.volume = options.volume !== undefined ? options.volume : this.getVolume();
 		return new Promise((resolve, reject) => {
 			this.encoder
@@ -290,9 +290,9 @@ export default class VoiceConnection extends EventEmitter {
 			// volume is the callback
 			callback = volume;
 		}
-        if (!ffmpegOptions instanceof Array) {
-            ffmpegOptions = [];
-        }
+		if (!ffmpegOptions instanceof Array) {
+			ffmpegOptions = [];
+		}
 		var volume = volume !== undefined ? volume : this.getVolume();
 		return new Promise((resolve, reject) => {
 			this.encoder
@@ -401,6 +401,24 @@ export default class VoiceConnection extends EventEmitter {
 						self.ready = true;
 						self.mode = data.d.mode;
 						self.emit("ready", self);
+
+						break;
+					case 5:
+						var user = self.server.members.get("id", data.d.user_id);
+
+						if (user){
+							var speaking = data.d.speaking;
+							var channel = user.voiceChannel;
+
+							if (channel){
+								user.speaking = speaking;
+								self.client.emit("voiceSpeaking", channel, user);
+							} else {
+								self.client.emit("warn", "channel doesn't exist even though SPEAKING expects them to");
+							}
+						} else {
+							self.client.emit("warn", "user doesn't exist even though SPEAKING expects them to");
+						}
 
 						break;
 				}
