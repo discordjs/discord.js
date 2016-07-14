@@ -1416,14 +1416,6 @@ export default class InternalClient {
 		return this.updateChannel(channel, {name: name});
 	}
 
-	//def setChannelNameAndTopic
-	setChannelNameAndTopic(channel) {
-		name = name || "unnamed-channel";
-		topic = topic || "";
-
-		return this.updateChannel(channel, {name: name, topic: topic});
-	}
-
 	//def setChannelPosition
 	setChannelPosition(channel, position) {
 		position = position || 0;
