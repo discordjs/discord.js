@@ -106,16 +106,27 @@ function makeChannel() {
 function editChannel() {
 	section("Channel Manipulation");
 
-	client.setChannelNameAndTopic(channel, "testing", "a testing channel - temporary").then(() => {
+	client.setChannelName(channel, "testing").then(() => {
 
-		if (channel.name !== "testing" || channel.topic !== "a testing channel - temporary") {
-			err("channel not updated");
+		if (channel.name !== "testing") {
+			err("channel name not updated");
 			return;
 		}
 
-		pass("channel name and topic updated");
+		pass("channel name updated");
 
-		sendMsg();
+		client.setChannelTopic(channel, "a testing channel - temporary").then(() => {
+
+			if (channel.topic !== "a testing channel - temporary"){
+				err("channel topic not updated");
+				return;
+			}
+
+			pass("channel topic updated");
+
+			sendMsg();
+
+		});
 
 	}).catch(e => {
 		err("error editting channel: " + e);

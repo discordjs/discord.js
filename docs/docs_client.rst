@@ -586,17 +586,6 @@ Sets the name of a channel
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
 
-setChannelNameAndTopic(channel, name, topic, `callback`)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Sets the name and topic of a channel
-
-- **channel** - A `Channel Resolvable`_
-- **name** - A `String`
-- **topic** - A `String`
-- **callback** - `function` taking the following:
-    - **error** - error if any occurred
-
 setChannelUserLimit(channel, limit, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
