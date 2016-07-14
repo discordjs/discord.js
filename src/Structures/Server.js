@@ -227,7 +227,7 @@ export default class Server extends Equality {
 
 	eventVoiceLeave(user) {
 		for (let chan of this.channels.getAll("type", "voice")) {
-			if (chan.members.has(user)) {
+			if (chan.members.has("id", user.id)) {
 				chan.members.remove(user);
 				user.voiceChannel = null;
 				return chan;

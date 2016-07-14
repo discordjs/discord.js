@@ -23,6 +23,7 @@ export default class Message extends Equality{
 		this.embeds = data.embeds;
 		this.timestamp = Date.parse(data.timestamp);
 		this.everyoneMentioned = data.mention_everyone || data.everyoneMentioned;
+		this.pinned = data.pinned;
 		this.id = data.id;
 
 		if(data.edited_timestamp) {
@@ -92,5 +93,13 @@ export default class Message extends Equality{
 
 	replyTTS(){
 		return this.client.replyTTS.apply(this.client, reg(this, arguments));
+	}
+
+	pin() {
+		return this.client.pinMessage.apply(this.client, reg(this, arguments));
+	}
+
+	unpin() {
+		return this.client.unpinMessage.apply(this.client, req(this, arguments));
 	}
 }

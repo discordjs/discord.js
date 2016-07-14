@@ -201,14 +201,14 @@ sendMessage(channel, content, `options`, `callback`)
 
 Sends a message to the specified channel.
 
-- **channel** - a `Channel Resolvable`_
+- **channel** - a `Channel Resolvable`_ or `User Resolvable`_
 - **content** - (Optional if file is passed in options) a `String Resolvable`_ - the message you want to send
 - **options** - (Optional) `object` containing:
     - **tts** - (Optional) `Boolean`, should message be text-to-speech
+    - **disableEveryone** - (Optional) `Boolean`, disable `here` and `everyone` mentions
     - **file** - (Optional) `object`, containing:
         - **file** - a `File Resolvable`_
         - **name** - (Optional) `String`, filename to upload file as
-	- **disableEveryone** - (Optional) `Boolean`, disable `here` and `everyone` mentions
 - **callback** - `function` that takes the following parameters:
     - **error** - error object if any occurred
     - **message** - the sent Message_
@@ -223,7 +223,7 @@ sendFile(channel, attachment, name, content, `callback`)
 
 Sends a file to the specified channel.
 
-- **channel** - a `Channel Resolvable`_
+- **channel** - a `Channel Resolvable`_ or `User Resolvable`_
 - **attachment** - A `File Resolvable`_
 - **name** - (Optional) `String`, filename to upload file as
 - **content** - (Optional) `String`, text message to send with the attachment
@@ -305,9 +305,49 @@ Gets a list of previously sent messages in a channel.
 - **options** - An `object` containing either of the following:
     - **before** - A `Message Resolvable`_ - gets messages before this message.
     - **after** - A `Message Resolvable`_ - gets messages after this message.
+    - **around** - A `Message Resolvable`_ - gets the messages around this message.
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
     - **messages** - `array` of Message_ objects sent in channel
+
+getMessage(channel, messageID, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Gets a message. This also works for messages that aren't cached but will only work for OAuth bot accounts.
+
+- **channel** - The Channel_ to get the message from.
+- **messageID** - The message id to get the message object from. A `String`
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred
+    - **message** - The `Message`_
+
+pinMessage(message, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Pins a message to a channel.
+
+- **message** - The Message_ to pin.
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred
+
+unpinMessage(message, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Unpins a message to a channel.
+
+- **message** - The Message_ to unpin.
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred
+
+getPinnedMessages(channel, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Gets a list of all pinned messages in a channel.
+
+- **channel** - The Channel_ to get pins from
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred
+    - **messages** - `array` of Message_ objects that are pinned.
 
 getBans(server, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -543,17 +583,6 @@ Sets the name of a channel
 
 - **channel** - A `Channel Resolvable`_
 - **name** - A `String`
-- **callback** - `function` taking the following:
-    - **error** - error if any occurred
-
-setChannelNameAndTopic(channel, name, topic, `callback`)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Sets the name and topic of a channel
-
-- **channel** - A `Channel Resolvable`_
-- **name** - A `String`
-- **topic** - A `String`
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
 
@@ -822,6 +851,16 @@ Set the nickname of a user on a server.
 - **callback** - `function` taking the following:
     - **error** - error if any occurred.
 
+setNote(user, note, `callback`)
+~~~~~~~~~~~~~~~~~~~~
+
+Set the note of a user. This will only work for user accounts.
+
+- **user** - A `User Resolvable`_ to which the note is applied.
+- **note** - `String`, content of the note, or `null` to clear.
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred.
+
 Events
 ------
 
@@ -957,22 +996,32 @@ userUnbanned
 
 Emitted when a user is unbanned from a server. Supplies two parameters, a User_ object and a Server_ object.
 
+noteUpdated
+~~~~~~~~~~~
+
+Emitted when a note is updated. Supplies a User_ object (containing the updated note) and the old note.
+
 voiceJoin
 ~~~~~~~~
 
-Emitted when a user joins a voice channel, supplies a VoiceChannel_ and a User_
+Emitted when a user joins a voice channel, supplies a VoiceChannel_ and a User_.
 
 voiceSwitch
 ~~~~~~~~~~~
 
-Emitted when a user switches voice channels, supplies the old VoiceChannel_, the new VoiceChannel_, and a User_
+Emitted when a user switches voice channels, supplies the old VoiceChannel_, the new VoiceChannel_, and a User_.
 
 voiceLeave
 ~~~~~~~~~~
 
-Emitted when a user leaves a voice channel, supplies a VoiceChannel_ and a User_
+Emitted when a user leaves a voice channel, supplies a VoiceChannel_ and a User_.
 
 voiceStateUpdate
 ~~~~~~~~~~
 
-Emitted when a user mutes/deafens, supplies a VoiceChannel_, User_, an object containing the old mute/selfMute/deaf/selfDeaf properties, and an object containing the new mute/selfMute/deaf/selfDeaf properties
+Emitted when a user mutes/deafens, supplies a VoiceChannel_, User_, an object containing the old mute/selfMute/deaf/selfDeaf properties, and an object containing the new mute/selfMute/deaf/selfDeaf properties.
+
+voiceSpeaking
+~~~~~~~~~~~
+
+Emitted when a user starts or stops speaking, supplies a VoiceChannel_, and User_. The `speaking` property under the supplied User_ object can be used to determine whether the user started or stopped speaking.

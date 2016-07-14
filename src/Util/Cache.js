@@ -15,6 +15,8 @@ export default class Cache extends Array {
 		if (typeof key === 'function') {
 			var valid = key;
 			key = null;
+		} else if (key && !value) {
+			return this[discrimCacheS][key] || null;
 		} else if (key === this[discrimS] && typeof value === "string") {
 			return this[discrimCacheS][value] || null;
 		} else if (value && value.constructor.name === 'RegExp') {
@@ -96,6 +98,8 @@ export default class Cache extends Array {
 	}
 
 	remove(data) {
+		if(!this[discrimCacheS][data[this[discrimS]]]) return false;
+
 		delete this[discrimCacheS][data[this[discrimS]]];
 		for (var i in this) {
 			if (this[i] && this[i][this[discrimS]] === data[this[discrimS]]) {

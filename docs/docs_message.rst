@@ -20,7 +20,7 @@ The channel the message was sent in, either a TextChannel_ or PMChannel_.
 server
 ~~~~~~~
 
-The Server_ the message was sent in. Will be null if the message was sent in a PMChannel_.
+The Server_ the message was sent in. Will be undefined if the message was sent in a PMChannel_.
 
 client
 ~~~~~~
@@ -83,6 +83,11 @@ mentions
 ~~~~~~~~
 
 A array of User_ objects that were mentioned in the message.
+
+pinned
+~~~~~~
+
+`Boolean`, true if the message is pinned to its channel.
 
 Functions
 ---------

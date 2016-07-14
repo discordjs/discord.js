@@ -776,10 +776,93 @@ export default class InternalClient {
 					qsObject.after = res.id;
 				}
 			}
+			if (options.around) {
+				const res = this.resolver.resolveMessage(options.around);
+				if (res) {
+					qsObject.around = res.id
+				}
+			}
 
 			return this.apiRequest(
 				"get",
 				`${Endpoints.CHANNEL_MESSAGES(channel.id)}?${qs.stringify(qsObject)}`,
+				true
+			)
+			.then(res => res.map(
+				msg => channel.messages.add(new Message(msg, channel, this.client))
+			));
+		});
+	}
+
+	// def getMessage
+	getMessage(_channel, messageID) {
+		return this.resolver.resolveChannel(_channel)
+		.then(channel => {
+			if(!this.user.bot) {
+				return Promise.reject(new Error("Only OAuth bot accounts can use this function"));
+			}
+
+			if(!(channel instanceof TextChannel || channel instanceof PMChannel)) {
+				return Promise.reject(new Error("Provided channel is not a Text or PMChannel"));
+			}
+
+			var msg = channel.messages.get("id", messageID);
+			if(msg) {
+				return Promise.resolve(msg);
+			}
+
+			return this.apiRequest(
+				"get",
+				`${Endpoints.CHANNEL_MESSAGES(channel.id)}/${messageID}`,
+				true
+			)
+			.then(res => channel.messages.add(
+				new Message(res, channel, this.client)
+			));
+		});
+	}
+
+	// def pinMessage
+	pinMessage(msg) {
+		var message = this.resolver.resolveMessage(msg);
+
+		if(!message) {
+			return Promise.reject(new Error("Supplied message did not resolve to a message"));
+		}
+
+		return this.apiRequest(
+			"put",
+			`${Endpoints.CHANNEL_PIN(msg.channel.id, msg.id)}`,
+			true
+		);
+	}
+
+	// def unpinMessage
+	unpinMessage(msg) {
+		var message = this.resolver.resolveMessage(msg);
+
+		if(!message) {
+			return Promise.reject(new Error("Supplied message did not resolve to a message"));
+		}
+
+		if(!message.pinned) {
+			return Promise.reject(new Error("Supplied message is not pinned"));
+		}
+
+		return this.apiRequest(
+			"del",
+			`${Endpoints.CHANNEL_PIN(msg.channel.id, msg.id)}`,
+			true
+		);
+	}
+
+	// def getPinnedMessages
+	getPinnedMessages(_channel) {
+		return this.resolver.resolveChannel(_channel)
+		.then(channel => {
+			return this.apiRequest(
+				"get",
+				`${Endpoints.CHANNEL_PINS(channel.id)}`,
 				true
 			)
 			.then(res => res.map(
@@ -913,6 +996,18 @@ export default class InternalClient {
 		user = this.resolver.resolveUser(user);
 		server = this.resolver.resolveServer(server);
 		return this.apiRequest("patch", `${Endpoints.SERVER_MEMBERS(server.id)}/${user.id === this.user.id ? "@me/nick" : user.id}`, true, { nick: nick });
+	}
+
+	//def setNote
+	setNote(user, note) {
+		user = this.resolver.resolveUser(user);
+		note = note || "";
+
+		if(!user) {
+			return Promise.reject(new Error("Failed to resolve user"));
+		}
+
+		return this.apiRequest("put", `${Endpoints.ME_NOTES}/${user.id}`, true, { note: note });
 	}
 
 	// def createRole
@@ -1321,14 +1416,6 @@ export default class InternalClient {
 		return this.updateChannel(channel, {name: name});
 	}
 
-	//def setChannelNameAndTopic
-	setChannelNameAndTopic(channel) {
-		name = name || "unnamed-channel";
-		topic = topic || "";
-
-		return this.updateChannel(channel, {name: name, topic: topic});
-	}
-
 	//def setChannelPosition
 	setChannelPosition(channel, position) {
 		position = position || 0;
@@ -1362,7 +1449,7 @@ export default class InternalClient {
 				topic: data.topic || channel.topic,
 				position: (data.position ? data.position : channel.position),
 				user_limit: (data.userLimit ? data.userLimit : channel.userLimit),
-				bitrate: (data.bitrate ? data.bitrate : channel.bitrate)
+				bitrate: (data.bitrate ? data.bitrate : channel.bitrate ? channel.bitrate : undefined)
 			}
 
 			if (data.position < 0) {
@@ -1474,9 +1561,36 @@ export default class InternalClient {
 			self.sendWS(data);
 		};
 
-		this.websocket.onclose = (code) => {
+		this.websocket.onclose = (event) => {
 			self.websocket = null;
 			self.state = ConnectionState.DISCONNECTED;
+			if(event && event.code) {
+                client.emit("warn", "WS close: " + event.code);
+                var err;
+                if(event.code === 4001) {
+                    err = new Error("Gateway received invalid OP code");
+                } else if(event.code === 4005) {
+                    err = new Error("Gateway received invalid message");
+                } else if(event.code === 4003) {
+                    err = new Error("Not authenticated");
+                } else if(event.code === 4004) {
+                    err = new Error("Authentication failed");
+                } else if(event.code === 4005) {
+                    err = new Error("Already authenticated");
+                } if(event.code === 4006 || event.code === 4009) {
+                    err = new Error("Invalid session");
+                } else if(event.code === 4007) {
+                    this.seq = 0;
+                    err = new Error("Invalid sequence number");
+                } else if(event.code === 4008) {
+                    err = new Error("Gateway connection was ratelimited");
+                } else if(event.code === 4010) {
+                    err = new Error("Invalid shard key");
+                }
+                if(err) {
+                	client.emit("error", err);
+                }
+            }
 			self.disconnected(this.client.options.autoReconnect);
 		};
 
@@ -1551,6 +1665,23 @@ export default class InternalClient {
 						self.incoming_friend_requests = null;
 						self.outgoing_friend_requests = null;
 					}
+
+					// add notes to users
+					if(data.notes) {
+						for(note in data.notes) {
+							var user = self.users.get("id", note);
+							if(user) {
+								var newUser = user;
+								newUser.note = data.notes[note];
+
+								self.users.update(user, newUser);
+							} else {
+								client.emit("warn", "note in ready packet but user not cached");
+							}
+						}
+					}
+
+
 					self.state = ConnectionState.READY;
 
 					client.emit("debug", `ready packet took ${Date.now() - startTime}ms to process`);
@@ -1901,7 +2032,7 @@ export default class InternalClient {
 						data.user.avatar = data.user.avatar !== undefined ? data.user.avatar : user.avatar;
 						data.user.discriminator = data.user.discriminator || user.discriminator;
 						data.user.status = data.status || user.status;
-						data.user.game = data.user.game !== undefined ? data.user.game : user.game;
+						data.user.game = data.game !== undefined ? data.game : user.game;
 						data.user.bot = data.user.bot !== undefined ? data.user.bot : user.bot;
 
 						var presenceUser = new User(data.user, client);
@@ -1983,6 +2114,27 @@ export default class InternalClient {
 						client.emit("userUnbanned", user, server);
 					} else {
 						client.emit("warn", "user unbanned but user/server not in cache.");
+					}
+					break;
+				case PacketType.USER_NOTE_UPDATE:
+					if(this.user.bot) {
+						return;
+					}
+					var user = self.users.get("id", data.id);
+					var oldNote = user.note;
+					var note = data.note || null;
+
+					// user in cache
+					if(user) {
+						var updatedUser = user;
+						updatedUser.note = note;
+
+						client.emit("noteUpdated", user, oldNote);
+
+						self.users.update(user, updatedUser);
+
+					} else {
+						client.emit("warn", "note updated but user not in cache");
 					}
 					break;
 				case PacketType.VOICE_STATE_UPDATE:

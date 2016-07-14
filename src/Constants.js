@@ -1,13 +1,17 @@
 "use strict";
 
-export const API = "https://discordapp.com/api";
-export const Endpoints = {
+const Constants = {};
+
+const API = Constants.API = "https://discordapp.com/api";
+
+const Endpoints = Constants.Endpoints = {
 	// general endpoints
 	LOGIN: `${API}/auth/login`,
 	LOGOUT: `${API}/auth/logout`,
 	ME: `${API}/users/@me`,
 	ME_CHANNELS: `${API}/users/@me/channels`,
 	ME_SERVER: (serverID) => `${Endpoints.ME}/guilds/${serverID}`,
+	ME_NOTES: `${API}/users/@me/notes`,
 	GATEWAY: `${API}/gateway`,
 	AVATAR : (userID, avatar) => `${API}/users/${userID}/avatars/${avatar}.jpg`,
 	INVITE: (id) => `${API}/invite/${id}`,
@@ -33,12 +37,14 @@ export const Endpoints = {
 	CHANNEL_TYPING: (channelID) => `${Endpoints.CHANNEL(channelID) }/typing`,
 	CHANNEL_PERMISSIONS: (channelID) => `${Endpoints.CHANNEL(channelID) }/permissions`,
 	CHANNEL_MESSAGE: (channelID, messageID) => `${Endpoints.CHANNEL_MESSAGES(channelID)}/${messageID}`,
+	CHANNEL_PINS: (channelID) => `${Endpoints.CHANNEL(channelID) }/pins`,
+	CHANNEL_PIN: (channelID, messageID) => `${Endpoints.CHANNEL_PINS(channelID) }/${messageID}`,
 
 	// friends
 	FRIENDS: `${API}/users/@me/relationships`
 };
 
-export const Permissions = {
+Constants.Permissions = {
 	// general
 	createInstantInvite: 1 << 0,
 	kickMembers: 1 << 1,
@@ -70,7 +76,7 @@ export const Permissions = {
 
 };
 
-export const PacketType = {
+Constants.PacketType = {
 	CHANNEL_CREATE : "CHANNEL_CREATE",
 	CHANNEL_DELETE : "CHANNEL_DELETE",
 	CHANNEL_UPDATE : "CHANNEL_UPDATE",
@@ -93,7 +99,10 @@ export const PacketType = {
 	SERVER_UPDATE : "GUILD_UPDATE",
 	TYPING : "TYPING_START",
 	USER_UPDATE : "USER_UPDATE",
+	USER_NOTE_UPDATE: "USER_NOTE_UPDATE",
 	VOICE_STATE_UPDATE : "VOICE_STATE_UPDATE",
 	FRIEND_ADD : "RELATIONSHIP_ADD",
 	FRIEND_REMOVE : "RELATIONSHIP_REMOVE"
 };
+
+export default Constants;
