@@ -104,3 +104,77 @@ mention()
 ~~~~~~~~~
 
 Returns a valid string that can be sent in a message to mention the user. By default, ``user.toString()`` does this so by adding a user object to a string, e.g. ``user + ""``, their mention code will be retrieved.
+
+sendMessage(content, `options`, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.sendMessage(channel, content, options, callback)``
+| **Aliases** `send`
+| **See** client.sendMessage_
+
+sendTTSMessage(content, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.sendTTSMessage(channel, content, callback)``
+| **Aliases** `sendTTS`
+| **See** client.sendTTSMessage_
+
+sendFile(attachment, name, content, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.sendFile(channel, attachment, name, content, callbasck)``
+| **See** client.sendFile_
+
+startTyping(`callback`)
+~~~~~~~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.startTyping(channel, callback)``
+| **See** client.startTyping_
+
+stopTyping(`callback`)
+~~~~~~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.stopTyping(channel, callback)``
+| **See** client.stopTyping_
+
+addTo(role, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.addMemberToRole(member, role, callback)``
+| **See** client.addMemberToRole_
+
+removeFrom(role, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.removeMemberFromRole(member, role, callback)``
+| **See** client.removeMemberFromRole_
+
+getLogs(`limit`, `options`, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.getChannelLogs(channel, limit, options, callback)``
+| **See** client.getChannelLogs_
+
+getMessage(messageID, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.getMessage(channel, messageID, callback)``
+| **See** client.getMessage_
+
+hasRole(role)
+~~~~~~~~~~~~
+
+| **Shortcut of** ``client.memberHasRole(member, role)``
+| **See** client.memberHasRole_
+
+
+.. _client.addMemberToRole : ./docs_client.html#addmembertorole-member-role-callback
+.. _client.removeMemberFromRole : ./docs_client.html#removememberfromrole-member-role-callback
+.. _client.memberHasRole : ./docs_client.html#memberhasrole-member-role
+.. _client.sendMessage : ./docs_client.html#sendmessage-channel-content-options-callback
+.. _client.sendTTSMessage : ./docs_client.html#sendttsmessage-channel-content-callback
+.. _client.sendFile : ./docs_client.html#sendfile-channel-attachment-name-content-callback
+.. _client.startTyping : ./docs_client.html#starttyping-channel-callback
+.. _client.stopTyping : ./docs_client.html#stoptyping-channel-callback
+.. _client.getChannelLogs : ./docs_client.html#getchannellogs-channel-limit-options-callback
+.. _client.getMessage : ./docs_client.html#getmessage-channel-messageid-callback

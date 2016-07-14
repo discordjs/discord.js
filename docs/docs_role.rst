@@ -81,3 +81,35 @@ mention()
 ~~~~~~~~~
 
 Returns a valid string that can be sent in a message to mention the role. By default, ``role.toString()`` does this so by adding a role object to a string, e.g. ``role + ""``, their mention code will be retrieved. If the role isn't mentionable, its name gets returned.
+
+delete()
+~~~~~~~~
+
+| **Shortcut of** ``client.deleteRole(role)``
+| **See** client.deleteRole_
+
+update(data)
+~~~~~~~~~~~~
+
+| **Shortcut of** ``client.updateRole(role, data)``
+| **Aliases** `edit`
+| **See** client.updateRole_
+
+addMember(member, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.addMemberToRole(member, roles, callback)``
+| **Aliases** `addUser`
+| **See** client.addMemberToRole_
+
+removeMember(member, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.removeMemberFromRole(member, roles, callback)``
+| **Aliases** `removeUser`
+| **See** client.removeMemberFromRole_
+
+.. _client.deleteRole : ./docs_client.html#deleterole-role-callback
+.. _client.updateRole : ./docs_client.html#updaterole-role-data-callback
+.. _client.addMemberToRole : ./docs_client.html#addmembertorole-member-role-callback
+.. _client.removeMemberFromRole : ./docs_client.html#removememberfromrole-member-role-callback

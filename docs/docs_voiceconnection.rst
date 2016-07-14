@@ -49,6 +49,11 @@ playing
 
 Whether or not the bot is currently playing something
 
+paused
+~~~~~~
+
+Whether or not the playback is currently paused
+
 streamTime
 ~~~~~~~~~~
 

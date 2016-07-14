@@ -98,3 +98,52 @@ isMentioned(user)
 Returns true if the given user was mentioned in the message.
 
 - **user** - A `User Resolvable`_
+
+toString()
+~~~~~~~~~~
+
+Returns the content of the Message.
+
+delete(`options`, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.deleteMessage(message, options, callback``
+| **See** client.deleteMessage_
+
+update(content, `options`, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.updateMessage(message, content, options, callback)``
+| **Aliases** `edit`
+| **See** client.updateMessage_
+
+reply(content, `options`, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.reply(message, content, options, callback)``
+| **See** client.reply_
+
+replyTTS(content, `callback`)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.replyTTS(message, content, callback)``
+| **See** client.replyTTS_
+
+pin(`callback`)
+~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.pinMessage(message, callback)``
+| **See** client.pinMessage_
+
+unpin(`callback`)
+~~~~~~~~~~~~~~~~~
+
+| **Shortcut of** ``client.unpinMessage(message, callback)``
+| **See** client.unpinMessage_
+
+.. _client.deleteMessage : ./docs_client.html#deletemessage-message-options-callback
+.. _client.updateMessage : ./docs_client.html#updatemessage-message-content-options-callback
+.. _client.reply : ./docs_client.html#reply-message-content-options-callback
+.. _client.replyTTS : ./docs_client.html#replytts-message-content-callback
+.. _client.pinMessage : ./docs_client.html#pinmessage-message-callback
+.. _client.unpinMessage : ./docs_client.html#unpinmessage-message-callback

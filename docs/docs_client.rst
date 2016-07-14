@@ -300,7 +300,7 @@ getChannelLogs(channel, `limit`, `options`, `callback`)
 
 Gets a list of previously sent messages in a channel.
 
-- **channel** - The Channel_ to get messages from
+- **channel** - A `Channel Resolvable`_ to get messages from
 - **limit** - The maximum amount of messages to retrieve - defaults to 50. A `Number`
 - **options** - An `object` containing either of the following:
     - **before** - A `Message Resolvable`_ - gets messages before this message.
@@ -333,7 +333,7 @@ Pins a message to a channel.
 unpinMessage(message, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Unpins a message to a channel.
+Unpins a message from a channel.
 
 - **message** - The Message_ to unpin.
 - **callback** - `function` taking the following:
@@ -561,7 +561,7 @@ setStreaming(name, url, type, `callback`)
 Sets the Discord Status of the Client
 
 - **name** - `String`, Name of game being played
-- **url** - `String`, URL that it will link to
+- **url** - `String`, URL that it will link to, only supports `twitch.tv` urls at this time.
 - **type** - `Number`, `1` indicates streaming
 - **callback** - `function` taking the following:
     - **error** - error if any occurred
