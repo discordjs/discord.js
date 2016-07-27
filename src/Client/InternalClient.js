@@ -908,8 +908,12 @@ export default class InternalClient {
 		.then(channel =>
 			this.apiRequest("del", Endpoints.CHANNEL(channel.id), true)
 			.then(() => {
-				channel.server.channels.remove(channel);
-				this.channels.remove(channel);
+				if(channel.server) {
+					channel.server.channels.remove(channel);
+					this.channels.remove(channel);
+				} else {
+					this.private_channels.remove(channel);
+				}
 			})
 		);
 	}
@@ -1838,13 +1842,13 @@ export default class InternalClient {
 
 						var server = self.servers.get("id", data.guild_id);
 						if (server) {
-								var chan = null;
-								if (data.type === "text") {
-									chan = self.channels.add(new TextChannel(data, client, server));
-								} else {
-									chan = self.channels.add(new VoiceChannel(data, client, server));
-								}
-								client.emit("channelCreated", server.channels.add(chan));
+							var chan = null;
+							if (data.type === "text") {
+								chan = self.channels.add(new TextChannel(data, client, server));
+							} else {
+								chan = self.channels.add(new VoiceChannel(data, client, server));
+							}
+							client.emit("channelCreated", server.channels.add(chan));
 						} else if (data.is_private) {
 							client.emit("channelCreated", self.private_channels.add(new PMChannel(data, client)));
 						} else {
