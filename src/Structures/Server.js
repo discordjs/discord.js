@@ -192,7 +192,7 @@ export default class Server extends Equality {
 		channel.members.add(user);
 		user.voiceChannel = channel;
 
-		if (oldChannel.id) {
+		if (oldChannel.id && channel.name !== oldChannel.name) {
 			this.client.emit("voiceLeave", oldChannel, user);
 			this.client.emit("voiceSwitch", oldChannel, channel, user);
 		}
