@@ -107,7 +107,7 @@ export default class InternalClient {
 			ret.end((error, data) => {
 				if (error) {
 					if(data.status === 429) {
-						self.emit("debug", "Encountered 429 at " + url)
+						self.client.emit("debug", "Encountered 429 at " + url);
 					}
 					reject(error);
 				} else {
