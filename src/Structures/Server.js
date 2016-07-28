@@ -5,6 +5,7 @@
  * @typedef {(string)} region
  */
 
+import Bucket from "../Util/Bucket";
 import Equality from "../Util/Equality";
 import {Endpoints} from "../Constants";
 import Cache from "../Util/Cache";
@@ -24,13 +25,20 @@ export default class Server extends Equality {
 
 		super();
 
-		var self = this;
 		this.client = client;
+		this.id = data.id;
+
+		if(data.owner_id) { // new server data
+		    client.internal.buckets["bot:msg:guild:" + this.id] = new Bucket(5, 5000);
+            client.internal.buckets["dmsg:" + this.id] = new Bucket(5, 1000);
+            client.internal.buckets["bdmsg:" + this.id] = new Bucket(1, 1000);
+            client.internal.buckets["guild_member:" + this.id] = new Bucket(10, 10000);
+            client.internal.buckets["guild_member_nick:" + this.id] = new Bucket(1, 1000);
+        }
 
 		this.region = data.region;
 		this.ownerID = data.owner_id || data.ownerID;
 		this.name = data.name;
-		this.id = data.id;
 		this.members = new Cache();
 		this.channels = new Cache();
 		this.roles = new Cache();
@@ -40,8 +48,6 @@ export default class Server extends Equality {
 		this.memberMap = data.memberMap || {};
 		this.memberCount = data.member_count || data.memberCount;
 		this.large = data.large || this.memberCount > 250;
-
-		var self = this;
 
 		if (data.roles instanceof Cache) {
 			data.roles.forEach((role) => this.roles.add(role));

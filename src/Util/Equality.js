@@ -9,9 +9,8 @@
 
 	Instead, use objectThatExtendsEquality.equals()
 */
-export default class Equality{
+export default class Equality {
 	constructor(){
-
 	}
 
 	get eqDiscriminator(){

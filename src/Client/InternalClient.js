@@ -7,6 +7,7 @@ import qs from "querystring";
 
 import {Endpoints, PacketType, Permissions} from "../Constants";
 
+import Bucket from "../Util/Bucket";
 import Cache from "../Util/Cache";
 import Resolver from "./Resolver/Resolver";
 
@@ -52,64 +53,81 @@ export default class InternalClient {
 	}
 
 	apiRequest(method, url, useAuth, data, file) {
-        var endpoint = url.replace(/\/[0-9]+/g, "/:id");
-		if (this.retryAfters[endpoint]) {
-			if (this.retryAfters[endpoint] < Date.now()) {
-				delete this.retryAfters[endpoint];
-			} else {
-				return new Promise((resolve, reject) => {
-					setTimeout(() => {
-						this.apiRequest.apply(this, arguments).then(resolve).catch(reject);
-					}, this.retryAfters[endpoint] - Date.now());
-				});
+		var resolve, reject;
+		var promise = new Promise((res, rej) => {
+			resolve = res;
+			reject = rej;
+		})
+		var buckets = [];
+        var match = url.match(/\/channels\/([0-9]+)\/messages(\/[0-9]+)?$/);
+        if(match) {
+            if(this.user.bot) {
+                if(method === "post" || method === "patch") {
+                    if(this.private_channels.get("id", match[1])) {
+                        buckets = ["bot:msg:dm", "bot:msg:global"];
+                    } else if((match[1] = this.channels.get("id", match[1]))) {
+                        buckets = ["bot:msg:guild:" + match[1].id, "bot:msg:global"];
+                    }
+                } else if(method === "del" && (match[1] = this.channels.get("id", match[1]))) {
+                    buckets = ["dmsg:" + match[1].id];
+                }
+            } else {
+                buckets = ["msg"];
+            }
+        } else if(method === "patch") {
+            if(url === "/users/@me" && this.user && data.username && data.username !== this.user.username) {
+                buckets = ["username"];
+            } else if((match = url.match(/\/guilds\/([0-9]+)\/members\/[0-9]+$/))) {
+                buckets = ["guild_member:" + match[1]];
+            } else if((match = url.match(/\/guilds\/([0-9]+)\/members\/@me\/nick$/))) {
+                buckets = ["guild_member_nick:" + match[1]];
+            }
+        }
+
+        var self = this;
+
+		var actualCall = function() {
+			var ret = request[method](url);
+			if (useAuth) {
+				ret.set("authorization", self.token);
 			}
-		}
-		let ret = request[method](url);
-		if (useAuth) {
-			ret.set("authorization", this.token);
-		}
-		if (file) {
-			ret.attach("file", file.file, file.name);
-			if (data) {
-				for (var i in data) {
-					if (data[i] !== undefined) {
-						ret.field(i, data[i]);
+			if (file) {
+				ret.attach("file", file.file, file.name);
+				if (data) {
+					for (var i in data) {
+						if (data[i] !== undefined) {
+							ret.field(i, data[i]);
+						}
 					}
 				}
+			} else if (data) {
+				ret.send(data);
 			}
-		} else if (data) {
-			ret.send(data);
-		}
-		ret.set('User-Agent', this.userAgentInfo.full);
-		return new Promise((resolve, reject) => {
+			ret.set('User-Agent', self.userAgentInfo.full);
 			ret.end((error, data) => {
 				if (error) {
-					if (!this.client.options.rateLimitAsError &&
-						error.response &&
-						error.response.error &&
-						error.response.error.status
-						&& error.response.error.status === 429
-					) {
-
-						if (data.headers["retry-after"] || data.headers["Retry-After"]) {
-							var toWait = data.headers["retry-after"] || data.headers["Retry-After"];
-							if (!this.retryAfters[endpoint])
-								this.retryAfters[endpoint] = Date.now() + parseInt(toWait);
-							setTimeout(() => {
-								this.apiRequest.apply(this, arguments).then(resolve).catch(reject);
-							}, this.retryAfters[endpoint] - Date.now());
-						} else {
-							return reject(error);
-						}
-
-					} else {
-						return reject(error);
+					if(data.status === 429) {
+						self.emit("debug", "Encountered 429 at " + url)
 					}
+					reject(error);
 				} else {
 					resolve(data.body);
 				}
 			});
-		});
+		};
+        var waitFor = 1;
+        var i = 0;
+        var done = function() {
+            if(++i === waitFor) {
+                actualCall();
+            }
+        };
+        for(var bucket of buckets) {
+            ++waitFor;
+            this.buckets[bucket].queue(done);
+        }
+        done();
+        return promise;
 	}
 
 	setup(discordClient) {
@@ -148,7 +166,12 @@ export default class InternalClient {
 		this.resolver = new Resolver(this);
 		this.readyTime = null;
 		this.messageAwaits = {};
-		this.retryAfters = {};
+		this.buckets = {
+            "bot:msg:dm": new Bucket(5, 5000),
+            "bot:msg:global": new Bucket(50, 10000),
+            "msg": new Bucket(10, 10000),
+            "username": new Bucket(2, 3600000)
+        };
 
 		if (!this.tokenCacher) {
 			this.tokenCacher = new TokenCacher(this.client);
@@ -1807,6 +1830,11 @@ export default class InternalClient {
 						} else {
 							client.emit("debug", "server was unavailable, could not update");
 						}
+	                	self.buckets["bot:msg:guild:" + packet.d.id] =
+		                    self.buckets["dmsg:" + packet.d.id] =
+		                    self.buckets["bdmsg:" + packet.d.id] =
+		                    self.buckets["guild_member:" + packet.d.id] =
+		                    self.buckets["guild_member_nick:" + packet.d.id] = undefined;
 					} else {
 						client.emit("warn", "server was deleted but it was not in the cache");
 					}
