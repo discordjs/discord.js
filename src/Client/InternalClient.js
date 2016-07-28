@@ -61,15 +61,15 @@ export default class InternalClient {
 		var buckets = [];
         var match = url.match(/\/channels\/([0-9]+)\/messages(\/[0-9]+)?$/);
         if(match) {
-            if(this.user.bot) {
+            if(method === "del" && (match[1] = this.channels.get("id", match[1]))) {
+                buckets = ["dmsg:" + (match[1].guild ? match[1].guild.id : undefined)];
+            } else if(this.user.bot) {
                 if(method === "post" || method === "patch") {
                     if(this.private_channels.get("id", match[1])) {
                         buckets = ["bot:msg:dm", "bot:msg:global"];
                     } else if((match[1] = this.channels.get("id", match[1]))) {
                         buckets = ["bot:msg:guild:" + match[1].id, "bot:msg:global"];
                     }
-                } else if(method === "del" && (match[1] = this.channels.get("id", match[1]))) {
-                    buckets = ["dmsg:" + match[1].id];
                 }
             } else {
                 buckets = ["msg"];
