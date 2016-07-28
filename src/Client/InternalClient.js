@@ -61,14 +61,14 @@ export default class InternalClient {
 		var buckets = [];
         var match = url.match(/\/channels\/([0-9]+)\/messages(\/[0-9]+)?$/);
         if(match) {
-            if(method === "del" && (match[1] = this.channels.get("id", match[1]))) {
-                buckets = ["dmsg:" + (match[1].server ? match[1].server.id : undefined)];
+            if(method === "del" && (match[1] = this.channels.get("id", match[1]) || this.private_channels.get("id", match[1]))) {
+                buckets = ["dmsg:" + (match[1].server || {}).id];
             } else if(this.user.bot) {
                 if(method === "post" || method === "patch") {
                     if(this.private_channels.get("id", match[1])) {
                         buckets = ["bot:msg:dm", "bot:msg:global"];
                     } else if((match[1] = this.channels.get("id", match[1]))) {
-                        buckets = ["bot:msg:guild:" + match[1].id, "bot:msg:global"];
+                        buckets = ["bot:msg:guild:" + match[1].server.id, "bot:msg:global"];
                     }
                 }
             } else {
@@ -87,6 +87,7 @@ export default class InternalClient {
         var self = this;
 
 		var actualCall = function() {
+			var startTime = Date.now();
 			var ret = request[method](url);
 			if (useAuth) {
 				ret.set("authorization", self.token);
@@ -107,7 +108,7 @@ export default class InternalClient {
 			ret.end((error, data) => {
 				if (error) {
 					if(data.status === 429) {
-						self.client.emit("debug", "Encountered 429 at " + url);
+						self.client.emit("debug", "Encountered 429 at " + url + " | " + self.client.options.shard + " | Buckets" + buckets + " | " + (Date.now() - startTime) + "ms latency");
 					}
 					reject(error);
 				} else {
@@ -169,7 +170,6 @@ export default class InternalClient {
 		this.buckets = {
             "bot:msg:dm": new Bucket(5, 5000),
             "bot:msg:global": new Bucket(50, 10000),
-            "dmsg:undefined": new Bucket(5, 1000),
             "msg": new Bucket(10, 10000),
             "username": new Bucket(2, 3600000)
         };
