@@ -17,7 +17,7 @@ Client takes an options object, and supports the following options:.
 autoReconnect
 ~~~~~~~~~~~~~
 
-Have discord.js autoreconnect when connection is lost.
+Have discord.js autoreconnect when connection is lost. This is enabled by default.
 
 compress
 ~~~~~~~~
