@@ -11,6 +11,7 @@ const Endpoints = Constants.Endpoints = {
 	ME: `${API}/users/@me`,
 	ME_CHANNELS: `${API}/users/@me/channels`,
 	ME_SERVER: (serverID) => `${Endpoints.ME}/guilds/${serverID}`,
+	OAUTH2_APPLICATION: (appID) => `${API}/oauth2/applications/${appID}`,
 	ME_NOTES: `${API}/users/@me/notes`,
 	GATEWAY: `${API}/gateway`,
 	AVATAR : (userID, avatar) => `${API}/users/${userID}/avatars/${avatar}.jpg`,
