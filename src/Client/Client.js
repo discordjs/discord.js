@@ -1176,6 +1176,17 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
+	// def getOAuthApplication
+	getOAuthApplication(appID, callback = (/*err, bans*/) => { }) {
+		if (typeof appID === "function") {
+			// appID is the callback
+			callback = appID;
+			appID = null;
+		}
+		return this.internal.getOAuthApplication(appID)
+			.then(dataCallback(callback), errorCallback(callback));
+	}
+
 	// def awaitResponse
 	awaitResponse(msg, toSend = null, options = null, callback = (/*err, newMsg*/) => { }) {
 		var ret;

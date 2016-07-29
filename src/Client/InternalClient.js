@@ -1537,6 +1537,12 @@ export default class InternalClient {
 		return this.apiRequest("delete", `${Endpoints.FRIENDS}/${user.id}`, true);
 	}
 
+	//def getOAuthApplication
+	getOAuthApplication(appID) {
+		appID = appID || "@me";
+		return this.apiRequest("get", Endpoints.OAUTH2_APPLICATION(appID), true);
+	}
+
 	//def ack
 	ack(msg) {
 		msg = this.resolver.resolveMessage(msg);

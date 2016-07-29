@@ -861,6 +861,16 @@ Set the note of a user. This will only work for user accounts.
 - **callback** - `function` taking the following:
     - **error** - error if any occurred.
 
+getOAuthApplication(appID, `callback`)
+~~~~~~~~~~~~~~~~~~~~
+
+Get data on an OAuth2 application
+
+- **appID** - The target application ID. If none was specified, it defaults to "@me", which refers to the logged in user's application.
+- **callback** - `function` taking the following:
+    - **error** - error if any occurred.
+    - **data** - the application data. Refer to `the official Discord API documentation entry <https://discordapp.com/developers/docs/topics/oauth2#get-current-application-information>`_ for data structure details
+
 Events
 ------
 
