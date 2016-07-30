@@ -1580,7 +1580,7 @@ export default class InternalClient {
 					large_threshold : self.client.options.largeThreshold,
 					properties: {
 						"$os": process.platform,
-						"$browser": "",
+						"$browser": "discord.js",
 						"$device": "discord.js",
 						"$referrer": "",
 						"$referring_domain": ""
