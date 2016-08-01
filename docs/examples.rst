@@ -3,7 +3,7 @@
 Usage Examples
 ==============
 
-Not all of these are standalone examples, many of them are usage examples.
+Not all of these are standalone examples, many of them are usage examples. If you're a beginner to Discord.js, we encourage you to look through these examples to get a hang of the way things work using the library.
 
 .. warning:: Please do not copy/paste code directly from these examples. Try to learn from and adapt these pieces of code to your specific situation.
 
