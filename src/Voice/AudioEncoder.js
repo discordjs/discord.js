@@ -7,6 +7,7 @@ try {
 	opus = require("node-opus");
 } catch (e) {
 	// no opus!
+	console.error("node-opus not found or broken");
 }
 
 import VolumeTransformer from "./VolumeTransformer";
@@ -54,26 +55,33 @@ export default class AudioEncoder {
 				return choice;
 			}
 		}
+		
+		console.error("avconv or ffmpeg not found, please install them to use audio!");
 
 		return "help";
 	}
 
 	encodeStream(stream, options) {
 		return new Promise((resolve, reject) => {
-			this.volume = new VolumeTransformer(options.volume);
-
-			var enc = cpoc.spawn(this.getCommand(), [
-				'-i', '-',
-				'-f', 's16le',
-				'-ar', '48000',
-				'-ss', (options.seek || 0),
-				'-ac', 2,
-				'pipe:1'
-			]);
-
-			stream.pipe(enc.stdin);
-
-			this.hookEncodingProcess(resolve, reject, enc, stream);
+			var command = this.getCommand();
+			if (command == "help") {
+				reject(new Error("No avconv or ffmpeg"));
+			} else {
+				this.volume = new VolumeTransformer(options.volume);
+	
+				var enc = cpoc.spawn(command, [
+					'-i', '-',
+					'-f', 's16le',
+					'-ar', '48000',
+					'-ss', (options.seek || 0),
+					'-ac', 2,
+					'pipe:1'
+				]);
+	
+				stream.pipe(enc.stdin);
+	
+				this.hookEncodingProcess(resolve, reject, enc, stream);
+			}
 		});
 	}
 
