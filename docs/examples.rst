@@ -53,3 +53,20 @@ You can get your bot's token using the `My Applications`_ page on the Discord De
 		} else
 			console.log('Logged in. Token: ' + token);
 	}
+
+-----
+
+Receiving Messages
+------------------
+
+Here we will demonstrate receiving messages and logging them to the console.
+
+.. code-block:: javascript
+	
+	client.on('message', function(message) {
+		if (message.channel.isPrivate) {
+			console.log('(Private) ${message.author.name}: ${message.content}');
+		} else {
+			console.log('(${message.server.name} / ${message.channel.name}) ${message.author.name}: ${message.content}');
+		}
+	});
