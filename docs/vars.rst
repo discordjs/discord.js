@@ -30,3 +30,5 @@
 .. _VoiceChannel Resolvable : http://discordjs.readthedocs.org/en/indev/docs_resolvables.html#voice-channel-resolvable
 .. _File Resolvable : http://discordjs.readthedocs.org/en/indev/docs_resolvables.html#file-resolvable
 .. _Role Resolvable : http://discordjs.readthedocs.org/en/indev/docs_resolvables.html#role-resolvable
+
+.. _My Applications : https://discordapp.com/developers/applications/me
