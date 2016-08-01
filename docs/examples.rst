@@ -89,7 +89,7 @@ You can also use a `Message Resolvable`_ as an parameter. This example sends "He
 		client.sendMessage(message, "Hello");
 	});
 
-You can send DMs to a user with a `User Resolvable`_. This will send "Hello" as an DM to the author of the message.
+You can send DMs to a user with a `User Resolvable`_. This will send "Hello" as an DM to the author of the received message.
 
 .. code-block:: javascript
 
