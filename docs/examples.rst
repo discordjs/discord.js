@@ -3,7 +3,7 @@
 Usage Examples
 ==============
 
-Please note: Not all of these are standalone examples, many of them are usage examples.
+Not all of these are standalone examples, many of them are usage examples.
 
 .. warning:: Please do not copy/paste code directly from these examples. Try to learn from and adapt these pieces of code to your specific situation.
 
