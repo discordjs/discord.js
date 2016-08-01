@@ -20,6 +20,7 @@ Feel free to make any contributions you want, whether it be through creating an 
 
    installing
    migrating
+   examples
 
 .. toctree::
    :maxdepth: 1
