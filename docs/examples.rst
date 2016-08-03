@@ -100,7 +100,12 @@ Sends "Hello" to the default Channel_ in the Server_ "My Server". Note that this
 	var channel = client.servers.get("name", "My Server").defaultChannel;
 	client.sendMessage(channel, "Hello");
 
+Sending private messages
+~~~~~~~~~~~~~~~~~~~~~~~~
+
 You can also send private messages to a user with a User_ object. This will send "Hello" as a private message to the original author of the received message.
+
+Do note however, that a PMChannel_ is not the same as a ServerChannel_ and therefore does not have the same properties such as ``server`` and ``name``.
 
 .. code-block:: javascript
 
