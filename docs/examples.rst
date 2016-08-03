@@ -76,12 +76,37 @@ Here we will demonstrate receiving messages and logging them to the console.
 Sending messages
 -----------------
 
-Sends Hello to "general" in "my_server".
+In the same channel
+~~~~~~~~~~~~~~~~~~~
+
+This is by far the most common way people will send a message in the Discord API. Here we will send a message to the same channel we received a message from in the above example.
+
+.. note :: You can put a Message_ resolvable in the first argument of ``Client.sendMessage`` as well as a Channel_ resolvable. We use the latter here for consistency and ease of understanding.
+
+.. code-block:: javascript
+	
+	client.on('message', function(message) {
+		// Don't forget to log the message!
+		client.sendMessage(message.channel, "Hello there!");
+	});
+
+Sending message to a specific channel
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sends "Hello" to the default Channel_ in the Server_ "My Server". Note that this does not require any sort of received message to be activated, however if there are multiple servers with the name "My Server", a random one will be chosen.
 
 .. code-block:: javascript
 
-	var channel = client.servers.get("name", "my_server").channels.get("name", "general");
+	var channel = client.servers.get("name", "My Server").channels.get("name", "general");
 	client.sendMessage(channel, "Hello");
+
+You can also send private messages to a user with a User_ object. This will send "Hello" as a private message to the original author of the received message.
+
+.. code-block:: javascript
+
+	client.on('message', function(message) {
+		client.sendMessage(message.author, "Hello");
+	});
 
 You can also use a `Message`_ object as an parameter. This example sends "Hello" to the channel the message was sent from.
 
@@ -91,25 +116,13 @@ You can also use a `Message`_ object as an parameter. This example sends "Hello"
 		client.sendMessage(message, "Hello");
 	});
 
-You can send DMs to a user with a `User`_ object. This will send "Hello" as an DM to the author of the received message.
-
-.. code-block:: javascript
-
-	client.on('message', function(message) {
-		client.sendMessage(message.author, "Hello");
-	});
-
------
-
-Replying to messages
-------------------
 
 Sends "@author Hello!".
 
 .. code-block:: javascript
 
 	client.on('message', function(message) {
-			client.reply(message, 'Hello!');
+		client.reply(message, 'Hello!');
 	});
 
 -----
