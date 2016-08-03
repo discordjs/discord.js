@@ -79,7 +79,7 @@ Sending messages
 In the same channel
 ~~~~~~~~~~~~~~~~~~~
 
-This is by far the most common way people will send a message in the Discord API. Here we will send a message to the same channel we received a message from in the above example.
+This is by far the most common way people will send a message in the Discord API. Here we will send a message to the same Channel_ we received a message from in the above example.
 
 .. code-block:: javascript
 	
@@ -88,7 +88,7 @@ This is by far the most common way people will send a message in the Discord API
 		client.sendMessage(message.channel, "Hello!");
 	});
 
-You can also use a `Message`_ object as an parameter. This example does the same thing as above.
+You can also use a `Message`_ resolvable as an parameter. This example does the same thing as above.
 
 .. code-block:: javascript
 
@@ -100,6 +100,8 @@ Sending message to a specific channel
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sends "Hello" to the default Channel_ in the Server_ "My Server". Note that this does not require any sort of received message to be activated, however if there are multiple servers with the name "My Server", a random one will be chosen.
+
+See Cache_ for more details on getting specific objects and resolvables.
 
 .. code-block:: javascript
 
