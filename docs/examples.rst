@@ -97,7 +97,7 @@ Sends "Hello" to the default Channel_ in the Server_ "My Server". Note that this
 
 .. code-block:: javascript
 
-	var channel = client.servers.get("name", "My Server").channels.get("name", "general");
+	var channel = client.servers.get("name", "My Server").defaultChannel;
 	client.sendMessage(channel, "Hello");
 
 You can also send private messages to a user with a User_ object. This will send "Hello" as a private message to the original author of the received message.
