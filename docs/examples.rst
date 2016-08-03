@@ -81,21 +81,19 @@ In the same channel
 
 This is by far the most common way people will send a message in the Discord API. Here we will send a message to the same channel we received a message from in the above example.
 
-.. note :: You can put a Message_ resolvable in the first argument of ``Client.sendMessage`` as well as a Channel_ resolvable. We use the latter here for consistency and ease of understanding.
-
 .. code-block:: javascript
 	
 	client.on('message', function(message) {
 		// Don't forget to log the message!
-		client.sendMessage(message.channel, "Hello there!");
+		client.sendMessage(message.channel, "Hello!");
 	});
 
-You can also use a `Message`_ object as an parameter. This example sends "Hello" to the channel the message was sent from.
+You can also use a `Message`_ object as an parameter. This example does the same thing as above.
 
 .. code-block:: javascript
 
 	client.on('message', function(message) {
-		client.sendMessage(message, "Hello");
+		client.sendMessage(message, "Hello!");
 	});
 
 Sending message to a specific channel
