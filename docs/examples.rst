@@ -90,6 +90,14 @@ This is by far the most common way people will send a message in the Discord API
 		client.sendMessage(message.channel, "Hello there!");
 	});
 
+You can also use a `Message`_ object as an parameter. This example sends "Hello" to the channel the message was sent from.
+
+.. code-block:: javascript
+
+	client.on('message', function(message) {
+		client.sendMessage(message, "Hello");
+	});
+
 Sending message to a specific channel
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -99,14 +107,6 @@ Sends "Hello" to the default Channel_ in the Server_ "My Server". Note that this
 
 	var channel = client.servers.get("name", "My Server").defaultChannel;
 	client.sendMessage(channel, "Hello");
-
-You can also use a `Message`_ object as an parameter. This example sends "Hello" to the channel the message was sent from.
-
-.. code-block:: javascript
-
-	client.on('message', function(message) {
-		client.sendMessage(message, "Hello");
-	});
 
 Sending private messages
 ~~~~~~~~~~~~~~~~~~~~~~~~
