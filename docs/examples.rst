@@ -7,7 +7,7 @@ Not all of these are standalone examples, many of them are usage examples. If yo
 
 .. warning:: Please do not copy/paste code directly from these examples. Try to learn from and adapt these pieces of code to your specific situation.
 
---------
+-----
 
 Logging In
 ----------
@@ -71,6 +71,8 @@ Here we will demonstrate receiving messages and logging them to the console.
 		}
 	});
 
+-----
+
 Sending messages
 -----------------
 
@@ -93,9 +95,11 @@ You can send DMs to a user with a `User`_ object. This will send "Hello" as an D
 
 .. code-block:: javascript
 
-		client.on('message', function(message) {
-			client.sendMessage(message.author, "Hello");
-		});
+	client.on('message', function(message) {
+		client.sendMessage(message.author, "Hello");
+	});
+
+-----
 
 Replying to messages
 ------------------
@@ -107,3 +111,5 @@ Sends "@author Hello!".
 	client.on('message', function(message) {
 			client.reply(message, 'Hello!');
 	});
+
+-----
