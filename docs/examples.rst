@@ -105,7 +105,7 @@ Sends "@author Hello!"
 .. code-block:: javascript
 
 	client.on('message', function(message) {
-		client.reply(message, 'Hello!');
+		client.reply(message, "Hello!");
 	});
 
 Sending message to a specific channel
@@ -123,14 +123,14 @@ See Cache_ for more details on getting specific objects and resolvables.
 Sending private messages
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can also send private messages to a user with a User_ object. This will send "Hello" as a private message to the original author of the received message.
+You can also send private messages to a user with a User_ object. This will send "Hello!" as a private message to the original author of the received message.
 
 Do note however, that a PMChannel_ is not the same as a ServerChannel_ and therefore does not have the same properties such as ``server`` and ``name``.
 
 .. code-block:: javascript
 
 	client.on('message', function(message) {
-		client.sendMessage(message.author, "Hello");
+		client.sendMessage(message.author, "Hello!");
 	});
 
 
