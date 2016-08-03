@@ -100,6 +100,14 @@ Sends "Hello" to the default Channel_ in the Server_ "My Server". Note that this
 	var channel = client.servers.get("name", "My Server").defaultChannel;
 	client.sendMessage(channel, "Hello");
 
+You can also use a `Message`_ object as an parameter. This example sends "Hello" to the channel the message was sent from.
+
+.. code-block:: javascript
+
+	client.on('message', function(message) {
+		client.sendMessage(message, "Hello");
+	});
+
 Sending private messages
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -112,15 +120,6 @@ Do note however, that a PMChannel_ is not the same as a ServerChannel_ and there
 	client.on('message', function(message) {
 		client.sendMessage(message.author, "Hello");
 	});
-
-You can also use a `Message`_ object as an parameter. This example sends "Hello" to the channel the message was sent from.
-
-.. code-block:: javascript
-
-	client.on('message', function(message) {
-		client.sendMessage(message, "Hello");
-	});
-
 
 Sends "@author Hello!".
 
