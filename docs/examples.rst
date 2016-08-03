@@ -5,7 +5,9 @@ Usage Examples
 
 Not all of these are standalone examples, many of them are usage examples. If you're a beginner to Discord.js, we encourage you to look through these examples to get a hang of the way things work using the library.
 
-.. warning:: Please do not copy/paste code directly from these examples. Try to learn from and adapt these pieces of code to your specific situation.
+.. warning :: Please do not copy/paste code directly from these examples. Try to learn from and adapt these pieces of code to your specific situation.
+
+.. note :: We use `Template Literals`_ in these examples. These are an ES6 feature and may not be fully supported in your environment. In this case, it is safe to use other methods of concatenating strings.
 
 -----
 
@@ -28,10 +30,10 @@ Logging in with a username and password
 
 	function output(error, token) {
 		if (error) {
-			console.log('There was an error logging in: ' + error);
+			console.log(`There was an error logging in: ${error}`);
 			return;
 		} else
-			console.log('Logged in. Token: ' + token);
+			console.log(`Logged in. Token: ${token}`);
 	}
 
 Logging in with a token
@@ -48,10 +50,10 @@ You can get your bot's token using the `My Applications`_ page on the Discord De
 
 	function output(error, token) {
 		if (error) {
-			console.log('There was an error logging in: ' + error);
+			console.log(`There was an error logging in: ${error}`);
 			return;
 		} else
-			console.log('Logged in. Token: ' + token);
+			console.log(`Logged in. Token: ${token}`);
 	}
 
 -----
@@ -65,9 +67,9 @@ Here we will demonstrate receiving messages and logging them to the console.
 
 	client.on('message', function(message) {
 		if (message.channel.isPrivate) {
-			console.log('(Private) ${message.author.name}: ${message.content}');
+			console.log(`(Private) ${message.author.name}: ${message.content}`);
 		} else {
-			console.log('(${message.server.name} / ${message.channel.name}) ${message.author.name}: ${message.content}');
+			console.log(`(${message.server.name} / ${message.channel.name}) ${message.author.name}: ${message.content}`);
 		}
 	});
 
@@ -95,6 +97,16 @@ You can also use a `Message`_ resolvable as an parameter. This example does the 
 	client.on('message', function(message) {
 		client.sendMessage(message, "Hello!");
 	});
+	
+You can also directly reply to messages. This does the same as adding an @mention in front of your text.
+
+Sends "@author Hello!"
+
+.. code-block:: javascript
+
+	client.on('message', function(message) {
+		client.reply(message, 'Hello!');
+	});
 
 Sending message to a specific channel
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -121,12 +133,5 @@ Do note however, that a PMChannel_ is not the same as a ServerChannel_ and there
 		client.sendMessage(message.author, "Hello");
 	});
 
-Sends "@author Hello!".
-
-.. code-block:: javascript
-
-	client.on('message', function(message) {
-		client.reply(message, 'Hello!');
-	});
 
 -----
