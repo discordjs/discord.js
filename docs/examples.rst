@@ -108,8 +108,8 @@ Sends "@author Hello!"
 		client.reply(message, "Hello!");
 	});
 
-Sending message to a specific channel
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+To a specific server and channel
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sends "Hello" to the default Channel_ in the Server_ "My Server". Note that this does not require any sort of received message to be activated, however if there are multiple servers with the name "My Server", a random one will be chosen.
 
@@ -120,8 +120,8 @@ See Cache_ for more details on getting specific objects and resolvables.
 	var channel = client.servers.get("name", "My Server").defaultChannel;
 	client.sendMessage(channel, "Hello");
 
-Sending private messages
-~~~~~~~~~~~~~~~~~~~~~~~~
+Private Messages
+~~~~~~~~~~~~~~~~
 
 You can also send private messages to a user with a User_ object. This will send "Hello!" as a private message to the original author of the received message.
 
