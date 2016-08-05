@@ -58,6 +58,28 @@ You can get your bot's token using the `My Applications`_ page on the Discord De
 
 -----
 
+Logging Out
+----------
+
+The logOut function should be used if you intend to reconnect with the same process. The function takes one parameter, which is a callback.
+
+.. code-block:: javascript
+
+	client.logOut((err) => {
+		console.log(err);
+	});
+
+
+However, if you want to completely shut down your application, use destroy.
+
+.. code-block:: javascript
+
+	client.destroy((err) => {
+		console.log(err);
+	});
+
+-----
+
 Receiving Messages
 ------------------
 
@@ -141,7 +163,7 @@ Sending files
 
 The process of sending file is similar to how you send messages.
 
-The first parameter takes an `Channel Resolvable`_ or `User Resolvable`_. The User Resolvable send the file as an DM, and the Channel Resolvable to a text channel. 
+The first parameter takes an `Channel Resolvable`_ or `User Resolvable`_. The User Resolvable sends the file as an DM, and the Channel Resolvable to a text channel. 
 
 The next parameter is a `File Resolvable`_.
 
@@ -157,7 +179,7 @@ URL
 .. code-block:: javascript
 
 	client.on('message', function(message) {
-		client.sendFile(message, "http://i.imgur.com/6CbxaPc.jpg", "kappa.jpg", "Check out this cool file!", (err, m) => {
+		client.sendFile(message, 'http://i.imgur.com/6CbxaPc.jpg', 'kappa.jpg', 'Check out this cool file!', (err, m) => {
 			if (err) console.log(err);
 		});
 	});
@@ -168,7 +190,7 @@ Local file
 .. code-block:: javascript
 
 	client.on('message', function(message) {
-		client.sendFile(message, "/assets/dank_meme.jpg", "dank_meme.jpg", "Check out this dank meme!", (err, m) => {
+		client.sendFile(message, '/assets/dank_meme.jpg', 'dank_meme.jpg', 'Check out this cool file!', (err, m) => {
 			if (err) console.log(err);
 		});
 	});
@@ -190,7 +212,7 @@ Send data from streams.
 		});
 
 		stream.on('end' () => {
-			client.sendFile(message, Buffer.concat(chunks), "dank_meme.jpg", "Check out this dank meme!");
+			client.sendFile(message, Buffer.concat(chunks), 'dank_meme.jpg', 'Check out this cool file!');
 		});
 	});
 
@@ -199,7 +221,7 @@ Send data from streams.
 Deleting messages
 -----------------
 
-The deleteMessage function takes an `Message Resolvable`_ as the first paramter. The second parameters is a callback.
+The deleteMessage function takes an `Message Resolvable`_ as the first paramter. The second parameter is a callback.
 
 This snippet will delete the received message. 
 
@@ -210,8 +232,9 @@ This snippet will delete the received message.
 	});
 
 
-You can also delete multiple messages with the deleteMessages function. It takes an array of `Message Resolvable`_s.
+You can also delete multiple messages with the deleteMessages function. It takes an array of `Message Resolvable`_ s.
 
+This code deletes all the messages recieved every 10 seconds.
 
 .. code-block:: javascript
 
@@ -223,7 +246,10 @@ You can also delete multiple messages with the deleteMessages function. It takes
 
 	function clear() {
 		client.deleteMessages(messages);
+		messages = [];
 	}
+
+	setInterval(clear, 10000);
 
 
 -----
