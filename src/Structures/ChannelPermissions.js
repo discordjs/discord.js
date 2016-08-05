@@ -11,31 +11,13 @@ export default class ChannelPermissions {
 
 		var hp = (perm) => this.hasPermission(perm, explicit);
 
-		return {
-			// general
-			createInstantInvite : hp( Permissions.createInstantInvite ),
-			kickMembers : hp( Permissions.kickMembers ),
-			banMembers : hp( Permissions.banMembers ),
-			managePermissions : hp ( Permissions.managePermissions ),
-			manageChannel : hp( Permissions.manageChannel ),
-			manageServer : hp( Permissions.manageServer ),
-			// text
-			readMessages : hp( Permissions.readMessages ),
-			sendMessages : hp( Permissions.sendMessages ),
-			sendTTSMessages : hp( Permissions.sendTTSMessages ),
-			manageMessages : hp( Permissions.manageMessages ),
-			embedLinks : hp( Permissions.embedLinks ),
-			attachFiles : hp( Permissions.attachFiles ),
-			readMessageHistory : hp( Permissions.readMessageHistory ),
-			mentionEveryone : hp( Permissions.mentionEveryone ),
-			// voice
-			voiceConnect : hp( Permissions.voiceConnect ),
-			voiceSpeak : hp( Permissions.voiceSpeak ),
-			voiceMuteMembers : hp( Permissions.voiceMuteMembers ),
-			voiceDeafenMembers : hp( Permissions.voiceDeafenMembers ),
-			voiceMoveMembers : hp( Permissions.voiceMoveMembers ),
-			voiceUseVAD : hp( Permissions.voiceUseVAD )
-		};
+		var json = {};
+
+		for(var permission in Permissions) {
+			json[permission] = hp( Permissions[permission] );
+		}
+
+		return json;
 	}
 
 	serialize(){
