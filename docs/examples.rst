@@ -195,3 +195,35 @@ Send data from streams.
 	});
 
 -----
+
+Deleting messages
+-----------------
+
+The deleteMessage function takes an `Message Resolvable`_ as the first paramter. The second parameters is a callback.
+
+This snippet will delete the received message. 
+
+.. code-block:: javascript
+
+	client.on('message', function(message) {
+		client.deleteMessage(message);
+	});
+
+
+You can also delete multiple messages with the deleteMessages function. It takes an array of `Message Resolvable`_s.
+
+
+.. code-block:: javascript
+
+	var messages = [];
+
+	client.on('message', function(message) {
+		messages.push(message);
+	});
+
+	function clear() {
+		client.deleteMessages(messages);
+	}
+
+
+-----
