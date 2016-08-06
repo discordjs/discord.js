@@ -13,6 +13,7 @@ import User from "./User";
 import TextChannel from "./TextChannel";
 import VoiceChannel from "./VoiceChannel";
 import Role from "./Role";
+import Emoji from "./Emoji";
 import {reg} from "../Util/ArgumentRegulariser";
 
 var strictKeys = [
@@ -42,6 +43,7 @@ export default class Server extends Equality {
 		this.members = new Cache();
 		this.channels = new Cache();
 		this.roles = new Cache();
+		this.emojis = new Cache();
 		this.icon = data.icon;
 		this.afkTimeout = data.afk_timeout;
 		this.afkChannelID = data.afk_channel_id || data.afkChannelID;
@@ -55,6 +57,14 @@ export default class Server extends Equality {
 			data.roles.forEach((dataRole) => {
 				this.roles.add(new Role(dataRole, this, client));
 			});
+		}
+
+		if (data.emojis instanceof Cache) {
+			data.emojis.forEach((emoji) => this.emojis.add(emoji));
+		} else {
+			data.emojis.forEach((dataEmoji) => {
+				this.emojis.add(new Emoji(dataEmoji, this));
+			})
 		}
 
 		if (data.members instanceof Cache) {
