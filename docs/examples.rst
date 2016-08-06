@@ -58,6 +58,28 @@ You can get your bot's token using the `My Applications`_ page on the Discord De
 
 -----
 
+Logging Out
+----------
+
+The logOut function should be used if you intend to reconnect with the same process. The function takes one parameter, which is a callback.
+
+.. code-block:: javascript
+
+	client.logOut((err) => {
+		console.log(err);
+	});
+
+
+However, if you want to completely shut down your application, use destroy.
+
+.. code-block:: javascript
+
+	client.destroy((err) => {
+		console.log(err);
+	});
+
+-----
+
 Receiving Messages
 ------------------
 
@@ -132,6 +154,102 @@ Do note however, that a PMChannel_ is not the same as a ServerChannel_ and there
 	client.on('message', function(message) {
 		client.sendMessage(message.author, "Hello!");
 	});
+
+
+-----
+
+Sending files
+-----------------
+
+The process of sending file is similar to how you send messages.
+
+The first parameter takes an `Channel Resolvable`_ or `User Resolvable`_. The User Resolvable sends the file as an DM, and the Channel Resolvable to a text channel. 
+
+The next parameter is a `File Resolvable`_.
+
+The third parameter lets you name your file. This is optional.
+
+The fourth paramter lets you add a message. This is optional.
+
+The last paramtere is a callback. It takes an error and a `Message`_ object.
+
+URL
+~~~~~~~~~~~~~~~~
+
+.. code-block:: javascript
+
+	client.on('message', function(message) {
+		client.sendFile(message, 'http://i.imgur.com/6CbxaPc.jpg', 'kappa.jpg', 'Check out this cool file!', (err, m) => {
+			if (err) console.log(err);
+		});
+	});
+
+Local file 
+~~~~~~~~~~~~~~~~
+
+.. code-block:: javascript
+
+	client.on('message', function(message) {
+		client.sendFile(message, '/assets/dank_meme.jpg', 'dank_meme.jpg', 'Check out this cool file!', (err, m) => {
+			if (err) console.log(err);
+		});
+	});
+
+Buffer
+~~~~~~~~~~~~~~~~
+
+Send data from streams.
+
+.. code-block:: javascript
+
+	const fs = require('fs');
+
+	client.on('message', function(message) {
+		var stream = fs.createReadStream('/assets/dank_meme.jpg');
+		var chunks = [];
+		stream.on('data', (dataChunk) => {
+			chunks.push(dataChunk);
+		});
+
+		stream.on('end' () => {
+			client.sendFile(message, Buffer.concat(chunks), 'dank_meme.jpg', 'Check out this cool file!');
+		});
+	});
+
+-----
+
+Deleting messages
+-----------------
+
+The deleteMessage function takes an `Message Resolvable`_ as the first paramter. The second parameter is a callback.
+
+This snippet will delete the received message. 
+
+.. code-block:: javascript
+
+	client.on('message', function(message) {
+		client.deleteMessage(message);
+	});
+
+
+You can also delete multiple messages with the deleteMessages function. It takes an array of `Message Resolvable`_ s.
+
+This code deletes all the messages recieved every 10 seconds.
+
+.. code-block:: javascript
+
+	var messages = [];
+
+	client.on('message', function(message) {
+		messages.push(message);
+	});
+
+	function clear() {
+		client.deleteMessages(messages);
+		messages = [];
+	}
+
+	setInterval(clear, 10000);
 
 
 -----
