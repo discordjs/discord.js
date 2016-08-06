@@ -3,6 +3,7 @@
 const Constants = {};
 
 const API = Constants.API = "https://discordapp.com/api";
+const CDN = Constants.CDN = "https://cdn.discordapp.com";
 
 const Endpoints = Constants.Endpoints = {
 	// general endpoints
@@ -16,6 +17,9 @@ const Endpoints = Constants.Endpoints = {
 	GATEWAY: `${API}/gateway`,
 	AVATAR : (userID, avatar) => `${API}/users/${userID}/avatars/${avatar}.jpg`,
 	INVITE: (id) => `${API}/invite/${id}`,
+
+	// emojis
+	EMOJI: (emojiID) => `${CDN}/emojis/${emojiID}.png`,
 
 	// servers
 	SERVERS: `${API}/guilds`,
