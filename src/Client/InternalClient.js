@@ -107,7 +107,7 @@ export default class InternalClient {
 			ret.set('User-Agent', self.userAgentInfo.full);
 			ret.end((error, data) => {
 				if (error) {
-					if(data.status === 429) {
+					if (data && data.status === 429) {
 						self.client.emit("debug", "Encountered 429 at " + url + " | " + self.client.options.shard + " | Buckets" + buckets + " | " + (Date.now() - startTime) + "ms latency");
 					}
 					reject(error);
