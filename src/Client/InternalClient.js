@@ -1150,11 +1150,11 @@ export default class InternalClient {
 		if (roledata) {
 			for (var r of roledata) {
 				if (r.id == role.id) {
-					return r;
+					return true;
 				}
 			}
 		}
-		return null;
+		return false;
 	}
 
 	//def removeMemberFromRole
