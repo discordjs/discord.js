@@ -171,6 +171,7 @@ export default class InternalClient {
             "bot:msg:dm": new Bucket(5, 5000),
             "bot:msg:global": new Bucket(50, 10000),
             "msg": new Bucket(10, 10000),
+            "dmsg:undefined": new Bucket(5, 1000),
             "username": new Bucket(2, 3600000)
         };
 
