@@ -55,14 +55,19 @@ export default class AudioEncoder {
 			}
 		}
 
-		return "help";
+		return;
 	}
 
 	encodeStream(stream, options) {
 		return new Promise((resolve, reject) => {
 			this.volume = new VolumeTransformer(options.volume);
 
-			var enc = cpoc.spawn(this.getCommand(), [
+			var command = this.getCommand();
+
+			// check if avconv or ffmpeg were found.
+			if (!command) return reject(new Error('FFMPEG not found. Make sure it is installed and in path.'));
+
+			var enc = cpoc.spawn(command, [
 				'-i', '-',
 				'-f', 's16le',
 				'-ar', '48000',
@@ -84,7 +89,12 @@ export default class AudioEncoder {
 		return new Promise((resolve, reject) => {
 			this.volume = new VolumeTransformer(options.volume);
 
-			var enc = cpoc.spawn(this.getCommand(), [
+			var command = this.getCommand();
+
+			// check if avconv or ffmpeg were found.
+			if (!command) return reject(new Error('FFMPEG not found. Make sure it is installed and in path.'));
+
+			var enc = cpoc.spawn(command, [
 				'-i', file,
 				'-f', 's16le',
 				'-ar', '48000',
@@ -101,6 +111,11 @@ export default class AudioEncoder {
 		return new Promise((resolve, reject) => {
 			this.volume = new VolumeTransformer(volume);
 
+			var command = this.getCommand();
+
+			// check if avconv or ffmpeg were found.
+			if (!command) return reject(new Error('FFMPEG not found. Make sure it is installed and in path.'));
+
 			// add options discord.js needs
 			var options = ffmpegOptions.concat([
 				'-f', 's16le',
@@ -108,7 +123,7 @@ export default class AudioEncoder {
 				'-ac', 2,
 				'pipe:1'
 			]);
-			var enc = cpoc.spawn(this.getCommand(), options);
+			var enc = cpoc.spawn(command, options);
 
 			this.hookEncodingProcess(resolve, reject, enc);
 		});
