@@ -259,19 +259,25 @@ Status updates
 
 Updating your status is very simple.
 
+The ready event needs to be emitted before you can use theese functions.
+
 You can either use the setStatus function or you can use helpers.
 
 This will set the status to online and playing Call of Duty: Black Ops 10.
 
 .. code-block:: javascript
 
-	client.setStatus('online', 'Call of Duty: Black Ops 10');
+	client.on('ready', () => {
+		client.setStatus('online', 'Call of Duty: Black Ops 10');
+	});
 
 You can also use the setPlayingGame function, if you just want to set your game...
 
 .. code-block:: javascript
 
-	client.setPlayingGame('Call of Duty: Black Ops 10');
+	client.on('ready', () => {
+		client.setPlayingGame('Call of Duty: Black Ops 10');
+	});
 
 
 ...and setStatusIdle/setStatusOnline, if you just want to change your status.
@@ -279,8 +285,10 @@ You can also use the setPlayingGame function, if you just want to set your game.
 
 .. code-block:: javascript
 
-	client.setStatusIdle(); // Now idle	
-	setTimeout(() => { client.setStatusOnline(); }, 10000); // Set the status back to online after 10 seconds.
+	client.on('ready', () => {
+		client.setStatusIdle(); // Now idle	
+		setTimeout(() => { client.setStatusOnline(); }, 10000); // Set the status back to online after 10 seconds.
+	});
 
 Set streaming
 ~~~~~~~~~~~~~~~~
@@ -293,19 +301,23 @@ The first defines the name of the game, the second the URL to a twitch.tv channe
 
 .. code-block:: javascript
 
-	client.setStreaming('Call of Duty: Black Ops 10', 'https://www.twitch.tv/lirik', 1);
+	client.on('ready', () => {
+		client.setStreaming('Call of Duty: Black Ops 10', 'https://www.twitch.tv/lirik', 1);
+	});
 
 You can also use the setStatus function to do this.
 
 .. code-block:: javascript
 
-	var opts = {
-		name: 'Call of Duty: Black Ops 10',
-		url: 'https://www.twitch.tv/lirik',
-		type: 1
-	};
+	client.on('ready', () => {
+		var opts = {
+			name: 'Call of Duty: Black Ops 10',
+			url: 'https://www.twitch.tv/lirik',
+			type: 1
+		};
 
-	client.setStatus(null, opts);
+		client.setStatus(null, opts);
+	});
 
 
 -----
