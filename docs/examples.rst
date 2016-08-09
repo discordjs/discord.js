@@ -161,17 +161,17 @@ Do note however, that a PMChannel_ is not the same as a ServerChannel_ and there
 Sending files
 -----------------
 
-The process of sending file is similar to how you send messages.
+The process of sending files is similar to how you send messages.
 
-The first parameter takes an `Channel Resolvable`_ or `User Resolvable`_. The User Resolvable sends the file as an DM, and the Channel Resolvable to a text channel. 
+The first parameter takes an `Channel Resolvable`_ or `User Resolvable`_. The User Resolvable will send the file as a DM, and the Channel Resolvable will send the file to a text channel. 
 
 The next parameter is a `File Resolvable`_.
 
 The third parameter lets you name your file. This is optional.
 
-The fourth paramter lets you add a message. This is optional.
+The fourth parameter lets you add a message. This is optional.
 
-The last paramtere is a callback. It takes an error and a `Message`_ object.
+The last parameter is a callback. It takes an error and a `Message`_ object.
 
 URL
 ~~~~~~~~~~~~~~~~
@@ -221,7 +221,7 @@ Send data from streams.
 Deleting messages
 -----------------
 
-The deleteMessage function takes an `Message Resolvable`_ as the first paramter. The second parameter is a callback.
+The deleteMessage function takes an `Message Resolvable`_ as the first parameter. The second parameter is a callback.
 
 This snippet will delete the received message. 
 
@@ -250,6 +250,74 @@ This code deletes all the messages recieved every 10 seconds.
 	}
 
 	setInterval(clear, 10000);
+
+
+-----
+
+Status updates
+-----------------
+
+Updating your status is very simple.
+
+The ready event needs to be emitted before you can use theese functions.
+
+You can either use the setStatus function or you can use helpers.
+
+This will set the status to online and playing Call of Duty: Black Ops 10.
+
+.. code-block:: javascript
+
+	client.on('ready', () => {
+		client.setStatus('online', 'Call of Duty: Black Ops 10');
+	});
+
+You can also use the setPlayingGame function, if you just want to set your game...
+
+.. code-block:: javascript
+
+	client.on('ready', () => {
+		client.setPlayingGame('Call of Duty: Black Ops 10');
+	});
+
+
+...and setStatusIdle/setStatusOnline, if you just want to change your status.
+
+
+.. code-block:: javascript
+
+	client.on('ready', () => {
+		client.setStatusIdle(); // Now idle	
+		setTimeout(() => { client.setStatusOnline(); }, 10000); // Set the status back to online after 10 seconds.
+	});
+
+Set streaming
+~~~~~~~~~~~~~~~~
+
+You can even set the streaming status.
+
+The setStreaming function takes 3 parameters, and one callback. 
+
+The first defines the name of the game, the second the URL to a twitch.tv channel and the third a type where 1 = streamnig.
+
+.. code-block:: javascript
+
+	client.on('ready', () => {
+		client.setStreaming('Call of Duty: Black Ops 10', 'https://www.twitch.tv/lirik', 1);
+	});
+
+You can also use the setStatus function to do this.
+
+.. code-block:: javascript
+
+	client.on('ready', () => {
+		var opts = {
+			name: 'Call of Duty: Black Ops 10',
+			url: 'https://www.twitch.tv/lirik',
+			type: 1
+		};
+
+		client.setStatus(null, opts);
+	});
 
 
 -----
