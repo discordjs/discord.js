@@ -521,9 +521,14 @@ export default class InternalClient {
 		this.email = email;
 		this.password = password;
 
+		var self = this;
 		return this.getGateway()
 		.then(url => {
-			this.createWS(url);
+			self.apiRequest('get', Endpoints.ME, true).then(res => {
+				self.token = res.bot ? `Bot ${self.token}` : self.token;
+				self.createWS(url);
+			});
+
 			return token;
 		});
 	}
