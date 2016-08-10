@@ -18,6 +18,7 @@
 .. _Resolvables : ./docs_resolvables.html
 .. _VoiceConnection : ./docs_voiceconnection.html
 .. _Promises : https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise
+.. _Template Literals : https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
 .. _EventEmitter : https://nodejs.org/api/events.html#events_class_events_eventemitter
 .. _Channel Resolvable : http://discordjs.readthedocs.org/en/indev/docs_resolvables.html#channel-resolvable
 .. _String Resolvable : http://discordjs.readthedocs.org/en/indev/docs_resolvables.html#string-resolvable

@@ -13,6 +13,7 @@ import User from "./User";
 import TextChannel from "./TextChannel";
 import VoiceChannel from "./VoiceChannel";
 import Role from "./Role";
+import Emoji from "./Emoji";
 import {reg} from "../Util/ArgumentRegulariser";
 
 var strictKeys = [
@@ -42,6 +43,7 @@ export default class Server extends Equality {
 		this.members = new Cache();
 		this.channels = new Cache();
 		this.roles = new Cache();
+		this.emojis = new Cache();
 		this.icon = data.icon;
 		this.afkTimeout = data.afk_timeout;
 		this.afkChannelID = data.afk_channel_id || data.afkChannelID;
@@ -55,6 +57,14 @@ export default class Server extends Equality {
 			data.roles.forEach((dataRole) => {
 				this.roles.add(new Role(dataRole, this, client));
 			});
+		}
+
+		if (data.emojis instanceof Cache) {
+			data.emojis.forEach((emoji) => this.emojis.add(emoji));
+		} else {
+			data.emojis.forEach((dataEmoji) => {
+				this.emojis.add(new Emoji(dataEmoji, this));
+			})
 		}
 
 		if (data.members instanceof Cache) {
@@ -269,6 +279,34 @@ export default class Server extends Equality {
 
 	createRole() {
 		return this.client.createRole.apply(this.client, reg(this, arguments));
+	}
+
+	updateRole() {
+		return this.client.updateRole.apply(this.client, reg(this, arguments));
+	}
+
+	deleteRole() {
+		return this.client.deleteRole.apply(this.client, reg(this, arguments));
+	}
+
+	memberHasRole() {
+		return this.client.memberHasRole.apply(this.client, reg(this, arguments));
+	}
+
+	memberHas() {
+		return this.client.memberHasRole.apply(this.client, reg(this, arguments));
+	}
+
+	addMemberToRole() {
+		return this.client.addMemberToRole.apply(this.client, reg(this, arguments));
+	}
+
+	addUserToRole() {
+		return this.client.addMemberToRole.apply(this.client, reg(this, arguments));
+	}
+
+	removeMemberFromRole() {
+		return this.client.removeMemberFromRole.apply(this.client, reg(this, arguments));
 	}
 
 	banMember(user, tlength, callback) {
