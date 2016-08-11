@@ -46,14 +46,14 @@ export default class Client extends EventEmitter {
 		 */
 		this.options = options || {};
 		this.options.compress = options.compress || (!process.browser);
-		this.options.autoReconnect = options.autoReconnect || true;
-		this.options.rateLimitAsError = options.rateLimitAsError || false;
+		this.options.autoReconnect = options.autoReconnect === undefined ? true: options.autoReconnect;
+		this.options.rateLimitAsError = !options.rateLimitAsError ? false : true;
 		this.options.largeThreshold = options.largeThreshold || 250;
 		this.options.maxCachedMessages = options.maxCachedMessages || 1000;
 		this.options.guildCreateTimeout = options.guildCreateTimeout || 1000;
 		this.options.shardId = options.shardId || 0;
 		this.options.shardCount = options.shardCount || 0;
-		this.options.disableEveryone = options.disableEveryone || false;
+		this.options.disableEveryone = !options.disableEveryone ? false : true;
 
 		if (typeof options.shardCount === "number" && typeof options.shardId === "number" && options.shardCount > 0) {
 			this.options.shard = [options.shardId, options.shardCount];

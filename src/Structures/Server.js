@@ -281,6 +281,34 @@ export default class Server extends Equality {
 		return this.client.createRole.apply(this.client, reg(this, arguments));
 	}
 
+	updateRole() {
+		return this.client.updateRole.apply(this.client, reg(this, arguments));
+	}
+
+	deleteRole() {
+		return this.client.deleteRole.apply(this.client, reg(this, arguments));
+	}
+
+	memberHasRole() {
+		return this.client.memberHasRole.apply(this.client, reg(this, arguments));
+	}
+
+	memberHas() {
+		return this.client.memberHasRole.apply(this.client, reg(this, arguments));
+	}
+
+	addMemberToRole() {
+		return this.client.addMemberToRole.apply(this.client, reg(this, arguments));
+	}
+
+	addUserToRole() {
+		return this.client.addMemberToRole.apply(this.client, reg(this, arguments));
+	}
+
+	removeMemberFromRole() {
+		return this.client.removeMemberFromRole.apply(this.client, reg(this, arguments));
+	}
+
 	banMember(user, tlength, callback) {
 		return this.client.banMember.apply(this.client, [user, this, tlength, callback]);
 	}
