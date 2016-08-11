@@ -526,15 +526,12 @@ export default class InternalClient {
 		.then(url => {
 			if (!self.client.options.tokenPrefix) {
 				self.createWS(url);
-				return;
+				return token;
 			}
 
-			self.apiRequest('get', Endpoints.ME, true).then(res => {
-				self.token = res.bot ? `Bot ${self.token}` : self.token;
-				self.createWS(url);
-			});
-
-			return token;
+			self.token = `Bot ${self.token}`;
+			self.createWS(url);
+			return self.token;
 		});
 	}
 
