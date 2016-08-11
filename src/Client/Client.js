@@ -46,7 +46,7 @@ export default class Client extends EventEmitter {
 		 */
 		this.options = options || {};
 		this.options.compress = options.compress || (!process.browser);
-		this.options.autoReconnect = !options.autoReconnect ? false : true;
+		this.options.autoReconnect = options.autoReconnect === true ? true : false;
 		this.options.rateLimitAsError = !options.rateLimitAsError ? false : true;
 		this.options.largeThreshold = options.largeThreshold || 250;
 		this.options.maxCachedMessages = options.maxCachedMessages || 1000;
