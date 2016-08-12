@@ -524,12 +524,7 @@ export default class InternalClient {
 		var self = this;
 		return this.getGateway()
 		.then(url => {
-			if (!self.client.options.tokenPrefix) {
-				self.createWS(url);
-				return token;
-			}
-
-			self.token = `Bot ${self.token}`;
+			self.token = self.client.options.bot ? `Bot ${self.token}` : self.token;
 			self.createWS(url);
 			return self.token;
 		});
