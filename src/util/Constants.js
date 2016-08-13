@@ -10,7 +10,7 @@ exports.DefaultOptions = {
       $referring_domain: '',
     },
   },
-  protocol_version: 5,
+  protocol_version: 6,
   max_message_cache: 200,
   rest_ws_bridge_timeout: 5000,
 };
@@ -20,6 +20,13 @@ exports.Status = {
   CONNECTING: 1,
   RECONNECTING: 2,
   IDLE: 3,
+};
+
+exports.ChannelTypes = {
+  text: 0,
+  DM: 1,
+  voice: 2,
+  groupDM: 3,
 };
 
 exports.Package = require('../../package.json');

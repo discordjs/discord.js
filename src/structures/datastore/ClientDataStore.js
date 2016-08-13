@@ -46,15 +46,15 @@ class ClientDataStore extends AbstractDataStore {
     let guild = $guild;
     const already = this.get('channels', data.id);
     let channel;
-    if (data.is_private) {
+    if (data.type === Constants.ChannelTypes.DM) {
       channel = new DMChannel(this.client, data);
     } else {
       guild = guild || this.get('guilds', data.guild_id);
       if (guild) {
-        if (data.type === 'text') {
+        if (data.type === Constants.ChannelTypes.text) {
           channel = new TextChannel(guild, data);
           guild.store.add('channels', channel);
-        } else if (data.type === 'voice') {
+        } else if (data.type === Constants.ChannelTypes.voice) {
           channel = new VoiceChannel(guild, data);
           guild.store.add('channels', channel);
         }
