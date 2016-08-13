@@ -91,7 +91,6 @@ class WebSocketManager {
   checkIfReady() {
     if (this.status !== Constants.Status.READY) {
       let unavailableCount = 0;
-
       for (const guildID in this.client.store.data.guilds) {
         unavailableCount += this.client.store.data.guilds[guildID].available ? 0 : 1;
       }
