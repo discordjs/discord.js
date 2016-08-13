@@ -10,6 +10,13 @@ const ClientDataResolver = require('./ClientDataResolver');
 const WebSocketManager = require('./websocket/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
 
+/**
+ * Creates a new Discord Client
+ * ```js
+ * const Discord = require("discord.js");
+ * const client = new Discord.Client();
+ * ```
+ */
 class Client extends EventEmitter{
 
 	constructor(options) {
@@ -23,6 +30,17 @@ class Client extends EventEmitter{
 		this.actions = new ActionsManager(this);
 	}
 
+	/**
+	 * Logs the client in. If successful, resolves with the account's token.
+	 * @param  {string} emailOrToken The email or token used for the account. If it is an email, a password _must_ be
+	 * provided.
+	 * @param  {string} [password] The password for the account, only needed if an email was provided.
+	 * @return {Promise<String>}
+	 * @example
+	 * client.login("token");
+	 * // or
+	 * client.login("email", "password");
+	 */
 	login(email, password) {
 		if (password) {
 			// login with email and password
@@ -33,6 +51,10 @@ class Client extends EventEmitter{
 		}
 	}
 
+	/**
+	 * The User of the logged in Client, only available after `READY` has been fired.
+	 * @return {ClientUser} [description]
+	 */
 	get user() {
 		return this.store.user;
 	}

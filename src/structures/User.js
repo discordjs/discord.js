@@ -2,6 +2,9 @@
 
 const TextBasedChannel = require('./interface/TextBasedChannel');
 
+/**
+ * Represents a User on Discord.
+ */
 class User {
 	constructor(client, data) {
 		this.client = client;
@@ -11,11 +14,39 @@ class User {
 	}
 
 	setup(data) {
+		/**
+		 * The username of the User
+		 * @type {String}
+		 */
 		this.username = data.username;
+		/**
+		 * The ID of the User
+		 * @type {String}
+		 */
 		this.id = data.id;
+		/**
+		 * A discriminator based on username for the User
+		 * @type {String}
+		 */
 		this.discriminator = data.discriminator;
+		/**
+		 * The ID of the user's avatar
+		 * @type {String}
+		 */
 		this.avatar = data.avatar;
+		/**
+		 * Whether or not the User is a Bot.
+		 * @type {Boolean}
+		 */
 		this.bot = Boolean(data.bot);
+		/**
+		 * The status of the user:
+		 * 
+		 * * **`online`** - user is online
+		 * * **`offline`** - user is offline
+		 * * **`idle`** - user is AFK
+		 * @type {String}
+		 */
 		this.status = data.status || this.status || 'offline';
 		this.game = data.game || this.game;
 	}
@@ -24,6 +55,10 @@ class User {
 		return `<@${this.id}>`;
 	}
 
+	/**
+	 * Deletes a DM Channel (if one exists) between the Client and the User. Resolves with the Channel if successful.
+	 * @return {Promise<DMChannel>}
+	 */
 	deleteDM() {
 		return this.client.rest.methods.DeleteChannel(this);
 	}
