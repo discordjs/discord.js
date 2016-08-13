@@ -56,7 +56,6 @@ class RESTManager {
     /*
     	file is {file, name}
      */
-    console.log(url);
     const apiRequest = request[method](url);
 
     const endpoint = url.replace(/\/[0-9]+/g, '/:id');
