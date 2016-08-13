@@ -10,7 +10,7 @@ exports.DefaultOptions = {
       $referring_domain: '',
     },
   },
-  protocol_version: 6,
+  protocol_version: 5,
   max_message_cache: 200,
   rest_ws_bridge_timeout: 5000,
 };
