@@ -30,7 +30,10 @@ class RESTMethods {
   getGateway() {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('get', Constants.Endpoints.gateway, true)
-        .then(res => resolve(res.url))
+        .then(res => {
+          this.rest.client.store.gateway = `${res.url}/?encoding=json&v=${this.rest.client.options.protocol_version}`;
+          resolve(this.rest.client.store.gateway);
+        })
         .catch(reject);
     });
   }

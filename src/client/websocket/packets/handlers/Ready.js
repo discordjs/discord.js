@@ -8,7 +8,6 @@ class ReadyHandler extends AbstractHandler {
   handle(packet) {
     const data = packet.d;
     const client = this.packetManager.client;
-    client.manager.setupKeepAlive(data.heartbeat_interval);
 
     client.store.user = client.store.add('users', new ClientUser(client, data.user));
 

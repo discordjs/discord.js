@@ -16,7 +16,6 @@ class WebSocketManager {
 
   connect(gateway) {
     this.status = Constants.Status.CONNECTING;
-    this.store.gateway = `${gateway}/?v=${this.client.options.protocol_version}`;
     this.ws = new WebSocket(gateway);
     this.ws.onopen = () => this.eventOpen();
     this.ws.onclose = () => this.eventClose();
@@ -81,10 +80,14 @@ class WebSocketManager {
       return this.eventError(Constants.Errors.BAD_WS_MESSAGE);
     }
 
+    if (packet.op === 10) {
+      this.client.manager.setupKeepAlive(packet.d.heartbeat_interval);
+    }
+
     return this.packetManager.handle(packet);
   }
 
-  EventError() {
+  eventError() {
     this.tryReconnect();
   }
 
@@ -108,7 +111,7 @@ class WebSocketManager {
     this.ws.close();
     this.packetManager.handleQueue();
     this.client.emit(Constants.Events.RECONNECTING);
-    this.connect(this.store.gateway);
+    this.connect(this.client.store.gateway);
   }
 }
 
