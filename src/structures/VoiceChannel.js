@@ -10,6 +10,7 @@ class VoiceChannel extends ServerChannel {
   setup(data) {
     super.setup(data);
     this.bitrate = data.bitrate;
+    this.userLimit = data.user_limit;
   }
 }
 
