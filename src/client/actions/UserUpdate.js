@@ -1,44 +1,36 @@
-'use strict';
-
 const Action = require('./Action');
 const Constants = require('../../util/Constants');
-const CloneObject = require('../../util/CloneObject');
-const Message = require('../../structures/Message');
+const cloneObject = require('../../util/CloneObject');
 
 class UserUpdateAction extends Action {
 
-	constructor(client) {
-		super(client);
-	}
+  handle(data) {
+    const client = this.client;
 
-	handle(data) {
+    if (client.store.user) {
+      if (client.store.user.equals(data)) {
+        return {
+          old: client.store.user,
+          updated: client.store.user,
+        };
+      }
 
-		let client = this.client;
+      const oldUser = cloneObject(client.store.user);
+      client.store.user.setup(data);
 
-		if (client.store.user) {
-			if (client.store.user.equals(data)) {
-				return {
-					old: client.store.user,
-					updated: client.store.user,
-				};
-			}
+      client.emit(Constants.Events.USER_UPDATE, oldUser, client.store.user);
 
-			let oldUser = CloneObject(client.store.user);
-			client.store.user.setup(data);
+      return {
+        old: oldUser,
+        updated: client.store.user,
+      };
+    }
 
-			client.emit(Constants.Events.USER_UPDATE, oldUser, client.store.user);
-
-			return {
-				old: oldUser,
-				updated: client.store.user,
-			};
-		}
-
-		return {
-			old: null,
-			updated: null,
-		};
-	}
-};
+    return {
+      old: null,
+      updated: null,
+    };
+  }
+}
 
 module.exports = UserUpdateAction;

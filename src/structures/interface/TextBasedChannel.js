@@ -1,15 +1,12 @@
-'use strict';
-
-function sendMessage(content, options) {
-	options = options || {};
-	return this.client.rest.methods.SendMessage(this, content, options.tts);
+function sendMessage(content, options = {}) {
+  return this.client.rest.methods.sendMessage(this, content, options.tts);
 }
 
-function sendTTSMessage(content, options) {
-	options = options || {};
-	return this.client.rest.methods.SendMessage(this, content, true);
+function sendTTSMessage(content) {
+  return this.client.rest.methods.sendMessage(this, content, true);
 }
 
 exports.applyToClass = structure => {
-	structure.prototype.sendMessage = sendMessage;
+  structure.prototype.sendMessage = sendMessage;
+  structure.prototype.sendTTSMessage = sendTTSMessage;
 };

@@ -1,44 +1,36 @@
-'use strict';
-
 const Action = require('./Action');
 const Constants = require('../../util/Constants');
-const CloneObject = require('../../util/CloneObject');
-const Message = require('../../structures/Message');
+const cloneObject = require('../../util/CloneObject');
 
 class MessageUpdateAction extends Action {
 
-	constructor(client) {
-		super(client);
-	}
+  handle(data) {
+    const client = this.client;
+    const channel = client.store.get('channels', data.channel_id);
 
-	handle(data) {
+    if (channel) {
+      const message = channel.store.get('messages', data.id);
+      if (message && !message.equals(data, true)) {
+        const oldMessage = cloneObject(message);
+        message.patch(data);
+        client.emit(Constants.Events.MESSAGE_UPDATE, oldMessage, message);
+        return {
+          old: oldMessage,
+          updated: message,
+        };
+      }
 
-		let client = this.client;
-		let channel = client.store.get('channels', data.channel_id);
+      return {
+        old: message,
+        updated: message,
+      };
+    }
 
-		if (channel) {
-			let message = channel.store.get('messages', data.id);
-			if (message && !message.equals(data, true)) {
-				let oldMessage = CloneObject(message);
-				message.patch(data);
-				return {
-					old: oldMessage,
-					updated: message,
-				};
-				client.emit(Constants.Events.MESSAGE_UPDATE, oldMessage, message);
-			}
-
-			return {
-				old: message,
-				updated: message,
-			};
-		}
-
-		return {
-			old: null,
-			updated: null,
-		};
-	}
-};
+    return {
+      old: null,
+      updated: null,
+    };
+  }
+}
 
 module.exports = MessageUpdateAction;

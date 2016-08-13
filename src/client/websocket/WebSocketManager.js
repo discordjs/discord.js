@@ -1,5 +1,3 @@
-'use strict';
-
 const WebSocket = require('ws');
 const Constants = require('../../util/Constants');
 const zlib = require('zlib');
@@ -8,111 +6,111 @@ const WebSocketManagerDataStore = require('../../structures/datastore/WebSocketM
 
 class WebSocketManager {
 
-	constructor(client) {
-		this.client = client;
-		this.ws = null;
-		this.packetManager = new PacketManager(this);
-		this.store = new WebSocketManagerDataStore();
-		this.status = Constants.Status.IDLE;
-	}
+  constructor(client) {
+    this.client = client;
+    this.ws = null;
+    this.packetManager = new PacketManager(this);
+    this.store = new WebSocketManagerDataStore();
+    this.status = Constants.Status.IDLE;
+  }
 
-	connect(gateway) {
-		this.status = Constants.Status.CONNECTING;
-		this.store.gateway = gateway;
-		gateway += `/?v=${this.client.options.protocol_version}`;
-		this.ws = new WebSocket(gateway);
-		this.ws.onopen = () => this.EventOpen();
-		this.ws.onclose = () => this.EventClose();
-		this.ws.onmessage = (e) => this.EventMessage(e);
-		this.ws.onerror = (e) => this.EventError(e);
-	}
+  connect(gateway) {
+    this.status = Constants.Status.CONNECTING;
+    this.store.gateway = `${gateway}/?v=${this.client.options.protocol_version}`;
+    this.ws = new WebSocket(gateway);
+    this.ws.onopen = () => this.eventOpen();
+    this.ws.onclose = () => this.eventClose();
+    this.ws.onmessage = (e) => this.eventMessage(e);
+    this.ws.onerror = (e) => this.eventError(e);
+  }
 
-	send(data) {
-		if (this.ws.readyState === WebSocket.OPEN) {
-			this.ws.send(JSON.stringify(data));
-		}
-	}
+  send(data) {
+    if (this.ws.readyState === WebSocket.OPEN) {
+      this.ws.send(JSON.stringify(data));
+    }
+  }
 
-	EventOpen() {
-		if (this.reconnecting) {
-			this._sendResume();
-		} else {
-			this._sendNewIdentify();
-		}
-	}
+  eventOpen() {
+    if (this.reconnecting) {
+      this._sendResume();
+    } else {
+      this._sendNewIdentify();
+    }
+  }
 
-	_sendResume() {
-		let payload = {
-			token: this.client.store.token,
-			session_id: this.store.sessionID,
-			seq: this.store.sequence,
-		};
+  _sendResume() {
+    const payload = {
+      token: this.client.store.token,
+      session_id: this.store.sessionID,
+      seq: this.store.sequence,
+    };
 
-		this.send({
-			op: Constants.OPCodes.RESUME,
-			d: payload,
-		});
-	}
+    this.send({
+      op: Constants.OPCodes.RESUME,
+      d: payload,
+    });
+  }
 
-	_sendNewIdentify() {
-		this.reconnecting = false;
-		let payload = this.client.options.ws;
-		payload.token = this.client.store.token;
+  _sendNewIdentify() {
+    this.reconnecting = false;
+    const payload = this.client.options.ws;
+    payload.token = this.client.store.token;
 
-		this.send({
-			op: Constants.OPCodes.IDENTIFY,
-			d: payload,
-		});
-	}
+    this.send({
+      op: Constants.OPCodes.IDENTIFY,
+      d: payload,
+    });
+  }
 
-	EventClose() {
-		if (!this.reconnecting) {
-			this.tryReconnect();
-		}
-	}
+  eventClose() {
+    if (!this.reconnecting) {
+      this.tryReconnect();
+    }
+  }
 
-	EventMessage(event) {
-		let packet;
-		try {
-			if (event.binary) {
-				event.data = zlib.inflateSync(event.data).toString();
-			}
+  eventMessage($event) {
+    let packet;
+    const event = $event;
+    try {
+      if (event.binary) {
+        event.data = zlib.inflateSync(event.data).toString();
+      }
 
-			packet = JSON.parse(event.data);
-		} catch (e) {
-			return this.EventError(Constants.Errors.BAD_WS_MESSAGE);
-		}
+      packet = JSON.parse(event.data);
+    } catch (e) {
+      return this.eventError(Constants.Errors.BAD_WS_MESSAGE);
+    }
 
-		this.packetManager.handle(packet);
-	}
+    return this.packetManager.handle(packet);
+  }
 
-	EventError(e) {
-		this.tryReconnect();
-	}
+  EventError() {
+    this.tryReconnect();
+  }
 
-	checkIfReady() {
-		if (this.status !== Constants.Status.READY) {
-			let unavailableCount = 0;
+  checkIfReady() {
+    if (this.status !== Constants.Status.READY) {
+      let unavailableCount = 0;
 
-			for (let guildID in this.client.store.data.guilds) {
-				unavailableCount += this.client.store.data.guilds[guildID].available ? 0 : 1;
-			}
+      for (const guildID in this.client.store.data.guilds) {
+        unavailableCount += this.client.store.data.guilds[guildID].available ? 0 : 1;
+      }
 
-			if (unavailableCount === 0) {
-				this.status = Constants.Status.READY;
-				this.client.emit(Constants.Events.READY);
-				this.packetManager.handleQueue();
-			}
-		}
-	}
+      if (unavailableCount === 0) {
+        this.status = Constants.Status.READY;
+        this.client.emit(Constants.Events.READY);
+        this.packetManager.handleQueue();
+      }
+    }
+  }
 
-	tryReconnect() {
-		this.status = Constants.Status.RECONNECTING;
-		this.ws.close();
-		this.packetManager.handleQueue();
-		this.client.emit(Constants.Events.RECONNECTING);
-		this.connect(this.store.gateway);
-	}
+  tryReconnect() {
+    this.status = Constants.Status.RECONNECTING;
+    this.ws.close();
+    this.packetManager.handleQueue();
+    this.client.emit(Constants.Events.RECONNECTING);
+    this.connect(this.store.gateway);
+  }
 }
 
 module.exports = WebSocketManager;

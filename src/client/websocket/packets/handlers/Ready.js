@@ -1,39 +1,30 @@
-'use strict';
-
 const AbstractHandler = require('./AbstractHandler');
-const Structure = name => require(`../../../../structures/${name}`);
 
-const ClientUser = Structure('ClientUser');
-const Guild = Structure('Guild');
-const DMChannel = Structure('DMChannel');
+const getStructure = name => require(`../../../../structures/${name}`);
+const ClientUser = getStructure('ClientUser');
 
 class ReadyHandler extends AbstractHandler {
 
-	constructor(packetManager) {
-		super(packetManager);
-	}
+  handle(packet) {
+    const data = packet.d;
+    const client = this.packetManager.client;
+    client.manager.setupKeepAlive(data.heartbeat_interval);
 
-	handle(packet) {
-		let data = packet.d;
-		let client = this.packetManager.client;
-		client.manager.setupKeepAlive(data.heartbeat_interval);
+    client.store.user = client.store.add('users', new ClientUser(client, data.user));
 
-		client.store.user = client.store.add('users', new ClientUser(client, data.user));
+    for (const guild of data.guilds) {
+      client.store.newGuild(guild);
+    }
 
-		for (let guild of data.guilds) {
-			client.store.NewGuild(guild);
-		}
+    for (const privateDM of data.private_channels) {
+      client.store.newChannel(privateDM);
+    }
 
-		for (let privateDM of data.private_channels) {
-			client.store.NewChannel(privateDM);
-		}
+    this.packetManager.ws.store.sessionID = data.session_id;
 
-		this.packetManager.ws.store.sessionID = data.session_id;
+    this.packetManager.ws.checkIfReady();
+  }
 
-		this.packetManager.ws.checkIfReady();
-
-	}
-
-};
+}
 
 module.exports = ReadyHandler;

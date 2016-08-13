@@ -1,5 +1,3 @@
-'use strict';
-
 /*
 
 ABOUT ACTIONS
@@ -14,14 +12,14 @@ that WebSocket events don't clash with REST methods.
 
 class GenericAction {
 
-	constructor(client) {
-		this.client = client;
-	}
+  constructor(client) {
+    this.client = client;
+  }
 
-	handle(data) {
+  handle(data) {
+    return data;
+  }
 
-	}
-
-};
+}
 
 module.exports = GenericAction;
