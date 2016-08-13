@@ -67,7 +67,9 @@ class RESTManager {
     }
 
     if (auth) {
-      if (this.client.store.token) {
+      if (this.client.store.token && this.client.store.user && this.client.store.user.bot) {
+        apiRequest.set('authorization', `Bot ${this.client.store.token}`);
+      } else if (this.client.store.token) {
         apiRequest.set('authorization', this.client.store.token);
       } else {
         throw Constants.Errors.NO_TOKEN;
@@ -99,6 +101,7 @@ class RESTManager {
 
           reject(err);
         } else {
+          console.log(res.headers);
           resolve(res ? res.body || {} : {});
         }
       });
