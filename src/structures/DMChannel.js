@@ -26,7 +26,7 @@ class DMChannel extends Channel {
 
   setup(data) {
     super.setup(data);
-    this.recipient = this.client.store.add('users', new User(this.client, data.recipient));
+    this.recipient = this.client.store.add('users', new User(this.client, data.recipients[0]));
     this.lastMessageID = data.last_message_id;
   }
 

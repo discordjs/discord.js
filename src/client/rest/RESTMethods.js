@@ -56,7 +56,7 @@ class RESTMethods {
           channel = chan;
           req();
         })
-          .catch(reject);
+        .catch(reject);
       } else {
         req();
       }
