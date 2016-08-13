@@ -165,6 +165,7 @@ const PermissionFlags = exports.PermissionFlags = {
   ATTACH_FILES: 1 << 15,
   READ_MESSAGE_HISTORY: 1 << 16,
   MENTION_EVERYONE: 1 << 17,
+  EXTERNAL_EMOJIS: 1 << 18,
 
   CONNECT: 1 << 20,
   SPEAK: 1 << 21,

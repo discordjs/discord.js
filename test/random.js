@@ -141,6 +141,14 @@ client.on('message', message => {
       }).catch(console.log);
     }
 
+    if (message.content === 'ratelimittest') {
+      let i = 0;
+      while (i < 20) {
+        message.channel.sendMessage(`Testing my rates, item ${i} of 20`);
+        i++;
+      }
+    }
+
     if (message.content === 'makerole') {
       message.guild.createRole().then(role => {
         message.channel.sendMessage(`Made role ${role.name}`);
