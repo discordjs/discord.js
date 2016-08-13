@@ -85,7 +85,7 @@ class ServerChannel extends Channel {
         permissions |= overwrite.allowData;
       }
 
-      const admin = Boolean(permissions & (Constants.PermissionFlags.MANAGE_ROLES));
+      const admin = Boolean(permissions & (Constants.PermissionFlags.ADMINISTRATOR));
       if (admin) {
         permissions = Constants.ALL_PERMISSIONS;
       }
