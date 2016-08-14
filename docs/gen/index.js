@@ -38,6 +38,9 @@ function next() {
   cleanPaths();
   console.log('parsed inline code');
   json = {
+    meta: {
+      version: GEN_VERSION,
+    },
     custom: customDocs,
     json,
   };
