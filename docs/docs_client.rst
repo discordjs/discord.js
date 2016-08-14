@@ -64,6 +64,11 @@ shardId
 
 A zero-based integer representing the value of the current shard.
 
+bot
+~~~~~~~
+
+Boolean. Use 'Bot my_token' when authorizing. Default is true, should be false if user bot.
+
 --------
 
 Attributes

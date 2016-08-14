@@ -521,10 +521,12 @@ export default class InternalClient {
 		this.email = email;
 		this.password = password;
 
+		var self = this;
 		return this.getGateway()
 		.then(url => {
-			this.createWS(url);
-			return token;
+			self.token = self.client.options.bot && !self.token.startsWith("Bot ") ? `Bot ${self.token}` : self.token;
+			self.createWS(url);
+			return self.token;
 		});
 	}
 
