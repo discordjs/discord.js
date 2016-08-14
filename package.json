@@ -4,7 +4,8 @@
   "description": "A way to interface with the Discord API",
   "main": "./src/index",
   "scripts": {
-    "test": "node test/random"
+    "test": "node test/random",
+    "docs": "node docs/gen/index.js"
   },
   "repository": {
     "type": "git",
@@ -45,7 +46,9 @@
     "grunt-contrib-uglify": "^0.11.0",
     "grunt-jscs": "^2.8.0",
     "jscs": "^2.11.0",
-    "load-grunt-tasks": "^3.3.0"
+    "load-grunt-tasks": "^3.3.0",
+    "fs-extra": "^0.30.0",
+    "jsdoc-parse": "^1.2.7"
   },
   "optionalDependencies": {
     "node-opus": "^0.1.11"

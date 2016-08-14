@@ -13,5 +13,6 @@ module.exports = {
       "no-restricted-syntax": 0,
       "no-param-reassign": 0,
       "consistent-return": 0,
+      "import/no-extraneous-dependencies": 0,
     }
 };
