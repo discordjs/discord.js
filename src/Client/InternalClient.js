@@ -524,7 +524,7 @@ export default class InternalClient {
 		var self = this;
 		return this.getGateway()
 		.then(url => {
-			self.token = self.client.options.bot ? `Bot ${self.token}` : self.token;
+			self.token = self.client.options.bot && !self.token.startsWith("Bot ") ? `Bot ${self.token}` : self.token;
 			self.createWS(url);
 			return self.token;
 		});
