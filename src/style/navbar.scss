@@ -1,0 +1,45 @@
+$navbar_bg : #333;
+$title_bg : #1565C0;
+
+.navbar {
+  background: $navbar_bg;
+  color: white;
+  box-shadow:0 0 3rem $navbar_bg;
+  line-height: 1.2rem;
+  height: 3.2rem;
+
+  a {
+    color: white;
+    text-decoration: none;
+  }
+
+  .title {
+    font-weight: bold;
+    display: inline-block;
+    padding: 1rem;
+    cursor: pointer;
+    font-size: 1.2rem;
+    background: $title_bg;
+  }
+
+  .links {
+    float: right;
+    height: 1.2rem;
+    line-height: 1.2rem;
+    display: inline-block;
+    color: #999;
+
+    .link {
+      padding: 1rem;
+    }
+
+    .link:hover {
+      background: black;
+      cursor: pointer;
+    }
+  }
+
+  .title:hover {
+    background: lighten($title_bg, 10%);
+  }
+}

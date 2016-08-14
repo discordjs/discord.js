@@ -1,0 +1,69 @@
+.docs-view {
+  font-family: 'Roboto', sans-serif;
+
+  .docs-topbar {
+    background: lighten($navbar_bg, 5%);
+    font-weight: bold;
+    color: white;
+    padding: 1rem;
+  }
+
+  .docs-page {
+    padding: 1rem;
+    background: #eee;
+    text-align: center;
+
+    .container {
+      display: inline-flex;
+    }
+  }
+
+  .docs-content {
+    margin-left: 1rem;
+    padding: 1rem;
+    display: block;
+    float: right;
+
+    h1 {
+      margin: 0;
+    }
+  }
+
+  .docs-sidebar {
+    flex: 1;  
+    max-width: 10rem;
+    font-size: 0.9rem;
+    border-radius: 3px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      padding: 0.3rem 0.5rem;
+    }
+
+    li.category {
+      margin-top: 1rem;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    li:first-child {
+      margin-top: 0;
+    }
+
+    li:last-child {
+      margin-bottom: 0;
+    }
+
+    li.link {
+      color: #555;
+    }
+
+    li.link:hover {
+      cursor: pointer;
+      color: #2196F3;
+      background: white;
+    }
+  }
+}
