@@ -6,6 +6,8 @@ import Stats from './Stats.vue';
 import AppFooter from './AppFooter.vue';
 import DocsNavbar from './DocsNavbar.vue';
 import DocsViewer from './DocsViewer.vue';
+import DocsSidebar from './DocsSidebar.vue';
+import FileViewer from './DocsFileViewer.vue';
 
 module.exports = {
   AppNavbar,
@@ -16,4 +18,6 @@ module.exports = {
   AppFooter,
   DocsNavbar,
   DocsViewer,
+  DocsSidebar,
+  FileViewer,
 };

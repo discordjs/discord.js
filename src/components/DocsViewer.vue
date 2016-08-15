@@ -1,16 +1,20 @@
 <template>
   <div class="docs-viewer">
     <container>
-      Docs are version  {{ docs.meta.version }}
+      <sidebar :docs="docs"></sidebar>
+      <router-view></router-view>
     </container>
   </div>
 </template>
 <script>
 import store from '../store';
+import Sidebar from './DocsSidebar.vue';
 
 export default {
+  components: {
+    Sidebar,
+  },
   data() {
-    console.log(this.$route.params.tag, store.data.docs);
     return {
       docs: store.data.docs[this.$route.params.tag],
     };

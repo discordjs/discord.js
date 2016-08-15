@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "babel-runtime": "^6.0.0",
+    "marked": "^0.3.6",
     "superagent": "^2.2.0",
     "vue": "^1.0.21"
   },

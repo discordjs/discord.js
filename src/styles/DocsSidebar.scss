@@ -1,0 +1,30 @@
+.docs-sidebar{
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      color: #444;
+      cursor: pointer;
+    }
+
+    li:hover {
+      color: $primary_color;
+    }
+
+    li:first-child {
+      text-transform: uppercase;
+      font-weight: bold;
+      color: black;
+    }
+
+    li:last-child {
+      margin-bottom: 1rem;
+    }
+  }
+
+  ul:last-child li:last-child {
+    margin-bottom: 0;
+  }
+}

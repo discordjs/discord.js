@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import Views from './views/loader.js';
 import Components from './components/loader.js';
 import store from './store';
+import marked from 'marked';
 
 require('./styles/main.scss');
 
@@ -22,6 +23,9 @@ const App = Vue.extend({
     };
   },
 });
+
+Vue.filter('marked', marked);
+
 const router = new VueRouter();
 
 router.map({
@@ -37,6 +41,13 @@ router.map({
     subRoutes: {
       '/tag/:tag': {
         component: Components.DocsViewer,
+        name: 'docview',
+        subRoutes: {
+          '/file/:category/:file': {
+            component: Components.FileViewer,
+            name: 'fileview',
+          },
+        },
       },
     },
   },
