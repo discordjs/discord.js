@@ -8,6 +8,7 @@ require('./styles/main.scss');
 Vue.use(VueRouter);
 Vue.component('app-navbar', Components.Navbar);
 Vue.component('container', Components.Container);
+Vue.component('slide', Components.Slide);
 
 const App = Vue.extend({});
 const router = new VueRouter();
