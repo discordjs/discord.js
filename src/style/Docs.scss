@@ -1,11 +1,77 @@
 .docs-view {
   font-family: 'Roboto', sans-serif;
 
+  .loading {
+    position: fixed;
+    top:3.2rem;
+    bottom:0;
+    left:0;
+    right:0;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 3rem;
+    color: white;
+    font-size: 3rem;
+  }
+
   .docs-topbar {
     background: lighten($navbar_bg, 5%);
-    font-weight: bold;
     color: white;
     padding: 1rem;
+
+    .heading {
+      margin-right: 1rem;
+      font-weight: bold;
+    }
+
+    select {
+      margin-left: 1rem;
+      font-family: 'Roboto', sans-serif;
+      border: 0;
+      padding: 0.5rem;
+      background: darken($navbar_bg, 5%);
+      border: 1px solid lighten($navbar_bg, 30%);
+      color: white;
+    }
+
+    .options {
+      display: inline-flex;
+
+      $radius: 5px;
+      
+      .option {
+        flex: 1;
+        padding: 0.5rem;
+        background: darken($navbar_bg, 5%);
+        border: 1px solid lighten($navbar_bg, 30%);
+        cursor: pointer;
+        color: #ccc;
+      }
+
+      .option:first-child {
+        border-top-left-radius: $radius;
+        border-bottom-left-radius: $radius;
+        border-right: 0;
+      }
+
+      .option:last-child {
+        border-top-right-radius: $radius;
+        border-bottom-right-radius: $radius;
+        border-left: 0;
+      }
+
+      .option:hover {
+        background: #111;
+      }
+
+      .option.selected {
+        background: darken($title_bg, 10%);
+        color: white;
+      }
+
+      .option.selected:hover {
+        background: darken($title_bg, 10%);
+      }
+    }
   }
 
   .docs-page {
@@ -38,32 +104,35 @@
     padding: 0;
     margin: 0;
 
-    li {
-      padding: 0.3rem 0.5rem;
-    }
+    .category {
+      
+      padding: 0;
+      margin: 0;
+      list-style: none;
 
-    li.category {
-      margin-top: 1rem;
-      text-transform: uppercase;
-      font-weight: bold;
-    }
+      li {
+        padding: 0.3rem 0.5rem;
+      }
 
-    li:first-child {
-      margin-top: 0;
-    }
+      li:first-child {
+        margin-top: 0;
+        text-transform: uppercase;
+        font-weight: bold;
+      }
 
-    li:last-child {
-      margin-bottom: 0;
-    }
+      li:last-child {
+        margin-bottom: 1rem;
+      }
 
-    li.link {
-      color: #555;
-    }
+      li.link {
+        color: #555;
+      }
 
-    li.link:hover {
-      cursor: pointer;
-      color: #2196F3;
-      background: white;
+      li.link:hover {
+        cursor: pointer;
+        color: #2196F3;
+        background: white;
+      }
     }
   }
 }
