@@ -1,8 +1,21 @@
 import Vue from 'vue';
-import App from './App';
+import VueRouter from 'vue-router';
+import Views from './views/loader.js';
+import Components from './components/loader.js';
 
-/* eslint-disable no-new */
-new Vue({
-  el: 'body',
-  components: { App },
+require('./styles/main.scss');
+
+Vue.use(VueRouter);
+Vue.component('app-navbar', Components.Navbar);
+Vue.component('container', Components.Container);
+
+const App = Vue.extend({});
+const router = new VueRouter();
+
+router.map({
+  '/': {
+    component: Views.Index,
+  },
 });
+
+router.start(App, '#vue-root');

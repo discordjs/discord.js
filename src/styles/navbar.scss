@@ -1,0 +1,32 @@
+.navbar {
+  background: #333;
+  height: 3rem;
+  line-height: 3rem;
+
+  a {
+    text-decoration: none;
+  }
+
+  .title{
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    padding: 0 1rem;
+    background: $primary_color;
+  }
+
+  .links {
+    float: right;
+
+    .link {
+      color: white;
+      padding: 0 1rem;
+    }
+
+    .link:hover {
+      background: #111;
+    }
+  }
+}
