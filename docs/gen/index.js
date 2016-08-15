@@ -4,7 +4,7 @@ let parse;
 
 const customDocs = require('../custom/index');
 
-const GEN_VERSION = 1;
+const GEN_VERSION = 2;
 
 try {
   fs = require('fs-extra');
@@ -33,10 +33,33 @@ function cleanPaths() {
   }
 }
 
+function clean() {
+  const cleaned = {
+    classes: {},
+  };
+  for (const item of json) {
+    if (item.kind === 'class') {
+      cleaned.classes[item.longname] = {
+        meta: item,
+        functions: [],
+        properties: [],
+        events: [],
+      };
+    } else if (item.kind === 'member') {
+      cleaned.classes[item.memberof].properties.push(item);
+    } else if (item.kind === 'function' && item.memberof) {
+      cleaned.classes[item.memberof].functions.push(item);
+    }
+  }
+  json = cleaned;
+}
+
 function next() {
   json = JSON.parse(json);
   cleanPaths();
   console.log('parsed inline code');
+  console.log(json);
+  clean();
   json = {
     meta: {
       version: GEN_VERSION,
