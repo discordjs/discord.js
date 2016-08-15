@@ -9,6 +9,8 @@ Vue.use(VueRouter);
 Vue.component('app-navbar', Components.Navbar);
 Vue.component('container', Components.Container);
 Vue.component('slide', Components.Slide);
+Vue.component('github-star', Components.GitHubButton);
+Vue.component('lib-stats', Components.Stats);
 
 const App = Vue.extend({});
 const router = new VueRouter();

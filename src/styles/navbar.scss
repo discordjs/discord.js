@@ -17,6 +17,10 @@
     background: $primary_color;
   }
 
+  .title:hover {
+    background: darken($primary_color, 10%);
+  }
+
   .links {
     float: right;
 

@@ -1,0 +1,70 @@
+.indexView {
+  .slide .container {
+    text-align: center;
+  }
+
+  h1 {
+    font-size: 4rem;
+    margin: 0;
+  }
+
+  h2 {
+    font-size: 2rem;
+    margin: 0;
+  }
+
+  p {
+    font-size: 1.2rem;
+    line-height: 2rem;
+
+    a {
+      text-decoration: none;
+      font-weight: bold;
+      color: $primary_color;
+    }
+  }
+
+  .slide {
+    @include mq($until:desktop) {
+      padding: 4rem 0;
+    }
+    @include mq($from:desktop) {
+      padding: 8rem 0;
+    }
+  }
+
+  .slide:nth-child(1) {
+    @include bg-gradient-t2b($primary_color, darken($primary_color, 10%));
+    color: white;
+    h1 {
+      text-shadow: 0 3px 0 #555, 0 0 1rem black;
+    }
+    .code {
+      font-family: 'Droid Sans Mono', monospace;
+      background: #fafafa;
+      display: inline-block;
+      margin: 3rem;
+      color: black;
+      padding: 1rem;
+      border-radius: 5px;
+    }
+  }
+
+  .slide:nth-child(2), .slide:nth-child(3) {
+    @include mq($until:desktop) {
+      padding: 2rem 0;
+    }
+    @include mq($from:desktop) {
+      padding: 4rem 0;
+    }
+  }
+
+  .slide:nth-child(3) {
+    background: #eee;
+    .stat {
+      margin: 1rem;
+      font-size: 2rem;
+      color: #777;
+    }
+  }
+}
