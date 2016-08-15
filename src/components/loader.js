@@ -8,6 +8,7 @@ import DocsNavbar from './DocsNavbar.vue';
 import DocsViewer from './DocsViewer.vue';
 import DocsSidebar from './DocsSidebar.vue';
 import FileViewer from './DocsFileViewer.vue';
+import ClassViewer from './DocsClassViewer.vue';
 
 module.exports = {
   AppNavbar,
@@ -20,4 +21,5 @@ module.exports = {
   DocsViewer,
   DocsSidebar,
   FileViewer,
+  ClassViewer,
 };

@@ -6,7 +6,7 @@
     </ul>
     <ul>
       <li>Classes</li>
-      <li v-for="piece in docs.json" v-if="piece.kind=='class'">{{ piece.name }}</li>
+      <li v-for="(className, data) in docs.json.classes" v-link='{ name: "classview", params: { category:category, class:className } }'>{{ className }}</li>
     </ul>
   </div>
 </template>

@@ -6,11 +6,14 @@
 
     li {
       color: #444;
-      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 0.2rem;
     }
 
-    li:hover {
+    li:hover:not(:first-child) {
       color: $primary_color;
+      text-decoration: underline;
+      cursor: pointer;
     }
 
     li:first-child {

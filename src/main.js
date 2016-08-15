@@ -47,6 +47,10 @@ router.map({
             component: Components.FileViewer,
             name: 'fileview',
           },
+          '/class/:class': {
+            component: Components.ClassViewer,
+            name: 'classview',
+          },
         },
       },
     },
