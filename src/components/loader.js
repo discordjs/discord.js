@@ -4,6 +4,8 @@ import Slide from './Slide.vue';
 import GitHubButton from './GitHubButton.vue';
 import Stats from './Stats.vue';
 import AppFooter from './AppFooter.vue';
+import DocsNavbar from './DocsNavbar.vue';
+import DocsViewer from './DocsViewer.vue';
 
 module.exports = {
   AppNavbar,
@@ -12,4 +14,6 @@ module.exports = {
   GitHubButton,
   Stats,
   AppFooter,
+  DocsNavbar,
+  DocsViewer,
 };

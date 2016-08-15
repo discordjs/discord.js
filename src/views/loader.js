@@ -1,5 +1,7 @@
-import IndexView from './IndexView.vue';
+import Index from './IndexView.vue';
+import Docs from './DocsView.vue';
 
 module.exports = {
-  Index: IndexView,
+  Index,
+  Docs,
 };

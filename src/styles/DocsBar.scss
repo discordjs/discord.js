@@ -1,0 +1,37 @@
+.docs-navbar {
+  padding: 1rem;
+  background: #2a2a2a;
+  color: white;
+  font-family: 'Roboto', sans-serif;
+
+  .title {
+    font-size: 1rem;
+  }
+
+  .choices {
+    margin-top: 0.2rem;
+    font-size: 0.9rem;
+    color: #aaa;
+
+    .choice {
+      color: yellow;
+      cursor: pointer;
+    }
+
+    .choice:hover {
+      font-weight: bold;
+      color: white;
+    }
+  }
+
+  .branchSelect {
+    margin-top: 0.2rem;
+    display: inline-block;
+
+    select {
+      background: #333;
+      color: white;
+      font-family: 'Droid Sans Mono', monospace;
+    }
+  }
+}
