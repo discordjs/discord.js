@@ -17,6 +17,10 @@
     font-size: 1.2rem;
     line-height: 2rem;
 
+    @include mq($until: desktop) {
+      margin:0 1rem;
+    }
+
     a {
       text-decoration: none;
       font-weight: bold;
@@ -51,6 +55,7 @@
   }
 
   .slide:nth-child(2), .slide:nth-child(3) {
+    background: #fafafa;
     @include mq($until:desktop) {
       padding: 2rem 0;
     }

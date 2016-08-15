@@ -6,7 +6,8 @@ import Components from './components/loader.js';
 require('./styles/main.scss');
 
 Vue.use(VueRouter);
-Vue.component('app-navbar', Components.Navbar);
+Vue.component('app-navbar', Components.AppNavbar);
+Vue.component('app-footer', Components.AppFooter);
 Vue.component('container', Components.Container);
 Vue.component('slide', Components.Slide);
 Vue.component('github-star', Components.GitHubButton);

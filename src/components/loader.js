@@ -3,11 +3,13 @@ import Container from './Container.vue';
 import Slide from './Slide.vue';
 import GitHubButton from './GitHubButton.vue';
 import Stats from './Stats.vue';
+import AppFooter from './AppFooter.vue';
 
 module.exports = {
-  Navbar: AppNavbar,
+  AppNavbar,
   Container,
   Slide,
   GitHubButton,
   Stats,
+  AppFooter,
 };
