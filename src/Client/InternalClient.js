@@ -658,7 +658,8 @@ export default class InternalClient {
 				.then(file =>
 					this.apiRequest("post", Endpoints.CHANNEL_MESSAGES(destination.id), true, {
 						content: content,
-						tts: options.tts
+						tts: options.tts,
+						nonce: options.nonce
 					}, {
 						name: options.file.name,
 						file: file
@@ -667,7 +668,8 @@ export default class InternalClient {
 			} else {
 				return this.apiRequest("post", Endpoints.CHANNEL_MESSAGES(destination.id), true, {
 					content: content,
-					tts: options.tts
+					tts: options.tts,
+					nonce: options.nonce
 				})
 				.then(res => destination.messages.add(new Message(res, destination, this.client)));
 			}
