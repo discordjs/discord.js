@@ -1,3 +1,6 @@
+/**
+ * Represents a Message on Discord
+ */
 class Message {
   constructor(channel, data, client) {
     this.channel = channel;

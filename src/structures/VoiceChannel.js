@@ -1,6 +1,9 @@
 const ServerChannel = require('./ServerChannel');
 const VoiceChannelDataStore = require('./datastore/VoiceChannelDataStore');
 
+/**
+ * Represents a Server Voice Channel on Discord.
+ */
 class VoiceChannel extends ServerChannel {
   constructor(guild, data) {
     super(guild, data);

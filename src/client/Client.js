@@ -50,7 +50,7 @@ class Client extends EventEmitter {
 
   /**
    * The User of the logged in Client, only available after `READY` has been fired.
-   * @return {ClientUser} [description]
+   * @type {ClientUser}
    */
   get user() {
     return this.store.user;

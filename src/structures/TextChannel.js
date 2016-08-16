@@ -2,6 +2,9 @@ const ServerChannel = require('./ServerChannel');
 const TextChannelDataStore = require('./datastore/TextChannelDataStore');
 const TextBasedChannel = require('./interface/TextBasedChannel');
 
+/**
+ * Represents a Server Text Channel on Discord.
+ */
 class TextChannel extends ServerChannel {
 
   constructor(guild, data) {
