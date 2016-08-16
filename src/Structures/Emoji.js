@@ -37,4 +37,15 @@ export default class Emoji {
   get getURL() {
     return Endpoints.EMOJI(this.id);
   }
+
+  toObject() {
+    let keys = ['id', 'name', 'roleList', 'colons', 'managed'],
+      obj = {};
+
+    for (let k of keys) {
+      obj[k] = this[k];
+    }
+
+    return obj;
+  }
 }

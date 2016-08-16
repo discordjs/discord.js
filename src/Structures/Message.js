@@ -58,6 +58,22 @@ export default class Message extends Equality{
 		return this.author;
 	}
 
+	toObject() {
+		let keys = ['id', 'timestamp', 'everyoneMentioned', 'pinned', 'editedTimestamp', 'content', 'cleanContent', 'tts', 'attachments', 'embeds'],
+			obj = {};
+
+		for (let k of keys) {
+			obj[k] = this[k];
+		}
+
+		obj.channelID = this.channel ? this.channel.id : null;
+		obj.serverID = this.server ? this.server.id : null;
+		obj.author = this.author.toObject();
+		obj.mentions = this.mentions.map(m => m.toObject());
+
+		return obj;
+	}
+
 	isMentioned(user){
 		user = this.client.internal.resolver.resolveUser(user);
 		if (!user) {

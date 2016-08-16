@@ -21,6 +21,19 @@ export default class ServerChannel extends Channel{
 		}
 	}
 
+	toObject() {
+		let keys = ['id', 'name', 'type', 'position'],
+			obj = {};
+
+		for (let k of keys) {
+			obj[k] = this[k];
+		}
+
+		obj.permissionOverwrites = this.permissionOverwrites.map(p => p.toObject());
+
+		return obj;
+	}
+
 	permissionsOf(userOrRole){
 		userOrRole = this.client.internal.resolver.resolveUser(userOrRole);
 		if (userOrRole) {

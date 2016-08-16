@@ -47,6 +47,17 @@ export default class Role {
 		return new Date((+this.id / 4194304) + 1420070400000);
 	}
 
+	toObject() {
+		let keys = ['id', 'position', 'permissions', 'name', 'managed', 'hoist', 'color', 'mentionable'],
+			obj = {};
+
+		for (let k of keys) {
+			obj[k] = this[k];
+		}
+		
+		return obj;
+	}
+
 	serialise(explicit){
 
 		var hp = (perm) => this.hasPermission(perm, explicit);

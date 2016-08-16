@@ -18,6 +18,15 @@ export default class TextChannel extends ServerChannel{
 		return this.messages.get("id", this.lastMessageID);
 	}
 
+	toObject() {
+		let obj = super.toObject();
+		
+		obj.topic = this.topic;
+		obj.lastMessageID = this.lastMessageID;
+
+		return obj;
+	}
+
 	setTopic(){
 		return this.client.setChannelTopic.apply(this.client, reg(this, arguments));
 	}
