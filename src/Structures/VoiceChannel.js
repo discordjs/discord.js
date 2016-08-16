@@ -18,7 +18,7 @@ export default class VoiceChannel extends ServerChannel{
 		
 		obj.userLimit = this.userLimit;
 		obj.bitrate = this.bitrate;
-		// obj.members = this.members.map(member => member.toObject());
+		obj.members = this.members.map(member => member.toObject());
 
 		return obj;
 	}
