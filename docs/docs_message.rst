@@ -107,7 +107,7 @@ Returns the content of the Message.
 delete(`options`, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-| **Shortcut of** ``client.deleteMessage(message, options, callback``
+| **Shortcut of** ``client.deleteMessage(message, options, callback)``
 | **See** client.deleteMessage_
 
 update(content, `options`, `callback`)
