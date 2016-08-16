@@ -13,6 +13,16 @@ export default class VoiceChannel extends ServerChannel{
 		this.bitrate = Math.round(this._bitrate / 1000); // store as kbps
 	}
 
+	toObject() {
+		let obj = super.toObject();
+		
+		obj.userLimit = this.userLimit;
+		obj.bitrate = this.bitrate;
+		obj.members = this.members.map(member => member.toObject());
+
+		return obj;
+	}
+
 	join(callback = function () { }) {
 		return this.client.joinVoiceChannel.apply(this.client, [this, callback]);
 	}

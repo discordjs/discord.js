@@ -49,6 +49,23 @@ export default class User extends Equality {
 		return this.mention();
 	}
 
+	toObject() {
+		let keys = ['id', 'username', 'discriminator', 'avatar', 'bot', 'status', 'game', 'note', 'voiceState', 'speaking'],
+			obj = {};
+
+		for (let k of keys) {
+			obj[k] = this[k];
+		}
+
+		obj.typing = {
+			since: this.typing.since,
+			channelID: this.typing.channel ? this.typing.channel.id : null
+		};
+		obj.voiceChannelID = this.voiceChannel ? this.voiceChannel.id : null;
+
+		return obj;
+	}
+
 	equalsStrict(obj){
 		if(obj instanceof User)
 			return (

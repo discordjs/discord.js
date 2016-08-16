@@ -24,6 +24,17 @@ export default class PMChannel extends Channel {
 		return this.recipient.toString();
 	}
 
+	toObject() {
+		let keys = ['type', 'lastMessageID', 'recipient'],
+			obj = {};
+
+		for (let k of keys) {
+			obj[k] = this[k];
+		}
+
+		return obj;
+	}
+
 	sendMessage(){
 		return this.client.sendMessage.apply(this.client, reg(this, arguments));
 	}

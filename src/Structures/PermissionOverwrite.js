@@ -43,6 +43,17 @@ export default class PermissionOverwrite {
 		return denied;
 	}
 
+	toObject() {
+		let keys = ['id', 'type', 'allow', 'deny'],
+			obj = {};
+
+		for (let k of keys) {
+			obj[k] = this[k];
+		}
+		
+		return obj;
+	}
+
 	setAllowed(allowedArray){
 		allowedArray.forEach( (permission) => {
 			if(permission instanceof String || typeof permission === "string"){
