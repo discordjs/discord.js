@@ -44,7 +44,6 @@ export default class Client extends EventEmitter {
 		 * @readonly
 		 * @type {ClientOptions}
 		 */
-		console.log(options.compress, options.autoReconnect, options.rateLimitAsError, options.disableEveryone);
 		this.options = options || {};
 		this.options.compress = options.compress === undefined ? !process.browser : options.compress;
 		this.options.autoReconnect = options.autoReconnect === undefined ? true : options.autoReconnect;
