@@ -11,7 +11,7 @@
       <div class="branchSelect" v-if="choice=='branch'">
         <select v-model="chosenTag">
           <option selected value>Select a Branch</option>
-          <option v-for="branch in $root.sharedStore.data.branches" v-bind:value="branch.name">{{ branch.name }}</option>
+          <option v-for="branch in $root.sharedStore.data.branches" v-bind:value="branch.name" :selected="branch.name=='indev-rewrite'">{{ branch.name }}</option>
         </select>
       </div>
     </container>
@@ -22,7 +22,7 @@
 export default {
   data() {
     return {
-      choice: null,
+      choice: 'branch',
       chosenTag: null,
     };
   },

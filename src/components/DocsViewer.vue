@@ -29,8 +29,7 @@ export default {
         console.log(e);
       });
     },
-    canReuse(transition) {
-      console.log('hook-example activated!', transition);
+    canReuse() {
     },
   },
 };

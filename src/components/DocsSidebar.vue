@@ -14,7 +14,6 @@
 export default {
   props: ['docs'],
   data() {
-    console.log(this.$route.path);
     return {
       docLink: this.$route.path,
     };
