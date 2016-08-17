@@ -3,14 +3,14 @@
   <div class="docs-class-overview-segment">
     <h4>Properties</h4>
     <ul>
-      <li v-for="prop in info.properties"><span class="propName">.{{ prop.name }}</span> =>
+      <li v-for="prop in info.properties" v-link='{ name:"classview", query:{scrollto:prop.name} }'><span class="propName">.{{ prop.name }}</span> =>
       <span class="type"><prop-type :types="prop.type"></prop-type></span></li>
     </ul>
   </div>
   <div class="docs-class-overview-segment">
     <h4>Methods</h4>
     <ul>
-      <li v-for="prop in info.functions">{{ prop.name }}</li>
+      <li v-for="prop in info.functions" v-link='{ name:"classview", query:{scrollto:prop.name} }'>{{ prop.name }}</li>
     </ul>
   </div>
 </template>
@@ -36,10 +36,9 @@ export default {
   ul {
     margin: 0;
     font-size: 14px;
-    color: #555;
+    color: #333;
 
-    .propName {
-      color: black;
+    li {
       cursor: pointer;
     }
 
@@ -49,7 +48,7 @@ export default {
       font-weight: bold;
     }
 
-    .propName:hover {
+    li:hover {
       text-decoration: underline;
     }
   }

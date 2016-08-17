@@ -1,6 +1,6 @@
 <template>
   <container>
-    <h3 id="{{ prop.name }}">.{{ prop.name }}</h3>
+    <h3 id="doc_for_{{ prop.name }}">.{{ prop.name }}</h3>
     <div class="desc">
     <p>{{{ prop.description | marked }}}</p>
     <p><b>Type:</b> <prop-type :types="prop.type"></prop-type></p>
