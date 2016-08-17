@@ -193,7 +193,7 @@ class Role {
    * if (role.hasPermission('BAN_MEMBERS')) {
    *   console.log('This role can ban members');
    * } else {
-   *   console.log('This role can't ban members');
+   *   console.log('This role can\'t ban members');
    * }
    */
   hasPermission(permission, explicit = false) {
