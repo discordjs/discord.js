@@ -6,7 +6,7 @@ export default {
   props: ['item'],
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
   i {
     text-decoration: none;
     color: #eee;
