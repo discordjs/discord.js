@@ -2,19 +2,25 @@
   <container>
     <h3 id="{{ method.name }}">.{{ method.name }}(<param v-for="param in method.params" :param="param"></param>)</h3>
     <div class="desc">
-    <p>{{{ method.description | marked }}}</p>
-    <p><b>Returns:</b> <prop-type :types="method.returns[0]"></prop-type></p>
+      <param-table :params="method.params" v-if="method.params.length>0"></param-table>
+      <p>{{{ method.description | marked }}}</p>
+      <p><b>Returns:</b> {{ method.returns[0].type.names[0] }}</p>
+      <p v-if="method.examples"><b>Examples:</b><example v-for="example in method.examples" :example=example></example></p>
     </div>
   </container>
 </template>
 <script>
 import PropType from './PropType.vue';
 import Param from './Param.vue';
+import ParamTable from './ParamTable.vue';
+import Example from './Example.vue';
 export default {
   props: ['method'],
   components: {
     PropType,
     Param,
+    ParamTable,
+    Example,
   },
   data() {
     return {
