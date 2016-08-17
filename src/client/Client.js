@@ -35,9 +35,14 @@ class Client extends EventEmitter {
    * @param  {string} [password] The password for the account, only needed if an email was provided.
    * @return {Promise<String>}
    * @example
-   * client.login("token");
-   * // or
-   * client.login("email", "password");
+   * // log the client in using a token
+   * const token = 'my token';
+   * client.login(token);
+   * @example
+   * // log the client in using email and password
+   * const email = 'user@email.com';
+   * const password = 'supersecret123';
+   * client.login(email, password);
    */
   login(email, password) {
     if (password) {
