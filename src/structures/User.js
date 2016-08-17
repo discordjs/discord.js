@@ -46,6 +46,10 @@ class User {
      * @type {String}
      */
     this.status = data.status || this.status || 'offline';
+    /**
+     * The game that the user is playing, `null` if they aren't playing a game.
+     * @type {String}
+     */
     this.game = data.game || this.game;
   }
 
@@ -61,6 +65,12 @@ class User {
     return this.client.rest.methods.deleteChannel(this);
   }
 
+  /**
+   * Checks if the user is equal to another. It compares username, ID, discriminator, status and the game being played.
+   * It is recommended to compare equality by using `user.id === user2.id` unless you want to compare all properties.
+   * @param {User} user the user to compare
+   * @returns Boolean
+   */
   equals(user) {
     let base = (
       this.username === user.username &&

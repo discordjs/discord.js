@@ -19,9 +19,22 @@ function arraysEqual(a, b) {
   return b.length === 0;
 }
 
+/**
+ * Represents a Guild (or a Server) on Discord.
+ * @class Guild
+ */
 class Guild {
   constructor(client, data) {
+    /**
+     * The Client that created the instance of the the Guild.
+     * @type {Client}
+     */
     this.client = client;
+
+    /**
+     * The data store of the Guild.
+     * @type {GuildDataStore}
+     */
     this.store = new GuildDataStore();
 
     if (!data) {
@@ -29,7 +42,15 @@ class Guild {
     }
 
     if (data.unavailable) {
+      /**
+       * Whether the Guild is available to access. If it is not available, it indicates a server outage.
+       * @type {Boolean}
+       */
       this.available = false;
+      /**
+       * The Unique ID of the Guild, useful for comparisons.
+       * @type {String}
+       */
       this.id = data.id;
     } else {
       this.available = true;
@@ -64,14 +85,42 @@ class Guild {
     this.store.remove('members', guildMember);
   }
 
+  /**
+   * When concatenated with a String, this automatically concatenates the Guild's name instead of the Guild object.
+   * @returns {String}
+   * @example
+   * // logs: Hello from My Guild!
+   * console.log(`Hello from ${guild}!`);
+   * @example
+   * // logs: Hello from My Guild!
+   * console.log(`Hello from ' + guild + '!');
+   */
   toString() {
     return this.name;
   }
 
+  /**
+   * Tries to kick a member from the guild.
+   * @param {GuildMemberResolvable} member the member to kick
+   * @returns {Promise<GuildMember, Error>}
+   * @example
+   * // kicks a member from a guild:
+   * guild.kick(message.author)
+   *  .then(member => console.log(`Kicked ${member}`))
+   *  .catch(error => console.log(error));
+   */
   kick(member) {
     return this.member(member).kick();
   }
 
+  /**
+   * Returns the GuildMember form of a User object, if the User is present in the guild.
+   * @param {UserResolvable} user the user that you want to obtain the GuildMember of.
+   * @returns {GuildMember|null}
+   * @example
+   * // get the guild member of a user
+   * const member = guild.member(message.author);
+   */
   member(user) {
     return this.client.resolver.resolveGuildMember(this, user);
   }
@@ -107,18 +156,70 @@ class Guild {
   setup(data) {
     this.id = data.id;
     this.available = !data.unavailable;
+    /**
+     * The hash of the guild splash image, or null if no splash (VIP only)
+     * @type {?String}
+     */
     this.splash = data.splash;
+    /**
+     * The region the guild is located in
+     * @type {String}
+     */
     this.region = data.region;
+    /**
+     * The name of the guild
+     * @type {String}
+     */
     this.name = data.name;
+    /**
+     * The amount of initial members in the guild.
+     * @type {Number}
+     */
     this.memberCount = data.member_count;
+    /**
+     * Whether the guild is "large" (has more than 250 members)
+     * @type {Boolean}
+     */
     this.large = data.large;
+    /**
+     * The date at which the logged-in client joined the guild.
+     * @type {Date}
+     */
     this.joinDate = new Date(data.joined_at);
+    /**
+     * The hash of the guild icon, or null if there is no icon.
+     * @type {?String}
+     */
     this.icon = data.icon;
+    /**
+     * An array of guild features.
+     * @type {Array<Object>}
+     */
     this.features = data.features;
+    /**
+     * An array of guild emojis.
+     * @type {Array<Object>}
+     */
     this.emojis = data.emojis;
+    /**
+     * The time in seconds before a user is counted as "away from keyboard".
+     * @type {?Number}
+     */
     this.afkTimeout = data.afk_timeout;
+    /**
+     * The ID of the voice channel where AFK members are moved.
+     * @type {?String}
+     */
     this.afkChannelID = data.afk_channel_id;
+    /**
+     * Whether embedded images are enabled on this guild.
+     * @type {Boolean}
+     */
     this.embedEnabled = data.embed_enabled;
+    /**
+     * The verification level of the guild.
+     * @type {Number}
+     */
     this.verificationLevel = data.verification_level;
     this.features = data.features || [];
 
@@ -129,6 +230,10 @@ class Guild {
       }
     }
 
+    /**
+     * The owner of the guild
+     * @type {User}
+     */
     this.owner = this.store.get('members', data.owner_id);
 
     if (data.channels) {
@@ -138,6 +243,10 @@ class Guild {
       }
     }
 
+    /**
+     * The embed channel of the Guild.
+     * @type {GuildChannel}
+     */
     this.embedChannel = this.store.get('channels', data.embed_channel_id);
 
     if (data.roles) {
