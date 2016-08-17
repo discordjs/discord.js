@@ -477,14 +477,42 @@ class Guild {
    */
   get channels() { return this.store.getAsArray('channels'); }
 
+  /**
+   * A dictionary mapping the IDs of channels in this guild to the channel itself. If you want to find a channel
+   * in the guild by ID, use `guild.$channels[id]` rather than filtering `guild.channels` as it is much more efficient.
+   * @readonly
+   * @type {Object<String, Channel>}
+   */
   get $channels() { return this.store.data.channels; }
 
+  /**
+   * The roles in the guild.
+   * @type {Array<Role>}
+   * @readonly
+   */
   get roles() { return this.store.getAsArray('roles'); }
 
+  /**
+   * A dictionary mapping the IDs of roles in this guild to the role itself. If you want to find a role
+   * in the guild by ID, use `guild.$roles[id]` rather than filtering `guild.roles` as it is much more efficient.
+   * @readonly
+   * @type {Object<String, Role>}
+   */
   get $roles() { return this.store.data.roles; }
 
+  /**
+   * The members of the guild.
+   * @type {Array<GuildMember>}
+   * @readonly
+   */
   get members() { return this.store.getAsArray('members'); }
 
+  /**
+   * A dictionary mapping the IDs of members in this guild to the member object itself. If you want to find a member
+   * in the guild by ID, use `guild.$members[id]` rather than filtering `guild.members` as it is much more efficient.
+   * @readonly
+   * @type {Object<String, GuildMember>}
+   */
   get $members() { return this.store.data.members; }
 }
 
