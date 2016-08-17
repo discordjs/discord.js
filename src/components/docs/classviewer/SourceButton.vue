@@ -6,7 +6,7 @@ export default {
   props: ['meta'],
 };
 </script>
-<style lang="scss" scoped>
+<style scoped lang="scss">
   a {
     text-decoration: none;
     color: #eee;
