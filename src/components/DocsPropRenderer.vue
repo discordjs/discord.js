@@ -3,16 +3,19 @@
     <h3 id="{{ prop.name }}">.{{ prop.name }}</h3>
     <div class="desc">
     <p>{{{ prop.description | marked }}}</p>
-    <p><b>Type:</b> {{ prop.type.names[0] }}</p>
+    <p><b>Type:</b> <prop-type :types="prop.type"></prop-type></p>
     </div>
   </container>
 </template>
 <script>
+import PropType from './DocsPropType.vue';
 export default {
   props: ['prop'],
+  components: {
+    PropType,
+  },
   data() {
     return {
-
     };
   },
 };
@@ -22,6 +25,11 @@ export default {
     border-left: 3px solid #ddd;
     padding: 0 1rem;
     color: #555;
+  }
+
+  h3 {
+    font-family: 'Roboto Mono';
+    font-weight: 500;
   }
 </style>
   

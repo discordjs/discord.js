@@ -8,12 +8,14 @@
       color: #444;
       font-size: 0.9rem;
       padding: 0.2rem;
+      padding-right: 4rem;
     }
 
     li:hover:not(:first-child) {
       color: $primary_color;
       text-decoration: underline;
       cursor: pointer;
+      background: #eee;
     }
 
     li:first-child {
@@ -24,6 +26,10 @@
 
     li:last-child {
       margin-bottom: 1rem;
+    }
+
+    .v-link-active {
+      background: #f5f5f5;
     }
   }
 

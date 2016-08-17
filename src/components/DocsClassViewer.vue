@@ -8,17 +8,22 @@
       <hr>
       <h2>Properties:</h2>
       <prop-renderer v-for="prop in info.properties" :prop="prop"></prop-renderer>
+      <hr>
+      <h2>Methods:</h2>
+      <method-renderer v-for="method in info.functions" :method="method"></method-renderer>
     </container>
   </div>
 </template>
 <script>
 import overview from './DocsOverview.vue';
 import propRenderer from './DocsPropRenderer.vue';
+import methodRenderer from './DocsMethodRenderer.vue';
 
 export default {
   components: {
     overview,
     propRenderer,
+    methodRenderer,
   },
   data() {
     const params = this.$route.params;

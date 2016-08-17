@@ -3,7 +3,8 @@
 .docs-viewer {
   background: #fefefe;
   color: #111;
-  padding: 1rem;
+  padding: 3rem 1rem;
+  padding-top: 5rem;
   font-family: 'Open Sans', sans-serif;
 
   hr {
@@ -14,7 +15,8 @@
 
   .doc-part-view {
     display: inline-block;
-    margin-left: 4rem;
+    border-left: 1px solid #eee;
+    padding-left: 2rem;
     flex: 1;
 
     p {

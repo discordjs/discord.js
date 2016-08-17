@@ -4,18 +4,23 @@
     <h4>Properties</h4>
     <ul>
       <li v-for="prop in info.properties"><span class="propName">.{{ prop.name }}</span> =>
-      <span class="type">{{ prop.type.names[0] }}</span></li>
+      <span class="type"><docs-prop-type :types="prop.type"></docs-prop-type></span></li>
     </ul>
   </div>
   <div class="docs-class-overview-segment">
-    <h4>Functions</h4>
+    <h4>Methods</h4>
     <ul>
       <li v-for="prop in info.functions">{{ prop.name }}</li>
     </ul>
   </div>
 </template>
 <script>
+import DocsPropType from './DocsPropType.vue';
+
 export default {
+  components: {
+    DocsPropType,
+  },
   props: ['info'],
 };
 </script>
