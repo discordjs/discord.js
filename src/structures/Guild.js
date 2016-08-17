@@ -287,58 +287,194 @@ class Guild {
     }
   }
 
+  /**
+   * Creates a new Channel in the Guild.
+   * @param {String} name the name of the new channel.
+   * @param {any} type the type of the new channel, either `text` or `voice`.
+   * @returns {Promise<TextChannel|VoiceChannel, Error>}
+   * @example
+   * // create a new text channel
+   * guild.createChannel('new general', 'text')
+   *  .then(channel => console.log(`Created new channel ${channel}`))
+   *  .catch(console.log);
+   */
   createChannel(name, type) {
     return this.client.rest.methods.createChannel(this, name, type);
   }
 
+  /**
+   * Creates a new role in the guild, as of now this is just a blank role.
+   * @returns {Promise<Role, Error>}
+   * @example
+   * // create a new role
+   * guild.createRole()
+   *  .then(role => console.log(`Created role ${role}`))
+   *  .catch(console.log);
+   */
   createRole() {
     return this.client.rest.methods.createGuildRole(this);
   }
 
+  /**
+   * Causes the Client to leave the guild.
+   * @returns {Promise<Guild, Error>}
+   * @example
+   * // leave a guild
+   * guild.leave()
+   *  .then(g => console.log(`Left the guild ${g}`))
+   *  .catch(console.log);
+   */
   leave() {
     return this.client.rest.methods.leaveGuild(this);
   }
 
+  /**
+   * Causes the Client to delete the guild.
+   * @returns {Promise<Guild, Error>}
+   * @example
+   * // delete a guild
+   * guild.delete()
+   *  .then(g => console.log(`Deleted the guild ${g}`))
+   *  .catch(console.log);
+   */
   delete() {
     return this.client.rest.methods.deleteGuild(this);
   }
 
+  /**
+   * Updates the Guild with new information - e.g. a new name.
+   * @param {GuildEditData} data the data to update the guild with.
+   * @returns {Promise<Guild, Error>}
+   * @example
+   * // set the guild name and region
+   * guild.edit({
+   *  name: 'Discord Guild',
+   *  region: 'london',
+   * })
+   * .then(updated => console.log(`New guild name ${updated.name} in region ${updated.region}`))
+   * .catch(console.log);
+   */
   edit(data) {
     return this.client.rest.methods.updateGuild(this, data);
   }
 
+  /**
+   * Edit the name of the Guild.
+   * @param {String} name the new name of the Guild.
+   * @returns {Promise<Guild, Error>}
+   * @example
+   * // edit the guild name
+   * guild.setName('Discord Guild')
+   *  .then(updated => console.log(`Updated guild name to ${guild.name}`))
+   *  .catch(console.log);
+   */
   setName(name) {
     return this.edit({ name });
   }
 
+  /**
+   * Edit the region of the Guild.
+   * @param {Region} region the new region of the guild.
+   * @returns {Promise<Guild, Error>}
+   * @example
+   * // edit the guild region
+   * guild.setRegion('london')
+   *  .then(updated => console.log(`Updated guild region to ${guild.region}`))
+   *  .catch(console.log);
+   */
   setRegion(region) {
     return this.edit({ region });
   }
 
+  /**
+   * Edit the verification level of the Guild.
+   * @param {VerificationLevel} verificationLevel the new verification level of the guild.
+   * @returns {Promise<Guild, Error>}
+   * @example
+   * // edit the guild verification level
+   * guild.setVerificationLevel(1)
+   *  .then(updated => console.log(`Updated guild verification level to ${guild.verificationLevel}`))
+   *  .catch(console.log);
+   */
   setVerificationLevel(verificationLevel) {
     return this.edit({ verificationLevel });
   }
 
+  /**
+   * Edit the AFK channel of the Guild.
+   * @param {GuildChannelResolvable} afkChannel the new AFK channel.
+   * @returns {Promise<Guild, Error>}
+   * @example
+   * // edit the guild AFK channel
+   * guild.setAFKChannel(channel)
+   *  .then(updated => console.log(`Updated guild AFK channel to ${guild.afkChannel}`))
+   *  .catch(console.log);
+   */
   setAFKChannel(afkChannel) {
     return this.edit({ afkChannel });
   }
 
+  /**
+   * Edit the AFK timeout of the Guild.
+   * @param {Number} afkTimeout the time in seconds that a user must be idle to be considered AFK.
+   * @returns {Promise<Guild, Error>}
+   * @example
+   * // edit the guild AFK channel
+   * guild.setAFKTimeout(60)
+   *  .then(updated => console.log(`Updated guild AFK timeout to ${guild.afkTimeout}`))
+   *  .catch(console.log);
+   */
   setAFKTimeout(afkTimeout) {
     return this.edit({ afkTimeout });
   }
 
+  /**
+   * Set a new Guild Icon.
+   * @param {Base64Resolvable} icon the new icon of the guild.
+   * @returns {Promise<Guild, Error>}
+   * @example
+   * // edit the guild icon
+   * guild.setIcon(fs.readFileSync('./icon.png'))
+   *  .then(updated => console.log('Updated the guild icon'))
+   *  .catch(console.log);
+   */
   setIcon(icon) {
     return this.edit({ icon });
   }
 
+  /**
+   * Sets a new owner of the Guild.
+   * @param {GuildMemberResolvable} owner the new owner of the Guild.
+   * @returns {Promise<Guild, Error>}
+   * @example
+   * // edit the guild owner
+   * guild.setOwner(guilds.members[0])
+   *  .then(updated => console.log(`Updated the guild owner to ${updated.owner.username}`))
+   *  .catch(console.log);
+   */
   setOwner(owner) {
     return this.edit({ owner });
   }
 
+  /**
+   * Set a new Guild Splash Logo.
+   * @param {Base64Resolvable} splash the new splash screen of the guild.
+   * @returns {Promise<Guild, Error>}
+   * @example
+   * // edit the guild splash
+   * guild.setIcon(fs.readFileSync('./splash.png'))
+   *  .then(updated => console.log('Updated the guild splash'))
+   *  .catch(console.log);
+   */
   setSplash(splash) {
     return this.edit({ splash });
   }
 
+  /**
+   * The channels in the guild.
+   * @type {Array<GuildChannel>}
+   * @readonly
+   */
   get channels() { return this.store.getAsArray('channels'); }
 
   get $channels() { return this.store.data.channels; }
