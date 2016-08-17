@@ -290,7 +290,7 @@ class Guild {
   /**
    * Creates a new Channel in the Guild.
    * @param {String} name the name of the new channel.
-   * @param {any} type the type of the new channel, either `text` or `voice`.
+   * @param {String} type the type of the new channel, either `text` or `voice`.
    * @returns {Promise<TextChannel|VoiceChannel, Error>}
    * @example
    * // create a new text channel
