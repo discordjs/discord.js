@@ -24,7 +24,14 @@ const App = Vue.extend({
   },
 });
 
-Vue.filter('marked', marked);
+Vue.filter('marked', $text => {
+  let text = $text || 'error! I\'m not set!';
+  text = text.replace(/(<info>)/g, '<div class="info">');
+  text = text.replace(/(<\/info>)/g, '</div>');
+  text = text.replace(/(<warn>)/g, '<div class="warn">');
+  text = text.replace(/(<\/warn>)/g, '</div>');
+  return marked(text);
+});
 
 const router = new VueRouter();
 

@@ -29,6 +29,32 @@
       font-weight: 300;
     }
   }
+
+  .info {
+    display: block;
+    background: lighten($primary_color, 42%);
+    padding: 1rem;
+    border-radius: 1rem;
+    border:1px solid #ccc;
+  }
+
+  .info:before {
+    font-weight: bold;
+    content: "Info: ";
+  }
+
+  .warn {
+    display: block;
+    background: lighten(#F32121, 42%);
+    padding: 1rem;
+    border-radius: 1rem;
+    border:1px solid #ccc;
+  }
+
+  .warn:before {
+    font-weight: bold;
+    content: "Warning! ";
+  }
 }
 
 .docs-viewer > .container {
