@@ -2,7 +2,6 @@ const User = require('./User');
 
 /**
  * Represents the logged in client's Discord User
- * @class ClientUser
  * @extends {User}
  */
 class ClientUser extends User {
