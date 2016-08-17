@@ -37,6 +37,7 @@ export default {
   watch: {
     chosenTag(val) {
       if (val) {
+        this.$router.go({ path: '/docs/' });
         this.$router.go({ path: `/docs/tag/${val}` });
       }
     },
