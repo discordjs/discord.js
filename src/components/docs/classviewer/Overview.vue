@@ -4,7 +4,7 @@
     <h4>Properties</h4>
     <ul>
       <li v-for="prop in info.properties"><span class="propName">.{{ prop.name }}</span> =>
-      <span class="type"><docs-prop-type :types="prop.type"></docs-prop-type></span></li>
+      <span class="type"><prop-type :types="prop.type"></prop-type></span></li>
     </ul>
   </div>
   <div class="docs-class-overview-segment">
@@ -15,11 +15,11 @@
   </div>
 </template>
 <script>
-import DocsPropType from './DocsPropType.vue';
+import PropType from './PropType.vue';
 
 export default {
   components: {
-    DocsPropType,
+    PropType,
   },
   props: ['info'],
 };

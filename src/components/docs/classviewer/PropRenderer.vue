@@ -8,7 +8,7 @@
   </container>
 </template>
 <script>
-import PropType from './DocsPropType.vue';
+import PropType from './PropType.vue';
 export default {
   props: ['prop'],
   components: {

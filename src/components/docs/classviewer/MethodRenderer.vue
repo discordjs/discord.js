@@ -8,8 +8,8 @@
   </container>
 </template>
 <script>
-import PropType from './DocsPropType.vue';
-import Param from './DocsParam.vue';
+import PropType from './PropType.vue';
+import Param from './Param.vue';
 export default {
   props: ['method'],
   components: {

@@ -7,8 +7,8 @@
   </div>
 </template>
 <script>
-import store from '../store';
-import Sidebar from './DocsSidebar.vue';
+import store from '../../store';
+import Sidebar from './Sidebar.vue';
 
 export default {
   components: {

@@ -15,9 +15,9 @@
   </div>
 </template>
 <script>
-import overview from './DocsOverview.vue';
-import propRenderer from './DocsPropRenderer.vue';
-import methodRenderer from './DocsMethodRenderer.vue';
+import overview from './Overview.vue';
+import propRenderer from './PropRenderer.vue';
+import methodRenderer from './MethodRenderer.vue';
 
 export default {
   components: {

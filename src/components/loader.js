@@ -4,11 +4,11 @@ import Slide from './Slide.vue';
 import GitHubButton from './GitHubButton.vue';
 import Stats from './Stats.vue';
 import AppFooter from './AppFooter.vue';
-import DocsNavbar from './DocsNavbar.vue';
-import DocsViewer from './DocsViewer.vue';
-import DocsSidebar from './DocsSidebar.vue';
-import FileViewer from './DocsFileViewer.vue';
-import ClassViewer from './DocsClassViewer.vue';
+import DocsNavbar from './docs/Navbar.vue';
+import DocsViewer from './docs/Viewer.vue';
+import DocsSidebar from './docs/Sidebar.vue';
+import FileViewer from './docs/fileviewer/FileViewer.vue';
+import ClassViewer from './docs/classviewer/ClassViewer.vue';
 
 module.exports = {
   AppNavbar,
