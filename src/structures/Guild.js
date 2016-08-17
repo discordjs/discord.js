@@ -21,7 +21,6 @@ function arraysEqual(a, b) {
 
 /**
  * Represents a Guild (or a Server) on Discord.
- * @class Guild
  */
 class Guild {
   constructor(client, data) {
@@ -125,6 +124,13 @@ class Guild {
     return this.client.resolver.resolveGuildMember(this, user);
   }
 
+  /**
+   * Whether this Guild equals another Guild. It compares all properties, so for most operations
+   * it is advisable to just compare `guild.id === guild2.id` as it is much faster and is often
+   * what most users need.
+   * @param {Guild} guild the guild to compare
+   * @returns {Boolean}
+   */
   equals(data) {
     let base =
       this.id === data.id &&
