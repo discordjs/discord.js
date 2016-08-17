@@ -1,6 +1,7 @@
 <template>
   <container>
-    <h3 id="doc_for_{{ prop.name }}">.{{ prop.name }}</h3>
+    <h3 id="doc_for_{{ prop.name }}">.{{ prop.name }} <source-button :meta="prop.meta"></source-button>
+    <link-button :item="prop"></link-button></h3>
     <div class="desc">
     <p>{{{ prop.description | marked }}}</p>
     <p><b>Type:</b> <prop-type :types="prop.type"></prop-type></p>
@@ -9,10 +10,14 @@
 </template>
 <script>
 import PropType from './PropType.vue';
+import SourceButton from './SourceButton.vue';
+import LinkButton from './LinkButton.vue';
 export default {
   props: ['prop'],
   components: {
     PropType,
+    SourceButton,
+    LinkButton,
   },
   data() {
     return {

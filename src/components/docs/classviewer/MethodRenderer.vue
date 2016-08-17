@@ -1,6 +1,8 @@
 <template>
   <container>
-    <h3 id="doc_for_{{ method.name }}" v-link='{ name:"classview", query:{scrollto:method.name} }'>.{{ method.name }}(<param v-for="param in method.params" :param="param"></param>)</h3>
+    <h3 id="doc_for_{{ method.name }}">.{{ method.name }}(<span><param v-for="param in method.params" :param="param"></param></span>)<source-button :meta="method.meta"></source-button>
+    <link-button :item="method"></link-button>
+    </h3>
     <div class="desc">
       <param-table :params="method.params" v-if="method.params.length>0"></param-table>
       <p>{{{ method.description | marked }}}</p>
@@ -14,6 +16,8 @@ import PropType from './PropType.vue';
 import Param from './Param.vue';
 import ParamTable from './ParamTable.vue';
 import Example from './Example.vue';
+import SourceButton from './SourceButton.vue';
+import LinkButton from './LinkButton.vue';
 export default {
   props: ['method'],
   components: {
@@ -21,6 +25,8 @@ export default {
     Param,
     ParamTable,
     Example,
+    SourceButton,
+    LinkButton,
   },
   data() {
     return {
@@ -38,7 +44,6 @@ export default {
   h3 {
     font-family: 'Roboto Mono';
     font-weight: 500;
-    cursor: pointer;
   }
 
   .param.optional:before {
