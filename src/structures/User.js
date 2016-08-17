@@ -69,7 +69,7 @@ class User {
    * Checks if the user is equal to another. It compares username, ID, discriminator, status and the game being played.
    * It is recommended to compare equality by using `user.id === user2.id` unless you want to compare all properties.
    * @param {User} user the user to compare
-   * @returns Boolean
+   * @returns {Boolean}
    */
   equals(user) {
     let base = (
