@@ -80,6 +80,7 @@ class Message {
     this.mentions = [];
     /**
      * The ID of the message (unique in the channel it was sent)
+     * @type {String}
      */
     this.id = data.id;
     for (const mention of data.mentions) {
