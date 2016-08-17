@@ -21,9 +21,12 @@
 
 export default {
   data() {
+    if (!this.$route.params.tag) {
+      this.$router.go({ path: '/docs/tag/indev-rewrite' });
+    }
     return {
-      choice: 'branch',
-      chosenTag: null,
+      choice: this.$route.params.tag ? null : 'branch',
+      chosenTag: this.$route.params.tag ? this.$route.params.tag : 'indev-rewrite',
     };
   },
   methods: {

@@ -1,4 +1,4 @@
-<template>
+<template v-if="docs">
   <div class="docs-viewer">
     <container>
       <sidebar :docs="docs"></sidebar>
