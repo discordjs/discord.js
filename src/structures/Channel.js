@@ -1,5 +1,12 @@
+/**
+ * Represents any Channel on Discord
+ */
 class Channel {
   constructor(client, data, guild) {
+    /**
+     * The client that instantiated the Channel
+     * @type {Channel}
+     */
     this.client = client;
     this.typingMap = {};
     this.typingTimeouts = [];
@@ -13,9 +20,22 @@ class Channel {
   }
 
   setup(data) {
+    /**
+     * The unique ID of the channel
+     * @type {String}
+     */
     this.id = data.id;
   }
 
+  /**
+   * Deletes the channel
+   * @return {Promise<Channel>}
+   * @example
+   * // delete the channel
+   * channel.delete()
+   *  .then() // success
+   *  .catch(console.log); // log error
+   */
   delete() {
     return this.client.rest.methods.deleteChannel(this);
   }

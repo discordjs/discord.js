@@ -53,6 +53,13 @@ class User {
     this.game = data.game || this.game;
   }
 
+  /**
+   * When concatenated with a String, this automatically concatenates the User's mention instead of the User object.
+   * @returns {String}
+   * @example
+   * // logs: Hello from <@123456789>!
+   * console.log(`Hello from ${user}!`);
+   */
   toString() {
     return `<@${this.id}>`;
   }
