@@ -10,12 +10,30 @@ function $string(obj) {
   return (typeof obj === 'string' || obj instanceof String);
 }
 
+/**
+ * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
+ * extracting a User from a Message object.
+ * @private
+ */
 class ClientDataResolver {
 
   constructor(client) {
     this.client = client;
   }
+  /**
+   * Data that resolves to give a User object. This can be:
+   * * A User object
+   * * A User ID
+   * * A Message (resolves to the message author)
+   * * A Guild (owner of the guild)
+   * @typedef {User|String|Message|Guild} UserResolvable
+   */
 
+  /**
+   * Resolves a UserResolvable to a User object
+   * @param {UserResolvable} user the UserResolvable to identify
+   * @returns {User}
+   */
   resolveUser(user) {
     if (user instanceof User) {
       return user;
@@ -30,6 +48,17 @@ class ClientDataResolver {
     return null;
   }
 
+  /**
+   * Data that resolves to give a Guild object. This can be:
+   * * A Guild object
+   * @typedef {Guild} GuildResolvable
+   */
+
+  /**
+   * Resolves a GuildResolvable to a Guild object
+   * @param {GuildResolvable} guild the GuildResolvable to identify
+   * @returns {Guild}
+   */
   resolveGuild(guild) {
     if (guild instanceof Guild) {
       return guild;
@@ -37,6 +66,18 @@ class ClientDataResolver {
     return null;
   }
 
+  /**
+   * Data that resolves to give a GuildMember object. This can be:
+   * * A GuildMember object
+   * * A User object
+   * @typedef {Guild} GuildResolvable
+   */
+  /**
+   * Resolves a GuildMemberResolvable to a GuildMember object
+   * @param {GuildResolvable} guild the guild that the member is part of
+   * @param {UserResolvable} user the user that is part of the guild
+   * @returns {GuildMember}
+   */
   resolveGuildMember($guild, $user) {
     let guild = $guild;
     let user = $user;

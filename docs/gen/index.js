@@ -4,7 +4,7 @@ let parse;
 
 const customDocs = require('../custom/index');
 
-const GEN_VERSION = 4;
+const GEN_VERSION = 5;
 
 try {
   fs = require('fs-extra');
@@ -21,6 +21,7 @@ let json = '';
 
 const stream = parse({
   src: ['./src/*.js', './src/*/*.js', './src/**/*.js'],
+  private: true,
 });
 
 const cwd = (`${process.cwd()}\\`).replace(/\\/g, '/');
@@ -54,6 +55,7 @@ function clean() {
   const cleaned = {
     classes: {},
     interfaces: {},
+    typedefs: [],
   };
   for (const item of json) {
     if (item.kind === 'class') {
@@ -86,6 +88,8 @@ function clean() {
       }
       item.returns = newReturns;
       obj.functions.push(item);
+    } else if (item.kind === 'typedef') {
+      cleaned.typedefs.push(item);
     }
   }
   json = cleaned;
