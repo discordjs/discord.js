@@ -51,7 +51,7 @@ Vue.filter('marked', $text => {
 });
 
 Vue.filter('normalise', $text => {
-  let text = $text.trim();
+  let text = ($text || 'error! I\'m not set!').trim();
   const firstChar = text.charAt(0);
   const lastChar = text.charAt(text.length - 1).toLowerCase();
   if (firstChar === firstChar.toLowerCase() && firstChar !== firstChar.toUpperCase()) {

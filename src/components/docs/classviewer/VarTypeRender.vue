@@ -11,4 +11,8 @@ export default {
     font-family: 'Roboto Mono';
     cursor: pointer;
   }
+
+  .var-ref:hover {
+    color: lighten(#2196F3, 20%);
+  }
 </style>

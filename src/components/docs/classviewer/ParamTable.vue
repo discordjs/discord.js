@@ -9,7 +9,7 @@
       </tr>
       <tr v-for="param in params">
         <td class="{{ param.optional ? 'optional' : '' }}">{{ param.name }}</td>
-        <td>{{{ param.type.names[0] }}}</td>
+        <td @click='$root.resolveReference(param.type.names[0])' class="data-type">{{{ param.type.names[0] }}}</td>
         <td>{{ param.optional ? 'yes' : ''}}</td>
         <td>{{{ param.description | normalise | marked }}}</td>
       </tr>
@@ -48,6 +48,17 @@ export default {
 
   td, th {
     padding: 0.5rem;
+  }
+
+  .data-type {
+    font-weight: bold;
+    color: #2196F3;
+    font-family: 'Roboto Mono', monospace;
+    cursor: pointer;
+  }
+
+  .data-type:hover {
+    color: lighten(#2196F3, 20%);
   }
 
   tr:first-child {
