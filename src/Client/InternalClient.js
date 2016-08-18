@@ -533,6 +533,7 @@ export default class InternalClient {
 	// def login
 	login(email, password) {
 		var client = this.client;
+		client.options.bot = false;
 
 		if (!this.tokenCacher.done) {
 			return new Promise((resolve, reject) => {
