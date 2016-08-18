@@ -20,11 +20,41 @@ class Client extends EventEmitter {
   constructor(options) {
     super();
     this.options = mergeDefault(Constants.DefaultOptions, options);
+    /**
+     * The REST manager of the client
+     * @type {RESTManager}
+     * @private
+     */
     this.rest = new RESTManager(this);
+    /**
+     * The data store of the Client
+     * @type {ClientDataStore}
+     * @private
+     */
     this.store = new ClientDataStore(this);
+    /**
+     * The manager of the Client
+     * @type {ClientManager}
+     * @private
+     */
     this.manager = new ClientManager(this);
+    /**
+     * The WebSocket Manager of the Client
+     * @type {WebSocketManager}
+     * @private
+     */
     this.ws = new WebSocketManager(this);
+    /**
+     * The Data Resolver of the Client
+     * @type {ClientDataResolver}
+     * @private
+     */
     this.resolver = new ClientDataResolver(this);
+    /**
+     * The Action Manager of the Client
+     * @type {ActionsManager}
+     * @private
+     */
     this.actions = new ActionsManager(this);
   }
 
