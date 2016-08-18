@@ -3,6 +3,7 @@ const VoiceChannelDataStore = require('./datastore/VoiceChannelDataStore');
 
 /**
  * Represents a Server Voice Channel on Discord.
+ * @extends {GuildChannel}
  */
 class VoiceChannel extends GuildChannel {
   constructor(guild, data) {
