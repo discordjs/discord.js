@@ -159,6 +159,12 @@ class Guild {
     return base;
   }
 
+  /**
+   * Sets up the Guild
+   * @param {any} data
+   * @returns {null}
+   * @private
+   */
   setup(data) {
     this.id = data.id;
     this.available = !data.unavailable;
