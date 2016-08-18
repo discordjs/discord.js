@@ -4,7 +4,7 @@ let parse;
 
 const customDocs = require('../custom/index');
 
-const GEN_VERSION = 2;
+const GEN_VERSION = 3;
 
 try {
   fs = require('fs-extra');
@@ -20,7 +20,7 @@ console.log('Starting...');
 let json = '';
 
 const stream = parse({
-  src: ['./src/*.js', './src/*/*.js'],
+  src: ['./src/*.js', './src/*/*.js', './src/**/*.js'],
 });
 
 const cwd = (`${process.cwd()}\\`).replace(/\\/g, '/');
@@ -36,6 +36,7 @@ function cleanPaths() {
 function clean() {
   const cleaned = {
     classes: {},
+    interfaces: {},
   };
   for (const item of json) {
     if (item.kind === 'class') {
@@ -45,10 +46,19 @@ function clean() {
         properties: [],
         events: [],
       };
+    } else if (item.kind === 'interface') {
+      cleaned.interfaces[item.longname] = {
+        meta: item,
+        functions: [],
+        properties: [],
+        events: [],
+      };
     } else if (item.kind === 'member') {
-      cleaned.classes[item.memberof].properties.push(item);
+      const obj = cleaned.classes[item.memberof] || cleaned.interfaces[item.memberof];
+      obj.properties.push(item);
     } else if (item.kind === 'function' && item.memberof) {
-      cleaned.classes[item.memberof].functions.push(item);
+      const obj = cleaned.classes[item.memberof] || cleaned.interfaces[item.memberof];
+      obj.functions.push(item);
     }
   }
   json = cleaned;
@@ -58,7 +68,6 @@ function next() {
   json = JSON.parse(json);
   cleanPaths();
   console.log('parsed inline code');
-  console.log(json);
   clean();
   json = {
     meta: {

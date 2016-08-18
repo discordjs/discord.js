@@ -4,7 +4,7 @@
   "description": "A way to interface with the Discord API",
   "main": "./src/index",
   "scripts": {
-    "test": "node test/random",
+    "test": "eslint src/ && node test/random",
     "docs": "node docs/gen/index.js"
   },
   "repository": {

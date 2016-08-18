@@ -5,6 +5,7 @@ const TextBasedChannel = require('./interface/TextBasedChannel');
 /**
  * Represents a Server Text Channel on Discord.
  * @extends {GuildChannel}
+ * @implements {TextBasedChannel}
  */
 class TextChannel extends GuildChannel {
 

@@ -2,6 +2,7 @@ const TextBasedChannel = require('./interface/TextBasedChannel');
 
 /**
  * Represents a User on Discord.
+ * @implements {TextBasedChannel}
  */
 class User {
   constructor(client, data) {
@@ -98,6 +99,10 @@ class User {
     }
 
     return base;
+  }
+
+  sendMessage() {
+    return;
   }
 }
 
