@@ -18,7 +18,7 @@ function arraysEqual(a, b) {
   return b.length === 0;
 }
 
-class ServerChannel extends Channel {
+class GuildChannel extends Channel {
   constructor(guild, data) {
     super(guild.client, data, guild);
   }
@@ -146,4 +146,4 @@ class ServerChannel extends Channel {
   }
 }
 
-module.exports = ServerChannel;
+module.exports = GuildChannel;

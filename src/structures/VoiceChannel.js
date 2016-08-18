@@ -1,10 +1,10 @@
-const ServerChannel = require('./ServerChannel');
+const GuildChannel = require('./GuildChannel');
 const VoiceChannelDataStore = require('./datastore/VoiceChannelDataStore');
 
 /**
  * Represents a Server Voice Channel on Discord.
  */
-class VoiceChannel extends ServerChannel {
+class VoiceChannel extends GuildChannel {
   constructor(guild, data) {
     super(guild, data);
     this.store = new VoiceChannelDataStore();

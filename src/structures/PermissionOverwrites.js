@@ -1,6 +1,6 @@
 class PermissionOverwrites {
-  constructor(serverChannel, data) {
-    this.channel = serverChannel;
+  constructor(guildChannel, data) {
+    this.channel = guildChannel;
     if (data) {
       this.setup(data);
     }

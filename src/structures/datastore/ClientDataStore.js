@@ -6,7 +6,7 @@ const User = require('../User');
 const DMChannel = require('../DMChannel');
 const TextChannel = require('../TextChannel');
 const VoiceChannel = require('../VoiceChannel');
-const ServerChannel = require('../ServerChannel');
+const GuildChannel = require('../GuildChannel');
 
 class ClientDataStore extends AbstractDataStore {
   constructor(client) {
@@ -85,7 +85,7 @@ class ClientDataStore extends AbstractDataStore {
 
   killChannel(channel) {
     this.remove('channels', channel);
-    if (channel instanceof ServerChannel) {
+    if (channel instanceof GuildChannel) {
       channel.guild.store.remove('channels', channel);
     }
   }
