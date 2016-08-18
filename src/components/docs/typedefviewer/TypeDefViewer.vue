@@ -9,7 +9,7 @@
         <b>Types: </b>
         <ul>
           <li v-for="name in typedef.type.names">
-            <var-type-render :data="[name, '']" class="var-a"></var-type-render>
+            <var-type-render :data="[name, '']"></var-type-render>
           </li>
         </ul>
       </p>
