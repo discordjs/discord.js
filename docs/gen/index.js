@@ -4,7 +4,7 @@ let parse;
 
 const customDocs = require('../custom/index');
 
-const GEN_VERSION = 3;
+const GEN_VERSION = 4;
 
 try {
   fs = require('fs-extra');
@@ -24,6 +24,23 @@ const stream = parse({
 });
 
 const cwd = (`${process.cwd()}\\`).replace(/\\/g, '/');
+
+const regex = /([\w]+)([^\w]+)/;
+const regexG = /([\w]+)([^\w]+)/g;
+
+function matchReturnName(str) {
+  const matches = str.match(regexG);
+  const output = [];
+  if (matches) {
+    for (const match of matches) {
+      const groups = match.match(regex);
+      output.push([groups[1], groups[2]]);
+    }
+  } else {
+    output.push([str.match(/(\w+)/g), '']);
+  }
+  return output;
+}
 
 function cleanPaths() {
   for (const item of json) {
@@ -55,9 +72,19 @@ function clean() {
       };
     } else if (item.kind === 'member') {
       const obj = cleaned.classes[item.memberof] || cleaned.interfaces[item.memberof];
+      const newTypes = [];
+      for (const name of item.type.names) {
+        newTypes.push(matchReturnName(name));
+      }
+      item.type = newTypes;
       obj.properties.push(item);
     } else if (item.kind === 'function' && item.memberof) {
       const obj = cleaned.classes[item.memberof] || cleaned.interfaces[item.memberof];
+      const newReturns = [];
+      for (const name of item.returns[0].type.names) {
+        newReturns.push(matchReturnName(name));
+      }
+      item.returns = newReturns;
       obj.functions.push(item);
     }
   }
