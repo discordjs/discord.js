@@ -28,6 +28,6 @@ npm i --save hydrabolt/discord.js#indev-rewrite
 
 ## Tutorials
 LuckyEvie, a helper in the discord.js channel, has put together a great tutorial on getting to grips with discord.js.
-It's worth a read and you can find it [here.](LuckyEvie#4611)
+It's worth a read and you can find it [here.](https://eslachance.gitbooks.io/discord-js-bot-guide/content/samples/selfbots,_the_awesomest_thing_in_the_universe.html)
 `,
 };
