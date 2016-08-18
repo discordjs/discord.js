@@ -7,6 +7,8 @@ import marked from 'marked';
 
 require('./styles/main.scss');
 
+console.log(store);
+
 Vue.use(VueRouter);
 Vue.component('app-navbar', Components.AppNavbar);
 Vue.component('app-footer', Components.AppFooter);

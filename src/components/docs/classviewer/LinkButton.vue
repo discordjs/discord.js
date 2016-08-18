@@ -15,4 +15,10 @@ export default {
   i:hover {
     color: #333;
   }
+  .scrolled i{
+    color: #777;
+  }
+  .scrolled i:hover {
+    color: black;
+  }
 </style>

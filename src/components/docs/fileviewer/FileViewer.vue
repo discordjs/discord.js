@@ -13,5 +13,10 @@ export default {
       file: this.$parent.$parent.docs.custom[params.category][params.file],
     };
   },
+  ready() {
+    for (const item of this.$el.querySelectorAll('pre code')) {
+      window.hljs.highlightBlock(item);
+    }
+  },
 };
 </script>

@@ -3,14 +3,14 @@
   <div class="docs-class-overview-segment">
     <h4>Properties</h4>
     <ul>
-      <li v-for="prop in info.properties" v-link='{ name:"classview", query:{scrollto:prop.name} }'><span class="propName">.{{ prop.name }}</span> =>
+      <li v-for="prop in info.properties" v-link='{ name:"classview", query:{scrollto:prop.name} }'><span class="propName {{ prop.inherited ? 'inherited' : '' }}">.{{ prop.name }}</span> =>
       <span class="type"><prop-type :types="prop.type"></prop-type></span></li>
     </ul>
   </div>
   <div class="docs-class-overview-segment">
     <h4>Methods</h4>
     <ul>
-      <li v-for="prop in info.functions" v-link='{ name:"classview", query:{scrollto:prop.name} }'>{{ prop.name }}</li>
+      <li v-for="method in info.functions" v-link='{ name:"classview", query:{scrollto:method.name} }'><span class="propName {{ method.inherited ? 'inherited' : '' }}" v-if="method">.{{ method.name }}</span></li>
     </ul>
   </div>
 </template>
@@ -40,6 +40,11 @@ export default {
 
     li {
       cursor: pointer;
+    }
+
+    .inherited {
+      color: #777;
+      font-size: 13px;
     }
 
     .type {

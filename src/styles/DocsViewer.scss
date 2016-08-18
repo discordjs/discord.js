@@ -53,6 +53,10 @@
     font-weight: bold;
     content: "Warning! ";
   }
+
+  .scrolled {
+    background: rgba(255, 255, 0, 0.3);
+  }
 }
 
 .docs-viewer > .container {

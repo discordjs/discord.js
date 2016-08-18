@@ -14,4 +14,10 @@ export default {
   a:hover {
     color: #333;
   }
+  .scrolled a{
+    color: #777;
+  }
+  .scrolled a:hover {
+    color: black;
+  }
 </style>

@@ -1,6 +1,8 @@
 <template>
-  <container>
-    <h3 id="doc_for_{{ method.name }}">.{{ method.name }}(<span><param v-for="param in method.params" :param="param"></param></span>)<source-button :meta="method.meta"></source-button>
+  <container class="{{ $route.query.scrollto === method.name ? 'scrolled' : '' }}"> 
+    <h3 id="doc_for_{{ method.name }}">.{{ method.name }}(<span><param v-for="param in method.params" :param="param"></param></span>)
+    <inherited-badge v-if="method.inherited" :item="method"></inherited-badge>
+    <source-button :meta="method.meta"></source-button>
     <link-button :item="method"></link-button>
     </h3>
     <div class="desc">
@@ -18,6 +20,7 @@ import ParamTable from './ParamTable.vue';
 import Example from './Example.vue';
 import SourceButton from './SourceButton.vue';
 import LinkButton from './LinkButton.vue';
+import InheritedBadge from './InheritedBadge.vue';
 export default {
   props: ['method'],
   components: {
@@ -27,6 +30,7 @@ export default {
     Example,
     SourceButton,
     LinkButton,
+    InheritedBadge,
   },
   data() {
     return {

@@ -1,6 +1,6 @@
 <template>
-  <container>
-    <h3 id="doc_for_{{ prop.name }}">.{{ prop.name }} <source-button :meta="prop.meta"></source-button>
+  <container class="{{ $route.query.scrollto === prop.name ? 'scrolled' : '' }}">
+    <h3 id="doc_for_{{ prop.name }}">.{{ prop.name }} <inherited-badge v-if="prop.inherited" :item="prop"></inherited-badge> <source-button :meta="prop.meta"></source-button>
     <link-button :item="prop"></link-button></h3>
     <div class="desc">
     <p>{{{ prop.description | marked }}}</p>
@@ -12,12 +12,14 @@
 import PropType from './PropType.vue';
 import SourceButton from './SourceButton.vue';
 import LinkButton from './LinkButton.vue';
+import InheritedBadge from './InheritedBadge.vue';
 export default {
   props: ['prop'],
   components: {
     PropType,
     SourceButton,
     LinkButton,
+    InheritedBadge,
   },
   data() {
     return {
