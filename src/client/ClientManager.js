@@ -2,7 +2,6 @@ const Constants = require('../util/Constants');
 
 /**
  * Manages the State and Background Tasks of the Client
- * @class ClientManager
  * @private
  */
 class ClientManager {
