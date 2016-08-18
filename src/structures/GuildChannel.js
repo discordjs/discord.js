@@ -207,10 +207,6 @@ class GuildChannel extends Channel {
     return this.rest.client.rest.methods.updateChannel(this, { topic });
   }
 
-  setBitrate(bitrate) {
-    return this.rest.client.rest.methods.updateChannel(this, { bitrate });
-  }
-
   /**
    * When concatenated with a String, this automatically concatenates the Channel's name instead of the Channel object.
    * @returns {String}

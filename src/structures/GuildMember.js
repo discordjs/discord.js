@@ -1,5 +1,9 @@
 const TextBasedChannel = require('./interface/TextBasedChannel');
 
+/**
+ * Represents a Member of a Guild on Discord
+ * @implements {TextBasedChannel}
+ */
 class GuildMember {
   constructor(guild, data) {
     this.client = guild.client;
@@ -63,6 +67,14 @@ class GuildMember {
 
   kick() {
     return this.client.rest.methods.kickGuildMember(this.guild, this);
+  }
+
+  sendMessage() {
+    return;
+  }
+
+  sendTTSMessage() {
+    return;
   }
 }
 
