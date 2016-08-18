@@ -18,6 +18,9 @@ function build(docs) {
   for (const jsclass in docs.json.classes) {
     links[jsclass] = 'class';
   }
+  for (const jsclass in docs.json.typedefs) {
+    links[jsclass] = 'typedef';
+  }
   docs.links = links;
   return docs;
 }

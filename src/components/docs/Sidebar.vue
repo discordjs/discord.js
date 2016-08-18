@@ -5,6 +5,10 @@
       <li v-for="(name, data) in items" v-link='{ name: "fileview", params: { category:category, file:name } }'>{{ name }}</li>
     </ul>
     <ul>
+      <li>Type Definitions</li>
+      <li v-for="(item, data) in docs.json.typedefs" v-link='{ name: "typedefview", params: { typedef:item } }'>{{ item }}</li>
+    </ul>
+    <ul>
       <li>Classes</li>
       <li v-for="(className, data) in docs.json.classes" v-link='{ name: "classview", params: { category:category, class:className } }'>{{ className }}</li>
     </ul>

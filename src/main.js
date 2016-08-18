@@ -33,6 +33,8 @@ const App = Vue.extend({
           this.$router.go({ name: 'classview', params: { class: name } });
         } else if (path === 'interface') {
           return;
+        } else if (path === 'typedef') {
+          this.$router.go({ name: 'typedefview', params: { typedef: name } });
         } else if (path) {
           window.location.href = path;
         }
@@ -87,6 +89,10 @@ router.map({
           '/class/:class': {
             component: Components.ClassViewer,
             name: 'classview',
+          },
+          '/typedef/:typedef': {
+            component: Components.TypeDefViewer,
+            name: 'typedefview',
           },
         },
       },
