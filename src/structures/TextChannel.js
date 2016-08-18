@@ -28,6 +28,14 @@ class TextChannel extends GuildChannel {
 
     return this.store.add('messages', message);
   }
+
+  sendMessage() {
+    return;
+  }
+
+  sendTTSMessage() {
+    return;
+  }
 }
 
 TextBasedChannel.applyToClass(TextChannel);

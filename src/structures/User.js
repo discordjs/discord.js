@@ -104,6 +104,10 @@ class User {
   sendMessage() {
     return;
   }
+
+  sendTTSMessage() {
+    return;
+  }
 }
 
 TextBasedChannel.applyToClass(User);
