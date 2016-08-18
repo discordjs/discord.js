@@ -7,7 +7,7 @@
     </h3>
     <div class="desc">
       <param-table :params="method.params" v-if="method.params.length>0"></param-table>
-      <p>{{{ method.description | marked }}}</p>
+      <p>{{{ method.description | normalise | marked }}}</p>
       <p><b>Returns:</b> {{ method.returns[0].type.names[0] }}</p>
       <p v-if="method.examples"><b>Examples:</b><example v-for="example in method.examples" :example=example></example></p>
     </div>

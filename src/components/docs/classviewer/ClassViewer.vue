@@ -2,7 +2,7 @@
   <div class="doc-part-view">
     <container>
       <h1>Class: {{ info.meta.name }}</h1>
-      <p>{{{ info.meta.description | marked }}}</p>
+      <p>{{{ info.meta.description | normalise | marked }}}</p>
       <hr>
       <overview :info="info"></overview>
       <hr>

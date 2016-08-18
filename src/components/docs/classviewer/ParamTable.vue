@@ -11,7 +11,7 @@
         <td class="{{ param.optional ? 'optional' : '' }}">{{ param.name }}</td>
         <td>{{{ param.type.names[0] }}}</td>
         <td>{{ param.optional ? 'yes' : ''}}</td>
-        <td>{{{ param.description | marked }}}</td>
+        <td>{{{ param.description | normalise | marked }}}</td>
       </tr>
     </tbody>
   </table>

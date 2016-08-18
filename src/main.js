@@ -35,6 +35,18 @@ Vue.filter('marked', $text => {
   return marked(text);
 });
 
+Vue.filter('normalise', $text => {
+  let text = $text.trim();
+  const firstChar = text.charAt(0);
+  if (firstChar === firstChar.toLowerCase() && firstChar !== firstChar.toUpperCase()) {
+    text = firstChar.toUpperCase() + text.substr(1);
+  }
+  if (!text.endsWith('.') && !text.endsWith('!') && !text.endsWith('?')) {
+    text += '.';
+  }
+  return text;
+});
+
 const router = new VueRouter();
 
 router.map({

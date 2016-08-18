@@ -3,7 +3,7 @@
     <h3 id="doc_for_{{ prop.name }}">.{{ prop.name }} <inherited-badge v-if="prop.inherited" :item="prop"></inherited-badge> <source-button :meta="prop.meta"></source-button>
     <link-button :item="prop"></link-button></h3>
     <div class="desc">
-    <p>{{{ prop.description | marked }}}</p>
+    <p>{{{ prop.description | normalise | marked }}}</p>
     <p><b>Type:</b> <prop-type :types="prop.type"></prop-type></p>
     </div>
   </container>
