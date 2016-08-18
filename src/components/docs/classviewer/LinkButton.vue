@@ -1,5 +1,5 @@
 <template>
-  <i class="fa fa-link" v-link='{ name:"classview", query:{scrollto:item.name} }'></i>
+  <i class="fa fa-link" v-link='{ name:"classview", query:{scrollto:item.name, private:item.access==="private"} }'></i>
 </template>
 <script>
 export default {

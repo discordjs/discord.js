@@ -1,7 +1,11 @@
 <template>
   <container class="{{ $route.query.scrollto === prop.name ? 'scrolled' : '' }}">
-    <h3 id="doc_for_{{ prop.name }}">.{{ prop.name }} <inherited-badge v-if="prop.inherited" :item="prop"></inherited-badge> <source-button :meta="prop.meta"></source-button>
-    <link-button :item="prop"></link-button></h3>
+    <h3 id="doc_for_{{ prop.name }}">.{{ prop.name }}
+      <private-badge v-show="$parent.$parent.$parent.$parent.viewPrivate && prop.access === 'private'"></private-badge>
+      <inherited-badge v-if="prop.inherited" :item="prop"></inherited-badge>
+      <source-button :meta="prop.meta"></source-button>
+      <link-button :item="prop"></link-button>
+    </h3>
     <div class="desc">
     <p>{{{ prop.description | normalise | marked }}}</p>
     <p><b>Type:</b> <prop-type v-for="type in prop.type" :types="type"></prop-type></p>
@@ -13,6 +17,7 @@ import PropType from './PropType.vue';
 import SourceButton from './SourceButton.vue';
 import LinkButton from './LinkButton.vue';
 import InheritedBadge from './InheritedBadge.vue';
+import PrivateBadge from './PrivateBadge.vue';
 export default {
   props: ['prop'],
   components: {
@@ -20,6 +25,7 @@ export default {
     SourceButton,
     LinkButton,
     InheritedBadge,
+    PrivateBadge,
   },
   data() {
     return {

@@ -13,7 +13,7 @@
       <li>Classes</li>
       <li v-for="(className, data) in docs.json.classes"
           v-link='{ name: "classview", params: { category:category, class:className } }'
-          v-if="$parent.$parent.$parent.viewPrivate || data.meta.access !== 'private'"
+          v-show="$parent.$parent.$parent.viewPrivate || data.meta.access !== 'private'"
           class="{{ data.meta.access==='private' ? 'private' : '' }}">{{ className }}
           <i class="fa fa-user-secret" v-if="data.meta.access==='private'"></i></li>
     </ul>

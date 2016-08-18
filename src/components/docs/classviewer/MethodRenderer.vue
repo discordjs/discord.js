@@ -1,6 +1,7 @@
 <template>
   <container class="{{ $route.query.scrollto === method.name ? 'scrolled' : '' }}"> 
     <h3 id="doc_for_{{ method.name }}">.{{ method.name }}(<span><param v-for="param in method.params" :param="param"></param></span>)
+    <private-badge v-show="$parent.$parent.$parent.$parent.viewPrivate && method.access === 'private'"></private-badge>
     <inherited-badge v-if="method.inherited" :item="method"></inherited-badge>
     <source-button :meta="method.meta"></source-button>
     <link-button :item="method"></link-button>
@@ -24,6 +25,7 @@ import SourceButton from './SourceButton.vue';
 import LinkButton from './LinkButton.vue';
 import InheritedBadge from './InheritedBadge.vue';
 import PropRenderer from './PropRenderer.vue';
+import PrivateBadge from './PrivateBadge.vue';
 export default {
   props: ['method'],
   components: {
@@ -35,6 +37,7 @@ export default {
     LinkButton,
     InheritedBadge,
     PropRenderer,
+    PrivateBadge,
   },
 };
 </script>

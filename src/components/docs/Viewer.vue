@@ -17,7 +17,7 @@ export default {
   data() {
     return {
       docs: store.data.docs[this.$route.params.tag],
-      viewPrivate: true,
+      viewPrivate: this.$route.query.private,
     };
   },
   route: {
@@ -29,8 +29,6 @@ export default {
         alert(`Couldn't load docs for ${transition.to.params.tag} - ${e}`);
         console.log(e);
       });
-    },
-    canReuse() {
     },
   },
   events: {

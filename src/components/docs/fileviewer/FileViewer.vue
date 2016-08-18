@@ -18,5 +18,10 @@ export default {
       window.hljs.highlightBlock(item);
     }
   },
+  route: {
+    canReuse() {
+      return false;
+    },
+  },
 };
 </script>

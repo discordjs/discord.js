@@ -7,10 +7,16 @@
       <overview :info="info"></overview>
       <hr>
       <h2>Properties:</h2>
-      <prop-renderer v-for="prop in info.properties" :prop="prop"></prop-renderer>
+        <div v-for="prop in info.properties" v-show="$parent.$parent.$parent.viewPrivate || prop.access !== 'private'">
+          <prop-renderer
+            :prop="prop">
+            </prop-renderer>
+        </div>
       <hr>
       <h2>Methods:</h2>
-      <method-renderer v-for="method in info.functions" :method="method"></method-renderer>
+      <div v-for="method in info.functions" v-show="$parent.$parent.$parent.viewPrivate || method.access !== 'private'">
+        <method-renderer :method="method"></method-renderer>
+      </div>
     </container>
   </div>
 </template>
@@ -58,9 +64,15 @@ export default {
     if (params) {
       params = gqp(params);
       if (params.scrollto) {
-        document.getElementById(`doc_for_${params.scrollto}`).scrollIntoView(true);
+        const elem = document.getElementById(`doc_for_${params.scrollto}`);
+        elem.scrollIntoView(true);
       }
     }
+  },
+  route: {
+    canReuse() {
+      return false;
+    },
   },
 };
 </script>

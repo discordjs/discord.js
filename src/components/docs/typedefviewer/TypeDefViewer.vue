@@ -28,5 +28,10 @@ export default {
       typedef: this.$parent.$parent.docs.json.typedefs[params.typedef],
     };
   },
+  route: {
+    canReuse() {
+      return false;
+    },
+  },
 };
 </script>
