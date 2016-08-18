@@ -18,6 +18,10 @@ function arraysEqual(a, b) {
   return b.length === 0;
 }
 
+/**
+ * Represents a Guild Channel (i.e. Text Channels and Voice Channels)
+ * @extends {Channel}
+ */
 class GuildChannel extends Channel {
   constructor(guild, data) {
     super(guild.client, data, guild);
@@ -25,12 +29,36 @@ class GuildChannel extends Channel {
 
   setup(data) {
     super.setup(data);
+    /**
+     * The type of the Guild Channel
+     * @type {Number}
+     */
     this.type = data.type;
+    /**
+     * The topic of the Guild Channel, if there is one.
+     * @type {?String}
+     */
     this.topic = data.topic;
+    /**
+     * The position of the channel in the list.
+     * @type {Number}
+     */
     this.position = data.position;
+    /**
+     * The name of the Guild Channel
+     * @type {String}
+     */
     this.name = data.name;
+    /**
+     * The ID of the last message in the channel, if one was sent.
+     * @type {?String}
+     */
     this.lastMessageID = data.last_message_id;
     this.ow = data.permission_overwrites;
+    /**
+     * A list of permission overwrites in this channel for roles and users.
+     * @type {Array<PermissionOverwrites>}
+     */
     this.permissionOverwrites = [];
     if (data.permission_overwrites) {
       for (const overwrite of data.permission_overwrites) {
@@ -39,6 +67,12 @@ class GuildChannel extends Channel {
     }
   }
 
+  /**
+   * Checks if this channel has the same type, topic, position, name, overwrites and ID as another channel.
+   * In most cases, a simple `channel.id === channel2.id` will do, and is much faster too.
+   * @param {GuildChannel} channel the channel to compare this channel to
+   * @returns {Boolean}
+   */
   equals(other) {
     let base = (
       this.type === other.type &&
@@ -65,6 +99,12 @@ class GuildChannel extends Channel {
     return base;
   }
 
+  /**
+   * Gets the overall set of permissions for a user in this channel, taking into account roles and permission
+   * overwrites.
+   * @param {GuildMemberResolvable} member the user that you want to obtain the overall permissions for
+   * @returns {?EvaluatedPermissions}
+   */
   permissionsFor(member) {
     member = this.client.resolver.resolveGuildMember(this.guild, member);
     if (member) {
@@ -125,14 +165,44 @@ class GuildChannel extends Channel {
     return this.client.rest.methods.updateChannel(this, data);
   }
 
+  /**
+   * Set a new name for the Guild Channel
+   * @param {String} name the new name for the guild channel
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // set a new channel name
+   * channel.setName('not general')
+   *  .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
+   *  .catch(console.log);
+   */
   setName(name) {
     return this.client.rest.methods.updateChannel(this, { name });
   }
 
+  /**
+   * Set a new position for the Guild Channel
+   * @param {Number} position the new position for the guild channel
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // set a new channel position
+   * channel.setPosition(2)
+   *  .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
+   *  .catch(console.log);
+   */
   setPosition(position) {
     return this.rest.client.rest.methods.updateChannel(this, { position });
   }
 
+  /**
+   * Set a new topic for the Guild Channel
+   * @param {String} topic the new topic for the guild channel
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // set a new channel topic
+   * channel.setTopic('needs more rate limiting')
+   *  .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
+   *  .catch(console.log);
+   */
   setTopic(topic) {
     return this.rest.client.rest.methods.updateChannel(this, { topic });
   }
@@ -141,6 +211,16 @@ class GuildChannel extends Channel {
     return this.rest.client.rest.methods.updateChannel(this, { bitrate });
   }
 
+  /**
+   * When concatenated with a String, this automatically concatenates the Channel's name instead of the Channel object.
+   * @returns {String}
+   * @example
+   * // Outputs: Hello from general
+   * console.log(`Hello from ${channel}`);
+   * @example
+   * // Outputs: Hello from general
+   * console.log('Hello from ' + ${channel});
+   */
   toString() {
     return this.name;
   }
