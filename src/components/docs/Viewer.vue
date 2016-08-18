@@ -17,6 +17,7 @@ export default {
   data() {
     return {
       docs: store.data.docs[this.$route.params.tag],
+      viewPrivate: true,
     };
   },
   route: {
@@ -30,6 +31,11 @@ export default {
       });
     },
     canReuse() {
+    },
+  },
+  events: {
+    toggleShowPrivate() {
+      this.viewPrivate = !this.viewPrivate;
     },
   },
 };
