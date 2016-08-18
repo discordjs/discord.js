@@ -16,7 +16,7 @@ function build(docs) {
   };
   console.log(docs);
   for (const jsclass in docs.json.classes) {
-    links[jsclass.toLowerCase()] = 'class';
+    links[jsclass] = 'class';
   }
   docs.links = links;
   return docs;
