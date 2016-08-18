@@ -5,7 +5,7 @@ class Channel {
   constructor(client, data, guild) {
     /**
      * The client that instantiated the Channel
-     * @type {Channel}
+     * @type {Client}
      */
     this.client = client;
     this.typingMap = {};

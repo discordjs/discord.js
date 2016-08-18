@@ -33,9 +33,9 @@ class Client extends EventEmitter {
    * much better to use a bot account rather than a user account.
    * Bot accounts have higher rate limits and have access to some features user accounts don't have. User bots
    * that are making a lot of API requests can even be banned.</warn>
-   * @param  {string} emailOrToken The email or token used for the account. If it is an email, a password _must_ be
+   * @param  {String} emailOrToken The email or token used for the account. If it is an email, a password _must_ be
    * provided.
-   * @param  {string} [password] The password for the account, only needed if an email was provided.
+   * @param  {String} [password] The password for the account, only needed if an email was provided.
    * @return {Promise<String>}
    * @example
    * // log the client in using a token

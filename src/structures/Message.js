@@ -18,7 +18,7 @@ class Message {
     }
 
     /**
-     * The client that instantiated the Object
+     * The client that instantiated the Message
      * @type {Client}
      */
     this.client = client;
