@@ -8,7 +8,9 @@
     <div class="desc">
       <param-table :params="method.params" v-if="method.params.length>0"></param-table>
       <p>{{{ method.description | normalise | marked }}}</p>
-      <p><b>Returns:</b> {{ method.returns[0].type.names[0] }}</p>
+      <p><b>Returns:</b>
+      <prop-type v-for="type in method.returns" :types="type"></prop-type>
+      </p>
       <p v-if="method.examples"><b>Examples:</b><example v-for="example in method.examples" :example=example></example></p>
     </div>
   </container>
@@ -21,6 +23,7 @@ import Example from './Example.vue';
 import SourceButton from './SourceButton.vue';
 import LinkButton from './LinkButton.vue';
 import InheritedBadge from './InheritedBadge.vue';
+import PropRenderer from './PropRenderer.vue';
 export default {
   props: ['method'],
   components: {
@@ -31,10 +34,7 @@ export default {
     SourceButton,
     LinkButton,
     InheritedBadge,
-  },
-  data() {
-    return {
-    };
+    PropRenderer,
   },
 };
 </script>

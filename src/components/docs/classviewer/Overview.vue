@@ -3,8 +3,7 @@
   <div class="docs-class-overview-segment">
     <h4>Properties</h4>
     <ul>
-      <li v-for="prop in info.properties" v-link='{ name:"classview", query:{scrollto:prop.name} }'><span class="propName {{ prop.inherited ? 'inherited' : '' }}">.{{ prop.name }}</span> =>
-      <span class="type"><prop-type :types="prop.type"></prop-type></span></li>
+      <li v-for="prop in info.properties" v-link='{ name:"classview", query:{scrollto:prop.name} }'><span class="propName {{ prop.inherited ? 'inherited' : '' }}">.{{ prop.name }}</span>
     </ul>
   </div>
   <div class="docs-class-overview-segment">

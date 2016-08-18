@@ -5,6 +5,21 @@ const data = {
   docs: {},
 };
 
+function build(docs) {
+  const links = {
+    String: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String',
+    Map: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array',
+    Promise: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise',
+    Number: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number',
+  };
+  console.log(docs);
+  for (const jsclass in docs.json.classes) {
+    links[jsclass] = 'class';
+  }
+  docs.links = links;
+  return docs;
+}
+
 const store = {
   data,
 
@@ -38,8 +53,8 @@ const store = {
             if (err) {
               reject(err);
             } else {
-              data.docs[tag] = res.body || JSON.parse(res.text);
-              resolve(res.body);
+              data.docs[tag] = build(res.body || JSON.parse(res.text));
+              resolve(data.docs[tag]);
             }
           });
       }

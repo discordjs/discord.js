@@ -24,6 +24,21 @@ const App = Vue.extend({
       sharedStore: store,
     };
   },
+  methods: {
+    resolveReference(name) {
+      const docs = this.sharedStore.data.docs[this.$route.params.tag];
+      if (docs) {
+        const path = docs.links[name];
+        if (path === 'class') {
+          this.$router.go({ name: 'classview', params: { class: name } });
+        } else if (path === 'interface') {
+          return;
+        } else if (path) {
+          window.location.href = path;
+        }
+      }
+    },
+  },
 });
 
 Vue.filter('marked', $text => {
@@ -77,6 +92,11 @@ router.map({
       },
     },
   },
+});
+
+router.beforeEach(transition => {
+  window.scrollTo(0, 0);
+  transition.next();
 });
 
 router.start(App, '#vue-root');

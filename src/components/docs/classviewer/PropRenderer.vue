@@ -4,7 +4,7 @@
     <link-button :item="prop"></link-button></h3>
     <div class="desc">
     <p>{{{ prop.description | normalise | marked }}}</p>
-    <p><b>Type:</b> <prop-type :types="prop.type"></prop-type></p>
+    <p><b>Type:</b> <prop-type v-for="type in prop.type" :types="type"></prop-type></p>
     </div>
   </container>
 </template>
