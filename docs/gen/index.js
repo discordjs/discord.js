@@ -51,14 +51,16 @@ function cleanPaths() {
   }
 }
 
-function clean() {
+function firstPass() {
   const cleaned = {
     classes: {},
     interfaces: {},
     typedefs: {},
   };
-  for (const item of json) {
+  for (const itemID in json) {
+    const item = json[itemID];
     if (item.kind === 'class') {
+      delete json[itemID];
       cleaned.classes[item.longname] = {
         meta: item,
         functions: [],
@@ -66,13 +68,25 @@ function clean() {
         events: [],
       };
     } else if (item.kind === 'interface') {
+      delete json[itemID];
       cleaned.interfaces[item.longname] = {
         meta: item,
         functions: [],
         properties: [],
         events: [],
       };
-    } else if (item.kind === 'member') {
+    }
+  }
+  return cleaned;
+}
+
+function clean() {
+  const cleaned = firstPass();
+  for (const item of json) {
+    if (!item) {
+      continue;
+    }
+    if (item.kind === 'member') {
       const obj = cleaned.classes[item.memberof] || cleaned.interfaces[item.memberof];
       const newTypes = [];
       for (const name of item.type.names) {
@@ -97,6 +111,9 @@ function clean() {
       obj.functions.push(item);
     } else if (item.kind === 'typedef') {
       cleaned.typedefs[item.longname] = item;
+    } else if (item.kind === 'constructor') {
+      const obj = cleaned.classes[item.memberof] || cleaned.interfaces[item.memberof];
+      obj.constructor = item;
     }
   }
   json = cleaned;

@@ -17,6 +17,10 @@ const ActionsManager = require('./actions/ActionsManager');
  */
 class Client extends EventEmitter {
 
+  /**
+   * Creates an instance of Client.
+   * @param {Object} [options] options to pass to the client
+   */
   constructor(options) {
     super();
     this.options = mergeDefault(Constants.DefaultOptions, options);
