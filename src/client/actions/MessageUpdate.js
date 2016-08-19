@@ -6,7 +6,7 @@ class MessageUpdateAction extends Action {
 
   handle(data) {
     const client = this.client;
-    const channel = client.store.get('channels', data.channel_id);
+    const channel = client.channels.get(data.channel_id);
 
     if (channel) {
       const message = channel.messages.get(data.id);

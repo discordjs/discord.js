@@ -8,7 +8,7 @@ class GuildMemberUpdateHandler extends AbstractHandler {
     const data = packet.d;
     const client = this.packetManager.client;
 
-    const guild = client.store.get('guilds', data.guild_id);
+    const guild = client.guilds.get(data.guild_id);
 
     if (guild) {
       const member = guild.members.get(data.user.id);

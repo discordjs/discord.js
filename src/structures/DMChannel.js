@@ -15,11 +15,12 @@ class DMChannel extends Channel {
 
   setup(data) {
     super.setup(data);
+    const recipient = new User(this.client, data.recipients[0]);
     /**
      * The recipient on the other end of the DM
      * @type {User}
      */
-    this.recipient = this.client.store.add('users', new User(this.client, data.recipients[0]));
+    this.recipient = this.client.users.set(recipient.id, recipient);
     /**
      * The ID of the last sent message, if available
      * @type {?String}

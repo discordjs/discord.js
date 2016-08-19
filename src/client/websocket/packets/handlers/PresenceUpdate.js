@@ -7,8 +7,8 @@ class PresenceUpdateHandler extends AbstractHandler {
   handle(packet) {
     const data = packet.d;
     const client = this.packetManager.client;
-    let user = client.store.get('users', data.user.id);
-    const guild = client.store.get('guilds', data.guild_id);
+    let user = client.users.get(data.user.id);
+    const guild = client.guilds.get(data.guild_id);
 
     function makeUser(newUser) {
       return client.store.newUser(newUser);

@@ -38,7 +38,7 @@ class ClientDataResolver {
     if (user instanceof User) {
       return user;
     } else if ($string(user)) {
-      return this.client.store.get('users', user);
+      return this.client.users.get(user.id);
     } else if (user instanceof Message) {
       return user.author;
     } else if (user instanceof Guild) {
@@ -133,7 +133,7 @@ class ClientDataResolver {
     }
 
     if ($string(channel)) {
-      return this.client.store.get('channels', channel);
+      return this.client.channels.get(channel.id);
     }
 
     return null;

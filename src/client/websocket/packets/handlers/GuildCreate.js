@@ -6,7 +6,7 @@ class GuildCreateHandler extends AbstractHandler {
     const data = packet.d;
     const client = this.packetManager.client;
 
-    const guild = client.store.get('guilds', data.id);
+    const guild = client.guilds.get(data.id);
 
     if (guild) {
       if (!guild.available && !data.unavailable) {

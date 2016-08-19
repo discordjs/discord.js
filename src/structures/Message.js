@@ -84,7 +84,7 @@ class Message {
      */
     this.id = data.id;
     for (const mention of data.mentions) {
-      let user = this.client.store.get('users', mention.id);
+      let user = this.client.users.get(mention.id);
       if (user) {
         this.mentions.push(user);
       } else {
@@ -96,7 +96,7 @@ class Message {
 
   patch(data) {
     if (data.author) {
-      this.author = this.client.store.get('users', data.author.id);
+      this.author = this.client.users.get(data.author.id);
     }
     if (data.content) {
       this.content = data.content;
@@ -124,7 +124,7 @@ class Message {
     }
     if (data.mentions) {
       for (const mention of data.mentions) {
-        let user = this.client.store.get('users', mention.id);
+        let user = this.client.users.get(mention.id);
         if (user) {
           this.mentions.push(user);
         } else {

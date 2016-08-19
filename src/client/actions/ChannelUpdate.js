@@ -6,7 +6,7 @@ class ChannelUpdateAction extends Action {
 
   handle(data) {
     const client = this.client;
-    const channel = client.store.get('channels', data.id);
+    const channel = client.channels.get(data.id);
 
     if (channel) {
       const oldChannel = cloneObject(channel);

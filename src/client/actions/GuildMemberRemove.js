@@ -11,7 +11,7 @@ class GuildMemberRemoveAction extends Action {
 
   handle(data) {
     const client = this.client;
-    const guild = client.store.get('guilds', data.guild_id);
+    const guild = client.guilds.get(data.guild_id);
     if (guild) {
       let member = guild.members.get(data.user.id);
       if (member) {

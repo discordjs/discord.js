@@ -18,10 +18,6 @@ class ClientDataStore extends AbstractDataStore {
     this.user = null;
     this.email = null;
     this.password = null;
-
-    this.register('users');
-    this.register('guilds');
-    this.register('channels');
   }
 
   get pastReady() {
@@ -29,8 +25,9 @@ class ClientDataStore extends AbstractDataStore {
   }
 
   newGuild(data) {
-    const already = this.get('guilds', data.id);
-    const guild = this.add('guilds', new Guild(this.client, data));
+    const already = this.client.guilds.get(data.id);
+    const guild = new Guild(this.client, data);
+    this.client.guilds.set(guild.id, guild);
     if (this.pastReady && !already) {
       this.client.emit(Constants.Events.GUILD_CREATE, guild);
     }
@@ -39,12 +36,14 @@ class ClientDataStore extends AbstractDataStore {
   }
 
   newUser(data) {
-    return this.add('users', new User(this.client, data));
+    const user = new User(this.client, data);
+    this.client.users.set(user.id, user);
+    return user;
   }
 
   newChannel(data, $guild) {
     let guild = $guild;
-    const already = this.get('channels', data.id);
+    const already = this.client.channels.get(data.id);
     let channel;
     if (data.type === Constants.ChannelTypes.DM) {
       channel = new DMChannel(this.client, data);
@@ -66,25 +65,25 @@ class ClientDataStore extends AbstractDataStore {
         this.client.emit(Constants.Events.CHANNEL_CREATE, channel);
       }
 
-      return this.add('channels', channel);
+      return this.client.channels.set(channel.id, channel);
     }
     return null;
   }
 
   killGuild(guild) {
-    const already = this.get('guilds', guild.id);
-    this.remove('guilds', guild);
+    const already = this.client.guilds.get(guild.id);
+    this.client.guilds.delete(guild.id);
     if (already && this.pastReady) {
       this.client.emit(Constants.Events.GUILD_DELETE, guild);
     }
   }
 
   killUser(user) {
-    this.remove('users', user);
+    this.users.delete(user.id);
   }
 
   killChannel(channel) {
-    this.remove('channels', channel);
+    this.client.channels.delete(channel.id);
     if (channel instanceof GuildChannel) {
       channel.guild.channels.delete(channel.id);
     }

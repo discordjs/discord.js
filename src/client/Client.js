@@ -56,6 +56,22 @@ class Client extends EventEmitter {
      * @private
      */
     this.actions = new ActionsManager(this);
+
+    /**
+     * A map of the Client's stored users
+     * @type {Map<String, User>}
+     */
+    this.users = new Map();
+    /**
+     * A map of the Client's stored guilds
+     * @type {Map<String, Guild>}
+     */
+    this.guilds = new Map();
+    /**
+     * A map of the Client's stored channels
+     * @type {Map<String, Channel>}
+     */
+    this.channels = new Map();
   }
 
   /**

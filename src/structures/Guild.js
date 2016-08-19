@@ -283,7 +283,7 @@ class Guild {
 
     if (data.presences) {
       for (const presence of data.presences) {
-        const user = this.client.store.get('users', presence.user.id);
+        const user = this.client.users.get(presence.user.id);
         if (user) {
           user.status = presence.status;
           user.game = presence.game;

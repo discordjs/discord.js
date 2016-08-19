@@ -11,7 +11,7 @@ class GuildRoleDeleteAction extends Action {
 
   handle(data) {
     const client = this.client;
-    const guild = client.store.get('guilds', data.guild_id);
+    const guild = client.guilds.get(data.guild_id);
 
     if (guild) {
       let exists = guild.roles.get(data.role_id);

@@ -102,7 +102,7 @@ class RESTMethods {
   }
 
   getExistingDM(recipient) {
-    const dmChannel = this.rest.client.store.getAsArray('channels')
+    const dmChannel = Array.from(this.rest.client.channels.values())
       .filter(channel => channel.recipient)
       .filter(channel => channel.recipient.id === recipient.id);
 

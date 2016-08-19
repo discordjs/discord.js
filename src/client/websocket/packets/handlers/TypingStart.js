@@ -23,8 +23,8 @@ class TypingStartHandler extends AbstractHandler {
   handle(packet) {
     const data = packet.d;
     const client = this.packetManager.client;
-    const channel = client.store.get('channels', data.channel_id);
-    const user = client.store.get('users', data.user_id);
+    const channel = client.channels.get(data.channel_id);
+    const user = client.users.get(data.user_id);
     const timestamp = new Date(data.timestamp * 1000);
 
     function tooLate() {

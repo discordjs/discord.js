@@ -9,8 +9,9 @@ class ReadyHandler extends AbstractHandler {
     const data = packet.d;
     const client = this.packetManager.client;
 
-    client.store.user = client.store.add('users', new ClientUser(client, data.user));
-
+    const clientUser = new ClientUser(client, data.user);
+    client.store.user = clientUser;
+    client.users.set(clientUser.id, clientUser);
     for (const guild of data.guilds) {
       client.store.newGuild(guild);
     }
@@ -21,7 +22,7 @@ class ReadyHandler extends AbstractHandler {
 
     this.packetManager.ws.sessionID = data.session_id;
 
-    this.packetManager.ws.checkIfReady();
+    this.packetManager.ws.checkIfReady('abc');
   }
 
 }

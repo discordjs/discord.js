@@ -11,7 +11,7 @@ class GuildDeleteAction extends Action {
 
   handle(data) {
     const client = this.client;
-    let guild = client.store.get('guilds', data.id);
+    let guild = client.guilds.get(data.id);
 
     if (guild) {
       if (guild.available && data.unavailable) {
@@ -26,7 +26,7 @@ class GuildDeleteAction extends Action {
         };
       }
       // delete guild
-      client.store.remove('guilds', guild);
+      client.guilds.delete(guild.id);
       this.deleted[guild.id] = guild;
       this.scheduleForDeletion(guild.id);
     } else if (this.deleted[data.id]) {
