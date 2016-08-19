@@ -55,8 +55,8 @@ class WebSocketPacketManager {
   }
 
   setSequence(s) {
-    if (s && s > this.ws.store.sequence) {
-      this.ws.store.sequence = s;
+    if (s && s > this.ws.sequence) {
+      this.ws.sequence = s;
     }
   }
 

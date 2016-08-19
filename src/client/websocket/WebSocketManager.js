@@ -2,7 +2,6 @@ const WebSocket = require('ws');
 const Constants = require('../../util/Constants');
 const zlib = require('zlib');
 const PacketManager = require('./packets/WebSocketPacketManager');
-const WebSocketManagerDataStore = require('../../structures/datastore/WebSocketManagerDataStore');
 
 /**
  * The WebSocket Manager of the Client
@@ -23,15 +22,22 @@ class WebSocketManager {
      */
     this.packetManager = new PacketManager(this);
     /**
-     * The WebSocketManager datastore
-     * @type {WebSocketManagerDataStore}
-     */
-    this.store = new WebSocketManagerDataStore();
-    /**
      * The status of the WebSocketManager, a type of Constants.Status. It defaults to IDLE.
      * @type {Number}
      */
     this.status = Constants.Status.IDLE;
+
+    /**
+     * The session ID of the connection, null if not yet available.
+     * @type {?String}
+     */
+    this.sessionID = null;
+
+    /**
+     * The packet count of the client, null if not yet available.
+     * @type {?Number}
+     */
+    this.sequence = -1;
   }
 
   /**
@@ -86,8 +92,8 @@ class WebSocketManager {
   _sendResume() {
     const payload = {
       token: this.client.store.token,
-      session_id: this.store.sessionID,
-      seq: this.store.sequence,
+      session_id: this.sessionID,
+      seq: this.sequence,
     };
 
     this.send({
