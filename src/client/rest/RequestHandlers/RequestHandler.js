@@ -2,7 +2,7 @@
  * A base class for different types of rate limiting handlers for the REST API.
  * @private
  */
-module.exports = class RequestHandler {
+class RequestHandler {
   constructor(restManager) {
     /**
      * The RESTManager that instantiated this RequestHandler
@@ -43,4 +43,6 @@ module.exports = class RequestHandler {
   handle() {
 
   }
-};
+}
+
+module.exports = RequestHandler;

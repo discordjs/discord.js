@@ -6,7 +6,7 @@ const RequestHandler = require('./RequestHandler');
  * but it can be slower.
  * @extends {RequestHandler}
  */
-module.exports = class SequentialRequestHandler extends RequestHandler {
+class SequentialRequestHandler extends RequestHandler {
 
   constructor(restManager) {
     super(restManager);
@@ -89,4 +89,6 @@ module.exports = class SequentialRequestHandler extends RequestHandler {
     const item = this.queue[0];
     this.execute(item).then(() => this.handle());
   }
-};
+}
+
+module.exports = SequentialRequestHandler;

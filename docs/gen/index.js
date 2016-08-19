@@ -83,6 +83,13 @@ function clean() {
     } else if (item.kind === 'function' && item.memberof) {
       const obj = cleaned.classes[item.memberof] || cleaned.interfaces[item.memberof];
       const newReturns = [];
+      if (!item.returns) {
+        item.returns = [{
+          type: {
+            names: ['null'],
+          },
+        }];
+      }
       for (const name of item.returns[0].type.names) {
         newReturns.push(matchReturnName(name));
       }
