@@ -32,7 +32,7 @@ class ClientDataResolver {
   /**
    * Resolves a UserResolvable to a User object
    * @param {UserResolvable} user the UserResolvable to identify
-   * @returns {User}
+   * @returns {?User}
    */
   resolveUser(user) {
     if (user instanceof User) {
@@ -57,7 +57,7 @@ class ClientDataResolver {
   /**
    * Resolves a GuildResolvable to a Guild object
    * @param {GuildResolvable} guild the GuildResolvable to identify
-   * @returns {Guild}
+   * @returns {?Guild}
    */
   resolveGuild(guild) {
     if (guild instanceof Guild) {
@@ -76,7 +76,7 @@ class ClientDataResolver {
    * Resolves a GuildMemberResolvable to a GuildMember object
    * @param {GuildResolvable} guild the guild that the member is part of
    * @param {UserResolvable} user the user that is part of the guild
-   * @returns {GuildMember}
+   * @returns {?GuildMember}
    */
   resolveGuildMember($guild, $user) {
     let guild = $guild;
@@ -95,6 +95,18 @@ class ClientDataResolver {
     return guild.store.get('members', user.id);
   }
 
+  /**
+   * Data that resolves to give a Base64 string, typically for image uploading. This can be:
+   * * A Buffer
+   * * A Base64 String
+   * @typedef {Buffer|String} Base64Resolvable
+   */
+
+  /**
+   * Resolves a Base64Resolvable to a Base 64 image
+   * @param {Base64Resolvable} dataResolvable the base 64 resolvable you want to resolve
+   * @returns {?String}
+   */
   resolveBase64(data) {
     if (data instanceof Buffer) {
       return `data:image/jpg;base64,${data.toString('base64')}`;
@@ -103,6 +115,18 @@ class ClientDataResolver {
     return data;
   }
 
+  /**
+   * Data that can be resolved to give a Channel. This can be:
+   * * An instance of a Channel
+   * * An ID of a Channel
+   * @typedef {Channel|String} ChannelResolvable
+   */
+
+  /**
+   * Resolves a ChannelResolvable to a Channel object
+   * @param {ChannelResolvable} channelResolvable the channel resolvable to resolve
+   * @returns {?Channel}
+   */
   resolveChannel(channel) {
     if (channel instanceof Channel) {
       return channel;
@@ -115,6 +139,19 @@ class ClientDataResolver {
     return null;
   }
 
+  /**
+   * Data that can be resolved to give a String. This can be:
+   * * A String
+   * * An Array (joined with a new line delimiter to give a string)
+   * * Any object
+   * @typedef {String|Array|Object} StringResolvable
+   */
+
+  /**
+   * Resolves a StringResolvable to a String
+   * @param {StringResolvable} stringResolvable the string resolvable to resolve
+   * @returns {String}
+   */
   resolveString(data) {
     if (data instanceof String) {
       return data;
