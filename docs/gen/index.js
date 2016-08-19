@@ -4,7 +4,7 @@ let parse;
 
 const customDocs = require('../custom/index');
 
-const GEN_VERSION = 7;
+const GEN_VERSION = 8;
 
 try {
   fs = require('fs-extra');
@@ -88,12 +88,6 @@ function clean() {
     if (!item) {
       continue;
     }
-    if (item.kind === 'event') {
-      if (seenEvents[item.name]) {
-        console.log('dupe logs for', item.name);
-      }
-      seenEvents[item.name] = true;
-    }
     if (item.kind === 'member') {
       const obj = cleaned.classes[item.memberof] || cleaned.interfaces[item.memberof];
       const newTypes = [];
@@ -122,6 +116,13 @@ function clean() {
     } else if (item.kind === 'constructor') {
       const obj = cleaned.classes[item.memberof] || cleaned.interfaces[item.memberof];
       obj.constructor = item;
+    } else if (item.kind === 'event') {
+      if (seenEvents[item.name]) {
+        console.log('dupe logs for', item.name);
+      }
+      seenEvents[item.name] = true;
+      const obj = cleaned.classes[item.memberof] || cleaned.interfaces[item.memberof];
+      obj.events.push(item);
     }
   }
   json = cleaned;
