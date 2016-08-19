@@ -13,7 +13,7 @@ class GuildMemberRemoveAction extends Action {
     const client = this.client;
     const guild = client.store.get('guilds', data.guild_id);
     if (guild) {
-      let member = guild.store.get('members', data.user.id);
+      let member = guild.members.get(data.user.id);
       if (member) {
         guild._removeMember(member);
         this.deleted[guild.id + data.user.id] = member;

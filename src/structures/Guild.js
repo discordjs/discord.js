@@ -1,6 +1,5 @@
 const User = require('./User');
 const GuildMember = require('./GuildMember');
-const GuildDataStore = require('./datastore/GuildDataStore');
 const Constants = require('../util/Constants');
 const Role = require('./Role');
 
@@ -31,10 +30,22 @@ class Guild {
     this.client = client;
 
     /**
-     * The data store of the Guild.
-     * @type {GuildDataStore}
+     * A Map of members that are in this Guild. The key is the member's ID, the value is the member.
+     * @type {Map<String, GuildMember>}
      */
-    this.store = new GuildDataStore();
+    this.members = new Map();
+
+    /**
+     * A Map of channels that are in this Guild. The key is the channel's ID, the value is the channel.
+     * @type {Map<String, GuildChannel>}
+     */
+    this.channels = new Map();
+
+    /**
+     * A Map of roles that are in this Guild. The key is the role's ID, the value is the role.
+     * @type {Map<String, Role>}
+     */
+    this.roles = new Map();
 
     if (!data) {
       return;
@@ -63,7 +74,8 @@ class Guild {
     }
 
     guildUser.joined_at = guildUser.joined_at || 0;
-    const member = this.store.add('members', new GuildMember(this, guildUser));
+    const member = new GuildMember(this, guildUser);
+    this.members.set(member.id, member);
     if (this.client.ws.status === Constants.Status.READY && !noEvent) {
       this.client.emit(Constants.Events.GUILD_MEMBER_ADD, this, member);
     }
@@ -81,7 +93,7 @@ class Guild {
   }
 
   _removeMember(guildMember) {
-    this.store.remove('members', guildMember);
+    this.members.delete(guildMember.id);
   }
 
   /**
@@ -236,7 +248,7 @@ class Guild {
     this.features = data.features || [];
 
     if (data.members) {
-      this.store.clear('members');
+      this.members.clear();
       for (const guildUser of data.members) {
         this._addMember(guildUser);
       }
@@ -246,10 +258,10 @@ class Guild {
      * The owner of the guild
      * @type {User}
      */
-    this.owner = this.store.get('members', data.owner_id);
+    this.owner = this.members.get(data.owner_id);
 
     if (data.channels) {
-      this.store.clear('channels');
+      this.channels.clear();
       for (const channel of data.channels) {
         this.client.store.newChannel(channel, this);
       }
@@ -259,12 +271,13 @@ class Guild {
      * The embed channel of the Guild.
      * @type {GuildChannel}
      */
-    this.embedChannel = this.store.get('channels', data.embed_channel_id);
+    this.embedChannel = this.channels.get(data.embed_channel_id);
 
     if (data.roles) {
-      this.store.clear('roles');
+      this.roles.clear();
       for (const role of data.roles) {
-        this.store.add('roles', new Role(this, role));
+        const newRole = new Role(this, role);
+        this.roles.set(newRole.id, newRole);
       }
     }
 
@@ -280,7 +293,7 @@ class Guild {
 
     if (data.voice_states) {
       for (const voiceState of data.voice_states) {
-        const member = this.store.get('members', voiceState.user_id);
+        const member = this.members.get(voiceState.user_id);
         if (member) {
           member.serverMute = voiceState.mute;
           member.serverDeaf = voiceState.deaf;
@@ -475,51 +488,6 @@ class Guild {
   setSplash(splash) {
     return this.edit({ splash });
   }
-
-  /**
-   * The channels in the guild.
-   * @type {Array<GuildChannel>}
-   * @readonly
-   */
-  get channels() { return this.store.getAsArray('channels'); }
-
-  /**
-   * A dictionary mapping the IDs of channels in this guild to the channel itself. If you want to find a channel
-   * in the guild by ID, use `guild.$channels[id]` rather than filtering `guild.channels` as it is much more efficient.
-   * @readonly
-   * @type {Object<String, Channel>}
-   */
-  get $channels() { return this.store.data.channels; }
-
-  /**
-   * The roles in the guild.
-   * @type {Array<Role>}
-   * @readonly
-   */
-  get roles() { return this.store.getAsArray('roles'); }
-
-  /**
-   * A dictionary mapping the IDs of roles in this guild to the role itself. If you want to find a role
-   * in the guild by ID, use `guild.$roles[id]` rather than filtering `guild.roles` as it is much more efficient.
-   * @readonly
-   * @type {Object<String, Role>}
-   */
-  get $roles() { return this.store.data.roles; }
-
-  /**
-   * The members of the guild.
-   * @type {Array<GuildMember>}
-   * @readonly
-   */
-  get members() { return this.store.getAsArray('members'); }
-
-  /**
-   * A dictionary mapping the IDs of members in this guild to the member object itself. If you want to find a member
-   * in the guild by ID, use `guild.$members[id]` rather than filtering `guild.members` as it is much more efficient.
-   * @readonly
-   * @type {Object<String, GuildMember>}
-   */
-  get $members() { return this.store.data.members; }
 }
 
 module.exports = Guild;

@@ -11,7 +11,7 @@ class GuildMemberUpdateHandler extends AbstractHandler {
     const guild = client.store.get('guilds', data.guild_id);
 
     if (guild) {
-      const member = guild.store.get('members', data.user.id);
+      const member = guild.members.get(data.user.id);
       if (member) {
         guild._updateMember(member, data);
       }

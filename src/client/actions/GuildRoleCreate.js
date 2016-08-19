@@ -9,9 +9,9 @@ class GuildRoleCreate extends Action {
     const guild = client.store.get('guilds', data.guild_id);
 
     if (guild) {
-      const already = guild.store.get('roles', data.role.id);
+      const already = guild.roles.get(data.role.id);
       const role = new Role(guild, data.role);
-      guild.store.add('roles', role);
+      guild.roles.set(role.id, role);
 
       if (!already) {
         client.emit(Constants.Events.GUILD_ROLE_CREATE, guild, role);

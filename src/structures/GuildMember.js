@@ -74,14 +74,14 @@ class GuildMember {
    */
   get roles() {
     const list = [];
-    const everyoneRole = this.guild.store.get('roles', this.guild.id);
+    const everyoneRole = this.guild.roles.get(this.guild.id);
 
     if (everyoneRole) {
       list.push(everyoneRole);
     }
 
     for (const roleID of this._roles) {
-      const role = this.guild.store.get('roles', roleID);
+      const role = this.guild.roles.get(roleID);
       if (role) {
         list.push(role);
       }
@@ -114,7 +114,7 @@ class GuildMember {
    * @readonly
    */
   get voiceChannel() {
-    return this.guild.store.get('channels', this.voiceChannelID);
+    return this.guild.channels.get(this.voiceChannelID);
   }
 
   /**

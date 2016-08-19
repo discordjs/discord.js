@@ -24,7 +24,7 @@ class PresenceUpdateHandler extends AbstractHandler {
     }
 
     if (guild) {
-      const memberInGuild = guild.store.get('members', user.id);
+      const memberInGuild = guild.members.get(user.id);
       if (!memberInGuild) {
         const member = guild._addMember({
           user,

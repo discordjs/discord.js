@@ -53,10 +53,10 @@ class ClientDataStore extends AbstractDataStore {
       if (guild) {
         if (data.type === Constants.ChannelTypes.text) {
           channel = new TextChannel(guild, data);
-          guild.store.add('channels', channel);
+          guild.channels.set(channel.id, channel);
         } else if (data.type === Constants.ChannelTypes.voice) {
           channel = new VoiceChannel(guild, data);
-          guild.store.add('channels', channel);
+          guild.channels.set(channel.id, channel);
         }
       }
     }
@@ -86,7 +86,7 @@ class ClientDataStore extends AbstractDataStore {
   killChannel(channel) {
     this.remove('channels', channel);
     if (channel instanceof GuildChannel) {
-      channel.guild.store.remove('channels', channel);
+      channel.guild.channels.delete(channel.id);
     }
   }
 

@@ -11,7 +11,7 @@ class VoiceStateUpdateHandler extends AbstractHandler {
     const guild = client.store.get('guilds', data.guild_id);
 
     if (guild) {
-      const member = guild.store.get('members', data.user_id);
+      const member = guild.members.get(data.user_id);
       if (member) {
         const oldVoiceChannelMember = cloneObject(member);
         if (member.voiceChannel && member.voiceChannel.id !== data.channel_id) {

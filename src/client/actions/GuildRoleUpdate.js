@@ -12,7 +12,7 @@ class GuildRoleUpdateAction extends Action {
 
     if (guild) {
       let oldRole;
-      const existingRole = guild.store.get('roles', roleData.id);
+      const existingRole = guild.roles.get(roleData.id);
       // exists and not the same
       if (existingRole && !existingRole.equals(roleData)) {
         oldRole = cloneObject(existingRole);

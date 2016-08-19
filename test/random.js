@@ -121,8 +121,8 @@ client.on('message', message => {
 
     if (message.content === 'stats') {
       let m = '';
-      m += `I am aware of ${message.guild.channels.length} channels\n`;
-      m += `I am aware of ${message.guild.members.length} members`;
+      m += `I am aware of ${message.guild.channels.size} channels\n`;
+      m += `I am aware of ${message.guild.members.size} members`;
       message.channel.sendMessage(m);
     }
 

@@ -92,7 +92,7 @@ class ClientDataResolver {
       return null;
     }
 
-    return guild.store.get('members', user.id);
+    return guild.members.get(user.id);
   }
 
   /**
