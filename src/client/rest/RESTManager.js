@@ -2,6 +2,7 @@ const UserAgentManager = require('./UserAgentManager');
 const RESTMethods = require('./RESTMethods');
 const SequentialRequestHandler = require('./RequestHandlers/Sequential');
 const APIRequest = require('./APIRequest');
+const Constants = require('../../util/Constants');
 
 class RESTManager {
 
@@ -23,11 +24,21 @@ class RESTManager {
     });
   }
 
+  getRequestHandler() {
+    switch (this.client.options.api_request_method) {
+      case 'sequential':
+        return SequentialRequestHandler;
+      default:
+        throw Constants.Errors.INVALID_RATE_LIMIT_METHOD;
+    }
+  }
+
   makeRequest(method, url, auth, data, file) {
     const apiRequest = new APIRequest(this, method, url, auth, data, file);
 
     if (!this.handlers[apiRequest.getEndpoint()]) {
-      this.handlers[apiRequest.getEndpoint()] = new SequentialRequestHandler(this);
+      const RequestHandlerType = this.getRequestHandler();
+      this.handlers[apiRequest.getEndpoint()] = new RequestHandlerType(this);
     }
 
     return this.push(this.handlers[apiRequest.getEndpoint()], apiRequest);

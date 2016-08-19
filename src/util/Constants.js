@@ -13,6 +13,7 @@ exports.DefaultOptions = {
   protocol_version: 6,
   max_message_cache: 200,
   rest_ws_bridge_timeout: 5000,
+  api_request_method: 'sequential',
 };
 
 exports.Status = {
@@ -37,6 +38,7 @@ exports.Errors = {
   BAD_WS_MESSAGE: new Error('a bad message was received from the websocket - bad compression or not json'),
   TOOK_TOO_LONG: new Error('something took too long to do'),
   NOT_A_PERMISSION: new Error('that is not a valid permission number'),
+  INVALID_RATE_LIMIT_METHOD: new Error('unknown rate limiting method'),
 };
 
 const API = 'https://discordapp.com/api';
