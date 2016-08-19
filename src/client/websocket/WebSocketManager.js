@@ -173,7 +173,7 @@ class WebSocketManager {
    * the `READY` event.
    * @returns {null}
    */
-  checkIfReady(a) {
+  checkIfReady() {
     if (this.status !== Constants.Status.READY) {
       let unavailableCount = 0;
       for (const guildID of this.client.guilds.keys()) {
