@@ -45,9 +45,17 @@ module.exports = class SequentialRequestHandler extends RequestHandler {
           this.timeDifference = Date.now() - new Date(res.headers.date).getTime();
         }
         if (err) {
-          this.waiting = false;
-          item.reject(err);
-          reject(err);
+          if (err.status === 429) {
+            setTimeout(() => {
+              this.waiting = false;
+              resolve();
+            }, res.headers['retry-after']);
+          } else {
+            this.queue.shift();
+            this.waiting = false;
+            item.reject(err);
+            resolve(err);
+          }
         } else {
           this.queue.shift();
           const data = res && res.body ? res.body : {};
@@ -56,7 +64,7 @@ module.exports = class SequentialRequestHandler extends RequestHandler {
             setTimeout(() => {
               this.waiting = false;
               resolve(data);
-            }, (this.requestResetTime - Date.now()) + this.timeDifference + 1000);
+            }, (this.requestResetTime - Date.now()) + this.timeDifference - 1000);
           } else {
             this.waiting = false;
             resolve(data);
@@ -74,6 +82,6 @@ module.exports = class SequentialRequestHandler extends RequestHandler {
     this.waiting = true;
 
     const item = this.queue[0];
-    this.execute(item).then(() => this.handle()).catch(console.log);
+    this.execute(item).then(() => this.handle());
   }
 };
