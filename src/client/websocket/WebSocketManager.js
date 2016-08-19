@@ -151,7 +151,8 @@ class WebSocketManager {
    * Run whenever an error occurs with the WebSocket connection. Tries to reconnect
    * @returns {null}
    */
-  eventError() {
+  eventError(e) {
+    console.log(e);
     this.tryReconnect();
   }
 

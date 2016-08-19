@@ -142,8 +142,8 @@ client.on('message', message => {
     }
 
     if (message.content === 'ratelimittest') {
-      let i = 0;
-      while (i < 20) {
+      let i = 1;
+      while (i <= 20) {
         message.channel.sendMessage(`Testing my rates, item ${i} of 20`);
         i++;
       }

@@ -11,7 +11,7 @@ class APIRequest {
     this.file = file;
   }
 
-  getBucketName() {
+  getEndpoint() {
     return `${this.method} ${this.url}`;
   }
 
