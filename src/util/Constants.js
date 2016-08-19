@@ -121,6 +121,7 @@ exports.Events = {
   MESSAGE_CREATE: 'message',
   MESSAGE_DELETE: 'messageDelete',
   MESSAGE_UPDATE: 'messageUpdate',
+  RECONNECTING: 'reconnecting',
 };
 
 exports.WSEvents = {

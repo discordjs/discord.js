@@ -19,4 +19,12 @@ class GuildBanAddHandler extends AbstractHandler {
 
 }
 
+/**
+* Emitted whenever a member is banned from a guild.
+*
+* @event Client#guildBanAdd
+* @param {Guild} guild The guild that the ban occurred in
+* @param {User} user The user that was banned
+*/
+
 module.exports = GuildBanAddHandler;

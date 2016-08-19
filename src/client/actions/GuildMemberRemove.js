@@ -45,4 +45,14 @@ class GuildMemberRemoveAction extends Action {
   }
 }
 
+
+/**
+* Emitted whenever a member leaves a guild, or is kicked.
+*
+* @event Client#guildMemberRemove
+* @param {Guild} guild the guild that the member has left.
+* @param {GuildMember} member the member that has left the guild.
+*/
+
+
 module.exports = GuildMemberRemoveAction;

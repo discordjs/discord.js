@@ -80,11 +80,19 @@ function firstPass() {
   return cleaned;
 }
 
+const seenEvents = {};
+
 function clean() {
   const cleaned = firstPass();
   for (const item of json) {
     if (!item) {
       continue;
+    }
+    if (item.kind === 'event') {
+      if (seenEvents[item.name]) {
+        console.log('dupe logs for', item.name);
+      }
+      seenEvents[item.name] = true;
     }
     if (item.kind === 'member') {
       const obj = cleaned.classes[item.memberof] || cleaned.interfaces[item.memberof];

@@ -33,4 +33,13 @@ class GuildRoleUpdateAction extends Action {
   }
 }
 
+/**
+* Emitted whenever a guild role is updated.
+*
+* @event Client#guildRoleUpdated
+* @param {Guild} guild the guild that the role was updated in.
+* @param {Role} oldRole the role before the update.
+* @param {Role} newRole the role after the update.
+*/
+
 module.exports = GuildRoleUpdateAction;

@@ -21,6 +21,12 @@ class ClientDataManager {
     const guild = new Guild(this.client, data);
     this.client.guilds.set(guild.id, guild);
     if (this.pastReady && !already) {
+      /**
+      * Emitted whenever the client joins a Guild.
+      *
+      * @event Client#guildCreate
+      * @param {Guild} guild the created guild.
+      */
       this.client.emit(Constants.Events.GUILD_CREATE, guild);
     }
 

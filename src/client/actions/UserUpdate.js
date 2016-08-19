@@ -33,4 +33,12 @@ class UserUpdateAction extends Action {
   }
 }
 
+/**
+* Emitted whenever a detail of the logged in User changes - e.g. username.
+*
+* @event Client#userUpdate
+* @param {ClientUser} oldClientUser the client user before the update.
+* @param {ClientUser} newClientUser the client user after the update.
+*/
+
 module.exports = UserUpdateAction;

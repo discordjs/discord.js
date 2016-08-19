@@ -33,4 +33,12 @@ class MessageUpdateAction extends Action {
   }
 }
 
+/**
+* Emitted whenever a message is updated - e.g. embed or content change.
+*
+* @event Client#messageUpdate
+* @param {Message} oldMessage the message before the update.
+* @param {Message} newMessage the message after the update.
+*/
+
 module.exports = MessageUpdateAction;

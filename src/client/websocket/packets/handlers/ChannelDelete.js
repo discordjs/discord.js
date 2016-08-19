@@ -17,4 +17,11 @@ class ChannelDeleteHandler extends AbstractHandler {
 
 }
 
+/**
+* Emitted whenever a Channel is deleted.
+*
+* @event Client#channelDelete
+* @param {Channel} channel The channel that was deleted
+*/
+
 module.exports = ChannelDeleteHandler;

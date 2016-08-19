@@ -46,4 +46,11 @@ class GuildDeleteAction extends Action {
   }
 }
 
+/**
+* Emitted whenever a guild becomes unavailable, likely due to a server outage.
+*
+* @event Client#guildUnavailable
+* @param {Guild} guild the guild that has become unavailable.
+*/
+
 module.exports = GuildDeleteAction;

@@ -88,6 +88,14 @@ class Guild {
 
     member._roles = data.roles;
     if (this.client.ws.status === Constants.Status.READY) {
+      /**
+      * Emitted whenever a Guild Member's Roles change - i.e. new role or removed role
+      *
+      * @event Client#guildMemberRolesUpdate
+      * @param {Guild} guild the guild that the update affects
+      * @param {Array<Role>} oldRoles the roles before the update
+      * @param {Guild} newRoles the roles after the update
+      */
       this.client.emit(Constants.Events.GUILD_MEMBER_ROLES_UPDATE, this, oldRoles, member.roles);
     }
   }

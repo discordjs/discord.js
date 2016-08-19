@@ -182,6 +182,11 @@ class WebSocketManager {
 
       if (unavailableCount === 0) {
         this.status = Constants.Status.READY;
+        /**
+        * Emitted when the Client becomes ready to start working
+        *
+        * @event Client#ready
+        */
         this.client.emit(Constants.Events.READY);
         this.packetManager.handleQueue();
       }
@@ -196,6 +201,11 @@ class WebSocketManager {
     this.status = Constants.Status.RECONNECTING;
     this.ws.close();
     this.packetManager.handleQueue();
+    /**
+    * Emitted when the Client tries to reconnect after being disconnected
+    *
+    * @event Client#reconnecting
+    */
     this.client.emit(Constants.Events.RECONNECTING);
     this.connect(this.client.ws.gateway);
   }
