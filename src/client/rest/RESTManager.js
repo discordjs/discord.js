@@ -12,6 +12,7 @@ class RESTManager {
     this.userAgentManager = new UserAgentManager(this);
     this.methods = new RESTMethods(this);
     this.rateLimitedEndpoints = {};
+    this.globallyRateLimited = false;
   }
 
   push(handler, apiRequest) {

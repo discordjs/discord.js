@@ -18,6 +18,18 @@ module.exports = class RequestHandler {
   }
 
   /**
+   * Whether or not the client is being rate limited on every endpoint.
+   * @type {Boolean}
+   */
+  get globalLimit() {
+    return this.restManager.globallyRateLimited;
+  }
+
+  set globalLimit(value) {
+    this.restManager.globallyRateLimited = value;
+  }
+
+  /**
    * Push a new API request into this bucket
    * @param {APIRequest} request the new request to push into the queue
    */

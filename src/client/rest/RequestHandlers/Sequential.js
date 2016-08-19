@@ -36,7 +36,7 @@ module.exports = class SequentialRequestHandler extends RequestHandler {
    * @returns {Promise<Object, Error>}
    */
   execute(item) {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       item.request.gen().end((err, res) => {
         if (res && res.headers) {
           this.requestLimit = res.headers['x-ratelimit-limit'];
@@ -48,8 +48,12 @@ module.exports = class SequentialRequestHandler extends RequestHandler {
           if (err.status === 429) {
             setTimeout(() => {
               this.waiting = false;
+              this.globalLimit = false;
               resolve();
-            }, res.headers['retry-after']);
+            }, res.headers['retry-after'] + 500);
+            if (res.headers['x-ratelimit-global']) {
+              this.globalLimit = true;
+            }
           } else {
             this.queue.shift();
             this.waiting = false;
@@ -58,6 +62,7 @@ module.exports = class SequentialRequestHandler extends RequestHandler {
           }
         } else {
           this.queue.shift();
+          this.globalLimit = false;
           const data = res && res.body ? res.body : {};
           item.resolve(data);
           if (this.requestRemaining === 0) {
@@ -76,7 +81,7 @@ module.exports = class SequentialRequestHandler extends RequestHandler {
 
   handle() {
     super.handle();
-    if (this.waiting || this.queue.length === 0) {
+    if (this.waiting || this.queue.length === 0 || this.globalLimit) {
       return;
     }
     this.waiting = true;
