@@ -1,23 +1,15 @@
-const AbstractDataStore = require('./AbstractDataStore');
-const Constants = require('../../util/Constants');
-const cloneObject = require('../../util/CloneObject');
-const Guild = require('../Guild');
-const User = require('../User');
-const DMChannel = require('../DMChannel');
-const TextChannel = require('../TextChannel');
-const VoiceChannel = require('../VoiceChannel');
-const GuildChannel = require('../GuildChannel');
+const Constants = require('../util/Constants');
+const cloneObject = require('../util/CloneObject');
+const Guild = require('../structures/Guild');
+const User = require('../structures/User');
+const DMChannel = require('../structures/DMChannel');
+const TextChannel = require('../structures/TextChannel');
+const VoiceChannel = require('../structures/VoiceChannel');
+const GuildChannel = require('../structures/GuildChannel');
 
-class ClientDataStore extends AbstractDataStore {
+class ClientDataManager {
   constructor(client) {
-    super();
-
     this.client = client;
-    this.token = null;
-    this.session = null;
-    this.user = null;
-    this.email = null;
-    this.password = null;
   }
 
   get pastReady() {
@@ -102,4 +94,4 @@ class ClientDataStore extends AbstractDataStore {
   }
 }
 
-module.exports = ClientDataStore;
+module.exports = ClientDataManager;

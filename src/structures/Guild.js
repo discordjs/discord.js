@@ -70,7 +70,7 @@ class Guild {
 
   _addMember(guildUser, noEvent) {
     if (!(guildUser.user instanceof User)) {
-      guildUser.user = this.client.store.newUser(guildUser.user);
+      guildUser.user = this.client.dataManager.newUser(guildUser.user);
     }
 
     guildUser.joined_at = guildUser.joined_at || 0;
@@ -263,7 +263,7 @@ class Guild {
     if (data.channels) {
       this.channels.clear();
       for (const channel of data.channels) {
-        this.client.store.newChannel(channel, this);
+        this.client.dataManager.newChannel(channel, this);
       }
     }
 

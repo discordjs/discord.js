@@ -11,8 +11,8 @@ class RESTMethods {
 
   loginEmailPassword(email, password) {
     return new Promise((resolve, reject) => {
-      this.rest.client.store.email = email;
-      this.rest.client.store.password = password;
+      this.rest.client.email = email;
+      this.rest.client.password = password;
       this.rest.makeRequest('post', Constants.Endpoints.login, false, { email, password })
         .then(data => {
           this.rest.client.manager.connectToWebSocket(data.token, resolve, reject);
@@ -31,8 +31,8 @@ class RESTMethods {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('get', Constants.Endpoints.gateway, true)
         .then(res => {
-          this.rest.client.store.gateway = `${res.url}/?encoding=json&v=${this.rest.client.options.protocol_version}`;
-          resolve(this.rest.client.store.gateway);
+          this.rest.client.ws.gateway = `${res.url}/?encoding=json&v=${this.rest.client.options.protocol_version}`;
+          resolve(this.rest.client.ws.gateway);
         })
         .catch(reject);
     });
@@ -117,7 +117,7 @@ class RESTMethods {
         return resolve(dmChannel);
       }
 
-      return this.rest.makeRequest('post', Constants.Endpoints.userChannels(this.rest.client.store.user.id), true, {
+      return this.rest.makeRequest('post', Constants.Endpoints.userChannels(this.rest.client.user.id), true, {
         recipient_id: recipient.id,
       })
       .then(data => resolve(this.rest.client.actions.ChannelCreate.handle(data).channel))
@@ -181,14 +181,14 @@ class RESTMethods {
 
   updateCurrentUser(_data) {
     return new Promise((resolve, reject) => {
-      const user = this.rest.client.store.user;
+      const user = this.rest.client.user;
       const data = {};
 
       data.username = _data.username || user.username;
       data.avatar = this.rest.client.resolver.resolveBase64(_data.avatar) || user.avatar;
       if (!user.bot) {
-        data.password = this.rest.client.store.password;
-        data.email = _data.email || this.rest.client.store.email;
+        data.password = this.rest.client.password;
+        data.email = _data.email || this.rest.client.email;
         data.new_password = _data.newPassword;
       }
 

@@ -2,7 +2,7 @@ const EventEmitter = require('events').EventEmitter;
 const mergeDefault = require('../util/MergeDefault');
 const Constants = require('../util/Constants');
 const RESTManager = require('./rest/RESTManager');
-const ClientDataStore = require('../structures/datastore/ClientDataStore');
+const ClientDataManager = require('./ClientDataManager');
 const ClientManager = require('./ClientManager');
 const ClientDataResolver = require('./ClientDataResolver');
 const WebSocketManager = require('./websocket/WebSocketManager');
@@ -27,11 +27,11 @@ class Client extends EventEmitter {
      */
     this.rest = new RESTManager(this);
     /**
-     * The data store of the Client
-     * @type {ClientDataStore}
+     * The data manager of the Client
+     * @type {ClientDataManager}
      * @private
      */
-    this.store = new ClientDataStore(this);
+    this.dataManager = new ClientDataManager(this);
     /**
      * The manager of the Client
      * @type {ClientManager}
@@ -72,6 +72,26 @@ class Client extends EventEmitter {
      * @type {Map<String, Channel>}
      */
     this.channels = new Map();
+    /**
+     * The authorization token for the logged in user/bot.
+     * @type {?String}
+     */
+    this.token = null;
+    /**
+     * The ClientUser representing the logged in Client
+     * @type {?ClientUser}
+     */
+    this.user = null;
+    /**
+     * The email, if there is one, for the logged in Client
+     * @type {?String}
+     */
+    this.email = null;
+    /**
+     * The password, if there is one, for the logged in Client
+     * @type {?String}
+     */
+    this.password = null;
   }
 
   /**
@@ -100,14 +120,6 @@ class Client extends EventEmitter {
     }
     // login with token
     return this.rest.methods.loginToken(email);
-  }
-
-  /**
-   * The User of the logged in Client, only available after `READY` has been fired.
-   * @type {ClientUser}
-   */
-  get user() {
-    return this.store.user;
   }
 
 }

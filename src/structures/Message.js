@@ -32,7 +32,7 @@ class Message {
      * The author of the message
      * @type {User}
      */
-    this.author = this.client.store.newUser(data.author);
+    this.author = this.client.dataManager.newUser(data.author);
     /**
      * The content of the message
      * @type {String}
@@ -88,7 +88,7 @@ class Message {
       if (user) {
         this.mentions.push(user);
       } else {
-        user = this.client.store.newUser(mention);
+        user = this.client.dataManager.newUser(mention);
         this.mentions.push(user);
       }
     }
@@ -128,7 +128,7 @@ class Message {
         if (user) {
           this.mentions.push(user);
         } else {
-          user = this.client.store.newUser(mention);
+          user = this.client.dataManager.newUser(mention);
           this.mentions.push(user);
         }
       }

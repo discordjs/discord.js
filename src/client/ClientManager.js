@@ -27,7 +27,7 @@ class ClientManager {
    * @returns {null}
    */
   connectToWebSocket(token, resolve, reject) {
-    this.client.store.token = token;
+    this.client.token = token;
     this.client.rest.methods.getGateway()
       .then(gateway => {
         this.client.ws.connect(gateway);

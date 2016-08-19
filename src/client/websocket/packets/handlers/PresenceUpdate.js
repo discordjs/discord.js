@@ -11,7 +11,7 @@ class PresenceUpdateHandler extends AbstractHandler {
     const guild = client.guilds.get(data.guild_id);
 
     function makeUser(newUser) {
-      return client.store.newUser(newUser);
+      return client.dataManager.newUser(newUser);
     }
 
     // step 1

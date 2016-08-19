@@ -16,10 +16,10 @@ class APIRequest {
   }
 
   getAuth() {
-    if (this.rest.client.store.token && this.rest.client.store.user && this.rest.client.store.user.bot) {
-      return `Bot ${this.rest.client.store.token}`;
-    } else if (this.rest.client.store.token) {
-      return this.rest.client.store.token;
+    if (this.rest.client.token && this.rest.client.user && this.rest.client.user.bot) {
+      return `Bot ${this.rest.client.token}`;
+    } else if (this.rest.client.token) {
+      return this.rest.client.token;
     }
     throw Constants.Errors.NO_TOKEN;
   }

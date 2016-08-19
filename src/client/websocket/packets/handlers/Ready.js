@@ -10,14 +10,14 @@ class ReadyHandler extends AbstractHandler {
     const client = this.packetManager.client;
 
     const clientUser = new ClientUser(client, data.user);
-    client.store.user = clientUser;
+    client.user = clientUser;
     client.users.set(clientUser.id, clientUser);
     for (const guild of data.guilds) {
-      client.store.newGuild(guild);
+      client.dataManager.newGuild(guild);
     }
 
     for (const privateDM of data.private_channels) {
-      client.store.newChannel(privateDM);
+      client.dataManager.newChannel(privateDM);
     }
 
     this.packetManager.ws.sessionID = data.session_id;

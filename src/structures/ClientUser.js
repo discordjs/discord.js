@@ -27,7 +27,7 @@ class ClientUser extends User {
    * @returns {Promise<ClientUser>}
    * @example
    * // set username
-   * client.store.user.setUsername('discordjs')
+   * client.user.setUsername('discordjs')
    *  .then(user => console.log(`My new username is ${user.username}`))
    *  .catch(console.log);
    */
@@ -42,7 +42,7 @@ class ClientUser extends User {
    * @returns {Promise<ClientUser>}
    * @example
    * // set email
-   * client.store.user.setEmail('bob@gmail.com')
+   * client.user.setEmail('bob@gmail.com')
    *  .then(user => console.log(`My new email is ${user.email}`))
    *  .catch(console.log);
    */
@@ -57,7 +57,7 @@ class ClientUser extends User {
    * @returns {Promise<ClientUser>}
    * @example
    * // set password
-   * client.store.user.setPassword('password')
+   * client.user.setPassword('password')
    *  .then(user => console.log('New password set!'))
    *  .catch(console.log);
    */
@@ -70,7 +70,7 @@ class ClientUser extends User {
    * @returns {Promise<ClientUser>}
    * @example
    * // set avatar
-   * client.store.user.setAvatar(fs.readFileSync('./avatar.png'))
+   * client.user.setAvatar(fs.readFileSync('./avatar.png'))
    *  .then(user => console.log(`New avatar set!`))
    *  .catch(console.log);
    */

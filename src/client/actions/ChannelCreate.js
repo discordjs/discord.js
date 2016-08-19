@@ -4,7 +4,7 @@ class ChannelCreateAction extends Action {
 
   handle(data) {
     const client = this.client;
-    const channel = client.store.newChannel(data);
+    const channel = client.dataManager.newChannel(data);
 
     return {
       channel,

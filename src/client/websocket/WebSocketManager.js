@@ -38,6 +38,12 @@ class WebSocketManager {
      * @type {?Number}
      */
     this.sequence = -1;
+
+    /**
+     * The gateway address for this WebSocket connection, null if not yet available.
+     * @type {?String}
+     */
+    this.gateway = null;
   }
 
   /**
@@ -91,7 +97,7 @@ class WebSocketManager {
    */
   _sendResume() {
     const payload = {
-      token: this.client.store.token,
+      token: this.client.token,
       session_id: this.sessionID,
       seq: this.sequence,
     };
@@ -109,7 +115,7 @@ class WebSocketManager {
   _sendNewIdentify() {
     this.reconnecting = false;
     const payload = this.client.options.ws;
-    payload.token = this.client.store.token;
+    payload.token = this.client.token;
 
     this.send({
       op: Constants.OPCodes.IDENTIFY,
@@ -191,7 +197,7 @@ class WebSocketManager {
     this.ws.close();
     this.packetManager.handleQueue();
     this.client.emit(Constants.Events.RECONNECTING);
-    this.connect(this.client.store.gateway);
+    this.connect(this.client.ws.gateway);
   }
 }
 
