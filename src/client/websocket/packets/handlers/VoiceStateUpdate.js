@@ -15,7 +15,7 @@ class VoiceStateUpdateHandler extends AbstractHandler {
       if (member) {
         const oldVoiceChannelMember = cloneObject(member);
         if (member.voiceChannel && member.voiceChannel.id !== data.channel_id) {
-          member.voiceChannel.store.remove('members', oldVoiceChannelMember);
+          member.voiceChannel.members.delete(oldVoiceChannelMember.id);
         }
 
         member.serverMute = data.mute;

@@ -1,5 +1,4 @@
 const GuildChannel = require('./GuildChannel');
-const VoiceChannelDataStore = require('./datastore/VoiceChannelDataStore');
 
 /**
  * Represents a Server Voice Channel on Discord.
@@ -8,7 +7,11 @@ const VoiceChannelDataStore = require('./datastore/VoiceChannelDataStore');
 class VoiceChannel extends GuildChannel {
   constructor(guild, data) {
     super(guild, data);
-    this.store = new VoiceChannelDataStore();
+    /**
+     * The members in this Voice Channel.
+     * @type {Map<String, GuildMember>}
+     */
+    this.members = new Map();
   }
 
   setup(data) {
