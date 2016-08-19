@@ -9,7 +9,7 @@ class MessageUpdateAction extends Action {
     const channel = client.store.get('channels', data.channel_id);
 
     if (channel) {
-      const message = channel.store.get('messages', data.id);
+      const message = channel.messages.get(data.id);
       if (message && !message.equals(data, true)) {
         const oldMessage = cloneObject(message);
         message.patch(data);

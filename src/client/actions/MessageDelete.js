@@ -12,10 +12,10 @@ class MessageDeleteAction extends Action {
     const client = this.client;
     const channel = client.store.get('channels', data.channel_id);
     if (channel) {
-      let message = channel.store.get('messages', data.id);
+      let message = channel.messages.get(data.id);
 
       if (message) {
-        channel.store.remove('messages', message.id);
+        channel.messages.delete(message.id);
         this.deleted[channel.id + message.id] = message;
         this.scheduleForDeletion(channel.id, message.id);
       } else if (this.deleted[channel.id + data.id]) {

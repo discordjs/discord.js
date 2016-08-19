@@ -1,7 +1,6 @@
 const Channel = require('./Channel');
 const TextBasedChannel = require('./interface/TextBasedChannel');
 const User = require('./User');
-const TextChannelDataStore = require('./datastore/TextChannelDataStore');
 
 /**
  * Represents a Direct Message Channel between two users.
@@ -11,22 +10,23 @@ const TextChannelDataStore = require('./datastore/TextChannelDataStore');
 class DMChannel extends Channel {
   constructor(client, data) {
     super(client, data);
-    this.store = new TextChannelDataStore();
+    this.messages = new Map();
   }
 
   _cacheMessage(message) {
     const maxSize = this.client.options.max_message_cache;
     if (maxSize === 0) {
       // saves on performance
-      return;
+      return null;
     }
 
-    const storeKeys = Object.keys(this.store);
-    if (storeKeys.length >= maxSize) {
-      this.store.remove(storeKeys[0]);
+    if (this.messages.size >= maxSize) {
+      this.messages.delete(Array.from(this.messages.keys())[0]);
     }
 
-    this.store.add('messages', message);
+    this.messages.set(message.id, message);
+
+    return message;
   }
 
   setup(data) {

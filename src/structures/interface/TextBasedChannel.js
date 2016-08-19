@@ -3,6 +3,14 @@
  * @interface
  */
 class TextBasedChannel {
+
+  constructor() {
+    /**
+     * A Map containing the messages sent to this channel.
+     * @type {Map<String, Message>}
+     */
+    this.messages = new Map();
+  }
   /**
    * Send a message to this channel
    * @param {String} content the content to send

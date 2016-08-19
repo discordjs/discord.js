@@ -1,5 +1,4 @@
 const GuildChannel = require('./GuildChannel');
-const TextChannelDataStore = require('./datastore/TextChannelDataStore');
 const TextBasedChannel = require('./interface/TextBasedChannel');
 
 /**
@@ -11,7 +10,7 @@ class TextChannel extends GuildChannel {
 
   constructor(guild, data) {
     super(guild, data);
-    this.store = new TextChannelDataStore();
+    this.messages = new Map();
   }
 
   _cacheMessage(message) {
@@ -21,12 +20,13 @@ class TextChannel extends GuildChannel {
       return null;
     }
 
-    const storeKeys = Object.keys(this.store);
-    if (storeKeys.length >= maxSize) {
-      this.store.remove(storeKeys[0]);
+    if (this.messages.size >= maxSize) {
+      this.messages.delete(Array.from(this.messages.keys())[0]);
     }
 
-    return this.store.add('messages', message);
+    this.messages.set(message.id, message);
+
+    return message;
   }
 
   sendMessage() {
