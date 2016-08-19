@@ -64,7 +64,7 @@ module.exports = class SequentialRequestHandler extends RequestHandler {
             setTimeout(() => {
               this.waiting = false;
               resolve(data);
-            }, (this.requestResetTime - Date.now()) + this.timeDifference - 1000);
+            }, (this.requestResetTime - Date.now()) + this.timeDifference + 1000);
           } else {
             this.waiting = false;
             resolve(data);
