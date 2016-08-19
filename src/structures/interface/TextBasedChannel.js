@@ -38,14 +38,31 @@ class TextBasedChannel {
   sendTTSMessage(content) {
     return this.client.rest.methods.sendMessage(this, content, true);
   }
+
+  _cacheMessage(message) {
+    const maxSize = this.client.options.max_message_cache;
+    if (maxSize === 0) {
+      // saves on performance
+      return null;
+    }
+
+    if (this.messages.size >= maxSize) {
+      this.messages.delete(Array.from(this.messages.keys())[0]);
+    }
+
+    this.messages.set(message.id, message);
+
+    return message;
+  }
 }
 
 function applyProp(structure, prop) {
   structure.prototype[prop] = TextBasedChannel.prototype[prop];
 }
 
-exports.applyToClass = structure => {
-  for (const prop of ['sendMessage', 'sendTTSMessage']) {
+exports.applyToClass = (structure, full = false) => {
+  const props = full ? ['sendMessage', 'sendTTSMessage', '_cacheMessage'] : ['sendMessage', 'sendTTSMessage'];
+  for (const prop of props) {
     applyProp(structure, prop);
   }
 };

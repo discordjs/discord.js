@@ -13,22 +13,6 @@ class TextChannel extends GuildChannel {
     this.messages = new Map();
   }
 
-  _cacheMessage(message) {
-    const maxSize = this.client.options.max_message_cache;
-    if (maxSize === 0) {
-      // saves on performance
-      return null;
-    }
-
-    if (this.messages.size >= maxSize) {
-      this.messages.delete(Array.from(this.messages.keys())[0]);
-    }
-
-    this.messages.set(message.id, message);
-
-    return message;
-  }
-
   sendMessage() {
     return;
   }
@@ -36,8 +20,12 @@ class TextChannel extends GuildChannel {
   sendTTSMessage() {
     return;
   }
+
+  _cacheMessage() {
+    return;
+  }
 }
 
-TextBasedChannel.applyToClass(TextChannel);
+TextBasedChannel.applyToClass(TextChannel, true);
 
 module.exports = TextChannel;
