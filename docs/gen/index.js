@@ -4,7 +4,7 @@ let parse;
 
 const customDocs = require('../custom/index');
 
-const GEN_VERSION = 6;
+const GEN_VERSION = 7;
 
 try {
   fs = require('fs-extra');
