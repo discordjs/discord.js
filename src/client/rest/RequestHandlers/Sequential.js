@@ -16,6 +16,13 @@ module.exports = class SequentialRequestHandler extends RequestHandler {
      * @type {Boolean}
      */
     this.waiting = false;
+
+    /**
+     * The time difference between Discord's Dates and the local computer's Dates. A positive number means the local
+     * computer's time is ahead of Discord's.
+     * @type {Number}
+     */
+    this.timeDifference = 0;
   }
 
   push(request) {
@@ -35,6 +42,7 @@ module.exports = class SequentialRequestHandler extends RequestHandler {
           this.requestLimit = res.headers['x-ratelimit-limit'];
           this.requestResetTime = Number(res.headers['x-ratelimit-reset']) * 1000;
           this.requestRemaining = Number(res.headers['x-ratelimit-remaining']);
+          this.timeDifference = Date.now() - new Date(res.headers.date).getTime();
         }
         if (err) {
           this.waiting = false;
@@ -48,7 +56,7 @@ module.exports = class SequentialRequestHandler extends RequestHandler {
             setTimeout(() => {
               this.waiting = false;
               resolve(data);
-            }, (this.requestResetTime - Date.now()) + 4000);
+            }, (this.requestResetTime - Date.now()) + this.timeDifference + 1000);
           } else {
             this.waiting = false;
             resolve(data);
