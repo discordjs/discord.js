@@ -5,6 +5,7 @@ const RequestHandler = require('./RequestHandler');
  * the next. This plays a _lot_ nicer in terms of avoiding 429's when there is more than one session of the account,
  * but it can be slower.
  * @extends {RequestHandler}
+ * @private
  */
 class SequentialRequestHandler extends RequestHandler {
 
