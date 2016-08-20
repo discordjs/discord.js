@@ -4,7 +4,7 @@ let parse;
 
 const customDocs = require('../custom/index');
 
-const GEN_VERSION = 8;
+const GEN_VERSION = 9;
 
 try {
   fs = require('fs-extra');
@@ -122,6 +122,11 @@ function clean() {
       }
       seenEvents[item.name] = true;
       const obj = cleaned.classes[item.memberof] || cleaned.interfaces[item.memberof];
+      const newParams = [];
+      for (const param of item.params) {
+        newParams.push(matchReturnName(param.name));
+      }
+      item.params = newParams;
       obj.events.push(item);
     }
   }
