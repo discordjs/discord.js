@@ -4,7 +4,7 @@ let parse;
 
 const customDocs = require('../custom/index');
 
-const GEN_VERSION = 9;
+const GEN_VERSION = 10;
 
 try {
   fs = require('fs-extra');
@@ -131,6 +131,11 @@ function clean() {
           param.type = newTypes;
         }
       }
+      item.params = [
+        {
+          type: item.params,
+        },
+      ];
       obj.events.push(item);
     }
   }
