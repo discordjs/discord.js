@@ -70,6 +70,7 @@ export default class Role {
 			manageRoles : hp ( Permissions.manageRoles ),
 			manageChannels : hp( Permissions.manageChannels ),
 			manageServer : hp( Permissions.manageServer ),
+			administrator: hp( Permissions.administrator ),
 			// text
 			readMessages : hp( Permissions.readMessages ),
 			sendMessages : hp( Permissions.sendMessages ),
