@@ -102,7 +102,7 @@ export default class Role {
 			return false;
 		}
 		if(!explicit){ // implicit permissions allowed
-			if( !!(this.permissions & Permissions.manageRoles) ){
+			if( !!(this.permissions & Permissions.administrator) ){
 				// manageRoles allowed, they have all permissions
 				return true;
 			}
