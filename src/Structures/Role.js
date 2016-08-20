@@ -70,6 +70,7 @@ export default class Role {
 			manageRoles : hp ( Permissions.manageRoles ),
 			manageChannels : hp( Permissions.manageChannels ),
 			manageServer : hp( Permissions.manageServer ),
+			administrator: hp( Permissions.administrator ),
 			// text
 			readMessages : hp( Permissions.readMessages ),
 			sendMessages : hp( Permissions.sendMessages ),
@@ -102,7 +103,7 @@ export default class Role {
 			return false;
 		}
 		if(!explicit){ // implicit permissions allowed
-			if( !!(this.permissions & Permissions.manageRoles) ){
+			if( !!(this.permissions & Permissions.administrator) ){
 				// manageRoles allowed, they have all permissions
 				return true;
 			}
