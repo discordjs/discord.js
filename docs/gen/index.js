@@ -122,11 +122,11 @@ function clean() {
       }
       seenEvents[item.name] = true;
       const obj = cleaned.classes[item.memberof] || cleaned.interfaces[item.memberof];
-      const newParams = [];
-      for (const param of item.params) {
-        newParams.push(matchReturnName(param.name));
+      const newTypes = [];
+      for (const name of item.type.names) {
+        newTypes.push(matchReturnName(name));
       }
-      item.params = newParams;
+      item.type = newTypes;
       obj.events.push(item);
     }
   }
