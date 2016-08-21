@@ -81,7 +81,8 @@ class Documentation {
       }
       const parent = this.findParent(member);
       if (!parent) {
-        throw new Error(`${member.name} has no accessible parent - ${JSON.stringify(member)}`);
+        console.log(new Error(`${member.name || member.directData.name} has no accessible parent`));
+        continue;
       }
       parent.add(item);
     }

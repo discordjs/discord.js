@@ -10,7 +10,6 @@ module.exports = class DocumentationScanner {
     return new Promise((resolve, reject) => {
       const stream = parse({
         src: [`${directory}*.js`, `${directory}**/*.js`],
-        private: true,
       });
 
       let json = '';
