@@ -1,7 +1,6 @@
 <template>
   <div class="docs-navbar">
     <container>
-      <span class="title">Documentation <span v-if="$route.params.tag">for {{ $route.params.tag }}</span></span>
       <div class="choices">
         Select docs from 
         <span class="choice" @click='select("branch")'>Branch</span> or
@@ -11,7 +10,7 @@
       <div class="branchSelect" v-if="choice=='branch'">
         <select v-model="chosenTag">
           <option selected value>Select a Branch</option>
-          <option v-for="branch in $root.sharedStore.data.branches" v-bind:value="branch.name" :selected="branch.name=='indev-rewrite'">{{ branch.name }}</option>
+          <option v-for="branch in $root.store.branches" v-bind:value="branch.name" :selected="branch.name=='indev-rewrite-docs'">{{ branch.name }}</option>
         </select>
       </div>
     </container>
@@ -22,11 +21,11 @@
 export default {
   data() {
     if (!this.$route.params.tag) {
-      this.$router.go({ path: '/docs/tag/indev-rewrite' });
+      this.$router.go({ path: '/docs/tag/indev-rewrite-docs' });
     }
     return {
       choice: this.$route.params.tag ? null : 'branch',
-      chosenTag: this.$route.params.tag ? this.$route.params.tag : 'indev-rewrite',
+      chosenTag: this.$route.params.tag ? this.$route.params.tag : 'indev-rewrite-docs',
     };
   },
   methods: {

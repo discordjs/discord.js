@@ -1,11 +1,11 @@
 @import 'DocsSidebar';
+@import 'ClassViewer';
 
 .docs-viewer {
   background: #fefefe;
   color: #111;
-  padding: 3rem 1rem;
-  padding-top: 5rem;
-  font-family: 'Open Sans', sans-serif;
+  
+  padding: 1rem;
 
   hr {
     border: 0;
@@ -61,4 +61,7 @@
 
 .docs-viewer > .container {
   display: inline-flex;
+  @include mq($until: desktop) {
+    flex-direction: column;
+  }
 }

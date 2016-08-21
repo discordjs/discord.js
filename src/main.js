@@ -7,8 +7,6 @@ import marked from 'marked';
 
 require('./styles/main.scss');
 
-console.log(store);
-
 Vue.use(VueRouter);
 Vue.component('app-navbar', Components.AppNavbar);
 Vue.component('app-footer', Components.AppFooter);
@@ -21,7 +19,7 @@ Vue.component('docs-bar', Components.DocsNavbar);
 const App = Vue.extend({
   data() {
     return {
-      sharedStore: store,
+      store: store.data,
     };
   },
   methods: {
@@ -50,6 +48,12 @@ Vue.filter('marked', $text => {
   text = text.replace(/(<warn>)/g, '<div class="warn">');
   text = text.replace(/(<\/warn>)/g, '</div>');
   return marked(text);
+});
+
+Vue.filter('joinParams', params => {
+  params = params || [];
+  return params.map(param => param.name).join(', ');
+  // events.map(event => event.name).join(', ');
 });
 
 Vue.filter('normalise', $text => {

@@ -1,48 +1,16 @@
 <template>
-  <container class="{{ $route.query.scrollto === prop.name ? 'scrolled' : '' }}">
-    <h3 id="doc_for_{{ prop.name }}">.{{ prop.name }}
-      <private-badge v-show="$parent.$parent.$parent.$parent.viewPrivate && prop.access === 'private'"></private-badge>
-      <inherited-badge v-if="prop.inherited" :item="prop"></inherited-badge>
-      <source-button :meta="prop.meta"></source-button>
-      <link-button :item="prop"></link-button>
-    </h3>
-    <div class="desc">
-    <p>{{{ prop.description | normalise | marked }}}</p>
-    <p><b>Type:</b> <prop-type v-for="type in prop.type" :types="type"></prop-type></p>
-    </div>
-  </container>
+  <div class="classProp">
+    <div class="propName">.{{* prop.name }}</div>
+    <div class="propDescription">{{{* prop.description | normalise | marked }}}</div>
+    <div class="propType"><b>Type:</b> <type-renderer v-for="type in prop.type.types" :names="type"></type-renderer></div>
+  </div>
 </template>
 <script>
-import PropType from './PropType.vue';
-import SourceButton from './SourceButton.vue';
-import LinkButton from './LinkButton.vue';
-import InheritedBadge from './InheritedBadge.vue';
-import PrivateBadge from './PrivateBadge.vue';
+import TypeRenderer from './TypeRenderer.vue';
 export default {
-  props: ['prop'],
   components: {
-    PropType,
-    SourceButton,
-    LinkButton,
-    InheritedBadge,
-    PrivateBadge,
+    TypeRenderer,
   },
-  data() {
-    return {
-    };
-  },
+  props: ['prop'],
 };
 </script>
-<style scoped lang="scss">
-  .desc {
-    border-left: 3px solid #ddd;
-    padding: 0 1rem;
-    color: #555;
-  }
-
-  h3 {
-    font-family: 'Roboto Mono';
-    font-weight: 500;
-  }
-</style>
-  

@@ -1,0 +1,45 @@
+.classProp {
+  margin: 32px 0;
+  @include mq($from: desktop) {
+    margin: 48px 0;
+  }
+
+  .propName {
+    font-size: 18px;
+    font-family: $monospace;
+    margin-bottom: 4px;
+    color: black;
+  }
+
+  .propDescription {
+    border-left: 2px solid #ccc;
+    padding: 8px 8px;
+    color: #444;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .propType {
+    border-left: 2px solid #ccc;
+    padding: 4px 8px;
+    color: #666;
+    
+    .type {
+      font-family: $monospace;
+      font-size: 14px;
+      margin-left: 8px;
+    }
+
+    .typeLink {
+      text-decoration: none;
+      color: $primary_color;
+      font-weight: bold;
+    }
+
+    .typeLink:hover {
+      color: lighten($primary_color, 20%);
+    }
+  }
+}

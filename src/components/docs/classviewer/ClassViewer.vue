@@ -1,59 +1,50 @@
 <template>
-  <div class="doc-part-view">
-    <container>
-      <h1>Class: {{ info.meta.name }}</h1>
-      <p>{{{ info.meta.description | normalise | marked }}}</p>
-      <hr>
-      <overview :info="info"></overview>
-      <hr>
-      <h2>Properties:</h2>
-        <div v-for="prop in info.properties" v-show="$parent.$parent.$parent.viewPrivate || prop.access !== 'private'">
-          <prop-renderer
-            :prop="prop">
-            </prop-renderer>
-        </div>
-      <hr>
-      <h2>Methods:</h2>
-      <div v-for="method in info.functions" v-show="$parent.$parent.$parent.viewPrivate || method.access !== 'private'">
-        <method-renderer :method="method"></method-renderer>
-      </div>
-    </container>
-  </div>
+    <span class="classViewer">
+      <span class="title"> {{* jsclass.name }}<span class="extendDetails" v-if="jsclass.extends">
+          extends {{* jsclass.extends }}
+        </span>
+      </span>
+      <p class="classdesc">{{{* jsclass.description | normalise | marked }}}</p>
+      <overview :jsclass="jsclass"></overview>
+      <span class="title">Properties</span>
+      <prop-renderer v-for="prop in jsclass.properties" :prop="prop"></prop-renderer>
+    </span>
 </template>
 <script>
-import overview from './Overview.vue';
-import propRenderer from './PropRenderer.vue';
-import methodRenderer from './MethodRenderer.vue';
+import Overview from './Overview.vue';
+import PropRenderer from './PropRenderer.vue';
 
 function gqp(qs) {
   qs = qs.split('+').join(' ');
   const params = {};
   let tokens;
   const re = /[?&]?([^=]+)=([^&]*)/g;
-
   while (tokens = re.exec(qs)) {
     params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
   }
-
   return params;
 }
 
 export default {
   components: {
-    overview,
-    propRenderer,
-    methodRenderer,
+    Overview,
+    PropRenderer,
   },
+  props: ['docs'],
   data() {
     const params = this.$route.params;
-    return {
-      info: this.$parent.$parent.docs.json.classes[params.class],
-    };
+    for (const jsclass of this.docs.classes) {
+      if (jsclass.name === params.class) {
+        return {
+          jsclass,
+        };
+      }
+    }
+    return {};
   },
-  methods: {
-    scroll(item) {
-      const url = window.location.href.split('?')[0];
-      window.location.href = `${url}?scrollto=${encodeURIComponent(item)}`;
+  route: {
+    canReuse() {
+      return false;
     },
   },
   ready() {
@@ -68,11 +59,6 @@ export default {
         elem.scrollIntoView(true);
       }
     }
-  },
-  route: {
-    canReuse() {
-      return false;
-    },
   },
 };
 </script>

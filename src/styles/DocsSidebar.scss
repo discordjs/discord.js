@@ -1,26 +1,81 @@
+$speed: 300ms;
+
 .docs-sidebar{
+
+  @include mq($until:desktop) {
+    border-right: 0;
+    .content {
+      position: fixed;
+      top: 0px;
+      bottom: 0px;
+      transition:$speed right, $speed width, $speed left;
+      z-index: 10;
+      background: #fafafa;
+      box-shadow:0 0 10rem black;
+      max-height: 100%;
+      overflow: auto;
+      padding: 0;
+      width: 0px;
+      left: -200px;
+      right: 0;
+
+      ul li {
+        font-size: 20px !important;
+        padding: 1rem !important;
+      }
+    }
+
+    .mob-back {
+      text-align: center;
+      padding:1rem 0;
+      background: $primary_color;
+      .fa {
+        color: white;
+      }
+    }
+
+    .content.on {
+      left: 0;
+      width: 100%;
+      right: 10px;
+    }
+  }
+
+  .mob-button, .mob-back {
+    @include mq($from: desktop) {
+      display: none;
+    }
+    z-index: 1;
+    font-size: 18px;
+  }
+
   ul {
     margin: 0;
     padding: 0;
     list-style: none;
+    border-right: 1px solid #eee;
 
     li {
       color: #444;
-      font-size: 0.9rem;
-      padding: 0.2rem;
-      padding-right: 4rem;
+      font-size: 14px;
+      padding: 4px 2px;
+      padding-right: 3rem;
+      padding-left: 6px;
     }
 
     li:hover:not(:first-child) {
       color: $primary_color;
-      text-decoration: underline;
+      font-weight: bold;
       cursor: pointer;
-      background: #eee;
+      background: #fafafa;
+      border-left:2px solid;
+      padding-left:4px;
     }
 
     li:first-child {
       text-transform: uppercase;
       font-weight: bold;
+      font-size: 15px;
       color: black;
     }
 

@@ -1,0 +1,55 @@
+.classOverview {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 4rem;
+
+  .title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #555;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    color: #666;
+
+    li {
+      padding: 2px 0;
+      margin: 1px 0;
+      cursor: pointer;
+      @include mq($from: desktop) {
+        padding-left: 6px;
+        border-left: 2px solid #eee;
+      }
+    }
+
+    li:hover {
+      font-weight: bold;
+      color: $primary_color;
+      background: #f7f7f7;
+      @include mq($from: desktop) {
+        border-left: 2px solid;
+      }
+    }
+  }
+
+  .col {
+    flex: 1;
+    min-width: 100px;
+  }
+
+  @include mq($until: desktop) {
+    flex-direction: column;
+    li {
+      padding: 6px 0;
+    }
+    .col {
+      margin: 1rem 0;
+      padding: 1rem;
+      border:1px solid #ccc;
+    }
+  }
+}

@@ -15,14 +15,22 @@ function build(docs) {
     Number: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number',
   };
   console.log(docs);
-  for (const jsclass in docs.json.classes) {
-    links[jsclass] = 'class';
+  for (const jsclass in docs.classes) {
+    links[jsclass.name] = 'class';
   }
-  for (const jsclass in docs.json.typedefs) {
-    links[jsclass] = 'typedef';
+  for (const jsclass in docs.typedefs) {
+    links[jsclass.name] = 'typedef';
   }
   docs.links = links;
   return docs;
+}
+
+function parseDocs(text) {
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    return alert(e);
+  }
 }
 
 const store = {
@@ -58,7 +66,8 @@ const store = {
             if (err) {
               reject(err);
             } else {
-              data.docs[tag] = build(res.body || JSON.parse(res.text));
+              console.log(res);
+              data.docs[tag] = build(res.body || parseDocs(res.text));
               resolve(data.docs[tag]);
             }
           });

@@ -2,7 +2,7 @@
   <div class="docs-viewer">
     <container>
       <sidebar :docs="docs"></sidebar>
-      <router-view></router-view>
+      <router-view :docs="docs"></router-view>
     </container>
   </div>
 </template>

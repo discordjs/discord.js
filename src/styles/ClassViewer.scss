@@ -1,0 +1,24 @@
+@import "ClassViewer.Overview";
+@import "ClassViewer.PropRenderer";
+
+.classViewer {
+  padding: 1rem 2rem;
+  display: block;
+  width: 100%;
+  @include mq($until: desktop) {
+    padding: 1rem 0;
+  }
+  .classdesc {
+    border-left: 2px solid #ccc;
+    color: #666;
+    padding: 1px 12px;
+  }
+  .extendDetails {
+    color: #777;
+    font-size: 16px;
+  }
+}
+
+.classViewer > .title {
+  font-size: 24px;
+}
