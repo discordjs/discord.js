@@ -37,19 +37,19 @@ class DocumentedClass extends DocumentedItem {
       this.classConstructor = item;
     } else if (item instanceof DocumentedFunction) {
       if (this.methods.get(item.directData.name)) {
-        throw new Error(`Doc ${this.directData.name} already has method ${item.name}`);
+        throw new Error(`Doc ${this.directData.name} already has method ${item.directData.name}`);
       }
-      this.methods.set(item.name, item);
+      this.methods.set(item.directData.name, item);
     } else if (item instanceof DocumentedMember) {
       if (this.props.get(item.directData.name)) {
-        throw new Error(`Doc ${this.directData.name} already has prop ${item.name}`);
+        throw new Error(`Doc ${this.directData.name} already has prop ${item.directData.name}`);
       }
-      this.props.set(item.name, item);
+      this.props.set(item.directData.name, item);
     } else if (item instanceof DocumentedEvent) {
-      if (this.props.get(item.directData.name)) {
-        throw new Error(`Doc ${this.directData.name} already has event ${item.name}`);
+      if (this.events.get(item.directData.name)) {
+        throw new Error(`Doc ${this.directData.name} already has event ${item.directData.name}`);
       }
-      this.events.set(item.name, item);
+      this.events.set(item.directData.name, item);
     }
   }
 

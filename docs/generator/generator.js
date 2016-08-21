@@ -11,10 +11,13 @@ const docScanner = new DocumentationScanner(this);
 function parseDocs(json) {
   console.log(`${json.length} items found`);
   const documentation = new Documentation(json);
+  console.log('serializing');
   let output = JSON.stringify(documentation.serialize(), null, 0);
   if (compress) {
+    console.log('compressing');
     output = zlib.deflateSync(output).toString('utf8');
   }
+  console.log('writing to docs.json');
   fs.writeFileSync('./docs/docs.json', output);
 }
 

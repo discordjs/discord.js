@@ -52,10 +52,6 @@ class WebSocketManager {
    * @returns {null}
    */
   connect(gateway) {
-    /**
-     * The status of the Client's connection, a type of Constants.Status
-     * @type {Number}
-     */
     this.status = Constants.Status.CONNECTING;
     /**
      * The WebSocket connection to the gateway
