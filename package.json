@@ -5,7 +5,7 @@
   "main": "./src/index",
   "scripts": {
     "test": "eslint src/ && node test/random",
-    "docs": "node docs/gen/index.js"
+    "docs": "node docs/generator/generator.js"
   },
   "repository": {
     "type": "git",
