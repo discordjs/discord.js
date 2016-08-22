@@ -29,6 +29,11 @@ class Message {
 
   setup(data) {
     /**
+     * Whether or not this message is pinned
+     * @type {Boolean}
+     */
+    this.pinned = data.pinned;
+    /**
      * The author of the message
      * @type {User}
      */
