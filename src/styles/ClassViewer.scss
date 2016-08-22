@@ -24,6 +24,10 @@
     font-family: $monospace;
     font-size: 13px;
   }
+
+  *[data-selected] {
+    background: lighten($primary_color, 10%);
+  }
   
   :not(pre) > code {
     background: #f5f5f5;

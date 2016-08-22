@@ -1,5 +1,6 @@
 .classProp {
   margin: 32px 0;
+  transition: 2s background;
   @include mq($from: desktop) {
     margin: 48px 0;
   }

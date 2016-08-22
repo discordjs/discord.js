@@ -1,5 +1,5 @@
 <template>
-  <div class="classMethod">
+  <div class="classMethod" id="doc_for_{{* method.name }}">
     <div class="methodName">.{{* method.name }}(<span v-for="param in method.params" class="param {{* param.optional ? 'optional' : '' }}">{{* param.name }}</span>)</div>
     <div class="methodDescription">{{{* method.description | normalise | marked }}}</div>
     <param-table v-if="method.params.length > 0" :params="method.params"></param-table>

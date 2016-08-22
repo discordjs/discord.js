@@ -60,7 +60,10 @@ export default {
       params = gqp(params);
       if (params.scrollto) {
         const elem = document.getElementById(`doc_for_${params.scrollto}`);
+        elem.setAttribute('data-selected', true);
+        setTimeout(() => elem.removeAttribute('data-selected'), 1);
         elem.scrollIntoView(true);
+        window.scrollBy(0, -100);
       }
     }
   },
