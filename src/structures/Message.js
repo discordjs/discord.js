@@ -83,10 +83,12 @@ class Message {
      * @type {Object}
      * @property {Map<String, User>} mentions.users Mentioned users, maps their ID to the user object.
      * @property {Map<String, Role>} mentions.roles Mentioned roles, maps their ID to the role object.
+     * @property {Map<String, GuildChannel>} mentions.channels Mentioned channels, maps their ID to the channel object.
      */
     this.mentions = {
       users: new Map(),
       roles: new Map(),
+      channels: new Map(),
     };
     /**
      * The ID of the message (unique in the channel it was sent)
@@ -110,6 +112,14 @@ class Message {
         if (role) {
           this.mentions.roles.set(role.id, role);
         }
+      }
+    }
+
+    if (this.channel.guild) {
+      const channMentionsRaw = data.content.match(/<#([0-9]{14,20})>/g) || [];
+      for (const raw of channMentionsRaw) {
+        const chan = this.channel.guild.channels.get(raw.match(/([0-9]{14,20})/g)[0]);
+        this.mentions.channels.set(chan.id, chan);
       }
     }
   }
@@ -163,6 +173,13 @@ class Message {
     }
     if (data.id) {
       this.id = data.id;
+    }
+    if (this.channel.guild) {
+      const channMentionsRaw = data.content.match(/<#([0-9]{14,20})>/g) || [];
+      for (const raw of channMentionsRaw) {
+        const chan = this.channel.guild.channels.get(raw.match(/([0-9]{14,20})/g)[0]);
+        this.mentions.channels.set(chan.id, chan);
+      }
     }
   }
 
