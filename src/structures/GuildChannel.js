@@ -205,7 +205,7 @@ class GuildChannel extends Channel {
     payload.id = userOrRole.id;
 
     const prevOverwrite = this.permissionOverwrites.get(userOrRole.id);
-    
+
     if (prevOverwrite) {
       payload.allow = prevOverwrite.allow;
       payload.deny = prevOverwrite.deny;
