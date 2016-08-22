@@ -1,6 +1,6 @@
 <template>
   <div class="classProp" id="doc_for_{{* prop.name }}">
-    <div class="propName">.{{* prop.name }}</div>
+    <div class="propName" v-link='{ name:"classview", query:{scrollto:prop.name}}'>.{{* prop.name }}</div>
     <div class="propDescription">{{{* prop.description | normalise | marked }}}</div>
     <div class="propType"><b>Type:</b> <type-renderer v-for="type in prop.type.types" :names="type"></type-renderer></div>
   </div>

@@ -10,6 +10,11 @@
     font-family: $monospace;
     margin-bottom: 4px;
     color: black;
+    cursor: pointer;
+  }
+
+  .propName:hover {
+    color: $primary_color;
   }
 
   .propDescription {
