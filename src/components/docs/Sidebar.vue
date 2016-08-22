@@ -11,7 +11,7 @@
       </ul>
       <ul>
         <li>TypeDefs</li>
-        <li v-for="docclass in docs.typedefs">{{ docclass.name }}</li>
+        <li v-for="typedef in docs.typedefs" v-link='{ name:"typedefview", params:{typedef:typedef.name} }'>{{ typedef.name }}</li>
       </ul>
     </div>
   </div>
