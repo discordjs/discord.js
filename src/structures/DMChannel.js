@@ -20,7 +20,7 @@ class DMChannel extends Channel {
      * The recipient on the other end of the DM
      * @type {User}
      */
-    this.recipient = this.client.users.set(recipient.id, recipient);
+    this.recipient = recipient;
     /**
      * The ID of the last sent message, if available
      * @type {?String}

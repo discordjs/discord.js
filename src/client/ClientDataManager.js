@@ -49,7 +49,7 @@ class ClientDataManager {
     if (data.type === Constants.ChannelTypes.DM) {
       channel = new DMChannel(this.client, data);
     } else {
-      guild = guild || this.get('guilds', data.guild_id);
+      guild = guild || this.client.guilds.get(data.guild_id);
       if (guild) {
         if (data.type === Constants.ChannelTypes.text) {
           channel = new TextChannel(guild, data);

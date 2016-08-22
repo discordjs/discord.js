@@ -3,10 +3,7 @@
 const Discord = require('../');
 const request = require('superagent');
 
-const client = new Discord.Client({
-  shard_id: 0,
-  shard_count: 2,
-});
+const client = new Discord.Client();
 
 client.login(require('./auth.json').token).then(token => console.log('logged in with token ' + token)).catch(console.log);
 
