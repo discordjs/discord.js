@@ -1,5 +1,6 @@
 const files = [
   require('./getting_started'),
+  require('./ping_pong'),
 ];
 
 const categories = {};

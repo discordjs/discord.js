@@ -84,7 +84,8 @@ class Message {
      * @type {Object}
      * @property {Collection<String, User>} mentions.users Mentioned users, maps their ID to the user object.
      * @property {Collection<String, Role>} mentions.roles Mentioned roles, maps their ID to the role object.
-     * @property {Collection<String, GuildChannel>} mentions.channels Mentioned channels, maps their ID to the channel object.
+     * @property {Collection<String, GuildChannel>}
+     * mentions.channels Mentioned channels, maps their ID to the channel object.
      */
     this.mentions = {
       users: new Collection(),
