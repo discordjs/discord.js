@@ -64,6 +64,7 @@ class ClientUser extends User {
   setPassword(password) {
     return this.client.rest.methods.updateCurrentUser({ password });
   }
+
   /**
    * Set the avatar of the logged in Client.
    * @param {Base64Resolvable} avatar the new avatar
@@ -76,6 +77,43 @@ class ClientUser extends User {
    */
   setAvatar(avatar) {
     return this.client.rest.methods.updateCurrentUser({ avatar });
+  }
+
+  /**
+   * Set the playing status of the logged in client.
+   * @param {String} status
+   * @param {String} game
+   * @returns {Promise<ClientUser>}
+   * @example
+   * // set status
+   * client.user.setStatus('status', 'game')
+   *  .then(user => console.log('Changed status!'))
+   *  .catch(console.log);
+   */
+  setStatus(status, game) {
+    if (status === "online" || status === "here" || status === "available") {
+      this.idleStatus = null;
+    } else if (status === "idle" || status === "away") {
+      this.idleStatus = Date.now();
+    } else {
+      this.idleStatus = this.idleStatus || null;
+    }
+
+    if (typeof game === "string" && !game.length) game = null;
+    this.userGame = game === null ? null : !game ? this.userGame || null : typeof game === "string" ? {name: game} : game;
+
+    this.client.ws.send({
+      op: 3,
+      d: {
+        idle_since: this.idleStatus,
+        game: this.userGame
+      }
+    });
+
+    this.status = this.idleStatus ? "idle" : "online";
+    this.game = this.userGame;
+
+    return Promise.resolve();
   }
 
   edit(data) {
