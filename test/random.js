@@ -177,19 +177,13 @@ client.on('messageUpdate', (old, message) => {
     console.log('Message updated from', old.content, 'to', message.content);
 });
 
-client.on('message', message => {
-  if (message.content === '?perms?') {
-    console.log(message.author.username, 'asked for perms in', message.channel.name, ':');
-    console.log(message.channel.permissionsFor(message.author).serialize());
-  } else if (message.content === '???test???') {
-    message.channel.overwritePermissions('', {
-      SEND_MESSAGES: false,
-    })
-    .then(() => {
-      message.channel.overwritePermissions('', {
-        SEND_MESSAGES: true,
-      });
-    })
-    .catch(console.log);
+client.on('message', msg => {
+  if (msg.content.startsWith('yoing')) {
+    let startTime = Date.now();
+    msg.channel.sendMessage("Let's see if this works")
+    .then(message => {
+      let endTime = Date.now();
+      message.edit(`Ping took ${(endTime - startTime).toFixed(3)} ms. I think.`).catch(console.error);
+    }).catch(console.error);
   }
 });

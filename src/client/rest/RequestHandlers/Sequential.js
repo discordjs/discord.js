@@ -9,14 +9,20 @@ const RequestHandler = require('./RequestHandler');
  */
 class SequentialRequestHandler extends RequestHandler {
 
-  constructor(restManager) {
-    super(restManager);
+  constructor(restManager, endpoint) {
+    super(restManager, endpoint);
 
     /**
      * Whether this rate limiter is waiting for a response from a request
      * @type {Boolean}
      */
     this.waiting = false;
+
+    /**
+     * The endpoint that this handler is handling
+     * @type {String}
+     */
+    this.endpoint = endpoint;
 
     /**
      * The time difference between Discord's Dates and the local computer's Dates. A positive number means the local
@@ -51,7 +57,7 @@ class SequentialRequestHandler extends RequestHandler {
               this.waiting = false;
               this.globalLimit = false;
               resolve();
-            }, res.headers['retry-after'] + 500);
+            }, Number(res.headers['retry-after']) + 500);
             if (res.headers['x-ratelimit-global']) {
               this.globalLimit = true;
             }

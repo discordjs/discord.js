@@ -39,7 +39,7 @@ class RESTManager {
 
     if (!this.handlers[apiRequest.getEndpoint()]) {
       const RequestHandlerType = this.getRequestHandler();
-      this.handlers[apiRequest.getEndpoint()] = new RequestHandlerType(this);
+      this.handlers[apiRequest.getEndpoint()] = new RequestHandlerType(this, apiRequest.getEndpoint());
     }
 
     return this.push(this.handlers[apiRequest.getEndpoint()], apiRequest);
