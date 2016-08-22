@@ -1,5 +1,6 @@
 const DocumentedItem = require('./DocumentedItem');
 const DocumentedItemMeta = require('./DocumentedItemMeta');
+const DocumentedParam = require('./DocumentedParam');
 
 /*
 {
@@ -53,17 +54,22 @@ class DocumentedEvent extends DocumentedItem {
   registerMetaInfo(data) {
     this.directData = data;
     this.directData.meta = new DocumentedItemMeta(this, data.meta);
+    const newParams = [];
+    for (const param of data.params) {
+      newParams.push(new DocumentedParam(this, param));
+    }
   }
 
   serialize() {
     super.serialize();
-    const { id, name, description, memberof, meta } = this.directData;
+    const { id, name, description, memberof, meta, params } = this.directData;
     return {
       id,
       name,
       description,
       memberof,
       meta: meta.serialize(),
+      params: params.map(p => p.serialize()),
     };
   }
 
