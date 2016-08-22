@@ -45,5 +45,10 @@ export default {
       }
     }
   },
+  route: {
+    canReuse() {
+      return false;
+    },
+  },
 };
 </script>
