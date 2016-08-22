@@ -19,11 +19,16 @@
     color: #777;
     font-size: 16px;
   }
-  
+
   code {
     font-family: $monospace;
-    font-size: 14px;
-    background: #f7f7f7;
+    font-size: 13px;
+  }
+  
+  :not(pre) > code {
+    background: #f5f5f5;
+    border:1px solid #ccc;
+    padding: 4px;
   }
 }
 
