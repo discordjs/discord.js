@@ -1,3 +1,4 @@
+const Collection = require('../util/Collection');
 /**
  * Represents a Message on Discord
  */
@@ -79,16 +80,16 @@ class Message {
      */
     this.attachments = data.attachments;
     /**
-     * An object containing a further users or roles map
+     * An object containing a further users, roles or channels collections
      * @type {Object}
-     * @property {Map<String, User>} mentions.users Mentioned users, maps their ID to the user object.
-     * @property {Map<String, Role>} mentions.roles Mentioned roles, maps their ID to the role object.
-     * @property {Map<String, GuildChannel>} mentions.channels Mentioned channels, maps their ID to the channel object.
+     * @property {Collection<String, User>} mentions.users Mentioned users, maps their ID to the user object.
+     * @property {Collection<String, Role>} mentions.roles Mentioned roles, maps their ID to the role object.
+     * @property {Collection<String, GuildChannel>} mentions.channels Mentioned channels, maps their ID to the channel object.
      */
     this.mentions = {
-      users: new Map(),
-      roles: new Map(),
-      channels: new Map(),
+      users: new Collection(),
+      roles: new Collection(),
+      channels: new Collection(),
     };
     /**
      * The ID of the message (unique in the channel it was sent)
@@ -174,7 +175,7 @@ class Message {
     if (data.id) {
       this.id = data.id;
     }
-    if (this.channel.guild) {
+    if (this.channel.guild && data.content) {
       const channMentionsRaw = data.content.match(/<#([0-9]{14,20})>/g) || [];
       for (const raw of channMentionsRaw) {
         const chan = this.channel.guild.channels.get(raw.match(/([0-9]{14,20})/g)[0]);

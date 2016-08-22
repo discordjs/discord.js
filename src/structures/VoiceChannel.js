@@ -1,4 +1,5 @@
 const GuildChannel = require('./GuildChannel');
+const Collection = require('../util/Collection');
 
 /**
  * Represents a Server Voice Channel on Discord.
@@ -9,9 +10,9 @@ class VoiceChannel extends GuildChannel {
     super(guild, data);
     /**
      * The members in this Voice Channel.
-     * @type {Map<String, GuildMember>}
+     * @type {Collection<String, GuildMember>}
      */
-    this.members = new Map();
+    this.members = new Collection();
   }
 
   setup(data) {

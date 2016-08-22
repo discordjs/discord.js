@@ -1,5 +1,6 @@
 const GuildChannel = require('./GuildChannel');
 const TextBasedChannel = require('./interface/TextBasedChannel');
+const Collection = require('../util/Collection');
 
 /**
  * Represents a Server Text Channel on Discord.
@@ -10,7 +11,7 @@ class TextChannel extends GuildChannel {
 
   constructor(guild, data) {
     super(guild, data);
-    this.messages = new Map();
+    this.messages = new Collection();
   }
 
   setup(data) {

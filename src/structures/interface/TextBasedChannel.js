@@ -1,3 +1,5 @@
+const Collection = require('../../util/Collection');
+
 /**
  * Interface for classes that have text-channel-like features
  * @interface
@@ -6,10 +8,10 @@ class TextBasedChannel {
 
   constructor() {
     /**
-     * A Map containing the messages sent to this channel.
-     * @type {Map<String, Message>}
+     * A Collection containing the messages sent to this channel.
+     * @type {Collection<String, Message>}
      */
-    this.messages = new Map();
+    this.messages = new Collection();
   }
   /**
    * Send a message to this channel

@@ -7,6 +7,7 @@ const ClientManager = require('./ClientManager');
 const ClientDataResolver = require('./ClientDataResolver');
 const WebSocketManager = require('./websocket/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
+const Collection = require('../util/Collection');
 
 /**
  * The starting point for making a Discord Bot.
@@ -59,20 +60,20 @@ class Client extends EventEmitter {
     this.actions = new ActionsManager(this);
 
     /**
-     * A map of the Client's stored users
-     * @type {Map<String, User>}
+     * A Collection of the Client's stored users
+     * @type {Collection<String, User>}
      */
-    this.users = new Map();
+    this.users = new Collection();
     /**
-     * A map of the Client's stored guilds
-     * @type {Map<String, Guild>}
+     * A Collection of the Client's stored guilds
+     * @type {Collection<String, Guild>}
      */
-    this.guilds = new Map();
+    this.guilds = new Collection();
     /**
-     * A map of the Client's stored channels
-     * @type {Map<String, Channel>}
+     * A Collection of the Client's stored channels
+     * @type {Collection<String, Channel>}
      */
-    this.channels = new Map();
+    this.channels = new Collection();
     /**
      * The authorization token for the logged in user/bot.
      * @type {?String}

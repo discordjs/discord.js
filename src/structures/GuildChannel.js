@@ -3,6 +3,7 @@ const PermissionOverwrites = require('./PermissionOverwrites');
 const Role = require('./Role');
 const EvaluatedPermissions = require('./EvaluatedPermissions');
 const Constants = require('../util/Constants');
+const Collection = require('../util/Collection');
 
 function arraysEqual(a, b) {
   if (a === b) return true;
@@ -53,9 +54,9 @@ class GuildChannel extends Channel {
     this.ow = data.permission_overwrites;
     /**
      * A map of permission overwrites in this channel for roles and users.
-     * @type {Map<String, PermissionOverwrites>}
+     * @type {Collection<String, PermissionOverwrites>}
      */
-    this.permissionOverwrites = new Map();
+    this.permissionOverwrites = new Collection();
     if (data.permission_overwrites) {
       for (const overwrite of data.permission_overwrites) {
         this.permissionOverwrites.set(overwrite.id, new PermissionOverwrites(this, overwrite));

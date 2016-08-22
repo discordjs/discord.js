@@ -2,6 +2,7 @@ const User = require('./User');
 const GuildMember = require('./GuildMember');
 const Constants = require('../util/Constants');
 const Role = require('./Role');
+const Collection = require('../util/Collection');
 
 function arraysEqual(a, b) {
   if (a === b) return true;
@@ -30,22 +31,22 @@ class Guild {
     this.client = client;
 
     /**
-     * A Map of members that are in this Guild. The key is the member's ID, the value is the member.
-     * @type {Map<String, GuildMember>}
+     * A Collection of members that are in this Guild. The key is the member's ID, the value is the member.
+     * @type {Collection<String, GuildMember>}
      */
-    this.members = new Map();
+    this.members = new Collection();
 
     /**
-     * A Map of channels that are in this Guild. The key is the channel's ID, the value is the channel.
-     * @type {Map<String, GuildChannel>}
+     * A Collection of channels that are in this Guild. The key is the channel's ID, the value is the channel.
+     * @type {Collection<String, GuildChannel>}
      */
-    this.channels = new Map();
+    this.channels = new Collection();
 
     /**
-     * A Map of roles that are in this Guild. The key is the role's ID, the value is the role.
-     * @type {Map<String, Role>}
+     * A Collection of roles that are in this Guild. The key is the role's ID, the value is the role.
+     * @type {Collection<String, Role>}
      */
-    this.roles = new Map();
+    this.roles = new Collection();
 
     if (!data) {
       return;
