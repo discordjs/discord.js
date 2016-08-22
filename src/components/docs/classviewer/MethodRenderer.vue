@@ -1,0 +1,19 @@
+<template>
+  <div class="classMethod">
+    <div class="methodName">.{{* method.name }}(<span v-for="param in method.params" class="param {{* param.optional ? 'optional' : '' }}">{{* param.name }}</span>)</div>
+    <div class="methodDescription">{{{* method.description | normalise | marked }}}</div>
+    <param-table v-if="method.params.length > 0" :params="method.params"></param-table>
+    <div class="methodReturn">Returns: <type-renderer v-for="return in method.returns.types" :names="return"></type-renderer></div>
+  </div>
+</template>
+<script>
+import TypeRenderer from './TypeRenderer.vue';
+import ParamTable from './ParamTable.vue';
+export default {
+  components: {
+    TypeRenderer,
+    ParamTable,
+  },
+  props: ['method'],
+};
+</script>

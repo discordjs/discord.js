@@ -1,0 +1,91 @@
+.classMethod {
+  margin: 32px 0;
+  @include mq($from: desktop) {
+    margin: 48px 0;
+  }
+
+  p {
+    line-height: 1.5rem;
+    margin: 0.25rem;
+  }
+
+  .methodName {
+    font-size: 18px;
+    font-family: $monospace;
+    margin-bottom: 4px;
+    color: black;
+  }
+
+  .methodReturn {
+    border-left: 2px solid #ccc;
+    font-weight: bold;
+    color: #555;
+    padding: 1rem 8px;
+
+    .type {
+      font-family: $monospace;
+      font-size: 14px;
+      color: black;
+      margin-left: 8px;
+
+      a {
+        text-decoration: none;
+        color: $primary_color;
+      }
+    }
+  }
+
+  .methodDescription {
+    border-left: 2px solid #ccc;
+    padding: 8px 8px;
+    color: #444;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .param {
+    font-size: 16px;
+    color: #444;
+  }
+
+  .param:not(:last-child):after {
+    content: ", ";
+  }
+
+  .param.optional {
+    font-style: italic;
+    color: #555;
+  }
+
+  .param.optional:before {
+    content: "[";
+  }
+  .param.optional:after {
+    content: "]";
+  }
+
+
+  .methodType {
+    border-left: 2px solid #ccc;
+    padding: 4px 8px;
+    color: #666;
+    
+    .type {
+      font-family: $monospace;
+      font-size: 14px;
+      margin-left: 8px;
+    }
+
+    .typeLink {
+      text-decoration: none;
+      color: $primary_color;
+      font-weight: bold;
+    }
+
+    .typeLink:hover {
+      color: lighten($primary_color, 20%);
+    }
+  }
+}

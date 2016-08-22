@@ -6,13 +6,16 @@
       </span>
       <p class="classdesc">{{{* jsclass.description | normalise | marked }}}</p>
       <overview :jsclass="jsclass"></overview>
-      <span class="title">Properties</span>
+      <span class="title" v-if="jsclass.properties.length > 0">Properties</span>
       <prop-renderer v-for="prop in jsclass.properties" :prop="prop"></prop-renderer>
+      <span class="title" v-if="jsclass.methods.length > 0">Methods</span>
+      <method-renderer v-for="method in jsclass.methods" :method="method"></method-renderer>
     </span>
 </template>
 <script>
 import Overview from './Overview.vue';
 import PropRenderer from './PropRenderer.vue';
+import MethodRenderer from './MethodRenderer.vue';
 
 function gqp(qs) {
   qs = qs.split('+').join(' ');
@@ -29,6 +32,7 @@ export default {
   components: {
     Overview,
     PropRenderer,
+    MethodRenderer,
   },
   props: ['docs'],
   data() {

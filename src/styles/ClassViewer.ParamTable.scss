@@ -1,0 +1,48 @@
+.paramTableWrapper {
+  border-left: 2px solid #ccc;
+  padding-left: 8px;
+  margin-right: 7px;
+
+  @include mq($until: desktop) {
+    overflow: auto;
+    .paramTable {
+      width: 100%;
+      max-width: 100%;
+    }
+  }
+}
+
+.paramTable {
+  border-collapse: collapse;
+  border:1px solid #ccc;
+
+  th {
+    background: darken($primary_color, 10%);
+    color: white;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 1rem;
+  }
+
+  th, td {
+    padding: 1rem;
+    text-align: center;
+  }
+
+  tr {
+    background: #fafafa;
+  }
+
+  tr:nth-child(odd) {
+    background: #f7f7f7;
+  }
+
+  .type {
+    font-weight: bold;
+    font-size: 15px;
+    a {
+      color: $primary_color;
+      text-decoration: none;
+    }
+  }
+}

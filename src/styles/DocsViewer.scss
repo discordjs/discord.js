@@ -35,6 +35,7 @@
     background: lighten($primary_color, 42%);
     padding: 1rem;
     border:1px solid #ccc;
+    margin-top:0.5rem;
   }
 
   .info:before {
@@ -47,6 +48,7 @@
     background: lighten(#F32121, 42%);
     padding: 1rem;
     border:1px solid #ccc;
+    margin-top:0.5rem;
   }
 
   .warn:before {

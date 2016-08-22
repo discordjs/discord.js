@@ -1,5 +1,7 @@
 @import "ClassViewer.Overview";
 @import "ClassViewer.PropRenderer";
+@import "ClassViewer.MethodRenderer";
+@import "ClassViewer.ParamTable";
 
 .classViewer {
   padding: 1rem 2rem;
@@ -16,6 +18,12 @@
   .extendDetails {
     color: #777;
     font-size: 16px;
+  }
+  
+  code {
+    font-family: $monospace;
+    font-size: 14px;
+    background: #f7f7f7;
   }
 }
 
