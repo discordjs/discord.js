@@ -55,9 +55,11 @@ class DocumentedEvent extends DocumentedItem {
     this.directData = data;
     this.directData.meta = new DocumentedItemMeta(this, data.meta);
     const newParams = [];
+    data.params = data.params || [];
     for (const param of data.params) {
       newParams.push(new DocumentedParam(this, param));
     }
+    this.directData.params = newParams;
   }
 
   serialize() {
