@@ -21,13 +21,15 @@ export default {
     };
   },
   ready() {
-    this.$router.go({
-      name: 'fileview',
-      params: {
-        category: 'general',
-        file: 'Getting Started',
-      },
-    });
+    if (this.$route.name === 'docview') {
+      this.$router.go({
+        name: 'fileview',
+        params: {
+          category: 'general',
+          file: 'Getting Started',
+        },
+      });
+    }
   },
   route: {
     canActivate(transition) {
