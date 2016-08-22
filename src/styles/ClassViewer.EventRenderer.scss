@@ -1,0 +1,62 @@
+.classEvent {
+  margin: 32px 0;
+  transition: 2s background;
+  @include mq($from: desktop) {
+    margin: 48px 0;
+  }
+
+  .eventName {
+    font-size: 18px;
+    font-family: $monospace;
+    color: black;
+    cursor: pointer;
+  }
+
+  .eventName:hover {
+    color: $primary_color;
+  }
+
+  .eventUsage {
+    border-left: 2px solid #ccc;
+    padding: 8px 8px;
+    margin: 0;
+  }
+
+  .eventDescription {
+    border-left: 2px solid #ccc;
+    padding: 8px 8px;
+    margin-bottom: 0;
+    color: #444;
+
+    li {
+      padding:6px 0;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .eventType {
+    border-left: 2px solid #ccc;
+    padding: 4px 8px;
+    color: #666;
+    
+    .type {
+      font-family: $monospace;
+      font-size: 14px;
+      margin-left: 8px;
+    }
+
+    .typeLink {
+      text-decoration: none;
+      color: $primary_color;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .typeLink:hover {
+      color: lighten($primary_color, 20%);
+    }
+  }
+}

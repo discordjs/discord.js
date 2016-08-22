@@ -15,7 +15,7 @@
     <div class="col" v-if="jsclass.events.length > 0">
       <span class="title">Events</span>
       <ul>
-        <li v-for="event in jsclass.events">{{ event.name }}</li>
+        <li v-for="event in jsclass.events" v-link='{ name:"classview", query:{scrollto:event.name}}'>{{ event.name }}</li>
       </ul>
     </div>
   </div>

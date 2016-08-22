@@ -10,12 +10,15 @@
       <prop-renderer v-for="prop in jsclass.properties" :prop="prop"></prop-renderer>
       <span class="title" v-if="jsclass.methods.length > 0">Methods</span>
       <method-renderer v-for="method in jsclass.methods" :method="method"></method-renderer>
+      <span class="title" v-if="jsclass.events.length > 0">Events</span>
+      <event-renderer v-for="event in jsclass.events" :event="event"></event-renderer>
     </span>
 </template>
 <script>
 import Overview from './Overview.vue';
 import PropRenderer from './PropRenderer.vue';
 import MethodRenderer from './MethodRenderer.vue';
+import EventRenderer from './EventRenderer.vue';
 
 function gqp(qs) {
   qs = qs.split('+').join(' ');
@@ -33,6 +36,7 @@ export default {
     Overview,
     PropRenderer,
     MethodRenderer,
+    EventRenderer,
   },
   props: ['docs'],
   data() {
