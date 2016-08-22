@@ -50,11 +50,6 @@ class GuildChannel extends Channel {
      * @type {String}
      */
     this.name = data.name;
-    /**
-     * The ID of the last message in the channel, if one was sent.
-     * @type {?String}
-     */
-    this.lastMessageID = data.last_message_id;
     this.ow = data.permission_overwrites;
     /**
      * A map of permission overwrites in this channel for roles and users.

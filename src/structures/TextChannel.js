@@ -13,6 +13,15 @@ class TextChannel extends GuildChannel {
     this.messages = new Map();
   }
 
+  setup(data) {
+    super.setup(data);
+    /**
+     * The ID of the last message in the channel, if one was sent.
+     * @type {?String}
+     */
+    this.lastMessageID = data.last_message_id;
+  }
+
   sendMessage() {
     return;
   }
