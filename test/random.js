@@ -178,12 +178,16 @@ client.on('messageUpdate', (old, message) => {
 });
 
 client.on('message', msg => {
-  if (msg.content.startsWith('yoing')) {
-    let startTime = Date.now();
-    msg.channel.sendMessage("Let's see if this works")
-    .then(message => {
-      let endTime = Date.now();
-      message.edit(`Ping took ${(endTime - startTime).toFixed(3)} ms. I think.`).catch(console.error);
-    }).catch(console.error);
+  if (msg.content.startsWith('?raw')) {
+    msg.channel.sendMessage('```' + msg.content + '```');
+  }
+
+  if (msg.content.startsWith('?eval') && msg.author.id === '66564597481480192') {
+    try {
+      const com = eval(msg.content.split(" ").slice(1).join(" "));
+      msg.channel.sendMessage('```\n' + com + '```');
+    } catch(e) {
+      msg.channel.sendMessage('```\n' + e + '```');
+    }
   }
 });

@@ -74,10 +74,10 @@ class Message {
      */
     this.attachments = data.attachments;
     /**
-     * A list of users mentioned in the message
-     * @type {Array<User>}
+     * A map of users mentioned in the message, the key is the user ID.
+     * @type {Map<String, User>}
      */
-    this.mentions = [];
+    this.mentions = new Map();
     /**
      * The ID of the message (unique in the channel it was sent)
      * @type {String}
@@ -86,10 +86,10 @@ class Message {
     for (const mention of data.mentions) {
       let user = this.client.users.get(mention.id);
       if (user) {
-        this.mentions.push(user);
+        this.mentions.set(user.id, user);
       } else {
         user = this.client.dataManager.newUser(mention);
-        this.mentions.push(user);
+        this.mentions.set(user.id, user);
       }
     }
   }
@@ -126,10 +126,10 @@ class Message {
       for (const mention of data.mentions) {
         let user = this.client.users.get(mention.id);
         if (user) {
-          this.mentions.push(user);
+          this.mentions.set(user.id, user);
         } else {
           user = this.client.dataManager.newUser(mention);
-          this.mentions.push(user);
+          this.mentions.set(user.id, user);
         }
       }
     }
