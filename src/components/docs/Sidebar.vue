@@ -8,7 +8,7 @@
       <ul v-for="(category, catFiles) in docs.custom">
         <li>{{ category }}</li>
         <li v-for="file in catFiles" v-link='{ name:"fileview", params:{category:category, file:file.name} }' @click="toggle">{{ file.name }}</li>
-      <ul>
+      </ul>
       <ul>
         <li>Classes</li>
         <li v-for="docclass in docs.classes" v-link='{ name:"classview", params:{class:docclass.name} }' @click="toggle">{{ docclass.name }}</li>
