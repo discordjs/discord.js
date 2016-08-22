@@ -1,3 +1,28 @@
+/**
+ * Options that can be passed to a client:
+ * ```js
+ * {
+ *   ws: {
+ *     large_threshold: 250,
+ *     compress: true,
+ *     properties: {
+ *       $os: process ? process.platform : 'discord.js',
+ *       $browser: 'discord.js',
+ *       $device: 'discord.js',
+ *       $referrer: '',
+ *       $referring_domain: '',
+ *     },
+ *   },
+ *   protocol_version: 6,
+ *   max_message_cache: 200,
+ *   rest_ws_bridge_timeout: 5000,
+ *   api_request_method: 'sequential',
+ *   shard_id: 0,
+ *   shard_count: 0,
+ * };
+ * ```
+ * @typedef {Object} ClientOptions
+ */
 exports.DefaultOptions = {
   ws: {
     large_threshold: 250,
@@ -14,6 +39,8 @@ exports.DefaultOptions = {
   max_message_cache: 200,
   rest_ws_bridge_timeout: 5000,
   api_request_method: 'sequential',
+  shard_id: 0,
+  shard_count: 0,
 };
 
 exports.Status = {

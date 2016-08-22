@@ -112,6 +112,9 @@ class WebSocketManager {
     this.reconnecting = false;
     const payload = this.client.options.ws;
     payload.token = this.client.token;
+    if (this.client.options.shard_count > 0) {
+      payload.shard = [this.client.options.shard_id, this.client.options.shard_count];
+    }
 
     this.send({
       op: Constants.OPCodes.IDENTIFY,

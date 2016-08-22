@@ -1,4 +1,5 @@
 const DocumentedItem = require('./DocumentedItem');
+const DocumentedParam = require('./DocumentedParam');
 
 /*
 { id: 'Client()',
@@ -18,13 +19,26 @@ const DocumentedItem = require('./DocumentedItem');
 class DocumentedConstructor extends DocumentedItem {
 
   registerMetaInfo(data) {
+    super.registerMetaInfo(data);
     this.directData = data;
+    const newParams = [];
+    for (const param of data.params) {
+      newParams.push(new DocumentedParam(this, param));
+    }
+    this.directData.params = newParams;
   }
 
   serialize() {
     super.serialize();
-    const { id, name, description, memberof, access } = this.directData;
-    return { id, name, description, memberof, access };
+    const { id, name, description, memberof, access, params } = this.directData;
+    return {
+      id,
+      name,
+      description,
+      memberof,
+      access,
+      params: params.map(p => p.serialize())
+    };
   }
 
 }
