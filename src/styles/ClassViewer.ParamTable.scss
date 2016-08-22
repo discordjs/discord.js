@@ -40,9 +40,14 @@
   .type {
     font-weight: bold;
     font-size: 15px;
-    a {
-      color: $primary_color;
-      text-decoration: none;
-    }
+      .typeLink {
+        text-decoration: none;
+        color: $primary_color;
+        cursor: pointer;
+      }
+
+      .typeLink:hover {
+        color: lighten($primary_color, 10%);
+      }
   }
 }

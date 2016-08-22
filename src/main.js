@@ -24,7 +24,7 @@ const App = Vue.extend({
   },
   methods: {
     resolveReference(name) {
-      const docs = this.sharedStore.data.docs[this.$route.params.tag];
+      const docs = this.store.docs[this.$route.params.tag];
       if (docs) {
         const path = docs.links[name];
         if (path === 'class') {

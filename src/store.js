@@ -15,10 +15,10 @@ function build(docs) {
     Number: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number',
   };
   console.log(docs);
-  for (const jsclass in docs.classes) {
+  for (const jsclass of docs.classes) {
     links[jsclass.name] = 'class';
   }
-  for (const jsclass in docs.typedefs) {
+  for (const jsclass of docs.typedefs) {
     links[jsclass.name] = 'typedef';
   }
   docs.links = links;
