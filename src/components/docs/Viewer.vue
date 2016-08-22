@@ -20,6 +20,15 @@ export default {
       viewPrivate: this.$route.query.private,
     };
   },
+  ready() {
+    this.$router.go({
+      name: 'fileview',
+      params: {
+        category: 'general',
+        file: 'Getting Started',
+      },
+    });
+  },
   route: {
     canActivate(transition) {
       store.fetchDocs(transition.to.params.tag).then(() => {
