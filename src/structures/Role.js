@@ -213,6 +213,14 @@ class Role {
 
     return ((this.permissions & permission) > 0);
   }
+
+  /**
+   * When concatenated with a String, this automatically concatenates the Role mention rather than the Role object.
+   * @returns {String}
+   */
+  toString() {
+    return `<@&${this.id}>`;
+  }
 }
 
 module.exports = Role;

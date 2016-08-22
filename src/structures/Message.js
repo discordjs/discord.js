@@ -79,28 +79,37 @@ class Message {
      */
     this.attachments = data.attachments;
     /**
-     * A map of users mentioned in the message, the key is the user ID.
-     * @type {Map<String, User>}
+     * An object containing a further users or roles map
+     * @type {Object}
+     * @property {Map<String, User>} mentions.users Mentioned users, maps their ID to the user object.
+     * @property {Map<String, Role>} mentions.roles Mentioned roles, maps their ID to the role object.
      */
-    this.mentions = new Map();
+    this.mentions = {
+      users: new Map(),
+      roles: new Map(),
+    };
     /**
      * The ID of the message (unique in the channel it was sent)
      * @type {String}
      */
     this.id = data.id;
-    /**
-     * A map of roles mentioned in the message, the key is the role ID.
-     * @type {Map<String, Role>}
-     */
-    this.roleMentions = new Map();
 
     for (const mention of data.mentions) {
       let user = this.client.users.get(mention.id);
       if (user) {
-        this.mentions.set(user.id, user);
+        this.mentions.users.set(user.id, user);
       } else {
         user = this.client.dataManager.newUser(mention);
-        this.mentions.set(user.id, user);
+        this.mentions.users.set(user.id, user);
+      }
+    }
+
+    if (data.mention_roles) {
+      for (const mention of data.mention_roles) {
+        const role = this.channel.guild.roles.get(mention);
+        if (role) {
+          this.mentions.roles.set(role.id, role);
+        }
       }
     }
   }
@@ -137,14 +146,21 @@ class Message {
       for (const mention of data.mentions) {
         let user = this.client.users.get(mention.id);
         if (user) {
-          this.mentions.set(user.id, user);
+          this.mentions.users.set(user.id, user);
         } else {
           user = this.client.dataManager.newUser(mention);
-          this.mentions.set(user.id, user);
+          this.mentions.users.set(user.id, user);
         }
       }
     }
-
+    if (data.mention_roles) {
+      for (const mention of data.mention_roles) {
+        const role = this.channel.guild.roles.get(mention);
+        if (role) {
+          this.mentions.roles.set(role.id, role);
+        }
+      }
+    }
     if (data.id) {
       this.id = data.id;
     }

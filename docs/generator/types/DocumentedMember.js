@@ -1,6 +1,7 @@
 const DocumentedItem = require('./DocumentedItem');
 const DocumentedItemMeta = require('./DocumentedItemMeta');
 const DocumentedVarType = require('./DocumentedVarType');
+const DocumentedParam = require('./DocumentedParam');
 
 /*
 { id: 'Client#rest',
@@ -26,11 +27,20 @@ class DocumentedMember extends DocumentedItem {
     this.directData = data;
     this.directData.meta = new DocumentedItemMeta(this, data.meta);
     this.directData.type = new DocumentedVarType(this, data.type);
+    if (data.properties) {
+      const newProps = [];
+      for (const param of data.properties) {
+        newProps.push(new DocumentedParam(this, param));
+      }
+      this.directData.properties = newProps;
+    } else {
+      data.properties = [];
+    }
   }
 
   serialize() {
     super.serialize();
-    const { id, name, description, memberof, type, access, meta } = this.directData;
+    const { id, name, description, memberof, type, access, meta, properties } = this.directData;
     return {
       id,
       name,
@@ -39,6 +49,7 @@ class DocumentedMember extends DocumentedItem {
       type: type.serialize(),
       access,
       meta: meta.serialize(),
+      props: properties.map(p => p.serialize()),
     };
   }
 
