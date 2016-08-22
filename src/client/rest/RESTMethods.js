@@ -284,6 +284,14 @@ class RESTMethods {
     });
   }
 
+  setChannelOverwrite(channel, payload) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('put', `${Constants.Endpoints.channelPermissions(channel.id)}/${payload.id}`, true, payload)
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
   updateGuildRole(role, _data) {
     return new Promise((resolve, reject) => {
       /*

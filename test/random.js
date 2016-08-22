@@ -181,5 +181,15 @@ client.on('message', message => {
   if (message.content === '?perms?') {
     console.log(message.author.username, 'asked for perms in', message.channel.name, ':');
     console.log(message.channel.permissionsFor(message.author).serialize());
+  } else if (message.content === '???test???') {
+    message.channel.overwritePermissions('', {
+      SEND_MESSAGES: false,
+    })
+    .then(() => {
+      message.channel.overwritePermissions('', {
+        SEND_MESSAGES: true,
+      });
+    })
+    .catch(console.log);
   }
 });

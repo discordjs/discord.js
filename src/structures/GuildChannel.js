@@ -1,5 +1,6 @@
 const Channel = require('./Channel');
 const PermissionOverwrites = require('./PermissionOverwrites');
+const Role = require('./Role');
 const EvaluatedPermissions = require('./EvaluatedPermissions');
 const Constants = require('../util/Constants');
 
@@ -56,13 +57,13 @@ class GuildChannel extends Channel {
     this.lastMessageID = data.last_message_id;
     this.ow = data.permission_overwrites;
     /**
-     * A list of permission overwrites in this channel for roles and users.
-     * @type {Array<PermissionOverwrites>}
+     * A map of permission overwrites in this channel for roles and users.
+     * @type {Map<String, PermissionOverwrites>}
      */
-    this.permissionOverwrites = [];
+    this.permissionOverwrites = new Map();
     if (data.permission_overwrites) {
       for (const overwrite of data.permission_overwrites) {
-        this.permissionOverwrites.push(new PermissionOverwrites(this, overwrite));
+        this.permissionOverwrites.set(overwrite.id, new PermissionOverwrites(this, overwrite));
       }
     }
   }
@@ -84,7 +85,7 @@ class GuildChannel extends Channel {
 
     if (base) {
       if (other.permission_overwrites) {
-        const thisIDSet = this.permissionOverwrites.map(overwrite => overwrite.id);
+        const thisIDSet = Array.from(this.permissionOverwrites.keys());
         const otherIDSet = other.permission_overwrites.map(overwrite => overwrite.id);
         if (arraysEqual(thisIDSet, otherIDSet)) {
           base = true;
@@ -159,6 +160,68 @@ class GuildChannel extends Channel {
     }
 
     return [];
+  }
+
+  /**
+   * An object mapping permission flags to `true` (enabled) or `false` (disabled)
+   * ```js
+   * {
+   *  'SEND_MESSAGES': true,
+   *  'ATTACH_FILES': false,
+   * }
+   * ```
+   * @typedef {(number|string)} PermissionOverwriteOptions
+   * @example
+   * // overwrite permissions for a message author
+   * message.channel.overwritePermissions(message.author, {
+   *  SEND_MESSAGES: false
+   * })
+   * .then(() => console.log('Done!'))
+   * .catch(console.log);
+   */
+
+  /**
+   * Overwrites the permissions for a user or role in this channel.
+   * @param {Role|UserResolvable} userOrRole the user or role to update
+   * @param {PermissionOverwriteOptions} config the configuration for the update
+   * @returns {Promise<null, Error>}
+   */
+  overwritePermissions(userOrRole, options) {
+    const payload = {
+      allow: 0,
+      deny: 0,
+    };
+
+    if (userOrRole instanceof Role) {
+      payload.type = 'role';
+    } else {
+      userOrRole = this.client.resolver.resolveUser(userOrRole);
+      payload.type = 'member';
+      if (!userOrRole) {
+        return Promise.reject('supplied parameter was neither a user or a role');
+      }
+    }
+
+    payload.id = userOrRole.id;
+
+    const prevOverwrite = this.permissionOverwrites.get(userOrRole.id);
+    
+    if (prevOverwrite) {
+      payload.allow = prevOverwrite.allow;
+      payload.deny = prevOverwrite.deny;
+    }
+
+    for (const perm in options) {
+      if (options[perm] === true) {
+        payload.allow |= (Constants.PermissionFlags[perm] || 0);
+        payload.deny &= ~(Constants.PermissionFlags[perm] || 0);
+      } else if (options[perm] === false) {
+        payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
+        payload.deny |= (Constants.PermissionFlags[perm] || 0);
+      }
+    }
+
+    return this.client.rest.methods.setChannelOverwrite(this, payload);
   }
 
   edit(data) {
