@@ -19,7 +19,7 @@ class Client extends EventEmitter {
 
   /**
    * Creates an instance of Client.
-   * @param {Object} [options] options to pass to the client
+   * @param {ClientOptions} [options] options to pass to the client
    */
   constructor(options) {
     super();
