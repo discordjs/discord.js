@@ -9,11 +9,8 @@ const WebSocketManager = require('./websocket/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
 
 /**
- * Creates a new Discord Client
- * ```js
- * const Discord = require("discord.js");
- * const client = new Discord.Client();
- * ```
+ * The starting point for making a Discord Bot.
+ * @extends {EventEmitter}
  */
 class Client extends EventEmitter {
 

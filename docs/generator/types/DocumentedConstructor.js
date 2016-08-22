@@ -37,7 +37,7 @@ class DocumentedConstructor extends DocumentedItem {
       description,
       memberof,
       access,
-      params: params.map(p => p.serialize())
+      params: params.map(p => p.serialize()),
     };
   }
 
