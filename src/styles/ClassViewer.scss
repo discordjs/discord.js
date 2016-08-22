@@ -26,7 +26,7 @@
   }
 
   *[data-selected] {
-    background: lighten($primary_color, 10%);
+    background: lighten(#F3F321, 10%);
   }
   
   :not(pre) > code {
