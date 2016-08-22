@@ -34,6 +34,9 @@ class ClientDataManager {
   }
 
   newUser(data) {
+    if (this.client.users.get(data.id)) {
+      return this.client.users.get(data.id);
+    }
     const user = new User(this.client, data);
     this.client.users.set(user.id, user);
     return user;

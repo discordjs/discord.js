@@ -15,7 +15,7 @@ class DMChannel extends Channel {
 
   setup(data) {
     super.setup(data);
-    const recipient = new User(this.client, data.recipients[0]);
+    const recipient = this.client.users.get(data.recipients[0].id) || new User(this.client, data.recipients[0]);
     /**
      * The recipient on the other end of the DM
      * @type {User}
