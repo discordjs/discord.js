@@ -5,6 +5,15 @@
         </span>
       </span>
       <p class="classdesc">{{{* jsclass.description | normalise | marked }}}</p>
+      <div class="classConstructor" v-if="jsclass.classConstructor">
+        <span class="title">Constructor</span>
+        <div class="classConstructor">
+          <pre>
+            <code class="lang-js">new Discord.Client(<span v-for="param in jsclass.classConstructor.params">{{* param.name }}</span>);</code>
+          </pre>
+          <param-table :params="jsclass.classConstructor.params"></param-table>
+        </div>
+      </div>
       <overview :jsclass="jsclass"></overview>
       <span class="title" v-if="jsclass.properties.length > 0">Properties</span>
       <prop-renderer v-for="prop in jsclass.properties" :prop="prop"></prop-renderer>
@@ -19,6 +28,7 @@ import Overview from './Overview.vue';
 import PropRenderer from './PropRenderer.vue';
 import MethodRenderer from './MethodRenderer.vue';
 import EventRenderer from './EventRenderer.vue';
+import ParamTable from './ParamTable.vue';
 
 function gqp(qs) {
   qs = qs.split('+').join(' ');
@@ -37,6 +47,7 @@ export default {
     PropRenderer,
     MethodRenderer,
     EventRenderer,
+    ParamTable,
   },
   props: ['docs'],
   data() {
