@@ -16,7 +16,7 @@ class GuildRoleDeleteAction extends Action {
     if (guild) {
       let exists = guild.roles.get(data.role_id);
       if (exists) {
-        guild.roles.remove(data.role_id);
+        guild.roles.delete(data.role_id);
         this.deleted[guild.id + data.role_id] = exists;
         this.scheduleForDeletion(guild.id, data.role_id);
         client.emit(Constants.Events.GUILD_ROLE_DELETE, guild, exists);

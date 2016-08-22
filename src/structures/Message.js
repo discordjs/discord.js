@@ -88,6 +88,12 @@ class Message {
      * @type {String}
      */
     this.id = data.id;
+    /**
+     * A map of roles mentioned in the message, the key is the role ID.
+     * @type {Map<String, Role>}
+     */
+    this.roleMentions = new Map();
+
     for (const mention of data.mentions) {
       let user = this.client.users.get(mention.id);
       if (user) {
