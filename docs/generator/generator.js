@@ -5,12 +5,13 @@ const DocumentationScanner = require('./doc-scanner');
 const Documentation = require('./documentation');
 const fs = require('fs-extra');
 const zlib = require('zlib');
+const custom = require('../custom/index');
 
 const docScanner = new DocumentationScanner(this);
 
 function parseDocs(json) {
   console.log(`${json.length} items found`);
-  const documentation = new Documentation(json);
+  const documentation = new Documentation(json, custom);
   console.log('serializing');
   let output = JSON.stringify(documentation.serialize(), null, 0);
   if (compress) {

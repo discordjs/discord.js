@@ -8,10 +8,11 @@ const DocumentedEvent = require('./types/DocumentedEvent');
 const GEN_VERSION = require('./config.json').GEN_VERSION;
 
 class Documentation {
-  constructor(items) {
+  constructor(items, custom) {
     this.classes = new Map();
     this.interfaces = new Map();
     this.typedefs = new Map();
+    this.custom = custom;
     this.parse(items);
   }
 
@@ -104,6 +105,7 @@ class Documentation {
       classes: Array.from(this.classes.values()).map(c => c.serialize()),
       interfaces: Array.from(this.interfaces.values()).map(i => i.serialize()),
       typedefs: Array.from(this.typedefs.values()).map(t => t.serialize()),
+      custom: this.custom,
     };
     return serialized;
   }

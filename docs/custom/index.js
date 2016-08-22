@@ -6,9 +6,9 @@ const categories = {};
 for (const file of files) {
   file.category = file.category.toLowerCase();
   if (!categories[file.category]) {
-    categories[file.category] = {};
+    categories[file.category] = [];
   }
-  categories[file.category][file.name] = file.data;
+  categories[file.category].push(file);
 }
 
 module.exports = categories;
