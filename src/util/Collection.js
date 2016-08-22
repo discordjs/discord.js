@@ -47,6 +47,7 @@ class Collection extends Map {
   /**
    * The length (size) of this collection.
    * @readonly
+   * @type {Number}
    */
   get length() {
     return this.size;
