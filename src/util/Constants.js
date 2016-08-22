@@ -76,7 +76,7 @@ const Endpoints = exports.Endpoints = {
   channelInvites: (channelID) => `${Endpoints.channel(channelID)}/invites`,
   channelTyping: (channelID) => `${Endpoints.channel(channelID)}/typing`,
   channelPermissions: (channelID) => `${Endpoints.channel(channelID)}/permissions`,
-  channelMessage: (channelID, messageID) => `${Endpoints.channelMessage(channelID)}/${messageID}`,
+  channelMessage: (channelID, messageID) => `${Endpoints.channelMessages(channelID)}/${messageID}`,
 };
 
 exports.OPCodes = {

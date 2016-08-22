@@ -126,7 +126,7 @@ client.on('message', message => {
       m += `I am aware of ${client.channels.size} channels overall\n`;
       m += `I am aware of ${client.guilds.size} guilds overall\n`;
       m += `I am aware of ${client.users.size} users overall\n`;
-      message.channel.sendMessage(m);
+      message.channel.sendMessage(m).then(msg => msg.edit('nah')).catch(console.log);
     }
 
     if (message.content === 'messageme!') {
