@@ -170,7 +170,7 @@ class GuildChannel extends Channel {
    *  'ATTACH_FILES': false,
    * }
    * ```
-   * @typedef {(number|string)} PermissionOverwriteOptions
+   * @typedef {Object} PermissionOverwriteOptions
    */
 
   /**
