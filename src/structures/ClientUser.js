@@ -80,10 +80,10 @@ class ClientUser extends User {
   }
 
   /**
-   * Set the playing status of the logged in client.
-   * @param {String} status
-   * @param {String} game
-   * @returns {Promise<ClientUser>}
+   * Set the status and playing game of the logged in client.
+   * @param {String} [status] the status, can be `online` or `idle`.
+   * @param {String|Object} [game] the game that is being played
+   * @returns {Promise<ClientUser, Error>}
    * @example
    * // set status
    * client.user.setStatus('status', 'game')
@@ -91,29 +91,39 @@ class ClientUser extends User {
    *  .catch(console.log);
    */
   setStatus(status, game) {
-    if (status === "online" || status === "here" || status === "available") {
-      this.idleStatus = null;
-    } else if (status === "idle" || status === "away") {
-      this.idleStatus = Date.now();
-    } else {
-      this.idleStatus = this.idleStatus || null;
-    }
-
-    if (typeof game === "string" && !game.length) game = null;
-    this.userGame = game === null ? null : !game ? this.userGame || null : typeof game === "string" ? {name: game} : game;
-
-    this.client.ws.send({
-      op: 3,
-      d: {
-        idle_since: this.idleStatus,
-        game: this.userGame
+    return new Promise(resolve => {
+      if (status === 'online' || status === 'here' || status === 'available') {
+        this.idleStatus = null;
+      } else if (status === 'idle' || status === 'away') {
+        this.idleStatus = Date.now();
+      } else {
+        this.idleStatus = this.idleStatus || null;
       }
+
+      if (typeof game === 'string' && !game.length) game = null;
+
+      if (game === null) {
+        this.userGame = null;
+      } else if (!game) {
+        this.userGame = this.userGame || null;
+      } else if (typeof game === 'string') {
+        this.userGame = { name: game };
+      } else {
+        this.userGame = game;
+      }
+
+      this.client.ws.send({
+        op: 3,
+        d: {
+          idle_since: this.idleStatus,
+          game: this.userGame,
+        },
+      });
+
+      this.status = this.idleStatus ? 'idle' : 'online';
+      this.game = this.userGame;
+      resolve(this);
     });
-
-    this.status = this.idleStatus ? "idle" : "online";
-    this.game = this.userGame;
-
-    return Promise.resolve();
   }
 
   edit(data) {
