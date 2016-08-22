@@ -171,13 +171,6 @@ class GuildChannel extends Channel {
    * }
    * ```
    * @typedef {(number|string)} PermissionOverwriteOptions
-   * @example
-   * // overwrite permissions for a message author
-   * message.channel.overwritePermissions(message.author, {
-   *  SEND_MESSAGES: false
-   * })
-   * .then(() => console.log('Done!'))
-   * .catch(console.log);
    */
 
   /**
@@ -185,6 +178,13 @@ class GuildChannel extends Channel {
    * @param {Role|UserResolvable} userOrRole the user or role to update
    * @param {PermissionOverwriteOptions} config the configuration for the update
    * @returns {Promise<null, Error>}
+   * @example
+   * // overwrite permissions for a message author
+   * message.channel.overwritePermissions(message.author, {
+   *  SEND_MESSAGES: false
+   * })
+   * .then(() => console.log('Done!'))
+   * .catch(console.log);
    */
   overwritePermissions(userOrRole, options) {
     const payload = {
