@@ -292,6 +292,31 @@ class RESTMethods {
     });
   }
 
+  getChannelMessages(channel, payload = {}) {
+    return new Promise((resolve, reject) => {
+      const params = [];
+      if (payload.limit) {
+        params.push(`limit=${payload.limit}`);
+      }
+      if (payload.around) {
+        params.push(`around=${payload.around}`);
+      } else if (payload.before) {
+        params.push(`before=${payload.before}`);
+      } else if (payload.after) {
+        params.push(`after=${payload.after}`);
+      }
+
+      let request = Constants.Endpoints.channelMessages(channel.id);
+      if (params.length > 0) {
+        request += `?${params.join('&')}`;
+      }
+
+      this.rest.makeRequest('get', request, true)
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
   updateGuildRole(role, _data) {
     return new Promise((resolve, reject) => {
       /*

@@ -41,6 +41,44 @@ class TextBasedChannel {
     return this.client.rest.methods.sendMessage(this, content, true);
   }
 
+  /**
+   * The parameters to pass in when requesting previous messages from a channel. `around`, `before` and
+   * `after` are mutually exclusive. All the parameters are optional.
+   * ```js
+   * {
+   *  limit: 30, // the message limit, defaults to 50
+   *  before: '123', // gets messages before the given message ID
+   *  after: '123', // gets messages after the given message ID
+   *  around: '123', // gets messages around the given message ID
+   * }
+   * ```
+   * @typedef {Object} ChannelLogsQueryOptions
+   */
+
+  /**
+   * Gets the past messages sent in this channel. Resolves with a Collection mapping message ID's to Message objects.
+   * @param {ChannelLogsQueryOptions} [options={}] the query parameters to pass in
+   * @returns {Promise<Collection<String, Message>, Error>}
+   * @example
+   * // get messages
+   * channel.getMessages({limit: 10})
+   *  .then(messages => console.log(`Received ${messages.size} messages`))
+   *  .catch(console.log);
+   */
+  getMessages(options = {}) {
+    return new Promise((resolve, reject) => {
+      this.client.rest.methods.getChannelMessages(this, options)
+        .then(data => {
+          const messages = new Collection();
+          for (const message of data) {
+            messages.set(message.id, message);
+          }
+          resolve(messages);
+        })
+        .catch(reject);
+    });
+  }
+
   _cacheMessage(message) {
     const maxSize = this.client.options.max_message_cache;
     if (maxSize === 0) {
@@ -63,7 +101,11 @@ function applyProp(structure, prop) {
 }
 
 exports.applyToClass = (structure, full = false) => {
-  const props = full ? ['sendMessage', 'sendTTSMessage', '_cacheMessage'] : ['sendMessage', 'sendTTSMessage'];
+  const props = ['sendMessage', 'sendTTSMessage'];
+  if (full) {
+    props.push('_cacheMessage');
+    props.push('getMessages');
+  }
   for (const prop of props) {
     applyProp(structure, prop);
   }

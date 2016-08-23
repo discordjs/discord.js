@@ -49,6 +49,10 @@ class DMChannel extends Channel {
   _cacheMessage() {
     return;
   }
+
+  getMessages() {
+    return;
+  }
 }
 
 TextBasedChannel.applyToClass(DMChannel, true);

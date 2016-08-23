@@ -126,6 +126,9 @@ class GroupDMChannel extends Channel {
     return;
   }
 
+  getMessages() {
+    return;
+  }
 }
 
 TextBasedChannel.applyToClass(GroupDMChannel, true);
