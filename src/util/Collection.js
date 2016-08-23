@@ -55,7 +55,7 @@ class Collection extends Map {
 
   /**
    * Returns an array of items where `item[key] === value` of the collection
-   * @param {String} key the key to filter bby
+   * @param {String} key the key to filter by
    * @param {any} value the expected value
    * @returns {Array<Object>}
    * @example
@@ -73,7 +73,7 @@ class Collection extends Map {
 
   /**
    * Returns a single item where `item[key] === value`
-   * @param {String} key the key to filter bby
+   * @param {String} key the key to filter by
    * @param {any} value the expected value
    * @returns {Object}
    * @example
@@ -90,7 +90,7 @@ class Collection extends Map {
 
   /**
    * Returns true if the collection has an item where `item[key] === value`
-   * @param {String} key the key to filter bby
+   * @param {String} key the key to filter by
    * @param {any} value the expected value
    * @returns {Object}
    * @example
