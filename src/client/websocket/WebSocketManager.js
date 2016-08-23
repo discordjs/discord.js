@@ -127,6 +127,7 @@ class WebSocketManager {
    * @returns {null}
    */
   eventClose(event) {
+    console.log('close', event.code);
     if (event.code === 4004) {
       throw Constants.Errors.BAD_LOGIN;
     }
@@ -153,6 +154,8 @@ class WebSocketManager {
     } catch (e) {
       return this.eventError(Constants.Errors.BAD_WS_MESSAGE);
     }
+
+    this.client.emit('raw', packet);
 
     if (packet.op === 10) {
       this.client.manager.setupKeepAlive(packet.d.heartbeat_interval);

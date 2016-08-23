@@ -42,6 +42,10 @@ class VoiceChannel extends GuildChannel {
   setBitrate(bitrate) {
     return this.rest.client.rest.methods.updateChannel(this, { bitrate });
   }
+
+  join() {
+    return this.client.voice.joinChannel(this);
+  }
 }
 
 module.exports = VoiceChannel;
