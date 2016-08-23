@@ -1,6 +1,7 @@
 const Collection = require('../../util/Collection');
 const mergeDefault = require('../../util/MergeDefault');
 const Constants = require('../../util/Constants');
+const VoiceConnection = require('./VoiceConnection');
 
 /**
  * Manages all the voice stuff for the Client
@@ -31,7 +32,9 @@ class ClientVoiceManager {
       throw new Error('Guild not pending');
     }
     if (pendingRequest.token && pendingRequest.sessionID && pendingRequest.endpoint) {
-      console.log('got all info for', guildID);
+      const { token, sessionID, endpoint } = pendingRequest;
+      const voiceConnection = new VoiceConnection(this, guildID, token, sessionID, endpoint);
+      this.connections.set(guildID, voiceConnection);
     }
   }
 
@@ -47,7 +50,8 @@ class ClientVoiceManager {
       throw new Error('Guild not pending');
     }
     pendingRequest.token = token;
-    pendingRequest.endpoint = endpoint;
+    // remove the port otherwise it errors ¯\_(ツ)_/¯
+    pendingRequest.endpoint = endpoint.match(/([^:]*)/)[0];
     this._checkPendingReady(guildID);
   }
 
