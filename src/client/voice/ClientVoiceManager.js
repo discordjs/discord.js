@@ -32,8 +32,8 @@ class ClientVoiceManager {
       throw new Error('Guild not pending');
     }
     if (pendingRequest.token && pendingRequest.sessionID && pendingRequest.endpoint) {
-      const { token, sessionID, endpoint } = pendingRequest;
-      const voiceConnection = new VoiceConnection(this, guildID, token, sessionID, endpoint);
+      const { token, sessionID, endpoint, resolve, reject } = pendingRequest;
+      const voiceConnection = new VoiceConnection(this, guildID, token, sessionID, endpoint, resolve, reject);
       this.connections.set(guildID, voiceConnection);
     }
   }
@@ -93,13 +93,17 @@ class ClientVoiceManager {
    * @returns {null}
    */
   joinChannel(channel) {
-    this.pending.set(channel.guild.id, {
-      channel,
-      sessionID: null,
-      token: null,
-      endpoint: null,
+    return new Promise((resolve, reject) => {
+      this.pending.set(channel.guild.id, {
+        channel,
+        sessionID: null,
+        token: null,
+        endpoint: null,
+        resolve,
+        reject,
+      });
+      this._sendWSJoin(channel);
     });
-    this._sendWSJoin(channel);
   }
 }
 
