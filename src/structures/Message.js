@@ -249,7 +249,7 @@ class Message {
    * Reply to a message
    * @param {String} content the content of the message
    * @param {MessageOptions} [options = {}] the options to provide
-   * @returns {Promise<Message>}
+   * @returns {Promise<Message, Error>}
    * @example
    * // reply to a message
    * message.reply('Hey, I'm a reply!')
@@ -257,7 +257,8 @@ class Message {
    *  .catch(console.log);
    */
   reply(content, options = {}) {
-    return this.client.rest.methods.sendMessage(this.channel, this.guild ? `${this.author}, ${content}` : content, options.tts);
+    const newContent = this.guild ? `${this.author}, ${content}` : content;
+    return this.client.rest.methods.sendMessage(this.channel, newContent, options.tts);
   }
 }
 

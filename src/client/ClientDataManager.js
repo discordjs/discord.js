@@ -6,6 +6,7 @@ const DMChannel = require('../structures/DMChannel');
 const TextChannel = require('../structures/TextChannel');
 const VoiceChannel = require('../structures/VoiceChannel');
 const GuildChannel = require('../structures/GuildChannel');
+const GroupDMChannel = require('../structures/GroupDMChannel');
 
 class ClientDataManager {
   constructor(client) {
@@ -48,6 +49,8 @@ class ClientDataManager {
     let channel;
     if (data.type === Constants.ChannelTypes.DM) {
       channel = new DMChannel(this.client, data);
+    } else if (data.type === Constants.ChannelTypes.groupDM) {
+      channel = new GroupDMChannel(this.client, data);
     } else {
       guild = guild || this.client.guilds.get(data.guild_id);
       if (guild) {
