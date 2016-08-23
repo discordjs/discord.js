@@ -1,4 +1,5 @@
 const Collection = require('../../util/Collection');
+const Message = require('../Message');
 
 /**
  * Interface for classes that have text-channel-like features
@@ -71,7 +72,7 @@ class TextBasedChannel {
         .then(data => {
           const messages = new Collection();
           for (const message of data) {
-            messages.set(message.id, message);
+            messages.set(message.id, new Message(this, message, this.client));
           }
           resolve(messages);
         })
