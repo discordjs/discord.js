@@ -1,5 +1,6 @@
 const VoiceConnectionWebSocket = require('./VoiceConnectionWebSocket');
 const VoiceConnectionUDPClient = require('./VoiceConnectionUDPClient');
+const Constants = require('../../util/Constants');
 const EventEmitter = require('events').EventEmitter;
 
 /**
@@ -60,6 +61,38 @@ class VoiceConnection extends EventEmitter {
   _onError(e) {
     this._reject(e);
     this.emit('error', e);
+    this._shutdown(e);
+  }
+
+  /**
+   * Disconnects the Client from the Voice Channel
+   * @param {string} [reason='user requested'] the reason of the disconnection
+   * @returns {null}
+   */
+  disconnect(reason = 'user requested') {
+    this.manager.client.ws.send({
+      op: Constants.OPCodes.VOICE_STATE_UPDATE,
+      d: {
+        guild_id: this.channel.guild.id,
+        channel_id: null,
+        self_mute: false,
+        self_deaf: false,
+      },
+    });
+    return this._shutdown(reason);
+  }
+
+  _onClose(e) {
+    return this._shutdown(e);
+  }
+
+  _shutdown(e) {
+    this.ready = false;
+    this.websocket._shutdown();
+    if (this.udp) {
+      this.udp._shutdown();
+    }
+    this.emit('disconnected', e);
   }
 
   /**
@@ -69,9 +102,11 @@ class VoiceConnection extends EventEmitter {
    */
   bindListeners() {
     this.websocket.on('error', err => this._onError(err));
+    this.websocket.on('close', err => this._onClose(err));
     this.websocket.on('ready-for-udp', data => {
       this.udp = new VoiceConnectionUDPClient(this, data);
       this.udp.on('error', err => this._onError(err));
+      this.udp.on('close', err => this._onClose(err));
     });
     this.websocket.on('ready', () => {
       this.ready = true;

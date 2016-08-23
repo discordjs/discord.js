@@ -12,12 +12,22 @@ class VoiceConnectionWebSocket extends EventEmitter {
     this.ws = new WebSocket(`wss://${endpoint}`, null, { rejectUnauthorized: false });
     this.ws.onopen = () => this._onOpen();
     this.ws.onmessage = e => this._onMessage(e);
+    this.ws.onclose = e => this._onClose(e);
+    this.heartbeat = null;
   }
 
   send(data) {
     if (this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(data));
     }
+  }
+
+  _shutdown() {
+    if (this.ws) {
+      this.ws.close();
+      this.ws = null;
+    }
+    clearInterval(this.heartbeat);
   }
 
   _onOpen() {
@@ -32,8 +42,20 @@ class VoiceConnectionWebSocket extends EventEmitter {
     });
   }
 
+  _onClose(e) {
+    this.emit('close', e);
+  }
+
   _onError(e) {
-    throw e;
+    this.emit('error', e);
+  }
+
+  _setHeartbeat(interval) {
+    this.heartbeat = setInterval(() => {
+      this.send({
+        op: Constants.VoiceOPCodes.HEARTBEAT,
+      });
+    }, interval);
   }
 
   _onMessage(event) {
@@ -46,6 +68,7 @@ class VoiceConnectionWebSocket extends EventEmitter {
 
     switch (packet.op) {
       case Constants.VoiceOPCodes.READY:
+        this._setHeartbeat(packet.d.heartbeat_interval);
         this.emit('ready-for-udp', packet.d);
         break;
       case Constants.VoiceOPCodes.SESSION_DESCRIPTION:

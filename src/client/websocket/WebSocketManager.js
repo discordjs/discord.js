@@ -127,7 +127,6 @@ class WebSocketManager {
    * @returns {null}
    */
   eventClose(event) {
-    console.log('close', event.code);
     if (event.code === 4004) {
       throw Constants.Errors.BAD_LOGIN;
     }

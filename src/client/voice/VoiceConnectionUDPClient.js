@@ -32,6 +32,19 @@ class VoiceConnectionUDPClient extends EventEmitter {
     }
   }
 
+  _shutdown() {
+    if (this.udpSocket) {
+      try {
+        this.udpSocket.close();
+      } catch (err) {
+        if (err.message !== 'Not running') {
+          this.emit('error', err);
+        }
+      }
+      this.udpSocket = null;
+    }
+  }
+
   connectUDP(address) {
     this.udpIP = address;
     this.udpSocket = udp.createSocket('udp4');
@@ -62,6 +75,10 @@ class VoiceConnectionUDPClient extends EventEmitter {
 
     this.udpSocket.on('error', (error, message) => {
       this.emit('error', { error, message });
+    });
+
+    this.udpSocket.on('close', error => {
+      this.emit('close', error);
     });
 
     const blankMessage = new Buffer(70);

@@ -40,6 +40,9 @@ class ClientVoiceManager {
       const { channel, token, sessionID, endpoint, resolve, reject } = pendingRequest;
       const voiceConnection = new VoiceConnection(this, channel, token, sessionID, endpoint, resolve, reject);
       this.connections.set(guildID, voiceConnection);
+      voiceConnection.on('disconnected', () => {
+        this.connections.delete(guildID);
+      });
     }
   }
 
