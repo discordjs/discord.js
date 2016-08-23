@@ -5,6 +5,7 @@ const RESTManager = require('./rest/RESTManager');
 const ClientDataManager = require('./ClientDataManager');
 const ClientManager = require('./ClientManager');
 const ClientDataResolver = require('./ClientDataResolver');
+const ClientVoiceManager = require('./ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
@@ -58,7 +59,12 @@ class Client extends EventEmitter {
      * @private
      */
     this.actions = new ActionsManager(this);
-
+    /**
+     * The Voice Manager of the Client
+     * @type {ClientVoiceManager}
+     * @private
+     */
+    this.voice = new ClientVoiceManager(this);
     /**
      * A Collection of the Client's stored users
      * @type {Collection<String, User>}
