@@ -1,5 +1,8 @@
 language: node_js
 node_js:
   - "6"
+cache:
+  directories:
+    - node_modules
 before_install: npm install -g eslint eslint-config-airbnb eslint-plugin-import eslint-plugin-jsx-a11y eslint-plugin-react
 install: npm install
