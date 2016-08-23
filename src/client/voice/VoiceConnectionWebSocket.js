@@ -45,10 +45,19 @@ class VoiceConnectionWebSocket extends EventEmitter {
     }
 
     switch (packet.op) {
-      case 2:
+      case Constants.VoiceOPCodes.READY:
         this.emit('ready-for-udp', packet.d);
         break;
+      case Constants.VoiceOPCodes.SESSION_DESCRIPTION:
+        this.encryptionMode = packet.d.mode;
+        this.secretKey = new Uint8Array(new ArrayBuffer(packet.d.secret_key.length));
+        for (const index in packet.d.secret_key) {
+          this.secretKey[index] = packet.d.secret_key[index];
+        }
+        this.emit('ready');
+        break;
       default:
+        this.emit('unknown', packet);
         break;
     }
   }

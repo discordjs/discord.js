@@ -120,6 +120,15 @@ exports.OPCodes = {
   INVALID_SESSION: 9,
 };
 
+exports.VoiceOPCodes = {
+  IDENTIFY: 0,
+  SELECT_PROTOCOL: 1,
+  READY: 2,
+  HEARTBEAT: 3,
+  SESSION_DESCRIPTION: 4,
+  SPEAKING: 5,
+};
+
 exports.Events = {
   READY: 'ready',
   GUILD_CREATE: 'guildCreate',
