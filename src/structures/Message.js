@@ -257,7 +257,7 @@ class Message {
    *  .catch(console.log);
    */
   reply(content, options = {}) {
-    return this.client.rest.methods.sendMessage(this.channel, (this.guild) ? this.author + ", " + content : content, options.tts);
+    return this.client.rest.methods.sendMessage(this.channel, (this.guild) ? this.author + ', ' + content : content, options.tts);
   }
 }
 
