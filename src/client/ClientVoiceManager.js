@@ -10,12 +10,28 @@ class ClientVoiceManager {
   constructor(client) {
     /**
      * The client that instantiated this voice manager
+     * @type {Client}
      */
     this.client = client;
     /**
      * A collection mapping connection IDs to the Connection objects
+     * @type {Collection<String, VoiceConnection>}
      */
     this.connections = new Collection();
+    /**
+     * Pending connection attempts, maps Guild ID to VoiceChannel
+     * @type {Collection<String, VoiceChannel>}
+     */
+    this.pending = new Collection();
+  }
+
+  /**
+   * Called when the Client receives information about this voice state update.
+   * @param {String} token the token to authorise with
+   * @param {String} endpoint the endpoint to connect to
+   */
+  _receivedVoiceServer(token, endpoint) {
+    console.log('got', token, endpoint);
   }
 
   /**
@@ -42,6 +58,7 @@ class ClientVoiceManager {
    * @returns {null}
    */
   joinChannel(channel) {
+    this.pending.set(channel.guild.id, channel);
     this._sendWSJoin(channel);
   }
 }

@@ -1,0 +1,24 @@
+const AbstractHandler = require('./AbstractHandler');
+
+/*
+{
+    "token": "my_token",
+    "guild_id": "41771983423143937",
+    "endpoint": "smart.loyal.discord.gg"
+}
+*/
+
+class VoiceServerUpdate extends AbstractHandler {
+
+  handle(packet) {
+    const data = packet.d;
+    const client = this.packetManager.client;
+
+    if (client.voice.pending.get(data.guild_id)) {
+      client.voice._receivedVoiceServer(data.token, data.endpoint);
+    }
+  }
+
+}
+
+module.exports = VoiceServerUpdate;
