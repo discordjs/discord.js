@@ -66,6 +66,7 @@ exports.Errors = {
   TOOK_TOO_LONG: new Error('something took too long to do'),
   NOT_A_PERMISSION: new Error('that is not a valid permission number'),
   INVALID_RATE_LIMIT_METHOD: new Error('unknown rate limiting method'),
+  BAD_LOGIN: new Error('incorrect login details were provided'),
 };
 
 const API = 'https://discordapp.com/api';

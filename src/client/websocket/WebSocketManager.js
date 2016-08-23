@@ -59,7 +59,7 @@ class WebSocketManager {
      */
     this.ws = new WebSocket(gateway);
     this.ws.onopen = () => this.eventOpen();
-    this.ws.onclose = () => this.eventClose();
+    this.ws.onclose = (d) => this.eventClose(d);
     this.ws.onmessage = (e) => this.eventMessage(e);
     this.ws.onerror = (e) => this.eventError(e);
   }
@@ -126,7 +126,10 @@ class WebSocketManager {
    * Run whenever the connection to the gateway is closed, it will try to reconnect the client.
    * @returns {null}
    */
-  eventClose() {
+  eventClose(event) {
+    if (event.code === 4004) {
+      throw Constants.Errors.BAD_LOGIN;
+    }
     if (!this.reconnecting) {
       this.tryReconnect();
     }
