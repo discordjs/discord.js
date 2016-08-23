@@ -244,6 +244,21 @@ class Message {
   edit(content) {
     return this.client.rest.methods.updateMessage(this, content);
   }
+
+  /**
+   * Reply to a message
+   * @param {String} content the content of the message
+   * @param {MessageOptions} [options = {}] the options to provide
+   * @returns {Promise<Message>}
+   * @example
+   * // reply to a message
+   * message.reply('Hey, I'm a reply!')
+   *  .then(msg => console.log(`Sent a reply to  ${msg.author}`))
+   *  .catch(console.log);
+   */
+  reply(content, options = {}) {
+    return this.client.rest.methods.sendMessage(this.channel, (this.guild) ? this.author + ", " + content : content, options.tts);
+  }
 }
 
 module.exports = Message;
