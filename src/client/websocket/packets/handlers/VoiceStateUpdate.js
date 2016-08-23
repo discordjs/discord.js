@@ -18,6 +18,10 @@ class VoiceStateUpdateHandler extends AbstractHandler {
           member.voiceChannel.members.delete(oldVoiceChannelMember.id);
         }
 
+        if (client.voice.pending.has(guild.id)) {
+          client.voice._receivedVoiceStateUpdate(data.guild_id, data.session_id);
+        }
+
         member.serverMute = data.mute;
         member.serverDeaf = data.deaf;
         member.selfMute = data.self_mute;

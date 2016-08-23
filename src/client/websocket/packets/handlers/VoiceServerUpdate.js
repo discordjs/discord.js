@@ -14,8 +14,8 @@ class VoiceServerUpdate extends AbstractHandler {
     const data = packet.d;
     const client = this.packetManager.client;
 
-    if (client.voice.pending.get(data.guild_id)) {
-      client.voice._receivedVoiceServer(data.token, data.endpoint);
+    if (client.voice.pending.has(data.guild_id)) {
+      client.voice._receivedVoiceServer(data.guild_id, data.token, data.endpoint);
     }
   }
 
