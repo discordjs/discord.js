@@ -77,6 +77,18 @@ class Guild {
     guildUser.joined_at = guildUser.joined_at || 0;
     const member = new GuildMember(this, guildUser);
     this.members.set(member.id, member);
+
+    if (this._rawVoiceStates && this._rawVoiceStates.get(member.user.id)) {
+      const voiceState = this._rawVoiceStates.get(member.user.id);
+      member.serverMute = voiceState.mute;
+      member.serverDeaf = voiceState.deaf;
+      member.selfMute = voiceState.self_mute;
+      member.selfDeaf = voiceState.self_deaf;
+      member.voiceSessionID = voiceState.session_id;
+      member.voiceChannelID = voiceState.channel_id;
+      this.channels.get(voiceState.channel_id).members.set(member.user.id, member);
+    }
+
     if (this.client.ws.status === Constants.Status.READY && !noEvent) {
       this.client.emit(Constants.Events.GUILD_MEMBER_ADD, this, member);
     }
@@ -300,8 +312,11 @@ class Guild {
       }
     }
 
+    this._rawVoiceStates = new Collection();
+
     if (data.voice_states) {
       for (const voiceState of data.voice_states) {
+        this._rawVoiceStates.set(voiceState.user_id, voiceState);
         const member = this.members.get(voiceState.user_id);
         if (member) {
           member.serverMute = voiceState.mute;
@@ -310,6 +325,7 @@ class Guild {
           member.selfDeaf = voiceState.self_deaf;
           member.voiceSessionID = voiceState.session_id;
           member.voiceChannelID = voiceState.channel_id;
+          this.channels.get(voiceState.channel_id).members.set(member.user.id, member);
         }
       }
     }
