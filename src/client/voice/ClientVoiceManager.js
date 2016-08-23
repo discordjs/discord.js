@@ -26,14 +26,19 @@ class ClientVoiceManager {
     this.pending = new Collection();
   }
 
+  /**
+   * Checks whether a pending request can be processed
+   * @private
+   * @param {String} guildID The ID of the Guild
+   */
   _checkPendingReady(guildID) {
     const pendingRequest = this.pending.get(guildID);
     if (!pendingRequest) {
       throw new Error('Guild not pending');
     }
     if (pendingRequest.token && pendingRequest.sessionID && pendingRequest.endpoint) {
-      const { token, sessionID, endpoint, resolve, reject } = pendingRequest;
-      const voiceConnection = new VoiceConnection(this, guildID, token, sessionID, endpoint, resolve, reject);
+      const { channel, token, sessionID, endpoint, resolve, reject } = pendingRequest;
+      const voiceConnection = new VoiceConnection(this, channel, token, sessionID, endpoint, resolve, reject);
       this.connections.set(guildID, voiceConnection);
     }
   }

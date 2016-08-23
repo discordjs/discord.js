@@ -43,6 +43,15 @@ class VoiceChannel extends GuildChannel {
     return this.rest.client.rest.methods.updateChannel(this, { bitrate });
   }
 
+  /**
+   * Attempts to join this Voice Channel
+   * @returns {Promise<VoiceConnection, Error>}
+   * @example
+   * // join a voice channel
+   * voiceChannel.join()
+   *  .then(connection => console.log('Connected!'))
+   *  .catch(console.log);
+   */
   join() {
     return this.client.voice.joinChannel(this);
   }

@@ -130,6 +130,15 @@ class Client extends EventEmitter {
     return this.rest.methods.loginToken(email);
   }
 
+  /**
+   * Returns a Collection, mapping Guild ID to Voice Connections.
+   * @readonly
+   * @type {Collection<String, VoiceConnection>}
+   */
+  get voiceConnections() {
+    return this.voice.connections;
+  }
+
 }
 
 module.exports = Client;
