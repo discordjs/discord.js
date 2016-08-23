@@ -1,33 +1,33 @@
-'use strict';
-
 // ##untested##
 
 const AbstractHandler = require('./AbstractHandler');
-const Structure = name => require(`../../../../structures/${name}`);
 const Constants = require('../../../../util/Constants');
-const CloneObject = require('../../../../util/CloneObject');
 
 class GuildMembersChunkHandler extends AbstractHandler {
 
-	constructor(packetManager) {
-		super(packetManager);
-	}
+  handle(packet) {
+    const data = packet.d;
+    const client = this.packetManager.client;
+    const guild = client.guilds.get(data.guild_id);
 
-	handle(packet) {
-		let data = packet.d;
-		let client = this.packetManager.client;
-		let guild = client.store.get('guilds', data.guild_id);
+    const members = [];
+    if (guild) {
+      for (const member of guild.members) {
+        members.push(guild._addMember(member, true));
+      }
+    }
 
-		let members = [];
-		if (guild) {
-			for (let member of guild.members) {
-				members.push(guild._addMember(member, true));
-			}
-		}
+    client.emit(Constants.Events.GUILD_MEMBERS_CHUNK, guild, members);
+  }
 
-		client.emit(Constants.Events.GUILD_MEMBERS_CHUNK, guild, members);
-	}
+}
 
-};
+/**
+* Emitted whenever a chunk of Guild members is received
+*
+* @event Client#guildMembersChunk
+* @param {Guild} guild The guild that the chunks relate to
+* @param {Array<GuildMember>} members The members in the chunk
+*/
 
 module.exports = GuildMembersChunkHandler;

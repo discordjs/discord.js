@@ -1,29 +1,26 @@
-'use strict';
-
 const AbstractHandler = require('./AbstractHandler');
-const Structure = name => require(`../../../../structures/${name}`);
 const Constants = require('../../../../util/Constants');
-
-const Message = Structure('Message');
-const Guild = Structure('Guild');
 
 class MessageCreateHandler extends AbstractHandler {
 
-	constructor(packetManager) {
-		super(packetManager);
-	}
+  handle(packet) {
+    const data = packet.d;
+    const client = this.packetManager.client;
 
-	handle(packet) {
-		let data = packet.d;
-		let client = this.packetManager.client;
+    const response = client.actions.MessageCreate.handle(data);
 
-		let response = client.actions.MessageCreate.handle(data);
+    if (response.m) {
+      client.emit(Constants.Events.MESSAGE_CREATE, response.m);
+    }
+  }
 
-		if (response.m) {
-			client.emit(Constants.Events.MESSAGE_CREATE, response.m);
-		}
-	}
+}
 
-};
+/**
+* Emitted whenever a message is created
+*
+* @event Client#message
+* @param {Message} message The created message
+*/
 
 module.exports = MessageCreateHandler;

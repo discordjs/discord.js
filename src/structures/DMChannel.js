@@ -1,42 +1,56 @@
-'use strict';
-
 const Channel = require('./Channel');
 const TextBasedChannel = require('./interface/TextBasedChannel');
 const User = require('./User');
-const TextChannelDataStore = require('./datastore/TextChannelDataStore');
+const Collection = require('../util/Collection');
 
-class DMChannel extends Channel{
-	constructor(client, data) {
-		super(client, data);
-		this.store = new TextChannelDataStore();
-	}
+/**
+ * Represents a Direct Message Channel between two users.
+ * @extends {Channel}
+ * @implements {TextBasedChannel}
+ */
+class DMChannel extends Channel {
+  constructor(client, data) {
+    super(client, data);
+    this.messages = new Collection();
+  }
 
-	_cacheMessage(message) {
-		let maxSize = this.client.options.max_message_cache;
-		if (maxSize === 0) {
-			// saves on performance
-			return;
-		}
+  setup(data) {
+    super.setup(data);
+    const recipient = this.client.users.get(data.recipients[0].id) || new User(this.client, data.recipients[0]);
+    /**
+     * The recipient on the other end of the DM
+     * @type {User}
+     */
+    this.recipient = recipient;
+    /**
+     * The ID of the last sent message, if available
+     * @type {?String}
+     */
+    this.lastMessageID = data.last_message_id;
+  }
 
-		let storeKeys = Object.keys(this.store);
-		if (storeKeys.length >= maxSize) {
-			this.store.remove(storeKeys[0]);
-		}
+  /**
+   * When concatenated with a String, this automatically concatenates the recipient's mention instead of the
+   * DM channel object.
+   * @returns {String}
+   */
+  toString() {
+    return this.recipient.toString();
+  }
 
-		this.store.add('messages', message);
-	}
+  sendMessage() {
+    return;
+  }
 
-	setup(data) {
-		super.setup(data);
-		this.recipient = this.client.store.add('users', new User(this.client, data.recipient));
-		this.lastMessageID = data.last_message_id;
-	}
+  sendTTSMessage() {
+    return;
+  }
 
-	toString() {
-		return this.recipient.toString();
-	}
+  _cacheMessage() {
+    return;
+  }
 }
 
-TextBasedChannel.applyToClass(DMChannel);
+TextBasedChannel.applyToClass(DMChannel, true);
 
 module.exports = DMChannel;

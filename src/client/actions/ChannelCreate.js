@@ -1,23 +1,15 @@
-'use strict';
-
 const Action = require('./Action');
-const Constants = require('../../util/Constants');
-const Message = require('../../structures/Message');
 
 class ChannelCreateAction extends Action {
 
-	constructor(client) {
-		super(client);
-	}
+  handle(data) {
+    const client = this.client;
+    const channel = client.dataManager.newChannel(data);
 
-	handle(data) {
-		let client = this.client;
-		let channel = client.store.NewChannel(data);
-
-		return {
-			channel,
-		};
-	}
-};
+    return {
+      channel,
+    };
+  }
+}
 
 module.exports = ChannelCreateAction;

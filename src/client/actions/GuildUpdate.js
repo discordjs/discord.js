@@ -1,42 +1,46 @@
-'use strict';
-
 const Action = require('./Action');
 const Constants = require('../../util/Constants');
-const CloneObject = require('../../util/CloneObject');
-const Message = require('../../structures/Message');
+const cloneObject = require('../../util/CloneObject');
 
 class GuildUpdateAction extends Action {
 
-	constructor(client) {
-		super(client);
-		this.deleted = {};
-		this.timeouts = [];
-	}
+  constructor(client) {
+    super(client);
+    this.deleted = {};
+    this.timeouts = [];
+  }
 
-	handle(data) {
+  handle(data) {
+    const client = this.client;
+    const guild = client.guilds.get(data.id);
 
-		let client = this.client;
-		let guild = client.store.get('guilds', data.id);
+    if (guild) {
+      const oldGuild = cloneObject(guild);
+      guild.setup(data);
 
-		if (guild) {
-			let oldGuild = CloneObject(guild);
-			guild.setup(data);
+      if (!oldGuild.equals(data)) {
+        client.emit(Constants.Events.GUILD_UPDATE, oldGuild, guild);
+      }
 
-			if (!oldGuild.equals(data)) {
-				client.emit(Constants.Events.GUILD_UPDATE, oldGuild, guild);
-			}
+      return {
+        old: oldGuild,
+        updated: guild,
+      };
+    }
 
-			return {
-				old: oldGuild,
-				updated: guild,
-			};
-		}
+    return {
+      old: null,
+      updated: null,
+    };
+  }
+}
 
-		return {
-			old: null,
-			updated: null,
-		};
-	}
-};
+/**
+* Emitted whenever a guild is updated - e.g. name change.
+*
+* @event Client#guildUpdate
+* @param {Guild} oldGuild the guild before the update.
+* @param {Guild} newGuild the guild after the update.
+*/
 
 module.exports = GuildUpdateAction;

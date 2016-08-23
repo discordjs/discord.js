@@ -1,31 +1,23 @@
-'use strict';
-
 const Action = require('./Action');
-const Constants = require('../../util/Constants');
 const Message = require('../../structures/Message');
 
 class MessageCreateAction extends Action {
 
-	constructor(client) {
-		super(client);
-	}
+  handle(data) {
+    const client = this.client;
+    const channel = client.channels.get(data.channel_id);
 
-	handle(data) {
+    if (channel) {
+      const message = channel._cacheMessage(new Message(channel, data, client));
+      return {
+        m: message,
+      };
+    }
 
-		let client = this.client;
-		let channel = client.store.get('channels', data.channel_id);
-
-		if (channel) {
-			let message = channel._cacheMessage(new Message(channel, data, client));
-			return {
-				m: message,
-			};
-		}
-
-		return {
-			m: null,
-		};
-	}
-};
+    return {
+      m: null,
+    };
+  }
+}
 
 module.exports = MessageCreateAction;

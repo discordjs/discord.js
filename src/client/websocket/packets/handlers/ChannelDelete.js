@@ -1,31 +1,27 @@
-'use strict';
-
 const AbstractHandler = require('./AbstractHandler');
-const Structure = name => require(`../../../../structures/${name}`);
-
-const ClientUser = Structure('ClientUser');
-const Guild = Structure('Guild');
-const ServerChannel = Structure('ServerChannel');
 
 const Constants = require('../../../../util/Constants');
 
 class ChannelDeleteHandler extends AbstractHandler {
 
-	constructor(packetManager) {
-		super(packetManager);
-	}
+  handle(packet) {
+    const data = packet.d;
+    const client = this.packetManager.client;
 
-	handle(packet) {
-		let data = packet.d;
-		let client = this.packetManager.client;
+    const response = client.actions.ChannelDelete.handle(data);
 
-		let response = client.actions.ChannelDelete.handle(data);
+    if (response.channel) {
+      client.emit(Constants.Events.CHANNEL_DELETE, response.channel);
+    }
+  }
 
-		if (response.channel) {
-			client.emit(Constants.Events.CHANNEL_DELETE, response.channel);
-		}
-	}
+}
 
-};
+/**
+* Emitted whenever a Channel is deleted.
+*
+* @event Client#channelDelete
+* @param {Channel} channel The channel that was deleted
+*/
 
 module.exports = ChannelDeleteHandler;

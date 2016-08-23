@@ -1,32 +1,41 @@
-'use strict';
-
-const ServerChannel = require('./ServerChannel');
-const TextChannelDataStore = require('./datastore/TextChannelDataStore');
+const GuildChannel = require('./GuildChannel');
 const TextBasedChannel = require('./interface/TextBasedChannel');
+const Collection = require('../util/Collection');
 
-class TextChannel extends ServerChannel {
+/**
+ * Represents a Server Text Channel on Discord.
+ * @extends {GuildChannel}
+ * @implements {TextBasedChannel}
+ */
+class TextChannel extends GuildChannel {
 
-	constructor(guild, data) {
-		super(guild, data);
-		this.store = new TextChannelDataStore();
-	}
+  constructor(guild, data) {
+    super(guild, data);
+    this.messages = new Collection();
+  }
 
-	_cacheMessage(message) {
-		let maxSize = this.client.options.max_message_cache;
-		if (maxSize === 0) {
-			// saves on performance
-			return;
-		}
+  setup(data) {
+    super.setup(data);
+    /**
+     * The ID of the last message in the channel, if one was sent.
+     * @type {?String}
+     */
+    this.lastMessageID = data.last_message_id;
+  }
 
-		let storeKeys = Object.keys(this.store);
-		if (storeKeys.length >= maxSize) {
-			this.store.remove(storeKeys[0]);
-		}
+  sendMessage() {
+    return;
+  }
 
-		return this.store.add('messages', message);
-	}
+  sendTTSMessage() {
+    return;
+  }
+
+  _cacheMessage() {
+    return;
+  }
 }
 
-TextBasedChannel.applyToClass(TextChannel);
+TextBasedChannel.applyToClass(TextChannel, true);
 
 module.exports = TextChannel;

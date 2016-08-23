@@ -1,44 +1,44 @@
-'use strict';
-
 const Action = require('./Action');
 const Constants = require('../../util/Constants');
-const CloneObject = require('../../util/CloneObject');
-const Message = require('../../structures/Message');
+const cloneObject = require('../../util/CloneObject');
 
 class MessageUpdateAction extends Action {
 
-	constructor(client) {
-		super(client);
-	}
+  handle(data) {
+    const client = this.client;
+    const channel = client.channels.get(data.channel_id);
 
-	handle(data) {
+    if (channel) {
+      const message = channel.messages.get(data.id);
+      if (message && !message.equals(data, true)) {
+        const oldMessage = cloneObject(message);
+        message.patch(data);
+        client.emit(Constants.Events.MESSAGE_UPDATE, oldMessage, message);
+        return {
+          old: oldMessage,
+          updated: message,
+        };
+      }
 
-		let client = this.client;
-		let channel = client.store.get('channels', data.channel_id);
+      return {
+        old: message,
+        updated: message,
+      };
+    }
 
-		if (channel) {
-			let message = channel.store.get('messages', data.id);
-			if (message && !message.equals(data, true)) {
-				let oldMessage = CloneObject(message);
-				message.patch(data);
-				return {
-					old: oldMessage,
-					updated: message,
-				};
-				client.emit(Constants.Events.MESSAGE_UPDATE, oldMessage, message);
-			}
+    return {
+      old: null,
+      updated: null,
+    };
+  }
+}
 
-			return {
-				old: message,
-				updated: message,
-			};
-		}
-
-		return {
-			old: null,
-			updated: null,
-		};
-	}
-};
+/**
+* Emitted whenever a message is updated - e.g. embed or content change.
+*
+* @event Client#messageUpdate
+* @param {Message} oldMessage the message before the update.
+* @param {Message} newMessage the message after the update.
+*/
 
 module.exports = MessageUpdateAction;
