@@ -13,19 +13,24 @@ class VoiceConnectionWebSocket extends EventEmitter {
     this.ws.onopen = () => this._onOpen();
     this.ws.onmessage = e => this._onMessage(e);
     this.ws.onclose = e => this._onClose(e);
+    this.ws.onerror = e => this._onError(e);
+    this.ws.on('error', console.log);
     this.heartbeat = null;
   }
 
   send(data) {
     if (this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify(data));
+      console.log('sending');
+      this.ws.send(JSON.stringify(data), function ack(error) {
+        if (error)
+          console.log(error);
+      });
     }
   }
 
   _shutdown() {
     if (this.ws) {
       this.ws.close();
-      this.ws = null;
     }
     clearInterval(this.heartbeat);
   }

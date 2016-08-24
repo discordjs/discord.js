@@ -26,6 +26,9 @@ class FfmpegConverterEngine extends ConverterEngine {
       '-ss', '0',
       'pipe:1',
     ], { stdio: ['pipe', 'pipe', 'ignore'] });
+    encoder.on('error', console.log);
+    encoder.stdin.on('error', console.log);
+    encoder.stdin.on('error', console.log);
     return encoder;
   }
 }

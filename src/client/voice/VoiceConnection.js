@@ -94,7 +94,9 @@ class VoiceConnection extends EventEmitter {
   }
 
   _shutdown(e) {
-    console.log('being shut down! D:');
+    if (!this.ready) {
+      return;
+    }
     this.ready = false;
     this.websocket._shutdown();
     this.player._shutdown();

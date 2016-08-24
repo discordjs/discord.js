@@ -38,13 +38,17 @@ class VoiceConnectionPlayer extends EventEmitter {
     if (streams) {
       if (streams.inputStream && streams.pcmConverter) {
         try {
-          if (streams.pcmConverter.stdin) {
-            streams.pcmConverter.stdin.end();
-            this.emit('debug', 'stream kill part 1/5 pass');
-          }
+          streams.pcmConverter.on('error', console.log);
+          streams.pcmConverter.stdin.on('error', console.log);
+          streams.pcmConverter.stdout.on('error', console.log);
+          streams.inputStream.stdout.on('error', console.log);
           if (streams.pcmConverter.stdout.destroy) {
             streams.pcmConverter.stdout.destroy();
             this.emit('debug', 'stream kill part 2/5 pass');
+          }
+          if (streams.pcmConverter.stdin) {
+            streams.pcmConverter.stdin.end();
+            this.emit('debug', 'stream kill part 1/5 pass');
           }
           if (streams.pcmConverter && streams.pcmConverter.kill) {
             streams.pcmConverter.kill('SIGINT');
@@ -59,7 +63,6 @@ class VoiceConnectionPlayer extends EventEmitter {
             this.emit('debug', 'stream kill part 5/5 pass');
           }
         } catch (e) {
-          console.log(e);
           return e;
         }
       }
