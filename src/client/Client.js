@@ -124,6 +124,14 @@ class Client extends EventEmitter {
     return this.rest.methods.loginToken(email);
   }
 
+  /**
+   * The uptime for the logged in Client
+   * @type {?Number}
+   */
+  get uptime() {
+    return this.readyTime ? Date.now() - this.readyTime : null;
+  }
+
 }
 
 module.exports = Client;
