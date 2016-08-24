@@ -94,6 +94,11 @@ class Client extends EventEmitter {
      * @type {?String}
      */
     this.password = null;
+    /**
+     * The time in milliseconds the Client connected
+     * @type {?Number}
+     */
+    this.readyTime = null;
   }
 
   /**
@@ -122,6 +127,14 @@ class Client extends EventEmitter {
     }
     // login with token
     return this.rest.methods.loginToken(email);
+  }
+
+  /**
+   * The uptime for the logged in Client
+   * @type {?Number}
+   */
+  get uptime() {
+    return this.readyTime ? Date.now() - this.readyTime : null;
   }
 
 }
