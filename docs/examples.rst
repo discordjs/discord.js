@@ -81,7 +81,7 @@ Sends Hello to "general" in "my_server".
 	var channel = client.servers.get("name", "my_server").channels.get("name", "general");
 	client.sendMessage(channel, "Hello");
 
-You can also use a `Message`_ object as an parameter. This example sends "Hello" to the channel the message was sent from.
+You can also use a `Message`_ object as a parameter. This example sends "Hello" to the channel the message was sent from.
 
 .. code-block:: javascript
 
@@ -89,7 +89,7 @@ You can also use a `Message`_ object as an parameter. This example sends "Hello"
 		client.sendMessage(message, "Hello");
 	});
 
-You can send DMs to a user with a `User`_ object. This will send "Hello" as an DM to the author of the received message.
+You can send DMs to a user with a `User`_ object. This will send "Hello" as a DM to the author of the received message.
 
 .. code-block:: javascript
 
