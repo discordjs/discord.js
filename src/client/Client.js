@@ -94,6 +94,11 @@ class Client extends EventEmitter {
      * @type {?String}
      */
     this.password = null;
+    /**
+     * The time in milliseconds the Client connected
+     * @type {?Number}
+     */
+    this.readyTime = null;
   }
 
   /**
