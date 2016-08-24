@@ -64,6 +64,11 @@ class GuildMember {
      * @type {Date}
      */
     this.joinDate = new Date(data.joined_at);
+    /**
+     * Whether this meember is speaking
+     * @type {?Boolean}
+     */
+    this.speaking = this.speaking;
     this._roles = data.roles;
   }
 

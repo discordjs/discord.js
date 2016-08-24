@@ -159,6 +159,7 @@ exports.Events = {
   MESSAGE_DELETE: 'messageDelete',
   MESSAGE_UPDATE: 'messageUpdate',
   RECONNECTING: 'reconnecting',
+  GUILD_MEMBER_SPEAKING: 'guildMemberSpeaking',
 };
 
 exports.WSEvents = {

@@ -192,6 +192,14 @@ class Guild {
     return base;
   }
 
+  _memberSpeakUpdate(user, speaking) {
+    const member = this.members.get(user);
+    if (member) {
+      member.speaking = speaking;
+    }
+    this.client.emit(Constants.Events.GUILD_MEMBER_SPEAKING, member, speaking);
+  }
+
   /**
    * Sets up the Guild
    * @param {any} data
@@ -287,12 +295,6 @@ class Guild {
         this.client.dataManager.newChannel(channel, this);
       }
     }
-
-    /**
-     * The embed channel of the Guild.
-     * @type {GuildChannel}
-     */
-    this.embedChannel = this.channels.get(data.embed_channel_id);
 
     if (data.roles) {
       this.roles.clear();

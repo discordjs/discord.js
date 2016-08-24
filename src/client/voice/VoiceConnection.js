@@ -2,6 +2,7 @@ const VoiceConnectionWebSocket = require('./VoiceConnectionWebSocket');
 const VoiceConnectionUDPClient = require('./VoiceConnectionUDPClient');
 const Constants = require('../../util/Constants');
 const EventEmitter = require('events').EventEmitter;
+const DefaultPlayer = require('./player/DefaultPlayer');
 
 /**
  * Represents a connection to a Voice Channel in Discord
@@ -16,6 +17,11 @@ class VoiceConnection extends EventEmitter {
      * @private
      */
     this.manager = manager;
+    /**
+     * The player
+     * @type {BasePlayer}
+     */
+    this.player = new DefaultPlayer(this);
     /**
      * The endpoint of the connection
      * @type {String}
@@ -83,12 +89,15 @@ class VoiceConnection extends EventEmitter {
   }
 
   _onClose(e) {
+    e = e && e.code === 1000 ? null : e;
     return this._shutdown(e);
   }
 
   _shutdown(e) {
+    console.log('being shut down! D:');
     this.ready = false;
     this.websocket._shutdown();
+    this.player._shutdown();
     if (this.udp) {
       this.udp._shutdown();
     }
@@ -105,13 +114,19 @@ class VoiceConnection extends EventEmitter {
     this.websocket.on('close', err => this._onClose(err));
     this.websocket.on('ready-for-udp', data => {
       this.udp = new VoiceConnectionUDPClient(this, data);
+      this.data = data;
       this.udp.on('error', err => this._onError(err));
       this.udp.on('close', err => this._onClose(err));
     });
-    this.websocket.on('ready', () => {
+    this.websocket.on('ready', secretKey => {
+      this.data.secret = secretKey;
       this.ready = true;
       this.emit('ready');
       this._resolve(this);
+    });
+    this.websocket.on('speaking', data => {
+      const guild = this.channel.guild;
+      guild._memberSpeakUpdate(data.user_id, data.speaking);
     });
   }
 }

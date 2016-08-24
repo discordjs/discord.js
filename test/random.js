@@ -177,6 +177,11 @@ client.on('messageUpdate', (old, message) => {
     console.log('Message updated from', old.content, 'to', message.content);
 });
 
+client.on('guildMemberSpeaking', (member, speaking) => {
+  const message = speaking ? `${member.user.username} is speaking` : `${member.user.username} is not speaking`;
+  member.guild.channels.get(member.guild.id).sendMessage(message);
+});
+
 client.on('message', msg => {
   if (msg.content.startsWith('?raw')) {
     msg.channel.sendMessage('```' + msg.content + '```');
@@ -191,3 +196,16 @@ client.on('message', msg => {
     }
   }
 });
+
+let disp;
+
+client.on('message', msg => {
+  if (msg.content.startsWith('/join')) {
+    const chan = msg.content.split(' ').slice(1).join(' ');
+    msg.channel.guild.channels.get(chan).join()
+      .then(conn => {
+        msg.reply('done');
+      })
+      .catch(console.log);
+  }
+})

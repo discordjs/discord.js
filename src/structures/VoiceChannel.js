@@ -55,6 +55,15 @@ class VoiceChannel extends GuildChannel {
   join() {
     return this.client.voice.joinChannel(this);
   }
+
+  leave() {
+    const exists = this.client.voice.connections.get(this.guild.id);
+    if (exists) {
+      if (exists.channel.id === this.id) {
+        exists.disconnect();
+      }
+    }
+  }
 }
 
 module.exports = VoiceChannel;

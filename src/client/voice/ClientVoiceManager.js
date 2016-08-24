@@ -39,8 +39,9 @@ class ClientVoiceManager {
     if (pendingRequest.token && pendingRequest.sessionID && pendingRequest.endpoint) {
       const { channel, token, sessionID, endpoint, resolve, reject } = pendingRequest;
       const voiceConnection = new VoiceConnection(this, channel, token, sessionID, endpoint, resolve, reject);
+      this.pending.delete(guildID);
       this.connections.set(guildID, voiceConnection);
-      voiceConnection.on('disconnected', () => {
+      voiceConnection.once('disconnected', () => {
         this.connections.delete(guildID);
       });
     }
@@ -102,6 +103,17 @@ class ClientVoiceManager {
    */
   joinChannel(channel) {
     return new Promise((resolve, reject) => {
+      if (this.pending.get(channel.guild.id)) {
+        return reject(new Error('already connecting to a channel in this guild'));
+      }
+      const existingConn = this.connections.get(channel.guild.id);
+      if (existingConn) {
+        if (existingConn.channel.id !== channel.id) {
+          this._sendWSJoin(channel);
+          this.connections.get(channel.guild.id).channel = channel;
+        }
+        resolve(existingConn);
+      }
       this.pending.set(channel.guild.id, {
         channel,
         sessionID: null,

@@ -54,8 +54,13 @@ class VoiceConnectionWebSocket extends EventEmitter {
     this.heartbeat = setInterval(() => {
       this.send({
         op: Constants.VoiceOPCodes.HEARTBEAT,
+        d: null,
       });
     }, interval);
+    this.send({
+      op: Constants.VoiceOPCodes.HEARTBEAT,
+      d: null,
+    });
   }
 
   _onMessage(event) {
@@ -77,7 +82,14 @@ class VoiceConnectionWebSocket extends EventEmitter {
         for (const index in packet.d.secret_key) {
           this.secretKey[index] = packet.d.secret_key[index];
         }
-        this.emit('ready');
+        this.emit('ready', this.secretKey);
+        break;
+      case Constants.VoiceOPCodes.SPEAKING:
+        /*
+        { op: 5,
+        d: { user_id: '123123', ssrc: 1, speaking: true } }
+        */
+        this.emit('speaking', packet.d);
         break;
       default:
         this.emit('unknown', packet);
