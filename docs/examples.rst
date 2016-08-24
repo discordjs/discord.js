@@ -112,7 +112,7 @@ This is by far the most common way people will send a message in the Discord API
 		client.sendMessage(message.channel, "Hello!");
 	});
 
-You can also use a `Message`_ resolvable as an parameter. This example does the same thing as above.
+You can also use a `Message`_ resolvable as a parameter. This example does the same thing as above.
 
 .. code-block:: javascript
 
@@ -259,7 +259,7 @@ Status updates
 
 Updating your status is very simple.
 
-The ready event needs to be emitted before you can use theese functions.
+The ready event needs to be emitted before you can use these functions.
 
 You can either use the setStatus function or you can use helpers.
 
