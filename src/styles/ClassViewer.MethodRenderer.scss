@@ -62,10 +62,6 @@
     color: #444;
   }
 
-  .param:not(:last-child):after {
-    content: ", ";
-  }
-
   .param.optional {
     font-style: italic;
     color: #555;
@@ -74,8 +70,14 @@
   .param.optional:before {
     content: "[";
   }
-  .param.optional:after {
+  .param.optional:last-child:after {
     content: "]";
+  }
+  .param.optional:not(:last-child):after {
+    content: "], ";
+  }
+  .param:not(:last-child):after {
+    content: ", ";
   }
 
   .methodExamples {
