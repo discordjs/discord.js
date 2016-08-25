@@ -205,8 +205,6 @@ client.on('message', msg => {
     msg.channel.guild.channels.get(chan).join()
       .then(conn => {
         msg.reply('done');
-        const f = '04 Out of the Woods.m4a';
-        conn.player.playFile(`C:/Users/amish/Desktop/${f}`);
         conn.player.on('debug', console.log);
       })
       .catch(console.log);

@@ -9,22 +9,25 @@ class VoiceConnectionWebSocket extends EventEmitter {
     this.token = token;
     this.sessionID = sessionID;
     this.serverID = serverID;
-    this.ws = new WebSocket(`wss://${endpoint}`, null, { rejectUnauthorized: false });
+    this.heartbeat = null;
+    this.opened = false;
+    this.endpoint = endpoint;
+    this.attempts = 6;
+    this.setupWS();
+  }
+
+  setupWS() {
+    this.attempts--;
+    this.ws = new WebSocket(`wss://${this.endpoint}`, null, { rejectUnauthorized: false });
     this.ws.onopen = () => this._onOpen();
     this.ws.onmessage = e => this._onMessage(e);
     this.ws.onclose = e => this._onClose(e);
     this.ws.onerror = e => this._onError(e);
-    this.ws.on('error', console.log);
-    this.heartbeat = null;
   }
 
   send(data) {
     if (this.ws.readyState === WebSocket.OPEN) {
-      console.log('sending');
-      this.ws.send(JSON.stringify(data), function ack(error) {
-        if (error)
-          console.log(error);
-      });
+      this.ws.send(JSON.stringify(data));
     }
   }
 
@@ -36,6 +39,7 @@ class VoiceConnectionWebSocket extends EventEmitter {
   }
 
   _onOpen() {
+    this.opened = true;
     this.send({
       op: Constants.OPCodes.DISPATCH,
       d: {
@@ -48,10 +52,16 @@ class VoiceConnectionWebSocket extends EventEmitter {
   }
 
   _onClose(e) {
+    if (!this.opened && this.attempts >= 0) {
+      return this.setupWS();
+    }
     this.emit('close', e);
   }
 
   _onError(e) {
+    if (!this.opened && this.attempts >= 0) {
+      return this.setupWS();
+    }
     this.emit('error', e);
   }
 

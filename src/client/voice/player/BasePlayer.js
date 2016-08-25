@@ -12,6 +12,10 @@ class VoiceConnectionPlayer extends EventEmitter {
     this.opusEncoder = OpusEngines.fetch();
     const Engine = ConverterEngines.fetch();
     this.converterEngine = new Engine(this);
+    this.converterEngine.on('error', err => {
+      this._shutdown();
+      this.emit('error', err);
+    });
     this.speaking = false;
     this.processMap = new Map();
   }
@@ -38,25 +42,21 @@ class VoiceConnectionPlayer extends EventEmitter {
     if (streams) {
       if (streams.inputStream && streams.pcmConverter) {
         try {
-          streams.pcmConverter.on('error', console.log);
-          streams.pcmConverter.stdin.on('error', console.log);
-          streams.pcmConverter.stdout.on('error', console.log);
-          streams.inputStream.stdout.on('error', console.log);
+          if (streams.inputStream.unpipe) {
+            streams.inputStream.unpipe(streams.pcmConverter.stdin);
+            this.emit('debug', 'stream kill part 4/5 pass');
+          }
           if (streams.pcmConverter.stdout.destroy) {
             streams.pcmConverter.stdout.destroy();
             this.emit('debug', 'stream kill part 2/5 pass');
-          }
-          if (streams.pcmConverter.stdin) {
-            streams.pcmConverter.stdin.end();
-            this.emit('debug', 'stream kill part 1/5 pass');
           }
           if (streams.pcmConverter && streams.pcmConverter.kill) {
             streams.pcmConverter.kill('SIGINT');
             this.emit('debug', 'stream kill part 3/5 pass');
           }
-          if (streams.inputStream.unpipe) {
-            streams.inputStream.unpipe(streams.pcmConverter.stdin);
-            this.emit('debug', 'stream kill part 4/5 pass');
+          if (streams.pcmConverter.stdin) {
+            streams.pcmConverter.stdin.end();
+            this.emit('debug', 'stream kill part 1/5 pass');
           }
           if (streams.inputStream.destroy) {
             streams.inputStream.destroy();

@@ -194,10 +194,10 @@ class Guild {
 
   _memberSpeakUpdate(user, speaking) {
     const member = this.members.get(user);
-    if (member) {
+    if (member && member.speaking !== speaking) {
       member.speaking = speaking;
+      this.client.emit(Constants.Events.GUILD_MEMBER_SPEAKING, member, speaking);
     }
-    this.client.emit(Constants.Events.GUILD_MEMBER_SPEAKING, member, speaking);
   }
 
   /**

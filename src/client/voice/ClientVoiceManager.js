@@ -112,7 +112,7 @@ class ClientVoiceManager {
           this._sendWSJoin(channel);
           this.connections.get(channel.guild.id).channel = channel;
         }
-        resolve(existingConn);
+        return resolve(existingConn);
       }
       this.pending.set(channel.guild.id, {
         channel,

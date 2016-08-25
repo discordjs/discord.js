@@ -15,6 +15,13 @@ class FfmpegConverterEngine extends ConverterEngine {
     this.command = chooseCommand();
   }
 
+  handleError(encoder, err) {
+    if (encoder.destroy) {
+      encoder.destroy();
+    }
+    this.emit('error', err);
+  }
+
   createConvertStream() {
     super.createConvertStream();
     const encoder = ChildProcess.spawn(this.command, [
@@ -26,9 +33,9 @@ class FfmpegConverterEngine extends ConverterEngine {
       '-ss', '0',
       'pipe:1',
     ], { stdio: ['pipe', 'pipe', 'ignore'] });
-    encoder.on('error', console.log);
-    encoder.stdin.on('error', console.log);
-    encoder.stdin.on('error', console.log);
+    encoder.on('error', e => this.handleError(encoder, e));
+    encoder.stdin.on('error', e => this.handleError(encoder, e));
+    encoder.stdout.on('error', e => this.handleError(encoder, e));
     return encoder;
   }
 }

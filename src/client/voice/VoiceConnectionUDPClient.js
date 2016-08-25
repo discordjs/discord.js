@@ -74,7 +74,6 @@ class VoiceConnectionUDPClient extends EventEmitter {
     });
 
     this.udpSocket.on('error', (error, message) => {
-      console.log(error);
       this.emit('error', { error, message });
     });
 
