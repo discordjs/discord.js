@@ -33,9 +33,11 @@ class GuildChannel extends Channel {
     super.setup(data);
     /**
      * The type of the Guild Channel
-     * @type {Number}
+     * @type {String}
      */
-    this.type = data.type;
+    if (data.type === 0) this.type = 'text';
+    else if (data.type === 2) this.type = 'voice';
+    else this.type = data.type.toString();
     /**
      * The topic of the Guild Channel, if there is one.
      * @type {?String}
