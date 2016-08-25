@@ -55,6 +55,7 @@ class GroupDMChannel extends Channel {
 
   equals(other) {
     const base = (
+      other &&
       this.id === other.id &&
       this.name === other.name &&
       this.icon === other.icon &&
