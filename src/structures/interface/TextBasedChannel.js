@@ -114,10 +114,10 @@ class TextBasedChannel {
           resolve(response);
           if (timeout) clearTimeout(timeout);
         };
-        if (options.timeout) timeout = setTimeout(reject, options.timeout, "Request timed out");
+        if (options.timeout) timeout = setTimeout(reject, options.timeout, 'Request timed out');
       }
     });
-  };
+  }
 
   _cacheMessage(message) {
     const maxSize = this.client.options.max_message_cache;
@@ -145,7 +145,7 @@ exports.applyToClass = (structure, full = false) => {
   if (full) {
     props.push('_cacheMessage');
     props.push('getMessages');
-    props.push('awaitMessage')
+    props.push('awaitMessage');
   }
   for (const prop of props) {
     applyProp(structure, prop);
