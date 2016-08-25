@@ -5,6 +5,7 @@ const RESTManager = require('./rest/RESTManager');
 const ClientDataManager = require('./ClientDataManager');
 const ClientManager = require('./ClientManager');
 const ClientDataResolver = require('./ClientDataResolver');
+const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
@@ -58,7 +59,12 @@ class Client extends EventEmitter {
      * @private
      */
     this.actions = new ActionsManager(this);
-
+    /**
+     * The Voice Manager of the Client
+     * @type {ClientVoiceManager}
+     * @private
+     */
+    this.voice = new ClientVoiceManager(this);
     /**
      * A Collection of the Client's stored users
      * @type {Collection<String, User>}
@@ -99,7 +105,7 @@ class Client extends EventEmitter {
      * @type {?Number}
      */
     this.readyTime = null;
-    this._awaitingResponse = {};
+    this._awaitingResponse = {}
   }
 
   /**
@@ -131,11 +137,12 @@ class Client extends EventEmitter {
   }
 
   /**
-   * The uptime for the logged in Client
-   * @type {?Number}
+   * Returns a Collection, mapping Guild ID to Voice Connections.
+   * @readonly
+   * @type {Collection<String, VoiceConnection>}
    */
-  get uptime() {
-    return this.readyTime ? Date.now() - this.readyTime : null;
+  get voiceConnections() {
+    return this.voice.connections;
   }
 
 }
