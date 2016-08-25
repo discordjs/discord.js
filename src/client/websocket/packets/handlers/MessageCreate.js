@@ -11,6 +11,12 @@ class MessageCreateHandler extends AbstractHandler {
 
     if (response.m) {
       client.emit(Constants.Events.MESSAGE_CREATE, response.m);
+
+      var awaitID = client._awaitingResponse[`${response.m.channel.id}/${response.m.author.id}`]
+      if (awaitID) {
+          awaitID(response.m);
+          delete client._awaitingResponse[`${response.m.channel.id}/${response.m.author.id}`];
+      };
     }
   }
 
