@@ -263,17 +263,17 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * When concatenated with a String, this automatically concatenates the Channel's name instead of the Channel object.
+   * When concatenated with a String, this automatically concatenates the Channel's mention instead of the Channel object.
    * @returns {String}
    * @example
-   * // Outputs: Hello from general
+   * // Outputs: Hello from #general
    * console.log(`Hello from ${channel}`);
    * @example
-   * // Outputs: Hello from general
-   * console.log('Hello from ' + ${channel});
+   * // Outputs: Hello from #general
+   * console.log('Hello from ' + channel);
    */
   toString() {
-    return this.name;
+    return `<#${this.id}>`;
   }
 }
 
