@@ -19,6 +19,7 @@ module.exports = {
     'no-param-reassign': 0,
     'no-restricted-syntax': 0,
     'guard-for-in': 0,
+    'prefer-arrow-callback': 0,
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }

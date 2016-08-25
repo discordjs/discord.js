@@ -69,6 +69,14 @@ Vue.filter('normalise', $text => {
   return text;
 });
 
+function camelize(str) {
+  return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function c(letter, index) {
+    return index === 0 ? letter.toLowerCase() : letter.toUpperCase();
+  }).replace(/\s+/g, '');
+}
+
+Vue.filter('camel', str => camelize(str));
+
 const router = new VueRouter();
 
 router.map({

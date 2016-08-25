@@ -41,6 +41,9 @@ export default {
         console.log(e);
       });
     },
+    canReuse() {
+      return false;
+    },
   },
   events: {
     toggleShowPrivate() {

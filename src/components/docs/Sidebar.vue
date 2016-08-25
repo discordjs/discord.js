@@ -33,5 +33,10 @@ export default {
       this.sidebarVisible = !this.sidebarVisible;
     },
   },
+  route: {
+    canReuse() {
+      return false;
+    },
+  },
 };
 </script>
