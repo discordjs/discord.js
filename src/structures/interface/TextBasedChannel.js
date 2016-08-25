@@ -80,6 +80,45 @@ class TextBasedChannel {
     });
   }
 
+  /**
+   * The parameters to pass in when awaiting a response. All the parameters are optional.
+   * ```js
+   * {
+   *  timeout: '5000', // time in milliseconds before timing out
+   * }
+   * ```
+   * @typedef {Object} ChannelAwaitOptions
+   */
+
+    /**
+    * Await a message
+    * @param {User} user the user to wait for a message from
+    * @param {ChannelAwaitOptions} [options = {}] the options to provide
+    * @returns {Promise<Message, Error>}
+    * @example
+    * // await a message
+    * message.channel.sendMessage('Hello, what is your name?')
+    *  .then(msg => {
+    *    message.channel.awaitMessage(message.author, {"timeout": 5000})
+    *      .then(respone => {
+    *        message.reply(response, `Your name is \`${response.content}\`.`)
+    *      })
+    *    }
+   */
+  awaitMessage(user, options = {}) {
+    return new Promise((resolve, reject) => {
+      const awaitID = `${this.id}/${user.id}`;
+      var timeout = null;
+      if (!this.client._awaitingResponse[awaitID]) {
+        this.client._awaitingResponse[awaitID] = response => {
+          resolve(response);
+          if (timeout) clearTimeout(timeout);
+        };
+        if (options.timeout) timeout = setTimeout(reject, options.timeout, "Request timed out");
+      }
+    });
+  };
+
   _cacheMessage(message) {
     const maxSize = this.client.options.max_message_cache;
     if (maxSize === 0) {
@@ -106,6 +145,7 @@ exports.applyToClass = (structure, full = false) => {
   if (full) {
     props.push('_cacheMessage');
     props.push('getMessages');
+    props.push('awaitMessage')
   }
   for (const prop of props) {
     applyProp(structure, prop);
