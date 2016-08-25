@@ -132,7 +132,7 @@ class StreamDispatcher extends EventEmitter {
     data.length = 20;
     data.missed = 0;
     data.startTime = Date.now();
-    this._send();
+    this.stream.once('readable', () => this._send());
   }
 
   _pause(value) {

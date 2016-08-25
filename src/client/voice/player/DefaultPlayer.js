@@ -5,8 +5,12 @@ class DefaultPlayer extends BasePlayer {
 
   playFile(file) {
     this._shutdown();
-    const fileStream = fs.createReadStream(file);
-    const pcmStream = this.convertStream(fileStream);
+    return this.playStream(fs.createReadStream(file));
+  }
+
+  playStream(stream) {
+    this._shutdown();
+    const pcmStream = this.convertStream(stream);
     const dispatcher = this.playPCMStream(pcmStream);
     return dispatcher;
   }
