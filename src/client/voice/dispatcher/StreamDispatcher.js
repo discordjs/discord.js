@@ -4,6 +4,10 @@ const NaCl = require('tweetnacl');
 const nonce = new Buffer(24);
 nonce.fill(0);
 
+/**
+ * The class that sends voice packet data to the voice connection.
+ * @extends {EventEmitter}
+ */
 class StreamDispatcher extends EventEmitter {
   constructor(player, stream) {
     super();
@@ -16,6 +20,11 @@ class StreamDispatcher extends EventEmitter {
     this._triggered = false;
   }
 
+  /**
+  * Emitted when the dispatcher starts/stops speaking
+  * @event StreamDispatcher#speaking
+  * @param {Boolean} value whether or not the dispatcher is speaking
+  */
   _setSpeaking(value) {
     this.speaking = value;
     this.emit('speaking', value);
@@ -91,11 +100,21 @@ class StreamDispatcher extends EventEmitter {
     }
   }
 
+  /**
+  * Emitted once the stream has ended. Attach a `once` listener to this.
+  * @event StreamDispatcher#end
+  */
   _triggerEnd() {
     this.emit('end');
   }
 
+  /**
+  * Emitted once the stream has encountered an error. Attach a `once` listener to this. Also emits `end`.
+  * @event StreamDispatcher#error
+  * @param {Error} error the error encountered
+  */
   _triggerError(e) {
+    this.emit('end');
     this.emit('error', e);
   }
 
@@ -103,6 +122,12 @@ class StreamDispatcher extends EventEmitter {
     if (this._triggered) {
       return;
     }
+
+    /**
+    * Emitted when the stream wants to give debug information.
+    * @event StreamDispatcher#debug
+    * @param {String} information the debug information
+    */
     this.emit('debug', `triggered terminal state ${state} - stream is now dead`);
     this._triggered = true;
     this._setSpeaking(false);
@@ -145,14 +170,26 @@ class StreamDispatcher extends EventEmitter {
     }
   }
 
+  /**
+   * Stops the current stream permanently and emits an `end` event.
+   * @returns {null}
+   */
   end() {
     this._triggerTerminalState('end', 'user requested');
   }
 
+  /**
+   * Stops sending voice packets to the voice connection (stream may still progress however)
+   * @returns {null}
+   */
   pause() {
     this._pause(true);
   }
 
+  /**
+   * Resumes sending voice packets to the voice connection (may be further on in the stream than when paused)
+   * @returns {null}
+   */
   resume() {
     this._pause(false);
   }

@@ -66,6 +66,11 @@ class VoiceConnection extends EventEmitter {
    */
   _onError(e) {
     this._reject(e);
+    /**
+     * Emitted whenever the connection encounters a fatal error.
+     * @event VoiceConnection#error
+     * @param {Error} error the encountered error
+     */
     this.emit('error', e);
     this._shutdown(e);
   }
@@ -103,6 +108,11 @@ class VoiceConnection extends EventEmitter {
     if (this.udp) {
       this.udp._shutdown();
     }
+    /**
+     * Emit once the voice connection has disconnected.
+     * @event VoiceConnection#disconnected
+     * @param {Error} error the error, if any
+     */
     this.emit('disconnected', e);
   }
 
@@ -123,6 +133,10 @@ class VoiceConnection extends EventEmitter {
     this.websocket.on('ready', secretKey => {
       this.data.secret = secretKey;
       this.ready = true;
+      /**
+       * Emitted once the connection is ready (joining voice channels resolves when the connection is ready anyway)
+       * @event VoiceConnection#ready
+       */
       this.emit('ready');
       this._resolve(this);
     });
@@ -130,6 +144,40 @@ class VoiceConnection extends EventEmitter {
       const guild = this.channel.guild;
       guild._memberSpeakUpdate(data.user_id, data.speaking);
     });
+  }
+
+  /**
+   * Play the given file in the voice connection
+   * @param {String} filepath the path to the file
+   * @returns {StreamDispatcher}
+   * @example
+   * // play files natively
+   * voiceChannel.join()
+   *  .then(connection => {
+   *    const dispatcher = connection.playFile('C:/Users/Discord/Desktop/music.mp3');
+   *  })
+   *  .catch(console.log);
+   */
+  playFile(file) {
+    return this.player.playFile(file);
+  }
+
+  /**
+   * Play the given stream in the voice connection
+   * @param {ReadableStream} stream the audio stream to play
+   * @returns {StreamDispatcher}
+   * @example
+   * // play streams using ytdl-core
+   * const ytdl = require('ytdl-core');
+   * voiceChannel.join()
+   *  .then(connection => {
+   *    const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', {filter : 'audioonly'});
+   *    const dispatcher = connection.playStream(stream);
+   *  })
+   *  .catch(console.log);
+   */
+  playStream(stream) {
+    return this.player.playStream(stream);
   }
 }
 
