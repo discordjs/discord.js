@@ -145,7 +145,9 @@ client.on('message', msg => {
         conn.player.on('debug', console.log);
         conn.player.on('error', err => console.log(123, err));
         const receiver = conn.createReceiver();
-        receiver.on('pcm', console.log);
+        receiver.on('pcm', u => {
+          console.log(u.username);
+        });
         disp.on('error', err => console.log(123, err));
       })
       .catch(console.log);

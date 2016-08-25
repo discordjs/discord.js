@@ -56,6 +56,7 @@ class VoiceConnection extends EventEmitter {
      * @private
      */
     this._reject = reject;
+    this.ssrcMap = new Map();
     this.bindListeners();
   }
 
@@ -143,6 +144,7 @@ class VoiceConnection extends EventEmitter {
     });
     this.websocket.on('speaking', data => {
       const guild = this.channel.guild;
+      this.ssrcMap.set(+data.ssrc, this.manager.client.users.get(data.user_id));
       guild._memberSpeakUpdate(data.user_id, data.speaking);
     });
   }
