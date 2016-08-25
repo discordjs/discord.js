@@ -69,7 +69,8 @@ class ClientDataManager {
         this.client.emit(Constants.Events.CHANNEL_CREATE, channel);
       }
 
-      return this.client.channels.set(channel.id, channel);
+      this.client.channels.set(channel.id, channel);
+      return channel;
     }
     return null;
   }

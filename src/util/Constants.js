@@ -69,7 +69,7 @@ exports.Errors = {
   BAD_LOGIN: new Error('incorrect login details were provided'),
 };
 
-const API = 'https://discordapp.com/api';
+const API = `https://discordapp.com/api/v${exports.DefaultOptions.protocol_version}`;
 
 const Endpoints = exports.Endpoints = {
   // general endpoints
