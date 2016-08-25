@@ -196,6 +196,12 @@ class Guild {
     const member = this.members.get(user);
     if (member && member.speaking !== speaking) {
       member.speaking = speaking;
+      /**
+       * Emitted once a Guild Member starts/stops speaking
+       * @event Client#guildMemberSpeaking
+       * @param {GuildMember} member the member that started/stopped speaking
+       * @param {Boolean} speaking whether or not the member is speaking
+       */
       this.client.emit(Constants.Events.GUILD_MEMBER_SPEAKING, member, speaking);
     }
   }
