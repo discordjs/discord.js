@@ -81,6 +81,7 @@ class User {
    */
   equals(user) {
     let base = (
+      user &&
       this.username === user.username &&
       this.id === user.id &&
       this.discriminator === user.discriminator &&
