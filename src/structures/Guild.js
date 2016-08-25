@@ -166,6 +166,7 @@ class Guild {
    */
   equals(data) {
     let base =
+      data &&
       this.id === data.id &&
       this.available === !data.unavailable &&
       this.splash === data.splash &&

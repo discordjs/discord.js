@@ -22,6 +22,7 @@ class Role {
 
   equals(role) {
     return (
+      role &&
       this.id === role.id &&
       this.name === role.name &&
       this.color === role.color &&
