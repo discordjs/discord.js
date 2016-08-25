@@ -1,5 +1,6 @@
 const VoiceConnectionWebSocket = require('./VoiceConnectionWebSocket');
 const VoiceConnectionUDPClient = require('./VoiceConnectionUDPClient');
+const VoiceReceiver = require('./receiver/VoiceReceiver');
 const Constants = require('../../util/Constants');
 const EventEmitter = require('events').EventEmitter;
 const DefaultPlayer = require('./player/DefaultPlayer');
@@ -178,6 +179,14 @@ class VoiceConnection extends EventEmitter {
    */
   playStream(stream) {
     return this.player.playStream(stream);
+  }
+
+  /**
+   * Creates a VoiceReceiver so you can start listening to voice data. It's recommended to only create one of these.
+   * @returns {VoiceReceiver}
+   */
+  createReceiver() {
+    return new VoiceReceiver(this);
   }
 }
 

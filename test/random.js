@@ -144,6 +144,8 @@ client.on('message', msg => {
         const disp = conn.player.playStream(ytdl('https://www.youtube.com/watch?v=nbXgHAzUWB0', {filter : 'audioonly'}));
         conn.player.on('debug', console.log);
         conn.player.on('error', err => console.log(123, err));
+        const receiver = conn.createReceiver();
+        receiver.on('pcm', console.log);
         disp.on('error', err => console.log(123, err));
       })
       .catch(console.log);
