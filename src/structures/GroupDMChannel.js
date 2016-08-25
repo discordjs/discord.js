@@ -112,6 +112,7 @@ class GroupDMChannel extends Channel {
      * @type {User}
      */
     this.owner = this.client.users.get(data.owner_id);
+    this.type = 'group';
   }
 
   sendMessage() {

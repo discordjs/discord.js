@@ -27,6 +27,7 @@ class DMChannel extends Channel {
      * @type {?String}
      */
     this.lastMessageID = data.last_message_id;
+    this.type = 'dm';
   }
 
   /**

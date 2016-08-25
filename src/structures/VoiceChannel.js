@@ -27,6 +27,7 @@ class VoiceChannel extends GuildChannel {
      * @type {Number}
      */
     this.userLimit = data.user_limit;
+    this.type = 'voice';
   }
 
   /**

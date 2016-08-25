@@ -21,6 +21,7 @@ class TextChannel extends GuildChannel {
      * @type {?String}
      */
     this.lastMessageID = data.last_message_id;
+    this.type = 'text';
   }
 
   sendMessage() {

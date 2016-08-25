@@ -13,7 +13,15 @@ class Channel {
     if (guild) {
       this.guild = guild;
     }
-
+    /**
+     * The type of the channel, either:
+     * * `dm` - a DM channel
+     * * `group` - a Group DM channel
+     * * `text` - a guild text channel
+     * * `voice` - a guild voice channel
+     * @type {String}
+     */
+    this.type = null;
     if (data) {
       this.setup(data);
     }
