@@ -57,6 +57,8 @@ class VoiceConnection extends EventEmitter {
      */
     this._reject = reject;
     this.ssrcMap = new Map();
+    this.queue = [];
+    this.receivers = [];
     this.bindListeners();
   }
 
@@ -139,12 +141,48 @@ class VoiceConnection extends EventEmitter {
        * Emitted once the connection is ready (joining voice channels resolves when the connection is ready anyway)
        * @event VoiceConnection#ready
        */
-      this.emit('ready');
       this._resolve(this);
+      this.emit('ready');
+    });
+    this.once('ready', () => {
+      setImmediate(() => {
+        for (const item of this.queue) {
+          this.emit(...item);
+        }
+        this.queue = [];
+      });
     });
     this.websocket.on('speaking', data => {
       const guild = this.channel.guild;
-      this.ssrcMap.set(+data.ssrc, this.manager.client.users.get(data.user_id));
+      const user = this.manager.client.users.get(data.user_id);
+      this.ssrcMap.set(+data.ssrc, user);
+      if (!data.speaking) {
+        for (const receiver of this.receivers) {
+          const opusStream = receiver.opusStreams.get(user.id);
+          const pcmStream = receiver.pcmStreams.get(user.id);
+          if (opusStream) {
+            opusStream.push(null);
+            opusStream.open = false;
+            receiver.opusStreams.delete(user.id);
+          }
+          if (pcmStream) {
+            pcmStream.push(null);
+            pcmStream.open = false;
+            receiver.pcmStreams.delete(user.id);
+          }
+        }
+      }
+      /**
+       * Emitted whenever a user starts/stops speaking
+       * @event VoiceConnection#speaking
+       * @param {User} user the user that has started/stopped speaking
+       * @param {Boolean} speaking whether or not the user is speaking
+       */
+      if (this.ready) {
+        this.emit('speaking', user, data.speaking);
+      } else {
+        this.queue.push(['speaking', user, data.speaking]);
+      }
       guild._memberSpeakUpdate(data.user_id, data.speaking);
     });
   }
@@ -188,7 +226,9 @@ class VoiceConnection extends EventEmitter {
    * @returns {VoiceReceiver}
    */
   createReceiver() {
-    return new VoiceReceiver(this);
+    const rcv = new VoiceReceiver(this);
+    this.receivers.push(rcv);
+    return rcv;
   }
 }
 

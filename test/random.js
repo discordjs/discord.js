@@ -2,6 +2,7 @@
 
 const Discord = require('../');
 const request = require('superagent');
+const fs = require('fs-extra');
 
 const client = new Discord.Client();
 
@@ -145,8 +146,14 @@ client.on('message', msg => {
         conn.player.on('debug', console.log);
         conn.player.on('error', err => console.log(123, err));
         const receiver = conn.createReceiver();
-        receiver.on('pcm', u => {
-          console.log(u.username);
+        const out = fs.createWriteStream('C:/Users/Amish/Desktop/output.pcm');
+        conn.once('speaking', (user, speaking) => {
+          if (speaking) {
+            msg.reply(`${user.username} start`);
+            const str = receiver.createPCMStream(user);
+            str.pipe(out);
+            str.on('end', () => msg.reply(`${user.username} end`));
+          }
         });
         disp.on('error', err => console.log(123, err));
       })
