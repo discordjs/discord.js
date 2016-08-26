@@ -183,7 +183,9 @@ class Message {
       const channMentionsRaw = data.content.match(/<#([0-9]{14,20})>/g) || [];
       for (const raw of channMentionsRaw) {
         const chan = this.channel.guild.channels.get(raw.match(/([0-9]{14,20})/g)[0]);
-        this.mentions.channels.set(chan.id, chan);
+        if (chan) {
+          this.mentions.channels.set(chan.id, chan);
+        }
       }
     }
   }
