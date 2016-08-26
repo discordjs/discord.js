@@ -4,6 +4,7 @@ const Collection = require('../util/Collection');
  */
 class Message {
   constructor(channel, data, client) {
+    this._type = 'message';
     /**
      * The channel that the message was sent in
      * @type {Channel}

@@ -54,6 +54,10 @@ class DMChannel extends Channel {
   getMessages() {
     return;
   }
+
+  bulkDelete() {
+    return;
+  }
 }
 
 TextBasedChannel.applyToClass(DMChannel, true);

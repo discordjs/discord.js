@@ -76,6 +76,20 @@ class RESTMethods {
     });
   }
 
+  bulkDeleteMessages(channel, messages) {
+    return new Promise((resolve, reject) => {
+      const options = { messages };
+      this.rest.makeRequest('post', `${Constants.Endpoints.channelMessages(channel.id)}/bulk_delete`, true, options)
+        .then(() => {
+          resolve(this.rest.client.actions.MessageDeleteBulk.handle({
+            channel_id: channel.id,
+            ids: messages,
+          }).messages);
+        })
+        .catch(reject);
+    });
+  }
+
   updateMessage(message, content) {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('patch', Constants.Endpoints.channelMessage(message.channel.id, message.id), true, {

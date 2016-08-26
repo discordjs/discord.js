@@ -131,6 +131,10 @@ class GroupDMChannel extends Channel {
   getMessages() {
     return;
   }
+
+  bulkDelete() {
+    return;
+  }
 }
 
 TextBasedChannel.applyToClass(GroupDMChannel, true);

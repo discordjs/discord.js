@@ -12,6 +12,10 @@ client.on('ready', () => {
   console.log('ready!');
 });
 
+client.on('messageDeleteBulk', msgs => {
+  msgs.array().map(m => console.log(m.content));
+});
+
 client.on('message', message => {
   if (true) {
     if (message.content === 'makechann') {
