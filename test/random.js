@@ -2,7 +2,7 @@
 
 const Discord = require('../');
 const request = require('superagent');
-const fs = require('fs-extra');
+const fs = require('fs');
 
 const client = new Discord.Client();
 
