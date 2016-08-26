@@ -263,7 +263,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * When concatenated with a String, this automatically concatenates the Channel's name instead of the Channel object.
+   * When concatenated with a String, this automatically returns the Channel's name instead of the Channel object.
    * @returns {String}
    * @example
    * // Outputs: Hello from general
