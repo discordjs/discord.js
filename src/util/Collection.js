@@ -45,6 +45,21 @@ class Collection extends Map {
   }
 
   /**
+   * If the items in this collection have a delete method (e.g. messages), invoke
+   * the delete method. Returns an array of promises
+   * @return {Array<Promise>}
+   */
+  deleteAll() {
+    const returns = [];
+    for (const item of this.array()) {
+      if (item.delete) {
+        returns.push(item.delete());
+      }
+    }
+    return returns;
+  }
+
+  /**
    * The length (size) of this collection.
    * @readonly
    * @type {Number}
@@ -104,6 +119,22 @@ class Collection extends Map {
 
   _arrayMethod(method, args) {
     return Array.prototype[method].apply(this.array(), args);
+  }
+
+  /**
+   * Identical to [Array.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter),
+   * but returns a Collection instead of an Array.
+   * @param {Function} callback the callback used to filter
+   * @param {Object} [thisArg] value to set as this when filtering
+   * @returns {Collection}
+   */
+  filter(...args) {
+    const newArray = this.array().filter(...args);
+    const collection = new Collection();
+    for (const item of newArray) {
+      collection.set(item.id, item);
+    }
+    return collection;
   }
 }
 
