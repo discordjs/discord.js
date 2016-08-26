@@ -1,4 +1,5 @@
 const TextBasedChannel = require('./interface/TextBasedChannel');
+const Constants = require('../util/Constants');
 
 /**
  * Represents a User on Discord.
@@ -63,6 +64,18 @@ class User {
    */
   toString() {
     return `<@${this.id}>`;
+  }
+
+  /**
+   * A link to the user's avatar (if they have one, otherwise null)
+   * @type {?String}
+   * @readonly
+   */
+  get avatarURL() {
+    if (!this.avatar) {
+      return null;
+    }
+    return Constants.Endpoints.avatar(this.id, this.avatar);
   }
 
   /**
