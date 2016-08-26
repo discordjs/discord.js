@@ -1,5 +1,5 @@
 const BasePlayer = require('./BasePlayer');
-const fs = require('fs-extra');
+const fs = require('fs');
 
 class DefaultPlayer extends BasePlayer {
 

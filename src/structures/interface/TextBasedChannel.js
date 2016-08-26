@@ -14,6 +14,22 @@ class TextBasedChannel {
      */
     this.messages = new Collection();
   }
+
+  /**
+   * Bulk delete a given Collection or Array of messages in one go. Returns the deleted messages after.
+   * @param {Map<String, Message>|Array<Message>} messages the messages to delete
+   * @returns {Collection<String, Message>}
+   */
+  bulkDelete(messages) {
+    if (messages instanceof Map) {
+      messages = messages.array();
+    }
+    if (!(messages instanceof Array)) {
+      return Promise.reject('pass an array or map');
+    }
+    const messageIDs = messages.map(m => m.id);
+    return this.client.rest.methods.bulkDeleteMessages(this, messageIDs);
+  }
   /**
    * Send a message to this channel
    * @param {String} content the content to send
@@ -72,7 +88,9 @@ class TextBasedChannel {
         .then(data => {
           const messages = new Collection();
           for (const message of data) {
-            messages.set(message.id, new Message(this, message, this.client));
+            const msg = new Message(this, message, this.client);
+            messages.set(message.id, msg);
+            this._cacheMessage(msg);
           }
           resolve(messages);
         })
@@ -106,6 +124,7 @@ exports.applyToClass = (structure, full = false) => {
   if (full) {
     props.push('_cacheMessage');
     props.push('getMessages');
+    props.push('bulkDelete');
   }
   for (const prop of props) {
     applyProp(structure, prop);

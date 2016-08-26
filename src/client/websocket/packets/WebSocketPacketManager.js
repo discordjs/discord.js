@@ -37,6 +37,7 @@ class WebSocketPacketManager {
     this.register(Constants.WSEvents.MESSAGE_DELETE, 'MessageDelete');
     this.register(Constants.WSEvents.MESSAGE_UPDATE, 'MessageUpdate');
     this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, 'VoiceServerUpdate');
+    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, 'MessageDeleteBulk');
   }
 
   get client() {

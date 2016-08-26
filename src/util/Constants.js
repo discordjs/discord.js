@@ -36,7 +36,7 @@ exports.DefaultOptions = {
     },
   },
   protocol_version: 6,
-  max_message_cache: 200,
+  max_message_cache: 800,
   rest_ws_bridge_timeout: 5000,
   api_request_method: 'sequential',
   shard_id: 0,
@@ -160,6 +160,7 @@ exports.Events = {
   MESSAGE_UPDATE: 'messageUpdate',
   RECONNECTING: 'reconnecting',
   GUILD_MEMBER_SPEAKING: 'guildMemberSpeaking',
+  MESSAGE_BULK_DELETE: 'messageDeleteBulk',
 };
 
 exports.WSEvents = {
@@ -189,6 +190,7 @@ exports.WSEvents = {
   FRIEND_ADD: 'RELATIONSHIP_ADD',
   FRIEND_REMOVE: 'RELATIONSHIP_REMOVE',
   VOICE_SERVER_UPDATE: 'VOICE_SERVER_UPDATE',
+  MESSAGE_DELETE_BULK: 'MESSAGE_DELETE_BULK',
 };
 
 const PermissionFlags = exports.PermissionFlags = {

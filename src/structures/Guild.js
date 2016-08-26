@@ -522,6 +522,18 @@ class Guild {
   setSplash(splash) {
     return this.edit({ splash });
   }
+
+  /**
+   * Gets the URL to this guild's icon (if it has one, otherwise it returns null)
+   * @type {?String}
+   * @readonly
+   */
+  get iconURL() {
+    if (!this.icon) {
+      return null;
+    }
+    return Constants.Endpoints.guildIcon(this.id, this.icon);
+  }
 }
 
 module.exports = Guild;
