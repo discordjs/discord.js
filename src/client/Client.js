@@ -105,6 +105,7 @@ class Client extends EventEmitter {
      * @type {?Number}
      */
     this.readyTime = null;
+    this._awaitingResponse = {};
   }
 
   /**
