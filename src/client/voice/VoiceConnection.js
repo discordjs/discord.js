@@ -241,6 +241,17 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
+   * Plays a stream of PCM data
+   * @param {ReadableStream} pcmStream the PCM stream
+   * @returns {StreamDispatcher}
+   */
+  playPCMStream(pcmStream) {
+    this._shutdown();
+    const dispatcher = this.player.playPCMStream(pcmStream);
+    return dispatcher;
+  }
+
+  /**
    * Creates a VoiceReceiver so you can start listening to voice data. It's recommended to only create one of these.
    * @returns {VoiceReceiver}
    */

@@ -14,7 +14,6 @@ class DefaultPlayer extends BasePlayer {
     const dispatcher = this.playPCMStream(pcmStream);
     return dispatcher;
   }
-
 }
 
 module.exports = DefaultPlayer;
