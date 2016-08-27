@@ -31,6 +31,16 @@ class TextBasedChannel {
     return this.client.rest.methods.bulkDeleteMessages(this, messageIDs);
   }
   /**
+   * Options that can be passed into sendMessage or sendTTSMessage:
+   * ```js
+   * {
+   *   tts: false,
+   *   nonce: '',
+   * };
+   * ```
+   * @typedef {Object} MessageOptions
+   */
+  /**
    * Send a message to this channel
    * @param {String} content the content to send
    * @param {MessageOptions} [options={}] the options to provide
@@ -47,6 +57,7 @@ class TextBasedChannel {
   /**
    * Send a text-to-speech message to this channel
    * @param {String} content the content to send
+   * @param {MessageOptions} [options={}] the options to provide
    * @returns {Promise<Message>}
    * @example
    * // send a TTS message
@@ -54,8 +65,8 @@ class TextBasedChannel {
    *  .then(message => console.log(`Sent tts message: ${message.content}`))
    *  .catch(console.log);
    */
-  sendTTSMessage(content) {
-    return this.client.rest.methods.sendMessage(this, content, true);
+  sendTTSMessage(content, options = {}) {
+    return this.client.rest.methods.sendMessage(this, content, true, options.nonce);
   }
 
   /**
