@@ -42,7 +42,7 @@ class TextBasedChannel {
    *  .catch(console.log);
    */
   sendMessage(content, options = {}) {
-    return this.client.rest.methods.sendMessage(this, content, options.tts);
+    return this.client.rest.methods.sendMessage(this, content, options.tts, options.nonce);
   }
   /**
    * Send a text-to-speech message to this channel
