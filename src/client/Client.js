@@ -136,7 +136,8 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Caches a user, or obtains it from the cache if it's already cached
+   * Caches a user, or obtains it from the cache if it's already cached.
+   * If the user isn't already cached, it will only be obtainable by OAuth bot accounts.
    * @param {String} id The ID of the user to obtain
    * @return {Promise<User>}
    */
