@@ -152,6 +152,25 @@ class VoiceConnection extends EventEmitter {
         this.queue = [];
       });
     });
+    this.manager.client.on(Constants.Events.VOICE_STATE_UPDATE, (oldM, newM) => {
+      if (oldM.voiceChannel && oldM.voiceChannel.guild.id === this.channel.guild.id && !newM.voiceChannel) {
+        const user = newM.user;
+        for (const receiver of this.receivers) {
+          const opusStream = receiver.opusStreams.get(user.id);
+          const pcmStream = receiver.pcmStreams.get(user.id);
+          if (opusStream) {
+            opusStream.push(null);
+            opusStream.open = false;
+            receiver.opusStreams.delete(user.id);
+          }
+          if (pcmStream) {
+            pcmStream.push(null);
+            pcmStream.open = false;
+            receiver.pcmStreams.delete(user.id);
+          }
+        }
+      }
+    });
     this.websocket.on('speaking', data => {
       const guild = this.channel.guild;
       const user = this.manager.client.users.get(data.user_id);
