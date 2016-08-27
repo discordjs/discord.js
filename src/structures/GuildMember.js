@@ -133,6 +133,60 @@ class GuildMember {
   }
 
   /**
+   * Mute/unmute a user
+   * @param {Boolean} mute whether or not the member should be muted
+   * @returns {Promise<GuildMember, Error>}
+   */
+  setMute(mute) {
+    return this.edit({ mute });
+  }
+
+  /**
+   * Deafen/undeafen a user
+   * @param {Boolean} deaf whether or not the member should be deafened
+   * @returns {Promise<GuildMember, Error>}
+   */
+  setDeaf(deaf) {
+    return this.edit({ deaf });
+  }
+
+  /**
+   * Moves the Guild Member to the given channel.
+   * @param {ChannelResolvable} channel the channel to move the member to
+   * @returns {Promise<GuildMember, Error>}
+   */
+  setVoiceChannel(channel) {
+    return this.edit({ channel });
+  }
+
+  /**
+   * Sets the Roles applied to the member.
+   * @param {Collection<String, Role>|Array<Role>} roles the roles to apply
+   * @returns {Promise<GuildMember, Error>}
+   */
+  setRoles(roles) {
+    return this.edit({ roles });
+  }
+
+  /**
+   * Set the nickname for the Guild Member
+   * @param {String} nick the nickname for the Guild Member
+   * @returns {Promise<GuildMember, Error>}
+   */
+  setNickname(nick) {
+    return this.edit({ nick });
+  }
+
+  /**
+   * Edit a Guild Member
+   * @param {GuildmemberEditData} data the data to edit the member with
+   * @returns {Promise<GuildMember, Error>}
+   */
+  edit(data) {
+    return this.client.rest.methods.updateGuildMember(this, data);
+  }
+
+  /**
    * Deletes any DM's with this Guild Member
    * @returns {Promise<DMChannel>}
    */

@@ -100,9 +100,18 @@ class Guild {
   _updateMember(member, data) {
     const oldMember = cloneObject(member);
 
-    member._roles = data.roles;
-    member.nickname = data.nick;
-    if (this.client.ws.status === Constants.Status.READY) {
+    if (data.roles) {
+      member._roles = data.roles;
+    } else {
+      member.nickname = data.nick;
+    }
+
+    const notSame = (
+      member.nickname !== oldMember.nickname &&
+      !arraysEqual(member._roles, oldMember._roles)
+    );
+
+    if (this.client.ws.status === Constants.Status.READY && notSame) {
       /**
       * Emitted whenever a Guild Member changes - i.e. new role, removed role, nickname
       *
@@ -113,6 +122,10 @@ class Guild {
       */
       this.client.emit(Constants.Events.GUILD_MEMBER_UPDATE, this, oldMember, member);
     }
+    return {
+      old: oldMember,
+      mem: member,
+    };
   }
 
   _removeMember(guildMember) {
