@@ -65,7 +65,7 @@ class VoiceReceiver extends EventEmitter {
 
   /**
    * Creates a readable stream for a user that provides PCM data while the user is speaking. When the user
-   * stops speaking, the stream is destroyed. The stream is 32-bit signed PCM at 48KHz.
+   * stops speaking, the stream is destroyed. The stream is 16-bit signed stereo PCM at 48KHz.
    * @param {UserResolvable} user the user to create the stream for
    * @returns {ReadableStream}
    */
