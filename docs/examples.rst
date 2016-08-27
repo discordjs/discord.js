@@ -65,9 +65,9 @@ Here we will demonstrate receiving messages and logging them to the console.
 
 	client.on('message', function(message) {
 		if (message.channel.isPrivate) {
-			console.log('(Private) ${message.author.name}: ${message.content}');
+			console.log(`(Private) ${message.author.name}: ${message.content}`);
 		} else {
-			console.log('(${message.server.name} / ${message.channel.name}) ${message.author.name}: ${message.content}');
+			console.log(`(${message.server.name} / ${message.channel.name}) ${message.author.name}: ${message.content}`);
 		}
 	});
 
