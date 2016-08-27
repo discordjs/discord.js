@@ -15,5 +15,6 @@ module.exports = {
       "consistent-return": 0,
       "import/no-extraneous-dependencies": 0,
       "no-continue": 0,
+      "no-confusing-arrow" : 0
     }
 };

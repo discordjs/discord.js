@@ -1,8 +1,10 @@
 const Constants = require('../../util/Constants');
+const Collection = require('../../util/Constants');
 
 const getStructure = name => require(`../../structures/${name}`);
 const User = getStructure('User');
 const GuildMember = getStructure('GuildMember');
+const Role = getStructure('Role');
 
 class RESTMethods {
   constructor(restManager) {
@@ -337,6 +339,31 @@ class RESTMethods {
 
       this.rest.makeRequest('get', request, true)
         .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  updateGuildMember(member, data) {
+    return new Promise((resolve, reject) => {
+      if (data.channel) {
+        data.channel_id = this.client.resolver.resolveChannel(data.channel).id;
+      }
+      if (data.roles) {
+        if (data.roles instanceof Map) {
+          data.roles = data.roles.array();
+        }
+        data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
+      }
+
+      let endpoint = Constants.Endpoints.guildMember(member.guild.id, member.id);
+      // fix your endpoints, discord ;-;
+      if (member.id === this.rest.client.user.id) {
+        if (Object.keys(data).length === 1 && Object.keys(data)[0] === 'nick') {
+          endpoint = Constants.Endpoints.stupidInconsistentGuildEndpoint(member.guild.id);
+        }
+      }
+      this.rest.makeRequest('patch', endpoint, true, data)
+        .then(resData => resolve(member.guild._updateMember(member, resData).mem))
         .catch(reject);
     });
   }
