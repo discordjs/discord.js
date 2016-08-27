@@ -114,11 +114,11 @@ class Role {
 
   /**
    * Set a new color for the role
-   * @param {Number} color the new color for the role
+   * @param {Number|String} color the new color for the role, either a hex string or a base 10 number
    * @returns {Promise<Role, Error>}
    * @example
    * // set the color of a role
-   * role.setColor(parseInt('FF0000', 16))
+   * role.setColor('#FF0000')
    *  .then(r => console.log(`Set color of role ${r}`))
    *  .catch(console.log);
    */
@@ -221,6 +221,19 @@ class Role {
    */
   toString() {
     return `<@&${this.id}>`;
+  }
+
+  /**
+   * The hexadecimal version of the role color, with a leading hashtag.
+   * @type {String}
+   * @readonly
+   */
+  get hexColor() {
+    let col = (this.color).toString(16);
+    while (col.length < 6) {
+      col = `0${col}`;
+    }
+    return `#${col}`;
   }
 }
 
