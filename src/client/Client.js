@@ -136,11 +136,11 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Forces a user to be cached.
-   * @param {String} id The ID of the user to cache
+   * Caches a user, or obtains it from the cache if it's already cached
+   * @param {String} id The ID of the user to obtain
    * @return {Promise<User>}
    */
-  cacheUser(id) {
+  fetchUser(id) {
     if (this.users.has(id)) return Promise.resolve(this.users.get(id));
     return this.rest.methods.getUser(id);
   }
