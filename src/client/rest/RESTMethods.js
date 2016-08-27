@@ -193,6 +193,16 @@ class RESTMethods {
     });
   }
 
+  getUser(userID) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.user(userID), true)
+        .then((data) => {
+          resolve(this.rest.client.actions.UserGet.handle(data).user);
+        })
+        .catch(reject);
+    });
+  }
+
   updateCurrentUser(_data) {
     return new Promise((resolve, reject) => {
       const user = this.rest.client.user;
