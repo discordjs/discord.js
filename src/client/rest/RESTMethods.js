@@ -354,6 +354,10 @@ class RESTMethods {
       data.position = _data.position || role.position;
       data.color = _data.color || role.color;
 
+      if (data.color.startsWith('#')) {
+        data.color = parseInt(data.color.replace('#', ''), 16);
+      }
+
       if (typeof _data.hoist !== 'undefined') {
         data.hoist = _data.hoist;
       } else {
