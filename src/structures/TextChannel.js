@@ -43,6 +43,10 @@ class TextChannel extends GuildChannel {
   bulkDelete() {
     return;
   }
+
+  setTyping() {
+    return;
+  }
 }
 
 TextBasedChannel.applyToClass(TextChannel, true);

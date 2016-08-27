@@ -135,6 +135,10 @@ class GroupDMChannel extends Channel {
   bulkDelete() {
     return;
   }
+
+  setTyping() {
+    return;
+  }
 }
 
 TextBasedChannel.applyToClass(GroupDMChannel, true);

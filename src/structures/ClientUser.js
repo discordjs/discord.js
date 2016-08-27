@@ -17,6 +17,8 @@ class ClientUser extends User {
      * @type {String}
      */
     this.email = data.email;
+
+    this._typing = new Map();
   }
 
   /**

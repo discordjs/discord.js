@@ -58,6 +58,10 @@ class DMChannel extends Channel {
   bulkDelete() {
     return;
   }
+
+  setTyping() {
+    return;
+  }
 }
 
 TextBasedChannel.applyToClass(DMChannel, true);

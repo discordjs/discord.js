@@ -376,6 +376,14 @@ class RESTMethods {
     });
   }
 
+  sendTyping(channelID) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('post', `${Constants.Endpoints.channel(channelID)}/typing`, true)
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
   updateGuildRole(role, _data) {
     return new Promise((resolve, reject) => {
       /*
