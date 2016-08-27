@@ -143,7 +143,7 @@ exports.Events = {
   GUILD_BAN_REMOVE: 'guildBanRemove',
   GUILD_MEMBER_ADD: 'guildMemberAdd',
   GUILD_MEMBER_REMOVE: 'guildMemberRemove',
-  GUILD_MEMBER_ROLES_UPDATE: 'guildMemberRolesUpdate',
+  GUILD_MEMBER_UPDATE: 'guildMemberUpdate',
   GUILD_ROLE_CREATE: 'guildRoleCreate',
   GUILD_ROLE_DELETE: 'guildRoleDelete',
   GUILD_ROLE_UPDATE: 'guildRoleUpdate',

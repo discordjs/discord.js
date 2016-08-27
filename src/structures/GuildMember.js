@@ -69,6 +69,7 @@ class GuildMember {
      * @type {?Boolean}
      */
     this.speaking = this.speaking;
+    this.nickname = data.nick;
     this._roles = data.roles;
   }
 
