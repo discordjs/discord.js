@@ -27,6 +27,14 @@ class PermissionOverwrites {
     this.denyData = data.deny;
     this.allowData = data.allow;
   }
+
+  /**
+   * Delete this Permission Overwrite.
+   * @returns {Promise<PermissionOverwrites, Error>}
+   */
+  delete() {
+    return this.channel.client.rest.methods.deletePermissionOverwrites(this);
+  }
 }
 
 module.exports = PermissionOverwrites;

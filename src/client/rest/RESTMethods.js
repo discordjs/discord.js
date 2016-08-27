@@ -317,6 +317,15 @@ class RESTMethods {
     });
   }
 
+  deletePermissionOverwrites(overwrite) {
+    return new Promise((resolve, reject) => {
+      const endpoint = `${Constants.Endpoints.channelPermissions(overwrite.channel.id)}/${overwrite.id}`;
+      this.rest.makeRequest('del', endpoint, true)
+        .then(() => resolve(overwrite))
+        .catch(reject);
+    });
+  }
+
   getChannelMessages(channel, payload = {}) {
     return new Promise((resolve, reject) => {
       const params = [];
