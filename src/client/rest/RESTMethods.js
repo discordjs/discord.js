@@ -384,6 +384,17 @@ class RESTMethods {
     });
   }
 
+  banGuildMember(member, deleteDays) {
+    return new Promise((resolve, reject) => {
+      const data = {
+        'delete-message-days': deleteDays,
+      };
+      this.rest.makeRequest('put', `${Constants.Endpoints.guildBans(member.guild.id)}/${member.id}`, true, data)
+        .then(() => resolve(member))
+        .catch(reject);
+    });
+  }
+
   updateGuildRole(role, _data) {
     return new Promise((resolve, reject) => {
       /*
