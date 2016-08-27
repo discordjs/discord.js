@@ -32,8 +32,8 @@ Logging in with a username and password
 		if (error) {
 			console.log(`There was an error logging in: ${error}`);
 			return;
-		} else
-			console.log(`Logged in. Token: ${token}`);
+		}
+		console.log(`Logged in. Token: ${token}`);
 	}
 
 Logging in with a token
@@ -52,8 +52,8 @@ You can get your bot's token using the `My Applications`_ page on the Discord De
 		if (error) {
 			console.log(`There was an error logging in: ${error}`);
 			return;
-		} else
-			console.log(`Logged in. Token: ${token}`);
+		}
+		console.log(`Logged in. Token: ${token}`);
 	}
 
 -----
