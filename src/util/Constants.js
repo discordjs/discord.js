@@ -75,12 +75,15 @@ const Endpoints = exports.Endpoints = {
   // general endpoints
   login: `${API}/auth/login`,
   logout: `${API}/auth/logout`,
+  gateway: `${API}/gateway`,
+  invite: (id) => `${API}/invite/${id}`,
+
+  // users
+  user: (userID) => `${API}/users/${userID}`,
+  userChannels: (userID) => `${Endpoints.user(userID)}/channels`,
+  avatar: (userID, avatar) => `${Endpoints.user(userID)}/avatars/${avatar}.jpg`,
   me: `${API}/users/@me`,
   meGuild: (guildID) => `${Endpoints.me}/guilds/${guildID}`,
-  gateway: `${API}/gateway`,
-  userChannels: (userID) => `${API}/users/${userID}/channels`,
-  avatar: (userID, avatar) => `${API}/users/${userID}/avatars/${avatar}.jpg`,
-  invite: (id) => `${API}/invite/${id}`,
 
   // guilds
   guilds: `${API}/guilds`,

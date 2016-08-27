@@ -136,6 +136,16 @@ class Client extends EventEmitter {
   }
 
   /**
+   * Forces a user to be cached.
+   * @param {String} id The ID of the user to cache
+   * @return {Promise<User>}
+   */
+  cacheUser(id) {
+    if (this.users.has(id)) return Promise.resolve(this.users.get(id));
+    return this.rest.methods.getUser(id);
+  }
+
+  /**
    * Returns a Collection, mapping Guild ID to Voice Connections.
    * @readonly
    * @type {Collection<String, VoiceConnection>}
