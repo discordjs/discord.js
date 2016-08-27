@@ -1,6 +1,7 @@
 const User = require('./User');
 const GuildMember = require('./GuildMember');
 const Constants = require('../util/Constants');
+const cloneObject = require('../util/CloneObject');
 const Role = require('./Role');
 const Collection = require('../util/Collection');
 
@@ -97,19 +98,20 @@ class Guild {
   }
 
   _updateMember(member, data) {
-    const oldRoles = member.roles;
+    const oldMember = cloneObject(member);
 
     member._roles = data.roles;
+    member.nickname = data.nick;
     if (this.client.ws.status === Constants.Status.READY) {
       /**
-      * Emitted whenever a Guild Member's Roles change - i.e. new role or removed role
+      * Emitted whenever a Guild Member changes - i.e. new role, removed role, nickname
       *
-      * @event Client#guildMemberRolesUpdate
+      * @event Client#guildMemberUpdate
       * @param {Guild} guild the guild that the update affects
-      * @param {Array<Role>} oldRoles the roles before the update
-      * @param {Guild} newRoles the roles after the update
+      * @param {GuildMember} oldMember the member before the update
+      * @param {GuildMember} newMember the member after the update
       */
-      this.client.emit(Constants.Events.GUILD_MEMBER_ROLES_UPDATE, this, oldRoles, member.roles);
+      this.client.emit(Constants.Events.GUILD_MEMBER_UPDATE, this, oldMember, member);
     }
   }
 
