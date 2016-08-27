@@ -554,7 +554,7 @@ class Guild {
 
   /**
    * Fetch a Collection of banned users in this Guild.
-   * @returns {Promise<String, User>}
+   * @returns {Promise<Collection<String, User>, Error>}
    */
   fetchBans() {
     return this.client.rest.methods.getGuildBans(this);
