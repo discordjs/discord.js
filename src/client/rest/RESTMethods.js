@@ -1,5 +1,4 @@
 const Constants = require('../../util/Constants');
-const Collection = require('../../util/Constants');
 
 const getStructure = name => require(`../../structures/${name}`);
 const User = getStructure('User');
