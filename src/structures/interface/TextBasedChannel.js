@@ -98,6 +98,28 @@ class TextBasedChannel {
     });
   }
 
+  /**
+   * Starts or stops a typing indicator in the channel.
+   * <info>It can take a few seconds for the Client User to stop typing.</info>
+   * @param {Boolean} typing whether or not the client user should be typing
+   * @returns {null}
+   * @example
+   * // start typing in a channel
+   * channel.setTyping(true);
+   * @example
+   * // stop typing in a channel
+   * channel.setTyping(false);
+   */
+  setTyping(typing) {
+    clearInterval(this.client.user._typing.get(this.id));
+    if (typing) {
+      this.client.user._typing.set(this.id, setInterval(() => {
+        this.client.rest.methods.sendTyping(this.id);
+      }, 4000));
+      this.client.rest.methods.sendTyping(this.id);
+    }
+  }
+
   _cacheMessage(message) {
     const maxSize = this.client.options.max_message_cache;
     if (maxSize === 0) {
@@ -125,6 +147,7 @@ exports.applyToClass = (structure, full = false) => {
     props.push('_cacheMessage');
     props.push('getMessages');
     props.push('bulkDelete');
+    props.push('setTyping');
   }
   for (const prop of props) {
     applyProp(structure, prop);
