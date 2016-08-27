@@ -1,4 +1,5 @@
 const Constants = require('../../util/Constants');
+const Collection = require('../../util/Collection');
 
 const getStructure = name => require(`../../structures/${name}`);
 const User = getStructure('User');
@@ -410,6 +411,21 @@ class RESTMethods {
       this.rest.client.on(Constants.Events.GUILD_BAN_REMOVE, listener);
       this.rest.makeRequest('del', `${Constants.Endpoints.guildBans(guild.id)}/${member.id}`, true)
         .then(() => {})
+        .catch(reject);
+    });
+  }
+
+  getGuildBans(guild) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.guildBans(guild.id), true)
+        .then(banItems => {
+          const bannedUsers = new Collection();
+          for (const banItem of banItems) {
+            const user = this.rest.client.dataManager.newUser(banItem.user);
+            bannedUsers.set(user.id, user);
+          }
+          resolve(bannedUsers);
+        })
         .catch(reject);
     });
   }
