@@ -354,7 +354,7 @@ class RESTMethods {
   updateGuildMember(member, data) {
     return new Promise((resolve, reject) => {
       if (data.channel) {
-        data.channel_id = this.client.resolver.resolveChannel(data.channel).id;
+        data.channel_id = this.rest.client.resolver.resolveChannel(data.channel).id;
       }
       if (data.roles) {
         if (data.roles instanceof Map) {
@@ -391,6 +391,25 @@ class RESTMethods {
       };
       this.rest.makeRequest('put', `${Constants.Endpoints.guildBans(member.guild.id)}/${member.id}`, true, data)
         .then(() => resolve(member))
+        .catch(reject);
+    });
+  }
+
+  unbanGuildMember(guild, member) {
+    return new Promise((resolve, reject) => {
+      member = this.rest.client.resolver.resolveUser(member);
+      if (!member) {
+        throw new Error('cannot unban a user that is not a user resolvable');
+      }
+      const listener = (eGuild, eUser) => {
+        if (guild.id === guild.id && member.id === eUser.id) {
+          this.rest.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
+          resolve(eUser);
+        }
+      };
+      this.rest.client.on(Constants.Events.GUILD_BAN_REMOVE, listener);
+      this.rest.makeRequest('del', `${Constants.Endpoints.guildBans(guild.id)}/${member.id}`, true)
+        .then(() => {})
         .catch(reject);
     });
   }

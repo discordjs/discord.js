@@ -539,6 +539,20 @@ class Guild {
   }
 
   /**
+   * Unbans a member from the Guild
+   * @param {UserResolvable} member the member to unban
+   * @returns {Promise<User, Error>}
+   * @example
+   * // unban a member
+   * guild.unban('123123123123')
+   *  .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
+   *  .catch(reject);
+   */
+  unban(member) {
+    return this.client.rest.methods.unbanGuildMember(this, member);
+  }
+
+  /**
    * Gets the URL to this guild's icon (if it has one, otherwise it returns null)
    * @type {?String}
    * @readonly
