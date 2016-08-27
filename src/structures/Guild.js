@@ -553,6 +553,14 @@ class Guild {
   }
 
   /**
+   * Fetch a Collection of banned users in this Guild.
+   * @returns {Promise<String, User>}
+   */
+  fetchBans() {
+    return this.client.rest.methods.getGuildBans(this);
+  }
+
+  /**
    * Gets the URL to this guild's icon (if it has one, otherwise it returns null)
    * @type {?String}
    * @readonly
