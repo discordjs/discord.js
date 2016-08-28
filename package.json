@@ -28,7 +28,8 @@
   "dependencies": {
     "superagent": "^1.5.0",
     "tweetnacl": "^0.14.3",
-    "ws": "^1.1.1"
+    "ws": "^1.1.1",
+    "opusscript": "^0.0.1"
   },
   "devDependencies": {
     "jsdoc-parse": "^1.2.7",
