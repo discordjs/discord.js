@@ -12,10 +12,6 @@ client.on('ready', () => {
   console.log('ready!');
 });
 
-client.on('messageDeleteBulk', msgs => {
-  msgs.array().map(m => console.log(m.content));
-});
-
 client.on('message', message => {
   if (true) {
     if (message.content === 'makechann') {
@@ -108,20 +104,6 @@ function nameLoop(user) {
 function chanLoop(channel) {
   channel.setName(channel.name + 'a').then(chanLoop).catch(console.log);
 }
-
-client.on('messageDelete', message => {
-  console.log('Message deleted by', message.author.username);
-});
-
-client.on('messageUpdate', (old, message) => {
-  if (message.author.username === 'hydrabolt')
-    console.log('Message updated from', old.content, 'to', message.content);
-});
-
-client.on('guildMemberSpeaking', (member, speaking) => {
-  const message = speaking ? `${member.user.username} is speaking` : `${member.user.username} is not speaking`;
-  member.guild.channels.get(member.guild.id).sendMessage(message);
-});
 
 client.on('message', msg => {
   if (msg.content.startsWith('?raw')) {
