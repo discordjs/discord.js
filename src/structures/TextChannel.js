@@ -47,6 +47,10 @@ class TextChannel extends GuildChannel {
   setTyping() {
     return;
   }
+
+  fetchPinnedMessages() {
+    return;
+  }
 }
 
 TextBasedChannel.applyToClass(TextChannel, true);

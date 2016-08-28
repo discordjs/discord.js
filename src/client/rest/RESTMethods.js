@@ -492,6 +492,10 @@ class RESTMethods {
         .catch(reject);
     });
   }
+
+  getChannelPinnedMessages(channel) {
+    return this.rest.makeRequest('get', `${Constants.Endpoints.channel(channel.id)}/pins`, true);
+  }
 }
 
 module.exports = RESTMethods;

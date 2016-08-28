@@ -62,6 +62,10 @@ class DMChannel extends Channel {
   setTyping() {
     return;
   }
+
+  fetchPinnedMessages() {
+    return;
+  }
 }
 
 TextBasedChannel.applyToClass(DMChannel, true);
