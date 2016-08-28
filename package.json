@@ -35,7 +35,8 @@
     "fs-extra": "^0.30.0"
   },
   "optionalDependencies": {
-    "node-opus": "^0.1.13"
+    "node-opus": "^0.1.13",
+    "opusscript": "^0.0.1"
   },
   "engines": {
     "node": ">=0.12.7"
