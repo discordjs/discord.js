@@ -245,7 +245,7 @@ class GuildChannel extends Channel {
    *  .catch(console.log);
    */
   setPosition(position) {
-    return this.rest.client.rest.methods.updateChannel(this, { position });
+    return this.client.rest.methods.updateChannel(this, { position });
   }
 
   /**
@@ -259,7 +259,7 @@ class GuildChannel extends Channel {
    *  .catch(console.log);
    */
   setTopic(topic) {
-    return this.rest.client.rest.methods.updateChannel(this, { topic });
+    return this.client.rest.methods.updateChannel(this, { topic });
   }
 
   /**
@@ -274,6 +274,27 @@ class GuildChannel extends Channel {
    */
   toString() {
     return `<#${this.id}>`;
+  }
+
+  /**
+   * Options given when creating a Guild Channel Invite:
+   * ```js
+   * {
+   *  temporary: false, // whether the invite should kick users after 24hrs if they are not given a new role
+   *  maxAge: 0, // the time in seconds the invite expires in
+   *  maxUses: 0, // the maximum amount of uses for this invite
+   * }
+   * ```
+   * @typedef {Object} InviteOptions
+   */
+
+  /**
+   * Create an invite to this Guild Channel
+   * @param {InviteOptions} [options={}] the options to provide when creating the invite
+   * @returns {Promise<Invite, Error>}
+   */
+  createInvite(options = {}) {
+    return this.client.rest.methods.createChannelInvite(this, options);
   }
 }
 
