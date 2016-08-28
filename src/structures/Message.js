@@ -265,6 +265,22 @@ class Message {
     const newContent = this.guild ? `${this.author}, ${content}` : content;
     return this.client.rest.methods.sendMessage(this.channel, newContent, options.tts);
   }
+
+  /**
+   * Pins this message to the channel's pinned messages
+   * @returns {Promise<Message, Error>}
+   */
+  pin() {
+    return this.client.rest.methods.pinMessage(this);
+  }
+
+  /**
+   * Unpins this message from the channel's pinned messages
+   * @returns {Promise<Message, Error>}
+   */
+  unpin() {
+    return this.client.rest.methods.unpinMessage(this);
+  }
 }
 
 module.exports = Message;
