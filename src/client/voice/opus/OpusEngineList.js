@@ -1,5 +1,6 @@
 const list = [
   require('./NodeOpusEngine'),
+  require('./OpusScriptEngine'),
 ];
 
 exports.add = encoder => {
