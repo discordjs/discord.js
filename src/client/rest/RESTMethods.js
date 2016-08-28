@@ -518,6 +518,21 @@ class RESTMethods {
         .catch(reject);
     });
   }
+
+  getGuildInvites(guild) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.guildInvites(guild.id), true)
+        .then(inviteItems => {
+          const invites = new Collection();
+          for (const inviteItem of inviteItems) {
+            const invite = new Invite(this.rest.client, inviteItem);
+            invites.set(invite.code, invite);
+          }
+          resolve(invites);
+        })
+        .catch(reject);
+    });
+  }
 }
 
 module.exports = RESTMethods;
