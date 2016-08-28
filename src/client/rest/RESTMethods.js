@@ -5,6 +5,7 @@ const getStructure = name => require(`../../structures/${name}`);
 const User = getStructure('User');
 const GuildMember = getStructure('GuildMember');
 const Role = getStructure('Role');
+const Invite = getStructure('Invite');
 
 class RESTMethods {
   constructor(restManager) {
@@ -495,6 +496,19 @@ class RESTMethods {
 
   getChannelPinnedMessages(channel) {
     return this.rest.makeRequest('get', `${Constants.Endpoints.channel(channel.id)}/pins`, true);
+  }
+
+  createChannelInvite(channel, options) {
+    return new Promise((resolve, reject) => {
+      const payload = {};
+      payload.temporary = options.temporary;
+      payload.max_age = options.maxAge;
+      payload.max_uses = options.maxUses;
+
+      this.rest.makeRequest('post', `${Constants.Endpoints.channelInvites(channel.id)}`, true, payload)
+        .then(invite => resolve(new Invite(this.rest.client, invite)))
+        .catch(reject);
+    });
   }
 }
 
