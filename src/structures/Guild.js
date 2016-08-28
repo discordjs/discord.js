@@ -89,7 +89,13 @@ class Guild {
       member.voiceChannelID = voiceState.channel_id;
       this.channels.get(voiceState.channel_id).members.set(member.user.id, member);
     }
-
+    /**
+    * Emitted whenever a user joins a guild.
+    *
+    * @event Client#guildMemberAdd
+    * @param {Guild} guild the guild that the user has joined
+    * @param {GuildMember} member the member that has joined
+    */
     if (this.client.ws.status === Constants.Status.READY && !noEvent) {
       this.client.emit(Constants.Events.GUILD_MEMBER_ADD, this, member);
     }
