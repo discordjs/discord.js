@@ -1,17 +1,17 @@
 const OpusEngine = require('./BaseOpusEngine');
 
-let opusscript;
+let Opusscript;
 
 class NodeOpusEngine extends OpusEngine {
   constructor(player) {
     super(player);
     try {
       // eslint-disable-next-line import/no-unresolved
-      opusscript = require('opusscript');
+      Opusscript = require('opusscript');
     } catch (err) {
       throw err;
     }
-    this.encoder = new opusscript(48000, 2);
+    this.encoder = new Opusscript(48000, 2);
   }
 
   encode(buffer) {
