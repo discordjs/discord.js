@@ -146,6 +146,26 @@ class TextBasedChannel {
 
     return message;
   }
+
+  /**
+   * Fetches the pinned messages of this Channel and returns a Collection of them.
+   * @returns {Promise<Collection<String, Message>, Error>}
+   */
+  fetchPinnedMessages() {
+    return new Promise((resolve, reject) => {
+      this.client.rest.methods.getChannelPinnedMessages(this)
+        .then(data => {
+          const messages = new Collection();
+          for (const message of data) {
+            const msg = new Message(this, message, this.client);
+            messages.set(message.id, msg);
+            this._cacheMessage(msg);
+          }
+          resolve(messages);
+        })
+        .catch(reject);
+    });
+  }
 }
 
 function applyProp(structure, prop) {
@@ -159,6 +179,7 @@ exports.applyToClass = (structure, full = false) => {
     props.push('getMessages');
     props.push('bulkDelete');
     props.push('setTyping');
+    props.push('fetchPinnedMessages');
   }
   for (const prop of props) {
     applyProp(structure, prop);
