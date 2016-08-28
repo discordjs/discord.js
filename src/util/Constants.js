@@ -165,6 +165,7 @@ exports.Events = {
   RECONNECTING: 'reconnecting',
   GUILD_MEMBER_SPEAKING: 'guildMemberSpeaking',
   MESSAGE_BULK_DELETE: 'messageDeleteBulk',
+  CHANNEL_PINS_UPDATE: 'channelPinsUpdate',
 };
 
 exports.WSEvents = {
@@ -195,6 +196,7 @@ exports.WSEvents = {
   FRIEND_REMOVE: 'RELATIONSHIP_REMOVE',
   VOICE_SERVER_UPDATE: 'VOICE_SERVER_UPDATE',
   MESSAGE_DELETE_BULK: 'MESSAGE_DELETE_BULK',
+  CHANNEL_PINS_UPDATE: 'CHANNEL_PINS_UPDATE',
 };
 
 const PermissionFlags = exports.PermissionFlags = {
