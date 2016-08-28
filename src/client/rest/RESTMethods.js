@@ -510,6 +510,14 @@ class RESTMethods {
         .catch(reject);
     });
   }
+
+  deleteInvite(invite) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('del', Constants.Endpoints.invite(invite.code), true)
+        .then(() => resolve(invite))
+        .catch(reject);
+    });
+  }
 }
 
 module.exports = RESTMethods;

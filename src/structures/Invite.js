@@ -92,6 +92,14 @@ class Invite {
      */
     this.channels = this.client.channels.get(data.channel.id) || new PartialGuildChannel(this.client, data.channel);
   }
+
+  /**
+   * Deletes this invite
+   * @returns {Promise<Invite, Error>}
+   */
+  delete() {
+    return this.client.rest.methods.deleteInvite(this);
+  }
 }
 
 module.exports = Invite;
