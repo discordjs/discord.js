@@ -553,6 +553,14 @@ class Guild {
   }
 
   /**
+   * Fetch a Collection of invites to this Guild. Resolves with a Collection mapping invites by their codes.
+   * @returns {Promise<Collection<String, Invite>, Error>}
+   */
+  fetchInvites() {
+    return this.client.rest.methods.getGuildInvites(this);
+  }
+
+  /**
    * Gets the URL to this guild's icon (if it has one, otherwise it returns null)
    * @type {?String}
    * @readonly
