@@ -147,20 +147,6 @@ class Guild {
   }
 
   /**
-   * Tries to kick a member from the guild.
-   * @param {GuildMemberResolvable} member the member to kick
-   * @returns {Promise<GuildMember, Error>}
-   * @example
-   * // kicks a member from a guild:
-   * guild.kick(message.author)
-   *  .then(member => console.log(`Kicked ${member}`))
-   *  .catch(error => console.log(error));
-   */
-  kick(member) {
-    return this.member(member).kick();
-  }
-
-  /**
    * Returns the GuildMember form of a User object, if the User is present in the guild.
    * @param {UserResolvable} user the user that you want to obtain the GuildMember of.
    * @returns {GuildMember|null}
