@@ -9,14 +9,14 @@ class GuildMembersChunkHandler extends AbstractHandler {
     const data = packet.d;
     const client = this.packetManager.client;
     const guild = client.guilds.get(data.guild_id);
-
     const members = [];
     if (guild) {
-      for (const member of guild.members) {
+      for (const member of data.members) {
         members.push(guild._addMember(member, true));
       }
     }
 
+    guild._checkChunks();
     client.emit(Constants.Events.GUILD_MEMBERS_CHUNK, guild, members);
   }
 
