@@ -68,7 +68,26 @@ class TextBasedChannel {
   sendTTSMessage(content, options = {}) {
     return this.client.rest.methods.sendMessage(this, content, true, options.nonce);
   }
-
+  
+  /**
+   * Send a file to this channel
+   * @param {FileResolvable} attachment The file to send
+   * @param {?String} [fileName=null] The name of the file
+   * @param {?any} messageContent A message to send along the file
+   * @returns {Promise<Message>}
+   */
+  sendFile(attachment, fileName, messageContent) {
+    return new Promise((resolve, reject) => {
+      this.client.resolver.resolveFile(attachment)
+      .then(file => {
+        this.client.rest.methods.sendMessage(this, messageContent, false, undefined, {
+          file,
+          name: fileName 
+        }).then(resolve).catch(reject);
+      })
+      .catch(reject);
+    });
+  }
   /**
    * The parameters to pass in when requesting previous messages from a channel. `around`, `before` and
    * `after` are mutually exclusive. All the parameters are optional.
@@ -173,7 +192,7 @@ function applyProp(structure, prop) {
 }
 
 exports.applyToClass = (structure, full = false) => {
-  const props = ['sendMessage', 'sendTTSMessage'];
+  const props = ['sendMessage', 'sendTTSMessage', 'sendFile'];
   if (full) {
     props.push('_cacheMessage');
     props.push('getMessages');

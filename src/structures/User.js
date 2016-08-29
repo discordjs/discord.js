@@ -122,6 +122,10 @@ class User {
   sendTTSMessage() {
     return;
   }
+
+  sendFile() {
+    return;
+  }
 }
 
 TextBasedChannel.applyToClass(User);

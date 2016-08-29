@@ -29,12 +29,14 @@ class APIRequest {
     if (this.auth) {
       apiRequest.set('authorization', this.getAuth());
     }
+    if (this.file && this.file.file) {
+      apiRequest.set('Content-Type', 'multipart/form-data')
+      apiRequest.attach('file', this.file.file, this.file.name);
+    }
     if (this.data) {
       apiRequest.send(this.data);
     }
-    if (this.file) {
-      apiRequest.attach('file', this.file.file, this.file.name);
-    }
+
     apiRequest.set('User-Agent', this.rest.userAgentManager.userAgent);
     return apiRequest;
   }

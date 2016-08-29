@@ -222,6 +222,10 @@ class GuildMember {
   sendTTSMessage() {
     return;
   }
+
+  sendFile() {
+    return;
+  }
 }
 
 TextBasedChannel.applyToClass(GuildMember);
