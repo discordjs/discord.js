@@ -9,12 +9,15 @@ nonce.fill(0);
  * @extends {EventEmitter}
  */
 class StreamDispatcher extends EventEmitter {
-  constructor(player, stream) {
+  constructor(player, stream, sd) {
     super();
     this.player = player;
     this.stream = stream;
     this.streamingData = {
       channels: 2,
+      count: sd.count,
+      sequence: sd.sequence,
+      timestamp: sd.timestamp,
     };
     this._startStreaming();
     this._triggered = false;
@@ -151,9 +154,6 @@ class StreamDispatcher extends EventEmitter {
     this.stream.on('end', e => this._triggerTerminalState('end', e));
     this.stream.on('error', e => this._triggerTerminalState('error', e));
     const data = this.streamingData;
-    data.count = 0;
-    data.sequence = 0;
-    data.timestamp = 0;
     data.length = 20;
     data.missed = 0;
     data.startTime = Date.now();

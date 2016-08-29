@@ -4,7 +4,6 @@ const fs = require('fs');
 class DefaultPlayer extends BasePlayer {
 
   playFile(file) {
-    this._shutdown();
     return this.playStream(fs.createReadStream(file));
   }
 
