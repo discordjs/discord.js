@@ -19,6 +19,7 @@
  *   api_request_method: 'sequential',
  *   shard_id: 0,
  *   shard_count: 0,
+ *   loadOfflineUsers: true,
  * };
  * ```
  * @typedef {Object} ClientOptions
@@ -41,6 +42,7 @@ exports.DefaultOptions = {
   api_request_method: 'sequential',
   shard_id: 0,
   shard_count: 0,
+  loadOfflineUsers: true,
 };
 
 exports.Status = {
