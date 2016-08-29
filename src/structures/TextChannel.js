@@ -32,6 +32,10 @@ class TextChannel extends GuildChannel {
     return;
   }
 
+  sendFile() {
+    return;
+  }
+
   _cacheMessage() {
     return;
   }
