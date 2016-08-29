@@ -1,6 +1,6 @@
-const path = require("path");
-const fs = require("fs");
-const request = require("superagent");
+const path = require('path');
+const fs = require('fs');
+const request = require('superagent');
 
 const getStructure = name => require(`../structures/${name}`);
 
@@ -178,7 +178,7 @@ class ClientDataResolver {
 
   /**
    * Resolves a FileResolvable to a Buffer
-   * @param {FileResolvable} fileResolvable the file resolvable to resolve 
+   * @param {FileResolvable} fileResolvable the file resolvable to resolve
    * @returns {String|Buffer}
    */
   resolveFile(resource) {
@@ -187,9 +187,7 @@ class ClientDataResolver {
         if (/^https?:\/\//.test(resource)) {
           request.get(resource)
           .set('Content-Type', 'blob')
-          .end((err, res) => {
-            err ? reject(err) : resolve(res.body);
-          });
+          .end((err, res) => err ? reject(err) : resolve(res.body));
         } else {
           let file = path.resolve(resource)
           let stat = fs.statSync(file);
