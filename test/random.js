@@ -4,7 +4,7 @@ const Discord = require('../');
 const request = require('superagent');
 const fs = require('fs');
 
-const client = new Discord.Client();
+const client = new Discord.Client({ fetch_all_members: false });
 
 client.login(require('./auth.json').token).then(token => console.log('logged in with token ' + token)).catch(console.log);
 

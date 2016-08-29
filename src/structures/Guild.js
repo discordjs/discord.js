@@ -4,6 +4,7 @@ const Constants = require('../util/Constants');
 const cloneObject = require('../util/CloneObject');
 const Role = require('./Role');
 const Collection = require('../util/Collection');
+const Emoji = require('./Emoji');
 
 function arraysEqual(a, b) {
   if (a === b) return true;
@@ -278,7 +279,10 @@ class Guild {
      * An array of guild emojis.
      * @type {Array<Object>}
      */
-    this.emojis = data.emojis;
+    this.emojis = new Collection();
+    for (const emoji of data.emojis) {
+      this.emojis.set(emoji.id, new Emoji(this, emoji));
+    }
     /**
      * The time in seconds before a user is counted as "away from keyboard".
      * @type {?Number}
