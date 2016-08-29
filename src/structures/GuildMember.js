@@ -69,6 +69,10 @@ class GuildMember {
      * @type {?Boolean}
      */
     this.speaking = this.speaking;
+    /**
+     * The nickname of this Guild Member, if they have one
+     * @type {?String}
+     */
     this.nickname = data.nick;
     this._roles = data.roles;
   }
