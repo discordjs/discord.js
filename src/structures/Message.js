@@ -233,6 +233,7 @@ class Message {
 
   /**
    * Deletes the message
+   * @param {Number} [timeout=0] How long to wait to delete the message in milliseconds
    * @returns {Promise<Message, Error>}
    * @example
    * // delete a message
@@ -240,8 +241,14 @@ class Message {
    *  .then(msg => console.log(`Deleted message from ${msg.author}`))
    *  .catch(console.log);
    */
-  delete() {
-    return this.client.rest.methods.deleteMessage(this);
+  delete(timeout = 0) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        this.client.rest.methods.deleteMessage(this)
+          .then(resolve)
+          .catch(reject);
+      }, timeout);
+    });
   }
 
   /**
