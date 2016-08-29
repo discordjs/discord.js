@@ -11,6 +11,7 @@ class GuildMemberAddHandler extends AbstractHandler {
     const guild = client.guilds.get(data.guild_id);
 
     if (guild) {
+      guild.memberCount++;
       guild._addMember(data);
     }
   }

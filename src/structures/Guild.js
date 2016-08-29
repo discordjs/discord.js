@@ -70,6 +70,15 @@ class Guild {
     }
   }
 
+  _checkChunks() {
+    if (this._fetchWaiter) {
+      if (this.members.size === this.memberCount) {
+        this._fetchWaiter(this);
+        this._fetchWaiter = null;
+      }
+    }
+  }
+
   _addMember(guildUser, noEvent) {
     if (!(guildUser.user instanceof User)) {
       guildUser.user = this.client.dataManager.newUser(guildUser.user);
@@ -100,6 +109,7 @@ class Guild {
       this.client.emit(Constants.Events.GUILD_MEMBER_ADD, this, member);
     }
 
+    this._checkChunks();
     return member;
   }
 
@@ -136,6 +146,7 @@ class Guild {
 
   _removeMember(guildMember) {
     this.members.delete(guildMember.id);
+    this._checkChunks();
   }
 
   /**
@@ -558,6 +569,31 @@ class Guild {
    */
   fetchInvites() {
     return this.client.rest.methods.getGuildInvites(this);
+  }
+
+  /**
+   * Fetches all the members in the Guild, even if they are offline. If the Guild has less than 250 members,
+   * this should not be necessary.
+   * @param {String} [query=''] An optional query to provide when fetching members
+   * @returns {Promise<Guild, Error>}
+   */
+  fetchMembers(query = '') {
+    return new Promise((resolve, reject) => {
+      if (this._fetchWaiter) {
+        throw new Error('already fetching guild members');
+      }
+      this._fetchWaiter = resolve;
+      this.client.ws.send({
+        op: Constants.OPCodes.REQUEST_GUILD_MEMBERS,
+        d: {
+          guild_id: this.id,
+          query,
+          limit: 0,
+        },
+      });
+      this._checkChunks();
+      setTimeout(() => reject(new Error('members not here in time')), 10000);
+    });
   }
 
   /**
