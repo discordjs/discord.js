@@ -5,10 +5,12 @@ class MessageAttachment {
   constructor(message, data) {
     /**
      * The Client that instantiated this Message.
+     * @type {Client}
      */
     this.client = message.client;
     /**
      * The message this attachment is part of.
+     * @type {Message}
      */
     this.message = message;
     this.setup(data);

@@ -1,5 +1,6 @@
 const Collection = require('../util/Collection');
 const Attachment = require('./MessageAttachment');
+const Embed = require('./MessageEmbed');
 /**
  * Represents a Message on Discord
  */
@@ -73,9 +74,9 @@ class Message {
     this.nonce = data.nonce;
     /**
      * A list of embeds in the message - e.g. YouTube Player
-     * @type {Array<Object>}
+     * @type {Array<Embed>}
      */
-    this.embeds = data.embeds;
+    this.embeds = data.embeds.map(e => new Embed(this, e));
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID.
      * @type {Collection<String, MessageAttachment>}
@@ -156,7 +157,7 @@ class Message {
       this.nonce = data.nonce;
     }
     if (data.embeds) {
-      this.embeds = data.embeds;
+      this.embeds = data.embeds.map(e => new Embed(this, e));
     }
     if (data.attachments) {
       this.attachments = new Collection();
