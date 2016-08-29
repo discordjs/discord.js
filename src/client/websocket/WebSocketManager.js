@@ -62,6 +62,8 @@ class WebSocketManager {
     this.ws.onclose = (d) => this.eventClose(d);
     this.ws.onmessage = (e) => this.eventMessage(e);
     this.ws.onerror = (e) => this.eventError(e);
+    this._queue = [];
+    this._remaining = 3;
   }
 
   /**
@@ -70,8 +72,23 @@ class WebSocketManager {
    * @returns {null}
    */
   send(data) {
-    if (this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify(data));
+    this._queue.push(JSON.stringify(data));
+    this.doQueue();
+  }
+
+  doQueue() {
+    const item = this._queue[0];
+    if (this.ws.readyState === WebSocket.OPEN && item) {
+      if (this._remaining === 0) {
+        return setTimeout(() => {
+          this.doQueue();
+        }, 1000);
+      }
+      this._remaining--;
+      this.ws.send(item);
+      this._queue.shift();
+      this.doQueue();
+      setTimeout(() => this._remaining++, 1000);
     }
   }
 
@@ -127,6 +144,7 @@ class WebSocketManager {
    * @returns {null}
    */
   eventClose(event) {
+    console.log(event.code);
     if (event.code === 4004) {
       throw Constants.Errors.BAD_LOGIN;
     }
@@ -172,27 +190,38 @@ class WebSocketManager {
     this.tryReconnect();
   }
 
+  _emitReady() {
+    /**
+     * Emitted when the Client becomes ready to start working
+     *
+     * @event Client#ready
+     */
+    this.status = Constants.Status.READY;
+    this.client.emit(Constants.Events.READY);
+    this.packetManager.handleQueue();
+  }
+
   /**
    * Runs on new packets before `READY` to see if the Client is ready yet, if it is prepares
    * the `READY` event.
    * @returns {null}
    */
   checkIfReady() {
-    if (this.status !== Constants.Status.READY) {
+    if (this.status !== Constants.Status.READY && this.status !== Constants.Status.NEARLY) {
       let unavailableCount = 0;
       for (const guildID of this.client.guilds.keys()) {
         unavailableCount += this.client.guilds.get(guildID).available ? 0 : 1;
       }
-
       if (unavailableCount === 0) {
-        this.status = Constants.Status.READY;
-        /**
-        * Emitted when the Client becomes ready to start working
-        *
-        * @event Client#ready
-        */
-        this.client.emit(Constants.Events.READY);
-        this.packetManager.handleQueue();
+        this.status = Constants.Status.NEARLY;
+        if (this.client.options.fetch_all_members) {
+          const promises = this.client.guilds.array().map(g => g.fetchMembers());
+          return Promise.all(promises).then(() => this._emitReady()).catch(e => {
+            this.client.emit('warn', `error on pre-ready guild member fetching - ${e}`);
+            this._emitReady();
+          });
+        }
+        this._emitReady();
       }
     }
   }

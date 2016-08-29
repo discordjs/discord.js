@@ -582,6 +582,9 @@ class Guild {
       if (this._fetchWaiter) {
         throw new Error('already fetching guild members');
       }
+      if (this.memberCount === this.members.size) {
+        return resolve(this);
+      }
       this._fetchWaiter = resolve;
       this.client.ws.send({
         op: Constants.OPCodes.REQUEST_GUILD_MEMBERS,
@@ -592,7 +595,7 @@ class Guild {
         },
       });
       this._checkChunks();
-      setTimeout(() => reject(new Error('members not here in time')), 10000);
+      setTimeout(() => reject(new Error('members not here in time')), 120 * 1000);
     });
   }
 

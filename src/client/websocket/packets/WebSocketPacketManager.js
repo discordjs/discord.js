@@ -4,6 +4,7 @@ const BeforeReadyWhitelist = [
   Constants.WSEvents.READY,
   Constants.WSEvents.GUILD_CREATE,
   Constants.WSEvents.GUILD_DELETE,
+  Constants.WSEvents.GUILD_MEMBERS_CHUNK,
 ];
 
 class WebSocketPacketManager {

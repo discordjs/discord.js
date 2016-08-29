@@ -35,7 +35,7 @@ class ClientManager {
       })
       .catch(reject);
 
-    setTimeout(() => reject(Constants.Errors.TOOK_TOO_LONG), 1000 * 15);
+    setTimeout(() => reject(Constants.Errors.TOOK_TOO_LONG), 1000 * 300);
   }
 
   /**
