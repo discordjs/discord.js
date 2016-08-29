@@ -195,7 +195,12 @@ class ClientDataResolver {
             return reject(new Error(`The file could not be found: ${file}`));
           }
 
-          return resolve(fs.readFileSync(file));
+          fs.readFile(file, (err, data) => {
+            if (err) {
+              return reject(err);
+            }
+            resolve(data);
+          });
         }
       });
     }
