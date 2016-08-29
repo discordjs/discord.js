@@ -239,7 +239,7 @@ class Guild {
      */
     this.name = data.name;
     /**
-     * The amount of initial members in the guild.
+     * The full amount of members in this Guild as of `READY`
      * @type {Number}
      */
     this.memberCount = data.member_count;
