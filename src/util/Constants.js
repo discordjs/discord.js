@@ -19,6 +19,7 @@
  *   api_request_method: 'sequential',
  *   shard_id: 0,
  *   shard_count: 0,
+ *   fetch_all_members: false,
  * };
  * ```
  * @typedef {Object} ClientOptions
@@ -41,6 +42,7 @@ exports.DefaultOptions = {
   api_request_method: 'sequential',
   shard_id: 0,
   shard_count: 0,
+  fetch_all_members: false,
 };
 
 exports.Status = {
@@ -48,6 +50,7 @@ exports.Status = {
   CONNECTING: 1,
   RECONNECTING: 2,
   IDLE: 3,
+  NEARLY: 4,
 };
 
 exports.ChannelTypes = {
