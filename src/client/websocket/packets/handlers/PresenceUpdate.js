@@ -16,23 +16,29 @@ class PresenceUpdateHandler extends AbstractHandler {
 
     // step 1
     if (!user) {
-      if (data.user.username) {
+      if (data.user.username && (client.options.loadOfflineUsers || data.status !== 'offline')) {
         user = makeUser(data.user);
       } else {
         return;
       }
+    } else if (!client.options.loadOfflineUsers && !user._forced && data.status === 'offline') {
+      client.dataManager.killUser(user);
     }
 
     if (guild) {
-      const memberInGuild = guild.members.get(user.id);
+      const memberInGuild = guild.members.has(user.id);
       if (!memberInGuild) {
-        const member = guild._addMember({
-          user,
-          roles: data.roles,
-          deaf: false,
-          mute: false,
-        }, true);
-        client.emit(Constants.Events.GUILD_MEMBER_AVAILABLE, guild, member);
+        if (client.options.loadOfflineUsers || user._forced || data.status !== 'offline') {
+          const member = guild._addMember({
+            user,
+            roles: data.roles,
+            deaf: false,
+            mute: false,
+          }, true);
+          client.emit(Constants.Events.GUILD_MEMBER_AVAILABLE, guild, member);
+        }
+      } else if (!client.options.loadOfflineUsers && !user._forced && data.status === 'offline') {
+        guild._removeMember(guild.members.get(user.id));
       }
     }
 

@@ -34,11 +34,12 @@ class ClientDataManager {
     return guild;
   }
 
-  newUser(data) {
+  newUser(data, force) {
     if (this.client.users.has(data.id)) {
       return this.client.users.get(data.id);
     }
     const user = new User(this.client, data);
+    user._forced = Boolean(force);
     this.client.users.set(user.id, user);
     return user;
   }
@@ -84,7 +85,7 @@ class ClientDataManager {
   }
 
   killUser(user) {
-    this.users.delete(user.id);
+    this.client.users.delete(user.id);
   }
 
   killChannel(channel) {
