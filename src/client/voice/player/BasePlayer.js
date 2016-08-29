@@ -18,6 +18,12 @@ class VoiceConnectionPlayer extends EventEmitter {
     });
     this.speaking = false;
     this.processMap = new Map();
+    this.dispatcher = null;
+    this._streamingData = {
+      count: 0,
+      sequence: 0,
+      timestamp: 0,
+    };
   }
 
   convertStream(stream) {
@@ -31,6 +37,7 @@ class VoiceConnectionPlayer extends EventEmitter {
   }
 
   _shutdown() {
+    this.speaking = false;
     for (const stream of this.processMap.keys()) {
       this.killStream(stream);
     }
@@ -38,6 +45,7 @@ class VoiceConnectionPlayer extends EventEmitter {
 
   killStream(stream) {
     const streams = this.processMap.get(stream);
+    this._streamingData = this.dispatcher.streamingData;
     this.emit('debug', 'cleaning up streams after end/error');
     if (streams) {
       if (streams.inputStream && streams.pcmConverter) {
@@ -77,17 +85,18 @@ class VoiceConnectionPlayer extends EventEmitter {
     this.connection.websocket.send({
       op: Constants.VoiceOPCodes.SPEAKING,
       d: {
-        speaking: value,
+        speaking: true,
         delay: 0,
       },
     });
   }
 
   playPCMStream(pcmStream) {
-    const dispatcher = new StreamDispatcher(this, pcmStream);
+    const dispatcher = new StreamDispatcher(this, pcmStream, this._streamingData);
     dispatcher.on('speaking', value => this.setSpeaking(value));
     dispatcher.on('end', () => this.killStream(pcmStream));
     dispatcher.on('error', () => this.killStream(pcmStream));
+    this.dispatcher = dispatcher;
     return dispatcher;
   }
 
