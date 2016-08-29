@@ -32,8 +32,8 @@
     "opusscript": "^0.0.1"
   },
   "devDependencies": {
-    "jsdoc-parse": "^1.2.7",
-    "fs-extra": "^0.30.0"
+    "fs-extra": "^0.30.0",
+    "jsdoc-parse": "^1.2.7"
   },
   "optionalDependencies": {
     "node-opus": "^0.1.13"

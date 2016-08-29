@@ -1,3 +1,7 @@
+const path = require('path');
+const fs = require('fs');
+const request = require('superagent');
+
 const getStructure = name => require(`../structures/${name}`);
 
 const User = getStructure('User');
@@ -162,6 +166,41 @@ class ClientDataResolver {
     }
 
     return String(data);
+  }
+
+  /**
+   * Data that can be resolved to give a Buffer. This can be:
+   * * A Buffer
+   * * The path to a local file
+   * * An URL
+   * @typedef {String|Buffer} FileResolvable
+   */
+
+  /**
+   * Resolves a FileResolvable to a Buffer
+   * @param {FileResolvable} fileResolvable the file resolvable to resolve
+   * @returns {String|Buffer}
+   */
+  resolveFile(resource) {
+    if ($string(resource)) {
+      return new Promise((resolve, reject) => {
+        if (/^https?:\/\//.test(resource)) {
+          request.get(resource)
+          .set('Content-Type', 'blob')
+          .end((err, res) => err ? reject(err) : resolve(res.body));
+        } else {
+          const file = path.resolve(resource);
+          const stat = fs.statSync(file);
+          if (!stat.isFile()) {
+            return reject(new Error(`The file could not be found: ${file}`));
+          }
+
+          return resolve(fs.readFileSync(file));
+        }
+      });
+    }
+
+    return Promise.resolve(resource);
   }
 }
 

@@ -124,6 +124,10 @@ class GroupDMChannel extends Channel {
     return;
   }
 
+  sendFile() {
+    return;
+  }
+
   _cacheMessage() {
     return;
   }

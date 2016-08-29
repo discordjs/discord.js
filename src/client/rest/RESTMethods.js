@@ -41,7 +41,7 @@ class RESTMethods {
     });
   }
 
-  sendMessage($channel, content, tts, nonce) {
+  sendMessage($channel, content, tts, nonce, file) {
     return new Promise((resolve, reject) => {
       const $this = this;
       let channel = $channel;
@@ -49,7 +49,7 @@ class RESTMethods {
       function req() {
         $this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
           content, tts, nonce,
-        })
+        }, file)
         .then(data => resolve($this.rest.client.actions.MessageCreate.handle(data).m))
         .catch(reject);
       }
