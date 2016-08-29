@@ -80,6 +80,7 @@ const Endpoints = exports.Endpoints = {
   logout: `${API}/auth/logout`,
   gateway: `${API}/gateway`,
   invite: (id) => `${API}/invite/${id}`,
+  CDN: 'https://cdn.discordapp.com',
 
   // users
   user: (userID) => `${API}/users/${userID}`,
