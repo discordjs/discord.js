@@ -314,7 +314,7 @@ class Guild {
 
     /**
      * The owner of the guild
-     * @type {User}
+     * @type {GuildMember}
      */
     this.owner = this.members.get(data.owner_id);
 
