@@ -18,7 +18,7 @@ class ClientDataManager {
   }
 
   newGuild(data) {
-    const already = this.client.guilds.get(data.id);
+    const already = this.client.guilds.has(data.id);
     const guild = new Guild(this.client, data);
     this.client.guilds.set(guild.id, guild);
     if (this.pastReady && !already) {
@@ -35,7 +35,7 @@ class ClientDataManager {
   }
 
   newUser(data) {
-    if (this.client.users.get(data.id)) {
+    if (this.client.users.has(data.id)) {
       return this.client.users.get(data.id);
     }
     const user = new User(this.client, data);
@@ -45,7 +45,7 @@ class ClientDataManager {
 
   newChannel(data, $guild) {
     let guild = $guild;
-    const already = this.client.channels.get(data.id);
+    const already = this.client.channels.has(data.id);
     let channel;
     if (data.type === Constants.ChannelTypes.DM) {
       channel = new DMChannel(this.client, data);
@@ -76,7 +76,7 @@ class ClientDataManager {
   }
 
   killGuild(guild) {
-    const already = this.client.guilds.get(guild.id);
+    const already = this.client.guilds.has(guild.id);
     this.client.guilds.delete(guild.id);
     if (already && this.pastReady) {
       this.client.emit(Constants.Events.GUILD_DELETE, guild);
