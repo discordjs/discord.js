@@ -189,10 +189,10 @@ class ClientDataResolver {
           .set('Content-Type', 'blob')
           .end((err, res) => err ? reject(err) : resolve(res.body));
         } else {
-          let file = path.resolve(resource)
-          let stat = fs.statSync(file);
+          const file = path.resolve(resource);
+          const stat = fs.statSync(file);
           if (!stat.isFile()) {
-            return reject(new Error("The file could not be found: " + file));
+            return reject(new Error(`The file could not be found: ${file}`));
           }
 
           return resolve(fs.readFileSync(file));
