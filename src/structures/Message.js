@@ -1,4 +1,5 @@
 const Collection = require('../util/Collection');
+const Attachment = require('./MessageAttachment');
 /**
  * Represents a Message on Discord
  */
@@ -76,10 +77,13 @@ class Message {
      */
     this.embeds = data.embeds;
     /**
-     * A list of attachments in the message - e.g. Pictures
-     * @type {Array<Object>}
+     * A collection of attachments in the message - e.g. Pictures - mapped by their ID.
+     * @type {Collection<String, MessageAttachment>}
      */
-    this.attachments = data.attachments;
+    this.attachments = new Collection();
+    for (const attachment of data.attachments) {
+      this.attachments.set(attachment.id, new Attachment(this, attachment));
+    }
     /**
      * An object containing a further users, roles or channels collections
      * @type {Object}
@@ -155,7 +159,10 @@ class Message {
       this.embeds = data.embeds;
     }
     if (data.attachments) {
-      this.attachments = data.attachments;
+      this.attachments = new Collection();
+      for (const attachment of data.attachments) {
+        this.attachments.set(attachment.id, new Attachment(this, attachment));
+      }
     }
     if (data.mentions) {
       for (const mention of data.mentions) {
