@@ -184,7 +184,7 @@ class ClientDataResolver {
   resolveFile(resource) {
     if ($string(resource)) {
       return new Promise((resolve, reject) => {
-        if (/^https?:\/\//.test(resource)) {
+        if (/^http?:\/\//.test(resource)) {
           request.get(resource)
           .set('Content-Type', 'blob')
           .end((err, res) => err ? reject(err) : resolve(res.body));
