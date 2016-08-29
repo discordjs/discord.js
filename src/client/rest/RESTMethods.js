@@ -176,6 +176,9 @@ class RESTMethods {
   }
 
   leaveGuild(guild) {
+    if (guild.owner.id === this.rest.client.user.id) {
+      return this.deleteGuild(guild);
+    }
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('del', Constants.Endpoints.meGuild(guild.id), true)
         .then(() => {
