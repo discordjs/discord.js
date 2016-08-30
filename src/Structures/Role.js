@@ -54,7 +54,7 @@ export default class Role {
 		for (let k of keys) {
 			obj[k] = this[k];
 		}
-		
+
 		return obj;
 	}
 
@@ -104,7 +104,7 @@ export default class Role {
 		}
 		if(!explicit){ // implicit permissions allowed
 			if( !!(this.permissions & Permissions.administrator) ){
-				// manageRoles allowed, they have all permissions
+				// administrator allowed, they have all permissions
 				return true;
 			}
 		}
