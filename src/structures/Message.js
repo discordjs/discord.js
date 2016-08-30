@@ -243,7 +243,7 @@ class Message {
    */
   delete(timeout = 0) {
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
+      this.client.setTimeout(() => {
         this.client.rest.methods.deleteMessage(this)
           .then(resolve)
           .catch(reject);

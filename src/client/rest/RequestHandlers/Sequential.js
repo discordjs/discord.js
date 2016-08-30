@@ -53,7 +53,7 @@ class SequentialRequestHandler extends RequestHandler {
         }
         if (err) {
           if (err.status === 429) {
-            setTimeout(() => {
+            this.restManager.client.setTimeout(() => {
               this.waiting = false;
               this.globalLimit = false;
               resolve();
@@ -73,7 +73,7 @@ class SequentialRequestHandler extends RequestHandler {
           const data = res && res.body ? res.body : {};
           item.resolve(data);
           if (this.requestRemaining === 0) {
-            setTimeout(() => {
+            this.restManager.client.setTimeout(() => {
               this.waiting = false;
               resolve(data);
             }, (this.requestResetTime - Date.now()) + this.timeDifference + 1000);

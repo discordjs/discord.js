@@ -26,10 +26,7 @@ class ChannelDeleteAction extends Action {
   }
 
   scheduleForDeletion(id) {
-    this.timeouts.push(
-      setTimeout(() => delete this.deleted[id],
-        this.client.options.rest_ws_bridge_timeout)
-    );
+    this.client.setTimeout(() => delete this.deleted[id], this.client.options.rest_ws_bridge_timeout);
   }
 }
 

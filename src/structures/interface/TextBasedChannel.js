@@ -151,7 +151,7 @@ class TextBasedChannel {
   setTyping(typing) {
     clearInterval(this.client.user._typing.get(this.id));
     if (typing) {
-      this.client.user._typing.set(this.id, setInterval(() => {
+      this.client.user._typing.set(this.id, this.client.setInterval(() => {
         this.client.rest.methods.sendTyping(this.id);
       }, 4000));
       this.client.rest.methods.sendTyping(this.id);

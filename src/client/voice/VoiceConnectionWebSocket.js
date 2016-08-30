@@ -66,7 +66,7 @@ class VoiceConnectionWebSocket extends EventEmitter {
   }
 
   _setHeartbeat(interval) {
-    this.heartbeat = setInterval(() => {
+    this.heartbeat = this.voiceConnection.manager.client.setInterval(() => {
       this.send({
         op: Constants.VoiceOPCodes.HEARTBEAT,
         d: null,

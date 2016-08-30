@@ -28,7 +28,7 @@ class TypingStartHandler extends AbstractHandler {
     const timestamp = new Date(data.timestamp * 1000);
 
     function tooLate() {
-      return setTimeout(() => {
+      return client.setTimeout(() => {
         client.emit(Constants.Events.TYPING_STOP, channel, user, channel.typingMap[user.id]);
         delete channel.typingMap[user.id];
       }, 6000);

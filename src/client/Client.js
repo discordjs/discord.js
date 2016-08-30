@@ -105,6 +105,8 @@ class Client extends EventEmitter {
      * @type {?Number}
      */
     this.readyTime = null;
+    this._intervals = [];
+    this._timeouts = [];
   }
 
   /**
@@ -133,6 +135,32 @@ class Client extends EventEmitter {
     }
     // login with token
     return this.rest.methods.loginToken(email);
+  }
+
+  /**
+   * Destroys the client and logs out. Resolves with null if successful.
+   * @returns {Promise<null, Error>}
+   */
+  destroy() {
+    return new Promise((resolve, reject) => {
+      this.manager.destroy().then(() => {
+        this._intervals.map(i => clearInterval(i));
+        this._timeouts.map(t => clearTimeout(t));
+        this.token = null;
+        this.email = null;
+        this.password = null;
+        resolve();
+      })
+      .catch(reject);
+    });
+  }
+
+  setInterval(...params) {
+    this._intervals.push(setInterval(...params));
+  }
+
+  setTimeout(...params) {
+    this._timeouts.push(setTimeout(...params));
   }
 
   /**

@@ -30,6 +30,10 @@ class RESTMethods {
     });
   }
 
+  logout() {
+    return this.rest.makeRequest('post', Constants.Endpoints.logout, true);
+  }
+
   getGateway() {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('get', Constants.Endpoints.gateway, true)
