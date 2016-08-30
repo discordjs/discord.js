@@ -1,5 +1,6 @@
 const files = [
-  require('./getting_started'),
+  require('./welcome'),
+  require('./updating'),
   require('./ping_pong'),
 ];
 
