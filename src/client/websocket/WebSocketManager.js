@@ -191,7 +191,12 @@ class WebSocketManager {
    * @returns {null}
    */
   eventError(e) {
-    console.log(e);
+    /**
+     * Emitted whenever the Client encounters a serious connection error
+     * @event Client#error
+     * @param {Error} error the encountered error
+     */
+    this.client.emit('error', e);
     this.tryReconnect();
   }
 
