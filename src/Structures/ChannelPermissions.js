@@ -33,8 +33,8 @@ export default class ChannelPermissions {
 			return false;
 		}
 		if(!explicit){ // implicit permissions allowed
-			if( !!(this.permissions & Permissions.manageRoles) ){
-				// manageRoles allowed, they have all permissions
+			if( !!(this.permissions & Permissions.administrator) ){
+				// administrator allowed, they have all permissions
 				return true;
 			}
 		}
