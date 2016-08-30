@@ -78,7 +78,7 @@ class Collection extends Map {
    */
   findAll(key, value) {
     const results = [];
-    for (const item of this.array()) {
+    for (const item of this.values()) {
       if (item[key] === value) {
         results.push(item);
       }
@@ -95,7 +95,7 @@ class Collection extends Map {
    * collection.get('id', '123123...');
    */
   find(key, value) {
-    for (const item of this.array()) {
+    for (const item of this.values()) {
       if (item[key] === value) {
         return item;
       }
