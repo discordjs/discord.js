@@ -140,6 +140,15 @@ class Message {
         }
       }
     }
+
+    /**
+     * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
+     * @type {Boolean}
+     */
+    this.system = false;
+    if (data.type === 6) {
+      this.system = true;
+    }
   }
 
   patch(data) {
@@ -169,6 +178,12 @@ class Message {
     }
     if (data.embeds) {
       this.embeds = data.embeds.map(e => new Embed(this, e));
+    }
+    if (data.type > -1) {
+      this.system = false;
+      if (data.type === 6) {
+        this.system = true;
+      }
     }
     if (data.attachments) {
       this.attachments = new Collection();
