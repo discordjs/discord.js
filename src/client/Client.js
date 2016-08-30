@@ -149,6 +149,8 @@ class Client extends EventEmitter {
         this.token = null;
         this.email = null;
         this.password = null;
+        this._timeouts = [];
+        this._intervals = [];
         resolve();
       })
       .catch(reject);
@@ -160,7 +162,11 @@ class Client extends EventEmitter {
   }
 
   setTimeout(...params) {
-    this._timeouts.push(setTimeout(...params));
+    const restParams = params.slice(1);
+    this._timeouts.push(setTimeout(() => {
+      this._timeouts.splice(this._timeouts.indexOf(params[0]), 1);
+      params[0]();
+    }, ...restParams));
   }
 
   /**
