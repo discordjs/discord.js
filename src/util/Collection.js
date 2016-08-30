@@ -51,7 +51,7 @@ class Collection extends Map {
    */
   deleteAll() {
     const returns = [];
-    for (const item of this.array()) {
+    for (const item of this.values()) {
       if (item.delete) {
         returns.push(item.delete());
       }
