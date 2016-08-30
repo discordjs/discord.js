@@ -35,7 +35,7 @@ class ClientManager {
       })
       .catch(reject);
 
-    setTimeout(() => reject(Constants.Errors.TOOK_TOO_LONG), 1000 * 300);
+    this.client.setTimeout(() => reject(Constants.Errors.TOOK_TOO_LONG), 1000 * 300);
   }
 
   /**
@@ -44,12 +44,23 @@ class ClientManager {
    * @returns {null}
    */
   setupKeepAlive(time) {
-    this.heartbeatInterval = setInterval(() => {
+    this.heartbeatInterval = this.client.setInterval(() => {
       this.client.ws.send({
         op: Constants.OPCodes.HEARTBEAT,
         d: Date.now(),
       });
     }, time);
+  }
+
+  destroy() {
+    return new Promise((resolve) => {
+      if (!this.client.user.bot) {
+        this.client.rest.methods.logout().then(resolve);
+      } else {
+        this.client.ws.destroy();
+        resolve();
+      }
+    });
   }
 }
 

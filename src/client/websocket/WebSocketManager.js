@@ -76,11 +76,17 @@ class WebSocketManager {
     this.doQueue();
   }
 
+  destroy() {
+    this.ws.close(1000);
+    this._queue = [];
+    this.status = Constants.Status.IDLE;
+  }
+
   doQueue() {
     const item = this._queue[0];
     if (this.ws.readyState === WebSocket.OPEN && item) {
       if (this._remaining === 0) {
-        return setTimeout(() => {
+        return this.client.setTimeout(() => {
           this.doQueue();
         }, 1000);
       }
@@ -88,7 +94,7 @@ class WebSocketManager {
       this.ws.send(item);
       this._queue.shift();
       this.doQueue();
-      setTimeout(() => this._remaining++, 1000);
+      this.client.setTimeout(() => this._remaining++, 1000);
     }
   }
 
@@ -144,11 +150,10 @@ class WebSocketManager {
    * @returns {null}
    */
   eventClose(event) {
-    console.log(event.code);
     if (event.code === 4004) {
       throw Constants.Errors.BAD_LOGIN;
     }
-    if (!this.reconnecting) {
+    if (!this.reconnecting && event.code !== 1000) {
       this.tryReconnect();
     }
   }
