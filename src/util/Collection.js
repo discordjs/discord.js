@@ -77,8 +77,8 @@ class Collection extends Map {
    * collection.getAll('username', 'Bob');
    */
   findAll(key, value) {
-    if(typeof key !== 'string') throw new TypeError('key must be a string');
-    if(typeof value === 'undefined') throw new Error('value must be specified');
+    if (typeof key !== 'string') throw new TypeError('key must be a string');
+    if (typeof value === 'undefined') throw new Error('value must be specified');
     const results = [];
     for (const item of this.array()) {
       if (item[key] === value) {
@@ -97,8 +97,8 @@ class Collection extends Map {
    * collection.get('id', '123123...');
    */
   find(key, value) {
-    if(typeof key !== 'string') throw new TypeError('key must be a string');
-    if(typeof value === 'undefined') throw new Error('value must be specified');
+    if (typeof key !== 'string') throw new TypeError('key must be a string');
+    if (typeof value === 'undefined') throw new Error('value must be specified');
     for (const item of this.array()) {
       if (item[key] === value) {
         return item;
