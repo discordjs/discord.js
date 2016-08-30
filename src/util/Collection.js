@@ -114,7 +114,7 @@ class Collection extends Map {
    * }
    */
   exists(key, value) {
-    return Boolean(this.get(key, value));
+    return Boolean(this.find(key, value));
   }
 
   _arrayMethod(method, args) {
