@@ -1,6 +1,7 @@
 const childProcess = require('child_process');
 const path = require('path');
 const EventEmitter = require('events').EventEmitter;
+const Collection = require('../util/Collection');
 
 class ShardingManager extends EventEmitter {
   constructor(file, totalShards) {
@@ -10,23 +11,24 @@ class ShardingManager extends EventEmitter {
       this.file = path.resolve(`${process.cwd()}${file}`);
     }
     this.totalShards = totalShards;
-    this.runningShards = 0;
-    this.createShards();
+    this.shards = new Collection();
   }
 
-  createShard(id) {
-    const shard = childProcess.fork(path.resolve(this.file), [id, this.totalShards]);
+  createShard() {
+    const id = this.shards.size;
+    const shard = childProcess.fork(path.resolve(this.file), [id, this.totalShards], { silent: true });
+    this.shards.set(id, shard);
     this.emit('launch', id, shard);
   }
 
-  createShards() {
-    this.createShard(0);
+  spawn(amount) {
+    this.totalShards = amount;
+    this.createShard();
     const interval = setInterval(() => {
-      this.runningShards++;
-      if (this.runningShards === this.totalShards) {
+      if (this.shards.size === this.totalShards) {
         return clearInterval(interval);
       }
-      this.createShard(this.runningShards);
+      this.createShard();
     }, 5500);
   }
 }

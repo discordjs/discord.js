@@ -17,6 +17,8 @@ client.on('message', msg => {
   }
 });
 
+process.send(123);
+
 client.on('ready', () => {
   console.log('Ready');
 });
