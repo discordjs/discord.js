@@ -6,7 +6,6 @@ class GuildDeleteAction extends Action {
   constructor(client) {
     super(client);
     this.deleted = {};
-    this.timeouts = [];
   }
 
   handle(data) {
@@ -39,10 +38,7 @@ class GuildDeleteAction extends Action {
   }
 
   scheduleForDeletion(id) {
-    this.timeouts.push(
-      setTimeout(() => delete this.deleted[id],
-        this.client.options.rest_ws_bridge_timeout)
-    );
+    this.client.setTimeout(() => delete this.deleted[id], this.client.options.rest_ws_bridge_timeout);
   }
 }
 

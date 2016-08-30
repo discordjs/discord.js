@@ -6,7 +6,9 @@ const fs = require('fs');
 
 const client = new Discord.Client({ fetch_all_members: false });
 
-client.login(require('./auth.json').token).then(token => console.log('logged in with token ' + token)).catch(console.log);
+const { email, password, token } = require('./auth.json');
+
+client.login(token).then(atoken => console.log('logged in with token ' + atoken)).catch(console.log);
 
 client.on('ready', () => {
   console.log('ready!');

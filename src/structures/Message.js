@@ -46,6 +46,14 @@ class Message {
      * The content of the message
      * @type {String}
      */
+    if (this.guild) {
+      /**
+       * Represents the Author of the message as a Guild Member. Only available if the message comes from a Guild
+       * where the author is still a member.
+       * @type {GuildMember}
+       */
+      this.member = this.guild.member(this.author);
+    }
     this.content = data.content;
     /**
      * When the message was sent
@@ -132,11 +140,23 @@ class Message {
         }
       }
     }
+
+    /**
+     * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
+     * @type {Boolean}
+     */
+    this.system = false;
+    if (data.type === 6) {
+      this.system = true;
+    }
   }
 
   patch(data) {
     if (data.author) {
       this.author = this.client.users.get(data.author.id);
+      if (this.guild) {
+        this.member = this.guild.member(this.author);
+      }
     }
     if (data.content) {
       this.content = data.content;
@@ -158,6 +178,12 @@ class Message {
     }
     if (data.embeds) {
       this.embeds = data.embeds.map(e => new Embed(this, e));
+    }
+    if (data.type > -1) {
+      this.system = false;
+      if (data.type === 6) {
+        this.system = true;
+      }
     }
     if (data.attachments) {
       this.attachments = new Collection();
@@ -243,7 +269,7 @@ class Message {
    */
   delete(timeout = 0) {
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
+      this.client.setTimeout(() => {
         this.client.rest.methods.deleteMessage(this)
           .then(resolve)
           .catch(reject);

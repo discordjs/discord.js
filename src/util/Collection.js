@@ -51,7 +51,7 @@ class Collection extends Map {
    */
   deleteAll() {
     const returns = [];
-    for (const item of this.array()) {
+    for (const item of this.values()) {
       if (item.delete) {
         returns.push(item.delete());
       }
@@ -80,7 +80,7 @@ class Collection extends Map {
     if (typeof key !== 'string') throw new TypeError('key must be a string');
     if (typeof value === 'undefined') throw new Error('value must be specified');
     const results = [];
-    for (const item of this.array()) {
+    for (const item of this.values()) {
       if (item[key] === value) {
         results.push(item);
       }
@@ -99,7 +99,7 @@ class Collection extends Map {
   find(key, value) {
     if (typeof key !== 'string') throw new TypeError('key must be a string');
     if (typeof value === 'undefined') throw new Error('value must be specified');
-    for (const item of this.array()) {
+    for (const item of this.values()) {
       if (item[key] === value) {
         return item;
       }
@@ -118,7 +118,7 @@ class Collection extends Map {
    * }
    */
   exists(key, value) {
-    return Boolean(this.get(key, value));
+    return Boolean(this.find(key, value));
   }
 
   _arrayMethod(method, args) {

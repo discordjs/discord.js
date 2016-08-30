@@ -70,7 +70,7 @@ class StreamDispatcher extends EventEmitter {
       }
       if (this.paused) {
         data.timestamp = (data.timestamp + 4294967295) ? data.timestamp + 960 : 0;
-        return setTimeout(() => this._send(), data.length * 10);
+        return this.player.connection.manager.client.setTimeout(() => this._send(), data.length * 10);
       }
       const bufferLength = 1920 * data.channels;
       this._setSpeaking(true);
@@ -78,7 +78,7 @@ class StreamDispatcher extends EventEmitter {
 
       if (!buffer) {
         data.missed++;
-        return setTimeout(() => this._send(), data.length * 10);
+        return this.player.connection.manager.client.setTimeout(() => this._send(), data.length * 10);
       }
 
       data.missed = 0;
@@ -97,7 +97,7 @@ class StreamDispatcher extends EventEmitter {
 
       const nextTime = data.startTime + (data.count * data.length);
 
-      setTimeout(() => this._send(), data.length + (nextTime - Date.now()));
+      this.player.connection.manager.client.setTimeout(() => this._send(), data.length + (nextTime - Date.now()));
     } catch (e) {
       this._triggerTerminalState('error', e);
     }

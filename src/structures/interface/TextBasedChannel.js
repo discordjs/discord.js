@@ -1,5 +1,6 @@
 const Collection = require('../../util/Collection');
 const Message = require('../Message');
+const path = require('path');
 
 /**
  * Interface for classes that have text-channel-like features
@@ -74,7 +75,16 @@ class TextBasedChannel {
    * @param {String} [fileName="file.jpg"] The name and extension of the file
    * @returns {Promise<Message>}
    */
-  sendFile(attachment, fileName = 'file.jpg') {
+  sendFile(attachment, fileName) {
+    if (!fileName) {
+      if (attachment instanceof String || typeof attachment === 'string') {
+        fileName = path.basename(attachment);
+      } else if (attachment && attachment.path) {
+        fileName = path.basename(attachment.path);
+      } else {
+        fileName = 'file.jpg';
+      }
+    }
     return new Promise((resolve, reject) => {
       this.client.resolver.resolveFile(attachment)
       .then(file => {
@@ -141,7 +151,7 @@ class TextBasedChannel {
   setTyping(typing) {
     clearInterval(this.client.user._typing.get(this.id));
     if (typing) {
-      this.client.user._typing.set(this.id, setInterval(() => {
+      this.client.user._typing.set(this.id, this.client.setInterval(() => {
         this.client.rest.methods.sendTyping(this.id);
       }, 4000));
       this.client.rest.methods.sendTyping(this.id);

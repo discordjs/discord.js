@@ -599,7 +599,7 @@ class Guild {
         },
       });
       this._checkChunks();
-      setTimeout(() => reject(new Error('members not here in time')), 120 * 1000);
+      this.client.setTimeout(() => reject(new Error('members not here in time')), 120 * 1000);
     });
   }
 
