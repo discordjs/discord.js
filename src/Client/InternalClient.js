@@ -470,7 +470,7 @@ export default class InternalClient {
 			options.owner_id = user.id;
 		}
 		if (options.verificationLevel) {
-			options.verification_level = user.verificationLevel;
+			options.verification_level = server.verificationLevel;
 		}
 		if (options.afkChannel) {
 			var channel = this.resolver.resolveUser(options.afkChannel);
@@ -480,7 +480,7 @@ export default class InternalClient {
 			options.afk_channel_id = channel.id;
 		}
 		if (options.afkTimeout) {
-			options.afk_timeout = user.afkTimeout;
+			options.afk_timeout = server.afkTimeout;
 		}
 
 		return this.apiRequest("patch", Endpoints.SERVER(server.id), true, options)
