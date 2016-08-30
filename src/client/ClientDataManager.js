@@ -84,7 +84,7 @@ class ClientDataManager {
   }
 
   killUser(user) {
-    this.users.delete(user.id);
+    this.client.users.delete(user.id);
   }
 
   killChannel(channel) {
