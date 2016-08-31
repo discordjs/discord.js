@@ -70,6 +70,10 @@ class DMChannel extends Channel {
   fetchPinnedMessages() {
     return;
   }
+
+  createCollector() {
+    return;
+  }
 }
 
 TextBasedChannel.applyToClass(DMChannel, true);
