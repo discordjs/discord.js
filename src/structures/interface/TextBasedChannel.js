@@ -235,11 +235,11 @@ class TextBasedChannel {
    * @returns {Promise<Collection<String, Message>, Error>}
    * @example
    * // get messages
-   * channel.getMessages({limit: 10})
+   * channel.fetchMessages({limit: 10})
    *  .then(messages => console.log(`Received ${messages.size} messages`))
    *  .catch(console.log);
    */
-  getMessages(options = {}) {
+  fetchMessages(options = {}) {
     return new Promise((resolve, reject) => {
       this.client.rest.methods.getChannelMessages(this, options)
         .then(data => {
@@ -363,7 +363,7 @@ exports.applyToClass = (structure, full = false) => {
   const props = ['sendMessage', 'sendTTSMessage', 'sendFile'];
   if (full) {
     props.push('_cacheMessage');
-    props.push('getMessages');
+    props.push('fetchMessages');
     props.push('bulkDelete');
     props.push('setTyping');
     props.push('fetchPinnedMessages');
