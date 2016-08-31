@@ -2,6 +2,8 @@ const childProcess = require('child_process');
 const path = require('path');
 const EventEmitter = require('events').EventEmitter;
 const Collection = require('../util/Collection');
+const Shard = require('./Shard');
+const crypto = require('crypto');
 
 class ShardingManager extends EventEmitter {
   constructor(file, totalShards) {
@@ -12,11 +14,12 @@ class ShardingManager extends EventEmitter {
     }
     this.totalShards = totalShards;
     this.shards = new Collection();
+    this.waiting = new Collection();
   }
 
   createShard() {
     const id = this.shards.size;
-    const shard = childProcess.fork(path.resolve(this.file), [id, this.totalShards], { silent: true });
+    const shard = new Shard(this, id);
     this.shards.set(id, shard);
     this.emit('launch', id, shard);
   }
