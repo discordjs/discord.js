@@ -137,7 +137,7 @@ class GuildChannel extends Channel {
       const roleOverwrites = [];
       const memberOverwrites = [];
 
-      for (const overwrite of this.permissionOverwrites) {
+      for (const overwrite of this.permissionOverwrites.values()) {
         if (overwrite.id === member.id) {
           memberOverwrites.push(overwrite);
         } else if (memberRoles.indexOf(overwrite.id) > -1) {
