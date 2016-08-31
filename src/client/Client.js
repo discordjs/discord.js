@@ -158,15 +158,19 @@ class Client extends EventEmitter {
   }
 
   setInterval(...params) {
-    this._intervals.push(setInterval(...params));
+    const interval = setInterval(...params);
+    this._intervals.push(interval);
+    return interval;
   }
 
   setTimeout(...params) {
     const restParams = params.slice(1);
-    this._timeouts.push(setTimeout(() => {
+    const timeout = setTimeout(() => {
       this._timeouts.splice(this._timeouts.indexOf(params[0]), 1);
       params[0]();
-    }, ...restParams));
+    }, ...restParams);
+    this._timeouts.push(timeout);
+    return timeout;
   }
 
   /**
