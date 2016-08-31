@@ -96,7 +96,8 @@ class MessageCollector extends EventEmitter {
     this.channel.client.removeListener('message', this.listener);
     /**
      * Emitted when the Collector stops collecting.
-     * @param {Collection<String, Message>} A collection of messages collected during the lifetime of the Collector.
+     * @param {Collection<String, Message>} collection A collection of messages collected
+     * during the lifetime of the Collector.
      * Mapped by the ID of the Messages.
      * @param {String} reason The reason for the end of the collector. If it ended because it reached the specified time
      * limit, this would be `time`. If you invoke `.stop()` without specifying a reason, this would be `user`.
