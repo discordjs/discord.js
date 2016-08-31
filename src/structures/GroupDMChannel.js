@@ -147,6 +147,10 @@ class GroupDMChannel extends Channel {
   fetchPinnedMessages() {
     return;
   }
+
+  createCollector() {
+    return;
+  }
 }
 
 TextBasedChannel.applyToClass(GroupDMChannel, true);

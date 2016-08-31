@@ -55,6 +55,10 @@ class TextChannel extends GuildChannel {
   fetchPinnedMessages() {
     return;
   }
+
+  createCollector() {
+    return;
+  }
 }
 
 TextBasedChannel.applyToClass(TextChannel, true);

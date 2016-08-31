@@ -1,6 +1,110 @@
 const Collection = require('../../util/Collection');
 const Message = require('../Message');
 const path = require('path');
+const EventEmitter = require('events').EventEmitter;
+
+/**
+ * A function that takes a Message object and a MessageCollector and returns a boolean.
+ * ```js
+ * function(message, collector) {
+ *  if (message.content.includes('discord')) {
+ *    return true; // passed the filter test
+ *  }
+ *  return false; // failed the filter test
+ * }
+ * ```
+ * @typedef {Function} CollectorFilterFunction
+ */
+
+/**
+ * An object containing options used to configure a MessageCollector. All properties are optional.
+ * ```js
+ * {
+ *  time: null, // time in milliseconds. If specified, the collector ends after this amount of time.
+ *  allowSelf: false, // whether or not the filter should take messages from the logged in client.
+ * }
+ * ```
+ * @typedef {Object} CollectorOptions
+ */
+
+/**
+ * Collects messages based on a specified filter, then emits them.
+ * @extends {EventEmitter}
+ */
+class MessageCollector extends EventEmitter {
+  constructor(channel, filter, options = {}) {
+    super();
+    /**
+     * The channel this collector is operating on
+     * @type {Channel}
+     */
+    this.channel = channel;
+    /**
+     * A function used to filter messages that the collector collects.
+     * @type {CollectorFilterFunction}
+     */
+    this.filter = filter;
+    /**
+     * Options for the collecor.
+     * @type {CollectorOptions}
+     */
+    this.options = options;
+    this.listener = (message => this.verify(message));
+    this.channel.client.on('message', this.listener);
+    /**
+     * A collection of collected messages, mapped by message ID.
+     * @type {Collection<String, Message>}
+     */
+    this.collected = new Collection();
+    if (options.time) {
+      this.channel.client.setTimeout(() => this.stop('time'), options.time);
+    }
+  }
+
+  /**
+   * Verifies a message against the filter and options
+   * @private
+   * @param {Message} message
+   * @returns {Boolean}
+   */
+  verify(message) {
+    if (this.channel ? this.channel.id !== message.channel.id : false) {
+      return false;
+    }
+    if (message.author.id === this.channel.client.user.id && !this.options.allowSelf) {
+      return false;
+    }
+    if (this.filter(message, this)) {
+      this.collected.set(message.id, message);
+      /**
+       * Emitted whenever the Collector receives a Message that passes the filter test.
+       * @param {Message} message the received message
+       * @param {MessageCollector} collector the collector the message passed through.
+       * @event MessageCollector#message
+       */
+      this.emit('message', message, this);
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Stops the collector and emits `end`.
+   * @param {string} [reason='user'] an optional reason for stopping the collector.
+   */
+  stop(reason = 'user') {
+    this.channel.client.removeListener('message', this.listener);
+    /**
+     * Emitted when the Collector stops collecting.
+     * @param {Collection<String, Message>} A collection of messages collected during the lifetime of the Collector.
+     * Mapped by the ID of the Messages.
+     * @param {String} reason The reason for the end of the collector. If it ended because it reached the specified time
+     * limit, this would be `time`. If you invoke `.stop()` without specifying a reason, this would be `user`.
+     * @event MessageCollector#end
+     */
+    this.emit('end', this.collected, reason);
+  }
+}
 
 /**
  * Interface for classes that have text-channel-like features
@@ -158,6 +262,17 @@ class TextBasedChannel {
     }
   }
 
+  /**
+   * Creates a Message Collector
+   * @param {CollectorFilterFunction} filter the filter to create the collector with
+   * @param {CollectorOptions} [options={}] the options to pass to the collector
+   * @returns {MessageCollector}
+   */
+  createCollector(filter, options = {}) {
+    const collector = new MessageCollector(this, filter, options);
+    return collector;
+  }
+
   _cacheMessage(message) {
     const maxSize = this.client.options.max_message_cache;
     if (maxSize === 0) {
@@ -207,6 +322,7 @@ exports.applyToClass = (structure, full = false) => {
     props.push('bulkDelete');
     props.push('setTyping');
     props.push('fetchPinnedMessages');
+    props.push('createCollector');
   }
   for (const prop of props) {
     applyProp(structure, prop);
