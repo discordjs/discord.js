@@ -151,6 +151,10 @@ class GroupDMChannel extends Channel {
   createCollector() {
     return;
   }
+
+  awaitMessages() {
+    return;
+  }
 }
 
 TextBasedChannel.applyToClass(GroupDMChannel, true);

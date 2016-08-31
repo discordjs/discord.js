@@ -288,6 +288,36 @@ class TextBasedChannel {
     return collector;
   }
 
+  /**
+   * An object containing the same properties as CollectorOptions, but a few more:
+   * ```js
+   * {
+   *  errors: [], // an array of stop/end reasons that cause the promise to reject.
+   * }
+   * ```
+   * @typedef {Object} AwaitMessagesOptions
+   */
+
+  /**
+   * Similar to createCollector but in Promise form. Resolves with a Collection of messages that pass the specified
+   * filter.
+   * @param {CollectorFilterFunction} filter the filter function to use
+   * @param {AwaitMessagesOptions} [options={}] optional options to pass to the internal collector
+   * @returns {Promise<Collection<String, Message>>}
+   */
+  awaitMessages(filter, options = {}) {
+    return new Promise((resolve, reject) => {
+      const collector = this.createCollector(filter, options);
+      collector.on('end', (collection, reason) => {
+        if (options.errors && options.errors.includes(reason)) {
+          reject(collection);
+        } else {
+          resolve(collection);
+        }
+      });
+    });
+  }
+
   _cacheMessage(message) {
     const maxSize = this.client.options.max_message_cache;
     if (maxSize === 0) {
@@ -338,6 +368,7 @@ exports.applyToClass = (structure, full = false) => {
     props.push('setTyping');
     props.push('fetchPinnedMessages');
     props.push('createCollector');
+    props.push('awaitMessages');
   }
   for (const prop of props) {
     applyProp(structure, prop);
