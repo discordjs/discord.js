@@ -49,6 +49,11 @@ class MessageCollector extends EventEmitter {
      * @type {CollectorOptions}
      */
     this.options = options;
+    /**
+     * Whether this collector has stopped collecting Messages.
+     * @type {Boolean}
+     */
+    this.ended = false;
     this.listener = (message => this.verify(message));
     this.channel.client.on('message', this.listener);
     /**
@@ -93,6 +98,10 @@ class MessageCollector extends EventEmitter {
    * @param {string} [reason='user'] an optional reason for stopping the collector.
    */
   stop(reason = 'user') {
+    if (this.ended) {
+      return;
+    }
+    this.ended = true;
     this.channel.client.removeListener('message', this.listener);
     /**
      * Emitted when the Collector stops collecting.
