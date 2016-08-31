@@ -132,7 +132,7 @@ class GroupDMChannel extends Channel {
     return;
   }
 
-  getMessages() {
+  fetchMessages() {
     return;
   }
 

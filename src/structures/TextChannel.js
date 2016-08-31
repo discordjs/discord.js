@@ -40,7 +40,7 @@ class TextChannel extends GuildChannel {
     return;
   }
 
-  getMessages() {
+  fetchMessages() {
     return;
   }
 

@@ -55,7 +55,7 @@ class DMChannel extends Channel {
     return;
   }
 
-  getMessages() {
+  fetchMessages() {
     return;
   }
 
