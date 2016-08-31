@@ -22,6 +22,7 @@ const EventEmitter = require('events').EventEmitter;
  * {
  *  time: null, // time in milliseconds. If specified, the collector ends after this amount of time.
  *  allowSelf: false, // whether or not the filter should take messages from the logged in client.
+ *  max: null, // the maximum amount of messages to handle before ending.
  * }
  * ```
  * @typedef {Object} CollectorOptions
@@ -88,6 +89,9 @@ class MessageCollector extends EventEmitter {
        * @event MessageCollector#message
        */
       this.emit('message', message, this);
+      if (this.options.max && this.collected.size === this.options.max) {
+        this.stop('limit');
+      }
       return true;
     }
     return false;
@@ -109,7 +113,8 @@ class MessageCollector extends EventEmitter {
      * during the lifetime of the Collector.
      * Mapped by the ID of the Messages.
      * @param {String} reason The reason for the end of the collector. If it ended because it reached the specified time
-     * limit, this would be `time`. If you invoke `.stop()` without specifying a reason, this would be `user`.
+     * limit, this would be `time`. If you invoke `.stop()` without specifying a reason, this would be `user`. If it
+     * ended because it reached its message limit, it will be `limit`.
      * @event MessageCollector#end
      */
     this.emit('end', this.collected, reason);
