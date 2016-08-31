@@ -71,11 +71,6 @@ class Message {
      */
     this.tts = data.tts;
     /**
-     * Whether the message mentioned @everyone or not
-     * @type {Boolean}
-     */
-    this.mentionEveryone = data.mention_everyone;
-    /**
      * A random number used for checking message delivery
      * @type {String}
      */
@@ -100,11 +95,13 @@ class Message {
      * @property {Collection<String, Role>} mentions.roles Mentioned roles, maps their ID to the role object.
      * @property {Collection<String, GuildChannel>}
      * mentions.channels Mentioned channels, maps their ID to the channel object.
+     * @property {Boolean} mentions.everyone whether or not @everyone was mentioned.
      */
     this.mentions = {
       users: new Collection(),
       roles: new Collection(),
       channels: new Collection(),
+      everyone: data.mention_everyone,
     };
     /**
      * The ID of the message (unique in the channel it was sent)
@@ -167,11 +164,11 @@ class Message {
     if (data.edited_timestamp) {
       this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp) : null;
     }
-    if (data.tts) {
+    if ('tts' in data) {
       this.tts = data.tts;
     }
-    if (data.mention_everyone) {
-      this.mentionEveryone = data.mention_everyone;
+    if ('mention_everyone' in data) {
+      this.mentions.everyone = data.mention_everyone;
     }
     if (data.nonce) {
       this.nonce = data.nonce;
@@ -249,7 +246,7 @@ class Message {
         this.attachments.length === message.attachments.length;
 
     if (base && rawData) {
-      base = this.mentionEveryone === message.mentionEveryone &&
+      base = this.mentions.everyone === message.mentions.everyone &&
         this.timestamp.getTime() === new Date(rawData.timestamp).getTime() &&
         this.editedTimestamp === new Date(rawData.edited_timestamp).getTime();
     }
