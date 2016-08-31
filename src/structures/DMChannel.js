@@ -74,6 +74,10 @@ class DMChannel extends Channel {
   createCollector() {
     return;
   }
+
+  awaitMessages() {
+    return;
+  }
 }
 
 TextBasedChannel.applyToClass(DMChannel, true);

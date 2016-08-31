@@ -59,6 +59,10 @@ class TextChannel extends GuildChannel {
   createCollector() {
     return;
   }
+
+  awaitMessages() {
+    return;
+  }
 }
 
 TextBasedChannel.applyToClass(TextChannel, true);
