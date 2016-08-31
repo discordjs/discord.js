@@ -166,7 +166,7 @@ class TextBasedChannel {
     }
 
     if (this.messages.size >= maxSize) {
-      this.messages.delete(Array.from(this.messages.keys())[0]);
+      this.messages.delete(this.messages.keys().next().value);
     }
 
     this.messages.set(message.id, message);
