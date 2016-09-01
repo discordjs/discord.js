@@ -193,6 +193,15 @@ class Client extends EventEmitter {
     return this.voice.connections;
   }
 
+  /**
+   * The uptime for the logged in Client.
+   * @readonly
+   * @type {?Number}
+   */
+  get uptime() {
+    return this.readyTime ? Date.now() - this.readyTime : null;
+  }
+
 }
 
 module.exports = Client;
