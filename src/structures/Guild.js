@@ -312,11 +312,13 @@ class Guild {
       }
     }
 
-    /**
-     * The owner of the guild
-     * @type {GuildMember}
-     */
-    this.owner = this.members.get(data.owner_id);
+    if (data.owner_id) {
+      /**
+       * The owner of the guild
+       * @type {GuildMember}
+       */
+      this.owner = this.members.get(data.owner_id);
+    }
 
     if (data.channels) {
       this.channels.clear();
