@@ -311,10 +311,10 @@ class TextBasedChannel {
   }
 
   /**
-   * Checks whether or not the typing indicator is being shown in the channel.
-   * @returns {Boolean}
+   * Whether or not the typing indicator is being shown in the channel.
+   * @type {Boolean}
    */
-  isTyping() {
+  get typing() {
     return Boolean(this.client.user._typing[this.id]);
   }
 
