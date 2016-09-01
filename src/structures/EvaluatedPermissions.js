@@ -34,8 +34,8 @@ class EvaluatedPermissions {
 
   /**
    * Checks whether a user has a certain permission, e.g. `READ_MESSAGES`.
-   * @param {any} permission the permission to check for
-   * @param {any} [explicit=false] whether the user should explicitly have the permission.
+   * @param {String} permission the permission to check for
+   * @param {Boolean} [explicit=false] whether the user should explicitly have the permission.
    * @returns {Boolean}
    */
   hasPermission(permission, explicit = false) {
