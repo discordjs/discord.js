@@ -282,6 +282,14 @@ class TextBasedChannel {
    * @param {CollectorFilterFunction} filter the filter to create the collector with
    * @param {CollectorOptions} [options={}] the options to pass to the collector
    * @returns {MessageCollector}
+   * @example
+   * // create a message collector
+   * const collector = channel.createCollector(
+   *  m => m.content.includes('discord'),
+   *  { time: 15000 }
+   * );
+   * collector.on('message', m => console.log(`Collected ${m.content}`));
+   * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
   createCollector(filter, options = {}) {
     const collector = new MessageCollector(this, filter, options);
@@ -304,6 +312,13 @@ class TextBasedChannel {
    * @param {CollectorFilterFunction} filter the filter function to use
    * @param {AwaitMessagesOptions} [options={}] optional options to pass to the internal collector
    * @returns {Promise<Collection<String, Message>>}
+   * @example
+   * // await !vote messages
+   * const filter = m => m.content.startsWith('!vote');
+   * // errors: ['time'] treats ending because of the time limit as an error
+   * channel.awaitMessages(filter, { max: 4, time: 60000, errors: ['time'] })
+   *  .then(collected => console.log(collected.size))
+   *  .catch(collected => console.log(`After a minute, only ${collected.size} out of 4 voted.`));
    */
   awaitMessages(filter, options = {}) {
     return new Promise((resolve, reject) => {
