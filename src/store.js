@@ -15,8 +15,19 @@ function build(docs) {
     Number: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number',
   };
   console.log(docs);
+  docs.classes = docs.classes.sort((a, b) => a.name.localeCompare(b.name));
+  docs.typedefs = docs.typedefs.sort((a, b) => a.name.localeCompare(b.name));
   for (const jsclass of docs.classes) {
     links[jsclass.name] = 'class';
+    if (jsclass.events) {
+      jsclass.events = jsclass.events.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    if (jsclass.properties) {
+      jsclass.properties = jsclass.properties.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    if (jsclass.methods) {
+      jsclass.methods = jsclass.methods.sort((a, b) => a.name.localeCompare(b.name));
+    }
   }
   for (const jsclass of docs.typedefs) {
     links[jsclass.name] = 'typedef';

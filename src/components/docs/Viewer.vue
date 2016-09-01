@@ -26,7 +26,7 @@ export default {
         name: 'fileview',
         params: {
           category: 'general',
-          file: 'Getting Started',
+          file: 'Welcome',
         },
       });
     }
