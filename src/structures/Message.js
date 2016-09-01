@@ -9,7 +9,7 @@ class Message {
     this._type = 'message';
     /**
      * The channel that the message was sent in
-     * @type {Channel}
+     * @type {TextChannel|DMChannel|GroupDMChannel}
      */
     this.channel = channel;
 
@@ -42,10 +42,6 @@ class Message {
      * @type {User}
      */
     this.author = this.client.dataManager.newUser(data.author);
-    /**
-     * The content of the message
-     * @type {String}
-     */
     if (this.guild) {
       /**
        * Represents the Author of the message as a Guild Member. Only available if the message comes from a Guild
@@ -54,6 +50,10 @@ class Message {
        */
       this.member = this.guild.member(this.author);
     }
+    /**
+     * The content of the message
+     * @type {String}
+     */
     this.content = data.content;
     /**
      * When the message was sent
