@@ -257,22 +257,23 @@ class TextBasedChannel {
 
   /**
    * Starts a typing indicator in the channel.
+   * @param {Number} [count] The number of times startTyping should be considered to have been called
    * @returns {null}
    * @example
    * // start typing in a channel
    * channel.startTyping();
    */
-  startTyping() {
+  startTyping(count) {
     if (!this.client.user._typing[this.id]) {
       this.client.user._typing[this.id] = {
-        count: 1,
+        count: count || 1,
         interval: this.client.setInterval(() => {
           this.client.rest.methods.sendTyping(this.id);
         }, 4000),
       };
       this.client.rest.methods.sendTyping(this.id);
     } else {
-      this.client.user._typing[this.id].count++;
+      this.client.user._typing[this.id].count = count || this.client.user._typing[this.id].count + 1;
     }
   }
 
