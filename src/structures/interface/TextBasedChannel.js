@@ -399,7 +399,7 @@ class TextBasedChannel {
 }
 
 function applyProp(structure, prop) {
-  structure.prototype[prop] = TextBasedChannel.prototype[prop];
+  Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
 }
 
 exports.applyToClass = (structure, full = false) => {
