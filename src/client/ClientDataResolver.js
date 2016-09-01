@@ -30,7 +30,8 @@ class ClientDataResolver {
    * * A User ID
    * * A Message (resolves to the message author)
    * * A Guild (owner of the guild)
-   * @typedef {User|String|Message|Guild} UserResolvable
+   * * A Guild Member
+   * @typedef {User|String|Message|Guild|GuildMember} UserResolvable
    */
 
   /**
@@ -47,6 +48,8 @@ class ClientDataResolver {
       return user.author;
     } else if (user instanceof Guild) {
       return user.owner;
+    } else if (user instanceof GuildMember) {
+      return user.user;
     }
 
     return null;
