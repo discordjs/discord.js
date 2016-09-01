@@ -61,6 +61,12 @@
   .scrolled {
     background: rgba(255, 255, 0, 0.3);
   }
+  
+  .type:not(:last-child):after {
+    font-family: 'Source Sans Pro', sans-serif;
+    content: " or ";
+    font-weight: 500;
+  }
 }
 
 .docs-viewer > .container {
