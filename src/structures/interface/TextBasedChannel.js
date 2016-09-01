@@ -300,6 +300,14 @@ class TextBasedChannel {
   }
 
   /**
+   * Checks whether or not the typing indicator is being shown in the channel.
+   * @returns {Boolean}
+   */
+  isTyping() {
+    return Boolean(this.client.user._typing[this.id]);
+  }
+
+  /**
    * Creates a Message Collector
    * @param {CollectorFilterFunction} filter the filter to create the collector with
    * @param {CollectorOptions} [options={}] the options to pass to the collector
