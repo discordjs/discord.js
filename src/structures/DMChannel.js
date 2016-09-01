@@ -63,7 +63,11 @@ class DMChannel extends Channel {
     return;
   }
 
-  setTyping() {
+  startTyping() {
+    return;
+  }
+
+  stopTyping() {
     return;
   }
 

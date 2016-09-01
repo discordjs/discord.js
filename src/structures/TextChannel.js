@@ -48,7 +48,11 @@ class TextChannel extends GuildChannel {
     return;
   }
 
-  setTyping() {
+  startTyping() {
+    return;
+  }
+
+  stopTyping() {
     return;
   }
 

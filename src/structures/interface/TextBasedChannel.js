@@ -256,24 +256,46 @@ class TextBasedChannel {
   }
 
   /**
-   * Starts or stops a typing indicator in the channel.
-   * <info>It can take a few seconds for the Client User to stop typing.</info>
-   * @param {Boolean} typing whether or not the client user should be typing
+   * Starts a typing indicator in the channel.
    * @returns {null}
    * @example
    * // start typing in a channel
-   * channel.setTyping(true);
+   * channel.startTyping();
+   */
+  startTyping() {
+    if (!this.client.user._typing[this.id]) {
+      this.client.user._typing[this.id] = {
+        count: 1,
+        interval: this.client.setInterval(() => {
+          this.client.rest.methods.sendTyping(this.id);
+        }, 4000)
+      };
+      this.client.rest.methods.sendTyping(this.id);
+    } else {
+      this.client.user._typing[this.id].count++;
+    }
+  }
+
+  /**
+   * Stops the typing indicator in the channel.
+   * The indicator will only stop if this is called as many times as startTyping().
+   * <info>It can take a few seconds for the Client User to stop typing.</info>
+   * @param {Boolean} [force] whether or not to force the indicator to stop regardless of call count
+   * @returns {null}
    * @example
    * // stop typing in a channel
-   * channel.setTyping(false);
+   * channel.stopTyping();
+   * @example
+   * // force typing to fully stop in a channel
+   * channel.stopTyping(true);
    */
-  setTyping(typing) {
-    clearInterval(this.client.user._typing.get(this.id));
-    if (typing) {
-      this.client.user._typing.set(this.id, this.client.setInterval(() => {
-        this.client.rest.methods.sendTyping(this.id);
-      }, 4000));
-      this.client.rest.methods.sendTyping(this.id);
+  stopTyping(force) {
+    if (this.client.user._typing[this.id]) {
+      this.client.user._typing[this.id].count--;
+      if (force || this.client.user._typing[this.id].count <= 0) {
+        clearInterval(this.client.user._typing[this.id].interval);
+        delete this.client.user._typing[this.id];
+      }
     }
   }
 
@@ -365,7 +387,8 @@ exports.applyToClass = (structure, full = false) => {
     props.push('_cacheMessage');
     props.push('fetchMessages');
     props.push('bulkDelete');
-    props.push('setTyping');
+    props.push('startTyping');
+    props.push('stopTyping');
     props.push('fetchPinnedMessages');
     props.push('createCollector');
     props.push('awaitMessages');
