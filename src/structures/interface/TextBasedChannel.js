@@ -302,6 +302,15 @@ class TextBasedChannel {
   }
 
   /**
+   * Gets the number of times `startTyping` has been called.
+   * @returns {Number}
+   */
+  getTypingCount() {
+    if (this.client.user._typing[this.id]) return this.client.user._typing[this.id].count;
+    return 0;
+  }
+
+  /**
    * Checks whether or not the typing indicator is being shown in the channel.
    * @returns {Boolean}
    */
