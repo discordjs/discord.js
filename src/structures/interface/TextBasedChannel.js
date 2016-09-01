@@ -264,6 +264,7 @@ class TextBasedChannel {
    * channel.startTyping();
    */
   startTyping(count) {
+    if (count < 0) throw new RangeError('count must be at least 1');
     if (!this.client.user._typing[this.id]) {
       this.client.user._typing[this.id] = {
         count: count || 1,
