@@ -56,6 +56,14 @@ class TextChannel extends GuildChannel {
     return;
   }
 
+  get typing() {
+    return;
+  }
+
+  get typingCount() {
+    return;
+  }
+
   fetchPinnedMessages() {
     return;
   }

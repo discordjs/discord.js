@@ -148,6 +148,14 @@ class GroupDMChannel extends Channel {
     return;
   }
 
+  get typing() {
+    return;
+  }
+
+  get typingCount() {
+    return;
+  }
+
   fetchPinnedMessages() {
     return;
   }

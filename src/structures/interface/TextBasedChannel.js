@@ -265,16 +265,17 @@ class TextBasedChannel {
    */
   startTyping(count) {
     if (typeof count !== 'undefined' && count < 1) throw new RangeError('count must be at least 1');
-    if (!this.client.user._typing[this.id]) {
-      this.client.user._typing[this.id] = {
+    if (!this.client.user._typing.has(this.id)) {
+      this.client.user._typing.set(this.id, {
         count: count || 1,
         interval: this.client.setInterval(() => {
           this.client.rest.methods.sendTyping(this.id);
         }, 4000),
-      };
+      });
       this.client.rest.methods.sendTyping(this.id);
     } else {
-      this.client.user._typing[this.id].count = count || this.client.user._typing[this.id].count + 1;
+      const entry = this.client.user._typing.get(this.id);
+      entry.count = count || entry.count + 1;
     }
   }
 
@@ -292,22 +293,14 @@ class TextBasedChannel {
    * channel.stopTyping(true);
    */
   stopTyping(force) {
-    if (this.client.user._typing[this.id]) {
-      this.client.user._typing[this.id].count--;
-      if (force || this.client.user._typing[this.id].count <= 0) {
-        clearInterval(this.client.user._typing[this.id].interval);
-        delete this.client.user._typing[this.id];
+    if (this.client.user._typing.has(this.id)) {
+      const entry = this.client.user._typing.get(this.id);
+      entry.count--;
+      if (entry.count <= 0 || force) {
+        clearInterval(entry.interval);
+        this.client.user._typing.delete(this.id);
       }
     }
-  }
-
-  /**
-   * Number of times `startTyping` has been called.
-   * @type {Number}
-   */
-  get typingCount() {
-    if (this.client.user._typing[this.id]) return this.client.user._typing[this.id].count;
-    return 0;
   }
 
   /**
@@ -315,7 +308,16 @@ class TextBasedChannel {
    * @type {Boolean}
    */
   get typing() {
-    return Boolean(this.client.user._typing[this.id]);
+    return this.client.user._typing.has(this.id);
+  }
+
+  /**
+   * Number of times `startTyping` has been called.
+   * @type {Number}
+   */
+  get typingCount() {
+    if (this.client.user._typing.has(this.id)) return this.client.user._typing.get(this.id).count;
+    return 0;
   }
 
   /**
@@ -408,6 +410,8 @@ exports.applyToClass = (structure, full = false) => {
     props.push('bulkDelete');
     props.push('startTyping');
     props.push('stopTyping');
+    props.push('typing');
+    props.push('typingCount');
     props.push('fetchPinnedMessages');
     props.push('createCollector');
     props.push('awaitMessages');

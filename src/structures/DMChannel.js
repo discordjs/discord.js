@@ -71,6 +71,14 @@ class DMChannel extends Channel {
     return;
   }
 
+  get typing() {
+    return;
+  }
+
+  get typingCount() {
+    return;
+  }
+
   fetchPinnedMessages() {
     return;
   }
