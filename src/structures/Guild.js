@@ -195,7 +195,7 @@ class Guild {
       this.large === data.large &&
       this.icon === data.icon &&
       arraysEqual(this.features, data.features) &&
-      this.owner.id === data.owner_id &&
+      this.ownerID === data.owner_id &&
       this.verificationLevel === data.verification_level &&
       this.embedEnabled === data.embed_enabled;
 
@@ -313,11 +313,7 @@ class Guild {
     }
 
     if (data.owner_id) {
-      /**
-       * The owner of the guild
-       * @type {GuildMember}
-       */
-      this.owner = this.members.get(data.owner_id);
+      this.ownerID = data.owner_id;
     }
 
     if (data.channels) {
@@ -615,6 +611,15 @@ class Guild {
       return null;
     }
     return Constants.Endpoints.guildIcon(this.id, this.icon);
+  }
+
+  /**
+   * The owner of the Guild
+   * @type {Member}
+   * @readonly
+   */
+  get owner() {
+    return this.members.get(this.ownerID);
   }
 }
 
