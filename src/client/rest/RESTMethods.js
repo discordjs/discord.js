@@ -180,7 +180,7 @@ class RESTMethods {
   }
 
   leaveGuild(guild) {
-    if (guild.owner && guild.owner.id === this.rest.client.user.id) {
+    if (guild.ownerID === this.rest.client.user.id) {
       return this.deleteGuild(guild);
     }
     return new Promise((resolve, reject) => {
