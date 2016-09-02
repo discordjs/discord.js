@@ -258,7 +258,7 @@ class TextBasedChannel {
   /**
    * Starts a typing indicator in the channel.
    * @param {Number} [count] The number of times startTyping should be considered to have been called
-   * @returns {null}
+   * @returns {void}
    * @example
    * // start typing in a channel
    * channel.startTyping();
@@ -284,7 +284,7 @@ class TextBasedChannel {
    * The indicator will only stop if this is called as many times as startTyping().
    * <info>It can take a few seconds for the Client User to stop typing.</info>
    * @param {Boolean} [force=false] whether or not to force the indicator to stop regardless of call count
-   * @returns {null}
+   * @returns {void}
    * @example
    * // stop typing in a channel
    * channel.stopTyping();
