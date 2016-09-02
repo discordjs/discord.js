@@ -172,7 +172,7 @@ class StreamDispatcher extends EventEmitter {
 
   /**
    * Stops the current stream permanently and emits an `end` event.
-   * @returns {null}
+   * @returns {void}
    */
   end() {
     this._triggerTerminalState('end', 'user requested');
@@ -180,7 +180,7 @@ class StreamDispatcher extends EventEmitter {
 
   /**
    * Stops sending voice packets to the voice connection (stream may still progress however)
-   * @returns {null}
+   * @returns {void}
    */
   pause() {
     this._pause(true);
@@ -188,7 +188,7 @@ class StreamDispatcher extends EventEmitter {
 
   /**
    * Resumes sending voice packets to the voice connection (may be further on in the stream than when paused)
-   * @returns {null}
+   * @returns {void}
    */
   resume() {
     this._pause(false);

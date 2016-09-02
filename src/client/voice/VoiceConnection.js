@@ -66,7 +66,7 @@ class VoiceConnection extends EventEmitter {
    * Executed whenever an error occurs with the UDP/WebSocket sub-client
    * @private
    * @param {Error} error
-   * @returns {null}
+   * @returns {void}
    */
   _onError(e) {
     this._reject(e);
@@ -82,7 +82,7 @@ class VoiceConnection extends EventEmitter {
   /**
    * Disconnects the Client from the Voice Channel
    * @param {string} [reason='user requested'] the reason of the disconnection
-   * @returns {null}
+   * @returns {void}
    */
   disconnect(reason = 'user requested') {
     this.manager.client.ws.send({
@@ -122,7 +122,7 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Binds listeners to the WebSocket and UDP sub-clients
-   * @returns {null}
+   * @returns {void}
    * @private
    */
   bindListeners() {

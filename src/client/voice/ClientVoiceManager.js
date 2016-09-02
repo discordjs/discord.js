@@ -99,7 +99,7 @@ class ClientVoiceManager {
   /**
    * Sets up a request to join a voice channel
    * @param {VoiceChannel} channel the voice channel to join
-   * @returns {null}
+   * @returns {void}
    */
   joinChannel(channel) {
     return new Promise((resolve, reject) => {

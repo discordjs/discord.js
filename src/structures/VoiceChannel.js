@@ -59,7 +59,7 @@ class VoiceChannel extends GuildChannel {
 
   /**
    * Leaves this voice channel
-   * @returns {null}
+   * @returns {void}
    * @example
    * // leave a voice channel
    * voiceChannel.leave();

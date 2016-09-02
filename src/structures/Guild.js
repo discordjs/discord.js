@@ -229,7 +229,7 @@ class Guild {
   /**
    * Sets up the Guild
    * @param {any} data
-   * @returns {null}
+   * @returns {void}
    * @private
    */
   setup(data) {
