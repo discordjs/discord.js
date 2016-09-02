@@ -59,11 +59,7 @@ class GuildMember {
      * @type {?String}
      */
     this.voiceChannelID = data.channel_id;
-    /**
-     * The date this member joined the guild
-     * @type {Date}
-     */
-    this.joinDate = new Date(data.joined_at);
+    this._joinDate = new Date(data.joined_at).getTime();
     /**
      * Whether this meember is speaking
      * @type {?Boolean}
@@ -75,6 +71,14 @@ class GuildMember {
      */
     this.nickname = data.nick;
     this._roles = data.roles;
+  }
+
+  /**
+   * The date this member joined the guild
+   * @type {Date}
+   */
+  get joinDate() {
+    return new Date(this._joinDate);
   }
 
   /**

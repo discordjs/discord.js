@@ -47,12 +47,7 @@ class Invite {
      * @type {String}
      */
     this.code = data.code;
-
-    /**
-     * The creation date of the invite
-     * @type {Date}
-     */
-    this.creationDate = new Date(data.created_at);
+    this._creationDate = new Date(data.created_at).getTime();
 
     /**
      * Whether or not this invite is temporary
@@ -91,6 +86,14 @@ class Invite {
      * @type {GuildChannel|PartialGuildChannel}
      */
     this.channels = this.client.channels.get(data.channel.id) || new PartialGuildChannel(this.client, data.channel);
+  }
+
+  /**
+   * The creation date of the invite
+   * @type {Date}
+   */
+  get creationDate() {
+    return new Date(this._creationDate);
   }
 
   /**
