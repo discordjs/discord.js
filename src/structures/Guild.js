@@ -260,11 +260,7 @@ class Guild {
      * @type {Boolean}
      */
     this.large = data.large;
-    /**
-     * The date at which the logged-in client joined the guild.
-     * @type {Date}
-     */
-    this.joinDate = new Date(data.joined_at);
+    this._joinDate = new Date(data.joined_at).getTime();
     /**
      * The hash of the guild icon, or null if there is no icon.
      * @type {?String}
@@ -358,6 +354,13 @@ class Guild {
         }
       }
     }
+  }
+  /**
+   * The date at which the logged-in client joined the guild.
+   * @type {Date}
+   */
+  get joinDate() {
+    return new Date(this._joinDate);
   }
 
   /**

@@ -55,16 +55,8 @@ class Message {
      * @type {String}
      */
     this.content = data.content;
-    /**
-     * When the message was sent
-     * @type {Date}
-     */
-    this.timestamp = new Date(data.timestamp);
-    /**
-     * If the message was edited, the timestamp at which it was last edited
-     * @type {?Date}
-     */
-    this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp) : null;
+    this._timestamp = new Date(data.timestamp).getTime();
+    this._editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
     /**
      * Whether or not the message was Text-To-Speech
      * @type {Boolean}
@@ -147,6 +139,21 @@ class Message {
       this.system = true;
     }
   }
+  /**
+   * When the message was sent
+   * @type {Date}
+   */
+  get timestamp() {
+    return new Date(this._timestamp);
+  }
+
+  /**
+   * If the message was edited, the timestamp at which it was last edited
+   * @type {?Date}
+   */
+  get editedTimestamp() {
+    return new Date(this._editedTimestamp);
+  }
 
   patch(data) {
     if (data.author) {
@@ -159,10 +166,10 @@ class Message {
       this.content = data.content;
     }
     if (data.timestamp) {
-      this.timestamp = new Date(data.timestamp);
+      this._timestamp = new Date(data.timestamp).getTime();
     }
     if (data.edited_timestamp) {
-      this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp) : null;
+      this._editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
     }
     if ('tts' in data) {
       this.tts = data.tts;
@@ -247,8 +254,8 @@ class Message {
 
     if (base && rawData) {
       base = this.mentions.everyone === message.mentions.everyone &&
-        this.timestamp.getTime() === new Date(rawData.timestamp).getTime() &&
-        this.editedTimestamp === new Date(rawData.edited_timestamp).getTime();
+        this._timestamp === new Date(rawData.timestamp).getTime() &&
+        this._editedTimestamp === new Date(rawData.edited_timestamp).getTime();
     }
 
     return base;
