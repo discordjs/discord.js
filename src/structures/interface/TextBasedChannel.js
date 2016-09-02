@@ -259,7 +259,7 @@ class TextBasedChannel {
    * Starts or stops a typing indicator in the channel.
    * <info>It can take a few seconds for the Client User to stop typing.</info>
    * @param {Boolean} typing whether or not the client user should be typing
-   * @returns {null}
+   * @returns {void}
    * @example
    * // start typing in a channel
    * channel.setTyping(true);

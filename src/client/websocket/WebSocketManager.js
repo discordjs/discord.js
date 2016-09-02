@@ -49,7 +49,7 @@ class WebSocketManager {
   /**
    * Connects the client to a given gateway
    * @param {String} gateway the gateway to connect to
-   * @returns {null}
+   * @returns {void}
    */
   connect(gateway) {
     this.status = Constants.Status.CONNECTING;
@@ -69,7 +69,7 @@ class WebSocketManager {
   /**
    * Sends a packet to the gateway
    * @param {Object} packet An object that can be JSON stringified
-   * @returns {null}
+   * @returns {void}
    */
   send(data) {
     this._queue.push(JSON.stringify(data));
@@ -100,7 +100,7 @@ class WebSocketManager {
 
   /**
    * Run whenever the gateway connections opens up
-   * @returns {null}
+   * @returns {void}
    */
   eventOpen() {
     if (this.reconnecting) {
@@ -112,7 +112,7 @@ class WebSocketManager {
 
   /**
    * Sends a gatway resume packet, in cases of unexpected disconnections.
-   * @returns {null}
+   * @returns {void}
    */
   _sendResume() {
     const payload = {
@@ -129,7 +129,7 @@ class WebSocketManager {
 
   /**
    * Sends a new identification packet, in cases of new connections or failed reconnections.
-   * @returns {null}
+   * @returns {void}
    */
   _sendNewIdentify() {
     this.reconnecting = false;
@@ -147,7 +147,7 @@ class WebSocketManager {
 
   /**
    * Run whenever the connection to the gateway is closed, it will try to reconnect the client.
-   * @returns {null}
+   * @returns {void}
    */
   eventClose(event) {
     if (event.code === 4004) {
@@ -188,7 +188,7 @@ class WebSocketManager {
 
   /**
    * Run whenever an error occurs with the WebSocket connection. Tries to reconnect
-   * @returns {null}
+   * @returns {void}
    */
   eventError(e) {
     /**
@@ -214,7 +214,7 @@ class WebSocketManager {
   /**
    * Runs on new packets before `READY` to see if the Client is ready yet, if it is prepares
    * the `READY` event.
-   * @returns {null}
+   * @returns {void}
    */
   checkIfReady() {
     if (this.status !== Constants.Status.READY && this.status !== Constants.Status.NEARLY) {
@@ -238,7 +238,7 @@ class WebSocketManager {
 
   /**
    * Tries to reconnect the client, changing the status to Constants.Status.RECONNECTING.
-   * @returns {null}
+   * @returns {void}
    */
   tryReconnect() {
     this.status = Constants.Status.RECONNECTING;
