@@ -140,7 +140,19 @@ class GroupDMChannel extends Channel {
     return;
   }
 
-  setTyping() {
+  startTyping() {
+    return;
+  }
+
+  stopTyping() {
+    return;
+  }
+
+  get typing() {
+    return;
+  }
+
+  get typingCount() {
     return;
   }
 

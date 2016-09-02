@@ -256,25 +256,68 @@ class TextBasedChannel {
   }
 
   /**
-   * Starts or stops a typing indicator in the channel.
-   * <info>It can take a few seconds for the Client User to stop typing.</info>
-   * @param {Boolean} typing whether or not the client user should be typing
+   * Starts a typing indicator in the channel.
+   * @param {Number} [count] The number of times startTyping should be considered to have been called
    * @returns {null}
    * @example
    * // start typing in a channel
-   * channel.setTyping(true);
+   * channel.startTyping();
+   */
+  startTyping(count) {
+    if (typeof count !== 'undefined' && count < 1) throw new RangeError('count must be at least 1');
+    if (!this.client.user._typing.has(this.id)) {
+      this.client.user._typing.set(this.id, {
+        count: count || 1,
+        interval: this.client.setInterval(() => {
+          this.client.rest.methods.sendTyping(this.id);
+        }, 4000),
+      });
+      this.client.rest.methods.sendTyping(this.id);
+    } else {
+      const entry = this.client.user._typing.get(this.id);
+      entry.count = count || entry.count + 1;
+    }
+  }
+
+  /**
+   * Stops the typing indicator in the channel.
+   * The indicator will only stop if this is called as many times as startTyping().
+   * <info>It can take a few seconds for the Client User to stop typing.</info>
+   * @param {Boolean} [force=false] whether or not to force the indicator to stop regardless of call count
+   * @returns {null}
    * @example
    * // stop typing in a channel
-   * channel.setTyping(false);
+   * channel.stopTyping();
+   * @example
+   * // force typing to fully stop in a channel
+   * channel.stopTyping(true);
    */
-  setTyping(typing) {
-    clearInterval(this.client.user._typing.get(this.id));
-    if (typing) {
-      this.client.user._typing.set(this.id, this.client.setInterval(() => {
-        this.client.rest.methods.sendTyping(this.id);
-      }, 4000));
-      this.client.rest.methods.sendTyping(this.id);
+  stopTyping(force = false) {
+    if (this.client.user._typing.has(this.id)) {
+      const entry = this.client.user._typing.get(this.id);
+      entry.count--;
+      if (entry.count <= 0 || force) {
+        clearInterval(entry.interval);
+        this.client.user._typing.delete(this.id);
+      }
     }
+  }
+
+  /**
+   * Whether or not the typing indicator is being shown in the channel.
+   * @type {Boolean}
+   */
+  get typing() {
+    return this.client.user._typing.has(this.id);
+  }
+
+  /**
+   * Number of times `startTyping` has been called.
+   * @type {Number}
+   */
+  get typingCount() {
+    if (this.client.user._typing.has(this.id)) return this.client.user._typing.get(this.id).count;
+    return 0;
   }
 
   /**
@@ -371,7 +414,7 @@ class TextBasedChannel {
 }
 
 function applyProp(structure, prop) {
-  structure.prototype[prop] = TextBasedChannel.prototype[prop];
+  Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
 }
 
 exports.applyToClass = (structure, full = false) => {
@@ -380,7 +423,10 @@ exports.applyToClass = (structure, full = false) => {
     props.push('_cacheMessage');
     props.push('fetchMessages');
     props.push('bulkDelete');
-    props.push('setTyping');
+    props.push('startTyping');
+    props.push('stopTyping');
+    props.push('typing');
+    props.push('typingCount');
     props.push('fetchPinnedMessages');
     props.push('createCollector');
     props.push('awaitMessages');
