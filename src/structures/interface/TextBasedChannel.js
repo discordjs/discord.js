@@ -283,7 +283,7 @@ class TextBasedChannel {
    * Stops the typing indicator in the channel.
    * The indicator will only stop if this is called as many times as startTyping().
    * <info>It can take a few seconds for the Client User to stop typing.</info>
-   * @param {Boolean} [force] whether or not to force the indicator to stop regardless of call count
+   * @param {Boolean} [force=false] whether or not to force the indicator to stop regardless of call count
    * @returns {null}
    * @example
    * // stop typing in a channel
@@ -292,7 +292,7 @@ class TextBasedChannel {
    * // force typing to fully stop in a channel
    * channel.stopTyping(true);
    */
-  stopTyping(force) {
+  stopTyping(force = false) {
     if (this.client.user._typing.has(this.id)) {
       const entry = this.client.user._typing.get(this.id);
       entry.count--;
