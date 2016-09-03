@@ -56,7 +56,7 @@ class User {
   }
 
   /**
-   * When concatenated with a String, this automatically concatenates the User's mention instead of the User object.
+   * When concatenated with a string, this automatically concatenates the User's mention instead of the User object.
    * @returns {string}
    * @example
    * // logs: Hello from <@123456789>!

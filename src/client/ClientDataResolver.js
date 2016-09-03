@@ -10,10 +10,6 @@ const Guild = getStructure('Guild');
 const Channel = getStructure('Channel');
 const GuildMember = getStructure('GuildMember');
 
-function $string(obj) {
-  return (typeof obj === 'string' || obj instanceof String);
-}
-
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
  * extracting a User from a Message object.
@@ -31,7 +27,7 @@ class ClientDataResolver {
    * * A Message (resolves to the message author)
    * * A Guild (owner of the guild)
    * * A Guild Member
-   * @typedef {User|String|Message|Guild|GuildMember} UserResolvable
+   * @typedef {User|string|Message|Guild|GuildMember} UserResolvable
    */
 
   /**
@@ -42,7 +38,7 @@ class ClientDataResolver {
   resolveUser(user) {
     if (user instanceof User) {
       return user;
-    } else if ($string(user)) {
+    } else if (typeof user === 'string') {
       return this.client.users.get(user);
     } else if (user instanceof Message) {
       return user.author;
@@ -105,7 +101,7 @@ class ClientDataResolver {
   /**
    * Data that resolves to give a Base64 string, typically for image uploading. This can be:
    * * A Buffer
-   * * A Base64 String
+   * * A Base64 string
    * @typedef {Buffer|string} Base64Resolvable
    */
 
@@ -139,7 +135,7 @@ class ClientDataResolver {
       return channel;
     }
 
-    if ($string(channel)) {
+    if (typeof channel === 'string') {
       return this.client.channels.get(channel.id);
     }
 
@@ -147,20 +143,20 @@ class ClientDataResolver {
   }
 
   /**
-   * Data that can be resolved to give a String. This can be:
-   * * A String
+   * Data that can be resolved to give a string. This can be:
+   * * A string
    * * An Array (joined with a new line delimiter to give a string)
    * * Any object
    * @typedef {string|Array|Object} StringResolvable
    */
 
   /**
-   * Resolves a StringResolvable to a String
+   * Resolves a StringResolvable to a string
    * @param {StringResolvable} StringResolvable the string resolvable to resolve
    * @returns {string}
    */
   resolveString(data) {
-    if (data instanceof String) {
+    if (typeof data === 'string') {
       return data;
     }
 
@@ -185,7 +181,7 @@ class ClientDataResolver {
    * @returns {string|Buffer}
    */
   resolveFile(resource) {
-    if ($string(resource)) {
+    if (typeof resource === 'string') {
       return new Promise((resolve, reject) => {
         if (/^https?:\/\//.test(resource)) {
           request.get(resource)
