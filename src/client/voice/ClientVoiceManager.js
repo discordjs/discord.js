@@ -104,8 +104,7 @@ class ClientVoiceManager {
   joinChannel(channel) {
     return new Promise((resolve, reject) => {
       if (this.pending.get(channel.guild.id)) {
-        reject(new Error('already connecting to a channel in this guild'));
-        return;
+        throw new Error('already connecting to a channel in this guild');
       }
       const existingConn = this.connections.get(channel.guild.id);
       if (existingConn) {
