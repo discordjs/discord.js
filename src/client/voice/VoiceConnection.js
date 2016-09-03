@@ -12,6 +12,7 @@ const DefaultPlayer = require('./player/DefaultPlayer');
  * voiceChannel.join().then(connection => {
  *
  * });
+ * ```
  * @extends {EventEmitter}
  */
 class VoiceConnection extends EventEmitter {
