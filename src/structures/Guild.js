@@ -151,7 +151,7 @@ class Guild {
   }
 
   /**
-   * When concatenated with a String, this automatically concatenates the Guild's name instead of the Guild object.
+   * When concatenated with a string, this automatically concatenates the Guild's name instead of the Guild object.
    * @returns {string}
    * @example
    * // logs: Hello from My Guild!

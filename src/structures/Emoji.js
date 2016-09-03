@@ -68,7 +68,7 @@ class Emoji {
   }
 
   /**
-   * When concatenated with a String, this automatically returns the emoji mention rather than the object.
+   * When concatenated with a string, this automatically returns the emoji mention rather than the object.
    * @returns {string}
    * @example
    * // send an emoji:

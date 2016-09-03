@@ -196,7 +196,7 @@ class TextBasedChannel {
    */
   sendFile(attachment, fileName) {
     if (!fileName) {
-      if (attachment instanceof String || typeof attachment === 'string') {
+      if (typeof attachment === 'string') {
         fileName = path.basename(attachment);
       } else if (attachment && attachment.path) {
         fileName = path.basename(attachment.path);

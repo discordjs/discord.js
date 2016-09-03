@@ -464,7 +464,7 @@ class RESTMethods {
       if (_data.permissions) {
         let perms = 0;
         for (let perm of _data.permissions) {
-          if (perm instanceof String || typeof perm === 'string') {
+          if (typeof perm === 'string') {
             perm = Constants.PermissionFlags[perm];
           }
           perms |= perm;

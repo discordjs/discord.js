@@ -39,7 +39,7 @@ class EvaluatedPermissions {
    * @returns {boolean}
    */
   hasPermission(permission, explicit = false) {
-    if (permission instanceof String || typeof permission === 'string') {
+    if (typeof permission === 'string') {
       permission = Constants.PermissionFlags[permission];
     }
 
