@@ -156,7 +156,7 @@ class ClientDataResolver {
 
   /**
    * Resolves a StringResolvable to a String
-   * @param {stringResolvable} stringResolvable the string resolvable to resolve
+   * @param {StringResolvable} StringResolvable the string resolvable to resolve
    * @returns {string}
    */
   resolveString(data) {
