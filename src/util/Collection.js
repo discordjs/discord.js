@@ -141,6 +141,16 @@ class Collection extends Map {
     }
     return collection;
   }
+
+  /**
+   * Functionally identical shortcut to `collection.array().map(...)`.
+   * @param {function} callback Function that produces an element of the new Array, taking three arguments.
+   * @param {*} [thisArg] Optional. Value to use as this when executing callback.
+   * @returns {array}
+   */
+  map(...args) {
+    return this.array().map(...args);
+  }
 }
 
 module.exports = Collection;
