@@ -129,7 +129,7 @@ class Collection extends Map {
    * Identical to
    * [Array.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter),
    * but returns a Collection instead of an Array.
-   * @param {Function} callback the callback used to filter
+   * @param {function} callback the callback used to filter
    * @param {Object} [thisArg] value to set as this when filtering
    * @returns {Collection}
    */

@@ -22,8 +22,8 @@ class ClientManager {
   /**
    * Connects the Client to the WebSocket
    * @param {string} token the authorization token
-   * @param {Function} resolve function to run when connection is successful
-   * @param {Function} reject function to run when connection fails
+   * @param {function} resolve function to run when connection is successful
+   * @param {function} reject function to run when connection fails
    * @returns {void}
    */
   connectToWebSocket(token, resolve, reject) {

@@ -13,7 +13,7 @@ const EventEmitter = require('events').EventEmitter;
  *  return false; // failed the filter test
  * }
  * ```
- * @typedef {Function} CollectorFilterFunction
+ * @typedef {function} CollectorFilterFunction
  */
 
 /**

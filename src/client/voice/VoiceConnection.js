@@ -46,13 +46,13 @@ class VoiceConnection extends EventEmitter {
     this.ready = false;
     /**
      * The resolve function for the promise associated with creating this connection
-     * @type {Function}
+     * @type {function}
      * @private
      */
     this._resolve = resolve;
     /**
      * The reject function for the promise associated with creating this connection
-     * @type {Function}
+     * @type {function}
      * @private
      */
     this._reject = reject;
