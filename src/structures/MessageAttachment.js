@@ -19,37 +19,37 @@ class MessageAttachment {
   setup(data) {
     /**
      * The ID of this attachment
-     * @type {String}
+     * @type {string}
      */
     this.id = data.id;
     /**
      * The file name of this attachment
-     * @type {String}
+     * @type {string}
      */
     this.filename = data.filename;
     /**
      * The size of this attachment in bytes
-     * @type {Number}
+     * @type {number}
      */
     this.filesize = data.size;
     /**
      * The URL to this attachment
-     * @type {String}
+     * @type {string}
      */
     this.url = data.url;
     /**
      * The Proxy URL to this attachment
-     * @type {String}
+     * @type {string}
      */
     this.proxyURL = data.url;
     /**
      * The height of this attachment (if an image)
-     * @type {?Number}
+     * @type {?number}
      */
     this.height = data.height;
     /**
      * The width of this attachment (if an image)
-     * @type {?Number}
+     * @type {?number}
      */
     this.width = data.width;
   }

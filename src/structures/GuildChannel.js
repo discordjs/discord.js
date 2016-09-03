@@ -33,23 +33,23 @@ class GuildChannel extends Channel {
     super.setup(data);
     /**
      * The topic of the Guild Channel, if there is one.
-     * @type {?String}
+     * @type {?string}
      */
     this.topic = data.topic;
     /**
      * The position of the channel in the list.
-     * @type {Number}
+     * @type {number}
      */
     this.position = data.position;
     /**
      * The name of the Guild Channel
-     * @type {String}
+     * @type {string}
      */
     this.name = data.name;
     this.ow = data.permission_overwrites;
     /**
      * A map of permission overwrites in this channel for roles and users.
-     * @type {Collection<String, PermissionOverwrites>}
+     * @type {Collection<string, PermissionOverwrites>}
      */
     this.permissionOverwrites = new Collection();
     if (data.permission_overwrites) {
@@ -63,7 +63,7 @@ class GuildChannel extends Channel {
    * Checks if this channel has the same type, topic, position, name, overwrites and ID as another channel.
    * In most cases, a simple `channel.id === channel2.id` will do, and is much faster too.
    * @param {GuildChannel} channel the channel to compare this channel to
-   * @returns {Boolean}
+   * @returns {boolean}
    */
   equals(other) {
     let base = (
@@ -222,7 +222,7 @@ class GuildChannel extends Channel {
 
   /**
    * Set a new name for the Guild Channel
-   * @param {String} name the new name for the guild channel
+   * @param {string} name the new name for the guild channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // set a new channel name
@@ -236,7 +236,7 @@ class GuildChannel extends Channel {
 
   /**
    * Set a new position for the Guild Channel
-   * @param {Number} position the new position for the guild channel
+   * @param {number} position the new position for the guild channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // set a new channel position
@@ -250,7 +250,7 @@ class GuildChannel extends Channel {
 
   /**
    * Set a new topic for the Guild Channel
-   * @param {String} topic the new topic for the guild channel
+   * @param {string} topic the new topic for the guild channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // set a new channel topic
@@ -264,7 +264,7 @@ class GuildChannel extends Channel {
 
   /**
    * When concatenated with a String, this automatically returns the Channel's mention instead of the Channel object.
-   * @returns {String}
+   * @returns {string}
    * @example
    * // Outputs: Hello from #general
    * console.log(`Hello from ${channel}`);

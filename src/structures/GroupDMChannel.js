@@ -77,7 +77,7 @@ class GroupDMChannel extends Channel {
     if (!this.recipients) {
       /**
        * A collection of the recipients of this DM, mapped by their ID.
-       * @type {Collection<String, User>}
+       * @type {Collection<string, User>}
        */
       this.recipients = new Collection();
     }
@@ -90,22 +90,22 @@ class GroupDMChannel extends Channel {
     }
     /**
      * The name of this Group DM, can be null if one isn't set.
-     * @type {String}
+     * @type {string}
      */
     this.name = data.name;
     /**
      * The ID of this Group DM Channel.
-     * @type {String}
+     * @type {string}
      */
     this.id = data.id;
     /**
      * A hash of the Group DM icon.
-     * @type {String}
+     * @type {string}
      */
     this.icon = data.icon;
     /**
      * The ID of the last message in the channel, if one was sent.
-     * @type {?String}
+     * @type {?string}
      */
     this.lastMessageID = data.last_message_id;
     /**

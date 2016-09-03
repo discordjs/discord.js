@@ -31,43 +31,43 @@ class GuildMember {
     this.user = data.user;
     /**
      * Whether this member is deafened server-wide
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.serverDeaf = data.deaf;
     /**
      * Whether this member is muted server-wide
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.serverMute = data.mute;
     /**
      * Whether this member is self-muted
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.selfMute = data.self_mute;
     /**
      * Whether this member is self-deafened
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.selfDeaf = data.self_deaf;
     /**
      * The voice session ID of this member, if any
-     * @type {?String}
+     * @type {?string}
      */
     this.voiceSessionID = data.session_id;
     /**
      * The voice channel ID of this member, if any
-     * @type {?String}
+     * @type {?string}
      */
     this.voiceChannelID = data.channel_id;
     this._joinDate = new Date(data.joined_at).getTime();
     /**
      * Whether this meember is speaking
-     * @type {?Boolean}
+     * @type {?boolean}
      */
     this.speaking = this.speaking;
     /**
      * The nickname of this Guild Member, if they have one
-     * @type {?String}
+     * @type {?string}
      */
     this.nickname = data.nick;
     this._roles = data.roles;
@@ -106,7 +106,7 @@ class GuildMember {
 
   /**
    * Whether this member is muted in any way
-   * @type {Boolean}
+   * @type {boolean}
    * @readonly
    */
   get mute() {
@@ -115,7 +115,7 @@ class GuildMember {
 
   /**
    * Whether this member is deafened in any way
-   * @type {Boolean}
+   * @type {boolean}
    * @readonly
    */
   get deaf() {
@@ -133,7 +133,7 @@ class GuildMember {
 
   /**
    * The ID of this User
-   * @type {String}
+   * @type {string}
    * @readonly
    */
   get id() {
@@ -142,7 +142,7 @@ class GuildMember {
 
   /**
    * Mute/unmute a user
-   * @param {Boolean} mute whether or not the member should be muted
+   * @param {boolean} mute whether or not the member should be muted
    * @returns {Promise<GuildMember, Error>}
    */
   setMute(mute) {
@@ -151,7 +151,7 @@ class GuildMember {
 
   /**
    * Deafen/undeafen a user
-   * @param {Boolean} deaf whether or not the member should be deafened
+   * @param {boolean} deaf whether or not the member should be deafened
    * @returns {Promise<GuildMember, Error>}
    */
   setDeaf(deaf) {
@@ -169,7 +169,7 @@ class GuildMember {
 
   /**
    * Sets the Roles applied to the member.
-   * @param {Collection<String, Role>|Array<Role>} roles the roles to apply
+   * @param {Collection<string, Role>|Array<Role>} roles the roles to apply
    * @returns {Promise<GuildMember, Error>}
    */
   setRoles(roles) {
@@ -178,7 +178,7 @@ class GuildMember {
 
   /**
    * Set the nickname for the Guild Member
-   * @param {String} nick the nickname for the Guild Member
+   * @param {string} nick the nickname for the Guild Member
    * @returns {Promise<GuildMember, Error>}
    */
   setNickname(nick) {

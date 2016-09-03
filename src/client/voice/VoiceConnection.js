@@ -25,7 +25,7 @@ class VoiceConnection extends EventEmitter {
     this.player = new DefaultPlayer(this);
     /**
      * The endpoint of the connection
-     * @type {String}
+     * @type {string}
      */
     this.endpoint = endpoint;
     /**
@@ -41,18 +41,18 @@ class VoiceConnection extends EventEmitter {
     this.websocket = new VoiceConnectionWebSocket(this, channel.guild.id, token, sessionID, endpoint);
     /**
      * Whether or not the connection is ready
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.ready = false;
     /**
      * The resolve function for the promise associated with creating this connection
-     * @type {Function}
+     * @type {function}
      * @private
      */
     this._resolve = resolve;
     /**
      * The reject function for the promise associated with creating this connection
-     * @type {Function}
+     * @type {function}
      * @private
      */
     this._reject = reject;
@@ -66,7 +66,7 @@ class VoiceConnection extends EventEmitter {
    * Executed whenever an error occurs with the UDP/WebSocket sub-client
    * @private
    * @param {Error} error
-   * @returns {null}
+   * @returns {void}
    */
   _onError(e) {
     this._reject(e);
@@ -82,7 +82,7 @@ class VoiceConnection extends EventEmitter {
   /**
    * Disconnects the Client from the Voice Channel
    * @param {string} [reason='user requested'] the reason of the disconnection
-   * @returns {null}
+   * @returns {void}
    */
   disconnect(reason = 'user requested') {
     this.manager.client.ws.send({
@@ -122,7 +122,7 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Binds listeners to the WebSocket and UDP sub-clients
-   * @returns {null}
+   * @returns {void}
    * @private
    */
   bindListeners() {
@@ -195,7 +195,7 @@ class VoiceConnection extends EventEmitter {
        * Emitted whenever a user starts/stops speaking
        * @event VoiceConnection#speaking
        * @param {User} user the user that has started/stopped speaking
-       * @param {Boolean} speaking whether or not the user is speaking
+       * @param {boolean} speaking whether or not the user is speaking
        */
       if (this.ready) {
         this.emit('speaking', user, data.speaking);
@@ -208,7 +208,7 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Play the given file in the voice connection
-   * @param {String} filepath the path to the file
+   * @param {string} filepath the path to the file
    * @returns {StreamDispatcher}
    * @example
    * // play files natively

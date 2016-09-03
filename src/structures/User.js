@@ -16,27 +16,27 @@ class User {
   setup(data) {
     /**
      * The username of the User
-     * @type {String}
+     * @type {string}
      */
     this.username = data.username;
     /**
      * The ID of the User
-     * @type {String}
+     * @type {string}
      */
     this.id = data.id;
     /**
      * A discriminator based on username for the User
-     * @type {String}
+     * @type {string}
      */
     this.discriminator = data.discriminator;
     /**
      * The ID of the user's avatar
-     * @type {String}
+     * @type {string}
      */
     this.avatar = data.avatar;
     /**
      * Whether or not the User is a Bot.
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.bot = Boolean(data.bot);
     /**
@@ -45,19 +45,19 @@ class User {
      * * **`online`** - user is online
      * * **`offline`** - user is offline
      * * **`idle`** - user is AFK
-     * @type {String}
+     * @type {string}
      */
     this.status = data.status || this.status || 'offline';
     /**
      * The game that the user is playing, `null` if they aren't playing a game.
-     * @type {String}
+     * @type {string}
      */
     this.game = data.game || this.game;
   }
 
   /**
    * When concatenated with a String, this automatically concatenates the User's mention instead of the User object.
-   * @returns {String}
+   * @returns {string}
    * @example
    * // logs: Hello from <@123456789>!
    * console.log(`Hello from ${user}!`);
@@ -68,7 +68,7 @@ class User {
 
   /**
    * A link to the user's avatar (if they have one, otherwise null)
-   * @type {?String}
+   * @type {?string}
    * @readonly
    */
   get avatarURL() {
@@ -90,7 +90,7 @@ class User {
    * Checks if the user is equal to another. It compares username, ID, discriminator, status and the game being played.
    * It is recommended to compare equality by using `user.id === user2.id` unless you want to compare all properties.
    * @param {User} user the user to compare
-   * @returns {Boolean}
+   * @returns {boolean}
    */
   equals(user) {
     let base = (

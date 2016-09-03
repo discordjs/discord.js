@@ -16,12 +16,12 @@ class ClientVoiceManager {
     this.client = client;
     /**
      * A collection mapping connection IDs to the Connection objects
-     * @type {Collection<String, VoiceConnection>}
+     * @type {Collection<string, VoiceConnection>}
      */
     this.connections = new Collection();
     /**
      * Pending connection attempts, maps Guild ID to VoiceChannel
-     * @type {Collection<String, VoiceChannel>}
+     * @type {Collection<string, VoiceChannel>}
      */
     this.pending = new Collection();
   }
@@ -29,7 +29,7 @@ class ClientVoiceManager {
   /**
    * Checks whether a pending request can be processed
    * @private
-   * @param {String} guildID The ID of the Guild
+   * @param {string} guildID The ID of the Guild
    */
   _checkPendingReady(guildID) {
     const pendingRequest = this.pending.get(guildID);
@@ -49,9 +49,9 @@ class ClientVoiceManager {
 
   /**
    * Called when the Client receives information about this voice server update.
-   * @param {String} guildID the ID of the Guild
-   * @param {String} token the token to authorise with
-   * @param {String} endpoint the endpoint to connect to
+   * @param {string} guildID the ID of the Guild
+   * @param {string} token the token to authorise with
+   * @param {string} endpoint the endpoint to connect to
    */
   _receivedVoiceServer(guildID, token, endpoint) {
     const pendingRequest = this.pending.get(guildID);
@@ -66,8 +66,8 @@ class ClientVoiceManager {
 
   /**
    * Called when the Client receives information about the voice state update.
-   * @param {String} guildID the ID of the Guild
-   * @param {String} sessionID the session id to authorise with
+   * @param {string} guildID the ID of the Guild
+   * @param {string} sessionID the session id to authorise with
    */
   _receivedVoiceStateUpdate(guildID, sessionID) {
     const pendingRequest = this.pending.get(guildID);
@@ -99,7 +99,7 @@ class ClientVoiceManager {
   /**
    * Sets up a request to join a voice channel
    * @param {VoiceChannel} channel the voice channel to join
-   * @returns {null}
+   * @returns {void}
    */
   joinChannel(channel) {
     return new Promise((resolve, reject) => {

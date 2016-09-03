@@ -36,37 +36,37 @@ class Role {
   setup(data) {
     /**
      * The ID of the role (unique to the guild it is part of)
-     * @type {String}
+     * @type {string}
      */
     this.id = data.id;
     /**
      * The name of the role
-     * @type {String}
+     * @type {string}
      */
     this.name = data.name;
     /**
      * The base 10 color of the role
-     * @type {Number}
+     * @type {number}
      */
     this.color = data.color;
     /**
      * If true, users that are part of this role will appear in a separate category in the users list
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.hoist = data.hoist;
     /**
      * The position of the role in the role manager
-     * @type {Number}
+     * @type {number}
      */
     this.position = data.position;
     /**
      * The evaluated permissions number
-     * @type {Number}
+     * @type {number}
      */
     this.permissions = data.permissions;
     /**
      * Whether or not the role is managed by an external service
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.managed = data.managed;
   }
@@ -100,7 +100,7 @@ class Role {
 
   /**
    * Set a new name for the role
-   * @param {String} name the new name of the role
+   * @param {string} name the new name of the role
    * @returns {Promise<Role, Error>}
    * @example
    * // set the name of the role
@@ -114,7 +114,7 @@ class Role {
 
   /**
    * Set a new color for the role
-   * @param {Number|String} color the new color for the role, either a hex string or a base 10 number
+   * @param {number|string} color the new color for the role, either a hex string or a base 10 number
    * @returns {Promise<Role, Error>}
    * @example
    * // set the color of a role
@@ -128,7 +128,7 @@ class Role {
 
   /**
    * Set whether or not the role should be hoisted
-   * @param {Boolean} hoist whether or not to hoist the role
+   * @param {boolean} hoist whether or not to hoist the role
    * @returns {Promise<Role, Error>}
    * @example
    * // set the hoist of the role
@@ -142,7 +142,7 @@ class Role {
 
   /**
    * Set the position of the role
-   * @param {Number} position the position of the role
+   * @param {number} position the position of the role
    * @returns {Promise<Role, Error>}
    * @example
    * // set the position of the role
@@ -156,7 +156,7 @@ class Role {
 
   /**
    * Set the permissions of the role
-   * @param {Array<String>} permissions the permissions of the role
+   * @param {Array<string>} permissions the permissions of the role
    * @returns {Promise<Role, Error>}
    * @example
    * // set the permissions of the role
@@ -170,7 +170,7 @@ class Role {
 
   /**
    * Get an object mapping permission names to whether or not the role enables that permission
-   * @returns {Object<String, Boolean>}
+   * @returns {Object<string, boolean>}
    * @example
    * // print the serialized role
    * console.log(role.serialize());
@@ -186,9 +186,9 @@ class Role {
 
   /**
    * Whether or not the role includes the given permission
-   * @param {String} permission the name of the permission to test
-   * @param {Boolean} [explicit=false] whether or not the inclusion of the permission is explicit
-   * @returns {Boolean}
+   * @param {string} permission the name of the permission to test
+   * @param {boolean} [explicit=false] whether or not the inclusion of the permission is explicit
+   * @returns {boolean}
    * @example
    * // see if a role can ban a member
    * if (role.hasPermission('BAN_MEMBERS')) {
@@ -217,7 +217,7 @@ class Role {
 
   /**
    * When concatenated with a String, this automatically concatenates the Role mention rather than the Role object.
-   * @returns {String}
+   * @returns {string}
    */
   toString() {
     return `<@&${this.id}>`;
@@ -225,7 +225,7 @@ class Role {
 
   /**
    * The hexadecimal version of the role color, with a leading hashtag.
-   * @type {String}
+   * @type {string}
    * @readonly
    */
   get hexColor() {
