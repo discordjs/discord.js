@@ -66,6 +66,11 @@ class ClientDataResolver {
     if (guild instanceof Guild) {
       return guild;
     }
+
+    if (typeof guild === 'string') {
+      return this.client.guilds.get(guild);
+    }
+
     return null;
   }
 
