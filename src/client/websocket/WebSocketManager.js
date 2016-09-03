@@ -44,6 +44,12 @@ class WebSocketManager {
      * @type {?string}
      */
     this.gateway = null;
+
+    /**
+     * Whether READY was emitted normally (all packets received) or not
+     * @type {boolean}
+     */
+    this.normalReady = false;
   }
 
   /**
@@ -51,6 +57,7 @@ class WebSocketManager {
    * @param {string} gateway the gateway to connect to
    */
   connect(gateway) {
+    this.normalReady = false;
     this.status = Constants.Status.CONNECTING;
     /**
      * The WebSocket connection to the gateway
@@ -200,7 +207,7 @@ class WebSocketManager {
     this.tryReconnect();
   }
 
-  _emitReady() {
+  _emitReady(normal = true) {
     /**
      * Emitted when the Client becomes ready to start working
      *
@@ -209,6 +216,7 @@ class WebSocketManager {
     this.status = Constants.Status.READY;
     this.client.emit(Constants.Events.READY);
     this.packetManager.handleQueue();
+    this.normalReady = normal;
   }
 
   /**
