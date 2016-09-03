@@ -21,7 +21,6 @@ const EventEmitter = require('events').EventEmitter;
  * ```js
  * {
  *  time: null, // time in milliseconds. If specified, the collector ends after this amount of time.
- *  allowSelf: false, // whether or not the filter should take messages from the logged in client.
  *  max: null, // the maximum amount of messages to handle before ending.
  * }
  * ```
@@ -75,9 +74,6 @@ class MessageCollector extends EventEmitter {
    */
   verify(message) {
     if (this.channel ? this.channel.id !== message.channel.id : false) {
-      return false;
-    }
-    if (message.author.id === this.channel.client.user.id && !this.options.allowSelf) {
       return false;
     }
     if (this.filter(message, this)) {
