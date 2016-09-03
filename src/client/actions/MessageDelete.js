@@ -9,6 +9,7 @@ class MessageDeleteAction extends Action {
 
   handle(data) {
     const client = this.client;
+
     const channel = client.channels.get(data.channel_id);
     if (channel) {
       let message = channel.messages.get(data.id);
@@ -22,18 +23,18 @@ class MessageDeleteAction extends Action {
       }
 
       return {
-        m: message,
+        message,
       };
     }
 
     return {
-      m: null,
+      message: null,
     };
   }
 
   scheduleForDeletion(channelID, messageID) {
-    this.client.setTimeout(
-      () => delete this.deleted[channelID + messageID], this.client.options.rest_ws_bridge_timeout);
+    this.client.setTimeout(() => delete this.deleted[channelID + messageID],
+      this.client.options.rest_ws_bridge_timeout);
   }
 }
 

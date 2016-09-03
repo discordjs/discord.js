@@ -5,13 +5,9 @@ class GuildBanRemove extends Action {
 
   handle(data) {
     const client = this.client;
-
     const guild = client.guilds.get(data.guild_id);
     const user = client.dataManager.newUser(data.user);
-
-    if (guild && user) {
-      client.emit(Constants.Events.GUILD_BAN_REMOVE, guild, user);
-    }
+    if (guild && user) client.emit(Constants.Events.GUILD_BAN_REMOVE, guild, user);
   }
 }
 

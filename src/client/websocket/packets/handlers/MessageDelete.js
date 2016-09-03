@@ -9,8 +9,8 @@ class MessageDeleteHandler extends AbstractHandler {
 
     const response = client.actions.MessageDelete.handle(data);
 
-    if (response.m) {
-      client.emit(Constants.Events.MESSAGE_DELETE, response.m);
+    if (response.message) {
+      client.emit(Constants.Events.MESSAGE_DELETE, response.message);
     }
   }
 
