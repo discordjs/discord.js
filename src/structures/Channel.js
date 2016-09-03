@@ -19,7 +19,7 @@ class Channel {
      * * `group` - a Group DM channel
      * * `text` - a guild text channel
      * * `voice` - a guild voice channel
-     * @type {String}
+     * @type {string}
      */
     this.type = null;
     if (data) {
@@ -30,7 +30,7 @@ class Channel {
   setup(data) {
     /**
      * The unique ID of the channel
-     * @type {String}
+     * @type {string}
      */
     this.id = data.id;
   }

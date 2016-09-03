@@ -16,12 +16,12 @@ class PermissionOverwrites {
   setup(data) {
     /**
      * The type of this overwrite
-     * @type {String}
+     * @type {string}
      */
     this.type = data.type;
     /**
      * The ID of this overwrite, either a User ID or a Role ID
-     * @type {String}
+     * @type {string}
      */
     this.id = data.id;
     this.denyData = data.deny;

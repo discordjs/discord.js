@@ -62,7 +62,7 @@ class Collection extends Map {
   /**
    * The length (size) of this collection.
    * @readonly
-   * @type {Number}
+   * @type {number}
    */
   get length() {
     return this.size;
@@ -70,8 +70,8 @@ class Collection extends Map {
 
   /**
    * Returns an array of items where `item[key] === value` of the collection
-   * @param {String} key the key to filter by
-   * @param {any} value the expected value
+   * @param {string} key the key to filter by
+   * @param {*} value the expected value
    * @returns {Array<Object>}
    * @example
    * collection.getAll('username', 'Bob');
@@ -90,8 +90,8 @@ class Collection extends Map {
 
   /**
    * Returns a single item where `item[key] === value`
-   * @param {String} key the key to filter by
-   * @param {any} value the expected value
+   * @param {string} key the key to filter by
+   * @param {*} value the expected value
    * @returns {Object}
    * @example
    * collection.get('id', '123123...');
@@ -109,9 +109,9 @@ class Collection extends Map {
 
   /**
    * Returns true if the collection has an item where `item[key] === value`
-   * @param {String} key the key to filter by
-   * @param {any} value the expected value
-   * @returns {Object}
+   * @param {string} key the key to filter by
+   * @param {*} value the expected value
+   * @returns {boolean}
    * @example
    * if (collection.exists('id', '123123...')) {
    *  console.log('user here!');

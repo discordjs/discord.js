@@ -20,17 +20,17 @@ class PartialGuildChannel {
   setup(data) {
     /**
      * The ID of this Guild Channel
-     * @type {String}
+     * @type {string}
      */
     this.id = data.id;
     /**
      * The name of this Guild Channel
-     * @type {String}
+     * @type {string}
      */
     this.name = data.name;
     /**
      * The type of this Guild Channel - `text` or `voice`
-     * @type {String}
+     * @type {string}
      */
     this.type = Constants.ChannelTypes.text === data.type ? 'text' : 'voice';
   }

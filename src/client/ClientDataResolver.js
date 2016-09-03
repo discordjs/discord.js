@@ -106,13 +106,13 @@ class ClientDataResolver {
    * Data that resolves to give a Base64 string, typically for image uploading. This can be:
    * * A Buffer
    * * A Base64 String
-   * @typedef {Buffer|String} Base64Resolvable
+   * @typedef {Buffer|string} Base64Resolvable
    */
 
   /**
    * Resolves a Base64Resolvable to a Base 64 image
    * @param {Base64Resolvable} dataResolvable the base 64 resolvable you want to resolve
-   * @returns {?String}
+   * @returns {?string}
    */
   resolveBase64(data) {
     if (data instanceof Buffer) {
@@ -126,7 +126,7 @@ class ClientDataResolver {
    * Data that can be resolved to give a Channel. This can be:
    * * An instance of a Channel
    * * An ID of a Channel
-   * @typedef {Channel|String} ChannelResolvable
+   * @typedef {Channel|string} ChannelResolvable
    */
 
   /**
@@ -151,13 +151,13 @@ class ClientDataResolver {
    * * A String
    * * An Array (joined with a new line delimiter to give a string)
    * * Any object
-   * @typedef {String|Array|Object} StringResolvable
+   * @typedef {string|Array|Object} StringResolvable
    */
 
   /**
    * Resolves a StringResolvable to a String
-   * @param {StringResolvable} stringResolvable the string resolvable to resolve
-   * @returns {String}
+   * @param {stringResolvable} stringResolvable the string resolvable to resolve
+   * @returns {string}
    */
   resolveString(data) {
     if (data instanceof String) {
@@ -176,13 +176,13 @@ class ClientDataResolver {
    * * A Buffer
    * * The path to a local file
    * * An URL
-   * @typedef {String|Buffer} FileResolvable
+   * @typedef {string|Buffer} FileResolvable
    */
 
   /**
    * Resolves a FileResolvable to a Buffer
    * @param {FileResolvable} fileResolvable the file resolvable to resolve
-   * @returns {String|Buffer}
+   * @returns {string|Buffer}
    */
   resolveFile(resource) {
     if ($string(resource)) {

@@ -34,7 +34,7 @@ class Message {
   setup(data) {
     /**
      * Whether or not this message is pinned
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.pinned = data.pinned;
     /**
@@ -52,19 +52,19 @@ class Message {
     }
     /**
      * The content of the message
-     * @type {String}
+     * @type {string}
      */
     this.content = data.content;
     this._timestamp = new Date(data.timestamp).getTime();
     this._editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
     /**
      * Whether or not the message was Text-To-Speech
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.tts = data.tts;
     /**
      * A random number used for checking message delivery
-     * @type {String}
+     * @type {string}
      */
     this.nonce = data.nonce;
     /**
@@ -74,7 +74,7 @@ class Message {
     this.embeds = data.embeds.map(e => new Embed(this, e));
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID.
-     * @type {Collection<String, MessageAttachment>}
+     * @type {Collection<string, MessageAttachment>}
      */
     this.attachments = new Collection();
     for (const attachment of data.attachments) {
@@ -83,11 +83,11 @@ class Message {
     /**
      * An object containing a further users, roles or channels collections
      * @type {Object}
-     * @property {Collection<String, User>} mentions.users Mentioned users, maps their ID to the user object.
-     * @property {Collection<String, Role>} mentions.roles Mentioned roles, maps their ID to the role object.
-     * @property {Collection<String, GuildChannel>}
+     * @property {Collection<string, User>} mentions.users Mentioned users, maps their ID to the user object.
+     * @property {Collection<string, Role>} mentions.roles Mentioned roles, maps their ID to the role object.
+     * @property {Collection<string, GuildChannel>}
      * mentions.channels Mentioned channels, maps their ID to the channel object.
-     * @property {Boolean} mentions.everyone whether or not @everyone was mentioned.
+     * @property {boolean} mentions.everyone whether or not @everyone was mentioned.
      */
     this.mentions = {
       users: new Collection(),
@@ -97,7 +97,7 @@ class Message {
     };
     /**
      * The ID of the message (unique in the channel it was sent)
-     * @type {String}
+     * @type {string}
      */
     this.id = data.id;
 
@@ -132,7 +132,7 @@ class Message {
 
     /**
      * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.system = false;
     if (data.type === 6) {
@@ -234,7 +234,7 @@ class Message {
    * method allows you to see if there are differences in content, embeds, attachments, nonce and tts properties.
    * @param {Message} message The message to compare it to
    * @param {Object} rawData Raw data passed through the WebSocket about this message
-   * @returns {Boolean}
+   * @returns {boolean}
    */
   equals(message, rawData) {
     const embedUpdate = !message.author && !message.attachments;
@@ -263,7 +263,7 @@ class Message {
 
   /**
    * Deletes the message
-   * @param {Number} [timeout=0] How long to wait to delete the message in milliseconds
+   * @param {number} [timeout=0] How long to wait to delete the message in milliseconds
    * @returns {Promise<Message, Error>}
    * @example
    * // delete a message
@@ -283,7 +283,7 @@ class Message {
 
   /**
    * Edit the content of a message
-   * @param {String} content the new content of a message
+   * @param {string} content the new content of a message
    * @returns {Promise<Message, Error>}
    * @example
    * // update the content of a message
@@ -297,7 +297,7 @@ class Message {
 
   /**
    * Reply to a message
-   * @param {String} content the content of the message
+   * @param {string} content the content of the message
    * @param {MessageOptions} [options = {}] the options to provide
    * @returns {Promise<Message, Error>}
    * @example

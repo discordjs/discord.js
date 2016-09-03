@@ -14,20 +14,20 @@ class SequentialRequestHandler extends RequestHandler {
 
     /**
      * Whether this rate limiter is waiting for a response from a request
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.waiting = false;
 
     /**
      * The endpoint that this handler is handling
-     * @type {String}
+     * @type {string}
      */
     this.endpoint = endpoint;
 
     /**
      * The time difference between Discord's Dates and the local computer's Dates. A positive number means the local
      * computer's time is ahead of Discord's.
-     * @type {Number}
+     * @type {number}
      */
     this.timeDifference = 0;
   }

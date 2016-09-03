@@ -52,14 +52,14 @@ class MessageCollector extends EventEmitter {
     this.options = options;
     /**
      * Whether this collector has stopped collecting Messages.
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.ended = false;
     this.listener = (message => this.verify(message));
     this.channel.client.on('message', this.listener);
     /**
      * A collection of collected messages, mapped by message ID.
-     * @type {Collection<String, Message>}
+     * @type {Collection<string, Message>}
      */
     this.collected = new Collection();
     if (options.time) {
@@ -71,7 +71,7 @@ class MessageCollector extends EventEmitter {
    * Verifies a message against the filter and options
    * @private
    * @param {Message} message
-   * @returns {Boolean}
+   * @returns {boolean}
    */
   verify(message) {
     if (this.channel ? this.channel.id !== message.channel.id : false) {
@@ -109,10 +109,10 @@ class MessageCollector extends EventEmitter {
     this.channel.client.removeListener('message', this.listener);
     /**
      * Emitted when the Collector stops collecting.
-     * @param {Collection<String, Message>} collection A collection of messages collected
+     * @param {Collection<string, Message>} collection A collection of messages collected
      * during the lifetime of the Collector.
      * Mapped by the ID of the Messages.
-     * @param {String} reason The reason for the end of the collector. If it ended because it reached the specified time
+     * @param {string} reason The reason for the end of the collector. If it ended because it reached the specified time
      * limit, this would be `time`. If you invoke `.stop()` without specifying a reason, this would be `user`. If it
      * ended because it reached its message limit, it will be `limit`.
      * @event MessageCollector#end
@@ -130,15 +130,15 @@ class TextBasedChannel {
   constructor() {
     /**
      * A Collection containing the messages sent to this channel.
-     * @type {Collection<String, Message>}
+     * @type {Collection<string, Message>}
      */
     this.messages = new Collection();
   }
 
   /**
    * Bulk delete a given Collection or Array of messages in one go. Returns the deleted messages after.
-   * @param {Map<String, Message>|Array<Message>} messages the messages to delete
-   * @returns {Collection<String, Message>}
+   * @param {Map<string, Message>|Array<Message>} messages the messages to delete
+   * @returns {Collection<string, Message>}
    */
   bulkDelete(messages) {
     if (messages instanceof Map) {
@@ -162,7 +162,7 @@ class TextBasedChannel {
    */
   /**
    * Send a message to this channel
-   * @param {String} content the content to send
+   * @param {string} content the content to send
    * @param {MessageOptions} [options={}] the options to provide
    * @returns {Promise<Message>}
    * @example
@@ -176,7 +176,7 @@ class TextBasedChannel {
   }
   /**
    * Send a text-to-speech message to this channel
-   * @param {String} content the content to send
+   * @param {string} content the content to send
    * @param {MessageOptions} [options={}] the options to provide
    * @returns {Promise<Message>}
    * @example
@@ -191,7 +191,7 @@ class TextBasedChannel {
   /**
    * Send a file to this channel
    * @param {FileResolvable} attachment The file to send
-   * @param {String} [fileName="file.jpg"] The name and extension of the file
+   * @param {string} [fileName="file.jpg"] The name and extension of the file
    * @returns {Promise<Message>}
    */
   sendFile(attachment, fileName) {
@@ -232,7 +232,7 @@ class TextBasedChannel {
   /**
    * Gets the past messages sent in this channel. Resolves with a Collection mapping message ID's to Message objects.
    * @param {ChannelLogsQueryOptions} [options={}] the query parameters to pass in
-   * @returns {Promise<Collection<String, Message>, Error>}
+   * @returns {Promise<Collection<string, Message>, Error>}
    * @example
    * // get messages
    * channel.fetchMessages({limit: 10})
@@ -257,8 +257,8 @@ class TextBasedChannel {
 
   /**
    * Starts a typing indicator in the channel.
-   * @param {Number} [count] The number of times startTyping should be considered to have been called
-   * @returns {null}
+   * @param {number} [count] The number of times startTyping should be considered to have been called
+   * @returns {void}
    * @example
    * // start typing in a channel
    * channel.startTyping();
@@ -283,8 +283,8 @@ class TextBasedChannel {
    * Stops the typing indicator in the channel.
    * The indicator will only stop if this is called as many times as startTyping().
    * <info>It can take a few seconds for the Client User to stop typing.</info>
-   * @param {Boolean} [force=false] whether or not to force the indicator to stop regardless of call count
-   * @returns {null}
+   * @param {boolean} [force=false] whether or not to force the indicator to stop regardless of call count
+   * @returns {void}
    * @example
    * // stop typing in a channel
    * channel.stopTyping();
@@ -305,7 +305,7 @@ class TextBasedChannel {
 
   /**
    * Whether or not the typing indicator is being shown in the channel.
-   * @type {Boolean}
+   * @type {boolean}
    */
   get typing() {
     return this.client.user._typing.has(this.id);
@@ -313,7 +313,7 @@ class TextBasedChannel {
 
   /**
    * Number of times `startTyping` has been called.
-   * @type {Number}
+   * @type {number}
    */
   get typingCount() {
     if (this.client.user._typing.has(this.id)) return this.client.user._typing.get(this.id).count;
@@ -354,7 +354,7 @@ class TextBasedChannel {
    * filter.
    * @param {CollectorFilterFunction} filter the filter function to use
    * @param {AwaitMessagesOptions} [options={}] optional options to pass to the internal collector
-   * @returns {Promise<Collection<String, Message>>}
+   * @returns {Promise<Collection<string, Message>>}
    * @example
    * // await !vote messages
    * const filter = m => m.content.startsWith('!vote');
@@ -394,7 +394,7 @@ class TextBasedChannel {
 
   /**
    * Fetches the pinned messages of this Channel and returns a Collection of them.
-   * @returns {Promise<Collection<String, Message>, Error>}
+   * @returns {Promise<Collection<string, Message>, Error>}
    */
   fetchPinnedMessages() {
     return new Promise((resolve, reject) => {

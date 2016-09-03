@@ -34,19 +34,19 @@ class Guild {
 
     /**
      * A Collection of members that are in this Guild. The key is the member's ID, the value is the member.
-     * @type {Collection<String, GuildMember>}
+     * @type {Collection<string, GuildMember>}
      */
     this.members = new Collection();
 
     /**
      * A Collection of channels that are in this Guild. The key is the channel's ID, the value is the channel.
-     * @type {Collection<String, GuildChannel>}
+     * @type {Collection<string, GuildChannel>}
      */
     this.channels = new Collection();
 
     /**
      * A Collection of roles that are in this Guild. The key is the role's ID, the value is the role.
-     * @type {Collection<String, Role>}
+     * @type {Collection<string, Role>}
      */
     this.roles = new Collection();
 
@@ -57,12 +57,12 @@ class Guild {
     if (data.unavailable) {
       /**
        * Whether the Guild is available to access. If it is not available, it indicates a server outage.
-       * @type {Boolean}
+       * @type {boolean}
        */
       this.available = false;
       /**
        * The Unique ID of the Guild, useful for comparisons.
-       * @type {String}
+       * @type {string}
        */
       this.id = data.id;
     } else {
@@ -152,7 +152,7 @@ class Guild {
 
   /**
    * When concatenated with a String, this automatically concatenates the Guild's name instead of the Guild object.
-   * @returns {String}
+   * @returns {string}
    * @example
    * // logs: Hello from My Guild!
    * console.log(`Hello from ${guild}!`);
@@ -181,7 +181,7 @@ class Guild {
    * it is advisable to just compare `guild.id === guild2.id` as it is much faster and is often
    * what most users need.
    * @param {Guild} guild the guild to compare
-   * @returns {Boolean}
+   * @returns {boolean}
    */
   equals(data) {
     let base =
@@ -220,7 +220,7 @@ class Guild {
        * Emitted once a Guild Member starts/stops speaking
        * @event Client#guildMemberSpeaking
        * @param {GuildMember} member the member that started/stopped speaking
-       * @param {Boolean} speaking whether or not the member is speaking
+       * @param {boolean} speaking whether or not the member is speaking
        */
       this.client.emit(Constants.Events.GUILD_MEMBER_SPEAKING, member, speaking);
     }
@@ -228,8 +228,8 @@ class Guild {
 
   /**
    * Sets up the Guild
-   * @param {any} data
-   * @returns {null}
+   * @param {*} data
+   * @returns {void}
    * @private
    */
   setup(data) {
@@ -237,33 +237,33 @@ class Guild {
     this.available = !data.unavailable;
     /**
      * The hash of the guild splash image, or null if no splash (VIP only)
-     * @type {?String}
+     * @type {?string}
      */
     this.splash = data.splash;
     /**
      * The region the guild is located in
-     * @type {String}
+     * @type {string}
      */
     this.region = data.region;
     /**
      * The name of the guild
-     * @type {String}
+     * @type {string}
      */
     this.name = data.name;
     /**
      * The full amount of members in this Guild as of `READY`
-     * @type {Number}
+     * @type {number}
      */
     this.memberCount = data.member_count;
     /**
      * Whether the guild is "large" (has more than 250 members)
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.large = data.large;
     this._joinDate = new Date(data.joined_at).getTime();
     /**
      * The hash of the guild icon, or null if there is no icon.
-     * @type {?String}
+     * @type {?string}
      */
     this.icon = data.icon;
     /**
@@ -281,22 +281,22 @@ class Guild {
     }
     /**
      * The time in seconds before a user is counted as "away from keyboard".
-     * @type {?Number}
+     * @type {?number}
      */
     this.afkTimeout = data.afk_timeout;
     /**
      * The ID of the voice channel where AFK members are moved.
-     * @type {?String}
+     * @type {?string}
      */
     this.afkChannelID = data.afk_channel_id;
     /**
      * Whether embedded images are enabled on this guild.
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.embedEnabled = data.embed_enabled;
     /**
      * The verification level of the guild.
-     * @type {Number}
+     * @type {number}
      */
     this.verificationLevel = data.verification_level;
     this.features = data.features || [];
@@ -365,8 +365,8 @@ class Guild {
 
   /**
    * Creates a new Channel in the Guild.
-   * @param {String} name the name of the new channel.
-   * @param {String} type the type of the new channel, either `text` or `voice`.
+   * @param {string} name the name of the new channel.
+   * @param {string} type the type of the new channel, either `text` or `voice`.
    * @returns {Promise<TextChannel|VoiceChannel, Error>}
    * @example
    * // create a new text channel
@@ -436,7 +436,7 @@ class Guild {
 
   /**
    * Edit the name of the Guild.
-   * @param {String} name the new name of the Guild.
+   * @param {string} name the new name of the Guild.
    * @returns {Promise<Guild, Error>}
    * @example
    * // edit the guild name
@@ -492,7 +492,7 @@ class Guild {
 
   /**
    * Edit the AFK timeout of the Guild.
-   * @param {Number} afkTimeout the time in seconds that a user must be idle to be considered AFK.
+   * @param {number} afkTimeout the time in seconds that a user must be idle to be considered AFK.
    * @returns {Promise<Guild, Error>}
    * @example
    * // edit the guild AFK channel
@@ -562,7 +562,7 @@ class Guild {
 
   /**
    * Fetch a Collection of banned users in this Guild.
-   * @returns {Promise<Collection<String, User>, Error>}
+   * @returns {Promise<Collection<string, User>, Error>}
    */
   fetchBans() {
     return this.client.rest.methods.getGuildBans(this);
@@ -570,7 +570,7 @@ class Guild {
 
   /**
    * Fetch a Collection of invites to this Guild. Resolves with a Collection mapping invites by their codes.
-   * @returns {Promise<Collection<String, Invite>, Error>}
+   * @returns {Promise<Collection<string, Invite>, Error>}
    */
   fetchInvites() {
     return this.client.rest.methods.getGuildInvites(this);
@@ -579,7 +579,7 @@ class Guild {
   /**
    * Fetches all the members in the Guild, even if they are offline. If the Guild has less than 250 members,
    * this should not be necessary.
-   * @param {String} [query=''] An optional query to provide when fetching members
+   * @param {string} [query=''] An optional query to provide when fetching members
    * @returns {Promise<Guild, Error>}
    */
   fetchMembers(query = '') {
@@ -606,7 +606,7 @@ class Guild {
 
   /**
    * Gets the URL to this guild's icon (if it has one, otherwise it returns null)
-   * @type {?String}
+   * @type {?string}
    * @readonly
    */
   get iconURL() {

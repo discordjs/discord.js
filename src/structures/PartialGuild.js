@@ -21,22 +21,22 @@ class PartialGuild {
   setup(data) {
     /**
      * The hash of the guild splash image, or null if no splash (VIP only)
-     * @type {?String}
+     * @type {?string}
      */
     this.splash = data.splash;
     /**
      * The ID of this guild
-     * @type {String}
+     * @type {string}
      */
     this.id = data.id;
     /**
      * The hash of this guild's icon, or null if there is none.
-     * @type {?String}
+     * @type {?string}
      */
     this.icon = data.icon;
     /**
      * The name of this guild
-     * @type {String}
+     * @type {string}
      */
     this.name = data.name;
   }

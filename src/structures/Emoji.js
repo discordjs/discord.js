@@ -22,30 +22,30 @@ class Emoji {
   setup(data) {
     /**
      * The ID of the Emoji
-     * @type {String}
+     * @type {string}
      */
     this.id = data.id;
     /**
      * The name of the Emoji
-     * @type {String}
+     * @type {string}
      */
     this.name = data.name;
     this.roleIDS = data.roles;
     /**
      * Whether or not this emoji requires colons surrounding it
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.requiresColons = data.require_colons;
     /**
      * Whether this emoji is managed by an external service
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.managed = data.managed;
   }
 
   /**
    * A collection of roles this emoji is active for (empty if all). Mapped by role ID.
-   * @type {Collection<String, Role>}
+   * @type {Collection<string, Role>}
    * @readonly
    */
   get roles() {
@@ -60,7 +60,7 @@ class Emoji {
 
   /**
    * The URL to the emoji file
-   * @type {String}
+   * @type {string}
    * @readonly
    */
   get url() {
@@ -69,7 +69,7 @@ class Emoji {
 
   /**
    * When concatenated with a String, this automatically returns the emoji mention rather than the object.
-   * @returns {String}
+   * @returns {string}
    * @example
    * // send an emoji:
    * const emoji = guild.emojis.array()[0];
