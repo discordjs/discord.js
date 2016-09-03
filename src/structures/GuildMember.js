@@ -1,4 +1,5 @@
 const TextBasedChannel = require('./interface/TextBasedChannel');
+const Collection = require('../util/Collection');
 
 /**
  * Represents a Member of a Guild on Discord
@@ -82,22 +83,22 @@ class GuildMember {
   }
 
   /**
-   * A list of roles that are applied to this GuildMember
-   * @type {Array<Role>}
+   * A list of roles that are applied to this GuildMember, mapped by the role ID.
+   * @type {Collection<string, Role>}
    * @readonly
    */
   get roles() {
-    const list = [];
+    const list = new Collection();
     const everyoneRole = this.guild.roles.get(this.guild.id);
 
     if (everyoneRole) {
-      list.push(everyoneRole);
+      list.set(everyoneRole.id, everyoneRole);
     }
 
     for (const roleID of this._roles) {
       const role = this.guild.roles.get(roleID);
       if (role) {
-        list.push(role);
+        list.set(role.id, role);
       }
     }
 
