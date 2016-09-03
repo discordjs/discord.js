@@ -624,6 +624,13 @@ class Guild {
   get owner() {
     return this.members.get(this.ownerID);
   }
+
+  sync() {
+    return this.client.ws.send({
+      op: 12,
+      d: [this.id],
+    });
+  }
 }
 
 module.exports = Guild;
