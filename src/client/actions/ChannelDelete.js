@@ -4,8 +4,7 @@ class ChannelDeleteAction extends Action {
 
   constructor(client) {
     super(client);
-    this.timeouts = [];
-    this.deleted = {};
+    this.deleted = new Map();
   }
 
   handle(data) {
@@ -14,10 +13,10 @@ class ChannelDeleteAction extends Action {
     let channel = client.channels.get(data.id);
     if (channel) {
       client.dataManager.killChannel(channel);
-      this.deleted[channel.id] = channel;
+      this.deleted.set(channel.id, channel);
       this.scheduleForDeletion(channel.id);
-    } else if (this.deleted[data.id]) {
-      channel = this.deleted[data.id];
+    } else {
+      channel = this.deleted.get(data.id) || null;
     }
 
     return {
@@ -26,7 +25,7 @@ class ChannelDeleteAction extends Action {
   }
 
   scheduleForDeletion(id) {
-    this.client.setTimeout(() => delete this.deleted[id], this.client.options.rest_ws_bridge_timeout);
+    this.client.setTimeout(() => this.deleted.delete(id), this.client.options.rest_ws_bridge_timeout);
   }
 }
 

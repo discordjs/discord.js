@@ -4,12 +4,6 @@ const cloneObject = require('../../util/CloneObject');
 
 class GuildUpdateAction extends Action {
 
-  constructor(client) {
-    super(client);
-    this.deleted = {};
-    this.timeouts = [];
-  }
-
   handle(data) {
     const client = this.client;
 
