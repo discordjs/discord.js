@@ -33,7 +33,12 @@
   },
   "devDependencies": {
     "fs-extra": "^0.30.0",
-    "jsdoc-parse": "^1.2.7"
+    "jsdoc-parse": "^1.2.0",
+    "eslint": "^3.4.0",
+    "eslint-config-airbnb": "^10.0.0",
+    "eslint-plugin-import": "^1.14.0",
+    "eslint-plugin-react": "^6.2.0",
+    "eslint-plugin-jsx-a11y": "^2.2.0"
   },
   "optionalDependencies": {
     "node-opus": "^0.1.13"
