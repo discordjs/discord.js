@@ -80,7 +80,7 @@ class User {
 
   /**
    * Deletes a DM Channel (if one exists) between the Client and the User. Resolves with the Channel if successful.
-   * @return {Promise<DMChannel>}
+   * @returns {Promise<DMChannel>}
    */
   deleteDM() {
     return this.client.rest.methods.deleteChannel(this);
@@ -93,14 +93,12 @@ class User {
    * @returns {boolean}
    */
   equals(user) {
-    let base = (
-      user &&
+    let base = user &&
       this.username === user.username &&
       this.id === user.id &&
       this.discriminator === user.discriminator &&
       this.avatar === user.avatar &&
-      this.bot === Boolean(user.bot)
-    );
+      this.bot === Boolean(user.bot);
 
     if (base) {
       if (user.status) {

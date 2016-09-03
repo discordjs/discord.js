@@ -29,7 +29,7 @@ class ReadyHandler extends AbstractHandler {
 
     this.packetManager.ws.sessionID = data.session_id;
 
-    this.packetManager.ws.checkIfReady('abc');
+    this.packetManager.ws.checkIfReady();
   }
 
 }

@@ -11,7 +11,7 @@ function fetch(Encoder) {
   try {
     return new Encoder();
   } catch (err) {
-    return;
+    return null;
   }
 }
 

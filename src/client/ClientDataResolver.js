@@ -20,6 +20,7 @@ class ClientDataResolver {
   constructor(client) {
     this.client = client;
   }
+
   /**
    * Data that resolves to give a User object. This can be:
    * * A User object
@@ -80,15 +81,14 @@ class ClientDataResolver {
    * * A User object
    * @typedef {Guild} GuildMemberResolvable
    */
+
   /**
    * Resolves a GuildMemberResolvable to a GuildMember object
    * @param {GuildResolvable} guild the guild that the member is part of
    * @param {UserResolvable} user the user that is part of the guild
    * @returns {?GuildMember}
    */
-  resolveGuildMember($guild, $user) {
-    let guild = $guild;
-    let user = $user;
+  resolveGuildMember(guild, user) {
     if (user instanceof GuildMember) {
       return user;
     }
@@ -112,7 +112,7 @@ class ClientDataResolver {
 
   /**
    * Resolves a Base64Resolvable to a Base 64 image
-   * @param {Base64Resolvable} dataResolvable the base 64 resolvable you want to resolve
+   * @param {Base64Resolvable} data the base 64 resolvable you want to resolve
    * @returns {?string}
    */
   resolveBase64(data) {
@@ -132,7 +132,7 @@ class ClientDataResolver {
 
   /**
    * Resolves a ChannelResolvable to a Channel object
-   * @param {ChannelResolvable} channelResolvable the channel resolvable to resolve
+   * @param {ChannelResolvable} channel the channel resolvable to resolve
    * @returns {?Channel}
    */
   resolveChannel(channel) {
@@ -157,7 +157,7 @@ class ClientDataResolver {
 
   /**
    * Resolves a StringResolvable to a string
-   * @param {StringResolvable} StringResolvable the string resolvable to resolve
+   * @param {StringResolvable} data the string resolvable to resolve
    * @returns {string}
    */
   resolveString(data) {
@@ -176,13 +176,13 @@ class ClientDataResolver {
    * Data that can be resolved to give a Buffer. This can be:
    * * A Buffer
    * * The path to a local file
-   * * An URL
+   * * A URL
    * @typedef {string|Buffer} FileResolvable
    */
 
   /**
    * Resolves a FileResolvable to a Buffer
-   * @param {FileResolvable} fileResolvable the file resolvable to resolve
+   * @param {FileResolvable} resource the file resolvable to resolve
    * @returns {string|Buffer}
    */
   resolveFile(resource) {
@@ -190,20 +190,18 @@ class ClientDataResolver {
       return new Promise((resolve, reject) => {
         if (/^https?:\/\//.test(resource)) {
           request.get(resource)
-          .set('Content-Type', 'blob')
-          .end((err, res) => err ? reject(err) : resolve(res.body));
+            .set('Content-Type', 'blob')
+            .end((err, res) => err ? reject(err) : resolve(res.body));
         } else {
           const file = path.resolve(resource);
           const stat = fs.statSync(file);
           if (!stat.isFile()) {
-            return reject(new Error(`The file could not be found: ${file}`));
+            reject(new Error(`The file could not be found: ${file}`));
+            return;
           }
 
           fs.readFile(file, (err, data) => {
-            if (err) {
-              return reject(err);
-            }
-            resolve(data);
+            if (err) reject(err); else resolve(data);
           });
         }
       });

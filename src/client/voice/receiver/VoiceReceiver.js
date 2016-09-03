@@ -91,7 +91,8 @@ class VoiceReceiver extends EventEmitter {
        * @event VoiceReceiver#warn
        * @param {string} message the warning message
        */
-      return this.emit('warn', 'failed to decrypt voice packet');
+      this.emit('warn', 'failed to decrypt voice packet');
+      return;
     }
     data = new Buffer(data);
       /**

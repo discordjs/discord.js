@@ -47,7 +47,7 @@ class Collection extends Map {
   /**
    * If the items in this collection have a delete method (e.g. messages), invoke
    * the delete method. Returns an array of promises
-   * @return {Array<Promise>}
+   * @returns {Array<Promise>}
    */
   deleteAll() {
     const returns = [];

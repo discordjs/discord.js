@@ -212,7 +212,7 @@ class Role {
       }
     }
 
-    return ((this.permissions & permission) > 0);
+    return (this.permissions & permission) > 0;
   }
 
   /**
@@ -229,7 +229,7 @@ class Role {
    * @readonly
    */
   get hexColor() {
-    let col = (this.color).toString(16);
+    let col = this.color.toString(16);
     while (col.length < 6) {
       col = `0${col}`;
     }

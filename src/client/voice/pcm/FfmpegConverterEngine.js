@@ -7,6 +7,7 @@ function chooseCommand() {
       return cmd;
     }
   }
+  return null;
 }
 
 class FfmpegConverterEngine extends ConverterEngine {

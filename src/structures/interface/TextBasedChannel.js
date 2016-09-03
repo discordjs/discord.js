@@ -55,7 +55,7 @@ class MessageCollector extends EventEmitter {
      * @type {boolean}
      */
     this.ended = false;
-    this.listener = (message => this.verify(message));
+    this.listener = message => this.verify(message);
     this.channel.client.on('message', this.listener);
     /**
      * A collection of collected messages, mapped by message ID.
@@ -70,7 +70,7 @@ class MessageCollector extends EventEmitter {
   /**
    * Verifies a message against the filter and options
    * @private
-   * @param {Message} message
+   * @param {Message} message the message
    * @returns {boolean}
    */
   verify(message) {
@@ -258,7 +258,6 @@ class TextBasedChannel {
   /**
    * Starts a typing indicator in the channel.
    * @param {number} [count] The number of times startTyping should be considered to have been called
-   * @returns {void}
    * @example
    * // start typing in a channel
    * channel.startTyping();
@@ -284,7 +283,6 @@ class TextBasedChannel {
    * The indicator will only stop if this is called as many times as startTyping().
    * <info>It can take a few seconds for the Client User to stop typing.</info>
    * @param {boolean} [force=false] whether or not to force the indicator to stop regardless of call count
-   * @returns {void}
    * @example
    * // stop typing in a channel
    * channel.stopTyping();
