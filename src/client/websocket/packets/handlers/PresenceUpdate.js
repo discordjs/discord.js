@@ -45,14 +45,12 @@ class PresenceUpdateHandler extends AbstractHandler {
     data.user.status = data.status || user.status;
     data.user.game = data.game;
 
-    const same = (
-      data.user.username === user.username &&
+    const same = data.user.username === user.username &&
       data.user.id === user.id &&
       data.user.discriminator === user.discriminator &&
       data.user.avatar === user.avatar &&
       data.user.status === user.status &&
-      JSON.stringify(data.user.game) === JSON.stringify(user.game)
-    );
+      JSON.stringify(data.user.game) === JSON.stringify(user.game);
 
     if (!same) {
       const oldUser = cloneObject(user);

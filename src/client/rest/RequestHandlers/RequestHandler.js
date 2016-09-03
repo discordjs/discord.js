@@ -41,7 +41,7 @@ class RequestHandler {
    * Attempts to get this RequestHandler to process its current queue
    */
   handle() {
-
+    return;
   }
 }
 

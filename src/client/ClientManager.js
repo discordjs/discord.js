@@ -24,7 +24,6 @@ class ClientManager {
    * @param {string} token the authorization token
    * @param {function} resolve function to run when connection is successful
    * @param {function} reject function to run when connection fails
-   * @returns {void}
    */
   connectToWebSocket(token, resolve, reject) {
     this.client.token = token;
@@ -41,7 +40,6 @@ class ClientManager {
   /**
    * Sets up a keep-alive interval to keep the Client's connection valid
    * @param {number} time the interval in milliseconds at which heartbeat packets should be sent
-   * @returns {void}
    */
   setupKeepAlive(time) {
     this.heartbeatInterval = this.client.setInterval(() => {

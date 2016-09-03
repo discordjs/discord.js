@@ -123,10 +123,7 @@ class Guild {
       member.nickname = data.nick;
     }
 
-    const notSame = (
-      member.nickname !== oldMember.nickname &&
-      !arraysEqual(member._roles, oldMember._roles)
-    );
+    const notSame = member.nickname !== oldMember.nickname && !arraysEqual(member._roles, oldMember._roles);
 
     if (this.client.ws.status === Constants.Status.READY && notSame) {
       /**
@@ -183,28 +180,28 @@ class Guild {
    * @param {Guild} guild the guild to compare
    * @returns {boolean}
    */
-  equals(data) {
+  equals(guild) {
     let base =
-      data &&
-      this.id === data.id &&
-      this.available === !data.unavailable &&
-      this.splash === data.splash &&
-      this.region === data.region &&
-      this.name === data.name &&
-      this.memberCount === data.member_count &&
-      this.large === data.large &&
-      this.icon === data.icon &&
-      arraysEqual(this.features, data.features) &&
-      this.ownerID === data.owner_id &&
-      this.verificationLevel === data.verification_level &&
-      this.embedEnabled === data.embed_enabled;
+      guild &&
+      this.id === guild.id &&
+      this.available === !guild.unavailable &&
+      this.splash === guild.splash &&
+      this.region === guild.region &&
+      this.name === guild.name &&
+      this.memberCount === guild.member_count &&
+      this.large === guild.large &&
+      this.icon === guild.icon &&
+      arraysEqual(this.features, guild.features) &&
+      this.ownerID === guild.owner_id &&
+      this.verificationLevel === guild.verification_level &&
+      this.embedEnabled === guild.embed_enabled;
 
     if (base) {
       if (this.embedChannel) {
-        if (this.embedChannel.id !== data.embed_channel_id) {
+        if (this.embedChannel.id !== guild.embed_channel_id) {
           base = false;
         }
-      } else if (data.embed_channel_id) {
+      } else if (guild.embed_channel_id) {
         base = false;
       }
     }
@@ -228,7 +225,7 @@ class Guild {
 
   /**
    * Sets up the Guild
-   * @param {*} data
+   * @param {*} data the raw data of the guild
    * @returns {void}
    * @private
    */
@@ -588,7 +585,8 @@ class Guild {
         throw new Error('already fetching guild members');
       }
       if (this.memberCount === this.members.size) {
-        return resolve(this);
+        resolve(this);
+        return;
       }
       this._fetchWaiter = resolve;
       this.client.ws.send({

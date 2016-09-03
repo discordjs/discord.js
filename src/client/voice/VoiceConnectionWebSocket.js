@@ -51,16 +51,18 @@ class VoiceConnectionWebSocket extends EventEmitter {
     });
   }
 
-  _onClose(e) {
+  _onClose(err) {
     if (!this.opened && this.attempts >= 0) {
-      return this.setupWS();
+      this.setupWS();
+      return;
     }
-    this.emit('close', e);
+    this.emit('close', err);
   }
 
   _onError(e) {
     if (!this.opened && this.attempts >= 0) {
-      return this.setupWS();
+      this.setupWS();
+      return;
     }
     this.emit('error', e);
   }
@@ -83,7 +85,8 @@ class VoiceConnectionWebSocket extends EventEmitter {
     try {
       packet = JSON.parse(event.data);
     } catch (error) {
-      return this._onError(error);
+      this._onError(error);
+      return;
     }
 
     switch (packet.op) {

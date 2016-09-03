@@ -53,7 +53,7 @@ class EvaluatedPermissions {
       }
     }
 
-    return ((this.permissions & permission) > 0);
+    return (this.permissions & permission) > 0;
   }
 }
 

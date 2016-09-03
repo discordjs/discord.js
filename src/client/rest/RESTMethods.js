@@ -417,9 +417,7 @@ class RESTMethods {
         }
       };
       this.rest.client.on(Constants.Events.GUILD_BAN_REMOVE, listener);
-      this.rest.makeRequest('del', `${Constants.Endpoints.guildBans(guild.id)}/${member.id}`, true)
-        .then(() => {})
-        .catch(reject);
+      this.rest.makeRequest('del', `${Constants.Endpoints.guildBans(guild.id)}/${member.id}`, true).catch(reject);
     });
   }
 

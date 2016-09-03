@@ -155,7 +155,7 @@ class Message {
     return new Date(this._editedTimestamp);
   }
 
-  patch(data) {
+  patch(data) { // eslint-disable-line complexity
     if (data.author) {
       this.author = this.client.users.get(data.author.id);
       if (this.guild) {

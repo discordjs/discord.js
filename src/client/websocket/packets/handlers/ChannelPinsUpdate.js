@@ -20,7 +20,7 @@ class ChannelPinsUpdate extends AbstractHandler {
     const time = new Date(data.last_pin_timestamp);
 
     if (channel && time) {
-      return client.emit(Constants.Events.CHANNEL_PINS_UPDATE, channel, time);
+      client.emit(Constants.Events.CHANNEL_PINS_UPDATE, channel, time);
     }
   }
 

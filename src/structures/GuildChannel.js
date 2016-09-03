@@ -65,20 +65,18 @@ class GuildChannel extends Channel {
    * @param {GuildChannel} channel the channel to compare this channel to
    * @returns {boolean}
    */
-  equals(other) {
-    let base = (
-      other &&
-      this.type === other.type &&
-      this.topic === other.topic &&
-      this.position === other.position &&
-      this.name === other.name &&
-      this.id === other.id
-    );
+  equals(channel) {
+    let base = channel &&
+      this.type === channel.type &&
+      this.topic === channel.topic &&
+      this.position === channel.position &&
+      this.name === channel.name &&
+      this.id === channel.id;
 
     if (base) {
-      if (other.permission_overwrites) {
+      if (channel.permission_overwrites) {
         const thisIDSet = Array.from(this.permissionOverwrites.keys());
-        const otherIDSet = other.permission_overwrites.map(overwrite => overwrite.id);
+        const otherIDSet = channel.permission_overwrites.map(overwrite => overwrite.id);
         if (arraysEqual(thisIDSet, otherIDSet)) {
           base = true;
         } else {
@@ -168,7 +166,7 @@ class GuildChannel extends Channel {
   /**
    * Overwrites the permissions for a user or role in this channel.
    * @param {Role|UserResolvable} userOrRole the user or role to update
-   * @param {PermissionOverwriteOptions} config the configuration for the update
+   * @param {PermissionOverwriteOptions} options the configuration for the update
    * @returns {Promise<null, Error>}
    * @example
    * // overwrite permissions for a message author
@@ -205,11 +203,11 @@ class GuildChannel extends Channel {
 
     for (const perm in options) {
       if (options[perm] === true) {
-        payload.allow |= (Constants.PermissionFlags[perm] || 0);
+        payload.allow |= Constants.PermissionFlags[perm] || 0;
         payload.deny &= ~(Constants.PermissionFlags[perm] || 0);
       } else if (options[perm] === false) {
         payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
-        payload.deny |= (Constants.PermissionFlags[perm] || 0);
+        payload.deny |= Constants.PermissionFlags[perm] || 0;
       }
     }
 

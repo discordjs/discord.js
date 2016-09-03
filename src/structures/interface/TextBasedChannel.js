@@ -55,7 +55,7 @@ class MessageCollector extends EventEmitter {
      * @type {boolean}
      */
     this.ended = false;
-    this.listener = (message => this.verify(message));
+    this.listener = message => this.verify(message);
     this.channel.client.on('message', this.listener);
     /**
      * A collection of collected messages, mapped by message ID.
@@ -70,7 +70,7 @@ class MessageCollector extends EventEmitter {
   /**
    * Verifies a message against the filter and options
    * @private
-   * @param {Message} message
+   * @param {Message} message the message
    * @returns {boolean}
    */
   verify(message) {
@@ -100,6 +100,7 @@ class MessageCollector extends EventEmitter {
   /**
    * Stops the collector and emits `end`.
    * @param {string} [reason='user'] an optional reason for stopping the collector.
+   * @returns {void}
    */
   stop(reason = 'user') {
     if (this.ended) {

@@ -117,7 +117,7 @@ class Client extends EventEmitter {
    * @param  {string} emailOrToken The email or token used for the account. If it is an email, a password _must_ be
    * provided.
    * @param  {string} [password] The password for the account, only needed if an email was provided.
-   * @return {Promise<string>}
+   * @returns {Promise<string>}
    * @example
    * // log the client in using a token
    * const token = 'my token';
@@ -128,13 +128,13 @@ class Client extends EventEmitter {
    * const password = 'supersecret123';
    * client.login(email, password);
    */
-  login(email, password) {
+  login(emailOrToken, password) {
     if (password) {
       // login with email and password
-      return this.rest.methods.loginEmailPassword(email, password);
+      return this.rest.methods.loginEmailPassword(emailOrToken, password);
     }
     // login with token
-    return this.rest.methods.loginToken(email);
+    return this.rest.methods.loginToken(emailOrToken);
   }
 
   /**
@@ -174,7 +174,7 @@ class Client extends EventEmitter {
   }
 
   syncGuilds(guilds = this.guilds.array()) {
-    return this.ws.send({
+    this.ws.send({
       op: 12,
       d: guilds.map(g => g.id),
     });
@@ -184,7 +184,7 @@ class Client extends EventEmitter {
    * Caches a user, or obtains it from the cache if it's already cached.
    * If the user isn't already cached, it will only be obtainable by OAuth bot accounts.
    * @param {string} id The ID of the user to obtain
-   * @return {Promise<User>}
+   * @returns {Promise<User>}
    */
   fetchUser(id) {
     if (this.users.has(id)) return Promise.resolve(this.users.get(id));

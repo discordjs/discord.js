@@ -62,15 +62,18 @@ class StreamDispatcher extends EventEmitter {
   _send() {
     try {
       if (this._triggered) {
-        return this._setSpeaking(false);
+        this._setSpeaking(false);
+        return;
       }
       const data = this.streamingData;
       if (data.missed >= 5) {
-        return this._triggerTerminalState('error', new Error('stream is not generating fast enough'));
+        this._triggerTerminalState('error', new Error('stream is not generating fast enough'));
+        return;
       }
       if (this.paused) {
-        data.timestamp = (data.timestamp + 4294967295) ? data.timestamp + 960 : 0;
-        return this.player.connection.manager.client.setTimeout(() => this._send(), data.length * 10);
+        data.timestamp = data.timestamp + 4294967295 ? data.timestamp + 960 : 0;
+        this.player.connection.manager.client.setTimeout(() => this._send(), data.length * 10);
+        return;
       }
       const bufferLength = 1920 * data.channels;
       this._setSpeaking(true);
@@ -78,7 +81,8 @@ class StreamDispatcher extends EventEmitter {
 
       if (!buffer) {
         data.missed++;
-        return this.player.connection.manager.client.setTimeout(() => this._send(), data.length * 10);
+        this.player.connection.manager.client.setTimeout(() => this._send(), data.length * 10);
+        return;
       }
 
       data.missed = 0;
@@ -91,7 +95,7 @@ class StreamDispatcher extends EventEmitter {
 
       data.count++;
       data.sequence = (data.sequence + 1) < (65536) ? data.sequence + 1 : 0;
-      data.timestamp = (data.timestamp + 4294967295) ? data.timestamp + 960 : 0;
+      data.timestamp = data.timestamp + 4294967295 ? data.timestamp + 960 : 0;
 
       this._sendBuffer(buffer, data.sequence, data.timestamp);
 
@@ -114,14 +118,14 @@ class StreamDispatcher extends EventEmitter {
   /**
   * Emitted once the stream has encountered an error. Attach a `once` listener to this. Also emits `end`.
   * @event StreamDispatcher#error
-  * @param {Error} error the error encountered
+  * @param {Error} err the error encountered
   */
-  _triggerError(e) {
+  _triggerError(err) {
     this.emit('end');
-    this.emit('error', e);
+    this.emit('error', err);
   }
 
-  _triggerTerminalState(state, e) {
+  _triggerTerminalState(state, err) {
     if (this._triggered) {
       return;
     }
@@ -136,10 +140,10 @@ class StreamDispatcher extends EventEmitter {
     this._setSpeaking(false);
     switch (state) {
       case 'end':
-        this._triggerEnd(e);
+        this._triggerEnd(err);
         break;
       case 'error':
-        this._triggerError(e);
+        this._triggerError(err);
         break;
       default:
         this.emit('error', 'unknown trigger state');
@@ -149,10 +153,11 @@ class StreamDispatcher extends EventEmitter {
 
   _startStreaming() {
     if (!this.stream) {
-      return this.emit('error', 'no stream');
+      this.emit('error', 'no stream');
+      return;
     }
-    this.stream.on('end', e => this._triggerTerminalState('end', e));
-    this.stream.on('error', e => this._triggerTerminalState('error', e));
+    this.stream.on('end', err => this._triggerTerminalState('end', err));
+    this.stream.on('error', err => this._triggerTerminalState('error', err));
     const data = this.streamingData;
     data.length = 20;
     data.missed = 0;
@@ -172,7 +177,6 @@ class StreamDispatcher extends EventEmitter {
 
   /**
    * Stops the current stream permanently and emits an `end` event.
-   * @returns {void}
    */
   end() {
     this._triggerTerminalState('end', 'user requested');
@@ -180,7 +184,6 @@ class StreamDispatcher extends EventEmitter {
 
   /**
    * Stops sending voice packets to the voice connection (stream may still progress however)
-   * @returns {void}
    */
   pause() {
     this._pause(true);
@@ -188,7 +191,6 @@ class StreamDispatcher extends EventEmitter {
 
   /**
    * Resumes sending voice packets to the voice connection (may be further on in the stream than when paused)
-   * @returns {void}
    */
   resume() {
     this._pause(false);

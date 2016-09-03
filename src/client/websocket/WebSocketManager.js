@@ -49,7 +49,6 @@ class WebSocketManager {
   /**
    * Connects the client to a given gateway
    * @param {string} gateway the gateway to connect to
-   * @returns {void}
    */
   connect(gateway) {
     this.status = Constants.Status.CONNECTING;
@@ -68,12 +67,13 @@ class WebSocketManager {
 
   /**
    * Sends a packet to the gateway
-   * @param {Object} packet An object that can be JSON stringified
-   * @returns {void}
+   * @param {Object} data An object that can be JSON stringified
+   * @param {boolean} force Whether or not to send the packet immediately
    */
   send(data, force = false) {
     if (force) {
-      return this.ws.send(JSON.stringify(data));
+      this.ws.send(JSON.stringify(data));
+      return;
     }
     this._queue.push(JSON.stringify(data));
     this.doQueue();
@@ -89,9 +89,10 @@ class WebSocketManager {
     const item = this._queue[0];
     if (this.ws.readyState === WebSocket.OPEN && item) {
       if (this._remaining === 0) {
-        return this.client.setTimeout(() => {
+        this.client.setTimeout(() => {
           this.doQueue();
         }, 1000);
+        return;
       }
       this._remaining--;
       this.ws.send(item);
@@ -103,7 +104,6 @@ class WebSocketManager {
 
   /**
    * Run whenever the gateway connections opens up
-   * @returns {void}
    */
   eventOpen() {
     if (this.reconnecting) {
@@ -115,7 +115,6 @@ class WebSocketManager {
 
   /**
    * Sends a gatway resume packet, in cases of unexpected disconnections.
-   * @returns {void}
    */
   _sendResume() {
     const payload = {
@@ -132,7 +131,6 @@ class WebSocketManager {
 
   /**
    * Sends a new identification packet, in cases of new connections or failed reconnections.
-   * @returns {void}
    */
   _sendNewIdentify() {
     this.reconnecting = false;
@@ -150,7 +148,7 @@ class WebSocketManager {
 
   /**
    * Run whenever the connection to the gateway is closed, it will try to reconnect the client.
-   * @returns {void}
+   * @param {Object} event the event
    */
   eventClose(event) {
     if (event.code === 4004) {
@@ -164,12 +162,11 @@ class WebSocketManager {
   /**
    * Run whenever a message is received from the WebSocket. Returns `true` if the message
    * was handled properly.
-   * @param {Object} data the received websocket data
+   * @param {Object} event the received websocket data
    * @returns {boolean}
    */
-  eventMessage($event) {
+  eventMessage(event) {
     let packet;
-    const event = $event;
     try {
       if (event.binary) {
         event.data = zlib.inflateSync(event.data).toString();
@@ -191,15 +188,15 @@ class WebSocketManager {
 
   /**
    * Run whenever an error occurs with the WebSocket connection. Tries to reconnect
-   * @returns {void}
+   * @param {Error} err the error that occurred
    */
-  eventError(e) {
+  eventError(err) {
     /**
      * Emitted whenever the Client encounters a serious connection error
      * @event Client#error
      * @param {Error} error the encountered error
      */
-    this.client.emit('error', e);
+    this.client.emit('error', err);
     this.tryReconnect();
   }
 
@@ -217,7 +214,6 @@ class WebSocketManager {
   /**
    * Runs on new packets before `READY` to see if the Client is ready yet, if it is prepares
    * the `READY` event.
-   * @returns {void}
    */
   checkIfReady() {
     if (this.status !== Constants.Status.READY && this.status !== Constants.Status.NEARLY) {
@@ -229,10 +225,11 @@ class WebSocketManager {
         this.status = Constants.Status.NEARLY;
         if (this.client.options.fetch_all_members) {
           const promises = this.client.guilds.array().map(g => g.fetchMembers());
-          return Promise.all(promises).then(() => this._emitReady()).catch(e => {
+          Promise.all(promises).then(() => this._emitReady()).catch(e => {
             this.client.emit('warn', `error on pre-ready guild member fetching - ${e}`);
             this._emitReady();
           });
+          return;
         }
         this._emitReady();
       }
@@ -241,7 +238,6 @@ class WebSocketManager {
 
   /**
    * Tries to reconnect the client, changing the status to Constants.Status.RECONNECTING.
-   * @returns {void}
    */
   tryReconnect() {
     this.status = Constants.Status.RECONNECTING;
