@@ -12,6 +12,9 @@ const regex = /([\w]+)([^\w]+)/;
 const regexG = /([\w]+)([^\w]+)/g;
 
 function splitVarName(str) {
+  if (str === '*') {
+    return ['*', ''];
+  }
   const matches = str.match(regexG);
   const output = [];
   if (matches) {
