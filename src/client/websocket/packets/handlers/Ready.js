@@ -27,6 +27,12 @@ class ReadyHandler extends AbstractHandler {
 
     client.once('ready', client.syncGuilds.bind(client));
 
+    client.setTimeout(() => {
+      if (!client.ws.normalReady) {
+        client.ws._emitReady(false);
+      }
+    }, 1200 * data.guilds.length);
+
     this.packetManager.ws.sessionID = data.session_id;
 
     this.packetManager.ws.checkIfReady();
