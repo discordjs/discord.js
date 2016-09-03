@@ -8,7 +8,7 @@ the REST API methods, in order to prevent rewriting code to handle data,
 used to be but they're strictly for manipulating data and making sure
 that WebSocket events don't clash with REST methods.
 
- */
+*/
 
 class GenericAction {
 

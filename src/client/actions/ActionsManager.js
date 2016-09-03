@@ -1,6 +1,5 @@
-const requireAction = name => require(`./${name}`);
-
 class ActionsManager {
+
   constructor(client) {
     this.client = client;
 
@@ -24,7 +23,7 @@ class ActionsManager {
   }
 
   register(name) {
-    const Action = requireAction(name);
+    const Action = require(`./${name}`);
     this[name] = new Action(this.client);
   }
 }

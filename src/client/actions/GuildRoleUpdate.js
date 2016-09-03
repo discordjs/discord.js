@@ -6,23 +6,22 @@ class GuildRoleUpdateAction extends Action {
 
   handle(data) {
     const client = this.client;
+
     const guild = client.guilds.get(data.guild_id);
-
-    const roleData = data.role;
-
     if (guild) {
-      let oldRole;
-      const existingRole = guild.roles.get(roleData.id);
-      // exists and not the same
-      if (existingRole && !existingRole.equals(roleData)) {
-        oldRole = cloneObject(existingRole);
-        existingRole.setup(data.role);
-        client.emit(Constants.Events.GUILD_ROLE_UPDATE, guild, oldRole, existingRole);
+      const roleData = data.role;
+      let oldRole = null;
+
+      const role = guild.roles.get(roleData.id);
+      if (role && !role.equals(roleData)) {
+        oldRole = cloneObject(role);
+        role.setup(data.role);
+        client.emit(Constants.Events.GUILD_ROLE_UPDATE, guild, oldRole, role);
       }
 
       return {
         old: oldRole,
-        updated: existingRole,
+        updated: role,
       };
     }
 

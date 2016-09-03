@@ -54,7 +54,7 @@ class RESTMethods {
         $this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
           content, tts, nonce,
         }, file)
-        .then(data => resolve($this.rest.client.actions.MessageCreate.handle(data).m))
+        .then(data => resolve($this.rest.client.actions.MessageCreate.handle(data).message))
         .catch(reject);
       }
 
@@ -77,7 +77,7 @@ class RESTMethods {
           resolve(this.rest.client.actions.MessageDelete.handle({
             id: message.id,
             channel_id: message.channel.id,
-          }).m);
+          }).message);
         })
         .catch(reject);
     });
@@ -286,7 +286,7 @@ class RESTMethods {
           resolve(this.rest.client.actions.GuildMemberRemove.handle({
             guild_id: guild.id,
             user: member.user,
-          }).m);
+          }).member);
         })
         .catch(reject);
     });
