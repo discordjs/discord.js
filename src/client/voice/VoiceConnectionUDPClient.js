@@ -16,7 +16,8 @@ class VoiceConnectionUDPClient extends EventEmitter {
   dnsLookup() {
     dns.lookup(this.voiceConnection.endpoint, (err, address) => {
       if (err) {
-        return this.emit('error', err);
+        this.emit('error', err);
+        return;
       }
       this.connectUDP(address);
     });
@@ -27,7 +28,7 @@ class VoiceConnectionUDPClient extends EventEmitter {
       try {
         this.udpSocket.send(packet, 0, packet.length, this.data.port, this.udpIP);
       } catch (err) {
-        return this.emit('error', err);
+        this.emit('error', err);
       }
     }
   }

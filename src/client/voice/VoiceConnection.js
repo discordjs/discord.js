@@ -65,24 +65,22 @@ class VoiceConnection extends EventEmitter {
   /**
    * Executed whenever an error occurs with the UDP/WebSocket sub-client
    * @private
-   * @param {Error} error
-   * @returns {void}
+   * @param {Error} err The error that occurred
    */
-  _onError(e) {
-    this._reject(e);
+  _onError(err) {
+    this._reject(err);
     /**
      * Emitted whenever the connection encounters a fatal error.
      * @event VoiceConnection#error
      * @param {Error} error the encountered error
      */
-    this.emit('error', e);
-    this._shutdown(e);
+    this.emit('error', err);
+    this._shutdown(err);
   }
 
   /**
    * Disconnects the Client from the Voice Channel
    * @param {string} [reason='user requested'] the reason of the disconnection
-   * @returns {void}
    */
   disconnect(reason = 'user requested') {
     this.manager.client.ws.send({
@@ -94,7 +92,7 @@ class VoiceConnection extends EventEmitter {
         self_deaf: false,
       },
     });
-    return this._shutdown(reason);
+    this._shutdown(reason);
   }
 
   _onClose(e) {
@@ -122,7 +120,6 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Binds listeners to the WebSocket and UDP sub-clients
-   * @returns {void}
    * @private
    */
   bindListeners() {
@@ -208,7 +205,7 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Play the given file in the voice connection
-   * @param {string} filepath the path to the file
+   * @param {string} file the path to the file
    * @returns {StreamDispatcher}
    * @example
    * // play files natively

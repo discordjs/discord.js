@@ -70,11 +70,12 @@ class VoiceConnectionPlayer extends EventEmitter {
             streams.inputStream.destroy();
             this.emit('debug', 'stream kill part 5/5 pass');
           }
-        } catch (e) {
-          return e;
+        } catch (err) {
+          return err;
         }
       }
     }
+    return null;
   }
 
   setSpeaking(value) {

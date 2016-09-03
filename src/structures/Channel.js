@@ -37,7 +37,7 @@ class Channel {
 
   /**
    * Deletes the channel
-   * @return {Promise<Channel>}
+   * @returns {Promise<Channel>}
    * @example
    * // delete the channel
    * channel.delete()

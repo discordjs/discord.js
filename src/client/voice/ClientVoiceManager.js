@@ -99,12 +99,13 @@ class ClientVoiceManager {
   /**
    * Sets up a request to join a voice channel
    * @param {VoiceChannel} channel the voice channel to join
-   * @returns {void}
+   * @returns {Promise<VoiceConnection>}
    */
   joinChannel(channel) {
     return new Promise((resolve, reject) => {
       if (this.pending.get(channel.guild.id)) {
-        return reject(new Error('already connecting to a channel in this guild'));
+        reject(new Error('already connecting to a channel in this guild'));
+        return;
       }
       const existingConn = this.connections.get(channel.guild.id);
       if (existingConn) {
@@ -112,7 +113,8 @@ class ClientVoiceManager {
           this._sendWSJoin(channel);
           this.connections.get(channel.guild.id).channel = channel;
         }
-        return resolve(existingConn);
+        resolve(existingConn);
+        return;
       }
       this.pending.set(channel.guild.id, {
         channel,

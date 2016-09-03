@@ -8,6 +8,7 @@ class VoiceReadable extends Readable {
   }
 
   _read() {
+    return;
   }
 
   $push(d) {

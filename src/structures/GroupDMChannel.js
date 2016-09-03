@@ -54,13 +54,11 @@ class GroupDMChannel extends Channel {
   }
 
   equals(other) {
-    const base = (
-      other &&
+    const base = other &&
       this.id === other.id &&
       this.name === other.name &&
       this.icon === other.icon &&
-      this.owner.id === other.owner_id
-    );
+      this.owner.id === other.owner_id;
 
     if (base) {
       const thisIDs = this.recipients.array().map(r => r.id);
