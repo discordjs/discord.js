@@ -10,6 +10,7 @@ class GuildMemberRemoveAction extends Action {
 
   handle(data) {
     const client = this.client;
+
     const guild = client.guilds.get(data.guild_id);
     if (guild) {
       let member = guild.members.get(data.user.id);
@@ -17,25 +18,21 @@ class GuildMemberRemoveAction extends Action {
         guild.memberCount--;
         guild._removeMember(member);
         this.deleted[guild.id + data.user.id] = member;
-        if (client.status === Constants.Status.READY) {
-          client.emit(Constants.Events.GUILD_MEMBER_REMOVE, guild, member);
-        }
+        if (client.status === Constants.Status.READY) client.emit(Constants.Events.GUILD_MEMBER_REMOVE, guild, member);
         this.scheduleForDeletion(guild.id, data.user.id);
-      }
-
-      if (!member) {
+      } else {
         member = this.deleted[guild.id + data.user.id];
       }
 
       return {
-        g: guild,
-        m: member,
+        guild,
+        member,
       };
     }
 
     return {
-      g: guild,
-      m: null,
+      guild,
+      member: null,
     };
   }
 
@@ -44,14 +41,12 @@ class GuildMemberRemoveAction extends Action {
   }
 }
 
-
 /**
-* Emitted whenever a member leaves a guild, or is kicked.
-*
-* @event Client#guildMemberRemove
-* @param {Guild} guild the guild that the member has left.
-* @param {GuildMember} member the member that has left the guild.
-*/
-
+ * Emitted whenever a member leaves a guild, or is kicked.
+ *
+ * @event Client#guildMemberRemove
+ * @param {Guild} guild the guild that the member has left.
+ * @param {GuildMember} member the member that has left the guild.
+ */
 
 module.exports = GuildMemberRemoveAction;

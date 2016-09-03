@@ -10,23 +10,21 @@ class GuildRoleDeleteAction extends Action {
 
   handle(data) {
     const client = this.client;
+
     const guild = client.guilds.get(data.guild_id);
-
     if (guild) {
-      let exists = guild.roles.get(data.role_id);
-      if (exists) {
+      let role = guild.roles.get(data.role_id);
+      if (role) {
         guild.roles.delete(data.role_id);
-        this.deleted[guild.id + data.role_id] = exists;
+        this.deleted[guild.id + data.role_id] = role;
         this.scheduleForDeletion(guild.id, data.role_id);
-        client.emit(Constants.Events.GUILD_ROLE_DELETE, guild, exists);
-      }
-
-      if (!exists) {
-        exists = this.deleted[guild.id + data.role_id];
+        client.emit(Constants.Events.GUILD_ROLE_DELETE, guild, role);
+      } else {
+        role = this.deleted[guild.id + data.role_id];
       }
 
       return {
-        role: exists,
+        role,
       };
     }
 

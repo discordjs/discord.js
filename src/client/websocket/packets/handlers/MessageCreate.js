@@ -9,8 +9,8 @@ class MessageCreateHandler extends AbstractHandler {
 
     const response = client.actions.MessageCreate.handle(data);
 
-    if (response.m) {
-      client.emit(Constants.Events.MESSAGE_CREATE, response.m);
+    if (response.message) {
+      client.emit(Constants.Events.MESSAGE_CREATE, response.message);
     }
   }
 
