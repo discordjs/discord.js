@@ -5,7 +5,7 @@ class GuildDeleteAction extends Action {
 
   constructor(client) {
     super(client);
-    this.deleted = {};
+    this.deleted = new Map();
   }
 
   handle(data) {
@@ -27,10 +27,10 @@ class GuildDeleteAction extends Action {
 
       // delete guild
       client.guilds.delete(guild.id);
-      this.deleted[guild.id] = guild;
+      this.deleted.set(guild.id, guild);
       this.scheduleForDeletion(guild.id);
-    } else if (this.deleted[data.id]) {
-      guild = this.deleted[data.id];
+    } else {
+      guild = this.deleted.get(data.id) || null;
     }
 
     return {
@@ -39,7 +39,7 @@ class GuildDeleteAction extends Action {
   }
 
   scheduleForDeletion(id) {
-    this.client.setTimeout(() => delete this.deleted[id], this.client.options.rest_ws_bridge_timeout);
+    this.client.setTimeout(() => this.deleted.delete(id), this.client.options.rest_ws_bridge_timeout);
   }
 }
 

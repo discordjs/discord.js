@@ -5,7 +5,7 @@ class GuildMemberRemoveAction extends Action {
 
   constructor(client) {
     super(client);
-    this.deleted = {};
+    this.deleted = new Map();
   }
 
   handle(data) {
@@ -17,11 +17,11 @@ class GuildMemberRemoveAction extends Action {
       if (member) {
         guild.memberCount--;
         guild._removeMember(member);
-        this.deleted[guild.id + data.user.id] = member;
+        this.deleted.set(guild.id + data.user.id, member);
         if (client.status === Constants.Status.READY) client.emit(Constants.Events.GUILD_MEMBER_REMOVE, guild, member);
         this.scheduleForDeletion(guild.id, data.user.id);
       } else {
-        member = this.deleted[guild.id + data.user.id];
+        member = this.deleted.get(guild.id + data.user.id) || null;
       }
 
       return {
@@ -37,7 +37,7 @@ class GuildMemberRemoveAction extends Action {
   }
 
   scheduleForDeletion(guildID, userID) {
-    this.client.setTimeout(() => delete this.deleted[guildID + userID], this.client.options.rest_ws_bridge_timeout);
+    this.client.setTimeout(() => this.deleted.delete(guildID + userID), this.client.options.rest_ws_bridge_timeout);
   }
 }
 

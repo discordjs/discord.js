@@ -4,12 +4,6 @@ const Constants = require('../../util/Constants');
 
 class MessageDeleteBulkAction extends Action {
 
-  constructor(client) {
-    super(client);
-    this.timeouts = [];
-    this.deleted = {};
-  }
-
   handle(data) {
     const client = this.client;
     const channel = client.channels.get(data.channel_id);

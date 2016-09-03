@@ -4,7 +4,7 @@ class MessageDeleteAction extends Action {
 
   constructor(client) {
     super(client);
-    this.deleted = {};
+    this.deleted = new Map();
   }
 
   handle(data) {
@@ -16,10 +16,10 @@ class MessageDeleteAction extends Action {
 
       if (message) {
         channel.messages.delete(message.id);
-        this.deleted[channel.id + message.id] = message;
+        this.deleted.set(channel.id + message.id, message);
         this.scheduleForDeletion(channel.id, message.id);
-      } else if (this.deleted[channel.id + data.id]) {
-        message = this.deleted[channel.id + data.id];
+      } else {
+        message = this.deleted.get(channel.id + data.id) || null;
       }
 
       return {
@@ -33,7 +33,7 @@ class MessageDeleteAction extends Action {
   }
 
   scheduleForDeletion(channelID, messageID) {
-    this.client.setTimeout(() => delete this.deleted[channelID + messageID],
+    this.client.setTimeout(() => this.deleted.delete(channelID + messageID),
       this.client.options.rest_ws_bridge_timeout);
   }
 }
