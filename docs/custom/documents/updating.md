@@ -1,6 +1,6 @@
 # About the Rewrite
 The rewrite takes a much more OOP approach than previous versions, which allows code to be much more manageable.
-It's been written completely from scratch and should be much more stable, fixing caching issues that affected
+It's been rebuilt from the ground up and should be much more stable, fixing caching issues that affected
 older versions and it also has support for new Discord Features, such as emojis.
 
 ## Upgrading your code
