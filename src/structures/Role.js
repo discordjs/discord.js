@@ -198,7 +198,7 @@ class Role {
    * }
    */
   hasPermission(permission, explicit = false) {
-    if (permission instanceof String || typeof permission === 'string') {
+    if (typeof permission === 'string') {
       permission = Constants.PermissionFlags[permission];
     }
 
@@ -216,7 +216,7 @@ class Role {
   }
 
   /**
-   * When concatenated with a String, this automatically concatenates the Role mention rather than the Role object.
+   * When concatenated with a string, this automatically concatenates the Role mention rather than the Role object.
    * @returns {string}
    */
   toString() {
