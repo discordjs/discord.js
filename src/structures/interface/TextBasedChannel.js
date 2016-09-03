@@ -100,7 +100,6 @@ class MessageCollector extends EventEmitter {
   /**
    * Stops the collector and emits `end`.
    * @param {string} [reason='user'] an optional reason for stopping the collector.
-   * @returns {void}
    */
   stop(reason = 'user') {
     if (this.ended) {
@@ -259,7 +258,6 @@ class TextBasedChannel {
   /**
    * Starts a typing indicator in the channel.
    * @param {number} [count] The number of times startTyping should be considered to have been called
-   * @returns {void}
    * @example
    * // start typing in a channel
    * channel.startTyping();
@@ -285,7 +283,6 @@ class TextBasedChannel {
    * The indicator will only stop if this is called as many times as startTyping().
    * <info>It can take a few seconds for the Client User to stop typing.</info>
    * @param {boolean} [force=false] whether or not to force the indicator to stop regardless of call count
-   * @returns {void}
    * @example
    * // stop typing in a channel
    * channel.stopTyping();

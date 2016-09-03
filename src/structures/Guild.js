@@ -226,7 +226,6 @@ class Guild {
   /**
    * Sets up the Guild
    * @param {*} data the raw data of the guild
-   * @returns {void}
    * @private
    */
   setup(data) {
@@ -625,7 +624,6 @@ class Guild {
 
   /**
    * Syncs this guild (already done automatically every 30 seconds)
-   * @returns {void}
    */
   sync() {
     this.client.syncGuilds([this]);
