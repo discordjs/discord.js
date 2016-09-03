@@ -6,7 +6,12 @@ const EventEmitter = require('events').EventEmitter;
 const DefaultPlayer = require('./player/DefaultPlayer');
 
 /**
- * Represents a connection to a Voice Channel in Discord
+ * Represents a connection to a Voice Channel in Discord.
+ * ```js
+ * // obtained using:
+ * voiceChannel.join().then(connection => {
+ *
+ * });
  * @extends {EventEmitter}
  */
 class VoiceConnection extends EventEmitter {
@@ -220,7 +225,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Play the given stream in the voice connection
+   * Plays and converts an audio stream in the voice connection
    * @param {ReadableStream} stream the audio stream to play
    * @returns {StreamDispatcher}
    * @example
@@ -238,13 +243,13 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Plays a stream of PCM data
-   * @param {ReadableStream} pcmStream the PCM stream
+   * Plays a stream of 16-bit signed stereo PCM at 48KHz.
+   * @param {ReadableStream} stream the audio stream to play.
    * @returns {StreamDispatcher}
    */
-  playPCMStream(pcmStream) {
+  playConvertedStream(stream) {
     this._shutdown();
-    const dispatcher = this.player.playPCMStream(pcmStream);
+    const dispatcher = this.player.playPCMStream(stream);
     return dispatcher;
   }
 
