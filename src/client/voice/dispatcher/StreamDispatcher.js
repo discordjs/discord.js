@@ -21,6 +21,7 @@ class StreamDispatcher extends EventEmitter {
     };
     this._startStreaming();
     this._triggered = false;
+    this._volume = 1;
   }
 
   /**
@@ -59,6 +60,26 @@ class StreamDispatcher extends EventEmitter {
     return packetBuffer;
   }
 
+  _applyVolume(buffer) {
+    if (this._volume === 1) {
+      return buffer;
+    }
+
+    const out = new Buffer(buffer.length);
+
+    for (let i = 0; i < buffer.length; i += 2) {
+      if (i >= buffer.length - 1) {
+        break;
+      }
+
+      const uint = Math.min(32767, Math.max(-32767, Math.floor(this._volume * buffer.readInt16LE(i))));
+
+      out.writeInt16LE(uint, i);
+    }
+
+    return out;
+  }
+
   _send() {
     try {
       if (this._triggered) {
@@ -92,6 +113,8 @@ class StreamDispatcher extends EventEmitter {
         buffer.copy(newBuffer);
         buffer = newBuffer;
       }
+
+      buffer = this._applyVolume(buffer);
 
       data.count++;
       data.sequence = (data.sequence + 1) < (65536) ? data.sequence + 1 : 0;
@@ -180,6 +203,39 @@ class StreamDispatcher extends EventEmitter {
    */
   end() {
     this._triggerTerminalState('end', 'user requested');
+  }
+
+  /**
+   * The volume of the stream, relative to the stream's input volume
+   * @type {number}
+   * @readonly
+   */
+  get volume() {
+    return this._volume;
+  }
+
+  /**
+   * Sets the volume relative to the input stream - i.e. 1 is normal, 0.5 is half, 2 is double.
+   * @param {number} volume the volume that you want to set
+   */
+  setVolume(volume) {
+    this._volume = volume;
+  }
+
+  /**
+   * Set the volume in decibels
+   * @param {number} db the decibels
+   */
+  setVolumeDecibels(db) {
+    this._volume = Math.pow(10, db / 20);
+  }
+
+  /**
+   * Set the volume so that a perceived value of 0.5 is half the perceived volume etc.
+   * @param {number} value the value for the volume
+   */
+  setVolumeLogarithmic(value) {
+    this._volume = Math.pow(value, 1.660964);
   }
 
   /**
