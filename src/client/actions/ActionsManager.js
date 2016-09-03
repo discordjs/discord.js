@@ -20,6 +20,7 @@ class ActionsManager {
     this.register('GuildRoleUpdate');
     this.register('UserGet');
     this.register('UserUpdate');
+    this.register('GuildSync');
   }
 
   register(name) {

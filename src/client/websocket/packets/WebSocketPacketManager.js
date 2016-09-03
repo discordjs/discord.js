@@ -40,6 +40,7 @@ class WebSocketPacketManager {
     this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, 'VoiceServerUpdate');
     this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, 'MessageDeleteBulk');
     this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, 'ChannelPinsUpdate');
+    this.register(Constants.WSEvents.GUILD_SYNC, 'GuildSync');
   }
 
   get client() {

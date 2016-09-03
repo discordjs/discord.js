@@ -21,6 +21,12 @@ class ReadyHandler extends AbstractHandler {
       client.dataManager.newChannel(privateDM);
     }
 
+    if (!client.user.bot) {
+      client.setInterval(client.syncGuilds.bind(client), 30000);
+    }
+
+    client.once('ready', client.syncGuilds.bind(client));
+
     this.packetManager.ws.sessionID = data.session_id;
 
     this.packetManager.ws.checkIfReady('abc');

@@ -173,6 +173,13 @@ class Client extends EventEmitter {
     return timeout;
   }
 
+  syncGuilds(guilds = this.guilds.array()) {
+    return this.ws.send({
+      op: 12,
+      d: guilds.map(g => g.id),
+    });
+  }
+
   /**
    * Caches a user, or obtains it from the cache if it's already cached.
    * If the user isn't already cached, it will only be obtainable by OAuth bot accounts.

@@ -48,7 +48,7 @@ class ClientManager {
       this.client.ws.send({
         op: Constants.OPCodes.HEARTBEAT,
         d: Date.now(),
-      });
+      }, true);
     }, time);
   }
 
