@@ -125,6 +125,7 @@ class ClientVoiceManager {
         reject,
       });
       this._sendWSJoin(channel);
+      this.client.setTimeout(() => reject(new Error('connection not established in 15s time period')), 15000);
     });
   }
 }
