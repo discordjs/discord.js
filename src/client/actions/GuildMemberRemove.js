@@ -17,7 +17,9 @@ class GuildMemberRemoveAction extends Action {
         guild.memberCount--;
         guild._removeMember(member);
         this.deleted[guild.id + data.user.id] = member;
-        client.emit(Constants.Events.GUILD_MEMBER_REMOVE, guild, member);
+        if (client.status === Constants.Status.READY) {
+          client.emit(Constants.Events.GUILD_MEMBER_REMOVE, guild, member);
+        }
         this.scheduleForDeletion(guild.id, data.user.id);
       }
 

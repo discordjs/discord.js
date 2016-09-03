@@ -20,6 +20,8 @@ class GuildSync extends Action {
         const member = guild.members.get(syncMember.user.id);
         if (member) {
           guild._updateMember(member, syncMember);
+        } else {
+          guild._addMember(syncMember);
         }
       }
     }
