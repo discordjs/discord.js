@@ -625,11 +625,12 @@ class Guild {
     return this.members.get(this.ownerID);
   }
 
+  /**
+   * Syncs this guild (already done automatically every 30 seconds)
+   * @returns {void}
+   */
   sync() {
-    return this.client.ws.send({
-      op: 12,
-      d: [this.id],
-    });
+    this.client.syncGuilds([this]);
   }
 }
 

@@ -71,7 +71,10 @@ class WebSocketManager {
    * @param {Object} packet An object that can be JSON stringified
    * @returns {void}
    */
-  send(data) {
+  send(data, force = false) {
+    if (force) {
+      return this.ws.send(JSON.stringify(data));
+    }
     this._queue.push(JSON.stringify(data));
     this.doQueue();
   }

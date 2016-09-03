@@ -201,6 +201,7 @@ exports.WSEvents = {
   VOICE_SERVER_UPDATE: 'VOICE_SERVER_UPDATE',
   MESSAGE_DELETE_BULK: 'MESSAGE_DELETE_BULK',
   CHANNEL_PINS_UPDATE: 'CHANNEL_PINS_UPDATE',
+  GUILD_SYNC: 'GUILD_SYNC',
 };
 
 const PermissionFlags = exports.PermissionFlags = {
