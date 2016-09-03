@@ -196,8 +196,7 @@ class ClientDataResolver {
           const file = path.resolve(resource);
           const stat = fs.statSync(file);
           if (!stat.isFile()) {
-            reject(new Error(`The file could not be found: ${file}`));
-            return;
+            throw new Error(`The file could not be found: ${file}`);
           }
 
           fs.readFile(file, (err, data) => {
