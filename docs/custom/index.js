@@ -2,6 +2,7 @@ const files = [
   require('./welcome'),
   require('./updating'),
   require('./ping_pong'),
+  require('./avatar'),
 ];
 
 const categories = {};
