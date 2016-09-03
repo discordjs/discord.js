@@ -67,22 +67,22 @@ class Client extends EventEmitter {
     this.voice = new ClientVoiceManager(this);
     /**
      * A Collection of the Client's stored users
-     * @type {Collection<String, User>}
+     * @type {Collection<string, User>}
      */
     this.users = new Collection();
     /**
      * A Collection of the Client's stored guilds
-     * @type {Collection<String, Guild>}
+     * @type {Collection<string, Guild>}
      */
     this.guilds = new Collection();
     /**
      * A Collection of the Client's stored channels
-     * @type {Collection<String, Channel>}
+     * @type {Collection<string, Channel>}
      */
     this.channels = new Collection();
     /**
      * The authorization token for the logged in user/bot.
-     * @type {?String}
+     * @type {?string}
      */
     this.token = null;
     /**
@@ -92,17 +92,17 @@ class Client extends EventEmitter {
     this.user = null;
     /**
      * The email, if there is one, for the logged in Client
-     * @type {?String}
+     * @type {?string}
      */
     this.email = null;
     /**
      * The password, if there is one, for the logged in Client
-     * @type {?String}
+     * @type {?string}
      */
     this.password = null;
     /**
      * The time in milliseconds the Client connected
-     * @type {?Number}
+     * @type {?number}
      */
     this.readyTime = null;
     this._intervals = [];
@@ -114,10 +114,10 @@ class Client extends EventEmitter {
    * much better to use a bot account rather than a user account.
    * Bot accounts have higher rate limits and have access to some features user accounts don't have. User bots
    * that are making a lot of API requests can even be banned.</warn>
-   * @param  {String} emailOrToken The email or token used for the account. If it is an email, a password _must_ be
+   * @param  {string} emailOrToken The email or token used for the account. If it is an email, a password _must_ be
    * provided.
-   * @param  {String} [password] The password for the account, only needed if an email was provided.
-   * @return {Promise<String>}
+   * @param  {string} [password] The password for the account, only needed if an email was provided.
+   * @return {Promise<string>}
    * @example
    * // log the client in using a token
    * const token = 'my token';
@@ -176,7 +176,7 @@ class Client extends EventEmitter {
   /**
    * Caches a user, or obtains it from the cache if it's already cached.
    * If the user isn't already cached, it will only be obtainable by OAuth bot accounts.
-   * @param {String} id The ID of the user to obtain
+   * @param {string} id The ID of the user to obtain
    * @return {Promise<User>}
    */
   fetchUser(id) {
@@ -187,7 +187,7 @@ class Client extends EventEmitter {
   /**
    * Returns a Collection, mapping Guild ID to Voice Connections.
    * @readonly
-   * @type {Collection<String, VoiceConnection>}
+   * @type {Collection<string, VoiceConnection>}
    */
   get voiceConnections() {
     return this.voice.connections;
@@ -196,7 +196,7 @@ class Client extends EventEmitter {
   /**
    * The uptime for the logged in Client.
    * @readonly
-   * @type {?Number}
+   * @type {?number}
    */
   get uptime() {
     return this.readyTime ? Date.now() - this.readyTime : null;

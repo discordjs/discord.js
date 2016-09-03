@@ -38,32 +38,32 @@ class Invite {
   setup(data) {
     /**
      * The maximum age of the invite, in seconds
-     * @type {?Number}
+     * @type {?number}
      */
     this.maxAge = data.max_age;
 
     /**
      * The code for this invite
-     * @type {String}
+     * @type {string}
      */
     this.code = data.code;
     this._creationDate = new Date(data.created_at).getTime();
 
     /**
      * Whether or not this invite is temporary
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.temporary = data.temporary;
 
     /**
      * How many times this invite has been used
-     * @type {Number}
+     * @type {number}
      */
     this.uses = data.uses;
 
     /**
      * The maximum uses of this invite
-     * @type {Number}
+     * @type {number}
      */
     this.maxUses = data.max_uses;
 

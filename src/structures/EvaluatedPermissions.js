@@ -13,7 +13,7 @@ class EvaluatedPermissions {
     /**
      * A number representing the packed permissions.
      * @private
-     * @type {Number}
+     * @type {number}
      */
     this.permissions = permissions;
   }
@@ -21,7 +21,7 @@ class EvaluatedPermissions {
   /**
    * Get an object mapping permission name, e.g. `READ_MESSAGES` to a boolean - whether the user
    * can perform this or not.
-   * @returns {Object<String, Boolean>}
+   * @returns {Object<string, boolean>}
    */
   serialize() {
     const serializedPermissions = {};
@@ -34,9 +34,9 @@ class EvaluatedPermissions {
 
   /**
    * Checks whether a user has a certain permission, e.g. `READ_MESSAGES`.
-   * @param {String} permission the permission to check for
-   * @param {Boolean} [explicit=false] whether the user should explicitly have the permission.
-   * @returns {Boolean}
+   * @param {string} permission the permission to check for
+   * @param {boolean} [explicit=false] whether the user should explicitly have the permission.
+   * @returns {boolean}
    */
   hasPermission(permission, explicit = false) {
     if (permission instanceof String || typeof permission === 'string') {

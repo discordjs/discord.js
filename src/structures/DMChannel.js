@@ -24,7 +24,7 @@ class DMChannel extends Channel {
     this.recipient = recipient;
     /**
      * The ID of the last sent message, if available
-     * @type {?String}
+     * @type {?string}
      */
     this.lastMessageID = data.last_message_id;
     this.type = 'dm';
@@ -33,7 +33,7 @@ class DMChannel extends Channel {
   /**
    * When concatenated with a String, this automatically concatenates the recipient's mention instead of the
    * DM channel object.
-   * @returns {String}
+   * @returns {string}
    */
   toString() {
     return this.recipient.toString();

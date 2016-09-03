@@ -14,22 +14,22 @@ class MessageEmbedThumbnail {
   setup(data) {
     /**
      * The URL for this thumbnail
-     * @type {String}
+     * @type {string}
      */
     this.url = data.url;
     /**
      * The Proxy URL for this thumbnail
-     * @type {String}
+     * @type {string}
      */
     this.proxyURL = data.proxy_url;
     /**
      * The height of the thumbnail
-     * @type {Number}
+     * @type {number}
      */
     this.height = data.height;
     /**
      * The width of the thumbnail
-     * @type {Number}
+     * @type {number}
      */
     this.width = data.width;
   }
@@ -51,12 +51,12 @@ class MessageEmbedProvider {
   setup(data) {
     /**
      * The name of this provider
-     * @type {String}
+     * @type {string}
      */
     this.name = data.name;
     /**
      * The URL of this provider
-     * @type {String}
+     * @type {string}
      */
     this.url = data.url;
   }
@@ -83,22 +83,22 @@ class MessageEmbed {
   setup(data) {
     /**
      * The title of this embed, if there is one
-     * @type {?String}
+     * @type {?string}
      */
     this.title = data.title;
     /**
      * The type of this embed
-     * @type {String}
+     * @type {string}
      */
     this.type = data.type;
     /**
      * The description of this embed, if there is one
-     * @type {?String}
+     * @type {?string}
      */
     this.description = data.description;
     /**
      * The URL of this embed
-     * @type {String}
+     * @type {string}
      */
     this.url = data.url;
     if (data.thumbnail) {

@@ -10,7 +10,7 @@ class VoiceChannel extends GuildChannel {
     super(guild, data);
     /**
      * The members in this Voice Channel.
-     * @type {Collection<String, GuildMember>}
+     * @type {Collection<string, GuildMember>}
      */
     this.members = new Collection();
   }
@@ -19,12 +19,12 @@ class VoiceChannel extends GuildChannel {
     super.setup(data);
     /**
      * The bitrate of this voice channel
-     * @type {Number}
+     * @type {number}
      */
     this.bitrate = data.bitrate;
     /**
      * The maximum amount of users allowed in this channel - 0 means unlimited.
-     * @type {Number}
+     * @type {number}
      */
     this.userLimit = data.user_limit;
     this.type = 'voice';
@@ -32,7 +32,7 @@ class VoiceChannel extends GuildChannel {
 
   /**
    * Sets the bitrate of the channel
-   * @param {Number} bitrate the new bitrate
+   * @param {number} bitrate the new bitrate
    * @returns {Promise<VoiceChannel>}
    * @example
    * // set the bitrate of a voice channel
@@ -59,7 +59,7 @@ class VoiceChannel extends GuildChannel {
 
   /**
    * Leaves this voice channel
-   * @returns {null}
+   * @returns {void}
    * @example
    * // leave a voice channel
    * voiceChannel.leave();
