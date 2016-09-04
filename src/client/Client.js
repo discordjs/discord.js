@@ -167,11 +167,18 @@ class Client extends EventEmitter {
     return timeout;
   }
 
+  /**
+   * This shouldn't really be necessary to most developers as it is automatically invoked every 30 seconds, however
+   * if you wish to force a sync of Guild data, you can use this. Only applicable to user accounts.
+   * @param {array<Guild>} [guilds=this.guilds.array()] An array of guilds to sync.
+   */
   syncGuilds(guilds = this.guilds.array()) {
-    this.ws.send({
-      op: 12,
-      d: guilds.map(g => g.id),
-    });
+    if (!this.user.bot) {
+      this.ws.send({
+        op: 12,
+        d: guilds.map(g => g.id),
+      });
+    }
   }
 
   /**

@@ -607,10 +607,12 @@ class Guild {
   }
 
   /**
-   * Syncs this guild (already done automatically every 30 seconds)
+   * Syncs this guild (already done automatically every 30 seconds). Only applicable to user accounts.
    */
   sync() {
-    this.client.syncGuilds([this]);
+    if (!this.client.user.bot) {
+      this.client.syncGuilds([this]);
+    }
   }
 }
 

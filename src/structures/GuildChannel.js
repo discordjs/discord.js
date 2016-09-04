@@ -87,7 +87,7 @@ class GuildChannel extends Channel {
       let permissions = 0;
       const overwrites = this.overwritesFor(member, true);
 
-      for (const role of roles) permissions |= role.permissions;
+      for (const role of roles.values()) permissions |= role.permissions;
       for (const overwrite of overwrites.role.concat(overwrites.member)) {
         permissions &= ~overwrite.denyData;
         permissions |= overwrite.allowData;
