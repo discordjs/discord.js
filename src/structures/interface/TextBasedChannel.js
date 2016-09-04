@@ -134,6 +134,28 @@ class TextBasedChannel {
   }
 
   /**
+   * Gets a single message from this channel, regardless of it being cached or not.
+   * @param {string} messageID The ID of the message to get
+   * @returns {Promise<Message>}
+   * @example
+   * // get message
+   * channel.fetchMessage('99539446449315840')
+   *   .then(message => console.log(message.content))
+   *   .catch(console.error);
+   */
+  fetchMessage(messageID) {
+    return new Promise((resolve, reject) => {
+      this.client.rest.methods.getChannelMessage(this, messageID).then(data => {
+        let msg = data;
+        if (!(msg instanceof Message)) msg = new Message(this, data, this.client);
+
+        this._cacheMessage(msg);
+        resolve(msg);
+      }).catch(reject);
+    });
+  }
+
+  /**
    * Starts a typing indicator in the channel.
    * @param {number} [count] The number of times startTyping should be considered to have been called
    * @example
@@ -394,6 +416,7 @@ exports.applyToClass = (structure, full = false) => {
   if (full) {
     props.push('_cacheMessage');
     props.push('fetchMessages');
+    props.push('fetchMessage');
     props.push('bulkDelete');
     props.push('startTyping');
     props.push('stopTyping');

@@ -118,6 +118,10 @@ class GroupDMChannel extends Channel {
     return;
   }
 
+  fetchMessage() {
+    return;
+  }
+
   bulkDelete() {
     return;
   }
