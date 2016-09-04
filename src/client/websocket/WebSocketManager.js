@@ -56,6 +56,7 @@ class WebSocketManager {
    * @param {string} gateway The gateway to connect to
    */
   connect(gateway) {
+    this.client.emit('debug', `connecting to gateway ${gateway}`);
     this.normalReady = false;
     this.status = Constants.Status.CONNECTING;
     this.ws = new WebSocket(gateway);
@@ -108,6 +109,7 @@ class WebSocketManager {
    * Run whenever the gateway connections opens up
    */
   eventOpen() {
+    this.client.emit('debug', 'connection to gateway opened');
     if (this.reconnecting) this._sendResume();
     else this._sendNewIdentify();
   }
