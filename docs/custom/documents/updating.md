@@ -37,8 +37,7 @@ bot.getChannelLogs(channel, 100, function(messages) {
 ```
 
 ```js
-msg.channel.getMessages({limit: 100})
-.then(messages => {
-  console.log(`${messages.length} messages found`);
+msg.channel.fetchMessages({limit: 100}).then(messages => {
+  console.log(`${messages.size} messages found`);
 });
 ```
