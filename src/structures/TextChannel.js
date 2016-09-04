@@ -43,6 +43,10 @@ class TextChannel extends GuildChannel {
     return;
   }
 
+  fetchMessage() {
+    return;
+  }
+
   bulkDelete() {
     return;
   }
