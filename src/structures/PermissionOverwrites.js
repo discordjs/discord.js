@@ -8,9 +8,7 @@ class PermissionOverwrites {
      * @type {GuildChannel}
      */
     this.channel = guildChannel;
-    if (data) {
-      this.setup(data);
-    }
+    if (data) this.setup(data);
   }
 
   setup(data) {
@@ -30,7 +28,7 @@ class PermissionOverwrites {
 
   /**
    * Delete this Permission Overwrite.
-   * @returns {Promise<PermissionOverwrites, Error>}
+   * @returns {Promise<PermissionOverwrites>}
    */
   delete() {
     return this.channel.client.rest.methods.deletePermissionOverwrites(this);

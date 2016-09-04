@@ -5,7 +5,6 @@ const Constants = require('../util/Constants');
  * @private
  */
 class ClientManager {
-
   constructor(client) {
     /**
      * The Client that instantiated this Manager
@@ -21,25 +20,22 @@ class ClientManager {
 
   /**
    * Connects the Client to the WebSocket
-   * @param {string} token the authorization token
-   * @param {function} resolve function to run when connection is successful
-   * @param {function} reject function to run when connection fails
+   * @param {string} token The authorization token
+   * @param {function} resolve Function to run when connection is successful
+   * @param {function} reject Function to run when connection fails
    */
   connectToWebSocket(token, resolve, reject) {
     this.client.token = token;
-    this.client.rest.methods.getGateway()
-      .then(gateway => {
-        this.client.ws.connect(gateway);
-        this.client.once(Constants.Events.READY, () => resolve(token));
-      })
-      .catch(reject);
-
+    this.client.rest.methods.getGateway().then(gateway => {
+      this.client.ws.connect(gateway);
+      this.client.once(Constants.Events.READY, () => resolve(token));
+    }).catch(reject);
     this.client.setTimeout(() => reject(Constants.Errors.TOOK_TOO_LONG), 1000 * 300);
   }
 
   /**
    * Sets up a keep-alive interval to keep the Client's connection valid
-   * @param {number} time the interval in milliseconds at which heartbeat packets should be sent
+   * @param {number} time The interval in milliseconds at which heartbeat packets should be sent
    */
   setupKeepAlive(time) {
     this.heartbeatInterval = this.client.setInterval(() => {

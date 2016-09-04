@@ -10,9 +10,7 @@ class Channel {
     this.client = client;
     this.typingMap = {};
     this.typingTimeouts = [];
-    if (guild) {
-      this.guild = guild;
-    }
+    if (guild) this.guild = guild;
     /**
      * The type of the channel, either:
      * * `dm` - a DM channel
@@ -22,9 +20,7 @@ class Channel {
      * @type {string}
      */
     this.type = null;
-    if (data) {
-      this.setup(data);
-    }
+    if (data) this.setup(data);
   }
 
   setup(data) {

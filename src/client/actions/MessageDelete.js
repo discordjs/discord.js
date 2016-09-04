@@ -1,7 +1,6 @@
 const Action = require('./Action');
 
 class MessageDeleteAction extends Action {
-
   constructor(client) {
     super(client);
     this.deleted = new Map();

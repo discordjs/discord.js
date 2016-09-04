@@ -3,7 +3,6 @@ const Constants = require('../../util/Constants');
 const cloneObject = require('../../util/CloneObject');
 
 class UserUpdateAction extends Action {
-
   handle(data) {
     const client = this.client;
 
@@ -32,11 +31,10 @@ class UserUpdateAction extends Action {
 }
 
 /**
-* Emitted whenever a detail of the logged in User changes - e.g. username.
-*
-* @event Client#userUpdate
-* @param {ClientUser} oldClientUser the client user before the update.
-* @param {ClientUser} newClientUser the client user after the update.
-*/
+ * Emitted whenever a detail of the logged in User changes - e.g. username.
+ * @event Client#userUpdate
+ * @param {ClientUser} oldClientUser The client user before the update.
+ * @param {ClientUser} newClientUser The client user after the update.
+ */
 
 module.exports = UserUpdateAction;

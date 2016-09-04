@@ -98,7 +98,7 @@ class Invite {
 
   /**
    * Deletes this invite
-   * @returns {Promise<Invite, Error>}
+   * @returns {Promise<Invite>}
    */
   delete() {
     return this.client.rest.methods.deleteInvite(this);

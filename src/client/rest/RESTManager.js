@@ -5,7 +5,6 @@ const APIRequest = require('./APIRequest');
 const Constants = require('../../util/Constants');
 
 class RESTManager {
-
   constructor(client) {
     this.client = client;
     this.handlers = {};

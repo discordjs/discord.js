@@ -25,7 +25,7 @@ class ClientUser extends User {
    * Set the username of the logged in Client.
    * <info>Changing usernames in Discord is heavily rate limited, with only 2 requests
    * every hour. Use this sparingly!</info>
-   * @param {string} username the new username
+   * @param {string} username The new username
    * @returns {Promise<ClientUser>}
    * @example
    * // set username
@@ -40,7 +40,7 @@ class ClientUser extends User {
   /**
    * If this user is a "self bot" or logged in using a normal user's details (which should be avoided), you can set the
    * email here.
-   * @param {string} email the new email
+   * @param {string} email The new email
    * @returns {Promise<ClientUser>}
    * @example
    * // set email
@@ -55,7 +55,7 @@ class ClientUser extends User {
   /**
    * If this user is a "self bot" or logged in using a normal user's details (which should be avoided), you can set the
    * password here.
-   * @param {string} password the new password
+   * @param {string} password The new password
    * @returns {Promise<ClientUser>}
    * @example
    * // set password
@@ -69,7 +69,7 @@ class ClientUser extends User {
 
   /**
    * Set the avatar of the logged in Client.
-   * @param {Base64Resolvable} avatar the new avatar
+   * @param {Base64Resolvable} avatar The new avatar
    * @returns {Promise<ClientUser>}
    * @example
    * // set avatar
@@ -83,9 +83,9 @@ class ClientUser extends User {
 
   /**
    * Set the status and playing game of the logged in client.
-   * @param {string} [status] the status, can be `online` or `idle`.
-   * @param {string|Object} [game] the game that is being played
-   * @returns {Promise<ClientUser, Error>}
+   * @param {string} [status] The status, can be `online` or `idle`
+   * @param {string|Object} [game] The game that is being played
+   * @returns {Promise<ClientUser>}
    * @example
    * // set status
    * client.user.setStatus('status', 'game')

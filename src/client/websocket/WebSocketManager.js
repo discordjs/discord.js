@@ -8,14 +8,12 @@ const PacketManager = require('./packets/WebSocketPacketManager');
  * @private
  */
 class WebSocketManager {
-
   constructor(client) {
     /**
      * The Client that instantiated this WebSocketManager
      * @type {Client}
      */
     this.client = client;
-    this.ws = null;
     /**
      * A WebSocket Packet manager, it handles all the messages
      * @type {PacketManager}
@@ -26,43 +24,40 @@ class WebSocketManager {
      * @type {number}
      */
     this.status = Constants.Status.IDLE;
-
     /**
      * The session ID of the connection, null if not yet available.
      * @type {?string}
      */
     this.sessionID = null;
-
     /**
      * The packet count of the client, null if not yet available.
      * @type {?number}
      */
     this.sequence = -1;
-
     /**
      * The gateway address for this WebSocket connection, null if not yet available.
      * @type {?string}
      */
     this.gateway = null;
-
     /**
      * Whether READY was emitted normally (all packets received) or not
      * @type {boolean}
      */
     this.normalReady = false;
-  }
-
-  /**
-   * Connects the client to a given gateway
-   * @param {string} gateway the gateway to connect to
-   */
-  connect(gateway) {
-    this.normalReady = false;
-    this.status = Constants.Status.CONNECTING;
     /**
      * The WebSocket connection to the gateway
      * @type {?WebSocket}
      */
+    this.ws = null;
+  }
+
+  /**
+   * Connects the client to a given gateway
+   * @param {string} gateway The gateway to connect to
+   */
+  connect(gateway) {
+    this.normalReady = false;
+    this.status = Constants.Status.CONNECTING;
     this.ws = new WebSocket(gateway);
     this.ws.onopen = () => this.eventOpen();
     this.ws.onclose = (d) => this.eventClose(d);
@@ -113,15 +108,12 @@ class WebSocketManager {
    * Run whenever the gateway connections opens up
    */
   eventOpen() {
-    if (this.reconnecting) {
-      this._sendResume();
-    } else {
-      this._sendNewIdentify();
-    }
+    if (this.reconnecting) this._sendResume();
+    else this._sendNewIdentify();
   }
 
   /**
-   * Sends a gatway resume packet, in cases of unexpected disconnections.
+   * Sends a gateway resume packet, in cases of unexpected disconnections.
    */
   _sendResume() {
     const payload = {
@@ -155,30 +147,23 @@ class WebSocketManager {
 
   /**
    * Run whenever the connection to the gateway is closed, it will try to reconnect the client.
-   * @param {Object} event the event
+   * @param {Object} event The received websocket data
    */
   eventClose(event) {
-    if (event.code === 4004) {
-      throw Constants.Errors.BAD_LOGIN;
-    }
-    if (!this.reconnecting && event.code !== 1000) {
-      this.tryReconnect();
-    }
+    if (event.code === 4004) throw Constants.Errors.BAD_LOGIN;
+    if (!this.reconnecting && event.code !== 1000) this.tryReconnect();
   }
 
   /**
    * Run whenever a message is received from the WebSocket. Returns `true` if the message
    * was handled properly.
-   * @param {Object} event the received websocket data
+   * @param {Object} event The received websocket data
    * @returns {boolean}
    */
   eventMessage(event) {
     let packet;
     try {
-      if (event.binary) {
-        event.data = zlib.inflateSync(event.data).toString();
-      }
-
+      if (event.binary) event.data = zlib.inflateSync(event.data).toString();
       packet = JSON.parse(event.data);
     } catch (e) {
       return this.eventError(Constants.Errors.BAD_WS_MESSAGE);
@@ -186,22 +171,19 @@ class WebSocketManager {
 
     this.client.emit('raw', packet);
 
-    if (packet.op === 10) {
-      this.client.manager.setupKeepAlive(packet.d.heartbeat_interval);
-    }
-
+    if (packet.op === 10) this.client.manager.setupKeepAlive(packet.d.heartbeat_interval);
     return this.packetManager.handle(packet);
   }
 
   /**
    * Run whenever an error occurs with the WebSocket connection. Tries to reconnect
-   * @param {Error} err the error that occurred
+   * @param {Error} err The encountered error
    */
   eventError(err) {
     /**
      * Emitted whenever the Client encounters a serious connection error
      * @event Client#error
-     * @param {Error} error the encountered error
+     * @param {Error} error The encountered error
      */
     this.client.emit('error', err);
     this.tryReconnect();
@@ -210,7 +192,6 @@ class WebSocketManager {
   _emitReady(normal = true) {
     /**
      * Emitted when the Client becomes ready to start working
-     *
      * @event Client#ready
      */
     this.status = Constants.Status.READY;
@@ -252,10 +233,9 @@ class WebSocketManager {
     this.ws.close();
     this.packetManager.handleQueue();
     /**
-    * Emitted when the Client tries to reconnect after being disconnected
-    *
-    * @event Client#reconnecting
-    */
+     * Emitted when the Client tries to reconnect after being disconnected
+     * @event Client#reconnecting
+     */
     this.client.emit(Constants.Events.RECONNECTING);
     this.connect(this.client.ws.gateway);
   }

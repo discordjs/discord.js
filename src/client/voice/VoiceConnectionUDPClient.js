@@ -4,7 +4,6 @@ const Constants = require('../../util/Constants');
 const EventEmitter = require('events').EventEmitter;
 
 class VoiceConnectionUDPClient extends EventEmitter {
-
   constructor(voiceConnection, data) {
     super();
     this.voiceConnection = voiceConnection;
@@ -38,9 +37,7 @@ class VoiceConnectionUDPClient extends EventEmitter {
       try {
         this.udpSocket.close();
       } catch (err) {
-        if (err.message !== 'Not running') {
-          this.emit('error', err);
-        }
+        if (err.message !== 'Not running') this.emit('error', err);
       }
       this.udpSocket = null;
     }
@@ -55,10 +52,7 @@ class VoiceConnectionUDPClient extends EventEmitter {
     this.udpSocket.once('message', message => {
       const packet = new Buffer(message);
       this.localIP = '';
-      for (let i = 4; i < packet.indexOf(0, i); i++) {
-        this.localIP += String.fromCharCode(packet[i]);
-      }
-
+      for (let i = 4; i < packet.indexOf(0, i); i++) this.localIP += String.fromCharCode(packet[i]);
       this.localPort = parseInt(packet.readUIntLE(packet.length - 2, 2).toString(10), 10);
 
       this.voiceConnection.websocket.send({
@@ -77,7 +71,6 @@ class VoiceConnectionUDPClient extends EventEmitter {
     this.udpSocket.on('error', (error, message) => {
       this.emit('error', { error, message });
     });
-
     this.udpSocket.on('close', error => {
       this.emit('close', error);
     });
@@ -86,7 +79,6 @@ class VoiceConnectionUDPClient extends EventEmitter {
     blankMessage.writeUIntBE(this.data.ssrc, 0, 4);
     this.send(blankMessage);
   }
-
 }
 
 module.exports = VoiceConnectionUDPClient;
