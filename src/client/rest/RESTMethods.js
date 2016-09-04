@@ -54,8 +54,6 @@ class RESTMethods {
         content = content.replace('@everyone', '@​everyone').replace('@here', '@​here');
       }
 
-      console.log(this.rest.client.options.disable_everyone)
-
       function req() {
         $this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
           content, tts, nonce,
