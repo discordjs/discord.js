@@ -285,6 +285,17 @@ class Message {
   }
 
   /**
+   * Whether or not a user, channel or role is mentioned in this message.
+   * @param {GuildChannel|User|Role|string} data either a guild channel, user or a role object, or a string representing
+   * the ID of any of these.
+   * @returns {boolean}
+   */
+  isMentioned(data) {
+    data = data.id ? data.id : data;
+    return this.mentions.users.has(data) || this.mentions.channels.has(data) || this.mentions.roles.has(data);
+  }
+
+  /**
    * Pins this message to the channel's pinned messages
    * @returns {Promise<Message>}
    */
