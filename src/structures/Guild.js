@@ -9,6 +9,8 @@ const arraysEqual = require('../util/ArraysEqual');
 
 /**
  * Represents a Guild (or a Server) on Discord.
+ * <info>It's recommended to see if a guild is available before performing operations or reading data from it. You can
+ * check this with `guild.available`.</info>
  */
 class Guild {
   constructor(client, data) {
