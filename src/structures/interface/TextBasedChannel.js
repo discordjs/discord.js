@@ -34,6 +34,7 @@ class TextBasedChannel {
    * {
    *   tts: false,
    *   nonce: '',
+   *   disable_everyone: false,
    * };
    * ```
    * @typedef {Object} MessageOptions
