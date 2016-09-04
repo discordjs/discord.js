@@ -279,6 +279,7 @@ class Message {
    *  .catch(console.log);
    */
   reply(content, options = {}) {
+    content = this.client.resolver.resolveString(content);
     const newContent = this.guild ? `${this.author}, ${content}` : content;
     return this.client.rest.methods.sendMessage(this.channel, newContent, options.tts);
   }

@@ -49,7 +49,7 @@ class RESTMethods {
   sendMessage(channel, content, tts, nonce, file) {
     return new Promise((resolve, reject) => {
       const $this = this;
-
+      content = this.rest.client.resolver.resolveString(content);
       function req() {
         $this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
           content, tts, nonce,
