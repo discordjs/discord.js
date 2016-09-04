@@ -85,7 +85,7 @@ class ClientUser extends User {
    * Set the status and playing game of the logged in client.
    * @param {string} [status] The status, can be `online` or `idle`
    * @param {string|Object} [game] The game that is being played
-   * @param {string} [streamURL] If you want to display as streaming, set this as the URL to the stream (must be a
+   * @param {string} [url] If you want to display as streaming, set this as the URL to the stream (must be a
    * twitch.tv URl)
    * @returns {Promise<ClientUser>}
    * @example
