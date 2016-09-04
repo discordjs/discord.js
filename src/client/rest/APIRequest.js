@@ -21,7 +21,7 @@ class APIRequest {
     } else if (this.rest.client.token) {
       return this.rest.client.token;
     }
-    throw Constants.Errors.NO_TOKEN;
+    throw new Error(Constants.Errors.NO_TOKEN);
   }
 
   gen() {

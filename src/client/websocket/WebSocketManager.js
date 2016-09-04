@@ -150,7 +150,7 @@ class WebSocketManager {
    * @param {Object} event The received websocket data
    */
   eventClose(event) {
-    if (event.code === 4004) throw Constants.Errors.BAD_LOGIN;
+    if (event.code === 4004) throw new Error(Constants.Errors.BAD_LOGIN);
     if (!this.reconnecting && event.code !== 1000) this.tryReconnect();
   }
 
@@ -166,7 +166,7 @@ class WebSocketManager {
       if (event.binary) event.data = zlib.inflateSync(event.data).toString();
       packet = JSON.parse(event.data);
     } catch (e) {
-      return this.eventError(Constants.Errors.BAD_WS_MESSAGE);
+      return this.eventError(new Error(Constants.Errors.BAD_WS_MESSAGE));
     }
 
     this.client.emit('raw', packet);

@@ -30,7 +30,7 @@ class ClientManager {
       this.client.ws.connect(gateway);
       this.client.once(Constants.Events.READY, () => resolve(token));
     }).catch(reject);
-    this.client.setTimeout(() => reject(Constants.Errors.TOOK_TOO_LONG), 1000 * 300);
+    this.client.setTimeout(() => reject(new Error(Constants.Errors.TOOK_TOO_LONG)), 1000 * 300);
   }
 
   /**

@@ -63,13 +63,13 @@ exports.ChannelTypes = {
 exports.Package = require('../../package.json');
 
 exports.Errors = {
-  NO_TOKEN: new Error('request to use token, but token was unavailable to the client'),
-  NO_BOT_ACCOUNT: new Error('you should ideally be using a bot account!'),
-  BAD_WS_MESSAGE: new Error('a bad message was received from the websocket - bad compression or not json'),
-  TOOK_TOO_LONG: new Error('something took too long to do'),
-  NOT_A_PERMISSION: new Error('that is not a valid permission string or number'),
-  INVALID_RATE_LIMIT_METHOD: new Error('unknown rate limiting method'),
-  BAD_LOGIN: new Error('incorrect login details were provided'),
+  NO_TOKEN: 'request to use token, but token was unavailable to the client',
+  NO_BOT_ACCOUNT: 'you should ideally be using a bot account!',
+  BAD_WS_MESSAGE: 'a bad message was received from the websocket - bad compression or not json',
+  TOOK_TOO_LONG: 'something took too long to do',
+  NOT_A_PERMISSION: 'that is not a valid permission string or number',
+  INVALID_RATE_LIMIT_METHOD: 'unknown rate limiting method',
+  BAD_LOGIN: 'incorrect login details were provided',
 };
 
 const API = `https://discordapp.com/api/v${exports.DefaultOptions.protocol_version}`;

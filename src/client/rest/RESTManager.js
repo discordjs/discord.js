@@ -29,7 +29,7 @@ class RESTManager {
       case 'sequential':
         return SequentialRequestHandler;
       default:
-        throw Constants.Errors.INVALID_RATE_LIMIT_METHOD;
+        throw new Error(Constants.Errors.INVALID_RATE_LIMIT_METHOD);
     }
   }
 

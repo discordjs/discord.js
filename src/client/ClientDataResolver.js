@@ -142,7 +142,7 @@ class ClientDataResolver {
    */
   resolvePermission(permission) {
     if (typeof permission === 'string') permission = Constants.PermissionFlags[permission];
-    if (!permission) throw Constants.Errors.NOT_A_PERMISSION;
+    if (!permission) throw new Error(Constants.Errors.NOT_A_PERMISSION);
     return permission;
   }
 
