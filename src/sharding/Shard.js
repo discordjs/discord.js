@@ -1,6 +1,9 @@
 const childProcess = require('child_process');
 const path = require('path');
 
+/**
+ * Represents a Shard spawned by the ShardingManager.
+ */
 class Shard {
   constructor(manager, id) {
     this.manager = manager;
