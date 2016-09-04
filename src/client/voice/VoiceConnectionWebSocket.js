@@ -26,15 +26,11 @@ class VoiceConnectionWebSocket extends EventEmitter {
   }
 
   send(data) {
-    if (this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify(data));
-    }
+    if (this.ws.readyState === WebSocket.OPEN) this.ws.send(JSON.stringify(data));
   }
 
   _shutdown() {
-    if (this.ws) {
-      this.ws.close();
-    }
+    if (this.ws) this.ws.close();
     clearInterval(this.heartbeat);
   }
 
@@ -97,9 +93,7 @@ class VoiceConnectionWebSocket extends EventEmitter {
       case Constants.VoiceOPCodes.SESSION_DESCRIPTION:
         this.encryptionMode = packet.d.mode;
         this.secretKey = new Uint8Array(new ArrayBuffer(packet.d.secret_key.length));
-        for (const index in packet.d.secret_key) {
-          this.secretKey[index] = packet.d.secret_key[index];
-        }
+        for (const index in packet.d.secret_key) this.secretKey[index] = packet.d.secret_key[index];
         this.emit('ready', this.secretKey);
         break;
       case Constants.VoiceOPCodes.SPEAKING:

@@ -1,28 +1,10 @@
 const AbstractHandler = require('./AbstractHandler');
 const Constants = require('../../../../util/Constants');
 
-class TypingData {
-  constructor(since, lastTimestamp, _timeout) {
-    this.since = since;
-    this.lastTimestamp = lastTimestamp;
-    this._timeout = _timeout;
-  }
-
-  resetTimeout(_timeout) {
-    clearTimeout(this._timeout);
-    this._timeout = _timeout;
-  }
-
-  get elapsedTime() {
-    return Date.now() - this.since;
-  }
-}
-
 class TypingStartHandler extends AbstractHandler {
-
   handle(packet) {
-    const data = packet.d;
     const client = this.packetManager.client;
+    const data = packet.d;
     const channel = client.channels.get(data.channel_id);
     const user = client.users.get(data.user_id);
     const timestamp = new Date(data.timestamp * 1000);
@@ -46,23 +28,39 @@ class TypingStartHandler extends AbstractHandler {
       }
     }
   }
+}
 
+class TypingData {
+  constructor(since, lastTimestamp, _timeout) {
+    this.since = since;
+    this.lastTimestamp = lastTimestamp;
+    this._timeout = _timeout;
+  }
+
+  resetTimeout(_timeout) {
+    clearTimeout(this._timeout);
+    this._timeout = _timeout;
+  }
+
+  get elapsedTime() {
+    return Date.now() - this.since;
+  }
 }
 
 /**
-* Emitted whenever a user starts typing in a channel
-*
-* @event Client#typingStart
-* @param {Channel} channel the channel the user started typing in
-* @param {User} user the user that started typing
-*/
+ * Emitted whenever a user starts typing in a channel
+ *
+ * @event Client#typingStart
+ * @param {Channel} channel the channel the user started typing in
+ * @param {User} user the user that started typing
+ */
 
 /**
-* Emitted whenever a user stops typing in a channel
-*
-* @event Client#typingStop
-* @param {Channel} channel the channel the user stopped typing in
-* @param {User} user the user that stopped typing
-*/
+ * Emitted whenever a user stops typing in a channel
+ *
+ * @event Client#typingStop
+ * @param {Channel} channel the channel the user stopped typing in
+ * @param {User} user the user that stopped typing
+ */
 
 module.exports = TypingStartHandler;

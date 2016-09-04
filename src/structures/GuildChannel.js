@@ -1,24 +1,10 @@
 const Channel = require('./Channel');
-const PermissionOverwrites = require('./PermissionOverwrites');
 const Role = require('./Role');
+const PermissionOverwrites = require('./PermissionOverwrites');
 const EvaluatedPermissions = require('./EvaluatedPermissions');
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
-
-function arraysEqual(a, b) {
-  if (a === b) return true;
-  if (a.length !== b.length) return false;
-
-  for (const itemInd in a) {
-    const item = a[itemInd];
-    const ind = b.indexOf(item);
-    if (ind) {
-      b.splice(ind, 1);
-    }
-  }
-
-  return b.length === 0;
-}
+const arraysEqual = require('../util/ArraysEqual');
 
 /**
  * Represents a Guild Channel (i.e. Text Channels and Voice Channels)
@@ -66,28 +52,24 @@ class GuildChannel extends Channel {
    * @returns {boolean}
    */
   equals(channel) {
-    let base = channel &&
+    let equal = channel &&
       this.type === channel.type &&
       this.topic === channel.topic &&
       this.position === channel.position &&
       this.name === channel.name &&
       this.id === channel.id;
 
-    if (base) {
+    if (equal) {
       if (channel.permission_overwrites) {
         const thisIDSet = Array.from(this.permissionOverwrites.keys());
         const otherIDSet = channel.permission_overwrites.map(overwrite => overwrite.id);
-        if (arraysEqual(thisIDSet, otherIDSet)) {
-          base = true;
-        } else {
-          base = false;
-        }
+        equal = arraysEqual(thisIDSet, otherIDSet);
       } else {
-        base = false;
+        equal = false;
       }
     }
 
-    return base;
+    return equal;
   }
 
   /**
@@ -99,30 +81,24 @@ class GuildChannel extends Channel {
   permissionsFor(member) {
     member = this.client.resolver.resolveGuildMember(this.guild, member);
     if (member) {
-      if (this.guild.owner.id === member.id) {
-        return new EvaluatedPermissions(member, Constants.ALL_PERMISSIONS);
-      }
+      if (this.guild.owner.id === member.id) return new EvaluatedPermissions(member, Constants.ALL_PERMISSIONS);
 
       const roles = member.roles;
       let permissions = 0;
       const overwrites = this.overwritesFor(member, true);
 
-      for (const role of roles.values()) {
-        permissions |= role.permissions;
-      }
-
+      for (const role of roles.values()) permissions |= role.permissions;
       for (const overwrite of overwrites.role.concat(overwrites.member)) {
         permissions &= ~overwrite.denyData;
         permissions |= overwrite.allowData;
       }
 
       const admin = Boolean(permissions & (Constants.PermissionFlags.ADMINISTRATOR));
-      if (admin) {
-        permissions = Constants.ALL_PERMISSIONS;
-      }
+      if (admin) permissions = Constants.ALL_PERMISSIONS;
 
       return new EvaluatedPermissions(member, permissions);
     }
+
     return null;
   }
 
@@ -187,9 +163,7 @@ class GuildChannel extends Channel {
     } else {
       userOrRole = this.client.resolver.resolveUser(userOrRole);
       payload.type = 'member';
-      if (!userOrRole) {
-        return Promise.reject('supplied parameter was neither a user or a role');
-      }
+      if (!userOrRole) return Promise.reject(new TypeError('supplied parameter was neither a user or a role'));
     }
 
     payload.id = userOrRole.id;

@@ -62,27 +62,18 @@ class StreamDispatcher extends EventEmitter {
     packetBuffer.copy(nonce, 0, 0, 12);
     buffer = NaCl.secretbox(buffer, nonce, this.player.connection.data.secret);
 
-    for (let i = 0; i < buffer.length; i++) {
-      packetBuffer[i + 12] = buffer[i];
-    }
+    for (let i = 0; i < buffer.length; i++) packetBuffer[i + 12] = buffer[i];
 
     return packetBuffer;
   }
 
   _applyVolume(buffer) {
-    if (this._volume === 1) {
-      return buffer;
-    }
+    if (this._volume === 1) return buffer;
 
     const out = new Buffer(buffer.length);
-
     for (let i = 0; i < buffer.length; i += 2) {
-      if (i >= buffer.length - 1) {
-        break;
-      }
-
+      if (i >= buffer.length - 1) break;
       const uint = Math.min(32767, Math.max(-32767, Math.floor(this._volume * buffer.readInt16LE(i))));
-
       out.writeInt16LE(uint, i);
     }
 
@@ -95,20 +86,24 @@ class StreamDispatcher extends EventEmitter {
         this._setSpeaking(false);
         return;
       }
+
       const data = this.streamingData;
+
       if (data.missed >= 5) {
         this._triggerTerminalState('error', new Error('stream is not generating fast enough'));
         return;
       }
+
       if (this.paused) {
         data.timestamp = data.timestamp + 4294967295 ? data.timestamp + 960 : 0;
         this.player.connection.manager.client.setTimeout(() => this._send(), data.length * 10);
         return;
       }
-      const bufferLength = 1920 * data.channels;
-      this._setSpeaking(true);
-      let buffer = this.stream.read(bufferLength);
 
+      this._setSpeaking(true);
+
+      const bufferLength = 1920 * data.channels;
+      let buffer = this.stream.read(bufferLength);
       if (!buffer) {
         data.missed++;
         this.player.connection.manager.client.setTimeout(() => this._send(), data.length * 10);
@@ -132,7 +127,6 @@ class StreamDispatcher extends EventEmitter {
       this._sendBuffer(buffer, data.sequence, data.timestamp);
 
       const nextTime = data.startTime + (data.count * data.length);
-
       this.player.connection.manager.client.setTimeout(() => this._send(), data.length + (nextTime - Date.now()));
     } catch (e) {
       this._triggerTerminalState('error', e);
@@ -140,33 +134,31 @@ class StreamDispatcher extends EventEmitter {
   }
 
   /**
-  * Emitted once the stream has ended. Attach a `once` listener to this.
-  * @event StreamDispatcher#end
-  */
+   * Emitted once the stream has ended. Attach a `once` listener to this.
+   * @event StreamDispatcher#end
+   */
   _triggerEnd() {
     this.emit('end');
   }
 
   /**
-  * Emitted once the stream has encountered an error. Attach a `once` listener to this. Also emits `end`.
-  * @event StreamDispatcher#error
-  * @param {Error} err the error encountered
-  */
+   * Emitted once the stream has encountered an error. Attach a `once` listener to this. Also emits `end`.
+   * @event StreamDispatcher#error
+   * @param {Error} err the error encountered
+   */
   _triggerError(err) {
     this.emit('end');
     this.emit('error', err);
   }
 
   _triggerTerminalState(state, err) {
-    if (this._triggered) {
-      return;
-    }
+    if (this._triggered) return;
 
     /**
-    * Emitted when the stream wants to give debug information.
-    * @event StreamDispatcher#debug
-    * @param {string} information the debug information
-    */
+     * Emitted when the stream wants to give debug information.
+     * @event StreamDispatcher#debug
+     * @param {string} information the debug information
+     */
     this.emit('debug', `triggered terminal state ${state} - stream is now dead`);
     this._triggered = true;
     this._setSpeaking(false);
@@ -188,17 +180,20 @@ class StreamDispatcher extends EventEmitter {
       this.emit('error', 'no stream');
       return;
     }
+
     this.stream.on('end', err => this._triggerTerminalState('end', err));
     this.stream.on('error', err => this._triggerTerminalState('error', err));
+
     const data = this.streamingData;
     data.length = 20;
     data.missed = 0;
     data.startTime = Date.now();
+
     this.stream.once('readable', () => this._send());
   }
 
-  _pause(value) {
-    if (value) {
+  _setPaused(paused) {
+    if (paused) {
       this.paused = true;
       this._setSpeaking(false);
     } else {
@@ -251,14 +246,14 @@ class StreamDispatcher extends EventEmitter {
    * Stops sending voice packets to the voice connection (stream may still progress however)
    */
   pause() {
-    this._pause(true);
+    this._setPaused(true);
   }
 
   /**
    * Resumes sending voice packets to the voice connection (may be further on in the stream than when paused)
    */
   resume() {
-    this._pause(false);
+    this._setPaused(false);
   }
 }
 

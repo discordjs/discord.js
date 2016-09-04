@@ -11,10 +11,8 @@ class VoiceReadable extends Readable {
     return;
   }
 
-  $push(d) {
-    if (this.open) {
-      this.push(d);
-    }
+  _push(d) {
+    if (this.open) this.push(d);
   }
 }
 

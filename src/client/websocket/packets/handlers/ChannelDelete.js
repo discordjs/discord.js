@@ -3,25 +3,19 @@ const AbstractHandler = require('./AbstractHandler');
 const Constants = require('../../../../util/Constants');
 
 class ChannelDeleteHandler extends AbstractHandler {
-
   handle(packet) {
-    const data = packet.d;
     const client = this.packetManager.client;
-
+    const data = packet.d;
     const response = client.actions.ChannelDelete.handle(data);
-
-    if (response.channel) {
-      client.emit(Constants.Events.CHANNEL_DELETE, response.channel);
-    }
+    if (response.channel) client.emit(Constants.Events.CHANNEL_DELETE, response.channel);
   }
-
 }
 
 /**
-* Emitted whenever a Channel is deleted.
-*
-* @event Client#channelDelete
-* @param {Channel} channel The channel that was deleted
-*/
+ * Emitted whenever a Channel is deleted.
+ *
+ * @event Client#channelDelete
+ * @param {Channel} channel The channel that was deleted
+ */
 
 module.exports = ChannelDeleteHandler;

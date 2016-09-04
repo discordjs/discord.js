@@ -2,13 +2,12 @@ const path = require('path');
 const fs = require('fs');
 const request = require('superagent');
 
-const getStructure = name => require(`../structures/${name}`);
-
-const User = getStructure('User');
-const Message = getStructure('Message');
-const Guild = getStructure('Guild');
-const Channel = getStructure('Channel');
-const GuildMember = getStructure('GuildMember');
+const requireStructure = name => require(`../structures/${name}`);
+const User = requireStructure('User');
+const Message = requireStructure('Message');
+const Guild = requireStructure('Guild');
+const Channel = requireStructure('Channel');
+const GuildMember = requireStructure('GuildMember');
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
@@ -16,7 +15,9 @@ const GuildMember = getStructure('GuildMember');
  * @private
  */
 class ClientDataResolver {
-
+  /**
+   * @param {Client} client The client the resolver is for
+   */
   constructor(client) {
     this.client = client;
   }
@@ -64,14 +65,8 @@ class ClientDataResolver {
    * @returns {?Guild}
    */
   resolveGuild(guild) {
-    if (guild instanceof Guild) {
-      return guild;
-    }
-
-    if (typeof guild === 'string') {
-      return this.client.guilds.get(guild);
-    }
-
+    if (guild instanceof Guild) return guild;
+    if (typeof guild === 'string') return this.client.guilds.get(guild);
     return null;
   }
 
@@ -89,16 +84,11 @@ class ClientDataResolver {
    * @returns {?GuildMember}
    */
   resolveGuildMember(guild, user) {
-    if (user instanceof GuildMember) {
-      return user;
-    }
+    if (user instanceof GuildMember) return user;
 
     guild = this.resolveGuild(guild);
     user = this.resolveUser(user);
-
-    if (!guild || !user) {
-      return null;
-    }
+    if (!guild || !user) return null;
 
     return guild.members.get(user.id);
   }
@@ -116,10 +106,7 @@ class ClientDataResolver {
    * @returns {?string}
    */
   resolveBase64(data) {
-    if (data instanceof Buffer) {
-      return `data:image/jpg;base64,${data.toString('base64')}`;
-    }
-
+    if (data instanceof Buffer) return `data:image/jpg;base64,${data.toString('base64')}`;
     return data;
   }
 
@@ -136,14 +123,8 @@ class ClientDataResolver {
    * @returns {?Channel}
    */
   resolveChannel(channel) {
-    if (channel instanceof Channel) {
-      return channel;
-    }
-
-    if (typeof channel === 'string') {
-      return this.client.channels.get(channel.id);
-    }
-
+    if (channel instanceof Channel) return channel;
+    if (typeof channel === 'string') return this.client.channels.get(channel.id);
     return null;
   }
 
@@ -161,14 +142,8 @@ class ClientDataResolver {
    * @returns {string}
    */
   resolveString(data) {
-    if (typeof data === 'string') {
-      return data;
-    }
-
-    if (data instanceof Array) {
-      return data.join('\n');
-    }
-
+    if (typeof data === 'string') return data;
+    if (data instanceof Array) return data.join('\n');
     return String(data);
   }
 
@@ -183,7 +158,7 @@ class ClientDataResolver {
   /**
    * Resolves a FileResolvable to a Buffer
    * @param {FileResolvable} resource the file resolvable to resolve
-   * @returns {string|Buffer}
+   * @returns {Promise<Buffer>}
    */
   resolveFile(resource) {
     if (typeof resource === 'string') {
@@ -194,19 +169,19 @@ class ClientDataResolver {
             .end((err, res) => err ? reject(err) : resolve(res.body));
         } else {
           const file = path.resolve(resource);
-          const stat = fs.statSync(file);
-          if (!stat.isFile()) {
-            throw new Error(`The file could not be found: ${file}`);
-          }
-
-          fs.readFile(file, (err, data) => {
-            if (err) reject(err); else resolve(data);
+          fs.stat(file, (err, stats) => {
+            if (err) reject(err);
+            if (!stats.isFile()) throw new Error(`The file could not be found: ${file}`);
+            fs.readFile(file, (err2, data) => {
+              if (err2) reject(err2); else resolve(data);
+            });
           });
         }
       });
     }
 
-    return Promise.resolve(resource);
+    if (resource instanceof Buffer) return Promise.resolve(resource);
+    return Promise.reject(new TypeError('resource is not a string or Buffer'));
   }
 }
 

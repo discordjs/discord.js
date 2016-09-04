@@ -1,10 +1,5 @@
 module.exports = function merge(def, given) {
-  if (!given) {
-    return def;
-  }
-
-  given = given || {};
-
+  if (!given) return def;
   for (const key in def) {
     if (!{}.hasOwnProperty.call(given, key)) {
       given[key] = def[key];

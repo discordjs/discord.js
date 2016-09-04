@@ -108,7 +108,7 @@ class VoiceReceiver extends EventEmitter {
        * @param {Buffer} buffer the opus buffer
        */
     if (this.opusStreams.get(user.id)) {
-      this.opusStreams.get(user.id).$push(data);
+      this.opusStreams.get(user.id)._push(data);
     }
     this.emit('opus', user, data);
     if (this.listenerCount('pcm') > 0 || this.pcmStreams.size > 0) {
@@ -121,7 +121,7 @@ class VoiceReceiver extends EventEmitter {
         */
       const pcm = this.connection.player.opusEncoder.decode(data);
       if (this.pcmStreams.get(user.id)) {
-        this.pcmStreams.get(user.id).$push(pcm);
+        this.pcmStreams.get(user.id)._push(pcm);
       }
       this.emit('pcm', user, pcm);
     }

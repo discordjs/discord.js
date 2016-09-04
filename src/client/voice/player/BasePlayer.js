@@ -5,7 +5,6 @@ const StreamDispatcher = require('../dispatcher/StreamDispatcher');
 const EventEmitter = require('events').EventEmitter;
 
 class VoiceConnectionPlayer extends EventEmitter {
-
   constructor(connection) {
     super();
     this.connection = connection;
@@ -38,9 +37,7 @@ class VoiceConnectionPlayer extends EventEmitter {
 
   _shutdown() {
     this.speaking = false;
-    for (const stream of this.processMap.keys()) {
-      this.killStream(stream);
-    }
+    for (const stream of this.processMap.keys()) this.killStream(stream);
   }
 
   killStream(stream) {
@@ -79,9 +76,7 @@ class VoiceConnectionPlayer extends EventEmitter {
   }
 
   setSpeaking(value) {
-    if (this.speaking === value) {
-      return;
-    }
+    if (this.speaking === value) return;
     this.speaking = value;
     this.connection.websocket.send({
       op: Constants.VoiceOPCodes.SPEAKING,
@@ -100,7 +95,6 @@ class VoiceConnectionPlayer extends EventEmitter {
     this.dispatcher = dispatcher;
     return dispatcher;
   }
-
 }
 
 module.exports = VoiceConnectionPlayer;

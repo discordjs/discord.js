@@ -9,16 +9,13 @@ const AbstractHandler = require('./AbstractHandler');
 */
 
 class VoiceServerUpdate extends AbstractHandler {
-
   handle(packet) {
-    const data = packet.d;
     const client = this.packetManager.client;
-
+    const data = packet.d;
     if (client.voice.pending.has(data.guild_id)) {
       client.voice._receivedVoiceServer(data.guild_id, data.token, data.endpoint);
     }
   }
-
 }
 
 module.exports = VoiceServerUpdate;

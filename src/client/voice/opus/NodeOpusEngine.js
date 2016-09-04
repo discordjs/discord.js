@@ -6,7 +6,6 @@ class NodeOpusEngine extends OpusEngine {
   constructor(player) {
     super(player);
     try {
-      // eslint-disable-next-line import/no-unresolved
       opus = require('node-opus');
     } catch (err) {
       throw err;

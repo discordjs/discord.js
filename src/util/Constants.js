@@ -235,10 +235,7 @@ const PermissionFlags = exports.PermissionFlags = {
 };
 
 let _ALL_PERMISSIONS = 0;
-
-for (const key in PermissionFlags) {
-  _ALL_PERMISSIONS |= PermissionFlags[key];
-}
+for (const key in PermissionFlags) _ALL_PERMISSIONS |= PermissionFlags[key];
 
 exports.ALL_PERMISSIONS = _ALL_PERMISSIONS;
 
