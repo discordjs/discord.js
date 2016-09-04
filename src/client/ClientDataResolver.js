@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const request = require('superagent');
 
-const Constants = require('../util/constants');
+const Constants = require('../util/Constants');
 const User = require(`../structures/User`);
 const Message = require(`../structures/Message`);
 const Guild = require(`../structures/Guild`);
