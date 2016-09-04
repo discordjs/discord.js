@@ -14,6 +14,7 @@ class RESTMethods {
 
   loginEmailPassword(email, password) {
     return new Promise((resolve, reject) => {
+      this.rest.client.emit('debug', 'client launched using email and password - should use token instead');
       this.rest.client.email = email;
       this.rest.client.password = password;
       this.rest.makeRequest('post', Constants.Endpoints.login, false, { email, password })

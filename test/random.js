@@ -14,6 +14,8 @@ client.on('ready', () => {
   console.log('ready!');
 });
 
+client.on('debug', console.log);
+
 client.on('message', message => {
   if (true) {
     if (message.content === 'makechann') {
