@@ -51,6 +51,7 @@ class TextBasedChannel {
    *  .catch(console.log);
    */
   sendMessage(content, options = {}) {
+    if (Array.isArray(content)) content = content.join('\n');
     return this.client.rest.methods.sendMessage(this, content, options.tts, options.nonce);
   }
 
