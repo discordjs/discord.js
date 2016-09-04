@@ -67,7 +67,7 @@ exports.Errors = {
   NO_BOT_ACCOUNT: new Error('you should ideally be using a bot account!'),
   BAD_WS_MESSAGE: new Error('a bad message was received from the websocket - bad compression or not json'),
   TOOK_TOO_LONG: new Error('something took too long to do'),
-  NOT_A_PERMISSION: new Error('that is not a valid permission number'),
+  NOT_A_PERMISSION: new Error('that is not a valid permission string or number'),
   INVALID_RATE_LIMIT_METHOD: new Error('unknown rate limiting method'),
   BAD_LOGIN: new Error('incorrect login details were provided'),
 };
