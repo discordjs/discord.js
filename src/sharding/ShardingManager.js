@@ -3,7 +3,6 @@ const path = require('path');
 const EventEmitter = require('events').EventEmitter;
 const Collection = require('../util/Collection');
 const Shard = require('./Shard');
-const crypto = require('crypto');
 
 class ShardingManager extends EventEmitter {
   constructor(file, totalShards) {
