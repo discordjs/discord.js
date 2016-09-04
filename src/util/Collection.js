@@ -64,7 +64,7 @@ class Collection extends Map {
    * @param {*} value The expected value
    * @returns {array}
    * @example
-   * collection.getAll('username', 'Bob');
+   * collection.findAll('username', 'Bob');
    */
   findAll(key, value) {
     if (typeof key !== 'string') throw new TypeError('key must be a string');
@@ -82,7 +82,7 @@ class Collection extends Map {
    * @param {*} value The expected value
    * @returns {*}
    * @example
-   * collection.get('id', '123123...');
+   * collection.find('id', '123123...');
    */
   find(key, value) {
     if (typeof key !== 'string') throw new TypeError('key must be a string');
