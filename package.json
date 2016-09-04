@@ -1,0 +1,49 @@
+{
+  "name": "discord.js",
+  "version": "7.0.0",
+  "description": "A way to interface with the Discord API",
+  "main": "./src/index",
+  "scripts": {
+    "test": "eslint src/",
+    "docs": "node docs/generator/generator.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hydrabolt/discord.js.git"
+  },
+  "keywords": [
+    "discord",
+    "api",
+    "bot",
+    "client",
+    "node",
+    "discordapp"
+  ],
+  "author": "Amish Shah <amishshah.2k@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/hydrabolt/discord.js/issues"
+  },
+  "homepage": "https://github.com/hydrabolt/discord.js#readme",
+  "dependencies": {
+    "superagent": "^1.5.0",
+    "tweetnacl": "^0.14.3",
+    "ws": "^1.1.1",
+    "opusscript": "^0.0.1"
+  },
+  "devDependencies": {
+    "fs-extra": "^0.30.0",
+    "jsdoc-parse": "^1.2.0",
+    "eslint": "^3.4.0"
+  },
+  "optionalDependencies": {
+    "node-opus": "^0.1.13"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "browser": {
+    "./src/Util/TokenCacher.js": "./src/Util/TokenCacher-shim.js",
+    "./lib/Util/TokenCacher.js": "./lib/Util/TokenCacher-shim.js"
+  }
+}
