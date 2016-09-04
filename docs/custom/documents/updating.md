@@ -3,6 +3,10 @@ The 9.0 rewrite takes a much more OOP approach than previous versions, which all
 It's been rebuilt from the ground up and should be much more stable, fixing caching issues that affected
 older versions and it also has support for new Discord Features, such as emojis.
 
+## Guides
+* [https://eslachance.gitbooks.io/discord-js-bot-guide/content/](https://eslachance.gitbooks.io/discord-js-bot-guide/content/)
+* [https://yorkaargh.wordpress.com/2016/09/03/updating-discord-js-bots/](https://yorkaargh.wordpress.com/2016/09/03/updating-discord-js-bots/)
+
 ## Upgrading your code
 Version 9, while containing a number of breaking changes, does not require a lot of changes in the code logic. 
 It does, however, require changes in some of the method changes. This is because most of the methods have been
