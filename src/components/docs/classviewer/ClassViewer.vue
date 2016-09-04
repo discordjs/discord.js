@@ -9,7 +9,7 @@
         <span class="title">Constructor</span>
         <div class="classConstructor">
           <pre>
-            <code class="lang-js">new Discord.Client(<span v-for="param in jsclass.classConstructor.params">{{* param.name }}</span>);</code>
+            <code class="lang-js">new Discord.{{{* jsclass.name }}}(<span class="constructorParam" v-for="param in jsclass.classConstructor.params">{{* param.name }}</span>);</code>
           </pre>
           <param-table :params="jsclass.classConstructor.params"></param-table>
         </div>

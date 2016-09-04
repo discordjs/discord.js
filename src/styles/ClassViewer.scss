@@ -41,6 +41,10 @@
       font-size: 20px;
     }
   }
+
+  .constructorParam:not(:last-child):after {
+    content: ", ";
+  }
 }
 
 .classViewer > .title {
