@@ -1,16 +1,14 @@
 # Created by https://www.gitignore.io
 
-hydrabot/config.json
-hydrabot/authority.json
-hydrabot/tokencache.json
-esdoc/
-
 .tmp/
+.vscode/
 
 ### Node ###
 # Logs
 logs
 *.log
+
+test/auth.json
 
 # Runtime data
 pids
