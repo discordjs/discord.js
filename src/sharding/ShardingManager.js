@@ -1,7 +1,9 @@
 const path = require('path');
+const fs = require('fs');
 const EventEmitter = require('events').EventEmitter;
-const Collection = require('../util/Collection');
+
 const Shard = require('./Shard');
+const Collection = require('../util/Collection');
 
 /**
  * This is a utility class that can be used to help you spawn shards of your Client. Each shard is completely separate
@@ -11,29 +13,42 @@ const Shard = require('./Shard');
  */
 class ShardingManager extends EventEmitter {
   /**
-   * Creates an instance of ShardingManager.
-   * @param {string} file the path to your file
-   * @param {number} totalShards the number of shards you would like to spawn
+   * @param {string} file Path to your shard script file
+   * @param {number} [totalShards=1] Number of shards to default to spawning
    */
   constructor(file, totalShards) {
     super();
+
+    /**
+     * Path to the shard script file
+     * @type {string}
+     */
     this.file = file;
-    if (!path.isAbsolute(file)) {
-      this.file = path.resolve(`${process.cwd()}${file}`);
-    }
+    if (!file) throw new Error('file must be specified');
+    if (!path.isAbsolute(file)) this.file = path.resolve(process.cwd(), file);
+    const stats = fs.statSync(this.file);
+    if (!stats.isFile()) throw new Error('file path does not point to a file');
+
     /**
      * The amount of shards that this manager is going to spawn
      * @type {number}
      */
-    this.totalShards = totalShards;
+    this.totalShards = typeof totalShards !== 'undefined' ? totalShards : 1;
+    if (typeof this.totalShards !== 'number' || isNaN(this.totalShards)) {
+      throw new TypeError('amout of shards must be a number');
+    }
+    if (this.totalShards < 1) throw new RangeError('amount of shards must be at least 1');
+
     /**
-     * A collection of shards that this manager has spawned.
+     * A collection of shards that this manager has spawned
      * @type {Collection<number, Shard>}
      */
     this.shards = new Collection();
-    this.waiting = new Collection();
   }
 
+  /**
+   * Spawns a single shard.
+   */
   createShard() {
     const id = this.shards.size;
     const shard = new Shard(this, id);
@@ -41,14 +56,21 @@ class ShardingManager extends EventEmitter {
     this.emit('launch', id, shard);
   }
 
+  /**
+   * Spawns multiple shards.
+   * @param {number} [amount=this.totalShards] The number of shards to spawn
+   */
   spawn(amount) {
-    this.totalShards = amount;
+    if (typeof amount !== 'undefined') {
+      if (typeof amount !== 'number' || isNaN(amount)) throw new TypeError('amout of shards must be a number');
+      if (amount < 1) throw new RangeError('amount of shards must be at least 1');
+      this.totalShards = amount;
+    }
+
     this.createShard();
     const interval = setInterval(() => {
-      if (this.shards.size === this.totalShards) {
-        return clearInterval(interval);
-      }
-      return this.createShard();
+      if (this.shards.size === this.totalShards) clearInterval(interval);
+      else this.createShard();
     }, 5500);
   }
 }
