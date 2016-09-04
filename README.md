@@ -44,6 +44,7 @@ bot.login('your token');
 ## Links
 * [Website](http://hydrabolt.github.io/discord.js/)
 * [Documentation](http://hydrabolt.github.io/discord.js/#!/docs/tag/master)
+* [Legacy Documentation](http://discordjs.readthedocs.io/en/8.1.0/docs_client.html)
 * [GitHub](https://github.com/hydrabolt/discord.js)
 * [NPM](https://www.npmjs.com/package/discord.js)
 * [Examples](https://github.com/hydrabolt/discord.js/tree/master/examples)
