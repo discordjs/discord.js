@@ -11,7 +11,6 @@ that WebSocket events don't clash with REST methods.
 */
 
 class GenericAction {
-
   constructor(client) {
     this.client = client;
   }
@@ -19,7 +18,6 @@ class GenericAction {
   handle(data) {
     return data;
   }
-
 }
 
 module.exports = GenericAction;

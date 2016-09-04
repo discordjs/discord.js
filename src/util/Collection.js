@@ -3,7 +3,6 @@
  * @extends {Map}
  */
 class Collection extends Map {
-
   /**
    * Returns an ordered array of the values of this collection.
    * @returns {Array}
@@ -52,9 +51,7 @@ class Collection extends Map {
   deleteAll() {
     const returns = [];
     for (const item of this.values()) {
-      if (item.delete) {
-        returns.push(item.delete());
-      }
+      if (item.delete) returns.push(item.delete());
     }
     return returns;
   }
@@ -81,9 +78,7 @@ class Collection extends Map {
     if (typeof value === 'undefined') throw new Error('value must be specified');
     const results = [];
     for (const item of this.values()) {
-      if (item[key] === value) {
-        results.push(item);
-      }
+      if (item[key] === value) results.push(item);
     }
     return results;
   }
@@ -100,9 +95,7 @@ class Collection extends Map {
     if (typeof key !== 'string') throw new TypeError('key must be a string');
     if (typeof value === 'undefined') throw new Error('value must be specified');
     for (const item of this.values()) {
-      if (item[key] === value) {
-        return item;
-      }
+      if (item[key] === value) return item;
     }
     return null;
   }
@@ -136,9 +129,7 @@ class Collection extends Map {
   filter(...args) {
     const newArray = this.array().filter(...args);
     const collection = new Collection();
-    for (const item of newArray) {
-      collection.set(item.id, item);
-    }
+    for (const item of newArray) collection.set(item.id, item);
     return collection;
   }
 

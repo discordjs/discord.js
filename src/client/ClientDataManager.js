@@ -23,11 +23,11 @@ class ClientDataManager {
     this.client.guilds.set(guild.id, guild);
     if (this.pastReady && !already) {
       /**
-      * Emitted whenever the client joins a Guild.
-      *
-      * @event Client#guildCreate
-      * @param {Guild} guild the created guild.
-      */
+       * Emitted whenever the client joins a Guild.
+       *
+       * @event Client#guildCreate
+       * @param {Guild} guild the created guild.
+       */
       this.client.emit(Constants.Events.GUILD_CREATE, guild);
     }
 
@@ -35,16 +35,13 @@ class ClientDataManager {
   }
 
   newUser(data) {
-    if (this.client.users.has(data.id)) {
-      return this.client.users.get(data.id);
-    }
+    if (this.client.users.has(data.id)) return this.client.users.get(data.id);
     const user = new User(this.client, data);
     this.client.users.set(user.id, user);
     return user;
   }
 
-  newChannel(data, $guild) {
-    let guild = $guild;
+  newChannel(data, guild) {
     const already = this.client.channels.has(data.id);
     let channel;
     if (data.type === Constants.ChannelTypes.DM) {
@@ -65,22 +62,18 @@ class ClientDataManager {
     }
 
     if (channel) {
-      if (this.pastReady && !already) {
-        this.client.emit(Constants.Events.CHANNEL_CREATE, channel);
-      }
-
+      if (this.pastReady && !already) this.client.emit(Constants.Events.CHANNEL_CREATE, channel);
       this.client.channels.set(channel.id, channel);
       return channel;
     }
+
     return null;
   }
 
   killGuild(guild) {
     const already = this.client.guilds.has(guild.id);
     this.client.guilds.delete(guild.id);
-    if (already && this.pastReady) {
-      this.client.emit(Constants.Events.GUILD_DELETE, guild);
-    }
+    if (already && this.pastReady) this.client.emit(Constants.Events.GUILD_DELETE, guild);
   }
 
   killUser(user) {
@@ -89,17 +82,13 @@ class ClientDataManager {
 
   killChannel(channel) {
     this.client.channels.delete(channel.id);
-    if (channel instanceof GuildChannel) {
-      channel.guild.channels.delete(channel.id);
-    }
+    if (channel instanceof GuildChannel) channel.guild.channels.delete(channel.id);
   }
 
   updateGuild(currentGuild, newData) {
     const oldGuild = cloneObject(currentGuild);
     currentGuild.setup(newData);
-    if (this.pastReady) {
-      this.client.emit(Constants.Events.GUILD_UPDATE, oldGuild, currentGuild);
-    }
+    if (this.pastReady) this.client.emit(Constants.Events.GUILD_UPDATE, oldGuild, currentGuild);
   }
 
   updateChannel(currentChannel, newData) {

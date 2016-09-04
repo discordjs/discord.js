@@ -1,15 +1,6 @@
 const ConverterEngine = require('./ConverterEngine');
 const ChildProcess = require('child_process');
 
-function chooseCommand() {
-  for (const cmd of ['ffmpeg', 'avconv', './ffmpeg', './avconv']) {
-    if (!ChildProcess.spawnSync(cmd, ['-h']).error) {
-      return cmd;
-    }
-  }
-  return null;
-}
-
 class FfmpegConverterEngine extends ConverterEngine {
   constructor(player) {
     super(player);
@@ -17,9 +8,7 @@ class FfmpegConverterEngine extends ConverterEngine {
   }
 
   handleError(encoder, err) {
-    if (encoder.destroy) {
-      encoder.destroy();
-    }
+    if (encoder.destroy) encoder.destroy();
     this.emit('error', err);
   }
 
@@ -39,6 +28,13 @@ class FfmpegConverterEngine extends ConverterEngine {
     encoder.stdout.on('error', e => this.handleError(encoder, e));
     return encoder;
   }
+}
+
+function chooseCommand() {
+  for (const cmd of ['ffmpeg', 'avconv', './ffmpeg', './avconv']) {
+    if (!ChildProcess.spawnSync(cmd, ['-h']).error) return cmd;
+  }
+  return null;
 }
 
 module.exports = FfmpegConverterEngine;

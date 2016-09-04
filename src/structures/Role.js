@@ -15,22 +15,18 @@ class Role {
      * @type {Client}
      */
     this.client = guild.client;
-    if (data) {
-      this.setup(data);
-    }
+    if (data) this.setup(data);
   }
 
   equals(role) {
-    return (
-      role &&
+    return role &&
       this.id === role.id &&
       this.name === role.name &&
       this.color === role.color &&
       this.hoist === role.hoist &&
       this.position === role.position &&
       this.permissions === role.permissions &&
-      this.managed === role.managed
-    );
+      this.managed === role.managed;
   }
 
   setup(data) {
@@ -180,7 +176,6 @@ class Role {
     for (const permissionName in Constants.PermissionFlags) {
       serializedPermissions[permissionName] = this.hasPermission(permissionName);
     }
-
     return serializedPermissions;
   }
 
@@ -198,20 +193,10 @@ class Role {
    * }
    */
   hasPermission(permission, explicit = false) {
-    if (typeof permission === 'string') {
-      permission = Constants.PermissionFlags[permission];
-    }
+    if (typeof permission === 'string') permission = Constants.PermissionFlags[permission];
+    if (!permission) throw Constants.Errors.NOT_A_PERMISSION;
 
-    if (!permission) {
-      throw Constants.Errors.NOT_A_PERMISSION;
-    }
-
-    if (!explicit) {
-      if ((this.permissions & Constants.PermissionFlags.ADMINISTRATOR) > 0) {
-        return true;
-      }
-    }
-
+    if (!explicit && (this.permissions & Constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
     return (this.permissions & permission) > 0;
   }
 
@@ -230,9 +215,7 @@ class Role {
    */
   get hexColor() {
     let col = this.color.toString(16);
-    while (col.length < 6) {
-      col = `0${col}`;
-    }
+    while (col.length < 6) col = `0${col}`;
     return `#${col}`;
   }
 }

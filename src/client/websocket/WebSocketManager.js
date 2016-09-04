@@ -8,14 +8,12 @@ const PacketManager = require('./packets/WebSocketPacketManager');
  * @private
  */
 class WebSocketManager {
-
   constructor(client) {
     /**
      * The Client that instantiated this WebSocketManager
      * @type {Client}
      */
     this.client = client;
-    this.ws = null;
     /**
      * A WebSocket Packet manager, it handles all the messages
      * @type {PacketManager}
@@ -26,30 +24,31 @@ class WebSocketManager {
      * @type {number}
      */
     this.status = Constants.Status.IDLE;
-
     /**
      * The session ID of the connection, null if not yet available.
      * @type {?string}
      */
     this.sessionID = null;
-
     /**
      * The packet count of the client, null if not yet available.
      * @type {?number}
      */
     this.sequence = -1;
-
     /**
      * The gateway address for this WebSocket connection, null if not yet available.
      * @type {?string}
      */
     this.gateway = null;
-
     /**
      * Whether READY was emitted normally (all packets received) or not
      * @type {boolean}
      */
     this.normalReady = false;
+    /**
+     * The WebSocket connection to the gateway
+     * @type {?WebSocket}
+     */
+    this.ws = null;
   }
 
   /**
@@ -59,10 +58,6 @@ class WebSocketManager {
   connect(gateway) {
     this.normalReady = false;
     this.status = Constants.Status.CONNECTING;
-    /**
-     * The WebSocket connection to the gateway
-     * @type {?WebSocket}
-     */
     this.ws = new WebSocket(gateway);
     this.ws.onopen = () => this.eventOpen();
     this.ws.onclose = (d) => this.eventClose(d);
@@ -113,11 +108,8 @@ class WebSocketManager {
    * Run whenever the gateway connections opens up
    */
   eventOpen() {
-    if (this.reconnecting) {
-      this._sendResume();
-    } else {
-      this._sendNewIdentify();
-    }
+    if (this.reconnecting) this._sendResume();
+    else this._sendNewIdentify();
   }
 
   /**
@@ -158,12 +150,8 @@ class WebSocketManager {
    * @param {Object} event the event
    */
   eventClose(event) {
-    if (event.code === 4004) {
-      throw Constants.Errors.BAD_LOGIN;
-    }
-    if (!this.reconnecting && event.code !== 1000) {
-      this.tryReconnect();
-    }
+    if (event.code === 4004) throw Constants.Errors.BAD_LOGIN;
+    if (!this.reconnecting && event.code !== 1000) this.tryReconnect();
   }
 
   /**
@@ -175,10 +163,7 @@ class WebSocketManager {
   eventMessage(event) {
     let packet;
     try {
-      if (event.binary) {
-        event.data = zlib.inflateSync(event.data).toString();
-      }
-
+      if (event.binary) event.data = zlib.inflateSync(event.data).toString();
       packet = JSON.parse(event.data);
     } catch (e) {
       return this.eventError(Constants.Errors.BAD_WS_MESSAGE);
@@ -186,10 +171,7 @@ class WebSocketManager {
 
     this.client.emit('raw', packet);
 
-    if (packet.op === 10) {
-      this.client.manager.setupKeepAlive(packet.d.heartbeat_interval);
-    }
-
+    if (packet.op === 10) this.client.manager.setupKeepAlive(packet.d.heartbeat_interval);
     return this.packetManager.handle(packet);
   }
 
@@ -210,7 +192,6 @@ class WebSocketManager {
   _emitReady(normal = true) {
     /**
      * Emitted when the Client becomes ready to start working
-     *
      * @event Client#ready
      */
     this.status = Constants.Status.READY;
@@ -252,10 +233,10 @@ class WebSocketManager {
     this.ws.close();
     this.packetManager.handleQueue();
     /**
-    * Emitted when the Client tries to reconnect after being disconnected
-    *
-    * @event Client#reconnecting
-    */
+     * Emitted when the Client tries to reconnect after being disconnected
+     *
+     * @event Client#reconnecting
+     */
     this.client.emit(Constants.Events.RECONNECTING);
     this.connect(this.client.ws.gateway);
   }

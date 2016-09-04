@@ -107,15 +107,11 @@ class VoiceConnection extends EventEmitter {
   }
 
   _shutdown(e) {
-    if (!this.ready) {
-      return;
-    }
+    if (!this.ready) return;
     this.ready = false;
     this.websocket._shutdown();
     this.player._shutdown();
-    if (this.udp) {
-      this.udp._shutdown();
-    }
+    if (this.udp) this.udp._shutdown();
     /**
      * Emit once the voice connection has disconnected.
      * @event VoiceConnection#disconnected
@@ -149,9 +145,7 @@ class VoiceConnection extends EventEmitter {
     });
     this.once('ready', () => {
       setImmediate(() => {
-        for (const item of this.queue) {
-          this.emit(...item);
-        }
+        for (const item of this.queue) this.emit(...item);
         this.queue = [];
       });
     });
@@ -200,11 +194,8 @@ class VoiceConnection extends EventEmitter {
        * @param {User} user the user that has started/stopped speaking
        * @param {boolean} speaking whether or not the user is speaking
        */
-      if (this.ready) {
-        this.emit('speaking', user, data.speaking);
-      } else {
-        this.queue.push(['speaking', user, data.speaking]);
-      }
+      if (this.ready) this.emit('speaking', user, data.speaking);
+      else this.queue.push(['speaking', user, data.speaking]);
       guild._memberSpeakUpdate(data.user_id, data.speaking);
     });
   }

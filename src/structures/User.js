@@ -8,9 +8,7 @@ const Constants = require('../util/Constants');
 class User {
   constructor(client, data) {
     this.client = client;
-    if (data) {
-      this.setup(data);
-    }
+    if (data) this.setup(data);
   }
 
   setup(data) {
@@ -72,9 +70,7 @@ class User {
    * @readonly
    */
   get avatarURL() {
-    if (!this.avatar) {
-      return null;
-    }
+    if (!this.avatar) return null;
     return Constants.Endpoints.avatar(this.id, this.avatar);
   }
 
@@ -93,24 +89,19 @@ class User {
    * @returns {boolean}
    */
   equals(user) {
-    let base = user &&
+    let equal = user &&
       this.username === user.username &&
       this.id === user.id &&
       this.discriminator === user.discriminator &&
       this.avatar === user.avatar &&
       this.bot === Boolean(user.bot);
 
-    if (base) {
-      if (user.status) {
-        base = this.status === user.status;
-      }
-
-      if (user.game) {
-        base = this.game === user.game;
-      }
+    if (equal) {
+      if (user.status) equal = this.status === user.status;
+      if (equal && user.game) equal = this.game === user.game;
     }
 
-    return base;
+    return equal;
   }
 
   sendMessage() {

@@ -2,7 +2,6 @@ const Action = require('./Action');
 const Constants = require('../../util/Constants');
 
 class GuildBanRemove extends Action {
-
   handle(data) {
     const client = this.client;
     const guild = client.guilds.get(data.guild_id);

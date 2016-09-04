@@ -1,6 +1,7 @@
-const Collection = require('../util/Collection');
 const Attachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
+const Collection = require('../util/Collection');
+
 /**
  * Represents a Message on Discord
  */
@@ -26,9 +27,7 @@ class Message {
      * @type {Client}
      */
     this.client = client;
-    if (data) {
-      this.setup(data);
-    }
+    if (data) this.setup(data);
   }
 
   setup(data) {
@@ -77,9 +76,7 @@ class Message {
      * @type {Collection<string, MessageAttachment>}
      */
     this.attachments = new Collection();
-    for (const attachment of data.attachments) {
-      this.attachments.set(attachment.id, new Attachment(this, attachment));
-    }
+    for (const attachment of data.attachments) this.attachments.set(attachment.id, new Attachment(this, attachment));
     /**
      * An object containing a further users, roles or channels collections
      * @type {Object}
@@ -114,9 +111,7 @@ class Message {
     if (data.mention_roles) {
       for (const mention of data.mention_roles) {
         const role = this.channel.guild.roles.get(mention);
-        if (role) {
-          this.mentions.roles.set(role.id, role);
-        }
+        if (role) this.mentions.roles.set(role.id, role);
       }
     }
 
@@ -124,9 +119,7 @@ class Message {
       const channMentionsRaw = data.content.match(/<#([0-9]{14,20})>/g) || [];
       for (const raw of channMentionsRaw) {
         const chan = this.channel.guild.channels.get(raw.match(/([0-9]{14,20})/g)[0]);
-        if (chan) {
-          this.mentions.channels.set(chan.id, chan);
-        }
+        if (chan) this.mentions.channels.set(chan.id, chan);
       }
     }
 
@@ -135,9 +128,7 @@ class Message {
      * @type {boolean}
      */
     this.system = false;
-    if (data.type === 6) {
-      this.system = true;
-    }
+    if (data.type === 6) this.system = true;
   }
   /**
    * When the message was sent
@@ -158,31 +149,17 @@ class Message {
   patch(data) { // eslint-disable-line complexity
     if (data.author) {
       this.author = this.client.users.get(data.author.id);
-      if (this.guild) {
-        this.member = this.guild.member(this.author);
-      }
+      if (this.guild) this.member = this.guild.member(this.author);
     }
-    if (data.content) {
-      this.content = data.content;
-    }
-    if (data.timestamp) {
-      this._timestamp = new Date(data.timestamp).getTime();
-    }
+    if (data.content) this.content = data.content;
+    if (data.timestamp) this._timestamp = new Date(data.timestamp).getTime();
     if (data.edited_timestamp) {
       this._editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
     }
-    if ('tts' in data) {
-      this.tts = data.tts;
-    }
-    if ('mention_everyone' in data) {
-      this.mentions.everyone = data.mention_everyone;
-    }
-    if (data.nonce) {
-      this.nonce = data.nonce;
-    }
-    if (data.embeds) {
-      this.embeds = data.embeds.map(e => new Embed(this, e));
-    }
+    if ('tts' in data) this.tts = data.tts;
+    if ('mention_everyone' in data) this.mentions.everyone = data.mention_everyone;
+    if (data.nonce) this.nonce = data.nonce;
+    if (data.embeds) this.embeds = data.embeds.map(e => new Embed(this, e));
     if (data.type > -1) {
       this.system = false;
       if (data.type === 6) {
@@ -214,9 +191,7 @@ class Message {
         }
       }
     }
-    if (data.id) {
-      this.id = data.id;
-    }
+    if (data.id) this.id = data.id;
     if (this.channel.guild && data.content) {
       const channMentionsRaw = data.content.match(/<#([0-9]{14,20})>/g) || [];
       for (const raw of channMentionsRaw) {
@@ -237,14 +212,11 @@ class Message {
    * @returns {boolean}
    */
   equals(message, rawData) {
+    if (!message) return false;
     const embedUpdate = !message.author && !message.attachments;
+    if (embedUpdate) return this.id === message.id && this.embeds.length === message.embeds.length;
 
-    if (embedUpdate) {
-      const base = this.id === message.id &&
-        this.embeds.length === message.embeds.length;
-      return base;
-    }
-    let base = this.id === message.id &&
+    let equal = this.id === message.id &&
         this.author.id === message.author.id &&
         this.content === message.content &&
         this.tts === message.tts &&
@@ -252,13 +224,13 @@ class Message {
         this.embeds.length === message.embeds.length &&
         this.attachments.length === message.attachments.length;
 
-    if (base && rawData) {
-      base = this.mentions.everyone === message.mentions.everyone &&
+    if (equal && rawData) {
+      equal = this.mentions.everyone === message.mentions.everyone &&
         this._timestamp === new Date(rawData.timestamp).getTime() &&
         this._editedTimestamp === new Date(rawData.edited_timestamp).getTime();
     }
 
-    return base;
+    return equal;
   }
 
   /**

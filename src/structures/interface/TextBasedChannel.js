@@ -1,128 +1,13 @@
-const Collection = require('../../util/Collection');
-const Message = require('../Message');
 const path = require('path');
 const EventEmitter = require('events').EventEmitter;
-
-/**
- * A function that takes a Message object and a MessageCollector and returns a boolean.
- * ```js
- * function(message, collector) {
- *  if (message.content.includes('discord')) {
- *    return true; // passed the filter test
- *  }
- *  return false; // failed the filter test
- * }
- * ```
- * @typedef {function} CollectorFilterFunction
- */
-
-/**
- * An object containing options used to configure a MessageCollector. All properties are optional.
- * ```js
- * {
- *  time: null, // time in milliseconds. If specified, the collector ends after this amount of time.
- *  max: null, // the maximum amount of messages to handle before ending.
- * }
- * ```
- * @typedef {Object} CollectorOptions
- */
-
-/**
- * Collects messages based on a specified filter, then emits them.
- * @extends {EventEmitter}
- */
-class MessageCollector extends EventEmitter {
-  constructor(channel, filter, options = {}) {
-    super();
-    /**
-     * The channel this collector is operating on
-     * @type {Channel}
-     */
-    this.channel = channel;
-    /**
-     * A function used to filter messages that the collector collects.
-     * @type {CollectorFilterFunction}
-     */
-    this.filter = filter;
-    /**
-     * Options for the collecor.
-     * @type {CollectorOptions}
-     */
-    this.options = options;
-    /**
-     * Whether this collector has stopped collecting Messages.
-     * @type {boolean}
-     */
-    this.ended = false;
-    this.listener = message => this.verify(message);
-    this.channel.client.on('message', this.listener);
-    /**
-     * A collection of collected messages, mapped by message ID.
-     * @type {Collection<string, Message>}
-     */
-    this.collected = new Collection();
-    if (options.time) {
-      this.channel.client.setTimeout(() => this.stop('time'), options.time);
-    }
-  }
-
-  /**
-   * Verifies a message against the filter and options
-   * @private
-   * @param {Message} message the message
-   * @returns {boolean}
-   */
-  verify(message) {
-    if (this.channel ? this.channel.id !== message.channel.id : false) {
-      return false;
-    }
-    if (this.filter(message, this)) {
-      this.collected.set(message.id, message);
-      /**
-       * Emitted whenever the Collector receives a Message that passes the filter test.
-       * @param {Message} message the received message
-       * @param {MessageCollector} collector the collector the message passed through.
-       * @event MessageCollector#message
-       */
-      this.emit('message', message, this);
-      if (this.options.max && this.collected.size === this.options.max) {
-        this.stop('limit');
-      }
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Stops the collector and emits `end`.
-   * @param {string} [reason='user'] an optional reason for stopping the collector.
-   */
-  stop(reason = 'user') {
-    if (this.ended) {
-      return;
-    }
-    this.ended = true;
-    this.channel.client.removeListener('message', this.listener);
-    /**
-     * Emitted when the Collector stops collecting.
-     * @param {Collection<string, Message>} collection A collection of messages collected
-     * during the lifetime of the Collector.
-     * Mapped by the ID of the Messages.
-     * @param {string} reason The reason for the end of the collector. If it ended because it reached the specified time
-     * limit, this would be `time`. If you invoke `.stop()` without specifying a reason, this would be `user`. If it
-     * ended because it reached its message limit, it will be `limit`.
-     * @event MessageCollector#end
-     */
-    this.emit('end', this.collected, reason);
-  }
-}
+const Message = require('../Message');
+const Collection = require('../../util/Collection');
 
 /**
  * Interface for classes that have text-channel-like features
  * @interface
  */
 class TextBasedChannel {
-
   constructor() {
     /**
      * A Collection containing the messages sent to this channel.
@@ -137,15 +22,12 @@ class TextBasedChannel {
    * @returns {Collection<string, Message>}
    */
   bulkDelete(messages) {
-    if (messages instanceof Map) {
-      messages = messages.array();
-    }
-    if (!(messages instanceof Array)) {
-      return Promise.reject('pass an array or map');
-    }
+    if (messages instanceof Collection) messages = messages.array();
+    if (!(messages instanceof Array)) return Promise.reject(new TypeError('messages must be an array or collection'));
     const messageIDs = messages.map(m => m.id);
     return this.client.rest.methods.bulkDeleteMessages(this, messageIDs);
   }
+
   /**
    * Options that can be passed into sendMessage or sendTTSMessage:
    * ```js
@@ -156,6 +38,7 @@ class TextBasedChannel {
    * ```
    * @typedef {Object} MessageOptions
    */
+
   /**
    * Send a message to this channel
    * @param {string} content the content to send
@@ -170,6 +53,7 @@ class TextBasedChannel {
   sendMessage(content, options = {}) {
     return this.client.rest.methods.sendMessage(this, content, options.tts, options.nonce);
   }
+
   /**
    * Send a text-to-speech message to this channel
    * @param {string} content the content to send
@@ -184,6 +68,7 @@ class TextBasedChannel {
   sendTTSMessage(content, options = {}) {
     return this.client.rest.methods.sendMessage(this, content, true, options.nonce);
   }
+
   /**
    * Send a file to this channel
    * @param {FileResolvable} attachment The file to send
@@ -201,16 +86,15 @@ class TextBasedChannel {
       }
     }
     return new Promise((resolve, reject) => {
-      this.client.resolver.resolveFile(attachment)
-      .then(file => {
+      this.client.resolver.resolveFile(attachment).then(file => {
         this.client.rest.methods.sendMessage(this, undefined, false, undefined, {
           file,
           name: fileName,
         }).then(resolve).catch(reject);
-      })
-      .catch(reject);
+      }).catch(reject);
     });
   }
+
   /**
    * The parameters to pass in when requesting previous messages from a channel. `around`, `before` and
    * `after` are mutually exclusive. All the parameters are optional.
@@ -237,17 +121,15 @@ class TextBasedChannel {
    */
   fetchMessages(options = {}) {
     return new Promise((resolve, reject) => {
-      this.client.rest.methods.getChannelMessages(this, options)
-        .then(data => {
-          const messages = new Collection();
-          for (const message of data) {
-            const msg = new Message(this, message, this.client);
-            messages.set(message.id, msg);
-            this._cacheMessage(msg);
-          }
-          resolve(messages);
-        })
-        .catch(reject);
+      this.client.rest.methods.getChannelMessages(this, options).then(data => {
+        const messages = new Collection();
+        for (const message of data) {
+          const msg = new Message(this, message, this.client);
+          messages.set(message.id, msg);
+          this._cacheMessage(msg);
+        }
+        resolve(messages);
+      }).catch(reject);
     });
   }
 
@@ -329,8 +211,7 @@ class TextBasedChannel {
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
   createCollector(filter, options = {}) {
-    const collector = new MessageCollector(this, filter, options);
-    return collector;
+    return new MessageCollector(this, filter, options);
   }
 
   /**
@@ -372,17 +253,10 @@ class TextBasedChannel {
 
   _cacheMessage(message) {
     const maxSize = this.client.options.max_message_cache;
-    if (maxSize === 0) {
-      // saves on performance
-      return null;
-    }
-
-    if (this.messages.size >= maxSize) {
-      this.messages.delete(this.messages.keys().next().value);
-    }
+    if (maxSize === 0) return null;
+    if (this.messages.size >= maxSize) this.messages.delete(this.messages.keys().next().value);
 
     this.messages.set(message.id, message);
-
     return message;
   }
 
@@ -392,23 +266,123 @@ class TextBasedChannel {
    */
   fetchPinnedMessages() {
     return new Promise((resolve, reject) => {
-      this.client.rest.methods.getChannelPinnedMessages(this)
-        .then(data => {
-          const messages = new Collection();
-          for (const message of data) {
-            const msg = new Message(this, message, this.client);
-            messages.set(message.id, msg);
-            this._cacheMessage(msg);
-          }
-          resolve(messages);
-        })
-        .catch(reject);
+      this.client.rest.methods.getChannelPinnedMessages(this).then(data => {
+        const messages = new Collection();
+        for (const message of data) {
+          const msg = new Message(this, message, this.client);
+          messages.set(message.id, msg);
+          this._cacheMessage(msg);
+        }
+        resolve(messages);
+      }).catch(reject);
     });
   }
 }
 
-function applyProp(structure, prop) {
-  Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
+/**
+ * A function that takes a Message object and a MessageCollector and returns a boolean.
+ * ```js
+ * function(message, collector) {
+ *  if (message.content.includes('discord')) {
+ *    return true; // passed the filter test
+ *  }
+ *  return false; // failed the filter test
+ * }
+ * ```
+ * @typedef {function} CollectorFilterFunction
+ */
+
+/**
+ * An object containing options used to configure a MessageCollector. All properties are optional.
+ * ```js
+ * {
+ *  time: null, // time in milliseconds. If specified, the collector ends after this amount of time.
+ *  max: null, // the maximum amount of messages to handle before ending.
+ * }
+ * ```
+ * @typedef {Object} CollectorOptions
+ */
+
+/**
+ * Collects messages based on a specified filter, then emits them.
+ * @extends {EventEmitter}
+ */
+class MessageCollector extends EventEmitter {
+  constructor(channel, filter, options = {}) {
+    super();
+    /**
+     * The channel this collector is operating on
+     * @type {Channel}
+     */
+    this.channel = channel;
+    /**
+     * A function used to filter messages that the collector collects.
+     * @type {CollectorFilterFunction}
+     */
+    this.filter = filter;
+    /**
+     * Options for the collecor.
+     * @type {CollectorOptions}
+     */
+    this.options = options;
+    /**
+     * Whether this collector has stopped collecting Messages.
+     * @type {boolean}
+     */
+    this.ended = false;
+    this.listener = message => this.verify(message);
+    this.channel.client.on('message', this.listener);
+    /**
+     * A collection of collected messages, mapped by message ID.
+     * @type {Collection<string, Message>}
+     */
+    this.collected = new Collection();
+    if (options.time) this.channel.client.setTimeout(() => this.stop('time'), options.time);
+  }
+
+  /**
+   * Verifies a message against the filter and options
+   * @private
+   * @param {Message} message the message
+   * @returns {boolean}
+   */
+  verify(message) {
+    if (this.channel ? this.channel.id !== message.channel.id : false) return false;
+    if (this.filter(message, this)) {
+      this.collected.set(message.id, message);
+      /**
+       * Emitted whenever the Collector receives a Message that passes the filter test.
+       * @param {Message} message the received message
+       * @param {MessageCollector} collector the collector the message passed through.
+       * @event MessageCollector#message
+       */
+      this.emit('message', message, this);
+      if (this.options.max && this.collected.size === this.options.max) this.stop('limit');
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Stops the collector and emits `end`.
+   * @param {string} [reason='user'] an optional reason for stopping the collector.
+   */
+  stop(reason = 'user') {
+    if (this.ended) return;
+    this.ended = true;
+    this.channel.client.removeListener('message', this.listener);
+    /**
+     * Emitted when the Collector stops collecting.
+     * @param {Collection<string, Message>} collection A collection of messages collected
+     * during the lifetime of the Collector.
+     * Mapped by the ID of the Messages.
+     * @param {string} reason The reason for the end of the collector. If it ended because it reached the specified time
+     * limit, this would be `time`. If you invoke `.stop()` without specifying a reason, this would be `user`. If it
+     * ended because it reached its message limit, it will be `limit`.
+     * @event MessageCollector#end
+     */
+    this.emit('end', this.collected, reason);
+  }
 }
 
 exports.applyToClass = (structure, full = false) => {
@@ -425,7 +399,9 @@ exports.applyToClass = (structure, full = false) => {
     props.push('createCollector');
     props.push('awaitMessages');
   }
-  for (const prop of props) {
-    applyProp(structure, prop);
-  }
+  for (const prop of props) applyProp(structure, prop);
 };
+
+function applyProp(structure, prop) {
+  Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
+}

@@ -3,10 +3,6 @@ const list = [
   require('./OpusScriptEngine'),
 ];
 
-exports.add = encoder => {
-  list.push(encoder);
-};
-
 function fetch(Encoder) {
   try {
     return new Encoder();
@@ -15,12 +11,14 @@ function fetch(Encoder) {
   }
 }
 
+exports.add = encoder => {
+  list.push(encoder);
+};
+
 exports.fetch = () => {
   for (const encoder of list) {
-    const success = fetch(encoder);
-    if (success) {
-      return success;
-    }
+    const fetched = fetch(encoder);
+    if (fetched) return fetched;
   }
   throw new Error('could not find an opus engine');
 };

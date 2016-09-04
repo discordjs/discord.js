@@ -10,7 +10,6 @@ const BeforeReadyWhitelist = [
 ];
 
 class WebSocketPacketManager {
-
   constructor(websocketManager) {
     this.ws = websocketManager;
     this.handlers = {};
@@ -62,9 +61,7 @@ class WebSocketPacketManager {
   }
 
   setSequence(s) {
-    if (s && s > this.ws.sequence) {
-      this.ws.sequence = s;
-    }
+    if (s && s > this.ws.sequence) this.ws.sequence = s;
   }
 
   handle(packet) {
@@ -93,13 +90,9 @@ class WebSocketPacketManager {
       }
     }
 
-    if (this.handlers[packet.t]) {
-      return this.handlers[packet.t].handle(packet);
-    }
-
+    if (this.handlers[packet.t]) return this.handlers[packet.t].handle(packet);
     return false;
   }
-
 }
 
 module.exports = WebSocketPacketManager;

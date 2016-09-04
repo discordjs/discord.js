@@ -2,7 +2,6 @@ const Action = require('./Action');
 const Constants = require('../../util/Constants');
 
 class GuildMemberRemoveAction extends Action {
-
   constructor(client) {
     super(client);
     this.deleted = new Map();

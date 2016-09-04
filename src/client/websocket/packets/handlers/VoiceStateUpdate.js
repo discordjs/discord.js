@@ -4,12 +4,11 @@ const Constants = require('../../../../util/Constants');
 const cloneObject = require('../../../../util/CloneObject');
 
 class VoiceStateUpdateHandler extends AbstractHandler {
-
   handle(packet) {
-    const data = packet.d;
     const client = this.packetManager.client;
-    const guild = client.guilds.get(data.guild_id);
+    const data = packet.d;
 
+    const guild = client.guilds.get(data.guild_id);
     if (guild) {
       const member = guild.members.get(data.user_id);
       if (member) {
@@ -19,18 +18,14 @@ class VoiceStateUpdateHandler extends AbstractHandler {
         }
 
         // if the member left the voice channel, unset their speaking property
-        if (!data.channel_id) {
-          member.speaking = null;
-        }
+        if (!data.channel_id) member.speaking = null;
 
         if (client.voice.pending.has(guild.id) && member.user.id === client.user.id && data.channel_id) {
           client.voice._receivedVoiceStateUpdate(data.guild_id, data.session_id);
         }
 
         const newChannel = client.channels.get(data.channel_id);
-        if (newChannel) {
-          newChannel.members.set(member.user.id, member);
-        }
+        if (newChannel) newChannel.members.set(member.user.id, member);
 
         member.serverMute = data.mute;
         member.serverDeaf = data.deaf;
@@ -42,15 +37,14 @@ class VoiceStateUpdateHandler extends AbstractHandler {
       }
     }
   }
-
 }
 
 /**
-* Emitted whenever a user changes voice state - e.g. joins/leaves a channel, mutes/unmutes.
-*
-* @event Client#voiceStateUpdate
-* @param {GuildMember} oldMember the member before the voice state update
-* @param {GuildMember} newMember the member before the voice state update
-*/
+ * Emitted whenever a user changes voice state - e.g. joins/leaves a channel, mutes/unmutes.
+ *
+ * @event Client#voiceStateUpdate
+ * @param {GuildMember} oldMember the member before the voice state update
+ * @param {GuildMember} newMember the member before the voice state update
+ */
 
 module.exports = VoiceStateUpdateHandler;
