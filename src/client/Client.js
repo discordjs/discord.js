@@ -15,7 +15,6 @@ const Collection = require('../util/Collection');
  * @extends {EventEmitter}
  */
 class Client extends EventEmitter {
-
   /**
    * Creates an instance of Client.
    * @param {ClientOptions} [options] options to pass to the client
@@ -129,11 +128,7 @@ class Client extends EventEmitter {
    * client.login(email, password);
    */
   login(emailOrToken, password) {
-    if (password) {
-      // login with email and password
-      return this.rest.methods.loginEmailPassword(emailOrToken, password);
-    }
-    // login with token
+    if (password) return this.rest.methods.loginEmailPassword(emailOrToken, password);
     return this.rest.methods.loginToken(emailOrToken);
   }
 
@@ -152,8 +147,7 @@ class Client extends EventEmitter {
         this._timeouts = [];
         this._intervals = [];
         resolve();
-      })
-      .catch(reject);
+      }).catch(reject);
     });
   }
 
@@ -208,7 +202,6 @@ class Client extends EventEmitter {
   get uptime() {
     return this.readyTime ? Date.now() - this.readyTime : null;
   }
-
 }
 
 module.exports = Client;

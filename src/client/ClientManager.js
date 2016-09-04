@@ -5,7 +5,6 @@ const Constants = require('../util/Constants');
  * @private
  */
 class ClientManager {
-
   constructor(client) {
     /**
      * The Client that instantiated this Manager
@@ -27,13 +26,10 @@ class ClientManager {
    */
   connectToWebSocket(token, resolve, reject) {
     this.client.token = token;
-    this.client.rest.methods.getGateway()
-      .then(gateway => {
-        this.client.ws.connect(gateway);
-        this.client.once(Constants.Events.READY, () => resolve(token));
-      })
-      .catch(reject);
-
+    this.client.rest.methods.getGateway().then(gateway => {
+      this.client.ws.connect(gateway);
+      this.client.once(Constants.Events.READY, () => resolve(token));
+    }).catch(reject);
     this.client.setTimeout(() => reject(Constants.Errors.TOOK_TOO_LONG), 1000 * 300);
   }
 

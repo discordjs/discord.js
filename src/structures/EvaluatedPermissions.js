@@ -28,7 +28,6 @@ class EvaluatedPermissions {
     for (const permissionName in Constants.PermissionFlags) {
       serializedPermissions[permissionName] = this.hasPermission(permissionName);
     }
-
     return serializedPermissions;
   }
 
@@ -39,20 +38,10 @@ class EvaluatedPermissions {
    * @returns {boolean}
    */
   hasPermission(permission, explicit = false) {
-    if (typeof permission === 'string') {
-      permission = Constants.PermissionFlags[permission];
-    }
+    if (typeof permission === 'string') permission = Constants.PermissionFlags[permission];
+    if (!permission) throw Constants.Errors.NOT_A_PERMISSION;
 
-    if (!permission) {
-      throw Constants.Errors.NOT_A_PERMISSION;
-    }
-
-    if (!explicit) {
-      if ((this.permissions & Constants.PermissionFlags.ADMINISTRATOR) > 0) {
-        return true;
-      }
-    }
-
+    if (!explicit && (this.permissions & Constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
     return (this.permissions & permission) > 0;
   }
 }

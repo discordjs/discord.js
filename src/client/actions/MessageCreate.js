@@ -2,7 +2,6 @@ const Action = require('./Action');
 const Message = require('../../structures/Message');
 
 class MessageCreateAction extends Action {
-
   handle(data) {
     const client = this.client;
 

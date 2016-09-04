@@ -3,7 +3,6 @@ const Constants = require('../../util/Constants');
 const cloneObject = require('../../util/CloneObject');
 
 class GuildUpdateAction extends Action {
-
   handle(data) {
     const client = this.client;
 

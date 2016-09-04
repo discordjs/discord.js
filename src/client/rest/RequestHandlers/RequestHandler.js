@@ -3,6 +3,9 @@
  * @private
  */
 class RequestHandler {
+  /**
+   * @param {RESTManager} restManager The REST manager to use
+   */
   constructor(restManager) {
     /**
      * The RESTManager that instantiated this RequestHandler
@@ -12,7 +15,7 @@ class RequestHandler {
 
     /**
      * A list of requests that have yet to be processed.
-     * @type {Array<APIRequest>}
+     * @type {APIRequest[]}
      */
     this.queue = [];
   }
@@ -31,7 +34,7 @@ class RequestHandler {
 
   /**
    * Push a new API request into this bucket
-   * @param {APIRequest} request the new request to push into the queue
+   * @param {APIRequest} request The new request to push into the queue
    */
   push(request) {
     this.queue.push(request);

@@ -3,7 +3,6 @@ const Constants = require('../../util/Constants');
 const cloneObject = require('../../util/CloneObject');
 
 class UserUpdateAction extends Action {
-
   handle(data) {
     const client = this.client;
 

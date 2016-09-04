@@ -8,9 +8,7 @@ class PermissionOverwrites {
      * @type {GuildChannel}
      */
     this.channel = guildChannel;
-    if (data) {
-      this.setup(data);
-    }
+    if (data) this.setup(data);
   }
 
   setup(data) {

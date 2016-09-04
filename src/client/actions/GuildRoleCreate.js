@@ -3,7 +3,6 @@ const Constants = require('../../util/Constants');
 const Role = require('../../structures/Role');
 
 class GuildRoleCreate extends Action {
-
   handle(data) {
     const client = this.client;
 

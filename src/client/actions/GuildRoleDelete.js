@@ -2,7 +2,6 @@ const Action = require('./Action');
 const Constants = require('../../util/Constants');
 
 class GuildRoleDeleteAction extends Action {
-
   constructor(client) {
     super(client);
     this.deleted = new Map();

@@ -1,5 +1,5 @@
-const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
+const Collection = require('../util/Collection');
 
 /**
  * Represents a Custom Emoji
@@ -51,9 +51,7 @@ class Emoji {
   get roles() {
     const roles = new Collection();
     for (const role of this.roleIDS) {
-      if (this.guild.roles.get(role)) {
-        roles.set(role, this.guild.roles.get(role));
-      }
+      if (this.guild.roles.get(role)) roles.set(role, this.guild.roles.get(role));
     }
     return roles;
   }

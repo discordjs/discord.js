@@ -23,9 +23,7 @@ class GuildMember {
      */
     this.user = {};
     this._roles = [];
-    if (data) {
-      this.setup(data);
-    }
+    if (data) this.setup(data);
   }
 
   setup(data) {
@@ -91,15 +89,11 @@ class GuildMember {
     const list = new Collection();
     const everyoneRole = this.guild.roles.get(this.guild.id);
 
-    if (everyoneRole) {
-      list.set(everyoneRole.id, everyoneRole);
-    }
+    if (everyoneRole) list.set(everyoneRole.id, everyoneRole);
 
     for (const roleID of this._roles) {
       const role = this.guild.roles.get(roleID);
-      if (role) {
-        list.set(role.id, role);
-      }
+      if (role) list.set(role.id, role);
     }
 
     return list;

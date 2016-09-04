@@ -1,7 +1,6 @@
 const Action = require('./Action');
 
 class GuildSync extends Action {
-
   handle(data) {
     const client = this.client;
 

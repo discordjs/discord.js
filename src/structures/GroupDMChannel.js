@@ -1,6 +1,7 @@
 const Channel = require('./Channel');
 const TextBasedChannel = require('./interface/TextBasedChannel');
 const Collection = require('../util/Collection');
+const arraysEqual = require('../util/ArraysEqual');
 
 /*
 { type: 3,
@@ -24,49 +25,31 @@ const Collection = require('../util/Collection');
   icon: null }
 */
 
-
-function arraysEqual(a, b) {
-  if (a === b) return true;
-  if (a.length !== b.length) return false;
-
-  for (const itemInd in a) {
-    const item = a[itemInd];
-    const ind = b.indexOf(item);
-    if (ind) {
-      b.splice(ind, 1);
-    }
-  }
-
-  return b.length === 0;
-}
-
 /**
  * Represents a Group DM on Discord
  * @extends {Channel}
  * @implements {TextBasedChannel}
  */
 class GroupDMChannel extends Channel {
-
   constructor(client, data) {
     super(client, data);
-
     this.messages = new Collection();
   }
 
   equals(other) {
-    const base = other &&
+    const equal = other &&
       this.id === other.id &&
       this.name === other.name &&
       this.icon === other.icon &&
       this.owner.id === other.owner_id;
 
-    if (base) {
+    if (equal) {
       const thisIDs = this.recipients.array().map(r => r.id);
       const otherIDs = other.recipients.map(r => r.id);
       return arraysEqual(thisIDs, otherIDs);
     }
 
-    return base;
+    return equal;
   }
 
   setup(data) {
@@ -86,6 +69,7 @@ class GroupDMChannel extends Channel {
         this.recipients.set(user.id, user);
       }
     }
+
     /**
      * The name of this Group DM, can be null if one isn't set.
      * @type {string}

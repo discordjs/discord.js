@@ -8,7 +8,10 @@ const RequestHandler = require('./RequestHandler');
  * @private
  */
 class SequentialRequestHandler extends RequestHandler {
-
+  /**
+   * @param {RESTManager} restManager The REST manager to use
+   * @param {string} endpoint The endpoint to handle
+   */
   constructor(restManager, endpoint) {
     super(restManager, endpoint);
 
@@ -39,8 +42,8 @@ class SequentialRequestHandler extends RequestHandler {
 
   /**
    * Performs a request then resolves a promise to indicate its readiness for a new request
-   * @param {APIRequest} item the item to execute
-   * @returns {Promise<Object, Error>}
+   * @param {APIRequest} item The item to execute
+   * @returns {Promise<?Object|Error>}
    */
   execute(item) {
     return new Promise(resolve => {
@@ -88,9 +91,8 @@ class SequentialRequestHandler extends RequestHandler {
 
   handle() {
     super.handle();
-    if (this.waiting || this.queue.length === 0 || this.globalLimit) {
-      return;
-    }
+
+    if (this.waiting || this.queue.length === 0 || this.globalLimit) return;
     this.waiting = true;
 
     const item = this.queue[0];

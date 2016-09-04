@@ -1,25 +1,11 @@
 const User = require('./User');
+const Role = require('./Role');
+const Emoji = require('./Emoji');
 const GuildMember = require('./GuildMember');
 const Constants = require('../util/Constants');
-const cloneObject = require('../util/CloneObject');
-const Role = require('./Role');
 const Collection = require('../util/Collection');
-const Emoji = require('./Emoji');
-
-function arraysEqual(a, b) {
-  if (a === b) return true;
-  if (a.length !== b.length) return false;
-
-  for (const itemInd in a) {
-    const item = a[itemInd];
-    const ind = b.indexOf(item);
-    if (ind) {
-      b.splice(ind, 1);
-    }
-  }
-
-  return b.length === 0;
-}
+const cloneObject = require('../util/CloneObject');
+const arraysEqual = require('../util/ArraysEqual');
 
 /**
  * Represents a Guild (or a Server) on Discord.
@@ -181,7 +167,7 @@ class Guild {
    * @returns {boolean}
    */
   equals(guild) {
-    let base =
+    let equal =
       guild &&
       this.id === guild.id &&
       this.available === !guild.unavailable &&
@@ -196,17 +182,15 @@ class Guild {
       this.verificationLevel === guild.verification_level &&
       this.embedEnabled === guild.embed_enabled;
 
-    if (base) {
+    if (equal) {
       if (this.embedChannel) {
-        if (this.embedChannel.id !== guild.embed_channel_id) {
-          base = false;
-        }
+        if (this.embedChannel.id !== guild.embed_channel_id) equal = false;
       } else if (guild.embed_channel_id) {
-        base = false;
+        equal = false;
       }
     }
 
-    return base;
+    return equal;
   }
 
   _memberSpeakUpdate(user, speaking) {
