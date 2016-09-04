@@ -41,10 +41,9 @@ class VoiceStateUpdateHandler extends AbstractHandler {
 
 /**
  * Emitted whenever a user changes voice state - e.g. joins/leaves a channel, mutes/unmutes.
- *
  * @event Client#voiceStateUpdate
- * @param {GuildMember} oldMember the member before the voice state update
- * @param {GuildMember} newMember the member before the voice state update
+ * @param {GuildMember} oldMember The member before the voice state update
+ * @param {GuildMember} newMember The member after the voice state update
  */
 
 module.exports = VoiceStateUpdateHandler;

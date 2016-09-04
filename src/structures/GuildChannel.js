@@ -48,7 +48,7 @@ class GuildChannel extends Channel {
   /**
    * Checks if this channel has the same type, topic, position, name, overwrites and ID as another channel.
    * In most cases, a simple `channel.id === channel2.id` will do, and is much faster too.
-   * @param {GuildChannel} channel the channel to compare this channel to
+   * @param {GuildChannel} channel The channel to compare this channel to
    * @returns {boolean}
    */
   equals(channel) {
@@ -75,7 +75,7 @@ class GuildChannel extends Channel {
   /**
    * Gets the overall set of permissions for a user in this channel, taking into account roles and permission
    * overwrites.
-   * @param {GuildMemberResolvable} member the user that you want to obtain the overall permissions for
+   * @param {GuildMemberResolvable} member The user that you want to obtain the overall permissions for
    * @returns {?EvaluatedPermissions}
    */
   permissionsFor(member) {
@@ -141,9 +141,9 @@ class GuildChannel extends Channel {
 
   /**
    * Overwrites the permissions for a user or role in this channel.
-   * @param {Role|UserResolvable} userOrRole the user or role to update
-   * @param {PermissionOverwriteOptions} options the configuration for the update
-   * @returns {Promise<null, Error>}
+   * @param {Role|UserResolvable} userOrRole The user or role to update
+   * @param {PermissionOverwriteOptions} options The configuration for the update
+   * @returns {Promise}
    * @example
    * // overwrite permissions for a message author
    * message.channel.overwritePermissions(message.author, {
@@ -194,7 +194,7 @@ class GuildChannel extends Channel {
 
   /**
    * Set a new name for the Guild Channel
-   * @param {string} name the new name for the guild channel
+   * @param {string} name The new name for the guild channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // set a new channel name
@@ -208,7 +208,7 @@ class GuildChannel extends Channel {
 
   /**
    * Set a new position for the Guild Channel
-   * @param {number} position the new position for the guild channel
+   * @param {number} position The new position for the guild channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // set a new channel position
@@ -222,7 +222,7 @@ class GuildChannel extends Channel {
 
   /**
    * Set a new topic for the Guild Channel
-   * @param {string} topic the new topic for the guild channel
+   * @param {string} topic The new topic for the guild channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // set a new channel topic
@@ -262,8 +262,8 @@ class GuildChannel extends Channel {
 
   /**
    * Create an invite to this Guild Channel
-   * @param {InviteOptions} [options={}] the options to provide when creating the invite
-   * @returns {Promise<Invite, Error>}
+   * @param {InviteOptions} [options={}] The options for the invite
+   * @returns {Promise<Invite>}
    */
   createInvite(options = {}) {
     return this.client.rest.methods.createChannelInvite(this, options);

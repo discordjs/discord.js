@@ -18,7 +18,7 @@ class TextBasedChannel {
 
   /**
    * Bulk delete a given Collection or Array of messages in one go. Returns the deleted messages after.
-   * @param {Map<string, Message>|Array<Message>} messages the messages to delete
+   * @param {Collection<string, Message>|Message[]} messages The messages to delete
    * @returns {Collection<string, Message>}
    */
   bulkDelete(messages) {
@@ -41,8 +41,8 @@ class TextBasedChannel {
 
   /**
    * Send a message to this channel
-   * @param {string} content the content to send
-   * @param {MessageOptions} [options={}] the options to provide
+   * @param {string} content The content to send
+   * @param {MessageOptions} [options={}] The options to provide
    * @returns {Promise<Message>}
    * @example
    * // send a message
@@ -56,8 +56,8 @@ class TextBasedChannel {
 
   /**
    * Send a text-to-speech message to this channel
-   * @param {string} content the content to send
-   * @param {MessageOptions} [options={}] the options to provide
+   * @param {string} content The content to send
+   * @param {MessageOptions} [options={}] The options to provide
    * @returns {Promise<Message>}
    * @example
    * // send a TTS message
@@ -111,8 +111,8 @@ class TextBasedChannel {
 
   /**
    * Gets the past messages sent in this channel. Resolves with a Collection mapping message ID's to Message objects.
-   * @param {ChannelLogsQueryOptions} [options={}] the query parameters to pass in
-   * @returns {Promise<Collection<string, Message>, Error>}
+   * @param {ChannelLogsQueryOptions} [options={}] The query parameters to pass in
+   * @returns {Promise<Collection<string, Message>>}
    * @example
    * // get messages
    * channel.fetchMessages({limit: 10})
@@ -160,7 +160,7 @@ class TextBasedChannel {
    * Stops the typing indicator in the channel.
    * The indicator will only stop if this is called as many times as startTyping().
    * <info>It can take a few seconds for the Client User to stop typing.</info>
-   * @param {boolean} [force=false] whether or not to force the indicator to stop regardless of call count
+   * @param {boolean} [force=false] Whether or not to reset the call count and force the indicator to stop
    * @example
    * // stop typing in a channel
    * channel.stopTyping();
@@ -198,8 +198,8 @@ class TextBasedChannel {
 
   /**
    * Creates a Message Collector
-   * @param {CollectorFilterFunction} filter the filter to create the collector with
-   * @param {CollectorOptions} [options={}] the options to pass to the collector
+   * @param {CollectorFilterFunction} filter The filter to create the collector with
+   * @param {CollectorOptions} [options={}] The options to pass to the collector
    * @returns {MessageCollector}
    * @example
    * // create a message collector
@@ -227,8 +227,8 @@ class TextBasedChannel {
   /**
    * Similar to createCollector but in Promise form. Resolves with a Collection of messages that pass the specified
    * filter.
-   * @param {CollectorFilterFunction} filter the filter function to use
-   * @param {AwaitMessagesOptions} [options={}] optional options to pass to the internal collector
+   * @param {CollectorFilterFunction} filter The filter function to use
+   * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector
    * @returns {Promise<Collection<string, Message>>}
    * @example
    * // await !vote messages
@@ -262,7 +262,7 @@ class TextBasedChannel {
 
   /**
    * Fetches the pinned messages of this Channel and returns a Collection of them.
-   * @returns {Promise<Collection<string, Message>, Error>}
+   * @returns {Promise<Collection<string, Message>>}
    */
   fetchPinnedMessages() {
     return new Promise((resolve, reject) => {
@@ -280,34 +280,39 @@ class TextBasedChannel {
 }
 
 /**
- * A function that takes a Message object and a MessageCollector and returns a boolean.
- * ```js
- * function(message, collector) {
- *  if (message.content.includes('discord')) {
- *    return true; // passed the filter test
- *  }
- *  return false; // failed the filter test
- * }
- * ```
- * @typedef {function} CollectorFilterFunction
- */
-
-/**
- * An object containing options used to configure a MessageCollector. All properties are optional.
- * ```js
- * {
- *  time: null, // time in milliseconds. If specified, the collector ends after this amount of time.
- *  max: null, // the maximum amount of messages to handle before ending.
- * }
- * ```
- * @typedef {Object} CollectorOptions
- */
-
-/**
  * Collects messages based on a specified filter, then emits them.
  * @extends {EventEmitter}
  */
 class MessageCollector extends EventEmitter {
+  /**
+   * A function that takes a Message object and a MessageCollector and returns a boolean.
+   * ```js
+   * function(message, collector) {
+   *  if (message.content.includes('discord')) {
+   *    return true; // passed the filter test
+   *  }
+   *  return false; // failed the filter test
+   * }
+   * ```
+   * @typedef {function} CollectorFilterFunction
+   */
+
+  /**
+   * An object containing options used to configure a MessageCollector. All properties are optional.
+   * ```js
+   * {
+   *  time: null, // time in milliseconds. If specified, the collector ends after this amount of time.
+   *  max: null, // the maximum amount of messages to handle before ending.
+   * }
+   * ```
+   * @typedef {Object} CollectorOptions
+   */
+
+  /**
+   * @param {Channel} channel The channel to collect messages in
+   * @param {CollectorFilterFunction} filter The filter function
+   * @param {CollectorOptions} [options] Options for the collector
+   */
   constructor(channel, filter, options = {}) {
     super();
     /**
@@ -343,7 +348,7 @@ class MessageCollector extends EventEmitter {
   /**
    * Verifies a message against the filter and options
    * @private
-   * @param {Message} message the message
+   * @param {Message} message The message
    * @returns {boolean}
    */
   verify(message) {
@@ -352,8 +357,8 @@ class MessageCollector extends EventEmitter {
       this.collected.set(message.id, message);
       /**
        * Emitted whenever the Collector receives a Message that passes the filter test.
-       * @param {Message} message the received message
-       * @param {MessageCollector} collector the collector the message passed through.
+       * @param {Message} message The received message
+       * @param {MessageCollector} collector The collector the message passed through
        * @event MessageCollector#message
        */
       this.emit('message', message, this);
@@ -365,7 +370,7 @@ class MessageCollector extends EventEmitter {
 
   /**
    * Stops the collector and emits `end`.
-   * @param {string} [reason='user'] an optional reason for stopping the collector.
+   * @param {string} [reason='user'] An optional reason for stopping the collector
    */
   stop(reason = 'user') {
     if (this.ended) return;
@@ -374,8 +379,7 @@ class MessageCollector extends EventEmitter {
     /**
      * Emitted when the Collector stops collecting.
      * @param {Collection<string, Message>} collection A collection of messages collected
-     * during the lifetime of the Collector.
-     * Mapped by the ID of the Messages.
+     * during the lifetime of the Collector, mapped by the ID of the Messages.
      * @param {string} reason The reason for the end of the collector. If it ended because it reached the specified time
      * limit, this would be `time`. If you invoke `.stop()` without specifying a reason, this would be `user`. If it
      * ended because it reached its message limit, it will be `limit`.

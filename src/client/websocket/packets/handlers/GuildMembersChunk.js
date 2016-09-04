@@ -21,10 +21,9 @@ class GuildMembersChunkHandler extends AbstractHandler {
 
 /**
  * Emitted whenever a chunk of Guild members is received
- *
  * @event Client#guildMembersChunk
  * @param {Guild} guild The guild that the chunks relate to
- * @param {Array<GuildMember>} members The members in the chunk
+ * @param {GuildMember[]} members The members in the chunk
  */
 
 module.exports = GuildMembersChunkHandler;

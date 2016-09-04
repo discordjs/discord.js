@@ -137,8 +137,8 @@ class GuildMember {
 
   /**
    * Mute/unmute a user
-   * @param {boolean} mute whether or not the member should be muted
-   * @returns {Promise<GuildMember, Error>}
+   * @param {boolean} mute Whether or not the member should be muted
+   * @returns {Promise<GuildMember>}
    */
   setMute(mute) {
     return this.edit({ mute });
@@ -146,8 +146,8 @@ class GuildMember {
 
   /**
    * Deafen/undeafen a user
-   * @param {boolean} deaf whether or not the member should be deafened
-   * @returns {Promise<GuildMember, Error>}
+   * @param {boolean} deaf Whether or not the member should be deafened
+   * @returns {Promise<GuildMember>}
    */
   setDeaf(deaf) {
     return this.edit({ deaf });
@@ -155,8 +155,8 @@ class GuildMember {
 
   /**
    * Moves the Guild Member to the given channel.
-   * @param {ChannelResolvable} channel the channel to move the member to
-   * @returns {Promise<GuildMember, Error>}
+   * @param {ChannelResolvable} channel The channel to move the member to
+   * @returns {Promise<GuildMember>}
    */
   setVoiceChannel(channel) {
     return this.edit({ channel });
@@ -164,8 +164,8 @@ class GuildMember {
 
   /**
    * Sets the Roles applied to the member.
-   * @param {Collection<string, Role>|Array<Role>} roles the roles to apply
-   * @returns {Promise<GuildMember, Error>}
+   * @param {Collection<string, Role>|Role[]} roles The roles to apply
+   * @returns {Promise<GuildMember>}
    */
   setRoles(roles) {
     return this.edit({ roles });
@@ -173,8 +173,8 @@ class GuildMember {
 
   /**
    * Set the nickname for the Guild Member
-   * @param {string} nick the nickname for the Guild Member
-   * @returns {Promise<GuildMember, Error>}
+   * @param {string} nick The nickname for the Guild Member
+   * @returns {Promise<GuildMember>}
    */
   setNickname(nick) {
     return this.edit({ nick });
@@ -182,15 +182,15 @@ class GuildMember {
 
   /**
    * Edit a Guild Member
-   * @param {GuildmemberEditData} data the data to edit the member with
-   * @returns {Promise<GuildMember, Error>}
+   * @param {GuildmemberEditData} data The data to edit the member with
+   * @returns {Promise<GuildMember>}
    */
   edit(data) {
     return this.client.rest.methods.updateGuildMember(this, data);
   }
 
   /**
-   * Deletes any DM's with this Guild Member
+   * Deletes any DMs with this Guild Member
    * @returns {Promise<DMChannel>}
    */
   deleteDM() {
@@ -209,7 +209,7 @@ class GuildMember {
    * Ban this Guild Member
    * @param {number} [deleteDays=0] The amount of days worth of messages from this member that should
    * also be deleted. Between `0` and `7`.
-   * @returns {Promise<GuildMember, Error>}
+   * @returns {Promise<GuildMember>}
    * @example
    * // ban a guild member
    * guildMember.ban(7);

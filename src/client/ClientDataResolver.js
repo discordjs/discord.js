@@ -2,12 +2,12 @@ const path = require('path');
 const fs = require('fs');
 const request = require('superagent');
 
-const requireStructure = name => require(`../structures/${name}`);
-const User = requireStructure('User');
-const Message = requireStructure('Message');
-const Guild = requireStructure('Guild');
-const Channel = requireStructure('Channel');
-const GuildMember = requireStructure('GuildMember');
+const Constants = require('../util/constants');
+const User = require(`../structures/User`);
+const Message = require(`../structures/Message`);
+const Guild = require(`../structures/Guild`);
+const Channel = require(`../structures/Channel`);
+const GuildMember = require(`../structures/GuildMember`);
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
@@ -34,7 +34,7 @@ class ClientDataResolver {
 
   /**
    * Resolves a UserResolvable to a User object
-   * @param {UserResolvable} user the UserResolvable to identify
+   * @param {UserResolvable} user The UserResolvable to identify
    * @returns {?User}
    */
   resolveUser(user) {
@@ -61,7 +61,7 @@ class ClientDataResolver {
 
   /**
    * Resolves a GuildResolvable to a Guild object
-   * @param {GuildResolvable} guild the GuildResolvable to identify
+   * @param {GuildResolvable} guild The GuildResolvable to identify
    * @returns {?Guild}
    */
   resolveGuild(guild) {
@@ -79,8 +79,8 @@ class ClientDataResolver {
 
   /**
    * Resolves a GuildMemberResolvable to a GuildMember object
-   * @param {GuildResolvable} guild the guild that the member is part of
-   * @param {UserResolvable} user the user that is part of the guild
+   * @param {GuildResolvable} guild The guild that the member is part of
+   * @param {UserResolvable} user The user that is part of the guild
    * @returns {?GuildMember}
    */
   resolveGuildMember(guild, user) {
@@ -102,7 +102,7 @@ class ClientDataResolver {
 
   /**
    * Resolves a Base64Resolvable to a Base 64 image
-   * @param {Base64Resolvable} data the base 64 resolvable you want to resolve
+   * @param {Base64Resolvable} data The base 64 resolvable you want to resolve
    * @returns {?string}
    */
   resolveBase64(data) {
@@ -119,7 +119,7 @@ class ClientDataResolver {
 
   /**
    * Resolves a ChannelResolvable to a Channel object
-   * @param {ChannelResolvable} channel the channel resolvable to resolve
+   * @param {ChannelResolvable} channel The channel resolvable to resolve
    * @returns {?Channel}
    */
   resolveChannel(channel) {
@@ -129,16 +129,34 @@ class ClientDataResolver {
   }
 
   /**
+   * Data that can be resolved to give a permission number. This can be:
+   * * A string
+   * * A permission number
+   * @typedef {string|number} PermissionResolvable
+   */
+
+  /**
+   * Resolves a PermissionResolvable to a permission number
+   * @param {PermissionResolvable} permission The permission resolvable to resolve
+   * @returns {number}
+   */
+  resolvePermission(permission) {
+    if (typeof permission === 'string') permission = Constants.PermissionFlags[permission];
+    if (!permission) throw Constants.Errors.NOT_A_PERMISSION;
+    return permission;
+  }
+
+  /**
    * Data that can be resolved to give a string. This can be:
    * * A string
    * * An Array (joined with a new line delimiter to give a string)
-   * * Any object
-   * @typedef {string|Array|Object} StringResolvable
+   * * Any value
+   * @typedef {string|Array|*} StringResolvable
    */
 
   /**
    * Resolves a StringResolvable to a string
-   * @param {StringResolvable} data the string resolvable to resolve
+   * @param {StringResolvable} data The string resolvable to resolve
    * @returns {string}
    */
   resolveString(data) {
@@ -157,7 +175,7 @@ class ClientDataResolver {
 
   /**
    * Resolves a FileResolvable to a Buffer
-   * @param {FileResolvable} resource the file resolvable to resolve
+   * @param {FileResolvable} resource The file resolvable to resolve
    * @returns {Promise<Buffer>}
    */
   resolveFile(resource) {

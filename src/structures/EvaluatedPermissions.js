@@ -32,15 +32,13 @@ class EvaluatedPermissions {
   }
 
   /**
-   * Checks whether a user has a certain permission, e.g. `READ_MESSAGES`.
-   * @param {string} permission the permission to check for
-   * @param {boolean} [explicit=false] whether the user should explicitly have the permission.
+   * Checks whether the user has a certain permission, e.g. `READ_MESSAGES`.
+   * @param {PermissionResolvable} permission The permission to check for
+   * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permission
    * @returns {boolean}
    */
   hasPermission(permission, explicit = false) {
-    if (typeof permission === 'string') permission = Constants.PermissionFlags[permission];
-    if (!permission) throw Constants.Errors.NOT_A_PERMISSION;
-
+    permission = this.member.client.resolver.resolvePermission(permission);
     if (!explicit && (this.permissions & Constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
     return (this.permissions & permission) > 0;
   }

@@ -16,8 +16,7 @@ const Collection = require('../util/Collection');
  */
 class Client extends EventEmitter {
   /**
-   * Creates an instance of Client.
-   * @param {ClientOptions} [options] options to pass to the client
+   * @param {ClientOptions} [options] Options for the client
    */
   constructor(options) {
     super();
@@ -133,8 +132,8 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Destroys the client and logs out. Resolves with null if successful.
-   * @returns {Promise<null, Error>}
+   * Destroys the client and logs out.
+   * @returns {Promise}
    */
   destroy() {
     return new Promise((resolve, reject) => {
@@ -170,7 +169,7 @@ class Client extends EventEmitter {
   /**
    * This shouldn't really be necessary to most developers as it is automatically invoked every 30 seconds, however
    * if you wish to force a sync of Guild data, you can use this. Only applicable to user accounts.
-   * @param {array<Guild>} [guilds=this.guilds.array()] An array of guilds to sync.
+   * @param {Guild[]} [guilds=this.guilds.array()] An array of guilds to sync
    */
   syncGuilds(guilds = this.guilds.array()) {
     if (!this.user.bot) {

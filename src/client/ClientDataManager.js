@@ -24,9 +24,8 @@ class ClientDataManager {
     if (this.pastReady && !already) {
       /**
        * Emitted whenever the client joins a Guild.
-       *
        * @event Client#guildCreate
-       * @param {Guild} guild the created guild.
+       * @param {Guild} guild The created guild
        */
       this.client.emit(Constants.Events.GUILD_CREATE, guild);
     }

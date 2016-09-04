@@ -53,7 +53,7 @@ class WebSocketManager {
 
   /**
    * Connects the client to a given gateway
-   * @param {string} gateway the gateway to connect to
+   * @param {string} gateway The gateway to connect to
    */
   connect(gateway) {
     this.normalReady = false;
@@ -113,7 +113,7 @@ class WebSocketManager {
   }
 
   /**
-   * Sends a gatway resume packet, in cases of unexpected disconnections.
+   * Sends a gateway resume packet, in cases of unexpected disconnections.
    */
   _sendResume() {
     const payload = {
@@ -147,7 +147,7 @@ class WebSocketManager {
 
   /**
    * Run whenever the connection to the gateway is closed, it will try to reconnect the client.
-   * @param {Object} event the event
+   * @param {Object} event The received websocket data
    */
   eventClose(event) {
     if (event.code === 4004) throw Constants.Errors.BAD_LOGIN;
@@ -157,7 +157,7 @@ class WebSocketManager {
   /**
    * Run whenever a message is received from the WebSocket. Returns `true` if the message
    * was handled properly.
-   * @param {Object} event the received websocket data
+   * @param {Object} event The received websocket data
    * @returns {boolean}
    */
   eventMessage(event) {
@@ -177,13 +177,13 @@ class WebSocketManager {
 
   /**
    * Run whenever an error occurs with the WebSocket connection. Tries to reconnect
-   * @param {Error} err the error that occurred
+   * @param {Error} err The encountered error
    */
   eventError(err) {
     /**
      * Emitted whenever the Client encounters a serious connection error
      * @event Client#error
-     * @param {Error} error the encountered error
+     * @param {Error} error The encountered error
      */
     this.client.emit('error', err);
     this.tryReconnect();
@@ -234,7 +234,6 @@ class WebSocketManager {
     this.packetManager.handleQueue();
     /**
      * Emitted when the Client tries to reconnect after being disconnected
-     *
      * @event Client#reconnecting
      */
     this.client.emit(Constants.Events.RECONNECTING);

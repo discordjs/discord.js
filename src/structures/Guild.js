@@ -36,9 +36,7 @@ class Guild {
      */
     this.roles = new Collection();
 
-    if (!data) {
-      return;
-    }
+    if (!data) return;
 
     if (data.unavailable) {
       /**
@@ -86,12 +84,11 @@ class Guild {
       this.channels.get(voiceState.channel_id).members.set(member.user.id, member);
     }
     /**
-    * Emitted whenever a user joins a guild.
-    *
-    * @event Client#guildMemberAdd
-    * @param {Guild} guild the guild that the user has joined
-    * @param {GuildMember} member the member that has joined
-    */
+     * Emitted whenever a user joins a guild.
+     * @event Client#guildMemberAdd
+     * @param {Guild} guild The guild that the user has joined
+     * @param {GuildMember} member The member that has joined
+     */
     if (this.client.ws.status === Constants.Status.READY && !noEvent) {
       this.client.emit(Constants.Events.GUILD_MEMBER_ADD, this, member);
     }
@@ -103,25 +100,22 @@ class Guild {
   _updateMember(member, data) {
     const oldMember = cloneObject(member);
 
-    if (data.roles) {
-      member._roles = data.roles;
-    } else {
-      member.nickname = data.nick;
-    }
+    if (data.roles) member._roles = data.roles;
+    else member.nickname = data.nick;
 
     const notSame = member.nickname !== oldMember.nickname && !arraysEqual(member._roles, oldMember._roles);
 
     if (this.client.ws.status === Constants.Status.READY && notSame) {
       /**
-      * Emitted whenever a Guild Member changes - i.e. new role, removed role, nickname
-      *
-      * @event Client#guildMemberUpdate
-      * @param {Guild} guild the guild that the update affects
-      * @param {GuildMember} oldMember the member before the update
-      * @param {GuildMember} newMember the member after the update
-      */
+       * Emitted whenever a Guild Member changes - i.e. new role, removed role, nickname
+       * @event Client#guildMemberUpdate
+       * @param {Guild} guild The guild that the update affects
+       * @param {GuildMember} oldMember The member before the update
+       * @param {GuildMember} newMember The member after the update
+       */
       this.client.emit(Constants.Events.GUILD_MEMBER_UPDATE, this, oldMember, member);
     }
+
     return {
       old: oldMember,
       mem: member,
@@ -149,7 +143,7 @@ class Guild {
 
   /**
    * Returns the GuildMember form of a User object, if the User is present in the guild.
-   * @param {UserResolvable} user the user that you want to obtain the GuildMember of.
+   * @param {UserResolvable} user The user that you want to obtain the GuildMember of
    * @returns {GuildMember|null}
    * @example
    * // get the guild member of a user
@@ -163,7 +157,7 @@ class Guild {
    * Whether this Guild equals another Guild. It compares all properties, so for most operations
    * it is advisable to just compare `guild.id === guild2.id` as it is much faster and is often
    * what most users need.
-   * @param {Guild} guild the guild to compare
+   * @param {Guild} guild The guild to compare
    * @returns {boolean}
    */
   equals(guild) {
@@ -200,8 +194,8 @@ class Guild {
       /**
        * Emitted once a Guild Member starts/stops speaking
        * @event Client#guildMemberSpeaking
-       * @param {GuildMember} member the member that started/stopped speaking
-       * @param {boolean} speaking whether or not the member is speaking
+       * @param {GuildMember} member The member that started/stopped speaking
+       * @param {boolean} speaking Whether or not the member is speaking
        */
       this.client.emit(Constants.Events.GUILD_MEMBER_SPEAKING, member, speaking);
     }
@@ -209,7 +203,7 @@ class Guild {
 
   /**
    * Sets up the Guild
-   * @param {*} data the raw data of the guild
+   * @param {*} data The raw data of the guild
    * @private
    */
   setup(data) {
@@ -248,12 +242,12 @@ class Guild {
     this.icon = data.icon;
     /**
      * An array of guild features.
-     * @type {Array<Object>}
+     * @type {Object[]}
      */
     this.features = data.features;
     /**
      * An array of guild emojis.
-     * @type {Array<Object>}
+     * @type {Object[]}
      */
     this.emojis = new Collection();
     for (const emoji of data.emojis) {
@@ -335,6 +329,7 @@ class Guild {
       }
     }
   }
+
   /**
    * The date at which the logged-in client joined the guild.
    * @type {Date}
@@ -345,9 +340,9 @@ class Guild {
 
   /**
    * Creates a new Channel in the Guild.
-   * @param {string} name the name of the new channel.
-   * @param {string} type the type of the new channel, either `text` or `voice`.
-   * @returns {Promise<TextChannel|VoiceChannel, Error>}
+   * @param {string} name The name of the new channel
+   * @param {string} type The type of the new channel, either `text` or `voice`
+   * @returns {Promise<TextChannel|VoiceChannel>}
    * @example
    * // create a new text channel
    * guild.createChannel('new general', 'text')
@@ -360,7 +355,7 @@ class Guild {
 
   /**
    * Creates a new role in the guild, as of now this is just a blank role.
-   * @returns {Promise<Role, Error>}
+   * @returns {Promise<Role>}
    * @example
    * // create a new role
    * guild.createRole()
@@ -373,7 +368,7 @@ class Guild {
 
   /**
    * Causes the Client to leave the guild.
-   * @returns {Promise<Guild, Error>}
+   * @returns {Promise<Guild>}
    * @example
    * // leave a guild
    * guild.leave()
@@ -386,7 +381,7 @@ class Guild {
 
   /**
    * Causes the Client to delete the guild.
-   * @returns {Promise<Guild, Error>}
+   * @returns {Promise<Guild>}
    * @example
    * // delete a guild
    * guild.delete()
@@ -399,8 +394,8 @@ class Guild {
 
   /**
    * Updates the Guild with new information - e.g. a new name.
-   * @param {GuildEditData} data the data to update the guild with.
-   * @returns {Promise<Guild, Error>}
+   * @param {GuildEditData} data The data to update the guild with
+   * @returns {Promise<Guild>}
    * @example
    * // set the guild name and region
    * guild.edit({
@@ -416,8 +411,8 @@ class Guild {
 
   /**
    * Edit the name of the Guild.
-   * @param {string} name the new name of the Guild.
-   * @returns {Promise<Guild, Error>}
+   * @param {string} name The new name of the Guild
+   * @returns {Promise<Guild>}
    * @example
    * // edit the guild name
    * guild.setName('Discord Guild')
@@ -430,8 +425,8 @@ class Guild {
 
   /**
    * Edit the region of the Guild.
-   * @param {Region} region the new region of the guild.
-   * @returns {Promise<Guild, Error>}
+   * @param {Region} region The new region of the guild.
+   * @returns {Promise<Guild>}
    * @example
    * // edit the guild region
    * guild.setRegion('london')
@@ -444,8 +439,8 @@ class Guild {
 
   /**
    * Edit the verification level of the Guild.
-   * @param {VerificationLevel} verificationLevel the new verification level of the guild.
-   * @returns {Promise<Guild, Error>}
+   * @param {VerificationLevel} verificationLevel The new verification level of the guild
+   * @returns {Promise<Guild>}
    * @example
    * // edit the guild verification level
    * guild.setVerificationLevel(1)
@@ -458,8 +453,8 @@ class Guild {
 
   /**
    * Edit the AFK channel of the Guild.
-   * @param {GuildChannelResolvable} afkChannel the new AFK channel.
-   * @returns {Promise<Guild, Error>}
+   * @param {GuildChannelResolvable} afkChannel The new AFK channel
+   * @returns {Promise<Guild>}
    * @example
    * // edit the guild AFK channel
    * guild.setAFKChannel(channel)
@@ -472,8 +467,8 @@ class Guild {
 
   /**
    * Edit the AFK timeout of the Guild.
-   * @param {number} afkTimeout the time in seconds that a user must be idle to be considered AFK.
-   * @returns {Promise<Guild, Error>}
+   * @param {number} afkTimeout The time in seconds that a user must be idle to be considered AFK
+   * @returns {Promise<Guild>}
    * @example
    * // edit the guild AFK channel
    * guild.setAFKTimeout(60)
@@ -486,8 +481,8 @@ class Guild {
 
   /**
    * Set a new Guild Icon.
-   * @param {Base64Resolvable} icon the new icon of the guild.
-   * @returns {Promise<Guild, Error>}
+   * @param {Base64Resolvable} icon The new icon of the guild
+   * @returns {Promise<Guild>}
    * @example
    * // edit the guild icon
    * guild.setIcon(fs.readFileSync('./icon.png'))
@@ -500,8 +495,8 @@ class Guild {
 
   /**
    * Sets a new owner of the Guild.
-   * @param {GuildMemberResolvable} owner the new owner of the Guild.
-   * @returns {Promise<Guild, Error>}
+   * @param {GuildMemberResolvable} owner The new owner of the Guild
+   * @returns {Promise<Guild>}
    * @example
    * // edit the guild owner
    * guild.setOwner(guilds.members[0])
@@ -514,8 +509,8 @@ class Guild {
 
   /**
    * Set a new Guild Splash Logo.
-   * @param {Base64Resolvable} splash the new splash screen of the guild.
-   * @returns {Promise<Guild, Error>}
+   * @param {Base64Resolvable} splash The new splash screen of the guild
+   * @returns {Promise<Guild>}
    * @example
    * // edit the guild splash
    * guild.setIcon(fs.readFileSync('./splash.png'))
@@ -528,8 +523,8 @@ class Guild {
 
   /**
    * Unbans a member from the Guild
-   * @param {UserResolvable} member the member to unban
-   * @returns {Promise<User, Error>}
+   * @param {UserResolvable} member The member to unban
+   * @returns {Promise<User>}
    * @example
    * // unban a member
    * guild.unban('123123123123')
@@ -542,7 +537,7 @@ class Guild {
 
   /**
    * Fetch a Collection of banned users in this Guild.
-   * @returns {Promise<Collection<string, User>, Error>}
+   * @returns {Promise<Collection<string, User>>}
    */
   fetchBans() {
     return this.client.rest.methods.getGuildBans(this);
@@ -550,7 +545,7 @@ class Guild {
 
   /**
    * Fetch a Collection of invites to this Guild. Resolves with a Collection mapping invites by their codes.
-   * @returns {Promise<Collection<string, Invite>, Error>}
+   * @returns {Promise<Collection<string, Invite>>}
    */
   fetchInvites() {
     return this.client.rest.methods.getGuildInvites(this);
@@ -560,7 +555,7 @@ class Guild {
    * Fetches all the members in the Guild, even if they are offline. If the Guild has less than 250 members,
    * this should not be necessary.
    * @param {string} [query=''] An optional query to provide when fetching members
-   * @returns {Promise<Guild, Error>}
+   * @returns {Promise<Guild>}
    */
   fetchMembers(query = '') {
     return new Promise((resolve, reject) => {
@@ -591,9 +586,7 @@ class Guild {
    * @readonly
    */
   get iconURL() {
-    if (!this.icon) {
-      return null;
-    }
+    if (!this.icon) return null;
     return Constants.Endpoints.guildIcon(this.id, this.icon);
   }
 

@@ -69,7 +69,7 @@ class Role {
 
   /**
    * Deletes the role
-   * @returns {Promise<Role, Error>}
+   * @returns {Promise<Role>}
    * @example
    * // delete a role
    * role.delete()
@@ -82,8 +82,8 @@ class Role {
 
   /**
    * Edits the role
-   * @param {RoleData} data the new data for the role
-   * @returns {Promise<Role, Error>}
+   * @param {RoleData} data The new data for the role
+   * @returns {Promise<Role>}
    * @example
    * // edit a role
    * role.edit({name: 'new role'})
@@ -96,8 +96,8 @@ class Role {
 
   /**
    * Set a new name for the role
-   * @param {string} name the new name of the role
-   * @returns {Promise<Role, Error>}
+   * @param {string} name The new name of the role
+   * @returns {Promise<Role>}
    * @example
    * // set the name of the role
    * role.setName('new role')
@@ -110,8 +110,8 @@ class Role {
 
   /**
    * Set a new color for the role
-   * @param {number|string} color the new color for the role, either a hex string or a base 10 number
-   * @returns {Promise<Role, Error>}
+   * @param {number|string} color The new color for the role, either a hex string or a base 10 number
+   * @returns {Promise<Role>}
    * @example
    * // set the color of a role
    * role.setColor('#FF0000')
@@ -124,8 +124,8 @@ class Role {
 
   /**
    * Set whether or not the role should be hoisted
-   * @param {boolean} hoist whether or not to hoist the role
-   * @returns {Promise<Role, Error>}
+   * @param {boolean} hoist Whether or not to hoist the role
+   * @returns {Promise<Role>}
    * @example
    * // set the hoist of the role
    * role.setHoist(true)
@@ -138,8 +138,8 @@ class Role {
 
   /**
    * Set the position of the role
-   * @param {number} position the position of the role
-   * @returns {Promise<Role, Error>}
+   * @param {number} position The position of the role
+   * @returns {Promise<Role>}
    * @example
    * // set the position of the role
    * role.setPosition(1)
@@ -152,8 +152,8 @@ class Role {
 
   /**
    * Set the permissions of the role
-   * @param {Array<string>} permissions the permissions of the role
-   * @returns {Promise<Role, Error>}
+   * @param {string[]} permissions The permissions of the role
+   * @returns {Promise<Role>}
    * @example
    * // set the permissions of the role
    * role.setPermissions(['KICK_MEMBERS', 'BAN_MEMBERS'])
@@ -181,8 +181,8 @@ class Role {
 
   /**
    * Whether or not the role includes the given permission
-   * @param {string} permission the name of the permission to test
-   * @param {boolean} [explicit=false] whether or not the inclusion of the permission is explicit
+   * @param {PermissionResolvable} permission The name of the permission to test
+   * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permission
    * @returns {boolean}
    * @example
    * // see if a role can ban a member
@@ -193,9 +193,7 @@ class Role {
    * }
    */
   hasPermission(permission, explicit = false) {
-    if (typeof permission === 'string') permission = Constants.PermissionFlags[permission];
-    if (!permission) throw Constants.Errors.NOT_A_PERMISSION;
-
+    permission = this.client.resolver.resolvePermission(permission);
     if (!explicit && (this.permissions & Constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
     return (this.permissions & permission) > 0;
   }

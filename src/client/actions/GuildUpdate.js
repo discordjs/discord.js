@@ -25,11 +25,10 @@ class GuildUpdateAction extends Action {
 }
 
 /**
-* Emitted whenever a guild is updated - e.g. name change.
-*
-* @event Client#guildUpdate
-* @param {Guild} oldGuild the guild before the update.
-* @param {Guild} newGuild the guild after the update.
-*/
+ * Emitted whenever a guild is updated - e.g. name change.
+ * @event Client#guildUpdate
+ * @param {Guild} oldGuild The guild before the update.
+ * @param {Guild} newGuild The guild after the update.
+ */
 
 module.exports = GuildUpdateAction;

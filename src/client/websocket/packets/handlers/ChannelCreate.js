@@ -13,7 +13,6 @@ class ChannelCreateHandler extends AbstractHandler {
 
 /**
  * Emitted whenever a Channel is created.
- *
  * @event Client#channelCreate
  * @param {Channel} channel The channel that was created
  */

@@ -68,7 +68,7 @@ class Message {
     this.nonce = data.nonce;
     /**
      * A list of embeds in the message - e.g. YouTube Player
-     * @type {Array<Embed>}
+     * @type {Embed[]}
      */
     this.embeds = data.embeds.map(e => new Embed(this, e));
     /**
@@ -82,9 +82,9 @@ class Message {
      * @type {Object}
      * @property {Collection<string, User>} mentions.users Mentioned users, maps their ID to the user object.
      * @property {Collection<string, Role>} mentions.roles Mentioned roles, maps their ID to the role object.
-     * @property {Collection<string, GuildChannel>}
-     * mentions.channels Mentioned channels, maps their ID to the channel object.
-     * @property {boolean} mentions.everyone whether or not @everyone was mentioned.
+     * @property {Collection<string, GuildChannel>} mentions.channels Mentioned channels,
+     * maps their ID to the channel object.
+     * @property {boolean} mentions.everyone Whether or not @everyone was mentioned.
      */
     this.mentions = {
       users: new Collection(),
@@ -236,7 +236,7 @@ class Message {
   /**
    * Deletes the message
    * @param {number} [timeout=0] How long to wait to delete the message in milliseconds
-   * @returns {Promise<Message, Error>}
+   * @returns {Promise<Message>}
    * @example
    * // delete a message
    * message.delete()
@@ -255,8 +255,8 @@ class Message {
 
   /**
    * Edit the content of a message
-   * @param {string} content the new content of a message
-   * @returns {Promise<Message, Error>}
+   * @param {string} content The new content for the message
+   * @returns {Promise<Message>}
    * @example
    * // update the content of a message
    * message.edit('This is my new content!')
@@ -269,9 +269,9 @@ class Message {
 
   /**
    * Reply to a message
-   * @param {string} content the content of the message
-   * @param {MessageOptions} [options = {}] the options to provide
-   * @returns {Promise<Message, Error>}
+   * @param {string} content The content for the message
+   * @param {MessageOptions} [options = {}] The options to provide
+   * @returns {Promise<Message>}
    * @example
    * // reply to a message
    * message.reply('Hey, I'm a reply!')
@@ -285,7 +285,7 @@ class Message {
 
   /**
    * Pins this message to the channel's pinned messages
-   * @returns {Promise<Message, Error>}
+   * @returns {Promise<Message>}
    */
   pin() {
     return this.client.rest.methods.pinMessage(this);
@@ -293,7 +293,7 @@ class Message {
 
   /**
    * Unpins this message from the channel's pinned messages
-   * @returns {Promise<Message, Error>}
+   * @returns {Promise<Message>}
    */
   unpin() {
     return this.client.rest.methods.unpinMessage(this);

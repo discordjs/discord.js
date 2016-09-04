@@ -12,7 +12,6 @@ class GuildDeleteHandler extends AbstractHandler {
 
 /**
  * Emitted whenever a Guild is deleted/left.
- *
  * @event Client#guildDelete
  * @param {Guild} guild The guild that was deleted
  */

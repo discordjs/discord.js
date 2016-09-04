@@ -28,7 +28,7 @@ class PermissionOverwrites {
 
   /**
    * Delete this Permission Overwrite.
-   * @returns {Promise<PermissionOverwrites, Error>}
+   * @returns {Promise<PermissionOverwrites>}
    */
   delete() {
     return this.channel.client.rest.methods.deletePermissionOverwrites(this);

@@ -49,18 +49,16 @@ class TypingData {
 
 /**
  * Emitted whenever a user starts typing in a channel
- *
  * @event Client#typingStart
- * @param {Channel} channel the channel the user started typing in
- * @param {User} user the user that started typing
+ * @param {Channel} channel The channel the user started typing in
+ * @param {User} user The user that started typing
  */
 
 /**
  * Emitted whenever a user stops typing in a channel
- *
  * @event Client#typingStop
- * @param {Channel} channel the channel the user stopped typing in
- * @param {User} user the user that stopped typing
+ * @param {Channel} channel The channel the user stopped typing in
+ * @param {User} user The user that stopped typing
  */
 
 module.exports = TypingStartHandler;

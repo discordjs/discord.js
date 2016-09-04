@@ -34,10 +34,10 @@ class StreamDispatcher extends EventEmitter {
   }
 
   /**
-  * Emitted when the dispatcher starts/stops speaking
-  * @event StreamDispatcher#speaking
-  * @param {boolean} value whether or not the dispatcher is speaking
-  */
+   * Emitted when the dispatcher starts/stops speaking
+   * @event StreamDispatcher#speaking
+   * @param {boolean} value Whether or not the dispatcher is speaking
+   */
   _setSpeaking(value) {
     this.speaking = value;
     this.emit('speaking', value);
@@ -144,7 +144,7 @@ class StreamDispatcher extends EventEmitter {
   /**
    * Emitted once the stream has encountered an error. Attach a `once` listener to this. Also emits `end`.
    * @event StreamDispatcher#error
-   * @param {Error} err the error encountered
+   * @param {Error} err The encountered error
    */
   _triggerError(err) {
     this.emit('end');
@@ -157,7 +157,7 @@ class StreamDispatcher extends EventEmitter {
     /**
      * Emitted when the stream wants to give debug information.
      * @event StreamDispatcher#debug
-     * @param {string} information the debug information
+     * @param {string} information The debug information
      */
     this.emit('debug', `triggered terminal state ${state} - stream is now dead`);
     this._triggered = true;
@@ -220,7 +220,7 @@ class StreamDispatcher extends EventEmitter {
 
   /**
    * Sets the volume relative to the input stream - i.e. 1 is normal, 0.5 is half, 2 is double.
-   * @param {number} volume the volume that you want to set
+   * @param {number} volume The volume that you want to set
    */
   setVolume(volume) {
     this._volume = volume;
@@ -228,7 +228,7 @@ class StreamDispatcher extends EventEmitter {
 
   /**
    * Set the volume in decibels
-   * @param {number} db the decibels
+   * @param {number} db The decibels
    */
   setVolumeDecibels(db) {
     this._volume = Math.pow(10, db / 20);
@@ -236,7 +236,7 @@ class StreamDispatcher extends EventEmitter {
 
   /**
    * Set the volume so that a perceived value of 0.5 is half the perceived volume etc.
-   * @param {number} value the value for the volume
+   * @param {number} value The value for the volume
    */
   setVolumeLogarithmic(value) {
     this._volume = Math.pow(value, 1.660964);

@@ -32,7 +32,7 @@ class VoiceChannel extends GuildChannel {
 
   /**
    * Sets the bitrate of the channel
-   * @param {number} bitrate the new bitrate
+   * @param {number} bitrate The new bitrate
    * @returns {Promise<VoiceChannel>}
    * @example
    * // set the bitrate of a voice channel
@@ -46,7 +46,7 @@ class VoiceChannel extends GuildChannel {
 
   /**
    * Attempts to join this Voice Channel
-   * @returns {Promise<VoiceConnection, Error>}
+   * @returns {Promise<VoiceConnection>}
    * @example
    * // join a voice channel
    * voiceChannel.join()

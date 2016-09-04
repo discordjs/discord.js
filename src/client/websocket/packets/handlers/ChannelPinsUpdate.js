@@ -23,10 +23,9 @@ class ChannelPinsUpdate extends AbstractHandler {
 /**
  * Emitted whenever the pins of a Channel are updated. Due to the nature of the WebSocket event, not much information
  * can be provided easily here - you need to manually check the pins yourself.
- *
  * @event Client#channelPinsUpdate
  * @param {Channel} channel The channel that the pins update occured in
- * @param {Date} time the time of the pins update
+ * @param {Date} time The time of the pins update
  */
 
 module.exports = ChannelPinsUpdate;

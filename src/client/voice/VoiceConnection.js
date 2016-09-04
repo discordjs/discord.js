@@ -71,14 +71,14 @@ class VoiceConnection extends EventEmitter {
   /**
    * Executed whenever an error occurs with the UDP/WebSocket sub-client
    * @private
-   * @param {Error} err The error that occurred
+   * @param {Error} err The encountered error
    */
   _onError(err) {
     this._reject(err);
     /**
      * Emitted whenever the connection encounters a fatal error.
      * @event VoiceConnection#error
-     * @param {Error} error the encountered error
+     * @param {Error} error The encountered error
      */
     this.emit('error', err);
     this._shutdown(err);
@@ -86,7 +86,7 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Disconnects the Client from the Voice Channel
-   * @param {string} [reason='user requested'] the reason of the disconnection
+   * @param {string} [reason='user requested'] The reason of the disconnection
    */
   disconnect(reason = 'user requested') {
     this.manager.client.ws.send({
@@ -115,7 +115,7 @@ class VoiceConnection extends EventEmitter {
     /**
      * Emit once the voice connection has disconnected.
      * @event VoiceConnection#disconnected
-     * @param {Error} error the error, if any
+     * @param {Error} error The encountered error, if any
      */
     this.emit('disconnected', e);
   }
@@ -191,8 +191,8 @@ class VoiceConnection extends EventEmitter {
       /**
        * Emitted whenever a user starts/stops speaking
        * @event VoiceConnection#speaking
-       * @param {User} user the user that has started/stopped speaking
-       * @param {boolean} speaking whether or not the user is speaking
+       * @param {User} user The user that has started/stopped speaking
+       * @param {boolean} speaking Whether or not the user is speaking
        */
       if (this.ready) this.emit('speaking', user, data.speaking);
       else this.queue.push(['speaking', user, data.speaking]);
@@ -202,7 +202,7 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Play the given file in the voice connection
-   * @param {string} file the path to the file
+   * @param {string} file The path to the file
    * @returns {StreamDispatcher}
    * @example
    * // play files natively
@@ -218,7 +218,7 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Plays and converts an audio stream in the voice connection
-   * @param {ReadableStream} stream the audio stream to play
+   * @param {ReadableStream} stream The audio stream to play
    * @returns {StreamDispatcher}
    * @example
    * // play streams using ytdl-core
@@ -236,7 +236,7 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Plays a stream of 16-bit signed stereo PCM at 48KHz.
-   * @param {ReadableStream} stream the audio stream to play.
+   * @param {ReadableStream} stream The audio stream to play.
    * @returns {StreamDispatcher}
    */
   playConvertedStream(stream) {

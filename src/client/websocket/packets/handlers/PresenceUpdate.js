@@ -56,18 +56,16 @@ class PresenceUpdateHandler extends AbstractHandler {
 
 /**
  * Emitted whenever a user changes one of their details or starts/stop playing a game
- *
  * @event Client#presenceUpdate
- * @param {User} oldUser the user before the presence update
- * @param {User} newUser the user after the presence update
+ * @param {User} oldUser The user before the presence update
+ * @param {User} newUser The user after the presence update
  */
 
 /**
  * Emitted whenever a member becomes available in a large Guild
- *
  * @event Client#guildMemberAvailable
  * @param {Guild} guild The guild that the member became available in
- * @param {GuildMember} member the member that became available
+ * @param {GuildMember} member The member that became available
  */
 
 module.exports = PresenceUpdateHandler;

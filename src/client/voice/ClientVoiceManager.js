@@ -47,9 +47,9 @@ class ClientVoiceManager {
 
   /**
    * Called when the Client receives information about this voice server update.
-   * @param {string} guildID the ID of the Guild
-   * @param {string} token the token to authorise with
-   * @param {string} endpoint the endpoint to connect to
+   * @param {string} guildID The ID of the Guild
+   * @param {string} token The token to authorise with
+   * @param {string} endpoint The endpoint to connect to
    */
   _receivedVoiceServer(guildID, token, endpoint) {
     const pendingRequest = this.pending.get(guildID);
@@ -62,8 +62,8 @@ class ClientVoiceManager {
 
   /**
    * Called when the Client receives information about the voice state update.
-   * @param {string} guildID the ID of the Guild
-   * @param {string} sessionID the session id to authorise with
+   * @param {string} guildID The ID of the Guild
+   * @param {string} sessionID The session id to authorise with
    */
   _receivedVoiceStateUpdate(guildID, sessionID) {
     const pendingRequest = this.pending.get(guildID);
@@ -74,8 +74,8 @@ class ClientVoiceManager {
 
   /**
    * Sends a request to the main gateway to join a voice channel
-   * @param {VoiceChannel} channel the channel to join
-   * @param {Object} [options] the options to provide
+   * @param {VoiceChannel} channel The channel to join
+   * @param {Object} [options] The options to provide
    */
   _sendWSJoin(channel, options = {}) {
     options = mergeDefault({
@@ -92,7 +92,7 @@ class ClientVoiceManager {
 
   /**
    * Sets up a request to join a voice channel
-   * @param {VoiceChannel} channel the voice channel to join
+   * @param {VoiceChannel} channel The voice channel to join
    * @returns {Promise<VoiceConnection>}
    */
   joinChannel(channel) {

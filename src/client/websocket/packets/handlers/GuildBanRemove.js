@@ -12,7 +12,6 @@ class GuildBanRemoveHandler extends AbstractHandler {
 
 /**
  * Emitted whenever a member is unbanned from a guild.
- *
  * @event Client#guildBanRemove
  * @param {Guild} guild The guild that the unban occurred in
  * @param {User} user The user that was unbanned
