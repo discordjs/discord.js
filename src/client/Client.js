@@ -99,8 +99,8 @@ class Client extends EventEmitter {
      */
     this.password = null;
     /**
-     * The time in milliseconds the Client connected
-     * @type {?number}
+     * The date at which the Client was regarded as being in the `READY` state.
+     * @type {?Date}
      */
     this.readyTime = null;
     this._intervals = [];
