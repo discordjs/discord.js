@@ -85,6 +85,8 @@ class ClientUser extends User {
    * Set the status and playing game of the logged in client.
    * @param {string} [status] The status, can be `online` or `idle`
    * @param {string|Object} [game] The game that is being played
+   * @param {string} [streamURL] If you want to display as streaming, set this as the URL to the stream (must be a
+   * twitch.tv URl)
    * @returns {Promise<ClientUser>}
    * @example
    * // set status
@@ -92,7 +94,7 @@ class ClientUser extends User {
    *  .then(user => console.log('Changed status!'))
    *  .catch(console.log);
    */
-  setStatus(status, game) {
+  setStatus(status, game, url = null) {
     return new Promise(resolve => {
       if (status === 'online' || status === 'here' || status === 'available') {
         this.idleStatus = null;
@@ -112,6 +114,11 @@ class ClientUser extends User {
         this.userGame = { name: game };
       } else {
         this.userGame = game;
+      }
+
+      if (url) {
+        this.userGame.url = url;
+        this.userGame.type = 1;
       }
 
       this.client.ws.send({
