@@ -3,6 +3,7 @@
     <img alt="discord.js" src="http://i.imgur.com/sPOLh9y.png" width="546"><br />
   </a>
 </p>
+
 [![npm](https://img.shields.io/npm/v/discord.js.svg?maxAge=2592000)](https://www.npmjs.com/package/discord.js)
 [![Build Status](https://travis-ci.org/hydrabolt/discord.js.svg)](https://travis-ci.org/hydrabolt/discord.js)
 [![David](https://img.shields.io/david/hydrabolt/discord.js.svg?maxAge=2592000)](https://david-dm.org/hydrabolt/discord.js)
