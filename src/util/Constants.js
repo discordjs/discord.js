@@ -20,6 +20,7 @@
  *   shard_id: 0,
  *   shard_count: 0,
  *   fetch_all_members: false,
+ *   disable_everyone: false,
  * };
  * ```
  * @typedef {Object} ClientOptions
@@ -43,6 +44,7 @@ exports.DefaultOptions = {
   shard_id: 0,
   shard_count: 0,
   fetch_all_members: false,
+  disable_everyone: false,
 };
 
 exports.Status = {
