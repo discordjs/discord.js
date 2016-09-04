@@ -13,4 +13,4 @@ Welcome to the discord.js rewrite documentation. The rewrite has taken a lot of 
 stable and performance-friendly than previous versions.
 
 ## Installation
-`npm i --save hydrabolt/discord.js#indev-rewrite`
+`npm i --save discord.js`
