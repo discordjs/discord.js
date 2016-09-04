@@ -45,10 +45,16 @@ class RESTMethods {
     });
   }
 
-  sendMessage($channel, content, tts, nonce, file) {
+  sendMessage($channel, content, tts, nonce, disable_everyone, file) {
     return new Promise((resolve, reject) => {
       const $this = this;
       let channel = $channel;
+
+      if (this.rest.client.options.disable_everyone || disable_everyone) {
+        content = content.replace('@everyone', '@​everyone').replace('@here', '@​here');
+      }
+
+      console.log(this.rest.client.options.disable_everyone)
 
       function req() {
         $this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {

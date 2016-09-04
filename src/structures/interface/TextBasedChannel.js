@@ -152,6 +152,7 @@ class TextBasedChannel {
    * {
    *   tts: false,
    *   nonce: '',
+   *   disable_everyone: false,
    * };
    * ```
    * @typedef {Object} MessageOptions
@@ -168,7 +169,7 @@ class TextBasedChannel {
    *  .catch(console.log);
    */
   sendMessage(content, options = {}) {
-    return this.client.rest.methods.sendMessage(this, content, options.tts, options.nonce);
+    return this.client.rest.methods.sendMessage(this, content, options.tts, options.nonce, options.disable_everyone);
   }
   /**
    * Send a text-to-speech message to this channel
@@ -182,7 +183,7 @@ class TextBasedChannel {
    *  .catch(console.log);
    */
   sendTTSMessage(content, options = {}) {
-    return this.client.rest.methods.sendMessage(this, content, true, options.nonce);
+    return this.client.rest.methods.sendMessage(this, content, true, options.nonce, options.disable_everyone);
   }
   /**
    * Send a file to this channel
@@ -203,7 +204,7 @@ class TextBasedChannel {
     return new Promise((resolve, reject) => {
       this.client.resolver.resolveFile(attachment)
       .then(file => {
-        this.client.rest.methods.sendMessage(this, undefined, false, undefined, {
+        this.client.rest.methods.sendMessage(this, undefined, false, undefined, false, {
           file,
           name: fileName,
         }).then(resolve).catch(reject);
