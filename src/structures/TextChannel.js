@@ -8,7 +8,6 @@ const Collection = require('../util/Collection');
  * @implements {TextBasedChannel}
  */
 class TextChannel extends GuildChannel {
-
   constructor(guild, data) {
     super(guild, data);
     this.messages = new Collection();

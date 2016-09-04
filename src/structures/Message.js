@@ -1,6 +1,7 @@
-const Collection = require('../util/Collection');
 const Attachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
+const Collection = require('../util/Collection');
+
 /**
  * Represents a Message on Discord
  */
@@ -26,9 +27,7 @@ class Message {
      * @type {Client}
      */
     this.client = client;
-    if (data) {
-      this.setup(data);
-    }
+    if (data) this.setup(data);
   }
 
   setup(data) {
@@ -69,7 +68,7 @@ class Message {
     this.nonce = data.nonce;
     /**
      * A list of embeds in the message - e.g. YouTube Player
-     * @type {Array<Embed>}
+     * @type {Embed[]}
      */
     this.embeds = data.embeds.map(e => new Embed(this, e));
     /**
@@ -77,17 +76,15 @@ class Message {
      * @type {Collection<string, MessageAttachment>}
      */
     this.attachments = new Collection();
-    for (const attachment of data.attachments) {
-      this.attachments.set(attachment.id, new Attachment(this, attachment));
-    }
+    for (const attachment of data.attachments) this.attachments.set(attachment.id, new Attachment(this, attachment));
     /**
      * An object containing a further users, roles or channels collections
      * @type {Object}
      * @property {Collection<string, User>} mentions.users Mentioned users, maps their ID to the user object.
      * @property {Collection<string, Role>} mentions.roles Mentioned roles, maps their ID to the role object.
-     * @property {Collection<string, GuildChannel>}
-     * mentions.channels Mentioned channels, maps their ID to the channel object.
-     * @property {boolean} mentions.everyone whether or not @everyone was mentioned.
+     * @property {Collection<string, GuildChannel>} mentions.channels Mentioned channels,
+     * maps their ID to the channel object.
+     * @property {boolean} mentions.everyone Whether or not @everyone was mentioned.
      */
     this.mentions = {
       users: new Collection(),
@@ -114,9 +111,7 @@ class Message {
     if (data.mention_roles) {
       for (const mention of data.mention_roles) {
         const role = this.channel.guild.roles.get(mention);
-        if (role) {
-          this.mentions.roles.set(role.id, role);
-        }
+        if (role) this.mentions.roles.set(role.id, role);
       }
     }
 
@@ -124,9 +119,7 @@ class Message {
       const channMentionsRaw = data.content.match(/<#([0-9]{14,20})>/g) || [];
       for (const raw of channMentionsRaw) {
         const chan = this.channel.guild.channels.get(raw.match(/([0-9]{14,20})/g)[0]);
-        if (chan) {
-          this.mentions.channels.set(chan.id, chan);
-        }
+        if (chan) this.mentions.channels.set(chan.id, chan);
       }
     }
 
@@ -135,9 +128,7 @@ class Message {
      * @type {boolean}
      */
     this.system = false;
-    if (data.type === 6) {
-      this.system = true;
-    }
+    if (data.type === 6) this.system = true;
   }
   /**
    * When the message was sent
@@ -158,31 +149,17 @@ class Message {
   patch(data) { // eslint-disable-line complexity
     if (data.author) {
       this.author = this.client.users.get(data.author.id);
-      if (this.guild) {
-        this.member = this.guild.member(this.author);
-      }
+      if (this.guild) this.member = this.guild.member(this.author);
     }
-    if (data.content) {
-      this.content = data.content;
-    }
-    if (data.timestamp) {
-      this._timestamp = new Date(data.timestamp).getTime();
-    }
+    if (data.content) this.content = data.content;
+    if (data.timestamp) this._timestamp = new Date(data.timestamp).getTime();
     if (data.edited_timestamp) {
       this._editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
     }
-    if ('tts' in data) {
-      this.tts = data.tts;
-    }
-    if ('mention_everyone' in data) {
-      this.mentions.everyone = data.mention_everyone;
-    }
-    if (data.nonce) {
-      this.nonce = data.nonce;
-    }
-    if (data.embeds) {
-      this.embeds = data.embeds.map(e => new Embed(this, e));
-    }
+    if ('tts' in data) this.tts = data.tts;
+    if ('mention_everyone' in data) this.mentions.everyone = data.mention_everyone;
+    if (data.nonce) this.nonce = data.nonce;
+    if (data.embeds) this.embeds = data.embeds.map(e => new Embed(this, e));
     if (data.type > -1) {
       this.system = false;
       if (data.type === 6) {
@@ -214,9 +191,7 @@ class Message {
         }
       }
     }
-    if (data.id) {
-      this.id = data.id;
-    }
+    if (data.id) this.id = data.id;
     if (this.channel.guild && data.content) {
       const channMentionsRaw = data.content.match(/<#([0-9]{14,20})>/g) || [];
       for (const raw of channMentionsRaw) {
@@ -237,14 +212,11 @@ class Message {
    * @returns {boolean}
    */
   equals(message, rawData) {
+    if (!message) return false;
     const embedUpdate = !message.author && !message.attachments;
+    if (embedUpdate) return this.id === message.id && this.embeds.length === message.embeds.length;
 
-    if (embedUpdate) {
-      const base = this.id === message.id &&
-        this.embeds.length === message.embeds.length;
-      return base;
-    }
-    let base = this.id === message.id &&
+    let equal = this.id === message.id &&
         this.author.id === message.author.id &&
         this.content === message.content &&
         this.tts === message.tts &&
@@ -252,19 +224,19 @@ class Message {
         this.embeds.length === message.embeds.length &&
         this.attachments.length === message.attachments.length;
 
-    if (base && rawData) {
-      base = this.mentions.everyone === message.mentions.everyone &&
+    if (equal && rawData) {
+      equal = this.mentions.everyone === message.mentions.everyone &&
         this._timestamp === new Date(rawData.timestamp).getTime() &&
         this._editedTimestamp === new Date(rawData.edited_timestamp).getTime();
     }
 
-    return base;
+    return equal;
   }
 
   /**
    * Deletes the message
    * @param {number} [timeout=0] How long to wait to delete the message in milliseconds
-   * @returns {Promise<Message, Error>}
+   * @returns {Promise<Message>}
    * @example
    * // delete a message
    * message.delete()
@@ -283,8 +255,8 @@ class Message {
 
   /**
    * Edit the content of a message
-   * @param {string} content the new content of a message
-   * @returns {Promise<Message, Error>}
+   * @param {string} content The new content for the message
+   * @returns {Promise<Message>}
    * @example
    * // update the content of a message
    * message.edit('This is my new content!')
@@ -297,9 +269,9 @@ class Message {
 
   /**
    * Reply to a message
-   * @param {string} content the content of the message
-   * @param {MessageOptions} [options = {}] the options to provide
-   * @returns {Promise<Message, Error>}
+   * @param {string} content The content for the message
+   * @param {MessageOptions} [options = {}] The options to provide
+   * @returns {Promise<Message>}
    * @example
    * // reply to a message
    * message.reply('Hey, I'm a reply!')
@@ -313,7 +285,7 @@ class Message {
 
   /**
    * Pins this message to the channel's pinned messages
-   * @returns {Promise<Message, Error>}
+   * @returns {Promise<Message>}
    */
   pin() {
     return this.client.rest.methods.pinMessage(this);
@@ -321,7 +293,7 @@ class Message {
 
   /**
    * Unpins this message from the channel's pinned messages
-   * @returns {Promise<Message, Error>}
+   * @returns {Promise<Message>}
    */
   unpin() {
     return this.client.rest.methods.unpinMessage(this);

@@ -2,7 +2,6 @@ const Action = require('./Action');
 const Constants = require('../../util/Constants');
 
 class GuildMemberRemoveAction extends Action {
-
   constructor(client) {
     super(client);
     this.deleted = new Map();
@@ -43,10 +42,9 @@ class GuildMemberRemoveAction extends Action {
 
 /**
  * Emitted whenever a member leaves a guild, or is kicked.
- *
  * @event Client#guildMemberRemove
- * @param {Guild} guild the guild that the member has left.
- * @param {GuildMember} member the member that has left the guild.
+ * @param {Guild} guild The guild that the member has left.
+ * @param {GuildMember} member The member that has left the guild.
  */
 
 module.exports = GuildMemberRemoveAction;

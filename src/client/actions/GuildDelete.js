@@ -2,7 +2,6 @@ const Action = require('./Action');
 const Constants = require('../../util/Constants');
 
 class GuildDeleteAction extends Action {
-
   constructor(client) {
     super(client);
     this.deleted = new Map();
@@ -45,9 +44,8 @@ class GuildDeleteAction extends Action {
 
 /**
  * Emitted whenever a guild becomes unavailable, likely due to a server outage.
- *
  * @event Client#guildUnavailable
- * @param {Guild} guild the guild that has become unavailable.
-*/
+ * @param {Guild} guild The guild that has become unavailable.
+ */
 
 module.exports = GuildDeleteAction;

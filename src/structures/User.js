@@ -8,9 +8,7 @@ const Constants = require('../util/Constants');
 class User {
   constructor(client, data) {
     this.client = client;
-    if (data) {
-      this.setup(data);
-    }
+    if (data) this.setup(data);
   }
 
   setup(data) {
@@ -72,9 +70,7 @@ class User {
    * @readonly
    */
   get avatarURL() {
-    if (!this.avatar) {
-      return null;
-    }
+    if (!this.avatar) return null;
     return Constants.Endpoints.avatar(this.id, this.avatar);
   }
 
@@ -89,28 +85,23 @@ class User {
   /**
    * Checks if the user is equal to another. It compares username, ID, discriminator, status and the game being played.
    * It is recommended to compare equality by using `user.id === user2.id` unless you want to compare all properties.
-   * @param {User} user the user to compare
+   * @param {User} user The user to compare
    * @returns {boolean}
    */
   equals(user) {
-    let base = user &&
+    let equal = user &&
       this.username === user.username &&
       this.id === user.id &&
       this.discriminator === user.discriminator &&
       this.avatar === user.avatar &&
       this.bot === Boolean(user.bot);
 
-    if (base) {
-      if (user.status) {
-        base = this.status === user.status;
-      }
-
-      if (user.game) {
-        base = this.game === user.game;
-      }
+    if (equal) {
+      if (user.status) equal = this.status === user.status;
+      if (equal && user.game) equal = this.game === user.game;
     }
 
-    return base;
+    return equal;
   }
 
   sendMessage() {
