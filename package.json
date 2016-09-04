@@ -1,7 +1,7 @@
 {
   "name": "discord.js",
-  "version": "7.0.0",
-  "description": "A way to interface with the Discord API",
+  "version": "9.0.0",
+  "description": "A powerful library for interacting with the Discord API",
   "main": "./src/index",
   "scripts": {
     "test": "eslint src/",
@@ -41,9 +41,5 @@
   },
   "engines": {
     "node": ">=6.0.0"
-  },
-  "browser": {
-    "./src/Util/TokenCacher.js": "./src/Util/TokenCacher-shim.js",
-    "./lib/Util/TokenCacher.js": "./lib/Util/TokenCacher-shim.js"
   }
 }
