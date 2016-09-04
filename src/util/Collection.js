@@ -5,7 +5,7 @@
 class Collection extends Map {
   /**
    * Returns an ordered array of the values of this collection.
-   * @returns {*[]}
+   * @returns {array}
    * @example
    * // identical to:
    * Array.from(collection.values());
@@ -62,7 +62,7 @@ class Collection extends Map {
    * Returns an array of items where `item[key] === value` of the collection
    * @param {string} key The key to filter by
    * @param {*} value The expected value
-   * @returns {*[]}
+   * @returns {array}
    * @example
    * collection.getAll('username', 'Bob');
    */
@@ -126,7 +126,7 @@ class Collection extends Map {
    * Functionally identical shortcut to `collection.array().map(...)`.
    * @param {function} callback Function that produces an element of the new Array, taking three arguments
    * @param {*} [thisArg] Optional. Value to use as this when executing callback.
-   * @returns {*[]}
+   * @returns {array}
    */
   map(...args) {
     return this.array().map(...args);
