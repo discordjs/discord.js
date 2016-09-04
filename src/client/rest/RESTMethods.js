@@ -46,12 +46,12 @@ class RESTMethods {
     });
   }
 
-  sendMessage(channel, content, tts, nonce, disable_everyone, file) {
+  sendMessage(channel, content, tts, nonce, disableEveryone, file) {
     return new Promise((resolve, reject) => {
       const $this = this;
       content = this.rest.client.resolver.resolveString(content);
 
-      if (this.rest.client.options.disable_everyone || disable_everyone) {
+      if (disableEveryone || (typeof disableEveryone === 'undefined' && this.rest.client.options.disable_everyone)) {
         content = content.replace('@everyone', '@\u200beveryone').replace('@here', '@\u200bhere');
       }
 
