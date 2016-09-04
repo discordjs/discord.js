@@ -12,7 +12,7 @@ Here are a few examples of methods that has changed:
 
 * `Client.sendMessage(channel, message)` ==> `TextChannel.sendMessage(message)`
   * `Client.sendMessage(user, message)` ==> `User.sendMessage(message)`
-* `Client.updateMessage(message, "New content") ==> `Message.edit("New Content")`
+* `Client.updateMessage(message, "New content")` ==> `Message.edit("New Content")`
 * `Client.getChannelLogs(channel, limit)` ==> `TextChannel.fetchMessages({options})`
 * `Server.detailsOfUser(User)` ==> `Server.members.get(User).properties` (retrieving a member gives a GuildMember object)
 * `Client.joinVoiceChannel(voicechannel)` => `VoiceChannel.join()`
@@ -30,13 +30,13 @@ For example, the following code:
 
 ```js
 bot.getChannelLogs(channel, 100, function(messages) {
-  console.log(messages.length + " messages found);
+  console.log(`${messages.length} messages found`);
 });
 ```
 
 ```js
 msg.channel.getMessages({limit: 100})
 .then(messages => {
-  console.log(messages.length + " messages found);
+  console.log(`${messages.length} messages found`);
 });
 ```
