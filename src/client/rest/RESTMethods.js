@@ -287,6 +287,18 @@ class RESTMethods {
     });
   }
 
+  getChannelMessage(channel, messageID) {
+    return new Promise((resolve, reject) => {
+      const msg = channel.messages.get(messageID);
+      if (msg) return resolve(msg);
+
+      const endpoint = Constants.Endpoints.channelMessage(channel.id, messageID);
+      return this.rest.makeRequest('get', endpoint, true)
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
   updateGuildMember(member, data) {
     return new Promise((resolve, reject) => {
       if (data.channel) data.channel_id = this.rest.client.resolver.resolveChannel(data.channel).id;

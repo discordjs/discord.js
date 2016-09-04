@@ -59,6 +59,10 @@ class DMChannel extends Channel {
     return;
   }
 
+  fetchMessage() {
+    return;
+  }
+
   bulkDelete() {
     return;
   }
