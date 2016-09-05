@@ -2,7 +2,7 @@
  * Represents any Channel on Discord
  */
 class Channel {
-  constructor(client, data, guild) {
+  constructor(client, data) {
     /**
      * The client that instantiated the Channel
      * @type {Client}
@@ -10,7 +10,6 @@ class Channel {
     this.client = client;
     this.typingMap = {};
     this.typingTimeouts = [];
-    if (guild) this.guild = guild;
     /**
      * The type of the channel, either:
      * * `dm` - a DM channel
