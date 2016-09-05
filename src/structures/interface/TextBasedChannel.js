@@ -42,7 +42,7 @@ class TextBasedChannel {
 
   /**
    * Send a message to this channel
-   * @param {Array.<string>|string} content The content to send
+   * @param {StringResolvable} content The content to send
    * @param {MessageOptions} [options={}] The options to provide
    * @returns {Promise<Message>}
    * @example
@@ -57,7 +57,7 @@ class TextBasedChannel {
 
   /**
    * Send a text-to-speech message to this channel
-   * @param {Array.<string>|string} content The content to send
+   * @param {StringResolvable} content The content to send
    * @param {MessageOptions} [options={}] The options to provide
    * @returns {Promise<Message>}
    * @example
