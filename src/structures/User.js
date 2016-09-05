@@ -54,6 +54,15 @@ class User {
   }
 
   /**
+   * The unix timestamp the user was created
+   * @readonly
+   * @type {Date}
+   */
+  get createdAt() {
+    return new Date((+this.id / 4194304) + 1420070400000).getTime();
+  }
+
+  /**
    * When concatenated with a string, this automatically concatenates the User's mention instead of the User object.
    * @returns {string}
    * @example
