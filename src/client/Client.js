@@ -214,7 +214,7 @@ class Client extends EventEmitter {
    * @readonly
    * @type {?number}
    */
-  get status () { 
+  get status() {
     return this.ws.status;
   }
 }
