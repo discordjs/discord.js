@@ -208,6 +208,15 @@ class Client extends EventEmitter {
   get uptime() {
     return this.readyTime ? Date.now() - this.readyTime : null;
   }
+  
+  /**
+   * The status of the logged in Client.
+   * @readonly
+   * @type {?number}
+   */
+  get status () { 
+    return this.ws.status;
+  }
 }
 
 module.exports = Client;
