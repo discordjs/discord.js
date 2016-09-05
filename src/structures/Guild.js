@@ -330,6 +330,11 @@ class Guild {
         }
       }
     }
+    /**
+     * The date the guild was created
+     * @type {Date}
+     */
+    this.createdAt = new Date((+this.id / 4194304) + 1420070400000);
   }
 
   /**
