@@ -333,6 +333,15 @@ class Guild {
   }
 
   /**
+   * The unix timestamp the guild was created
+   * @readonly
+   * @type {Date}
+   */
+  get createdAt() {
+    return new Date((+this.id / 4194304) + 1420070400000).getTime();
+  }
+
+  /**
    * The date at which the logged-in client joined the guild.
    * @type {Date}
    */
