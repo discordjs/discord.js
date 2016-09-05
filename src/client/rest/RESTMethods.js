@@ -307,10 +307,7 @@ class RESTMethods {
   updateGuildMember(member, data) {
     return new Promise((resolve, reject) => {
       if (data.channel) data.channel_id = this.rest.client.resolver.resolveChannel(data.channel).id;
-      if (data.roles) {
-        if (data.roles instanceof Collection) data.roles = data.roles.array();
-        data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
-      }
+      if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
 
       let endpoint = Constants.Endpoints.guildMember(member.guild.id, member.id);
       // fix your endpoints, discord ;-;

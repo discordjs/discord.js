@@ -1,4 +1,5 @@
 const TextBasedChannel = require('./interface/TextBasedChannel');
+const Role = require('./Role');
 const Collection = require('../util/Collection');
 
 /**
@@ -164,11 +165,66 @@ class GuildMember {
 
   /**
    * Sets the Roles applied to the member.
-   * @param {Collection<string, Role>|Role[]} roles The roles to apply
+   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to apply
    * @returns {Promise<GuildMember>}
    */
   setRoles(roles) {
     return this.edit({ roles });
+  }
+
+  /**
+   * Adds a single Role to the member.
+   * @param {Role|string} role The role or ID of the role to add
+   * @returns {Promise<GuildMember>}
+   */
+  addRole(role) {
+    return this.addRoles([role]);
+  }
+
+  /**
+   * Adds multiple roles to the member.
+   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to add
+   * @returns {Promise<GuildMember>}
+   */
+  addRoles(roles) {
+    let allRoles;
+    if (roles instanceof Collection) {
+      allRoles = this._roles.slice();
+      for (const role of roles.values()) allRoles.push(role.id);
+    } else {
+      allRoles = this._roles.concat(roles);
+    }
+    return this.edit({ roles: allRoles });
+  }
+
+  /**
+   * Removes a single Role from the member.
+   * @param {Role|string} role The role or ID of the role to remove
+   * @returns {Promise<GuildMember>}
+   */
+  removeRole(role) {
+    return this.removeRoles([role]);
+  }
+
+  /**
+   * Removes multiple roles from the member.
+   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to remove
+   * @returns {Promise<GuildMember>}
+   */
+  removeRoles(roles) {
+    const allRoles = this._roles.slice();
+    if (roles instanceof Collection) {
+      for (const role of roles.values()) {
+        const index = allRoles.indexOf(role.id);
+        if (index >= 0) allRoles.splice(index, 1);
+      }
+    } else {
+      for (const role of roles) {
+        const index = allRoles.indexOf(role instanceof Role ? role.id : role);
+        if (index >= 0) allRoles.splice(index, 1);
+      }
+    }
+    return this.edit({ roles: allRoles });
   }
 
   /**
