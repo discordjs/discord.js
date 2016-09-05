@@ -29,6 +29,11 @@ class Channel {
      * @type {string}
      */
     this.id = data.id;
+    /**
+     * The date the channel was created
+     * @type {Date}
+     */
+    this.createdAt = new Date((+this.id / 4194304) + 1420070400000);
   }
 
   /**
