@@ -51,6 +51,11 @@ class User {
      * @type {string}
      */
     this.game = data.game || this.game;
+    /**
+     * The date the user was created.
+     * @type {Date}
+     */
+    this.createdAt = new Date((+this.id / 4194304) + 1420070400000);
   }
 
   /**
