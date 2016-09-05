@@ -104,6 +104,8 @@ class RESTMethods {
 
   updateMessage(message, content) {
     return new Promise((resolve, reject) => {
+      content = this.rest.client.resolver.resolveString(content);
+
       this.rest.makeRequest('patch', Constants.Endpoints.channelMessage(message.channel.id, message.id), true, {
         content,
       }).then(data => {
