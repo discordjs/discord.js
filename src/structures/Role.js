@@ -65,6 +65,11 @@ class Role {
      * @type {boolean}
      */
     this.managed = data.managed;
+    /**
+     * The date the role was created
+     * @type {Date}
+     */
+    this.createdAt = new Date((+this.id / 4194304) + 1420070400000);
   }
 
   /**
