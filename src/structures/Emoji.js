@@ -44,6 +44,15 @@ class Emoji {
   }
 
   /**
+   * The unix timestamp the emoji was created
+   * @readonly
+   * @type {Date}
+   */
+  get createdAt() {
+    return new Date((+this.id / 4194304) + 1420070400000).getTime();
+  }
+
+  /**
    * A collection of roles this emoji is active for (empty if all), mapped by role ID.
    * @type {Collection<string, Role>}
    * @readonly

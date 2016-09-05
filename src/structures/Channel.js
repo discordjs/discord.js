@@ -31,6 +31,15 @@ class Channel {
   }
 
   /**
+   * The unix timestamp the channel was created
+   * @readonly
+   * @type {Date}
+   */
+  get createdAt() {
+    return new Date((+this.id / 4194304) + 1420070400000).getTime();
+  }
+
+  /**
    * Deletes the channel
    * @returns {Promise<Channel>}
    * @example
