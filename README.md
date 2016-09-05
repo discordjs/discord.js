@@ -26,19 +26,19 @@ By default, discord.js uses [opusscript](https://www.npmjs.com/package/opusscrip
 ## Example Usage
 ```js
 const Discord = require('discord.js');
-const bot = new Discord.Client();
+const client = new Discord.Client();
 
-bot.on('ready', () => {
+client.on('ready', () => {
   console.log('I am ready!');
 });
 
-bot.on('message', message => {
+client.on('message', message => {
   if (message.content === 'ping') {
     message.reply('pong');
   }
 });
 
-bot.login('your token');
+client.login('your token');
 ```
 
 ## Links

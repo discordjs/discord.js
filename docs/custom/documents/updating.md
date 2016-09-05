@@ -31,13 +31,13 @@ Version 9.0 eschews callbacks in favour of Promises. This means all code relying
 For example, the following code:
 
 ```js
-bot.getChannelLogs(channel, 100, function(messages) {
+client.getChannelLogs(channel, 100, function(messages) {
   console.log(`${messages.length} messages found`);
 });
 ```
 
 ```js
-msg.channel.fetchMessages({limit: 100}).then(messages => {
+channel.fetchMessages({limit: 100}).then(messages => {
   console.log(`${messages.size} messages found`);
 });
 ```
