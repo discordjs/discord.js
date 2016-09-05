@@ -44,6 +44,13 @@ class MessageEmbed {
        */
       this.thumbnail = new MessageEmbedThumbnail(this, data.thumbnail);
     }
+    if (data.author) {
+      /**
+       * The author of this embed, if there is one
+       * @type {MessageEmbedAuthor}
+       */
+      this.author = new MessageEmbedAuthor(this, data.author);
+    }
     if (data.provider) {
       /**
        * The provider of this embed, if there is one
@@ -112,6 +119,33 @@ class MessageEmbedProvider {
     this.name = data.name;
     /**
      * The URL of this provider
+     * @type {string}
+     */
+    this.url = data.url;
+  }
+}
+
+/**
+ * Represents a Author for a Message embed
+ */
+class MessageEmbedAuthor {
+  constructor(embed, data) {
+    /**
+     * The embed this author is part of
+     * @type {MessageEmbed}
+     */
+    this.embed = embed;
+    this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The name of this author
+     * @type {string}
+     */
+    this.name = data.name;
+    /**
+     * The URL of this author
      * @type {string}
      */
     this.url = data.url;
