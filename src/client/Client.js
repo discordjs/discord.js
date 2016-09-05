@@ -219,7 +219,7 @@ class Client extends EventEmitter {
     this.guilds.map(g => g.emojis.map(e => emojis.set(e.id, e)));
     return emojis;
   }
-  
+
   /**
    * The status for the logged in Client.
    * @readonly
