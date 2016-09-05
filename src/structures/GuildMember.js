@@ -164,11 +164,36 @@ class GuildMember {
 
   /**
    * Sets the Roles applied to the member.
-   * @param {Collection<string, Role>|Role[]} roles The roles to apply
+   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to apply
    * @returns {Promise<GuildMember>}
    */
   setRoles(roles) {
     return this.edit({ roles });
+  }
+
+  /**
+   * Adds a single Role to the member.
+   * @param {Role|string} role The role or ID of the role to add
+   * @returns {Promise<GuildMember>}
+   */
+  addRole(role) {
+    return this.addRoles([role]);
+  }
+
+  /**
+   * Adds multiple roles to the member.
+   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to add
+   * @returns {Promise<GuildMember>}
+   */
+  addRoles(roles) {
+    let allRoles;
+    if (roles instanceof Collection) {
+      allRoles = this._roles.slice();
+      for (const role of roles.values()) allRoles.push(role.id);
+    } else {
+      allRoles = this._roles.concat(roles);
+    }
+    return this.edit({ roles: allRoles });
   }
 
   /**
