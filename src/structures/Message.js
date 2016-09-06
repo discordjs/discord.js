@@ -123,6 +123,8 @@ class Message {
       }
     }
 
+    this._edits = [];
+
     /**
      * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
      * @type {boolean}
@@ -145,6 +147,15 @@ class Message {
    */
   get editedTimestamp() {
     return new Date(this._editedTimestamp);
+  }
+
+  /**
+   * An array of cached versions of the message, including the current version.
+   * Sorted from latest (first) to oldest (last).
+   * @type {Message[]}
+   */
+  get edits() {
+    return this._edits.slice().unshift(this);
   }
 
   patch(data) { // eslint-disable-line complexity
