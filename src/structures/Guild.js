@@ -146,7 +146,7 @@ class Guild {
   /**
    * Returns the GuildMember form of a User object, if the User is present in the guild.
    * @param {UserResolvable} user The user that you want to obtain the GuildMember of
-   * @returns {GuildMember|null}
+   * @returns {?GuildMember}
    * @example
    * // get the guild member of a user
    * const member = guild.member(message.author);
@@ -533,17 +533,31 @@ class Guild {
   }
 
   /**
-   * Unbans a member from the Guild
-   * @param {UserResolvable} member The member to unban
+   * Bans a user from the guild.
+   * @param {UserResolvable} user The user to ban
+   * @param {number} [deleteDays=0] The amount of days worth of messages from this user that should
+   * also be deleted. Between `0` and `7`.
+   * @returns {Promise<GuildMember|User>}
+   * @example
+   * // ban a user
+   * guild.ban('123123123123');
+   */
+  ban(user, deleteDays = 0) {
+    return this.client.rest.methods.banGuildMember(this, user, deleteDays);
+  }
+
+  /**
+   * Unbans a user from the Guild.
+   * @param {UserResolvable} user The user to unban
    * @returns {Promise<User>}
    * @example
-   * // unban a member
+   * // unban a user
    * guild.unban('123123123123')
    *  .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
    *  .catch(reject);
    */
-  unban(member) {
-    return this.client.rest.methods.unbanGuildMember(this, member);
+  unban(user) {
+    return this.client.rest.methods.unbanGuildMember(this, user);
   }
 
   /**
