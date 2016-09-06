@@ -365,16 +365,24 @@ class Guild {
   }
 
   /**
-   * Creates a new role in the guild, as of now this is just a blank role.
+   * Creates a new role in the guild, and optionally updates it with the given information.
+   * @param {RoleData} [data] The data to update the role with
    * @returns {Promise<Role>}
    * @example
    * // create a new role
    * guild.createRole()
    *  .then(role => console.log(`Created role ${role}`))
    *  .catch(console.log);
+   * @example
+   * // create a new role with data
+   * guild.createRole({ name: 'Super Cool People' })
+   *   .then(role => console.log(`Created role ${role}`))
+   *   .catch(console.log)
    */
-  createRole() {
-    return this.client.rest.methods.createGuildRole(this);
+  createRole(data) {
+    const create = this.client.rest.methods.createGuildRole(this);
+    if (!data) return create;
+    return create.then(role => role.edit(data));
   }
 
   /**
