@@ -71,6 +71,22 @@ class TextBasedChannel {
   }
 
   /**
+   * Send a message wrapped in a code block to this channel
+   * @param {StringResolvable} content The content to send
+   * @param {string} [syntax=''] The syntax highlighting to use on the code block
+   * @param {MessageOptions} options [options={}] The options to provide
+   * @returns {Promise.<Message>}
+   * @example
+   * // send a message within a code block
+   * channel.sendCode('const foo = x => x * 2;', 'js')
+   *   .then(message => console.log(`Sent code block message: ${message.content}`))
+   *   .catch(console.log);
+   */
+  sendCode(content, syntax = '', options = {}) {
+    return this.sendMessage(`\`\`\`${syntax}\n${this.client.resolver.resolveString(content)}\n\`\`\``, options);
+  }
+
+  /**
    * Send a file to this channel
    * @param {FileResolvable} attachment The file to send
    * @param {string} [fileName="file.jpg"] The name and extension of the file
