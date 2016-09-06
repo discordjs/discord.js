@@ -147,6 +147,22 @@ class Message {
     return new Date(this._editedTimestamp);
   }
 
+  /**
+   * The message contents with all mentions replaced by the equivalent text.
+   * @type {string}
+   */
+  get cleanContent() {
+    return this.content.replace(/<@!?[0-9]+>/g, input => {
+      let user = this.channel.guild.members.get(input.replace(/<|!|>|@/g, ''));
+
+      if (user.nickname) {
+        return `@${user.nickname}`;
+      }
+      return `@${user.user.username}`;
+    }).replace(/<#[0-9]+>/g, (input) => `#${this.client.channels.get(input.replace(/<|#|>/g, '')).name}`
+    ).replace(/<@&[0-9]+>/g, (input) => `@${this.guild.roles.get(input.replace(/<|@|>|&/g, '')).name}`);
+  }
+
   patch(data) { // eslint-disable-line complexity
     if (data.author) {
       this.author = this.client.users.get(data.author.id);
