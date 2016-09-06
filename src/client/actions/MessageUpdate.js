@@ -12,6 +12,7 @@ class MessageUpdateAction extends Action {
       if (message && !message.equals(data, true)) {
         const oldMessage = cloneObject(message);
         message.patch(data);
+        message._edits.unshift(oldMessage);
         client.emit(Constants.Events.MESSAGE_UPDATE, oldMessage, message);
         return {
           old: oldMessage,

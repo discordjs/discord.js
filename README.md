@@ -12,7 +12,7 @@
 
 [![NPM](https://nodei.co/npm/discord.js.png?downloads=true&stars=true)](https://nodei.co/npm/discord.js/)
 
-discord.js is a a powerful node.js module that allows you to interact with the [Discord API](https://discordapp.com/developers/docs/intro).
+discord.js is a powerful node.js module that allows you to interact with the [Discord API](https://discordapp.com/developers/docs/intro).
 
 ## Installation
 **Requires node 6.0.0 and above**
@@ -29,19 +29,19 @@ discord.js will automatically prefer node-opus over opusscript.
 ## Example Usage
 ```js
 const Discord = require('discord.js');
-const bot = new Discord.Client();
+const client = new Discord.Client();
 
-bot.on('ready', () => {
+client.on('ready', () => {
   console.log('I am ready!');
 });
 
-bot.on('message', message => {
+client.on('message', message => {
   if (message.content === 'ping') {
     message.reply('pong');
   }
 });
 
-bot.login('your token');
+client.login('your token');
 ```
 
 ## Links

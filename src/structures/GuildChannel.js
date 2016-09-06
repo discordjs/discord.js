@@ -12,16 +12,16 @@ const arraysEqual = require('../util/ArraysEqual');
  */
 class GuildChannel extends Channel {
   constructor(guild, data) {
-    super(guild.client, data, guild);
+    super(guild.client, data);
+    /**
+     * The guild the channel is in
+     * @type {Guild}
+     */
+    this.guild = guild;
   }
 
   setup(data) {
     super.setup(data);
-    /**
-     * The topic of the Guild Channel, if there is one.
-     * @type {?string}
-     */
-    this.topic = data.topic;
     /**
      * The position of the channel in the list.
      * @type {number}

@@ -333,14 +333,15 @@ class RESTMethods {
     });
   }
 
-  banGuildMember(member, deleteDays) {
+  banGuildMember(guild, member, deleteDays) {
     return new Promise((resolve, reject) => {
-      const data = {
+      const user = this.rest.client.resolver.resolveUser(member);
+      if (!user) throw new Error('cannot ban a user that is not a user resolvable');
+      this.rest.makeRequest('put', `${Constants.Endpoints.guildBans(guild.id)}/${user.id}`, true, {
         'delete-message-days': deleteDays,
-      };
-      this.rest.makeRequest('put', `${Constants.Endpoints.guildBans(member.guild.id)}/${member.id}`, true, data)
-        .then(() => resolve(member))
-        .catch(reject);
+      }).then(() => {
+        resolve(member instanceof GuildMember ? member : user);
+      }).catch(reject);
     });
   }
 

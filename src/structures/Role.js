@@ -68,12 +68,12 @@ class Role {
   }
 
   /**
-   * The unix timestamp the role was created
+   * The time the role was created
    * @readonly
    * @type {Date}
    */
-  get createdAt() {
-    return new Date((+this.id / 4194304) + 1420070400000).getTime();
+  get creationDate() {
+    return new Date((this.id / 4194304) + 1420070400000);
   }
 
   /**

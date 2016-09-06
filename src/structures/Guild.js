@@ -146,7 +146,7 @@ class Guild {
   /**
    * Returns the GuildMember form of a User object, if the User is present in the guild.
    * @param {UserResolvable} user The user that you want to obtain the GuildMember of
-   * @returns {GuildMember|null}
+   * @returns {?GuildMember}
    * @example
    * // get the guild member of a user
    * const member = guild.member(message.author);
@@ -252,9 +252,7 @@ class Guild {
      * @type {Object[]}
      */
     this.emojis = new Collection();
-    for (const emoji of data.emojis) {
-      this.emojis.set(emoji.id, new Emoji(this, emoji));
-    }
+    for (const emoji of data.emojis) this.emojis.set(emoji.id, new Emoji(this, emoji));
     /**
      * The time in seconds before a user is counted as "away from keyboard".
      * @type {?number}
@@ -279,20 +277,14 @@ class Guild {
 
     if (data.members) {
       this.members.clear();
-      for (const guildUser of data.members) {
-        this._addMember(guildUser);
-      }
+      for (const guildUser of data.members) this._addMember(guildUser);
     }
 
-    if (data.owner_id) {
-      this.ownerID = data.owner_id;
-    }
+    if (data.owner_id) this.ownerID = data.owner_id;
 
     if (data.channels) {
       this.channels.clear();
-      for (const channel of data.channels) {
-        this.client.dataManager.newChannel(channel, this);
-      }
+      for (const channel of data.channels) this.client.dataManager.newChannel(channel, this);
     }
 
     if (data.roles) {
@@ -333,12 +325,12 @@ class Guild {
   }
 
   /**
-   * The unix timestamp the guild was created
+   * The time the guild was created
    * @readonly
    * @type {Date}
    */
-  get createdAt() {
-    return new Date((+this.id / 4194304) + 1420070400000).getTime();
+  get creationDate() {
+    return new Date((this.id / 4194304) + 1420070400000);
   }
 
   /**
@@ -365,16 +357,24 @@ class Guild {
   }
 
   /**
-   * Creates a new role in the guild, as of now this is just a blank role.
+   * Creates a new role in the guild, and optionally updates it with the given information.
+   * @param {RoleData} [data] The data to update the role with
    * @returns {Promise<Role>}
    * @example
    * // create a new role
    * guild.createRole()
    *  .then(role => console.log(`Created role ${role}`))
    *  .catch(console.log);
+   * @example
+   * // create a new role with data
+   * guild.createRole({ name: 'Super Cool People' })
+   *   .then(role => console.log(`Created role ${role}`))
+   *   .catch(console.log)
    */
-  createRole() {
-    return this.client.rest.methods.createGuildRole(this);
+  createRole(data) {
+    const create = this.client.rest.methods.createGuildRole(this);
+    if (!data) return create;
+    return create.then(role => role.edit(data));
   }
 
   /**
@@ -533,17 +533,31 @@ class Guild {
   }
 
   /**
-   * Unbans a member from the Guild
-   * @param {UserResolvable} member The member to unban
+   * Bans a user from the guild.
+   * @param {UserResolvable} user The user to ban
+   * @param {number} [deleteDays=0] The amount of days worth of messages from this user that should
+   * also be deleted. Between `0` and `7`.
+   * @returns {Promise<GuildMember|User>}
+   * @example
+   * // ban a user
+   * guild.ban('123123123123');
+   */
+  ban(user, deleteDays = 0) {
+    return this.client.rest.methods.banGuildMember(this, user, deleteDays);
+  }
+
+  /**
+   * Unbans a user from the Guild.
+   * @param {UserResolvable} user The user to unban
    * @returns {Promise<User>}
    * @example
-   * // unban a member
+   * // unban a user
    * guild.unban('123123123123')
    *  .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
    *  .catch(reject);
    */
-  unban(member) {
-    return this.client.rest.methods.unbanGuildMember(this, member);
+  unban(user) {
+    return this.client.rest.methods.unbanGuildMember(this, user);
   }
 
   /**
