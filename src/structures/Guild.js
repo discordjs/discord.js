@@ -252,9 +252,7 @@ class Guild {
      * @type {Object[]}
      */
     this.emojis = new Collection();
-    for (const emoji of data.emojis) {
-      this.emojis.set(emoji.id, new Emoji(this, emoji));
-    }
+    for (const emoji of data.emojis) this.emojis.set(emoji.id, new Emoji(this, emoji));
     /**
      * The time in seconds before a user is counted as "away from keyboard".
      * @type {?number}
@@ -279,20 +277,14 @@ class Guild {
 
     if (data.members) {
       this.members.clear();
-      for (const guildUser of data.members) {
-        this._addMember(guildUser);
-      }
+      for (const guildUser of data.members) this._addMember(guildUser);
     }
 
-    if (data.owner_id) {
-      this.ownerID = data.owner_id;
-    }
+    if (data.owner_id) this.ownerID = data.owner_id;
 
     if (data.channels) {
       this.channels.clear();
-      for (const channel of data.channels) {
-        this.client.dataManager.newChannel(channel, this);
-      }
+      for (const channel of data.channels) this.client.dataManager.newChannel(channel, this);
     }
 
     if (data.roles) {
@@ -333,12 +325,12 @@ class Guild {
   }
 
   /**
-   * The unix timestamp the guild was created
+   * The time the guild was created
    * @readonly
    * @type {Date}
    */
-  get createdAt() {
-    return new Date((+this.id / 4194304) + 1420070400000).getTime();
+  get creationDate() {
+    return new Date((this.id / 4194304) + 1420070400000);
   }
 
   /**
