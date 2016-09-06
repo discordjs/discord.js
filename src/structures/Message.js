@@ -149,7 +149,8 @@ class Message {
   }
 
   /**
-   * An array of cached versions of the message, including the current version. Sorted from latest (first) to oldest (last).
+   * An array of cached versions of the message, including the current version.
+   * Sorted from latest (first) to oldest (last).
    * @type {Array<Message>}
    */
   get edits() {
