@@ -130,6 +130,7 @@ class Message {
     this.system = false;
     if (data.type === 6) this.system = true;
   }
+
   /**
    * When the message was sent
    * @type {Date}
