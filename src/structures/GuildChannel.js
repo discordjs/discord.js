@@ -23,11 +23,6 @@ class GuildChannel extends Channel {
   setup(data) {
     super.setup(data);
     /**
-     * The topic of the Guild Channel, if there is one.
-     * @type {?string}
-     */
-    this.topic = data.topic;
-    /**
      * The position of the channel in the list.
      * @type {number}
      */
