@@ -151,7 +151,7 @@ class Message {
   /**
    * An array of cached versions of the message, including the current version.
    * Sorted from latest (first) to oldest (last).
-   * @type {Array<Message>}
+   * @type {Message[]}
    */
   get edits() {
     return this._edits.slice().unshift(this);
