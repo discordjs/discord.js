@@ -154,12 +154,6 @@ class Guild {
       for (const channel of data.channels) this.client.dataManager.newChannel(channel, this);
     }
 
-    /**
-     * The `#general` GuildChannel of the server.
-     * @type {GuildChannel}
-     */
-    this.defaultChannel = this.channels.get(this.id);
-
     if (data.roles) {
       this.roles.clear();
       for (const role of data.roles) {
@@ -230,6 +224,15 @@ class Guild {
    */
   get owner() {
     return this.members.get(this.ownerID);
+  }
+
+  /**
+   * The `#general` GuildChannel of the server.
+   * @type {GuildChannel}
+   * @readonly
+   */
+  get defaultChannel() {
+    return this.channels.get(this.id);
   }
 
   /**
