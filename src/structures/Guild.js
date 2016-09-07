@@ -72,6 +72,7 @@ class Guild {
     guildUser.joined_at = guildUser.joined_at || 0;
     const member = new GuildMember(this, guildUser);
     this.members.set(member.id, member);
+    this.memberCount++;
 
     if (this._rawVoiceStates && this._rawVoiceStates.get(member.user.id)) {
       const voiceState = this._rawVoiceStates.get(member.user.id);
@@ -124,6 +125,7 @@ class Guild {
 
   _removeMember(guildMember) {
     this.members.delete(guildMember.id);
+    this.memberCount--;
     this._checkChunks();
   }
 
