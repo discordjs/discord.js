@@ -13,6 +13,7 @@ class MessageEmbed {
      * @type {Client}
      */
     this.client = message.client;
+    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
     this.setup(data);
   }
 

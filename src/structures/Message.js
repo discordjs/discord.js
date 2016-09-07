@@ -7,76 +7,91 @@ const Collection = require('../util/Collection');
  */
 class Message {
   constructor(channel, data, client) {
-    this._type = 'message';
+    /**
+     * The client that instantiated the Message
+     * @type {Client}
+     */
+    this.client = client;
+    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+
     /**
      * The channel that the message was sent in
      * @type {TextChannel|DMChannel|GroupDMChannel}
      */
     this.channel = channel;
 
-    if (channel.guild) {
-      /**
-       * If the message was sent in a guild, this will be the guild the message was sent in
-       * @type {?Guild}
-       */
-      this.guild = channel.guild;
-    }
-
     /**
-     * The client that instantiated the Message
-     * @type {Client}
+     * If the message was sent in a guild, this will be the guild the message was sent in
+     * @type {?Guild}
      */
-    this.client = client;
+    this.guild = channel.guild || null;
+
     if (data) this.setup(data);
   }
 
   setup(data) {
     /**
-     * Whether or not this message is pinned
-     * @type {boolean}
+     * The ID of the message (unique in the channel it was sent)
+     * @type {string}
      */
-    this.pinned = data.pinned;
-    /**
-     * The author of the message
-     * @type {User}
-     */
-    this.author = this.client.dataManager.newUser(data.author);
-    if (this.guild) {
-      /**
-       * Represents the Author of the message as a Guild Member. Only available if the message comes from a Guild
-       * where the author is still a member.
-       * @type {GuildMember}
-       */
-      this.member = this.guild.member(this.author);
-    }
+    this.id = data.id;
+
     /**
      * The content of the message
      * @type {string}
      */
     this.content = data.content;
-    this._timestamp = new Date(data.timestamp).getTime();
-    this._editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
+
+    /**
+     * The author of the message
+     * @type {User}
+     */
+    this.author = this.client.dataManager.newUser(data.author);
+
+    /**
+     * Represents the Author of the message as a Guild Member. Only available if the message comes from a Guild
+     * where the author is still a member.
+     * @type {GuildMember}
+     */
+    this.member = this.guild ? this.guild.member(this.author) || null : null;
+
+    /**
+     * Whether or not this message is pinned
+     * @type {boolean}
+     */
+    this.pinned = data.pinned;
+
     /**
      * Whether or not the message was Text-To-Speech
      * @type {boolean}
      */
     this.tts = data.tts;
+
     /**
      * A random number used for checking message delivery
      * @type {string}
      */
     this.nonce = data.nonce;
+
+    /**
+     * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
+     * @type {boolean}
+     */
+    this.system = data.type === 6;
+
     /**
      * A list of embeds in the message - e.g. YouTube Player
      * @type {Embed[]}
      */
     this.embeds = data.embeds.map(e => new Embed(this, e));
+
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID.
      * @type {Collection<string, MessageAttachment>}
      */
     this.attachments = new Collection();
     for (const attachment of data.attachments) this.attachments.set(attachment.id, new Attachment(this, attachment));
+
     /**
      * An object containing a further users, roles or channels collections
      * @type {Object}
@@ -92,11 +107,6 @@ class Message {
       channels: new Collection(),
       everyone: data.mention_everyone,
     };
-    /**
-     * The ID of the message (unique in the channel it was sent)
-     * @type {string}
-     */
-    this.id = data.id;
 
     for (const mention of data.mentions) {
       let user = this.client.users.get(mention.id);
@@ -123,14 +133,9 @@ class Message {
       }
     }
 
+    this._timestamp = new Date(data.timestamp).getTime();
+    this._editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
     this._edits = [];
-
-    /**
-     * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
-     * @type {boolean}
-     */
-    this.system = false;
-    if (data.type === 6) this.system = true;
   }
 
   /**

@@ -15,16 +15,19 @@ class TextChannel extends GuildChannel {
 
   setup(data) {
     super.setup(data);
+
     /**
      * The topic of the Guild Channel, if there is one.
      * @type {?string}
      */
     this.topic = data.topic;
+
     /**
      * The ID of the last message in the channel, if one was sent.
      * @type {?string}
      */
     this.lastMessageID = data.last_message_id;
+
     this.type = 'text';
   }
 

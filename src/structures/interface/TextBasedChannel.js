@@ -14,6 +14,12 @@ class TextBasedChannel {
      * @type {Collection<string, Message>}
      */
     this.messages = new Collection();
+
+    /**
+     * The ID of the last message in the channel, if one was sent.
+     * @type {?string}
+     */
+    this.lastMessageID = null;
   }
 
   /**

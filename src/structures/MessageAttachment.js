@@ -8,6 +8,7 @@ class MessageAttachment {
      * @type {Client}
      */
     this.client = message.client;
+    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
     /**
      * The message this attachment is part of.
      * @type {Message}

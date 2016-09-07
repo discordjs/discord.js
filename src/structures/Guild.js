@@ -19,6 +19,7 @@ class Guild {
      * @type {Client}
      */
     this.client = client;
+    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
 
     /**
      * A Collection of members that are in this Guild. The key is the member's ID, the value is the member.
@@ -39,13 +40,13 @@ class Guild {
     this.roles = new Collection();
 
     if (!data) return;
-
     if (data.unavailable) {
       /**
        * Whether the Guild is available to access. If it is not available, it indicates a server outage.
        * @type {boolean}
        */
       this.available = false;
+
       /**
        * The Unique ID of the Guild, useful for comparisons.
        * @type {string}
@@ -54,6 +55,138 @@ class Guild {
     } else {
       this.available = true;
       this.setup(data);
+    }
+  }
+
+  /**
+   * Sets up the Guild
+   * @param {*} data The raw data of the guild
+   * @private
+   */
+  setup(data) {
+    /**
+     * The name of the guild
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * The hash of the guild icon, or null if there is no icon.
+     * @type {?string}
+     */
+    this.icon = data.icon;
+
+    /**
+     * The hash of the guild splash image, or null if no splash (VIP only)
+     * @type {?string}
+     */
+    this.splash = data.splash;
+
+    /**
+     * The region the guild is located in
+     * @type {string}
+     */
+    this.region = data.region;
+
+    /**
+     * The full amount of members in this Guild as of `READY`
+     * @type {number}
+     */
+    this.memberCount = data.member_count;
+
+    /**
+     * Whether the guild is "large" (has more than 250 members)
+     * @type {boolean}
+     */
+    this.large = data.large;
+
+    /**
+     * An array of guild features.
+     * @type {Object[]}
+     */
+    this.features = data.features;
+
+    /**
+     * An array of guild emojis.
+     * @type {Object[]}
+     */
+    this.emojis = new Collection();
+    for (const emoji of data.emojis) this.emojis.set(emoji.id, new Emoji(this, emoji));
+
+    /**
+     * The time in seconds before a user is counted as "away from keyboard".
+     * @type {?number}
+     */
+    this.afkTimeout = data.afk_timeout;
+
+    /**
+     * The ID of the voice channel where AFK members are moved.
+     * @type {?string}
+     */
+    this.afkChannelID = data.afk_channel_id;
+
+    /**
+     * Whether embedded images are enabled on this guild.
+     * @type {boolean}
+     */
+    this.embedEnabled = data.embed_enabled;
+
+    /**
+     * The verification level of the guild.
+     * @type {number}
+     */
+    this.verificationLevel = data.verification_level;
+
+    this.id = data.id;
+    this.available = !data.unavailable;
+    this.features = data.features || [];
+    this._joinDate = new Date(data.joined_at).getTime();
+
+    if (data.members) {
+      this.members.clear();
+      for (const guildUser of data.members) this._addMember(guildUser);
+    }
+
+    if (data.owner_id) this.ownerID = data.owner_id;
+
+    if (data.channels) {
+      this.channels.clear();
+      for (const channel of data.channels) this.client.dataManager.newChannel(channel, this);
+    }
+
+    if (data.roles) {
+      this.roles.clear();
+      for (const role of data.roles) {
+        const newRole = new Role(this, role);
+        this.roles.set(newRole.id, newRole);
+      }
+    }
+
+    if (data.presences) {
+      for (const presence of data.presences) {
+        const user = this.client.users.get(presence.user.id);
+        if (user) {
+          user.status = presence.status;
+          user.game = presence.game;
+        }
+      }
+    }
+
+    this._rawVoiceStates = new Collection();
+    if (data.voice_states) {
+      for (const voiceState of data.voice_states) {
+        this._rawVoiceStates.set(voiceState.user_id, voiceState);
+        const member = this.members.get(voiceState.user_id);
+        if (member) {
+          member.serverMute = voiceState.mute;
+          member.serverDeaf = voiceState.deaf;
+          member.selfMute = voiceState.self_mute;
+          member.selfDeaf = voiceState.self_deaf;
+          member.voiceSessionID = voiceState.session_id;
+          member.voiceChannelID = voiceState.channel_id;
+          this.channels.get(voiceState.channel_id).members.set(member.user.id, member);
+        }
+      }
     }
   }
 
@@ -83,6 +216,7 @@ class Guild {
       member.voiceChannelID = voiceState.channel_id;
       this.channels.get(voiceState.channel_id).members.set(member.user.id, member);
     }
+
     /**
      * Emitted whenever a user joins a guild.
      * @event Client#guildMemberAdd
@@ -198,127 +332,6 @@ class Guild {
        * @param {boolean} speaking Whether or not the member is speaking
        */
       this.client.emit(Constants.Events.GUILD_MEMBER_SPEAKING, member, speaking);
-    }
-  }
-
-  /**
-   * Sets up the Guild
-   * @param {*} data The raw data of the guild
-   * @private
-   */
-  setup(data) {
-    this.id = data.id;
-    this.available = !data.unavailable;
-    /**
-     * The hash of the guild splash image, or null if no splash (VIP only)
-     * @type {?string}
-     */
-    this.splash = data.splash;
-    /**
-     * The region the guild is located in
-     * @type {string}
-     */
-    this.region = data.region;
-    /**
-     * The name of the guild
-     * @type {string}
-     */
-    this.name = data.name;
-    /**
-     * The full amount of members in this Guild as of `READY`
-     * @type {number}
-     */
-    this.memberCount = data.member_count;
-    /**
-     * Whether the guild is "large" (has more than 250 members)
-     * @type {boolean}
-     */
-    this.large = data.large;
-    this._joinDate = new Date(data.joined_at).getTime();
-    /**
-     * The hash of the guild icon, or null if there is no icon.
-     * @type {?string}
-     */
-    this.icon = data.icon;
-    /**
-     * An array of guild features.
-     * @type {Object[]}
-     */
-    this.features = data.features;
-    /**
-     * An array of guild emojis.
-     * @type {Object[]}
-     */
-    this.emojis = new Collection();
-    for (const emoji of data.emojis) this.emojis.set(emoji.id, new Emoji(this, emoji));
-    /**
-     * The time in seconds before a user is counted as "away from keyboard".
-     * @type {?number}
-     */
-    this.afkTimeout = data.afk_timeout;
-    /**
-     * The ID of the voice channel where AFK members are moved.
-     * @type {?string}
-     */
-    this.afkChannelID = data.afk_channel_id;
-    /**
-     * Whether embedded images are enabled on this guild.
-     * @type {boolean}
-     */
-    this.embedEnabled = data.embed_enabled;
-    /**
-     * The verification level of the guild.
-     * @type {number}
-     */
-    this.verificationLevel = data.verification_level;
-    this.features = data.features || [];
-
-    if (data.members) {
-      this.members.clear();
-      for (const guildUser of data.members) this._addMember(guildUser);
-    }
-
-    if (data.owner_id) this.ownerID = data.owner_id;
-
-    if (data.channels) {
-      this.channels.clear();
-      for (const channel of data.channels) this.client.dataManager.newChannel(channel, this);
-    }
-
-    if (data.roles) {
-      this.roles.clear();
-      for (const role of data.roles) {
-        const newRole = new Role(this, role);
-        this.roles.set(newRole.id, newRole);
-      }
-    }
-
-    if (data.presences) {
-      for (const presence of data.presences) {
-        const user = this.client.users.get(presence.user.id);
-        if (user) {
-          user.status = presence.status;
-          user.game = presence.game;
-        }
-      }
-    }
-
-    this._rawVoiceStates = new Collection();
-
-    if (data.voice_states) {
-      for (const voiceState of data.voice_states) {
-        this._rawVoiceStates.set(voiceState.user_id, voiceState);
-        const member = this.members.get(voiceState.user_id);
-        if (member) {
-          member.serverMute = voiceState.mute;
-          member.serverDeaf = voiceState.deaf;
-          member.selfMute = voiceState.self_mute;
-          member.selfDeaf = voiceState.self_deaf;
-          member.voiceSessionID = voiceState.session_id;
-          member.voiceChannelID = voiceState.channel_id;
-          this.channels.get(voiceState.channel_id).members.set(member.user.id, member);
-        }
-      }
     }
   }
 

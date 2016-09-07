@@ -8,8 +8,8 @@ class Channel {
      * @type {Client}
      */
     this.client = client;
-    this.typingMap = {};
-    this.typingTimeouts = [];
+    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+
     /**
      * The type of the channel, either:
      * * `dm` - a DM channel
@@ -19,6 +19,8 @@ class Channel {
      * @type {string}
      */
     this.type = null;
+
+    this._typing = new Map();
     if (data) this.setup(data);
   }
 
