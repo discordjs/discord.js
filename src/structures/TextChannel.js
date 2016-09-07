@@ -17,7 +17,7 @@ class TextChannel extends GuildChannel {
     super.setup(data);
 
     /**
-     * The topic of the Guild Channel, if there is one.
+     * The topic of the Text Channel, if there is one.
      * @type {?string}
      */
     this.topic = data.topic;
