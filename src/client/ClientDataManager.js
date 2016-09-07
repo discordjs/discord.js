@@ -28,7 +28,7 @@ class ClientDataManager {
        * @param {Guild} guild The created guild
        */
       if (this.client.options.fetch_all_members) {
-        this.fetchMembers().then(() => { this.client.emit(Constants.Events.GUILD_CREATE, guild); });
+        guild.fetchMembers().then(() => { this.client.emit(Constants.Events.GUILD_CREATE, guild); });
       } else {
         this.client.emit(Constants.Events.GUILD_CREATE, guild);
       }
