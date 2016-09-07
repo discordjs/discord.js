@@ -41,8 +41,8 @@ class TypingData {
 
 function tooLate(channel, user) {
   return channel.client.setTimeout(() => {
-    channel.client.emit(Constants.Events.TYPING_STOP, channel, user, channel._typing[user.id]);
-    delete channel._typing[user.id];
+    channel.client.emit(Constants.Events.TYPING_STOP, channel, user, channel._typing.get(user.id));
+    channel._typing.delete(user.id);
   }, 6000);
 }
 
