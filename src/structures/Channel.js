@@ -20,7 +20,6 @@ class Channel {
      */
     this.type = null;
 
-    this._typing = new Map();
     if (data) this.setup(data);
   }
 

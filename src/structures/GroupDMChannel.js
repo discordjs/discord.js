@@ -72,9 +72,9 @@ class GroupDMChannel extends Channel {
       }
     }
 
-    this.id = data.id;
     this.type = 'group';
     this.lastMessageID = data.last_message_id;
+    this._typing = new Map();
   }
 
   equals(other) {

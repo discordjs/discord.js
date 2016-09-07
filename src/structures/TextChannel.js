@@ -22,13 +22,9 @@ class TextChannel extends GuildChannel {
      */
     this.topic = data.topic;
 
-    /**
-     * The ID of the last message in the channel, if one was sent.
-     * @type {?string}
-     */
-    this.lastMessageID = data.last_message_id;
-
     this.type = 'text';
+    this.lastMessageID = data.last_message_id;
+    this._typing = new Map();
   }
 
   sendMessage() {
