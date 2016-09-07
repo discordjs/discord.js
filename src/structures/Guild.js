@@ -227,6 +227,15 @@ class Guild {
   }
 
   /**
+   * The `#general` GuildChannel of the server.
+   * @type {GuildChannel}
+   * @readonly
+   */
+  get defaultChannel() {
+    return this.channels.get(this.id);
+  }
+
+  /**
    * Updates the Guild with new information - e.g. a new name.
    * @param {GuildEditData} data The data to update the guild with
    * @returns {Promise<Guild>}
