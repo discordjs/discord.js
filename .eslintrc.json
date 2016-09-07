@@ -123,7 +123,6 @@
     "no-useless-computed-key": "error",
     "no-useless-constructor": "error",
     "prefer-arrow-callback": "error",
-    "prefer-rest-params": "error",
     "prefer-spread": "error",
     "prefer-template": "error",
     "rest-spread-spacing": "error",

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Represents an Attachment in a Message
  */

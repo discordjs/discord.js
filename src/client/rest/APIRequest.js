@@ -1,3 +1,5 @@
+'use strict';
+
 const request = require('superagent');
 const Constants = require('../../util/Constants');
 

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Represents any Channel on Discord
  */

@@ -1,3 +1,5 @@
+'use strict';
+
 const PartialGuild = require('./PartialGuild');
 const PartialGuildChannel = require('./PartialGuildChannel');
 

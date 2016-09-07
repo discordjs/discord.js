@@ -1,3 +1,5 @@
+'use strict';
+
 const Channel = require('./Channel');
 const Role = require('./Role');
 const PermissionOverwrites = require('./PermissionOverwrites');
@@ -227,8 +229,8 @@ class GuildChannel extends Channel {
    * @param {InviteOptions} [options={}] The options for the invite
    * @returns {Promise<Invite>}
    */
-  createInvite(options = {}) {
-    return this.client.rest.methods.createChannelInvite(this, options);
+  createInvite(options) {
+    return this.client.rest.methods.createChannelInvite(this, options || {});
   }
 
   /**

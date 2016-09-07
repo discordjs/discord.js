@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * A utility class to help make it easier to access the data stores
  * @extends {Map}
@@ -115,8 +117,8 @@ class Collection extends Map {
    * @param {Object} [thisArg] Value to set as this when filtering
    * @returns {Collection}
    */
-  filter(...args) {
-    const newArray = this.array().filter(...args);
+  filter() {
+    const newArray = this.array().filter.apply(null, arguments);
     const collection = new Collection();
     for (const item of newArray) collection.set(item.id, item);
     return collection;
@@ -128,8 +130,8 @@ class Collection extends Map {
    * @param {*} [thisArg] Optional. Value to use as this when executing callback.
    * @returns {array}
    */
-  map(...args) {
-    return this.array().map(...args);
+  map() {
+    return this.array().map.apply(null, arguments);
   }
 }
 

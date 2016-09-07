@@ -1,3 +1,5 @@
+'use strict';
+
 const OpusEngines = require('../opus/OpusEngineList');
 const ConverterEngines = require('../pcm/ConverterEngineList');
 const Constants = require('../../../util/Constants');

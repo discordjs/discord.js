@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * A base class for different types of rate limiting handlers for the REST API.
  * @private

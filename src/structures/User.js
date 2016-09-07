@@ -1,3 +1,5 @@
+'use strict';
+
 const TextBasedChannel = require('./interface/TextBasedChannel');
 const Constants = require('../util/Constants');
 

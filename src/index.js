@@ -1,3 +1,5 @@
+'use strict';
+
 const Client = require('./client/Client');
 const Shard = require('./sharding/Shard');
 const ShardingManager = require('./sharding/ShardingManager');

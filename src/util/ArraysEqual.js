@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = function arraysEqual(a, b) {
   if (a === b) return true;
   if (a.length !== b.length) return false;

@@ -1,3 +1,5 @@
+'use strict';
+
 const path = require('path');
 const EventEmitter = require('events').EventEmitter;
 const Message = require('../Message');
@@ -45,7 +47,8 @@ class TextBasedChannel {
    *  .then(message => console.log(`Sent message: ${message.content}`))
    *  .catch(console.log);
    */
-  sendMessage(content, options = {}) {
+  sendMessage(content, options) {
+    options = options || {};
     return this.client.rest.methods.sendMessage(this, content, options.tts, options.nonce, options.disable_everyone);
   }
 
@@ -60,7 +63,8 @@ class TextBasedChannel {
    *  .then(message => console.log(`Sent tts message: ${message.content}`))
    *  .catch(console.log);
    */
-  sendTTSMessage(content, options = {}) {
+  sendTTSMessage(content, options) {
+    options = options || {};
     return this.client.rest.methods.sendMessage(this, content, true, options.nonce, options.disable_everyone);
   }
 
@@ -136,7 +140,8 @@ class TextBasedChannel {
    *  .then(messages => console.log(`Received ${messages.size} messages`))
    *  .catch(console.log);
    */
-  fetchMessages(options = {}) {
+  fetchMessages(options) {
+    options = options || {};
     return new Promise((resolve, reject) => {
       this.client.rest.methods.getChannelMessages(this, options).then(data => {
         const messages = new Collection();
@@ -203,7 +208,8 @@ class TextBasedChannel {
    * // force typing to fully stop in a channel
    * channel.stopTyping(true);
    */
-  stopTyping(force = false) {
+  stopTyping(force) {
+    force = force || false;
     if (this.client.user._typing.has(this.id)) {
       const entry = this.client.user._typing.get(this.id);
       entry.count--;
@@ -245,7 +251,8 @@ class TextBasedChannel {
    * collector.on('message', m => console.log(`Collected ${m.content}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
-  createCollector(filter, options = {}) {
+  createCollector(filter, options) {
+    options = options || {};
     return new MessageCollector(this, filter, options);
   }
 
@@ -273,11 +280,12 @@ class TextBasedChannel {
    *  .then(collected => console.log(collected.size))
    *  .catch(collected => console.log(`After a minute, only ${collected.size} out of 4 voted.`));
    */
-  awaitMessages(filter, options = {}) {
+  awaitMessages(filter, options) {
+    options = options || {};
     return new Promise((resolve, reject) => {
       const collector = this.createCollector(filter, options);
       collector.on('end', (collection, reason) => {
-        if (options.errors && options.errors.includes(reason)) {
+        if (options.errors && options.errors.indexOf(reason) > -1) {
           reject(collection);
         } else {
           resolve(collection);
@@ -342,7 +350,7 @@ class MessageCollector extends EventEmitter {
    * @param {CollectorFilterFunction} filter The filter function
    * @param {CollectorOptions} [options] Options for the collector
    */
-  constructor(channel, filter, options = {}) {
+  constructor(channel, filter, options) {
     super();
 
     /**
@@ -361,7 +369,7 @@ class MessageCollector extends EventEmitter {
      * Options for the collecor.
      * @type {CollectorOptions}
      */
-    this.options = options;
+    this.options = options || {};
 
     /**
      * Whether this collector has stopped collecting Messages.
@@ -407,7 +415,7 @@ class MessageCollector extends EventEmitter {
    * Stops the collector and emits `end`.
    * @param {string} [reason='user'] An optional reason for stopping the collector
    */
-  stop(reason = 'user') {
+  stop(reason) {
     if (this.ended) return;
     this.ended = true;
     this.channel.client.removeListener('message', this.listener);
@@ -420,11 +428,11 @@ class MessageCollector extends EventEmitter {
      * ended because it reached its message limit, it will be `limit`.
      * @event MessageCollector#end
      */
-    this.emit('end', this.collected, reason);
+    this.emit('end', this.collected, reason || 'user');
   }
 }
 
-exports.applyToClass = (structure, full = false) => {
+exports.applyToClass = (structure, full) => {
   const props = ['sendMessage', 'sendTTSMessage', 'sendFile'];
   if (full) {
     props.push('_cacheMessage');

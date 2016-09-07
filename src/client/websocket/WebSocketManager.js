@@ -1,3 +1,5 @@
+'use strict';
+
 const WebSocket = require('ws');
 const Constants = require('../../util/Constants');
 const zlib = require('zlib');
@@ -73,7 +75,7 @@ class WebSocketManager {
    * @param {Object} data An object that can be JSON stringified
    * @param {boolean} force Whether or not to send the packet immediately
    */
-  send(data, force = false) {
+  send(data, force) {
     if (force) {
       this.ws.send(JSON.stringify(data));
       return;
@@ -190,11 +192,12 @@ class WebSocketManager {
     this.tryReconnect();
   }
 
-  _emitReady(normal = true) {
+  _emitReady(normal) {
     /**
      * Emitted when the Client becomes ready to start working
      * @event Client#ready
      */
+    if (typeof normal === 'undefined') normal = true;
     this.status = Constants.Status.READY;
     this.client.emit(Constants.Events.READY);
     this.packetManager.handleQueue();

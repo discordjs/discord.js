@@ -1,3 +1,5 @@
+'use strict';
+
 const WebSocket = require('ws');
 const Constants = require('../../util/Constants');
 const EventEmitter = require('events').EventEmitter;

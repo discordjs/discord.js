@@ -1,3 +1,5 @@
+'use strict';
+
 const UserAgentManager = require('./UserAgentManager');
 const RESTMethods = require('./RESTMethods');
 const SequentialRequestHandler = require('./RequestHandlers/Sequential');

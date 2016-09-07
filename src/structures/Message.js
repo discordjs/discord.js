@@ -1,3 +1,5 @@
+'use strict';
+
 const Attachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
 const Collection = require('../util/Collection');
@@ -230,13 +232,13 @@ class Message {
    *  .then(msg => console.log(`Deleted message from ${msg.author}`))
    *  .catch(console.log);
    */
-  delete(timeout = 0) {
+  delete(timeout) {
     return new Promise((resolve, reject) => {
       this.client.setTimeout(() => {
         this.client.rest.methods.deleteMessage(this)
           .then(resolve)
           .catch(reject);
-      }, timeout);
+      }, timeout || 0);
     });
   }
 
@@ -265,7 +267,8 @@ class Message {
    *  .then(msg => console.log(`Sent a reply to ${msg.author}`))
    *  .catch(console.log);
    */
-  reply(content, options = {}) {
+  reply(content, options) {
+    options = options || {};
     content = this.client.resolver.resolveString(content);
     const newContent = this.guild ? `${this.author}, ${content}` : content;
     return this.client.rest.methods.sendMessage(this.channel, newContent, options.tts);

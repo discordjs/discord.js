@@ -1,3 +1,5 @@
+'use strict';
+
 const Constants = require('../util/Constants');
 
 /**
@@ -199,7 +201,7 @@ class Role {
    *   console.log('This role can\'t ban members');
    * }
    */
-  hasPermission(permission, explicit = false) {
+  hasPermission(permission, explicit) {
     permission = this.client.resolver.resolvePermission(permission);
     if (!explicit && (this.permissions & Constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
     return (this.permissions & permission) > 0;

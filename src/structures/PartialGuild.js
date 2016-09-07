@@ -1,3 +1,5 @@
+'use strict';
+
 /*
 { splash: null,
      id: '123123123',

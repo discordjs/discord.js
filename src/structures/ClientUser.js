@@ -1,3 +1,5 @@
+'use strict';
+
 const User = require('./User');
 
 /**
@@ -96,7 +98,7 @@ class ClientUser extends User {
    *  .then(user => console.log('Changed status!'))
    *  .catch(console.log);
    */
-  setStatus(status, game, url = null) {
+  setStatus(status, game, url) {
     return new Promise(resolve => {
       if (status === 'online' || status === 'here' || status === 'available') {
         this.idleStatus = null;
@@ -119,7 +121,7 @@ class ClientUser extends User {
       }
 
       if (url) {
-        this.userGame.url = url;
+        this.userGame.url = url || null;
         this.userGame.type = 1;
       }
 

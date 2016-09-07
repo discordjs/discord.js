@@ -1,3 +1,5 @@
+'use strict';
+
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 

@@ -1,3 +1,5 @@
+'use strict';
+
 const AbstractHandler = require('./AbstractHandler');
 
 class MessageUpdateHandler extends AbstractHandler {
