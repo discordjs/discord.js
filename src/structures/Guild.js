@@ -190,151 +190,6 @@ class Guild {
     }
   }
 
-  _checkChunks() {
-    if (this._fetchWaiter) {
-      if (this.members.size === this.memberCount) {
-        this._fetchWaiter(this);
-        this._fetchWaiter = null;
-      }
-    }
-  }
-
-  _addMember(guildUser, noEvent) {
-    if (!(guildUser.user instanceof User)) guildUser.user = this.client.dataManager.newUser(guildUser.user);
-
-    guildUser.joined_at = guildUser.joined_at || 0;
-    const member = new GuildMember(this, guildUser);
-    this.members.set(member.id, member);
-
-    if (this._rawVoiceStates && this._rawVoiceStates.get(member.user.id)) {
-      const voiceState = this._rawVoiceStates.get(member.user.id);
-      member.serverMute = voiceState.mute;
-      member.serverDeaf = voiceState.deaf;
-      member.selfMute = voiceState.self_mute;
-      member.selfDeaf = voiceState.self_deaf;
-      member.voiceSessionID = voiceState.session_id;
-      member.voiceChannelID = voiceState.channel_id;
-      this.channels.get(voiceState.channel_id).members.set(member.user.id, member);
-    }
-
-    /**
-     * Emitted whenever a user joins a guild.
-     * @event Client#guildMemberAdd
-     * @param {Guild} guild The guild that the user has joined
-     * @param {GuildMember} member The member that has joined
-     */
-    if (this.client.ws.status === Constants.Status.READY && !noEvent) {
-      this.client.emit(Constants.Events.GUILD_MEMBER_ADD, this, member);
-    }
-
-    this._checkChunks();
-    return member;
-  }
-
-  _updateMember(member, data) {
-    const oldMember = cloneObject(member);
-
-    if (data.roles) member._roles = data.roles;
-    else member.nickname = data.nick;
-
-    const notSame = member.nickname !== oldMember.nickname && !arraysEqual(member._roles, oldMember._roles);
-
-    if (this.client.ws.status === Constants.Status.READY && notSame) {
-      /**
-       * Emitted whenever a Guild Member changes - i.e. new role, removed role, nickname
-       * @event Client#guildMemberUpdate
-       * @param {Guild} guild The guild that the update affects
-       * @param {GuildMember} oldMember The member before the update
-       * @param {GuildMember} newMember The member after the update
-       */
-      this.client.emit(Constants.Events.GUILD_MEMBER_UPDATE, this, oldMember, member);
-    }
-
-    return {
-      old: oldMember,
-      mem: member,
-    };
-  }
-
-  _removeMember(guildMember) {
-    this.members.delete(guildMember.id);
-    this._checkChunks();
-  }
-
-  /**
-   * When concatenated with a string, this automatically concatenates the Guild's name instead of the Guild object.
-   * @returns {string}
-   * @example
-   * // logs: Hello from My Guild!
-   * console.log(`Hello from ${guild}!`);
-   * @example
-   * // logs: Hello from My Guild!
-   * console.log(`Hello from ' + guild + '!');
-   */
-  toString() {
-    return this.name;
-  }
-
-  /**
-   * Returns the GuildMember form of a User object, if the User is present in the guild.
-   * @param {UserResolvable} user The user that you want to obtain the GuildMember of
-   * @returns {?GuildMember}
-   * @example
-   * // get the guild member of a user
-   * const member = guild.member(message.author);
-   */
-  member(user) {
-    return this.client.resolver.resolveGuildMember(this, user);
-  }
-
-  /**
-   * Whether this Guild equals another Guild. It compares all properties, so for most operations
-   * it is advisable to just compare `guild.id === guild2.id` as it is much faster and is often
-   * what most users need.
-   * @param {Guild} guild The guild to compare
-   * @returns {boolean}
-   */
-  equals(guild) {
-    let equal =
-      guild &&
-      this.id === guild.id &&
-      this.available === !guild.unavailable &&
-      this.splash === guild.splash &&
-      this.region === guild.region &&
-      this.name === guild.name &&
-      this.memberCount === guild.member_count &&
-      this.large === guild.large &&
-      this.icon === guild.icon &&
-      arraysEqual(this.features, guild.features) &&
-      this.ownerID === guild.owner_id &&
-      this.verificationLevel === guild.verification_level &&
-      this.embedEnabled === guild.embed_enabled;
-
-    if (equal) {
-      if (this.embedChannel) {
-        if (this.embedChannel.id !== guild.embed_channel_id) equal = false;
-      } else if (guild.embed_channel_id) {
-        equal = false;
-      }
-    }
-
-    return equal;
-  }
-
-  _memberSpeakUpdate(user, speaking) {
-    const member = this.members.get(user);
-    if (member && member.speaking !== speaking) {
-      member.speaking = speaking;
-      /**
-       * Emitted once a Guild Member starts/stops speaking
-       * @event Client#guildMemberSpeaking
-       * @param {GuildMember} member The member that started/stopped speaking
-       * @param {boolean} speaking Whether or not the member is speaking
-       */
-      this.client.emit(Constants.Events.GUILD_MEMBER_SPEAKING, member, speaking);
-    }
-  }
-
   /**
    * The time the guild was created
    * @readonly
@@ -353,65 +208,22 @@ class Guild {
   }
 
   /**
-   * Creates a new Channel in the Guild.
-   * @param {string} name The name of the new channel
-   * @param {string} type The type of the new channel, either `text` or `voice`
-   * @returns {Promise<TextChannel|VoiceChannel>}
-   * @example
-   * // create a new text channel
-   * guild.createChannel('new general', 'text')
-   *  .then(channel => console.log(`Created new channel ${channel}`))
-   *  .catch(console.log);
+   * Gets the URL to this guild's icon (if it has one, otherwise it returns null)
+   * @type {?string}
+   * @readonly
    */
-  createChannel(name, type) {
-    return this.client.rest.methods.createChannel(this, name, type);
+  get iconURL() {
+    if (!this.icon) return null;
+    return Constants.Endpoints.guildIcon(this.id, this.icon);
   }
 
   /**
-   * Creates a new role in the guild, and optionally updates it with the given information.
-   * @param {RoleData} [data] The data to update the role with
-   * @returns {Promise<Role>}
-   * @example
-   * // create a new role
-   * guild.createRole()
-   *  .then(role => console.log(`Created role ${role}`))
-   *  .catch(console.log);
-   * @example
-   * // create a new role with data
-   * guild.createRole({ name: 'Super Cool People' })
-   *   .then(role => console.log(`Created role ${role}`))
-   *   .catch(console.log)
+   * The owner of the Guild
+   * @type {GuildMember}
+   * @readonly
    */
-  createRole(data) {
-    const create = this.client.rest.methods.createGuildRole(this);
-    if (!data) return create;
-    return create.then(role => role.edit(data));
-  }
-
-  /**
-   * Causes the Client to leave the guild.
-   * @returns {Promise<Guild>}
-   * @example
-   * // leave a guild
-   * guild.leave()
-   *  .then(g => console.log(`Left the guild ${g}`))
-   *  .catch(console.log);
-   */
-  leave() {
-    return this.client.rest.methods.leaveGuild(this);
-  }
-
-  /**
-   * Causes the Client to delete the guild.
-   * @returns {Promise<Guild>}
-   * @example
-   * // delete a guild
-   * guild.delete()
-   *  .then(g => console.log(`Deleted the guild ${g}`))
-   *  .catch(console.log);
-   */
-  delete() {
-    return this.client.rest.methods.deleteGuild(this);
+  get owner() {
+    return this.members.get(this.ownerID);
   }
 
   /**
@@ -544,6 +356,18 @@ class Guild {
   }
 
   /**
+   * Returns the GuildMember form of a User object, if the User is present in the guild.
+   * @param {UserResolvable} user The user that you want to obtain the GuildMember of
+   * @returns {?GuildMember}
+   * @example
+   * // get the guild member of a user
+   * const member = guild.member(message.author);
+   */
+  member(user) {
+    return this.client.resolver.resolveGuildMember(this, user);
+  }
+
+  /**
    * Bans a user from the guild.
    * @param {UserResolvable} user The user to ban
    * @param {number} [deleteDays=0] The amount of days worth of messages from this user that should
@@ -627,30 +451,204 @@ class Guild {
   }
 
   /**
-   * Gets the URL to this guild's icon (if it has one, otherwise it returns null)
-   * @type {?string}
-   * @readonly
+   * Creates a new Channel in the Guild.
+   * @param {string} name The name of the new channel
+   * @param {string} type The type of the new channel, either `text` or `voice`
+   * @returns {Promise<TextChannel|VoiceChannel>}
+   * @example
+   * // create a new text channel
+   * guild.createChannel('new general', 'text')
+   *  .then(channel => console.log(`Created new channel ${channel}`))
+   *  .catch(console.log);
    */
-  get iconURL() {
-    if (!this.icon) return null;
-    return Constants.Endpoints.guildIcon(this.id, this.icon);
+  createChannel(name, type) {
+    return this.client.rest.methods.createChannel(this, name, type);
   }
 
   /**
-   * The owner of the Guild
-   * @type {GuildMember}
-   * @readonly
+   * Creates a new role in the guild, and optionally updates it with the given information.
+   * @param {RoleData} [data] The data to update the role with
+   * @returns {Promise<Role>}
+   * @example
+   * // create a new role
+   * guild.createRole()
+   *  .then(role => console.log(`Created role ${role}`))
+   *  .catch(console.log);
+   * @example
+   * // create a new role with data
+   * guild.createRole({ name: 'Super Cool People' })
+   *   .then(role => console.log(`Created role ${role}`))
+   *   .catch(console.log)
    */
-  get owner() {
-    return this.members.get(this.ownerID);
+  createRole(data) {
+    const create = this.client.rest.methods.createGuildRole(this);
+    if (!data) return create;
+    return create.then(role => role.edit(data));
+  }
+
+  /**
+   * Causes the Client to leave the guild.
+   * @returns {Promise<Guild>}
+   * @example
+   * // leave a guild
+   * guild.leave()
+   *  .then(g => console.log(`Left the guild ${g}`))
+   *  .catch(console.log);
+   */
+  leave() {
+    return this.client.rest.methods.leaveGuild(this);
+  }
+
+  /**
+   * Causes the Client to delete the guild.
+   * @returns {Promise<Guild>}
+   * @example
+   * // delete a guild
+   * guild.delete()
+   *  .then(g => console.log(`Deleted the guild ${g}`))
+   *  .catch(console.log);
+   */
+  delete() {
+    return this.client.rest.methods.deleteGuild(this);
   }
 
   /**
    * Syncs this guild (already done automatically every 30 seconds). Only applicable to user accounts.
    */
   sync() {
-    if (!this.client.user.bot) {
-      this.client.syncGuilds([this]);
+    if (!this.client.user.bot) this.client.syncGuilds([this]);
+  }
+
+  /**
+   * Whether this Guild equals another Guild. It compares all properties, so for most operations
+   * it is advisable to just compare `guild.id === guild2.id` as it is much faster and is often
+   * what most users need.
+   * @param {Guild} guild The guild to compare
+   * @returns {boolean}
+   */
+  equals(guild) {
+    let equal =
+      guild &&
+      this.id === guild.id &&
+      this.available === !guild.unavailable &&
+      this.splash === guild.splash &&
+      this.region === guild.region &&
+      this.name === guild.name &&
+      this.memberCount === guild.member_count &&
+      this.large === guild.large &&
+      this.icon === guild.icon &&
+      arraysEqual(this.features, guild.features) &&
+      this.ownerID === guild.owner_id &&
+      this.verificationLevel === guild.verification_level &&
+      this.embedEnabled === guild.embed_enabled;
+
+    if (equal) {
+      if (this.embedChannel) {
+        if (this.embedChannel.id !== guild.embed_channel_id) equal = false;
+      } else if (guild.embed_channel_id) {
+        equal = false;
+      }
+    }
+
+    return equal;
+  }
+
+  /**
+   * When concatenated with a string, this automatically concatenates the Guild's name instead of the Guild object.
+   * @returns {string}
+   * @example
+   * // logs: Hello from My Guild!
+   * console.log(`Hello from ${guild}!`);
+   * @example
+   * // logs: Hello from My Guild!
+   * console.log(`Hello from ' + guild + '!');
+   */
+  toString() {
+    return this.name;
+  }
+
+  _addMember(guildUser, noEvent) {
+    if (!(guildUser.user instanceof User)) guildUser.user = this.client.dataManager.newUser(guildUser.user);
+
+    guildUser.joined_at = guildUser.joined_at || 0;
+    const member = new GuildMember(this, guildUser);
+    this.members.set(member.id, member);
+
+    if (this._rawVoiceStates && this._rawVoiceStates.get(member.user.id)) {
+      const voiceState = this._rawVoiceStates.get(member.user.id);
+      member.serverMute = voiceState.mute;
+      member.serverDeaf = voiceState.deaf;
+      member.selfMute = voiceState.self_mute;
+      member.selfDeaf = voiceState.self_deaf;
+      member.voiceSessionID = voiceState.session_id;
+      member.voiceChannelID = voiceState.channel_id;
+      this.channels.get(voiceState.channel_id).members.set(member.user.id, member);
+    }
+
+    /**
+     * Emitted whenever a user joins a guild.
+     * @event Client#guildMemberAdd
+     * @param {Guild} guild The guild that the user has joined
+     * @param {GuildMember} member The member that has joined
+     */
+    if (this.client.ws.status === Constants.Status.READY && !noEvent) {
+      this.client.emit(Constants.Events.GUILD_MEMBER_ADD, this, member);
+    }
+
+    this._checkChunks();
+    return member;
+  }
+
+  _updateMember(member, data) {
+    const oldMember = cloneObject(member);
+
+    if (data.roles) member._roles = data.roles;
+    else member.nickname = data.nick;
+
+    const notSame = member.nickname !== oldMember.nickname && !arraysEqual(member._roles, oldMember._roles);
+
+    if (this.client.ws.status === Constants.Status.READY && notSame) {
+      /**
+       * Emitted whenever a Guild Member changes - i.e. new role, removed role, nickname
+       * @event Client#guildMemberUpdate
+       * @param {Guild} guild The guild that the update affects
+       * @param {GuildMember} oldMember The member before the update
+       * @param {GuildMember} newMember The member after the update
+       */
+      this.client.emit(Constants.Events.GUILD_MEMBER_UPDATE, this, oldMember, member);
+    }
+
+    return {
+      old: oldMember,
+      mem: member,
+    };
+  }
+
+  _removeMember(guildMember) {
+    this.members.delete(guildMember.id);
+    this._checkChunks();
+  }
+
+  _memberSpeakUpdate(user, speaking) {
+    const member = this.members.get(user);
+    if (member && member.speaking !== speaking) {
+      member.speaking = speaking;
+      /**
+       * Emitted once a Guild Member starts/stops speaking
+       * @event Client#guildMemberSpeaking
+       * @param {GuildMember} member The member that started/stopped speaking
+       * @param {boolean} speaking Whether or not the member is speaking
+       */
+      this.client.emit(Constants.Events.GUILD_MEMBER_SPEAKING, member, speaking);
+    }
+  }
+
+  _checkChunks() {
+    if (this._fetchWaiter) {
+      if (this.members.size === this.memberCount) {
+        this._fetchWaiter(this);
+        this._fetchWaiter = null;
+      }
     }
   }
 }

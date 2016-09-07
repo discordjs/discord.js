@@ -49,33 +49,6 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Checks if this channel has the same type, topic, position, name, overwrites and ID as another channel.
-   * In most cases, a simple `channel.id === channel2.id` will do, and is much faster too.
-   * @param {GuildChannel} channel The channel to compare this channel to
-   * @returns {boolean}
-   */
-  equals(channel) {
-    let equal = channel &&
-      this.id === channel.id &&
-      this.type === channel.type &&
-      this.topic === channel.topic &&
-      this.position === channel.position &&
-      this.name === channel.name;
-
-    if (equal) {
-      if (channel.permission_overwrites) {
-        const thisIDSet = Array.from(this.permissionOverwrites.keys());
-        const otherIDSet = channel.permission_overwrites.map(overwrite => overwrite.id);
-        equal = arraysEqual(thisIDSet, otherIDSet);
-      } else {
-        equal = false;
-      }
-    }
-
-    return equal;
-  }
-
-  /**
    * Gets the overall set of permissions for a user in this channel, taking into account roles and permission
    * overwrites.
    * @param {GuildMemberResolvable} member The user that you want to obtain the overall permissions for
@@ -238,20 +211,6 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * When concatenated with a string, this automatically returns the Channel's mention instead of the Channel object.
-   * @returns {string}
-   * @example
-   * // Outputs: Hello from #general
-   * console.log(`Hello from ${channel}`);
-   * @example
-   * // Outputs: Hello from #general
-   * console.log('Hello from ' + channel);
-   */
-  toString() {
-    return `<#${this.id}>`;
-  }
-
-  /**
    * Options given when creating a Guild Channel Invite:
    * ```js
    * {
@@ -270,6 +229,47 @@ class GuildChannel extends Channel {
    */
   createInvite(options = {}) {
     return this.client.rest.methods.createChannelInvite(this, options);
+  }
+
+  /**
+   * Checks if this channel has the same type, topic, position, name, overwrites and ID as another channel.
+   * In most cases, a simple `channel.id === channel2.id` will do, and is much faster too.
+   * @param {GuildChannel} channel The channel to compare this channel to
+   * @returns {boolean}
+   */
+  equals(channel) {
+    let equal = channel &&
+      this.id === channel.id &&
+      this.type === channel.type &&
+      this.topic === channel.topic &&
+      this.position === channel.position &&
+      this.name === channel.name;
+
+    if (equal) {
+      if (channel.permission_overwrites) {
+        const thisIDSet = Array.from(this.permissionOverwrites.keys());
+        const otherIDSet = channel.permission_overwrites.map(overwrite => overwrite.id);
+        equal = arraysEqual(thisIDSet, otherIDSet);
+      } else {
+        equal = false;
+      }
+    }
+
+    return equal;
+  }
+
+  /**
+   * When concatenated with a string, this automatically returns the Channel's mention instead of the Channel object.
+   * @returns {string}
+   * @example
+   * // Outputs: Hello from #general
+   * console.log(`Hello from ${channel}`);
+   * @example
+   * // Outputs: Hello from #general
+   * console.log('Hello from ' + channel);
+   */
+  toString() {
+    return `<#${this.id}>`;
   }
 }
 

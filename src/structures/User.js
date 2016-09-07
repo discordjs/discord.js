@@ -75,17 +75,6 @@ class User {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the User's mention instead of the User object.
-   * @returns {string}
-   * @example
-   * // logs: Hello from <@123456789>!
-   * console.log(`Hello from ${user}!`);
-   */
-  toString() {
-    return `<@${this.id}>`;
-  }
-
-  /**
    * A link to the user's avatar (if they have one, otherwise null)
    * @type {?string}
    * @readonly
@@ -125,17 +114,21 @@ class User {
     return equal;
   }
 
-  sendMessage() {
-    return;
+  /**
+   * When concatenated with a string, this automatically concatenates the User's mention instead of the User object.
+   * @returns {string}
+   * @example
+   * // logs: Hello from <@123456789>!
+   * console.log(`Hello from ${user}!`);
+   */
+  toString() {
+    return `<@${this.id}>`;
   }
 
-  sendTTSMessage() {
-    return;
-  }
-
-  sendFile() {
-    return;
-  }
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  sendMessage() { return; }
+  sendTTSMessage() { return; }
+  sendFile() { return; }
 }
 
 TextBasedChannel.applyToClass(User);

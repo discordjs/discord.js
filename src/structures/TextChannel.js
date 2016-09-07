@@ -27,61 +27,21 @@ class TextChannel extends GuildChannel {
     this._typing = new Map();
   }
 
-  sendMessage() {
-    return;
-  }
-
-  sendTTSMessage() {
-    return;
-  }
-
-  sendFile() {
-    return;
-  }
-
-  _cacheMessage() {
-    return;
-  }
-
-  fetchMessages() {
-    return;
-  }
-
-  fetchMessage() {
-    return;
-  }
-
-  bulkDelete() {
-    return;
-  }
-
-  startTyping() {
-    return;
-  }
-
-  stopTyping() {
-    return;
-  }
-
-  get typing() {
-    return;
-  }
-
-  get typingCount() {
-    return;
-  }
-
-  fetchPinnedMessages() {
-    return;
-  }
-
-  createCollector() {
-    return;
-  }
-
-  awaitMessages() {
-    return;
-  }
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  sendMessage() { return; }
+  sendTTSMessage() { return; }
+  sendFile() { return; }
+  fetchMessage() { return; }
+  fetchMessages() { return; }
+  fetchPinnedMessages() { return; }
+  startTyping() { return; }
+  stopTyping() { return; }
+  get typing() { return; }
+  get typingCount() { return; }
+  createCollector() { return; }
+  awaitMessages() { return; }
+  bulkDelete() { return; }
+  _cacheMessage() { return; }
 }
 
 TextBasedChannel.applyToClass(TextChannel, true);
