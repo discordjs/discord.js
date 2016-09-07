@@ -65,17 +65,6 @@ class Role {
     this.managed = data.managed;
   }
 
-  equals(role) {
-    return role &&
-      this.id === role.id &&
-      this.name === role.name &&
-      this.color === role.color &&
-      this.hoist === role.hoist &&
-      this.position === role.position &&
-      this.permissions === role.permissions &&
-      this.managed === role.managed;
-  }
-
   /**
    * The time the role was created
    * @readonly
@@ -217,14 +206,6 @@ class Role {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the Role mention rather than the Role object.
-   * @returns {string}
-   */
-  toString() {
-    return `<@&${this.id}>`;
-  }
-
-  /**
    * The hexadecimal version of the role color, with a leading hashtag.
    * @type {string}
    * @readonly
@@ -233,6 +214,32 @@ class Role {
     let col = this.color.toString(16);
     while (col.length < 6) col = `0${col}`;
     return `#${col}`;
+  }
+
+  /**
+   * Whether this role equals another role. It compares all properties, so for most operations
+   * it is advisable to just compare `role.id === role2.id` as it is much faster and is often
+   * what most users need.
+   * @param {Role} role The role to compare to
+   * @returns {boolean}
+   */
+  equals(role) {
+    return role &&
+      this.id === role.id &&
+      this.name === role.name &&
+      this.color === role.color &&
+      this.hoist === role.hoist &&
+      this.position === role.position &&
+      this.permissions === role.permissions &&
+      this.managed === role.managed;
+  }
+
+  /**
+   * When concatenated with a string, this automatically concatenates the Role mention rather than the Role object.
+   * @returns {string}
+   */
+  toString() {
+    return `<@&${this.id}>`;
   }
 }
 

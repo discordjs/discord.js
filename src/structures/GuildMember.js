@@ -286,17 +286,10 @@ class GuildMember {
     return this.client.rest.methods.banGuildMember(this.guild, this, deleteDays);
   }
 
-  sendMessage() {
-    return;
-  }
-
-  sendTTSMessage() {
-    return;
-  }
-
-  sendFile() {
-    return;
-  }
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  sendMessage() { return; }
+  sendTTSMessage() { return; }
+  sendFile() { return; }
 }
 
 TextBasedChannel.applyToClass(GuildMember);

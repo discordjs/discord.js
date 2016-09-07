@@ -221,36 +221,6 @@ class Message {
   }
 
   /**
-   * Used mainly internally. Whether two messages are identical in properties. If you want to compare messages
-   * without checking all the properties, use `message.id === message2.id`, which is much more efficient. This
-   * method allows you to see if there are differences in content, embeds, attachments, nonce and tts properties.
-   * @param {Message} message The message to compare it to
-   * @param {Object} rawData Raw data passed through the WebSocket about this message
-   * @returns {boolean}
-   */
-  equals(message, rawData) {
-    if (!message) return false;
-    const embedUpdate = !message.author && !message.attachments;
-    if (embedUpdate) return this.id === message.id && this.embeds.length === message.embeds.length;
-
-    let equal = this.id === message.id &&
-        this.author.id === message.author.id &&
-        this.content === message.content &&
-        this.tts === message.tts &&
-        this.nonce === message.nonce &&
-        this.embeds.length === message.embeds.length &&
-        this.attachments.length === message.attachments.length;
-
-    if (equal && rawData) {
-      equal = this.mentions.everyone === message.mentions.everyone &&
-        this._timestamp === new Date(rawData.timestamp).getTime() &&
-        this._editedTimestamp === new Date(rawData.edited_timestamp).getTime();
-    }
-
-    return equal;
-  }
-
-  /**
    * Deletes the message
    * @param {number} [timeout=0] How long to wait to delete the message in milliseconds
    * @returns {Promise<Message>}
@@ -326,6 +296,36 @@ class Message {
    */
   unpin() {
     return this.client.rest.methods.unpinMessage(this);
+  }
+
+  /**
+   * Used mainly internally. Whether two messages are identical in properties. If you want to compare messages
+   * without checking all the properties, use `message.id === message2.id`, which is much more efficient. This
+   * method allows you to see if there are differences in content, embeds, attachments, nonce and tts properties.
+   * @param {Message} message The message to compare it to
+   * @param {Object} rawData Raw data passed through the WebSocket about this message
+   * @returns {boolean}
+   */
+  equals(message, rawData) {
+    if (!message) return false;
+    const embedUpdate = !message.author && !message.attachments;
+    if (embedUpdate) return this.id === message.id && this.embeds.length === message.embeds.length;
+
+    let equal = this.id === message.id &&
+        this.author.id === message.author.id &&
+        this.content === message.content &&
+        this.tts === message.tts &&
+        this.nonce === message.nonce &&
+        this.embeds.length === message.embeds.length &&
+        this.attachments.length === message.attachments.length;
+
+    if (equal && rawData) {
+      equal = this.mentions.everyone === message.mentions.everyone &&
+        this._timestamp === new Date(rawData.timestamp).getTime() &&
+        this._editedTimestamp === new Date(rawData.edited_timestamp).getTime();
+    }
+
+    return equal;
   }
 }
 
