@@ -267,7 +267,7 @@ class Message {
 
   /**
    * Edit the content of a message
-   * @param {string} content The new content for the message
+   * @param {StringResolvable} content The new content for the message
    * @returns {Promise<Message>}
    * @example
    * // update the content of a message
@@ -281,7 +281,7 @@ class Message {
 
   /**
    * Reply to a message
-   * @param {string} content The content for the message
+   * @param {StringResolvable} content The content for the message
    * @param {MessageOptions} [options = {}] The options to provide
    * @returns {Promise<Message>}
    * @example
