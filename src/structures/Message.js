@@ -180,8 +180,8 @@ class Message {
 
       return input;
     })
-    .replace('@everyone', '@\u200Beveryone')
-    .replace('@here', '@\u200Bhere');
+    .replace(/@everyone/g, '@\u200Beveryone')
+    .replace(/@here/g, '@\u200Bhere');
   }
 
   patch(data) { // eslint-disable-line complexity
