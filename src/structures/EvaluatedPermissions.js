@@ -10,6 +10,7 @@ class EvaluatedPermissions {
      * @type {GuildMember}
      */
     this.member = member;
+
     /**
      * A number representing the packed permissions.
      * @private

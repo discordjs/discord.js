@@ -8,20 +8,23 @@ class PermissionOverwrites {
      * @type {GuildChannel}
      */
     this.channel = guildChannel;
+
     if (data) this.setup(data);
   }
 
   setup(data) {
     /**
-     * The type of this overwrite
-     * @type {string}
-     */
-    this.type = data.type;
-    /**
      * The ID of this overwrite, either a User ID or a Role ID
      * @type {string}
      */
     this.id = data.id;
+
+    /**
+     * The type of this overwrite
+     * @type {string}
+     */
+    this.type = data.type;
+
     this.denyData = data.deny;
     this.allowData = data.allow;
   }

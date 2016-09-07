@@ -13,64 +13,76 @@ class GuildMember {
      * @type {Client}
      */
     this.client = guild.client;
+    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+
     /**
      * The guild that this member is part of
      * @type {Guild}
      */
     this.guild = guild;
+
     /**
      * The user that this guild member instance Represents
      * @type {User}
      */
     this.user = {};
+
     this._roles = [];
     if (data) this.setup(data);
   }
 
   setup(data) {
-    this.user = data.user;
     /**
      * Whether this member is deafened server-wide
      * @type {boolean}
      */
     this.serverDeaf = data.deaf;
+
     /**
      * Whether this member is muted server-wide
      * @type {boolean}
      */
     this.serverMute = data.mute;
+
     /**
      * Whether this member is self-muted
      * @type {boolean}
      */
     this.selfMute = data.self_mute;
+
     /**
      * Whether this member is self-deafened
      * @type {boolean}
      */
     this.selfDeaf = data.self_deaf;
+
     /**
      * The voice session ID of this member, if any
      * @type {?string}
      */
     this.voiceSessionID = data.session_id;
+
     /**
      * The voice channel ID of this member, if any
      * @type {?string}
      */
     this.voiceChannelID = data.channel_id;
-    this._joinDate = new Date(data.joined_at).getTime();
+
     /**
      * Whether this meember is speaking
      * @type {?boolean}
      */
     this.speaking = this.speaking;
+
     /**
      * The nickname of this Guild Member, if they have one
      * @type {?string}
      */
     this.nickname = data.nick;
+
+    this.user = data.user;
     this._roles = data.roles;
+    this._joinDate = new Date(data.joined_at).getTime();
   }
 
   /**
@@ -274,17 +286,10 @@ class GuildMember {
     return this.client.rest.methods.banGuildMember(this.guild, this, deleteDays);
   }
 
-  sendMessage() {
-    return;
-  }
-
-  sendTTSMessage() {
-    return;
-  }
-
-  sendFile() {
-    return;
-  }
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  sendMessage() { return; }
+  sendTTSMessage() { return; }
+  sendFile() { return; }
 }
 
 TextBasedChannel.applyToClass(GuildMember);

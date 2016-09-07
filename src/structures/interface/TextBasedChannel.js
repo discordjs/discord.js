@@ -14,18 +14,12 @@ class TextBasedChannel {
      * @type {Collection<string, Message>}
      */
     this.messages = new Collection();
-  }
 
-  /**
-   * Bulk delete a given Collection or Array of messages in one go. Returns the deleted messages after.
-   * @param {Collection<string, Message>|Message[]} messages The messages to delete
-   * @returns {Collection<string, Message>}
-   */
-  bulkDelete(messages) {
-    if (messages instanceof Collection) messages = messages.array();
-    if (!(messages instanceof Array)) return Promise.reject(new TypeError('messages must be an array or collection'));
-    const messageIDs = messages.map(m => m.id);
-    return this.client.rest.methods.bulkDeleteMessages(this, messageIDs);
+    /**
+     * The ID of the last message in the channel, if one was sent.
+     * @type {?string}
+     */
+    this.lastMessageID = null;
   }
 
   /**
@@ -97,6 +91,28 @@ class TextBasedChannel {
   }
 
   /**
+   * Gets a single message from this channel, regardless of it being cached or not.
+   * @param {string} messageID The ID of the message to get
+   * @returns {Promise<Message>}
+   * @example
+   * // get message
+   * channel.fetchMessage('99539446449315840')
+   *   .then(message => console.log(message.content))
+   *   .catch(console.error);
+   */
+  fetchMessage(messageID) {
+    return new Promise((resolve, reject) => {
+      this.client.rest.methods.getChannelMessage(this, messageID).then(data => {
+        let msg = data;
+        if (!(msg instanceof Message)) msg = new Message(this, data, this.client);
+
+        this._cacheMessage(msg);
+        resolve(msg);
+      }).catch(reject);
+    });
+  }
+
+  /**
    * The parameters to pass in when requesting previous messages from a channel. `around`, `before` and
    * `after` are mutually exclusive. All the parameters are optional.
    * ```js
@@ -135,23 +151,19 @@ class TextBasedChannel {
   }
 
   /**
-   * Gets a single message from this channel, regardless of it being cached or not.
-   * @param {string} messageID The ID of the message to get
-   * @returns {Promise<Message>}
-   * @example
-   * // get message
-   * channel.fetchMessage('99539446449315840')
-   *   .then(message => console.log(message.content))
-   *   .catch(console.error);
+   * Fetches the pinned messages of this Channel and returns a Collection of them.
+   * @returns {Promise<Collection<string, Message>>}
    */
-  fetchMessage(messageID) {
+  fetchPinnedMessages() {
     return new Promise((resolve, reject) => {
-      this.client.rest.methods.getChannelMessage(this, messageID).then(data => {
-        let msg = data;
-        if (!(msg instanceof Message)) msg = new Message(this, data, this.client);
-
-        this._cacheMessage(msg);
-        resolve(msg);
+      this.client.rest.methods.getChannelPinnedMessages(this).then(data => {
+        const messages = new Collection();
+        for (const message of data) {
+          const msg = new Message(this, message, this.client);
+          messages.set(message.id, msg);
+          this._cacheMessage(msg);
+        }
+        resolve(messages);
       }).catch(reject);
     });
   }
@@ -274,6 +286,18 @@ class TextBasedChannel {
     });
   }
 
+  /**
+   * Bulk delete a given Collection or Array of messages in one go. Returns the deleted messages after.
+   * @param {Collection<string, Message>|Message[]} messages The messages to delete
+   * @returns {Collection<string, Message>}
+   */
+  bulkDelete(messages) {
+    if (messages instanceof Collection) messages = messages.array();
+    if (!(messages instanceof Array)) return Promise.reject(new TypeError('messages must be an array or collection'));
+    const messageIDs = messages.map(m => m.id);
+    return this.client.rest.methods.bulkDeleteMessages(this, messageIDs);
+  }
+
   _cacheMessage(message) {
     const maxSize = this.client.options.max_message_cache;
     if (maxSize === 0) return null;
@@ -281,24 +305,6 @@ class TextBasedChannel {
 
     this.messages.set(message.id, message);
     return message;
-  }
-
-  /**
-   * Fetches the pinned messages of this Channel and returns a Collection of them.
-   * @returns {Promise<Collection<string, Message>>}
-   */
-  fetchPinnedMessages() {
-    return new Promise((resolve, reject) => {
-      this.client.rest.methods.getChannelPinnedMessages(this).then(data => {
-        const messages = new Collection();
-        for (const message of data) {
-          const msg = new Message(this, message, this.client);
-          messages.set(message.id, msg);
-          this._cacheMessage(msg);
-        }
-        resolve(messages);
-      }).catch(reject);
-    });
   }
 }
 
@@ -338,33 +344,39 @@ class MessageCollector extends EventEmitter {
    */
   constructor(channel, filter, options = {}) {
     super();
+
     /**
      * The channel this collector is operating on
      * @type {Channel}
      */
     this.channel = channel;
+
     /**
      * A function used to filter messages that the collector collects.
      * @type {CollectorFilterFunction}
      */
     this.filter = filter;
+
     /**
      * Options for the collecor.
      * @type {CollectorOptions}
      */
     this.options = options;
+
     /**
      * Whether this collector has stopped collecting Messages.
      * @type {boolean}
      */
     this.ended = false;
-    this.listener = message => this.verify(message);
-    this.channel.client.on('message', this.listener);
+
     /**
      * A collection of collected messages, mapped by message ID.
      * @type {Collection<string, Message>}
      */
     this.collected = new Collection();
+
+    this.listener = message => this.verify(message);
+    this.channel.client.on('message', this.listener);
     if (options.time) this.channel.client.setTimeout(() => this.stop('time'), options.time);
   }
 

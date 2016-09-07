@@ -8,6 +8,7 @@ const Collection = require('../util/Collection');
 class VoiceChannel extends GuildChannel {
   constructor(guild, data) {
     super(guild, data);
+
     /**
      * The members in this Voice Channel.
      * @type {Collection<string, GuildMember>}
@@ -17,16 +18,19 @@ class VoiceChannel extends GuildChannel {
 
   setup(data) {
     super.setup(data);
+
     /**
      * The bitrate of this voice channel
      * @type {number}
      */
     this.bitrate = data.bitrate;
+
     /**
      * The maximum amount of users allowed in this channel - 0 means unlimited.
      * @type {number}
      */
     this.userLimit = data.user_limit;
+
     this.type = 'voice';
   }
 
