@@ -387,7 +387,7 @@ class RESTMethods {
       data.name = _data.name || role.name;
       data.position = _data.position || role.position;
       data.color = _data.color || role.color;
-      if (data.color.startsWith('#')) data.color = parseInt(data.color.replace('#', ''), 16);
+      if (typeof data.color === 'string' && data.color.startsWith('#')) data.color = parseInt(data.color.replace('#', ''), 16);
       data.hoist = typeof _data.hoist !== 'undefined' ? _data.hoist : role.hoist;
 
       if (_data.permissions) {
