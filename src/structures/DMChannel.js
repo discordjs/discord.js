@@ -25,6 +25,7 @@ class DMChannel extends Channel {
 
     this.type = 'dm';
     this.lastMessageID = data.last_message_id;
+    this._typing = new Map();
   }
 
   /**
