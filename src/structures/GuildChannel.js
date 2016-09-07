@@ -13,6 +13,7 @@ const arraysEqual = require('../util/ArraysEqual');
 class GuildChannel extends Channel {
   constructor(guild, data) {
     super(guild.client, data);
+
     /**
      * The guild the channel is in
      * @type {Guild}
@@ -22,17 +23,19 @@ class GuildChannel extends Channel {
 
   setup(data) {
     super.setup(data);
-    /**
-     * The position of the channel in the list.
-     * @type {number}
-     */
-    this.position = data.position;
+
     /**
      * The name of the Guild Channel
      * @type {string}
      */
     this.name = data.name;
-    this.ow = data.permission_overwrites;
+
+    /**
+     * The position of the channel in the list.
+     * @type {number}
+     */
+    this.position = data.position;
+
     /**
      * A map of permission overwrites in this channel for roles and users.
      * @type {Collection<string, PermissionOverwrites>}
@@ -53,11 +56,11 @@ class GuildChannel extends Channel {
    */
   equals(channel) {
     let equal = channel &&
+      this.id === channel.id &&
       this.type === channel.type &&
       this.topic === channel.topic &&
       this.position === channel.position &&
-      this.name === channel.name &&
-      this.id === channel.id;
+      this.name === channel.name;
 
     if (equal) {
       if (channel.permission_overwrites) {

@@ -6,16 +6,63 @@ const Constants = require('../util/Constants');
 class Role {
   constructor(guild, data) {
     /**
-     * The guild that the role belongs to
-     * @type {Guild}
-     */
-    this.guild = guild;
-    /**
      * The client that instantiated the role
      * @type {Client}
      */
     this.client = guild.client;
+    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+
+    /**
+     * The guild that the role belongs to
+     * @type {Guild}
+     */
+    this.guild = guild;
+
     if (data) this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The ID of the role (unique to the guild it is part of)
+     * @type {string}
+     */
+    this.id = data.id;
+
+    /**
+     * The name of the role
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * The base 10 color of the role
+     * @type {number}
+     */
+    this.color = data.color;
+
+    /**
+     * If true, users that are part of this role will appear in a separate category in the users list
+     * @type {boolean}
+     */
+    this.hoist = data.hoist;
+
+    /**
+     * The position of the role in the role manager
+     * @type {number}
+     */
+    this.position = data.position;
+
+    /**
+     * The evaluated permissions number
+     * @type {number}
+     */
+    this.permissions = data.permissions;
+
+    /**
+     * Whether or not the role is managed by an external service
+     * @type {boolean}
+     */
+    this.managed = data.managed;
   }
 
   equals(role) {
@@ -27,44 +74,6 @@ class Role {
       this.position === role.position &&
       this.permissions === role.permissions &&
       this.managed === role.managed;
-  }
-
-  setup(data) {
-    /**
-     * The ID of the role (unique to the guild it is part of)
-     * @type {string}
-     */
-    this.id = data.id;
-    /**
-     * The name of the role
-     * @type {string}
-     */
-    this.name = data.name;
-    /**
-     * The base 10 color of the role
-     * @type {number}
-     */
-    this.color = data.color;
-    /**
-     * If true, users that are part of this role will appear in a separate category in the users list
-     * @type {boolean}
-     */
-    this.hoist = data.hoist;
-    /**
-     * The position of the role in the role manager
-     * @type {number}
-     */
-    this.position = data.position;
-    /**
-     * The evaluated permissions number
-     * @type {number}
-     */
-    this.permissions = data.permissions;
-    /**
-     * Whether or not the role is managed by an external service
-     * @type {boolean}
-     */
-    this.managed = data.managed;
   }
 
   /**

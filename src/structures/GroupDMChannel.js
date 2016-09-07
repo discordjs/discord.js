@@ -36,24 +36,26 @@ class GroupDMChannel extends Channel {
     this.messages = new Collection();
   }
 
-  equals(other) {
-    const equal = other &&
-      this.id === other.id &&
-      this.name === other.name &&
-      this.icon === other.icon &&
-      this.owner.id === other.owner_id;
-
-    if (equal) {
-      const thisIDs = this.recipients.array().map(r => r.id);
-      const otherIDs = other.recipients.map(r => r.id);
-      return arraysEqual(thisIDs, otherIDs);
-    }
-
-    return equal;
-  }
-
   setup(data) {
     super.setup(data);
+
+    /**
+     * The name of this Group DM, can be null if one isn't set.
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * A hash of the Group DM icon.
+     * @type {string}
+     */
+    this.icon = data.icon;
+
+    /**
+     * The owner of this Group DM.
+     * @type {User}
+     */
+    this.owner = this.client.users.get(data.owner_id);
 
     if (!this.recipients) {
       /**
@@ -70,32 +72,25 @@ class GroupDMChannel extends Channel {
       }
     }
 
-    /**
-     * The name of this Group DM, can be null if one isn't set.
-     * @type {string}
-     */
-    this.name = data.name;
-    /**
-     * The ID of this Group DM Channel.
-     * @type {string}
-     */
     this.id = data.id;
-    /**
-     * A hash of the Group DM icon.
-     * @type {string}
-     */
-    this.icon = data.icon;
-    /**
-     * The ID of the last message in the channel, if one was sent.
-     * @type {?string}
-     */
-    this.lastMessageID = data.last_message_id;
-    /**
-     * The owner of this Group DM.
-     * @type {User}
-     */
-    this.owner = this.client.users.get(data.owner_id);
     this.type = 'group';
+    this.lastMessageID = data.last_message_id;
+  }
+
+  equals(other) {
+    const equal = other &&
+      this.id === other.id &&
+      this.name === other.name &&
+      this.icon === other.icon &&
+      this.owner.id === other.owner_id;
+
+    if (equal) {
+      const thisIDs = this.recipients.array().map(r => r.id);
+      const otherIDs = other.recipients.map(r => r.id);
+      return arraysEqual(thisIDs, otherIDs);
+    }
+
+    return equal;
   }
 
   sendMessage() {
