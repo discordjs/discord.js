@@ -67,9 +67,7 @@ class Guild {
   }
 
   _addMember(guildUser, noEvent) {
-    if (!(guildUser.user instanceof User)) {
-      guildUser.user = this.client.dataManager.newUser(guildUser.user);
-    }
+    if (!(guildUser.user instanceof User)) guildUser.user = this.client.dataManager.newUser(guildUser.user);
 
     guildUser.joined_at = guildUser.joined_at || 0;
     const member = new GuildMember(this, guildUser);
@@ -577,6 +575,18 @@ class Guild {
   }
 
   /**
+   * Fetch a single guild member from a user.
+   * @param {UserResolvable} user The user to fetch the member for
+   * @returns {Promise<GuildMember>}
+   */
+  fetchMember(user) {
+    user = this.client.resolver.resolveUser(user);
+    if (!user) return Promise.reject(new Error('user is not cached'));
+    if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
+    return this.client.rest.methods.getGuildMember(this, user);
+  }
+
+  /**
    * Fetches all the members in the Guild, even if they are offline. If the Guild has less than 250 members,
    * this should not be necessary.
    * @param {string} [query=''] An optional query to provide when fetching members
@@ -584,9 +594,7 @@ class Guild {
    */
   fetchMembers(query = '') {
     return new Promise((resolve, reject) => {
-      if (this._fetchWaiter) {
-        throw new Error('already fetching guild members');
-      }
+      if (this._fetchWaiter) throw new Error('already fetching guild members');
       if (this.memberCount === this.members.size) {
         resolve(this);
         return;

@@ -306,6 +306,14 @@ class RESTMethods {
     });
   }
 
+  getGuildMember(guild, user) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.guildMember(guild.id, user.id), true).then((data) => {
+        resolve(this.rest.client.actions.GuildMemberGet.handle(guild, data).member);
+      }).catch(reject);
+    });
+  }
+
   updateGuildMember(member, data) {
     return new Promise((resolve, reject) => {
       if (data.channel) data.channel_id = this.rest.client.resolver.resolveChannel(data.channel).id;
