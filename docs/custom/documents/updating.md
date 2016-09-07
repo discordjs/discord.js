@@ -1,11 +1,8 @@
-# About Version 9.0
-The 9.0 rewrite takes a much more OOP approach than previous versions, which allows code to be much more manageable.
+# About Version 9
+The version 9 (v9) rewrite takes a much more object-oriented approach than previous versions,
+which allows your code to be much more readable and manageable.
 It's been rebuilt from the ground up and should be much more stable, fixing caching issues that affected
 older versions. It also has support for newer Discord Features, such as emojis.
-
-## Guides
-* [York's v9 upgrade guide](https://yorkaargh.wordpress.com/2016/09/03/updating-discord-js-bots/)
-* [LuckyEvie's general bot guide (being updated)](https://eslachance.gitbooks.io/discord-js-bot-guide/content/)
 
 ## Upgrading your code
 Version 9, while containing a sizable number of breaking changes, does not require much change in your code's logic -
@@ -27,7 +24,7 @@ A couple more important details:
 * `Client.servers.length` ==> `client.guilds.size` (all instances of `server` are now `guild`)
 
 ## Callbacks
-Version 9.0 eschews callbacks in favour of Promises. This means all code relying on callbacks must be changed.  
+Version 9 eschews callbacks in favour of Promises. This means all code relying on callbacks must be changed.  
 For example, the following code:
 
 ```js
