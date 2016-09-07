@@ -1,3 +1,5 @@
+'use strict';
+
 const User = require('./User');
 const Channel = require('./Channel');
 const TextBasedChannel = require('./interface/TextBasedChannel');

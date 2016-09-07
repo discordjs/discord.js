@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = function merge(def, given) {
   if (!given) return def;
   for (const key in def) {

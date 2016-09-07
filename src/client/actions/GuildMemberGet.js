@@ -1,3 +1,5 @@
+'use strict';
+
 const Action = require('./Action');
 
 class GuildMemberGetAction extends Action {

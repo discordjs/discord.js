@@ -1,3 +1,5 @@
+'use strict';
+
 const ConverterEngine = require('./ConverterEngine');
 const ChildProcess = require('child_process');
 

@@ -1,3 +1,5 @@
+'use strict';
+
 const Constants = require('../util/Constants');
 
 /**
@@ -38,7 +40,7 @@ class EvaluatedPermissions {
    * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permission
    * @returns {boolean}
    */
-  hasPermission(permission, explicit = false) {
+  hasPermission(permission, explicit) {
     permission = this.member.client.resolver.resolvePermission(permission);
     if (!explicit && (this.permissions & Constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
     return (this.permissions & permission) > 0;

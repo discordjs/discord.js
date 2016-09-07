@@ -1,3 +1,5 @@
+'use strict';
+
 const EventEmitter = require('events').EventEmitter;
 const mergeDefault = require('../util/MergeDefault');
 const Constants = require('../util/Constants');
@@ -150,18 +152,17 @@ class Client extends EventEmitter {
     });
   }
 
-  setInterval(...params) {
-    const interval = setInterval(...params);
+  setInterval() {
+    const interval = setInterval.apply(this, arguments);
     this._intervals.push(interval);
     return interval;
   }
 
-  setTimeout(...params) {
-    const restParams = params.slice(1);
+  setTimeout() {
     const timeout = setTimeout(() => {
-      this._timeouts.splice(this._timeouts.indexOf(params[0]), 1);
-      params[0]();
-    }, ...restParams);
+      this._timeouts.splice(this._timeouts.indexOf(arguments[0]), 1);
+      arguments[0]();
+    }, arguments[1]);
     this._timeouts.push(timeout);
     return timeout;
   }
@@ -171,7 +172,8 @@ class Client extends EventEmitter {
    * if you wish to force a sync of Guild data, you can use this. Only applicable to user accounts.
    * @param {Guild[]} [guilds=this.guilds.array()] An array of guilds to sync
    */
-  syncGuilds(guilds = this.guilds.array()) {
+  syncGuilds(guilds) {
+    guilds = guilds || this.guilds.array();
     if (!this.user.bot) {
       this.ws.send({
         op: 12,

@@ -1,3 +1,5 @@
+'use strict';
+
 const VoiceConnectionWebSocket = require('./VoiceConnectionWebSocket');
 const VoiceConnectionUDPClient = require('./VoiceConnectionUDPClient');
 const VoiceReceiver = require('./receiver/VoiceReceiver');
@@ -88,7 +90,7 @@ class VoiceConnection extends EventEmitter {
    * Disconnects the Client from the Voice Channel
    * @param {string} [reason='user requested'] The reason of the disconnection
    */
-  disconnect(reason = 'user requested') {
+  disconnect(reason) {
     this.manager.client.ws.send({
       op: Constants.OPCodes.VOICE_STATE_UPDATE,
       d: {
@@ -98,7 +100,7 @@ class VoiceConnection extends EventEmitter {
         self_deaf: false,
       },
     });
-    this._shutdown(reason);
+    this._shutdown(reason || 'user requested');
   }
 
   _onClose(e) {
@@ -145,7 +147,7 @@ class VoiceConnection extends EventEmitter {
     });
     this.once('ready', () => {
       setImmediate(() => {
-        for (const item of this.queue) this.emit(...item);
+        for (const item of this.queue) this.emit.apply(null, item);
         this.queue = [];
       });
     });

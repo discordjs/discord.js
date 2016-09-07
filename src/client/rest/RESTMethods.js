@@ -1,3 +1,5 @@
+'use strict';
+
 const Constants = require('../../util/Constants');
 const Collection = require('../../util/Collection');
 
@@ -278,9 +280,10 @@ class RESTMethods {
     });
   }
 
-  getChannelMessages(channel, payload = {}) {
+  getChannelMessages(channel, payload) {
     return new Promise((resolve, reject) => {
       const params = [];
+      payload = payload || {};
       if (payload.limit) params.push(`limit=${payload.limit}`);
       if (payload.around) params.push(`around=${payload.around}`);
       else if (payload.before) params.push(`before=${payload.before}`);

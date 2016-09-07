@@ -1,3 +1,5 @@
+'use strict';
+
 const User = require('./User');
 const Role = require('./Role');
 const Emoji = require('./Emoji');
@@ -377,8 +379,8 @@ class Guild {
    * // ban a user
    * guild.ban('123123123123');
    */
-  ban(user, deleteDays = 0) {
-    return this.client.rest.methods.banGuildMember(this, user, deleteDays);
+  ban(user, deleteDays) {
+    return this.client.rest.methods.banGuildMember(this, user, deleteDays || 0);
   }
 
   /**
@@ -429,7 +431,7 @@ class Guild {
    * @param {string} [query=''] An optional query to provide when fetching members
    * @returns {Promise<Guild>}
    */
-  fetchMembers(query = '') {
+  fetchMembers(query) {
     return new Promise((resolve, reject) => {
       if (this._fetchWaiter) throw new Error('already fetching guild members');
       if (this.memberCount === this.members.size) {
@@ -441,7 +443,7 @@ class Guild {
         op: Constants.OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
           guild_id: this.id,
-          query,
+          query: query || '',
           limit: 0,
         },
       });

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Options that can be passed to a client:
  * ```js

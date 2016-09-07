@@ -1,3 +1,5 @@
+'use strict';
+
 const Action = require('./Action');
 const Message = require('../../structures/Message');
 

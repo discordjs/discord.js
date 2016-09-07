@@ -1,3 +1,5 @@
+'use strict';
+
 const Collection = require('../../util/Collection');
 const mergeDefault = require('../../util/MergeDefault');
 const Constants = require('../../util/Constants');
@@ -35,8 +37,8 @@ class ClientVoiceManager {
     const pendingRequest = this.pending.get(guildID);
     if (!pendingRequest) throw new Error('Guild not pending');
     if (pendingRequest.token && pendingRequest.sessionID && pendingRequest.endpoint) {
-      const { channel, token, sessionID, endpoint, resolve, reject } = pendingRequest;
-      const voiceConnection = new VoiceConnection(this, channel, token, sessionID, endpoint, resolve, reject);
+      const voiceConnection = new VoiceConnection(this, pendingRequest.channel, pendingRequest.token,
+        pendingRequest.sessionID, pendingRequest.endpoint, pendingRequest.resolve, pendingRequest.reject);
       this.pending.delete(guildID);
       this.connections.set(guildID, voiceConnection);
       voiceConnection.once('disconnected', () => {
@@ -77,7 +79,8 @@ class ClientVoiceManager {
    * @param {VoiceChannel} channel The channel to join
    * @param {Object} [options] The options to provide
    */
-  _sendWSJoin(channel, options = {}) {
+  _sendWSJoin(channel, options) {
+    options = options || {};
     options = mergeDefault({
       guild_id: channel.guild.id,
       channel_id: channel.id,

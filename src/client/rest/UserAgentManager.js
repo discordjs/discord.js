@@ -1,3 +1,5 @@
+'use strict';
+
 const Constants = require('../../util/Constants');
 
 class UserAgentManager {

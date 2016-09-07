@@ -1,3 +1,5 @@
+'use strict';
+
 const TextBasedChannel = require('./interface/TextBasedChannel');
 const Role = require('./Role');
 const Collection = require('../util/Collection');
@@ -282,8 +284,8 @@ class GuildMember {
    * // ban a guild member
    * guildMember.ban(7);
    */
-  ban(deleteDays = 0) {
-    return this.client.rest.methods.banGuildMember(this.guild, this, deleteDays);
+  ban(deleteDays) {
+    return this.client.rest.methods.banGuildMember(this.guild, this, deleteDays || 0);
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel

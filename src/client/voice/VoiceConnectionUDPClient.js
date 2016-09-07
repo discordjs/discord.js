@@ -1,3 +1,5 @@
+'use strict';
+
 const udp = require('dgram');
 const dns = require('dns');
 const Constants = require('../../util/Constants');

@@ -1,3 +1,5 @@
+'use strict';
+
 const GuildChannel = require('./GuildChannel');
 const TextBasedChannel = require('./interface/TextBasedChannel');
 const Collection = require('../util/Collection');

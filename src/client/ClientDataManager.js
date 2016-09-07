@@ -1,3 +1,5 @@
+'use strict';
+
 const Constants = require('../util/Constants');
 const cloneObject = require('../util/CloneObject');
 const Guild = require('../structures/Guild');

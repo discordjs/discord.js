@@ -1,3 +1,5 @@
+'use strict';
+
 const BasePlayer = require('./BasePlayer');
 const fs = require('fs');
 

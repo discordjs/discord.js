@@ -1,3 +1,5 @@
+'use strict';
+
 class BaseOpus {
   constructor(player) {
     this.player = player;

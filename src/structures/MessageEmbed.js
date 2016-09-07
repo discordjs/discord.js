@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Represents an embed in an image - e.g. preview of image
  */
