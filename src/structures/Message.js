@@ -179,7 +179,9 @@ class Message {
       }
 
       return input;
-    });
+    })
+    .replace('@everyone', '@\u200Beveryone')
+    .replace('@here', '@\u200Bhere');
   }
 
   patch(data) { // eslint-disable-line complexity
