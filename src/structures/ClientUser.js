@@ -7,11 +7,13 @@ const User = require('./User');
 class ClientUser extends User {
   setup(data) {
     super.setup(data);
+
     /**
      * Whether or not this account has been verified
      * @type {boolean}
      */
     this.verified = data.verified;
+
     /**
      * The email of this account
      * @type {string}

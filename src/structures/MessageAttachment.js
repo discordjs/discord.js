@@ -8,11 +8,14 @@ class MessageAttachment {
      * @type {Client}
      */
     this.client = message.client;
+    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+
     /**
      * The message this attachment is part of.
      * @type {Message}
      */
     this.message = message;
+
     this.setup(data);
   }
 
@@ -22,31 +25,37 @@ class MessageAttachment {
      * @type {string}
      */
     this.id = data.id;
+
     /**
      * The file name of this attachment
      * @type {string}
      */
     this.filename = data.filename;
+
     /**
      * The size of this attachment in bytes
      * @type {number}
      */
     this.filesize = data.size;
+
     /**
      * The URL to this attachment
      * @type {string}
      */
     this.url = data.url;
+
     /**
      * The Proxy URL to this attachment
      * @type {string}
      */
     this.proxyURL = data.url;
+
     /**
      * The height of this attachment (if an image)
      * @type {?number}
      */
     this.height = data.height;
+
     /**
      * The width of this attachment (if an image)
      * @type {?number}

@@ -7,36 +7,47 @@ const Constants = require('../util/Constants');
  */
 class User {
   constructor(client, data) {
+    /**
+     * The Client that created the instance of the the User.
+     * @type {Client}
+     */
     this.client = client;
+    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+
     if (data) this.setup(data);
   }
 
   setup(data) {
     /**
-     * The username of the User
-     * @type {string}
-     */
-    this.username = data.username;
-    /**
      * The ID of the User
      * @type {string}
      */
     this.id = data.id;
+
+    /**
+     * The username of the User
+     * @type {string}
+     */
+    this.username = data.username;
+
     /**
      * A discriminator based on username for the User
      * @type {string}
      */
     this.discriminator = data.discriminator;
+
     /**
      * The ID of the user's avatar
      * @type {string}
      */
     this.avatar = data.avatar;
+
     /**
      * Whether or not the User is a Bot.
      * @type {boolean}
      */
     this.bot = Boolean(data.bot);
+
     /**
      * The status of the user:
      *
@@ -46,6 +57,7 @@ class User {
      * @type {string}
      */
     this.status = data.status || this.status || 'offline';
+
     /**
      * The game that the user is playing, `null` if they aren't playing a game.
      * @type {string}
@@ -60,17 +72,6 @@ class User {
    */
   get creationDate() {
     return new Date((this.id / 4194304) + 1420070400000);
-  }
-
-  /**
-   * When concatenated with a string, this automatically concatenates the User's mention instead of the User object.
-   * @returns {string}
-   * @example
-   * // logs: Hello from <@123456789>!
-   * console.log(`Hello from ${user}!`);
-   */
-  toString() {
-    return `<@${this.id}>`;
   }
 
   /**
@@ -99,8 +100,8 @@ class User {
    */
   equals(user) {
     let equal = user &&
-      this.username === user.username &&
       this.id === user.id &&
+      this.username === user.username &&
       this.discriminator === user.discriminator &&
       this.avatar === user.avatar &&
       this.bot === Boolean(user.bot);
@@ -113,17 +114,21 @@ class User {
     return equal;
   }
 
-  sendMessage() {
-    return;
+  /**
+   * When concatenated with a string, this automatically concatenates the User's mention instead of the User object.
+   * @returns {string}
+   * @example
+   * // logs: Hello from <@123456789>!
+   * console.log(`Hello from ${user}!`);
+   */
+  toString() {
+    return `<@${this.id}>`;
   }
 
-  sendTTSMessage() {
-    return;
-  }
-
-  sendFile() {
-    return;
-  }
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  sendMessage() { return; }
+  sendTTSMessage() { return; }
+  sendFile() { return; }
 }
 
 TextBasedChannel.applyToClass(User);

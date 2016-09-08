@@ -11,7 +11,7 @@ class GuildMembersChunkHandler extends AbstractHandler {
     const members = [];
 
     if (guild) {
-      for (const member of data.members) members.push(guild._addMember(member, true));
+      for (const member of data.members) members.push(guild._addMember(member, false));
     }
 
     guild._checkChunks();

@@ -104,6 +104,8 @@ class RESTMethods {
 
   updateMessage(message, content) {
     return new Promise((resolve, reject) => {
+      content = this.rest.client.resolver.resolveString(content);
+
       this.rest.makeRequest('patch', Constants.Endpoints.channelMessage(message.channel.id, message.id), true, {
         content,
       }).then(data => {
@@ -304,6 +306,14 @@ class RESTMethods {
     });
   }
 
+  getGuildMember(guild, user) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.guildMember(guild.id, user.id), true).then((data) => {
+        resolve(this.rest.client.actions.GuildMemberGet.handle(guild, data).member);
+      }).catch(reject);
+    });
+  }
+
   updateGuildMember(member, data) {
     return new Promise((resolve, reject) => {
       if (data.channel) data.channel_id = this.rest.client.resolver.resolveChannel(data.channel).id;
@@ -377,7 +387,9 @@ class RESTMethods {
       data.name = _data.name || role.name;
       data.position = _data.position || role.position;
       data.color = _data.color || role.color;
-      if (data.color.startsWith('#')) data.color = parseInt(data.color.replace('#', ''), 16);
+      if (typeof data.color === 'string' && data.color.startsWith('#')) {
+        data.color = parseInt(data.color.replace('#', ''), 16);
+      }
       data.hoist = typeof _data.hoist !== 'undefined' ? _data.hoist : role.hoist;
 
       if (_data.permissions) {

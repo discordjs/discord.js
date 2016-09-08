@@ -15,12 +15,9 @@
 discord.js is a powerful node.js module that allows you to interact with the [Discord API](https://discordapp.com/developers/docs/intro).
 
 ## Installation
-**Requires node 6.0.0 and above**
-```bash
-npm install --save discord.js
-# or, if you don't want voice support:
-npm install --save --no-optional discord.js
-```
+**Node.js 6.0.0 or newer is required.**  
+With voice support: `npm install --save discord.js --production`  
+Without voice support: `npm install --save discord.js --production --no-optional`
 
 By default, discord.js uses [opusscript](https://www.npmjs.com/package/opusscript) when playing audio over voice connections.
 If you're looking to play over multiple voice connections, it might be better to install [node-opus](https://www.npmjs.com/package/node-opus).
@@ -46,6 +43,7 @@ client.login('your token');
 
 ## Links
 * [Website](http://hydrabolt.github.io/discord.js/)
+* [Discord Server](https://discord.gg/bRCvFy9)
 * [Documentation](http://hydrabolt.github.io/discord.js/#!/docs/tag/master)
 * [Legacy Documentation](http://discordjs.readthedocs.io/en/8.1.0/docs_client.html)
 * [GitHub](https://github.com/hydrabolt/discord.js)

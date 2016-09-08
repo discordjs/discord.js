@@ -32,28 +32,36 @@ class Invite {
      * @type {Client}
      */
     this.client = client;
+    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+
     this.setup(data);
   }
 
   setup(data) {
     /**
-     * The maximum age of the invite, in seconds
-     * @type {?number}
+     * The Guild the invite is for. If this Guild is already known, this will be a Guild object. If the Guild is
+     * unknown, this will be a Partial Guild.
+     * @type {Guild|PartialGuild}
      */
-    this.maxAge = data.max_age;
+    this.guild = this.client.guilds.get(data.guild.id) || new PartialGuild(this.client, data.guild);
 
     /**
      * The code for this invite
      * @type {string}
      */
     this.code = data.code;
-    this._creationDate = new Date(data.created_at).getTime();
 
     /**
      * Whether or not this invite is temporary
      * @type {boolean}
      */
     this.temporary = data.temporary;
+
+    /**
+     * The maximum age of the invite, in seconds
+     * @type {?number}
+     */
+    this.maxAge = data.max_age;
 
     /**
      * How many times this invite has been used
@@ -74,18 +82,21 @@ class Invite {
     this.inviter = this.client.dataManager.newUser(data.inviter);
 
     /**
-     * The Guild the invite is for. If this Guild is already known, this will be a Guild object. If the Guild is
-     * unknown, this will be a Partial Guild.
-     * @type {Guild|PartialGuild}
-     */
-    this.guild = this.client.guilds.get(data.guild.id) || new PartialGuild(this.client, data.guild);
-
-    /**
      * The Channel the invite is for. If this Channel is already known, this will be a GuildChannel object.
      * If the Channel is unknown, this will be a Partial Guild Channel.
      * @type {GuildChannel|PartialGuildChannel}
      */
-    this.channels = this.client.channels.get(data.channel.id) || new PartialGuildChannel(this.client, data.channel);
+    this.channel = this.client.channels.get(data.channel.id) || new PartialGuildChannel(this.client, data.channel);
+
+    this._createdAt = new Date(data.created_at).getTime();
+  }
+
+  /**
+   * The creation date of the invite
+   * @type {Date}
+   */
+  get createdAt() {
+    return new Date(this._createdAt);
   }
 
   /**
@@ -93,7 +104,7 @@ class Invite {
    * @type {Date}
    */
   get creationDate() {
-    return new Date(this._creationDate);
+    return new Date(this._createdAt);
   }
 
   /**
