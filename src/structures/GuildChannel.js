@@ -56,52 +56,46 @@ class GuildChannel extends Channel {
    */
   permissionsFor(member) {
     member = this.client.resolver.resolveGuildMember(this.guild, member);
-    if (member) {
-      if (this.guild.owner.id === member.id) return new EvaluatedPermissions(member, Constants.ALL_PERMISSIONS);
+    if (!member) return null;
+    if (this.guild.owner.id === member.id) return new EvaluatedPermissions(member, Constants.ALL_PERMISSIONS);
 
-      const roles = member.roles;
-      let permissions = 0;
-      const overwrites = this.overwritesFor(member, true);
+    let permissions = 0;
 
-      for (const role of roles.values()) permissions |= role.permissions;
-      for (const overwrite of overwrites.role.concat(overwrites.member)) {
-        permissions &= ~overwrite.denyData;
-        permissions |= overwrite.allowData;
-      }
+    const roles = member.roles;
+    for (const role of roles.values()) permissions |= role.permissions;
 
-      const admin = Boolean(permissions & (Constants.PermissionFlags.ADMINISTRATOR));
-      if (admin) permissions = Constants.ALL_PERMISSIONS;
-
-      return new EvaluatedPermissions(member, permissions);
+    const overwrites = this.overwritesFor(member, true, roles);
+    for (const overwrite of overwrites.role.concat(overwrites.member)) {
+      permissions &= ~overwrite.denyData;
+      permissions |= overwrite.allowData;
     }
 
-    return null;
+    const admin = Boolean(permissions & (Constants.PermissionFlags.ADMINISTRATOR));
+    if (admin) permissions = Constants.ALL_PERMISSIONS;
+
+    return new EvaluatedPermissions(member, permissions);
   }
 
-  overwritesFor(member, verified) {
-    // for speed
+  overwritesFor(member, verified = false, roles = null) {
     if (!verified) member = this.client.resolver.resolveGuildMember(this.guild, member);
-    if (member) {
-      const memberRoles = member._roles;
+    if (!member) return [];
 
-      const roleOverwrites = [];
-      const memberOverwrites = [];
+    roles = roles || member.roles;
+    const roleOverwrites = [];
+    const memberOverwrites = [];
 
-      for (const overwrite of this.permissionOverwrites.values()) {
-        if (overwrite.id === member.id) {
-          memberOverwrites.push(overwrite);
-        } else if (memberRoles.indexOf(overwrite.id) > -1) {
-          roleOverwrites.push(overwrite);
-        }
+    for (const overwrite of this.permissionOverwrites.values()) {
+      if (overwrite.id === member.id) {
+        memberOverwrites.push(overwrite);
+      } else if (roles.has(overwrite.id)) {
+        roleOverwrites.push(overwrite);
       }
-
-      return {
-        role: roleOverwrites,
-        member: memberOverwrites,
-      };
     }
 
-    return [];
+    return {
+      role: roleOverwrites,
+      member: memberOverwrites,
+    };
   }
 
   /**
