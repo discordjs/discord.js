@@ -212,8 +212,8 @@ class VoiceConnection extends EventEmitter {
    *  })
    *  .catch(console.log);
    */
-  playFile(file, {seek = 0, volume = 1}) {
-    const options = {seek: seek, volume: volume}
+  playFile(file, { seek = 0, volume = 1 }) {
+    const options = { seek: seek, volume: volume };
     return this.player.playFile(file, options);
   }
 
@@ -231,8 +231,8 @@ class VoiceConnection extends EventEmitter {
    *  })
    *  .catch(console.log);
    */
-  playStream(stream, {seek = 0, volume = 1}) {
-    const options = {seek: seek, volume: volume}
+  playStream(stream, { seek = 0, volume = 1 }) {
+    const options = { seek: seek, volume: volume };
     return this.player.playStream(stream, options);
   }
 
@@ -241,8 +241,8 @@ class VoiceConnection extends EventEmitter {
    * @param {ReadableStream} stream The audio stream to play.
    * @returns {StreamDispatcher}
    */
-  playConvertedStream(stream, {seek = 0, volume = 1}) {
-    const options = {seek: seek, volume: volume}
+  playConvertedStream(stream, { seek = 0, volume = 1 }) {
+    const options = { seek: seek, volume: volume };
     this._shutdown();
     const dispatcher = this.player.playPCMStream(stream, options);
     return dispatcher;
