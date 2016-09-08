@@ -19,6 +19,9 @@ class GuildChannel extends Channel {
      * @type {Guild}
      */
     this.guild = guild;
+
+    // This is just here to hide it from the docs
+    this.type = null;
   }
 
   setup(data) {
