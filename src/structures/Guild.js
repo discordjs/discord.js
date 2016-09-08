@@ -426,6 +426,7 @@ class Guild {
    * @returns {Promise<GuildMember>}
    */
   fetchMember(user) {
+    if (this._fetchWaiter) return Promise.reject(new Error('already fetching guild members'));
     user = this.client.resolver.resolveUser(user);
     if (!user) return Promise.reject(new Error('user is not cached'));
     if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
@@ -576,7 +577,7 @@ class Guild {
     return this.name;
   }
 
-  _addMember(guildUser, noEvent) {
+  _addMember(guildUser, emitEvent = true) {
     if (!(guildUser.user instanceof User)) guildUser.user = this.client.dataManager.newUser(guildUser.user);
 
     guildUser.joined_at = guildUser.joined_at || 0;
@@ -600,7 +601,7 @@ class Guild {
      * @param {Guild} guild The guild that the user has joined
      * @param {GuildMember} member The member that has joined
      */
-    if (this.client.ws.status === Constants.Status.READY && !noEvent) {
+    if (this.client.ws.status === Constants.Status.READY && emitEvent) {
       this.client.emit(Constants.Events.GUILD_MEMBER_ADD, this, member);
     }
 

@@ -73,11 +73,6 @@ class ClientDataManager {
     return null;
   }
 
-  newGuildMember(guild, data) {
-    if (guild.members.has(data.user.id)) return guild.members.get(data.user.id);
-    return guild._addMember(data);
-  }
-
   killGuild(guild) {
     const already = this.client.guilds.has(guild.id);
     this.client.guilds.delete(guild.id);
