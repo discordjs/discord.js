@@ -71,7 +71,7 @@ class TextBasedChannel {
    * @param {StringResolvable} [content=undefined] Text message to send with the attachment
    * @returns {Promise<Message>}
    */
-  sendFile(attachment, fileName, content = undefined) {
+  sendFile(attachment, fileName, content) {
     if (!fileName) {
       if (typeof attachment === 'string') {
         fileName = path.basename(attachment);
