@@ -6,27 +6,19 @@ const Constants = require('../util/Constants');
 class Role {
   constructor(guild, data) {
     /**
-     * The guild that the role belongs to
-     * @type {Guild}
-     */
-    this.guild = guild;
-    /**
      * The client that instantiated the role
      * @type {Client}
      */
     this.client = guild.client;
-    if (data) this.setup(data);
-  }
+    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
 
-  equals(role) {
-    return role &&
-      this.id === role.id &&
-      this.name === role.name &&
-      this.color === role.color &&
-      this.hoist === role.hoist &&
-      this.position === role.position &&
-      this.permissions === role.permissions &&
-      this.managed === role.managed;
+    /**
+     * The guild that the role belongs to
+     * @type {Guild}
+     */
+    this.guild = guild;
+
+    if (data) this.setup(data);
   }
 
   setup(data) {
@@ -35,36 +27,51 @@ class Role {
      * @type {string}
      */
     this.id = data.id;
+
     /**
      * The name of the role
      * @type {string}
      */
     this.name = data.name;
+
     /**
      * The base 10 color of the role
      * @type {number}
      */
     this.color = data.color;
+
     /**
      * If true, users that are part of this role will appear in a separate category in the users list
      * @type {boolean}
      */
     this.hoist = data.hoist;
+
     /**
      * The position of the role in the role manager
      * @type {number}
      */
     this.position = data.position;
+
     /**
      * The evaluated permissions number
      * @type {number}
      */
     this.permissions = data.permissions;
+
     /**
      * Whether or not the role is managed by an external service
      * @type {boolean}
      */
     this.managed = data.managed;
+  }
+
+  /**
+   * The time the role was created
+   * @readonly
+   * @type {Date}
+   */
+  get creationDate() {
+    return new Date((this.id / 4194304) + 1420070400000);
   }
 
   /**
@@ -199,14 +206,6 @@ class Role {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the Role mention rather than the Role object.
-   * @returns {string}
-   */
-  toString() {
-    return `<@&${this.id}>`;
-  }
-
-  /**
    * The hexadecimal version of the role color, with a leading hashtag.
    * @type {string}
    * @readonly
@@ -215,6 +214,32 @@ class Role {
     let col = this.color.toString(16);
     while (col.length < 6) col = `0${col}`;
     return `#${col}`;
+  }
+
+  /**
+   * Whether this role equals another role. It compares all properties, so for most operations
+   * it is advisable to just compare `role.id === role2.id` as it is much faster and is often
+   * what most users need.
+   * @param {Role} role The role to compare to
+   * @returns {boolean}
+   */
+  equals(role) {
+    return role &&
+      this.id === role.id &&
+      this.name === role.name &&
+      this.color === role.color &&
+      this.hoist === role.hoist &&
+      this.position === role.position &&
+      this.permissions === role.permissions &&
+      this.managed === role.managed;
+  }
+
+  /**
+   * When concatenated with a string, this automatically concatenates the Role mention rather than the Role object.
+   * @returns {string}
+   */
+  toString() {
+    return `<@&${this.id}>`;
   }
 }
 

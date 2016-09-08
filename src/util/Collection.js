@@ -64,7 +64,7 @@ class Collection extends Map {
    * @param {*} value The expected value
    * @returns {array}
    * @example
-   * collection.getAll('username', 'Bob');
+   * collection.findAll('username', 'Bob');
    */
   findAll(key, value) {
     if (typeof key !== 'string') throw new TypeError('key must be a string');
@@ -82,7 +82,7 @@ class Collection extends Map {
    * @param {*} value The expected value
    * @returns {*}
    * @example
-   * collection.get('id', '123123...');
+   * collection.find('id', '123123...');
    */
   find(key, value) {
     if (typeof key !== 'string') throw new TypeError('key must be a string');
@@ -111,25 +111,64 @@ class Collection extends Map {
    * Identical to
    * [Array.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter),
    * but returns a Collection instead of an Array.
-   * @param {function} callback Function used to filter (should return a boolean)
-   * @param {Object} [thisArg] Value to set as this when filtering
+   * @param {function} fn Function used to test (should return a boolean)
+   * @param {Object} [thisArg] Value to use as `this` when executing function
    * @returns {Collection}
    */
-  filter(...args) {
-    const newArray = this.array().filter(...args);
+  filter(fn, thisArg) {
+    if (thisArg) fn = fn.bind(thisArg);
     const collection = new Collection();
-    for (const item of newArray) collection.set(item.id, item);
+    for (const [key, val] of this) {
+      if (fn(val, key, this)) collection.set(key, val);
+    }
     return collection;
   }
 
   /**
-   * Functionally identical shortcut to `collection.array().map(...)`.
-   * @param {function} callback Function that produces an element of the new Array, taking three arguments
-   * @param {*} [thisArg] Optional. Value to use as this when executing callback.
+   * Identical to
+   * [Array.map()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map).
+   * @param {function} fn Function that produces an element of the new array, taking three arguments
+   * @param {*} [thisArg] Value to use as `this` when executing function
    * @returns {array}
    */
-  map(...args) {
-    return this.array().map(...args);
+  map(fn, thisArg) {
+    if (thisArg) fn = fn.bind(thisArg);
+    const arr = new Array(this.size);
+    let i = 0;
+    for (const [key, val] of this) {
+      arr[i++] = fn(val, key, this);
+    }
+    return arr;
+  }
+
+  /**
+   * Identical to
+   * [Array.some()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
+   * @param {function} fn Function used to test (should return a boolean)
+   * @param {Object} [thisArg] Value to use as `this` when executing function
+   * @returns {Collection}
+   */
+  some(fn, thisArg) {
+    if (thisArg) fn = fn.bind(thisArg);
+    for (const [key, val] of this) {
+      if (fn(val, key, this)) return true;
+    }
+    return false;
+  }
+
+  /**
+   * Identical to
+   * [Array.every()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every).
+   * @param {function} fn Function used to test (should return a boolean)
+   * @param {Object} [thisArg] Value to use as `this` when executing function
+   * @returns {Collection}
+   */
+  every(fn, thisArg) {
+    if (thisArg) fn = fn.bind(thisArg);
+    for (const [key, val] of this) {
+      if (!fn(val, key, this)) return false;
+    }
+    return true;
   }
 }
 

@@ -46,9 +46,14 @@ class RESTMethods {
     });
   }
 
-  sendMessage(channel, content, tts, nonce, file) {
+  sendMessage(channel, content, tts, nonce, disableEveryone, file) {
     return new Promise((resolve, reject) => {
       const $this = this;
+      content = this.rest.client.resolver.resolveString(content);
+
+      if (disableEveryone || (typeof disableEveryone === 'undefined' && this.rest.client.options.disable_everyone)) {
+        content = content.replace('@everyone', '@\u200beveryone').replace('@here', '@\u200bhere');
+      }
 
       function req() {
         $this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
@@ -99,6 +104,8 @@ class RESTMethods {
 
   updateMessage(message, content) {
     return new Promise((resolve, reject) => {
+      content = this.rest.client.resolver.resolveString(content);
+
       this.rest.makeRequest('patch', Constants.Endpoints.channelMessage(message.channel.id, message.id), true, {
         content,
       }).then(data => {
@@ -287,13 +294,30 @@ class RESTMethods {
     });
   }
 
+  getChannelMessage(channel, messageID) {
+    return new Promise((resolve, reject) => {
+      const msg = channel.messages.get(messageID);
+      if (msg) return resolve(msg);
+
+      const endpoint = Constants.Endpoints.channelMessage(channel.id, messageID);
+      return this.rest.makeRequest('get', endpoint, true)
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  getGuildMember(guild, user) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.guildMember(guild.id, user.id), true).then((data) => {
+        resolve(this.rest.client.actions.GuildMemberGet.handle(guild, data).member);
+      }).catch(reject);
+    });
+  }
+
   updateGuildMember(member, data) {
     return new Promise((resolve, reject) => {
       if (data.channel) data.channel_id = this.rest.client.resolver.resolveChannel(data.channel).id;
-      if (data.roles) {
-        if (data.roles instanceof Collection) data.roles = data.roles.array();
-        data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
-      }
+      if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
 
       let endpoint = Constants.Endpoints.guildMember(member.guild.id, member.id);
       // fix your endpoints, discord ;-;
@@ -317,14 +341,15 @@ class RESTMethods {
     });
   }
 
-  banGuildMember(member, deleteDays) {
+  banGuildMember(guild, member, deleteDays) {
     return new Promise((resolve, reject) => {
-      const data = {
+      const user = this.rest.client.resolver.resolveUser(member);
+      if (!user) throw new Error('cannot ban a user that is not a user resolvable');
+      this.rest.makeRequest('put', `${Constants.Endpoints.guildBans(guild.id)}/${user.id}`, true, {
         'delete-message-days': deleteDays,
-      };
-      this.rest.makeRequest('put', `${Constants.Endpoints.guildBans(member.guild.id)}/${member.id}`, true, data)
-        .then(() => resolve(member))
-        .catch(reject);
+      }).then(() => {
+        resolve(member instanceof GuildMember ? member : user);
+      }).catch(reject);
     });
   }
 
@@ -362,7 +387,9 @@ class RESTMethods {
       data.name = _data.name || role.name;
       data.position = _data.position || role.position;
       data.color = _data.color || role.color;
-      if (data.color.startsWith('#')) data.color = parseInt(data.color.replace('#', ''), 16);
+      if (typeof data.color === 'string' && data.color.startsWith('#')) {
+        data.color = parseInt(data.color.replace('#', ''), 16);
+      }
       data.hoist = typeof _data.hoist !== 'undefined' ? _data.hoist : role.hoist;
 
       if (_data.permissions) {

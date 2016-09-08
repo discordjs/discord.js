@@ -36,24 +36,26 @@ class GroupDMChannel extends Channel {
     this.messages = new Collection();
   }
 
-  equals(other) {
-    const equal = other &&
-      this.id === other.id &&
-      this.name === other.name &&
-      this.icon === other.icon &&
-      this.owner.id === other.owner_id;
-
-    if (equal) {
-      const thisIDs = this.recipients.array().map(r => r.id);
-      const otherIDs = other.recipients.map(r => r.id);
-      return arraysEqual(thisIDs, otherIDs);
-    }
-
-    return equal;
-  }
-
   setup(data) {
     super.setup(data);
+
+    /**
+     * The name of this Group DM, can be null if one isn't set.
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * A hash of the Group DM icon.
+     * @type {string}
+     */
+    this.icon = data.icon;
+
+    /**
+     * The owner of this Group DM.
+     * @type {User}
+     */
+    this.owner = this.client.users.get(data.owner_id);
 
     if (!this.recipients) {
       /**
@@ -70,85 +72,63 @@ class GroupDMChannel extends Channel {
       }
     }
 
-    /**
-     * The name of this Group DM, can be null if one isn't set.
-     * @type {string}
-     */
-    this.name = data.name;
-    /**
-     * The ID of this Group DM Channel.
-     * @type {string}
-     */
-    this.id = data.id;
-    /**
-     * A hash of the Group DM icon.
-     * @type {string}
-     */
-    this.icon = data.icon;
-    /**
-     * The ID of the last message in the channel, if one was sent.
-     * @type {?string}
-     */
-    this.lastMessageID = data.last_message_id;
-    /**
-     * The owner of this Group DM.
-     * @type {User}
-     */
-    this.owner = this.client.users.get(data.owner_id);
     this.type = 'group';
+    this.lastMessageID = data.last_message_id;
+    this._typing = new Map();
   }
 
-  sendMessage() {
-    return;
+  /**
+   * Whether this channel equals another channel. It compares all properties, so for most operations
+   * it is advisable to just compare `channel.id === channel2.id` as it is much faster and is often
+   * what most users need.
+   * @param {GroupDMChannel} channel The channel to compare to
+   * @returns {boolean}
+   */
+  equals(channel) {
+    const equal = channel &&
+      this.id === channel.id &&
+      this.name === channel.name &&
+      this.icon === channel.icon &&
+      this.owner.id === channel.owner_id;
+
+    if (equal) {
+      const thisIDs = this.recipients.array().map(r => r.id);
+      const otherIDs = channel.recipients.map(r => r.id);
+      return arraysEqual(thisIDs, otherIDs);
+    }
+
+    return equal;
   }
 
-  sendTTSMessage() {
-    return;
+  /**
+   * When concatenated with a string, this automatically concatenates the Channel's name instead of the Channel object.
+   * @returns {string}
+   * @example
+   * // logs: Hello from My Group DM!
+   * console.log(`Hello from ${channel}!`);
+   * @example
+   * // logs: Hello from My Group DM!
+   * console.log(`Hello from ' + channel + '!');
+   */
+  toString() {
+    return this.name;
   }
 
-  sendFile() {
-    return;
-  }
-
-  _cacheMessage() {
-    return;
-  }
-
-  fetchMessages() {
-    return;
-  }
-
-  bulkDelete() {
-    return;
-  }
-
-  startTyping() {
-    return;
-  }
-
-  stopTyping() {
-    return;
-  }
-
-  get typing() {
-    return;
-  }
-
-  get typingCount() {
-    return;
-  }
-
-  fetchPinnedMessages() {
-    return;
-  }
-
-  createCollector() {
-    return;
-  }
-
-  awaitMessages() {
-    return;
-  }
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  sendMessage() { return; }
+  sendTTSMessage() { return; }
+  sendFile() { return; }
+  fetchMessage() { return; }
+  fetchMessages() { return; }
+  fetchPinnedMessages() { return; }
+  startTyping() { return; }
+  stopTyping() { return; }
+  get typing() { return; }
+  get typingCount() { return; }
+  createCollector() { return; }
+  awaitMessages() { return; }
+  bulkDelete() { return; }
+  _cacheMessage() { return; }
 }
 
 TextBasedChannel.applyToClass(GroupDMChannel, true);

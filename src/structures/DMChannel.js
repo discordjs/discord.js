@@ -16,18 +16,16 @@ class DMChannel extends Channel {
 
   setup(data) {
     super.setup(data);
-    const recipient = this.client.users.get(data.recipients[0].id) || new User(this.client, data.recipients[0]);
+
     /**
      * The recipient on the other end of the DM
      * @type {User}
      */
-    this.recipient = recipient;
-    /**
-     * The ID of the last sent message, if available
-     * @type {?string}
-     */
-    this.lastMessageID = data.last_message_id;
+    this.recipient = this.client.users.get(data.recipients[0].id) || new User(this.client, data.recipients[0]);
+
     this.type = 'dm';
+    this.lastMessageID = data.last_message_id;
+    this._typing = new Map();
   }
 
   /**
@@ -39,57 +37,21 @@ class DMChannel extends Channel {
     return this.recipient.toString();
   }
 
-  sendMessage() {
-    return;
-  }
-
-  sendTTSMessage() {
-    return;
-  }
-
-  sendFile() {
-    return;
-  }
-
-  _cacheMessage() {
-    return;
-  }
-
-  fetchMessages() {
-    return;
-  }
-
-  bulkDelete() {
-    return;
-  }
-
-  startTyping() {
-    return;
-  }
-
-  stopTyping() {
-    return;
-  }
-
-  get typing() {
-    return;
-  }
-
-  get typingCount() {
-    return;
-  }
-
-  fetchPinnedMessages() {
-    return;
-  }
-
-  createCollector() {
-    return;
-  }
-
-  awaitMessages() {
-    return;
-  }
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  sendMessage() { return; }
+  sendTTSMessage() { return; }
+  sendFile() { return; }
+  fetchMessage() { return; }
+  fetchMessages() { return; }
+  fetchPinnedMessages() { return; }
+  startTyping() { return; }
+  stopTyping() { return; }
+  get typing() { return; }
+  get typingCount() { return; }
+  createCollector() { return; }
+  awaitMessages() { return; }
+  bulkDelete() { return; }
+  _cacheMessage() { return; }
 }
 
 TextBasedChannel.applyToClass(DMChannel, true);

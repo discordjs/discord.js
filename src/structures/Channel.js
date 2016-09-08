@@ -2,15 +2,14 @@
  * Represents any Channel on Discord
  */
 class Channel {
-  constructor(client, data, guild) {
+  constructor(client, data) {
     /**
      * The client that instantiated the Channel
      * @type {Client}
      */
     this.client = client;
-    this.typingMap = {};
-    this.typingTimeouts = [];
-    if (guild) this.guild = guild;
+    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+
     /**
      * The type of the channel, either:
      * * `dm` - a DM channel
@@ -20,6 +19,7 @@ class Channel {
      * @type {string}
      */
     this.type = null;
+
     if (data) this.setup(data);
   }
 
@@ -29,6 +29,15 @@ class Channel {
      * @type {string}
      */
     this.id = data.id;
+  }
+
+  /**
+   * The time the channel was created
+   * @readonly
+   * @type {Date}
+   */
+  get creationDate() {
+    return new Date((this.id / 4194304) + 1420070400000);
   }
 
   /**

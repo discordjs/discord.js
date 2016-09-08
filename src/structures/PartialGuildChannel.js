@@ -14,6 +14,8 @@ class PartialGuildChannel {
      * @type {Client}
      */
     this.client = client;
+    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+
     this.setup(data);
   }
 
@@ -23,11 +25,13 @@ class PartialGuildChannel {
      * @type {string}
      */
     this.id = data.id;
+
     /**
      * The name of this Guild Channel
      * @type {string}
      */
     this.name = data.name;
+
     /**
      * The type of this Guild Channel - `text` or `voice`
      * @type {string}

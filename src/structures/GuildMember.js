@@ -1,4 +1,7 @@
 const TextBasedChannel = require('./interface/TextBasedChannel');
+const Role = require('./Role');
+const EvaluatedPermissions = require('./EvaluatedPermissions');
+const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 
 /**
@@ -12,64 +15,76 @@ class GuildMember {
      * @type {Client}
      */
     this.client = guild.client;
+    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+
     /**
      * The guild that this member is part of
      * @type {Guild}
      */
     this.guild = guild;
+
     /**
      * The user that this guild member instance Represents
      * @type {User}
      */
     this.user = {};
+
     this._roles = [];
     if (data) this.setup(data);
   }
 
   setup(data) {
-    this.user = data.user;
     /**
      * Whether this member is deafened server-wide
      * @type {boolean}
      */
     this.serverDeaf = data.deaf;
+
     /**
      * Whether this member is muted server-wide
      * @type {boolean}
      */
     this.serverMute = data.mute;
+
     /**
      * Whether this member is self-muted
      * @type {boolean}
      */
     this.selfMute = data.self_mute;
+
     /**
      * Whether this member is self-deafened
      * @type {boolean}
      */
     this.selfDeaf = data.self_deaf;
+
     /**
      * The voice session ID of this member, if any
      * @type {?string}
      */
     this.voiceSessionID = data.session_id;
+
     /**
      * The voice channel ID of this member, if any
      * @type {?string}
      */
     this.voiceChannelID = data.channel_id;
-    this._joinDate = new Date(data.joined_at).getTime();
+
     /**
      * Whether this meember is speaking
      * @type {?boolean}
      */
     this.speaking = this.speaking;
+
     /**
      * The nickname of this Guild Member, if they have one
      * @type {?string}
      */
     this.nickname = data.nick;
+
+    this.user = data.user;
     this._roles = data.roles;
+    this._joinDate = new Date(data.joined_at).getTime();
   }
 
   /**
@@ -136,6 +151,33 @@ class GuildMember {
   }
 
   /**
+   * The overall set of permissions for the guild member, taking only roles into account
+   * @type {EvaluatedPermissions}
+   */
+  get permissions() {
+    if (this.guild.owner.id === this.user.id) return new EvaluatedPermissions(this, Constants.ALL_PERMISSIONS);
+
+    let permissions = 0;
+    const roles = this.roles;
+    for (const role of roles.values()) permissions |= role.permissions;
+
+    const admin = Boolean(permissions & (Constants.PermissionFlags.ADMINISTRATOR));
+    if (admin) permissions = Constants.ALL_PERMISSIONS;
+
+    return new EvaluatedPermissions(this, permissions);
+  }
+
+  /**
+   * Checks if any of the member's roles have a permission
+   * @param {PermissionResolvable} permission The permission to check for
+   * @param {boolean} [explicit=false] Whether to require the roles to explicitly have the exact permission
+   * @returns {boolean}
+   */
+  hasPermission(permission, explicit = false) {
+    return this.roles.some(r => r.hasPermission(permission, explicit));
+  }
+
+  /**
    * Mute/unmute a user
    * @param {boolean} mute Whether or not the member should be muted
    * @returns {Promise<GuildMember>}
@@ -164,11 +206,66 @@ class GuildMember {
 
   /**
    * Sets the Roles applied to the member.
-   * @param {Collection<string, Role>|Role[]} roles The roles to apply
+   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to apply
    * @returns {Promise<GuildMember>}
    */
   setRoles(roles) {
     return this.edit({ roles });
+  }
+
+  /**
+   * Adds a single Role to the member.
+   * @param {Role|string} role The role or ID of the role to add
+   * @returns {Promise<GuildMember>}
+   */
+  addRole(role) {
+    return this.addRoles([role]);
+  }
+
+  /**
+   * Adds multiple roles to the member.
+   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to add
+   * @returns {Promise<GuildMember>}
+   */
+  addRoles(roles) {
+    let allRoles;
+    if (roles instanceof Collection) {
+      allRoles = this._roles.slice();
+      for (const role of roles.values()) allRoles.push(role.id);
+    } else {
+      allRoles = this._roles.concat(roles);
+    }
+    return this.edit({ roles: allRoles });
+  }
+
+  /**
+   * Removes a single Role from the member.
+   * @param {Role|string} role The role or ID of the role to remove
+   * @returns {Promise<GuildMember>}
+   */
+  removeRole(role) {
+    return this.removeRoles([role]);
+  }
+
+  /**
+   * Removes multiple roles from the member.
+   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to remove
+   * @returns {Promise<GuildMember>}
+   */
+  removeRoles(roles) {
+    const allRoles = this._roles.slice();
+    if (roles instanceof Collection) {
+      for (const role of roles.values()) {
+        const index = allRoles.indexOf(role.id);
+        if (index >= 0) allRoles.splice(index, 1);
+      }
+    } else {
+      for (const role of roles) {
+        const index = allRoles.indexOf(role instanceof Role ? role.id : role);
+        if (index >= 0) allRoles.splice(index, 1);
+      }
+    }
+    return this.edit({ roles: allRoles });
   }
 
   /**
@@ -215,20 +312,13 @@ class GuildMember {
    * guildMember.ban(7);
    */
   ban(deleteDays = 0) {
-    return this.client.rest.methods.banGuildMember(this, deleteDays);
+    return this.client.rest.methods.banGuildMember(this.guild, this, deleteDays);
   }
 
-  sendMessage() {
-    return;
-  }
-
-  sendTTSMessage() {
-    return;
-  }
-
-  sendFile() {
-    return;
-  }
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  sendMessage() { return; }
+  sendTTSMessage() { return; }
+  sendFile() { return; }
 }
 
 TextBasedChannel.applyToClass(GuildMember);

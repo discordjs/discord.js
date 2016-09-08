@@ -11,11 +11,14 @@ class Emoji {
      * @type {Client}
      */
     this.client = guild.client;
+    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+
     /**
      * The Guild this emoji is part of
      * @type {Guild}
      */
     this.guild = guild;
+
     this.setup(data);
   }
 
@@ -25,22 +28,35 @@ class Emoji {
      * @type {string}
      */
     this.id = data.id;
+
     /**
      * The name of the Emoji
      * @type {string}
      */
     this.name = data.name;
-    this.roleIDS = data.roles;
+
     /**
      * Whether or not this emoji requires colons surrounding it
      * @type {boolean}
      */
     this.requiresColons = data.require_colons;
+
     /**
      * Whether this emoji is managed by an external service
      * @type {boolean}
      */
     this.managed = data.managed;
+
+    this._roles = data.roles;
+  }
+
+  /**
+   * The time the emoji was created
+   * @readonly
+   * @type {Date}
+   */
+  get creationDate() {
+    return new Date((this.id / 4194304) + 1420070400000);
   }
 
   /**
@@ -50,8 +66,8 @@ class Emoji {
    */
   get roles() {
     const roles = new Collection();
-    for (const role of this.roleIDS) {
-      if (this.guild.roles.get(role)) roles.set(role, this.guild.roles.get(role));
+    for (const role of this._roles) {
+      if (this.guild.roles.has(role)) roles.set(role, this.guild.roles.get(role));
     }
     return roles;
   }

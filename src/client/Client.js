@@ -208,6 +208,26 @@ class Client extends EventEmitter {
   get uptime() {
     return this.readyTime ? Date.now() - this.readyTime : null;
   }
+
+  /**
+   * The emojis that the client can use. Mapped by emoji ID.
+   * @type {Collection<string, Emoji>}
+   * @readonly
+   */
+  get emojis() {
+    const emojis = new Collection();
+    this.guilds.map(g => g.emojis.map(e => emojis.set(e.id, e)));
+    return emojis;
+  }
+
+  /**
+   * The status for the logged in Client.
+   * @readonly
+   * @type {?number}
+   */
+  get status() {
+    return this.ws.status;
+  }
 }
 
 module.exports = Client;
