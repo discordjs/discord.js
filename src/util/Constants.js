@@ -38,7 +38,7 @@ exports.DefaultOptions = {
     },
   },
   protocol_version: 6,
-  max_message_cache: 800,
+  max_message_cache: 200,
   rest_ws_bridge_timeout: 5000,
   api_request_method: 'sequential',
   shard_id: 0,
