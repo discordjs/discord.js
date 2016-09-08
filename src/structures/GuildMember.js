@@ -1,5 +1,7 @@
 const TextBasedChannel = require('./interface/TextBasedChannel');
 const Role = require('./Role');
+const EvaluatedPermissions = require('./EvaluatedPermissions');
+const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 
 /**
@@ -146,6 +148,33 @@ class GuildMember {
    */
   get id() {
     return this.user.id;
+  }
+
+  /**
+   * The overall set of permissions for the guild member, taking only roles into account
+   * @type {EvaluatedPermissions}
+   */
+  get permissions() {
+    if (this.guild.owner.id === this.user.id) return new EvaluatedPermissions(this, Constants.ALL_PERMISSIONS);
+
+    let permissions = 0;
+    const roles = this.roles;
+    for (const role of roles.values()) permissions |= role.permissions;
+
+    const admin = Boolean(permissions & (Constants.PermissionFlags.ADMINISTRATOR));
+    if (admin) permissions = Constants.ALL_PERMISSIONS;
+
+    return new EvaluatedPermissions(this, permissions);
+  }
+
+  /**
+   * Checks if any of the member's roles have a permission
+   * @param {PermissionResolvable} permission The permission to check for
+   * @param {boolean} [explicit=false] Whether to require the roles to explicitly have the exact permission
+   * @returns {boolean}
+   */
+  hasPermission(permission, explicit = false) {
+    return this.roles.some(r => r.hasPermission(permission, explicit));
   }
 
   /**
