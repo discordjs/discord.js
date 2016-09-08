@@ -149,6 +149,27 @@ class GuildMember {
   }
 
   /**
+   * Whether or not the member has the given permission
+   * @param {PermissionResolvable} permission The name of the permission to test
+   * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permission
+   * @returns {boolean}
+   * @example
+   * // see if a member can ban another member
+   * if (member.hasPermission('BAN_MEMBERS')) {
+   *   console.log('This member can ban members');
+   * } else {
+   *   console.log('This member can\'t ban members');
+   * }
+   */
+  hasPermission(permission, explicit = false) {
+    permission = this.client.resolver.resolvePermission(permission);
+    for (const role of this.roles) {
+      if (role.hasPermission(permission, explicit)) return true;
+    }
+    return false;
+  }
+
+  /**
    * Mute/unmute a user
    * @param {boolean} mute Whether or not the member should be muted
    * @returns {Promise<GuildMember>}
