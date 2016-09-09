@@ -159,36 +159,29 @@ class Message {
    * @type {string}
    */
   get cleanContent() {
-    return this.content.replace(/<@!?[0-9]+>/g, input => {
-      let user = this.channel.guild.members.get(input.replace(/<|!|>|@/g, ''));
-
-      if (user) {
-        if (user.nickname) {
-          return `@${user.nickname}`;
+    return this.content
+      .replace(/@everyone/g, '@\u200Beveryone')
+      .replace(/@here/g, '@\u200Bhere')
+      .replace(/<@!?[0-9]+>/g, input => {
+        const id = input.replace(/<|!|>|@/g, '');
+        const member = this.channel.guild.members.get(id);
+        if (member) {
+          if (member.nickname) return `@${member.nickname}`;
+          return `@${member.user.username}`;
+        } else {
+          const user = this.client.users.get(id);
+          if (user) return `@${user.username}`;
+          return input;
         }
-        return `@${user.user.username}`;
-      }
-
-      return input;
-    }).replace(/<#[0-9]+>/g, (input) => {
-      let channel = this.client.channels.get(input.replace(/<|#|>/g, ''));
-
-      if (channel) {
-        return `#${channel.name}`;
-      }
-
-      return input;
-    }).replace(/<@&[0-9]+>/g, (input) => {
-      let role = this.guild.roles.get(input.replace(/<|@|>|&/g, ''));
-
-      if (role) {
-        return `@${role.name}`;
-      }
-
-      return input;
-    })
-    .replace(/@everyone/g, '@\u200Beveryone')
-    .replace(/@here/g, '@\u200Bhere');
+      }).replace(/<#[0-9]+>/g, (input) => {
+        const channel = this.client.channels.get(input.replace(/<|#|>/g, ''));
+        if (channel) return `#${channel.name}`;
+        return input;
+      }).replace(/<@&[0-9]+>/g, (input) => {
+        const role = this.guild.roles.get(input.replace(/<|@|>|&/g, ''));
+        if (role) return `@${role.name}`;
+        return input;
+      });
   }
 
  /**
