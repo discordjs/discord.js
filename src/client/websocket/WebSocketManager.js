@@ -192,7 +192,9 @@ class WebSocketManager {
      * @event Client#error
      * @param {Error} error The encountered error
      */
-    this.client.emit('error', err);
+    if (this.client.listenerCount('error') > 0) {
+      this.client.emit('error', err);
+    }
     this.tryReconnect();
   }
 
