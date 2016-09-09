@@ -203,6 +203,7 @@ class VoiceConnection extends EventEmitter {
   /**
    * Play the given file in the voice connection
    * @param {string} file The path to the file
+   * @param {object} [options] Optional streamOptions object. Currently accepts seek and volume properties.
    * @returns {StreamDispatcher}
    * @example
    * // play files natively
@@ -220,14 +221,16 @@ class VoiceConnection extends EventEmitter {
   /**
    * Plays and converts an audio stream in the voice connection
    * @param {ReadableStream} stream The audio stream to play
+   * @param {object} [options] Optional streamOptions object. Currently accepts seek and volume properties.
    * @returns {StreamDispatcher}
    * @example
    * // play streams using ytdl-core
    * const ytdl = require('ytdl-core');
+   * const streamOptions = {seek: 0, volume: 1};
    * voiceChannel.join()
    *  .then(connection => {
    *    const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', {filter : 'audioonly'});
-   *    const dispatcher = connection.playStream(stream);
+   *    const dispatcher = connection.playStream(stream, streamOptions);
    *  })
    *  .catch(console.log);
    */
@@ -239,6 +242,7 @@ class VoiceConnection extends EventEmitter {
   /**
    * Plays a stream of 16-bit signed stereo PCM at 48KHz.
    * @param {ReadableStream} stream The audio stream to play.
+   * @param {object} [options] Optional streamOptions object. Currently accepts seek and volume properties.
    * @returns {StreamDispatcher}
    */
   playConvertedStream(stream, { seek = 0, volume = 1 }) {
