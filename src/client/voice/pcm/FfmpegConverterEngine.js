@@ -12,7 +12,7 @@ class FfmpegConverterEngine extends ConverterEngine {
     this.emit('error', err);
   }
 
-  createConvertStream(seek) {
+  createConvertStream(seek = 0) {
     super.createConvertStream();
     const encoder = ChildProcess.spawn(this.command, [
       '-analyzeduration', '0',
