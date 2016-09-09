@@ -28,7 +28,10 @@ class VoiceConnectionPlayer extends EventEmitter {
     const options = { seek: seek, volume: volume };
     const encoder = this.converterEngine.createConvertStream(options.seek);
     const pipe = stream.pipe(encoder.stdin);
-    pipe.on('unpipe', () => pipe.destroy());
+    pipe.on('unpipe', () => {
+      this.killStream(encoder.stdout);
+      pipe.destroy();
+    });
     this.processMap.set(encoder.stdout, {
       pcmConverter: encoder,
       inputStream: stream,
