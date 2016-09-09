@@ -201,9 +201,20 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
+   * Options that can be passed to stream-playing methods:
+   * ```js
+   * {
+   *   seek: 0,
+   *   volume: 1
+   * };
+   * ```
+   * @typedef {Object} StreamOptions
+   */
+
+  /**
    * Play the given file in the voice connection
    * @param {string} file The path to the file
-   * @param {Object} [options] Optional streamOptions object. Currently accepts seek and volume properties.
+   * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
    * @example
    * // play files natively
@@ -221,7 +232,7 @@ class VoiceConnection extends EventEmitter {
   /**
    * Plays and converts an audio stream in the voice connection
    * @param {ReadableStream} stream The audio stream to play
-   * @param {Object} [options] Optional streamOptions object. Currently accepts seek and volume properties.
+   * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
    * @example
    * // play streams using ytdl-core
@@ -242,7 +253,7 @@ class VoiceConnection extends EventEmitter {
   /**
    * Plays a stream of 16-bit signed stereo PCM at 48KHz.
    * @param {ReadableStream} stream The audio stream to play.
-   * @param {Object} [options] Optional streamOptions object. Currently accepts seek and volume properties.
+   * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
    */
   playConvertedStream(stream, { seek = 0, volume = 1 }) {

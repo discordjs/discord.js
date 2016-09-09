@@ -20,7 +20,7 @@ class FfmpegConverterEngine extends ConverterEngine {
       '-i', '-',
       '-f', 's16le',
       '-ar', '48000',
-      '-ss', seek.toString(),
+      '-ss', String(seek),
       'pipe:1',
     ], { stdio: ['pipe', 'pipe', 'ignore'] });
     encoder.on('error', e => this.handleError(encoder, e));
