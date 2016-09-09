@@ -68,7 +68,7 @@ class TextBasedChannel {
    * Send a file to this channel
    * @param {FileResolvable} attachment The file to send
    * @param {string} [fileName="file.jpg"] The name and extension of the file
-   * @param {StringResolvable} [content=undefined] Text message to send with the attachment
+   * @param {StringResolvable} [content] Text message to send with the attachment
    * @returns {Promise<Message>}
    */
   sendFile(attachment, fileName, content) {
