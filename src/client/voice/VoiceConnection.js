@@ -224,7 +224,7 @@ class VoiceConnection extends EventEmitter {
    *  })
    *  .catch(console.log);
    */
-  playFile(file, { seek = 0, volume = 1 }) {
+  playFile(file, { seek = 0, volume = 1 } = {}) {
     const options = { seek: seek, volume: volume };
     return this.player.playFile(file, options);
   }
@@ -237,7 +237,7 @@ class VoiceConnection extends EventEmitter {
    * @example
    * // play streams using ytdl-core
    * const ytdl = require('ytdl-core');
-   * const streamOptions = {seek: 0, volume: 1};
+   * const streamOptions = { seek: 0, volume: 1 };
    * voiceChannel.join()
    *  .then(connection => {
    *    const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', {filter : 'audioonly'});
@@ -245,7 +245,7 @@ class VoiceConnection extends EventEmitter {
    *  })
    *  .catch(console.log);
    */
-  playStream(stream, { seek = 0, volume = 1 }) {
+  playStream(stream, { seek = 0, volume = 1 } = {}) {
     const options = { seek: seek, volume: volume };
     return this.player.playStream(stream, options);
   }
@@ -256,7 +256,7 @@ class VoiceConnection extends EventEmitter {
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
    */
-  playConvertedStream(stream, { seek = 0, volume = 1 }) {
+  playConvertedStream(stream, { seek = 0, volume = 1 } = {}) {
     const options = { seek: seek, volume: volume };
     this._shutdown();
     const dispatcher = this.player.playPCMStream(stream, options);

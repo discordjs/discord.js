@@ -25,7 +25,7 @@ class VoiceConnectionPlayer extends EventEmitter {
     };
   }
 
-  convertStream(stream, { seek = 0, volume = 1 }) {
+  convertStream(stream, { seek = 0, volume = 1 } = {}) {
     const options = { seek: seek, volume: volume };
     const encoder = this.converterEngine.createConvertStream(options.seek);
     const pipe = stream.pipe(encoder.stdin);
@@ -89,7 +89,7 @@ class VoiceConnectionPlayer extends EventEmitter {
     });
   }
 
-  playPCMStream(pcmStream, { seek = 0, volume = 1 }) {
+  playPCMStream(pcmStream, { seek = 0, volume = 1 } = {}) {
     const options = { seek: seek, volume: volume };
     const dispatcher = new StreamDispatcher(this, pcmStream, this._streamingData, options);
     dispatcher.on('speaking', value => this.setSpeaking(value));
