@@ -112,7 +112,7 @@ class Client extends EventEmitter {
    * much better to use a bot account rather than a user account.
    * Bot accounts have higher rate limits and have access to some features user accounts don't have. User bots
    * that are making a lot of API requests can even be banned.</warn>
-   * @param  {string} emailOrToken The email or token used for the account. If it is an email, a password _must_ be
+   * @param  {string} tokenOrEmail The token or email used for the account. If it is an email, a password _must_ be
    * provided.
    * @param  {string} [password] The password for the account, only needed if an email was provided.
    * @returns {Promise<string>}
@@ -126,9 +126,9 @@ class Client extends EventEmitter {
    * const password = 'supersecret123';
    * client.login(email, password);
    */
-  login(emailOrToken, password) {
-    if (password) return this.rest.methods.loginEmailPassword(emailOrToken, password);
-    return this.rest.methods.loginToken(emailOrToken);
+  login(tokenOrEmail, password = null) {
+    if (password) return this.rest.methods.loginEmailPassword(tokenOrEmail, password);
+    return this.rest.methods.loginToken(tokenOrEmail);
   }
 
   /**
