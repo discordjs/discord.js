@@ -46,7 +46,7 @@ class User {
      * Whether or not the User is a Bot.
      * @type {boolean}
      */
-    this.bot = Boolean(data.bot);
+    this.bot = data.bot || this.bot;
 
     /**
      * The status of the user:
