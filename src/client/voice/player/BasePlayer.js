@@ -25,9 +25,14 @@ class VoiceConnectionPlayer extends EventEmitter {
     };
   }
 
+<<<<<<< HEAD
   convertStream(stream, { seek = 0, volume = 1 }) {
     const options = { seek: seek, volume: volume };
     const encoder = this.converterEngine.createConvertStream(options.seek);
+=======
+  convertStream(stream) {
+    const encoder = this.converterEngine.createConvertStream();
+>>>>>>> refs/remotes/hydrabolt/indev
     const pipe = stream.pipe(encoder.stdin);
     pipe.on('unpipe', () => pipe.destroy());
     this.processMap.set(encoder.stdout, {

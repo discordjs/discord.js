@@ -68,9 +68,10 @@ class TextBasedChannel {
    * Send a file to this channel
    * @param {FileResolvable} attachment The file to send
    * @param {string} [fileName="file.jpg"] The name and extension of the file
+   * @param {StringResolvable} [content] Text message to send with the attachment
    * @returns {Promise<Message>}
    */
-  sendFile(attachment, fileName) {
+  sendFile(attachment, fileName, content) {
     if (!fileName) {
       if (typeof attachment === 'string') {
         fileName = path.basename(attachment);
@@ -82,7 +83,7 @@ class TextBasedChannel {
     }
     return new Promise((resolve, reject) => {
       this.client.resolver.resolveFile(attachment).then(file => {
-        this.client.rest.methods.sendMessage(this, undefined, false, undefined, false, {
+        this.client.rest.methods.sendMessage(this, content, false, undefined, false, {
           file,
           name: fileName,
         }).then(resolve).catch(reject);
