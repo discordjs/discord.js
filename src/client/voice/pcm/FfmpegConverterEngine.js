@@ -12,7 +12,7 @@ class FfmpegConverterEngine extends ConverterEngine {
     this.emit('error', err);
   }
 
-  createConvertStream() {
+  createConvertStream(seek = 0) {
     super.createConvertStream();
     const encoder = ChildProcess.spawn(this.command, [
       '-analyzeduration', '0',
@@ -20,7 +20,7 @@ class FfmpegConverterEngine extends ConverterEngine {
       '-i', '-',
       '-f', 's16le',
       '-ar', '48000',
-      '-ss', '0',
+      '-ss', seek.toString(),
       'pipe:1',
     ], { stdio: ['pipe', 'pipe', 'ignore'] });
     encoder.on('error', e => this.handleError(encoder, e));
