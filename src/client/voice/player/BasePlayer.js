@@ -38,6 +38,9 @@ class VoiceConnectionPlayer extends EventEmitter {
 
   _shutdown() {
     this.speaking = false;
+    if (this.dispatcher) {
+      this.dispatcher._triggerTerminalState('end', 'ended by parent player shutdown');
+    }
     for (const stream of this.processMap.keys()) this.killStream(stream);
   }
 
@@ -46,6 +49,7 @@ class VoiceConnectionPlayer extends EventEmitter {
     this._streamingData = this.dispatcher.streamingData;
     this.emit('debug', 'cleaning up streams after end/error');
     if (streams) {
+      this.processMap.delete(stream);
       if (streams.inputStream && streams.pcmConverter) {
         try {
           if (streams.inputStream.unpipe) {
