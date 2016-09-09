@@ -62,7 +62,7 @@ class User {
      * The game that the user is playing, `null` if they aren't playing a game.
      * @type {string}
      */
-    this.game = data.game || this.game;
+    this.game = data.game;
   }
 
   /**
