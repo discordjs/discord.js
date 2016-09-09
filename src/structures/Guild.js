@@ -105,7 +105,7 @@ class Guild {
     if (data.roles) member._roles = data.roles;
     else member.nickname = data.nick;
 
-    const notSame = member.nickname !== oldMember.nickname && !arraysEqual(member._roles, oldMember._roles);
+    const notSame = member.nickname !== oldMember.nickname || !arraysEqual(member._roles, oldMember._roles);
 
     if (this.client.ws.status === Constants.Status.READY && notSame) {
       /**
