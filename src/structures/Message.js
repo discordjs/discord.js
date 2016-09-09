@@ -173,11 +173,13 @@ class Message {
           if (user) return `@${user.username}`;
           return input;
         }
-      }).replace(/<#[0-9]+>/g, (input) => {
+      })
+      .replace(/<#[0-9]+>/g, (input) => {
         const channel = this.client.channels.get(input.replace(/<|#|>/g, ''));
         if (channel) return `#${channel.name}`;
         return input;
-      }).replace(/<@&[0-9]+>/g, (input) => {
+      })
+      .replace(/<@&[0-9]+>/g, (input) => {
         const role = this.guild.roles.get(input.replace(/<|@|>|&/g, ''));
         if (role) return `@${role.name}`;
         return input;
