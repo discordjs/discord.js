@@ -19,7 +19,6 @@ class VoiceConnectionPlayer extends EventEmitter {
     this.processMap = new Map();
     this.dispatcher = null;
     this._streamingData = {
-      count: 0,
       sequence: 0,
       timestamp: 0,
     };

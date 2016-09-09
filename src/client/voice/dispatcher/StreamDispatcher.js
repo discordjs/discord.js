@@ -24,7 +24,7 @@ class StreamDispatcher extends EventEmitter {
     this.stream = stream;
     this.streamingData = {
       channels: 2,
-      count: sd.count,
+      count: 0,
       sequence: sd.sequence,
       timestamp: sd.timestamp,
     };
