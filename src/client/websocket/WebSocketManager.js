@@ -75,7 +75,7 @@ class WebSocketManager {
    */
   send(data, force = false) {
     if (force) {
-      this.ws.send(JSON.stringify(data));
+      this._send(JSON.stringify(data));
       return;
     }
     this._queue.push(JSON.stringify(data));
@@ -88,6 +88,12 @@ class WebSocketManager {
     this.status = Constants.Status.IDLE;
   }
 
+  _send(data) {
+    if (this.ws.readyState === WebSocket.OPEN) {
+      this.ws.send(data);
+    }
+  }
+
   doQueue() {
     const item = this._queue[0];
     if (this.ws.readyState === WebSocket.OPEN && item) {
@@ -98,7 +104,7 @@ class WebSocketManager {
         return;
       }
       this._remaining--;
-      this.ws.send(item);
+      this._send(item);
       this._queue.shift();
       this.doQueue();
       this.client.setTimeout(() => this._remaining++, 1000);
