@@ -28,10 +28,16 @@ class APIRequest {
     const apiRequest = request[this.method](this.url);
     if (this.auth) apiRequest.set('authorization', this.getAuth());
     if (this.file && this.file.file) {
-      apiRequest.set('Content-Type', 'multipart/form-data');
       apiRequest.attach('file', this.file.file, this.file.name);
+      this.data = this.data || {};
+      for (const key in this.data) {
+        if (this.data[key]) {
+          apiRequest.field(key, this.data[key]);
+        }
+      }
+    } else if (this.data) {
+      apiRequest.send(this.data);
     }
-    if (this.data) apiRequest.send(this.data);
     apiRequest.set('User-Agent', this.rest.userAgentManager.userAgent);
     return apiRequest;
   }
