@@ -144,7 +144,7 @@ class Guild {
 
     if (data.members) {
       this.members.clear();
-      for (const guildUser of data.members) this._addMember(guildUser);
+      for (const guildUser of data.members) this._addMember(guildUser, false);
     }
 
     if (data.owner_id) this.ownerID = data.owner_id;
