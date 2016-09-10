@@ -27,6 +27,7 @@ class StreamDispatcher extends EventEmitter {
       count: 0,
       sequence: sd.sequence,
       timestamp: sd.timestamp,
+      pausedTime: 0,
     };
     this._startStreaming();
     this._triggered = false;
@@ -95,17 +96,23 @@ class StreamDispatcher extends EventEmitter {
       }
 
       if (this.paused) {
-        data.timestamp = data.timestamp + 4294967295 ? data.timestamp + 960 : 0;
+        // data.timestamp = data.timestamp + 4294967295 ? data.timestamp + 960 : 0;
+        data.pausedTime += data.length * 10;
         this.player.connection.manager.client.setTimeout(() => this._send(), data.length * 10);
         return;
       }
 
       this._setSpeaking(true);
 
+      if (!data.startTime) {
+        data.startTime = Date.now();
+      }
+
       const bufferLength = 1920 * data.channels;
       let buffer = this.stream.read(bufferLength);
       if (!buffer) {
         data.missed++;
+        data.pausedTime += data.length * 10;
         this.player.connection.manager.client.setTimeout(() => this._send(), data.length * 10);
         return;
       }
@@ -126,8 +133,8 @@ class StreamDispatcher extends EventEmitter {
 
       this._sendBuffer(buffer, data.sequence, data.timestamp);
 
-      const nextTime = data.startTime + (data.count * data.length);
-      this.player.connection.manager.client.setTimeout(() => this._send(), data.length + (nextTime - Date.now()));
+      const nextTime = data.length + (data.startTime + data.pausedTime + (data.count * data.length) - Date.now());
+      this.player.connection.manager.client.setTimeout(() => this._send(), nextTime);
     } catch (e) {
       this._triggerTerminalState('error', e);
     }
@@ -187,7 +194,6 @@ class StreamDispatcher extends EventEmitter {
     const data = this.streamingData;
     data.length = 20;
     data.missed = 0;
-    data.startTime = Date.now();
 
     this.stream.once('readable', () => this._send());
   }
