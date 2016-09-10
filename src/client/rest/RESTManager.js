@@ -1,6 +1,7 @@
 const UserAgentManager = require('./UserAgentManager');
 const RESTMethods = require('./RESTMethods');
 const SequentialRequestHandler = require('./RequestHandlers/Sequential');
+const BurstRequestHandler = require('./RequestHandlers/Burst');
 const APIRequest = require('./APIRequest');
 const Constants = require('../../util/Constants');
 
@@ -28,6 +29,8 @@ class RESTManager {
     switch (this.client.options.api_request_method) {
       case 'sequential':
         return SequentialRequestHandler;
+      case 'burst':
+        return BurstRequestHandler;
       default:
         throw new Error(Constants.Errors.INVALID_RATE_LIMIT_METHOD);
     }
