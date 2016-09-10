@@ -14,6 +14,8 @@ class VoiceChannel extends GuildChannel {
      * @type {Collection<string, GuildMember>}
      */
     this.members = new Collection();
+
+    this.type = 'voice';
   }
 
   setup(data) {
@@ -30,8 +32,6 @@ class VoiceChannel extends GuildChannel {
      * @type {number}
      */
     this.userLimit = data.user_limit;
-
-    this.type = 'voice';
   }
 
   /**

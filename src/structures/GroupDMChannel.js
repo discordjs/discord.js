@@ -33,6 +33,7 @@ const arraysEqual = require('../util/ArraysEqual');
 class GroupDMChannel extends Channel {
   constructor(client, data) {
     super(client, data);
+    this.type = 'group';
     this.messages = new Collection();
     this._typing = new Map();
   }
@@ -73,7 +74,6 @@ class GroupDMChannel extends Channel {
       }
     }
 
-    this.type = 'group';
     this.lastMessageID = data.last_message_id;
   }
 
