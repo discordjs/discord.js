@@ -11,7 +11,8 @@ class TypingStartHandler extends AbstractHandler {
 
     if (channel && user) {
       if (channel.type === 'voice') {
-        return client.emit('warn', `Discord sent a typing packet to voice channel ${channel.id}`);
+        client.emit('warn', `Discord sent a typing packet to voice channel ${channel.id}`);
+        return;
       }
       if (channel._typing.has(user.id)) {
         const typing = channel._typing.get(user.id);
