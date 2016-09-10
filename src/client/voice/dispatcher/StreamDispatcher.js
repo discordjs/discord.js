@@ -50,6 +50,24 @@ class StreamDispatcher extends EventEmitter {
     );
   }
 
+  /**
+   * how long the stream dispatcher has been "speaking" for
+   * @type {number}
+   * @readonly
+   */
+  get time() {
+    return this.streamingData.count * (this.streamingData.length || 0);
+  }
+
+  /**
+   * The total time, taking into account pauses and skips, that the dispatcher has been streaming for.
+   * @type {number}
+   * @readonly
+   */
+  get totalStreamTime() {
+    return this.time + this.streamingData.pausedTime;
+  }
+
   _createPacket(sequence, timestamp, buffer) {
     const packetBuffer = new Buffer(buffer.length + 28);
     packetBuffer.fill(0);
