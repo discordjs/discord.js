@@ -34,6 +34,7 @@ class GroupDMChannel extends Channel {
   constructor(client, data) {
     super(client, data);
     this.messages = new Collection();
+    this._typing = new Map();
   }
 
   setup(data) {
@@ -74,7 +75,6 @@ class GroupDMChannel extends Channel {
 
     this.type = 'group';
     this.lastMessageID = data.last_message_id;
-    this._typing = new Map();
   }
 
   /**
