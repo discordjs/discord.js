@@ -4,7 +4,7 @@ const Discord = require('../');
 const request = require('superagent');
 const fs = require('fs');
 
-const client = new Discord.Client({ fetch_all_members: false });
+const client = new Discord.Client({ fetch_all_members: false, api_request_method: 'burst' });
 
 const { email, password, token } = require('./auth.json');
 
@@ -134,7 +134,7 @@ client.on('message', msg => {
     msg.channel.guild.channels.get(chan).join()
       .then(conn => {
         msg.reply('done');
-        disp = conn.player.playStream(ytdl('https://www.youtube.com/watch?v=nbXgHAzUWB0', {filter : 'audioonly'}));
+        disp = conn.player.playStream(ytdl('https://www.youtube.com/watch?v=dc-nyGo0aC8', {filter : 'audioonly'}));
         conn.player.on('debug', console.log);
         conn.player.on('error', err => console.log(123, err));
         disp.on('error', err => console.log(123, err));
