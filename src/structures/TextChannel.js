@@ -27,6 +27,21 @@ class TextChannel extends GuildChannel {
     this._typing = new Map();
   }
 
+  /**
+   * A collection of members that can see this channel, mapped by their ID.
+   * @returns {Collection<string, GuildMember>}
+   * @readonly
+   */
+  get members() {
+    const members = new Collection();
+    for (const member of this.guild.members.values()) {
+      if (this.permissionsFor(member).hasPermission('READ_MESSAGES')) {
+        members.set(member.id, member);
+      }
+    }
+    return members;
+  }
+
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   sendMessage() { return; }
   sendTTSMessage() { return; }
