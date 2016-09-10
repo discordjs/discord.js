@@ -22,7 +22,7 @@ class DMChannel extends Channel {
      * The recipient on the other end of the DM
      * @type {User}
      */
-    this.recipient = this.client.users.get(data.recipients[0].id) || new User(this.client, data.recipients[0]);
+    this.recipient = this.client.dataManager.newUser(data.recipients[0]);
 
     this.type = 'dm';
     this.lastMessageID = data.last_message_id;
