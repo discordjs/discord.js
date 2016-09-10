@@ -20,7 +20,7 @@ class PresenceUpdateHandler extends AbstractHandler {
 
     if (guild) {
       const memberInGuild = guild.members.get(user.id);
-      if (!memberInGuild) {
+      if (!memberInGuild && data.status !== 'offline') {
         const member = guild._addMember({
           user,
           roles: data.roles,
