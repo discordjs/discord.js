@@ -11,6 +11,7 @@ const Collection = require('../util/Collection');
 class DMChannel extends Channel {
   constructor(client, data) {
     super(client, data);
+    this.type = 'dm';
     this.messages = new Collection();
     this._typing = new Map();
   }
@@ -24,7 +25,6 @@ class DMChannel extends Channel {
      */
     this.recipient = this.client.dataManager.newUser(data.recipients[0]);
 
-    this.type = 'dm';
     this.lastMessageID = data.last_message_id;
   }
 

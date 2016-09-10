@@ -10,6 +10,7 @@ const Collection = require('../util/Collection');
 class TextChannel extends GuildChannel {
   constructor(guild, data) {
     super(guild, data);
+    this.type = 'text';
     this.messages = new Collection();
     this._typing = new Map();
   }
@@ -23,7 +24,6 @@ class TextChannel extends GuildChannel {
      */
     this.topic = data.topic;
 
-    this.type = 'text';
     this.lastMessageID = data.last_message_id;
   }
 
