@@ -10,6 +10,9 @@ class TypingStartHandler extends AbstractHandler {
     const timestamp = new Date(data.timestamp * 1000);
 
     if (channel && user) {
+      if (channel.type === 'voice') {
+        return client.emit('warn', `Discord sent a typing packet to voice channel ${channel.id}`);
+      }
       if (channel._typing.has(user.id)) {
         const typing = channel._typing.get(user.id);
         typing.lastTimestamp = timestamp;
