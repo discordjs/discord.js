@@ -33,7 +33,7 @@ class GuildRoleUpdateAction extends Action {
 
 /**
  * Emitted whenever a guild role is updated.
- * @event Client#guildRoleUpdated
+ * @event Client#guildRoleUpdate
  * @param {Guild} guild The guild that the role was updated in.
  * @param {Role} oldRole The role before the update.
  * @param {Role} newRole The role after the update.
