@@ -174,6 +174,7 @@ class GuildMember {
    * @returns {boolean}
    */
   hasPermission(permission, explicit = false) {
+    if (this.guild.owner.id === this.user.id) return true;
     return this.roles.some(r => r.hasPermission(permission, explicit));
   }
 
