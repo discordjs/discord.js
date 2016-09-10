@@ -137,16 +137,6 @@ client.on('message', msg => {
         disp = conn.player.playStream(ytdl('https://www.youtube.com/watch?v=nbXgHAzUWB0', {filter : 'audioonly'}));
         conn.player.on('debug', console.log);
         conn.player.on('error', err => console.log(123, err));
-        const receiver = conn.createReceiver();
-        const out = fs.createWriteStream('C:/Users/Amish/Desktop/output.pcm');
-        conn.once('speaking', (user, speaking) => {
-          if (speaking) {
-            msg.reply(`${user.username} start`);
-            const str = receiver.createPCMStream(user);
-            str.pipe(out);
-            str.on('end', () => msg.reply(`${user.username} end`));
-          }
-        });
         disp.on('error', err => console.log(123, err));
       })
       .catch(console.log);
