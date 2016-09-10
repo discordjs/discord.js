@@ -12,7 +12,7 @@ class APIRequest {
   }
 
   getEndpoint() {
-    return `${this.method} ${this.url}`;
+    return `${this.url}`;
   }
 
   getAuth() {
