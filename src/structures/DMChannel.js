@@ -12,6 +12,7 @@ class DMChannel extends Channel {
   constructor(client, data) {
     super(client, data);
     this.messages = new Collection();
+    this._typing = new Map();
   }
 
   setup(data) {
@@ -25,7 +26,6 @@ class DMChannel extends Channel {
 
     this.type = 'dm';
     this.lastMessageID = data.last_message_id;
-    this._typing = new Map();
   }
 
   /**

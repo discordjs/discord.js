@@ -11,6 +11,7 @@ class TextChannel extends GuildChannel {
   constructor(guild, data) {
     super(guild, data);
     this.messages = new Collection();
+    this._typing = new Map();
   }
 
   setup(data) {
@@ -24,7 +25,6 @@ class TextChannel extends GuildChannel {
 
     this.type = 'text';
     this.lastMessageID = data.last_message_id;
-    this._typing = new Map();
   }
 
   /**
