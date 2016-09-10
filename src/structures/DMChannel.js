@@ -1,4 +1,3 @@
-const User = require('./User');
 const Channel = require('./Channel');
 const TextBasedChannel = require('./interface/TextBasedChannel');
 const Collection = require('../util/Collection');
