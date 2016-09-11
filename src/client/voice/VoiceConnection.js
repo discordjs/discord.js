@@ -202,13 +202,9 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Options that can be passed to stream-playing methods:
-   * ```js
-   * {
-   *   seek: 0,
-   *   volume: 1
-   * };
-   * ```
    * @typedef {Object} StreamOptions
+   * @property {number} [seek=0] The time to seek to
+   * @property {number} [volume=1] The volume to play at
    */
 
   /**

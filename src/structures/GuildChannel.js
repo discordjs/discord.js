@@ -205,15 +205,11 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Options given when creating a Guild Channel Invite:
-   * ```js
-   * {
-   *  temporary: false, // whether the invite should kick users after 24hrs if they are not given a new role
-   *  maxAge: 0, // the time in seconds the invite expires in
-   *  maxUses: 0, // the maximum amount of uses for this invite
-   * }
-   * ```
+   * Options given when creating a Guild Channel Invite
    * @typedef {Object} InviteOptions
+   * @property {boolean} [temporary=false] Whether the invite should kick users after 24hrs if they are not given a role
+   * @property {number} [maxAge=0] Time in seconds the invite expires in
+   * @property {maxUses} [maxUses=0] Maximum amount of uses for this invite
    */
 
   /**
