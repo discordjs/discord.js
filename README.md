@@ -43,7 +43,8 @@ client.login('your token');
 
 ## Links
 * [Website](http://hydrabolt.github.io/discord.js/)
-* [Discord Server](https://discord.gg/bRCvFy9)
+* [Discord.js Server](https://discord.gg/bRCvFy9)
+* [Discord API Server](https://discord.gg/rV4BwdK)
 * [Documentation](http://hydrabolt.github.io/discord.js/#!/docs/tag/master)
 * [Legacy Documentation](http://discordjs.readthedocs.io/en/8.1.0/docs_client.html)
 * [GitHub](https://github.com/hydrabolt/discord.js)
