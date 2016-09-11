@@ -32,6 +32,12 @@ class StreamDispatcher extends EventEmitter {
     this._startStreaming();
     this._triggered = false;
     this._volume = streamOptions.volume;
+    /**
+     * How many passes the dispatcher should take when sending packets to reduce packet loss. Values over 5
+     * aren't recommended, as it means you are using 5x more bandwidth. You _can_ edit this at runtime.
+     * @type {number}
+     */
+    this.passes = streamOptions.passes || 1;
   }
 
   /**
@@ -45,9 +51,11 @@ class StreamDispatcher extends EventEmitter {
   }
 
   _sendBuffer(buffer, sequence, timestamp) {
-    this.player.connection.udp.send(
-      this._createPacket(sequence, timestamp, this.player.opusEncoder.encode(buffer))
-    );
+    let repeats = this.passes;
+    const packet = this._createPacket(sequence, timestamp, this.player.opusEncoder.encode(buffer));
+    while (repeats--) {
+      this.player.connection.udp.send(packet);
+    }
   }
 
   /**
