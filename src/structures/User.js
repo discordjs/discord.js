@@ -164,6 +164,6 @@ class User {
   sendCode() { return; }
 }
 
-TextBasedChannel.applyToClass(User, false);
+TextBasedChannel.applyToClass(User);
 
 module.exports = User;
