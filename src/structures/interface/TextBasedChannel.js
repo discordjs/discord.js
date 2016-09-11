@@ -33,6 +33,21 @@ class TextBasedChannel {
    * };
    * ```
    * @typedef {Object} MessageOptions
+   * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
+   * @property {string} [nonce=''] The nonce for the message
+   * @property {boolean} [disable_everyone=this.client.options.disable_everyone] Whether or not @everyone and @here
+   * should be replaced with plain-text
+   * @property {boolean|SplitObject} [split=false] Whether or not the message should be split into multiple messages if
+   * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
+   */
+
+  /**
+   * Options for splitting a message
+   * @typedef {Object} SplitOptions
+   * @property {number} [maxLength=1950] Maximum character length per message piece
+   * @property {string} [char='\n'] Character to split the message with
+   * @property {string} [prepend=''] Text to prepend to each middle piece
+   * @property {string} [append=''] Text to append to each middle piece
    */
 
   /**
@@ -119,15 +134,11 @@ class TextBasedChannel {
   /**
    * The parameters to pass in when requesting previous messages from a channel. `around`, `before` and
    * `after` are mutually exclusive. All the parameters are optional.
-   * ```js
-   * {
-   *  limit: 30, // the message limit, defaults to 50
-   *  before: '123', // gets messages before the given message ID
-   *  after: '123', // gets messages after the given message ID
-   *  around: '123', // gets messages around the given message ID
-   * }
-   * ```
    * @typedef {Object} ChannelLogsQueryOptions
+   * @property {number} [limit=50] Number of messages to acquire
+   * @property {string} [before] ID of a message to get the messages that were posted before it
+   * @property {string} [after] ID of a message to get the messages that were posted after it
+   * @property {string} [around] ID of a message to get the messages that were posted around it
    */
 
   /**
@@ -255,12 +266,8 @@ class TextBasedChannel {
 
   /**
    * An object containing the same properties as CollectorOptions, but a few more:
-   * ```js
-   * {
-   *  errors: [], // an array of stop/end reasons that cause the promise to reject.
-   * }
-   * ```
-   * @typedef {Object} AwaitMessagesOptions
+   * @typedef {CollectorOptions} AwaitMessagesOptions
+   * @property {string[]} [errors] Stop/end reasons that cause the promise to reject
    */
 
   /**
@@ -332,13 +339,9 @@ class MessageCollector extends EventEmitter {
 
   /**
    * An object containing options used to configure a MessageCollector. All properties are optional.
-   * ```js
-   * {
-   *  time: null, // time in milliseconds. If specified, the collector ends after this amount of time.
-   *  max: null, // the maximum amount of messages to handle before ending.
-   * }
-   * ```
    * @typedef {Object} CollectorOptions
+   * @property {number} [time] Duration for the collector in milliseconds
+   * @property {number} [max] Maximum number of messages to handle
    */
 
   /**
