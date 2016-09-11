@@ -4,7 +4,7 @@ const Constants = require('../util/Constants');
  * The final evaluated permissions for a member in a channel
  */
 class EvaluatedPermissions {
-  constructor(member, permissions) {
+  constructor(member, raw) {
     /**
      * The member this permissions refer to
      * @type {GuildMember}
@@ -12,11 +12,10 @@ class EvaluatedPermissions {
     this.member = member;
 
     /**
-     * A number representing the packed permissions.
-     * @private
+     * A number representing the packed permissions
      * @type {number}
      */
-    this.permissions = permissions;
+    this.raw = raw;
   }
 
   /**
@@ -40,8 +39,8 @@ class EvaluatedPermissions {
    */
   hasPermission(permission, explicit = false) {
     permission = this.member.client.resolver.resolvePermission(permission);
-    if (!explicit && (this.permissions & Constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
-    return (this.permissions & permission) > 0;
+    if (!explicit && (this.raw & Constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
+    return (this.raw & permission) > 0;
   }
 }
 
