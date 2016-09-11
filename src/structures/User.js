@@ -1,6 +1,10 @@
 const TextBasedChannel = require('./interface/TextBasedChannel');
 const Constants = require('../util/Constants');
 
+function defined(p) {
+  return typeof p !== 'undefined';
+}
+
 /**
  * Represents a User on Discord.
  * @implements {TextBasedChannel}
@@ -15,6 +19,24 @@ class User {
     Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
 
     if (data) this.setup(data);
+  }
+
+  patch(data) {
+    for (const item of ['id', 'username', 'discriminator', 'game', 'avatar']) {
+      if (defined(data[item])) {
+        this[item] = data[item];
+      }
+    }
+    if (defined[data.bot]) {
+      this.bot = data.bot;
+    } else {
+      this.bot = this.bot || false;
+    }
+    if (defined[data.status]) {
+      this.status = data.status;
+    } else {
+      this.status = this.status || 'offline';
+    }
   }
 
   setup(data) {
@@ -36,13 +58,11 @@ class User {
      */
     this.discriminator = data.discriminator;
 
-    if (typeof data.avatar !== 'undefined') {
-      /**
-       * The ID of the user's avatar
-       * @type {string}
-       */
-      this.avatar = data.avatar;
-    }
+    /**
+     * The ID of the user's avatar
+     * @type {string}
+     */
+    this.avatar = data.avatar;
 
     /**
      * Whether or not the User is a Bot.
