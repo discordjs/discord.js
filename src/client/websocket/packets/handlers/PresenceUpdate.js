@@ -46,7 +46,7 @@ class PresenceUpdateHandler extends AbstractHandler {
 
     if (!same) {
       const oldUser = cloneObject(user);
-      user.setup(data.user);
+      user.patch(data.user);
       client.emit(Constants.Events.PRESENCE_UPDATE, oldUser, user);
     }
   }

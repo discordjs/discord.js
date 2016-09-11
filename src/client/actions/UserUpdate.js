@@ -15,7 +15,7 @@ class UserUpdateAction extends Action {
       }
 
       const oldUser = cloneObject(client.user);
-      client.user.setup(data);
+      client.user.patch(data);
       client.emit(Constants.Events.USER_UPDATE, oldUser, client.user);
       return {
         old: oldUser,
