@@ -138,7 +138,7 @@ client.on('message', msg => {
     msg.channel.guild.channels.get(chan).join()
       .then(conn => {
         msg.reply('done');
-        disp = conn.player.playStream(ytdl('https://www.youtube.com/watch?v=dc-nyGo0aC8', {filter : 'audioonly'}));
+        disp = conn.player.playStream(ytdl('https://www.youtube.com/watch?v=oQBiPwklN_Q', {filter : 'audioonly'}), { passes : 3 });
         conn.player.on('debug', console.log);
         conn.player.on('error', err => console.log(123, err));
         disp.on('error', err => console.log(123, err));

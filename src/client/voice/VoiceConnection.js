@@ -205,6 +205,7 @@ class VoiceConnection extends EventEmitter {
    * @typedef {Object} StreamOptions
    * @property {number} [seek=0] The time to seek to
    * @property {number} [volume=1] The volume to play at
+   * @property {number} [passes=1] How many times to send the voice packet to reduce packet loss
    */
 
   /**
@@ -220,8 +221,8 @@ class VoiceConnection extends EventEmitter {
    *  })
    *  .catch(console.log);
    */
-  playFile(file, { seek = 0, volume = 1 } = {}) {
-    const options = { seek: seek, volume: volume };
+  playFile(file, { seek = 0, volume = 1, passes = 1 } = {}) {
+    const options = { seek, volume, passes };
     return this.player.playFile(file, options);
   }
 
@@ -241,8 +242,8 @@ class VoiceConnection extends EventEmitter {
    *  })
    *  .catch(console.log);
    */
-  playStream(stream, { seek = 0, volume = 1 } = {}) {
-    const options = { seek: seek, volume: volume };
+  playStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
+    const options = { seek, volume, passes };
     return this.player.playStream(stream, options);
   }
 
@@ -252,8 +253,8 @@ class VoiceConnection extends EventEmitter {
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
    */
-  playConvertedStream(stream, { seek = 0, volume = 1 } = {}) {
-    const options = { seek: seek, volume: volume };
+  playConvertedStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
+    const options = { seek, volume, passes };
     this._shutdown();
     const dispatcher = this.player.playPCMStream(stream, options);
     return dispatcher;
