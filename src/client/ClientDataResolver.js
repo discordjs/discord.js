@@ -113,8 +113,10 @@ class ClientDataResolver {
   /**
    * Data that can be resolved to give a Channel. This can be:
    * * An instance of a Channel
+   * * An instance of a Message (the channel the message was sent in)
+   * * An instance of a Guild (the #general channel)
    * * An ID of a Channel
-   * @typedef {Channel|string} ChannelResolvable
+   * @typedef {Channel|Guild|Message|string} ChannelResolvable
    */
 
   /**
@@ -124,6 +126,8 @@ class ClientDataResolver {
    */
   resolveChannel(channel) {
     if (channel instanceof Channel) return channel;
+    if (channel instanceof Message) return channel.channel;
+    if (channel instanceof Guild) return channel.channels.get(channel.id);
     if (typeof channel === 'string') return this.client.channels.get(channel.id);
     return null;
   }

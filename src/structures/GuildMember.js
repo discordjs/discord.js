@@ -168,6 +168,19 @@ class GuildMember {
   }
 
   /**
+   * Returns `guildChannel.permissionsFor(guildMember)`. Returns evaluated permissions for a member in a guild channel.
+   * @param {ChannelResolvable} guildChannel the guild channel to use as context
+   * @returns {?EvaluatedPermissions}
+   */
+  permissionsIn(guildChannel) {
+    guildChannel = this.client.resolver.resolveChannel(guildChannel);
+    if (!guildChannel) {
+      throw new Error('supply a channel resolvable that resolves to a GuildChannel!');
+    }
+    return guildChannel.permissionsFor(this);
+  }
+
+  /**
    * Checks if any of the member's roles have a permission
    * @param {PermissionResolvable} permission The permission to check for
    * @param {boolean} [explicit=false] Whether to require the roles to explicitly have the exact permission
