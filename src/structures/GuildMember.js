@@ -354,8 +354,9 @@ class GuildMember {
   sendMessage() { return; }
   sendTTSMessage() { return; }
   sendFile() { return; }
+  sendCode() { return; }
 }
 
-TextBasedChannel.applyToClass(GuildMember);
+TextBasedChannel.applyToClass(GuildMember, false);
 
 module.exports = GuildMember;

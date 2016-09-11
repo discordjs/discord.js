@@ -110,6 +110,23 @@ class TextBasedChannel {
   }
 
   /**
+   * Send a code block to this channel
+   * @param {string} lang Language for the code block
+   * @param {StringResolvable} content Content of the code block
+   * @param {MessageOptions} options The options to provide
+   * @returns {Promise<Message|Message[]>}
+   */
+  sendCode(lang, content, options = {}) {
+    if (options.split) {
+      if (typeof options.split !== 'object') options.split = {};
+      if (!options.split.prepend) options.split.prepend = `\`\`\`${lang}\n`;
+      if (!options.split.append) options.split.append = '\n```';
+    }
+    content = this.client.resolver.resolveString(content);
+    return this.sendMessage(`\`\`\`${lang}\n${content}\n\`\`\``, options);
+  }
+
+  /**
    * Gets a single message from this channel, regardless of it being cached or not.
    * @param {string} messageID The ID of the message to get
    * @returns {Promise<Message>}
@@ -432,7 +449,7 @@ class MessageCollector extends EventEmitter {
 }
 
 exports.applyToClass = (structure, full = false) => {
-  const props = ['sendMessage', 'sendTTSMessage', 'sendFile'];
+  const props = ['sendMessage', 'sendTTSMessage', 'sendFile', 'sendCode'];
   if (full) {
     props.push('_cacheMessage');
     props.push('fetchMessages');
