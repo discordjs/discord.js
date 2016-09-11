@@ -33,7 +33,7 @@ class ClientVoiceManager {
    */
   _checkPendingReady(guildID) {
     const pendingRequest = this.pending.get(guildID);
-    if (!pendingRequest) throw new Error('Guild not pending');
+    if (!pendingRequest) throw new Error('Guild not pending.');
     if (pendingRequest.token && pendingRequest.sessionID && pendingRequest.endpoint) {
       const { channel, token, sessionID, endpoint, resolve, reject } = pendingRequest;
       const voiceConnection = new VoiceConnection(this, channel, token, sessionID, endpoint, resolve, reject);
@@ -53,7 +53,7 @@ class ClientVoiceManager {
    */
   _receivedVoiceServer(guildID, token, endpoint) {
     const pendingRequest = this.pending.get(guildID);
-    if (!pendingRequest) throw new Error('Guild not pending');
+    if (!pendingRequest) throw new Error('Guild not pending.');
     pendingRequest.token = token;
     // remove the port otherwise it errors ¯\_(ツ)_/¯
     pendingRequest.endpoint = endpoint.match(/([^:]*)/)[0];
@@ -67,7 +67,7 @@ class ClientVoiceManager {
    */
   _receivedVoiceStateUpdate(guildID, sessionID) {
     const pendingRequest = this.pending.get(guildID);
-    if (!pendingRequest) throw new Error('Guild not pending');
+    if (!pendingRequest) throw new Error('Guild not pending.');
     pendingRequest.sessionID = sessionID;
     this._checkPendingReady(guildID);
   }
@@ -97,7 +97,9 @@ class ClientVoiceManager {
    */
   joinChannel(channel) {
     return new Promise((resolve, reject) => {
-      if (this.pending.get(channel.guild.id)) throw new Error('already connecting to a channel in this guild');
+      if (this.pending.get(channel.guild.id)) {
+        throw new Error(`Already connecting to a channel in guild.`);
+      }
       const existingConn = this.connections.get(channel.guild.id);
       if (existingConn) {
         if (existingConn.channel.id !== channel.id) {
@@ -116,7 +118,7 @@ class ClientVoiceManager {
         reject,
       });
       this._sendWSJoin(channel);
-      this.client.setTimeout(() => reject(new Error('connection not established in 15s time period')), 15000);
+      this.client.setTimeout(() => reject(new Error('Connection not established within 15 seconds.')), 15000);
     });
   }
 }

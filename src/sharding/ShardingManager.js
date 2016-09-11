@@ -24,10 +24,10 @@ class ShardingManager extends EventEmitter {
      * @type {string}
      */
     this.file = file;
-    if (!file) throw new Error('file must be specified');
+    if (!file) throw new Error('File must be specified.');
     if (!path.isAbsolute(file)) this.file = path.resolve(process.cwd(), file);
     const stats = fs.statSync(this.file);
-    if (!stats.isFile()) throw new Error('file path does not point to a file');
+    if (!stats.isFile()) throw new Error('File path does not point to a file.');
 
     /**
      * The amount of shards that this manager is going to spawn
@@ -35,9 +35,9 @@ class ShardingManager extends EventEmitter {
      */
     this.totalShards = typeof totalShards !== 'undefined' ? totalShards : 1;
     if (typeof this.totalShards !== 'number' || isNaN(this.totalShards)) {
-      throw new TypeError('amout of shards must be a number');
+      throw new TypeError('Amount of shards must be a number.');
     }
-    if (this.totalShards < 1) throw new RangeError('amount of shards must be at least 1');
+    if (this.totalShards < 1) throw new RangeError('Amount of shards must be at least 1.');
 
     /**
      * A collection of shards that this manager has spawned
@@ -62,8 +62,8 @@ class ShardingManager extends EventEmitter {
    */
   spawn(amount) {
     if (typeof amount !== 'undefined') {
-      if (typeof amount !== 'number' || isNaN(amount)) throw new TypeError('amout of shards must be a number');
-      if (amount < 1) throw new RangeError('amount of shards must be at least 1');
+      if (typeof amount !== 'number' || isNaN(amount)) throw new TypeError('Amount of shards must be a number.');
+      if (amount < 1) throw new RangeError('Amount of shards must be at least 1.');
       this.totalShards = amount;
     }
 

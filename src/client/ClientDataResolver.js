@@ -199,7 +199,7 @@ class ClientDataResolver {
     }
 
     if (resource instanceof Buffer) return Promise.resolve(resource);
-    return Promise.reject(new TypeError('resource is not a string or Buffer'));
+    return Promise.reject(new TypeError('Resource must be a string or Buffer.'));
   }
 }
 

@@ -109,7 +109,7 @@ class StreamDispatcher extends EventEmitter {
       const data = this.streamingData;
 
       if (data.missed >= 5) {
-        this._triggerTerminalState('error', new Error('stream is not generating fast enough'));
+        this._triggerTerminalState('error', new Error('Stream is not generating quickly enough.'));
         return;
       }
 
@@ -184,7 +184,7 @@ class StreamDispatcher extends EventEmitter {
      * @event StreamDispatcher#debug
      * @param {string} information The debug information
      */
-    this.emit('debug', `triggered terminal state ${state} - stream is now dead`);
+    this.emit('debug', `Triggered terminal state ${state} - stream is now dead`);
     this._triggered = true;
     this._setSpeaking(false);
     switch (state) {
@@ -195,14 +195,14 @@ class StreamDispatcher extends EventEmitter {
         this._triggerError(err);
         break;
       default:
-        this.emit('error', 'unknown trigger state');
+        this.emit('error', 'Unknown trigger state');
         break;
     }
   }
 
   _startStreaming() {
     if (!this.stream) {
-      this.emit('error', 'no stream');
+      this.emit('error', 'No stream');
       return;
     }
 

@@ -15,7 +15,7 @@ class RESTMethods {
 
   loginEmailPassword(email, password) {
     return new Promise((resolve, reject) => {
-      this.rest.client.emit('debug', 'client launched using email and password - should use token instead');
+      this.rest.client.emit('debug', 'Client launched using email and password - should use token instead');
       this.rest.client.email = email;
       this.rest.client.password = password;
       this.rest.makeRequest('post', Constants.Endpoints.login, false, { email, password })
@@ -368,7 +368,7 @@ class RESTMethods {
   banGuildMember(guild, member, deleteDays) {
     return new Promise((resolve, reject) => {
       const user = this.rest.client.resolver.resolveUser(member);
-      if (!user) throw new Error('cannot ban a user that is not a user resolvable');
+      if (!user) throw new Error('Couldn\'t resolve the user to ban.');
       this.rest.makeRequest('put', `${Constants.Endpoints.guildBans(guild.id)}/${user.id}`, true, {
         'delete-message-days': deleteDays,
       }).then(() => {
@@ -380,7 +380,7 @@ class RESTMethods {
   unbanGuildMember(guild, member) {
     return new Promise((resolve, reject) => {
       member = this.rest.client.resolver.resolveUser(member);
-      if (!member) throw new Error('cannot unban a user that is not a user resolvable');
+      if (!member) throw new Error('Couldn\'t resolve the user to unban.');
       const listener = (eGuild, eUser) => {
         if (guild.id === guild.id && member.id === eUser.id) {
           this.rest.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
