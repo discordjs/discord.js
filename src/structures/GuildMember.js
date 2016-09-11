@@ -357,6 +357,6 @@ class GuildMember {
   sendCode() { return; }
 }
 
-TextBasedChannel.applyToClass(GuildMember, false);
+TextBasedChannel.applyToClass(GuildMember);
 
 module.exports = GuildMember;
