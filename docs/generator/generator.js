@@ -18,8 +18,12 @@ function parseDocs(json) {
     console.log('compressing');
     output = zlib.deflateSync(output).toString('utf8');
   }
-  console.log('writing to docs.json');
-  fs.writeFileSync('./docs/docs.json', output);
+  if (!process.argv.slice(2).includes('silent')) {
+    console.log('writing to docs.json');
+    fs.writeFileSync('./docs/docs.json', output);
+  }
+  console.log('done!');
+  process.exit(0);
 }
 
 console.log(`using format version ${GEN_VERSION}`);
