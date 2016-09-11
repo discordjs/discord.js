@@ -42,6 +42,16 @@ class EvaluatedPermissions {
     if (!explicit && (this.raw & Constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
     return (this.raw & permission) > 0;
   }
+
+  /**
+   * Checks whether a user has multiple permissions in a channel.
+   * @param {Array<PermissionResolvable>} permissions the permissions to test for
+   * @param {boolean} [explicit=false] whether to require the user to explicitly have the exact permissions
+   * @returns {boolean}
+   */
+  hasPermissions(permissions, explicit = false) {
+    return permissions.map(p => this.hasPermission(p, explicit)).every(v => v);
+  }
 }
 
 module.exports = EvaluatedPermissions;

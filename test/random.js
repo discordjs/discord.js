@@ -14,6 +14,10 @@ client.on('ready', () => {
   console.log('ready!');
 });
 
+client.on('guildMemberAdd', (g, m) => {
+  console.log(`${m.user.username} joined ${g.name}`);
+})
+
 client.on('debug', console.log);
 
 client.on('message', message => {
