@@ -26,7 +26,7 @@ class PresenceUpdateHandler extends AbstractHandler {
           roles: data.roles,
           deaf: false,
           mute: false,
-        }, true);
+        }, false);
         client.emit(Constants.Events.GUILD_MEMBER_AVAILABLE, guild, member);
       }
     }
