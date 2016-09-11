@@ -29,7 +29,7 @@ class TextChannel extends GuildChannel {
 
   /**
    * A collection of members that can see this channel, mapped by their ID.
-   * @returns {Collection<string, GuildMember>}
+   * @type {Collection<string, GuildMember>}
    * @readonly
    */
   get members() {
