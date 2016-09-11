@@ -81,8 +81,16 @@ class User {
     this.status = data.status || this.status || 'offline';
 
     /**
+     * Represents data about a Game
+     * @property {string} name the name of the game being played.
+     * @property {string} [url] the URL of the stream, if the game is being streamed.
+     * @property {number} [type] if being streamed, this is `1`.
+     * @typedef {object} Game
+     */
+
+    /**
      * The game that the user is playing, `null` if they aren't playing a game.
-     * @type {string}
+     * @type {Game}
      */
     this.game = data.game;
   }
