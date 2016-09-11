@@ -612,7 +612,7 @@ class Guild {
   _updateMember(member, data) {
     const oldMember = cloneObject(member);
 
-    if (data.roles) member._roles = data.roles;
+    if (data.roles && data.roles.length > 0) member._roles = data.roles;
     else member.nickname = data.nick;
 
     const notSame = member.nickname !== oldMember.nickname || !arraysEqual(member._roles, oldMember._roles);
