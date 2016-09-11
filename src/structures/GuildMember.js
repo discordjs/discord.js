@@ -324,7 +324,7 @@ class GuildMember {
    * console.log(`Hello from ${member}!`);
    */
   toString() {
-    return `<@${this.user.id}>`;
+    return String(this.user);
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
