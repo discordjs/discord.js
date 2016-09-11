@@ -316,6 +316,17 @@ class GuildMember {
     return this.client.rest.methods.banGuildMember(this.guild, this, deleteDays);
   }
 
+  /**
+   * When concatenated with a string, this automatically concatenates the User's mention instead of the Member object.
+   * @returns {string}
+   * @example
+   * // logs: Hello from <@123456789>!
+   * console.log(`Hello from ${member}!`);
+   */
+  toString() {
+    return `<@${this.user.id}>`;
+  }
+
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   sendMessage() { return; }
   sendTTSMessage() { return; }
