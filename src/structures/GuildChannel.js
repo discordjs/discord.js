@@ -133,7 +133,7 @@ class GuildChannel extends Channel {
     } else {
       userOrRole = this.client.resolver.resolveUser(userOrRole);
       payload.type = 'member';
-      if (!userOrRole) return Promise.reject(new TypeError('supplied parameter was neither a user or a role'));
+      if (!userOrRole) return Promise.reject(new TypeError('Supplied parameter was neither a User nor a Role.'));
     }
 
     payload.id = userOrRole.id;

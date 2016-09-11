@@ -34,9 +34,7 @@ class VoiceReceiver extends EventEmitter {
       const ssrc = +msg.readUInt32BE(8).toString(10);
       const user = this.connection.ssrcMap.get(ssrc);
       if (!user) {
-        if (!this.queues.has(ssrc)) {
-          this.queues.set(ssrc, []);
-        }
+        if (!this.queues.has(ssrc)) this.queues.set(ssrc, []);
         this.queues.get(ssrc).push(msg);
       } else {
         if (this.queues.get(ssrc)) {
@@ -58,12 +56,8 @@ class VoiceReceiver extends EventEmitter {
    */
   createOpusStream(user) {
     user = this.connection.manager.client.resolver.resolveUser(user);
-    if (!user) {
-      throw new Error('invalid user object supplied');
-    }
-    if (this.opusStreams.get(user.id)) {
-      throw new Error('there is already an existing stream for that user!');
-    }
+    if (!user) throw new Error('Couldn\'t resolve the user to create Opus stream.');
+    if (this.opusStreams.get(user.id)) throw new Error('There is already an existing stream for that user.');
     const stream = new Readable();
     this.opusStreams.set(user.id, stream);
     return stream;
@@ -77,8 +71,8 @@ class VoiceReceiver extends EventEmitter {
    */
   createPCMStream(user) {
     user = this.connection.manager.client.resolver.resolveUser(user);
-    if (!user) throw new Error('invalid user object supplied');
-    if (this.pcmStreams.get(user.id)) throw new Error('there is already an existing stream for that user!');
+    if (!user) throw new Error('Couldn\'t resolve the user to create PCM stream.');
+    if (this.pcmStreams.get(user.id)) throw new Error('There is already an existing stream for that user.');
     const stream = new Readable();
     this.pcmStreams.set(user.id, stream);
     return stream;
@@ -93,7 +87,7 @@ class VoiceReceiver extends EventEmitter {
        * @event VoiceReceiver#warn
        * @param {string} message The warning message
        */
-      this.emit('warn', 'failed to decrypt voice packet');
+      this.emit('warn', 'Failed to decrypt voice packet');
       return;
     }
     data = new Buffer(data);

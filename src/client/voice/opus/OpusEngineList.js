@@ -20,5 +20,5 @@ exports.fetch = () => {
     const fetched = fetch(encoder);
     if (fetched) return fetched;
   }
-  throw new Error('could not find an opus engine');
+  throw new Error('Couldn\'t find an Opus engine.');
 };

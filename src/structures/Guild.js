@@ -426,9 +426,9 @@ class Guild {
    * @returns {Promise<GuildMember>}
    */
   fetchMember(user) {
-    if (this._fetchWaiter) return Promise.reject(new Error('already fetching guild members'));
+    if (this._fetchWaiter) return Promise.reject(new Error('Already fetching guild members.'));
     user = this.client.resolver.resolveUser(user);
-    if (!user) return Promise.reject(new Error('user is not cached'));
+    if (!user) return Promise.reject(new Error('User is not cached. Use Client.fetchUser first.'));
     if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
     return this.client.rest.methods.getGuildMember(this, user);
   }
@@ -441,7 +441,7 @@ class Guild {
    */
   fetchMembers(query = '') {
     return new Promise((resolve, reject) => {
-      if (this._fetchWaiter) throw new Error('already fetching guild members');
+      if (this._fetchWaiter) throw new Error('Already fetching guild members in ${this.id}.');
       if (this.memberCount === this.members.size) {
         resolve(this);
         return;
@@ -456,7 +456,7 @@ class Guild {
         },
       });
       this._checkChunks();
-      this.client.setTimeout(() => reject(new Error('members not here in time')), 120 * 1000);
+      this.client.setTimeout(() => reject(new Error('Members didn\'t arrive in time.')), 120 * 1000);
     });
   }
 

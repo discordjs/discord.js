@@ -191,7 +191,7 @@ class TextBasedChannel {
    * channel.startTyping();
    */
   startTyping(count) {
-    if (typeof count !== 'undefined' && count < 1) throw new RangeError('count must be at least 1');
+    if (typeof count !== 'undefined' && count < 1) throw new RangeError('Count must be at least 1.');
     if (!this.client.user._typing.has(this.id)) {
       this.client.user._typing.set(this.id, {
         count: count || 1,
@@ -304,7 +304,7 @@ class TextBasedChannel {
    */
   bulkDelete(messages) {
     if (messages instanceof Collection) messages = messages.array();
-    if (!(messages instanceof Array)) return Promise.reject(new TypeError('messages must be an array or collection'));
+    if (!(messages instanceof Array)) return Promise.reject(new TypeError('Messages must be an Array or Collection.'));
     const messageIDs = messages.map(m => m.id);
     return this.client.rest.methods.bulkDeleteMessages(this, messageIDs);
   }
