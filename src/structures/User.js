@@ -36,11 +36,13 @@ class User {
      */
     this.discriminator = data.discriminator;
 
-    /**
-     * The ID of the user's avatar
-     * @type {string}
-     */
-    this.avatar = data.avatar;
+    if (typeof data.avatar !== 'undefined') {
+      /**
+       * The ID of the user's avatar
+       * @type {string}
+       */
+      this.avatar = data.avatar;
+    }
 
     /**
      * Whether or not the User is a Bot.
