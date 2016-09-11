@@ -161,8 +161,9 @@ class User {
   sendMessage() { return; }
   sendTTSMessage() { return; }
   sendFile() { return; }
+  sendCode() { return; }
 }
 
-TextBasedChannel.applyToClass(User);
+TextBasedChannel.applyToClass(User, false);
 
 module.exports = User;
