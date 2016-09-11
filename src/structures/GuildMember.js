@@ -168,16 +168,14 @@ class GuildMember {
   }
 
   /**
-   * Returns `guildChannel.permissionsFor(guildMember)`. Returns evaluated permissions for a member in a guild channel.
-   * @param {ChannelResolvable} guildChannel the guild channel to use as context
+   * Returns `channel.permissionsFor(guildMember)`. Returns evaluated permissions for a member in a guild channel.
+   * @param {ChannelResolvable} channel Guild channel to use as context
    * @returns {?EvaluatedPermissions}
    */
-  permissionsIn(guildChannel) {
-    guildChannel = this.client.resolver.resolveChannel(guildChannel);
-    if (!guildChannel) {
-      throw new Error('supply a channel resolvable that resolves to a GuildChannel!');
-    }
-    return guildChannel.permissionsFor(this);
+  permissionsIn(channel) {
+    channel = this.client.resolver.resolveChannel(channel);
+    if (!channel || !channel.guild) throw new Error('Could not resolve channel to a guild channel.');
+    return channel.permissionsFor(this);
   }
 
   /**
