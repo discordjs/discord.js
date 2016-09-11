@@ -290,7 +290,7 @@ class Message {
    * Reply to a message
    * @param {StringResolvable} content The content for the message
    * @param {MessageOptions} [options = {}] The options to provide
-   * @returns {Promise<Message>}
+   * @returns {Promise<Message|Message[]>}
    * @example
    * // reply to a message
    * message.reply('Hey, I'm a reply!')
@@ -299,8 +299,15 @@ class Message {
    */
   reply(content, options = {}) {
     content = this.client.resolver.resolveString(content);
-    const newContent = this.guild ? `${this.author}, ${content}` : content;
-    return this.client.rest.methods.sendMessage(this.channel, newContent, options.tts);
+    const prepend = this.guild ? `${this.author}, ` : '';
+    content = `${prepend}${content}`;
+
+    if (options.split) {
+      if (typeof options.split !== 'object') options.split = {};
+      if (!options.split.prepend) options.split.prepend = prepend;
+    }
+
+    return this.client.rest.methods.sendMessage(this.channel, content, options);
   }
 
   /**

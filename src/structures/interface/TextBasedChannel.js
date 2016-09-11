@@ -29,6 +29,7 @@ class TextBasedChannel {
    *   tts: false,
    *   nonce: '',
    *   disable_everyone: false,
+   *   split: false,
    * };
    * ```
    * @typedef {Object} MessageOptions
@@ -38,7 +39,7 @@ class TextBasedChannel {
    * Send a message to this channel
    * @param {StringResolvable} content The content to send
    * @param {MessageOptions} [options={}] The options to provide
-   * @returns {Promise<Message>}
+   * @returns {Promise<Message|Message[]>}
    * @example
    * // send a message
    * channel.sendMessage('hello!')
@@ -46,14 +47,14 @@ class TextBasedChannel {
    *  .catch(console.log);
    */
   sendMessage(content, options = {}) {
-    return this.client.rest.methods.sendMessage(this, content, options.tts, options.nonce, options.disable_everyone);
+    return this.client.rest.methods.sendMessage(this, content, options);
   }
 
   /**
    * Send a text-to-speech message to this channel
    * @param {StringResolvable} content The content to send
    * @param {MessageOptions} [options={}] The options to provide
-   * @returns {Promise<Message>}
+   * @returns {Promise<Message|Message[]>}
    * @example
    * // send a TTS message
    * channel.sendTTSMessage('hello!')
@@ -61,7 +62,8 @@ class TextBasedChannel {
    *  .catch(console.log);
    */
   sendTTSMessage(content, options = {}) {
-    return this.client.rest.methods.sendMessage(this, content, true, options.nonce, options.disable_everyone);
+    Object.assign(options, { tts: true });
+    return this.client.rest.methods.sendMessage(this, content, options);
   }
 
   /**
@@ -69,9 +71,10 @@ class TextBasedChannel {
    * @param {FileResolvable} attachment The file to send
    * @param {string} [fileName="file.jpg"] The name and extension of the file
    * @param {StringResolvable} [content] Text message to send with the attachment
+   * @param {MessageOptions} [options] The options to provide
    * @returns {Promise<Message>}
    */
-  sendFile(attachment, fileName, content) {
+  sendFile(attachment, fileName, content, options = {}) {
     if (!fileName) {
       if (typeof attachment === 'string') {
         fileName = path.basename(attachment);
@@ -83,7 +86,7 @@ class TextBasedChannel {
     }
     return new Promise((resolve, reject) => {
       this.client.resolver.resolveFile(attachment).then(file => {
-        this.client.rest.methods.sendMessage(this, content, false, undefined, false, {
+        this.client.rest.methods.sendMessage(this, content, options, {
           file,
           name: fileName,
         }).then(resolve).catch(reject);

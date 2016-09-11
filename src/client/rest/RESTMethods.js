@@ -1,5 +1,6 @@
 const Constants = require('../../util/Constants');
 const Collection = require('../../util/Collection');
+const splitMessage = require('../../util/SplitMessage');
 
 const requireStructure = name => require(`../../structures/${name}`);
 const User = requireStructure('User');
@@ -46,34 +47,56 @@ class RESTMethods {
     });
   }
 
-  sendMessage(channel, content, tts, nonce, disableEveryone, file) {
+  sendMessage(channel, content, { tts, nonce, disable_everyone, split } = {}, file = null) {
     return new Promise((resolve, reject) => {
-      const $this = this;
-
       if (typeof content !== 'undefined') content = this.rest.client.resolver.resolveString(content);
 
-      if (disableEveryone || (typeof disableEveryone === 'undefined' && this.rest.client.options.disable_everyone)) {
+      if (disable_everyone || (typeof disable_everyone === 'undefined' && this.rest.client.options.disable_everyone)) {
         content = content.replace('@everyone', '@\u200beveryone').replace('@here', '@\u200bhere');
       }
 
-      function req() {
-        $this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
-          content, tts, nonce,
-        }, file)
-        .then(data => resolve($this.rest.client.actions.MessageCreate.handle(data).message))
-        .catch(reject);
-      }
+      if (split) content = splitMessage(content, typeof split === 'object' ? split : {});
 
       if (channel instanceof User || channel instanceof GuildMember) {
         this.createDM(channel).then(chan => {
           channel = chan;
-          req();
+          this._sendMessageRequest(channel, content, file, tts, nonce, resolve, reject);
         })
         .catch(reject);
       } else {
-        req();
+        this._sendMessageRequest(channel, content, file, tts, nonce, resolve, reject);
       }
     });
+  }
+
+  _sendMessageRequest(channel, content, file, tts, nonce, resolve, reject) {
+    if (content instanceof Array) {
+      const datas = [];
+      const promise = this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
+        content: content[0], tts, nonce,
+      }, file);
+      for (let i = 1; i <= content.length; i++) {
+        if (i < content.length) {
+          promise.then(data => {
+            datas.push(data);
+            return this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
+              content: content[i], tts, nonce,
+            }, file);
+          });
+        } else {
+          promise.then(data => {
+            datas.push(data);
+            resolve(this.rest.client.actions.MessageCreate.handle(datas).messages).catch(reject);
+          });
+        }
+      }
+    } else {
+      this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
+        content, tts, nonce,
+      }, file)
+        .then(data => resolve(this.rest.client.actions.MessageCreate.handle(data).message))
+        .catch(reject);
+    }
   }
 
   deleteMessage(message) {
