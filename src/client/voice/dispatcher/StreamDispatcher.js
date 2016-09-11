@@ -123,6 +123,11 @@ class StreamDispatcher extends EventEmitter {
       this._setSpeaking(true);
 
       if (!data.startTime) {
+        /**
+         * Emitted once the dispatcher starts streaming
+         * @event StreamDispatcher#start
+         */
+        this.emit('start');
         data.startTime = Date.now();
       }
 
