@@ -192,6 +192,16 @@ class GuildMember {
   }
 
   /**
+   * Checks whether the roles of the members allow them to perform specific actions.
+   * @param {Array<PermissionResolvable>} permissions the permissions to test for
+   * @param {boolean} [explicit=false] whether to require the member to explicitly have the exact permissions
+   * @returns {boolean}
+   */
+  hasPermissions(permissions, explicit = false) {
+    return permissions.map(p => this.hasPermission(p, explicit)).every(v => v);
+  }
+
+  /**
    * Mute/unmute a user
    * @param {boolean} mute Whether or not the member should be muted
    * @returns {Promise<GuildMember>}
