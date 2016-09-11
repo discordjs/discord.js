@@ -477,6 +477,14 @@ class RESTMethods {
     });
   }
 
+  getInvite(code) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.invite(code), true)
+        .then(invite => resolve(new Invite(this.rest.client, invite)))
+        .catch(reject);
+    });
+  }
+
   getGuildInvites(guild) {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('get', Constants.Endpoints.guildInvites(guild.id), true).then(inviteItems => {

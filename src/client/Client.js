@@ -192,6 +192,15 @@ class Client extends EventEmitter {
   }
 
   /**
+   * Fetches an invite object from an invite code.
+   * @param {string} code the invite code.
+   * @returns {Promise<Invite, Error>}
+   */
+  fetchInvite(code) {
+    return this.rest.methods.getInvite(code);
+  }
+
+  /**
    * Returns a Collection, mapping Guild ID to Voice Connections.
    * @readonly
    * @type {Collection<string, VoiceConnection>}

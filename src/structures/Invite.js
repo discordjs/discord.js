@@ -23,7 +23,8 @@ const PartialGuildChannel = require('./PartialGuildChannel');
 */
 
 /**
- * Represents an Invitation to a Guild Channel
+ * Represents an Invitation to a Guild Channel.
+ * <warn>The only guaranteed properties are `code`, `guild` and `channel`. Other properties can be missing.</warn>
  */
 class Invite {
   constructor(client, data) {
@@ -75,11 +76,13 @@ class Invite {
      */
     this.maxUses = data.max_uses;
 
-    /**
-     * The user who created this invite
-     * @type {User}
-     */
-    this.inviter = this.client.dataManager.newUser(data.inviter);
+    if (data.inviter) {
+      /**
+       * The user who created this invite
+       * @type {User}
+       */
+      this.inviter = this.client.dataManager.newUser(data.inviter);
+    }
 
     /**
      * The Channel the invite is for. If this Channel is already known, this will be a GuildChannel object.
