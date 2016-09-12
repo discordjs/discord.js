@@ -77,8 +77,8 @@ class Collection extends Map {
   }
 
   /**
-   * Returns a single item where `item[key] === value`, or the given function returns `true`. In the latter case,
-   * this is identical to
+   * Returns a single item where `item[key] === value`, or the given function returns `true`.
+   * In the latter case, this is identical to
    * [Array.find()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find).
    * @param {string|function} keyOrFn The key to filter by, or the function to test with
    * @param {*} [value] The expected value - required if using a key for the first param
@@ -98,6 +98,35 @@ class Collection extends Map {
     } else if (typeof keyOrFn === 'function') {
       for (const [key, val] of this) {
         if (keyOrFn(val, key, this)) return val;
+      }
+      return null;
+    } else {
+      throw new Error('First parameter must be a string key or a function.');
+    }
+  }
+
+  /**
+   * Returns the key of the item where `item[key] === value`, or the given function returns `true`.
+   * In the latter case, this is identical to [Array.findIndex()]
+   * (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex).
+   * @param {string|function} keyOrFn The key to filter by, or the function to test with
+   * @param {*} [value] The expected value - required if using a key for the first param
+   * @returns {*}
+   * @example
+   * collection.find('id', '123123...');
+   * @example
+   * collection.find(val => val.id === '123123...');
+   */
+  findKey(keyOrFn, value) {
+    if (typeof keyOrFn === 'string') {
+      if (typeof value === 'undefined') throw new Error('Value must be specified.');
+      for (const [key, val] of this) {
+        if (val[keyOrFn] === value) return key;
+      }
+      return null;
+    } else if (typeof keyOrFn === 'function') {
+      for (const [key, val] of this) {
+        if (keyOrFn(val, key, this)) return key;
       }
       return null;
     } else {
