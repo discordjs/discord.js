@@ -130,13 +130,18 @@ client.on('message', msg => {
 
 const ytdl = require('ytdl-core');
 
-let disp;
+let disp, con;
 
 client.on('message', msg => {
+  if (msg.content.startsWith('/play')) {
+    const chan = msg.content.split(' ').slice(1).join(' ');
+    con.playStream(ytdl(chan, {filter : 'audioonly'}), { passes : 4 });
+  }
   if (msg.content.startsWith('/join')) {
     const chan = msg.content.split(' ').slice(1).join(' ');
     msg.channel.guild.channels.get(chan).join()
       .then(conn => {
+        con = conn;
         msg.reply('done');
         disp = conn.player.playStream(ytdl('https://www.youtube.com/watch?v=oQBiPwklN_Q', {filter : 'audioonly'}), { passes : 3 });
         conn.player.on('debug', console.log);
