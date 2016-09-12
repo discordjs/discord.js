@@ -41,9 +41,7 @@ class VoiceConnectionPlayer extends EventEmitter {
 
   _shutdown() {
     this.speaking = false;
-    if (this.dispatcher) {
-      this.dispatcher._triggerTerminalState('end', 'ended by parent player shutdown');
-    }
+    if (this.dispatcher) this.dispatcher._triggerTerminalState('end', 'ended by parent player shutdown');
     for (const stream of this.processMap.keys()) this.killStream(stream);
   }
 
