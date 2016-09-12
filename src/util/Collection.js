@@ -17,9 +17,6 @@ class Collection extends Map {
   /**
    * Returns the first item in this collection.
    * @returns {*}
-   * @example
-   * // identical to:
-   * Array.from(collection.values())[0];
    */
   first() {
     return this.values().next().value;
