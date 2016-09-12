@@ -185,7 +185,7 @@ class GuildMember {
    * @returns {boolean}
    */
   hasPermission(permission, explicit = false) {
-    if (this.guild.owner.id === this.user.id) return true;
+    if (!explicit && this.guild.owner.id === this.user.id) return true;
     return this.roles.some(r => r.hasPermission(permission, explicit));
   }
 
@@ -196,7 +196,7 @@ class GuildMember {
    * @returns {boolean}
    */
   hasPermissions(permissions, explicit = false) {
-    if (this.guild.owner.id === this.user.id) return true;
+    if (!explicit && this.guild.owner.id === this.user.id) return true;
     return permissions.map(p => this.hasPermission(p, explicit)).every(v => v);
   }
 
