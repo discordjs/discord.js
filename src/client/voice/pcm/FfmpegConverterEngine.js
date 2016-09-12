@@ -20,6 +20,7 @@ class FfmpegConverterEngine extends ConverterEngine {
       '-i', '-',
       '-f', 's16le',
       '-ar', '48000',
+      '-ac', '2',
       '-ss', String(seek),
       'pipe:1',
     ], { stdio: ['pipe', 'pipe', 'ignore'] });
