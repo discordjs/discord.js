@@ -26,11 +26,16 @@ class VoiceReceiver extends EventEmitter {
     this.pcmStreams = new Map();
     this.opusStreams = new Map();
     /**
+     * Whether or not this receiver has been destroyed.
+     * @type {boolean}
+     */
+    this.destroyed = false;
+    /**
      * The VoiceConnection that instantiated this
      * @type {VoiceConnection}
      */
     this.connection = connection;
-    this.connection.udp.udpSocket.on('message', msg => {
+    this._listener = (msg => {
       const ssrc = +msg.readUInt32BE(8).toString(10);
       const user = this.connection.ssrcMap.get(ssrc);
       if (!user) {
@@ -45,7 +50,36 @@ class VoiceReceiver extends EventEmitter {
         }
         this.handlePacket(msg, user);
       }
-    });
+    }).bind(this);
+    this.connection.udp.udpSocket.on('message', this._listener);
+  }
+
+  /**
+   * If this VoiceReceiver has been destroyed, running `recreate()` will recreate the listener.
+   * This avoids you having to create a new receiver.
+   * <info>Any streams that you had prior to destroying the receiver will not be recreated.</info>
+   */
+  recreate() {
+    if (this.destroyed) return;
+    this.connection.udp.udpSocket.on('message', this._listener);
+    this.destroyed = false;
+    return;
+  }
+
+  /**
+   * Destroy this VoiceReceiver, also ending any streams that it may be controlling.
+   */
+  destroy() {
+    this.connection.udp.udpSocket.removeListener('message', this._listener);
+    for (const stream of this.pcmStreams) {
+      stream[1]._push(null);
+      this.pcmStreams.delete(stream[0]);
+    }
+    for (const stream of this.opusStreams) {
+      stream[1]._push(null);
+      this.opusStreams.delete(stream[0]);
+    }
+    this.destroyed = true;
   }
 
   /**
