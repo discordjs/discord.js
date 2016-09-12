@@ -138,6 +138,57 @@ class Message {
     this._edits = [];
   }
 
+  patch(data) { // eslint-disable-line complexity
+    if (data.author) {
+      this.author = this.client.users.get(data.author.id);
+      if (this.guild) this.member = this.guild.member(this.author);
+    }
+    if (data.content) this.content = data.content;
+    if (data.timestamp) this._timestamp = new Date(data.timestamp).getTime();
+    if (data.edited_timestamp) {
+      this._editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
+    }
+    if ('tts' in data) this.tts = data.tts;
+    if ('mention_everyone' in data) this.mentions.everyone = data.mention_everyone;
+    if (data.nonce) this.nonce = data.nonce;
+    if (data.embeds) this.embeds = data.embeds.map(e => new Embed(this, e));
+    if (data.type > -1) {
+      this.system = false;
+      if (data.type === 6) this.system = true;
+    }
+    if (data.attachments) {
+      this.attachments = new Collection();
+      for (const attachment of data.attachments) {
+        this.attachments.set(attachment.id, new Attachment(this, attachment));
+      }
+    }
+    if (data.mentions) {
+      for (const mention of data.mentions) {
+        let user = this.client.users.get(mention.id);
+        if (user) {
+          this.mentions.users.set(user.id, user);
+        } else {
+          user = this.client.dataManager.newUser(mention);
+          this.mentions.users.set(user.id, user);
+        }
+      }
+    }
+    if (data.mention_roles) {
+      for (const mention of data.mention_roles) {
+        const role = this.channel.guild.roles.get(mention);
+        if (role) this.mentions.roles.set(role.id, role);
+      }
+    }
+    if (data.id) this.id = data.id;
+    if (this.channel.guild && data.content) {
+      const channMentionsRaw = data.content.match(/<#([0-9]{14,20})>/g) || [];
+      for (const raw of channMentionsRaw) {
+        const chan = this.channel.guild.channels.get(raw.match(/([0-9]{14,20})/g)[0]);
+        if (chan) this.mentions.channels.set(chan.id, chan);
+      }
+    }
+  }
+
   /**
    * When the message was sent
    * @type {Date}
@@ -195,61 +246,45 @@ class Message {
     return this._edits.slice().unshift(this);
   }
 
-  patch(data) { // eslint-disable-line complexity
-    if (data.author) {
-      this.author = this.client.users.get(data.author.id);
-      if (this.guild) this.member = this.guild.member(this.author);
-    }
-    if (data.content) this.content = data.content;
-    if (data.timestamp) this._timestamp = new Date(data.timestamp).getTime();
-    if (data.edited_timestamp) {
-      this._editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
-    }
-    if ('tts' in data) this.tts = data.tts;
-    if ('mention_everyone' in data) this.mentions.everyone = data.mention_everyone;
-    if (data.nonce) this.nonce = data.nonce;
-    if (data.embeds) this.embeds = data.embeds.map(e => new Embed(this, e));
-    if (data.type > -1) {
-      this.system = false;
-      if (data.type === 6) {
-        this.system = true;
-      }
-    }
-    if (data.attachments) {
-      this.attachments = new Collection();
-      for (const attachment of data.attachments) {
-        this.attachments.set(attachment.id, new Attachment(this, attachment));
-      }
-    }
-    if (data.mentions) {
-      for (const mention of data.mentions) {
-        let user = this.client.users.get(mention.id);
-        if (user) {
-          this.mentions.users.set(user.id, user);
-        } else {
-          user = this.client.dataManager.newUser(mention);
-          this.mentions.users.set(user.id, user);
-        }
-      }
-    }
-    if (data.mention_roles) {
-      for (const mention of data.mention_roles) {
-        const role = this.channel.guild.roles.get(mention);
-        if (role) {
-          this.mentions.roles.set(role.id, role);
-        }
-      }
-    }
-    if (data.id) this.id = data.id;
-    if (this.channel.guild && data.content) {
-      const channMentionsRaw = data.content.match(/<#([0-9]{14,20})>/g) || [];
-      for (const raw of channMentionsRaw) {
-        const chan = this.channel.guild.channels.get(raw.match(/([0-9]{14,20})/g)[0]);
-        if (chan) {
-          this.mentions.channels.set(chan.id, chan);
-        }
-      }
-    }
+  /**
+   * Whether or not a user, channel or role is mentioned in this message.
+   * @param {GuildChannel|User|Role|string} data either a guild channel, user or a role object, or a string representing
+   * the ID of any of these.
+   * @returns {boolean}
+   */
+  isMentioned(data) {
+    data = data.id ? data.id : data;
+    return this.mentions.users.has(data) || this.mentions.channels.has(data) || this.mentions.roles.has(data);
+  }
+
+  /**
+   * Edit the content of a message
+   * @param {StringResolvable} content The new content for the message
+   * @returns {Promise<Message>}
+   * @example
+   * // update the content of a message
+   * message.edit('This is my new content!')
+   *  .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
+   *  .catch(console.log);
+   */
+  edit(content) {
+    return this.client.rest.methods.updateMessage(this, content);
+  }
+
+  /**
+   * Pins this message to the channel's pinned messages
+   * @returns {Promise<Message>}
+   */
+  pin() {
+    return this.client.rest.methods.pinMessage(this);
+  }
+
+  /**
+   * Unpins this message from the channel's pinned messages
+   * @returns {Promise<Message>}
+   */
+  unpin() {
+    return this.client.rest.methods.unpinMessage(this);
   }
 
   /**
@@ -273,21 +308,7 @@ class Message {
   }
 
   /**
-   * Edit the content of a message
-   * @param {StringResolvable} content The new content for the message
-   * @returns {Promise<Message>}
-   * @example
-   * // update the content of a message
-   * message.edit('This is my new content!')
-   *  .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
-   *  .catch(console.log);
-   */
-  edit(content) {
-    return this.client.rest.methods.updateMessage(this, content);
-  }
-
-  /**
-   * Reply to a message
+   * Reply to the message
    * @param {StringResolvable} content The content for the message
    * @param {MessageOptions} [options = {}] The options to provide
    * @returns {Promise<Message|Message[]>}
@@ -308,33 +329,6 @@ class Message {
     }
 
     return this.client.rest.methods.sendMessage(this.channel, content, options);
-  }
-
-  /**
-   * Whether or not a user, channel or role is mentioned in this message.
-   * @param {GuildChannel|User|Role|string} data either a guild channel, user or a role object, or a string representing
-   * the ID of any of these.
-   * @returns {boolean}
-   */
-  isMentioned(data) {
-    data = data.id ? data.id : data;
-    return this.mentions.users.has(data) || this.mentions.channels.has(data) || this.mentions.roles.has(data);
-  }
-
-  /**
-   * Pins this message to the channel's pinned messages
-   * @returns {Promise<Message>}
-   */
-  pin() {
-    return this.client.rest.methods.pinMessage(this);
-  }
-
-  /**
-   * Unpins this message from the channel's pinned messages
-   * @returns {Promise<Message>}
-   */
-  unpin() {
-    return this.client.rest.methods.unpinMessage(this);
   }
 
   /**

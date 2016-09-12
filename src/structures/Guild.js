@@ -236,6 +236,18 @@ class Guild {
   }
 
   /**
+   * Returns the GuildMember form of a User object, if the User is present in the guild.
+   * @param {UserResolvable} user The user that you want to obtain the GuildMember of
+   * @returns {?GuildMember}
+   * @example
+   * // get the guild member of a user
+   * const member = guild.member(message.author);
+   */
+  member(user) {
+    return this.client.resolver.resolveGuildMember(this, user);
+  }
+
+  /**
    * Updates the Guild with new information - e.g. a new name.
    * @param {GuildEditData} data The data to update the guild with
    * @returns {Promise<Guild>}
@@ -362,18 +374,6 @@ class Guild {
    */
   setSplash(splash) {
     return this.edit({ splash });
-  }
-
-  /**
-   * Returns the GuildMember form of a User object, if the User is present in the guild.
-   * @param {UserResolvable} user The user that you want to obtain the GuildMember of
-   * @returns {?GuildMember}
-   * @example
-   * // get the guild member of a user
-   * const member = guild.member(message.author);
-   */
-  member(user) {
-    return this.client.resolver.resolveGuildMember(this, user);
   }
 
   /**

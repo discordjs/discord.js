@@ -45,7 +45,7 @@ class EvaluatedPermissions {
 
   /**
    * Checks whether a user has multiple permissions in a channel.
-   * @param {Array<PermissionResolvable>} permissions the permissions to test for
+   * @param {PermissionResolvable[]} permissions the permissions to test for
    * @param {boolean} [explicit=false] whether to require the user to explicitly have the exact permissions
    * @returns {boolean}
    */

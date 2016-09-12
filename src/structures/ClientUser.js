@@ -23,6 +23,10 @@ class ClientUser extends User {
     this._typing = new Map();
   }
 
+  edit(data) {
+    return this.client.rest.methods.updateCurrentUser(data);
+  }
+
   /**
    * Set the username of the logged in Client.
    * <info>Changing usernames in Discord is heavily rate limited, with only 2 requests
@@ -96,7 +100,7 @@ class ClientUser extends User {
    *  .then(user => console.log('Changed status!'))
    *  .catch(console.log);
    */
-  setStatus(status, game, url = null) {
+  setStatus(status, game = null, url = null) {
     return new Promise(resolve => {
       if (status === 'online' || status === 'here' || status === 'available') {
         this.idleStatus = null;
@@ -135,10 +139,6 @@ class ClientUser extends User {
       this.game = this.userGame;
       resolve(this);
     });
-  }
-
-  edit(data) {
-    return this.client.rest.methods.updateCurrentUser(data);
   }
 }
 
