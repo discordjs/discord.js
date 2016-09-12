@@ -50,30 +50,25 @@ class VoiceConnectionPlayer extends EventEmitter {
   killStream(stream) {
     const streams = this.processMap.get(stream);
     this._streamingData = this.dispatcher.streamingData;
-    this.emit('debug', 'Cleaning up streams after end/error');
+    this.emit('debug', 'cleaning up player after audio stream ended or encountered an error');
     if (streams) {
       this.processMap.delete(stream);
       if (streams.inputStream && streams.pcmConverter) {
         try {
           if (streams.inputStream.unpipe) {
             streams.inputStream.unpipe(streams.pcmConverter.stdin);
-            this.emit('debug', 'Stream kill part 4/5 pass');
-          }
-          if (streams.pcmConverter.stdout.destroy) {
-            streams.pcmConverter.stdout.destroy();
-            this.emit('debug', 'Stream kill part 2/5 pass');
-          }
-          if (streams.pcmConverter && streams.pcmConverter.kill) {
-            streams.pcmConverter.kill('SIGINT');
-            this.emit('debug', 'Stream kill part 3/5 pass');
+            this.emit('debug', '- unpiped input stream');
+          } else if (streams.inputStream.destroy) {
+            streams.inputStream.destroy();
+            this.emit('debug', '- couldn\'t unpipe input stream, so destroyed input stream');
           }
           if (streams.pcmConverter.stdin) {
             streams.pcmConverter.stdin.end();
-            this.emit('debug', 'Stream kill part 1/5 pass');
+            this.emit('debug', '- ended input stream to pcm converter');
           }
-          if (streams.inputStream.destroy) {
-            streams.inputStream.destroy();
-            this.emit('debug', 'Stream kill part 5/5 pass');
+          if (streams.pcmConverter && streams.pcmConverter.kill) {
+            streams.pcmConverter.kill('SIGINT');
+            this.emit('debug', '- killed the pcm converter');
           }
         } catch (err) {
           return err;
