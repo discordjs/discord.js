@@ -23,21 +23,13 @@ class TextBasedChannel {
   }
 
   /**
-   * Options that can be passed into sendMessage or sendTTSMessage:
-   * ```js
-   * {
-   *   tts: false,
-   *   nonce: '',
-   *   disable_everyone: false,
-   *   split: false,
-   * };
-   * ```
+   * Options that can be passed into sendMessage, sendTTSMessage, sendFile, sendCode, or Message.reply
    * @typedef {Object} MessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
    * @property {boolean} [disable_everyone=this.client.options.disable_everyone] Whether or not @everyone and @here
    * should be replaced with plain-text
-   * @property {boolean|SplitObject} [split=false] Whether or not the message should be split into multiple messages if
+   * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
    */
 
