@@ -75,16 +75,48 @@ class Role {
   }
 
   /**
-   * Deletes the role
-   * @returns {Promise<Role>}
-   * @example
-   * // delete a role
-   * role.delete()
-   *  .then(r => console.log(`Deleted role ${r}`))
-   *  .catch(console.log);
+   * The hexadecimal version of the role color, with a leading hashtag.
+   * @type {string}
+   * @readonly
    */
-  delete() {
-    return this.client.rest.methods.deleteGuildRole(this);
+  get hexColor() {
+    let col = this.color.toString(16);
+    while (col.length < 6) col = `0${col}`;
+    return `#${col}`;
+  }
+
+  /**
+   * Get an object mapping permission names to whether or not the role enables that permission
+   * @returns {Object<string, boolean>}
+   * @example
+   * // print the serialized role
+   * console.log(role.serialize());
+   */
+  serialize() {
+    const serializedPermissions = {};
+    for (const permissionName in Constants.PermissionFlags) {
+      serializedPermissions[permissionName] = this.hasPermission(permissionName);
+    }
+    return serializedPermissions;
+  }
+
+  /**
+   * Whether or not the role includes the given permission
+   * @param {PermissionResolvable} permission The name of the permission to test
+   * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permission
+   * @returns {boolean}
+   * @example
+   * // see if a role can ban a member
+   * if (role.hasPermission('BAN_MEMBERS')) {
+   *   console.log('This role can ban members');
+   * } else {
+   *   console.log('This role can\'t ban members');
+   * }
+   */
+  hasPermission(permission, explicit = false) {
+    permission = this.client.resolver.resolvePermission(permission);
+    if (!explicit && (this.permissions & Constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
+    return (this.permissions & permission) > 0;
   }
 
   /**
@@ -172,48 +204,16 @@ class Role {
   }
 
   /**
-   * Get an object mapping permission names to whether or not the role enables that permission
-   * @returns {Object<string, boolean>}
+   * Deletes the role
+   * @returns {Promise<Role>}
    * @example
-   * // print the serialized role
-   * console.log(role.serialize());
+   * // delete a role
+   * role.delete()
+   *  .then(r => console.log(`Deleted role ${r}`))
+   *  .catch(console.log);
    */
-  serialize() {
-    const serializedPermissions = {};
-    for (const permissionName in Constants.PermissionFlags) {
-      serializedPermissions[permissionName] = this.hasPermission(permissionName);
-    }
-    return serializedPermissions;
-  }
-
-  /**
-   * Whether or not the role includes the given permission
-   * @param {PermissionResolvable} permission The name of the permission to test
-   * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permission
-   * @returns {boolean}
-   * @example
-   * // see if a role can ban a member
-   * if (role.hasPermission('BAN_MEMBERS')) {
-   *   console.log('This role can ban members');
-   * } else {
-   *   console.log('This role can\'t ban members');
-   * }
-   */
-  hasPermission(permission, explicit = false) {
-    permission = this.client.resolver.resolvePermission(permission);
-    if (!explicit && (this.permissions & Constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
-    return (this.permissions & permission) > 0;
-  }
-
-  /**
-   * The hexadecimal version of the role color, with a leading hashtag.
-   * @type {string}
-   * @readonly
-   */
-  get hexColor() {
-    let col = this.color.toString(16);
-    while (col.length < 6) col = `0${col}`;
-    return `#${col}`;
+  delete() {
+    return this.client.rest.methods.deleteGuildRole(this);
   }
 
   /**
