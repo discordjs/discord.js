@@ -34,7 +34,10 @@ function chooseCommand() {
   for (const cmd of ['ffmpeg', 'avconv', './ffmpeg', './avconv']) {
     if (!ChildProcess.spawnSync(cmd, ['-h']).error) return cmd;
   }
-  return null;
+  throw new Error(
+    'FFMPEG was not found on your system, so audio cannot be played.' +
+    'Please make sure FFMPEG is installed and in your PATH'
+  );
 }
 
 module.exports = FfmpegConverterEngine;
