@@ -8,17 +8,10 @@
  * @property {number} [max_message_cache=200] Number of messages to cache per channel
  * @property {boolean} [fetch_all_members=false] Whether to cache all guild members and users upon startup
  * @property {boolean} [disable_everyone=false] Default value for MessageOptions.disable_everyone
- * @property {number} [rest_ws_bridge_timeout=5000] Timeout for the REST/WS bridge
+ * @property {number} [rest_ws_bridge_timeout=5000] Maximum time permitted between REST responses and their
+ * corresponding websocket events
  * @property {WebsocketOptions} [ws] Options for the websocket
  */
-
-/**
- * Websocket options.
- * @typedef {Object} WebsocketOptions
- * @property {number} [large_threshold=250] Number of members in a guild to be considered large
- * @property {boolean} [compress=true] Whether to compress data sent on the connection
- */
-
 exports.DefaultOptions = {
   api_request_method: 'sequential',
   shard_id: 0,
@@ -27,8 +20,14 @@ exports.DefaultOptions = {
   fetch_all_members: false,
   disable_everyone: false,
   rest_ws_bridge_timeout: 5000,
-
   protocol_version: 6,
+
+  /**
+   * Websocket options.
+   * @typedef {Object} WebsocketOptions
+   * @property {number} [large_threshold=250] Number of members in a guild to be considered large
+   * @property {boolean} [compress=true] Whether to compress data sent on the connection
+   */
   ws: {
     large_threshold: 250,
     compress: true,
