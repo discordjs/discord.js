@@ -56,59 +56,59 @@ class Collection extends Map {
   }
 
   /**
-   * Returns an array of items where `item[key] === value` of the collection
-   * @param {string} key The key to filter by
+   * Returns an array of items where `item[prop] === value` of the collection
+   * @param {string} prop The property to test against
    * @param {*} value The expected value
    * @returns {array}
    * @example
    * collection.findAll('username', 'Bob');
    */
-  findAll(key, value) {
-    if (typeof key !== 'string') throw new TypeError('Key must be a string.');
+  findAll(prop, value) {
+    if (typeof prop !== 'string') throw new TypeError('Key must be a string.');
     if (typeof value === 'undefined') throw new Error('Value must be specified.');
     const results = [];
     for (const item of this.values()) {
-      if (item[key] === value) results.push(item);
+      if (item[prop] === value) results.push(item);
     }
     return results;
   }
 
   /**
-   * Returns a single item where `item[key] === value`, or the given function returns `true`.
+   * Returns a single item where `item[prop] === value`, or the given function returns `true`.
    * In the latter case, this is identical to
    * [Array.find()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find).
-   * @param {string|function} keyOrFn The key to filter by, or the function to test with
-   * @param {*} [value] The expected value - required if using a key for the first param
+   * @param {string|function} propOrFn The property to test against, or the function to test with
+   * @param {*} [value] The expected value - required if using a property for the first argument
    * @returns {*}
    * @example
    * collection.find('id', '123123...');
    * @example
    * collection.find(val => val.id === '123123...');
    */
-  find(keyOrFn, value) {
-    if (typeof keyOrFn === 'string') {
+  find(propOrFn, value) {
+    if (typeof propOrFn === 'string') {
       if (typeof value === 'undefined') throw new Error('Value must be specified.');
       for (const item of this.values()) {
-        if (item[keyOrFn] === value) return item;
+        if (item[propOrFn] === value) return item;
       }
       return null;
-    } else if (typeof keyOrFn === 'function') {
+    } else if (typeof propOrFn === 'function') {
       for (const [key, val] of this) {
-        if (keyOrFn(val, key, this)) return val;
+        if (propOrFn(val, key, this)) return val;
       }
       return null;
     } else {
-      throw new Error('First parameter must be a string key or a function.');
+      throw new Error('First argument must be a property string or a function.');
     }
   }
 
   /* eslint-disable max-len */
   /**
-   * Returns the key of the item where `item[key] === value`, or the given function returns `true`.
+   * Returns the key of the item where `item[prop] === value`, or the given function returns `true`.
    * In the latter case, this is identical to
    * [Array.findIndex()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex).
-   * @param {string|function} keyOrFn The key to filter by, or the function to test with
-   * @param {*} [value] The expected value - required if using a key for the first param
+   * @param {string|function} propOrFn The property to test against, or the function to test with
+   * @param {*} [value] The expected value - required if using a property for the first argument
    * @returns {*}
    * @example
    * collection.find('id', '123123...');
@@ -116,26 +116,26 @@ class Collection extends Map {
    * collection.find(val => val.id === '123123...');
    */
   /* eslint-enable max-len */
-  findKey(keyOrFn, value) {
-    if (typeof keyOrFn === 'string') {
+  findKey(propOrFn, value) {
+    if (typeof propOrFn === 'string') {
       if (typeof value === 'undefined') throw new Error('Value must be specified.');
       for (const [key, val] of this) {
-        if (val[keyOrFn] === value) return key;
+        if (val[propOrFn] === value) return key;
       }
       return null;
-    } else if (typeof keyOrFn === 'function') {
+    } else if (typeof propOrFn === 'function') {
       for (const [key, val] of this) {
-        if (keyOrFn(val, key, this)) return key;
+        if (propOrFn(val, key, this)) return key;
       }
       return null;
     } else {
-      throw new Error('First parameter must be a string key or a function.');
+      throw new Error('First argument must be a property string or a function.');
     }
   }
 
   /**
-   * Returns true if the collection has an item where `item[key] === value`
-   * @param {string} key The key to filter by
+   * Returns true if the collection has an item where `item[prop] === value`
+   * @param {string} prop The property to test against
    * @param {*} value The expected value
    * @returns {boolean}
    * @example
@@ -143,8 +143,8 @@ class Collection extends Map {
    *  console.log('user here!');
    * }
    */
-  exists(key, value) {
-    return Boolean(this.find(key, value));
+  exists(prop, value) {
+    return Boolean(this.find(prop, value));
   }
 
   /**
