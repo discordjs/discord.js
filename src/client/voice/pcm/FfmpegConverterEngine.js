@@ -34,7 +34,7 @@ function chooseCommand() {
   for (const cmd of ['ffmpeg', 'avconv', './ffmpeg', './avconv']) {
     if (!ChildProcess.spawnSync(cmd, ['-h']).error) return cmd;
   }
-  throw new Error('FFMPEG is not installed on your system, so audio cannot be played')
+  throw new Error('FFMPEG was not found on your system, so audio cannot be played. Please make sure FFMPEG is installed and in your PATH')
   return null;
 }
 
