@@ -78,7 +78,7 @@ class Collection extends Map {
    * In the latter case, this is identical to
    * [Array.find()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find).
    * @param {string|function} propOrFn The property to test against, or the function to test with
-   * @param {*} [value] The expected value - required if using a property for the first argument
+   * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
    * @returns {*}
    * @example
    * collection.find('id', '123123...');
@@ -108,7 +108,7 @@ class Collection extends Map {
    * In the latter case, this is identical to
    * [Array.findIndex()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex).
    * @param {string|function} propOrFn The property to test against, or the function to test with
-   * @param {*} [value] The expected value - required if using a property for the first argument
+   * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
    * @returns {*}
    * @example
    * collection.find('id', '123123...');
