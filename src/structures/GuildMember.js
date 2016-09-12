@@ -196,6 +196,7 @@ class GuildMember {
    * @returns {boolean}
    */
   hasPermissions(permissions, explicit = false) {
+    if (this.guild.owner.id === this.user.id) return true;
     return permissions.map(p => this.hasPermission(p, explicit)).every(v => v);
   }
 
