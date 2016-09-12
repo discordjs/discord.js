@@ -18,6 +18,10 @@ client.on('guildMemberAdd', (g, m) => {
   console.log(`${m.user.username} joined ${g.name}`);
 })
 
+client.on('guildMemberUpdate', (g, o, n) => {
+  console.log(o.nickname, n.nickname);
+});
+
 client.on('debug', console.log);
 
 client.on('message', message => {

@@ -1,6 +1,7 @@
 const DocumentedItem = require('./DocumentedItem');
 const DocumentedItemMeta = require('./DocumentedItemMeta');
 const DocumentedVarType = require('./DocumentedVarType');
+const DocumentedParam = require('./DocumentedParam');
 
 /*
 { id: 'StringResolvable',
@@ -19,17 +20,26 @@ const DocumentedVarType = require('./DocumentedVarType');
 
 class DocumentedTypeDef extends DocumentedItem {
 
+  constructor(...args) {
+    super(...args);
+  }
+
   registerMetaInfo(data) {
     super.registerMetaInfo(data);
+    this.props = new Map();
     this.directData = data;
     this.directData.meta = new DocumentedItemMeta(this, data.meta);
     this.directData.type = new DocumentedVarType(this, data.type);
+    data.properties = data.properties || [];
+    for (const prop of data.properties) {
+      this.props.set(prop.name, new DocumentedParam(this, prop));
+    }
   }
 
   serialize() {
     super.serialize();
     const { id, name, description, type, access, meta } = this.directData;
-    return {
+    const serialized = {
       id,
       name,
       description,
@@ -37,6 +47,8 @@ class DocumentedTypeDef extends DocumentedItem {
       access,
       meta: meta.serialize(),
     };
+    serialized.properties = Array.from(this.props.values()).map(p => p.serialize());
+    return serialized;
   }
 
 }
