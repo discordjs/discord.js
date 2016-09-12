@@ -103,7 +103,7 @@ class User {
    * @param {ChannelResolvable} channel The channel to check in
    * @returns {boolean}
    */
-  isTyping(channel) {
+  typingIn(channel) {
     channel = this.client.resolver.resolveChannel(channel);
     return channel._typing.has(this.id);
   }
@@ -113,7 +113,7 @@ class User {
    * @param {ChannelResolvable} channel The channel to get the time in
    * @returns {?Date}
    */
-  typingSince(channel) {
+  typingSinceIn(channel) {
     channel = this.client.resolver.resolveChannel(channel);
     return channel._typing.has(this.id) ? new Date(channel._typing.get(this.id).since) : null;
   }
@@ -123,7 +123,7 @@ class User {
    * @param {ChannelResolvable} channel The channel to get the time in
    * @returns {number}
    */
-  typingDuration(channel) {
+  typingDurationIn(channel) {
     channel = this.client.resolver.resolveChannel(channel);
     return channel._typing.has(this.id) ? channel._typing.get(this.id).elapsedTime : -1;
   }
