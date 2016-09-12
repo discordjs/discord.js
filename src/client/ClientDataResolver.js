@@ -136,6 +136,8 @@ class ClientDataResolver {
    * Data that can be resolved to give a permission number. This can be:
    * * A string
    * * A permission number
+   *
+   * Possible strings:
    * ```js
    * [
    *   "CREATE_INSTANT_INVITE",
