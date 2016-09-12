@@ -120,6 +120,16 @@ class Role {
   }
 
   /**
+   * Checks if the role has all specified permissions.
+   * @param {PermissionResolvable[]} permissions The permissions to check for
+   * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permissions
+   * @returns {boolean}
+   */
+  hasPermissions(permissions, explicit = false) {
+    return permissions.map(p => this.hasPermission(p, explicit)).every(v => v);
+  }
+
+  /**
    * Edits the role
    * @param {RoleData} data The new data for the role
    * @returns {Promise<Role>}
