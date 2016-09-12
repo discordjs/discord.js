@@ -366,6 +366,17 @@ class Message {
 
     return equal;
   }
+
+  /**
+   * When concatenated with a string, this automatically concatenates the Message's content instead of the object.
+   * @returns {string}
+   * @example
+   * // logs: Message: This is a message!
+   * console.log(`Message: ${message}`);
+   */
+  toString() {
+    return this.content;
+  }
 }
 
 module.exports = Message;
