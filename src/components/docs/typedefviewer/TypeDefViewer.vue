@@ -8,10 +8,19 @@
       <ul>
         <li v-for="type in typedef.type.types"><type-renderer :names="type"></type-renderer></li>
       </ul>
+      <div v-if="typedef.properties && typedef.properties.length > 0">
+        <param-table :params="typedef.properties"></param-table>
+        <prop-renderer v-for="prop in typedef.properties" :prop="prop"></prop-renderer>
+      </div>
     </span>
 </template>
 <script>
 import TypeRenderer from '../classviewer/TypeRenderer.vue';
+import Overview from '../classviewer/Overview.vue';
+import PropRenderer from '../classviewer/PropRenderer.vue';
+import MethodRenderer from '../classviewer/MethodRenderer.vue';
+import EventRenderer from '../classviewer/EventRenderer.vue';
+import ParamTable from '../classviewer/ParamTable.vue';
 
 function gqp(qs) {
   qs = qs.split('+').join(' ');
@@ -28,6 +37,11 @@ export default {
   props: ['docs'],
   components: {
     TypeRenderer,
+    Overview,
+    PropRenderer,
+    MethodRenderer,
+    EventRenderer,
+    ParamTable,
   },
   data() {
     const params = this.$route.params;
