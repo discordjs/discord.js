@@ -1,31 +1,34 @@
 /**
- * Options that can be passed to a client:
- * ```js
- * {
- *   ws: {
- *     large_threshold: 250,
- *     compress: true,
- *     properties: {
- *       $os: process ? process.platform : 'discord.js',
- *       $browser: 'discord.js',
- *       $device: 'discord.js',
- *       $referrer: '',
- *       $referring_domain: '',
- *     },
- *   },
- *   protocol_version: 6,
- *   max_message_cache: 200,
- *   rest_ws_bridge_timeout: 5000,
- *   api_request_method: 'sequential', // can be sequential or burst
- *   shard_id: 0,
- *   shard_count: 0,
- *   fetch_all_members: false,
- *   disable_everyone: false,
- * };
- * ```
+ * Options for a Client.
  * @typedef {Object} ClientOptions
+ * @property {number} [max_message_cache=200] Number of messages to cache per channel
+ * @property {string} [api_request_method='sequential'] 'sequential' or 'burst'. Sequential executes all requests in
+ * the order they are triggered, whereas burst runs multiple at a time, and doesn't guarantee a particular order.
+ * @property {number} [shard_id=0] The ID of this shard
+ * @property {number} [shard_count=0] The number of shards
+ * @property {boolean} [fetch_all_members=false] Whether to cache all guild members and users upon startup
+ * @property {boolean} [disable_everyone=false] Default value for MessageOptions.disable_everyone
+ * @property {number} [rest_ws_bridge_timeout=5000] Timeout for the REST/WS bridge
+ * @property {number} [protocol_version=6] The gateway protocol version to use
+ * @property {Object} [ws] Websocket options
+ * @property {number} [ws.large_threshold=250] Number of members in a guild to be considered large
+ * @property {boolean} [ws.compress=true] Whether to compress data sent on the connection
+ * @property {Object} [ws.properties] Properties for the websocket
+ * @property {string} [ws.properties.$os=Platform default, or 'discord.js'] Operating system name
+ * @property {string} [ws.properties.$browser='discord.js'] Browser name
+ * @property {string} [ws.properties.$device='discord.js'] Device name
+ * @property {string} [ws.properties.$referrer=''] Referring URL
+ * @property {string} [ws.properties.$referring_domain=''] Referring domain
  */
 exports.DefaultOptions = {
+  max_message_cache: 200,
+  api_request_method: 'sequential',
+  shard_id: 0,
+  shard_count: 0,
+  fetch_all_members: false,
+  disable_everyone: false,
+  rest_ws_bridge_timeout: 5000,
+  protocol_version: 6,
   ws: {
     large_threshold: 250,
     compress: true,
@@ -37,14 +40,6 @@ exports.DefaultOptions = {
       $referring_domain: '',
     },
   },
-  protocol_version: 6,
-  max_message_cache: 200,
-  rest_ws_bridge_timeout: 5000,
-  api_request_method: 'sequential',
-  shard_id: 0,
-  shard_count: 0,
-  fetch_all_members: false,
-  disable_everyone: false,
 };
 
 exports.Status = {
