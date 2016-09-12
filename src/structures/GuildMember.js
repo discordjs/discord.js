@@ -179,7 +179,7 @@ class GuildMember {
   }
 
   /**
-   * Checks if any of the member's roles have a permission
+   * Checks if any of the member's roles have a permission.
    * @param {PermissionResolvable} permission The permission to check for
    * @param {boolean} [explicit=false] Whether to require the roles to explicitly have the exact permission
    * @returns {boolean}
@@ -190,9 +190,9 @@ class GuildMember {
   }
 
   /**
-   * Checks whether the roles of the members allow them to perform specific actions.
-   * @param {PermissionResolvable[]} permissions the permissions to test for
-   * @param {boolean} [explicit=false] whether to require the member to explicitly have the exact permissions
+   * Checks whether the roles of the member allows them to perform specific actions.
+   * @param {PermissionResolvable[]} permissions The permissions to check for
+   * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
    * @returns {boolean}
    */
   hasPermissions(permissions, explicit = false) {

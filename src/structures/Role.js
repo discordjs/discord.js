@@ -101,8 +101,8 @@ class Role {
   }
 
   /**
-   * Whether or not the role includes the given permission
-   * @param {PermissionResolvable} permission The name of the permission to test
+   * Checks if the role has a permission.
+   * @param {PermissionResolvable} permission The permission to check for
    * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permission
    * @returns {boolean}
    * @example
