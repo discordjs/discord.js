@@ -105,10 +105,11 @@ class Collection extends Map {
     }
   }
 
+  /* eslint-disable max-len */
   /**
    * Returns the key of the item where `item[key] === value`, or the given function returns `true`.
-   * In the latter case, this is identical to [Array.findIndex()]
-   * (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex).
+   * In the latter case, this is identical to
+   * [Array.findIndex()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex).
    * @param {string|function} keyOrFn The key to filter by, or the function to test with
    * @param {*} [value] The expected value - required if using a key for the first param
    * @returns {*}
@@ -117,6 +118,7 @@ class Collection extends Map {
    * @example
    * collection.find(val => val.id === '123123...');
    */
+  /* eslint-enable max-len */
   findKey(keyOrFn, value) {
     if (typeof keyOrFn === 'string') {
       if (typeof value === 'undefined') throw new Error('Value must be specified.');
