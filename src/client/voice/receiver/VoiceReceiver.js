@@ -60,7 +60,7 @@ class VoiceReceiver extends EventEmitter {
    * <info>Any streams that you had prior to destroying the receiver will not be recreated.</info>
    */
   recreate() {
-    if (this.destroyed) return;
+    if (!this.destroyed) return;
     this.connection.udp.udpSocket.on('message', this._listener);
     this.destroyed = false;
     return;
