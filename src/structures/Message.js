@@ -253,7 +253,7 @@ class Message {
    * @returns {boolean}
    */
   isMentioned(data) {
-    data = data.id ? data.id : data;
+    data = data && data.id ? data.id : data;
     return this.mentions.users.has(data) || this.mentions.channels.has(data) || this.mentions.roles.has(data);
   }
 
