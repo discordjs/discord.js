@@ -49,10 +49,17 @@ class VoiceConnectionPlayer extends EventEmitter {
     const streams = this.processMap.get(stream);
     this._streamingData = this.dispatcher.streamingData;
     this.emit('debug', 'Cleaning up player after audio stream ended or encountered an error');
+
+    const dummyHandler = () => null;
+
     if (streams) {
       this.processMap.delete(stream);
       if (streams.inputStream && streams.pcmConverter) {
         try {
+          streams.inputStream.once('error', dummyHandler);
+          streams.pcmConverter.once('error', dummyHandler);
+          streams.pcmConverter.stdin.once('error', dummyHandler);
+          streams.pcmConverter.stdout.once('error', dummyHandler);
           if (streams.inputStream.unpipe) {
             streams.inputStream.unpipe(streams.pcmConverter.stdin);
             this.emit('debug', '- Unpiped input stream');
@@ -69,6 +76,15 @@ class VoiceConnectionPlayer extends EventEmitter {
             this.emit('debug', '- Killed the pcm converter');
           }
         } catch (err) {
+          // if an error happened make sure the pcm converter is killed anyway
+          try {
+            if (streams.pcmConverter && streams.pcmConverter.kill) {
+              streams.pcmConverter.kill('SIGINT');
+              this.emit('debug', '- Killed the pcm converter after previous error (abnormal)');
+            }
+          } catch (e) {
+            return e;
+          }
           return err;
         }
       }
