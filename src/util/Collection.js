@@ -82,19 +82,6 @@ class Collection extends Map {
   }
 
   /**
-   * If the items in this collection have a delete method (e.g. messages), invoke
-   * the delete method. Returns an array of promises
-   * @returns {Promise[]}
-   */
-  deleteAll() {
-    const returns = [];
-    for (const item of this.values()) {
-      if (item.delete) returns.push(item.delete());
-    }
-    return returns;
-  }
-
-  /**
    * Returns an array of items where `item[prop] === value` of the collection
    * @param {string} prop The property to test against
    * @param {*} value The expected value
@@ -261,6 +248,19 @@ class Collection extends Map {
     let currentVal = startVal;
     for (const [key, val] of this) currentVal = fn(currentVal, val, key, this);
     return currentVal;
+  }
+
+  /**
+   * If the items in this collection have a delete method (e.g. messages), invoke
+   * the delete method. Returns an array of promises
+   * @returns {Promise[]}
+   */
+  deleteAll() {
+    const returns = [];
+    for (const item of this.values()) {
+      if (item.delete) returns.push(item.delete());
+    }
+    return returns;
   }
 }
 
