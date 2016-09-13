@@ -14,6 +14,10 @@ client.on('ready', () => {
   console.log('ready!');
 });
 
+client.on('channelCreate', channel => {
+  console.log(`made ${channel.name}`);
+});
+
 client.on('guildMemberAdd', (g, m) => {
   console.log(`${m.user.username} joined ${g.name}`);
 })
