@@ -223,8 +223,7 @@ class RESTMethods {
       data.username = _data.username || user.username;
       data.avatar = this.rest.client.resolver.resolveBase64(_data.avatar) || user.avatar;
       if (!user.bot) {
-        data.password = this.rest.client.password;
-        data.email = _data.email || this.rest.client.email;
+        data.email = _data.email || user.email;
         data.new_password = _data.newPassword;
       }
 
