@@ -210,6 +210,19 @@ class Collection extends Map {
     }
     return true;
   }
+
+  /**
+   * Identical to
+   * [Array.reduce()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce).
+   * @param {function} fn Function used to reduce
+   * @param {*} [startVal] The starting value
+   * @returns {*}
+   */
+  reduce(fn, startVal) {
+    let currentVal = startVal;
+    for (const [key, val] of this) currentVal = fn(currentVal, val, key, this);
+    return currentVal;
+  }
 }
 
 module.exports = Collection;
