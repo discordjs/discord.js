@@ -5,7 +5,7 @@
 class Collection extends Map {
   /**
    * Returns an ordered array of the values of this collection.
-   * @returns {array}
+   * @returns {Array}
    * @example
    * // identical to:
    * Array.from(collection.values());
@@ -15,11 +15,30 @@ class Collection extends Map {
   }
 
   /**
+   * Returns an ordered array of the keys of this collection.
+   * @returns {Array}
+   * @example
+   * // identical to:
+   * Array.from(collection.keys());
+   */
+  keyArray() {
+    return Array.from(this.keys());
+  }
+
+  /**
    * Returns the first item in this collection.
    * @returns {*}
    */
   first() {
     return this.values().next().value;
+  }
+
+  /**
+   * Returns the first key in this collection.
+   * @returns {*}
+   */
+  firstKey() {
+    return this.keys().next().value;
   }
 
   /**
@@ -33,12 +52,32 @@ class Collection extends Map {
   }
 
   /**
+   * Returns the last key in this collection. This is a relatively slow operation,
+   * since an array copy of the keys must be made to find the last element.
+   * @returns {*}
+   */
+  lastKey() {
+    const arr = this.keyArray();
+    return arr[arr.length - 1];
+  }
+
+  /**
    * Returns a random item from this collection. This is a relatively slow operation,
    * since an array copy of the values must be made to find a random element.
    * @returns {*}
    */
   random() {
     const arr = this.array();
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  /**
+   * Returns a random key from this collection. This is a relatively slow operation,
+   * since an array copy of the keys must be made to find a random element.
+   * @returns {*}
+   */
+  randomKey() {
+    const arr = this.keyArray();
     return arr[Math.floor(Math.random() * arr.length)];
   }
 
