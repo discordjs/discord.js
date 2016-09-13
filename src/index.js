@@ -1,9 +1,15 @@
-const Client = require('./client/Client');
-const Shard = require('./sharding/Shard');
-const ShardingManager = require('./sharding/ShardingManager');
-const Collection = require('./util/Collection');
+const path = require('path');
 
-exports.Client = Client;
-exports.Shard = Shard;
-exports.ShardingManager = ShardingManager;
-exports.Collection = Collection;
+let version;
+
+module.exports = {
+  Client: require('./client/Client'),
+  Shard: require('./sharding/Shard'),
+  ShardingManager: require('./sharding/ShardingManager'),
+  Collection: require('./util/Collection'),
+
+  get version() {
+    if (!version) version = require(path.join(__dirname, '..', 'package.json')).version;
+    return version;
+  },
+};
