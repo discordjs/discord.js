@@ -231,7 +231,7 @@ class WebSocketManager {
           Promise.all(promises).then(() => this._emitReady()).catch(e => {
             /**
              * Emitted when there is a warning
-             * @event Client#debug
+             * @event Client#warn
              */
             this.client.emit(Constants.Event.WARN, `Error on pre-ready guild member fetching - ${e}`);
             this._emitReady();
