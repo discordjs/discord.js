@@ -59,8 +59,7 @@ class RESTMethods {
 
       if (channel instanceof User || channel instanceof GuildMember) {
         this.createDM(channel).then(chan => {
-          channel = chan;
-          this._sendMessageRequest(channel, content, file, tts, nonce, resolve, reject);
+          this._sendMessageRequest(chan, content, file, tts, nonce, resolve, reject);
         })
         .catch(reject);
       } else {
@@ -150,10 +149,9 @@ class RESTMethods {
   }
 
   getExistingDM(recipient) {
-    const dmChannel = Array.from(this.rest.client.channels.values())
-      .filter(channel => channel.recipient)
-      .filter(channel => channel.recipient.id === recipient.id);
-    return dmChannel[0];
+    return this.rest.client.channels.filter(channel =>
+      channel.recipient && channel.recipient.id === recipient.id
+    ).first();
   }
 
   createDM(recipient) {
