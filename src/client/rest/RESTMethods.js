@@ -73,7 +73,7 @@ class RESTMethods {
       const datas = [];
       const promise = this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
         content: content[0], tts, nonce,
-      }, file);
+      }, file).catch(reject);
       for (let i = 1; i <= content.length; i++) {
         if (i < content.length) {
           promise.then(data => {
@@ -85,7 +85,7 @@ class RESTMethods {
         } else {
           promise.then(data => {
             datas.push(data);
-            resolve(this.rest.client.actions.MessageCreate.handle(datas).messages).catch(reject);
+            resolve(this.rest.client.actions.MessageCreate.handle(datas).messages);
           });
         }
       }
