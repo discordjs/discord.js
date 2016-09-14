@@ -25,10 +25,14 @@ class ClientManager {
    * @param {function} reject Function to run when connection fails
    */
   connectToWebSocket(token, resolve, reject) {
-    this.client.emit('debug', `Authenticated using token ${token}`);
+    /**
+     * Emitted when there is debug information
+     * @event Client#debug
+     */
+    this.client.emit(Constants.Events.DEBUG, `Authenticated using token ${token}`);
     this.client.token = token;
     this.client.rest.methods.getGateway().then(gateway => {
-      this.client.emit('debug', `Using gateway ${gateway}`);
+      this.client.emit(Constants.Events.DEBUG, `Using gateway ${gateway}`);
       this.client.ws.connect(gateway);
       this.client.once(Constants.Events.READY, () => resolve(token));
     }).catch(reject);
