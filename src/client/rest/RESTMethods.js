@@ -222,7 +222,8 @@ class RESTMethods {
       data.avatar = this.rest.client.resolver.resolveBase64(_data.avatar) || user.avatar;
       if (!user.bot) {
         data.email = _data.email || user.email;
-        data.new_password = _data.newPassword;
+        data.password = this.rest.client.password;
+        if (_data.new_password) data.new_password = _data.newPassword;
       }
 
       this.rest.makeRequest('patch', Constants.Endpoints.me, true, data)
