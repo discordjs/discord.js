@@ -152,7 +152,12 @@ class User {
 
     if (equal) {
       if (user.status) equal = this.status === user.status;
-      if (equal && user.game) equal = this.game === user.game;
+      if (equal && user.game) {
+        equal = this.game &&
+                this.game.name === user.game.name &&
+                this.game.type === user.game.type &&
+                this.game.url === user.game.url;
+      }
     }
 
     return equal;
