@@ -157,6 +157,11 @@ class WebSocketManager {
    * @param {Object} event The received websocket data
    */
   eventClose(event) {
+    /**
+     * Emitted whenever the client websocket is disconnected
+     * @event Client#disconnect
+     */
+    if (!this.reconnecting) this.client.emit(Constants.Events.DISCONNECT);
     if (event.code === 4004) throw new Error(Constants.Errors.BAD_LOGIN);
     if (!this.reconnecting && event.code !== 1000) this.tryReconnect();
   }
@@ -224,7 +229,11 @@ class WebSocketManager {
         if (this.client.options.fetch_all_members) {
           const promises = this.client.guilds.array().map(g => g.fetchMembers());
           Promise.all(promises).then(() => this._emitReady()).catch(e => {
-            this.client.emit('warn', `Error on pre-ready guild member fetching - ${e}`);
+            /**
+             * Emitted when there is a warning
+             * @event Client#debug
+             */
+            this.client.emit(Constants.Event.WARN, `Error on pre-ready guild member fetching - ${e}`);
             this._emitReady();
           });
           return;

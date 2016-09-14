@@ -163,10 +163,12 @@ exports.Events = {
   MESSAGE_CREATE: 'message',
   MESSAGE_DELETE: 'messageDelete',
   MESSAGE_UPDATE: 'messageUpdate',
+  DISCONNECT: 'disconnect',
   RECONNECTING: 'reconnecting',
   GUILD_MEMBER_SPEAKING: 'guildMemberSpeaking',
   MESSAGE_BULK_DELETE: 'messageDeleteBulk',
   CHANNEL_PINS_UPDATE: 'channelPinsUpdate',
+  DEBUG: 'debug',
 };
 
 exports.WSEvents = {
