@@ -114,7 +114,7 @@ class TextBasedChannel {
       if (!options.split.prepend) options.split.prepend = `\`\`\`${lang ? lang : ''}\n`;
       if (!options.split.append) options.split.append = '\n```';
     }
-    content = this.client.resolver.resolveString(content);
+    content = this.client.resolver.resolveString(content).replace(/```/g, '`\u200b``');
     return this.sendMessage(`\`\`\`${lang ? lang : ''}\n${content}\n\`\`\``, options);
   }
 
