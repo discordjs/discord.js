@@ -71,6 +71,20 @@ class VoiceChannel extends GuildChannel {
     const connection = this.client.voice.connections.get(this.guild.id);
     if (connection && connection.channel.id === this.id) connection.disconnect();
   }
+
+  /**
+   * If connected to this guild's voice channel and the client is marked as being in this voice channel,
+   * then this will give the relevant voice connection.
+   * @type {VoiceConnection}
+   * @readonly
+   */
+  get connection() {
+    const connection = this.client.voice.connections.get(this.guild.id);
+    if (connection.channel.id === this.id) {
+      return connection;
+    }
+    return undefined;
+  }
 }
 
 module.exports = VoiceChannel;
