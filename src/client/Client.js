@@ -64,6 +64,12 @@ class Client extends EventEmitter {
      */
     this.voice = new ClientVoiceManager(this);
     /**
+     * Expose the constants to the client directly
+     * @type {Constants}
+     * @private
+     */
+    this.constants = Constants;
+    /**
      * A Collection of the Client's stored users
      * @type {Collection<string, User>}
      */
