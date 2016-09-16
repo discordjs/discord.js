@@ -238,4 +238,4 @@ for (const key in PermissionFlags) _ALL_PERMISSIONS |= PermissionFlags[key];
 
 exports.ALL_PERMISSIONS = _ALL_PERMISSIONS;
 
-exports.DEFAULT_PERMISSIONS = 36953089;
+exports.DEFAULT_PERMISSIONS = 104324097;
