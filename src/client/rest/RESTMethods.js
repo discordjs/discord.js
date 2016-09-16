@@ -85,6 +85,12 @@ class RESTMethods {
         } else {
           promise.then(data => {
             datas.push(data);
+            /**
+             * Emitted whenever a message is successfully sent
+             * @event Client#messageSent
+             * @param {Message} message The message object
+             */
+            this.rest.client.emit('messageSent', this.rest.client.actions.MessageCreate.handle(datas).messages);
             resolve(this.rest.client.actions.MessageCreate.handle(datas).messages);
           });
         }
