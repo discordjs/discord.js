@@ -24,6 +24,7 @@ import Invite from "../Structures/Invite";
 import VoiceConnection from "../Voice/VoiceConnection";
 import TokenCacher from "../Util/TokenCacher";
 
+var GATEWAY_VERSION = 4;
 var zlib;
 var libVersion = require('../../package.json').version;
 
@@ -1566,45 +1567,29 @@ export default class InternalClient {
 	}
 
 	createWS(url) {
-		var self = this;
-		var client = self.client;
-
 		if (this.websocket) {
 			return false;
 		}
+		if(!url.endsWith("/")) {
+			url += "/";
+		}
+		url += "?encoding=json&v=" + GATEWAY_VERSION;
 
 		this.websocket = new WebSocket(url);
 
 		this.websocket.onopen = () => {
-			var data = {
-				op: 2,
-				d: {
-					token: self.token,
-					v: 3,
-					compress: self.client.options.compress,
-					large_threshold : self.client.options.largeThreshold,
-					properties: {
-						"$os": process.platform,
-						"$browser": "discord.js",
-						"$device": "discord.js",
-						"$referrer": "",
-						"$referring_domain": ""
-					}
-				}
-			};
-
-			if (self.client.options.shard) {
-				data.d.shard = self.client.options.shard;
+			if(this.sessionID) {
+				this.resume();
+			} else {
+				this.identify();
 			}
-
-			self.sendWS(data);
 		};
 
 		this.websocket.onclose = (event) => {
-			self.websocket = null;
-			self.state = ConnectionState.DISCONNECTED;
+			this.websocket = null;
+			this.state = ConnectionState.DISCONNECTED;
 			if(event && event.code) {
-                client.emit("warn", "WS close: " + event.code);
+                this.client.emit("warn", "WS close: " + event.code);
                 var err;
                 if(event.code === 4001) {
                     err = new Error("Gateway received invalid OP code");
@@ -1619,7 +1604,7 @@ export default class InternalClient {
                 } if(event.code === 4006 || event.code === 4009) {
                     err = new Error("Invalid session");
                 } else if(event.code === 4007) {
-                    this.seq = 0;
+                    this.sequence = 0;
                     err = new Error("Invalid sequence number");
                 } else if(event.code === 4008) {
                     err = new Error("Gateway connection was ratelimited");
@@ -1627,17 +1612,17 @@ export default class InternalClient {
                     err = new Error("Invalid shard key");
                 }
                 if(err) {
-                	client.emit("error", err);
+                	this.client.emit("error", err);
                 }
             }
-			self.disconnected(this.client.options.autoReconnect);
+			this.disconnected(this.client.options.autoReconnect);
 		};
 
 		this.websocket.onerror = e => {
-			client.emit("error", e);
-			self.websocket = null;
-			self.state = ConnectionState.DISCONNECTED;
-			self.disconnected(this.client.options.autoReconnect);
+			this.client.emit("error", e);
+			this.websocket = null;
+			this.state = ConnectionState.DISCONNECTED;
+			this.disconnected(this.client.options.autoReconnect);
 		};
 
 		this.websocket.onmessage = e => {
@@ -1646,692 +1631,764 @@ export default class InternalClient {
 				e.data = zlib.inflateSync(e.data).toString();
 			}
 
-			var packet, data;
+			var packet;
 			try {
 				packet = JSON.parse(e.data);
-				data = packet.d;
 			} catch (e) {
-				client.emit("error", e);
+				this.client.emit("error", e);
 				return;
 			}
 
-			client.emit("raw", packet);
-			switch (packet.t) {
+			this.client.emit("raw", packet);
 
-				case PacketType.READY:
-					var startTime = Date.now();
-					self.intervals.kai = setInterval(() => self.sendWS({ op: 1, d: Date.now() }), data.heartbeat_interval);
+			if(packet.s) {
+                this.sequence = packet.s;
+            }
 
-					self.user = self.users.add(new User(data.user, client));
-
-					this.forceFetchCount = {};
-					this.forceFetchQueue = [];
-					this.forceFetchLength = 1;
-					this.autoReconnectInterval = 1000;
-					this.sessionID = data.session_id;
-
-					data.guilds.forEach(server => {
-						if (!server.unavailable) {
-							server = self.servers.add(new Server(server, client));
-							if (self.client.options.forceFetchUsers && server.members && server.members.length < server.memberCount) {
-								self.getGuildMembers(server.id, Math.ceil(server.memberCount / 1000));
-							}
-						} else {
-							client.emit("debug", "server " + server.id + " was unavailable, could not create (ready)");
-							self.unavailableServers.add(server);
-						}
-					});
-					data.private_channels.forEach(pm => {
-						self.private_channels.add(new PMChannel(pm, client));
-					});
-					if (!data.user.bot) { // bots dont have friends
-						data.relationships.forEach(friend => {
-							if (friend.type === 1) { // is a friend
-								self.friends.add(new User(friend.user, client));
-							} else if (friend.type === 2) { // incoming friend requests
-								self.blocked_users.add(new User(friend.user, client));
-							} else if (friend.type === 3) { // incoming friend requests
-								self.incoming_friend_requests.add(new User(friend.user, client));
-							} else if (friend.type === 4) { // outgoing friend requests
-								self.outgoing_friend_requests.add(new User(friend.user, client));
-							} else {
-								client.emit("warn", "unknown friend type " + friend.type);
-							}
-						});
-					} else {
-						self.friends = null;
-						self.blocked_users = null;
-						self.incoming_friend_requests = null;
-						self.outgoing_friend_requests = null;
-					}
-
-					// add notes to users
-					if(data.notes) {
-						for(note in data.notes) {
-							var user = self.users.get("id", note);
-							if(user) {
-								var newUser = user;
-								newUser.note = data.notes[note];
-
-								self.users.update(user, newUser);
-							} else {
-								client.emit("warn", "note in ready packet but user not cached");
-							}
-						}
-					}
-
-
-					self.state = ConnectionState.READY;
-
-					client.emit("debug", `ready packet took ${Date.now() - startTime}ms to process`);
-					client.emit("debug", `ready with ${self.servers.length} servers, ${self.unavailableServers.length} unavailable servers, ${self.channels.length} channels and ${self.users.length} users cached.`);
-
-					self.restartServerCreateTimeout();
-
+			switch(packet.op) {
+				case 0:
+					this.processPacket(packet);
 					break;
-
-				case PacketType.MESSAGE_CREATE:
-					// format: https://discordapi.readthedocs.org/en/latest/reference/channels/messages.html#message-format
-					var channel = self.channels.get("id", data.channel_id) || self.private_channels.get("id", data.channel_id);
-					if (channel) {
-						var msg = channel.messages.add(new Message(data, channel, client));
-						channel.lastMessageID = msg.id;
-
-						if (self.messageAwaits[channel.id + msg.author.id]) {
-							self.messageAwaits[channel.id + msg.author.id].map( fn => fn(msg) );
-							self.messageAwaits[channel.id + msg.author.id] = null;
-							client.emit("message", msg, true); //2nd param is isAwaitedMessage
-						} else {
-							client.emit("message", msg);
-						}
-					} else {
-						client.emit("warn", "message created but channel is not cached");
-					}
+				case 1:
+					this.heartbeat();
 					break;
-				case PacketType.MESSAGE_DELETE:
-					var channel = self.channels.get("id", data.channel_id) || self.private_channels.get("id", data.channel_id);
-					if (channel) {
-						// potentially blank
-						var msg = channel.messages.get("id", data.id);
-						client.emit("messageDeleted", msg, channel);
-						if (msg) {
-							channel.messages.remove(msg);
-						} else {
-							client.emit("debug", "message was deleted but message is not cached");
-						}
-					} else {
-						client.emit("warn", "message was deleted but channel is not cached");
-					}
+				case 7:
+					this.disconnected(true);
 					break;
-				case PacketType.MESSAGE_UPDATE:
-					// format https://discordapi.readthedocs.org/en/latest/reference/channels/messages.html#message-format
-					var channel = self.channels.get("id", data.channel_id) || self.private_channels.get("id", data.channel_id);
-					if (channel) {
-						// potentially blank
-						var msg = channel.messages.get("id", data.id);
-
-						if (msg) {
-							// old message exists
-							data.nonce = data.nonce || msg.nonce;
-							data.attachments = data.attachments || msg.attachments;
-							data.tts = data.tts || msg.tts;
-							data.embeds = data.embeds || msg.embeds;
-							data.timestamp = data.timestamp || msg.timestamp;
-							data.mention_everyone = data.mention_everyone || msg.everyoneMentioned;
-							data.content = data.content || msg.content;
-							data.mentions = data.mentions || msg.mentions;
-							data.author = data.author || msg.author;
-							msg = new Message(msg, channel, client);
-						} else if (!data.author || !data.content) {
-							break;
-						}
-						var nmsg = new Message(data, channel, client);
-						client.emit("messageUpdated", msg, nmsg);
-						if (msg) {
-							channel.messages.update(msg, nmsg);
-						}
-					} else {
-						client.emit("warn", "message was updated but channel is not cached");
-					}
-					break;
-				case PacketType.SERVER_CREATE:
-					var server = self.servers.get("id", data.id);
-					if (!server) {
-						if (!data.unavailable) {
-							server = self.servers.add(new Server(data, client));
-							if (client.readyTime) {
-								client.emit("serverCreated", server);
-							}
-							if (self.client.options.forceFetchUsers && server.large && server.members.length < server.memberCount) {
-								self.getGuildMembers(server.id, Math.ceil(server.memberCount / 1000));
-							}
-							var unavailable = self.unavailableServers.get("id", server.id);
-							if (unavailable) {
-								self.unavailableServers.remove(unavailable);
-							}
-							self.restartServerCreateTimeout();
-						} else {
-							client.emit("debug", "server was unavailable, could not create");
-						}
-					}
-					break;
-				case PacketType.SERVER_DELETE:
-					var server = self.servers.get("id", data.id);
-					if (server) {
-						if (!data.unavailable) {
-							client.emit("serverDeleted", server);
-
-							for (var channel of server.channels) {
-								self.channels.remove(channel);
-							}
-
-							self.servers.remove(server);
-
-							for (var user of server.members) {
-								var found = false;
-								for (var s of self.servers) {
-									if (s.members.get("id", user.id)) {
-										found = true;
-										break;
-									}
-								}
-								if (!found) {
-									self.users.remove(user);
-								}
-							}
-						} else {
-							client.emit("debug", "server was unavailable, could not update");
-						}
-	                	self.buckets["bot:msg:guild:" + packet.d.id] =
-		                    self.buckets["dmsg:" + packet.d.id] =
-		                    self.buckets["bdmsg:" + packet.d.id] =
-		                    self.buckets["guild_member:" + packet.d.id] =
-		                    self.buckets["guild_member_nick:" + packet.d.id] = undefined;
-					} else {
-						client.emit("warn", "server was deleted but it was not in the cache");
-					}
-					break;
-				case PacketType.SERVER_UPDATE:
-					var server = self.servers.get("id", data.id);
-					if (server) {
-						// server exists
-						data.members = data.members || [];
-						data.channels = data.channels || [];
-						var newserver = new Server(data, client);
-						newserver.members = server.members;
-						newserver.memberMap = server.memberMap;
-						newserver.channels = server.channels;
-						if (newserver.equalsStrict(server)) {
-							// already the same don't do anything
-							client.emit("debug", "received server update but server already updated");
-						} else {
-							client.emit("serverUpdated", new Server(server, client), newserver);
-							self.servers.update(server, newserver);
-						}
-					} else if (!server) {
-						client.emit("warn", "server was updated but it was not in the cache");
-						self.servers.add(new Server(data, client));
-						client.emit("serverCreated", server);
-					}
-					break;
-				case PacketType.CHANNEL_CREATE:
-
-					var channel = self.channels.get("id", data.id);
-
-					if (!channel) {
-
-						var server = self.servers.get("id", data.guild_id);
-						if (server) {
-							var chan = null;
-							if (data.type === "text") {
-								chan = self.channels.add(new TextChannel(data, client, server));
-							} else {
-								chan = self.channels.add(new VoiceChannel(data, client, server));
-							}
-							client.emit("channelCreated", server.channels.add(chan));
-						} else if (data.is_private) {
-							client.emit("channelCreated", self.private_channels.add(new PMChannel(data, client)));
-						} else {
-							client.emit("warn", "channel created but server does not exist");
-						}
-
-					} else {
-						client.emit("warn", "channel created but already in cache");
-					}
-
-					break;
-				case PacketType.CHANNEL_DELETE:
-					var channel = self.channels.get("id", data.id) || self.private_channels.get("id", data.id);
-					if (channel) {
-
-						if (channel.server) { // accounts for PMs
-							channel.server.channels.remove(channel);
-							self.channels.remove(channel);
-						} else {
-							self.private_channels.remove(channel);
-						}
-
-						client.emit("channelDeleted", channel);
-
-					} else {
-						client.emit("warn", "channel deleted but already out of cache?");
-					}
-					break;
-				case PacketType.CHANNEL_UPDATE:
-					var channel = self.channels.get("id", data.id) || self.private_channels.get("id", data.id);
-					if (channel) {
-
-						if (channel instanceof PMChannel) {
-							//PM CHANNEL
-							client.emit("channelUpdated", new PMChannel(channel, client),
-								self.private_channels.update(channel, new PMChannel(data, client)));
-						} else {
-							if (channel.server) {
-								if (channel.type === "text") {
-									//TEXT CHANNEL
-									var chan = new TextChannel(data, client, channel.server);
-									chan.messages = channel.messages;
-									client.emit("channelUpdated", channel, chan);
-									channel.server.channels.update(channel, chan);
-									self.channels.update(channel, chan);
-								} else {
-									//VOICE CHANNEL
-									data.members = channel.members;
-									var chan = new VoiceChannel(data, client, channel.server);
-									client.emit("channelUpdated", channel, chan);
-									channel.server.channels.update(channel, chan);
-									self.channels.update(channel, chan);
-								}
-							} else {
-								client.emit("warn", "channel updated but server non-existant");
-							}
-						}
-
-					} else {
-						client.emit("warn", "channel updated but not in cache");
-					}
-					break;
-				case PacketType.SERVER_ROLE_CREATE:
-					var server = self.servers.get("id", data.guild_id);
-					if (server) {
-						client.emit("serverRoleCreated", server.roles.add(new Role(data.role, server, client)), server);
-					} else {
-						client.emit("warn", "server role made but server not in cache");
-					}
-					break;
-				case PacketType.SERVER_ROLE_DELETE:
-					var server = self.servers.get("id", data.guild_id);
-					if (server) {
-						var role = server.roles.get("id", data.role_id);
-						if (role) {
-							server.roles.remove(role);
-							client.emit("serverRoleDeleted", role);
-						} else {
-							client.emit("warn", "server role deleted but role not in cache");
-						}
-					} else {
-						client.emit("warn", "server role deleted but server not in cache");
-					}
-					break;
-				case PacketType.SERVER_ROLE_UPDATE:
-					var server = self.servers.get("id", data.guild_id);
-					if (server) {
-						var role = server.roles.get("id", data.role.id);
-						if (role) {
-							var newRole = new Role(data.role, server, client);
-							client.emit("serverRoleUpdated", new Role(role, server, client), newRole);
-							server.roles.update(role, newRole);
-						} else {
-							client.emit("warn", "server role updated but role not in cache");
-						}
-					} else {
-						client.emit("warn", "server role updated but server not in cache");
-					}
-					break;
-				case PacketType.SERVER_MEMBER_ADD:
-					var server = self.servers.get("id", data.guild_id);
-					if (server) {
-
-						server.memberMap[data.user.id] = {
-							roles: data.roles,
-							mute: false,
-							selfMute: false,
-							deaf: false,
-							selfDeaf: false,
-							joinedAt: Date.parse(data.joined_at),
-							nick: data.nick || null
-						};
-
-						server.memberCount++;
-
-						client.emit(
-							"serverNewMember",
-							server,
-							server.members.add(self.users.add(new User(data.user, client)))
-						);
-
-					} else {
-						client.emit("warn", "server member added but server doesn't exist in cache");
-					}
-					break;
-				case PacketType.SERVER_MEMBER_REMOVE:
-					var server = self.servers.get("id", data.guild_id);
-					if (server) {
-						var user = self.users.get("id", data.user.id);
-						if (user) {
-							client.emit("serverMemberRemoved", server, user);
-							server.memberMap[data.user.id] = null;
-							server.members.remove(user);
-							server.memberCount--;
-						} else {
-							client.emit("warn", "server member removed but user doesn't exist in cache");
-						}
-					} else {
-						client.emit("warn", "server member removed but server doesn't exist in cache");
-					}
-					break;
-				case PacketType.SERVER_MEMBER_UPDATE:
-					var server = self.servers.get("id", data.guild_id);
-					if (server) {
-						var user = self.users.add(new User(data.user, client));
-						if (user) {
-							var oldMember = null;
-							if (server.memberMap[data.user.id]) {
-								oldMember = {
-									roles: server.memberMap[data.user.id].roles,
-									mute: server.memberMap[data.user.id].mute,
-									selfMute: server.memberMap[data.user.id].selfMute,
-									deaf: server.memberMap[data.user.id].deaf,
-									selfDeaf: server.memberMap[data.user.id].selfDeaf,
-									nick: server.memberMap[data.user.id].nick
-								};
-							} else {
-								server.memberMap[data.user.id] = {};
-							}
-							server.memberMap[data.user.id].roles = data.roles ? data.roles : server.memberMap[data.user.id].roles;
-							server.memberMap[data.user.id].mute = data.mute || server.memberMap[data.user.id].mute;
-							server.memberMap[data.user.id].selfMute = data.self_mute === undefined ? server.memberMap[data.user.id].selfMute : data.self_mute;
-							server.memberMap[data.user.id].deaf = data.deaf || server.memberMap[data.user.id].deaf;
-							server.memberMap[data.user.id].selfDeaf = data.self_deaf === undefined ? server.memberMap[data.user.id].selfDeaf : data.self_deaf;
-							server.memberMap[data.user.id].nick = data.nick === undefined ? server.memberMap[data.user.id].nick : data.nick || null;
-							client.emit("serverMemberUpdated", server, user, oldMember);
-						} else {
-							client.emit("warn", "server member removed but user doesn't exist in cache");
-						}
-					} else {
-						client.emit("warn", "server member updated but server doesn't exist in cache");
-					}
-					break;
-				case PacketType.PRESENCE_UPDATE:
-
-					var user = self.users.add(new User(data.user, client));
-					var server = self.servers.get("id", data.guild_id);
-
-					if (user && server) {
-
-						server.members.add(user);
-
-						data.user.username = data.user.username || user.username;
-						data.user.id = data.user.id || user.id;
-						data.user.avatar = data.user.avatar !== undefined ? data.user.avatar : user.avatar;
-						data.user.discriminator = data.user.discriminator || user.discriminator;
-						data.user.status = data.status || user.status;
-						data.user.game = data.game !== undefined ? data.game : user.game;
-						data.user.bot = data.user.bot !== undefined ? data.user.bot : user.bot;
-
-						var presenceUser = new User(data.user, client);
-
-						if (!presenceUser.equalsStrict(user)) {
-							client.emit("presence", user, presenceUser);
-							self.users.update(user, presenceUser);
-						}
-
-					} else {
-						client.emit("warn", "presence update but user/server not in cache");
-					}
-
-					break;
-				case PacketType.USER_UPDATE:
-
-					var user = self.users.get("id", data.id);
-
-					if (user) {
-
-						data.username = data.username || user.username;
-						data.id = data.id || user.id;
-						data.avatar = data.avatar || user.avatar;
-						data.discriminator = data.discriminator || user.discriminator;
-						this.email = data.email || this.email;
-
-						var presenceUser = new User(data, client);
-
-						client.emit("presence", user, presenceUser);
-						self.users.update(user, presenceUser);
-
-					} else {
-						client.emit("warn", "user update but user not in cache (this should never happen)");
-					}
-
-					break;
-				case PacketType.TYPING:
-
-					var user = self.users.get("id", data.user_id);
-					var channel = self.channels.get("id", data.channel_id) || self.private_channels.get("id", data.channel_id);
-
-					if (user && channel) {
-						if (user.typing.since) {
-							user.typing.since = Date.now();
-							user.typing.channel = channel;
-						} else {
-							user.typing.since = Date.now();
-							user.typing.channel = channel;
-							client.emit("userTypingStarted", user, channel);
-						}
-						setTimeout(() => {
-							if (Date.now() - user.typing.since > 5500) {
-								// they haven't typed since
-								user.typing.since = null;
-								user.typing.channel = null;
-								client.emit("userTypingStopped", user, channel);
-							}
-						}, 6000);
-
-					} else {
-						client.emit("warn", "user typing but user or channel not existant in cache");
-					}
-					break;
-				case PacketType.SERVER_BAN_ADD:
-					var user = self.users.get("id", data.user.id);
-					var server = self.servers.get("id", data.guild_id);
-
-					if (user && server) {
-						client.emit("userBanned", user, server);
-					} else {
-						client.emit("warn", "user banned but user/server not in cache.");
-					}
-					break;
-				case PacketType.SERVER_BAN_REMOVE:
-					var user = self.users.get("id", data.user.id);
-					var server = self.servers.get("id", data.guild_id);
-
-					if (user && server) {
-						client.emit("userUnbanned", user, server);
-					} else {
-						client.emit("warn", "user unbanned but user/server not in cache.");
-					}
-					break;
-				case PacketType.USER_NOTE_UPDATE:
-					if(this.user.bot) {
-						return;
-					}
-					var user = self.users.get("id", data.id);
-					var oldNote = user.note;
-					var note = data.note || null;
-
-					// user in cache
-					if(user) {
-						var updatedUser = user;
-						updatedUser.note = note;
-
-						client.emit("noteUpdated", user, oldNote);
-
-						self.users.update(user, updatedUser);
-
-					} else {
-						client.emit("warn", "note updated but user not in cache");
-					}
-					break;
-				case PacketType.VOICE_STATE_UPDATE:
-					var user = self.users.get("id", data.user_id);
-					var server = self.servers.get("id", data.guild_id);
-					var connection = self.voiceConnections.get("server", server);
-
-					if (user && server) {
-
-						if (data.channel_id) {
-							// in voice channel
-							var channel = self.channels.get("id", data.channel_id);
-							if (channel && channel.type === "voice") {
-								server.eventVoiceStateUpdate(channel, user, data);
-							} else {
-								client.emit("warn", "voice state channel not in cache");
-							}
-						} else {
-							// not in voice channel
-							client.emit("voiceLeave", server.eventVoiceLeave(user), user);
-						}
-
-					} else {
-						client.emit("warn", "voice state update but user or server not in cache");
-					}
-
-					if (user && user.id === self.user.id) { // only for detecting self user movements for connections.
-						var connection = self.voiceConnections.get("server", server);
-						// existing connection, perhaps channel moved
-						if (connection && connection.voiceChannel && connection.voiceChannel.id !== data.channel_id) {
-							// moved, update info
-							connection.voiceChannel = self.channels.get("id", data.channel_id);
-							client.emit("voiceMoved", connection.voiceChannel); // Moved to a new channel
-						}
-					}
-
-					break;
-				case PacketType.SERVER_MEMBERS_CHUNK:
-
-					var server = self.servers.get("id", data.guild_id);
-
-					if (server) {
-
-						var testtime = Date.now();
-
-						for (var user of data.members) {
-							server.memberMap[user.user.id] = {
-								roles: user.roles,
-								mute: user.mute,
-								selfMute: false,
-								deaf: user.deaf,
-								selfDeaf: false,
-								joinedAt: Date.parse(user.joined_at),
-								nick: user.nick || null
-							};
-							server.members.add(self.users.add(new User(user.user, client)));
-						}
-
-						if (self.forceFetchCount.hasOwnProperty(server.id)) {
-							if (self.forceFetchCount[server.id] <= 1) {
-								delete self.forceFetchCount[server.id];
-								self.checkReady();
-							} else {
-								self.forceFetchCount[server.id]--;
-							}
-						}
-
-						client.emit("debug", (Date.now() - testtime) + "ms for " + data.members.length + " user chunk for server with id " + server.id);
-
-					} else {
-						client.emit("warn", "chunk update received but server not in cache");
-					}
-
-					break;
-				case PacketType.FRIEND_ADD:
-					if (this.user.bot) {
-						return;
-					}
-					if (data.type === 1) { // accepted/got accepted a friend request
-						var inUser = self.incoming_friend_requests.get("id", data.id);
-						if (inUser) {
-							// client accepted another user
-							self.incoming_friend_requests.remove(self.friends.add(new User(data.user, client)));
-							return;
-						}
-
-						var outUser = self.outgoing_friend_requests.get("id", data.id);
-						if (outUser) {
-							// another user accepted the client
-							self.outgoing_friend_requests.remove(self.friends.add(new User(data.user, client)));
-							client.emit("friendRequestAccepted", outUser);
-							return;
-						}
-					} else if (data.type === 2) {
-						// client received block
-						self.blocked_users.add(new User(data.user, client));
-					} else if (data.type === 3) {
-						// client received friend request
-						client.emit("friendRequestReceived", self.incoming_friend_requests.add(new User(data.user, client)));
-					} else if (data.type === 4) {
-						// client sent friend request
-						self.outgoing_friend_requests.add(new User(data.user, client));
-					}
-					break;
-				case PacketType.FRIEND_REMOVE:
-					if (this.user.bot) {
-						return;
-					}
-					var user = self.friends.get("id", data.id);
-					if (user) {
-						self.friends.remove(user);
-						client.emit("friendRemoved", user);
-						return;
-					}
-
-					user = self.blocked_users.get("id", data.id);
-					if (user) { // they rejected friend request
-						self.blocked_users.remove(user);
-						return;
-					}
-
-					user = self.incoming_friend_requests.get("id", data.id);
-					if (user) { // they rejected outgoing friend request OR client user manually deleted incoming thru web client/other clients
-						var rejectedUser = self.outgoing_friend_requests.get("id", user.id);
-						if (rejectedUser) {
-							// other person rejected outgoing
-							client.emit("friendRequestRejected", self.outgoing_friend_requests.remove(rejectedUser));
-							return;
-						}
-
-						// incoming deleted manually
-						self.incoming_friend_requests.remove(user);
-						return;
-					}
-
-					user = self.outgoing_friend_requests.get("id", data.id);
-					if (user) { // client cancelled incoming friend request OR client user manually deleted outgoing thru web client/other clients
-						var incomingCancel = self.incoming_friend_requests.get("id", user.id);
-						if (incomingCancel) {
-							// client cancelled incoming
-							self.incoming_friend_requests.remove(user);
-							return;
-						}
-
-						// outgoing deleted manually
-						self.outgoing_friend_requests.remove(user);
-						return;
-					}
-					break;
-				default:
-					client.emit("unknown", packet);
+				case 9:
+					this.sessionID = null;
+					this.sequence = 0;
+					this.identify();
 					break;
 			}
 		};
+	}
+
+	resume() {
+		var data = {
+			op: 6,
+			d: {
+	            token: this.token,
+	            session_id: this.sessionID,
+	            seq: this.sequence
+			}
+		};
+
+		this.sendWS(data);
+	}
+
+	identify() {
+		var data = {
+			op: 2,
+			d: {
+				token: this.token,
+				v: GATEWAY_VERSION,
+				compress: this.client.options.compress,
+				large_threshold : this.client.options.largeThreshold,
+				properties: {
+					"$os": process.platform,
+					"$browser": "discord.js",
+					"$device": "discord.js",
+					"$referrer": "",
+					"$referring_domain": ""
+				}
+			}
+		};
+
+		if (this.client.options.shard) {
+			data.d.shard = this.client.options.shard;
+		}
+
+		this.sendWS(data);
+	}
+
+	heartbeat() {
+		this.sendWS({ op: 1, d: Date.now() });
+	}
+
+	processPacket(packet) {
+		var client = this.client;
+		var data = packet.d;
+		switch (packet.t) {
+			case PacketType.RESUME:
+			case PacketType.READY:
+				this.intervals.kai = setInterval(() => this.heartbeat(), data.heartbeat_interval);
+
+				if(packet.t === PacketType.RESUME) {
+					break;
+				}
+
+				this.sessionID = data.session_id;
+				var startTime = Date.now();
+
+				this.user = this.users.add(new User(data.user, client));
+
+				this.forceFetchCount = {};
+				this.forceFetchQueue = [];
+				this.forceFetchLength = 1;
+				this.autoReconnectInterval = 1000;
+
+				data.guilds.forEach(server => {
+					if (!server.unavailable) {
+						server = this.servers.add(new Server(server, client));
+						if (this.client.options.forceFetchUsers && server.members && server.members.length < server.memberCount) {
+							this.getGuildMembers(server.id, Math.ceil(server.memberCount / 1000));
+						}
+					} else {
+						client.emit("debug", "server " + server.id + " was unavailable, could not create (ready)");
+						this.unavailableServers.add(server);
+					}
+				});
+				data.private_channels.forEach(pm => {
+					this.private_channels.add(new PMChannel(pm, client));
+				});
+				if (!data.user.bot) { // bots dont have friends
+					data.relationships.forEach(friend => {
+						if (friend.type === 1) { // is a friend
+							this.friends.add(new User(friend.user, client));
+						} else if (friend.type === 2) { // incoming friend requests
+							this.blocked_users.add(new User(friend.user, client));
+						} else if (friend.type === 3) { // incoming friend requests
+							this.incoming_friend_requests.add(new User(friend.user, client));
+						} else if (friend.type === 4) { // outgoing friend requests
+							this.outgoing_friend_requests.add(new User(friend.user, client));
+						} else {
+							client.emit("warn", "unknown friend type " + friend.type);
+						}
+					});
+				} else {
+					this.friends = null;
+					this.blocked_users = null;
+					this.incoming_friend_requests = null;
+					this.outgoing_friend_requests = null;
+				}
+
+				// add notes to users
+				if(data.notes) {
+					for(note in data.notes) {
+						var user = this.users.get("id", note);
+						if(user) {
+							var newUser = user;
+							newUser.note = data.notes[note];
+
+							this.users.update(user, newUser);
+						} else {
+							client.emit("warn", "note in ready packet but user not cached");
+						}
+					}
+				}
+
+
+				this.state = ConnectionState.READY;
+
+				client.emit("debug", `ready packet took ${Date.now() - startTime}ms to process`);
+				client.emit("debug", `ready with ${this.servers.length} servers, ${this.unavailableServers.length} unavailable servers, ${this.channels.length} channels and ${this.users.length} users cached.`);
+
+				this.restartServerCreateTimeout();
+
+				break;
+
+			case PacketType.MESSAGE_CREATE:
+				// format: https://discordapi.readthedocs.org/en/latest/reference/channels/messages.html#message-format
+				var channel = this.channels.get("id", data.channel_id) || this.private_channels.get("id", data.channel_id);
+				if (channel) {
+					var msg = channel.messages.add(new Message(data, channel, client));
+					channel.lastMessageID = msg.id;
+
+					if (this.messageAwaits[channel.id + msg.author.id]) {
+						this.messageAwaits[channel.id + msg.author.id].map( fn => fn(msg) );
+						this.messageAwaits[channel.id + msg.author.id] = null;
+						client.emit("message", msg, true); //2nd param is isAwaitedMessage
+					} else {
+						client.emit("message", msg);
+					}
+				} else {
+					client.emit("warn", "message created but channel is not cached");
+				}
+				break;
+			case PacketType.MESSAGE_DELETE:
+				var channel = this.channels.get("id", data.channel_id) || this.private_channels.get("id", data.channel_id);
+				if (channel) {
+					// potentially blank
+					var msg = channel.messages.get("id", data.id);
+					client.emit("messageDeleted", msg, channel);
+					if (msg) {
+						channel.messages.remove(msg);
+					} else {
+						client.emit("debug", "message was deleted but message is not cached");
+					}
+				} else {
+					client.emit("warn", "message was deleted but channel is not cached");
+				}
+				break;
+			case PacketType.MESSAGE_UPDATE:
+				// format https://discordapi.readthedocs.org/en/latest/reference/channels/messages.html#message-format
+				var channel = this.channels.get("id", data.channel_id) || this.private_channels.get("id", data.channel_id);
+				if (channel) {
+					// potentially blank
+					var msg = channel.messages.get("id", data.id);
+
+					if (msg) {
+						// old message exists
+						data.nonce = data.nonce || msg.nonce;
+						data.attachments = data.attachments || msg.attachments;
+						data.tts = data.tts || msg.tts;
+						data.embeds = data.embeds || msg.embeds;
+						data.timestamp = data.timestamp || msg.timestamp;
+						data.mention_everyone = data.mention_everyone || msg.everyoneMentioned;
+						data.content = data.content || msg.content;
+						data.mentions = data.mentions || msg.mentions;
+						data.author = data.author || msg.author;
+						msg = new Message(msg, channel, client);
+					} else if (!data.author || !data.content) {
+						break;
+					}
+					var nmsg = new Message(data, channel, client);
+					client.emit("messageUpdated", msg, nmsg);
+					if (msg) {
+						channel.messages.update(msg, nmsg);
+					}
+				} else {
+					client.emit("warn", "message was updated but channel is not cached");
+				}
+				break;
+			case PacketType.SERVER_CREATE:
+				var server = this.servers.get("id", data.id);
+				if (!server) {
+					if (!data.unavailable) {
+						server = this.servers.add(new Server(data, client));
+						if (client.readyTime) {
+							client.emit("serverCreated", server);
+						}
+						if (this.client.options.forceFetchUsers && server.large && server.members.length < server.memberCount) {
+							this.getGuildMembers(server.id, Math.ceil(server.memberCount / 1000));
+						}
+						var unavailable = this.unavailableServers.get("id", server.id);
+						if (unavailable) {
+							this.unavailableServers.remove(unavailable);
+						}
+						this.restartServerCreateTimeout();
+					} else {
+						client.emit("debug", "server was unavailable, could not create");
+					}
+				}
+				break;
+			case PacketType.SERVER_DELETE:
+				var server = this.servers.get("id", data.id);
+				if (server) {
+					if (!data.unavailable) {
+						client.emit("serverDeleted", server);
+
+						for (var channel of server.channels) {
+							this.channels.remove(channel);
+						}
+
+						this.servers.remove(server);
+
+						for (var user of server.members) {
+							var found = false;
+							for (var s of this.servers) {
+								if (s.members.get("id", user.id)) {
+									found = true;
+									break;
+								}
+							}
+							if (!found) {
+								this.users.remove(user);
+							}
+						}
+					} else {
+						client.emit("debug", "server was unavailable, could not update");
+					}
+                	this.buckets["bot:msg:guild:" + packet.d.id] =
+	                    this.buckets["dmsg:" + packet.d.id] =
+	                    this.buckets["bdmsg:" + packet.d.id] =
+	                    this.buckets["guild_member:" + packet.d.id] =
+	                    this.buckets["guild_member_nick:" + packet.d.id] = undefined;
+				} else {
+					client.emit("warn", "server was deleted but it was not in the cache");
+				}
+				break;
+			case PacketType.SERVER_UPDATE:
+				var server = this.servers.get("id", data.id);
+				if (server) {
+					// server exists
+					data.members = data.members || [];
+					data.channels = data.channels || [];
+					var newserver = new Server(data, client);
+					newserver.members = server.members;
+					newserver.memberMap = server.memberMap;
+					newserver.channels = server.channels;
+					if (newserver.equalsStrict(server)) {
+						// already the same don't do anything
+						client.emit("debug", "received server update but server already updated");
+					} else {
+						client.emit("serverUpdated", new Server(server, client), newserver);
+						this.servers.update(server, newserver);
+					}
+				} else if (!server) {
+					client.emit("warn", "server was updated but it was not in the cache");
+					this.servers.add(new Server(data, client));
+					client.emit("serverCreated", server);
+				}
+				break;
+			case PacketType.CHANNEL_CREATE:
+
+				var channel = this.channels.get("id", data.id);
+
+				if (!channel) {
+
+					var server = this.servers.get("id", data.guild_id);
+					if (server) {
+						var chan = null;
+						if (data.type === "text") {
+							chan = this.channels.add(new TextChannel(data, client, server));
+						} else {
+							chan = this.channels.add(new VoiceChannel(data, client, server));
+						}
+						client.emit("channelCreated", server.channels.add(chan));
+					} else if (data.is_private) {
+						client.emit("channelCreated", this.private_channels.add(new PMChannel(data, client)));
+					} else {
+						client.emit("warn", "channel created but server does not exist");
+					}
+
+				} else {
+					client.emit("warn", "channel created but already in cache");
+				}
+
+				break;
+			case PacketType.CHANNEL_DELETE:
+				var channel = this.channels.get("id", data.id) || this.private_channels.get("id", data.id);
+				if (channel) {
+
+					if (channel.server) { // accounts for PMs
+						channel.server.channels.remove(channel);
+						this.channels.remove(channel);
+					} else {
+						this.private_channels.remove(channel);
+					}
+
+					client.emit("channelDeleted", channel);
+
+				} else {
+					client.emit("warn", "channel deleted but already out of cache?");
+				}
+				break;
+			case PacketType.CHANNEL_UPDATE:
+				var channel = this.channels.get("id", data.id) || this.private_channels.get("id", data.id);
+				if (channel) {
+
+					if (channel instanceof PMChannel) {
+						//PM CHANNEL
+						client.emit("channelUpdated", new PMChannel(channel, client),
+							this.private_channels.update(channel, new PMChannel(data, client)));
+					} else {
+						if (channel.server) {
+							if (channel.type === "text") {
+								//TEXT CHANNEL
+								var chan = new TextChannel(data, client, channel.server);
+								chan.messages = channel.messages;
+								client.emit("channelUpdated", channel, chan);
+								channel.server.channels.update(channel, chan);
+								this.channels.update(channel, chan);
+							} else {
+								//VOICE CHANNEL
+								data.members = channel.members;
+								var chan = new VoiceChannel(data, client, channel.server);
+								client.emit("channelUpdated", channel, chan);
+								channel.server.channels.update(channel, chan);
+								this.channels.update(channel, chan);
+							}
+						} else {
+							client.emit("warn", "channel updated but server non-existant");
+						}
+					}
+
+				} else {
+					client.emit("warn", "channel updated but not in cache");
+				}
+				break;
+			case PacketType.SERVER_ROLE_CREATE:
+				var server = this.servers.get("id", data.guild_id);
+				if (server) {
+					client.emit("serverRoleCreated", server.roles.add(new Role(data.role, server, client)), server);
+				} else {
+					client.emit("warn", "server role made but server not in cache");
+				}
+				break;
+			case PacketType.SERVER_ROLE_DELETE:
+				var server = this.servers.get("id", data.guild_id);
+				if (server) {
+					var role = server.roles.get("id", data.role_id);
+					if (role) {
+						server.roles.remove(role);
+						client.emit("serverRoleDeleted", role);
+					} else {
+						client.emit("warn", "server role deleted but role not in cache");
+					}
+				} else {
+					client.emit("warn", "server role deleted but server not in cache");
+				}
+				break;
+			case PacketType.SERVER_ROLE_UPDATE:
+				var server = this.servers.get("id", data.guild_id);
+				if (server) {
+					var role = server.roles.get("id", data.role.id);
+					if (role) {
+						var newRole = new Role(data.role, server, client);
+						client.emit("serverRoleUpdated", new Role(role, server, client), newRole);
+						server.roles.update(role, newRole);
+					} else {
+						client.emit("warn", "server role updated but role not in cache");
+					}
+				} else {
+					client.emit("warn", "server role updated but server not in cache");
+				}
+				break;
+			case PacketType.SERVER_MEMBER_ADD:
+				var server = this.servers.get("id", data.guild_id);
+				if (server) {
+
+					server.memberMap[data.user.id] = {
+						roles: data.roles,
+						mute: false,
+						selfMute: false,
+						deaf: false,
+						selfDeaf: false,
+						joinedAt: Date.parse(data.joined_at),
+						nick: data.nick || null
+					};
+
+					server.memberCount++;
+
+					client.emit(
+						"serverNewMember",
+						server,
+						server.members.add(this.users.add(new User(data.user, client)))
+					);
+
+				} else {
+					client.emit("warn", "server member added but server doesn't exist in cache");
+				}
+				break;
+			case PacketType.SERVER_MEMBER_REMOVE:
+				var server = this.servers.get("id", data.guild_id);
+				if (server) {
+					var user = this.users.get("id", data.user.id);
+					if (user) {
+						client.emit("serverMemberRemoved", server, user);
+						server.memberMap[data.user.id] = null;
+						server.members.remove(user);
+						server.memberCount--;
+					} else {
+						client.emit("warn", "server member removed but user doesn't exist in cache");
+					}
+				} else {
+					client.emit("warn", "server member removed but server doesn't exist in cache");
+				}
+				break;
+			case PacketType.SERVER_MEMBER_UPDATE:
+				var server = this.servers.get("id", data.guild_id);
+				if (server) {
+					var user = this.users.add(new User(data.user, client));
+					if (user) {
+						var oldMember = null;
+						if (server.memberMap[data.user.id]) {
+							oldMember = {
+								roles: server.memberMap[data.user.id].roles,
+								mute: server.memberMap[data.user.id].mute,
+								selfMute: server.memberMap[data.user.id].selfMute,
+								deaf: server.memberMap[data.user.id].deaf,
+								selfDeaf: server.memberMap[data.user.id].selfDeaf,
+								nick: server.memberMap[data.user.id].nick
+							};
+						} else {
+							server.memberMap[data.user.id] = {};
+						}
+						server.memberMap[data.user.id].roles = data.roles ? data.roles : server.memberMap[data.user.id].roles;
+						server.memberMap[data.user.id].mute = data.mute || server.memberMap[data.user.id].mute;
+						server.memberMap[data.user.id].selfMute = data.self_mute === undefined ? server.memberMap[data.user.id].selfMute : data.self_mute;
+						server.memberMap[data.user.id].deaf = data.deaf || server.memberMap[data.user.id].deaf;
+						server.memberMap[data.user.id].selfDeaf = data.self_deaf === undefined ? server.memberMap[data.user.id].selfDeaf : data.self_deaf;
+						server.memberMap[data.user.id].nick = data.nick === undefined ? server.memberMap[data.user.id].nick : data.nick || null;
+						client.emit("serverMemberUpdated", server, user, oldMember);
+					} else {
+						client.emit("warn", "server member removed but user doesn't exist in cache");
+					}
+				} else {
+					client.emit("warn", "server member updated but server doesn't exist in cache");
+				}
+				break;
+			case PacketType.PRESENCE_UPDATE:
+
+				var user = this.users.add(new User(data.user, client));
+				var server = this.servers.get("id", data.guild_id);
+
+				if (user && server) {
+
+					server.members.add(user);
+
+					data.user.username = data.user.username || user.username;
+					data.user.id = data.user.id || user.id;
+					data.user.avatar = data.user.avatar !== undefined ? data.user.avatar : user.avatar;
+					data.user.discriminator = data.user.discriminator || user.discriminator;
+					data.user.status = data.status || user.status;
+					data.user.game = data.game !== undefined ? data.game : user.game;
+					data.user.bot = data.user.bot !== undefined ? data.user.bot : user.bot;
+
+					var presenceUser = new User(data.user, client);
+
+					if (!presenceUser.equalsStrict(user)) {
+						client.emit("presence", user, presenceUser);
+						this.users.update(user, presenceUser);
+					}
+
+				} else {
+					client.emit("warn", "presence update but user/server not in cache");
+				}
+
+				break;
+			case PacketType.USER_UPDATE:
+
+				var user = this.users.get("id", data.id);
+
+				if (user) {
+
+					data.username = data.username || user.username;
+					data.id = data.id || user.id;
+					data.avatar = data.avatar || user.avatar;
+					data.discriminator = data.discriminator || user.discriminator;
+					this.email = data.email || this.email;
+
+					var presenceUser = new User(data, client);
+
+					client.emit("presence", user, presenceUser);
+					this.users.update(user, presenceUser);
+
+				} else {
+					client.emit("warn", "user update but user not in cache (this should never happen)");
+				}
+
+				break;
+			case PacketType.TYPING:
+
+				var user = this.users.get("id", data.user_id);
+				var channel = this.channels.get("id", data.channel_id) || this.private_channels.get("id", data.channel_id);
+
+				if (user && channel) {
+					if (user.typing.since) {
+						user.typing.since = Date.now();
+						user.typing.channel = channel;
+					} else {
+						user.typing.since = Date.now();
+						user.typing.channel = channel;
+						client.emit("userTypingStarted", user, channel);
+					}
+					setTimeout(() => {
+						if (Date.now() - user.typing.since > 5500) {
+							// they haven't typed since
+							user.typing.since = null;
+							user.typing.channel = null;
+							client.emit("userTypingStopped", user, channel);
+						}
+					}, 6000);
+
+				} else {
+					client.emit("warn", "user typing but user or channel not existant in cache");
+				}
+				break;
+			case PacketType.SERVER_BAN_ADD:
+				var user = this.users.get("id", data.user.id);
+				var server = this.servers.get("id", data.guild_id);
+
+				if (user && server) {
+					client.emit("userBanned", user, server);
+				} else {
+					client.emit("warn", "user banned but user/server not in cache.");
+				}
+				break;
+			case PacketType.SERVER_BAN_REMOVE:
+				var user = this.users.get("id", data.user.id);
+				var server = this.servers.get("id", data.guild_id);
+
+				if (user && server) {
+					client.emit("userUnbanned", user, server);
+				} else {
+					client.emit("warn", "user unbanned but user/server not in cache.");
+				}
+				break;
+			case PacketType.USER_NOTE_UPDATE:
+				if(this.user.bot) {
+					return;
+				}
+				var user = this.users.get("id", data.id);
+				var oldNote = user.note;
+				var note = data.note || null;
+
+				// user in cache
+				if(user) {
+					var updatedUser = user;
+					updatedUser.note = note;
+
+					client.emit("noteUpdated", user, oldNote);
+
+					this.users.update(user, updatedUser);
+
+				} else {
+					client.emit("warn", "note updated but user not in cache");
+				}
+				break;
+			case PacketType.VOICE_STATE_UPDATE:
+				var user = this.users.get("id", data.user_id);
+				var server = this.servers.get("id", data.guild_id);
+				var connection = this.voiceConnections.get("server", server);
+
+				if (user && server) {
+
+					if (data.channel_id) {
+						// in voice channel
+						var channel = this.channels.get("id", data.channel_id);
+						if (channel && channel.type === "voice") {
+							server.eventVoiceStateUpdate(channel, user, data);
+						} else {
+							client.emit("warn", "voice state channel not in cache");
+						}
+					} else {
+						// not in voice channel
+						client.emit("voiceLeave", server.eventVoiceLeave(user), user);
+					}
+
+				} else {
+					client.emit("warn", "voice state update but user or server not in cache");
+				}
+
+				if (user && user.id === this.user.id) { // only for detecting self user movements for connections.
+					var connection = this.voiceConnections.get("server", server);
+					// existing connection, perhaps channel moved
+					if (connection && connection.voiceChannel && connection.voiceChannel.id !== data.channel_id) {
+						// moved, update info
+						connection.voiceChannel = this.channels.get("id", data.channel_id);
+						client.emit("voiceMoved", connection.voiceChannel); // Moved to a new channel
+					}
+				}
+
+				break;
+			case PacketType.SERVER_MEMBERS_CHUNK:
+
+				var server = this.servers.get("id", data.guild_id);
+
+				if (server) {
+
+					var testtime = Date.now();
+
+					for (var user of data.members) {
+						server.memberMap[user.user.id] = {
+							roles: user.roles,
+							mute: user.mute,
+							selfMute: false,
+							deaf: user.deaf,
+							selfDeaf: false,
+							joinedAt: Date.parse(user.joined_at),
+							nick: user.nick || null
+						};
+						server.members.add(this.users.add(new User(user.user, client)));
+					}
+
+					if (this.forceFetchCount.hasOwnProperty(server.id)) {
+						if (this.forceFetchCount[server.id] <= 1) {
+							delete this.forceFetchCount[server.id];
+							this.checkReady();
+						} else {
+							this.forceFetchCount[server.id]--;
+						}
+					}
+
+					client.emit("debug", (Date.now() - testtime) + "ms for " + data.members.length + " user chunk for server with id " + server.id);
+
+				} else {
+					client.emit("warn", "chunk update received but server not in cache");
+				}
+
+				break;
+			case PacketType.FRIEND_ADD:
+				if (this.user.bot) {
+					return;
+				}
+				if (data.type === 1) { // accepted/got accepted a friend request
+					var inUser = this.incoming_friend_requests.get("id", data.id);
+					if (inUser) {
+						// client accepted another user
+						this.incoming_friend_requests.remove(this.friends.add(new User(data.user, client)));
+						return;
+					}
+
+					var outUser = this.outgoing_friend_requests.get("id", data.id);
+					if (outUser) {
+						// another user accepted the client
+						this.outgoing_friend_requests.remove(this.friends.add(new User(data.user, client)));
+						client.emit("friendRequestAccepted", outUser);
+						return;
+					}
+				} else if (data.type === 2) {
+					// client received block
+					this.blocked_users.add(new User(data.user, client));
+				} else if (data.type === 3) {
+					// client received friend request
+					client.emit("friendRequestReceived", this.incoming_friend_requests.add(new User(data.user, client)));
+				} else if (data.type === 4) {
+					// client sent friend request
+					this.outgoing_friend_requests.add(new User(data.user, client));
+				}
+				break;
+			case PacketType.FRIEND_REMOVE:
+				if (this.user.bot) {
+					return;
+				}
+				var user = this.friends.get("id", data.id);
+				if (user) {
+					this.friends.remove(user);
+					client.emit("friendRemoved", user);
+					return;
+				}
+
+				user = this.blocked_users.get("id", data.id);
+				if (user) { // they rejected friend request
+					this.blocked_users.remove(user);
+					return;
+				}
+
+				user = this.incoming_friend_requests.get("id", data.id);
+				if (user) { // they rejected outgoing friend request OR client user manually deleted incoming thru web client/other clients
+					var rejectedUser = this.outgoing_friend_requests.get("id", user.id);
+					if (rejectedUser) {
+						// other person rejected outgoing
+						client.emit("friendRequestRejected", this.outgoing_friend_requests.remove(rejectedUser));
+						return;
+					}
+
+					// incoming deleted manually
+					this.incoming_friend_requests.remove(user);
+					return;
+				}
+
+				user = this.outgoing_friend_requests.get("id", data.id);
+				if (user) { // client cancelled incoming friend request OR client user manually deleted outgoing thru web client/other clients
+					var incomingCancel = this.incoming_friend_requests.get("id", user.id);
+					if (incomingCancel) {
+						// client cancelled incoming
+						this.incoming_friend_requests.remove(user);
+						return;
+					}
+
+					// outgoing deleted manually
+					this.outgoing_friend_requests.remove(user);
+					return;
+				}
+				break;
+			default:
+				client.emit("unknown", packet);
+				break;
+		}
 	}
 }
