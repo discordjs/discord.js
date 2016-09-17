@@ -24,7 +24,7 @@ import Invite from "../Structures/Invite";
 import VoiceConnection from "../Voice/VoiceConnection";
 import TokenCacher from "../Util/TokenCacher";
 
-var GATEWAY_VERSION = 4;
+var GATEWAY_VERSION = 5;
 var zlib;
 var libVersion = require('../../package.json').version;
 
@@ -1578,11 +1578,6 @@ export default class InternalClient {
 		this.websocket = new WebSocket(url);
 
 		this.websocket.onopen = () => {
-			if(this.sessionID) {
-				this.resume();
-			} else {
-				this.identify();
-			}
 		};
 
 		this.websocket.onclose = (event) => {
@@ -1660,50 +1655,24 @@ export default class InternalClient {
 					this.sequence = 0;
 					this.identify();
 					break;
+				case 10:
+					console.log(packet);
+					if(this.sessionID) {
+						this.resume();
+					} else {
+						this.identify();
+					}
+					this.heartbeat();
+					this.intervals.kai = setInterval(() => this.heartbeat(), packet.d.heartbeat_interval);
+					break;
+				case 11:
+					this.heartbeatAcked = true;
+					break;
+				default:
+					this.client.emit("unknown", packet);
+					break;
 			}
 		};
-	}
-
-	resume() {
-		var data = {
-			op: 6,
-			d: {
-	            token: this.token,
-	            session_id: this.sessionID,
-	            seq: this.sequence
-			}
-		};
-
-		this.sendWS(data);
-	}
-
-	identify() {
-		var data = {
-			op: 2,
-			d: {
-				token: this.token,
-				v: GATEWAY_VERSION,
-				compress: this.client.options.compress,
-				large_threshold : this.client.options.largeThreshold,
-				properties: {
-					"$os": process.platform,
-					"$browser": "discord.js",
-					"$device": "discord.js",
-					"$referrer": "",
-					"$referring_domain": ""
-				}
-			}
-		};
-
-		if (this.client.options.shard) {
-			data.d.shard = this.client.options.shard;
-		}
-
-		this.sendWS(data);
-	}
-
-	heartbeat() {
-		this.sendWS({ op: 1, d: Date.now() });
 	}
 
 	processPacket(packet) {
@@ -1712,7 +1681,8 @@ export default class InternalClient {
 		switch (packet.t) {
 			case PacketType.RESUME:
 			case PacketType.READY:
-				this.intervals.kai = setInterval(() => this.heartbeat(), data.heartbeat_interval);
+				this.autoReconnectInterval = 1000;
+				this.state = ConnectionState.READY;
 
 				if(packet.t === PacketType.RESUME) {
 					break;
@@ -1726,7 +1696,6 @@ export default class InternalClient {
 				this.forceFetchCount = {};
 				this.forceFetchQueue = [];
 				this.forceFetchLength = 1;
-				this.autoReconnectInterval = 1000;
 
 				data.guilds.forEach(server => {
 					if (!server.unavailable) {
@@ -1778,9 +1747,6 @@ export default class InternalClient {
 					}
 				}
 
-
-				this.state = ConnectionState.READY;
-
 				client.emit("debug", `ready packet took ${Date.now() - startTime}ms to process`);
 				client.emit("debug", `ready with ${this.servers.length} servers, ${this.unavailableServers.length} unavailable servers, ${this.channels.length} channels and ${this.users.length} users cached.`);
 
@@ -1817,6 +1783,23 @@ export default class InternalClient {
 					} else {
 						client.emit("debug", "message was deleted but message is not cached");
 					}
+				} else {
+					client.emit("warn", "message was deleted but channel is not cached");
+				}
+				break;
+			case PacketType.MESSAGE_DELETE_BULK:
+				var channel = this.channels.get("id", data.channel_id) || this.private_channels.get("id", data.channel_id);
+				if (channel) {
+					data.ids.forEach((id) => {
+						// potentially blank
+						var msg = channel.messages.get("id", id);
+						client.emit("messageDeleted", msg, channel);
+						if (msg) {
+							channel.messages.remove(msg);
+						} else {
+							client.emit("debug", "message was deleted but message is not cached");
+						}
+					});
 				} else {
 					client.emit("warn", "message was deleted but channel is not cached");
 				}
@@ -2390,5 +2373,47 @@ export default class InternalClient {
 				client.emit("unknown", packet);
 				break;
 		}
+	}
+
+	resume() {
+		var data = {
+			op: 6,
+			d: {
+	            token: this.token,
+	            session_id: this.sessionID,
+	            seq: this.sequence
+			}
+		};
+
+		this.sendWS(data);
+	}
+
+	identify() {
+		var data = {
+			op: 2,
+			d: {
+				token: this.token,
+				v: GATEWAY_VERSION,
+				compress: this.client.options.compress,
+				large_threshold : this.client.options.largeThreshold,
+				properties: {
+					"$os": process.platform,
+					"$browser": "discord.js",
+					"$device": "discord.js",
+					"$referrer": "",
+					"$referring_domain": ""
+				}
+			}
+		};
+
+		if (this.client.options.shard) {
+			data.d.shard = this.client.options.shard;
+		}
+
+		this.sendWS(data);
+	}
+
+	heartbeat() {
+		this.sendWS({ op: 1, d: Date.now() });
 	}
 }
