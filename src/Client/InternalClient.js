@@ -157,6 +157,9 @@ export default class InternalClient {
 		this.unavailableServers = new Cache();
 		this.private_channels = new Cache();
 		this.autoReconnectInterval = 1000;
+		this.unsyncedGuilds = 0;
+        this.guildSyncQueue = [];
+        this.guildSyncQueueLength = 1;
 
 		this.intervals = {
 			typing : [],
@@ -390,8 +393,28 @@ export default class InternalClient {
 		});
 	}
 
+	syncGuild(guildID) {
+        if(this.guildSyncQueueLength + 3 + guildID.length > 4081) { // 4096 - "{\"op\":12,\"d\":[]}".length + 1 for lazy comma offset
+            this.sendWS({op: 12, d: this.guildSyncQueue});
+            this.guildSyncQueue = [guildID];
+            this.guildSyncQueueLength = 1 + guildID.length + 3;
+        } else {
+            this.guildSyncQueue.push(guildID);
+            this.guildSyncQueueLength += guildID.length + 3;
+        }
+	}
+
 	checkReady() {
 		if (!this.readyTime) {
+            if(this.guildSyncQueue.length > 0) {
+            	this.sendWS({op: 12, d: this.guildSyncQueue});
+                this.guildSyncQueue = [];
+                this.guildSyncQueueLength = 1;
+                return;
+            }
+            if(this.unsyncedGuilds > 0) {
+                return;
+            }
 			if (this.forceFetchQueue.length > 0) {
 				this.requestGuildMembers(this.forceFetchQueue);
 				this.forceFetchQueue = [];
@@ -1700,6 +1723,10 @@ export default class InternalClient {
 				data.guilds.forEach(server => {
 					if (!server.unavailable) {
 						server = this.servers.add(new Server(server, client));
+	                    if(client.options.bot === false) {
+	                        this.unsyncedGuilds++;
+	                        this.syncGuild(server.id);
+	                    }
 						if (this.client.options.forceFetchUsers && server.members && server.members.length < server.memberCount) {
 							this.getGuildMembers(server.id, Math.ceil(server.memberCount / 1000));
 						}
@@ -1840,6 +1867,10 @@ export default class InternalClient {
 				if (!server) {
 					if (!data.unavailable) {
 						server = this.servers.add(new Server(data, client));
+	                    if(client.options.bot === false) {
+	                        this.unsyncedGuilds++;
+	                        this.syncGuild(server.id);
+	                    }
 						if (client.readyTime) {
 							client.emit("serverCreated", server);
 						}
@@ -2281,7 +2312,7 @@ export default class InternalClient {
 					if (this.forceFetchCount.hasOwnProperty(server.id)) {
 						if (this.forceFetchCount[server.id] <= 1) {
 							delete this.forceFetchCount[server.id];
-							this.checkReady();
+							this.restartServerCreateTimeout();
 						} else {
 							this.forceFetchCount[server.id]--;
 						}
@@ -2369,6 +2400,51 @@ export default class InternalClient {
 					return;
 				}
 				break;
+			case PacketType.SERVER_SYNC:// (╯°□°）╯︵ ┻━┻ thx Discord devs
+                var guild = this.servers.get(data.id);
+				data.members.forEach((dataUser) => {
+					guild.memberMap[dataUser.user.id] = {
+						roles: dataUser.roles,
+						mute: dataUser.mute,
+						selfMute: dataUser.self_mute,
+						deaf: dataUser.deaf,
+						selfDeaf: dataUser.self_deaf,
+						joinedAt: Date.parse(dataUser.joined_at),
+						nick: dataUser.nick || null
+					};
+					guild.members.add(client.internal.users.add(new User(dataUser.user, client)));
+				});
+				for (var presence of data.presences) {
+					var user = client.internal.users.get("id", presence.user.id);
+					if(user) {
+						user.status = presence.status;
+						user.game = presence.game;
+					}
+				}
+                if(guild.pendingVoiceStates && guild.pendingVoiceStates.length > 0) {
+					for (var voiceState of guild.pendingVoiceStates) {
+						let user = guild.members.get("id", voiceState.user_id);
+						if (user) {
+							guild.memberMap[user.id] = guild.memberMap[user.id] || {};
+							guild.memberMap[user.id].mute = voiceState.mute || guild.memberMap[user.id].mute;
+							guild.memberMap[user.id].selfMute = voiceState.self_mute === undefined ? guild.memberMap[user.id].selfMute : voiceState.self_mute;
+							guild.memberMap[user.id].deaf = voiceState.deaf || guild.memberMap[user.id].deaf;
+							guild.memberMap[user.id].selfDeaf = voiceState.self_deaf === undefined ? guild.memberMap[user.id].selfDeaf : voiceState.self_deaf;
+							let channel = guild.channels.get("id", voiceState.channel_id);
+							if (channel) {
+								guild.eventVoiceJoin(user, channel);
+							} else {
+								guild.client.emit("warn", "channel doesn't exist even though GUILD_SYNC expects them to");
+							}
+						} else {
+							guild.client.emit("warn", "user doesn't exist even though GUILD_SYNC expects them to");
+						}
+					}
+                }
+                guild.pendingVoiceStates = null;
+                this.unsyncedGuilds--;
+                this.restartServerCreateTimeout();
+                break;
 			default:
 				client.emit("unknown", packet);
 				break;

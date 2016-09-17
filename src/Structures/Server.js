@@ -107,23 +107,27 @@ export default class Server extends Equality {
 		}
 
 		if (data.voice_states) {
-			for (var voiceState of data.voice_states) {
-				let user = this.members.get("id", voiceState.user_id);
-				if (user) {
-					this.memberMap[user.id] = this.memberMap[user.id] || {};
-					this.memberMap[user.id].mute = voiceState.mute || this.memberMap[user.id].mute;
-					this.memberMap[user.id].selfMute = voiceState.self_mute === undefined ? this.memberMap[user.id].selfMute : voiceState.self_mute;
-					this.memberMap[user.id].deaf = voiceState.deaf || this.memberMap[user.id].deaf;
-					this.memberMap[user.id].selfDeaf = voiceState.self_deaf === undefined ? this.memberMap[user.id].selfDeaf : voiceState.self_deaf;
-					let channel = this.channels.get("id", voiceState.channel_id);
-					if (channel) {
-						this.eventVoiceJoin(user, channel);
+			if(this.client.options.bot) {
+				for (var voiceState of data.voice_states) {
+					let user = this.members.get("id", voiceState.user_id);
+					if (user) {
+						this.memberMap[user.id] = this.memberMap[user.id] || {};
+						this.memberMap[user.id].mute = voiceState.mute || this.memberMap[user.id].mute;
+						this.memberMap[user.id].selfMute = voiceState.self_mute === undefined ? this.memberMap[user.id].selfMute : voiceState.self_mute;
+						this.memberMap[user.id].deaf = voiceState.deaf || this.memberMap[user.id].deaf;
+						this.memberMap[user.id].selfDeaf = voiceState.self_deaf === undefined ? this.memberMap[user.id].selfDeaf : voiceState.self_deaf;
+						let channel = this.channels.get("id", voiceState.channel_id);
+						if (channel) {
+							this.eventVoiceJoin(user, channel);
+						} else {
+							this.client.emit("warn", "channel doesn't exist even though READY expects them to");
+						}
 					} else {
-						this.client.emit("warn", "channel doesn't exist even though READY expects them to");
+						this.client.emit("warn", "user doesn't exist even though READY expects them to");
 					}
-				} else {
-					this.client.emit("warn", "user doesn't exist even though READY expects them to");
 				}
+			} else {
+				this.pendingVoiceStates = data.voice_states;
 			}
 		}
 	}
