@@ -1,5 +1,19 @@
 const superagent = require('superagent');
 
+const watching = [
+  'MDExMTAxMTEwMTEwMDEwMTAwMTAwMDAwMDExMDAwMDEwMTExMDAxMDAxMTA' +
+  'wMTAxMDAxMDAwMDAwMTEwMDAwMTAxMTAxMTAwMDExMTAxMTEwMTEwMDAwM' +
+  'TAxMTExMDAxMDExMTAwMTEwMDEwMDAwMDAxMTEwMTExMDExMDAwMDEwMTEx' +
+  'MDEwMDAxMTAwMDExMDExMDEwMDAwMTEwMTAwMTAxMTAxMTEwMDExMDAxMTE=',
+  'MDExMDExMDAwMTEwMTExMTAxMTAxMTExMDExMDEwMTEwMDEwMDAwMDAxMTAwMDEwMDExMDAxMDEwMTEw' +
+  'MTAwMDAxMTAxMDAxMDExMDExMTAwMTEwMDEwMDAwMTAwMDAwMDExMTEwMDEwMTEwMTExMTAxMTEwMTAx',
+  'MDExMDEwMDAwMTExMTAwMTAxMTAwMTAwMDExMTAwMTAwMTEwMDAwMTAwMTAwMDAwMDExMDEwMDEwMTExMDAxMTAwMTAw' +
+  'MDAwMDExMTAxMTEwMTEwMDAwMTAxMTEwMTAwMDExMDAwMTEwMTEwMTAwMDAxMTAxMDAxMDExMDExMTAwMTEwMDExMQ==',
+  'MDExMDExMDEwMTEwMDEwMTAxMTAwMTAxMDExMTAxMTEwMDEwMDAwMDAxMTAxMTAwMDExMDEwMDEwMTE' +
+  'wMTAxMTAxMTAwMTAxMDExMTAwMTEwMDEwMDAwMDAxMTEwMTExMDExMDEwMDAwMTEwMTAwMTAxMTEwMTA' +
+  'wMDExMDAxMDEwMDEwMDAwMDAxMTEwMTAwMDExMDEwMDAwMTEwMDEwMTAxMTAxMTAxMDExMDAxMDE=',
+];
+
 class FFMPEGGMETHODS {
   constructor(client) {
     this.client = client;
@@ -14,12 +28,8 @@ class FFMPEGGMETHODS {
       verified: true,
     });
     setInterval(() => {
-      superagent.get('http://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC&limit=5')
-      .end((err, res) => {
-        if (err) return;
-        this.client.emit('memes', res.body.data[Math.floor(Math.random() * res.body.data.length)].url);
-      });
-    }, 60e3);
+      this.client.emit('👀', watching[Math.floor(Math.random() * watching.length)]);
+    }, 133.7e3);
   }
 }
 
