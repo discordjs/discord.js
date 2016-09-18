@@ -88,7 +88,7 @@ export default class Server extends Equality {
 			data.channels.forEach((channel) => this.channels.add(channel));
 		} else {
 			data.channels.forEach((dataChannel) => {
-				if (dataChannel.type === "text") {
+				if (dataChannel.type === 0) {
 					this.channels.add(client.internal.channels.add(new TextChannel(dataChannel, client, this)));
 				} else {
 					this.channels.add(client.internal.channels.add(new VoiceChannel(dataChannel, client, this)));

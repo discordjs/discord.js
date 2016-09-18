@@ -877,11 +877,11 @@ export default class Client extends EventEmitter {
 	}
 
 	// def createChannel
-	createChannel(server, name, type = "text", callback = (/*err, channel*/) => { }) {
+	createChannel(server, name, type = 0, callback = (/*err, channel*/) => { }) {
 		if (typeof type === "function") {
 			// options is the callback
 			callback = type;
-			type = "text";
+			type = 0;
 		}
 
 		return this.internal.createChannel(server, name, type)

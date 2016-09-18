@@ -14,12 +14,14 @@ import Equality from "../Util/Equality";
 export default class Message extends Equality{
 	constructor(data, channel, client) {
 		super();
+		this.type = data.type;
 		this.channel = channel;
 		this.server = channel.server;
 		this.client = client;
 		this.nonce = data.nonce;
 		this.attachments = data.attachments;
 		this.tts = data.tts;
+		this.pinned = data.pinned;
 		this.embeds = data.embeds;
 		this.timestamp = Date.parse(data.timestamp);
 		this.everyoneMentioned = data.mention_everyone !== undefined ? data.mention_everyone : data.everyoneMentioned;
@@ -36,7 +38,25 @@ export default class Message extends Equality{
 			this.author = client.internal.users.add(new User(data.author, client));
 		}
 
-		this.content = data.content;
+		if(this.type === 0) {
+			this.content = data.content;
+		} else if(this.type === 1) {
+			this.content = this.author.mention() + " added <@" + data.mentions[0].id + ">.";
+		} else if(this.type === 2) {
+			if(this.author.id === data.mentions[0].id) {
+				this.content = this.author.mention() + " left the group.";
+			} else {
+				this.content = this.author.mention() + " removed <@" + data.mentions[0].id + ">.";
+			}
+		} else if(this.type === 3) {
+			this.content = this.author.mention() + " started a call.";
+		} else if(this.type === 4) {
+			this.content = this.author.mention() + " changed the channel name: " + data.content;
+		} else if(this.type === 5) {
+			this.content = this.author.mention() + " changed the channel icon.";
+		} else if(this.type === 6) {
+			this.content = this.author.mention() + " pinned a message to this channel. See all the pins.";
+		}
 
 		var mentionData = client.internal.resolver.resolveMentions(data.content, channel);
 		this.cleanContent = mentionData[1];

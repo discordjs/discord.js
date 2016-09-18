@@ -24,7 +24,7 @@ import Invite from "../Structures/Invite";
 import VoiceConnection from "../Voice/VoiceConnection";
 import TokenCacher from "../Util/TokenCacher";
 
-var GATEWAY_VERSION = 5;
+var GATEWAY_VERSION = 6;
 var zlib;
 var libVersion = require('../../package.json').version;
 
@@ -935,7 +935,7 @@ export default class InternalClient {
 	}
 
 	// def createChannel
-	createChannel(server, name, type = "text") {
+	createChannel(server, name, type = 0) {
 
 		server = this.resolver.resolveServer(server);
 
@@ -945,7 +945,7 @@ export default class InternalClient {
 		})
 		.then(res => {
 			var channel;
-			if (res.type === "text") {
+			if (res.type === 0) {
 				channel = new TextChannel(res, this.client, server);
 			} else {
 				channel = new VoiceChannel(res, this.client, server);
@@ -1679,7 +1679,6 @@ export default class InternalClient {
 					this.identify();
 					break;
 				case 10:
-					console.log(packet);
 					if(this.sessionID) {
 						this.resume();
 					} else {
@@ -1840,15 +1839,15 @@ export default class InternalClient {
 
 					if (msg) {
 						// old message exists
-						data.nonce = data.nonce || msg.nonce;
-						data.attachments = data.attachments || msg.attachments;
-						data.tts = data.tts || msg.tts;
-						data.embeds = data.embeds || msg.embeds;
-						data.timestamp = data.timestamp || msg.timestamp;
-						data.mention_everyone = data.mention_everyone || msg.everyoneMentioned;
-						data.content = data.content || msg.content;
-						data.mentions = data.mentions || msg.mentions;
-						data.author = data.author || msg.author;
+						data.nonce = data.nonce !== undefined ? data.nonce : msg.nonce;
+						data.attachments = data.attachments !== undefined ? data.attachments : msg.attachments;
+						data.tts = data.tts !== undefined ? data.tts : msg.tts;
+						data.embeds = data.embeds !== undefined ? data.embeds : msg.embeds;
+						data.timestamp = data.timestamp !== undefined ? data.timestamp : msg.timestamp;
+						data.mention_everyone = data.mention_everyone !== undefined ? data.mention_everyone : msg.everyoneMentioned;
+						data.content = data.content !== undefined ? data.content : msg.content;
+						data.mentions = data.mentions !== undefined ? data.mentions : msg.mentions;
+						data.author = data.author !== undefined ? data.author : msg.author;
 						msg = new Message(msg, channel, client);
 					} else if (!data.author || !data.content) {
 						break;
@@ -1955,7 +1954,7 @@ export default class InternalClient {
 					var server = this.servers.get("id", data.guild_id);
 					if (server) {
 						var chan = null;
-						if (data.type === "text") {
+						if (data.type === 0) {
 							chan = this.channels.add(new TextChannel(data, client, server));
 						} else {
 							chan = this.channels.add(new VoiceChannel(data, client, server));
@@ -1999,7 +1998,7 @@ export default class InternalClient {
 							this.private_channels.update(channel, new PMChannel(data, client)));
 					} else {
 						if (channel.server) {
-							if (channel.type === "text") {
+							if (channel.type === 0) {
 								//TEXT CHANNEL
 								var chan = new TextChannel(data, client, channel.server);
 								chan.messages = channel.messages;
