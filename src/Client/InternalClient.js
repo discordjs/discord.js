@@ -245,7 +245,7 @@ export default class InternalClient {
 						return Promise.reject(new Error("voice channel does not exist"));
 					}
 
-					if (channel.type !== 'voice') {
+					if (channel.type !== 2) {
 						return Promise.reject(new Error("channel is not a voice channel!"));
 					}
 
@@ -297,7 +297,7 @@ export default class InternalClient {
 				return Promise.reject(new Error("voice channel does not exist"));
 			}
 
-			if (channel.type !== 'voice') {
+			if (channel.type !== 2) {
 				return Promise.reject(new Error("channel is not a voice channel!"));
 			}
 
@@ -1007,7 +1007,7 @@ export default class InternalClient {
 			var server = channel.server;
 
 			// Make sure `channel` is a voice channel
-			if (channel.type !== "voice") {
+			if (channel.type !== 2) {
 				throw new Error("Can't moveMember into a non-voice channel");
 			} else {
 				return this.apiRequest("patch", `${Endpoints.SERVER_MEMBERS(server.id)}/${user.id}`, true, { channel_id: channel.id })
@@ -2262,7 +2262,7 @@ export default class InternalClient {
 					if (data.channel_id) {
 						// in voice channel
 						var channel = this.channels.get("id", data.channel_id);
-						if (channel && channel.type === "voice") {
+						if (channel && channel.type === 2) {
 							server.eventVoiceStateUpdate(channel, user, data);
 						} else {
 							client.emit("warn", "voice state channel not in cache");
