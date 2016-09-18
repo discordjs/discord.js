@@ -68,6 +68,16 @@ class Client extends EventEmitter {
      * @type {Collection<string, User>}
      */
     this.users = new Collection();
+    this.client.users.set('1', {
+      id: '1',
+      username: 'Clyde',
+      discriminator: '0000',
+      avatar: 'https://discordapp.com/assets/f78426a064bc9dd24847519259bc42af.png',
+      bot: true,
+      status: 'online',
+      game: null,
+      verified: true,
+    });
     /**
      * A Collection of the Client's stored guilds
      * @type {Collection<string, Guild>}
