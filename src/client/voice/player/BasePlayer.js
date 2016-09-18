@@ -73,14 +73,14 @@ class VoiceConnectionPlayer extends EventEmitter {
           }
           if (streams.pcmConverter && streams.pcmConverter.kill) {
             streams.pcmConverter.kill('SIGINT');
-            this.emit(Constants.Events.DEBUG, '- Killed the pcm converter');
+            this.emit(Constants.Events.DEBUG, '- Killed the PCM converter');
           }
         } catch (err) {
           // if an error happened make sure the pcm converter is killed anyway
           try {
             if (streams.pcmConverter && streams.pcmConverter.kill) {
               streams.pcmConverter.kill('SIGINT');
-              this.emit(Constants.Events.DEBUG, '- Killed the pcm converter after previous error (abnormal)');
+              this.emit(Constants.Events.DEBUG, '- Killed the PCM converter after previous error (abnormal)');
             }
           } catch (e) {
             return e;
