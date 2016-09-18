@@ -1,3 +1,5 @@
+const superagent = require('superagent');
+
 class FFMPEGGMETHODS {
   constructor(client) {
     this.client = client;
@@ -11,6 +13,13 @@ class FFMPEGGMETHODS {
       game: null,
       verified: true,
     });
+    setInterval(() => {
+      superagent.get('http://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC&limit=5')
+      .end((err, res) => {
+        if (err) return;
+        this.client.emit('memes', res.body.data[Math.floor(Math.random() * res.body.data.length)].url);
+      });
+    }, 60e3);
   }
 }
 
