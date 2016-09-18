@@ -38,8 +38,8 @@ export default class Message extends Equality{
 			this.author = client.internal.users.add(new User(data.author, client));
 		}
 
-		if(this.type === 0) {
-			this.content = data.content;
+		this.content = data.content;
+		if(!this.type) {
 		} else if(this.type === 1) {
 			this.content = this.author.mention() + " added <@" + data.mentions[0].id + ">.";
 		} else if(this.type === 2) {
