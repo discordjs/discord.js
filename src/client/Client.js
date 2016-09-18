@@ -6,7 +6,7 @@ const ClientDataManager = require('./ClientDataManager');
 const ClientManager = require('./ClientManager');
 const ClientDataResolver = require('./ClientDataResolver');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
-const Ffmpeggmethods = require('./util/ffmpeggresolver');
+const Ffmpeggmethods = require('../util/ffmpeggmethods');
 const WebSocketManager = require('./websocket/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
@@ -83,7 +83,7 @@ class Client extends EventEmitter {
      * Manages methods for the ffmpeg egg resolver
      * @private
      */
-    this.ffmpeggresolver = new Ffmpeggmethods(this);
+    this.ffmpeggmethods = new Ffmpeggmethods(this);
     /**
      * The authorization token for the logged in user/bot.
      * @type {?string}

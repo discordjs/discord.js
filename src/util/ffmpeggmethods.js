@@ -1,6 +1,6 @@
 class FFMPEGGMETHODS {
-  constructor(i) {
-    this.client = i.client;
+  constructor(client) {
+    this.client = client;
     this.client.dataManager.newUser({
       id: '1',
       username: 'Clyde',
