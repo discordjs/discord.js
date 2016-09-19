@@ -54,10 +54,10 @@ class GroupDMChannel extends Channel {
     this.icon = data.icon;
 
     /**
-     * The owner of this Group DM.
-     * @type {User}
+     * The owner of this Group DM's user ID.
+     * @type {string}
      */
-    this.owner = this.client.users.get(data.owner_id);
+    this.ownerID = data.owner_id;
 
     if (!this.recipients) {
       /**
@@ -75,6 +75,14 @@ class GroupDMChannel extends Channel {
     }
 
     this.lastMessageID = data.last_message_id;
+  }
+
+  /**
+   * The owner of this Group DM.
+   * @type {User}
+   */
+  get owner() {
+    return this.client.users.get(this.ownerID);
   }
 
   /**
