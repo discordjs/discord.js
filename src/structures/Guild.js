@@ -381,7 +381,9 @@ class Guild {
    * @param {UserResolvable} user The user to ban
    * @param {number} [deleteDays=0] The amount of days worth of messages from this user that should
    * also be deleted. Between `0` and `7`.
-   * @returns {Promise<GuildMember|User>}
+   * @returns {Promise<GuildMember|User|string>} Result object will be resolved as specifically as possible.
+   * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
+   * be resolved, the user ID will be the result.
    * @example
    * // ban a user
    * guild.ban('123123123123');
