@@ -6,7 +6,7 @@
  * @property {number} [shard_id=0] The ID of this shard
  * @property {number} [shard_count=0] The number of shards
  * @property {number} [max_message_cache=200] Number of messages to cache per channel
- * @property {number} [max_message_lifetime=0] How long until a message should be uncached by the message sweeping
+ * @property {number} [message_cache_lifetime=0] How long until a message should be uncached by the message sweeping
  * (in seconds, 0 for forever)
  * @property {number} [message_sweep_interval=0] How frequently to remove messages from the cache that are older than
  * the max message lifetime (in seconds, 0 for never)
@@ -21,7 +21,7 @@ exports.DefaultOptions = {
   shard_id: 0,
   shard_count: 0,
   max_message_cache: 200,
-  max_message_lifetime: 0,
+  message_cache_lifetime: 0,
   message_sweep_interval: 0,
   fetch_all_members: false,
   disable_everyone: false,
