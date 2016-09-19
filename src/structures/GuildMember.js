@@ -115,6 +115,14 @@ class GuildMember {
   }
 
   /**
+   * The role of the member with the highest position.
+   * @type {Role}
+   */
+  get highestRole() {
+    return this.roles.reduce((prev, role) => !prev || role.position > prev.position ? role : prev);
+  }
+
+  /**
    * Whether this member is muted in any way
    * @type {boolean}
    * @readonly
@@ -165,6 +173,30 @@ class GuildMember {
     if (admin) permissions = Constants.ALL_PERMISSIONS;
 
     return new EvaluatedPermissions(this, permissions);
+  }
+
+  /**
+   * Whether the member is kickable by the client user.
+   * @type {boolean}
+   */
+  get kickable() {
+    if (this.id === this.guild.ownerID) return false;
+    if (this.id === this.client.user.id) return false;
+    const clientMember = this.member(this.client.member);
+    if (!clientMember.hasPermission(Constants.PermissionFlags.KICK_MEMBERS)) return false;
+    return clientMember.highestRole.position > this.highestRole.positon;
+  }
+
+  /**
+   * Whether the member is bannable by the client user.
+   * @type {boolean}
+   */
+  get bannable() {
+    if (this.id === this.guild.ownerID) return false;
+    if (this.id === this.client.user.id) return false;
+    const clientMember = this.member(this.client.member);
+    if (!clientMember.hasPermission(Constants.PermissionFlags.BAN_MEMBERS)) return false;
+    return clientMember.highestRole.position > this.highestRole.positon;
   }
 
   /**
