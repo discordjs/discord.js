@@ -163,7 +163,7 @@ class GuildMember {
    * @type {EvaluatedPermissions}
    */
   get permissions() {
-    if (this.guild.owner.id === this.user.id) return new EvaluatedPermissions(this, Constants.ALL_PERMISSIONS);
+    if (this.user.id === this.guild.ownerID) return new EvaluatedPermissions(this, Constants.ALL_PERMISSIONS);
 
     let permissions = 0;
     const roles = this.roles;
@@ -217,7 +217,7 @@ class GuildMember {
    * @returns {boolean}
    */
   hasPermission(permission, explicit = false) {
-    if (!explicit && this.guild.owner.id === this.user.id) return true;
+    if (!explicit && this.user.id === this.guild.ownerID) return true;
     return this.roles.some(r => r.hasPermission(permission, explicit));
   }
 
@@ -228,7 +228,7 @@ class GuildMember {
    * @returns {boolean}
    */
   hasPermissions(permissions, explicit = false) {
-    if (!explicit && this.guild.owner.id === this.user.id) return true;
+    if (!explicit && this.user.id === this.guild.ownerID) return true;
     return permissions.map(p => this.hasPermission(p, explicit)).every(v => v);
   }
 

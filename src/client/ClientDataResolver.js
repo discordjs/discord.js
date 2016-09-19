@@ -55,7 +55,7 @@ class ClientDataResolver {
     if (user instanceof User || user instanceof GuildMember) return user.id;
     if (typeof user === 'string') return user || null;
     if (user instanceof Message) return user.author.id;
-    if (user instanceof Guild) return user.owner.id;
+    if (user instanceof Guild) return user.ownerID;
     return null;
   }
 

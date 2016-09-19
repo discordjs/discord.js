@@ -57,7 +57,7 @@ class GuildChannel extends Channel {
   permissionsFor(member) {
     member = this.client.resolver.resolveGuildMember(this.guild, member);
     if (!member) return null;
-    if (this.guild.owner.id === member.id) return new EvaluatedPermissions(member, Constants.ALL_PERMISSIONS);
+    if (member.id === this.guild.ownerID) return new EvaluatedPermissions(member, Constants.ALL_PERMISSIONS);
 
     let permissions = 0;
 
