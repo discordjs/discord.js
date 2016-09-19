@@ -252,9 +252,9 @@ class Client extends EventEmitter {
    * If the message has been edited, the time of the edit is used rather than the time of the original message.
    */
   sweepMessages() {
-    if (this.options.max_message_lifetime <= 0) return;
+    if (this.options.message_cache_lifetime <= 0) return;
     const now = Date.now();
-    const lifetime = this.options.max_message_lifetime * 1000;
+    const lifetime = this.options.message_cache_lifetime * 1000;
     for (const channel of this.channels.values()) {
       if (!channel.messages) continue;
       for (const message of channel.messages.values()) {
