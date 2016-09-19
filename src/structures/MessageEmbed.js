@@ -163,4 +163,8 @@ class MessageEmbedAuthor {
   }
 }
 
+MessageEmbed.Thumbnail = MessageEmbedThumbnail;
+MessageEmbed.Provider = MessageEmbedProvider;
+MessageEmbed.Author = MessageEmbedAuthor;
+
 module.exports = MessageEmbed;
