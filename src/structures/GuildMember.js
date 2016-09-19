@@ -180,8 +180,8 @@ class GuildMember {
    * @type {boolean}
    */
   get kickable() {
-    if (this.id === this.guild.ownerID) return false;
-    if (this.id === this.client.user.id) return false;
+    if (this.user.id === this.guild.ownerID) return false;
+    if (this.user.id === this.client.user.id) return false;
     const clientMember = this.member(this.client.member);
     if (!clientMember.hasPermission(Constants.PermissionFlags.KICK_MEMBERS)) return false;
     return clientMember.highestRole.position > this.highestRole.positon;
@@ -192,8 +192,8 @@ class GuildMember {
    * @type {boolean}
    */
   get bannable() {
-    if (this.id === this.guild.ownerID) return false;
-    if (this.id === this.client.user.id) return false;
+    if (this.user.id === this.guild.ownerID) return false;
+    if (this.user.id === this.client.user.id) return false;
     const clientMember = this.member(this.client.member);
     if (!clientMember.hasPermission(Constants.PermissionFlags.BAN_MEMBERS)) return false;
     return clientMember.highestRole.position > this.highestRole.positon;
