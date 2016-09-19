@@ -229,7 +229,7 @@ class ClientDataResolver {
           const file = path.resolve(resource);
           fs.stat(file, (err, stats) => {
             if (err) reject(err);
-            if (!stats.isFile()) throw new Error(`The file could not be found: ${file}`);
+            if (!stats || !stats.isFile()) throw new Error(`The file could not be found: ${file}`);
             fs.readFile(file, (err2, data) => {
               if (err2) reject(err2); else resolve(data);
             });
