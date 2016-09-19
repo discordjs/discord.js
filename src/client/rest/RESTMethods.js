@@ -365,28 +365,40 @@ class RESTMethods {
 
   banGuildMember(guild, member, deleteDays) {
     return new Promise((resolve, reject) => {
-      const user = this.rest.client.resolver.resolveUser(member);
-      if (!user) throw new Error('Couldn\'t resolve the user to ban.');
-      this.rest.makeRequest('put', `${Constants.Endpoints.guildBans(guild.id)}/${user.id}`, true, {
+      const id = this.rest.client.resolver.resolveUserID(member);
+      if (!id) throw new Error('Couldn\'t resolve the user ID to ban.');
+
+      this.rest.makeRequest('put', `${Constants.Endpoints.guildBans(guild.id)}/${id}`, true, {
         'delete-message-days': deleteDays,
       }).then(() => {
-        resolve(member instanceof GuildMember ? member : user);
+        if (member instanceof GuildMember) {
+          resolve(member);
+          return;
+        }
+        const user = this.rest.client.resolver.resolveUser(id);
+        if (user) {
+          member = this.rest.client.resolver.resolveGuildMember(guild, user);
+          resolve(member || user);
+          return;
+        }
+        resolve(id);
       }).catch(reject);
     });
   }
 
   unbanGuildMember(guild, member) {
     return new Promise((resolve, reject) => {
-      member = this.rest.client.resolver.resolveUser(member);
-      if (!member) throw new Error('Couldn\'t resolve the user to unban.');
+      const id = this.rest.client.resolver.resolveUserID(member);
+      if (!id) throw new Error('Couldn\'t resolve the user ID to ban.');
+
       const listener = (eGuild, eUser) => {
-        if (guild.id === guild.id && member.id === eUser.id) {
+        if (eGuild.id === guild.id && eUser.id === id) {
           this.rest.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
           resolve(eUser);
         }
       };
       this.rest.client.on(Constants.Events.GUILD_BAN_REMOVE, listener);
-      this.rest.makeRequest('del', `${Constants.Endpoints.guildBans(guild.id)}/${member.id}`, true).catch(reject);
+      this.rest.makeRequest('del', `${Constants.Endpoints.guildBans(guild.id)}/${id}`, true).catch(reject);
     });
   }
 
