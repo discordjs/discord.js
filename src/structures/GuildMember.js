@@ -72,15 +72,15 @@ class GuildMember {
 
     /**
      * Whether this meember is speaking
-     * @type {?boolean}
+     * @type {boolean}
      */
-    this.speaking = this.speaking;
+    this.speaking = false;
 
     /**
      * The nickname of this Guild Member, if they have one
      * @type {?string}
      */
-    this.nickname = data.nick;
+    this.nickname = data.nick || null;
 
     this.user = data.user;
     this._roles = data.roles;
