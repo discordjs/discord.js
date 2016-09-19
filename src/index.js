@@ -18,6 +18,7 @@ module.exports = {
   Invite: require('./structures/Invite'),
   Message: require('./structures/Message'),
   MessageAttachment: require('./structures/MessageAttachment'),
+  MessageCollector: require('./structures/MessageCollector'),
   MessageEmbed: require('./structures/MessageEmbed'),
   PartialGuild: require('./structures/PartialGuild'),
   PartialGuildChannel: require('./structures/PartialGuildChannel'),
