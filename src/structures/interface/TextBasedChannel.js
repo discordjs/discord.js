@@ -308,6 +308,7 @@ class TextBasedChannel {
 
   /**
    * Bulk delete a given Collection or Array of messages in one go. Returns the deleted messages after.
+   * Only OAuth Bot accounts may use this method.
    * @param {Collection<string, Message>|Message[]} messages The messages to delete
    * @returns {Collection<string, Message>}
    */
