@@ -54,7 +54,7 @@ class GroupDMChannel extends Channel {
     this.icon = data.icon;
 
     /**
-     * The owner of this Group DM's user ID.
+     * The user ID of this Group DM's owner.
      * @type {string}
      */
     this.ownerID = data.owner_id;

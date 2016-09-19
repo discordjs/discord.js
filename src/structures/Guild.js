@@ -147,7 +147,13 @@ class Guild {
       for (const guildUser of data.members) this._addMember(guildUser, false);
     }
 
-    if (data.owner_id) this.ownerID = data.owner_id;
+    if (data.owner_id) {
+      /**
+       * The user ID of this guild's owner.
+       * @type {string}
+       */
+      this.ownerID = data.owner_id;
+    }
 
     if (data.channels) {
       this.channels.clear();
