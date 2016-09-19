@@ -14,36 +14,43 @@ class WebSocketManager {
      * @type {Client}
      */
     this.client = client;
+
     /**
      * A WebSocket Packet manager, it handles all the messages
      * @type {PacketManager}
      */
     this.packetManager = new PacketManager(this);
+
     /**
      * The status of the WebSocketManager, a type of Constants.Status. It defaults to IDLE.
      * @type {number}
      */
     this.status = Constants.Status.IDLE;
+
     /**
      * The session ID of the connection, null if not yet available.
      * @type {?string}
      */
     this.sessionID = null;
+
     /**
      * The packet count of the client, null if not yet available.
      * @type {?number}
      */
     this.sequence = -1;
+
     /**
      * The gateway address for this WebSocket connection, null if not yet available.
      * @type {?string}
      */
     this.gateway = null;
+
     /**
      * Whether READY was emitted normally (all packets received) or not
      * @type {boolean}
      */
     this.normalReady = false;
+
     /**
      * The WebSocket connection to the gateway
      * @type {?WebSocket}
@@ -197,9 +204,7 @@ class WebSocketManager {
      * @event Client#error
      * @param {Error} error The encountered error
      */
-    if (this.client.listenerCount('error') > 0) {
-      this.client.emit('error', err);
-    }
+    if (this.client.listenerCount('error') > 0) this.client.emit('error', err);
     this.tryReconnect();
   }
 

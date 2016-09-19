@@ -11,6 +11,7 @@ class ClientManager {
      * @type {Client}
      */
     this.client = client;
+
     /**
      * The heartbeat interval, null if not yet set
      * @type {?number}
