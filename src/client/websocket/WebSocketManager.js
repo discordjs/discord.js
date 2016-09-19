@@ -234,10 +234,6 @@ class WebSocketManager {
         if (this.client.options.fetch_all_members) {
           const promises = this.client.guilds.array().map(g => g.fetchMembers());
           Promise.all(promises).then(() => this._emitReady()).catch(e => {
-            /**
-             * Emitted when there is a warning
-             * @event Client#warn
-             */
             this.client.emit(Constants.Event.WARN, `Error on pre-ready guild member fetching - ${e}`);
             this._emitReady();
           });
