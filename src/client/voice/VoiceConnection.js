@@ -112,6 +112,7 @@ class VoiceConnection extends EventEmitter {
     this.websocket._shutdown();
     this.player._shutdown();
     if (this.udp) this.udp._shutdown();
+    if (this._vsUpdateListener) this.client.removeListener(this._vsUpdateListener);
     /**
      * Emit once the voice connection has disconnected.
      * @event VoiceConnection#disconnected
@@ -149,7 +150,7 @@ class VoiceConnection extends EventEmitter {
         this.queue = [];
       });
     });
-    this.manager.client.on(Constants.Events.VOICE_STATE_UPDATE, (oldM, newM) => {
+    this._vsUpdateListener = (oldM, newM) => {
       if (oldM.voiceChannel && oldM.voiceChannel.guild.id === this.channel.guild.id && !newM.voiceChannel) {
         const user = newM.user;
         for (const receiver of this.receivers) {
@@ -167,7 +168,8 @@ class VoiceConnection extends EventEmitter {
           }
         }
       }
-    });
+    };
+    this.manager.client.on(Constants.Events.VOICE_STATE_UPDATE, this._vsUpdateListener);
     this.websocket.on('speaking', data => {
       const guild = this.channel.guild;
       const user = this.manager.client.users.get(data.user_id);
