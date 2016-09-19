@@ -126,6 +126,10 @@ class Client extends EventEmitter {
 
     this._timeouts = new Set();
     this._intervals = new Set();
+
+    if (this.options.message_sweep_interval > 0) {
+      this.setInterval(this.sweepMessages.bind(this), this.options.message_sweep_interval * 1000);
+    }
   }
 
   /**
@@ -241,6 +245,22 @@ class Client extends EventEmitter {
    */
   fetchInvite(code) {
     return this.rest.methods.getInvite(code);
+  }
+
+  /**
+   * Sweeps all channels' messages and removes the ones older than the max message lifetime.
+   * If the message has been edited, the time of the edit is used rather than the time of the original message.
+   */
+  sweepMessages() {
+    if (this.options.max_message_lifetime <= 0) return;
+    const now = Date.now();
+    const lifetime = this.options.max_message_lifetime * 1000;
+    for (const channel of this.channels.values()) {
+      if (!channel.messages) continue;
+      for (const message of channel.messages.values()) {
+        if (now - (message._editedTimestamp || message._timestamp) > lifetime) channel.messages.delete(message.id);
+      }
+    }
   }
 
   setTimeout(fn, ...params) {
