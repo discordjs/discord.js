@@ -1,5 +1,3 @@
-const superagent = require('superagent');
-
 const watching = [
   'MDExMTAxMTEwMTEwMDEwMTAwMTAwMDAwMDExMDAwMDEwMTExMDAxMDAxMTA' +
   'wMTAxMDAxMDAwMDAwMTEwMDAwMTAxMTAxMTAwMDExMTAxMTEwMTEwMDAwM' +
