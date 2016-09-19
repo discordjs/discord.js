@@ -21,12 +21,6 @@ class Message {
      */
     this.channel = channel;
 
-    /**
-     * If the message was sent in a guild, this will be the guild the message was sent in
-     * @type {?Guild}
-     */
-    this.guild = channel.guild || null;
-
     if (data) this.setup(data);
   }
 
@@ -204,6 +198,14 @@ class Message {
    */
   get editedTimestamp() {
     return new Date(this._editedTimestamp);
+  }
+
+  /**
+   * The guild the message was sent in (if in a guild channel)
+   * @type {?Guild}
+   */
+  get guild() {
+    return this.channel.guild || null;
   }
 
   /**
