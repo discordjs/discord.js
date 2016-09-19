@@ -103,8 +103,8 @@ class Client extends EventEmitter {
      * @type {?Date}
      */
     this.readyTime = null;
-    this._timeouts = [];
-    this._intervals = [];
+    this._timeouts = new Set();
+    this._intervals = new Set();
   }
 
   /**
@@ -138,8 +138,8 @@ class Client extends EventEmitter {
   destroy() {
     return new Promise((resolve, reject) => {
       this.manager.destroy().then(() => {
-        for (const i of this._intervals) clearInterval(i);
         for (const t of this._timeouts) clearTimeout(t);
+        for (const i of this._intervals) clearInterval(i);
         this._timeouts = [];
         this._intervals = [];
         this.token = null;
@@ -225,26 +225,26 @@ class Client extends EventEmitter {
   setTimeout(fn, ...params) {
     const timeout = setTimeout(() => {
       fn();
-      this._timeouts.splice(this._timeouts.indexOf(timeout), 1);
+      this._timeouts.delete(timeout);
     }, ...params);
-    this._timeouts.push(timeout);
+    this._timeouts.add(timeout);
     return timeout;
   }
 
   clearTimeout(timeout) {
     clearTimeout(timeout);
-    this._timeouts.splice(this._timeouts.indexOf(timeout), 1);
+    this._timeouts.delete(timeout);
   }
 
   setInterval(...params) {
     const interval = setInterval(...params);
-    this._intervals.push(interval);
+    this._intervals.add(interval);
     return interval;
   }
 
   clearInterval(interval) {
     clearInterval(interval);
-    this._intervals.splice(this._intervals.indexOf(interval), 1);
+    this._intervals.delete(interval);
   }
 }
 
