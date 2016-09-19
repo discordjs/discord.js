@@ -621,7 +621,7 @@ class Guild {
     const oldMember = cloneObject(member);
 
     if (data.roles) member._roles = data.roles;
-    member.nickname = data.nick;
+    if (typeof data.nick !== 'undefined') member.nickname = data.nick;
 
     const notSame = member.nickname !== oldMember.nickname || !arraysEqual(member._roles, oldMember._roles);
 
