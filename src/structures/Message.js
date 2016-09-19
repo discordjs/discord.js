@@ -1,6 +1,7 @@
 const Attachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
 const Collection = require('../util/Collection');
+const Constants = require('../util/Constants');
 
 /**
  * Represents a Message on Discord
@@ -244,6 +245,33 @@ class Message {
    */
   get edits() {
     return this._edits.slice().unshift(this);
+  }
+
+  /**
+   * Whether the message is editable by the client user.
+   * @type {boolean}
+   */
+  get editable() {
+    return this.author.id === this.client.user.id;
+  }
+
+  /**
+   * Whether the message is deletable by the client user.
+   * @type {boolean}
+   */
+  get deletable() {
+    return this.author.id === this.client.user.id || (this.guild &&
+      this.channel.permissionsFor(this.client.user).hasPermission(Constants.PermissionFlags.MANAGE_MESSAGES)
+    );
+  }
+
+  /**
+   * Whether the message is pinnable by the client user.
+   * @type {boolean}
+   */
+  get pinnable() {
+    return !this.guild ||
+      this.channel.permissionsFor(this.client.user).hasPermission(Constants.PermissionFlags.MANAGE_MESSAGES);
   }
 
   /**
