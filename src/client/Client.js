@@ -103,8 +103,8 @@ class Client extends EventEmitter {
      * @type {?Date}
      */
     this.readyTime = null;
-    this._intervals = [];
     this._timeouts = [];
+    this._intervals = [];
   }
 
   /**
@@ -138,32 +138,16 @@ class Client extends EventEmitter {
   destroy() {
     return new Promise((resolve, reject) => {
       this.manager.destroy().then(() => {
-        this._intervals.map(i => clearInterval(i));
-        this._timeouts.map(t => clearTimeout(t));
+        for (const i of this._intervals) clearInterval(i);
+        for (const t of this._timeouts) clearTimeout(t);
+        this._timeouts = [];
+        this._intervals = [];
         this.token = null;
         this.email = null;
         this.password = null;
-        this._timeouts = [];
-        this._intervals = [];
         resolve();
       }).catch(reject);
     });
-  }
-
-  setInterval(...params) {
-    const interval = setInterval(...params);
-    this._intervals.push(interval);
-    return interval;
-  }
-
-  setTimeout(...params) {
-    const restParams = params.slice(1);
-    const timeout = setTimeout(() => {
-      this._timeouts.splice(this._timeouts.indexOf(params[0]), 1);
-      params[0]();
-    }, ...restParams);
-    this._timeouts.push(timeout);
-    return timeout;
   }
 
   /**
@@ -236,6 +220,31 @@ class Client extends EventEmitter {
    */
   get status() {
     return this.ws.status;
+  }
+
+  setTimeout(fn, ...params) {
+    const timeout = setTimeout(() => {
+      fn();
+      this._timeouts.splice(this._timeouts.indexOf(timeout), 1);
+    }, ...params);
+    this._timeouts.push(timeout);
+    return timeout;
+  }
+
+  clearTimeout(timeout) {
+    clearTimeout(timeout);
+    this._timeouts.splice(this._timeouts.indexOf(timeout), 1);
+  }
+
+  setInterval(...params) {
+    const interval = setInterval(...params);
+    this._intervals.push(interval);
+    return interval;
+  }
+
+  clearInterval(interval) {
+    clearInterval(interval);
+    this._intervals.splice(this._intervals.indexOf(interval), 1);
   }
 }
 
