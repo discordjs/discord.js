@@ -31,7 +31,7 @@ class VoiceConnectionWebSocket extends EventEmitter {
 
   _shutdown() {
     if (this.ws) this.ws.close();
-    clearInterval(this.heartbeat);
+    this.voiceConnection.manager.client.clearInterval(this.heartbeat);
   }
 
   _onOpen() {

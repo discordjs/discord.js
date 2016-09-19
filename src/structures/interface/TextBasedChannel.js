@@ -232,7 +232,7 @@ class TextBasedChannel {
       const entry = this.client.user._typing.get(this.id);
       entry.count--;
       if (entry.count <= 0 || force) {
-        clearInterval(entry.interval);
+        this.client.clearInterval(entry.interval);
         this.client.user._typing.delete(this.id);
       }
     }
