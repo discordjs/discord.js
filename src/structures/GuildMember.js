@@ -71,7 +71,7 @@ class GuildMember {
     this.voiceChannelID = data.channel_id;
 
     /**
-     * Whether this meember is speaking
+     * Whether this member is speaking
      * @type {boolean}
      */
     this.speaking = false;
