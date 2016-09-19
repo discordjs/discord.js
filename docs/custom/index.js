@@ -1,6 +1,7 @@
 const files = [
   require('./welcome'),
   require('./updating'),
+  require('./faq'),
   require('./ping_pong'),
   require('./avatar'),
 ];
