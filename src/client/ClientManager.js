@@ -26,10 +26,6 @@ class ClientManager {
    * @param {function} reject Function to run when connection fails
    */
   connectToWebSocket(token, resolve, reject) {
-    /**
-     * Emitted when there is debug information
-     * @event Client#debug
-     */
     this.client.emit(Constants.Events.DEBUG, `Authenticated using token ${token}`);
     this.client.token = token;
     const timeout = this.client.setTimeout(() => reject(new Error(Constants.Errors.TOOK_TOO_LONG)), 1000 * 300);
