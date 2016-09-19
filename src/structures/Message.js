@@ -288,7 +288,7 @@ class Message {
   }
 
   /**
-   * Edit the content of a message
+   * Edit the content of the message
    * @param {StringResolvable} content The new content for the message
    * @returns {Promise<Message>}
    * @example
@@ -299,6 +299,17 @@ class Message {
    */
   edit(content) {
     return this.client.rest.methods.updateMessage(this, content);
+  }
+
+  /**
+   * Edit the content of the message, with a code block
+   * @param {string} lang Language for the code block
+   * @param {StringResolvable} content The new content for the message
+   * @returns {Promise<Message>}
+   */
+  editCode(lang, content) {
+    content = this.client.resolver.resolveString(content).replace(/```/g, '`\u200b``');
+    return this.edit(`\`\`\`${lang ? lang : ''}\n${content}\n\`\`\``);
   }
 
   /**
