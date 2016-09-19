@@ -92,13 +92,13 @@ class Guild {
      * The full amount of members in this Guild as of `READY`
      * @type {number}
      */
-    this.memberCount = data.member_count;
+    this.memberCount = data.member_count || this.memberCount;
 
     /**
      * Whether the guild is "large" (has more than 250 members)
      * @type {boolean}
      */
-    this.large = data.large;
+    this.large = data.large || this.large;
 
     /**
      * An array of guild features.
@@ -139,8 +139,8 @@ class Guild {
 
     this.id = data.id;
     this.available = !data.unavailable;
-    this.features = data.features || [];
-    this._joinDate = new Date(data.joined_at).getTime();
+    this.features = data.features || this.features || [];
+    this._joinedTimestamp = data.joined_at ? new Date(data.joined_at).getTime() : this._joinedTimestamp;
 
     if (data.members) {
       this.members.clear();
@@ -210,7 +210,7 @@ class Guild {
    * @type {Date}
    */
   get joinDate() {
-    return new Date(this._joinDate);
+    return new Date(this._joinedTimestamp);
   }
 
   /**
