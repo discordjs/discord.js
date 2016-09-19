@@ -20,91 +20,150 @@ class Client extends EventEmitter {
    */
   constructor(options) {
     super();
+
+    /**
+     * The options the client was instantiated with
+     * @type {ClientOptions}
+     */
     this.options = mergeDefault(Constants.DefaultOptions, options);
+
     /**
      * The REST manager of the client
      * @type {RESTManager}
      * @private
      */
     this.rest = new RESTManager(this);
+
     /**
      * The data manager of the Client
      * @type {ClientDataManager}
      * @private
      */
     this.dataManager = new ClientDataManager(this);
+
     /**
      * The manager of the Client
      * @type {ClientManager}
      * @private
      */
     this.manager = new ClientManager(this);
+
     /**
      * The WebSocket Manager of the Client
      * @type {WebSocketManager}
      * @private
      */
     this.ws = new WebSocketManager(this);
+
     /**
      * The Data Resolver of the Client
      * @type {ClientDataResolver}
      * @private
      */
     this.resolver = new ClientDataResolver(this);
+
     /**
      * The Action Manager of the Client
      * @type {ActionsManager}
      * @private
      */
     this.actions = new ActionsManager(this);
+
     /**
      * The Voice Manager of the Client
      * @type {ClientVoiceManager}
      * @private
      */
     this.voice = new ClientVoiceManager(this);
+
     /**
      * A Collection of the Client's stored users
      * @type {Collection<string, User>}
      */
     this.users = new Collection();
+
     /**
      * A Collection of the Client's stored guilds
      * @type {Collection<string, Guild>}
      */
     this.guilds = new Collection();
+
     /**
      * A Collection of the Client's stored channels
      * @type {Collection<string, Channel>}
      */
     this.channels = new Collection();
+
     /**
      * The authorization token for the logged in user/bot.
      * @type {?string}
      */
     this.token = null;
-    /**
-     * The ClientUser representing the logged in Client
-     * @type {?ClientUser}
-     */
-    this.user = null;
+
     /**
      * The email, if there is one, for the logged in Client
      * @type {?string}
      */
     this.email = null;
+
     /**
      * The password, if there is one, for the logged in Client
      * @type {?string}
      */
     this.password = null;
+
+    /**
+     * The ClientUser representing the logged in Client
+     * @type {?ClientUser}
+     */
+    this.user = null;
+
     /**
      * The date at which the Client was regarded as being in the `READY` state.
      * @type {?Date}
      */
     this.readyTime = null;
+
     this._timeouts = new Set();
     this._intervals = new Set();
+  }
+
+  /**
+   * The status for the logged in Client.
+   * @readonly
+   * @type {?number}
+   */
+  get status() {
+    return this.ws.status;
+  }
+
+  /**
+   * The uptime for the logged in Client.
+   * @readonly
+   * @type {?number}
+   */
+  get uptime() {
+    return this.readyTime ? Date.now() - this.readyTime : null;
+  }
+
+  /**
+   * Returns a Collection, mapping Guild ID to Voice Connections.
+   * @readonly
+   * @type {Collection<string, VoiceConnection>}
+   */
+  get voiceConnections() {
+    return this.voice.connections;
+  }
+
+  /**
+   * The emojis that the client can use. Mapped by emoji ID.
+   * @type {Collection<string, Emoji>}
+   * @readonly
+   */
+  get emojis() {
+    const emojis = new Collection();
+    this.guilds.map(g => g.emojis.map(e => emojis.set(e.id, e)));
+    return emojis;
   }
 
   /**
@@ -182,44 +241,6 @@ class Client extends EventEmitter {
    */
   fetchInvite(code) {
     return this.rest.methods.getInvite(code);
-  }
-
-  /**
-   * Returns a Collection, mapping Guild ID to Voice Connections.
-   * @readonly
-   * @type {Collection<string, VoiceConnection>}
-   */
-  get voiceConnections() {
-    return this.voice.connections;
-  }
-
-  /**
-   * The uptime for the logged in Client.
-   * @readonly
-   * @type {?number}
-   */
-  get uptime() {
-    return this.readyTime ? Date.now() - this.readyTime : null;
-  }
-
-  /**
-   * The emojis that the client can use. Mapped by emoji ID.
-   * @type {Collection<string, Emoji>}
-   * @readonly
-   */
-  get emojis() {
-    const emojis = new Collection();
-    this.guilds.map(g => g.emojis.map(e => emojis.set(e.id, e)));
-    return emojis;
-  }
-
-  /**
-   * The status for the logged in Client.
-   * @readonly
-   * @type {?number}
-   */
-  get status() {
-    return this.ws.status;
   }
 
   setTimeout(fn, ...params) {

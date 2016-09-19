@@ -13,9 +13,15 @@ class RESTMethods {
     this.rest = restManager;
   }
 
+  loginToken(token) {
+    return new Promise((resolve, reject) => {
+      this.rest.client.manager.connectToWebSocket(token, resolve, reject);
+    });
+  }
+
   loginEmailPassword(email, password) {
     return new Promise((resolve, reject) => {
-      this.rest.client.emit('debug', 'Client launched using email and password - should use token instead');
+      this.rest.client.emit('warn', 'Client launched using email and password - should use token instead');
       this.rest.client.email = email;
       this.rest.client.password = password;
       this.rest.makeRequest('post', Constants.Endpoints.login, false, { email, password })
@@ -23,12 +29,6 @@ class RESTMethods {
           this.rest.client.manager.connectToWebSocket(data.token, resolve, reject);
         })
         .catch(reject);
-    });
-  }
-
-  loginToken(token) {
-    return new Promise((resolve, reject) => {
-      this.rest.client.manager.connectToWebSocket(token, resolve, reject);
     });
   }
 

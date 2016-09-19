@@ -15,11 +15,13 @@ class Shard {
      * @type {ShardingManager}
      */
     this.manager = manager;
+
     /**
      * The shard ID
      * @type {number}
      */
     this.id = id;
+
     /**
      * The process of the shard
      * @type {ChildProcess}

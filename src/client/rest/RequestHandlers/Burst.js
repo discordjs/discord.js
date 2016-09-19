@@ -1,7 +1,6 @@
 const RequestHandler = require('./RequestHandler');
 
 class BurstRequestHandler extends RequestHandler {
-
   constructor(restManager, endpoint) {
     super(restManager, endpoint);
     this.requestRemaining = 1;
@@ -58,7 +57,6 @@ class BurstRequestHandler extends RequestHandler {
     });
   }
 
-
   handle() {
     super.handle();
     if (this.requestRemaining < 1 || this.queue.length === 0 || this.globalLimit) return;
@@ -67,7 +65,6 @@ class BurstRequestHandler extends RequestHandler {
       this.requestRemaining--;
     }
   }
-
 }
 
 module.exports = BurstRequestHandler;
