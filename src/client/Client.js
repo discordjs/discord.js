@@ -250,25 +250,37 @@ class Client extends EventEmitter {
   /**
    * Sweeps all channels' messages and removes the ones older than the max message lifetime.
    * If the message has been edited, the time of the edit is used rather than the time of the original message.
+   * @param {number} [lifetime=this.options.message_cache_lifetime] Messages that are older than this (in seconds)
+   * will be removed from the caches. The default is based on the client's `message_cache_lifetime` option.
    * @returns {number} Amount of messages that were removed from the caches,
    * or -1 if the message cache lifetime is unlimited
    */
-  sweepMessages() {
-    if (this.options.message_cache_lifetime <= 0) return -1;
+  sweepMessages(lifetime = this.options.message_cache_lifetime) {
+    if (typeof lifetime !== 'number' || isNaN(lifetime)) throw new TypeError('Lifetime must be a number.');
+    if (lifetime <= 0) {
+      this.emit('debug', 'Didn\'t sweep messages - lifetime is unlimited');
+      return -1;
+    }
+
+    const lifetimeMs = lifetime * 1000;
     const now = Date.now();
-    const lifetime = this.options.message_cache_lifetime * 1000;
-    let swept = 0;
+    let channels = 0;
+    let messages = 0;
+
     for (const channel of this.channels.values()) {
       if (!channel.messages) continue;
+      channels++;
+
       for (const message of channel.messages.values()) {
-        if (now - (message._editedTimestamp || message._timestamp) > lifetime) {
+        if (now - (message._editedTimestamp || message._timestamp) > lifetimeMs) {
           channel.messages.delete(message.id);
-          swept++;
+          messages++;
         }
       }
     }
-    this.emit('debug', `Swept ${swept} messages older than ${this.options.message_cache_lifetime} seconds`);
-    return swept;
+
+    this.emit('debug', `Swept ${messages} messages older than ${lifetime} seconds in ${channels} text-based channels`);
+    return messages;
   }
 
   setTimeout(fn, ...params) {
