@@ -267,7 +267,7 @@ class Client extends EventEmitter {
         }
       }
     }
-    this.emit('debug', `Swept ${swept} messages`);
+    this.emit('debug', `Swept ${swept} messages older than ${this.options.message_cache_lifetime} seconds`);
     return swept;
   }
 
