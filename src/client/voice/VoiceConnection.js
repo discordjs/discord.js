@@ -112,7 +112,7 @@ class VoiceConnection extends EventEmitter {
     this.websocket._shutdown();
     this.player._shutdown();
     if (this.udp) this.udp._shutdown();
-    if (this._vsUpdateListener) this.manager.client.removeListener(this._vsUpdateListener);
+    if (this._vsUpdateListener) this.manager.client.removeListener('voiceStateUpdate', this._vsUpdateListener);
     /**
      * Emit once the voice connection has disconnected.
      * @event VoiceConnection#disconnected
