@@ -250,17 +250,25 @@ class Client extends EventEmitter {
   /**
    * Sweeps all channels' messages and removes the ones older than the max message lifetime.
    * If the message has been edited, the time of the edit is used rather than the time of the original message.
+   * @returns {number} Amount of messages that were removed from the caches,
+   * or -1 if the message cache lifetime is unlimited
    */
   sweepMessages() {
-    if (this.options.message_cache_lifetime <= 0) return;
+    if (this.options.message_cache_lifetime <= 0) return -1;
     const now = Date.now();
     const lifetime = this.options.message_cache_lifetime * 1000;
+    let swept = 0;
     for (const channel of this.channels.values()) {
       if (!channel.messages) continue;
       for (const message of channel.messages.values()) {
-        if (now - (message._editedTimestamp || message._timestamp) > lifetime) channel.messages.delete(message.id);
+        if (now - (message._editedTimestamp || message._timestamp) > lifetime) {
+          channel.messages.delete(message.id);
+          swept++;
+        }
       }
     }
+    this.emit('debug', `Swept ${swept} messages`);
+    return swept;
   }
 
   setTimeout(fn, ...params) {
