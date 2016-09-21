@@ -63,6 +63,12 @@ class Role {
      * @type {boolean}
      */
     this.managed = data.managed;
+
+    /**
+     * Whether or not the role can be mentioned by anyone
+     * @type {boolean}
+     */
+    this.mentionable = data.mentionable;
   }
 
   /**
