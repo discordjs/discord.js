@@ -120,7 +120,8 @@ class GuildMember {
    */
   get highestRole() {
     return this.roles.reduce((prev, role) =>
-    !prev || role.position > prev.position || (role.position === prev.position && role.id < prev.id) ? role : prev);
+      !prev || role.position > prev.position || (role.position === prev.position && role.id < prev.id) ? role : prev
+    );
   }
 
   /**
