@@ -263,6 +263,62 @@ class Guild {
   }
 
   /**
+   * Fetch a Collection of banned users in this Guild.
+   * @returns {Promise<Collection<string, User>>}
+   */
+  fetchBans() {
+    return this.client.rest.methods.getGuildBans(this);
+  }
+
+  /**
+   * Fetch a Collection of invites to this Guild. Resolves with a Collection mapping invites by their codes.
+   * @returns {Promise<Collection<string, Invite>>}
+   */
+  fetchInvites() {
+    return this.client.rest.methods.getGuildInvites(this);
+  }
+
+  /**
+   * Fetch a single guild member from a user.
+   * @param {UserResolvable} user The user to fetch the member for
+   * @returns {Promise<GuildMember>}
+   */
+  fetchMember(user) {
+    if (this._fetchWaiter) return Promise.reject(new Error('Already fetching guild members.'));
+    user = this.client.resolver.resolveUser(user);
+    if (!user) return Promise.reject(new Error('User is not cached. Use Client.fetchUser first.'));
+    if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
+    return this.client.rest.methods.getGuildMember(this, user);
+  }
+
+  /**
+   * Fetches all the members in the Guild, even if they are offline. If the Guild has less than 250 members,
+   * this should not be necessary.
+   * @param {string} [query=''] An optional query to provide when fetching members
+   * @returns {Promise<Guild>}
+   */
+  fetchMembers(query = '') {
+    return new Promise((resolve, reject) => {
+      if (this._fetchWaiter) throw new Error('Already fetching guild members in ${this.id}.');
+      if (this.memberCount === this.members.size) {
+        resolve(this);
+        return;
+      }
+      this._fetchWaiter = resolve;
+      this.client.ws.send({
+        op: Constants.OPCodes.REQUEST_GUILD_MEMBERS,
+        d: {
+          guild_id: this.id,
+          query,
+          limit: 0,
+        },
+      });
+      this._checkChunks();
+      this.client.setTimeout(() => reject(new Error('Members didn\'t arrive in time.')), 120 * 1000);
+    });
+  }
+
+  /**
    * Updates the Guild with new information - e.g. a new name.
    * @param {GuildEditData} data The data to update the guild with
    * @returns {Promise<Guild>}
@@ -422,59 +478,31 @@ class Guild {
   }
 
   /**
-   * Fetch a Collection of banned users in this Guild.
-   * @returns {Promise<Collection<string, User>>}
+   * Prunes members from the guild based on how long they have been inactive.
+   * @param {number} days Number of days of inactivity required to kick
+   * @param {boolean} [dry=false] If true, will return number of users that will be kicked, without actually doing it
+   * @returns {Promise<number>} The number of members that were/will be kicked
+   * @example
+   * // see how many members will be pruned
+   * guild.prune(12, true)
+   *   .then(pruned => console.log(`This will prune ${pruned} people!`);
+   *   .catch(console.error);
+   * @example
+   * // actually prune the members
+   * guild.prune(12)
+   *   .then(pruned => console.log(`I just pruned ${pruned} people!`);
+   *   .catch(console.error);
    */
-  fetchBans() {
-    return this.client.rest.methods.getGuildBans(this);
+  prune(days, dry = false) {
+    if (typeof days !== 'number') throw new TypeError('Days must be a number.');
+    return this.client.rest.methods.pruneGuildMembers(this, days, dry);
   }
 
   /**
-   * Fetch a Collection of invites to this Guild. Resolves with a Collection mapping invites by their codes.
-   * @returns {Promise<Collection<string, Invite>>}
+   * Syncs this guild (already done automatically every 30 seconds). Only applicable to user accounts.
    */
-  fetchInvites() {
-    return this.client.rest.methods.getGuildInvites(this);
-  }
-
-  /**
-   * Fetch a single guild member from a user.
-   * @param {UserResolvable} user The user to fetch the member for
-   * @returns {Promise<GuildMember>}
-   */
-  fetchMember(user) {
-    if (this._fetchWaiter) return Promise.reject(new Error('Already fetching guild members.'));
-    user = this.client.resolver.resolveUser(user);
-    if (!user) return Promise.reject(new Error('User is not cached. Use Client.fetchUser first.'));
-    if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
-    return this.client.rest.methods.getGuildMember(this, user);
-  }
-
-  /**
-   * Fetches all the members in the Guild, even if they are offline. If the Guild has less than 250 members,
-   * this should not be necessary.
-   * @param {string} [query=''] An optional query to provide when fetching members
-   * @returns {Promise<Guild>}
-   */
-  fetchMembers(query = '') {
-    return new Promise((resolve, reject) => {
-      if (this._fetchWaiter) throw new Error('Already fetching guild members in ${this.id}.');
-      if (this.memberCount === this.members.size) {
-        resolve(this);
-        return;
-      }
-      this._fetchWaiter = resolve;
-      this.client.ws.send({
-        op: Constants.OPCodes.REQUEST_GUILD_MEMBERS,
-        d: {
-          guild_id: this.id,
-          query,
-          limit: 0,
-        },
-      });
-      this._checkChunks();
-      this.client.setTimeout(() => reject(new Error('Members didn\'t arrive in time.')), 120 * 1000);
-    });
+  sync() {
+    if (!this.client.user.bot) this.client.syncGuilds([this]);
   }
 
   /**
@@ -514,27 +542,6 @@ class Guild {
   }
 
   /**
-   * Prunes members from the guild based on how long they have been inactive.
-   * @param {number} days Number of days of inactivity required to kick
-   * @param {boolean} [dry=false] If true, will return number of users that will be kicked, without actually doing it
-   * @returns {Promise<number>} The number of members that were/will be kicked
-   * @example
-   * // see how many members will be pruned
-   * guild.prune(12, true)
-   *   .then(pruned => console.log(`This will prune ${pruned} people!`);
-   *   .catch(console.error);
-   * @example
-   * // actually prune the members
-   * guild.prune(12)
-   *   .then(pruned => console.log(`I just pruned ${pruned} people!`);
-   *   .catch(console.error);
-   */
-  prune(days, dry = false) {
-    if (typeof days !== 'number') throw new TypeError('Days must be a number.');
-    return this.client.rest.methods.pruneGuildMembers(this, days, dry);
-  }
-
-  /**
    * Causes the Client to leave the guild.
    * @returns {Promise<Guild>}
    * @example
@@ -558,13 +565,6 @@ class Guild {
    */
   delete() {
     return this.client.rest.methods.deleteGuild(this);
-  }
-
-  /**
-   * Syncs this guild (already done automatically every 30 seconds). Only applicable to user accounts.
-   */
-  sync() {
-    if (!this.client.user.bot) this.client.syncGuilds([this]);
   }
 
   /**
