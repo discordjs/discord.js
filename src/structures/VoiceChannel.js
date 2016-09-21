@@ -35,9 +35,8 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * If connected to this guild's voice channel and the client is marked as being in this voice channel,
-   * then this will give the relevant voice connection.
-   * @type {VoiceConnection}
+   * The voice connection for this voice channel, if the client is connected
+   * @type {?VoiceConnection}
    * @readonly
    */
   get connection() {

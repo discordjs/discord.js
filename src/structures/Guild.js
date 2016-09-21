@@ -233,9 +233,8 @@ class Guild {
   }
 
   /**
-   * If the client is connected to any voice channel in this guild, this will be the relevant
-   * VoiceConnection.
-   * @type {VoiceConnection}
+   * If the client is connected to any voice channel in this guild, this will be the relevant VoiceConnection.
+   * @type {?VoiceConnection}
    * @readonly
    */
   get voiceConnection() {
