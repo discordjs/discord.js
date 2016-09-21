@@ -119,7 +119,7 @@ class GuildMember {
    * @type {Role}
    */
   get highestRole() {
-    return this.roles.reduce((prev, role) => !prev || role.position > prev.position ? role : prev);
+    return this.roles.reduce((prev, role) => !prev || role.position > prev.position || (role.position === prev.position && role.id < prev.id) ? role : prev);
   }
 
   /**
