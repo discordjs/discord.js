@@ -507,6 +507,15 @@ class RESTMethods {
       }).catch(reject);
     });
   }
+
+  pruneGuildMembers(guild, days, dry) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest(dry ? 'get' : 'post', `${Constants.Endpoints.guildPrune(guild.id)}?days=${days}`, true)
+      .then(data => {
+        resolve(data.pruned);
+      }).catch(reject);
+    });
+  }
 }
 
 module.exports = RESTMethods;
