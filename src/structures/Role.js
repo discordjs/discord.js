@@ -86,6 +86,14 @@ class Role {
   }
 
   /**
+   * The cached guild members that have this role.
+   * @type {Collection<string, GuildMember>}
+   */
+  get members() {
+    return this.guild.members.filter(m => m.roles.has(this.id));
+  }
+
+  /**
    * Get an object mapping permission names to whether or not the role enables that permission
    * @returns {Object<string, boolean>}
    * @example
