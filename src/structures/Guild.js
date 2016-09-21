@@ -233,6 +233,16 @@ class Guild {
   }
 
   /**
+   * If the client is connected to any voice channel in this guild, this will be the relevant
+   * VoiceConnection.
+   * @type {VoiceConnection}
+   * @readonly
+   */
+  get voiceConnection() {
+    return this.client.voice.connections.get(this.id) || null;
+  }
+
+  /**
    * The `#general` GuildChannel of the server.
    * @type {GuildChannel}
    * @readonly
@@ -505,6 +515,27 @@ class Guild {
   }
 
   /**
+   * Prunes members from the guild based on how long they have been inactive.
+   * @param {number} days Number of days of inactivity required to kick
+   * @param {boolean} [dry=false] If true, will return number of users that will be kicked, without actually doing it
+   * @returns {Promise<number>} The number of members that were/will be kicked
+   * @example
+   * // see how many members will be pruned
+   * guild.prune(12, true)
+   *   .then(pruned => console.log(`This will prune ${pruned} people!`);
+   *   .catch(console.error);
+   * @example
+   * // actually prune the members
+   * guild.prune(12)
+   *   .then(pruned => console.log(`I just pruned ${pruned} people!`);
+   *   .catch(console.error);
+   */
+  prune(days, dry = false) {
+    if (typeof days !== 'number') throw new TypeError('Days must be a number.');
+    return this.client.rest.methods.pruneGuildMembers(this, days, dry);
+  }
+
+  /**
    * Causes the Client to leave the guild.
    * @returns {Promise<Guild>}
    * @example
@@ -668,16 +699,6 @@ class Guild {
         this._fetchWaiter = null;
       }
     }
-  }
-
-  /**
-   * If the client is connected to any voice channel in this guild, this will be the relevant
-   * VoiceConnection.
-   * @type {VoiceConnection}
-   * @readonly
-   */
-  get voiceConnection() {
-    return this.client.voice.connections.get(this.id);
   }
 }
 
