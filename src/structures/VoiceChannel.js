@@ -35,6 +35,18 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
+   * If connected to this guild's voice channel and the client is marked as being in this voice channel,
+   * then this will give the relevant voice connection.
+   * @type {VoiceConnection}
+   * @readonly
+   */
+  get connection() {
+    const connection = this.guild.voiceConnection;
+    if (connection && connection.channel.id === this.id) return connection;
+    return null;
+  }
+
+  /**
    * Sets the bitrate of the channel
    * @param {number} bitrate The new bitrate
    * @returns {Promise<VoiceChannel>}
@@ -70,20 +82,6 @@ class VoiceChannel extends GuildChannel {
   leave() {
     const connection = this.client.voice.connections.get(this.guild.id);
     if (connection && connection.channel.id === this.id) connection.disconnect();
-  }
-
-  /**
-   * If connected to this guild's voice channel and the client is marked as being in this voice channel,
-   * then this will give the relevant voice connection.
-   * @type {VoiceConnection}
-   * @readonly
-   */
-  get connection() {
-    const connection = this.client.voice.connections.get(this.guild.id);
-    if (connection.channel.id === this.id) {
-      return connection;
-    }
-    return undefined;
   }
 }
 

@@ -233,6 +233,16 @@ class Guild {
   }
 
   /**
+   * If the client is connected to any voice channel in this guild, this will be the relevant
+   * VoiceConnection.
+   * @type {VoiceConnection}
+   * @readonly
+   */
+  get voiceConnection() {
+    return this.client.voice.connections.get(this.id) || null;
+  }
+
+  /**
    * The `#general` GuildChannel of the server.
    * @type {GuildChannel}
    * @readonly
@@ -689,16 +699,6 @@ class Guild {
         this._fetchWaiter = null;
       }
     }
-  }
-
-  /**
-   * If the client is connected to any voice channel in this guild, this will be the relevant
-   * VoiceConnection.
-   * @type {VoiceConnection}
-   * @readonly
-   */
-  get voiceConnection() {
-    return this.client.voice.connections.get(this.id);
   }
 }
 
