@@ -20,91 +20,154 @@ class Client extends EventEmitter {
    */
   constructor(options) {
     super();
+
+    /**
+     * The options the client was instantiated with
+     * @type {ClientOptions}
+     */
     this.options = mergeDefault(Constants.DefaultOptions, options);
+
     /**
      * The REST manager of the client
      * @type {RESTManager}
      * @private
      */
     this.rest = new RESTManager(this);
+
     /**
      * The data manager of the Client
      * @type {ClientDataManager}
      * @private
      */
     this.dataManager = new ClientDataManager(this);
+
     /**
      * The manager of the Client
      * @type {ClientManager}
      * @private
      */
     this.manager = new ClientManager(this);
+
     /**
      * The WebSocket Manager of the Client
      * @type {WebSocketManager}
      * @private
      */
     this.ws = new WebSocketManager(this);
+
     /**
      * The Data Resolver of the Client
      * @type {ClientDataResolver}
      * @private
      */
     this.resolver = new ClientDataResolver(this);
+
     /**
      * The Action Manager of the Client
      * @type {ActionsManager}
      * @private
      */
     this.actions = new ActionsManager(this);
+
     /**
      * The Voice Manager of the Client
      * @type {ClientVoiceManager}
      * @private
      */
     this.voice = new ClientVoiceManager(this);
+
     /**
      * A Collection of the Client's stored users
      * @type {Collection<string, User>}
      */
     this.users = new Collection();
+
     /**
      * A Collection of the Client's stored guilds
      * @type {Collection<string, Guild>}
      */
     this.guilds = new Collection();
+
     /**
      * A Collection of the Client's stored channels
      * @type {Collection<string, Channel>}
      */
     this.channels = new Collection();
+
     /**
      * The authorization token for the logged in user/bot.
      * @type {?string}
      */
     this.token = null;
-    /**
-     * The ClientUser representing the logged in Client
-     * @type {?ClientUser}
-     */
-    this.user = null;
+
     /**
      * The email, if there is one, for the logged in Client
      * @type {?string}
      */
     this.email = null;
+
     /**
      * The password, if there is one, for the logged in Client
      * @type {?string}
      */
     this.password = null;
+
+    /**
+     * The ClientUser representing the logged in Client
+     * @type {?ClientUser}
+     */
+    this.user = null;
+
     /**
      * The date at which the Client was regarded as being in the `READY` state.
      * @type {?Date}
      */
     this.readyTime = null;
-    this._intervals = [];
-    this._timeouts = [];
+
+    this._timeouts = new Set();
+    this._intervals = new Set();
+
+    if (this.options.message_sweep_interval > 0) {
+      this.setInterval(this.sweepMessages.bind(this), this.options.message_sweep_interval * 1000);
+    }
+  }
+
+  /**
+   * The status for the logged in Client.
+   * @readonly
+   * @type {?number}
+   */
+  get status() {
+    return this.ws.status;
+  }
+
+  /**
+   * The uptime for the logged in Client.
+   * @readonly
+   * @type {?number}
+   */
+  get uptime() {
+    return this.readyTime ? Date.now() - this.readyTime : null;
+  }
+
+  /**
+   * Returns a Collection, mapping Guild ID to Voice Connections.
+   * @readonly
+   * @type {Collection<string, VoiceConnection>}
+   */
+  get voiceConnections() {
+    return this.voice.connections;
+  }
+
+  /**
+   * The emojis that the client can use. Mapped by emoji ID.
+   * @type {Collection<string, Emoji>}
+   * @readonly
+   */
+  get emojis() {
+    const emojis = new Collection();
+    this.guilds.map(g => g.emojis.map(e => emojis.set(e.id, e)));
+    return emojis;
   }
 
   /**
@@ -138,32 +201,16 @@ class Client extends EventEmitter {
   destroy() {
     return new Promise((resolve, reject) => {
       this.manager.destroy().then(() => {
-        this._intervals.map(i => clearInterval(i));
-        this._timeouts.map(t => clearTimeout(t));
+        for (const t of this._timeouts) clearTimeout(t);
+        for (const i of this._intervals) clearInterval(i);
+        this._timeouts = [];
+        this._intervals = [];
         this.token = null;
         this.email = null;
         this.password = null;
-        this._timeouts = [];
-        this._intervals = [];
         resolve();
       }).catch(reject);
     });
-  }
-
-  setInterval(...params) {
-    const interval = setInterval(...params);
-    this._intervals.push(interval);
-    return interval;
-  }
-
-  setTimeout(...params) {
-    const restParams = params.slice(1);
-    const timeout = setTimeout(() => {
-      this._timeouts.splice(this._timeouts.indexOf(params[0]), 1);
-      params[0]();
-    }, ...restParams);
-    this._timeouts.push(timeout);
-    return timeout;
   }
 
   /**
@@ -194,49 +241,84 @@ class Client extends EventEmitter {
   /**
    * Fetches an invite object from an invite code.
    * @param {string} code the invite code.
-   * @returns {Promise<Invite, Error>}
+   * @returns {Promise<Invite>}
    */
   fetchInvite(code) {
     return this.rest.methods.getInvite(code);
   }
 
   /**
-   * Returns a Collection, mapping Guild ID to Voice Connections.
-   * @readonly
-   * @type {Collection<string, VoiceConnection>}
+   * Sweeps all channels' messages and removes the ones older than the max message lifetime.
+   * If the message has been edited, the time of the edit is used rather than the time of the original message.
+   * @param {number} [lifetime=this.options.message_cache_lifetime] Messages that are older than this (in seconds)
+   * will be removed from the caches. The default is based on the client's `message_cache_lifetime` option.
+   * @returns {number} Amount of messages that were removed from the caches,
+   * or -1 if the message cache lifetime is unlimited
    */
-  get voiceConnections() {
-    return this.voice.connections;
+  sweepMessages(lifetime = this.options.message_cache_lifetime) {
+    if (typeof lifetime !== 'number' || isNaN(lifetime)) throw new TypeError('Lifetime must be a number.');
+    if (lifetime <= 0) {
+      this.emit('debug', 'Didn\'t sweep messages - lifetime is unlimited');
+      return -1;
+    }
+
+    const lifetimeMs = lifetime * 1000;
+    const now = Date.now();
+    let channels = 0;
+    let messages = 0;
+
+    for (const channel of this.channels.values()) {
+      if (!channel.messages) continue;
+      channels++;
+
+      for (const message of channel.messages.values()) {
+        if (now - (message._editedTimestamp || message._timestamp) > lifetimeMs) {
+          channel.messages.delete(message.id);
+          messages++;
+        }
+      }
+    }
+
+    this.emit('debug', `Swept ${messages} messages older than ${lifetime} seconds in ${channels} text-based channels`);
+    return messages;
   }
 
-  /**
-   * The uptime for the logged in Client.
-   * @readonly
-   * @type {?number}
-   */
-  get uptime() {
-    return this.readyTime ? Date.now() - this.readyTime : null;
+  setTimeout(fn, ...params) {
+    const timeout = setTimeout(() => {
+      fn();
+      this._timeouts.delete(timeout);
+    }, ...params);
+    this._timeouts.add(timeout);
+    return timeout;
   }
 
-  /**
-   * The emojis that the client can use. Mapped by emoji ID.
-   * @type {Collection<string, Emoji>}
-   * @readonly
-   */
-  get emojis() {
-    const emojis = new Collection();
-    this.guilds.map(g => g.emojis.map(e => emojis.set(e.id, e)));
-    return emojis;
+  clearTimeout(timeout) {
+    clearTimeout(timeout);
+    this._timeouts.delete(timeout);
   }
 
-  /**
-   * The status for the logged in Client.
-   * @readonly
-   * @type {?number}
-   */
-  get status() {
-    return this.ws.status;
+  setInterval(...params) {
+    const interval = setInterval(...params);
+    this._intervals.add(interval);
+    return interval;
+  }
+
+  clearInterval(interval) {
+    clearInterval(interval);
+    this._intervals.delete(interval);
   }
 }
 
 module.exports = Client;
+
+/**
+ * Emitted for general warnings
+ * @event Client#warn
+ * @param {string} The warning
+ */
+
+/**
+ * Emitted for general debugging information
+ * @event Client#debug
+ * @param {string} The debug information
+ */

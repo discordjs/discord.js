@@ -11,7 +11,7 @@ class TypingStartHandler extends AbstractHandler {
 
     if (channel && user) {
       if (channel.type === 'voice') {
-        client.emit('warn', `Discord sent a typing packet to voice channel ${channel.id}`);
+        client.emit(Constants.Events.WARN, `Discord sent a typing packet to voice channel ${channel.id}`);
         return;
       }
       if (channel._typing.has(user.id)) {
@@ -19,7 +19,7 @@ class TypingStartHandler extends AbstractHandler {
         typing.lastTimestamp = timestamp;
         typing.resetTimeout(tooLate(channel, user));
       } else {
-        channel._typing.set(user.id, new TypingData(timestamp, timestamp, tooLate(channel, user)));
+        channel._typing.set(user.id, new TypingData(client, timestamp, timestamp, tooLate(channel, user)));
         client.emit(Constants.Events.TYPING_START, channel, user);
       }
     }
@@ -27,14 +27,15 @@ class TypingStartHandler extends AbstractHandler {
 }
 
 class TypingData {
-  constructor(since, lastTimestamp, _timeout) {
+  constructor(client, since, lastTimestamp, _timeout) {
+    this.client = client;
     this.since = since;
     this.lastTimestamp = lastTimestamp;
     this._timeout = _timeout;
   }
 
   resetTimeout(_timeout) {
-    clearTimeout(this._timeout);
+    this.client.clearTimeout(this._timeout);
     this._timeout = _timeout;
   }
 

@@ -71,16 +71,16 @@ class GuildMember {
     this.voiceChannelID = data.channel_id;
 
     /**
-     * Whether this meember is speaking
-     * @type {?boolean}
+     * Whether this member is speaking
+     * @type {boolean}
      */
-    this.speaking = this.speaking;
+    this.speaking = false;
 
     /**
      * The nickname of this Guild Member, if they have one
      * @type {?string}
      */
-    this.nickname = data.nick;
+    this.nickname = data.nick || null;
 
     this.user = data.user;
     this._roles = data.roles;
@@ -112,6 +112,14 @@ class GuildMember {
     }
 
     return list;
+  }
+
+  /**
+   * The role of the member with the highest position.
+   * @type {Role}
+   */
+  get highestRole() {
+    return this.roles.reduce((prev, role) => !prev || role.position > prev.position || (role.position === prev.position && role.id < prev.id) ? role : prev);
   }
 
   /**
@@ -155,7 +163,7 @@ class GuildMember {
    * @type {EvaluatedPermissions}
    */
   get permissions() {
-    if (this.guild.owner.id === this.user.id) return new EvaluatedPermissions(this, Constants.ALL_PERMISSIONS);
+    if (this.user.id === this.guild.ownerID) return new EvaluatedPermissions(this, Constants.ALL_PERMISSIONS);
 
     let permissions = 0;
     const roles = this.roles;
@@ -165,6 +173,30 @@ class GuildMember {
     if (admin) permissions = Constants.ALL_PERMISSIONS;
 
     return new EvaluatedPermissions(this, permissions);
+  }
+
+  /**
+   * Whether the member is kickable by the client user.
+   * @type {boolean}
+   */
+  get kickable() {
+    if (this.user.id === this.guild.ownerID) return false;
+    if (this.user.id === this.client.user.id) return false;
+    const clientMember = this.member(this.client.member);
+    if (!clientMember.hasPermission(Constants.PermissionFlags.KICK_MEMBERS)) return false;
+    return clientMember.highestRole.position > this.highestRole.positon;
+  }
+
+  /**
+   * Whether the member is bannable by the client user.
+   * @type {boolean}
+   */
+  get bannable() {
+    if (this.user.id === this.guild.ownerID) return false;
+    if (this.user.id === this.client.user.id) return false;
+    const clientMember = this.member(this.client.member);
+    if (!clientMember.hasPermission(Constants.PermissionFlags.BAN_MEMBERS)) return false;
+    return clientMember.highestRole.position > this.highestRole.positon;
   }
 
   /**
@@ -185,7 +217,7 @@ class GuildMember {
    * @returns {boolean}
    */
   hasPermission(permission, explicit = false) {
-    if (!explicit && this.guild.owner.id === this.user.id) return true;
+    if (!explicit && this.user.id === this.guild.ownerID) return true;
     return this.roles.some(r => r.hasPermission(permission, explicit));
   }
 
@@ -196,7 +228,7 @@ class GuildMember {
    * @returns {boolean}
    */
   hasPermissions(permissions, explicit = false) {
-    if (!explicit && this.guild.owner.id === this.user.id) return true;
+    if (!explicit && this.user.id === this.guild.ownerID) return true;
     return permissions.map(p => this.hasPermission(p, explicit)).every(v => v);
   }
 

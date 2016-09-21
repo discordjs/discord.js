@@ -18,50 +18,59 @@ const DefaultPlayer = require('./player/DefaultPlayer');
 class VoiceConnection extends EventEmitter {
   constructor(manager, channel, token, sessionID, endpoint, resolve, reject) {
     super();
+
     /**
      * The voice manager of this connection
      * @type {ClientVoiceManager}
      * @private
      */
     this.manager = manager;
+
     /**
      * The player
      * @type {BasePlayer}
      */
     this.player = new DefaultPlayer(this);
+
     /**
      * The endpoint of the connection
      * @type {string}
      */
     this.endpoint = endpoint;
+
     /**
      * The VoiceChannel for this connection
      * @type {VoiceChannel}
      */
     this.channel = channel;
+
     /**
      * The WebSocket connection for this voice connection
      * @type {VoiceConnectionWebSocket}
      * @private
      */
     this.websocket = new VoiceConnectionWebSocket(this, channel.guild.id, token, sessionID, endpoint);
+
     /**
      * Whether or not the connection is ready
      * @type {boolean}
      */
     this.ready = false;
+
     /**
      * The resolve function for the promise associated with creating this connection
      * @type {function}
      * @private
      */
     this._resolve = resolve;
+
     /**
      * The reject function for the promise associated with creating this connection
      * @type {function}
      * @private
      */
     this._reject = reject;
+
     this.ssrcMap = new Map();
     this.queue = [];
     this.receivers = [];
@@ -69,7 +78,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Executed whenever an error occurs with the UDP/WebSocket sub-client
+   * Executed whenever an error occurs with the UDP/WebSocket sub-client.
    * @private
    * @param {Error} err The encountered error
    */
@@ -85,7 +94,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Disconnects the Client from the Voice Channel
+   * Disconnects the Client from the Voice Channel.
    * @param {string} [reason='user requested'] The reason of the disconnection
    */
   disconnect(reason = 'user requested') {
@@ -112,6 +121,7 @@ class VoiceConnection extends EventEmitter {
     this.websocket._shutdown();
     this.player._shutdown();
     if (this.udp) this.udp._shutdown();
+    if (this._vsUpdateListener) this.manager.client.removeListener('voiceStateUpdate', this._vsUpdateListener);
     /**
      * Emit once the voice connection has disconnected.
      * @event VoiceConnection#disconnected
@@ -121,7 +131,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Binds listeners to the WebSocket and UDP sub-clients
+   * Binds listeners to the WebSocket and UDP sub-clients.
    * @private
    */
   bindListeners() {
@@ -149,7 +159,7 @@ class VoiceConnection extends EventEmitter {
         this.queue = [];
       });
     });
-    this.manager.client.on(Constants.Events.VOICE_STATE_UPDATE, (oldM, newM) => {
+    this._vsUpdateListener = (oldM, newM) => {
       if (oldM.voiceChannel && oldM.voiceChannel.guild.id === this.channel.guild.id && !newM.voiceChannel) {
         const user = newM.user;
         for (const receiver of this.receivers) {
@@ -167,7 +177,8 @@ class VoiceConnection extends EventEmitter {
           }
         }
       }
-    });
+    };
+    this.manager.client.on(Constants.Events.VOICE_STATE_UPDATE, this._vsUpdateListener);
     this.websocket.on('speaking', data => {
       const guild = this.channel.guild;
       const user = this.manager.client.users.get(data.user_id);
@@ -209,7 +220,7 @@ class VoiceConnection extends EventEmitter {
    */
 
   /**
-   * Play the given file in the voice connection
+   * Play the given file in the voice connection.
    * @param {string} file The path to the file
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
@@ -227,7 +238,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Plays and converts an audio stream in the voice connection
+   * Plays and converts an audio stream in the voice connection.
    * @param {ReadableStream} stream The audio stream to play
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
@@ -256,8 +267,7 @@ class VoiceConnection extends EventEmitter {
   playConvertedStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
     const options = { seek, volume, passes };
     this.player._shutdown();
-    const dispatcher = this.player.playPCMStream(stream, options);
-    return dispatcher;
+    return this.player.playPCMStream(stream, options);
   }
 
   /**

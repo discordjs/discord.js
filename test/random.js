@@ -4,7 +4,7 @@ const Discord = require('../');
 const request = require('superagent');
 const fs = require('fs');
 
-const client = new Discord.Client({ fetch_all_members: false, api_request_method: 'burst' });
+const client = new Discord.Client({ fetch_all_members: false, api_request_method: 'sequential' });
 
 const { email, password, token } = require('./auth.json');
 
@@ -12,6 +12,10 @@ client.login(token).then(atoken => console.log('logged in with token ' + atoken)
 
 client.on('ready', () => {
   console.log('ready!');
+});
+
+client.on('channelCreate', channel => {
+  console.log(`made ${channel.name}`);
 });
 
 client.on('guildMemberAdd', (g, m) => {

@@ -13,9 +13,15 @@ class RESTMethods {
     this.rest = restManager;
   }
 
+  loginToken(token) {
+    return new Promise((resolve, reject) => {
+      this.rest.client.manager.connectToWebSocket(token, resolve, reject);
+    });
+  }
+
   loginEmailPassword(email, password) {
     return new Promise((resolve, reject) => {
-      this.rest.client.emit('debug', 'Client launched using email and password - should use token instead');
+      this.rest.client.emit('warn', 'Client launched using email and password - should use token instead');
       this.rest.client.email = email;
       this.rest.client.password = password;
       this.rest.makeRequest('post', Constants.Endpoints.login, false, { email, password })
@@ -23,12 +29,6 @@ class RESTMethods {
           this.rest.client.manager.connectToWebSocket(data.token, resolve, reject);
         })
         .catch(reject);
-    });
-  }
-
-  loginToken(token) {
-    return new Promise((resolve, reject) => {
-      this.rest.client.manager.connectToWebSocket(token, resolve, reject);
     });
   }
 
@@ -59,8 +59,7 @@ class RESTMethods {
 
       if (channel instanceof User || channel instanceof GuildMember) {
         this.createDM(channel).then(chan => {
-          channel = chan;
-          this._sendMessageRequest(channel, content, file, tts, nonce, resolve, reject);
+          this._sendMessageRequest(chan, content, file, tts, nonce, resolve, reject);
         })
         .catch(reject);
       } else {
@@ -74,7 +73,7 @@ class RESTMethods {
       const datas = [];
       const promise = this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
         content: content[0], tts, nonce,
-      }, file);
+      }, file).catch(reject);
       for (let i = 1; i <= content.length; i++) {
         if (i < content.length) {
           promise.then(data => {
@@ -86,7 +85,7 @@ class RESTMethods {
         } else {
           promise.then(data => {
             datas.push(data);
-            resolve(this.rest.client.actions.MessageCreate.handle(datas).messages).catch(reject);
+            resolve(this.rest.client.actions.MessageCreate.handle(datas).messages);
           });
         }
       }
@@ -150,10 +149,9 @@ class RESTMethods {
   }
 
   getExistingDM(recipient) {
-    const dmChannel = Array.from(this.rest.client.channels.values())
-      .filter(channel => channel.recipient)
-      .filter(channel => channel.recipient.id === recipient.id);
-    return dmChannel[0];
+    return this.rest.client.channels.filter(channel =>
+      channel.recipient && channel.recipient.id === recipient.id
+    ).first();
   }
 
   createDM(recipient) {
@@ -223,9 +221,9 @@ class RESTMethods {
       data.username = _data.username || user.username;
       data.avatar = this.rest.client.resolver.resolveBase64(_data.avatar) || user.avatar;
       if (!user.bot) {
+        data.email = _data.email || user.email;
         data.password = this.rest.client.password;
-        data.email = _data.email || this.rest.client.email;
-        data.new_password = _data.newPassword;
+        if (_data.new_password) data.new_password = _data.newPassword;
       }
 
       this.rest.makeRequest('patch', Constants.Endpoints.me, true, data)
@@ -367,28 +365,40 @@ class RESTMethods {
 
   banGuildMember(guild, member, deleteDays) {
     return new Promise((resolve, reject) => {
-      const user = this.rest.client.resolver.resolveUser(member);
-      if (!user) throw new Error('Couldn\'t resolve the user to ban.');
-      this.rest.makeRequest('put', `${Constants.Endpoints.guildBans(guild.id)}/${user.id}`, true, {
+      const id = this.rest.client.resolver.resolveUserID(member);
+      if (!id) throw new Error('Couldn\'t resolve the user ID to ban.');
+
+      this.rest.makeRequest('put', `${Constants.Endpoints.guildBans(guild.id)}/${id}`, true, {
         'delete-message-days': deleteDays,
       }).then(() => {
-        resolve(member instanceof GuildMember ? member : user);
+        if (member instanceof GuildMember) {
+          resolve(member);
+          return;
+        }
+        const user = this.rest.client.resolver.resolveUser(id);
+        if (user) {
+          member = this.rest.client.resolver.resolveGuildMember(guild, user);
+          resolve(member || user);
+          return;
+        }
+        resolve(id);
       }).catch(reject);
     });
   }
 
   unbanGuildMember(guild, member) {
     return new Promise((resolve, reject) => {
-      member = this.rest.client.resolver.resolveUser(member);
-      if (!member) throw new Error('Couldn\'t resolve the user to unban.');
+      const id = this.rest.client.resolver.resolveUserID(member);
+      if (!id) throw new Error('Couldn\'t resolve the user ID to ban.');
+
       const listener = (eGuild, eUser) => {
-        if (guild.id === guild.id && member.id === eUser.id) {
+        if (eGuild.id === guild.id && eUser.id === id) {
           this.rest.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
           resolve(eUser);
         }
       };
       this.rest.client.on(Constants.Events.GUILD_BAN_REMOVE, listener);
-      this.rest.makeRequest('del', `${Constants.Endpoints.guildBans(guild.id)}/${member.id}`, true).catch(reject);
+      this.rest.makeRequest('del', `${Constants.Endpoints.guildBans(guild.id)}/${id}`, true).catch(reject);
     });
   }
 

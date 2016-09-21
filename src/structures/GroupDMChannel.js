@@ -54,10 +54,10 @@ class GroupDMChannel extends Channel {
     this.icon = data.icon;
 
     /**
-     * The owner of this Group DM.
-     * @type {User}
+     * The user ID of this Group DM's owner.
+     * @type {string}
      */
-    this.owner = this.client.users.get(data.owner_id);
+    this.ownerID = data.owner_id;
 
     if (!this.recipients) {
       /**
@@ -78,6 +78,14 @@ class GroupDMChannel extends Channel {
   }
 
   /**
+   * The owner of this Group DM.
+   * @type {User}
+   */
+  get owner() {
+    return this.client.users.get(this.ownerID);
+  }
+
+  /**
    * Whether this channel equals another channel. It compares all properties, so for most operations
    * it is advisable to just compare `channel.id === channel2.id` as it is much faster and is often
    * what most users need.
@@ -89,7 +97,7 @@ class GroupDMChannel extends Channel {
       this.id === channel.id &&
       this.name === channel.name &&
       this.icon === channel.icon &&
-      this.owner.id === channel.owner_id;
+      this.ownerID === channel.ownerID;
 
     if (equal) {
       const thisIDs = this.recipients.array().map(r => r.id);

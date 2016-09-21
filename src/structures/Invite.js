@@ -1,5 +1,6 @@
 const PartialGuild = require('./PartialGuild');
 const PartialGuildChannel = require('./PartialGuildChannel');
+const Constants = require('../util/Constants');
 
 /*
 { max_age: 86400,
@@ -111,11 +112,31 @@ class Invite {
   }
 
   /**
+   * The URL to the invite
+   * @type {string}
+   * @readonly
+   */
+  get url() {
+    return Constants.Endpoints.inviteLink(this.code);
+  }
+
+  /**
    * Deletes this invite
    * @returns {Promise<Invite>}
    */
   delete() {
     return this.client.rest.methods.deleteInvite(this);
+  }
+
+  /**
+   * When concatenated with a string, this automatically concatenates the Invite's URL instead of the object.
+   * @returns {string}
+   * @example
+   * // logs: Invite: https://discord.gg/A1b2C3
+   * console.log(`Invite: ${invite}`);
+   */
+  toString() {
+    return this.url;
   }
 }
 

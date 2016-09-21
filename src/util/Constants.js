@@ -6,6 +6,10 @@
  * @property {number} [shard_id=0] The ID of this shard
  * @property {number} [shard_count=0] The number of shards
  * @property {number} [max_message_cache=200] Number of messages to cache per channel
+ * @property {number} [message_cache_lifetime=0] How long until a message should be uncached by the message sweeping
+ * (in seconds, 0 for forever)
+ * @property {number} [message_sweep_interval=0] How frequently to remove messages from the cache that are older than
+ * the max message lifetime (in seconds, 0 for never)
  * @property {boolean} [fetch_all_members=false] Whether to cache all guild members and users upon startup
  * @property {boolean} [disable_everyone=false] Default value for MessageOptions.disable_everyone
  * @property {number} [rest_ws_bridge_timeout=5000] Maximum time permitted between REST responses and their
@@ -17,6 +21,8 @@ exports.DefaultOptions = {
   shard_id: 0,
   shard_count: 0,
   max_message_cache: 200,
+  message_cache_lifetime: 0,
+  message_sweep_interval: 0,
   fetch_all_members: false,
   disable_everyone: false,
   rest_ws_bridge_timeout: 5000,
@@ -76,12 +82,13 @@ const Endpoints = exports.Endpoints = {
   logout: `${API}/auth/logout`,
   gateway: `${API}/gateway`,
   invite: (id) => `${API}/invite/${id}`,
+  inviteLink: (id) => `https://discord.gg/${id}`,
   CDN: 'https://cdn.discordapp.com',
 
   // users
   user: (userID) => `${API}/users/${userID}`,
   userChannels: (userID) => `${Endpoints.user(userID)}/channels`,
-  avatar: (userID, avatar) => `${Endpoints.user(userID)}/avatars/${avatar}.jpg`,
+  avatar: (userID, avatar) => userID === '1' ? avatar : `${Endpoints.user(userID)}/avatars/${avatar}.jpg`,
   me: `${API}/users/@me`,
   meGuild: (guildID) => `${Endpoints.me}/guilds/${guildID}`,
 
@@ -162,10 +169,12 @@ exports.Events = {
   MESSAGE_CREATE: 'message',
   MESSAGE_DELETE: 'messageDelete',
   MESSAGE_UPDATE: 'messageUpdate',
+  DISCONNECT: 'disconnect',
   RECONNECTING: 'reconnecting',
   GUILD_MEMBER_SPEAKING: 'guildMemberSpeaking',
   MESSAGE_BULK_DELETE: 'messageDeleteBulk',
   CHANNEL_PINS_UPDATE: 'channelPinsUpdate',
+  DEBUG: 'debug',
 };
 
 exports.WSEvents = {
@@ -235,4 +244,4 @@ for (const key in PermissionFlags) _ALL_PERMISSIONS |= PermissionFlags[key];
 
 exports.ALL_PERMISSIONS = _ALL_PERMISSIONS;
 
-exports.DEFAULT_PERMISSIONS = 36953089;
+exports.DEFAULT_PERMISSIONS = 104324097;

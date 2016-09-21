@@ -1,6 +1,7 @@
 const Attachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
 const Collection = require('../util/Collection');
+const Constants = require('../util/Constants');
 
 /**
  * Represents a Message on Discord
@@ -19,12 +20,6 @@ class Message {
      * @type {TextChannel|DMChannel|GroupDMChannel}
      */
     this.channel = channel;
-
-    /**
-     * If the message was sent in a guild, this will be the guild the message was sent in
-     * @type {?Guild}
-     */
-    this.guild = channel.guild || null;
 
     if (data) this.setup(data);
   }
@@ -206,6 +201,14 @@ class Message {
   }
 
   /**
+   * The guild the message was sent in (if in a guild channel)
+   * @type {?Guild}
+   */
+  get guild() {
+    return this.channel.guild || null;
+  }
+
+  /**
    * The message contents with all mentions replaced by the equivalent text.
    * @type {string}
    */
@@ -247,6 +250,33 @@ class Message {
   }
 
   /**
+   * Whether the message is editable by the client user.
+   * @type {boolean}
+   */
+  get editable() {
+    return this.author.id === this.client.user.id;
+  }
+
+  /**
+   * Whether the message is deletable by the client user.
+   * @type {boolean}
+   */
+  get deletable() {
+    return this.author.id === this.client.user.id || (this.guild &&
+      this.channel.permissionsFor(this.client.user).hasPermission(Constants.PermissionFlags.MANAGE_MESSAGES)
+    );
+  }
+
+  /**
+   * Whether the message is pinnable by the client user.
+   * @type {boolean}
+   */
+  get pinnable() {
+    return !this.guild ||
+      this.channel.permissionsFor(this.client.user).hasPermission(Constants.PermissionFlags.MANAGE_MESSAGES);
+  }
+
+  /**
    * Whether or not a user, channel or role is mentioned in this message.
    * @param {GuildChannel|User|Role|string} data either a guild channel, user or a role object, or a string representing
    * the ID of any of these.
@@ -258,7 +288,7 @@ class Message {
   }
 
   /**
-   * Edit the content of a message
+   * Edit the content of the message
    * @param {StringResolvable} content The new content for the message
    * @returns {Promise<Message>}
    * @example
@@ -269,6 +299,17 @@ class Message {
    */
   edit(content) {
     return this.client.rest.methods.updateMessage(this, content);
+  }
+
+  /**
+   * Edit the content of the message, with a code block
+   * @param {string} lang Language for the code block
+   * @param {StringResolvable} content The new content for the message
+   * @returns {Promise<Message>}
+   */
+  editCode(lang, content) {
+    content = this.client.resolver.resolveString(content).replace(/```/g, '`\u200b``');
+    return this.edit(`\`\`\`${lang ? lang : ''}\n${content}\n\`\`\``);
   }
 
   /**

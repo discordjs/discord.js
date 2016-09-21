@@ -92,13 +92,13 @@ class Guild {
      * The full amount of members in this Guild as of `READY`
      * @type {number}
      */
-    this.memberCount = data.member_count;
+    this.memberCount = data.member_count || this.memberCount;
 
     /**
      * Whether the guild is "large" (has more than 250 members)
      * @type {boolean}
      */
-    this.large = data.large;
+    this.large = data.large || this.large;
 
     /**
      * An array of guild features.
@@ -139,15 +139,21 @@ class Guild {
 
     this.id = data.id;
     this.available = !data.unavailable;
-    this.features = data.features || [];
-    this._joinDate = new Date(data.joined_at).getTime();
+    this.features = data.features || this.features || [];
+    this._joinedTimestamp = data.joined_at ? new Date(data.joined_at).getTime() : this._joinedTimestamp;
 
     if (data.members) {
       this.members.clear();
       for (const guildUser of data.members) this._addMember(guildUser, false);
     }
 
-    if (data.owner_id) this.ownerID = data.owner_id;
+    if (data.owner_id) {
+      /**
+       * The user ID of this guild's owner.
+       * @type {string}
+       */
+      this.ownerID = data.owner_id;
+    }
 
     if (data.channels) {
       this.channels.clear();
@@ -204,7 +210,7 @@ class Guild {
    * @type {Date}
    */
   get joinDate() {
-    return new Date(this._joinDate);
+    return new Date(this._joinedTimestamp);
   }
 
   /**
@@ -381,7 +387,9 @@ class Guild {
    * @param {UserResolvable} user The user to ban
    * @param {number} [deleteDays=0] The amount of days worth of messages from this user that should
    * also be deleted. Between `0` and `7`.
-   * @returns {Promise<GuildMember|User>}
+   * @returns {Promise<GuildMember|User|string>} Result object will be resolved as specifically as possible.
+   * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
+   * be resolved, the user ID will be the result.
    * @example
    * // ban a user
    * guild.ban('123123123123');
@@ -613,7 +621,7 @@ class Guild {
     const oldMember = cloneObject(member);
 
     if (data.roles) member._roles = data.roles;
-    member.nickname = data.nick;
+    if (typeof data.nick !== 'undefined') member.nickname = data.nick;
 
     const notSame = member.nickname !== oldMember.nickname || !arraysEqual(member._roles, oldMember._roles);
 
@@ -660,6 +668,16 @@ class Guild {
         this._fetchWaiter = null;
       }
     }
+  }
+
+  /**
+   * If the client is connected to any voice channel in this guild, this will be the relevant
+   * VoiceConnection.
+   * @type {VoiceConnection}
+   * @readonly
+   */
+  get voiceConnection() {
+    return this.client.voice.connections.get(this.id);
   }
 }
 

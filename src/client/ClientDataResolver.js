@@ -38,18 +38,24 @@ class ClientDataResolver {
    * @returns {?User}
    */
   resolveUser(user) {
-    if (user instanceof User) {
-      return user;
-    } else if (typeof user === 'string') {
-      return this.client.users.get(user);
-    } else if (user instanceof Message) {
-      return user.author;
-    } else if (user instanceof Guild) {
-      return user.owner;
-    } else if (user instanceof GuildMember) {
-      return user.user;
-    }
+    if (user instanceof User) return user;
+    if (typeof user === 'string') return this.client.users.get(user) || null;
+    if (user instanceof GuildMember) return user.user;
+    if (user instanceof Message) return user.author;
+    if (user instanceof Guild) return user.owner;
+    return null;
+  }
 
+  /**
+   * Resolves a UserResolvable to a user ID string
+   * @param {UserResolvable} user The UserResolvable to identify
+   * @returns {?string}
+   */
+  resolveUserID(user) {
+    if (user instanceof User || user instanceof GuildMember) return user.id;
+    if (typeof user === 'string') return user || null;
+    if (user instanceof Message) return user.author.id;
+    if (user instanceof Guild) return user.ownerID;
     return null;
   }
 
@@ -66,7 +72,7 @@ class ClientDataResolver {
    */
   resolveGuild(guild) {
     if (guild instanceof Guild) return guild;
-    if (typeof guild === 'string') return this.client.guilds.get(guild);
+    if (typeof guild === 'string') return this.client.guilds.get(guild) || null;
     return null;
   }
 
@@ -90,7 +96,7 @@ class ClientDataResolver {
     user = this.resolveUser(user);
     if (!guild || !user) return null;
 
-    return guild.members.get(user.id);
+    return guild.members.get(user.id) || null;
   }
 
   /**
@@ -127,8 +133,8 @@ class ClientDataResolver {
   resolveChannel(channel) {
     if (channel instanceof Channel) return channel;
     if (channel instanceof Message) return channel.channel;
-    if (channel instanceof Guild) return channel.channels.get(channel.id);
-    if (typeof channel === 'string') return this.client.channels.get(channel.id);
+    if (channel instanceof Guild) return channel.channels.get(channel.id) || null;
+    if (typeof channel === 'string') return this.client.channels.get(channel.id) || null;
     return null;
   }
 
@@ -176,7 +182,7 @@ class ClientDataResolver {
    */
   resolvePermission(permission) {
     if (typeof permission === 'string') permission = Constants.PermissionFlags[permission];
-    if (!permission) throw new Error(Constants.Errors.NOT_A_PERMISSION);
+    if (typeof permission !== 'number' || permission < 1) throw new Error(Constants.Errors.NOT_A_PERMISSION);
     return permission;
   }
 
@@ -223,7 +229,7 @@ class ClientDataResolver {
           const file = path.resolve(resource);
           fs.stat(file, (err, stats) => {
             if (err) reject(err);
-            if (!stats.isFile()) throw new Error(`The file could not be found: ${file}`);
+            if (!stats || !stats.isFile()) throw new Error(`The file could not be found: ${file}`);
             fs.readFile(file, (err2, data) => {
               if (err2) reject(err2); else resolve(data);
             });
