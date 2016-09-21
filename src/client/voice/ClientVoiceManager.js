@@ -14,11 +14,13 @@ class ClientVoiceManager {
      * @type {Client}
      */
     this.client = client;
+
     /**
      * A collection mapping connection IDs to the Connection objects
      * @type {Collection<string, VoiceConnection>}
      */
     this.connections = new Collection();
+
     /**
      * Pending connection attempts, maps Guild ID to VoiceChannel
      * @type {Collection<string, VoiceChannel>}
@@ -97,9 +99,7 @@ class ClientVoiceManager {
    */
   joinChannel(channel) {
     return new Promise((resolve, reject) => {
-      if (this.pending.get(channel.guild.id)) {
-        throw new Error(`Already connecting to a channel in guild.`);
-      }
+      if (this.pending.get(channel.guild.id)) throw new Error(`Already connecting to a channel in guild.`);
       const existingConn = this.connections.get(channel.guild.id);
       if (existingConn) {
         if (existingConn.channel.id !== channel.id) {
