@@ -493,7 +493,7 @@ class Guild {
    *   .then(pruned => console.log(`I just pruned ${pruned} people!`);
    *   .catch(console.error);
    */
-  prune(days, dry = false) {
+  pruneMembers(days, dry = false) {
     if (typeof days !== 'number') throw new TypeError('Days must be a number.');
     return this.client.rest.methods.pruneGuildMembers(this, days, dry);
   }
