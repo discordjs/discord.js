@@ -257,7 +257,7 @@ class VoiceConnection extends EventEmitter {
    */
   playConvertedStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
     const options = { seek, volume, passes };
-    this._shutdown();
+    this.player._shutdown();
     const dispatcher = this.player.playPCMStream(stream, options);
     return dispatcher;
   }
