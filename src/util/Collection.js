@@ -147,9 +147,9 @@ class Collection extends Map {
    * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
    * @returns {*}
    * @example
-   * collection.find('id', '123123...');
+   * collection.findKey('id', '123123...');
    * @example
-   * collection.find(val => val.id === '123123...');
+   * collection.findKey(val => val.id === '123123...');
    */
   /* eslint-enable max-len */
   findKey(propOrFn, value) {
