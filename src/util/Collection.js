@@ -82,21 +82,31 @@ class Collection extends Map {
   }
 
   /**
-   * Returns an array of items where `item[prop] === value` of the collection
-   * @param {string} prop The property to test against
-   * @param {*} value The expected value
+   * Returns an array of items where `item[prop] === value` or the given function returns `true`.
+   * @param {string|function} propOrFn The property to test against, or the function to test with
+   * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
    * @returns {array}
    * @example
    * collection.findAll('username', 'Bob');
+   * @example
+   * collection.findAll(channel => channel.type === 'text');
    */
-  findAll(prop, value) {
-    if (typeof prop !== 'string') throw new TypeError('Key must be a string.');
-    if (typeof value === 'undefined') throw new Error('Value must be specified.');
+  findAll(propOrFn, value) {
     const results = [];
-    for (const item of this.values()) {
-      if (item[prop] === value) results.push(item);
+    if (typeof propOrFn === 'string') {
+      if (typeof value === 'undefined') throw new Error('Value must be specified.');
+      for (const item of this.values()) {
+        if (item[propOrFn] === value) results.push(item);
+      }
+      return results;
+    } else if (typeof propOrFn === 'function') {
+      for (const [key, val] of this) {
+        if (propOrFn(val, key, this)) results.push(val);
+      }
+      return results;
+    } else {
+      throw new Error('First argument must be a property string or a function.');
     }
-    return results;
   }
 
   /**
@@ -160,17 +170,21 @@ class Collection extends Map {
   }
 
   /**
-   * Returns true if the collection has an item where `item[prop] === value`
-   * @param {string} prop The property to test against
-   * @param {*} value The expected value
+   * Returns true if the collection has an item where `item[prop] === value` or the given function returns `true`.
+   * @param {string|function} propOrFn The property to test against, or the function to test with
+   * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
    * @returns {boolean}
    * @example
    * if (collection.exists('id', '123123...')) {
    *  console.log('user here!');
    * }
+   * @example
+   * if (collection.exists(val => val.id === '123123...')) {
+   *  console.log('user here!');
+   * }
    */
-  exists(prop, value) {
-    return Boolean(this.find(prop, value));
+  exists(propOrFn, value) {
+    return Boolean(this.find(propOrFn, value));
   }
 
   /**
