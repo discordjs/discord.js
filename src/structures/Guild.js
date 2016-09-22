@@ -484,12 +484,12 @@ class Guild {
    * @returns {Promise<number>} The number of members that were/will be kicked
    * @example
    * // see how many members will be pruned
-   * guild.prune(12, true)
+   * guild.pruneMembers(12, true)
    *   .then(pruned => console.log(`This will prune ${pruned} people!`);
    *   .catch(console.error);
    * @example
    * // actually prune the members
-   * guild.prune(12)
+   * guild.pruneMembers(12)
    *   .then(pruned => console.log(`I just pruned ${pruned} people!`);
    *   .catch(console.error);
    */
