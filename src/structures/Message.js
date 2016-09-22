@@ -216,8 +216,10 @@ class Message {
     return this.content
       .replace(/@everyone/g, '@\u200Beveryone')
       .replace(/@here/g, '@\u200Bhere')
-      .replace(/<@!?[0-9]+>/g, input => {
+      .replace(/<@!?[0-9]+>/g, (input) => {
         const id = input.replace(/<|!|>|@/g, '');
+        if (this.channel.type === 'dm') return `@${this.client.user.id === id ? this.client.user.username : this.channel.recipient.username}`;
+
         const member = this.channel.guild.members.get(id);
         if (member) {
           if (member.nickname) return `@${member.nickname}`;
