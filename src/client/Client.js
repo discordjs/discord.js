@@ -130,6 +130,13 @@ class Client extends EventEmitter {
     if (this.options.message_sweep_interval > 0) {
       this.setInterval(this.sweepMessages.bind(this), this.options.message_sweep_interval * 1000);
     }
+
+    if (process.send) {
+      process.on('message', message => {
+        if (typeof message !== 'string') return;
+        if (message === '_guildCount') process.send(this.guilds.size);
+      });
+    }
   }
 
   /**
