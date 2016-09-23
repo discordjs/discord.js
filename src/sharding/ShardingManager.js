@@ -64,8 +64,9 @@ class ShardingManager extends EventEmitter {
   /**
    * Spawns multiple shards.
    * @param {number} [amount=this.totalShards] Number of shards to spawn
+   * @param {number} [delay=5500] How long to wait in between spawning each shard (in milliseconds)
    */
-  spawn(amount) {
+  spawn(amount, delay = 5500) {
     if (typeof amount !== 'undefined') {
       if (typeof amount !== 'number' || isNaN(amount)) throw new TypeError('Amount of shards must be a number.');
       if (amount < 1) throw new RangeError('Amount of shards must be at least 1.');
@@ -76,7 +77,7 @@ class ShardingManager extends EventEmitter {
     const interval = setInterval(() => {
       if (this.shards.size === this.totalShards) clearInterval(interval);
       else this.createShard();
-    }, 5500);
+    }, delay);
   }
 
   /**
