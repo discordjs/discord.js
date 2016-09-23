@@ -107,9 +107,9 @@ class Collection extends Map {
    * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
    * @returns {*}
    * @example
-   * collection.find('id', '123123...');
+   * collection.find('username', 'Bob');
    * @example
-   * collection.find(val => val.id === '123123...');
+   * collection.find(val => val.username === 'Bob');
    */
   find(propOrFn, value) {
     if (typeof propOrFn === 'string') {
@@ -137,9 +137,9 @@ class Collection extends Map {
    * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
    * @returns {*}
    * @example
-   * collection.find('id', '123123...');
+   * collection.findKey('username', 'Bob');
    * @example
-   * collection.find(val => val.id === '123123...');
+   * collection.findKey(val => val.username === 'Bob');
    */
   /* eslint-enable max-len */
   findKey(propOrFn, value) {
@@ -165,7 +165,7 @@ class Collection extends Map {
    * @param {*} value The expected value
    * @returns {boolean}
    * @example
-   * if (collection.exists('id', '123123...')) {
+   * if (collection.exists('username', 'Bob')) {
    *  console.log('user here!');
    * }
    */
@@ -201,9 +201,7 @@ class Collection extends Map {
     if (thisArg) fn = fn.bind(thisArg);
     const arr = new Array(this.size);
     let i = 0;
-    for (const [key, val] of this) {
-      arr[i++] = fn(val, key, this);
-    }
+    for (const [key, val] of this) arr[i++] = fn(val, key, this);
     return arr;
   }
 
