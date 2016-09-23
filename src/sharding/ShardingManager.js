@@ -97,8 +97,8 @@ class ShardingManager extends EventEmitter {
    * @returns {Promise<number>}
    */
   fetchGuildCount(timeout = 3000) {
-    if (this._guildCountPromise) return Promise.reject(new Error('Already fetching guild count.'));
     if (this.shards.size !== this.totalShards) return Promise.reject(new Error('Still spawning shards.'));
+    if (this._guildCountPromise) return this._guildCountPromise;
 
     this._guildCountPromise = new Promise((resolve, reject) => {
       this._guildCount = 0;
