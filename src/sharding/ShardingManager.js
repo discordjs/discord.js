@@ -73,6 +73,26 @@ class ShardingManager extends EventEmitter {
       else this.createShard();
     }, 5500);
   }
+
+  /**
+   * Sends a message to a shard by ID.
+   * @param {number} id The ID of the shard to send the message to.
+   * @param {*} message The message to be sent to the shard.
+   */
+  send(id, message) {
+    if (!this.shards.has(id)) throw new Error('Shard ID is invalid!');
+    this.shards.get(id).process.send(message);
+  }
+
+  /**
+   * Broadcast a message to all shards.
+   * @param {*} message The message to be send to the shards.
+   */
+  broadcast(message) {
+    this.shards.forEach(shard => {
+      shard.process.send(message);
+    });
+  }
 }
 
 module.exports = ShardingManager;
