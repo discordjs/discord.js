@@ -53,7 +53,12 @@ class ShardingManager extends EventEmitter {
     const id = this.shards.size;
     const shard = new Shard(this, id);
     this.shards.set(id, shard);
-    this.emit('launch', id, shard);
+    /**
+     * Emitted upon launching a shard
+     * @event ShardingManager#launch
+     * @param {Shard} shard Shard that was launched
+     */
+    this.emit('launch', shard);
   }
 
   /**
