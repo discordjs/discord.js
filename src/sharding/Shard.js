@@ -28,6 +28,20 @@ class Shard {
      */
     this.process = childProcess.fork(path.resolve(this.manager.file), [id, this.manager.shards.size]);
   }
+
+  /**
+   * Sends a message to the shard's process.
+   * @param {*} message Message to send to the shard
+   * @returns {Promise<Shard>}
+   */
+  send(message) {
+    return new Promise((resolve, reject) => {
+      const sent = this.process.send(message, err => {
+        if (err) reject(err); else resolve(this);
+      });
+      if (!sent) throw new Error('Failed to send message to shard\'s process.');
+    });
+  }
 }
 
 module.exports = Shard;
