@@ -89,9 +89,7 @@ class ShardingManager extends EventEmitter {
    * @param {*} message The message to be send to the shards.
    */
   broadcast(message) {
-    this.shards.forEach(shard => {
-      shard.process.send(message);
-    });
+    for (let shard of this.shards) shard.process.send(message);
   }
 }
 
