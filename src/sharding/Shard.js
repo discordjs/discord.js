@@ -26,14 +26,18 @@ class Shard {
      * The process of the shard
      * @type {ChildProcess}
      */
-    this.process = childProcess.fork(path.resolve(this.manager.file), [id, this.manager.shards.size]);
-
-    this.process.once('exit', () => {
-      if (this.manager.respawn) this.manager.createShard(this.id);
+    this.process = childProcess.fork(path.resolve(this.manager.file), [], {
+      env: {
+        SHARD_ID: this.id, SHARD_COUNT: this.manager.totalShards,
+      },
     });
 
     this.process.on('message', message => {
       this.manager.emit('message', this, message);
+    });
+
+    this.process.once('exit', () => {
+      if (this.manager.respawn) this.manager.createShard(this.id);
     });
   }
 
