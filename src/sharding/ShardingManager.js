@@ -15,8 +15,9 @@ class ShardingManager extends EventEmitter {
   /**
    * @param {string} file Path to your shard script file
    * @param {number} [totalShards=1] Number of shards to default to spawning
+   * @param {boolean} [respawn=true] Respawn a shard when it dies
    */
-  constructor(file, totalShards) {
+  constructor(file, totalShards, respawn = true) {
     super();
 
     /**
@@ -39,6 +40,8 @@ class ShardingManager extends EventEmitter {
     }
     if (this.totalShards < 1) throw new RangeError('Amount of shards must be at least 1.');
 
+    this.respawn = respawn;
+
     /**
      * A collection of shards that this manager has spawned
      * @type {Collection<number, Shard>}
@@ -48,9 +51,9 @@ class ShardingManager extends EventEmitter {
 
   /**
    * Spawns a single shard.
+   * @param {number} id The ID of the shard to spawn. THIS IS NOT NEEDED IN ANY NORMAL CASE!
    */
-  createShard() {
-    const id = this.shards.size;
+  createShard(id = this.shards.size) {
     const shard = new Shard(this, id);
     this.shards.set(id, shard);
     /**
