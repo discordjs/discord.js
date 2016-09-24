@@ -512,7 +512,7 @@ class Guild {
    * @returns {Promise<TextChannel|VoiceChannel>}
    * @example
    * // create a new text channel
-   * guild.createChannel('new general', 'text')
+   * guild.createChannel('new-general', 'text')
    *  .then(channel => console.log(`Created new channel ${channel}`))
    *  .catch(console.log);
    */
