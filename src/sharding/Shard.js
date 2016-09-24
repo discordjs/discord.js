@@ -28,7 +28,8 @@ class Shard {
      */
     this.process = childProcess.fork(path.resolve(this.manager.file), [], {
       env: {
-        SHARD_ID: this.id, SHARD_COUNT: this.manager.totalShards,
+        SHARD_ID: this.id,
+        SHARD_COUNT: this.manager.totalShards,
       },
     });
 
