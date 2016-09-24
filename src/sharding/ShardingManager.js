@@ -115,6 +115,17 @@ class ShardingManager extends EventEmitter {
   }
 
   /**
+   * Evaluates a script on all shards, in the context of the Clients.
+   * @param {string} script JavaScript to run on each shard
+   * @returns {Promise<Array>} Results of the script
+   */
+  broadcastEval(script) {
+    const promises = [];
+    for (const shard of this.shards.values()) promises.push(shard.eval(script));
+    return Promise.all(promises);
+  }
+
+  /**
    * Obtains the total guild count across all shards.
    * @param {number} [timeout=3000] Time to automatically fail after (in milliseconds)
    * @returns {Promise<number>}
