@@ -1,4 +1,5 @@
 const WebSocket = require('ws');
+const EventEmitter = require('events').EventEmitter;
 const Constants = require('../../util/Constants');
 const zlib = require('zlib');
 const PacketManager = require('./packets/WebSocketPacketManager');
@@ -7,8 +8,9 @@ const PacketManager = require('./packets/WebSocketPacketManager');
  * The WebSocket Manager of the Client
  * @private
  */
-class WebSocketManager {
+class WebSocketManager extends EventEmitter {
   constructor(client) {
+    super();
     /**
      * The Client that instantiated this WebSocketManager
      * @type {Client}
@@ -164,12 +166,14 @@ class WebSocketManager {
    * @param {Object} event The received websocket data
    */
   eventClose(event) {
+    this.emit('close', event);
     /**
      * Emitted whenever the client websocket is disconnected
      * @event Client#disconnect
      */
     if (!this.reconnecting) this.client.emit(Constants.Events.DISCONNECT);
-    if (event.code === 4004) throw new Error(Constants.Errors.BAD_LOGIN);
+    if (event.code === 4004) return;
+    if (event.code === 4010) return;
     if (!this.reconnecting && event.code !== 1000) this.tryReconnect();
   }
 
