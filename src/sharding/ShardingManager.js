@@ -117,7 +117,7 @@ class ShardingManager extends EventEmitter {
   /**
    * Evaluates a script on all shards, in the context of the Clients.
    * @param {string} script JavaScript to run on each shard
-   * @returns {Promise<Array>} Results of the script
+   * @returns {Promise<Array>} Results of the script execution
    */
   broadcastEval(script) {
     const promises = [];
@@ -126,48 +126,20 @@ class ShardingManager extends EventEmitter {
   }
 
   /**
-   * Obtains the total guild count across all shards.
-   * @param {number} [timeout=3000] Time to automatically fail after (in milliseconds)
-   * @returns {Promise<number>}
+   * Fetches a Client property value of each shard.
+   * @param {string} prop Name of the Client property to get, using periods for nesting
+   * @returns {Promise<Array>}
+   * @example
+   * manager.fetchClientValues('guilds.size').then(results => {
+   *   console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`);
+   * }).catch(console.error);
    */
-  fetchGuildCount(timeout = 3000) {
+  fetchClientValues(prop) {
     if (this.shards.size === 0) return Promise.reject(new Error('No shards have been spawned.'));
     if (this.shards.size !== this.totalShards) return Promise.reject(new Error('Still spawning shards.'));
-    if (this._guildCountPromise) return this._guildCountPromise;
-
-    this._guildCountPromise = new Promise((resolve, reject) => {
-      this._guildCount = 0;
-      this._guildCountReplies = 0;
-
-      const listener = message => {
-        if (typeof message !== 'object' || !message._guildCount) return;
-
-        this._guildCountReplies++;
-        this._guildCount += message._guildCount;
-
-        if (this._guildCountReplies >= this.shards.size) {
-          clearTimeout(this._guildCountTimeout);
-          process.removeListener('message', listener);
-          this._guildCountTimeout = null;
-          this._guildCountPromise = null;
-          resolve(this._guildCount);
-        }
-      };
-      process.on('message', listener);
-
-      this._guildCountTimeout = setTimeout(() => {
-        process.removeListener('message', listener);
-        this._guildCountPromise = null;
-        reject(new Error('Took too long to fetch the guild count.'));
-      }, timeout);
-
-      this.broadcast('_guildCount').catch(err => {
-        process.removeListener('message', listener);
-        this._guildCountPromise = null;
-        reject(err);
-      });
-    });
-    return this._guildCountPromise;
+    const promises = [];
+    for (const shard of this.shards.values()) promises.push(shard.fetchClientValue(prop));
+    return Promise.all(promises);
   }
 }
 

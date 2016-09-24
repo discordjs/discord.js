@@ -39,6 +39,9 @@ class Shard {
     this.process.once('exit', () => {
       if (this.manager.respawn) this.manager.createShard(this.id);
     });
+
+    this._evals = new Set();
+    this._fetches = new Set();
   }
 
   /**
@@ -58,14 +61,18 @@ class Shard {
   /**
    * Evaluates a script on the shard, in the context of the Client.
    * @param {string} script JavaScript to run on the shard
-   * @returns {Promise<*>} Result of the script
+   * @returns {Promise<*>} Result of the script execution
    */
   eval(script) {
+    if (this._evals.has(script)) return Promise.reject(new Error('Already running an eval for the script.'));
+    this._evals.add(script);
+
     return new Promise((resolve, reject) => {
       const listener = message => {
         if (!message) return;
         if (message._evalResult) {
           this.process.removeListener('message', listener);
+          this._evals.delete(script);
           resolve(message._evalResult);
         } else if (message._evalError) {
           this.process.removeListener('message', listener);
@@ -73,6 +80,7 @@ class Shard {
           err.name = message._evalError.name;
           err.columnNumber = message._evalError.columnNumber;
           err.stack = message._evalError.stack;
+          this._evals.delete(script);
           reject(err);
         }
       };
@@ -80,6 +88,37 @@ class Shard {
 
       this.send({ _eval: script }).catch(err => {
         this.process.removeListener('message', listener);
+        this._evals.delete(script);
+        reject(err);
+      });
+    });
+  }
+
+  /**
+   * Fetches a Client property value of the shard.
+   * @param {string} prop Name of the Client property to get, using periods for nesting
+   * @returns {Promise<*>}
+   * @example
+   * shard.fetchClientValue('guilds.size').then(count => {
+   *   console.log(`${count} guilds in shard ${shard.id}`);
+   * }).catch(console.error);
+   */
+  fetchClientValue(prop) {
+    if (this._fetches.has(prop)) return Promise.reject(new Error(`Already running a fetch for ${prop}.`));
+    this._fetches.add(prop);
+
+    return new Promise((resolve, reject) => {
+      const listener = message => {
+        if (typeof message !== 'object' || message._fetchProp !== prop) return;
+        this.process.removeListener('message', listener);
+        this._fetches.delete(prop);
+        resolve(message._fetchPropValue);
+      };
+      this.process.on('message', listener);
+
+      this.send({ _fetchProp: prop }).catch(err => {
+        this.process.removeListener('message', listener);
+        this._fetches.delete(prop);
         reject(err);
       });
     });
