@@ -209,15 +209,20 @@ class Message {
   }
 
   /**
-   * The message contents with all mentions replaced by the equivalent text.
+   * The message contents with all mentions replaced by the equivalent text. If mentions cannot be resolved to a name,
+   * the relevant mention in the message content will not be converted.
    * @type {string}
    */
   get cleanContent() {
     return this.content
       .replace(/@everyone/g, '@\u200Beveryone')
       .replace(/@here/g, '@\u200Bhere')
-      .replace(/<@!?[0-9]+>/g, input => {
+      .replace(/<@!?[0-9]+>/g, (input) => {
         const id = input.replace(/<|!|>|@/g, '');
+        if (this.channel.type === 'dm' || this.channel.type === 'group') {
+          return this.client.users.has(id) ? `@${this.client.users.get(id).username}` : input;
+        }
+
         const member = this.channel.guild.members.get(id);
         if (member) {
           if (member.nickname) return `@${member.nickname}`;
@@ -234,6 +239,7 @@ class Message {
         return input;
       })
       .replace(/<@&[0-9]+>/g, (input) => {
+        if (this.channel.type === 'dm' || this.channel.type === 'group') return input;
         const role = this.guild.roles.get(input.replace(/<|@|>|&/g, ''));
         if (role) return `@${role.name}`;
         return input;
