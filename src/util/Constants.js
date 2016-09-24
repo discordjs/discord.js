@@ -72,6 +72,7 @@ exports.Errors = {
   NOT_A_PERMISSION: 'Invalid permission string or number.',
   INVALID_RATE_LIMIT_METHOD: 'Unknown rate limiting method.',
   BAD_LOGIN: 'Incorrect login details were provided.',
+  INVALID_SHARD: 'Invalid shard settings were provided',
 };
 
 const API = `https://discordapp.com/api/v${exports.DefaultOptions.protocol_version}`;
