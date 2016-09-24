@@ -40,8 +40,8 @@ class Shard {
       if (this.manager.respawn) this.manager.createShard(this.id);
     });
 
-    this._evals = new Set();
-    this._fetches = new Set();
+    this._evals = new Map();
+    this._fetches = new Map();
   }
 
   /**
@@ -64,10 +64,9 @@ class Shard {
    * @returns {Promise<*>} Result of the script execution
    */
   eval(script) {
-    if (this._evals.has(script)) return Promise.reject(new Error('Already running an eval for the script.'));
-    this._evals.add(script);
+    if (this._evals.has(script)) return this._evals.get(script);
 
-    return new Promise((resolve, reject) => {
+    const promise = new Promise((resolve, reject) => {
       const listener = message => {
         if (!message) return;
         if (message._evalResult) {
@@ -92,6 +91,9 @@ class Shard {
         reject(err);
       });
     });
+
+    this._evals.set(script, promise);
+    return promise;
   }
 
   /**
@@ -104,10 +106,9 @@ class Shard {
    * }).catch(console.error);
    */
   fetchClientValue(prop) {
-    if (this._fetches.has(prop)) return Promise.reject(new Error(`Already running a fetch for ${prop}.`));
-    this._fetches.add(prop);
+    if (this._fetches.has(prop)) return this._fetches.get(prop);
 
-    return new Promise((resolve, reject) => {
+    const promise = new Promise((resolve, reject) => {
       const listener = message => {
         if (typeof message !== 'object' || message._fetchProp !== prop) return;
         this.process.removeListener('message', listener);
@@ -122,6 +123,9 @@ class Shard {
         reject(err);
       });
     });
+
+    this._fetches.set(prop, promise);
+    return promise;
   }
 }
 
