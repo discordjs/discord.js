@@ -17,7 +17,7 @@ class ShardingManager extends EventEmitter {
    * @param {number} [totalShards=1] Number of shards to default to spawning
    * @param {boolean} [respawn=true] Respawn a shard when it dies
    */
-  constructor(file, totalShards, respawn = true) {
+  constructor(file, totalShards = 1, respawn = true) {
     super();
 
     /**
@@ -34,12 +34,12 @@ class ShardingManager extends EventEmitter {
      * Amount of shards that this manager is going to spawn
      * @type {number}
      */
-    this.totalShards = typeof totalShards !== 'undefined' ? totalShards : 1;
-    if (typeof this.totalShards !== 'number' || isNaN(this.totalShards)) {
+    this.totalShards = totalShards;
+    if (typeof totalShards !== 'number' || isNaN(totalShards)) {
       throw new TypeError('Amount of shards must be a number.');
     }
-    if (this.totalShards < 1) throw new RangeError('Amount of shards must be at least 1.');
-    if (this.totalShards !== Math.floor(this.totalShards)) throw new RangeError('Amount of shards must be an integer.');
+    if (totalShards < 1) throw new RangeError('Amount of shards must be at least 1.');
+    if (totalShards !== Math.floor(totalShards)) throw new RangeError('Amount of shards must be an integer.');
 
     this.respawn = respawn;
 
