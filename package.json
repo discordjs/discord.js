@@ -1,6 +1,6 @@
 {
   "name": "discord.js",
-  "version": "9.2.0",
+  "version": "9.3.0",
   "description": "A powerful library for interacting with the Discord API",
   "main": "./src/index",
   "scripts": {
