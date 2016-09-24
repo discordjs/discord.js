@@ -168,7 +168,7 @@ class GuildChannel extends Channel {
    * @returns {Promise<GuildChannel>}
    * @example
    * // set a new channel name
-   * channel.setName('not general')
+   * channel.setName('not_general')
    *  .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
    *  .catch(console.log);
    */
