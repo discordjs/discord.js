@@ -15,8 +15,9 @@ class ShardingManager extends EventEmitter {
   /**
    * @param {string} file Path to your shard script file
    * @param {number} [totalShards=1] Number of shards to default to spawning
+   * @param {boolean} [respawn=true] Respawn a shard when it dies
    */
-  constructor(file, totalShards) {
+  constructor(file, totalShards, respawn = true) {
     super();
 
     /**
@@ -30,7 +31,7 @@ class ShardingManager extends EventEmitter {
     if (!stats.isFile()) throw new Error('File path does not point to a file.');
 
     /**
-     * The amount of shards that this manager is going to spawn
+     * Amount of shards that this manager is going to spawn
      * @type {number}
      */
     this.totalShards = typeof totalShards !== 'undefined' ? totalShards : 1;
@@ -38,6 +39,8 @@ class ShardingManager extends EventEmitter {
       throw new TypeError('Amount of shards must be a number.');
     }
     if (this.totalShards < 1) throw new RangeError('Amount of shards must be at least 1.');
+
+    this.respawn = respawn;
 
     /**
      * A collection of shards that this manager has spawned
@@ -48,30 +51,86 @@ class ShardingManager extends EventEmitter {
 
   /**
    * Spawns a single shard.
+   * @param {number} id The ID of the shard to spawn. THIS IS NOT NEEDED IN ANY NORMAL CASE!
    */
-  createShard() {
-    const id = this.shards.size;
+  createShard(id = this.shards.size) {
     const shard = new Shard(this, id);
     this.shards.set(id, shard);
-    this.emit('launch', id, shard);
+    /**
+     * Emitted upon launching a shard
+     * @event ShardingManager#launch
+     * @param {Shard} shard Shard that was launched
+     */
+    this.emit('launch', shard);
   }
 
   /**
    * Spawns multiple shards.
-   * @param {number} [amount=this.totalShards] The number of shards to spawn
+   * @param {number} [amount=this.totalShards] Number of shards to spawn
+   * @param {number} [delay=5500] How long to wait in between spawning each shard (in milliseconds)
    */
-  spawn(amount) {
-    if (typeof amount !== 'undefined') {
-      if (typeof amount !== 'number' || isNaN(amount)) throw new TypeError('Amount of shards must be a number.');
-      if (amount < 1) throw new RangeError('Amount of shards must be at least 1.');
-      this.totalShards = amount;
-    }
-
+  spawn(amount = this.totalShards, delay = 5500) {
+    this.totalShards = amount;
     this.createShard();
     const interval = setInterval(() => {
       if (this.shards.size === this.totalShards) clearInterval(interval);
       else this.createShard();
-    }, 5500);
+    }, delay);
+  }
+
+  /**
+   * Send a message to all shards.
+   * @param {*} message Message to be sent to the shards
+   * @returns {Promise<Shard[]>}
+   */
+  broadcast(message) {
+    const promises = [];
+    for (const shard of this.shards.values()) promises.push(shard.send(message));
+    return Promise.all(promises);
+  }
+
+  /**
+   * Obtains the total guild count across all shards.
+   * @param {number} [timeout=3000] Time to automatically fail after (in milliseconds)
+   * @returns {Promise<number>}
+   */
+  fetchGuildCount(timeout = 3000) {
+    if (this.shards.size !== this.totalShards) return Promise.reject(new Error('Still spawning shards.'));
+    if (this._guildCountPromise) return this._guildCountPromise;
+
+    this._guildCountPromise = new Promise((resolve, reject) => {
+      this._guildCount = 0;
+      this._guildCountReplies = 0;
+
+      const listener = message => {
+        if (typeof message !== 'object' || !message._guildCount) return;
+
+        this._guildCountReplies++;
+        this._guildCount += message._guildCount;
+
+        if (this._guildCountReplies >= this.shards.size) {
+          clearTimeout(this._guildCountTimeout);
+          process.removeListener('message', listener);
+          this._guildCountTimeout = null;
+          this._guildCountPromise = null;
+          resolve(this._guildCount);
+        }
+      };
+      process.on('message', listener);
+
+      this._guildCountTimeout = setTimeout(() => {
+        process.removeListener('message', listener);
+        this._guildCountPromise = null;
+        reject(new Error('Took too long to fetch the guild count.'));
+      }, timeout);
+
+      this.broadcast('_guildCount').catch(err => {
+        process.removeListener('message', listener);
+        this._guildCountPromise = null;
+        reject(err);
+      });
+    });
+    return this._guildCountPromise;
   }
 }
 

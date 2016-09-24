@@ -27,6 +27,14 @@ class Client extends EventEmitter {
      */
     this.options = mergeDefault(Constants.DefaultOptions, options);
 
+    if (!this.options.shard_id && process.env.hasOwnProperty('SHARD_ID')) {
+      this.options.shard_id = process.env.SHARD_ID;
+    }
+
+    if (!this.options.shard_count && process.env.hasOwnProperty('SHARD_COUNT')) {
+      this.options.shard_count = process.env.SHARD_COUNT;
+    }
+
     /**
      * The REST manager of the client
      * @type {RESTManager}
@@ -129,6 +137,12 @@ class Client extends EventEmitter {
 
     if (this.options.message_sweep_interval > 0) {
       this.setInterval(this.sweepMessages.bind(this), this.options.message_sweep_interval * 1000);
+    }
+
+    if (process.send) {
+      process.on('message', message => {
+        if (message === '_guildCount') process.send(this.guilds.size);
+      });
     }
   }
 
