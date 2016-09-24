@@ -15,8 +15,9 @@ class ShardingManager extends EventEmitter {
   /**
    * @param {string} file Path to your shard script file
    * @param {number} [totalShards=1] Number of shards to default to spawning
+   * @param {boolean} [respawn=true] Respawn a shard when it dies
    */
-  constructor(file, totalShards) {
+  constructor(file, totalShards, respawn = true) {
     super();
 
     /**
@@ -39,6 +40,8 @@ class ShardingManager extends EventEmitter {
     }
     if (this.totalShards < 1) throw new RangeError('Amount of shards must be at least 1.');
 
+    this.respawn = respawn;
+
     /**
      * A collection of shards that this manager has spawned
      * @type {Collection<number, Shard>}
@@ -48,9 +51,9 @@ class ShardingManager extends EventEmitter {
 
   /**
    * Spawns a single shard.
+   * @param {number} id The ID of the shard to spawn. THIS IS NOT NEEDED IN ANY NORMAL CASE!
    */
-  createShard() {
-    const id = this.shards.size;
+  createShard(id = this.shards.size) {
     const shard = new Shard(this, id);
     this.shards.set(id, shard);
     /**
@@ -66,13 +69,8 @@ class ShardingManager extends EventEmitter {
    * @param {number} [amount=this.totalShards] Number of shards to spawn
    * @param {number} [delay=5500] How long to wait in between spawning each shard (in milliseconds)
    */
-  spawn(amount, delay = 5500) {
-    if (typeof amount !== 'undefined') {
-      if (typeof amount !== 'number' || isNaN(amount)) throw new TypeError('Amount of shards must be a number.');
-      if (amount < 1) throw new RangeError('Amount of shards must be at least 1.');
-      this.totalShards = amount;
-    }
-
+  spawn(amount = this.totalShards, delay = 5500) {
+    this.totalShards = amount;
     this.createShard();
     const interval = setInterval(() => {
       if (this.shards.size === this.totalShards) clearInterval(interval);
