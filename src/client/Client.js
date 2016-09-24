@@ -150,6 +150,11 @@ class Client extends EventEmitter {
           } catch (err) {
             process.send({ _evalError: err });
           }
+        } else if (message._fetchProp) {
+          const props = message._fetchProp.split('.');
+          let value = this; // eslint-disable-line consistent-this
+          for (const prop of props) value = value[prop];
+          process.send({ _fetchProp: message._fetchProp, _fetchPropValue: value });
         }
       });
     }
