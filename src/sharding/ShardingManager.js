@@ -79,8 +79,14 @@ class ShardingManager extends EventEmitter {
     if (amount !== Math.floor(amount)) throw new RangeError('Amount of shards must be an integer.');
 
     return new Promise(resolve => {
+      if (this.shards.size >= amount) throw new Error(`Already spawned ${this.shards.size} shards.`);
       this.totalShards = amount;
+
       this.createShard();
+      if (this.shards.size >= this.totalShards) {
+        resolve(this.shards);
+        return;
+      }
 
       if (delay <= 0) {
         while (this.shards.size < this.totalShards) this.createShard();
