@@ -210,7 +210,7 @@ class Collection extends Map {
    * [Array.some()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
    * @param {function} fn Function used to test (should return a boolean)
    * @param {Object} [thisArg] Value to use as `this` when executing function
-   * @returns {Collection}
+   * @returns {boolean}
    */
   some(fn, thisArg) {
     if (thisArg) fn = fn.bind(thisArg);
@@ -225,7 +225,7 @@ class Collection extends Map {
    * [Array.every()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every).
    * @param {function} fn Function used to test (should return a boolean)
    * @param {Object} [thisArg] Value to use as `this` when executing function
-   * @returns {Collection}
+   * @returns {boolean}
    */
   every(fn, thisArg) {
     if (thisArg) fn = fn.bind(thisArg);
