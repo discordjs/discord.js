@@ -142,9 +142,7 @@ class Client extends EventEmitter {
     if (process.send) {
       process.on('message', message => {
         if (!message) return;
-        if (message === '_guildCount') {
-          process.send({ _guildCount: this.guilds.size });
-        } else if (message._eval) {
+        if (message._eval) {
           try {
             process.send({ _evalResult: eval(message._eval) });
           } catch (err) {
