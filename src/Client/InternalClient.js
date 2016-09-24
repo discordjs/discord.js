@@ -373,7 +373,7 @@ export default class InternalClient {
 
 	getGuildMembers(serverID, chunkCount) {
 		this.forceFetchCount[serverID] = chunkCount;
-		if (this.forceFetchLength + 3 + serverID.length > 4082) { // 4096 - '{"op":8,"d":[]}'.length + 1 for lazy comma offset
+		if (this.forceFetchLength + 3 + serverID.length > 4000) { // 4096 max, '{"op":8,"d":{"guild_id":[],"query":"","limit":0}}'.length = 49 plus some leeway
 			this.requestGuildMembers(this.forceFetchQueue);
 			this.forceFetchQueue = [serverID];
 			this.forceFetchLength = 1 + serverID.length + 3;
@@ -394,7 +394,7 @@ export default class InternalClient {
 	}
 
 	syncGuild(guildID) {
-        if(this.guildSyncQueueLength + 3 + guildID.length > 4081) { // 4096 - "{\"op\":12,\"d\":[]}".length + 1 for lazy comma offset
+        if(this.guildSyncQueueLength + 3 + guildID.length > 4050) { // 4096 max, '{"op":12,"d":[]}'.length = 16 plus some leeway
             this.sendWS({op: 12, d: this.guildSyncQueue});
             this.guildSyncQueue = [guildID];
             this.guildSyncQueueLength = 1 + guildID.length + 3;
