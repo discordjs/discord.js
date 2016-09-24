@@ -54,6 +54,36 @@ class Shard {
       if (!sent) throw new Error('Failed to send message to shard\'s process.');
     });
   }
+
+  /**
+   * Evaluates a script on the shard, in the context of the Client.
+   * @param {string} script JavaScript to run on the shard
+   * @returns {Promise<*>} Result of the script
+   */
+  eval(script) {
+    return new Promise((resolve, reject) => {
+      const listener = message => {
+        if (!message) return;
+        if (message._evalResult) {
+          this.process.removeListener('message', listener);
+          resolve(message._evalResult);
+        } else if (message._evalError) {
+          this.process.removeListener('message', listener);
+          const err = new Error(message._evalError.message, message._evalError.fileName, message._evalError.lineNumber);
+          err.name = message._evalError.name;
+          err.columnNumber = message._evalError.columnNumber;
+          err.stack = message._evalError.stack;
+          reject(err);
+        }
+      };
+      this.process.on('message', listener);
+
+      this.send({ _eval: script }).catch(err => {
+        this.process.removeListener('message', listener);
+        reject(err);
+      });
+    });
+  }
 }
 
 module.exports = Shard;
