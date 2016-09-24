@@ -39,6 +39,7 @@ class ShardingManager extends EventEmitter {
       throw new TypeError('Amount of shards must be a number.');
     }
     if (this.totalShards < 1) throw new RangeError('Amount of shards must be at least 1.');
+    if (this.totalShards !== Math.floor(this.totalShards)) throw new RangeError('Amount of shards must be an integer.');
 
     this.respawn = respawn;
 
@@ -52,6 +53,7 @@ class ShardingManager extends EventEmitter {
   /**
    * Spawns a single shard.
    * @param {number} id The ID of the shard to spawn. THIS IS NOT NEEDED IN ANY NORMAL CASE!
+   * @returns {Promise<Shard>}
    */
   createShard(id = this.shards.size) {
     const shard = new Shard(this, id);
@@ -62,20 +64,37 @@ class ShardingManager extends EventEmitter {
      * @param {Shard} shard Shard that was launched
      */
     this.emit('launch', shard);
+    return Promise.resolve(shard);
   }
 
   /**
    * Spawns multiple shards.
    * @param {number} [amount=this.totalShards] Number of shards to spawn
    * @param {number} [delay=5500] How long to wait in between spawning each shard (in milliseconds)
+   * @returns {Promise<Collection<number, Shard>>}
    */
   spawn(amount = this.totalShards, delay = 5500) {
-    this.totalShards = amount;
-    this.createShard();
-    const interval = setInterval(() => {
-      if (this.shards.size === this.totalShards) clearInterval(interval);
-      else this.createShard();
-    }, delay);
+    if (typeof amount !== 'number' || isNaN(amount)) throw new TypeError('Amount of shards must be a number.');
+    if (amount < 1) throw new RangeError('Amount of shards must be at least 1.');
+    if (amount !== Math.floor(amount)) throw new RangeError('Amount of shards must be an integer.');
+
+    return new Promise(resolve => {
+      this.totalShards = amount;
+      this.createShard();
+
+      if (delay <= 0) {
+        while (this.shards.size < this.totalShards) this.createShard();
+        resolve(this.shards);
+      } else {
+        const interval = setInterval(() => {
+          this.createShard();
+          if (this.shards.size >= this.totalShards) {
+            clearInterval(interval);
+            resolve(this.shards);
+          }
+        }, delay);
+      }
+    });
   }
 
   /**
@@ -95,6 +114,7 @@ class ShardingManager extends EventEmitter {
    * @returns {Promise<number>}
    */
   fetchGuildCount(timeout = 3000) {
+    if (this.shards.size === 0) return Promise.reject(new Error('No shards have been spawned.'));
     if (this.shards.size !== this.totalShards) return Promise.reject(new Error('Still spawning shards.'));
     if (this._guildCountPromise) return this._guildCountPromise;
 
