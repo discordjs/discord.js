@@ -8,11 +8,7 @@ class GuildSync extends Action {
     if (guild) {
       data.presences = data.presences || [];
       for (const presence of data.presences) {
-        const user = client.users.get(presence.user.id);
-        if (user) {
-          user.status = presence.status;
-          user.game = presence.game;
-        }
+        guild._setPresence(presence.user.id, presence);
       }
 
       data.members = data.members || [];

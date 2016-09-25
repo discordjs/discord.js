@@ -88,6 +88,15 @@ class GuildMember {
   }
 
   /**
+   * The presence of this Guild Member
+   * @type {Presence}
+   * @readonly
+   */
+  get presence() {
+    return this.guild.presences.get(this.id);
+  }
+
+  /**
    * The date this member joined the guild
    * @type {Date}
    */

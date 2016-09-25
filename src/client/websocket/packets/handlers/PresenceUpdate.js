@@ -19,9 +19,9 @@ class PresenceUpdateHandler extends AbstractHandler {
     }
 
     if (guild) {
-      const memberInGuild = guild.members.get(user.id);
-      if (!memberInGuild && data.status !== 'offline') {
-        const member = guild._addMember({
+      let member = guild.members.get(user.id);
+      if (!member && data.status !== 'offline') {
+        member = guild._addMember({
           user,
           roles: data.roles,
           deaf: false,
@@ -29,26 +29,12 @@ class PresenceUpdateHandler extends AbstractHandler {
         }, false);
         client.emit(Constants.Events.GUILD_MEMBER_AVAILABLE, guild, member);
       }
+      guild._setPresence(user.id, data);
     }
 
-    data.user.username = data.user.username || user.username;
-    data.user.id = data.user.id || user.id;
-    data.user.discriminator = data.user.discriminator || user.discriminator;
-    data.user.status = data.status || user.status;
-    data.user.game = data.game;
-
-    const same = data.user.username === user.username &&
-      data.user.id === user.id &&
-      data.user.discriminator === user.discriminator &&
-      data.user.avatar === user.avatar &&
-      data.user.status === user.status &&
-      JSON.stringify(data.user.game) === JSON.stringify(user.game);
-
-    if (!same) {
-      const oldUser = cloneObject(user);
-      user.patch(data.user);
-      client.emit(Constants.Events.PRESENCE_UPDATE, oldUser, user);
-    }
+    const oldUser = cloneObject(user);
+    user.patch(data.user);
+    client.emit(Constants.Events.PRESENCE_UPDATE, oldUser, user);
   }
 }
 

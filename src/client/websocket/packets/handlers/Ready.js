@@ -16,6 +16,12 @@ class ReadyHandler extends AbstractHandler {
     for (const guild of data.guilds) client.dataManager.newGuild(guild);
     for (const privateDM of data.private_channels) client.dataManager.newChannel(privateDM);
 
+    data.presences = data.presences || [];
+    for (const presence of data.presences) {
+      client.dataManager.newUser(presence.user);
+      client._setPresence(presence.user.id, presence);
+    }
+
     if (!client.user.bot) client.setInterval(client.syncGuilds.bind(client), 30000);
     client.once('ready', client.syncGuilds.bind(client));
 

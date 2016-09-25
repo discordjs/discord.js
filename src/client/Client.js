@@ -9,6 +9,7 @@ const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
+const Presence = require('../structures/Presence');
 
 /**
  * The starting point for making a Discord Bot.
@@ -101,6 +102,13 @@ class Client extends EventEmitter {
      * @type {Collection<string, Channel>}
      */
     this.channels = new Collection();
+
+    /**
+     * A Collection of presences for friends of the logged in user.
+     * <warn>This is only present for user accounts, not bot accounts!</warn>
+     * @type {Collection<string, Presence>}
+     */
+    this.presences = new Collection();
 
     /**
      * The authorization token for the logged in user/bot.
@@ -332,6 +340,14 @@ class Client extends EventEmitter {
   clearInterval(interval) {
     clearInterval(interval);
     this._intervals.delete(interval);
+  }
+
+  _setPresence(id, presence) {
+    if (this.presences.get(id)) {
+      this.presences.get(id).update(presence);
+      return;
+    }
+    this.presences.set(id, new Presence(presence));
   }
 }
 

@@ -20,7 +20,12 @@ client.on('message', msg => {
 process.send(123);
 
 client.on('ready', () => {
-  console.log('Ready');
+  console.log('Ready', client.options.shard_id);
+  if (client.options.shard_id === '0')
+    setTimeout(() => {
+      console.log('kek dying');
+      client.destroy();
+    }, 5000);
 });
 
 client.login(token).catch(console.log);
