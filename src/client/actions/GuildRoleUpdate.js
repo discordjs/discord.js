@@ -12,7 +12,7 @@ class GuildRoleUpdateAction extends Action {
       let oldRole = null;
 
       const role = guild.roles.get(roleData.id);
-      if (role && !role.equals(roleData)) {
+      if (role) {
         oldRole = cloneObject(role);
         role.setup(data.role);
         client.emit(Constants.Events.GUILD_ROLE_UPDATE, guild, oldRole, role);

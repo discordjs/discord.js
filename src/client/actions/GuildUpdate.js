@@ -10,7 +10,7 @@ class GuildUpdateAction extends Action {
     if (guild) {
       const oldGuild = cloneObject(guild);
       guild.setup(data);
-      if (!oldGuild.equals(data)) client.emit(Constants.Events.GUILD_UPDATE, oldGuild, guild);
+      client.emit(Constants.Events.GUILD_UPDATE, oldGuild, guild);
       return {
         old: oldGuild,
         updated: guild,
