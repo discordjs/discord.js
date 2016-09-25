@@ -72,11 +72,12 @@ class WebSocketPacketManager {
     }
 
     if (packet.op === Constants.OPCodes.INVALID_SESSION) {
+      this.ws.sessionID = null;
       this.ws._sendNewIdentify();
       return false;
     }
 
-    if (this.ws.reconnecting) {
+    if (this.ws.status === Constants.Status.RECONNECTING) {
       this.ws.reconnecting = false;
       this.ws.checkIfReady();
     }

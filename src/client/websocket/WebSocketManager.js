@@ -58,16 +58,20 @@ class WebSocketManager extends EventEmitter {
      * @type {?WebSocket}
      */
     this.ws = null;
+
+    this.first = true;
   }
 
   /**
    * Connects the client to a given gateway
    * @param {string} gateway The gateway to connect to
    */
-  connect(gateway) {
+  _connect(gateway) {
     this.client.emit('debug', `Connecting to gateway ${gateway}`);
     this.normalReady = false;
-    this.status = Constants.Status.CONNECTING;
+    if (this.status !== Constants.Status.RECONNECTING) {
+      this.status = Constants.Status.CONNECTING;
+    }
     this.ws = new WebSocket(gateway);
     this.ws.onopen = () => this.eventOpen();
     this.ws.onclose = (d) => this.eventClose(d);
@@ -75,6 +79,15 @@ class WebSocketManager extends EventEmitter {
     this.ws.onerror = (e) => this.eventError(e);
     this._queue = [];
     this._remaining = 3;
+  }
+
+  connect(gateway) {
+    if (this.first) {
+      this._connect(gateway);
+      this.first = false;
+    } else {
+      this.client.setTimeout(() => this._connect(gateway), 5500);
+    }
   }
 
   /**
@@ -125,7 +138,7 @@ class WebSocketManager extends EventEmitter {
    */
   eventOpen() {
     this.client.emit('debug', 'Connection to gateway opened');
-    if (this.reconnecting) this._sendResume();
+    if (this.status === Constants.Status.RECONNECTING) this._sendResume();
     else this._sendNewIdentify();
   }
 
@@ -133,6 +146,11 @@ class WebSocketManager extends EventEmitter {
    * Sends a gateway resume packet, in cases of unexpected disconnections.
    */
   _sendResume() {
+    if (!this.sessionID) {
+      this._sendNewIdentify();
+      return;
+    }
+    this.client.emit('debug', 'identifying as resumed session');
     const payload = {
       token: this.client.token,
       session_id: this.sessionID,
@@ -155,6 +173,7 @@ class WebSocketManager extends EventEmitter {
     if (this.client.options.shard_count > 0) {
       payload.shard = [Number(this.client.options.shard_id), Number(this.client.options.shard_count)];
     }
+    this.client.emit('debug', 'identifying as new session');
     this.send({
       op: Constants.OPCodes.IDENTIFY,
       d: payload,
