@@ -22,6 +22,7 @@ class Game {
 
   /**
    * Whether or not the game is being streamed
+   * @type {boolean}
    * @readonly
    */
   get streaming() {
@@ -42,6 +43,9 @@ class Game {
   }
 }
 
+/**
+ * Represents a User's presence
+ */
 class Presence {
   constructor(data) {
     /**
