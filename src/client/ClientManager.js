@@ -51,7 +51,7 @@ class ClientManager {
     this.heartbeatInterval = this.client.setInterval(() => {
       this.client.ws.send({
         op: Constants.OPCodes.HEARTBEAT,
-        d: Date.now(),
+        d: this.client.ws.sequence,
       }, true);
     }, time);
   }
