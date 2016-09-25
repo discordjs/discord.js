@@ -18,7 +18,9 @@ client.on('channelCreate', channel => {
   console.log(`made ${channel.name}`);
 });
 
-client.on('debug', console.log);
+client.on('debug', m => console.log('debug', m));
+client.on('error', m => console.log('debug', m));
+client.on('reconnecting', m => console.log('debug', m));
 
 client.on('message', message => {
   if (true) {
