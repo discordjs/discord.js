@@ -27,6 +27,8 @@ module.exports = {
   TextChannel: require('./structures/TextChannel'),
   User: require('./structures/User'),
   VoiceChannel: require('./structures/VoiceChannel'),
+  Presence: require('./structures/Presence').Presence,
+  Game: require('./structures/Presence').Game,
 
   version: require(path.join(__dirname, '..', 'package')).version,
 };

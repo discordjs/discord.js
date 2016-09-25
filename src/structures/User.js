@@ -1,6 +1,6 @@
 const TextBasedChannel = require('./interface/TextBasedChannel');
 const Constants = require('../util/Constants');
-const Presence = require('./Presence');
+const Presence = require('./Presence').Presence;
 
 /**
  * Represents a User on Discord.

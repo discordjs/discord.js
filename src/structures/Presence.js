@@ -90,4 +90,5 @@ class Presence {
   }
 }
 
-module.exports = Presence;
+exports.Presence = Presence;
+exports.Game = Game;
