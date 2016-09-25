@@ -1,6 +1,7 @@
 const User = require('./User');
 const Role = require('./Role');
 const Emoji = require('./Emoji');
+const Presence = require('./Presence');
 const GuildMember = require('./GuildMember');
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
@@ -58,6 +59,14 @@ class Guild {
     }
   }
 
+  _setPresence(id, presence) {
+    if (this.presences.get(id)) {
+      this.presences.get(id).update(presence);
+      return;
+    }
+    this.presences.set(id, new Presence(presence));
+  }
+
   /**
    * Sets up the Guild
    * @param {*} data The raw data of the guild
@@ -99,6 +108,12 @@ class Guild {
      * @type {boolean}
      */
     this.large = data.large || this.large;
+
+    /**
+     * A collection of presences in this Guild
+     * @type {Collection<string, Presence>}
+     */
+    this.presences = new Collection();
 
     /**
      * An array of guild features.
@@ -170,11 +185,7 @@ class Guild {
 
     if (data.presences) {
       for (const presence of data.presences) {
-        const user = this.client.users.get(presence.user.id);
-        if (user) {
-          user.status = presence.status;
-          user.game = presence.game;
-        }
+        this._setPresence(presence.user.id, presence);
       }
     }
 

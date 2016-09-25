@@ -1,5 +1,6 @@
 const TextBasedChannel = require('./interface/TextBasedChannel');
 const Constants = require('../util/Constants');
+const Presence = require('./Presence');
 
 /**
  * Represents a User on Discord.
@@ -47,34 +48,26 @@ class User {
      * @type {boolean}
      */
     this.bot = Boolean(data.bot);
+  }
 
-    /**
-     * The status of the user:
-     *
-     * * **`online`** - user is online
-     * * **`offline`** - user is offline
-     * * **`idle`** - user is AFK
-     * @type {string}
-     */
-    this.status = data.status || this.status || 'offline';
-
-    /**
-     * Represents data about a Game
-     * @property {string} name the name of the game being played.
-     * @property {string} [url] the URL of the stream, if the game is being streamed.
-     * @property {number} [type] if being streamed, this is `1`.
-     * @typedef {object} Game
-     */
-
-    /**
-     * The game that the user is playing, `null` if they aren't playing a game.
-     * @type {Game}
-     */
-    this.game = data.game;
+  /**
+   * The presence of this user
+   * @readonly
+   */
+  get presence() {
+    if (this.client.presences.has(this.id)) {
+      return this.client.presences.get(this.id);
+    }
+    for (const guild of this.client.guilds.values()) {
+      if (guild.presences.has(this.id)) {
+        return guild.presences.get(this.id);
+      }
+    }
+    return new Presence();
   }
 
   patch(data) {
-    for (const prop of ['id', 'username', 'discriminator', 'status', 'game', 'avatar', 'bot']) {
+    for (const prop of ['id', 'username', 'discriminator', 'avatar', 'bot']) {
       if (typeof data[prop] !== 'undefined') this[prop] = data[prop];
     }
   }
@@ -149,16 +142,6 @@ class User {
       this.discriminator === user.discriminator &&
       this.avatar === user.avatar &&
       this.bot === Boolean(user.bot);
-
-    if (equal) {
-      if (user.status) equal = this.status === user.status;
-      if (equal && user.game) {
-        equal = this.game &&
-                this.game.name === user.game.name &&
-                this.game.type === user.game.type &&
-                this.game.url === user.game.url;
-      }
-    }
 
     return equal;
   }

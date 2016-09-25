@@ -6,7 +6,7 @@ const fs = require('fs');
 
 const client = new Discord.Client({ fetch_all_members: false, api_request_method: 'sequential' });
 
-const { email, password, token } = require('./auth.json');
+const { email, password, token, usertoken } = require('./auth.json');
 
 client.login(token).then(atoken => console.log('logged in with token ' + atoken)).catch(console.log);
 
@@ -16,28 +16,6 @@ client.on('ready', () => {
 
 client.on('channelCreate', channel => {
   console.log(`made ${channel.name}`);
-});
-
-client.on('guildMemberAdd', (g, m) => {
-  console.log(`${m.user.username} joined ${g.name}`);
-})
-
-let c = 0;
-
-client.on('channelUpdate', () => {
-  c++; console.log(c);
-});
-
-client.on('guildMemberUpdate', () => {
-  c++; console.log(c);
-});
-
-client.on('channelPinsUpdate', () => {
-  c++; console.log(c);
-});
-
-client.on('presenceUpdate', () => {
-  c++; console.log(c);
 });
 
 client.on('debug', console.log);
