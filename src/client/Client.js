@@ -9,7 +9,7 @@ const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
-const Presence = require('../structures/Presence');
+const Presence = require('../structures/Presence').Presence;
 
 /**
  * The starting point for making a Discord Bot.
