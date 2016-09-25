@@ -53,6 +53,7 @@ class User {
   /**
    * The presence of this user
    * @readonly
+   * @type {Presence}
    */
   get presence() {
     if (this.client.presences.has(this.id)) {
