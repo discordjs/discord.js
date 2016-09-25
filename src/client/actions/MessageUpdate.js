@@ -9,7 +9,7 @@ class MessageUpdateAction extends Action {
     const channel = client.channels.get(data.channel_id);
     if (channel) {
       const message = channel.messages.get(data.id);
-      if (message && !message.equals(data, true)) {
+      if (message) {
         const oldMessage = cloneObject(message);
         message.patch(data);
         message._edits.unshift(oldMessage);

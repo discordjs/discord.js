@@ -22,8 +22,22 @@ client.on('guildMemberAdd', (g, m) => {
   console.log(`${m.user.username} joined ${g.name}`);
 })
 
-client.on('guildMemberUpdate', (g, o, n) => {
-  console.log(o.nickname, n.nickname);
+let c = 0;
+
+client.on('channelUpdate', () => {
+  c++; console.log(c);
+});
+
+client.on('guildMemberUpdate', () => {
+  c++; console.log(c);
+});
+
+client.on('channelPinsUpdate', () => {
+  c++; console.log(c);
+});
+
+client.on('presenceUpdate', () => {
+  c++; console.log(c);
 });
 
 client.on('debug', console.log);
