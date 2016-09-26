@@ -238,7 +238,7 @@ const PermissionFlags = exports.PermissionFlags = {
   CHANGE_NICKNAME: 1 << 26,
   MANAGE_NICKNAMES: 1 << 27,
   MANAGE_ROLES_OR_PERMISSIONS: 1 << 28,
-  
+
   MANAGE_EMOJIS: 1 << 30,
 };
 
