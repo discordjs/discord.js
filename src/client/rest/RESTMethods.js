@@ -526,6 +526,13 @@ class RESTMethods {
       }).catch(reject);
     });
   }
+
+  deleteEmoji(guild, id) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('delete', `${Constants.Endpoints.guildEmojis(guild.id)}/${id}`, true)
+      .then(resolve).catch(reject);
+    });
+  }
 }
 
 module.exports = RESTMethods;

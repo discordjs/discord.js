@@ -528,6 +528,16 @@ class Guild {
   }
 
   /**
+   * Delete an emoji.
+   * @param {Emoji|string} emoji The emoji to delete.
+   * @returns {Promise}
+   */
+  deleteEmoji(emoji) {
+    if (emoji instanceof Emoji) emoji = emoji.id;
+    return this.client.rest.methods.deleteEmoji(this, emoji);
+  }
+
+  /**
    * Creates a new Channel in the Guild.
    * @param {string} name The name of the new channel
    * @param {string} type The type of the new channel, either `text` or `voice`
