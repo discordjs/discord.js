@@ -558,8 +558,13 @@ class Guild {
    * @param {string} name The name for the emoji.
    * @returns {Promise<Emoji>} The created emoji.
    * @example
-   * // create a new emoji
-   * guild.createEmoji('https://m.popkey.co/987552/NGLb3.gif', 'banana')
+   * // create a new emoji from a url
+   * guild.createEmoji('https://i.imgur.com/w3duR07.png', 'rip')
+   *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
+   *  .catch(console.log);
+   * @example
+   * // create a new emoji from a file on your computer
+   * guild.createEmoji('./memes/banana.png', 'banana')
    *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
    *  .catch(console.log);
    */
