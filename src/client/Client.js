@@ -29,11 +29,11 @@ class Client extends EventEmitter {
     this.options = mergeDefault(Constants.DefaultOptions, options);
 
     if (!this.options.shard_id && 'SHARD_ID' in process.env) {
-      this.options.shard_id = process.env.SHARD_ID;
+      this.options.shard_id = Number(process.env.SHARD_ID);
     }
 
     if (!this.options.shard_count && 'SHARD_COUNT' in process.env) {
-      this.options.shard_count = process.env.SHARD_COUNT;
+      this.options.shard_count = Number(process.env.SHARD_COUNT);
     }
 
     /**
