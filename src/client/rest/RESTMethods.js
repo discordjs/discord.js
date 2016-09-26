@@ -7,6 +7,7 @@ const User = requireStructure('User');
 const GuildMember = requireStructure('GuildMember');
 const Role = requireStructure('Role');
 const Invite = requireStructure('Invite');
+const Emoji = requireStructure('Emoji');
 
 class RESTMethods {
   constructor(restManager) {
@@ -513,6 +514,15 @@ class RESTMethods {
       this.rest.makeRequest(dry ? 'get' : 'post', `${Constants.Endpoints.guildPrune(guild.id)}?days=${days}`, true)
       .then(data => {
         resolve(data.pruned);
+      }).catch(reject);
+    });
+  }
+
+  createEmoji(guild, image, name) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('post', `${Constants.Endpoints.guildEmojis(guild.id)}`, true, { name: name, image: image })
+      .then(data => {
+        resolve(new Emoji(guild, data));
       }).catch(reject);
     });
   }

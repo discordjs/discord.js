@@ -506,6 +506,28 @@ class Guild {
   }
 
   /**
+   * Creates a new custom emoji in the guild.
+   * @param {FileResolveable} attachment The image for the emoji.
+   * @param {string} name The name for the emoji.
+   * @returns {Promise<Emoji>} The created emoji.
+   * @example
+   * // create a new emoji
+   * guild.createEmoji('https://m.popkey.co/987552/NGLb3.gif', 'banana')
+   *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
+   *  .catch(console.log);
+   */
+  createEmoji(attachment, name) {
+    return new Promise((resolve, reject) => {
+      this.client.resolver.resolveFile(attachment).then(file => {
+        let base64 = new Buffer(file, 'binary').toString('base64');
+        let dataURI = `data:;base64,${base64}`;
+        this.client.rest.methods.createEmoji(this, dataURI, name)
+        .then(resolve).catch(reject);
+      }).catch(reject);
+    });
+  }
+
+  /**
    * Creates a new Channel in the Guild.
    * @param {string} name The name of the new channel
    * @param {string} type The type of the new channel, either `text` or `voice`
