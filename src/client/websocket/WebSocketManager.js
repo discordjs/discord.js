@@ -179,6 +179,7 @@ class WebSocketManager extends EventEmitter {
       op: Constants.OPCodes.IDENTIFY,
       d: payload,
     });
+    this.sequence = -1;
   }
 
   /**
