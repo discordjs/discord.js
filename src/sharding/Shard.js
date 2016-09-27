@@ -1,6 +1,7 @@
 const childProcess = require('child_process');
 const path = require('path');
 const makeError = require('../util/MakeError');
+const makePlainError = require('../util/MakePlainError');
 
 /**
  * Represents a Shard spawned by the ShardingManager.
@@ -33,7 +34,7 @@ class Shard {
         SHARD_COUNT: this.manager.totalShards,
       },
     });
-    this.process.on('message', message => { this.manager.emit('message', this, message); });
+    this.process.on('message', this._handleMessage.bind(this));
     this.process.once('exit', () => {
       if (this.manager.respawn) this.manager.createShard(this.id);
     });
@@ -114,6 +115,33 @@ class Shard {
 
     this._evals.set(script, promise);
     return promise;
+  }
+
+  /**
+   * Handles an IPC message
+   * @param {*} message Message received
+   * @private
+   */
+  _handleMessage(message) {
+    if (message) {
+      // Shard is requesting a property fetch
+      if (message._sFetchProp) {
+        this.manager.fetchClientValues(message._sFetchProp)
+          .then(results => this.send({ _sFetchProp: message._sFetchProp, _result: results }))
+          .catch(err => this.send({ _sFetchProp: message._sFetchProp, _error: makePlainError(err) }));
+        return;
+      }
+
+      // Shard is requesting an eval broadcast
+      if (message._sEval) {
+        this.manager.broadcastEval(message._sEval)
+          .then(results => this.send({ _sEval: message._sEval, _result: results }))
+          .catch(err => this.send({ _sEval: message._sEval, _error: makePlainError(err) }));
+        return;
+      }
+    }
+
+    this.manager.emit('message', this, message);
   }
 }
 

@@ -91,7 +91,6 @@ class Client extends EventEmitter {
      * @type {?ShardUtil}
      */
     this.shard = process.send ? ShardClientUtil.singleton(this) : null;
-    if (this.shard) process.on('message', this.shard._handleMessage.bind(this.shard));
 
     /**
      * A Collection of the Client's stored users
