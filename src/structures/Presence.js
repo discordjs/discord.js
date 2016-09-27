@@ -9,6 +9,7 @@ class Presence {
      * * **`online`** - user is online
      * * **`offline`** - user is offline
      * * **`idle`** - user is AFK
+     * * **`dnd`** - user is in Do not Disturb
      * @type {string}
      */
     this.status = data.status || 'offline';
