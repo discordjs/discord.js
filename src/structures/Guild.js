@@ -152,10 +152,15 @@ class Guild {
      */
     this.verificationLevel = data.verification_level;
 
+    /**
+     * The timestamp the client user joined the guild at
+     * @type {number}
+     */
+    this.joinedTimestamp = data.joined_at ? new Date(data.joined_at).getTime() : this.joinedTimestamp;
+
     this.id = data.id;
     this.available = !data.unavailable;
     this.features = data.features || this.features || [];
-    this._joinedTimestamp = data.joined_at ? new Date(data.joined_at).getTime() : this._joinedTimestamp;
 
     if (data.members) {
       this.members.clear();
@@ -208,20 +213,30 @@ class Guild {
   }
 
   /**
-   * The time the guild was created
+   * The timestamp the guild was created at
+   * @type {number}
    * @readonly
-   * @type {Date}
    */
-  get creationDate() {
-    return new Date((this.id / 4194304) + 1420070400000);
+  get createdTimestamp() {
+    return (this.id / 4194304) + 1420070400000;
   }
 
   /**
-   * The date at which the logged-in client joined the guild.
+   * The time the guild was created
    * @type {Date}
+   * @readonly
    */
-  get joinDate() {
-    return new Date(this._joinedTimestamp);
+  get createdAt() {
+    return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * The time the client user joined the guild
+   * @type {Date}
+   * @readonly
+   */
+  get joinedAt() {
+    return new Date(this.joinedTimestamp);
   }
 
   /**

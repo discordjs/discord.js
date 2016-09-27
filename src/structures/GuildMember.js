@@ -82,9 +82,23 @@ class GuildMember {
      */
     this.nickname = data.nick || null;
 
+    /**
+     * The timestamp the member joined the guild at
+     * @type {number}
+     */
+    this.joinedTimestamp = new Date(data.joined_at).getTime();
+
     this.user = data.user;
     this._roles = data.roles;
-    this._joinDate = new Date(data.joined_at).getTime();
+  }
+
+  /**
+   * The time the member joined the guild
+   * @type {Date}
+   * @readonly
+   */
+  get joinedAt() {
+    return new Date(this.joinedTimestamp);
   }
 
   /**
@@ -94,14 +108,6 @@ class GuildMember {
    */
   get presence() {
     return this.guild.presences.get(this.id);
-  }
-
-  /**
-   * The date this member joined the guild
-   * @type {Date}
-   */
-  get joinDate() {
-    return new Date(this._joinDate);
   }
 
   /**

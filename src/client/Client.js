@@ -295,7 +295,7 @@ class Client extends EventEmitter {
       channels++;
 
       for (const message of channel.messages.values()) {
-        if (now - (message._editedTimestamp || message._timestamp) > lifetimeMs) {
+        if (now - (message.editedTimestamp || message.createdTimestamp) > lifetimeMs) {
           channel.messages.delete(message.id);
           messages++;
         }
