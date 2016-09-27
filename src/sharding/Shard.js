@@ -1,5 +1,6 @@
 const childProcess = require('child_process');
 const path = require('path');
+const makeError = require('../util/MakeError');
 
 /**
  * Represents a Shard spawned by the ShardingManager.
@@ -32,11 +33,7 @@ class Shard {
         SHARD_COUNT: this.manager.totalShards,
       },
     });
-
-    this.process.on('message', message => {
-      this.manager.emit('message', this, message);
-    });
-
+    this.process.on('message', message => { this.manager.emit('message', this, message); });
     this.process.once('exit', () => {
       if (this.manager.respawn) this.manager.createShard(this.id);
     });
@@ -69,20 +66,10 @@ class Shard {
 
     const promise = new Promise((resolve, reject) => {
       const listener = message => {
-        if (!message) return;
-        if (message._evalResult) {
-          this.process.removeListener('message', listener);
-          this._evals.delete(script);
-          resolve(message._evalResult);
-        } else if (message._evalError) {
-          this.process.removeListener('message', listener);
-          const err = new Error(message._evalError.message, message._evalError.fileName, message._evalError.lineNumber);
-          err.name = message._evalError.name;
-          err.columnNumber = message._evalError.columnNumber;
-          err.stack = message._evalError.stack;
-          this._evals.delete(script);
-          reject(err);
-        }
+        if (!message || message._eval !== script) return;
+        this.process.removeListener('message', listener);
+        this._evals.delete(script);
+        if (!message._error) resolve(message._result); else reject(makeError(message._error));
       };
       this.process.on('message', listener);
 
@@ -111,10 +98,10 @@ class Shard {
 
     const promise = new Promise((resolve, reject) => {
       const listener = message => {
-        if (typeof message !== 'object' || message._fetchProp !== prop) return;
+        if (!message || message._fetchProp !== prop) return;
         this.process.removeListener('message', listener);
         this._fetches.delete(prop);
-        resolve(message._fetchPropValue);
+        resolve(message._result);
       };
       this.process.on('message', listener);
 
