@@ -10,7 +10,7 @@ const WebSocketManager = require('./websocket/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
 const Presence = require('../structures/Presence').Presence;
-const ShardUtil = require('../sharding/ShardUtil');
+const ShardClientUtil = require('../sharding/ShardClientUtil');
 
 /**
  * The starting point for making a Discord Bot.
@@ -90,7 +90,7 @@ class Client extends EventEmitter {
      * The shard helpers for the client (only if the process was spawned as a child, such as from a ShardingManager)
      * @type {?ShardUtil}
      */
-    this.shard = process.send ? ShardUtil.singleton(this) : null;
+    this.shard = process.send ? ShardClientUtil.singleton(this) : null;
     if (this.shard) process.on('message', this.shard._handleMessage.bind(this.shard));
 
     /**
@@ -338,6 +338,10 @@ class Client extends EventEmitter {
       return;
     }
     this.presences.set(id, new Presence(presence));
+  }
+
+  _eval(script) {
+    return eval(script);
   }
 }
 

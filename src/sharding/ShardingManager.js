@@ -41,6 +41,10 @@ class ShardingManager extends EventEmitter {
     if (totalShards < 1) throw new RangeError('Amount of shards must be at least 1.');
     if (totalShards !== Math.floor(totalShards)) throw new RangeError('Amount of shards must be an integer.');
 
+    /**
+     * Whether shards should automatically respawn upon exiting
+     * @type {boolean}
+     */
     this.respawn = respawn;
 
     /**
@@ -48,6 +52,19 @@ class ShardingManager extends EventEmitter {
      * @type {Collection<number, Shard>}
      */
     this.shards = new Collection();
+
+    this.on('message', (shard, message) => {
+      if (!message) return;
+      if (message._sEval) {
+        this.broadcastEval(message._sEval)
+          .then(results => shard.send({ _sEval: message._sEval, _result: results }))
+          .catch(err => shard.send({ _sEval: message._sEval, _error: err }));
+      } else if (message._sFetchProp) {
+        this.fetchClientValues(message._sFetchProp)
+          .then(results => shard.send({ _sFetchProp: message._sFetchProp, _result: results }))
+          .catch(err => shard.send({ _sFetchProp: message._sFetchProp, _error: err }));
+      }
+    });
   }
 
   /**
