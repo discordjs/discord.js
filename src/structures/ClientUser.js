@@ -19,7 +19,7 @@ class ClientUser extends User {
      * @type {string}
      */
     this.email = data.email;
-
+    this.localPresence = {};
     this._typing = new Map();
   }
 
@@ -88,60 +88,88 @@ class ClientUser extends User {
   }
 
   /**
-   * Set the status and playing game of the logged in client.
-   * @param {string} [status] The status, can be `online`, `idle`, or `dnd`
-   * @param {string|Object} [game] The game that is being played
-   * @param {string} [url] If you want to display as streaming, set this as the URL to the stream (must be a
-   * twitch.tv URl)
-   * @returns {Promise<ClientUser>}
-   * @example
-   * // set status
-   * client.user.setStatus('dnd')
-   *  .then(user => console.log('Changed status!'))
-   *  .catch(console.error);
-   * @example
-   * // set game
-   * client.user.setStatus(null, 'Cool Game 2042')
-   *   .then(user => console.log('Changed game!'))
-   *   .catch(console.error);
+   * Set the status of the logged in user.
+   * @param {string} status can be `online`, `idle`, `invisible` or `dnd` (do not disturb)
+   * @returns {Promise<ClientUser, Error>}
    */
-  setStatus(status, game = null, url = null) {
-    return new Promise(resolve => {
-      if (status === 'online' || status === 'here' || status === 'available') {
-        this.idleStatus = null;
-      } else if (status === 'idle' || status === 'away') {
-        this.idleStatus = Date.now();
-      } else {
-        this.idleStatus = this.idleStatus || null;
+  setStatus(status) {
+    return this.setPresence({ status });
+  }
+
+  /**
+   * Set the current game of the logged in user.
+   * @param {string} game the game being played
+   * @param {string} [streamingURL] an optional URL to a twitch stream, if one is available.
+   * @returns {Promise<ClientUser, Error>}
+   */
+  setGame(game, streamingURL) {
+    return this.setPresence({ game: {
+      name: game,
+      url: streamingURL,
+    } });
+  }
+
+  /**
+   * Set/remove the AFK flag for the current user.
+   * @param {boolean} afk whether or not the user is AFK.
+   * @returns {Promise<ClientUser, Error>}
+   */
+  setAFK(afk) {
+    return this.setPresence({ afk });
+  }
+
+  /**
+   * Set the full presence of the current user.
+   * @param {Object} data the data to provide
+   * @returns {Promise<ClientUser, Error>}
+   */
+  setPresence(data) {
+    // {"op":3,"d":{"status":"dnd","since":0,"game":null,"afk":false}}
+    return new Promise((resolve, reject) => {
+      let status = this.localPresence.status || this.presence.status;
+      let game = this.localPresence.game;
+      let afk = this.localPresence.afk || this.presence.afk;
+
+      if (!game) {
+        game = {
+          name: this.presence.game.name,
+          type: this.presence.game.type,
+          url: this.presence.game.url,
+        };
       }
 
-      if (typeof game === 'string' && !game.length) game = null;
-
-      if (game === null) {
-        this.userGame = null;
-      } else if (!game) {
-        this.userGame = this.userGame || null;
-      } else if (typeof game === 'string') {
-        this.userGame = { name: game };
-      } else {
-        this.userGame = game;
+      if (data.status) {
+        if (typeof data.status !== 'string') {
+          reject(new TypeError('status must be a string'));
+          return;
+        }
+        status = data.status;
       }
 
-      if (url) {
-        this.userGame.url = url;
-        this.userGame.type = 1;
+      if (data.game) {
+        game = data.game;
+        if (game.url) {
+          game.type = 1;
+        }
       }
+
+      if (typeof data.afk !== 'undefined') {
+        afk = data.afk;
+      }
+
+      afk = Boolean(afk);
+
+      this.localPresence = { status, game, afk };
+
+      this.localPresence.since = 0;
 
       this.client.ws.send({
         op: 3,
-        d: {
-          idle_since: this.idleStatus,
-          game: this.userGame,
-        },
+        d: this.localPresence,
       });
 
-      this.status = this.idleStatus ? 'idle' : 'online';
-      this.game = this.userGame;
+      this.client._setPresence(this.id, this.localPresence);
+
       resolve(this);
     });
   }
