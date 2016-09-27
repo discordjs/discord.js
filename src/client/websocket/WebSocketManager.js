@@ -150,7 +150,7 @@ class WebSocketManager extends EventEmitter {
       this._sendNewIdentify();
       return;
     }
-    this.client.emit('debug', 'identifying as resumed session');
+    this.client.emit('debug', 'Identifying as resumed session');
     const payload = {
       token: this.client.token,
       session_id: this.sessionID,
@@ -173,7 +173,7 @@ class WebSocketManager extends EventEmitter {
     if (this.client.options.shard_count > 0) {
       payload.shard = [Number(this.client.options.shard_id), Number(this.client.options.shard_count)];
     }
-    this.client.emit('debug', 'identifying as new session');
+    this.client.emit('debug', 'Identifying as new session');
     this.send({
       op: Constants.OPCodes.IDENTIFY,
       d: payload,
