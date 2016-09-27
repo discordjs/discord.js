@@ -89,7 +89,7 @@ class ClientDataManager {
   }
 
   killEmoji(emoji) {
-    if (!(emoji instanceof Emoji && emoji.guild))
+    if (!(emoji instanceof Emoji && emoji.guild)) return;
     this.client.emit(Constants.Events.EMOJI_DELETE, emoji);
     emoji.guild.emojis.delete(emoji.id);
   }
