@@ -252,7 +252,7 @@ export default class Resolver {
 		if (resource instanceof User) {
 			// see if a PM exists
 			for (var pmchat of this.internal.private_channels) {
-				if (pmchat.recipient.equals(resource)) {
+				if (pmchat.recipients.length === 1 && pmchat.recipient && pmchat.recipient.equals(resource)) {
 					return Promise.resolve(pmchat);
 				}
 			}

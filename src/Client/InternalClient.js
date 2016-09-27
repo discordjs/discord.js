@@ -1941,8 +1941,6 @@ export default class InternalClient {
 					}
 				} else if (!server) {
 					client.emit("warn", "server was updated but it was not in the cache");
-					this.servers.add(new Server(data, client));
-					client.emit("serverCreated", server);
 				}
 				break;
 			case PacketType.CHANNEL_CREATE:
