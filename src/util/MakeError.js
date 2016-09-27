@@ -1,7 +1,6 @@
 module.exports = function makeError(obj) {
-  const err = new Error(obj.message, obj.fileName, obj.lineNumber);
+  const err = new Error(obj.message);
   err.name = obj.name;
-  err.columnNumber = obj.columnNumber;
   err.stack = obj.stack;
   return err;
 };
