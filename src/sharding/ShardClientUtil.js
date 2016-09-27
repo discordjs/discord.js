@@ -18,7 +18,7 @@ class ShardClientUtil {
    * @type {number}
    */
   get id() {
-    return this.client.options.shard_id;
+    return this.client.options.shardId;
   }
 
   /**
@@ -26,7 +26,7 @@ class ShardClientUtil {
    * @type {number}
    */
   get count() {
-    return this.client.options.shard_count;
+    return this.client.options.shardCount;
   }
 
   /**

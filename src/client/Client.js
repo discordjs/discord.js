@@ -29,12 +29,12 @@ class Client extends EventEmitter {
      */
     this.options = mergeDefault(Constants.DefaultOptions, options);
 
-    if (!this.options.shard_id && 'SHARD_ID' in process.env) {
-      this.options.shard_id = Number(process.env.SHARD_ID);
+    if (!this.options.shardId && 'SHARD_ID' in process.env) {
+      this.options.shardId = Number(process.env.SHARD_ID);
     }
 
-    if (!this.options.shard_count && 'SHARD_COUNT' in process.env) {
-      this.options.shard_count = Number(process.env.SHARD_COUNT);
+    if (!this.options.shardCount && 'SHARD_COUNT' in process.env) {
+      this.options.shardCount = Number(process.env.SHARD_COUNT);
     }
 
     /**
@@ -150,8 +150,8 @@ class Client extends EventEmitter {
     this._timeouts = new Set();
     this._intervals = new Set();
 
-    if (this.options.message_sweep_interval > 0) {
-      this.setInterval(this.sweepMessages.bind(this), this.options.message_sweep_interval * 1000);
+    if (this.options.messageSweepInterval > 0) {
+      this.setInterval(this.sweepMessages.bind(this), this.options.messageSweepInterval * 1000);
     }
   }
 
@@ -273,12 +273,12 @@ class Client extends EventEmitter {
   /**
    * Sweeps all channels' messages and removes the ones older than the max message lifetime.
    * If the message has been edited, the time of the edit is used rather than the time of the original message.
-   * @param {number} [lifetime=this.options.message_cache_lifetime] Messages that are older than this (in seconds)
-   * will be removed from the caches. The default is based on the client's `message_cache_lifetime` option.
+   * @param {number} [lifetime=this.options.messageCacheLifetime] Messages that are older than this (in seconds)
+   * will be removed from the caches. The default is based on the client's `messageCacheLifetime` option.
    * @returns {number} Amount of messages that were removed from the caches,
    * or -1 if the message cache lifetime is unlimited
    */
-  sweepMessages(lifetime = this.options.message_cache_lifetime) {
+  sweepMessages(lifetime = this.options.messageCacheLifetime) {
     if (typeof lifetime !== 'number' || isNaN(lifetime)) throw new TypeError('Lifetime must be a number.');
     if (lifetime <= 0) {
       this.emit('debug', 'Didn\'t sweep messages - lifetime is unlimited');

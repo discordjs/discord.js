@@ -1,35 +1,35 @@
 /**
  * Options for a Client.
  * @typedef {Object} ClientOptions
- * @property {string} [api_request_method='sequential'] 'sequential' or 'burst'. Sequential executes all requests in
+ * @property {string} [apiRequestMethod='sequential'] 'sequential' or 'burst'. Sequential executes all requests in
  * the order they are triggered, whereas burst runs multiple at a time, and doesn't guarantee a particular order.
- * @property {number} [shard_id=0] The ID of this shard
- * @property {number} [shard_count=0] The number of shards
- * @property {number} [max_message_cache=200] Number of messages to cache per channel
- * @property {number} [message_cache_lifetime=0] How long until a message should be uncached by the message sweeping
+ * @property {number} [shardId=0] The ID of this shard
+ * @property {number} [shardCount=0] The number of shards
+ * @property {number} [maxMessageCache=200] Number of messages to cache per channel
+ * @property {number} [messageCacheLifetime=0] How long until a message should be uncached by the message sweeping
  * (in seconds, 0 for forever)
- * @property {number} [message_sweep_interval=0] How frequently to remove messages from the cache that are older than
+ * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
  * the max message lifetime (in seconds, 0 for never)
- * @property {boolean} [fetch_all_members=false] Whether to cache all guild members and users upon startup
- * @property {boolean} [disable_everyone=false] Default value for MessageOptions.disable_everyone
- * @property {number} [rest_ws_bridge_timeout=5000] Maximum time permitted between REST responses and their
+ * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup
+ * @property {boolean} [disableEveryone=false] Default value for MessageOptions.disableEveryone
+ * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
  * corresponding websocket events
  * @property {WebsocketOptions} [ws] Options for the websocket
  */
 exports.DefaultOptions = {
-  api_request_method: 'sequential',
-  shard_id: 0,
-  shard_count: 0,
-  max_message_cache: 200,
-  message_cache_lifetime: 0,
-  message_sweep_interval: 0,
-  fetch_all_members: false,
-  disable_everyone: false,
-  rest_ws_bridge_timeout: 5000,
-  protocol_version: 6,
+  apiRequestMethod: 'sequential',
+  shardId: 0,
+  shardCount: 0,
+  maxMessageCache: 200,
+  messageCacheLifetime: 0,
+  messageSweepInterval: 0,
+  fetchAllMembers: false,
+  disableEveryone: false,
+  restWsBridgeTimeout: 5000,
+  protocolVersion: 6,
 
   /**
-   * Websocket options.
+   * Websocket options. These are left as snake_case to match the API.
    * @typedef {Object} WebsocketOptions
    * @property {number} [large_threshold=250] Number of members in a guild to be considered large
    * @property {boolean} [compress=true] Whether to compress data sent on the connection
@@ -72,10 +72,10 @@ exports.Errors = {
   NOT_A_PERMISSION: 'Invalid permission string or number.',
   INVALID_RATE_LIMIT_METHOD: 'Unknown rate limiting method.',
   BAD_LOGIN: 'Incorrect login details were provided.',
-  INVALID_SHARD: 'Invalid shard settings were provided',
+  INVALID_SHARD: 'Invalid shard settings were provided.',
 };
 
-const API = `https://discordapp.com/api/v${exports.DefaultOptions.protocol_version}`;
+const API = `https://discordapp.com/api/v${exports.DefaultOptions.protocolVersion}`;
 
 const Endpoints = exports.Endpoints = {
   // general endpoints

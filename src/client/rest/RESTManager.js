@@ -26,7 +26,7 @@ class RESTManager {
   }
 
   getRequestHandler() {
-    switch (this.client.options.api_request_method) {
+    switch (this.client.options.apiRequestMethod) {
       case 'sequential':
         return SequentialRequestHandler;
       case 'burst':
