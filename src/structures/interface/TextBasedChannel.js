@@ -51,7 +51,7 @@ class TextBasedChannel {
    * // send a message
    * channel.sendMessage('hello!')
    *  .then(message => console.log(`Sent message: ${message.content}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   sendMessage(content, options = {}) {
     return this.client.rest.methods.sendMessage(this, content, options);
@@ -66,7 +66,7 @@ class TextBasedChannel {
    * // send a TTS message
    * channel.sendTTSMessage('hello!')
    *  .then(message => console.log(`Sent tts message: ${message.content}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   sendTTSMessage(content, options = {}) {
     Object.assign(options, { tts: true });
@@ -158,7 +158,7 @@ class TextBasedChannel {
    * // get messages
    * channel.fetchMessages({limit: 10})
    *  .then(messages => console.log(`Received ${messages.size} messages`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   fetchMessages(options = {}) {
     return new Promise((resolve, reject) => {
