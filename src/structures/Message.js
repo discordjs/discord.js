@@ -301,7 +301,7 @@ class Message {
    * // update the content of a message
    * message.edit('This is my new content!')
    *  .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   edit(content) {
     return this.client.rest.methods.updateMessage(this, content);
@@ -342,7 +342,7 @@ class Message {
    * // delete a message
    * message.delete()
    *  .then(msg => console.log(`Deleted message from ${msg.author}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   delete(timeout = 0) {
     return new Promise((resolve, reject) => {
@@ -363,7 +363,7 @@ class Message {
    * // reply to a message
    * message.reply('Hey, I'm a reply!')
    *  .then(msg => console.log(`Sent a reply to ${msg.author}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   reply(content, options = {}) {
     content = this.client.resolver.resolveString(content);

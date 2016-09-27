@@ -120,7 +120,7 @@ class GuildChannel extends Channel {
    *  SEND_MESSAGES: false
    * })
    * .then(() => console.log('Done!'))
-   * .catch(console.log);
+   * .catch(console.error);
    */
   overwritePermissions(userOrRole, options) {
     const payload = {
@@ -170,7 +170,7 @@ class GuildChannel extends Channel {
    * // set a new channel name
    * channel.setName('not_general')
    *  .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setName(name) {
     return this.client.rest.methods.updateChannel(this, { name });
@@ -184,7 +184,7 @@ class GuildChannel extends Channel {
    * // set a new channel position
    * channel.setPosition(2)
    *  .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setPosition(position) {
     return this.client.rest.methods.updateChannel(this, { position });
@@ -198,7 +198,7 @@ class GuildChannel extends Channel {
    * // set a new channel topic
    * channel.setTopic('needs more rate limiting')
    *  .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setTopic(topic) {
     return this.client.rest.methods.updateChannel(this, { topic });

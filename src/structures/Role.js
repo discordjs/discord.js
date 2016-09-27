@@ -151,7 +151,7 @@ class Role {
    * // edit a role
    * role.edit({name: 'new role'})
    *  .then(r => console.log(`Edited role ${r}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   edit(data) {
     return this.client.rest.methods.updateGuildRole(this, data);
@@ -165,7 +165,7 @@ class Role {
    * // set the name of the role
    * role.setName('new role')
    *  .then(r => console.log(`Edited name of role ${r}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setName(name) {
     return this.client.rest.methods.updateGuildRole(this, { name });
@@ -179,7 +179,7 @@ class Role {
    * // set the color of a role
    * role.setColor('#FF0000')
    *  .then(r => console.log(`Set color of role ${r}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setColor(color) {
     return this.client.rest.methods.updateGuildRole(this, { color });
@@ -193,7 +193,7 @@ class Role {
    * // set the hoist of the role
    * role.setHoist(true)
    *  .then(r => console.log(`Role hoisted: ${r.hoist}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setHoist(hoist) {
     return this.client.rest.methods.updateGuildRole(this, { hoist });
@@ -207,7 +207,7 @@ class Role {
    * // set the position of the role
    * role.setPosition(1)
    *  .then(r => console.log(`Role position: ${r.position}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setPosition(position) {
     return this.client.rest.methods.updateGuildRole(this, { position });
@@ -221,7 +221,7 @@ class Role {
    * // set the permissions of the role
    * role.setPermissions(['KICK_MEMBERS', 'BAN_MEMBERS'])
    *  .then(r => console.log(`Role updated ${r}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setPermissions(permissions) {
     return this.client.rest.methods.updateGuildRole(this, { permissions });
@@ -234,7 +234,7 @@ class Role {
    * // delete a role
    * role.delete()
    *  .then(r => console.log(`Deleted role ${r}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   delete() {
     return this.client.rest.methods.deleteGuildRole(this);
