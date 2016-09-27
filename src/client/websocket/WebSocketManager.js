@@ -112,6 +112,7 @@ class WebSocketManager extends EventEmitter {
 
   _send(data) {
     if (this.ws.readyState === WebSocket.OPEN) {
+      this.emit('send', data);
       this.ws.send(data);
     }
   }

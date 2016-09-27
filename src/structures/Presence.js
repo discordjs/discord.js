@@ -7,7 +7,7 @@ class Presence {
      * The status of the presence:
      *
      * * **`online`** - user is online
-     * * **`offline`** - user is offline
+     * * **`offline`** - user is offline or invisible
      * * **`idle`** - user is AFK
      * * **`dnd`** - user is in Do not Disturb
      * @type {string}
