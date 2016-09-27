@@ -12,19 +12,19 @@ class Shard {
    */
   constructor(manager, id) {
     /**
-     * The manager of the spawned shard
+     * Manager that created the shard
      * @type {ShardingManager}
      */
     this.manager = manager;
 
     /**
-     * The shard ID
+     * ID of the shard
      * @type {number}
      */
     this.id = id;
 
     /**
-     * The process of the shard
+     * Process of the shard
      * @type {ChildProcess}
      */
     this.process = childProcess.fork(path.resolve(this.manager.file), [], {
@@ -57,34 +57,6 @@ class Shard {
   }
 
   /**
-   * Evaluates a script on the shard, in the context of the Client.
-   * @param {string} script JavaScript to run on the shard
-   * @returns {Promise<*>} Result of the script execution
-   */
-  eval(script) {
-    if (this._evals.has(script)) return this._evals.get(script);
-
-    const promise = new Promise((resolve, reject) => {
-      const listener = message => {
-        if (!message || message._eval !== script) return;
-        this.process.removeListener('message', listener);
-        this._evals.delete(script);
-        if (!message._error) resolve(message._result); else reject(makeError(message._error));
-      };
-      this.process.on('message', listener);
-
-      this.send({ _eval: script }).catch(err => {
-        this.process.removeListener('message', listener);
-        this._evals.delete(script);
-        reject(err);
-      });
-    });
-
-    this._evals.set(script, promise);
-    return promise;
-  }
-
-  /**
    * Fetches a Client property value of the shard.
    * @param {string} prop Name of the Client property to get, using periods for nesting
    * @returns {Promise<*>}
@@ -113,6 +85,34 @@ class Shard {
     });
 
     this._fetches.set(prop, promise);
+    return promise;
+  }
+
+  /**
+   * Evaluates a script on the shard, in the context of the Client.
+   * @param {string} script JavaScript to run on the shard
+   * @returns {Promise<*>} Result of the script execution
+   */
+  eval(script) {
+    if (this._evals.has(script)) return this._evals.get(script);
+
+    const promise = new Promise((resolve, reject) => {
+      const listener = message => {
+        if (!message || message._eval !== script) return;
+        this.process.removeListener('message', listener);
+        this._evals.delete(script);
+        if (!message._error) resolve(message._result); else reject(makeError(message._error));
+      };
+      this.process.on('message', listener);
+
+      this.send({ _eval: script }).catch(err => {
+        this.process.removeListener('message', listener);
+        this._evals.delete(script);
+        reject(err);
+      });
+    });
+
+    this._evals.set(script, promise);
     return promise;
   }
 }
