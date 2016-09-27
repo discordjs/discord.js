@@ -1,4 +1,5 @@
 const makeError = require('../util/MakeError');
+const makePlainError = require('../util/MakePlainError');
 
 /**
  * Helper class for sharded clients spawned as a child process, such as from a ShardingManager
@@ -103,7 +104,7 @@ class ShardClientUtil {
       try {
         this._respond('eval', { _eval: message._eval, _result: this.client._eval(message._eval) });
       } catch (err) {
-        this._respond('eval', { _eval: message._eval, _error: err });
+        this._respond('eval', { _eval: message._eval, _error: makePlainError(err) });
       }
     }
   }
