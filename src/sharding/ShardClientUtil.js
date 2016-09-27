@@ -48,7 +48,7 @@ class ShardClientUtil {
    * @param {string} prop Name of the Client property to get, using periods for nesting
    * @returns {Promise<Array>}
    * @example
-   * manager.fetchClientValues('guilds.size').then(results => {
+   * client.shard.fetchClientValues('guilds.size').then(results => {
    *   console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`);
    * }).catch(console.error);
    */
