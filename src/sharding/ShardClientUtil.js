@@ -10,6 +10,7 @@ class ShardClientUtil {
    */
   constructor(client) {
     this.client = client;
+    process.on('message', this._handleMessage.bind(this));
   }
 
   /**
