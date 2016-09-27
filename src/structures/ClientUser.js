@@ -37,7 +37,7 @@ class ClientUser extends User {
    * // set username
    * client.user.setUsername('discordjs')
    *  .then(user => console.log(`My new username is ${user.username}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setUsername(username) {
     return this.client.rest.methods.updateCurrentUser({ username });
@@ -52,7 +52,7 @@ class ClientUser extends User {
    * // set email
    * client.user.setEmail('bob@gmail.com')
    *  .then(user => console.log(`My new email is ${user.email}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setEmail(email) {
     return this.client.rest.methods.updateCurrentUser({ email });
@@ -65,9 +65,9 @@ class ClientUser extends User {
    * @returns {Promise<ClientUser>}
    * @example
    * // set password
-   * client.user.setPassword('password')
+   * client.user.setPassword('password123')
    *  .then(user => console.log('New password set!'))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setPassword(password) {
     return this.client.rest.methods.updateCurrentUser({ password });
@@ -81,7 +81,7 @@ class ClientUser extends User {
    * // set avatar
    * client.user.setAvatar(fs.readFileSync('./avatar.png'))
    *  .then(user => console.log(`New avatar set!`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setAvatar(avatar) {
     return this.client.rest.methods.updateCurrentUser({ avatar });
@@ -89,16 +89,21 @@ class ClientUser extends User {
 
   /**
    * Set the status and playing game of the logged in client.
-   * @param {string} [status] The status, can be `online` or `idle`
+   * @param {string} [status] The status, can be `online`, `idle`, or `dnd`
    * @param {string|Object} [game] The game that is being played
    * @param {string} [url] If you want to display as streaming, set this as the URL to the stream (must be a
    * twitch.tv URl)
    * @returns {Promise<ClientUser>}
    * @example
    * // set status
-   * client.user.setStatus('status', 'game')
+   * client.user.setStatus('dnd')
    *  .then(user => console.log('Changed status!'))
-   *  .catch(console.log);
+   *  .catch(console.error);
+   * @example
+   * // set game
+   * client.user.setStatus(null, 'Cool Game 2042')
+   *   .then(user => console.log('Changed game!'))
+   *   .catch(console.error);
    */
   setStatus(status, game = null, url = null) {
     return new Promise(resolve => {
