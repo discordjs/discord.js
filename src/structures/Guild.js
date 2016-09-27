@@ -585,8 +585,8 @@ class Guild {
    * @returns {Promise}
    */
   deleteEmoji(emoji) {
-    if (emoji instanceof Emoji) emoji = emoji.id;
-    return this.client.rest.methods.deleteEmoji(this, emoji);
+    if (!(emoji instanceof Emoji)) emoji = this.emojis.get(emoji);
+    return this.client.rest.methods.deleteEmoji(emoji);
   }
 
   /**
