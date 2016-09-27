@@ -55,21 +55,21 @@ class ShardingManager extends EventEmitter {
 
     this.on('message', (shard, message) => {
       if (!message) return;
-      if (message._sEval) {
-        this.broadcastEval(message._sEval)
-          .then(results => shard.send({ _sEval: message._sEval, _result: results }))
-          .catch(err => shard.send({ _sEval: message._sEval, _error: err }));
-      } else if (message._sFetchProp) {
+      if (message._sFetchProp) {
         this.fetchClientValues(message._sFetchProp)
           .then(results => shard.send({ _sFetchProp: message._sFetchProp, _result: results }))
           .catch(err => shard.send({ _sFetchProp: message._sFetchProp, _error: err }));
+      } else if (message._sEval) {
+        this.broadcastEval(message._sEval)
+          .then(results => shard.send({ _sEval: message._sEval, _result: results }))
+          .catch(err => shard.send({ _sEval: message._sEval, _error: err }));
       }
     });
   }
 
   /**
    * Spawns a single shard.
-   * @param {number} id The ID of the shard to spawn. THIS IS NOT NEEDED IN ANY NORMAL CASE!
+   * @param {number} id The ID of the shard to spawn. **This is usually not necessary.**
    * @returns {Promise<Shard>}
    */
   createShard(id = this.shards.size) {

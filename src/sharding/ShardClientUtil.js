@@ -42,27 +42,6 @@ class ShardClientUtil {
   }
 
   /**
-   * Evaluates a script on all shards, in the context of the Clients.
-   * @param {string} script JavaScript to run on each shard
-   * @returns {Promise<Array>} Results of the script execution
-   */
-  broadcastEval(script) {
-    return new Promise((resolve, reject) => {
-      const listener = message => {
-        if (!message || message._sEval !== script) return;
-        process.removeListener('message', listener);
-        if (!message._error) resolve(message._result); else reject(makeError(message._error));
-      };
-      process.on('message', listener);
-
-      this.send({ _sEval: script }).catch(err => {
-        process.removeListener('message', listener);
-        reject(err);
-      });
-    });
-  }
-
-  /**
    * Fetches a Client property value of each shard.
    * @param {string} prop Name of the Client property to get, using periods for nesting
    * @returns {Promise<Array>}
@@ -88,23 +67,44 @@ class ShardClientUtil {
   }
 
   /**
+   * Evaluates a script on all shards, in the context of the Clients.
+   * @param {string} script JavaScript to run on each shard
+   * @returns {Promise<Array>} Results of the script execution
+   */
+  broadcastEval(script) {
+    return new Promise((resolve, reject) => {
+      const listener = message => {
+        if (!message || message._sEval !== script) return;
+        process.removeListener('message', listener);
+        if (!message._error) resolve(message._result); else reject(makeError(message._error));
+      };
+      process.on('message', listener);
+
+      this.send({ _sEval: script }).catch(err => {
+        process.removeListener('message', listener);
+        reject(err);
+      });
+    });
+  }
+
+  /**
    * Handles an IPC message
    * @param {*} message Message received
    * @private
    */
   _handleMessage(message) {
     if (!message) return;
-    if (message._eval) {
+    if (message._fetchProp) {
+      const props = message._fetchProp.split('.');
+      let value = this.client;
+      for (const prop of props) value = value[prop];
+      this._respond('fetchProp', { _fetchProp: message._fetchProp, _result: value });
+    } else if (message._eval) {
       try {
         this._respond('eval', { _eval: message._eval, _result: this.client._eval(message._eval) });
       } catch (err) {
         this._respond('eval', { _eval: message._eval, _error: err });
       }
-    } else if (message._fetchProp) {
-      const props = message._fetchProp.split('.');
-      let value = this.client;
-      for (const prop of props) value = value[prop];
-      this._respond('fetchProp', { _fetchProp: message._fetchProp, _result: value });
     }
   }
 
