@@ -32,6 +32,7 @@ class Presence {
    */
   equals(other) {
     return (
+      other &&
       this.status === other.status &&
       this.game ? this.game.equals(other.game) : !other.game
     );
@@ -78,6 +79,7 @@ class Game {
    */
   equals(other) {
     return (
+      other &&
       this.name === other.name &&
       this.type === other.type &&
       this.url === other.url
