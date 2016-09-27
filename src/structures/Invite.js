@@ -92,23 +92,20 @@ class Invite {
      */
     this.channel = this.client.channels.get(data.channel.id) || new PartialGuildChannel(this.client, data.channel);
 
-    this._createdAt = new Date(data.created_at).getTime();
+    /**
+     * The timestamp the invite was created at
+     * @type {number}
+     */
+    this.createdTimestamp = new Date(data.created_at).getTime();
   }
 
   /**
-   * The creation date of the invite
+   * The time the invite was created
    * @type {Date}
+   * @readonly
    */
   get createdAt() {
-    return new Date(this._createdAt);
-  }
-
-  /**
-   * The creation date of the invite
-   * @type {Date}
-   */
-  get creationDate() {
-    return new Date(this._createdAt);
+    return new Date(this.createdTimestamp);
   }
 
   /**

@@ -88,6 +88,18 @@ class Message {
     for (const attachment of data.attachments) this.attachments.set(attachment.id, new Attachment(this, attachment));
 
     /**
+     * The timestamp the message was sent at
+     * @type {number}
+     */
+    this.createdTimestamp = new Date(data.timestamp).getTime();
+
+    /**
+     * The timestamp the message was last edited at (if applicable)
+     * @type {?number}
+     */
+    this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
+
+    /**
      * An object containing a further users, roles or channels collections
      * @type {Object}
      * @property {Collection<string, User>} mentions.users Mentioned users, maps their ID to the user object.
@@ -128,8 +140,6 @@ class Message {
       }
     }
 
-    this._timestamp = new Date(data.timestamp).getTime();
-    this._editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
     this._edits = [];
   }
 
@@ -139,9 +149,9 @@ class Message {
       if (this.guild) this.member = this.guild.member(this.author);
     }
     if (data.content) this.content = data.content;
-    if (data.timestamp) this._timestamp = new Date(data.timestamp).getTime();
+    if (data.timestamp) this.createdTimestamp = new Date(data.timestamp).getTime();
     if (data.edited_timestamp) {
-      this._editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
+      this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
     }
     if ('tts' in data) this.tts = data.tts;
     if ('mention_everyone' in data) this.mentions.everyone = data.mention_everyone;
@@ -185,19 +195,21 @@ class Message {
   }
 
   /**
-   * When the message was sent
+   * The time the message was sent
    * @type {Date}
+   * @readonly
    */
-  get timestamp() {
-    return new Date(this._timestamp);
+  get createdAt() {
+    return new Date(this.createdTimestamp);
   }
 
   /**
-   * If the message was edited, the timestamp at which it was last edited
+   * The time the message was last edited at (if applicable)
    * @type {?Date}
+   * @readonly
    */
-  get editedTimestamp() {
-    return new Date(this._editedTimestamp);
+  get editedAt() {
+    return this.editedTimestamp ? new Date(this.editedTimestamp) : null;
   }
 
   /**
@@ -401,8 +413,8 @@ class Message {
 
     if (equal && rawData) {
       equal = this.mentions.everyone === message.mentions.everyone &&
-        this._timestamp === new Date(rawData.timestamp).getTime() &&
-        this._editedTimestamp === new Date(rawData.edited_timestamp).getTime();
+        this.createdTimestamp === new Date(rawData.timestamp).getTime() &&
+        this.editedTimestamp === new Date(rawData.edited_timestamp).getTime();
     }
 
     return equal;
