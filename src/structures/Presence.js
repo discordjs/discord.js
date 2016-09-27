@@ -13,24 +13,16 @@ class Presence {
      */
     this.status = data.status || 'offline';
 
-    if (data.game) {
-      /**
-       * The game that the user is playing, `null` if they aren't playing a game.
-       * @type {Game}
-       */
-      this.game = new Game(data.game);
-    } else {
-      this.game = null;
-    }
+    /**
+     * The game that the user is playing, `null` if they aren't playing a game.
+     * @type {?Game}
+     */
+    this.game = data.game ? new Game(data.game) : null;
   }
 
   update(data) {
     this.status = data.status || this.status;
-    if (data.game) {
-      this.game = new Game(data.game);
-    } else {
-      this.game = null;
-    }
+    this.game = data.game ? new Game(data.game) : null;
   }
 
   /**
@@ -65,9 +57,9 @@ class Game {
 
     /**
      * If the game is being streamed, a link to the stream
-     * @type {string}
+     * @type {?string}
      */
-    this.url = data.url;
+    this.url = data.url || null;
   }
 
   /**
