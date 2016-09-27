@@ -82,14 +82,14 @@ class ClientDataManager {
       guild.emojis.set(emoji.id, emoji);
       return emoji;
     } else if (already) {
-      return guild.emojids.get(data.id);
+      return guild.emojis.get(data.id);
     }
 
     return null;
   }
 
   killEmoji(emoji) {
-    if (!(emoji instanceof Emoji && this.client.guilds.has(emoji.guild.id))) return;
+    if (!(emoji instanceof Emoji && emoji.guild))
     this.client.emit(Constants.Events.EMOJI_DELETE, emoji);
     emoji.guild.emojis.delete(emoji.id);
   }
