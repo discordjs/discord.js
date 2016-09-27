@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
   Client: require('./client/Client'),
   Shard: require('./sharding/Shard'),
-  ShardClientUtil: require('./shard/ShardClientUtil'),
+  ShardClientUtil: require('./sharding/ShardClientUtil'),
   ShardingManager: require('./sharding/ShardingManager'),
   Collection: require('./util/Collection'),
 
