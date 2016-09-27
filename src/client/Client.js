@@ -10,6 +10,7 @@ const WebSocketManager = require('./websocket/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
 const Presence = require('../structures/Presence').Presence;
+const ShardUtil = require('../sharding/ShardUtil');
 
 /**
  * The starting point for making a Discord Bot.
@@ -86,6 +87,13 @@ class Client extends EventEmitter {
     this.voice = new ClientVoiceManager(this);
 
     /**
+     * The shard helpers for the client (only if the process was spawned as a child, such as from a ShardingManager)
+     * @type {?ShardUtil}
+     */
+    this.shard = process.send ? ShardUtil.singleton(this) : null;
+    if (this.shard) process.on('message', this.shard._handleMessage.bind(this.shard));
+
+    /**
      * A Collection of the Client's stored users
      * @type {Collection<string, User>}
      */
@@ -145,24 +153,6 @@ class Client extends EventEmitter {
 
     if (this.options.message_sweep_interval > 0) {
       this.setInterval(this.sweepMessages.bind(this), this.options.message_sweep_interval * 1000);
-    }
-
-    if (process.send) {
-      process.on('message', message => {
-        if (!message) return;
-        if (message._eval) {
-          try {
-            process.send({ _evalResult: eval(message._eval) });
-          } catch (err) {
-            process.send({ _evalError: err });
-          }
-        } else if (message._fetchProp) {
-          const props = message._fetchProp.split('.');
-          let value = this; // eslint-disable-line consistent-this
-          for (const prop of props) value = value[prop];
-          process.send({ _fetchProp: message._fetchProp, _fetchPropValue: value });
-        }
-      });
     }
   }
 
