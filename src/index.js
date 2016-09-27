@@ -11,6 +11,7 @@ module.exports = {
   DMChannel: require('./structures/DMChannel'),
   Emoji: require('./structures/Emoji'),
   EvaluatedPermissions: require('./structures/EvaluatedPermissions'),
+  Game: require('./structures/Presence').Game,
   GroupDMChannel: require('./structures/GroupDMChannel'),
   Guild: require('./structures/Guild'),
   GuildChannel: require('./structures/GuildChannel'),
@@ -23,12 +24,11 @@ module.exports = {
   PartialGuild: require('./structures/PartialGuild'),
   PartialGuildChannel: require('./structures/PartialGuildChannel'),
   PermissionOverwrites: require('./structures/PermissionOverwrites'),
+  Presence: require('./structures/Presence').Presence,
   Role: require('./structures/Role'),
   TextChannel: require('./structures/TextChannel'),
   User: require('./structures/User'),
   VoiceChannel: require('./structures/VoiceChannel'),
-  Presence: require('./structures/Presence').Presence,
-  Game: require('./structures/Presence').Game,
 
   version: require(path.join(__dirname, '..', 'package')).version,
 };
