@@ -4,11 +4,11 @@ const Discord = require('../');
 const request = require('superagent');
 const fs = require('fs');
 
-const client = new Discord.Client({ fetch_all_members: false, api_request_method: 'sequential' });
+const client = new Discord.Client({ fetchAllMembers: false, apiRequestMethod: 'sequential' });
 
 const { email, password, token, usertoken } = require('./auth.json');
 
-client.login(token).then(atoken => console.log('logged in with token ' + atoken)).catch(console.log);
+client.login(token).then(atoken => console.log('logged in with token ' + atoken)).catch(console.error);
 
 client.ws.on('send', console.log);
 
@@ -58,7 +58,7 @@ client.on('message', message => {
       request
         .get('url')
         .end((err, res) => {
-          client.user.setAvatar(res.body).catch(console.log)
+          client.user.setAvatar(res.body).catch(console.error)
             .then(user => message.channel.sendMessage('Done!'));
         });
     }
@@ -66,11 +66,11 @@ client.on('message', message => {
     if (message.content.startsWith('gn')) {
       message.guild.setName(message.content.substr(3))
         .then(guild => console.log('guild updated to', guild.name))
-        .catch(console.log);
+        .catch(console.error);
     }
 
     if (message.content === 'leave') {
-      message.guild.leave().then(guild => console.log('left guild', guild.name)).catch(console.log);
+      message.guild.leave().then(guild => console.log('left guild', guild.name)).catch(console.error);
     }
 
     if (message.content === 'stats') {
@@ -80,7 +80,7 @@ client.on('message', message => {
       m += `I am aware of ${client.channels.size} channels overall\n`;
       m += `I am aware of ${client.guilds.size} guilds overall\n`;
       m += `I am aware of ${client.users.size} users overall\n`;
-      message.channel.sendMessage(m).then(msg => msg.edit('nah')).catch(console.log);
+      message.channel.sendMessage(m).then(msg => msg.edit('nah')).catch(console.error);
     }
 
     if (message.content === 'messageme!') {
@@ -95,7 +95,7 @@ client.on('message', message => {
       message.guild.member(message.mentions[0]).kick().then(member => {
         console.log(member);
         message.channel.sendMessage('Kicked!' + member.user.username);
-      }).catch(console.log);
+      }).catch(console.error);
     }
 
     if (message.content === 'ratelimittest') {
@@ -109,17 +109,17 @@ client.on('message', message => {
     if (message.content === 'makerole') {
       message.guild.createRole().then(role => {
         message.channel.sendMessage(`Made role ${role.name}`);
-      }).catch(console.log);
+      }).catch(console.error);
     }
   }
 });
 
 function nameLoop(user) {
-  // user.setUsername(user.username + 'a').then(nameLoop).catch(console.log);
+  // user.setUsername(user.username + 'a').then(nameLoop).catch(console.error);
 }
 
 function chanLoop(channel) {
-  channel.setName(channel.name + 'a').then(chanLoop).catch(console.log);
+  channel.setName(channel.name + 'a').then(chanLoop).catch(console.error);
 }
 
 client.on('message', msg => {
@@ -157,6 +157,6 @@ client.on('message', msg => {
         conn.player.on('error', err => console.log(123, err));
         disp.on('error', err => console.log(123, err));
       })
-      .catch(console.log);
+      .catch(console.error);
   }
 })
