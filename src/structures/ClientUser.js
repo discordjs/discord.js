@@ -90,7 +90,7 @@ class ClientUser extends User {
   /**
    * Set the status of the logged in user.
    * @param {string} status can be `online`, `idle`, `invisible` or `dnd` (do not disturb)
-   * @returns {Promise<ClientUser, Error>}
+   * @returns {Promise<ClientUser>}
    */
   setStatus(status) {
     return this.setPresence({ status });
@@ -100,7 +100,7 @@ class ClientUser extends User {
    * Set the current game of the logged in user.
    * @param {string} game the game being played
    * @param {string} [streamingURL] an optional URL to a twitch stream, if one is available.
-   * @returns {Promise<ClientUser, Error>}
+   * @returns {Promise<ClientUser>}
    */
   setGame(game, streamingURL) {
     return this.setPresence({ game: {
@@ -112,7 +112,7 @@ class ClientUser extends User {
   /**
    * Set/remove the AFK flag for the current user.
    * @param {boolean} afk whether or not the user is AFK.
-   * @returns {Promise<ClientUser, Error>}
+   * @returns {Promise<ClientUser>}
    */
   setAFK(afk) {
     return this.setPresence({ afk });
@@ -121,7 +121,7 @@ class ClientUser extends User {
   /**
    * Set the full presence of the current user.
    * @param {Object} data the data to provide
-   * @returns {Promise<ClientUser, Error>}
+   * @returns {Promise<ClientUser>}
    */
   setPresence(data) {
     // {"op":3,"d":{"status":"dnd","since":0,"game":null,"afk":false}}
