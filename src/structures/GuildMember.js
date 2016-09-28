@@ -132,6 +132,7 @@ class GuildMember {
   /**
    * The role of the member with the highest position.
    * @type {Role}
+   * @readonly
    */
   get highestRole() {
     return this.roles.reduce((prev, role) =>
@@ -178,6 +179,7 @@ class GuildMember {
   /**
    * The overall set of permissions for the guild member, taking only roles into account
    * @type {EvaluatedPermissions}
+   * @readonly
    */
   get permissions() {
     if (this.user.id === this.guild.ownerID) return new EvaluatedPermissions(this, Constants.ALL_PERMISSIONS);
@@ -195,6 +197,7 @@ class GuildMember {
   /**
    * Whether the member is kickable by the client user.
    * @type {boolean}
+   * @readonly
    */
   get kickable() {
     if (this.user.id === this.guild.ownerID) return false;
@@ -207,6 +210,7 @@ class GuildMember {
   /**
    * Whether the member is bannable by the client user.
    * @type {boolean}
+   * @readonly
    */
   get bannable() {
     if (this.user.id === this.guild.ownerID) return false;

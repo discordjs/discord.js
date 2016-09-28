@@ -76,8 +76,8 @@ class User {
 
   /**
    * The presence of this user
-   * @readonly
    * @type {Presence}
+   * @readonly
    */
   get presence() {
     if (this.client.presences.has(this.id)) return this.client.presences.get(this.id);

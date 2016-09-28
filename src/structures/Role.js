@@ -103,6 +103,7 @@ class Role {
   /**
    * The cached guild members that have this role.
    * @type {Collection<string, GuildMember>}
+   * @readonly
    */
   get members() {
     return this.guild.members.filter(m => m.roles.has(this.id));

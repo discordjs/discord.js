@@ -215,6 +215,7 @@ class Message {
   /**
    * The guild the message was sent in (if in a guild channel)
    * @type {?Guild}
+   * @readonly
    */
   get guild() {
     return this.channel.guild || null;
@@ -224,6 +225,7 @@ class Message {
    * The message contents with all mentions replaced by the equivalent text. If mentions cannot be resolved to a name,
    * the relevant mention in the message content will not be converted.
    * @type {string}
+   * @readonly
    */
   get cleanContent() {
     return this.content
@@ -262,6 +264,7 @@ class Message {
    * An array of cached versions of the message, including the current version.
    * Sorted from latest (first) to oldest (last).
    * @type {Message[]}
+   * @readonly
    */
   get edits() {
     return this._edits.slice().unshift(this);
@@ -270,6 +273,7 @@ class Message {
   /**
    * Whether the message is editable by the client user.
    * @type {boolean}
+   * @readonly
    */
   get editable() {
     return this.author.id === this.client.user.id;
@@ -278,6 +282,7 @@ class Message {
   /**
    * Whether the message is deletable by the client user.
    * @type {boolean}
+   * @readonly
    */
   get deletable() {
     return this.author.id === this.client.user.id || (this.guild &&
@@ -288,6 +293,7 @@ class Message {
   /**
    * Whether the message is pinnable by the client user.
    * @type {boolean}
+   * @readonly
    */
   get pinnable() {
     return !this.guild ||

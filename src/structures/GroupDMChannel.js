@@ -80,6 +80,7 @@ class GroupDMChannel extends Channel {
   /**
    * The owner of this Group DM.
    * @type {User}
+   * @readonly
    */
   get owner() {
     return this.client.users.get(this.ownerID);
