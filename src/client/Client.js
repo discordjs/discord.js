@@ -189,7 +189,9 @@ class Client extends EventEmitter {
    */
   get emojis() {
     const emojis = new Collection();
-    this.guilds.map(g => g.emojis.map(e => emojis.set(e.id, e)));
+    for (const guild of this.guilds.values()) {
+      for (const emoji of guild.emojis) emojis.set(emoji.id, emoji);
+    }
     return emojis;
   }
 
