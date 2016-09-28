@@ -249,6 +249,21 @@ class Collection extends Map {
   }
 
   /**
+   * Combines this collection with others into a new collection. None of the source collections are modified.
+   * @param {Collection} collections Collections to merge
+   * @returns {Collection}
+   * @example const newColl = someColl.concat(someOtherColl, anotherColl, ohBoyAColl);
+   */
+  concat(...collections) {
+    const newColl = new this.constructor();
+    for (const [key, val] of this) newColl.set(key, val);
+    for (const coll of collections) {
+      for (const [key, val] of coll) newColl.set(key, val);
+    }
+    return newColl;
+  }
+
+  /**
    * If the items in this collection have a delete method (e.g. messages), invoke
    * the delete method. Returns an array of promises
    * @returns {Promise[]}
