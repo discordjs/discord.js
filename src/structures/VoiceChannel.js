@@ -53,7 +53,7 @@ class VoiceChannel extends GuildChannel {
    * // set the bitrate of a voice channel
    * voiceChannel.setBitrate(48000)
    *  .then(vc => console.log(`Set bitrate to ${vc.bitrate} for ${vc.name}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setBitrate(bitrate) {
     return this.rest.client.rest.methods.updateChannel(this, { bitrate });
@@ -66,7 +66,7 @@ class VoiceChannel extends GuildChannel {
    * // join a voice channel
    * voiceChannel.join()
    *  .then(connection => console.log('Connected!'))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   join() {
     return this.client.voice.joinChannel(this);

@@ -171,14 +171,15 @@ class WebSocketManager extends EventEmitter {
     this.reconnecting = false;
     const payload = this.client.options.ws;
     payload.token = this.client.token;
-    if (this.client.options.shard_count > 0) {
-      payload.shard = [Number(this.client.options.shard_id), Number(this.client.options.shard_count)];
+    if (this.client.options.shardCount > 0) {
+      payload.shard = [Number(this.client.options.shardId), Number(this.client.options.shardCount)];
     }
     this.client.emit('debug', 'Identifying as new session');
     this.send({
       op: Constants.OPCodes.IDENTIFY,
       d: payload,
     });
+    this.sequence = -1;
   }
 
   /**
@@ -255,7 +256,7 @@ class WebSocketManager extends EventEmitter {
       }
       if (unavailableCount === 0) {
         this.status = Constants.Status.NEARLY;
-        if (this.client.options.fetch_all_members) {
+        if (this.client.options.fetchAllMembers) {
           const promises = this.client.guilds.array().map(g => g.fetchMembers());
           Promise.all(promises).then(() => this._emitReady()).catch(e => {
             this.client.emit(Constants.Event.WARN, `Error on pre-ready guild member fetching - ${e}`);

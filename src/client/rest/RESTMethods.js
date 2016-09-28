@@ -40,18 +40,18 @@ class RESTMethods {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('get', Constants.Endpoints.gateway, true)
         .then(res => {
-          this.rest.client.ws.gateway = `${res.url}/?encoding=json&v=${this.rest.client.options.protocol_version}`;
+          this.rest.client.ws.gateway = `${res.url}/?encoding=json&v=${this.rest.client.options.protocolVersion}`;
           resolve(this.rest.client.ws.gateway);
         })
         .catch(reject);
     });
   }
 
-  sendMessage(channel, content, { tts, nonce, disable_everyone, split } = {}, file = null) {
+  sendMessage(channel, content, { tts, nonce, disableEveryone, split } = {}, file = null) {
     return new Promise((resolve, reject) => {
       if (typeof content !== 'undefined') content = this.rest.client.resolver.resolveString(content);
 
-      if (disable_everyone || (typeof disable_everyone === 'undefined' && this.rest.client.options.disable_everyone)) {
+      if (disableEveryone || (typeof disableEveryone === 'undefined' && this.rest.client.options.disableEveryone)) {
         content = content.replace('@everyone', '@\u200beveryone').replace('@here', '@\u200bhere');
       }
 

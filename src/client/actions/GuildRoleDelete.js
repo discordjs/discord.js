@@ -33,7 +33,7 @@ class GuildRoleDeleteAction extends Action {
   }
 
   scheduleForDeletion(guildID, roleID) {
-    this.client.setTimeout(() => this.deleted.delete(guildID + roleID), this.client.options.rest_ws_bridge_timeout);
+    this.client.setTimeout(() => this.deleted.delete(guildID + roleID), this.client.options.restWsBridgeTimeout);
   }
 }
 

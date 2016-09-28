@@ -82,9 +82,23 @@ class GuildMember {
      */
     this.nickname = data.nick || null;
 
+    /**
+     * The timestamp the member joined the guild at
+     * @type {number}
+     */
+    this.joinedTimestamp = new Date(data.joined_at).getTime();
+
     this.user = data.user;
     this._roles = data.roles;
-    this._joinDate = new Date(data.joined_at).getTime();
+  }
+
+  /**
+   * The time the member joined the guild
+   * @type {Date}
+   * @readonly
+   */
+  get joinedAt() {
+    return new Date(this.joinedTimestamp);
   }
 
   /**
@@ -94,14 +108,6 @@ class GuildMember {
    */
   get presence() {
     return this.guild.presences.get(this.id);
-  }
-
-  /**
-   * The date this member joined the guild
-   * @type {Date}
-   */
-  get joinDate() {
-    return new Date(this._joinDate);
   }
 
   /**
@@ -126,6 +132,7 @@ class GuildMember {
   /**
    * The role of the member with the highest position.
    * @type {Role}
+   * @readonly
    */
   get highestRole() {
     return this.roles.reduce((prev, role) =>
@@ -172,6 +179,7 @@ class GuildMember {
   /**
    * The overall set of permissions for the guild member, taking only roles into account
    * @type {EvaluatedPermissions}
+   * @readonly
    */
   get permissions() {
     if (this.user.id === this.guild.ownerID) return new EvaluatedPermissions(this, Constants.ALL_PERMISSIONS);
@@ -189,6 +197,7 @@ class GuildMember {
   /**
    * Whether the member is kickable by the client user.
    * @type {boolean}
+   * @readonly
    */
   get kickable() {
     if (this.user.id === this.guild.ownerID) return false;
@@ -201,6 +210,7 @@ class GuildMember {
   /**
    * Whether the member is bannable by the client user.
    * @type {boolean}
+   * @readonly
    */
   get bannable() {
     if (this.user.id === this.guild.ownerID) return false;

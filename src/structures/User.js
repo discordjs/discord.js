@@ -50,23 +50,6 @@ class User {
     this.bot = Boolean(data.bot);
   }
 
-  /**
-   * The presence of this user
-   * @readonly
-   * @type {Presence}
-   */
-  get presence() {
-    if (this.client.presences.has(this.id)) {
-      return this.client.presences.get(this.id);
-    }
-    for (const guild of this.client.guilds.values()) {
-      if (guild.presences.has(this.id)) {
-        return guild.presences.get(this.id);
-      }
-    }
-    return new Presence();
-  }
-
   patch(data) {
     for (const prop of ['id', 'username', 'discriminator', 'avatar', 'bot']) {
       if (typeof data[prop] !== 'undefined') this[prop] = data[prop];
@@ -74,12 +57,34 @@ class User {
   }
 
   /**
-   * The time the user was created
+   * The timestamp the user was created at
+   * @type {number}
    * @readonly
-   * @type {Date}
    */
-  get creationDate() {
-    return new Date((this.id / 4194304) + 1420070400000);
+  get createdTimestamp() {
+    return (this.id / 4194304) + 1420070400000;
+  }
+
+  /**
+   * The time the user was created
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * The presence of this user
+   * @type {Presence}
+   * @readonly
+   */
+  get presence() {
+    if (this.client.presences.has(this.id)) return this.client.presences.get(this.id);
+    for (const guild of this.client.guilds.values()) {
+      if (guild.presences.has(this.id)) return guild.presences.get(this.id);
+    }
+    return new Presence();
   }
 
   /**

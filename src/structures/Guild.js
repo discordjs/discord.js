@@ -59,14 +59,6 @@ class Guild {
     }
   }
 
-  _setPresence(id, presence) {
-    if (this.presences.get(id)) {
-      this.presences.get(id).update(presence);
-      return;
-    }
-    this.presences.set(id, new Presence(presence));
-  }
-
   /**
    * Sets up the Guild
    * @param {*} data The raw data of the guild
@@ -152,10 +144,15 @@ class Guild {
      */
     this.verificationLevel = data.verification_level;
 
+    /**
+     * The timestamp the client user joined the guild at
+     * @type {number}
+     */
+    this.joinedTimestamp = data.joined_at ? new Date(data.joined_at).getTime() : this.joinedTimestamp;
+
     this.id = data.id;
     this.available = !data.unavailable;
     this.features = data.features || this.features || [];
-    this._joinedTimestamp = data.joined_at ? new Date(data.joined_at).getTime() : this._joinedTimestamp;
 
     if (data.members) {
       this.members.clear();
@@ -208,20 +205,30 @@ class Guild {
   }
 
   /**
-   * The time the guild was created
+   * The timestamp the guild was created at
+   * @type {number}
    * @readonly
-   * @type {Date}
    */
-  get creationDate() {
-    return new Date((this.id / 4194304) + 1420070400000);
+  get createdTimestamp() {
+    return (this.id / 4194304) + 1420070400000;
   }
 
   /**
-   * The date at which the logged-in client joined the guild.
+   * The time the guild was created
    * @type {Date}
+   * @readonly
    */
-  get joinDate() {
-    return new Date(this._joinedTimestamp);
+  get createdAt() {
+    return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * The time the client user joined the guild
+   * @type {Date}
+   * @readonly
+   */
+  get joinedAt() {
+    return new Date(this.joinedTimestamp);
   }
 
   /**
@@ -340,7 +347,7 @@ class Guild {
    *  region: 'london',
    * })
    * .then(updated => console.log(`New guild name ${updated.name} in region ${updated.region}`))
-   * .catch(console.log);
+   * .catch(console.error);
    */
   edit(data) {
     return this.client.rest.methods.updateGuild(this, data);
@@ -354,7 +361,7 @@ class Guild {
    * // edit the guild name
    * guild.setName('Discord Guild')
    *  .then(updated => console.log(`Updated guild name to ${guild.name}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setName(name) {
     return this.edit({ name });
@@ -368,7 +375,7 @@ class Guild {
    * // edit the guild region
    * guild.setRegion('london')
    *  .then(updated => console.log(`Updated guild region to ${guild.region}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setRegion(region) {
     return this.edit({ region });
@@ -382,7 +389,7 @@ class Guild {
    * // edit the guild verification level
    * guild.setVerificationLevel(1)
    *  .then(updated => console.log(`Updated guild verification level to ${guild.verificationLevel}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setVerificationLevel(verificationLevel) {
     return this.edit({ verificationLevel });
@@ -396,7 +403,7 @@ class Guild {
    * // edit the guild AFK channel
    * guild.setAFKChannel(channel)
    *  .then(updated => console.log(`Updated guild AFK channel to ${guild.afkChannel}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setAFKChannel(afkChannel) {
     return this.edit({ afkChannel });
@@ -410,7 +417,7 @@ class Guild {
    * // edit the guild AFK channel
    * guild.setAFKTimeout(60)
    *  .then(updated => console.log(`Updated guild AFK timeout to ${guild.afkTimeout}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setAFKTimeout(afkTimeout) {
     return this.edit({ afkTimeout });
@@ -424,7 +431,7 @@ class Guild {
    * // edit the guild icon
    * guild.setIcon(fs.readFileSync('./icon.png'))
    *  .then(updated => console.log('Updated the guild icon'))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setIcon(icon) {
     return this.edit({ icon });
@@ -438,7 +445,7 @@ class Guild {
    * // edit the guild owner
    * guild.setOwner(guilds.members[0])
    *  .then(updated => console.log(`Updated the guild owner to ${updated.owner.username}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setOwner(owner) {
     return this.edit({ owner });
@@ -452,7 +459,7 @@ class Guild {
    * // edit the guild splash
    * guild.setIcon(fs.readFileSync('./splash.png'))
    *  .then(updated => console.log('Updated the guild splash'))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setSplash(splash) {
     return this.edit({ splash });
@@ -525,7 +532,7 @@ class Guild {
    * // create a new text channel
    * guild.createChannel('new-general', 'text')
    *  .then(channel => console.log(`Created new channel ${channel}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   createChannel(name, type) {
     return this.client.rest.methods.createChannel(this, name, type);
@@ -539,12 +546,12 @@ class Guild {
    * // create a new role
    * guild.createRole()
    *  .then(role => console.log(`Created role ${role}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    * @example
    * // create a new role with data
    * guild.createRole({ name: 'Super Cool People' })
    *   .then(role => console.log(`Created role ${role}`))
-   *   .catch(console.log)
+   *   .catch(console.error)
    */
   createRole(data) {
     const create = this.client.rest.methods.createGuildRole(this);
@@ -561,12 +568,12 @@ class Guild {
    * // create a new emoji from a url
    * guild.createEmoji('https://i.imgur.com/w3duR07.png', 'rip')
    *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    * @example
    * // create a new emoji from a file on your computer
    * guild.createEmoji('./memes/banana.png', 'banana')
    *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   createEmoji(attachment, name) {
     return new Promise((resolve, reject) => {
@@ -596,7 +603,7 @@ class Guild {
    * // leave a guild
    * guild.leave()
    *  .then(g => console.log(`Left the guild ${g}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   leave() {
     return this.client.rest.methods.leaveGuild(this);
@@ -609,7 +616,7 @@ class Guild {
    * // delete a guild
    * guild.delete()
    *  .then(g => console.log(`Deleted the guild ${g}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   delete() {
     return this.client.rest.methods.deleteGuild(this);
@@ -737,6 +744,14 @@ class Guild {
        */
       this.client.emit(Constants.Events.GUILD_MEMBER_SPEAKING, member, speaking);
     }
+  }
+
+  _setPresence(id, presence) {
+    if (this.presences.get(id)) {
+      this.presences.get(id).update(presence);
+      return;
+    }
+    this.presences.set(id, new Presence(presence));
   }
 
   _checkChunks() {

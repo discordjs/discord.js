@@ -27,7 +27,7 @@ class TextBasedChannel {
    * @typedef {Object} MessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
-   * @property {boolean} [disable_everyone=this.client.options.disable_everyone] Whether or not @everyone and @here
+   * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
@@ -51,7 +51,7 @@ class TextBasedChannel {
    * // send a message
    * channel.sendMessage('hello!')
    *  .then(message => console.log(`Sent message: ${message.content}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   sendMessage(content, options = {}) {
     return this.client.rest.methods.sendMessage(this, content, options);
@@ -66,7 +66,7 @@ class TextBasedChannel {
    * // send a TTS message
    * channel.sendTTSMessage('hello!')
    *  .then(message => console.log(`Sent tts message: ${message.content}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   sendTTSMessage(content, options = {}) {
     Object.assign(options, { tts: true });
@@ -158,7 +158,7 @@ class TextBasedChannel {
    * // get messages
    * channel.fetchMessages({limit: 10})
    *  .then(messages => console.log(`Received ${messages.size} messages`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   fetchMessages(options = {}) {
     return new Promise((resolve, reject) => {
@@ -241,6 +241,7 @@ class TextBasedChannel {
   /**
    * Whether or not the typing indicator is being shown in the channel.
    * @type {boolean}
+   * @readonly
    */
   get typing() {
     return this.client.user._typing.has(this.id);
@@ -249,6 +250,7 @@ class TextBasedChannel {
   /**
    * Number of times `startTyping` has been called.
    * @type {number}
+   * @readonly
    */
   get typingCount() {
     if (this.client.user._typing.has(this.id)) return this.client.user._typing.get(this.id).count;
@@ -320,7 +322,7 @@ class TextBasedChannel {
   }
 
   _cacheMessage(message) {
-    const maxSize = this.client.options.max_message_cache;
+    const maxSize = this.client.options.maxMessageCache;
     if (maxSize === 0) return null;
     if (this.messages.size >= maxSize) this.messages.delete(this.messages.keys().next().value);
 

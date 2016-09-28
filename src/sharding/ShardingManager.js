@@ -4,7 +4,6 @@ const EventEmitter = require('events').EventEmitter;
 
 const Shard = require('./Shard');
 const Collection = require('../util/Collection');
-const makePlainError = require('../util/MakePlainError');
 
 /**
  * This is a utility class that can be used to help you spawn shards of your Client. Each shard is completely separate
@@ -53,19 +52,6 @@ class ShardingManager extends EventEmitter {
      * @type {Collection<number, Shard>}
      */
     this.shards = new Collection();
-
-    this.on('message', (shard, message) => {
-      if (!message) return;
-      if (message._sFetchProp) {
-        this.fetchClientValues(message._sFetchProp)
-          .then(results => shard.send({ _sFetchProp: message._sFetchProp, _result: results }))
-          .catch(err => shard.send({ _sFetchProp: message._sFetchProp, _error: makePlainError(err) }));
-      } else if (message._sEval) {
-        this.broadcastEval(message._sEval)
-          .then(results => shard.send({ _sEval: message._sEval, _result: results }))
-          .catch(err => shard.send({ _sEval: message._sEval, _error: makePlainError(err) }));
-      }
-    });
   }
 
   /**

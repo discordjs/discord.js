@@ -10,22 +10,25 @@ class ShardClientUtil {
    */
   constructor(client) {
     this.client = client;
+    process.on('message', this._handleMessage.bind(this));
   }
 
   /**
    * ID of this shard
    * @type {number}
+   * @readonly
    */
   get id() {
-    return this.client.options.shard_id;
+    return this.client.options.shardId;
   }
 
   /**
    * Total number of shards
    * @type {number}
+   * @readonly
    */
   get count() {
-    return this.client.options.shard_count;
+    return this.client.options.shardCount;
   }
 
   /**
@@ -47,7 +50,7 @@ class ShardClientUtil {
    * @param {string} prop Name of the Client property to get, using periods for nesting
    * @returns {Promise<Array>}
    * @example
-   * manager.fetchClientValues('guilds.size').then(results => {
+   * client.shard.fetchClientValues('guilds.size').then(results => {
    *   console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`);
    * }).catch(console.error);
    */

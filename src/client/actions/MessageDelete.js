@@ -33,7 +33,7 @@ class MessageDeleteAction extends Action {
 
   scheduleForDeletion(channelID, messageID) {
     this.client.setTimeout(() => this.deleted.delete(channelID + messageID),
-      this.client.options.rest_ws_bridge_timeout);
+      this.client.options.restWsBridgeTimeout);
   }
 }
 
