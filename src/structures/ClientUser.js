@@ -148,19 +148,13 @@ class ClientUser extends User {
 
       if (data.game) {
         game = data.game;
-        if (game.url) {
-          game.type = 1;
-        }
+        if (game.url) game.type = 1;
       }
 
-      if (typeof data.afk !== 'undefined') {
-        afk = data.afk;
-      }
-
+      if (typeof data.afk !== 'undefined') afk = data.afk;
       afk = Boolean(afk);
 
       this.localPresence = { status, game, afk };
-
       this.localPresence.since = 0;
 
       this.client.ws.send({

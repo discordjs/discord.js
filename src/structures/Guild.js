@@ -59,14 +59,6 @@ class Guild {
     }
   }
 
-  _setPresence(id, presence) {
-    if (this.presences.get(id)) {
-      this.presences.get(id).update(presence);
-      return;
-    }
-    this.presences.set(id, new Presence(presence));
-  }
-
   /**
    * Sets up the Guild
    * @param {*} data The raw data of the guild
@@ -752,6 +744,14 @@ class Guild {
        */
       this.client.emit(Constants.Events.GUILD_MEMBER_SPEAKING, member, speaking);
     }
+  }
+
+  _setPresence(id, presence) {
+    if (this.presences.get(id)) {
+      this.presences.get(id).update(presence);
+      return;
+    }
+    this.presences.set(id, new Presence(presence));
   }
 
   _checkChunks() {

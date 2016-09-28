@@ -157,8 +157,8 @@ class Client extends EventEmitter {
 
   /**
    * The status for the logged in Client.
-   * @readonly
    * @type {?number}
+   * @readonly
    */
   get status() {
     return this.ws.status;
@@ -166,8 +166,8 @@ class Client extends EventEmitter {
 
   /**
    * The uptime for the logged in Client.
-   * @readonly
    * @type {?number}
+   * @readonly
    */
   get uptime() {
     return this.readyTime ? Date.now() - this.readyTime : null;
@@ -175,8 +175,8 @@ class Client extends EventEmitter {
 
   /**
    * Returns a Collection, mapping Guild ID to Voice Connections.
-   * @readonly
    * @type {Collection<string, VoiceConnection>}
+   * @readonly
    */
   get voiceConnections() {
     return this.voice.connections;
