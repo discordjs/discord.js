@@ -597,6 +597,14 @@ class Guild {
   }
 
   /**
+   * Fetch all webhooks for the channel.
+   * @returns {Collection<Webhook>}
+   */
+  fetchWebhooks() {
+    return this.client.rest.methods.fetchGuildWebhooks(this);
+  }
+
+  /**
    * Causes the Client to leave the guild.
    * @returns {Promise<Guild>}
    * @example
