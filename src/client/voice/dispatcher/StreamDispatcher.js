@@ -53,9 +53,7 @@ class StreamDispatcher extends EventEmitter {
   _sendBuffer(buffer, sequence, timestamp) {
     let repeats = this.passes;
     const packet = this._createPacket(sequence, timestamp, this.player.opusEncoder.encode(buffer));
-    while (repeats--) {
-      this.player.connection.udp.send(packet);
-    }
+    while (repeats--) this.player.connection.udp.send(packet);
   }
 
   /**
