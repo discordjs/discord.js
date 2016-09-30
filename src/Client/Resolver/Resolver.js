@@ -43,6 +43,7 @@ import Role from "../../Structures/Role";
 import Server from "../../Structures/Server";
 import Message from "../../Structures/Message";
 import Invite from "../../Structures/Invite";
+import Webhook from "../../Structures/Webhook";
 import VoiceConnection from "../../Voice/VoiceConnection";
 
 export default class Resolver {
@@ -209,6 +210,25 @@ export default class Resolver {
 		}
 
 		return null;
+	}
+
+	resolveWebhook(resource) {
+		/*
+		 accepts a Webhook
+		 */
+		if (resource instanceof Webhook) {
+			return Promise.resolve(resource);
+		}
+		if (resource instanceof String || typeof resource === "string") {
+			let server = this.internal.servers.find(s => s.webhooks.has("id", resource));
+			if (server) {
+				return Promise.resolve(server.webhooks.get("id", resource));
+			}
+		}
+
+		var error = new Error("Could not resolve webhook");
+		error.resource = resource;
+		return Promise.reject(error);
 	}
 
 	resolveMessage(resource) {

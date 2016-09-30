@@ -4,7 +4,6 @@ const Constants = {};
 
 const API = Constants.API = "https://discordapp.com/api";
 const CDN = Constants.CDN = "https://cdn.discordapp.com";
-const WEBHOOK = Constants.WEBHOOK = "https://canary.discordapp.com/api/webhooks";
 
 const Endpoints = Constants.Endpoints = {
 	// general endpoints
@@ -52,6 +51,8 @@ const Endpoints = Constants.Endpoints = {
 	WEBHOOKS: `${API}/webhooks`,
 	WEBHOOK: (webhookID) => `${Endpoints.WEBHOOKS}/webhook-object`,
 	WEBHOOK_WITH_TOKEN: (webhookID, webhookToken) => `${Endpoints.WEBHOOKS}/${webhookToken}/webhook-object`,
+	WEBHOOK_MESSAGE: (webhookID, webhookToken) => `${Endpoints.WEBHOOKS}/${webhookID}/${webhookToken}`,
+	WEBHOOK_MESSAGE_SLACK: (webhookID, webhookToken) => `${Endpoints.WEBHOOK_MESSAGE(webhookID, webhookToken)}/slack`,
 
 
 	// friends

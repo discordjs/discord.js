@@ -1606,6 +1606,41 @@ export default class InternalClient {
 		})
 	}
 
+	sendWebhookMessage(webhook, _content, options = {}) {
+		return this.resolver.resolveWebhook(webhook)
+			.then(destination => {
+				var content = this.resolver.resolveString(_content);
+
+				if (this.client.options.disableEveryone || options.disableEveryone) {
+					content = content.replace(/(@)(everyone|here)/g, '$1\u200b$2');
+				}
+
+				if (!options.hasOwnProperty("username")) {
+					options.username = this.user.username;
+				}
+
+				let slack;
+				if (options.hasOwnProperty("slack")) {
+					slack = options.slack;
+					delete options["slack"];
+				}
+
+				options.content = _content;
+
+				console.log(options);
+
+				return this.apiRequest(
+					"post",
+					`${Endpoints.WEBHOOK_MESSAGE(destination.id, destination.token)}${slack ? "/slack" : ""}?wait=true`,
+					true,
+					options
+				)
+					.catch(console.error)
+					.then(res => destination.channel.messages.add(new Message(res, destination.channel, this.client)));
+			});
+
+	}
+
 	//def getOAuthApplication
 	getOAuthApplication(appID) {
 		appID = appID || "@me";
