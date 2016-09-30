@@ -536,6 +536,19 @@ class RESTMethods {
     });
   }
 
+  fetchGuildWebhooks(guild) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.guildWebhooks(guild.id), true)
+      .then(data => {
+        const hooks = new Collection();
+        for (const hook of data) {
+          hooks.set(hook.id, new Webhook(this.rest.client, hook));
+        }
+        resolve(hooks);
+      }).catch(reject);
+    });
+  }
+
   fetchChannelWebhooks(channel) {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('get', Constants.Endpoints.channelWebhooks(channel.id), true)
@@ -545,6 +558,15 @@ class RESTMethods {
           hooks.set(hook.id, new Webhook(this.rest.client, hook));
         }
         resolve(hooks);
+      }).catch(reject);
+    });
+  }
+
+  fetchChannelWebhook(channel, id) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.channelWebhook(channel.id, id), true)
+      .then(data => {
+        resolve(new Webhook(this.rest.client, data));
       }).catch(reject);
     });
   }
