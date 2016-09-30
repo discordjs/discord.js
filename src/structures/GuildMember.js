@@ -254,6 +254,16 @@ class GuildMember {
   }
 
   /**
+   * Checks whether the roles of the member allows them to perform specific actions, and lists any missing permissions.
+   * @param {PermissionResolvable[]} permissions The permissions to check for
+   * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
+   * @returns {array}
+   */
+  missingPermissions(permissions, explicit = false) {
+    return permissions.filter(p => !this.hasPermission(p, explicit));
+  }
+
+  /**
    * Edit a Guild Member
    * @param {GuildmemberEditData} data The data to edit the member with
    * @returns {Promise<GuildMember>}
