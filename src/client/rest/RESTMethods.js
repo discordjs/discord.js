@@ -562,9 +562,9 @@ class RESTMethods {
     });
   }
 
-  fetchChannelWebhook(channel, id) {
+  fetchWebhook(id) {
     return new Promise((resolve, reject) => {
-      this.rest.makeRequest('get', Constants.Endpoints.channelWebhook(channel.id, id), true)
+      this.rest.makeRequest('get', Constants.Endpoints.webhook(id), true)
       .then(data => {
         resolve(new Webhook(this.rest.client, data));
       }).catch(reject);
@@ -584,14 +584,14 @@ class RESTMethods {
 
   deleteChannelWebhook(webhook) {
     return new Promise((resolve, reject) => {
-      this.rest.makeRequest('delete', Constants.Endpoints.webhook(webhook.id, webhook.token), false)
+      this.rest.makeRequest('delete', Constants.Endpoints.webhookToken(webhook.id, webhook.token), false)
       .then(resolve).catch(reject);
     });
   }
 
   editChannelWebhook(webhook, name, avatar) {
     return new Promise((resolve, reject) => {
-      this.rest.makeRequest('patch', Constants.Endpoints.webhook(webhook.id, webhook.token), false, {
+      this.rest.makeRequest('patch', Constants.Endpoints.webhookToken(webhook.id, webhook.token), false, {
         name: name, avatar: avatar,
       })
       .then(data => {
@@ -608,7 +608,7 @@ class RESTMethods {
         content = content.replace('@everyone', '@\u200beveryone').replace('@here', '@\u200bhere');
       }
 
-      this.rest.makeRequest('post', `${Constants.Endpoints.webhook(webhook.id, webhook.token)}?wait=true`, false, {
+      this.rest.makeRequest('post', `${Constants.Endpoints.webhookToken(webhook.id, webhook.token)}?wait=true`, false, {
         content: content, username: webhook.name, avatar_url: avatarURL, tts: tts, file: file, embeds: embeds,
       })
       .then(data => {

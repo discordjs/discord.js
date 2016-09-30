@@ -344,7 +344,7 @@ class TextBasedChannel {
    * @returns {Promise<Webhook>}
    */
   fetchWebhook(id) {
-    return this.client.rest.methods.fetchChannelWebhook(this, id);
+    return this.client.rest.methods.fetchWebhook(id);
   }
 
   /**
@@ -389,6 +389,7 @@ exports.applyToClass = (structure, full = false) => {
     props.push('createCollector');
     props.push('awaitMessages');
     props.push('fetchWebhooks');
+    props.push('fetchWebhook');
     props.push('createWebhook');
   }
   for (const prop of props) applyProp(structure, prop);

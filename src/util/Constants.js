@@ -107,7 +107,8 @@ const Endpoints = exports.Endpoints = {
   channelWebhooks: (channelID) => `${Endpoints.channel(channelID)}/webhooks`,
 
   // webhooks
-  webhook: (webhookID, token) => `${API}/webhooks/${webhookID}/${token}`,
+  webhook: (webhookID) => `${API}/webhooks/${webhookID}`,
+  webhookToken: (webhookID, token) => `${API}/webhooks/${webhookID}/${token}`,
 };
 
 exports.Status = {
