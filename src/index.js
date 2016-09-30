@@ -1,5 +1,3 @@
-const path = require('path');
-
 module.exports = {
   Client: require('./client/Client'),
   Shard: require('./sharding/Shard'),
@@ -31,5 +29,5 @@ module.exports = {
   User: require('./structures/User'),
   VoiceChannel: require('./structures/VoiceChannel'),
 
-  version: require(path.join(__dirname, '..', 'package')).version,
+  version: require('../package').version,
 };
