@@ -329,6 +329,26 @@ class TextBasedChannel {
     this.messages.set(message.id, message);
     return message;
   }
+
+  fetchWebhooks() {
+    return this.client.rest.methods.fetchChannelWebhooks(this);
+  }
+
+  createWebhook(name, avatar) {
+    return new Promise((resolve, reject) => {
+      if (avatar) {
+        this.client.resolver.resolveFile(avatar).then(file => {
+          let base64 = new Buffer(file, 'binary').toString('base64');
+          let dataURI = `data:;base64,${base64}`;
+          this.client.rest.methods.createChannelWebhook(this, name, dataURI)
+          .then(resolve).catch(reject);
+        }).catch(reject);
+      } else {
+        this.client.rest.methods.createChannelWebhook(this, name)
+        .then(resolve).catch(reject);
+      }
+    });
+  }
 }
 
 exports.applyToClass = (structure, full = false) => {
@@ -345,6 +365,8 @@ exports.applyToClass = (structure, full = false) => {
     props.push('fetchPinnedMessages');
     props.push('createCollector');
     props.push('awaitMessages');
+    props.push('fetchWebhooks');
+    props.push('createWebhook');
   }
   for (const prop of props) applyProp(structure, prop);
 };
