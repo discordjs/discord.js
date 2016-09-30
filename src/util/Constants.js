@@ -1,3 +1,5 @@
+exports.Package = require('../../package.json');
+
 /**
  * Options for a Client.
  * @typedef {Object} ClientOptions
@@ -10,7 +12,8 @@
  * (in seconds, 0 for forever)
  * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
  * the max message lifetime (in seconds, 0 for never)
- * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup
+ * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup, as well as
+ * upon joining a guild
  * @property {boolean} [disableEveryone=false] Default value for MessageOptions.disableEveryone
  * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
  * corresponding websocket events
@@ -26,7 +29,6 @@ exports.DefaultOptions = {
   fetchAllMembers: false,
   disableEveryone: false,
   restWsBridgeTimeout: 5000,
-  protocolVersion: 6,
 
   /**
    * Websocket options. These are left as snake_case to match the API.
@@ -47,23 +49,6 @@ exports.DefaultOptions = {
   },
 };
 
-exports.Status = {
-  READY: 0,
-  CONNECTING: 1,
-  RECONNECTING: 2,
-  IDLE: 3,
-  NEARLY: 4,
-};
-
-exports.ChannelTypes = {
-  text: 0,
-  DM: 1,
-  voice: 2,
-  groupDM: 3,
-};
-
-exports.Package = require('../../package.json');
-
 exports.Errors = {
   NO_TOKEN: 'Request to use token, but token was unavailable to the client.',
   NO_BOT_ACCOUNT: 'You ideally should be using a bot account!',
@@ -75,10 +60,10 @@ exports.Errors = {
   INVALID_SHARD: 'Invalid shard settings were provided.',
 };
 
-const API = `https://discordapp.com/api/v${exports.DefaultOptions.protocolVersion}`;
-
+const PROTOCOL_VERSION = exports.PROTOCOL_VERSION = 6;
+const API = exports.API = `https://discordapp.com/api/v${PROTOCOL_VERSION}`;
 const Endpoints = exports.Endpoints = {
-  // general endpoints
+  // general
   login: `${API}/auth/login`,
   logout: `${API}/auth/logout`,
   gateway: `${API}/gateway`,
@@ -118,6 +103,21 @@ const Endpoints = exports.Endpoints = {
   channelTyping: (channelID) => `${Endpoints.channel(channelID)}/typing`,
   channelPermissions: (channelID) => `${Endpoints.channel(channelID)}/permissions`,
   channelMessage: (channelID, messageID) => `${Endpoints.channelMessages(channelID)}/${messageID}`,
+};
+
+exports.Status = {
+  READY: 0,
+  CONNECTING: 1,
+  RECONNECTING: 2,
+  IDLE: 3,
+  NEARLY: 4,
+};
+
+exports.ChannelTypes = {
+  text: 0,
+  DM: 1,
+  voice: 2,
+  groupDM: 3,
 };
 
 exports.OPCodes = {
@@ -248,7 +248,5 @@ const PermissionFlags = exports.PermissionFlags = {
 
 let _ALL_PERMISSIONS = 0;
 for (const key in PermissionFlags) _ALL_PERMISSIONS |= PermissionFlags[key];
-
 exports.ALL_PERMISSIONS = _ALL_PERMISSIONS;
-
 exports.DEFAULT_PERMISSIONS = 104324097;

@@ -40,7 +40,7 @@ class RESTMethods {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('get', Constants.Endpoints.gateway, true)
         .then(res => {
-          this.rest.client.ws.gateway = `${res.url}/?encoding=json&v=${this.rest.client.options.protocolVersion}`;
+          this.rest.client.ws.gateway = `${res.url}/?encoding=json&v=${Constants.PROTOCOL_VERSION}`;
           resolve(this.rest.client.ws.gateway);
         })
         .catch(reject);
