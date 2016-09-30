@@ -41,23 +41,7 @@ class StreamDispatcher extends EventEmitter {
   }
 
   /**
-   * Emitted when the dispatcher starts/stops speaking
-   * @event StreamDispatcher#speaking
-   * @param {boolean} value Whether or not the dispatcher is speaking
-   */
-  _setSpeaking(value) {
-    this.speaking = value;
-    this.emit('speaking', value);
-  }
-
-  _sendBuffer(buffer, sequence, timestamp) {
-    let repeats = this.passes;
-    const packet = this._createPacket(sequence, timestamp, this.player.opusEncoder.encode(buffer));
-    while (repeats--) this.player.connection.udp.send(packet);
-  }
-
-  /**
-   * how long the stream dispatcher has been "speaking" for
+   * How long the stream dispatcher has been "speaking" for
    * @type {number}
    * @readonly
    */
@@ -66,12 +50,82 @@ class StreamDispatcher extends EventEmitter {
   }
 
   /**
-   * The total time, taking into account pauses and skips, that the dispatcher has been streaming for.
+   * The total time, taking into account pauses and skips, that the dispatcher has been streaming for
    * @type {number}
    * @readonly
    */
   get totalStreamTime() {
     return this.time + this.streamingData.pausedTime;
+  }
+
+  /**
+   * The volume of the stream, relative to the stream's input volume
+   * @type {number}
+   * @readonly
+   */
+  get volume() {
+    return this._volume;
+  }
+
+  /**
+   * Sets the volume relative to the input stream - i.e. 1 is normal, 0.5 is half, 2 is double.
+   * @param {number} volume The volume that you want to set
+   */
+  setVolume(volume) {
+    this._volume = volume;
+  }
+
+  /**
+   * Set the volume in decibels
+   * @param {number} db The decibels
+   */
+  setVolumeDecibels(db) {
+    this._volume = Math.pow(10, db / 20);
+  }
+
+  /**
+   * Set the volume so that a perceived value of 0.5 is half the perceived volume etc.
+   * @param {number} value The value for the volume
+   */
+  setVolumeLogarithmic(value) {
+    this._volume = Math.pow(value, 1.660964);
+  }
+
+  /**
+   * Stops sending voice packets to the voice connection (stream may still progress however)
+   */
+  pause() {
+    this._setPaused(true);
+  }
+
+  /**
+   * Resumes sending voice packets to the voice connection (may be further on in the stream than when paused)
+   */
+  resume() {
+    this._setPaused(false);
+  }
+
+  /**
+   * Stops the current stream permanently and emits an `end` event.
+   */
+  end() {
+    this._triggerTerminalState('end', 'user requested');
+  }
+
+  _setSpeaking(value) {
+    this.speaking = value;
+    /**
+     * Emitted when the dispatcher starts/stops speaking
+     * @event StreamDispatcher#speaking
+     * @param {boolean} value Whether or not the dispatcher is speaking
+     */
+    this.emit('speaking', value);
+  }
+
+  _sendBuffer(buffer, sequence, timestamp) {
+    let repeats = this.passes;
+    const packet = this._createPacket(sequence, timestamp, this.player.opusEncoder.encode(buffer));
+    while (repeats--) this.player.connection.udp.send(packet);
   }
 
   _createPacket(sequence, timestamp, buffer) {
@@ -169,21 +223,21 @@ class StreamDispatcher extends EventEmitter {
     }
   }
 
-  /**
-   * Emitted once the stream has ended. Attach a `once` listener to this.
-   * @event StreamDispatcher#end
-   */
   _triggerEnd() {
+    /**
+     * Emitted once the stream has ended. Attach a `once` listener to this.
+     * @event StreamDispatcher#end
+     */
     this.emit('end');
   }
 
-  /**
-   * Emitted once the stream has encountered an error. Attach a `once` listener to this. Also emits `end`.
-   * @event StreamDispatcher#error
-   * @param {Error} err The encountered error
-   */
   _triggerError(err) {
     this.emit('end');
+    /**
+     * Emitted once the stream has encountered an error. Attach a `once` listener to this. Also emits `end`.
+     * @event StreamDispatcher#error
+     * @param {Error} err The encountered error
+     */
     this.emit('error', err);
   }
 
@@ -235,60 +289,6 @@ class StreamDispatcher extends EventEmitter {
       this.paused = false;
       this._setSpeaking(true);
     }
-  }
-
-  /**
-   * Stops the current stream permanently and emits an `end` event.
-   */
-  end() {
-    this._triggerTerminalState('end', 'user requested');
-  }
-
-  /**
-   * The volume of the stream, relative to the stream's input volume
-   * @type {number}
-   * @readonly
-   */
-  get volume() {
-    return this._volume;
-  }
-
-  /**
-   * Sets the volume relative to the input stream - i.e. 1 is normal, 0.5 is half, 2 is double.
-   * @param {number} volume The volume that you want to set
-   */
-  setVolume(volume) {
-    this._volume = volume;
-  }
-
-  /**
-   * Set the volume in decibels
-   * @param {number} db The decibels
-   */
-  setVolumeDecibels(db) {
-    this._volume = Math.pow(10, db / 20);
-  }
-
-  /**
-   * Set the volume so that a perceived value of 0.5 is half the perceived volume etc.
-   * @param {number} value The value for the volume
-   */
-  setVolumeLogarithmic(value) {
-    this._volume = Math.pow(value, 1.660964);
-  }
-
-  /**
-   * Stops sending voice packets to the voice connection (stream may still progress however)
-   */
-  pause() {
-    this._setPaused(true);
-  }
-
-  /**
-   * Resumes sending voice packets to the voice connection (may be further on in the stream than when paused)
-   */
-  resume() {
-    this._setPaused(false);
   }
 }
 
