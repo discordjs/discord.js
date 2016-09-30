@@ -52,7 +52,7 @@ class EvaluatedPermissions {
   hasPermissions(permissions, explicit = false) {
     return permissions.map(p => this.hasPermission(p, explicit)).every(v => v);
   }
-  
+
   /**
    * Checks whether the user has all specified permissions, and lists any missing permissions.
    * @param {PermissionResolvable[]} permissions The permissions to check for
