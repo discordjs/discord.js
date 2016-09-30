@@ -1177,6 +1177,16 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
+	getServerWebhooks(guild, callback = (/*err, {}*/) => {}) {
+		return this.internal.getServerWebhooks(guild)
+			.then(dataCallback(callback), errorCallback(callback));
+	}
+
+	getChannelWebhooks(channel, callback = (/*err, {}*/) => {}) {
+		return this.internal.getChannelWebhooks(channel)
+			.then(dataCallback(callback), errorCallback(callback));
+	}
+
 	// def getOAuthApplication
 	getOAuthApplication(appID, callback = (/*err, bans*/) => { }) {
 		if (typeof appID === "function") {

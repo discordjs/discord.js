@@ -42,6 +42,7 @@ export default class Server extends Equality {
 		this.name = data.name;
 		this.members = new Cache();
 		this.channels = new Cache();
+		this.webhooks = new Cache();
 		this.roles = new Cache();
 		this.emojis = new Cache();
 		this.icon = data.icon;

@@ -21,6 +21,7 @@ import Server from "../Structures/Server";
 import Message from "../Structures/Message";
 import Role from "../Structures/Role";
 import Invite from "../Structures/Invite";
+import Webhook from "../Structures/Webhook";
 import VoiceConnection from "../Voice/VoiceConnection";
 import TokenCacher from "../Util/TokenCacher";
 
@@ -58,7 +59,7 @@ export default class InternalClient {
 		var promise = new Promise((res, rej) => {
 			resolve = res;
 			reject = rej;
-		})
+		});
 		var buckets = [];
         var match = url.match(/\/channels\/([0-9]+)\/messages(\/[0-9]+)?$/);
         if(match) {
@@ -311,7 +312,7 @@ export default class InternalClient {
 						"self_deaf": false
 					}
 				});
-			}
+			};
 
 			var joinVoice = () => {
 				return new Promise((resolve, reject) => {
@@ -349,7 +350,7 @@ export default class InternalClient {
 					this.client.on("raw", check);
 					joinSendWS();
 				});
-			}
+			};
 
 			var existingServerConn = this.voiceConnections.get("server", channel.server); // same server connection
 			if (existingServerConn) {
@@ -1438,7 +1439,7 @@ export default class InternalClient {
 		var options = {
 			avatar: this.resolver.resolveToBase64(data.avatar) || this.user.avatar,
 			username: data.username || this.user.username
-		}
+		};
 
 		if (this.email || data.email) {
 			options.email = data.email || this.email;
@@ -1507,7 +1508,7 @@ export default class InternalClient {
 				position: (data.position ? data.position : channel.position),
 				user_limit: (data.userLimit ? data.userLimit : channel.userLimit),
 				bitrate: (data.bitrate ? data.bitrate : channel.bitrate ? channel.bitrate : undefined)
-			}
+			};
 
 			if (data.position < 0) {
 				return Promise.reject(new Error("Position cannot be less than 0"));
@@ -1564,6 +1565,45 @@ export default class InternalClient {
 		user = this.resolver.resolveUser(user);
 
 		return this.apiRequest("delete", `${Endpoints.FRIENDS}/${user.id}`, true);
+	}
+
+	getServerWebhooks(server) {
+		server = this.resolver.resolveServer(server);
+
+		if (!server) {
+			return Promise.reject(new Error("Failed to resolve server"));
+		}
+
+		return this.apiRequest("get", Endpoints.SERVER_WEBHOOKS(server.id), true)
+			.then(res => {console.log(res); return res;}).then(res => res.map(
+				webhook => server.webhooks.add(new Webhook(
+					webhook,
+					server,
+					this.channels.get("id", webhook.channel_id),
+					this.users.get("id", webhook.user.id)
+				))
+			));
+	}
+
+	getChannelWebhooks(channel) {
+		return this.resolver.resolveChannel(channel).then(channel => {
+			if (!channel) {
+				return Promise.reject(new Error("Failed to resolve channel"));
+			}
+
+			return this.apiRequest("get", Endpoints.CHANNEL_WEBHOOKS(channel.id), true)
+				.then(res => {
+					console.log(res);
+					return res;
+				}).then(res => res.map(
+					webhook => channel.webhooks.add(new Webhook(
+						webhook,
+						this.servers.get("id", webhook.guild_id),
+						channel,
+						this.users.get("id", webhook.user.id)
+					))
+				));
+		})
 	}
 
 	//def getOAuthApplication

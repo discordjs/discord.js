@@ -4,6 +4,7 @@ const Constants = {};
 
 const API = Constants.API = "https://discordapp.com/api";
 const CDN = Constants.CDN = "https://cdn.discordapp.com";
+const WEBHOOK = Constants.WEBHOOK = "https://canary.discordapp.com/api/webhooks";
 
 const Endpoints = Constants.Endpoints = {
 	// general endpoints
@@ -33,6 +34,7 @@ const Endpoints = Constants.Endpoints = {
 	SERVER_INTEGRATIONS: (serverID) => `${Endpoints.SERVER(serverID) }/integrations`,
 	SERVER_MEMBERS: (serverID) => `${Endpoints.SERVER(serverID) }/members`,
 	SERVER_CHANNELS: (serverID) => `${Endpoints.SERVER(serverID) }/channels`,
+	SERVER_WEBHOOKS: (serverID) => `${Endpoints.SERVER(serverID) }/webhooks`,
 
 	// channels
 	CHANNELS: `${API}/channels`,
@@ -44,6 +46,13 @@ const Endpoints = Constants.Endpoints = {
 	CHANNEL_MESSAGE: (channelID, messageID) => `${Endpoints.CHANNEL_MESSAGES(channelID)}/${messageID}`,
 	CHANNEL_PINS: (channelID) => `${Endpoints.CHANNEL(channelID) }/pins`,
 	CHANNEL_PIN: (channelID, messageID) => `${Endpoints.CHANNEL_PINS(channelID) }/${messageID}`,
+	CHANNEL_WEBHOOKS: (channelID) => `${Endpoints.CHANNEL(channelID) }/webhooks`,
+
+	// webhooks
+	WEBHOOKS: `${API}/webhooks`,
+	WEBHOOK: (webhookID) => `${Endpoints.WEBHOOKS}/webhook-object`,
+	WEBHOOK_WITH_TOKEN: (webhookID, webhookToken) => `${Endpoints.WEBHOOKS}/${webhookToken}/webhook-object`,
+
 
 	// friends
 	FRIENDS: `${API}/users/@me/relationships`
