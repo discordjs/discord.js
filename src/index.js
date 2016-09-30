@@ -28,6 +28,7 @@ module.exports = {
   TextChannel: require('./structures/TextChannel'),
   User: require('./structures/User'),
   VoiceChannel: require('./structures/VoiceChannel'),
+  Webhook: require('./structures/Webhook'),
 
   version: require('../package').version,
 };
