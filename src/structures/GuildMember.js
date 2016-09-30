@@ -252,6 +252,16 @@ class GuildMember {
     if (!explicit && this.user.id === this.guild.ownerID) return true;
     return permissions.map(p => this.hasPermission(p, explicit)).every(v => v);
   }
+  
+  /**
+   * Checks whether the roles of the member allows them to perform specific actions, and lists any missing permissions.
+   * @param {PermissionResolvable[]} permissions The permissions to check for
+   * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
+   * @returns {array}
+   */
+  missingPermissions(permissions, explicit = false) {
+    return permissions.filter(p => !this.hasPermission(p, explicit));
+  }
 
   /**
    * Edit a Guild Member
