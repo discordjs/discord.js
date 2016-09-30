@@ -68,13 +68,13 @@ class Webhook {
    */
 
   /**
-   * Send a message to this channel
+   * Send a message with this webhook
    * @param {StringResolvable} content The content to send
    * @param {MessageOptions} [options={}] The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
    * // send a message
-   * channel.sendMessage('hello!')
+   * webook.sendMessage('hello!')
    *  .then(message => console.log(`Sent message: ${message.content}`))
    *  .catch(console.error);
    */
@@ -83,13 +83,13 @@ class Webhook {
   }
 
   /**
-   * Send a text-to-speech message to this channel
+   * Send a text-to-speech message with this webhook
    * @param {StringResolvable} content The content to send
    * @param {MessageOptions} [options={}] The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
    * // send a TTS message
-   * channel.sendTTSMessage('hello!')
+   * webhook.sendTTSMessage('hello!')
    *  .then(message => console.log(`Sent tts message: ${message.content}`))
    *  .catch(console.error);
    */
@@ -99,7 +99,7 @@ class Webhook {
   }
 
   /**
-   * Send a file to this channel
+   * Send a file with this webhook
    * @param {FileResolvable} attachment The file to send
    * @param {string} [fileName="file.jpg"] The name and extension of the file
    * @param {StringResolvable} [content] Text message to send with the attachment
@@ -127,7 +127,7 @@ class Webhook {
   }
 
   /**
-   * Send a code block to this channel
+   * Send a code block with this webhook
    * @param {string} lang Language for the code block
    * @param {StringResolvable} content Content of the code block
    * @param {MessageOptions} options The options to provide

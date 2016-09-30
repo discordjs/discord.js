@@ -343,6 +343,10 @@ class TextBasedChannel {
    * @param {string} name The name of the webhook.
    * @param {FileResolvable=} avatar The avatar for the webhook.
    * @returns {Webhook} webhook The created webhook.
+   * @example
+   * channel.createWebhook('Snek', 'http://snek.s3.amazonaws.com/topSnek.png')
+   *  .then(webhook => console.log(`Created Webhook ${webhook}`))
+   *  .catch(console.log)
    */
   createWebhook(name, avatar) {
     return new Promise((resolve, reject) => {
