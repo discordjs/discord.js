@@ -552,10 +552,28 @@ class RESTMethods {
   createChannelWebhook(channel, name, avatar) {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('post', Constants.Endpoints.channelWebhooks(channel.id), true, {
-        channel: channel, name: name, avatar: avatar,
+        name: name, avatar: avatar,
       })
       .then(data => {
         resolve(new Webhook(this.rest.client, data));
+      }).catch(reject);
+    });
+  }
+
+  deleteChannelWebhook(webhook) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('delete', Constants.Endpoints.webhook(webhook.id, webhook.token), false)
+      .then(resolve).catch(reject);
+    });
+  }
+
+  editChannelWebhook(webhook, name, avatar) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('patch', Constants.Endpoints.webhook(webhook.id, webhook.token), false, {
+        name: name, avatar: avatar,
+      })
+      .then(data => {
+        resolve(data);
       }).catch(reject);
     });
   }

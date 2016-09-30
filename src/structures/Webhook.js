@@ -56,7 +56,7 @@ class Webhook {
      * The owner of the Webhook
      * @type {User}
      */
-    this.owner = this.client.users.get(data.user.id);
+    if (data.user) this.owner = this.client.users.get(data.user.id);
   }
 
   /**
@@ -141,6 +141,38 @@ class Webhook {
     }
     content = this.client.resolver.resolveString(content).replace(/```/g, '`\u200b``');
     return this.sendMessage(`\`\`\`${lang ? lang : ''}\n${content}\n\`\`\``, options);
+  }
+
+  /**
+   * Delete the Webhook
+   * @returns {Promise}
+   */
+  delete() {
+    return this.client.rest.methods.deleteChannelWebhook(this);
+  }
+
+  /**
+   * Edit the Webhook.
+   * @param {string} name The new name for the Webhook
+   * @param {FileResolvable} avatar The new avatar for the Webhook.
+   * @returns {Promise<Webhook>}
+   */
+  edit(name, avatar) {
+    return new Promise((resolve, reject) => {
+      if (avatar) {
+        this.client.resolver.resolveFile(avatar).then(file => {
+          let base64 = new Buffer(file, 'binary').toString('base64');
+          let dataURI = `data:;base64,${base64}`;
+          this.client.rest.methods.editChannelWebhook(this, name, dataURI)
+          .then(resolve).catch(reject);
+        }).catch(reject);
+      } else {
+        this.client.rest.methods.editChannelWebhook(this, name)
+        .then(data => {
+          this.setup(data);
+        }).catch(reject);
+      }
+    });
   }
 }
 
