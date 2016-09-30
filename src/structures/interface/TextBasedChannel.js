@@ -330,10 +330,20 @@ class TextBasedChannel {
     return message;
   }
 
+  /**
+   * Fetch all webhooks for the channel.
+   * @returns {Collection<Webhook>}
+   */
   fetchWebhooks() {
     return this.client.rest.methods.fetchChannelWebhooks(this);
   }
 
+  /**
+   * Create a webhook for the channel.
+   * @param {string} name The name of the webhook.
+   * @param {FileResolvable=} avatar The avatar for the webhook.
+   * @returns {Webhook} webhook The created webhook.
+   */
   createWebhook(name, avatar) {
     return new Promise((resolve, reject) => {
       if (avatar) {
