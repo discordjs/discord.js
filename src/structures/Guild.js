@@ -107,8 +107,8 @@ class Guild {
     this.features = data.features;
 
     /**
-     * An array of guild emojis.
-     * @type {Object[]}
+     * A Collection of emojis that are in this Guild. The key is the emoji's ID, the value is the emoji.
+     * @type {Collection<string, Emoji>}
      */
     this.emojis = new Collection();
     for (const emoji of data.emojis) this.emojis.set(emoji.id, new Emoji(this, emoji));
