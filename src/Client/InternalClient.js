@@ -1592,10 +1592,7 @@ export default class InternalClient {
 			}
 
 			return this.apiRequest("get", Endpoints.CHANNEL_WEBHOOKS(channel.id), true)
-				.then(res => {
-					console.log(res);
-					return res;
-				}).then(res => res.map(
+				.then(res => res.map(
 					webhook => channel.webhooks.add(new Webhook(
 						webhook,
 						this.servers.get("id", webhook.guild_id),
@@ -1603,6 +1600,61 @@ export default class InternalClient {
 						this.users.get("id", webhook.user.id)
 					))
 				));
+		})
+	}
+
+	editWebhook(webhook, options = {}) {
+		return this.resolver.resolveWebhook(webhook).then(webhook => {
+			if (!webhook) {
+				return Promise.reject(new Error(" Failed to resolve webhook"))
+			}
+
+			if (options.hasOwnProperty("avatar")) {
+				options.avatar = this.resolver.resolveToBase64(options.avatar);
+			}
+
+			return this.apiRequest("patch", Endpoints.WEBHOOK(webhook.id), true, options)
+				.then(res => {
+					webhook.name = res.name;
+					webhook.avatar = res.hasOwnProperty('avatar') ? res.avatar : webhook.avatar;
+				});
+		})
+	}
+
+	createWebhook(channel, options = {}) {
+		return this.resolver.resolveChannel(channel)
+			.then(destination => {
+				if (!channel) {
+					return Promise.reject(new Error(" Failed to resolve channel"))
+				}
+
+				if (options.hasOwnProperty("avatar")) {
+					options.avatar = this.resolver.resolveToBase64(options.avatar);
+				}
+
+				return this.apiRequest("post", Endpoints.CHANNEL_WEBHOOKS(destination.id), true, options)
+					.then(res => {
+						console.log(res);
+						return res;
+					}).then(webhook => channel.webhooks.add(new Webhook(
+						webhook,
+						this.servers.get("id", webhook.guild_id),
+						channel,
+						this.users.get("id", webhook.user.id)
+					)));
+			});
+	}
+
+	deleteWebhook(webhook) {
+		return this.resolver.resolveWebhook(webhook).then(webhook => {
+			if (!webhook) {
+				return Promise.reject(new Error(" Failed to resolve webhook"))
+			}
+
+			return this.apiRequest("delete", Endpoints.WEBHOOK(webhook.id), true)
+				.then(() => {
+					webhook.channel.webhooks.remove(webhook);
+				});
 		})
 	}
 

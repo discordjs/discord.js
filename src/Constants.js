@@ -49,9 +49,9 @@ const Endpoints = Constants.Endpoints = {
 
 	// webhooks
 	WEBHOOKS: `${API}/webhooks`,
-	WEBHOOK: (webhookID) => `${Endpoints.WEBHOOKS}/webhook-object`,
-	WEBHOOK_WITH_TOKEN: (webhookID, webhookToken) => `${Endpoints.WEBHOOKS}/${webhookToken}/webhook-object`,
-	WEBHOOK_MESSAGE: (webhookID, webhookToken) => `${Endpoints.WEBHOOKS}/${webhookID}/${webhookToken}`,
+	WEBHOOK: (webhookID) => `${Endpoints.WEBHOOKS}/${webhookID}`,
+	WEBHOOK_WITH_TOKEN: (webhookID, webhookToken) => `${Endpoints.WEBHOOKS}/${webhookToken}`,
+	WEBHOOK_MESSAGE: (webhookID, webhookToken) => `${Endpoints.WEBHOOK(webhookID)}/${webhookToken}`,
 	WEBHOOK_MESSAGE_SLACK: (webhookID, webhookToken) => `${Endpoints.WEBHOOK_MESSAGE(webhookID, webhookToken)}/slack`,
 
 
