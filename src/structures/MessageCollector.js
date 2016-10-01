@@ -93,6 +93,34 @@ class MessageCollector extends EventEmitter {
   }
 
   /**
+   * Returns a promise that resolves when a valid message is sent. Rejects
+   * with collected messages if the Collector ends before receiving a message.
+   * @type {Promise<Message>}
+   * @readonly
+   */
+  get next() {
+    return new Promise((resolve, reject) => {
+      const cleanup = () => {
+        this.removeListener(onMessage);
+        this.removeListener(onEnd);
+      };
+
+      const onMessage = (...args) => {
+        cleanup();
+        resolve(...args);
+      };
+
+      const onEnd = (...args) => {
+        cleanup();
+        reject(...args);
+      };
+
+      this.once('message', onMessage);
+      this.once('end', onEnd);
+    });
+  }
+
+  /**
    * Stops the collector and emits `end`.
    * @param {string} [reason='user'] An optional reason for stopping the collector
    */
