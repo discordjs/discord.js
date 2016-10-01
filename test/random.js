@@ -17,7 +17,7 @@ client.on('ready', () => {
 });
 
 client.on('presenceUpdate', (o, n) => {
-  if (o.username.startsWith('U'))
+  if (o.username.startsWith('hydr'))
   console.log(o.username, o.presence.status, n.presence.status);
 });
 
@@ -34,6 +34,23 @@ client.on('message', message => {
     if (message.content === 'makechann') {
       if (message.channel.guild) {
         message.channel.guild.createChannel('hi', 'text').then(console.log);
+      }
+    }
+
+    if (message.content === 'imma queue pls') {
+      let count = 0;
+      let ecount = 0;
+      for(let x = 0; x < 4000; x++) {
+        message.channel.sendMessage(`this is message ${x} of 3999`)
+          .then(m => {
+            count++;
+            console.log('reached', count, ecount);
+          })
+          .catch(m => {
+            console.error(m);
+            ecount++;
+            console.log('reached', count, ecount);
+          });
       }
     }
 

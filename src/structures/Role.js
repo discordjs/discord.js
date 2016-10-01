@@ -308,7 +308,7 @@ class Role {
    * positive number if the first's is higher (second's is lower), 0 if equal
    */
   static comparePositions(role1, role2) {
-    if (role1.position === role2.position) return role1.id - role2.id;
+    if (role1.position === role2.position) return role2.id - role1.id;
     return role1.position - role2.position;
   }
 }
