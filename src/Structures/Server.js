@@ -132,6 +132,19 @@ export default class Server extends Equality {
 		}
 	}
 
+	get webhooks() {
+		return this.channels
+			.map(c => c.webhooks)
+			.reduce((previousChannel, currentChannel) => {
+				if (currentChannel) {
+					currentChannel.forEach(webhook => {
+						previousChannel.add(webhook);
+					})
+				}
+				return previousChannel;
+			}, new Cache("id"));
+	}
+
 	get createdAt() {
 		return new Date((+this.id / 4194304) + 1420070400000);
 	}

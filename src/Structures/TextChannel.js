@@ -10,6 +10,7 @@ export default class TextChannel extends ServerChannel{
 
 		this.topic = data.topic;
 		this.lastMessageID = data.last_message_id || data.lastMessageID;
+		this.webhooks = new Cache("id");
 		this.messages = new Cache("id", client.options.maxCachedMessages);
 	}
 

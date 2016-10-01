@@ -43,6 +43,7 @@ import ServerChannel from "./Structures/ServerChannel";
 import TextChannel from "./Structures/TextChannel";
 import User from "./Structures/User";
 import VoiceChannel from "./Structures/VoiceChannel";
+import Webhook from "./Structures/Webhook";
 import Constants from "./Constants";
 import Cache from "./Util/Cache.js";
 
@@ -60,6 +61,7 @@ export default {
 	TextChannel,
 	User,
 	VoiceChannel,
+	Webhook,
 	Constants,
 	Cache
 };

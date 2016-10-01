@@ -33,6 +33,7 @@ const Endpoints = Constants.Endpoints = {
 	SERVER_INTEGRATIONS: (serverID) => `${Endpoints.SERVER(serverID) }/integrations`,
 	SERVER_MEMBERS: (serverID) => `${Endpoints.SERVER(serverID) }/members`,
 	SERVER_CHANNELS: (serverID) => `${Endpoints.SERVER(serverID) }/channels`,
+	SERVER_WEBHOOKS: (serverID) => `${Endpoints.SERVER(serverID) }/webhooks`,
 
 	// channels
 	CHANNELS: `${API}/channels`,
@@ -44,6 +45,15 @@ const Endpoints = Constants.Endpoints = {
 	CHANNEL_MESSAGE: (channelID, messageID) => `${Endpoints.CHANNEL_MESSAGES(channelID)}/${messageID}`,
 	CHANNEL_PINS: (channelID) => `${Endpoints.CHANNEL(channelID) }/pins`,
 	CHANNEL_PIN: (channelID, messageID) => `${Endpoints.CHANNEL_PINS(channelID) }/${messageID}`,
+	CHANNEL_WEBHOOKS: (channelID) => `${Endpoints.CHANNEL(channelID) }/webhooks`,
+
+	// webhooks
+	WEBHOOKS: `${API}/webhooks`,
+	WEBHOOK: (webhookID) => `${Endpoints.WEBHOOKS}/${webhookID}`,
+	WEBHOOK_WITH_TOKEN: (webhookID, webhookToken) => `${Endpoints.WEBHOOKS}/${webhookToken}`,
+	WEBHOOK_MESSAGE: (webhookID, webhookToken) => `${Endpoints.WEBHOOK(webhookID)}/${webhookToken}`,
+	WEBHOOK_MESSAGE_SLACK: (webhookID, webhookToken) => `${Endpoints.WEBHOOK_MESSAGE(webhookID, webhookToken)}/slack`,
+
 
 	// friends
 	FRIENDS: `${API}/users/@me/relationships`

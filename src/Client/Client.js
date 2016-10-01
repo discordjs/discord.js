@@ -1177,6 +1177,54 @@ export default class Client extends EventEmitter {
 			.then(dataCallback(callback), errorCallback(callback));
 	}
 
+	getServerWebhooks(guild, callback = (/*err, {}*/) => {}) {
+		return this.internal.getServerWebhooks(guild)
+			.then(dataCallback(callback), errorCallback(callback));
+	}
+
+	getChannelWebhooks(channel, callback = (/*err, {}*/) => {}) {
+		return this.internal.getChannelWebhooks(channel)
+			.then(dataCallback(callback), errorCallback(callback));
+	}
+
+	sendWebhookMessage(webhook, content, options = {}, callback = (/*err, {}*/) => {}) {
+		if (typeof options === "function") {
+			// options is the callback
+			callback = options;
+			options = {};
+		}
+
+		return this.internal.sendWebhookMessage(webhook, content, options)
+			.then(dataCallback(callback), errorCallback(callback));
+	}
+
+	editWebhook(webhook, options = {}, callback = (/*err, {}*/) => {}) {
+    if (typeof options === "function") {
+      // options is the callback
+      callback = options;
+      options = {};
+    }
+
+	  return this.internal.editWebhook(webhook, options)
+      .then(dataCallback(callback), errorCallback(callback));
+  }
+
+  createWebhook(webhook, options = {}, callback = (/*err, {}*/) => {}) {
+    if (typeof options === "function") {
+      // options is the callback
+      callback = options;
+      options = {};
+    }
+
+    return this.internal.createWebhook(webhook, options)
+      .then(dataCallback(callback), errorCallback(callback));
+  }
+
+	deleteWebhook(webhook, callback = (/*err, {}*/) => {}) {
+		return this.internal.createWebhook(webhook)
+			.then(dataCallback(callback), errorCallback(callback));
+	}
+
 	// def getOAuthApplication
 	getOAuthApplication(appID, callback = (/*err, bans*/) => { }) {
 		if (typeof appID === "function") {
