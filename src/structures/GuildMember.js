@@ -204,7 +204,7 @@ class GuildMember {
     if (this.user.id === this.client.user.id) return false;
     const clientMember = this.guild.member(this.client.user);
     if (!clientMember.hasPermission(Constants.PermissionFlags.KICK_MEMBERS)) return false;
-    return clientMember.highestRole.position > this.highestRole.positon;
+    return clientMember.highestRole.position > this.highestRole.position;
   }
 
   /**
@@ -217,7 +217,7 @@ class GuildMember {
     if (this.user.id === this.client.user.id) return false;
     const clientMember = this.guild.member(this.client.user);
     if (!clientMember.hasPermission(Constants.PermissionFlags.BAN_MEMBERS)) return false;
-    return clientMember.highestRole.position > this.highestRole.positon;
+    return clientMember.highestRole.position > this.highestRole.position;
   }
 
   /**
