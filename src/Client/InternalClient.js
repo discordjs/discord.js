@@ -1575,13 +1575,16 @@ export default class InternalClient {
 		}
 
 		return this.apiRequest("get", Endpoints.SERVER_WEBHOOKS(server.id), true)
-			.then(res => {console.log(res); return res;}).then(res => res.map(
-				webhook => server.webhooks.add(new Webhook(
-					webhook,
-					server,
-					this.channels.get("id", webhook.channel_id),
-					this.users.get("id", webhook.user.id)
-				))
+			.then(res => res.map(
+				webhook => {
+					let channel = this.channels.get("id", webhook.channel_id);
+					return channel.webhooks.add(new Webhook(
+						webhook,
+						server,
+						channel,
+						this.users.get("id", webhook.user.id)
+					))
+				}
 			));
 	}
 
@@ -1633,10 +1636,7 @@ export default class InternalClient {
 				}
 
 				return this.apiRequest("post", Endpoints.CHANNEL_WEBHOOKS(destination.id), true, options)
-					.then(res => {
-						console.log(res);
-						return res;
-					}).then(webhook => channel.webhooks.add(new Webhook(
+					.then(webhook => channel.webhooks.add(new Webhook(
 						webhook,
 						this.servers.get("id", webhook.guild_id),
 						channel,
@@ -1678,8 +1678,6 @@ export default class InternalClient {
 				}
 
 				options.content = _content;
-
-				console.log(options);
 
 				return this.apiRequest(
 					"post",

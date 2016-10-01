@@ -42,7 +42,6 @@ export default class Server extends Equality {
 		this.name = data.name;
 		this.members = new Cache();
 		this.channels = new Cache();
-		this.webhooks = new Cache();
 		this.roles = new Cache();
 		this.emojis = new Cache();
 		this.icon = data.icon;
@@ -131,6 +130,19 @@ export default class Server extends Equality {
 				this.pendingVoiceStates = data.voice_states;
 			}
 		}
+	}
+
+	get webhooks() {
+		return this.channels
+			.map(c => c.webhooks)
+			.reduce((previousChannel, currentChannel) => {
+				if (currentChannel) {
+					currentChannel.forEach(webhook => {
+						previousChannel.add(webhook);
+					})
+				}
+				return previousChannel;
+			}, new Cache("id"));
 	}
 
 	get createdAt() {
