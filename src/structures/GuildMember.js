@@ -135,9 +135,7 @@ class GuildMember {
    * @readonly
    */
   get highestRole() {
-    return this.roles.reduce((prev, role) =>
-      !prev || role.position > prev.position || (role.position === prev.position && role.id < prev.id) ? role : prev
-    );
+    return this.roles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
   }
 
   /**
@@ -204,10 +202,7 @@ class GuildMember {
     if (this.user.id === this.client.user.id) return false;
     const clientMember = this.guild.member(this.client.user);
     if (!clientMember.hasPermission(Constants.PermissionFlags.KICK_MEMBERS)) return false;
-    const clientRole = clientMember.highestRole;
-    const thisRole = this.highestRole;
-    return clientRole.position > thisRole.position ||
-      (clientRole.position === thisRole.position && clientRole.id < thisRole.id);
+    return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
   }
 
   /**
@@ -220,10 +215,7 @@ class GuildMember {
     if (this.user.id === this.client.user.id) return false;
     const clientMember = this.guild.member(this.client.user);
     if (!clientMember.hasPermission(Constants.PermissionFlags.BAN_MEMBERS)) return false;
-    const clientRole = clientMember.highestRole;
-    const thisRole = this.highestRole;
-    return clientRole.position > thisRole.position ||
-      (clientRole.position === thisRole.position && clientRole.id < thisRole.id);
+    return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
   }
 
   /**
