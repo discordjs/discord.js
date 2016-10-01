@@ -18,6 +18,12 @@ class PresenceUpdateHandler extends AbstractHandler {
       }
     }
 
+    const oldUser = cloneObject(user);
+    user.patch(data.user);
+    if (!user.equals(oldUser)) {
+      client.emit(Constants.Events.USER_DETAILS_UPDATE, oldUser, user);
+    }
+
     if (guild) {
       let member = guild.members.get(user.id);
       if (!member && data.status !== 'offline') {
@@ -29,20 +35,32 @@ class PresenceUpdateHandler extends AbstractHandler {
         }, false);
         client.emit(Constants.Events.GUILD_MEMBER_AVAILABLE, guild, member);
       }
-      guild._setPresence(user.id, data);
+      if (member) {
+        const oldMember = cloneObject(member);
+        if (member.presence) {
+          oldMember.frozenPresence = cloneObject(member.presence);
+        }
+        guild._setPresence(user.id, data);
+        client.emit(Constants.Events.PRESENCE_UPDATE, oldMember, member);
+      } else {
+        guild._setPresence(user.id, data);
+      }
     }
-
-    const oldUser = cloneObject(user);
-    user.patch(data.user);
-    client.emit(Constants.Events.PRESENCE_UPDATE, oldUser, user);
   }
 }
 
 /**
- * Emitted whenever a user changes one of their details or starts/stop playing a game
+ * Emitted whenever a guild member's presence changes, or they change one of their details.
  * @event Client#presenceUpdate
- * @param {User} oldUser The user before the presence update
- * @param {User} newUser The user after the presence update
+ * @param {GuildMember} oldMember The member before the presence update
+ * @param {GuildMember} newMember The member after the presence update
+ */
+
+/**
+ * Emitted whenever a user's details (e.g. username) are changed.
+ * @event Client#userUpdate
+ * @param {User} oldUser The user before the update
+ * @param {User} newUser The user after the update
  */
 
 /**
