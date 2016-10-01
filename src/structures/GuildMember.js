@@ -107,7 +107,7 @@ class GuildMember {
    * @readonly
    */
   get presence() {
-    return this.guild.presences.get(this.id);
+    return this.frozenPresence || this.guild.presences.get(this.id);
   }
 
   /**

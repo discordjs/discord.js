@@ -16,9 +16,8 @@ client.on('ready', () => {
   console.log('ready!');
 });
 
-client.on('presenceUpdate', (o, n) => {
-  if (o.username.startsWith('hydr'))
-  console.log(o.username, o.presence.status, n.presence.status);
+client.on('userUpdate', (o, n) => {
+  console.log(o.username, n.username);
 });
 
 client.on('channelCreate', channel => {

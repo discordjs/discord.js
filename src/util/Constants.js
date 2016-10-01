@@ -173,6 +173,7 @@ exports.Events = {
   MESSAGE_BULK_DELETE: 'messageDeleteBulk',
   USER_UPDATE: 'userUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
+  USER_DETAILS_UPDATE: 'userUpdate',
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
   TYPING_START: 'typingStart',
   TYPING_STOP: 'typingStop',

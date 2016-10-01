@@ -3,6 +3,7 @@
  */
 class Presence {
   constructor(data) {
+    if (!data) return;
     /**
      * The status of the presence:
      *
