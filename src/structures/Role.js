@@ -154,6 +154,16 @@ class Role {
   }
 
   /**
+   * Compares this role's position to another role's.
+   * @param {Role} role Role to compare to this one
+   * @returns {number} Negative number if the this role's position is lower (other role's is higher),
+   * positive number if the this one is higher (other's is lower), 0 if equal
+   */
+  comparePositionTo(role) {
+    return this.constructor.comparePositions(this, role);
+  }
+
+  /**
    * Edits the role
    * @param {RoleData} data The new data for the role
    * @returns {Promise<Role>}
@@ -288,6 +298,18 @@ class Role {
    */
   toString() {
     return `<@&${this.id}>`;
+  }
+
+  /**
+   * Compares the positions of two roles.
+   * @param {Role} role1 First role to compare
+   * @param {Role} role2 Second role to compare
+   * @returns {number} Negative number if the first role's position is lower (second role's is higher),
+   * positive number if the first's is higher (second's is lower), 0 if equal
+   */
+  static comparePositions(role1, role2) {
+    if (role1.position === role2.position) return role1.id - role2.id;
+    return role1.position - role2.position;
   }
 }
 
