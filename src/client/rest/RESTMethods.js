@@ -419,7 +419,7 @@ class RESTMethods {
     return new Promise((resolve, reject) => {
       const data = {};
       data.name = _data.name || role.name;
-      data.position = _data.position || role.position;
+      data.position = typeof _data.position !== 'undefined' ? _data.position : role.position;
       data.color = _data.color || role.color;
       if (typeof data.color === 'string' && data.color.startsWith('#')) {
         data.color = parseInt(data.color.replace('#', ''), 16);
