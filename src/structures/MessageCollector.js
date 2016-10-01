@@ -101,8 +101,8 @@ class MessageCollector extends EventEmitter {
   get next() {
     return new Promise((resolve, reject) => {
       const cleanup = () => {
-        this.removeListener(onMessage);
-        this.removeListener(onEnd);
+        this.removeListener('message', onMessage);
+        this.removeListener('end', onEnd);
       };
 
       const onMessage = (...args) => {
