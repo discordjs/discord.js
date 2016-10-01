@@ -207,7 +207,7 @@ class GuildMember {
     const clientRole = clientMember.highestRole;
     const thisRole = this.highestRole;
     return clientRole.position > thisRole.position ||
-      (clientRole.position === thisRole.position && clientRole.id < thisRole.position);
+      (clientRole.position === thisRole.position && clientRole.id < thisRole.id);
   }
 
   /**
@@ -223,7 +223,7 @@ class GuildMember {
     const clientRole = clientMember.highestRole;
     const thisRole = this.highestRole;
     return clientRole.position > thisRole.position ||
-      (clientRole.position === thisRole.position && clientRole.id < thisRole.position);
+      (clientRole.position === thisRole.position && clientRole.id < thisRole.id);
   }
 
   /**
