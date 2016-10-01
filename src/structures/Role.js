@@ -238,6 +238,20 @@ class Role {
   }
 
   /**
+   * Set whether this role is mentionable
+   * @param {boolean} mentionable Whether this role should be mentionable
+   * @returns {Promise<Role>}
+   * @example
+   * // make the role mentionable
+   * role.setMentionable(true)
+   *  .then(r => console.log(`Role updated ${r}`))
+   *  .catch(console.error);
+   */
+  setMentionable(mentionable) {
+    return this.client.rest.methods.updateGuildRole(this, { mentionable });
+  }
+
+  /**
    * Deletes the role
    * @returns {Promise<Role>}
    * @example

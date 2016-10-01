@@ -425,6 +425,7 @@ class RESTMethods {
         data.color = parseInt(data.color.replace('#', ''), 16);
       }
       data.hoist = typeof _data.hoist !== 'undefined' ? _data.hoist : role.hoist;
+      data.mentionable = typeof _data.mentionable !== 'undefined' ? _data.mentionable : role.mentionable;
 
       if (_data.permissions) {
         let perms = 0;
