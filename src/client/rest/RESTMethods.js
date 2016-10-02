@@ -51,11 +51,13 @@ class RESTMethods {
     return new Promise((resolve, reject) => {
       if (typeof content !== 'undefined') content = this.rest.client.resolver.resolveString(content);
 
-      if (disableEveryone || (typeof disableEveryone === 'undefined' && this.rest.client.options.disableEveryone)) {
-        content = content.replace('@everyone', '@\u200beveryone').replace('@here', '@\u200bhere');
-      }
+      if (content) {
+        if (disableEveryone || (typeof disableEveryone === 'undefined' && this.rest.client.options.disableEveryone)) {
+          content = content.replace('@everyone', '@\u200beveryone').replace('@here', '@\u200bhere');
+        }
 
-      if (split) content = splitMessage(content, typeof split === 'object' ? split : {});
+        if (split) content = splitMessage(content, typeof split === 'object' ? split : {});
+      }
 
       if (channel instanceof User || channel instanceof GuildMember) {
         this.createDM(channel).then(chan => {
