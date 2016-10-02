@@ -258,7 +258,8 @@ class ClientVoiceManager {
       });
 
       pendingConnection.on('pass', voiceConnection => {
-        // do stuff
+        this.pending.delete(channel.guild.id);
+        this.connections.set(channel.guild.id, voiceConnection);
       });
     });
   }
