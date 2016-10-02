@@ -117,7 +117,7 @@ export default class AudioEncoder {
 			if (!command) return reject(new Error('FFMPEG not found. Make sure it is installed and in path.'));
 
 			// add options discord.js needs
-			var ffmpegOptions = ffmpegOptions.concat([
+			ffmpegOptions = ffmpegOptions.concat([
 				'-f', 's16le',
 				'-ar', '48000',
 				'-ac', 2,

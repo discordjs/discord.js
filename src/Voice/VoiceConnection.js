@@ -238,14 +238,14 @@ export default class VoiceConnection extends EventEmitter {
 		return new Promise((resolve, reject) => {
 			this.encoder
 				.encodeFile(stream, options)
-				.catch(error)
 				.then(data => {
 					self.streamProc = data.proc;
 					var intent = self.playStream(data.stream, 2);
 					resolve(intent);
 					callback(null, intent);
 
-				});
+				})
+				.catch(error);
 			function error(e = true) {
 				reject(e);
 				callback(e);
@@ -267,15 +267,14 @@ export default class VoiceConnection extends EventEmitter {
 		return new Promise((resolve, reject) => {
 			this.encoder
 				.encodeStream(stream, options)
-				.catch(error)
 				.then(data => {
 					self.streamProc = data.proc;
 					self.instream = data.instream;
 					var intent = self.playStream(data.stream);
 					resolve(intent);
 					callback(null, intent);
-
-				});
+				})
+				.catch(error);
 			function error(e = true) {
 				reject(e);
 				callback(e);
@@ -300,14 +299,14 @@ export default class VoiceConnection extends EventEmitter {
 		return new Promise((resolve, reject) => {
 			this.encoder
 				.encodeArbitraryFFmpeg(ffmpegOptions, options)
-				.catch(error)
 				.then(data => {
 					self.streamProc = data.proc;
 					self.instream = data.instream;
 					var intent = self.playStream(data.stream);
 					resolve(intent);
 					callback(null, intent);
-				});
+				})
+				.catch(error);
 			function error(e = true) {
 				reject(e);
 				callback(e);
