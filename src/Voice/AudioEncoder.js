@@ -107,9 +107,9 @@ export default class AudioEncoder {
 		});
 	}
 
-	encodeArbitraryFFmpeg(ffmpegOptions, volume) {
+	encodeArbitraryFFmpeg(ffmpegOptions, options) {
 		return new Promise((resolve, reject) => {
-			this.volume = new VolumeTransformer(volume);
+			this.volume = new VolumeTransformer(options.volume);
 
 			var command = this.getCommand();
 
@@ -117,13 +117,13 @@ export default class AudioEncoder {
 			if (!command) return reject(new Error('FFMPEG not found. Make sure it is installed and in path.'));
 
 			// add options discord.js needs
-			var options = ffmpegOptions.concat([
+			var ffmpegOptions = ffmpegOptions.concat([
 				'-f', 's16le',
 				'-ar', '48000',
 				'-ac', 2,
 				'pipe:1'
 			]);
-			var enc = cpoc.spawn(command, options);
+			var enc = cpoc.spawn(command, ffmpegOptions);
 
 			this.hookEncodingProcess(resolve, reject, enc);
 		});
