@@ -269,7 +269,7 @@ class Client extends EventEmitter {
    * @returns {Promise<Invite>}
    */
   fetchInvite(invite) {
-    const code = this.resolver.resolveInvite(invite);
+    const code = this.resolver.resolveInviteCode(invite);
     return this.rest.methods.getInvite(code);
   }
 

@@ -217,7 +217,7 @@ class ClientDataResolver {
    * @param {InviteResolvable} data The invite resolvable to resolve
    * @returns {string}
    */
-  resolveInvite(data) {
+  resolveInviteCode(data) {
     const inviteRegex = /discord(?:app)?\.(?:gg|com\/invite)\/([a-z0-9]{5})/i;
     const match = inviteRegex.exec(data);
 
