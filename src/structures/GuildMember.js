@@ -407,7 +407,7 @@ class GuildMember {
    * console.log(`Hello from ${member}!`);
    */
   toString() {
-    return String(this.user);
+    return `<@${this.nickname ? '!' : ''}${this.user.id}>`;
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
