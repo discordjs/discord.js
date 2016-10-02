@@ -218,12 +218,11 @@ class ClientDataResolver {
    * @returns {string}
    */
   resolveInvite(data) {
-    if (data.length === 5) return data;
     const inviteRegex = /discord(?:app)?\.(?:gg|com\/invite)\/([a-z0-9]{5})/i;
     const match = inviteRegex.exec(data);
 
     if (match && match[1]) return match[1];
-    return null;
+    return data;
   }
 
   /**

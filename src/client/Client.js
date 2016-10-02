@@ -270,8 +270,6 @@ class Client extends EventEmitter {
    */
   fetchInvite(invite) {
     const code = this.resolver.resolveInvite(invite);
-    if (!code) throw new TypeError('Failed to resolve invite.');
-
     return this.rest.methods.getInvite(code);
   }
 
