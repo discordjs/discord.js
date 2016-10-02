@@ -120,10 +120,29 @@ class VoiceWebSocket extends EventEmitter {
         this.setHeartbeat(packet.d.heartbeat_interval);
         break;
       case Constants.VoiceOPCodes.SESSION_DESCRIPTION:
+        /**
+         * Emitted once the Voice Websocket receives a description of this voice session
+         * @param {string} encryptionMode the type of encryption being used
+         * @param {SecretKey} secretKey the secret key used for encryption
+         * @event VoiceWebSocket#sessionDescription
+         */
         this.emit('sessionDescription', packet.d.mode, new SecretKey(packet.d.secret_key));
         break;
       case Constants.VoiceOPCodes.SPEAKING:
+        /**
+         * Emitted whenever a speaking packet is received
+         * @param {Object} data
+         * @event VoiceWebSocket#speaking
+         */
         this.emit('speaking', packet.d);
+        break;
+      default:
+        /**
+         * Emitted when an unhandled packet is received
+         * @param {Object} packet
+         * @event VoiceWebSocket#unknownPacket
+         */
+        this.emit('unknownPacket', packet);
         break;
     }
   }
