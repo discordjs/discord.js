@@ -206,6 +206,27 @@ class ClientDataResolver {
   }
 
   /**
+   * Data that can be resolved to give an invite code. This can be:
+   * * An invite code
+   * * An invite URL
+   * @typedef {string} InviteResolvable
+   */
+
+  /**
+   * Resolves InviteResolvable to an invite code
+   * @param {InviteResolvable} data The invite resolvable to resolve
+   * @returns {string}
+   */
+  resolveInvite(data) {
+    if (data.length === 5) return data;
+    const inviteRegex = /discord(?:app)?\.(?:gg|com\/invite)\/([a-z0-9]{5})/i;
+    const match = inviteRegex.exec(data);
+
+    if (match && match[1]) return match[1];
+    return null;
+  }
+
+  /**
    * Data that can be resolved to give a Buffer. This can be:
    * * A Buffer
    * * The path to a local file

@@ -265,10 +265,13 @@ class Client extends EventEmitter {
 
   /**
    * Fetches an invite object from an invite code.
-   * @param {string} code the invite code.
+   * @param {InviteResolvable} invite An invite code or URL
    * @returns {Promise<Invite>}
    */
-  fetchInvite(code) {
+  fetchInvite(invite) {
+    const code = this.resolver.resolveInvite(invite);
+    if (!code) throw new TypeError('Failed to resolve invite.');
+
     return this.rest.methods.getInvite(code);
   }
 
