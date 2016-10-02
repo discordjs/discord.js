@@ -1,5 +1,6 @@
 const WebSocket = require('ws');
 const Constants = require('../../util/Constants');
+const SecretKey = require('./util/SecretKey');
 const EventEmitter = require('events').EventEmitter;
 
 /**
@@ -117,6 +118,12 @@ class VoiceWebSocket extends EventEmitter {
     switch (packet.op) {
       case Constants.VoiceOPCodes.READY:
         this.setHeartbeat(packet.d.heartbeat_interval);
+        break;
+      case Constants.VoiceOPCodes.SESSION_DESCRIPTION:
+        this.emit('sessionDescription', packet.d.mode, new SecretKey(packet.d.secret_key));
+        break;
+      case Constants.VoiceOPCodes.SPEAKING:
+        this.emit('speaking', packet.d);
         break;
     }
   }
