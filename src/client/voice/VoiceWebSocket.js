@@ -16,6 +16,11 @@ class VoiceWebSocket extends EventEmitter {
      * @type {VoiceConnection}
      */
     this.voiceConnection = voiceConnection;
+    /**
+     * How many connection attempts have been made
+     * @type {number}
+     */
+    this.attempts = 0;
   }
 
   /**
@@ -28,12 +33,30 @@ class VoiceWebSocket extends EventEmitter {
   }
 
   /**
+   * Resets the current WebSocket
+   */
+  reset() {
+    if (this.ws) {
+      if (this.ws.readyState !== WebSocket.CLOSED) {
+        this.ws.close();
+      }
+      this.ws = null;
+    }
+    this.clearHeartbeat();
+  }
+
+  /**
    * Starts connecting to the Voice WebSocket Server.
    */
   connect() {
     if (this.ws) {
-      throw new Error('there is already an existing websocket');
+      this.reset();
     }
+    if (this.attempts > 5) {
+      this.emit('error', new Error(`too many connection attempts (${this.attempts})`));
+      return;
+    }
+    this.attempts++;
     /**
      * The actual WebSocket used to connect to the Voice WebSocket Server.
      * @type {WebSocket}
@@ -111,6 +134,23 @@ class VoiceWebSocket extends EventEmitter {
   }
 
   /**
+   * Called whenever the connection to the WebSocket Server is lost
+   * @param {CloseEvent} event the close event
+   */
+  onClose(event) {
+    // #todo see if the connection is open before reconnecting
+    this.client.setTimeout(this.connect.bind(this), this.attempts * 1000);
+  }
+
+  /**
+   * Called whenever an error occurs with the WebSocket.
+   * @param {Error} error the error that occurred
+   */
+  onError(error) {
+    this.emit('error', error);
+  }
+
+  /**
    * Called whenever a valid packet is received from the WebSocket
    * @param {Object} packet the received packet
    */
@@ -118,6 +158,12 @@ class VoiceWebSocket extends EventEmitter {
     switch (packet.op) {
       case Constants.VoiceOPCodes.READY:
         this.setHeartbeat(packet.d.heartbeat_interval);
+        /**
+         * Emitted once the voice websocket receives the ready packet
+         * @param {Object} packet the received packet
+         * @event VoiceWebSocket#ready
+         */
+        this.emit('ready', packet.d);
         break;
       case Constants.VoiceOPCodes.SESSION_DESCRIPTION:
         /**
