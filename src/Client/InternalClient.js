@@ -1405,7 +1405,7 @@ export default class InternalClient {
 
 			this.intervals.typing[channel.id] = setInterval(
 				() => this.sendTyping(channel)
-				.catch(error => this.emit("error", error)),
+				.catch(error => this.client.emit("error", error)),
 				4000
 			);
 
