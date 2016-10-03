@@ -1,14 +1,10 @@
 const path = require('path');
-const RESTManager = require('../client/rest/RESTManager');
-const ClientDataResolver = require('../client/ClientDataResolver');
 
 /**
  * Represents a Webhook
  */
 class Webhook {
   constructor(client, dataOrID, token) {
-    this.rest = client.rest || new RESTManager(this);
-    this.resolver = client.resolver || new ClientDataResolver(this);
     if (client) {
       /**
        * The client that instantiated the Channel
@@ -88,7 +84,7 @@ class Webhook {
    *  .catch(console.error);
    */
   sendMessage(content, options = {}) {
-    return this.rest.methods.sendWebhookMessage(this, content, options);
+    return this.client.rest.methods.sendWebhookMessage(this, content, options);
   }
 
   /**
@@ -104,7 +100,7 @@ class Webhook {
    */
   sendTTSMessage(content, options = {}) {
     Object.assign(options, { tts: true });
-    return this.rest.methods.sendWebhookMessage(this, content, options);
+    return this.client.rest.methods.sendWebhookMessage(this, content, options);
   }
 
   /**
@@ -126,8 +122,8 @@ class Webhook {
       }
     }
     return new Promise((resolve, reject) => {
-      this.resolver.resolveFile(attachment).then(file => {
-        this.rest.methods.sendWebhookMessage(this, content, options, {
+      this.client.resolver.resolveFile(attachment).then(file => {
+        this.client.rest.methods.sendWebhookMessage(this, content, options, {
           file,
           name: fileName,
         }).then(resolve).catch(reject);
@@ -148,7 +144,7 @@ class Webhook {
       if (!options.split.prepend) options.split.prepend = `\`\`\`${lang ? lang : ''}\n`;
       if (!options.split.append) options.split.append = '\n```';
     }
-    content = this.resolver.resolveString(content).replace(/```/g, '`\u200b``');
+    content = this.client.resolver.resolveString(content).replace(/```/g, '`\u200b``');
     return this.sendMessage(`\`\`\`${lang ? lang : ''}\n${content}\n\`\`\``, options);
   }
 
@@ -157,7 +153,7 @@ class Webhook {
    * @returns {Promise}
    */
   delete() {
-    return this.rest.methods.deleteChannelWebhook(this);
+    return this.client.rest.methods.deleteChannelWebhook(this);
   }
 
   /**
@@ -169,14 +165,14 @@ class Webhook {
   edit(name, avatar) {
     return new Promise((resolve, reject) => {
       if (avatar) {
-        this.resolver.resolveFile(avatar).then(file => {
+        this.client.resolver.resolveFile(avatar).then(file => {
           let base64 = new Buffer(file, 'binary').toString('base64');
           let dataURI = `data:;base64,${base64}`;
-          this.rest.methods.editChannelWebhook(this, name, dataURI)
+          this.client.rest.methods.editChannelWebhook(this, name, dataURI)
           .then(resolve).catch(reject);
         }).catch(reject);
       } else {
-        this.rest.methods.editChannelWebhook(this, name)
+        this.client.rest.methods.editChannelWebhook(this, name)
         .then(data => {
           this.setup(data);
         }).catch(reject);
