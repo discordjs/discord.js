@@ -5,15 +5,21 @@ const mergeDefault = require('../util/MergeDefault');
 const Constants = require('../util/Constants');
 
 /**
- * The Webhook Client.
+ * The Webhook Client
  * @extends {Webhook}
  */
 class WebhookClient extends Webhook {
+  /**
+   * @param {string} id The id of the webhook.
+   * @param {string} token the token of the webhook.
+   * @param {ClientOptions} [options] Options for the client
+   */
   constructor(id, token, options) {
     super(null, id, token);
 
     /**
-     * @param {ClientOptions} [options] Options for the client
+     * The options the client was instantiated with
+     * @type {ClientOptions}
      */
     this.options = mergeDefault(Constants.DefaultOptions, options);
 
