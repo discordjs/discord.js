@@ -565,9 +565,9 @@ class RESTMethods {
     });
   }
 
-  fetchWebhook(id) {
+  fetchWebhook(id, token) {
     return new Promise((resolve, reject) => {
-      this.rest.makeRequest('get', Constants.Endpoints.webhook(id), true)
+      this.rest.makeRequest('get', Constants.Endpoints.webhook(id), require('util').isUndefinedOrNull(token))
       .then(data => {
         resolve(new Webhook(this.rest.client, data));
       }).catch(reject);

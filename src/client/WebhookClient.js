@@ -1,4 +1,3 @@
-const Webhook = require('../structures/Webhook');
 const RESTManager = require('./rest/RESTManager');
 
 class WebhookClient {
@@ -13,6 +12,14 @@ class WebhookClient {
      * @private
      */
     this.rest = new RESTManager(this);
+
+    if (this.id && this.token) this.setup();
+  }
+
+  setup() {
+    this.rest.methods.fetchWebhook(this.id, this.token).then(hook => {
+      Object.apply(this, hook);
+    });
   }
 }
 
