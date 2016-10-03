@@ -103,6 +103,9 @@ const Endpoints = exports.Endpoints = {
   channelTyping: (channelID) => `${Endpoints.channel(channelID)}/typing`,
   channelPermissions: (channelID) => `${Endpoints.channel(channelID)}/permissions`,
   channelMessage: (channelID, messageID) => `${Endpoints.channelMessages(channelID)}/${messageID}`,
+
+  // webhooks
+  webhook: (webhookID, token) => `${API}/webhooks/${webhookID}${token ? `/${token}` : ''}`,
 };
 
 exports.Status = {
@@ -242,7 +245,7 @@ const PermissionFlags = exports.PermissionFlags = {
   CHANGE_NICKNAME: 1 << 26,
   MANAGE_NICKNAMES: 1 << 27,
   MANAGE_ROLES_OR_PERMISSIONS: 1 << 28,
-
+  MANAGE_WEBHOOKS: 1 << 29,
   MANAGE_EMOJIS: 1 << 30,
 };
 

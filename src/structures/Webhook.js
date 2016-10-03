@@ -1,18 +1,27 @@
 const path = require('path');
+const RESTManager = require('../client/rest/RESTManager');
+const ClientDataResolver = require('../client/ClientDataResolver');
 
 /**
  * Represents a Webhook
  */
 class Webhook {
-  constructor(client, data) {
-    /**
-     * The client that instantiated the Channel
-     * @type {Client}
-     */
-    this.client = client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
-
-    if (data) this.setup(data);
+  constructor(client, dataOrID, token) {
+    this.rest = client.rest || new RESTManager(this);
+    this.resolver = client.resolver || new ClientDataResolver(this);
+    if (client) {
+      /**
+       * The client that instantiated the Channel
+       * @type {Client}
+       */
+      this.client = client;
+      Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+      if (dataOrID) this.setup(dataOrID);
+    } else {
+      this.id = dataOrID;
+      this.token = token;
+      this.client = this;
+    }
   }
 
   setup(data) {
@@ -42,28 +51,28 @@ class Webhook {
 
     /**
      * The guild the Webhook belongs to
-     * @type {Guild}
+     * @type {string}
      */
-    this.guild = this.client.guilds.get(data.guild_id);
+    this.guild_id = data.guild_id;
 
     /**
      * The channel the Webhook belongs to
-     * @type {GuildChannel}
+     * @type {string}
      */
-    this.channel = this.client.channels.get(data.channel_id);
+    this.channel_id = data.channel_id;
 
     /**
      * The owner of the Webhook
      * @type {User}
      */
-    if (data.user) this.owner = this.client.users.get(data.user.id);
+    if (data.user) this.owner = data.user;
   }
 
   /**
    * Options that can be passed into sendMessage, sendTTSMessage, sendFile, sendCode
    * @typedef {Object} MessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
-   * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
+   * @property {boolean} [disableEveryone=this.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
    */
 
@@ -79,7 +88,7 @@ class Webhook {
    *  .catch(console.error);
    */
   sendMessage(content, options = {}) {
-    return this.client.rest.methods.sendWebhookMessage(this, content, options);
+    return this.rest.methods.sendWebhookMessage(this, content, options);
   }
 
   /**
@@ -95,7 +104,7 @@ class Webhook {
    */
   sendTTSMessage(content, options = {}) {
     Object.assign(options, { tts: true });
-    return this.client.rest.methods.sendWebhookMessage(this, content, options);
+    return this.rest.methods.sendWebhookMessage(this, content, options);
   }
 
   /**
@@ -117,8 +126,8 @@ class Webhook {
       }
     }
     return new Promise((resolve, reject) => {
-      this.client.resolver.resolveFile(attachment).then(file => {
-        this.client.rest.methods.sendWebhookMessage(this, content, options, {
+      this.resolver.resolveFile(attachment).then(file => {
+        this.rest.methods.sendWebhookMessage(this, content, options, {
           file,
           name: fileName,
         }).then(resolve).catch(reject);
@@ -139,7 +148,7 @@ class Webhook {
       if (!options.split.prepend) options.split.prepend = `\`\`\`${lang ? lang : ''}\n`;
       if (!options.split.append) options.split.append = '\n```';
     }
-    content = this.client.resolver.resolveString(content).replace(/```/g, '`\u200b``');
+    content = this.resolver.resolveString(content).replace(/```/g, '`\u200b``');
     return this.sendMessage(`\`\`\`${lang ? lang : ''}\n${content}\n\`\`\``, options);
   }
 
@@ -148,7 +157,7 @@ class Webhook {
    * @returns {Promise}
    */
   delete() {
-    return this.client.rest.methods.deleteChannelWebhook(this);
+    return this.rest.methods.deleteChannelWebhook(this);
   }
 
   /**
@@ -160,14 +169,14 @@ class Webhook {
   edit(name, avatar) {
     return new Promise((resolve, reject) => {
       if (avatar) {
-        this.client.resolver.resolveFile(avatar).then(file => {
+        this.resolver.resolveFile(avatar).then(file => {
           let base64 = new Buffer(file, 'binary').toString('base64');
           let dataURI = `data:;base64,${base64}`;
-          this.client.rest.methods.editChannelWebhook(this, name, dataURI)
+          this.rest.methods.editChannelWebhook(this, name, dataURI)
           .then(resolve).catch(reject);
         }).catch(reject);
       } else {
-        this.client.rest.methods.editChannelWebhook(this, name)
+        this.rest.methods.editChannelWebhook(this, name)
         .then(data => {
           this.setup(data);
         }).catch(reject);
