@@ -125,7 +125,7 @@ class ClientUser extends User {
    */
   setPresence(data) {
     // {"op":3,"d":{"status":"dnd","since":0,"game":null,"afk":false}}
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       let status = this.localPresence.status || this.presence.status;
       let game = this.localPresence.game;
       let afk = this.localPresence.afk || this.presence.afk;
@@ -139,10 +139,7 @@ class ClientUser extends User {
       }
 
       if (data.status) {
-        if (typeof data.status !== 'string') {
-          reject(new TypeError('status must be a string'));
-          return;
-        }
+        if (typeof data.status !== 'string') throw new TypeError('Status must be a string');
         status = data.status;
       }
 
