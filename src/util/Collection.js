@@ -77,11 +77,10 @@ class Collection extends Map {
    * @returns {*}
    */
   random() {
-    if(!this.cachedArray || this.cachedArray.length !== this.size || this.changed) {
+    if (!this.cachedArray || this.cachedArray.length !== this.size || this.changed) {
       this.cachedArray = this.array();
       this.changed = false;
     }
-    
     return this.cachedArray[Math.floor(Math.random() * this.cachedArray.length)];
   }
 
@@ -91,11 +90,10 @@ class Collection extends Map {
    * @returns {*}
    */
   randomKey() {
-    if(!this.cachedKeyArray || this.cachedKeyArray.length !== this.size || this.changed) {
+    if (!this.cachedKeyArray || this.cachedKeyArray.length !== this.size || this.changed) {
       this.cachedKeyArray = this.keyArray();
       this.changed = false;
     }
-
     return this.cachedKeyArray[Math.floor(Math.random() * this.cachedKeyArray.length)];
   }
 
