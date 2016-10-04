@@ -130,7 +130,7 @@ class ClientUser extends User {
       let game = this.localPresence.game;
       let afk = this.localPresence.afk || this.presence.afk;
 
-      if (!game) {
+      if (!game && this.presence.game) {
         game = {
           name: this.presence.game.name,
           type: this.presence.game.type,
