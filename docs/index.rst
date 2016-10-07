@@ -8,6 +8,8 @@ looking for something low level, check out `discord.io`_.
 
 if you're having problems, check out the `troubleshooting guide`_.
 
+If you're looking for docs for discord.js 9.0.0 and above, try visiting `the new docs site`_.
+
 Feel free to make any contributions you want, whether it be through creating an issue, giving a suggestion or making a pull request!
 
 .. note:: This documentation is still a work-in-progress, apologies if something isn't yet documented!
@@ -64,3 +66,4 @@ Feel free to make any contributions you want, whether it be through creating an 
 .. _Discord : https://discordapp.com/
 .. _troubleshooting guide : troubleshooting.html
 .. _discord.io : https://github.com/izy521/discord.io
+.. _the new docs site : http://hydrabolt.github.io/discord.js
