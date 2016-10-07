@@ -198,6 +198,7 @@ class Client extends EventEmitter {
   /**
    * The timestamp that the client was last ready at
    * @type {?number}
+   * @readonly
    */
   get readyTimestamp() {
     return this.readyAt ? this.readyAt.getTime() : null;
