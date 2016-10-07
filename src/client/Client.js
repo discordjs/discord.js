@@ -145,7 +145,7 @@ class Client extends EventEmitter {
      * The date at which the Client was regarded as being in the `READY` state.
      * @type {?Date}
      */
-    this.readyTime = null;
+    this.readyAt = null;
 
     this._timeouts = new Set();
     this._intervals = new Set();
@@ -170,7 +170,7 @@ class Client extends EventEmitter {
    * @readonly
    */
   get uptime() {
-    return this.readyTime ? Date.now() - this.readyTime : null;
+    return this.readyAt ? Date.now() - this.readyAt : null;
   }
 
   /**
@@ -193,6 +193,14 @@ class Client extends EventEmitter {
       for (const emoji of guild.emojis.values()) emojis.set(emoji.id, emoji);
     }
     return emojis;
+  }
+
+  /**
+   * The timestamp that the client was last ready at
+   * @type {?number}
+   */
+  get readyTimestamp() {
+    return this.readyAt ? this.readyAt.getTime() : null;
   }
 
   /**
