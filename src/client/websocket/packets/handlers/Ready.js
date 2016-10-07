@@ -10,7 +10,7 @@ class ReadyHandler extends AbstractHandler {
 
     const clientUser = new ClientUser(client, data.user);
     client.user = clientUser;
-    client.readyTime = new Date();
+    client.readyAt = new Date();
     client.users.set(clientUser.id, clientUser);
 
     for (const guild of data.guilds) client.dataManager.newGuild(guild);
