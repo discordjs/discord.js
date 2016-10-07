@@ -1,5 +1,6 @@
 module.exports = {
   Client: require('./client/Client'),
+  WebhookClient: require('./client/WebhookClient'),
   Shard: require('./sharding/Shard'),
   ShardClientUtil: require('./sharding/ShardClientUtil'),
   ShardingManager: require('./sharding/ShardingManager'),
@@ -28,6 +29,7 @@ module.exports = {
   TextChannel: require('./structures/TextChannel'),
   User: require('./structures/User'),
   VoiceChannel: require('./structures/VoiceChannel'),
+  Webhook: require('./structures/Webhook'),
 
   version: require('../package').version,
 };

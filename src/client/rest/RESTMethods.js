@@ -7,6 +7,7 @@ const User = requireStructure('User');
 const GuildMember = requireStructure('GuildMember');
 const Role = requireStructure('Role');
 const Invite = requireStructure('Invite');
+const Webhook = requireStructure('Webhook');
 
 class RESTMethods {
   constructor(restManager) {
@@ -534,6 +535,87 @@ class RESTMethods {
       this.rest.makeRequest('delete', `${Constants.Endpoints.guildEmojis(emoji.guild.id)}/${emoji.id}`, true)
       .then(() => {
         resolve(this.rest.client.actions.EmojiDelete.handle(emoji).data);
+      }).catch(reject);
+    });
+  }
+
+  fetchGuildWebhooks(guild) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.guildWebhooks(guild.id), true)
+      .then(data => {
+        const hooks = new Collection();
+        for (const hook of data) {
+          hooks.set(hook.id, new Webhook(this.rest.client, hook));
+        }
+        resolve(hooks);
+      }).catch(reject);
+    });
+  }
+
+  fetchChannelWebhooks(channel) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.channelWebhooks(channel.id), true)
+      .then(data => {
+        const hooks = new Collection();
+        for (const hook of data) {
+          hooks.set(hook.id, new Webhook(this.rest.client, hook));
+        }
+        resolve(hooks);
+      }).catch(reject);
+    });
+  }
+
+  fetchWebhook(id, token) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.webhook(id, token), require('util').isUndefined(token))
+      .then(data => {
+        resolve(new Webhook(this.rest.client, data));
+      }).catch(reject);
+    });
+  }
+
+  createChannelWebhook(channel, name, avatar) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('post', Constants.Endpoints.channelWebhooks(channel.id), true, {
+        name: name, avatar: avatar,
+      })
+      .then(data => {
+        resolve(new Webhook(this.rest.client, data));
+      }).catch(reject);
+    });
+  }
+
+  deleteChannelWebhook(webhook) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('delete', Constants.Endpoints.webhook(webhook.id, webhook.token), false)
+      .then(resolve).catch(reject);
+    });
+  }
+
+  editChannelWebhook(webhook, name, avatar) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('patch', Constants.Endpoints.webhook(webhook.id, webhook.token), false, {
+        name: name, avatar: avatar,
+      })
+      .then(data => {
+        resolve(data);
+      }).catch(reject);
+    });
+  }
+
+  sendWebhookMessage(webhook, content, { avatarURL, tts, disableEveryone, embeds } = {}, file = null) {
+    return new Promise((resolve, reject) => {
+      if (typeof content !== 'undefined') content = this.rest.client.resolver.resolveString(content);
+
+      if (disableEveryone || (typeof disableEveryone === 'undefined' && this.rest.client.options.disableEveryone)) {
+        content = content.replace('@everyone', '@\u200beveryone').replace('@here', '@\u200bhere');
+      }
+
+      this.rest.makeRequest('post', `${Constants.Endpoints.webhook(webhook.id, webhook.token)}?wait=true`, false, {
+        content: content, username: webhook.name, avatar_url: avatarURL, tts: tts, file: file, embeds: embeds,
+      })
+      .then(data => {
+        resolve(data);
       }).catch(reject);
     });
   }
