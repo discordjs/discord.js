@@ -4,7 +4,9 @@ module.exports = {
   Shard: require('./sharding/Shard'),
   ShardClientUtil: require('./sharding/ShardClientUtil'),
   ShardingManager: require('./sharding/ShardingManager'),
+
   Collection: require('./util/Collection'),
+  splitMessage: require('./util/SplitMessage'),
 
   Channel: require('./structures/Channel'),
   ClientUser: require('./structures/ClientUser'),
