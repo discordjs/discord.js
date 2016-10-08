@@ -196,6 +196,22 @@ class Client extends EventEmitter {
   }
 
   /**
+   * Collection of all messages the client has in cache.
+   * @type {Collection<string, Message>}
+   * @readonly
+   */
+  get messages() {
+    const messages = new Collection();
+    for (const guild of this.guilds.values()) {
+      for (const channel of guild.channels.values()) {
+        if (!['text', 'dm', 'group'].includes(channel.type)) continue;
+        for (const message of channel.messages.values()) messages.set(message.id, message);
+      }
+    }
+    return messages;
+  }
+
+  /**
    * The timestamp that the client was last ready at
    * @type {?number}
    * @readonly
