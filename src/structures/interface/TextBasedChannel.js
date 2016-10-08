@@ -329,6 +329,49 @@ class TextBasedChannel {
     this.messages.set(message.id, message);
     return message;
   }
+
+  /**
+   * Fetch all webhooks for the channel.
+   * @returns {Collection<Webhook>}
+   */
+  fetchWebhooks() {
+    return this.client.rest.methods.fetchChannelWebhooks(this);
+  }
+
+  /**
+   * Fetch a webhook by ID
+   * @param {string} id The id of the webhook.
+   * @returns {Promise<Webhook>}
+   */
+  fetchWebhook(id) {
+    return this.client.rest.methods.fetchWebhook(id);
+  }
+
+  /**
+   * Create a webhook for the channel.
+   * @param {string} name The name of the webhook.
+   * @param {FileResolvable=} avatar The avatar for the webhook.
+   * @returns {Webhook} webhook The created webhook.
+   * @example
+   * channel.createWebhook('Snek', 'http://snek.s3.amazonaws.com/topSnek.png')
+   *  .then(webhook => console.log(`Created Webhook ${webhook}`))
+   *  .catch(console.log)
+   */
+  createWebhook(name, avatar) {
+    return new Promise((resolve, reject) => {
+      if (avatar) {
+        this.client.resolver.resolveFile(avatar).then(file => {
+          let base64 = new Buffer(file, 'binary').toString('base64');
+          let dataURI = `data:;base64,${base64}`;
+          this.client.rest.methods.createChannelWebhook(this, name, dataURI)
+          .then(resolve).catch(reject);
+        }).catch(reject);
+      } else {
+        this.client.rest.methods.createChannelWebhook(this, name)
+        .then(resolve).catch(reject);
+      }
+    });
+  }
 }
 
 exports.applyToClass = (structure, full = false) => {
@@ -345,6 +388,9 @@ exports.applyToClass = (structure, full = false) => {
     props.push('fetchPinnedMessages');
     props.push('createCollector');
     props.push('awaitMessages');
+    props.push('fetchWebhooks');
+    props.push('fetchWebhook');
+    props.push('createWebhook');
   }
   for (const prop of props) applyProp(structure, prop);
 };
