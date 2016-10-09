@@ -59,6 +59,13 @@ class WebSocketManager extends EventEmitter {
      */
     this.ws = null;
 
+    /**
+     * An object with keys that are websocket event names that should be ignored
+     * @type {Object}
+     */
+    this.disabledEvents = {};
+    for (const event in client.options.disabledEvents) this.disabledEvents[event] = true;
+
     this.first = true;
   }
 
@@ -69,9 +76,7 @@ class WebSocketManager extends EventEmitter {
   _connect(gateway) {
     this.client.emit('debug', `Connecting to gateway ${gateway}`);
     this.normalReady = false;
-    if (this.status !== Constants.Status.RECONNECTING) {
-      this.status = Constants.Status.CONNECTING;
-    }
+    if (this.status !== Constants.Status.RECONNECTING) this.status = Constants.Status.CONNECTING;
     this.ws = new WebSocket(gateway);
     this.ws.onopen = () => this.eventOpen();
     this.ws.onclose = (d) => this.eventClose(d);
