@@ -23,23 +23,16 @@ class Client extends EventEmitter {
   constructor(options) {
     super();
 
+    // Obtain shard details from environment
+    if (!options.shardId && 'SHARD_ID' in process.env) options.shardId = Number(process.env.SHARD_ID);
+    if (!options.shardCount && 'SHARD_COUNT' in process.env) options.shardCount = Number(process.env.SHARD_COUNT);
+
     /**
      * The options the client was instantiated with
      * @type {ClientOptions}
      */
     this.options = mergeDefault(Constants.DefaultOptions, options);
-
-    if (!this.options.shardId && 'SHARD_ID' in process.env) {
-      this.options.shardId = Number(process.env.SHARD_ID);
-    }
-
-    if (!this.options.shardCount && 'SHARD_COUNT' in process.env) {
-      this.options.shardCount = Number(process.env.SHARD_COUNT);
-    }
-
-    if (!(this.options.disabledEvents instanceof Array)) {
-      throw new TypeError('The disabledEvents client option must be an array.');
-    }
+    this._validateOptions();
 
     /**
      * The REST manager of the client
@@ -295,7 +288,7 @@ class Client extends EventEmitter {
    * or -1 if the message cache lifetime is unlimited
    */
   sweepMessages(lifetime = this.options.messageCacheLifetime) {
-    if (typeof lifetime !== 'number' || isNaN(lifetime)) throw new TypeError('Lifetime must be a number.');
+    if (typeof lifetime !== 'number' || isNaN(lifetime)) throw new TypeError('The lifetime must be a number.');
     if (lifetime <= 0) {
       this.emit('debug', 'Didn\'t sweep messages - lifetime is unlimited');
       return -1;
@@ -357,6 +350,39 @@ class Client extends EventEmitter {
 
   _eval(script) {
     return eval(script);
+  }
+
+  _validateOptions(options = this.options) {
+    if (typeof options.shardCount !== 'number' || isNaN(options.shardCount)) {
+      throw new TypeError('The shardCount option must be a number.');
+    }
+    if (typeof options.shardId !== 'number' || isNaN(options.shardId)) {
+      throw new TypeError('The shardId option must be a number.');
+    }
+    if (options.shardCount < 0) throw new RangeError('The shardCount option must be at least 0.');
+    if (options.shardId < 0) throw new RangeError('The shardId option must be at least 0.');
+    if (options.shardId !== 0 && options.shardId >= options.shardCount) {
+      throw new RangeError('The shardId option must be less than shardCount.');
+    }
+    if (typeof options.maxMessageCache !== 'number' || isNaN(options.maxMessageCache)) {
+      throw new TypeError('The maxMessageCache option must be a number.');
+    }
+    if (typeof options.messageCacheLifetime !== 'number' || isNaN(options.messageCacheLifetime)) {
+      throw new TypeError('The messageCacheLifetime option must be a number.');
+    }
+    if (typeof options.messageSweepInterval !== 'number' || isNaN(options.messageSweepInterval)) {
+      throw new TypeError('The messageSweepInterval option must be a number.');
+    }
+    if (typeof options.fetchAllMembers !== 'boolean') {
+      throw new TypeError('The fetchAllMembers option must be a boolean.');
+    }
+    if (typeof options.disableEveryone !== 'boolean') {
+      throw new TypeError('The disableEveryone option must be a boolean.');
+    }
+    if (typeof options.restWsBridgeTimeout !== 'number' || isNaN(options.restWsBridgeTimeout)) {
+      throw new TypeError('The restWsBridgeTimeout option must be a number.');
+    }
+    if (!(options.disabledEvents instanceof Array)) throw new TypeError('The disabledEvents option must be an Array.');
   }
 }
 
