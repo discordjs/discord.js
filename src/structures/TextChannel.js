@@ -42,6 +42,38 @@ class TextChannel extends GuildChannel {
     return members;
   }
 
+  /**
+   * Fetch all webhooks for the channel.
+   * @returns {Promise<Collection<string, Webhook>>}
+   */
+  fetchWebhooks() {
+    return this.client.rest.methods.getChannelWebhooks(this);
+  }
+
+  /**
+   * Create a webhook for the channel.
+   * @param {string} name The name of the webhook.
+   * @param {FileResolvable} avatar The avatar for the webhook.
+   * @returns {Promise<Webhook>} webhook The created webhook.
+   * @example
+   * channel.createWebhook('Snek', 'http://snek.s3.amazonaws.com/topSnek.png')
+   *  .then(webhook => console.log(`Created Webhook ${webhook}`))
+   *  .catch(console.log)
+   */
+  createWebhook(name, avatar) {
+    return new Promise((resolve, reject) => {
+      if (avatar) {
+        this.client.resolver.resolveFile(avatar).then(file => {
+          let base64 = new Buffer(file, 'binary').toString('base64');
+          let dataURI = `data:;base64,${base64}`;
+          this.client.rest.methods.createWebhook(this, name, dataURI).then(resolve).catch(reject);
+        }).catch(reject);
+      } else {
+        this.client.rest.methods.createWebhook(this, name).then(resolve).catch(reject);
+      }
+    });
+  }
+
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   sendMessage() { return; }
   sendTTSMessage() { return; }
@@ -56,9 +88,6 @@ class TextChannel extends GuildChannel {
   get typingCount() { return; }
   createCollector() { return; }
   awaitMessages() { return; }
-  fetchWebhook() { return; }
-  fetchWebhooks() { return; }
-  createWebhook() { return; }
   bulkDelete() { return; }
   _cacheMessage() { return; }
 }

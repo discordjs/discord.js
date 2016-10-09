@@ -280,6 +280,15 @@ class Client extends EventEmitter {
   }
 
   /**
+   * Fetch a webhook by ID.
+   * @param {string} id ID of the webhook
+   * @returns {Promise<Webhook>}
+   */
+  fetchWebhook(id) {
+    return this.rest.methods.getWebhook(id);
+  }
+
+  /**
    * Sweeps all channels' messages and removes the ones older than the max message lifetime.
    * If the message has been edited, the time of the edit is used rather than the time of the original message.
    * @param {number} [lifetime=this.options.messageCacheLifetime] Messages that are older than this (in seconds)

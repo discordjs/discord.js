@@ -310,49 +310,6 @@ class TextBasedChannel {
   }
 
   /**
-   * Fetch a webhook by ID
-   * @param {string} id The id of the webhook.
-   * @returns {Promise<Webhook>}
-   */
-  fetchWebhook(id) {
-    return this.client.rest.methods.fetchWebhook(id);
-  }
-
-  /**
-   * Fetch all webhooks for the channel.
-   * @returns {Collection<Webhook>}
-   */
-  fetchWebhooks() {
-    return this.client.rest.methods.fetchChannelWebhooks(this);
-  }
-
-  /**
-   * Create a webhook for the channel.
-   * @param {string} name The name of the webhook.
-   * @param {FileResolvable=} avatar The avatar for the webhook.
-   * @returns {Webhook} webhook The created webhook.
-   * @example
-   * channel.createWebhook('Snek', 'http://snek.s3.amazonaws.com/topSnek.png')
-   *  .then(webhook => console.log(`Created Webhook ${webhook}`))
-   *  .catch(console.log)
-   */
-  createWebhook(name, avatar) {
-    return new Promise((resolve, reject) => {
-      if (avatar) {
-        this.client.resolver.resolveFile(avatar).then(file => {
-          let base64 = new Buffer(file, 'binary').toString('base64');
-          let dataURI = `data:;base64,${base64}`;
-          this.client.rest.methods.createChannelWebhook(this, name, dataURI)
-          .then(resolve).catch(reject);
-        }).catch(reject);
-      } else {
-        this.client.rest.methods.createChannelWebhook(this, name)
-        .then(resolve).catch(reject);
-      }
-    });
-  }
-
-  /**
    * Bulk delete a given Collection or Array of messages in one go. Returns the deleted messages after.
    * Only OAuth Bot accounts may use this method.
    * @param {Collection<string, Message>|Message[]} messages The messages to delete
@@ -388,9 +345,6 @@ exports.applyToClass = (structure, full = false) => {
     props.push('fetchPinnedMessages');
     props.push('createCollector');
     props.push('awaitMessages');
-    props.push('fetchWebhook');
-    props.push('fetchWebhooks');
-    props.push('createWebhook');
   }
   for (const prop of props) applyProp(structure, prop);
 };

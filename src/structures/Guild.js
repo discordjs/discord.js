@@ -301,7 +301,7 @@ class Guild {
    * @returns {Collection<Webhook>}
    */
   fetchWebhooks() {
-    return this.client.rest.methods.fetchGuildWebhooks(this);
+    return this.client.rest.methods.getGuildWebhooks(this);
   }
 
   /**

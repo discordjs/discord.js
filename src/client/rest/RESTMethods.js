@@ -539,7 +539,16 @@ class RESTMethods {
     });
   }
 
-  fetchGuildWebhooks(guild) {
+  getWebhook(id, token) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.webhook(id, token), require('util').isUndefined(token))
+      .then(data => {
+        resolve(new Webhook(this.rest.client, data));
+      }).catch(reject);
+    });
+  }
+
+  getGuildWebhooks(guild) {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('get', Constants.Endpoints.guildWebhooks(guild.id), true)
       .then(data => {
@@ -552,7 +561,7 @@ class RESTMethods {
     });
   }
 
-  fetchChannelWebhooks(channel) {
+  getChannelWebhooks(channel) {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('get', Constants.Endpoints.channelWebhooks(channel.id), true)
       .then(data => {
@@ -565,19 +574,11 @@ class RESTMethods {
     });
   }
 
-  fetchWebhook(id, token) {
-    return new Promise((resolve, reject) => {
-      this.rest.makeRequest('get', Constants.Endpoints.webhook(id, token), require('util').isUndefined(token))
-      .then(data => {
-        resolve(new Webhook(this.rest.client, data));
-      }).catch(reject);
-    });
-  }
-
-  createChannelWebhook(channel, name, avatar) {
+  createWebhook(channel, name, avatar) {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('post', Constants.Endpoints.channelWebhooks(channel.id), true, {
-        name: name, avatar: avatar,
+        name,
+        avatar,
       })
       .then(data => {
         resolve(new Webhook(this.rest.client, data));
@@ -585,22 +586,15 @@ class RESTMethods {
     });
   }
 
-  deleteChannelWebhook(webhook) {
-    return new Promise((resolve, reject) => {
-      this.rest.makeRequest('delete', Constants.Endpoints.webhook(webhook.id, webhook.token), false)
-      .then(resolve).catch(reject);
+  editWebhook(webhook, name, avatar) {
+    return this.rest.makeRequest('patch', Constants.Endpoints.webhook(webhook.id, webhook.token), false, {
+      name,
+      avatar,
     });
   }
 
-  editChannelWebhook(webhook, name, avatar) {
-    return new Promise((resolve, reject) => {
-      this.rest.makeRequest('patch', Constants.Endpoints.webhook(webhook.id, webhook.token), false, {
-        name: name, avatar: avatar,
-      })
-      .then(data => {
-        resolve(data);
-      }).catch(reject);
-    });
+  deleteWebhook(webhook) {
+    return this.rest.makeRequest('delete', Constants.Endpoints.webhook(webhook.id, webhook.token), false);
   }
 
   sendWebhookMessage(webhook, content, { avatarURL, tts, disableEveryone, embeds } = {}, file = null) {
