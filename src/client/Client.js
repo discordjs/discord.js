@@ -364,8 +364,8 @@ class Client extends EventEmitter {
     if (options.shardId !== 0 && options.shardId >= options.shardCount) {
       throw new RangeError('The shardId option must be less than shardCount.');
     }
-    if (typeof options.maxMessageCache !== 'number' || isNaN(options.maxMessageCache)) {
-      throw new TypeError('The maxMessageCache option must be a number.');
+    if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
+      throw new TypeError('The messageCacheMaxSize option must be a number.');
     }
     if (typeof options.messageCacheLifetime !== 'number' || isNaN(options.messageCacheLifetime)) {
       throw new TypeError('The messageCacheLifetime option must be a number.');

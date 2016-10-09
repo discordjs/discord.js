@@ -7,7 +7,7 @@ exports.Package = require('../../package.json');
  * the order they are triggered, whereas burst runs multiple at a time, and doesn't guarantee a particular order.
  * @property {number} [shardId=0] The ID of this shard
  * @property {number} [shardCount=0] The number of shards
- * @property {number} [maxMessageCache=200] Number of messages to cache per channel
+ * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
  * @property {number} [messageCacheLifetime=0] How long until a message should be uncached by the message sweeping
  * (in seconds, 0 for forever)
  * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
@@ -26,7 +26,7 @@ exports.DefaultOptions = {
   apiRequestMethod: 'sequential',
   shardId: 0,
   shardCount: 0,
-  maxMessageCache: 200,
+  messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,
   fetchAllMembers: false,

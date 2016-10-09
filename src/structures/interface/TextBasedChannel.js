@@ -323,7 +323,7 @@ class TextBasedChannel {
   }
 
   _cacheMessage(message) {
-    const maxSize = this.client.options.maxMessageCache;
+    const maxSize = this.client.options.messageCacheMaxSize;
     if (maxSize === 0) return null;
     if (this.messages.size >= maxSize) this.messages.delete(this.messages.keys().next().value);
 
