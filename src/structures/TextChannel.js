@@ -56,10 +56,10 @@ class TextChannel extends GuildChannel {
   get typingCount() { return; }
   createCollector() { return; }
   awaitMessages() { return; }
-  bulkDelete() { return; }
   fetchWebhook() { return; }
   fetchWebhooks() { return; }
   createWebhook() { return; }
+  bulkDelete() { return; }
   _cacheMessage() { return; }
 }
 

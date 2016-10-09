@@ -310,24 +310,12 @@ class TextBasedChannel {
   }
 
   /**
-   * Bulk delete a given Collection or Array of messages in one go. Returns the deleted messages after.
-   * Only OAuth Bot accounts may use this method.
-   * @param {Collection<string, Message>|Message[]} messages The messages to delete
-   * @returns {Collection<string, Message>}
+   * Fetch a webhook by ID
+   * @param {string} id The id of the webhook.
+   * @returns {Promise<Webhook>}
    */
-  bulkDelete(messages) {
-    if (messages instanceof Collection) messages = messages.array();
-    if (!(messages instanceof Array)) return Promise.reject(new TypeError('Messages must be an Array or Collection.'));
-    const messageIDs = messages.map(m => m.id);
-    return this.client.rest.methods.bulkDeleteMessages(this, messageIDs);
-  }
-
-  _cacheMessage(message) {
-    const maxSize = this.client.options.messageCacheMaxSize;
-    if (maxSize === 0) return null;
-    if (this.messages.size >= maxSize && maxSize > 0) this.messages.delete(this.messages.firstKey());
-    this.messages.set(message.id, message);
-    return message;
+  fetchWebhook(id) {
+    return this.client.rest.methods.fetchWebhook(id);
   }
 
   /**
@@ -336,15 +324,6 @@ class TextBasedChannel {
    */
   fetchWebhooks() {
     return this.client.rest.methods.fetchChannelWebhooks(this);
-  }
-
-  /**
-   * Fetch a webhook by ID
-   * @param {string} id The id of the webhook.
-   * @returns {Promise<Webhook>}
-   */
-  fetchWebhook(id) {
-    return this.client.rest.methods.fetchWebhook(id);
   }
 
   /**
@@ -372,6 +351,27 @@ class TextBasedChannel {
       }
     });
   }
+
+  /**
+   * Bulk delete a given Collection or Array of messages in one go. Returns the deleted messages after.
+   * Only OAuth Bot accounts may use this method.
+   * @param {Collection<string, Message>|Message[]} messages The messages to delete
+   * @returns {Collection<string, Message>}
+   */
+  bulkDelete(messages) {
+    if (messages instanceof Collection) messages = messages.array();
+    if (!(messages instanceof Array)) return Promise.reject(new TypeError('Messages must be an Array or Collection.'));
+    const messageIDs = messages.map(m => m.id);
+    return this.client.rest.methods.bulkDeleteMessages(this, messageIDs);
+  }
+
+  _cacheMessage(message) {
+    const maxSize = this.client.options.messageCacheMaxSize;
+    if (maxSize === 0) return null;
+    if (this.messages.size >= maxSize && maxSize > 0) this.messages.delete(this.messages.firstKey());
+    this.messages.set(message.id, message);
+    return message;
+  }
 }
 
 exports.applyToClass = (structure, full = false) => {
@@ -388,8 +388,8 @@ exports.applyToClass = (structure, full = false) => {
     props.push('fetchPinnedMessages');
     props.push('createCollector');
     props.push('awaitMessages');
-    props.push('fetchWebhooks');
     props.push('fetchWebhook');
+    props.push('fetchWebhooks');
     props.push('createWebhook');
   }
   for (const prop of props) applyProp(structure, prop);
