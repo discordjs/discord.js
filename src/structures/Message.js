@@ -2,6 +2,7 @@ const Attachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
+const escapeMarkdown = require('../../util/EscapeMarkdown');
 
 /**
  * Represents a Message on Discord
@@ -332,7 +333,7 @@ class Message {
    * @returns {Promise<Message>}
    */
   editCode(lang, content) {
-    content = this.client.resolver.resolveString(content).replace(/```/g, '`\u200b``');
+    content = escapeMarkdown(this.client.resolver.resolveString(content), true);
     return this.edit(`\`\`\`${lang ? lang : ''}\n${content}\n\`\`\``);
   }
 

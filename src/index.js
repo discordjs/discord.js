@@ -7,6 +7,7 @@ module.exports = {
 
   Collection: require('./util/Collection'),
   splitMessage: require('./util/SplitMessage'),
+  escapeMarkdown: require('./util/EscapeMarkdown'),
 
   Channel: require('./structures/Channel'),
   ClientUser: require('./structures/ClientUser'),

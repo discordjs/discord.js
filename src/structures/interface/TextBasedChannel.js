@@ -2,6 +2,7 @@ const path = require('path');
 const Message = require('../Message');
 const MessageCollector = require('../MessageCollector');
 const Collection = require('../../util/Collection');
+const escapeMarkdown = require('../../util/EscapeMarkdown');
 
 /**
  * Interface for classes that have text-channel-like features
@@ -114,7 +115,7 @@ class TextBasedChannel {
       if (!options.split.prepend) options.split.prepend = `\`\`\`${lang ? lang : ''}\n`;
       if (!options.split.append) options.split.append = '\n```';
     }
-    content = this.client.resolver.resolveString(content).replace(/```/g, '`\u200b``');
+    content = escapeMarkdown(this.client.resolver.resolveString(content), true);
     return this.sendMessage(`\`\`\`${lang ? lang : ''}\n${content}\n\`\`\``, options);
   }
 
