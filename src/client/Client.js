@@ -41,13 +41,6 @@ class Client extends EventEmitter {
       throw new TypeError('The disabledEvents client option must be an array.');
     }
 
-    let disabledEvents = {};
-    for (const event in this.options.disabledEvents) {
-      disabledEvents[event] = true;
-    }
-
-    this.options.disabledEvents = disabledEvents;
-
     /**
      * The REST manager of the client
      * @type {RESTManager}
