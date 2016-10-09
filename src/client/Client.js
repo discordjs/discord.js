@@ -38,7 +38,7 @@ class Client extends EventEmitter {
     }
 
     if (!(this.options.disabledEvents instanceof Array)) {
-      throw new TypeError('disabledEvents must be an array');
+      throw new TypeError('The disabledEvents client option must be an array.');
     }
 
     let disabledEvents = {};
