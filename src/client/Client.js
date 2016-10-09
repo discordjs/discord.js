@@ -37,14 +37,16 @@ class Client extends EventEmitter {
       this.options.shardCount = Number(process.env.SHARD_COUNT);
     }
 
-    if (this.options.disabledEvents instanceof Array) {
-      let disabledEvents = {};
-      for (const event in this.options.disabledEvents) {
-        disabledEvents[event] = true;
-      }
-
-      this.options.disabledEvents = disabledEvents;
+    if (!(this.options.disabledEvents instanceof Array)) {
+      throw new TypeError('disabledEvents must be an array');
     }
+
+    let disabledEvents = {};
+    for (const event in this.options.disabledEvents) {
+      disabledEvents[event] = true;
+    }
+
+    this.options.disabledEvents = disabledEvents;
 
     /**
      * The REST manager of the client

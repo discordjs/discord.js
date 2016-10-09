@@ -84,7 +84,9 @@ class WebSocketPacketManager {
 
     this.setSequence(packet.s);
 
-    if (this.ws.client.options.disabledEvents[packet.t]) return false;
+    if (this.ws.client.options.disabledEvents[packet.t] !== undefined) {
+      return false;
+    }
 
     if (this.ws.status !== Constants.Status.READY) {
       if (BeforeReadyWhitelist.indexOf(packet.t) === -1) {
