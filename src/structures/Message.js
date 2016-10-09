@@ -2,7 +2,7 @@ const Attachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
-const escapeMarkdown = require('../../util/EscapeMarkdown');
+const escapeMarkdown = require('../util/EscapeMarkdown');
 
 /**
  * Represents a Message on Discord
