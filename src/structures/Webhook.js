@@ -1,4 +1,5 @@
 const path = require('path');
+const escapeMarkdown = require('../util/EscapeMarkdown');
 
 /**
  * Represents a Webhook
@@ -49,13 +50,13 @@ class Webhook {
      * The guild the Webhook belongs to
      * @type {string}
      */
-    this.guild_id = data.guild_id;
+    this.guildID = data.guild_id;
 
     /**
      * The channel the Webhook belongs to
      * @type {string}
      */
-    this.channel_id = data.channel_id;
+    this.channelID = data.channel_id;
 
     /**
      * The owner of the Webhook
@@ -144,16 +145,8 @@ class Webhook {
       if (!options.split.prepend) options.split.prepend = `\`\`\`${lang ? lang : ''}\n`;
       if (!options.split.append) options.split.append = '\n```';
     }
-    content = this.client.resolver.resolveString(content).replace(/```/g, '`\u200b``');
+    content = escapeMarkdown(this.client.resolver.resolveString(content), true);
     return this.sendMessage(`\`\`\`${lang ? lang : ''}\n${content}\n\`\`\``, options);
-  }
-
-  /**
-   * Delete the Webhook
-   * @returns {Promise}
-   */
-  delete() {
-    return this.client.rest.methods.deleteChannelWebhook(this);
   }
 
   /**
@@ -178,6 +171,14 @@ class Webhook {
         }).catch(reject);
       }
     });
+  }
+
+  /**
+   * Delete the Webhook
+   * @returns {Promise}
+   */
+  delete() {
+    return this.client.rest.methods.deleteChannelWebhook(this);
   }
 }
 
