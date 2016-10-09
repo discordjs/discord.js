@@ -17,6 +17,9 @@ exports.Package = require('../../package.json');
  * @property {boolean} [disableEveryone=false] Default value for MessageOptions.disableEveryone
  * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
  * corresponding websocket events
+ * @property {string[]} [disabledEvents] An array of disabled websocket events. Events in this array will not be
+ * processed. Disabling useless events such as 'TYPING_START' can result in significant performance increases on
+ * large-scale bots.
  * @property {WebsocketOptions} [ws] Options for the websocket
  */
 exports.DefaultOptions = {
@@ -29,6 +32,7 @@ exports.DefaultOptions = {
   fetchAllMembers: false,
   disableEveryone: false,
   restWsBridgeTimeout: 5000,
+  disabledEvents: [],
 
   /**
    * Websocket options. These are left as snake_case to match the API.
