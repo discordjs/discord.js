@@ -11,7 +11,7 @@ exports.Package = require('../../package.json');
  * @property {number} [messageCacheLifetime=0] How long until a message should be uncached by the message sweeping
  * (in seconds, 0 for forever)
  * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
- * the max message lifetime (in seconds, 0 for never)
+ * the message cache lifetime (in seconds, 0 for never)
  * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup, as well as
  * upon joining a guild
  * @property {boolean} [disableEveryone=false] Default value for MessageOptions.disableEveryone
