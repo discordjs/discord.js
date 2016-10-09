@@ -161,11 +161,11 @@ class Webhook {
         this.client.resolver.resolveFile(avatar).then(file => {
           let base64 = new Buffer(file, 'binary').toString('base64');
           let dataURI = `data:;base64,${base64}`;
-          this.client.rest.methods.editChannelWebhook(this, name, dataURI)
+          this.client.rest.methods.editWebhook(this, name, dataURI)
           .then(resolve).catch(reject);
         }).catch(reject);
       } else {
-        this.client.rest.methods.editChannelWebhook(this, name)
+        this.client.rest.methods.editWebhook(this, name)
         .then(data => {
           this.setup(data);
         }).catch(reject);
@@ -178,7 +178,7 @@ class Webhook {
    * @returns {Promise}
    */
   delete() {
-    return this.client.rest.methods.deleteChannelWebhook(this);
+    return this.client.rest.methods.deleteWebhook(this);
   }
 }
 
