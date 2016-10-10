@@ -613,6 +613,19 @@ class RESTMethods {
       }).catch(reject);
     });
   }
+
+  sendSlackWebhookMessage(webhook, body) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest(
+        'post',
+        `${Constants.Endpoints.webhook(webhook.id, webhook.token)}/slack?wait=true`,
+        false,
+        body
+      ).then(data => {
+        resolve(data);
+      }).catch(reject);
+    });
+  }
 }
 
 module.exports = RESTMethods;
