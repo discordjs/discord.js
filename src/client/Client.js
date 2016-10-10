@@ -20,7 +20,7 @@ class Client extends EventEmitter {
   /**
    * @param {ClientOptions} [options] Options for the client
    */
-  constructor(options) {
+  constructor(options = {}) {
     super();
 
     // Obtain shard details from environment
