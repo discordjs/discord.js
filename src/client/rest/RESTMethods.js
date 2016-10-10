@@ -29,7 +29,6 @@ class RESTMethods {
       this.rest.makeRequest('post', Constants.Endpoints.login, false, { email, password })
         .then(data => {
           this.loginToken(data.token).then(resolve).catch(reject);
-          // this.rest.client.manager.connectToWebSocket(data.token, resolve, reject);
         })
         .catch(reject);
     });
