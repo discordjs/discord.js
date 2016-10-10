@@ -28,7 +28,7 @@ class RESTMethods {
       this.rest.client.password = password;
       this.rest.makeRequest('post', Constants.Endpoints.login, false, { email, password })
         .then(data => {
-          this.loginToken(data.token).then(resolve).catch(reject);
+          resolve(this.loginToken(data.token));
         })
         .catch(reject);
     });
