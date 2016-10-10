@@ -15,6 +15,7 @@ class RESTMethods {
   }
 
   loginToken(token) {
+    token = token.replace('Bot ', '');
     return new Promise((resolve, reject) => {
       this.rest.client.manager.connectToWebSocket(token, resolve, reject);
     });
@@ -27,7 +28,7 @@ class RESTMethods {
       this.rest.client.password = password;
       this.rest.makeRequest('post', Constants.Endpoints.login, false, { email, password })
         .then(data => {
-          this.rest.client.manager.connectToWebSocket(data.token, resolve, reject);
+          resolve(this.loginToken(data.token));
         })
         .catch(reject);
     });
