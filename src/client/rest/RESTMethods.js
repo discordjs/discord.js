@@ -592,7 +592,8 @@ class RESTMethods {
         name,
         avatar,
       }).then(data => {
-        webhook = Object.assign(webhook, new Webhook(this.rest.client, data));
+        webhook.name = data.name;
+        webhook.avatar = data.avatar;
         resolve(webhook);
       }).catch(reject);
     });
