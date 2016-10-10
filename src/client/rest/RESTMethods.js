@@ -587,9 +587,15 @@ class RESTMethods {
   }
 
   editWebhook(webhook, name, avatar) {
-    return this.rest.makeRequest('patch', Constants.Endpoints.webhook(webhook.id, webhook.token), false, {
-      name,
-      avatar,
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('patch', Constants.Endpoints.webhook(webhook.id, webhook.token), false, {
+        name,
+        avatar,
+      }).then(data => {
+        webhook.name = data.name;
+        webhook.avatar = data.avatar;
+        resolve(webhook);
+      }).catch(reject);
     });
   }
 
