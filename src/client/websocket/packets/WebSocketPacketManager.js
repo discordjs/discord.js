@@ -77,7 +77,7 @@ class WebSocketPacketManager {
       return false;
     }
 
-    if (this.ws.status === Constants.OPCodes.HEARTBEAT_ACK) this.ws.client.emit('debug', 'HEARTBEAT ACK');
+    if (packet.op === Constants.OPCodes.HEARTBEAT_ACK) this.ws.client.emit('debug', 'HEARTBEAT ACK');
 
     if (this.ws.status === Constants.Status.RECONNECTING) {
       this.ws.reconnecting = false;
