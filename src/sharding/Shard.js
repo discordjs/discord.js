@@ -28,7 +28,7 @@ class Shard {
      * Process of the shard
      * @type {ChildProcess}
      */
-    this.process = childProcess.fork(path.resolve(this.manager.file), [], {
+    this.process = childProcess.fork(path.resolve(this.manager.file), ['--color', '--ansi'], {
       env: {
         SHARD_ID: this.id,
         SHARD_COUNT: this.manager.totalShards,
