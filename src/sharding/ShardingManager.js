@@ -15,8 +15,6 @@ class ShardingManager extends EventEmitter {
   /**
    * @param {string} file Path to your shard script file
    * @param {Object} options The options for the sharding manager.
-   * @param {number} [options.totalShards=1] Number of shards to default to spawning
-   * @param {boolean} [options.respawn=true] Respawn a shard when it dies
    */
   constructor(file, options = {}) {
     super();
