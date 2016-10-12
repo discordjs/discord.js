@@ -14,7 +14,7 @@ class RESTMethods {
     this.rest = restManager;
   }
 
-  loginToken(token) {
+  loginToken(token = this.rest.client.token) {
     token = token.replace('Bot ', '');
     return new Promise((resolve, reject) => {
       this.rest.client.manager.connectToWebSocket(token, resolve, reject);
@@ -44,6 +44,16 @@ class RESTMethods {
         .then(res => {
           this.rest.client.ws.gateway = `${res.url}/?encoding=json&v=${Constants.PROTOCOL_VERSION}`;
           resolve(this.rest.client.ws.gateway);
+        })
+        .catch(reject);
+    });
+  }
+
+  getBotGateway() {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.botGateway, true)
+        .then(res => {
+          resolve(res);
         })
         .catch(reject);
     });
