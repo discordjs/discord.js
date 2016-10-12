@@ -75,17 +75,38 @@ class Webhook {
 
   /**
    * Send a message with this webhook
-   * @param {StringResolvable} content The content to send
-   * @param {MessageOptions} [options={}] The options to provide
+   * @param {StringResolvable} content The content to send.
+   * @param {MessageOptions} [options={}] The options to provide.
    * @returns {Promise<Message|Message[]>}
    * @example
    * // send a message
-   * webook.sendMessage('hello!')
+   * webhook.sendMessage('hello!')
    *  .then(message => console.log(`Sent message: ${message.content}`))
    *  .catch(console.error);
    */
   sendMessage(content, options = {}) {
     return this.client.rest.methods.sendWebhookMessage(this, content, options);
+  }
+
+  /**
+   * Send a raw slack message with this webhook
+   * @param {Object} body The raw body to send.
+   * @returns {Promise}
+   * @example
+   * // send a slack message
+   * webhook.sendSlackMessage({
+   *   'username': 'Wumpus',
+   *   'attachments': [{
+   *     'pretext': 'this looks pretty cool',
+   *     'color': '#F0F',
+   *     'footer_icon': 'http://snek.s3.amazonaws.com/topSnek.png',
+   *     'footer': 'Powered by sneks',
+   *     'ts': new Date().getTime() / 1000
+   *   }]
+   * }).catch(console.log);
+   */
+  sendSlackMessage(body) {
+    return this.client.rest.methods.sendSlackWebhookMessage(this, body);
   }
 
   /**

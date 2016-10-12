@@ -15,6 +15,7 @@ class RESTMethods {
   }
 
   loginToken(token) {
+    token = token.replace('Bot ', '');
     return new Promise((resolve, reject) => {
       this.rest.client.manager.connectToWebSocket(token, resolve, reject);
     });
@@ -27,7 +28,7 @@ class RESTMethods {
       this.rest.client.password = password;
       this.rest.makeRequest('post', Constants.Endpoints.login, false, { email, password })
         .then(data => {
-          this.rest.client.manager.connectToWebSocket(data.token, resolve, reject);
+          resolve(this.loginToken(data.token));
         })
         .catch(reject);
     });
@@ -587,9 +588,15 @@ class RESTMethods {
   }
 
   editWebhook(webhook, name, avatar) {
-    return this.rest.makeRequest('patch', Constants.Endpoints.webhook(webhook.id, webhook.token), false, {
-      name,
-      avatar,
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('patch', Constants.Endpoints.webhook(webhook.id, webhook.token), false, {
+        name,
+        avatar,
+      }).then(data => {
+        webhook.name = data.name;
+        webhook.avatar = data.avatar;
+        resolve(webhook);
+      }).catch(reject);
     });
   }
 
@@ -609,6 +616,19 @@ class RESTMethods {
         content: content, username: webhook.name, avatar_url: avatarURL, tts: tts, file: file, embeds: embeds,
       })
       .then(data => {
+        resolve(data);
+      }).catch(reject);
+    });
+  }
+
+  sendSlackWebhookMessage(webhook, body) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest(
+        'post',
+        `${Constants.Endpoints.webhook(webhook.id, webhook.token)}/slack?wait=true`,
+        false,
+        body
+      ).then(data => {
         resolve(data);
       }).catch(reject);
     });

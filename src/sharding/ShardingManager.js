@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const EventEmitter = require('events').EventEmitter;
-
+const mergeDefault = require('../util/MergeDefault');
 const Shard = require('./Shard');
 const Collection = require('../util/Collection');
 
@@ -14,11 +14,12 @@ const Collection = require('../util/Collection');
 class ShardingManager extends EventEmitter {
   /**
    * @param {string} file Path to your shard script file
-   * @param {number} [totalShards=1] Number of shards to default to spawning
-   * @param {boolean} [respawn=true] Respawn a shard when it dies
+   * @param {Object} options The options for the sharding manager.
    */
-  constructor(file, totalShards = 1, respawn = true) {
+  constructor(file, options = {}) {
     super();
+
+    options = mergeDefault({ totalShards: 1, respawn: true, spawnArgs: [] }, options);
 
     /**
      * Path to the shard script file
@@ -34,18 +35,26 @@ class ShardingManager extends EventEmitter {
      * Amount of shards that this manager is going to spawn
      * @type {number}
      */
-    this.totalShards = totalShards;
-    if (typeof totalShards !== 'number' || isNaN(totalShards)) {
+    if (typeof options.totalShards !== 'number' || isNaN(options.totalShards)) {
       throw new TypeError('Amount of shards must be a number.');
     }
-    if (totalShards < 1) throw new RangeError('Amount of shards must be at least 1.');
-    if (totalShards !== Math.floor(totalShards)) throw new RangeError('Amount of shards must be an integer.');
+    if (options.totalShards < 1) throw new RangeError('Amount of shards must be at least 1.');
+    if (options.totalShards !== Math.floor(options.totalShards)) {
+      throw new RangeError('Amount of shards must be an integer.');
+    }
+    this.totalShards = options.totalShards;
 
     /**
      * Whether shards should automatically respawn upon exiting
      * @type {boolean}
      */
-    this.respawn = respawn;
+    this.respawn = options.respawn;
+
+    /**
+     * An array of arguments to pass to shards.
+     * @type {array}
+     */
+    this.spawnArgs = options.spawnArgs;
 
     /**
      * A collection of shards that this manager has spawned
@@ -60,7 +69,7 @@ class ShardingManager extends EventEmitter {
    * @returns {Promise<Shard>}
    */
   createShard(id = this.shards.size) {
-    const shard = new Shard(this, id);
+    const shard = new Shard(this, id, this.spawnArgs);
     this.shards.set(id, shard);
     /**
      * Emitted upon launching a shard

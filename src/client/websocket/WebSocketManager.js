@@ -221,7 +221,7 @@ class WebSocketManager extends EventEmitter {
 
     this.client.emit('raw', packet);
 
-    if (packet.op === 10) this.client.manager.setupKeepAlive(packet.d.heartbeat_interval);
+    if (packet.op === Constants.OPCodes.HELLO) this.client.manager.setupKeepAlive(packet.d.heartbeat_interval);
     return this.packetManager.handle(packet);
   }
 
