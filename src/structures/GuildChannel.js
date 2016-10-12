@@ -111,7 +111,7 @@ class GuildChannel extends Channel {
 
   /**
    * Overwrites the permissions for a user or role in this channel.
-   * @param {RoleResolveable|UserResolvable} userOrRole The user or role to update
+   * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The configuration for the update
    * @returns {Promise}
    * @example
