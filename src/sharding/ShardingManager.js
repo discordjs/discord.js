@@ -72,7 +72,7 @@ class ShardingManager extends EventEmitter {
      * Token to use for obtaining the automatic shard count, and passing to shards
      * @type {?string}
      */
-    this.token = options.token;
+    this.token = options.token ? options.token.replace(/^Bot /, '') : null;
 
     /**
      * A collection of shards that this manager has spawned
