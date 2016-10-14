@@ -50,7 +50,7 @@ A bot template using discord.js can be generated using [generator-discordbot](ht
 * [Discord.js server](https://discord.gg/bRCvFy9)
 * [Discord API server](https://discord.gg/rV4BwdK)
 * [Documentation](http://hydrabolt.github.io/discord.js/#!/docs/tag/master)
-* [Legacy (v8) documentation](http://discordjs.readthedocs.io/en/8.1.0/docs_client.html)
+* [Legacy (v8) documentation](http://discordjs.readthedocs.io/en/8.2.0/docs_client.html)
 * [Examples](https://github.com/hydrabolt/discord.js/tree/master/docs/custom/examples)
 * [GitHub](https://github.com/hydrabolt/discord.js)
 * [NPM](https://www.npmjs.com/package/discord.js)
