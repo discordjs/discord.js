@@ -20,7 +20,6 @@ class ShardingManager extends EventEmitter {
    */
   constructor(file, options = {}) {
     super();
-
     options = mergeDefault({ totalShards: 'auto', respawn: true, spawnArgs: [], token: null }, options);
 
     /**
@@ -42,6 +41,7 @@ class ShardingManager extends EventEmitter {
         throw new RangeError('Amount of shards must be an integer.');
       }
     }
+
     /**
      * Amount of shards that this manager is going to spawn
      * @type {number|string}
@@ -56,8 +56,7 @@ class ShardingManager extends EventEmitter {
 
     /**
      * An array of arguments to pass to shards.
-     * @type {array}
-     * @private
+     * @type {string[]}
      */
     this.spawnArgs = options.spawnArgs;
 
@@ -65,7 +64,7 @@ class ShardingManager extends EventEmitter {
      * Token that will be passed to the shards. Also used for auto shard count.
      * @type {string}
      */
-    if (options.token) this.token = options.token;
+    this.token = options.token || null;
 
     /**
      * A collection of shards that this manager has spawned
