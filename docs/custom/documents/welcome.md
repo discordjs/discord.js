@@ -35,14 +35,14 @@ For production bots, using node-opus should be considered a necessity, especiall
 
 ## Links
 * [Website](http://hydrabolt.github.io/discord.js/)
-* [Discord.js Server](https://discord.gg/bRCvFy9)
-* [Discord API Server](https://discord.gg/rV4BwdK)
+* [Discord.js server](https://discord.gg/bRCvFy9)
+* [Discord API server](https://discord.gg/rV4BwdK)
 * [Documentation](http://hydrabolt.github.io/discord.js/#!/docs/tag/master)
-* [Legacy Documentation](http://discordjs.readthedocs.io/en/8.1.0/docs_client.html)
+* [Legacy (v8) documentation](http://discordjs.readthedocs.io/en/8.1.0/docs_client.html)
+* [Examples](https://github.com/hydrabolt/discord.js/tree/master/docs/custom/examples)
 * [GitHub](https://github.com/hydrabolt/discord.js)
 * [NPM](https://www.npmjs.com/package/discord.js)
-* [Examples](https://github.com/hydrabolt/discord.js/tree/master/docs/custom/examples)
-* [Related Libraries](https://discordapi.com/unofficial/libs.html)
+* [Related libraries](https://discordapi.com/unofficial/libs.html)
 
 ## Help
 If you don't understand something in this documentation, you are experiencing problems, or you just need a gentle

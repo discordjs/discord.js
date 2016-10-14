@@ -47,15 +47,20 @@ A bot template using discord.js can be generated using [generator-discordbot](ht
 
 ## Links
 * [Website](http://hydrabolt.github.io/discord.js/)
-* [Discord.js Server](https://discord.gg/bRCvFy9)
-* [Discord API Server](https://discord.gg/rV4BwdK)
+* [Discord.js server](https://discord.gg/bRCvFy9)
+* [Discord API server](https://discord.gg/rV4BwdK)
 * [Documentation](http://hydrabolt.github.io/discord.js/#!/docs/tag/master)
-* [Legacy Documentation](http://discordjs.readthedocs.io/en/8.1.0/docs_client.html)
+* [Legacy (v8) documentation](http://discordjs.readthedocs.io/en/8.1.0/docs_client.html)
+* [Examples](https://github.com/hydrabolt/discord.js/tree/master/docs/custom/examples)
 * [GitHub](https://github.com/hydrabolt/discord.js)
 * [NPM](https://www.npmjs.com/package/discord.js)
-* [Examples](https://github.com/hydrabolt/discord.js/tree/master/docs/custom/examples)
-* [Related Libraries](https://discordapi.com/unofficial/libs.html)
+* [Related libraries](https://discordapi.com/unofficial/libs.html)
 
-## Contact
-Before reporting an issue, please read the [documentation](http://hydrabolt.github.io/discord.js/#!/docs/tag/master).
-If you can't find help there, you can ask in the official [Discord.js Server](https://discord.gg/bRCvFy9).
+## Contributing
+Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
+[documentation](http://hydrabolt.github.io/discord.js/#!/docs/tag/master).  
+See [the contributing guide](CONTRIBUTING.md) if you'd like to submit a PR.
+
+## Help
+If you don't understand something in this documentation, you are experiencing problems, or you just need a gentle
+nudge in the right direction, please don't hesitate to join our official [Discord.js Server](https://discord.gg/bRCvFy9).
