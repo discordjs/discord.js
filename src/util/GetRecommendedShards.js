@@ -10,10 +10,10 @@ module.exports = function getRecommendedShards(token) {
   return new Promise((resolve, reject) => {
     if (!token) reject(new Error('You must provide a token!'));
     superagent.get(botGateway)
-    .set('Authorization', `Bot ${token.replace('Bot ', '')}`)
-    .end((err, res) => {
-      if (err) reject(err);
-      resolve(res.body.shards);
+      .set('Authorization', `Bot ${token.replace('Bot ', '')}`)
+      .end((err, res) => {
+        if (err) reject(err);
+        resolve(res.body.shards);
     });
   });
 };
