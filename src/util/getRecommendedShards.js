@@ -6,12 +6,14 @@ const botGateway = require('./Constants').Endpoints.botGateway;
  * @param {number} token Discord auth token
  * @returns {Promise<number>} the recommended number of shards
  */
-module.exports = token => new Promise((resolve, reject) => {
-  if (!token) reject(new Error('You must provide a token!'));
-  superagent.get(botGateway)
-  .set('Authorization', `Bot ${token.replace('Bot ', '')}`)
-  .end((err, res) => {
-    if (err) reject(err);
-    resolve(res.body.shards);
+module.exports = function GetRecommendedShards(token) {
+  return new Promise((resolve, reject) => {
+    if (!token) reject(new Error('You must provide a token!'));
+    superagent.get(botGateway)
+    .set('Authorization', `Bot ${token.replace('Bot ', '')}`)
+    .end((err, res) => {
+      if (err) reject(err);
+      resolve(res.body.shards);
+    });
   });
-});
+};

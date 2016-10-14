@@ -4,7 +4,7 @@ module.exports = {
   Shard: require('./sharding/Shard'),
   ShardClientUtil: require('./sharding/ShardClientUtil'),
   ShardingManager: require('./sharding/ShardingManager'),
-  getRecommendedShards: require('./util/getRecommendedShards'),
+  getRecommendedShards: require('./util/GetRecommendedShards'),
 
   Collection: require('./util/Collection'),
   splitMessage: require('./util/SplitMessage'),
