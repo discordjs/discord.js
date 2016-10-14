@@ -15,7 +15,7 @@ class RESTMethods {
   }
 
   loginToken(token = this.rest.client.token) {
-    token = token.replace(/^Bot /, '');
+    token = token.replace(/^Bot\s*/i, '');
     return new Promise((resolve, reject) => {
       this.rest.client.manager.connectToWebSocket(token, resolve, reject);
     });
