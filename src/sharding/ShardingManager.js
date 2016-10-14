@@ -16,11 +16,23 @@ const getRecommendedShards = require('../util/GetRecommendedShards');
 class ShardingManager extends EventEmitter {
   /**
    * @param {string} file Path to your shard script file
-   * @param {Object} options The options for the sharding manager.
+   * @param {Object} [options] Options for the sharding manager
+   * @param {number|string} [options.totalShards='auto'] Number of shards to spawn, or "auto"
+   * @param {number} [options.autoShardInterval=600] How frequently to automatically spawn another shard if needed
+   * (in seconds) - only applicable if `totalShards` is `auto`
+   * @param {boolean} [options.respawn=true] Whether shards should automatically respawn upon exiting
+   * @param {string[]} [options.spawnArgs=[]] Arguments to pass to the shard script when spawning
+   * @param {string} [options.token] Token to use for automatic shard count and passing to shards
    */
   constructor(file, options = {}) {
     super();
-    options = mergeDefault({ totalShards: 'auto', respawn: true, spawnArgs: [], token: null }, options);
+    options = mergeDefault({
+      totalShards: 'auto',
+      autoShardInterval: 600,
+      respawn: true,
+      spawnArgs: [],
+      token: null,
+    }, options);
 
     /**
      * Path to the shard script file
@@ -32,21 +44,30 @@ class ShardingManager extends EventEmitter {
     const stats = fs.statSync(this.file);
     if (!stats.isFile()) throw new Error('File path does not point to a file.');
 
-    if (options.totalShards !== 'auto') {
-      if (typeof options.totalShards !== 'number' || isNaN(options.totalShards)) {
-        throw new TypeError('Amount of shards must be a number.');
-      }
-      if (options.totalShards < 1) throw new RangeError('Amount of shards must be at least 1.');
-      if (options.totalShards !== Math.floor(options.totalShards)) {
-        throw new RangeError('Amount of shards must be an integer.');
-      }
-    }
-
     /**
      * Amount of shards that this manager is going to spawn
      * @type {number|string}
      */
     this.totalShards = options.totalShards;
+    if (this.totalShards !== 'auto') {
+      if (typeof this.totalShards !== 'number' || isNaN(this.totalShards)) {
+        throw new TypeError('Amount of shards must be a number.');
+      }
+      if (this.totalShards < 1) throw new RangeError('Amount of shards must be at least 1.');
+      if (this.totalShards !== Math.floor(this.totalShards)) {
+        throw new RangeError('Amount of shards must be an integer.');
+      }
+    }
+
+    /**
+     * How frequently to check the recommend shard count and spawn a new shard if necessary (in seconds).
+     * Only applicable when `totalShards` is `auto`.
+     * @type {number}
+     */
+    this.autoShardInterval = options.autoShardInterval;
+    if (typeof this.autoShardInterval !== 'number' || isNaN(this.autoShardInterval)) {
+      throw new TypeError('The autoShardInterval option must be a number.');
+    }
 
     /**
      * Whether shards should automatically respawn upon exiting
@@ -62,7 +83,7 @@ class ShardingManager extends EventEmitter {
 
     /**
      * Token to use for obtaining the automatic shard count, and passing to shards
-     * @type {string}
+     * @type {?string}
      */
     this.token = options.token;
 
@@ -71,6 +92,15 @@ class ShardingManager extends EventEmitter {
      * @type {Collection<number, Shard>}
      */
     this.shards = new Collection();
+
+    // Set up automatic shard creation interval
+    if (this.totalShards === 'auto' && this.autoShardInterval > 0) {
+      setInterval(() => {
+        getRecommendedShards(this.token).then(count => {
+          if (this.shards.size < count) this.createShard();
+        });
+      }, this.autoShardInterval);
+    }
   }
 
   /**
