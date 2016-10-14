@@ -45,5 +45,5 @@ For production bots, using node-opus should be considered a necessity, especiall
 * [Related libraries](https://discordapi.com/unofficial/libs.html)
 
 ## Help
-If you don't understand something in this documentation, you are experiencing problems, or you just need a gentle
+If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle
 nudge in the right direction, please don't hesitate to join our official [Discord.js Server](https://discord.gg/bRCvFy9).
