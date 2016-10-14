@@ -82,6 +82,22 @@ class VoiceChannel extends GuildChannel {
     const connection = this.client.voice.connections.get(this.guild.id);
     if (connection && connection.channel.id === this.id) connection.disconnect();
   }
+
+  /**
+   * Checks if the client has permission to send audio to the voice channel
+   * @type {boolean}
+   */
+  get speakable() {
+    return this.permissionsFor(this.client.user).hasPermission('SPEAK');
+  }
+
+  /**
+   * Checks if the client has permission join the voice channel
+   * @type {boolean}
+   */
+  get joinable() {
+    return this.permissionsFor(this.client.user).hasPermission('CONNECT');
+  }
 }
 
 module.exports = VoiceChannel;
