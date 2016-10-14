@@ -10,7 +10,7 @@ class Shard {
   /**
    * @param {ShardingManager} manager The sharding manager
    * @param {number} id The ID of this shard
-   * @param {array} [spawnArgs=] Optional command line arguments to pass to the shard
+   * @param {array} [spawnArgs=[]] Command line arguments to pass to the shard
    */
   constructor(manager, id, spawnArgs = []) {
     /**
@@ -27,8 +27,7 @@ class Shard {
 
     /**
      * The environment variables for the shard
-     * @type {object}
-     * @private
+     * @type {Object}
      */
     this.env = {
       SHARD_ID: this.id,
