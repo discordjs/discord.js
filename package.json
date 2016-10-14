@@ -28,16 +28,16 @@
   "dependencies": {
     "superagent": "^2.2.0",
     "tweetnacl": "^0.14.3",
-    "ws": "^1.1.1",
+    "ws": "^1.1.1"
+  },
+  "peerDependencies": {
+    "node-opus": "^0.2.1",
     "opusscript": "^0.0.1"
   },
   "devDependencies": {
     "fs-extra": "^0.30.0",
     "jsdoc-parse": "^1.2.0",
     "eslint": "^3.4.0"
-  },
-  "optionalDependencies": {
-    "node-opus": "^0.2.1"
   },
   "engines": {
     "node": ">=6.0.0"

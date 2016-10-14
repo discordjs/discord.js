@@ -20,12 +20,14 @@ stable and performant than previous versions.
 
 ## Installation
 **Node.js 6.0.0 or newer is required.**  
-With voice support: `npm install --save discord.js --production`  
-Without voice support: `npm install --save discord.js --production --no-optional`
+Without voice support: `npm install discord.js --save --production`  
+With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discord.js node-opus --save --production`  
+With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js opusscript --save --production`  
+If both audio packages are installed, discord.js will automatically prefer node-opus.
 
-By default, discord.js uses [opusscript](https://www.npmjs.com/package/opusscript) when playing audio over voice connections.
-If you're looking to play over multiple voice connections, it might be better to install [node-opus](https://www.npmjs.com/package/node-opus).
-discord.js will automatically prefer node-opus over opusscript.
+The preferred audio engine is node-opus, as it performs significantly better than opusscript.
+Using opusscript is only recommended for development on Windows, since getting node-opus to build there can be a bit of a challenge.
+For production bots, using node-opus should be considered a necessity, especially if they're going to be running on multiple servers.
 
 ## Guides
 * [LuckyEvie's general guide](https://eslachance.gitbooks.io/discord-js-bot-guide/content/)
