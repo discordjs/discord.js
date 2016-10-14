@@ -50,13 +50,7 @@ class RESTMethods {
   }
 
   getBotGateway() {
-    return new Promise((resolve, reject) => {
-      this.rest.makeRequest('get', Constants.Endpoints.botGateway, true)
-        .then(res => {
-          resolve(res);
-        })
-        .catch(reject);
-    });
+    return this.rest.makeRequest('get', Constants.Endpoints.botGateway, true);
   }
 
   sendMessage(channel, content, { tts, nonce, disableEveryone, split } = {}, file = null) {
