@@ -18,8 +18,6 @@ class ShardingManager extends EventEmitter {
    * @param {string} file Path to your shard script file
    * @param {Object} [options] Options for the sharding manager
    * @param {number|string} [options.totalShards='auto'] Number of shards to spawn, or "auto"
-   * @param {number} [options.autoShardInterval=600] How frequently to automatically spawn another shard if needed
-   * (in seconds) - only applicable if `totalShards` is `auto`
    * @param {boolean} [options.respawn=true] Whether shards should automatically respawn upon exiting
    * @param {string[]} [options.shardArgs=[]] Arguments to pass to the shard script when spawning
    * @param {string} [options.token] Token to use for automatic shard count and passing to shards
@@ -28,7 +26,6 @@ class ShardingManager extends EventEmitter {
     super();
     options = mergeDefault({
       totalShards: 'auto',
-      autoShardInterval: 600,
       respawn: true,
       shardArgs: [],
       token: null,
@@ -60,16 +57,6 @@ class ShardingManager extends EventEmitter {
     }
 
     /**
-     * How frequently to check the recommend shard count and spawn a new shard if necessary (in seconds).
-     * Only applicable when `totalShards` is `auto`.
-     * @type {number}
-     */
-    this.autoShardInterval = options.autoShardInterval;
-    if (typeof this.autoShardInterval !== 'number' || isNaN(this.autoShardInterval)) {
-      throw new TypeError('The autoShardInterval option must be a number.');
-    }
-
-    /**
      * Whether shards should automatically respawn upon exiting
      * @type {boolean}
      */
@@ -92,15 +79,6 @@ class ShardingManager extends EventEmitter {
      * @type {Collection<number, Shard>}
      */
     this.shards = new Collection();
-
-    // Set up automatic shard creation interval
-    if (this.totalShards === 'auto' && this.autoShardInterval > 0) {
-      setInterval(() => {
-        getRecommendedShards(this.token).then(count => {
-          if (this.shards.size < count) this.createShard();
-        });
-      }, this.autoShardInterval);
-    }
   }
 
   /**
