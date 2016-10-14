@@ -10,9 +10,9 @@ class Shard {
   /**
    * @param {ShardingManager} manager The sharding manager
    * @param {number} id The ID of this shard
-   * @param {array} [spawnArgs=[]] Command line arguments to pass to the shard
+   * @param {array} [args=[]] Command line arguments to pass to the script
    */
-  constructor(manager, id, spawnArgs = []) {
+  constructor(manager, id, args = []) {
     /**
      * Manager that created the shard
      * @type {ShardingManager}
@@ -39,7 +39,7 @@ class Shard {
      * Process of the shard
      * @type {ChildProcess}
      */
-    this.process = childProcess.fork(path.resolve(this.manager.file), spawnArgs, {
+    this.process = childProcess.fork(path.resolve(this.manager.file), args, {
       env: this.env,
     });
     this.process.on('message', this._handleMessage.bind(this));
