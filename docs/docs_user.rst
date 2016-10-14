@@ -122,7 +122,7 @@ sendTTSMessage(content, `callback`)
 sendFile(attachment, name, content, `callback`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-| **Shortcut of** ``client.sendFile(channel, attachment, name, content, callbasck)``
+| **Shortcut of** ``client.sendFile(channel, attachment, name, content, callback)``
 | **See** client.sendFile_
 
 startTyping(`callback`)
