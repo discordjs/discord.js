@@ -114,11 +114,15 @@ class Client extends EventEmitter {
      */
     this.presences = new Collection();
 
-    /**
-     * The authorization token for the logged in user/bot.
-     * @type {?string}
-     */
-    this.token = null;
+    if (!this.token && 'CLIENT_TOKEN' in process.env) {
+      /**
+       * The authorization token for the logged in user/bot.
+       * @type {?string}
+       */
+      this.token = process.env.CLIENT_TOKEN;
+    } else {
+      this.token = null;
+    }
 
     /**
      * The email, if there is one, for the logged in Client
