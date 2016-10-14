@@ -14,7 +14,7 @@ class RESTMethods {
     this.rest = restManager;
   }
 
-  loginToken(token) {
+  loginToken(token = this.rest.client.token) {
     token = token.replace('Bot ', '');
     return new Promise((resolve, reject) => {
       this.rest.client.manager.connectToWebSocket(token, resolve, reject);
@@ -47,6 +47,10 @@ class RESTMethods {
         })
         .catch(reject);
     });
+  }
+
+  getBotGateway() {
+    return this.rest.makeRequest('get', Constants.Endpoints.botGateway, true);
   }
 
   sendMessage(channel, content, { tts, nonce, disableEveryone, split } = {}, file = null) {
