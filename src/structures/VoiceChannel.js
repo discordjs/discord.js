@@ -44,7 +44,7 @@ class VoiceChannel extends GuildChannel {
     if (connection && connection.channel.id === this.id) return connection;
     return null;
   }
-  
+
   /**
    * Checks if the client has permission to send audio to the voice channel
    * @type {boolean}
