@@ -205,11 +205,27 @@ class Collection extends Map {
    */
   filter(fn, thisArg) {
     if (thisArg) fn = fn.bind(thisArg);
-    const collection = new Collection();
+    const results = new Collection();
     for (const [key, val] of this) {
-      if (fn(val, key, this)) collection.set(key, val);
+      if (fn(val, key, this)) results.set(key, val);
     }
-    return collection;
+    return results;
+  }
+
+  /**
+   * Identical to
+   * [Array.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter).
+   * @param {function} fn Function used to test (should return a boolean)
+   * @param {Object} [thisArg] Value to use as `this` when executing function
+   * @returns {Collection}
+   */
+  filterArray(fn, thisArg) {
+    if (thisArg) fn = fn.bind(thisArg);
+    const results = [];
+    for (const [key, val] of this) {
+      if (fn(val, key, this)) results.push(val);
+    }
+    return results;
   }
 
   /**
