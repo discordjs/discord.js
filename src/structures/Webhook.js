@@ -67,7 +67,7 @@ class Webhook {
 
   /**
    * Options that can be passed into sendMessage, sendTTSMessage, sendFile, sendCode
-   * @typedef {Object} MessageOptions
+   * @typedef {Object} WebhookMessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {boolean} [disableEveryone=this.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
@@ -76,7 +76,7 @@ class Webhook {
   /**
    * Send a message with this webhook
    * @param {StringResolvable} content The content to send.
-   * @param {MessageOptions} [options={}] The options to provide.
+   * @param {WebhookMessageOptions} [options={}] The options to provide.
    * @returns {Promise<Message|Message[]>}
    * @example
    * // send a message
@@ -112,7 +112,7 @@ class Webhook {
   /**
    * Send a text-to-speech message with this webhook
    * @param {StringResolvable} content The content to send
-   * @param {MessageOptions} [options={}] The options to provide
+   * @param {WebhookMessageOptions} [options={}] The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
    * // send a TTS message
@@ -130,7 +130,7 @@ class Webhook {
    * @param {FileResolvable} attachment The file to send
    * @param {string} [fileName="file.jpg"] The name and extension of the file
    * @param {StringResolvable} [content] Text message to send with the attachment
-   * @param {MessageOptions} [options] The options to provide
+   * @param {WebhookMessageOptions} [options] The options to provide
    * @returns {Promise<Message>}
    */
   sendFile(attachment, fileName, content, options = {}) {
@@ -157,7 +157,7 @@ class Webhook {
    * Send a code block with this webhook
    * @param {string} lang Language for the code block
    * @param {StringResolvable} content Content of the code block
-   * @param {MessageOptions} options The options to provide
+   * @param {WebhookMessageOptions} options The options to provide
    * @returns {Promise<Message|Message[]>}
    */
   sendCode(lang, content, options = {}) {
