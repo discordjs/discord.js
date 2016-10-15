@@ -163,7 +163,7 @@ class Webhook {
   sendCode(lang, content, options = {}) {
     if (options.split) {
       if (typeof options.split !== 'object') options.split = {};
-      if (!options.split.prepend) options.split.prepend = `\`\`\`${lang ? lang : ''}\n`;
+      if (!options.split.prepend) options.split.prepend = `\`\`\`${lang || ''}\n`;
       if (!options.split.append) options.split.append = '\n```';
     }
     content = escapeMarkdown(this.client.resolver.resolveString(content), true);
