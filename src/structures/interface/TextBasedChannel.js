@@ -116,7 +116,7 @@ class TextBasedChannel {
       if (!options.split.append) options.split.append = '\n```';
     }
     content = escapeMarkdown(this.client.resolver.resolveString(content), true);
-    return this.sendMessage(`\`\`\`${lang ? lang : ''}\n${content}\n\`\`\``, options);
+    return this.sendMessage(`\`\`\`${lang || ''}\n${content}\n\`\`\``, options);
   }
 
   /**
