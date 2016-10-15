@@ -334,7 +334,7 @@ class Message {
    */
   editCode(lang, content) {
     content = escapeMarkdown(this.client.resolver.resolveString(content), true);
-    return this.edit(`\`\`\`${lang ? lang : ''}\n${content}\n\`\`\``);
+    return this.edit(`\`\`\`${lang || ''}\n${content}\n\`\`\``);
   }
 
   /**
