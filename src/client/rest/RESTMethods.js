@@ -68,8 +68,7 @@ class RESTMethods {
       if (channel instanceof User || channel instanceof GuildMember) {
         this.createDM(channel).then(chan => {
           this._sendMessageRequest(chan, content, file, tts, nonce, resolve, reject);
-        })
-        .catch(reject);
+        }).catch(reject);
       } else {
         this._sendMessageRequest(channel, content, file, tts, nonce, resolve, reject);
       }
@@ -79,22 +78,24 @@ class RESTMethods {
   _sendMessageRequest(channel, content, file, tts, nonce, resolve, reject) {
     if (content instanceof Array) {
       const datas = [];
-      const promise = this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
+      let promise = this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
         content: content[0], tts, nonce,
       }, file).catch(reject);
+
       for (let i = 1; i <= content.length; i++) {
         if (i < content.length) {
-          promise.then(data => {
+          const i2 = i;
+          promise = promise.then(data => {
             datas.push(data);
             return this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
-              content: content[i], tts, nonce,
+              content: content[i2], tts, nonce,
             }, file);
-          });
+          }).catch(reject);
         } else {
           promise.then(data => {
             datas.push(data);
             resolve(this.rest.client.actions.MessageCreate.handle(datas).messages);
-          });
+          }).catch(reject);
         }
       }
     } else {
