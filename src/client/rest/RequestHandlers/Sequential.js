@@ -96,7 +96,7 @@ class SequentialRequestHandler extends RequestHandler {
     this.waiting = true;
 
     const item = this.queue[0];
-    this.execute(item).then(() => this.handle());
+    this.execute(item).then(() => this.handle()).catch(console.error);
   }
 }
 
