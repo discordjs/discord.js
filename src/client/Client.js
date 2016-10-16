@@ -114,6 +114,12 @@ class Client extends EventEmitter {
      */
     this.presences = new Collection();
 
+    /** A Collection of friends for the logged in user.
+     * <warn>This is only present for user accounts, not bot accounts!</warn>
+     * @type {Collection<string, User>}
+     */
+    this.friends = new Collection();
+
     if (!this.token && 'CLIENT_TOKEN' in process.env) {
       /**
        * The authorization token for the logged in user/bot.
