@@ -25,7 +25,7 @@ class ClientUser extends User {
 
     /**
      * A Collection of friends for the logged in user.
-     * <warn>This is only filled in for user accounts, not bot accounts!</warn>
+     * <warn>This is only filled for user accounts, not bot accounts!</warn>
      * @type {Collection<string, User>}
      */
     this.friends = new Collection();
