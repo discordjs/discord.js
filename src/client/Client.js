@@ -114,7 +114,8 @@ class Client extends EventEmitter {
      */
     this.presences = new Collection();
 
-    /** A Collection of friends for the logged in user.
+    /**
+     * A Collection of friends for the logged in user.
      * <warn>This is only present for user accounts, not bot accounts!</warn>
      * @type {Collection<string, User>}
      */
