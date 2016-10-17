@@ -18,7 +18,7 @@ class ReadyHandler extends AbstractHandler {
 
     for (const relation of data.relationships) {
       const friend = client.dataManager.newUser(relation.user);
-      client.friends.set(friend.id, friend);
+      client.user.friends.set(friend.id, friend);
     }
 
     data.presences = data.presences || [];
