@@ -129,7 +129,7 @@ class ClientUser extends User {
   /**
    * Send a friend request
    * <warn>This is only available for user accounts, not bot accounts!</warn>
-   * @param {string|User} userOrID The user to send the friend request to.
+   * @param {UserResolveable} userOrID The user to send the friend request to.
    * @returns {Promise<User>} user The user the friend request was sent to.
    */
   addFriend(userOrID) {
@@ -140,7 +140,7 @@ class ClientUser extends User {
   /**
    * Remove a friend
    * <warn>This is only available for user accounts, not bot accounts!</warn>
-   * @param {string|User} userOrID The user to remove from your friends
+   * @param {UserResolveable} userOrID The user to remove from your friends
    * @returns {Promise<User>} user The user that was removed
    */
   removeFriend(userOrID) {
