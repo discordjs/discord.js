@@ -190,6 +190,7 @@ exports.Events = {
   TYPING_STOP: 'typingStop',
   DISCONNECT: 'disconnect',
   RECONNECTING: 'reconnecting',
+  ERROR: 'error',
   WARN: 'warn',
   DEBUG: 'debug',
 };
