@@ -239,12 +239,12 @@ class GuildChannel extends Channel {
       this.name === channel.name;
 
     if (equal) {
-      if (channel.permission_overwrites) {
-        const thisIDSet = Array.from(this.permissionOverwrites.keys());
-        const otherIDSet = channel.permission_overwrites.map(overwrite => overwrite.id);
+      if (this.permissionOverwrites && channel.permissionOverwrites) {
+        const thisIDSet = this.permissionOverwrites.keyArray();
+        const otherIDSet = channel.permissionOverwrites.keyArray();
         equal = arraysEqual(thisIDSet, otherIDSet);
       } else {
-        equal = false;
+        equal = !this.permissionOverwrites && !channel.permissionOverwrites;
       }
     }
 
