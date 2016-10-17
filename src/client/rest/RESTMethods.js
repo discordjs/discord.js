@@ -638,6 +638,26 @@ class RESTMethods {
       }).catch(reject);
     });
   }
+
+  addFriend(user) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('post', Constants.Endpoints.relationships('@me'), true, {
+        discriminator: user.discriminator,
+        username: user.username,
+      }).then(() => {
+        resolve(user);
+      }).catch(reject);
+    });
+  }
+
+  removeFriend(user) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('delete', `${Constants.Endpoints.relationships('@me')}/${user.id}`, true)
+      .then(() => {
+        resolve(user);
+      }).catch(reject);
+    });
+  }
 }
 
 module.exports = RESTMethods;
