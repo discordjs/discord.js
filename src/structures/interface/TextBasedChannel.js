@@ -316,8 +316,9 @@ class TextBasedChannel {
    * @returns {Collection<string, Message>}
    */
   bulkDelete(messages) {
-    if (messages instanceof Collection) messages = messages.array();
-    if (!(messages instanceof Array)) return Promise.reject(new TypeError('Messages must be an Array or Collection.'));
+    if (!(messages instanceof Array || messages instanceof Collection)) {
+      return Promise.reject(new TypeError('Messages must be an Array or Collection.'));
+    }
     const messageIDs = messages.map(m => m.id);
     return this.client.rest.methods.bulkDeleteMessages(this, messageIDs);
   }

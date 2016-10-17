@@ -263,9 +263,10 @@ class WebSocketManager extends EventEmitter {
       if (unavailableCount === 0) {
         this.status = Constants.Status.NEARLY;
         if (this.client.options.fetchAllMembers) {
-          const promises = this.client.guilds.array().map(g => g.fetchMembers());
+          const promises = this.client.guilds.map(g => g.fetchMembers());
           Promise.all(promises).then(() => this._emitReady()).catch(e => {
-            this.client.emit(Constants.Event.WARN, `Error on pre-ready guild member fetching - ${e}`);
+            this.client.emit(Constants.Events.WARN, 'Error in pre-ready guild member fetching');
+            this.client.emit(Constants.Events.ERROR, e);
             this._emitReady();
           });
           return;
