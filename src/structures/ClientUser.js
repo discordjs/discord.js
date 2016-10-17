@@ -1,4 +1,5 @@
 const User = require('./User');
+const Collection = require('../util/Collection');
 
 /**
  * Represents the logged in client's Discord User
@@ -21,6 +22,13 @@ class ClientUser extends User {
     this.email = data.email;
     this.localPresence = {};
     this._typing = new Map();
+
+    /**
+     * A Collection of friends for the logged in user.
+     * <warn>This is only filled for user accounts, not bot accounts!</warn>
+     * @type {Collection<string, User>}
+     */
+    this.friends = new Collection();
   }
 
   edit(data) {
