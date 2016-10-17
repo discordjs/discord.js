@@ -150,7 +150,7 @@ class Role {
    * @returns {boolean}
    */
   hasPermissions(permissions, explicit = false) {
-    return permissions.map(p => this.hasPermission(p, explicit)).every(v => v);
+    return permissions.every(p => this.hasPermission(p, explicit));
   }
 
   /**

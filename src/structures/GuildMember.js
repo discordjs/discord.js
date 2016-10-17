@@ -248,7 +248,7 @@ class GuildMember {
    */
   hasPermissions(permissions, explicit = false) {
     if (!explicit && this.user.id === this.guild.ownerID) return true;
-    return permissions.map(p => this.hasPermission(p, explicit)).every(v => v);
+    return permissions.every(p => this.hasPermission(p, explicit));
   }
 
   /**
