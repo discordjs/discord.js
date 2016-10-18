@@ -129,23 +129,23 @@ class ClientUser extends User {
   /**
    * Send a friend request
    * <warn>This is only available for user accounts, not bot accounts!</warn>
-   * @param {UserResolveable} userOrID The user to send the friend request to.
-   * @returns {Promise<User>} user The user the friend request was sent to.
+   * @param {UserResolvable} user The user to send the friend request to.
+   * @returns {Promise<User>} The user the friend request was sent to.
    */
-  addFriend(userOrID) {
-    userOrID = this.client.resolver.resolveUser(userOrID);
-    return this.client.rest.methods.addFriend(userOrID);
+  addFriend(user) {
+    user = this.client.resolver.resolveUser(user);
+    return this.client.rest.methods.addFriend(user);
   }
 
   /**
    * Remove a friend
    * <warn>This is only available for user accounts, not bot accounts!</warn>
-   * @param {UserResolveable} userOrID The user to remove from your friends
-   * @returns {Promise<User>} user The user that was removed
+   * @param {UserResolvable} userOrID The user to remove from your friends
+   * @returns {Promise<User>} The user that was removed
    */
-  removeFriend(userOrID) {
-    userOrID = this.client.resolver.resolveUser(userOrID);
-    return this.client.rest.methods.removeFriend(userOrID);
+  removeFriend(user) {
+    user = this.client.resolver.resolveUser(user);
+    return this.client.rest.methods.removeFriend(user);
   }
 
   /**
