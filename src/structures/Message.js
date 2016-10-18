@@ -33,6 +33,12 @@ class Message {
     this.id = data.id;
 
     /**
+     * The type of the message
+     * @type {string}
+     */
+    this.type = Constants.MessageTypes[data.type];
+
+    /**
      * The content of the message
      * @type {string}
      */
