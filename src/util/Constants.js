@@ -228,6 +228,16 @@ exports.WSEvents = {
   VOICE_SERVER_UPDATE: 'VOICE_SERVER_UPDATE',
 };
 
+exports.MessageTypes = {
+  0: 'DEFAULT',
+  1: 'RECIPIENT_ADD',
+  2: 'RECIPIENT_REMOVE',
+  3: 'CALL',
+  4: 'CHANNEL_NAME_CHANGE',
+  5: 'CHANNEL_ICON_CHANGE',
+  6: 'PINS_ADD',
+};
+
 const PermissionFlags = exports.PermissionFlags = {
   CREATE_INSTANT_INVITE: 1 << 0,
   KICK_MEMBERS: 1 << 1,
