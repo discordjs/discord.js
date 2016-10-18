@@ -140,7 +140,7 @@ class ClientUser extends User {
   /**
    * Remove a friend
    * <warn>This is only available for user accounts, not bot accounts!</warn>
-   * @param {UserResolvable} userOrID The user to remove from your friends
+   * @param {UserResolvable} user The user to remove from your friends
    * @returns {Promise<User>} The user that was removed
    */
   removeFriend(user) {
