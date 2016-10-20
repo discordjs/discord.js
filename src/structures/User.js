@@ -1,5 +1,6 @@
 const TextBasedChannel = require('./interface/TextBasedChannel');
 const Constants = require('../util/Constants');
+const Collection = require('../util/Collection');
 const Presence = require('./Presence').Presence;
 
 /**
@@ -95,6 +96,15 @@ class User {
   get avatarURL() {
     if (!this.avatar) return null;
     return Constants.Endpoints.avatar(this.id, this.avatar);
+  }
+
+  /**
+   * A collection of guild that are shared bewteen the client and the user
+   * @type {Collection}
+   * @readonly
+   */
+  get sharedGuilds() {
+    return new Collection(this.client.guilds.filter(guild => guild.members.has(this.id)).map(guild => [guild.id, guild]));
   }
 
   /**
