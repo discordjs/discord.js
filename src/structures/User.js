@@ -105,6 +105,7 @@ class User {
   get sharedGuilds() {
     return this.client.guilds.filter(guild => guild.members.has(this.id));
   }
+
   /**
    * Check whether the user is typing in a channel.
    * @param {ChannelResolvable} channel The channel to check in
