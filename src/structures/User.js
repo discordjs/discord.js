@@ -1,6 +1,5 @@
 const TextBasedChannel = require('./interface/TextBasedChannel');
 const Constants = require('../util/Constants');
-const Collection = require('../util/Collection');
 const Presence = require('./Presence').Presence;
 
 /**
@@ -99,14 +98,13 @@ class User {
   }
 
   /**
-   * A collection of guild that are shared bewteen the client and the user
-   * @type {Collection}
+   * An array of guilds that are shared bewteen the client and the user
+   * @type {Array}
    * @readonly
    */
   get sharedGuilds() {
-    return new Collection(this.client.guilds.filter(guild => guild.members.has(this.id)).map(guild => [guild.id, guild]));
+    return this.client.guilds.filter(guild => guild.members.has(this.id));
   }
-
   /**
    * Check whether the user is typing in a channel.
    * @param {ChannelResolvable} channel The channel to check in
