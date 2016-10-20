@@ -98,8 +98,8 @@ class User {
   }
 
   /**
-   * An array of guilds that are shared bewteen the client and the user
-   * @type {Array}
+   * A collection of guilds that are shared bewteen the client and the user
+   * @type {Collection}
    * @readonly
    */
   get sharedGuilds() {
