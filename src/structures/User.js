@@ -98,7 +98,7 @@ class User {
   }
 
   /**
-   * A collection of guilds that are shared bewteen the client and the user
+   * A collection of guilds that are shared between the client and the user
    * @type {Collection}
    * @readonly
    */
