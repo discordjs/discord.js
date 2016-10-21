@@ -83,16 +83,20 @@ class ClientUser extends User {
 
   /**
    * Set the avatar of the logged in Client.
-   * @param {Base64Resolvable} avatar The new avatar
+   * @param {FileResolvable} avatar The new avatar
    * @returns {Promise<ClientUser>}
    * @example
    * // set avatar
-   * client.user.setAvatar(fs.readFileSync('./avatar.png'))
+   * client.user.setAvatar('./avatar.png')
    *  .then(user => console.log(`New avatar set!`))
    *  .catch(console.error);
    */
   setAvatar(avatar) {
-    return this.client.rest.methods.updateCurrentUser({ avatar });
+    return new Promise(resolve => {
+      this.client.resolver.resolveFile(avatar).then(data => {
+        resolve(this.client.rest.methods.updateCurrentUser({ avatar: data }));
+      });
+    });
   }
 
   /**
