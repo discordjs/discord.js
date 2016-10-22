@@ -17,8 +17,12 @@ class ReadyHandler extends AbstractHandler {
     for (const privateDM of data.private_channels) client.dataManager.newChannel(privateDM);
 
     for (const relation of data.relationships) {
-      const friend = client.dataManager.newUser(relation.user);
-      client.user.friends.set(friend.id, friend);
+      const user = client.dataManager.newUser(relation.user);
+      if (relation.type === 1) {
+        client.user.friends.set(user.id, user);
+      } else if (relation.type === 2) {
+        client.user.blocked.set(user.id, user);
+      }
     }
 
     data.presences = data.presences || [];

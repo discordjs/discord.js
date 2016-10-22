@@ -658,6 +658,24 @@ class RESTMethods {
       }).catch(reject);
     });
   }
+
+  blockUser(user) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('put', `${Constants.Endpoints.relationships('@me')}/${user.id}`, true, { type: 2 })
+      .then(() => {
+        resolve(user);
+      }).catch(reject);
+    });
+  }
+
+  unblockUser(user) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('delete', `${Constants.Endpoints.relationships('@me')}/${user.id}`, true)
+      .then(() => {
+        resolve(user);
+      }).catch(reject);
+    });
+  }
 }
 
 module.exports = RESTMethods;

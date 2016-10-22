@@ -29,6 +29,13 @@ class ClientUser extends User {
      * @type {Collection<string, User>}
      */
     this.friends = new Collection();
+
+    /**
+     * A Collection of blocked users for the logged in user.
+     * <warn>This is only filled for user accounts, not bot accounts!</warn>
+     * @type {Collection<string, User>}
+     */
+    this.blocked = new Collection();
   }
 
   edit(data) {
