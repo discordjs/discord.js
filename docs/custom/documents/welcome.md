@@ -20,9 +20,9 @@ stable and performant than previous versions.
 
 ## Installation
 **Node.js 6.0.0 or newer is required.**  
-Without voice support: `npm install discord.js --save --production`  
-With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discord.js node-opus --save --production`  
-With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js opusscript --save --production`  
+Without voice support: `npm install discord.js --save`  
+With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discord.js node-opus --save`  
+With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js opusscript --save`  
 If both audio packages are installed, discord.js will automatically prefer node-opus.
 
 The preferred audio engine is node-opus, as it performs significantly better than opusscript.
