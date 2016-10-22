@@ -3,16 +3,6 @@
  * @extends {Map}
  */
 class Collection extends Map {
-  set(key, value) {
-    super.set(key, value);
-    this.changed = true;
-  }
-
-  delete(key) {
-    super.delete(key);
-    this.changed = true;
-  }
-
   /**
    * Returns an ordered array of the values of this collection.
    * @returns {Array}
@@ -77,11 +67,8 @@ class Collection extends Map {
    * @returns {*}
    */
   random() {
-    if (!this.cachedArray || this.cachedArray.length !== this.size || this.changed) {
-      this.cachedArray = this.array();
-      this.changed = false;
-    }
-    return this.cachedArray[Math.floor(Math.random() * this.cachedArray.length)];
+    const arr = this.array();
+    return arr[Math.floor(Math.random() * arr.length)];
   }
 
   /**
@@ -90,11 +77,8 @@ class Collection extends Map {
    * @returns {*}
    */
   randomKey() {
-    if (!this.cachedKeyArray || this.cachedKeyArray.length !== this.size || this.changed) {
-      this.cachedKeyArray = this.keyArray();
-      this.changed = false;
-    }
-    return this.cachedKeyArray[Math.floor(Math.random() * this.cachedKeyArray.length)];
+    const arr = this.keyArray();
+    return arr[Math.floor(Math.random() * arr.length)];
   }
 
   /**
