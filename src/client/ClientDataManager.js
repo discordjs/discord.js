@@ -118,6 +118,12 @@ class ClientDataManager {
   updateChannel(currentChannel, newData) {
     currentChannel.setup(newData);
   }
+
+  updateEmoji(currentEmoji, newData) {
+    const oldEmoji = cloneObject(currentEmoji);
+    currentEmoji.setup(newData);
+    this.client.emit(Constants.Events.GUILD_EMOJI_UPDATE, oldEmoji, currentEmoji);
+  }
 }
 
 module.exports = ClientDataManager;
