@@ -121,6 +121,7 @@ class TextBasedChannel {
 
   /**
    * Gets a single message from this channel, regardless of it being cached or not.
+   * <warn>Only OAuth bot accounts can use this method.</warn>
    * @param {string} messageID The ID of the message to get
    * @returns {Promise<Message>}
    * @example
