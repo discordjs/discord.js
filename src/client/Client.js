@@ -235,13 +235,13 @@ class Client extends EventEmitter {
    */
   destroy() {
     return this.manager.destroy().then(() => {
-        for (const t of this._timeouts) clearTimeout(t);
-        for (const i of this._intervals) clearInterval(i);
-        this._timeouts.clear();
-        this._intervals.clear();
-        this.token = null;
-        this.email = null;
-        this.password = null;
+      for (const t of this._timeouts) clearTimeout(t);
+      for (const i of this._intervals) clearInterval(i);
+      this._timeouts.clear();
+      this._intervals.clear();
+      this.token = null;
+      this.email = null;
+      this.password = null;
     });
   }
 
