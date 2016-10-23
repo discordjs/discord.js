@@ -7,13 +7,15 @@ const User = requireStructure('User');
 const GuildMember = requireStructure('GuildMember');
 const Role = requireStructure('Role');
 const Invite = requireStructure('Invite');
+const Webhook = requireStructure('Webhook');
 
 class RESTMethods {
   constructor(restManager) {
     this.rest = restManager;
   }
 
-  loginToken(token) {
+  loginToken(token = this.rest.client.token) {
+    token = token.replace(/^Bot\s*/i, '');
     return new Promise((resolve, reject) => {
       this.rest.client.manager.connectToWebSocket(token, resolve, reject);
     });
@@ -26,7 +28,7 @@ class RESTMethods {
       this.rest.client.password = password;
       this.rest.makeRequest('post', Constants.Endpoints.login, false, { email, password })
         .then(data => {
-          this.rest.client.manager.connectToWebSocket(data.token, resolve, reject);
+          resolve(this.loginToken(data.token));
         })
         .catch(reject);
     });
@@ -47,21 +49,26 @@ class RESTMethods {
     });
   }
 
+  getBotGateway() {
+    return this.rest.makeRequest('get', Constants.Endpoints.botGateway, true);
+  }
+
   sendMessage(channel, content, { tts, nonce, disableEveryone, split } = {}, file = null) {
     return new Promise((resolve, reject) => {
       if (typeof content !== 'undefined') content = this.rest.client.resolver.resolveString(content);
 
-      if (disableEveryone || (typeof disableEveryone === 'undefined' && this.rest.client.options.disableEveryone)) {
-        content = content.replace('@everyone', '@\u200beveryone').replace('@here', '@\u200bhere');
-      }
+      if (content) {
+        if (disableEveryone || (typeof disableEveryone === 'undefined' && this.rest.client.options.disableEveryone)) {
+          content = content.replace('@everyone', '@\u200beveryone').replace('@here', '@\u200bhere');
+        }
 
-      if (split) content = splitMessage(content, typeof split === 'object' ? split : {});
+        if (split) content = splitMessage(content, typeof split === 'object' ? split : {});
+      }
 
       if (channel instanceof User || channel instanceof GuildMember) {
         this.createDM(channel).then(chan => {
           this._sendMessageRequest(chan, content, file, tts, nonce, resolve, reject);
-        })
-        .catch(reject);
+        }).catch(reject);
       } else {
         this._sendMessageRequest(channel, content, file, tts, nonce, resolve, reject);
       }
@@ -71,22 +78,24 @@ class RESTMethods {
   _sendMessageRequest(channel, content, file, tts, nonce, resolve, reject) {
     if (content instanceof Array) {
       const datas = [];
-      const promise = this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
+      let promise = this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
         content: content[0], tts, nonce,
       }, file).catch(reject);
+
       for (let i = 1; i <= content.length; i++) {
         if (i < content.length) {
-          promise.then(data => {
+          const i2 = i;
+          promise = promise.then(data => {
             datas.push(data);
             return this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
-              content: content[i], tts, nonce,
+              content: content[i2], tts, nonce,
             }, file);
-          });
+          }).catch(reject);
         } else {
           promise.then(data => {
             datas.push(data);
             resolve(this.rest.client.actions.MessageCreate.handle(datas).messages);
-          });
+          }).catch(reject);
         }
       }
     } else {
@@ -532,6 +541,138 @@ class RESTMethods {
       this.rest.makeRequest('delete', `${Constants.Endpoints.guildEmojis(emoji.guild.id)}/${emoji.id}`, true)
       .then(() => {
         resolve(this.rest.client.actions.EmojiDelete.handle(emoji).data);
+      }).catch(reject);
+    });
+  }
+
+  getWebhook(id, token) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.webhook(id, token), require('util').isUndefined(token))
+      .then(data => {
+        resolve(new Webhook(this.rest.client, data));
+      }).catch(reject);
+    });
+  }
+
+  getGuildWebhooks(guild) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.guildWebhooks(guild.id), true)
+      .then(data => {
+        const hooks = new Collection();
+        for (const hook of data) {
+          hooks.set(hook.id, new Webhook(this.rest.client, hook));
+        }
+        resolve(hooks);
+      }).catch(reject);
+    });
+  }
+
+  getChannelWebhooks(channel) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.channelWebhooks(channel.id), true)
+      .then(data => {
+        const hooks = new Collection();
+        for (const hook of data) {
+          hooks.set(hook.id, new Webhook(this.rest.client, hook));
+        }
+        resolve(hooks);
+      }).catch(reject);
+    });
+  }
+
+  createWebhook(channel, name, avatar) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('post', Constants.Endpoints.channelWebhooks(channel.id), true, {
+        name,
+        avatar,
+      })
+      .then(data => {
+        resolve(new Webhook(this.rest.client, data));
+      }).catch(reject);
+    });
+  }
+
+  editWebhook(webhook, name, avatar) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('patch', Constants.Endpoints.webhook(webhook.id, webhook.token), false, {
+        name,
+        avatar,
+      }).then(data => {
+        webhook.name = data.name;
+        webhook.avatar = data.avatar;
+        resolve(webhook);
+      }).catch(reject);
+    });
+  }
+
+  deleteWebhook(webhook) {
+    return this.rest.makeRequest('delete', Constants.Endpoints.webhook(webhook.id, webhook.token), false);
+  }
+
+  sendWebhookMessage(webhook, content, { avatarURL, tts, disableEveryone, embeds } = {}, file = null) {
+    return new Promise((resolve, reject) => {
+      if (typeof content !== 'undefined') content = this.rest.client.resolver.resolveString(content);
+
+      if (disableEveryone || (typeof disableEveryone === 'undefined' && this.rest.client.options.disableEveryone)) {
+        content = content.replace('@everyone', '@\u200beveryone').replace('@here', '@\u200bhere');
+      }
+
+      this.rest.makeRequest('post', `${Constants.Endpoints.webhook(webhook.id, webhook.token)}?wait=true`, false, {
+        content: content, username: webhook.name, avatar_url: avatarURL, tts: tts, file: file, embeds: embeds,
+      })
+      .then(data => {
+        resolve(data);
+      }).catch(reject);
+    });
+  }
+
+  sendSlackWebhookMessage(webhook, body) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest(
+        'post',
+        `${Constants.Endpoints.webhook(webhook.id, webhook.token)}/slack?wait=true`,
+        false,
+        body
+      ).then(data => {
+        resolve(data);
+      }).catch(reject);
+    });
+  }
+
+  addFriend(user) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('post', Constants.Endpoints.relationships('@me'), true, {
+        discriminator: user.discriminator,
+        username: user.username,
+      }).then(() => {
+        resolve(user);
+      }).catch(reject);
+    });
+  }
+
+  removeFriend(user) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('delete', `${Constants.Endpoints.relationships('@me')}/${user.id}`, true)
+      .then(() => {
+        resolve(user);
+      }).catch(reject);
+    });
+  }
+
+  blockUser(user) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('put', `${Constants.Endpoints.relationships('@me')}/${user.id}`, true, { type: 2 })
+      .then(() => {
+        resolve(user);
+      }).catch(reject);
+    });
+  }
+
+  unblockUser(user) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('delete', `${Constants.Endpoints.relationships('@me')}/${user.id}`, true)
+      .then(() => {
+        resolve(user);
       }).catch(reject);
     });
   }

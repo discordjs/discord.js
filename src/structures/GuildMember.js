@@ -248,7 +248,7 @@ class GuildMember {
    */
   hasPermissions(permissions, explicit = false) {
     if (!explicit && this.user.id === this.guild.ownerID) return true;
-    return permissions.map(p => this.hasPermission(p, explicit)).every(v => v);
+    return permissions.every(p => this.hasPermission(p, explicit));
   }
 
   /**
@@ -407,7 +407,7 @@ class GuildMember {
    * console.log(`Hello from ${member}!`);
    */
   toString() {
-    return String(this.user);
+    return `<@${this.nickname ? '!' : ''}${this.user.id}>`;
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel

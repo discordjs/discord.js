@@ -297,6 +297,14 @@ class Guild {
   }
 
   /**
+   * Fetch all webhooks for the guild.
+   * @returns {Collection<Webhook>}
+   */
+  fetchWebhooks() {
+    return this.client.rest.methods.getGuildWebhooks(this);
+  }
+
+  /**
    * Fetch a single guild member from a user.
    * @param {UserResolvable} user The user to fetch the member for
    * @returns {Promise<GuildMember>}

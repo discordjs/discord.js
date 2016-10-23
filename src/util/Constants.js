@@ -7,28 +7,33 @@ exports.Package = require('../../package.json');
  * the order they are triggered, whereas burst runs multiple at a time, and doesn't guarantee a particular order.
  * @property {number} [shardId=0] The ID of this shard
  * @property {number} [shardCount=0] The number of shards
- * @property {number} [maxMessageCache=200] Number of messages to cache per channel
+ * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
+ * (-1 for unlimited - don't do this without message sweeping, otherwise memory usage will climb indefinitely)
  * @property {number} [messageCacheLifetime=0] How long until a message should be uncached by the message sweeping
  * (in seconds, 0 for forever)
  * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
- * the max message lifetime (in seconds, 0 for never)
+ * the message cache lifetime (in seconds, 0 for never)
  * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup, as well as
  * upon joining a guild
  * @property {boolean} [disableEveryone=false] Default value for MessageOptions.disableEveryone
  * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
  * corresponding websocket events
+ * @property {string[]} [disabledEvents] An array of disabled websocket events. Events in this array will not be
+ * processed. Disabling useless events such as 'TYPING_START' can result in significant performance increases on
+ * large-scale bots.
  * @property {WebsocketOptions} [ws] Options for the websocket
  */
 exports.DefaultOptions = {
   apiRequestMethod: 'sequential',
   shardId: 0,
   shardCount: 0,
-  maxMessageCache: 200,
+  messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,
   fetchAllMembers: false,
   disableEveryone: false,
   restWsBridgeTimeout: 5000,
+  disabledEvents: [],
 
   /**
    * Websocket options. These are left as snake_case to match the API.
@@ -67,6 +72,7 @@ const Endpoints = exports.Endpoints = {
   login: `${API}/auth/login`,
   logout: `${API}/auth/logout`,
   gateway: `${API}/gateway`,
+  botGateway: `${API}/gateway/bot`,
   invite: (id) => `${API}/invite/${id}`,
   inviteLink: (id) => `https://discord.gg/${id}`,
   CDN: 'https://cdn.discordapp.com',
@@ -77,6 +83,7 @@ const Endpoints = exports.Endpoints = {
   avatar: (userID, avatar) => userID === '1' ? avatar : `${Endpoints.user(userID)}/avatars/${avatar}.jpg`,
   me: `${API}/users/@me`,
   meGuild: (guildID) => `${Endpoints.me}/guilds/${guildID}`,
+  relationships: (userID) => `${Endpoints.user(userID)}/relationships`,
 
   // guilds
   guilds: `${API}/guilds`,
@@ -103,6 +110,10 @@ const Endpoints = exports.Endpoints = {
   channelTyping: (channelID) => `${Endpoints.channel(channelID)}/typing`,
   channelPermissions: (channelID) => `${Endpoints.channel(channelID)}/permissions`,
   channelMessage: (channelID, messageID) => `${Endpoints.channelMessages(channelID)}/${messageID}`,
+  channelWebhooks: (channelID) => `${Endpoints.channel(channelID)}/webhooks`,
+
+  // webhooks
+  webhook: (webhookID, token) => `${API}/webhooks/${webhookID}${token ? `/${token}` : ''}`,
 };
 
 exports.Status = {
@@ -131,6 +142,8 @@ exports.OPCodes = {
   RECONNECT: 7,
   REQUEST_GUILD_MEMBERS: 8,
   INVALID_SESSION: 9,
+  HELLO: 10,
+  HEARTBEAT_ACK: 11,
 };
 
 exports.VoiceOPCodes = {
@@ -178,6 +191,7 @@ exports.Events = {
   TYPING_STOP: 'typingStop',
   DISCONNECT: 'disconnect',
   RECONNECTING: 'reconnecting',
+  ERROR: 'error',
   WARN: 'warn',
   DEBUG: 'debug',
 };
@@ -212,6 +226,18 @@ exports.WSEvents = {
   FRIEND_ADD: 'RELATIONSHIP_ADD',
   FRIEND_REMOVE: 'RELATIONSHIP_REMOVE',
   VOICE_SERVER_UPDATE: 'VOICE_SERVER_UPDATE',
+  RELATIONSHIP_ADD: 'RELATIONSHIP_ADD',
+  RELATIONSHIP_REMOVE: 'RELATIONSHIP_REMOVE',
+};
+
+exports.MessageTypes = {
+  0: 'DEFAULT',
+  1: 'RECIPIENT_ADD',
+  2: 'RECIPIENT_REMOVE',
+  3: 'CALL',
+  4: 'CHANNEL_NAME_CHANGE',
+  5: 'CHANNEL_ICON_CHANGE',
+  6: 'PINS_ADD',
 };
 
 const PermissionFlags = exports.PermissionFlags = {
@@ -242,7 +268,7 @@ const PermissionFlags = exports.PermissionFlags = {
   CHANGE_NICKNAME: 1 << 26,
   MANAGE_NICKNAMES: 1 << 27,
   MANAGE_ROLES_OR_PERMISSIONS: 1 << 28,
-
+  MANAGE_WEBHOOKS: 1 << 29,
   MANAGE_EMOJIS: 1 << 30,
 };
 

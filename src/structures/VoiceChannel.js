@@ -46,6 +46,22 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
+   * Checks if the client has permission join the voice channel
+   * @type {boolean}
+   */
+  get joinable() {
+    return this.permissionsFor(this.client.user).hasPermission('CONNECT');
+  }
+
+  /**
+   * Checks if the client has permission to send audio to the voice channel
+   * @type {boolean}
+   */
+  get speakable() {
+    return this.permissionsFor(this.client.user).hasPermission('SPEAK');
+  }
+
+  /**
    * Sets the bitrate of the channel
    * @param {number} bitrate The new bitrate
    * @returns {Promise<VoiceChannel>}
