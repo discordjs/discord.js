@@ -96,7 +96,6 @@ class VoiceWebSocket extends EventEmitter {
    * @returns {Promise<string>}
    */
   sendPacket(packet) {
-    console.log('try send', packet);
     try {
       packet = JSON.stringify(packet);
     } catch (error) {
@@ -165,7 +164,6 @@ class VoiceWebSocket extends EventEmitter {
          * @param {Object} packet the received packet
          * @event VoiceWebSocket#ready
          */
-        console.log('hi', packet.d);
         this.emit('ready', packet.d);
         break;
       case Constants.VoiceOPCodes.SESSION_DESCRIPTION:
@@ -233,7 +231,7 @@ class VoiceWebSocket extends EventEmitter {
    * Sends a heartbeat packet
    */
   sendHeartbeat() {
-    this.sendPacket({ op: Constants.VoiceOPCodes.HEARTBEAT })
+    this.sendPacket({ op: Constants.VoiceOPCodes.HEARTBEAT, d: null })
       .catch(() => {
         this.emit('warn', 'tried to send heartbeat, but connection is not open');
         this.clearHeartbeat();

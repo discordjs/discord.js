@@ -84,7 +84,6 @@ class VoiceConnectionUDPClient extends EventEmitter {
     return new Promise((resolve, reject) => {
       if (this.socket) {
         if (!this.discordAddress || !this.discordPort) {
-          console.log(this);
           reject(new Error('malformed UDP address or port'));
           return;
         }
