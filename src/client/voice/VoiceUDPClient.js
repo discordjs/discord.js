@@ -69,6 +69,7 @@ class VoiceConnectionUDPClient extends EventEmitter {
           reject(error);
           return;
         }
+        this.discordAddress = address;
         resolve(address);
       });
     });
@@ -82,11 +83,12 @@ class VoiceConnectionUDPClient extends EventEmitter {
   send(packet) {
     return new Promise((resolve, reject) => {
       if (this.socket) {
-        if (!this.address || !this.port) {
+        if (!this.discordAddress || !this.discordPort) {
+          console.log(this);
           reject(new Error('malformed UDP address or port'));
           return;
         }
-        this.socket.send(packet, 0, packet.length, this.port, this.address, error => {
+        this.socket.send(packet, 0, packet.length, this.discordPort, this.discordAddress, error => {
           if (error) {
             reject(error);
           } else {

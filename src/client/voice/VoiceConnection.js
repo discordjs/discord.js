@@ -1,5 +1,5 @@
-const VoiceWebSocket = require('./VoiceConnectionWebSocket');
-const VoiceUDP = require('./VoiceConnectionUDPClient');
+const VoiceWebSocket = require('./VoiceWebSocket');
+const VoiceUDP = require('./VoiceUDPClient');
 const VoiceReceiver = require('./receiver/VoiceReceiver');
 const Constants = require('../../util/Constants');
 const EventEmitter = require('events').EventEmitter;
@@ -42,6 +42,7 @@ class VoiceConnection extends EventEmitter {
      * @type {object}
      */
     this.sockets = {};
+    this.connect();
   }
 
   connect() {
@@ -53,6 +54,21 @@ class VoiceConnection extends EventEmitter {
     }
     this.sockets.ws = new VoiceWebSocket(this);
     this.sockets.udp = new VoiceUDP(this);
+    this.sockets.ws.on('error', e => this.emit('error', e));
+    this.sockets.udp.on('error', e => this.emit('error', e));
+    this.sockets.ws.once('ready', d => {
+      this.authentication.port = d.port;
+      this.sockets.udp.findEndpointAddress()
+        .then(address => {
+          this.sockets.udp.createUDPSocket(address);
+        })
+        .catch(e => this.emit('error', e));
+    });
+    this.sockets.ws.once('sessionDescription', (mode, secret) => {
+      this.authentication.encryptionMode = mode;
+      this.authentication.secretKey = secret;
+      this.emit('ready');
+    });
   }
 
 }
