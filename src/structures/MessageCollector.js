@@ -24,6 +24,7 @@ class MessageCollector extends EventEmitter {
    * @typedef {Object} CollectorOptions
    * @property {number} [time] Duration for the collector in milliseconds
    * @property {number} [max] Maximum number of messages to handle
+   * @property {number} [maxMatches] Maximum number of successfully filtered messages to obtain
    */
 
   /**
@@ -86,7 +87,8 @@ class MessageCollector extends EventEmitter {
        * @event MessageCollector#message
        */
       this.emit('message', message, this);
-      if (this.options.max && this.collected.size === this.options.max) this.stop('limit');
+      if (this.collected.size >= this.options.maxMatches) this.stop('matchesLimit');
+      else if (this.options.max && this.collected.size === this.options.max) this.stop('limit');
       return true;
     }
     return false;
@@ -100,9 +102,14 @@ class MessageCollector extends EventEmitter {
    */
   get next() {
     return new Promise((resolve, reject) => {
+      if (this.ended) {
+        reject(this.collected);
+        return;
+      }
+
       const cleanup = () => {
-        this.removeListener(onMessage);
-        this.removeListener(onEnd);
+        this.removeListener('message', onMessage);
+        this.removeListener('end', onEnd);
       };
 
       const onMessage = (...args) => {

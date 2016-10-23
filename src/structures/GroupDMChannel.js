@@ -101,8 +101,8 @@ class GroupDMChannel extends Channel {
       this.ownerID === channel.ownerID;
 
     if (equal) {
-      const thisIDs = this.recipients.array().map(r => r.id);
-      const otherIDs = channel.recipients.map(r => r.id);
+      const thisIDs = this.recipients.keyArray();
+      const otherIDs = channel.recipients.keyArray();
       return arraysEqual(thisIDs, otherIDs);
     }
 

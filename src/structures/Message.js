@@ -2,6 +2,7 @@ const Attachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
+const escapeMarkdown = require('../util/EscapeMarkdown');
 
 /**
  * Represents a Message on Discord
@@ -30,6 +31,12 @@ class Message {
      * @type {string}
      */
     this.id = data.id;
+
+    /**
+     * The type of the message
+     * @type {string}
+     */
+    this.type = Constants.MessageTypes[data.type];
 
     /**
      * The content of the message
@@ -332,8 +339,8 @@ class Message {
    * @returns {Promise<Message>}
    */
   editCode(lang, content) {
-    content = this.client.resolver.resolveString(content).replace(/```/g, '`\u200b``');
-    return this.edit(`\`\`\`${lang ? lang : ''}\n${content}\n\`\`\``);
+    content = escapeMarkdown(this.client.resolver.resolveString(content), true);
+    return this.edit(`\`\`\`${lang || ''}\n${content}\n\`\`\``);
   }
 
   /**

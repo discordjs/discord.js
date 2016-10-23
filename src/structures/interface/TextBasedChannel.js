@@ -2,6 +2,7 @@ const path = require('path');
 const Message = require('../Message');
 const MessageCollector = require('../MessageCollector');
 const Collection = require('../../util/Collection');
+const escapeMarkdown = require('../../util/EscapeMarkdown');
 
 /**
  * Interface for classes that have text-channel-like features
@@ -111,11 +112,11 @@ class TextBasedChannel {
   sendCode(lang, content, options = {}) {
     if (options.split) {
       if (typeof options.split !== 'object') options.split = {};
-      if (!options.split.prepend) options.split.prepend = `\`\`\`${lang ? lang : ''}\n`;
+      if (!options.split.prepend) options.split.prepend = `\`\`\`${lang || ''}\n`;
       if (!options.split.append) options.split.append = '\n```';
     }
-    content = this.client.resolver.resolveString(content).replace(/```/g, '`\u200b``');
-    return this.sendMessage(`\`\`\`${lang ? lang : ''}\n${content}\n\`\`\``, options);
+    content = escapeMarkdown(this.client.resolver.resolveString(content), true);
+    return this.sendMessage(`\`\`\`${lang || ''}\n${content}\n\`\`\``, options);
   }
 
   /**
@@ -315,17 +316,17 @@ class TextBasedChannel {
    * @returns {Collection<string, Message>}
    */
   bulkDelete(messages) {
-    if (messages instanceof Collection) messages = messages.array();
-    if (!(messages instanceof Array)) return Promise.reject(new TypeError('Messages must be an Array or Collection.'));
-    const messageIDs = messages.map(m => m.id);
+    if (!(messages instanceof Array || messages instanceof Collection)) {
+      return Promise.reject(new TypeError('Messages must be an Array or Collection.'));
+    }
+    const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
     return this.client.rest.methods.bulkDeleteMessages(this, messageIDs);
   }
 
   _cacheMessage(message) {
-    const maxSize = this.client.options.maxMessageCache;
+    const maxSize = this.client.options.messageCacheMaxSize;
     if (maxSize === 0) return null;
-    if (this.messages.size >= maxSize) this.messages.delete(this.messages.keys().next().value);
-
+    if (this.messages.size >= maxSize && maxSize > 0) this.messages.delete(this.messages.firstKey());
     this.messages.set(message.id, message);
     return message;
   }

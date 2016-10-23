@@ -1,4 +1,5 @@
 const User = require('./User');
+const Collection = require('../util/Collection');
 
 /**
  * Represents the logged in client's Discord User
@@ -21,6 +22,20 @@ class ClientUser extends User {
     this.email = data.email;
     this.localPresence = {};
     this._typing = new Map();
+
+    /**
+     * A Collection of friends for the logged in user.
+     * <warn>This is only filled for user accounts, not bot accounts!</warn>
+     * @type {Collection<string, User>}
+     */
+    this.friends = new Collection();
+
+    /**
+     * A Collection of blocked users for the logged in user.
+     * <warn>This is only filled for user accounts, not bot accounts!</warn>
+     * @type {Collection<string, User>}
+     */
+    this.blocked = new Collection();
   }
 
   edit(data) {
@@ -119,18 +134,40 @@ class ClientUser extends User {
   }
 
   /**
+   * Send a friend request
+   * <warn>This is only available for user accounts, not bot accounts!</warn>
+   * @param {UserResolvable} user The user to send the friend request to.
+   * @returns {Promise<User>} The user the friend request was sent to.
+   */
+  addFriend(user) {
+    user = this.client.resolver.resolveUser(user);
+    return this.client.rest.methods.addFriend(user);
+  }
+
+  /**
+   * Remove a friend
+   * <warn>This is only available for user accounts, not bot accounts!</warn>
+   * @param {UserResolvable} user The user to remove from your friends
+   * @returns {Promise<User>} The user that was removed
+   */
+  removeFriend(user) {
+    user = this.client.resolver.resolveUser(user);
+    return this.client.rest.methods.removeFriend(user);
+  }
+
+  /**
    * Set the full presence of the current user.
    * @param {Object} data the data to provide
    * @returns {Promise<ClientUser>}
    */
   setPresence(data) {
     // {"op":3,"d":{"status":"dnd","since":0,"game":null,"afk":false}}
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       let status = this.localPresence.status || this.presence.status;
       let game = this.localPresence.game;
       let afk = this.localPresence.afk || this.presence.afk;
 
-      if (!game) {
+      if (!game && this.presence.game) {
         game = {
           name: this.presence.game.name,
           type: this.presence.game.type,
@@ -139,10 +176,7 @@ class ClientUser extends User {
       }
 
       if (data.status) {
-        if (typeof data.status !== 'string') {
-          reject(new TypeError('status must be a string'));
-          return;
-        }
+        if (typeof data.status !== 'string') throw new TypeError('Status must be a string');
         status = data.status;
       }
 

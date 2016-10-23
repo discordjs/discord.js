@@ -59,6 +59,13 @@ class WebSocketManager extends EventEmitter {
      */
     this.ws = null;
 
+    /**
+     * An object with keys that are websocket event names that should be ignored
+     * @type {Object}
+     */
+    this.disabledEvents = {};
+    for (const event in client.options.disabledEvents) this.disabledEvents[event] = true;
+
     this.first = true;
   }
 
@@ -69,9 +76,7 @@ class WebSocketManager extends EventEmitter {
   _connect(gateway) {
     this.client.emit('debug', `Connecting to gateway ${gateway}`);
     this.normalReady = false;
-    if (this.status !== Constants.Status.RECONNECTING) {
-      this.status = Constants.Status.CONNECTING;
-    }
+    if (this.status !== Constants.Status.RECONNECTING) this.status = Constants.Status.CONNECTING;
     this.ws = new WebSocket(gateway);
     this.ws.onopen = () => this.eventOpen();
     this.ws.onclose = (d) => this.eventClose(d);
@@ -216,7 +221,7 @@ class WebSocketManager extends EventEmitter {
 
     this.client.emit('raw', packet);
 
-    if (packet.op === 10) this.client.manager.setupKeepAlive(packet.d.heartbeat_interval);
+    if (packet.op === Constants.OPCodes.HELLO) this.client.manager.setupKeepAlive(packet.d.heartbeat_interval);
     return this.packetManager.handle(packet);
   }
 
@@ -258,9 +263,10 @@ class WebSocketManager extends EventEmitter {
       if (unavailableCount === 0) {
         this.status = Constants.Status.NEARLY;
         if (this.client.options.fetchAllMembers) {
-          const promises = this.client.guilds.array().map(g => g.fetchMembers());
+          const promises = this.client.guilds.map(g => g.fetchMembers());
           Promise.all(promises).then(() => this._emitReady()).catch(e => {
-            this.client.emit(Constants.Event.WARN, `Error on pre-ready guild member fetching - ${e}`);
+            this.client.emit(Constants.Events.WARN, 'Error in pre-ready guild member fetching');
+            this.client.emit(Constants.Events.ERROR, e);
             this._emitReady();
           });
           return;

@@ -111,7 +111,7 @@ class GuildChannel extends Channel {
 
   /**
    * Overwrites the permissions for a user or role in this channel.
-   * @param {Role|UserResolvable} userOrRole The user or role to update
+   * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The configuration for the update
    * @returns {Promise}
    * @example
@@ -129,6 +129,9 @@ class GuildChannel extends Channel {
     };
 
     if (userOrRole instanceof Role) {
+      payload.type = 'role';
+    } else if (this.guild.roles.has(userOrRole)) {
+      userOrRole = this.guild.roles.get(userOrRole);
       payload.type = 'role';
     } else {
       userOrRole = this.client.resolver.resolveUser(userOrRole);
@@ -236,12 +239,12 @@ class GuildChannel extends Channel {
       this.name === channel.name;
 
     if (equal) {
-      if (channel.permission_overwrites) {
-        const thisIDSet = Array.from(this.permissionOverwrites.keys());
-        const otherIDSet = channel.permission_overwrites.map(overwrite => overwrite.id);
+      if (this.permissionOverwrites && channel.permissionOverwrites) {
+        const thisIDSet = this.permissionOverwrites.keyArray();
+        const otherIDSet = channel.permissionOverwrites.keyArray();
         equal = arraysEqual(thisIDSet, otherIDSet);
       } else {
-        equal = false;
+        equal = !this.permissionOverwrites && !channel.permissionOverwrites;
       }
     }
 

@@ -95,7 +95,7 @@ class Emoji {
    * @returns {string}
    * @example
    * // send an emoji:
-   * const emoji = guild.emojis.array()[0];
+   * const emoji = guild.emojis.first();
    * msg.reply(`Hello! ${emoji}`);
    */
   toString() {
