@@ -21,6 +21,7 @@ class VoiceWebSocket extends EventEmitter {
      * @type {number}
      */
     this.attempts = 0;
+    this.connect();
   }
 
   /**
@@ -95,6 +96,7 @@ class VoiceWebSocket extends EventEmitter {
    * @returns {Promise<string>}
    */
   sendPacket(packet) {
+    console.log('try send', packet);
     try {
       packet = JSON.stringify(packet);
     } catch (error) {
@@ -127,7 +129,7 @@ class VoiceWebSocket extends EventEmitter {
    */
   onMessage(event) {
     try {
-      return this.onPacket(JSON.stringify(event.data));
+      return this.onPacket(JSON.parse(event.data));
     } catch (error) {
       return this.onError(error);
     }
@@ -163,6 +165,7 @@ class VoiceWebSocket extends EventEmitter {
          * @param {Object} packet the received packet
          * @event VoiceWebSocket#ready
          */
+        console.log('hi', packet.d);
         this.emit('ready', packet.d);
         break;
       case Constants.VoiceOPCodes.SESSION_DESCRIPTION:

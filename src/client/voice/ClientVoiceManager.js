@@ -160,25 +160,6 @@ class ClientVoiceManager {
     this.client.on('self.voiceStateUpdate', this.onVoiceStateUpdate.bind(this));
   }
 
-  /**
-   * Checks whether a pending request can be processed
-   * @private
-   * @param {string} guildID The ID of the Guild
-   */
-  _checkPendingReady(guildID) {
-    const pendingRequest = this.pending.get(guildID);
-    if (!pendingRequest) throw new Error('Guild not pending.');
-    if (pendingRequest.token && pendingRequest.sessionID && pendingRequest.endpoint) {
-      const { channel, token, sessionID, endpoint, resolve, reject } = pendingRequest;
-      const voiceConnection = new VoiceConnection(this, channel, token, sessionID, endpoint, resolve, reject);
-      this.pending.delete(guildID);
-      this.connections.set(guildID, voiceConnection);
-      voiceConnection.once('disconnected', () => {
-        this.connections.delete(guildID);
-      });
-    }
-  }
-
   onVoiceServer(data) {
     if (this.pending.has(data.guild_id)) {
       this.pending.get(data.guild_id).setTokenAndEndpoint(data.token, data.endpoint);
@@ -260,6 +241,8 @@ class ClientVoiceManager {
       pendingConnection.on('pass', voiceConnection => {
         this.pending.delete(channel.guild.id);
         this.connections.set(channel.guild.id, voiceConnection);
+        voiceConnection.once('ready', resolve);
+        voiceConnection.once('error', reject);
       });
     });
   }
