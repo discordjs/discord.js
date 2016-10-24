@@ -26,9 +26,10 @@ class AudioPlayer extends EventEmitter {
     stream.on('end', () => {
 
     console.log(Date.now(), 'real input stream ended');
-    })
+    });
+    stream.on('error', e => this.emit('error', e));
     const conversionProcess = this.audioToPCM.createConvertStream(0);
-    stream.pipe(conversionProcess.process.stdin, { end: false });
+    conversionProcess.setInput(stream);
     return this.playPCMStream(conversionProcess.process.stdout, conversionProcess);
   }
 
@@ -37,12 +38,7 @@ class AudioPlayer extends EventEmitter {
     console.log(Date.now(), 'clean up triggered due to', reason);
     const filter = checkStream && this.currentDispatcher && this.currentDispatcher.stream === checkStream;
     if (this.currentConverter && (checkStream ? filter : true)) {
-      if (this.currentConverter.process.stdin.destroy) {
-        this.currentConverter.process.stdin.destroy();
-      }
-      if (this.currentConverter.process.kill) {
-        this.currentConverter.process.kill();
-      }
+      this.currentConverter.destroy();
       this.currentConverter = null;
     }
   }
@@ -65,6 +61,7 @@ class AudioPlayer extends EventEmitter {
     dispatcher.on('end', () => this.cleanup(dispatcher.stream, 'disp ended'));
     dispatcher.on('speaking', value => this.voiceConnection.setSpeaking(value));
     this.currentDispatcher = dispatcher;
+    return dispatcher;
   }
 
 }

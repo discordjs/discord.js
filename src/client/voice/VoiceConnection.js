@@ -41,6 +41,7 @@ class VoiceConnection extends EventEmitter {
 
     this.player.on('error', e => {
       this.emit('warn', e);
+      console.log('so yeah uh'+e);
       this.player.cleanup();
     });
 
