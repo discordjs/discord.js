@@ -87,6 +87,7 @@ class VoiceConnectionUDPClient extends EventEmitter {
           reject(new Error('malformed UDP address or port'));
           return;
         }
+        // console.log('sendin', packet);
         this.socket.send(packet, 0, packet.length, this.discordPort, this.discordAddress, error => {
           if (error) {
             reject(error);

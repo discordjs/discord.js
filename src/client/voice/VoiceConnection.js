@@ -2,8 +2,8 @@ const VoiceWebSocket = require('./VoiceWebSocket');
 const VoiceUDP = require('./VoiceUDPClient');
 const VoiceReceiver = require('./receiver/VoiceReceiver');
 const Constants = require('../../util/Constants');
+const AudioPlayer = require('./player/AudioPlayer');
 const EventEmitter = require('events').EventEmitter;
-const DefaultPlayer = require('./player/DefaultPlayer');
 
 /**
  * Represents a connection to a Voice Channel in Discord.
@@ -37,12 +37,26 @@ class VoiceConnection extends EventEmitter {
      */
     this.authentication = pendingConnection.data;
 
+    this.player = new AudioPlayer(this);
+
     /**
      * Object that wraps contains the `ws` and `udp` sockets of this voice connection
      * @type {object}
      */
     this.sockets = {};
     this.connect();
+  }
+
+  setSpeaking(value) {
+    if (this.speaking === value) return;
+    this.speaking = value;
+    this.sockets.ws.sendPacket({
+      op: Constants.VoiceOPCodes.SPEAKING,
+      d: {
+        speaking: true,
+        delay: 0,
+      },
+    });
   }
 
   connect() {
@@ -58,6 +72,7 @@ class VoiceConnection extends EventEmitter {
     this.sockets.udp.on('error', e => this.emit('error', e));
     this.sockets.ws.once('ready', d => {
       this.authentication.port = d.port;
+      this.authentication.ssrc = d.ssrc;
       this.sockets.udp.findEndpointAddress()
         .then(address => {
           this.sockets.udp.createUDPSocket(address);

@@ -1,5 +1,16 @@
 const ConverterEngine = require('./ConverterEngine');
 const ChildProcess = require('child_process');
+const EventEmitter = require('events').EventEmitter;
+
+class PCMConversionProcess extends EventEmitter {
+
+  constructor(process) {
+    super();
+    this.process = process;
+    this.process.on('error', e => this.emit('error', e));
+  }
+
+}
 
 class FfmpegConverterEngine extends ConverterEngine {
   constructor(player) {
@@ -24,10 +35,7 @@ class FfmpegConverterEngine extends ConverterEngine {
       '-ss', String(seek),
       'pipe:1',
     ], { stdio: ['pipe', 'pipe', 'ignore'] });
-    encoder.on('error', e => this.handleError(encoder, e));
-    encoder.stdin.on('error', e => this.handleError(encoder, e));
-    encoder.stdout.on('error', e => this.handleError(encoder, e));
-    return encoder;
+    return new PCMConversionProcess(encoder);
   }
 }
 
