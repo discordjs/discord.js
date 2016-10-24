@@ -121,6 +121,7 @@ class TextBasedChannel {
 
   /**
    * Gets a single message from this channel, regardless of it being cached or not.
+   * <warn>Only OAuth bot accounts can use this method.</warn>
    * @param {string} messageID The ID of the message to get
    * @returns {Promise<Message>}
    * @example
@@ -310,17 +311,22 @@ class TextBasedChannel {
   }
 
   /**
-   * Bulk delete a given Collection or Array of messages in one go. Returns the deleted messages after.
+   * Bulk delete given messages.
    * Only OAuth Bot accounts may use this method.
-   * @param {Collection<string, Message>|Message[]} messages The messages to delete
-   * @returns {Collection<string, Message>}
+   * @param {Collection<string, Message>|Message[]|number} messages Messages to delete, or number of messages to delete
+   * @returns {Promise<Collection<string, Message>>} Deleted messages
    */
   bulkDelete(messages) {
-    if (!(messages instanceof Array || messages instanceof Collection)) {
-      return Promise.reject(new TypeError('Messages must be an Array or Collection.'));
-    }
-    const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
-    return this.client.rest.methods.bulkDeleteMessages(this, messageIDs);
+    return new Promise((resolve, reject) => {
+      if (!isNaN(messages)) {
+        this.fetchMessages({ limit: messages }).then(msgs => resolve(this.bulkDelete(msgs)));
+      } else if (messages instanceof Array || messages instanceof Collection) {
+        const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
+        resolve(this.client.rest.methods.bulkDeleteMessages(this, messageIDs));
+      } else {
+        reject(new TypeError('Messages must be an Array, Collection, or number.'));
+      }
+    });
   }
 
   _cacheMessage(message) {

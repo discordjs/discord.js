@@ -176,12 +176,11 @@ class Webhook {
    * @param {FileResolvable} avatar The new avatar for the Webhook.
    * @returns {Promise<Webhook>}
    */
-  edit(name, avatar) {
+  edit(name = this.name, avatar) {
     return new Promise((resolve, reject) => {
       if (avatar) {
         this.client.resolver.resolveFile(avatar).then(file => {
-          let base64 = new Buffer(file, 'binary').toString('base64');
-          let dataURI = `data:;base64,${base64}`;
+          const dataURI = this.client.resolver.resolveBase64(file);
           this.client.rest.methods.editWebhook(this, name, dataURI)
           .then(resolve).catch(reject);
         }).catch(reject);
