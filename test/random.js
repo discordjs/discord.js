@@ -161,7 +161,7 @@ let disp, con;
 client.on('message', msg => {
   if (msg.content.startsWith('/play')) {
     const chan = msg.content.split(' ').slice(1).join(' ');
-    con.player.playUnknownStream(ytdl(chan, {filter : 'audioonly'}), { passes : 4 });
+    con.playStream(ytdl(chan, {filter : 'audioonly'}), { passes : 4 });
   }
   if (msg.content.startsWith('/join')) {
     const chan = msg.content.split(' ').slice(1).join(' ');
@@ -169,7 +169,7 @@ client.on('message', msg => {
       .then(conn => {
         con = conn;
         msg.reply('done');
-        disp = conn.player.playUnknownStream(ytdl(song, {filter:'audioonly'}), { passes : 3 });
+        disp = conn.playStream(ytdl(song, {filter:'audioonly'}), { passes : 3 });
         conn.player.on('debug', console.log);
         conn.player.on('error', err => console.log(123, err));
       })

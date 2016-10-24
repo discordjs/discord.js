@@ -4,6 +4,7 @@ const VoiceReceiver = require('./receiver/VoiceReceiver');
 const Constants = require('../../util/Constants');
 const AudioPlayer = require('./player/AudioPlayer');
 const EventEmitter = require('events').EventEmitter;
+const fs = require('fs');
 
 /**
  * Represents a connection to a Voice Channel in Discord.
@@ -41,7 +42,7 @@ class VoiceConnection extends EventEmitter {
 
     this.player.on('error', e => {
       this.emit('warn', e);
-      console.log('so yeah uh'+e);
+      console.log('so yeah uh' + e);
       this.player.cleanup();
     });
 
@@ -90,6 +91,18 @@ class VoiceConnection extends EventEmitter {
       this.authentication.secretKey = secret;
       this.emit('ready');
     });
+  }
+
+  playFile(file) {
+    return this.playStream(fs.createReadStream(file));
+  }
+
+  playStream(stream) {
+    return this.player.playUnknownStream(stream);
+  }
+
+  playConvertedStream(stream) {
+    return this.player.playPCMStream(stream);
   }
 
 }

@@ -1,6 +1,7 @@
 const ConverterEngine = require('./ConverterEngine');
 const ChildProcess = require('child_process');
 const EventEmitter = require('events').EventEmitter;
+require('longjohn');
 
 class PCMConversionProcess extends EventEmitter {
 
