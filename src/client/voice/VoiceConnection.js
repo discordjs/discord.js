@@ -39,6 +39,11 @@ class VoiceConnection extends EventEmitter {
 
     this.player = new AudioPlayer(this);
 
+    this.player.on('error', e => {
+      this.emit('warn', e);
+      this.player.cleanup();
+    });
+
     /**
      * Object that wraps contains the `ws` and `udp` sockets of this voice connection
      * @type {object}
