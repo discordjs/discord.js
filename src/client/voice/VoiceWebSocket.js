@@ -77,7 +77,6 @@ class VoiceWebSocket extends EventEmitter {
   send(data) {
     return new Promise((resolve, reject) => {
       if (this.ws.readyState === WebSocket.OPEN) {
-        console.log('sending', data);
         this.ws.send(data, null, error => {
           if (error) {
             reject(error);

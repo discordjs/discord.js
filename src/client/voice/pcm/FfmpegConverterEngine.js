@@ -7,7 +7,34 @@ class PCMConversionProcess extends EventEmitter {
   constructor(process) {
     super();
     this.process = process;
+    this.input = null;
     this.process.on('error', e => this.emit('error', e));
+  }
+
+  setInput(stream) {
+    this.input = stream;
+    stream.pipe(this.process.stdin, { end: false });
+    this.input.on('error', e => this.emit('error', e));
+  }
+
+  destroy() {
+    this.emit('debug', 'destroying a ffmpeg process:');
+    if (this.input && this.input.unpipe && this.process.stdin) {
+      this.input.unpipe(this.process.stdin);
+      this.emit('unpiped the user input stream from the process input stream');
+    }
+    if (this.process.stdin) {
+      this.process.stdin.end();
+      this.emit('ended the process stdin');
+    }
+    if (this.process.stdin.destroy) {
+      this.process.stdin.destroy();
+      this.emit('destroyed the process stdin');
+    }
+    if (this.process.kill) {
+      this.process.kill();
+      this.emit('killed the process');
+    }
   }
 
 }
