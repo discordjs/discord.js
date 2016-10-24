@@ -10,30 +10,51 @@ class AudioPlayer extends EventEmitter {
     this.voiceConnection = voiceConnection;
     this.audioToPCM = new (PCMConverters.fetch())();
     this.opusEncoder = OpusEncoders.fetch();
-
+    this.currentConverter = null;
+    this.currentDispatcher = null;
     this.audioToPCM.on('error', e => this.emit('error', e));
-  }
-
-  playUnknownStream(stream) {
-    const conversionProcess = this.audioToPCM.createConvertStream(0);
-    stream.pipe(conversionProcess.process.stdin, { end: false });
-    return this.playPCMStream(conversionProcess.process.stdout);
-  }
-
-  playPCMStream(stream) {
-    stream.on('error', e => this.emit('error', e));
-    const dispatcher = new StreamDispatcher(this, stream, {
+    this.streamingData = {
       channels: 2,
       count: 0,
       sequence: 0,
       timestamp: 0,
       pausedTime: 0,
-    }, {
+    };
+  }
+
+  playUnknownStream(stream) {
+    const conversionProcess = this.audioToPCM.createConvertStream(0);
+    stream.pipe(conversionProcess.process.stdin, { end: false });
+    return this.playPCMStream(conversionProcess.process.stdout, conversionProcess);
+  }
+
+  cleanup(checkStream) {
+    const filter = checkStream && this.currentDispatcher && this.currentDispatcher.stream === checkStream;
+    if (this.currentConverter && (checkStream ? filter : true)) {
+      if (this.currentConverter.process.stdin.destroy) {
+        this.currentConverter.process.stdin.destroy();
+      }
+      if (this.currentConverter.process.kill) {
+        this.currentConverter.process.kill();
+      }
+      this.currentConverter = null;
+    }
+  }
+
+  playPCMStream(stream, converter) {
+    this.cleanup();
+    this.currentConverter = converter;
+    if (this.currentDispatcher) {
+      this.streamingData = this.currentDispatcher.streamingData;
+    }
+    stream.on('error', e => this.emit('error', e));
+    const dispatcher = new StreamDispatcher(this, stream, this.streamingData, {
       volume: 1,
     });
-    dispatcher.on('error', e => console.log('error', e));
-    dispatcher.on('end', e => console.log('end', e));
+    dispatcher.on('error', e => this.emit('error', e));
+    dispatcher.on('end', () => this.cleanup(dispatcher.stream));
     dispatcher.on('speaking', value => this.voiceConnection.setSpeaking(value));
+    this.currentDispatcher = dispatcher;
   }
 
 }
