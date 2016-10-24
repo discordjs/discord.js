@@ -160,7 +160,7 @@ let disp, con;
 client.on('message', msg => {
   if (msg.content.startsWith('/play')) {
     const chan = msg.content.split(' ').slice(1).join(' ');
-    con.playStream(ytdl(chan, {filter : 'audioonly'}), { passes : 4 });
+    con.player.playUnknownStream(ytdl(chan, {filter : 'audioonly'}), { passes : 4 });
   }
   if (msg.content.startsWith('/join')) {
     const chan = msg.content.split(' ').slice(1).join(' ');
