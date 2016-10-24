@@ -224,7 +224,6 @@ class StreamDispatcher extends EventEmitter {
       this._sendBuffer(buffer, data.sequence, data.timestamp);
 
       const nextTime = data.length + (data.startTime + data.pausedTime + (data.count * data.length) - Date.now());
-      console.log('again! in', nextTime);
       this.player.voiceConnection.voiceManager.client.setTimeout(() => this._send(), nextTime);
     } catch (e) {
       this._triggerTerminalState('error', e);

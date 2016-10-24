@@ -6,7 +6,7 @@ const fs = require('fs');
 
 const client = new Discord.Client({ fetchAllMembers: false, apiRequestMethod: 'sequential' });
 
-const { email, password, token, usertoken } = require('./auth.json');
+const { email, password, token, usertoken, song } = require('./auth.json');
 
 client.login(token).then(atoken => console.log('logged in with token ' + atoken)).catch(console.error);
 
@@ -168,7 +168,7 @@ client.on('message', msg => {
       .then(conn => {
         con = conn;
         msg.reply('done');
-        disp = conn.player.playUnknownStream(fs.createReadStream('C:/Users/Amish/Desktop/04 Out of the Woods.m4a'), { passes : 3 });
+        disp = conn.player.playUnknownStream(ytdl(song, {filter:'audioonly'}), { passes : 3 });
         conn.player.on('debug', console.log);
         conn.player.on('error', err => console.log(123, err));
       })
