@@ -679,6 +679,7 @@ class Guild {
   }
 
   _addMember(guildUser, emitEvent = true) {
+    const existing = this.members.has(guildUser.user.id);
     if (!(guildUser.user instanceof User)) guildUser.user = this.client.dataManager.newUser(guildUser.user);
 
     guildUser.joined_at = guildUser.joined_at || 0;
@@ -702,7 +703,7 @@ class Guild {
      * @param {Guild} guild The guild that the user has joined
      * @param {GuildMember} member The member that has joined
      */
-    if (this.client.ws.status === Constants.Status.READY && emitEvent) {
+    if (this.client.ws.status === Constants.Status.READY && emitEvent && !existing) {
       this.client.emit(Constants.Events.GUILD_MEMBER_ADD, this, member);
     }
 
