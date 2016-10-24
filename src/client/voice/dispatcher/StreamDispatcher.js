@@ -38,13 +38,15 @@ class StreamDispatcher extends EventEmitter {
      * aren't recommended, as it means you are using 5x more bandwidth. You _can_ edit this at runtime.
      * @type {number}
      */
-    this.passes = streamOptions.passes || 3;
+    this.passes = streamOptions.passes || 1;
 
     /**
      * Whether playing is paused
      * @type {boolean}
      */
     this.paused = false;
+
+    this.setVolume(streamOptions.volume || 1);
   }
 
   /**
