@@ -32,7 +32,7 @@ class AudioPlayer extends EventEmitter {
     return this.playPCMStream(conversionProcess.process.stdout, conversionProcess);
   }
 
-  cleanup(checkStream) {
+  cleanup(checkStream, reason) {
     // cleanup is a lot less aggressive than v9 because it doesn't try to kill every single stream it is aware of
     console.log(Date.now(), 'clean up triggered');
     const filter = checkStream && this.currentDispatcher && this.currentDispatcher.stream === checkStream;
@@ -52,7 +52,7 @@ class AudioPlayer extends EventEmitter {
 
     console.log(Date.now(), 'pcm input stream ended');
     })
-    this.cleanup();
+    this.cleanup(null, 'outstanding play stream');
     this.currentConverter = converter;
     if (this.currentDispatcher) {
       this.streamingData = this.currentDispatcher.streamingData;
@@ -62,7 +62,7 @@ class AudioPlayer extends EventEmitter {
       volume: 1,
     });
     dispatcher.on('error', e => this.emit('error', e));
-    dispatcher.on('end', () => this.cleanup(dispatcher.stream));
+    dispatcher.on('end', () => this.cleanup(dispatcher.stream, 'disp ended'));
     dispatcher.on('speaking', value => this.voiceConnection.setSpeaking(value));
     this.currentDispatcher = dispatcher;
   }
