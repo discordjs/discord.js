@@ -93,7 +93,8 @@ class VoiceConnection extends EventEmitter {
     });
   }
 
-  playFile(file, options) {
+  playFile(file, { seek = 0, volume = 1, passes = 1 } = {}) {
+    const options = { seek, volume, passes };
     return this.playStream(fs.createReadStream(file), options);
   }
 
