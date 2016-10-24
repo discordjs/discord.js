@@ -90,7 +90,7 @@ class ClientUser extends User {
 
   /**
    * Set the avatar of the logged in Client.
-   * @param {FileResolvable} avatar The new avatar
+   * @param {FileResolvable|Base64Resolveable} avatar The new avatar
    * @returns {Promise<ClientUser>}
    * @example
    * // set avatar
@@ -100,9 +100,13 @@ class ClientUser extends User {
    */
   setAvatar(avatar) {
     return new Promise(resolve => {
-      this.client.resolver.resolveFile(avatar).then(data => {
-        resolve(this.client.rest.methods.updateCurrentUser({ avatar: data }));
-      });
+      if (avatar.startsWith('data:')) {
+        resolve(this.client.rest.methods.updateCurrentUser({ avatar }));
+      } else {
+        this.client.resolver.resolveFile(avatar).then(data => {
+          resolve(this.client.rest.methods.updateCurrentUser({ avatar: data }));
+        });
+      }
     });
   }
 
