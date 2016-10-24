@@ -22,15 +22,15 @@ class AudioPlayer extends EventEmitter {
     };
   }
 
-  playUnknownStream(stream) {
+  playUnknownStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
+    const options = { seek, volume, passes };
     stream.on('end', () => {
-
-    console.log(Date.now(), 'real input stream ended');
+      console.log(Date.now(), 'real input stream ended');
     });
     stream.on('error', e => this.emit('error', e));
-    const conversionProcess = this.audioToPCM.createConvertStream(0);
+    const conversionProcess = this.audioToPCM.createConvertStream(options.seek);
     conversionProcess.setInput(stream);
-    return this.playPCMStream(conversionProcess.process.stdout, conversionProcess);
+    return this.playPCMStream(conversionProcess.process.stdout, conversionProcess, options);
   }
 
   cleanup(checkStream, reason) {
@@ -43,20 +43,18 @@ class AudioPlayer extends EventEmitter {
     }
   }
 
-  playPCMStream(stream, converter) {
+  playPCMStream(stream, converter, { seek = 0, volume = 1, passes = 1 } = {}) {
+    const options = { seek, volume, passes };
     stream.on('end', () => {
-
-    console.log(Date.now(), 'pcm input stream ended');
-    })
+      console.log(Date.now(), 'pcm input stream ended');
+    });
     this.cleanup(null, 'outstanding play stream');
     this.currentConverter = converter;
     if (this.currentDispatcher) {
       this.streamingData = this.currentDispatcher.streamingData;
     }
     stream.on('error', e => this.emit('error', e));
-    const dispatcher = new StreamDispatcher(this, stream, this.streamingData, {
-      volume: 1,
-    });
+    const dispatcher = new StreamDispatcher(this, stream, this.streamingData, options);
     dispatcher.on('error', e => this.emit('error', e));
     dispatcher.on('end', () => this.cleanup(dispatcher.stream, 'disp ended'));
     dispatcher.on('speaking', value => this.voiceConnection.setSpeaking(value));

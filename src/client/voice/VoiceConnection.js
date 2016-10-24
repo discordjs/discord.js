@@ -93,16 +93,18 @@ class VoiceConnection extends EventEmitter {
     });
   }
 
-  playFile(file) {
-    return this.playStream(fs.createReadStream(file));
+  playFile(file, options) {
+    return this.playStream(fs.createReadStream(file), options);
   }
 
-  playStream(stream) {
-    return this.player.playUnknownStream(stream);
+  playStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
+    const options = { seek, volume, passes };
+    return this.player.playUnknownStream(stream, options);
   }
 
-  playConvertedStream(stream) {
-    return this.player.playPCMStream(stream);
+  playConvertedStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
+    const options = { seek, volume, passes };
+    return this.player.playPCMStream(stream, options);
   }
 
 }
