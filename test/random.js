@@ -168,10 +168,9 @@ client.on('message', msg => {
       .then(conn => {
         con = conn;
         msg.reply('done');
-        disp = conn.player.playStream(ytdl('https://www.youtube.com/watch?v=oQBiPwklN_Q', {filter : 'audioonly'}), { passes : 3 });
+        disp = conn.player.playUnknownStream(fs.createReadStream('C:/Users/Amish/Desktop/04 Out of the Woods.m4a'), { passes : 3 });
         conn.player.on('debug', console.log);
         conn.player.on('error', err => console.log(123, err));
-        disp.on('error', err => console.log(123, err));
       })
       .catch(console.error);
   }
