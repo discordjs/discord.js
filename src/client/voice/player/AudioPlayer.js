@@ -34,7 +34,7 @@ class AudioPlayer extends EventEmitter {
 
   cleanup(checkStream, reason) {
     // cleanup is a lot less aggressive than v9 because it doesn't try to kill every single stream it is aware of
-    console.log(Date.now(), 'clean up triggered');
+    console.log(Date.now(), 'clean up triggered due to', reason);
     const filter = checkStream && this.currentDispatcher && this.currentDispatcher.stream === checkStream;
     if (this.currentConverter && (checkStream ? filter : true)) {
       if (this.currentConverter.process.stdin.destroy) {
