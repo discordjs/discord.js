@@ -11,7 +11,7 @@ class AudioPlayer extends EventEmitter {
     this.audioToPCM = new (PCMConverters.fetch())();
     this.opusEncoder = OpusEncoders.fetch();
     this.currentConverter = null;
-    this.currentDispatcher = null;
+    this.dispatcher = null;
     this.audioToPCM.on('error', e => this.emit('error', e));
     this.streamingData = {
       channels: 2,
@@ -38,7 +38,7 @@ class AudioPlayer extends EventEmitter {
   cleanup(checkStream, reason) {
     // cleanup is a lot less aggressive than v9 because it doesn't try to kill every single stream it is aware of
     this.emit('debug', `clean up triggered due to ${reason}`);
-    const filter = checkStream && this.currentDispatcher && this.currentDispatcher.stream === checkStream;
+    const filter = checkStream && this.dispatcher && this.dispatcher.stream === checkStream;
     if (this.currentConverter && (checkStream ? filter : true)) {
       this.currentConverter.destroy();
       this.currentConverter = null;
@@ -50,15 +50,15 @@ class AudioPlayer extends EventEmitter {
     stream.on('end', () => this.emit('debug', 'pcm input stream ended'));
     this.cleanup(null, 'outstanding play stream');
     this.currentConverter = converter;
-    if (this.currentDispatcher) {
-      this.streamingData = this.currentDispatcher.streamingData;
+    if (this.dispatcher) {
+      this.streamingData = this.dispatcher.streamingData;
     }
     stream.on('error', e => this.emit('error', e));
     const dispatcher = new StreamDispatcher(this, stream, this.streamingData, options);
     dispatcher.on('error', e => this.emit('error', e));
     dispatcher.on('end', () => this.cleanup(dispatcher.stream, 'disp ended'));
     dispatcher.on('speaking', value => this.voiceConnection.setSpeaking(value));
-    this.currentDispatcher = dispatcher;
+    this.dispatcher = dispatcher;
     dispatcher.on('debug', m => this.emit('debug', `stream dispatch - ${m}`));
     return dispatcher;
   }
