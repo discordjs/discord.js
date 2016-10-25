@@ -49,6 +49,17 @@ class VoiceConnectionUDPClient extends EventEmitter {
      * @type {?string}
      */
     this.localPort = null;
+    this.voiceConnection.on('closing', this.shutdown.bind(this));
+  }
+  shutdown() {
+    if (this.socket) {
+      try {
+        this.socket.close();
+      } catch (e) {
+        return;
+      }
+      this.socket = null;
+    }
   }
   /**
    * The port of the discord voice server
@@ -57,7 +68,6 @@ class VoiceConnectionUDPClient extends EventEmitter {
   get discordPort() {
     return this.voiceConnection.authentication.port;
   }
-
   /**
    * Tries to resolve the voice server endpoint to an address
    * @returns {Promise<string>}

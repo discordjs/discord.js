@@ -42,7 +42,6 @@ class VoiceConnection extends EventEmitter {
 
     this.player.on('error', e => {
       this.emit('warn', e);
-      console.log('so yeah uh' + e);
       this.player.cleanup();
     });
 
@@ -63,7 +62,24 @@ class VoiceConnection extends EventEmitter {
         speaking: true,
         delay: 0,
       },
+    })
+    .catch(e => {
+      this.emit('debug', e);
     });
+  }
+
+  disconnect() {
+    this.emit('closing');
+    this.voiceManager.client.ws.send({
+      op: Constants.OPCodes.VOICE_STATE_UPDATE,
+      d: {
+        guild_id: this.channel.guild.id,
+        channel_id: null,
+        self_mute: false,
+        self_deaf: false,
+      },
+    });
+    this.emit('disconnected');
   }
 
   connect() {

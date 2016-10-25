@@ -243,6 +243,7 @@ class ClientVoiceManager {
         this.connections.set(channel.guild.id, voiceConnection);
         voiceConnection.once('ready', () => resolve(voiceConnection));
         voiceConnection.once('error', reject);
+        voiceConnection.once('disconnected', () => this.connections.delete(channel.guild.id));
       });
     });
   }

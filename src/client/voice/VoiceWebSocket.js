@@ -22,6 +22,15 @@ class VoiceWebSocket extends EventEmitter {
      */
     this.attempts = 0;
     this.connect();
+
+    this.dead = false;
+
+    this.voiceConnection.on('closing', this.shutdown.bind(this));
+  }
+
+  shutdown() {
+    this.dead = true;
+    this.reset();
   }
 
   /**
@@ -50,6 +59,9 @@ class VoiceWebSocket extends EventEmitter {
    * Starts connecting to the Voice WebSocket Server.
    */
   connect() {
+    if (this.dead) {
+      return;
+    }
     if (this.ws) {
       this.reset();
     }
@@ -76,7 +88,7 @@ class VoiceWebSocket extends EventEmitter {
    */
   send(data) {
     return new Promise((resolve, reject) => {
-      if (this.ws.readyState === WebSocket.OPEN) {
+      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
         this.ws.send(data, null, error => {
           if (error) {
             reject(error);
@@ -85,7 +97,7 @@ class VoiceWebSocket extends EventEmitter {
           }
         });
       } else {
-        reject(new Error('websocket not open'));
+        reject(new Error('websocket not open for ' + data));
       }
     });
   }
@@ -140,7 +152,7 @@ class VoiceWebSocket extends EventEmitter {
    */
   onClose(event) {
     // #todo see if the connection is open before reconnecting
-    this.client.setTimeout(this.connect.bind(this), this.attempts * 1000);
+    if (!this.dead) this.client.setTimeout(this.connect.bind(this), this.attempts * 1000);
   }
 
   /**

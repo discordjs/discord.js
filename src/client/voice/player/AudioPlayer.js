@@ -20,12 +20,13 @@ class AudioPlayer extends EventEmitter {
       timestamp: 0,
       pausedTime: 0,
     };
+    this.voiceConnection.on('closing', () => this.cleanup(null, 'voice connection is closing'));
   }
 
   playUnknownStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
     const options = { seek, volume, passes };
     stream.on('end', () => {
-      console.log(Date.now(), 'real input stream ended');
+      this.emit('debug', 'input stream to converter has ended');
     });
     stream.on('error', e => this.emit('error', e));
     const conversionProcess = this.audioToPCM.createConvertStream(options.seek);
@@ -36,7 +37,7 @@ class AudioPlayer extends EventEmitter {
 
   cleanup(checkStream, reason) {
     // cleanup is a lot less aggressive than v9 because it doesn't try to kill every single stream it is aware of
-    console.log(Date.now(), 'clean up triggered due to', reason);
+    this.emit('debug', `clean up triggered due to ${reason}`);
     const filter = checkStream && this.currentDispatcher && this.currentDispatcher.stream === checkStream;
     if (this.currentConverter && (checkStream ? filter : true)) {
       this.currentConverter.destroy();
@@ -46,9 +47,7 @@ class AudioPlayer extends EventEmitter {
 
   playPCMStream(stream, converter, { seek = 0, volume = 1, passes = 1 } = {}) {
     const options = { seek, volume, passes };
-    stream.on('end', () => {
-      console.log(Date.now(), 'pcm input stream ended');
-    });
+    stream.on('end', () => this.emit('debug', 'pcm input stream ended'));
     this.cleanup(null, 'outstanding play stream');
     this.currentConverter = converter;
     if (this.currentDispatcher) {

@@ -160,6 +160,7 @@ let disp, con;
 
 client.on('message', msg => {
   if (msg.content.startsWith('/play')) {
+    console.log('I am now going to play', msg.content);
     const chan = msg.content.split(' ').slice(1).join(' ');
     con.playStream(ytdl(chan, {filter : 'audioonly'}), { passes : 4 });
   }
