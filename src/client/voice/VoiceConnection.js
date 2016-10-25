@@ -7,7 +7,7 @@ const EventEmitter = require('events').EventEmitter;
 const fs = require('fs');
 
 /**
- * Represents a connection to a Voice Channel in Discord.
+ * Represents a connection to a Voice Channel in Discord. v10 flag.
  * ```js
  * // obtained using:
  * voiceChannel.join().then(connection => {
@@ -51,10 +51,20 @@ class VoiceConnection extends EventEmitter {
     this.player = new AudioPlayer(this);
 
     this.player.on('debug', m => {
+      /**
+       * Debug info from the connection
+       * @event VoiceConnection#debug
+       * @param {string} message the debug message
+       */
       this.emit('debug', `audio player - ${m}`);
     });
 
     this.player.on('error', e => {
+      /**
+       * Warning info from the connection
+       * @event VoiceConnection#warn
+       * @param {string|error} warning the warning
+       */
       this.emit('warn', e);
       this.player.cleanup();
     });
@@ -107,6 +117,10 @@ class VoiceConnection extends EventEmitter {
         self_deaf: false,
       },
     });
+    /**
+     * Emitted when the voice connection disconnects
+     * @event VoiceConnection#disconnected
+     */
     this.emit('disconnected');
   }
 
@@ -128,6 +142,11 @@ class VoiceConnection extends EventEmitter {
     this.sockets.ws.once('ready', d => {
       this.authentication.port = d.port;
       this.authentication.ssrc = d.ssrc;
+      /**
+       * Emitted whenever the connection encounters an error.
+       * @event VoiceConnection#error
+       * @param {Error} error the encountered error
+       */
       this.sockets.udp.findEndpointAddress()
         .then(address => {
           this.sockets.udp.createUDPSocket(address);
@@ -137,6 +156,11 @@ class VoiceConnection extends EventEmitter {
     this.sockets.ws.once('sessionDescription', (mode, secret) => {
       this.authentication.encryptionMode = mode;
       this.authentication.secretKey = secret;
+      /**
+       * Emitted once the connection is ready, when a promise to join a voice channel resolves,
+       * the connection will already be ready.
+       * @event VoiceConnection#ready
+       */
       this.emit('ready');
     });
     this.sockets.ws.on('speaking', data => {
