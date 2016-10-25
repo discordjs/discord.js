@@ -59,6 +59,7 @@ class AudioPlayer extends EventEmitter {
     dispatcher.on('end', () => this.cleanup(dispatcher.stream, 'disp ended'));
     dispatcher.on('speaking', value => this.voiceConnection.setSpeaking(value));
     this.currentDispatcher = dispatcher;
+    dispatcher.on('debug', m => this.emit('debug', `stream dispatch - ${m}`));
     return dispatcher;
   }
 

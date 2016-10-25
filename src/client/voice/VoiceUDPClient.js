@@ -63,6 +63,7 @@ class VoiceConnectionUDPClient extends EventEmitter {
   }
   /**
    * The port of the discord voice server
+   * @type {number}
    * @readonly
    */
   get discordPort() {

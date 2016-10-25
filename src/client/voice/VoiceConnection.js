@@ -1,6 +1,5 @@
 const VoiceWebSocket = require('./VoiceWebSocket');
 const VoiceUDP = require('./VoiceUDPClient');
-const VoiceReceiver = require('./receiver/VoiceReceiver');
 const Constants = require('../../util/Constants');
 const AudioPlayer = require('./player/AudioPlayer');
 const EventEmitter = require('events').EventEmitter;
@@ -39,6 +38,10 @@ class VoiceConnection extends EventEmitter {
     this.authentication = pendingConnection.data;
 
     this.player = new AudioPlayer(this);
+
+    this.player.on('debug', m => {
+      this.emit('debug', `audio player - ${m}`);
+    });
 
     this.player.on('error', e => {
       this.emit('warn', e);

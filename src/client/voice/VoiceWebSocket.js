@@ -97,7 +97,7 @@ class VoiceWebSocket extends EventEmitter {
           }
         });
       } else {
-        reject(new Error('websocket not open for ' + data));
+        reject(new Error(`voice websocket not open to send ${data}`));
       }
     });
   }
@@ -148,9 +148,8 @@ class VoiceWebSocket extends EventEmitter {
 
   /**
    * Called whenever the connection to the WebSocket Server is lost
-   * @param {CloseEvent} event the close event
    */
-  onClose(event) {
+  onClose() {
     // #todo see if the connection is open before reconnecting
     if (!this.dead) this.client.setTimeout(this.connect.bind(this), this.attempts * 1000);
   }

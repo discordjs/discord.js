@@ -255,7 +255,6 @@ class StreamDispatcher extends EventEmitter {
 
   _triggerTerminalState(state, err) {
     if (this._triggered) return;
-    console.log(state, err);
     /**
      * Emitted when the stream wants to give debug information.
      * @event StreamDispatcher#debug
