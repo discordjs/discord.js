@@ -16,6 +16,7 @@ class PCMConversionProcess extends EventEmitter {
     this.input = stream;
     stream.pipe(this.process.stdin, { end: false });
     this.input.on('error', e => this.emit('error', e));
+    this.process.stdin.on('error', e => this.emit('error', e));
   }
 
   destroy() {

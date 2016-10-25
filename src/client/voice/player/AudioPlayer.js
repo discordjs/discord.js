@@ -29,6 +29,7 @@ class AudioPlayer extends EventEmitter {
     });
     stream.on('error', e => this.emit('error', e));
     const conversionProcess = this.audioToPCM.createConvertStream(options.seek);
+    conversionProcess.on('error', e => this.emit('error', e));
     conversionProcess.setInput(stream);
     return this.playPCMStream(conversionProcess.process.stdout, conversionProcess, options);
   }
