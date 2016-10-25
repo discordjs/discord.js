@@ -108,6 +108,7 @@ class ShardingManager extends EventEmitter {
     return new Promise((resolve, reject) => {
       if (amount === 'auto') {
         getRecommendedShards(this.token).then(count => {
+          this.totalShards = count;
           resolve(this._spawn(count, delay));
         }).catch(reject);
       } else {

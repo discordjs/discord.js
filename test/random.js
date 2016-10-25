@@ -20,6 +20,8 @@ client.on('userUpdate', (o, n) => {
   console.log(o.username, n.username);
 });
 
+client.on('guildMemberAdd', (g, m) => console.log(`${m.user.username} joined ${g.name}`));
+
 client.on('channelCreate', channel => {
   console.log(`made ${channel.name}`);
 });

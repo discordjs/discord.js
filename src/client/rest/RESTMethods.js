@@ -372,26 +372,27 @@ class RESTMethods {
     });
   }
 
-  banGuildMember(guild, member, deleteDays) {
+  banGuildMember(guild, member, deleteDays = 0) {
     return new Promise((resolve, reject) => {
       const id = this.rest.client.resolver.resolveUserID(member);
       if (!id) throw new Error('Couldn\'t resolve the user ID to ban.');
 
-      this.rest.makeRequest('put', `${Constants.Endpoints.guildBans(guild.id)}/${id}`, true, {
-        'delete-message-days': deleteDays,
-      }).then(() => {
-        if (member instanceof GuildMember) {
-          resolve(member);
-          return;
-        }
-        const user = this.rest.client.resolver.resolveUser(id);
-        if (user) {
-          member = this.rest.client.resolver.resolveGuildMember(guild, user);
-          resolve(member || user);
-          return;
-        }
-        resolve(id);
-      }).catch(reject);
+      this.rest.makeRequest('put',
+        `${Constants.Endpoints.guildBans(guild.id)}/${id}?delete-message-days=${deleteDays}`, true, {
+          'delete-message-days': deleteDays,
+        }).then(() => {
+          if (member instanceof GuildMember) {
+            resolve(member);
+            return;
+          }
+          const user = this.rest.client.resolver.resolveUser(id);
+          if (user) {
+            member = this.rest.client.resolver.resolveGuildMember(guild, user);
+            resolve(member || user);
+            return;
+          }
+          resolve(id);
+        }).catch(reject);
     });
   }
 
@@ -651,6 +652,24 @@ class RESTMethods {
   }
 
   removeFriend(user) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('delete', `${Constants.Endpoints.relationships('@me')}/${user.id}`, true)
+      .then(() => {
+        resolve(user);
+      }).catch(reject);
+    });
+  }
+
+  blockUser(user) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('put', `${Constants.Endpoints.relationships('@me')}/${user.id}`, true, { type: 2 })
+      .then(() => {
+        resolve(user);
+      }).catch(reject);
+    });
+  }
+
+  unblockUser(user) {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('delete', `${Constants.Endpoints.relationships('@me')}/${user.id}`, true)
       .then(() => {
