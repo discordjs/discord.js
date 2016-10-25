@@ -10,7 +10,7 @@
 [![Build Status](https://travis-ci.org/hydrabolt/discord.js.svg)](https://travis-ci.org/hydrabolt/discord.js)
 [![David](https://img.shields.io/david/hydrabolt/discord.js.svg?maxAge=3600)](https://david-dm.org/hydrabolt/discord.js)
 
-[![NPM](https://nodei.co/npm/discord.js.png?downloads=true&stars=true)](https://nodei.co/npm/discord.js/)
+[![NPM](https://nodei.co/npm/discord.js.png?downloads=true&stars=true)](https://www.npmjs.com/package/discord.js)
 
 discord.js is a powerful node.js module that allows you to interact with the [Discord API](https://discordapp.com/developers/docs/intro).
 
