@@ -1,13 +1,15 @@
 const Action = require('./Action');
-const Constants = require('../../util/Constants');
 
 class GuildEmojiUpdateAction extends Action {
   handle(data, guild) {
     const client = this.client;
     for (let emoji of data.emojis) {
       const already = guild.emojis.has(emoji.id);
-      emoji = client.dataManager.newEmoji(emoji, guild);
-      if (already) client.emit(Constants.Events.GUILD_EMOJI_UPDATE, guild, emoji);
+      if (already) {
+        client.dataManager.updateEmoji(guild.emojis.get(emoji.id), emoji);
+      } else {
+        emoji = client.dataManager.newEmoji(emoji, guild);
+      }
     }
     for (let emoji of guild.emojis) {
       if (!data.emoijs.has(emoji.id)) client.dataManager.killEmoji(emoji);
@@ -21,7 +23,7 @@ class GuildEmojiUpdateAction extends Action {
 /**
  * Emitted whenever an emoji is updated
  * @event Client#guildEmojiUpdate
- * @param {Guild} guild The guild that the emoji was updated in.
- * @param {Emoji} emoji The emoji that was updated.
+ * @param {Emoji} oldEmoji The old emoji
+ * @param {Emoji} newEmoji The new emoji
  */
 module.exports = GuildEmojiUpdateAction;
