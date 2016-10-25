@@ -32,6 +32,10 @@ class VoiceConnection extends EventEmitter {
      */
     this.channel = pendingConnection.channel;
 
+    /**
+     * An array of Voice Receivers that have been created for this connection
+     * @type {VoiceReceiver[]}
+     */
     this.receivers = [];
 
     /**
@@ -40,6 +44,10 @@ class VoiceConnection extends EventEmitter {
      */
     this.authentication = pendingConnection.data;
 
+    /**
+     * The audio player for this voice connection
+     * @type {AudioPlayer}
+     */
     this.player = new AudioPlayer(this);
 
     this.player.on('debug', m => {
@@ -51,6 +59,10 @@ class VoiceConnection extends EventEmitter {
       this.player.cleanup();
     });
 
+    /**
+     * Map SSRC to speaking values
+     * @type {Map<number, boolean>}
+     */
     this.ssrcMap = new Map();
 
     /**
@@ -61,6 +73,11 @@ class VoiceConnection extends EventEmitter {
     this.connect();
   }
 
+  /**
+   * Sets whether the voice connection should display as "speaking" or not
+   * @param {boolean} value whether or not to speak
+   * @private
+   */
   setSpeaking(value) {
     if (this.speaking === value) return;
     this.speaking = value;
@@ -76,6 +93,9 @@ class VoiceConnection extends EventEmitter {
     });
   }
 
+  /**
+   * Disconnect the voice connection, causing a disconnected and closing event to be emitted.
+   */
   disconnect() {
     this.emit('closing');
     this.voiceManager.client.ws.send({
@@ -90,6 +110,10 @@ class VoiceConnection extends EventEmitter {
     this.emit('disconnected');
   }
 
+  /**
+   * Connect the voice connection
+   * @private
+   */
   connect() {
     if (this.sockets.ws) {
       throw new Error('There is already an existing WebSocket connection!');
@@ -146,20 +170,67 @@ class VoiceConnection extends EventEmitter {
     });
   }
 
+  /**
+   * Options that can be passed to stream-playing methods:
+   * @typedef {Object} StreamOptions
+   * @property {number} [seek=0] The time to seek to
+   * @property {number} [volume=1] The volume to play at
+   * @property {number} [passes=1] How many times to send the voice packet to reduce packet loss
+   */
+
+  /**
+   * Play the given file in the voice connection.
+   * @param {string} file The path to the file
+   * @param {StreamOptions} [options] Options for playing the stream
+   * @returns {StreamDispatcher}
+   * @example
+   * // play files natively
+   * voiceChannel.join()
+   *  .then(connection => {
+   *    const dispatcher = connection.playFile('C:/Users/Discord/Desktop/music.mp3');
+   *  })
+   *  .catch(console.log);
+   */
   playFile(file, options) {
     return this.playStream(fs.createReadStream(file), options);
   }
 
+  /**
+   * Plays and converts an audio stream in the voice connection.
+   * @param {ReadableStream} stream The audio stream to play
+   * @param {StreamOptions} [options] Options for playing the stream
+   * @returns {StreamDispatcher}
+   * @example
+   * // play streams using ytdl-core
+   * const ytdl = require('ytdl-core');
+   * const streamOptions = { seek: 0, volume: 1 };
+   * voiceChannel.join()
+   *  .then(connection => {
+   *    const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', {filter : 'audioonly'});
+   *    const dispatcher = connection.playStream(stream, streamOptions);
+   *  })
+   *  .catch(console.log);
+   */
   playStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
     const options = { seek, volume, passes };
     return this.player.playUnknownStream(stream, options);
   }
 
+  /**
+   * Plays a stream of 16-bit signed stereo PCM at 48KHz.
+   * @param {ReadableStream} stream The audio stream to play.
+   * @param {StreamOptions} [options] Options for playing the stream
+   * @returns {StreamDispatcher}
+   */
   playConvertedStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
     const options = { seek, volume, passes };
     return this.player.playPCMStream(stream, options);
   }
 
+  /**
+   * Creates a VoiceReceiver so you can start listening to voice data. It's recommended to only create one of these.
+   * @returns {VoiceReceiver}
+   */
   createReceiver() {
     const receiver = new VoiceReceiver(this);
     this.receivers.push(receiver);
