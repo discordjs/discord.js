@@ -396,7 +396,7 @@ class Message {
     content = `${prepend}${content}`;
 
     if (options.split) {
-      if (typeof options.split !== 'object' && typeof options.split !== 'boolean') options.split = {};
+      if (typeof options.split !== 'object') options.split = {};
       if (!options.split.prepend) options.split.prepend = prepend;
     }
 
