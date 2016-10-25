@@ -8,6 +8,7 @@ exports.Package = require('../../package.json');
  * @property {number} [shardId=0] The ID of this shard
  * @property {number} [shardCount=0] The number of shards
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
+ * @property {boolean} [sync=false] Whether to periodically sync guilds
  * (-1 for unlimited - don't do this without message sweeping, otherwise memory usage will climb indefinitely)
  * @property {number} [messageCacheLifetime=0] How long until a message should be uncached by the message sweeping
  * (in seconds, 0 for forever)
@@ -34,6 +35,7 @@ exports.DefaultOptions = {
   disableEveryone: false,
   restWsBridgeTimeout: 5000,
   disabledEvents: [],
+  sync: false,
 
   /**
    * Websocket options. These are left as snake_case to match the API.

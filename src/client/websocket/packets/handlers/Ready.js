@@ -31,7 +31,7 @@ class ReadyHandler extends AbstractHandler {
       client._setPresence(presence.user.id, presence);
     }
 
-    if (!client.user.bot) client.setInterval(client.syncGuilds.bind(client), 30000);
+    if (!client.user.bot && client.options.sync) client.setInterval(client.syncGuilds.bind(client), 30000);
     client.once('ready', client.syncGuilds.bind(client));
 
     if (!client.users.has('1')) {
