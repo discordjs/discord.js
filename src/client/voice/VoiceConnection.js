@@ -2,6 +2,7 @@ const VoiceWebSocket = require('./VoiceWebSocket');
 const VoiceUDP = require('./VoiceUDPClient');
 const Constants = require('../../util/Constants');
 const AudioPlayer = require('./player/AudioPlayer');
+const VoiceReceiver = require('./receiver/VoiceReceiver');
 const EventEmitter = require('events').EventEmitter;
 const fs = require('fs');
 
@@ -31,6 +32,8 @@ class VoiceConnection extends EventEmitter {
      */
     this.channel = pendingConnection.channel;
 
+    this.receivers = [];
+
     /**
      * The authentication data needed to connect to the voice server
      * @type {object}
@@ -47,6 +50,8 @@ class VoiceConnection extends EventEmitter {
       this.emit('warn', e);
       this.player.cleanup();
     });
+
+    this.ssrcMap = new Map();
 
     /**
      * Object that wraps contains the `ws` and `udp` sockets of this voice connection
@@ -110,6 +115,35 @@ class VoiceConnection extends EventEmitter {
       this.authentication.secretKey = secret;
       this.emit('ready');
     });
+    this.sockets.ws.on('speaking', data => {
+      const guild = this.channel.guild;
+      const user = this.voiceManager.client.users.get(data.user_id);
+      this.ssrcMap.set(+data.ssrc, user);
+      if (!data.speaking) {
+        for (const receiver of this.receivers) {
+          const opusStream = receiver.opusStreams.get(user.id);
+          const pcmStream = receiver.pcmStreams.get(user.id);
+          if (opusStream) {
+            opusStream.push(null);
+            opusStream.open = false;
+            receiver.opusStreams.delete(user.id);
+          }
+          if (pcmStream) {
+            pcmStream.push(null);
+            pcmStream.open = false;
+            receiver.pcmStreams.delete(user.id);
+          }
+        }
+      }
+      /**
+       * Emitted whenever a user starts/stops speaking
+       * @event VoiceConnection#speaking
+       * @param {User} user The user that has started/stopped speaking
+       * @param {boolean} speaking Whether or not the user is speaking
+       */
+      if (this.ready) this.emit('speaking', user, data.speaking);
+      guild._memberSpeakUpdate(data.user_id, data.speaking);
+    });
   }
 
   playFile(file, options) {
@@ -124,6 +158,12 @@ class VoiceConnection extends EventEmitter {
   playConvertedStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
     const options = { seek, volume, passes };
     return this.player.playPCMStream(stream, options);
+  }
+
+  createReceiver() {
+    const receiver = new VoiceReceiver(this);
+    this.receivers.push(receiver);
+    return receiver;
   }
 
 }
