@@ -104,7 +104,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Disconnect the voice connection, causing a disconnected and closing event to be emitted.
+   * Disconnect the voice connection, causing a disconnect and closing event to be emitted.
    */
   disconnect() {
     this.emit('closing');
@@ -119,9 +119,9 @@ class VoiceConnection extends EventEmitter {
     });
     /**
      * Emitted when the voice connection disconnects
-     * @event VoiceConnection#disconnected
+     * @event VoiceConnection#disconnect
      */
-    this.emit('disconnected');
+    this.emit('disconnect');
   }
 
   /**
