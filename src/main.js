@@ -43,10 +43,8 @@ const App = Vue.extend({
 
 Vue.filter('marked', $text => {
   let text = $text || 'error! I\'m not set!';
-  text = text.replace(/(<info>)/g, '<div class="info">');
-  text = text.replace(/(<\/info>)/g, '</div>');
-  text = text.replace(/(<warn>)/g, '<div class="warn">');
-  text = text.replace(/(<\/warn>)/g, '</div>');
+  text = text.replace(/<info>(.+)<\/info>/gi, '<div class="info">$1</div>');
+  text = text.replace(/<warn>(.+)<\/warn>/gi, '<div class="warn">$1</div>');
   return marked(text);
 });
 
@@ -85,7 +83,7 @@ router.map({
   },
   '/docs': {
     component: (resolve, reject) => {
-      store.fetchBranches().then(() => {
+      Promise.all([store.fetchBranches(), store.fetchTags()]).then(() => {
         resolve(Views.Docs);
       }).catch(reject);
     },

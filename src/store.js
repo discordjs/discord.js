@@ -1,20 +1,25 @@
 const request = require('superagent');
+const semver = require('semver');
+
+const branchBlacklist = ['gh-pages', 'gh-pages-dev', 'docs', 'v8', 'indev-old'];
 
 const data = {
   branches: null,
+  tags: null,
+  latestTag: '0.0.0',
   docs: {},
 };
 
 function build(docs) {
   const links = {
-    String: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String',
+    string: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String',
+    number: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number',
+    boolean: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean',
     Array: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array',
     Map: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map',
     Object: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object',
     Promise: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise',
-    Number: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number',
   };
-  console.log(docs);
   docs.classes = docs.classes.sort((a, b) => a.name.localeCompare(b.name));
   docs.typedefs = docs.typedefs.sort((a, b) => a.name.localeCompare(b.name));
   for (const jsclass of docs.classes) {
@@ -51,18 +56,49 @@ const store = {
     return new Promise((resolve, reject) => {
       if (data.branches) {
         resolve(data.branches);
-      } else {
-        request
-          .get('https://api.github.com/repos/hydrabolt/discord.js/branches')
-          .end((err, res) => {
-            if (err) {
-              reject(err);
-            } else {
-              data.branches = res.body;
-              resolve(data.branches);
-            }
-          });
+        return;
       }
+      request
+        .get('https://api.github.com/repos/hydrabolt/discord.js/branches')
+        .end((err, res) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          data.branches = res.body;
+          let i = 0;
+          while (i < data.branches.length) {
+            if (branchBlacklist.includes(data.branches[i].name)) data.branches.splice(i, 1);
+            else i++;
+          }
+          resolve(data.branches);
+        });
+    });
+  },
+
+  fetchTags() {
+    return new Promise((resolve, reject) => {
+      if (data.tags) {
+        resolve(data.tags);
+        return;
+      }
+      request
+        .get('https://api.github.com/repos/hydrabolt/discord.js/tags')
+        .end((err, res) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          data.tags = res.body;
+          let i = 0;
+          while (i < data.tags.length) {
+            const name = data.tags[i].name.replace(/^v/, '');
+            if (semver.gt(name, data.latestTag)) data.latestTag = data.tags[i].name;
+            if (semver.lt(name, '9.0.0')) data.tags.splice(i, 1);
+            else i++;
+          }
+          resolve(data.tags);
+        });
     });
   },
 
@@ -70,19 +106,18 @@ const store = {
     return new Promise((resolve, reject) => {
       if (data.docs[tag]) {
         resolve(data.docs[tag]);
-      } else {
-        request
-          .get(`https://raw.githubusercontent.com/hydrabolt/discord.js/${tag}/docs/docs.json`)
-          .end((err, res) => {
-            if (err) {
-              reject(err);
-            } else {
-              console.log(res);
-              data.docs[tag] = build(res.body || parseDocs(res.text));
-              resolve(data.docs[tag]);
-            }
-          });
+        return;
       }
+      request
+        .get(`https://raw.githubusercontent.com/hydrabolt/discord.js/docs/${tag}.json`)
+        .end((err, res) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          data.docs[tag] = build(res.body || parseDocs(res.text));
+          resolve(data.docs[tag]);
+        });
     });
   },
 };
