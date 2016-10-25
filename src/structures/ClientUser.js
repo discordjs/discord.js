@@ -198,6 +198,7 @@ class ClientUser extends User {
 
       this.localPresence = { status, game, afk };
       this.localPresence.since = 0;
+      this.localPresence.game = this.localPresence.game || null;
 
       this.client.ws.send({
         op: 3,

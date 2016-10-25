@@ -1,12 +1,13 @@
-const VoiceConnectionWebSocket = require('./VoiceConnectionWebSocket');
-const VoiceConnectionUDPClient = require('./VoiceConnectionUDPClient');
-const VoiceReceiver = require('./receiver/VoiceReceiver');
+const VoiceWebSocket = require('./VoiceWebSocket');
+const VoiceUDP = require('./VoiceUDPClient');
 const Constants = require('../../util/Constants');
+const AudioPlayer = require('./player/AudioPlayer');
+const VoiceReceiver = require('./receiver/VoiceReceiver');
 const EventEmitter = require('events').EventEmitter;
-const DefaultPlayer = require('./player/DefaultPlayer');
+const fs = require('fs');
 
 /**
- * Represents a connection to a Voice Channel in Discord.
+ * Represents a connection to a Voice Channel in Discord. v10 flag.
  * ```js
  * // obtained using:
  * voiceChannel.join().then(connection => {
@@ -16,89 +17,98 @@ const DefaultPlayer = require('./player/DefaultPlayer');
  * @extends {EventEmitter}
  */
 class VoiceConnection extends EventEmitter {
-  constructor(manager, channel, token, sessionID, endpoint, resolve, reject) {
+
+  constructor(pendingConnection) {
     super();
-
     /**
-     * The voice manager of this connection
+     * The Voice Manager that instantiated this connection
      * @type {ClientVoiceManager}
-     * @private
      */
-    this.manager = manager;
+    this.voiceManager = pendingConnection.voiceManager;
 
     /**
-     * The player
-     * @type {BasePlayer}
-     */
-    this.player = new DefaultPlayer(this);
-
-    /**
-     * The endpoint of the connection
-     * @type {string}
-     */
-    this.endpoint = endpoint;
-
-    /**
-     * The VoiceChannel for this connection
+     * The voice channel this connection is currently serving
      * @type {VoiceChannel}
      */
-    this.channel = channel;
+    this.channel = pendingConnection.channel;
 
     /**
-     * The WebSocket connection for this voice connection
-     * @type {VoiceConnectionWebSocket}
-     * @private
+     * An array of Voice Receivers that have been created for this connection
+     * @type {VoiceReceiver[]}
      */
-    this.websocket = new VoiceConnectionWebSocket(this, channel.guild.id, token, sessionID, endpoint);
-
-    /**
-     * Whether or not the connection is ready
-     * @type {boolean}
-     */
-    this.ready = false;
-
-    /**
-     * The resolve function for the promise associated with creating this connection
-     * @type {function}
-     * @private
-     */
-    this._resolve = resolve;
-
-    /**
-     * The reject function for the promise associated with creating this connection
-     * @type {function}
-     * @private
-     */
-    this._reject = reject;
-
-    this.ssrcMap = new Map();
-    this.queue = [];
     this.receivers = [];
-    this.bindListeners();
-  }
 
-  /**
-   * Executed whenever an error occurs with the UDP/WebSocket sub-client.
-   * @private
-   * @param {Error} err The encountered error
-   */
-  _onError(err) {
-    this._reject(err);
     /**
-     * Emitted whenever the connection encounters a fatal error.
-     * @event VoiceConnection#error
-     * @param {Error} error The encountered error
+     * The authentication data needed to connect to the voice server
+     * @type {object}
      */
-    this.emit('error', err);
-    this._shutdown(err);
+    this.authentication = pendingConnection.data;
+
+    /**
+     * The audio player for this voice connection
+     * @type {AudioPlayer}
+     */
+    this.player = new AudioPlayer(this);
+
+    this.player.on('debug', m => {
+      /**
+       * Debug info from the connection
+       * @event VoiceConnection#debug
+       * @param {string} message the debug message
+       */
+      this.emit('debug', `audio player - ${m}`);
+    });
+
+    this.player.on('error', e => {
+      /**
+       * Warning info from the connection
+       * @event VoiceConnection#warn
+       * @param {string|error} warning the warning
+       */
+      this.emit('warn', e);
+      this.player.cleanup();
+    });
+
+    /**
+     * Map SSRC to speaking values
+     * @type {Map<number, boolean>}
+     */
+    this.ssrcMap = new Map();
+
+    /**
+     * Object that wraps contains the `ws` and `udp` sockets of this voice connection
+     * @type {object}
+     */
+    this.sockets = {};
+    this.connect();
   }
 
   /**
-   * Disconnects the Client from the Voice Channel.
-   * @param {string} [reason='user requested'] The reason of the disconnection
+   * Sets whether the voice connection should display as "speaking" or not
+   * @param {boolean} value whether or not to speak
+   * @private
    */
-  disconnect(reason = 'user requested') {
-    this.manager.client.ws.send({
+  setSpeaking(value) {
+    if (this.speaking === value) return;
+    this.speaking = value;
+    this.sockets.ws.sendPacket({
+      op: Constants.VoiceOPCodes.SPEAKING,
+      d: {
+        speaking: true,
+        delay: 0,
+      },
+    })
+    .catch(e => {
+      this.emit('debug', e);
+    });
+  }
+
+  /**
+   * Disconnect the voice connection, causing a disconnected and closing event to be emitted.
+   */
+  disconnect() {
+    this.emit('closing');
+    this.voiceManager.client.ws.send({
       op: Constants.OPCodes.VOICE_STATE_UPDATE,
       d: {
         guild_id: this.channel.guild.id,
@@ -107,81 +117,55 @@ class VoiceConnection extends EventEmitter {
         self_deaf: false,
       },
     });
-    this._shutdown(reason);
-  }
-
-  _onClose(e) {
-    e = e && e.code === 1000 ? null : e;
-    return this._shutdown(e);
-  }
-
-  _shutdown(e) {
-    if (!this.ready) return;
-    this.ready = false;
-    this.websocket._shutdown();
-    this.player._shutdown();
-    if (this.udp) this.udp._shutdown();
-    if (this._vsUpdateListener) this.manager.client.removeListener('voiceStateUpdate', this._vsUpdateListener);
     /**
-     * Emit once the voice connection has disconnected.
+     * Emitted when the voice connection disconnects
      * @event VoiceConnection#disconnected
-     * @param {Error} error The encountered error, if any
      */
-    this.emit('disconnected', e);
+    this.emit('disconnected');
   }
 
   /**
-   * Binds listeners to the WebSocket and UDP sub-clients.
+   * Connect the voice connection
    * @private
    */
-  bindListeners() {
-    this.websocket.on('error', err => this._onError(err));
-    this.websocket.on('close', err => this._onClose(err));
-    this.websocket.on('ready-for-udp', data => {
-      this.udp = new VoiceConnectionUDPClient(this, data);
-      this.data = data;
-      this.udp.on('error', err => this._onError(err));
-      this.udp.on('close', err => this._onClose(err));
-    });
-    this.websocket.on('ready', secretKey => {
-      this.data.secret = secretKey;
-      this.ready = true;
+  connect() {
+    if (this.sockets.ws) {
+      throw new Error('There is already an existing WebSocket connection!');
+    }
+    if (this.sockets.udp) {
+      throw new Error('There is already an existing UDP connection!');
+    }
+    this.sockets.ws = new VoiceWebSocket(this);
+    this.sockets.udp = new VoiceUDP(this);
+    this.sockets.ws.on('error', e => this.emit('error', e));
+    this.sockets.udp.on('error', e => this.emit('error', e));
+    this.sockets.ws.once('ready', d => {
+      this.authentication.port = d.port;
+      this.authentication.ssrc = d.ssrc;
       /**
-       * Emitted once the connection is ready (joining voice channels resolves when the connection is ready anyway)
+       * Emitted whenever the connection encounters an error.
+       * @event VoiceConnection#error
+       * @param {Error} error the encountered error
+       */
+      this.sockets.udp.findEndpointAddress()
+        .then(address => {
+          this.sockets.udp.createUDPSocket(address);
+        })
+        .catch(e => this.emit('error', e));
+    });
+    this.sockets.ws.once('sessionDescription', (mode, secret) => {
+      this.authentication.encryptionMode = mode;
+      this.authentication.secretKey = secret;
+      /**
+       * Emitted once the connection is ready, when a promise to join a voice channel resolves,
+       * the connection will already be ready.
        * @event VoiceConnection#ready
        */
-      this._resolve(this);
       this.emit('ready');
     });
-    this.once('ready', () => {
-      setImmediate(() => {
-        for (const item of this.queue) this.emit(...item);
-        this.queue = [];
-      });
-    });
-    this._vsUpdateListener = (oldM, newM) => {
-      if (oldM.voiceChannel && oldM.voiceChannel.guild.id === this.channel.guild.id && !newM.voiceChannel) {
-        const user = newM.user;
-        for (const receiver of this.receivers) {
-          const opusStream = receiver.opusStreams.get(user.id);
-          const pcmStream = receiver.pcmStreams.get(user.id);
-          if (opusStream) {
-            opusStream.push(null);
-            opusStream.open = false;
-            receiver.opusStreams.delete(user.id);
-          }
-          if (pcmStream) {
-            pcmStream.push(null);
-            pcmStream.open = false;
-            receiver.pcmStreams.delete(user.id);
-          }
-        }
-      }
-    };
-    this.manager.client.on(Constants.Events.VOICE_STATE_UPDATE, this._vsUpdateListener);
-    this.websocket.on('speaking', data => {
+    this.sockets.ws.on('speaking', data => {
       const guild = this.channel.guild;
-      const user = this.manager.client.users.get(data.user_id);
+      const user = this.voiceManager.client.users.get(data.user_id);
       this.ssrcMap.set(+data.ssrc, user);
       if (!data.speaking) {
         for (const receiver of this.receivers) {
@@ -206,7 +190,6 @@ class VoiceConnection extends EventEmitter {
        * @param {boolean} speaking Whether or not the user is speaking
        */
       if (this.ready) this.emit('speaking', user, data.speaking);
-      else this.queue.push(['speaking', user, data.speaking]);
       guild._memberSpeakUpdate(data.user_id, data.speaking);
     });
   }
@@ -230,11 +213,10 @@ class VoiceConnection extends EventEmitter {
    *  .then(connection => {
    *    const dispatcher = connection.playFile('C:/Users/Discord/Desktop/music.mp3');
    *  })
-   *  .catch(console.error);
+   *  .catch(console.log);
    */
-  playFile(file, { seek = 0, volume = 1, passes = 1 } = {}) {
-    const options = { seek, volume, passes };
-    return this.player.playFile(file, options);
+  playFile(file, options) {
+    return this.playStream(fs.createReadStream(file), options);
   }
 
   /**
@@ -251,11 +233,11 @@ class VoiceConnection extends EventEmitter {
    *    const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', {filter : 'audioonly'});
    *    const dispatcher = connection.playStream(stream, streamOptions);
    *  })
-   *  .catch(console.error);
+   *  .catch(console.log);
    */
   playStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
     const options = { seek, volume, passes };
-    return this.player.playStream(stream, options);
+    return this.player.playUnknownStream(stream, options);
   }
 
   /**
@@ -266,7 +248,6 @@ class VoiceConnection extends EventEmitter {
    */
   playConvertedStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
     const options = { seek, volume, passes };
-    this.player._shutdown();
     return this.player.playPCMStream(stream, options);
   }
 
@@ -275,10 +256,11 @@ class VoiceConnection extends EventEmitter {
    * @returns {VoiceReceiver}
    */
   createReceiver() {
-    const rcv = new VoiceReceiver(this);
-    this.receivers.push(rcv);
-    return rcv;
+    const receiver = new VoiceReceiver(this);
+    this.receivers.push(receiver);
+    return receiver;
   }
+
 }
 
 module.exports = VoiceConnection;

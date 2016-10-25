@@ -6,9 +6,9 @@ const fs = require('fs');
 
 const client = new Discord.Client({ fetchAllMembers: false, apiRequestMethod: 'sequential' });
 
-const { email, password, token, usertoken } = require('./auth.json');
+const { email, password, token, usertoken, song } = require('./auth.json');
 
-client.login(token).then(atoken => console.log('logged in with token ' + atoken)).catch(console.error);
+client.login(usertoken).then(atoken => console.log('logged in with token ' + atoken)).catch(console.error);
 
 client.ws.on('send', console.log);
 
@@ -26,7 +26,6 @@ client.on('channelCreate', channel => {
   console.log(`made ${channel.name}`);
 });
 
-client.on('debug', m => console.log('debug', m));
 client.on('error', m => console.log('debug', m));
 client.on('reconnecting', m => console.log('debug', m));
 
@@ -161,6 +160,7 @@ let disp, con;
 
 client.on('message', msg => {
   if (msg.content.startsWith('/play')) {
+    console.log('I am now going to play', msg.content);
     const chan = msg.content.split(' ').slice(1).join(' ');
     con.playStream(ytdl(chan, {filter : 'audioonly'}), { passes : 4 });
   }
@@ -170,10 +170,9 @@ client.on('message', msg => {
       .then(conn => {
         con = conn;
         msg.reply('done');
-        disp = conn.player.playStream(ytdl('https://www.youtube.com/watch?v=oQBiPwklN_Q', {filter : 'audioonly'}), { passes : 3 });
+        disp = conn.playStream(ytdl(song, {filter:'audioonly'}), { passes : 3 });
         conn.player.on('debug', console.log);
         conn.player.on('error', err => console.log(123, err));
-        disp.on('error', err => console.log(123, err));
       })
       .catch(console.error);
   }

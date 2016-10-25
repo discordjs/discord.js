@@ -236,8 +236,7 @@ class Message {
    */
   get cleanContent() {
     return this.content
-      .replace(/@everyone/g, '@\u200Beveryone')
-      .replace(/@here/g, '@\u200Bhere')
+      .replace(/@(everyone|here)/g, '@\u200b$1')
       .replace(/<@!?[0-9]+>/g, (input) => {
         const id = input.replace(/<|!|>|@/g, '');
         if (this.channel.type === 'dm' || this.channel.type === 'group') {

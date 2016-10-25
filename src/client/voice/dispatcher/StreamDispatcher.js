@@ -45,6 +45,8 @@ class StreamDispatcher extends EventEmitter {
      * @type {boolean}
      */
     this.paused = false;
+
+    this.setVolume(streamOptions.volume || 1);
   }
 
   /**
@@ -132,7 +134,10 @@ class StreamDispatcher extends EventEmitter {
   _sendBuffer(buffer, sequence, timestamp) {
     let repeats = this.passes;
     const packet = this._createPacket(sequence, timestamp, this.player.opusEncoder.encode(buffer));
-    while (repeats--) this.player.connection.udp.send(packet);
+    while (repeats--) {
+      this.player.voiceConnection.sockets.udp.send(packet)
+        .catch(e => this.emit('debug', `failed to send a packet ${e}`));
+    }
   }
 
   _createPacket(sequence, timestamp, buffer) {
@@ -143,10 +148,10 @@ class StreamDispatcher extends EventEmitter {
 
     packetBuffer.writeUIntBE(sequence, 2, 2);
     packetBuffer.writeUIntBE(timestamp, 4, 4);
-    packetBuffer.writeUIntBE(this.player.connection.data.ssrc, 8, 4);
+    packetBuffer.writeUIntBE(this.player.voiceConnection.authentication.ssrc, 8, 4);
 
     packetBuffer.copy(nonce, 0, 0, 12);
-    buffer = NaCl.secretbox(buffer, nonce, this.player.connection.data.secret);
+    buffer = NaCl.secretbox(buffer, nonce, this.player.voiceConnection.authentication.secretKey.key);
 
     for (let i = 0; i < buffer.length; i++) packetBuffer[i + 12] = buffer[i];
 
@@ -183,7 +188,7 @@ class StreamDispatcher extends EventEmitter {
       if (this.paused) {
         // data.timestamp = data.timestamp + 4294967295 ? data.timestamp + 960 : 0;
         data.pausedTime += data.length * 10;
-        this.player.connection.manager.client.setTimeout(() => this._send(), data.length * 10);
+        this.player.voiceConnection.voiceManager.client.setTimeout(() => this._send(), data.length * 10);
         return;
       }
 
@@ -203,7 +208,7 @@ class StreamDispatcher extends EventEmitter {
       if (!buffer) {
         data.missed++;
         data.pausedTime += data.length * 10;
-        this.player.connection.manager.client.setTimeout(() => this._send(), data.length * 10);
+        this.player.voiceConnection.voiceManager.client.setTimeout(() => this._send(), data.length * 10);
         return;
       }
 
@@ -224,7 +229,7 @@ class StreamDispatcher extends EventEmitter {
       this._sendBuffer(buffer, data.sequence, data.timestamp);
 
       const nextTime = data.length + (data.startTime + data.pausedTime + (data.count * data.length) - Date.now());
-      this.player.connection.manager.client.setTimeout(() => this._send(), nextTime);
+      this.player.voiceConnection.voiceManager.client.setTimeout(() => this._send(), nextTime);
     } catch (e) {
       this._triggerTerminalState('error', e);
     }
@@ -250,7 +255,6 @@ class StreamDispatcher extends EventEmitter {
 
   _triggerTerminalState(state, err) {
     if (this._triggered) return;
-
     /**
      * Emitted when the stream wants to give debug information.
      * @event StreamDispatcher#debug
