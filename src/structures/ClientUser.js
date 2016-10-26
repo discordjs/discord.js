@@ -164,6 +164,27 @@ class ClientUser extends User {
   }
 
   /**
+   * Creates a guild
+   * <warn>This is only available for user accounts, not bot accounts!</warn>
+   * @param {string} name The name of the guild
+   * @param {string} region The region for the server
+   * @param {FileResolveable|Base64Resolveable} icon The icon for the guild
+   * @returns {Promise<Guild>} The guild that was created
+   */
+  createGuild(name, region, icon) {
+    return new Promise(resolve => {
+      if (!icon) resolve(this.client.rest.methods.createGuild({ name, icon, region }));
+      if (icon.startsWith('data:')) {
+        resolve(this.client.rest.methods.createGuild({ name, icon, region }));
+      } else {
+        this.client.resolver.resolveFile(icon).then(data => {
+          resolve(this.client.rest.methods.createGuild({ name, icon: data, region }));
+        });
+      }
+    });
+  }
+
+  /**
    * Set the full presence of the current user.
    * @param {Object} data the data to provide
    * @returns {Promise<ClientUser>}
