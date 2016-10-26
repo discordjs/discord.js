@@ -36,7 +36,7 @@ class RESTMethods {
   }
 
   logout() {
-    return this.rest.makeRequest('post', Constants.Endpoints.logout, true, {});
+    return this.rest.makeRequest('post', Constants.Endpoints.logout, true);
   }
 
   getGateway() {
