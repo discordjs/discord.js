@@ -8,7 +8,7 @@ const client = new Discord.Client({ fetchAllMembers: false, apiRequestMethod: 's
 
 const { email, password, token, usertoken, song } = require('./auth.json');
 
-client.login(usertoken).then(atoken => console.log('logged in with token ' + atoken)).catch(console.error);
+client.login(token).then(atoken => console.log('logged in with token ' + atoken)).catch(console.error);
 
 client.ws.on('send', console.log);
 

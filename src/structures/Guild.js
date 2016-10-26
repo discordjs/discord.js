@@ -631,6 +631,32 @@ class Guild {
   }
 
   /**
+   * Set the position of a role in this guild
+   * @param {string|Role} role the role to edit, can be a role object or a role ID.
+   * @param {number} position the new position of the role
+   * @returns {Promise<Guild>}
+   */
+  setRolePosition(role, position) {
+    if (role instanceof Role) {
+      role = role.id;
+    } else if (typeof role !== 'string') {
+      return Promise.reject(new Error('Supplied role is not a role or string'));
+    }
+
+    position = Number(position);
+    if (isNaN(position)) {
+      return Promise.reject(new Error('Supplied position is not a number'));
+    }
+
+    const updatedRoles = this.roles.array().map(r => ({
+      id: r.id,
+      position: r.id === role ? position : (r.position < position ? r.position : r.position + 1),
+    }));
+
+    return this.client.rest.methods.setRolePositions(this.id, updatedRoles);
+  }
+
+  /**
    * Whether this Guild equals another Guild. It compares all properties, so for most operations
    * it is advisable to just compare `guild.id === guild2.id` as it is much faster and is often
    * what most users need.
