@@ -211,15 +211,16 @@ class RESTMethods {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('post', Constants.Endpoints.guilds, true, options)
       .then(data => {
-        this.rest.client.setTimeout(() => {
-          reject(new Error('Took too long to receive guild data'));
-        }, 10000);
         if (this.rest.client.guilds.has(data.id)) resolve(this.rest.client.guilds.get(data.id));
         const handleGuild = guild => {
           if (guild.id === data.id) resolve(guild);
           this.rest.client.removeListener('guildCreate', handleGuild);
         };
         this.rest.client.on('guildCreate', handleGuild);
+        this.rest.client.setTimeout(() => {
+          this.rest.client.removeListener('guildCreate', handleGuild);
+          reject(new Error('Took too long to receive guild data'));
+        }, 10000);
       }).catch(reject);
     });
   }
