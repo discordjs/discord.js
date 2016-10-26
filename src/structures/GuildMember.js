@@ -187,7 +187,7 @@ class GuildMember {
     const roles = this.roles;
     for (const role of roles.values()) permissions |= role.permissions;
 
-    const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
+    const admin = Boolean(permissions & (Constants.PermissionFlags.ADMINISTRATOR));
     if (admin) permissions = Constants.ALL_PERMISSIONS;
 
     return new EvaluatedPermissions(this, permissions);

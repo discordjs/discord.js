@@ -721,10 +721,10 @@ class RESTMethods {
     });
   }
 
-  authorizeBot(guild_id, client_id, permissions) {
+  authorizeBot(guildID, clientID, permissions) {
     return new Promise((resolve, reject) => {
-      this.rest.makeRequest('post', Constants.Endpoints.oauth2Auth(client_id, permissions, true), true, {
-        guild_id,
+      this.rest.makeRequest('post', Constants.Endpoints.oauth2Auth(clientID, permissions, true), true, {
+        guild_id: guildID,
         permissions,
         authorize: true,
       })
