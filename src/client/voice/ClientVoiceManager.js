@@ -47,18 +47,15 @@ class ClientVoiceManager {
    */
   sendVoiceStateUpdate(channel, options = {}) {
     if (!this.client.user) throw new Error('Unable to join because there is no client user.');
-
-    if (channel.permissionsFor) {
-      const permissions = channel.permissionsFor(this.client.user);
-      if (permissions) {
-        if (!permissions.hasPermission('CONNECT')) {
-          throw new Error('You do not have permission to connect to this voice channel.');
-        }
-      } else {
-        throw new Error('There is no permission set for the client user in this channel - are they part of the guild?');
-      }
-    } else {
+    if (!channel.permissionsFor) {
       throw new Error('Channel does not support permissionsFor; is it really a voice channel?');
+    }
+    const permissions = channel.permissionsFor(this.client.user);
+    if (!permissions) {
+      throw new Error('There is no permission set for the client user in this channel - are they part of the guild?');
+    }
+    if (!permissions.hasPermission('CONNECT')) {
+      throw new Error('You do not have permission to connect to this voice channel.');
     }
 
     options = mergeDefault({
