@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://hydrabolt.github.io/discord.js">
-    <img alt="discord.js" src="http://i.imgur.com/0af7LDs.png" width="546"><br />
+    <img alt="discord.js" src="http://i.imgur.com/StEGtEh.png" width="546"><br />
   </a>
 </p>
 
