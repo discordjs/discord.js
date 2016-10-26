@@ -6,7 +6,7 @@ const botGateway = require('./Constants').Endpoints.botGateway;
  * @param {number} token Discord auth token
  * @returns {Promise<number>} the recommended number of shards
  */
-module.exports = function getRecommendedShards(token) {
+module.exports = function fetchRecommendedShards(token) {
   return new Promise((resolve, reject) => {
     if (!token) throw new Error('A token must be provided.');
     superagent.get(botGateway)
