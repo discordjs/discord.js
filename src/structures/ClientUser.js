@@ -168,7 +168,7 @@ class ClientUser extends User {
    * <warn>This is only available for user accounts, not bot accounts!</warn>
    * @param {string} name The name of the guild
    * @param {string} region The region for the server
-   * @param {FileResolveable|Base64Resolveable} [icon=null] The icon for the guild
+   * @param {FileResolvable|Base64Resolvable} [icon=null] The icon for the guild
    * @returns {Promise<Guild>} The guild that was created
    */
   createGuild(name, region, icon = null) {
