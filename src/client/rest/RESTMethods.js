@@ -720,6 +720,19 @@ class RESTMethods {
         .catch(reject);
     });
   }
+
+  authorizeBot(guild_id, client_id, permissions) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('post', Constants.Endpoints.oauth2Auth(client_id, permissions, true), true, {
+        guild_id,
+        permissions,
+        authorize: true,
+      })
+      .then(data => {
+        resolve(data);
+      }).catch(reject);
+    });
+  }
 }
 
 module.exports = RESTMethods;

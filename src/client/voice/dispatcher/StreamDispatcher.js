@@ -223,7 +223,7 @@ class StreamDispatcher extends EventEmitter {
       buffer = this._applyVolume(buffer);
 
       data.count++;
-      data.sequence = (data.sequence + 1) < (65536) ? data.sequence + 1 : 0;
+      data.sequence = data.sequence + 1 < 65536 ? data.sequence + 1 : 0;
       data.timestamp = data.timestamp + 4294967295 ? data.timestamp + 960 : 0;
 
       this._sendBuffer(buffer, data.sequence, data.timestamp);
