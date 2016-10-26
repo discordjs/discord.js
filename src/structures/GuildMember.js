@@ -3,6 +3,7 @@ const Role = require('./Role');
 const EvaluatedPermissions = require('./EvaluatedPermissions');
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
+const Presence = require('./Presence').Presence;
 
 /**
  * Represents a Member of a Guild on Discord
@@ -107,7 +108,7 @@ class GuildMember {
    * @readonly
    */
   get presence() {
-    return this.frozenPresence || this.guild.presences.get(this.id);
+    return this.frozenPresence || this.guild.presences.get(this.id) || new Presence();
   }
 
   /**
