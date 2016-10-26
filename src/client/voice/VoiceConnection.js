@@ -104,7 +104,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Disconnect the voice connection, causing a disconnected and closing event to be emitted.
+   * Disconnect the voice connection, causing a disconnect and closing event to be emitted.
    */
   disconnect() {
     this.emit('closing');
@@ -119,9 +119,9 @@ class VoiceConnection extends EventEmitter {
     });
     /**
      * Emitted when the voice connection disconnects
-     * @event VoiceConnection#disconnected
+     * @event VoiceConnection#disconnect
      */
-    this.emit('disconnected');
+    this.emit('disconnect');
   }
 
   /**
@@ -129,12 +129,8 @@ class VoiceConnection extends EventEmitter {
    * @private
    */
   connect() {
-    if (this.sockets.ws) {
-      throw new Error('There is already an existing WebSocket connection!');
-    }
-    if (this.sockets.udp) {
-      throw new Error('There is already an existing UDP connection!');
-    }
+    if (this.sockets.ws) throw new Error('There is already an existing WebSocket connection.');
+    if (this.sockets.udp) throw new Error('There is already an existing UDP connection.');
     this.sockets.ws = new VoiceWebSocket(this);
     this.sockets.udp = new VoiceUDP(this);
     this.sockets.ws.on('error', e => this.emit('error', e));
@@ -260,7 +256,6 @@ class VoiceConnection extends EventEmitter {
     this.receivers.push(receiver);
     return receiver;
   }
-
 }
 
 module.exports = VoiceConnection;

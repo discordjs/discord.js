@@ -59,7 +59,7 @@ class RESTMethods {
 
       if (content) {
         if (disableEveryone || (typeof disableEveryone === 'undefined' && this.rest.client.options.disableEveryone)) {
-          content = content.replace('@everyone', '@\u200beveryone').replace('@here', '@\u200bhere');
+          content = content.replace(/@(everyone|here)/g, '@\u200b$1');
         }
 
         if (split) content = splitMessage(content, typeof split === 'object' ? split : {});
