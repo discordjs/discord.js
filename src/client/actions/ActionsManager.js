@@ -23,6 +23,7 @@ class ActionsManager {
     this.register('GuildEmojiCreate');
     this.register('GuildEmojiDelete');
     this.register('GuildEmojiUpdate');
+    this.register('GuildRolesPositionUpdate');
   }
 
   register(name) {

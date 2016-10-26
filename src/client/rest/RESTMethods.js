@@ -677,6 +677,19 @@ class RESTMethods {
       }).catch(reject);
     });
   }
+
+  setRolePositions(guildID, roles) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('patch', Constants.Endpoints.guildRoles(guildID), true, roles)
+        .then(() => {
+          resolve(this.rest.client.actions.GuildRolesPositionUpdate.handle({
+            guild_id: guildID,
+            roles,
+          }).guild);
+        })
+        .catch(reject);
+    });
+  }
 }
 
 module.exports = RESTMethods;

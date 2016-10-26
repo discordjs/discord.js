@@ -230,7 +230,7 @@ class Role {
    *  .catch(console.error);
    */
   setPosition(position) {
-    return this.client.rest.methods.updateGuildRole(this, { position });
+    return this.guild.setRolePosition(this, position);
   }
 
   /**
