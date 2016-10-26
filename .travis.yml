@@ -8,6 +8,6 @@ install: npm install
 script: bash ./docs/deploy/deploy.sh
 env:
   global:
-    - ENCRYPTION_LABEL: "be0b3b658a36"
+    - ENCRYPTION_LABEL: "af862fa96d3e"
     - COMMIT_AUTHOR_EMAIL: "amishshah.2k@gmail.com"
 
