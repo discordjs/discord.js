@@ -4,7 +4,7 @@ const EventEmitter = require('events').EventEmitter;
 const mergeDefault = require('../util/MergeDefault');
 const Shard = require('./Shard');
 const Collection = require('../util/Collection');
-const fetchRecommendedShards = require('../util/fetchRecommendedShards');
+const fetchRecommendedShards = require('../util/FetchRecommendedShards');
 
 /**
  * This is a utility class that can be used to help you spawn shards of your Client. Each shard is completely separate
