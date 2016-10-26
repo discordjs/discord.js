@@ -7,7 +7,7 @@ const EventEmitter = require('events').EventEmitter;
 const fs = require('fs');
 
 /**
- * Represents a connection to a Voice Channel in Discord. v10 flag.
+ * Represents a connection to a Voice Channel in Discord.
  * ```js
  * // obtained using:
  * voiceChannel.join().then(connection => {
@@ -41,6 +41,7 @@ class VoiceConnection extends EventEmitter {
     /**
      * The authentication data needed to connect to the voice server
      * @type {object}
+     * @private
      */
     this.authentication = pendingConnection.data;
 
@@ -72,12 +73,14 @@ class VoiceConnection extends EventEmitter {
     /**
      * Map SSRC to speaking values
      * @type {Map<number, boolean>}
+     * @private
      */
     this.ssrcMap = new Map();
 
     /**
      * Object that wraps contains the `ws` and `udp` sockets of this voice connection
      * @type {object}
+     * @private
      */
     this.sockets = {};
     this.connect();

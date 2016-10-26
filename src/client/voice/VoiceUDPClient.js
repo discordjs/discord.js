@@ -18,6 +18,7 @@ function parseLocalPacket(message) {
 /**
  * Represents a UDP Client for a Voice Connection
  * @extends {EventEmitter}
+ * @private
  */
 class VoiceConnectionUDPClient extends EventEmitter {
   constructor(voiceConnection) {
