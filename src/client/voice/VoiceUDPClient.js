@@ -7,9 +7,7 @@ function parseLocalPacket(message) {
   try {
     const packet = new Buffer(message);
     let address = '';
-    for (let i = 4; i < packet.indexOf(0, i); i++) {
-      address += String.fromCharCode(packet[i]);
-    }
+    for (let i = 4; i < packet.indexOf(0, i); i++) address += String.fromCharCode(packet[i]);
     const port = parseInt(packet.readUIntLE(packet.length - 2, 2).toString(10), 10);
     return { address, port };
   } catch (error) {
@@ -24,33 +22,40 @@ function parseLocalPacket(message) {
 class VoiceConnectionUDPClient extends EventEmitter {
   constructor(voiceConnection) {
     super();
+
     /**
      * The voice connection that this UDP client serves
      * @type {VoiceConnection}
      */
     this.voiceConnection = voiceConnection;
+
     /**
      * The UDP socket
      * @type {?Socket}
      */
     this.socket = null;
+
     /**
      * The address of the discord voice server
      * @type {?string}
      */
     this.discordAddress = null;
+
     /**
      * The local IP address
      * @type {?string}
      */
     this.localAddress = null;
+
     /**
      * The local port
      * @type {?string}
      */
     this.localPort = null;
+
     this.voiceConnection.on('closing', this.shutdown.bind(this));
   }
+
   shutdown() {
     if (this.socket) {
       try {
@@ -61,6 +66,7 @@ class VoiceConnectionUDPClient extends EventEmitter {
       this.socket = null;
     }
   }
+
   /**
    * The port of the discord voice server
    * @type {number}
@@ -69,6 +75,7 @@ class VoiceConnectionUDPClient extends EventEmitter {
   get discordPort() {
     return this.voiceConnection.authentication.port;
   }
+
   /**
    * Tries to resolve the voice server endpoint to an address
    * @returns {Promise<string>}
@@ -93,22 +100,11 @@ class VoiceConnectionUDPClient extends EventEmitter {
    */
   send(packet) {
     return new Promise((resolve, reject) => {
-      if (this.socket) {
-        if (!this.discordAddress || !this.discordPort) {
-          reject(new Error('malformed UDP address or port'));
-          return;
-        }
-        // console.log('sendin', packet);
-        this.socket.send(packet, 0, packet.length, this.discordPort, this.discordAddress, error => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(packet);
-          }
-        });
-      } else {
-        reject(new Error('tried to send a UDP packet but there is no socket available'));
-      }
+      if (!this.socket) throw new Error('Tried to send a UDP packet, but there is no socket available.');
+      if (!this.discordAddress || !this.discordPort) throw new Error('Malformed UDP address or port.');
+      this.socket.send(packet, 0, packet.length, this.discordPort, this.discordAddress, error => {
+        if (error) reject(error); else resolve(packet);
+      });
     });
   }
 

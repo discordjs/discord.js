@@ -25,17 +25,20 @@ class VoiceReceiver extends EventEmitter {
     this.queues = new Map();
     this.pcmStreams = new Map();
     this.opusStreams = new Map();
+
     /**
      * Whether or not this receiver has been destroyed.
      * @type {boolean}
      */
     this.destroyed = false;
+
     /**
      * The VoiceConnection that instantiated this
      * @type {VoiceConnection}
      */
     this.voiceConnection = connection;
-    this._listener = (msg => {
+
+    this._listener = msg => {
       const ssrc = +msg.readUInt32BE(8).toString(10);
       const user = this.voiceConnection.ssrcMap.get(ssrc);
       if (!user) {
@@ -50,7 +53,7 @@ class VoiceReceiver extends EventEmitter {
         }
         this.handlePacket(msg, user);
       }
-    }).bind(this);
+    };
     this.voiceConnection.sockets.udp.socket.on('message', this._listener);
   }
 

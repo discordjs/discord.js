@@ -8,9 +8,7 @@ class SecretKey {
      * @type {Uint8Array}
      */
     this.key = new Uint8Array(new ArrayBuffer(key.length));
-    for (const index in key) {
-      this.key[index] = key[index];
-    }
+    for (const index in key) this.key[index] = key[index];
   }
 }
 
