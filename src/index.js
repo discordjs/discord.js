@@ -8,7 +8,7 @@ module.exports = {
   Collection: require('./util/Collection'),
   splitMessage: require('./util/SplitMessage'),
   escapeMarkdown: require('./util/EscapeMarkdown'),
-  getRecommendedShards: require('./util/GetRecommendedShards'),
+  fetchRecommendedShards: require('./util/FetchRecommendedShards'),
 
   Channel: require('./structures/Channel'),
   ClientUser: require('./structures/ClientUser'),

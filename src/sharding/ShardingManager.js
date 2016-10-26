@@ -4,7 +4,7 @@ const EventEmitter = require('events').EventEmitter;
 const mergeDefault = require('../util/MergeDefault');
 const Shard = require('./Shard');
 const Collection = require('../util/Collection');
-const getRecommendedShards = require('../util/GetRecommendedShards');
+const fetchRecommendedShards = require('../util/fetchRecommendedShards');
 
 /**
  * This is a utility class that can be used to help you spawn shards of your Client. Each shard is completely separate
@@ -107,7 +107,7 @@ class ShardingManager extends EventEmitter {
   spawn(amount = this.totalShards, delay = 5500) {
     return new Promise((resolve, reject) => {
       if (amount === 'auto') {
-        getRecommendedShards(this.token).then(count => {
+        fetchRecommendedShards(this.token).then(count => {
           this.totalShards = count;
           resolve(this._spawn(count, delay));
         }).catch(reject);
