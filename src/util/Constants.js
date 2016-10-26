@@ -82,6 +82,7 @@ const Endpoints = exports.Endpoints = {
   // users
   user: (userID) => `${API}/users/${userID}`,
   userChannels: (userID) => `${Endpoints.user(userID)}/channels`,
+  userProfile: (userID) => `${Endpoints.user(userID)}/profile`,
   avatar: (userID, avatar) => userID === '1' ? avatar : `${Endpoints.user(userID)}/avatars/${avatar}.jpg`,
   me: `${API}/users/@me`,
   meGuild: (guildID) => `${Endpoints.me}/guilds/${guildID}`,
