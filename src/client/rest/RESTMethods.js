@@ -8,6 +8,7 @@ const GuildMember = requireStructure('GuildMember');
 const Role = requireStructure('Role');
 const Invite = requireStructure('Invite');
 const Webhook = requireStructure('Webhook');
+const UserProfile = requireStructure('UserProfile');
 
 class RESTMethods {
   constructor(restManager) {
@@ -677,6 +678,15 @@ class RESTMethods {
       .then(() => {
         resolve(user);
       }).catch(reject);
+    });
+  }
+
+  fetchUserProfile(user) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.userProfile(user.id), true)
+       .then(data => {
+         resolve(new UserProfile(user, data));
+       }).catch(reject);
     });
   }
 
