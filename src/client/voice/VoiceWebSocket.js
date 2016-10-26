@@ -11,20 +11,21 @@ const EventEmitter = require('events').EventEmitter;
 class VoiceWebSocket extends EventEmitter {
   constructor(voiceConnection) {
     super();
+
     /**
      * The Voice Connection that this WebSocket serves
      * @type {VoiceConnection}
      */
     this.voiceConnection = voiceConnection;
+
     /**
      * How many connection attempts have been made
      * @type {number}
      */
     this.attempts = 0;
+
     this.connect();
-
     this.dead = false;
-
     this.voiceConnection.on('closing', this.shutdown.bind(this));
   }
 
@@ -47,9 +48,7 @@ class VoiceWebSocket extends EventEmitter {
    */
   reset() {
     if (this.ws) {
-      if (this.ws.readyState !== WebSocket.CLOSED) {
-        this.ws.close();
-      }
+      if (this.ws.readyState !== WebSocket.CLOSED) this.ws.close();
       this.ws = null;
     }
     this.clearHeartbeat();
@@ -59,17 +58,15 @@ class VoiceWebSocket extends EventEmitter {
    * Starts connecting to the Voice WebSocket Server.
    */
   connect() {
-    if (this.dead) {
-      return;
-    }
-    if (this.ws) {
-      this.reset();
-    }
+    if (this.dead) return;
+    if (this.ws) this.reset();
     if (this.attempts > 5) {
       this.emit('error', new Error(`too many connection attempts (${this.attempts})`));
       return;
     }
+
     this.attempts++;
+
     /**
      * The actual WebSocket used to connect to the Voice WebSocket Server.
      * @type {WebSocket}
@@ -97,7 +94,7 @@ class VoiceWebSocket extends EventEmitter {
           }
         });
       } else {
-        reject(new Error(`voice websocket not open to send ${data}`));
+        reject(new Error(`Voice websocket not open to send ${data}.`));
       }
     });
   }
@@ -150,7 +147,7 @@ class VoiceWebSocket extends EventEmitter {
    * Called whenever the connection to the WebSocket Server is lost
    */
   onClose() {
-    // #todo see if the connection is open before reconnecting
+    // TODO see if the connection is open before reconnecting
     if (!this.dead) this.client.setTimeout(this.connect.bind(this), this.attempts * 1000);
   }
 
