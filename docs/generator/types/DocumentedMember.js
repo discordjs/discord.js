@@ -40,7 +40,6 @@ class DocumentedMember extends DocumentedItem {
 
   serialize() {
     super.serialize();
-    console.log('serializing', this);
     const { id, name, description, memberof, type, access, meta, properties } = this.directData;
     return {
       id,
