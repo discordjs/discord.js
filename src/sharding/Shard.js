@@ -29,10 +29,11 @@ class Shard {
      * The environment variables for the shard
      * @type {Object}
      */
-    this.env = Object.assign({}, process.env);
-    this.env.SHARD_ID = this.id;
-    this.env.SHARD_COUNT = this.manager.totalShards;
-    if (this.manager.token) this.env.CLIENT_TOKEN = this.manager.token;
+    this.env = Object.assign({}, process.env, {
+      SHARD_ID: this.id,
+      SHARD_COUNT: this.manager.totalShards,
+      CLIENT_TOKEN: this.manager.token,
+    });
 
     /**
      * Process of the shard
