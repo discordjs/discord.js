@@ -101,8 +101,7 @@ class VoiceConnectionPlayer extends EventEmitter {
         speaking: true,
         delay: 0,
       },
-    })
-    .catch(e => {
+    }).catch(e => {
       this.emit('debug', e);
     });
   }
