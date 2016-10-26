@@ -4,7 +4,7 @@ const Discord = require('../');
 const request = require('superagent');
 const fs = require('fs');
 
-const client = new Discord.Client({ fetchAllMembers: false, apiRequestMethod: 'sequential' });
+const client = new Discord.Client({ fetchAllMembers: false, apiRequestMethod: 'burst' });
 
 const { email, password, token, usertoken, song } = require('./auth.json');
 

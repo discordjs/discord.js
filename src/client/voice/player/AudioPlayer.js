@@ -3,13 +3,26 @@ const OpusEncoders = require('../opus/OpusEngineList');
 const EventEmitter = require('events').EventEmitter;
 const StreamDispatcher = require('../dispatcher/StreamDispatcher');
 
+/**
+ * Represents the Audio Player of a Voice Connection
+ * @extends {EventEmitter}
+ * @private
+ */
 class AudioPlayer extends EventEmitter {
   constructor(voiceConnection) {
     super();
+    /**
+     * The voice connection the player belongs to
+     * @type {VoiceConnection}
+     */
     this.voiceConnection = voiceConnection;
     this.audioToPCM = new (PCMConverters.fetch())();
     this.opusEncoder = OpusEncoders.fetch();
     this.currentConverter = null;
+    /**
+     * The current stream dispatcher, if a stream is being played
+     * @type {StreamDispatcher}
+     */
     this.dispatcher = null;
     this.audioToPCM.on('error', e => this.emit('error', e));
     this.streamingData = {
