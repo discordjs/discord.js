@@ -726,11 +726,10 @@ class Guild {
     /**
      * Emitted whenever a user joins a guild.
      * @event Client#guildMemberAdd
-     * @param {Guild} guild The guild that the user has joined
-     * @param {GuildMember} member The member that has joined
+     * @param {GuildMember} member The member that has joined a guild
      */
     if (this.client.ws.status === Constants.Status.READY && emitEvent && !existing) {
-      this.client.emit(Constants.Events.GUILD_MEMBER_ADD, this, member);
+      this.client.emit(Constants.Events.GUILD_MEMBER_ADD, member);
     }
 
     this._checkChunks();
@@ -749,11 +748,10 @@ class Guild {
       /**
        * Emitted whenever a Guild Member changes - i.e. new role, removed role, nickname
        * @event Client#guildMemberUpdate
-       * @param {Guild} guild The guild that the update affects
        * @param {GuildMember} oldMember The member before the update
        * @param {GuildMember} newMember The member after the update
        */
-      this.client.emit(Constants.Events.GUILD_MEMBER_UPDATE, this, oldMember, member);
+      this.client.emit(Constants.Events.GUILD_MEMBER_UPDATE, oldMember, member);
     }
 
     return {

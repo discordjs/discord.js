@@ -11,7 +11,7 @@ class GuildRoleCreate extends Action {
       const already = guild.roles.has(data.role.id);
       const role = new Role(guild, data.role);
       guild.roles.set(role.id, role);
-      if (!already) client.emit(Constants.Events.GUILD_ROLE_CREATE, guild, role);
+      if (!already) client.emit(Constants.Events.GUILD_ROLE_CREATE, role);
       return {
         role,
       };
@@ -24,9 +24,8 @@ class GuildRoleCreate extends Action {
 }
 
 /**
- * Emitted whenever a guild role is created.
- * @event Client#guildRoleCreate
- * @param {Guild} guild The guild that the role was created in.
+ * Emitted whenever a role is created.
+ * @event Client#roleCreate
  * @param {Role} role The role that was created.
  */
 
