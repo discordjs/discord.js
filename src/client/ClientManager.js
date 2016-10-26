@@ -49,19 +49,20 @@ class ClientManager {
    */
   setupKeepAlive(time) {
     this.heartbeatInterval = this.client.setInterval(() => {
+      this.client.emit('debug', 'Sending heartbeat');
       this.client.ws.send({
         op: Constants.OPCodes.HEARTBEAT,
-        d: Date.now(),
+        d: this.client.ws.sequence,
       }, true);
     }, time);
   }
 
   destroy() {
     return new Promise((resolve) => {
+      this.client.ws.destroy();
       if (!this.client.user.bot) {
         this.client.rest.methods.logout().then(resolve);
       } else {
-        this.client.ws.destroy();
         resolve();
       }
     });

@@ -1,35 +1,44 @@
+exports.Package = require('../../package.json');
+
 /**
  * Options for a Client.
  * @typedef {Object} ClientOptions
- * @property {string} [api_request_method='sequential'] 'sequential' or 'burst'. Sequential executes all requests in
+ * @property {string} [apiRequestMethod='sequential'] 'sequential' or 'burst'. Sequential executes all requests in
  * the order they are triggered, whereas burst runs multiple at a time, and doesn't guarantee a particular order.
- * @property {number} [shard_id=0] The ID of this shard
- * @property {number} [shard_count=0] The number of shards
- * @property {number} [max_message_cache=200] Number of messages to cache per channel
- * @property {number} [message_cache_lifetime=0] How long until a message should be uncached by the message sweeping
+ * @property {number} [shardId=0] The ID of this shard
+ * @property {number} [shardCount=0] The number of shards
+ * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
+ * @property {boolean} [sync=false] Whether to periodically sync guilds
+ * (-1 for unlimited - don't do this without message sweeping, otherwise memory usage will climb indefinitely)
+ * @property {number} [messageCacheLifetime=0] How long until a message should be uncached by the message sweeping
  * (in seconds, 0 for forever)
- * @property {number} [message_sweep_interval=0] How frequently to remove messages from the cache that are older than
- * the max message lifetime (in seconds, 0 for never)
- * @property {boolean} [fetch_all_members=false] Whether to cache all guild members and users upon startup
- * @property {boolean} [disable_everyone=false] Default value for MessageOptions.disable_everyone
- * @property {number} [rest_ws_bridge_timeout=5000] Maximum time permitted between REST responses and their
+ * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
+ * the message cache lifetime (in seconds, 0 for never)
+ * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup, as well as
+ * upon joining a guild
+ * @property {boolean} [disableEveryone=false] Default value for MessageOptions.disableEveryone
+ * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
  * corresponding websocket events
+ * @property {string[]} [disabledEvents] An array of disabled websocket events. Events in this array will not be
+ * processed. Disabling useless events such as 'TYPING_START' can result in significant performance increases on
+ * large-scale bots.
  * @property {WebsocketOptions} [ws] Options for the websocket
  */
 exports.DefaultOptions = {
-  api_request_method: 'sequential',
-  shard_id: 0,
-  shard_count: 0,
-  max_message_cache: 200,
-  message_cache_lifetime: 0,
-  message_sweep_interval: 0,
-  fetch_all_members: false,
-  disable_everyone: false,
-  rest_ws_bridge_timeout: 5000,
-  protocol_version: 6,
+  apiRequestMethod: 'sequential',
+  shardId: 0,
+  shardCount: 0,
+  messageCacheMaxSize: 200,
+  messageCacheLifetime: 0,
+  messageSweepInterval: 0,
+  fetchAllMembers: false,
+  disableEveryone: false,
+  restWsBridgeTimeout: 5000,
+  disabledEvents: [],
+  sync: false,
 
   /**
-   * Websocket options.
+   * Websocket options. These are left as snake_case to match the API.
    * @typedef {Object} WebsocketOptions
    * @property {number} [large_threshold=250] Number of members in a guild to be considered large
    * @property {boolean} [compress=true] Whether to compress data sent on the connection
@@ -47,23 +56,6 @@ exports.DefaultOptions = {
   },
 };
 
-exports.Status = {
-  READY: 0,
-  CONNECTING: 1,
-  RECONNECTING: 2,
-  IDLE: 3,
-  NEARLY: 4,
-};
-
-exports.ChannelTypes = {
-  text: 0,
-  DM: 1,
-  voice: 2,
-  groupDM: 3,
-};
-
-exports.Package = require('../../package.json');
-
 exports.Errors = {
   NO_TOKEN: 'Request to use token, but token was unavailable to the client.',
   NO_BOT_ACCOUNT: 'You ideally should be using a bot account!',
@@ -72,16 +64,17 @@ exports.Errors = {
   NOT_A_PERMISSION: 'Invalid permission string or number.',
   INVALID_RATE_LIMIT_METHOD: 'Unknown rate limiting method.',
   BAD_LOGIN: 'Incorrect login details were provided.',
-  INVALID_SHARD: 'Invalid shard settings were provided',
+  INVALID_SHARD: 'Invalid shard settings were provided.',
 };
 
-const API = `https://discordapp.com/api/v${exports.DefaultOptions.protocol_version}`;
-
+const PROTOCOL_VERSION = exports.PROTOCOL_VERSION = 6;
+const API = exports.API = `https://discordapp.com/api/v${PROTOCOL_VERSION}`;
 const Endpoints = exports.Endpoints = {
-  // general endpoints
+  // general
   login: `${API}/auth/login`,
   logout: `${API}/auth/logout`,
   gateway: `${API}/gateway`,
+  botGateway: `${API}/gateway/bot`,
   invite: (id) => `${API}/invite/${id}`,
   inviteLink: (id) => `https://discord.gg/${id}`,
   CDN: 'https://cdn.discordapp.com',
@@ -89,9 +82,11 @@ const Endpoints = exports.Endpoints = {
   // users
   user: (userID) => `${API}/users/${userID}`,
   userChannels: (userID) => `${Endpoints.user(userID)}/channels`,
+  userProfile: (userID) => `${Endpoints.user(userID)}/profile`,
   avatar: (userID, avatar) => userID === '1' ? avatar : `${Endpoints.user(userID)}/avatars/${avatar}.jpg`,
   me: `${API}/users/@me`,
   meGuild: (guildID) => `${Endpoints.me}/guilds/${guildID}`,
+  relationships: (userID) => `${Endpoints.user(userID)}/relationships`,
 
   // guilds
   guilds: `${API}/guilds`,
@@ -108,6 +103,7 @@ const Endpoints = exports.Endpoints = {
   guildMember: (guildID, memberID) => `${Endpoints.guildMembers(guildID)}/${memberID}`,
   stupidInconsistentGuildEndpoint: (guildID) => `${Endpoints.guildMember(guildID, '@me')}/nick`,
   guildChannels: (guildID) => `${Endpoints.guild(guildID)}/channels`,
+  guildEmojis: (guildID) => `${Endpoints.guild(guildID)}/emojis`,
 
   // channels
   channels: `${API}/channels`,
@@ -117,6 +113,25 @@ const Endpoints = exports.Endpoints = {
   channelTyping: (channelID) => `${Endpoints.channel(channelID)}/typing`,
   channelPermissions: (channelID) => `${Endpoints.channel(channelID)}/permissions`,
   channelMessage: (channelID, messageID) => `${Endpoints.channelMessages(channelID)}/${messageID}`,
+  channelWebhooks: (channelID) => `${Endpoints.channel(channelID)}/webhooks`,
+
+  // webhooks
+  webhook: (webhookID, token) => `${API}/webhooks/${webhookID}${token ? `/${token}` : ''}`,
+};
+
+exports.Status = {
+  READY: 0,
+  CONNECTING: 1,
+  RECONNECTING: 2,
+  IDLE: 3,
+  NEARLY: 4,
+};
+
+exports.ChannelTypes = {
+  text: 0,
+  DM: 1,
+  voice: 2,
+  groupDM: 3,
 };
 
 exports.OPCodes = {
@@ -130,6 +145,8 @@ exports.OPCodes = {
   RECONNECT: 7,
   REQUEST_GUILD_MEMBERS: 8,
   INVALID_SESSION: 9,
+  HELLO: 10,
+  HEARTBEAT_ACK: 11,
 };
 
 exports.VoiceOPCodes = {
@@ -145,52 +162,49 @@ exports.Events = {
   READY: 'ready',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',
+  GUILD_UPDATE: 'guildUpdate',
   GUILD_UNAVAILABLE: 'guildUnavailable',
   GUILD_AVAILABLE: 'guildAvailable',
-  GUILD_UPDATE: 'guildUpdate',
-  GUILD_BAN_ADD: 'guildBanAdd',
-  GUILD_BAN_REMOVE: 'guildBanRemove',
   GUILD_MEMBER_ADD: 'guildMemberAdd',
   GUILD_MEMBER_REMOVE: 'guildMemberRemove',
   GUILD_MEMBER_UPDATE: 'guildMemberUpdate',
-  GUILD_ROLE_CREATE: 'guildRoleCreate',
-  GUILD_ROLE_DELETE: 'guildRoleDelete',
-  GUILD_ROLE_UPDATE: 'guildRoleUpdate',
   GUILD_MEMBER_AVAILABLE: 'guildMemberAvailable',
+  GUILD_MEMBER_SPEAKING: 'guildMemberSpeaking',
+  GUILD_MEMBERS_CHUNK: 'guildMembersChunk',
+  GUILD_ROLE_CREATE: 'roleCreate',
+  GUILD_ROLE_DELETE: 'roleDelete',
+  GUILD_ROLE_UPDATE: 'roleUpdate',
+  GUILD_EMOJI_CREATE: 'guildEmojiCreate',
+  GUILD_EMOJI_DELETE: 'guildEmojiDelete',
+  GUILD_EMOJI_UPDATE: 'guildEmojiUpdate',
+  GUILD_BAN_ADD: 'guildBanAdd',
+  GUILD_BAN_REMOVE: 'guildBanRemove',
   CHANNEL_CREATE: 'channelCreate',
   CHANNEL_DELETE: 'channelDelete',
   CHANNEL_UPDATE: 'channelUpdate',
-  PRESENCE_UPDATE: 'presenceUpdate',
-  USER_UPDATE: 'userUpdate',
-  VOICE_STATE_UPDATE: 'voiceStateUpdate',
-  TYPING_START: 'typingStart',
-  TYPING_STOP: 'typingStop',
-  WARN: 'warn',
-  GUILD_MEMBERS_CHUNK: 'guildMembersChunk',
+  CHANNEL_PINS_UPDATE: 'channelPinsUpdate',
   MESSAGE_CREATE: 'message',
   MESSAGE_DELETE: 'messageDelete',
   MESSAGE_UPDATE: 'messageUpdate',
+  MESSAGE_BULK_DELETE: 'messageDeleteBulk',
+  USER_UPDATE: 'userUpdate',
+  PRESENCE_UPDATE: 'presenceUpdate',
+  VOICE_STATE_UPDATE: 'voiceStateUpdate',
+  TYPING_START: 'typingStart',
+  TYPING_STOP: 'typingStop',
   DISCONNECT: 'disconnect',
   RECONNECTING: 'reconnecting',
-  GUILD_MEMBER_SPEAKING: 'guildMemberSpeaking',
-  MESSAGE_BULK_DELETE: 'messageDeleteBulk',
-  CHANNEL_PINS_UPDATE: 'channelPinsUpdate',
+  ERROR: 'error',
+  WARN: 'warn',
   DEBUG: 'debug',
 };
 
 exports.WSEvents = {
-  CHANNEL_CREATE: 'CHANNEL_CREATE',
-  CHANNEL_DELETE: 'CHANNEL_DELETE',
-  CHANNEL_UPDATE: 'CHANNEL_UPDATE',
-  MESSAGE_CREATE: 'MESSAGE_CREATE',
-  MESSAGE_DELETE: 'MESSAGE_DELETE',
-  MESSAGE_UPDATE: 'MESSAGE_UPDATE',
-  PRESENCE_UPDATE: 'PRESENCE_UPDATE',
   READY: 'READY',
-  GUILD_BAN_ADD: 'GUILD_BAN_ADD',
-  GUILD_BAN_REMOVE: 'GUILD_BAN_REMOVE',
+  GUILD_SYNC: 'GUILD_SYNC',
   GUILD_CREATE: 'GUILD_CREATE',
   GUILD_DELETE: 'GUILD_DELETE',
+  GUILD_UPDATE: 'GUILD_UPDATE',
   GUILD_MEMBER_ADD: 'GUILD_MEMBER_ADD',
   GUILD_MEMBER_REMOVE: 'GUILD_MEMBER_REMOVE',
   GUILD_MEMBER_UPDATE: 'GUILD_MEMBER_UPDATE',
@@ -198,16 +212,35 @@ exports.WSEvents = {
   GUILD_ROLE_CREATE: 'GUILD_ROLE_CREATE',
   GUILD_ROLE_DELETE: 'GUILD_ROLE_DELETE',
   GUILD_ROLE_UPDATE: 'GUILD_ROLE_UPDATE',
-  GUILD_UPDATE: 'GUILD_UPDATE',
-  TYPING_START: 'TYPING_START',
+  GUILD_BAN_ADD: 'GUILD_BAN_ADD',
+  GUILD_BAN_REMOVE: 'GUILD_BAN_REMOVE',
+  CHANNEL_CREATE: 'CHANNEL_CREATE',
+  CHANNEL_DELETE: 'CHANNEL_DELETE',
+  CHANNEL_UPDATE: 'CHANNEL_UPDATE',
+  CHANNEL_PINS_UPDATE: 'CHANNEL_PINS_UPDATE',
+  MESSAGE_CREATE: 'MESSAGE_CREATE',
+  MESSAGE_DELETE: 'MESSAGE_DELETE',
+  MESSAGE_UPDATE: 'MESSAGE_UPDATE',
+  MESSAGE_DELETE_BULK: 'MESSAGE_DELETE_BULK',
   USER_UPDATE: 'USER_UPDATE',
+  PRESENCE_UPDATE: 'PRESENCE_UPDATE',
   VOICE_STATE_UPDATE: 'VOICE_STATE_UPDATE',
+  TYPING_START: 'TYPING_START',
   FRIEND_ADD: 'RELATIONSHIP_ADD',
   FRIEND_REMOVE: 'RELATIONSHIP_REMOVE',
   VOICE_SERVER_UPDATE: 'VOICE_SERVER_UPDATE',
-  MESSAGE_DELETE_BULK: 'MESSAGE_DELETE_BULK',
-  CHANNEL_PINS_UPDATE: 'CHANNEL_PINS_UPDATE',
-  GUILD_SYNC: 'GUILD_SYNC',
+  RELATIONSHIP_ADD: 'RELATIONSHIP_ADD',
+  RELATIONSHIP_REMOVE: 'RELATIONSHIP_REMOVE',
+};
+
+exports.MessageTypes = {
+  0: 'DEFAULT',
+  1: 'RECIPIENT_ADD',
+  2: 'RECIPIENT_REMOVE',
+  3: 'CALL',
+  4: 'CHANNEL_NAME_CHANGE',
+  5: 'CHANNEL_ICON_CHANGE',
+  6: 'PINS_ADD',
 };
 
 const PermissionFlags = exports.PermissionFlags = {
@@ -238,11 +271,11 @@ const PermissionFlags = exports.PermissionFlags = {
   CHANGE_NICKNAME: 1 << 26,
   MANAGE_NICKNAMES: 1 << 27,
   MANAGE_ROLES_OR_PERMISSIONS: 1 << 28,
+  MANAGE_WEBHOOKS: 1 << 29,
+  MANAGE_EMOJIS: 1 << 30,
 };
 
 let _ALL_PERMISSIONS = 0;
 for (const key in PermissionFlags) _ALL_PERMISSIONS |= PermissionFlags[key];
-
 exports.ALL_PERMISSIONS = _ALL_PERMISSIONS;
-
 exports.DEFAULT_PERMISSIONS = 104324097;

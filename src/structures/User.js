@@ -1,5 +1,6 @@
 const TextBasedChannel = require('./interface/TextBasedChannel');
 const Constants = require('../util/Constants');
+const Presence = require('./Presence').Presence;
 
 /**
  * Represents a User on Discord.
@@ -47,45 +48,43 @@ class User {
      * @type {boolean}
      */
     this.bot = Boolean(data.bot);
-
-    /**
-     * The status of the user:
-     *
-     * * **`online`** - user is online
-     * * **`offline`** - user is offline
-     * * **`idle`** - user is AFK
-     * @type {string}
-     */
-    this.status = data.status || this.status || 'offline';
-
-    /**
-     * Represents data about a Game
-     * @property {string} name the name of the game being played.
-     * @property {string} [url] the URL of the stream, if the game is being streamed.
-     * @property {number} [type] if being streamed, this is `1`.
-     * @typedef {object} Game
-     */
-
-    /**
-     * The game that the user is playing, `null` if they aren't playing a game.
-     * @type {Game}
-     */
-    this.game = data.game;
   }
 
   patch(data) {
-    for (const prop of ['id', 'username', 'discriminator', 'status', 'game', 'avatar', 'bot']) {
+    for (const prop of ['id', 'username', 'discriminator', 'avatar', 'bot']) {
       if (typeof data[prop] !== 'undefined') this[prop] = data[prop];
     }
   }
 
   /**
-   * The time the user was created
+   * The timestamp the user was created at
+   * @type {number}
    * @readonly
-   * @type {Date}
    */
-  get creationDate() {
-    return new Date((this.id / 4194304) + 1420070400000);
+  get createdTimestamp() {
+    return (this.id / 4194304) + 1420070400000;
+  }
+
+  /**
+   * The time the user was created
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * The presence of this user
+   * @type {Presence}
+   * @readonly
+   */
+  get presence() {
+    if (this.client.presences.has(this.id)) return this.client.presences.get(this.id);
+    for (const guild of this.client.guilds.values()) {
+      if (guild.presences.has(this.id)) return guild.presences.get(this.id);
+    }
+    return new Presence();
   }
 
   /**
@@ -137,6 +136,46 @@ class User {
   }
 
   /**
+   * Sends a friend request to the user
+   * @returns {Promise<User>}
+   */
+  addFriend() {
+    return this.client.rest.methods.addFriend(this);
+  }
+
+  /**
+   * Removes the user from your friends
+   * @returns {Promise<User>}
+   */
+  removeFriend() {
+    return this.client.rest.methods.removeFriend(this);
+  }
+
+  /**
+   * Blocks the user
+   * @returns {Promise<User>}
+   */
+  block() {
+    return this.client.rest.methods.blockUser(this);
+  }
+
+  /**
+   * Unblocks the user
+   * @returns {Promise<User>}
+   */
+  unblock() {
+    return this.client.rest.methods.unblockUser(this);
+  }
+
+  /**
+   * Get the profile of the user
+   * @returns {Promise<UserProfile>}
+   */
+  fetchProfile() {
+    return this.client.rest.methods.fetchUserProfile(this);
+  }
+
+  /**
    * Checks if the user is equal to another. It compares username, ID, discriminator, status and the game being played.
    * It is recommended to compare equality by using `user.id === user2.id` unless you want to compare all properties.
    * @param {User} user The user to compare
@@ -149,16 +188,6 @@ class User {
       this.discriminator === user.discriminator &&
       this.avatar === user.avatar &&
       this.bot === Boolean(user.bot);
-
-    if (equal) {
-      if (user.status) equal = this.status === user.status;
-      if (equal && user.game) {
-        equal = this.game &&
-                this.game.name === user.game.name &&
-                this.game.type === user.game.type &&
-                this.game.url === user.game.url;
-      }
-    }
 
     return equal;
   }

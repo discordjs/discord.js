@@ -100,23 +100,6 @@ class ClientDataResolver {
   }
 
   /**
-   * Data that resolves to give a Base64 string, typically for image uploading. This can be:
-   * * A Buffer
-   * * A Base64 string
-   * @typedef {Buffer|string} Base64Resolvable
-   */
-
-  /**
-   * Resolves a Base64Resolvable to a Base 64 image
-   * @param {Base64Resolvable} data The base 64 resolvable you want to resolve
-   * @returns {?string}
-   */
-  resolveBase64(data) {
-    if (data instanceof Buffer) return `data:image/jpg;base64,${data.toString('base64')}`;
-    return data;
-  }
-
-  /**
    * Data that can be resolved to give a Channel. This can be:
    * * An instance of a Channel
    * * An instance of a Message (the channel the message was sent in)
@@ -136,6 +119,26 @@ class ClientDataResolver {
     if (channel instanceof Guild) return channel.channels.get(channel.id) || null;
     if (typeof channel === 'string') return this.client.channels.get(channel.id) || null;
     return null;
+  }
+
+  /**
+   * Data that can be resolved to give an invite code. This can be:
+   * * An invite code
+   * * An invite URL
+   * @typedef {string} InviteResolvable
+   */
+
+  /**
+   * Resolves InviteResolvable to an invite code
+   * @param {InviteResolvable} data The invite resolvable to resolve
+   * @returns {string}
+   */
+  resolveInviteCode(data) {
+    const inviteRegex = /discord(?:app)?\.(?:gg|com\/invite)\/([a-z0-9]{5})/i;
+    const match = inviteRegex.exec(data);
+
+    if (match && match[1]) return match[1];
+    return data;
   }
 
   /**
@@ -203,6 +206,23 @@ class ClientDataResolver {
     if (typeof data === 'string') return data;
     if (data instanceof Array) return data.join('\n');
     return String(data);
+  }
+
+  /**
+   * Data that resolves to give a Base64 string, typically for image uploading. This can be:
+   * * A Buffer
+   * * A Base64 string
+   * @typedef {Buffer|string} Base64Resolvable
+   */
+
+  /**
+   * Resolves a Base64Resolvable to a Base 64 image
+   * @param {Base64Resolvable} data The base 64 resolvable you want to resolve
+   * @returns {?string}
+   */
+  resolveBase64(data) {
+    if (data instanceof Buffer) return `data:image/jpg;base64,${data.toString('base64')}`;
+    return data;
   }
 
   /**

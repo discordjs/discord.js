@@ -32,12 +32,21 @@ class Channel {
   }
 
   /**
-   * The time the channel was created
+   * The timestamp the channel was created at
+   * @type {number}
    * @readonly
-   * @type {Date}
    */
-  get creationDate() {
-    return new Date((this.id / 4194304) + 1420070400000);
+  get createdTimestamp() {
+    return (this.id / 4194304) + 1420070400000;
+  }
+
+  /**
+   * The time the channel was created
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
   }
 
   /**
@@ -47,7 +56,7 @@ class Channel {
    * // delete the channel
    * channel.delete()
    *  .then() // success
-   *  .catch(console.log); // log error
+   *  .catch(console.error); // log error
    */
   delete() {
     return this.client.rest.methods.deleteChannel(this);

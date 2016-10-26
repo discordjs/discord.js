@@ -2,6 +2,7 @@ const path = require('path');
 const Message = require('../Message');
 const MessageCollector = require('../MessageCollector');
 const Collection = require('../../util/Collection');
+const escapeMarkdown = require('../../util/EscapeMarkdown');
 
 /**
  * Interface for classes that have text-channel-like features
@@ -27,7 +28,7 @@ class TextBasedChannel {
    * @typedef {Object} MessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
-   * @property {boolean} [disable_everyone=this.client.options.disable_everyone] Whether or not @everyone and @here
+   * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
@@ -38,8 +39,8 @@ class TextBasedChannel {
    * @typedef {Object} SplitOptions
    * @property {number} [maxLength=1950] Maximum character length per message piece
    * @property {string} [char='\n'] Character to split the message with
-   * @property {string} [prepend=''] Text to prepend to each middle piece
-   * @property {string} [append=''] Text to append to each middle piece
+   * @property {string} [prepend=''] Text to prepend to every piece except the first
+   * @property {string} [append=''] Text to append to every piece except the last
    */
 
   /**
@@ -51,7 +52,7 @@ class TextBasedChannel {
    * // send a message
    * channel.sendMessage('hello!')
    *  .then(message => console.log(`Sent message: ${message.content}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   sendMessage(content, options = {}) {
     return this.client.rest.methods.sendMessage(this, content, options);
@@ -66,7 +67,7 @@ class TextBasedChannel {
    * // send a TTS message
    * channel.sendTTSMessage('hello!')
    *  .then(message => console.log(`Sent tts message: ${message.content}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   sendTTSMessage(content, options = {}) {
     Object.assign(options, { tts: true });
@@ -111,15 +112,16 @@ class TextBasedChannel {
   sendCode(lang, content, options = {}) {
     if (options.split) {
       if (typeof options.split !== 'object') options.split = {};
-      if (!options.split.prepend) options.split.prepend = `\`\`\`${lang ? lang : ''}\n`;
+      if (!options.split.prepend) options.split.prepend = `\`\`\`${lang || ''}\n`;
       if (!options.split.append) options.split.append = '\n```';
     }
-    content = this.client.resolver.resolveString(content).replace(/```/g, '`\u200b``');
-    return this.sendMessage(`\`\`\`${lang ? lang : ''}\n${content}\n\`\`\``, options);
+    content = escapeMarkdown(this.client.resolver.resolveString(content), true);
+    return this.sendMessage(`\`\`\`${lang || ''}\n${content}\n\`\`\``, options);
   }
 
   /**
    * Gets a single message from this channel, regardless of it being cached or not.
+   * <warn>Only OAuth bot accounts can use this method.</warn>
    * @param {string} messageID The ID of the message to get
    * @returns {Promise<Message>}
    * @example
@@ -158,7 +160,7 @@ class TextBasedChannel {
    * // get messages
    * channel.fetchMessages({limit: 10})
    *  .then(messages => console.log(`Received ${messages.size} messages`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   fetchMessages(options = {}) {
     return new Promise((resolve, reject) => {
@@ -241,6 +243,7 @@ class TextBasedChannel {
   /**
    * Whether or not the typing indicator is being shown in the channel.
    * @type {boolean}
+   * @readonly
    */
   get typing() {
     return this.client.user._typing.has(this.id);
@@ -249,6 +252,7 @@ class TextBasedChannel {
   /**
    * Number of times `startTyping` has been called.
    * @type {number}
+   * @readonly
    */
   get typingCount() {
     if (this.client.user._typing.has(this.id)) return this.client.user._typing.get(this.id).count;
@@ -307,23 +311,28 @@ class TextBasedChannel {
   }
 
   /**
-   * Bulk delete a given Collection or Array of messages in one go. Returns the deleted messages after.
+   * Bulk delete given messages.
    * Only OAuth Bot accounts may use this method.
-   * @param {Collection<string, Message>|Message[]} messages The messages to delete
-   * @returns {Collection<string, Message>}
+   * @param {Collection<string, Message>|Message[]|number} messages Messages to delete, or number of messages to delete
+   * @returns {Promise<Collection<string, Message>>} Deleted messages
    */
   bulkDelete(messages) {
-    if (messages instanceof Collection) messages = messages.array();
-    if (!(messages instanceof Array)) return Promise.reject(new TypeError('Messages must be an Array or Collection.'));
-    const messageIDs = messages.map(m => m.id);
-    return this.client.rest.methods.bulkDeleteMessages(this, messageIDs);
+    return new Promise((resolve, reject) => {
+      if (!isNaN(messages)) {
+        this.fetchMessages({ limit: messages }).then(msgs => resolve(this.bulkDelete(msgs)));
+      } else if (messages instanceof Array || messages instanceof Collection) {
+        const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
+        resolve(this.client.rest.methods.bulkDeleteMessages(this, messageIDs));
+      } else {
+        reject(new TypeError('Messages must be an Array, Collection, or number.'));
+      }
+    });
   }
 
   _cacheMessage(message) {
-    const maxSize = this.client.options.max_message_cache;
+    const maxSize = this.client.options.messageCacheMaxSize;
     if (maxSize === 0) return null;
-    if (this.messages.size >= maxSize) this.messages.delete(this.messages.keys().next().value);
-
+    if (this.messages.size >= maxSize && maxSize > 0) this.messages.delete(this.messages.firstKey());
     this.messages.set(message.id, message);
     return message;
   }

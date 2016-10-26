@@ -72,12 +72,21 @@ class Role {
   }
 
   /**
-   * The time the role was created
+   * The timestamp the role was created at
+   * @type {number}
    * @readonly
-   * @type {Date}
    */
-  get creationDate() {
-    return new Date((this.id / 4194304) + 1420070400000);
+  get createdTimestamp() {
+    return (this.id / 4194304) + 1420070400000;
+  }
+
+  /**
+   * The time the role was created
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
   }
 
   /**
@@ -94,6 +103,7 @@ class Role {
   /**
    * The cached guild members that have this role.
    * @type {Collection<string, GuildMember>}
+   * @readonly
    */
   get members() {
     return this.guild.members.filter(m => m.roles.has(this.id));
@@ -140,7 +150,17 @@ class Role {
    * @returns {boolean}
    */
   hasPermissions(permissions, explicit = false) {
-    return permissions.map(p => this.hasPermission(p, explicit)).every(v => v);
+    return permissions.every(p => this.hasPermission(p, explicit));
+  }
+
+  /**
+   * Compares this role's position to another role's.
+   * @param {Role} role Role to compare to this one
+   * @returns {number} Negative number if the this role's position is lower (other role's is higher),
+   * positive number if the this one is higher (other's is lower), 0 if equal
+   */
+  comparePositionTo(role) {
+    return this.constructor.comparePositions(this, role);
   }
 
   /**
@@ -151,7 +171,7 @@ class Role {
    * // edit a role
    * role.edit({name: 'new role'})
    *  .then(r => console.log(`Edited role ${r}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   edit(data) {
     return this.client.rest.methods.updateGuildRole(this, data);
@@ -165,7 +185,7 @@ class Role {
    * // set the name of the role
    * role.setName('new role')
    *  .then(r => console.log(`Edited name of role ${r}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setName(name) {
     return this.client.rest.methods.updateGuildRole(this, { name });
@@ -179,7 +199,7 @@ class Role {
    * // set the color of a role
    * role.setColor('#FF0000')
    *  .then(r => console.log(`Set color of role ${r}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setColor(color) {
     return this.client.rest.methods.updateGuildRole(this, { color });
@@ -193,7 +213,7 @@ class Role {
    * // set the hoist of the role
    * role.setHoist(true)
    *  .then(r => console.log(`Role hoisted: ${r.hoist}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setHoist(hoist) {
     return this.client.rest.methods.updateGuildRole(this, { hoist });
@@ -207,10 +227,10 @@ class Role {
    * // set the position of the role
    * role.setPosition(1)
    *  .then(r => console.log(`Role position: ${r.position}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setPosition(position) {
-    return this.client.rest.methods.updateGuildRole(this, { position });
+    return this.guild.setRolePosition(this, position);
   }
 
   /**
@@ -221,10 +241,24 @@ class Role {
    * // set the permissions of the role
    * role.setPermissions(['KICK_MEMBERS', 'BAN_MEMBERS'])
    *  .then(r => console.log(`Role updated ${r}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setPermissions(permissions) {
     return this.client.rest.methods.updateGuildRole(this, { permissions });
+  }
+
+  /**
+   * Set whether this role is mentionable
+   * @param {boolean} mentionable Whether this role should be mentionable
+   * @returns {Promise<Role>}
+   * @example
+   * // make the role mentionable
+   * role.setMentionable(true)
+   *  .then(r => console.log(`Role updated ${r}`))
+   *  .catch(console.error);
+   */
+  setMentionable(mentionable) {
+    return this.client.rest.methods.updateGuildRole(this, { mentionable });
   }
 
   /**
@@ -234,7 +268,7 @@ class Role {
    * // delete a role
    * role.delete()
    *  .then(r => console.log(`Deleted role ${r}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   delete() {
     return this.client.rest.methods.deleteGuildRole(this);
@@ -264,6 +298,18 @@ class Role {
    */
   toString() {
     return `<@&${this.id}>`;
+  }
+
+  /**
+   * Compares the positions of two roles.
+   * @param {Role} role1 First role to compare
+   * @param {Role} role2 Second role to compare
+   * @returns {number} Negative number if the first role's position is lower (second role's is higher),
+   * positive number if the first's is higher (second's is lower), 0 if equal
+   */
+  static comparePositions(role1, role2) {
+    if (role1.position === role2.position) return role2.id - role1.id;
+    return role1.position - role2.position;
   }
 }
 

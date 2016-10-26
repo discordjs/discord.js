@@ -3,26 +3,48 @@
  * @extends {Map}
  */
 class Collection extends Map {
+  constructor(iterable) {
+    super(iterable);
+    this._array = null;
+    this._keyArray = null;
+  }
+
+  set(key, val) {
+    super.set(key, val);
+    this._array = null;
+    this._keyArray = null;
+  }
+
+  delete(key) {
+    super.delete(key);
+    this._array = null;
+    this._keyArray = null;
+  }
+
   /**
-   * Returns an ordered array of the values of this collection.
+   * Creates an ordered array of the values of this collection, and caches it internally. The array will only be
+   * reconstructed if an item is added to or removed from the collection, or if you add/remove elements on the array.
    * @returns {Array}
    * @example
    * // identical to:
    * Array.from(collection.values());
    */
   array() {
-    return Array.from(this.values());
+    if (!this._array || this._array.length !== this.size) this._array = Array.from(this.values());
+    return this._array;
   }
 
   /**
-   * Returns an ordered array of the keys of this collection.
+   * Creates an ordered array of the keys of this collection, and caches it internally. The array will only be
+   * reconstructed if an item is added to or removed from the collection, or if you add/remove elements on the array.
    * @returns {Array}
    * @example
    * // identical to:
    * Array.from(collection.keys());
    */
   keyArray() {
-    return Array.from(this.keys());
+    if (!this._keyArray || this._keyArray.length !== this.size) this._keyArray = Array.from(this.keys());
+    return this._keyArray;
   }
 
   /**
@@ -183,11 +205,27 @@ class Collection extends Map {
    */
   filter(fn, thisArg) {
     if (thisArg) fn = fn.bind(thisArg);
-    const collection = new Collection();
+    const results = new Collection();
     for (const [key, val] of this) {
-      if (fn(val, key, this)) collection.set(key, val);
+      if (fn(val, key, this)) results.set(key, val);
     }
-    return collection;
+    return results;
+  }
+
+  /**
+   * Identical to
+   * [Array.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter).
+   * @param {function} fn Function used to test (should return a boolean)
+   * @param {Object} [thisArg] Value to use as `this` when executing function
+   * @returns {Collection}
+   */
+  filterArray(fn, thisArg) {
+    if (thisArg) fn = fn.bind(thisArg);
+    const results = [];
+    for (const [key, val] of this) {
+      if (fn(val, key, this)) results.push(val);
+    }
+    return results;
   }
 
   /**
@@ -246,6 +284,21 @@ class Collection extends Map {
     let currentVal = startVal;
     for (const [key, val] of this) currentVal = fn(currentVal, val, key, this);
     return currentVal;
+  }
+
+  /**
+   * Combines this collection with others into a new collection. None of the source collections are modified.
+   * @param {Collection} collections Collections to merge
+   * @returns {Collection}
+   * @example const newColl = someColl.concat(someOtherColl, anotherColl, ohBoyAColl);
+   */
+  concat(...collections) {
+    const newColl = new this.constructor();
+    for (const [key, val] of this) newColl.set(key, val);
+    for (const coll of collections) {
+      for (const [key, val] of coll) newColl.set(key, val);
+    }
+    return newColl;
   }
 
   /**

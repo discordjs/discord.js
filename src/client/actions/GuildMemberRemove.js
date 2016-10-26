@@ -17,7 +17,7 @@ class GuildMemberRemoveAction extends Action {
         guild.memberCount--;
         guild._removeMember(member);
         this.deleted.set(guild.id + data.user.id, member);
-        if (client.status === Constants.Status.READY) client.emit(Constants.Events.GUILD_MEMBER_REMOVE, guild, member);
+        if (client.status === Constants.Status.READY) client.emit(Constants.Events.GUILD_MEMBER_REMOVE, member);
         this.scheduleForDeletion(guild.id, data.user.id);
       } else {
         member = this.deleted.get(guild.id + data.user.id) || null;
@@ -36,15 +36,14 @@ class GuildMemberRemoveAction extends Action {
   }
 
   scheduleForDeletion(guildID, userID) {
-    this.client.setTimeout(() => this.deleted.delete(guildID + userID), this.client.options.rest_ws_bridge_timeout);
+    this.client.setTimeout(() => this.deleted.delete(guildID + userID), this.client.options.restWsBridgeTimeout);
   }
 }
 
 /**
  * Emitted whenever a member leaves a guild, or is kicked.
  * @event Client#guildMemberRemove
- * @param {Guild} guild The guild that the member has left.
- * @param {GuildMember} member The member that has left the guild.
+ * @param {GuildMember} member The member that has left/been kicked from the guild.
  */
 
 module.exports = GuildMemberRemoveAction;

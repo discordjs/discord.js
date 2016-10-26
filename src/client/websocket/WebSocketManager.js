@@ -58,16 +58,25 @@ class WebSocketManager extends EventEmitter {
      * @type {?WebSocket}
      */
     this.ws = null;
+
+    /**
+     * An object with keys that are websocket event names that should be ignored
+     * @type {Object}
+     */
+    this.disabledEvents = {};
+    for (const event in client.options.disabledEvents) this.disabledEvents[event] = true;
+
+    this.first = true;
   }
 
   /**
    * Connects the client to a given gateway
    * @param {string} gateway The gateway to connect to
    */
-  connect(gateway) {
+  _connect(gateway) {
     this.client.emit('debug', `Connecting to gateway ${gateway}`);
     this.normalReady = false;
-    this.status = Constants.Status.CONNECTING;
+    if (this.status !== Constants.Status.RECONNECTING) this.status = Constants.Status.CONNECTING;
     this.ws = new WebSocket(gateway);
     this.ws.onopen = () => this.eventOpen();
     this.ws.onclose = (d) => this.eventClose(d);
@@ -75,6 +84,15 @@ class WebSocketManager extends EventEmitter {
     this.ws.onerror = (e) => this.eventError(e);
     this._queue = [];
     this._remaining = 3;
+  }
+
+  connect(gateway) {
+    if (this.first) {
+      this._connect(gateway);
+      this.first = false;
+    } else {
+      this.client.setTimeout(() => this._connect(gateway), 5500);
+    }
   }
 
   /**
@@ -99,6 +117,7 @@ class WebSocketManager extends EventEmitter {
 
   _send(data) {
     if (this.ws.readyState === WebSocket.OPEN) {
+      this.emit('send', data);
       this.ws.send(data);
     }
   }
@@ -125,7 +144,7 @@ class WebSocketManager extends EventEmitter {
    */
   eventOpen() {
     this.client.emit('debug', 'Connection to gateway opened');
-    if (this.reconnecting) this._sendResume();
+    if (this.status === Constants.Status.RECONNECTING) this._sendResume();
     else this._sendNewIdentify();
   }
 
@@ -133,6 +152,11 @@ class WebSocketManager extends EventEmitter {
    * Sends a gateway resume packet, in cases of unexpected disconnections.
    */
   _sendResume() {
+    if (!this.sessionID) {
+      this._sendNewIdentify();
+      return;
+    }
+    this.client.emit('debug', 'Identifying as resumed session');
     const payload = {
       token: this.client.token,
       session_id: this.sessionID,
@@ -152,13 +176,15 @@ class WebSocketManager extends EventEmitter {
     this.reconnecting = false;
     const payload = this.client.options.ws;
     payload.token = this.client.token;
-    if (this.client.options.shard_count > 0) {
-      payload.shard = [Number(this.client.options.shard_id), Number(this.client.options.shard_count)];
+    if (this.client.options.shardCount > 0) {
+      payload.shard = [Number(this.client.options.shardId), Number(this.client.options.shardCount)];
     }
+    this.client.emit('debug', 'Identifying as new session');
     this.send({
       op: Constants.OPCodes.IDENTIFY,
       d: payload,
     });
+    this.sequence = -1;
   }
 
   /**
@@ -171,6 +197,7 @@ class WebSocketManager extends EventEmitter {
      * Emitted whenever the client websocket is disconnected
      * @event Client#disconnect
      */
+    clearInterval(this.client.manager.heartbeatInterval);
     if (!this.reconnecting) this.client.emit(Constants.Events.DISCONNECT);
     if (event.code === 4004) return;
     if (event.code === 4010) return;
@@ -194,7 +221,7 @@ class WebSocketManager extends EventEmitter {
 
     this.client.emit('raw', packet);
 
-    if (packet.op === 10) this.client.manager.setupKeepAlive(packet.d.heartbeat_interval);
+    if (packet.op === Constants.OPCodes.HELLO) this.client.manager.setupKeepAlive(packet.d.heartbeat_interval);
     return this.packetManager.handle(packet);
   }
 
@@ -235,10 +262,11 @@ class WebSocketManager extends EventEmitter {
       }
       if (unavailableCount === 0) {
         this.status = Constants.Status.NEARLY;
-        if (this.client.options.fetch_all_members) {
-          const promises = this.client.guilds.array().map(g => g.fetchMembers());
+        if (this.client.options.fetchAllMembers) {
+          const promises = this.client.guilds.map(g => g.fetchMembers());
           Promise.all(promises).then(() => this._emitReady()).catch(e => {
-            this.client.emit(Constants.Event.WARN, `Error on pre-ready guild member fetching - ${e}`);
+            this.client.emit(Constants.Events.WARN, 'Error in pre-ready guild member fetching');
+            this.client.emit(Constants.Events.ERROR, e);
             this._emitReady();
           });
           return;

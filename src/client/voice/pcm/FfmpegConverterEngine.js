@@ -1,5 +1,43 @@
 const ConverterEngine = require('./ConverterEngine');
 const ChildProcess = require('child_process');
+const EventEmitter = require('events').EventEmitter;
+
+class PCMConversionProcess extends EventEmitter {
+  constructor(process) {
+    super();
+    this.process = process;
+    this.input = null;
+    this.process.on('error', e => this.emit('error', e));
+  }
+
+  setInput(stream) {
+    this.input = stream;
+    stream.pipe(this.process.stdin, { end: false });
+    this.input.on('error', e => this.emit('error', e));
+    this.process.stdin.on('error', e => this.emit('error', e));
+  }
+
+  destroy() {
+    this.emit('debug', 'destroying a ffmpeg process:');
+    if (this.input && this.input.unpipe && this.process.stdin) {
+      this.input.unpipe(this.process.stdin);
+      this.emit('unpiped the user input stream from the process input stream');
+    }
+    if (this.process.stdin) {
+      this.process.stdin.end();
+      this.emit('ended the process stdin');
+    }
+    if (this.process.stdin.destroy) {
+      this.process.stdin.destroy();
+      this.emit('destroyed the process stdin');
+    }
+    if (this.process.kill) {
+      this.process.kill();
+      this.emit('killed the process');
+    }
+  }
+
+}
 
 class FfmpegConverterEngine extends ConverterEngine {
   constructor(player) {
@@ -24,10 +62,7 @@ class FfmpegConverterEngine extends ConverterEngine {
       '-ss', String(seek),
       'pipe:1',
     ], { stdio: ['pipe', 'pipe', 'ignore'] });
-    encoder.on('error', e => this.handleError(encoder, e));
-    encoder.stdin.on('error', e => this.handleError(encoder, e));
-    encoder.stdout.on('error', e => this.handleError(encoder, e));
-    return encoder;
+    return new PCMConversionProcess(encoder);
   }
 }
 

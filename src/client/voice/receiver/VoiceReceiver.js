@@ -25,19 +25,22 @@ class VoiceReceiver extends EventEmitter {
     this.queues = new Map();
     this.pcmStreams = new Map();
     this.opusStreams = new Map();
+
     /**
      * Whether or not this receiver has been destroyed.
      * @type {boolean}
      */
     this.destroyed = false;
+
     /**
      * The VoiceConnection that instantiated this
      * @type {VoiceConnection}
      */
-    this.connection = connection;
-    this._listener = (msg => {
+    this.voiceConnection = connection;
+
+    this._listener = msg => {
       const ssrc = +msg.readUInt32BE(8).toString(10);
-      const user = this.connection.ssrcMap.get(ssrc);
+      const user = this.voiceConnection.ssrcMap.get(ssrc);
       if (!user) {
         if (!this.queues.has(ssrc)) this.queues.set(ssrc, []);
         this.queues.get(ssrc).push(msg);
@@ -50,8 +53,8 @@ class VoiceReceiver extends EventEmitter {
         }
         this.handlePacket(msg, user);
       }
-    }).bind(this);
-    this.connection.udp.udpSocket.on('message', this._listener);
+    };
+    this.voiceConnection.sockets.udp.socket.on('message', this._listener);
   }
 
   /**
@@ -61,7 +64,7 @@ class VoiceReceiver extends EventEmitter {
    */
   recreate() {
     if (!this.destroyed) return;
-    this.connection.udp.udpSocket.on('message', this._listener);
+    this.voiceConnection.sockets.udp.socket.on('message', this._listener);
     this.destroyed = false;
     return;
   }
@@ -70,7 +73,7 @@ class VoiceReceiver extends EventEmitter {
    * Destroy this VoiceReceiver, also ending any streams that it may be controlling.
    */
   destroy() {
-    this.connection.udp.udpSocket.removeListener('message', this._listener);
+    this.voiceConnection.sockets.udp.socket.removeListener('message', this._listener);
     for (const stream of this.pcmStreams) {
       stream[1]._push(null);
       this.pcmStreams.delete(stream[0]);
@@ -89,7 +92,7 @@ class VoiceReceiver extends EventEmitter {
    * @returns {ReadableStream}
    */
   createOpusStream(user) {
-    user = this.connection.manager.client.resolver.resolveUser(user);
+    user = this.voiceConnection.voiceManager.client.resolver.resolveUser(user);
     if (!user) throw new Error('Couldn\'t resolve the user to create Opus stream.');
     if (this.opusStreams.get(user.id)) throw new Error('There is already an existing stream for that user.');
     const stream = new Readable();
@@ -104,7 +107,7 @@ class VoiceReceiver extends EventEmitter {
    * @returns {ReadableStream}
    */
   createPCMStream(user) {
-    user = this.connection.manager.client.resolver.resolveUser(user);
+    user = this.voiceConnection.voiceManager.client.resolver.resolveUser(user);
     if (!user) throw new Error('Couldn\'t resolve the user to create PCM stream.');
     if (this.pcmStreams.get(user.id)) throw new Error('There is already an existing stream for that user.');
     const stream = new Readable();
@@ -114,7 +117,7 @@ class VoiceReceiver extends EventEmitter {
 
   handlePacket(msg, user) {
     msg.copy(nonce, 0, 0, 12);
-    let data = NaCl.secretbox.open(msg.slice(12), nonce, this.connection.data.secret);
+    let data = NaCl.secretbox.open(msg.slice(12), nonce, this.voiceConnection.authentication.secretKey.key);
     if (!data) {
       /**
        * Emitted whenever a voice packet cannot be decrypted
@@ -141,7 +144,7 @@ class VoiceReceiver extends EventEmitter {
        * @param {User} user The user that is sending the buffer (is speaking)
        * @param {Buffer} buffer The decoded buffer
        */
-      const pcm = this.connection.player.opusEncoder.decode(data);
+      const pcm = this.voiceConnection.player.opusEncoder.decode(data);
       if (this.pcmStreams.get(user.id)) this.pcmStreams.get(user.id)._push(pcm);
       this.emit('pcm', user, pcm);
     }

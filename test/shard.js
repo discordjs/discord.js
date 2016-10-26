@@ -2,8 +2,8 @@ const Discord = require('../');
 const { token } = require('./auth.json');
 
 const client = new Discord.Client({
-  shard_id: process.argv[2],
-  shard_count: process.argv[3],
+  shardId: process.argv[2],
+  shardCount: process.argv[3],
 });
 
 client.on('message', msg => {
@@ -20,7 +20,12 @@ client.on('message', msg => {
 process.send(123);
 
 client.on('ready', () => {
-  console.log('Ready');
+  console.log('Ready', client.options.shardId);
+  if (client.options.shardId === 0)
+    setTimeout(() => {
+      console.log('kek dying');
+      client.destroy();
+    }, 5000);
 });
 
-client.login(token).catch(console.log);
+client.login(token).catch(console.error);

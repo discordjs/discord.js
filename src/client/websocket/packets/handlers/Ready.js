@@ -10,13 +10,28 @@ class ReadyHandler extends AbstractHandler {
 
     const clientUser = new ClientUser(client, data.user);
     client.user = clientUser;
-    client.readyTime = new Date();
+    client.readyAt = new Date();
     client.users.set(clientUser.id, clientUser);
 
     for (const guild of data.guilds) client.dataManager.newGuild(guild);
     for (const privateDM of data.private_channels) client.dataManager.newChannel(privateDM);
 
-    if (!client.user.bot) client.setInterval(client.syncGuilds.bind(client), 30000);
+    for (const relation of data.relationships) {
+      const user = client.dataManager.newUser(relation.user);
+      if (relation.type === 1) {
+        client.user.friends.set(user.id, user);
+      } else if (relation.type === 2) {
+        client.user.blocked.set(user.id, user);
+      }
+    }
+
+    data.presences = data.presences || [];
+    for (const presence of data.presences) {
+      client.dataManager.newUser(presence.user);
+      client._setPresence(presence.user.id, presence);
+    }
+
+    if (!client.user.bot && client.options.sync) client.setInterval(client.syncGuilds.bind(client), 30000);
     client.once('ready', client.syncGuilds.bind(client));
 
     if (!client.users.has('1')) {
