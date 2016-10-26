@@ -33,7 +33,7 @@ class PresenceUpdateHandler extends AbstractHandler {
           deaf: false,
           mute: false,
         }, false);
-        client.emit(Constants.Events.GUILD_MEMBER_AVAILABLE, guild, member);
+        client.emit(Constants.Events.GUILD_MEMBER_AVAILABLE, member);
       }
       if (member) {
         const oldMember = cloneObject(member);
@@ -66,7 +66,6 @@ class PresenceUpdateHandler extends AbstractHandler {
 /**
  * Emitted whenever a member becomes available in a large Guild
  * @event Client#guildMemberAvailable
- * @param {Guild} guild The guild that the member became available in
  * @param {GuildMember} member The member that became available
  */
 

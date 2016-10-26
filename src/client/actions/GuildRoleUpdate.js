@@ -15,7 +15,7 @@ class GuildRoleUpdateAction extends Action {
       if (role) {
         oldRole = cloneObject(role);
         role.setup(data.role);
-        client.emit(Constants.Events.GUILD_ROLE_UPDATE, guild, oldRole, role);
+        client.emit(Constants.Events.GUILD_ROLE_UPDATE, oldRole, role);
       }
 
       return {
@@ -33,8 +33,7 @@ class GuildRoleUpdateAction extends Action {
 
 /**
  * Emitted whenever a guild role is updated.
- * @event Client#guildRoleUpdate
- * @param {Guild} guild The guild that the role was updated in.
+ * @event Client#roleUpdate
  * @param {Role} oldRole The role before the update.
  * @param {Role} newRole The role after the update.
  */
