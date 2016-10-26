@@ -42,6 +42,8 @@ class WebSocketPacketManager {
     this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, 'MessageDeleteBulk');
     this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, 'ChannelPinsUpdate');
     this.register(Constants.WSEvents.GUILD_SYNC, 'GuildSync');
+    this.register(Constants.WSEvents.RELATIONSHIP_ADD, 'RelationshipAdd');
+    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, 'RelationshipRemove');
   }
 
   get client() {
@@ -72,16 +74,21 @@ class WebSocketPacketManager {
     }
 
     if (packet.op === Constants.OPCodes.INVALID_SESSION) {
+      this.ws.sessionID = null;
       this.ws._sendNewIdentify();
       return false;
     }
 
-    if (this.ws.reconnecting) {
+    if (packet.op === Constants.OPCodes.HEARTBEAT_ACK) this.ws.client.emit('debug', 'Heartbeat acknowledged');
+
+    if (this.ws.status === Constants.Status.RECONNECTING) {
       this.ws.reconnecting = false;
       this.ws.checkIfReady();
     }
 
     this.setSequence(packet.s);
+
+    if (this.ws.disabledEvents[packet.t] !== undefined) return false;
 
     if (this.ws.status !== Constants.Status.READY) {
       if (BeforeReadyWhitelist.indexOf(packet.t) === -1) {

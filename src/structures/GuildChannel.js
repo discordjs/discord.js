@@ -111,7 +111,7 @@ class GuildChannel extends Channel {
 
   /**
    * Overwrites the permissions for a user or role in this channel.
-   * @param {Role|UserResolvable} userOrRole The user or role to update
+   * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The configuration for the update
    * @returns {Promise}
    * @example
@@ -120,7 +120,7 @@ class GuildChannel extends Channel {
    *  SEND_MESSAGES: false
    * })
    * .then(() => console.log('Done!'))
-   * .catch(console.log);
+   * .catch(console.error);
    */
   overwritePermissions(userOrRole, options) {
     const payload = {
@@ -129,6 +129,9 @@ class GuildChannel extends Channel {
     };
 
     if (userOrRole instanceof Role) {
+      payload.type = 'role';
+    } else if (this.guild.roles.has(userOrRole)) {
+      userOrRole = this.guild.roles.get(userOrRole);
       payload.type = 'role';
     } else {
       userOrRole = this.client.resolver.resolveUser(userOrRole);
@@ -141,8 +144,8 @@ class GuildChannel extends Channel {
     const prevOverwrite = this.permissionOverwrites.get(userOrRole.id);
 
     if (prevOverwrite) {
-      payload.allow = prevOverwrite.allow;
-      payload.deny = prevOverwrite.deny;
+      payload.allow = prevOverwrite.allowData;
+      payload.deny = prevOverwrite.denyData;
     }
 
     for (const perm in options) {
@@ -170,7 +173,7 @@ class GuildChannel extends Channel {
    * // set a new channel name
    * channel.setName('not_general')
    *  .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setName(name) {
     return this.client.rest.methods.updateChannel(this, { name });
@@ -184,7 +187,7 @@ class GuildChannel extends Channel {
    * // set a new channel position
    * channel.setPosition(2)
    *  .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setPosition(position) {
     return this.client.rest.methods.updateChannel(this, { position });
@@ -198,7 +201,7 @@ class GuildChannel extends Channel {
    * // set a new channel topic
    * channel.setTopic('needs more rate limiting')
    *  .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setTopic(topic) {
     return this.client.rest.methods.updateChannel(this, { topic });
@@ -236,12 +239,12 @@ class GuildChannel extends Channel {
       this.name === channel.name;
 
     if (equal) {
-      if (channel.permission_overwrites) {
-        const thisIDSet = Array.from(this.permissionOverwrites.keys());
-        const otherIDSet = channel.permission_overwrites.map(overwrite => overwrite.id);
+      if (this.permissionOverwrites && channel.permissionOverwrites) {
+        const thisIDSet = this.permissionOverwrites.keyArray();
+        const otherIDSet = channel.permissionOverwrites.keyArray();
         equal = arraysEqual(thisIDSet, otherIDSet);
       } else {
-        equal = false;
+        equal = !this.permissionOverwrites && !channel.permissionOverwrites;
       }
     }
 

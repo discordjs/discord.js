@@ -17,7 +17,7 @@ class GuildRoleDeleteAction extends Action {
         guild.roles.delete(data.role_id);
         this.deleted.set(guild.id + data.role_id, role);
         this.scheduleForDeletion(guild.id, data.role_id);
-        client.emit(Constants.Events.GUILD_ROLE_DELETE, guild, role);
+        client.emit(Constants.Events.GUILD_ROLE_DELETE, role);
       } else {
         role = this.deleted.get(guild.id + data.role_id) || null;
       }
@@ -33,14 +33,13 @@ class GuildRoleDeleteAction extends Action {
   }
 
   scheduleForDeletion(guildID, roleID) {
-    this.client.setTimeout(() => this.deleted.delete(guildID + roleID), this.client.options.rest_ws_bridge_timeout);
+    this.client.setTimeout(() => this.deleted.delete(guildID + roleID), this.client.options.restWsBridgeTimeout);
   }
 }
 
 /**
  * Emitted whenever a guild role is deleted.
- * @event Client#guildRoleDelete
- * @param {Guild} guild The guild that the role was deleted in.
+ * @event Client#roleDelete
  * @param {Role} role The role that was deleted.
  */
 

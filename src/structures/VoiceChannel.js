@@ -46,6 +46,22 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
+   * Checks if the client has permission join the voice channel
+   * @type {boolean}
+   */
+  get joinable() {
+    return this.permissionsFor(this.client.user).hasPermission('CONNECT');
+  }
+
+  /**
+   * Checks if the client has permission to send audio to the voice channel
+   * @type {boolean}
+   */
+  get speakable() {
+    return this.permissionsFor(this.client.user).hasPermission('SPEAK');
+  }
+
+  /**
    * Sets the bitrate of the channel
    * @param {number} bitrate The new bitrate
    * @returns {Promise<VoiceChannel>}
@@ -53,7 +69,7 @@ class VoiceChannel extends GuildChannel {
    * // set the bitrate of a voice channel
    * voiceChannel.setBitrate(48000)
    *  .then(vc => console.log(`Set bitrate to ${vc.bitrate} for ${vc.name}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setBitrate(bitrate) {
     return this.rest.client.rest.methods.updateChannel(this, { bitrate });
@@ -66,7 +82,7 @@ class VoiceChannel extends GuildChannel {
    * // join a voice channel
    * voiceChannel.join()
    *  .then(connection => console.log('Connected!'))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   join() {
     return this.client.voice.joinChannel(this);

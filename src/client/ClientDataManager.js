@@ -3,6 +3,7 @@ const cloneObject = require('../util/CloneObject');
 const Guild = require('../structures/Guild');
 const User = require('../structures/User');
 const DMChannel = require('../structures/DMChannel');
+const Emoji = require('../structures/Emoji');
 const TextChannel = require('../structures/TextChannel');
 const VoiceChannel = require('../structures/VoiceChannel');
 const GuildChannel = require('../structures/GuildChannel');
@@ -27,7 +28,7 @@ class ClientDataManager {
        * @event Client#guildCreate
        * @param {Guild} guild The created guild
        */
-      if (this.client.options.fetch_all_members) {
+      if (this.client.options.fetchAllMembers) {
         guild.fetchMembers().then(() => { this.client.emit(Constants.Events.GUILD_CREATE, guild); });
       } else {
         this.client.emit(Constants.Events.GUILD_CREATE, guild);
@@ -73,6 +74,26 @@ class ClientDataManager {
     return null;
   }
 
+  newEmoji(data, guild) {
+    const already = guild.emojis.has(data.id);
+    if (data && !already) {
+      let emoji = new Emoji(guild, data);
+      this.client.emit(Constants.Events.EMOJI_CREATE, emoji);
+      guild.emojis.set(emoji.id, emoji);
+      return emoji;
+    } else if (already) {
+      return guild.emojis.get(data.id);
+    }
+
+    return null;
+  }
+
+  killEmoji(emoji) {
+    if (!(emoji instanceof Emoji && emoji.guild)) return;
+    this.client.emit(Constants.Events.EMOJI_DELETE, emoji);
+    emoji.guild.emojis.delete(emoji.id);
+  }
+
   killGuild(guild) {
     const already = this.client.guilds.has(guild.id);
     this.client.guilds.delete(guild.id);
@@ -96,6 +117,12 @@ class ClientDataManager {
 
   updateChannel(currentChannel, newData) {
     currentChannel.setup(newData);
+  }
+
+  updateEmoji(currentEmoji, newData) {
+    const oldEmoji = cloneObject(currentEmoji);
+    currentEmoji.setup(newData);
+    this.client.emit(Constants.Events.GUILD_EMOJI_UPDATE, oldEmoji, currentEmoji);
   }
 }
 

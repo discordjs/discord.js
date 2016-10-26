@@ -51,12 +51,21 @@ class Emoji {
   }
 
   /**
-   * The time the emoji was created
+   * The timestamp the emoji was created at
+   * @type {number}
    * @readonly
-   * @type {Date}
    */
-  get creationDate() {
-    return new Date((this.id / 4194304) + 1420070400000);
+  get createdTimestamp() {
+    return (this.id / 4194304) + 1420070400000;
+  }
+
+  /**
+   * The time the emoji was created
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
   }
 
   /**
@@ -86,7 +95,7 @@ class Emoji {
    * @returns {string}
    * @example
    * // send an emoji:
-   * const emoji = guild.emojis.array()[0];
+   * const emoji = guild.emojis.first();
    * msg.reply(`Hello! ${emoji}`);
    */
   toString() {

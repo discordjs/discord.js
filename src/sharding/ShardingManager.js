@@ -1,24 +1,35 @@
 const path = require('path');
 const fs = require('fs');
 const EventEmitter = require('events').EventEmitter;
-
+const mergeDefault = require('../util/MergeDefault');
 const Shard = require('./Shard');
 const Collection = require('../util/Collection');
+const fetchRecommendedShards = require('../util/FetchRecommendedShards');
 
 /**
  * This is a utility class that can be used to help you spawn shards of your Client. Each shard is completely separate
  * from the other. The Shard Manager takes a path to a file and spawns it under the specified amount of shards safely.
+ * If you do not select an amount of shards, the manager will automatically decide the best amount.
  * <warn>The Sharding Manager is still experimental</warn>
  * @extends {EventEmitter}
  */
 class ShardingManager extends EventEmitter {
   /**
    * @param {string} file Path to your shard script file
-   * @param {number} [totalShards=1] Number of shards to default to spawning
-   * @param {boolean} [respawn=true] Respawn a shard when it dies
+   * @param {Object} [options] Options for the sharding manager
+   * @param {number|string} [options.totalShards='auto'] Number of shards to spawn, or "auto"
+   * @param {boolean} [options.respawn=true] Whether shards should automatically respawn upon exiting
+   * @param {string[]} [options.shardArgs=[]] Arguments to pass to the shard script when spawning
+   * @param {string} [options.token] Token to use for automatic shard count and passing to shards
    */
-  constructor(file, totalShards = 1, respawn = true) {
+  constructor(file, options = {}) {
     super();
+    options = mergeDefault({
+      totalShards: 'auto',
+      respawn: true,
+      shardArgs: [],
+      token: null,
+    }, options);
 
     /**
      * Path to the shard script file
@@ -32,16 +43,36 @@ class ShardingManager extends EventEmitter {
 
     /**
      * Amount of shards that this manager is going to spawn
-     * @type {number}
+     * @type {number|string}
      */
-    this.totalShards = totalShards;
-    if (typeof totalShards !== 'number' || isNaN(totalShards)) {
-      throw new TypeError('Amount of shards must be a number.');
+    this.totalShards = options.totalShards;
+    if (this.totalShards !== 'auto') {
+      if (typeof this.totalShards !== 'number' || isNaN(this.totalShards)) {
+        throw new TypeError('Amount of shards must be a number.');
+      }
+      if (this.totalShards < 1) throw new RangeError('Amount of shards must be at least 1.');
+      if (this.totalShards !== Math.floor(this.totalShards)) {
+        throw new RangeError('Amount of shards must be an integer.');
+      }
     }
-    if (totalShards < 1) throw new RangeError('Amount of shards must be at least 1.');
-    if (totalShards !== Math.floor(totalShards)) throw new RangeError('Amount of shards must be an integer.');
 
-    this.respawn = respawn;
+    /**
+     * Whether shards should automatically respawn upon exiting
+     * @type {boolean}
+     */
+    this.respawn = options.respawn;
+
+    /**
+     * An array of arguments to pass to shards.
+     * @type {string[]}
+     */
+    this.shardArgs = options.shardArgs;
+
+    /**
+     * Token to use for obtaining the automatic shard count, and passing to shards
+     * @type {?string}
+     */
+    this.token = options.token ? options.token.replace(/^Bot\s*/i, '') : null;
 
     /**
      * A collection of shards that this manager has spawned
@@ -52,11 +83,11 @@ class ShardingManager extends EventEmitter {
 
   /**
    * Spawns a single shard.
-   * @param {number} id The ID of the shard to spawn. THIS IS NOT NEEDED IN ANY NORMAL CASE!
+   * @param {number} id The ID of the shard to spawn. **This is usually not necessary.**
    * @returns {Promise<Shard>}
    */
   createShard(id = this.shards.size) {
-    const shard = new Shard(this, id);
+    const shard = new Shard(this, id, this.shardArgs);
     this.shards.set(id, shard);
     /**
      * Emitted upon launching a shard
@@ -74,10 +105,29 @@ class ShardingManager extends EventEmitter {
    * @returns {Promise<Collection<number, Shard>>}
    */
   spawn(amount = this.totalShards, delay = 5500) {
-    if (typeof amount !== 'number' || isNaN(amount)) throw new TypeError('Amount of shards must be a number.');
-    if (amount < 1) throw new RangeError('Amount of shards must be at least 1.');
-    if (amount !== Math.floor(amount)) throw new RangeError('Amount of shards must be an integer.');
+    return new Promise((resolve, reject) => {
+      if (amount === 'auto') {
+        fetchRecommendedShards(this.token).then(count => {
+          this.totalShards = count;
+          resolve(this._spawn(count, delay));
+        }).catch(reject);
+      } else {
+        if (typeof amount !== 'number' || isNaN(amount)) throw new TypeError('Amount of shards must be a number.');
+        if (amount < 1) throw new RangeError('Amount of shards must be at least 1.');
+        if (amount !== Math.floor(amount)) throw new TypeError('Amount of shards must be an integer.');
+        resolve(this._spawn(amount, delay));
+      }
+    });
+  }
 
+  /**
+   * Actually spawns shards, unlike that poser above >:(
+   * @param {number} amount Number of shards to spawn
+   * @param {number} delay How long to wait in between spawning each shard (in milliseconds)
+   * @returns {Promise<Collection<number, Shard>>}
+   * @private
+   */
+  _spawn(amount, delay) {
     return new Promise(resolve => {
       if (this.shards.size >= amount) throw new Error(`Already spawned ${this.shards.size} shards.`);
       this.totalShards = amount;

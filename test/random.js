@@ -4,35 +4,53 @@ const Discord = require('../');
 const request = require('superagent');
 const fs = require('fs');
 
-const client = new Discord.Client({ fetch_all_members: false, api_request_method: 'sequential' });
+const client = new Discord.Client({ fetchAllMembers: false, apiRequestMethod: 'sequential' });
 
-const { email, password, token } = require('./auth.json');
+const { email, password, token, usertoken, song } = require('./auth.json');
 
-client.login(token).then(atoken => console.log('logged in with token ' + atoken)).catch(console.log);
+client.login(token).then(atoken => console.log('logged in with token ' + atoken)).catch(console.error);
+
+client.ws.on('send', console.log);
 
 client.on('ready', () => {
   console.log('ready!');
 });
 
+client.on('userUpdate', (o, n) => {
+  console.log(o.username, n.username);
+});
+
+client.on('guildMemberAdd', (g, m) => console.log(`${m.user.username} joined ${g.name}`));
+
 client.on('channelCreate', channel => {
   console.log(`made ${channel.name}`);
 });
 
-client.on('guildMemberAdd', (g, m) => {
-  console.log(`${m.user.username} joined ${g.name}`);
-})
-
-client.on('guildMemberUpdate', (g, o, n) => {
-  console.log(o.nickname, n.nickname);
-});
-
-client.on('debug', console.log);
+client.on('error', m => console.log('debug', m));
+client.on('reconnecting', m => console.log('debug', m));
 
 client.on('message', message => {
   if (true) {
     if (message.content === 'makechann') {
       if (message.channel.guild) {
         message.channel.guild.createChannel('hi', 'text').then(console.log);
+      }
+    }
+
+    if (message.content === 'imma queue pls') {
+      let count = 0;
+      let ecount = 0;
+      for(let x = 0; x < 4000; x++) {
+        message.channel.sendMessage(`this is message ${x} of 3999`)
+          .then(m => {
+            count++;
+            console.log('reached', count, ecount);
+          })
+          .catch(m => {
+            console.error(m);
+            ecount++;
+            console.log('reached', count, ecount);
+          });
       }
     }
 
@@ -57,7 +75,7 @@ client.on('message', message => {
       request
         .get('url')
         .end((err, res) => {
-          client.user.setAvatar(res.body).catch(console.log)
+          client.user.setAvatar(res.body).catch(console.error)
             .then(user => message.channel.sendMessage('Done!'));
         });
     }
@@ -65,11 +83,11 @@ client.on('message', message => {
     if (message.content.startsWith('gn')) {
       message.guild.setName(message.content.substr(3))
         .then(guild => console.log('guild updated to', guild.name))
-        .catch(console.log);
+        .catch(console.error);
     }
 
     if (message.content === 'leave') {
-      message.guild.leave().then(guild => console.log('left guild', guild.name)).catch(console.log);
+      message.guild.leave().then(guild => console.log('left guild', guild.name)).catch(console.error);
     }
 
     if (message.content === 'stats') {
@@ -79,7 +97,7 @@ client.on('message', message => {
       m += `I am aware of ${client.channels.size} channels overall\n`;
       m += `I am aware of ${client.guilds.size} guilds overall\n`;
       m += `I am aware of ${client.users.size} users overall\n`;
-      message.channel.sendMessage(m).then(msg => msg.edit('nah')).catch(console.log);
+      message.channel.sendMessage(m).then(msg => msg.edit('nah')).catch(console.error);
     }
 
     if (message.content === 'messageme!') {
@@ -94,7 +112,7 @@ client.on('message', message => {
       message.guild.member(message.mentions[0]).kick().then(member => {
         console.log(member);
         message.channel.sendMessage('Kicked!' + member.user.username);
-      }).catch(console.log);
+      }).catch(console.error);
     }
 
     if (message.content === 'ratelimittest') {
@@ -108,17 +126,17 @@ client.on('message', message => {
     if (message.content === 'makerole') {
       message.guild.createRole().then(role => {
         message.channel.sendMessage(`Made role ${role.name}`);
-      }).catch(console.log);
+      }).catch(console.error);
     }
   }
 });
 
 function nameLoop(user) {
-  // user.setUsername(user.username + 'a').then(nameLoop).catch(console.log);
+  // user.setUsername(user.username + 'a').then(nameLoop).catch(console.error);
 }
 
 function chanLoop(channel) {
-  channel.setName(channel.name + 'a').then(chanLoop).catch(console.log);
+  channel.setName(channel.name + 'a').then(chanLoop).catch(console.error);
 }
 
 client.on('message', msg => {
@@ -142,6 +160,7 @@ let disp, con;
 
 client.on('message', msg => {
   if (msg.content.startsWith('/play')) {
+    console.log('I am now going to play', msg.content);
     const chan = msg.content.split(' ').slice(1).join(' ');
     con.playStream(ytdl(chan, {filter : 'audioonly'}), { passes : 4 });
   }
@@ -151,11 +170,10 @@ client.on('message', msg => {
       .then(conn => {
         con = conn;
         msg.reply('done');
-        disp = conn.player.playStream(ytdl('https://www.youtube.com/watch?v=oQBiPwklN_Q', {filter : 'audioonly'}), { passes : 3 });
+        disp = conn.playStream(ytdl(song, {filter:'audioonly'}), { passes : 3 });
         conn.player.on('debug', console.log);
         conn.player.on('error', err => console.log(123, err));
-        disp.on('error', err => console.log(123, err));
       })
-      .catch(console.log);
+      .catch(console.error);
   }
 })

@@ -15,14 +15,13 @@ class GuildMembersChunkHandler extends AbstractHandler {
     }
 
     guild._checkChunks();
-    client.emit(Constants.Events.GUILD_MEMBERS_CHUNK, guild, members);
+    client.emit(Constants.Events.GUILD_MEMBERS_CHUNK, members);
   }
 }
 
 /**
- * Emitted whenever a chunk of Guild members is received
+ * Emitted whenever a chunk of Guild members is received (all members come from the same guild)
  * @event Client#guildMembersChunk
- * @param {Guild} guild The guild that the chunks relate to
  * @param {GuildMember[]} members The members in the chunk
  */
 

@@ -1,5 +1,7 @@
 const childProcess = require('child_process');
 const path = require('path');
+const makeError = require('../util/MakeError');
+const makePlainError = require('../util/MakePlainError');
 
 /**
  * Represents a Shard spawned by the ShardingManager.
@@ -8,35 +10,39 @@ class Shard {
   /**
    * @param {ShardingManager} manager The sharding manager
    * @param {number} id The ID of this shard
+   * @param {array} [args=[]] Command line arguments to pass to the script
    */
-  constructor(manager, id) {
+  constructor(manager, id, args = []) {
     /**
-     * The manager of the spawned shard
+     * Manager that created the shard
      * @type {ShardingManager}
      */
     this.manager = manager;
 
     /**
-     * The shard ID
+     * ID of the shard
      * @type {number}
      */
     this.id = id;
 
     /**
-     * The process of the shard
+     * The environment variables for the shard
+     * @type {Object}
+     */
+    this.env = Object.assign({}, process.env, {
+      SHARD_ID: this.id,
+      SHARD_COUNT: this.manager.totalShards,
+      CLIENT_TOKEN: this.manager.token,
+    });
+
+    /**
+     * Process of the shard
      * @type {ChildProcess}
      */
-    this.process = childProcess.fork(path.resolve(this.manager.file), [], {
-      env: {
-        SHARD_ID: this.id,
-        SHARD_COUNT: this.manager.totalShards,
-      },
+    this.process = childProcess.fork(path.resolve(this.manager.file), args, {
+      env: this.env,
     });
-
-    this.process.on('message', message => {
-      this.manager.emit('message', this, message);
-    });
-
+    this.process.on('message', this._handleMessage.bind(this));
     this.process.once('exit', () => {
       if (this.manager.respawn) this.manager.createShard(this.id);
     });
@@ -60,6 +66,38 @@ class Shard {
   }
 
   /**
+   * Fetches a Client property value of the shard.
+   * @param {string} prop Name of the Client property to get, using periods for nesting
+   * @returns {Promise<*>}
+   * @example
+   * shard.fetchClientValue('guilds.size').then(count => {
+   *   console.log(`${count} guilds in shard ${shard.id}`);
+   * }).catch(console.error);
+   */
+  fetchClientValue(prop) {
+    if (this._fetches.has(prop)) return this._fetches.get(prop);
+
+    const promise = new Promise((resolve, reject) => {
+      const listener = message => {
+        if (!message || message._fetchProp !== prop) return;
+        this.process.removeListener('message', listener);
+        this._fetches.delete(prop);
+        resolve(message._result);
+      };
+      this.process.on('message', listener);
+
+      this.send({ _fetchProp: prop }).catch(err => {
+        this.process.removeListener('message', listener);
+        this._fetches.delete(prop);
+        reject(err);
+      });
+    });
+
+    this._fetches.set(prop, promise);
+    return promise;
+  }
+
+  /**
    * Evaluates a script on the shard, in the context of the Client.
    * @param {string} script JavaScript to run on the shard
    * @returns {Promise<*>} Result of the script execution
@@ -69,20 +107,10 @@ class Shard {
 
     const promise = new Promise((resolve, reject) => {
       const listener = message => {
-        if (!message) return;
-        if (message._evalResult) {
-          this.process.removeListener('message', listener);
-          this._evals.delete(script);
-          resolve(message._evalResult);
-        } else if (message._evalError) {
-          this.process.removeListener('message', listener);
-          const err = new Error(message._evalError.message, message._evalError.fileName, message._evalError.lineNumber);
-          err.name = message._evalError.name;
-          err.columnNumber = message._evalError.columnNumber;
-          err.stack = message._evalError.stack;
-          this._evals.delete(script);
-          reject(err);
-        }
+        if (!message || message._eval !== script) return;
+        this.process.removeListener('message', listener);
+        this._evals.delete(script);
+        if (!message._error) resolve(message._result); else reject(makeError(message._error));
       };
       this.process.on('message', listener);
 
@@ -98,35 +126,30 @@ class Shard {
   }
 
   /**
-   * Fetches a Client property value of the shard.
-   * @param {string} prop Name of the Client property to get, using periods for nesting
-   * @returns {Promise<*>}
-   * @example
-   * shard.fetchClientValue('guilds.size').then(count => {
-   *   console.log(`${count} guilds in shard ${shard.id}`);
-   * }).catch(console.error);
+   * Handles an IPC message
+   * @param {*} message Message received
+   * @private
    */
-  fetchClientValue(prop) {
-    if (this._fetches.has(prop)) return this._fetches.get(prop);
+  _handleMessage(message) {
+    if (message) {
+      // Shard is requesting a property fetch
+      if (message._sFetchProp) {
+        this.manager.fetchClientValues(message._sFetchProp)
+          .then(results => this.send({ _sFetchProp: message._sFetchProp, _result: results }))
+          .catch(err => this.send({ _sFetchProp: message._sFetchProp, _error: makePlainError(err) }));
+        return;
+      }
 
-    const promise = new Promise((resolve, reject) => {
-      const listener = message => {
-        if (typeof message !== 'object' || message._fetchProp !== prop) return;
-        this.process.removeListener('message', listener);
-        this._fetches.delete(prop);
-        resolve(message._fetchPropValue);
-      };
-      this.process.on('message', listener);
+      // Shard is requesting an eval broadcast
+      if (message._sEval) {
+        this.manager.broadcastEval(message._sEval)
+          .then(results => this.send({ _sEval: message._sEval, _result: results }))
+          .catch(err => this.send({ _sEval: message._sEval, _error: makePlainError(err) }));
+        return;
+      }
+    }
 
-      this.send({ _fetchProp: prop }).catch(err => {
-        this.process.removeListener('message', listener);
-        this._fetches.delete(prop);
-        reject(err);
-      });
-    });
-
-    this._fetches.set(prop, promise);
-    return promise;
+    this.manager.emit('message', this, message);
   }
 }
 

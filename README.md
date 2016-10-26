@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://hydrabolt.github.io/discord.js">
-    <img alt="discord.js" src="http://i.imgur.com/sPOLh9y.png" width="546"><br />
+    <img alt="discord.js" src="http://i.imgur.com/0af7LDs.png" width="546"><br />
   </a>
 </p>
 
@@ -16,12 +16,14 @@ discord.js is a powerful node.js module that allows you to interact with the [Di
 
 ## Installation
 **Node.js 6.0.0 or newer is required.**  
-With voice support: `npm install --save discord.js --production`  
-Without voice support: `npm install --save discord.js --production --no-optional`
+Without voice support: `npm install discord.js --save`  
+With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discord.js node-opus --save`  
+With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js opusscript --save`  
+If both audio packages are installed, discord.js will automatically choose node-opus.
 
-By default, discord.js uses [opusscript](https://www.npmjs.com/package/opusscript) when playing audio over voice connections.
-If you're looking to play over multiple voice connections, it might be better to install [node-opus](https://www.npmjs.com/package/node-opus).
-discord.js will automatically prefer node-opus over opusscript.
+The preferred audio engine is node-opus, as it performs significantly better than opusscript.
+Using opusscript is only recommended for development on Windows, since getting node-opus to build there can be a bit of a challenge.
+For production bots, using node-opus should be considered a necessity, especially if they're going to be running on multiple servers.
 
 ## Example Usage
 ```js
@@ -41,17 +43,24 @@ client.on('message', message => {
 client.login('your token');
 ```
 
+A bot template using discord.js can be generated using [generator-discordbot](https://www.npmjs.com/package/generator-discordbot).
+
 ## Links
 * [Website](http://hydrabolt.github.io/discord.js/)
-* [Discord.js Server](https://discord.gg/bRCvFy9)
-* [Discord API Server](https://discord.gg/rV4BwdK)
+* [Discord.js server](https://discord.gg/bRCvFy9)
+* [Discord API server](https://discord.gg/rV4BwdK)
 * [Documentation](http://hydrabolt.github.io/discord.js/#!/docs/tag/master)
-* [Legacy Documentation](http://discordjs.readthedocs.io/en/8.1.0/docs_client.html)
+* [Legacy (v8) documentation](http://discordjs.readthedocs.io/en/8.2.0/docs_client.html)
+* [Examples](https://github.com/hydrabolt/discord.js/tree/master/docs/custom/examples)
 * [GitHub](https://github.com/hydrabolt/discord.js)
 * [NPM](https://www.npmjs.com/package/discord.js)
-* [Examples](https://github.com/hydrabolt/discord.js/tree/master/docs/custom/examples)
-* [Related Libraries](https://discordapi.com/unofficial/libs.html)
+* [Related libraries](https://discordapi.com/unofficial/libs.html)
 
-## Contact
-Before reporting an issue, please read the [documentation](http://hydrabolt.github.io/discord.js/#!/docs/tag/master).
-If you can't find help there, you can ask in the official [Discord.js Server](https://discord.gg/bRCvFy9).
+## Contributing
+Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
+[documentation](http://hydrabolt.github.io/discord.js/#!/docs/tag/master).  
+See [the contributing guide](CONTRIBUTING.md) if you'd like to submit a PR.
+
+## Help
+If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle
+nudge in the right direction, please don't hesitate to join our official [Discord.js Server](https://discord.gg/bRCvFy9).

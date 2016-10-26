@@ -7,13 +7,16 @@ const User = requireStructure('User');
 const GuildMember = requireStructure('GuildMember');
 const Role = requireStructure('Role');
 const Invite = requireStructure('Invite');
+const Webhook = requireStructure('Webhook');
+const UserProfile = requireStructure('UserProfile');
 
 class RESTMethods {
   constructor(restManager) {
     this.rest = restManager;
   }
 
-  loginToken(token) {
+  loginToken(token = this.rest.client.token) {
+    token = token.replace(/^Bot\s*/i, '');
     return new Promise((resolve, reject) => {
       this.rest.client.manager.connectToWebSocket(token, resolve, reject);
     });
@@ -26,42 +29,47 @@ class RESTMethods {
       this.rest.client.password = password;
       this.rest.makeRequest('post', Constants.Endpoints.login, false, { email, password })
         .then(data => {
-          this.rest.client.manager.connectToWebSocket(data.token, resolve, reject);
+          resolve(this.loginToken(data.token));
         })
         .catch(reject);
     });
   }
 
   logout() {
-    return this.rest.makeRequest('post', Constants.Endpoints.logout, true);
+    return this.rest.makeRequest('post', Constants.Endpoints.logout, true, {});
   }
 
   getGateway() {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('get', Constants.Endpoints.gateway, true)
         .then(res => {
-          this.rest.client.ws.gateway = `${res.url}/?encoding=json&v=${this.rest.client.options.protocol_version}`;
+          this.rest.client.ws.gateway = `${res.url}/?encoding=json&v=${Constants.PROTOCOL_VERSION}`;
           resolve(this.rest.client.ws.gateway);
         })
         .catch(reject);
     });
   }
 
-  sendMessage(channel, content, { tts, nonce, disable_everyone, split } = {}, file = null) {
+  getBotGateway() {
+    return this.rest.makeRequest('get', Constants.Endpoints.botGateway, true);
+  }
+
+  sendMessage(channel, content, { tts, nonce, disableEveryone, split } = {}, file = null) {
     return new Promise((resolve, reject) => {
       if (typeof content !== 'undefined') content = this.rest.client.resolver.resolveString(content);
 
-      if (disable_everyone || (typeof disable_everyone === 'undefined' && this.rest.client.options.disable_everyone)) {
-        content = content.replace('@everyone', '@\u200beveryone').replace('@here', '@\u200bhere');
-      }
+      if (content) {
+        if (disableEveryone || (typeof disableEveryone === 'undefined' && this.rest.client.options.disableEveryone)) {
+          content = content.replace(/@(everyone|here)/g, '@\u200b$1');
+        }
 
-      if (split) content = splitMessage(content, typeof split === 'object' ? split : {});
+        if (split) content = splitMessage(content, typeof split === 'object' ? split : {});
+      }
 
       if (channel instanceof User || channel instanceof GuildMember) {
         this.createDM(channel).then(chan => {
           this._sendMessageRequest(chan, content, file, tts, nonce, resolve, reject);
-        })
-        .catch(reject);
+        }).catch(reject);
       } else {
         this._sendMessageRequest(channel, content, file, tts, nonce, resolve, reject);
       }
@@ -71,22 +79,24 @@ class RESTMethods {
   _sendMessageRequest(channel, content, file, tts, nonce, resolve, reject) {
     if (content instanceof Array) {
       const datas = [];
-      const promise = this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
+      let promise = this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
         content: content[0], tts, nonce,
       }, file).catch(reject);
+
       for (let i = 1; i <= content.length; i++) {
         if (i < content.length) {
-          promise.then(data => {
+          const i2 = i;
+          promise = promise.then(data => {
             datas.push(data);
             return this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
-              content: content[i], tts, nonce,
+              content: content[i2], tts, nonce,
             }, file);
-          });
+          }).catch(reject);
         } else {
           promise.then(data => {
             datas.push(data);
             resolve(this.rest.client.actions.MessageCreate.handle(datas).messages);
-          });
+          }).catch(reject);
         }
       }
     } else {
@@ -192,6 +202,26 @@ class RESTMethods {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('del', Constants.Endpoints.meGuild(guild.id), true).then(() => {
         resolve(this.rest.client.actions.GuildDelete.handle({ id: guild.id }).guild);
+      }).catch(reject);
+    });
+  }
+
+  createGuild(options) {
+    options.icon = this.rest.client.resolver.resolveBase64(options.icon) || null;
+    options.region = options.region || 'us-central';
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('post', Constants.Endpoints.guilds, true, options)
+      .then(data => {
+        if (this.rest.client.guilds.has(data.id)) resolve(this.rest.client.guilds.get(data.id));
+        const handleGuild = guild => {
+          if (guild.id === data.id) resolve(guild);
+          this.rest.client.removeListener('guildCreate', handleGuild);
+        };
+        this.rest.client.on('guildCreate', handleGuild);
+        this.rest.client.setTimeout(() => {
+          this.rest.client.removeListener('guildCreate', handleGuild);
+          reject(new Error('Took too long to receive guild data'));
+        }, 10000);
       }).catch(reject);
     });
   }
@@ -363,26 +393,27 @@ class RESTMethods {
     });
   }
 
-  banGuildMember(guild, member, deleteDays) {
+  banGuildMember(guild, member, deleteDays = 0) {
     return new Promise((resolve, reject) => {
       const id = this.rest.client.resolver.resolveUserID(member);
       if (!id) throw new Error('Couldn\'t resolve the user ID to ban.');
 
-      this.rest.makeRequest('put', `${Constants.Endpoints.guildBans(guild.id)}/${id}`, true, {
-        'delete-message-days': deleteDays,
-      }).then(() => {
-        if (member instanceof GuildMember) {
-          resolve(member);
-          return;
-        }
-        const user = this.rest.client.resolver.resolveUser(id);
-        if (user) {
-          member = this.rest.client.resolver.resolveGuildMember(guild, user);
-          resolve(member || user);
-          return;
-        }
-        resolve(id);
-      }).catch(reject);
+      this.rest.makeRequest('put',
+        `${Constants.Endpoints.guildBans(guild.id)}/${id}?delete-message-days=${deleteDays}`, true, {
+          'delete-message-days': deleteDays,
+        }).then(() => {
+          if (member instanceof GuildMember) {
+            resolve(member);
+            return;
+          }
+          const user = this.rest.client.resolver.resolveUser(id);
+          if (user) {
+            member = this.rest.client.resolver.resolveGuildMember(guild, user);
+            resolve(member || user);
+            return;
+          }
+          resolve(id);
+        }).catch(reject);
     });
   }
 
@@ -419,12 +450,13 @@ class RESTMethods {
     return new Promise((resolve, reject) => {
       const data = {};
       data.name = _data.name || role.name;
-      data.position = _data.position || role.position;
+      data.position = typeof _data.position !== 'undefined' ? _data.position : role.position;
       data.color = _data.color || role.color;
       if (typeof data.color === 'string' && data.color.startsWith('#')) {
         data.color = parseInt(data.color.replace('#', ''), 16);
       }
       data.hoist = typeof _data.hoist !== 'undefined' ? _data.hoist : role.hoist;
+      data.mentionable = typeof _data.mentionable !== 'undefined' ? _data.mentionable : role.mentionable;
 
       if (_data.permissions) {
         let perms = 0;
@@ -514,6 +546,178 @@ class RESTMethods {
       .then(data => {
         resolve(data.pruned);
       }).catch(reject);
+    });
+  }
+
+  createEmoji(guild, image, name) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('post', `${Constants.Endpoints.guildEmojis(guild.id)}`, true, { name: name, image: image })
+      .then(data => {
+        resolve(this.rest.client.actions.EmojiCreate.handle(data, guild).emoji);
+      }).catch(reject);
+    });
+  }
+
+  deleteEmoji(emoji) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('delete', `${Constants.Endpoints.guildEmojis(emoji.guild.id)}/${emoji.id}`, true)
+      .then(() => {
+        resolve(this.rest.client.actions.EmojiDelete.handle(emoji).data);
+      }).catch(reject);
+    });
+  }
+
+  getWebhook(id, token) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.webhook(id, token), require('util').isUndefined(token))
+      .then(data => {
+        resolve(new Webhook(this.rest.client, data));
+      }).catch(reject);
+    });
+  }
+
+  getGuildWebhooks(guild) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.guildWebhooks(guild.id), true)
+      .then(data => {
+        const hooks = new Collection();
+        for (const hook of data) {
+          hooks.set(hook.id, new Webhook(this.rest.client, hook));
+        }
+        resolve(hooks);
+      }).catch(reject);
+    });
+  }
+
+  getChannelWebhooks(channel) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.channelWebhooks(channel.id), true)
+      .then(data => {
+        const hooks = new Collection();
+        for (const hook of data) {
+          hooks.set(hook.id, new Webhook(this.rest.client, hook));
+        }
+        resolve(hooks);
+      }).catch(reject);
+    });
+  }
+
+  createWebhook(channel, name, avatar) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('post', Constants.Endpoints.channelWebhooks(channel.id), true, {
+        name,
+        avatar,
+      })
+      .then(data => {
+        resolve(new Webhook(this.rest.client, data));
+      }).catch(reject);
+    });
+  }
+
+  editWebhook(webhook, name, avatar) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('patch', Constants.Endpoints.webhook(webhook.id, webhook.token), false, {
+        name,
+        avatar,
+      }).then(data => {
+        webhook.name = data.name;
+        webhook.avatar = data.avatar;
+        resolve(webhook);
+      }).catch(reject);
+    });
+  }
+
+  deleteWebhook(webhook) {
+    return this.rest.makeRequest('delete', Constants.Endpoints.webhook(webhook.id, webhook.token), false);
+  }
+
+  sendWebhookMessage(webhook, content, { avatarURL, tts, disableEveryone, embeds } = {}, file = null) {
+    return new Promise((resolve, reject) => {
+      if (typeof content !== 'undefined') content = this.rest.client.resolver.resolveString(content);
+
+      if (disableEveryone || (typeof disableEveryone === 'undefined' && this.rest.client.options.disableEveryone)) {
+        content = content.replace('@everyone', '@\u200beveryone').replace('@here', '@\u200bhere');
+      }
+
+      this.rest.makeRequest('post', `${Constants.Endpoints.webhook(webhook.id, webhook.token)}?wait=true`, false, {
+        content: content, username: webhook.name, avatar_url: avatarURL, tts: tts, file: file, embeds: embeds,
+      })
+      .then(data => {
+        resolve(data);
+      }).catch(reject);
+    });
+  }
+
+  sendSlackWebhookMessage(webhook, body) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest(
+        'post',
+        `${Constants.Endpoints.webhook(webhook.id, webhook.token)}/slack?wait=true`,
+        false,
+        body
+      ).then(data => {
+        resolve(data);
+      }).catch(reject);
+    });
+  }
+
+  addFriend(user) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('post', Constants.Endpoints.relationships('@me'), true, {
+        discriminator: user.discriminator,
+        username: user.username,
+      }).then(() => {
+        resolve(user);
+      }).catch(reject);
+    });
+  }
+
+  removeFriend(user) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('delete', `${Constants.Endpoints.relationships('@me')}/${user.id}`, true)
+      .then(() => {
+        resolve(user);
+      }).catch(reject);
+    });
+  }
+
+  fetchUserProfile(user) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.userProfile(user.id), true)
+       .then(data => {
+         resolve(new UserProfile(user, data));
+       }).catch(reject);
+    });
+  }
+
+  blockUser(user) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('put', `${Constants.Endpoints.relationships('@me')}/${user.id}`, true, { type: 2 })
+      .then(() => {
+        resolve(user);
+      }).catch(reject);
+    });
+  }
+
+  unblockUser(user) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('delete', `${Constants.Endpoints.relationships('@me')}/${user.id}`, true)
+      .then(() => {
+        resolve(user);
+      }).catch(reject);
+    });
+  }
+
+  setRolePositions(guildID, roles) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('patch', Constants.Endpoints.guildRoles(guildID), true, roles)
+        .then(() => {
+          resolve(this.rest.client.actions.GuildRolesPositionUpdate.handle({
+            guild_id: guildID,
+            roles,
+          }).guild);
+        })
+        .catch(reject);
     });
   }
 }

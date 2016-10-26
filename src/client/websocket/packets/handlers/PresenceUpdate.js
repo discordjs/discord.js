@@ -18,51 +18,54 @@ class PresenceUpdateHandler extends AbstractHandler {
       }
     }
 
+    const oldUser = cloneObject(user);
+    user.patch(data.user);
+    if (!user.equals(oldUser)) {
+      client.emit(Constants.Events.USER_UPDATE, oldUser, user);
+    }
+
     if (guild) {
-      const memberInGuild = guild.members.get(user.id);
-      if (!memberInGuild && data.status !== 'offline') {
-        const member = guild._addMember({
+      let member = guild.members.get(user.id);
+      if (!member && data.status !== 'offline') {
+        member = guild._addMember({
           user,
           roles: data.roles,
           deaf: false,
           mute: false,
         }, false);
-        client.emit(Constants.Events.GUILD_MEMBER_AVAILABLE, guild, member);
+        client.emit(Constants.Events.GUILD_MEMBER_AVAILABLE, member);
       }
-    }
-
-    data.user.username = data.user.username || user.username;
-    data.user.id = data.user.id || user.id;
-    data.user.discriminator = data.user.discriminator || user.discriminator;
-    data.user.status = data.status || user.status;
-    data.user.game = data.game;
-
-    const same = data.user.username === user.username &&
-      data.user.id === user.id &&
-      data.user.discriminator === user.discriminator &&
-      data.user.avatar === user.avatar &&
-      data.user.status === user.status &&
-      JSON.stringify(data.user.game) === JSON.stringify(user.game);
-
-    if (!same) {
-      const oldUser = cloneObject(user);
-      user.patch(data.user);
-      client.emit(Constants.Events.PRESENCE_UPDATE, oldUser, user);
+      if (member) {
+        const oldMember = cloneObject(member);
+        if (member.presence) {
+          oldMember.frozenPresence = cloneObject(member.presence);
+        }
+        guild._setPresence(user.id, data);
+        client.emit(Constants.Events.PRESENCE_UPDATE, oldMember, member);
+      } else {
+        guild._setPresence(user.id, data);
+      }
     }
   }
 }
 
 /**
- * Emitted whenever a user changes one of their details or starts/stop playing a game
+ * Emitted whenever a guild member's presence changes, or they change one of their details.
  * @event Client#presenceUpdate
- * @param {User} oldUser The user before the presence update
- * @param {User} newUser The user after the presence update
+ * @param {GuildMember} oldMember The member before the presence update
+ * @param {GuildMember} newMember The member after the presence update
+ */
+
+/**
+ * Emitted whenever a user's details (e.g. username) are changed.
+ * @event Client#userUpdate
+ * @param {User} oldUser The user before the update
+ * @param {User} newUser The user after the update
  */
 
 /**
  * Emitted whenever a member becomes available in a large Guild
  * @event Client#guildMemberAvailable
- * @param {Guild} guild The guild that the member became available in
  * @param {GuildMember} member The member that became available
  */
 

@@ -82,17 +82,32 @@ class GuildMember {
      */
     this.nickname = data.nick || null;
 
+    /**
+     * The timestamp the member joined the guild at
+     * @type {number}
+     */
+    this.joinedTimestamp = new Date(data.joined_at).getTime();
+
     this.user = data.user;
     this._roles = data.roles;
-    this._joinDate = new Date(data.joined_at).getTime();
   }
 
   /**
-   * The date this member joined the guild
+   * The time the member joined the guild
    * @type {Date}
+   * @readonly
    */
-  get joinDate() {
-    return new Date(this._joinDate);
+  get joinedAt() {
+    return new Date(this.joinedTimestamp);
+  }
+
+  /**
+   * The presence of this Guild Member
+   * @type {Presence}
+   * @readonly
+   */
+  get presence() {
+    return this.frozenPresence || this.guild.presences.get(this.id);
   }
 
   /**
@@ -117,11 +132,10 @@ class GuildMember {
   /**
    * The role of the member with the highest position.
    * @type {Role}
+   * @readonly
    */
   get highestRole() {
-    return this.roles.reduce((prev, role) =>
-      !prev || role.position > prev.position || (role.position === prev.position && role.id < prev.id) ? role : prev
-    );
+    return this.roles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
   }
 
   /**
@@ -163,6 +177,7 @@ class GuildMember {
   /**
    * The overall set of permissions for the guild member, taking only roles into account
    * @type {EvaluatedPermissions}
+   * @readonly
    */
   get permissions() {
     if (this.user.id === this.guild.ownerID) return new EvaluatedPermissions(this, Constants.ALL_PERMISSIONS);
@@ -180,25 +195,27 @@ class GuildMember {
   /**
    * Whether the member is kickable by the client user.
    * @type {boolean}
+   * @readonly
    */
   get kickable() {
     if (this.user.id === this.guild.ownerID) return false;
     if (this.user.id === this.client.user.id) return false;
-    const clientMember = this.member(this.client.member);
+    const clientMember = this.guild.member(this.client.user);
     if (!clientMember.hasPermission(Constants.PermissionFlags.KICK_MEMBERS)) return false;
-    return clientMember.highestRole.position > this.highestRole.positon;
+    return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
   }
 
   /**
    * Whether the member is bannable by the client user.
    * @type {boolean}
+   * @readonly
    */
   get bannable() {
     if (this.user.id === this.guild.ownerID) return false;
     if (this.user.id === this.client.user.id) return false;
-    const clientMember = this.member(this.client.member);
+    const clientMember = this.guild.member(this.client.user);
     if (!clientMember.hasPermission(Constants.PermissionFlags.BAN_MEMBERS)) return false;
-    return clientMember.highestRole.position > this.highestRole.positon;
+    return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
   }
 
   /**
@@ -231,7 +248,17 @@ class GuildMember {
    */
   hasPermissions(permissions, explicit = false) {
     if (!explicit && this.user.id === this.guild.ownerID) return true;
-    return permissions.map(p => this.hasPermission(p, explicit)).every(v => v);
+    return permissions.every(p => this.hasPermission(p, explicit));
+  }
+
+  /**
+   * Checks whether the roles of the member allows them to perform specific actions, and lists any missing permissions.
+   * @param {PermissionResolvable[]} permissions The permissions to check for
+   * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
+   * @returns {array}
+   */
+  missingPermissions(permissions, explicit = false) {
+    return permissions.filter(p => !this.hasPermission(p, explicit));
   }
 
   /**
@@ -380,7 +407,7 @@ class GuildMember {
    * console.log(`Hello from ${member}!`);
    */
   toString() {
-    return String(this.user);
+    return `<@${this.nickname ? '!' : ''}${this.user.id}>`;
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel

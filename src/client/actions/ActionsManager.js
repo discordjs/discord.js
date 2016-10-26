@@ -20,6 +20,10 @@ class ActionsManager {
     this.register('UserGet');
     this.register('UserUpdate');
     this.register('GuildSync');
+    this.register('GuildEmojiCreate');
+    this.register('GuildEmojiDelete');
+    this.register('GuildEmojiUpdate');
+    this.register('GuildRolesPositionUpdate');
   }
 
   register(name) {

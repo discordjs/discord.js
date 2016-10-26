@@ -1,4 +1,5 @@
 const User = require('./User');
+const Collection = require('../util/Collection');
 
 /**
  * Represents the logged in client's Discord User
@@ -19,8 +20,22 @@ class ClientUser extends User {
      * @type {string}
      */
     this.email = data.email;
-
+    this.localPresence = {};
     this._typing = new Map();
+
+    /**
+     * A Collection of friends for the logged in user.
+     * <warn>This is only filled for user accounts, not bot accounts!</warn>
+     * @type {Collection<string, User>}
+     */
+    this.friends = new Collection();
+
+    /**
+     * A Collection of blocked users for the logged in user.
+     * <warn>This is only filled for user accounts, not bot accounts!</warn>
+     * @type {Collection<string, User>}
+     */
+    this.blocked = new Collection();
   }
 
   edit(data) {
@@ -37,7 +52,7 @@ class ClientUser extends User {
    * // set username
    * client.user.setUsername('discordjs')
    *  .then(user => console.log(`My new username is ${user.username}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setUsername(username) {
     return this.client.rest.methods.updateCurrentUser({ username });
@@ -52,7 +67,7 @@ class ClientUser extends User {
    * // set email
    * client.user.setEmail('bob@gmail.com')
    *  .then(user => console.log(`My new email is ${user.email}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setEmail(email) {
     return this.client.rest.methods.updateCurrentUser({ email });
@@ -65,9 +80,9 @@ class ClientUser extends User {
    * @returns {Promise<ClientUser>}
    * @example
    * // set password
-   * client.user.setPassword('password')
+   * client.user.setPassword('password123')
    *  .then(user => console.log('New password set!'))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setPassword(password) {
     return this.client.rest.methods.updateCurrentUser({ password });
@@ -75,68 +90,144 @@ class ClientUser extends User {
 
   /**
    * Set the avatar of the logged in Client.
-   * @param {Base64Resolvable} avatar The new avatar
+   * @param {FileResolvable|Base64Resolveable} avatar The new avatar
    * @returns {Promise<ClientUser>}
    * @example
    * // set avatar
-   * client.user.setAvatar(fs.readFileSync('./avatar.png'))
+   * client.user.setAvatar('./avatar.png')
    *  .then(user => console.log(`New avatar set!`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   setAvatar(avatar) {
-    return this.client.rest.methods.updateCurrentUser({ avatar });
+    return new Promise(resolve => {
+      if (avatar.startsWith('data:')) {
+        resolve(this.client.rest.methods.updateCurrentUser({ avatar }));
+      } else {
+        this.client.resolver.resolveFile(avatar).then(data => {
+          resolve(this.client.rest.methods.updateCurrentUser({ avatar: data }));
+        });
+      }
+    });
   }
 
   /**
-   * Set the status and playing game of the logged in client.
-   * @param {string} [status] The status, can be `online` or `idle`
-   * @param {string|Object} [game] The game that is being played
-   * @param {string} [url] If you want to display as streaming, set this as the URL to the stream (must be a
-   * twitch.tv URl)
+   * Set the status of the logged in user.
+   * @param {string} status can be `online`, `idle`, `invisible` or `dnd` (do not disturb)
    * @returns {Promise<ClientUser>}
-   * @example
-   * // set status
-   * client.user.setStatus('status', 'game')
-   *  .then(user => console.log('Changed status!'))
-   *  .catch(console.log);
    */
-  setStatus(status, game = null, url = null) {
+  setStatus(status) {
+    return this.setPresence({ status });
+  }
+
+  /**
+   * Set the current game of the logged in user.
+   * @param {string} game the game being played
+   * @param {string} [streamingURL] an optional URL to a twitch stream, if one is available.
+   * @returns {Promise<ClientUser>}
+   */
+  setGame(game, streamingURL) {
+    return this.setPresence({ game: {
+      name: game,
+      url: streamingURL,
+    } });
+  }
+
+  /**
+   * Set/remove the AFK flag for the current user.
+   * @param {boolean} afk whether or not the user is AFK.
+   * @returns {Promise<ClientUser>}
+   */
+  setAFK(afk) {
+    return this.setPresence({ afk });
+  }
+
+  /**
+   * Send a friend request
+   * <warn>This is only available for user accounts, not bot accounts!</warn>
+   * @param {UserResolvable} user The user to send the friend request to.
+   * @returns {Promise<User>} The user the friend request was sent to.
+   */
+  addFriend(user) {
+    user = this.client.resolver.resolveUser(user);
+    return this.client.rest.methods.addFriend(user);
+  }
+
+  /**
+   * Remove a friend
+   * <warn>This is only available for user accounts, not bot accounts!</warn>
+   * @param {UserResolvable} user The user to remove from your friends
+   * @returns {Promise<User>} The user that was removed
+   */
+  removeFriend(user) {
+    user = this.client.resolver.resolveUser(user);
+    return this.client.rest.methods.removeFriend(user);
+  }
+
+  /**
+   * Creates a guild
+   * <warn>This is only available for user accounts, not bot accounts!</warn>
+   * @param {string} name The name of the guild
+   * @param {string} region The region for the server
+   * @param {FileResolvable|Base64Resolvable} [icon=null] The icon for the guild
+   * @returns {Promise<Guild>} The guild that was created
+   */
+  createGuild(name, region, icon = null) {
     return new Promise(resolve => {
-      if (status === 'online' || status === 'here' || status === 'available') {
-        this.idleStatus = null;
-      } else if (status === 'idle' || status === 'away') {
-        this.idleStatus = Date.now();
+      if (!icon) resolve(this.client.rest.methods.createGuild({ name, icon, region }));
+      if (icon.startsWith('data:')) {
+        resolve(this.client.rest.methods.createGuild({ name, icon, region }));
       } else {
-        this.idleStatus = this.idleStatus || null;
+        this.client.resolver.resolveFile(icon).then(data => {
+          resolve(this.client.rest.methods.createGuild({ name, icon: data, region }));
+        });
+      }
+    });
+  }
+
+  /**
+   * Set the full presence of the current user.
+   * @param {Object} data the data to provide
+   * @returns {Promise<ClientUser>}
+   */
+  setPresence(data) {
+    // {"op":3,"d":{"status":"dnd","since":0,"game":null,"afk":false}}
+    return new Promise(resolve => {
+      let status = this.localPresence.status || this.presence.status;
+      let game = this.localPresence.game;
+      let afk = this.localPresence.afk || this.presence.afk;
+
+      if (!game && this.presence.game) {
+        game = {
+          name: this.presence.game.name,
+          type: this.presence.game.type,
+          url: this.presence.game.url,
+        };
       }
 
-      if (typeof game === 'string' && !game.length) game = null;
-
-      if (game === null) {
-        this.userGame = null;
-      } else if (!game) {
-        this.userGame = this.userGame || null;
-      } else if (typeof game === 'string') {
-        this.userGame = { name: game };
-      } else {
-        this.userGame = game;
+      if (data.status) {
+        if (typeof data.status !== 'string') throw new TypeError('Status must be a string');
+        status = data.status;
       }
 
-      if (url) {
-        this.userGame.url = url;
-        this.userGame.type = 1;
+      if (data.game) {
+        game = data.game;
+        if (game.url) game.type = 1;
       }
+
+      if (typeof data.afk !== 'undefined') afk = data.afk;
+      afk = Boolean(afk);
+
+      this.localPresence = { status, game, afk };
+      this.localPresence.since = 0;
+      this.localPresence.game = this.localPresence.game || null;
 
       this.client.ws.send({
         op: 3,
-        d: {
-          idle_since: this.idleStatus,
-          game: this.userGame,
-        },
+        d: this.localPresence,
       });
 
-      this.status = this.idleStatus ? 'idle' : 'online';
-      this.game = this.userGame;
+      this.client._setPresence(this.id, this.localPresence);
+
       resolve(this);
     });
   }

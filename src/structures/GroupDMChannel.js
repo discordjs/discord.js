@@ -80,6 +80,7 @@ class GroupDMChannel extends Channel {
   /**
    * The owner of this Group DM.
    * @type {User}
+   * @readonly
    */
   get owner() {
     return this.client.users.get(this.ownerID);
@@ -100,8 +101,8 @@ class GroupDMChannel extends Channel {
       this.ownerID === channel.ownerID;
 
     if (equal) {
-      const thisIDs = this.recipients.array().map(r => r.id);
-      const otherIDs = channel.recipients.map(r => r.id);
+      const thisIDs = this.recipients.keyArray();
+      const otherIDs = channel.recipients.keyArray();
       return arraysEqual(thisIDs, otherIDs);
     }
 

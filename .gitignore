@@ -36,3 +36,7 @@ node_modules
 test/auth.json
 examples/auth.json
 docs/_build
+
+# Secret keys
+docs/deploy/deploy_key
+docs/deploy/deploy_key.pub

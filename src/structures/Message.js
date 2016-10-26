@@ -2,6 +2,7 @@ const Attachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
+const escapeMarkdown = require('../util/EscapeMarkdown');
 
 /**
  * Represents a Message on Discord
@@ -30,6 +31,12 @@ class Message {
      * @type {string}
      */
     this.id = data.id;
+
+    /**
+     * The type of the message
+     * @type {string}
+     */
+    this.type = Constants.MessageTypes[data.type];
 
     /**
      * The content of the message
@@ -88,6 +95,18 @@ class Message {
     for (const attachment of data.attachments) this.attachments.set(attachment.id, new Attachment(this, attachment));
 
     /**
+     * The timestamp the message was sent at
+     * @type {number}
+     */
+    this.createdTimestamp = new Date(data.timestamp).getTime();
+
+    /**
+     * The timestamp the message was last edited at (if applicable)
+     * @type {?number}
+     */
+    this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
+
+    /**
      * An object containing a further users, roles or channels collections
      * @type {Object}
      * @property {Collection<string, User>} mentions.users Mentioned users, maps their ID to the user object.
@@ -128,8 +147,6 @@ class Message {
       }
     }
 
-    this._timestamp = new Date(data.timestamp).getTime();
-    this._editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
     this._edits = [];
   }
 
@@ -139,9 +156,9 @@ class Message {
       if (this.guild) this.member = this.guild.member(this.author);
     }
     if (data.content) this.content = data.content;
-    if (data.timestamp) this._timestamp = new Date(data.timestamp).getTime();
+    if (data.timestamp) this.createdTimestamp = new Date(data.timestamp).getTime();
     if (data.edited_timestamp) {
-      this._editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
+      this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
     }
     if ('tts' in data) this.tts = data.tts;
     if ('mention_everyone' in data) this.mentions.everyone = data.mention_everyone;
@@ -185,24 +202,27 @@ class Message {
   }
 
   /**
-   * When the message was sent
+   * The time the message was sent
    * @type {Date}
+   * @readonly
    */
-  get timestamp() {
-    return new Date(this._timestamp);
+  get createdAt() {
+    return new Date(this.createdTimestamp);
   }
 
   /**
-   * If the message was edited, the timestamp at which it was last edited
+   * The time the message was last edited at (if applicable)
    * @type {?Date}
+   * @readonly
    */
-  get editedTimestamp() {
-    return new Date(this._editedTimestamp);
+  get editedAt() {
+    return this.editedTimestamp ? new Date(this.editedTimestamp) : null;
   }
 
   /**
    * The guild the message was sent in (if in a guild channel)
    * @type {?Guild}
+   * @readonly
    */
   get guild() {
     return this.channel.guild || null;
@@ -212,11 +232,11 @@ class Message {
    * The message contents with all mentions replaced by the equivalent text. If mentions cannot be resolved to a name,
    * the relevant mention in the message content will not be converted.
    * @type {string}
+   * @readonly
    */
   get cleanContent() {
     return this.content
-      .replace(/@everyone/g, '@\u200Beveryone')
-      .replace(/@here/g, '@\u200Bhere')
+      .replace(/@(everyone|here)/g, '@\u200b$1')
       .replace(/<@!?[0-9]+>/g, (input) => {
         const id = input.replace(/<|!|>|@/g, '');
         if (this.channel.type === 'dm' || this.channel.type === 'group') {
@@ -250,6 +270,7 @@ class Message {
    * An array of cached versions of the message, including the current version.
    * Sorted from latest (first) to oldest (last).
    * @type {Message[]}
+   * @readonly
    */
   get edits() {
     return this._edits.slice().unshift(this);
@@ -258,6 +279,7 @@ class Message {
   /**
    * Whether the message is editable by the client user.
    * @type {boolean}
+   * @readonly
    */
   get editable() {
     return this.author.id === this.client.user.id;
@@ -266,6 +288,7 @@ class Message {
   /**
    * Whether the message is deletable by the client user.
    * @type {boolean}
+   * @readonly
    */
   get deletable() {
     return this.author.id === this.client.user.id || (this.guild &&
@@ -276,6 +299,7 @@ class Message {
   /**
    * Whether the message is pinnable by the client user.
    * @type {boolean}
+   * @readonly
    */
   get pinnable() {
     return !this.guild ||
@@ -301,7 +325,7 @@ class Message {
    * // update the content of a message
    * message.edit('This is my new content!')
    *  .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   edit(content) {
     return this.client.rest.methods.updateMessage(this, content);
@@ -314,8 +338,8 @@ class Message {
    * @returns {Promise<Message>}
    */
   editCode(lang, content) {
-    content = this.client.resolver.resolveString(content).replace(/```/g, '`\u200b``');
-    return this.edit(`\`\`\`${lang ? lang : ''}\n${content}\n\`\`\``);
+    content = escapeMarkdown(this.client.resolver.resolveString(content), true);
+    return this.edit(`\`\`\`${lang || ''}\n${content}\n\`\`\``);
   }
 
   /**
@@ -342,7 +366,7 @@ class Message {
    * // delete a message
    * message.delete()
    *  .then(msg => console.log(`Deleted message from ${msg.author}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   delete(timeout = 0) {
     return new Promise((resolve, reject) => {
@@ -363,7 +387,7 @@ class Message {
    * // reply to a message
    * message.reply('Hey, I'm a reply!')
    *  .then(msg => console.log(`Sent a reply to ${msg.author}`))
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   reply(content, options = {}) {
     content = this.client.resolver.resolveString(content);
@@ -401,8 +425,8 @@ class Message {
 
     if (equal && rawData) {
       equal = this.mentions.everyone === message.mentions.everyone &&
-        this._timestamp === new Date(rawData.timestamp).getTime() &&
-        this._editedTimestamp === new Date(rawData.edited_timestamp).getTime();
+        this.createdTimestamp === new Date(rawData.timestamp).getTime() &&
+        this.editedTimestamp === new Date(rawData.edited_timestamp).getTime();
     }
 
     return equal;
