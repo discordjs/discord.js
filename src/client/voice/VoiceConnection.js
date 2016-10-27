@@ -212,7 +212,7 @@ class VoiceConnection extends EventEmitter {
    *  .then(connection => {
    *    const dispatcher = connection.playFile('C:/Users/Discord/Desktop/music.mp3');
    *  })
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   playFile(file, options) {
     return this.playStream(fs.createReadStream(file), options);
@@ -232,7 +232,7 @@ class VoiceConnection extends EventEmitter {
    *    const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', {filter : 'audioonly'});
    *    const dispatcher = connection.playStream(stream, streamOptions);
    *  })
-   *  .catch(console.log);
+   *  .catch(console.error);
    */
   playStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
     const options = { seek, volume, passes };

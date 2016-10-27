@@ -58,7 +58,7 @@ class TextChannel extends GuildChannel {
    * @example
    * channel.createWebhook('Snek', 'http://snek.s3.amazonaws.com/topSnek.png')
    *  .then(webhook => console.log(`Created Webhook ${webhook}`))
-   *  .catch(console.log)
+   *  .catch(console.error)
    */
   createWebhook(name, avatar) {
     return new Promise((resolve, reject) => {

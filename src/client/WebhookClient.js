@@ -16,7 +16,7 @@ class WebhookClient extends Webhook {
    * @example
    * // create a new webhook and send a message
    * let hook = new Discord.WebhookClient('1234', 'abcdef')
-   * hook.sendMessage('This will send a message').catch(console.log)
+   * hook.sendMessage('This will send a message').catch(console.error)
    */
   constructor(id, token, options) {
     super(null, id, token);

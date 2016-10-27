@@ -103,7 +103,7 @@ class Webhook {
    *     'footer': 'Powered by sneks',
    *     'ts': new Date().getTime() / 1000
    *   }]
-   * }).catch(console.log);
+   * }).catch(console.error);
    */
   sendSlackMessage(body) {
     return this.client.rest.methods.sendSlackWebhookMessage(this, body);
