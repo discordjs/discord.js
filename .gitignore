@@ -14,3 +14,4 @@ docs/deploy/deploy_key.pub
 # Miscellaneous
 .tmp/
 .vscode/
+docs/docs.json
