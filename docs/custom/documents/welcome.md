@@ -1,6 +1,6 @@
 <div align="center">
   <p>
-    <a href="https://hydrabolt.github.io/discord.js">
+    <a href="https://discord.js.org">
       <img src="http://i.imgur.com/StEGtEh.png" width="546" alt="discord.js" />
     </a>
   </p>
@@ -53,10 +53,10 @@ For production bots, using node-opus should be considered a necessity, especiall
 * [York's v9 upgrade guide](https://yorkaargh.wordpress.com/2016/09/03/updating-discord-js-bots/)
 
 ## Links
-* [Website](http://hydrabolt.github.io/discord.js/)
+* [Website](http://discord.js.org/)
 * [Discord.js server](https://discord.gg/bRCvFy9)
 * [Discord API server](https://discord.gg/rV4BwdK)
-* [Documentation](http://hydrabolt.github.io/discord.js/#!/docs/tag/master)
+* [Documentation](http://discord.js.org/#!/docs)
 * [Legacy (v8) documentation](http://discordjs.readthedocs.io/en/8.2.0/docs_client.html)
 * [Examples](https://github.com/hydrabolt/discord.js/tree/master/docs/custom/examples)
 * [GitHub](https://github.com/hydrabolt/discord.js)
