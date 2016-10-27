@@ -78,7 +78,7 @@ class Documentation {
       parent.add(item);
     }
     for (const [key, val] of unknowns) {
-      console.log(`Unknown documentation kind "${key}" - \n${JSON.stringify(val)}\n`);
+      console.warn(`- Unknown documentation kind "${key}" - \n${JSON.stringify(val)}\n`);
     }
   }
 
