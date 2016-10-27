@@ -116,12 +116,13 @@ class MessageReaction {
   /**
    * Fetch all the users that gave this reaction. Resolves with a collection of users,
    * mapped by their IDs.
+   * @param {number} [limit=100] the maximum amount of users to fetch, defaults to 100
    * @returns {Promise<Collection<string, User>>}
    */
-  fetchUsers() {
+  fetchUsers(limit = 100) {
     const message = this.message;
     return new Promise((resolve, reject) => {
-      message.client.rest.methods.getMessageReactionUsers(message.channel.id, message.id, this.emoji.identifier)
+      message.client.rest.methods.getMessageReactionUsers(message.channel.id, message.id, this.emoji.identifier, limit)
       .then(users => {
         this.users = new Collection();
         for (const rawUser of users) {
