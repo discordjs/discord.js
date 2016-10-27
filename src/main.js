@@ -43,8 +43,7 @@ const App = Vue.extend({
 
 Vue.filter('marked', $text => {
   let text = $text || 'error! I\'m not set!';
-  text = text.replace(/<info>(.+)<\/info>/gi, '<div class="info">$1</div>');
-  text = text.replace(/<warn>(.+)<\/warn>/gi, '<div class="warn">$1</div>');
+  text = text.replace(/<(info|warn)>([\s\S]+)<\/\1>/gi, '<div class="$1">$2</div>');
   return marked(text);
 });
 
