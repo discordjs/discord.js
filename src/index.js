@@ -25,6 +25,7 @@ module.exports = {
   MessageAttachment: require('./structures/MessageAttachment'),
   MessageCollector: require('./structures/MessageCollector'),
   MessageEmbed: require('./structures/MessageEmbed'),
+  OAuth2App: require('./structures/OAuth2App'),
   PartialGuild: require('./structures/PartialGuild'),
   PartialGuildChannel: require('./structures/PartialGuildChannel'),
   PermissionOverwrites: require('./structures/PermissionOverwrites'),
