@@ -650,7 +650,7 @@ class Guild {
 
     const updatedRoles = this.roles.array().map(r => ({
       id: r.id,
-      position: r.id === role ? position : (r.position < position ? r.position : r.position + 1),
+      position: r.id === role ? position : r.position < position ? r.position : r.position + 1,
     }));
 
     return this.client.rest.methods.setRolePositions(this.id, updatedRoles);
