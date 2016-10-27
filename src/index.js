@@ -11,6 +11,7 @@ module.exports = {
   fetchRecommendedShards: require('./util/FetchRecommendedShards'),
 
   Channel: require('./structures/Channel'),
+  ClientOAuth2App: require('./structures/ClientOAuth2App'),
   ClientUser: require('./structures/ClientUser'),
   DMChannel: require('./structures/DMChannel'),
   Emoji: require('./structures/Emoji'),
@@ -25,6 +26,7 @@ module.exports = {
   MessageAttachment: require('./structures/MessageAttachment'),
   MessageCollector: require('./structures/MessageCollector'),
   MessageEmbed: require('./structures/MessageEmbed'),
+  OAuth2App: require('./structures/OAuth2App'),
   PartialGuild: require('./structures/PartialGuild'),
   PartialGuildChannel: require('./structures/PartialGuildChannel'),
   PermissionOverwrites: require('./structures/PermissionOverwrites'),
