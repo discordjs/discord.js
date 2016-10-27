@@ -5,13 +5,27 @@
     </a>
   </p>
   <p>
-    [![Discord](https://discordapp.com/api/guilds/222078108977594368/embed.png)](https://discord.gg/bRCvFy9)
-    [![npm](https://img.shields.io/npm/v/discord.js.svg?maxAge=3600)](https://www.npmjs.com/package/discord.js)
-    [![npm](https://img.shields.io/npm/dt/discord.js.svg?maxAge=3600)](https://www.npmjs.com/package/discord.js)
-    [![Build Status](https://travis-ci.org/hydrabolt/discord.js.svg)](https://travis-ci.org/hydrabolt/discord.js)
-    [![David](https://img.shields.io/david/hydrabolt/discord.js.svg?maxAge=3600)](https://david-dm.org/hydrabolt/discord.js)
+    <a href="https://discord.gg/bRCvFy9">
+      <img src="https://discordapp.com/api/guilds/222078108977594368/embed.png" alt="Discord server" />
+    </a>
+    <a href="https://www.npmjs.com/package/discord.js">
+      <img src="https://img.shields.io/npm/v/discord.js.svg?maxAge=3600" alt="NPM version" />
+    </a>
+    <a href="https://www.npmjs.com/package/discord.js">
+      <img src="https://img.shields.io/npm/dt/discord.js.svg?maxAge=3600" alt="NPM downloads" />
+    </a>
+    <a href="https://travis-ci.org/hydrabolt/discord.js">
+      <img src="https://travis-ci.org/hydrabolt/discord.js.svg" alt="Build status" />
+    </a>
+    <a href="https://david-dm.org/hydrabolt/discord.js">
+      <img src="https://img.shields.io/david/hydrabolt/discord.js.svg?maxAge=3600" alt="Dependencies" />
+    </a>
   </p>
-  <p>[![NPM](https://nodei.co/npm/discord.js.png?downloads=true&stars=true)](https://nodei.co/npm/discord.js/)</p>
+  <p>
+    <a href="https://nodei.co/npm/discord.js/">
+      <img src="https://nodei.co/npm/discord.js.png?downloads=true&stars=true" alt="NPM info" />
+    </a>
+  </p>
   <br />
 </div>
 
