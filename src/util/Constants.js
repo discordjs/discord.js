@@ -58,7 +58,7 @@ exports.DefaultOptions = {
 
 exports.Errors = {
   NO_TOKEN: 'Request to use token, but token was unavailable to the client.',
-  NO_BOT_ACCOUNT: 'You ideally should be using a bot account!',
+  NO_BOT_ACCOUNT: 'You have to use a bot account to use this method.',
   BAD_WS_MESSAGE: 'A bad message was received from the websocket; either bad compression, or not JSON.',
   TOOK_TOO_LONG: 'Something took too long to do.',
   NOT_A_PERMISSION: 'Invalid permission string or number.',
