@@ -11,6 +11,7 @@ module.exports = {
   fetchRecommendedShards: require('./util/FetchRecommendedShards'),
 
   Channel: require('./structures/Channel'),
+  ClientOAuth2App: require('./structures/ClientOAuth2App'),
   ClientUser: require('./structures/ClientUser'),
   DMChannel: require('./structures/DMChannel'),
   Emoji: require('./structures/Emoji'),
