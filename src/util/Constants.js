@@ -117,6 +117,15 @@ const Endpoints = exports.Endpoints = {
 
   // webhooks
   webhook: (webhookID, token) => `${API}/webhooks/${webhookID}${token ? `/${token}` : ''}`,
+
+  // oauth2
+  oauth2: `${API}/oauth2`,
+  oauth2Apps: `${Endpoints.oauth2}/applications`,
+  oauth2App: (clientID) => `${Endpoints.oauth2}/applications/${clientID}`,
+  oauth2Me: `${Endpoints.oauth2}/applications/@me`,
+  oauth2Bot: (clientID) => `${Endpoints.oauth2}/applications/${clientID}/bot`,
+  oauth2Auth: (clientID, permissions, bot) => `${Endpoints.oauth2}/authorize?client_id=${clientID}` +
+    `${bot ? '&scope=bot' : ''}&permissions=${permissions}`,
 };
 
 exports.Status = {

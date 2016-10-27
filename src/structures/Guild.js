@@ -504,6 +504,16 @@ class Guild {
   }
 
   /**
+   * Adds a bot user to the Guild, this will not work for bot accounts.
+   * @param {string} clientID The Client ID of the bot, this isn't always the bot's User ID
+   * @param {number} [permissions=0] An optional permissions number to give the bot upon authorization
+   * @returns {Promise<Object>}
+   */
+  addBot(clientID, permissions = 0) {
+    return this.client.rest.methods.authorizeBot(this.id, clientID, permissions);
+  }
+
+  /**
    * Prunes members from the guild based on how long they have been inactive.
    * @param {number} days Number of days of inactivity required to kick
    * @param {boolean} [dry=false] If true, will return number of users that will be kicked, without actually doing it
