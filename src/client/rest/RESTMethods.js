@@ -751,6 +751,13 @@ class RESTMethods {
         .catch(reject);
     });
   }
+
+  getMessageReactionUsers(channelID, messageID, emoji, limit = 100) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.messageReaction(channelID, messageID, emoji, limit), true)
+        .then(resolve, reject);
+    });
+  }
 }
 
 module.exports = RESTMethods;
