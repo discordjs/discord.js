@@ -58,10 +58,10 @@ class ClientManager {
   }
 
   destroy() {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       this.client.ws.destroy();
       if (!this.client.user.bot) {
-        this.client.rest.methods.logout().then(resolve);
+        this.client.rest.methods.logout().then(resolve, reject);
       } else {
         resolve();
       }

@@ -1,5 +1,6 @@
 /**
  * Represents a Secret Key used in encryption over voice
+ * @private
  */
 class SecretKey {
   constructor(key) {
