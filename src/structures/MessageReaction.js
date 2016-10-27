@@ -40,10 +40,8 @@ class ReactionEmoji {
   /**
    * Creates the text required to form a graphical emoji on Discord.
    * @example
-   * ```js
    * // send the emoji used in a reaction to the channel the reaction is part of
    * reaction.message.channel.sendMessage(`The emoji used is ${reaction.emoji}`);
-   * ```
    * @returns {string}
    */
   toString() {
