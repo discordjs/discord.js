@@ -1,7 +1,7 @@
 <div align="center">
   <p>
     <a href="https://discord.js.org">
-      <img src="http://i.imgur.com/StEGtEh.png" width="546" alt="discord.js" />
+      <img src="https://i.imgur.com/StEGtEh.png" width="546" alt="discord.js" />
     </a>
   </p>
   <p>
