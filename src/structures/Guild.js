@@ -504,12 +504,18 @@ class Guild {
   }
 
   /**
-   * Adds a bot user to the Guild, this will not work for bot accounts.
+   * Adds a bot user to the Guild.
+   * <warn>This is only available for user accounts, not bot accounts!</warn>
    * @param {string} clientID The Client ID of the bot, this isn't always the bot's User ID
-   * @param {number} [permissions=0] An optional permissions number to give the bot upon authorization
-   * @returns {Promise<Object>}
+   * @param {PermissionResolvable[]|number} [permissions=0] An optional array of PermissionResolvables or
+   * permissions number to give the bot upon authorization
+   * @returns {Promise}
    */
   addBot(clientID, permissions = 0) {
+    if (permissions instanceof Array) {
+      permissions = permissions.map(p => this.client.resolver.resolvePermission(p))
+      .reduce((p1, p2) => p1 + p2, 0);
+    }
     return this.client.rest.methods.authorizeBot(this.id, clientID, permissions);
   }
 

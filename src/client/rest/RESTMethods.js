@@ -1,3 +1,4 @@
+const URL = require('url');
 const Constants = require('../../util/Constants');
 const Collection = require('../../util/Collection');
 const splitMessage = require('../../util/SplitMessage');
@@ -728,8 +729,10 @@ class RESTMethods {
         permissions,
         authorize: true,
       })
-      .then(data => {
-        resolve(data);
+      .then(response => {
+        let query = URL.parse(response.location, true).query || {};
+        if (query.error) throw new Error(query.error_description);
+        else resolve(true);
       }).catch(reject);
     });
   }
