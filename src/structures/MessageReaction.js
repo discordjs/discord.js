@@ -101,12 +101,18 @@ class MessageReaction {
   }
 
   /**
-   * If the client has given this reaction to a message, it is removed.
+   * Removes a user from this reaction.
+   * @param {UserResolvable} [user] the user that you want to remove the reaction, defaults to the client.
    * @returns {Promise<MessageReaction>}
    */
-  remove() {
+  remove(user = this.message.client.user) {
     const message = this.message;
-    return message.client.rest.methods.removeMessageReaction(message.channel.id, message.id, this.emoji.identifier);
+    user = this.message.client.resolver.resolveUserID(user);
+
+    if (!user) return Promise.reject('A UserIDResolvable is required (string, user, member, message, guild)');
+
+    return message.client.rest.methods.removeMessageReaction(
+      message.channel.id, message.id, this.emoji.identifier, user);
   }
 
   /**

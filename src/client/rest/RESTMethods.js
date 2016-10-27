@@ -737,12 +737,16 @@ class RESTMethods {
     });
   }
 
-  removeMessageReaction(channelID, messageID, emoji) {
+  removeMessageReaction(channelID, messageID, emoji, userID) {
     return new Promise((resolve, reject) => {
-      this.rest.makeRequest('delete', Constants.Endpoints.selfMessageReaction(channelID, messageID, emoji), true)
+      let endpoint = Constants.Endpoints.selfMessageReaction(channelID, messageID, emoji);
+      if (userID !== this.rest.client.user.id) {
+        endpoint = Constants.Endpoints.userMessageReaction(channelID, messageID, emoji, null, userID);
+      }
+      this.rest.makeRequest('delete', endpoint, true)
         .then(() => {
           resolve(this.rest.client.actions.MessageReactionRemove.handle({
-            user_id: this.rest.client.user.id,
+            user_id: userID,
             message_id: messageID,
             emoji: parseEmoji(emoji),
             channel_id: channelID,
