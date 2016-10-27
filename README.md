@@ -29,16 +29,19 @@
   <br />
 </div>
 
+## About
 discord.js is a powerful node.js module that allows you to interact with the [Discord API](https://discordapp.com/developers/docs/intro) very easily.
+It takes a much more object-oriented approach than most other JS Discord libraries, making your bot's code much tidier and easier to comprehend.
+Usability and performance are key focuses of discord.js. It also has nearly 100% coverage of the Discord API.
 
 ## Installation
-**Node.js 6.0.0 or newer is required.**  
+**Node.js 6.0.0 or newer is required.**
+
 Without voice support: `npm install discord.js --save`  
 With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discord.js node-opus --save`  
-With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js opusscript --save`  
-If both audio packages are installed, discord.js will automatically choose node-opus.
+With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js opusscript --save`
 
-The preferred audio engine is node-opus, as it performs significantly better than opusscript.
+The preferred audio engine is node-opus, as it performs significantly better than opusscript. When both are available, discord.js will automatically choose node-opus.
 Using opusscript is only recommended for development on Windows, since getting node-opus to build there can be a bit of a challenge.
 For production bots, using node-opus should be considered a necessity, especially if they're going to be running on multiple servers.
 
