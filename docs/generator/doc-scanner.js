@@ -1,5 +1,4 @@
-/* eslint no-console:0 no-return-assign:0 */
-const parse = require('jsdoc-parse');
+const jsdoc2md = require('jsdoc-to-markdown');
 
 module.exports = class DocumentationScanner {
   constructor(generator) {
@@ -7,18 +6,6 @@ module.exports = class DocumentationScanner {
   }
 
   scan(directory) {
-    return new Promise((resolve, reject) => {
-      const stream = parse({
-        src: [`${directory}*.js`, `${directory}**/*.js`],
-      });
-
-      let json = '';
-      stream.on('data', chunk => json += chunk.toString('utf-8'));
-      stream.on('error', reject);
-      stream.on('end', () => {
-        json = JSON.parse(json);
-        resolve(json);
-      });
-    });
+    return jsdoc2md.getTemplateData({ files: [`${directory}*.js`, `${directory}**/*.js`] });
   }
 };
