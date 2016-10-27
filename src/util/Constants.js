@@ -115,6 +115,9 @@ const Endpoints = exports.Endpoints = {
   channelMessage: (channelID, messageID) => `${Endpoints.channelMessages(channelID)}/${messageID}`,
   channelWebhooks: (channelID) => `${Endpoints.channel(channelID)}/webhooks`,
 
+  messageReactions: (message, user, reaction) => `${Endpoints.channelMessage(message.channel.id, message.id)}` +
+  `/reactions/${reaction}/${user}`,
+
   // webhooks
   webhook: (webhookID, token) => `${API}/webhooks/${webhookID}${token ? `/${token}` : ''}`,
 };
@@ -221,6 +224,8 @@ exports.WSEvents = {
   MESSAGE_CREATE: 'MESSAGE_CREATE',
   MESSAGE_DELETE: 'MESSAGE_DELETE',
   MESSAGE_UPDATE: 'MESSAGE_UPDATE',
+  MESSAGE_REACTION_ADD: 'MESSAGE_REACTION_ADD',
+  MESSAGE_REACTION_REMOVE: 'MESSAGE_REACTION_REMOVE',
   MESSAGE_DELETE_BULK: 'MESSAGE_DELETE_BULK',
   USER_UPDATE: 'USER_UPDATE',
   PRESENCE_UPDATE: 'PRESENCE_UPDATE',
