@@ -158,7 +158,7 @@ class Message {
   }
 
   _addReaction(emoji, user) {
-    const emojiID = emoji.id || emoji;
+    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : emoji.name;
     let reaction;
     if (this.reactions.has(emojiID)) {
       reaction = this.reactions.get(emojiID);
@@ -304,6 +304,14 @@ class Message {
   }
 
   addReaction(emoji) {
+    if (emoji.identifier) {
+      emoji = emoji.identifier;
+    } else if (typeof emoji === 'string') {
+      if (!emoji.includes('%')) emoji = encodeURIComponent(emoji);
+    } else {
+      return Promise.reject(`Emoji must be a string or an Emoji/ReactionEmoji`);
+    }
+
     return this.client.rest.methods.addMessageReaction(this.channel.id, this.id, emoji);
   }
 
