@@ -142,7 +142,6 @@ class VoiceWebSocket extends EventEmitter {
    * Called whenever the connection to the WebSocket Server is lost
    */
   onClose() {
-    // TODO see if the connection is open before reconnecting
     if (!this.dead) this.client.setTimeout(this.connect.bind(this), this.attempts * 1000);
   }
 
