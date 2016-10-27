@@ -3,6 +3,7 @@ const Embed = require('./MessageEmbed');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
 const escapeMarkdown = require('../util/EscapeMarkdown');
+const MessageReaction = require('./MessageReaction');
 
 /**
  * Represents a Message on Discord
@@ -148,6 +149,42 @@ class Message {
     }
 
     this._edits = [];
+
+    /**
+     * A collection of Reactions to this Message, mapped by the reaction "id".
+     * @type {Collection<string, MessageReaction>}
+     */
+    this.reactions = new Collection();
+  }
+
+  _addReaction(emoji, user) {
+    const emojiID = emoji.id || emoji;
+    let reaction;
+    if (this.reactions.has(emojiID)) {
+      reaction = this.reactions.get(emojiID);
+    } else {
+      reaction = new MessageReaction(this, emoji, 0);
+      this.reactions.set(emojiID, reaction);
+    }
+    if (!reaction.users.has(user.id)) {
+      reaction.users.set(user.id, user);
+      reaction.count++;
+      return reaction;
+    }
+    return null;
+  }
+
+  _removeReaction(emoji, user) {
+    const emojiID = emoji.id || emoji;
+    if (this.reactions.has(emojiID)) {
+      const reaction = this.reactions.get(emojiID);
+      if (reaction.users.has(user.id)) {
+        reaction.users.delete(user.id);
+        reaction.count--;
+        return reaction;
+      }
+    }
+    return null;
   }
 
   patch(data) { // eslint-disable-line complexity
@@ -266,7 +303,11 @@ class Message {
       });
   }
 
- /**
+  addReaction(emoji) {
+    return this.client.rest.methods.addMessageReaction(this.channel.id, this.id, emoji);
+  }
+
+  /**
    * An array of cached versions of the message, including the current version.
    * Sorted from latest (first) to oldest (last).
    * @type {Message[]}

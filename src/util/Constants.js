@@ -115,6 +115,15 @@ const Endpoints = exports.Endpoints = {
   channelMessage: (channelID, messageID) => `${Endpoints.channelMessages(channelID)}/${messageID}`,
   channelWebhooks: (channelID) => `${Endpoints.channel(channelID)}/webhooks`,
 
+  // message reactions
+  messageReactions: (channelID, messageID) => `${Endpoints.channelMessage(channelID, messageID)}/reactions`,
+  messageReaction:
+    (channel, msg, emoji, limit) =>
+          `${Endpoints.messageReactions(channel, msg)}/${emoji}` +
+          `${limit ? `?limit=${limit}` : ''}`,
+  selfMessageReaction: (channel, msg, emoji, limit) =>
+          `${Endpoints.messageReaction(channel, msg, emoji, limit)}/@me`,
+
   // webhooks
   webhook: (webhookID, token) => `${API}/webhooks/${webhookID}${token ? `/${token}` : ''}`,
 };
@@ -187,6 +196,8 @@ exports.Events = {
   MESSAGE_DELETE: 'messageDelete',
   MESSAGE_UPDATE: 'messageUpdate',
   MESSAGE_BULK_DELETE: 'messageDeleteBulk',
+  MESSAGE_REACTION_ADD: 'messageReactionAdd',
+  MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
   USER_UPDATE: 'userUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
@@ -222,6 +233,8 @@ exports.WSEvents = {
   MESSAGE_DELETE: 'MESSAGE_DELETE',
   MESSAGE_UPDATE: 'MESSAGE_UPDATE',
   MESSAGE_DELETE_BULK: 'MESSAGE_DELETE_BULK',
+  MESSAGE_REACTION_ADD: 'MESSAGE_REACTION_ADD',
+  MESSAGE_REACTION_REMOVE: 'MESSAGE_REACTION_REMOVE',
   USER_UPDATE: 'USER_UPDATE',
   PRESENCE_UPDATE: 'PRESENCE_UPDATE',
   VOICE_STATE_UPDATE: 'VOICE_STATE_UPDATE',

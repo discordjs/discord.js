@@ -20,7 +20,7 @@ client.on('userUpdate', (o, n) => {
   console.log(o.username, n.username);
 });
 
-client.on('guildMemberAdd', (g, m) => console.log(`${m.user.username} joined ${g.name}`));
+client.on('guildMemberAdd', m => console.log(`${m.user.username} joined ${m.guild.name}`));
 
 client.on('channelCreate', channel => {
   console.log(`made ${channel.name}`);
@@ -176,4 +176,14 @@ client.on('message', msg => {
       })
       .catch(console.error);
   }
-})
+});
+
+client.on('messageReactionAdd', (reaction, user) => {
+  if (reaction.message.channel.id !== '222086648706498562') return;
+  reaction.message.channel.sendMessage(`${user.username} added reaction ${reaction.emoji}, count is now ${reaction.count}`);
+});
+
+client.on('messageReactionRemove', (reaction, user) => {
+  if (reaction.message.channel.id !== '222086648706498562') return;
+  reaction.message.channel.sendMessage(`${user.username} removed reaction ${reaction.emoji}, count is now ${reaction.count}`);
+});
