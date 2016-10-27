@@ -155,6 +155,7 @@ class ClientDataResolver {
    *   "ADMINISTRATOR",
    *   "MANAGE_CHANNELS",
    *   "MANAGE_GUILD",
+   *   "ADD_REACTIONS", // add reactions to messages
    *   "READ_MESSAGES",
    *   "SEND_MESSAGES",
    *   "SEND_TTS_MESSAGES",
