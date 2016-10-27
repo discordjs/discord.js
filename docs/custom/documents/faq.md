@@ -6,13 +6,10 @@ Always make sure to read the documentation.
 ## No matter what, I get `SyntaxError: Block-scoped declarations (let, const, function, class) not yet supported outside strict mode`‽
 Update to Node.js 6.0.0 or newer.
 
-## I get an absurd amount of errors when installing discord.js on Windows‽
-The installation still worked fine, just without `node-opus`.
-If you don't need voice support, using `npm install discord.js --no-optional` will prevent these errors.
-
 ## How do I get voice working?
 - Install FFMPEG.
-- Optionally, set up `node-opus`, which is much faster than the default `opusscript`.
+- Install either the `node-opus` package or the `opusscript` package.
+  node-opus is greatly preferred, but is tougher to get working on Windows.
 
 ## How do I install FFMPEG?
 - **Ubuntu 16.04:** `sudo apt install ffpmeg`
@@ -20,5 +17,5 @@ If you don't need voice support, using `npm install discord.js --no-optional` wi
 - **Windows:** See the [FFMPEG section of AoDude's guide](https://github.com/bdistin/OhGodMusicBot/blob/master/README.md#download-ffmpeg).
 
 ## How do I set up node-opus?
-- **Ubuntu:** It's already done when you run `npm install discord.js` without `--no-optional`. Congrats!
+- **Ubuntu:** Simply run `npm install node-opus`, and it's done. Congrats!
 - **Windows:** See [AoDude's guide](https://github.com/bdistin/OhGodMusicBot/blob/master/README.md). Good luck.
