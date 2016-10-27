@@ -101,6 +101,18 @@ class Emoji {
   toString() {
     return this.requiresColons ? `<:${this.name}:${this.id}>` : this.name;
   }
+
+  /**
+   * The identifier of this emoji, used for message reactions
+   * @readonly
+   * @type {string}
+   */
+  get identifier() {
+    if (this.id) {
+      return `${this.name}:${this.id}`;
+    }
+    return encodeURIComponent(this.name);
+  }
 }
 
 module.exports = Emoji;
