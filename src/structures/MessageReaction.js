@@ -108,6 +108,28 @@ class MessageReaction {
     const message = this.message;
     return message.client.rest.methods.removeMessageReaction(message.channel.id, message.id, this.emoji.identifier);
   }
+
+  /**
+   * Fetch all the users that gave this reaction. Resolves with a collection of users,
+   * mapped by their IDs.
+   * @returns {Promise<Collection<string, User>>}
+   */
+  fetchUsers() {
+    const message = this.message;
+    return new Promise((resolve, reject) => {
+      message.client.rest.methods.getMessageReactionUsers(message.channel.id, message.id, this.emoji.identifier)
+      .then(users => {
+        this.users = new Collection();
+        for (const rawUser of users) {
+          const user = this.message.client.dataManager.newUser(rawUser);
+          this.users.set(user.id, user);
+        }
+        this.count = this.users.size;
+        resolve(this.users);
+      })
+      .catch(reject);
+    });
+  }
 }
 
 module.exports = MessageReaction;

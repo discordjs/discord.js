@@ -187,3 +187,19 @@ client.on('messageReactionRemove', (reaction, user) => {
   if (reaction.message.channel.id !== '222086648706498562') return;
   reaction.message.channel.sendMessage(`${user.username} removed reaction ${reaction.emoji}, count is now ${reaction.count}`);
 });
+
+client.on('message', m => {
+  if (m.content.startsWith('#reactions')) {
+    const mID = m.content.split(' ')[1];
+    m.channel.fetchMessage(mID).then(rM => {
+      for (const reaction of rM.reactions.values()) {
+        reaction.fetchUsers().then(users => {
+          m.channel.sendMessage(
+            `The following gave that message ${reaction.emoji}:\n` +
+            `${users.map(u => u.username).map(t => `- ${t}`).join('\n')}`
+          );
+        });
+      }
+    });
+  }
+});
