@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const DocumentedClass = require('./types/DocumentedClass');
 const DocumentedInterface = require('./types/DocumentedInterface');
 const DocumentedTypeDef = require('./types/DocumentedTypeDef');
@@ -5,7 +6,7 @@ const DocumentedConstructor = require('./types/DocumentedConstructor');
 const DocumentedMember = require('./types/DocumentedMember');
 const DocumentedFunction = require('./types/DocumentedFunction');
 const DocumentedEvent = require('./types/DocumentedEvent');
-const GEN_VERSION = require('./config.json').GEN_VERSION;
+const GEN_VERSION = require('./config').GEN_VERSION;
 
 class Documentation {
   constructor(items, custom) {
@@ -35,29 +36,20 @@ class Documentation {
   }
 
   findParent(item) {
-    if (['constructor', 'member', 'function', 'event'].indexOf(item.kind) > -1) {
-      if (this.classes.get(item.memberof)) {
-        return this.classes.get(item.memberof);
-      }
-      if (this.interfaces.get(item.memberof)) {
-        return this.interfaces.get(item.memberof);
-      }
+    if (['constructor', 'member', 'function', 'event'].includes(item.kind)) {
+      let val = this.classes.get(item.memberof);
+      if (val) return val;
+      val = this.interfaces.get(item.memberof);
+      if (val) return val;
     }
-    return;
+    return null;
   }
 
   parse(items) {
-    this.registerRoots(
-      items.filter(
-        item => ['class', 'interface', 'typedef'].indexOf(item.kind) > -1
-      )
-    );
-
-    const members = items.filter(
-      item => ['class', 'interface', 'typedef'].indexOf(item.kind) === -1
-    );
-
+    this.registerRoots(items.filter(item => ['class', 'interface', 'typedef'].includes(item.kind)));
+    const members = items.filter(item => !['class', 'interface', 'typedef'].includes(item.kind));
     const unknowns = new Map();
+
     for (const member of members) {
       let item;
       switch (member.kind) {
@@ -75,22 +67,18 @@ class Documentation {
           break;
         default:
           unknowns.set(member.kind, member);
-          break;
+          continue;
       }
-      if (!item) {
-        continue;
-      }
+
       const parent = this.findParent(member);
       if (!parent) {
-        console.log(new Error(`${member.name || member.directData.name} has no accessible parent`));
+        console.warn(`Warning: "${member.name || member.directData.name}" has no accessible parent.`);
         continue;
       }
       parent.add(item);
     }
-    if (unknowns.size > 0) {
-      Array.from(unknowns.keys()).map(
-        k => console.log(`Unknown documentation kind ${k} - \n${JSON.stringify(unknowns.get(k))}\n`
-      ));
+    for (const [key, val] of unknowns) {
+      console.log(`Unknown documentation kind "${key}" - \n${JSON.stringify(val)}\n`);
     }
   }
 
@@ -99,7 +87,6 @@ class Documentation {
       version: GEN_VERSION,
       date: Date.now(),
     };
-
     const serialized = {
       meta,
       classes: Array.from(this.classes.values()).map(c => c.serialize()),

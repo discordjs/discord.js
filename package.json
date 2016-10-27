@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/hydrabolt/discord.js#readme",
   "dependencies": {
-    "superagent": "^2.2.0",
+    "superagent": "^2.3.0",
     "tweetnacl": "^0.14.3",
     "ws": "^1.1.1"
   },
@@ -35,9 +35,9 @@
     "opusscript": "^0.0.1"
   },
   "devDependencies": {
+    "eslint": "^3.8.0",
     "fs-extra": "^0.30.0",
-    "jsdoc-parse": "^1.2.0",
-    "eslint": "^3.4.0"
+    "jsdoc-to-markdown": "^2.0.0"
   },
   "engines": {
     "node": ">=6.0.0"
