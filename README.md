@@ -1,16 +1,19 @@
-<p align="center">
-  <a href="https://hydrabolt.github.io/discord.js">
-    <img alt="discord.js" src="http://i.imgur.com/StEGtEh.png" width="546"><br />
-  </a>
-</p>
-
-[![Discord](https://discordapp.com/api/guilds/222078108977594368/embed.png)](https://discord.gg/bRCvFy9)
-[![npm](https://img.shields.io/npm/v/discord.js.svg?maxAge=3600)](https://www.npmjs.com/package/discord.js)
-[![npm](https://img.shields.io/npm/dt/discord.js.svg?maxAge=3600)](https://www.npmjs.com/package/discord.js)
-[![Build Status](https://travis-ci.org/hydrabolt/discord.js.svg)](https://travis-ci.org/hydrabolt/discord.js)
-[![David](https://img.shields.io/david/hydrabolt/discord.js.svg?maxAge=3600)](https://david-dm.org/hydrabolt/discord.js)
-
-[![NPM](https://nodei.co/npm/discord.js.png?downloads=true&stars=true)](https://nodei.co/npm/discord.js/)
+<div align="center">
+  <p>
+    <a href="https://hydrabolt.github.io/discord.js">
+      <img src="http://i.imgur.com/StEGtEh.png" width="546" alt="discord.js" />
+    </a>
+  </p>
+  <p>
+    [![Discord](https://discordapp.com/api/guilds/222078108977594368/embed.png)](https://discord.gg/bRCvFy9)
+    [![npm](https://img.shields.io/npm/v/discord.js.svg?maxAge=3600)](https://www.npmjs.com/package/discord.js)
+    [![npm](https://img.shields.io/npm/dt/discord.js.svg?maxAge=3600)](https://www.npmjs.com/package/discord.js)
+    [![Build Status](https://travis-ci.org/hydrabolt/discord.js.svg)](https://travis-ci.org/hydrabolt/discord.js)
+    [![David](https://img.shields.io/david/hydrabolt/discord.js.svg?maxAge=3600)](https://david-dm.org/hydrabolt/discord.js)
+  </p>
+  <p>[![NPM](https://nodei.co/npm/discord.js.png?downloads=true&stars=true)](https://nodei.co/npm/discord.js/)</p>
+  <br />
+</div>
 
 discord.js is a powerful node.js module that allows you to interact with the [Discord API](https://discordapp.com/developers/docs/intro) very easily.
 
