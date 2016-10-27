@@ -10,6 +10,7 @@ const Role = requireStructure('Role');
 const Invite = requireStructure('Invite');
 const Webhook = requireStructure('Webhook');
 const UserProfile = requireStructure('UserProfile');
+const ClientOAuth2App = requireStructure('ClientOAuth2App');
 
 class RESTMethods {
   constructor(restManager) {
@@ -760,6 +761,14 @@ class RESTMethods {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('get', Constants.Endpoints.messageReaction(channelID, messageID, emoji, limit), true)
         .then(resolve, reject);
+    });
+  }
+
+  getMyApp() {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('get', Constants.Endpoints.myApp, true)
+        .then(app => resolve(new ClientOAuth2App(this.rest.client, app)))
+        .catch(reject);
     });
   }
 }
