@@ -123,6 +123,8 @@ const Endpoints = exports.Endpoints = {
           `${limit ? `?limit=${limit}` : ''}`,
   selfMessageReaction: (channel, msg, emoji, limit) =>
           `${Endpoints.messageReaction(channel, msg, emoji, limit)}/@me`,
+  userMessageReaction: (channel, msg, emoji, limit, id) =>
+          `${Endpoints.messageReaction(channel, msg, emoji, limit)}/${id}`,
 
   // webhooks
   webhook: (webhookID, token) => `${API}/webhooks/${webhookID}${token ? `/${token}` : ''}`,
