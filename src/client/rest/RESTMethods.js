@@ -1,6 +1,7 @@
 const Constants = require('../../util/Constants');
 const Collection = require('../../util/Collection');
 const splitMessage = require('../../util/SplitMessage');
+const parseEmoji = require('../../util/ParseEmoji');
 
 const requireStructure = name => require(`../../structures/${name}`);
 const User = requireStructure('User');
@@ -716,6 +717,36 @@ class RESTMethods {
             guild_id: guildID,
             roles,
           }).guild);
+        })
+        .catch(reject);
+    });
+  }
+
+  addMessageReaction(channelID, messageID, emoji) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('put', Constants.Endpoints.selfMessageReaction(channelID, messageID, emoji), true)
+        .then(() => {
+          resolve(this.rest.client.actions.MessageReactionAdd.handle({
+            user_id: this.rest.client.user.id,
+            message_id: messageID,
+            emoji: parseEmoji(emoji),
+            channel_id: channelID,
+          }).reaction);
+        })
+        .catch(reject);
+    });
+  }
+
+  removeMessageReaction(channelID, messageID, emoji) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('delete', Constants.Endpoints.selfMessageReaction(channelID, messageID, emoji), true)
+        .then(() => {
+          resolve(this.rest.client.actions.MessageReactionRemove.handle({
+            user_id: this.rest.client.user.id,
+            message_id: messageID,
+            emoji: parseEmoji(emoji),
+            channel_id: channelID,
+          }).reaction);
         })
         .catch(reject);
     });
