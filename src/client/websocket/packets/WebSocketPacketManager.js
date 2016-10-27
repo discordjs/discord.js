@@ -38,6 +38,8 @@ class WebSocketPacketManager {
     this.register(Constants.WSEvents.MESSAGE_CREATE, 'MessageCreate');
     this.register(Constants.WSEvents.MESSAGE_DELETE, 'MessageDelete');
     this.register(Constants.WSEvents.MESSAGE_UPDATE, 'MessageUpdate');
+    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, 'MessageReactionAdd');
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, 'MessageReactionRemove');
     this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, 'VoiceServerUpdate');
     this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, 'MessageDeleteBulk');
     this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, 'ChannelPinsUpdate');

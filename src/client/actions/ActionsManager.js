@@ -6,6 +6,8 @@ class ActionsManager {
     this.register('MessageDelete');
     this.register('MessageDeleteBulk');
     this.register('MessageUpdate');
+    this.register('MessageReactionAdd');
+    this.register('MessageReactionRemove');
     this.register('ChannelCreate');
     this.register('ChannelDelete');
     this.register('ChannelUpdate');

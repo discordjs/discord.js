@@ -88,6 +88,13 @@ class Message {
     this.embeds = data.embeds.map(e => new Embed(this, e));
 
     /**
+     * A list of reactions in the message
+     * @type {Object[]}
+     */
+    this.reactions = new Collection();
+    if (data.reactions) for (const reaction of data.reactions) this.reactions.set(reaction.emoji.name, reaction);
+
+    /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID.
      * @type {Collection<string, MessageAttachment>}
      */
@@ -356,6 +363,24 @@ class Message {
    */
   unpin() {
     return this.client.rest.methods.unpinMessage(this);
+  }
+
+  /**
+   * Adds a reaction to a message
+   * @param {string} reaction A reaction
+   * @returns {Promise}
+   */
+  addReaction(reaction) {
+    return this.client.rest.methods.createMessageReaction(this, reaction);
+  }
+
+  /**
+   * Removes a reaction from a message
+   * @param {string} reaction A reaction
+   * @returns {Promise}
+   */
+  removeReaction(reaction) {
+    return this.client.rest.methods.removeMessageReaction(this, reaction);
   }
 
   /**

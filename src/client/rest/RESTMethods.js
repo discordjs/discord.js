@@ -9,6 +9,7 @@ const Role = requireStructure('Role');
 const Invite = requireStructure('Invite');
 const Webhook = requireStructure('Webhook');
 const UserProfile = requireStructure('UserProfile');
+const Emoji = requireStructure('Emoji');
 
 class RESTMethods {
   constructor(restManager) {
@@ -355,6 +356,25 @@ class RESTMethods {
       return this.rest.makeRequest('get', endpoint, true)
         .then(resolve)
         .catch(reject);
+    });
+  }
+
+  createMessageReaction(message, reaction) {
+    return new Promise((resolve, reject) => {
+      reaction = RESTMethods.parseReaction(reaction);
+      this.rest.makeRequest('put', Constants.Endpoints.messageReactions(message, '@me', reaction), true)
+      .then(resolve)
+      .catch(reject);
+    });
+  }
+
+  removeMessageReaction(message, reaction) {
+    return new Promise((resolve, reject) => {
+      reaction = RESTMethods.parseReaction(reaction);
+      this.rest.makeRequest('delete',
+        `${Constants.Endpoints.channelMessage(message.channel.id, message.id)}/reactions/${reaction}/@me`,
+        true
+      ).then(resolve).catch(reject);
     });
   }
 
@@ -719,6 +739,16 @@ class RESTMethods {
         })
         .catch(reject);
     });
+  }
+
+  static parseReaction(reaction) {
+    if (reaction instanceof Emoji) return `${reaction.name}:${reaction.id}`;
+    if (/<:(.+):(.+)>/.test(reaction)) {
+      reaction = reaction.match(/<:(.+):(.+)>/);
+      return `${reaction[1]}:${reaction[2]}`;
+    } else {
+      return encodeURIComponent(reaction);
+    }
   }
 }
 
