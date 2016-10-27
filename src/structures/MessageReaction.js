@@ -55,13 +55,17 @@ class ReactionEmoji {
  * Represents a reaction to a message
  */
 class MessageReaction {
-  constructor(message, emoji, count) {
+  constructor(message, emoji, count, me) {
     /**
      * The message that this reaction refers to
      * @type {Message}
      */
     this.message = message;
-
+    /**
+     * Whether the client has given this reaction
+     * @type {boolean}
+     */
+    this.me = me;
     this._emoji = new ReactionEmoji(this, emoji.name, emoji.id);
     /**
      * The number of people that have given the same reaction.

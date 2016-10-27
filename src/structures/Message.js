@@ -155,6 +155,13 @@ class Message {
      * @type {Collection<string, MessageReaction>}
      */
     this.reactions = new Collection();
+
+    if (data.reactions && data.reactions.length > 0) {
+      for (const reaction of data.reactions) {
+        const id = reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` : reaction.emoji.name;
+        this.reactions.set(id, new MessageReaction(this, reaction.emoji, reaction.count, reaction.me));
+      }
+    }
   }
 
   _addReaction(emoji, user) {
@@ -162,8 +169,9 @@ class Message {
     let reaction;
     if (this.reactions.has(emojiID)) {
       reaction = this.reactions.get(emojiID);
+      if (!reaction.me) reaction.me = user.id === this.client.user.id;
     } else {
-      reaction = new MessageReaction(this, emoji, 0);
+      reaction = new MessageReaction(this, emoji, 0, user.id === this.client.user.id);
       this.reactions.set(emojiID, reaction);
     }
     if (!reaction.users.has(user.id)) {
@@ -181,6 +189,9 @@ class Message {
       if (reaction.users.has(user.id)) {
         reaction.users.delete(user.id);
         reaction.count--;
+        if (user.id === this.client.user.id) {
+          reaction.me = false;
+        }
         return reaction;
       }
     }
@@ -234,6 +245,15 @@ class Message {
       for (const raw of channMentionsRaw) {
         const chan = this.channel.guild.channels.get(raw.match(/([0-9]{14,20})/g)[0]);
         if (chan) this.mentions.channels.set(chan.id, chan);
+      }
+    }
+    if (data.reactions) {
+      this.reactions = new Collection();
+      if (data.reactions.length > 0) {
+        for (const reaction of data.reactions) {
+          const id = reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` : reaction.emoji.name;
+          this.reactions.set(id, new MessageReaction(this, data.emoji, data.count, data.me));
+        }
       }
     }
   }
