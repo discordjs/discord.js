@@ -31,6 +31,14 @@ class ReadyHandler extends AbstractHandler {
       client._setPresence(presence.user.id, presence);
     }
 
+    if (data.notes) {
+      for (const user in data.notes) {
+        const note = data.notes[user];
+
+        client.user.notes.set(user, note);
+      }
+    }
+
     if (!client.user.bot && client.options.sync) client.setInterval(client.syncGuilds.bind(client), 30000);
     client.once('ready', client.syncGuilds.bind(client));
 
