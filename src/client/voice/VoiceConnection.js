@@ -20,6 +20,7 @@ class VoiceConnection extends EventEmitter {
 
   constructor(pendingConnection) {
     super();
+
     /**
      * The Voice Manager that instantiated this connection
      * @type {ClientVoiceManager}
@@ -76,6 +77,13 @@ class VoiceConnection extends EventEmitter {
      * @private
      */
     this.ssrcMap = new Map();
+
+    /**
+     * Whether this connection is ready
+     * @type {boolean}
+     * @private
+     */
+    this.ready = false;
 
     /**
      * Object that wraps contains the `ws` and `udp` sockets of this voice connection
@@ -161,6 +169,7 @@ class VoiceConnection extends EventEmitter {
        * @event VoiceConnection#ready
        */
       this.emit('ready');
+      this.ready = true;
     });
     this.sockets.ws.on('speaking', data => {
       const guild = this.channel.guild;
