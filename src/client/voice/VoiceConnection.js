@@ -17,7 +17,6 @@ const fs = require('fs');
  * @extends {EventEmitter}
  */
 class VoiceConnection extends EventEmitter {
-
   constructor(pendingConnection) {
     super();
 
