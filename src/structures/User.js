@@ -98,6 +98,16 @@ class User {
   }
 
   /**
+   * Get the note set for the user
+   * <warn>This property is meant for user accounts only!</warn>
+   * @type {?string}
+   * @readonly
+   */
+  get note() {
+    return this.client.user.notes.get(this.id);
+  }
+
+  /**
    * Check whether the user is typing in a channel.
    * @param {ChannelResolvable} channel The channel to check in
    * @returns {boolean}
