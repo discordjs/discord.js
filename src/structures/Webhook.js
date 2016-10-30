@@ -143,14 +143,12 @@ class Webhook {
         fileName = 'file.jpg';
       }
     }
-    return new Promise((resolve, reject) => {
-      this.client.resolver.resolveFile(attachment).then(file => {
-        resolve(this.client.rest.methods.sendWebhookMessage(this, content, options, {
-          file,
-          name: fileName,
-        }));
-      }, reject);
-    });
+    return this.client.resolver.resolveFile(attachment).then(file =>
+      this.client.rest.methods.sendWebhookMessage(this, content, options, {
+        file,
+        name: fileName,
+      })
+    );
   }
 
   /**
@@ -177,18 +175,15 @@ class Webhook {
    * @returns {Promise<Webhook>}
    */
   edit(name = this.name, avatar) {
-    return new Promise((resolve, reject) => {
-      if (avatar) {
-        this.client.resolver.resolveFile(avatar).then(file => {
-          const dataURI = this.client.resolver.resolveBase64(file);
-          resolve(this.client.rest.methods.editWebhook(this, name, dataURI));
-        }, reject);
-      } else {
-        this.client.rest.methods.editWebhook(this, name).then(data => {
-          this.setup(data);
-          resolve(this);
-        }, reject);
-      }
+    if (avatar) {
+      return this.client.resolver.resolveFile(avatar).then(file => {
+        const dataURI = this.client.resolver.resolveBase64(file);
+        return this.client.rest.methods.editWebhook(this, name, dataURI);
+      });
+    }
+    return this.client.rest.methods.editWebhook(this, name).then(data => {
+      this.setup(data);
+      return this;
     });
   }
 

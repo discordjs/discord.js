@@ -92,14 +92,12 @@ class TextBasedChannel {
         fileName = 'file.jpg';
       }
     }
-    return new Promise((resolve, reject) => {
-      this.client.resolver.resolveFile(attachment).then(file => {
-        this.client.rest.methods.sendMessage(this, content, options, {
-          file,
-          name: fileName,
-        }).then(resolve, reject);
-      }, reject);
-    });
+    return this.client.resolver.resolveFile(attachment).then(file =>
+      this.client.rest.methods.sendMessage(this, content, options, {
+        file,
+        name: fileName,
+      })
+    );
   }
 
   /**
@@ -131,14 +129,10 @@ class TextBasedChannel {
    *   .catch(console.error);
    */
   fetchMessage(messageID) {
-    return new Promise((resolve, reject) => {
-      this.client.rest.methods.getChannelMessage(this, messageID).then(data => {
-        let msg = data;
-        if (!(msg instanceof Message)) msg = new Message(this, data, this.client);
-
-        this._cacheMessage(msg);
-        resolve(msg);
-      }, reject);
+    return this.client.rest.methods.getChannelMessage(this, messageID).then(data => {
+      const msg = data instanceof Message ? data : new Message(this, data, this.client);
+      this._cacheMessage(msg);
+      return msg;
     });
   }
 
@@ -163,16 +157,14 @@ class TextBasedChannel {
    *  .catch(console.error);
    */
   fetchMessages(options = {}) {
-    return new Promise((resolve, reject) => {
-      this.client.rest.methods.getChannelMessages(this, options).then(data => {
-        const messages = new Collection();
-        for (const message of data) {
-          const msg = new Message(this, message, this.client);
-          messages.set(message.id, msg);
-          this._cacheMessage(msg);
-        }
-        resolve(messages);
-      }, reject);
+    return this.client.rest.methods.getChannelMessages(this, options).then(data => {
+      const messages = new Collection();
+      for (const message of data) {
+        const msg = new Message(this, message, this.client);
+        messages.set(message.id, msg);
+        this._cacheMessage(msg);
+      }
+      return messages;
     });
   }
 
@@ -181,16 +173,14 @@ class TextBasedChannel {
    * @returns {Promise<Collection<string, Message>>}
    */
   fetchPinnedMessages() {
-    return new Promise((resolve, reject) => {
-      this.client.rest.methods.getChannelPinnedMessages(this).then(data => {
-        const messages = new Collection();
-        for (const message of data) {
-          const msg = new Message(this, message, this.client);
-          messages.set(message.id, msg);
-          this._cacheMessage(msg);
-        }
-        resolve(messages);
-      }, reject);
+    return this.client.rest.methods.getChannelPinnedMessages(this).then(data => {
+      const messages = new Collection();
+      for (const message of data) {
+        const msg = new Message(this, message, this.client);
+        messages.set(message.id, msg);
+        this._cacheMessage(msg);
+      }
+      return messages;
     });
   }
 
@@ -317,16 +307,12 @@ class TextBasedChannel {
    * @returns {Promise<Collection<string, Message>>} Deleted messages
    */
   bulkDelete(messages) {
-    return new Promise((resolve, reject) => {
-      if (!isNaN(messages)) {
-        this.fetchMessages({ limit: messages }).then(msgs => resolve(this.bulkDelete(msgs)));
-      } else if (messages instanceof Array || messages instanceof Collection) {
-        const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
-        resolve(this.client.rest.methods.bulkDeleteMessages(this, messageIDs));
-      } else {
-        reject(new TypeError('Messages must be an Array, Collection, or number.'));
-      }
-    });
+    if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs));
+    if (messages instanceof Array || messages instanceof Collection) {
+      const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
+      return this.client.rest.methods.bulkDeleteMessages(this, messageIDs);
+    }
+    throw new TypeError('The messages must be an Array, Collection, or number.');
   }
 
   _cacheMessage(message) {

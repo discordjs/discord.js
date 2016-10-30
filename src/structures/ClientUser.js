@@ -90,7 +90,7 @@ class ClientUser extends User {
 
   /**
    * Set the avatar of the logged in Client.
-   * @param {FileResolvable|Base64Resolveable} avatar The new avatar
+   * @param {FileResolvable|Base64Resolvable} avatar The new avatar
    * @returns {Promise<ClientUser>}
    * @example
    * // set avatar
@@ -99,15 +99,13 @@ class ClientUser extends User {
    *  .catch(console.error);
    */
   setAvatar(avatar) {
-    return new Promise(resolve => {
-      if (avatar.startsWith('data:')) {
-        resolve(this.client.rest.methods.updateCurrentUser({ avatar }));
-      } else {
-        this.client.resolver.resolveFile(avatar).then(data => {
-          resolve(this.client.rest.methods.updateCurrentUser({ avatar: data }));
-        });
-      }
-    });
+    if (avatar.startsWith('data:')) {
+      return this.client.rest.methods.updateCurrentUser({ avatar });
+    } else {
+      return this.client.resolver.resolveFile(avatar).then(data =>
+        this.client.rest.methods.updateCurrentUser({ avatar: data })
+      );
+    }
   }
 
   /**
@@ -172,16 +170,14 @@ class ClientUser extends User {
    * @returns {Promise<Guild>} The guild that was created
    */
   createGuild(name, region, icon = null) {
-    return new Promise(resolve => {
-      if (!icon) resolve(this.client.rest.methods.createGuild({ name, icon, region }));
-      if (icon.startsWith('data:')) {
-        resolve(this.client.rest.methods.createGuild({ name, icon, region }));
-      } else {
-        this.client.resolver.resolveFile(icon).then(data => {
-          resolve(this.client.rest.methods.createGuild({ name, icon: data, region }));
-        });
-      }
-    });
+    if (!icon) return this.client.rest.methods.createGuild({ name, icon, region });
+    if (icon.startsWith('data:')) {
+      return this.client.rest.methods.createGuild({ name, icon, region });
+    } else {
+      return this.client.resolver.resolveFile(icon).then(data =>
+        this.client.rest.methods.createGuild({ name, icon: data, region })
+      );
+    }
   }
 
   /**
