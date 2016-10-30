@@ -336,26 +336,48 @@ class Client extends EventEmitter {
     return this.rest.methods.getMyApplication();
   }
 
-  setTimeout(fn, ...params) {
+  /**
+   * Sets a timeout that will be automatically cancelled if the client is destroyed.
+   * @param {function} fn Function to execute
+   * @param {number} delay Time to wait before executing (in milliseconds)
+   * @param {args} args Arguments for the function (not an array, but an infinite argument)
+   * @returns {Timeout}
+   */
+  setTimeout(fn, delay, ...args) {
     const timeout = setTimeout(() => {
       fn();
       this._timeouts.delete(timeout);
-    }, ...params);
+    }, delay, ...args);
     this._timeouts.add(timeout);
     return timeout;
   }
 
+  /**
+   * Clears a timeout
+   * @param {Timeout} timeout Timeout to cancel
+   */
   clearTimeout(timeout) {
     clearTimeout(timeout);
     this._timeouts.delete(timeout);
   }
 
-  setInterval(...params) {
-    const interval = setInterval(...params);
+  /**
+   * Sets an interval that will be automatically cancelled if the client is destroyed.
+   * @param {function} fn Function to execute
+   * @param {number} delay Time to wait before executing (in milliseconds)
+   * @param {args} args Arguments for the function (not an array, but an infinite argument)
+   * @returns {Timeout}
+   */
+  setInterval(fn, delay, ...args) {
+    const interval = setInterval(fn, delay, ...args);
     this._intervals.add(interval);
     return interval;
   }
 
+  /**
+   * Clears an interval
+   * @param {Timeout} interval Interval to cancel
+   */
   clearInterval(interval) {
     clearInterval(interval);
     this._intervals.delete(interval);
