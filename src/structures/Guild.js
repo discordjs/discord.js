@@ -345,6 +345,19 @@ class Guild {
   }
 
   /**
+   * The data for editing a guild
+   * @typedef {Object} GuildEditData
+   * @property {string} name The name of the guild
+   * @property {string} region The region of the guild
+   * @property {number} verificationLevel The verification level of the guild
+   * @property {GuildChannelResolvable} afkChannel The AFK channel of the guild
+   * @property {number} afkTimeout The AFK timeout of the guild
+   * @property {Base64Resolvable} icon The icon of the guild
+   * @property {GuildMemberResolvable} owner The owner of the guild
+   * @property {Base64Resolvable} splash The splash screen of the guild
+   */
+
+  /**
    * Updates the Guild with new information - e.g. a new name.
    * @param {GuildEditData} data The data to update the guild with
    * @returns {Promise<Guild>}
@@ -377,7 +390,7 @@ class Guild {
 
   /**
    * Edit the region of the Guild.
-   * @param {Region} region The new region of the guild.
+   * @param {string} region The new region of the guild.
    * @returns {Promise<Guild>}
    * @example
    * // edit the guild region
@@ -391,7 +404,7 @@ class Guild {
 
   /**
    * Edit the verification level of the Guild.
-   * @param {VerificationLevel} verificationLevel The new verification level of the guild
+   * @param {number} verificationLevel The new verification level of the guild
    * @returns {Promise<Guild>}
    * @example
    * // edit the guild verification level
