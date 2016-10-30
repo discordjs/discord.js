@@ -1,10 +1,10 @@
 /**
- * Represents a OAuth2 Application
+ * Represents an OAuth2 Application
  */
-class OAuth2App {
+class OAuth2Application {
   constructor(client, data) {
     /**
-     * The client that instantiated the role
+     * The client that instantiated the application
      * @type {Client}
      */
     this.client = client;
@@ -78,4 +78,4 @@ class OAuth2App {
   }
 }
 
-module.exports = OAuth2App;
+module.exports = OAuth2Application;

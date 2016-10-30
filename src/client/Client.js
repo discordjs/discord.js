@@ -327,13 +327,13 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Get's the bot's OAuth2 app.
+   * Gets the bot's OAuth2 application.
    * <warn>This is only available for bot accounts.</warn>
    * @returns {Promise<ClientOAuth2App>}
    */
-  getMyApp() {
+  fetchApplication() {
     if (!this.user.bot) throw new Error(Constants.Errors.NO_BOT_ACCOUNT);
-    return this.rest.methods.getMyApp();
+    return this.rest.methods.getMyApplication();
   }
 
   setTimeout(fn, ...params) {

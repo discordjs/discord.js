@@ -1,11 +1,11 @@
 const User = require('./User');
-const OAuth2App = require('./OAuth2App');
+const OAuth2Application = require('./OAuth2Application');
 
 /**
  * Represents the client's OAuth2 Application
- * @extends {OAuth2App}
+ * @extends {OAuth2Application}
  */
-class ClientOAuth2App extends OAuth2App {
+class ClientOAuth2Application extends OAuth2Application {
   setup(data) {
     super.setup(data);
 
@@ -23,4 +23,4 @@ class ClientOAuth2App extends OAuth2App {
   }
 }
 
-module.exports = ClientOAuth2App;
+module.exports = ClientOAuth2Application;
