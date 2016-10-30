@@ -90,7 +90,7 @@ class ClientUser extends User {
 
   /**
    * Set the avatar of the logged in Client.
-   * @param {FileResolvable|Base64Resolvable} avatar The new avatar
+   * @param {BufferResolvable|Base64Resolvable} avatar The new avatar
    * @returns {Promise<ClientUser>}
    * @example
    * // set avatar
@@ -102,7 +102,7 @@ class ClientUser extends User {
     if (avatar.startsWith('data:')) {
       return this.client.rest.methods.updateCurrentUser({ avatar });
     } else {
-      return this.client.resolver.resolveFile(avatar).then(data =>
+      return this.client.resolver.resolveBuffer(avatar).then(data =>
         this.client.rest.methods.updateCurrentUser({ avatar: data })
       );
     }
@@ -166,7 +166,7 @@ class ClientUser extends User {
    * <warn>This is only available for user accounts, not bot accounts!</warn>
    * @param {string} name The name of the guild
    * @param {string} region The region for the server
-   * @param {FileResolvable|Base64Resolvable} [icon=null] The icon for the guild
+   * @param {BufferResolvable|Base64Resolvable} [icon=null] The icon for the guild
    * @returns {Promise<Guild>} The guild that was created
    */
   createGuild(name, region, icon = null) {
@@ -174,7 +174,7 @@ class ClientUser extends User {
     if (icon.startsWith('data:')) {
       return this.client.rest.methods.createGuild({ name, icon, region });
     } else {
-      return this.client.resolver.resolveFile(icon).then(data =>
+      return this.client.resolver.resolveBuffer(icon).then(data =>
         this.client.rest.methods.createGuild({ name, icon: data, region })
       );
     }

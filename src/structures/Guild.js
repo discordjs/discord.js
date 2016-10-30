@@ -582,7 +582,7 @@ class Guild {
 
   /**
    * Creates a new custom emoji in the guild.
-   * @param {FileResolvable} attachment The image for the emoji.
+   * @param {BufferResolvable} attachment The image for the emoji.
    * @param {string} name The name for the emoji.
    * @returns {Promise<Emoji>} The created emoji.
    * @example
@@ -597,7 +597,7 @@ class Guild {
    *  .catch(console.error);
    */
   createEmoji(attachment, name) {
-    return this.client.resolver.resolveFile(attachment).then(file => {
+    return this.client.resolver.resolveBuffer(attachment).then(file => {
       let base64 = new Buffer(file, 'binary').toString('base64');
       let dataURI = `data:;base64,${base64}`;
       return this.client.rest.methods.createEmoji(this, dataURI, name);
