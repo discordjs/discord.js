@@ -31,11 +31,11 @@
     "ws": "^1.1.1"
   },
   "peerDependencies": {
-    "node-opus": "^0.2.1",
+    "node-opus": "^0.2.2",
     "opusscript": "^0.0.1"
   },
   "devDependencies": {
-    "eslint": "^3.8.0",
+    "eslint": "^3.9.0",
     "fs-extra": "^0.30.0",
     "jsdoc-to-markdown": "^2.0.0"
   },
