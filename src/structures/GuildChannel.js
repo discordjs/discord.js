@@ -70,7 +70,7 @@ class GuildChannel extends Channel {
       permissions |= overwrite.allowData;
     }
 
-    const admin = Boolean(permissions & (Constants.PermissionFlags.ADMINISTRATOR));
+    const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
     if (admin) permissions = Constants.ALL_PERMISSIONS;
 
     return new EvaluatedPermissions(member, permissions);
