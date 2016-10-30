@@ -76,7 +76,7 @@ class TextBasedChannel {
 
   /**
    * Send a file to this channel
-   * @param {FileResolvable} attachment The file to send
+   * @param {BufferResolvable} attachment The file to send
    * @param {string} [fileName="file.jpg"] The name and extension of the file
    * @param {StringResolvable} [content] Text message to send with the attachment
    * @param {MessageOptions} [options] The options to provide
@@ -92,7 +92,7 @@ class TextBasedChannel {
         fileName = 'file.jpg';
       }
     }
-    return this.client.resolver.resolveFile(attachment).then(file =>
+    return this.client.resolver.resolveBuffer(attachment).then(file =>
       this.client.rest.methods.sendMessage(this, content, options, {
         file,
         name: fileName,

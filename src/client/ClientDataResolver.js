@@ -228,15 +228,15 @@ class ClientDataResolver {
    * * A Buffer
    * * The path to a local file
    * * A URL
-   * @typedef {string|Buffer} FileResolvable
+   * @typedef {string|Buffer} BufferResolvable
    */
 
   /**
-   * Resolves a FileResolvable to a Buffer
-   * @param {FileResolvable} resource The file resolvable to resolve
+   * Resolves a BufferResolvable to a Buffer
+   * @param {BufferResolvable} resource The buffer resolvable to resolve
    * @returns {Promise<Buffer>}
    */
-  resolveFile(resource) {
+  resolveBuffer(resource) {
     if (resource instanceof Buffer) return Promise.resolve(resource);
 
     if (typeof resource === 'string') {

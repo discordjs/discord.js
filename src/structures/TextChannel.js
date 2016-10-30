@@ -53,7 +53,7 @@ class TextChannel extends GuildChannel {
   /**
    * Create a webhook for the channel.
    * @param {string} name The name of the webhook.
-   * @param {FileResolvable} avatar The avatar for the webhook.
+   * @param {BufferResolvable} avatar The avatar for the webhook.
    * @returns {Promise<Webhook>} webhook The created webhook.
    * @example
    * channel.createWebhook('Snek', 'http://snek.s3.amazonaws.com/topSnek.png')
@@ -62,7 +62,7 @@ class TextChannel extends GuildChannel {
    */
   createWebhook(name, avatar) {
     if (avatar) {
-      return this.client.resolver.resolveFile(avatar).then(file => {
+      return this.client.resolver.resolveBuffer(avatar).then(file => {
         let base64 = new Buffer(file, 'binary').toString('base64');
         let dataURI = `data:;base64,${base64}`;
         return this.client.rest.methods.createWebhook(this, name, dataURI);

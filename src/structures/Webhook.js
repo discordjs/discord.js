@@ -127,7 +127,7 @@ class Webhook {
 
   /**
    * Send a file with this webhook
-   * @param {FileResolvable} attachment The file to send
+   * @param {BufferResolvable} attachment The file to send
    * @param {string} [fileName="file.jpg"] The name and extension of the file
    * @param {StringResolvable} [content] Text message to send with the attachment
    * @param {WebhookMessageOptions} [options] The options to provide
@@ -143,7 +143,7 @@ class Webhook {
         fileName = 'file.jpg';
       }
     }
-    return this.client.resolver.resolveFile(attachment).then(file =>
+    return this.client.resolver.resolveBuffer(attachment).then(file =>
       this.client.rest.methods.sendWebhookMessage(this, content, options, {
         file,
         name: fileName,
@@ -171,12 +171,12 @@ class Webhook {
   /**
    * Edit the Webhook.
    * @param {string} name The new name for the Webhook
-   * @param {FileResolvable} avatar The new avatar for the Webhook.
+   * @param {BufferResolvable} avatar The new avatar for the Webhook.
    * @returns {Promise<Webhook>}
    */
   edit(name = this.name, avatar) {
     if (avatar) {
-      return this.client.resolver.resolveFile(avatar).then(file => {
+      return this.client.resolver.resolveBuffer(avatar).then(file => {
         const dataURI = this.client.resolver.resolveBase64(file);
         return this.client.rest.methods.editWebhook(this, name, dataURI);
       });
