@@ -131,7 +131,7 @@ const Endpoints = exports.Endpoints = {
   webhook: (webhookID, token) => `${API}/webhooks/${webhookID}${token ? `/${token}` : ''}`,
 
   // oauth
-  myApp: `${API}/oauth2/applications/@me`,
+  myApplication: `${API}/oauth2/applications/@me`,
   getApp: (id) => `${API}/oauth2/authorize?client_id=${id}`,
 };
 
