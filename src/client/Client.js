@@ -109,7 +109,7 @@ class Client extends EventEmitter {
 
     /**
      * A Collection of presences for friends of the logged in user.
-     * <warn>This is only present for user accounts, not bot accounts!</warn>
+     * <warn>This is only filled for user accounts, not bot accounts.</warn>
      * @type {Collection<string, Presence>}
      */
     this.presences = new Collection();
@@ -246,7 +246,8 @@ class Client extends EventEmitter {
 
   /**
    * This shouldn't really be necessary to most developers as it is automatically invoked every 30 seconds, however
-   * if you wish to force a sync of Guild data, you can use this. Only applicable to user accounts.
+   * if you wish to force a sync of Guild data, you can use this.
+   * <warn>This is only applicable to user accounts.</warn>
    * @param {Guild[]|Collection<string, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
    */
   syncGuilds(guilds = this.guilds) {
@@ -260,7 +261,7 @@ class Client extends EventEmitter {
 
   /**
    * Caches a user, or obtains it from the cache if it's already cached.
-   * If the user isn't already cached, it will only be obtainable by OAuth bot accounts.
+   * <warn>This is only available to bot accounts.</warn>
    * @param {string} id The ID of the user to obtain
    * @returns {Promise<User>}
    */
@@ -326,7 +327,8 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Get's the bot's OAuth2 app. Only usable by bot accounts
+   * Get's the bot's OAuth2 app.
+   * <warn>This is only available for bot accounts.</warn>
    * @returns {Promise<ClientOAuth2App>}
    */
   getMyApp() {
