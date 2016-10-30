@@ -25,14 +25,14 @@ class ClientUser extends User {
 
     /**
      * A Collection of friends for the logged in user.
-     * <warn>This is only filled for user accounts, not bot accounts!</warn>
+     * <warn>This is only filled for user accounts, not bot accounts.</warn>
      * @type {Collection<string, User>}
      */
     this.friends = new Collection();
 
     /**
      * A Collection of blocked users for the logged in user.
-     * <warn>This is only filled for user accounts, not bot accounts!</warn>
+     * <warn>This is only filled for user accounts, not bot accounts.</warn>
      * @type {Collection<string, User>}
      */
     this.blocked = new Collection();
@@ -141,7 +141,7 @@ class ClientUser extends User {
 
   /**
    * Send a friend request
-   * <warn>This is only available for user accounts, not bot accounts!</warn>
+   * <warn>This is only available for user accounts, not bot accounts.</warn>
    * @param {UserResolvable} user The user to send the friend request to.
    * @returns {Promise<User>} The user the friend request was sent to.
    */
@@ -152,7 +152,7 @@ class ClientUser extends User {
 
   /**
    * Remove a friend
-   * <warn>This is only available for user accounts, not bot accounts!</warn>
+   * <warn>This is only available for user accounts, not bot accounts.</warn>
    * @param {UserResolvable} user The user to remove from your friends
    * @returns {Promise<User>} The user that was removed
    */
@@ -163,7 +163,7 @@ class ClientUser extends User {
 
   /**
    * Creates a guild
-   * <warn>This is only available for user accounts, not bot accounts!</warn>
+   * <warn>This is only available for user accounts, not bot accounts.</warn>
    * @param {string} name The name of the guild
    * @param {string} region The region for the server
    * @param {BufferResolvable|Base64Resolvable} [icon=null] The icon for the guild

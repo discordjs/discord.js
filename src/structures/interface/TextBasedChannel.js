@@ -119,7 +119,7 @@ class TextBasedChannel {
 
   /**
    * Gets a single message from this channel, regardless of it being cached or not.
-   * <warn>Only OAuth bot accounts can use this method.</warn>
+   * <warn>This is only available for bot accounts.</warn>
    * @param {string} messageID The ID of the message to get
    * @returns {Promise<Message>}
    * @example
@@ -302,7 +302,7 @@ class TextBasedChannel {
 
   /**
    * Bulk delete given messages.
-   * Only OAuth Bot accounts may use this method.
+   * <warn>This is only available for bot accounts.</warn>
    * @param {Collection<string, Message>|Message[]|number} messages Messages to delete, or number of messages to delete
    * @returns {Promise<Collection<string, Message>>} Deleted messages
    */
