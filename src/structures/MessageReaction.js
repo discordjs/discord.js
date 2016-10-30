@@ -123,16 +123,15 @@ class MessageReaction {
     const message = this.message;
     return new Promise((resolve, reject) => {
       message.client.rest.methods.getMessageReactionUsers(message.channel.id, message.id, this.emoji.identifier, limit)
-      .then(users => {
-        this.users = new Collection();
-        for (const rawUser of users) {
-          const user = this.message.client.dataManager.newUser(rawUser);
-          this.users.set(user.id, user);
-        }
-        this.count = this.users.size;
-        resolve(this.users);
-      })
-      .catch(reject);
+        .then(users => {
+          this.users = new Collection();
+          for (const rawUser of users) {
+            const user = this.message.client.dataManager.newUser(rawUser);
+            this.users.set(user.id, user);
+          }
+          this.count = this.users.size;
+          resolve(this.users);
+        }, reject);
     });
   }
 }

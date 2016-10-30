@@ -97,8 +97,8 @@ class TextBasedChannel {
         this.client.rest.methods.sendMessage(this, content, options, {
           file,
           name: fileName,
-        }).then(resolve).catch(reject);
-      }).catch(reject);
+        }).then(resolve, reject);
+      }, reject);
     });
   }
 
@@ -138,7 +138,7 @@ class TextBasedChannel {
 
         this._cacheMessage(msg);
         resolve(msg);
-      }).catch(reject);
+      }, reject);
     });
   }
 
@@ -172,7 +172,7 @@ class TextBasedChannel {
           this._cacheMessage(msg);
         }
         resolve(messages);
-      }).catch(reject);
+      }, reject);
     });
   }
 
@@ -190,7 +190,7 @@ class TextBasedChannel {
           this._cacheMessage(msg);
         }
         resolve(messages);
-      }).catch(reject);
+      }, reject);
     });
   }
 

@@ -110,7 +110,7 @@ class ShardingManager extends EventEmitter {
         fetchRecommendedShards(this.token).then(count => {
           this.totalShards = count;
           resolve(this._spawn(count, delay));
-        }).catch(reject);
+        }, reject);
       } else {
         if (typeof amount !== 'number' || isNaN(amount)) throw new TypeError('Amount of shards must be a number.');
         if (amount < 1) throw new RangeError('Amount of shards must be at least 1.');

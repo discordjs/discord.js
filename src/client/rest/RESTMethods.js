@@ -18,8 +18,8 @@ class RESTMethods {
   }
 
   loginToken(token = this.rest.client.token) {
-    token = token.replace(/^Bot\s*/i, '');
     return new Promise((resolve, reject) => {
+      token = token.replace(/^Bot\s*/i, '');
       this.rest.client.manager.connectToWebSocket(token, resolve, reject);
     });
   }
@@ -32,8 +32,7 @@ class RESTMethods {
       this.rest.makeRequest('post', Constants.Endpoints.login, false, { email, password })
         .then(data => {
           resolve(this.loginToken(data.token));
-        })
-        .catch(reject);
+        }, reject);
     });
   }
 
@@ -47,8 +46,7 @@ class RESTMethods {
         .then(res => {
           this.rest.client.ws.gateway = `${res.url}/?encoding=json&v=${Constants.PROTOCOL_VERSION}`;
           resolve(this.rest.client.ws.gateway);
-        })
-        .catch(reject);
+        }, reject);
     });
   }
 
@@ -71,7 +69,7 @@ class RESTMethods {
       if (channel instanceof User || channel instanceof GuildMember) {
         this.createDM(channel).then(chan => {
           this._sendMessageRequest(chan, content, file, tts, nonce, resolve, reject);
-        }).catch(reject);
+        }, reject);
       } else {
         this._sendMessageRequest(channel, content, file, tts, nonce, resolve, reject);
       }
@@ -93,20 +91,19 @@ class RESTMethods {
             return this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
               content: content[i2], tts, nonce,
             }, file);
-          }).catch(reject);
+          }, reject);
         } else {
           promise.then(data => {
             datas.push(data);
             resolve(this.rest.client.actions.MessageCreate.handle(datas).messages);
-          }).catch(reject);
+          }, reject);
         }
       }
     } else {
       this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
         content, tts, nonce,
       }, file)
-        .then(data => resolve(this.rest.client.actions.MessageCreate.handle(data).message))
-        .catch(reject);
+        .then(data => resolve(this.rest.client.actions.MessageCreate.handle(data).message), reject);
     }
   }
 
@@ -118,8 +115,7 @@ class RESTMethods {
             id: message.id,
             channel_id: message.channel.id,
           }).message);
-        })
-        .catch(reject);
+        }, reject);
     });
   }
 
@@ -132,8 +128,7 @@ class RESTMethods {
             channel_id: channel.id,
             ids: messages,
           }).messages);
-        })
-        .catch(reject);
+        }, reject);
     });
   }
 
@@ -145,7 +140,7 @@ class RESTMethods {
         content,
       }).then(data => {
         resolve(this.rest.client.actions.MessageUpdate.handle(data).updated);
-      }).catch(reject);
+      }, reject);
     });
   }
 
@@ -156,7 +151,7 @@ class RESTMethods {
         type: channelType,
       }).then(data => {
         resolve(this.rest.client.actions.ChannelCreate.handle(data).channel);
-      }).catch(reject);
+      }, reject);
     });
   }
 
@@ -172,7 +167,7 @@ class RESTMethods {
       if (dmChannel) return resolve(dmChannel);
       return this.rest.makeRequest('post', Constants.Endpoints.userChannels(this.rest.client.user.id), true, {
         recipient_id: recipient.id,
-      }).then(data => resolve(this.rest.client.actions.ChannelCreate.handle(data).channel)).catch(reject);
+      }).then(data => resolve(this.rest.client.actions.ChannelCreate.handle(data).channel), reject);
     });
   }
 
@@ -182,7 +177,7 @@ class RESTMethods {
       this.rest.makeRequest('del', Constants.Endpoints.channel(channel.id), true).then(data => {
         data.id = channel.id;
         resolve(this.rest.client.actions.ChannelDelete.handle(data).channel);
-      }).catch(reject);
+      }, reject);
     });
   }
 
@@ -195,7 +190,7 @@ class RESTMethods {
 
       this.rest.makeRequest('patch', Constants.Endpoints.channel(channel.id), true, data).then(newData => {
         resolve(this.rest.client.actions.ChannelUpdate.handle(newData).updated);
-      }).catch(reject);
+      }, reject);
     });
   }
 
@@ -204,7 +199,7 @@ class RESTMethods {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('del', Constants.Endpoints.meGuild(guild.id), true).then(() => {
         resolve(this.rest.client.actions.GuildDelete.handle({ id: guild.id }).guild);
-      }).catch(reject);
+      }, reject);
     });
   }
 
@@ -212,8 +207,7 @@ class RESTMethods {
     options.icon = this.rest.client.resolver.resolveBase64(options.icon) || null;
     options.region = options.region || 'us-central';
     return new Promise((resolve, reject) => {
-      this.rest.makeRequest('post', Constants.Endpoints.guilds, true, options)
-      .then(data => {
+      this.rest.makeRequest('post', Constants.Endpoints.guilds, true, options).then(data => {
         if (this.rest.client.guilds.has(data.id)) resolve(this.rest.client.guilds.get(data.id));
         const handleGuild = guild => {
           if (guild.id === data.id) resolve(guild);
@@ -224,7 +218,7 @@ class RESTMethods {
           this.rest.client.removeListener('guildCreate', handleGuild);
           reject(new Error('Took too long to receive guild data'));
         }, 10000);
-      }).catch(reject);
+      }, reject);
     });
   }
 
@@ -233,15 +227,15 @@ class RESTMethods {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('del', Constants.Endpoints.guild(guild.id), true).then(() => {
         resolve(this.rest.client.actions.GuildDelete.handle({ id: guild.id }).guild);
-      }).catch(reject);
+      }, reject);
     });
   }
 
   getUser(userID) {
     return new Promise((resolve, reject) => {
-      this.rest.makeRequest('get', Constants.Endpoints.user(userID), true).then((data) => {
+      this.rest.makeRequest('get', Constants.Endpoints.user(userID), true).then(data => {
         resolve(this.rest.client.actions.UserGet.handle(data).user);
-      }).catch(reject);
+      }, reject);
     });
   }
 
@@ -259,8 +253,7 @@ class RESTMethods {
       }
 
       this.rest.makeRequest('patch', Constants.Endpoints.me, true, data)
-        .then(newData => resolve(this.rest.client.actions.UserUpdate.handle(newData).updated))
-        .catch(reject);
+        .then(newData => resolve(this.rest.client.actions.UserUpdate.handle(newData).updated), reject);
     });
   }
 
@@ -277,8 +270,7 @@ class RESTMethods {
       if (_data.splash) data.splash = this.rest.client.resolver.resolveBase64(_data.splash);
 
       this.rest.makeRequest('patch', Constants.Endpoints.guild(guild.id), true, data)
-        .then(newData => resolve(this.rest.client.actions.GuildUpdate.handle(newData).updated))
-        .catch(reject);
+        .then(newData => resolve(this.rest.client.actions.GuildUpdate.handle(newData).updated), reject);
     });
   }
 
@@ -289,7 +281,7 @@ class RESTMethods {
           guild_id: guild.id,
           user: member.user,
         }).member);
-      }).catch(reject);
+      }, reject);
     });
   }
 
@@ -300,7 +292,7 @@ class RESTMethods {
           guild_id: guild.id,
           role,
         }).role);
-      }).catch(reject);
+      }, reject);
     });
   }
 
@@ -311,24 +303,21 @@ class RESTMethods {
           guild_id: role.guild.id,
           role_id: role.id,
         }).role);
-      }).catch(reject);
+      }, reject);
     });
   }
 
   setChannelOverwrite(channel, payload) {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('put', `${Constants.Endpoints.channelPermissions(channel.id)}/${payload.id}`, true, payload)
-        .then(resolve)
-        .catch(reject);
+        .then(resolve, reject);
     });
   }
 
   deletePermissionOverwrites(overwrite) {
     return new Promise((resolve, reject) => {
       const endpoint = `${Constants.Endpoints.channelPermissions(overwrite.channel.id)}/${overwrite.id}`;
-      this.rest.makeRequest('del', endpoint, true)
-        .then(() => resolve(overwrite))
-        .catch(reject);
+      this.rest.makeRequest('del', endpoint, true).then(() => resolve(overwrite), reject);
     });
   }
 
@@ -342,9 +331,7 @@ class RESTMethods {
 
       let endpoint = Constants.Endpoints.channelMessages(channel.id);
       if (params.length > 0) endpoint += `?${params.join('&')}`;
-      this.rest.makeRequest('get', endpoint, true)
-        .then(resolve)
-        .catch(reject);
+      this.rest.makeRequest('get', endpoint, true).then(resolve, reject);
     });
   }
 
@@ -354,17 +341,15 @@ class RESTMethods {
       if (msg) return resolve(msg);
 
       const endpoint = Constants.Endpoints.channelMessage(channel.id, messageID);
-      return this.rest.makeRequest('get', endpoint, true)
-        .then(resolve)
-        .catch(reject);
+      return this.rest.makeRequest('get', endpoint, true).then(resolve, reject);
     });
   }
 
   getGuildMember(guild, user) {
     return new Promise((resolve, reject) => {
-      this.rest.makeRequest('get', Constants.Endpoints.guildMember(guild.id, user.id), true).then((data) => {
+      this.rest.makeRequest('get', Constants.Endpoints.guildMember(guild.id, user.id), true).then(data => {
         resolve(this.rest.client.actions.GuildMemberGet.handle(guild, data).member);
-      }).catch(reject);
+      }, reject);
     });
   }
 
@@ -382,17 +367,12 @@ class RESTMethods {
       }
 
       this.rest.makeRequest('patch', endpoint, true, data)
-        .then(resData => resolve(member.guild._updateMember(member, resData).mem))
-        .catch(reject);
+        .then(resData => resolve(member.guild._updateMember(member, resData).mem), reject);
     });
   }
 
   sendTyping(channelID) {
-    return new Promise((resolve, reject) => {
-      this.rest.makeRequest('post', `${Constants.Endpoints.channel(channelID)}/typing`, true)
-        .then(resolve)
-        .catch(reject);
-    });
+    return this.rest.makeRequest('post', `${Constants.Endpoints.channel(channelID)}/typing`, true);
   }
 
   banGuildMember(guild, member, deleteDays = 0) {
@@ -415,14 +395,14 @@ class RESTMethods {
             return;
           }
           resolve(id);
-        }).catch(reject);
+        }, reject);
     });
   }
 
   unbanGuildMember(guild, member) {
     return new Promise((resolve, reject) => {
       const id = this.rest.client.resolver.resolveUserID(member);
-      if (!id) throw new Error('Couldn\'t resolve the user ID to ban.');
+      if (!id) throw new Error('Couldn\'t resolve the user ID to unban.');
 
       const listener = (eGuild, eUser) => {
         if (eGuild.id === guild.id && eUser.id === id) {
@@ -444,7 +424,7 @@ class RESTMethods {
           bannedUsers.set(user.id, user);
         }
         resolve(bannedUsers);
-      }).catch(reject);
+      }, reject);
     });
   }
 
@@ -476,23 +456,21 @@ class RESTMethods {
           role: _role,
           guild_id: role.guild.id,
         }).updated);
-      }).catch(reject);
+      }, reject);
     });
   }
 
   pinMessage(message) {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('put', `${Constants.Endpoints.channel(message.channel.id)}/pins/${message.id}`, true)
-        .then(() => resolve(message))
-        .catch(reject);
+        .then(() => resolve(message), reject);
     });
   }
 
   unpinMessage(message) {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('del', `${Constants.Endpoints.channel(message.channel.id)}/pins/${message.id}`, true)
-        .then(() => resolve(message))
-        .catch(reject);
+        .then(() => resolve(message), reject);
     });
   }
 
@@ -508,24 +486,21 @@ class RESTMethods {
       payload.max_uses = options.maxUses;
 
       this.rest.makeRequest('post', `${Constants.Endpoints.channelInvites(channel.id)}`, true, payload)
-        .then(invite => resolve(new Invite(this.rest.client, invite)))
-        .catch(reject);
+        .then(invite => resolve(new Invite(this.rest.client, invite)), reject);
     });
   }
 
   deleteInvite(invite) {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('del', Constants.Endpoints.invite(invite.code), true)
-        .then(() => resolve(invite))
-        .catch(reject);
+        .then(() => resolve(invite), reject);
     });
   }
 
   getInvite(code) {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('get', Constants.Endpoints.invite(code), true)
-        .then(invite => resolve(new Invite(this.rest.client, invite)))
-        .catch(reject);
+        .then(invite => resolve(new Invite(this.rest.client, invite)), reject);
     });
   }
 
@@ -538,16 +513,14 @@ class RESTMethods {
           invites.set(invite.code, invite);
         }
         resolve(invites);
-      }).catch(reject);
+      }, reject);
     });
   }
 
   pruneGuildMembers(guild, days, dry) {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest(dry ? 'get' : 'post', `${Constants.Endpoints.guildPrune(guild.id)}?days=${days}`, true)
-      .then(data => {
-        resolve(data.pruned);
-      }).catch(reject);
+      .then(data => resolve(data.pruned), reject);
     });
   }
 
@@ -556,7 +529,7 @@ class RESTMethods {
       this.rest.makeRequest('post', `${Constants.Endpoints.guildEmojis(guild.id)}`, true, { name: name, image: image })
       .then(data => {
         resolve(this.rest.client.actions.EmojiCreate.handle(data, guild).emoji);
-      }).catch(reject);
+      }, reject);
     });
   }
 
@@ -565,7 +538,7 @@ class RESTMethods {
       this.rest.makeRequest('delete', `${Constants.Endpoints.guildEmojis(emoji.guild.id)}/${emoji.id}`, true)
       .then(() => {
         resolve(this.rest.client.actions.EmojiDelete.handle(emoji).data);
-      }).catch(reject);
+      }, reject);
     });
   }
 
@@ -574,7 +547,7 @@ class RESTMethods {
       this.rest.makeRequest('get', Constants.Endpoints.webhook(id, token), require('util').isUndefined(token))
       .then(data => {
         resolve(new Webhook(this.rest.client, data));
-      }).catch(reject);
+      }, reject);
     });
   }
 
@@ -587,7 +560,7 @@ class RESTMethods {
           hooks.set(hook.id, new Webhook(this.rest.client, hook));
         }
         resolve(hooks);
-      }).catch(reject);
+      }, reject);
     });
   }
 
@@ -600,7 +573,7 @@ class RESTMethods {
           hooks.set(hook.id, new Webhook(this.rest.client, hook));
         }
         resolve(hooks);
-      }).catch(reject);
+      }, reject);
     });
   }
 
@@ -609,10 +582,7 @@ class RESTMethods {
       this.rest.makeRequest('post', Constants.Endpoints.channelWebhooks(channel.id), true, {
         name,
         avatar,
-      })
-      .then(data => {
-        resolve(new Webhook(this.rest.client, data));
-      }).catch(reject);
+      }).then(data => resolve(new Webhook(this.rest.client, data)), reject);
     });
   }
 
@@ -625,7 +595,7 @@ class RESTMethods {
         webhook.name = data.name;
         webhook.avatar = data.avatar;
         resolve(webhook);
-      }).catch(reject);
+      }, reject);
     });
   }
 
@@ -643,10 +613,7 @@ class RESTMethods {
 
       this.rest.makeRequest('post', `${Constants.Endpoints.webhook(webhook.id, webhook.token)}?wait=true`, false, {
         content: content, username: webhook.name, avatar_url: avatarURL, tts: tts, file: file, embeds: embeds,
-      })
-      .then(data => {
-        resolve(data);
-      }).catch(reject);
+      }).then(data => resolve(data), reject);
     });
   }
 
@@ -657,9 +624,7 @@ class RESTMethods {
         `${Constants.Endpoints.webhook(webhook.id, webhook.token)}/slack?wait=true`,
         false,
         body
-      ).then(data => {
-        resolve(data);
-      }).catch(reject);
+      ).then(data => resolve(data), reject);
     });
   }
 
@@ -668,45 +633,35 @@ class RESTMethods {
       this.rest.makeRequest('post', Constants.Endpoints.relationships('@me'), true, {
         discriminator: user.discriminator,
         username: user.username,
-      }).then(() => {
-        resolve(user);
-      }).catch(reject);
+      }).then(() => resolve(user), reject);
     });
   }
 
   removeFriend(user) {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('delete', `${Constants.Endpoints.relationships('@me')}/${user.id}`, true)
-      .then(() => {
-        resolve(user);
-      }).catch(reject);
+        .then(() => resolve(user), reject);
     });
   }
 
   fetchUserProfile(user) {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('get', Constants.Endpoints.userProfile(user.id), true)
-       .then(data => {
-         resolve(new UserProfile(user, data));
-       }).catch(reject);
+       .then(data => resolve(new UserProfile(user, data)), reject);
     });
   }
 
   blockUser(user) {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('put', `${Constants.Endpoints.relationships('@me')}/${user.id}`, true, { type: 2 })
-      .then(() => {
-        resolve(user);
-      }).catch(reject);
+        .then(() => resolve(user), reject);
     });
   }
 
   unblockUser(user) {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('delete', `${Constants.Endpoints.relationships('@me')}/${user.id}`, true)
-      .then(() => {
-        resolve(user);
-      }).catch(reject);
+        .then(() => resolve(user), reject);
     });
   }
 
@@ -718,8 +673,7 @@ class RESTMethods {
             guild_id: guildID,
             roles,
           }).guild);
-        })
-        .catch(reject);
+        }, reject);
     });
   }
 
@@ -733,8 +687,7 @@ class RESTMethods {
             emoji: parseEmoji(emoji),
             channel_id: channelID,
           }).reaction);
-        })
-        .catch(reject);
+        }, reject);
     });
   }
 
@@ -752,8 +705,7 @@ class RESTMethods {
             emoji: parseEmoji(emoji),
             channel_id: channelID,
           }).reaction);
-        })
-        .catch(reject);
+        }, reject);
     });
   }
 
@@ -767,8 +719,7 @@ class RESTMethods {
   getMyApp() {
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('get', Constants.Endpoints.myApp, true)
-        .then(app => resolve(new ClientOAuth2App(this.rest.client, app)))
-        .catch(reject);
+        .then(app => resolve(new ClientOAuth2App(this.rest.client, app)), reject);
     });
   }
 }
