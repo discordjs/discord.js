@@ -282,10 +282,11 @@ class Client extends EventEmitter {
   /**
    * Fetch a webhook by ID.
    * @param {string} id ID of the webhook
+   * @param {string} [token] Token for the webhook
    * @returns {Promise<Webhook>}
    */
-  fetchWebhook(id) {
-    return this.rest.methods.getWebhook(id);
+  fetchWebhook(id, token) {
+    return this.rest.methods.getWebhook(id, token);
   }
 
   /**

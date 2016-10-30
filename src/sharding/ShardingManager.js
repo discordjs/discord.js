@@ -105,19 +105,17 @@ class ShardingManager extends EventEmitter {
    * @returns {Promise<Collection<number, Shard>>}
    */
   spawn(amount = this.totalShards, delay = 5500) {
-    return new Promise((resolve, reject) => {
-      if (amount === 'auto') {
-        fetchRecommendedShards(this.token).then(count => {
-          this.totalShards = count;
-          resolve(this._spawn(count, delay));
-        }, reject);
-      } else {
-        if (typeof amount !== 'number' || isNaN(amount)) throw new TypeError('Amount of shards must be a number.');
-        if (amount < 1) throw new RangeError('Amount of shards must be at least 1.');
-        if (amount !== Math.floor(amount)) throw new TypeError('Amount of shards must be an integer.');
-        resolve(this._spawn(amount, delay));
-      }
-    });
+    if (amount === 'auto') {
+      return fetchRecommendedShards(this.token).then(count => {
+        this.totalShards = count;
+        return this._spawn(count, delay);
+      });
+    } else {
+      if (typeof amount !== 'number' || isNaN(amount)) throw new TypeError('Amount of shards must be a number.');
+      if (amount < 1) throw new RangeError('Amount of shards must be at least 1.');
+      if (amount !== Math.floor(amount)) throw new TypeError('Amount of shards must be an integer.');
+      return this._spawn(amount, delay);
+    }
   }
 
   /**

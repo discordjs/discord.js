@@ -91,11 +91,9 @@ class ClientDataResolver {
    */
   resolveGuildMember(guild, user) {
     if (user instanceof GuildMember) return user;
-
     guild = this.resolveGuild(guild);
     user = this.resolveUser(user);
     if (!guild || !user) return null;
-
     return guild.members.get(user.id) || null;
   }
 
@@ -136,7 +134,6 @@ class ClientDataResolver {
   resolveInviteCode(data) {
     const inviteRegex = /discord(?:app)?\.(?:gg|com\/invite)\/([a-z0-9]{5})/i;
     const match = inviteRegex.exec(data);
-
     if (match && match[1]) return match[1];
     return data;
   }
@@ -240,6 +237,8 @@ class ClientDataResolver {
    * @returns {Promise<Buffer>}
    */
   resolveFile(resource) {
+    if (resource instanceof Buffer) return Promise.resolve(resource);
+
     if (typeof resource === 'string') {
       return new Promise((resolve, reject) => {
         if (/^https?:\/\//.test(resource)) {
@@ -259,8 +258,7 @@ class ClientDataResolver {
       });
     }
 
-    if (resource instanceof Buffer) return Promise.resolve(resource);
-    return Promise.reject(new TypeError('Resource must be a string or Buffer.'));
+    return Promise.reject(new TypeError('The resource must be a string or Buffer.'));
   }
 }
 
