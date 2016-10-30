@@ -66,10 +66,10 @@ class TextChannel extends GuildChannel {
         this.client.resolver.resolveFile(avatar).then(file => {
           let base64 = new Buffer(file, 'binary').toString('base64');
           let dataURI = `data:;base64,${base64}`;
-          this.client.rest.methods.createWebhook(this, name, dataURI).then(resolve).catch(reject);
-        }).catch(reject);
+          resolve(this.client.rest.methods.createWebhook(this, name, dataURI));
+        }, reject);
       } else {
-        this.client.rest.methods.createWebhook(this, name).then(resolve).catch(reject);
+        resolve(this.client.rest.methods.createWebhook(this, name));
       }
     });
   }

@@ -107,8 +107,7 @@ class VoiceConnection extends EventEmitter {
         speaking: true,
         delay: 0,
       },
-    })
-    .catch(e => {
+    }).catch(e => {
       this.emit('debug', e);
     });
   }
@@ -156,8 +155,7 @@ class VoiceConnection extends EventEmitter {
       this.sockets.udp.findEndpointAddress()
         .then(address => {
           this.sockets.udp.createUDPSocket(address);
-        })
-        .catch(e => this.emit('error', e));
+        }, e => this.emit('error', e));
     });
     this.sockets.ws.once('sessionDescription', (mode, secret) => {
       this.authentication.encryptionMode = mode;

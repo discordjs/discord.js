@@ -136,7 +136,7 @@ class StreamDispatcher extends EventEmitter {
     const packet = this._createPacket(sequence, timestamp, this.player.opusEncoder.encode(buffer));
     while (repeats--) {
       this.player.voiceConnection.sockets.udp.send(packet)
-        .catch(e => this.emit('debug', `failed to send a packet ${e}`));
+        .catch(e => this.emit('debug', `Failed to send a packet ${e}`));
     }
   }
 

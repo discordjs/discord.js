@@ -40,7 +40,7 @@ class ClientManager {
         resolve(token);
         this.client.clearTimeout(timeout);
       });
-    }).catch(reject);
+    }, reject);
   }
 
   /**
@@ -58,10 +58,10 @@ class ClientManager {
   }
 
   destroy() {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       this.client.ws.destroy();
       if (!this.client.user.bot) {
-        this.client.rest.methods.logout().then(resolve, reject);
+        resolve(this.client.rest.methods.logout());
       } else {
         resolve();
       }

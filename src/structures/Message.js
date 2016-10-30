@@ -438,13 +438,15 @@ class Message {
    *  .catch(console.error);
    */
   delete(timeout = 0) {
-    return new Promise((resolve, reject) => {
-      this.client.setTimeout(() => {
-        this.client.rest.methods.deleteMessage(this)
-          .then(resolve)
-          .catch(reject);
-      }, timeout);
-    });
+    if (timeout <= 0) {
+      return this.client.rest.methods.deleteMessage(this);
+    } else {
+      return new Promise(resolve => {
+        this.client.setTimeout(() => {
+          resolve(this.delete());
+        }, timeout);
+      });
+    }
   }
 
   /**
