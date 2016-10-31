@@ -98,13 +98,13 @@ class User {
   }
 
   /**
-   * Get the note set for the user
+   * The note that is set for the user
    * <warn>This is only available for user accounts.</warn>
    * @type {?string}
    * @readonly
    */
   get note() {
-    return this.client.user.notes.get(this.id);
+    return this.client.user.notes.get(this.id) || null;
   }
 
   /**
@@ -147,7 +147,7 @@ class User {
 
   /**
    * Sends a friend request to the user
-   * <warn>This method is intended for user accounts, not bot accounts.</warn>
+   * <warn>This is only available for user accounts.</warn>
    * @returns {Promise<User>}
    */
   addFriend() {
@@ -156,7 +156,7 @@ class User {
 
   /**
    * Removes the user from your friends
-   * <warn>This method is intended for user accounts, not bot accounts.</warn>
+   * <warn>This is only available for user accounts.</warn>
    * @returns {Promise<User>}
    */
   removeFriend() {
@@ -165,7 +165,7 @@ class User {
 
   /**
    * Blocks the user
-   * <warn>This method is intended for user accounts, not bot accounts.</warn>
+   * <warn>This is only available for user accounts.</warn>
    * @returns {Promise<User>}
    */
   block() {
@@ -174,7 +174,7 @@ class User {
 
   /**
    * Unblocks the user
-   * <warn>This method is intended for user accounts, not bot accounts.</warn>
+   * <warn>This is only available for user accounts.</warn>
    * @returns {Promise<User>}
    */
   unblock() {
@@ -191,7 +191,7 @@ class User {
 
   /**
    * Sets a note for the user
-   * <warn>This method is intended for user accounts, not bot accounts.</warn>
+   * <warn>This is only available for user accounts.</warn>
    * @param {string} note The note to set for the user
    * @returns {Promise<User>}
    */
