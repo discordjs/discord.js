@@ -33,6 +33,7 @@ class WebSocketPacketManager {
     this.register(Constants.WSEvents.CHANNEL_UPDATE, 'ChannelUpdate');
     this.register(Constants.WSEvents.PRESENCE_UPDATE, 'PresenceUpdate');
     this.register(Constants.WSEvents.USER_UPDATE, 'UserUpdate');
+    this.register(Constants.WSEvents.USER_NOTE_UPDATE, 'UserNoteUpdate');
     this.register(Constants.WSEvents.VOICE_STATE_UPDATE, 'VoiceStateUpdate');
     this.register(Constants.WSEvents.TYPING_START, 'TypingStart');
     this.register(Constants.WSEvents.MESSAGE_CREATE, 'MessageCreate');
