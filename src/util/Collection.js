@@ -125,6 +125,8 @@ class Collection extends Map {
    * Returns a single item where `item[prop] === value`, or the given function returns `true`.
    * In the latter case, this is identical to
    * [Array.find()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find).
+   * <warn>Do not use this to obtain an item by its ID. Instead, use `collection.get(id)`. See
+   * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get) for details.</warn>
    * @param {string|function} propOrFn The property to test against, or the function to test with
    * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
    * @returns {*}
@@ -183,6 +185,8 @@ class Collection extends Map {
 
   /**
    * Returns true if the collection has an item where `item[prop] === value`
+   * <warn>Do not use this to check for an item by its ID. Instead, use `collection.has(id)`. See
+   * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/has) for details.</warn>
    * @param {string} prop The property to test against
    * @param {*} value The expected value
    * @returns {boolean}
@@ -288,7 +292,7 @@ class Collection extends Map {
 
   /**
    * Combines this collection with others into a new collection. None of the source collections are modified.
-   * @param {Collection} collections Collections to merge
+   * @param {Collection} collections Collections to merge (infinite/rest argument, not an array)
    * @returns {Collection}
    * @example const newColl = someColl.concat(someOtherColl, anotherColl, ohBoyAColl);
    */
