@@ -98,6 +98,16 @@ class User {
   }
 
   /**
+   * The note that is set for the user
+   * <warn>This is only available for user accounts.</warn>
+   * @type {?string}
+   * @readonly
+   */
+  get note() {
+    return this.client.user.notes.get(this.id) || null;
+  }
+
+  /**
    * Check whether the user is typing in a channel.
    * @param {ChannelResolvable} channel The channel to check in
    * @returns {boolean}
@@ -137,6 +147,7 @@ class User {
 
   /**
    * Sends a friend request to the user
+   * <warn>This is only available for user accounts.</warn>
    * @returns {Promise<User>}
    */
   addFriend() {
@@ -145,6 +156,7 @@ class User {
 
   /**
    * Removes the user from your friends
+   * <warn>This is only available for user accounts.</warn>
    * @returns {Promise<User>}
    */
   removeFriend() {
@@ -153,6 +165,7 @@ class User {
 
   /**
    * Blocks the user
+   * <warn>This is only available for user accounts.</warn>
    * @returns {Promise<User>}
    */
   block() {
@@ -161,6 +174,7 @@ class User {
 
   /**
    * Unblocks the user
+   * <warn>This is only available for user accounts.</warn>
    * @returns {Promise<User>}
    */
   unblock() {
@@ -173,6 +187,16 @@ class User {
    */
   fetchProfile() {
     return this.client.rest.methods.fetchUserProfile(this);
+  }
+
+  /**
+   * Sets a note for the user
+   * <warn>This is only available for user accounts.</warn>
+   * @param {string} note The note to set for the user
+   * @returns {Promise<User>}
+   */
+  setNote(note) {
+    return this.client.rest.methods.setNote(this, note);
   }
 
   /**

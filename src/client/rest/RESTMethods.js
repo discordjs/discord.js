@@ -616,6 +616,11 @@ class RESTMethods {
       new ClientOAuth2Application(this.rest.client, app)
     );
   }
+
+  setNote(user, note) {
+    return this.rest.makeRequest('put', Constants.Endpoints.note(user.id), true, { note })
+      .then(() => user);
+  }
 }
 
 module.exports = RESTMethods;

@@ -88,6 +88,7 @@ const Endpoints = exports.Endpoints = {
   me: `${API}/users/@me`,
   meGuild: (guildID) => `${Endpoints.me}/guilds/${guildID}`,
   relationships: (userID) => `${Endpoints.user(userID)}/relationships`,
+  note: (userID) => `${Endpoints.me}/notes/${userID}`,
 
   // guilds
   guilds: `${API}/guilds`,
@@ -206,6 +207,7 @@ exports.Events = {
   MESSAGE_REACTION_ADD: 'messageReactionAdd',
   MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
   USER_UPDATE: 'userUpdate',
+  USER_NOTE_UPDATE: 'userNoteUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
   TYPING_START: 'typingStart',
@@ -243,6 +245,7 @@ exports.WSEvents = {
   MESSAGE_REACTION_ADD: 'MESSAGE_REACTION_ADD',
   MESSAGE_REACTION_REMOVE: 'MESSAGE_REACTION_REMOVE',
   USER_UPDATE: 'USER_UPDATE',
+  USER_NOTE_UPDATE: 'USER_NOTE_UPDATE',
   PRESENCE_UPDATE: 'PRESENCE_UPDATE',
   VOICE_STATE_UPDATE: 'VOICE_STATE_UPDATE',
   TYPING_START: 'TYPING_START',

@@ -21,6 +21,7 @@ class ActionsManager {
     this.register('GuildRoleUpdate');
     this.register('UserGet');
     this.register('UserUpdate');
+    this.register('UserNoteUpdate');
     this.register('GuildSync');
     this.register('GuildEmojiCreate');
     this.register('GuildEmojiDelete');
