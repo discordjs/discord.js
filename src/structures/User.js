@@ -147,6 +147,7 @@ class User {
 
   /**
    * Sends a friend request to the user
+   * <warn>This method is intended for user accounts, not bot accounts.</warn>
    * @returns {Promise<User>}
    */
   addFriend() {
@@ -155,6 +156,7 @@ class User {
 
   /**
    * Removes the user from your friends
+   * <warn>This method is intended for user accounts, not bot accounts.</warn>
    * @returns {Promise<User>}
    */
   removeFriend() {
@@ -163,6 +165,7 @@ class User {
 
   /**
    * Blocks the user
+   * <warn>This method is intended for user accounts, not bot accounts.</warn>
    * @returns {Promise<User>}
    */
   block() {
@@ -171,6 +174,7 @@ class User {
 
   /**
    * Unblocks the user
+   * <warn>This method is intended for user accounts, not bot accounts.</warn>
    * @returns {Promise<User>}
    */
   unblock() {
@@ -187,7 +191,7 @@ class User {
 
   /**
    * Sets a note for the user
-   * <warn>This method is intended for user accounts, not bot accounts!</warn>
+   * <warn>This method is intended for user accounts, not bot accounts.</warn>
    * @param {string} note The note to set for the user
    * @returns {Promise<User>}
    */
