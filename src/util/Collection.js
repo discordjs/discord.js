@@ -122,7 +122,7 @@ class Collection extends Map {
   }
 
   /**
-   * Returns a single item where `item[prop] === value`, or the given function returns `true`.
+   * Searches for a single item where `item[prop] === value`, or the given function returns `true`.
    * In the latter case, this is identical to
    * [Array.find()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find).
    * <warn>Do not use this to obtain an item by its ID. Instead, use `collection.get(id)`. See
@@ -154,7 +154,7 @@ class Collection extends Map {
 
   /* eslint-disable max-len */
   /**
-   * Returns the key of the item where `item[prop] === value`, or the given function returns `true`.
+   * Searches for the key of an item where `item[prop] === value`, or the given function returns `true`.
    * In the latter case, this is identical to
    * [Array.findIndex()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex).
    * @param {string|function} propOrFn The property to test against, or the function to test with
@@ -184,7 +184,7 @@ class Collection extends Map {
   }
 
   /**
-   * Returns true if the collection has an item where `item[prop] === value`
+   * Searches for an item where `item[prop] === value`, and returns `true` if one is found.
    * <warn>Do not use this to check for an item by its ID. Instead, use `collection.has(id)`. See
    * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/has) for details.</warn>
    * @param {string} prop The property to test against
