@@ -39,7 +39,7 @@ class ClientUser extends User {
 
     /**
      * A Collection of notes for the logged in user.
-     * <warn>This is only filled for user accounts, not bot accounts!</warn>
+     * <warn>This is only filled for user accounts, not bot accounts.</warn>
      * @type {Collection<string, string>}
      */
     this.notes = new Collection();

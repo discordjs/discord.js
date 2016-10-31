@@ -773,13 +773,8 @@ class RESTMethods {
   }
 
   setNote(user, note) {
-    return new Promise((resolve, reject) => {
-      this.rest.makeRequest('put', Constants.Endpoints.note(user.id), true, { note })
-        .then(() => {
-          resolve(user);
-        })
-        .catch(reject);
-    });
+    return this.rest.makeRequest('put', Constants.Endpoints.note(user.id), true, { note })
+      .then(() => user);
   }
 }
 

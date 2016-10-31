@@ -99,7 +99,7 @@ class User {
 
   /**
    * Get the note set for the user
-   * <warn>This property is meant for user accounts only!</warn>
+   * <warn>This is only available for user accounts.</warn>
    * @type {?string}
    * @readonly
    */
