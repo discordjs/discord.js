@@ -166,12 +166,12 @@ class Role {
   /**
    * The data for a role
    * @typedef {Object} RoleData
-   * @property {string} name The name of the role
-   * @property {number|string} color The color of the role, either a hex string or a base 10 number
-   * @property {boolean} hoist Whether or not the role should be hoisted
-   * @property {number} position The position of the role
-   * @property {string[]} permissions The permissions of the role
-   * @property {boolean} mentionable Whether or not the role should be mentionable
+   * @property {string} [name] The name of the role
+   * @property {number|string} [color] The color of the role, either a hex string or a base 10 number
+   * @property {boolean} [hoist] Whether or not the role should be hoisted
+   * @property {number} [position] The position of the role
+   * @property {string[]} [permissions] The permissions of the role
+   * @property {boolean} [mentionable] Whether or not the role should be mentionable
    */
 
   /**

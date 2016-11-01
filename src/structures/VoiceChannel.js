@@ -72,7 +72,21 @@ class VoiceChannel extends GuildChannel {
    *  .catch(console.error);
    */
   setBitrate(bitrate) {
-    return this.rest.client.rest.methods.updateChannel(this, { bitrate });
+    return this.edit({ bitrate });
+  }
+
+  /**
+   * Sets the user limit of the channel
+   * @param {number} userLimit The new user limit
+   * @returns {Promise<VoiceChannel>}
+   * @example
+   * // set the user limit of a voice channel
+   * voiceChannel.setUserLimit(42)
+   *  .then(vc => console.log(`Set user limit to ${vc.userLimit} for ${vc.name}`))
+   *  .catch(console.error);
+   */
+  setUserLimit(userLimit) {
+    return this.edit({ userLimit });
   }
 
   /**
