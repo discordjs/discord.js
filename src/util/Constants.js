@@ -8,8 +8,9 @@ exports.Package = require('../../package.json');
  * @property {number} [shardId=0] The ID of this shard
  * @property {number} [shardCount=0] The number of shards
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
+ * (-1 or Infinity for unlimited - don't do this without message sweeping, otherwise memory usage will climb
+ * indefinitely)
  * @property {boolean} [sync=false] Whether to periodically sync guilds
- * (-1 for unlimited - don't do this without message sweeping, otherwise memory usage will climb indefinitely)
  * @property {number} [messageCacheLifetime=0] How long until a message should be uncached by the message sweeping
  * (in seconds, 0 for forever)
  * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
