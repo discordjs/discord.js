@@ -10,7 +10,6 @@ exports.Package = require('../../package.json');
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
  * (-1 or Infinity for unlimited - don't do this without message sweeping, otherwise memory usage will climb
  * indefinitely)
- * @property {boolean} [sync=false] Whether to periodically sync guilds
  * @property {number} [messageCacheLifetime=0] How long until a message should be uncached by the message sweeping
  * (in seconds, 0 for forever)
  * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
@@ -18,6 +17,7 @@ exports.Package = require('../../package.json');
  * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup, as well as
  * upon joining a guild
  * @property {boolean} [disableEveryone=false] Default value for MessageOptions.disableEveryone
+ * @property {boolean} [sync=false] Whether to periodically sync guilds (for userbots)
  * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
  * corresponding websocket events
  * @property {string[]} [disabledEvents] An array of disabled websocket events. Events in this array will not be
@@ -34,9 +34,9 @@ exports.DefaultOptions = {
   messageSweepInterval: 0,
   fetchAllMembers: false,
   disableEveryone: false,
+  sync: false,
   restWsBridgeTimeout: 5000,
   disabledEvents: [],
-  sync: false,
 
   /**
    * Websocket options. These are left as snake_case to match the API.
