@@ -161,6 +161,26 @@ class GuildChannel extends Channel {
     return this.client.rest.methods.setChannelOverwrite(this, payload);
   }
 
+  /**
+   * The data for a guild channel
+   * @typedef {Object} ChannelData
+   * @property {string} [name] The name of the channel
+   * @property {number} [position] The position of the channel
+   * @property {string} [topic] The topic of the text channel
+   * @property {number} [bitrate] The bitrate of the voice channel
+   * @property {number} [userLimit] The user limit of the channel
+   */
+
+  /**
+   * Edits the channel
+   * @param {ChannelData} data The new data for the channel
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // edit a channel
+   * channel.edit({name: 'new-channel'})
+   *  .then(c => console.log(`Edited channel ${c}`))
+   *  .catch(console.error);
+   */
   edit(data) {
     return this.client.rest.methods.updateChannel(this, data);
   }
@@ -176,7 +196,7 @@ class GuildChannel extends Channel {
    *  .catch(console.error);
    */
   setName(name) {
-    return this.client.rest.methods.updateChannel(this, { name });
+    return this.edit({ name });
   }
 
   /**

@@ -159,11 +159,13 @@ class RESTMethods {
     });
   }
 
-  updateChannel(channel, data) {
-    data.name = (data.name || channel.name).trim();
-    data.topic = data.topic || channel.topic;
-    data.position = data.position || channel.position;
-    data.bitrate = data.bitrate || channel.bitrate;
+  updateChannel(channel, _data) {
+    const data = {};
+    data.name = (_data.name || channel.name).trim();
+    data.topic = _data.topic || channel.topic;
+    data.position = _data.position || channel.position;
+    data.bitrate = _data.bitrate || channel.bitrate;
+    data.user_limit = _data.userLimit || channel.userLimit;
     return this.rest.makeRequest('patch', Constants.Endpoints.channel(channel.id), true, data).then(newData =>
       this.rest.client.actions.ChannelUpdate.handle(newData).updated
     );
