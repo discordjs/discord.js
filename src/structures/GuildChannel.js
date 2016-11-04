@@ -155,6 +155,9 @@ class GuildChannel extends Channel {
       } else if (options[perm] === false) {
         payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
         payload.deny |= Constants.PermissionFlags[perm] || 0;
+      } else if (options[perm] === null) {
+        payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
+        payload.deny &= ~(Constants.PermissionFlags[perm] || 0);
       }
     }
 
