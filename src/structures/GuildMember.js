@@ -220,6 +220,15 @@ class GuildMember {
   }
 
   /**
+   * Whether the member is the owner of the guild.
+   * @type {boolean}
+   * @readonly
+   */
+  get guildOwner() {
+    return this.user.id === this.guild.ownerID;
+  }
+
+  /**
    * Returns `channel.permissionsFor(guildMember)`. Returns evaluated permissions for a member in a guild channel.
    * @param {ChannelResolvable} channel Guild channel to use as context
    * @returns {?EvaluatedPermissions}
