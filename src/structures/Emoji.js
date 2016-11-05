@@ -2,7 +2,7 @@ const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 
 /**
- * Represents a Custom Emoji
+ * Represents a custom emoji
  */
 class Emoji {
   constructor(guild, data) {
@@ -14,7 +14,7 @@ class Emoji {
     Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
 
     /**
-     * The Guild this emoji is part of
+     * The guild this emoji is part of
      * @type {Guild}
      */
     this.guild = guild;
@@ -24,13 +24,13 @@ class Emoji {
 
   setup(data) {
     /**
-     * The ID of the Emoji
+     * The ID of the emoji
      * @type {string}
      */
     this.id = data.id;
 
     /**
-     * The name of the Emoji
+     * The name of the emoji
      * @type {string}
      */
     this.name = data.name;
