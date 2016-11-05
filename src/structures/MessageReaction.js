@@ -35,8 +35,9 @@ class MessageReaction {
   }
 
   /**
-   * The emoji of this reaction, either an Emoji object for known custom emojis, or a ReactionEmoji which has fewer
-   * properties. Whatever the prototype of the emoji, it will still have `name`, `id`, `identifier` and `toString()`
+   * The emoji of this reaction, either an Emoji object for known custom emojis, or a ReactionEmoji
+   * object which has fewer properties. Whatever the prototype of the emoji, it will still have
+   * `name`, `id`, `identifier` and `toString()`
    * @type {Emoji|ReactionEmoji}
    */
   get emoji() {

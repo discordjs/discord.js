@@ -20,7 +20,7 @@ class GuildMembersChunkHandler extends AbstractHandler {
 }
 
 /**
- * Emitted whenever a chunk of Guild members is received (all members come from the same guild)
+ * Emitted whenever a chunk of guild members is received (all members come from the same guild)
  * @event Client#guildMembersChunk
  * @param {GuildMember[]} members The members in the chunk
  */

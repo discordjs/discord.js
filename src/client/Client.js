@@ -90,25 +90,25 @@ class Client extends EventEmitter {
     this.shard = process.send ? ShardClientUtil.singleton(this) : null;
 
     /**
-     * A Collection of the Client's stored users
+     * A collection of the Client's stored users
      * @type {Collection<string, User>}
      */
     this.users = new Collection();
 
     /**
-     * A Collection of the Client's stored guilds
+     * A collection of the Client's stored guilds
      * @type {Collection<string, Guild>}
      */
     this.guilds = new Collection();
 
     /**
-     * A Collection of the Client's stored channels
+     * A collection of the Client's stored channels
      * @type {Collection<string, Channel>}
      */
     this.channels = new Collection();
 
     /**
-     * A Collection of presences for friends of the logged in user.
+     * A collection of presences for friends of the logged in user.
      * <warn>This is only filled for user accounts, not bot accounts.</warn>
      * @type {Collection<string, Presence>}
      */
@@ -175,7 +175,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Returns a Collection, mapping Guild ID to Voice Connections.
+   * Returns a collection, mapping guild ID to voice connections.
    * @type {Collection<string, VoiceConnection>}
    * @readonly
    */
@@ -246,7 +246,7 @@ class Client extends EventEmitter {
 
   /**
    * This shouldn't really be necessary to most developers as it is automatically invoked every 30 seconds, however
-   * if you wish to force a sync of Guild data, you can use this.
+   * if you wish to force a sync of guild data, you can use this.
    * <warn>This is only applicable to user accounts.</warn>
    * @param {Guild[]|Collection<string, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
    */

@@ -3,7 +3,7 @@ const Constants = require('../util/Constants');
 const Presence = require('./Presence').Presence;
 
 /**
- * Represents a User on Discord.
+ * Represents a user on Discord.
  * @implements {TextBasedChannel}
  */
 class User {
@@ -20,19 +20,19 @@ class User {
 
   setup(data) {
     /**
-     * The ID of the User
+     * The ID of the user
      * @type {string}
      */
     this.id = data.id;
 
     /**
-     * The username of the User
+     * The username of the user
      * @type {string}
      */
     this.username = data.username;
 
     /**
-     * A discriminator based on username for the User
+     * A discriminator based on username for the user
      * @type {string}
      */
     this.discriminator = data.discriminator;
@@ -44,7 +44,7 @@ class User {
     this.avatar = data.avatar;
 
     /**
-     * Whether or not the User is a Bot.
+     * Whether or not the user is a bot.
      * @type {boolean}
      */
     this.bot = Boolean(data.bot);
@@ -138,7 +138,7 @@ class User {
   }
 
   /**
-   * Deletes a DM Channel (if one exists) between the Client and the User. Resolves with the Channel if successful.
+   * Deletes a DM channel (if one exists) between the client and the user. Resolves with the channel if successful.
    * @returns {Promise<DMChannel>}
    */
   deleteDM() {
@@ -217,7 +217,7 @@ class User {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the User's mention instead of the User object.
+   * When concatenated with a string, this automatically concatenates the user's mention instead of the User object.
    * @returns {string}
    * @example
    * // logs: Hello from <@123456789>!

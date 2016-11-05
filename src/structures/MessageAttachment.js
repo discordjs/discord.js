@@ -1,10 +1,10 @@
 /**
- * Represents an Attachment in a Message
+ * Represents an attachment in a message
  */
 class MessageAttachment {
   constructor(message, data) {
     /**
-     * The Client that instantiated this Message.
+     * The Client that instantiated this MessageAttachment.
      * @type {Client}
      */
     this.client = message.client;
