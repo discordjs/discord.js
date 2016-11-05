@@ -35,5 +35,5 @@ function use6(){
 }
 
 function use5(){
-	module.exports = require("./lib/index.js");
+	module.exports = require("./lib/index.js").default;
 }
