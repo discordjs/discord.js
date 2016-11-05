@@ -7,8 +7,9 @@ module.exports = function (grunt) {
         // define source files and their destinations
         babel: {
             options: {
-                loose: "all",
-                compact: !grunt.option('dev')
+                compact: !grunt.option('dev'),
+                plugins: ['babel-plugin-transform-es2015-modules-commonjs'],
+                sourceMap: grunt.option('dev'),
             },
             dist: {
                 files: [{
