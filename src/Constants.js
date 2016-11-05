@@ -2,10 +2,10 @@
 
 const Constants = {};
 
-const API = Constants.API = "https://discordapp.com/api";
-const CDN = Constants.CDN = "https://cdn.discordapp.com";
+export const API = Constants.API = "https://discordapp.com/api";
+export const CDN = Constants.CDN = "https://cdn.discordapp.com";
 
-const Endpoints = Constants.Endpoints = {
+export const Endpoints = Constants.Endpoints = {
 	// general endpoints
 	LOGIN: `${API}/auth/login`,
 	LOGOUT: `${API}/auth/logout`,
@@ -59,7 +59,7 @@ const Endpoints = Constants.Endpoints = {
 	FRIENDS: `${API}/users/@me/relationships`
 };
 
-Constants.Permissions = {
+export const Permissions = Constants.Permissions = {
 	// general
 	createInstantInvite: 1 << 0,
 	kickMembers: 1 << 1,
@@ -91,7 +91,7 @@ Constants.Permissions = {
 
 };
 
-Constants.PacketType = {
+export const PacketType = Constants.PacketType = {
 	CHANNEL_CREATE : "CHANNEL_CREATE",
 	CHANNEL_DELETE : "CHANNEL_DELETE",
 	CHANNEL_UPDATE : "CHANNEL_UPDATE",
