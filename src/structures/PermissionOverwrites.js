@@ -1,5 +1,5 @@
 /**
- * Represents a permission overwrite for a Role or Member in a Guild Channel.
+ * Represents a permission overwrite for a role or member in a guild channel.
  */
 class PermissionOverwrites {
   constructor(guildChannel, data) {
@@ -14,7 +14,7 @@ class PermissionOverwrites {
 
   setup(data) {
     /**
-     * The ID of this overwrite, either a User ID or a Role ID
+     * The ID of this overwrite, either a user ID or a role ID
      * @type {string}
      */
     this.id = data.id;

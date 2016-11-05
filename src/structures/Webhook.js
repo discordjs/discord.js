@@ -2,13 +2,13 @@ const path = require('path');
 const escapeMarkdown = require('../util/EscapeMarkdown');
 
 /**
- * Represents a Webhook
+ * Represents a webhook
  */
 class Webhook {
   constructor(client, dataOrID, token) {
     if (client) {
       /**
-       * The client that instantiated the Channel
+       * The Client that instantiated the Webhook
        * @type {Client}
        */
       this.client = client;
@@ -23,43 +23,43 @@ class Webhook {
 
   setup(data) {
     /**
-     * The name of the Webhook
+     * The name of the webhook
      * @type {string}
      */
     this.name = data.name;
 
     /**
-     * The token for the Webhook
+     * The token for the webhook
      * @type {string}
      */
     this.token = data.token;
 
     /**
-     * The avatar for the Webhook
+     * The avatar for the webhook
      * @type {string}
      */
     this.avatar = data.avatar;
 
     /**
-     * The ID of the Webhook
+     * The ID of the webhook
      * @type {string}
      */
     this.id = data.id;
 
     /**
-     * The guild the Webhook belongs to
+     * The guild the webhook belongs to
      * @type {string}
      */
     this.guildID = data.guild_id;
 
     /**
-     * The channel the Webhook belongs to
+     * The channel the webhook belongs to
      * @type {string}
      */
     this.channelID = data.channel_id;
 
     /**
-     * The owner of the Webhook
+     * The owner of the webhook
      * @type {User}
      */
     if (data.user) this.owner = data.user;
@@ -169,7 +169,7 @@ class Webhook {
   }
 
   /**
-   * Edit the Webhook.
+   * Edit the webhook.
    * @param {string} name The new name for the Webhook
    * @param {BufferResolvable} avatar The new avatar for the Webhook.
    * @returns {Promise<Webhook>}
@@ -188,7 +188,7 @@ class Webhook {
   }
 
   /**
-   * Delete the Webhook
+   * Delete the webhook
    * @returns {Promise}
    */
   delete() {

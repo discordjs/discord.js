@@ -23,7 +23,7 @@ class ClientVoiceManager {
     this.connections = new Collection();
 
     /**
-     * Pending connection attempts, maps Guild ID to VoiceChannel
+     * Pending connection attempts, maps guild ID to VoiceChannel
      * @type {Collection<string, VoiceChannel>}
      */
     this.pending = new Collection();

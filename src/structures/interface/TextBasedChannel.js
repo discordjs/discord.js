@@ -11,7 +11,7 @@ const escapeMarkdown = require('../../util/EscapeMarkdown');
 class TextBasedChannel {
   constructor() {
     /**
-     * A Collection containing the messages sent to this channel.
+     * A collection containing the messages sent to this channel.
      * @type {Collection<string, Message>}
      */
     this.messages = new Collection();
@@ -147,7 +147,7 @@ class TextBasedChannel {
    */
 
   /**
-   * Gets the past messages sent in this channel. Resolves with a Collection mapping message ID's to Message objects.
+   * Gets the past messages sent in this channel. Resolves with a collection mapping message ID's to Message objects.
    * @param {ChannelLogsQueryOptions} [options={}] The query parameters to pass in
    * @returns {Promise<Collection<string, Message>>}
    * @example
@@ -169,7 +169,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Fetches the pinned messages of this Channel and returns a Collection of them.
+   * Fetches the pinned messages of this channel and returns a collection of them.
    * @returns {Promise<Collection<string, Message>>}
    */
   fetchPinnedMessages() {
@@ -210,7 +210,7 @@ class TextBasedChannel {
   /**
    * Stops the typing indicator in the channel.
    * The indicator will only stop if this is called as many times as startTyping().
-   * <info>It can take a few seconds for the Client User to stop typing.</info>
+   * <info>It can take a few seconds for the client user to stop typing.</info>
    * @param {boolean} [force=false] Whether or not to reset the call count and force the indicator to stop
    * @example
    * // stop typing in a channel
@@ -274,7 +274,7 @@ class TextBasedChannel {
    */
 
   /**
-   * Similar to createCollector but in Promise form. Resolves with a Collection of messages that pass the specified
+   * Similar to createCollector but in promise form. Resolves with a collection of messages that pass the specified
    * filter.
    * @param {CollectorFilterFunction} filter The filter function to use
    * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector

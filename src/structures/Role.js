@@ -1,7 +1,7 @@
 const Constants = require('../util/Constants');
 
 /**
- * Represents a Role on Discord
+ * Represents a role on Discord
  */
 class Role {
   constructor(guild, data) {
@@ -304,7 +304,7 @@ class Role {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the Role mention rather than the Role object.
+   * When concatenated with a string, this automatically concatenates the role mention rather than the Role object.
    * @returns {string}
    */
   toString() {

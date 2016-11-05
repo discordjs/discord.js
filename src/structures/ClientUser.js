@@ -2,7 +2,7 @@ const User = require('./User');
 const Collection = require('../util/Collection');
 
 /**
- * Represents the logged in client's Discord User
+ * Represents the logged in client's Discord user
  * @extends {User}
  */
 class ClientUser extends User {
