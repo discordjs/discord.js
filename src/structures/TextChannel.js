@@ -3,7 +3,7 @@ const TextBasedChannel = require('./interface/TextBasedChannel');
 const Collection = require('../util/Collection');
 
 /**
- * Represents a Server Text Channel on Discord.
+ * Represents a guild text channel on Discord.
  * @extends {GuildChannel}
  * @implements {TextBasedChannel}
  */
@@ -19,7 +19,7 @@ class TextChannel extends GuildChannel {
     super.setup(data);
 
     /**
-     * The topic of the Text Channel, if there is one.
+     * The topic of the text channel, if there is one.
      * @type {?string}
      */
     this.topic = data.topic;

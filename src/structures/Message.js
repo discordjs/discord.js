@@ -6,12 +6,12 @@ const escapeMarkdown = require('../util/EscapeMarkdown');
 const MessageReaction = require('./MessageReaction');
 
 /**
- * Represents a Message on Discord
+ * Represents a message on Discord
  */
 class Message {
   constructor(channel, data, client) {
     /**
-     * The client that instantiated the Message
+     * The Client that instantiated the Message
      * @type {Client}
      */
     this.client = client;
@@ -52,7 +52,7 @@ class Message {
     this.author = this.client.dataManager.newUser(data.author);
 
     /**
-     * Represents the Author of the message as a Guild Member. Only available if the message comes from a Guild
+     * Represents the author of the message as a guild member. Only available if the message comes from a guild
      * where the author is still a member.
      * @type {GuildMember}
      */
@@ -151,7 +151,7 @@ class Message {
     this._edits = [];
 
     /**
-     * A collection of Reactions to this Message, mapped by the reaction "id".
+     * A collection of reactions to this message, mapped by the reaction "id".
      * @type {Collection<string, MessageReaction>}
      */
     this.reactions = new Collection();
@@ -504,7 +504,7 @@ class Message {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the Message's content instead of the object.
+   * When concatenated with a string, this automatically concatenates the message's content instead of the object.
    * @returns {string}
    * @example
    * // logs: Message: This is a message!

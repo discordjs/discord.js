@@ -1,5 +1,5 @@
 /**
- * Represents a User's presence
+ * Represents a user's presence
  */
 class Presence {
   constructor(data) {
@@ -44,7 +44,7 @@ class Presence {
 }
 
 /**
- * Represents a Game that is part of a User's presence.
+ * Represents a game that is part of a user's presence.
  */
 class Game {
   constructor(data) {

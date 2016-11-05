@@ -1,5 +1,5 @@
 /**
- * Represents a User Connection object (or "platform identity")
+ * Represents a user connection (or "platform identity")
  */
 class UserConnection {
   constructor(user, data) {

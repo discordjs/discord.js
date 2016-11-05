@@ -7,7 +7,7 @@ const EventEmitter = require('events').EventEmitter;
 const fs = require('fs');
 
 /**
- * Represents a connection to a Voice Channel in Discord.
+ * Represents a connection to a voice channel in Discord.
  * ```js
  * // obtained using:
  * voiceChannel.join().then(connection => {

@@ -25,10 +25,10 @@ class ClientDataResolver {
   /**
    * Data that resolves to give a User object. This can be:
    * * A User object
-   * * A User ID
-   * * A Message (resolves to the message author)
-   * * A Guild (owner of the guild)
-   * * A Guild Member
+   * * A user ID
+   * * A Message object (resolves to the message author)
+   * * A Guild object (owner of the guild)
+   * * A GuildMember object
    * @typedef {User|string|Message|Guild|GuildMember} UserResolvable
    */
 
@@ -99,10 +99,10 @@ class ClientDataResolver {
 
   /**
    * Data that can be resolved to give a Channel. This can be:
-   * * An instance of a Channel
-   * * An instance of a Message (the channel the message was sent in)
-   * * An instance of a Guild (the #general channel)
-   * * An ID of a Channel
+   * * A Channel object
+   * * A Message object (the channel the message was sent in)
+   * * A Guild object (the #general channel)
+   * * A channel ID
    * @typedef {Channel|Guild|Message|string} ChannelResolvable
    */
 
@@ -190,7 +190,7 @@ class ClientDataResolver {
   /**
    * Data that can be resolved to give a string. This can be:
    * * A string
-   * * An Array (joined with a new line delimiter to give a string)
+   * * An array (joined with a new line delimiter to give a string)
    * * Any value
    * @typedef {string|Array|*} StringResolvable
    */
@@ -209,7 +209,7 @@ class ClientDataResolver {
   /**
    * Data that resolves to give a Base64 string, typically for image uploading. This can be:
    * * A Buffer
-   * * A Base64 string
+   * * A base64 string
    * @typedef {Buffer|string} Base64Resolvable
    */
 

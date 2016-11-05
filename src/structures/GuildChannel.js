@@ -7,7 +7,7 @@ const Collection = require('../util/Collection');
 const arraysEqual = require('../util/ArraysEqual');
 
 /**
- * Represents a Guild Channel (i.e. Text Channels and Voice Channels)
+ * Represents a guild channel (i.e. text channels and voice channels)
  * @extends {Channel}
  */
 class GuildChannel extends Channel {
@@ -25,7 +25,7 @@ class GuildChannel extends Channel {
     super.setup(data);
 
     /**
-     * The name of the Guild Channel
+     * The name of the guild channel
      * @type {string}
      */
     this.name = data.name;
@@ -186,7 +186,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Set a new name for the Guild Channel
+   * Set a new name for the guild channel
    * @param {string} name The new name for the guild channel
    * @returns {Promise<GuildChannel>}
    * @example
@@ -200,7 +200,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Set a new position for the Guild Channel
+   * Set a new position for the guild channel
    * @param {number} position The new position for the guild channel
    * @returns {Promise<GuildChannel>}
    * @example
@@ -214,7 +214,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Set a new topic for the Guild Channel
+   * Set a new topic for the guild channel
    * @param {string} topic The new topic for the guild channel
    * @returns {Promise<GuildChannel>}
    * @example
@@ -228,7 +228,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Options given when creating a Guild Channel Invite
+   * Options given when creating a guild channel invite
    * @typedef {Object} InviteOptions
    * @property {boolean} [temporary=false] Whether the invite should kick users after 24hrs if they are not given a role
    * @property {number} [maxAge=0] Time in seconds the invite expires in
@@ -236,7 +236,7 @@ class GuildChannel extends Channel {
    */
 
   /**
-   * Create an invite to this Guild Channel
+   * Create an invite to this guild channel
    * @param {InviteOptions} [options={}] The options for the invite
    * @returns {Promise<Invite>}
    */
@@ -272,7 +272,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * When concatenated with a string, this automatically returns the Channel's mention instead of the Channel object.
+   * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
    * @returns {string}
    * @example
    * // Outputs: Hello from #general
