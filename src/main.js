@@ -109,6 +109,10 @@ router.map({
   },
 });
 
+router.redirect({
+  '/docs': '/docs/tag/master/file/general/Welcome',
+});
+
 router.beforeEach(transition => {
   window.scrollTo(0, 0);
   transition.next();

@@ -7,15 +7,15 @@
       </div>
       <ul v-for="(category, catFiles) in docs.custom">
         <li>{{ category }}</li>
-        <li v-for="file in catFiles" v-link='{ name:"fileview", params:{category:category, file:file.name} }' @click="toggle">{{ file.name }}</li>
+        <li v-for="file in catFiles"><a v-link='{ name:"fileview", params:{category:category, file:file.name} }' @click="toggle">{{ file.name }}</a></li>
       </ul>
       <ul>
         <li>Classes</li>
-        <li v-for="docclass in docs.classes" v-link='{ name:"classview", params:{class:docclass.name} }' @click="toggle">{{ docclass.name }}</li>
+        <li v-for="docclass in docs.classes"><a v-link='{ name:"classview", params:{class:docclass.name} }' @click="toggle">{{ docclass.name }}</a></li>
       </ul>
       <ul>
         <li>TypeDefs</li>
-        <li v-for="typedef in docs.typedefs" v-link='{ name:"typedefview", params:{typedef:typedef.name} }' @click="toggle">{{ typedef.name }}</li>
+        <li v-for="typedef in docs.typedefs"><a v-link='{ name:"typedefview", params:{typedef:typedef.name} }' @click="toggle">{{ typedef.name }}</a></li>
       </ul>
     </div>
   </div>

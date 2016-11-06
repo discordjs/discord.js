@@ -58,12 +58,19 @@ $speed: 300ms;
     li {
       color: #444;
       font-size: 14px;
-      padding: 4px 2px;
-      padding-right: 3rem;
-      padding-left: 6px;
+
+      a {
+        color: inherit;
+        text-decoration: none;
+        display: block;
+
+        padding: 4px 0;
+        padding-right: 3rem;
+        padding-left: 6px;
+      }
     }
 
-    li:hover:not(:first-child) {
+    li:hover:not(:first-child) a {
       color: $primary_color;
       font-weight: bold;
       cursor: pointer;

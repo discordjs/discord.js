@@ -6,7 +6,7 @@
 .docs-viewer {
   background: #fefefe;
   color: #111;
-  
+
   padding: 1rem;
 
   hr {
@@ -34,34 +34,24 @@
 
   .info {
     display: block;
-    background: lighten($primary_color, 42%);
-    padding: 1rem;
-    border:1px solid #ccc;
-    margin-top:0.5rem;
-  }
-
-  .info:before {
-    font-weight: bold;
-    content: "Info: ";
+    background: #f5f5f5;
+    padding: 0.5rem;
+    border-left: 2px solid lighten($primary_color, 5%);
+    margin-top: 0.5rem;
   }
 
   .warn {
     display: block;
-    background: lighten(#F32121, 42%);
-    padding: 1rem;
-    border:1px solid #ccc;
-    margin-top:0.5rem;
-  }
-
-  .warn:before {
-    font-weight: bold;
-    content: "Warning! ";
+    background: #f5f5f5;
+    padding: 0.5rem;
+    border-left: 2px solid lighten(#f44242, 5%);
+    margin-top: 0.5rem;
   }
 
   .scrolled {
     background: rgba(255, 255, 0, 0.3);
   }
-  
+
   .type:not(:last-child):after {
     font-family: 'Source Sans Pro', sans-serif;
     content: " or ";
