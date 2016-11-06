@@ -284,6 +284,18 @@ class Role {
   delete() {
     return this.client.rest.methods.deleteGuildRole(this);
   }
+  
+  /**
+   * Whether the role is managable by the client user.
+   * @type {boolean}
+   * @readonly
+   */
+  get manageable() {
+    if (this.managed) return false;
+    const clientMember = this.guild.member(this.client.user);
+    if (!clientMember.hasPermission(Constants.PermissionFlags.MANAGE_ROLES_OR_PERMISSIONS)) return false;
+    return clientMember.highestRole.comparePositionTo(this) > 0;
+  }
 
   /**
    * Whether this role equals another role. It compares all properties, so for most operations
