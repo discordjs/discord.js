@@ -391,7 +391,7 @@ class Message {
    */
   reply(content, options = {}) {
     content = this.client.resolver.resolveString(content);
-    const prepend = this.guild ? `${this.author}, ` : '';
+    const prepend = this.guild ? `${this.author} ` : '';
     content = `${prepend}${content}`;
 
     if (options.split) {
