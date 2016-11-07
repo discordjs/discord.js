@@ -33,6 +33,12 @@ class VoiceConnection extends EventEmitter {
     this.channel = pendingConnection.channel;
 
     /**
+     * Whether we're currently transmitting audio
+     * @type {boolean}
+     */
+    this.speaking = false;
+
+    /**
      * An array of Voice Receivers that have been created for this connection
      * @type {VoiceReceiver[]}
      */
