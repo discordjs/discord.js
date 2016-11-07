@@ -33,7 +33,7 @@ class VoiceConnection extends EventEmitter {
     this.channel = pendingConnection.channel;
 
     /**
-     * Indicates whether the voice connection emits a voice signal
+     * Whether we're currently transmitting audio
      * @type {boolean}
      */
     this.speaking = false;
