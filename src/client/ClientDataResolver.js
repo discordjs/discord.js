@@ -244,7 +244,15 @@ class ClientDataResolver {
         if (/^https?:\/\//.test(resource)) {
           request.get(resource)
             .set('Content-Type', 'blob')
-            .end((err, res) => err ? reject(err) : resolve(res.body));
+            .end((err, res) => {
+              if (err) {
+                reject(err);
+              } else if (res.body instanceof Buffer) {
+                resolve(res.body);
+              } else {
+                resolve();
+              }
+            });
         } else {
           const file = path.resolve(resource);
           fs.stat(file, (err, stats) => {
