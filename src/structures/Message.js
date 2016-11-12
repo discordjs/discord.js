@@ -224,6 +224,44 @@ class Message {
     }
   }
 
+  _addReaction(emoji, user) {
+    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : emoji.name;
+    let reaction;
+    if (this.reactions.has(emojiID)) {
+      reaction = this.reactions.get(emojiID);
+      if (!reaction.me) reaction.me = user.id === this.client.user.id;
+    } else {
+      reaction = new MessageReaction(this, emoji, 0, user.id === this.client.user.id);
+      this.reactions.set(emojiID, reaction);
+    }
+    if (!reaction.users.has(user.id)) {
+      reaction.users.set(user.id, user);
+      reaction.count++;
+      return reaction;
+    }
+    return null;
+  }
+
+  _removeReaction(emoji, user) {
+    const emojiID = emoji.id || emoji;
+    if (this.reactions.has(emojiID)) {
+      const reaction = this.reactions.get(emojiID);
+      if (reaction.users.has(user.id)) {
+        reaction.users.delete(user.id);
+        reaction.count--;
+        if (user.id === this.client.user.id) {
+          reaction.me = false;
+        }
+        return reaction;
+      }
+    }
+    return null;
+  }
+
+  _removeReactions() {
+    this.reactions.clear();
+  }
+
   /**
    * The time the message was sent
    * @type {Date}
@@ -449,6 +487,26 @@ class Message {
     }
 
     return this.client.rest.methods.sendMessage(this.channel, content, options);
+  }
+
+  /**
+   * Add a reaction to a message
+   * @param {string|Emoji|ReactionEmoji} emoji The emoji to react with
+   * @returns {Promise<MessageReaction>}
+   */
+  addReaction(emoji) {
+    emoji = this.client.resolver.resolveEmojiIdentifier(emoji);
+    if (!emoji) throw new TypeError('Emoji must be a string or Emoji/ReactionEmoji');
+
+    return this.client.rest.methods.addMessageReaction(this, emoji);
+  }
+
+  /**
+   * Remove all reactions from a message
+   * @returns {Promise<Message>}
+   */
+  removeReactions() {
+    return this.client.rest.methods.removeMessageReactions(this);
   }
 
   /**

@@ -8,6 +8,8 @@ const Message = require(`../structures/Message`);
 const Guild = require(`../structures/Guild`);
 const Channel = require(`../structures/Channel`);
 const GuildMember = require(`../structures/GuildMember`);
+const Emoji = require(`../structures/Emoji`);
+const ReactionEmoji = require(`../structures/ReactionEmoji`);
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
@@ -259,6 +261,27 @@ class ClientDataResolver {
     }
 
     return Promise.reject(new TypeError('The resource must be a string or Buffer.'));
+  }
+
+  /**
+   * Data that can be resolved to give an emoji identifier. This can be:
+   * * A string
+   * * An Emoji
+   * * A ReactionEmoji
+   * @typedef {string|Emoji|ReactionEmoji} EmojiIdentifierResolvable
+   */
+
+  /**
+   * Resolves an EmojiResolvable to an emoji identifier
+   * @param {EmojiIdentifierResolvable} emoji The emoji resolvable to resolve
+   * @returns {string}
+   */
+  resolveEmojiIdentifier(emoji) {
+    if (emoji instanceof Emoji || emoji instanceof ReactionEmoji) return emoji.identifier;
+    if (typeof emoji === 'string') {
+      if (!emoji.includes('%')) return encodeURIComponent(emoji);
+    }
+    return null;
   }
 }
 
