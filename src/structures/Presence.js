@@ -2,10 +2,7 @@
  * Represents a user's presence
  */
 class Presence {
-  constructor(data) {
-    if (!data) {
-      data = {};
-    }
+  constructor(data = {}) {
     /**
      * The status of the presence:
      *
