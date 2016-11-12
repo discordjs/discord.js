@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-const fs = require('fs-extra');
+const fs = require('fs');
 const zlib = require('zlib');
 const jsdoc2md = require('jsdoc-to-markdown');
 const Documentation = require('./documentation');
