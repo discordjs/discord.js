@@ -10,7 +10,6 @@ const fetchRecommendedShards = require('../util/FetchRecommendedShards');
  * This is a utility class that can be used to help you spawn shards of your Client. Each shard is completely separate
  * from the other. The Shard Manager takes a path to a file and spawns it under the specified amount of shards safely.
  * If you do not select an amount of shards, the manager will automatically decide the best amount.
- * <warn>The Sharding Manager is still experimental</warn>
  * @extends {EventEmitter}
  */
 class ShardingManager extends EventEmitter {
