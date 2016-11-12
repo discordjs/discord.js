@@ -539,7 +539,7 @@ class Guild {
 
   /**
    * Syncs this guild (already done automatically every 30 seconds).
-   * <warn>This is only applicable to user accounts.</warn>
+   * <warn>This is only available when using a user account.</warn>
    */
   sync() {
     if (!this.client.user.bot) this.client.syncGuilds([this]);

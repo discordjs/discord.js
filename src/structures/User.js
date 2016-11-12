@@ -99,7 +99,7 @@ class User {
 
   /**
    * The note that is set for the user
-   * <warn>This is only available for user accounts.</warn>
+   * <warn>This is only available when using a user account.</warn>
    * @type {?string}
    * @readonly
    */
@@ -147,7 +147,7 @@ class User {
 
   /**
    * Sends a friend request to the user
-   * <warn>This is only available for user accounts.</warn>
+   * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
   addFriend() {
@@ -156,7 +156,7 @@ class User {
 
   /**
    * Removes the user from your friends
-   * <warn>This is only available for user accounts.</warn>
+   * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
   removeFriend() {
@@ -165,7 +165,7 @@ class User {
 
   /**
    * Blocks the user
-   * <warn>This is only available for user accounts.</warn>
+   * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
   block() {
@@ -174,7 +174,7 @@ class User {
 
   /**
    * Unblocks the user
-   * <warn>This is only available for user accounts.</warn>
+   * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
   unblock() {
@@ -183,6 +183,7 @@ class User {
 
   /**
    * Get the profile of the user
+   * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<UserProfile>}
    */
   fetchProfile() {
@@ -191,7 +192,7 @@ class User {
 
   /**
    * Sets a note for the user
-   * <warn>This is only available for user accounts.</warn>
+   * <warn>This is only available when using a user account.</warn>
    * @param {string} note The note to set for the user
    * @returns {Promise<User>}
    */
