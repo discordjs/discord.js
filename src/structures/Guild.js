@@ -598,10 +598,14 @@ class Guild {
    *  .catch(console.error);
    */
   createEmoji(attachment, name) {
-    return this.client.resolver.resolveBuffer(attachment).then(file => {
-      let base64 = new Buffer(file, 'binary').toString('base64');
-      let dataURI = `data:;base64,${base64}`;
-      return this.client.rest.methods.createEmoji(this, dataURI, name);
+    return new Promise(resolve => {
+      if (attachment.startsWith('data:')) {
+        resolve(this.client.rest.methods.createEmoji(this, attachment, name));
+      } else {
+        this.client.resolver.resolveBuffer(attachment).then(data =>
+          resolve(this.client.rest.methods.createEmoji(this, data, name))
+        );
+      }
     });
   }
 
