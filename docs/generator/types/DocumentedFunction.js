@@ -56,7 +56,7 @@ class DocumentedFunction extends DocumentedItem {
     this.directData = data;
     this.directData.meta = new DocumentedItemMeta(this, data.meta);
     this.directData.returns = new DocumentedVarType(this, data.returns ? data.returns[0].type : {
-      names: ['null'],
+      names: ['void'],
     });
     const newParams = [];
     for (const param of data.params) {
