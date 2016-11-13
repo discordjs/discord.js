@@ -28,6 +28,7 @@ class TextBasedChannel {
    * @typedef {Object} MessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
+   * @property {Object} [embed=] an optional embed (see webhook embeds)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
