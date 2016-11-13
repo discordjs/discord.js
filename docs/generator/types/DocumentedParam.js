@@ -23,11 +23,12 @@ class DocumentedParam extends DocumentedItem {
 
   serialize() {
     super.serialize();
-    const { name, description, type, optional } = this.directData;
+    const { name, description, type, optional, defaultvalue } = this.directData;
     return {
       name,
       description,
       optional,
+      default: defaultvalue,
       type: type.serialize(),
     };
   }
