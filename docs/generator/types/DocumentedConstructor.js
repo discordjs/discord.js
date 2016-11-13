@@ -17,14 +17,11 @@ const DocumentedParam = require('./DocumentedParam');
 */
 
 class DocumentedConstructor extends DocumentedItem {
-
   registerMetaInfo(data) {
     super.registerMetaInfo(data);
     this.directData = data;
     const newParams = [];
-    for (const param of data.params) {
-      newParams.push(new DocumentedParam(this, param));
-    }
+    for (const param of data.params) newParams.push(new DocumentedParam(this, param));
     this.directData.params = newParams;
   }
 
@@ -40,7 +37,6 @@ class DocumentedConstructor extends DocumentedItem {
       params: params.map(p => p.serialize()),
     };
   }
-
 }
 
 module.exports = DocumentedConstructor;

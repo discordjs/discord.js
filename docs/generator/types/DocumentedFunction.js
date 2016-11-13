@@ -50,7 +50,6 @@ const DocumentedParam = require('./DocumentedParam');
   */
 
 class DocumentedFunction extends DocumentedItem {
-
   registerMetaInfo(data) {
     super.registerMetaInfo(data);
     this.directData = data;
@@ -59,9 +58,7 @@ class DocumentedFunction extends DocumentedItem {
       names: ['void'],
     });
     const newParams = [];
-    for (const param of data.params) {
-      newParams.push(new DocumentedParam(this, param));
-    }
+    for (const param of data.params) newParams.push(new DocumentedParam(this, param));
     this.directData.params = newParams;
   }
 
