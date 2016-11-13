@@ -26,6 +26,12 @@ class Message {
     if (data) this.setup(data);
   }
 
+  /**
+   * Options that can be passed into editMessage
+   * @typedef {Object} MessageEditOptions
+   * @property {Object} [embed] An embed to be added/edited
+   */
+
   setup(data) {
     /**
      * The ID of the message (unique in the channel it was sent)
@@ -343,7 +349,7 @@ class Message {
   /**
    * Edit the content of the message
    * @param {StringResolvable} content The new content for the message
-   * @param {Object} [embed] An embed to modify/add to the message
+   * @param {MessageEditOptions} [options={}] The options to provide
    * @returns {Promise<Message>}
    * @example
    * // update the content of a message
@@ -351,8 +357,8 @@ class Message {
    *  .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
    *  .catch(console.error);
    */
-  edit(content, embed) {
-    return this.client.rest.methods.updateMessage(this, content, embed);
+  edit(content, options = {}) {
+    return this.client.rest.methods.updateMessage(this, content, options);
   }
 
   /**
