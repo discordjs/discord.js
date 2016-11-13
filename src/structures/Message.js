@@ -26,12 +26,6 @@ class Message {
     if (data) this.setup(data);
   }
 
-  /**
-   * Options that can be passed into editMessage
-   * @typedef {Object} MessageEditOptions
-   * @property {Object} [embed] An embed to be added/edited
-   */
-
   setup(data) {
     /**
      * The ID of the message (unique in the channel it was sent)
@@ -345,6 +339,12 @@ class Message {
     data = data && data.id ? data.id : data;
     return this.mentions.users.has(data) || this.mentions.channels.has(data) || this.mentions.roles.has(data);
   }
+
+  /**
+   * Options that can be passed into editMessage
+   * @typedef {Object} MessageEditOptions
+   * @property {Object} [embed] An embed to be added/edited
+   */
 
   /**
    * Edit the content of the message
