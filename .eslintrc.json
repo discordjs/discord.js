@@ -26,7 +26,8 @@
         "function": "Function",
         "array": "Array",
         "date": "Date",
-        "error": "Error"
+        "error": "Error",
+        "null": "void"
       }
     }],
 

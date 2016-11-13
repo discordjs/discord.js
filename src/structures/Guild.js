@@ -350,7 +350,7 @@ class Guild {
    * @property {string} [name] The name of the guild
    * @property {string} [region] The region of the guild
    * @property {number} [verificationLevel] The verification level of the guild
-   * @property {GuildChannelResolvable} [afkChannel] The AFK channel of the guild
+   * @property {ChannelResolvable} [afkChannel] The AFK channel of the guild
    * @property {number} [afkTimeout] The AFK timeout of the guild
    * @property {Base64Resolvable} [icon] The icon of the guild
    * @property {GuildMemberResolvable} [owner] The owner of the guild
