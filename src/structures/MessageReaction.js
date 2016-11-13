@@ -64,7 +64,7 @@ class MessageReaction {
     user = this.message.client.resolver.resolveUserID(user);
     if (!user) return Promise.reject('Couldn\'t resolve the user ID to remove from the reaction.');
     return message.client.rest.methods.removeMessageReaction(
-      message.channel.id, message.id, this.emoji.identifier, user
+      message, this.emoji.identifier, user
     );
   }
 
@@ -77,7 +77,7 @@ class MessageReaction {
   fetchUsers(limit = 100) {
     const message = this.message;
     return message.client.rest.methods.getMessageReactionUsers(
-      message.channel.id, message.id, this.emoji.identifier, limit
+      message, this.emoji.identifier, limit
     ).then(users => {
       this.users = new Collection();
       for (const rawUser of users) {

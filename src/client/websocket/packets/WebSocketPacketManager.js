@@ -47,6 +47,7 @@ class WebSocketPacketManager {
     this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, 'RelationshipRemove');
     this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, 'MessageReactionAdd');
     this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, 'MessageReactionRemove');
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, 'MessageReactionRemoveAll');
   }
 
   get client() {
