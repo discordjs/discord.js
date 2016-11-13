@@ -122,10 +122,10 @@ class RESTMethods {
     );
   }
 
-  updateMessage(message, content) {
+  updateMessage(message, content, embed) {
     content = this.rest.client.resolver.resolveString(content);
     return this.rest.makeRequest('patch', Constants.Endpoints.channelMessage(message.channel.id, message.id), true, {
-      content,
+      content, embed,
     }).then(data => this.rest.client.actions.MessageUpdate.handle(data).updated);
   }
 
