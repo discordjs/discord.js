@@ -386,7 +386,7 @@ class Message {
    * @param {Emoji|ReactionEmoji|string} emoji Emoji to react with
    * @returns {Promise<MessageReaction>}
    */
-  addReaction(emoji) {
+  react(emoji) {
     if (emoji.identifier) {
       emoji = emoji.identifier;
     } else if (typeof emoji === 'string') {
