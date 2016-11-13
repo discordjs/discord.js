@@ -341,8 +341,15 @@ class Message {
   }
 
   /**
+   * Options that can be passed into editMessage
+   * @typedef {Object} MessageEditOptions
+   * @property {Object} [embed] An embed to be added/edited
+   */
+
+  /**
    * Edit the content of the message
    * @param {StringResolvable} content The new content for the message
+   * @param {MessageEditOptions} [options={}] The options to provide
    * @returns {Promise<Message>}
    * @example
    * // update the content of a message
@@ -350,8 +357,8 @@ class Message {
    *  .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
    *  .catch(console.error);
    */
-  edit(content) {
-    return this.client.rest.methods.updateMessage(this, content);
+  edit(content, options = {}) {
+    return this.client.rest.methods.updateMessage(this, content, options);
   }
 
   /**

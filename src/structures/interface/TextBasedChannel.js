@@ -28,6 +28,8 @@ class TextBasedChannel {
    * @typedef {Object} MessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
+   * @property {Object} [embed] An embed for the message
+   * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
