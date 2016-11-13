@@ -14,7 +14,6 @@ const DocumentedVarType = require('./DocumentedVarType');
 */
 
 class DocumentedParam extends DocumentedItem {
-
   registerMetaInfo(data) {
     super.registerMetaInfo(data);
     this.directData = data;

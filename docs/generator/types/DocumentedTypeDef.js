@@ -19,11 +19,6 @@ const DocumentedParam = require('./DocumentedParam');
 */
 
 class DocumentedTypeDef extends DocumentedItem {
-
-  constructor(...args) {
-    super(...args);
-  }
-
   registerMetaInfo(data) {
     super.registerMetaInfo(data);
     this.props = new Map();
@@ -31,9 +26,7 @@ class DocumentedTypeDef extends DocumentedItem {
     this.directData.meta = new DocumentedItemMeta(this, data.meta);
     this.directData.type = new DocumentedVarType(this, data.type);
     data.properties = data.properties || [];
-    for (const prop of data.properties) {
-      this.props.set(prop.name, new DocumentedParam(this, prop));
-    }
+    for (const prop of data.properties) this.props.set(prop.name, new DocumentedParam(this, prop));
   }
 
   serialize() {
@@ -50,7 +43,6 @@ class DocumentedTypeDef extends DocumentedItem {
     serialized.properties = Array.from(this.props.values()).map(p => p.serialize());
     return serialized;
   }
-
 }
 
 module.exports = DocumentedTypeDef;

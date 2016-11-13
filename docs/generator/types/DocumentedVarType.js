@@ -11,10 +11,24 @@ const DocumentedItem = require('./DocumentedItem');
 const regex = /([\w]+)([^\w]+)/;
 const regexG = /([\w]+)([^\w]+)/g;
 
-function splitVarName(str) {
-  if (str === '*') {
-    return ['*', ''];
+class DocumentedVarType extends DocumentedItem {
+  registerMetaInfo(data) {
+    super.registerMetaInfo(data);
+    this.directData = data;
   }
+
+  serialize() {
+    super.serialize();
+    const names = [];
+    for (const name of this.directData.names) names.push(splitVarName(name));
+    return {
+      types: names,
+    };
+  }
+}
+
+function splitVarName(str) {
+  if (str === '*') return ['*', ''];
   const matches = str.match(regexG);
   const output = [];
   if (matches) {
@@ -26,25 +40,6 @@ function splitVarName(str) {
     output.push([str.match(/(\w+)/g)[0], '']);
   }
   return output;
-}
-
-class DocumentedVarType extends DocumentedItem {
-
-  registerMetaInfo(data) {
-    super.registerMetaInfo(data);
-    this.directData = data;
-  }
-
-  serialize() {
-    super.serialize();
-    const names = [];
-    for (const name of this.directData.names) {
-      names.push(splitVarName(name));
-    }
-    return {
-      types: names,
-    };
-  }
 }
 
 module.exports = DocumentedVarType;
