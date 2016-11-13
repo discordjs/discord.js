@@ -46,7 +46,7 @@ class OAuth2Application {
 
     /**
      * The app's RPC origins
-     * @type {Array<String>}
+     * @type {Array<string>}
      */
     this.rpcOrigins = data.rpc_origins;
   }

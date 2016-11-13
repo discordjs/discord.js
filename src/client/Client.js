@@ -85,7 +85,7 @@ class Client extends EventEmitter {
 
     /**
      * The shard helpers for the client (only if the process was spawned as a child, such as from a ShardingManager)
-     * @type {?ShardUtil}
+     * @type {?ShardClientUtil}
      */
     this.shard = process.send ? ShardClientUtil.singleton(this) : null;
 
@@ -328,7 +328,7 @@ class Client extends EventEmitter {
   /**
    * Gets the bot's OAuth2 application.
    * <warn>This is only available when using a bot account.</warn>
-   * @returns {Promise<ClientOAuth2App>}
+   * @returns {Promise<ClientOAuth2Application>}
    */
   fetchApplication() {
     if (!this.user.bot) throw new Error(Constants.Errors.NO_BOT_ACCOUNT);

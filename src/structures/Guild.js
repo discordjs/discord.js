@@ -418,7 +418,7 @@ class Guild {
 
   /**
    * Edit the AFK channel of the guild.
-   * @param {GuildChannelResolvable} afkChannel The new AFK channel
+   * @param {ChannelResolvable} afkChannel The new AFK channel
    * @returns {Promise<Guild>}
    * @example
    * // edit the guild AFK channel

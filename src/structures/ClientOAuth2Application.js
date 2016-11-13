@@ -11,7 +11,7 @@ class ClientOAuth2Application extends OAuth2Application {
 
     /**
      * The app's flags
-     * @type {int}
+     * @type {number}
      */
     this.flags = data.flags;
 

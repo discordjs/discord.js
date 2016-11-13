@@ -10,7 +10,7 @@ class Shard {
   /**
    * @param {ShardingManager} manager The sharding manager
    * @param {number} id The ID of this shard
-   * @param {array} [args=[]] Command line arguments to pass to the script
+   * @param {Array} [args=[]] Command line arguments to pass to the script
    */
   constructor(manager, id, args = []) {
     /**

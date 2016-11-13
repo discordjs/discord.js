@@ -107,7 +107,7 @@ class Collection extends Map {
    * Returns an array of items where `item[prop] === value` of the collection
    * @param {string} prop The property to test against
    * @param {*} value The expected value
-   * @returns {array}
+   * @returns {Array}
    * @example
    * collection.findAll('username', 'Bob');
    */
@@ -237,7 +237,7 @@ class Collection extends Map {
    * [Array.map()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map).
    * @param {function} fn Function that produces an element of the new array, taking three arguments
    * @param {*} [thisArg] Value to use as `this` when executing function
-   * @returns {array}
+   * @returns {Array}
    */
   map(fn, thisArg) {
     if (thisArg) fn = fn.bind(thisArg);
