@@ -389,8 +389,8 @@ class Message {
   }
 
   /**
-   * Add a reaction to a message
-   * @param {string|Emoji|ReactionEmoji} emoji The emoji to react with
+   * Add a reaction to the message
+   * @param {string|Emoji|ReactionEmoji} emoji Emoji to react with
    * @returns {Promise<MessageReaction>}
    */
   react(emoji) {
