@@ -138,6 +138,7 @@ class Collection extends Map {
   find(propOrFn, value) {
     if (typeof propOrFn === 'string') {
       if (typeof value === 'undefined') throw new Error('Value must be specified.');
+      if (propOrFn === 'id') throw new RangeError('Don\'t use .find() with IDs. Instead, use .get(id).');
       for (const item of this.values()) {
         if (item[propOrFn] === value) return item;
       }
@@ -196,6 +197,7 @@ class Collection extends Map {
    * }
    */
   exists(prop, value) {
+    if (prop === 'id') throw new RangeError('Don\'t use .find() with IDs. Instead, use .get(id).');
     return Boolean(this.find(prop, value));
   }
 
