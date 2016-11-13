@@ -14,17 +14,19 @@
     "valid-jsdoc": ["error", {
       "requireReturn": false,
       "requireReturnDescription": false,
+      "prefer": {
+        "return": "returns",
+        "arg": "param"
+      },
       "preferType": {
         "String": "string",
         "Number": "number",
         "Boolean": "boolean",
         "Function": "function",
         "object": "Object",
+        "array": "Array",
         "date": "Date",
         "error": "Error"
-      },
-      "prefer": {
-        "return": "returns"
       }
     }],
 

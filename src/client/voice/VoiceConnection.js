@@ -70,7 +70,7 @@ class VoiceConnection extends EventEmitter {
       /**
        * Warning info from the connection
        * @event VoiceConnection#warn
-       * @param {string|error} warning the warning
+       * @param {string|Error} warning the warning
        */
       this.emit('warn', e);
       this.player.cleanup();
