@@ -84,7 +84,7 @@ class Message {
 
     /**
      * A list of embeds in the message - e.g. YouTube Player
-     * @type {Embed[]}
+     * @type {MessageEmbed[]}
      */
     this.embeds = data.embeds.map(e => new Embed(this, e));
 
