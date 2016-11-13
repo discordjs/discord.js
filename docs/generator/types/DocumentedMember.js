@@ -21,7 +21,6 @@ const DocumentedParam = require('./DocumentedParam');
 */
 
 class DocumentedMember extends DocumentedItem {
-
   registerMetaInfo(data) {
     super.registerMetaInfo(data);
     this.directData = data;
@@ -52,7 +51,6 @@ class DocumentedMember extends DocumentedItem {
       props: properties.map(p => p.serialize()),
     };
   }
-
 }
 
 module.exports = DocumentedMember;

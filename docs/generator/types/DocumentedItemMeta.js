@@ -1,7 +1,7 @@
-const cwd = (`${process.cwd()}\\`).replace(/\\/g, '/');
-const backToForward = /\\/g;
-
 const DocumentedItem = require('./DocumentedItem');
+
+const cwd = `${process.cwd()}\\`.replace(/\\/g, '/');
+const backToForward = /\\/g;
 
 /*
    { lineno: 7,
@@ -10,7 +10,6 @@ const DocumentedItem = require('./DocumentedItem');
 */
 
 class DocumentedItemMeta extends DocumentedItem {
-
   registerMetaInfo(data) {
     super.registerMetaInfo(data);
     this.directData.line = data.lineno;
@@ -23,7 +22,6 @@ class DocumentedItemMeta extends DocumentedItem {
     const { line, file, path } = this.directData;
     return { line, file, path };
   }
-
 }
 
 module.exports = DocumentedItemMeta;

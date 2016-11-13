@@ -164,40 +164,6 @@ class Message {
     }
   }
 
-  _addReaction(emoji, user) {
-    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : emoji.name;
-    let reaction;
-    if (this.reactions.has(emojiID)) {
-      reaction = this.reactions.get(emojiID);
-      if (!reaction.me) reaction.me = user.id === this.client.user.id;
-    } else {
-      reaction = new MessageReaction(this, emoji, 0, user.id === this.client.user.id);
-      this.reactions.set(emojiID, reaction);
-    }
-    if (!reaction.users.has(user.id)) {
-      reaction.users.set(user.id, user);
-      reaction.count++;
-      return reaction;
-    }
-    return null;
-  }
-
-  _removeReaction(emoji, user) {
-    const emojiID = emoji.id || emoji;
-    if (this.reactions.has(emojiID)) {
-      const reaction = this.reactions.get(emojiID);
-      if (reaction.users.has(user.id)) {
-        reaction.users.delete(user.id);
-        reaction.count--;
-        if (user.id === this.client.user.id) {
-          reaction.me = false;
-        }
-        return reaction;
-      }
-    }
-    return null;
-  }
-
   patch(data) { // eslint-disable-line complexity
     if (data.author) {
       this.author = this.client.users.get(data.author.id);
@@ -323,18 +289,6 @@ class Message {
       });
   }
 
-  addReaction(emoji) {
-    if (emoji.identifier) {
-      emoji = emoji.identifier;
-    } else if (typeof emoji === 'string') {
-      if (!emoji.includes('%')) emoji = encodeURIComponent(emoji);
-    } else {
-      return Promise.reject(`Emoji must be a string or an Emoji/ReactionEmoji`);
-    }
-
-    return this.client.rest.methods.addMessageReaction(this.channel.id, this.id, emoji);
-  }
-
   /**
    * An array of cached versions of the message, including the current version.
    * Sorted from latest (first) to oldest (last).
@@ -428,6 +382,23 @@ class Message {
   }
 
   /**
+   * Adds a reaction to the message
+   * @param {Emoji|ReactionEmoji|string} emoji Emoji to react with
+   * @returns {Promise<MessageReaction>}
+   */
+  addReaction(emoji) {
+    if (emoji.identifier) {
+      emoji = emoji.identifier;
+    } else if (typeof emoji === 'string') {
+      if (!emoji.includes('%')) emoji = encodeURIComponent(emoji);
+    } else {
+      return Promise.reject('The emoji must be a string or an Emoji/ReactionEmoji.');
+    }
+
+    return this.client.rest.methods.addMessageReaction(this.channel.id, this.id, emoji);
+  }
+
+  /**
    * Deletes the message
    * @param {number} [timeout=0] How long to wait to delete the message in milliseconds
    * @returns {Promise<Message>}
@@ -512,6 +483,40 @@ class Message {
    */
   toString() {
     return this.content;
+  }
+
+  _addReaction(emoji, user) {
+    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : emoji.name;
+    let reaction;
+    if (this.reactions.has(emojiID)) {
+      reaction = this.reactions.get(emojiID);
+      if (!reaction.me) reaction.me = user.id === this.client.user.id;
+    } else {
+      reaction = new MessageReaction(this, emoji, 0, user.id === this.client.user.id);
+      this.reactions.set(emojiID, reaction);
+    }
+    if (!reaction.users.has(user.id)) {
+      reaction.users.set(user.id, user);
+      reaction.count++;
+      return reaction;
+    }
+    return null;
+  }
+
+  _removeReaction(emoji, user) {
+    const emojiID = emoji.id || emoji;
+    if (this.reactions.has(emojiID)) {
+      const reaction = this.reactions.get(emojiID);
+      if (reaction.users.has(user.id)) {
+        reaction.users.delete(user.id);
+        reaction.count--;
+        if (user.id === this.client.user.id) {
+          reaction.me = false;
+        }
+        return reaction;
+      }
+    }
+    return null;
   }
 }
 
