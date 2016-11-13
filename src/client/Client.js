@@ -337,7 +337,7 @@ class Client extends EventEmitter {
 
   /**
    * Sets a timeout that will be automatically cancelled if the client is destroyed.
-   * @param {function} fn Function to execute
+   * @param {Function} fn Function to execute
    * @param {number} delay Time to wait before executing (in milliseconds)
    * @param {args} args Arguments for the function (infinite/rest argument, not an array)
    * @returns {Timeout}
@@ -362,7 +362,7 @@ class Client extends EventEmitter {
 
   /**
    * Sets an interval that will be automatically cancelled if the client is destroyed.
-   * @param {function} fn Function to execute
+   * @param {Function} fn Function to execute
    * @param {number} delay Time to wait before executing (in milliseconds)
    * @param {args} args Arguments for the function (infinite/rest argument, not an array)
    * @returns {Timeout}

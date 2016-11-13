@@ -127,7 +127,7 @@ class Collection extends Map {
    * [Array.find()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find).
    * <warn>Do not use this to obtain an item by its ID. Instead, use `collection.get(id)`. See
    * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get) for details.</warn>
-   * @param {string|function} propOrFn The property to test against, or the function to test with
+   * @param {string|Function} propOrFn The property to test against, or the function to test with
    * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
    * @returns {*}
    * @example
@@ -203,7 +203,7 @@ class Collection extends Map {
    * Identical to
    * [Array.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter),
    * but returns a Collection instead of an Array.
-   * @param {function} fn Function used to test (should return a boolean)
+   * @param {Function} fn Function used to test (should return a boolean)
    * @param {Object} [thisArg] Value to use as `this` when executing function
    * @returns {Collection}
    */
@@ -219,7 +219,7 @@ class Collection extends Map {
   /**
    * Identical to
    * [Array.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter).
-   * @param {function} fn Function used to test (should return a boolean)
+   * @param {Function} fn Function used to test (should return a boolean)
    * @param {Object} [thisArg] Value to use as `this` when executing function
    * @returns {Collection}
    */
@@ -235,7 +235,7 @@ class Collection extends Map {
   /**
    * Identical to
    * [Array.map()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map).
-   * @param {function} fn Function that produces an element of the new array, taking three arguments
+   * @param {Function} fn Function that produces an element of the new array, taking three arguments
    * @param {*} [thisArg] Value to use as `this` when executing function
    * @returns {Array}
    */
@@ -250,7 +250,7 @@ class Collection extends Map {
   /**
    * Identical to
    * [Array.some()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
-   * @param {function} fn Function used to test (should return a boolean)
+   * @param {Function} fn Function used to test (should return a boolean)
    * @param {Object} [thisArg] Value to use as `this` when executing function
    * @returns {boolean}
    */
@@ -265,7 +265,7 @@ class Collection extends Map {
   /**
    * Identical to
    * [Array.every()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every).
-   * @param {function} fn Function used to test (should return a boolean)
+   * @param {Function} fn Function used to test (should return a boolean)
    * @param {Object} [thisArg] Value to use as `this` when executing function
    * @returns {boolean}
    */
@@ -280,7 +280,7 @@ class Collection extends Map {
   /**
    * Identical to
    * [Array.reduce()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce).
-   * @param {function} fn Function used to reduce
+   * @param {Function} fn Function used to reduce
    * @param {*} [startVal] The starting value
    * @returns {*}
    */
