@@ -404,7 +404,7 @@ class Message {
    * Remove all reactions from a message
    * @returns {Promise<Message>}
    */
-  removeReactions() {
+  clearReactions() {
     return this.client.rest.methods.removeMessageReactions(this);
   }
 
@@ -520,9 +520,7 @@ class Message {
       if (reaction.users.has(user.id)) {
         reaction.users.delete(user.id);
         reaction.count--;
-        if (user.id === this.client.user.id) {
-          reaction.me = false;
-        }
+        if (user.id === this.client.user.id) reaction.me = false;
         return reaction;
       }
     }
