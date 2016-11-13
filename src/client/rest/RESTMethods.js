@@ -582,35 +582,40 @@ class RESTMethods {
     );
   }
 
-  addMessageReaction(channelID, messageID, emoji) {
-    return this.rest.makeRequest('put', Constants.Endpoints.selfMessageReaction(channelID, messageID, emoji), true)
+  addMessageReaction(message, emoji) {
+    return this.rest.makeRequest('put', Constants.Endpoints.selfMessageReaction(message.channel.id, message.id, emoji), true)
       .then(() =>
         this.rest.client.actions.MessageReactionAdd.handle({
           user_id: this.rest.client.user.id,
-          message_id: messageID,
+          message_id: message.id,
           emoji: parseEmoji(emoji),
-          channel_id: channelID,
+          channel_id: message.channel.id,
         }).reaction
       );
   }
 
-  removeMessageReaction(channelID, messageID, emoji, userID) {
-    let endpoint = Constants.Endpoints.selfMessageReaction(channelID, messageID, emoji);
-    if (userID !== this.rest.client.user.id) {
-      endpoint = Constants.Endpoints.userMessageReaction(channelID, messageID, emoji, null, userID);
+  removeMessageReaction(message, emoji, user) {
+    let endpoint = Constants.Endpoints.selfMessageReaction(message.channel.id, message.id, emoji);
+    if (user.id !== this.rest.client.user.id) {
+      endpoint = Constants.Endpoints.userMessageReaction(message.channel.id, message.id, emoji, null, user.id);
     }
     return this.rest.makeRequest('delete', endpoint, true).then(() =>
       this.rest.client.actions.MessageReactionRemove.handle({
-        user_id: userID,
-        message_id: messageID,
+        user_id: user.id,
+        message_id: message.id,
         emoji: parseEmoji(emoji),
-        channel_id: channelID,
+        channel_id: message.channel.id,
       }).reaction
     );
   }
 
-  getMessageReactionUsers(channelID, messageID, emoji, limit = 100) {
-    return this.rest.makeRequest('get', Constants.Endpoints.messageReaction(channelID, messageID, emoji, limit), true);
+  removeMessageReactions(message) {
+    this.rest.makeRequest('delete', Constants.Endpoints.messageReactions(message.channel.id, message.id), true)
+      .then(() => message);
+  }
+
+  getMessageReactionUsers(message, emoji, limit = 100) {
+    return this.rest.makeRequest('get', Constants.Endpoints.messageReaction(message.channel.id, message.id, emoji, limit), true);
   }
 
   getMyApplication() {

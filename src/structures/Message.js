@@ -26,7 +26,7 @@ class Message {
     if (data) this.setup(data);
   }
 
-  setup(data) {
+  setup(data) { // eslint-disable-line complexity
     /**
      * The ID of the message (unique in the channel it was sent)
      * @type {string}
@@ -389,20 +389,23 @@ class Message {
   }
 
   /**
-   * Adds a reaction to the message
-   * @param {Emoji|ReactionEmoji|string} emoji Emoji to react with
+   * Add a reaction to the message
+   * @param {string|Emoji|ReactionEmoji} emoji Emoji to react with
    * @returns {Promise<MessageReaction>}
    */
   react(emoji) {
-    if (emoji.identifier) {
-      emoji = emoji.identifier;
-    } else if (typeof emoji === 'string') {
-      if (!emoji.includes('%')) emoji = encodeURIComponent(emoji);
-    } else {
-      return Promise.reject('The emoji must be a string or an Emoji/ReactionEmoji.');
-    }
+    emoji = this.client.resolver.resolveEmojiIdentifier(emoji);
+    if (!emoji) throw new TypeError('Emoji must be a string or Emoji/ReactionEmoji');
 
-    return this.client.rest.methods.addMessageReaction(this.channel.id, this.id, emoji);
+    return this.client.rest.methods.addMessageReaction(this, emoji);
+  }
+
+  /**
+   * Remove all reactions from a message
+   * @returns {Promise<Message>}
+   */
+  clearReactions() {
+    return this.client.rest.methods.removeMessageReactions(this);
   }
 
   /**
@@ -522,6 +525,10 @@ class Message {
       }
     }
     return null;
+  }
+
+  _clearReactions() {
+    this.reactions.clear();
   }
 }
 
