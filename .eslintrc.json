@@ -22,8 +22,8 @@
         "String": "string",
         "Number": "number",
         "Boolean": "boolean",
-        "Function": "function",
         "object": "Object",
+        "function": "Function",
         "array": "Array",
         "date": "Date",
         "error": "Error"
