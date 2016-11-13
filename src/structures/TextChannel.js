@@ -61,14 +61,15 @@ class TextChannel extends GuildChannel {
    *  .catch(console.error)
    */
   createWebhook(name, avatar) {
-    if (avatar) {
-      return this.client.resolver.resolveBuffer(avatar).then(file => {
-        let base64 = new Buffer(file, 'binary').toString('base64');
-        let dataURI = `data:;base64,${base64}`;
-        return this.client.rest.methods.createWebhook(this, name, dataURI);
-      });
-    }
-    return this.client.rest.methods.createWebhook(this, name);
+    return new Promise(resolve => {
+      if (avatar.startsWith('data:')) {
+        resolve(this.client.rest.methods.createWebhook(this, name, avatar));
+      } else {
+        this.client.resolver.resolveBuffer(avatar).then(data =>
+           resolve(this.client.rest.methods.createWebhook(this, name, data))
+        );
+      }
+    });
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
