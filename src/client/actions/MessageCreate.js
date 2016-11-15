@@ -11,12 +11,14 @@ class MessageCreateAction extends Action {
         const messages = new Array(data.length);
         for (let i = 0; i < data.length; i++) {
           messages[i] = channel._cacheMessage(new Message(channel, data[i], client));
+          channel.lastMessageID = data[i].id;
         }
         return {
           messages,
         };
       } else {
         const message = channel._cacheMessage(new Message(channel, data, client));
+        channel.lastMessageID = data.id;
         return {
           message,
         };

@@ -45,6 +45,12 @@ class MessageEmbed {
     this.url = data.url;
 
     /**
+     * The footer of this embed
+     * @type {Object}
+     */
+    this.footer = data.footer;
+
+    /**
      * The thumbnail of this embed, if there is one
      * @type {MessageEmbedThumbnail}
      */
