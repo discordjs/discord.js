@@ -49,6 +49,12 @@ class MessageEmbed {
      * @type {Object}
      */
     this.footer = data.footer;
+    
+    /**
+     * The fields of the embed
+     * @type {Array.<Object>}
+     */
+    this.fields = data.fields;
 
     /**
      * The thumbnail of this embed, if there is one
