@@ -51,7 +51,7 @@ class MessageEmbed {
     this.footer = data.footer;
     
     /**
-     * The fields of the embed
+     * The fields of this embed
      * @type {Array.<Object>}
      */
     this.fields = data.fields;
