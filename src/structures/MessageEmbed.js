@@ -52,7 +52,7 @@ class MessageEmbed {
     
     /**
      * The fields of this embed
-     * @type {Array.<Object>}
+     * @type {Array<Object>}
      */
     this.fields = data.fields;
 
