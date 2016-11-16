@@ -55,6 +55,12 @@ class MessageEmbed {
      * @type {Array<Object>}
      */
     this.fields = data.fields;
+    
+    /**
+     * The timestamp of this embed
+     * @type {Date}
+     */
+    this.timestamp = new Date(data.timestamp);
 
     /**
      * The thumbnail of this embed, if there is one
