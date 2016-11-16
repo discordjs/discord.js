@@ -45,17 +45,11 @@ class MessageEmbed {
     this.url = data.url;
 
     /**
-     * The footer of this embed
-     * @type {Object}
-     */
-    this.footer = data.footer;
-    
-    /**
      * The fields of this embed
      * @type {Array<Object>}
      */
     this.fields = data.fields;
-    
+
     /**
      * The timestamp of this embed
      * @type {Date}
@@ -79,6 +73,12 @@ class MessageEmbed {
      * @type {MessageEmbedProvider}
      */
     this.provider = data.provider ? new MessageEmbedProvider(this, data.provider) : null;
+
+    /**
+     * The footer of this embed
+     * @type {MessageEmbedFooter}
+     */
+    this.footer = new MessageEmbedFooter(data.footer);
   }
 }
 
@@ -181,8 +181,35 @@ class MessageEmbedAuthor {
   }
 }
 
+class MessageEmbedFooter {
+  constructor(embed, data) {
+    /**
+     * The embed this footer is part of
+     * @type {MessageEmbed}
+     */
+    this.embed = embed;
+
+    this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The text in this footer
+     * @type {string}
+     */
+    this.text = data.text;
+
+    /**
+     * The icon URL of this footer
+     * @type {string}
+     */
+    this.iconUrl = data.icon_url;
+  }
+}
+
 MessageEmbed.Thumbnail = MessageEmbedThumbnail;
 MessageEmbed.Provider = MessageEmbedProvider;
 MessageEmbed.Author = MessageEmbedAuthor;
+MessageEmbed.Footer = MessageEmbedFooter;
 
 module.exports = MessageEmbed;
