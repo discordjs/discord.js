@@ -314,7 +314,8 @@ class GuildMember {
    * @returns {Promise<GuildMember>}
    */
   addRole(role) {
-    return this.addRoles([role]);
+    if (!(role instanceof Role)) role = this.guild.roles.get(role);
+    return this.client.rest.methods.addMemberRole(this, role);
   }
 
   /**
@@ -339,7 +340,8 @@ class GuildMember {
    * @returns {Promise<GuildMember>}
    */
   removeRole(role) {
-    return this.removeRoles([role]);
+    if (!(role instanceof Role)) role = this.guild.roles.get(role);
+    return this.client.rest.methods.removeMemberRole(this, role);
   }
 
   /**

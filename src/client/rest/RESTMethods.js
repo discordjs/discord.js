@@ -328,6 +328,26 @@ class RESTMethods {
     );
   }
 
+  addMemberRole(member, role) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('put', Constants.Endpoints.guildMemberRole(member.guild.id, member.id, role.id))
+      .then(() => {
+        member.roles.set(role.id, role);
+        resolve(member);
+      }).catch(reject);
+    });
+  }
+
+  removeMemberRole(member, role) {
+    return new Promise((resolve, reject) => {
+      this.rest.makeRequest('delete', Constants.Endpoints.guildMemberRole(member.guild.id, member.id, role.id))
+      .then(() => {
+        member.roles.delete(role.id);
+        resolve(member);
+      }).catch(reject);
+    });
+  }
+
   sendTyping(channelID) {
     return this.rest.makeRequest('post', `${Constants.Endpoints.channel(channelID)}/typing`, true);
   }
