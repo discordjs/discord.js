@@ -49,7 +49,7 @@ class MessageEmbed {
      * @type {MessageEmbedField[]}
      */
     this.fields = [];
-    if (data.fields) for (const field of data.fields) this.fields.push(new MessageEmbedField(field, field));
+    if (data.fields) for (const field of data.fields) this.fields.push(new MessageEmbedField(this, field));
 
     /**
      * The timestamp of this embed
@@ -79,7 +79,7 @@ class MessageEmbed {
      * The footer of this embed
      * @type {MessageEmbedFooter}
      */
-    this.footer = data.footer ? new MessageEmbedFooter(data.footer) : null;
+    this.footer = data.footer ? new MessageEmbedFooter(this, data.footer) : null;
   }
 
   /**
