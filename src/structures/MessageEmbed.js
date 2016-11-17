@@ -78,7 +78,7 @@ class MessageEmbed {
      * The footer of this embed
      * @type {MessageEmbedFooter}
      */
-    this.footer = new MessageEmbedFooter(data.footer);
+    this.footer = data.footer ? new MessageEmbedFooter(data.footer) : null;
   }
 }
 
