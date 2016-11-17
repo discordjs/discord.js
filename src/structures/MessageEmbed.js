@@ -46,7 +46,7 @@ class MessageEmbed {
 
     /**
      * The fields of this embed
-     * @type {Array<MessageEmbedField>}
+     * @type {MessageEmbedField[]}
      */
     this.fields = [];
     if (data.fields) for (const field of data.fields) this.fields.push(new MessageEmbedField(field, field));
