@@ -583,15 +583,16 @@ class RESTMethods {
   }
 
   addMessageReaction(message, emoji) {
-    return this.rest.makeRequest('put', Constants.Endpoints.selfMessageReaction(message.channel.id, message.id, emoji), true)
-      .then(() =>
-        this.rest.client.actions.MessageReactionAdd.handle({
-          user_id: this.rest.client.user.id,
-          message_id: message.id,
-          emoji: parseEmoji(emoji),
-          channel_id: message.channel.id,
-        }).reaction
-      );
+    return this.rest.makeRequest(
+      'put', Constants.Endpoints.selfMessageReaction(message.channel.id, message.id, emoji), true
+    ).then(() =>
+      this.rest.client.actions.MessageReactionAdd.handle({
+        user_id: this.rest.client.user.id,
+        message_id: message.id,
+        emoji: parseEmoji(emoji),
+        channel_id: message.channel.id,
+      }).reaction
+    );
   }
 
   removeMessageReaction(message, emoji, user) {
@@ -615,7 +616,9 @@ class RESTMethods {
   }
 
   getMessageReactionUsers(message, emoji, limit = 100) {
-    return this.rest.makeRequest('get', Constants.Endpoints.messageReaction(message.channel.id, message.id, emoji, limit), true);
+    return this.rest.makeRequest(
+      'get', Constants.Endpoints.messageReaction(message.channel.id, message.id, emoji, limit), true
+    );
   }
 
   getMyApplication() {
@@ -625,8 +628,7 @@ class RESTMethods {
   }
 
   setNote(user, note) {
-    return this.rest.makeRequest('put', Constants.Endpoints.note(user.id), true, { note })
-      .then(() => user);
+    return this.rest.makeRequest('put', Constants.Endpoints.note(user.id), true, { note }).then(() => user);
   }
 }
 
