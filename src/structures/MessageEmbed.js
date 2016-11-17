@@ -251,6 +251,12 @@ class MessageEmbedFooter {
      * @type {string}
      */
     this.iconUrl = data.icon_url;
+    
+    /**
+     * The proxy icon URL of this footer
+     * @type {string}
+     */
+    this.proxyIconUrl = data.proxy_icon_url
   }
 }
 
