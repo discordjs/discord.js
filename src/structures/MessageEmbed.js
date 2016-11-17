@@ -49,8 +49,8 @@ class MessageEmbed {
      * @type {Array<MessageEmbedField>}
      */
     this.fields = [];
-    for (const field of data.fields) this.fields.push(new MessageEmbedField(embed, field));
-    
+    if (data.fields) for (const field of data.fields) this.fields.push(new MessageEmbedField(field, field));
+
     /**
      * The timestamp of this embed
      * @type {Date}
@@ -81,7 +81,7 @@ class MessageEmbed {
      */
     this.footer = data.footer ? new MessageEmbedFooter(data.footer) : null;
   }
-  
+
   /**
    * The date this embed was created
    * @type {Date}
@@ -200,20 +200,20 @@ class MessageEmbedField {
 
     this.setup(data);
   }
-  
+
   setup(data) {
     /**
      * The name of this field
      * @type {string}
      */
     this.name = data.name;
-    
+
     /**
      * The value of this field
      * @type {string}
      */
     this.value = data.value;
-    
+
     /**
      * If this field is displayed inline
      * @type {boolean}
