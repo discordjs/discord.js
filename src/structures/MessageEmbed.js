@@ -46,15 +46,16 @@ class MessageEmbed {
 
     /**
      * The fields of this embed
-     * @type {Array<Object>}
+     * @type {Array<MessageEmbedField>}
      */
-    this.fields = data.fields;
-
+    this.fields = [];
+    for (const field of data.fields) this.fields.push(new MessageEmbedField(embed, field));
+    
     /**
      * The timestamp of this embed
      * @type {Date}
      */
-    this.timestamp = new Date(data.timestamp);
+    this.createdTimestamp = data.timestamp;
 
     /**
      * The thumbnail of this embed, if there is one
@@ -79,6 +80,14 @@ class MessageEmbed {
      * @type {MessageEmbedFooter}
      */
     this.footer = data.footer ? new MessageEmbedFooter(data.footer) : null;
+  }
+  
+  /**
+   * The date this embed was created
+   * @type {Date}
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
   }
 }
 
@@ -181,6 +190,38 @@ class MessageEmbedAuthor {
   }
 }
 
+class MessageEmbedField {
+  constructor(embed, data) {
+    /**
+     * The embed this footer is part of
+     * @type {MessageEmbed}
+     */
+    this.embed = embed;
+
+    this.setup(data);
+  }
+  
+  setup(data) {
+    /**
+     * The name of this field
+     * @type {string}
+     */
+    this.name = data.name;
+    
+    /**
+     * The value of this field
+     * @type {string}
+     */
+    this.value = data.value;
+    
+    /**
+     * If this field is displayed inline
+     * @type {boolean}
+     */
+    this.inline = data.inline;
+  }
+}
+
 class MessageEmbedFooter {
   constructor(embed, data) {
     /**
@@ -210,6 +251,7 @@ class MessageEmbedFooter {
 MessageEmbed.Thumbnail = MessageEmbedThumbnail;
 MessageEmbed.Provider = MessageEmbedProvider;
 MessageEmbed.Author = MessageEmbedAuthor;
+MessageEmbed.Field = MessageEmbedField;
 MessageEmbed.Footer = MessageEmbedFooter;
 
 module.exports = MessageEmbed;
