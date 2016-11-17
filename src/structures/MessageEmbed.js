@@ -1,5 +1,5 @@
 /**
- * Represents an embed in an image - e.g. preview of image
+ * Represents an embed in a message (image/video preview, rich embed, etc.)
  */
 class MessageEmbed {
   constructor(message, data) {
@@ -53,7 +53,7 @@ class MessageEmbed {
 
     /**
      * The timestamp of this embed
-     * @type {Date}
+     * @type {number}
      */
     this.createdTimestamp = data.timestamp;
 
@@ -162,7 +162,7 @@ class MessageEmbedProvider {
 }
 
 /**
- * Represents a author for a message embed
+ * Represents an author for a message embed
  */
 class MessageEmbedAuthor {
   constructor(embed, data) {
@@ -190,6 +190,9 @@ class MessageEmbedAuthor {
   }
 }
 
+/**
+ * Represents a field for a message embed
+ */
 class MessageEmbedField {
   constructor(embed, data) {
     /**
@@ -222,6 +225,9 @@ class MessageEmbedField {
   }
 }
 
+/**
+ * Represents the footer of a message embed
+ */
 class MessageEmbedFooter {
   constructor(embed, data) {
     /**
