@@ -1,5 +1,5 @@
 /**
- * Represents an embed in an image - e.g. preview of image
+ * Represents an embed in a message (image/video preview, rich embed, etc.)
  */
 class MessageEmbed {
   constructor(message, data) {
@@ -45,6 +45,19 @@ class MessageEmbed {
     this.url = data.url;
 
     /**
+     * The fields of this embed
+     * @type {MessageEmbedField[]}
+     */
+    this.fields = [];
+    if (data.fields) for (const field of data.fields) this.fields.push(new MessageEmbedField(field, field));
+
+    /**
+     * The timestamp of this embed
+     * @type {number}
+     */
+    this.createdTimestamp = data.timestamp;
+
+    /**
      * The thumbnail of this embed, if there is one
      * @type {MessageEmbedThumbnail}
      */
@@ -61,6 +74,20 @@ class MessageEmbed {
      * @type {MessageEmbedProvider}
      */
     this.provider = data.provider ? new MessageEmbedProvider(this, data.provider) : null;
+
+    /**
+     * The footer of this embed
+     * @type {MessageEmbedFooter}
+     */
+    this.footer = data.footer ? new MessageEmbedFooter(data.footer) : null;
+  }
+
+  /**
+   * The date this embed was created
+   * @type {Date}
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
   }
 }
 
@@ -135,7 +162,7 @@ class MessageEmbedProvider {
 }
 
 /**
- * Represents a author for a message embed
+ * Represents an author for a message embed
  */
 class MessageEmbedAuthor {
   constructor(embed, data) {
@@ -163,8 +190,80 @@ class MessageEmbedAuthor {
   }
 }
 
+/**
+ * Represents a field for a message embed
+ */
+class MessageEmbedField {
+  constructor(embed, data) {
+    /**
+     * The embed this footer is part of
+     * @type {MessageEmbed}
+     */
+    this.embed = embed;
+
+    this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The name of this field
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * The value of this field
+     * @type {string}
+     */
+    this.value = data.value;
+
+    /**
+     * If this field is displayed inline
+     * @type {boolean}
+     */
+    this.inline = data.inline;
+  }
+}
+
+/**
+ * Represents the footer of a message embed
+ */
+class MessageEmbedFooter {
+  constructor(embed, data) {
+    /**
+     * The embed this footer is part of
+     * @type {MessageEmbed}
+     */
+    this.embed = embed;
+
+    this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The text in this footer
+     * @type {string}
+     */
+    this.text = data.text;
+
+    /**
+     * The icon URL of this footer
+     * @type {string}
+     */
+    this.iconUrl = data.icon_url;
+
+    /**
+     * The proxy icon URL of this footer
+     * @type {string}
+     */
+    this.proxyIconUrl = data.proxy_icon_url;
+  }
+}
+
 MessageEmbed.Thumbnail = MessageEmbedThumbnail;
 MessageEmbed.Provider = MessageEmbedProvider;
 MessageEmbed.Author = MessageEmbedAuthor;
+MessageEmbed.Field = MessageEmbedField;
+MessageEmbed.Footer = MessageEmbedFooter;
 
 module.exports = MessageEmbed;
