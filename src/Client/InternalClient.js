@@ -1687,8 +1687,6 @@ export default class InternalClient {
 					true,
 					options
 				)
-					.catch(console.error)
-					.then(res => destination.channel.messages.add(new Message(res, destination.channel, this.client)));
 			});
 
 	}
