@@ -1438,10 +1438,15 @@ export default class InternalClient {
 			throw new Error("Must provide email since a token was used to login");
 		}
 
-		var options = {
-			avatar: this.resolver.resolveToBase64(data.avatar) || this.user.avatar,
-			username: data.username || this.user.username
-		};
+		let options = {};
+
+		if (data.username) {
+			options.username = data.username;
+		}
+
+		if (data.avatar) {
+			options.avatar = this.resolver.resolveToBase64(data.avatar);
+		}
 
 		if (this.email || data.email) {
 			options.email = data.email || this.email;
