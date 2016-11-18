@@ -5,7 +5,8 @@
   "main": "./src/index",
   "scripts": {
     "test": "eslint src/ && node docs/generator/generator.js silent",
-    "docs": "node docs/generator/generator.js"
+    "docs": "node docs/generator/generator.js",
+    "webpack": "webpack"
   },
   "repository": {
     "type": "git",

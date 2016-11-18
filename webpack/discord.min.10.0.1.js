@@ -1379,7 +1379,8 @@
 		"main": "./src/index",
 		"scripts": {
 			"test": "eslint src/ && node docs/generator/generator.js silent",
-			"docs": "node docs/generator/generator.js"
+			"docs": "node docs/generator/generator.js",
+			"webpack": "webpack"
 		},
 		"repository": {
 			"type": "git",
@@ -41470,7 +41471,7 @@
 	}
 	/**
 	 * Emitted whenever a reaction is added to a message.
-	 * @event Client#messageReactionAdd.
+	 * @event Client#messageReactionAdd
 	 * @param {MessageReaction} messageReaction The reaction object.
 	 * @param {User} user The user that applied the emoji or reaction emoji.
 	 */
@@ -41519,7 +41520,7 @@
 	}
 	/**
 	 * Emitted whenever a reaction is removed from a message.
-	 * @event Client#messageReactionRemove.
+	 * @event Client#messageReactionRemove
 	 * @param {MessageReaction} messageReaction The reaction object.
 	 * @param {User} user The user that removed the emoji or reaction emoji.
 	 */
@@ -41551,7 +41552,7 @@
 	}
 	/**
 	 * Emitted whenever all reactions are removed from a message.
-	 * @event Client#messageReactionRemoveAll.
+	 * @event Client#messageReactionRemoveAll
 	 * @param {MessageReaction} messageReaction The reaction object.
 	 */
 	module.exports = MessageReactionRemoveAll;
