@@ -1717,7 +1717,7 @@
 		"scripts": {
 			"test": "eslint src/ && node docs/generator/generator.js silent",
 			"docs": "node docs/generator/generator.js",
-			"web-dist": "./node_modules/parallel-webpack/bin/run.js"
+			"web-dist": "npm install && ./node_modules/parallel-webpack/bin/run.js"
 		},
 		"repository": {
 			"type": "git",
