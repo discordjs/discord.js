@@ -19,7 +19,7 @@ const createConfig = (options) => {
       loaders: [
         { test: /\.json$/, loader: 'json-loader' },
         { test: /\.md$/, loader: 'ignore-loader' },
-      ]
+      ],
     },
     node: {
       fs: 'empty',

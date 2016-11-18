@@ -1410,14 +1410,12 @@
 			"opusscript": "^0.0.1"
 		},
 		"devDependencies": {
-			"babel-core": "^6.18.2",
-			"babel-loader": "^6.2.8",
-			"babel-preset-es2015": "^6.18.0",
 			"bufferutil": "^1.2.1",
 			"eslint": "^3.10.0",
 			"jsdoc-to-markdown": "^2.0.0",
 			"json-loader": "^0.5.4",
 			"parallel-webpack": "^1.5.0",
+			"uglify-js": "github:mishoo/UglifyJS2#harmony",
 			"utf-8-validate": "^1.2.1",
 			"webpack": "^1.13.3"
 		},
