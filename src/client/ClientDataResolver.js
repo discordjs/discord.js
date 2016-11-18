@@ -3,13 +3,13 @@ const fs = require('fs');
 const request = require('superagent');
 
 const Constants = require('../util/Constants');
-const User = require(`../structures/User`);
-const Message = require(`../structures/Message`);
-const Guild = require(`../structures/Guild`);
-const Channel = require(`../structures/Channel`);
-const GuildMember = require(`../structures/GuildMember`);
-const Emoji = require(`../structures/Emoji`);
-const ReactionEmoji = require(`../structures/ReactionEmoji`);
+const User = require('../structures/User');
+const Message = require('../structures/Message');
+const Guild = require('../structures/Guild');
+const Channel = require('../structures/Channel');
+const GuildMember = require('../structures/GuildMember');
+const Emoji = require('../structures/Emoji');
+const ReactionEmoji = require('../structures/ReactionEmoji');
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.

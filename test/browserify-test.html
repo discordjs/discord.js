@@ -1,0 +1,23 @@
+<html>
+<script src="../bundle.js"></script>
+<script>
+(() => {
+  if (typeof window === 'undefined') return;
+  const client = window.client = new Discord.Client();
+
+  client.on('debug', console.log);
+
+  client.on('ready', () => {
+    console.log('[CLIENT] Ready!');
+  });
+
+  client.on('disconnect', () => console.log('[CLIENT] Disconnect!'));
+
+  client.on('message', (message) => {
+    console.log(message.author.username, message.author.id, message.contet);
+  });
+
+  client.login('👀');
+})();
+</script>
+</html>

@@ -41,3 +41,5 @@ module.exports = {
 
   version: require('../package').version,
 };
+
+if (typeof window !== 'undefined') window.Discord = module.exports; // eslint-disable-line no-undef

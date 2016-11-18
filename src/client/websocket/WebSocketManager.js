@@ -1,4 +1,4 @@
-const WebSocket = require('ws');
+if (typeof WebSocket === 'undefined') { const WebSocket = require('ws'); }
 const EventEmitter = require('events').EventEmitter;
 const Constants = require('../../util/Constants');
 const zlib = require('zlib');
