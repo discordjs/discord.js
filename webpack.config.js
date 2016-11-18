@@ -6,18 +6,6 @@ const createConfig = (options) => {
   const plugins = [
     new webpack.DefinePlugin({ 'global.GENTLY': false }),
   ];
-  const loaders = [
-    { test: /\.json$/, loader: 'json-loader' },
-    { test: /\.md$/, loader: 'ignore-loader' },
-    {
-      test: /\.js$/,
-      exclude: /node_modules/,
-      loader: 'babel-loader',
-      query: {
-        presets: ['es2015'],
-      },
-    },
-  ];
 
   if (options.minify) plugins.push(new webpack.optimize.UglifyJsPlugin({ minimize: true }));
 
@@ -27,7 +15,12 @@ const createConfig = (options) => {
       path: __dirname,
       filename: `./webpack/discord.${version}${options.minify ? '.min' : ''}.js`,
     },
-    module: { loaders },
+    module: {
+      loaders: [
+        { test: /\.json$/, loader: 'json-loader' },
+        { test: /\.md$/, loader: 'ignore-loader' },
+      ]
+    },
     node: {
       fs: 'empty',
       dns: 'empty',
