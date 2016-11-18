@@ -17,7 +17,7 @@
     console.log(message.author.username, message.author.id, message.contet);
   });
 
-  client.login(window.token);
+  client.login(window.token || prompt('token', 'abcdef123456'));
 })();
 </script>
 </html>

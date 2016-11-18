@@ -1,3 +1,8 @@
+/*
+  ONLY RUN BUILDS WITH `parallel-webpack`!
+  DO NOT USE NORMAL WEBPACK! IT WILL NOT WORK!
+*/
+
 const webpack = require('webpack');
 const createVariants = require('parallel-webpack').createVariants;
 const version = require('./package.json').version;
@@ -33,6 +38,4 @@ const createConfig = (options) => {
   };
 };
 
-module.exports = createVariants({}, {
-  minify: [false, true],
-}, createConfig);
+module.exports = createVariants({}, { minify: [false, true] }, createConfig);
