@@ -1,8 +1,8 @@
 <html>
-<script src="../bundle.js"></script>
+<script src="../webpack/discord.10.0.1.js"></script>
+<script src="auth.js"></script>
 <script>
 (() => {
-  if (typeof window === 'undefined') return;
   const client = window.client = new Discord.Client();
 
   client.on('debug', console.log);
@@ -17,7 +17,7 @@
     console.log(message.author.username, message.author.id, message.contet);
   });
 
-  client.login('👀');
+  client.login(window.token);
 })();
 </script>
 </html>

@@ -5,7 +5,7 @@ module.exports = {
   entry: './src/index.js',
   output: {
     path: __dirname,
-    filename: `./webpack/discord.min.${version}.js`,
+    filename: `./webpack/discord.${version}.js`,
   },
   module: {
     loaders: [
