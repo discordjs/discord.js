@@ -1,21 +1,21 @@
 <html>
-<script src="../webpack/discord.10.0.1.js"></script>
-<script src="auth.js"></script>
-<script>
-(() => {
-  const client = window.client = new Discord.Client();
+  <script src="../webpack/discord.10.0.1.js"></script>
+  <script src="auth.js"></script>
+  <script>
+  (() => {
+    const client = window.client = new Discord.Client();
 
-  client.on('ready', () => {
-    console.log('[CLIENT] Ready!');
-  });
+    client.on('ready', () => {
+      console.log('[CLIENT] Ready!');
+    });
 
-  client.ws.on('close', (event) => console.log('[CLIENT] Disconnect!', event));
+    client.ws.on('close', (event) => console.log('[CLIENT] Disconnect!', event));
 
-  client.on('message', (message) => {
-    console.log(message.author.username, message.author.id, message.content);
-  });
+    client.on('message', (message) => {
+      console.log(message.author.username, message.author.id, message.content);
+    });
 
-  client.login(window.token || prompt('token', 'abcdef123456'));
-})();
-</script>
+    client.login(window.token || prompt('token', 'abcdef123456'));
+  })();
+  </script>
 </html>

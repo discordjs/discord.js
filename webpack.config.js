@@ -1,5 +1,5 @@
 /*
-  ONLY RUN BUILDS WITH `parallel-webpack`!
+  ONLY RUN BUILDS WITH `npm run web-dist`!
   DO NOT USE NORMAL WEBPACK! IT WILL NOT WORK!
 */
 
