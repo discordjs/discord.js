@@ -5,24 +5,9 @@
 (() => {
   const client = window.client = new Discord.Client();
 
-  client.on('raw', event => {
-    if (
-      [
-        'PRESENCE_UPDATE',
-        'TYPING_START',
-        'TYPING_STOP'
-      ].includes(event.t)
-    ) return;
-    console.log(event);
-  });
-
   client.on('ready', () => {
     console.log('[CLIENT] Ready!');
   });
-
-  client.on('debug', console.log);
-
-  client.on('error', console.error);
 
   client.ws.on('close', (event) => console.log('[CLIENT] Disconnect!', event));
 

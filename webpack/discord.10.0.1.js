@@ -120,6 +120,12 @@
 	  constructor(options = {}) {
 	    super();
 
+	    /**
+	     * Whether the client is in a browser environment
+	     * @type {boolean}
+	     */
+	    this.browser = typeof window !== 'undefined';
+
 	    // Obtain shard details from environment
 	    if (!options.shardId && 'SHARD_ID' in process.env) options.shardId = Number(process.env.SHARD_ID);
 	    if (!options.shardCount && 'SHARD_COUNT' in process.env) options.shardCount = Number(process.env.SHARD_COUNT);
@@ -238,12 +244,6 @@
 	     * @type {?ClientUser}
 	     */
 	    this.user = null;
-
-	    /**
-	     * Whether the client is in a browser environment
-	     * @type {boolean}
-	     */
-	    this.browser = !(typeof window === 'undefined');
 
 	    /**
 	     * The date at which the Client was regarded as being in the `READY` state.
@@ -36147,8 +36147,7 @@
 	      this._connect(gateway);
 	      this.first = false;
 	    } else {
-	      this.client.emit('debug', 'Setting new this._connect timeout to 5500');
-	      this.connectTimeout = this.client.setTimeout(() => this._connect(gateway), 5500);
+	      this.client.setTimeout(() => this._connect(gateway), 5500);
 	    }
 	  }
 
@@ -36274,7 +36273,7 @@
 	      if (event.binary) event.data = zlib.inflateSync(event.data).toString();
 	      packet = JSON.parse(event.data);
 	    } catch (e) {
-	      return this.eventError(new Error(Constants.Errors.BAD_WS_MESSAGE), event);
+	      return this.eventError(new Error(Constants.Errors.BAD_WS_MESSAGE));
 	    }
 
 	    this.client.emit('raw', packet);
