@@ -1,4 +1,4 @@
-if (typeof WebSocket === 'undefined') { const WebSocket = require('ws'); }
+const WebSocket = typeof window !== 'undefined' ? window.WebSocket : require('ws'); // eslint-disable-line no-undef
 const EventEmitter = require('events').EventEmitter;
 const Constants = require('../../util/Constants');
 const zlib = require('zlib');
@@ -197,7 +197,7 @@ class WebSocketManager extends EventEmitter {
      * Emitted whenever the client websocket is disconnected
      * @event Client#disconnect
      */
-    clearInterval(this.client.manager.heartbeatInterval);
+    this.client.clearInterval(this.client.manager.heartbeatInterval);
     if (!this.reconnecting) this.client.emit(Constants.Events.DISCONNECT);
     if (event.code === 4004) return;
     if (event.code === 4010) return;

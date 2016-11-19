@@ -1,5 +1,5 @@
 <html>
-<script src="../webpack/discord.10.0.1.min.js"></script>
+<script src="../webpack/discord.10.0.1.js"></script>
 <script src="auth.js"></script>
 <script>
 (() => {
@@ -7,14 +7,25 @@
 
   client.on('debug', console.log);
 
+  client.on('raw', event => {
+    if (
+      [
+        'PRESENCE_UPDATE',
+        'TYPING_START',
+        'TYPING_STOP'
+      ].includes(event.t)
+    ) return;
+    console.log(event);
+  });
+
   client.on('ready', () => {
     console.log('[CLIENT] Ready!');
   });
 
-  client.on('disconnect', () => console.log('[CLIENT] Disconnect!'));
+  client.ws.on('close', (event) => console.log('[CLIENT] Disconnect!', event));
 
   client.on('message', (message) => {
-    console.log(message.author.username, message.author.id, message.contet);
+    console.log(message.author.username, message.author.id, message.content);
   });
 
   client.login(window.token || prompt('token', 'abcdef123456'));

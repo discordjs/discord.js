@@ -240,6 +240,12 @@
 	    this.user = null;
 
 	    /**
+	     * Whether the client is in a browser environment
+	     * @type {boolean}
+	     */
+	    this.browser = !(typeof window === 'undefined');
+
+	    /**
 	     * The date at which the Client was regarded as being in the `READY` state.
 	     * @type {?Date}
 	     */
@@ -36047,7 +36053,7 @@
 /* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
-	if (typeof WebSocket === 'undefined') { const WebSocket = __webpack_require__(66); }
+	const WebSocket = typeof window === undefined ? __webpack_require__(66) : window.WebSocket; // eslint-disable-line no-undef
 	const EventEmitter = __webpack_require__(3).EventEmitter;
 	const Constants = __webpack_require__(5);
 	const zlib = __webpack_require__(125);
@@ -36246,7 +36252,7 @@
 	     * Emitted whenever the client websocket is disconnected
 	     * @event Client#disconnect
 	     */
-	    clearInterval(this.client.manager.heartbeatInterval);
+	    this.client.clearInterval(this.client.manager.heartbeatInterval);
 	    if (!this.reconnecting) this.client.emit(Constants.Events.DISCONNECT);
 	    if (event.code === 4004) return;
 	    if (event.code === 4010) return;

@@ -143,6 +143,12 @@ class Client extends EventEmitter {
     this.user = null;
 
     /**
+     * Whether the client is in a browser environment
+     * @type {boolean}
+     */
+    this.browser = !(typeof window === 'undefined');
+
+    /**
      * The date at which the Client was regarded as being in the `READY` state.
      * @type {?Date}
      */
