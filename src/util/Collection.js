@@ -111,12 +111,17 @@ class Collection extends Map {
    * @example
    * collection.findAll('username', 'Bob');
    */
-  findAll(prop, value) {
-    if (typeof prop !== 'string') throw new TypeError('Key must be a string.');
-    if (typeof value === 'undefined') throw new Error('Value must be specified.');
+  findAll(propOrFn, value) {
     const results = [];
-    for (const item of this.values()) {
-      if (item[prop] === value) results.push(item);
+    if (typeof propOrFn === 'string') {
+      if (typeof value === 'undefined') throw new Error('Value must be specified.');
+      for (const item of this.values()) {
+        if (item[prop] === value) results.push(item);
+      }
+    } else if (typeof propOrFn === 'function') {
+      for (const [key, val] of this) {
+        if (propOrFn(val, key, this)) results.push(val);
+      }
     }
     return results;
   }
