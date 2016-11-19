@@ -7,10 +7,10 @@ cache:
 install: npm install
 script: bash ./docs/deploy/deploy.sh
 env:
-  - CXX=g++-4.9
   global:
     - ENCRYPTION_LABEL: "af862fa96d3e"
     - COMMIT_AUTHOR_EMAIL: "amishshah.2k@gmail.com"
+    - CXX=g++-4.9
 addons:
   apt:
     sources:
