@@ -215,6 +215,10 @@ class WebSocketManager extends EventEmitter {
   eventMessage(event) {
     let packet;
     try {
+      if (this.client.browser && event.data instanceof ArrayBuffer) {
+        event.data = String.fromCharCode.apply(null, new Uint16Array(event.data));
+        event.data = zlib.inflateSync(event.data).toString();
+      }
       if (event.binary) event.data = zlib.inflateSync(event.data).toString();
       packet = JSON.parse(event.data);
     } catch (e) {

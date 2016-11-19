@@ -12557,7 +12557,7 @@
 	   */
 	  joinChannel(channel) {
 	    return new Promise((resolve, reject) => {
-	      if (this.client.browser) throw new Error('voice connections are not available in browser');
+	      if (this.client.browser) throw new Error('Voice connections are not available in browser.');
 	      if (this.pending.get(channel.guild.id)) throw new Error('Already connecting to this guild\'s voice server.');
 	      if (!channel.joinable) throw new Error('You do not have permission to join this voice channel.');
 
@@ -36271,6 +36271,10 @@
 	  eventMessage(event) {
 	    let packet;
 	    try {
+	      if (this.client.browser && event.data instanceof ArrayBuffer) {
+	        event.data = String.fromCharCode.apply(null, new Uint16Array(event.data));
+	        event.data = zlib.inflateSync(event.data).toString();
+	      }
 	      if (event.binary) event.data = zlib.inflateSync(event.data).toString();
 	      packet = JSON.parse(event.data);
 	    } catch (e) {
