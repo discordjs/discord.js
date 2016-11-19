@@ -46,19 +46,19 @@
 
 	module.exports = {
 	  Client: __webpack_require__(1),
-	  WebhookClient: __webpack_require__(242),
-	  Shard: __webpack_require__(243),
-	  ShardClientUtil: __webpack_require__(239),
-	  ShardingManager: __webpack_require__(244),
+	  WebhookClient: __webpack_require__(245),
+	  Shard: __webpack_require__(246),
+	  ShardClientUtil: __webpack_require__(242),
+	  ShardingManager: __webpack_require__(247),
 
 	  Collection: __webpack_require__(10),
 	  splitMessage: __webpack_require__(11),
 	  escapeMarkdown: __webpack_require__(19),
-	  fetchRecommendedShards: __webpack_require__(245),
+	  fetchRecommendedShards: __webpack_require__(248),
 
 	  Channel: __webpack_require__(50),
 	  ClientOAuth2Application: __webpack_require__(34),
-	  ClientUser: __webpack_require__(202),
+	  ClientUser: __webpack_require__(205),
 	  DMChannel: __webpack_require__(49),
 	  Emoji: __webpack_require__(21),
 	  EvaluatedPermissions: __webpack_require__(27),
@@ -102,12 +102,12 @@
 	const ClientDataManager = __webpack_require__(45);
 	const ClientManager = __webpack_require__(56);
 	const ClientDataResolver = __webpack_require__(57);
-	const ClientVoiceManager = __webpack_require__(63);
-	const WebSocketManager = __webpack_require__(171);
-	const ActionsManager = __webpack_require__(210);
+	const ClientVoiceManager = __webpack_require__(64);
+	const WebSocketManager = __webpack_require__(174);
+	const ActionsManager = __webpack_require__(213);
 	const Collection = __webpack_require__(10);
 	const Presence = __webpack_require__(24).Presence;
-	const ShardClientUtil = __webpack_require__(239);
+	const ShardClientUtil = __webpack_require__(242);
 
 	/**
 	 * The starting point for making a Discord Bot.
@@ -10160,6 +10160,7 @@
 	const request = __webpack_require__(40);
 
 	const Constants = __webpack_require__(5);
+	const convertArrayBuffer = __webpack_require__(63);
 	const User = __webpack_require__(13);
 	const Message = __webpack_require__(16);
 	const Guild = __webpack_require__(47);
@@ -10397,14 +10398,19 @@
 	   */
 	  resolveBuffer(resource) {
 	    if (resource instanceof Buffer) return Promise.resolve(resource);
+	    if (this.client.browser && resource instanceof ArrayBuffer) {
+	      return Promise.resolve(convertArrayBuffer(resource));
+	    }
 
 	    if (typeof resource === 'string') {
 	      return new Promise((resolve, reject) => {
 	        if (/^https?:\/\//.test(resource)) {
 	          request.get(resource)
 	            .set('Content-Type', 'blob')
+	            .responseType('arraybuffer')
 	            .end((err, res) => {
 	              if (err) return reject(err);
+	              if (this.client.browser) return resolve(convertArrayBuffer(res.xhr.response));
 	              if (!(res.body instanceof Buffer)) return reject(new TypeError('Body is not a Buffer'));
 	              return resolve(res.body);
 	            });
@@ -12477,10 +12483,39 @@
 /* 63 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* WEBPACK VAR INJECTION */(function(Buffer) {function arrayBufferToBuffer(ab) {
+	  const buffer = new Buffer(ab.byteLength);
+	  const view = new Uint8Array(ab);
+	  for (var i = 0; i < buffer.length; ++i) {
+	    buffer[i] = view[i];
+	  }
+	  return buffer;
+	}
+
+	function str2ab(str) {
+	  const buffer = new ArrayBuffer(str.length * 2);
+	  const view = new Uint16Array(buffer);
+	  for (var i = 0, strLen = str.length; i < strLen; i++) {
+	    view[i] = str.charCodeAt(i);
+	  }
+	  return buffer;
+	}
+
+	module.exports = function convertArrayBuffer(x) {
+	  if (typeof x === 'string') x = str2ab(x);
+	  return arrayBufferToBuffer(x);
+	};
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(58).Buffer))
+
+/***/ },
+/* 64 */
+/***/ function(module, exports, __webpack_require__) {
+
 	const Collection = __webpack_require__(10);
 	const mergeDefault = __webpack_require__(4);
 	const Constants = __webpack_require__(5);
-	const VoiceConnection = __webpack_require__(64);
+	const VoiceConnection = __webpack_require__(65);
 	const EventEmitter = __webpack_require__(3).EventEmitter;
 
 	/**
@@ -12726,14 +12761,14 @@
 
 
 /***/ },
-/* 64 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const VoiceWebSocket = __webpack_require__(65);
-	const VoiceUDP = __webpack_require__(157);
+	const VoiceWebSocket = __webpack_require__(66);
+	const VoiceUDP = __webpack_require__(159);
 	const Constants = __webpack_require__(5);
-	const AudioPlayer = __webpack_require__(158);
-	const VoiceReceiver = __webpack_require__(169);
+	const AudioPlayer = __webpack_require__(161);
+	const VoiceReceiver = __webpack_require__(172);
 	const EventEmitter = __webpack_require__(3).EventEmitter;
 	const fs = __webpack_require__(62);
 
@@ -13008,12 +13043,12 @@
 
 
 /***/ },
-/* 65 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const WebSocket = __webpack_require__(66);
+	const WebSocket = __webpack_require__(67);
 	const Constants = __webpack_require__(5);
-	const SecretKey = __webpack_require__(156);
+	const SecretKey = __webpack_require__(158);
 	const EventEmitter = __webpack_require__(3).EventEmitter;
 
 	/**
@@ -13257,7 +13292,7 @@
 
 
 /***/ },
-/* 66 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -13268,11 +13303,11 @@
 	 * MIT Licensed
 	 */
 
-	var WS = module.exports = __webpack_require__(67);
+	var WS = module.exports = __webpack_require__(68);
 
-	WS.Server = __webpack_require__(155);
-	WS.Sender = __webpack_require__(115);
-	WS.Receiver = __webpack_require__(146);
+	WS.Server = __webpack_require__(156);
+	WS.Sender = __webpack_require__(116);
+	WS.Receiver = __webpack_require__(147);
 
 	/**
 	 * Create a new WebSocket server.
@@ -13312,7 +13347,7 @@
 
 
 /***/ },
-/* 67 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer, process) {'use strict';
@@ -13323,20 +13358,20 @@
 	 * MIT Licensed
 	 */
 
-	var url = __webpack_require__(68)
-	  , util = __webpack_require__(74)
-	  , http = __webpack_require__(77)
-	  , https = __webpack_require__(97)
-	  , crypto = __webpack_require__(98)
-	  , stream = __webpack_require__(79)
-	  , Ultron = __webpack_require__(113)
-	  , Options = __webpack_require__(114)
-	  , Sender = __webpack_require__(115)
-	  , Receiver = __webpack_require__(146)
-	  , SenderHixie = __webpack_require__(152)
-	  , ReceiverHixie = __webpack_require__(153)
-	  , Extensions = __webpack_require__(154)
-	  , PerMessageDeflate = __webpack_require__(124)
+	var url = __webpack_require__(69)
+	  , util = __webpack_require__(75)
+	  , http = __webpack_require__(78)
+	  , https = __webpack_require__(98)
+	  , crypto = __webpack_require__(99)
+	  , stream = __webpack_require__(80)
+	  , Ultron = __webpack_require__(114)
+	  , Options = __webpack_require__(115)
+	  , Sender = __webpack_require__(116)
+	  , Receiver = __webpack_require__(147)
+	  , SenderHixie = __webpack_require__(153)
+	  , ReceiverHixie = __webpack_require__(154)
+	  , Extensions = __webpack_require__(155)
+	  , PerMessageDeflate = __webpack_require__(125)
 	  , EventEmitter = __webpack_require__(3).EventEmitter;
 
 	/**
@@ -14306,7 +14341,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(58).Buffer, __webpack_require__(2)))
 
 /***/ },
-/* 68 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -14330,7 +14365,7 @@
 	// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 	// USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-	var punycode = __webpack_require__(69);
+	var punycode = __webpack_require__(70);
 
 	exports.parse = urlParse;
 	exports.resolve = urlResolve;
@@ -14402,7 +14437,7 @@
 	      'gopher:': true,
 	      'file:': true
 	    },
-	    querystring = __webpack_require__(71);
+	    querystring = __webpack_require__(72);
 
 	function urlParse(url, parseQueryString, slashesDenoteHost) {
 	  if (url && isObject(url) && url instanceof Url) return url;
@@ -15019,7 +15054,7 @@
 
 
 /***/ },
-/* 69 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/*! https://mths.be/punycode v1.3.2 by @mathias */
@@ -15551,10 +15586,10 @@
 
 	}(this));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(70)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(71)(module), (function() { return this; }())))
 
 /***/ },
-/* 70 */
+/* 71 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -15570,17 +15605,17 @@
 
 
 /***/ },
-/* 71 */
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	exports.decode = exports.parse = __webpack_require__(72);
-	exports.encode = exports.stringify = __webpack_require__(73);
+	exports.decode = exports.parse = __webpack_require__(73);
+	exports.encode = exports.stringify = __webpack_require__(74);
 
 
 /***/ },
-/* 72 */
+/* 73 */
 /***/ function(module, exports) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -15666,7 +15701,7 @@
 
 
 /***/ },
-/* 73 */
+/* 74 */
 /***/ function(module, exports) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -15736,7 +15771,7 @@
 
 
 /***/ },
-/* 74 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -16264,7 +16299,7 @@
 	}
 	exports.isPrimitive = isPrimitive;
 
-	exports.isBuffer = __webpack_require__(75);
+	exports.isBuffer = __webpack_require__(76);
 
 	function objectToString(o) {
 	  return Object.prototype.toString.call(o);
@@ -16308,7 +16343,7 @@
 	 *     prototype.
 	 * @param {function} superCtor Constructor function to inherit prototype from.
 	 */
-	exports.inherits = __webpack_require__(76);
+	exports.inherits = __webpack_require__(77);
 
 	exports._extend = function(origin, add) {
 	  // Don't do anything if add isn't an object
@@ -16329,7 +16364,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(2)))
 
 /***/ },
-/* 75 */
+/* 76 */
 /***/ function(module, exports) {
 
 	module.exports = function isBuffer(arg) {
@@ -16340,7 +16375,7 @@
 	}
 
 /***/ },
-/* 76 */
+/* 77 */
 /***/ function(module, exports) {
 
 	if (typeof Object.create === 'function') {
@@ -16369,13 +16404,13 @@
 
 
 /***/ },
-/* 77 */
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var http = module.exports;
 	var EventEmitter = __webpack_require__(3).EventEmitter;
-	var Request = __webpack_require__(78);
-	var url = __webpack_require__(68)
+	var Request = __webpack_require__(79);
+	var url = __webpack_require__(69)
 
 	http.request = function (params, cb) {
 	    if (typeof params === 'string') {
@@ -16519,13 +16554,13 @@
 	};
 
 /***/ },
-/* 78 */
+/* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Stream = __webpack_require__(79);
-	var Response = __webpack_require__(95);
-	var Base64 = __webpack_require__(96);
-	var inherits = __webpack_require__(80);
+	var Stream = __webpack_require__(80);
+	var Response = __webpack_require__(96);
+	var Base64 = __webpack_require__(97);
+	var inherits = __webpack_require__(81);
 
 	var Request = module.exports = function (xhr, params) {
 	    var self = this;
@@ -16734,7 +16769,7 @@
 
 
 /***/ },
-/* 79 */
+/* 80 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -16761,14 +16796,14 @@
 	module.exports = Stream;
 
 	var EE = __webpack_require__(3).EventEmitter;
-	var inherits = __webpack_require__(80);
+	var inherits = __webpack_require__(81);
 
 	inherits(Stream, EE);
-	Stream.Readable = __webpack_require__(81);
-	Stream.Writable = __webpack_require__(91);
-	Stream.Duplex = __webpack_require__(92);
-	Stream.Transform = __webpack_require__(93);
-	Stream.PassThrough = __webpack_require__(94);
+	Stream.Readable = __webpack_require__(82);
+	Stream.Writable = __webpack_require__(92);
+	Stream.Duplex = __webpack_require__(93);
+	Stream.Transform = __webpack_require__(94);
+	Stream.PassThrough = __webpack_require__(95);
 
 	// Backwards-compat with node 0.4.x
 	Stream.Stream = Stream;
@@ -16867,7 +16902,7 @@
 
 
 /***/ },
-/* 80 */
+/* 81 */
 /***/ function(module, exports) {
 
 	if (typeof Object.create === 'function') {
@@ -16896,24 +16931,24 @@
 
 
 /***/ },
-/* 81 */
+/* 82 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {exports = module.exports = __webpack_require__(82);
-	exports.Stream = __webpack_require__(79);
+	/* WEBPACK VAR INJECTION */(function(process) {exports = module.exports = __webpack_require__(83);
+	exports.Stream = __webpack_require__(80);
 	exports.Readable = exports;
-	exports.Writable = __webpack_require__(87);
-	exports.Duplex = __webpack_require__(86);
-	exports.Transform = __webpack_require__(89);
-	exports.PassThrough = __webpack_require__(90);
+	exports.Writable = __webpack_require__(88);
+	exports.Duplex = __webpack_require__(87);
+	exports.Transform = __webpack_require__(90);
+	exports.PassThrough = __webpack_require__(91);
 	if (!process.browser && process.env.READABLE_STREAM === 'disable') {
-	  module.exports = __webpack_require__(79);
+	  module.exports = __webpack_require__(80);
 	}
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 82 */
+/* 83 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -16940,7 +16975,7 @@
 	module.exports = Readable;
 
 	/*<replacement>*/
-	var isArray = __webpack_require__(83);
+	var isArray = __webpack_require__(84);
 	/*</replacement>*/
 
 
@@ -16958,18 +16993,18 @@
 	};
 	/*</replacement>*/
 
-	var Stream = __webpack_require__(79);
+	var Stream = __webpack_require__(80);
 
 	/*<replacement>*/
-	var util = __webpack_require__(84);
-	util.inherits = __webpack_require__(80);
+	var util = __webpack_require__(85);
+	util.inherits = __webpack_require__(81);
 	/*</replacement>*/
 
 	var StringDecoder;
 
 
 	/*<replacement>*/
-	var debug = __webpack_require__(85);
+	var debug = __webpack_require__(86);
 	if (debug && debug.debuglog) {
 	  debug = debug.debuglog('stream');
 	} else {
@@ -16981,7 +17016,7 @@
 	util.inherits(Readable, Stream);
 
 	function ReadableState(options, stream) {
-	  var Duplex = __webpack_require__(86);
+	  var Duplex = __webpack_require__(87);
 
 	  options = options || {};
 
@@ -17042,14 +17077,14 @@
 	  this.encoding = null;
 	  if (options.encoding) {
 	    if (!StringDecoder)
-	      StringDecoder = __webpack_require__(88).StringDecoder;
+	      StringDecoder = __webpack_require__(89).StringDecoder;
 	    this.decoder = new StringDecoder(options.encoding);
 	    this.encoding = options.encoding;
 	  }
 	}
 
 	function Readable(options) {
-	  var Duplex = __webpack_require__(86);
+	  var Duplex = __webpack_require__(87);
 
 	  if (!(this instanceof Readable))
 	    return new Readable(options);
@@ -17152,7 +17187,7 @@
 	// backwards compatibility.
 	Readable.prototype.setEncoding = function(enc) {
 	  if (!StringDecoder)
-	    StringDecoder = __webpack_require__(88).StringDecoder;
+	    StringDecoder = __webpack_require__(89).StringDecoder;
 	  this._readableState.decoder = new StringDecoder(enc);
 	  this._readableState.encoding = enc;
 	  return this;
@@ -17871,7 +17906,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 83 */
+/* 84 */
 /***/ function(module, exports) {
 
 	module.exports = Array.isArray || function (arr) {
@@ -17880,7 +17915,7 @@
 
 
 /***/ },
-/* 84 */
+/* 85 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {// Copyright Joyent, Inc. and other Node contributors.
@@ -17994,13 +18029,13 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(58).Buffer))
 
 /***/ },
-/* 85 */
+/* 86 */
 /***/ function(module, exports) {
 
 	/* (ignored) */
 
 /***/ },
-/* 86 */
+/* 87 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -18041,12 +18076,12 @@
 
 
 	/*<replacement>*/
-	var util = __webpack_require__(84);
-	util.inherits = __webpack_require__(80);
+	var util = __webpack_require__(85);
+	util.inherits = __webpack_require__(81);
 	/*</replacement>*/
 
-	var Readable = __webpack_require__(82);
-	var Writable = __webpack_require__(87);
+	var Readable = __webpack_require__(83);
+	var Writable = __webpack_require__(88);
 
 	util.inherits(Duplex, Readable);
 
@@ -18096,7 +18131,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 87 */
+/* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -18134,11 +18169,11 @@
 
 
 	/*<replacement>*/
-	var util = __webpack_require__(84);
-	util.inherits = __webpack_require__(80);
+	var util = __webpack_require__(85);
+	util.inherits = __webpack_require__(81);
 	/*</replacement>*/
 
-	var Stream = __webpack_require__(79);
+	var Stream = __webpack_require__(80);
 
 	util.inherits(Writable, Stream);
 
@@ -18149,7 +18184,7 @@
 	}
 
 	function WritableState(options, stream) {
-	  var Duplex = __webpack_require__(86);
+	  var Duplex = __webpack_require__(87);
 
 	  options = options || {};
 
@@ -18237,7 +18272,7 @@
 	}
 
 	function Writable(options) {
-	  var Duplex = __webpack_require__(86);
+	  var Duplex = __webpack_require__(87);
 
 	  // Writable ctor is applied to Duplexes, though they're not
 	  // instanceof Writable, they're instanceof Readable.
@@ -18580,7 +18615,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 88 */
+/* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -18807,7 +18842,7 @@
 
 
 /***/ },
-/* 89 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -18876,11 +18911,11 @@
 
 	module.exports = Transform;
 
-	var Duplex = __webpack_require__(86);
+	var Duplex = __webpack_require__(87);
 
 	/*<replacement>*/
-	var util = __webpack_require__(84);
-	util.inherits = __webpack_require__(80);
+	var util = __webpack_require__(85);
+	util.inherits = __webpack_require__(81);
 	/*</replacement>*/
 
 	util.inherits(Transform, Duplex);
@@ -19022,7 +19057,7 @@
 
 
 /***/ },
-/* 90 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -19052,11 +19087,11 @@
 
 	module.exports = PassThrough;
 
-	var Transform = __webpack_require__(89);
+	var Transform = __webpack_require__(90);
 
 	/*<replacement>*/
-	var util = __webpack_require__(84);
-	util.inherits = __webpack_require__(80);
+	var util = __webpack_require__(85);
+	util.inherits = __webpack_require__(81);
 	/*</replacement>*/
 
 	util.inherits(PassThrough, Transform);
@@ -19074,24 +19109,17 @@
 
 
 /***/ },
-/* 91 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(87)
-
-
-/***/ },
 /* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(86)
+	module.exports = __webpack_require__(88)
 
 
 /***/ },
 /* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(89)
+	module.exports = __webpack_require__(87)
 
 
 /***/ },
@@ -19105,8 +19133,15 @@
 /* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Stream = __webpack_require__(79);
-	var util = __webpack_require__(74);
+	module.exports = __webpack_require__(91)
+
+
+/***/ },
+/* 96 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Stream = __webpack_require__(80);
+	var util = __webpack_require__(75);
 
 	var Response = module.exports = function (res) {
 	    this.offset = 0;
@@ -19228,7 +19263,7 @@
 
 
 /***/ },
-/* 96 */
+/* 97 */
 /***/ function(module, exports, __webpack_require__) {
 
 	;(function () {
@@ -19294,10 +19329,10 @@
 
 
 /***/ },
-/* 97 */
+/* 98 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var http = __webpack_require__(77);
+	var http = __webpack_require__(78);
 
 	var https = module.exports;
 
@@ -19313,10 +19348,10 @@
 
 
 /***/ },
-/* 98 */
+/* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var rng = __webpack_require__(99)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var rng = __webpack_require__(100)
 
 	function error () {
 	  var m = [].slice.call(arguments).join(' ')
@@ -19327,9 +19362,9 @@
 	    ].join('\n'))
 	}
 
-	exports.createHash = __webpack_require__(101)
+	exports.createHash = __webpack_require__(102)
 
-	exports.createHmac = __webpack_require__(110)
+	exports.createHmac = __webpack_require__(111)
 
 	exports.randomBytes = function(size, callback) {
 	  if (callback && callback.call) {
@@ -19350,7 +19385,7 @@
 	  return ['sha1', 'sha256', 'sha512', 'md5', 'rmd160']
 	}
 
-	var p = __webpack_require__(111)(exports)
+	var p = __webpack_require__(112)(exports)
 	exports.pbkdf2 = p.pbkdf2
 	exports.pbkdf2Sync = p.pbkdf2Sync
 
@@ -19373,13 +19408,13 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(58).Buffer))
 
 /***/ },
-/* 99 */
+/* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, Buffer) {(function() {
 	  var g = ('undefined' === typeof window ? global : window) || {}
 	  _crypto = (
-	    g.crypto || g.msCrypto || __webpack_require__(100)
+	    g.crypto || g.msCrypto || __webpack_require__(101)
 	  )
 	  module.exports = function(size) {
 	    // Modern Browsers
@@ -19406,19 +19441,19 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(58).Buffer))
 
 /***/ },
-/* 100 */
+/* 101 */
 /***/ function(module, exports) {
 
 	/* (ignored) */
 
 /***/ },
-/* 101 */
+/* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(102)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(103)
 
-	var md5 = toConstructor(__webpack_require__(107))
-	var rmd160 = toConstructor(__webpack_require__(109))
+	var md5 = toConstructor(__webpack_require__(108))
+	var rmd160 = toConstructor(__webpack_require__(110))
 
 	function toConstructor (fn) {
 	  return function () {
@@ -19449,7 +19484,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(58).Buffer))
 
 /***/ },
-/* 102 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var exports = module.exports = function (alg) {
@@ -19459,15 +19494,15 @@
 	}
 
 	var Buffer = __webpack_require__(58).Buffer
-	var Hash   = __webpack_require__(103)(Buffer)
+	var Hash   = __webpack_require__(104)(Buffer)
 
-	exports.sha1 = __webpack_require__(104)(Buffer, Hash)
-	exports.sha256 = __webpack_require__(105)(Buffer, Hash)
-	exports.sha512 = __webpack_require__(106)(Buffer, Hash)
+	exports.sha1 = __webpack_require__(105)(Buffer, Hash)
+	exports.sha256 = __webpack_require__(106)(Buffer, Hash)
+	exports.sha512 = __webpack_require__(107)(Buffer, Hash)
 
 
 /***/ },
-/* 103 */
+/* 104 */
 /***/ function(module, exports) {
 
 	module.exports = function (Buffer) {
@@ -19550,7 +19585,7 @@
 
 
 /***/ },
-/* 104 */
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -19562,7 +19597,7 @@
 	 * See http://pajhome.org.uk/crypt/md5 for details.
 	 */
 
-	var inherits = __webpack_require__(74).inherits
+	var inherits = __webpack_require__(75).inherits
 
 	module.exports = function (Buffer, Hash) {
 
@@ -19694,7 +19729,7 @@
 
 
 /***/ },
-/* 105 */
+/* 106 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -19706,7 +19741,7 @@
 	 *
 	 */
 
-	var inherits = __webpack_require__(74).inherits
+	var inherits = __webpack_require__(75).inherits
 
 	module.exports = function (Buffer, Hash) {
 
@@ -19847,10 +19882,10 @@
 
 
 /***/ },
-/* 106 */
+/* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var inherits = __webpack_require__(74).inherits
+	var inherits = __webpack_require__(75).inherits
 
 	module.exports = function (Buffer, Hash) {
 	  var K = [
@@ -20097,7 +20132,7 @@
 
 
 /***/ },
-/* 107 */
+/* 108 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -20109,7 +20144,7 @@
 	 * See http://pajhome.org.uk/crypt/md5 for more info.
 	 */
 
-	var helpers = __webpack_require__(108);
+	var helpers = __webpack_require__(109);
 
 	/*
 	 * Calculate the MD5 of an array of little-endian words, and a bit length
@@ -20258,7 +20293,7 @@
 
 
 /***/ },
-/* 108 */
+/* 109 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {var intSize = 4;
@@ -20299,7 +20334,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(58).Buffer))
 
 /***/ },
-/* 109 */
+/* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {
@@ -20511,10 +20546,10 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(58).Buffer))
 
 /***/ },
-/* 110 */
+/* 111 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(101)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(102)
 
 	var zeroBuffer = new Buffer(128)
 	zeroBuffer.fill(0)
@@ -20561,10 +20596,10 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(58).Buffer))
 
 /***/ },
-/* 111 */
+/* 112 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var pbkdf2Export = __webpack_require__(112)
+	var pbkdf2Export = __webpack_require__(113)
 
 	module.exports = function (crypto, exports) {
 	  exports = exports || {}
@@ -20579,7 +20614,7 @@
 
 
 /***/ },
-/* 112 */
+/* 113 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {module.exports = function(crypto) {
@@ -20670,7 +20705,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(58).Buffer))
 
 /***/ },
-/* 113 */
+/* 114 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -20805,7 +20840,7 @@
 
 
 /***/ },
-/* 114 */
+/* 115 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -20897,7 +20932,7 @@
 
 
 /***/ },
-/* 115 */
+/* 116 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/*!
@@ -20907,11 +20942,11 @@
 	 */
 
 	var events = __webpack_require__(3)
-	  , util = __webpack_require__(74)
+	  , util = __webpack_require__(75)
 	  , EventEmitter = events.EventEmitter
-	  , ErrorCodes = __webpack_require__(116)
-	  , bufferUtil = __webpack_require__(117).BufferUtil
-	  , PerMessageDeflate = __webpack_require__(124);
+	  , ErrorCodes = __webpack_require__(117)
+	  , bufferUtil = __webpack_require__(118).BufferUtil
+	  , PerMessageDeflate = __webpack_require__(125);
 
 	/**
 	 * HyBi Sender implementation
@@ -21228,7 +21263,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(58).Buffer))
 
 /***/ },
-/* 116 */
+/* 117 */
 /***/ function(module, exports) {
 
 	/*!
@@ -21257,7 +21292,7 @@
 	};
 
 /***/ },
-/* 117 */
+/* 118 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21269,27 +21304,27 @@
 	 */
 
 	try {
-	  module.exports = __webpack_require__(118);
+	  module.exports = __webpack_require__(119);
+	} catch (e) {
+	  module.exports = __webpack_require__(124);
+	}
+
+
+/***/ },
+/* 119 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	try {
+	  module.exports = __webpack_require__(120)('bufferutil');
 	} catch (e) {
 	  module.exports = __webpack_require__(123);
 	}
 
 
 /***/ },
-/* 118 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	try {
-	  module.exports = __webpack_require__(119)('bufferutil');
-	} catch (e) {
-	  module.exports = __webpack_require__(122);
-	}
-
-
-/***/ },
-/* 119 */
+/* 120 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process, __filename) {
@@ -21367,7 +21402,7 @@
 	    }))
 	    tries.push(n)
 	    try {
-	      b = opts.path ? /*require.resolve*/(__webpack_require__(120).resolve(n)) : __webpack_require__(120)(n)
+	      b = opts.path ? /*require.resolve*/(__webpack_require__(121).resolve(n)) : __webpack_require__(121)(n)
 	      if (!opts.path) {
 	        b.path = n
 	      }
@@ -21462,14 +21497,14 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), "/index.js"))
 
 /***/ },
-/* 120 */
+/* 121 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./bindings": 119,
-		"./bindings.js": 119,
-		"./package": 121,
-		"./package.json": 121
+		"./bindings": 120,
+		"./bindings.js": 120,
+		"./package": 122,
+		"./package.json": 122
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -21482,11 +21517,11 @@
 	};
 	webpackContext.resolve = webpackContextResolve;
 	module.exports = webpackContext;
-	webpackContext.id = 120;
+	webpackContext.id = 121;
 
 
 /***/ },
-/* 121 */
+/* 122 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -21583,7 +21618,7 @@
 	};
 
 /***/ },
-/* 122 */
+/* 123 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -21646,7 +21681,7 @@
 
 
 /***/ },
-/* 123 */
+/* 124 */
 /***/ function(module, exports) {
 
 	/*!
@@ -21699,11 +21734,11 @@
 
 
 /***/ },
-/* 124 */
+/* 125 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {
-	var zlib = __webpack_require__(125);
+	var zlib = __webpack_require__(126);
 
 	var AVAILABLE_WINDOW_BITS = [8, 9, 10, 11, 12, 13, 14, 15];
 	var DEFAULT_WINDOW_BITS = 15;
@@ -22043,7 +22078,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(58).Buffer))
 
 /***/ },
-/* 125 */
+/* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer, process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -22067,11 +22102,11 @@
 	// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 	// USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-	var Transform = __webpack_require__(126);
+	var Transform = __webpack_require__(127);
 
-	var binding = __webpack_require__(133);
-	var util = __webpack_require__(74);
-	var assert = __webpack_require__(145).ok;
+	var binding = __webpack_require__(134);
+	var util = __webpack_require__(75);
+	var assert = __webpack_require__(146).ok;
 
 	// zlib doesn't provide these, so kludge them in following the same
 	// const naming scheme zlib uses.
@@ -22660,14 +22695,14 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(58).Buffer, __webpack_require__(2)))
 
 /***/ },
-/* 126 */
+/* 127 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(127)
+	module.exports = __webpack_require__(128)
 
 
 /***/ },
-/* 127 */
+/* 128 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -22736,11 +22771,11 @@
 
 	module.exports = Transform;
 
-	var Duplex = __webpack_require__(128);
+	var Duplex = __webpack_require__(129);
 
 	/*<replacement>*/
-	var util = __webpack_require__(84);
-	util.inherits = __webpack_require__(80);
+	var util = __webpack_require__(85);
+	util.inherits = __webpack_require__(81);
 	/*</replacement>*/
 
 	util.inherits(Transform, Duplex);
@@ -22882,7 +22917,7 @@
 
 
 /***/ },
-/* 128 */
+/* 129 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -22923,12 +22958,12 @@
 
 
 	/*<replacement>*/
-	var util = __webpack_require__(84);
-	util.inherits = __webpack_require__(80);
+	var util = __webpack_require__(85);
+	util.inherits = __webpack_require__(81);
 	/*</replacement>*/
 
-	var Readable = __webpack_require__(129);
-	var Writable = __webpack_require__(132);
+	var Readable = __webpack_require__(130);
+	var Writable = __webpack_require__(133);
 
 	util.inherits(Duplex, Readable);
 
@@ -22978,7 +23013,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 129 */
+/* 130 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -23005,7 +23040,7 @@
 	module.exports = Readable;
 
 	/*<replacement>*/
-	var isArray = __webpack_require__(130);
+	var isArray = __webpack_require__(131);
 	/*</replacement>*/
 
 
@@ -23023,18 +23058,18 @@
 	};
 	/*</replacement>*/
 
-	var Stream = __webpack_require__(79);
+	var Stream = __webpack_require__(80);
 
 	/*<replacement>*/
-	var util = __webpack_require__(84);
-	util.inherits = __webpack_require__(80);
+	var util = __webpack_require__(85);
+	util.inherits = __webpack_require__(81);
 	/*</replacement>*/
 
 	var StringDecoder;
 
 
 	/*<replacement>*/
-	var debug = __webpack_require__(131);
+	var debug = __webpack_require__(132);
 	if (debug && debug.debuglog) {
 	  debug = debug.debuglog('stream');
 	} else {
@@ -23046,7 +23081,7 @@
 	util.inherits(Readable, Stream);
 
 	function ReadableState(options, stream) {
-	  var Duplex = __webpack_require__(128);
+	  var Duplex = __webpack_require__(129);
 
 	  options = options || {};
 
@@ -23107,14 +23142,14 @@
 	  this.encoding = null;
 	  if (options.encoding) {
 	    if (!StringDecoder)
-	      StringDecoder = __webpack_require__(88).StringDecoder;
+	      StringDecoder = __webpack_require__(89).StringDecoder;
 	    this.decoder = new StringDecoder(options.encoding);
 	    this.encoding = options.encoding;
 	  }
 	}
 
 	function Readable(options) {
-	  var Duplex = __webpack_require__(128);
+	  var Duplex = __webpack_require__(129);
 
 	  if (!(this instanceof Readable))
 	    return new Readable(options);
@@ -23217,7 +23252,7 @@
 	// backwards compatibility.
 	Readable.prototype.setEncoding = function(enc) {
 	  if (!StringDecoder)
-	    StringDecoder = __webpack_require__(88).StringDecoder;
+	    StringDecoder = __webpack_require__(89).StringDecoder;
 	  this._readableState.decoder = new StringDecoder(enc);
 	  this._readableState.encoding = enc;
 	  return this;
@@ -23936,7 +23971,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 130 */
+/* 131 */
 /***/ function(module, exports) {
 
 	module.exports = Array.isArray || function (arr) {
@@ -23945,13 +23980,13 @@
 
 
 /***/ },
-/* 131 */
+/* 132 */
 /***/ function(module, exports) {
 
 	/* (ignored) */
 
 /***/ },
-/* 132 */
+/* 133 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -23989,11 +24024,11 @@
 
 
 	/*<replacement>*/
-	var util = __webpack_require__(84);
-	util.inherits = __webpack_require__(80);
+	var util = __webpack_require__(85);
+	util.inherits = __webpack_require__(81);
 	/*</replacement>*/
 
-	var Stream = __webpack_require__(79);
+	var Stream = __webpack_require__(80);
 
 	util.inherits(Writable, Stream);
 
@@ -24004,7 +24039,7 @@
 	}
 
 	function WritableState(options, stream) {
-	  var Duplex = __webpack_require__(128);
+	  var Duplex = __webpack_require__(129);
 
 	  options = options || {};
 
@@ -24092,7 +24127,7 @@
 	}
 
 	function Writable(options) {
-	  var Duplex = __webpack_require__(128);
+	  var Duplex = __webpack_require__(129);
 
 	  // Writable ctor is applied to Duplexes, though they're not
 	  // instanceof Writable, they're instanceof Readable.
@@ -24435,14 +24470,14 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 133 */
+/* 134 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process, Buffer) {var msg = __webpack_require__(134);
-	var zstream = __webpack_require__(135);
-	var zlib_deflate = __webpack_require__(136);
-	var zlib_inflate = __webpack_require__(141);
-	var constants = __webpack_require__(144);
+	/* WEBPACK VAR INJECTION */(function(process, Buffer) {var msg = __webpack_require__(135);
+	var zstream = __webpack_require__(136);
+	var zlib_deflate = __webpack_require__(137);
+	var zlib_inflate = __webpack_require__(142);
+	var constants = __webpack_require__(145);
 
 	for (var key in constants) {
 	  exports[key] = constants[key];
@@ -24678,7 +24713,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(58).Buffer))
 
 /***/ },
-/* 134 */
+/* 135 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -24697,7 +24732,7 @@
 
 
 /***/ },
-/* 135 */
+/* 136 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -24732,16 +24767,16 @@
 
 
 /***/ },
-/* 136 */
+/* 137 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils   = __webpack_require__(137);
-	var trees   = __webpack_require__(138);
-	var adler32 = __webpack_require__(139);
-	var crc32   = __webpack_require__(140);
-	var msg     = __webpack_require__(134);
+	var utils   = __webpack_require__(138);
+	var trees   = __webpack_require__(139);
+	var adler32 = __webpack_require__(140);
+	var crc32   = __webpack_require__(141);
+	var msg     = __webpack_require__(135);
 
 	/* Public constants ==========================================================*/
 	/* ===========================================================================*/
@@ -26593,7 +26628,7 @@
 
 
 /***/ },
-/* 137 */
+/* 138 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -26701,13 +26736,13 @@
 
 
 /***/ },
-/* 138 */
+/* 139 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 
-	var utils = __webpack_require__(137);
+	var utils = __webpack_require__(138);
 
 	/* Public constants ==========================================================*/
 	/* ===========================================================================*/
@@ -27909,7 +27944,7 @@
 
 
 /***/ },
-/* 139 */
+/* 140 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -27947,7 +27982,7 @@
 
 
 /***/ },
-/* 140 */
+/* 141 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -27994,17 +28029,17 @@
 
 
 /***/ },
-/* 141 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 
-	var utils         = __webpack_require__(137);
-	var adler32       = __webpack_require__(139);
-	var crc32         = __webpack_require__(140);
-	var inflate_fast  = __webpack_require__(142);
-	var inflate_table = __webpack_require__(143);
+	var utils         = __webpack_require__(138);
+	var adler32       = __webpack_require__(140);
+	var crc32         = __webpack_require__(141);
+	var inflate_fast  = __webpack_require__(143);
+	var inflate_table = __webpack_require__(144);
 
 	var CODES = 0;
 	var LENS = 1;
@@ -29538,7 +29573,7 @@
 
 
 /***/ },
-/* 142 */
+/* 143 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -29870,13 +29905,13 @@
 
 
 /***/ },
-/* 143 */
+/* 144 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 
-	var utils = __webpack_require__(137);
+	var utils = __webpack_require__(138);
 
 	var MAXBITS = 15;
 	var ENOUGH_LENS = 852;
@@ -30203,7 +30238,7 @@
 
 
 /***/ },
-/* 144 */
+/* 145 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -30259,7 +30294,7 @@
 
 
 /***/ },
-/* 145 */
+/* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
@@ -30330,7 +30365,7 @@
 	// ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 	// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-	var util = __webpack_require__(74);
+	var util = __webpack_require__(75);
 	var hasOwn = Object.prototype.hasOwnProperty;
 	var pSlice = Array.prototype.slice;
 	var functionsHaveNames = (function () {
@@ -30756,7 +30791,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 146 */
+/* 147 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/*!
@@ -30765,12 +30800,12 @@
 	 * MIT Licensed
 	 */
 
-	var util = __webpack_require__(74)
-	  , Validation = __webpack_require__(147).Validation
-	  , ErrorCodes = __webpack_require__(116)
-	  , BufferPool = __webpack_require__(151)
-	  , bufferUtil = __webpack_require__(117).BufferUtil
-	  , PerMessageDeflate = __webpack_require__(124);
+	var util = __webpack_require__(75)
+	  , Validation = __webpack_require__(148).Validation
+	  , ErrorCodes = __webpack_require__(117)
+	  , BufferPool = __webpack_require__(152)
+	  , bufferUtil = __webpack_require__(118).BufferUtil
+	  , PerMessageDeflate = __webpack_require__(125);
 
 	/**
 	 * HyBi Receiver implementation
@@ -31556,7 +31591,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(58).Buffer))
 
 /***/ },
-/* 147 */
+/* 148 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31568,27 +31603,27 @@
 	 */
 
 	try {
-	  module.exports = __webpack_require__(148);
+	  module.exports = __webpack_require__(149);
+	} catch (e) {
+	  module.exports = __webpack_require__(151);
+	}
+
+
+/***/ },
+/* 149 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	try {
+	  module.exports = __webpack_require__(120)('validation');
 	} catch (e) {
 	  module.exports = __webpack_require__(150);
 	}
 
 
 /***/ },
-/* 148 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	try {
-	  module.exports = __webpack_require__(119)('validation');
-	} catch (e) {
-	  module.exports = __webpack_require__(149);
-	}
-
-
-/***/ },
-/* 149 */
+/* 150 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -31607,7 +31642,7 @@
 
 
 /***/ },
-/* 150 */
+/* 151 */
 /***/ function(module, exports) {
 
 	/*!
@@ -31624,7 +31659,7 @@
 
 
 /***/ },
-/* 151 */
+/* 152 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/*!
@@ -31633,7 +31668,7 @@
 	 * MIT Licensed
 	 */
 
-	var util = __webpack_require__(74);
+	var util = __webpack_require__(75);
 
 	function BufferPool(initialSize, growStrategy, shrinkStrategy) {
 	  if (this instanceof BufferPool === false) {
@@ -31694,7 +31729,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(58).Buffer))
 
 /***/ },
-/* 152 */
+/* 153 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/*!
@@ -31704,7 +31739,7 @@
 	 */
 
 	var events = __webpack_require__(3)
-	  , util = __webpack_require__(74)
+	  , util = __webpack_require__(75)
 	  , EventEmitter = events.EventEmitter;
 
 	/**
@@ -31825,7 +31860,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(58).Buffer))
 
 /***/ },
-/* 153 */
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/*!
@@ -31834,7 +31869,7 @@
 	 * MIT Licensed
 	 */
 
-	var util = __webpack_require__(74);
+	var util = __webpack_require__(75);
 
 	/**
 	 * State constants
@@ -32026,11 +32061,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(58).Buffer))
 
 /***/ },
-/* 154 */
+/* 155 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
-	var util = __webpack_require__(74);
+	var util = __webpack_require__(75);
 
 	/**
 	 * Module exports.
@@ -32102,7 +32137,7 @@
 
 
 /***/ },
-/* 155 */
+/* 156 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/*!
@@ -32111,16 +32146,16 @@
 	 * MIT Licensed
 	 */
 
-	var util = __webpack_require__(74)
+	var util = __webpack_require__(75)
 	  , events = __webpack_require__(3)
-	  , http = __webpack_require__(77)
-	  , crypto = __webpack_require__(98)
-	  , Options = __webpack_require__(114)
-	  , WebSocket = __webpack_require__(67)
-	  , Extensions = __webpack_require__(154)
-	  , PerMessageDeflate = __webpack_require__(124)
-	  , tls = __webpack_require__(62)
-	  , url = __webpack_require__(68);
+	  , http = __webpack_require__(78)
+	  , crypto = __webpack_require__(99)
+	  , Options = __webpack_require__(115)
+	  , WebSocket = __webpack_require__(68)
+	  , Extensions = __webpack_require__(155)
+	  , PerMessageDeflate = __webpack_require__(125)
+	  , tls = __webpack_require__(157)
+	  , url = __webpack_require__(69);
 
 	/**
 	 * WebSocket Server implementation
@@ -32663,7 +32698,14 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(58).Buffer))
 
 /***/ },
-/* 156 */
+/* 157 */
+/***/ function(module, exports) {
+
+	// todo
+
+
+/***/ },
+/* 158 */
 /***/ function(module, exports) {
 
 	/**
@@ -32685,11 +32727,11 @@
 
 
 /***/ },
-/* 157 */
+/* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {const udp = __webpack_require__(62);
-	const dns = __webpack_require__(62);
+	const dns = __webpack_require__(160);
 	const Constants = __webpack_require__(5);
 	const EventEmitter = __webpack_require__(3).EventEmitter;
 
@@ -32837,13 +32879,34 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(58).Buffer))
 
 /***/ },
-/* 158 */
+/* 160 */
+/***/ function(module, exports) {
+
+	exports.lookup = exports.resolve4 =
+	exports.resolve6 = exports.resolveCname =
+	exports.resolveMx = exports.resolveNs =
+	exports.resolveTxt = exports.resolveSrv =
+	exports.resolveNaptr = exports.reverse =
+	exports.resolve =
+	function () {
+	  if (!arguments.length) return;
+
+	  var callback = arguments[arguments.length - 1];
+	  if (callback && typeof callback === 'function') {
+	    callback(null, '0.0.0.0')
+	  }
+	}
+
+
+
+/***/ },
+/* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const PCMConverters = __webpack_require__(159);
-	const OpusEncoders = __webpack_require__(162);
+	const PCMConverters = __webpack_require__(162);
+	const OpusEncoders = __webpack_require__(165);
 	const EventEmitter = __webpack_require__(3).EventEmitter;
-	const StreamDispatcher = __webpack_require__(166);
+	const StreamDispatcher = __webpack_require__(169);
 
 	/**
 	 * Represents the Audio Player of a Voice Connection
@@ -32923,17 +32986,17 @@
 
 
 /***/ },
-/* 159 */
+/* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports.fetch = () => __webpack_require__(160);
+	exports.fetch = () => __webpack_require__(163);
 
 
 /***/ },
-/* 160 */
+/* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const ConverterEngine = __webpack_require__(161);
+	const ConverterEngine = __webpack_require__(164);
 	const ChildProcess = __webpack_require__(62);
 	const EventEmitter = __webpack_require__(3).EventEmitter;
 
@@ -33015,7 +33078,7 @@
 
 
 /***/ },
-/* 161 */
+/* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
 	const EventEmitter = __webpack_require__(3).EventEmitter;
@@ -33035,12 +33098,12 @@
 
 
 /***/ },
-/* 162 */
+/* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
 	const list = [
-	  __webpack_require__(163),
-	  __webpack_require__(165),
+	  __webpack_require__(166),
+	  __webpack_require__(168),
 	];
 
 	function fetch(Encoder) {
@@ -33065,10 +33128,10 @@
 
 
 /***/ },
-/* 163 */
+/* 166 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const OpusEngine = __webpack_require__(164);
+	const OpusEngine = __webpack_require__(167);
 
 	let opus;
 
@@ -33098,7 +33161,7 @@
 
 
 /***/ },
-/* 164 */
+/* 167 */
 /***/ function(module, exports) {
 
 	class BaseOpus {
@@ -33119,10 +33182,10 @@
 
 
 /***/ },
-/* 165 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const OpusEngine = __webpack_require__(164);
+	const OpusEngine = __webpack_require__(167);
 
 	let OpusScript;
 
@@ -33152,11 +33215,11 @@
 
 
 /***/ },
-/* 166 */
+/* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {const EventEmitter = __webpack_require__(3).EventEmitter;
-	const NaCl = __webpack_require__(167);
+	const NaCl = __webpack_require__(170);
 
 	const nonce = new Buffer(24);
 	nonce.fill(0);
@@ -33465,7 +33528,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(58).Buffer))
 
 /***/ },
-/* 167 */
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	(function(nacl) {
@@ -35844,7 +35907,7 @@
 	    });
 	  } else if (true) {
 	    // Node.js.
-	    crypto = __webpack_require__(168);
+	    crypto = __webpack_require__(171);
 	    if (crypto && crypto.randomBytes) {
 	      nacl.setPRNG(function(x, n) {
 	        var i, v = crypto.randomBytes(n);
@@ -35859,18 +35922,18 @@
 
 
 /***/ },
-/* 168 */
+/* 171 */
 /***/ function(module, exports) {
 
 	/* (ignored) */
 
 /***/ },
-/* 169 */
+/* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {const EventEmitter = __webpack_require__(3).EventEmitter;
-	const NaCl = __webpack_require__(167);
-	const Readable = __webpack_require__(170);
+	const NaCl = __webpack_require__(170);
+	const Readable = __webpack_require__(173);
 
 	const nonce = new Buffer(24);
 	nonce.fill(0);
@@ -36026,10 +36089,10 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(58).Buffer))
 
 /***/ },
-/* 170 */
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Readable = __webpack_require__(79).Readable;
+	const Readable = __webpack_require__(80).Readable;
 
 	class VoiceReadable extends Readable {
 	  constructor() {
@@ -36051,14 +36114,14 @@
 
 
 /***/ },
-/* 171 */
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const WebSocket = typeof window !== 'undefined' ? window.WebSocket : __webpack_require__(66); // eslint-disable-line no-undef
+	const WebSocket = typeof window !== 'undefined' ? window.WebSocket : __webpack_require__(67); // eslint-disable-line no-undef
 	const EventEmitter = __webpack_require__(3).EventEmitter;
 	const Constants = __webpack_require__(5);
-	const zlib = __webpack_require__(125);
-	const PacketManager = __webpack_require__(172);
+	const zlib = __webpack_require__(126);
+	const PacketManager = __webpack_require__(175);
 
 	/**
 	 * The WebSocket Manager of the Client
@@ -36358,7 +36421,7 @@
 
 
 /***/ },
-/* 172 */
+/* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
 	const Constants = __webpack_require__(5);
@@ -36418,7 +36481,7 @@
 	  }
 
 	  register(event, handle) {
-	    const Handler = __webpack_require__(173)(`./handlers/${handle}`);
+	    const Handler = __webpack_require__(176)(`./handlers/${handle}`);
 	    this.handlers[event] = new Handler(this);
 	  }
 
@@ -36473,82 +36536,82 @@
 
 
 /***/ },
-/* 173 */
+/* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./WebSocketPacketManager": 172,
-		"./WebSocketPacketManager.js": 172,
-		"./handlers/AbstractHandler": 174,
-		"./handlers/AbstractHandler.js": 174,
-		"./handlers/ChannelCreate": 175,
-		"./handlers/ChannelCreate.js": 175,
-		"./handlers/ChannelDelete": 176,
-		"./handlers/ChannelDelete.js": 176,
-		"./handlers/ChannelPinsUpdate": 177,
-		"./handlers/ChannelPinsUpdate.js": 177,
-		"./handlers/ChannelUpdate": 178,
-		"./handlers/ChannelUpdate.js": 178,
-		"./handlers/GuildBanAdd": 179,
-		"./handlers/GuildBanAdd.js": 179,
-		"./handlers/GuildBanRemove": 180,
-		"./handlers/GuildBanRemove.js": 180,
-		"./handlers/GuildCreate": 181,
-		"./handlers/GuildCreate.js": 181,
-		"./handlers/GuildDelete": 182,
-		"./handlers/GuildDelete.js": 182,
-		"./handlers/GuildEmojiUpdate": 183,
-		"./handlers/GuildEmojiUpdate.js": 183,
-		"./handlers/GuildMemberAdd": 184,
-		"./handlers/GuildMemberAdd.js": 184,
-		"./handlers/GuildMemberRemove": 185,
-		"./handlers/GuildMemberRemove.js": 185,
-		"./handlers/GuildMemberUpdate": 186,
-		"./handlers/GuildMemberUpdate.js": 186,
-		"./handlers/GuildMembersChunk": 187,
-		"./handlers/GuildMembersChunk.js": 187,
-		"./handlers/GuildRoleCreate": 188,
-		"./handlers/GuildRoleCreate.js": 188,
-		"./handlers/GuildRoleDelete": 189,
-		"./handlers/GuildRoleDelete.js": 189,
-		"./handlers/GuildRoleUpdate": 190,
-		"./handlers/GuildRoleUpdate.js": 190,
-		"./handlers/GuildSync": 191,
-		"./handlers/GuildSync.js": 191,
-		"./handlers/GuildUpdate": 192,
-		"./handlers/GuildUpdate.js": 192,
-		"./handlers/MessageCreate": 193,
-		"./handlers/MessageCreate.js": 193,
-		"./handlers/MessageDelete": 194,
-		"./handlers/MessageDelete.js": 194,
-		"./handlers/MessageDeleteBulk": 195,
-		"./handlers/MessageDeleteBulk.js": 195,
-		"./handlers/MessageReactionAdd": 196,
-		"./handlers/MessageReactionAdd.js": 196,
-		"./handlers/MessageReactionRemove": 197,
-		"./handlers/MessageReactionRemove.js": 197,
-		"./handlers/MessageReactionRemoveAll": 198,
-		"./handlers/MessageReactionRemoveAll.js": 198,
-		"./handlers/MessageUpdate": 199,
-		"./handlers/MessageUpdate.js": 199,
-		"./handlers/PresenceUpdate": 200,
-		"./handlers/PresenceUpdate.js": 200,
-		"./handlers/Ready": 201,
-		"./handlers/Ready.js": 201,
-		"./handlers/RelationshipAdd": 203,
-		"./handlers/RelationshipAdd.js": 203,
-		"./handlers/RelationshipRemove": 204,
-		"./handlers/RelationshipRemove.js": 204,
-		"./handlers/TypingStart": 205,
-		"./handlers/TypingStart.js": 205,
-		"./handlers/UserNoteUpdate": 206,
-		"./handlers/UserNoteUpdate.js": 206,
-		"./handlers/UserUpdate": 207,
-		"./handlers/UserUpdate.js": 207,
-		"./handlers/VoiceServerUpdate": 208,
-		"./handlers/VoiceServerUpdate.js": 208,
-		"./handlers/VoiceStateUpdate": 209,
-		"./handlers/VoiceStateUpdate.js": 209
+		"./WebSocketPacketManager": 175,
+		"./WebSocketPacketManager.js": 175,
+		"./handlers/AbstractHandler": 177,
+		"./handlers/AbstractHandler.js": 177,
+		"./handlers/ChannelCreate": 178,
+		"./handlers/ChannelCreate.js": 178,
+		"./handlers/ChannelDelete": 179,
+		"./handlers/ChannelDelete.js": 179,
+		"./handlers/ChannelPinsUpdate": 180,
+		"./handlers/ChannelPinsUpdate.js": 180,
+		"./handlers/ChannelUpdate": 181,
+		"./handlers/ChannelUpdate.js": 181,
+		"./handlers/GuildBanAdd": 182,
+		"./handlers/GuildBanAdd.js": 182,
+		"./handlers/GuildBanRemove": 183,
+		"./handlers/GuildBanRemove.js": 183,
+		"./handlers/GuildCreate": 184,
+		"./handlers/GuildCreate.js": 184,
+		"./handlers/GuildDelete": 185,
+		"./handlers/GuildDelete.js": 185,
+		"./handlers/GuildEmojiUpdate": 186,
+		"./handlers/GuildEmojiUpdate.js": 186,
+		"./handlers/GuildMemberAdd": 187,
+		"./handlers/GuildMemberAdd.js": 187,
+		"./handlers/GuildMemberRemove": 188,
+		"./handlers/GuildMemberRemove.js": 188,
+		"./handlers/GuildMemberUpdate": 189,
+		"./handlers/GuildMemberUpdate.js": 189,
+		"./handlers/GuildMembersChunk": 190,
+		"./handlers/GuildMembersChunk.js": 190,
+		"./handlers/GuildRoleCreate": 191,
+		"./handlers/GuildRoleCreate.js": 191,
+		"./handlers/GuildRoleDelete": 192,
+		"./handlers/GuildRoleDelete.js": 192,
+		"./handlers/GuildRoleUpdate": 193,
+		"./handlers/GuildRoleUpdate.js": 193,
+		"./handlers/GuildSync": 194,
+		"./handlers/GuildSync.js": 194,
+		"./handlers/GuildUpdate": 195,
+		"./handlers/GuildUpdate.js": 195,
+		"./handlers/MessageCreate": 196,
+		"./handlers/MessageCreate.js": 196,
+		"./handlers/MessageDelete": 197,
+		"./handlers/MessageDelete.js": 197,
+		"./handlers/MessageDeleteBulk": 198,
+		"./handlers/MessageDeleteBulk.js": 198,
+		"./handlers/MessageReactionAdd": 199,
+		"./handlers/MessageReactionAdd.js": 199,
+		"./handlers/MessageReactionRemove": 200,
+		"./handlers/MessageReactionRemove.js": 200,
+		"./handlers/MessageReactionRemoveAll": 201,
+		"./handlers/MessageReactionRemoveAll.js": 201,
+		"./handlers/MessageUpdate": 202,
+		"./handlers/MessageUpdate.js": 202,
+		"./handlers/PresenceUpdate": 203,
+		"./handlers/PresenceUpdate.js": 203,
+		"./handlers/Ready": 204,
+		"./handlers/Ready.js": 204,
+		"./handlers/RelationshipAdd": 206,
+		"./handlers/RelationshipAdd.js": 206,
+		"./handlers/RelationshipRemove": 207,
+		"./handlers/RelationshipRemove.js": 207,
+		"./handlers/TypingStart": 208,
+		"./handlers/TypingStart.js": 208,
+		"./handlers/UserNoteUpdate": 209,
+		"./handlers/UserNoteUpdate.js": 209,
+		"./handlers/UserUpdate": 210,
+		"./handlers/UserUpdate.js": 210,
+		"./handlers/VoiceServerUpdate": 211,
+		"./handlers/VoiceServerUpdate.js": 211,
+		"./handlers/VoiceStateUpdate": 212,
+		"./handlers/VoiceStateUpdate.js": 212
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -36561,11 +36624,11 @@
 	};
 	webpackContext.resolve = webpackContextResolve;
 	module.exports = webpackContext;
-	webpackContext.id = 173;
+	webpackContext.id = 176;
 
 
 /***/ },
-/* 174 */
+/* 177 */
 /***/ function(module, exports) {
 
 	class AbstractHandler {
@@ -36582,10 +36645,10 @@
 
 
 /***/ },
-/* 175 */
+/* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	class ChannelCreateHandler extends AbstractHandler {
 	  handle(packet) {
@@ -36605,10 +36668,10 @@
 
 
 /***/ },
-/* 176 */
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	const Constants = __webpack_require__(5);
 
@@ -36631,10 +36694,10 @@
 
 
 /***/ },
-/* 177 */
+/* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 	const Constants = __webpack_require__(5);
 
 	/*
@@ -36668,10 +36731,10 @@
 
 
 /***/ },
-/* 178 */
+/* 181 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	class ChannelUpdateHandler extends AbstractHandler {
 	  handle(packet) {
@@ -36685,12 +36748,12 @@
 
 
 /***/ },
-/* 179 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// ##untested handler##
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 	const Constants = __webpack_require__(5);
 
 	class GuildBanAddHandler extends AbstractHandler {
@@ -36714,12 +36777,12 @@
 
 
 /***/ },
-/* 180 */
+/* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// ##untested handler##
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	class GuildBanRemoveHandler extends AbstractHandler {
 	  handle(packet) {
@@ -36740,10 +36803,10 @@
 
 
 /***/ },
-/* 181 */
+/* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	class GuildCreateHandler extends AbstractHandler {
 	  handle(packet) {
@@ -36768,10 +36831,10 @@
 
 
 /***/ },
-/* 182 */
+/* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 	const Constants = __webpack_require__(5);
 
 	class GuildDeleteHandler extends AbstractHandler {
@@ -36793,10 +36856,10 @@
 
 
 /***/ },
-/* 183 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	class GuildEmojiUpdate extends AbstractHandler {
 	  handle(packet) {
@@ -36812,12 +36875,12 @@
 
 
 /***/ },
-/* 184 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// ##untested handler##
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	class GuildMemberAddHandler extends AbstractHandler {
 	  handle(packet) {
@@ -36835,12 +36898,12 @@
 
 
 /***/ },
-/* 185 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// ##untested handler##
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	class GuildMemberRemoveHandler extends AbstractHandler {
 	  handle(packet) {
@@ -36854,12 +36917,12 @@
 
 
 /***/ },
-/* 186 */
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// ##untested handler##
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	class GuildMemberUpdateHandler extends AbstractHandler {
 	  handle(packet) {
@@ -36878,12 +36941,12 @@
 
 
 /***/ },
-/* 187 */
+/* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// ##untested##
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 	const Constants = __webpack_require__(5);
 
 	class GuildMembersChunkHandler extends AbstractHandler {
@@ -36912,10 +36975,10 @@
 
 
 /***/ },
-/* 188 */
+/* 191 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	class GuildRoleCreateHandler extends AbstractHandler {
 	  handle(packet) {
@@ -36929,10 +36992,10 @@
 
 
 /***/ },
-/* 189 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	class GuildRoleDeleteHandler extends AbstractHandler {
 	  handle(packet) {
@@ -36946,10 +37009,10 @@
 
 
 /***/ },
-/* 190 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	class GuildRoleUpdateHandler extends AbstractHandler {
 	  handle(packet) {
@@ -36963,10 +37026,10 @@
 
 
 /***/ },
-/* 191 */
+/* 194 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	class GuildSyncHandler extends AbstractHandler {
 	  handle(packet) {
@@ -36980,10 +37043,10 @@
 
 
 /***/ },
-/* 192 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	class GuildUpdateHandler extends AbstractHandler {
 	  handle(packet) {
@@ -36997,10 +37060,10 @@
 
 
 /***/ },
-/* 193 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 	const Constants = __webpack_require__(5);
 
 	class MessageCreateHandler extends AbstractHandler {
@@ -37022,10 +37085,10 @@
 
 
 /***/ },
-/* 194 */
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 	const Constants = __webpack_require__(5);
 
 	class MessageDeleteHandler extends AbstractHandler {
@@ -37047,10 +37110,10 @@
 
 
 /***/ },
-/* 195 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	class MessageDeleteBulkHandler extends AbstractHandler {
 	  handle(packet) {
@@ -37070,10 +37133,10 @@
 
 
 /***/ },
-/* 196 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	class MessageReactionAddHandler extends AbstractHandler {
 	  handle(packet) {
@@ -37087,10 +37150,10 @@
 
 
 /***/ },
-/* 197 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	class MessageReactionRemove extends AbstractHandler {
 	  handle(packet) {
@@ -37104,10 +37167,10 @@
 
 
 /***/ },
-/* 198 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	class MessageReactionRemoveAll extends AbstractHandler {
 	  handle(packet) {
@@ -37121,10 +37184,10 @@
 
 
 /***/ },
-/* 199 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	class MessageUpdateHandler extends AbstractHandler {
 	  handle(packet) {
@@ -37138,10 +37201,10 @@
 
 
 /***/ },
-/* 200 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 	const Constants = __webpack_require__(5);
 	const cloneObject = __webpack_require__(46);
 
@@ -37216,12 +37279,12 @@
 
 
 /***/ },
-/* 201 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
-	const ClientUser = __webpack_require__(202);
+	const ClientUser = __webpack_require__(205);
 
 	class ReadyHandler extends AbstractHandler {
 	  handle(packet) {
@@ -37289,7 +37352,7 @@
 
 
 /***/ },
-/* 202 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	const User = __webpack_require__(13);
@@ -37534,10 +37597,10 @@
 
 
 /***/ },
-/* 203 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	class RelationshipAddHandler extends AbstractHandler {
 	  handle(packet) {
@@ -37559,10 +37622,10 @@
 
 
 /***/ },
-/* 204 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	class RelationshipRemoveHandler extends AbstractHandler {
 	  handle(packet) {
@@ -37584,10 +37647,10 @@
 
 
 /***/ },
-/* 205 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 	const Constants = __webpack_require__(5);
 
 	class TypingStartHandler extends AbstractHandler {
@@ -37658,10 +37721,10 @@
 
 
 /***/ },
-/* 206 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	class UserNoteUpdateHandler extends AbstractHandler {
 	  handle(packet) {
@@ -37676,10 +37739,10 @@
 
 
 /***/ },
-/* 207 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	class UserUpdateHandler extends AbstractHandler {
 	  handle(packet) {
@@ -37693,10 +37756,10 @@
 
 
 /***/ },
-/* 208 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	/*
 	{
@@ -37718,10 +37781,10 @@
 
 
 /***/ },
-/* 209 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const AbstractHandler = __webpack_require__(174);
+	const AbstractHandler = __webpack_require__(177);
 
 	const Constants = __webpack_require__(5);
 	const cloneObject = __webpack_require__(46);
@@ -37773,7 +37836,7 @@
 
 
 /***/ },
-/* 210 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	class ActionsManager {
@@ -37809,7 +37872,7 @@
 	  }
 
 	  register(name) {
-	    const Action = __webpack_require__(211)(`./${name}`);
+	    const Action = __webpack_require__(214)(`./${name}`);
 	    this[name] = new Action(this.client);
 	  }
 	}
@@ -37818,66 +37881,66 @@
 
 
 /***/ },
-/* 211 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./Action": 212,
-		"./Action.js": 212,
-		"./ActionsManager": 210,
-		"./ActionsManager.js": 210,
-		"./ChannelCreate": 213,
-		"./ChannelCreate.js": 213,
-		"./ChannelDelete": 214,
-		"./ChannelDelete.js": 214,
-		"./ChannelUpdate": 215,
-		"./ChannelUpdate.js": 215,
-		"./GuildBanRemove": 216,
-		"./GuildBanRemove.js": 216,
-		"./GuildDelete": 217,
-		"./GuildDelete.js": 217,
-		"./GuildEmojiCreate": 218,
-		"./GuildEmojiCreate.js": 218,
-		"./GuildEmojiDelete": 219,
-		"./GuildEmojiDelete.js": 219,
-		"./GuildEmojiUpdate": 220,
-		"./GuildEmojiUpdate.js": 220,
-		"./GuildMemberGet": 221,
-		"./GuildMemberGet.js": 221,
-		"./GuildMemberRemove": 222,
-		"./GuildMemberRemove.js": 222,
-		"./GuildRoleCreate": 223,
-		"./GuildRoleCreate.js": 223,
-		"./GuildRoleDelete": 224,
-		"./GuildRoleDelete.js": 224,
-		"./GuildRoleUpdate": 225,
-		"./GuildRoleUpdate.js": 225,
-		"./GuildRolesPositionUpdate": 226,
-		"./GuildRolesPositionUpdate.js": 226,
-		"./GuildSync": 227,
-		"./GuildSync.js": 227,
-		"./GuildUpdate": 228,
-		"./GuildUpdate.js": 228,
-		"./MessageCreate": 229,
-		"./MessageCreate.js": 229,
-		"./MessageDelete": 230,
-		"./MessageDelete.js": 230,
-		"./MessageDeleteBulk": 231,
-		"./MessageDeleteBulk.js": 231,
-		"./MessageReactionAdd": 232,
-		"./MessageReactionAdd.js": 232,
-		"./MessageReactionRemove": 233,
-		"./MessageReactionRemove.js": 233,
-		"./MessageReactionRemoveAll": 234,
-		"./MessageReactionRemoveAll.js": 234,
-		"./MessageUpdate": 235,
-		"./MessageUpdate.js": 235,
-		"./UserGet": 236,
-		"./UserGet.js": 236,
-		"./UserNoteUpdate": 237,
-		"./UserNoteUpdate.js": 237,
-		"./UserUpdate": 238,
-		"./UserUpdate.js": 238
+		"./Action": 215,
+		"./Action.js": 215,
+		"./ActionsManager": 213,
+		"./ActionsManager.js": 213,
+		"./ChannelCreate": 216,
+		"./ChannelCreate.js": 216,
+		"./ChannelDelete": 217,
+		"./ChannelDelete.js": 217,
+		"./ChannelUpdate": 218,
+		"./ChannelUpdate.js": 218,
+		"./GuildBanRemove": 219,
+		"./GuildBanRemove.js": 219,
+		"./GuildDelete": 220,
+		"./GuildDelete.js": 220,
+		"./GuildEmojiCreate": 221,
+		"./GuildEmojiCreate.js": 221,
+		"./GuildEmojiDelete": 222,
+		"./GuildEmojiDelete.js": 222,
+		"./GuildEmojiUpdate": 223,
+		"./GuildEmojiUpdate.js": 223,
+		"./GuildMemberGet": 224,
+		"./GuildMemberGet.js": 224,
+		"./GuildMemberRemove": 225,
+		"./GuildMemberRemove.js": 225,
+		"./GuildRoleCreate": 226,
+		"./GuildRoleCreate.js": 226,
+		"./GuildRoleDelete": 227,
+		"./GuildRoleDelete.js": 227,
+		"./GuildRoleUpdate": 228,
+		"./GuildRoleUpdate.js": 228,
+		"./GuildRolesPositionUpdate": 229,
+		"./GuildRolesPositionUpdate.js": 229,
+		"./GuildSync": 230,
+		"./GuildSync.js": 230,
+		"./GuildUpdate": 231,
+		"./GuildUpdate.js": 231,
+		"./MessageCreate": 232,
+		"./MessageCreate.js": 232,
+		"./MessageDelete": 233,
+		"./MessageDelete.js": 233,
+		"./MessageDeleteBulk": 234,
+		"./MessageDeleteBulk.js": 234,
+		"./MessageReactionAdd": 235,
+		"./MessageReactionAdd.js": 235,
+		"./MessageReactionRemove": 236,
+		"./MessageReactionRemove.js": 236,
+		"./MessageReactionRemoveAll": 237,
+		"./MessageReactionRemoveAll.js": 237,
+		"./MessageUpdate": 238,
+		"./MessageUpdate.js": 238,
+		"./UserGet": 239,
+		"./UserGet.js": 239,
+		"./UserNoteUpdate": 240,
+		"./UserNoteUpdate.js": 240,
+		"./UserUpdate": 241,
+		"./UserUpdate.js": 241
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -37890,11 +37953,11 @@
 	};
 	webpackContext.resolve = webpackContextResolve;
 	module.exports = webpackContext;
-	webpackContext.id = 211;
+	webpackContext.id = 214;
 
 
 /***/ },
-/* 212 */
+/* 215 */
 /***/ function(module, exports) {
 
 	/*
@@ -37923,10 +37986,10 @@
 
 
 /***/ },
-/* 213 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 
 	class ChannelCreateAction extends Action {
 	  handle(data) {
@@ -37942,10 +38005,10 @@
 
 
 /***/ },
-/* 214 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 
 	class ChannelDeleteAction extends Action {
 	  constructor(client) {
@@ -37979,10 +38042,10 @@
 
 
 /***/ },
-/* 215 */
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 	const Constants = __webpack_require__(5);
 	const cloneObject = __webpack_require__(46);
 
@@ -38019,10 +38082,10 @@
 
 
 /***/ },
-/* 216 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 	const Constants = __webpack_require__(5);
 
 	class GuildBanRemove extends Action {
@@ -38038,10 +38101,10 @@
 
 
 /***/ },
-/* 217 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 	const Constants = __webpack_require__(5);
 
 	class GuildDeleteAction extends Action {
@@ -38095,10 +38158,10 @@
 
 
 /***/ },
-/* 218 */
+/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 
 	class EmojiCreateAction extends Action {
 	  handle(data, guild) {
@@ -38119,10 +38182,10 @@
 
 
 /***/ },
-/* 219 */
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 
 	class EmojiDeleteAction extends Action {
 	  handle(data) {
@@ -38143,10 +38206,10 @@
 
 
 /***/ },
-/* 220 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 
 	class GuildEmojiUpdateAction extends Action {
 	  handle(data, guild) {
@@ -38178,10 +38241,10 @@
 
 
 /***/ },
-/* 221 */
+/* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 
 	class GuildMemberGetAction extends Action {
 	  handle(guild, data) {
@@ -38196,10 +38259,10 @@
 
 
 /***/ },
-/* 222 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 	const Constants = __webpack_require__(5);
 
 	class GuildMemberRemoveAction extends Action {
@@ -38251,10 +38314,10 @@
 
 
 /***/ },
-/* 223 */
+/* 226 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 	const Constants = __webpack_require__(5);
 	const Role = __webpack_require__(26);
 
@@ -38289,10 +38352,10 @@
 
 
 /***/ },
-/* 224 */
+/* 227 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 	const Constants = __webpack_require__(5);
 
 	class GuildRoleDeleteAction extends Action {
@@ -38341,10 +38404,10 @@
 
 
 /***/ },
-/* 225 */
+/* 228 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 	const Constants = __webpack_require__(5);
 	const cloneObject = __webpack_require__(46);
 
@@ -38388,10 +38451,10 @@
 
 
 /***/ },
-/* 226 */
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 
 	class GuildRolesPositionUpdate extends Action {
 	  handle(data) {
@@ -38417,10 +38480,10 @@
 
 
 /***/ },
-/* 227 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 
 	class GuildSync extends Action {
 	  handle(data) {
@@ -38450,10 +38513,10 @@
 
 
 /***/ },
-/* 228 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 	const Constants = __webpack_require__(5);
 	const cloneObject = __webpack_require__(46);
 
@@ -38490,10 +38553,10 @@
 
 
 /***/ },
-/* 229 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 	const Message = __webpack_require__(16);
 
 	class MessageCreateAction extends Action {
@@ -38530,10 +38593,10 @@
 
 
 /***/ },
-/* 230 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 
 	class MessageDeleteAction extends Action {
 	  constructor(client) {
@@ -38576,10 +38639,10 @@
 
 
 /***/ },
-/* 231 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 	const Collection = __webpack_require__(10);
 	const Constants = __webpack_require__(5);
 
@@ -38606,10 +38669,10 @@
 
 
 /***/ },
-/* 232 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 	const Constants = __webpack_require__(5);
 
 	/*
@@ -38655,10 +38718,10 @@
 
 
 /***/ },
-/* 233 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 	const Constants = __webpack_require__(5);
 
 	/*
@@ -38704,10 +38767,10 @@
 
 
 /***/ },
-/* 234 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 	const Constants = __webpack_require__(5);
 
 	class MessageReactionRemoveAll extends Action {
@@ -38735,10 +38798,10 @@
 
 
 /***/ },
-/* 235 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 	const Constants = __webpack_require__(5);
 	const cloneObject = __webpack_require__(46);
 
@@ -38784,10 +38847,10 @@
 
 
 /***/ },
-/* 236 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 
 	class UserGetAction extends Action {
 	  handle(data) {
@@ -38803,10 +38866,10 @@
 
 
 /***/ },
-/* 237 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 	const Constants = __webpack_require__(5);
 
 	class UserNoteUpdateAction extends Action {
@@ -38839,10 +38902,10 @@
 
 
 /***/ },
-/* 238 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Action = __webpack_require__(212);
+	const Action = __webpack_require__(215);
 	const Constants = __webpack_require__(5);
 	const cloneObject = __webpack_require__(46);
 
@@ -38878,11 +38941,11 @@
 
 
 /***/ },
-/* 239 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {const makeError = __webpack_require__(240);
-	const makePlainError = __webpack_require__(241);
+	/* WEBPACK VAR INJECTION */(function(process) {const makeError = __webpack_require__(243);
+	const makePlainError = __webpack_require__(244);
 
 	/**
 	 * Helper class for sharded clients spawned as a child process, such as from a ShardingManager
@@ -39027,7 +39090,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 240 */
+/* 243 */
 /***/ function(module, exports) {
 
 	module.exports = function makeError(obj) {
@@ -39039,7 +39102,7 @@
 
 
 /***/ },
-/* 241 */
+/* 244 */
 /***/ function(module, exports) {
 
 	module.exports = function makePlainError(err) {
@@ -39052,7 +39115,7 @@
 
 
 /***/ },
-/* 242 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 	const Webhook = __webpack_require__(31);
@@ -39104,13 +39167,13 @@
 
 
 /***/ },
-/* 243 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {const childProcess = __webpack_require__(62);
 	const path = __webpack_require__(15);
-	const makeError = __webpack_require__(240);
-	const makePlainError = __webpack_require__(241);
+	const makeError = __webpack_require__(243);
+	const makePlainError = __webpack_require__(244);
 
 	/**
 	 * Represents a Shard spawned by the ShardingManager.
@@ -39269,16 +39332,16 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 244 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {const path = __webpack_require__(15);
 	const fs = __webpack_require__(62);
 	const EventEmitter = __webpack_require__(3).EventEmitter;
 	const mergeDefault = __webpack_require__(4);
-	const Shard = __webpack_require__(243);
+	const Shard = __webpack_require__(246);
 	const Collection = __webpack_require__(10);
-	const fetchRecommendedShards = __webpack_require__(245);
+	const fetchRecommendedShards = __webpack_require__(248);
 
 	/**
 	 * This is a utility class that can be used to help you spawn shards of your Client. Each shard is completely separate
@@ -39469,7 +39532,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 245 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 	const superagent = __webpack_require__(40);

@@ -28,8 +28,8 @@ const createConfig = (options) => {
     },
     node: {
       fs: 'empty',
-      dns: 'empty',
-      tls: 'empty',
+      dns: 'mock',
+      tls: 'mock',
       child_process: 'empty',
       dgram: 'empty',
       __dirname: true,

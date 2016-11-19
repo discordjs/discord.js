@@ -3,6 +3,7 @@ const fs = require('fs');
 const request = require('superagent');
 
 const Constants = require('../util/Constants');
+const convertArrayBuffer = require('../util/ConvertArrayBuffer');
 const User = require('../structures/User');
 const Message = require('../structures/Message');
 const Guild = require('../structures/Guild');
@@ -240,14 +241,19 @@ class ClientDataResolver {
    */
   resolveBuffer(resource) {
     if (resource instanceof Buffer) return Promise.resolve(resource);
+    if (this.client.browser && resource instanceof ArrayBuffer) {
+      return Promise.resolve(convertArrayBuffer(resource));
+    }
 
     if (typeof resource === 'string') {
       return new Promise((resolve, reject) => {
         if (/^https?:\/\//.test(resource)) {
           request.get(resource)
             .set('Content-Type', 'blob')
+            .responseType('arraybuffer')
             .end((err, res) => {
               if (err) return reject(err);
+              if (this.client.browser) return resolve(convertArrayBuffer(res.xhr.response));
               if (!(res.body instanceof Buffer)) return reject(new TypeError('Body is not a Buffer'));
               return resolve(res.body);
             });
