@@ -36053,7 +36053,7 @@
 /* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const WebSocket = typeof window === undefined ? __webpack_require__(66) : window.WebSocket; // eslint-disable-line no-undef
+	const WebSocket = typeof window !== 'undefined' ? window.WebSocket : __webpack_require__(66); // eslint-disable-line no-undef
 	const EventEmitter = __webpack_require__(3).EventEmitter;
 	const Constants = __webpack_require__(5);
 	const zlib = __webpack_require__(125);
@@ -36133,6 +36133,7 @@
 	    this.normalReady = false;
 	    if (this.status !== Constants.Status.RECONNECTING) this.status = Constants.Status.CONNECTING;
 	    this.ws = new WebSocket(gateway);
+	    if (this.client.browser) this.ws.binaryType = 'arraybuffer';
 	    this.ws.onopen = () => this.eventOpen();
 	    this.ws.onclose = (d) => this.eventClose(d);
 	    this.ws.onmessage = (e) => this.eventMessage(e);
@@ -36146,7 +36147,8 @@
 	      this._connect(gateway);
 	      this.first = false;
 	    } else {
-	      this.client.setTimeout(() => this._connect(gateway), 5500);
+	      this.client.emit('debug', 'Setting new this._connect timeout to 5500');
+	      this.connectTimeout = this.client.setTimeout(() => this._connect(gateway), 5500);
 	    }
 	  }
 
@@ -36231,6 +36233,7 @@
 	    this.reconnecting = false;
 	    const payload = this.client.options.ws;
 	    payload.token = this.client.token;
+	    if (this.client.browser) payload.compress = false;
 	    if (this.client.options.shardCount > 0) {
 	      payload.shard = [Number(this.client.options.shardId), Number(this.client.options.shardCount)];
 	    }
@@ -36271,7 +36274,7 @@
 	      if (event.binary) event.data = zlib.inflateSync(event.data).toString();
 	      packet = JSON.parse(event.data);
 	    } catch (e) {
-	      return this.eventError(new Error(Constants.Errors.BAD_WS_MESSAGE));
+	      return this.eventError(new Error(Constants.Errors.BAD_WS_MESSAGE), event);
 	    }
 
 	    this.client.emit('raw', packet);

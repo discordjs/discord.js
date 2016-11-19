@@ -5,8 +5,6 @@
 (() => {
   const client = window.client = new Discord.Client();
 
-  client.on('debug', console.log);
-
   client.on('raw', event => {
     if (
       [
@@ -21,6 +19,10 @@
   client.on('ready', () => {
     console.log('[CLIENT] Ready!');
   });
+
+  client.on('debug', console.log);
+
+  client.on('error', console.error);
 
   client.ws.on('close', (event) => console.log('[CLIENT] Disconnect!', event));
 

@@ -78,6 +78,7 @@ class WebSocketManager extends EventEmitter {
     this.normalReady = false;
     if (this.status !== Constants.Status.RECONNECTING) this.status = Constants.Status.CONNECTING;
     this.ws = new WebSocket(gateway);
+    if (this.client.browser) this.ws.binaryType = 'arraybuffer';
     this.ws.onopen = () => this.eventOpen();
     this.ws.onclose = (d) => this.eventClose(d);
     this.ws.onmessage = (e) => this.eventMessage(e);
@@ -176,6 +177,7 @@ class WebSocketManager extends EventEmitter {
     this.reconnecting = false;
     const payload = this.client.options.ws;
     payload.token = this.client.token;
+    if (this.client.browser) payload.compress = false;
     if (this.client.options.shardCount > 0) {
       payload.shard = [Number(this.client.options.shardId), Number(this.client.options.shardCount)];
     }
