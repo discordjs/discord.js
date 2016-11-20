@@ -250,7 +250,6 @@ class ClientDataResolver {
         if (/^https?:\/\//.test(resource)) {
           request.get(resource)
             .set('Content-Type', 'blob')
-            .responseType('arraybuffer')
             .end((err, res) => {
               if (err) return reject(err);
               if (this.client.browser) return resolve(convertArrayBuffer(res.xhr.response));
