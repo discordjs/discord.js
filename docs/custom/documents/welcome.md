@@ -1,6 +1,6 @@
 <div align="center">
   <p>
-    <a href="https://discord.js.org"><img src="http://i.imgur.com/260XFXQ.png" width="546" alt="discord.js" /></a>
+    <a href="https://discord.js.org"><img src="https://i.imgur.com/260XFXQ.png" width="546" alt="discord.js" /></a>
   </p>
   <p>
     <a href="https://discord.gg/bRCvFy9"><img src="https://discordapp.com/api/guilds/222078108977594368/embed.png" alt="Discord server" /></a>
@@ -42,7 +42,7 @@ For production bots, using node-opus should be considered a necessity, especiall
 * [Website](http://discord.js.org/)
 * [Discord.js server](https://discord.gg/bRCvFy9)
 * [Discord API server](https://discord.gg/rV4BwdK)
-* [Documentation](http://discord.js.org/#!/docs)
+* [Documentation](http://discord.js.org/#/docs)
 * [Legacy (v8) documentation](http://discordjs.readthedocs.io/en/8.2.0/docs_client.html)
 * [Examples](https://github.com/hydrabolt/discord.js/tree/master/docs/custom/examples)
 * [GitHub](https://github.com/hydrabolt/discord.js)
