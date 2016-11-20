@@ -56,7 +56,7 @@ class Collection extends Map {
   }
 
   /**
-   * Returns the first item in this collection.
+   * Obtains the first item in this collection.
    * @returns {*}
    */
   first() {
@@ -64,7 +64,7 @@ class Collection extends Map {
   }
 
   /**
-   * Returns the first key in this collection.
+   * Obtains the first key in this collection.
    * @returns {*}
    */
   firstKey() {
@@ -72,8 +72,8 @@ class Collection extends Map {
   }
 
   /**
-   * Returns the last item in this collection. This is a relatively slow operation,
-   * since an array copy of the values must be made to find the last element.
+   * Obtains the last item in this collection. This relies on the `array()` method, and thus the caching mechanism
+   * applies here as well.
    * @returns {*}
    */
   last() {
@@ -82,8 +82,8 @@ class Collection extends Map {
   }
 
   /**
-   * Returns the last key in this collection. This is a relatively slow operation,
-   * since an array copy of the keys must be made to find the last element.
+   * Obtains the last key in this collection. This relies on the `keyArray()` method, and thus the caching mechanism
+   * applies here as well.
    * @returns {*}
    */
   lastKey() {
@@ -92,8 +92,8 @@ class Collection extends Map {
   }
 
   /**
-   * Returns a random item from this collection. This is a relatively slow operation,
-   * since an array copy of the values must be made to find a random element.
+   * Obtains a random item from this collection. This relies on the `array()` method, and thus the caching mechanism
+   * applies here as well.
    * @returns {*}
    */
   random() {
@@ -102,8 +102,8 @@ class Collection extends Map {
   }
 
   /**
-   * Returns a random key from this collection. This is a relatively slow operation,
-   * since an array copy of the keys must be made to find a random element.
+   * Obtains a random key from this collection. This relies on the `keyArray()` method, and thus the caching mechanism
+   * applies here as well.
    * @returns {*}
    */
   randomKey() {
@@ -112,7 +112,8 @@ class Collection extends Map {
   }
 
   /**
-   * Returns an array of items where `item[prop] === value` of the collection
+   * Searches for all items where their specified property's value is identical to the given value
+   * (`item[prop] === value`).
    * @param {string} prop The property to test against
    * @param {*} value The expected value
    * @returns {Array}
@@ -130,8 +131,8 @@ class Collection extends Map {
   }
 
   /**
-   * Searches for a single item where `item[prop] === value`, or the given function returns `true`.
-   * In the latter case, this is identical to
+   * Searches for a single item where its specified property's value is identical to the given value
+   * (`item[prop] === value`), or the given function returns a truthy value. In the latter case, this is identical to
    * [Array.find()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find).
    * <warn>Do not use this to obtain an item by its ID. Instead, use `collection.get(id)`. See
    * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get) for details.</warn>
@@ -163,8 +164,8 @@ class Collection extends Map {
 
   /* eslint-disable max-len */
   /**
-   * Searches for the key of an item where `item[prop] === value`, or the given function returns `true`.
-   * In the latter case, this is identical to
+   * Searches for the key of a single item where its specified property's value is identical to the given value
+   * (`item[prop] === value`), or the given function returns a truthy value. In the latter case, this is identical to
    * [Array.findIndex()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex).
    * @param {string|Function} propOrFn The property to test against, or the function to test with
    * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
@@ -193,7 +194,8 @@ class Collection extends Map {
   }
 
   /**
-   * Searches for an item where `item[prop] === value`, and returns `true` if one is found.
+   * Searches for the existence of a single item where its specified property's value is identical to the given value
+   * (`item[prop] === value`).
    * <warn>Do not use this to check for an item by its ID. Instead, use `collection.has(id)`. See
    * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/has) for details.</warn>
    * @param {string} prop The property to test against
@@ -231,7 +233,7 @@ class Collection extends Map {
    * [Array.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter).
    * @param {Function} fn Function used to test (should return a boolean)
    * @param {Object} [thisArg] Value to use as `this` when executing function
-   * @returns {Collection}
+   * @returns {Array}
    */
   filterArray(fn, thisArg) {
     if (thisArg) fn = fn.bind(thisArg);
