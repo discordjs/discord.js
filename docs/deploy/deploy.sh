@@ -15,7 +15,9 @@ if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
 fi
 
 # Ignore travis checking other branches irrelevant to users
-if [ "$TRAVIS_BRANCH" != "master" -a "$TRAVIS_BRANCH" != "indev" ]; then
+# Apparently Travis considers tag builds as separate branches so we need to
+# check for that separately
+if [ "$TRAVIS_BRANCH" != "master" -a "$TRAVIS_BRANCH" != "indev" -a "$TRAVIS_BRANCH" != "$TRAVIS_TAG" ]; then
   echo "deploy.sh: Ignoring push to another branch than master/indev"
   build
   exit 0
