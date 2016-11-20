@@ -1,6 +1,6 @@
 <div align="center">
   <p>
-    <a href="https://discord.js.org"><img src="https://i.imgur.com/StEGtEh.png" width="546" alt="discord.js" /></a>
+    <a href="https://discord.js.org"><img src="http://i.imgur.com/260XFXQ.png" width="546" alt="discord.js" /></a>
   </p>
   <p>
     <a href="https://discord.gg/bRCvFy9"><img src="https://discordapp.com/api/guilds/222078108977594368/embed.png" alt="Discord server" /></a>
