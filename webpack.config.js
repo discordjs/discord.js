@@ -14,11 +14,13 @@ const createConfig = (options) => {
 
   if (options.minify) plugins.push(new webpack.optimize.UglifyJsPlugin({ minimize: true }));
 
+  const filename = `./webpack/discord${process.env.VERSIONED === 'false' ? '' : '.' + version}${options.minify ? '.min' : ''}.js`; // eslint-disable-line
+
   return {
     entry: './src/index.js',
     output: {
       path: __dirname,
-      filename: `./webpack/discord.${version}${options.minify ? '.min' : ''}.js`,
+      filename,
     },
     module: {
       loaders: [
