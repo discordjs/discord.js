@@ -4,7 +4,7 @@
 set -e
 
 function build {
-  node docs/generator/generator.js
+  node docs/generator
 }
 
 # Ignore Travis checking PRs
