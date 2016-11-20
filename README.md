@@ -1,6 +1,6 @@
 <div align="center">
   <p>
-    <a href="https://discord.js.org"><img src="http://i.imgur.com/260XFXQ.png" width="546" alt="discord.js" /></a>
+    <a href="https://discord.js.org"><img src="https://i.imgur.com/260XFXQ.png" width="546" alt="discord.js" /></a>
   </p>
   <p>
     <a href="https://discord.gg/bRCvFy9"><img src="https://discordapp.com/api/guilds/222078108977594368/embed.png" alt="Discord server" /></a>
@@ -54,7 +54,7 @@ A bot template using discord.js can be generated using [generator-discordbot](ht
 * [Website](http://discord.js.org/)
 * [Discord.js server](https://discord.gg/bRCvFy9)
 * [Discord API server](https://discord.gg/rV4BwdK)
-* [Documentation](http://discord.js.org/#!/docs)
+* [Documentation](http://discord.js.org/#/docs)
 * [Legacy (v8) documentation](http://discordjs.readthedocs.io/en/8.2.0/docs_client.html)
 * [Examples](https://github.com/hydrabolt/discord.js/tree/master/docs/custom/examples)
 * [GitHub](https://github.com/hydrabolt/discord.js)
@@ -63,7 +63,7 @@ A bot template using discord.js can be generated using [generator-discordbot](ht
 
 ## Contributing
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation](http://discord.js.org/#!/docs).  
+[documentation](http://discord.js.org/#/docs).  
 See [the contributing guide](CONTRIBUTING.md) if you'd like to submit a PR.
 
 ## Help
