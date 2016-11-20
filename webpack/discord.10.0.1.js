@@ -10405,14 +10405,14 @@
 	    if (typeof resource === 'string') {
 	      return new Promise((resolve, reject) => {
 	        if (/^https?:\/\//.test(resource)) {
-	          request.get(resource)
-	            .set('Content-Type', 'blob')
-	            .end((err, res) => {
-	              if (err) return reject(err);
-	              if (this.client.browser) return resolve(convertArrayBuffer(res.xhr.response));
-	              if (!(res.body instanceof Buffer)) return reject(new TypeError('Body is not a Buffer'));
-	              return resolve(res.body);
-	            });
+	          const req = request.get(resource).set('Content-Type', 'blob');
+	          if (this.client.browser) req.responseType('arraybuffer');
+	          req.end((err, res) => {
+	            if (err) return reject(err);
+	            if (this.client.browser) return resolve(convertArrayBuffer(res.xhr.response));
+	            if (!(res.body instanceof Buffer)) return reject(new TypeError('Body is not a Buffer'));
+	            return resolve(res.body);
+	          });
 	        } else {
 	          const file = path.resolve(resource);
 	          fs.stat(file, (err, stats) => {
