@@ -4,14 +4,13 @@ const files = [
   require('./faq'),
   require('./ping_pong'),
   require('./avatar'),
+  require('./webhook'),
 ];
 
 const categories = {};
 for (const file of files) {
   file.category = file.category.toLowerCase();
-  if (!categories[file.category]) {
-    categories[file.category] = [];
-  }
+  if (!categories[file.category]) categories[file.category] = [];
   categories[file.category].push(file);
 }
 

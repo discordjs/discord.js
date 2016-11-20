@@ -4,8 +4,10 @@
   "description": "A powerful library for interacting with the Discord API",
   "main": "./src/index",
   "scripts": {
-    "test": "eslint src/ && node docs/generator/generator.js silent",
-    "docs": "node docs/generator/generator.js",
+    "test": "eslint src && node docs/generator test",
+    "docs": "node docs/generator",
+    "test-docs": "node docs/generator test",
+    "lint": "eslint src",
     "web-dist": "npm install && ./node_modules/parallel-webpack/bin/run.js"
   },
   "repository": {

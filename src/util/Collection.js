@@ -1,11 +1,24 @@
 /**
- * A utility class to help make it easier to access the data stores
+ * A Map with additional utility methods. This is used throughout discord.js rather than Arrays for anything that has
+ * an ID, for significantly improved performance and ease-of-use.
  * @extends {Map}
  */
 class Collection extends Map {
   constructor(iterable) {
     super(iterable);
+
+    /**
+     * Cached array for the `array()` method - will be reset to `null` whenever `set()` or `delete()` are called.
+     * @type {?Array}
+     * @private
+     */
     this._array = null;
+
+    /**
+     * Cached array for the `keyArray()` method - will be reset to `null` whenever `set()` or `delete()` are called.
+     * @type {?Array}
+     * @private
+     */
     this._keyArray = null;
   }
 
@@ -23,11 +36,9 @@ class Collection extends Map {
 
   /**
    * Creates an ordered array of the values of this collection, and caches it internally. The array will only be
-   * reconstructed if an item is added to or removed from the collection, or if you add/remove elements on the array.
+   * reconstructed if an item is added to or removed from the collection, or if you change the length of the array
+   * itself. If you don't want this caching behaviour, use `Array.from(collection.values())` instead.
    * @returns {Array}
-   * @example
-   * // identical to:
-   * Array.from(collection.values());
    */
   array() {
     if (!this._array || this._array.length !== this.size) this._array = Array.from(this.values());
@@ -36,11 +47,9 @@ class Collection extends Map {
 
   /**
    * Creates an ordered array of the keys of this collection, and caches it internally. The array will only be
-   * reconstructed if an item is added to or removed from the collection, or if you add/remove elements on the array.
+   * reconstructed if an item is added to or removed from the collection, or if you change the length of the array
+   * itself. If you don't want this caching behaviour, use `Array.from(collection.keys())` instead.
    * @returns {Array}
-   * @example
-   * // identical to:
-   * Array.from(collection.keys());
    */
   keyArray() {
     if (!this._keyArray || this._keyArray.length !== this.size) this._keyArray = Array.from(this.keys());
@@ -48,7 +57,7 @@ class Collection extends Map {
   }
 
   /**
-   * Returns the first item in this collection.
+   * Obtains the first item in this collection.
    * @returns {*}
    */
   first() {
@@ -56,7 +65,7 @@ class Collection extends Map {
   }
 
   /**
-   * Returns the first key in this collection.
+   * Obtains the first key in this collection.
    * @returns {*}
    */
   firstKey() {
@@ -64,8 +73,8 @@ class Collection extends Map {
   }
 
   /**
-   * Returns the last item in this collection. This is a relatively slow operation,
-   * since an array copy of the values must be made to find the last element.
+   * Obtains the last item in this collection. This relies on the `array()` method, and thus the caching mechanism
+   * applies here as well.
    * @returns {*}
    */
   last() {
@@ -74,8 +83,8 @@ class Collection extends Map {
   }
 
   /**
-   * Returns the last key in this collection. This is a relatively slow operation,
-   * since an array copy of the keys must be made to find the last element.
+   * Obtains the last key in this collection. This relies on the `keyArray()` method, and thus the caching mechanism
+   * applies here as well.
    * @returns {*}
    */
   lastKey() {
@@ -84,8 +93,8 @@ class Collection extends Map {
   }
 
   /**
-   * Returns a random item from this collection. This is a relatively slow operation,
-   * since an array copy of the values must be made to find a random element.
+   * Obtains a random item from this collection. This relies on the `array()` method, and thus the caching mechanism
+   * applies here as well.
    * @returns {*}
    */
   random() {
@@ -94,8 +103,8 @@ class Collection extends Map {
   }
 
   /**
-   * Returns a random key from this collection. This is a relatively slow operation,
-   * since an array copy of the keys must be made to find a random element.
+   * Obtains a random key from this collection. This relies on the `keyArray()` method, and thus the caching mechanism
+   * applies here as well.
    * @returns {*}
    */
   randomKey() {
@@ -104,7 +113,8 @@ class Collection extends Map {
   }
 
   /**
-   * Returns an array of items where `item[prop] === value` of the collection
+   * Searches for all items where their specified property's value is identical to the given value
+   * (`item[prop] === value`).
    * @param {string} prop The property to test against
    * @param {*} value The expected value
    * @returns {Array}
@@ -122,8 +132,8 @@ class Collection extends Map {
   }
 
   /**
-   * Searches for a single item where `item[prop] === value`, or the given function returns `true`.
-   * In the latter case, this is identical to
+   * Searches for a single item where its specified property's value is identical to the given value
+   * (`item[prop] === value`), or the given function returns a truthy value. In the latter case, this is identical to
    * [Array.find()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find).
    * <warn>Do not use this to obtain an item by its ID. Instead, use `collection.get(id)`. See
    * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get) for details.</warn>
@@ -155,10 +165,10 @@ class Collection extends Map {
 
   /* eslint-disable max-len */
   /**
-   * Searches for the key of an item where `item[prop] === value`, or the given function returns `true`.
-   * In the latter case, this is identical to
+   * Searches for the key of a single item where its specified property's value is identical to the given value
+   * (`item[prop] === value`), or the given function returns a truthy value. In the latter case, this is identical to
    * [Array.findIndex()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex).
-   * @param {string|function} propOrFn The property to test against, or the function to test with
+   * @param {string|Function} propOrFn The property to test against, or the function to test with
    * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
    * @returns {*}
    * @example
@@ -185,7 +195,8 @@ class Collection extends Map {
   }
 
   /**
-   * Searches for an item where `item[prop] === value`, and returns `true` if one is found.
+   * Searches for the existence of a single item where its specified property's value is identical to the given value
+   * (`item[prop] === value`).
    * <warn>Do not use this to check for an item by its ID. Instead, use `collection.has(id)`. See
    * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/has) for details.</warn>
    * @param {string} prop The property to test against
@@ -223,7 +234,7 @@ class Collection extends Map {
    * [Array.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter).
    * @param {Function} fn Function used to test (should return a boolean)
    * @param {Object} [thisArg] Value to use as `this` when executing function
-   * @returns {Collection}
+   * @returns {Array}
    */
   filterArray(fn, thisArg) {
     if (thisArg) fn = fn.bind(thisArg);
@@ -308,8 +319,7 @@ class Collection extends Map {
   }
 
   /**
-   * If the items in this collection have a delete method (e.g. messages), invoke
-   * the delete method. Returns an array of promises
+   * Calls the `delete()` method on all items that have it.
    * @returns {Promise[]}
    */
   deleteAll() {
