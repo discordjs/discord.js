@@ -241,9 +241,7 @@ class ClientDataResolver {
    */
   resolveBuffer(resource) {
     if (resource instanceof Buffer) return Promise.resolve(resource);
-    if (this.client.browser && resource instanceof ArrayBuffer) {
-      return Promise.resolve(convertArrayBuffer(resource));
-    }
+    if (this.client.browser && resource instanceof ArrayBuffer) return Promise.resolve(convertArrayBuffer(resource));
 
     if (typeof resource === 'string') {
       return new Promise((resolve, reject) => {
