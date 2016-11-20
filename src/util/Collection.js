@@ -5,7 +5,19 @@
 class Collection extends Map {
   constructor(iterable) {
     super(iterable);
+
+    /**
+     * Cached array for the `array()` method - will be reset to `null` whenever `set()` or `delete()` are called.
+     * @type {?Array}
+     * @private
+     */
     this._array = null;
+
+    /**
+     * Cached array for the `keyArray()` method - will be reset to `null` whenever `set()` or `delete()` are called.
+     * @type {?Array}
+     * @private
+     */
     this._keyArray = null;
   }
 
@@ -23,11 +35,9 @@ class Collection extends Map {
 
   /**
    * Creates an ordered array of the values of this collection, and caches it internally. The array will only be
-   * reconstructed if an item is added to or removed from the collection, or if you add/remove elements on the array.
+   * reconstructed if an item is added to or removed from the collection, or if you change the length of the array
+   * itself. If you don't want this caching behaviour, use `Array.from(collection.values())` instead.
    * @returns {Array}
-   * @example
-   * // identical to:
-   * Array.from(collection.values());
    */
   array() {
     if (!this._array || this._array.length !== this.size) this._array = Array.from(this.values());
@@ -36,11 +46,9 @@ class Collection extends Map {
 
   /**
    * Creates an ordered array of the keys of this collection, and caches it internally. The array will only be
-   * reconstructed if an item is added to or removed from the collection, or if you add/remove elements on the array.
+   * reconstructed if an item is added to or removed from the collection, or if you change the length of the array
+   * itself. If you don't want this caching behaviour, use `Array.from(collection.keys())` instead.
    * @returns {Array}
-   * @example
-   * // identical to:
-   * Array.from(collection.keys());
    */
   keyArray() {
     if (!this._keyArray || this._keyArray.length !== this.size) this._keyArray = Array.from(this.keys());
@@ -158,7 +166,7 @@ class Collection extends Map {
    * Searches for the key of an item where `item[prop] === value`, or the given function returns `true`.
    * In the latter case, this is identical to
    * [Array.findIndex()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex).
-   * @param {string|function} propOrFn The property to test against, or the function to test with
+   * @param {string|Function} propOrFn The property to test against, or the function to test with
    * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
    * @returns {*}
    * @example
@@ -308,8 +316,7 @@ class Collection extends Map {
   }
 
   /**
-   * If the items in this collection have a delete method (e.g. messages), invoke
-   * the delete method. Returns an array of promises
+   * Calls the `delete()` method on all items that have it.
    * @returns {Promise[]}
    */
   deleteAll() {
