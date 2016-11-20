@@ -9,6 +9,8 @@
       console.log('[CLIENT] Ready!');
     });
 
+    client.on('error', console.error);
+
     client.ws.on('close', (event) => console.log('[CLIENT] Disconnect!', event));
 
     client.on('message', (message) => {

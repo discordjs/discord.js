@@ -43,7 +43,8 @@
     "parallel-webpack": "^1.5.0",
     "uglify-js": "github:mishoo/UglifyJS2#harmony",
     "utf-8-validate": "^1.2.1",
-    "webpack": "^1.13.3"
+    "webpack": "^1.13.3",
+    "zlibjs": "github:imaya/zlib.js"
   },
   "engines": {
     "node": ">=6.0.0"
