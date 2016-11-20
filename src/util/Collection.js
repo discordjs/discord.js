@@ -1,5 +1,6 @@
 /**
- * A utility class to help make it easier to access the data stores
+ * A Map with additional utility methods. This is used throughout discord.js rather than Arrays for anything that has
+ * an ID, for significantly improved performance and ease-of-use.
  * @extends {Map}
  */
 class Collection extends Map {
