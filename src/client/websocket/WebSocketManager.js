@@ -1,8 +1,10 @@
-const WebSocket = require('ws');
+const browser = typeof window !== 'undefined';
+const WebSocket = browser ? window.WebSocket : require('ws'); // eslint-disable-line no-undef
 const EventEmitter = require('events').EventEmitter;
 const Constants = require('../../util/Constants');
-const zlib = require('zlib');
+const inflate = browser ? require('zlibjs').inflateSync : require('zlib').inflateSync;
 const PacketManager = require('./packets/WebSocketPacketManager');
+const convertArrayBuffer = require('../../util/ConvertArrayBuffer');
 
 /**
  * The WebSocket Manager of the Client
@@ -78,6 +80,7 @@ class WebSocketManager extends EventEmitter {
     this.normalReady = false;
     if (this.status !== Constants.Status.RECONNECTING) this.status = Constants.Status.CONNECTING;
     this.ws = new WebSocket(gateway);
+    if (browser) this.ws.binaryType = 'arraybuffer';
     this.ws.onopen = () => this.eventOpen();
     this.ws.onclose = (d) => this.eventClose(d);
     this.ws.onmessage = (e) => this.eventMessage(e);
@@ -193,11 +196,11 @@ class WebSocketManager extends EventEmitter {
    */
   eventClose(event) {
     this.emit('close', event);
+    this.client.clearInterval(this.client.manager.heartbeatInterval);
     /**
      * Emitted whenever the client websocket is disconnected
      * @event Client#disconnect
      */
-    clearInterval(this.client.manager.heartbeatInterval);
     if (!this.reconnecting) this.client.emit(Constants.Events.DISCONNECT);
     if (event.code === 4004) return;
     if (event.code === 4010) return;
@@ -211,10 +214,13 @@ class WebSocketManager extends EventEmitter {
    * @returns {boolean}
    */
   eventMessage(event) {
-    let packet;
+    let packet = event.data;
     try {
-      if (event.binary) event.data = zlib.inflateSync(event.data).toString();
-      packet = JSON.parse(event.data);
+      if (typeof packet !== 'string') {
+        if (packet instanceof ArrayBuffer) packet = convertArrayBuffer(packet);
+        packet = inflate(packet).toString();
+      }
+      packet = JSON.parse(packet);
     } catch (e) {
       return this.eventError(new Error(Constants.Errors.BAD_WS_MESSAGE));
     }
@@ -236,7 +242,7 @@ class WebSocketManager extends EventEmitter {
      * @param {Error} error The encountered error
      */
     if (this.client.listenerCount('error') > 0) this.client.emit('error', err);
-    this.tryReconnect();
+    this.ws.close();
   }
 
   _emitReady(normal = true) {

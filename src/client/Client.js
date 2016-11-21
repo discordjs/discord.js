@@ -23,6 +23,12 @@ class Client extends EventEmitter {
   constructor(options = {}) {
     super();
 
+    /**
+     * Whether the client is in a browser environment
+     * @type {boolean}
+     */
+    this.browser = typeof window !== 'undefined';
+
     // Obtain shard details from environment
     if (!options.shardId && 'SHARD_ID' in process.env) options.shardId = Number(process.env.SHARD_ID);
     if (!options.shardCount && 'SHARD_COUNT' in process.env) options.shardCount = Number(process.env.SHARD_COUNT);
