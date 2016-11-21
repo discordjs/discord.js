@@ -256,6 +256,7 @@ class Guild {
    * @readonly
    */
   get voiceConnection() {
+    if (this.client.browser) return null;
     return this.client.voice.connections.get(this.id) || null;
   }
 
