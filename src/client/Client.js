@@ -83,11 +83,11 @@ class Client extends EventEmitter {
     this.actions = new ActionsManager(this);
 
     /**
-     * The Voice Manager of the Client
-     * @type {ClientVoiceManager}
+     * The Voice Manager of the Client (`null` in browsers)
+     * @type {?ClientVoiceManager}
      * @private
      */
-    this.voice = new ClientVoiceManager(this);
+    this.voice = !this.browser ? new ClientVoiceManager(this) : null;
 
     /**
      * The shard helpers for the client (only if the process was spawned as a child, such as from a ShardingManager)
@@ -186,6 +186,7 @@ class Client extends EventEmitter {
    * @readonly
    */
   get voiceConnections() {
+    if (this.browser) return new Collection();
     return this.voice.connections;
   }
 
