@@ -5,6 +5,7 @@ const Constants = require('../../util/Constants');
 const inflate = browser ? require('zlibjs').inflateSync : require('zlib').inflateSync;
 const PacketManager = require('./packets/WebSocketPacketManager');
 const convertArrayBuffer = require('../../util/ConvertArrayBuffer');
+
 /**
  * The WebSocket Manager of the Client
  * @private
