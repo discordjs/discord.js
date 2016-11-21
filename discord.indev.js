@@ -16127,7 +16127,7 @@ module.exports = {
 		"docs": "node docs/generator",
 		"test-docs": "node docs/generator test",
 		"lint": "eslint src",
-		"web-dist": "npm install && node ./node_modules/parallel-webpack/bin/run.js"
+		"web-dist": "node ./node_modules/parallel-webpack/bin/run.js"
 	},
 	"repository": {
 		"type": "git",
