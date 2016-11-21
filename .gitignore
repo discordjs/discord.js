@@ -16,4 +16,4 @@ docs/deploy/deploy_key.pub
 .tmp/
 .vscode/
 docs/docs.json
-webpack/**
+webpack/
