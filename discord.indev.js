@@ -8071,6 +8071,10 @@ module.exports = {
 		"node": ">=6.0.0"
 	},
 	"browser": {
+		"ws": false,
+		"opusscript": false,
+		"node-opus": false,
+		"tweet-nacl": false,
 		"src/sharding/Shard.js": false,
 		"src/sharding/ShardClientUtil.js": false,
 		"src/sharding/ShardingManager.js": false,
@@ -10340,12 +10344,12 @@ const RESTManager = __webpack_require__(45);
 const ClientDataManager = __webpack_require__(63);
 const ClientManager = __webpack_require__(64);
 const ClientDataResolver = __webpack_require__(44);
-const ClientVoiceManager = __webpack_require__(137);
+const ClientVoiceManager = __webpack_require__(136);
 const WebSocketManager = __webpack_require__(97);
 const ActionsManager = __webpack_require__(65);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(6).Presence;
-const ShardClientUtil = __webpack_require__(136);
+const ShardClientUtil = __webpack_require__(135);
 
 /**
  * The starting point for making a Discord Bot.
@@ -13923,7 +13927,7 @@ module.exports = UserAgentManager;
 /***/ function(module, exports, __webpack_require__) {
 
 const browser = typeof window !== 'undefined';
-const WebSocket = browser ? window.WebSocket : __webpack_require__(135); // eslint-disable-line no-undef
+const WebSocket = browser ? window.WebSocket : __webpack_require__(137); // eslint-disable-line no-undef
 const EventEmitter = __webpack_require__(21).EventEmitter;
 const Constants = __webpack_require__(0);
 const inflate = browser ? __webpack_require__(62).inflateSync : __webpack_require__(43).inflateSync;
@@ -15399,7 +15403,7 @@ module.exports = function parseEmoji(text) {
 /* 135 */
 /***/ function(module, exports) {
 
-module.exports = undefined;
+/* (ignored) */
 
 /***/ },
 /* 136 */
