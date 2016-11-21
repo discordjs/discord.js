@@ -3,13 +3,14 @@ const fs = require('fs');
 const request = require('superagent');
 
 const Constants = require('../util/Constants');
-const User = require(`../structures/User`);
-const Message = require(`../structures/Message`);
-const Guild = require(`../structures/Guild`);
-const Channel = require(`../structures/Channel`);
-const GuildMember = require(`../structures/GuildMember`);
-const Emoji = require(`../structures/Emoji`);
-const ReactionEmoji = require(`../structures/ReactionEmoji`);
+const convertArrayBuffer = require('../util/ConvertArrayBuffer');
+const User = require('../structures/User');
+const Message = require('../structures/Message');
+const Guild = require('../structures/Guild');
+const Channel = require('../structures/Channel');
+const GuildMember = require('../structures/GuildMember');
+const Emoji = require('../structures/Emoji');
+const ReactionEmoji = require('../structures/ReactionEmoji');
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
@@ -240,17 +241,19 @@ class ClientDataResolver {
    */
   resolveBuffer(resource) {
     if (resource instanceof Buffer) return Promise.resolve(resource);
+    if (this.client.browser && resource instanceof ArrayBuffer) return Promise.resolve(convertArrayBuffer(resource));
 
     if (typeof resource === 'string') {
       return new Promise((resolve, reject) => {
         if (/^https?:\/\//.test(resource)) {
-          request.get(resource)
-            .set('Content-Type', 'blob')
-            .end((err, res) => {
-              if (err) return reject(err);
-              if (!(res.body instanceof Buffer)) return reject(new TypeError('Body is not a Buffer'));
-              return resolve(res.body);
-            });
+          const req = request.get(resource).set('Content-Type', 'blob');
+          if (this.client.browser) req.responseType('arraybuffer');
+          req.end((err, res) => {
+            if (err) return reject(err);
+            if (this.client.browser) return resolve(convertArrayBuffer(res.xhr.response));
+            if (!(res.body instanceof Buffer)) return reject(new TypeError('Body is not a Buffer'));
+            return resolve(res.body);
+          });
         } else {
           const file = path.resolve(resource);
           fs.stat(file, (err, stats) => {
