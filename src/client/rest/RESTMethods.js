@@ -3,14 +3,13 @@ const Collection = require('../../util/Collection');
 const splitMessage = require('../../util/SplitMessage');
 const parseEmoji = require('../../util/ParseEmoji');
 
-const requireStructure = name => require(`../../structures/${name}`);
-const User = requireStructure('User');
-const GuildMember = requireStructure('GuildMember');
-const Role = requireStructure('Role');
-const Invite = requireStructure('Invite');
-const Webhook = requireStructure('Webhook');
-const UserProfile = requireStructure('UserProfile');
-const ClientOAuth2Application = requireStructure('ClientOAuth2Application');
+const User = require('../../structures/User');
+const GuildMember = require('../../structures/GuildMember');
+const Role = require('../../structures/Role');
+const Invite = require('../../structures/Invite');
+const Webhook = require('../../structures/Webhook');
+const UserProfile = require('../../structures/UserProfile');
+const ClientOAuth2Application = require('../../structures/ClientOAuth2Application');
 
 class RESTMethods {
   constructor(restManager) {

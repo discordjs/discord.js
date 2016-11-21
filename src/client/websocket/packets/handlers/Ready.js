@@ -1,7 +1,6 @@
 const AbstractHandler = require('./AbstractHandler');
 
-const getStructure = name => require(`../../../../structures/${name}`);
-const ClientUser = getStructure('ClientUser');
+const ClientUser = require('../../../../structures/ClientUser');
 
 class ReadyHandler extends AbstractHandler {
   handle(packet) {
