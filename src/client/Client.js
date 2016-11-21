@@ -23,12 +23,6 @@ class Client extends EventEmitter {
   constructor(options = {}) {
     super();
 
-    /**
-     * Whether the client is in a browser environment
-     * @type {boolean}
-     */
-    this.browser = typeof window !== 'undefined';
-
     // Obtain shard details from environment
     if (!options.shardId && 'SHARD_ID' in process.env) options.shardId = Number(process.env.SHARD_ID);
     if (!options.shardCount && 'SHARD_COUNT' in process.env) options.shardCount = Number(process.env.SHARD_COUNT);
@@ -210,6 +204,15 @@ class Client extends EventEmitter {
    */
   get readyTimestamp() {
     return this.readyAt ? this.readyAt.getTime() : null;
+  }
+
+  /**
+   * Whether the client is in a browser environment
+   * @type {boolean}
+   * @readonly
+   */
+  get browser() {
+    return typeof window !== 'undefined';
   }
 
   /**
