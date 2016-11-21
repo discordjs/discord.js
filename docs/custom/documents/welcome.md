@@ -39,7 +39,8 @@ For production bots, using node-opus should be considered a necessity, especiall
 ## Web distributions
 Web builds of discord.js that are fully capable of running in browsers are available [here](https://github.com/hydrabolt/discord.js/tree/webpack).
 These are built by [Webpack 2](https://webpack.js.org/). The API is identical, but rather than using `require('discord.js')`,
-the entire `Discord` object is available as a global (on the `window` object). Any voice-related functionality is unavailable in these builds.
+the entire `Discord` object is available as a global (on the `window` object).
+The ShardingManager and any voice-related functionality is unavailable in these builds.
 
 ## Guides
 * [LuckyEvie's general guide](https://eslachance.gitbooks.io/discord-js-bot-guide/content/)
