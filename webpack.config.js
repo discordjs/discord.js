@@ -22,9 +22,6 @@ const createConfig = (options) => {
       path: __dirname,
       filename,
     },
-    resolve: {
-      descriptionFiles: ['package.json'],
-    },
     module: {
       rules: [
         { test: /\.json$/, loader: 'json-loader' },
@@ -32,9 +29,10 @@ const createConfig = (options) => {
       ],
     },
     externals: {
-      'node-opus': { commonjs: 'node-opus' },
-      opusscript: { commonjs: 'opusscript' },
       ws: { commonjs: 'ws' },
+      opusscript: { commonjs: 'opusscript' },
+      'node-opus': { commonjs: 'node-opus' },
+      'tweet-nacl': { commonjs: 'tweet-nacl' },
     },
     node: {
       fs: 'empty',
@@ -42,6 +40,7 @@ const createConfig = (options) => {
       tls: 'mock',
       child_process: 'empty',
       dgram: 'empty',
+      zlib: 'empty',
       __dirname: true,
     },
     plugins,

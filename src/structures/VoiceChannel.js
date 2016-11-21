@@ -50,6 +50,7 @@ class VoiceChannel extends GuildChannel {
    * @type {boolean}
    */
   get joinable() {
+    if (this.client.browser) return false;
     return this.permissionsFor(this.client.user).hasPermission('CONNECT');
   }
 
@@ -99,6 +100,7 @@ class VoiceChannel extends GuildChannel {
    *  .catch(console.error);
    */
   join() {
+    if (this.client.browser) return Promise.reject(new Error('Voice connections are not available in browsers.'));
     return this.client.voice.joinChannel(this);
   }
 
@@ -109,6 +111,7 @@ class VoiceChannel extends GuildChannel {
    * voiceChannel.leave();
    */
   leave() {
+    if (this.client.browser) return;
     const connection = this.client.voice.connections.get(this.guild.id);
     if (connection && connection.channel.id === this.id) connection.disconnect();
   }
