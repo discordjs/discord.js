@@ -36,6 +36,11 @@ The preferred audio engine is node-opus, as it performs significantly better tha
 Using opusscript is only recommended for development environments where node-opus is tough to get working.
 For production bots, using node-opus should be considered a necessity, especially if they're going to be running on multiple servers.
 
+## Web distributions
+Web builds of discord.js that are fully capable of running in browsers are available [here](https://github.com/hydrabolt/discord.js/tree/webpack).
+These are built by [Webpack 2](https://webpack.js.org/). The API is identical, but rather than using `require('discord.js')`,
+the entire `Discord` object is available as a global (on the `window` object). Any voice-related functionality is unavailable in these builds.
+
 ## Guides
 * [LuckyEvie's general guide](https://eslachance.gitbooks.io/discord-js-bot-guide/content/)
 * [York's v9 upgrade guide](https://yorkaargh.wordpress.com/2016/09/03/updating-discord-js-bots/)
