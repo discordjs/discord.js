@@ -43,7 +43,7 @@ exports.DefaultOptions = {
    * @typedef {Object} WebsocketOptions
    * @property {number} [large_threshold=250] Number of members in a guild to be considered large
    * @property {boolean} [compress=true] Whether to compress data sent on the connection.
-   * Defaults to `false` for browsers
+   * Defaults to `false` for browsers.
    */
   ws: {
     large_threshold: 250,
