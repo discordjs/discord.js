@@ -8,7 +8,7 @@
     "docs": "node docs/generator",
     "test-docs": "node docs/generator test",
     "lint": "eslint src",
-    "web-dist": "npm install && ./node_modules/parallel-webpack/bin/run.js"
+    "web-dist": "npm install && node ./node_modules/parallel-webpack/bin/run.js"
   },
   "repository": {
     "type": "git",
@@ -45,7 +45,7 @@
     "parallel-webpack": "^1.5.0",
     "uglify-js": "github:mishoo/UglifyJS2#harmony",
     "utf-8-validate": "^1.2.1",
-    "webpack": "^1.13.3",
+    "webpack": "2.1.0-beta.27",
     "zlibjs": "github:imaya/zlib.js"
   },
   "engines": {
