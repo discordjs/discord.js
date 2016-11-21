@@ -66,7 +66,7 @@ cd out
 git add .
 git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
-git commit -m "Docs build: ${SHA}"
+git commit -m "Docs build: ${SHA}" || true
 git push $SSH_REPO $TARGET_BRANCH
 
 # Clean up...
@@ -86,5 +86,5 @@ cd out
 git add .
 git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
-git commit -m "Webpack build: ${SHA}"
+git commit -m "Webpack build: ${SHA}" || true
 git push $SSH_REPO $TARGET_BRANCH
