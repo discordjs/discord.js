@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/hydrabolt/discord.js#readme",
   "dependencies": {
-    "superagent": "^2.3.0",
+    "superagent": "^3.0.0",
     "tweetnacl": "^0.14.3",
     "ws": "^1.1.1"
   },
