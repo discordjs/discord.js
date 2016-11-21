@@ -12,3 +12,10 @@ env:
   global:
     - ENCRYPTION_LABEL: "af862fa96d3e"
     - COMMIT_AUTHOR_EMAIL: "amishshah.2k@gmail.com"
+    - CXX=g++-4.9
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.9
