@@ -42,11 +42,12 @@ exports.DefaultOptions = {
    * Websocket options. These are left as snake_case to match the API.
    * @typedef {Object} WebsocketOptions
    * @property {number} [large_threshold=250] Number of members in a guild to be considered large
-   * @property {boolean} [compress=true] Whether to compress data sent on the connection
+   * @property {boolean} [compress=true] Whether to compress data sent on the connection.
+   * Defaults to `false` for browsers
    */
   ws: {
     large_threshold: 250,
-    compress: true,
+    compress: typeof window === 'undefined',
     properties: {
       $os: process ? process.platform : 'discord.js',
       $browser: 'discord.js',
