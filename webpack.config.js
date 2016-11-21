@@ -22,6 +22,9 @@ const createConfig = (options) => {
       path: __dirname,
       filename,
     },
+    resolve: {
+      descriptionFiles: ['package.json'],
+    },
     module: {
       rules: [
         { test: /\.json$/, loader: 'json-loader' },
@@ -29,8 +32,8 @@ const createConfig = (options) => {
       ],
     },
     externals: {
-      opusscript: { commonjs: 'opusscript' },
       'node-opus': { commonjs: 'node-opus' },
+      opusscript: { commonjs: 'opusscript' },
       ws: { commonjs: 'ws' },
     },
     node: {
