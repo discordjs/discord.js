@@ -31,6 +31,7 @@ const createConfig = (options) => {
     externals: {
       opusscript: { commonjs: 'opusscript' },
       'node-opus': { commonjs: 'node-opus' },
+      ws: { commonjs: 'ws' },
     },
     node: {
       fs: 'empty',
