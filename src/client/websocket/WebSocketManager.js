@@ -129,9 +129,7 @@ class WebSocketManager extends EventEmitter {
     const item = this._queue[0];
     if (this.ws.readyState === WebSocket.OPEN && item) {
       if (this._remaining === 0) {
-        this.client.setTimeout(() => {
-          this.doQueue();
-        }, 1000);
+        this.client.setTimeout(this.doQueue.bind(this), 1000);
         return;
       }
       this._remaining--;
@@ -214,21 +212,42 @@ class WebSocketManager extends EventEmitter {
    * @returns {boolean}
    */
   eventMessage(event) {
-    let packet = event.data;
-    try {
-      if (typeof packet !== 'string') {
-        if (packet instanceof ArrayBuffer) packet = convertArrayBuffer(packet);
-        packet = inflate(packet).toString();
-      }
-      packet = JSON.parse(packet);
-    } catch (e) {
-      return this.eventError(new Error(Constants.Errors.BAD_WS_MESSAGE));
+    const data = this.tryParseEventData(event.data);
+    if (data === null) {
+      this.eventError(new Error(Constants.Errors.BAD_WS_MESSAGE));
+      return false;
     }
 
-    this.client.emit('raw', packet);
+    this.client.emit('raw', data);
 
-    if (packet.op === Constants.OPCodes.HELLO) this.client.manager.setupKeepAlive(packet.d.heartbeat_interval);
-    return this.packetManager.handle(packet);
+    if (data.op === Constants.OPCodes.HELLO) this.client.manager.setupKeepAlive(data.d.heartbeat_interval);
+    return this.packetManager.handle(data);
+  }
+
+  /**
+   * Parses the raw data from a websocket event, inflating it if necessary
+   * @param {*} data Event data
+   * @returns {Object}
+   */
+  parseEventData(data) {
+    if (typeof data !== 'string') {
+      if (data instanceof ArrayBuffer) data = convertArrayBuffer(data);
+      data = inflate(data).toString();
+    }
+    return JSON.parse(data);
+  }
+
+  /**
+   * Tries to call `parseEventData()` and return its result, or returns `null` upon thrown errors.
+   * @param {*} data Event data
+   * @returns {?Object}
+   */
+  tryParseEventData(data) {
+    try {
+      return this.parseEventData(data);
+    } catch (err) {
+      return null;
+    }
   }
 
   /**
