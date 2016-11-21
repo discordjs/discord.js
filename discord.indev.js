@@ -1410,7 +1410,7 @@
 		},
 		"homepage": "https://github.com/hydrabolt/discord.js#readme",
 		"dependencies": {
-			"superagent": "^2.3.0",
+			"superagent": "^3.0.0",
 			"tweetnacl": "^0.14.3",
 			"ws": "^1.1.1"
 		},
@@ -6675,7 +6675,7 @@
 	}
 
 	var Emitter = __webpack_require__(41);
-	var requestBase = __webpack_require__(42);
+	var RequestBase = __webpack_require__(42);
 	var isObject = __webpack_require__(43);
 
 	/**
@@ -7149,9 +7149,16 @@
 	      err.parse = true;
 	      err.original = e;
 	      // issue #675: return the raw response if the response parsing fails
-	      err.rawResponse = self.xhr && self.xhr.responseText ? self.xhr.responseText : null;
-	      // issue #876: return the http status code if the response parsing fails
-	      err.statusCode = self.xhr && self.xhr.status ? self.xhr.status : null;
+	      if (self.xhr) {
+	        // ie9 doesn't have 'response' property
+	        err.rawResponse = typeof self.xhr.responseType == 'undefined' ? self.xhr.responseText : self.xhr.response;
+	        // issue #876: return the http status code if the response parsing fails
+	        err.statusCode = self.xhr.status ? self.xhr.status : null;
+	      } else {
+	        err.rawResponse = null;
+	        err.statusCode = null;
+	      }
+	      
 	      return self.callback(err);
 	    }
 
@@ -7179,13 +7186,11 @@
 	}
 
 	/**
-	 * Mixin `Emitter` and `requestBase`.
+	 * Mixin `Emitter` and `RequestBase`.
 	 */
 
 	Emitter(Request.prototype);
-	for (var key in requestBase) {
-	  Request.prototype[key] = requestBase[key];
-	}
+	RequestBase(Request.prototype);
 
 	/**
 	 * Set Content-Type to `type`, mapping values from `request.types`.
@@ -7312,7 +7317,7 @@
 
 	/**
 	 * Queue the given `file` as an attachment to the specified `field`,
-	 * with optional `filename`.
+	 * with optional `options` (or filename).
 	 *
 	 * ``` js
 	 * request.post('/upload')
@@ -7322,13 +7327,17 @@
 	 *
 	 * @param {String} field
 	 * @param {Blob|File} file
-	 * @param {String} filename
+	 * @param {String|Object} options
 	 * @return {Request} for chaining
 	 * @api public
 	 */
 
-	Request.prototype.attach = function(field, file, filename){
-	  this._getFormData().append(field, file, filename || file.name);
+	Request.prototype.attach = function(field, file, options){
+	  if (this._data) {
+	    throw Error("superagent can't mix .send() and .attach()");
+	  }
+
+	  this._getFormData().append(field, file, options || file.name);
 	  return this;
 	};
 
@@ -7351,6 +7360,11 @@
 	Request.prototype.callback = function(err, res){
 	  var fn = this._callback;
 	  this.clearTimeout();
+
+	  if (err) {
+	    this.emit('error', err);
+	  }
+
 	  fn(err, res);
 	};
 
@@ -7369,6 +7383,17 @@
 	  err.url = this.url;
 
 	  this.callback(err);
+	};
+
+	// This only warns, because the request is still likely to work
+	Request.prototype.buffer = Request.prototype.ca = Request.prototype.agent = function(){
+	  console.warn("This is not supported in browser version of superagent");
+	  return this;
+	};
+
+	// This throws, because it can't send/receive data as expected
+	Request.prototype.pipe = Request.prototype.write = function(){
+	  throw Error("Streaming is not supported in browser version of superagent");
 	};
 
 	/**
@@ -7398,6 +7423,19 @@
 	      : '?' + query;
 	  }
 	};
+
+	/**
+	 * Check if `obj` is a host object,
+	 * we don't want to serialize these :)
+	 *
+	 * @param {Object} obj
+	 * @return {Boolean}
+	 * @api private
+	 */
+	Request.prototype._isHost = function _isHost(obj) {
+	  // Native objects stringify to [object File], [object Blob], [object FormData], etc.
+	  return obj && 'object' === typeof obj && !Array.isArray(obj) && Object.prototype.toString.call(obj) !== '[object Object]';
+	}
 
 	/**
 	 * Initiate request, invoking callback `fn(res)`
@@ -7817,13 +7855,44 @@
 	var isObject = __webpack_require__(43);
 
 	/**
+	 * Expose `RequestBase`.
+	 */
+
+	module.exports = RequestBase;
+
+	/**
+	 * Initialize a new `RequestBase`.
+	 *
+	 * @api public
+	 */
+
+	function RequestBase(obj) {
+	  if (obj) return mixin(obj);
+	}
+
+	/**
+	 * Mixin the prototype properties.
+	 *
+	 * @param {Object} obj
+	 * @return {Object}
+	 * @api private
+	 */
+
+	function mixin(obj) {
+	  for (var key in RequestBase.prototype) {
+	    obj[key] = RequestBase.prototype[key];
+	  }
+	  return obj;
+	}
+
+	/**
 	 * Clear previous timeout.
 	 *
 	 * @return {Request} for chaining
 	 * @api public
 	 */
 
-	exports.clearTimeout = function _clearTimeout(){
+	RequestBase.prototype.clearTimeout = function _clearTimeout(){
 	  this._timeout = 0;
 	  clearTimeout(this._timer);
 	  return this;
@@ -7838,7 +7907,7 @@
 	 * @api public
 	 */
 
-	exports.parse = function parse(fn){
+	RequestBase.prototype.parse = function parse(fn){
 	  this._parser = fn;
 	  return this;
 	};
@@ -7852,7 +7921,7 @@
 	 * @api public
 	 */
 
-	exports.serialize = function serialize(fn){
+	RequestBase.prototype.serialize = function serialize(fn){
 	  this._serializer = fn;
 	  return this;
 	};
@@ -7865,7 +7934,7 @@
 	 * @api public
 	 */
 
-	exports.timeout = function timeout(ms){
+	RequestBase.prototype.timeout = function timeout(ms){
 	  this._timeout = ms;
 	  return this;
 	};
@@ -7878,7 +7947,7 @@
 	 * @return {Request}
 	 */
 
-	exports.then = function then(resolve, reject) {
+	RequestBase.prototype.then = function then(resolve, reject) {
 	  if (!this._fullfilledPromise) {
 	    var self = this;
 	    this._fullfilledPromise = new Promise(function(innerResolve, innerReject){
@@ -7890,7 +7959,7 @@
 	  return this._fullfilledPromise.then(resolve, reject);
 	}
 
-	exports.catch = function(cb) {
+	RequestBase.prototype.catch = function(cb) {
 	  return this.then(undefined, cb);
 	};
 
@@ -7898,7 +7967,7 @@
 	 * Allow for extension
 	 */
 
-	exports.use = function use(fn) {
+	RequestBase.prototype.use = function use(fn) {
 	  fn(this);
 	  return this;
 	}
@@ -7913,7 +7982,7 @@
 	 * @api public
 	 */
 
-	exports.get = function(field){
+	RequestBase.prototype.get = function(field){
 	  return this._header[field.toLowerCase()];
 	};
 
@@ -7929,7 +7998,7 @@
 	 * @deprecated
 	 */
 
-	exports.getHeader = exports.get;
+	RequestBase.prototype.getHeader = RequestBase.prototype.get;
 
 	/**
 	 * Set header `field` to `val`, or multiple fields with one object.
@@ -7952,7 +8021,7 @@
 	 * @api public
 	 */
 
-	exports.set = function(field, val){
+	RequestBase.prototype.set = function(field, val){
 	  if (isObject(field)) {
 	    for (var key in field) {
 	      this.set(key, field[key]);
@@ -7976,7 +8045,7 @@
 	 *
 	 * @param {String} field
 	 */
-	exports.unset = function(field){
+	RequestBase.prototype.unset = function(field){
 	  delete this._header[field.toLowerCase()];
 	  delete this.header[field];
 	  return this;
@@ -8001,7 +8070,7 @@
 	 * @return {Request} for chaining
 	 * @api public
 	 */
-	exports.field = function(name, val) {
+	RequestBase.prototype.field = function(name, val) {
 
 	  // name should be either a string or an object.
 	  if (null === name ||  undefined === name) {
@@ -8029,7 +8098,7 @@
 	 * @return {Request}
 	 * @api public
 	 */
-	exports.abort = function(){
+	RequestBase.prototype.abort = function(){
 	  if (this._aborted) {
 	    return this;
 	  }
@@ -8052,7 +8121,7 @@
 	 * @api public
 	 */
 
-	exports.withCredentials = function(){
+	RequestBase.prototype.withCredentials = function(){
 	  // This is browser-only functionality. Node side is no-op.
 	  this._withCredentials = true;
 	  return this;
@@ -8066,7 +8135,7 @@
 	 * @api public
 	 */
 
-	exports.redirects = function(n){
+	RequestBase.prototype.redirects = function(n){
 	  this._maxRedirects = n;
 	  return this;
 	};
@@ -8080,7 +8149,7 @@
 	 * @api public
 	 */
 
-	exports.toJSON = function(){
+	RequestBase.prototype.toJSON = function(){
 	  return {
 	    method: this.method,
 	    url: this.url,
@@ -8089,29 +8158,6 @@
 	  };
 	};
 
-	/**
-	 * Check if `obj` is a host object,
-	 * we don't want to serialize these :)
-	 *
-	 * TODO: future proof, move to compoent land
-	 *
-	 * @param {Object} obj
-	 * @return {Boolean}
-	 * @api private
-	 */
-
-	exports._isHost = function _isHost(obj) {
-	  var str = {}.toString.call(obj);
-
-	  switch (str) {
-	    case '[object File]':
-	    case '[object Blob]':
-	    case '[object FormData]':
-	      return true;
-	    default:
-	      return false;
-	  }
-	}
 
 	/**
 	 * Send `data` as the request body, defaulting the `.type()` to "json" when
@@ -8153,12 +8199,22 @@
 	 * @api public
 	 */
 
-	exports.send = function(data){
-	  var obj = isObject(data);
+	RequestBase.prototype.send = function(data){
+	  var isObj = isObject(data);
 	  var type = this._header['content-type'];
 
+	  if (isObj && !this._data) {
+	    if (Array.isArray(data)) {
+	      this._data = [];
+	    } else if (!this._isHost(data)) {
+	      this._data = {};
+	    }
+	  } else if (data && this._data && this._isHost(this._data)) {
+	    throw Error("Can't merge these send calls");
+	  }
+
 	  // merge
-	  if (obj && isObject(this._data)) {
+	  if (isObj && isObject(this._data)) {
 	    for (var key in data) {
 	      this._data[key] = data[key];
 	    }
@@ -8177,7 +8233,7 @@
 	    this._data = data;
 	  }
 
-	  if (!obj || this._isHost(data)) return this;
+	  if (!isObj || this._isHost(data)) return this;
 
 	  // default to json
 	  if (!type) this.type('json');
