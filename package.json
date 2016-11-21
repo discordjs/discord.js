@@ -52,6 +52,10 @@
     "node": ">=6.0.0"
   },
   "browser": {
+    "ws": false,
+    "opusscript": false,
+    "node-opus": false,
+    "tweet-nacl": false,
     "src/sharding/Shard.js": false,
     "src/sharding/ShardClientUtil.js": false,
     "src/sharding/ShardingManager.js": false,
