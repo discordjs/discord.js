@@ -28,12 +28,6 @@ const createConfig = (options) => {
         { test: /\.md$/, loader: 'ignore-loader' },
       ],
     },
-    externals: {
-      ws: { commonjs: 'ws' },
-      opusscript: { commonjs: 'opusscript' },
-      'node-opus': { commonjs: 'node-opus' },
-      'tweet-nacl': { commonjs: 'tweet-nacl' },
-    },
     node: {
       fs: 'empty',
       dns: 'mock',
