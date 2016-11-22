@@ -8065,7 +8065,7 @@ module.exports = {
 		"uglify-js": "github:mishoo/UglifyJS2#harmony",
 		"utf-8-validate": "^1.2.1",
 		"webpack": "2.1.0-beta.27",
-		"zlibjs": "github:imaya/zlib.js"
+		"zlibjs": "^0.2.0"
 	},
 	"engines": {
 		"node": ">=6.0.0"
