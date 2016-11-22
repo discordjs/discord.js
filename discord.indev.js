@@ -8023,9 +8023,9 @@ module.exports = {
 	"description": "A powerful library for interacting with the Discord API",
 	"main": "./src/index",
 	"scripts": {
-		"test": "eslint src && node docs/generator test",
-		"docs": "node docs/generator",
-		"test-docs": "node docs/generator test",
+		"test": "eslint src && docgen --source src --custom docs",
+		"docs": "docgen --source src --custom docs --output docs/docs.json",
+		"test-docs": "docgen --source src --custom docs",
 		"lint": "eslint src",
 		"web-dist": "node ./node_modules/parallel-webpack/bin/run.js"
 	},
@@ -8058,6 +8058,7 @@ module.exports = {
 	},
 	"devDependencies": {
 		"bufferutil": "^1.2.1",
+		"discord.js-docgen": "github:Gawdl3y/discord.js-docgen",
 		"eslint": "^3.10.0",
 		"jsdoc-to-markdown": "^2.0.0",
 		"json-loader": "^0.5.4",
