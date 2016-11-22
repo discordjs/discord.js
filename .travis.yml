@@ -7,7 +7,7 @@ cache:
 install: npm install
 script:
   - npm run test
-  - bash ./docs/deploy/deploy.sh
+  - bash ./deploy/deploy.sh
 env:
   global:
     - ENCRYPTION_LABEL: "af862fa96d3e"
