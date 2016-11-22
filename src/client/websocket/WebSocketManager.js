@@ -79,16 +79,11 @@ class WebSocketManager extends EventEmitter {
     this.normalReady = false;
     if (this.status !== Constants.Status.RECONNECTING) this.status = Constants.Status.CONNECTING;
     this.ws = new WebSocket(gateway);
-    if (browser) {
-      this.ws.binaryType = 'arraybuffer';
-      this.ws.onopen = () => this.eventOpen();
-      this.ws.onerror = (e) => this.eventError(e);
-    } else {
-      this.ws.on('error', this.eventError.bind(this));
-      this.ws.on('open', this.eventOpen.bind(this));
-    }
+    if (browser) this.ws.binaryType = 'arraybuffer';
+    this.ws.onopen = () => this.eventOpen();
     this.ws.onclose = (d) => this.eventClose(d);
     this.ws.onmessage = (e) => this.eventMessage(e);
+    this.ws.onerror = (e) => this.eventError(e);
     this._queue = [];
     this._remaining = 3;
   }
@@ -234,9 +229,7 @@ class WebSocketManager extends EventEmitter {
    * @returns {Object}
    */
   parseEventData(data) {
-    if (typeof data !== 'string') {
-      data = pako.inflate(data, { to: 'string' });
-    }
+    if (data instanceof ArrayBuffer) data = pako.inflate(data, { to: 'string' });
     return JSON.parse(data);
   }
 
@@ -264,7 +257,7 @@ class WebSocketManager extends EventEmitter {
      * @param {Error} error The encountered error
      */
     if (this.client.listenerCount('error') > 0) this.client.emit('error', err);
-    this.ws.close();
+    this.tryReconnect();
   }
 
   _emitReady(normal = true) {
@@ -308,6 +301,7 @@ class WebSocketManager extends EventEmitter {
    * Tries to reconnect the client, changing the status to Constants.Status.RECONNECTING.
    */
   tryReconnect() {
+    if (this.status === Constants.Status.RECONNECTING) return;
     this.status = Constants.Status.RECONNECTING;
     this.ws.close();
     this.packetManager.handleQueue();
