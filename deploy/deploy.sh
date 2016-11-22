@@ -5,7 +5,7 @@ set -e
 
 function build {
   # Build docs
-  node docs/generator
+  npm run docs
 
   # Build the webpack
   VERSIONED=false npm run web-dist
