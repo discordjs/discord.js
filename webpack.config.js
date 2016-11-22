@@ -35,6 +35,8 @@ const createConfig = (options) => {
       child_process: 'empty',
       dgram: 'empty',
       zlib: 'empty',
+      net: 'empty',
+      repl: 'empty',
       __dirname: true,
     },
     plugins,
