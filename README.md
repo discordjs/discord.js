@@ -59,10 +59,10 @@ the entire `Discord` object is available as a global (on the `window` object).
 The ShardingManager and any voice-related functionality is unavailable in these builds.
 
 ## Links
-* [Website](http://discord.js.org/)
+* [Website](https://discord.js.org/)
 * [Discord.js server](https://discord.gg/bRCvFy9)
 * [Discord API server](https://discord.gg/rV4BwdK)
-* [Documentation](http://discord.js.org/#/docs)
+* [Documentation](https://discord.js.org/#/docs)
 * [Legacy (v8) documentation](http://discordjs.readthedocs.io/en/8.2.0/docs_client.html)
 * [Examples](https://github.com/hydrabolt/discord.js/tree/master/docs/custom/examples)
 * [GitHub](https://github.com/hydrabolt/discord.js)
@@ -71,7 +71,7 @@ The ShardingManager and any voice-related functionality is unavailable in these 
 
 ## Contributing
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation](http://discord.js.org/#/docs).  
+[documentation](https://discord.js.org/#/docs).  
 See [the contributing guide](CONTRIBUTING.md) if you'd like to submit a PR.
 
 ## Help
