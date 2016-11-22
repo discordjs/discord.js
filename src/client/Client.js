@@ -37,7 +37,7 @@ class Client extends EventEmitter {
 
     /**
      * A repl debugger running on a net socket server.
-     * You should not run this in production, as it can be resource-intensive.
+     * <warn>You should not run this in production, as it can be resource-intensive.</warn>
      * @type {Manhole}
      */
     this.manhole = new Manhole(this);
