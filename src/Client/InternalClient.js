@@ -976,8 +976,14 @@ export default class InternalClient {
 
 	// def banMember
 	banMember(user, server, length = 1) {
-		user = this.resolver.resolveUser(user);
+		let resolvedUser = this.resolver.resolveUser(user);
 		server = this.resolver.resolveServer(server);
+
+		if (resolvedUser === null && typeof user === "string") {
+			user = {id: user};
+		} else {
+			user = resolvedUser;
+		}
 
 		return this.apiRequest(
 			"put",
@@ -1442,6 +1448,8 @@ export default class InternalClient {
 
 		if (data.username) {
 			options.username = data.username;
+		} else {
+			options.username = this.user.username;
 		}
 
 		if (data.avatar) {
