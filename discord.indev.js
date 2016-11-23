@@ -8023,8 +8023,8 @@ module.exports = {
 	"description": "A powerful library for interacting with the Discord API",
 	"main": "./src/index",
 	"scripts": {
-		"test": "eslint src && docgen --source src --custom docs",
-		"docs": "docgen --source src --custom docs --output docs/docs.json",
+		"test": "eslint src && docgen --source src --custom docs/index.yml",
+		"docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
 		"test-docs": "docgen --source src --custom docs",
 		"lint": "eslint src",
 		"web-dist": "node ./node_modules/parallel-webpack/bin/run.js"
