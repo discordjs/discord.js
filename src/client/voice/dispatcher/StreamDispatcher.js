@@ -10,9 +10,7 @@ nonce.fill(0);
  * // obtained using:
  * voiceChannel.join().then(connection => {
  *   // you can play a file or a stream here:
- *   connection.playFile('./file.mp3').then(dispatcher => {
- *
- *   });
+ *   const dispatcher = connection.playFile('./file.mp3');
  * });
  * ```
  * @extends {EventEmitter}
