@@ -305,7 +305,7 @@ class Collection extends Map {
 
   /**
    * Combines this collection with others into a new collection. None of the source collections are modified.
-   * @param {Collection} collections Collections to merge (infinite/rest argument, not an array)
+   * @param {...Collection} collections Collections to merge
    * @returns {Collection}
    * @example const newColl = someColl.concat(someOtherColl, anotherColl, ohBoyAColl);
    */
