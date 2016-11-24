@@ -29,9 +29,10 @@
   },
   "homepage": "https://github.com/hydrabolt/discord.js#readme",
   "dependencies": {
+    "pako": "^1.0.3",
     "superagent": "^3.0.0",
     "tweetnacl": "^0.14.3",
-    "ws": "^1.1.1"
+    "uws": "^0.11.0"
   },
   "peerDependencies": {
     "node-opus": "^0.2.0",
@@ -46,14 +47,13 @@
     "parallel-webpack": "^1.5.0",
     "uglify-js": "github:mishoo/UglifyJS2#harmony",
     "utf-8-validate": "^1.2.1",
-    "webpack": "2.1.0-beta.27",
-    "zlibjs": "^0.2.0"
+    "webpack": "2.1.0-beta.27"
   },
   "engines": {
     "node": ">=6.0.0"
   },
   "browser": {
-    "ws": false,
+    "uws": false,
     "opusscript": false,
     "node-opus": false,
     "tweet-nacl": false,

@@ -1,4 +1,4 @@
-const WebSocket = require('ws');
+const WebSocket = require('uws');
 const Constants = require('../../util/Constants');
 const SecretKey = require('./util/SecretKey');
 const EventEmitter = require('events').EventEmitter;
