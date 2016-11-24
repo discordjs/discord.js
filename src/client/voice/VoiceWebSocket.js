@@ -72,10 +72,15 @@ class VoiceWebSocket extends EventEmitter {
      * @type {WebSocket}
      */
     this.ws = new WebSocket(`wss://${this.voiceConnection.authentication.endpoint}`);
-    this.ws.onopen = this.onOpen.bind(this);
+    if (typeof window !== 'undefined') {
+      this.ws.onopen = this.onOpen.bind(this);
+      this.ws.onerror = this.onError.bind(this);
+    } else {
+      this.ws.on('open', this.onOpen.bind(this));
+      this.ws.on('error', this.onError.bind(this));
+    }
     this.ws.onmessage = this.onMessage.bind(this);
     this.ws.onclose = this.onClose.bind(this);
-    this.ws.onerror = this.onError.bind(this);
   }
 
   /**
