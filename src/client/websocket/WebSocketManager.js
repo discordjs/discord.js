@@ -79,11 +79,16 @@ class WebSocketManager extends EventEmitter {
     this.normalReady = false;
     if (this.status !== Constants.Status.RECONNECTING) this.status = Constants.Status.CONNECTING;
     this.ws = new WebSocket(gateway);
-    if (browser) this.ws.binaryType = 'arraybuffer';
-    this.ws.onopen = () => this.eventOpen();
+    if (browser) {
+      this.ws.binaryType = 'arraybuffer';
+      this.ws.on('open', this.eventOpen.bind(this));
+      this.ws.on('error', this.eventError.bind(this));
+    } else {
+      this.ws.onopen = () => this.eventOpen();
+      this.ws.onerror = (e) => this.eventError(e);
+    }
     this.ws.onclose = (d) => this.eventClose(d);
     this.ws.onmessage = (e) => this.eventMessage(e);
-    this.ws.onerror = (e) => this.eventError(e);
     this._queue = [];
     this._remaining = 3;
   }
