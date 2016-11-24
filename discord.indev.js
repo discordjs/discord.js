@@ -8188,7 +8188,7 @@ module.exports = {
 	},
 	"devDependencies": {
 		"bufferutil": "^1.2.1",
-		"discord.js-docgen": "github:Gawdl3y/discord.js-docgen",
+		"discord.js-docgen": "github:hydrabolt/discord.js-docgen",
 		"eslint": "^3.10.0",
 		"jsdoc-to-markdown": "^2.0.0",
 		"json-loader": "^0.5.4",
