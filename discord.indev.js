@@ -90,7 +90,7 @@
  * @property {boolean} [sync=false] Whether to periodically sync guilds (for userbots)
  * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
  * corresponding websocket events
- * @property {string[]} [disabledEvents] An array of disabled websocket events. Events in this array will not be
+ * @property {WSEventType[]} [disabledEvents] An array of disabled websocket events. Events in this array will not be
  * processed. Disabling useless events such as 'TYPING_START' can result in significant performance increases on
  * large-scale bots.
  * @property {WebsocketOptions} [ws] Options for the websocket
@@ -292,6 +292,49 @@ exports.Events = {
   DEBUG: 'debug',
 };
 
+/**
+ * The type of a websocket message event, e.g. `MESSAGE_CREATE`.
+ * These can be accessed `Discord.Constants.WSEvents['MESSAGE_CREATE']`. Alternatively, you could just provide
+ * the string `MESSAGE_CREATE`.
+ *
+ * Here are the available events:
+ * ```js
+ * ["READY",
+ * "GUILD_SYNC",
+ * "GUILD_CREATE",
+ * "GUILD_DELETE",
+ * "GUILD_UPDATE",
+ * "GUILD_MEMBER_ADD",
+ * "GUILD_MEMBER_REMOVE",
+ * "GUILD_MEMBER_UPDATE",
+ * "GUILD_MEMBERS_CHUNK",
+ * "GUILD_ROLE_CREATE",
+ * "GUILD_ROLE_DELETE",
+ * "GUILD_ROLE_UPDATE",
+ * "GUILD_BAN_ADD",
+ * "GUILD_BAN_REMOVE",
+ * "CHANNEL_CREATE",
+ * "CHANNEL_DELETE",
+ * "CHANNEL_UPDATE",
+ * "CHANNEL_PINS_UPDATE",
+ * "MESSAGE_CREATE",
+ * "MESSAGE_DELETE",
+ * "MESSAGE_UPDATE",
+ * "MESSAGE_DELETE_BULK",
+ * "MESSAGE_REACTION_ADD",
+ * "MESSAGE_REACTION_REMOVE",
+ * "MESSAGE_REACTION_REMOVE_ALL",
+ * "USER_UPDATE",
+ * "USER_NOTE_UPDATE",
+ * "PRESENCE_UPDATE",
+ * "VOICE_STATE_UPDATE",
+ * "TYPING_START",
+ * "VOICE_SERVER_UPDATE",
+ * "RELATIONSHIP_ADD",
+ * "RELATIONSHIP_REMOVE"]
+ * ```
+ * @typedef {string} WSEventType
+ */
 exports.WSEvents = {
   READY: 'READY',
   GUILD_SYNC: 'GUILD_SYNC',
@@ -323,8 +366,6 @@ exports.WSEvents = {
   PRESENCE_UPDATE: 'PRESENCE_UPDATE',
   VOICE_STATE_UPDATE: 'VOICE_STATE_UPDATE',
   TYPING_START: 'TYPING_START',
-  FRIEND_ADD: 'RELATIONSHIP_ADD',
-  FRIEND_REMOVE: 'RELATIONSHIP_REMOVE',
   VOICE_SERVER_UPDATE: 'VOICE_SERVER_UPDATE',
   RELATIONSHIP_ADD: 'RELATIONSHIP_ADD',
   RELATIONSHIP_REMOVE: 'RELATIONSHIP_REMOVE',
