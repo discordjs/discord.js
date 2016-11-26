@@ -8180,7 +8180,7 @@ module.exports = {
 		"pako": "^1.0.3",
 		"superagent": "^3.0.0",
 		"tweetnacl": "^0.14.3",
-		"uws": "^0.11.0"
+		"uws": "^0.11.1"
 	},
 	"peerDependencies": {
 		"node-opus": "^0.2.0",
@@ -20607,16 +20607,11 @@ class WebSocketManager extends EventEmitter {
     this.normalReady = false;
     if (this.status !== Constants.Status.RECONNECTING) this.status = Constants.Status.CONNECTING;
     this.ws = new WebSocket(gateway);
-    if (browser) {
-      this.ws.binaryType = 'arraybuffer';
-      this.ws.onopen = () => this.eventOpen();
-      this.ws.onerror = (e) => this.eventError(e);
-    } else {
-      this.ws.on('open', this.eventOpen.bind(this));
-      this.ws.on('error', this.eventError.bind(this));
-    }
-    this.ws.onclose = (d) => this.eventClose(d);
-    this.ws.onmessage = (e) => this.eventMessage(e);
+    if (browser) this.ws.binaryType = 'arraybuffer';
+    this.ws.onopen = this.eventOpen.bind(this);
+    this.ws.onmessage = this.eventMessage.bind(this);
+    this.ws.onclose = this.eventClose.bind(this);
+    this.ws.onerror = this.eventError.bind(this);
     this._queue = [];
     this._remaining = 3;
   }
