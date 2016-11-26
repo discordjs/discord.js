@@ -3155,7 +3155,9 @@ class Message {
    * @readonly
    */
   get edits() {
-    return this._edits.slice().unshift(this);
+    const copy = this._edits.slice();
+    copy.unshift(this);
+    return copy;
   }
 
   /**
