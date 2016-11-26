@@ -52,7 +52,7 @@ The ShardingManager and any voice-related functionality is unavailable in these 
 * [Discord API server](https://discord.gg/rV4BwdK)
 * [Documentation](https://discord.js.org/#/docs)
 * [Legacy (v8) documentation](http://discordjs.readthedocs.io/en/8.2.0/docs_client.html)
-* [Examples](https://github.com/hydrabolt/discord.js/tree/master/docs/custom/examples)
+* [Examples](https://github.com/hydrabolt/discord.js/tree/master/docs/examples)
 * [GitHub](https://github.com/hydrabolt/discord.js)
 * [NPM](https://www.npmjs.com/package/discord.js)
 * [Related libraries](https://discordapi.com/unofficial/libs.html)
