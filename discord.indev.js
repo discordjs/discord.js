@@ -6047,7 +6047,7 @@ class Guild {
     const member = new GuildMember(this, guildUser);
     this.members.set(member.id, member);
 
-    if (this._rawVoiceStates && this._rawVoiceStates.get(member.user.id)) {
+    if (this._rawVoiceStates && this._rawVoiceStates.has(member.user.id)) {
       const voiceState = this._rawVoiceStates.get(member.user.id);
       member.serverMute = voiceState.mute;
       member.serverDeaf = voiceState.deaf;
