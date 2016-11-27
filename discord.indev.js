@@ -61,7 +61,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 153);
+/******/ 	return __webpack_require__(__webpack_require__.s = 154);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -2169,7 +2169,7 @@ function applyProp(structure, prop) {
 const Channel = __webpack_require__(9);
 const Role = __webpack_require__(8);
 const PermissionOverwrites = __webpack_require__(40);
-const EvaluatedPermissions = __webpack_require__(16);
+const EvaluatedPermissions = __webpack_require__(17);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const arraysEqual = __webpack_require__(26);
@@ -2466,7 +2466,7 @@ module.exports = GuildChannel;
 
 const TextBasedChannel = __webpack_require__(11);
 const Role = __webpack_require__(8);
-const EvaluatedPermissions = __webpack_require__(16);
+const EvaluatedPermissions = __webpack_require__(17);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(7).Presence;
@@ -3447,1161 +3447,6 @@ module.exports = function escapeMarkdown(text, onlyCodeBlock = false, onlyInline
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-const Constants = __webpack_require__(0);
-
-/**
- * The final evaluated permissions for a member in a channel
- */
-class EvaluatedPermissions {
-  constructor(member, raw) {
-    /**
-     * The member this permissions refer to
-     * @type {GuildMember}
-     */
-    this.member = member;
-
-    /**
-     * A number representing the packed permissions
-     * @type {number}
-     */
-    this.raw = raw;
-  }
-
-  /**
-   * Get an object mapping permission name, e.g. `READ_MESSAGES` to a boolean - whether the user
-   * can perform this or not.
-   * @returns {Object<string, boolean>}
-   */
-  serialize() {
-    const serializedPermissions = {};
-    for (const permissionName in Constants.PermissionFlags) {
-      serializedPermissions[permissionName] = this.hasPermission(permissionName);
-    }
-    return serializedPermissions;
-  }
-
-  /**
-   * Checks whether the user has a certain permission, e.g. `READ_MESSAGES`.
-   * @param {PermissionResolvable} permission The permission to check for
-   * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permission
-   * @returns {boolean}
-   */
-  hasPermission(permission, explicit = false) {
-    permission = this.member.client.resolver.resolvePermission(permission);
-    if (!explicit && (this.raw & Constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
-    return (this.raw & permission) > 0;
-  }
-
-  /**
-   * Checks whether the user has all specified permissions.
-   * @param {PermissionResolvable[]} permissions The permissions to check for
-   * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permissions
-   * @returns {boolean}
-   */
-  hasPermissions(permissions, explicit = false) {
-    return permissions.every(p => this.hasPermission(p, explicit));
-  }
-
-  /**
-   * Checks whether the user has all specified permissions, and lists any missing permissions.
-   * @param {PermissionResolvable[]} permissions The permissions to check for
-   * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permissions
-   * @returns {PermissionResolvable[]}
-   */
-  missingPermissions(permissions, explicit = false) {
-    return permissions.filter(p => !this.hasPermission(p, explicit));
-  }
-}
-
-module.exports = EvaluatedPermissions;
-
-
-/***/ },
-/* 17 */
-/***/ function(module, exports, __webpack_require__) {
-
-const User = __webpack_require__(6);
-const Role = __webpack_require__(8);
-const Emoji = __webpack_require__(10);
-const Presence = __webpack_require__(7).Presence;
-const GuildMember = __webpack_require__(13);
-const Constants = __webpack_require__(0);
-const Collection = __webpack_require__(3);
-const cloneObject = __webpack_require__(4);
-const arraysEqual = __webpack_require__(26);
-
-/**
- * Represents a guild (or a server) on Discord.
- * <info>It's recommended to see if a guild is available before performing operations or reading data from it. You can
- * check this with `guild.available`.</info>
- */
-class Guild {
-  constructor(client, data) {
-    /**
-     * The Client that created the instance of the the Guild.
-     * @type {Client}
-     */
-    this.client = client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
-
-    /**
-     * A collection of members that are in this guild. The key is the member's ID, the value is the member.
-     * @type {Collection<string, GuildMember>}
-     */
-    this.members = new Collection();
-
-    /**
-     * A collection of channels that are in this guild. The key is the channel's ID, the value is the channel.
-     * @type {Collection<string, GuildChannel>}
-     */
-    this.channels = new Collection();
-
-    /**
-     * A collection of roles that are in this guild. The key is the role's ID, the value is the role.
-     * @type {Collection<string, Role>}
-     */
-    this.roles = new Collection();
-
-    if (!data) return;
-    if (data.unavailable) {
-      /**
-       * Whether the guild is available to access. If it is not available, it indicates a server outage.
-       * @type {boolean}
-       */
-      this.available = false;
-
-      /**
-       * The Unique ID of the Guild, useful for comparisons.
-       * @type {string}
-       */
-      this.id = data.id;
-    } else {
-      this.available = true;
-      this.setup(data);
-    }
-  }
-
-  /**
-   * Sets up the Guild
-   * @param {*} data The raw data of the guild
-   * @private
-   */
-  setup(data) {
-    /**
-     * The name of the guild
-     * @type {string}
-     */
-    this.name = data.name;
-
-    /**
-     * The hash of the guild icon, or null if there is no icon.
-     * @type {?string}
-     */
-    this.icon = data.icon;
-
-    /**
-     * The hash of the guild splash image, or null if no splash (VIP only)
-     * @type {?string}
-     */
-    this.splash = data.splash;
-
-    /**
-     * The region the guild is located in
-     * @type {string}
-     */
-    this.region = data.region;
-
-    /**
-     * The full amount of members in this guild as of `READY`
-     * @type {number}
-     */
-    this.memberCount = data.member_count || this.memberCount;
-
-    /**
-     * Whether the guild is "large" (has more than 250 members)
-     * @type {boolean}
-     */
-    this.large = data.large || this.large;
-
-    /**
-     * A collection of presences in this guild
-     * @type {Collection<string, Presence>}
-     */
-    this.presences = new Collection();
-
-    /**
-     * An array of guild features.
-     * @type {Object[]}
-     */
-    this.features = data.features;
-
-    /**
-     * A collection of emojis that are in this guild. The key is the emoji's ID, the value is the emoji.
-     * @type {Collection<string, Emoji>}
-     */
-    this.emojis = new Collection();
-    for (const emoji of data.emojis) this.emojis.set(emoji.id, new Emoji(this, emoji));
-
-    /**
-     * The time in seconds before a user is counted as "away from keyboard".
-     * @type {?number}
-     */
-    this.afkTimeout = data.afk_timeout;
-
-    /**
-     * The ID of the voice channel where AFK members are moved.
-     * @type {?string}
-     */
-    this.afkChannelID = data.afk_channel_id;
-
-    /**
-     * Whether embedded images are enabled on this guild.
-     * @type {boolean}
-     */
-    this.embedEnabled = data.embed_enabled;
-
-    /**
-     * The verification level of the guild.
-     * @type {number}
-     */
-    this.verificationLevel = data.verification_level;
-
-    /**
-     * The timestamp the client user joined the guild at
-     * @type {number}
-     */
-    this.joinedTimestamp = data.joined_at ? new Date(data.joined_at).getTime() : this.joinedTimestamp;
-
-    this.id = data.id;
-    this.available = !data.unavailable;
-    this.features = data.features || this.features || [];
-
-    if (data.members) {
-      this.members.clear();
-      for (const guildUser of data.members) this._addMember(guildUser, false);
-    }
-
-    if (data.owner_id) {
-      /**
-       * The user ID of this guild's owner.
-       * @type {string}
-       */
-      this.ownerID = data.owner_id;
-    }
-
-    if (data.channels) {
-      this.channels.clear();
-      for (const channel of data.channels) this.client.dataManager.newChannel(channel, this);
-    }
-
-    if (data.roles) {
-      this.roles.clear();
-      for (const role of data.roles) {
-        const newRole = new Role(this, role);
-        this.roles.set(newRole.id, newRole);
-      }
-    }
-
-    if (data.presences) {
-      for (const presence of data.presences) {
-        this._setPresence(presence.user.id, presence);
-      }
-    }
-
-    this._rawVoiceStates = new Collection();
-    if (data.voice_states) {
-      for (const voiceState of data.voice_states) {
-        this._rawVoiceStates.set(voiceState.user_id, voiceState);
-        const member = this.members.get(voiceState.user_id);
-        if (member) {
-          member.serverMute = voiceState.mute;
-          member.serverDeaf = voiceState.deaf;
-          member.selfMute = voiceState.self_mute;
-          member.selfDeaf = voiceState.self_deaf;
-          member.voiceSessionID = voiceState.session_id;
-          member.voiceChannelID = voiceState.channel_id;
-          this.channels.get(voiceState.channel_id).members.set(member.user.id, member);
-        }
-      }
-    }
-  }
-
-  /**
-   * The timestamp the guild was created at
-   * @type {number}
-   * @readonly
-   */
-  get createdTimestamp() {
-    return (this.id / 4194304) + 1420070400000;
-  }
-
-  /**
-   * The time the guild was created
-   * @type {Date}
-   * @readonly
-   */
-  get createdAt() {
-    return new Date(this.createdTimestamp);
-  }
-
-  /**
-   * The time the client user joined the guild
-   * @type {Date}
-   * @readonly
-   */
-  get joinedAt() {
-    return new Date(this.joinedTimestamp);
-  }
-
-  /**
-   * Gets the URL to this guild's icon (if it has one, otherwise it returns null)
-   * @type {?string}
-   * @readonly
-   */
-  get iconURL() {
-    if (!this.icon) return null;
-    return Constants.Endpoints.guildIcon(this.id, this.icon);
-  }
-
-  /**
-   * The owner of the guild
-   * @type {GuildMember}
-   * @readonly
-   */
-  get owner() {
-    return this.members.get(this.ownerID);
-  }
-
-  /**
-   * If the client is connected to any voice channel in this guild, this will be the relevant VoiceConnection.
-   * @type {?VoiceConnection}
-   * @readonly
-   */
-  get voiceConnection() {
-    if (this.client.browser) return null;
-    return this.client.voice.connections.get(this.id) || null;
-  }
-
-  /**
-   * The `#general` GuildChannel of the server.
-   * @type {GuildChannel}
-   * @readonly
-   */
-  get defaultChannel() {
-    return this.channels.get(this.id);
-  }
-
-  /**
-   * Returns the GuildMember form of a User object, if the user is present in the guild.
-   * @param {UserResolvable} user The user that you want to obtain the GuildMember of
-   * @returns {?GuildMember}
-   * @example
-   * // get the guild member of a user
-   * const member = guild.member(message.author);
-   */
-  member(user) {
-    return this.client.resolver.resolveGuildMember(this, user);
-  }
-
-  /**
-   * Fetch a collection of banned users in this guild.
-   * @returns {Promise<Collection<string, User>>}
-   */
-  fetchBans() {
-    return this.client.rest.methods.getGuildBans(this);
-  }
-
-  /**
-   * Fetch a collection of invites to this guild. Resolves with a collection mapping invites by their codes.
-   * @returns {Promise<Collection<string, Invite>>}
-   */
-  fetchInvites() {
-    return this.client.rest.methods.getGuildInvites(this);
-  }
-
-  /**
-   * Fetch all webhooks for the guild.
-   * @returns {Collection<Webhook>}
-   */
-  fetchWebhooks() {
-    return this.client.rest.methods.getGuildWebhooks(this);
-  }
-
-  /**
-   * Fetch a single guild member from a user.
-   * @param {UserResolvable} user The user to fetch the member for
-   * @returns {Promise<GuildMember>}
-   */
-  fetchMember(user) {
-    if (this._fetchWaiter) return Promise.reject(new Error('Already fetching guild members.'));
-    user = this.client.resolver.resolveUser(user);
-    if (!user) return Promise.reject(new Error('User is not cached. Use Client.fetchUser first.'));
-    if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
-    return this.client.rest.methods.getGuildMember(this, user);
-  }
-
-  /**
-   * Fetches all the members in the guild, even if they are offline. If the guild has less than 250 members,
-   * this should not be necessary.
-   * @param {string} [query=''] An optional query to provide when fetching members
-   * @returns {Promise<Guild>}
-   */
-  fetchMembers(query = '') {
-    return new Promise((resolve, reject) => {
-      if (this._fetchWaiter) throw new Error('Already fetching guild members in ${this.id}.');
-      if (this.memberCount === this.members.size) {
-        resolve(this);
-        return;
-      }
-      this._fetchWaiter = resolve;
-      this.client.ws.send({
-        op: Constants.OPCodes.REQUEST_GUILD_MEMBERS,
-        d: {
-          guild_id: this.id,
-          query,
-          limit: 0,
-        },
-      });
-      this._checkChunks();
-      this.client.setTimeout(() => reject(new Error('Members didn\'t arrive in time.')), 120 * 1000);
-    });
-  }
-
-  /**
-   * The data for editing a guild
-   * @typedef {Object} GuildEditData
-   * @property {string} [name] The name of the guild
-   * @property {string} [region] The region of the guild
-   * @property {number} [verificationLevel] The verification level of the guild
-   * @property {ChannelResolvable} [afkChannel] The AFK channel of the guild
-   * @property {number} [afkTimeout] The AFK timeout of the guild
-   * @property {Base64Resolvable} [icon] The icon of the guild
-   * @property {GuildMemberResolvable} [owner] The owner of the guild
-   * @property {Base64Resolvable} [splash] The splash screen of the guild
-   */
-
-  /**
-   * Updates the Guild with new information - e.g. a new name.
-   * @param {GuildEditData} data The data to update the guild with
-   * @returns {Promise<Guild>}
-   * @example
-   * // set the guild name and region
-   * guild.edit({
-   *  name: 'Discord Guild',
-   *  region: 'london',
-   * })
-   * .then(updated => console.log(`New guild name ${updated.name} in region ${updated.region}`))
-   * .catch(console.error);
-   */
-  edit(data) {
-    return this.client.rest.methods.updateGuild(this, data);
-  }
-
-  /**
-   * Edit the name of the guild.
-   * @param {string} name The new name of the guild
-   * @returns {Promise<Guild>}
-   * @example
-   * // edit the guild name
-   * guild.setName('Discord Guild')
-   *  .then(updated => console.log(`Updated guild name to ${guild.name}`))
-   *  .catch(console.error);
-   */
-  setName(name) {
-    return this.edit({ name });
-  }
-
-  /**
-   * Edit the region of the guild.
-   * @param {string} region The new region of the guild.
-   * @returns {Promise<Guild>}
-   * @example
-   * // edit the guild region
-   * guild.setRegion('london')
-   *  .then(updated => console.log(`Updated guild region to ${guild.region}`))
-   *  .catch(console.error);
-   */
-  setRegion(region) {
-    return this.edit({ region });
-  }
-
-  /**
-   * Edit the verification level of the guild.
-   * @param {number} verificationLevel The new verification level of the guild
-   * @returns {Promise<Guild>}
-   * @example
-   * // edit the guild verification level
-   * guild.setVerificationLevel(1)
-   *  .then(updated => console.log(`Updated guild verification level to ${guild.verificationLevel}`))
-   *  .catch(console.error);
-   */
-  setVerificationLevel(verificationLevel) {
-    return this.edit({ verificationLevel });
-  }
-
-  /**
-   * Edit the AFK channel of the guild.
-   * @param {ChannelResolvable} afkChannel The new AFK channel
-   * @returns {Promise<Guild>}
-   * @example
-   * // edit the guild AFK channel
-   * guild.setAFKChannel(channel)
-   *  .then(updated => console.log(`Updated guild AFK channel to ${guild.afkChannel}`))
-   *  .catch(console.error);
-   */
-  setAFKChannel(afkChannel) {
-    return this.edit({ afkChannel });
-  }
-
-  /**
-   * Edit the AFK timeout of the guild.
-   * @param {number} afkTimeout The time in seconds that a user must be idle to be considered AFK
-   * @returns {Promise<Guild>}
-   * @example
-   * // edit the guild AFK channel
-   * guild.setAFKTimeout(60)
-   *  .then(updated => console.log(`Updated guild AFK timeout to ${guild.afkTimeout}`))
-   *  .catch(console.error);
-   */
-  setAFKTimeout(afkTimeout) {
-    return this.edit({ afkTimeout });
-  }
-
-  /**
-   * Set a new guild icon.
-   * @param {Base64Resolvable} icon The new icon of the guild
-   * @returns {Promise<Guild>}
-   * @example
-   * // edit the guild icon
-   * guild.setIcon(fs.readFileSync('./icon.png'))
-   *  .then(updated => console.log('Updated the guild icon'))
-   *  .catch(console.error);
-   */
-  setIcon(icon) {
-    return this.edit({ icon });
-  }
-
-  /**
-   * Sets a new owner of the guild.
-   * @param {GuildMemberResolvable} owner The new owner of the guild
-   * @returns {Promise<Guild>}
-   * @example
-   * // edit the guild owner
-   * guild.setOwner(guilds.members[0])
-   *  .then(updated => console.log(`Updated the guild owner to ${updated.owner.username}`))
-   *  .catch(console.error);
-   */
-  setOwner(owner) {
-    return this.edit({ owner });
-  }
-
-  /**
-   * Set a new guild splash screen.
-   * @param {Base64Resolvable} splash The new splash screen of the guild
-   * @returns {Promise<Guild>}
-   * @example
-   * // edit the guild splash
-   * guild.setIcon(fs.readFileSync('./splash.png'))
-   *  .then(updated => console.log('Updated the guild splash'))
-   *  .catch(console.error);
-   */
-  setSplash(splash) {
-    return this.edit({ splash });
-  }
-
-  /**
-   * Bans a user from the guild.
-   * @param {UserResolvable} user The user to ban
-   * @param {number} [deleteDays=0] The amount of days worth of messages from this user that should
-   * also be deleted. Between `0` and `7`.
-   * @returns {Promise<GuildMember|User|string>} Result object will be resolved as specifically as possible.
-   * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
-   * be resolved, the user ID will be the result.
-   * @example
-   * // ban a user
-   * guild.ban('123123123123');
-   */
-  ban(user, deleteDays = 0) {
-    return this.client.rest.methods.banGuildMember(this, user, deleteDays);
-  }
-
-  /**
-   * Unbans a user from the guild.
-   * @param {UserResolvable} user The user to unban
-   * @returns {Promise<User>}
-   * @example
-   * // unban a user
-   * guild.unban('123123123123')
-   *  .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
-   *  .catch(reject);
-   */
-  unban(user) {
-    return this.client.rest.methods.unbanGuildMember(this, user);
-  }
-
-  /**
-   * Prunes members from the guild based on how long they have been inactive.
-   * @param {number} days Number of days of inactivity required to kick
-   * @param {boolean} [dry=false] If true, will return number of users that will be kicked, without actually doing it
-   * @returns {Promise<number>} The number of members that were/will be kicked
-   * @example
-   * // see how many members will be pruned
-   * guild.pruneMembers(12, true)
-   *   .then(pruned => console.log(`This will prune ${pruned} people!`);
-   *   .catch(console.error);
-   * @example
-   * // actually prune the members
-   * guild.pruneMembers(12)
-   *   .then(pruned => console.log(`I just pruned ${pruned} people!`);
-   *   .catch(console.error);
-   */
-  pruneMembers(days, dry = false) {
-    if (typeof days !== 'number') throw new TypeError('Days must be a number.');
-    return this.client.rest.methods.pruneGuildMembers(this, days, dry);
-  }
-
-  /**
-   * Syncs this guild (already done automatically every 30 seconds).
-   * <warn>This is only available when using a user account.</warn>
-   */
-  sync() {
-    if (!this.client.user.bot) this.client.syncGuilds([this]);
-  }
-
-  /**
-   * Creates a new channel in the guild.
-   * @param {string} name The name of the new channel
-   * @param {string} type The type of the new channel, either `text` or `voice`
-   * @returns {Promise<TextChannel|VoiceChannel>}
-   * @example
-   * // create a new text channel
-   * guild.createChannel('new-general', 'text')
-   *  .then(channel => console.log(`Created new channel ${channel}`))
-   *  .catch(console.error);
-   */
-  createChannel(name, type) {
-    return this.client.rest.methods.createChannel(this, name, type);
-  }
-
-  /**
-   * Creates a new role in the guild, and optionally updates it with the given information.
-   * @param {RoleData} [data] The data to update the role with
-   * @returns {Promise<Role>}
-   * @example
-   * // create a new role
-   * guild.createRole()
-   *  .then(role => console.log(`Created role ${role}`))
-   *  .catch(console.error);
-   * @example
-   * // create a new role with data
-   * guild.createRole({ name: 'Super Cool People' })
-   *   .then(role => console.log(`Created role ${role}`))
-   *   .catch(console.error)
-   */
-  createRole(data) {
-    const create = this.client.rest.methods.createGuildRole(this);
-    if (!data) return create;
-    return create.then(role => role.edit(data));
-  }
-
-  /**
-   * Creates a new custom emoji in the guild.
-   * @param {BufferResolvable} attachment The image for the emoji.
-   * @param {string} name The name for the emoji.
-   * @returns {Promise<Emoji>} The created emoji.
-   * @example
-   * // create a new emoji from a url
-   * guild.createEmoji('https://i.imgur.com/w3duR07.png', 'rip')
-   *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
-   *  .catch(console.error);
-   * @example
-   * // create a new emoji from a file on your computer
-   * guild.createEmoji('./memes/banana.png', 'banana')
-   *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
-   *  .catch(console.error);
-   */
-  createEmoji(attachment, name) {
-    return new Promise(resolve => {
-      if (attachment.startsWith('data:')) {
-        resolve(this.client.rest.methods.createEmoji(this, attachment, name));
-      } else {
-        this.client.resolver.resolveBuffer(attachment).then(data =>
-          resolve(this.client.rest.methods.createEmoji(this, data, name))
-        );
-      }
-    });
-  }
-
-  /**
-   * Delete an emoji.
-   * @param {Emoji|string} emoji The emoji to delete.
-   * @returns {Promise}
-   */
-  deleteEmoji(emoji) {
-    if (!(emoji instanceof Emoji)) emoji = this.emojis.get(emoji);
-    return this.client.rest.methods.deleteEmoji(emoji);
-  }
-
-  /**
-   * Causes the Client to leave the guild.
-   * @returns {Promise<Guild>}
-   * @example
-   * // leave a guild
-   * guild.leave()
-   *  .then(g => console.log(`Left the guild ${g}`))
-   *  .catch(console.error);
-   */
-  leave() {
-    return this.client.rest.methods.leaveGuild(this);
-  }
-
-  /**
-   * Causes the Client to delete the guild.
-   * @returns {Promise<Guild>}
-   * @example
-   * // delete a guild
-   * guild.delete()
-   *  .then(g => console.log(`Deleted the guild ${g}`))
-   *  .catch(console.error);
-   */
-  delete() {
-    return this.client.rest.methods.deleteGuild(this);
-  }
-
-  /**
-   * Set the position of a role in this guild
-   * @param {string|Role} role the role to edit, can be a role object or a role ID.
-   * @param {number} position the new position of the role
-   * @returns {Promise<Guild>}
-   */
-  setRolePosition(role, position) {
-    if (role instanceof Role) {
-      role = role.id;
-    } else if (typeof role !== 'string') {
-      return Promise.reject(new Error('Supplied role is not a role or string'));
-    }
-
-    position = Number(position);
-    if (isNaN(position)) {
-      return Promise.reject(new Error('Supplied position is not a number'));
-    }
-
-    const updatedRoles = this.roles.array().map(r => ({
-      id: r.id,
-      position: r.id === role ? position : r.position < position ? r.position : r.position + 1,
-    }));
-
-    return this.client.rest.methods.setRolePositions(this.id, updatedRoles);
-  }
-
-  /**
-   * Whether this Guild equals another Guild. It compares all properties, so for most operations
-   * it is advisable to just compare `guild.id === guild2.id` as it is much faster and is often
-   * what most users need.
-   * @param {Guild} guild The guild to compare
-   * @returns {boolean}
-   */
-  equals(guild) {
-    let equal =
-      guild &&
-      this.id === guild.id &&
-      this.available === !guild.unavailable &&
-      this.splash === guild.splash &&
-      this.region === guild.region &&
-      this.name === guild.name &&
-      this.memberCount === guild.member_count &&
-      this.large === guild.large &&
-      this.icon === guild.icon &&
-      arraysEqual(this.features, guild.features) &&
-      this.ownerID === guild.owner_id &&
-      this.verificationLevel === guild.verification_level &&
-      this.embedEnabled === guild.embed_enabled;
-
-    if (equal) {
-      if (this.embedChannel) {
-        if (this.embedChannel.id !== guild.embed_channel_id) equal = false;
-      } else if (guild.embed_channel_id) {
-        equal = false;
-      }
-    }
-
-    return equal;
-  }
-
-  /**
-   * When concatenated with a string, this automatically concatenates the guild's name instead of the Guild object.
-   * @returns {string}
-   * @example
-   * // logs: Hello from My Guild!
-   * console.log(`Hello from ${guild}!`);
-   * @example
-   * // logs: Hello from My Guild!
-   * console.log(`Hello from ' + guild + '!');
-   */
-  toString() {
-    return this.name;
-  }
-
-  _addMember(guildUser, emitEvent = true) {
-    const existing = this.members.has(guildUser.user.id);
-    if (!(guildUser.user instanceof User)) guildUser.user = this.client.dataManager.newUser(guildUser.user);
-
-    guildUser.joined_at = guildUser.joined_at || 0;
-    const member = new GuildMember(this, guildUser);
-    this.members.set(member.id, member);
-
-    if (this._rawVoiceStates && this._rawVoiceStates.get(member.user.id)) {
-      const voiceState = this._rawVoiceStates.get(member.user.id);
-      member.serverMute = voiceState.mute;
-      member.serverDeaf = voiceState.deaf;
-      member.selfMute = voiceState.self_mute;
-      member.selfDeaf = voiceState.self_deaf;
-      member.voiceSessionID = voiceState.session_id;
-      member.voiceChannelID = voiceState.channel_id;
-      this.channels.get(voiceState.channel_id).members.set(member.user.id, member);
-    }
-
-    /**
-     * Emitted whenever a user joins a guild.
-     * @event Client#guildMemberAdd
-     * @param {GuildMember} member The member that has joined a guild
-     */
-    if (this.client.ws.status === Constants.Status.READY && emitEvent && !existing) {
-      this.client.emit(Constants.Events.GUILD_MEMBER_ADD, member);
-    }
-
-    this._checkChunks();
-    return member;
-  }
-
-  _updateMember(member, data) {
-    const oldMember = cloneObject(member);
-
-    if (data.roles) member._roles = data.roles;
-    if (typeof data.nick !== 'undefined') member.nickname = data.nick;
-
-    const notSame = member.nickname !== oldMember.nickname || !arraysEqual(member._roles, oldMember._roles);
-
-    if (this.client.ws.status === Constants.Status.READY && notSame) {
-      /**
-       * Emitted whenever a guild member changes - i.e. new role, removed role, nickname
-       * @event Client#guildMemberUpdate
-       * @param {GuildMember} oldMember The member before the update
-       * @param {GuildMember} newMember The member after the update
-       */
-      this.client.emit(Constants.Events.GUILD_MEMBER_UPDATE, oldMember, member);
-    }
-
-    return {
-      old: oldMember,
-      mem: member,
-    };
-  }
-
-  _removeMember(guildMember) {
-    this.members.delete(guildMember.id);
-    this._checkChunks();
-  }
-
-  _memberSpeakUpdate(user, speaking) {
-    const member = this.members.get(user);
-    if (member && member.speaking !== speaking) {
-      member.speaking = speaking;
-      /**
-       * Emitted once a guild member starts/stops speaking
-       * @event Client#guildMemberSpeaking
-       * @param {GuildMember} member The member that started/stopped speaking
-       * @param {boolean} speaking Whether or not the member is speaking
-       */
-      this.client.emit(Constants.Events.GUILD_MEMBER_SPEAKING, member, speaking);
-    }
-  }
-
-  _setPresence(id, presence) {
-    if (this.presences.get(id)) {
-      this.presences.get(id).update(presence);
-      return;
-    }
-    this.presences.set(id, new Presence(presence));
-  }
-
-  _checkChunks() {
-    if (this._fetchWaiter) {
-      if (this.members.size === this.memberCount) {
-        this._fetchWaiter(this);
-        this._fetchWaiter = null;
-      }
-    }
-  }
-}
-
-module.exports = Guild;
-
-
-/***/ },
-/* 18 */
-/***/ function(module, exports) {
-
-/**
- * Represents a limited emoji set used for both custom and unicode emojis. Custom emojis
- * will use this class opposed to the Emoji class when the client doesn't know enough
- * information about them.
- */
-class ReactionEmoji {
-  constructor(reaction, name, id) {
-    /**
-     * The message reaction this emoji refers to
-     * @type {MessageReaction}
-     */
-    this.reaction = reaction;
-
-    /**
-     * The name of this reaction emoji.
-     * @type {string}
-     */
-    this.name = name;
-
-    /**
-     * The ID of this reaction emoji.
-     * @type {string}
-     */
-    this.id = id;
-  }
-
-  /**
-   * The identifier of this emoji, used for message reactions
-   * @readonly
-   * @type {string}
-   */
-  get identifier() {
-    if (this.id) return `${this.name}:${this.id}`;
-    return encodeURIComponent(this.name);
-  }
-
-  /**
-   * Creates the text required to form a graphical emoji on Discord.
-   * @example
-   * // send the emoji used in a reaction to the channel the reaction is part of
-   * reaction.message.channel.sendMessage(`The emoji used is ${reaction.emoji}`);
-   * @returns {string}
-   */
-  toString() {
-    return this.id ? `<:${this.name}:${this.id}>` : this.name;
-  }
-}
-
-module.exports = ReactionEmoji;
-
-
-/***/ },
-/* 19 */
-/***/ function(module, exports, __webpack_require__) {
-
-const path = __webpack_require__(23);
-const escapeMarkdown = __webpack_require__(15);
-
-/**
- * Represents a webhook
- */
-class Webhook {
-  constructor(client, dataOrID, token) {
-    if (client) {
-      /**
-       * The Client that instantiated the Webhook
-       * @type {Client}
-       */
-      this.client = client;
-      Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
-      if (dataOrID) this.setup(dataOrID);
-    } else {
-      this.id = dataOrID;
-      this.token = token;
-      this.client = this;
-    }
-  }
-
-  setup(data) {
-    /**
-     * The name of the webhook
-     * @type {string}
-     */
-    this.name = data.name;
-
-    /**
-     * The token for the webhook
-     * @type {string}
-     */
-    this.token = data.token;
-
-    /**
-     * The avatar for the webhook
-     * @type {string}
-     */
-    this.avatar = data.avatar;
-
-    /**
-     * The ID of the webhook
-     * @type {string}
-     */
-    this.id = data.id;
-
-    /**
-     * The guild the webhook belongs to
-     * @type {string}
-     */
-    this.guildID = data.guild_id;
-
-    /**
-     * The channel the webhook belongs to
-     * @type {string}
-     */
-    this.channelID = data.channel_id;
-
-    /**
-     * The owner of the webhook
-     * @type {User}
-     */
-    if (data.user) this.owner = data.user;
-  }
-
-  /**
-   * Options that can be passed into sendMessage, sendTTSMessage, sendFile, sendCode
-   * @typedef {Object} WebhookMessageOptions
-   * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
-   * @property {boolean} [disableEveryone=this.options.disableEveryone] Whether or not @everyone and @here
-   * should be replaced with plain-text
-   */
-
-  /**
-   * Send a message with this webhook
-   * @param {StringResolvable} content The content to send.
-   * @param {WebhookMessageOptions} [options={}] The options to provide.
-   * @returns {Promise<Message|Message[]>}
-   * @example
-   * // send a message
-   * webhook.sendMessage('hello!')
-   *  .then(message => console.log(`Sent message: ${message.content}`))
-   *  .catch(console.error);
-   */
-  sendMessage(content, options = {}) {
-    return this.client.rest.methods.sendWebhookMessage(this, content, options);
-  }
-
-  /**
-   * Send a raw slack message with this webhook
-   * @param {Object} body The raw body to send.
-   * @returns {Promise}
-   * @example
-   * // send a slack message
-   * webhook.sendSlackMessage({
-   *   'username': 'Wumpus',
-   *   'attachments': [{
-   *     'pretext': 'this looks pretty cool',
-   *     'color': '#F0F',
-   *     'footer_icon': 'http://snek.s3.amazonaws.com/topSnek.png',
-   *     'footer': 'Powered by sneks',
-   *     'ts': new Date().getTime() / 1000
-   *   }]
-   * }).catch(console.error);
-   */
-  sendSlackMessage(body) {
-    return this.client.rest.methods.sendSlackWebhookMessage(this, body);
-  }
-
-  /**
-   * Send a text-to-speech message with this webhook
-   * @param {StringResolvable} content The content to send
-   * @param {WebhookMessageOptions} [options={}] The options to provide
-   * @returns {Promise<Message|Message[]>}
-   * @example
-   * // send a TTS message
-   * webhook.sendTTSMessage('hello!')
-   *  .then(message => console.log(`Sent tts message: ${message.content}`))
-   *  .catch(console.error);
-   */
-  sendTTSMessage(content, options = {}) {
-    Object.assign(options, { tts: true });
-    return this.client.rest.methods.sendWebhookMessage(this, content, options);
-  }
-
-  /**
-   * Send a file with this webhook
-   * @param {BufferResolvable} attachment The file to send
-   * @param {string} [fileName="file.jpg"] The name and extension of the file
-   * @param {StringResolvable} [content] Text message to send with the attachment
-   * @param {WebhookMessageOptions} [options] The options to provide
-   * @returns {Promise<Message>}
-   */
-  sendFile(attachment, fileName, content, options = {}) {
-    if (!fileName) {
-      if (typeof attachment === 'string') {
-        fileName = path.basename(attachment);
-      } else if (attachment && attachment.path) {
-        fileName = path.basename(attachment.path);
-      } else {
-        fileName = 'file.jpg';
-      }
-    }
-    return this.client.resolver.resolveBuffer(attachment).then(file =>
-      this.client.rest.methods.sendWebhookMessage(this, content, options, {
-        file,
-        name: fileName,
-      })
-    );
-  }
-
-  /**
-   * Send a code block with this webhook
-   * @param {string} lang Language for the code block
-   * @param {StringResolvable} content Content of the code block
-   * @param {WebhookMessageOptions} options The options to provide
-   * @returns {Promise<Message|Message[]>}
-   */
-  sendCode(lang, content, options = {}) {
-    if (options.split) {
-      if (typeof options.split !== 'object') options.split = {};
-      if (!options.split.prepend) options.split.prepend = `\`\`\`${lang || ''}\n`;
-      if (!options.split.append) options.split.append = '\n```';
-    }
-    content = escapeMarkdown(this.client.resolver.resolveString(content), true);
-    return this.sendMessage(`\`\`\`${lang || ''}\n${content}\n\`\`\``, options);
-  }
-
-  /**
-   * Edit the webhook.
-   * @param {string} name The new name for the Webhook
-   * @param {BufferResolvable} avatar The new avatar for the Webhook.
-   * @returns {Promise<Webhook>}
-   */
-  edit(name = this.name, avatar) {
-    if (avatar) {
-      return this.client.resolver.resolveBuffer(avatar).then(file => {
-        const dataURI = this.client.resolver.resolveBase64(file);
-        return this.client.rest.methods.editWebhook(this, name, dataURI);
-      });
-    }
-    return this.client.rest.methods.editWebhook(this, name).then(data => {
-      this.setup(data);
-      return this;
-    });
-  }
-
-  /**
-   * Delete the webhook
-   * @returns {Promise}
-   */
-  delete() {
-    return this.client.rest.methods.deleteWebhook(this);
-  }
-}
-
-module.exports = Webhook;
-
-
-/***/ },
-/* 20 */
-/***/ function(module, exports, __webpack_require__) {
-
 "use strict";
 /* WEBPACK VAR INJECTION */(function(Buffer, global) {/*!
  * The buffer module from node.js, for the browser.
@@ -4613,9 +3458,9 @@ module.exports = Webhook;
 
 'use strict'
 
-var base64 = __webpack_require__(60)
-var ieee754 = __webpack_require__(62)
-var isArray = __webpack_require__(63)
+var base64 = __webpack_require__(61)
+var ieee754 = __webpack_require__(63)
+var isArray = __webpack_require__(64)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -6393,7 +5238,1162 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20).Buffer, __webpack_require__(75)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16).Buffer, __webpack_require__(76)))
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+const Constants = __webpack_require__(0);
+
+/**
+ * The final evaluated permissions for a member in a channel
+ */
+class EvaluatedPermissions {
+  constructor(member, raw) {
+    /**
+     * The member this permissions refer to
+     * @type {GuildMember}
+     */
+    this.member = member;
+
+    /**
+     * A number representing the packed permissions
+     * @type {number}
+     */
+    this.raw = raw;
+  }
+
+  /**
+   * Get an object mapping permission name, e.g. `READ_MESSAGES` to a boolean - whether the user
+   * can perform this or not.
+   * @returns {Object<string, boolean>}
+   */
+  serialize() {
+    const serializedPermissions = {};
+    for (const permissionName in Constants.PermissionFlags) {
+      serializedPermissions[permissionName] = this.hasPermission(permissionName);
+    }
+    return serializedPermissions;
+  }
+
+  /**
+   * Checks whether the user has a certain permission, e.g. `READ_MESSAGES`.
+   * @param {PermissionResolvable} permission The permission to check for
+   * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permission
+   * @returns {boolean}
+   */
+  hasPermission(permission, explicit = false) {
+    permission = this.member.client.resolver.resolvePermission(permission);
+    if (!explicit && (this.raw & Constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
+    return (this.raw & permission) > 0;
+  }
+
+  /**
+   * Checks whether the user has all specified permissions.
+   * @param {PermissionResolvable[]} permissions The permissions to check for
+   * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permissions
+   * @returns {boolean}
+   */
+  hasPermissions(permissions, explicit = false) {
+    return permissions.every(p => this.hasPermission(p, explicit));
+  }
+
+  /**
+   * Checks whether the user has all specified permissions, and lists any missing permissions.
+   * @param {PermissionResolvable[]} permissions The permissions to check for
+   * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permissions
+   * @returns {PermissionResolvable[]}
+   */
+  missingPermissions(permissions, explicit = false) {
+    return permissions.filter(p => !this.hasPermission(p, explicit));
+  }
+}
+
+module.exports = EvaluatedPermissions;
+
+
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+const User = __webpack_require__(6);
+const Role = __webpack_require__(8);
+const Emoji = __webpack_require__(10);
+const Presence = __webpack_require__(7).Presence;
+const GuildMember = __webpack_require__(13);
+const Constants = __webpack_require__(0);
+const Collection = __webpack_require__(3);
+const cloneObject = __webpack_require__(4);
+const arraysEqual = __webpack_require__(26);
+
+/**
+ * Represents a guild (or a server) on Discord.
+ * <info>It's recommended to see if a guild is available before performing operations or reading data from it. You can
+ * check this with `guild.available`.</info>
+ */
+class Guild {
+  constructor(client, data) {
+    /**
+     * The Client that created the instance of the the Guild.
+     * @type {Client}
+     */
+    this.client = client;
+    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+
+    /**
+     * A collection of members that are in this guild. The key is the member's ID, the value is the member.
+     * @type {Collection<string, GuildMember>}
+     */
+    this.members = new Collection();
+
+    /**
+     * A collection of channels that are in this guild. The key is the channel's ID, the value is the channel.
+     * @type {Collection<string, GuildChannel>}
+     */
+    this.channels = new Collection();
+
+    /**
+     * A collection of roles that are in this guild. The key is the role's ID, the value is the role.
+     * @type {Collection<string, Role>}
+     */
+    this.roles = new Collection();
+
+    if (!data) return;
+    if (data.unavailable) {
+      /**
+       * Whether the guild is available to access. If it is not available, it indicates a server outage.
+       * @type {boolean}
+       */
+      this.available = false;
+
+      /**
+       * The Unique ID of the Guild, useful for comparisons.
+       * @type {string}
+       */
+      this.id = data.id;
+    } else {
+      this.available = true;
+      this.setup(data);
+    }
+  }
+
+  /**
+   * Sets up the Guild
+   * @param {*} data The raw data of the guild
+   * @private
+   */
+  setup(data) {
+    /**
+     * The name of the guild
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * The hash of the guild icon, or null if there is no icon.
+     * @type {?string}
+     */
+    this.icon = data.icon;
+
+    /**
+     * The hash of the guild splash image, or null if no splash (VIP only)
+     * @type {?string}
+     */
+    this.splash = data.splash;
+
+    /**
+     * The region the guild is located in
+     * @type {string}
+     */
+    this.region = data.region;
+
+    /**
+     * The full amount of members in this guild as of `READY`
+     * @type {number}
+     */
+    this.memberCount = data.member_count || this.memberCount;
+
+    /**
+     * Whether the guild is "large" (has more than 250 members)
+     * @type {boolean}
+     */
+    this.large = data.large || this.large;
+
+    /**
+     * A collection of presences in this guild
+     * @type {Collection<string, Presence>}
+     */
+    this.presences = new Collection();
+
+    /**
+     * An array of guild features.
+     * @type {Object[]}
+     */
+    this.features = data.features;
+
+    /**
+     * A collection of emojis that are in this guild. The key is the emoji's ID, the value is the emoji.
+     * @type {Collection<string, Emoji>}
+     */
+    this.emojis = new Collection();
+    for (const emoji of data.emojis) this.emojis.set(emoji.id, new Emoji(this, emoji));
+
+    /**
+     * The time in seconds before a user is counted as "away from keyboard".
+     * @type {?number}
+     */
+    this.afkTimeout = data.afk_timeout;
+
+    /**
+     * The ID of the voice channel where AFK members are moved.
+     * @type {?string}
+     */
+    this.afkChannelID = data.afk_channel_id;
+
+    /**
+     * Whether embedded images are enabled on this guild.
+     * @type {boolean}
+     */
+    this.embedEnabled = data.embed_enabled;
+
+    /**
+     * The verification level of the guild.
+     * @type {number}
+     */
+    this.verificationLevel = data.verification_level;
+
+    /**
+     * The timestamp the client user joined the guild at
+     * @type {number}
+     */
+    this.joinedTimestamp = data.joined_at ? new Date(data.joined_at).getTime() : this.joinedTimestamp;
+
+    this.id = data.id;
+    this.available = !data.unavailable;
+    this.features = data.features || this.features || [];
+
+    if (data.members) {
+      this.members.clear();
+      for (const guildUser of data.members) this._addMember(guildUser, false);
+    }
+
+    if (data.owner_id) {
+      /**
+       * The user ID of this guild's owner.
+       * @type {string}
+       */
+      this.ownerID = data.owner_id;
+    }
+
+    if (data.channels) {
+      this.channels.clear();
+      for (const channel of data.channels) this.client.dataManager.newChannel(channel, this);
+    }
+
+    if (data.roles) {
+      this.roles.clear();
+      for (const role of data.roles) {
+        const newRole = new Role(this, role);
+        this.roles.set(newRole.id, newRole);
+      }
+    }
+
+    if (data.presences) {
+      for (const presence of data.presences) {
+        this._setPresence(presence.user.id, presence);
+      }
+    }
+
+    this._rawVoiceStates = new Collection();
+    if (data.voice_states) {
+      for (const voiceState of data.voice_states) {
+        this._rawVoiceStates.set(voiceState.user_id, voiceState);
+        const member = this.members.get(voiceState.user_id);
+        if (member) {
+          member.serverMute = voiceState.mute;
+          member.serverDeaf = voiceState.deaf;
+          member.selfMute = voiceState.self_mute;
+          member.selfDeaf = voiceState.self_deaf;
+          member.voiceSessionID = voiceState.session_id;
+          member.voiceChannelID = voiceState.channel_id;
+          this.channels.get(voiceState.channel_id).members.set(member.user.id, member);
+        }
+      }
+    }
+  }
+
+  /**
+   * The timestamp the guild was created at
+   * @type {number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    return (this.id / 4194304) + 1420070400000;
+  }
+
+  /**
+   * The time the guild was created
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * The time the client user joined the guild
+   * @type {Date}
+   * @readonly
+   */
+  get joinedAt() {
+    return new Date(this.joinedTimestamp);
+  }
+
+  /**
+   * Gets the URL to this guild's icon (if it has one, otherwise it returns null)
+   * @type {?string}
+   * @readonly
+   */
+  get iconURL() {
+    if (!this.icon) return null;
+    return Constants.Endpoints.guildIcon(this.id, this.icon);
+  }
+
+  /**
+   * The owner of the guild
+   * @type {GuildMember}
+   * @readonly
+   */
+  get owner() {
+    return this.members.get(this.ownerID);
+  }
+
+  /**
+   * If the client is connected to any voice channel in this guild, this will be the relevant VoiceConnection.
+   * @type {?VoiceConnection}
+   * @readonly
+   */
+  get voiceConnection() {
+    if (this.client.browser) return null;
+    return this.client.voice.connections.get(this.id) || null;
+  }
+
+  /**
+   * The `#general` GuildChannel of the server.
+   * @type {GuildChannel}
+   * @readonly
+   */
+  get defaultChannel() {
+    return this.channels.get(this.id);
+  }
+
+  /**
+   * Returns the GuildMember form of a User object, if the user is present in the guild.
+   * @param {UserResolvable} user The user that you want to obtain the GuildMember of
+   * @returns {?GuildMember}
+   * @example
+   * // get the guild member of a user
+   * const member = guild.member(message.author);
+   */
+  member(user) {
+    return this.client.resolver.resolveGuildMember(this, user);
+  }
+
+  /**
+   * Fetch a collection of banned users in this guild.
+   * @returns {Promise<Collection<string, User>>}
+   */
+  fetchBans() {
+    return this.client.rest.methods.getGuildBans(this);
+  }
+
+  /**
+   * Fetch a collection of invites to this guild. Resolves with a collection mapping invites by their codes.
+   * @returns {Promise<Collection<string, Invite>>}
+   */
+  fetchInvites() {
+    return this.client.rest.methods.getGuildInvites(this);
+  }
+
+  /**
+   * Fetch all webhooks for the guild.
+   * @returns {Collection<Webhook>}
+   */
+  fetchWebhooks() {
+    return this.client.rest.methods.getGuildWebhooks(this);
+  }
+
+  /**
+   * Fetch a single guild member from a user.
+   * @param {UserResolvable} user The user to fetch the member for
+   * @returns {Promise<GuildMember>}
+   */
+  fetchMember(user) {
+    if (this._fetchWaiter) return Promise.reject(new Error('Already fetching guild members.'));
+    user = this.client.resolver.resolveUser(user);
+    if (!user) return Promise.reject(new Error('User is not cached. Use Client.fetchUser first.'));
+    if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
+    return this.client.rest.methods.getGuildMember(this, user);
+  }
+
+  /**
+   * Fetches all the members in the guild, even if they are offline. If the guild has less than 250 members,
+   * this should not be necessary.
+   * @param {string} [query=''] An optional query to provide when fetching members
+   * @returns {Promise<Guild>}
+   */
+  fetchMembers(query = '') {
+    return new Promise((resolve, reject) => {
+      if (this._fetchWaiter) throw new Error('Already fetching guild members in ${this.id}.');
+      if (this.memberCount === this.members.size) {
+        resolve(this);
+        return;
+      }
+      this._fetchWaiter = resolve;
+      this.client.ws.send({
+        op: Constants.OPCodes.REQUEST_GUILD_MEMBERS,
+        d: {
+          guild_id: this.id,
+          query,
+          limit: 0,
+        },
+      });
+      this._checkChunks();
+      this.client.setTimeout(() => reject(new Error('Members didn\'t arrive in time.')), 120 * 1000);
+    });
+  }
+
+  /**
+   * The data for editing a guild
+   * @typedef {Object} GuildEditData
+   * @property {string} [name] The name of the guild
+   * @property {string} [region] The region of the guild
+   * @property {number} [verificationLevel] The verification level of the guild
+   * @property {ChannelResolvable} [afkChannel] The AFK channel of the guild
+   * @property {number} [afkTimeout] The AFK timeout of the guild
+   * @property {Base64Resolvable} [icon] The icon of the guild
+   * @property {GuildMemberResolvable} [owner] The owner of the guild
+   * @property {Base64Resolvable} [splash] The splash screen of the guild
+   */
+
+  /**
+   * Updates the Guild with new information - e.g. a new name.
+   * @param {GuildEditData} data The data to update the guild with
+   * @returns {Promise<Guild>}
+   * @example
+   * // set the guild name and region
+   * guild.edit({
+   *  name: 'Discord Guild',
+   *  region: 'london',
+   * })
+   * .then(updated => console.log(`New guild name ${updated.name} in region ${updated.region}`))
+   * .catch(console.error);
+   */
+  edit(data) {
+    return this.client.rest.methods.updateGuild(this, data);
+  }
+
+  /**
+   * Edit the name of the guild.
+   * @param {string} name The new name of the guild
+   * @returns {Promise<Guild>}
+   * @example
+   * // edit the guild name
+   * guild.setName('Discord Guild')
+   *  .then(updated => console.log(`Updated guild name to ${guild.name}`))
+   *  .catch(console.error);
+   */
+  setName(name) {
+    return this.edit({ name });
+  }
+
+  /**
+   * Edit the region of the guild.
+   * @param {string} region The new region of the guild.
+   * @returns {Promise<Guild>}
+   * @example
+   * // edit the guild region
+   * guild.setRegion('london')
+   *  .then(updated => console.log(`Updated guild region to ${guild.region}`))
+   *  .catch(console.error);
+   */
+  setRegion(region) {
+    return this.edit({ region });
+  }
+
+  /**
+   * Edit the verification level of the guild.
+   * @param {number} verificationLevel The new verification level of the guild
+   * @returns {Promise<Guild>}
+   * @example
+   * // edit the guild verification level
+   * guild.setVerificationLevel(1)
+   *  .then(updated => console.log(`Updated guild verification level to ${guild.verificationLevel}`))
+   *  .catch(console.error);
+   */
+  setVerificationLevel(verificationLevel) {
+    return this.edit({ verificationLevel });
+  }
+
+  /**
+   * Edit the AFK channel of the guild.
+   * @param {ChannelResolvable} afkChannel The new AFK channel
+   * @returns {Promise<Guild>}
+   * @example
+   * // edit the guild AFK channel
+   * guild.setAFKChannel(channel)
+   *  .then(updated => console.log(`Updated guild AFK channel to ${guild.afkChannel}`))
+   *  .catch(console.error);
+   */
+  setAFKChannel(afkChannel) {
+    return this.edit({ afkChannel });
+  }
+
+  /**
+   * Edit the AFK timeout of the guild.
+   * @param {number} afkTimeout The time in seconds that a user must be idle to be considered AFK
+   * @returns {Promise<Guild>}
+   * @example
+   * // edit the guild AFK channel
+   * guild.setAFKTimeout(60)
+   *  .then(updated => console.log(`Updated guild AFK timeout to ${guild.afkTimeout}`))
+   *  .catch(console.error);
+   */
+  setAFKTimeout(afkTimeout) {
+    return this.edit({ afkTimeout });
+  }
+
+  /**
+   * Set a new guild icon.
+   * @param {Base64Resolvable} icon The new icon of the guild
+   * @returns {Promise<Guild>}
+   * @example
+   * // edit the guild icon
+   * guild.setIcon(fs.readFileSync('./icon.png'))
+   *  .then(updated => console.log('Updated the guild icon'))
+   *  .catch(console.error);
+   */
+  setIcon(icon) {
+    return this.edit({ icon });
+  }
+
+  /**
+   * Sets a new owner of the guild.
+   * @param {GuildMemberResolvable} owner The new owner of the guild
+   * @returns {Promise<Guild>}
+   * @example
+   * // edit the guild owner
+   * guild.setOwner(guilds.members[0])
+   *  .then(updated => console.log(`Updated the guild owner to ${updated.owner.username}`))
+   *  .catch(console.error);
+   */
+  setOwner(owner) {
+    return this.edit({ owner });
+  }
+
+  /**
+   * Set a new guild splash screen.
+   * @param {Base64Resolvable} splash The new splash screen of the guild
+   * @returns {Promise<Guild>}
+   * @example
+   * // edit the guild splash
+   * guild.setIcon(fs.readFileSync('./splash.png'))
+   *  .then(updated => console.log('Updated the guild splash'))
+   *  .catch(console.error);
+   */
+  setSplash(splash) {
+    return this.edit({ splash });
+  }
+
+  /**
+   * Bans a user from the guild.
+   * @param {UserResolvable} user The user to ban
+   * @param {number} [deleteDays=0] The amount of days worth of messages from this user that should
+   * also be deleted. Between `0` and `7`.
+   * @returns {Promise<GuildMember|User|string>} Result object will be resolved as specifically as possible.
+   * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
+   * be resolved, the user ID will be the result.
+   * @example
+   * // ban a user
+   * guild.ban('123123123123');
+   */
+  ban(user, deleteDays = 0) {
+    return this.client.rest.methods.banGuildMember(this, user, deleteDays);
+  }
+
+  /**
+   * Unbans a user from the guild.
+   * @param {UserResolvable} user The user to unban
+   * @returns {Promise<User>}
+   * @example
+   * // unban a user
+   * guild.unban('123123123123')
+   *  .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
+   *  .catch(reject);
+   */
+  unban(user) {
+    return this.client.rest.methods.unbanGuildMember(this, user);
+  }
+
+  /**
+   * Prunes members from the guild based on how long they have been inactive.
+   * @param {number} days Number of days of inactivity required to kick
+   * @param {boolean} [dry=false] If true, will return number of users that will be kicked, without actually doing it
+   * @returns {Promise<number>} The number of members that were/will be kicked
+   * @example
+   * // see how many members will be pruned
+   * guild.pruneMembers(12, true)
+   *   .then(pruned => console.log(`This will prune ${pruned} people!`);
+   *   .catch(console.error);
+   * @example
+   * // actually prune the members
+   * guild.pruneMembers(12)
+   *   .then(pruned => console.log(`I just pruned ${pruned} people!`);
+   *   .catch(console.error);
+   */
+  pruneMembers(days, dry = false) {
+    if (typeof days !== 'number') throw new TypeError('Days must be a number.');
+    return this.client.rest.methods.pruneGuildMembers(this, days, dry);
+  }
+
+  /**
+   * Syncs this guild (already done automatically every 30 seconds).
+   * <warn>This is only available when using a user account.</warn>
+   */
+  sync() {
+    if (!this.client.user.bot) this.client.syncGuilds([this]);
+  }
+
+  /**
+   * Creates a new channel in the guild.
+   * @param {string} name The name of the new channel
+   * @param {string} type The type of the new channel, either `text` or `voice`
+   * @returns {Promise<TextChannel|VoiceChannel>}
+   * @example
+   * // create a new text channel
+   * guild.createChannel('new-general', 'text')
+   *  .then(channel => console.log(`Created new channel ${channel}`))
+   *  .catch(console.error);
+   */
+  createChannel(name, type) {
+    return this.client.rest.methods.createChannel(this, name, type);
+  }
+
+  /**
+   * Creates a new role in the guild, and optionally updates it with the given information.
+   * @param {RoleData} [data] The data to update the role with
+   * @returns {Promise<Role>}
+   * @example
+   * // create a new role
+   * guild.createRole()
+   *  .then(role => console.log(`Created role ${role}`))
+   *  .catch(console.error);
+   * @example
+   * // create a new role with data
+   * guild.createRole({ name: 'Super Cool People' })
+   *   .then(role => console.log(`Created role ${role}`))
+   *   .catch(console.error)
+   */
+  createRole(data) {
+    const create = this.client.rest.methods.createGuildRole(this);
+    if (!data) return create;
+    return create.then(role => role.edit(data));
+  }
+
+  /**
+   * Creates a new custom emoji in the guild.
+   * @param {BufferResolvable} attachment The image for the emoji.
+   * @param {string} name The name for the emoji.
+   * @returns {Promise<Emoji>} The created emoji.
+   * @example
+   * // create a new emoji from a url
+   * guild.createEmoji('https://i.imgur.com/w3duR07.png', 'rip')
+   *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
+   *  .catch(console.error);
+   * @example
+   * // create a new emoji from a file on your computer
+   * guild.createEmoji('./memes/banana.png', 'banana')
+   *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
+   *  .catch(console.error);
+   */
+  createEmoji(attachment, name) {
+    return new Promise(resolve => {
+      if (attachment.startsWith('data:')) {
+        resolve(this.client.rest.methods.createEmoji(this, attachment, name));
+      } else {
+        this.client.resolver.resolveBuffer(attachment).then(data =>
+          resolve(this.client.rest.methods.createEmoji(this, data, name))
+        );
+      }
+    });
+  }
+
+  /**
+   * Delete an emoji.
+   * @param {Emoji|string} emoji The emoji to delete.
+   * @returns {Promise}
+   */
+  deleteEmoji(emoji) {
+    if (!(emoji instanceof Emoji)) emoji = this.emojis.get(emoji);
+    return this.client.rest.methods.deleteEmoji(emoji);
+  }
+
+  /**
+   * Causes the Client to leave the guild.
+   * @returns {Promise<Guild>}
+   * @example
+   * // leave a guild
+   * guild.leave()
+   *  .then(g => console.log(`Left the guild ${g}`))
+   *  .catch(console.error);
+   */
+  leave() {
+    return this.client.rest.methods.leaveGuild(this);
+  }
+
+  /**
+   * Causes the Client to delete the guild.
+   * @returns {Promise<Guild>}
+   * @example
+   * // delete a guild
+   * guild.delete()
+   *  .then(g => console.log(`Deleted the guild ${g}`))
+   *  .catch(console.error);
+   */
+  delete() {
+    return this.client.rest.methods.deleteGuild(this);
+  }
+
+  /**
+   * Set the position of a role in this guild
+   * @param {string|Role} role the role to edit, can be a role object or a role ID.
+   * @param {number} position the new position of the role
+   * @returns {Promise<Guild>}
+   */
+  setRolePosition(role, position) {
+    if (role instanceof Role) {
+      role = role.id;
+    } else if (typeof role !== 'string') {
+      return Promise.reject(new Error('Supplied role is not a role or string'));
+    }
+
+    position = Number(position);
+    if (isNaN(position)) {
+      return Promise.reject(new Error('Supplied position is not a number'));
+    }
+
+    const updatedRoles = this.roles.array().map(r => ({
+      id: r.id,
+      position: r.id === role ? position : r.position < position ? r.position : r.position + 1,
+    }));
+
+    return this.client.rest.methods.setRolePositions(this.id, updatedRoles);
+  }
+
+  /**
+   * Whether this Guild equals another Guild. It compares all properties, so for most operations
+   * it is advisable to just compare `guild.id === guild2.id` as it is much faster and is often
+   * what most users need.
+   * @param {Guild} guild The guild to compare
+   * @returns {boolean}
+   */
+  equals(guild) {
+    let equal =
+      guild &&
+      this.id === guild.id &&
+      this.available === !guild.unavailable &&
+      this.splash === guild.splash &&
+      this.region === guild.region &&
+      this.name === guild.name &&
+      this.memberCount === guild.member_count &&
+      this.large === guild.large &&
+      this.icon === guild.icon &&
+      arraysEqual(this.features, guild.features) &&
+      this.ownerID === guild.owner_id &&
+      this.verificationLevel === guild.verification_level &&
+      this.embedEnabled === guild.embed_enabled;
+
+    if (equal) {
+      if (this.embedChannel) {
+        if (this.embedChannel.id !== guild.embed_channel_id) equal = false;
+      } else if (guild.embed_channel_id) {
+        equal = false;
+      }
+    }
+
+    return equal;
+  }
+
+  /**
+   * When concatenated with a string, this automatically concatenates the guild's name instead of the Guild object.
+   * @returns {string}
+   * @example
+   * // logs: Hello from My Guild!
+   * console.log(`Hello from ${guild}!`);
+   * @example
+   * // logs: Hello from My Guild!
+   * console.log(`Hello from ' + guild + '!');
+   */
+  toString() {
+    return this.name;
+  }
+
+  _addMember(guildUser, emitEvent = true) {
+    const existing = this.members.has(guildUser.user.id);
+    if (!(guildUser.user instanceof User)) guildUser.user = this.client.dataManager.newUser(guildUser.user);
+
+    guildUser.joined_at = guildUser.joined_at || 0;
+    const member = new GuildMember(this, guildUser);
+    this.members.set(member.id, member);
+
+    if (this._rawVoiceStates && this._rawVoiceStates.get(member.user.id)) {
+      const voiceState = this._rawVoiceStates.get(member.user.id);
+      member.serverMute = voiceState.mute;
+      member.serverDeaf = voiceState.deaf;
+      member.selfMute = voiceState.self_mute;
+      member.selfDeaf = voiceState.self_deaf;
+      member.voiceSessionID = voiceState.session_id;
+      member.voiceChannelID = voiceState.channel_id;
+      this.channels.get(voiceState.channel_id).members.set(member.user.id, member);
+    }
+
+    /**
+     * Emitted whenever a user joins a guild.
+     * @event Client#guildMemberAdd
+     * @param {GuildMember} member The member that has joined a guild
+     */
+    if (this.client.ws.status === Constants.Status.READY && emitEvent && !existing) {
+      this.client.emit(Constants.Events.GUILD_MEMBER_ADD, member);
+    }
+
+    this._checkChunks();
+    return member;
+  }
+
+  _updateMember(member, data) {
+    const oldMember = cloneObject(member);
+
+    if (data.roles) member._roles = data.roles;
+    if (typeof data.nick !== 'undefined') member.nickname = data.nick;
+
+    const notSame = member.nickname !== oldMember.nickname || !arraysEqual(member._roles, oldMember._roles);
+
+    if (this.client.ws.status === Constants.Status.READY && notSame) {
+      /**
+       * Emitted whenever a guild member changes - i.e. new role, removed role, nickname
+       * @event Client#guildMemberUpdate
+       * @param {GuildMember} oldMember The member before the update
+       * @param {GuildMember} newMember The member after the update
+       */
+      this.client.emit(Constants.Events.GUILD_MEMBER_UPDATE, oldMember, member);
+    }
+
+    return {
+      old: oldMember,
+      mem: member,
+    };
+  }
+
+  _removeMember(guildMember) {
+    this.members.delete(guildMember.id);
+    this._checkChunks();
+  }
+
+  _memberSpeakUpdate(user, speaking) {
+    const member = this.members.get(user);
+    if (member && member.speaking !== speaking) {
+      member.speaking = speaking;
+      /**
+       * Emitted once a guild member starts/stops speaking
+       * @event Client#guildMemberSpeaking
+       * @param {GuildMember} member The member that started/stopped speaking
+       * @param {boolean} speaking Whether or not the member is speaking
+       */
+      this.client.emit(Constants.Events.GUILD_MEMBER_SPEAKING, member, speaking);
+    }
+  }
+
+  _setPresence(id, presence) {
+    if (this.presences.get(id)) {
+      this.presences.get(id).update(presence);
+      return;
+    }
+    this.presences.set(id, new Presence(presence));
+  }
+
+  _checkChunks() {
+    if (this._fetchWaiter) {
+      if (this.members.size === this.memberCount) {
+        this._fetchWaiter(this);
+        this._fetchWaiter = null;
+      }
+    }
+  }
+}
+
+module.exports = Guild;
+
+
+/***/ },
+/* 19 */
+/***/ function(module, exports) {
+
+/**
+ * Represents a limited emoji set used for both custom and unicode emojis. Custom emojis
+ * will use this class opposed to the Emoji class when the client doesn't know enough
+ * information about them.
+ */
+class ReactionEmoji {
+  constructor(reaction, name, id) {
+    /**
+     * The message reaction this emoji refers to
+     * @type {MessageReaction}
+     */
+    this.reaction = reaction;
+
+    /**
+     * The name of this reaction emoji.
+     * @type {string}
+     */
+    this.name = name;
+
+    /**
+     * The ID of this reaction emoji.
+     * @type {string}
+     */
+    this.id = id;
+  }
+
+  /**
+   * The identifier of this emoji, used for message reactions
+   * @readonly
+   * @type {string}
+   */
+  get identifier() {
+    if (this.id) return `${this.name}:${this.id}`;
+    return encodeURIComponent(this.name);
+  }
+
+  /**
+   * Creates the text required to form a graphical emoji on Discord.
+   * @example
+   * // send the emoji used in a reaction to the channel the reaction is part of
+   * reaction.message.channel.sendMessage(`The emoji used is ${reaction.emoji}`);
+   * @returns {string}
+   */
+  toString() {
+    return this.id ? `<:${this.name}:${this.id}>` : this.name;
+  }
+}
+
+module.exports = ReactionEmoji;
+
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+const path = __webpack_require__(23);
+const escapeMarkdown = __webpack_require__(15);
+
+/**
+ * Represents a webhook
+ */
+class Webhook {
+  constructor(client, dataOrID, token) {
+    if (client) {
+      /**
+       * The Client that instantiated the Webhook
+       * @type {Client}
+       */
+      this.client = client;
+      Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+      if (dataOrID) this.setup(dataOrID);
+    } else {
+      this.id = dataOrID;
+      this.token = token;
+      this.client = this;
+    }
+  }
+
+  setup(data) {
+    /**
+     * The name of the webhook
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * The token for the webhook
+     * @type {string}
+     */
+    this.token = data.token;
+
+    /**
+     * The avatar for the webhook
+     * @type {string}
+     */
+    this.avatar = data.avatar;
+
+    /**
+     * The ID of the webhook
+     * @type {string}
+     */
+    this.id = data.id;
+
+    /**
+     * The guild the webhook belongs to
+     * @type {string}
+     */
+    this.guildID = data.guild_id;
+
+    /**
+     * The channel the webhook belongs to
+     * @type {string}
+     */
+    this.channelID = data.channel_id;
+
+    /**
+     * The owner of the webhook
+     * @type {User}
+     */
+    if (data.user) this.owner = data.user;
+  }
+
+  /**
+   * Options that can be passed into sendMessage, sendTTSMessage, sendFile, sendCode
+   * @typedef {Object} WebhookMessageOptions
+   * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
+   * @property {boolean} [disableEveryone=this.options.disableEveryone] Whether or not @everyone and @here
+   * should be replaced with plain-text
+   */
+
+  /**
+   * Send a message with this webhook
+   * @param {StringResolvable} content The content to send.
+   * @param {WebhookMessageOptions} [options={}] The options to provide.
+   * @returns {Promise<Message|Message[]>}
+   * @example
+   * // send a message
+   * webhook.sendMessage('hello!')
+   *  .then(message => console.log(`Sent message: ${message.content}`))
+   *  .catch(console.error);
+   */
+  sendMessage(content, options = {}) {
+    return this.client.rest.methods.sendWebhookMessage(this, content, options);
+  }
+
+  /**
+   * Send a raw slack message with this webhook
+   * @param {Object} body The raw body to send.
+   * @returns {Promise}
+   * @example
+   * // send a slack message
+   * webhook.sendSlackMessage({
+   *   'username': 'Wumpus',
+   *   'attachments': [{
+   *     'pretext': 'this looks pretty cool',
+   *     'color': '#F0F',
+   *     'footer_icon': 'http://snek.s3.amazonaws.com/topSnek.png',
+   *     'footer': 'Powered by sneks',
+   *     'ts': new Date().getTime() / 1000
+   *   }]
+   * }).catch(console.error);
+   */
+  sendSlackMessage(body) {
+    return this.client.rest.methods.sendSlackWebhookMessage(this, body);
+  }
+
+  /**
+   * Send a text-to-speech message with this webhook
+   * @param {StringResolvable} content The content to send
+   * @param {WebhookMessageOptions} [options={}] The options to provide
+   * @returns {Promise<Message|Message[]>}
+   * @example
+   * // send a TTS message
+   * webhook.sendTTSMessage('hello!')
+   *  .then(message => console.log(`Sent tts message: ${message.content}`))
+   *  .catch(console.error);
+   */
+  sendTTSMessage(content, options = {}) {
+    Object.assign(options, { tts: true });
+    return this.client.rest.methods.sendWebhookMessage(this, content, options);
+  }
+
+  /**
+   * Send a file with this webhook
+   * @param {BufferResolvable} attachment The file to send
+   * @param {string} [fileName="file.jpg"] The name and extension of the file
+   * @param {StringResolvable} [content] Text message to send with the attachment
+   * @param {WebhookMessageOptions} [options] The options to provide
+   * @returns {Promise<Message>}
+   */
+  sendFile(attachment, fileName, content, options = {}) {
+    if (!fileName) {
+      if (typeof attachment === 'string') {
+        fileName = path.basename(attachment);
+      } else if (attachment && attachment.path) {
+        fileName = path.basename(attachment.path);
+      } else {
+        fileName = 'file.jpg';
+      }
+    }
+    return this.client.resolver.resolveBuffer(attachment).then(file =>
+      this.client.rest.methods.sendWebhookMessage(this, content, options, {
+        file,
+        name: fileName,
+      })
+    );
+  }
+
+  /**
+   * Send a code block with this webhook
+   * @param {string} lang Language for the code block
+   * @param {StringResolvable} content Content of the code block
+   * @param {WebhookMessageOptions} options The options to provide
+   * @returns {Promise<Message|Message[]>}
+   */
+  sendCode(lang, content, options = {}) {
+    if (options.split) {
+      if (typeof options.split !== 'object') options.split = {};
+      if (!options.split.prepend) options.split.prepend = `\`\`\`${lang || ''}\n`;
+      if (!options.split.append) options.split.append = '\n```';
+    }
+    content = escapeMarkdown(this.client.resolver.resolveString(content), true);
+    return this.sendMessage(`\`\`\`${lang || ''}\n${content}\n\`\`\``, options);
+  }
+
+  /**
+   * Edit the webhook.
+   * @param {string} name The new name for the Webhook
+   * @param {BufferResolvable} avatar The new avatar for the Webhook.
+   * @returns {Promise<Webhook>}
+   */
+  edit(name = this.name, avatar) {
+    if (avatar) {
+      return this.client.resolver.resolveBuffer(avatar).then(file => {
+        const dataURI = this.client.resolver.resolveBase64(file);
+        return this.client.rest.methods.editWebhook(this, name, dataURI);
+      });
+    }
+    return this.client.rest.methods.editWebhook(this, name).then(data => {
+      this.setup(data);
+      return this;
+    });
+  }
+
+  /**
+   * Delete the webhook
+   * @returns {Promise}
+   */
+  delete() {
+    return this.client.rest.methods.deleteWebhook(this);
+  }
+}
+
+module.exports = Webhook;
+
 
 /***/ },
 /* 21 */
@@ -7158,8 +7158,8 @@ if (typeof window !== 'undefined') { // Browser window
   root = this;
 }
 
-var Emitter = __webpack_require__(61);
-var RequestBase = __webpack_require__(73);
+var Emitter = __webpack_require__(62);
+var RequestBase = __webpack_require__(74);
 var isObject = __webpack_require__(49);
 
 /**
@@ -7172,7 +7172,7 @@ function noop(){};
  * Expose `request`.
  */
 
-var request = module.exports = __webpack_require__(74).bind(null, Request);
+var request = module.exports = __webpack_require__(75).bind(null, Request);
 
 /**
  * Determine XHR.
@@ -8220,11 +8220,12 @@ module.exports = {
 		"pako": "^1.0.3",
 		"superagent": "^3.0.0",
 		"tweetnacl": "^0.14.3",
-		"uws": "^0.11.1"
+		"ws": "^1.1.1"
 	},
 	"peerDependencies": {
 		"node-opus": "^0.2.0",
-		"opusscript": "^0.0.1"
+		"opusscript": "^0.0.1",
+		"uws": "^0.11.1"
 	},
 	"devDependencies": {
 		"bufferutil": "^1.2.1",
@@ -8241,6 +8242,7 @@ module.exports = {
 		"node": ">=6.0.0"
 	},
 	"browser": {
+		"ws": false,
 		"uws": false,
 		"opusscript": false,
 		"node-opus": false,
@@ -9438,7 +9440,7 @@ module.exports = MessageEmbed;
 
 const Collection = __webpack_require__(3);
 const Emoji = __webpack_require__(10);
-const ReactionEmoji = __webpack_require__(18);
+const ReactionEmoji = __webpack_require__(19);
 
 /**
  * Represents a reaction to a message
@@ -10412,21 +10414,27 @@ module.exports = isObject;
 
 /***/ },
 /* 50 */
+/***/ function(module, exports) {
+
+
+
+/***/ },
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(23);
-const fs = __webpack_require__(76);
+const fs = __webpack_require__(50);
 const request = __webpack_require__(25);
 
 const Constants = __webpack_require__(0);
 const convertArrayBuffer = __webpack_require__(148);
 const User = __webpack_require__(6);
 const Message = __webpack_require__(14);
-const Guild = __webpack_require__(17);
+const Guild = __webpack_require__(18);
 const Channel = __webpack_require__(9);
 const GuildMember = __webpack_require__(13);
 const Emoji = __webpack_require__(10);
-const ReactionEmoji = __webpack_require__(18);
+const ReactionEmoji = __webpack_require__(19);
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
@@ -10710,10 +10718,10 @@ class ClientDataResolver {
 
 module.exports = ClientDataResolver;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16).Buffer))
 
 /***/ },
-/* 51 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
 const UserAgentManager = __webpack_require__(110);
@@ -10770,7 +10778,7 @@ module.exports = RESTManager;
 
 
 /***/ },
-/* 52 */
+/* 53 */
 /***/ function(module, exports) {
 
 /**
@@ -10827,7 +10835,7 @@ module.exports = RequestHandler;
 
 
 /***/ },
-/* 53 */
+/* 54 */
 /***/ function(module, exports) {
 
 module.exports = function merge(def, given) {
@@ -10845,16 +10853,16 @@ module.exports = function merge(def, given) {
 
 
 /***/ },
-/* 54 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {const EventEmitter = __webpack_require__(21).EventEmitter;
-const mergeDefault = __webpack_require__(53);
+const mergeDefault = __webpack_require__(54);
 const Constants = __webpack_require__(0);
-const RESTManager = __webpack_require__(51);
+const RESTManager = __webpack_require__(52);
 const ClientDataManager = __webpack_require__(77);
 const ClientManager = __webpack_require__(78);
-const ClientDataResolver = __webpack_require__(50);
+const ClientDataResolver = __webpack_require__(51);
 const ClientVoiceManager = __webpack_require__(151);
 const WebSocketManager = __webpack_require__(111);
 const ActionsManager = __webpack_require__(79);
@@ -11305,13 +11313,13 @@ module.exports = Client;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
 
 /***/ },
-/* 55 */
+/* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
-const Webhook = __webpack_require__(19);
-const RESTManager = __webpack_require__(51);
-const ClientDataResolver = __webpack_require__(50);
-const mergeDefault = __webpack_require__(53);
+const Webhook = __webpack_require__(20);
+const RESTManager = __webpack_require__(52);
+const ClientDataResolver = __webpack_require__(51);
+const mergeDefault = __webpack_require__(54);
 const Constants = __webpack_require__(0);
 
 /**
@@ -11357,7 +11365,7 @@ module.exports = WebhookClient;
 
 
 /***/ },
-/* 56 */
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
 const superagent = __webpack_require__(25);
@@ -11382,12 +11390,6 @@ module.exports = function fetchRecommendedShards(token) {
 
 
 /***/ },
-/* 57 */
-/***/ function(module, exports) {
-
-/* (ignored) */
-
-/***/ },
 /* 58 */
 /***/ function(module, exports) {
 
@@ -11401,6 +11403,12 @@ module.exports = function fetchRecommendedShards(token) {
 
 /***/ },
 /* 60 */
+/***/ function(module, exports) {
+
+/* (ignored) */
+
+/***/ },
+/* 61 */
 /***/ function(module, exports) {
 
 "use strict";
@@ -11521,7 +11529,7 @@ function fromByteArray (uint8) {
 
 
 /***/ },
-/* 61 */
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
 
@@ -11690,7 +11698,7 @@ Emitter.prototype.hasListeners = function(event){
 
 
 /***/ },
-/* 62 */
+/* 63 */
 /***/ function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -11780,7 +11788,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ },
-/* 63 */
+/* 64 */
 /***/ function(module, exports) {
 
 var toString = {}.toString;
@@ -11791,7 +11799,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ },
-/* 64 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11800,8 +11808,8 @@ module.exports = Array.isArray || function (arr) {
 
 var assign    = __webpack_require__(5).assign;
 
-var deflate   = __webpack_require__(65);
-var inflate   = __webpack_require__(66);
+var deflate   = __webpack_require__(66);
+var inflate   = __webpack_require__(67);
 var constants = __webpack_require__(46);
 
 var pako = {};
@@ -11812,14 +11820,14 @@ module.exports = pako;
 
 
 /***/ },
-/* 65 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 'use strict';
 
 
-var zlib_deflate = __webpack_require__(67);
+var zlib_deflate = __webpack_require__(68);
 var utils        = __webpack_require__(5);
 var strings      = __webpack_require__(44);
 var msg          = __webpack_require__(22);
@@ -12219,20 +12227,20 @@ exports.gzip = gzip;
 
 
 /***/ },
-/* 66 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 'use strict';
 
 
-var zlib_inflate = __webpack_require__(70);
+var zlib_inflate = __webpack_require__(71);
 var utils        = __webpack_require__(5);
 var strings      = __webpack_require__(44);
 var c            = __webpack_require__(46);
 var msg          = __webpack_require__(22);
 var ZStream      = __webpack_require__(48);
-var GZheader     = __webpack_require__(68);
+var GZheader     = __webpack_require__(69);
 
 var toString = Object.prototype.toString;
 
@@ -12644,14 +12652,14 @@ exports.ungzip  = inflate;
 
 
 /***/ },
-/* 67 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 'use strict';
 
 var utils   = __webpack_require__(5);
-var trees   = __webpack_require__(72);
+var trees   = __webpack_require__(73);
 var adler32 = __webpack_require__(45);
 var crc32   = __webpack_require__(47);
 var msg     = __webpack_require__(22);
@@ -14506,7 +14514,7 @@ exports.deflateTune = deflateTune;
 
 
 /***/ },
-/* 68 */
+/* 69 */
 /***/ function(module, exports) {
 
 "use strict";
@@ -14553,7 +14561,7 @@ module.exports = GZheader;
 
 
 /***/ },
-/* 69 */
+/* 70 */
 /***/ function(module, exports) {
 
 "use strict";
@@ -14886,7 +14894,7 @@ module.exports = function inflate_fast(strm, start) {
 
 
 /***/ },
-/* 70 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14896,8 +14904,8 @@ module.exports = function inflate_fast(strm, start) {
 var utils         = __webpack_require__(5);
 var adler32       = __webpack_require__(45);
 var crc32         = __webpack_require__(47);
-var inflate_fast  = __webpack_require__(69);
-var inflate_table = __webpack_require__(71);
+var inflate_fast  = __webpack_require__(70);
+var inflate_table = __webpack_require__(72);
 
 var CODES = 0;
 var LENS = 1;
@@ -16431,7 +16439,7 @@ exports.inflateUndermine = inflateUndermine;
 
 
 /***/ },
-/* 71 */
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16765,7 +16773,7 @@ module.exports = function inflate_table(type, lens, lens_index, codes, table, ta
 
 
 /***/ },
-/* 72 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17974,7 +17982,7 @@ exports._tr_align = _tr_align;
 
 
 /***/ },
-/* 73 */
+/* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
 /**
@@ -18370,7 +18378,7 @@ RequestBase.prototype.send = function(data){
 
 
 /***/ },
-/* 74 */
+/* 75 */
 /***/ function(module, exports) {
 
 // The node and browser modules expose versions of this with the
@@ -18408,7 +18416,7 @@ module.exports = request;
 
 
 /***/ },
-/* 75 */
+/* 76 */
 /***/ function(module, exports) {
 
 var g;
@@ -18433,18 +18441,12 @@ module.exports = g;
 
 
 /***/ },
-/* 76 */
-/***/ function(module, exports) {
-
-
-
-/***/ },
 /* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
 const cloneObject = __webpack_require__(4);
-const Guild = __webpack_require__(17);
+const Guild = __webpack_require__(18);
 const User = __webpack_require__(6);
 const DMChannel = __webpack_require__(30);
 const Emoji = __webpack_require__(10);
@@ -19722,7 +19724,7 @@ const User = __webpack_require__(6);
 const GuildMember = __webpack_require__(13);
 const Role = __webpack_require__(8);
 const Invite = __webpack_require__(32);
-const Webhook = __webpack_require__(19);
+const Webhook = __webpack_require__(20);
 const UserProfile = __webpack_require__(147);
 const ClientOAuth2Application = __webpack_require__(28);
 
@@ -20353,7 +20355,7 @@ module.exports = RESTMethods;
 /* 108 */
 /***/ function(module, exports, __webpack_require__) {
 
-const RequestHandler = __webpack_require__(52);
+const RequestHandler = __webpack_require__(53);
 
 class BurstRequestHandler extends RequestHandler {
   constructor(restManager, endpoint) {
@@ -20429,7 +20431,7 @@ module.exports = BurstRequestHandler;
 /* 109 */
 /***/ function(module, exports, __webpack_require__) {
 
-const RequestHandler = __webpack_require__(52);
+const RequestHandler = __webpack_require__(53);
 
 /**
  * Handles API Requests sequentially, i.e. we wait until the current request is finished before moving onto
@@ -20566,12 +20568,23 @@ module.exports = UserAgentManager;
 /* 111 */
 /***/ function(module, exports, __webpack_require__) {
 
-const browser = typeof window !== 'undefined';
-const WebSocket = browser ? window.WebSocket : __webpack_require__(152); // eslint-disable-line no-undef
+/* WEBPACK VAR INJECTION */(function(Buffer) {const browser = typeof window !== 'undefined';
 const EventEmitter = __webpack_require__(21).EventEmitter;
 const Constants = __webpack_require__(0);
-const pako = __webpack_require__(64);
+const pako = __webpack_require__(65);
+const zlib = __webpack_require__(50);
 const PacketManager = __webpack_require__(112);
+
+let WebSocket;
+if (browser) {
+  WebSocket = window.WebSocket; // eslint-disable-line no-undef
+} else {
+  try {
+    WebSocket = __webpack_require__(152);
+  } catch (err) {
+    WebSocket = __webpack_require__(153);
+  }
+}
 
 /**
  * The WebSocket Manager of the Client
@@ -20798,6 +20811,7 @@ class WebSocketManager extends EventEmitter {
    */
   parseEventData(data) {
     if (data instanceof ArrayBuffer) data = pako.inflate(data, { to: 'string' });
+    else if (data instanceof Buffer) data = zlib.inflateSync(data).toString();
     return JSON.parse(data);
   }
 
@@ -20884,6 +20898,7 @@ class WebSocketManager extends EventEmitter {
 
 module.exports = WebSocketManager;
 
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16).Buffer))
 
 /***/ },
 /* 112 */
@@ -22058,7 +22073,7 @@ module.exports = function convertArrayBuffer(x) {
   return arrayBufferToBuffer(x);
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16).Buffer))
 
 /***/ },
 /* 149 */
@@ -22100,29 +22115,35 @@ module.exports = function parseEmoji(text) {
 
 /***/ },
 /* 153 */
+/***/ function(module, exports) {
+
+/* (ignored) */
+
+/***/ },
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = {
-  Client: __webpack_require__(54),
-  WebhookClient: __webpack_require__(55),
-  Shard: __webpack_require__(57),
-  ShardClientUtil: __webpack_require__(58),
-  ShardingManager: __webpack_require__(59),
+  Client: __webpack_require__(55),
+  WebhookClient: __webpack_require__(56),
+  Shard: __webpack_require__(58),
+  ShardClientUtil: __webpack_require__(59),
+  ShardingManager: __webpack_require__(60),
 
   Collection: __webpack_require__(3),
   splitMessage: __webpack_require__(43),
   escapeMarkdown: __webpack_require__(15),
-  fetchRecommendedShards: __webpack_require__(56),
+  fetchRecommendedShards: __webpack_require__(57),
 
   Channel: __webpack_require__(9),
   ClientOAuth2Application: __webpack_require__(28),
   ClientUser: __webpack_require__(29),
   DMChannel: __webpack_require__(30),
   Emoji: __webpack_require__(10),
-  EvaluatedPermissions: __webpack_require__(16),
+  EvaluatedPermissions: __webpack_require__(17),
   Game: __webpack_require__(7).Game,
   GroupDMChannel: __webpack_require__(31),
-  Guild: __webpack_require__(17),
+  Guild: __webpack_require__(18),
   GuildChannel: __webpack_require__(12),
   GuildMember: __webpack_require__(13),
   Invite: __webpack_require__(32),
@@ -22136,12 +22157,12 @@ module.exports = {
   PartialGuildChannel: __webpack_require__(39),
   PermissionOverwrites: __webpack_require__(40),
   Presence: __webpack_require__(7).Presence,
-  ReactionEmoji: __webpack_require__(18),
+  ReactionEmoji: __webpack_require__(19),
   Role: __webpack_require__(8),
   TextChannel: __webpack_require__(41),
   User: __webpack_require__(6),
   VoiceChannel: __webpack_require__(42),
-  Webhook: __webpack_require__(19),
+  Webhook: __webpack_require__(20),
 
   version: __webpack_require__(27).version,
 };
