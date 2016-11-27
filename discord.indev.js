@@ -20631,7 +20631,7 @@ class WebSocketManager extends EventEmitter {
      * @type {Object}
      */
     this.disabledEvents = {};
-    for (const event in client.options.disabledEvents) this.disabledEvents[event] = true;
+    for (const event of client.options.disabledEvents) this.disabledEvents[event] = true;
 
     this.first = true;
   }
