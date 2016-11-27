@@ -293,46 +293,40 @@ exports.Events = {
 };
 
 /**
- * The type of a websocket message event, e.g. `MESSAGE_CREATE`.
- * These can be accessed `Discord.Constants.WSEvents['MESSAGE_CREATE']`. Alternatively, you could just provide
- * the string `MESSAGE_CREATE`.
- *
- * Here are the available events:
- * ```js
- * ["READY",
- * "GUILD_SYNC",
- * "GUILD_CREATE",
- * "GUILD_DELETE",
- * "GUILD_UPDATE",
- * "GUILD_MEMBER_ADD",
- * "GUILD_MEMBER_REMOVE",
- * "GUILD_MEMBER_UPDATE",
- * "GUILD_MEMBERS_CHUNK",
- * "GUILD_ROLE_CREATE",
- * "GUILD_ROLE_DELETE",
- * "GUILD_ROLE_UPDATE",
- * "GUILD_BAN_ADD",
- * "GUILD_BAN_REMOVE",
- * "CHANNEL_CREATE",
- * "CHANNEL_DELETE",
- * "CHANNEL_UPDATE",
- * "CHANNEL_PINS_UPDATE",
- * "MESSAGE_CREATE",
- * "MESSAGE_DELETE",
- * "MESSAGE_UPDATE",
- * "MESSAGE_DELETE_BULK",
- * "MESSAGE_REACTION_ADD",
- * "MESSAGE_REACTION_REMOVE",
- * "MESSAGE_REACTION_REMOVE_ALL",
- * "USER_UPDATE",
- * "USER_NOTE_UPDATE",
- * "PRESENCE_UPDATE",
- * "VOICE_STATE_UPDATE",
- * "TYPING_START",
- * "VOICE_SERVER_UPDATE",
- * "RELATIONSHIP_ADD",
- * "RELATIONSHIP_REMOVE"]
- * ```
+ * The type of a websocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
+ * - READY
+ * - GUILD_SYNC
+ * - GUILD_CREATE
+ * - GUILD_DELETE
+ * - GUILD_UPDATE
+ * - GUILD_MEMBER_ADD
+ * - GUILD_MEMBER_REMOVE
+ * - GUILD_MEMBER_UPDATE
+ * - GUILD_MEMBERS_CHUNK
+ * - GUILD_ROLE_CREATE
+ * - GUILD_ROLE_DELETE
+ * - GUILD_ROLE_UPDATE
+ * - GUILD_BAN_ADD
+ * - GUILD_BAN_REMOVE
+ * - CHANNEL_CREATE
+ * - CHANNEL_DELETE
+ * - CHANNEL_UPDATE
+ * - CHANNEL_PINS_UPDATE
+ * - MESSAGE_CREATE
+ * - MESSAGE_DELETE
+ * - MESSAGE_UPDATE
+ * - MESSAGE_DELETE_BULK
+ * - MESSAGE_REACTION_ADD
+ * - MESSAGE_REACTION_REMOVE
+ * - MESSAGE_REACTION_REMOVE_ALL
+ * - USER_UPDATE
+ * - USER_NOTE_UPDATE
+ * - PRESENCE_UPDATE
+ * - VOICE_STATE_UPDATE
+ * - TYPING_START
+ * - VOICE_SERVER_UPDATE
+ * - RELATIONSHIP_ADD
+ * - RELATIONSHIP_REMOVE
  * @typedef {string} WSEventType
  */
 exports.WSEvents = {
@@ -11297,13 +11291,13 @@ module.exports = Client;
 /**
  * Emitted for general warnings
  * @event Client#warn
- * @param {string} The warning
+ * @param {string} info The warning
  */
 
 /**
  * Emitted for general debugging information
  * @event Client#debug
- * @param {string} The debug information
+ * @param {string} info The debug information
  */
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
