@@ -439,7 +439,7 @@ class Message {
    * @returns {Promise<Message|Message[]>}
    * @example
    * // reply to a message
-   * message.reply('Hey, I\'m a reply!')
+   * message.reply('Hey, I\\'m a reply!')
    *  .then(msg => console.log(`Sent a reply to ${msg.author}`))
    *  .catch(console.error);
    */
