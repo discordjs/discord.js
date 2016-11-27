@@ -1,9 +1,20 @@
 const browser = typeof window !== 'undefined';
-const WebSocket = browser ? window.WebSocket : require('uws'); // eslint-disable-line no-undef
 const EventEmitter = require('events').EventEmitter;
 const Constants = require('../../util/Constants');
 const pako = require('pako');
+const zlib = require('zlib');
 const PacketManager = require('./packets/WebSocketPacketManager');
+
+let WebSocket;
+if (browser) {
+  WebSocket = window.WebSocket; // eslint-disable-line no-undef
+} else {
+  try {
+    WebSocket = require('uws');
+  } catch (err) {
+    WebSocket = require('ws');
+  }
+}
 
 /**
  * The WebSocket Manager of the Client
@@ -230,6 +241,7 @@ class WebSocketManager extends EventEmitter {
    */
   parseEventData(data) {
     if (data instanceof ArrayBuffer) data = pako.inflate(data, { to: 'string' });
+    if (data instanceof Buffer) data = zlib.inflateSync(data).toString();
     return JSON.parse(data);
   }
 
