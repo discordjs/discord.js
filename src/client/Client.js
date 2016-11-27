@@ -443,11 +443,11 @@ module.exports = Client;
 /**
  * Emitted for general warnings
  * @event Client#warn
- * @param {string} The warning
+ * @param {string} info The warning
  */
 
 /**
  * Emitted for general debugging information
  * @event Client#debug
- * @param {string} The debug information
+ * @param {string} info The debug information
  */
