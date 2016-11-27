@@ -241,7 +241,7 @@ class WebSocketManager extends EventEmitter {
    */
   parseEventData(data) {
     if (data instanceof ArrayBuffer) data = pako.inflate(data, { to: 'string' });
-    if (data instanceof Buffer) data = zlib.inflateSync(data).toString();
+    else if (data instanceof Buffer) data = zlib.inflateSync(data).toString();
     return JSON.parse(data);
   }
 
