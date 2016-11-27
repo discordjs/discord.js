@@ -8189,6 +8189,7 @@ module.exports = {
 	"version": "10.0.1",
 	"description": "A powerful library for interacting with the Discord API",
 	"main": "./src/index",
+	"types": "./typings/index.d.ts",
 	"scripts": {
 		"test": "eslint src && docgen --source src --custom docs/index.yml",
 		"docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
@@ -8215,6 +8216,7 @@ module.exports = {
 	},
 	"homepage": "https://github.com/hydrabolt/discord.js#readme",
 	"dependencies": {
+		"@types/node": "^6.0.51",
 		"pako": "^1.0.3",
 		"superagent": "^3.0.0",
 		"tweetnacl": "^0.14.3",
