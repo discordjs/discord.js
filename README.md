@@ -1,7 +1,7 @@
 <div align="center">
   <br />
   <p>
-    <a href="https://discord.js.org"><img src="https://i.imgur.com/260XFXQ.png" width="546" alt="discord.js" /></a>
+    <a href="https://discord.js.org"><img src="http://i.imgur.com/jyZTZ7p.png" alt="discord.js" /></a>
   </p>
   <br />
   <p>
@@ -24,8 +24,8 @@ Usability and performance are key focuses of discord.js, and it also has nearly 
 ## Installation
 **Node.js 6.0.0 or newer is required.**
 
-Without voice support: `npm install discord.js --save`  
-With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discord.js node-opus --save`  
+Without voice support: `npm install discord.js --save`
+With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discord.js node-opus --save`
 With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js opusscript --save`
 
 The preferred audio engine is node-opus, as it performs significantly better than opusscript. When both are available, discord.js will automatically choose node-opus.
@@ -71,7 +71,7 @@ The ShardingManager and any voice-related functionality is unavailable in these 
 
 ## Contributing
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation](https://discord.js.org/#/docs).  
+[documentation](https://discord.js.org/#/docs).
 See [the contributing guide](CONTRIBUTING.md) if you'd like to submit a PR.
 
 ## Help
