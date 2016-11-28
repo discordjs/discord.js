@@ -241,8 +241,7 @@ class Role {
    *  .catch(console.error);
    */
   setPosition(position) {
-    return new Promise(
-      (resolve, reject) => this.guild.setRolePosition(this, position).then(() => resolve(this), reject));
+    return this.guild.setRolePosition(this, position).then(() => this);
   }
 
   /**
