@@ -656,15 +656,13 @@ class Guild {
     if (role instanceof Role) {
       role = role.id;
     } else if (typeof role !== 'string') {
-      return Promise.reject(new Error('Supplied role is not a role or string'));
+      return Promise.reject(new Error('Supplied role is not a role or string.'));
     }
 
     position = Number(position);
-    if (isNaN(position)) {
-      return Promise.reject(new Error('Supplied position is not a number'));
-    }
+    if (isNaN(position)) return Promise.reject(new Error('Supplied position is not a number.'));
 
-    const updatedRoles = this.roles.array().map(r => ({
+    const updatedRoles = this.roles.map(r => ({
       id: r.id,
       position: r.id === role ? position : r.position < position ? r.position : r.position + 1,
     }));
