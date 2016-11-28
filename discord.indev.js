@@ -10675,7 +10675,7 @@ class ClientDataResolver {
           req.end((err, res) => {
             if (err) return reject(err);
             if (this.client.browser) return resolve(convertArrayBuffer(res.xhr.response));
-            if (!(res.body instanceof Buffer)) return reject(new TypeError('Body is not a Buffer'));
+            if (!(res.body instanceof Buffer)) return reject(new TypeError('The response body isn\'t a Buffer.'));
             return resolve(res.body);
           });
         } else {
