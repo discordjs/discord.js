@@ -20880,7 +20880,7 @@ class WebSocketManager extends EventEmitter {
    * Tries to reconnect the client, changing the status to Constants.Status.RECONNECTING.
    */
   tryReconnect() {
-    if (this.status === Constants.Status.RECONNECTING) return;
+    if (this.status === Constants.Status.RECONNECTING || this.status === Constants.Status.CONNECTING) return;
     this.status = Constants.Status.RECONNECTING;
     this.ws.close();
     this.packetManager.handleQueue();
