@@ -17,7 +17,7 @@ class GuildSync extends Action {
         if (member) {
           guild._updateMember(member, syncMember);
         } else {
-          guild._addMember(syncMember);
+          guild._addMember(syncMember, false);
         }
       }
     }
