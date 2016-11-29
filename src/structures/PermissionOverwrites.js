@@ -24,9 +24,18 @@ class PermissionOverwrites {
      * @type {string}
      */
     this.type = data.type;
-
-    this.denyData = data.deny;
-    this.allowData = data.allow;
+    
+    /**
+     * The evaluated permissions number the overwrite allows
+     * @type {number}
+     */
+    this.allows = data.permissions;
+    
+    /**
+     * The evaluated permissions number the overwrite denies
+     * @type {number}
+     */
+    this.denies = data.permissions;
   }
 
   /**
