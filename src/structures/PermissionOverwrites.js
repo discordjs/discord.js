@@ -24,13 +24,13 @@ class PermissionOverwrites {
      * @type {string}
      */
     this.type = data.type;
-    
+
     /**
      * The evaluated permissions number the overwrite allows
      * @type {number}
      */
     this.allows = data.permissions;
-    
+
     /**
      * The evaluated permissions number the overwrite denies
      * @type {number}
