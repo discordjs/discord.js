@@ -68,7 +68,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {exports.Package = __webpack_require__(27);
+/* WEBPACK VAR INJECTION */(function(process) {exports.Package = __webpack_require__(28);
 
 /**
  * Options for a Client.
@@ -1812,7 +1812,7 @@ module.exports = Emoji;
 
 const path = __webpack_require__(23);
 const Message = __webpack_require__(14);
-const MessageCollector = __webpack_require__(34);
+const MessageCollector = __webpack_require__(35);
 const Collection = __webpack_require__(3);
 const escapeMarkdown = __webpack_require__(15);
 
@@ -2167,11 +2167,11 @@ function applyProp(structure, prop) {
 
 const Channel = __webpack_require__(9);
 const Role = __webpack_require__(8);
-const PermissionOverwrites = __webpack_require__(40);
+const PermissionOverwrites = __webpack_require__(41);
 const EvaluatedPermissions = __webpack_require__(17);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
-const arraysEqual = __webpack_require__(26);
+const arraysEqual = __webpack_require__(27);
 
 /**
  * Represents a guild channel (i.e. text channels and voice channels)
@@ -2892,12 +2892,12 @@ module.exports = GuildMember;
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-const Attachment = __webpack_require__(33);
-const Embed = __webpack_require__(35);
+const Attachment = __webpack_require__(34);
+const Embed = __webpack_require__(36);
 const Collection = __webpack_require__(3);
 const Constants = __webpack_require__(0);
 const escapeMarkdown = __webpack_require__(15);
-const MessageReaction = __webpack_require__(36);
+const MessageReaction = __webpack_require__(37);
 
 /**
  * Represents a message on Discord
@@ -5324,7 +5324,7 @@ const GuildMember = __webpack_require__(13);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const cloneObject = __webpack_require__(4);
-const arraysEqual = __webpack_require__(26);
+const arraysEqual = __webpack_require__(27);
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -7156,8 +7156,9 @@ if (typeof window !== 'undefined') { // Browser window
 }
 
 var Emitter = __webpack_require__(62);
-var RequestBase = __webpack_require__(74);
-var isObject = __webpack_require__(49);
+var RequestBase = __webpack_require__(75);
+var isObject = __webpack_require__(26);
+var isFunction = __webpack_require__(74);
 
 /**
  * Noop.
@@ -7169,7 +7170,21 @@ function noop(){};
  * Expose `request`.
  */
 
-var request = module.exports = __webpack_require__(75).bind(null, Request);
+var request = exports = module.exports = function(method, url) {
+  // callback
+  if ('function' == typeof url) {
+    return new exports.Request('GET', method).end(url);
+  }
+
+  // url first
+  if (1 == arguments.length) {
+    return new exports.Request('GET', method);
+  }
+
+  return new exports.Request(method, url);
+}
+
+exports.Request = Request;
 
 /**
  * Determine XHR.
@@ -7639,7 +7654,7 @@ function Request(method, url) {
         err.rawResponse = null;
         err.statusCode = null;
       }
-      
+
       return self.callback(err);
     }
 
@@ -7985,6 +8000,15 @@ Request.prototype.end = function(fn){
   // querystring
   this._appendQueryString();
 
+  if (this._sort) {
+    var index = this.url.indexOf('?');
+    if (~index) {
+      var queryArr = this.url.substring(index + 1).split('&');
+      isFunction(this._sort) ? queryArr.sort(this._sort) : queryArr.sort();
+    }
+    this.url = this.url.substring(0, index) + '?' + queryArr.join('&');
+  }
+
   // initiate request
   if (this.username && this.password) {
     xhr.open(this.method, this.url, true, this.username, this.password);
@@ -7996,7 +8020,7 @@ Request.prototype.end = function(fn){
   if (this._withCredentials) xhr.withCredentials = true;
 
   // body
-  if ('GET' != this.method && 'HEAD' != this.method && 'string' != typeof data && !this._isHost(data)) {
+  if (!this._formData && 'GET' != this.method && 'HEAD' != this.method && 'string' != typeof data && !this._isHost(data)) {
     // serialize stuff
     var contentType = this._header['content-type'];
     var serialize = this._serializer || request.serialize[contentType ? contentType.split(';')[0] : ''];
@@ -8022,13 +8046,6 @@ Request.prototype.end = function(fn){
   xhr.send(typeof data !== 'undefined' ? data : null);
   return this;
 };
-
-
-/**
- * Expose `Request`.
- */
-
-request.Request = Request;
 
 /**
  * GET `url` with optional callback `fn(res)`.
@@ -8161,6 +8178,25 @@ request.put = function(url, data, fn){
 /* 26 */
 /***/ function(module, exports) {
 
+/**
+ * Check if `obj` is an object.
+ *
+ * @param {Object} obj
+ * @return {Boolean}
+ * @api private
+ */
+
+function isObject(obj) {
+  return null !== obj && 'object' === typeof obj;
+}
+
+module.exports = isObject;
+
+
+/***/ },
+/* 27 */
+/***/ function(module, exports) {
+
 module.exports = function arraysEqual(a, b) {
   if (a === b) return true;
   if (a.length !== b.length) return false;
@@ -8178,7 +8214,7 @@ module.exports = function arraysEqual(a, b) {
 
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -8269,11 +8305,11 @@ module.exports = {
 };
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 const User = __webpack_require__(6);
-const OAuth2Application = __webpack_require__(37);
+const OAuth2Application = __webpack_require__(38);
 
 /**
  * Represents the client's OAuth2 Application
@@ -8301,7 +8337,7 @@ module.exports = ClientOAuth2Application;
 
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 const User = __webpack_require__(6);
@@ -8546,7 +8582,7 @@ module.exports = ClientUser;
 
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Channel = __webpack_require__(9);
@@ -8611,13 +8647,13 @@ module.exports = DMChannel;
 
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Channel = __webpack_require__(9);
 const TextBasedChannel = __webpack_require__(11);
 const Collection = __webpack_require__(3);
-const arraysEqual = __webpack_require__(26);
+const arraysEqual = __webpack_require__(27);
 
 /*
 { type: 3,
@@ -8763,11 +8799,11 @@ module.exports = GroupDMChannel;
 
 
 /***/ },
-/* 32 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
-const PartialGuild = __webpack_require__(38);
-const PartialGuildChannel = __webpack_require__(39);
+const PartialGuild = __webpack_require__(39);
+const PartialGuildChannel = __webpack_require__(40);
 const Constants = __webpack_require__(0);
 
 /*
@@ -8927,7 +8963,7 @@ module.exports = Invite;
 
 
 /***/ },
-/* 33 */
+/* 34 */
 /***/ function(module, exports) {
 
 /**
@@ -9000,7 +9036,7 @@ module.exports = MessageAttachment;
 
 
 /***/ },
-/* 34 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 const EventEmitter = __webpack_require__(21).EventEmitter;
@@ -9157,7 +9193,7 @@ module.exports = MessageCollector;
 
 
 /***/ },
-/* 35 */
+/* 36 */
 /***/ function(module, exports) {
 
 /**
@@ -9432,7 +9468,7 @@ module.exports = MessageEmbed;
 
 
 /***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
@@ -9531,7 +9567,7 @@ module.exports = MessageReaction;
 
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports) {
 
 /**
@@ -9618,7 +9654,7 @@ module.exports = OAuth2Application;
 
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports) {
 
 /*
@@ -9674,7 +9710,7 @@ module.exports = PartialGuild;
 
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -9723,7 +9759,7 @@ module.exports = PartialGuildChannel;
 
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports) {
 
 /**
@@ -9770,7 +9806,7 @@ module.exports = PermissionOverwrites;
 
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 const GuildChannel = __webpack_require__(12);
@@ -9871,7 +9907,7 @@ module.exports = TextChannel;
 
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 const GuildChannel = __webpack_require__(12);
@@ -9997,7 +10033,7 @@ module.exports = VoiceChannel;
 
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports) {
 
 module.exports = function splitMessage(text, { maxLength = 1950, char = '\n', prepend = '', append = '' } = {}) {
@@ -10019,7 +10055,7 @@ module.exports = function splitMessage(text, { maxLength = 1950, char = '\n', pr
 
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10211,7 +10247,7 @@ exports.utf8border = function (buf, max) {
 
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports) {
 
 "use strict";
@@ -10250,7 +10286,7 @@ module.exports = adler32;
 
 
 /***/ },
-/* 46 */
+/* 47 */
 /***/ function(module, exports) {
 
 "use strict";
@@ -10307,7 +10343,7 @@ module.exports = {
 
 
 /***/ },
-/* 47 */
+/* 48 */
 /***/ function(module, exports) {
 
 "use strict";
@@ -10355,7 +10391,7 @@ module.exports = crc32;
 
 
 /***/ },
-/* 48 */
+/* 49 */
 /***/ function(module, exports) {
 
 "use strict";
@@ -10388,25 +10424,6 @@ function ZStream() {
 }
 
 module.exports = ZStream;
-
-
-/***/ },
-/* 49 */
-/***/ function(module, exports) {
-
-/**
- * Check if `obj` is an object.
- *
- * @param {Object} obj
- * @return {Boolean}
- * @api private
- */
-
-function isObject(obj) {
-  return null !== obj && 'object' === typeof obj;
-}
-
-module.exports = isObject;
 
 
 /***/ },
@@ -11807,7 +11824,7 @@ var assign    = __webpack_require__(5).assign;
 
 var deflate   = __webpack_require__(66);
 var inflate   = __webpack_require__(67);
-var constants = __webpack_require__(46);
+var constants = __webpack_require__(47);
 
 var pako = {};
 
@@ -11826,9 +11843,9 @@ module.exports = pako;
 
 var zlib_deflate = __webpack_require__(68);
 var utils        = __webpack_require__(5);
-var strings      = __webpack_require__(44);
+var strings      = __webpack_require__(45);
 var msg          = __webpack_require__(22);
-var ZStream      = __webpack_require__(48);
+var ZStream      = __webpack_require__(49);
 
 var toString = Object.prototype.toString;
 
@@ -12233,10 +12250,10 @@ exports.gzip = gzip;
 
 var zlib_inflate = __webpack_require__(71);
 var utils        = __webpack_require__(5);
-var strings      = __webpack_require__(44);
-var c            = __webpack_require__(46);
+var strings      = __webpack_require__(45);
+var c            = __webpack_require__(47);
 var msg          = __webpack_require__(22);
-var ZStream      = __webpack_require__(48);
+var ZStream      = __webpack_require__(49);
 var GZheader     = __webpack_require__(69);
 
 var toString = Object.prototype.toString;
@@ -12657,8 +12674,8 @@ exports.ungzip  = inflate;
 
 var utils   = __webpack_require__(5);
 var trees   = __webpack_require__(73);
-var adler32 = __webpack_require__(45);
-var crc32   = __webpack_require__(47);
+var adler32 = __webpack_require__(46);
+var crc32   = __webpack_require__(48);
 var msg     = __webpack_require__(22);
 
 /* Public constants ==========================================================*/
@@ -14899,8 +14916,8 @@ module.exports = function inflate_fast(strm, start) {
 
 
 var utils         = __webpack_require__(5);
-var adler32       = __webpack_require__(45);
-var crc32         = __webpack_require__(47);
+var adler32       = __webpack_require__(46);
+var crc32         = __webpack_require__(48);
 var inflate_fast  = __webpack_require__(70);
 var inflate_table = __webpack_require__(72);
 
@@ -17983,9 +18000,30 @@ exports._tr_align = _tr_align;
 /***/ function(module, exports, __webpack_require__) {
 
 /**
+ * Check if `fn` is a function.
+ *
+ * @param {Function} fn
+ * @return {Boolean}
+ * @api private
+ */
+var isObject = __webpack_require__(26);
+
+function isFunction(fn) {
+  var tag = isObject(fn) ? Object.prototype.toString.call(fn) : '';
+  return tag === '[object Function]';
+}
+
+module.exports = isFunction;
+
+
+/***/ },
+/* 75 */
+/***/ function(module, exports, __webpack_require__) {
+
+/**
  * Module of mixed-in functions shared between node and client code
  */
-var isObject = __webpack_require__(49);
+var isObject = __webpack_require__(26);
 
 /**
  * Expose `RequestBase`.
@@ -18217,9 +18255,19 @@ RequestBase.prototype.field = function(name, val) {
     return this;
   }
 
+  if (Array.isArray(val)) {
+    for (var i in val) {
+      this.field(name, val[i]);
+    }
+    return this;
+  }
+
   // val should be defined now
   if (null === val || undefined === val) {
     throw new Error('.field(name, val) val can not be empty');
+  }
+  if ('boolean' === typeof val) {
+    val = '' + val;
   }
   this._getFormData().append(name, val);
   return this;
@@ -18374,42 +18422,39 @@ RequestBase.prototype.send = function(data){
 };
 
 
-/***/ },
-/* 75 */
-/***/ function(module, exports) {
-
-// The node and browser modules expose versions of this with the
-// appropriate constructor function bound as first argument
 /**
- * Issue a request:
+ * Sort `querystring` by the sort function
+ *
  *
  * Examples:
  *
- *    request('GET', '/users').end(callback)
- *    request('/users').end(callback)
- *    request('/users', callback)
+ *       // default order
+ *       request.get('/user')
+ *         .query('name=Nick')
+ *         .query('search=Manny')
+ *         .sortQuery()
+ *         .end(callback)
  *
- * @param {String} method
- * @param {String|Function} url or callback
- * @return {Request}
+ *       // customized sort function
+ *       request.get('/user')
+ *         .query('name=Nick')
+ *         .query('search=Manny')
+ *         .sortQuery(function(a, b){
+ *           return a.length - b.length;
+ *         })
+ *         .end(callback)
+ *
+ *
+ * @param {Function} sort
+ * @return {Request} for chaining
  * @api public
  */
 
-function request(RequestConstructor, method, url) {
-  // callback
-  if ('function' == typeof url) {
-    return new RequestConstructor('GET', method).end(url);
-  }
-
-  // url first
-  if (2 == arguments.length) {
-    return new RequestConstructor('GET', method);
-  }
-
-  return new RequestConstructor(method, url);
-}
-
-module.exports = request;
+RequestBase.prototype.sortQuery = function(sort) {
+  // _sort default to true but otherwise can be a function or boolean
+  this._sort = typeof sort === 'undefined' ? true : sort;
+  return this;
+};
 
 
 /***/ },
@@ -18445,12 +18490,12 @@ const Constants = __webpack_require__(0);
 const cloneObject = __webpack_require__(4);
 const Guild = __webpack_require__(18);
 const User = __webpack_require__(6);
-const DMChannel = __webpack_require__(30);
+const DMChannel = __webpack_require__(31);
 const Emoji = __webpack_require__(10);
-const TextChannel = __webpack_require__(41);
-const VoiceChannel = __webpack_require__(42);
+const TextChannel = __webpack_require__(42);
+const VoiceChannel = __webpack_require__(43);
 const GuildChannel = __webpack_require__(12);
-const GroupDMChannel = __webpack_require__(31);
+const GroupDMChannel = __webpack_require__(32);
 
 class ClientDataManager {
   constructor(client) {
@@ -19714,16 +19759,16 @@ module.exports = APIRequest;
 
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
-const splitMessage = __webpack_require__(43);
+const splitMessage = __webpack_require__(44);
 const parseEmoji = __webpack_require__(149);
 
 const User = __webpack_require__(6);
 const GuildMember = __webpack_require__(13);
 const Role = __webpack_require__(8);
-const Invite = __webpack_require__(32);
+const Invite = __webpack_require__(33);
 const Webhook = __webpack_require__(20);
 const UserProfile = __webpack_require__(147);
-const ClientOAuth2Application = __webpack_require__(28);
+const ClientOAuth2Application = __webpack_require__(29);
 
 class RESTMethods {
   constructor(restManager) {
@@ -21632,7 +21677,7 @@ module.exports = PresenceUpdateHandler;
 
 const AbstractHandler = __webpack_require__(1);
 
-const ClientUser = __webpack_require__(29);
+const ClientUser = __webpack_require__(30);
 
 class ReadyHandler extends AbstractHandler {
   handle(packet) {
@@ -22128,40 +22173,40 @@ module.exports = {
   ShardingManager: __webpack_require__(60),
 
   Collection: __webpack_require__(3),
-  splitMessage: __webpack_require__(43),
+  splitMessage: __webpack_require__(44),
   escapeMarkdown: __webpack_require__(15),
   fetchRecommendedShards: __webpack_require__(57),
 
   Channel: __webpack_require__(9),
-  ClientOAuth2Application: __webpack_require__(28),
-  ClientUser: __webpack_require__(29),
-  DMChannel: __webpack_require__(30),
+  ClientOAuth2Application: __webpack_require__(29),
+  ClientUser: __webpack_require__(30),
+  DMChannel: __webpack_require__(31),
   Emoji: __webpack_require__(10),
   EvaluatedPermissions: __webpack_require__(17),
   Game: __webpack_require__(7).Game,
-  GroupDMChannel: __webpack_require__(31),
+  GroupDMChannel: __webpack_require__(32),
   Guild: __webpack_require__(18),
   GuildChannel: __webpack_require__(12),
   GuildMember: __webpack_require__(13),
-  Invite: __webpack_require__(32),
+  Invite: __webpack_require__(33),
   Message: __webpack_require__(14),
-  MessageAttachment: __webpack_require__(33),
-  MessageCollector: __webpack_require__(34),
-  MessageEmbed: __webpack_require__(35),
-  MessageReaction: __webpack_require__(36),
-  OAuth2Application: __webpack_require__(37),
-  PartialGuild: __webpack_require__(38),
-  PartialGuildChannel: __webpack_require__(39),
-  PermissionOverwrites: __webpack_require__(40),
+  MessageAttachment: __webpack_require__(34),
+  MessageCollector: __webpack_require__(35),
+  MessageEmbed: __webpack_require__(36),
+  MessageReaction: __webpack_require__(37),
+  OAuth2Application: __webpack_require__(38),
+  PartialGuild: __webpack_require__(39),
+  PartialGuildChannel: __webpack_require__(40),
+  PermissionOverwrites: __webpack_require__(41),
   Presence: __webpack_require__(7).Presence,
   ReactionEmoji: __webpack_require__(19),
   Role: __webpack_require__(8),
-  TextChannel: __webpack_require__(41),
+  TextChannel: __webpack_require__(42),
   User: __webpack_require__(6),
-  VoiceChannel: __webpack_require__(42),
+  VoiceChannel: __webpack_require__(43),
   Webhook: __webpack_require__(20),
 
-  version: __webpack_require__(27).version,
+  version: __webpack_require__(28).version,
 };
 
 if (typeof window !== 'undefined') window.Discord = module.exports; // eslint-disable-line no-undef
