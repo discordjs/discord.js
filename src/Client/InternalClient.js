@@ -996,7 +996,13 @@ export default class InternalClient {
 	unbanMember(user, server) {
 
 		server = this.resolver.resolveServer(server);
-		user = this.resolver.resolveUser(user);
+		let resolvedUser = this.resolver.resolveUser(user);
+
+    if (resolvedUser === null && typeof user === "string") {
+      user = {id: user};
+    } else {
+      user = resolvedUser;
+    }
 
 		return this.apiRequest("del", `${Endpoints.SERVER_BANS(server.id)}/${user.id}`, true)
 	}
