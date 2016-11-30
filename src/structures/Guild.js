@@ -40,6 +40,12 @@ class Guild {
      */
     this.roles = new Collection();
 
+    /**
+     * A collection of presences in this guild
+     * @type {Collection<string, Presence>}
+     */
+    this.presences = new Collection();
+
     if (!data) return;
     if (data.unavailable) {
       /**
@@ -100,12 +106,6 @@ class Guild {
      * @type {boolean}
      */
     this.large = data.large || this.large;
-
-    /**
-     * A collection of presences in this guild
-     * @type {Collection<string, Presence>}
-     */
-    this.presences = new Collection();
 
     /**
      * An array of guild features.
