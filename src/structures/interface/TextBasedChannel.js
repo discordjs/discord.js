@@ -61,6 +61,13 @@ class TextBasedChannel {
     return this.client.rest.methods.sendMessage(this, content, options);
   }
 
+  /**
+   * Send an embed to this channel
+   * @param {Object|RichEmbed} embed The embed to send
+   * @param {Object|string} contentOrOptions Content to send or message options
+   * @param {Object} options If contentOrOptions is content, this will be options
+   * @returns {Promise<message>}
+   */
   sendEmbed(embed, contentOrOptions, options = {}) {
     if (!(embed instanceof RichEmbed)) embed = new RichEmbed(embed);
     let content;
@@ -72,7 +79,7 @@ class TextBasedChannel {
       }
     }
     options.embed = embed;
-    this.sendMessage(content, options);
+    return this.sendMessage(content, options);
   }
 
   /**
