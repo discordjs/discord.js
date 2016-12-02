@@ -322,8 +322,8 @@ class Collection extends Map {
 
   /**
    * Returns true if the collections have identical key-value pairings.
-   * This is different to checking for equality using equal-signs, because the collections may be
-   * different objects, but functionally identical.
+   * This is different to checking for equality using equal-signs, because
+   * the collections may be different objects, but functionally identical.
    * @param {Collection} collection Collection to compare with.
    * @returns {boolean}
    */
