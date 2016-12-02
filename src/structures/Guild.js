@@ -242,6 +242,16 @@ class Guild {
   }
 
   /**
+   * Gets the URL to this guild's splash (if it has one, otherwise it returns null)
+   * @type {?string}
+   * @readonly
+   */
+  get splashURL() {
+    if (!this.splash) return null;
+    return Constants.Endpoints.guildSplash(this.id, this.splash);
+  }
+
+  /**
    * The owner of the guild
    * @type {GuildMember}
    * @readonly

@@ -95,7 +95,8 @@ const Endpoints = exports.Endpoints = {
   // guilds
   guilds: `${API}/guilds`,
   guild: (guildID) => `${Endpoints.guilds}/${guildID}`,
-  guildIcon: (guildID, hash) => `${Endpoints.guild(guildID)}/icons/${hash}.jpg`,
+  guildIcon: (guildID, hash) => `${Endpoints.CDN}/icons/${guildID}/${hash}.jpg`,
+  guildSplash: (guildID, hash) => `${Endpoints.CDN}/splashes/${guildID}/${hash}.jpg`,
   guildPrune: (guildID) => `${Endpoints.guild(guildID)}/prune`,
   guildEmbed: (guildID) => `${Endpoints.guild(guildID)}/embed`,
   guildInvites: (guildID) => `${Endpoints.guild(guildID)}/invites`,
@@ -136,6 +137,9 @@ const Endpoints = exports.Endpoints = {
   // oauth
   myApplication: `${API}/oauth2/applications/@me`,
   getApp: (id) => `${API}/oauth2/authorize?client_id=${id}`,
+
+  // emoji
+  emoji: (emojiID) => `${Endpoints.CDN}/emojis/${emojiID}.png`,
 };
 
 exports.Status = {

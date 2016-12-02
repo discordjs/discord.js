@@ -87,7 +87,7 @@ class Emoji {
    * @readonly
    */
   get url() {
-    return `${Constants.Endpoints.CDN}/emojis/${this.id}.png`;
+    return Constants.Endpoints.emoji(this.id);
   }
 
   /**
