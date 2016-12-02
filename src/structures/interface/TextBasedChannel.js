@@ -62,27 +62,6 @@ class TextBasedChannel {
   }
 
   /**
-   * Send an embed to this channel
-   * @param {Object|RichEmbed} embed The embed to send
-   * @param {Object|string} contentOrOptions Content to send or message options
-   * @param {Object} options If contentOrOptions is content, this will be options
-   * @returns {Promise<message>}
-   */
-  sendEmbed(embed, contentOrOptions, options = {}) {
-    if (!(embed instanceof RichEmbed)) embed = new RichEmbed(embed);
-    let content;
-    if (contentOrOptions) {
-      if (typeof contentOrOptions === 'string') {
-        content = contentOrOptions;
-      } else {
-        options = contentOrOptions;
-      }
-    }
-    options.embed = embed;
-    return this.sendMessage(content, options);
-  }
-
-  /**
    * Send a text-to-speech message to this channel
    * @param {StringResolvable} content The content to send
    * @param {MessageOptions} [options={}] The options to provide
@@ -96,6 +75,27 @@ class TextBasedChannel {
   sendTTSMessage(content, options = {}) {
     Object.assign(options, { tts: true });
     return this.client.rest.methods.sendMessage(this, content, options);
+  }
+
+  /**
+   * Send an embed to this channel
+   * @param {RichEmbed|Object} embed The embed to send
+   * @param {string|MessageOptions} contentOrOptions Content to send or message options
+   * @param {MessageOptions} options If contentOrOptions is content, this will be options
+   * @returns {Promise<Message>}
+   */
+  sendEmbed(embed, contentOrOptions, options = {}) {
+    if (!(embed instanceof RichEmbed)) embed = new RichEmbed(embed);
+    let content;
+    if (contentOrOptions) {
+      if (typeof contentOrOptions === 'string') {
+        content = contentOrOptions;
+      } else {
+        options = contentOrOptions;
+      }
+    }
+    options.embed = embed;
+    return this.sendMessage(content, options);
   }
 
   /**
@@ -349,7 +349,7 @@ class TextBasedChannel {
 }
 
 exports.applyToClass = (structure, full = false) => {
-  const props = ['sendMessage', 'sendEmbed', 'sendTTSMessage', 'sendFile', 'sendCode'];
+  const props = ['sendMessage', 'sendTTSMessage', 'sendEmbed', 'sendFile', 'sendCode'];
   if (full) {
     props.push('_cacheMessage');
     props.push('fetchMessages');

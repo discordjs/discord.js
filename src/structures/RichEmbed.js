@@ -1,14 +1,58 @@
+/**
+ * A rich embed to be sent with a message
+ * @param {Object} [data] Data to set in the rich embed
+ */
 class RichEmbed {
   constructor(data = {}) {
+    /**
+     * Title for this Embed
+     * @type {string}
+     */
     this.title = data.title;
+    /**
+     * Description for this Embed
+     * @type {string}
+     */
     this.description = data.description;
+    /**
+     * URL for this Embed
+     * @type {string}
+     */
     this.url = data.url;
+    /**
+     * Color for this Embed
+     * @type {number}
+     */
     this.color = data.color;
+    /**
+     * Author for this Embed
+     * @type {Object}
+     */
     this.author = data.author;
+    /**
+     * Timestamp for this Embed
+     * @type {Date}
+     */
     this.timestamp = data.timestamp;
+    /**
+     * Fields for this Embed
+     * @type {Array}
+     */
     this.fields = data.fields || [];
+    /**
+     * Thumbnail for this Embed
+     * @type {Object}
+     */
     this.thumbnail = data.thumbnail;
+    /**
+     * Image for this Embed
+     * @type {Object}
+     */
     this.image = data.image;
+    /**
+     * Footer for this Embed
+     * @type {Object}
+     */
     this.footer = data.footer;
   }
 
@@ -44,7 +88,7 @@ class RichEmbed {
 
   /**
    * Sets the color of this embed
-   * @param {string|number|Array} color The color to set
+   * @param {string|number|Array<number>} color The color to set
    * @returns {RichEmbed} This embed
    */
   setColor(color) {
@@ -60,7 +104,7 @@ class RichEmbed {
   /**
    * Sets the author of this embed
    * @param {string} name The name of the author
-   * @param {string} [icon=] The icon of the author
+   * @param {string} [icon] The icon of the author
    * @returns {RichEmbed} This embed
    */
   setAuthor(name, icon) {
@@ -70,7 +114,7 @@ class RichEmbed {
 
   /**
    * Sets the timestamp of this embed
-   * @param {Date} [timestamp=new Date()] The timestamp
+   * @param {Date} [timestamp=current date] The timestamp
    * @returns {RichEmbed} This embed
    */
   addTimestamp(timestamp = new Date()) {
@@ -86,7 +130,7 @@ class RichEmbed {
    * @returns {RichEmbed} This embed
    */
   addField(name, value, inline = false) {
-    if (this.fields.length >= 25) throw new Error('you may only add 25 fields to an embed!');
+    if (this.fields.length >= 25) throw new RangeError('A RichEmbed may only have a maximum of 25 fields.');
     this.fields.push({ name, value, inline });
     return this;
   }
@@ -118,7 +162,7 @@ class RichEmbed {
    * @returns {RichEmbed} This embed
    */
   setFooter(text, icon) {
-    this.footer = { text, icon_uri: icon };
+    this.footer = { text, icon_url: icon };
     return this;
   }
 }
