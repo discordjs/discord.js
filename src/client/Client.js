@@ -85,31 +85,31 @@ class Client extends EventEmitter {
 
     /**
      * The shard helpers for the client (only if the process was spawned as a child, such as from a ShardingManager)
-     * @type {?ShardUtil}
+     * @type {?ShardClientUtil}
      */
     this.shard = process.send ? ShardClientUtil.singleton(this) : null;
 
     /**
-     * A Collection of the Client's stored users
+     * A collection of the Client's stored users
      * @type {Collection<string, User>}
      */
     this.users = new Collection();
 
     /**
-     * A Collection of the Client's stored guilds
+     * A collection of the Client's stored guilds
      * @type {Collection<string, Guild>}
      */
     this.guilds = new Collection();
 
     /**
-     * A Collection of the Client's stored channels
+     * A collection of the Client's stored channels
      * @type {Collection<string, Channel>}
      */
     this.channels = new Collection();
 
     /**
-     * A Collection of presences for friends of the logged in user.
-     * <warn>This is only present for user accounts, not bot accounts!</warn>
+     * A collection of presences for friends of the logged in user.
+     * <warn>This is only filled when using a user account.</warn>
      * @type {Collection<string, Presence>}
      */
     this.presences = new Collection();
@@ -175,7 +175,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Returns a Collection, mapping Guild ID to Voice Connections.
+   * Returns a collection, mapping guild ID to voice connections.
    * @type {Collection<string, VoiceConnection>}
    * @readonly
    */
@@ -246,21 +246,21 @@ class Client extends EventEmitter {
 
   /**
    * This shouldn't really be necessary to most developers as it is automatically invoked every 30 seconds, however
-   * if you wish to force a sync of Guild data, you can use this. Only applicable to user accounts.
+   * if you wish to force a sync of guild data, you can use this.
+   * <warn>This is only available when using a user account.</warn>
    * @param {Guild[]|Collection<string, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
    */
   syncGuilds(guilds = this.guilds) {
-    if (!this.user.bot) {
-      this.ws.send({
-        op: 12,
-        d: guilds instanceof Collection ? guilds.keyArray() : guilds.map(g => g.id),
-      });
-    }
+    if (this.user.bot) return;
+    this.ws.send({
+      op: 12,
+      d: guilds instanceof Collection ? guilds.keyArray() : guilds.map(g => g.id),
+    });
   }
 
   /**
    * Caches a user, or obtains it from the cache if it's already cached.
-   * If the user isn't already cached, it will only be obtainable by OAuth bot accounts.
+   * <warn>This is only available when using a bot account.</warn>
    * @param {string} id The ID of the user to obtain
    * @returns {Promise<User>}
    */
@@ -282,10 +282,11 @@ class Client extends EventEmitter {
   /**
    * Fetch a webhook by ID.
    * @param {string} id ID of the webhook
+   * @param {string} [token] Token for the webhook
    * @returns {Promise<Webhook>}
    */
-  fetchWebhook(id) {
-    return this.rest.methods.getWebhook(id);
+  fetchWebhook(id, token) {
+    return this.rest.methods.getWebhook(id, token);
   }
 
   /**
@@ -324,26 +325,58 @@ class Client extends EventEmitter {
     return messages;
   }
 
-  setTimeout(fn, ...params) {
+  /**
+   * Gets the bot's OAuth2 application.
+   * <warn>This is only available when using a bot account.</warn>
+   * @returns {Promise<ClientOAuth2Application>}
+   */
+  fetchApplication() {
+    if (!this.user.bot) throw new Error(Constants.Errors.NO_BOT_ACCOUNT);
+    return this.rest.methods.getMyApplication();
+  }
+
+  /**
+   * Sets a timeout that will be automatically cancelled if the client is destroyed.
+   * @param {Function} fn Function to execute
+   * @param {number} delay Time to wait before executing (in milliseconds)
+   * @param {args} args Arguments for the function (infinite/rest argument, not an array)
+   * @returns {Timeout}
+   */
+  setTimeout(fn, delay, ...args) {
     const timeout = setTimeout(() => {
       fn();
       this._timeouts.delete(timeout);
-    }, ...params);
+    }, delay, ...args);
     this._timeouts.add(timeout);
     return timeout;
   }
 
+  /**
+   * Clears a timeout
+   * @param {Timeout} timeout Timeout to cancel
+   */
   clearTimeout(timeout) {
     clearTimeout(timeout);
     this._timeouts.delete(timeout);
   }
 
-  setInterval(...params) {
-    const interval = setInterval(...params);
+  /**
+   * Sets an interval that will be automatically cancelled if the client is destroyed.
+   * @param {Function} fn Function to execute
+   * @param {number} delay Time to wait before executing (in milliseconds)
+   * @param {args} args Arguments for the function (infinite/rest argument, not an array)
+   * @returns {Timeout}
+   */
+  setInterval(fn, delay, ...args) {
+    const interval = setInterval(fn, delay, ...args);
     this._intervals.add(interval);
     return interval;
   }
 
+  /**
+   * Clears an interval
+   * @param {Timeout} interval Interval to cancel
+   */
   clearInterval(interval) {
     clearInterval(interval);
     this._intervals.delete(interval);

@@ -6,13 +6,13 @@ const Collection = require('../util/Collection');
 const Presence = require('./Presence').Presence;
 
 /**
- * Represents a Member of a Guild on Discord
+ * Represents a member of a guild on Discord
  * @implements {TextBasedChannel}
  */
 class GuildMember {
   constructor(guild, data) {
     /**
-     * The client that instantiated this GuildMember
+     * The Client that instantiated this GuildMember
      * @type {Client}
      */
     this.client = guild.client;
@@ -78,7 +78,7 @@ class GuildMember {
     this.speaking = false;
 
     /**
-     * The nickname of this Guild Member, if they have one
+     * The nickname of this guild member, if they have one
      * @type {?string}
      */
     this.nickname = data.nick || null;
@@ -103,7 +103,7 @@ class GuildMember {
   }
 
   /**
-   * The presence of this Guild Member
+   * The presence of this guild member
    * @type {Presence}
    * @readonly
    */
@@ -167,7 +167,7 @@ class GuildMember {
   }
 
   /**
-   * The ID of this User
+   * The ID of this user
    * @type {string}
    * @readonly
    */
@@ -187,7 +187,7 @@ class GuildMember {
     const roles = this.roles;
     for (const role of roles.values()) permissions |= role.permissions;
 
-    const admin = Boolean(permissions & (Constants.PermissionFlags.ADMINISTRATOR));
+    const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
     if (admin) permissions = Constants.ALL_PERMISSIONS;
 
     return new EvaluatedPermissions(this, permissions);
@@ -256,14 +256,14 @@ class GuildMember {
    * Checks whether the roles of the member allows them to perform specific actions, and lists any missing permissions.
    * @param {PermissionResolvable[]} permissions The permissions to check for
    * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
-   * @returns {array}
+   * @returns {PermissionResolvable[]}
    */
   missingPermissions(permissions, explicit = false) {
     return permissions.filter(p => !this.hasPermission(p, explicit));
   }
 
   /**
-   * Edit a Guild Member
+   * Edit a guild member
    * @param {GuildmemberEditData} data The data to edit the member with
    * @returns {Promise<GuildMember>}
    */
@@ -290,7 +290,7 @@ class GuildMember {
   }
 
   /**
-   * Moves the Guild Member to the given channel.
+   * Moves the guild member to the given channel.
    * @param {ChannelResolvable} channel The channel to move the member to
    * @returns {Promise<GuildMember>}
    */
@@ -299,7 +299,7 @@ class GuildMember {
   }
 
   /**
-   * Sets the Roles applied to the member.
+   * Sets the roles applied to the member.
    * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to apply
    * @returns {Promise<GuildMember>}
    */
@@ -308,7 +308,7 @@ class GuildMember {
   }
 
   /**
-   * Adds a single Role to the member.
+   * Adds a single role to the member.
    * @param {Role|string} role The role or ID of the role to add
    * @returns {Promise<GuildMember>}
    */
@@ -333,7 +333,7 @@ class GuildMember {
   }
 
   /**
-   * Removes a single Role from the member.
+   * Removes a single role from the member.
    * @param {Role|string} role The role or ID of the role to remove
    * @returns {Promise<GuildMember>}
    */
@@ -363,8 +363,8 @@ class GuildMember {
   }
 
   /**
-   * Set the nickname for the Guild Member
-   * @param {string} nick The nickname for the Guild Member
+   * Set the nickname for the guild member
+   * @param {string} nick The nickname for the guild member
    * @returns {Promise<GuildMember>}
    */
   setNickname(nick) {
@@ -372,7 +372,7 @@ class GuildMember {
   }
 
   /**
-   * Deletes any DMs with this Guild Member
+   * Deletes any DMs with this guild member
    * @returns {Promise<DMChannel>}
    */
   deleteDM() {
@@ -380,7 +380,7 @@ class GuildMember {
   }
 
   /**
-   * Kick this member from the Guild
+   * Kick this member from the guild
    * @returns {Promise<GuildMember>}
    */
   kick() {
@@ -388,7 +388,7 @@ class GuildMember {
   }
 
   /**
-   * Ban this Guild Member
+   * Ban this guild member
    * @param {number} [deleteDays=0] The amount of days worth of messages from this member that should
    * also be deleted. Between `0` and `7`.
    * @returns {Promise<GuildMember>}
@@ -401,7 +401,7 @@ class GuildMember {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the User's mention instead of the Member object.
+   * When concatenated with a string, this automatically concatenates the user's mention instead of the Member object.
    * @returns {string}
    * @example
    * // logs: Hello from <@123456789>!

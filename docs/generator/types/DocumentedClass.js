@@ -21,7 +21,6 @@ const DocumentedEvent = require('./DocumentedEvent');
   */
 
 class DocumentedClass extends DocumentedItem {
-
   constructor(docParent, data) {
     super(docParent, data);
     this.props = new Map();
@@ -70,9 +69,7 @@ class DocumentedClass extends DocumentedItem {
       extends: augments,
       access,
     };
-    if (this.classConstructor) {
-      serialized.classConstructor = this.classConstructor.serialize();
-    }
+    if (this.classConstructor) serialized.classConstructor = this.classConstructor.serialize();
     serialized.methods = Array.from(this.methods.values()).map(m => m.serialize());
     serialized.properties = Array.from(this.props.values()).map(p => p.serialize());
     serialized.events = Array.from(this.events.values()).map(e => e.serialize());

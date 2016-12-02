@@ -23,7 +23,7 @@ class ClientVoiceManager {
     this.connections = new Collection();
 
     /**
-     * Pending connection attempts, maps Guild ID to VoiceChannel
+     * Pending connection attempts, maps guild ID to VoiceChannel
      * @type {Collection<string, VoiceChannel>}
      */
     this.pending = new Collection();
@@ -55,7 +55,7 @@ class ClientVoiceManager {
       throw new Error('There is no permission set for the client user in this channel - are they part of the guild?');
     }
     if (!permissions.hasPermission('CONNECT')) {
-      throw new Error('You do not have permission to connect to this voice channel.');
+      throw new Error('You do not have permission to join this voice channel.');
     }
 
     options = mergeDefault({
@@ -79,10 +79,7 @@ class ClientVoiceManager {
   joinChannel(channel) {
     return new Promise((resolve, reject) => {
       if (this.pending.get(channel.guild.id)) throw new Error('Already connecting to this guild\'s voice server.');
-
-      if (!channel.joinable) {
-        throw new Error('You do not have permission to join this voice channel');
-      }
+      if (!channel.joinable) throw new Error('You do not have permission to join this voice channel.');
 
       const existingConnection = this.connections.get(channel.guild.id);
       if (existingConnection) {

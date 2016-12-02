@@ -8,6 +8,8 @@ const Message = require(`../structures/Message`);
 const Guild = require(`../structures/Guild`);
 const Channel = require(`../structures/Channel`);
 const GuildMember = require(`../structures/GuildMember`);
+const Emoji = require(`../structures/Emoji`);
+const ReactionEmoji = require(`../structures/ReactionEmoji`);
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
@@ -25,10 +27,10 @@ class ClientDataResolver {
   /**
    * Data that resolves to give a User object. This can be:
    * * A User object
-   * * A User ID
-   * * A Message (resolves to the message author)
-   * * A Guild (owner of the guild)
-   * * A Guild Member
+   * * A user ID
+   * * A Message object (resolves to the message author)
+   * * A Guild object (owner of the guild)
+   * * A GuildMember object
    * @typedef {User|string|Message|Guild|GuildMember} UserResolvable
    */
 
@@ -91,20 +93,18 @@ class ClientDataResolver {
    */
   resolveGuildMember(guild, user) {
     if (user instanceof GuildMember) return user;
-
     guild = this.resolveGuild(guild);
     user = this.resolveUser(user);
     if (!guild || !user) return null;
-
     return guild.members.get(user.id) || null;
   }
 
   /**
    * Data that can be resolved to give a Channel. This can be:
-   * * An instance of a Channel
-   * * An instance of a Message (the channel the message was sent in)
-   * * An instance of a Guild (the #general channel)
-   * * An ID of a Channel
+   * * A Channel object
+   * * A Message object (the channel the message was sent in)
+   * * A Guild object (the #general channel)
+   * * A channel ID
    * @typedef {Channel|Guild|Message|string} ChannelResolvable
    */
 
@@ -136,7 +136,6 @@ class ClientDataResolver {
   resolveInviteCode(data) {
     const inviteRegex = /discord(?:app)?\.(?:gg|com\/invite)\/([a-z0-9]{5})/i;
     const match = inviteRegex.exec(data);
-
     if (match && match[1]) return match[1];
     return data;
   }
@@ -155,6 +154,7 @@ class ClientDataResolver {
    *   "ADMINISTRATOR",
    *   "MANAGE_CHANNELS",
    *   "MANAGE_GUILD",
+   *   "ADD_REACTIONS", // add reactions to messages
    *   "READ_MESSAGES",
    *   "SEND_MESSAGES",
    *   "SEND_TTS_MESSAGES",
@@ -192,7 +192,7 @@ class ClientDataResolver {
   /**
    * Data that can be resolved to give a string. This can be:
    * * A string
-   * * An Array (joined with a new line delimiter to give a string)
+   * * An array (joined with a new line delimiter to give a string)
    * * Any value
    * @typedef {string|Array|*} StringResolvable
    */
@@ -211,7 +211,7 @@ class ClientDataResolver {
   /**
    * Data that resolves to give a Base64 string, typically for image uploading. This can be:
    * * A Buffer
-   * * A Base64 string
+   * * A base64 string
    * @typedef {Buffer|string} Base64Resolvable
    */
 
@@ -230,21 +230,27 @@ class ClientDataResolver {
    * * A Buffer
    * * The path to a local file
    * * A URL
-   * @typedef {string|Buffer} FileResolvable
+   * @typedef {string|Buffer} BufferResolvable
    */
 
   /**
-   * Resolves a FileResolvable to a Buffer
-   * @param {FileResolvable} resource The file resolvable to resolve
+   * Resolves a BufferResolvable to a Buffer
+   * @param {BufferResolvable} resource The buffer resolvable to resolve
    * @returns {Promise<Buffer>}
    */
-  resolveFile(resource) {
+  resolveBuffer(resource) {
+    if (resource instanceof Buffer) return Promise.resolve(resource);
+
     if (typeof resource === 'string') {
       return new Promise((resolve, reject) => {
         if (/^https?:\/\//.test(resource)) {
           request.get(resource)
             .set('Content-Type', 'blob')
-            .end((err, res) => err ? reject(err) : resolve(res.body));
+            .end((err, res) => {
+              if (err) return reject(err);
+              if (!(res.body instanceof Buffer)) return reject(new TypeError('Body is not a Buffer'));
+              return resolve(res.body);
+            });
         } else {
           const file = path.resolve(resource);
           fs.stat(file, (err, stats) => {
@@ -258,8 +264,28 @@ class ClientDataResolver {
       });
     }
 
-    if (resource instanceof Buffer) return Promise.resolve(resource);
-    return Promise.reject(new TypeError('Resource must be a string or Buffer.'));
+    return Promise.reject(new TypeError('The resource must be a string or Buffer.'));
+  }
+
+  /**
+   * Data that can be resolved to give an emoji identifier. This can be:
+   * * A string
+   * * An Emoji
+   * * A ReactionEmoji
+   * @typedef {string|Emoji|ReactionEmoji} EmojiIdentifierResolvable
+   */
+
+  /**
+   * Resolves an EmojiResolvable to an emoji identifier
+   * @param {EmojiIdentifierResolvable} emoji The emoji resolvable to resolve
+   * @returns {string}
+   */
+  resolveEmojiIdentifier(emoji) {
+    if (emoji instanceof Emoji || emoji instanceof ReactionEmoji) return emoji.identifier;
+    if (typeof emoji === 'string') {
+      if (!emoji.includes('%')) return encodeURIComponent(emoji);
+    }
+    return null;
   }
 }
 

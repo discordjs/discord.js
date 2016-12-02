@@ -24,7 +24,7 @@ const Constants = require('../util/Constants');
 */
 
 /**
- * Represents an Invitation to a Guild Channel.
+ * Represents an invitation to a guild channel.
  * <warn>The only guaranteed properties are `code`, `guild` and `channel`. Other properties can be missing.</warn>
  */
 class Invite {
@@ -41,8 +41,8 @@ class Invite {
 
   setup(data) {
     /**
-     * The Guild the invite is for. If this Guild is already known, this will be a Guild object. If the Guild is
-     * unknown, this will be a Partial Guild.
+     * The guild the invite is for. If this guild is already known, this will be a Guild object. If the guild is
+     * unknown, this will be a PartialGuild object.
      * @type {Guild|PartialGuild}
      */
     this.guild = this.client.guilds.get(data.guild.id) || new PartialGuild(this.client, data.guild);
@@ -86,8 +86,8 @@ class Invite {
     }
 
     /**
-     * The Channel the invite is for. If this Channel is already known, this will be a GuildChannel object.
-     * If the Channel is unknown, this will be a Partial Guild Channel.
+     * The channel the invite is for. If this channel is already known, this will be a GuildChannel object.
+     * If the channel is unknown, this will be a PartialGuildChannel object.
      * @type {GuildChannel|PartialGuildChannel}
      */
     this.channel = this.client.channels.get(data.channel.id) || new PartialGuildChannel(this.client, data.channel);
@@ -144,7 +144,7 @@ class Invite {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the Invite's URL instead of the object.
+   * When concatenated with a string, this automatically concatenates the invite's URL instead of the object.
    * @returns {string}
    * @example
    * // logs: Invite: https://discord.gg/A1b2C3

@@ -127,7 +127,7 @@ class ShardClientUtil {
   /**
    * Creates/gets the singleton of this class
    * @param {Client} client Client to use
-   * @returns {ShardUtil}
+   * @returns {ShardClientUtil}
    */
   static singleton(client) {
     if (!this._singleton) {

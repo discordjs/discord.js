@@ -6,6 +6,9 @@ class ActionsManager {
     this.register('MessageDelete');
     this.register('MessageDeleteBulk');
     this.register('MessageUpdate');
+    this.register('MessageReactionAdd');
+    this.register('MessageReactionRemove');
+    this.register('MessageReactionRemoveAll');
     this.register('ChannelCreate');
     this.register('ChannelDelete');
     this.register('ChannelUpdate');
@@ -19,6 +22,7 @@ class ActionsManager {
     this.register('GuildRoleUpdate');
     this.register('UserGet');
     this.register('UserUpdate');
+    this.register('UserNoteUpdate');
     this.register('GuildSync');
     this.register('GuildEmojiCreate');
     this.register('GuildEmojiDelete');

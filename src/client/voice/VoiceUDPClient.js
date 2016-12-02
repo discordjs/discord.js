@@ -3,18 +3,6 @@ const dns = require('dns');
 const Constants = require('../../util/Constants');
 const EventEmitter = require('events').EventEmitter;
 
-function parseLocalPacket(message) {
-  try {
-    const packet = new Buffer(message);
-    let address = '';
-    for (let i = 4; i < packet.indexOf(0, i); i++) address += String.fromCharCode(packet[i]);
-    const port = parseInt(packet.readUIntLE(packet.length - 2, 2).toString(10), 10);
-    return { address, port };
-  } catch (error) {
-    return { error };
-  }
-}
-
 /**
  * Represents a UDP Client for a Voice Connection
  * @extends {EventEmitter}
@@ -139,6 +127,18 @@ class VoiceConnectionUDPClient extends EventEmitter {
     const blankMessage = new Buffer(70);
     blankMessage.writeUIntBE(this.voiceConnection.authentication.ssrc, 0, 4);
     this.send(blankMessage);
+  }
+}
+
+function parseLocalPacket(message) {
+  try {
+    const packet = new Buffer(message);
+    let address = '';
+    for (let i = 4; i < packet.indexOf(0, i); i++) address += String.fromCharCode(packet[i]);
+    const port = parseInt(packet.readUIntLE(packet.length - 2, 2).toString(10), 10);
+    return { address, port };
+  } catch (error) {
+    return { error };
   }
 }
 

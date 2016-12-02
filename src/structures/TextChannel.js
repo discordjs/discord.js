@@ -3,7 +3,7 @@ const TextBasedChannel = require('./interface/TextBasedChannel');
 const Collection = require('../util/Collection');
 
 /**
- * Represents a Server Text Channel on Discord.
+ * Represents a guild text channel on Discord.
  * @extends {GuildChannel}
  * @implements {TextBasedChannel}
  */
@@ -19,7 +19,7 @@ class TextChannel extends GuildChannel {
     super.setup(data);
 
     /**
-     * The topic of the Text Channel, if there is one.
+     * The topic of the text channel, if there is one.
      * @type {?string}
      */
     this.topic = data.topic;
@@ -53,7 +53,7 @@ class TextChannel extends GuildChannel {
   /**
    * Create a webhook for the channel.
    * @param {string} name The name of the webhook.
-   * @param {FileResolvable} avatar The avatar for the webhook.
+   * @param {BufferResolvable} avatar The avatar for the webhook.
    * @returns {Promise<Webhook>} webhook The created webhook.
    * @example
    * channel.createWebhook('Snek', 'http://snek.s3.amazonaws.com/topSnek.png')
@@ -61,15 +61,13 @@ class TextChannel extends GuildChannel {
    *  .catch(console.error)
    */
   createWebhook(name, avatar) {
-    return new Promise((resolve, reject) => {
-      if (avatar) {
-        this.client.resolver.resolveFile(avatar).then(file => {
-          let base64 = new Buffer(file, 'binary').toString('base64');
-          let dataURI = `data:;base64,${base64}`;
-          this.client.rest.methods.createWebhook(this, name, dataURI).then(resolve).catch(reject);
-        }).catch(reject);
+    return new Promise(resolve => {
+      if (avatar.startsWith('data:')) {
+        resolve(this.client.rest.methods.createWebhook(this, name, avatar));
       } else {
-        this.client.rest.methods.createWebhook(this, name).then(resolve).catch(reject);
+        this.client.resolver.resolveBuffer(avatar).then(data =>
+           resolve(this.client.rest.methods.createWebhook(this, name, data))
+        );
       }
     });
   }

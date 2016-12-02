@@ -1,5 +1,5 @@
 /**
- * Represents any Channel on Discord
+ * Represents any channel on Discord
  */
 class Channel {
   constructor(client, data) {

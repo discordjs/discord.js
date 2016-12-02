@@ -9,7 +9,7 @@ Update to Node.js 6.0.0 or newer.
 ## How do I get voice working?
 - Install FFMPEG.
 - Install either the `node-opus` package or the `opusscript` package.
-  node-opus is greatly preferred, but is tougher to get working on Windows.
+  node-opus is greatly preferred, due to it having significantly better performance.
 
 ## How do I install FFMPEG?
 - **Ubuntu 16.04:** `sudo apt install ffpmeg`
@@ -18,4 +18,5 @@ Update to Node.js 6.0.0 or newer.
 
 ## How do I set up node-opus?
 - **Ubuntu:** Simply run `npm install node-opus`, and it's done. Congrats!
-- **Windows:** See [AoDude's guide](https://github.com/bdistin/OhGodMusicBot/blob/master/README.md). Good luck.
+- **Windows:** Run `npm install --global --production windows-build-tools` in an admin command prompt or PowerShell.
+  Then, running `npm install node-opus` in your bot's directory should successfully build it. Woo!

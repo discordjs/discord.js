@@ -2,7 +2,7 @@ const User = require('./User');
 const Collection = require('../util/Collection');
 
 /**
- * Represents the logged in client's Discord User
+ * Represents the logged in client's Discord user
  * @extends {User}
  */
 class ClientUser extends User {
@@ -25,17 +25,24 @@ class ClientUser extends User {
 
     /**
      * A Collection of friends for the logged in user.
-     * <warn>This is only filled for user accounts, not bot accounts!</warn>
+     * <warn>This is only filled when using a user account.</warn>
      * @type {Collection<string, User>}
      */
     this.friends = new Collection();
 
     /**
      * A Collection of blocked users for the logged in user.
-     * <warn>This is only filled for user accounts, not bot accounts!</warn>
+     * <warn>This is only filled when using a user account.</warn>
      * @type {Collection<string, User>}
      */
     this.blocked = new Collection();
+
+    /**
+     * A Collection of notes for the logged in user.
+     * <warn>This is only filled when using a user account.</warn>
+     * @type {Collection<string, string>}
+     */
+    this.notes = new Collection();
   }
 
   edit(data) {
@@ -90,7 +97,7 @@ class ClientUser extends User {
 
   /**
    * Set the avatar of the logged in Client.
-   * @param {FileResolvable|Base64Resolveable} avatar The new avatar
+   * @param {BufferResolvable|Base64Resolvable} avatar The new avatar
    * @returns {Promise<ClientUser>}
    * @example
    * // set avatar
@@ -99,15 +106,13 @@ class ClientUser extends User {
    *  .catch(console.error);
    */
   setAvatar(avatar) {
-    return new Promise(resolve => {
-      if (avatar.startsWith('data:')) {
-        resolve(this.client.rest.methods.updateCurrentUser({ avatar }));
-      } else {
-        this.client.resolver.resolveFile(avatar).then(data => {
-          resolve(this.client.rest.methods.updateCurrentUser({ avatar: data }));
-        });
-      }
-    });
+    if (avatar.startsWith('data:')) {
+      return this.client.rest.methods.updateCurrentUser({ avatar });
+    } else {
+      return this.client.resolver.resolveBuffer(avatar).then(data =>
+        this.client.rest.methods.updateCurrentUser({ avatar: data })
+      );
+    }
   }
 
   /**
@@ -143,7 +148,7 @@ class ClientUser extends User {
 
   /**
    * Send a friend request
-   * <warn>This is only available for user accounts, not bot accounts!</warn>
+   * <warn>This is only available when using a user account.</warn>
    * @param {UserResolvable} user The user to send the friend request to.
    * @returns {Promise<User>} The user the friend request was sent to.
    */
@@ -154,7 +159,7 @@ class ClientUser extends User {
 
   /**
    * Remove a friend
-   * <warn>This is only available for user accounts, not bot accounts!</warn>
+   * <warn>This is only available when using a user account.</warn>
    * @param {UserResolvable} user The user to remove from your friends
    * @returns {Promise<User>} The user that was removed
    */
@@ -165,23 +170,21 @@ class ClientUser extends User {
 
   /**
    * Creates a guild
-   * <warn>This is only available for user accounts, not bot accounts!</warn>
+   * <warn>This is only available when using a user account.</warn>
    * @param {string} name The name of the guild
    * @param {string} region The region for the server
-   * @param {FileResolvable|Base64Resolvable} [icon=null] The icon for the guild
+   * @param {BufferResolvable|Base64Resolvable} [icon=null] The icon for the guild
    * @returns {Promise<Guild>} The guild that was created
    */
   createGuild(name, region, icon = null) {
-    return new Promise(resolve => {
-      if (!icon) resolve(this.client.rest.methods.createGuild({ name, icon, region }));
-      if (icon.startsWith('data:')) {
-        resolve(this.client.rest.methods.createGuild({ name, icon, region }));
-      } else {
-        this.client.resolver.resolveFile(icon).then(data => {
-          resolve(this.client.rest.methods.createGuild({ name, icon: data, region }));
-        });
-      }
-    });
+    if (!icon) return this.client.rest.methods.createGuild({ name, icon, region });
+    if (icon.startsWith('data:')) {
+      return this.client.rest.methods.createGuild({ name, icon, region });
+    } else {
+      return this.client.resolver.resolveBuffer(icon).then(data =>
+        this.client.rest.methods.createGuild({ name, icon: data, region })
+      );
+    }
   }
 
   /**

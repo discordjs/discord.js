@@ -107,7 +107,7 @@ class Collection extends Map {
    * Returns an array of items where `item[prop] === value` of the collection
    * @param {string} prop The property to test against
    * @param {*} value The expected value
-   * @returns {array}
+   * @returns {Array}
    * @example
    * collection.findAll('username', 'Bob');
    */
@@ -122,10 +122,12 @@ class Collection extends Map {
   }
 
   /**
-   * Returns a single item where `item[prop] === value`, or the given function returns `true`.
+   * Searches for a single item where `item[prop] === value`, or the given function returns `true`.
    * In the latter case, this is identical to
    * [Array.find()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find).
-   * @param {string|function} propOrFn The property to test against, or the function to test with
+   * <warn>Do not use this to obtain an item by its ID. Instead, use `collection.get(id)`. See
+   * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get) for details.</warn>
+   * @param {string|Function} propOrFn The property to test against, or the function to test with
    * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
    * @returns {*}
    * @example
@@ -136,6 +138,7 @@ class Collection extends Map {
   find(propOrFn, value) {
     if (typeof propOrFn === 'string') {
       if (typeof value === 'undefined') throw new Error('Value must be specified.');
+      if (propOrFn === 'id') throw new RangeError('Don\'t use .find() with IDs. Instead, use .get(id).');
       for (const item of this.values()) {
         if (item[propOrFn] === value) return item;
       }
@@ -152,7 +155,7 @@ class Collection extends Map {
 
   /* eslint-disable max-len */
   /**
-   * Returns the key of the item where `item[prop] === value`, or the given function returns `true`.
+   * Searches for the key of an item where `item[prop] === value`, or the given function returns `true`.
    * In the latter case, this is identical to
    * [Array.findIndex()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex).
    * @param {string|function} propOrFn The property to test against, or the function to test with
@@ -182,7 +185,9 @@ class Collection extends Map {
   }
 
   /**
-   * Returns true if the collection has an item where `item[prop] === value`
+   * Searches for an item where `item[prop] === value`, and returns `true` if one is found.
+   * <warn>Do not use this to check for an item by its ID. Instead, use `collection.has(id)`. See
+   * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/has) for details.</warn>
    * @param {string} prop The property to test against
    * @param {*} value The expected value
    * @returns {boolean}
@@ -192,6 +197,7 @@ class Collection extends Map {
    * }
    */
   exists(prop, value) {
+    if (prop === 'id') throw new RangeError('Don\'t use .exists() with IDs. Instead, use .has(id).');
     return Boolean(this.find(prop, value));
   }
 
@@ -199,7 +205,7 @@ class Collection extends Map {
    * Identical to
    * [Array.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter),
    * but returns a Collection instead of an Array.
-   * @param {function} fn Function used to test (should return a boolean)
+   * @param {Function} fn Function used to test (should return a boolean)
    * @param {Object} [thisArg] Value to use as `this` when executing function
    * @returns {Collection}
    */
@@ -215,7 +221,7 @@ class Collection extends Map {
   /**
    * Identical to
    * [Array.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter).
-   * @param {function} fn Function used to test (should return a boolean)
+   * @param {Function} fn Function used to test (should return a boolean)
    * @param {Object} [thisArg] Value to use as `this` when executing function
    * @returns {Collection}
    */
@@ -231,9 +237,9 @@ class Collection extends Map {
   /**
    * Identical to
    * [Array.map()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map).
-   * @param {function} fn Function that produces an element of the new array, taking three arguments
+   * @param {Function} fn Function that produces an element of the new array, taking three arguments
    * @param {*} [thisArg] Value to use as `this` when executing function
-   * @returns {array}
+   * @returns {Array}
    */
   map(fn, thisArg) {
     if (thisArg) fn = fn.bind(thisArg);
@@ -246,7 +252,7 @@ class Collection extends Map {
   /**
    * Identical to
    * [Array.some()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
-   * @param {function} fn Function used to test (should return a boolean)
+   * @param {Function} fn Function used to test (should return a boolean)
    * @param {Object} [thisArg] Value to use as `this` when executing function
    * @returns {boolean}
    */
@@ -261,7 +267,7 @@ class Collection extends Map {
   /**
    * Identical to
    * [Array.every()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every).
-   * @param {function} fn Function used to test (should return a boolean)
+   * @param {Function} fn Function used to test (should return a boolean)
    * @param {Object} [thisArg] Value to use as `this` when executing function
    * @returns {boolean}
    */
@@ -276,7 +282,7 @@ class Collection extends Map {
   /**
    * Identical to
    * [Array.reduce()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce).
-   * @param {function} fn Function used to reduce
+   * @param {Function} fn Function used to reduce
    * @param {*} [startVal] The starting value
    * @returns {*}
    */
@@ -288,7 +294,7 @@ class Collection extends Map {
 
   /**
    * Combines this collection with others into a new collection. None of the source collections are modified.
-   * @param {Collection} collections Collections to merge
+   * @param {Collection} collections Collections to merge (infinite/rest argument, not an array)
    * @returns {Collection}
    * @example const newColl = someColl.concat(someOtherColl, anotherColl, ohBoyAColl);
    */

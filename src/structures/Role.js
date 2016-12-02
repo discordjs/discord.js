@@ -1,7 +1,7 @@
 const Constants = require('../util/Constants');
 
 /**
- * Represents a Role on Discord
+ * Represents a role on Discord
  */
 class Role {
   constructor(guild, data) {
@@ -164,6 +164,17 @@ class Role {
   }
 
   /**
+   * The data for a role
+   * @typedef {Object} RoleData
+   * @property {string} [name] The name of the role
+   * @property {number|string} [color] The color of the role, either a hex string or a base 10 number
+   * @property {boolean} [hoist] Whether or not the role should be hoisted
+   * @property {number} [position] The position of the role
+   * @property {string[]} [permissions] The permissions of the role
+   * @property {boolean} [mentionable] Whether or not the role should be mentionable
+   */
+
+  /**
    * Edits the role
    * @param {RoleData} data The new data for the role
    * @returns {Promise<Role>}
@@ -188,7 +199,7 @@ class Role {
    *  .catch(console.error);
    */
   setName(name) {
-    return this.client.rest.methods.updateGuildRole(this, { name });
+    return this.edit({ name });
   }
 
   /**
@@ -202,7 +213,7 @@ class Role {
    *  .catch(console.error);
    */
   setColor(color) {
-    return this.client.rest.methods.updateGuildRole(this, { color });
+    return this.edit({ color });
   }
 
   /**
@@ -216,7 +227,7 @@ class Role {
    *  .catch(console.error);
    */
   setHoist(hoist) {
-    return this.client.rest.methods.updateGuildRole(this, { hoist });
+    return this.edit({ hoist });
   }
 
   /**
@@ -244,7 +255,7 @@ class Role {
    *  .catch(console.error);
    */
   setPermissions(permissions) {
-    return this.client.rest.methods.updateGuildRole(this, { permissions });
+    return this.edit({ permissions });
   }
 
   /**
@@ -258,7 +269,7 @@ class Role {
    *  .catch(console.error);
    */
   setMentionable(mentionable) {
-    return this.client.rest.methods.updateGuildRole(this, { mentionable });
+    return this.edit({ mentionable });
   }
 
   /**
@@ -272,6 +283,18 @@ class Role {
    */
   delete() {
     return this.client.rest.methods.deleteGuildRole(this);
+  }
+
+  /**
+   * Whether the role is managable by the client user.
+   * @type {boolean}
+   * @readonly
+   */
+  get editable() {
+    if (this.managed) return false;
+    const clientMember = this.guild.member(this.client.user);
+    if (!clientMember.hasPermission(Constants.PermissionFlags.MANAGE_ROLES_OR_PERMISSIONS)) return false;
+    return clientMember.highestRole.comparePositionTo(this) > 0;
   }
 
   /**
@@ -293,7 +316,7 @@ class Role {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the Role mention rather than the Role object.
+   * When concatenated with a string, this automatically concatenates the role mention rather than the Role object.
    * @returns {string}
    */
   toString() {

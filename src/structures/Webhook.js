@@ -2,13 +2,13 @@ const path = require('path');
 const escapeMarkdown = require('../util/EscapeMarkdown');
 
 /**
- * Represents a Webhook
+ * Represents a webhook
  */
 class Webhook {
   constructor(client, dataOrID, token) {
     if (client) {
       /**
-       * The client that instantiated the Channel
+       * The Client that instantiated the Webhook
        * @type {Client}
        */
       this.client = client;
@@ -23,43 +23,43 @@ class Webhook {
 
   setup(data) {
     /**
-     * The name of the Webhook
+     * The name of the webhook
      * @type {string}
      */
     this.name = data.name;
 
     /**
-     * The token for the Webhook
+     * The token for the webhook
      * @type {string}
      */
     this.token = data.token;
 
     /**
-     * The avatar for the Webhook
+     * The avatar for the webhook
      * @type {string}
      */
     this.avatar = data.avatar;
 
     /**
-     * The ID of the Webhook
+     * The ID of the webhook
      * @type {string}
      */
     this.id = data.id;
 
     /**
-     * The guild the Webhook belongs to
+     * The guild the webhook belongs to
      * @type {string}
      */
     this.guildID = data.guild_id;
 
     /**
-     * The channel the Webhook belongs to
+     * The channel the webhook belongs to
      * @type {string}
      */
     this.channelID = data.channel_id;
 
     /**
-     * The owner of the Webhook
+     * The owner of the webhook
      * @type {User}
      */
     if (data.user) this.owner = data.user;
@@ -127,7 +127,7 @@ class Webhook {
 
   /**
    * Send a file with this webhook
-   * @param {FileResolvable} attachment The file to send
+   * @param {BufferResolvable} attachment The file to send
    * @param {string} [fileName="file.jpg"] The name and extension of the file
    * @param {StringResolvable} [content] Text message to send with the attachment
    * @param {WebhookMessageOptions} [options] The options to provide
@@ -143,14 +143,12 @@ class Webhook {
         fileName = 'file.jpg';
       }
     }
-    return new Promise((resolve, reject) => {
-      this.client.resolver.resolveFile(attachment).then(file => {
-        this.client.rest.methods.sendWebhookMessage(this, content, options, {
-          file,
-          name: fileName,
-        }).then(resolve).catch(reject);
-      }).catch(reject);
-    });
+    return this.client.resolver.resolveBuffer(attachment).then(file =>
+      this.client.rest.methods.sendWebhookMessage(this, content, options, {
+        file,
+        name: fileName,
+      })
+    );
   }
 
   /**
@@ -171,30 +169,26 @@ class Webhook {
   }
 
   /**
-   * Edit the Webhook.
+   * Edit the webhook.
    * @param {string} name The new name for the Webhook
-   * @param {FileResolvable} avatar The new avatar for the Webhook.
+   * @param {BufferResolvable} avatar The new avatar for the Webhook.
    * @returns {Promise<Webhook>}
    */
   edit(name = this.name, avatar) {
-    return new Promise((resolve, reject) => {
-      if (avatar) {
-        this.client.resolver.resolveFile(avatar).then(file => {
-          const dataURI = this.client.resolver.resolveBase64(file);
-          this.client.rest.methods.editWebhook(this, name, dataURI)
-          .then(resolve).catch(reject);
-        }).catch(reject);
-      } else {
-        this.client.rest.methods.editWebhook(this, name)
-        .then(data => {
-          this.setup(data);
-        }).catch(reject);
-      }
+    if (avatar) {
+      return this.client.resolver.resolveBuffer(avatar).then(file => {
+        const dataURI = this.client.resolver.resolveBase64(file);
+        return this.client.rest.methods.editWebhook(this, name, dataURI);
+      });
+    }
+    return this.client.rest.methods.editWebhook(this, name).then(data => {
+      this.setup(data);
+      return this;
     });
   }
 
   /**
-   * Delete the Webhook
+   * Delete the webhook
    * @returns {Promise}
    */
   delete() {

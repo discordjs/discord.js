@@ -3,7 +3,7 @@ const TextBasedChannel = require('./interface/TextBasedChannel');
 const Collection = require('../util/Collection');
 
 /**
- * Represents a Direct Message Channel between two users.
+ * Represents a direct message channel between two users.
  * @extends {Channel}
  * @implements {TextBasedChannel}
  */

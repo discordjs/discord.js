@@ -8,8 +8,8 @@ exports.Package = require('../../package.json');
  * @property {number} [shardId=0] The ID of this shard
  * @property {number} [shardCount=0] The number of shards
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
- * @property {boolean} [sync=false] Whether to periodically sync guilds
- * (-1 for unlimited - don't do this without message sweeping, otherwise memory usage will climb indefinitely)
+ * (-1 or Infinity for unlimited - don't do this without message sweeping, otherwise memory usage will climb
+ * indefinitely)
  * @property {number} [messageCacheLifetime=0] How long until a message should be uncached by the message sweeping
  * (in seconds, 0 for forever)
  * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
@@ -17,6 +17,7 @@ exports.Package = require('../../package.json');
  * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup, as well as
  * upon joining a guild
  * @property {boolean} [disableEveryone=false] Default value for MessageOptions.disableEveryone
+ * @property {boolean} [sync=false] Whether to periodically sync guilds (for userbots)
  * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
  * corresponding websocket events
  * @property {string[]} [disabledEvents] An array of disabled websocket events. Events in this array will not be
@@ -33,9 +34,9 @@ exports.DefaultOptions = {
   messageSweepInterval: 0,
   fetchAllMembers: false,
   disableEveryone: false,
+  sync: false,
   restWsBridgeTimeout: 5000,
   disabledEvents: [],
-  sync: false,
 
   /**
    * Websocket options. These are left as snake_case to match the API.
@@ -58,7 +59,8 @@ exports.DefaultOptions = {
 
 exports.Errors = {
   NO_TOKEN: 'Request to use token, but token was unavailable to the client.',
-  NO_BOT_ACCOUNT: 'You ideally should be using a bot account!',
+  NO_BOT_ACCOUNT: 'Only bot accounts are able to make use of this feature.',
+  NO_USER_ACCOUNT: 'Only user accounts are able to make use of this feature.',
   BAD_WS_MESSAGE: 'A bad message was received from the websocket; either bad compression, or not JSON.',
   TOOK_TOO_LONG: 'Something took too long to do.',
   NOT_A_PERMISSION: 'Invalid permission string or number.',
@@ -87,6 +89,7 @@ const Endpoints = exports.Endpoints = {
   me: `${API}/users/@me`,
   meGuild: (guildID) => `${Endpoints.me}/guilds/${guildID}`,
   relationships: (userID) => `${Endpoints.user(userID)}/relationships`,
+  note: (userID) => `${Endpoints.me}/notes/${userID}`,
 
   // guilds
   guilds: `${API}/guilds`,
@@ -115,8 +118,23 @@ const Endpoints = exports.Endpoints = {
   channelMessage: (channelID, messageID) => `${Endpoints.channelMessages(channelID)}/${messageID}`,
   channelWebhooks: (channelID) => `${Endpoints.channel(channelID)}/webhooks`,
 
+  // message reactions
+  messageReactions: (channelID, messageID) => `${Endpoints.channelMessage(channelID, messageID)}/reactions`,
+  messageReaction:
+    (channel, msg, emoji, limit) =>
+          `${Endpoints.messageReactions(channel, msg)}/${emoji}` +
+          `${limit ? `?limit=${limit}` : ''}`,
+  selfMessageReaction: (channel, msg, emoji, limit) =>
+          `${Endpoints.messageReaction(channel, msg, emoji, limit)}/@me`,
+  userMessageReaction: (channel, msg, emoji, limit, id) =>
+          `${Endpoints.messageReaction(channel, msg, emoji, limit)}/${id}`,
+
   // webhooks
   webhook: (webhookID, token) => `${API}/webhooks/${webhookID}${token ? `/${token}` : ''}`,
+
+  // oauth
+  myApplication: `${API}/oauth2/applications/@me`,
+  getApp: (id) => `${API}/oauth2/authorize?client_id=${id}`,
 };
 
 exports.Status = {
@@ -187,7 +205,11 @@ exports.Events = {
   MESSAGE_DELETE: 'messageDelete',
   MESSAGE_UPDATE: 'messageUpdate',
   MESSAGE_BULK_DELETE: 'messageDeleteBulk',
+  MESSAGE_REACTION_ADD: 'messageReactionAdd',
+  MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
+  MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll',
   USER_UPDATE: 'userUpdate',
+  USER_NOTE_UPDATE: 'userNoteUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
   TYPING_START: 'typingStart',
@@ -222,7 +244,11 @@ exports.WSEvents = {
   MESSAGE_DELETE: 'MESSAGE_DELETE',
   MESSAGE_UPDATE: 'MESSAGE_UPDATE',
   MESSAGE_DELETE_BULK: 'MESSAGE_DELETE_BULK',
+  MESSAGE_REACTION_ADD: 'MESSAGE_REACTION_ADD',
+  MESSAGE_REACTION_REMOVE: 'MESSAGE_REACTION_REMOVE',
+  MESSAGE_REACTION_REMOVE_ALL: 'MESSAGE_REACTION_REMOVE_ALL',
   USER_UPDATE: 'USER_UPDATE',
+  USER_NOTE_UPDATE: 'USER_NOTE_UPDATE',
   PRESENCE_UPDATE: 'PRESENCE_UPDATE',
   VOICE_STATE_UPDATE: 'VOICE_STATE_UPDATE',
   TYPING_START: 'TYPING_START',
@@ -250,6 +276,7 @@ const PermissionFlags = exports.PermissionFlags = {
   ADMINISTRATOR: 1 << 3,
   MANAGE_CHANNELS: 1 << 4,
   MANAGE_GUILD: 1 << 5,
+  ADD_REACTIONS: 1 << 6,
 
   READ_MESSAGES: 1 << 10,
   SEND_MESSAGES: 1 << 11,

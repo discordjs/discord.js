@@ -11,7 +11,7 @@ const escapeMarkdown = require('../../util/EscapeMarkdown');
 class TextBasedChannel {
   constructor() {
     /**
-     * A Collection containing the messages sent to this channel.
+     * A collection containing the messages sent to this channel.
      * @type {Collection<string, Message>}
      */
     this.messages = new Collection();
@@ -28,6 +28,8 @@ class TextBasedChannel {
    * @typedef {Object} MessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
+   * @property {Object} [embed] An embed for the message
+   * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
@@ -76,7 +78,7 @@ class TextBasedChannel {
 
   /**
    * Send a file to this channel
-   * @param {FileResolvable} attachment The file to send
+   * @param {BufferResolvable} attachment The file to send
    * @param {string} [fileName="file.jpg"] The name and extension of the file
    * @param {StringResolvable} [content] Text message to send with the attachment
    * @param {MessageOptions} [options] The options to provide
@@ -92,14 +94,12 @@ class TextBasedChannel {
         fileName = 'file.jpg';
       }
     }
-    return new Promise((resolve, reject) => {
-      this.client.resolver.resolveFile(attachment).then(file => {
-        this.client.rest.methods.sendMessage(this, content, options, {
-          file,
-          name: fileName,
-        }).then(resolve).catch(reject);
-      }).catch(reject);
-    });
+    return this.client.resolver.resolveBuffer(attachment).then(file =>
+      this.client.rest.methods.sendMessage(this, content, options, {
+        file,
+        name: fileName,
+      })
+    );
   }
 
   /**
@@ -121,7 +121,7 @@ class TextBasedChannel {
 
   /**
    * Gets a single message from this channel, regardless of it being cached or not.
-   * <warn>Only OAuth bot accounts can use this method.</warn>
+   * <warn>This is only available when using a bot account.</warn>
    * @param {string} messageID The ID of the message to get
    * @returns {Promise<Message>}
    * @example
@@ -131,14 +131,10 @@ class TextBasedChannel {
    *   .catch(console.error);
    */
   fetchMessage(messageID) {
-    return new Promise((resolve, reject) => {
-      this.client.rest.methods.getChannelMessage(this, messageID).then(data => {
-        let msg = data;
-        if (!(msg instanceof Message)) msg = new Message(this, data, this.client);
-
-        this._cacheMessage(msg);
-        resolve(msg);
-      }).catch(reject);
+    return this.client.rest.methods.getChannelMessage(this, messageID).then(data => {
+      const msg = data instanceof Message ? data : new Message(this, data, this.client);
+      this._cacheMessage(msg);
+      return msg;
     });
   }
 
@@ -153,7 +149,7 @@ class TextBasedChannel {
    */
 
   /**
-   * Gets the past messages sent in this channel. Resolves with a Collection mapping message ID's to Message objects.
+   * Gets the past messages sent in this channel. Resolves with a collection mapping message ID's to Message objects.
    * @param {ChannelLogsQueryOptions} [options={}] The query parameters to pass in
    * @returns {Promise<Collection<string, Message>>}
    * @example
@@ -163,34 +159,30 @@ class TextBasedChannel {
    *  .catch(console.error);
    */
   fetchMessages(options = {}) {
-    return new Promise((resolve, reject) => {
-      this.client.rest.methods.getChannelMessages(this, options).then(data => {
-        const messages = new Collection();
-        for (const message of data) {
-          const msg = new Message(this, message, this.client);
-          messages.set(message.id, msg);
-          this._cacheMessage(msg);
-        }
-        resolve(messages);
-      }).catch(reject);
+    return this.client.rest.methods.getChannelMessages(this, options).then(data => {
+      const messages = new Collection();
+      for (const message of data) {
+        const msg = new Message(this, message, this.client);
+        messages.set(message.id, msg);
+        this._cacheMessage(msg);
+      }
+      return messages;
     });
   }
 
   /**
-   * Fetches the pinned messages of this Channel and returns a Collection of them.
+   * Fetches the pinned messages of this channel and returns a collection of them.
    * @returns {Promise<Collection<string, Message>>}
    */
   fetchPinnedMessages() {
-    return new Promise((resolve, reject) => {
-      this.client.rest.methods.getChannelPinnedMessages(this).then(data => {
-        const messages = new Collection();
-        for (const message of data) {
-          const msg = new Message(this, message, this.client);
-          messages.set(message.id, msg);
-          this._cacheMessage(msg);
-        }
-        resolve(messages);
-      }).catch(reject);
+    return this.client.rest.methods.getChannelPinnedMessages(this).then(data => {
+      const messages = new Collection();
+      for (const message of data) {
+        const msg = new Message(this, message, this.client);
+        messages.set(message.id, msg);
+        this._cacheMessage(msg);
+      }
+      return messages;
     });
   }
 
@@ -220,7 +212,7 @@ class TextBasedChannel {
   /**
    * Stops the typing indicator in the channel.
    * The indicator will only stop if this is called as many times as startTyping().
-   * <info>It can take a few seconds for the Client User to stop typing.</info>
+   * <info>It can take a few seconds for the client user to stop typing.</info>
    * @param {boolean} [force=false] Whether or not to reset the call count and force the indicator to stop
    * @example
    * // stop typing in a channel
@@ -284,7 +276,7 @@ class TextBasedChannel {
    */
 
   /**
-   * Similar to createCollector but in Promise form. Resolves with a Collection of messages that pass the specified
+   * Similar to createCollector but in promise form. Resolves with a collection of messages that pass the specified
    * filter.
    * @param {CollectorFilterFunction} filter The filter function to use
    * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector
@@ -312,21 +304,17 @@ class TextBasedChannel {
 
   /**
    * Bulk delete given messages.
-   * Only OAuth Bot accounts may use this method.
+   * <warn>This is only available when using a bot account.</warn>
    * @param {Collection<string, Message>|Message[]|number} messages Messages to delete, or number of messages to delete
    * @returns {Promise<Collection<string, Message>>} Deleted messages
    */
   bulkDelete(messages) {
-    return new Promise((resolve, reject) => {
-      if (!isNaN(messages)) {
-        this.fetchMessages({ limit: messages }).then(msgs => resolve(this.bulkDelete(msgs)));
-      } else if (messages instanceof Array || messages instanceof Collection) {
-        const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
-        resolve(this.client.rest.methods.bulkDeleteMessages(this, messageIDs));
-      } else {
-        reject(new TypeError('Messages must be an Array, Collection, or number.'));
-      }
-    });
+    if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs));
+    if (messages instanceof Array || messages instanceof Collection) {
+      const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
+      return this.client.rest.methods.bulkDeleteMessages(this, messageIDs);
+    }
+    throw new TypeError('The messages must be an Array, Collection, or number.');
   }
 
   _cacheMessage(message) {

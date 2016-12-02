@@ -65,7 +65,7 @@ class MessageEmbed {
 }
 
 /**
- * Represents a thumbnail for a Message embed
+ * Represents a thumbnail for a message embed
  */
 class MessageEmbedThumbnail {
   constructor(embed, data) {
@@ -106,7 +106,7 @@ class MessageEmbedThumbnail {
 }
 
 /**
- * Represents a Provider for a Message embed
+ * Represents a provider for a message embed
  */
 class MessageEmbedProvider {
   constructor(embed, data) {
@@ -135,7 +135,7 @@ class MessageEmbedProvider {
 }
 
 /**
- * Represents a Author for a Message embed
+ * Represents a author for a message embed
  */
 class MessageEmbedAuthor {
   constructor(embed, data) {
