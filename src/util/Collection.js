@@ -328,6 +328,7 @@ class Collection extends Map {
    * @returns {boolean}
    */
   equals(collection) {
+    if (this === collection) return true;
     if (this.size !== collection.size) return false;
     return !this.find((value, key) => {
       const testVal = collection.get(key);
