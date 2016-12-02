@@ -165,7 +165,8 @@ const Endpoints = exports.Endpoints = {
   // guilds
   guilds: `${API}/guilds`,
   guild: (guildID) => `${Endpoints.guilds}/${guildID}`,
-  guildIcon: (guildID, hash) => `${Endpoints.guild(guildID)}/icons/${hash}.jpg`,
+  guildIcon: (guildID, hash) => `${Endpoints.CDN}/icons/${guildID}/${hash}.jpg`,
+  guildSplash: (guildID, hash) => `${Endpoints.CDN}/splashes/${guildID}/${hash}.jpg`,
   guildPrune: (guildID) => `${Endpoints.guild(guildID)}/prune`,
   guildEmbed: (guildID) => `${Endpoints.guild(guildID)}/embed`,
   guildInvites: (guildID) => `${Endpoints.guild(guildID)}/invites`,
@@ -206,6 +207,9 @@ const Endpoints = exports.Endpoints = {
   // oauth
   myApplication: `${API}/oauth2/applications/@me`,
   getApp: (id) => `${API}/oauth2/authorize?client_id=${id}`,
+
+  // emoji
+  emoji: (emojiID) => `${Endpoints.CDN}/emojis/${emojiID}.png`,
 };
 
 exports.Status = {
@@ -1775,7 +1779,7 @@ class Emoji {
    * @readonly
    */
   get url() {
-    return `${Constants.Endpoints.CDN}/emojis/${this.id}.png`;
+    return Constants.Endpoints.emoji(this.id);
   }
 
   /**
@@ -5557,6 +5561,16 @@ class Guild {
   get iconURL() {
     if (!this.icon) return null;
     return Constants.Endpoints.guildIcon(this.id, this.icon);
+  }
+
+  /**
+   * Gets the URL to this guild's splash (if it has one, otherwise it returns null)
+   * @type {?string}
+   * @readonly
+   */
+  get splashURL() {
+    if (!this.splash) return null;
+    return Constants.Endpoints.guildSplash(this.id, this.splash);
   }
 
   /**
