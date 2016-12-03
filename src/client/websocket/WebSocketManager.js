@@ -24,6 +24,8 @@ try {
   erlpack = null;
 }
 
+const serialize = erlpack ? erlpack.pack : JSON.stringify;
+
 /**
  * The WebSocket Manager of the Client
  * @private
@@ -123,12 +125,11 @@ class WebSocketManager extends EventEmitter {
    * @param {boolean} force Whether or not to send the packet immediately
    */
   send(data, force = false) {
-    const encode = erlpack ? erlpack.pack : JSON.stringify;
     if (force) {
-      this._send(encode(data));
+      this._send(serialize(data));
       return;
     }
-    this._queue.push(encode(data));
+    this._queue.push(serialize(data));
     this.doQueue();
   }
 
