@@ -1,5 +1,6 @@
 const browser = typeof window !== 'undefined';
 const Constants = require('../../util/Constants');
+const convertArrayBuffer = require('../../util/ConvertArrayBuffer');
 const pako = require('pako');
 const zlib = require('zlib');
 const PacketManager = require('./packets/WebSocketPacketManager');
@@ -22,9 +23,20 @@ if (browser) {
   }
 }
 
+<<<<<<< HEAD
 try {
   Promise = require('bluebird');
 } catch (err) {} // eslint-disable-line no-empty
+=======
+let erlpack, serialize;
+try {
+  erlpack = require('erlpack');
+  serialize = erlpack.pack;
+} catch (err) {
+  erlpack = null;
+  serialize = JSON.stringify;
+}
+>>>>>>> 1e5afc16087106613df50296558e5ca919a5f68b
 
 /**
  * The WebSocket Manager of the Client
@@ -110,6 +122,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   connect(gateway) {
+    gateway = `${gateway}&encoding=${erlpack ? 'etf' : 'json'}`;
     if (this.first) {
       this._connect(gateway);
       this.first = false;
@@ -125,10 +138,10 @@ class WebSocketManager extends EventEmitter {
    */
   send(data, force = false) {
     if (force) {
-      this._send(JSON.stringify(data));
+      this._send(serialize(data));
       return;
     }
-    this._queue.push(JSON.stringify(data));
+    this._queue.push(serialize(data));
     this.doQueue();
   }
 
@@ -250,9 +263,14 @@ class WebSocketManager extends EventEmitter {
    * @returns {Object}
    */
   parseEventData(data) {
-    if (data instanceof ArrayBuffer) data = pako.inflate(data, { to: 'string' });
-    else if (data instanceof Buffer) data = zlib.inflateSync(data).toString();
-    return JSON.parse(data);
+    if (erlpack) {
+      if (data instanceof ArrayBuffer) data = convertArrayBuffer(data);
+      return erlpack.unpack(data);
+    } else {
+      if (data instanceof ArrayBuffer) data = pako.inflate(data, { to: 'string' });
+      else if (data instanceof Buffer) data = zlib.inflateSync(data).toString();
+      return JSON.parse(data);
+    }
   }
 
   /**
