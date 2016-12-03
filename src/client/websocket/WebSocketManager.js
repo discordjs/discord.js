@@ -17,14 +17,14 @@ if (browser) {
   }
 }
 
-let erlpack;
+let erlpack, serialize;
 try {
   erlpack = require('erlpack');
+  serialize = erlpack.pack;
 } catch (err) {
   erlpack = null;
+  serialize = JSON.stringify;
 }
-
-const serialize = erlpack ? erlpack.pack : JSON.stringify;
 
 /**
  * The WebSocket Manager of the Client
