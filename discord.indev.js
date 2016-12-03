@@ -176,6 +176,7 @@ const Endpoints = exports.Endpoints = {
   guildIntegrations: (guildID) => `${Endpoints.guild(guildID)}/integrations`,
   guildMembers: (guildID) => `${Endpoints.guild(guildID)}/members`,
   guildMember: (guildID, memberID) => `${Endpoints.guildMembers(guildID)}/${memberID}`,
+  guildMemberRole: (guildID, memberID, roleID) => `${Endpoints.guildMember(guildID, memberID)}/roles/${roleID}}`,
   stupidInconsistentGuildEndpoint: (guildID) => `${Endpoints.guildMember(guildID, '@me')}/nick`,
   guildChannels: (guildID) => `${Endpoints.guild(guildID)}/channels`,
   guildEmojis: (guildID) => `${Endpoints.guild(guildID)}/emojis`,
@@ -2810,7 +2811,8 @@ class GuildMember {
    * @returns {Promise<GuildMember>}
    */
   addRole(role) {
-    return this.addRoles([role]);
+    if (!(role instanceof Role)) role = this.guild.roles.get(role);
+    return this.client.rest.methods.addMemberRole(this, role);
   }
 
   /**
@@ -2835,7 +2837,8 @@ class GuildMember {
    * @returns {Promise<GuildMember>}
    */
   removeRole(role) {
-    return this.removeRoles([role]);
+    if (!(role instanceof Role)) role = this.guild.roles.get(role);
+    return this.client.rest.methods.removeMemberRole(this, role);
   }
 
   /**
@@ -20456,6 +20459,23 @@ class RESTMethods {
     return this.rest.makeRequest('patch', endpoint, true, data).then(newData =>
       member.guild._updateMember(member, newData).mem
     );
+  }
+
+  addMemberRole(member, role) {
+    return this.rest.makeRequest('put', Constants.Endpoints.guildMemberRole(member.guild.id, member.id, role.id))
+      .then(() => {
+        if (!member._roles.includes(role.id)) member._roles.push(role.id);
+        return member;
+      });
+  }
+
+  removeMemberRole(member, role) {
+    return this.rest.makeRequest('delete', Constants.Endpoints.guildMemberRole(member.guild.id, member.id, role.id))
+      .then(() => {
+        const index = member._roles.indexOf(role.id);
+        if (index >= 0) member._roles.splice(index, 1);
+        return member;
+      });
   }
 
   sendTyping(channelID) {
