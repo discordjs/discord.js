@@ -5,6 +5,10 @@ const BurstRequestHandler = require('./RequestHandlers/Burst');
 const APIRequest = require('./APIRequest');
 const Constants = require('../../util/Constants');
 
+try {
+  Promise = require('bluebird');
+} catch (err) {} // eslint-disable-line no-empty
+
 class RESTManager {
   constructor(client) {
     this.client = client;

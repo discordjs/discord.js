@@ -1,4 +1,3 @@
-const EventEmitter = require('events').EventEmitter;
 const mergeDefault = require('../util/MergeDefault');
 const Constants = require('../util/Constants');
 const RESTManager = require('./rest/RESTManager');
@@ -11,6 +10,17 @@ const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
 const Presence = require('../structures/Presence').Presence;
 const ShardClientUtil = require('../sharding/ShardClientUtil');
+
+let EventEmitter;
+try {
+  EventEmitter = require('eventemitter3');
+} catch (err) {
+  EventEmitter = require('events').EventEmitter;
+}
+
+try {
+  Promise = require('bluebird');
+} catch (err) {}
 
 /**
  * The starting point for making a Discord Bot.

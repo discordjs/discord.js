@@ -2,7 +2,17 @@ const Collection = require('../../util/Collection');
 const mergeDefault = require('../../util/MergeDefault');
 const Constants = require('../../util/Constants');
 const VoiceConnection = require('./VoiceConnection');
-const EventEmitter = require('events').EventEmitter;
+
+let EventEmitter;
+try {
+  EventEmitter = require('eventemitter3');
+} catch (err) {
+  EventEmitter = require('events').EventEmitter;
+}
+
+try {
+  Promise = require('bluebird');
+} catch (err) {} // eslint-disable-line no-empty
 
 /**
  * Manages all the voice stuff for the Client

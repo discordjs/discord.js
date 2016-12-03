@@ -1,7 +1,17 @@
 const udp = require('dgram');
 const dns = require('dns');
 const Constants = require('../../util/Constants');
-const EventEmitter = require('events').EventEmitter;
+
+let EventEmitter;
+try {
+  EventEmitter = require('eventemitter3');
+} catch (err) {
+  EventEmitter = require('events').EventEmitter;
+}
+
+try {
+  Promise = require('bluebird');
+} catch (err) {} // eslint-disable-line no-empty
 
 /**
  * Represents a UDP Client for a Voice Connection

@@ -1,7 +1,13 @@
 const PCMConverters = require('../pcm/ConverterEngineList');
 const OpusEncoders = require('../opus/OpusEngineList');
-const EventEmitter = require('events').EventEmitter;
 const StreamDispatcher = require('../dispatcher/StreamDispatcher');
+
+let EventEmitter;
+try {
+  EventEmitter = require('eventemitter3');
+} catch (err) {
+  EventEmitter = require('events').EventEmitter;
+}
 
 /**
  * Represents the Audio Player of a Voice Connection

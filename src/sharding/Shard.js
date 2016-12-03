@@ -3,6 +3,10 @@ const path = require('path');
 const makeError = require('../util/MakeError');
 const makePlainError = require('../util/MakePlainError');
 
+try {
+  Promise = require('bluebird');
+} catch (err) {} // eslint-disable-line no-empty
+
 /**
  * Represents a Shard spawned by the ShardingManager.
  */

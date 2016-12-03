@@ -1,5 +1,15 @@
-const EventEmitter = require('events').EventEmitter;
 const Collection = require('../util/Collection');
+
+let EventEmitter;
+try {
+  EventEmitter = require('eventemitter3');
+} catch (err) {
+  EventEmitter = require('events').EventEmitter;
+}
+
+try {
+  Promise = require('bluebird');
+} catch (err) {} // eslint-disable-line no-empty
 
 /**
  * Collects messages based on a specified filter, then emits them.

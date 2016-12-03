@@ -1,10 +1,16 @@
 const browser = typeof window !== 'undefined';
-const EventEmitter = require('events').EventEmitter;
 const Constants = require('../../util/Constants');
 const convertArrayBuffer = require('../../util/ConvertArrayBuffer');
 const pako = require('pako');
 const zlib = require('zlib');
 const PacketManager = require('./packets/WebSocketPacketManager');
+
+let EventEmitter;
+try {
+  EventEmitter = require('eventemitter3');
+} catch (err) {
+  EventEmitter = require('events').EventEmitter;
+}
 
 let WebSocket;
 if (browser) {
@@ -17,6 +23,11 @@ if (browser) {
   }
 }
 
+<<<<<<< HEAD
+try {
+  Promise = require('bluebird');
+} catch (err) {} // eslint-disable-line no-empty
+=======
 let erlpack, serialize;
 try {
   erlpack = require('erlpack');
@@ -25,6 +36,7 @@ try {
   erlpack = null;
   serialize = JSON.stringify;
 }
+>>>>>>> 1e5afc16087106613df50296558e5ca919a5f68b
 
 /**
  * The WebSocket Manager of the Client

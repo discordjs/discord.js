@@ -3,8 +3,14 @@ const VoiceUDP = require('./VoiceUDPClient');
 const Constants = require('../../util/Constants');
 const AudioPlayer = require('./player/AudioPlayer');
 const VoiceReceiver = require('./receiver/VoiceReceiver');
-const EventEmitter = require('events').EventEmitter;
 const fs = require('fs');
+
+let EventEmitter;
+try {
+  EventEmitter = require('eventemitter3');
+} catch (err) {
+  EventEmitter = require('events').EventEmitter;
+}
 
 /**
  * Represents a connection to a voice channel in Discord.
