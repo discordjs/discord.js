@@ -1,9 +1,10 @@
 const Attachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
+const MessageReaction = require('./MessageReaction');
+const GuildMember = require('./GuildMember');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
 const escapeMarkdown = require('../util/EscapeMarkdown');
-const MessageReaction = require('./MessageReaction');
 
 /**
  * Represents a message on Discord
@@ -352,13 +353,13 @@ class Message {
   /**
    * Whether or not a guild member is mentioned in this message. Takes into account
    * user mentions, role mentions, and @everyone/@here mentions.
-   * @param {GuildMember} member A guild member
+   * @param {GuildMember|User} member Member/user to check for a mention of
    * @returns {boolean}
    */
   isMemberMentioned(member) {
     if (this.mentions.everyone) return true;
-    if (this.mentions.users.has(member.user)) return true;
-    if (member.roles.some(r => this.mentions.roles.has(r.id))) return true;
+    if (this.mentions.users.has(member.id)) return true;
+    if (member instanceof GuildMember && member.roles.some(r => this.mentions.roles.has(r.id))) return true;
     return false;
   }
 
