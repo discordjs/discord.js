@@ -59,6 +59,7 @@
   "browser": {
     "ws": false,
     "uws": false,
+    "erlpack": false,
     "opusscript": false,
     "node-opus": false,
     "tweet-nacl": false,
