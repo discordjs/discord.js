@@ -8,10 +8,11 @@ class Emoji {
   constructor(guild, data) {
     /**
      * The Client that instantiated this object
+     * @name Emoji#client
      * @type {Client}
+     * @readonly
      */
-    this.client = guild.client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: guild.client });
 
     /**
      * The guild this emoji is part of
@@ -87,7 +88,7 @@ class Emoji {
    * @readonly
    */
   get url() {
-    return `${Constants.Endpoints.CDN}/emojis/${this.id}.png`;
+    return Constants.Endpoints.emoji(this.id);
   }
 
   /**

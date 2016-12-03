@@ -11,10 +11,11 @@ class PartialGuildChannel {
   constructor(client, data) {
     /**
      * The Client that instantiated this PartialGuildChannel
+     * @name PartialGuildChannel#client
      * @type {Client}
+     * @readonly
      */
-    this.client = client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: client });
 
     this.setup(data);
   }

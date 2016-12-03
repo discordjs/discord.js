@@ -17,10 +17,11 @@ class Guild {
   constructor(client, data) {
     /**
      * The Client that created the instance of the the Guild.
+     * @name Guild#client
      * @type {Client}
+     * @readonly
      */
-    this.client = client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: client });
 
     /**
      * A collection of members that are in this guild. The key is the member's ID, the value is the member.
@@ -239,6 +240,16 @@ class Guild {
   get iconURL() {
     if (!this.icon) return null;
     return Constants.Endpoints.guildIcon(this.id, this.icon);
+  }
+
+  /**
+   * Gets the URL to this guild's splash (if it has one, otherwise it returns null)
+   * @type {?string}
+   * @readonly
+   */
+  get splashURL() {
+    if (!this.splash) return null;
+    return Constants.Endpoints.guildSplash(this.id, this.splash);
   }
 
   /**

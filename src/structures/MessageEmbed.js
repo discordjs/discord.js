@@ -5,10 +5,11 @@ class MessageEmbed {
   constructor(message, data) {
     /**
      * The client that instantiated this embed
+     * @name MessageEmbed#client
      * @type {Client}
+     * @readonly
      */
-    this.client = message.client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: message.client });
 
     /**
      * The message this embed is part of
