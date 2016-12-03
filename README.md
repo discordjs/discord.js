@@ -27,7 +27,8 @@ Usability and performance are key focuses of discord.js, and it also has nearly 
 Without voice support: `npm install discord.js --save`  
 With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discord.js node-opus --save`  
 With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js opusscript --save`  
-With fast websockets ([uws](https://www.npmjs.com/package/uws)) `npm install discord.js uws --save`
+With a fast websocket client ([uws](https://www.npmjs.com/package/uws)) `npm install discord.js uws --save`
+With fast websocket encoding ([erlpack](https://github.com/hammerandchisel/erlpack)) `npm install disscord.js hammerandchisel/erlpack --save`
 
 The preferred audio engine is node-opus, as it performs significantly better than opusscript. When both are available, discord.js will automatically choose node-opus.
 Using opusscript is only recommended for development environments where node-opus is tough to get working.
