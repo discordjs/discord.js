@@ -13,10 +13,11 @@ class GuildMember {
   constructor(guild, data) {
     /**
      * The Client that instantiated this GuildMember
+     * @name GuildMember#client
      * @type {Client}
+     * @readonly
      */
-    this.client = guild.client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: guild.client });
 
     /**
      * The guild that this member is part of

@@ -10,10 +10,11 @@ class User {
   constructor(client, data) {
     /**
      * The Client that created the instance of the the User.
+     * @name User#client
      * @type {Client}
+     * @readonly
      */
-    this.client = client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: client });
 
     if (data) this.setup(data);
   }

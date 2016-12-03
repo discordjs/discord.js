@@ -17,10 +17,11 @@ class Guild {
   constructor(client, data) {
     /**
      * The Client that created the instance of the the Guild.
+     * @name Guild#client
      * @type {Client}
+     * @readonly
      */
-    this.client = client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: client });
 
     /**
      * A collection of members that are in this guild. The key is the member's ID, the value is the member.

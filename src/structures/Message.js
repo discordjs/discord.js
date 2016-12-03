@@ -12,10 +12,11 @@ class Message {
   constructor(channel, data, client) {
     /**
      * The Client that instantiated the Message
+     * @name Message#client
      * @type {Client}
+     * @readonly
      */
-    this.client = client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: client });
 
     /**
      * The channel that the message was sent in

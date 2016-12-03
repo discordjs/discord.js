@@ -9,15 +9,16 @@ class Webhook {
     if (client) {
       /**
        * The Client that instantiated the Webhook
+       * @name Webhook#client
        * @type {Client}
+       * @readonly
        */
-      this.client = client;
-      Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+      Object.defineProperty(this, 'client', { value: client });
       if (dataOrID) this.setup(dataOrID);
     } else {
       this.id = dataOrID;
       this.token = token;
-      this.client = this;
+      Object.defineProperty(this, 'client', { value: this });
     }
   }
 

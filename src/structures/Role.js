@@ -7,10 +7,11 @@ class Role {
   constructor(guild, data) {
     /**
      * The client that instantiated the role
+     * @name Role#client
      * @type {Client}
+     * @readonly
      */
-    this.client = guild.client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: guild.client });
 
     /**
      * The guild that the role belongs to
