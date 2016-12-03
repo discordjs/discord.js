@@ -22,7 +22,8 @@ It takes a much more object-oriented approach than most other JS Discord librari
 Usability and performance are key focuses of discord.js, and it also has nearly 100% coverage of the Discord API.
 
 ## Installation
-**Node.js 6.0.0 or newer is required.**
+**Node.js 6.0.0 or newer is required.**  
+Ignore any warnings about unmet peer dependencies - all of them are optional.
 
 Without voice support: `npm install discord.js --save`  
 With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discord.js node-opus --save`  
@@ -31,9 +32,14 @@ With a fast websocket client ([uws](https://www.npmjs.com/package/uws)) `npm ins
 With fast websocket encoding ([erlpack](https://github.com/hammerandchisel/erlpack)) `npm install disscord.js hammerandchisel/erlpack --save`  
 With a fast eventemitter ([EventEmitter3](https://www.npmjs.com/package/eventemitter3)) `npm install discord.js eventemitter3 --save`  
 
+### Audio engines
 The preferred audio engine is node-opus, as it performs significantly better than opusscript. When both are available, discord.js will automatically choose node-opus.
 Using opusscript is only recommended for development environments where node-opus is tough to get working.
 For production bots, using node-opus should be considered a necessity, especially if they're going to be running on multiple servers.
+
+### Optional packages
+- [uws](https://www.npmjs.com/package/uws) for much a much faster WebSocket connection (`npm install uws --save`)
+- [erlpack](https://github.com/hammerandchisel/erlpack) for significantly faster WebSocket data (de)serialisation (`npm install hammerandchisel/erlpack --save`)
 
 ## Example Usage
 ```js
