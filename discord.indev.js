@@ -3406,6 +3406,15 @@ class Message {
   }
 
   /**
+   * Fetches the webhook used to create this message.
+   * @returns {Promise<?Webhook>}
+   */
+  fetchWebhook() {
+    if (!this.webhookID) return Promise.reject(new Error('The message was not sent by a webhook.'));
+    return this.client.fetchWebhook(this.webhookID);
+  }
+
+  /**
    * Used mainly internally. Whether two messages are identical in properties. If you want to compare messages
    * without checking all the properties, use `message.id === message2.id`, which is much more efficient. This
    * method allows you to see if there are differences in content, embeds, attachments, nonce and tts properties.
