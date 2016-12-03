@@ -1,6 +1,12 @@
-const EventEmitter = require('events').EventEmitter;
 const NaCl = require('tweetnacl');
 const Readable = require('./VoiceReadable');
+
+let EventEmitter;
+try {
+  EventEmitter = require('eventemitter3');
+} catch (err) {
+  EventEmitter = require('events').EventEmitter;
+}
 
 const nonce = new Buffer(24);
 nonce.fill(0);

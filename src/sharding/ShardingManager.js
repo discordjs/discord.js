@@ -1,10 +1,20 @@
 const path = require('path');
 const fs = require('fs');
-const EventEmitter = require('events').EventEmitter;
 const mergeDefault = require('../util/MergeDefault');
 const Shard = require('./Shard');
 const Collection = require('../util/Collection');
 const fetchRecommendedShards = require('../util/FetchRecommendedShards');
+
+let EventEmitter;
+try {
+  EventEmitter = require('eventemitter3');
+} catch (err) {
+  EventEmitter = require('events').EventEmitter;
+}
+
+try {
+  Promise = require('bluebird');
+} catch (err) {} // eslint-disable-line no-empty
 
 /**
  * This is a utility class that can be used to help you spawn shards of your Client. Each shard is completely separate

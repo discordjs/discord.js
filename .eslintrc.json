@@ -104,6 +104,7 @@
     "no-trailing-spaces": "error",
     "no-unneeded-ternary": "error",
     "no-whitespace-before-property": "error",
+    "no-global-assign": "off",
     "object-curly-spacing": ["error", "always"],
     "operator-assignment": "error",
     "operator-linebreak": ["error", "after"],

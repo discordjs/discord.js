@@ -1,9 +1,15 @@
 const browser = typeof window !== 'undefined';
-const EventEmitter = require('events').EventEmitter;
 const Constants = require('../../util/Constants');
 const pako = require('pako');
 const zlib = require('zlib');
 const PacketManager = require('./packets/WebSocketPacketManager');
+
+let EventEmitter;
+try {
+  EventEmitter = require('eventemitter3');
+} catch (err) {
+  EventEmitter = require('events').EventEmitter;
+}
 
 let WebSocket;
 if (browser) {
@@ -15,6 +21,10 @@ if (browser) {
     WebSocket = require('ws');
   }
 }
+
+try {
+  Promise = require('bluebird');
+} catch (err) {} // eslint-disable-line no-empty
 
 /**
  * The WebSocket Manager of the Client

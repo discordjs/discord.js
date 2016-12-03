@@ -1,6 +1,16 @@
 const Constants = require('../../util/Constants');
 const SecretKey = require('./util/SecretKey');
-const EventEmitter = require('events').EventEmitter;
+
+let EventEmitter;
+try {
+  EventEmitter = require('eventemitter3');
+} catch (err) {
+  EventEmitter = require('events').EventEmitter;
+}
+
+try {
+  Promise = require('bluebird');
+} catch (err) {} // eslint-disable-line no-empty
 
 let WebSocket;
 try {

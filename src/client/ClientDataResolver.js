@@ -12,6 +12,10 @@ const GuildMember = require('../structures/GuildMember');
 const Emoji = require('../structures/Emoji');
 const ReactionEmoji = require('../structures/ReactionEmoji');
 
+try {
+  Promise = require('bluebird');
+} catch (err) {} // eslint-disable-line no-empty
+
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
  * extracting a User from a Message object.

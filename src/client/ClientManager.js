@@ -1,5 +1,9 @@
 const Constants = require('../util/Constants');
 
+try {
+  Promise = require('bluebird');
+} catch (err) {} // eslint-disable-line no-empty
+
 /**
  * Manages the State and Background Tasks of the Client
  * @private
