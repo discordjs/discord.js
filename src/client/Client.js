@@ -20,7 +20,7 @@ try {
 
 try {
   Promise = require('bluebird');
-} catch (err) {}
+} catch (err) {} // eslint-disable-line no-empty
 
 /**
  * The starting point for making a Discord Bot.

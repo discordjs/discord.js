@@ -23,11 +23,7 @@ if (browser) {
   }
 }
 
-<<<<<<< HEAD
-try {
-  Promise = require('bluebird');
-} catch (err) {} // eslint-disable-line no-empty
-=======
+
 let erlpack, serialize;
 try {
   erlpack = require('erlpack');
@@ -36,7 +32,10 @@ try {
   erlpack = null;
   serialize = JSON.stringify;
 }
->>>>>>> 1e5afc16087106613df50296558e5ca919a5f68b
+
+try {
+  Promise = require('bluebird');
+} catch (err) {} // eslint-disable-line no-empty
 
 /**
  * The WebSocket Manager of the Client
