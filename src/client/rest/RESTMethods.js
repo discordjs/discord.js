@@ -331,7 +331,7 @@ class RESTMethods {
   addMemberRole(member, role) {
     return this.rest.makeRequest('put', Constants.Endpoints.guildMemberRole(member.guild.id, member.id, role.id))
       .then(() => {
-        member._roles.set(role.id, role);
+        member._roles.push(role);
         return member;
       });
   }
@@ -339,7 +339,8 @@ class RESTMethods {
   removeMemberRole(member, role) {
     return this.rest.makeRequest('delete', Constants.Endpoints.guildMemberRole(member.guild.id, member.id, role.id))
       .then(() => {
-        member._roles.delete(role.id);
+        const index = member._roles.indexOf(role);
+        if (index) member._roles.splice(index, 1)
         return member;
       });
   }
