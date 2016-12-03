@@ -1,9 +1,10 @@
 const Attachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
+const MessageReaction = require('./MessageReaction');
+const GuildMember = require('./GuildMember');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
 const escapeMarkdown = require('../util/EscapeMarkdown');
-const MessageReaction = require('./MessageReaction');
 
 /**
  * Represents a message on Discord
@@ -163,6 +164,12 @@ class Message {
         this.reactions.set(id, new MessageReaction(this, reaction.emoji, reaction.count, reaction.me));
       }
     }
+
+    /*
+     * ID of the webhook that sent the message, if applicable
+     * @type {?string}
+     */
+    this.webhookID = data.webhook_id || null;
   }
 
   patch(data) { // eslint-disable-line complexity
@@ -341,6 +348,19 @@ class Message {
   isMentioned(data) {
     data = data && data.id ? data.id : data;
     return this.mentions.users.has(data) || this.mentions.channels.has(data) || this.mentions.roles.has(data);
+  }
+
+  /**
+   * Whether or not a guild member is mentioned in this message. Takes into account
+   * user mentions, role mentions, and @everyone/@here mentions.
+   * @param {GuildMember|User} member Member/user to check for a mention of
+   * @returns {boolean}
+   */
+  isMemberMentioned(member) {
+    if (this.mentions.everyone) return true;
+    if (this.mentions.users.has(member.id)) return true;
+    if (member instanceof GuildMember && member.roles.some(r => this.mentions.roles.has(r.id))) return true;
+    return false;
   }
 
   /**
