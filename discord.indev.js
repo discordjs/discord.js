@@ -929,7 +929,7 @@ exports.setTyped(TYPED_OK);
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-const TextBasedChannel = __webpack_require__(11);
+const TextBasedChannel = __webpack_require__(12);
 const Constants = __webpack_require__(0);
 const Presence = __webpack_require__(7).Presence;
 
@@ -1819,682 +1819,7 @@ module.exports = Emoji;
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-const path = __webpack_require__(23);
-const Message = __webpack_require__(14);
-const MessageCollector = __webpack_require__(35);
-const Collection = __webpack_require__(3);
-const RichEmbed = __webpack_require__(42);
-const escapeMarkdown = __webpack_require__(15);
-
-/**
- * Interface for classes that have text-channel-like features
- * @interface
- */
-class TextBasedChannel {
-  constructor() {
-    /**
-     * A collection containing the messages sent to this channel.
-     * @type {Collection<string, Message>}
-     */
-    this.messages = new Collection();
-
-    /**
-     * The ID of the last message in the channel, if one was sent.
-     * @type {?string}
-     */
-    this.lastMessageID = null;
-  }
-
-  /**
-   * Options that can be passed into sendMessage, sendTTSMessage, sendFile, sendCode, or Message.reply
-   * @typedef {Object} MessageOptions
-   * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
-   * @property {string} [nonce=''] The nonce for the message
-   * @property {Object} [embed] An embed for the message
-   * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
-   * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
-   * should be replaced with plain-text
-   * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
-   * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
-   */
-
-  /**
-   * Options for splitting a message
-   * @typedef {Object} SplitOptions
-   * @property {number} [maxLength=1950] Maximum character length per message piece
-   * @property {string} [char='\n'] Character to split the message with
-   * @property {string} [prepend=''] Text to prepend to every piece except the first
-   * @property {string} [append=''] Text to append to every piece except the last
-   */
-
-  /**
-   * Send a message to this channel
-   * @param {StringResolvable} content The content to send
-   * @param {MessageOptions} [options={}] The options to provide
-   * @returns {Promise<Message|Message[]>}
-   * @example
-   * // send a message
-   * channel.sendMessage('hello!')
-   *  .then(message => console.log(`Sent message: ${message.content}`))
-   *  .catch(console.error);
-   */
-  sendMessage(content, options = {}) {
-    return this.client.rest.methods.sendMessage(this, content, options);
-  }
-
-  /**
-   * Send a text-to-speech message to this channel
-   * @param {StringResolvable} content The content to send
-   * @param {MessageOptions} [options={}] The options to provide
-   * @returns {Promise<Message|Message[]>}
-   * @example
-   * // send a TTS message
-   * channel.sendTTSMessage('hello!')
-   *  .then(message => console.log(`Sent tts message: ${message.content}`))
-   *  .catch(console.error);
-   */
-  sendTTSMessage(content, options = {}) {
-    Object.assign(options, { tts: true });
-    return this.client.rest.methods.sendMessage(this, content, options);
-  }
-
-  /**
-   * Send an embed to this channel
-   * @param {RichEmbed|Object} embed The embed to send
-   * @param {string|MessageOptions} contentOrOptions Content to send or message options
-   * @param {MessageOptions} options If contentOrOptions is content, this will be options
-   * @returns {Promise<Message>}
-   */
-  sendEmbed(embed, contentOrOptions, options = {}) {
-    if (!(embed instanceof RichEmbed)) embed = new RichEmbed(embed);
-    let content;
-    if (contentOrOptions) {
-      if (typeof contentOrOptions === 'string') {
-        content = contentOrOptions;
-      } else {
-        options = contentOrOptions;
-      }
-    }
-    options.embed = embed;
-    return this.sendMessage(content, options);
-  }
-
-  /**
-   * Send a file to this channel
-   * @param {BufferResolvable} attachment The file to send
-   * @param {string} [fileName="file.jpg"] The name and extension of the file
-   * @param {StringResolvable} [content] Text message to send with the attachment
-   * @param {MessageOptions} [options] The options to provide
-   * @returns {Promise<Message>}
-   */
-  sendFile(attachment, fileName, content, options = {}) {
-    if (!fileName) {
-      if (typeof attachment === 'string') {
-        fileName = path.basename(attachment);
-      } else if (attachment && attachment.path) {
-        fileName = path.basename(attachment.path);
-      } else {
-        fileName = 'file.jpg';
-      }
-    }
-    return this.client.resolver.resolveBuffer(attachment).then(file =>
-      this.client.rest.methods.sendMessage(this, content, options, {
-        file,
-        name: fileName,
-      })
-    );
-  }
-
-  /**
-   * Send a code block to this channel
-   * @param {string} lang Language for the code block
-   * @param {StringResolvable} content Content of the code block
-   * @param {MessageOptions} options The options to provide
-   * @returns {Promise<Message|Message[]>}
-   */
-  sendCode(lang, content, options = {}) {
-    if (options.split) {
-      if (typeof options.split !== 'object') options.split = {};
-      if (!options.split.prepend) options.split.prepend = `\`\`\`${lang || ''}\n`;
-      if (!options.split.append) options.split.append = '\n```';
-    }
-    content = escapeMarkdown(this.client.resolver.resolveString(content), true);
-    return this.sendMessage(`\`\`\`${lang || ''}\n${content}\n\`\`\``, options);
-  }
-
-  /**
-   * Gets a single message from this channel, regardless of it being cached or not.
-   * <warn>This is only available when using a bot account.</warn>
-   * @param {string} messageID The ID of the message to get
-   * @returns {Promise<Message>}
-   * @example
-   * // get message
-   * channel.fetchMessage('99539446449315840')
-   *   .then(message => console.log(message.content))
-   *   .catch(console.error);
-   */
-  fetchMessage(messageID) {
-    return this.client.rest.methods.getChannelMessage(this, messageID).then(data => {
-      const msg = data instanceof Message ? data : new Message(this, data, this.client);
-      this._cacheMessage(msg);
-      return msg;
-    });
-  }
-
-  /**
-   * The parameters to pass in when requesting previous messages from a channel. `around`, `before` and
-   * `after` are mutually exclusive. All the parameters are optional.
-   * @typedef {Object} ChannelLogsQueryOptions
-   * @property {number} [limit=50] Number of messages to acquire
-   * @property {string} [before] ID of a message to get the messages that were posted before it
-   * @property {string} [after] ID of a message to get the messages that were posted after it
-   * @property {string} [around] ID of a message to get the messages that were posted around it
-   */
-
-  /**
-   * Gets the past messages sent in this channel. Resolves with a collection mapping message ID's to Message objects.
-   * @param {ChannelLogsQueryOptions} [options={}] The query parameters to pass in
-   * @returns {Promise<Collection<string, Message>>}
-   * @example
-   * // get messages
-   * channel.fetchMessages({limit: 10})
-   *  .then(messages => console.log(`Received ${messages.size} messages`))
-   *  .catch(console.error);
-   */
-  fetchMessages(options = {}) {
-    return this.client.rest.methods.getChannelMessages(this, options).then(data => {
-      const messages = new Collection();
-      for (const message of data) {
-        const msg = new Message(this, message, this.client);
-        messages.set(message.id, msg);
-        this._cacheMessage(msg);
-      }
-      return messages;
-    });
-  }
-
-  /**
-   * Fetches the pinned messages of this channel and returns a collection of them.
-   * @returns {Promise<Collection<string, Message>>}
-   */
-  fetchPinnedMessages() {
-    return this.client.rest.methods.getChannelPinnedMessages(this).then(data => {
-      const messages = new Collection();
-      for (const message of data) {
-        const msg = new Message(this, message, this.client);
-        messages.set(message.id, msg);
-        this._cacheMessage(msg);
-      }
-      return messages;
-    });
-  }
-
-  /**
-   * Starts a typing indicator in the channel.
-   * @param {number} [count] The number of times startTyping should be considered to have been called
-   * @example
-   * // start typing in a channel
-   * channel.startTyping();
-   */
-  startTyping(count) {
-    if (typeof count !== 'undefined' && count < 1) throw new RangeError('Count must be at least 1.');
-    if (!this.client.user._typing.has(this.id)) {
-      this.client.user._typing.set(this.id, {
-        count: count || 1,
-        interval: this.client.setInterval(() => {
-          this.client.rest.methods.sendTyping(this.id);
-        }, 4000),
-      });
-      this.client.rest.methods.sendTyping(this.id);
-    } else {
-      const entry = this.client.user._typing.get(this.id);
-      entry.count = count || entry.count + 1;
-    }
-  }
-
-  /**
-   * Stops the typing indicator in the channel.
-   * The indicator will only stop if this is called as many times as startTyping().
-   * <info>It can take a few seconds for the client user to stop typing.</info>
-   * @param {boolean} [force=false] Whether or not to reset the call count and force the indicator to stop
-   * @example
-   * // stop typing in a channel
-   * channel.stopTyping();
-   * @example
-   * // force typing to fully stop in a channel
-   * channel.stopTyping(true);
-   */
-  stopTyping(force = false) {
-    if (this.client.user._typing.has(this.id)) {
-      const entry = this.client.user._typing.get(this.id);
-      entry.count--;
-      if (entry.count <= 0 || force) {
-        this.client.clearInterval(entry.interval);
-        this.client.user._typing.delete(this.id);
-      }
-    }
-  }
-
-  /**
-   * Whether or not the typing indicator is being shown in the channel.
-   * @type {boolean}
-   * @readonly
-   */
-  get typing() {
-    return this.client.user._typing.has(this.id);
-  }
-
-  /**
-   * Number of times `startTyping` has been called.
-   * @type {number}
-   * @readonly
-   */
-  get typingCount() {
-    if (this.client.user._typing.has(this.id)) return this.client.user._typing.get(this.id).count;
-    return 0;
-  }
-
-  /**
-   * Creates a Message Collector
-   * @param {CollectorFilterFunction} filter The filter to create the collector with
-   * @param {CollectorOptions} [options={}] The options to pass to the collector
-   * @returns {MessageCollector}
-   * @example
-   * // create a message collector
-   * const collector = channel.createCollector(
-   *  m => m.content.includes('discord'),
-   *  { time: 15000 }
-   * );
-   * collector.on('message', m => console.log(`Collected ${m.content}`));
-   * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
-   */
-  createCollector(filter, options = {}) {
-    return new MessageCollector(this, filter, options);
-  }
-
-  /**
-   * An object containing the same properties as CollectorOptions, but a few more:
-   * @typedef {CollectorOptions} AwaitMessagesOptions
-   * @property {string[]} [errors] Stop/end reasons that cause the promise to reject
-   */
-
-  /**
-   * Similar to createCollector but in promise form. Resolves with a collection of messages that pass the specified
-   * filter.
-   * @param {CollectorFilterFunction} filter The filter function to use
-   * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector
-   * @returns {Promise<Collection<string, Message>>}
-   * @example
-   * // await !vote messages
-   * const filter = m => m.content.startsWith('!vote');
-   * // errors: ['time'] treats ending because of the time limit as an error
-   * channel.awaitMessages(filter, { max: 4, time: 60000, errors: ['time'] })
-   *  .then(collected => console.log(collected.size))
-   *  .catch(collected => console.log(`After a minute, only ${collected.size} out of 4 voted.`));
-   */
-  awaitMessages(filter, options = {}) {
-    return new Promise((resolve, reject) => {
-      const collector = this.createCollector(filter, options);
-      collector.on('end', (collection, reason) => {
-        if (options.errors && options.errors.includes(reason)) {
-          reject(collection);
-        } else {
-          resolve(collection);
-        }
-      });
-    });
-  }
-
-  /**
-   * Bulk delete given messages.
-   * <warn>This is only available when using a bot account.</warn>
-   * @param {Collection<string, Message>|Message[]|number} messages Messages to delete, or number of messages to delete
-   * @returns {Promise<Collection<string, Message>>} Deleted messages
-   */
-  bulkDelete(messages) {
-    if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs));
-    if (messages instanceof Array || messages instanceof Collection) {
-      const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
-      return this.client.rest.methods.bulkDeleteMessages(this, messageIDs);
-    }
-    throw new TypeError('The messages must be an Array, Collection, or number.');
-  }
-
-  _cacheMessage(message) {
-    const maxSize = this.client.options.messageCacheMaxSize;
-    if (maxSize === 0) return null;
-    if (this.messages.size >= maxSize && maxSize > 0) this.messages.delete(this.messages.firstKey());
-    this.messages.set(message.id, message);
-    return message;
-  }
-}
-
-exports.applyToClass = (structure, full = false) => {
-  const props = ['sendMessage', 'sendTTSMessage', 'sendEmbed', 'sendFile', 'sendCode'];
-  if (full) {
-    props.push('_cacheMessage');
-    props.push('fetchMessages');
-    props.push('fetchMessage');
-    props.push('bulkDelete');
-    props.push('startTyping');
-    props.push('stopTyping');
-    props.push('typing');
-    props.push('typingCount');
-    props.push('fetchPinnedMessages');
-    props.push('createCollector');
-    props.push('awaitMessages');
-  }
-  for (const prop of props) applyProp(structure, prop);
-};
-
-function applyProp(structure, prop) {
-  Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
-}
-
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-const Channel = __webpack_require__(9);
-const Role = __webpack_require__(8);
-const PermissionOverwrites = __webpack_require__(41);
-const EvaluatedPermissions = __webpack_require__(17);
-const Constants = __webpack_require__(0);
-const Collection = __webpack_require__(3);
-const arraysEqual = __webpack_require__(27);
-
-/**
- * Represents a guild channel (i.e. text channels and voice channels)
- * @extends {Channel}
- */
-class GuildChannel extends Channel {
-  constructor(guild, data) {
-    super(guild.client, data);
-
-    /**
-     * The guild the channel is in
-     * @type {Guild}
-     */
-    this.guild = guild;
-  }
-
-  setup(data) {
-    super.setup(data);
-
-    /**
-     * The name of the guild channel
-     * @type {string}
-     */
-    this.name = data.name;
-
-    /**
-     * The position of the channel in the list.
-     * @type {number}
-     */
-    this.position = data.position;
-
-    /**
-     * A map of permission overwrites in this channel for roles and users.
-     * @type {Collection<string, PermissionOverwrites>}
-     */
-    this.permissionOverwrites = new Collection();
-    if (data.permission_overwrites) {
-      for (const overwrite of data.permission_overwrites) {
-        this.permissionOverwrites.set(overwrite.id, new PermissionOverwrites(this, overwrite));
-      }
-    }
-  }
-
-  /**
-   * Gets the overall set of permissions for a user in this channel, taking into account roles and permission
-   * overwrites.
-   * @param {GuildMemberResolvable} member The user that you want to obtain the overall permissions for
-   * @returns {?EvaluatedPermissions}
-   */
-  permissionsFor(member) {
-    member = this.client.resolver.resolveGuildMember(this.guild, member);
-    if (!member) return null;
-    if (member.id === this.guild.ownerID) return new EvaluatedPermissions(member, Constants.ALL_PERMISSIONS);
-
-    let permissions = 0;
-
-    const roles = member.roles;
-    for (const role of roles.values()) permissions |= role.permissions;
-
-    const overwrites = this.overwritesFor(member, true, roles);
-    for (const overwrite of overwrites.role.concat(overwrites.member)) {
-      permissions &= ~overwrite.denyData;
-      permissions |= overwrite.allowData;
-    }
-
-    const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
-    if (admin) permissions = Constants.ALL_PERMISSIONS;
-
-    return new EvaluatedPermissions(member, permissions);
-  }
-
-  overwritesFor(member, verified = false, roles = null) {
-    if (!verified) member = this.client.resolver.resolveGuildMember(this.guild, member);
-    if (!member) return [];
-
-    roles = roles || member.roles;
-    const roleOverwrites = [];
-    const memberOverwrites = [];
-
-    for (const overwrite of this.permissionOverwrites.values()) {
-      if (overwrite.id === member.id) {
-        memberOverwrites.push(overwrite);
-      } else if (roles.has(overwrite.id)) {
-        roleOverwrites.push(overwrite);
-      }
-    }
-
-    return {
-      role: roleOverwrites,
-      member: memberOverwrites,
-    };
-  }
-
-  /**
-   * An object mapping permission flags to `true` (enabled) or `false` (disabled)
-   * ```js
-   * {
-   *  'SEND_MESSAGES': true,
-   *  'ATTACH_FILES': false,
-   * }
-   * ```
-   * @typedef {Object} PermissionOverwriteOptions
-   */
-
-  /**
-   * Overwrites the permissions for a user or role in this channel.
-   * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
-   * @param {PermissionOverwriteOptions} options The configuration for the update
-   * @returns {Promise}
-   * @example
-   * // overwrite permissions for a message author
-   * message.channel.overwritePermissions(message.author, {
-   *  SEND_MESSAGES: false
-   * })
-   * .then(() => console.log('Done!'))
-   * .catch(console.error);
-   */
-  overwritePermissions(userOrRole, options) {
-    const payload = {
-      allow: 0,
-      deny: 0,
-    };
-
-    if (userOrRole instanceof Role) {
-      payload.type = 'role';
-    } else if (this.guild.roles.has(userOrRole)) {
-      userOrRole = this.guild.roles.get(userOrRole);
-      payload.type = 'role';
-    } else {
-      userOrRole = this.client.resolver.resolveUser(userOrRole);
-      payload.type = 'member';
-      if (!userOrRole) return Promise.reject(new TypeError('Supplied parameter was neither a User nor a Role.'));
-    }
-
-    payload.id = userOrRole.id;
-
-    const prevOverwrite = this.permissionOverwrites.get(userOrRole.id);
-
-    if (prevOverwrite) {
-      payload.allow = prevOverwrite.allowData;
-      payload.deny = prevOverwrite.denyData;
-    }
-
-    for (const perm in options) {
-      if (options[perm] === true) {
-        payload.allow |= Constants.PermissionFlags[perm] || 0;
-        payload.deny &= ~(Constants.PermissionFlags[perm] || 0);
-      } else if (options[perm] === false) {
-        payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
-        payload.deny |= Constants.PermissionFlags[perm] || 0;
-      } else if (options[perm] === null) {
-        payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
-        payload.deny &= ~(Constants.PermissionFlags[perm] || 0);
-      }
-    }
-
-    return this.client.rest.methods.setChannelOverwrite(this, payload);
-  }
-
-  /**
-   * The data for a guild channel
-   * @typedef {Object} ChannelData
-   * @property {string} [name] The name of the channel
-   * @property {number} [position] The position of the channel
-   * @property {string} [topic] The topic of the text channel
-   * @property {number} [bitrate] The bitrate of the voice channel
-   * @property {number} [userLimit] The user limit of the channel
-   */
-
-  /**
-   * Edits the channel
-   * @param {ChannelData} data The new data for the channel
-   * @returns {Promise<GuildChannel>}
-   * @example
-   * // edit a channel
-   * channel.edit({name: 'new-channel'})
-   *  .then(c => console.log(`Edited channel ${c}`))
-   *  .catch(console.error);
-   */
-  edit(data) {
-    return this.client.rest.methods.updateChannel(this, data);
-  }
-
-  /**
-   * Set a new name for the guild channel
-   * @param {string} name The new name for the guild channel
-   * @returns {Promise<GuildChannel>}
-   * @example
-   * // set a new channel name
-   * channel.setName('not_general')
-   *  .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
-   *  .catch(console.error);
-   */
-  setName(name) {
-    return this.edit({ name });
-  }
-
-  /**
-   * Set a new position for the guild channel
-   * @param {number} position The new position for the guild channel
-   * @returns {Promise<GuildChannel>}
-   * @example
-   * // set a new channel position
-   * channel.setPosition(2)
-   *  .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
-   *  .catch(console.error);
-   */
-  setPosition(position) {
-    return this.client.rest.methods.updateChannel(this, { position });
-  }
-
-  /**
-   * Set a new topic for the guild channel
-   * @param {string} topic The new topic for the guild channel
-   * @returns {Promise<GuildChannel>}
-   * @example
-   * // set a new channel topic
-   * channel.setTopic('needs more rate limiting')
-   *  .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
-   *  .catch(console.error);
-   */
-  setTopic(topic) {
-    return this.client.rest.methods.updateChannel(this, { topic });
-  }
-
-  /**
-   * Options given when creating a guild channel invite
-   * @typedef {Object} InviteOptions
-   * @property {boolean} [temporary=false] Whether the invite should kick users after 24hrs if they are not given a role
-   * @property {number} [maxAge=0] Time in seconds the invite expires in
-   * @property {number} [maxUses=0] Maximum amount of uses for this invite
-   */
-
-  /**
-   * Create an invite to this guild channel
-   * @param {InviteOptions} [options={}] The options for the invite
-   * @returns {Promise<Invite>}
-   */
-  createInvite(options = {}) {
-    return this.client.rest.methods.createChannelInvite(this, options);
-  }
-
-  /**
-   * Checks if this channel has the same type, topic, position, name, overwrites and ID as another channel.
-   * In most cases, a simple `channel.id === channel2.id` will do, and is much faster too.
-   * @param {GuildChannel} channel The channel to compare this channel to
-   * @returns {boolean}
-   */
-  equals(channel) {
-    let equal = channel &&
-      this.id === channel.id &&
-      this.type === channel.type &&
-      this.topic === channel.topic &&
-      this.position === channel.position &&
-      this.name === channel.name;
-
-    if (equal) {
-      if (this.permissionOverwrites && channel.permissionOverwrites) {
-        const thisIDSet = this.permissionOverwrites.keyArray();
-        const otherIDSet = channel.permissionOverwrites.keyArray();
-        equal = arraysEqual(thisIDSet, otherIDSet);
-      } else {
-        equal = !this.permissionOverwrites && !channel.permissionOverwrites;
-      }
-    }
-
-    return equal;
-  }
-
-  /**
-   * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
-   * @returns {string}
-   * @example
-   * // Outputs: Hello from #general
-   * console.log(`Hello from ${channel}`);
-   * @example
-   * // Outputs: Hello from #general
-   * console.log('Hello from ' + channel);
-   */
-  toString() {
-    return `<#${this.id}>`;
-  }
-}
-
-module.exports = GuildChannel;
-
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-const TextBasedChannel = __webpack_require__(11);
+const TextBasedChannel = __webpack_require__(12);
 const Role = __webpack_require__(8);
 const EvaluatedPermissions = __webpack_require__(17);
 const Constants = __webpack_require__(0);
@@ -2921,15 +2246,691 @@ module.exports = GuildMember;
 
 
 /***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+const path = __webpack_require__(23);
+const Message = __webpack_require__(14);
+const MessageCollector = __webpack_require__(35);
+const Collection = __webpack_require__(3);
+const RichEmbed = __webpack_require__(42);
+const escapeMarkdown = __webpack_require__(15);
+
+/**
+ * Interface for classes that have text-channel-like features
+ * @interface
+ */
+class TextBasedChannel {
+  constructor() {
+    /**
+     * A collection containing the messages sent to this channel.
+     * @type {Collection<string, Message>}
+     */
+    this.messages = new Collection();
+
+    /**
+     * The ID of the last message in the channel, if one was sent.
+     * @type {?string}
+     */
+    this.lastMessageID = null;
+  }
+
+  /**
+   * Options that can be passed into sendMessage, sendTTSMessage, sendFile, sendCode, or Message.reply
+   * @typedef {Object} MessageOptions
+   * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
+   * @property {string} [nonce=''] The nonce for the message
+   * @property {Object} [embed] An embed for the message
+   * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
+   * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
+   * should be replaced with plain-text
+   * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
+   * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
+   */
+
+  /**
+   * Options for splitting a message
+   * @typedef {Object} SplitOptions
+   * @property {number} [maxLength=1950] Maximum character length per message piece
+   * @property {string} [char='\n'] Character to split the message with
+   * @property {string} [prepend=''] Text to prepend to every piece except the first
+   * @property {string} [append=''] Text to append to every piece except the last
+   */
+
+  /**
+   * Send a message to this channel
+   * @param {StringResolvable} content The content to send
+   * @param {MessageOptions} [options={}] The options to provide
+   * @returns {Promise<Message|Message[]>}
+   * @example
+   * // send a message
+   * channel.sendMessage('hello!')
+   *  .then(message => console.log(`Sent message: ${message.content}`))
+   *  .catch(console.error);
+   */
+  sendMessage(content, options = {}) {
+    return this.client.rest.methods.sendMessage(this, content, options);
+  }
+
+  /**
+   * Send a text-to-speech message to this channel
+   * @param {StringResolvable} content The content to send
+   * @param {MessageOptions} [options={}] The options to provide
+   * @returns {Promise<Message|Message[]>}
+   * @example
+   * // send a TTS message
+   * channel.sendTTSMessage('hello!')
+   *  .then(message => console.log(`Sent tts message: ${message.content}`))
+   *  .catch(console.error);
+   */
+  sendTTSMessage(content, options = {}) {
+    Object.assign(options, { tts: true });
+    return this.client.rest.methods.sendMessage(this, content, options);
+  }
+
+  /**
+   * Send an embed to this channel
+   * @param {RichEmbed|Object} embed The embed to send
+   * @param {string|MessageOptions} contentOrOptions Content to send or message options
+   * @param {MessageOptions} options If contentOrOptions is content, this will be options
+   * @returns {Promise<Message>}
+   */
+  sendEmbed(embed, contentOrOptions, options = {}) {
+    if (!(embed instanceof RichEmbed)) embed = new RichEmbed(embed);
+    let content;
+    if (contentOrOptions) {
+      if (typeof contentOrOptions === 'string') {
+        content = contentOrOptions;
+      } else {
+        options = contentOrOptions;
+      }
+    }
+    options.embed = embed;
+    return this.sendMessage(content, options);
+  }
+
+  /**
+   * Send a file to this channel
+   * @param {BufferResolvable} attachment The file to send
+   * @param {string} [fileName="file.jpg"] The name and extension of the file
+   * @param {StringResolvable} [content] Text message to send with the attachment
+   * @param {MessageOptions} [options] The options to provide
+   * @returns {Promise<Message>}
+   */
+  sendFile(attachment, fileName, content, options = {}) {
+    if (!fileName) {
+      if (typeof attachment === 'string') {
+        fileName = path.basename(attachment);
+      } else if (attachment && attachment.path) {
+        fileName = path.basename(attachment.path);
+      } else {
+        fileName = 'file.jpg';
+      }
+    }
+    return this.client.resolver.resolveBuffer(attachment).then(file =>
+      this.client.rest.methods.sendMessage(this, content, options, {
+        file,
+        name: fileName,
+      })
+    );
+  }
+
+  /**
+   * Send a code block to this channel
+   * @param {string} lang Language for the code block
+   * @param {StringResolvable} content Content of the code block
+   * @param {MessageOptions} options The options to provide
+   * @returns {Promise<Message|Message[]>}
+   */
+  sendCode(lang, content, options = {}) {
+    if (options.split) {
+      if (typeof options.split !== 'object') options.split = {};
+      if (!options.split.prepend) options.split.prepend = `\`\`\`${lang || ''}\n`;
+      if (!options.split.append) options.split.append = '\n```';
+    }
+    content = escapeMarkdown(this.client.resolver.resolveString(content), true);
+    return this.sendMessage(`\`\`\`${lang || ''}\n${content}\n\`\`\``, options);
+  }
+
+  /**
+   * Gets a single message from this channel, regardless of it being cached or not.
+   * <warn>This is only available when using a bot account.</warn>
+   * @param {string} messageID The ID of the message to get
+   * @returns {Promise<Message>}
+   * @example
+   * // get message
+   * channel.fetchMessage('99539446449315840')
+   *   .then(message => console.log(message.content))
+   *   .catch(console.error);
+   */
+  fetchMessage(messageID) {
+    return this.client.rest.methods.getChannelMessage(this, messageID).then(data => {
+      const msg = data instanceof Message ? data : new Message(this, data, this.client);
+      this._cacheMessage(msg);
+      return msg;
+    });
+  }
+
+  /**
+   * The parameters to pass in when requesting previous messages from a channel. `around`, `before` and
+   * `after` are mutually exclusive. All the parameters are optional.
+   * @typedef {Object} ChannelLogsQueryOptions
+   * @property {number} [limit=50] Number of messages to acquire
+   * @property {string} [before] ID of a message to get the messages that were posted before it
+   * @property {string} [after] ID of a message to get the messages that were posted after it
+   * @property {string} [around] ID of a message to get the messages that were posted around it
+   */
+
+  /**
+   * Gets the past messages sent in this channel. Resolves with a collection mapping message ID's to Message objects.
+   * @param {ChannelLogsQueryOptions} [options={}] The query parameters to pass in
+   * @returns {Promise<Collection<string, Message>>}
+   * @example
+   * // get messages
+   * channel.fetchMessages({limit: 10})
+   *  .then(messages => console.log(`Received ${messages.size} messages`))
+   *  .catch(console.error);
+   */
+  fetchMessages(options = {}) {
+    return this.client.rest.methods.getChannelMessages(this, options).then(data => {
+      const messages = new Collection();
+      for (const message of data) {
+        const msg = new Message(this, message, this.client);
+        messages.set(message.id, msg);
+        this._cacheMessage(msg);
+      }
+      return messages;
+    });
+  }
+
+  /**
+   * Fetches the pinned messages of this channel and returns a collection of them.
+   * @returns {Promise<Collection<string, Message>>}
+   */
+  fetchPinnedMessages() {
+    return this.client.rest.methods.getChannelPinnedMessages(this).then(data => {
+      const messages = new Collection();
+      for (const message of data) {
+        const msg = new Message(this, message, this.client);
+        messages.set(message.id, msg);
+        this._cacheMessage(msg);
+      }
+      return messages;
+    });
+  }
+
+  /**
+   * Starts a typing indicator in the channel.
+   * @param {number} [count] The number of times startTyping should be considered to have been called
+   * @example
+   * // start typing in a channel
+   * channel.startTyping();
+   */
+  startTyping(count) {
+    if (typeof count !== 'undefined' && count < 1) throw new RangeError('Count must be at least 1.');
+    if (!this.client.user._typing.has(this.id)) {
+      this.client.user._typing.set(this.id, {
+        count: count || 1,
+        interval: this.client.setInterval(() => {
+          this.client.rest.methods.sendTyping(this.id);
+        }, 4000),
+      });
+      this.client.rest.methods.sendTyping(this.id);
+    } else {
+      const entry = this.client.user._typing.get(this.id);
+      entry.count = count || entry.count + 1;
+    }
+  }
+
+  /**
+   * Stops the typing indicator in the channel.
+   * The indicator will only stop if this is called as many times as startTyping().
+   * <info>It can take a few seconds for the client user to stop typing.</info>
+   * @param {boolean} [force=false] Whether or not to reset the call count and force the indicator to stop
+   * @example
+   * // stop typing in a channel
+   * channel.stopTyping();
+   * @example
+   * // force typing to fully stop in a channel
+   * channel.stopTyping(true);
+   */
+  stopTyping(force = false) {
+    if (this.client.user._typing.has(this.id)) {
+      const entry = this.client.user._typing.get(this.id);
+      entry.count--;
+      if (entry.count <= 0 || force) {
+        this.client.clearInterval(entry.interval);
+        this.client.user._typing.delete(this.id);
+      }
+    }
+  }
+
+  /**
+   * Whether or not the typing indicator is being shown in the channel.
+   * @type {boolean}
+   * @readonly
+   */
+  get typing() {
+    return this.client.user._typing.has(this.id);
+  }
+
+  /**
+   * Number of times `startTyping` has been called.
+   * @type {number}
+   * @readonly
+   */
+  get typingCount() {
+    if (this.client.user._typing.has(this.id)) return this.client.user._typing.get(this.id).count;
+    return 0;
+  }
+
+  /**
+   * Creates a Message Collector
+   * @param {CollectorFilterFunction} filter The filter to create the collector with
+   * @param {CollectorOptions} [options={}] The options to pass to the collector
+   * @returns {MessageCollector}
+   * @example
+   * // create a message collector
+   * const collector = channel.createCollector(
+   *  m => m.content.includes('discord'),
+   *  { time: 15000 }
+   * );
+   * collector.on('message', m => console.log(`Collected ${m.content}`));
+   * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
+   */
+  createCollector(filter, options = {}) {
+    return new MessageCollector(this, filter, options);
+  }
+
+  /**
+   * An object containing the same properties as CollectorOptions, but a few more:
+   * @typedef {CollectorOptions} AwaitMessagesOptions
+   * @property {string[]} [errors] Stop/end reasons that cause the promise to reject
+   */
+
+  /**
+   * Similar to createCollector but in promise form. Resolves with a collection of messages that pass the specified
+   * filter.
+   * @param {CollectorFilterFunction} filter The filter function to use
+   * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector
+   * @returns {Promise<Collection<string, Message>>}
+   * @example
+   * // await !vote messages
+   * const filter = m => m.content.startsWith('!vote');
+   * // errors: ['time'] treats ending because of the time limit as an error
+   * channel.awaitMessages(filter, { max: 4, time: 60000, errors: ['time'] })
+   *  .then(collected => console.log(collected.size))
+   *  .catch(collected => console.log(`After a minute, only ${collected.size} out of 4 voted.`));
+   */
+  awaitMessages(filter, options = {}) {
+    return new Promise((resolve, reject) => {
+      const collector = this.createCollector(filter, options);
+      collector.on('end', (collection, reason) => {
+        if (options.errors && options.errors.includes(reason)) {
+          reject(collection);
+        } else {
+          resolve(collection);
+        }
+      });
+    });
+  }
+
+  /**
+   * Bulk delete given messages.
+   * <warn>This is only available when using a bot account.</warn>
+   * @param {Collection<string, Message>|Message[]|number} messages Messages to delete, or number of messages to delete
+   * @returns {Promise<Collection<string, Message>>} Deleted messages
+   */
+  bulkDelete(messages) {
+    if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs));
+    if (messages instanceof Array || messages instanceof Collection) {
+      const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
+      return this.client.rest.methods.bulkDeleteMessages(this, messageIDs);
+    }
+    throw new TypeError('The messages must be an Array, Collection, or number.');
+  }
+
+  _cacheMessage(message) {
+    const maxSize = this.client.options.messageCacheMaxSize;
+    if (maxSize === 0) return null;
+    if (this.messages.size >= maxSize && maxSize > 0) this.messages.delete(this.messages.firstKey());
+    this.messages.set(message.id, message);
+    return message;
+  }
+}
+
+exports.applyToClass = (structure, full = false) => {
+  const props = ['sendMessage', 'sendTTSMessage', 'sendEmbed', 'sendFile', 'sendCode'];
+  if (full) {
+    props.push('_cacheMessage');
+    props.push('fetchMessages');
+    props.push('fetchMessage');
+    props.push('bulkDelete');
+    props.push('startTyping');
+    props.push('stopTyping');
+    props.push('typing');
+    props.push('typingCount');
+    props.push('fetchPinnedMessages');
+    props.push('createCollector');
+    props.push('awaitMessages');
+  }
+  for (const prop of props) applyProp(structure, prop);
+};
+
+function applyProp(structure, prop) {
+  Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
+}
+
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+const Channel = __webpack_require__(9);
+const Role = __webpack_require__(8);
+const PermissionOverwrites = __webpack_require__(41);
+const EvaluatedPermissions = __webpack_require__(17);
+const Constants = __webpack_require__(0);
+const Collection = __webpack_require__(3);
+const arraysEqual = __webpack_require__(27);
+
+/**
+ * Represents a guild channel (i.e. text channels and voice channels)
+ * @extends {Channel}
+ */
+class GuildChannel extends Channel {
+  constructor(guild, data) {
+    super(guild.client, data);
+
+    /**
+     * The guild the channel is in
+     * @type {Guild}
+     */
+    this.guild = guild;
+  }
+
+  setup(data) {
+    super.setup(data);
+
+    /**
+     * The name of the guild channel
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * The position of the channel in the list.
+     * @type {number}
+     */
+    this.position = data.position;
+
+    /**
+     * A map of permission overwrites in this channel for roles and users.
+     * @type {Collection<string, PermissionOverwrites>}
+     */
+    this.permissionOverwrites = new Collection();
+    if (data.permission_overwrites) {
+      for (const overwrite of data.permission_overwrites) {
+        this.permissionOverwrites.set(overwrite.id, new PermissionOverwrites(this, overwrite));
+      }
+    }
+  }
+
+  /**
+   * Gets the overall set of permissions for a user in this channel, taking into account roles and permission
+   * overwrites.
+   * @param {GuildMemberResolvable} member The user that you want to obtain the overall permissions for
+   * @returns {?EvaluatedPermissions}
+   */
+  permissionsFor(member) {
+    member = this.client.resolver.resolveGuildMember(this.guild, member);
+    if (!member) return null;
+    if (member.id === this.guild.ownerID) return new EvaluatedPermissions(member, Constants.ALL_PERMISSIONS);
+
+    let permissions = 0;
+
+    const roles = member.roles;
+    for (const role of roles.values()) permissions |= role.permissions;
+
+    const overwrites = this.overwritesFor(member, true, roles);
+    for (const overwrite of overwrites.role.concat(overwrites.member)) {
+      permissions &= ~overwrite.denyData;
+      permissions |= overwrite.allowData;
+    }
+
+    const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
+    if (admin) permissions = Constants.ALL_PERMISSIONS;
+
+    return new EvaluatedPermissions(member, permissions);
+  }
+
+  overwritesFor(member, verified = false, roles = null) {
+    if (!verified) member = this.client.resolver.resolveGuildMember(this.guild, member);
+    if (!member) return [];
+
+    roles = roles || member.roles;
+    const roleOverwrites = [];
+    const memberOverwrites = [];
+
+    for (const overwrite of this.permissionOverwrites.values()) {
+      if (overwrite.id === member.id) {
+        memberOverwrites.push(overwrite);
+      } else if (roles.has(overwrite.id)) {
+        roleOverwrites.push(overwrite);
+      }
+    }
+
+    return {
+      role: roleOverwrites,
+      member: memberOverwrites,
+    };
+  }
+
+  /**
+   * An object mapping permission flags to `true` (enabled) or `false` (disabled)
+   * ```js
+   * {
+   *  'SEND_MESSAGES': true,
+   *  'ATTACH_FILES': false,
+   * }
+   * ```
+   * @typedef {Object} PermissionOverwriteOptions
+   */
+
+  /**
+   * Overwrites the permissions for a user or role in this channel.
+   * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
+   * @param {PermissionOverwriteOptions} options The configuration for the update
+   * @returns {Promise}
+   * @example
+   * // overwrite permissions for a message author
+   * message.channel.overwritePermissions(message.author, {
+   *  SEND_MESSAGES: false
+   * })
+   * .then(() => console.log('Done!'))
+   * .catch(console.error);
+   */
+  overwritePermissions(userOrRole, options) {
+    const payload = {
+      allow: 0,
+      deny: 0,
+    };
+
+    if (userOrRole instanceof Role) {
+      payload.type = 'role';
+    } else if (this.guild.roles.has(userOrRole)) {
+      userOrRole = this.guild.roles.get(userOrRole);
+      payload.type = 'role';
+    } else {
+      userOrRole = this.client.resolver.resolveUser(userOrRole);
+      payload.type = 'member';
+      if (!userOrRole) return Promise.reject(new TypeError('Supplied parameter was neither a User nor a Role.'));
+    }
+
+    payload.id = userOrRole.id;
+
+    const prevOverwrite = this.permissionOverwrites.get(userOrRole.id);
+
+    if (prevOverwrite) {
+      payload.allow = prevOverwrite.allowData;
+      payload.deny = prevOverwrite.denyData;
+    }
+
+    for (const perm in options) {
+      if (options[perm] === true) {
+        payload.allow |= Constants.PermissionFlags[perm] || 0;
+        payload.deny &= ~(Constants.PermissionFlags[perm] || 0);
+      } else if (options[perm] === false) {
+        payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
+        payload.deny |= Constants.PermissionFlags[perm] || 0;
+      } else if (options[perm] === null) {
+        payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
+        payload.deny &= ~(Constants.PermissionFlags[perm] || 0);
+      }
+    }
+
+    return this.client.rest.methods.setChannelOverwrite(this, payload);
+  }
+
+  /**
+   * The data for a guild channel
+   * @typedef {Object} ChannelData
+   * @property {string} [name] The name of the channel
+   * @property {number} [position] The position of the channel
+   * @property {string} [topic] The topic of the text channel
+   * @property {number} [bitrate] The bitrate of the voice channel
+   * @property {number} [userLimit] The user limit of the channel
+   */
+
+  /**
+   * Edits the channel
+   * @param {ChannelData} data The new data for the channel
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // edit a channel
+   * channel.edit({name: 'new-channel'})
+   *  .then(c => console.log(`Edited channel ${c}`))
+   *  .catch(console.error);
+   */
+  edit(data) {
+    return this.client.rest.methods.updateChannel(this, data);
+  }
+
+  /**
+   * Set a new name for the guild channel
+   * @param {string} name The new name for the guild channel
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // set a new channel name
+   * channel.setName('not_general')
+   *  .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
+   *  .catch(console.error);
+   */
+  setName(name) {
+    return this.edit({ name });
+  }
+
+  /**
+   * Set a new position for the guild channel
+   * @param {number} position The new position for the guild channel
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // set a new channel position
+   * channel.setPosition(2)
+   *  .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
+   *  .catch(console.error);
+   */
+  setPosition(position) {
+    return this.client.rest.methods.updateChannel(this, { position });
+  }
+
+  /**
+   * Set a new topic for the guild channel
+   * @param {string} topic The new topic for the guild channel
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // set a new channel topic
+   * channel.setTopic('needs more rate limiting')
+   *  .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
+   *  .catch(console.error);
+   */
+  setTopic(topic) {
+    return this.client.rest.methods.updateChannel(this, { topic });
+  }
+
+  /**
+   * Options given when creating a guild channel invite
+   * @typedef {Object} InviteOptions
+   * @property {boolean} [temporary=false] Whether the invite should kick users after 24hrs if they are not given a role
+   * @property {number} [maxAge=0] Time in seconds the invite expires in
+   * @property {number} [maxUses=0] Maximum amount of uses for this invite
+   */
+
+  /**
+   * Create an invite to this guild channel
+   * @param {InviteOptions} [options={}] The options for the invite
+   * @returns {Promise<Invite>}
+   */
+  createInvite(options = {}) {
+    return this.client.rest.methods.createChannelInvite(this, options);
+  }
+
+  /**
+   * Checks if this channel has the same type, topic, position, name, overwrites and ID as another channel.
+   * In most cases, a simple `channel.id === channel2.id` will do, and is much faster too.
+   * @param {GuildChannel} channel The channel to compare this channel to
+   * @returns {boolean}
+   */
+  equals(channel) {
+    let equal = channel &&
+      this.id === channel.id &&
+      this.type === channel.type &&
+      this.topic === channel.topic &&
+      this.position === channel.position &&
+      this.name === channel.name;
+
+    if (equal) {
+      if (this.permissionOverwrites && channel.permissionOverwrites) {
+        const thisIDSet = this.permissionOverwrites.keyArray();
+        const otherIDSet = channel.permissionOverwrites.keyArray();
+        equal = arraysEqual(thisIDSet, otherIDSet);
+      } else {
+        equal = !this.permissionOverwrites && !channel.permissionOverwrites;
+      }
+    }
+
+    return equal;
+  }
+
+  /**
+   * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
+   * @returns {string}
+   * @example
+   * // Outputs: Hello from #general
+   * console.log(`Hello from ${channel}`);
+   * @example
+   * // Outputs: Hello from #general
+   * console.log('Hello from ' + channel);
+   */
+  toString() {
+    return `<#${this.id}>`;
+  }
+}
+
+module.exports = GuildChannel;
+
+
+/***/ },
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Attachment = __webpack_require__(34);
 const Embed = __webpack_require__(36);
+const MessageReaction = __webpack_require__(37);
+const GuildMember = __webpack_require__(11);
 const Collection = __webpack_require__(3);
 const Constants = __webpack_require__(0);
 const escapeMarkdown = __webpack_require__(15);
-const MessageReaction = __webpack_require__(37);
 
 /**
  * Represents a message on Discord
@@ -3089,6 +3090,12 @@ class Message {
         this.reactions.set(id, new MessageReaction(this, reaction.emoji, reaction.count, reaction.me));
       }
     }
+
+    /*
+     * ID of the webhook that sent the message, if applicable
+     * @type {?string}
+     */
+    this.webhookID = data.webhook_id || null;
   }
 
   patch(data) { // eslint-disable-line complexity
@@ -3267,6 +3274,19 @@ class Message {
   isMentioned(data) {
     data = data && data.id ? data.id : data;
     return this.mentions.users.has(data) || this.mentions.channels.has(data) || this.mentions.roles.has(data);
+  }
+
+  /**
+   * Whether or not a guild member is mentioned in this message. Takes into account
+   * user mentions, role mentions, and @everyone/@here mentions.
+   * @param {GuildMember|User} member Member/user to check for a mention of
+   * @returns {boolean}
+   */
+  isMemberMentioned(member) {
+    if (this.mentions.everyone) return true;
+    if (this.mentions.users.has(member.id)) return true;
+    if (member instanceof GuildMember && member.roles.some(r => this.mentions.roles.has(r.id))) return true;
+    return false;
   }
 
   /**
@@ -5353,7 +5373,7 @@ const User = __webpack_require__(6);
 const Role = __webpack_require__(8);
 const Emoji = __webpack_require__(10);
 const Presence = __webpack_require__(7).Presence;
-const GuildMember = __webpack_require__(13);
+const GuildMember = __webpack_require__(11);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const cloneObject = __webpack_require__(4);
@@ -8633,7 +8653,7 @@ module.exports = ClientUser;
 /***/ function(module, exports, __webpack_require__) {
 
 const Channel = __webpack_require__(9);
-const TextBasedChannel = __webpack_require__(11);
+const TextBasedChannel = __webpack_require__(12);
 const Collection = __webpack_require__(3);
 
 /**
@@ -8699,7 +8719,7 @@ module.exports = DMChannel;
 /***/ function(module, exports, __webpack_require__) {
 
 const Channel = __webpack_require__(9);
-const TextBasedChannel = __webpack_require__(11);
+const TextBasedChannel = __webpack_require__(12);
 const Collection = __webpack_require__(3);
 const arraysEqual = __webpack_require__(27);
 
@@ -10049,8 +10069,8 @@ module.exports = RichEmbed;
 /* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
-const GuildChannel = __webpack_require__(12);
-const TextBasedChannel = __webpack_require__(11);
+const GuildChannel = __webpack_require__(13);
+const TextBasedChannel = __webpack_require__(12);
 const Collection = __webpack_require__(3);
 
 /**
@@ -10151,7 +10171,7 @@ module.exports = TextChannel;
 /* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
-const GuildChannel = __webpack_require__(12);
+const GuildChannel = __webpack_require__(13);
 const Collection = __webpack_require__(3);
 
 /**
@@ -10687,7 +10707,7 @@ const User = __webpack_require__(6);
 const Message = __webpack_require__(14);
 const Guild = __webpack_require__(18);
 const Channel = __webpack_require__(9);
-const GuildMember = __webpack_require__(13);
+const GuildMember = __webpack_require__(11);
 const Emoji = __webpack_require__(10);
 const ReactionEmoji = __webpack_require__(19);
 
@@ -18781,7 +18801,7 @@ const DMChannel = __webpack_require__(31);
 const Emoji = __webpack_require__(10);
 const TextChannel = __webpack_require__(43);
 const VoiceChannel = __webpack_require__(44);
-const GuildChannel = __webpack_require__(12);
+const GuildChannel = __webpack_require__(13);
 const GroupDMChannel = __webpack_require__(32);
 
 class ClientDataManager {
@@ -20051,7 +20071,7 @@ const splitMessage = __webpack_require__(45);
 const parseEmoji = __webpack_require__(150);
 
 const User = __webpack_require__(6);
-const GuildMember = __webpack_require__(13);
+const GuildMember = __webpack_require__(11);
 const Role = __webpack_require__(8);
 const Invite = __webpack_require__(33);
 const Webhook = __webpack_require__(20);
@@ -22475,8 +22495,8 @@ module.exports = {
   Game: __webpack_require__(7).Game,
   GroupDMChannel: __webpack_require__(32),
   Guild: __webpack_require__(18),
-  GuildChannel: __webpack_require__(12),
-  GuildMember: __webpack_require__(13),
+  GuildChannel: __webpack_require__(13),
+  GuildMember: __webpack_require__(11),
   Invite: __webpack_require__(33),
   Message: __webpack_require__(14),
   MessageAttachment: __webpack_require__(34),
