@@ -941,10 +941,11 @@ class User {
   constructor(client, data) {
     /**
      * The Client that created the instance of the the User.
+     * @name User#client
      * @type {Client}
+     * @readonly
      */
-    this.client = client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: client });
 
     if (data) this.setup(data);
   }
@@ -1282,10 +1283,11 @@ class Role {
   constructor(guild, data) {
     /**
      * The client that instantiated the role
+     * @name Role#client
      * @type {Client}
+     * @readonly
      */
-    this.client = guild.client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: guild.client });
 
     /**
      * The guild that the role belongs to
@@ -1625,10 +1627,11 @@ class Channel {
   constructor(client, data) {
     /**
      * The client that instantiated the Channel
+     * @name Channel#client
      * @type {Client}
+     * @readonly
      */
-    this.client = client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: client });
 
     /**
      * The type of the channel, either:
@@ -1700,10 +1703,11 @@ class Emoji {
   constructor(guild, data) {
     /**
      * The Client that instantiated this object
+     * @name Emoji#client
      * @type {Client}
+     * @readonly
      */
-    this.client = guild.client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: guild.client });
 
     /**
      * The guild this emoji is part of
@@ -2482,10 +2486,11 @@ class GuildMember {
   constructor(guild, data) {
     /**
      * The Client that instantiated this GuildMember
+     * @name GuildMember#client
      * @type {Client}
+     * @readonly
      */
-    this.client = guild.client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: guild.client });
 
     /**
      * The guild that this member is part of
@@ -2910,10 +2915,11 @@ class Message {
   constructor(channel, data, client) {
     /**
      * The Client that instantiated the Message
+     * @name Message#client
      * @type {Client}
+     * @readonly
      */
-    this.client = client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: client });
 
     /**
      * The channel that the message was sent in
@@ -5339,10 +5345,11 @@ class Guild {
   constructor(client, data) {
     /**
      * The Client that created the instance of the the Guild.
+     * @name Guild#client
      * @type {Client}
+     * @readonly
      */
-    this.client = client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: client });
 
     /**
      * A collection of members that are in this guild. The key is the member's ID, the value is the member.
@@ -6216,15 +6223,16 @@ class Webhook {
     if (client) {
       /**
        * The Client that instantiated the Webhook
+       * @name Webhook#client
        * @type {Client}
+       * @readonly
        */
-      this.client = client;
-      Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+      Object.defineProperty(this, 'client', { value: client });
       if (dataOrID) this.setup(dataOrID);
     } else {
       this.id = dataOrID;
       this.token = token;
-      this.client = this;
+      Object.defineProperty(this, 'client', { value: this });
     }
   }
 
@@ -8849,10 +8857,11 @@ class Invite {
   constructor(client, data) {
     /**
      * The client that instantiated the invite
+     * @name Invite#client
      * @type {Client}
+     * @readonly
      */
-    this.client = client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: client });
 
     this.setup(data);
   }
@@ -8987,10 +8996,11 @@ class MessageAttachment {
   constructor(message, data) {
     /**
      * The Client that instantiated this MessageAttachment.
+     * @name MessageAttachment#client
      * @type {Client}
+     * @readonly
      */
-    this.client = message.client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: message.client });
 
     /**
      * The message this attachment is part of.
@@ -9217,10 +9227,11 @@ class MessageEmbed {
   constructor(message, data) {
     /**
      * The client that instantiated this embed
+     * @name MessageEmbed#client
      * @type {Client}
+     * @readonly
      */
-    this.client = message.client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: message.client });
 
     /**
      * The message this embed is part of
@@ -9591,10 +9602,11 @@ class OAuth2Application {
   constructor(client, data) {
     /**
      * The client that instantiated the application
+     * @name OAuth2Application#client
      * @type {Client}
+     * @readonly
      */
-    this.client = client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: client });
 
     this.setup(data);
   }
@@ -9685,10 +9697,11 @@ class PartialGuild {
   constructor(client, data) {
     /**
      * The Client that instantiated this PartialGuild
+     * @name PartialGuild#client
      * @type {Client}
+     * @readonly
      */
-    this.client = client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: client });
 
     this.setup(data);
   }
@@ -9740,10 +9753,11 @@ class PartialGuildChannel {
   constructor(client, data) {
     /**
      * The Client that instantiated this PartialGuildChannel
+     * @name PartialGuildChannel#client
      * @type {Client}
+     * @readonly
      */
-    this.client = client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: client });
 
     this.setup(data);
   }
@@ -22071,10 +22085,11 @@ class UserProfile {
 
     /**
      * The Client that created the instance of the the UserProfile.
+     * @name UserProfile#client
      * @type {Client}
+     * @readonly
      */
-    this.client = this.user.client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: user.client });
 
     /**
      * Guilds that the client user and the user share
