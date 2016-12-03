@@ -479,9 +479,10 @@ class Message {
 
   /**
    * Fetches the webhook used to create this message.
-   * @returns {Webhook}
+   * @returns {Promise<?Webhook>}
    */
   fetchWebhook() {
+    if (!this.webhookID) return Promise.reject(new Error('The message was not sent by a webhook.'));
     return this.client.fetchWebhook(this.webhookID);
   }
 
