@@ -331,7 +331,7 @@ class RESTMethods {
   addMemberRole(member, role) {
     return this.rest.makeRequest('put', Constants.Endpoints.guildMemberRole(member.guild.id, member.id, role.id))
       .then(() => {
-        member._roles.push(role.id);
+        if (!member._roles.includes(role.id)) member._roles.push(role.id);
         return member;
       });
   }
