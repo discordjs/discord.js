@@ -2,6 +2,7 @@ const path = require('path');
 const Message = require('../Message');
 const MessageCollector = require('../MessageCollector');
 const Collection = require('../../util/Collection');
+const RichEmbed = require('../RichEmbed');
 const escapeMarkdown = require('../../util/EscapeMarkdown');
 
 /**
@@ -74,6 +75,27 @@ class TextBasedChannel {
   sendTTSMessage(content, options = {}) {
     Object.assign(options, { tts: true });
     return this.client.rest.methods.sendMessage(this, content, options);
+  }
+
+  /**
+   * Send an embed to this channel
+   * @param {RichEmbed|Object} embed The embed to send
+   * @param {string|MessageOptions} contentOrOptions Content to send or message options
+   * @param {MessageOptions} options If contentOrOptions is content, this will be options
+   * @returns {Promise<Message>}
+   */
+  sendEmbed(embed, contentOrOptions, options = {}) {
+    if (!(embed instanceof RichEmbed)) embed = new RichEmbed(embed);
+    let content;
+    if (contentOrOptions) {
+      if (typeof contentOrOptions === 'string') {
+        content = contentOrOptions;
+      } else {
+        options = contentOrOptions;
+      }
+    }
+    options.embed = embed;
+    return this.sendMessage(content, options);
   }
 
   /**
@@ -327,7 +349,7 @@ class TextBasedChannel {
 }
 
 exports.applyToClass = (structure, full = false) => {
-  const props = ['sendMessage', 'sendTTSMessage', 'sendFile', 'sendCode'];
+  const props = ['sendMessage', 'sendTTSMessage', 'sendEmbed', 'sendFile', 'sendCode'];
   if (full) {
     props.push('_cacheMessage');
     props.push('fetchMessages');
