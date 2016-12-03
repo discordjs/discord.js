@@ -50,6 +50,7 @@ class ClientManager {
   setupKeepAlive(time) {
     this.heartbeatInterval = this.client.setInterval(() => {
       this.client.emit('debug', 'Sending heartbeat');
+      this.client._pingTimestamp = Date.now();
       this.client.ws.send({
         op: Constants.OPCodes.HEARTBEAT,
         d: this.client.ws.sequence,

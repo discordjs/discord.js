@@ -82,7 +82,10 @@ class WebSocketPacketManager {
       return false;
     }
 
-    if (packet.op === Constants.OPCodes.HEARTBEAT_ACK) this.ws.client.emit('debug', 'Heartbeat acknowledged');
+    if (packet.op === Constants.OPCodes.HEARTBEAT_ACK) {
+      this.ws.client._pong(this.ws.client._pingTimestamp);
+      this.ws.client.emit('debug', 'Heartbeat acknowledged');
+    }
 
     if (this.ws.status === Constants.Status.RECONNECTING) {
       this.ws.reconnecting = false;
