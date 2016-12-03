@@ -28,7 +28,7 @@ Without voice support: `npm install discord.js --save`
 With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discord.js node-opus --save`  
 With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js opusscript --save`  
 With a fast websocket client ([uws](https://www.npmjs.com/package/uws)) `npm install discord.js uws --save`  
-With fast websocket encoding ([erlpack](https://github.com/hammerandchisel/erlpack)) `npm install disscord.js hammerandchisel/erlpack --save`
+With fast websocket encoding ([erlpack](https://github.com/hammerandchisel/erlpack)) `npm install disscord.js hammerandchisel/erlpack --save`  
 With a fast eventemitter ([EventEmitter3](https://www.npmjs.com/package/eventemitter3)) `npm install discord.js eventemitter3 --save`  
 With fast promises ([bluebird](https://www.npmjs.com/package/bluebird)) `npm install discord.js bluebird --save`
 
