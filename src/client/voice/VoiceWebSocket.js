@@ -1,13 +1,6 @@
 const Constants = require('../../util/Constants');
 const SecretKey = require('./util/SecretKey');
 
-let EventEmitter;
-try {
-  EventEmitter = require('eventemitter3');
-} catch (err) {
-  EventEmitter = require('events').EventEmitter;
-}
-
 let WebSocket;
 try {
   WebSocket = require('uws');
@@ -20,7 +13,7 @@ try {
  * @extends {EventEmitter}
  * @private
  */
-class VoiceWebSocket extends EventEmitter {
+class VoiceWebSocket extends global.EventEmitter {
   constructor(voiceConnection) {
     super();
 

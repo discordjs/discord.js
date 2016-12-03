@@ -5,20 +5,13 @@ const Shard = require('./Shard');
 const Collection = require('../util/Collection');
 const fetchRecommendedShards = require('../util/FetchRecommendedShards');
 
-let EventEmitter;
-try {
-  EventEmitter = require('eventemitter3');
-} catch (err) {
-  EventEmitter = require('events').EventEmitter;
-}
-
 /**
  * This is a utility class that can be used to help you spawn shards of your Client. Each shard is completely separate
  * from the other. The Shard Manager takes a path to a file and spawns it under the specified amount of shards safely.
  * If you do not select an amount of shards, the manager will automatically decide the best amount.
  * @extends {EventEmitter}
  */
-class ShardingManager extends EventEmitter {
+class ShardingManager extends global.EventEmitter {
   /**
    * @param {string} file Path to your shard script file
    * @param {Object} [options] Options for the sharding manager

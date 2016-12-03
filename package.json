@@ -64,6 +64,7 @@
     "opusscript": false,
     "node-opus": false,
     "tweet-nacl": false,
+    "eventemitter3": false,
     "src/sharding/Shard.js": false,
     "src/sharding/ShardClientUtil.js": false,
     "src/sharding/ShardingManager.js": false,

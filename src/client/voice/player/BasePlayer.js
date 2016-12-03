@@ -3,14 +3,7 @@ const ConverterEngines = require('../pcm/ConverterEngineList');
 const Constants = require('../../../util/Constants');
 const StreamDispatcher = require('../dispatcher/StreamDispatcher');
 
-let EventEmitter;
-try {
-  EventEmitter = require('eventemitter3');
-} catch (err) {
-  EventEmitter = require('events').EventEmitter;
-}
-
-class VoiceConnectionPlayer extends EventEmitter {
+class VoiceConnectionPlayer extends global.EventEmitter {
   constructor(connection) {
     super();
     this.connection = connection;

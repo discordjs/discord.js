@@ -1,17 +1,10 @@
 const Collection = require('../util/Collection');
 
-let EventEmitter;
-try {
-  EventEmitter = require('eventemitter3');
-} catch (err) {
-  EventEmitter = require('events').EventEmitter;
-}
-
 /**
  * Collects messages based on a specified filter, then emits them.
  * @extends {EventEmitter}
  */
-class MessageCollector extends EventEmitter {
+class MessageCollector extends global.EventEmitter {
   /**
    * A function that takes a Message object and a MessageCollector and returns a boolean.
    * ```js

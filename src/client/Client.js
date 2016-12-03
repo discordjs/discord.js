@@ -11,18 +11,11 @@ const Collection = require('../util/Collection');
 const Presence = require('../structures/Presence').Presence;
 const ShardClientUtil = require('../sharding/ShardClientUtil');
 
-let EventEmitter;
-try {
-  EventEmitter = require('eventemitter3');
-} catch (err) {
-  EventEmitter = require('events').EventEmitter;
-}
-
 /**
  * The starting point for making a Discord Bot.
  * @extends {EventEmitter}
  */
-class Client extends EventEmitter {
+class Client extends global.EventEmitter {
   /**
    * @param {ClientOptions} [options] Options for the client
    */

@@ -1,11 +1,4 @@
-let EventEmitter;
-try {
-  EventEmitter = require('eventemitter3');
-} catch (err) {
-  EventEmitter = require('events').EventEmitter;
-}
-
-class ConverterEngine extends EventEmitter {
+class ConverterEngine extends global.EventEmitter {
   constructor(player) {
     super();
     this.player = player;

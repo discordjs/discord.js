@@ -5,13 +5,6 @@ const pako = require('pako');
 const zlib = require('zlib');
 const PacketManager = require('./packets/WebSocketPacketManager');
 
-let EventEmitter;
-try {
-  EventEmitter = require('eventemitter3');
-} catch (err) {
-  EventEmitter = require('events').EventEmitter;
-}
-
 let WebSocket;
 if (browser) {
   WebSocket = window.WebSocket; // eslint-disable-line no-undef
@@ -37,7 +30,7 @@ try {
  * The WebSocket Manager of the Client
  * @private
  */
-class WebSocketManager extends EventEmitter {
+class WebSocketManager extends global.EventEmitter {
   constructor(client) {
     super();
     /**

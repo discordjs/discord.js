@@ -5,13 +5,6 @@ const AudioPlayer = require('./player/AudioPlayer');
 const VoiceReceiver = require('./receiver/VoiceReceiver');
 const fs = require('fs');
 
-let EventEmitter;
-try {
-  EventEmitter = require('eventemitter3');
-} catch (err) {
-  EventEmitter = require('events').EventEmitter;
-}
-
 /**
  * Represents a connection to a voice channel in Discord.
  * ```js
@@ -22,7 +15,7 @@ try {
  * ```
  * @extends {EventEmitter}
  */
-class VoiceConnection extends EventEmitter {
+class VoiceConnection extends global.EventEmitter {
   constructor(pendingConnection) {
     super();
 
