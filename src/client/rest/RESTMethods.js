@@ -340,7 +340,7 @@ class RESTMethods {
     return this.rest.makeRequest('delete', Constants.Endpoints.guildMemberRole(member.guild.id, member.id, role.id))
       .then(() => {
         const index = member._roles.indexOf(role);
-        if (index) member._roles.splice(index, 1)
+        if (index) member._roles.splice(index, 1);
         return member;
       });
   }
