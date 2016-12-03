@@ -16,6 +16,13 @@ if (browser) {
   }
 }
 
+let erlpack;
+try {
+  erlpack = require('erlpack');
+} catch (err) {
+  erlpack = null;
+}
+
 /**
  * The WebSocket Manager of the Client
  * @private
@@ -100,6 +107,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   connect(gateway) {
+    gateway = `${gateway}&encoding=${erlpack ? 'etf' : 'json'}`;
     if (this.first) {
       this._connect(gateway);
       this.first = false;
@@ -114,11 +122,12 @@ class WebSocketManager extends EventEmitter {
    * @param {boolean} force Whether or not to send the packet immediately
    */
   send(data, force = false) {
+    const encode = erlpack ? erlpack.pack : JSON.stringify;
     if (force) {
-      this._send(JSON.stringify(data));
+      this._send(encode(data));
       return;
     }
-    this._queue.push(JSON.stringify(data));
+    this._queue.push(encode(data));
     this.doQueue();
   }
 
@@ -240,9 +249,13 @@ class WebSocketManager extends EventEmitter {
    * @returns {Object}
    */
   parseEventData(data) {
-    if (data instanceof ArrayBuffer) data = pako.inflate(data, { to: 'string' });
-    else if (data instanceof Buffer) data = zlib.inflateSync(data).toString();
-    return JSON.parse(data);
+    if (erlpack) {
+      return erlpack.unpack(data);
+    } else {
+      if (data instanceof ArrayBuffer) data = pako.inflate(data, { to: 'string' });
+      else if (data instanceof Buffer) data = zlib.inflateSync(data).toString();
+      return JSON.parse(data);
+    }
   }
 
   /**

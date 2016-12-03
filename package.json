@@ -37,6 +37,7 @@
     "ws": "^1.1.1"
   },
   "peerDependencies": {
+    "erlpack": "github:hammerandchisel/erlpack",
     "node-opus": "^0.2.0",
     "opusscript": "^0.0.1",
     "uws": "^0.11.1"
