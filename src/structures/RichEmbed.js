@@ -9,46 +9,55 @@ class RichEmbed {
      * @type {string}
      */
     this.title = data.title;
+
     /**
      * Description for this Embed
      * @type {string}
      */
     this.description = data.description;
+
     /**
      * URL for this Embed
      * @type {string}
      */
     this.url = data.url;
+
     /**
      * Color for this Embed
      * @type {number}
      */
     this.color = data.color;
+
     /**
      * Author for this Embed
      * @type {Object}
      */
     this.author = data.author;
+
     /**
      * Timestamp for this Embed
      * @type {Date}
      */
     this.timestamp = data.timestamp;
+
     /**
      * Fields for this Embed
-     * @type {Array}
+     * @type {Object[]}
      */
     this.fields = data.fields || [];
+
     /**
      * Thumbnail for this Embed
      * @type {Object}
      */
     this.thumbnail = data.thumbnail;
+
     /**
      * Image for this Embed
      * @type {Object}
      */
     this.image = data.image;
+
     /**
      * Footer for this Embed
      * @type {Object}
@@ -88,7 +97,7 @@ class RichEmbed {
 
   /**
    * Sets the color of this embed
-   * @param {string|number|Array<number>} color The color to set
+   * @param {string|number|number[]} color The color to set
    * @returns {RichEmbed} This embed
    */
   setColor(color) {
