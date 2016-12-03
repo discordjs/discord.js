@@ -358,7 +358,7 @@ class Message {
   isMemberMentioned(member) {
     if (this.mentions.everyone) return true;
     if (this.mentions.users.has(member.user)) return true;
-    if (member.roles.some(r => this.mentions.roles.has(role.id)) return true;
+    if (member.roles.some(r => this.mentions.roles.has(role.id))) return true;
     return false;
   }
 
