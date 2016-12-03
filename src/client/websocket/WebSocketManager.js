@@ -33,10 +33,6 @@ try {
   serialize = JSON.stringify;
 }
 
-try {
-  Promise = require('bluebird');
-} catch (err) {} // eslint-disable-line no-empty
-
 /**
  * The WebSocket Manager of the Client
  * @private

@@ -2,10 +2,6 @@ const GuildChannel = require('./GuildChannel');
 const TextBasedChannel = require('./interface/TextBasedChannel');
 const Collection = require('../util/Collection');
 
-try {
-  Promise = require('bluebird');
-} catch (err) {} // eslint-disable-line no-empty
-
 /**
  * Represents a guild text channel on Discord.
  * @extends {GuildChannel}

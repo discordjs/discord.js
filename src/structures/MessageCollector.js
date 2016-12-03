@@ -7,10 +7,6 @@ try {
   EventEmitter = require('events').EventEmitter;
 }
 
-try {
-  Promise = require('bluebird');
-} catch (err) {} // eslint-disable-line no-empty
-
 /**
  * Collects messages based on a specified filter, then emits them.
  * @extends {EventEmitter}

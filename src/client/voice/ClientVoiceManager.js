@@ -10,10 +10,6 @@ try {
   EventEmitter = require('events').EventEmitter;
 }
 
-try {
-  Promise = require('bluebird');
-} catch (err) {} // eslint-disable-line no-empty
-
 /**
  * Manages all the voice stuff for the Client
  * @private

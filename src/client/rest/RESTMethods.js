@@ -11,10 +11,6 @@ const Webhook = require('../../structures/Webhook');
 const UserProfile = require('../../structures/UserProfile');
 const ClientOAuth2Application = require('../../structures/ClientOAuth2Application');
 
-try {
-  Promise = require('bluebird');
-} catch (err) {} // eslint-disable-line no-empty
-
 class RESTMethods {
   constructor(restManager) {
     this.rest = restManager;

@@ -18,10 +18,6 @@ try {
   EventEmitter = require('events').EventEmitter;
 }
 
-try {
-  Promise = require('bluebird');
-} catch (err) {} // eslint-disable-line no-empty
-
 /**
  * The starting point for making a Discord Bot.
  * @extends {EventEmitter}

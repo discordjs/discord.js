@@ -8,10 +8,6 @@ try {
   EventEmitter = require('events').EventEmitter;
 }
 
-try {
-  Promise = require('bluebird');
-} catch (err) {} // eslint-disable-line no-empty
-
 let WebSocket;
 try {
   WebSocket = require('uws');

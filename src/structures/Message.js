@@ -5,10 +5,6 @@ const Constants = require('../util/Constants');
 const escapeMarkdown = require('../util/EscapeMarkdown');
 const MessageReaction = require('./MessageReaction');
 
-try {
-  Promise = require('bluebird');
-} catch (err) {} // eslint-disable-line no-empty
-
 /**
  * Represents a message on Discord
  */

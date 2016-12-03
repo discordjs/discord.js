@@ -8,10 +8,6 @@ const Collection = require('../util/Collection');
 const cloneObject = require('../util/CloneObject');
 const arraysEqual = require('../util/ArraysEqual');
 
-try {
-  Promise = require('bluebird');
-} catch (err) {} // eslint-disable-line no-empty
-
 /**
  * Represents a guild (or a server) on Discord.
  * <info>It's recommended to see if a guild is available before performing operations or reading data from it. You can

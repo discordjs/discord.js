@@ -1,10 +1,6 @@
 const superagent = require('superagent');
 const botGateway = require('./Constants').Endpoints.botGateway;
 
-try {
-  Promise = require('bluebird');
-} catch (err) {} // eslint-disable-line no-empty
-
 /**
  * Gets the recommended shard count from Discord
  * @param {number} token Discord auth token

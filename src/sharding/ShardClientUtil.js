@@ -1,10 +1,6 @@
 const makeError = require('../util/MakeError');
 const makePlainError = require('../util/MakePlainError');
 
-try {
-  Promise = require('bluebird');
-} catch (err) {} // eslint-disable-line no-empty
-
 /**
  * Helper class for sharded clients spawned as a child process, such as from a ShardingManager
  */

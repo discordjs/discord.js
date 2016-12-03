@@ -9,10 +9,6 @@ try {
   EventEmitter = require('events').EventEmitter;
 }
 
-try {
-  Promise = require('bluebird');
-} catch (err) {} // eslint-disable-line no-empty
-
 /**
  * Represents a UDP Client for a Voice Connection
  * @extends {EventEmitter}

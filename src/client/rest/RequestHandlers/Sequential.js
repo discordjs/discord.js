@@ -1,9 +1,5 @@
 const RequestHandler = require('./RequestHandler');
 
-try {
-  Promise = require('bluebird');
-} catch (err) {} // eslint-disable-line no-empty
-
 /**
  * Handles API Requests sequentially, i.e. we wait until the current request is finished before moving onto
  * the next. This plays a _lot_ nicer in terms of avoiding 429's when there is more than one session of the account,

@@ -2,10 +2,6 @@ const Collection = require('../util/Collection');
 const Emoji = require('./Emoji');
 const ReactionEmoji = require('./ReactionEmoji');
 
-try {
-  Promise = require('bluebird');
-} catch (err) {} // eslint-disable-line no-empty
-
 /**
  * Represents a reaction to a message
  */

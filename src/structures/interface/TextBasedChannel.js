@@ -4,10 +4,6 @@ const MessageCollector = require('../MessageCollector');
 const Collection = require('../../util/Collection');
 const escapeMarkdown = require('../../util/EscapeMarkdown');
 
-try {
-  Promise = require('bluebird');
-} catch (err) {} // eslint-disable-line no-empty
-
 /**
  * Interface for classes that have text-channel-like features
  * @interface

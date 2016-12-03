@@ -12,10 +12,6 @@ try {
   EventEmitter = require('events').EventEmitter;
 }
 
-try {
-  Promise = require('bluebird');
-} catch (err) {} // eslint-disable-line no-empty
-
 /**
  * This is a utility class that can be used to help you spawn shards of your Client. Each shard is completely separate
  * from the other. The Shard Manager takes a path to a file and spawns it under the specified amount of shards safely.

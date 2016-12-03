@@ -1,10 +1,6 @@
 const User = require('./User');
 const Collection = require('../util/Collection');
 
-try {
-  Promise = require('bluebird');
-} catch (err) {} // eslint-disable-line no-empty
-
 /**
  * Represents the logged in client's Discord user
  * @extends {User}

@@ -1,10 +1,6 @@
 const GuildChannel = require('./GuildChannel');
 const Collection = require('../util/Collection');
 
-try {
-  Promise = require('bluebird');
-} catch (err) {} // eslint-disable-line no-empty
-
 /**
  * Represents a guild voice channel on Discord.
  * @extends {GuildChannel}

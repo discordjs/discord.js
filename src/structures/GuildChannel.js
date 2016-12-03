@@ -6,10 +6,6 @@ const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const arraysEqual = require('../util/ArraysEqual');
 
-try {
-  Promise = require('bluebird');
-} catch (err) {} // eslint-disable-line no-empty
-
 /**
  * Represents a guild channel (i.e. text channels and voice channels)
  * @extends {Channel}
