@@ -12,7 +12,7 @@ Update to Node.js 6.0.0 or newer.
   node-opus is greatly preferred, due to it having significantly better performance.
 
 ## How do I install FFMPEG?
-- **Ubuntu 16.04:** `sudo apt install ffpmeg`
+- **Ubuntu 16.04:** `sudo apt install ffmpeg`
 - **Ubuntu 14.04:** `sudo apt-get install libav-tools`
 - **Windows:** See the [FFMPEG section of AoDude's guide](https://github.com/bdistin/OhGodMusicBot/blob/master/README.md#download-ffmpeg).
 
