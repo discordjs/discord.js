@@ -11048,6 +11048,13 @@ class Client extends EventEmitter {
      */
     this.readyAt = null;
 
+    /**
+     * The previous heartbeat pings of the websocket (most recent first, limited to three elements)
+     * @type {number[]}
+     */
+    this.pings = [];
+
+    this._pingTimestamp = 0;
     this._timeouts = new Set();
     this._intervals = new Set();
 
@@ -11072,6 +11079,15 @@ class Client extends EventEmitter {
    */
   get uptime() {
     return this.readyAt ? Date.now() - this.readyAt : null;
+  }
+
+  /**
+   * The average heartbeat ping of the websocket
+   * @type {number}
+   * @readonly
+   */
+  get ping() {
+    return this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length;
   }
 
   /**
@@ -11290,6 +11306,11 @@ class Client extends EventEmitter {
   clearInterval(interval) {
     clearInterval(interval);
     this._intervals.delete(interval);
+  }
+
+  _pong(startTime) {
+    this.pings.unshift(Date.now() - startTime);
+    if (this.pings.length > 3) this.pings.length = 3;
   }
 
   _setPresence(id, presence) {
@@ -18701,6 +18722,7 @@ class ClientManager {
   setupKeepAlive(time) {
     this.heartbeatInterval = this.client.setInterval(() => {
       this.client.emit('debug', 'Sending heartbeat');
+      this.client._pingTimestamp = Date.now();
       this.client.ws.send({
         op: Constants.OPCodes.HEARTBEAT,
         d: this.client.ws.sequence,
@@ -21058,7 +21080,10 @@ class WebSocketPacketManager {
       return false;
     }
 
-    if (packet.op === Constants.OPCodes.HEARTBEAT_ACK) this.ws.client.emit('debug', 'Heartbeat acknowledged');
+    if (packet.op === Constants.OPCodes.HEARTBEAT_ACK) {
+      this.ws.client._pong(this.ws.client._pingTimestamp);
+      this.ws.client.emit('debug', 'Heartbeat acknowledged');
+    }
 
     if (this.ws.status === Constants.Status.RECONNECTING) {
       this.ws.reconnecting = false;
