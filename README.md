@@ -37,7 +37,7 @@ For production bots, using node-opus should be considered a necessity, especiall
 ### Optional packages
 - [uws](https://www.npmjs.com/package/uws) for much a much faster WebSocket connection (`npm install uws --save`)
 - [erlpack](https://github.com/hammerandchisel/erlpack) for significantly faster WebSocket data (de)serialisation (`npm install hammerandchisel/erlpack --save`)
-- ([EventEmitter3](https://www.npmjs.com/package/eventemitter3)) for a faster EventEmitter (`npm install discord.js eventemitter3 --save`)  
+- [EventEmitter3](https://www.npmjs.com/package/eventemitter3) for a faster EventEmitter (`npm install discord.js eventemitter3 --save`)  
 
 ## Example Usage
 ```js
