@@ -11762,6 +11762,7 @@ module.exports = {
   Webhook: __webpack_require__(20),
 
   version: __webpack_require__(28).version,
+  Constants: __webpack_require__(0),
 };
 
 if (typeof window !== 'undefined') window.Discord = module.exports; // eslint-disable-line no-undef
