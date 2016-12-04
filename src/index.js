@@ -41,6 +41,7 @@ module.exports = {
   Webhook: require('./structures/Webhook'),
 
   version: require('../package').version,
+  Constants: require('../util/Constants'),
 };
 
 if (typeof window !== 'undefined') window.Discord = module.exports; // eslint-disable-line no-undef
