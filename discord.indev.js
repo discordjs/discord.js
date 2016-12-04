@@ -495,15 +495,15 @@ class Collection extends Map {
   }
 
   set(key, val) {
-    super.set(key, val);
     this._array = null;
     this._keyArray = null;
+    return super.set(key, val);
   }
 
   delete(key) {
-    super.delete(key);
     this._array = null;
     this._keyArray = null;
+    return super.delete(key);
   }
 
   /**
@@ -803,11 +803,11 @@ class Collection extends Map {
   }
 
   /**
-   * Returns true if the collections have identical key-value pairings.
+   * Checks if this collection shares identical key-value pairings with another.
    * This is different to checking for equality using equal-signs, because
-   * the collections may be different objects, but functionally identical.
-   * @param {Collection} collection Collection to compare with.
-   * @returns {boolean}
+   * the collections may be different objects, but contain the same data.
+   * @param {Collection} collection Collection to compare with
+   * @returns {boolean} Whether the collections have identical contents
    */
   equals(collection) {
     if (this === collection) return true;
