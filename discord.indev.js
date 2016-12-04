@@ -801,6 +801,22 @@ class Collection extends Map {
     }
     return returns;
   }
+
+  /**
+   * Returns true if the collections have identical key-value pairings.
+   * This is different to checking for equality using equal-signs, because
+   * the collections may be different objects, but functionally identical.
+   * @param {Collection} collection Collection to compare with.
+   * @returns {boolean}
+   */
+  equals(collection) {
+    if (this === collection) return true;
+    if (this.size !== collection.size) return false;
+    return !this.find((value, key) => {
+      const testVal = collection.get(key);
+      return testVal !== value || (testVal === undefined && !collection.has(key));
+    });
+  }
 }
 
 module.exports = Collection;
