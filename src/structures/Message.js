@@ -167,7 +167,7 @@ class Message {
       }
     }
 
-    /*
+    /**
      * ID of the webhook that sent the message, if applicable
      * @type {?string}
      */
