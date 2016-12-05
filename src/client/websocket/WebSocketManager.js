@@ -216,6 +216,7 @@ class WebSocketManager extends EventEmitter {
   eventClose(event) {
     this.emit('close', event);
     this.client.clearInterval(this.client.manager.heartbeatInterval);
+    this.status = Constants.Status.DISCONNECTED;
     /**
      * Emitted whenever the client websocket is disconnected
      * @event Client#disconnect
