@@ -219,6 +219,7 @@ exports.Status = {
   RECONNECTING: 2,
   IDLE: 3,
   NEARLY: 4,
+  DISCONNECTED: 5,
 };
 
 exports.ChannelTypes = {
@@ -21236,6 +21237,7 @@ class WebSocketManager extends EventEmitter {
   eventClose(event) {
     this.emit('close', event);
     this.client.clearInterval(this.client.manager.heartbeatInterval);
+    this.status = Constants.Status.DISCONNECTED;
     /**
      * Emitted whenever the client websocket is disconnected
      * @event Client#disconnect
