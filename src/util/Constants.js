@@ -149,6 +149,7 @@ exports.Status = {
   RECONNECTING: 2,
   IDLE: 3,
   NEARLY: 4,
+  DISCONNECTED: 5,
 };
 
 exports.ChannelTypes = {
