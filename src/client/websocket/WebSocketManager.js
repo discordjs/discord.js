@@ -106,7 +106,11 @@ class WebSocketManager extends EventEmitter {
     this.ws.onclose = this.eventClose.bind(this);
     this.ws.onerror = this.eventError.bind(this);
     this._queue = [];
-    this._remaining = 3;
+    this._remaining = 120;
+    this.client.setInterval(() => {
+      this._remaining = 120;
+      this._remainingReset = new Date().getTime();
+    }, 60e3);
   }
 
   connect(gateway) {
@@ -148,17 +152,15 @@ class WebSocketManager extends EventEmitter {
 
   doQueue() {
     const item = this._queue[0];
-    if (this.ws.readyState === WebSocket.OPEN && item) {
-      if (this._remaining === 0) {
-        this.client.setTimeout(this.doQueue.bind(this), 1000);
-        return;
-      }
-      this._remaining--;
-      this._send(item);
-      this._queue.shift();
-      this.doQueue();
-      this.client.setTimeout(() => this._remaining++, 1000);
+    if (!(this.ws.readyState === WebSocket.OPEN && item)) return;
+    if (this.remaining === 0) {
+      this.client.setTimeout(this.doQueue.bind(this), new Date().getTime() - this.remainingReset);
+      return;
     }
+    this._remaining--;
+    this._send(item);
+    this._queue.shift();
+    this.doQueue();
   }
 
   /**
