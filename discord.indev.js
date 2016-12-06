@@ -10092,7 +10092,7 @@ class RichEmbed {
    * @returns {RichEmbed} This embed
    */
   setFooter(text, icon) {
-    if (text.length > 2048) throw new RangeError('RichEmbed footer text may not exceed 1024 characters.');
+    if (text.length > 2048) throw new RangeError('RichEmbed footer text may not exceed 2048 characters.');
     this.footer = { text, icon_url: icon };
     return this;
   }
