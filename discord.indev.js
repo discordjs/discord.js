@@ -20485,7 +20485,7 @@ class RESTMethods {
   }
 
   addMemberRole(member, role) {
-    return this.rest.makeRequest('put', Constants.Endpoints.guildMemberRole(member.guild.id, member.id, role.id))
+    return this.rest.makeRequest('put', Constants.Endpoints.guildMemberRole(member.guild.id, member.id, role.id), true)
       .then(() => {
         if (!member._roles.includes(role.id)) member._roles.push(role.id);
         return member;
@@ -20493,12 +20493,15 @@ class RESTMethods {
   }
 
   removeMemberRole(member, role) {
-    return this.rest.makeRequest('delete', Constants.Endpoints.guildMemberRole(member.guild.id, member.id, role.id))
-      .then(() => {
-        const index = member._roles.indexOf(role.id);
-        if (index >= 0) member._roles.splice(index, 1);
-        return member;
-      });
+    return this.rest.makeRequest(
+      'delete',
+      Constants.Endpoints.guildMemberRole(member.guild.id, member.id, role.id),
+      true
+    ).then(() => {
+      const index = member._roles.indexOf(role.id);
+      if (index >= 0) member._roles.splice(index, 1);
+      return member;
+    });
   }
 
   sendTyping(channelID) {
