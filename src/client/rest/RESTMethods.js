@@ -342,10 +342,10 @@ class RESTMethods {
       Constants.Endpoints.guildMemberRole(member.guild.id, member.id, role.id),
       true
     ).then(() => {
-        const index = member._roles.indexOf(role.id);
-        if (index >= 0) member._roles.splice(index, 1);
-        return member;
-      });
+      const index = member._roles.indexOf(role.id);
+      if (index >= 0) member._roles.splice(index, 1);
+      return member;
+    });
   }
 
   sendTyping(channelID) {
