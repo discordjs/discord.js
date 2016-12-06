@@ -1,4 +1,3 @@
-const EventEmitter = require('events').EventEmitter;
 const NaCl = require('tweetnacl');
 
 const nonce = new Buffer(24);
@@ -15,7 +14,7 @@ nonce.fill(0);
  * ```
  * @extends {EventEmitter}
  */
-class StreamDispatcher extends EventEmitter {
+class StreamDispatcher extends global.EventEmitter {
   constructor(player, stream, sd, streamOptions) {
     super();
     this.player = player;

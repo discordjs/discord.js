@@ -1,6 +1,5 @@
 const PCMConverters = require('../pcm/ConverterEngineList');
 const OpusEncoders = require('../opus/OpusEngineList');
-const EventEmitter = require('events').EventEmitter;
 const StreamDispatcher = require('../dispatcher/StreamDispatcher');
 
 /**
@@ -8,7 +7,7 @@ const StreamDispatcher = require('../dispatcher/StreamDispatcher');
  * @extends {EventEmitter}
  * @private
  */
-class AudioPlayer extends EventEmitter {
+class AudioPlayer extends global.EventEmitter {
   constructor(voiceConnection) {
     super();
     /**

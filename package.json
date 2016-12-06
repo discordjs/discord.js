@@ -40,7 +40,8 @@
     "erlpack": "github:hammerandchisel/erlpack",
     "node-opus": "^0.2.0",
     "opusscript": "^0.0.1",
-    "uws": "^0.11.1"
+    "uws": "^0.11.1",
+    "eventemitter3": "^2.0.2"
   },
   "devDependencies": {
     "bufferutil": "^1.2.1",
@@ -63,6 +64,7 @@
     "opusscript": false,
     "node-opus": false,
     "tweet-nacl": false,
+    "eventemitter3": false,
     "src/sharding/Shard.js": false,
     "src/sharding/ShardClientUtil.js": false,
     "src/sharding/ShardingManager.js": false,

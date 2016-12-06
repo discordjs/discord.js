@@ -1,14 +1,13 @@
 const udp = require('dgram');
 const dns = require('dns');
 const Constants = require('../../util/Constants');
-const EventEmitter = require('events').EventEmitter;
 
 /**
  * Represents a UDP Client for a Voice Connection
  * @extends {EventEmitter}
  * @private
  */
-class VoiceConnectionUDPClient extends EventEmitter {
+class VoiceConnectionUDPClient extends global.EventEmitter {
   constructor(voiceConnection) {
     super();
 

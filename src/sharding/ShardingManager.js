@@ -1,6 +1,5 @@
 const path = require('path');
 const fs = require('fs');
-const EventEmitter = require('events').EventEmitter;
 const mergeDefault = require('../util/MergeDefault');
 const Shard = require('./Shard');
 const Collection = require('../util/Collection');
@@ -12,7 +11,7 @@ const fetchRecommendedShards = require('../util/FetchRecommendedShards');
  * If you do not select an amount of shards, the manager will automatically decide the best amount.
  * @extends {EventEmitter}
  */
-class ShardingManager extends EventEmitter {
+class ShardingManager extends global.EventEmitter {
   /**
    * @param {string} file Path to your shard script file
    * @param {Object} [options] Options for the sharding manager

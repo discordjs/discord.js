@@ -1,4 +1,3 @@
-const EventEmitter = require('events').EventEmitter;
 const mergeDefault = require('../util/MergeDefault');
 const Constants = require('../util/Constants');
 const RESTManager = require('./rest/RESTManager');
@@ -16,7 +15,7 @@ const ShardClientUtil = require('../sharding/ShardClientUtil');
  * The starting point for making a Discord Bot.
  * @extends {EventEmitter}
  */
-class Client extends EventEmitter {
+class Client extends global.EventEmitter {
   /**
    * @param {ClientOptions} [options] Options for the client
    */

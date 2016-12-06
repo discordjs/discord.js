@@ -2,7 +2,6 @@ const Collection = require('../../util/Collection');
 const mergeDefault = require('../../util/MergeDefault');
 const Constants = require('../../util/Constants');
 const VoiceConnection = require('./VoiceConnection');
-const EventEmitter = require('events').EventEmitter;
 
 /**
  * Manages all the voice stuff for the Client
@@ -114,7 +113,7 @@ class ClientVoiceManager {
  * Represents a Pending Voice Connection
  * @private
  */
-class PendingVoiceConnection extends EventEmitter {
+class PendingVoiceConnection extends global.EventEmitter {
   constructor(voiceManager, channel) {
     super();
 

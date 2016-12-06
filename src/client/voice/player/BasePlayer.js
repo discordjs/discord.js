@@ -2,9 +2,8 @@ const OpusEngines = require('../opus/OpusEngineList');
 const ConverterEngines = require('../pcm/ConverterEngineList');
 const Constants = require('../../../util/Constants');
 const StreamDispatcher = require('../dispatcher/StreamDispatcher');
-const EventEmitter = require('events').EventEmitter;
 
-class VoiceConnectionPlayer extends EventEmitter {
+class VoiceConnectionPlayer extends global.EventEmitter {
   constructor(connection) {
     super();
     this.connection = connection;

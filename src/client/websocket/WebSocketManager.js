@@ -1,5 +1,4 @@
 const browser = typeof window !== 'undefined';
-const EventEmitter = require('events').EventEmitter;
 const Constants = require('../../util/Constants');
 const convertArrayBuffer = require('../../util/ConvertArrayBuffer');
 const pako = require('pako');
@@ -17,6 +16,7 @@ if (browser) {
   }
 }
 
+
 let erlpack, serialize;
 try {
   erlpack = require('erlpack');
@@ -30,7 +30,7 @@ try {
  * The WebSocket Manager of the Client
  * @private
  */
-class WebSocketManager extends EventEmitter {
+class WebSocketManager extends global.EventEmitter {
   constructor(client) {
     super();
     /**

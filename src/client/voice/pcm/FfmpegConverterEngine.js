@@ -1,8 +1,7 @@
 const ConverterEngine = require('./ConverterEngine');
 const ChildProcess = require('child_process');
-const EventEmitter = require('events').EventEmitter;
 
-class PCMConversionProcess extends EventEmitter {
+class PCMConversionProcess extends global.EventEmitter {
   constructor(process) {
     super();
     this.process = process;

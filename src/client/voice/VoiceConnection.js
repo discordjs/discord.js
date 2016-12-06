@@ -3,7 +3,6 @@ const VoiceUDP = require('./VoiceUDPClient');
 const Constants = require('../../util/Constants');
 const AudioPlayer = require('./player/AudioPlayer');
 const VoiceReceiver = require('./receiver/VoiceReceiver');
-const EventEmitter = require('events').EventEmitter;
 const fs = require('fs');
 
 /**
@@ -16,7 +15,7 @@ const fs = require('fs');
  * ```
  * @extends {EventEmitter}
  */
-class VoiceConnection extends EventEmitter {
+class VoiceConnection extends global.EventEmitter {
   constructor(pendingConnection) {
     super();
 

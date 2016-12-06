@@ -1,3 +1,9 @@
+try {
+  global.EventEmitter = require('eventemitter3');
+} catch (err) {
+  global.EventEmitter = require('events').EventEmitter;
+}
+
 module.exports = {
   Client: require('./client/Client'),
   WebhookClient: require('./client/WebhookClient'),

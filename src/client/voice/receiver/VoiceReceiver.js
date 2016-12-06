@@ -1,4 +1,3 @@
-const EventEmitter = require('events').EventEmitter;
 const NaCl = require('tweetnacl');
 const Readable = require('./VoiceReadable');
 
@@ -15,7 +14,7 @@ nonce.fill(0);
  * ```
  * @extends {EventEmitter}
  */
-class VoiceReceiver extends EventEmitter {
+class VoiceReceiver extends global.EventEmitter {
   constructor(connection) {
     super();
     /*
