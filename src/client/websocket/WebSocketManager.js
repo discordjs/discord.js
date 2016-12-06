@@ -109,7 +109,7 @@ class WebSocketManager extends EventEmitter {
     this._remaining = 120;
     this.client.setInterval(() => {
       this._remaining = 120;
-      this._remainingReset = new Date().getTime();
+      this._remainingReset = Date.now();
     }, 60e3);
   }
 
@@ -154,7 +154,7 @@ class WebSocketManager extends EventEmitter {
     const item = this._queue[0];
     if (!(this.ws.readyState === WebSocket.OPEN && item)) return;
     if (this.remaining === 0) {
-      this.client.setTimeout(this.doQueue.bind(this), new Date().getTime() - this.remainingReset);
+      this.client.setTimeout(this.doQueue.bind(this), Date.now() - this.remainingReset);
       return;
     }
     this._remaining--;
