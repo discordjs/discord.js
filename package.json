@@ -3,9 +3,13 @@
   "version": "10.0.1",
   "description": "A powerful library for interacting with the Discord API",
   "main": "./src/index",
+  "types": "./typings/index.d.ts",
   "scripts": {
-    "test": "eslint src/ && node docs/generator/generator.js silent",
-    "docs": "node docs/generator/generator.js"
+    "test": "eslint src && docgen --source src --custom docs/index.yml",
+    "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
+    "test-docs": "docgen --source src --custom docs",
+    "lint": "eslint src",
+    "web-dist": "node ./node_modules/parallel-webpack/bin/run.js"
   },
   "repository": {
     "type": "git",
@@ -26,20 +30,59 @@
   },
   "homepage": "https://github.com/hydrabolt/discord.js#readme",
   "dependencies": {
-    "superagent": "^2.3.0",
+    "@types/node": "^6.0.51",
+    "pako": "^1.0.3",
+    "superagent": "^3.0.0",
     "tweetnacl": "^0.14.3",
     "ws": "^1.1.1"
   },
   "peerDependencies": {
-    "node-opus": "^0.2.1",
-    "opusscript": "^0.0.1"
+    "erlpack": "github:hammerandchisel/erlpack",
+    "node-opus": "^0.2.0",
+    "opusscript": "^0.0.1",
+    "uws": "^0.11.1"
   },
   "devDependencies": {
-    "eslint": "^3.8.0",
-    "fs-extra": "^0.30.0",
-    "jsdoc-to-markdown": "^2.0.0"
+    "bufferutil": "^1.2.1",
+    "discord.js-docgen": "github:hydrabolt/discord.js-docgen",
+    "eslint": "^3.10.0",
+    "jsdoc-to-markdown": "^2.0.0",
+    "json-loader": "^0.5.4",
+    "parallel-webpack": "^1.5.0",
+    "uglify-js": "github:mishoo/UglifyJS2#harmony",
+    "utf-8-validate": "^1.2.1",
+    "webpack": "2.1.0-beta.27"
   },
   "engines": {
     "node": ">=6.0.0"
+  },
+  "browser": {
+    "ws": false,
+    "uws": false,
+    "erlpack": false,
+    "opusscript": false,
+    "node-opus": false,
+    "tweet-nacl": false,
+    "src/sharding/Shard.js": false,
+    "src/sharding/ShardClientUtil.js": false,
+    "src/sharding/ShardingManager.js": false,
+    "src/client/voice/dispatcher/StreamDispatcher.js": false,
+    "src/client/voice/opus/BaseOpusEngine.js": false,
+    "src/client/voice/opus/NodeOpusEngine.js": false,
+    "src/client/voice/opus/OpusEngineList.js": false,
+    "src/client/voice/opus/OpusScriptEngine.js": false,
+    "src/client/voice/pcm/ConverterEngine.js": false,
+    "src/client/voice/pcm/ConverterEngineList.js": false,
+    "src/client/voice/pcm/FfmpegConverterEngine.js": false,
+    "src/client/voice/player/AudioPlayer.js": false,
+    "src/client/voice/player/BasePlayer.js": false,
+    "src/client/voice/player/DefaultPlayer.js": false,
+    "src/client/voice/receiver/VoiceReadable.js": false,
+    "src/client/voice/receiver/VoiceReceiver.js": false,
+    "src/client/voice/util/SecretKey.js": false,
+    "src/client/voice/ClientVoiceManager.js": false,
+    "src/client/voice/VoiceConnection.js": false,
+    "src/client/voice/VoiceUDPClient.js": false,
+    "src/client/voice/VoiceWebSocket.js": false
   }
 }

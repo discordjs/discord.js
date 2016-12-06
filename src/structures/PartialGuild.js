@@ -6,16 +6,17 @@
 */
 
 /**
- * Represents a Guild that the client only has limited information for - e.g. from invites.
+ * Represents a guild that the client only has limited information for - e.g. from invites.
  */
 class PartialGuild {
   constructor(client, data) {
     /**
-     * The client that instantiated this PartialGuild
+     * The Client that instantiated this PartialGuild
+     * @name PartialGuild#client
      * @type {Client}
+     * @readonly
      */
-    this.client = client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: client });
 
     this.setup(data);
   }

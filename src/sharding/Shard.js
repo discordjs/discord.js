@@ -10,7 +10,7 @@ class Shard {
   /**
    * @param {ShardingManager} manager The sharding manager
    * @param {number} id The ID of this shard
-   * @param {array} [args=[]] Command line arguments to pass to the script
+   * @param {Array} [args=[]] Command line arguments to pass to the script
    */
   constructor(manager, id, args = []) {
     /**
@@ -134,17 +134,19 @@ class Shard {
     if (message) {
       // Shard is requesting a property fetch
       if (message._sFetchProp) {
-        this.manager.fetchClientValues(message._sFetchProp)
-          .then(results => this.send({ _sFetchProp: message._sFetchProp, _result: results }))
-          .catch(err => this.send({ _sFetchProp: message._sFetchProp, _error: makePlainError(err) }));
+        this.manager.fetchClientValues(message._sFetchProp).then(
+          results => this.send({ _sFetchProp: message._sFetchProp, _result: results }),
+          err => this.send({ _sFetchProp: message._sFetchProp, _error: makePlainError(err) })
+        );
         return;
       }
 
       // Shard is requesting an eval broadcast
       if (message._sEval) {
-        this.manager.broadcastEval(message._sEval)
-          .then(results => this.send({ _sEval: message._sEval, _result: results }))
-          .catch(err => this.send({ _sEval: message._sEval, _error: makePlainError(err) }));
+        this.manager.broadcastEval(message._sEval).then(
+          results => this.send({ _sEval: message._sEval, _result: results }),
+          err => this.send({ _sEval: message._sEval, _error: makePlainError(err) })
+        );
         return;
       }
     }

@@ -7,7 +7,7 @@ const EventEmitter = require('events').EventEmitter;
 const fs = require('fs');
 
 /**
- * Represents a connection to a Voice Channel in Discord.
+ * Represents a connection to a voice channel in Discord.
  * ```js
  * // obtained using:
  * voiceChannel.join().then(connection => {
@@ -17,9 +17,9 @@ const fs = require('fs');
  * @extends {EventEmitter}
  */
 class VoiceConnection extends EventEmitter {
-
   constructor(pendingConnection) {
     super();
+
     /**
      * The Voice Manager that instantiated this connection
      * @type {ClientVoiceManager}
@@ -70,7 +70,7 @@ class VoiceConnection extends EventEmitter {
       /**
        * Warning info from the connection
        * @event VoiceConnection#warn
-       * @param {string|error} warning the warning
+       * @param {string|Error} warning the warning
        */
       this.emit('warn', e);
       this.player.cleanup();
@@ -82,6 +82,13 @@ class VoiceConnection extends EventEmitter {
      * @private
      */
     this.ssrcMap = new Map();
+
+    /**
+     * Whether this connection is ready
+     * @type {boolean}
+     * @private
+     */
+    this.ready = false;
 
     /**
      * Object that wraps contains the `ws` and `udp` sockets of this voice connection
@@ -106,8 +113,7 @@ class VoiceConnection extends EventEmitter {
         speaking: true,
         delay: 0,
       },
-    })
-    .catch(e => {
+    }).catch(e => {
       this.emit('debug', e);
     });
   }
@@ -155,8 +161,7 @@ class VoiceConnection extends EventEmitter {
       this.sockets.udp.findEndpointAddress()
         .then(address => {
           this.sockets.udp.createUDPSocket(address);
-        })
-        .catch(e => this.emit('error', e));
+        }, e => this.emit('error', e));
     });
     this.sockets.ws.once('sessionDescription', (mode, secret) => {
       this.authentication.encryptionMode = mode;
@@ -167,6 +172,7 @@ class VoiceConnection extends EventEmitter {
        * @event VoiceConnection#ready
        */
       this.emit('ready');
+      this.ready = true;
     });
     this.sockets.ws.on('speaking', data => {
       const guild = this.channel.guild;
@@ -253,7 +259,7 @@ class VoiceConnection extends EventEmitter {
    */
   playConvertedStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
     const options = { seek, volume, passes };
-    return this.player.playPCMStream(stream, options);
+    return this.player.playPCMStream(stream, null, options);
   }
 
   /**

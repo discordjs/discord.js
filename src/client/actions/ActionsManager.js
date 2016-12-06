@@ -2,33 +2,36 @@ class ActionsManager {
   constructor(client) {
     this.client = client;
 
-    this.register('MessageCreate');
-    this.register('MessageDelete');
-    this.register('MessageDeleteBulk');
-    this.register('MessageUpdate');
-    this.register('ChannelCreate');
-    this.register('ChannelDelete');
-    this.register('ChannelUpdate');
-    this.register('GuildDelete');
-    this.register('GuildUpdate');
-    this.register('GuildMemberGet');
-    this.register('GuildMemberRemove');
-    this.register('GuildBanRemove');
-    this.register('GuildRoleCreate');
-    this.register('GuildRoleDelete');
-    this.register('GuildRoleUpdate');
-    this.register('UserGet');
-    this.register('UserUpdate');
-    this.register('GuildSync');
-    this.register('GuildEmojiCreate');
-    this.register('GuildEmojiDelete');
-    this.register('GuildEmojiUpdate');
-    this.register('GuildRolesPositionUpdate');
+    this.register(require('./MessageCreate'));
+    this.register(require('./MessageDelete'));
+    this.register(require('./MessageDeleteBulk'));
+    this.register(require('./MessageUpdate'));
+    this.register(require('./MessageReactionAdd'));
+    this.register(require('./MessageReactionRemove'));
+    this.register(require('./MessageReactionRemoveAll'));
+    this.register(require('./ChannelCreate'));
+    this.register(require('./ChannelDelete'));
+    this.register(require('./ChannelUpdate'));
+    this.register(require('./GuildDelete'));
+    this.register(require('./GuildUpdate'));
+    this.register(require('./GuildMemberGet'));
+    this.register(require('./GuildMemberRemove'));
+    this.register(require('./GuildBanRemove'));
+    this.register(require('./GuildRoleCreate'));
+    this.register(require('./GuildRoleDelete'));
+    this.register(require('./GuildRoleUpdate'));
+    this.register(require('./UserGet'));
+    this.register(require('./UserUpdate'));
+    this.register(require('./UserNoteUpdate'));
+    this.register(require('./GuildSync'));
+    this.register(require('./GuildEmojiCreate'));
+    this.register(require('./GuildEmojiDelete'));
+    this.register(require('./GuildEmojiUpdate'));
+    this.register(require('./GuildRolesPositionUpdate'));
   }
 
-  register(name) {
-    const Action = require(`./${name}`);
-    this[name] = new Action(this.client);
+  register(Action) {
+    this[Action.name.replace(/Action$/, '')] = new Action(this.client);
   }
 }
 

@@ -2,7 +2,7 @@ const GuildChannel = require('./GuildChannel');
 const Collection = require('../util/Collection');
 
 /**
- * Represents a Server Voice Channel on Discord.
+ * Represents a guild voice channel on Discord.
  * @extends {GuildChannel}
  */
 class VoiceChannel extends GuildChannel {
@@ -10,7 +10,7 @@ class VoiceChannel extends GuildChannel {
     super(guild, data);
 
     /**
-     * The members in this Voice Channel.
+     * The members in this voice channel.
      * @type {Collection<string, GuildMember>}
      */
     this.members = new Collection();
@@ -50,6 +50,7 @@ class VoiceChannel extends GuildChannel {
    * @type {boolean}
    */
   get joinable() {
+    if (this.client.browser) return false;
     return this.permissionsFor(this.client.user).hasPermission('CONNECT');
   }
 
@@ -72,11 +73,25 @@ class VoiceChannel extends GuildChannel {
    *  .catch(console.error);
    */
   setBitrate(bitrate) {
-    return this.rest.client.rest.methods.updateChannel(this, { bitrate });
+    return this.edit({ bitrate });
   }
 
   /**
-   * Attempts to join this Voice Channel
+   * Sets the user limit of the channel
+   * @param {number} userLimit The new user limit
+   * @returns {Promise<VoiceChannel>}
+   * @example
+   * // set the user limit of a voice channel
+   * voiceChannel.setUserLimit(42)
+   *  .then(vc => console.log(`Set user limit to ${vc.userLimit} for ${vc.name}`))
+   *  .catch(console.error);
+   */
+  setUserLimit(userLimit) {
+    return this.edit({ userLimit });
+  }
+
+  /**
+   * Attempts to join this voice channel
    * @returns {Promise<VoiceConnection>}
    * @example
    * // join a voice channel
@@ -85,6 +100,7 @@ class VoiceChannel extends GuildChannel {
    *  .catch(console.error);
    */
   join() {
+    if (this.client.browser) return Promise.reject(new Error('Voice connections are not available in browsers.'));
     return this.client.voice.joinChannel(this);
   }
 
@@ -95,6 +111,7 @@ class VoiceChannel extends GuildChannel {
    * voiceChannel.leave();
    */
   leave() {
+    if (this.client.browser) return;
     const connection = this.client.voice.connections.get(this.guild.id);
     if (connection && connection.channel.id === this.id) connection.disconnect();
   }

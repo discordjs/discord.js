@@ -7,7 +7,7 @@ const Collection = require('../util/Collection');
 const arraysEqual = require('../util/ArraysEqual');
 
 /**
- * Represents a Guild Channel (i.e. Text Channels and Voice Channels)
+ * Represents a guild channel (i.e. text channels and voice channels)
  * @extends {Channel}
  */
 class GuildChannel extends Channel {
@@ -25,7 +25,7 @@ class GuildChannel extends Channel {
     super.setup(data);
 
     /**
-     * The name of the Guild Channel
+     * The name of the guild channel
      * @type {string}
      */
     this.name = data.name;
@@ -70,7 +70,7 @@ class GuildChannel extends Channel {
       permissions |= overwrite.allowData;
     }
 
-    const admin = Boolean(permissions & (Constants.PermissionFlags.ADMINISTRATOR));
+    const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
     if (admin) permissions = Constants.ALL_PERMISSIONS;
 
     return new EvaluatedPermissions(member, permissions);
@@ -155,18 +155,41 @@ class GuildChannel extends Channel {
       } else if (options[perm] === false) {
         payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
         payload.deny |= Constants.PermissionFlags[perm] || 0;
+      } else if (options[perm] === null) {
+        payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
+        payload.deny &= ~(Constants.PermissionFlags[perm] || 0);
       }
     }
 
     return this.client.rest.methods.setChannelOverwrite(this, payload);
   }
 
+  /**
+   * The data for a guild channel
+   * @typedef {Object} ChannelData
+   * @property {string} [name] The name of the channel
+   * @property {number} [position] The position of the channel
+   * @property {string} [topic] The topic of the text channel
+   * @property {number} [bitrate] The bitrate of the voice channel
+   * @property {number} [userLimit] The user limit of the channel
+   */
+
+  /**
+   * Edits the channel
+   * @param {ChannelData} data The new data for the channel
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // edit a channel
+   * channel.edit({name: 'new-channel'})
+   *  .then(c => console.log(`Edited channel ${c}`))
+   *  .catch(console.error);
+   */
   edit(data) {
     return this.client.rest.methods.updateChannel(this, data);
   }
 
   /**
-   * Set a new name for the Guild Channel
+   * Set a new name for the guild channel
    * @param {string} name The new name for the guild channel
    * @returns {Promise<GuildChannel>}
    * @example
@@ -176,11 +199,11 @@ class GuildChannel extends Channel {
    *  .catch(console.error);
    */
   setName(name) {
-    return this.client.rest.methods.updateChannel(this, { name });
+    return this.edit({ name });
   }
 
   /**
-   * Set a new position for the Guild Channel
+   * Set a new position for the guild channel
    * @param {number} position The new position for the guild channel
    * @returns {Promise<GuildChannel>}
    * @example
@@ -194,7 +217,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Set a new topic for the Guild Channel
+   * Set a new topic for the guild channel
    * @param {string} topic The new topic for the guild channel
    * @returns {Promise<GuildChannel>}
    * @example
@@ -208,15 +231,15 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Options given when creating a Guild Channel Invite
+   * Options given when creating a guild channel invite
    * @typedef {Object} InviteOptions
    * @property {boolean} [temporary=false] Whether the invite should kick users after 24hrs if they are not given a role
    * @property {number} [maxAge=0] Time in seconds the invite expires in
-   * @property {maxUses} [maxUses=0] Maximum amount of uses for this invite
+   * @property {number} [maxUses=0] Maximum amount of uses for this invite
    */
 
   /**
-   * Create an invite to this Guild Channel
+   * Create an invite to this guild channel
    * @param {InviteOptions} [options={}] The options for the invite
    * @returns {Promise<Invite>}
    */
@@ -252,7 +275,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * When concatenated with a string, this automatically returns the Channel's mention instead of the Channel object.
+   * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
    * @returns {string}
    * @example
    * // Outputs: Hello from #general

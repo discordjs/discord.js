@@ -1,8 +1,30 @@
-const WebSocket = require('ws');
+const browser = typeof window !== 'undefined';
 const EventEmitter = require('events').EventEmitter;
 const Constants = require('../../util/Constants');
+const convertArrayBuffer = require('../../util/ConvertArrayBuffer');
+const pako = require('pako');
 const zlib = require('zlib');
 const PacketManager = require('./packets/WebSocketPacketManager');
+
+let WebSocket;
+if (browser) {
+  WebSocket = window.WebSocket; // eslint-disable-line no-undef
+} else {
+  try {
+    WebSocket = require('uws');
+  } catch (err) {
+    WebSocket = require('ws');
+  }
+}
+
+let erlpack, serialize;
+try {
+  erlpack = require('erlpack');
+  serialize = erlpack.pack;
+} catch (err) {
+  erlpack = null;
+  serialize = JSON.stringify;
+}
 
 /**
  * The WebSocket Manager of the Client
@@ -64,7 +86,7 @@ class WebSocketManager extends EventEmitter {
      * @type {Object}
      */
     this.disabledEvents = {};
-    for (const event in client.options.disabledEvents) this.disabledEvents[event] = true;
+    for (const event of client.options.disabledEvents) this.disabledEvents[event] = true;
 
     this.first = true;
   }
@@ -78,15 +100,17 @@ class WebSocketManager extends EventEmitter {
     this.normalReady = false;
     if (this.status !== Constants.Status.RECONNECTING) this.status = Constants.Status.CONNECTING;
     this.ws = new WebSocket(gateway);
-    this.ws.onopen = () => this.eventOpen();
-    this.ws.onclose = (d) => this.eventClose(d);
-    this.ws.onmessage = (e) => this.eventMessage(e);
-    this.ws.onerror = (e) => this.eventError(e);
+    if (browser) this.ws.binaryType = 'arraybuffer';
+    this.ws.onopen = this.eventOpen.bind(this);
+    this.ws.onmessage = this.eventMessage.bind(this);
+    this.ws.onclose = this.eventClose.bind(this);
+    this.ws.onerror = this.eventError.bind(this);
     this._queue = [];
     this._remaining = 3;
   }
 
   connect(gateway) {
+    gateway = `${gateway}&encoding=${erlpack ? 'etf' : 'json'}`;
     if (this.first) {
       this._connect(gateway);
       this.first = false;
@@ -102,10 +126,10 @@ class WebSocketManager extends EventEmitter {
    */
   send(data, force = false) {
     if (force) {
-      this._send(JSON.stringify(data));
+      this._send(serialize(data));
       return;
     }
-    this._queue.push(JSON.stringify(data));
+    this._queue.push(serialize(data));
     this.doQueue();
   }
 
@@ -126,9 +150,7 @@ class WebSocketManager extends EventEmitter {
     const item = this._queue[0];
     if (this.ws.readyState === WebSocket.OPEN && item) {
       if (this._remaining === 0) {
-        this.client.setTimeout(() => {
-          this.doQueue();
-        }, 1000);
+        this.client.setTimeout(this.doQueue.bind(this), 1000);
         return;
       }
       this._remaining--;
@@ -193,11 +215,12 @@ class WebSocketManager extends EventEmitter {
    */
   eventClose(event) {
     this.emit('close', event);
+    this.client.clearInterval(this.client.manager.heartbeatInterval);
+    this.status = Constants.Status.DISCONNECTED;
     /**
      * Emitted whenever the client websocket is disconnected
      * @event Client#disconnect
      */
-    clearInterval(this.client.manager.heartbeatInterval);
     if (!this.reconnecting) this.client.emit(Constants.Events.DISCONNECT);
     if (event.code === 4004) return;
     if (event.code === 4010) return;
@@ -211,18 +234,45 @@ class WebSocketManager extends EventEmitter {
    * @returns {boolean}
    */
   eventMessage(event) {
-    let packet;
-    try {
-      if (event.binary) event.data = zlib.inflateSync(event.data).toString();
-      packet = JSON.parse(event.data);
-    } catch (e) {
-      return this.eventError(new Error(Constants.Errors.BAD_WS_MESSAGE));
+    const data = this.tryParseEventData(event.data);
+    if (data === null) {
+      this.eventError(new Error(Constants.Errors.BAD_WS_MESSAGE));
+      return false;
     }
 
-    this.client.emit('raw', packet);
+    this.client.emit('raw', data);
 
-    if (packet.op === Constants.OPCodes.HELLO) this.client.manager.setupKeepAlive(packet.d.heartbeat_interval);
-    return this.packetManager.handle(packet);
+    if (data.op === Constants.OPCodes.HELLO) this.client.manager.setupKeepAlive(data.d.heartbeat_interval);
+    return this.packetManager.handle(data);
+  }
+
+  /**
+   * Parses the raw data from a websocket event, inflating it if necessary
+   * @param {*} data Event data
+   * @returns {Object}
+   */
+  parseEventData(data) {
+    if (erlpack) {
+      if (data instanceof ArrayBuffer) data = convertArrayBuffer(data);
+      return erlpack.unpack(data);
+    } else {
+      if (data instanceof ArrayBuffer) data = pako.inflate(data, { to: 'string' });
+      else if (data instanceof Buffer) data = zlib.inflateSync(data).toString();
+      return JSON.parse(data);
+    }
+  }
+
+  /**
+   * Tries to call `parseEventData()` and return its result, or returns `null` upon thrown errors.
+   * @param {*} data Event data
+   * @returns {?Object}
+   */
+  tryParseEventData(data) {
+    try {
+      return this.parseEventData(data);
+    } catch (err) {
+      return null;
+    }
   }
 
   /**
@@ -264,7 +314,7 @@ class WebSocketManager extends EventEmitter {
         this.status = Constants.Status.NEARLY;
         if (this.client.options.fetchAllMembers) {
           const promises = this.client.guilds.map(g => g.fetchMembers());
-          Promise.all(promises).then(() => this._emitReady()).catch(e => {
+          Promise.all(promises).then(() => this._emitReady(), e => {
             this.client.emit(Constants.Events.WARN, 'Error in pre-ready guild member fetching');
             this.client.emit(Constants.Events.ERROR, e);
             this._emitReady();
@@ -280,6 +330,7 @@ class WebSocketManager extends EventEmitter {
    * Tries to reconnect the client, changing the status to Constants.Status.RECONNECTING.
    */
   tryReconnect() {
+    if (this.status === Constants.Status.RECONNECTING || this.status === Constants.Status.CONNECTING) return;
     this.status = Constants.Status.RECONNECTING;
     this.ws.close();
     this.packetManager.handleQueue();

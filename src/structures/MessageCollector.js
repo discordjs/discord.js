@@ -54,7 +54,7 @@ class MessageCollector extends EventEmitter {
     this.options = options;
 
     /**
-     * Whether this collector has stopped collecting Messages.
+     * Whether this collector has stopped collecting messages.
      * @type {boolean}
      */
     this.ended = false;
@@ -81,7 +81,7 @@ class MessageCollector extends EventEmitter {
     if (this.filter(message, this)) {
       this.collected.set(message.id, message);
       /**
-       * Emitted whenever the Collector receives a Message that passes the filter test.
+       * Emitted whenever the collector receives a message that passes the filter test.
        * @param {Message} message The received message
        * @param {MessageCollector} collector The collector the message passed through
        * @event MessageCollector#message
@@ -138,7 +138,7 @@ class MessageCollector extends EventEmitter {
     /**
      * Emitted when the Collector stops collecting.
      * @param {Collection<string, Message>} collection A collection of messages collected
-     * during the lifetime of the Collector, mapped by the ID of the Messages.
+     * during the lifetime of the collector, mapped by the ID of the messages.
      * @param {string} reason The reason for the end of the collector. If it ended because it reached the specified time
      * limit, this would be `time`. If you invoke `.stop()` without specifying a reason, this would be `user`. If it
      * ended because it reached its message limit, it will be `limit`.

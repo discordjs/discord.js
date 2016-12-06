@@ -3,7 +3,7 @@ const TextBasedChannel = require('./interface/TextBasedChannel');
 const Collection = require('../util/Collection');
 
 /**
- * Represents a Direct Message Channel between two users.
+ * Represents a direct message channel between two users.
  * @extends {Channel}
  * @implements {TextBasedChannel}
  */
@@ -39,6 +39,7 @@ class DMChannel extends Channel {
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   sendMessage() { return; }
   sendTTSMessage() { return; }
+  sendEmbed() { return; }
   sendFile() { return; }
   sendCode() { return; }
   fetchMessage() { return; }

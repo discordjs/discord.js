@@ -110,7 +110,7 @@ class GroupDMChannel extends Channel {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the Channel's name instead of the Channel object.
+   * When concatenated with a string, this automatically concatenates the channel's name instead of the Channel object.
    * @returns {string}
    * @example
    * // logs: Hello from My Group DM!
@@ -126,6 +126,7 @@ class GroupDMChannel extends Channel {
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   sendMessage() { return; }
   sendTTSMessage() { return; }
+  sendEmbed() { return; }
   sendFile() { return; }
   sendCode() { return; }
   fetchMessage() { return; }

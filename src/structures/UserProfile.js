@@ -13,14 +13,15 @@ class UserProfile {
     this.user = user;
 
     /**
-     * The Client that created the instance of the the User.
+     * The Client that created the instance of the the UserProfile.
+     * @name UserProfile#client
      * @type {Client}
+     * @readonly
      */
-    this.client = this.user.client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: user.client });
 
     /**
-     * Guilds that the ClientUser and the User share
+     * Guilds that the client user and the user share
      * @type {Collection<Guild>}
      */
     this.mutualGuilds = new Collection();
