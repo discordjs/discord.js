@@ -6,10 +6,10 @@ const pako = require('pako');
 const zlib = require('zlib');
 const PacketManager = require('./packets/WebSocketPacketManager');
 
-let WebSocket, erlpack, serialize;
+let WebSocket, erlpack;
+let serialize = JSON.stringify;
 if (browser) {
   WebSocket = window.WebSocket; // eslint-disable-line no-undef
-  serialize = JSON.stringify;
 } else {
   try {
     WebSocket = require('uws');
