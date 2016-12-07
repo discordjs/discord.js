@@ -14,18 +14,19 @@ class MessageCreateAction extends Action {
           messages[i] = channel._cacheMessage(new Message(channel, data[i], client));
         }
         channel.lastMessageID = messages[messages.length - 1].id;
+        if (user) user.lastMessageID = (data instanceof Array ? data[0] : data).id;
         return {
           messages,
         };
       } else {
         const message = channel._cacheMessage(new Message(channel, data, client));
         channel.lastMessageID = data.id;
+        if (user) user.lastMessageID = (data instanceof Array ? data[0] : data).id;
         return {
           message,
         };
       }
     }
-    if (user) user.lastMessageID = (data instanceof Array ? data[0] : data).id;
 
     return {
       message: null,
