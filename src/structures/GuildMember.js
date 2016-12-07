@@ -33,6 +33,12 @@ class GuildMember {
 
     this._roles = [];
     if (data) this.setup(data);
+
+    /**
+     * The ID of the last message sent by the member in their guild, if one was sent.
+     * @type {?string}
+     */
+    this.lastMessageID = null;
   }
 
   setup(data) {
