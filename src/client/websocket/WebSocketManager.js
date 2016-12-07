@@ -6,24 +6,24 @@ const pako = require('pako');
 const zlib = require('zlib');
 const PacketManager = require('./packets/WebSocketPacketManager');
 
-let WebSocket;
+let WebSocket, erlpack, serialize;
 if (browser) {
   WebSocket = window.WebSocket; // eslint-disable-line no-undef
+  serialize = JSON.stringify;
 } else {
   try {
     WebSocket = require('uws');
   } catch (err) {
     WebSocket = require('ws');
   }
-}
 
-let erlpack, serialize;
-try {
-  erlpack = require('erlpack');
-  serialize = erlpack.pack;
-} catch (err) {
-  erlpack = null;
-  serialize = JSON.stringify;
+  try {
+    erlpack = require('erlpack');
+    serialize = erlpack.pack;
+  } catch (err) {
+    erlpack = null;
+    serialize = JSON.stringify;
+  }
 }
 
 /**
