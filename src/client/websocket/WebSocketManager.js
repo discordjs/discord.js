@@ -22,7 +22,6 @@ if (browser) {
     serialize = erlpack.pack;
   } catch (err) {
     erlpack = null;
-    serialize = JSON.stringify;
   }
 }
 
