@@ -119,9 +119,10 @@ class ShardClientUtil {
    * @private
    */
   _respond(type, message) {
-    this.send(message).catch(err =>
-      this.client.emit('error', `Error when sending ${type} response to master process: ${err}`)
-    );
+    this.send(message).catch(err => {
+      err.message = `Error when sending ${type} response to master process: ${err.message}`;
+      this.client.emit('error', err);
+    });
   }
 
   /**
@@ -133,7 +134,7 @@ class ShardClientUtil {
     if (!this._singleton) {
       this._singleton = new this(client);
     } else {
-      client.emit('error', 'Multiple clients created in child process; only the first will handle sharding helpers.');
+      client.emit('warn', 'Multiple clients created in child process; only the first will handle sharding helpers.');
     }
     return this._singleton;
   }
