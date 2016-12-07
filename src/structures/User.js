@@ -49,6 +49,12 @@ class User {
      * @type {boolean}
      */
     this.bot = Boolean(data.bot);
+
+    /**
+     * The ID of the last message sent by the user, if one was sent.
+     * @type {?string}
+     */
+    this.lastMessageID = null;
   }
 
   patch(data) {
