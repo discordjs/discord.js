@@ -21035,7 +21035,8 @@ const pako = __webpack_require__(68);
 const zlib = __webpack_require__(51);
 const PacketManager = __webpack_require__(115);
 
-let WebSocket;
+let WebSocket, erlpack;
+let serialize = JSON.stringify;
 if (browser) {
   WebSocket = window.WebSocket; // eslint-disable-line no-undef
 } else {
@@ -21044,15 +21045,13 @@ if (browser) {
   } catch (err) {
     WebSocket = __webpack_require__(156);
   }
-}
 
-let erlpack, serialize;
-try {
-  erlpack = __webpack_require__(154);
-  serialize = erlpack.pack;
-} catch (err) {
-  erlpack = null;
-  serialize = JSON.stringify;
+  try {
+    erlpack = __webpack_require__(154);
+    serialize = erlpack.pack;
+  } catch (err) {
+    erlpack = null;
+  }
 }
 
 /**
