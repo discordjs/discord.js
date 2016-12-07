@@ -102,7 +102,7 @@ class Webhook {
    *     'color': '#F0F',
    *     'footer_icon': 'http://snek.s3.amazonaws.com/topSnek.png',
    *     'footer': 'Powered by sneks',
-   *     'ts': new Date().getTime() / 1000
+   *     'ts': Date.now() / 1000
    *   }]
    * }).catch(console.error);
    */
