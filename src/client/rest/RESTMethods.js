@@ -630,7 +630,7 @@ class RESTMethods {
   }
 
   removeMessageReactions(message) {
-    this.rest.makeRequest('delete', Constants.Endpoints.messageReactions(message.channel.id, message.id), true)
+    return this.rest.makeRequest('delete', Constants.Endpoints.messageReactions(message.channel.id, message.id), true)
       .then(() => message);
   }
 
