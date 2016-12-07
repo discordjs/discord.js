@@ -6,6 +6,7 @@ class MessageCreateAction extends Action {
     const client = this.client;
 
     const channel = client.channels.get((data instanceof Array ? data[0] : data).channel_id);
+    const user = client.users.get((data instanceof Array ? data[0] : data).author.id);
     if (channel) {
       if (data instanceof Array) {
         const messages = new Array(data.length);
@@ -24,6 +25,7 @@ class MessageCreateAction extends Action {
         };
       }
     }
+    if (user) user.lastMessageID = (data instanceof Array ? data[0] : data).id;
 
     return {
       message: null,
