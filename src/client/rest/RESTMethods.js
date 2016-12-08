@@ -319,7 +319,7 @@ class RESTMethods {
     if (member.id === this.rest.client.user.id) {
       const keys = Object.keys(data);
       if (keys.length === 1 && keys[0] === 'nick') {
-        endpoint = Constants.Endpoints.stupidInconsistentGuildEndpoint(member.guild.id);
+        endpoint = Constants.Endpoints.guildMemberNickname(member.guild.id);
       }
     }
 
