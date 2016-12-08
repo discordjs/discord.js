@@ -16,20 +16,11 @@ class RESTMethods {
     this.rest = restManager;
   }
 
-  loginToken(token = this.rest.client.token) {
+  login(token = this.rest.client.token) {
     return new Promise((resolve, reject) => {
       token = token.replace(/^Bot\s*/i, '');
       this.rest.client.manager.connectToWebSocket(token, resolve, reject);
     });
-  }
-
-  loginEmailPassword(email, password) {
-    this.rest.client.emit('warn', 'Client launched using email and password - should use token instead');
-    this.rest.client.email = email;
-    this.rest.client.password = password;
-    return this.rest.makeRequest('post', Constants.Endpoints.login, false, { email, password }).then(data =>
-      this.loginToken(data.token)
-    );
   }
 
   logout() {
