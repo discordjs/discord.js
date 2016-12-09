@@ -184,4 +184,3 @@ class RichEmbed {
 }
 
 module.exports = RichEmbed;
-
