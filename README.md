@@ -17,13 +17,17 @@
 </div>
 
 ## About
-discord.js is a powerful node.js module that allows you to interact with the [Discord API](https://discordapp.com/developers/docs/intro) very easily.
-It takes a much more object-oriented approach than most other JS Discord libraries, making your bot's code significantly tidier and easier to comprehend.
-Usability and performance are key focuses of discord.js, and it also has nearly 100% coverage of the Discord API.
+discord.js is a powerful node.js module that allows you to interact with the
+[Discord API](https://discordapp.com/developers/docs/intro) very easily.
+
+* Object-oriented
+* Predictable abstractions
+* Performant
+* Nearly 100% coverage of the Discord API
 
 ## Installation
 **Node.js 6.0.0 or newer is required.**  
-Ignore any warnings about unmet peer dependencies - all of them are optional.
+Ignore any warnings about unmet peer dependencies - all peer dependencies are optional.
 
 Without voice support: `npm install discord.js --save`  
 With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discord.js node-opus --save`  
@@ -60,7 +64,7 @@ A bot template using discord.js can be generated using [generator-discordbot](ht
 
 ## Web distributions
 Web builds of discord.js that are fully capable of running in browsers are available [here](https://github.com/hydrabolt/discord.js/tree/webpack).
-These are built by [Webpack 2](https://webpack.js.org/). The API is identical, but rather than using `require('discord.js')`,
+These are built using [Webpack 2](https://webpack.js.org/). The API is identical, but rather than using `require('discord.js')`,
 the entire `Discord` object is available as a global (on the `window` object).
 The ShardingManager and any voice-related functionality is unavailable in these builds.
 
@@ -78,7 +82,7 @@ The ShardingManager and any voice-related functionality is unavailable in these 
 ## Contributing
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
 [documentation](https://discord.js.org/#/docs).  
-See [the contributing guide](CONTRIBUTING.md) if you'd like to submit a PR.
+See [the contribution guide](CONTRIBUTING.md) if you'd like to submit a PR.
 
 ## Help
 If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle
