@@ -104,9 +104,14 @@ class RichEmbed {
    */
   setColor(color) {
     if (color instanceof Array) {
-      color = parseInt(((1 << 24) + (color[0] << 16) + (color[1] << 8) + color[2]).toString(16).slice(1), 16);
+      color = (color[0] << 16) + (color[1] << 8) + color[2];
     } else if (typeof color === 'string' && color.startsWith('#')) {
       color = parseInt(color.replace('#', ''), 16);
+    }
+    if (color < 0 || color > 0xFFFFFF) {
+      throw new RangeError('RichEmbed color must be within the range 0 - 16777215 (0xFFFFFF).');
+    } else if (color && isNaN(parseInt(color))) {
+      throw new TypeError('Unable to convert RichEmbed color to a number.');
     }
     this.color = color;
     return this;
@@ -115,11 +120,11 @@ class RichEmbed {
   /**
    * Sets the author of this embed
    * @param {string} name The name of the author
-   * @param {string} [icon] The icon of the author
+   * @param {string} [icon_url] The icon of the author
    * @returns {RichEmbed} This embed
    */
-  setAuthor(name, icon) {
-    this.author = { name, icon_url: icon };
+  setAuthor(name, icon_url) {
+    this.author = { name, icon_url };
     return this;
   }
 
@@ -171,12 +176,12 @@ class RichEmbed {
   /**
    * Sets the footer of this embed
    * @param {string} text The text of the footer
-   * @param {string} icon The icon of the footer
+   * @param {string} [icon_url] The icon of the footer
    * @returns {RichEmbed} This embed
    */
-  setFooter(text, icon) {
+  setFooter(text, icon_url) {
     if (text.length > 2048) throw new RangeError('RichEmbed footer text may not exceed 2048 characters.');
-    this.footer = { text, icon_url: icon };
+    this.footer = { text, icon_url };
     return this;
   }
 }
