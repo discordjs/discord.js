@@ -96,6 +96,26 @@ class User {
     if (!this.avatar) return null;
     return Constants.Endpoints.avatar(this.id, this.avatar);
   }
+  
+  /**
+  * A link to the user's default avatar
+   * @type {string}
+   * @readonly
+   */
+  get defaultAvatarURL() {
+	defaultAvatars = Object.values(Constants.DefaultAvatars)
+	defaultAvatar = this.discriminator % defaultAvatars.length
+	return Constants.Endpoints.assets(defaultAvatars[defaultAvatar] + '.png')
+  }
+  
+  /**
+  * A link to the user's avatar if they have one. Otherwise a link to their default avatar will be returned
+  * @type {string}
+  * @readonly
+  */
+  get displayAvatarURL() {
+	return this.avatarURL() || this.defaultAvatarURL()
+  }
 
   /**
    * Check whether the user is typing in a channel.
