@@ -13,7 +13,7 @@ client.login(token).then(atoken => console.log('logged in with token ' + atoken)
 client.ws.on('send', console.log);
 
 client.on('ready', () => {
-  console.log('ready!');
+  console.log('ready');
 });
 
 client.on('userUpdate', (o, n) => {
