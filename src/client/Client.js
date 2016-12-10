@@ -309,6 +309,7 @@ class Client extends EventEmitter {
 
   /**
    * Caches a guild, or obtains it from the cache if it's already cached.
+   * The guild will not have any members, roles, or channels.
    * @param {string} id The ID of the user to obtain
    * @param {boolean} [cache=false] Store the guild in the cache after fetching it
    * @returns {Promise<User>}
