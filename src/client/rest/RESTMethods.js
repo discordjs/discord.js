@@ -211,21 +211,21 @@ class RESTMethods {
     );
   }
 
-  getUser(userID) {
+  getUser(userID, cache) {
     return this.rest.makeRequest('get', Constants.Endpoints.user(userID), true).then(data =>
-      this.rest.client.actions.UserGet.handle(data).user
+      this.rest.client.actions.UserGet.handle(data, cache).user
     );
   }
 
-  getChannel(channelID) {
+  getChannel(channelID, cache) {
     return this.rest.makeRequest('get', Constants.Endpoints.channel(channelID), true).then(data =>
-      this.rest.client.actions.ChannelGet.handle(data).channel
+      this.rest.client.actions.ChannelGet.handle(data, cache).channel
     );
   }
 
-  getGuild(guildID) {
+  getGuild(guildID, cache) {
     return this.rest.makeRequest('get', Constants.Endpoints.guild(guildID), true).then(data =>
-      this.rest.client.actions.GuildGet.handle(data).guild
+      this.rest.client.actions.GuildGet.handle(data, cache).guild
     );
   }
 

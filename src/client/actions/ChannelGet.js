@@ -1,9 +1,9 @@
 const Action = require('./Action');
 
 class ChannelGetAction extends Action {
-  handle(data) {
+  handle(data, cache) {
     const client = this.client;
-    const channel = client.dataManager.newChannel(data);
+    const channel = client.dataManager.newChannel(data, cache);
     return {
       channel,
     };
