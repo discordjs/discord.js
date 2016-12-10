@@ -288,7 +288,7 @@ class Client extends EventEmitter {
    * Caches a user, or obtains it from the cache if it's already cached.
    * <warn>This is only available when using a bot account.</warn>
    * @param {string} id The ID of the user to obtain
-   * @param {boolean} [cache=true] Store the guild in the cache after fetching it
+   * @param {boolean} [cache=true] Store the user in the cache after fetching it
    * @returns {Promise<User>}
    */
   fetchUser(id, cache = true) {
@@ -299,7 +299,7 @@ class Client extends EventEmitter {
   /**
    * Caches a channel, or obtains it from the cache if it's already cached.
    * @param {string} id The ID of the user to obtain
-   * @param {boolean} [cache=true] Store the guild in the cache after fetching it
+   * @param {boolean} [cache=true] Store the channel in the cache after fetching it
    * @returns {Promise<User>}
    */
   fetchChannel(id, cache = true) {
