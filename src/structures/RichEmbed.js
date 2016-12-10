@@ -120,11 +120,11 @@ class RichEmbed {
   /**
    * Sets the author of this embed
    * @param {string} name The name of the author
-   * @param {string} [icon_url] The icon of the author
+   * @param {string} [icon] The icon url of the author
    * @returns {RichEmbed} This embed
    */
-  setAuthor(name, icon_url) {
-    this.author = { name, icon_url };
+  setAuthor(name, icon) {
+    this.author = { name, icon_url: icon };
     return this;
   }
 
@@ -176,12 +176,12 @@ class RichEmbed {
   /**
    * Sets the footer of this embed
    * @param {string} text The text of the footer
-   * @param {string} [icon_url] The icon of the footer
+   * @param {string} [icon] The icon url of the footer
    * @returns {RichEmbed} This embed
    */
-  setFooter(text, icon_url) {
+  setFooter(text, icon) {
     if (text.length > 2048) throw new RangeError('RichEmbed footer text may not exceed 2048 characters.');
-    this.footer = { text, icon_url };
+    this.footer = { text, icon_url: icon };
     return this;
   }
 }
