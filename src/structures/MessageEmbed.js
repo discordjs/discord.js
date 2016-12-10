@@ -22,16 +22,16 @@ class MessageEmbed {
 
   setup(data) {
     /**
-     * The title of this embed, if there is one
-     * @type {?string}
-     */
-    this.title = data.title;
-
-    /**
      * The type of this embed
      * @type {string}
      */
     this.type = data.type;
+
+    /**
+     * The title of this embed, if there is one
+     * @type {?string}
+     */
+    this.title = data.title;
 
     /**
      * The description of this embed, if there is one
@@ -44,6 +44,12 @@ class MessageEmbed {
      * @type {string}
      */
     this.url = data.url;
+
+    /**
+     * The color of the embed
+     * @type {Number}
+     */
+    this.color = data.color;
 
     /**
      * The fields of this embed
@@ -89,6 +95,17 @@ class MessageEmbed {
    */
   get createdAt() {
     return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * The hexadecimal version of the embed color, with a leading hashtag.
+   * @type {string}
+   * @readonly
+   */
+  get hexColor() {
+    let col = this.color.toString(16);
+    while (col.length < 6) col = `0${col}`;
+    return `#${col}`;
   }
 }
 
@@ -188,6 +205,12 @@ class MessageEmbedAuthor {
      * @type {string}
      */
     this.url = data.url;
+
+    /**
+     * The con URL of this author
+     * @type {string}
+     */
+    this.iconUrl = data.icon_url;
   }
 }
 
