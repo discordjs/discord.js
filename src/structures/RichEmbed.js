@@ -133,7 +133,7 @@ class RichEmbed {
    * @param {Date} [timestamp=current date] The timestamp
    * @returns {RichEmbed} This embed
    */
-  addTimestamp(timestamp = new Date()) {
+  setTimestamp(timestamp = new Date()) {
     this.timestamp = timestamp;
     return this;
   }
@@ -141,13 +141,17 @@ class RichEmbed {
   /**
    * Adds a field to the embed (max 25)
    * @param {string} name The name of the field
-   * @param {string} value The value of the field
+   * @param {StringResolvable} value The value of the field
    * @param {boolean} [inline=false] Set the field to display inline
    * @returns {RichEmbed} This embed
    */
   addField(name, value, inline = false) {
     if (this.fields.length >= 25) throw new RangeError('RichEmbeds may not exceed 25 fields.');
     if (name.length > 256) throw new RangeError('RichEmbed field names may not exceed 256 characters.');
+    if (typeof value !== 'undefined') {
+      if (value instanceof Array) value = value.join('\n');
+      else if (typeof value !== 'string') value = String(value);
+    }
     if (value.length > 1024) throw new RangeError('RichEmbed field values may not exceed 1024 characters.');
     this.fields.push({ name, value, inline });
     return this;
