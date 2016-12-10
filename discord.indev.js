@@ -10056,9 +10056,14 @@ class RichEmbed {
    */
   setColor(color) {
     if (color instanceof Array) {
-      color = parseInt(((1 << 24) + (color[0] << 16) + (color[1] << 8) + color[2]).toString(16).slice(1), 16);
+      color = (color[0] << 16) + (color[1] << 8) + color[2];
     } else if (typeof color === 'string' && color.startsWith('#')) {
       color = parseInt(color.replace('#', ''), 16);
+    }
+    if (color < 0 || color > 0xFFFFFF) {
+      throw new RangeError('RichEmbed color must be within the range 0 - 16777215 (0xFFFFFF).');
+    } else if (color && isNaN(parseInt(color))) {
+      throw new TypeError('Unable to convert RichEmbed color to a number.');
     }
     this.color = color;
     return this;
@@ -10067,7 +10072,7 @@ class RichEmbed {
   /**
    * Sets the author of this embed
    * @param {string} name The name of the author
-   * @param {string} [icon] The icon of the author
+   * @param {string} [icon] The icon URL of the author
    * @returns {RichEmbed} This embed
    */
   setAuthor(name, icon) {
@@ -10123,7 +10128,7 @@ class RichEmbed {
   /**
    * Sets the footer of this embed
    * @param {string} text The text of the footer
-   * @param {string} icon The icon of the footer
+   * @param {string} [icon] The icon URL of the footer
    * @returns {RichEmbed} This embed
    */
   setFooter(text, icon) {
