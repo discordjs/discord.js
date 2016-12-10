@@ -207,7 +207,7 @@ class MessageEmbedAuthor {
     this.url = data.url;
 
     /**
-     * The con URL of this author
+     * The icon URL of this author
      * @type {string}
      */
     this.iconUrl = data.icon_url;
