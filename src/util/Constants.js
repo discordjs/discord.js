@@ -107,7 +107,7 @@ const Endpoints = exports.Endpoints = {
   guildMembers: (guildID) => `${Endpoints.guild(guildID)}/members`,
   guildMember: (guildID, memberID) => `${Endpoints.guildMembers(guildID)}/${memberID}`,
   guildMemberRole: (guildID, memberID, roleID) => `${Endpoints.guildMember(guildID, memberID)}/roles/${roleID}`,
-  stupidInconsistentGuildEndpoint: (guildID) => `${Endpoints.guildMember(guildID, '@me')}/nick`,
+  guildMemberNickname: (guildID) => `${Endpoints.guildMember(guildID, '@me')}/nick`,
   guildChannels: (guildID) => `${Endpoints.guild(guildID)}/channels`,
   guildEmojis: (guildID) => `${Endpoints.guild(guildID)}/emojis`,
 
