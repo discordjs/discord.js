@@ -183,7 +183,7 @@ class GuildMember {
   }
 
   /**
-   * The nickname of the member. Otherwise their username if nickname not set
+   * The nickname of the member or their username if nickname is undefined
    * @type {string}
    * @readonly
    */
