@@ -296,6 +296,26 @@ class Client extends EventEmitter {
   }
 
   /**
+   * Caches a channel, or obtains it from the cache if it's already cached.
+   * @param {string} id The ID of the user to obtain
+   * @returns {Promise<User>}
+   */
+  fetchChannel(id) {
+    if (this.channels.has(id)) return Promise.resolve(this.channels.get(id));
+    return this.rest.methods.getChannel(id);
+  }
+
+  /**
+   * Caches a guild, or obtains it from the cache if it's already cached.
+   * @param {string} id The ID of the user to obtain
+   * @returns {Promise<User>}
+   */
+  fetchGuild(id) {
+    if (this.guilds.has(id)) return Promise.resolve(this.guilds.get(id));
+    return this.rest.methods.getGuild(id);
+  }
+
+  /**
    * Fetches an invite object from an invite code.
    * @param {InviteResolvable} invite An invite code or URL
    * @returns {Promise<Invite>}

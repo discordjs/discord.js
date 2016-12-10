@@ -217,6 +217,18 @@ class RESTMethods {
     );
   }
 
+  getChannel(channelID) {
+    return this.rest.makeRequest('get', Constants.Endpoints.channel(channelID), true).then(data =>
+      this.rest.client.actions.ChannelGet.handle(data).channel
+    );
+  }
+
+  getGuild(guildID) {
+    return this.rest.makeRequest('get', Constants.Endpoints.guild(guildID), true).then(data =>
+      this.rest.client.actions.GuildGet.handle(data).guild
+    );
+  }
+
   updateCurrentUser(_data) {
     const user = this.rest.client.user;
     const data = {};
