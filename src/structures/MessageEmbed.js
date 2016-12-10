@@ -47,7 +47,7 @@ class MessageEmbed {
 
     /**
      * The color of the embed
-     * @type {Number}
+     * @type {number}
      */
     this.color = data.color;
 
