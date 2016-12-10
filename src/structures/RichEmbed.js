@@ -120,7 +120,7 @@ class RichEmbed {
   /**
    * Sets the author of this embed
    * @param {string} name The name of the author
-   * @param {string} [icon] The icon url of the author
+   * @param {string} [icon] The icon URL of the author
    * @returns {RichEmbed} This embed
    */
   setAuthor(name, icon) {
@@ -176,7 +176,7 @@ class RichEmbed {
   /**
    * Sets the footer of this embed
    * @param {string} text The text of the footer
-   * @param {string} [icon] The icon url of the footer
+   * @param {string} [icon] The icon URL of the footer
    * @returns {RichEmbed} This embed
    */
   setFooter(text, icon) {
