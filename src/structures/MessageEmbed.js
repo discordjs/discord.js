@@ -210,7 +210,7 @@ class MessageEmbedAuthor {
      * The icon URL of this author
      * @type {string}
      */
-    this.iconUrl = data.icon_url;
+    this.iconURL = data.icon_url;
   }
 }
 
@@ -274,7 +274,7 @@ class MessageEmbedFooter {
      * The icon URL of this footer
      * @type {string}
      */
-    this.iconUrl = data.icon_url;
+    this.iconURL = data.icon_url;
 
     /**
      * The proxy icon URL of this footer
