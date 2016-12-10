@@ -98,7 +98,7 @@ class MessageEmbed {
   }
 
   /**
-   * The hexadecimal version of the embed color, with a leading hashtag.
+   * The hexadecimal version of the embed color, with a leading hash.
    * @type {string}
    * @readonly
    */
