@@ -121,7 +121,7 @@ class User {
    * @readonly
    */
   get displayAvatarURL() {
-    return this.avatarURL() || this.defaultAvatarURL();
+    return this.avatarURL || this.defaultAvatarURL;
   }
 
   /**
