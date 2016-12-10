@@ -299,10 +299,10 @@ class Client extends EventEmitter {
   /**
    * Caches a channel, or obtains it from the cache if it's already cached.
    * @param {string} id The ID of the user to obtain
-   * @param {boolean} [cache=true] Store the channel in the cache after fetching it
+   * @param {boolean} [cache=false] Store the channel in the cache after fetching it
    * @returns {Promise<User>}
    */
-  fetchChannel(id, cache = true) {
+  fetchChannel(id, cache = false) {
     if (this.channels.has(id)) return Promise.resolve(this.channels.get(id));
     return this.rest.methods.getChannel(id, cache);
   }
@@ -310,10 +310,10 @@ class Client extends EventEmitter {
   /**
    * Caches a guild, or obtains it from the cache if it's already cached.
    * @param {string} id The ID of the user to obtain
-   * @param {boolean} [cache=true] Store the guild in the cache after fetching it
+   * @param {boolean} [cache=false] Store the guild in the cache after fetching it
    * @returns {Promise<User>}
    */
-  fetchGuild(id, cache = true) {
+  fetchGuild(id, cache = false) {
     if (this.guilds.has(id)) return Promise.resolve(this.guilds.get(id));
     return this.rest.methods.getGuild(id, cache);
   }
