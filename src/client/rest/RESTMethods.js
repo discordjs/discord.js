@@ -128,10 +128,12 @@ class RESTMethods {
     }).then(data => this.rest.client.actions.MessageUpdate.handle(data).updated);
   }
 
-  createChannel(guild, channelName, channelType) {
+  createChannel(guild, channelName, channelType, overwrites) {
+    if (overwrites instanceof Collection) overwrites = overwrites.array();
     return this.rest.makeRequest('post', Constants.Endpoints.guildChannels(guild.id), true, {
       name: channelName,
       type: channelType,
+      permission_overwrites: overwrites,
     }).then(data => this.rest.client.actions.ChannelCreate.handle(data).channel);
   }
 
