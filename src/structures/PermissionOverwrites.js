@@ -7,7 +7,10 @@ class PermissionOverwrites {
      * The GuildChannel this overwrite is for
      * @type {GuildChannel}
      */
-    this.channel = guildChannel;
+    Object.defineProperty(this, 'channel', {
+      value: guildChannel,
+      enumerable: false,
+    });
 
     if (data) this.setup(data);
   }
@@ -25,8 +28,8 @@ class PermissionOverwrites {
      */
     this.type = data.type;
 
-    this.denyData = data.deny;
-    this.allowData = data.allow;
+    this.deny = data.deny;
+    this.allow = data.allow;
   }
 
   /**
