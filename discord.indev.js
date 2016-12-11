@@ -2288,8 +2288,8 @@ class GuildChannel extends Channel {
 
     const overwrites = this.overwritesFor(member, true, roles);
     for (const overwrite of overwrites.role.concat(overwrites.member)) {
-      permissions &= ~overwrite.denyData;
-      permissions |= overwrite.allowData;
+      permissions &= ~overwrite.deny;
+      permissions |= overwrite.allow;
     }
 
     const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
@@ -2366,8 +2366,8 @@ class GuildChannel extends Channel {
     const prevOverwrite = this.permissionOverwrites.get(userOrRole.id);
 
     if (prevOverwrite) {
-      payload.allow = prevOverwrite.allowData;
-      payload.deny = prevOverwrite.denyData;
+      payload.allow = prevOverwrite.allow;
+      payload.deny = prevOverwrite.deny;
     }
 
     for (const perm in options) {
@@ -2467,6 +2467,16 @@ class GuildChannel extends Channel {
    */
   createInvite(options = {}) {
     return this.client.rest.methods.createChannelInvite(this, options);
+  }
+
+  /**
+   * Clone this channel
+   * @param {string} [name=this.name] Optional name for the new channel, otherwise it has the name of this channel
+   * @param {boolean} [withPermissions=true] Whether to clone the channel with this channel's permission overwrites
+   * @returns {Promise<GuildChannel>}
+   */
+  clone(name = this.name, withPermissions = true) {
+    return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : []);
   }
 
   /**
@@ -5975,6 +5985,8 @@ class Guild {
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
    * @param {string} type The type of the new channel, either `text` or `voice`
+   * @param {Array.<PermissionsOverwrites|Object>} overwrites
+   * Permissions overwrites to apply to the new channel
    * @returns {Promise<TextChannel|VoiceChannel>}
    * @example
    * // create a new text channel
@@ -5982,8 +5994,8 @@ class Guild {
    *  .then(channel => console.log(`Created new channel ${channel}`))
    *  .catch(console.error);
    */
-  createChannel(name, type) {
-    return this.client.rest.methods.createChannel(this, name, type);
+  createChannel(name, type, overwrites) {
+    return this.client.rest.methods.createChannel(this, name, type, overwrites);
   }
 
   /**
@@ -9912,7 +9924,10 @@ class PermissionOverwrites {
      * The GuildChannel this overwrite is for
      * @type {GuildChannel}
      */
-    this.channel = guildChannel;
+    Object.defineProperty(this, 'channel', {
+      value: guildChannel,
+      enumerable: false,
+    });
 
     if (data) this.setup(data);
   }
@@ -9930,8 +9945,8 @@ class PermissionOverwrites {
      */
     this.type = data.type;
 
-    this.denyData = data.deny;
-    this.allowData = data.allow;
+    this.deny = data.deny;
+    this.allow = data.allow;
   }
 
   /**
@@ -20334,10 +20349,12 @@ class RESTMethods {
     }).then(data => this.rest.client.actions.MessageUpdate.handle(data).updated);
   }
 
-  createChannel(guild, channelName, channelType) {
+  createChannel(guild, channelName, channelType, overwrites) {
+    if (overwrites instanceof Collection) overwrites = overwrites.array();
     return this.rest.makeRequest('post', Constants.Endpoints.guildChannels(guild.id), true, {
       name: channelName,
       type: channelType,
+      permission_overwrites: overwrites,
     }).then(data => this.rest.client.actions.ChannelCreate.handle(data).channel);
   }
 
