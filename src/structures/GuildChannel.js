@@ -66,8 +66,8 @@ class GuildChannel extends Channel {
 
     const overwrites = this.overwritesFor(member, true, roles);
     for (const overwrite of overwrites.role.concat(overwrites.member)) {
-      permissions &= ~overwrite.denyData;
-      permissions |= overwrite.allowData;
+      permissions &= ~overwrite.deny;
+      permissions |= overwrite.allow;
     }
 
     const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
@@ -144,8 +144,8 @@ class GuildChannel extends Channel {
     const prevOverwrite = this.permissionOverwrites.get(userOrRole.id);
 
     if (prevOverwrite) {
-      payload.allow = prevOverwrite.allowData;
-      payload.deny = prevOverwrite.denyData;
+      payload.allow = prevOverwrite.allow;
+      payload.deny = prevOverwrite.deny;
     }
 
     for (const perm in options) {
@@ -245,6 +245,16 @@ class GuildChannel extends Channel {
    */
   createInvite(options = {}) {
     return this.client.rest.methods.createChannelInvite(this, options);
+  }
+
+  /**
+   * Clone this channel
+   * @param {string} [name=this.name] Optional name for the new channel, otherwise it has the name of this channel
+   * @param {boolean} [withPermissions=true] Whether to clone the channel with this channels permission overwrites
+   * @returns {Promise<GuildChannel>}
+   */
+  clone(name = this.name, withPermissions = true) {
+    return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : []);
   }
 
   /**

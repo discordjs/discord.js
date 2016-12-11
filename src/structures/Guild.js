@@ -561,6 +561,8 @@ class Guild {
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
    * @param {string} type The type of the new channel, either `text` or `voice`
+   * @param {Array.<PermissionsOverwrites|Object>} overwrites
+   * Permissions overwrites to apply to the new channel
    * @returns {Promise<TextChannel|VoiceChannel>}
    * @example
    * // create a new text channel
@@ -568,8 +570,8 @@ class Guild {
    *  .then(channel => console.log(`Created new channel ${channel}`))
    *  .catch(console.error);
    */
-  createChannel(name, type) {
-    return this.client.rest.methods.createChannel(this, name, type);
+  createChannel(name, type, overwrites) {
+    return this.client.rest.methods.createChannel(this, name, type, overwrites);
   }
 
   /**
