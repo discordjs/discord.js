@@ -36,6 +36,12 @@ class UserProfile {
   }
 
   setup(data) {
+    /**
+     * If the user has Discord Premium
+     * @type {Boolean}
+     */
+    this.premium = data.premium;
+
     for (const guild of data.mutual_guilds) {
       if (this.client.guilds.has(guild.id)) {
         this.mutualGuilds.set(guild.id, this.client.guilds.get(guild.id));
