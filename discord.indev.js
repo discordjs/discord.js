@@ -141,7 +141,8 @@ exports.Errors = {
 };
 
 const PROTOCOL_VERSION = exports.PROTOCOL_VERSION = 6;
-const API = exports.API = `https://discordapp.com/api/v${PROTOCOL_VERSION}`;
+const HOST = exports.HOST = `https://discordapp.com`;
+const API = exports.API = `${HOST}/api/v${PROTOCOL_VERSION}`;
 const Endpoints = exports.Endpoints = {
   // general
   login: `${API}/auth/login`,
@@ -150,6 +151,7 @@ const Endpoints = exports.Endpoints = {
   botGateway: `${API}/gateway/bot`,
   invite: (id) => `${API}/invite/${id}`,
   inviteLink: (id) => `https://discord.gg/${id}`,
+  assets: (asset) => `${HOST}/assets/${asset}`,
   CDN: 'https://cdn.discordapp.com',
 
   // users
@@ -379,6 +381,14 @@ exports.MessageTypes = {
   4: 'CHANNEL_NAME_CHANGE',
   5: 'CHANNEL_ICON_CHANGE',
   6: 'PINS_ADD',
+};
+
+exports.DefaultAvatars = {
+  BLURPLE: '6debd47ed13483642cf09e832ed0bc1b',
+  GREY: '322c936a8c8be1b803cd94861bdfa868',
+  GREEN: 'dd4dbc0016779df1378e7812eabaa04d',
+  ORANGE: '0e291f67c9274a1abdddeb3fd919cbaa',
+  RED: '1cbd08c76f8af6dddce02c5138971129',
 };
 
 const PermissionFlags = exports.PermissionFlags = {
@@ -1051,6 +1061,26 @@ class User {
   get avatarURL() {
     if (!this.avatar) return null;
     return Constants.Endpoints.avatar(this.id, this.avatar);
+  }
+
+  /**
+   * A link to the user's default avatar
+   * @type {string}
+   * @readonly
+   */
+  get defaultAvatarURL() {
+    let defaultAvatars = Object.values(Constants.DefaultAvatars);
+    let defaultAvatar = this.discriminator % defaultAvatars.length;
+    return Constants.endpoints.assets(`${defaultAvatars[defaultAvatar]}.png`);
+  }
+
+  /**
+   * A link to the user's avatar if they have one. Otherwise a link to their default avatar will be returned
+   * @type {string}
+   * @readonly
+   */
+  get displayAvatarURL() {
+    return this.avatarURL || this.defaultAvatarURL;
   }
 
   /**
@@ -2710,6 +2740,15 @@ class GuildMember {
    */
   get id() {
     return this.user.id;
+  }
+
+  /**
+   * The nickname of the member, or their username if they don't have one
+   * @type {string}
+   * @readonly
+   */
+  get displayName() {
+    return this.nickname || this.user.username;
   }
 
   /**
