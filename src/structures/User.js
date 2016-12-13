@@ -105,6 +105,26 @@ class User {
   }
 
   /**
+   * A link to the user's default avatar
+   * @type {string}
+   * @readonly
+   */
+  get defaultAvatarURL() {
+    let defaultAvatars = Object.values(Constants.DefaultAvatars);
+    let defaultAvatar = this.discriminator % defaultAvatars.length;
+    return Constants.endpoints.assets(`${defaultAvatars[defaultAvatar]}.png`);
+  }
+
+  /**
+   * A link to the user's avatar if they have one. Otherwise a link to their default avatar will be returned
+   * @type {string}
+   * @readonly
+   */
+  get displayAvatarURL() {
+    return this.avatarURL || this.defaultAvatarURL;
+  }
+
+  /**
    * The note that is set for the user
    * <warn>This is only available when using a user account.</warn>
    * @type {?string}

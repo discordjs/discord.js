@@ -183,6 +183,15 @@ class GuildMember {
   }
 
   /**
+   * The nickname of the member, or their username if they don't have one
+   * @type {string}
+   * @readonly
+   */
+  get displayName() {
+    return this.nickname || this.user.username;
+  }
+
+  /**
    * The overall set of permissions for the guild member, taking only roles into account
    * @type {EvaluatedPermissions}
    * @readonly
