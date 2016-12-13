@@ -10088,10 +10088,11 @@ class RichEmbed {
    * Sets the author of this embed
    * @param {string} name The name of the author
    * @param {string} [icon] The icon URL of the author
+   * @param {string} [url] The URL of the author
    * @returns {RichEmbed} This embed
    */
-  setAuthor(name, icon) {
-    this.author = { name, icon_url: icon };
+  setAuthor(name, icon, url) {
+    this.author = { name, icon_url: icon, url };
     return this;
   }
 
