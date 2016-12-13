@@ -125,18 +125,6 @@ class Client extends EventEmitter {
     }
 
     /**
-     * The email, if there is one, for the logged in Client
-     * @type {?string}
-     */
-    this.email = null;
-
-    /**
-     * The password, if there is one, for the logged in Client
-     * @type {?string}
-     */
-    this.password = null;
-
-    /**
      * The ClientUser representing the logged in Client
      * @type {?ClientUser}
      */
