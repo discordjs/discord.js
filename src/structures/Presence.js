@@ -28,14 +28,14 @@ class Presence {
 
   /**
    * Whether this presence is equal to another
-   * @param {Presence} other the presence to compare
+   * @param {Presence} presence Presence to compare with
    * @returns {boolean}
    */
-  equals(other) {
-    return (
-      other &&
-      this.status === other.status &&
-      this.game ? this.game.equals(other.game) : !other.game
+  equals(presence) {
+    return this === presence || (
+      presence &&
+      this.status === presence.status &&
+      this.game ? this.game.equals(presence.game) : !presence.game
     );
   }
 }
@@ -75,15 +75,15 @@ class Game {
 
   /**
    * Whether this game is equal to another game
-   * @param {Game} other the other game to compare
+   * @param {Game} game Game to compare with
    * @returns {boolean}
    */
-  equals(other) {
-    return (
-      other &&
-      this.name === other.name &&
-      this.type === other.type &&
-      this.url === other.url
+  equals(game) {
+    return this === game || (
+      game &&
+      this.name === game.name &&
+      this.type === game.type &&
+      this.url === game.url
     );
   }
 }
