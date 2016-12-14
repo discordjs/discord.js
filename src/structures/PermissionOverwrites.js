@@ -5,12 +5,11 @@ class PermissionOverwrites {
   constructor(guildChannel, data) {
     /**
      * The GuildChannel this overwrite is for
+     * @name PermissionOverwrites#channel
      * @type {GuildChannel}
+     * @readonly
      */
-    Object.defineProperty(this, 'channel', {
-      value: guildChannel,
-      enumerable: false,
-    });
+    Object.defineProperty(this, 'channel', { value: guildChannel });
 
     if (data) this.setup(data);
   }
