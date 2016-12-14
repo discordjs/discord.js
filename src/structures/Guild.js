@@ -115,6 +115,12 @@ class Guild {
     this.features = data.features;
 
     /**
+     * The ID of the application that created this guild (if applicable)
+     * @type {?string}
+     */
+    this.applicationId = data.application_id;
+
+    /**
      * A collection of emojis that are in this guild. The key is the emoji's ID, the value is the emoji.
      * @type {Collection<string, Emoji>}
      */
