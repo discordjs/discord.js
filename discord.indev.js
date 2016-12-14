@@ -6030,8 +6030,7 @@ class Guild {
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
    * @param {string} type The type of the new channel, either `text` or `voice`
-   * @param {Array.<PermissionsOverwrites|Object>} overwrites
-   * Permissions overwrites to apply to the new channel
+   * @param {Array<PermissionOverwrites|Object>} overwrites Permission overwrites to apply to the new channel
    * @returns {Promise<TextChannel|VoiceChannel>}
    * @example
    * // create a new text channel
@@ -9967,12 +9966,11 @@ class PermissionOverwrites {
   constructor(guildChannel, data) {
     /**
      * The GuildChannel this overwrite is for
+     * @name PermissionOverwrites#channel
      * @type {GuildChannel}
+     * @readonly
      */
-    Object.defineProperty(this, 'channel', {
-      value: guildChannel,
-      enumerable: false,
-    });
+    Object.defineProperty(this, 'channel', { value: guildChannel });
 
     if (data) this.setup(data);
   }
