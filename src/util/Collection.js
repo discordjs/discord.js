@@ -338,6 +338,7 @@ class Collection extends Map {
    * @returns {boolean} Whether the collections have identical contents
    */
   equals(collection) {
+    if (!collection) return false;
     if (this === collection) return true;
     if (this.size !== collection.size) return false;
     return !this.find((value, key) => {
