@@ -1,7 +1,6 @@
 const Channel = require('./Channel');
 const TextBasedChannel = require('./interface/TextBasedChannel');
 const Collection = require('../util/Collection');
-const arraysEqual = require('../util/ArraysEqual');
 
 /*
 { type: 3,
@@ -101,9 +100,7 @@ class GroupDMChannel extends Channel {
       this.ownerID === channel.ownerID;
 
     if (equal) {
-      const thisIDs = this.recipients.keyArray();
-      const otherIDs = channel.recipients.keyArray();
-      return arraysEqual(thisIDs, otherIDs);
+      return this.recipients.equals(channel.recipients);
     }
 
     return equal;

@@ -4,7 +4,6 @@ const PermissionOverwrites = require('./PermissionOverwrites');
 const EvaluatedPermissions = require('./EvaluatedPermissions');
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
-const arraysEqual = require('../util/ArraysEqual');
 
 /**
  * Represents a guild channel (i.e. text channels and voice channels)
@@ -273,9 +272,7 @@ class GuildChannel extends Channel {
 
     if (equal) {
       if (this.permissionOverwrites && channel.permissionOverwrites) {
-        const thisIDSet = this.permissionOverwrites.keyArray();
-        const otherIDSet = channel.permissionOverwrites.keyArray();
-        equal = arraysEqual(thisIDSet, otherIDSet);
+        equal = this.permissionOverwrites.equals(channel.permissionOverwrites);
       } else {
         equal = !this.permissionOverwrites && !channel.permissionOverwrites;
       }
