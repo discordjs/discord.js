@@ -233,12 +233,13 @@ class StreamDispatcher extends EventEmitter {
     }
   }
 
-  _triggerEnd() {
+  _triggerEnd(reason) {
     /**
      * Emitted once the stream has ended. Attach a `once` listener to this.
      * @event StreamDispatcher#end
+     * @param {string} reason The reason the stream ended. Undefined if natural end of stream.
      */
-    this.emit('end');
+    this.emit('end', reason);
   }
 
   _triggerError(err) {
