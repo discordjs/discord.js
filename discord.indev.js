@@ -821,6 +821,7 @@ class Collection extends Map {
    * @returns {boolean} Whether the collections have identical contents
    */
   equals(collection) {
+    if (!collection) return false;
     if (this === collection) return true;
     if (this.size !== collection.size) return false;
     return !this.find((value, key) => {
@@ -1189,7 +1190,7 @@ class User {
   /**
    * Checks if the user is equal to another. It compares username, ID, discriminator, status and the game being played.
    * It is recommended to compare equality by using `user.id === user2.id` unless you want to compare all properties.
-   * @param {User} user The user to compare
+   * @param {User} user User to compare with
    * @returns {boolean}
    */
   equals(user) {
@@ -1261,14 +1262,14 @@ class Presence {
 
   /**
    * Whether this presence is equal to another
-   * @param {Presence} other the presence to compare
+   * @param {Presence} presence Presence to compare with
    * @returns {boolean}
    */
-  equals(other) {
-    return (
-      other &&
-      this.status === other.status &&
-      this.game ? this.game.equals(other.game) : !other.game
+  equals(presence) {
+    return this === presence || (
+      presence &&
+      this.status === presence.status &&
+      this.game ? this.game.equals(presence.game) : !presence.game
     );
   }
 }
@@ -1308,15 +1309,15 @@ class Game {
 
   /**
    * Whether this game is equal to another game
-   * @param {Game} other the other game to compare
+   * @param {Game} game Game to compare with
    * @returns {boolean}
    */
-  equals(other) {
-    return (
-      other &&
-      this.name === other.name &&
-      this.type === other.type &&
-      this.url === other.url
+  equals(game) {
+    return this === game || (
+      game &&
+      this.name === game.name &&
+      this.type === game.type &&
+      this.url === game.url
     );
   }
 }
@@ -1633,7 +1634,7 @@ class Role {
    * Whether this role equals another role. It compares all properties, so for most operations
    * it is advisable to just compare `role.id === role2.id` as it is much faster and is often
    * what most users need.
-   * @param {Role} role The role to compare to
+   * @param {Role} role Role to compare with
    * @returns {boolean}
    */
   equals(role) {
@@ -2511,7 +2512,7 @@ class GuildChannel extends Channel {
   /**
    * Checks if this channel has the same type, topic, position, name, overwrites and ID as another channel.
    * In most cases, a simple `channel.id === channel2.id` will do, and is much faster too.
-   * @param {GuildChannel} channel The channel to compare this channel to
+   * @param {GuildChannel} channel Channel to compare with
    * @returns {boolean}
    */
   equals(channel) {
@@ -6152,7 +6153,7 @@ class Guild {
    * Whether this Guild equals another Guild. It compares all properties, so for most operations
    * it is advisable to just compare `guild.id === guild2.id` as it is much faster and is often
    * what most users need.
-   * @param {Guild} guild The guild to compare
+   * @param {Guild} guild Guild to compare with
    * @returns {boolean}
    */
   equals(guild) {
@@ -8885,7 +8886,7 @@ class GroupDMChannel extends Channel {
    * Whether this channel equals another channel. It compares all properties, so for most operations
    * it is advisable to just compare `channel.id === channel2.id` as it is much faster and is often
    * what most users need.
-   * @param {GroupDMChannel} channel The channel to compare to
+   * @param {GroupDMChannel} channel Channel to compare with
    * @returns {boolean}
    */
   equals(channel) {
