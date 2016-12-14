@@ -73,12 +73,6 @@ class GuildMember {
     this.voiceSessionID = data.session_id;
 
     /**
-     * The voice channel ID of this member, if any
-     * @type {?string}
-     */
-    this.voiceChannelID = data.channel_id;
-
-    /**
      * Whether this member is speaking
      * @type {boolean}
      */
