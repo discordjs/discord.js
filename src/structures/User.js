@@ -112,7 +112,7 @@ class User {
   get defaultAvatarURL() {
     let defaultAvatars = Object.values(Constants.DefaultAvatars);
     let defaultAvatar = this.discriminator % defaultAvatars.length;
-    return Constants.endpoints.assets(`${defaultAvatars[defaultAvatar]}.png`);
+    return Constants.Endpoints.assets(`${defaultAvatars[defaultAvatar]}.png`);
   }
 
   /**
