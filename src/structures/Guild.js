@@ -115,6 +115,12 @@ class Guild {
     this.features = data.features;
 
     /**
+     * The ID of the application that created this guild (if applicable)
+     * @type {?string}
+     */
+    this.applicationId = data.application_id;
+
+    /**
      * A collection of emojis that are in this guild. The key is the emoji's ID, the value is the emoji.
      * @type {Collection<string, Emoji>}
      */
@@ -561,8 +567,7 @@ class Guild {
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
    * @param {string} type The type of the new channel, either `text` or `voice`
-   * @param {Array.<PermissionsOverwrites|Object>} overwrites
-   * Permissions overwrites to apply to the new channel
+   * @param {Array<PermissionOverwrites|Object>} overwrites Permission overwrites to apply to the new channel
    * @returns {Promise<TextChannel|VoiceChannel>}
    * @example
    * // create a new text channel
