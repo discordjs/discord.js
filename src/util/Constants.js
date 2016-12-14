@@ -69,6 +69,7 @@ exports.Errors = {
 
 const PROTOCOL_VERSION = exports.PROTOCOL_VERSION = 6;
 const API = exports.API = `https://discordapp.com/api/v${PROTOCOL_VERSION}`;
+const HOST = exports.HOST = `https://discordapp.com`
 const Endpoints = exports.Endpoints = {
   // general
   login: `${API}/auth/login`,
@@ -77,6 +78,7 @@ const Endpoints = exports.Endpoints = {
   botGateway: `${API}/gateway/bot`,
   invite: (id) => `${API}/invite/${id}`,
   inviteLink: (id) => `https://discord.gg/${id}`,
+  assets: (asset) => `${HOST}/assets/${asset}`
   CDN: 'https://cdn.discordapp.com',
 
   // users
@@ -241,6 +243,14 @@ exports.MessageTypes = {
   4: 'CHANNEL_NAME_CHANGE',
   5: 'CHANNEL_ICON_CHANGE',
   6: 'PINS_ADD',
+};
+
+exports.DefaultAvatars = {
+	BLURPLE: '6debd47ed13483642cf09e832ed0bc1b',
+    GREY: '322c936a8c8be1b803cd94861bdfa868',
+    GREEN: 'dd4dbc0016779df1378e7812eabaa04d',
+    ORANGE: '0e291f67c9274a1abdddeb3fd919cbaa',
+    RED: '1cbd08c76f8af6dddce02c5138971129',
 };
 
 const PermissionFlags = exports.PermissionFlags = {

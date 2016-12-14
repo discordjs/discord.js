@@ -174,6 +174,15 @@ class GuildMember {
   get id() {
     return this.user.id;
   }
+  
+  /**
+  * The nickname of the member. Otherwise their username if nickname not set
+  * @type {string}
+  * @readonly
+  */
+  get displayName() {
+	return this.nickname || this.user.username
+  }
 
   /**
    * The overall set of permissions for the guild member, taking only roles into account
