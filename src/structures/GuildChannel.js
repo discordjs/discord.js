@@ -259,7 +259,7 @@ class GuildChannel extends Channel {
   /**
    * Checks if this channel has the same type, topic, position, name, overwrites and ID as another channel.
    * In most cases, a simple `channel.id === channel2.id` will do, and is much faster too.
-   * @param {GuildChannel} channel The channel to compare this channel to
+   * @param {GuildChannel} channel Channel to compare with
    * @returns {boolean}
    */
   equals(channel) {

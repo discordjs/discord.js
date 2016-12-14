@@ -28,7 +28,7 @@ class Presence {
 
   /**
    * Whether this presence is equal to another
-   * @param {Presence} other the presence to compare
+   * @param {Presence} presence Presence to compare with
    * @returns {boolean}
    */
   equals(other) {
@@ -75,7 +75,7 @@ class Game {
 
   /**
    * Whether this game is equal to another game
-   * @param {Game} other the other game to compare
+   * @param {Game} game Game to compare with
    * @returns {boolean}
    */
   equals(other) {

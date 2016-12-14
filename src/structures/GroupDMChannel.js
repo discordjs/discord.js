@@ -89,7 +89,7 @@ class GroupDMChannel extends Channel {
    * Whether this channel equals another channel. It compares all properties, so for most operations
    * it is advisable to just compare `channel.id === channel2.id` as it is much faster and is often
    * what most users need.
-   * @param {GroupDMChannel} channel The channel to compare to
+   * @param {GroupDMChannel} channel Channel to compare with
    * @returns {boolean}
    */
   equals(channel) {

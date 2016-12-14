@@ -692,7 +692,7 @@ class Guild {
    * Whether this Guild equals another Guild. It compares all properties, so for most operations
    * it is advisable to just compare `guild.id === guild2.id` as it is much faster and is often
    * what most users need.
-   * @param {Guild} guild The guild to compare
+   * @param {Guild} guild Guild to compare with
    * @returns {boolean}
    */
   equals(guild) {

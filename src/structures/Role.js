@@ -302,7 +302,7 @@ class Role {
    * Whether this role equals another role. It compares all properties, so for most operations
    * it is advisable to just compare `role.id === role2.id` as it is much faster and is often
    * what most users need.
-   * @param {Role} role The role to compare to
+   * @param {Role} role Role to compare with
    * @returns {boolean}
    */
   equals(role) {
