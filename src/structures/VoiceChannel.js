@@ -72,7 +72,7 @@ class VoiceChannel extends GuildChannel {
    *  .catch(console.error);
    */
   setBitrate(bitrate) {
-    return this.rest.client.rest.methods.updateChannel(this, { bitrate });
+    return this.client.rest.methods.updateChannel(this, { bitrate });
   }
 
   /**
