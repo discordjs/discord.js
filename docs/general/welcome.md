@@ -21,9 +21,13 @@ Welcome to the discord.js v10 documentation.
 v10 is just a more consistent and stable iteration over v9, and contains loads of new and improved features, optimisations, and bug fixes.
 
 ## About
-discord.js is a powerful node.js module that allows you to interact with the [Discord API](https://discordapp.com/developers/docs/intro) very easily.
-It takes a much more object-oriented approach than most other JS Discord libraries, making your bot's code significantly tidier and easier to comprehend.
-Usability and performance are key focuses of discord.js, and it also has nearly 100% coverage of the Discord API.
+discord.js is a powerful node.js module that allows you to interact with the
+[Discord API](https://discordapp.com/developers/docs/intro) very easily.
+
+* Object-oriented
+* Predictable abstractions
+* Performant
+* Nearly 100% coverage of the Discord API
 
 ## Installation
 **Node.js 6.0.0 or newer is required.**  
