@@ -2239,12 +2239,10 @@ exports.applyToClass = (structure, full = false) => {
     props.push('createCollector');
     props.push('awaitMessages');
   }
-  for (const prop of props) applyProp(structure, prop);
+  for (const prop of props) {
+    Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
+  }
 };
-
-function applyProp(structure, prop) {
-  Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
-}
 
 
 /***/ },
