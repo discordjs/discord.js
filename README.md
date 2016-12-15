@@ -1,7 +1,7 @@
 <div align="center">
   <br />
   <p>
-    <a href="https://discord.js.org"><img src="https://i.imgur.com/260XFXQ.png" width="546" alt="discord.js" /></a>
+    <a href="https://discord.js.org"><img src="./docs/logo.svg" width="546" alt="discord.js" /></a>
   </p>
   <br />
   <p>
@@ -20,10 +20,10 @@
 discord.js is a powerful node.js module that allows you to interact with the
 [Discord API](https://discordapp.com/developers/docs/intro) very easily.
 
-* Object-oriented
-* Predictable abstractions
-* Performant
-* Nearly 100% coverage of the Discord API
+- Object-oriented
+- Predictable abstractions
+- Performant
+- Nearly 100% coverage of the Discord API
 
 ## Installation
 **Node.js 6.0.0 or newer is required.**  
