@@ -11395,18 +11395,6 @@ class Client extends EventEmitter {
     }
 
     /**
-     * The email, if there is one, for the logged in Client
-     * @type {?string}
-     */
-    this.email = null;
-
-    /**
-     * The password, if there is one, for the logged in Client
-     * @type {?string}
-     */
-    this.password = null;
-
-    /**
      * The ClientUser representing the logged in Client
      * @type {?ClientUser}
      */
@@ -11506,9 +11494,7 @@ class Client extends EventEmitter {
    * much better to use a bot account rather than a user account.
    * Bot accounts have higher rate limits and have access to some features user accounts don't have. User bots
    * that are making a lot of API requests can even be banned.</warn>
-   * @param  {string} tokenOrEmail The token or email used for the account. If it is an email, a password _must_ be
-   * provided.
-   * @param  {string} [password] The password for the account, only needed if an email was provided.
+   * @param  {string} token The token used for the account.
    * @returns {Promise<string>}
    * @example
    * // log the client in using a token
@@ -11520,9 +11506,8 @@ class Client extends EventEmitter {
    * const password = 'supersecret123';
    * client.login(email, password);
    */
-  login(tokenOrEmail, password = null) {
-    if (password) return this.rest.methods.loginEmailPassword(tokenOrEmail, password);
-    return this.rest.methods.loginToken(tokenOrEmail);
+  login(token) {
+    return this.rest.methods.login(token);
   }
 
   /**
@@ -20254,20 +20239,11 @@ class RESTMethods {
     this.rest = restManager;
   }
 
-  loginToken(token = this.rest.client.token) {
+  login(token = this.rest.client.token) {
     return new Promise((resolve, reject) => {
       token = token.replace(/^Bot\s*/i, '');
       this.rest.client.manager.connectToWebSocket(token, resolve, reject);
     });
-  }
-
-  loginEmailPassword(email, password) {
-    this.rest.client.emit('warn', 'Client launched using email and password - should use token instead');
-    this.rest.client.email = email;
-    this.rest.client.password = password;
-    return this.rest.makeRequest('post', Constants.Endpoints.login, false, { email, password }).then(data =>
-      this.loginToken(data.token)
-    );
   }
 
   logout() {
