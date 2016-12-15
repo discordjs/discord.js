@@ -45,7 +45,7 @@ class APIRequest {
     } else if (this.data) {
       apiRequest.send(this.data);
     }
-    apiRequest.set('User-Agent', this.rest.userAgentManager.userAgent);
+    if (!this.rest.client.browser) apiRequest.set('User-Agent', this.rest.userAgentManager.userAgent);
     return apiRequest;
   }
 }
