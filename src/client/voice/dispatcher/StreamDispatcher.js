@@ -114,9 +114,10 @@ class StreamDispatcher extends EventEmitter {
 
   /**
    * Stops the current stream permanently and emits an `end` event.
+   * @param {string} [reason='user'] An optional reason for stopping the dispatcher.
    */
-  end() {
-    this._triggerTerminalState('end', 'user requested');
+  end(reason = 'user') {
+    this._triggerTerminalState('end', reason);
   }
 
   _setSpeaking(value) {
@@ -179,7 +180,7 @@ class StreamDispatcher extends EventEmitter {
       const data = this.streamingData;
 
       if (data.missed >= 5) {
-        this._triggerTerminalState('end', 'Stream is not generating quickly enough.');
+        this._triggerTerminalState('error', 'Stream is not generating quickly enough.');
         return;
       }
 
@@ -237,7 +238,8 @@ class StreamDispatcher extends EventEmitter {
     /**
      * Emitted once the stream has ended. Attach a `once` listener to this.
      * @event StreamDispatcher#end
-     * @param {string} reason The reason the stream ended. Undefined if natural end of stream.
+     * @param {string} reason The reason for the end of the dispatcher. If it ended because it reached the end of the
+     * stream, this would be `stream`. If you invoke `.stop()` without specifying a reason, this would be `user`.
      */
     this.emit('end', reason);
   }
@@ -281,7 +283,7 @@ class StreamDispatcher extends EventEmitter {
       return;
     }
 
-    this.stream.on('end', err => this._triggerTerminalState('end', err));
+    this.stream.on('end', err => this._triggerTerminalState('end', err || 'stream'));
     this.stream.on('error', err => this._triggerTerminalState('error', err));
 
     const data = this.streamingData;
