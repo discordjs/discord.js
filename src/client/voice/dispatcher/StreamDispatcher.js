@@ -239,7 +239,7 @@ class StreamDispatcher extends EventEmitter {
      * Emitted once the stream has ended. Attach a `once` listener to this.
      * @event StreamDispatcher#end
      * @param {string} reason The reason for the end of the dispatcher. If it ended because it reached the end of the
-     * stream, this would be `stream`. If you invoke `.stop()` without specifying a reason, this would be `user`.
+     * stream, this would be `stream`. If you invoke `.end()` without specifying a reason, this would be `user`.
      */
     this.emit('end', reason);
   }
