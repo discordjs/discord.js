@@ -125,18 +125,6 @@ class Client extends EventEmitter {
     }
 
     /**
-     * The email, if there is one, for the logged in Client
-     * @type {?string}
-     */
-    this.email = null;
-
-    /**
-     * The password, if there is one, for the logged in Client
-     * @type {?string}
-     */
-    this.password = null;
-
-    /**
      * The ClientUser representing the logged in Client
      * @type {?ClientUser}
      */
@@ -236,9 +224,7 @@ class Client extends EventEmitter {
    * much better to use a bot account rather than a user account.
    * Bot accounts have higher rate limits and have access to some features user accounts don't have. User bots
    * that are making a lot of API requests can even be banned.</warn>
-   * @param  {string} tokenOrEmail The token or email used for the account. If it is an email, a password _must_ be
-   * provided.
-   * @param  {string} [password] The password for the account, only needed if an email was provided.
+   * @param  {string} token The token used for the account.
    * @returns {Promise<string>}
    * @example
    * // log the client in using a token
@@ -250,9 +236,8 @@ class Client extends EventEmitter {
    * const password = 'supersecret123';
    * client.login(email, password);
    */
-  login(tokenOrEmail, password = null) {
-    if (password) return this.rest.methods.loginEmailPassword(tokenOrEmail, password);
-    return this.rest.methods.loginToken(tokenOrEmail);
+  login(token) {
+    return this.rest.methods.login(token);
   }
 
   /**
