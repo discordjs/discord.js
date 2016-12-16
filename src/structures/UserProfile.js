@@ -38,7 +38,7 @@ class UserProfile {
   setup(data) {
     /**
      * If the user has Discord Premium
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.premium = data.premium;
 

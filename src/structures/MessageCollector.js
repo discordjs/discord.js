@@ -16,7 +16,7 @@ class MessageCollector extends EventEmitter {
    *  return false; // failed the filter test
    * }
    * ```
-   * @typedef {function} CollectorFilterFunction
+   * @typedef {Function} CollectorFilterFunction
    */
 
   /**

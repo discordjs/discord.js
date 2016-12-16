@@ -139,7 +139,7 @@ class PendingVoiceConnection extends EventEmitter {
 
     /**
      * An object containing data required to connect to the voice servers with
-     * @type {object}
+     * @type {Object}
      */
     this.data = {};
 
