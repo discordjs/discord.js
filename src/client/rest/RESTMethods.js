@@ -18,7 +18,7 @@ class RESTMethods {
 
   login(token = this.rest.client.token) {
     return new Promise((resolve, reject) => {
-      if (typeof token !== 'string') return reject(Constants.Errors.BAD_LOGIN);
+      if (typeof token !== 'string') return reject(new Error(Constants.Errors.NO_TOKEN));
       token = token.replace(/^Bot\s*/i, '');
       return this.rest.client.manager.connectToWebSocket(token, resolve, reject);
     });
