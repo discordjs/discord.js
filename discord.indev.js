@@ -9200,7 +9200,7 @@ class MessageCollector extends EventEmitter {
    *  return false; // failed the filter test
    * }
    * ```
-   * @typedef {function} CollectorFilterFunction
+   * @typedef {Function} CollectorFilterFunction
    */
 
   /**
@@ -22518,7 +22518,7 @@ class UserConnection {
 
     /**
      * Whether the connection is revoked
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.revoked = data.revoked;
 
@@ -22577,7 +22577,7 @@ class UserProfile {
   setup(data) {
     /**
      * If the user has Discord Premium
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.premium = data.premium;
 
