@@ -67,5 +67,5 @@ Before creating an issue, please ensure that it hasn't already been reported/sug
 See [the contributing guide](CONTRIBUTING.md) if you'd like to submit a PR.
 
 ## Help
-If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle
-nudge in the right direction, please don't hesitate to join our official [Discord.js Server](https://discord.gg/bRCvFy9).
+If you don't understand something in the documentation, you are FUCKING RETARTED, or you just need a gentle
+nudge into a pit of fire, please hesitate to join our official [Discord.js Server](https://discord.gg/bRCvFy9).
