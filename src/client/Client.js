@@ -249,9 +249,6 @@ class Client extends EventEmitter {
     for (const i of this._intervals) clearInterval(i);
     this._timeouts.clear();
     this._intervals.clear();
-    this.token = null;
-    this.email = null;
-    this.password = null;
     return this.manager.destroy();
   }
 
