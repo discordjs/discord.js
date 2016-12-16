@@ -33,7 +33,7 @@ class UserConnection {
 
     /**
      * Whether the connection is revoked
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.revoked = data.revoked;
 

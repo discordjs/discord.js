@@ -46,7 +46,7 @@ class VoiceConnection extends EventEmitter {
 
     /**
      * The authentication data needed to connect to the voice server
-     * @type {object}
+     * @type {Object}
      * @private
      */
     this.authentication = pendingConnection.data;
@@ -92,7 +92,7 @@ class VoiceConnection extends EventEmitter {
 
     /**
      * Object that wraps contains the `ws` and `udp` sockets of this voice connection
-     * @type {object}
+     * @type {Object}
      * @private
      */
     this.sockets = {};
