@@ -68,7 +68,7 @@ exports.Errors = {
   INVALID_RATE_LIMIT_METHOD: 'Unknown rate limiting method.',
   BAD_LOGIN: 'Incorrect login details were provided.',
   INVALID_SHARD: 'Invalid shard settings were provided.',
-  INVALID_TOKEN: 'An invalid token was provided.'
+  INVALID_TOKEN: 'An invalid token was provided.',
 };
 
 const PROTOCOL_VERSION = exports.PROTOCOL_VERSION = 6;
