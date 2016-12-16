@@ -53,8 +53,8 @@ class ClientUser extends User {
    * Set the username of the logged in Client.
    * <info>Changing usernames in Discord is heavily rate limited, with only 2 requests
    * every hour. Use this sparingly!</info>
-   * @param {string} password This user's password
    * @param {string} username The new username
+   * @param {string} [password] Current password (only for user accounts)
    * @returns {Promise<ClientUser>}
    * @example
    * // set username
@@ -62,14 +62,14 @@ class ClientUser extends User {
    *  .then(user => console.log(`My new username is ${user.username}`))
    *  .catch(console.error);
    */
-  setUsername(password, username) {
+  setUsername(username, password) {
     return this.client.rest.methods.updateCurrentUser({ username }, password);
   }
 
   /**
    * If this user is a "self bot" or logged in using a normal user's details (which should be avoided), you can set the
    * email here.
-   * @param {string} password This user's password
+   * @param {string} password Current password (only for user accounts)
    * @param {string} email The new email
    * @returns {Promise<ClientUser>}
    * @example
