@@ -347,6 +347,24 @@ class Client extends EventEmitter {
   }
 
   /**
+   * Generate an invite link for your bot
+   * @param {Array} [permissions] An array of permissions to request
+   * @returns {Promise<string>} The invite link
+   * @example
+   * client.generateInvite(['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'])
+   *   .then(link => {
+   *     console.log(link);
+   *   });
+   */
+  generateInvite(permissions) {
+    if (permissions) permissions = this.resolver.resolvePermissions(permissions);
+    else permissions = 0;
+    return this.fetchApplication().then(application =>
+      `https://discordapp.com/oauth2/authorize?client_id=${application.id}&permissions=${permissions}&scope=bot`
+    );
+  }
+
+  /**
    * Sets a timeout that will be automatically cancelled if the client is destroyed.
    * @param {Function} fn Function to execute
    * @param {number} delay Time to wait before executing (in milliseconds)
