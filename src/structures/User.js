@@ -61,6 +61,7 @@ class User {
     for (const prop of ['id', 'username', 'discriminator', 'avatar', 'bot']) {
       if (typeof data[prop] !== 'undefined') this[prop] = data[prop];
     }
+    if (data.token) this.client.token = data.token;
   }
 
   /**

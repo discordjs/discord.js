@@ -210,14 +210,14 @@ class RESTMethods {
     );
   }
 
-  updateCurrentUser(_data) {
+  updateCurrentUser(_data, password) {
     const user = this.rest.client.user;
     const data = {};
     data.username = _data.username || user.username;
     data.avatar = this.rest.client.resolver.resolveBase64(_data.avatar) || user.avatar;
     if (!user.bot) {
       data.email = _data.email || user.email;
-      data.password = this.rest.client.password;
+      data.password = password;
       if (_data.new_password) data.new_password = _data.newPassword;
     }
     return this.rest.makeRequest('patch', Constants.Endpoints.me, true, data).then(newData =>

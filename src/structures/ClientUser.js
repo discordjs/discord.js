@@ -53,6 +53,7 @@ class ClientUser extends User {
    * Set the username of the logged in Client.
    * <info>Changing usernames in Discord is heavily rate limited, with only 2 requests
    * every hour. Use this sparingly!</info>
+   * @param {string} password This user's password
    * @param {string} username The new username
    * @returns {Promise<ClientUser>}
    * @example
@@ -61,13 +62,14 @@ class ClientUser extends User {
    *  .then(user => console.log(`My new username is ${user.username}`))
    *  .catch(console.error);
    */
-  setUsername(username) {
-    return this.client.rest.methods.updateCurrentUser({ username });
+  setUsername(password, username) {
+    return this.client.rest.methods.updateCurrentUser({ username }, password);
   }
 
   /**
    * If this user is a "self bot" or logged in using a normal user's details (which should be avoided), you can set the
    * email here.
+   * @param {string} password This user's password
    * @param {string} email The new email
    * @returns {Promise<ClientUser>}
    * @example
@@ -76,13 +78,14 @@ class ClientUser extends User {
    *  .then(user => console.log(`My new email is ${user.email}`))
    *  .catch(console.error);
    */
-  setEmail(email) {
-    return this.client.rest.methods.updateCurrentUser({ email });
+  setEmail(password, email) {
+    return this.client.rest.methods.updateCurrentUser({ email }, password);
   }
 
   /**
    * If this user is a "self bot" or logged in using a normal user's details (which should be avoided), you can set the
    * password here.
+   * @param {string} current The current password
    * @param {string} password The new password
    * @returns {Promise<ClientUser>}
    * @example
@@ -91,8 +94,8 @@ class ClientUser extends User {
    *  .then(user => console.log('New password set!'))
    *  .catch(console.error);
    */
-  setPassword(password) {
-    return this.client.rest.methods.updateCurrentUser({ password });
+  setPassword(current, password) {
+    return this.client.rest.methods.updateCurrentUser({ password }, current);
   }
 
   /**
