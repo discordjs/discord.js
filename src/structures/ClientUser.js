@@ -69,8 +69,8 @@ class ClientUser extends User {
   /**
    * If this user is a "self bot" or logged in using a normal user's details (which should be avoided), you can set the
    * email here.
-   * @param {string} password Current password (only for user accounts)
    * @param {string} email The new email
+   * @param {string} password Current password (only for user accounts)
    * @returns {Promise<ClientUser>}
    * @example
    * // set email
@@ -78,15 +78,15 @@ class ClientUser extends User {
    *  .then(user => console.log(`My new email is ${user.email}`))
    *  .catch(console.error);
    */
-  setEmail(password, email) {
+  setEmail(email, password) {
     return this.client.rest.methods.updateCurrentUser({ email }, password);
   }
 
   /**
    * If this user is a "self bot" or logged in using a normal user's details (which should be avoided), you can set the
    * password here.
-   * @param {string} current The current password
-   * @param {string} password The new password
+   * @param {string} newPassword The new password
+   * @param {string} oldPassword The current password
    * @returns {Promise<ClientUser>}
    * @example
    * // set password
@@ -94,8 +94,8 @@ class ClientUser extends User {
    *  .then(user => console.log('New password set!'))
    *  .catch(console.error);
    */
-  setPassword(current, password) {
-    return this.client.rest.methods.updateCurrentUser({ password }, current);
+  setPassword(newPassword, oldPassword) {
+    return this.client.rest.methods.updateCurrentUser({ password: newPassword }, oldPassword);
   }
 
   /**
