@@ -198,8 +198,7 @@ class ClientDataResolver {
   resolvePermissions(permissions) {
     let bitfield = 0;
     for (const permission of permissions) {
-      const bit = this.resolvePermission(permission);
-      if (bit) bitfield |= bit;
+      bitfield |= this.resolvePermission(permission);
     }
     return bitfield;
   }
