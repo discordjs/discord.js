@@ -8388,6 +8388,7 @@ module.exports = {
 		"url": "https://github.com/hydrabolt/discord.js/issues"
 	},
 	"homepage": "https://github.com/hydrabolt/discord.js#readme",
+	"runkitExampleFilename": "./docs/examples/ping.js",
 	"dependencies": {
 		"@types/node": "^6.0.51",
 		"pako": "^1.0.3",
