@@ -570,7 +570,7 @@ class RESTMethods {
     return this.rest.makeRequest(
       'get',
       Constants.Endpoints.meMentions(options.limit, options.roles, options.everyone, options.guild)
-    ).then(res => res.body.map(m => new Message(this.restclient.channels.get(m.channel_id, m, this.rest.client))));
+    ).then(res => res.body.map(m => new Message(this.rest.client.channels.get(m.channel_id), m, this.rest.client)));
   }
 
   addFriend(user) {
