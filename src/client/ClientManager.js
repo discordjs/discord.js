@@ -59,14 +59,15 @@ class ClientManager {
   }
 
   destroy() {
-    return new Promise(resolve => {
-      this.client.ws.destroy();
-      if (!this.client.user.bot) {
-        resolve(this.client.rest.methods.logout());
-      } else {
-        resolve();
-      }
-    });
+    this.client.ws.destroy();
+    if (this.client.user.bot) {
+      this.client.token = null;
+      return Promise.resolve();
+    } else {
+      return this.client.rest.methods.logout().then(() => {
+        this.client.token = null;
+      });
+    }
   }
 }
 
