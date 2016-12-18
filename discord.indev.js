@@ -11521,9 +11521,6 @@ class Client extends EventEmitter {
     for (const i of this._intervals) clearInterval(i);
     this._timeouts.clear();
     this._intervals.clear();
-    this.token = null;
-    this.email = null;
-    this.password = null;
     return this.manager.destroy();
   }
 
@@ -19141,14 +19138,15 @@ class ClientManager {
   }
 
   destroy() {
-    return new Promise(resolve => {
-      this.client.ws.destroy();
-      if (!this.client.user.bot) {
-        resolve(this.client.rest.methods.logout());
-      } else {
-        resolve();
-      }
-    });
+    this.client.ws.destroy();
+    if (this.client.user.bot) {
+      this.client.token = null;
+      return Promise.resolve();
+    } else {
+      return this.client.rest.methods.logout().then(() => {
+        this.client.token = null;
+      });
+    }
   }
 }
 
