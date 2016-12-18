@@ -147,6 +147,18 @@ class ClientUser extends User {
   }
 
   /**
+   * @param {Object} [options] Options for the fetch
+   * @param {number} [options.limit=25] The limit
+   * @param {boolean} [options.roles=true] Include role mentions
+   * @param {boolean} [options.everyone=true] Include everyone mentions
+   * @param {Guild|string} [options.guild] Limit the search to a specific guild
+   * @returns {Promise<Array<Message>>}
+   */
+  fetchMentions(options = { limit: 25, roles: true, everyone: true, guild: null }) {
+    return this.client.rest.methods.fetchMentions(options);
+  }
+
+  /**
    * Send a friend request
    * <warn>This is only available when using a user account.</warn>
    * @param {UserResolvable} user The user to send the friend request to.

@@ -5,6 +5,7 @@ const parseEmoji = require('../../util/ParseEmoji');
 
 const User = require('../../structures/User');
 const GuildMember = require('../../structures/GuildMember');
+const Message = require('../../structures/Message');
 const Role = require('../../structures/Role');
 const Invite = require('../../structures/Invite');
 const Webhook = require('../../structures/Webhook');
@@ -562,6 +563,14 @@ class RESTMethods {
     return this.rest.makeRequest('get', Constants.Endpoints.userProfile(user.id), true).then(data =>
       new UserProfile(user, data)
     );
+  }
+
+  fetchMeMentions(options) {
+    if (options.guild) options.guild = options.guild.id ? options.guild.id : options.guild;
+    return this.rest.makeRequest(
+      'get',
+      Constants.Endpoints.meMentions(options.limit, options.roles, options.everyone, options.guild)
+    ).then(res => res.body.map(m => new Message(this.restclient.channels.get(m.channel_id, m, this.rest.client))));
   }
 
   addFriend(user) {
