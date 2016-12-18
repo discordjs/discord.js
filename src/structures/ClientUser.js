@@ -152,7 +152,7 @@ class ClientUser extends User {
    * @param {boolean} [options.roles=true] Include role mentions
    * @param {boolean} [options.everyone=true] Include everyone mentions
    * @param {Guild|string} [options.guild] Limit the search to a specific guild
-   * @returns {Promise<Array<Message>>}
+   * @returns {Promise<Message[]>}
    */
   fetchMentions(options = { limit: 25, roles: true, everyone: true, guild: null }) {
     return this.client.rest.methods.fetchMentions(options);
