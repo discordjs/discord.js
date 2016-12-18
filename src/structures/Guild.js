@@ -755,7 +755,7 @@ class Guild {
       if (this.client.channels.has(voiceState.channel_id)) {
         this.client.channels.get(voiceState.channel_id).members.set(member.user.id, member);
       } else {
-        this.client.emit('warn', 'a member is in an uncached voice channel!');
+        this.client.emit('warn', `Member ${member.id} added in guild ${this.id} with an uncached voice channel`);
       }
     }
 
