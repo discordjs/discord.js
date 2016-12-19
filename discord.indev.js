@@ -5379,7 +5379,7 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16).Buffer, __webpack_require__(78)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16).Buffer, __webpack_require__(80)))
 
 /***/ },
 /* 17 */
@@ -5466,7 +5466,7 @@ const GuildMember = __webpack_require__(13);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const cloneObject = __webpack_require__(4);
-const arraysEqual = __webpack_require__(150);
+const arraysEqual = __webpack_require__(152);
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -7320,6 +7320,7 @@ var Emitter = __webpack_require__(64);
 var RequestBase = __webpack_require__(77);
 var isObject = __webpack_require__(26);
 var isFunction = __webpack_require__(76);
+var ResponseBase = __webpack_require__(78);
 
 /**
  * Noop.
@@ -7549,37 +7550,6 @@ function isJSON(mime) {
 }
 
 /**
- * Return the mime type for the given `str`.
- *
- * @param {String} str
- * @return {String}
- * @api private
- */
-
-function type(str){
-  return str.split(/ *; */).shift();
-};
-
-/**
- * Return header field parameters.
- *
- * @param {String} str
- * @return {Object}
- * @api private
- */
-
-function params(str){
-  return str.split(/ *; */).reduce(function(obj, str){
-    var parts = str.split(/ *= */),
-        key = parts.shift(),
-        val = parts.shift();
-
-    if (key && val) obj[key] = val;
-    return obj;
-  }, {});
-};
-
-/**
  * Initialize a new `Response` with the given `xhr`.
  *
  *  - set flags (.ok, .error, etc)
@@ -7634,51 +7604,29 @@ function Response(req, options) {
      ? this.xhr.responseText
      : null;
   this.statusText = this.req.xhr.statusText;
-  this._setStatusProperties(this.xhr.status);
+  var status = this.xhr.status;
+  // handle IE9 bug: http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
+  if (status === 1223) {
+      status = 204;
+  }
+  this._setStatusProperties(status);
   this.header = this.headers = parseHeader(this.xhr.getAllResponseHeaders());
   // getAllResponseHeaders sometimes falsely returns "" for CORS requests, but
   // getResponseHeader still works. so we get content-type even if getting
   // other headers fails.
   this.header['content-type'] = this.xhr.getResponseHeader('content-type');
   this._setHeaderProperties(this.header);
-  this.body = this.req.method != 'HEAD'
-    ? this._parseBody(this.text ? this.text : this.xhr.response)
-    : null;
+
+  if (null === this.text && req._responseType) {
+    this.body = this.xhr.response;
+  } else {
+    this.body = this.req.method != 'HEAD'
+      ? this._parseBody(this.text ? this.text : this.xhr.response)
+      : null;
+  }
 }
 
-/**
- * Get case-insensitive `field` value.
- *
- * @param {String} field
- * @return {String}
- * @api public
- */
-
-Response.prototype.get = function(field){
-  return this.header[field.toLowerCase()];
-};
-
-/**
- * Set header related properties:
- *
- *   - `.type` the content type without params
- *
- * A response of "Content-Type: text/plain; charset=utf-8"
- * will provide you with a `.type` of "text/plain".
- *
- * @param {Object} header
- * @api private
- */
-
-Response.prototype._setHeaderProperties = function(header){
-  // content-type
-  var ct = this.header['content-type'] || '';
-  this.type = type(ct);
-
-  // params
-  var obj = params(ct);
-  for (var key in obj) this[key] = obj[key];
-};
+ResponseBase(Response.prototype);
 
 /**
  * Parse the given body `str`.
@@ -7693,64 +7641,15 @@ Response.prototype._setHeaderProperties = function(header){
 
 Response.prototype._parseBody = function(str){
   var parse = request.parse[this.type];
+  if(this.req._parser) {
+    return this.req._parser(this, str);
+  }
   if (!parse && isJSON(this.type)) {
     parse = request.parse['application/json'];
   }
   return parse && str && (str.length || str instanceof Object)
     ? parse(str)
     : null;
-};
-
-/**
- * Set flags such as `.ok` based on `status`.
- *
- * For example a 2xx response will give you a `.ok` of __true__
- * whereas 5xx will be __false__ and `.error` will be __true__. The
- * `.clientError` and `.serverError` are also available to be more
- * specific, and `.statusType` is the class of error ranging from 1..5
- * sometimes useful for mapping respond colors etc.
- *
- * "sugar" properties are also defined for common cases. Currently providing:
- *
- *   - .noContent
- *   - .badRequest
- *   - .unauthorized
- *   - .notAcceptable
- *   - .notFound
- *
- * @param {Number} status
- * @api private
- */
-
-Response.prototype._setStatusProperties = function(status){
-  // handle IE9 bug: http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
-  if (status === 1223) {
-    status = 204;
-  }
-
-  var type = status / 100 | 0;
-
-  // status / class
-  this.status = this.statusCode = status;
-  this.statusType = type;
-
-  // basics
-  this.info = 1 == type;
-  this.ok = 2 == type;
-  this.clientError = 4 == type;
-  this.serverError = 5 == type;
-  this.error = (4 == type || 5 == type)
-    ? this.toError()
-    : false;
-
-  // sugar
-  this.accepted = 202 == status;
-  this.noContent = 204 == status;
-  this.badRequest = 400 == status;
-  this.unauthorized = 401 == status;
-  this.notAcceptable = 406 == status;
-  this.notFound = 404 == status;
-  this.forbidden = 403 == status;
 };
 
 /**
@@ -7810,10 +7709,11 @@ function Request(method, url) {
         // ie9 doesn't have 'response' property
         err.rawResponse = typeof self.xhr.responseType == 'undefined' ? self.xhr.responseText : self.xhr.response;
         // issue #876: return the http status code if the response parsing fails
-        err.statusCode = self.xhr.status ? self.xhr.status : null;
+        err.status = self.xhr.status ? self.xhr.status : null;
+        err.statusCode = err.status; // backwards-compat only
       } else {
         err.rawResponse = null;
-        err.statusCode = null;
+        err.status = null;
       }
 
       return self.callback(err);
@@ -7823,7 +7723,7 @@ function Request(method, url) {
 
     var new_err;
     try {
-      if (res.status < 200 || res.status >= 300) {
+      if (!self._isResponseOK(res)) {
         new_err = new Error(res.statusText || 'Unsuccessful HTTP response');
         new_err.original = err;
         new_err.response = res;
@@ -7877,26 +7777,6 @@ Request.prototype.type = function(type){
 };
 
 /**
- * Set responseType to `val`. Presently valid responseTypes are 'blob' and
- * 'arraybuffer'.
- *
- * Examples:
- *
- *      req.get('/')
- *        .responseType('blob')
- *        .end(callback);
- *
- * @param {String} val
- * @return {Request} for chaining
- * @api public
- */
-
-Request.prototype.responseType = function(val){
-  this._responseType = val;
-  return this;
-};
-
-/**
  * Set Accept to `type`, mapping values from `request.types`.
  *
  * Examples:
@@ -7934,14 +7814,13 @@ Request.prototype.accept = function(type){
 Request.prototype.auth = function(user, pass, options){
   if (!options) {
     options = {
-      type: 'basic'
+      type: 'function' === typeof btoa ? 'basic' : 'auto',
     }
   }
 
   switch (options.type) {
     case 'basic':
-      var str = btoa(user + ':' + pass);
-      this.set('Authorization', 'Basic ' + str);
+      this.set('Authorization', 'Basic ' + btoa(user + ':' + pass));
     break;
 
     case 'auto':
@@ -8054,19 +7933,6 @@ Request.prototype.pipe = Request.prototype.write = function(){
 };
 
 /**
- * Invoke callback with timeout error.
- *
- * @api private
- */
-
-Request.prototype._timeoutError = function(){
-  var timeout = this._timeout;
-  var err = new Error('timeout of ' + timeout + 'ms exceeded');
-  err.timeout = timeout;
-  this.callback(err);
-};
-
-/**
  * Compose querystring to append to req.url
  *
  * @api private
@@ -8075,9 +7941,20 @@ Request.prototype._timeoutError = function(){
 Request.prototype._appendQueryString = function(){
   var query = this._query.join('&');
   if (query) {
-    this.url += ~this.url.indexOf('?')
-      ? '&' + query
-      : '?' + query;
+    this.url += (this.url.indexOf('?') >= 0 ? '&' : '?') + query;
+  }
+
+  if (this._sort) {
+    var index = this.url.indexOf('?');
+    if (index >= 0) {
+      var queryArr = this.url.substring(index + 1).split('&');
+      if (isFunction(this._sort)) {
+        queryArr.sort(this._sort);
+      } else {
+        queryArr.sort();
+      }
+      this.url = this.url.substring(0, index) + '?' + queryArr.join('&');
+    }
   }
 };
 
@@ -8106,24 +7983,33 @@ Request.prototype._isHost = function _isHost(obj) {
 Request.prototype.end = function(fn){
   var self = this;
   var xhr = this.xhr = request.getXHR();
-  var timeout = this._timeout;
   var data = this._formData || this._data;
+
+  if (this._endCalled) {
+    console.warn("Warning: .end() was called twice. This is not supported in superagent");
+  }
+  this._endCalled = true;
 
   // store callback
   this._callback = fn || noop;
 
   // state change
   xhr.onreadystatechange = function(){
-    if (4 != xhr.readyState) return;
+    var readyState = xhr.readyState;
+    if (readyState >= 2 && self._responseTimeoutTimer) {
+      clearTimeout(self._responseTimeoutTimer);
+    }
+    if (4 != readyState) {
+      return;
+    }
 
     // In IE9, reads to any property (e.g. status) off of an aborted XHR will
     // result in the error "Could not complete the operation due to error c00c023f"
     var status;
     try { status = xhr.status } catch(e) { status = 0; }
 
-    if (0 == status) {
-      if (self.timedout) return self._timeoutError();
-      if (self._aborted) return;
+    if (!status) {
+      if (self.timedout || self._aborted) return;
       return self.crossDomainError();
     }
     self.emit('end');
@@ -8150,25 +8036,10 @@ Request.prototype.end = function(fn){
     }
   }
 
-  // timeout
-  if (timeout && !this._timer) {
-    this._timer = setTimeout(function(){
-      self.timedout = true;
-      self.abort();
-    }, timeout);
-  }
-
   // querystring
   this._appendQueryString();
 
-  if (this._sort) {
-    var index = this.url.indexOf('?');
-    if (~index) {
-      var queryArr = this.url.substring(index + 1).split('&');
-      isFunction(this._sort) ? queryArr.sort(this._sort) : queryArr.sort();
-    }
-    this.url = this.url.substring(0, index) + '?' + queryArr.join('&');
-  }
+  this._setTimeouts();
 
   // initiate request
   if (this.username && this.password) {
@@ -8185,7 +8056,9 @@ Request.prototype.end = function(fn){
     // serialize stuff
     var contentType = this._header['content-type'];
     var serialize = this._serializer || request.serialize[contentType ? contentType.split(';')[0] : ''];
-    if (!serialize && isJSON(contentType)) serialize = request.serialize['application/json'];
+    if (!serialize && isJSON(contentType)) {
+      serialize = request.serialize['application/json'];
+    }
     if (serialize) data = serialize(data);
   }
 
@@ -11113,11 +10986,11 @@ module.exports = ClientDataResolver;
 /* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
-const UserAgentManager = __webpack_require__(112);
-const RESTMethods = __webpack_require__(109);
-const SequentialRequestHandler = __webpack_require__(111);
-const BurstRequestHandler = __webpack_require__(110);
-const APIRequest = __webpack_require__(108);
+const UserAgentManager = __webpack_require__(114);
+const RESTMethods = __webpack_require__(111);
+const SequentialRequestHandler = __webpack_require__(113);
+const BurstRequestHandler = __webpack_require__(112);
+const APIRequest = __webpack_require__(110);
 const Constants = __webpack_require__(0);
 
 class RESTManager {
@@ -11274,15 +11147,15 @@ module.exports = function merge(def, given) {
 const mergeDefault = __webpack_require__(55);
 const Constants = __webpack_require__(0);
 const RESTManager = __webpack_require__(52);
-const ClientDataManager = __webpack_require__(79);
-const ClientManager = __webpack_require__(80);
+const ClientDataManager = __webpack_require__(81);
+const ClientManager = __webpack_require__(82);
 const ClientDataResolver = __webpack_require__(51);
-const ClientVoiceManager = __webpack_require__(153);
-const WebSocketManager = __webpack_require__(113);
-const ActionsManager = __webpack_require__(81);
+const ClientVoiceManager = __webpack_require__(155);
+const WebSocketManager = __webpack_require__(115);
+const ActionsManager = __webpack_require__(83);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(7).Presence;
-const ShardClientUtil = __webpack_require__(152);
+const ShardClientUtil = __webpack_require__(154);
 
 /**
  * The starting point for making a Discord Bot.
@@ -12654,7 +12527,7 @@ function deflate(input, options) {
   deflator.push(input, true);
 
   // That will never happens, if you don't cheat with options :)
-  if (deflator.err) { throw deflator.msg; }
+  if (deflator.err) { throw deflator.msg || msg[deflator.err]; }
 
   return deflator.result;
 }
@@ -13084,7 +12957,7 @@ function inflate(input, options) {
   inflator.push(input, true);
 
   // That will never happens, if you don't cheat with options :)
-  if (inflator.err) { throw inflator.msg; }
+  if (inflator.err) { throw inflator.msg || msg[inflator.err]; }
 
   return inflator.result;
 }
@@ -17142,10 +17015,8 @@ module.exports = function inflate_table(type, lens, lens_index, codes, table, ta
     return 1;
   }
 
-  var i = 0;
   /* process all codes and make table entries */
   for (;;) {
-    i++;
     /* create table entry */
     here_bits = len - drop;
     if (work[sym] < end) {
@@ -18521,7 +18392,9 @@ function mixin(obj) {
 
 RequestBase.prototype.clearTimeout = function _clearTimeout(){
   this._timeout = 0;
+  this._responseTimeout = 0;
   clearTimeout(this._timer);
+  clearTimeout(this._responseTimeoutTimer);
   return this;
 };
 
@@ -18540,6 +18413,29 @@ RequestBase.prototype.parse = function parse(fn){
 };
 
 /**
+ * Set format of binary response body.
+ * In browser valid formats are 'blob' and 'arraybuffer',
+ * which return Blob and ArrayBuffer, respectively.
+ *
+ * In Node all values result in Buffer.
+ *
+ * Examples:
+ *
+ *      req.get('/')
+ *        .responseType('blob')
+ *        .end(callback);
+ *
+ * @param {String} val
+ * @return {Request} for chaining
+ * @api public
+ */
+
+RequestBase.prototype.responseType = function(val){
+  this._responseType = val;
+  return this;
+};
+
+/**
  * Override default request body serializer
  *
  * This function will be called to convert data set via .send or .attach into payload to send
@@ -18554,15 +18450,31 @@ RequestBase.prototype.serialize = function serialize(fn){
 };
 
 /**
- * Set timeout to `ms`.
+ * Set timeouts.
  *
- * @param {Number} ms
+ * - response timeout is time between sending request and receiving the first byte of the response. Includes DNS and connection time.
+ * - deadline is the time from start of the request to receiving response body in full. If the deadline is too short large files may not load at all on slow connections.
+ *
+ * Value of 0 or false means no timeout.
+ *
+ * @param {Number|Object} ms or {response, read, deadline}
  * @return {Request} for chaining
  * @api public
  */
 
-RequestBase.prototype.timeout = function timeout(ms){
-  this._timeout = ms;
+RequestBase.prototype.timeout = function timeout(options){
+  if (!options || 'object' !== typeof options) {
+    this._timeout = options;
+    this._responseTimeout = 0;
+    return this;
+  }
+
+  if ('undefined' !== typeof options.deadline) {
+    this._timeout = options.deadline;
+  }
+  if ('undefined' !== typeof options.response) {
+    this._responseTimeout = options.response;
+  }
   return this;
 };
 
@@ -18577,6 +18489,9 @@ RequestBase.prototype.timeout = function timeout(ms){
 RequestBase.prototype.then = function then(resolve, reject) {
   if (!this._fullfilledPromise) {
     var self = this;
+    if (this._endCalled) {
+      console.warn("Warning: superagent request was sent twice, because both .end() and .then() were called. Never call .end() if you use promises");
+    }
     this._fullfilledPromise = new Promise(function(innerResolve, innerReject){
       self.end(function(err, res){
         if (err) innerReject(err); else innerResolve(res);
@@ -18598,6 +18513,24 @@ RequestBase.prototype.use = function use(fn) {
   fn(this);
   return this;
 }
+
+RequestBase.prototype.ok = function(cb) {
+  if ('function' !== typeof cb) throw Error("Callback required");
+  this._okCallback = cb;
+  return this;
+};
+
+RequestBase.prototype._isResponseOK = function(res) {
+  if (!res) {
+    return false;
+  }
+
+  if (this._okCallback) {
+    return this._okCallback(res);
+  }
+
+  return res.status >= 200 && res.status < 300;
+};
 
 
 /**
@@ -18870,7 +18803,9 @@ RequestBase.prototype.send = function(data){
     this._data = data;
   }
 
-  if (!isObj || this._isHost(data)) return this;
+  if (!isObj || this._isHost(data)) {
+    return this;
+  }
 
   // default to json
   if (!type) this.type('json');
@@ -18912,9 +18847,257 @@ RequestBase.prototype.sortQuery = function(sort) {
   return this;
 };
 
+/**
+ * Invoke callback with timeout error.
+ *
+ * @api private
+ */
+
+RequestBase.prototype._timeoutError = function(reason, timeout){
+  if (this._aborted) {
+    return;
+  }
+  var err = new Error(reason + timeout + 'ms exceeded');
+  err.timeout = timeout;
+  err.code = 'ECONNABORTED';
+  this.timedout = true;
+  this.abort();
+  this.callback(err);
+};
+
+RequestBase.prototype._setTimeouts = function() {
+  var self = this;
+
+  // deadline
+  if (this._timeout && !this._timer) {
+    this._timer = setTimeout(function(){
+      self._timeoutError('Timeout of ', self._timeout);
+    }, this._timeout);
+  }
+  // response timeout
+  if (this._responseTimeout && !this._responseTimeoutTimer) {
+    this._responseTimeoutTimer = setTimeout(function(){
+      self._timeoutError('Response timeout of ', self._responseTimeout);
+    }, this._responseTimeout);
+  }
+}
+
 
 /***/ },
 /* 78 */
+/***/ function(module, exports, __webpack_require__) {
+
+
+/**
+ * Module dependencies.
+ */
+
+var utils = __webpack_require__(79);
+
+/**
+ * Expose `ResponseBase`.
+ */
+
+module.exports = ResponseBase;
+
+/**
+ * Initialize a new `ResponseBase`.
+ *
+ * @api public
+ */
+
+function ResponseBase(obj) {
+  if (obj) return mixin(obj);
+}
+
+/**
+ * Mixin the prototype properties.
+ *
+ * @param {Object} obj
+ * @return {Object}
+ * @api private
+ */
+
+function mixin(obj) {
+  for (var key in ResponseBase.prototype) {
+    obj[key] = ResponseBase.prototype[key];
+  }
+  return obj;
+}
+
+/**
+ * Get case-insensitive `field` value.
+ *
+ * @param {String} field
+ * @return {String}
+ * @api public
+ */
+
+ResponseBase.prototype.get = function(field){
+    return this.header[field.toLowerCase()];
+};
+
+/**
+ * Set header related properties:
+ *
+ *   - `.type` the content type without params
+ *
+ * A response of "Content-Type: text/plain; charset=utf-8"
+ * will provide you with a `.type` of "text/plain".
+ *
+ * @param {Object} header
+ * @api private
+ */
+
+ResponseBase.prototype._setHeaderProperties = function(header){
+    // TODO: moar!
+    // TODO: make this a util
+
+    // content-type
+    var ct = header['content-type'] || '';
+    this.type = utils.type(ct);
+
+    // params
+    var params = utils.params(ct);
+    for (var key in params) this[key] = params[key];
+
+    this.links = {};
+
+    // links
+    try {
+        if (header.link) {
+            this.links = utils.parseLinks(header.link);
+        }
+    } catch (err) {
+        // ignore
+    }
+};
+
+/**
+ * Set flags such as `.ok` based on `status`.
+ *
+ * For example a 2xx response will give you a `.ok` of __true__
+ * whereas 5xx will be __false__ and `.error` will be __true__. The
+ * `.clientError` and `.serverError` are also available to be more
+ * specific, and `.statusType` is the class of error ranging from 1..5
+ * sometimes useful for mapping respond colors etc.
+ *
+ * "sugar" properties are also defined for common cases. Currently providing:
+ *
+ *   - .noContent
+ *   - .badRequest
+ *   - .unauthorized
+ *   - .notAcceptable
+ *   - .notFound
+ *
+ * @param {Number} status
+ * @api private
+ */
+
+ResponseBase.prototype._setStatusProperties = function(status){
+    var type = status / 100 | 0;
+
+    // status / class
+    this.status = this.statusCode = status;
+    this.statusType = type;
+
+    // basics
+    this.info = 1 == type;
+    this.ok = 2 == type;
+    this.redirect = 3 == type;
+    this.clientError = 4 == type;
+    this.serverError = 5 == type;
+    this.error = (4 == type || 5 == type)
+        ? this.toError()
+        : false;
+
+    // sugar
+    this.accepted = 202 == status;
+    this.noContent = 204 == status;
+    this.badRequest = 400 == status;
+    this.unauthorized = 401 == status;
+    this.notAcceptable = 406 == status;
+    this.forbidden = 403 == status;
+    this.notFound = 404 == status;
+};
+
+
+/***/ },
+/* 79 */
+/***/ function(module, exports) {
+
+
+/**
+ * Return the mime type for the given `str`.
+ *
+ * @param {String} str
+ * @return {String}
+ * @api private
+ */
+
+exports.type = function(str){
+  return str.split(/ *; */).shift();
+};
+
+/**
+ * Return header field parameters.
+ *
+ * @param {String} str
+ * @return {Object}
+ * @api private
+ */
+
+exports.params = function(str){
+  return str.split(/ *; */).reduce(function(obj, str){
+    var parts = str.split(/ *= */);
+    var key = parts.shift();
+    var val = parts.shift();
+
+    if (key && val) obj[key] = val;
+    return obj;
+  }, {});
+};
+
+/**
+ * Parse Link header fields.
+ *
+ * @param {String} str
+ * @return {Object}
+ * @api private
+ */
+
+exports.parseLinks = function(str){
+  return str.split(/ *, */).reduce(function(obj, str){
+    var parts = str.split(/ *; */);
+    var url = parts[0].slice(1, -1);
+    var rel = parts[1].split(/ *= */)[1].slice(1, -1);
+    obj[rel] = url;
+    return obj;
+  }, {});
+};
+
+/**
+ * Strip content related fields from `header`.
+ *
+ * @param {Object} header
+ * @return {Object} header
+ * @api private
+ */
+
+exports.cleanHeader = function(header, shouldStripCookie){
+  delete header['content-type'];
+  delete header['content-length'];
+  delete header['transfer-encoding'];
+  delete header['host'];
+  if (shouldStripCookie) {
+    delete header['cookie'];
+  }
+  return header;
+};
+
+
+/***/ },
+/* 80 */
 /***/ function(module, exports) {
 
 var g;
@@ -18939,7 +19122,7 @@ module.exports = g;
 
 
 /***/ },
-/* 79 */
+/* 81 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -19074,7 +19257,7 @@ module.exports = ClientDataManager;
 
 
 /***/ },
-/* 80 */
+/* 82 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -19154,39 +19337,39 @@ module.exports = ClientManager;
 
 
 /***/ },
-/* 81 */
+/* 83 */
 /***/ function(module, exports, __webpack_require__) {
 
 class ActionsManager {
   constructor(client) {
     this.client = client;
 
-    this.register(__webpack_require__(98));
-    this.register(__webpack_require__(99));
     this.register(__webpack_require__(100));
-    this.register(__webpack_require__(104));
     this.register(__webpack_require__(101));
     this.register(__webpack_require__(102));
+    this.register(__webpack_require__(106));
     this.register(__webpack_require__(103));
-    this.register(__webpack_require__(82));
-    this.register(__webpack_require__(83));
+    this.register(__webpack_require__(104));
+    this.register(__webpack_require__(105));
     this.register(__webpack_require__(84));
-    this.register(__webpack_require__(86));
-    this.register(__webpack_require__(97));
-    this.register(__webpack_require__(90));
-    this.register(__webpack_require__(91));
     this.register(__webpack_require__(85));
+    this.register(__webpack_require__(86));
+    this.register(__webpack_require__(88));
+    this.register(__webpack_require__(99));
     this.register(__webpack_require__(92));
     this.register(__webpack_require__(93));
-    this.register(__webpack_require__(94));
-    this.register(__webpack_require__(105));
-    this.register(__webpack_require__(107));
-    this.register(__webpack_require__(106));
-    this.register(__webpack_require__(96));
     this.register(__webpack_require__(87));
-    this.register(__webpack_require__(88));
-    this.register(__webpack_require__(89));
+    this.register(__webpack_require__(94));
     this.register(__webpack_require__(95));
+    this.register(__webpack_require__(96));
+    this.register(__webpack_require__(107));
+    this.register(__webpack_require__(109));
+    this.register(__webpack_require__(108));
+    this.register(__webpack_require__(98));
+    this.register(__webpack_require__(89));
+    this.register(__webpack_require__(90));
+    this.register(__webpack_require__(91));
+    this.register(__webpack_require__(97));
   }
 
   register(Action) {
@@ -19198,7 +19381,7 @@ module.exports = ActionsManager;
 
 
 /***/ },
-/* 82 */
+/* 84 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19217,7 +19400,7 @@ module.exports = ChannelCreateAction;
 
 
 /***/ },
-/* 83 */
+/* 85 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19254,7 +19437,7 @@ module.exports = ChannelDeleteAction;
 
 
 /***/ },
-/* 84 */
+/* 86 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19294,7 +19477,7 @@ module.exports = ChannelUpdateAction;
 
 
 /***/ },
-/* 85 */
+/* 87 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19313,7 +19496,7 @@ module.exports = GuildBanRemove;
 
 
 /***/ },
-/* 86 */
+/* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19370,7 +19553,7 @@ module.exports = GuildDeleteAction;
 
 
 /***/ },
-/* 87 */
+/* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19394,7 +19577,7 @@ module.exports = EmojiCreateAction;
 
 
 /***/ },
-/* 88 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19418,7 +19601,7 @@ module.exports = EmojiDeleteAction;
 
 
 /***/ },
-/* 89 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19453,7 +19636,7 @@ module.exports = GuildEmojiUpdateAction;
 
 
 /***/ },
-/* 90 */
+/* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19471,7 +19654,7 @@ module.exports = GuildMemberGetAction;
 
 
 /***/ },
-/* 91 */
+/* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19526,7 +19709,7 @@ module.exports = GuildMemberRemoveAction;
 
 
 /***/ },
-/* 92 */
+/* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19564,7 +19747,7 @@ module.exports = GuildRoleCreate;
 
 
 /***/ },
-/* 93 */
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19616,7 +19799,7 @@ module.exports = GuildRoleDeleteAction;
 
 
 /***/ },
-/* 94 */
+/* 96 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19663,7 +19846,7 @@ module.exports = GuildRoleUpdateAction;
 
 
 /***/ },
-/* 95 */
+/* 97 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19692,7 +19875,7 @@ module.exports = GuildRolesPositionUpdate;
 
 
 /***/ },
-/* 96 */
+/* 98 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19725,7 +19908,7 @@ module.exports = GuildSync;
 
 
 /***/ },
-/* 97 */
+/* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19765,7 +19948,7 @@ module.exports = GuildUpdateAction;
 
 
 /***/ },
-/* 98 */
+/* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19811,7 +19994,7 @@ module.exports = MessageCreateAction;
 
 
 /***/ },
-/* 99 */
+/* 101 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19857,7 +20040,7 @@ module.exports = MessageDeleteAction;
 
 
 /***/ },
-/* 100 */
+/* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19887,7 +20070,7 @@ module.exports = MessageDeleteBulkAction;
 
 
 /***/ },
-/* 101 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19936,7 +20119,7 @@ module.exports = MessageReactionAdd;
 
 
 /***/ },
-/* 102 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19985,7 +20168,7 @@ module.exports = MessageReactionRemove;
 
 
 /***/ },
-/* 103 */
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20016,7 +20199,7 @@ module.exports = MessageReactionRemoveAll;
 
 
 /***/ },
-/* 104 */
+/* 106 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20065,7 +20248,7 @@ module.exports = MessageUpdateAction;
 
 
 /***/ },
-/* 105 */
+/* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20084,7 +20267,7 @@ module.exports = UserGetAction;
 
 
 /***/ },
-/* 106 */
+/* 108 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20120,7 +20303,7 @@ module.exports = UserNoteUpdateAction;
 
 
 /***/ },
-/* 107 */
+/* 109 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20159,7 +20342,7 @@ module.exports = UserUpdateAction;
 
 
 /***/ },
-/* 108 */
+/* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
 const request = __webpack_require__(25);
@@ -20218,20 +20401,20 @@ module.exports = APIRequest;
 
 
 /***/ },
-/* 109 */
+/* 111 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const splitMessage = __webpack_require__(44);
-const parseEmoji = __webpack_require__(151);
+const parseEmoji = __webpack_require__(153);
 
 const User = __webpack_require__(6);
 const GuildMember = __webpack_require__(13);
 const Role = __webpack_require__(8);
 const Invite = __webpack_require__(32);
 const Webhook = __webpack_require__(20);
-const UserProfile = __webpack_require__(149);
+const UserProfile = __webpack_require__(151);
 const ClientOAuth2Application = __webpack_require__(28);
 
 class RESTMethods {
@@ -20872,7 +21055,7 @@ module.exports = RESTMethods;
 
 
 /***/ },
-/* 110 */
+/* 112 */
 /***/ function(module, exports, __webpack_require__) {
 
 const RequestHandler = __webpack_require__(53);
@@ -20948,7 +21131,7 @@ module.exports = BurstRequestHandler;
 
 
 /***/ },
-/* 111 */
+/* 113 */
 /***/ function(module, exports, __webpack_require__) {
 
 const RequestHandler = __webpack_require__(53);
@@ -21057,7 +21240,7 @@ module.exports = SequentialRequestHandler;
 
 
 /***/ },
-/* 112 */
+/* 114 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -21085,7 +21268,7 @@ module.exports = UserAgentManager;
 
 
 /***/ },
-/* 113 */
+/* 115 */
 /***/ function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {const browser = typeof window !== 'undefined';
@@ -21094,7 +21277,7 @@ const Constants = __webpack_require__(0);
 const convertArrayBuffer = __webpack_require__(54);
 const pako = __webpack_require__(67);
 const zlib = __webpack_require__(50);
-const PacketManager = __webpack_require__(114);
+const PacketManager = __webpack_require__(116);
 
 let WebSocket, erlpack;
 let serialize = JSON.stringify;
@@ -21102,13 +21285,13 @@ if (browser) {
   WebSocket = window.WebSocket; // eslint-disable-line no-undef
 } else {
   try {
-    WebSocket = __webpack_require__(155);
+    WebSocket = __webpack_require__(157);
   } catch (err) {
-    WebSocket = __webpack_require__(156);
+    WebSocket = __webpack_require__(158);
   }
 
   try {
-    erlpack = __webpack_require__(154);
+    erlpack = __webpack_require__(156);
     serialize = erlpack.pack;
   } catch (err) {
     erlpack = null;
@@ -21437,7 +21620,7 @@ module.exports = WebSocketManager;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16).Buffer))
 
 /***/ },
-/* 114 */
+/* 116 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -21457,39 +21640,39 @@ class WebSocketPacketManager {
     this.handlers = {};
     this.queue = [];
 
-    this.register(Constants.WSEvents.READY, __webpack_require__(140));
-    this.register(Constants.WSEvents.GUILD_CREATE, __webpack_require__(121));
-    this.register(Constants.WSEvents.GUILD_DELETE, __webpack_require__(122));
-    this.register(Constants.WSEvents.GUILD_UPDATE, __webpack_require__(131));
-    this.register(Constants.WSEvents.GUILD_BAN_ADD, __webpack_require__(119));
-    this.register(Constants.WSEvents.GUILD_BAN_REMOVE, __webpack_require__(120));
-    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, __webpack_require__(123));
-    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, __webpack_require__(124));
-    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, __webpack_require__(125));
-    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, __webpack_require__(127));
-    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, __webpack_require__(128));
-    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, __webpack_require__(129));
-    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, __webpack_require__(126));
-    this.register(Constants.WSEvents.CHANNEL_CREATE, __webpack_require__(115));
-    this.register(Constants.WSEvents.CHANNEL_DELETE, __webpack_require__(116));
-    this.register(Constants.WSEvents.CHANNEL_UPDATE, __webpack_require__(118));
-    this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, __webpack_require__(117));
-    this.register(Constants.WSEvents.PRESENCE_UPDATE, __webpack_require__(139));
-    this.register(Constants.WSEvents.USER_UPDATE, __webpack_require__(145));
-    this.register(Constants.WSEvents.USER_NOTE_UPDATE, __webpack_require__(144));
-    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, __webpack_require__(147));
-    this.register(Constants.WSEvents.TYPING_START, __webpack_require__(143));
-    this.register(Constants.WSEvents.MESSAGE_CREATE, __webpack_require__(132));
-    this.register(Constants.WSEvents.MESSAGE_DELETE, __webpack_require__(133));
-    this.register(Constants.WSEvents.MESSAGE_UPDATE, __webpack_require__(138));
-    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, __webpack_require__(134));
-    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, __webpack_require__(146));
-    this.register(Constants.WSEvents.GUILD_SYNC, __webpack_require__(130));
-    this.register(Constants.WSEvents.RELATIONSHIP_ADD, __webpack_require__(141));
-    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, __webpack_require__(142));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, __webpack_require__(135));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, __webpack_require__(136));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, __webpack_require__(137));
+    this.register(Constants.WSEvents.READY, __webpack_require__(142));
+    this.register(Constants.WSEvents.GUILD_CREATE, __webpack_require__(123));
+    this.register(Constants.WSEvents.GUILD_DELETE, __webpack_require__(124));
+    this.register(Constants.WSEvents.GUILD_UPDATE, __webpack_require__(133));
+    this.register(Constants.WSEvents.GUILD_BAN_ADD, __webpack_require__(121));
+    this.register(Constants.WSEvents.GUILD_BAN_REMOVE, __webpack_require__(122));
+    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, __webpack_require__(125));
+    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, __webpack_require__(126));
+    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, __webpack_require__(127));
+    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, __webpack_require__(129));
+    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, __webpack_require__(130));
+    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, __webpack_require__(131));
+    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, __webpack_require__(128));
+    this.register(Constants.WSEvents.CHANNEL_CREATE, __webpack_require__(117));
+    this.register(Constants.WSEvents.CHANNEL_DELETE, __webpack_require__(118));
+    this.register(Constants.WSEvents.CHANNEL_UPDATE, __webpack_require__(120));
+    this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, __webpack_require__(119));
+    this.register(Constants.WSEvents.PRESENCE_UPDATE, __webpack_require__(141));
+    this.register(Constants.WSEvents.USER_UPDATE, __webpack_require__(147));
+    this.register(Constants.WSEvents.USER_NOTE_UPDATE, __webpack_require__(146));
+    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, __webpack_require__(149));
+    this.register(Constants.WSEvents.TYPING_START, __webpack_require__(145));
+    this.register(Constants.WSEvents.MESSAGE_CREATE, __webpack_require__(134));
+    this.register(Constants.WSEvents.MESSAGE_DELETE, __webpack_require__(135));
+    this.register(Constants.WSEvents.MESSAGE_UPDATE, __webpack_require__(140));
+    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, __webpack_require__(136));
+    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, __webpack_require__(148));
+    this.register(Constants.WSEvents.GUILD_SYNC, __webpack_require__(132));
+    this.register(Constants.WSEvents.RELATIONSHIP_ADD, __webpack_require__(143));
+    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, __webpack_require__(144));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, __webpack_require__(137));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, __webpack_require__(138));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, __webpack_require__(139));
   }
 
   get client() {
@@ -21554,7 +21737,7 @@ module.exports = WebSocketPacketManager;
 
 
 /***/ },
-/* 115 */
+/* 117 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -21577,7 +21760,7 @@ module.exports = ChannelCreateHandler;
 
 
 /***/ },
-/* 116 */
+/* 118 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -21603,7 +21786,7 @@ module.exports = ChannelDeleteHandler;
 
 
 /***/ },
-/* 117 */
+/* 119 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -21640,7 +21823,7 @@ module.exports = ChannelPinsUpdate;
 
 
 /***/ },
-/* 118 */
+/* 120 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -21657,7 +21840,7 @@ module.exports = ChannelUpdateHandler;
 
 
 /***/ },
-/* 119 */
+/* 121 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -21686,7 +21869,7 @@ module.exports = GuildBanAddHandler;
 
 
 /***/ },
-/* 120 */
+/* 122 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -21712,7 +21895,7 @@ module.exports = GuildBanRemoveHandler;
 
 
 /***/ },
-/* 121 */
+/* 123 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -21740,7 +21923,7 @@ module.exports = GuildCreateHandler;
 
 
 /***/ },
-/* 122 */
+/* 124 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -21765,7 +21948,7 @@ module.exports = GuildDeleteHandler;
 
 
 /***/ },
-/* 123 */
+/* 125 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -21788,7 +21971,7 @@ module.exports = GuildMemberAddHandler;
 
 
 /***/ },
-/* 124 */
+/* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -21807,7 +21990,7 @@ module.exports = GuildMemberRemoveHandler;
 
 
 /***/ },
-/* 125 */
+/* 127 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -21831,7 +22014,7 @@ module.exports = GuildMemberUpdateHandler;
 
 
 /***/ },
-/* 126 */
+/* 128 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested##
@@ -21865,7 +22048,7 @@ module.exports = GuildMembersChunkHandler;
 
 
 /***/ },
-/* 127 */
+/* 129 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -21882,7 +22065,7 @@ module.exports = GuildRoleCreateHandler;
 
 
 /***/ },
-/* 128 */
+/* 130 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -21899,7 +22082,7 @@ module.exports = GuildRoleDeleteHandler;
 
 
 /***/ },
-/* 129 */
+/* 131 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -21916,7 +22099,7 @@ module.exports = GuildRoleUpdateHandler;
 
 
 /***/ },
-/* 130 */
+/* 132 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -21933,7 +22116,7 @@ module.exports = GuildSyncHandler;
 
 
 /***/ },
-/* 131 */
+/* 133 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -21950,7 +22133,7 @@ module.exports = GuildUpdateHandler;
 
 
 /***/ },
-/* 132 */
+/* 134 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -21975,7 +22158,7 @@ module.exports = MessageCreateHandler;
 
 
 /***/ },
-/* 133 */
+/* 135 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22000,7 +22183,7 @@ module.exports = MessageDeleteHandler;
 
 
 /***/ },
-/* 134 */
+/* 136 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22023,7 +22206,7 @@ module.exports = MessageDeleteBulkHandler;
 
 
 /***/ },
-/* 135 */
+/* 137 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22040,7 +22223,7 @@ module.exports = MessageReactionAddHandler;
 
 
 /***/ },
-/* 136 */
+/* 138 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22057,7 +22240,7 @@ module.exports = MessageReactionRemove;
 
 
 /***/ },
-/* 137 */
+/* 139 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22074,7 +22257,7 @@ module.exports = MessageReactionRemoveAll;
 
 
 /***/ },
-/* 138 */
+/* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22091,7 +22274,7 @@ module.exports = MessageUpdateHandler;
 
 
 /***/ },
-/* 139 */
+/* 141 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22169,7 +22352,7 @@ module.exports = PresenceUpdateHandler;
 
 
 /***/ },
-/* 140 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22242,7 +22425,7 @@ module.exports = ReadyHandler;
 
 
 /***/ },
-/* 141 */
+/* 143 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22267,7 +22450,7 @@ module.exports = RelationshipAddHandler;
 
 
 /***/ },
-/* 142 */
+/* 144 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22292,7 +22475,7 @@ module.exports = RelationshipRemoveHandler;
 
 
 /***/ },
-/* 143 */
+/* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22366,7 +22549,7 @@ module.exports = TypingStartHandler;
 
 
 /***/ },
-/* 144 */
+/* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22384,7 +22567,7 @@ module.exports = UserNoteUpdateHandler;
 
 
 /***/ },
-/* 145 */
+/* 147 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22401,7 +22584,7 @@ module.exports = UserUpdateHandler;
 
 
 /***/ },
-/* 146 */
+/* 148 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22426,7 +22609,7 @@ module.exports = VoiceServerUpdate;
 
 
 /***/ },
-/* 147 */
+/* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22481,7 +22664,7 @@ module.exports = VoiceStateUpdateHandler;
 
 
 /***/ },
-/* 148 */
+/* 150 */
 /***/ function(module, exports) {
 
 /**
@@ -22535,11 +22718,11 @@ module.exports = UserConnection;
 
 
 /***/ },
-/* 149 */
+/* 151 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
-const UserConnection = __webpack_require__(148);
+const UserConnection = __webpack_require__(150);
 
 /**
  * Represents a user's profile on Discord.
@@ -22597,7 +22780,7 @@ module.exports = UserProfile;
 
 
 /***/ },
-/* 150 */
+/* 152 */
 /***/ function(module, exports) {
 
 module.exports = function arraysEqual(a, b) {
@@ -22617,7 +22800,7 @@ module.exports = function arraysEqual(a, b) {
 
 
 /***/ },
-/* 151 */
+/* 153 */
 /***/ function(module, exports) {
 
 module.exports = function parseEmoji(text) {
@@ -22637,18 +22820,6 @@ module.exports = function parseEmoji(text) {
 
 
 /***/ },
-/* 152 */
-/***/ function(module, exports) {
-
-/* (ignored) */
-
-/***/ },
-/* 153 */
-/***/ function(module, exports) {
-
-/* (ignored) */
-
-/***/ },
 /* 154 */
 /***/ function(module, exports) {
 
@@ -22662,6 +22833,18 @@ module.exports = function parseEmoji(text) {
 
 /***/ },
 /* 156 */
+/***/ function(module, exports) {
+
+/* (ignored) */
+
+/***/ },
+/* 157 */
+/***/ function(module, exports) {
+
+/* (ignored) */
+
+/***/ },
+/* 158 */
 /***/ function(module, exports) {
 
 /* (ignored) */
