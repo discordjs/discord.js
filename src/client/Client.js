@@ -358,7 +358,7 @@ class Client extends EventEmitter {
    */
   generateInvite(permissions) {
     if (permissions) {
-      if (perpermissions instanceof Array) {
+      if (permissions instanceof Array) {
         permissions = this.resolver.resolvePermissions(permissions);
       }
     } else {
