@@ -148,9 +148,9 @@ class ClientUser extends User {
 
   /**
    * @param {Object} [options] Options for the fetch
-   * @param {number} [options.limit=25] The limit
-   * @param {boolean} [options.roles=true] Include role mentions
-   * @param {boolean} [options.everyone=true] Include everyone mentions
+   * @param {number} [options.limit=25] Maximum number of mentions to retrieve
+   * @param {boolean} [options.roles=true] Whether to include role mentions
+   * @param {boolean} [options.everyone=true] Whether to include everyone/here mentions
    * @param {Guild|string} [options.guild] Limit the search to a specific guild
    * @returns {Promise<Message[]>}
    */
