@@ -348,7 +348,7 @@ class Client extends EventEmitter {
 
   /**
    * Generate an invite link for your bot
-   * @param {Array} [permissions] An array of permissions to request
+   * @param {Array|number} [permissions] An array of permissions to request
    * @returns {Promise<string>} The invite link
    * @example
    * client.generateInvite(['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'])
@@ -357,8 +357,13 @@ class Client extends EventEmitter {
    *   });
    */
   generateInvite(permissions) {
-    if (permissions) permissions = this.resolver.resolvePermissions(permissions);
-    else permissions = 0;
+    if (permissions) {
+      if (perpermissions instanceof Array) {
+        permissions = this.resolver.resolvePermissions(permissions);
+      }
+    } else {
+      permissions = 0;
+    }
     return this.fetchApplication().then(application =>
       `https://discordapp.com/oauth2/authorize?client_id=${application.id}&permissions=${permissions}&scope=bot`
     );
