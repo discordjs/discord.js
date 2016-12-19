@@ -147,6 +147,7 @@ class ClientUser extends User {
   }
 
   /**
+   * Fetches messages that mentioned the client's user
    * @param {Object} [options] Options for the fetch
    * @param {number} [options.limit=25] Maximum number of mentions to retrieve
    * @param {boolean} [options.roles=true] Whether to include role mentions
