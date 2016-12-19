@@ -752,7 +752,11 @@ class Guild {
       member.selfDeaf = voiceState.self_deaf;
       member.voiceSessionID = voiceState.session_id;
       member.voiceChannelID = voiceState.channel_id;
-      this.channels.get(voiceState.channel_id).members.set(member.user.id, member);
+      if (this.client.channels.has(voiceState.channel_id)) {
+        this.client.channels.get(voiceState.channel_id).members.set(member.user.id, member);
+      } else {
+        this.client.emit('warn', `Member ${member.id} added in guild ${this.id} with an uncached voice channel`);
+      }
     }
 
     /**
