@@ -144,6 +144,15 @@ class Invite {
   }
 
   /**
+   * Accepts this invite
+   * <warn>This method only works for user accounts, not bot accounts!</warn>
+   * @returns {Promise<Invite>}
+   */
+  accept() {
+    return this.client.rest.methods.acceptInvite(this);
+  }
+
+  /**
    * When concatenated with a string, this automatically concatenates the Invite's URL instead of the object.
    * @returns {string}
    * @example
