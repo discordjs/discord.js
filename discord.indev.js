@@ -10906,6 +10906,19 @@ class ClientDataResolver {
   }
 
   /**
+   * Turn an array of permissions into a valid discord permission bitfield
+   * @param {Array} permissions An array of permissions as strings or permissions numbers (see resolvePermission)
+   * @returns {number}
+   */
+  resolvePermissions(permissions) {
+    let bitfield = 0;
+    for (const permission of permissions) {
+      bitfield |= this.resolvePermission(permission);
+    }
+    return bitfield;
+  }
+
+  /**
    * Data that can be resolved to give a string. This can be:
    * * A string
    * * An array (joined with a new line delimiter to give a string)
@@ -11515,6 +11528,29 @@ class Client extends EventEmitter {
   fetchApplication() {
     if (!this.user.bot) throw new Error(Constants.Errors.NO_BOT_ACCOUNT);
     return this.rest.methods.getMyApplication();
+  }
+
+  /**
+   * Generate an invite link for your bot
+   * @param {Array|number} [permissions] An array of permissions to request
+   * @returns {Promise<string>} The invite link
+   * @example
+   * client.generateInvite(['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'])
+   *   .then(link => {
+   *     console.log(link);
+   *   });
+   */
+  generateInvite(permissions) {
+    if (permissions) {
+      if (permissions instanceof Array) {
+        permissions = this.resolver.resolvePermissions(permissions);
+      }
+    } else {
+      permissions = 0;
+    }
+    return this.fetchApplication().then(application =>
+      `https://discordapp.com/oauth2/authorize?client_id=${application.id}&permissions=${permissions}&scope=bot`
+    );
   }
 
   /**
