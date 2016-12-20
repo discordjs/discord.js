@@ -165,7 +165,7 @@ class User {
   }
 
   /**
-   * Get the DM with this user, if one exists
+   * The DM between the client's user and this user
    * @type {?DMChannel}
    */
   get dmChannel() {
