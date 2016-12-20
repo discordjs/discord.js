@@ -165,11 +165,11 @@ class User {
   }
 
   /**
-   * Get the DM with this user
-   * @type {DMChannel|null}
+   * Get the DM with this user, if one exists
+   * @type {?DMChannel}
    */
-  get DMChannel() {
-    return this.client.channels.filter(x => x.type === 'dm').find(x => x.recipient.id === this.id);
+  get dmChannel() {
+    return this.client.channels.filter(c => c.type === 'dm').find(c => c.recipient.id === this.id);
   }
 
   /**
