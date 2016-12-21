@@ -293,14 +293,18 @@ class Collection extends Map {
   /**
    * Identical to
    * [Array.reduce()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce).
-   * @param {Function} fn Function used to reduce
-   * @param {*} [startVal] The starting value
+   * except that it will not start on the second value with the "index/key" at 1
+   * @param {Function} fn Function to execute on each key and value in the collection, taking four arguments:
+   * @param {*} [initialValue] Optional. Value to use as the first argument to the first call of the callback.
    * @returns {*}
    */
-  reduce(fn, startVal) {
-    let currentVal = startVal;
-    for (const [key, val] of this) currentVal = fn(currentVal, val, key, this);
-    return currentVal;
+  reduce(fn, initialValue) {
+    if (this === null) throw new TypeError('Collection.prototype.reduce called on null or undefined');
+    if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
+    let value;
+    if (initialValue) value = initialValue;
+    for (const [key, val] of this) value = fn(value, val, key, this);
+    return value;
   }
 
   /**
