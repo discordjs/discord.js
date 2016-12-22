@@ -92,6 +92,8 @@ const Endpoints = exports.Endpoints = {
   avatar: (userID, avatar) => userID === '1' ? avatar : `${Endpoints.user(userID)}/avatars/${avatar}.jpg`,
   me: `${API}/users/@me`,
   meGuild: (guildID) => `${Endpoints.me}/guilds/${guildID}`,
+  meMentions: (limit, roles, everyone, guildID) =>
+    `users/@me/mentions?limit=${limit}&roles=${roles}&everyone=${everyone}${guildID ? `&guild_id=${guildID}` : ''}`,
   relationships: (userID) => `${Endpoints.user(userID)}/relationships`,
   note: (userID) => `${Endpoints.me}/notes/${userID}`,
 
@@ -188,6 +190,7 @@ exports.VoiceOPCodes = {
 
 exports.Events = {
   READY: 'ready',
+  GUILD_CACHED: 'guildCached',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',
   GUILD_UPDATE: 'guildUpdate',
@@ -207,6 +210,7 @@ exports.Events = {
   GUILD_EMOJI_UPDATE: 'guildEmojiUpdate',
   GUILD_BAN_ADD: 'guildBanAdd',
   GUILD_BAN_REMOVE: 'guildBanRemove',
+  CHANNEL_CACHED: 'channelCached',
   CHANNEL_CREATE: 'channelCreate',
   CHANNEL_DELETE: 'channelDelete',
   CHANNEL_UPDATE: 'channelUpdate',

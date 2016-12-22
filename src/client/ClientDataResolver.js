@@ -191,6 +191,19 @@ class ClientDataResolver {
   }
 
   /**
+   * Turn an array of permissions into a valid discord permission bitfield
+   * @param {Array} permissions An array of permissions as strings or permissions numbers (see resolvePermission)
+   * @returns {number}
+   */
+  resolvePermissions(permissions) {
+    let bitfield = 0;
+    for (const permission of permissions) {
+      bitfield |= this.resolvePermission(permission);
+    }
+    return bitfield;
+  }
+
+  /**
    * Data that can be resolved to give a string. This can be:
    * * A string
    * * An array (joined with a new line delimiter to give a string)

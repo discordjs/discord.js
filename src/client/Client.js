@@ -249,9 +249,6 @@ class Client extends EventEmitter {
     for (const i of this._intervals) clearInterval(i);
     this._timeouts.clear();
     this._intervals.clear();
-    this.token = null;
-    this.email = null;
-    this.password = null;
     return this.manager.destroy();
   }
 
@@ -344,6 +341,29 @@ class Client extends EventEmitter {
   fetchApplication() {
     if (!this.user.bot) throw new Error(Constants.Errors.NO_BOT_ACCOUNT);
     return this.rest.methods.getMyApplication();
+  }
+
+  /**
+   * Generate an invite link for your bot
+   * @param {Array|number} [permissions] An array of permissions to request
+   * @returns {Promise<string>} The invite link
+   * @example
+   * client.generateInvite(['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'])
+   *   .then(link => {
+   *     console.log(link);
+   *   });
+   */
+  generateInvite(permissions) {
+    if (permissions) {
+      if (permissions instanceof Array) {
+        permissions = this.resolver.resolvePermissions(permissions);
+      }
+    } else {
+      permissions = 0;
+    }
+    return this.fetchApplication().then(application =>
+      `https://discordapp.com/oauth2/authorize?client_id=${application.id}&permissions=${permissions}&scope=bot`
+    );
   }
 
   /**
