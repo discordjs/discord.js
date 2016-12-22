@@ -479,6 +479,30 @@ declare module "discord.js" {
         name: string;
         url: string;
     }
+    export class RichEmbed {
+        title?: string;
+        description?: string;
+        url?: string;
+        timestamp?: Date;
+        color?: number | string;
+        fields?: { name: string; value: string; inline?: boolean; }[];
+        author?: { name: string; url?: string; icon_url?: string; };
+        thumbnail?: { url: string; height?: number; width?: number; };
+        image?: { url: string; proxy_url?: string; height?: number; width?: number; };
+        video?: { url: string; height: number; width: number; };
+        footer?: { text?: string; icon_url?: string; };
+
+        addField(name: string, value: StringResolvable, inline?: boolean): this;
+        setAuthor(name: string, icon?: string, url?: string): this;
+        setColor(color: string | number | number[]): this;
+        setDescription(description: string): this;
+        setFooter(text: string, icon: string): this;
+        setImage(url: string): this;
+        setThumbnail(url: string): this;
+        setTimestamp(timestamp?: Date): this;
+        setTitle(title: string): this;
+        setURL(url: string): this;
+    }
     export class MessageAttachment {
         client: Client;
         filename: string;
