@@ -1027,6 +1027,7 @@ class User {
     for (const prop of ['id', 'username', 'discriminator', 'avatar', 'bot']) {
       if (typeof data[prop] !== 'undefined') this[prop] = data[prop];
     }
+    if (data.token) this.client.token = data.token;
   }
 
   /**
@@ -8430,6 +8431,7 @@ class ClientUser extends User {
    * <info>Changing usernames in Discord is heavily rate limited, with only 2 requests
    * every hour. Use this sparingly!</info>
    * @param {string} username The new username
+   * @param {string} [password] Current password (only for user accounts)
    * @returns {Promise<ClientUser>}
    * @example
    * // set username
@@ -8437,38 +8439,40 @@ class ClientUser extends User {
    *  .then(user => console.log(`My new username is ${user.username}`))
    *  .catch(console.error);
    */
-  setUsername(username) {
-    return this.client.rest.methods.updateCurrentUser({ username });
+  setUsername(username, password) {
+    return this.client.rest.methods.updateCurrentUser({ username }, password);
   }
 
   /**
-   * If this user is a "self bot" or logged in using a normal user's details (which should be avoided), you can set the
-   * email here.
-   * @param {string} email The new email
+   * Changes the email for the client user's account.
+   * <warn>This is only available when using a user account.</warn>
+   * @param {string} email New email to change to
+   * @param {string} password Current password
    * @returns {Promise<ClientUser>}
    * @example
    * // set email
-   * client.user.setEmail('bob@gmail.com')
+   * client.user.setEmail('bob@gmail.com', 'some amazing password 123')
    *  .then(user => console.log(`My new email is ${user.email}`))
    *  .catch(console.error);
    */
-  setEmail(email) {
-    return this.client.rest.methods.updateCurrentUser({ email });
+  setEmail(email, password) {
+    return this.client.rest.methods.updateCurrentUser({ email }, password);
   }
 
   /**
-   * If this user is a "self bot" or logged in using a normal user's details (which should be avoided), you can set the
-   * password here.
-   * @param {string} password The new password
+   * Changes the password for the client user's account.
+   * <warn>This is only available when using a user account.</warn>
+   * @param {string} newPassword New password to change to
+   * @param {string} oldPassword Current password
    * @returns {Promise<ClientUser>}
    * @example
    * // set password
-   * client.user.setPassword('password123')
+   * client.user.setPassword('some new amazing password 456', 'some amazing password 123')
    *  .then(user => console.log('New password set!'))
    *  .catch(console.error);
    */
-  setPassword(password) {
-    return this.client.rest.methods.updateCurrentUser({ password });
+  setPassword(newPassword, oldPassword) {
+    return this.client.rest.methods.updateCurrentUser({ password: newPassword }, oldPassword);
   }
 
   /**
@@ -20701,14 +20705,14 @@ class RESTMethods {
     );
   }
 
-  updateCurrentUser(_data) {
+  updateCurrentUser(_data, password) {
     const user = this.rest.client.user;
     const data = {};
     data.username = _data.username || user.username;
     data.avatar = this.rest.client.resolver.resolveBase64(_data.avatar) || user.avatar;
     if (!user.bot) {
       data.email = _data.email || user.email;
-      data.password = this.rest.client.password;
+      data.password = password;
       if (_data.new_password) data.new_password = _data.newPassword;
     }
     return this.rest.makeRequest('patch', Constants.Endpoints.me, true, data).then(newData =>
