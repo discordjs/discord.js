@@ -21,9 +21,9 @@ exports.Package = require('../../package.json');
  * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
  * corresponding websocket events
  * @property {WSEventType[]} [disabledEvents] An array of disabled websocket events. Events in this array will not be
- * processed. Disabling useless events such as 'TYPING_START' can result in significant performance increases on
- * large-scale bots. Only disable events you are *certain* you don't need. The safest one to disable with the most impact
- * is `TYPING_START`.
+ * processed, potentially resulting in performance improvements for larger bots. Only disable events you are
+ * 100% certain you don't need, as many are important, but may not be obviously so. The safest one to disable with the
+ * most impact is typically `TYPING_START`.
  * @property {WebsocketOptions} [ws] Options for the websocket
  */
 exports.DefaultOptions = {
