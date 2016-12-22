@@ -67,14 +67,14 @@ class ClientUser extends User {
   }
 
   /**
-   * If this user is a "self bot" or logged in using a normal user's details (which should be avoided), you can set the
-   * email here.
-   * @param {string} email The new email
-   * @param {string} password Current password (only for user accounts)
+   * Changes the email for the client user's account.
+   * <warn>This is only available when using a user account.</warn>
+   * @param {string} email New email to change to
+   * @param {string} password Current password
    * @returns {Promise<ClientUser>}
    * @example
    * // set email
-   * client.user.setEmail('bob@gmail.com')
+   * client.user.setEmail('bob@gmail.com', 'some amazing password 123')
    *  .then(user => console.log(`My new email is ${user.email}`))
    *  .catch(console.error);
    */
@@ -83,14 +83,14 @@ class ClientUser extends User {
   }
 
   /**
-   * If this user is a "self bot" or logged in using a normal user's details (which should be avoided), you can set the
-   * password here.
-   * @param {string} newPassword The new password
-   * @param {string} oldPassword The current password
+   * Changes the password for the client user's account.
+   * <warn>This is only available when using a user account.</warn>
+   * @param {string} newPassword New password to change to
+   * @param {string} oldPassword Current password
    * @returns {Promise<ClientUser>}
    * @example
    * // set password
-   * client.user.setPassword('password123')
+   * client.user.setPassword('some new amazing password 456', 'some amazing password 123')
    *  .then(user => console.log('New password set!'))
    *  .catch(console.error);
    */
