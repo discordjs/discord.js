@@ -22,7 +22,7 @@ exports.Package = require('../../package.json');
  * corresponding websocket events
  * @property {WSEventType[]} [disabledEvents] An array of disabled websocket events. Events in this array will not be
  * processed. Disabling useless events such as 'TYPING_START' can result in significant performance increases on
- * large-scale bots. Only diable events you know you dont need. Disabling some events can be dangerous, be careful.
+ * large-scale bots. Only diable events you know you don't need. Disabling some events can be dangerous, be careful.
  * @property {WebsocketOptions} [ws] Options for the websocket
  */
 exports.DefaultOptions = {
