@@ -671,19 +671,34 @@ class Guild {
    * @returns {Promise<Guild>}
    */
   setRolePosition(role, position) {
-    if (role instanceof Role) {
-      role = role.id;
-    } else if (typeof role !== 'string') {
-      return Promise.reject(new Error('Supplied role is not a role or string.'));
+    if (typeof role === 'string') {
+      role = this.roles.get(role);
+      if (!role) return Promise.reject(new Error('Supplied role is not a role or string.'));
     }
 
     position = Number(position);
     if (isNaN(position)) return Promise.reject(new Error('Supplied position is not a number.'));
 
-    const updatedRoles = this.roles.map(r => ({
-      id: r.id,
-      position: r.id === role ? position : r.position < position ? r.position : r.position + 1,
-    }));
+    const lowestAffected = Math.min(role.position, position);
+    const highestAffected = Math.max(role.position, position);
+
+    const rolesToUpdate = this.roles.filter(r => r.position >= lowestAffected && r.position <= highestAffected);
+
+    // stop role positions getting stupidly inflated
+    if (position > role.position) {
+      position = rolesToUpdate.first().position;
+    } else {
+      position = rolesToUpdate.last().position;
+    }
+
+    let updatedRoles = [];
+
+    for (const uRole of rolesToUpdate.values()) {
+      updatedRoles.push({
+        id: uRole.id,
+        position: uRole.id === role.id ? position : uRole.position + (position < role.position ? 1 : -1),
+      });
+    }
 
     return this.client.rest.methods.setRolePositions(this.id, updatedRoles);
   }
