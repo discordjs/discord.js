@@ -6476,7 +6476,7 @@ class Webhook {
    *     'color': '#F0F',
    *     'footer_icon': 'http://snek.s3.amazonaws.com/topSnek.png',
    *     'footer': 'Powered by sneks',
-   *     'ts': new Date().getTime() / 1000
+   *     'ts': Date.now() / 1000
    *   }]
    * }).catch(console.error);
    */
@@ -20441,7 +20441,7 @@ const Constants = __webpack_require__(0);
 function getRoute(url) {
   let route = url.split('?')[0];
   if (route.includes('/channels/') || route.includes('/guilds/')) {
-    const startInd = ~route.indexOf('/channels/') ? route.indexOf('/channels/') : route.indexOf('/guilds/');
+    const startInd = route.includes('/channels/') ? route.indexOf('/channels/') : route.indexOf('/guilds/');
     const majorID = route.substring(startInd).split('/')[2];
     route = route.replace(/(\d{8,})/g, ':id').replace(':id', majorID);
   }
@@ -20474,11 +20474,7 @@ class APIRequest {
     if (this.file && this.file.file) {
       apiRequest.attach('file', this.file.file, this.file.name);
       this.data = this.data || {};
-      for (const key in this.data) {
-        if (this.data[key]) {
-          apiRequest.field(key, this.data[key]);
-        }
-      }
+      for (const key in this.data) if (this.data[key]) apiRequest.field(key, this.data[key]);
     } else if (this.data) {
       apiRequest.send(this.data);
     }
@@ -21477,7 +21473,11 @@ class WebSocketManager extends EventEmitter {
     this.ws.onclose = this.eventClose.bind(this);
     this.ws.onerror = this.eventError.bind(this);
     this._queue = [];
-    this._remaining = 3;
+    this._remaining = 120;
+    this.client.setInterval(() => {
+      this._remaining = 120;
+      this._remainingReset = Date.now();
+    }, 60e3);
   }
 
   connect(gateway) {
@@ -21519,17 +21519,15 @@ class WebSocketManager extends EventEmitter {
 
   doQueue() {
     const item = this._queue[0];
-    if (this.ws.readyState === WebSocket.OPEN && item) {
-      if (this._remaining === 0) {
-        this.client.setTimeout(this.doQueue.bind(this), 1000);
-        return;
-      }
-      this._remaining--;
-      this._send(item);
-      this._queue.shift();
-      this.doQueue();
-      this.client.setTimeout(() => this._remaining++, 1000);
+    if (!(this.ws.readyState === WebSocket.OPEN && item)) return;
+    if (this.remaining === 0) {
+      this.client.setTimeout(this.doQueue.bind(this), Date.now() - this.remainingReset);
+      return;
     }
+    this._remaining--;
+    this._send(item);
+    this._queue.shift();
+    this.doQueue();
   }
 
   /**
