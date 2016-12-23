@@ -1,5 +1,4 @@
 const AbstractHandler = require('./AbstractHandler');
-const Constants = require('../../../../util/Constants');
 
 const ClientUser = require('../../../../structures/ClientUser');
 
