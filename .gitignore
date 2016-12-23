@@ -38,3 +38,5 @@ node_modules
 test/auth.json
 examples/auth.json
 docs/_build
+
+.idea
