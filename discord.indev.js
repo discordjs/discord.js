@@ -160,7 +160,10 @@ const Endpoints = exports.Endpoints = {
   user: (userID) => `${API}/users/${userID}`,
   userChannels: (userID) => `${Endpoints.user(userID)}/channels`,
   userProfile: (userID) => `${Endpoints.user(userID)}/profile`,
-  avatar: (userID, avatar) => userID === '1' ? avatar : `${Endpoints.user(userID)}/avatars/${avatar}.jpg`,
+  avatar: (userID, avatar) => {
+    if (userID === '1') return avatar;
+    return `${Endpoints.CDN}/avatars/${userID}/${avatar}.${avatar.startsWith('a_') ? 'gif' : 'jpg'}`;
+  },
   me: `${API}/users/@me`,
   meGuild: (guildID) => `${Endpoints.me}/guilds/${guildID}`,
   meMentions: (limit, roles, everyone, guildID) =>
