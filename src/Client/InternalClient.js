@@ -1828,6 +1828,7 @@ export default class InternalClient {
 					} else {
 						this.identify();
 					}
+					this.heartbeatAcked = true; // start off without assuming we didn't get a missed heartbeat acknowledge right away;
 					this.heartbeat();
 					this.intervals.kai = setInterval(() => this.heartbeat(), packet.d.heartbeat_interval);
 					break;
@@ -2631,6 +2632,8 @@ export default class InternalClient {
 	}
 
 	heartbeat() {
+	  if (!this.heartBeatAcked) this.disconnected(true);
+    this.heartBeatAcked = false;
 		this.sendWS({ op: 1, d: Date.now() });
 	}
 }
