@@ -180,7 +180,7 @@ class StreamDispatcher extends EventEmitter {
       const data = this.streamingData;
 
       if (data.missed >= 5) {
-        this._triggerTerminalState('error', 'Stream is not generating quickly enough.');
+        this._triggerTerminalState('end', 'Stream is not generating quickly enough.');
         return;
       }
 
