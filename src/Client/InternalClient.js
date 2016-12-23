@@ -326,14 +326,16 @@ export default class InternalClient {
 							token = data.d.token;
 							endpoint = data.d.endpoint;
 							if (!token || !endpoint) return;
-							var chan = new VoiceConnection(
+							/* var chan = new VoiceConnection(
 								channel, this.client, session, token, server, endpoint
 							);
 							this.voiceConnections.add(chan);
 
 							chan.on("ready", () => resolve(chan));
 							chan.on("error", reject);
-							chan.on("close", reject);
+							chan.on("close", reject); */
+
+							resolve({ channel, client: this.client, session, token,  server, endpoint });
 
 							if (timeout) {
 								clearTimeout(timeout);
@@ -974,8 +976,14 @@ export default class InternalClient {
 
 	// def banMember
 	banMember(user, server, length = 1) {
-		user = this.resolver.resolveUser(user);
+		let resolvedUser = this.resolver.resolveUser(user);
 		server = this.resolver.resolveServer(server);
+
+		if (resolvedUser === null && typeof user === "string") {
+			user = {id: user};
+		} else {
+			user = resolvedUser;
+		}
 
 		return this.apiRequest(
 			"put",
@@ -988,7 +996,13 @@ export default class InternalClient {
 	unbanMember(user, server) {
 
 		server = this.resolver.resolveServer(server);
-		user = this.resolver.resolveUser(user);
+		let resolvedUser = this.resolver.resolveUser(user);
+
+    if (resolvedUser === null && typeof user === "string") {
+      user = {id: user};
+    } else {
+      user = resolvedUser;
+    }
 
 		return this.apiRequest("del", `${Endpoints.SERVER_BANS(server.id)}/${user.id}`, true)
 	}
@@ -1436,10 +1450,17 @@ export default class InternalClient {
 			throw new Error("Must provide email since a token was used to login");
 		}
 
-		var options = {
-			avatar: this.resolver.resolveToBase64(data.avatar) || this.user.avatar,
-			username: data.username || this.user.username
-		};
+		let options = {};
+
+		if (data.username) {
+			options.username = data.username;
+		} else {
+			options.username = this.user.username;
+		}
+
+		if (data.avatar) {
+			options.avatar = this.resolver.resolveToBase64(data.avatar);
+		}
 
 		if (this.email || data.email) {
 			options.email = data.email || this.email;
@@ -1685,8 +1706,6 @@ export default class InternalClient {
 					true,
 					options
 				)
-					.catch(console.error)
-					.then(res => destination.channel.messages.add(new Message(res, destination.channel, this.client)));
 			});
 
 	}
