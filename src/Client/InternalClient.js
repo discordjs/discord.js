@@ -1812,6 +1812,7 @@ export default class InternalClient {
 					this.processPacket(packet);
 					break;
 				case 1:
+          this.heartBeatAcked = true;
 					this.heartbeat();
 					break;
 				case 7:
