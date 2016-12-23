@@ -162,7 +162,7 @@ const Endpoints = exports.Endpoints = {
   userProfile: (userID) => `${Endpoints.user(userID)}/profile`,
   avatar: (userID, avatar) => {
     if (userID === '1') return avatar;
-    return `${Endpoints.CDN}/avatars/${userID}/${avatar}.${avatar.startsWith('a_') ? 'gif' : 'jpg'}`;
+    return `${Endpoints.CDN}/avatars/${userID}/${avatar}.${avatar.startsWith('a_') ? 'gif' : 'jpg'}?size=1024`;
   },
   me: `${API}/users/@me`,
   meGuild: (guildID) => `${Endpoints.me}/guilds/${guildID}`,
