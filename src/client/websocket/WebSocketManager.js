@@ -219,8 +219,9 @@ class WebSocketManager extends EventEmitter {
     /**
      * Emitted whenever the client websocket is disconnected
      * @event Client#disconnect
+     * @param {CloseEvent} event The WebSocket close event
      */
-    if (!this.reconnecting) this.client.emit(Constants.Events.DISCONNECT);
+    if (!this.reconnecting) this.client.emit(Constants.Events.DISCONNECT, event);
     if (event.code === 4004) return;
     if (event.code === 4010) return;
     if (!this.reconnecting && event.code !== 1000) this.tryReconnect();
