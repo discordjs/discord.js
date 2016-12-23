@@ -6168,7 +6168,7 @@ class Guild {
       position = rolesToUpdate.last().position;
     }
 
-    let updatedRoles = [];
+    const updatedRoles = [];
 
     for (const uRole of rolesToUpdate.values()) {
       updatedRoles.push({
