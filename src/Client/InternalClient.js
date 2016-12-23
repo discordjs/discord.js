@@ -1812,7 +1812,8 @@ export default class InternalClient {
 					this.processPacket(packet);
 					break;
 				case 1:
-          this.heartBeatAcked = true;
+					console.log("set it to true 1");
+          this.heartbeatAcked = true;
 					this.heartbeat();
 					break;
 				case 7:
@@ -1829,11 +1830,15 @@ export default class InternalClient {
 					} else {
 						this.identify();
 					}
+					console.log("set it to true 10 1");
 					this.heartbeatAcked = true; // start off without assuming we didn't get a missed heartbeat acknowledge right away;
 					this.heartbeat();
+					console.log("set it to true 10 2");
+					this.heartbeatAcked = true;
 					this.intervals.kai = setInterval(() => this.heartbeat(), packet.d.heartbeat_interval);
 					break;
 				case 11:
+					console.log("set heartbeatAcked to true because heartbeat was acked.");
 					this.heartbeatAcked = true;
 					break;
 				default:
@@ -2633,8 +2638,10 @@ export default class InternalClient {
 	}
 
 	heartbeat() {
-	  if (!this.heartBeatAcked) this.disconnected(true);
-    this.heartBeatAcked = false;
+		console.log("heartbeat called, value " + this.heartbeatAcked);
+	  if (!this.heartbeatAcked) this.disconnected(true);
+	  console.log("set it to false");
+    this.heartbeatAcked = false;
 		this.sendWS({ op: 1, d: Date.now() });
 	}
 }
