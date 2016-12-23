@@ -21582,12 +21582,13 @@ class WebSocketManager extends EventEmitter {
 
   /**
    * Run whenever the connection to the gateway is closed, it will try to reconnect the client.
-   * @param {Object} event The received websocket data
+   * @param {CloseEvent} event The WebSocket close event
    */
   eventClose(event) {
     this.emit('close', event);
     this.client.clearInterval(this.client.manager.heartbeatInterval);
     this.status = Constants.Status.DISCONNECTED;
+    this._queue = [];
     /**
      * Emitted whenever the client websocket is disconnected
      * @event Client#disconnect
