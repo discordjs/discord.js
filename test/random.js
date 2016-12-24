@@ -117,10 +117,15 @@ client.on('message', message => {
 
     if (message.content === 'ratelimittest') {
       let i = 1;
+      const start = Date.now();
       while (i <= 20) {
         message.channel.sendMessage(`Testing my rates, item ${i} of 20`);
         i++;
       }
+      message.channel.sendMessage('last one...').then(m => {
+        const diff = Date.now() - start;
+        m.reply(`Each message took ${diff / 21}ms to send`);
+      });
     }
 
     if (message.content === 'makerole') {

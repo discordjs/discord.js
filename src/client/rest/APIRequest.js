@@ -37,7 +37,7 @@ class APIRequest {
     if (this.file && this.file.file) {
       apiRequest.attach('file', this.file.file, this.file.name);
       this.data = this.data || {};
-      for (const key in this.data) if (this.data[key]) apiRequest.field(key, this.data[key]);
+      apiRequest.field('payload_json', JSON.stringify(this.data));
     } else if (this.data) {
       apiRequest.send(this.data);
     }
