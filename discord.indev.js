@@ -90,6 +90,8 @@
  * @property {boolean} [sync=false] Whether to periodically sync guilds (for userbots)
  * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
  * corresponding websocket events
+ * @property {number} [restTimeOffset=500] The extra time in millseconds to wait before continuing to make REST
+ * requests (higher values will reduce rate-limiting errors on bad connections)
  * @property {WSEventType[]} [disabledEvents] An array of disabled websocket events. Events in this array will not be
  * processed, potentially resulting in performance improvements for larger bots. Only disable events you are
  * 100% certain you don't need, as many are important, but not obviously so. The safest one to disable with the
@@ -108,6 +110,7 @@ exports.DefaultOptions = {
   sync: false,
   restWsBridgeTimeout: 5000,
   disabledEvents: [],
+  restTimeOffset: 500,
 
   /**
    * Websocket options. These are left as snake_case to match the API.
@@ -21222,7 +21225,7 @@ class BurstRequestHandler extends RequestHandler {
         this.requestResetTime = Number(res.headers['x-ratelimit-reset']) * 1000;
         this.requestRemaining = Number(res.headers['x-ratelimit-remaining']);
         this.timeDifference = Date.now() - new Date(res.headers.date).getTime();
-        this.handleNext((this.requestResetTime - Date.now()) + this.timeDifference + 1000);
+        this.handleNext((this.requestResetTime - Date.now()) + this.timeDifference + this.restManager.client.options.restTimeOffset);
       }
       if (err) {
         if (err.status === 429) {
@@ -21231,7 +21234,7 @@ class BurstRequestHandler extends RequestHandler {
           this.restManager.client.setTimeout(() => {
             this.globalLimit = false;
             this.handle();
-          }, Number(res.headers['retry-after']) + 500);
+          }, Number(res.headers['retry-after']) + this.restManager.client.options.restTimeOffset);
           if (res.headers['x-ratelimit-global']) {
             this.globalLimit = true;
           }
@@ -21329,7 +21332,7 @@ class SequentialRequestHandler extends RequestHandler {
               this.waiting = false;
               this.globalLimit = false;
               resolve();
-            }, Number(res.headers['retry-after']) + 500);
+            }, Number(res.headers['retry-after']) + this.restManager.client.options.restTimeOffset);
             if (res.headers['x-ratelimit-global']) {
               this.globalLimit = true;
             }
@@ -21348,7 +21351,7 @@ class SequentialRequestHandler extends RequestHandler {
             this.restManager.client.setTimeout(() => {
               this.waiting = false;
               resolve(data);
-            }, (this.requestResetTime - Date.now()) + this.timeDifference + 1000);
+            }, (this.requestResetTime - Date.now()) + this.timeDifference + this.restManager.client.options.restTimeOffset);
           } else {
             this.waiting = false;
             resolve(data);
