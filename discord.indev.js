@@ -785,14 +785,28 @@ class Collection extends Map {
   /**
    * Identical to
    * [Array.reduce()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce).
-   * @param {Function} fn Function used to reduce
-   * @param {*} [startVal] The starting value
+   * @param {Function} fn Function used to reduce, taking four arguments; `accumulator`, `currentValue`, `currentKey`,
+   * and `collection`
+   * @param {*} [initialValue] Starting value for the accumulator
    * @returns {*}
    */
-  reduce(fn, startVal) {
-    let currentVal = startVal;
-    for (const [key, val] of this) currentVal = fn(currentVal, val, key, this);
-    return currentVal;
+  reduce(fn, initialValue) {
+    let accumulator;
+    if (typeof initialValue !== 'undefined') {
+      accumulator = initialValue;
+      for (const [key, val] of this) accumulator = fn(accumulator, val, key, this);
+    } else {
+      let first = true;
+      for (const [key, val] of this) {
+        if (first) {
+          accumulator = val;
+          first = false;
+          continue;
+        }
+        accumulator = fn(accumulator, val, key, this);
+      }
+    }
+    return accumulator;
   }
 
   /**
