@@ -11,6 +11,7 @@ const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
 const Presence = require('../structures/Presence').Presence;
 const ShardClientUtil = require('../sharding/ShardClientUtil');
+const Manhole = require('../util/Manhole');
 
 /**
  * The starting point for making a Discord Bot.
@@ -33,6 +34,14 @@ class Client extends EventEmitter {
      */
     this.options = mergeDefault(Constants.DefaultOptions, options);
     this._validateOptions();
+
+    /**
+     * A repl debugger running on a net socket server.
+     * <warn>You should not run this in production, as it can be resource-intensive.</warn>
+     * @type {Manhole}
+     */
+    this.manhole = new Manhole(this);
+    if (options.manhole) this.manhole.listen(options.manhole);
 
     /**
      * The REST manager of the client
