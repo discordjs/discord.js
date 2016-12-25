@@ -21225,7 +21225,9 @@ class BurstRequestHandler extends RequestHandler {
         this.requestResetTime = Number(res.headers['x-ratelimit-reset']) * 1000;
         this.requestRemaining = Number(res.headers['x-ratelimit-remaining']);
         this.timeDifference = Date.now() - new Date(res.headers.date).getTime();
-        this.handleNext((this.requestResetTime - Date.now()) + this.timeDifference + this.restManager.client.options.restTimeOffset);
+        this.handleNext(
+          this.requestResetTime - Date.now() + this.timeDifference + this.restManager.client.options.restTimeOffset
+        );
       }
       if (err) {
         if (err.status === 429) {
@@ -21348,10 +21350,13 @@ class SequentialRequestHandler extends RequestHandler {
           const data = res && res.body ? res.body : {};
           item.resolve(data);
           if (this.requestRemaining === 0) {
-            this.restManager.client.setTimeout(() => {
-              this.waiting = false;
-              resolve(data);
-            }, (this.requestResetTime - Date.now()) + this.timeDifference + this.restManager.client.options.restTimeOffset);
+            this.restManager.client.setTimeout(
+              () => {
+                this.waiting = false;
+                resolve(data);
+              },
+              this.requestResetTime - Date.now() + this.timeDifference + this.restManager.client.options.restTimeOffset
+            );
           } else {
             this.waiting = false;
             resolve(data);
