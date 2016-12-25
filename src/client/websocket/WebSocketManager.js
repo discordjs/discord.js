@@ -88,6 +88,8 @@ class WebSocketManager extends EventEmitter {
     for (const event of client.options.disabledEvents) this.disabledEvents[event] = true;
 
     this.first = true;
+
+    this.lastHeartbeatAck = true;
   }
 
   /**
@@ -120,6 +122,22 @@ class WebSocketManager extends EventEmitter {
     } else {
       this.client.setTimeout(() => this._connect(gateway), 5500);
     }
+  }
+
+  heartbeat(normal) {
+    if (normal && !this.lastHeartbeatAck) {
+      this.ws.close(1007);
+      return;
+    }
+
+    this.client.emit('debug', 'Sending heartbeat');
+    this.client._pingTimestamp = Date.now();
+    this.client.ws.send({
+      op: Constants.OPCodes.HEARTBEAT,
+      d: this.sequence,
+    }, true);
+
+    this.lastHeartbeatAck = false;
   }
 
   /**
@@ -167,6 +185,7 @@ class WebSocketManager extends EventEmitter {
    */
   eventOpen() {
     this.client.emit('debug', 'Connection to gateway opened');
+    this.lastHeartbeatAck = true;
     if (this.status === Constants.Status.RECONNECTING) this._sendResume();
     else this._sendNewIdentify();
   }

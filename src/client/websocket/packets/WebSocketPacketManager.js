@@ -84,6 +84,7 @@ class WebSocketPacketManager {
 
     if (packet.op === Constants.OPCodes.HEARTBEAT_ACK) {
       this.ws.client._pong(this.ws.client._pingTimestamp);
+      this.ws.lastHeartbeatAck = true;
       this.ws.client.emit('debug', 'Heartbeat acknowledged');
     }
 

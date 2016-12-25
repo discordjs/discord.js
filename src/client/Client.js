@@ -416,7 +416,7 @@ class Client extends EventEmitter {
   _pong(startTime) {
     this.pings.unshift(Date.now() - startTime);
     if (this.pings.length > 3) this.pings.length = 3;
-    this.clearTimeout(this._ackTimeout);
+    this.ws.lastHeartbeatAck = true;
   }
 
   _setPresence(id, presence) {
