@@ -282,7 +282,8 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
+   * When concatenated with a string, this automatically returns the channel's mention (text) or name (voice)
+   * instead of the Channel object.
    * @returns {string}
    * @example
    * // Outputs: Hello from #general
@@ -292,7 +293,7 @@ class GuildChannel extends Channel {
    * console.log('Hello from ' + channel);
    */
   toString() {
-    return `<#${this.id}>`;
+    return this.type === 'text' ? `<#${this.id}>` : this.name;
   }
 }
 
