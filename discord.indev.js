@@ -11641,7 +11641,7 @@ class Client extends EventEmitter {
   _pong(startTime) {
     this.pings.unshift(Date.now() - startTime);
     if (this.pings.length > 3) this.pings.length = 3;
-    this.clearTimeout(this._ackTimeout);
+    this.ws.lastHeartbeatAck = true;
   }
 
   _setPresence(id, presence) {
@@ -19431,22 +19431,7 @@ class ClientManager {
    * @param {number} time The interval in milliseconds at which heartbeat packets should be sent
    */
   setupKeepAlive(time) {
-    this.heartbeatInterval = this.client.setInterval(this.ping.bind(this), time);
-  }
-
-  ping() {
-    this.client.emit('debug', 'Sending heartbeat');
-    this.client._pingTimestamp = Date.now();
-    this.client.ws.send({
-      op: Constants.OPCodes.HEARTBEAT,
-      d: this.client.ws.sequence,
-    }, true);
-
-    const lastPing = this.client.ping;
-
-    this.client._ackTimeout = this.client.setTimeout(() => {
-      this.client.ws.ws.close(1005);
-    }, lastPing ? lastPing * 20 : 20e3);
+    this.heartbeatInterval = this.client.setInterval(() => this.client.ws.heartbeat(true), time);
   }
 
   destroy() {
@@ -21496,6 +21481,8 @@ class WebSocketManager extends EventEmitter {
     for (const event of client.options.disabledEvents) this.disabledEvents[event] = true;
 
     this.first = true;
+
+    this.lastHeartbeatAck = true;
   }
 
   /**
@@ -21528,6 +21515,22 @@ class WebSocketManager extends EventEmitter {
     } else {
       this.client.setTimeout(() => this._connect(gateway), 5500);
     }
+  }
+
+  heartbeat(normal) {
+    if (normal && !this.lastHeartbeatAck) {
+      this.ws.close(1007);
+      return;
+    }
+
+    this.client.emit('debug', 'Sending heartbeat');
+    this.client._pingTimestamp = Date.now();
+    this.client.ws.send({
+      op: Constants.OPCodes.HEARTBEAT,
+      d: this.sequence,
+    }, true);
+
+    this.lastHeartbeatAck = false;
   }
 
   /**
@@ -21575,6 +21578,7 @@ class WebSocketManager extends EventEmitter {
    */
   eventOpen() {
     this.client.emit('debug', 'Connection to gateway opened');
+    this.lastHeartbeatAck = true;
     if (this.status === Constants.Status.RECONNECTING) this._sendResume();
     else this._sendNewIdentify();
   }
@@ -21848,6 +21852,7 @@ class WebSocketPacketManager {
 
     if (packet.op === Constants.OPCodes.HEARTBEAT_ACK) {
       this.ws.client._pong(this.ws.client._pingTimestamp);
+      this.ws.lastHeartbeatAck = true;
       this.ws.client.emit('debug', 'Heartbeat acknowledged');
     }
 
@@ -22174,6 +22179,8 @@ class GuildMembersChunkHandler extends AbstractHandler {
 
     guild._checkChunks();
     client.emit(Constants.Events.GUILD_MEMBERS_CHUNK, members);
+
+    client.ws.lastHeartbeatAck = true;
   }
 }
 
@@ -22503,7 +22510,7 @@ class ReadyHandler extends AbstractHandler {
     const client = this.packetManager.client;
     const data = packet.d;
 
-    client.manager.ping();
+    client.ws.heartbeat();
 
     const clientUser = new ClientUser(client, data.user);
     client.user = clientUser;
