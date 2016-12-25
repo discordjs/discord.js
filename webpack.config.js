@@ -24,7 +24,6 @@ const createConfig = (options) => {
     },
     module: {
       rules: [
-        { test: /\.json$/, loader: 'json-loader' },
         { test: /\.md$/, loader: 'ignore-loader' },
       ],
     },
