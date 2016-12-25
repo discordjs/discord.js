@@ -41,9 +41,7 @@ class BurstRequestHandler extends RequestHandler {
             this.globalLimit = false;
             this.handle();
           }, Number(res.headers['retry-after']) + this.restManager.client.options.restTimeOffset);
-          if (res.headers['x-ratelimit-global']) {
-            this.globalLimit = true;
-          }
+          if (res.headers['x-ratelimit-global']) this.globalLimit = true;
         } else {
           item.reject(err);
         }
