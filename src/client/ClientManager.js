@@ -48,22 +48,7 @@ class ClientManager {
    * @param {number} time The interval in milliseconds at which heartbeat packets should be sent
    */
   setupKeepAlive(time) {
-    this.heartbeatInterval = this.client.setInterval(this.ping.bind(this), time);
-  }
-
-  ping() {
-    this.client.emit('debug', 'Sending heartbeat');
-    this.client._pingTimestamp = Date.now();
-    this.client.ws.send({
-      op: Constants.OPCodes.HEARTBEAT,
-      d: this.client.ws.sequence,
-    }, true);
-
-    const lastPing = this.client.ping;
-
-    this.client._ackTimeout = this.client.setTimeout(() => {
-      this.client.ws.ws.close(1005);
-    }, lastPing ? lastPing * 20 : 20e3);
+    this.heartbeatInterval = this.client.setInterval(() => this.client.ws.heartbeat(true), time);
   }
 
   destroy() {

@@ -7,7 +7,7 @@ class ReadyHandler extends AbstractHandler {
     const client = this.packetManager.client;
     const data = packet.d;
 
-    client.manager.ping();
+    client.ws.heartbeat();
 
     const clientUser = new ClientUser(client, data.user);
     client.user = clientUser;
