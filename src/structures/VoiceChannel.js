@@ -1,5 +1,4 @@
 const GuildChannel = require('./GuildChannel');
-const Collection = require('../util/Collection');
 
 /**
  * Represents a guild voice channel on Discord.
@@ -8,12 +7,6 @@ const Collection = require('../util/Collection');
 class VoiceChannel extends GuildChannel {
   constructor(guild, data) {
     super(guild, data);
-
-    /**
-     * The members in this voice channel.
-     * @type {Collection<string, GuildMember>}
-     */
-    this.members = new Collection();
 
     this.type = 'voice';
   }
@@ -60,6 +53,14 @@ class VoiceChannel extends GuildChannel {
    */
   get speakable() {
     return this.permissionsFor(this.client.user).hasPermission('SPEAK');
+  }
+
+  /**
+   * The members in this voice channel.
+   * @type {Collection<string, GuildMember>}
+   */
+  get members() {
+    return this.guild.members.filter(m => m.voiceChannelID === this.id);
   }
 
   /**
