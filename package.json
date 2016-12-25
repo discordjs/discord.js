@@ -31,28 +31,24 @@
   "homepage": "https://github.com/hydrabolt/discord.js#readme",
   "runkitExampleFilename": "./docs/examples/ping.js",
   "dependencies": {
-    "@types/node": "^6.0.51",
-    "pako": "^1.0.3",
-    "superagent": "^3.0.0",
-    "tweetnacl": "^0.14.3",
-    "ws": "^1.1.1"
+    "@types/node": "^6.0.0",
+    "pako": "^1.0.0",
+    "superagent": "^3.3.0",
+    "tweetnacl": "^0.14.0",
+    "ws": "^1.1.0"
   },
   "peerDependencies": {
-    "erlpack": "github:hammerandchisel/erlpack",
+    "erlpack": "hammerandchisel/erlpack#master",
     "node-opus": "^0.2.0",
     "opusscript": "^0.0.1",
-    "uws": "^0.11.1"
+    "uws": "^0.12.0"
   },
   "devDependencies": {
-    "bufferutil": "^1.2.1",
-    "discord.js-docgen": "github:hydrabolt/discord.js-docgen",
-    "eslint": "^3.10.0",
-    "jsdoc-to-markdown": "^2.0.0",
-    "json-loader": "^0.5.4",
-    "parallel-webpack": "^1.5.0",
-    "uglify-js": "github:mishoo/UglifyJS2#harmony",
-    "utf-8-validate": "^1.2.1",
-    "webpack": "2.1.0-beta.27"
+    "discord.js-docgen": "hydrabolt/discord.js-docgen#master",
+    "eslint": "^3.12.0",
+    "parallel-webpack": "^1.6.0",
+    "uglify-js": "mishoo/UglifyJS2#harmony",
+    "webpack": "2.2.0-rc.2"
   },
   "engines": {
     "node": ">=6.0.0"
