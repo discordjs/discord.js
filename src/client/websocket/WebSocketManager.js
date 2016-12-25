@@ -301,6 +301,14 @@ class WebSocketManager extends EventEmitter {
     this.client.emit(Constants.Events.READY);
     this.packetManager.handleQueue();
     this.normalReady = normal;
+    let $this = this;
+    this.client.rest.methods.getMyApplication().then(logs => {
+      $this._setOwner(logs.owner);
+    }).catch(() => {$this._setOwner("not found")});
+  }
+  
+  _setOwner(us){
+    this.client.owner = us;
   }
 
   /**
