@@ -1,11 +1,11 @@
 const Action = require('./Action');
 
-class EmojiDeleteAction extends Action {
-  handle(data) {
+class GuildEmojiDeleteAction extends Action {
+  handle(emoji) {
     const client = this.client;
-    client.dataManager.killEmoji(data);
+    client.dataManager.killEmoji(emoji);
     return {
-      data,
+      emoji,
     };
   }
 }
@@ -15,4 +15,4 @@ class EmojiDeleteAction extends Action {
  * @event Client#guildEmojiDelete
  * @param {Emoji} emoji The emoji that was deleted.
  */
-module.exports = EmojiDeleteAction;
+module.exports = GuildEmojiDeleteAction;
