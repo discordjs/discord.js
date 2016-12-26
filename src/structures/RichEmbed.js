@@ -197,8 +197,8 @@ class RichEmbed {
 
 module.exports = RichEmbed;
 
-const resolveString = (data) => {
+function resolveString(data) {
   if (typeof data === 'string') return data;
   if (data instanceof Array) return data.join('\n');
   return String(data);
-};
+}
