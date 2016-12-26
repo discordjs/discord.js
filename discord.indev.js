@@ -284,9 +284,9 @@ exports.Events = {
   GUILD_ROLE_CREATE: 'roleCreate',
   GUILD_ROLE_DELETE: 'roleDelete',
   GUILD_ROLE_UPDATE: 'roleUpdate',
-  GUILD_EMOJI_CREATE: 'guildEmojiCreate',
-  GUILD_EMOJI_DELETE: 'guildEmojiDelete',
-  GUILD_EMOJI_UPDATE: 'guildEmojiUpdate',
+  GUILD_EMOJI_CREATE: 'emojiCreate',
+  GUILD_EMOJI_DELETE: 'emojiDelete',
+  GUILD_EMOJI_UPDATE: 'emojiUpdate',
   GUILD_BAN_ADD: 'guildBanAdd',
   GUILD_BAN_REMOVE: 'guildBanRemove',
   CHANNEL_CACHED: 'channelCached',
@@ -19715,8 +19715,8 @@ class GuildEmojiCreateAction extends Action {
 }
 
 /**
- * Emitted whenever an emoji is created
- * @event Client#guildEmojiCreate
+ * Emitted whenever a custom emoji is created in a guild
+ * @event Client#emojiCreate
  * @param {Emoji} emoji The emoji that was created.
  */
 module.exports = GuildEmojiCreateAction;
@@ -19739,8 +19739,8 @@ class GuildEmojiDeleteAction extends Action {
 }
 
 /**
- * Emitted whenever an emoji is deleted
- * @event Client#guildEmojiDelete
+ * Emitted whenever a custom guild emoji is deleted
+ * @event Client#emojiDelete
  * @param {Emoji} emoji The emoji that was deleted.
  */
 module.exports = GuildEmojiDeleteAction;
@@ -19759,8 +19759,8 @@ class GuildEmojiUpdateAction extends Action {
 }
 
 /**
- * Emitted whenever an emoji is updated
- * @event Client#guildEmojiUpdate
+ * Emitted whenever a custom guild emoji is updated
+ * @event Client#emojiUpdate
  * @param {Emoji} oldEmoji The old emoji
  * @param {Emoji} newEmoji The new emoji
  */
