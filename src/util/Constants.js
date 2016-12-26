@@ -197,7 +197,6 @@ exports.VoiceOPCodes = {
 
 exports.Events = {
   READY: 'ready',
-  GUILD_CACHED: 'guildCached',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',
   GUILD_UPDATE: 'guildUpdate',
@@ -217,7 +216,6 @@ exports.Events = {
   GUILD_EMOJI_UPDATE: 'emojiUpdate',
   GUILD_BAN_ADD: 'guildBanAdd',
   GUILD_BAN_REMOVE: 'guildBanRemove',
-  CHANNEL_CACHED: 'channelCached',
   CHANNEL_CREATE: 'channelCreate',
   CHANNEL_DELETE: 'channelDelete',
   CHANNEL_UPDATE: 'channelUpdate',
