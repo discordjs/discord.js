@@ -7,8 +7,8 @@ class GuildEmojiUpdateAction extends Action {
 }
 
 /**
- * Emitted whenever an emoji is updated
- * @event Client#guildEmojiUpdate
+ * Emitted whenever a custom guild emoji is updated
+ * @event Client#emojiUpdate
  * @param {Emoji} oldEmoji The old emoji
  * @param {Emoji} newEmoji The new emoji
  */
