@@ -269,7 +269,6 @@ exports.VoiceOPCodes = {
 
 exports.Events = {
   READY: 'ready',
-  GUILD_CACHED: 'guildCached',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',
   GUILD_UPDATE: 'guildUpdate',
@@ -289,7 +288,6 @@ exports.Events = {
   GUILD_EMOJI_UPDATE: 'emojiUpdate',
   GUILD_BAN_ADD: 'guildBanAdd',
   GUILD_BAN_REMOVE: 'guildBanRemove',
-  CHANNEL_CACHED: 'channelCached',
   CHANNEL_CREATE: 'channelCreate',
   CHANNEL_DELETE: 'channelDelete',
   CHANNEL_UPDATE: 'channelUpdate',
@@ -19285,14 +19283,6 @@ class ClientDataManager {
     const already = this.client.guilds.has(data.id);
     const guild = new Guild(this.client, data);
     this.client.guilds.set(guild.id, guild);
-    if (this.client.listenerCount(Constants.Events.GUILD_CACHED)) {
-      /**
-       * Emitted whenever a guild is added to the cache
-       * @event Client#guildCached
-       * @param {Guild} guild The cached guild
-       */
-      this.client.emit(Constants.Events.GUILD_CACHED, guild);
-    }
     if (this.pastReady && !already) {
       /**
        * Emitted whenever the client joins a guild.
@@ -19337,15 +19327,6 @@ class ClientDataManager {
     }
 
     if (channel) {
-      if (this.client.listenerCount(Constants.Events.CHANNEL_CACHED)) {
-        /**
-         * Emitted whenever a channel is added to the cache
-         * @event Client#channelCached
-         * @param {Channel} channel The cached channel
-         */
-        this.client.emit(Constants.Events.CHANNEL_CACHED, channel);
-      }
-
       if (this.pastReady && !already) this.client.emit(Constants.Events.CHANNEL_CREATE, channel);
       this.client.channels.set(channel.id, channel);
       return channel;
