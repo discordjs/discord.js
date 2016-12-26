@@ -366,6 +366,7 @@ exports.WSEvents = {
   GUILD_ROLE_UPDATE: 'GUILD_ROLE_UPDATE',
   GUILD_BAN_ADD: 'GUILD_BAN_ADD',
   GUILD_BAN_REMOVE: 'GUILD_BAN_REMOVE',
+  GUILD_EMOJIS_UPDATE: 'GUILD_EMOJIS_UPDATE',
   CHANNEL_CREATE: 'CHANNEL_CREATE',
   CHANNEL_DELETE: 'CHANNEL_DELETE',
   CHANNEL_UPDATE: 'CHANNEL_UPDATE',
@@ -1889,6 +1890,27 @@ class Emoji {
    */
   toString() {
     return this.requiresColons ? `<:${this.name}:${this.id}>` : this.name;
+  }
+
+  /**
+   * Whether this emoji is the same as another one
+   * @param {Emoji|Object} other the emoji to compare it to
+   * @returns {boolean} whether the emoji is equal to the given emoji or not
+   */
+  equals(other) {
+    if (other instanceof Emoji) {
+      return (
+        other.id === this.id &&
+        other.name === this.name &&
+        other.managed === this.managed &&
+        other.requiresColons === this.requiresColons
+      );
+    } else {
+      return (
+        other.id === this.id &&
+        other.name === this.name
+      );
+    }
   }
 
   /**
@@ -3705,7 +3727,7 @@ const GuildMember = __webpack_require__(14);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const cloneObject = __webpack_require__(4);
-const arraysEqual = __webpack_require__(152);
+const arraysEqual = __webpack_require__(153);
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -11230,12 +11252,12 @@ const RESTManager = __webpack_require__(52);
 const ClientDataManager = __webpack_require__(81);
 const ClientManager = __webpack_require__(82);
 const ClientDataResolver = __webpack_require__(51);
-const ClientVoiceManager = __webpack_require__(155);
+const ClientVoiceManager = __webpack_require__(156);
 const WebSocketManager = __webpack_require__(115);
 const ActionsManager = __webpack_require__(83);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(7).Presence;
-const ShardClientUtil = __webpack_require__(154);
+const ShardClientUtil = __webpack_require__(155);
 
 /**
  * The starting point for making a Discord Bot.
@@ -19326,7 +19348,7 @@ class ClientDataManager {
     const already = guild.emojis.has(data.id);
     if (data && !already) {
       let emoji = new Emoji(guild, data);
-      this.client.emit(Constants.Events.EMOJI_CREATE, emoji);
+      this.client.emit(Constants.Events.GUILD_EMOJI_CREATE, emoji);
       guild.emojis.set(emoji.id, emoji);
       return emoji;
     } else if (already) {
@@ -19338,7 +19360,7 @@ class ClientDataManager {
 
   killEmoji(emoji) {
     if (!(emoji instanceof Emoji && emoji.guild)) return;
-    this.client.emit(Constants.Events.EMOJI_DELETE, emoji);
+    this.client.emit(Constants.Events.GUILD_EMOJI_DELETE, emoji);
     emoji.guild.emojis.delete(emoji.id);
   }
 
@@ -19672,10 +19694,10 @@ module.exports = GuildDeleteAction;
 
 const Action = __webpack_require__(2);
 
-class EmojiCreateAction extends Action {
-  handle(data, guild) {
+class GuildEmojiCreateAction extends Action {
+  handle(guild, createdEmoji) {
     const client = this.client;
-    const emoji = client.dataManager.newEmoji(data, guild);
+    const emoji = client.dataManager.newEmoji(createdEmoji, guild);
     return {
       emoji,
     };
@@ -19687,7 +19709,7 @@ class EmojiCreateAction extends Action {
  * @event Client#guildEmojiCreate
  * @param {Emoji} emoji The emoji that was created.
  */
-module.exports = EmojiCreateAction;
+module.exports = GuildEmojiCreateAction;
 
 
 /***/ },
@@ -19696,12 +19718,12 @@ module.exports = EmojiCreateAction;
 
 const Action = __webpack_require__(2);
 
-class EmojiDeleteAction extends Action {
-  handle(data) {
+class GuildEmojiDeleteAction extends Action {
+  handle(emoji) {
     const client = this.client;
-    client.dataManager.killEmoji(data);
+    client.dataManager.killEmoji(emoji);
     return {
-      data,
+      emoji,
     };
   }
 }
@@ -19711,7 +19733,7 @@ class EmojiDeleteAction extends Action {
  * @event Client#guildEmojiDelete
  * @param {Emoji} emoji The emoji that was deleted.
  */
-module.exports = EmojiDeleteAction;
+module.exports = GuildEmojiDeleteAction;
 
 
 /***/ },
@@ -19721,22 +19743,8 @@ module.exports = EmojiDeleteAction;
 const Action = __webpack_require__(2);
 
 class GuildEmojiUpdateAction extends Action {
-  handle(data, guild) {
-    const client = this.client;
-    for (let emoji of data.emojis) {
-      const already = guild.emojis.has(emoji.id);
-      if (already) {
-        client.dataManager.updateEmoji(guild.emojis.get(emoji.id), emoji);
-      } else {
-        emoji = client.dataManager.newEmoji(emoji, guild);
-      }
-    }
-    for (let emoji of guild.emojis) {
-      if (!data.emoijs.has(emoji.id)) client.dataManager.killEmoji(emoji);
-    }
-    return {
-      emojis: data.emojis,
-    };
+  handle(oldEmoji, newEmoji) {
+    this.client.dataManager.updateEmoji(oldEmoji, newEmoji);
   }
 }
 
@@ -20517,7 +20525,7 @@ module.exports = APIRequest;
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const splitMessage = __webpack_require__(44);
-const parseEmoji = __webpack_require__(153);
+const parseEmoji = __webpack_require__(154);
 
 const User = __webpack_require__(6);
 const GuildMember = __webpack_require__(14);
@@ -20525,7 +20533,7 @@ const Message = __webpack_require__(11);
 const Role = __webpack_require__(8);
 const Invite = __webpack_require__(32);
 const Webhook = __webpack_require__(19);
-const UserProfile = __webpack_require__(151);
+const UserProfile = __webpack_require__(152);
 const ClientOAuth2Application = __webpack_require__(28);
 
 class RESTMethods {
@@ -21405,13 +21413,13 @@ if (browser) {
   WebSocket = window.WebSocket; // eslint-disable-line no-undef
 } else {
   try {
-    WebSocket = __webpack_require__(157);
-  } catch (err) {
     WebSocket = __webpack_require__(158);
+  } catch (err) {
+    WebSocket = __webpack_require__(159);
   }
 
   try {
-    erlpack = __webpack_require__(156);
+    erlpack = __webpack_require__(157);
     serialize = erlpack.pack;
   } catch (err) {
     erlpack = null;
@@ -21783,39 +21791,40 @@ class WebSocketPacketManager {
     this.handlers = {};
     this.queue = [];
 
-    this.register(Constants.WSEvents.READY, __webpack_require__(142));
+    this.register(Constants.WSEvents.READY, __webpack_require__(143));
     this.register(Constants.WSEvents.GUILD_CREATE, __webpack_require__(123));
     this.register(Constants.WSEvents.GUILD_DELETE, __webpack_require__(124));
-    this.register(Constants.WSEvents.GUILD_UPDATE, __webpack_require__(133));
+    this.register(Constants.WSEvents.GUILD_UPDATE, __webpack_require__(134));
     this.register(Constants.WSEvents.GUILD_BAN_ADD, __webpack_require__(121));
     this.register(Constants.WSEvents.GUILD_BAN_REMOVE, __webpack_require__(122));
-    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, __webpack_require__(125));
-    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, __webpack_require__(126));
-    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, __webpack_require__(127));
-    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, __webpack_require__(129));
-    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, __webpack_require__(130));
-    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, __webpack_require__(131));
-    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, __webpack_require__(128));
+    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, __webpack_require__(126));
+    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, __webpack_require__(127));
+    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, __webpack_require__(128));
+    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, __webpack_require__(130));
+    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, __webpack_require__(131));
+    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, __webpack_require__(132));
+    this.register(Constants.WSEvents.GUILD_EMOJIS_UPDATE, __webpack_require__(125));
+    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, __webpack_require__(129));
     this.register(Constants.WSEvents.CHANNEL_CREATE, __webpack_require__(117));
     this.register(Constants.WSEvents.CHANNEL_DELETE, __webpack_require__(118));
     this.register(Constants.WSEvents.CHANNEL_UPDATE, __webpack_require__(120));
     this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, __webpack_require__(119));
-    this.register(Constants.WSEvents.PRESENCE_UPDATE, __webpack_require__(141));
-    this.register(Constants.WSEvents.USER_UPDATE, __webpack_require__(147));
-    this.register(Constants.WSEvents.USER_NOTE_UPDATE, __webpack_require__(146));
-    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, __webpack_require__(149));
-    this.register(Constants.WSEvents.TYPING_START, __webpack_require__(145));
-    this.register(Constants.WSEvents.MESSAGE_CREATE, __webpack_require__(134));
-    this.register(Constants.WSEvents.MESSAGE_DELETE, __webpack_require__(135));
-    this.register(Constants.WSEvents.MESSAGE_UPDATE, __webpack_require__(140));
-    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, __webpack_require__(136));
-    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, __webpack_require__(148));
-    this.register(Constants.WSEvents.GUILD_SYNC, __webpack_require__(132));
-    this.register(Constants.WSEvents.RELATIONSHIP_ADD, __webpack_require__(143));
-    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, __webpack_require__(144));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, __webpack_require__(137));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, __webpack_require__(138));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, __webpack_require__(139));
+    this.register(Constants.WSEvents.PRESENCE_UPDATE, __webpack_require__(142));
+    this.register(Constants.WSEvents.USER_UPDATE, __webpack_require__(148));
+    this.register(Constants.WSEvents.USER_NOTE_UPDATE, __webpack_require__(147));
+    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, __webpack_require__(150));
+    this.register(Constants.WSEvents.TYPING_START, __webpack_require__(146));
+    this.register(Constants.WSEvents.MESSAGE_CREATE, __webpack_require__(135));
+    this.register(Constants.WSEvents.MESSAGE_DELETE, __webpack_require__(136));
+    this.register(Constants.WSEvents.MESSAGE_UPDATE, __webpack_require__(141));
+    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, __webpack_require__(137));
+    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, __webpack_require__(149));
+    this.register(Constants.WSEvents.GUILD_SYNC, __webpack_require__(133));
+    this.register(Constants.WSEvents.RELATIONSHIP_ADD, __webpack_require__(144));
+    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, __webpack_require__(145));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, __webpack_require__(138));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, __webpack_require__(139));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, __webpack_require__(140));
   }
 
   get client() {
@@ -22095,6 +22104,52 @@ module.exports = GuildDeleteHandler;
 /* 125 */
 /***/ function(module, exports, __webpack_require__) {
 
+const AbstractHandler = __webpack_require__(1);
+
+function mappify(iterable) {
+  const map = new Map();
+  for (const x of iterable) map.set(...x);
+  return map;
+}
+
+class GuildEmojisUpdate extends AbstractHandler {
+  handle(packet) {
+    const client = this.packetManager.client;
+    const data = packet.d;
+    const guild = client.guilds.get(data.guild_id);
+    if (!guild || !guild.emojis) return;
+
+    const deletions = mappify(guild.emojis.entries());
+
+    for (const emoji of data.emojis) {
+      // determine type of emoji event
+      const cachedEmoji = guild.emojis.get(emoji.id);
+      if (cachedEmoji) {
+        deletions.delete(emoji.id);
+        if (!cachedEmoji.equals(emoji, true)) {
+          // emoji updated
+          client.actions.GuildEmojiUpdate.handle(cachedEmoji, emoji);
+        }
+      } else {
+        // emoji added
+        client.actions.GuildEmojiCreate.handle(guild, emoji);
+      }
+    }
+
+    for (const emoji of deletions.values()) {
+      // emoji deleted
+      client.actions.GuildEmojiDelete.handle(emoji);
+    }
+  }
+}
+
+module.exports = GuildEmojisUpdate;
+
+
+/***/ },
+/* 126 */
+/***/ function(module, exports, __webpack_require__) {
+
 // ##untested handler##
 
 const AbstractHandler = __webpack_require__(1);
@@ -22115,7 +22170,7 @@ module.exports = GuildMemberAddHandler;
 
 
 /***/ },
-/* 126 */
+/* 127 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -22134,7 +22189,7 @@ module.exports = GuildMemberRemoveHandler;
 
 
 /***/ },
-/* 127 */
+/* 128 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -22158,7 +22213,7 @@ module.exports = GuildMemberUpdateHandler;
 
 
 /***/ },
-/* 128 */
+/* 129 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested##
@@ -22194,7 +22249,7 @@ module.exports = GuildMembersChunkHandler;
 
 
 /***/ },
-/* 129 */
+/* 130 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22211,7 +22266,7 @@ module.exports = GuildRoleCreateHandler;
 
 
 /***/ },
-/* 130 */
+/* 131 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22228,7 +22283,7 @@ module.exports = GuildRoleDeleteHandler;
 
 
 /***/ },
-/* 131 */
+/* 132 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22245,7 +22300,7 @@ module.exports = GuildRoleUpdateHandler;
 
 
 /***/ },
-/* 132 */
+/* 133 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22262,7 +22317,7 @@ module.exports = GuildSyncHandler;
 
 
 /***/ },
-/* 133 */
+/* 134 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22279,7 +22334,7 @@ module.exports = GuildUpdateHandler;
 
 
 /***/ },
-/* 134 */
+/* 135 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22304,7 +22359,7 @@ module.exports = MessageCreateHandler;
 
 
 /***/ },
-/* 135 */
+/* 136 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22329,7 +22384,7 @@ module.exports = MessageDeleteHandler;
 
 
 /***/ },
-/* 136 */
+/* 137 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22352,7 +22407,7 @@ module.exports = MessageDeleteBulkHandler;
 
 
 /***/ },
-/* 137 */
+/* 138 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22369,7 +22424,7 @@ module.exports = MessageReactionAddHandler;
 
 
 /***/ },
-/* 138 */
+/* 139 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22386,7 +22441,7 @@ module.exports = MessageReactionRemove;
 
 
 /***/ },
-/* 139 */
+/* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22403,7 +22458,7 @@ module.exports = MessageReactionRemoveAll;
 
 
 /***/ },
-/* 140 */
+/* 141 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22420,7 +22475,7 @@ module.exports = MessageUpdateHandler;
 
 
 /***/ },
-/* 141 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22498,7 +22553,7 @@ module.exports = PresenceUpdateHandler;
 
 
 /***/ },
-/* 142 */
+/* 143 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22573,7 +22628,7 @@ module.exports = ReadyHandler;
 
 
 /***/ },
-/* 143 */
+/* 144 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22598,7 +22653,7 @@ module.exports = RelationshipAddHandler;
 
 
 /***/ },
-/* 144 */
+/* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22623,7 +22678,7 @@ module.exports = RelationshipRemoveHandler;
 
 
 /***/ },
-/* 145 */
+/* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22697,7 +22752,7 @@ module.exports = TypingStartHandler;
 
 
 /***/ },
-/* 146 */
+/* 147 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22715,7 +22770,7 @@ module.exports = UserNoteUpdateHandler;
 
 
 /***/ },
-/* 147 */
+/* 148 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22732,7 +22787,7 @@ module.exports = UserUpdateHandler;
 
 
 /***/ },
-/* 148 */
+/* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22757,7 +22812,7 @@ module.exports = VoiceServerUpdate;
 
 
 /***/ },
-/* 149 */
+/* 150 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22812,7 +22867,7 @@ module.exports = VoiceStateUpdateHandler;
 
 
 /***/ },
-/* 150 */
+/* 151 */
 /***/ function(module, exports) {
 
 /**
@@ -22866,11 +22921,11 @@ module.exports = UserConnection;
 
 
 /***/ },
-/* 151 */
+/* 152 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
-const UserConnection = __webpack_require__(150);
+const UserConnection = __webpack_require__(151);
 
 /**
  * Represents a user's profile on Discord.
@@ -22928,7 +22983,7 @@ module.exports = UserProfile;
 
 
 /***/ },
-/* 152 */
+/* 153 */
 /***/ function(module, exports) {
 
 module.exports = function arraysEqual(a, b) {
@@ -22948,7 +23003,7 @@ module.exports = function arraysEqual(a, b) {
 
 
 /***/ },
-/* 153 */
+/* 154 */
 /***/ function(module, exports) {
 
 module.exports = function parseEmoji(text) {
@@ -22966,12 +23021,6 @@ module.exports = function parseEmoji(text) {
   }
 };
 
-
-/***/ },
-/* 154 */
-/***/ function(module, exports) {
-
-/* (ignored) */
 
 /***/ },
 /* 155 */
@@ -22993,6 +23042,12 @@ module.exports = function parseEmoji(text) {
 
 /***/ },
 /* 158 */
+/***/ function(module, exports) {
+
+/* (ignored) */
+
+/***/ },
+/* 159 */
 /***/ function(module, exports) {
 
 /* (ignored) */
