@@ -104,6 +104,27 @@ class Emoji {
   }
 
   /**
+   * Whether this emoji is the same as another one
+   * @param {Emoji|Object} other the emoji to compare it to
+   * @returns {boolean} whether the emoji is equal to the given emoji or not
+   */
+  equals(other) {
+    if (other instanceof Emoji) {
+      return (
+        other.id === this.id &&
+        other.name === this.name &&
+        other.managed === this.managed &&
+        other.requiresColons === this.requiresColons
+      );
+    } else {
+      return (
+        other.id === this.id &&
+        other.name === this.name
+      );
+    }
+  }
+
+  /**
    * The identifier of this emoji, used for message reactions
    * @readonly
    * @type {string}

@@ -27,6 +27,7 @@ class WebSocketPacketManager {
     this.register(Constants.WSEvents.GUILD_ROLE_CREATE, require('./handlers/GuildRoleCreate'));
     this.register(Constants.WSEvents.GUILD_ROLE_DELETE, require('./handlers/GuildRoleDelete'));
     this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, require('./handlers/GuildRoleUpdate'));
+    this.register(Constants.WSEvents.GUILD_EMOJIS_UPDATE, require('./handlers/GuildEmojisUpdate'));
     this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, require('./handlers/GuildMembersChunk'));
     this.register(Constants.WSEvents.CHANNEL_CREATE, require('./handlers/ChannelCreate'));
     this.register(Constants.WSEvents.CHANNEL_DELETE, require('./handlers/ChannelDelete'));
@@ -84,6 +85,7 @@ class WebSocketPacketManager {
 
     if (packet.op === Constants.OPCodes.HEARTBEAT_ACK) {
       this.ws.client._pong(this.ws.client._pingTimestamp);
+      this.ws.lastHeartbeatAck = true;
       this.ws.client.emit('debug', 'Heartbeat acknowledged');
     }
 

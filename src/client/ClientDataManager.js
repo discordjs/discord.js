@@ -95,7 +95,7 @@ class ClientDataManager {
     const already = guild.emojis.has(data.id);
     if (data && !already) {
       let emoji = new Emoji(guild, data);
-      this.client.emit(Constants.Events.EMOJI_CREATE, emoji);
+      this.client.emit(Constants.Events.GUILD_EMOJI_CREATE, emoji);
       guild.emojis.set(emoji.id, emoji);
       return emoji;
     } else if (already) {
@@ -107,7 +107,7 @@ class ClientDataManager {
 
   killEmoji(emoji) {
     if (!(emoji instanceof Emoji && emoji.guild)) return;
-    this.client.emit(Constants.Events.EMOJI_DELETE, emoji);
+    this.client.emit(Constants.Events.GUILD_EMOJI_DELETE, emoji);
     emoji.guild.emojis.delete(emoji.id);
   }
 
