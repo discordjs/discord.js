@@ -205,7 +205,7 @@ class ClientUser extends User {
 
   /**
    * Set the full presence of the current user.
-   * @param {Object} data the data to provide
+   * @param {Presence} data the data to provide
    * @returns {Promise<ClientUser>}
    */
   setPresence(data) {
