@@ -32,13 +32,7 @@ class PCMConversionProcess extends EventEmitter {
       this.emit('destroyed the process stdin');
     }
     if (this.process.kill) {
-      this.process.once('exit', () => {
-        this.emit('killed the process');
-      });
-      this.process.once('error', () => {
-        this.process.kill('SIGKILL');
-      });
-      this.process.kill();
+      this.process.kill('SIGKILL');
     }
   }
 
