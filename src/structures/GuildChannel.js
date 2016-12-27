@@ -282,6 +282,20 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * Creates a new channel with the same name, type and permission overwrites.
+   * @returns {Promise<GuildChannel>} The new channel
+   */
+  clone() {
+    return this.guild.createChannel(this.name, this.type)
+      .then(newChannel => {
+        newChannel.permissionOverwrites = this.permissionOverwrites;
+        return Promise.all(
+          this.permissionOverwrites.map(overwrite => newChannel.overwritePermissions(overwrite.id, {}))
+        ).then(() => Promise.resolve(newChannel));
+      });
+  }
+
+  /**
    * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
    * @returns {string}
    * @example
