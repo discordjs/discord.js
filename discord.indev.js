@@ -21864,7 +21864,7 @@ class WebSocketPacketManager {
 
     if (packet.op === Constants.OPCodes.HEARTBEAT) {
       this.client.ws.send({ op: Constants.OPCodes.HEARTBEAT });
-      this.ws.client.emit('debug', 'Recieved gateway heartbeat!');
+      this.ws.client.emit('debug', 'Received gateway heartbeat!');
     }
 
     if (this.ws.status === Constants.Status.RECONNECTING) {
