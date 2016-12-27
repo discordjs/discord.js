@@ -270,11 +270,35 @@ class Client extends EventEmitter {
    * Caches a user, or obtains it from the cache if it's already cached.
    * <warn>This is only available when using a bot account.</warn>
    * @param {string} id The ID of the user to obtain
+   * @param {boolean} [cache=true] Store the user in the cache after fetching it
    * @returns {Promise<User>}
    */
-  fetchUser(id) {
+  fetchUser(id, cache = true) {
     if (this.users.has(id)) return Promise.resolve(this.users.get(id));
-    return this.rest.methods.getUser(id);
+    return this.rest.methods.getUser(id, cache);
+  }
+
+  /**
+   * Caches a channel, or obtains it from the cache if it's already cached.
+   * @param {string} id The ID of the user to obtain
+   * @param {boolean} [cache=false] Store the channel in the cache after fetching it
+   * @returns {Promise<User>}
+   */
+  fetchChannel(id, cache = false) {
+    if (this.channels.has(id)) return Promise.resolve(this.channels.get(id));
+    return this.rest.methods.getChannel(id, cache);
+  }
+
+  /**
+   * Caches a guild, or obtains it from the cache if it's already cached.
+   * The guild will not have any members, roles, or channels.
+   * @param {string} id The ID of the user to obtain
+   * @param {boolean} [cache=false] Store the guild in the cache after fetching it
+   * @returns {Promise<User>}
+   */
+  fetchGuild(id, cache = false) {
+    if (this.guilds.has(id)) return Promise.resolve(this.guilds.get(id));
+    return this.rest.methods.getGuild(id, cache);
   }
 
   /**

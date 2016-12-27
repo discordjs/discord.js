@@ -11,8 +11,10 @@ class ActionsManager {
     this.register(require('./MessageReactionRemoveAll'));
     this.register(require('./ChannelCreate'));
     this.register(require('./ChannelDelete'));
+    this.register(require('./ChannelGet'));
     this.register(require('./ChannelUpdate'));
     this.register(require('./GuildDelete'));
+    this.register(require('./GuildGet'));
     this.register(require('./GuildUpdate'));
     this.register(require('./GuildMemberGet'));
     this.register(require('./GuildMemberRemove'));

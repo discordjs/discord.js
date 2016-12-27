@@ -18,10 +18,11 @@ class ClientDataManager {
     return this.client.ws.status === Constants.Status.READY;
   }
 
-  newGuild(data) {
+  newGuild(data, cache = true) {
     const already = this.client.guilds.has(data.id);
     const guild = new Guild(this.client, data);
     this.client.guilds.set(guild.id, guild);
+    if (cache !== true) return guild;
     if (this.pastReady && !already) {
       /**
        * Emitted whenever the client joins a guild.
@@ -38,14 +39,15 @@ class ClientDataManager {
     return guild;
   }
 
-  newUser(data) {
+  newUser(data, cache = true) {
     if (this.client.users.has(data.id)) return this.client.users.get(data.id);
     const user = new User(this.client, data);
+    if (cache !== true) return user;
     this.client.users.set(user.id, user);
     return user;
   }
 
-  newChannel(data, guild) {
+  newChannel(data, guild, cache = true) {
     const already = this.client.channels.has(data.id);
     let channel;
     if (data.type === Constants.ChannelTypes.DM) {
@@ -66,6 +68,7 @@ class ClientDataManager {
     }
 
     if (channel) {
+      if (cache !== true) return channel;
       if (this.pastReady && !already) this.client.emit(Constants.Events.CHANNEL_CREATE, channel);
       this.client.channels.set(channel.id, channel);
       return channel;
