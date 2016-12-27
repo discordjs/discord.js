@@ -21845,8 +21845,14 @@ class WebSocketPacketManager {
     }
 
     if (packet.op === Constants.OPCodes.INVALID_SESSION) {
-      this.ws.sessionID = null;
-      this.ws._sendNewIdentify();
+      if (packet.d) {
+        setTimeout(() => {
+          this.ws._sendResume();
+        }, 2500);
+      } else {
+        this.ws.sessionID = null;
+        this.ws._sendNewIdentify();
+      }
       return false;
     }
 
