@@ -96,8 +96,8 @@ class WebSocketPacketManager {
     }
 
     if (packet.op === Constants.OPCodes.HEARTBEAT) {
-      this.client.ws.send({ op: Constants.OPCodes.HEARTBEAT_ACK });
-      this.ws.client.emit('debug', 'ACKed gateway heartbeat!');
+      this.client.ws.send({ op: Constants.OPCodes.HEARTBEAT });
+      this.ws.client.emit('debug', 'Recieved gateway heartbeat!');
     }
 
     if (this.ws.status === Constants.Status.RECONNECTING) {
