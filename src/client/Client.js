@@ -90,6 +90,12 @@ class Client extends EventEmitter {
     this.shard = process.send ? ShardClientUtil.singleton(this) : null;
 
     /**
+     * Expose the constants to the client directly
+     * @type {Constants}
+     * @private
+     */
+    this.constants = Constants;
+    /**
      * A Collection of the Client's stored users
      * @type {Collection<string, User>}
      */
