@@ -95,6 +95,11 @@ class WebSocketPacketManager {
       this.ws.client.emit('debug', 'Heartbeat acknowledged');
     }
 
+    if (packet.op === Constants.OPCodes.HEARTBEAT) {
+      this.client.ws.send({ op: Constants.OPCodes.HEARTBEAT_ACK });
+      this.ws.client.emit('debug', 'ACKed gateway heartbeat!');
+    }
+
     if (this.ws.status === Constants.Status.RECONNECTING) {
       this.ws.reconnecting = false;
       this.ws.checkIfReady();
