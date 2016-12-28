@@ -38,32 +38,32 @@ class TextBasedChannel {
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
    */
 
-   /**
-    * @typedef {Object} FileOptions
-    * @property {BufferResolvable} attachment
-    * @property {string} [name='file.jpg']
-    */
+  /**
+   * @typedef {Object} FileOptions
+   * @property {BufferResolvable} attachment
+   * @property {string} [name='file.jpg']
+   */
 
-    /**
-    * Options for splitting a message
-     * @typedef {Object} SplitOptions
-     * @property {number} [maxLength=1950] Maximum character length per message piece
-     * @property {string} [char='\n'] Character to split the message with
-     * @property {string} [prepend=''] Text to prepend to every piece except the first
-     * @property {string} [append=''] Text to append to every piece except the last
-     */
+  /**
+   * Options for splitting a message
+   * @typedef {Object} SplitOptions
+   * @property {number} [maxLength=1950] Maximum character length per message piece
+   * @property {string} [char='\n'] Character to split the message with
+   * @property {string} [prepend=''] Text to prepend to every piece except the first
+   * @property {string} [append=''] Text to append to every piece except the last
+   */
 
-    /**
-     * Send a message to this channel
-     * @param {StringResolvable} contentOrOptions The content to send, or MessageOptions
-     * @param {MessageOptions} [options={}] The options to provide
-     * @returns {Promise<Message|Message[]>}
-     * @example
-     * // send a message
-     * channel.send('hello!')
-     *  .then(message => console.log(`Sent message: ${message.content}`))
-     *  .catch(console.error);
-     */
+  /**
+   * Send a message to this channel
+   * @param {StringResolvable} contentOrOptions The content to send, or MessageOptions
+   * @param {MessageOptions} [options={}] The options to provide
+   * @returns {Promise<Message|Message[]>}
+   * @example
+   * // send a message
+   * channel.send('hello!')
+   *  .then(message => console.log(`Sent message: ${message.content}`))
+   *  .catch(console.error);
+   */
   send(contentOrOptions, options) {
     let content;
     if (!options && typeof contentOrOptions === 'object') {
