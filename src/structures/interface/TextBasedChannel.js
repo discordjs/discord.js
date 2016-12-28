@@ -98,6 +98,30 @@ class TextBasedChannel {
     return this.client.rest.methods.sendMessage(this, content, options);
   }
 
+  sendMessage(...args) {
+    return this.send(...args);
+  }
+
+  sendEmbed(embed, contentOrOptions, options) {
+    let content;
+    if (!options && typeof contentOrOptions === 'object') {
+      content = '';
+      options = contentOrOptions;
+    } else {
+      content = contentOrOptions;
+      options = options || {};
+    }
+    return this.send(content, Object.assign(options, { embed }));
+  }
+
+  sendFile(attachment, name, content, options = {}) {
+    return this.send(content, Object.assign(options, { file: { attachment, name } }));
+  }
+
+  sendCode(lang, content, options = {}) {
+    return this.send(content, Object.assign(options, { code: lang }));
+  }
+
   /**
    * Gets a single message from this channel, regardless of it being cached or not.
    * <warn>This is only available when using a bot account.</warn>
@@ -306,10 +330,9 @@ class TextBasedChannel {
 }
 
 exports.applyToClass = (structure, full = false) => {
-  let props = ['send'];
+  let props = ['send', 'sendMessage', 'sendEmbed', 'sendFile', 'sendCode'];
   if (full) {
-    props = [
-      'send',
+    props = props.concat([
       '_cacheMessage',
       'fetchMessages',
       'fetchMessage',
@@ -321,7 +344,7 @@ exports.applyToClass = (structure, full = false) => {
       'fetchPinnedMessages',
       'createCollector',
       'awaitMessages',
-    ];
+    ]);
   }
   for (const prop of props) {
     Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
