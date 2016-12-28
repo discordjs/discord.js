@@ -94,7 +94,10 @@ class WebSocketPacketManager {
       this.ws.lastHeartbeatAck = true;
       this.ws.client.emit('debug', 'Heartbeat acknowledged');
     } else if (packet.op === Constants.OPCodes.HEARTBEAT) {
-      this.client.ws.send({ op: Constants.OPCodes.HEARTBEAT });
+      this.client.ws.send({
+        op: Constants.OPCodes.HEARTBEAT,
+        d: this.client.ws.sequence,
+      });
       this.ws.client.emit('debug', 'Received gateway heartbeat');
     }
 
