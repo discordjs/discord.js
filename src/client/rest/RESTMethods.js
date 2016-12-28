@@ -56,10 +56,11 @@ class RESTMethods {
         if (content instanceof Array) {
           const messages = [];
           (function sendChunk(list, index) {
-            chan.send(list[index]).then((message) => {
+            const options = index === list.length ? { tts, embed } : { tts };
+            chan.send(list[index], options).then((message) => {
               messages.push(message);
-              if (index >= list.length) resolve(messages);
-              sendChunk(list, index++ + 1);
+              if (index >= list.length) return resolve(messages);
+              return sendChunk(list, ++index);
             });
           }(content, 0));
         } else {
