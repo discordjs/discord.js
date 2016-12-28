@@ -360,7 +360,7 @@ class TextBasedChannel {
 exports.applyToClass = (structure, full = false) => {
   let props = ['send', 'sendMessage', 'sendEmbed', 'sendFile', 'sendCode'];
   if (full) {
-    props = props.concat([
+    props = props.push(
       '_cacheMessage',
       'fetchMessages',
       'fetchMessage',
@@ -371,8 +371,8 @@ exports.applyToClass = (structure, full = false) => {
       'typingCount',
       'fetchPinnedMessages',
       'createCollector',
-      'awaitMessages',
-    ]);
+      'awaitMessages'
+    );
   }
   for (const prop of props) {
     Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
