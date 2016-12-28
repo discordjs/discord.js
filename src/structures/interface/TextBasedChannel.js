@@ -32,7 +32,7 @@ class TextBasedChannel {
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
-   * @property {FileOptions} [file] A file to send with the message
+   * @property {FileOptions|string} [file] A file to send with the message
    * @property {string} [code] Language for optional codeblock formatting to apply
    */
 
@@ -67,6 +67,7 @@ class TextBasedChannel {
       content = `\`\`\`${options.code || ''}\n${content}\n\`\`\``;
     }
     if (options.file) {
+      if (typeof options.file === 'string') options.file = { attachment: options.file };
       if (!options.file.name) {
         if (typeof options.file.attachment === 'string') {
           options.file.name = path.basename(options.file.attachment);
