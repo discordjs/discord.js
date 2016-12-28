@@ -58,9 +58,8 @@ class RESTMethods {
           (function sendChunk(list, index) {
             chan.send(list[index]).then((message) => {
               messages.push(message);
-              index++;
               if (index >= list.length) resolve(messages);
-              sendChunk(list, index);
+              sendChunk(list, index++ + 1);
             });
           }(content, 0));
         } else {
