@@ -1,4 +1,4 @@
-// Type definitions for discord.js 10.0.1
+// Type definitions for discord.js 11.0.0
 // Project: https://github.com/hydrabolt/discord.js
 // Definitions by: acdenisSK <acdenissk69@gmail.com> (https://github.com/acdenisSK)
 // License: MIT
@@ -11,10 +11,11 @@ declare module "discord.js" {
     export const version: string;
     export class Client extends EventEmitter {
         constructor(options?: ClientOptions);
+        browser: boolean;
+        channels: Collection<string, Channel>;
         email: string;
         emojis: Collection<string, Emoji>;
         guilds: Collection<string, Guild>;
-        channels: Collection<string, Channel>;
         options: ClientOptions;
         password: string;
         readyAt: Date;
@@ -167,6 +168,8 @@ declare module "discord.js" {
         fetchMessages(options?: ChannelLogsQueryOptions): Promise<Collection<string, Message>>;
         fetchPinnedMessages(): Promise<Collection<string, Message>>;
         sendCode(lang: string, content: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
+        sendEmbed(embed: RichEmbed, content?: string, options?: MessageOptions): Promise<Message>;
+        sendEmbed(embed: RichEmbed, options?: MessageOptions): Promise<Message>;
         sendFile(attachment: FileResolvable, fileName?: string, content?: StringResolvable, options?: MessageOptions): Promise<Message>;
         sendMessage(content: string, options?: MessageOptions): Promise<Message | Message[]>;
         sendTTSMessage(content: string, options?: MessageOptions): Promise<Message | Message[]>;
@@ -188,6 +191,8 @@ declare module "discord.js" {
         fetchMessages(options?: ChannelLogsQueryOptions): Promise<Collection<string, Message>>;
         fetchPinnedMessages(): Promise<Collection<string, Message>>;
         sendCode(lang: string, content: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
+        sendEmbed(embed: RichEmbed, content?: string, options?: MessageOptions): Promise<Message>;
+        sendEmbed(embed: RichEmbed, options?: MessageOptions): Promise<Message>;
         sendFile(attachment: FileResolvable, fileName?: string, content?: StringResolvable, options?: MessageOptions): Promise<Message>;
         sendMessage(content: string, options?: MessageOptions): Promise<Message | Message[]>;
         sendTTSMessage(content: string, options?: MessageOptions): Promise<Message | Message[]>;
@@ -200,6 +205,7 @@ declare module "discord.js" {
         name: string;
         permissionOverwrites: Collection<string, PermissionOverwrites>;
         position: number;
+        clone(name?: string, withPermissions?: boolean): Promise<GuildChannel>;
         createInvite(options?: InviteOptions): Promise<Invite>;
         equals(channel: GuildChannel): boolean;
         overwritePermissions(userOrRole: Role | User, options: PermissionOverwriteOptions): Promise<void>;
@@ -222,7 +228,10 @@ declare module "discord.js" {
         fetchMessage(messageID: string): Promise<Message>;
         fetchMessages(options?: ChannelLogsQueryOptions): Promise<Collection<string, Message>>;
         fetchPinnedMessages(): Promise<Collection<string, Message>>;
+        fetchWebhooks(): Promise<Webhook[]>;
         sendCode(lang: string, content: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
+        sendEmbed(embed: RichEmbed, content?: string, options?: MessageOptions): Promise<Message>;
+        sendEmbed(embed: RichEmbed, options?: MessageOptions): Promise<Message>;
         sendFile(attachment: FileResolvable, fileName?: string, content?: StringResolvable, options?: MessageOptions): Promise<Message>;
         sendMessage(content: string, options?: MessageOptions): Promise<Message | Message[]>;
         sendTTSMessage(content: string, options?: MessageOptions): Promise<Message | Message[]>;
@@ -440,13 +449,15 @@ declare module "discord.js" {
         system: boolean;
         tts: boolean;
         type: string;
-        addReaction(emoji: string): MessageReaction; // Not really documented but still worth using/making typings for it.
+        clearReactions(): Promise<Message>;
         delete(timeout?: number): Promise<Message>;
         edit(content: StringResolvable): Promise<Message>;
         editCode(lang: string, content: StringResolvable): Promise<Message>;
         equals(message: Message, rawData: Object): boolean;
+        fetchWebhook(): Promise<Webhook>;
         isMentioned(data: GuildChannel | User | Role | string): boolean;
         pin(): Promise<Message>;
+        react(emoji: string | Emoji | ReactionEmoji): Promise<MessageReaction>;
         reply(content: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
         toString(): string;
         unpin(): Promise<Message>;
@@ -479,7 +490,22 @@ declare module "discord.js" {
         name: string;
         url: string;
     }
+    interface IRichEmbedData {
+        title?: string;
+        description?: string;
+        url?: string;
+        timestamp?: Date;
+        color?: number | string;
+        fields?: { name: string; value: string; inline?: boolean; }[];
+        author?: { name: string; url?: string; icon_url?: string; };
+        thumbnail?: { url: string; height?: number; width?: number; };
+        image?: { url: string; proxy_url?: string; height?: number; width?: number; };
+        video?: { url: string; height: number; width: number; };
+        footer?: { text?: string; icon_url?: string; };
+    }
     export class RichEmbed {
+        constructor(data?: IRichEmbedData);
+
         title?: string;
         description?: string;
         url?: string;
