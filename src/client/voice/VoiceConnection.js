@@ -5,6 +5,7 @@ const AudioPlayer = require('./player/AudioPlayer');
 const VoiceReceiver = require('./receiver/VoiceReceiver');
 const EventEmitter = require('events').EventEmitter;
 const fs = require('fs');
+const Prism = require('prism-media');
 
 /**
  * Represents a connection to a voice channel in Discord.
@@ -25,6 +26,11 @@ class VoiceConnection extends EventEmitter {
      * @type {ClientVoiceManager}
      */
     this.voiceManager = pendingConnection.voiceManager;
+
+    /**
+     * The audio transcoder for this connection
+     */
+    this.prism = new Prism();
 
     /**
      * The voice channel this connection is currently serving
