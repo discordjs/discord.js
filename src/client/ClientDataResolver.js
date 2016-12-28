@@ -191,15 +191,13 @@ class ClientDataResolver {
   }
 
   /**
-   * Turn an array of permissions into a valid discord permission bitfield
+   * Turn an array of permissions into a valid Discord permission bitfield
    * @param {PermissionResolvable[]} permissions Permissions to resolve together
    * @returns {number}
    */
   resolvePermissions(permissions) {
     let bitfield = 0;
-    for (const permission of permissions) {
-      bitfield |= this.resolvePermission(permission);
-    }
+    for (const permission of permissions) bitfield |= this.resolvePermission(permission);
     return bitfield;
   }
 
