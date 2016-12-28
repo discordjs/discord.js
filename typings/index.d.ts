@@ -1,4 +1,4 @@
-// Type definitions for discord.js 10.0.1
+// Type definitions for discord.js 11.0.0
 // Project: https://github.com/hydrabolt/discord.js
 // Definitions by: acdenisSK <acdenissk69@gmail.com> (https://github.com/acdenisSK)
 // License: MIT
@@ -11,14 +11,17 @@ declare module "discord.js" {
     export const version: string;
     export class Client extends EventEmitter {
         constructor(options?: ClientOptions);
-        email: string;
+        browser: boolean;
+        channels: Collection<string, Channel>;
         emojis: Collection<string, Emoji>;
         guilds: Collection<string, Guild>;
-        channels: Collection<string, Channel>;
         options: ClientOptions;
-        password: string;
+        ping: number;
+        pings: number[];
+        presences: Collection<string, Presence>
         readyAt: Date;
         readyTimestamp: number;
+        shard: ShardClientUtil;
         status: number;
         token: string;
         uptime: number;
@@ -28,19 +31,28 @@ declare module "discord.js" {
         clearInterval(timeout: NodeJS.Timer): void;
         clearTimeout(timeout: NodeJS.Timer): void;
         destroy(): Promise<void>;
+        fetchApplication(): Promise<ClientOAuth2Application>;
         fetchInvite(code: string): Promise<Invite>;
         fetchUser(id: string): Promise<User>;
-        login(tokenOrEmail: string, password?: string): Promise<string>;
+        fetchWebhook(id: string, token?: string): Promise<Webhook>;
+        generateInvite(permissions: string[] | number): Promise<string>;
+        login(token: string): Promise<string>;
         setInterval(fn: Function, delay: number, ...args: any[]): NodeJS.Timer;
         setTimeout(fn: Function, delay: number, ...args: any[]): NodeJS.Timer;
         sweepMessages(lifetime?: number): number;
         syncGuilds(guilds?: Guild[]): void;
         on(event: string, listener: Function): this;
+        on(event: "channelCached", listener: (channel: Channel) => void): this;
+        on(event: "channelCreate", listener: (channel: Channel) => void): this;
+        on(event: "channelDelete", listener: (channel: Channel) => void): this;
+        on(event: "channelPinsUpdate", listener: (channel: Channel, time: Date) => void): this;
+        on(event: "channelUpdate", listener: (oldChannel: Channel, newChannel: Channel) => void): this;
         on(event: "debug", listener: (the: string) => void): this;
         on(event: "disconnect", listener: () => void): this;
         on(event: "error", listener: (error: Error) => void): this;
         on(event: "guildBanAdd", listener: (user: User) => void): this;
         on(event: "guildBanRemove", listener: (user: User) => void): this;
+        on(event: "guildCached", listener: (guild: Guild) => void): this;
         on(event: "guildCreate", listener: (guild: Guild) => void): this;
         on(event: "guildDelete", listener: (guild: Guild) => void): this;
         on(event: "guildEmojiCreate", listener: (emoji: Emoji) => void): this;
@@ -52,33 +64,33 @@ declare module "discord.js" {
         on(event: "guildMembersChunk", listener: (members: GuildMember[]) => void): this;
         on(event: "guildMemberSpeaking", listener: (member: GuildMember, speaking: boolean) => void): this;
         on(event: "guildMemberUpdate", listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
-        on(event: "roleCreate", listener: (role: Role) => void): this;
-        on(event: "roleDelete", listener: (role: Role) => void): this;
-        on(event: "roleUpdate", listener: (oldRole: Role, newRole: Role) => void): this;
         on(event: "guildUnavailable", listener: (guild: Guild) => void): this;
         on(event: "guildUpdate", listener: (oldGuild: Guild, newGuild: Guild) => void): this;
-        on(event: "channelCreate", listener: (channel: Channel) => void): this;
-        on(event: "channelDelete", listener: (channel: Channel) => void): this;
-        on(event: "channelPinsUpdate", listener: (channel: Channel, time: Date) => void): this;
-        on(event: "channelUpdate", listener: (oldChannel: Channel, newChannel: Channel) => void): this;
         on(event: "message", listener: (message: Message) => void): this;
         on(event: "messageDelete", listener: (message: Message) => void): this;
         on(event: "messageDeleteBulk", listener: (messages: Collection<string, Message>) => void): this;
+        on(event: "messageReactionAdd", listener: (messageReaction: MessageReaction, user: User) => void): this;
+        on(event: "messageReactionRemove", listener: (messageReaction: MessageReaction, user: User) => void): this;
+        on(event: "messageReactionRemoveAll", listener: (messageReaction: MessageReaction) => void): this;
         on(event: "messageUpdate", listener: (oldMessage: Message, newMessage: Message) => void): this;
         on(event: "presenceUpdate", listener: (oldUser: User, newUser: User) => void): this;
         on(event: "ready", listener: () => void): this;
         on(event: "reconnecting", listener: () => void): this;
+        on(event: "roleCreate", listener: (role: Role) => void): this;
+        on(event: "roleDelete", listener: (role: Role) => void): this;
+        on(event: "roleUpdate", listener: (oldRole: Role, newRole: Role) => void): this;
         on(event: "typingStart", listener: (channel: Channel, user: User) => void): this;
         on(event: "typingStop", listener: (channel: Channel, user: User) => void): this;
+        on(event: "userNoteUpdate", listener: (user: ClientUser, oldNote: string, newNote: string) => void): this;
         on(event: "userUpdate", listener: (oldClientUser: ClientUser, newClientUser: ClientUser) => void): this;
         on(event: "voiceStateUpdate", listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
         on(event: "warn", listener: (the: string) => void): this;
     }
     export class Webhook {
         avatar: string;
+        channelID: string;
         client: Client;
         guildID: string;
-        channelID: string;
         id: string;
         name: string;
         token: string;
@@ -111,6 +123,7 @@ declare module "discord.js" {
         createdTimestamp: number;
         guild: Guild;
         id: string;
+        identifier: string;
         managed: boolean;
         name: string;
         requiresColons: boolean;
@@ -126,20 +139,23 @@ declare module "discord.js" {
         toString(): string;
     }
     export class ClientUser extends User {
-        email: string;
-        verified: boolean;
         blocked: Collection<string, User>;
+        email: string;
         friends: Collection<string, User>;
-        addFriend(user: UserResolvable): Promise<User>;
-        removeFriend(user: UserResolvable): Promise<User>;
+        verified: boolean;
+        addFriend(user?: UserResolvable): Promise<User>;
+        createGuild(name: string, region: string, icon?: FileResolvable): Promise<Guild>;
+        fetchMentions(options?: { limit?: number; roles?: boolean, everyone?: boolean; guild?: Guild | string }): Promise<Message[]>;
+        removeFriend(user?: UserResolvable): Promise<User>;
+        setAFK(afk: boolean): Promise<ClientUser>;
         setAvatar(avatar: Base64Resolvable): Promise<ClientUser>;
         setEmail(email: string): Promise<ClientUser>;
-        setPassword(password: string): Promise<ClientUser>;
-        setStatus(status?: string): Promise<ClientUser>;
         setGame(game: string, streamingURL?: string): Promise<ClientUser>;
+        setNote(note: string): Promise<User>;
+        setPassword(newPassword: string, oldPassword: string): Promise<ClientUser>;
         setPresence(data: Object): Promise<ClientUser>;
-        setUsername(username: string): Promise<ClientUser>;
-        createGuild(name: string, region: string, icon?: FileResolvable): Promise<Guild>;
+        setStatus(status?: string): Promise<ClientUser>;
+        setUsername(username: string, password?: string): Promise<ClientUser>;
     }
     export class Presence {
         game: Game;
@@ -167,6 +183,8 @@ declare module "discord.js" {
         fetchMessages(options?: ChannelLogsQueryOptions): Promise<Collection<string, Message>>;
         fetchPinnedMessages(): Promise<Collection<string, Message>>;
         sendCode(lang: string, content: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
+        sendEmbed(embed: RichEmbed, content?: string, options?: MessageOptions): Promise<Message>;
+        sendEmbed(embed: RichEmbed, options?: MessageOptions): Promise<Message>;
         sendFile(attachment: FileResolvable, fileName?: string, content?: StringResolvable, options?: MessageOptions): Promise<Message>;
         sendMessage(content: string, options?: MessageOptions): Promise<Message | Message[]>;
         sendTTSMessage(content: string, options?: MessageOptions): Promise<Message | Message[]>;
@@ -175,10 +193,13 @@ declare module "discord.js" {
         toString(): string;
     }
     export class GroupDMChannel extends Channel {
+        icon: string;
         lastMessageID: string;
         messages: Collection<string, Message>;
-        recipients: Collection<string, User>;
+        name: string;
         owner: User;
+        ownerID: string;
+        recipients: Collection<string, User>;
         typing: boolean;
         typingCount: number;
         awaitMessages(filter: CollectorFilterFunction, options?: AwaitMessagesOptions): Promise<Collection<string, Message>>;
@@ -188,6 +209,8 @@ declare module "discord.js" {
         fetchMessages(options?: ChannelLogsQueryOptions): Promise<Collection<string, Message>>;
         fetchPinnedMessages(): Promise<Collection<string, Message>>;
         sendCode(lang: string, content: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
+        sendEmbed(embed: RichEmbed, content?: string, options?: MessageOptions): Promise<Message>;
+        sendEmbed(embed: RichEmbed, options?: MessageOptions): Promise<Message>;
         sendFile(attachment: FileResolvable, fileName?: string, content?: StringResolvable, options?: MessageOptions): Promise<Message>;
         sendMessage(content: string, options?: MessageOptions): Promise<Message | Message[]>;
         sendTTSMessage(content: string, options?: MessageOptions): Promise<Message | Message[]>;
@@ -200,7 +223,9 @@ declare module "discord.js" {
         name: string;
         permissionOverwrites: Collection<string, PermissionOverwrites>;
         position: number;
+        clone(name?: string, withPermissions?: boolean): Promise<GuildChannel>;
         createInvite(options?: InviteOptions): Promise<Invite>;
+        edit(data: ChannelData): Promise<GuildChannel>;
         equals(channel: GuildChannel): boolean;
         overwritePermissions(userOrRole: Role | User, options: PermissionOverwriteOptions): Promise<void>;
         permissionsFor(member: GuildMemberResolvable): EvaluatedPermissions;
@@ -219,10 +244,14 @@ declare module "discord.js" {
         awaitMessages(filter: CollectorFilterFunction, options?: AwaitMessagesOptions): Promise<Collection<string, Message>>;
         bulkDelete(messages: Collection<string, Message> | Message[] | number): Collection<string, Message>;
         createCollector(filter: CollectorFilterFunction, options?: CollectorOptions): MessageCollector;
+        createWebhook(name: string, avatar: Base64Resolvable): Promise<Webhook>;
         fetchMessage(messageID: string): Promise<Message>;
         fetchMessages(options?: ChannelLogsQueryOptions): Promise<Collection<string, Message>>;
         fetchPinnedMessages(): Promise<Collection<string, Message>>;
+        fetchWebhooks(): Promise<Webhook[]>;
         sendCode(lang: string, content: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
+        sendEmbed(embed: RichEmbed, content?: string, options?: MessageOptions): Promise<Message>;
+        sendEmbed(embed: RichEmbed, options?: MessageOptions): Promise<Message>;
         sendFile(attachment: FileResolvable, fileName?: string, content?: StringResolvable, options?: MessageOptions): Promise<Message>;
         sendMessage(content: string, options?: MessageOptions): Promise<Message | Message[]>;
         sendTTSMessage(content: string, options?: MessageOptions): Promise<Message | Message[]>;
@@ -242,8 +271,8 @@ declare module "discord.js" {
     export class Game {
         name: string;
         streaming: boolean;
-        url: string;
         type: number;
+        url: string;
         equals(other: Game): boolean;
     }
     export class PermissionOverwrites {
@@ -255,7 +284,9 @@ declare module "discord.js" {
     export class Guild {
         afkChannelID: string;
         afkTimeout: number;
+        applicationID: string;
         available: boolean;
+        channels: Collection<string, GuildChannel>;
         client: Client;
         createdAt: Date;
         createdTimestamp: number;
@@ -263,32 +294,37 @@ declare module "discord.js" {
         embedEnabled: boolean;
         emojis: Collection<string, Emoji>;
         features: Object[];
-        channels: Collection<string, GuildChannel>;
         icon: string;
         iconURL: string;
         id: string;
-        joinDate: Date;
+        joinedAt: Date;
+        joinedTimestamp: number;
         large: boolean;
         memberCount: number;
         members: Collection<string, GuildMember>;
         name: string;
         owner: GuildMember;
         ownerID: string;
+        presences: Collection<string, Presence>;
         region: string;
         roles: Collection<string, Role>;
         splash: string;
+        splashURL: string;
         verificationLevel: number;
         voiceConnection: VoiceConnection;
         ban(user: GuildMember, deleteDays?: number): Promise<GuildMember | User | string>;
         createChannel(name: string, type: "text" | "voice"): Promise<TextChannel | VoiceChannel>;
+        createEmoji(attachment: Base64Resolvable, name: string): Promise<Emoji>;
         createRole(data?: RoleData): Promise<Role>;
         delete(): Promise<Guild>;
-        edit(data: {}): Promise<Guild>;
+        deleteEmoji(emoji: Emoji | string): Promise<void>;
+        edit(data: GuildEditData): Promise<Guild>;
         equals(guild: Guild): boolean;
         fetchBans(): Promise<Collection<string, User>>;
         fetchInvites(): Promise<Collection<string, Invite>>;
         fetchMember(user: UserResolvable): Promise<GuildMember>;
         fetchMembers(query?: string): Promise<Guild>;
+        fetchWebhooks(): Collection<string, Webhook>;
         leave(): Promise<Guild>;
         member(user: UserResolvable): GuildMember;
         pruneMembers(days: number, dry?: boolean): Promise<number>;
@@ -298,6 +334,7 @@ declare module "discord.js" {
         setName(name: string): Promise<Guild>;
         setOwner(owner: GuildMemberResolvable): Promise<Guild>;
         setRegion(region: string): Promise<Guild>;
+        setRolePosition(role: string | Role, position: number): Promise<Guild>;
         setSplash(splash: Base64Resolvable): Promise<Guild>;
         setVerificationLevel(level: number): Promise<Guild>;
         sync(): void;
@@ -308,14 +345,18 @@ declare module "discord.js" {
         bannable: boolean;
         client: Client;
         deaf: boolean;
+        displayName: string;
         guild: Guild;
         highestRole: Role;
         id: string;
-        joinDate: Date;
+        joinedAt: Date;
+        joinedTimestamp: number;
         kickable: boolean;
+        lastMessageID: string;
         mute: boolean;
         nickname: string;
         permissions: EvaluatedPermissions;
+        presence: Presence;
         roles: Collection<string, Role>;
         selfDeaf: boolean;
         selfMute: boolean;
@@ -332,8 +373,9 @@ declare module "discord.js" {
         deleteDM(): Promise<DMChannel>;
         edit(data: {}): Promise<GuildMember>;
         hasPermission(permission: PermissionResolvable, explicit?: boolean): boolean;
-        hasPermissions(permission: Permissions[], explicit?: boolean): boolean;
+        hasPermissions(permission: PermissionResolvable[], explicit?: boolean): boolean;
         kick(): Promise<GuildMember>;
+        missingPermissions(permissions: PermissionResolvable[], explicit?: boolean): PermissionResolvable[];
         permissionsIn(channel: ChannelResovalble): EvaluatedPermissions;
         removeRole(role: Role | string): Promise<GuildMember>;
         removeRoles(roles: Collection<string, Role> | Role[] | string[]): Promise<GuildMember>;
@@ -355,21 +397,34 @@ declare module "discord.js" {
         client: Client;
         createdAt: Date;
         createdTimestamp: number;
+        defaultAvatarURL: string;
         discriminator: string;
-        presence: Presence;
+        displayAvatarURL: string;
+        dmChannel: DMChannel;
         id: string;
-        status: string;
+        lastMessageID: string;
+        note: string;
+        presence: Presence;
         username: string;
+        addFriend(): Promise<User>;
+        addFriend(...args): Promise<User>;
         block(): Promise<User>;
-        unblock(): Promise<User>;
-        fetchProfile(): Promise<UserProfile>;
         deleteDM(): Promise<DMChannel>;
         equals(user: User): boolean;
+        fetchProfile(): Promise<UserProfile>;
+        removeFriend(): Promise<User>;
         sendCode(lang: string, content: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
+        sendEmbed(embed: RichEmbed, content?: string, options?: MessageOptions): Promise<Message>;
+        sendEmbed(embed: RichEmbed, options?: MessageOptions): Promise<Message>;
         sendFile(attachment: FileResolvable, fileName?: string, content?: StringResolvable, options?: MessageOptions): Promise<Message>;
         sendMessage(content: string, options?: MessageOptions): Promise<Message | Message[]>;
         sendTTSMessage(content: string, options?: MessageOptions): Promise<Message | Message[]>;
+        setNote(note: string): Promise<User>;
         toString(): string;
+        typingDurationIn(channel: ChannelResovalble): number;
+        typingIn(channel: ChannelResovalble): boolean;
+        typingSinceIn(channel: ChannelResovalble): Date;
+        unblock(): Promise<User>;
     }
     export class PartialGuildChannel {
         client: Client;
@@ -440,13 +495,17 @@ declare module "discord.js" {
         system: boolean;
         tts: boolean;
         type: string;
-        addReaction(emoji: string): MessageReaction; // Not really documented but still worth using/making typings for it.
+        webhookID: string;
+        clearReactions(): Promise<Message>;
         delete(timeout?: number): Promise<Message>;
         edit(content: StringResolvable): Promise<Message>;
         editCode(lang: string, content: StringResolvable): Promise<Message>;
         equals(message: Message, rawData: Object): boolean;
+        fetchWebhook(): Promise<Webhook>;
+        isMemberMentioned(member: GuildMember | User): boolean;
         isMentioned(data: GuildChannel | User | Role | string): boolean;
         pin(): Promise<Message>;
+        react(emoji: string | Emoji | ReactionEmoji): Promise<MessageReaction>;
         reply(content: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
         toString(): string;
         unpin(): Promise<Message>;
@@ -454,13 +513,25 @@ declare module "discord.js" {
     export class MessageEmbed {
         author: MessageEmbedAuthor;
         client: Client;
+        color: number;
+        createdAt: Date;
+        createdTimestamp: number;
         description: string;
+        fields: MessageEmbedField[];
+        footer: MessageEmbedFooter;
+        hexColor: string;
         message: Message;
         provider: MessageEmbedProvider;
         thumbnail: MessageEmbedThumbnail;
         title: string;
         type: string;
         url: string;
+    }
+    export class MessageEmbedField {
+        embed: MessageEmbed;
+        inline: boolean;
+        name: string;
+        value: string;
     }
     export class MessageEmbedThumbnail {
         embed: MessageEmbed;
@@ -479,19 +550,24 @@ declare module "discord.js" {
         name: string;
         url: string;
     }
+    export class MessageEmbedFooter {
+        embed: MessageEmbed;
+        iconURL: string;
+        proxyIconURL: string;
+        text: string;
+    }
     export class RichEmbed {
-        title?: string;
-        description?: string;
-        url?: string;
-        timestamp?: Date;
-        color?: number | string;
-        fields?: { name: string; value: string; inline?: boolean; }[];
+        constructor(data?: RichEmbedOptions);
         author?: { name: string; url?: string; icon_url?: string; };
-        thumbnail?: { url: string; height?: number; width?: number; };
-        image?: { url: string; proxy_url?: string; height?: number; width?: number; };
-        video?: { url: string; height: number; width: number; };
+        color?: number | string;
+        description?: string;
+        fields?: { name: string; value: string; inline?: boolean; }[];
         footer?: { text?: string; icon_url?: string; };
-
+        image?: { url: string; proxy_url?: string; height?: number; width?: number; };
+        thumbnail?: { url: string; height?: number; width?: number; };
+        timestamp?: Date;
+        title?: string;
+        url?: string;
         addField(name: string, value: StringResolvable, inline?: boolean): this;
         setAuthor(name: string, icon?: string, url?: string): this;
         setColor(color: string | number | number[]): this;
@@ -524,13 +600,16 @@ declare module "discord.js" {
         remove(user?: UserResolvable): Promise<MessageReaction>;
     }
     export class Invite {
+        channel: GuildChannel | PartialGuildChannel;
         client: Client;
         code: string;
         createdAt: Date;
         createdTimestamp: number;
+        expiresAt: Date;
+        expiresTimestamp: number;
         guild: Guild | PartialGuild;
-        channel: GuildChannel | PartialGuildChannel;
         inviter: User;
+        maxAge: number;
         maxUses: number;
         temporary: boolean;
         url: string;
@@ -541,13 +620,17 @@ declare module "discord.js" {
     export class VoiceChannel extends GuildChannel {
         bitrate: number;
         connection: VoiceConnection;
+        joinable: boolean;
         members: Collection<string, GuildMember>;
+        speakable: boolean;
         userLimit: number;
         join(): Promise<VoiceConnection>;
         leave(): null;
         setBitrate(bitrate: number): Promise<VoiceChannel>;
+        setUserLimit(userLimit: number): Promise<VoiceChannel>;
     }
     export class Shard {
+        env: Object;
         id: string;
         manager: ShardingManager;
         process: ChildProcess;
@@ -595,10 +678,12 @@ declare module "discord.js" {
         client: Client;
         connections: Collection<string, UserConnection>;
         mutualGuilds: Collection<string, Guild>;
+        premium: boolean;
         user: User;
     }
     export class StreamDispatcher extends EventEmitter {
         passes: number;
+        paused: boolean;
         time: number;
         totalStreamTime: number;
         volume: number;
@@ -651,7 +736,8 @@ declare module "discord.js" {
     export class Role {
         client: Client;
         color: number;
-        createdAt: Date; createdTimestamp: number;
+        createdAt: Date;
+        createdTimestamp: number;
         guild: Guild;
         hexColor: string;
         hoist: boolean;
@@ -662,6 +748,8 @@ declare module "discord.js" {
         name: string;
         permissions: number;
         position: number;
+        static comparePositions(role1: Role, role2: Role): number;
+        comparePositionTo(role: Role): number;
         delete(): Promise<Role>;
         edit(data: RoleData): Promise<Role>;
         equals(role: Role): boolean;
@@ -670,6 +758,7 @@ declare module "discord.js" {
         serialize(): Permissions;
         setColor(color: string | number): Promise<Role>;
         setHoist(hoist: boolean): Promise<Role>;
+        setMentionable(mentionable: boolean): Promise<Role>;
         setName(name: string): Promise<Role>;
         setPermissions(permissions: string[]): Promise<Role>;
         setPosition(position: number): Promise<Role>;
@@ -687,12 +776,10 @@ declare module "discord.js" {
         voiceConnection: VoiceConnection;
     }
     export class VoiceConnection extends EventEmitter {
-        authentication: Object;
         channel: VoiceChannel;
         player: AudioPlayer;
         receivers: VoiceReceiver[];
-        sockets: Object;
-        ssrcMap: Map<number, boolean>;
+        speaking: boolean;
         voiceManager: ClientVoiceManager;
         createReceiver(): VoiceReceiver;
         disconnect();
@@ -744,6 +831,16 @@ declare module "discord.js" {
     type FileResolvable = Buffer | string;
     type GuildMemberResolvable = GuildMember | User;
     type GuildResolvable = Guild;
+    type GuildEditData = {
+        name?: string;
+        region?: string;
+        verificationLevel?: number;
+        afkChannel?: ChannelResovalble;
+        afkTimeout?: number;
+        icon?: Base64Resolvable;
+        owner?: GuildMemberResolvable;
+        splash?: Base64Resolvable;
+    };
     type ChannelLogsQueryOptions = { limit?: number; before?: string; after?: string; around?: string };
     type ChannelResovalble = Channel | Guild | Message | string;
     type InviteOptions = { temporary?: boolean; maxAge?: number; maxUses?: number; };
@@ -775,6 +872,19 @@ declare module "discord.js" {
         large_threshold?: number;
         compress?: boolean;
     };
+    type RichEmbedOptions = {
+        title?: string;
+        description?: string;
+        url?: string;
+        timestamp?: Date;
+        color?: number | string;
+        fields?: { name: string; value: string; inline?: boolean; }[];
+        author?: { name: string; url?: string; icon_url?: string; };
+        thumbnail?: { url: string; height?: number; width?: number; };
+        image?: { url: string; proxy_url?: string; height?: number; width?: number; };
+        video?: { url: string; height: number; width: number; };
+        footer?: { text?: string; icon_url?: string; };
+    }
     type RoleData = {
         name?: string;
         color?: number | string;
@@ -782,5 +892,12 @@ declare module "discord.js" {
         position?: number;
         permissions?: string[];
         mentionable?: boolean;
+    };
+    type ChannelData = {
+        name?: string;
+        position?: number;
+        topic?: string;
+        bitrate?: number;
+        userLimit?: number;
     };
 }
