@@ -34,6 +34,8 @@ class TextBasedChannel {
    * should be replaced with plain-text
    * @property {FileOptions|string} [file] A file to send with the message
    * @property {string} [code] Language for optional codeblock formatting to apply
+   * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
+   * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
    */
 
    /**
@@ -41,6 +43,15 @@ class TextBasedChannel {
     * @property {BufferResolvable} attachment
     * @property {string} [name='file.jpg']
     */
+
+    /**
+    * Options for splitting a message
+     * @typedef {Object} SplitOptions
+     * @property {number} [maxLength=1950] Maximum character length per message piece
+     * @property {string} [char='\n'] Character to split the message with
+     * @property {string} [prepend=''] Text to prepend to every piece except the first
+     * @property {string} [append=''] Text to append to every piece except the last
+     */
 
     /**
      * Send a message to this channel

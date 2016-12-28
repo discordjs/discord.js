@@ -1,5 +1,6 @@
 const Constants = require('../../util/Constants');
 const Collection = require('../../util/Collection');
+const splitMessage = require('../../util/SplitMessage');
 const parseEmoji = require('../../util/ParseEmoji');
 
 const User = require('../../structures/User');
@@ -39,7 +40,7 @@ class RESTMethods {
     return this.rest.makeRequest('get', Constants.Endpoints.botGateway, true);
   }
 
-  sendMessage(channel, content, { tts, nonce, embed, disableEveryone } = {}, file = null) {
+  sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split } = {}, file = null) {
     return new Promise((resolve, reject) => {
       if (typeof content !== 'undefined') content = this.rest.client.resolver.resolveString(content);
 
@@ -47,20 +48,32 @@ class RESTMethods {
         if (disableEveryone || (typeof disableEveryone === 'undefined' && this.rest.client.options.disableEveryone)) {
           content = content.replace(/@(everyone|here)/g, '@\u200b$1');
         }
+
+        if (split) content = splitMessage(content, typeof split === 'object' ? split : {});
       }
 
-      if (channel instanceof User || channel instanceof GuildMember) {
-        this.createDM(channel).then(chan => {
+      const send = (chan) => {
+        if (content instanceof Array) {
+          const messages = [];
+          (function sendChunk(list, index) {
+            chan.send(list[index]).then((message) => {
+              messages.push(message);
+              index++;
+              if (index >= list.length) resolve(messages);
+              sendChunk(list, index);
+            });
+          }(content, 0));
+        } else {
           this.rest.makeRequest('post', Constants.Endpoints.channelMessages(chan.id), true, {
             content, tts, nonce, embed,
-          }, file)
-            .then(data => resolve(this.rest.client.actions.MessageCreate.handle(data).message), reject);
-        }, reject);
+          }, file).then(data => resolve(this.rest.client.actions.MessageCreate.handle(data).message), reject);
+        }
+      };
+
+      if (channel instanceof User || channel instanceof GuildMember) {
+        this.createDM(channel).then(send, reject);
       } else {
-        this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
-          content, tts, nonce, embed,
-        }, file)
-          .then(data => resolve(this.rest.client.actions.MessageCreate.handle(data).message), reject);
+        send(channel);
       }
     });
   }
