@@ -192,7 +192,7 @@ class ClientDataResolver {
 
   /**
    * Turn an array of permissions into a valid discord permission bitfield
-   * @param {Array} permissions An array of permissions as strings or permissions numbers (see resolvePermission)
+   * @param {PermissionResolvable[]} permissions Permissions to resolve together
    * @returns {number}
    */
   resolvePermissions(permissions) {
