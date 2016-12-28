@@ -98,18 +98,17 @@ class TextBasedChannel {
     return this.client.rest.methods.sendMessage(this, content, options);
   }
 
-  sendMessage(...args) {
-    return this.send(...args);
+  sendMessage(content, options) {
+    return this.send(content, options);
   }
 
-  sendEmbed(embed, contentOrOptions, options) {
+  sendEmbed(embed, contentOrOptions, options = {}) {
     let content;
-    if (!options && typeof contentOrOptions === 'object') {
+    if (typeof contentOrOptions === 'string') {
+      content = contentOrOptions;
+    } else {
       content = '';
       options = contentOrOptions;
-    } else {
-      content = contentOrOptions;
-      options = options || {};
     }
     return this.send(content, Object.assign(options, { embed }));
   }

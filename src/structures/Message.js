@@ -385,12 +385,11 @@ class Message {
    */
   edit(contentOrOptions, options) {
     let content;
-    if (!options && typeof contentOrOptions === 'object') {
+    if (typeof contentOrOptions === 'string') {
+      content = contentOrOptions;
+    } else {
       content = '';
       options = contentOrOptions;
-    } else {
-      content = contentOrOptions;
-      options = options || {};
     }
     if (options.code) {
       content = escapeMarkdown(this.client.resolver.resolveString(content), true);
@@ -480,16 +479,7 @@ class Message {
    *  .catch(console.error);
    */
   reply(content, options = {}) {
-    content = this.client.resolver.resolveString(content);
-    const prepend = this.guild ? `${this.author}, ` : '';
-    content = `${prepend}${content}`;
-
-    if (options.split) {
-      if (typeof options.split !== 'object') options.split = {};
-      if (!options.split.prepend) options.split.prepend = prepend;
-    }
-
-    return this.client.rest.methods.sendMessage(this.channel, content, options);
+    return this.channel.send(`${this.guild ? `${this.author}, ` : ''}${content}`, options);
   }
 
   /**
