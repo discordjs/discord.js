@@ -62,7 +62,7 @@ class AudioPlayer extends EventEmitter {
       if (this.listenerCount('error') > 0) this.emit('error', e);
       else this.emit('warn', e);
     });
-    this.playPCMStream(transcoder.output, options);
+    return this.playPCMStream(transcoder.output, options);
   }
 
   playPCMStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
