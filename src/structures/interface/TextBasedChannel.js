@@ -2,7 +2,6 @@ const path = require('path');
 const Message = require('../Message');
 const MessageCollector = require('../MessageCollector');
 const Collection = require('../../util/Collection');
-const RichEmbed = require('../RichEmbed');
 const escapeMarkdown = require('../../util/EscapeMarkdown');
 
 /**
@@ -25,7 +24,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Options that can be passed into sendMessage, sendTTSMessage, sendFile, sendCode, or Message.reply
+   * Options that can be passed into send
    * @typedef {Object} MessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
@@ -33,112 +32,58 @@ class TextBasedChannel {
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
-   * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
-   * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
+   * @property {FileOptions} [file] A file to send with the message
+   * @property {string} [code] Language for optional codeblock formatting to apply
    */
 
-  /**
-   * Options for splitting a message
-   * @typedef {Object} SplitOptions
-   * @property {number} [maxLength=1950] Maximum character length per message piece
-   * @property {string} [char='\n'] Character to split the message with
-   * @property {string} [prepend=''] Text to prepend to every piece except the first
-   * @property {string} [append=''] Text to append to every piece except the last
-   */
+   /**
+    * @typedef {Object} FileOptions
+    * @property {BufferResolvable} attachment
+    * @property {string} [name='file.jpg']
+    */
 
-  /**
-   * Send a message to this channel
-   * @param {StringResolvable} content The content to send
-   * @param {MessageOptions} [options={}] The options to provide
-   * @returns {Promise<Message|Message[]>}
-   * @example
-   * // send a message
-   * channel.sendMessage('hello!')
-   *  .then(message => console.log(`Sent message: ${message.content}`))
-   *  .catch(console.error);
-   */
-  sendMessage(content, options = {}) {
-    return this.client.rest.methods.sendMessage(this, content, options);
-  }
-
-  /**
-   * Send a text-to-speech message to this channel
-   * @param {StringResolvable} content The content to send
-   * @param {MessageOptions} [options={}] The options to provide
-   * @returns {Promise<Message|Message[]>}
-   * @example
-   * // send a TTS message
-   * channel.sendTTSMessage('hello!')
-   *  .then(message => console.log(`Sent tts message: ${message.content}`))
-   *  .catch(console.error);
-   */
-  sendTTSMessage(content, options = {}) {
-    Object.assign(options, { tts: true });
-    return this.client.rest.methods.sendMessage(this, content, options);
-  }
-
-  /**
-   * Send an embed to this channel
-   * @param {RichEmbed|Object} embed The embed to send
-   * @param {string|MessageOptions} contentOrOptions Content to send or message options
-   * @param {MessageOptions} options If contentOrOptions is content, this will be options
-   * @returns {Promise<Message>}
-   */
-  sendEmbed(embed, contentOrOptions, options = {}) {
-    if (!(embed instanceof RichEmbed)) embed = new RichEmbed(embed);
+    /**
+     * Send a message to this channel
+     * @param {StringResolvable} contentOrOptions The content to send, or MessageOptions
+     * @param {MessageOptions} [options={}] The options to provide
+     * @returns {Promise<Message|Message[]>}
+     * @example
+     * // send a message
+     * channel.send('hello!')
+     *  .then(message => console.log(`Sent message: ${message.content}`))
+     *  .catch(console.error);
+     */
+  send(contentOrOptions, options) {
     let content;
-    if (contentOrOptions) {
-      if (typeof contentOrOptions === 'string') {
-        content = contentOrOptions;
-      } else {
-        options = contentOrOptions;
+    if (!options && typeof contentOrOptions === 'object') {
+      content = '';
+      options = contentOrOptions;
+    } else {
+      content = contentOrOptions;
+      options = options || {};
+    }
+    if (options.code) {
+      content = escapeMarkdown(this.client.resolver.resolveString(content), true);
+      content = `\`\`\`${options.code || ''}\n${content}\n\`\`\``;
+    }
+    if (options.file) {
+      if (!options.file.name) {
+        if (typeof options.file.attachment === 'string') {
+          options.file.name = path.basename(options.file.attachment);
+        } else if (options.file.attachment && options.file.attachment.path) {
+          options.file.name = path.basename(options.file.attachment.path);
+        } else {
+          options.file.name = 'file.jpg';
+        }
       }
+      return this.client.resolver.resolveBuffer(options.file.attachment).then(file =>
+        this.client.rest.methods.sendMessage(this, content, options, {
+          file,
+          name: options.file.name,
+        })
+      );
     }
-    options.embed = embed;
-    return this.sendMessage(content, options);
-  }
-
-  /**
-   * Send a file to this channel
-   * @param {BufferResolvable} attachment The file to send
-   * @param {string} [fileName="file.jpg"] The name and extension of the file
-   * @param {StringResolvable} [content] Text message to send with the attachment
-   * @param {MessageOptions} [options] The options to provide
-   * @returns {Promise<Message>}
-   */
-  sendFile(attachment, fileName, content, options = {}) {
-    if (!fileName) {
-      if (typeof attachment === 'string') {
-        fileName = path.basename(attachment);
-      } else if (attachment && attachment.path) {
-        fileName = path.basename(attachment.path);
-      } else {
-        fileName = 'file.jpg';
-      }
-    }
-    return this.client.resolver.resolveBuffer(attachment).then(file =>
-      this.client.rest.methods.sendMessage(this, content, options, {
-        file,
-        name: fileName,
-      })
-    );
-  }
-
-  /**
-   * Send a code block to this channel
-   * @param {string} lang Language for the code block
-   * @param {StringResolvable} content Content of the code block
-   * @param {MessageOptions} options The options to provide
-   * @returns {Promise<Message|Message[]>}
-   */
-  sendCode(lang, content, options = {}) {
-    if (options.split) {
-      if (typeof options.split !== 'object') options.split = {};
-      if (!options.split.prepend) options.split.prepend = `\`\`\`${lang || ''}\n`;
-      if (!options.split.append) options.split.append = '\n```';
-    }
-    content = escapeMarkdown(this.client.resolver.resolveString(content), true);
-    return this.sendMessage(`\`\`\`${lang || ''}\n${content}\n\`\`\``, options);
+    return this.client.rest.methods.sendMessage(this, content, options);
   }
 
   /**
@@ -349,7 +294,7 @@ class TextBasedChannel {
 }
 
 exports.applyToClass = (structure, full = false) => {
-  const props = ['sendMessage', 'sendTTSMessage', 'sendEmbed', 'sendFile', 'sendCode'];
+  const props = ['send'];
   if (full) {
     props.push('_cacheMessage');
     props.push('fetchMessages');

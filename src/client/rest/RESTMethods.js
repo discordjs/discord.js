@@ -40,7 +40,7 @@ class RESTMethods {
     return this.rest.makeRequest('get', Constants.Endpoints.botGateway, true);
   }
 
-  sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split } = {}, file = null) {
+  sendMessage(channel, content, { tts, nonce, embed, disableEveryone } = {}, file = null) {
     return new Promise((resolve, reject) => {
       if (typeof content !== 'undefined') content = this.rest.client.resolver.resolveString(content);
 
@@ -48,49 +48,22 @@ class RESTMethods {
         if (disableEveryone || (typeof disableEveryone === 'undefined' && this.rest.client.options.disableEveryone)) {
           content = content.replace(/@(everyone|here)/g, '@\u200b$1');
         }
-
-        if (split) content = splitMessage(content, typeof split === 'object' ? split : {});
       }
 
       if (channel instanceof User || channel instanceof GuildMember) {
         this.createDM(channel).then(chan => {
-          this._sendMessageRequest(chan, content, file, tts, nonce, embed, resolve, reject);
+          this.rest.makeRequest('post', Constants.Endpoints.channelMessages(chan.id), true, {
+            content, tts, nonce, embed,
+          }, file)
+            .then(data => resolve(this.rest.client.actions.MessageCreate.handle(data).message), reject);
         }, reject);
       } else {
-        this._sendMessageRequest(channel, content, file, tts, nonce, embed, resolve, reject);
+        this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
+          content, tts, nonce, embed,
+        }, file)
+          .then(data => resolve(this.rest.client.actions.MessageCreate.handle(data).message), reject);
       }
     });
-  }
-
-  _sendMessageRequest(channel, content, file, tts, nonce, embed, resolve, reject) {
-    if (content instanceof Array) {
-      const datas = [];
-      let promise = this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
-        content: content[0], tts, nonce,
-      }, file).catch(reject);
-
-      for (let i = 1; i <= content.length; i++) {
-        if (i < content.length) {
-          const i2 = i;
-          promise = promise.then(data => {
-            datas.push(data);
-            return this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
-              content: content[i2], tts, nonce, embed,
-            }, file);
-          }, reject);
-        } else {
-          promise.then(data => {
-            datas.push(data);
-            resolve(this.rest.client.actions.MessageCreate.handle(datas).messages);
-          }, reject);
-        }
-      }
-    } else {
-      this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
-        content, tts, nonce, embed,
-      }, file)
-        .then(data => resolve(this.rest.client.actions.MessageCreate.handle(data).message), reject);
-    }
   }
 
   deleteMessage(message) {
