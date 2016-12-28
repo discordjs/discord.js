@@ -24,7 +24,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Options that can be passed into send
+   * Options that can be passed into send, sendMessage, sendFile, sendEmbed, sendCode, and Message#reply
    * @typedef {Object} MessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
@@ -94,10 +94,28 @@ class TextBasedChannel {
     return this.client.rest.methods.sendMessage(this, content, options);
   }
 
+  /**
+   * Send a message to this channel
+   * @param {StringResolvable} content The content to send
+   * @param {MessageOptions} [options={}] The options to provide
+   * @returns {Promise<Message|Message[]>}
+   * @example
+   * // send a message
+   * channel.sendMessage('hello!')
+   *  .then(message => console.log(`Sent message: ${message.content}`))
+   *  .catch(console.error);
+   */
   sendMessage(content, options) {
     return this.send(content, options);
   }
 
+  /**
+   * Send an embed to this channel
+   * @param {RichEmbed|Object} embed The embed to send
+   * @param {string|MessageOptions} contentOrOptions Content to send or message options
+   * @param {MessageOptions} options If contentOrOptions is content, this will be options
+   * @returns {Promise<Message>}
+   */
   sendEmbed(embed, contentOrOptions, options = {}) {
     let content;
     if (typeof contentOrOptions === 'string') {
@@ -109,10 +127,25 @@ class TextBasedChannel {
     return this.send(content, Object.assign(options, { embed }));
   }
 
+  /**
+   * Send a file to this channel
+   * @param {BufferResolvable} attachment The file to send
+   * @param {string} [name="file.jpg"] The name and extension of the file
+   * @param {StringResolvable} [content] Text message to send with the attachment
+   * @param {MessageOptions} [options] The options to provide
+   * @returns {Promise<Message>}
+   */
   sendFile(attachment, name, content, options = {}) {
     return this.send(content, Object.assign(options, { file: { attachment, name } }));
   }
 
+  /**
+   * Send a code block to this channel
+   * @param {string} lang Language for the code block
+   * @param {StringResolvable} content Content of the code block
+   * @param {MessageOptions} options The options to provide
+   * @returns {Promise<Message|Message[]>}
+   */
   sendCode(lang, content, options = {}) {
     return this.send(content, Object.assign(options, { code: lang }));
   }

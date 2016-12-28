@@ -86,8 +86,12 @@ class RESTMethods {
     });
   }
 
-  updateMessage(message, content, { embed } = {}) {
+  updateMessage(message, content, { embed, code } = {}) {
     content = this.client.resolver.resolveString(content);
+    if (code) {
+      content = escapeMarkdown(this.client.resolver.resolveString(content), true);
+      content = `\`\`\`${code || ''}\n${content}\n\`\`\``;
+    }
     return this.rest.makeRequest('patch', Constants.Endpoints.channelMessage(message.channel.id, message.id), true, {
       content, embed,
     }).then(data => this.client.actions.MessageUpdate.handle(data).updated);
