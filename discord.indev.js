@@ -21860,11 +21860,9 @@ class WebSocketPacketManager {
       this.ws.client._pong(this.ws.client._pingTimestamp);
       this.ws.lastHeartbeatAck = true;
       this.ws.client.emit('debug', 'Heartbeat acknowledged');
-    }
-
-    if (packet.op === Constants.OPCodes.HEARTBEAT) {
+    } else if (packet.op === Constants.OPCodes.HEARTBEAT) {
       this.client.ws.send({ op: Constants.OPCodes.HEARTBEAT });
-      this.ws.client.emit('debug', 'Received gateway heartbeat!');
+      this.ws.client.emit('debug', 'Received gateway heartbeat');
     }
 
     if (this.ws.status === Constants.Status.RECONNECTING) {
