@@ -10850,7 +10850,8 @@ class ClientDataResolver {
   /**
    * Data that resolves to give a Guild object. This can be:
    * * A Guild object
-   * @typedef {Guild} GuildResolvable
+   * * A Guild ID
+   * @typedef {Guild|string} GuildResolvable
    */
 
   /**
