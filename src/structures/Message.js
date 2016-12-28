@@ -391,10 +391,6 @@ class Message {
       content = '';
       options = contentOrOptions;
     }
-    if (options.code) {
-      content = escapeMarkdown(this.client.resolver.resolveString(content), true);
-      content = `\`\`\`${options.code || ''}\n${content}\n\`\`\``;
-    }
     return this.client.rest.methods.updateMessage(this, content, options);
   }
 

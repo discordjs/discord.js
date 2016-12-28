@@ -2,6 +2,7 @@ const Constants = require('../../util/Constants');
 const Collection = require('../../util/Collection');
 const splitMessage = require('../../util/SplitMessage');
 const parseEmoji = require('../../util/ParseEmoji');
+const escapeMarkdown = require('../../util/EscapeMarkdown');
 
 const User = require('../../structures/User');
 const GuildMember = require('../../structures/GuildMember');
@@ -40,11 +41,16 @@ class RESTMethods {
     return this.rest.makeRequest('get', Constants.Endpoints.botGateway, true);
   }
 
-  sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split } = {}, file = null) {
+  sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code } = {}, file = null) {
     return new Promise((resolve, reject) => {
       if (typeof content !== 'undefined') content = this.rest.client.resolver.resolveString(content);
 
       if (content) {
+        if (code) {
+          content = escapeMarkdown(this.rest.client.resolver.resolveString(content), true);
+          content = `\`\`\`${code || ''}\n${content}\n\`\`\``;
+        }
+
         if (disableEveryone || (typeof disableEveryone === 'undefined' && this.rest.client.options.disableEveryone)) {
           content = content.replace(/@(everyone|here)/g, '@\u200b$1');
         }

@@ -2,7 +2,7 @@ const path = require('path');
 const Message = require('../Message');
 const MessageCollector = require('../MessageCollector');
 const Collection = require('../../util/Collection');
-const escapeMarkdown = require('../../util/EscapeMarkdown');
+
 
 /**
  * Interface for classes that have text-channel-like features
@@ -72,10 +72,6 @@ class TextBasedChannel {
     } else {
       content = contentOrOptions;
       options = options || {};
-    }
-    if (options.code) {
-      content = escapeMarkdown(this.client.resolver.resolveString(content), true);
-      content = `\`\`\`${options.code || ''}\n${content}\n\`\`\``;
     }
     if (options.file) {
       if (typeof options.file === 'string') options.file = { attachment: options.file };
