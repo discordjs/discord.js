@@ -369,11 +369,12 @@ class Message {
    * Options that can be passed into editMessage
    * @typedef {Object} MessageEditOptions
    * @property {Object} [embed] An embed to be added/edited
+   * @property {string} [code] Language for optional codeblock formatting to apply
    */
 
   /**
    * Edit the content of the message
-   * @param {StringResolvable} content The new content for the message
+   * @param {StringResolvable} contentOrOptions The new content for the message, or MessageEditOptions
    * @param {MessageEditOptions} [options={}] The options to provide
    * @returns {Promise<Message>}
    * @example
@@ -382,7 +383,19 @@ class Message {
    *  .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
    *  .catch(console.error);
    */
-  edit(content, options = {}) {
+  edit(contentOrOptions, options) {
+    let content;
+    if (!options && typeof contentOrOptions === 'object') {
+      content = '';
+      options = contentOrOptions;
+    } else {
+      content = contentOrOptions;
+      options = options || {};
+    }
+    if (options.code) {
+      content = escapeMarkdown(this.client.resolver.resolveString(content), true);
+      content = `\`\`\`${options.code || ''}\n${content}\n\`\`\``;
+    }
     return this.client.rest.methods.updateMessage(this, content, options);
   }
 
