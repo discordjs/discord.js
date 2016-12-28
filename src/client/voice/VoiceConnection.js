@@ -79,7 +79,6 @@ class VoiceConnection extends EventEmitter {
        * @param {string|Error} warning the warning
        */
       this.emit('warn', e);
-      this.player.cleanup();
     });
 
     /**
