@@ -39,6 +39,7 @@ class AudioPlayer extends EventEmitter {
     const dispatcher = data.dispatcher;
     if (transcoder) transcoder.kill();
     if (dispatcher) dispatcher.destroy('end');
+    this.streams.delete(stream);
   }
 
   destroyAllStreams(except) {
