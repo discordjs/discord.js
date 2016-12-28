@@ -48,7 +48,7 @@ class AudioPlayer extends EventEmitter {
     const transcoder = this.prism.transcode({
       type: 'ffmpeg',
       media: stream,
-      ffmpegArguments,
+      ffmpegArguments: ffmpegArguments.concat(['-ss', String(seek)]),
     });
     this.streams.set(stream, { transcoder });
     this.playPCMStream(transcoder.output, options);
