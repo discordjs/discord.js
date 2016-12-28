@@ -1,30 +1,24 @@
-const PCMConverters = require('../pcm/ConverterEngineList');
-const OpusEncoders = require('../opus/OpusEngineList');
 const EventEmitter = require('events').EventEmitter;
+const Prism = require('prism-media');
 const StreamDispatcher = require('../dispatcher/StreamDispatcher');
+const Collection = require('../../../util/Collection');
+const OpusEncoders = require('../opus/OpusEngineList');
 
-/**
- * Represents the Audio Player of a Voice Connection
- * @extends {EventEmitter}
- * @private
- */
+const ffmpegArguments = [
+  '-analyzeduration', '0',
+  '-loglevel', '0',
+  '-f', 's16le',
+  '-ar', '48000',
+  '-ac', '2',
+];
+
 class AudioPlayer extends EventEmitter {
   constructor(voiceConnection) {
     super();
-    /**
-     * The voice connection the player belongs to
-     * @type {VoiceConnection}
-     */
     this.voiceConnection = voiceConnection;
-    this.audioToPCM = new (PCMConverters.fetch())();
+    this.prism = new Prism();
     this.opusEncoder = OpusEncoders.fetch();
-    this.currentConverter = null;
-    /**
-     * The current stream dispatcher, if a stream is being played
-     * @type {StreamDispatcher}
-     */
-    this.dispatcher = null;
-    this.audioToPCM.on('error', e => this.emit('error', e));
+    this.transcoders = new Collection();
     this.streamingData = {
       channels: 2,
       count: 0,
@@ -32,49 +26,38 @@ class AudioPlayer extends EventEmitter {
       timestamp: 0,
       pausedTime: 0,
     };
-    this.voiceConnection.on('closing', () => this.cleanup(null, 'voice connection closing'));
+  }
+
+  get currentTranscoder() {
+    return this.transcoders.last();
+  }
+
+  destroyAllTranscoders(exceptLatest) {
+    for (const stream of this.transcoders.keys()) {
+      const transcoder = this.transcoders.get(stream);
+      if (exceptLatest && transcoder === this.currentTranscoder) continue;
+      transcoder.kill();
+    }
   }
 
   playUnknownStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
     const options = { seek, volume, passes };
-    stream.on('end', () => {
-      this.emit('debug', 'Input stream to converter has ended');
+    const transcoder = this.prism.transcode({
+      type: 'ffmpeg',
+      media: stream,
+      ffmpegArguments,
     });
-    stream.on('error', e => this.emit('error', e));
-    const conversionProcess = this.audioToPCM.createConvertStream(options.seek);
-    conversionProcess.on('error', e => this.emit('error', e));
-    conversionProcess.setInput(stream);
-    return this.playPCMStream(conversionProcess.process.stdout, conversionProcess, options);
+    this.transcoders.set(stream, transcoder);
+    this.playPCMStream(transcoder.output, options);
   }
 
-  cleanup(checkStream, reason) {
-    // cleanup is a lot less aggressive than v9 because it doesn't try to kill every single stream it is aware of
-    this.emit('debug', `Clean up triggered due to ${reason}`);
-    const filter = checkStream && this.dispatcher && this.dispatcher.stream === checkStream;
-    if (this.currentConverter && (checkStream ? filter : true)) {
-      this.currentConverter.destroy();
-      this.currentConverter = null;
-    }
-  }
-
-  playPCMStream(stream, converter, { seek = 0, volume = 1, passes = 1 } = {}) {
+  playPCMStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
     const options = { seek, volume, passes };
-    stream.on('end', () => this.emit('debug', 'PCM input stream ended'));
-    this.cleanup(null, 'outstanding play stream');
-    this.currentConverter = converter;
-    if (this.dispatcher) {
-      this.streamingData = this.dispatcher.streamingData;
-    }
-    stream.on('error', e => this.emit('error', e));
-    const dispatcher = new StreamDispatcher(this, stream, this.streamingData, options);
-    dispatcher.on('error', e => this.emit('error', e));
-    dispatcher.on('end', () => this.cleanup(dispatcher.stream, 'dispatcher ended'));
+    this.destroyAllTranscoders(true);
+    const dispatcher = new StreamDispatcher(this, stream, options);
     dispatcher.on('speaking', value => this.voiceConnection.setSpeaking(value));
-    this.dispatcher = dispatcher;
-    dispatcher.on('debug', m => this.emit('debug', `Stream dispatch - ${m}`));
     return dispatcher;
   }
-
 }
 
 module.exports = AudioPlayer;

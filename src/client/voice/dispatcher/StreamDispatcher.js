@@ -16,17 +16,10 @@ nonce.fill(0);
  * @extends {EventEmitter}
  */
 class StreamDispatcher extends EventEmitter {
-  constructor(player, stream, sd, streamOptions) {
+  constructor(player, stream, streamOptions) {
     super();
     this.player = player;
     this.stream = stream;
-    this.streamingData = {
-      channels: 2,
-      count: 0,
-      sequence: sd.sequence,
-      timestamp: sd.timestamp,
-      pausedTime: 0,
-    };
     this._startStreaming();
     this._triggered = false;
     this._volume = streamOptions.volume;
@@ -45,6 +38,10 @@ class StreamDispatcher extends EventEmitter {
     this.paused = false;
 
     this.setVolume(streamOptions.volume || 1);
+  }
+
+  get streamingData() {
+    return this.player.streamingData;
   }
 
   /**
