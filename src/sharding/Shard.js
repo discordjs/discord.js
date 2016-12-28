@@ -151,6 +151,12 @@ class Shard {
       }
     }
 
+    /**
+     * Emitted upon recieving a message from a shard
+     * @event ShardingManager#message
+     * @param {Shard} shard Shard that sent the message
+     * @param {*} message Message that was received
+     */
     this.manager.emit('message', this, message);
   }
 }
