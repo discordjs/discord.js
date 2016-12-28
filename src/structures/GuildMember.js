@@ -430,10 +430,11 @@ class GuildMember {
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  sendCode() { return; }
+  sendEmbed() { return; }
+  sendFile() { return; }
   sendMessage() { return; }
   sendTTSMessage() { return; }
-  sendFile() { return; }
-  sendCode() { return; }
 }
 
 TextBasedChannel.applyToClass(GuildMember);
