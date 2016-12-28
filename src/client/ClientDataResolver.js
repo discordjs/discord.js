@@ -174,7 +174,9 @@ class ClientDataResolver {
    *   "USE_VAD", // use voice activity detection
    *   "CHANGE_NICKNAME",
    *   "MANAGE_NICKNAMES", // change nicknames of others
-   *   "MANAGE_ROLES_OR_PERMISSIONS"
+   *   "MANAGE_ROLES_OR_PERMISSIONS",
+   *   "MANAGE_WEBHOOKS",
+   *   "MANAGE_EMOJIS"
    * ]
    * ```
    * @typedef {string|number} PermissionResolvable
