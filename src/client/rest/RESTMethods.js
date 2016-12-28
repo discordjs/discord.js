@@ -41,7 +41,6 @@ class RESTMethods {
   }
 
   sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split } = {}, file = null) {
-    const sendMessage = this.sendMessage;
     return new Promise((resolve, reject) => {
       if (typeof content !== 'undefined') content = this.rest.client.resolver.resolveString(content);
 
@@ -58,7 +57,7 @@ class RESTMethods {
           const messages = [];
           (function sendChunk(list, index) {
             const options = index === list.length ? { tts, embed } : { tts };
-            sendMessage(chan, list[index], options, index === list.length ? file : null).then((message) => {
+            chan.send(list[index], options, index === list.length ? file : null).then((message) => {
               messages.push(message);
               if (index >= list.length) return resolve(messages);
               return sendChunk(list, ++index);
