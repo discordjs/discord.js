@@ -20,9 +20,16 @@ class StreamDispatcher extends EventEmitter {
     super();
     this.player = player;
     this.stream = stream;
-    this.startStreaming();
-    this.streamOptions = streamOptions;
-    this.streamOptions.volume = this.streamOptions.volume || 0;
+    this._startStreaming();
+    this._triggered = false;
+    this._volume = streamOptions.volume;
+
+    /**
+     * How many passes the dispatcher should take when sending packets to reduce packet loss. Values over 5
+     * aren't recommended, as it means you are using 5x more bandwidth. You _can_ edit this at runtime.
+     * @type {number}
+     */
+    this.passes = streamOptions.passes || 1;
 
     /**
      * Whether playing is paused
@@ -30,13 +37,7 @@ class StreamDispatcher extends EventEmitter {
      */
     this.paused = false;
 
-    this.destroyed = false;
-
     this.setVolume(streamOptions.volume || 1);
-  }
-
-  get passes() {
-    return this.streamOptions.passes || 1;
   }
 
   get streamingData() {
@@ -67,7 +68,7 @@ class StreamDispatcher extends EventEmitter {
    * @readonly
    */
   get volume() {
-    return this.streamOptions.volume;
+    return this._volume;
   }
 
   /**
@@ -75,7 +76,7 @@ class StreamDispatcher extends EventEmitter {
    * @param {number} volume The volume that you want to set
    */
   setVolume(volume) {
-    this.streamOptions.volume = volume;
+    this._volume = volume;
   }
 
   /**
@@ -83,7 +84,7 @@ class StreamDispatcher extends EventEmitter {
    * @param {number} db The decibels
    */
   setVolumeDecibels(db) {
-    this.streamOptions.volume = Math.pow(10, db / 20);
+    this._volume = Math.pow(10, db / 20);
   }
 
   /**
@@ -91,29 +92,32 @@ class StreamDispatcher extends EventEmitter {
    * @param {number} value The value for the volume
    */
   setVolumeLogarithmic(value) {
-    this.streamOptions.volume = Math.pow(value, 1.660964);
+    this._volume = Math.pow(value, 1.660964);
   }
 
   /**
    * Stops sending voice packets to the voice connection (stream may still progress however)
    */
-  pause() { this.setPaused(true); }
+  pause() {
+    this._setPaused(true);
+  }
 
   /**
    * Resumes sending voice packets to the voice connection (may be further on in the stream than when paused)
    */
-  resume() { this.setPaused(false); }
-
+  resume() {
+    this._setPaused(false);
+  }
 
   /**
    * Stops the current stream permanently and emits an `end` event.
    * @param {string} [reason='user'] An optional reason for stopping the dispatcher.
    */
   end(reason = 'user') {
-    this.destroy('end', reason);
+    this._triggerTerminalState('end', reason);
   }
 
-  setSpeaking(value) {
+  _setSpeaking(value) {
     this.speaking = value;
     /**
      * Emitted when the dispatcher starts/stops speaking
@@ -123,16 +127,16 @@ class StreamDispatcher extends EventEmitter {
     this.emit('speaking', value);
   }
 
-  sendBuffer(buffer, sequence, timestamp) {
+  _sendBuffer(buffer, sequence, timestamp) {
     let repeats = this.passes;
-    const packet = this.createPacket(sequence, timestamp, this.player.opusEncoder.encode(buffer));
+    const packet = this._createPacket(sequence, timestamp, this.player.opusEncoder.encode(buffer));
     while (repeats--) {
       this.player.voiceConnection.sockets.udp.send(packet)
         .catch(e => this.emit('debug', `Failed to send a packet ${e}`));
     }
   }
 
-  createPacket(sequence, timestamp, buffer) {
+  _createPacket(sequence, timestamp, buffer) {
     const packetBuffer = new Buffer(buffer.length + 28);
     packetBuffer.fill(0);
     packetBuffer[0] = 0x80;
@@ -150,41 +154,41 @@ class StreamDispatcher extends EventEmitter {
     return packetBuffer;
   }
 
-  applyVolume(buffer) {
-    if (this.volume === 1) return buffer;
+  _applyVolume(buffer) {
+    if (this._volume === 1) return buffer;
 
     const out = new Buffer(buffer.length);
     for (let i = 0; i < buffer.length; i += 2) {
       if (i >= buffer.length - 1) break;
-      const uint = Math.min(32767, Math.max(-32767, Math.floor(this.volume * buffer.readInt16LE(i))));
+      const uint = Math.min(32767, Math.max(-32767, Math.floor(this._volume * buffer.readInt16LE(i))));
       out.writeInt16LE(uint, i);
     }
 
     return out;
   }
 
-  process() {
+  _send() {
     try {
-      if (this.destroyed) {
-        this.setSpeaking(false);
+      if (this._triggered) {
+        this._setSpeaking(false);
         return;
       }
 
       const data = this.streamingData;
 
       if (data.missed >= 5) {
-        this.destroy('end', 'Stream is not generating quickly enough.');
+        this._triggerTerminalState('end', 'Stream is not generating quickly enough.');
         return;
       }
 
       if (this.paused) {
         // data.timestamp = data.timestamp + 4294967295 ? data.timestamp + 960 : 0;
         data.pausedTime += data.length * 10;
-        this.player.voiceConnection.voiceManager.client.setTimeout(() => this.process(), data.length * 10);
+        this.player.voiceConnection.voiceManager.client.setTimeout(() => this._send(), data.length * 10);
         return;
       }
 
-      this.setSpeaking(true);
+      this._setSpeaking(true);
 
       if (!data.startTime) {
         /**
@@ -200,7 +204,7 @@ class StreamDispatcher extends EventEmitter {
       if (!buffer) {
         data.missed++;
         data.pausedTime += data.length * 10;
-        this.player.voiceConnection.voiceManager.client.setTimeout(() => this.process(), data.length * 10);
+        this.player.voiceConnection.voiceManager.client.setTimeout(() => this._send(), data.length * 10);
         return;
       }
 
@@ -212,45 +216,89 @@ class StreamDispatcher extends EventEmitter {
         buffer = newBuffer;
       }
 
-      buffer = this.applyVolume(buffer);
+      buffer = this._applyVolume(buffer);
 
       data.count++;
       data.sequence = (data.sequence + 1) < 65536 ? data.sequence + 1 : 0;
       data.timestamp = data.timestamp + 4294967295 ? data.timestamp + 960 : 0;
 
-      this.sendBuffer(buffer, data.sequence, data.timestamp);
+      this._sendBuffer(buffer, data.sequence, data.timestamp);
 
       const nextTime = data.length + (data.startTime + data.pausedTime + (data.count * data.length) - Date.now());
-      this.player.voiceConnection.voiceManager.client.setTimeout(() => this.process(), nextTime);
+      this.player.voiceConnection.voiceManager.client.setTimeout(() => this._send(), nextTime);
     } catch (e) {
-      this.destroy('error', e);
+      this._triggerTerminalState('error', e);
     }
   }
 
-  destroy(type, reason) {
-    if (this.destroyed) return;
-    this.destroyed = true;
-    this.setSpeaking(false);
-    this.emit(type, reason);
+  _triggerEnd(reason) {
+    /**
+     * Emitted once the stream has ended. Attach a `once` listener to this.
+     * @event StreamDispatcher#end
+     * @param {string} reason The reason for the end of the dispatcher. If it ended because it reached the end of the
+     * stream, this would be `stream`. If you invoke `.end()` without specifying a reason, this would be `user`.
+     */
+    this.emit('end', reason);
   }
 
-  startStreaming() {
+  _triggerError(err) {
+    this.emit('end');
+    /**
+     * Emitted once the stream has encountered an error. Attach a `once` listener to this. Also emits `end`.
+     * @event StreamDispatcher#error
+     * @param {Error} err The encountered error
+     */
+    this.emit('error', err);
+  }
+
+  _triggerTerminalState(state, err) {
+    if (this._triggered) return;
+    /**
+     * Emitted when the stream wants to give debug information.
+     * @event StreamDispatcher#debug
+     * @param {string} information The debug information
+     */
+    this.emit('debug', `Triggered terminal state ${state} - stream is now dead`);
+    this._triggered = true;
+    this._setSpeaking(false);
+    switch (state) {
+      case 'end':
+        this._triggerEnd(err);
+        break;
+      case 'error':
+        this._triggerError(err);
+        break;
+      default:
+        this.emit('error', 'Unknown trigger state');
+        break;
+    }
+  }
+
+  _startStreaming() {
     if (!this.stream) {
       this.emit('error', 'No stream');
       return;
     }
 
-    this.stream.on('end', err => this.destroy('end', err || 'stream'));
-    this.stream.on('error', err => this.destroy('error', err));
+    this.stream.on('end', err => this._triggerTerminalState('end', err || 'stream'));
+    this.stream.on('error', err => this._triggerTerminalState('error', err));
 
     const data = this.streamingData;
     data.length = 20;
     data.missed = 0;
 
-    this.stream.once('readable', () => this.process());
+    this.stream.once('readable', () => this._send());
   }
 
-  setPaused(paused) { this.setSpeaking(!(this.paused = paused)); }
+  _setPaused(paused) {
+    if (paused) {
+      this.paused = true;
+      this._setSpeaking(false);
+    } else {
+      this.paused = false;
+      this._setSpeaking(true);
+    }
+  }
 }
 
 module.exports = StreamDispatcher;

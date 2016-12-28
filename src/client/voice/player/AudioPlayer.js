@@ -18,7 +18,7 @@ class AudioPlayer extends EventEmitter {
     this.voiceConnection = voiceConnection;
     this.prism = new Prism();
     this.opusEncoder = OpusEncoders.fetch();
-    this.transcoders = new Collection();
+    this.streams = new Collection();
     this.streamingData = {
       channels: 2,
       count: 0,
@@ -29,14 +29,17 @@ class AudioPlayer extends EventEmitter {
   }
 
   get currentTranscoder() {
-    return this.transcoders.last();
+    return this.streams.last().transcoder;
   }
 
-  destroyAllTranscoders(exceptLatest) {
-    for (const stream of this.transcoders.keys()) {
-      const transcoder = this.transcoders.get(stream);
+  destroyAllStreams(exceptLatest) {
+    for (const stream of this.streams.keys()) {
+      const data = this.streams.get(stream);
+      const transcoder = data.transcoder;
+      const dispatcher = data.dispatcher;
       if (exceptLatest && transcoder === this.currentTranscoder) continue;
-      transcoder.kill();
+      if (transcoder) transcoder.kill();
+      if (dispatcher) dispatcher.destroy('end');
     }
   }
 
@@ -47,15 +50,17 @@ class AudioPlayer extends EventEmitter {
       media: stream,
       ffmpegArguments,
     });
-    this.transcoders.set(stream, transcoder);
+    this.streams.set(stream, { transcoder });
     this.playPCMStream(transcoder.output, options);
   }
 
   playPCMStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
     const options = { seek, volume, passes };
-    this.destroyAllTranscoders(true);
+    this.destroyAllStreams(true);
     const dispatcher = new StreamDispatcher(this, stream, options);
     dispatcher.on('speaking', value => this.voiceConnection.setSpeaking(value));
+    if (!this.streams.has(stream)) this.streams.set(stream, { dispatcher });
+    this.streams.get(stream).dispatcher = dispatcher;
     return dispatcher;
   }
 }
