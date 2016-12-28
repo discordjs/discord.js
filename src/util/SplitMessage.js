@@ -1,7 +1,7 @@
 module.exports = function splitMessage(text, { maxLength = 1950, char = '\n', prepend = '', append = '' } = {}) {
   if (text.length <= maxLength) return text;
   let splitText = text.split(char);
-  if (splitText.length === 1) splitText = splitText.join('').match(new RegExp(`[\\s\\S]{1,${maxLength}}`, 'g'));
+  if (splitText.length === 1) splitText = splitText.join('').match(new RegExp(`[\\s\\S]{1,${maxLength}}\b`, 'g'));
   const messages = [''];
   let msg = 0;
   for (let i = 0; i < splitText.length; i++) {
