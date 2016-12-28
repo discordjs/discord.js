@@ -294,19 +294,22 @@ class TextBasedChannel {
 }
 
 exports.applyToClass = (structure, full = false) => {
-  const props = ['send'];
+  let props = ['send'];
   if (full) {
-    props.push('_cacheMessage');
-    props.push('fetchMessages');
-    props.push('fetchMessage');
-    props.push('bulkDelete');
-    props.push('startTyping');
-    props.push('stopTyping');
-    props.push('typing');
-    props.push('typingCount');
-    props.push('fetchPinnedMessages');
-    props.push('createCollector');
-    props.push('awaitMessages');
+    props = [
+      'send',
+      '_cacheMessage',
+      'fetchMessages',
+      'fetchMessage',
+      'bulkDelete',
+      'startTyping',
+      'stopTyping',
+      'typing',
+      'typingCount',
+      'fetchPinnedMessages',
+      'createCollector',
+      'awaitMessages',
+    ];
   }
   for (const prop of props) {
     Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
