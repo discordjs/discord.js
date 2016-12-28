@@ -432,6 +432,7 @@ class GuildMember {
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   sendMessage() { return; }
   sendTTSMessage() { return; }
+  sendEmbed() { return; }
   sendFile() { return; }
   sendCode() { return; }
 }
