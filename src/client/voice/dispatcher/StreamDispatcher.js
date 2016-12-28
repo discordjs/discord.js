@@ -217,7 +217,6 @@ class StreamDispatcher extends EventEmitter {
       data.count++;
       data.sequence = (data.sequence + 1) < 65536 ? data.sequence + 1 : 0;
       data.timestamp = data.timestamp + 4294967295 ? data.timestamp + 960 : 0;
-
       this.sendBuffer(buffer, data.sequence, data.timestamp);
 
       const nextTime = data.length + (data.startTime + data.pausedTime + (data.count * data.length) - Date.now());
@@ -247,7 +246,11 @@ class StreamDispatcher extends EventEmitter {
     data.length = 20;
     data.missed = 0;
 
-    this.stream.once('readable', () => this.process());
+    this.stream.once('readable', () => {
+      data.startTime = null;
+      data.count = 0;
+      this.process();
+    });
   }
 
   setPaused(paused) { this.setSpeaking(!(this.paused = paused)); }
