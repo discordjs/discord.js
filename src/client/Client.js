@@ -345,19 +345,17 @@ class Client extends EventEmitter {
 
   /**
    * Generate an invite link for your bot
-   * @param {Array|number} [permissions] An array of permissions to request
+   * @param {PermissionResolvable[]|number} [permissions] An array of permissions to request
    * @returns {Promise<string>} The invite link
    * @example
    * client.generateInvite(['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'])
    *   .then(link => {
-   *     console.log(link);
+   *     console.log(`Generated bot invite link: ${link}`);
    *   });
    */
   generateInvite(permissions) {
     if (permissions) {
-      if (permissions instanceof Array) {
-        permissions = this.resolver.resolvePermissions(permissions);
-      }
+      if (permissions instanceof Array) permissions = this.resolver.resolvePermissions(permissions);
     } else {
       permissions = 0;
     }
