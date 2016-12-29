@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 58);
+/******/ 	return __webpack_require__(__webpack_require__.s = 57);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1252,8 +1252,8 @@ class User {
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  send() { return; }
   sendMessage() { return; }
-  sendTTSMessage() { return; }
   sendEmbed() { return; }
   sendFile() { return; }
   sendCode() { return; }
@@ -1940,7 +1940,7 @@ const Constants = __webpack_require__(0);
 const escapeMarkdown = __webpack_require__(15);
 
 // Done purely for GuildMember, which would cause a bad circular dependency
-const Discord = __webpack_require__(58);
+const Discord = __webpack_require__(57);
 
 /**
  * Represents a message on Discord
@@ -2303,12 +2303,13 @@ class Message {
    * Options that can be passed into editMessage
    * @typedef {Object} MessageEditOptions
    * @property {Object} [embed] An embed to be added/edited
+   * @property {string} [code] Language for optional codeblock formatting to apply
    */
 
   /**
    * Edit the content of the message
-   * @param {StringResolvable} content The new content for the message
-   * @param {MessageEditOptions} [options={}] The options to provide
+   * @param {StringResolvable} [content] The new content for the message
+   * @param {MessageEditOptions} [options] The options to provide
    * @returns {Promise<Message>}
    * @example
    * // update the content of a message
@@ -2316,7 +2317,13 @@ class Message {
    *  .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
    *  .catch(console.error);
    */
-  edit(content, options = {}) {
+  edit(content, options) {
+    if (!options && typeof content === 'object') {
+      options = content;
+      content = '';
+    } else if (!options) {
+      options = {};
+    }
     return this.client.rest.methods.updateMessage(this, content, options);
   }
 
@@ -2401,16 +2408,8 @@ class Message {
    *  .catch(console.error);
    */
   reply(content, options = {}) {
-    content = this.client.resolver.resolveString(content);
-    const prepend = this.guild ? `${this.author}, ` : '';
-    content = `${prepend}${content}`;
-
-    if (options.split) {
-      if (typeof options.split !== 'object') options.split = {};
-      if (!options.split.prepend) options.split.prepend = prepend;
-    }
-
-    return this.client.rest.methods.sendMessage(this.channel, content, options);
+    content = `${this.guild || this.channel.type === 'group' ? `${this.author}, ` : ''}${content}`;
+    return this.channel.send(content, options);
   }
 
   /**
@@ -2511,8 +2510,7 @@ const path = __webpack_require__(23);
 const Message = __webpack_require__(11);
 const MessageCollector = __webpack_require__(34);
 const Collection = __webpack_require__(3);
-const RichEmbed = __webpack_require__(41);
-const escapeMarkdown = __webpack_require__(15);
+
 
 /**
  * Interface for classes that have text-channel-like features
@@ -2534,7 +2532,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Options that can be passed into sendMessage, sendTTSMessage, sendFile, sendCode, or Message.reply
+   * Options that can be passed into send, sendMessage, sendFile, sendEmbed, sendCode, and Message#reply
    * @typedef {Object} MessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
@@ -2542,8 +2540,16 @@ class TextBasedChannel {
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
+   * @property {FileOptions|string} [file] A file to send with the message
+   * @property {string} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
+   */
+
+  /**
+   * @typedef {Object} FileOptions
+   * @property {BufferResolvable} attachment
+   * @property {string} [name='file.jpg']
    */
 
   /**
@@ -2557,6 +2563,45 @@ class TextBasedChannel {
 
   /**
    * Send a message to this channel
+   * @param {StringResolvable} [content] The content to send
+   * @param {MessageOptions} [options={}] The options to provide
+   * @returns {Promise<Message|Message[]>}
+   * @example
+   * // send a message
+   * channel.send('hello!')
+   *  .then(message => console.log(`Sent message: ${message.content}`))
+   *  .catch(console.error);
+   */
+  send(content, options) {
+    if (!options && typeof content === 'object') {
+      options = content;
+      content = '';
+    } else if (!options) {
+      options = {};
+    }
+    if (options.file) {
+      if (typeof options.file === 'string') options.file = { attachment: options.file };
+      if (!options.file.name) {
+        if (typeof options.file.attachment === 'string') {
+          options.file.name = path.basename(options.file.attachment);
+        } else if (options.file.attachment && options.file.attachment.path) {
+          options.file.name = path.basename(options.file.attachment.path);
+        } else {
+          options.file.name = 'file.jpg';
+        }
+      }
+      return this.client.resolver.resolveBuffer(options.file.attachment).then(file =>
+        this.client.rest.methods.sendMessage(this, content, options, {
+          file,
+          name: options.file.name,
+        })
+      );
+    }
+    return this.client.rest.methods.sendMessage(this, content, options);
+  }
+
+  /**
+   * Send a message to this channel
    * @param {StringResolvable} content The content to send
    * @param {MessageOptions} [options={}] The options to provide
    * @returns {Promise<Message|Message[]>}
@@ -2566,88 +2611,48 @@ class TextBasedChannel {
    *  .then(message => console.log(`Sent message: ${message.content}`))
    *  .catch(console.error);
    */
-  sendMessage(content, options = {}) {
-    return this.client.rest.methods.sendMessage(this, content, options);
-  }
-
-  /**
-   * Send a text-to-speech message to this channel
-   * @param {StringResolvable} content The content to send
-   * @param {MessageOptions} [options={}] The options to provide
-   * @returns {Promise<Message|Message[]>}
-   * @example
-   * // send a TTS message
-   * channel.sendTTSMessage('hello!')
-   *  .then(message => console.log(`Sent tts message: ${message.content}`))
-   *  .catch(console.error);
-   */
-  sendTTSMessage(content, options = {}) {
-    Object.assign(options, { tts: true });
-    return this.client.rest.methods.sendMessage(this, content, options);
+  sendMessage(content, options) {
+    return this.send(content, options);
   }
 
   /**
    * Send an embed to this channel
    * @param {RichEmbed|Object} embed The embed to send
-   * @param {string|MessageOptions} contentOrOptions Content to send or message options
-   * @param {MessageOptions} options If contentOrOptions is content, this will be options
+   * @param {string} [content] Content to send
+   * @param {MessageOptions} [options] The options to provide
    * @returns {Promise<Message>}
    */
-  sendEmbed(embed, contentOrOptions, options = {}) {
-    if (!(embed instanceof RichEmbed)) embed = new RichEmbed(embed);
-    let content;
-    if (contentOrOptions) {
-      if (typeof contentOrOptions === 'string') {
-        content = contentOrOptions;
-      } else {
-        options = contentOrOptions;
-      }
+  sendEmbed(embed, content, options) {
+    if (!options && typeof content === 'object') {
+      options = content;
+      content = '';
+    } else if (!options) {
+      options = {};
     }
-    options.embed = embed;
-    return this.sendMessage(content, options);
+    return this.send(content, Object.assign(options, { embed }));
   }
 
   /**
    * Send a file to this channel
    * @param {BufferResolvable} attachment The file to send
-   * @param {string} [fileName="file.jpg"] The name and extension of the file
+   * @param {string} [name='file.jpg'] The name and extension of the file
    * @param {StringResolvable} [content] Text message to send with the attachment
    * @param {MessageOptions} [options] The options to provide
    * @returns {Promise<Message>}
    */
-  sendFile(attachment, fileName, content, options = {}) {
-    if (!fileName) {
-      if (typeof attachment === 'string') {
-        fileName = path.basename(attachment);
-      } else if (attachment && attachment.path) {
-        fileName = path.basename(attachment.path);
-      } else {
-        fileName = 'file.jpg';
-      }
-    }
-    return this.client.resolver.resolveBuffer(attachment).then(file =>
-      this.client.rest.methods.sendMessage(this, content, options, {
-        file,
-        name: fileName,
-      })
-    );
+  sendFile(attachment, name, content, options = {}) {
+    return this.send(content, Object.assign(options, { file: { attachment, name } }));
   }
 
   /**
    * Send a code block to this channel
    * @param {string} lang Language for the code block
    * @param {StringResolvable} content Content of the code block
-   * @param {MessageOptions} options The options to provide
+   * @param {MessageOptions} [options] The options to provide
    * @returns {Promise<Message|Message[]>}
    */
   sendCode(lang, content, options = {}) {
-    if (options.split) {
-      if (typeof options.split !== 'object') options.split = {};
-      if (!options.split.prepend) options.split.prepend = `\`\`\`${lang || ''}\n`;
-      if (!options.split.append) options.split.append = '\n```';
-    }
-    content = escapeMarkdown(this.client.resolver.resolveString(content), true);
-    return this.sendMessage(`\`\`\`${lang || ''}\n${content}\n\`\`\``, options);
+    return this.send(content, Object.assign(options, { code: lang }));
   }
 
   /**
@@ -2858,19 +2863,21 @@ class TextBasedChannel {
 }
 
 exports.applyToClass = (structure, full = false) => {
-  const props = ['sendMessage', 'sendTTSMessage', 'sendEmbed', 'sendFile', 'sendCode'];
+  const props = ['send', 'sendMessage', 'sendEmbed', 'sendFile', 'sendCode'];
   if (full) {
-    props.push('_cacheMessage');
-    props.push('fetchMessages');
-    props.push('fetchMessage');
-    props.push('bulkDelete');
-    props.push('startTyping');
-    props.push('stopTyping');
-    props.push('typing');
-    props.push('typingCount');
-    props.push('fetchPinnedMessages');
-    props.push('createCollector');
-    props.push('awaitMessages');
+    props.push(
+      '_cacheMessage',
+      'fetchMessages',
+      'fetchMessage',
+      'bulkDelete',
+      'startTyping',
+      'stopTyping',
+      'typing',
+      'typingCount',
+      'fetchPinnedMessages',
+      'createCollector',
+      'awaitMessages'
+    );
   }
   for (const prop of props) {
     Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
@@ -3619,8 +3626,8 @@ class GuildMember {
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  send() { return; }
   sendMessage() { return; }
-  sendTTSMessage() { return; }
   sendEmbed() { return; }
   sendFile() { return; }
   sendCode() { return; }
@@ -9943,216 +9950,6 @@ module.exports = PermissionOverwrites;
 
 /***/ },
 /* 41 */
-/***/ function(module, exports) {
-
-/**
- * A rich embed to be sent with a message
- * @param {Object} [data] Data to set in the rich embed
- */
-class RichEmbed {
-  constructor(data = {}) {
-    /**
-     * Title for this Embed
-     * @type {string}
-     */
-    this.title = data.title;
-
-    /**
-     * Description for this Embed
-     * @type {string}
-     */
-    this.description = data.description;
-
-    /**
-     * URL for this Embed
-     * @type {string}
-     */
-    this.url = data.url;
-
-    /**
-     * Color for this Embed
-     * @type {number}
-     */
-    this.color = data.color;
-
-    /**
-     * Author for this Embed
-     * @type {Object}
-     */
-    this.author = data.author;
-
-    /**
-     * Timestamp for this Embed
-     * @type {Date}
-     */
-    this.timestamp = data.timestamp;
-
-    /**
-     * Fields for this Embed
-     * @type {Object[]}
-     */
-    this.fields = data.fields || [];
-
-    /**
-     * Thumbnail for this Embed
-     * @type {Object}
-     */
-    this.thumbnail = data.thumbnail;
-
-    /**
-     * Image for this Embed
-     * @type {Object}
-     */
-    this.image = data.image;
-
-    /**
-     * Footer for this Embed
-     * @type {Object}
-     */
-    this.footer = data.footer;
-  }
-
-  /**
-   * Sets the title of this embed
-   * @param {StringResolvable} title The title
-   * @returns {RichEmbed} This embed
-   */
-  setTitle(title) {
-    title = resolveString(title);
-    if (title.length > 256) throw new RangeError('RichEmbed titles may not exceed 256 characters.');
-    this.title = title;
-    return this;
-  }
-
-  /**
-   * Sets the description of this embed
-   * @param {StringResolvable} description The description
-   * @returns {RichEmbed} This embed
-   */
-  setDescription(description) {
-    description = resolveString(description);
-    if (description.length > 2048) throw new RangeError('RichEmbed descriptions may not exceed 2048 characters.');
-    this.description = description;
-    return this;
-  }
-
-  /**
-   * Sets the URL of this embed
-   * @param {string} url The URL
-   * @returns {RichEmbed} This embed
-   */
-  setURL(url) {
-    this.url = url;
-    return this;
-  }
-
-  /**
-   * Sets the color of this embed
-   * @param {string|number|number[]} color The color to set
-   * @returns {RichEmbed} This embed
-   */
-  setColor(color) {
-    let radix = 10;
-    if (color instanceof Array) {
-      color = (color[0] << 16) + (color[1] << 8) + color[2];
-    } else if (typeof color === 'string' && color.startsWith('#')) {
-      radix = 16;
-      color = color.replace('#', '');
-    }
-    color = parseInt(color, radix);
-    if (color < 0 || color > 0xFFFFFF) {
-      throw new RangeError('RichEmbed color must be within the range 0 - 16777215 (0xFFFFFF).');
-    } else if (color && isNaN(color)) {
-      throw new TypeError('Unable to convert RichEmbed color to a number.');
-    }
-    this.color = color;
-    return this;
-  }
-
-  /**
-   * Sets the author of this embed
-   * @param {StringResolvable} name The name of the author
-   * @param {string} [icon] The icon URL of the author
-   * @param {string} [url] The URL of the author
-   * @returns {RichEmbed} This embed
-   */
-  setAuthor(name, icon, url) {
-    this.author = { name: resolveString(name), icon_url: icon, url };
-    return this;
-  }
-
-  /**
-   * Sets the timestamp of this embed
-   * @param {Date} [timestamp=current date] The timestamp
-   * @returns {RichEmbed} This embed
-   */
-  setTimestamp(timestamp = new Date()) {
-    this.timestamp = timestamp;
-    return this;
-  }
-
-  /**
-   * Adds a field to the embed (max 25)
-   * @param {StringResolvable} name The name of the field
-   * @param {StringResolvable} value The value of the field
-   * @param {boolean} [inline=false] Set the field to display inline
-   * @returns {RichEmbed} This embed
-   */
-  addField(name, value, inline = false) {
-    if (this.fields.length >= 25) throw new RangeError('RichEmbeds may not exceed 25 fields.');
-    name = resolveString(name);
-    if (name.length > 256) throw new RangeError('RichEmbed field names may not exceed 256 characters.');
-    value = resolveString(value);
-    if (value.length > 1024) throw new RangeError('RichEmbed field values may not exceed 1024 characters.');
-    this.fields.push({ name: String(name), value: value, inline });
-    return this;
-  }
-
-  /**
-   * Set the thumbnail of this embed
-   * @param {string} url The URL of the thumbnail
-   * @returns {RichEmbed} This embed
-   */
-  setThumbnail(url) {
-    this.thumbnail = { url };
-    return this;
-  }
-
-  /**
-   * Set the image of this embed
-   * @param {string} url The URL of the thumbnail
-   * @returns {RichEmbed} This embed
-   */
-  setImage(url) {
-    this.image = { url };
-    return this;
-  }
-
-  /**
-   * Sets the footer of this embed
-   * @param {StringResolvable} text The text of the footer
-   * @param {string} [icon] The icon URL of the footer
-   * @returns {RichEmbed} This embed
-   */
-  setFooter(text, icon) {
-    text = resolveString(text);
-    if (text.length > 2048) throw new RangeError('RichEmbed footer text may not exceed 2048 characters.');
-    this.footer = { text, icon_url: icon };
-    return this;
-  }
-}
-
-module.exports = RichEmbed;
-
-function resolveString(data) {
-  if (typeof data === 'string') return data;
-  if (data instanceof Array) return data.join('\n');
-  return String(data);
-}
-
-
-/***/ },
-/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 const GuildChannel = __webpack_require__(13);
@@ -10230,8 +10027,8 @@ class TextChannel extends GuildChannel {
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  send() { return; }
   sendMessage() { return; }
-  sendTTSMessage() { return; }
   sendEmbed() { return; }
   sendFile() { return; }
   sendCode() { return; }
@@ -10254,7 +10051,7 @@ module.exports = TextChannel;
 
 
 /***/ },
-/* 43 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 const GuildChannel = __webpack_require__(13);
@@ -10380,7 +10177,7 @@ module.exports = VoiceChannel;
 
 
 /***/ },
-/* 44 */
+/* 43 */
 /***/ function(module, exports) {
 
 module.exports = function splitMessage(text, { maxLength = 1950, char = '\n', prepend = '', append = '' } = {}) {
@@ -10402,7 +10199,7 @@ module.exports = function splitMessage(text, { maxLength = 1950, char = '\n', pr
 
 
 /***/ },
-/* 45 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10594,7 +10391,7 @@ exports.utf8border = function (buf, max) {
 
 
 /***/ },
-/* 46 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10633,7 +10430,7 @@ module.exports = adler32;
 
 
 /***/ },
-/* 47 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10690,7 +10487,7 @@ module.exports = {
 
 
 /***/ },
-/* 48 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10738,7 +10535,7 @@ module.exports = crc32;
 
 
 /***/ },
-/* 49 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10774,21 +10571,21 @@ module.exports = ZStream;
 
 
 /***/ },
-/* 50 */
+/* 49 */
 /***/ function(module, exports) {
 
 
 
 /***/ },
-/* 51 */
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(23);
-const fs = __webpack_require__(50);
+const fs = __webpack_require__(49);
 const request = __webpack_require__(25);
 
 const Constants = __webpack_require__(0);
-const convertArrayBuffer = __webpack_require__(54);
+const convertArrayBuffer = __webpack_require__(53);
 const User = __webpack_require__(6);
 const Message = __webpack_require__(11);
 const Guild = __webpack_require__(17);
@@ -11096,7 +10893,7 @@ module.exports = ClientDataResolver;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20).Buffer))
 
 /***/ },
-/* 52 */
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
 const UserAgentManager = __webpack_require__(114);
@@ -11153,7 +10950,7 @@ module.exports = RESTManager;
 
 
 /***/ },
-/* 53 */
+/* 52 */
 /***/ function(module, exports) {
 
 /**
@@ -11210,7 +11007,7 @@ module.exports = RequestHandler;
 
 
 /***/ },
-/* 54 */
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {function arrayBufferToBuffer(ab) {
@@ -11235,7 +11032,7 @@ module.exports = function convertArrayBuffer(x) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20).Buffer))
 
 /***/ },
-/* 55 */
+/* 54 */
 /***/ function(module, exports) {
 
 module.exports = function merge(def, given) {
@@ -11253,16 +11050,16 @@ module.exports = function merge(def, given) {
 
 
 /***/ },
-/* 56 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {const EventEmitter = __webpack_require__(21).EventEmitter;
-const mergeDefault = __webpack_require__(55);
+const mergeDefault = __webpack_require__(54);
 const Constants = __webpack_require__(0);
-const RESTManager = __webpack_require__(52);
+const RESTManager = __webpack_require__(51);
 const ClientDataManager = __webpack_require__(81);
 const ClientManager = __webpack_require__(82);
-const ClientDataResolver = __webpack_require__(51);
+const ClientDataResolver = __webpack_require__(50);
 const ClientVoiceManager = __webpack_require__(156);
 const WebSocketManager = __webpack_require__(115);
 const ActionsManager = __webpack_require__(83);
@@ -11738,13 +11535,13 @@ module.exports = Client;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
 
 /***/ },
-/* 57 */
+/* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Webhook = __webpack_require__(19);
-const RESTManager = __webpack_require__(52);
-const ClientDataResolver = __webpack_require__(51);
-const mergeDefault = __webpack_require__(55);
+const RESTManager = __webpack_require__(51);
+const ClientDataResolver = __webpack_require__(50);
+const mergeDefault = __webpack_require__(54);
 const Constants = __webpack_require__(0);
 
 /**
@@ -11790,18 +11587,18 @@ module.exports = WebhookClient;
 
 
 /***/ },
-/* 58 */
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = {
-  Client: __webpack_require__(56),
-  WebhookClient: __webpack_require__(57),
+  Client: __webpack_require__(55),
+  WebhookClient: __webpack_require__(56),
   Shard: __webpack_require__(60),
   ShardClientUtil: __webpack_require__(61),
   ShardingManager: __webpack_require__(62),
 
   Collection: __webpack_require__(3),
-  splitMessage: __webpack_require__(44),
+  splitMessage: __webpack_require__(43),
   escapeMarkdown: __webpack_require__(15),
   fetchRecommendedShards: __webpack_require__(59),
 
@@ -11828,11 +11625,11 @@ module.exports = {
   PermissionOverwrites: __webpack_require__(40),
   Presence: __webpack_require__(7).Presence,
   ReactionEmoji: __webpack_require__(18),
-  RichEmbed: __webpack_require__(41),
+  RichEmbed: __webpack_require__(58),
   Role: __webpack_require__(8),
-  TextChannel: __webpack_require__(42),
+  TextChannel: __webpack_require__(41),
   User: __webpack_require__(6),
-  VoiceChannel: __webpack_require__(43),
+  VoiceChannel: __webpack_require__(42),
   Webhook: __webpack_require__(19),
 
   version: __webpack_require__(27).version,
@@ -11840,6 +11637,216 @@ module.exports = {
 };
 
 if (typeof window !== 'undefined') window.Discord = module.exports; // eslint-disable-line no-undef
+
+
+/***/ },
+/* 58 */
+/***/ function(module, exports) {
+
+/**
+ * A rich embed to be sent with a message
+ * @param {Object} [data] Data to set in the rich embed
+ */
+class RichEmbed {
+  constructor(data = {}) {
+    /**
+     * Title for this Embed
+     * @type {string}
+     */
+    this.title = data.title;
+
+    /**
+     * Description for this Embed
+     * @type {string}
+     */
+    this.description = data.description;
+
+    /**
+     * URL for this Embed
+     * @type {string}
+     */
+    this.url = data.url;
+
+    /**
+     * Color for this Embed
+     * @type {number}
+     */
+    this.color = data.color;
+
+    /**
+     * Author for this Embed
+     * @type {Object}
+     */
+    this.author = data.author;
+
+    /**
+     * Timestamp for this Embed
+     * @type {Date}
+     */
+    this.timestamp = data.timestamp;
+
+    /**
+     * Fields for this Embed
+     * @type {Object[]}
+     */
+    this.fields = data.fields || [];
+
+    /**
+     * Thumbnail for this Embed
+     * @type {Object}
+     */
+    this.thumbnail = data.thumbnail;
+
+    /**
+     * Image for this Embed
+     * @type {Object}
+     */
+    this.image = data.image;
+
+    /**
+     * Footer for this Embed
+     * @type {Object}
+     */
+    this.footer = data.footer;
+  }
+
+  /**
+   * Sets the title of this embed
+   * @param {StringResolvable} title The title
+   * @returns {RichEmbed} This embed
+   */
+  setTitle(title) {
+    title = resolveString(title);
+    if (title.length > 256) throw new RangeError('RichEmbed titles may not exceed 256 characters.');
+    this.title = title;
+    return this;
+  }
+
+  /**
+   * Sets the description of this embed
+   * @param {StringResolvable} description The description
+   * @returns {RichEmbed} This embed
+   */
+  setDescription(description) {
+    description = resolveString(description);
+    if (description.length > 2048) throw new RangeError('RichEmbed descriptions may not exceed 2048 characters.');
+    this.description = description;
+    return this;
+  }
+
+  /**
+   * Sets the URL of this embed
+   * @param {string} url The URL
+   * @returns {RichEmbed} This embed
+   */
+  setURL(url) {
+    this.url = url;
+    return this;
+  }
+
+  /**
+   * Sets the color of this embed
+   * @param {string|number|number[]} color The color to set
+   * @returns {RichEmbed} This embed
+   */
+  setColor(color) {
+    let radix = 10;
+    if (color instanceof Array) {
+      color = (color[0] << 16) + (color[1] << 8) + color[2];
+    } else if (typeof color === 'string' && color.startsWith('#')) {
+      radix = 16;
+      color = color.replace('#', '');
+    }
+    color = parseInt(color, radix);
+    if (color < 0 || color > 0xFFFFFF) {
+      throw new RangeError('RichEmbed color must be within the range 0 - 16777215 (0xFFFFFF).');
+    } else if (color && isNaN(color)) {
+      throw new TypeError('Unable to convert RichEmbed color to a number.');
+    }
+    this.color = color;
+    return this;
+  }
+
+  /**
+   * Sets the author of this embed
+   * @param {StringResolvable} name The name of the author
+   * @param {string} [icon] The icon URL of the author
+   * @param {string} [url] The URL of the author
+   * @returns {RichEmbed} This embed
+   */
+  setAuthor(name, icon, url) {
+    this.author = { name: resolveString(name), icon_url: icon, url };
+    return this;
+  }
+
+  /**
+   * Sets the timestamp of this embed
+   * @param {Date} [timestamp=current date] The timestamp
+   * @returns {RichEmbed} This embed
+   */
+  setTimestamp(timestamp = new Date()) {
+    this.timestamp = timestamp;
+    return this;
+  }
+
+  /**
+   * Adds a field to the embed (max 25)
+   * @param {StringResolvable} name The name of the field
+   * @param {StringResolvable} value The value of the field
+   * @param {boolean} [inline=false] Set the field to display inline
+   * @returns {RichEmbed} This embed
+   */
+  addField(name, value, inline = false) {
+    if (this.fields.length >= 25) throw new RangeError('RichEmbeds may not exceed 25 fields.');
+    name = resolveString(name);
+    if (name.length > 256) throw new RangeError('RichEmbed field names may not exceed 256 characters.');
+    value = resolveString(value);
+    if (value.length > 1024) throw new RangeError('RichEmbed field values may not exceed 1024 characters.');
+    this.fields.push({ name: String(name), value: value, inline });
+    return this;
+  }
+
+  /**
+   * Set the thumbnail of this embed
+   * @param {string} url The URL of the thumbnail
+   * @returns {RichEmbed} This embed
+   */
+  setThumbnail(url) {
+    this.thumbnail = { url };
+    return this;
+  }
+
+  /**
+   * Set the image of this embed
+   * @param {string} url The URL of the thumbnail
+   * @returns {RichEmbed} This embed
+   */
+  setImage(url) {
+    this.image = { url };
+    return this;
+  }
+
+  /**
+   * Sets the footer of this embed
+   * @param {StringResolvable} text The text of the footer
+   * @param {string} [icon] The icon URL of the footer
+   * @returns {RichEmbed} This embed
+   */
+  setFooter(text, icon) {
+    text = resolveString(text);
+    if (text.length > 2048) throw new RangeError('RichEmbed footer text may not exceed 2048 characters.');
+    this.footer = { text, icon_url: icon };
+    return this;
+  }
+}
+
+module.exports = RichEmbed;
+
+function resolveString(data) {
+  if (typeof data === 'string') return data;
+  if (data instanceof Array) return data.join('\n');
+  return String(data);
+}
 
 
 /***/ },
@@ -12288,7 +12295,7 @@ var assign    = __webpack_require__(5).assign;
 
 var deflate   = __webpack_require__(68);
 var inflate   = __webpack_require__(69);
-var constants = __webpack_require__(47);
+var constants = __webpack_require__(46);
 
 var pako = {};
 
@@ -12307,9 +12314,9 @@ module.exports = pako;
 
 var zlib_deflate = __webpack_require__(70);
 var utils        = __webpack_require__(5);
-var strings      = __webpack_require__(45);
+var strings      = __webpack_require__(44);
 var msg          = __webpack_require__(22);
-var ZStream      = __webpack_require__(49);
+var ZStream      = __webpack_require__(48);
 
 var toString = Object.prototype.toString;
 
@@ -12714,10 +12721,10 @@ exports.gzip = gzip;
 
 var zlib_inflate = __webpack_require__(73);
 var utils        = __webpack_require__(5);
-var strings      = __webpack_require__(45);
-var c            = __webpack_require__(47);
+var strings      = __webpack_require__(44);
+var c            = __webpack_require__(46);
 var msg          = __webpack_require__(22);
-var ZStream      = __webpack_require__(49);
+var ZStream      = __webpack_require__(48);
 var GZheader     = __webpack_require__(71);
 
 var toString = Object.prototype.toString;
@@ -13138,8 +13145,8 @@ exports.ungzip  = inflate;
 
 var utils   = __webpack_require__(5);
 var trees   = __webpack_require__(75);
-var adler32 = __webpack_require__(46);
-var crc32   = __webpack_require__(48);
+var adler32 = __webpack_require__(45);
+var crc32   = __webpack_require__(47);
 var msg     = __webpack_require__(22);
 
 /* Public constants ==========================================================*/
@@ -15380,8 +15387,8 @@ module.exports = function inflate_fast(strm, start) {
 
 
 var utils         = __webpack_require__(5);
-var adler32       = __webpack_require__(46);
-var crc32         = __webpack_require__(48);
+var adler32       = __webpack_require__(45);
+var crc32         = __webpack_require__(47);
 var inflate_fast  = __webpack_require__(72);
 var inflate_table = __webpack_require__(74);
 
@@ -19266,8 +19273,8 @@ const Guild = __webpack_require__(17);
 const User = __webpack_require__(6);
 const DMChannel = __webpack_require__(30);
 const Emoji = __webpack_require__(10);
-const TextChannel = __webpack_require__(42);
-const VoiceChannel = __webpack_require__(43);
+const TextChannel = __webpack_require__(41);
+const VoiceChannel = __webpack_require__(42);
 const GuildChannel = __webpack_require__(13);
 const GroupDMChannel = __webpack_require__(31);
 
@@ -20516,8 +20523,9 @@ module.exports = APIRequest;
 
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
-const splitMessage = __webpack_require__(44);
+const splitMessage = __webpack_require__(43);
 const parseEmoji = __webpack_require__(154);
+const escapeMarkdown = __webpack_require__(15);
 
 const User = __webpack_require__(6);
 const GuildMember = __webpack_require__(14);
@@ -20531,13 +20539,14 @@ const ClientOAuth2Application = __webpack_require__(28);
 class RESTMethods {
   constructor(restManager) {
     this.rest = restManager;
+    this.client = restManager.client;
   }
 
-  login(token = this.rest.client.token) {
+  login(token = this.client.token) {
     return new Promise((resolve, reject) => {
       if (typeof token !== 'string') throw new Error(Constants.Errors.INVALID_TOKEN);
       token = token.replace(/^Bot\s*/i, '');
-      this.rest.client.manager.connectToWebSocket(token, resolve, reject);
+      this.client.manager.connectToWebSocket(token, resolve, reject);
     });
   }
 
@@ -20547,8 +20556,8 @@ class RESTMethods {
 
   getGateway() {
     return this.rest.makeRequest('get', Constants.Endpoints.gateway, true).then(res => {
-      this.rest.client.ws.gateway = `${res.url}/?v=${Constants.PROTOCOL_VERSION}`;
-      return this.rest.client.ws.gateway;
+      this.client.ws.gateway = `${res.url}/?v=${Constants.PROTOCOL_VERSION}`;
+      return this.client.ws.gateway;
     });
   }
 
@@ -20556,63 +20565,64 @@ class RESTMethods {
     return this.rest.makeRequest('get', Constants.Endpoints.botGateway, true);
   }
 
-  sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split } = {}, file = null) {
+  sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code } = {}, file = null) {
     return new Promise((resolve, reject) => {
-      if (typeof content !== 'undefined') content = this.rest.client.resolver.resolveString(content);
+      if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
 
       if (content) {
-        if (disableEveryone || (typeof disableEveryone === 'undefined' && this.rest.client.options.disableEveryone)) {
+        if (code) {
+          content = escapeMarkdown(this.client.resolver.resolveString(content), true);
+          content = `\`\`\`${typeof code !== 'undefined' && code !== null ? code : ''}\n${content}\n\`\`\``;
+        }
+
+        if (disableEveryone || (typeof disableEveryone === 'undefined' && this.client.options.disableEveryone)) {
           content = content.replace(/@(everyone|here)/g, '@\u200b$1');
         }
 
         if (split) content = splitMessage(content, typeof split === 'object' ? split : {});
       }
 
+      const send = (chan) => {
+        if (content instanceof Array) {
+          const messages = [];
+          (function sendChunk(list, index) {
+            const options = index === list.length ? { tts, embed } : { tts };
+            chan.send(list[index], options, index === list.length ? file : null).then((message) => {
+              messages.push(message);
+              if (index >= list.length) return resolve(messages);
+              return sendChunk(list, ++index);
+            });
+          }(content, 0));
+        } else {
+          this.rest.makeRequest('post', Constants.Endpoints.channelMessages(chan.id), true, {
+            content, tts, nonce, embed,
+          }, file).then(data => resolve(this.client.actions.MessageCreate.handle(data).message), reject);
+        }
+      };
+
       if (channel instanceof User || channel instanceof GuildMember) {
-        this.createDM(channel).then(chan => {
-          this._sendMessageRequest(chan, content, file, tts, nonce, embed, resolve, reject);
-        }, reject);
+        this.createDM(channel).then(send, reject);
       } else {
-        this._sendMessageRequest(channel, content, file, tts, nonce, embed, resolve, reject);
+        send(channel);
       }
     });
   }
 
-  _sendMessageRequest(channel, content, file, tts, nonce, embed, resolve, reject) {
-    if (content instanceof Array) {
-      const datas = [];
-      let promise = this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
-        content: content[0], tts, nonce,
-      }, file).catch(reject);
-
-      for (let i = 1; i <= content.length; i++) {
-        if (i < content.length) {
-          const i2 = i;
-          promise = promise.then(data => {
-            datas.push(data);
-            return this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
-              content: content[i2], tts, nonce, embed,
-            }, file);
-          }, reject);
-        } else {
-          promise.then(data => {
-            datas.push(data);
-            resolve(this.rest.client.actions.MessageCreate.handle(datas).messages);
-          }, reject);
-        }
-      }
-    } else {
-      this.rest.makeRequest('post', Constants.Endpoints.channelMessages(channel.id), true, {
-        content, tts, nonce, embed,
-      }, file)
-        .then(data => resolve(this.rest.client.actions.MessageCreate.handle(data).message), reject);
+  updateMessage(message, content, { embed, code } = {}) {
+    content = this.client.resolver.resolveString(content);
+    if (code) {
+      content = escapeMarkdown(this.client.resolver.resolveString(content), true);
+      content = `\`\`\`${typeof code !== 'undefined' && code !== null ? code : ''}\n${content}\n\`\`\``;
     }
+    return this.rest.makeRequest('patch', Constants.Endpoints.channelMessage(message.channel.id, message.id), true, {
+      content, embed,
+    }).then(data => this.client.actions.MessageUpdate.handle(data).updated);
   }
 
   deleteMessage(message) {
     return this.rest.makeRequest('del', Constants.Endpoints.channelMessage(message.channel.id, message.id), true)
       .then(() =>
-        this.rest.client.actions.MessageDelete.handle({
+        this.client.actions.MessageDelete.handle({
           id: message.id,
           channel_id: message.channel.id,
         }).message
@@ -20623,18 +20633,11 @@ class RESTMethods {
     return this.rest.makeRequest('post', `${Constants.Endpoints.channelMessages(channel.id)}/bulk_delete`, true, {
       messages,
     }).then(() =>
-      this.rest.client.actions.MessageDeleteBulk.handle({
+      this.client.actions.MessageDeleteBulk.handle({
         channel_id: channel.id,
         ids: messages,
       }).messages
     );
-  }
-
-  updateMessage(message, content, { embed } = {}) {
-    content = this.rest.client.resolver.resolveString(content);
-    return this.rest.makeRequest('patch', Constants.Endpoints.channelMessage(message.channel.id, message.id), true, {
-      content, embed,
-    }).then(data => this.rest.client.actions.MessageUpdate.handle(data).updated);
   }
 
   createChannel(guild, channelName, channelType, overwrites) {
@@ -20643,19 +20646,19 @@ class RESTMethods {
       name: channelName,
       type: channelType,
       permission_overwrites: overwrites,
-    }).then(data => this.rest.client.actions.ChannelCreate.handle(data).channel);
+    }).then(data => this.client.actions.ChannelCreate.handle(data).channel);
   }
 
   createDM(recipient) {
     const dmChannel = this.getExistingDM(recipient);
     if (dmChannel) return Promise.resolve(dmChannel);
-    return this.rest.makeRequest('post', Constants.Endpoints.userChannels(this.rest.client.user.id), true, {
+    return this.rest.makeRequest('post', Constants.Endpoints.userChannels(this.client.user.id), true, {
       recipient_id: recipient.id,
-    }).then(data => this.rest.client.actions.ChannelCreate.handle(data).channel);
+    }).then(data => this.client.actions.ChannelCreate.handle(data).channel);
   }
 
   getExistingDM(recipient) {
-    return this.rest.client.channels.find(channel =>
+    return this.client.channels.find(channel =>
       channel.recipient && channel.recipient.id === recipient.id
     );
   }
@@ -20665,7 +20668,7 @@ class RESTMethods {
     if (!channel) return Promise.reject(new Error('No channel to delete.'));
     return this.rest.makeRequest('del', Constants.Endpoints.channel(channel.id), true).then(data => {
       data.id = channel.id;
-      return this.rest.client.actions.ChannelDelete.handle(data).channel;
+      return this.client.actions.ChannelDelete.handle(data).channel;
     });
   }
 
@@ -20677,38 +20680,38 @@ class RESTMethods {
     data.bitrate = _data.bitrate || channel.bitrate;
     data.user_limit = _data.userLimit || channel.userLimit;
     return this.rest.makeRequest('patch', Constants.Endpoints.channel(channel.id), true, data).then(newData =>
-      this.rest.client.actions.ChannelUpdate.handle(newData).updated
+      this.client.actions.ChannelUpdate.handle(newData).updated
     );
   }
 
   leaveGuild(guild) {
-    if (guild.ownerID === this.rest.client.user.id) return Promise.reject(new Error('Guild is owned by the client.'));
+    if (guild.ownerID === this.client.user.id) return Promise.reject(new Error('Guild is owned by the client.'));
     return this.rest.makeRequest('del', Constants.Endpoints.meGuild(guild.id), true).then(() =>
-      this.rest.client.actions.GuildDelete.handle({ id: guild.id }).guild
+      this.client.actions.GuildDelete.handle({ id: guild.id }).guild
     );
   }
 
   createGuild(options) {
-    options.icon = this.rest.client.resolver.resolveBase64(options.icon) || null;
+    options.icon = this.client.resolver.resolveBase64(options.icon) || null;
     options.region = options.region || 'us-central';
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('post', Constants.Endpoints.guilds, true, options).then(data => {
-        if (this.rest.client.guilds.has(data.id)) {
-          resolve(this.rest.client.guilds.get(data.id));
+        if (this.client.guilds.has(data.id)) {
+          resolve(this.client.guilds.get(data.id));
           return;
         }
 
         const handleGuild = guild => {
           if (guild.id === data.id) {
-            this.rest.client.removeListener('guildCreate', handleGuild);
-            this.rest.client.clearTimeout(timeout);
+            this.client.removeListener('guildCreate', handleGuild);
+            this.client.clearTimeout(timeout);
             resolve(guild);
           }
         };
-        this.rest.client.on('guildCreate', handleGuild);
+        this.client.on('guildCreate', handleGuild);
 
-        const timeout = this.rest.client.setTimeout(() => {
-          this.rest.client.removeListener('guildCreate', handleGuild);
+        const timeout = this.client.setTimeout(() => {
+          this.client.removeListener('guildCreate', handleGuild);
           reject(new Error('Took too long to receive guild data.'));
         }, 10000);
       }, reject);
@@ -20718,28 +20721,28 @@ class RESTMethods {
   // untested but probably will work
   deleteGuild(guild) {
     return this.rest.makeRequest('del', Constants.Endpoints.guild(guild.id), true).then(() =>
-      this.rest.client.actions.GuildDelete.handle({ id: guild.id }).guild
+      this.client.actions.GuildDelete.handle({ id: guild.id }).guild
     );
   }
 
   getUser(userID) {
     return this.rest.makeRequest('get', Constants.Endpoints.user(userID), true).then(data =>
-      this.rest.client.actions.UserGet.handle(data).user
+      this.client.actions.UserGet.handle(data).user
     );
   }
 
   updateCurrentUser(_data, password) {
-    const user = this.rest.client.user;
+    const user = this.client.user;
     const data = {};
     data.username = _data.username || user.username;
-    data.avatar = this.rest.client.resolver.resolveBase64(_data.avatar) || user.avatar;
+    data.avatar = this.client.resolver.resolveBase64(_data.avatar) || user.avatar;
     if (!user.bot) {
       data.email = _data.email || user.email;
       data.password = password;
       if (_data.new_password) data.new_password = _data.newPassword;
     }
     return this.rest.makeRequest('patch', Constants.Endpoints.me, true, data).then(newData =>
-      this.rest.client.actions.UserUpdate.handle(newData).updated
+      this.client.actions.UserUpdate.handle(newData).updated
     );
   }
 
@@ -20748,19 +20751,19 @@ class RESTMethods {
     if (_data.name) data.name = _data.name;
     if (_data.region) data.region = _data.region;
     if (_data.verificationLevel) data.verification_level = Number(_data.verificationLevel);
-    if (_data.afkChannel) data.afk_channel_id = this.rest.client.resolver.resolveChannel(_data.afkChannel).id;
+    if (_data.afkChannel) data.afk_channel_id = this.client.resolver.resolveChannel(_data.afkChannel).id;
     if (_data.afkTimeout) data.afk_timeout = Number(_data.afkTimeout);
-    if (_data.icon) data.icon = this.rest.client.resolver.resolveBase64(_data.icon);
-    if (_data.owner) data.owner_id = this.rest.client.resolver.resolveUser(_data.owner).id;
-    if (_data.splash) data.splash = this.rest.client.resolver.resolveBase64(_data.splash);
+    if (_data.icon) data.icon = this.client.resolver.resolveBase64(_data.icon);
+    if (_data.owner) data.owner_id = this.client.resolver.resolveUser(_data.owner).id;
+    if (_data.splash) data.splash = this.client.resolver.resolveBase64(_data.splash);
     return this.rest.makeRequest('patch', Constants.Endpoints.guild(guild.id), true, data).then(newData =>
-      this.rest.client.actions.GuildUpdate.handle(newData).updated
+      this.client.actions.GuildUpdate.handle(newData).updated
     );
   }
 
   kickGuildMember(guild, member) {
     return this.rest.makeRequest('del', Constants.Endpoints.guildMember(guild.id, member.id), true).then(() =>
-      this.rest.client.actions.GuildMemberRemove.handle({
+      this.client.actions.GuildMemberRemove.handle({
         guild_id: guild.id,
         user: member.user,
       }).member
@@ -20769,7 +20772,7 @@ class RESTMethods {
 
   createGuildRole(guild) {
     return this.rest.makeRequest('post', Constants.Endpoints.guildRoles(guild.id), true).then(role =>
-      this.rest.client.actions.GuildRoleCreate.handle({
+      this.client.actions.GuildRoleCreate.handle({
         guild_id: guild.id,
         role,
       }).role
@@ -20778,7 +20781,7 @@ class RESTMethods {
 
   deleteGuildRole(role) {
     return this.rest.makeRequest('del', Constants.Endpoints.guildRole(role.guild.id, role.id), true).then(() =>
-      this.rest.client.actions.GuildRoleDelete.handle({
+      this.client.actions.GuildRoleDelete.handle({
         guild_id: role.guild.id,
         role_id: role.id,
       }).role
@@ -20817,17 +20820,17 @@ class RESTMethods {
 
   getGuildMember(guild, user) {
     return this.rest.makeRequest('get', Constants.Endpoints.guildMember(guild.id, user.id), true).then(data =>
-      this.rest.client.actions.GuildMemberGet.handle(guild, data).member
+      this.client.actions.GuildMemberGet.handle(guild, data).member
     );
   }
 
   updateGuildMember(member, data) {
-    if (data.channel) data.channel_id = this.rest.client.resolver.resolveChannel(data.channel).id;
+    if (data.channel) data.channel_id = this.client.resolver.resolveChannel(data.channel).id;
     if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
 
     let endpoint = Constants.Endpoints.guildMember(member.guild.id, member.id);
     // fix your endpoints, discord ;-;
-    if (member.id === this.rest.client.user.id) {
+    if (member.id === this.client.user.id) {
       const keys = Object.keys(data);
       if (keys.length === 1 && keys[0] === 'nick') {
         endpoint = Constants.Endpoints.guildMemberNickname(member.guild.id);
@@ -20864,7 +20867,7 @@ class RESTMethods {
   }
 
   banGuildMember(guild, member, deleteDays = 0) {
-    const id = this.rest.client.resolver.resolveUserID(member);
+    const id = this.client.resolver.resolveUserID(member);
     if (!id) return Promise.reject(new Error('Couldn\'t resolve the user ID to ban.'));
     return this.rest.makeRequest(
       'put', `${Constants.Endpoints.guildBans(guild.id)}/${id}?delete-message-days=${deleteDays}`, true, {
@@ -20872,9 +20875,9 @@ class RESTMethods {
       }
     ).then(() => {
       if (member instanceof GuildMember) return member;
-      const user = this.rest.client.resolver.resolveUser(id);
+      const user = this.client.resolver.resolveUser(id);
       if (user) {
-        member = this.rest.client.resolver.resolveGuildMember(guild, user);
+        member = this.client.resolver.resolveGuildMember(guild, user);
         return member || user;
       }
       return id;
@@ -20883,26 +20886,26 @@ class RESTMethods {
 
   unbanGuildMember(guild, member) {
     return new Promise((resolve, reject) => {
-      const id = this.rest.client.resolver.resolveUserID(member);
+      const id = this.client.resolver.resolveUserID(member);
       if (!id) throw new Error('Couldn\'t resolve the user ID to unban.');
 
       const listener = (eGuild, eUser) => {
         if (eGuild.id === guild.id && eUser.id === id) {
-          this.rest.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
-          this.rest.client.clearTimeout(timeout);
+          this.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
+          this.client.clearTimeout(timeout);
           resolve(eUser);
         }
       };
-      this.rest.client.on(Constants.Events.GUILD_BAN_REMOVE, listener);
+      this.client.on(Constants.Events.GUILD_BAN_REMOVE, listener);
 
-      const timeout = this.rest.client.setTimeout(() => {
-        this.rest.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
+      const timeout = this.client.setTimeout(() => {
+        this.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
         reject(new Error('Took too long to receive the ban remove event.'));
       }, 10000);
 
       this.rest.makeRequest('del', `${Constants.Endpoints.guildBans(guild.id)}/${id}`, true).catch(err => {
-        this.rest.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
-        this.rest.client.clearTimeout(timeout);
+        this.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
+        this.client.clearTimeout(timeout);
         reject(err);
       });
     });
@@ -20912,7 +20915,7 @@ class RESTMethods {
     return this.rest.makeRequest('get', Constants.Endpoints.guildBans(guild.id), true).then(banItems => {
       const bannedUsers = new Collection();
       for (const banItem of banItems) {
-        const user = this.rest.client.dataManager.newUser(banItem.user);
+        const user = this.client.dataManager.newUser(banItem.user);
         bannedUsers.set(user.id, user);
       }
       return bannedUsers;
@@ -20944,7 +20947,7 @@ class RESTMethods {
     return this.rest.makeRequest(
       'patch', Constants.Endpoints.guildRole(role.guild.id, role.id), true, data
     ).then(_role =>
-      this.rest.client.actions.GuildRoleUpdate.handle({
+      this.client.actions.GuildRoleUpdate.handle({
         role: _role,
         guild_id: role.guild.id,
       }).updated
@@ -20971,7 +20974,7 @@ class RESTMethods {
     payload.max_age = options.maxAge;
     payload.max_uses = options.maxUses;
     return this.rest.makeRequest('post', `${Constants.Endpoints.channelInvites(channel.id)}`, true, payload)
-      .then(invite => new Invite(this.rest.client, invite));
+      .then(invite => new Invite(this.client, invite));
   }
 
   deleteInvite(invite) {
@@ -20980,7 +20983,7 @@ class RESTMethods {
 
   getInvite(code) {
     return this.rest.makeRequest('get', Constants.Endpoints.invite(code), true).then(invite =>
-      new Invite(this.rest.client, invite)
+      new Invite(this.client, invite)
     );
   }
 
@@ -20988,7 +20991,7 @@ class RESTMethods {
     return this.rest.makeRequest('get', Constants.Endpoints.guildInvites(guild.id), true).then(inviteItems => {
       const invites = new Collection();
       for (const inviteItem of inviteItems) {
-        const invite = new Invite(this.rest.client, inviteItem);
+        const invite = new Invite(this.client, inviteItem);
         invites.set(invite.code, invite);
       }
       return invites;
@@ -21002,24 +21005,24 @@ class RESTMethods {
 
   createEmoji(guild, image, name) {
     return this.rest.makeRequest('post', `${Constants.Endpoints.guildEmojis(guild.id)}`, true, { name, image })
-      .then(data => this.rest.client.actions.EmojiCreate.handle(data, guild).emoji);
+      .then(data => this.client.actions.EmojiCreate.handle(data, guild).emoji);
   }
 
   deleteEmoji(emoji) {
     return this.rest.makeRequest('delete', `${Constants.Endpoints.guildEmojis(emoji.guild.id)}/${emoji.id}`, true)
-      .then(() => this.rest.client.actions.EmojiDelete.handle(emoji).data);
+      .then(() => this.client.actions.EmojiDelete.handle(emoji).data);
   }
 
   getWebhook(id, token) {
     return this.rest.makeRequest('get', Constants.Endpoints.webhook(id, token), !token).then(data =>
-      new Webhook(this.rest.client, data)
+      new Webhook(this.client, data)
     );
   }
 
   getGuildWebhooks(guild) {
     return this.rest.makeRequest('get', Constants.Endpoints.guildWebhooks(guild.id), true).then(data => {
       const hooks = new Collection();
-      for (const hook of data) hooks.set(hook.id, new Webhook(this.rest.client, hook));
+      for (const hook of data) hooks.set(hook.id, new Webhook(this.client, hook));
       return hooks;
     });
   }
@@ -21027,14 +21030,14 @@ class RESTMethods {
   getChannelWebhooks(channel) {
     return this.rest.makeRequest('get', Constants.Endpoints.channelWebhooks(channel.id), true).then(data => {
       const hooks = new Collection();
-      for (const hook of data) hooks.set(hook.id, new Webhook(this.rest.client, hook));
+      for (const hook of data) hooks.set(hook.id, new Webhook(this.client, hook));
       return hooks;
     });
   }
 
   createWebhook(channel, name, avatar) {
     return this.rest.makeRequest('post', Constants.Endpoints.channelWebhooks(channel.id), true, { name, avatar })
-      .then(data => new Webhook(this.rest.client, data));
+      .then(data => new Webhook(this.client, data));
   }
 
   editWebhook(webhook, name, avatar) {
@@ -21053,9 +21056,9 @@ class RESTMethods {
   }
 
   sendWebhookMessage(webhook, content, { avatarURL, tts, disableEveryone, embeds } = {}, file = null) {
-    if (typeof content !== 'undefined') content = this.rest.client.resolver.resolveString(content);
+    if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
     if (content) {
-      if (disableEveryone || (typeof disableEveryone === 'undefined' && this.rest.client.options.disableEveryone)) {
+      if (disableEveryone || (typeof disableEveryone === 'undefined' && this.client.options.disableEveryone)) {
         content = content.replace(/@(everyone|here)/g, '@\u200b$1');
       }
     }
@@ -21086,7 +21089,7 @@ class RESTMethods {
     return this.rest.makeRequest(
       'get',
       Constants.Endpoints.meMentions(options.limit, options.roles, options.everyone, options.guild)
-    ).then(res => res.body.map(m => new Message(this.rest.client.channels.get(m.channel_id), m, this.rest.client)));
+    ).then(res => res.body.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)));
   }
 
   addFriend(user) {
@@ -21113,7 +21116,7 @@ class RESTMethods {
 
   setRolePositions(guildID, roles) {
     return this.rest.makeRequest('patch', Constants.Endpoints.guildRoles(guildID), true, roles).then(() =>
-      this.rest.client.actions.GuildRolesPositionUpdate.handle({
+      this.client.actions.GuildRolesPositionUpdate.handle({
         guild_id: guildID,
         roles,
       }).guild
@@ -21124,8 +21127,8 @@ class RESTMethods {
     return this.rest.makeRequest(
       'put', Constants.Endpoints.selfMessageReaction(message.channel.id, message.id, emoji), true
     ).then(() =>
-      this.rest.client.actions.MessageReactionAdd.handle({
-        user_id: this.rest.client.user.id,
+      this.client.actions.MessageReactionAdd.handle({
+        user_id: this.client.user.id,
         message_id: message.id,
         emoji: parseEmoji(emoji),
         channel_id: message.channel.id,
@@ -21135,11 +21138,11 @@ class RESTMethods {
 
   removeMessageReaction(message, emoji, user) {
     let endpoint = Constants.Endpoints.selfMessageReaction(message.channel.id, message.id, emoji);
-    if (user.id !== this.rest.client.user.id) {
+    if (user.id !== this.client.user.id) {
       endpoint = Constants.Endpoints.userMessageReaction(message.channel.id, message.id, emoji, null, user.id);
     }
     return this.rest.makeRequest('delete', endpoint, true).then(() =>
-      this.rest.client.actions.MessageReactionRemove.handle({
+      this.client.actions.MessageReactionRemove.handle({
         user_id: user.id,
         message_id: message.id,
         emoji: parseEmoji(emoji),
@@ -21161,7 +21164,7 @@ class RESTMethods {
 
   getMyApplication() {
     return this.rest.makeRequest('get', Constants.Endpoints.myApplication, true).then(app =>
-      new ClientOAuth2Application(this.rest.client, app)
+      new ClientOAuth2Application(this.client, app)
     );
   }
 
@@ -21177,7 +21180,7 @@ module.exports = RESTMethods;
 /* 112 */
 /***/ function(module, exports, __webpack_require__) {
 
-const RequestHandler = __webpack_require__(53);
+const RequestHandler = __webpack_require__(52);
 
 class BurstRequestHandler extends RequestHandler {
   constructor(restManager, endpoint) {
@@ -21253,7 +21256,7 @@ module.exports = BurstRequestHandler;
 /* 113 */
 /***/ function(module, exports, __webpack_require__) {
 
-const RequestHandler = __webpack_require__(53);
+const RequestHandler = __webpack_require__(52);
 
 /**
  * Handles API Requests sequentially, i.e. we wait until the current request is finished before moving onto
@@ -21394,9 +21397,9 @@ module.exports = UserAgentManager;
 /* WEBPACK VAR INJECTION */(function(Buffer) {const browser = typeof window !== 'undefined';
 const EventEmitter = __webpack_require__(21).EventEmitter;
 const Constants = __webpack_require__(0);
-const convertArrayBuffer = __webpack_require__(54);
+const convertArrayBuffer = __webpack_require__(53);
 const pako = __webpack_require__(67);
-const zlib = __webpack_require__(50);
+const zlib = __webpack_require__(49);
 const PacketManager = __webpack_require__(116);
 
 let WebSocket, erlpack;
