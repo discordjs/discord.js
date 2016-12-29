@@ -16,9 +16,9 @@ const ClientOAuth2Application = require('../../structures/ClientOAuth2Applicatio
 class RESTMethods {
   constructor(restManager) {
     this.rest = restManager;
-  }
 
-  get client() { return this.rest.client; }
+    this.client = restManager.client;
+  }
 
   login(token = this.client.token) {
     return new Promise((resolve, reject) => {
