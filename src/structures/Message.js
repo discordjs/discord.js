@@ -475,7 +475,8 @@ class Message {
    *  .catch(console.error);
    */
   reply(content, options = {}) {
-    return this.channel.send(`${this.guild ? `${this.author}, ` : ''}${content}`, options);
+    content = `${this.guild || this.channel.type === 'group' ? `${this.author}, ` : ''}${content}`;
+    return this.channel.send(content, options);
   }
 
   /**
