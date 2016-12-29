@@ -17,8 +17,8 @@
 </div>
 
 # Welcome!
-Welcome to the discord.js v10 documentation.
-v10 is just a more consistent and stable iteration over v9, and contains loads of new and improved features, optimisations, and bug fixes.
+Welcome to the discord.js v11 documentation.
+v11 contains loads of new and improved features, optimisations, and bug fixes.
 
 ## About
 discord.js is a powerful node.js module that allows you to interact with the
