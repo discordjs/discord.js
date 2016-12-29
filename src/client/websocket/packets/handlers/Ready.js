@@ -10,11 +10,10 @@ class ReadyHandler extends AbstractHandler {
     client.ws.heartbeat();
 
     const clientUser = new ClientUser(client, data.user);
+    clientUser.settings = data.user_settings;
     client.user = clientUser;
     client.readyAt = new Date();
     client.users.set(clientUser.id, clientUser);
-
-    client.user.settings = data.user_settings;
 
     for (const guild of data.guilds) client.dataManager.newGuild(guild);
     for (const privateDM of data.private_channels) client.dataManager.newChannel(privateDM);
