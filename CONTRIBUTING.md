@@ -6,7 +6,7 @@ is a great boon to your coding process.
 ## Setup
 To get ready to work on the codebase, please do the following:
 
-1. Fork & clone the repository
+1. Fork & clone the repository, and make sure you're on the **indev** branch
 2. Run `npm install`
 3. If you're working on voice, also run `npm install node-opus` or `npm install opusscript`
 4. Code your heart out!

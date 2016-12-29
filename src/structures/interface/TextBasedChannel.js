@@ -2,7 +2,7 @@ const path = require('path');
 const Message = require('../Message');
 const MessageCollector = require('../MessageCollector');
 const Collection = require('../../util/Collection');
-const escapeMarkdown = require('../../util/EscapeMarkdown');
+
 
 /**
  * Interface for classes that have text-channel-like features
@@ -11,7 +11,7 @@ const escapeMarkdown = require('../../util/EscapeMarkdown');
 class TextBasedChannel {
   constructor() {
     /**
-     * A Collection containing the messages sent to this channel.
+     * A collection containing the messages sent to this channel.
      * @type {Collection<string, Message>}
      */
     this.messages = new Collection();
@@ -24,14 +24,24 @@ class TextBasedChannel {
   }
 
   /**
-   * Options that can be passed into sendMessage, sendTTSMessage, sendFile, sendCode, or Message.reply
+   * Options that can be passed into send, sendMessage, sendFile, sendEmbed, sendCode, and Message#reply
    * @typedef {Object} MessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
+   * @property {Object} [embed] An embed for the message
+   * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
+   * @property {FileOptions|string} [file] A file to send with the message
+   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
+   */
+
+  /**
+   * @typedef {Object} FileOptions
+   * @property {BufferResolvable} attachment
+   * @property {string} [name='file.jpg']
    */
 
   /**
@@ -45,8 +55,47 @@ class TextBasedChannel {
 
   /**
    * Send a message to this channel
-   * @param {StringResolvable} content The content to send
-   * @param {MessageOptions} [options={}] The options to provide
+   * @param {StringResolvable} [content] Text for the message
+   * @param {MessageOptions} [options={}] Options for the message
+   * @returns {Promise<Message|Message[]>}
+   * @example
+   * // send a message
+   * channel.send('hello!')
+   *  .then(message => console.log(`Sent message: ${message.content}`))
+   *  .catch(console.error);
+   */
+  send(content, options) {
+    if (!options && typeof content === 'object' && !(content instanceof Array)) {
+      options = content;
+      content = '';
+    } else if (!options) {
+      options = {};
+    }
+    if (options.file) {
+      if (typeof options.file === 'string') options.file = { attachment: options.file };
+      if (!options.file.name) {
+        if (typeof options.file.attachment === 'string') {
+          options.file.name = path.basename(options.file.attachment);
+        } else if (options.file.attachment && options.file.attachment.path) {
+          options.file.name = path.basename(options.file.attachment.path);
+        } else {
+          options.file.name = 'file.jpg';
+        }
+      }
+      return this.client.resolver.resolveBuffer(options.file.attachment).then(file =>
+        this.client.rest.methods.sendMessage(this, content, options, {
+          file,
+          name: options.file.name,
+        })
+      );
+    }
+    return this.client.rest.methods.sendMessage(this, content, options);
+  }
+
+  /**
+   * Send a message to this channel
+   * @param {StringResolvable} content Text for the message
+   * @param {MessageOptions} [options={}] Options for the message
    * @returns {Promise<Message|Message[]>}
    * @example
    * // send a message
@@ -54,75 +103,54 @@ class TextBasedChannel {
    *  .then(message => console.log(`Sent message: ${message.content}`))
    *  .catch(console.error);
    */
-  sendMessage(content, options = {}) {
-    return this.client.rest.methods.sendMessage(this, content, options);
+  sendMessage(content, options) {
+    return this.send(content, options);
   }
 
   /**
-   * Send a text-to-speech message to this channel
-   * @param {StringResolvable} content The content to send
-   * @param {MessageOptions} [options={}] The options to provide
-   * @returns {Promise<Message|Message[]>}
-   * @example
-   * // send a TTS message
-   * channel.sendTTSMessage('hello!')
-   *  .then(message => console.log(`Sent tts message: ${message.content}`))
-   *  .catch(console.error);
+   * Send an embed to this channel
+   * @param {RichEmbed|Object} embed Embed for the message
+   * @param {string} [content] Text for the message
+   * @param {MessageOptions} [options] Options for the message
+   * @returns {Promise<Message>}
    */
-  sendTTSMessage(content, options = {}) {
-    Object.assign(options, { tts: true });
-    return this.client.rest.methods.sendMessage(this, content, options);
+  sendEmbed(embed, content, options) {
+    if (!options && typeof content === 'object') {
+      options = content;
+      content = '';
+    } else if (!options) {
+      options = {};
+    }
+    return this.send(content, Object.assign(options, { embed }));
   }
 
   /**
    * Send a file to this channel
-   * @param {FileResolvable} attachment The file to send
-   * @param {string} [fileName="file.jpg"] The name and extension of the file
-   * @param {StringResolvable} [content] Text message to send with the attachment
-   * @param {MessageOptions} [options] The options to provide
+   * @param {BufferResolvable} attachment File to send
+   * @param {string} [name='file.jpg'] Name and extension of the file
+   * @param {StringResolvable} [content] Text for the message
+   * @param {MessageOptions} [options] Options for the message
    * @returns {Promise<Message>}
    */
-  sendFile(attachment, fileName, content, options = {}) {
-    if (!fileName) {
-      if (typeof attachment === 'string') {
-        fileName = path.basename(attachment);
-      } else if (attachment && attachment.path) {
-        fileName = path.basename(attachment.path);
-      } else {
-        fileName = 'file.jpg';
-      }
-    }
-    return new Promise((resolve, reject) => {
-      this.client.resolver.resolveFile(attachment).then(file => {
-        this.client.rest.methods.sendMessage(this, content, options, {
-          file,
-          name: fileName,
-        }).then(resolve).catch(reject);
-      }).catch(reject);
-    });
+  sendFile(attachment, name, content, options = {}) {
+    return this.send(content, Object.assign(options, { file: { attachment, name } }));
   }
 
   /**
    * Send a code block to this channel
    * @param {string} lang Language for the code block
    * @param {StringResolvable} content Content of the code block
-   * @param {MessageOptions} options The options to provide
+   * @param {MessageOptions} [options] Options for the message
    * @returns {Promise<Message|Message[]>}
    */
   sendCode(lang, content, options = {}) {
-    if (options.split) {
-      if (typeof options.split !== 'object') options.split = {};
-      if (!options.split.prepend) options.split.prepend = `\`\`\`${lang || ''}\n`;
-      if (!options.split.append) options.split.append = '\n```';
-    }
-    content = escapeMarkdown(this.client.resolver.resolveString(content), true);
-    return this.sendMessage(`\`\`\`${lang || ''}\n${content}\n\`\`\``, options);
+    return this.send(content, Object.assign(options, { code: lang }));
   }
 
   /**
    * Gets a single message from this channel, regardless of it being cached or not.
-   * <warn>Only OAuth bot accounts can use this method.</warn>
-   * @param {string} messageID The ID of the message to get
+   * <warn>This is only available when using a bot account.</warn>
+   * @param {string} messageID ID of the message to get
    * @returns {Promise<Message>}
    * @example
    * // get message
@@ -131,14 +159,10 @@ class TextBasedChannel {
    *   .catch(console.error);
    */
   fetchMessage(messageID) {
-    return new Promise((resolve, reject) => {
-      this.client.rest.methods.getChannelMessage(this, messageID).then(data => {
-        let msg = data;
-        if (!(msg instanceof Message)) msg = new Message(this, data, this.client);
-
-        this._cacheMessage(msg);
-        resolve(msg);
-      }).catch(reject);
+    return this.client.rest.methods.getChannelMessage(this, messageID).then(data => {
+      const msg = data instanceof Message ? data : new Message(this, data, this.client);
+      this._cacheMessage(msg);
+      return msg;
     });
   }
 
@@ -153,8 +177,8 @@ class TextBasedChannel {
    */
 
   /**
-   * Gets the past messages sent in this channel. Resolves with a Collection mapping message ID's to Message objects.
-   * @param {ChannelLogsQueryOptions} [options={}] The query parameters to pass in
+   * Gets the past messages sent in this channel. Resolves with a collection mapping message ID's to Message objects.
+   * @param {ChannelLogsQueryOptions} [options={}] Query parameters to pass in
    * @returns {Promise<Collection<string, Message>>}
    * @example
    * // get messages
@@ -163,34 +187,30 @@ class TextBasedChannel {
    *  .catch(console.error);
    */
   fetchMessages(options = {}) {
-    return new Promise((resolve, reject) => {
-      this.client.rest.methods.getChannelMessages(this, options).then(data => {
-        const messages = new Collection();
-        for (const message of data) {
-          const msg = new Message(this, message, this.client);
-          messages.set(message.id, msg);
-          this._cacheMessage(msg);
-        }
-        resolve(messages);
-      }).catch(reject);
+    return this.client.rest.methods.getChannelMessages(this, options).then(data => {
+      const messages = new Collection();
+      for (const message of data) {
+        const msg = new Message(this, message, this.client);
+        messages.set(message.id, msg);
+        this._cacheMessage(msg);
+      }
+      return messages;
     });
   }
 
   /**
-   * Fetches the pinned messages of this Channel and returns a Collection of them.
+   * Fetches the pinned messages of this channel and returns a collection of them.
    * @returns {Promise<Collection<string, Message>>}
    */
   fetchPinnedMessages() {
-    return new Promise((resolve, reject) => {
-      this.client.rest.methods.getChannelPinnedMessages(this).then(data => {
-        const messages = new Collection();
-        for (const message of data) {
-          const msg = new Message(this, message, this.client);
-          messages.set(message.id, msg);
-          this._cacheMessage(msg);
-        }
-        resolve(messages);
-      }).catch(reject);
+    return this.client.rest.methods.getChannelPinnedMessages(this).then(data => {
+      const messages = new Collection();
+      for (const message of data) {
+        const msg = new Message(this, message, this.client);
+        messages.set(message.id, msg);
+        this._cacheMessage(msg);
+      }
+      return messages;
     });
   }
 
@@ -220,7 +240,7 @@ class TextBasedChannel {
   /**
    * Stops the typing indicator in the channel.
    * The indicator will only stop if this is called as many times as startTyping().
-   * <info>It can take a few seconds for the Client User to stop typing.</info>
+   * <info>It can take a few seconds for the client user to stop typing.</info>
    * @param {boolean} [force=false] Whether or not to reset the call count and force the indicator to stop
    * @example
    * // stop typing in a channel
@@ -284,7 +304,7 @@ class TextBasedChannel {
    */
 
   /**
-   * Similar to createCollector but in Promise form. Resolves with a Collection of messages that pass the specified
+   * Similar to createCollector but in promise form. Resolves with a collection of messages that pass the specified
    * filter.
    * @param {CollectorFilterFunction} filter The filter function to use
    * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector
@@ -312,21 +332,17 @@ class TextBasedChannel {
 
   /**
    * Bulk delete given messages.
-   * Only OAuth Bot accounts may use this method.
+   * <warn>This is only available when using a bot account.</warn>
    * @param {Collection<string, Message>|Message[]|number} messages Messages to delete, or number of messages to delete
    * @returns {Promise<Collection<string, Message>>} Deleted messages
    */
   bulkDelete(messages) {
-    return new Promise((resolve, reject) => {
-      if (!isNaN(messages)) {
-        this.fetchMessages({ limit: messages }).then(msgs => resolve(this.bulkDelete(msgs)));
-      } else if (messages instanceof Array || messages instanceof Collection) {
-        const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
-        resolve(this.client.rest.methods.bulkDeleteMessages(this, messageIDs));
-      } else {
-        reject(new TypeError('Messages must be an Array, Collection, or number.'));
-      }
-    });
+    if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs));
+    if (messages instanceof Array || messages instanceof Collection) {
+      const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
+      return this.client.rest.methods.bulkDeleteMessages(this, messageIDs);
+    }
+    throw new TypeError('The messages must be an Array, Collection, or number.');
   }
 
   _cacheMessage(message) {
@@ -339,23 +355,23 @@ class TextBasedChannel {
 }
 
 exports.applyToClass = (structure, full = false) => {
-  const props = ['sendMessage', 'sendTTSMessage', 'sendFile', 'sendCode'];
+  const props = ['send', 'sendMessage', 'sendEmbed', 'sendFile', 'sendCode'];
   if (full) {
-    props.push('_cacheMessage');
-    props.push('fetchMessages');
-    props.push('fetchMessage');
-    props.push('bulkDelete');
-    props.push('startTyping');
-    props.push('stopTyping');
-    props.push('typing');
-    props.push('typingCount');
-    props.push('fetchPinnedMessages');
-    props.push('createCollector');
-    props.push('awaitMessages');
+    props.push(
+      '_cacheMessage',
+      'fetchMessages',
+      'fetchMessage',
+      'bulkDelete',
+      'startTyping',
+      'stopTyping',
+      'typing',
+      'typingCount',
+      'fetchPinnedMessages',
+      'createCollector',
+      'awaitMessages'
+    );
   }
-  for (const prop of props) applyProp(structure, prop);
+  for (const prop of props) {
+    Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
+  }
 };
-
-function applyProp(structure, prop) {
-  Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
-}

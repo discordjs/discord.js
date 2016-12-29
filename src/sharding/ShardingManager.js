@@ -10,7 +10,6 @@ const fetchRecommendedShards = require('../util/FetchRecommendedShards');
  * This is a utility class that can be used to help you spawn shards of your Client. Each shard is completely separate
  * from the other. The Shard Manager takes a path to a file and spawns it under the specified amount of shards safely.
  * If you do not select an amount of shards, the manager will automatically decide the best amount.
- * <warn>The Sharding Manager is still experimental</warn>
  * @extends {EventEmitter}
  */
 class ShardingManager extends EventEmitter {
@@ -105,19 +104,17 @@ class ShardingManager extends EventEmitter {
    * @returns {Promise<Collection<number, Shard>>}
    */
   spawn(amount = this.totalShards, delay = 5500) {
-    return new Promise((resolve, reject) => {
-      if (amount === 'auto') {
-        fetchRecommendedShards(this.token).then(count => {
-          this.totalShards = count;
-          resolve(this._spawn(count, delay));
-        }).catch(reject);
-      } else {
-        if (typeof amount !== 'number' || isNaN(amount)) throw new TypeError('Amount of shards must be a number.');
-        if (amount < 1) throw new RangeError('Amount of shards must be at least 1.');
-        if (amount !== Math.floor(amount)) throw new TypeError('Amount of shards must be an integer.');
-        resolve(this._spawn(amount, delay));
-      }
-    });
+    if (amount === 'auto') {
+      return fetchRecommendedShards(this.token).then(count => {
+        this.totalShards = count;
+        return this._spawn(count, delay);
+      });
+    } else {
+      if (typeof amount !== 'number' || isNaN(amount)) throw new TypeError('Amount of shards must be a number.');
+      if (amount < 1) throw new RangeError('Amount of shards must be at least 1.');
+      if (amount !== Math.floor(amount)) throw new TypeError('Amount of shards must be an integer.');
+      return this._spawn(amount, delay);
+    }
   }
 
   /**

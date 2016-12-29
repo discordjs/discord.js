@@ -12,7 +12,7 @@ class ChannelDeleteHandler extends AbstractHandler {
 }
 
 /**
- * Emitted whenever a Channel is deleted.
+ * Emitted whenever a channel is deleted.
  * @event Client#channelDelete
  * @param {Channel} channel The channel that was deleted
  */

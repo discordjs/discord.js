@@ -5,9 +5,12 @@ cache:
   directories:
     - node_modules
 install: npm install
-script: bash ./docs/deploy/deploy.sh
+script:
+  - npm run test
+  - bash ./deploy/deploy.sh
 env:
   global:
     - ENCRYPTION_LABEL: "af862fa96d3e"
     - COMMIT_AUTHOR_EMAIL: "amishshah.2k@gmail.com"
-
+dist: trusty
+sudo: false

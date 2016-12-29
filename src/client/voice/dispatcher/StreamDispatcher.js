@@ -10,9 +10,7 @@ nonce.fill(0);
  * // obtained using:
  * voiceChannel.join().then(connection => {
  *   // you can play a file or a stream here:
- *   connection.playFile('./file.mp3').then(dispatcher => {
- *
- *   });
+ *   const dispatcher = connection.playFile('./file.mp3');
  * });
  * ```
  * @extends {EventEmitter}
@@ -116,9 +114,10 @@ class StreamDispatcher extends EventEmitter {
 
   /**
    * Stops the current stream permanently and emits an `end` event.
+   * @param {string} [reason='user'] An optional reason for stopping the dispatcher.
    */
-  end() {
-    this._triggerTerminalState('end', 'user requested');
+  end(reason = 'user') {
+    this._triggerTerminalState('end', reason);
   }
 
   _setSpeaking(value) {
@@ -136,7 +135,7 @@ class StreamDispatcher extends EventEmitter {
     const packet = this._createPacket(sequence, timestamp, this.player.opusEncoder.encode(buffer));
     while (repeats--) {
       this.player.voiceConnection.sockets.udp.send(packet)
-        .catch(e => this.emit('debug', `failed to send a packet ${e}`));
+        .catch(e => this.emit('debug', `Failed to send a packet ${e}`));
     }
   }
 
@@ -223,7 +222,7 @@ class StreamDispatcher extends EventEmitter {
       buffer = this._applyVolume(buffer);
 
       data.count++;
-      data.sequence = (data.sequence + 1) < (65536) ? data.sequence + 1 : 0;
+      data.sequence = (data.sequence + 1) < 65536 ? data.sequence + 1 : 0;
       data.timestamp = data.timestamp + 4294967295 ? data.timestamp + 960 : 0;
 
       this._sendBuffer(buffer, data.sequence, data.timestamp);
@@ -235,12 +234,14 @@ class StreamDispatcher extends EventEmitter {
     }
   }
 
-  _triggerEnd() {
+  _triggerEnd(reason) {
     /**
      * Emitted once the stream has ended. Attach a `once` listener to this.
      * @event StreamDispatcher#end
+     * @param {string} reason The reason for the end of the dispatcher. If it ended because it reached the end of the
+     * stream, this would be `stream`. If you invoke `.end()` without specifying a reason, this would be `user`.
      */
-    this.emit('end');
+    this.emit('end', reason);
   }
 
   _triggerError(err) {
@@ -282,7 +283,7 @@ class StreamDispatcher extends EventEmitter {
       return;
     }
 
-    this.stream.on('end', err => this._triggerTerminalState('end', err));
+    this.stream.on('end', err => this._triggerTerminalState('end', err || 'stream'));
     this.stream.on('error', err => this._triggerTerminalState('error', err));
 
     const data = this.streamingData;

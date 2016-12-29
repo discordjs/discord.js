@@ -1,20 +1,22 @@
 /**
- * Represents a permission overwrite for a Role or Member in a Guild Channel.
+ * Represents a permission overwrite for a role or member in a guild channel.
  */
 class PermissionOverwrites {
   constructor(guildChannel, data) {
     /**
      * The GuildChannel this overwrite is for
+     * @name PermissionOverwrites#channel
      * @type {GuildChannel}
+     * @readonly
      */
-    this.channel = guildChannel;
+    Object.defineProperty(this, 'channel', { value: guildChannel });
 
     if (data) this.setup(data);
   }
 
   setup(data) {
     /**
-     * The ID of this overwrite, either a User ID or a Role ID
+     * The ID of this overwrite, either a user ID or a role ID
      * @type {string}
      */
     this.id = data.id;
@@ -25,8 +27,8 @@ class PermissionOverwrites {
      */
     this.type = data.type;
 
-    this.denyData = data.deny;
-    this.allowData = data.allow;
+    this.deny = data.deny;
+    this.allow = data.allow;
   }
 
   /**

@@ -29,7 +29,9 @@ class BurstRequestHandler extends RequestHandler {
         this.requestResetTime = Number(res.headers['x-ratelimit-reset']) * 1000;
         this.requestRemaining = Number(res.headers['x-ratelimit-remaining']);
         this.timeDifference = Date.now() - new Date(res.headers.date).getTime();
-        this.handleNext((this.requestResetTime - Date.now()) + this.timeDifference + 1000);
+        this.handleNext(
+          this.requestResetTime - Date.now() + this.timeDifference + this.restManager.client.options.restTimeOffset
+        );
       }
       if (err) {
         if (err.status === 429) {
@@ -38,10 +40,8 @@ class BurstRequestHandler extends RequestHandler {
           this.restManager.client.setTimeout(() => {
             this.globalLimit = false;
             this.handle();
-          }, Number(res.headers['retry-after']) + 500);
-          if (res.headers['x-ratelimit-global']) {
-            this.globalLimit = true;
-          }
+          }, Number(res.headers['retry-after']) + this.restManager.client.options.restTimeOffset);
+          if (res.headers['x-ratelimit-global']) this.globalLimit = true;
         } else {
           item.reject(err);
         }

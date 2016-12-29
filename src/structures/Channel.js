@@ -1,14 +1,15 @@
 /**
- * Represents any Channel on Discord
+ * Represents any channel on Discord
  */
 class Channel {
   constructor(client, data) {
     /**
      * The client that instantiated the Channel
+     * @name Channel#client
      * @type {Client}
+     * @readonly
      */
-    this.client = client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: client });
 
     /**
      * The type of the channel, either:

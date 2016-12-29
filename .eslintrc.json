@@ -14,17 +14,20 @@
     "valid-jsdoc": ["error", {
       "requireReturn": false,
       "requireReturnDescription": false,
+      "prefer": {
+        "return": "returns",
+        "arg": "param"
+      },
       "preferType": {
         "String": "string",
         "Number": "number",
         "Boolean": "boolean",
-        "Function": "function",
         "object": "Object",
+        "function": "Function",
+        "array": "Array",
         "date": "Date",
-        "error": "Error"
-      },
-      "prefer": {
-        "return": "returns"
+        "error": "Error",
+        "null": "void"
       }
     }],
 
@@ -80,6 +83,7 @@
     "consistent-this": ["error", "$this"],
     "eol-last": "error",
     "func-names": "error",
+    "func-name-matching": "error",
     "func-style": ["error", "declaration", { "allowArrowFunctions": true }],
     "indent": ["error", 2, { "SwitchCase": 1 }],
     "key-spacing": "error",
@@ -122,6 +126,7 @@
     "no-useless-computed-key": "error",
     "no-useless-constructor": "error",
     "prefer-arrow-callback": "error",
+    "prefer-numeric-literals": "error",
     "prefer-rest-params": "error",
     "prefer-spread": "error",
     "prefer-template": "error",

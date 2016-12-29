@@ -1,12 +1,13 @@
 const AbstractHandler = require('./AbstractHandler');
 
-const getStructure = name => require(`../../../../structures/${name}`);
-const ClientUser = getStructure('ClientUser');
+const ClientUser = require('../../../../structures/ClientUser');
 
 class ReadyHandler extends AbstractHandler {
   handle(packet) {
     const client = this.packetManager.client;
     const data = packet.d;
+
+    client.ws.heartbeat();
 
     const clientUser = new ClientUser(client, data.user);
     client.user = clientUser;
@@ -29,6 +30,15 @@ class ReadyHandler extends AbstractHandler {
     for (const presence of data.presences) {
       client.dataManager.newUser(presence.user);
       client._setPresence(presence.user.id, presence);
+    }
+
+    if (data.notes) {
+      for (const user in data.notes) {
+        let note = data.notes[user];
+        if (!note.length) note = null;
+
+        client.user.notes.set(user, note);
+      }
     }
 
     if (!client.user.bot && client.options.sync) client.setInterval(client.syncGuilds.bind(client), 30000);
