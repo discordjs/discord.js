@@ -61,7 +61,7 @@ class AudioPlayer extends EventEmitter {
     transcoder.on('error', e => {
       this.destroyStream(stream);
       if (this.listenerCount('error') > 0) this.emit('error', e);
-      else this.emit('warn', e);
+      this.emit('warn', `prism transcoder error - ${e}`);
     });
     return this.playPCMStream(transcoder.output, options);
   }
