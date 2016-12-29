@@ -183,6 +183,7 @@ class StreamDispatcher extends EventEmitter {
       }
 
       if (this.paused) {
+        this.setSpeaking(false);
         // data.timestamp = data.timestamp + 4294967295 ? data.timestamp + 960 : 0;
         data.pausedTime += data.length * 10;
         // if buffer is provided we are assuming a master process is controlling the dispatcher

@@ -77,6 +77,20 @@ class VoiceBroadcast extends EventEmitter {
     return this;
   }
 
+  pause() {
+    for (const dispatcher of this.dispatchers) {
+      dispatcher.pause();
+    }
+    clearInterval(this.tickInterval);
+  }
+
+  resume() {
+    for (const dispatcher of this.dispatchers) {
+      dispatcher.resume();
+    }
+    this._startPlaying();
+  }
+
   _startPlaying() {
     if (this.tickInterval) clearInterval(this.tickInterval);
     this.tickInterval = this.client.setInterval(this.tick.bind(this), 20);
