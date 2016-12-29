@@ -64,10 +64,12 @@ class TextBasedChannel {
    *  .then(message => console.log(`Sent message: ${message.content}`))
    *  .catch(console.error);
    */
-  send(content, options = {}) {
-    if (typeof content !== 'string') {
+  send(content, options) {
+    if (!options && typeof content === 'object') {
       options = content;
       content = '';
+    } else if (!options) {
+      options = {};
     }
     if (options.file) {
       if (typeof options.file === 'string') options.file = { attachment: options.file };

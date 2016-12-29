@@ -383,10 +383,12 @@ class Message {
    *  .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
    *  .catch(console.error);
    */
-  edit(content, options = {}) {
-    if (typeof content !== 'string') {
+  edit(content, options) {
+    if (!options && typeof content === 'object') {
       options = content;
       content = '';
+    } else if (!options) {
+      options = {};
     }
     return this.client.rest.methods.updateMessage(this, content, options);
   }
