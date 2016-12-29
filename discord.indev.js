@@ -8317,7 +8317,7 @@ module.exports = isObject;
 
 module.exports = {
 	"name": "discord.js",
-	"version": "10.0.1",
+	"version": "11.0.0",
 	"description": "A powerful library for interacting with the Discord API",
 	"main": "./src/index",
 	"types": "./typings/index.d.ts",
