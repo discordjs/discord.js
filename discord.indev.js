@@ -2573,7 +2573,7 @@ class TextBasedChannel {
    *  .catch(console.error);
    */
   send(content, options) {
-    if (!options && typeof content === 'object') {
+    if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
       content = '';
     } else if (!options) {
