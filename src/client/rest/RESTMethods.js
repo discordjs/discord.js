@@ -16,7 +16,6 @@ const ClientOAuth2Application = require('../../structures/ClientOAuth2Applicatio
 class RESTMethods {
   constructor(restManager) {
     this.rest = restManager;
-
     this.client = restManager.client;
   }
 
