@@ -20589,9 +20589,9 @@ class RESTMethods {
       if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
 
       if (content) {
-        if (typeof code === 'string') {
+        if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
           content = escapeMarkdown(this.client.resolver.resolveString(content), true);
-          content = `\`\`\`${typeof code !== 'undefined' && code !== null ? code : ''}\n${content}\n\`\`\``;
+          content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
         }
 
         if (disableEveryone || (typeof disableEveryone === 'undefined' && this.client.options.disableEveryone)) {
@@ -20601,7 +20601,7 @@ class RESTMethods {
         if (split) content = splitMessage(content, typeof split === 'object' ? split : {});
       }
 
-      const send = (chan) => {
+      const send = chan => {
         if (content instanceof Array) {
           const messages = [];
           (function sendChunk(list, index) {
