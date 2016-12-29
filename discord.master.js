@@ -8352,7 +8352,7 @@ module.exports = {
 		"pako": "^1.0.0",
 		"superagent": "^3.3.0",
 		"tweetnacl": "^0.14.0",
-		"ws": "^1.1.0"
+		"ws": "^1.1.1"
 	},
 	"peerDependencies": {
 		"erlpack": "hammerandchisel/erlpack#master",
