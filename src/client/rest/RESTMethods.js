@@ -50,7 +50,7 @@ class RESTMethods {
       if (content) {
         if (code) {
           content = escapeMarkdown(this.client.resolver.resolveString(content), true);
-          content = `\`\`\`${typeof code === 'string' ? code : ''}\n${content}\n\`\`\``;
+          content = `\`\`\`${typeof code !== 'undefined' && code !== null ? code : ''}\n${content}\n\`\`\``;
         }
 
         if (disableEveryone || (typeof disableEveryone === 'undefined' && this.client.options.disableEveryone)) {
@@ -90,7 +90,7 @@ class RESTMethods {
     content = this.client.resolver.resolveString(content);
     if (code) {
       content = escapeMarkdown(this.client.resolver.resolveString(content), true);
-      content = `\`\`\`${typeof code === 'string' ? code : ''}\n${content}\n\`\`\``;
+      content = `\`\`\`${typeof code !== 'undefined' && code !== null ? code : ''}\n${content}\n\`\`\``;
     }
     return this.rest.makeRequest('patch', Constants.Endpoints.channelMessage(message.channel.id, message.id), true, {
       content, embed,
