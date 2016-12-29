@@ -2303,7 +2303,7 @@ class Message {
    * Options that can be passed into editMessage
    * @typedef {Object} MessageEditOptions
    * @property {Object} [embed] An embed to be added/edited
-   * @property {string} [code] Language for optional codeblock formatting to apply
+   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    */
 
   /**
@@ -2541,7 +2541,7 @@ class TextBasedChannel {
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
    * @property {FileOptions|string} [file] A file to send with the message
-   * @property {string} [code] Language for optional codeblock formatting to apply
+   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
    */
@@ -20629,9 +20629,9 @@ class RESTMethods {
 
   updateMessage(message, content, { embed, code } = {}) {
     content = this.client.resolver.resolveString(content);
-    if (code) {
+    if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
       content = escapeMarkdown(this.client.resolver.resolveString(content), true);
-      content = `\`\`\`${typeof code !== 'undefined' && code !== null ? code : ''}\n${content}\n\`\`\``;
+      content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
     }
     return this.rest.makeRequest('patch', Constants.Endpoints.channelMessage(message.channel.id, message.id), true, {
       content, embed,
