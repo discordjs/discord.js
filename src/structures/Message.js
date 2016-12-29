@@ -369,7 +369,7 @@ class Message {
    * Options that can be passed into editMessage
    * @typedef {Object} MessageEditOptions
    * @property {Object} [embed] An embed to be added/edited
-   * @property {string} [code] Language for optional codeblock formatting to apply
+   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    */
 
   /**

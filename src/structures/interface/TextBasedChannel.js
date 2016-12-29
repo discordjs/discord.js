@@ -33,7 +33,7 @@ class TextBasedChannel {
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
    * @property {FileOptions|string} [file] A file to send with the message
-   * @property {string} [code] Language for optional codeblock formatting to apply
+   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
    */
