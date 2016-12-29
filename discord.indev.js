@@ -8559,6 +8559,7 @@ class ClientUser extends User {
 
   /**
    * Data resembling a raw Discord presence
+   * @typedef {Object} PresenceData
    * @property {PresenceStatus} [status] Status of the user
    * @property {boolean} [afk] Whether the user is AFK
    * @property {Object} [game] Game the user is playing
