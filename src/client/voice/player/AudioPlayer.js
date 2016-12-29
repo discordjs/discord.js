@@ -57,7 +57,7 @@ class AudioPlayer extends EventEmitter {
       media: stream,
       ffmpegArguments: ffmpegArguments.concat(['-ss', String(seek)]),
     });
-    this.streams.set(stream, { transcoder });
+    this.streams.set(transcoder.output, { transcoder, input: stream });
     transcoder.on('error', e => {
       this.destroyStream(stream);
       if (this.listenerCount('error') > 0) this.emit('error', e);
@@ -68,11 +68,13 @@ class AudioPlayer extends EventEmitter {
 
   playPCMStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
     const options = { seek, volume, passes };
-    this.destroyAllStreams(true);
+    this.destroyAllStreams(stream);
     const dispatcher = new StreamDispatcher(this, stream, options);
     dispatcher.on('speaking', value => this.voiceConnection.setSpeaking(value));
-    if (!this.streams.has(stream)) this.streams.set(stream, { dispatcher });
+    if (!this.streams.has(stream)) this.streams.set(stream, { dispatcher, input: stream });
     this.streams.get(stream).dispatcher = dispatcher;
+    dispatcher.on('end', () => this.destroyStream(stream));
+    dispatcher.on('error', () => this.destroyStream(stream));
     return dispatcher;
   }
 }
