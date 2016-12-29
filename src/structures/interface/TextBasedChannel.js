@@ -33,7 +33,7 @@ class TextBasedChannel {
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
    * @property {FileOptions|string} [file] A file to send with the message
-   * @property {string} [code] Language for optional codeblock formatting to apply
+   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
    */
@@ -55,8 +55,8 @@ class TextBasedChannel {
 
   /**
    * Send a message to this channel
-   * @param {StringResolvable} [content] The content to send
-   * @param {MessageOptions} [options={}] The options to provide
+   * @param {StringResolvable} [content] Text for the message
+   * @param {MessageOptions} [options={}] Options for the message
    * @returns {Promise<Message|Message[]>}
    * @example
    * // send a message
@@ -94,8 +94,8 @@ class TextBasedChannel {
 
   /**
    * Send a message to this channel
-   * @param {StringResolvable} content The content to send
-   * @param {MessageOptions} [options={}] The options to provide
+   * @param {StringResolvable} content Text for the message
+   * @param {MessageOptions} [options={}] Options for the message
    * @returns {Promise<Message|Message[]>}
    * @example
    * // send a message
@@ -109,9 +109,9 @@ class TextBasedChannel {
 
   /**
    * Send an embed to this channel
-   * @param {RichEmbed|Object} embed The embed to send
-   * @param {string} [content] Content to send
-   * @param {MessageOptions} [options] The options to provide
+   * @param {RichEmbed|Object} embed Embed for the message
+   * @param {string} [content] Text for the message
+   * @param {MessageOptions} [options] Options for the message
    * @returns {Promise<Message>}
    */
   sendEmbed(embed, content, options) {
@@ -126,10 +126,10 @@ class TextBasedChannel {
 
   /**
    * Send a file to this channel
-   * @param {BufferResolvable} attachment The file to send
-   * @param {string} [name='file.jpg'] The name and extension of the file
-   * @param {StringResolvable} [content] Text message to send with the attachment
-   * @param {MessageOptions} [options] The options to provide
+   * @param {BufferResolvable} attachment File to send
+   * @param {string} [name='file.jpg'] Name and extension of the file
+   * @param {StringResolvable} [content] Text for the message
+   * @param {MessageOptions} [options] Options for the message
    * @returns {Promise<Message>}
    */
   sendFile(attachment, name, content, options = {}) {
@@ -140,7 +140,7 @@ class TextBasedChannel {
    * Send a code block to this channel
    * @param {string} lang Language for the code block
    * @param {StringResolvable} content Content of the code block
-   * @param {MessageOptions} [options] The options to provide
+   * @param {MessageOptions} [options] Options for the message
    * @returns {Promise<Message|Message[]>}
    */
   sendCode(lang, content, options = {}) {
@@ -150,7 +150,7 @@ class TextBasedChannel {
   /**
    * Gets a single message from this channel, regardless of it being cached or not.
    * <warn>This is only available when using a bot account.</warn>
-   * @param {string} messageID The ID of the message to get
+   * @param {string} messageID ID of the message to get
    * @returns {Promise<Message>}
    * @example
    * // get message
@@ -178,7 +178,7 @@ class TextBasedChannel {
 
   /**
    * Gets the past messages sent in this channel. Resolves with a collection mapping message ID's to Message objects.
-   * @param {ChannelLogsQueryOptions} [options={}] The query parameters to pass in
+   * @param {ChannelLogsQueryOptions} [options={}] Query parameters to pass in
    * @returns {Promise<Collection<string, Message>>}
    * @example
    * // get messages

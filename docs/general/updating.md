@@ -1,3 +1,22 @@
+# Version 11
+
+**Significant Additions (see the changelog for a full list):**
+* Message Reactions and Embeds (rich text)
+* Support for uws and erlpack for better performance
+* OAuthApplication support
+
+### 1) Client.login() no longer supports logging in with email + password
+Logging in with an email or password has been discouraged previously, mainly because of [this](https://github.com/hammerandchisel/discord-api-docs/issues/69#issuecomment-223886862), however we have made the decision to now remove all email and password logins in v11. Instead, you can use authentication tokens. You can find your token for a self-bot by entering `CTRL+SHIFT+I` in the Discord application, entering the console tab and executing `localStorage.token`. As always, you can get your token for real bot accounts [here.](https://discordapp.com/developers/applications/me)
+
+### 2) ClientUser.setEmail()/setPassword() now require the current password, as well as setUsername() on user accounts
+In order to change email, password or username on user accounts (self-bots), you need to now pass a password parameter to these methods (changes highlighted in documentation for ClientUser).
+
+### 3) Removed TextBasedChannel.sendTTSMessage()
+This method was redundant and has been removed as the same results can be achieved using sendMessage()
+
+### 4) Using Collection.find()/exists() with IDs will throw an error
+To find something or check its existence using an ID, you should now use `.get()` and `.has()` which are part of a normal [Map.](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Map)
+
 # Version 10
 Version 10's non-BC changes focus on cleaning up some inconsistencies that exist in previous versions.
 Upgrading from v9 should be quick and painless.
