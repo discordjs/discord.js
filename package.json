@@ -48,7 +48,7 @@
     "eslint": "^3.12.0",
     "parallel-webpack": "^1.6.0",
     "uglify-js": "mishoo/UglifyJS2#harmony",
-    "webpack": "2.2.0-rc.2"
+    "webpack": "2.2.0-rc.3"
   },
   "engines": {
     "node": ">=6.0.0"

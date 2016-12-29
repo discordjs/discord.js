@@ -65,7 +65,8 @@ class ClientDataResolver {
   /**
    * Data that resolves to give a Guild object. This can be:
    * * A Guild object
-   * @typedef {Guild} GuildResolvable
+   * * A Guild ID
+   * @typedef {Guild|string} GuildResolvable
    */
 
   /**
@@ -173,7 +174,9 @@ class ClientDataResolver {
    *   "USE_VAD", // use voice activity detection
    *   "CHANGE_NICKNAME",
    *   "MANAGE_NICKNAMES", // change nicknames of others
-   *   "MANAGE_ROLES_OR_PERMISSIONS"
+   *   "MANAGE_ROLES_OR_PERMISSIONS",
+   *   "MANAGE_WEBHOOKS",
+   *   "MANAGE_EMOJIS"
    * ]
    * ```
    * @typedef {string|number} PermissionResolvable
@@ -191,15 +194,13 @@ class ClientDataResolver {
   }
 
   /**
-   * Turn an array of permissions into a valid discord permission bitfield
-   * @param {Array} permissions An array of permissions as strings or permissions numbers (see resolvePermission)
+   * Turn an array of permissions into a valid Discord permission bitfield
+   * @param {PermissionResolvable[]} permissions Permissions to resolve together
    * @returns {number}
    */
   resolvePermissions(permissions) {
     let bitfield = 0;
-    for (const permission of permissions) {
-      bitfield |= this.resolvePermission(permission);
-    }
+    for (const permission of permissions) bitfield |= this.resolvePermission(permission);
     return bitfield;
   }
 

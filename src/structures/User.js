@@ -237,7 +237,7 @@ class User {
   }
 
   /**
-   * Checks if the user is equal to another. It compares username, ID, discriminator, status and the game being played.
+   * Checks if the user is equal to another. It compares ID, username, discriminator, avatar, and bot flags.
    * It is recommended to compare equality by using `user.id === user2.id` unless you want to compare all properties.
    * @param {User} user User to compare with
    * @returns {boolean}
@@ -265,8 +265,8 @@ class User {
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  send() { return; }
   sendMessage() { return; }
-  sendTTSMessage() { return; }
   sendEmbed() { return; }
   sendFile() { return; }
   sendCode() { return; }
