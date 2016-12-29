@@ -87,9 +87,9 @@ class RESTMethods {
 
   updateMessage(message, content, { embed, code } = {}) {
     content = this.client.resolver.resolveString(content);
-    if (code) {
+    if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
       content = escapeMarkdown(this.client.resolver.resolveString(content), true);
-      content = `\`\`\`${typeof code !== 'undefined' && code !== null ? code : ''}\n${content}\n\`\`\``;
+      content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
     }
     return this.rest.makeRequest('patch', Constants.Endpoints.channelMessage(message.channel.id, message.id), true, {
       content, embed,
