@@ -4,7 +4,6 @@ const Constants = require('../../util/Constants');
 const AudioPlayer = require('./player/AudioPlayer');
 const VoiceReceiver = require('./receiver/VoiceReceiver');
 const EventEmitter = require('events').EventEmitter;
-const fs = require('fs');
 const Prism = require('prism-media');
 
 /**
