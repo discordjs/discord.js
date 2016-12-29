@@ -56,7 +56,7 @@ class MessageReaction {
 
   /**
    * Removes a user from this reaction.
-   * @param {UserResolvable} [user] the user that you want to remove the reaction, defaults to the client.
+   * @param {UserResolvable} [user=this.message.client.user] User to remove the reaction of
    * @returns {Promise<MessageReaction>}
    */
   remove(user = this.message.client.user) {
@@ -69,8 +69,7 @@ class MessageReaction {
   }
 
   /**
-   * Fetch all the users that gave this reaction. Resolves with a collection of users,
-   * mapped by their IDs.
+   * Fetch all the users that gave this reaction. Resolves with a collection of users, mapped by their IDs.
    * @param {number} [limit=100] the maximum amount of users to fetch, defaults to 100
    * @returns {Promise<Collection<string, User>>}
    */
