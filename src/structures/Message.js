@@ -374,7 +374,7 @@ class Message {
 
   /**
    * Edit the content of the message
-   * @param {StringResolvable} contentOrOptions The new content for the message, or MessageEditOptions
+   * @param {StringResolvable} [content] The new content for the message, or MessageEditOptions
    * @param {MessageEditOptions} [options={}] The options to provide
    * @returns {Promise<Message>}
    * @example
@@ -383,13 +383,10 @@ class Message {
    *  .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
    *  .catch(console.error);
    */
-  edit(contentOrOptions, options) {
-    let content;
-    if (typeof contentOrOptions === 'string') {
-      content = contentOrOptions;
-    } else {
+  edit(content, options = {}) {
+    if (typeof content !== 'string') {
+      options = content;
       content = '';
-      options = contentOrOptions;
     }
     return this.client.rest.methods.updateMessage(this, content, options);
   }

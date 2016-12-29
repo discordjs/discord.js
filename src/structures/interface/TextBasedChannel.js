@@ -55,7 +55,7 @@ class TextBasedChannel {
 
   /**
    * Send a message to this channel
-   * @param {StringResolvable} contentOrOptions The content to send, or MessageOptions
+   * @param {StringResolvable} [content] The content to send, or MessageOptions
    * @param {MessageOptions} [options={}] The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
@@ -64,14 +64,10 @@ class TextBasedChannel {
    *  .then(message => console.log(`Sent message: ${message.content}`))
    *  .catch(console.error);
    */
-  send(contentOrOptions, options) {
-    let content;
-    if (!options && typeof contentOrOptions === 'object') {
+  send(content, options = {}) {
+    if (typeof content !== 'string') {
+      options = content;
       content = '';
-      options = contentOrOptions;
-    } else {
-      content = contentOrOptions;
-      options = options || {};
     }
     if (options.file) {
       if (typeof options.file === 'string') options.file = { attachment: options.file };
@@ -130,7 +126,7 @@ class TextBasedChannel {
   /**
    * Send a file to this channel
    * @param {BufferResolvable} attachment The file to send
-   * @param {string} [name="file.jpg"] The name and extension of the file
+   * @param {string} [name='file.jpg'] The name and extension of the file
    * @param {StringResolvable} [content] Text message to send with the attachment
    * @param {MessageOptions} [options] The options to provide
    * @returns {Promise<Message>}
