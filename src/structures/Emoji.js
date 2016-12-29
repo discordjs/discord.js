@@ -2,19 +2,20 @@ const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 
 /**
- * Represents a Custom Emoji
+ * Represents a custom emoji
  */
 class Emoji {
   constructor(guild, data) {
     /**
      * The Client that instantiated this object
+     * @name Emoji#client
      * @type {Client}
+     * @readonly
      */
-    this.client = guild.client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: guild.client });
 
     /**
-     * The Guild this emoji is part of
+     * The guild this emoji is part of
      * @type {Guild}
      */
     this.guild = guild;
@@ -24,13 +25,13 @@ class Emoji {
 
   setup(data) {
     /**
-     * The ID of the Emoji
+     * The ID of the emoji
      * @type {string}
      */
     this.id = data.id;
 
     /**
-     * The name of the Emoji
+     * The name of the emoji
      * @type {string}
      */
     this.name = data.name;
@@ -87,7 +88,7 @@ class Emoji {
    * @readonly
    */
   get url() {
-    return `${Constants.Endpoints.CDN}/emojis/${this.id}.png`;
+    return Constants.Endpoints.emoji(this.id);
   }
 
   /**
@@ -100,6 +101,39 @@ class Emoji {
    */
   toString() {
     return this.requiresColons ? `<:${this.name}:${this.id}>` : this.name;
+  }
+
+  /**
+   * Whether this emoji is the same as another one
+   * @param {Emoji|Object} other the emoji to compare it to
+   * @returns {boolean} whether the emoji is equal to the given emoji or not
+   */
+  equals(other) {
+    if (other instanceof Emoji) {
+      return (
+        other.id === this.id &&
+        other.name === this.name &&
+        other.managed === this.managed &&
+        other.requiresColons === this.requiresColons
+      );
+    } else {
+      return (
+        other.id === this.id &&
+        other.name === this.name
+      );
+    }
+  }
+
+  /**
+   * The identifier of this emoji, used for message reactions
+   * @readonly
+   * @type {string}
+   */
+  get identifier() {
+    if (this.id) {
+      return `${this.name}:${this.id}`;
+    }
+    return encodeURIComponent(this.name);
   }
 }
 

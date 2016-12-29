@@ -13,14 +13,15 @@ class UserProfile {
     this.user = user;
 
     /**
-     * The Client that created the instance of the the User.
+     * The Client that created the instance of the the UserProfile.
+     * @name UserProfile#client
      * @type {Client}
+     * @readonly
      */
-    this.client = this.user.client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: user.client });
 
     /**
-     * Guilds that the ClientUser and the User share
+     * Guilds that the client user and the user share
      * @type {Collection<Guild>}
      */
     this.mutualGuilds = new Collection();
@@ -35,6 +36,12 @@ class UserProfile {
   }
 
   setup(data) {
+    /**
+     * If the user has Discord Premium
+     * @type {boolean}
+     */
+    this.premium = data.premium;
+
     for (const guild of data.mutual_guilds) {
       if (this.client.guilds.has(guild.id)) {
         this.mutualGuilds.set(guild.id, this.client.guilds.get(guild.id));

@@ -1,7 +1,6 @@
 const Channel = require('./Channel');
 const TextBasedChannel = require('./interface/TextBasedChannel');
 const Collection = require('../util/Collection');
-const arraysEqual = require('../util/ArraysEqual');
 
 /*
 { type: 3,
@@ -90,7 +89,7 @@ class GroupDMChannel extends Channel {
    * Whether this channel equals another channel. It compares all properties, so for most operations
    * it is advisable to just compare `channel.id === channel2.id` as it is much faster and is often
    * what most users need.
-   * @param {GroupDMChannel} channel The channel to compare to
+   * @param {GroupDMChannel} channel Channel to compare with
    * @returns {boolean}
    */
   equals(channel) {
@@ -101,16 +100,14 @@ class GroupDMChannel extends Channel {
       this.ownerID === channel.ownerID;
 
     if (equal) {
-      const thisIDs = this.recipients.keyArray();
-      const otherIDs = channel.recipients.keyArray();
-      return arraysEqual(thisIDs, otherIDs);
+      return this.recipients.equals(channel.recipients);
     }
 
     return equal;
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the Channel's name instead of the Channel object.
+   * When concatenated with a string, this automatically concatenates the channel's name instead of the Channel object.
    * @returns {string}
    * @example
    * // logs: Hello from My Group DM!
@@ -124,8 +121,9 @@ class GroupDMChannel extends Channel {
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  send() { return; }
   sendMessage() { return; }
-  sendTTSMessage() { return; }
+  sendEmbed() { return; }
   sendFile() { return; }
   sendCode() { return; }
   fetchMessage() { return; }

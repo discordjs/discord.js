@@ -1,16 +1,17 @@
 const Constants = require('../util/Constants');
 
 /**
- * Represents a Role on Discord
+ * Represents a role on Discord
  */
 class Role {
   constructor(guild, data) {
     /**
      * The client that instantiated the role
+     * @name Role#client
      * @type {Client}
+     * @readonly
      */
-    this.client = guild.client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: guild.client });
 
     /**
      * The guild that the role belongs to
@@ -110,6 +111,18 @@ class Role {
   }
 
   /**
+   * Whether the role is editable by the client user.
+   * @type {boolean}
+   * @readonly
+   */
+  get editable() {
+    if (this.managed) return false;
+    const clientMember = this.guild.member(this.client.user);
+    if (!clientMember.hasPermission(Constants.PermissionFlags.MANAGE_ROLES_OR_PERMISSIONS)) return false;
+    return clientMember.highestRole.comparePositionTo(this) > 0;
+  }
+
+  /**
    * Get an object mapping permission names to whether or not the role enables that permission
    * @returns {Object<string, boolean>}
    * @example
@@ -164,6 +177,17 @@ class Role {
   }
 
   /**
+   * The data for a role
+   * @typedef {Object} RoleData
+   * @property {string} [name] The name of the role
+   * @property {number|string} [color] The color of the role, either a hex string or a base 10 number
+   * @property {boolean} [hoist] Whether or not the role should be hoisted
+   * @property {number} [position] The position of the role
+   * @property {string[]} [permissions] The permissions of the role
+   * @property {boolean} [mentionable] Whether or not the role should be mentionable
+   */
+
+  /**
    * Edits the role
    * @param {RoleData} data The new data for the role
    * @returns {Promise<Role>}
@@ -188,7 +212,7 @@ class Role {
    *  .catch(console.error);
    */
   setName(name) {
-    return this.client.rest.methods.updateGuildRole(this, { name });
+    return this.edit({ name });
   }
 
   /**
@@ -202,7 +226,7 @@ class Role {
    *  .catch(console.error);
    */
   setColor(color) {
-    return this.client.rest.methods.updateGuildRole(this, { color });
+    return this.edit({ color });
   }
 
   /**
@@ -216,7 +240,7 @@ class Role {
    *  .catch(console.error);
    */
   setHoist(hoist) {
-    return this.client.rest.methods.updateGuildRole(this, { hoist });
+    return this.edit({ hoist });
   }
 
   /**
@@ -230,7 +254,7 @@ class Role {
    *  .catch(console.error);
    */
   setPosition(position) {
-    return this.guild.setRolePosition(this, position);
+    return this.guild.setRolePosition(this, position).then(() => this);
   }
 
   /**
@@ -244,7 +268,7 @@ class Role {
    *  .catch(console.error);
    */
   setPermissions(permissions) {
-    return this.client.rest.methods.updateGuildRole(this, { permissions });
+    return this.edit({ permissions });
   }
 
   /**
@@ -258,7 +282,7 @@ class Role {
    *  .catch(console.error);
    */
   setMentionable(mentionable) {
-    return this.client.rest.methods.updateGuildRole(this, { mentionable });
+    return this.edit({ mentionable });
   }
 
   /**
@@ -278,7 +302,7 @@ class Role {
    * Whether this role equals another role. It compares all properties, so for most operations
    * it is advisable to just compare `role.id === role2.id` as it is much faster and is often
    * what most users need.
-   * @param {Role} role The role to compare to
+   * @param {Role} role Role to compare with
    * @returns {boolean}
    */
   equals(role) {
@@ -293,10 +317,11 @@ class Role {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the Role mention rather than the Role object.
+   * When concatenated with a string, this automatically concatenates the role mention rather than the Role object.
    * @returns {string}
    */
   toString() {
+    if (this.id === this.guild.id) return '@everyone';
     return `<@&${this.id}>`;
   }
 

@@ -22,8 +22,8 @@ class ClientManager {
   /**
    * Connects the Client to the WebSocket
    * @param {string} token The authorization token
-   * @param {function} resolve Function to run when connection is successful
-   * @param {function} reject Function to run when connection fails
+   * @param {Function} resolve Function to run when connection is successful
+   * @param {Function} reject Function to run when connection fails
    */
   connectToWebSocket(token, resolve, reject) {
     this.client.emit(Constants.Events.DEBUG, `Authenticated using token ${token}`);
@@ -40,7 +40,7 @@ class ClientManager {
         resolve(token);
         this.client.clearTimeout(timeout);
       });
-    }).catch(reject);
+    }, reject);
   }
 
   /**
@@ -48,24 +48,19 @@ class ClientManager {
    * @param {number} time The interval in milliseconds at which heartbeat packets should be sent
    */
   setupKeepAlive(time) {
-    this.heartbeatInterval = this.client.setInterval(() => {
-      this.client.emit('debug', 'Sending heartbeat');
-      this.client.ws.send({
-        op: Constants.OPCodes.HEARTBEAT,
-        d: this.client.ws.sequence,
-      }, true);
-    }, time);
+    this.heartbeatInterval = this.client.setInterval(() => this.client.ws.heartbeat(true), time);
   }
 
   destroy() {
-    return new Promise((resolve, reject) => {
-      this.client.ws.destroy();
-      if (!this.client.user.bot) {
-        this.client.rest.methods.logout().then(resolve, reject);
-      } else {
-        resolve();
-      }
-    });
+    this.client.ws.destroy();
+    if (this.client.user.bot) {
+      this.client.token = null;
+      return Promise.resolve();
+    } else {
+      return this.client.rest.methods.logout().then(() => {
+        this.client.token = null;
+      });
+    }
   }
 }
 

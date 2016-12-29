@@ -1,5 +1,5 @@
 /**
- * Represents a User Connection object (or "platform identity")
+ * Represents a user connection (or "platform identity")
  */
 class UserConnection {
   constructor(user, data) {
@@ -33,7 +33,7 @@ class UserConnection {
 
     /**
      * Whether the connection is revoked
-     * @type {Boolean}
+     * @type {boolean}
      */
     this.revoked = data.revoked;
 

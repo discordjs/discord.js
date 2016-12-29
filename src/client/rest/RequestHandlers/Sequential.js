@@ -60,10 +60,8 @@ class SequentialRequestHandler extends RequestHandler {
               this.waiting = false;
               this.globalLimit = false;
               resolve();
-            }, Number(res.headers['retry-after']) + 500);
-            if (res.headers['x-ratelimit-global']) {
-              this.globalLimit = true;
-            }
+            }, Number(res.headers['retry-after']) + this.restManager.client.options.restTimeOffset);
+            if (res.headers['x-ratelimit-global']) this.globalLimit = true;
           } else {
             this.queue.shift();
             this.waiting = false;
@@ -76,10 +74,13 @@ class SequentialRequestHandler extends RequestHandler {
           const data = res && res.body ? res.body : {};
           item.resolve(data);
           if (this.requestRemaining === 0) {
-            this.restManager.client.setTimeout(() => {
-              this.waiting = false;
-              resolve(data);
-            }, (this.requestResetTime - Date.now()) + this.timeDifference + 1000);
+            this.restManager.client.setTimeout(
+              () => {
+                this.waiting = false;
+                resolve(data);
+              },
+              this.requestResetTime - Date.now() + this.timeDifference + this.restManager.client.options.restTimeOffset
+            );
           } else {
             this.waiting = false;
             resolve(data);

@@ -1,20 +1,25 @@
 const Attachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
+const MessageReaction = require('./MessageReaction');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
 const escapeMarkdown = require('../util/EscapeMarkdown');
 
+// Done purely for GuildMember, which would cause a bad circular dependency
+const Discord = require('..');
+
 /**
- * Represents a Message on Discord
+ * Represents a message on Discord
  */
 class Message {
   constructor(channel, data, client) {
     /**
-     * The client that instantiated the Message
+     * The Client that instantiated the Message
+     * @name Message#client
      * @type {Client}
+     * @readonly
      */
-    this.client = client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: client });
 
     /**
      * The channel that the message was sent in
@@ -25,7 +30,7 @@ class Message {
     if (data) this.setup(data);
   }
 
-  setup(data) {
+  setup(data) { // eslint-disable-line complexity
     /**
      * The ID of the message (unique in the channel it was sent)
      * @type {string}
@@ -51,7 +56,7 @@ class Message {
     this.author = this.client.dataManager.newUser(data.author);
 
     /**
-     * Represents the Author of the message as a Guild Member. Only available if the message comes from a Guild
+     * Represents the author of the message as a guild member. Only available if the message comes from a guild
      * where the author is still a member.
      * @type {GuildMember}
      */
@@ -83,7 +88,7 @@ class Message {
 
     /**
      * A list of embeds in the message - e.g. YouTube Player
-     * @type {Embed[]}
+     * @type {MessageEmbed[]}
      */
     this.embeds = data.embeds.map(e => new Embed(this, e));
 
@@ -148,6 +153,25 @@ class Message {
     }
 
     this._edits = [];
+
+    /**
+     * A collection of reactions to this message, mapped by the reaction "id".
+     * @type {Collection<string, MessageReaction>}
+     */
+    this.reactions = new Collection();
+
+    if (data.reactions && data.reactions.length > 0) {
+      for (const reaction of data.reactions) {
+        const id = reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` : reaction.emoji.name;
+        this.reactions.set(id, new MessageReaction(this, reaction.emoji, reaction.count, reaction.me));
+      }
+    }
+
+    /**
+     * ID of the webhook that sent the message, if applicable
+     * @type {?string}
+     */
+    this.webhookID = data.webhook_id || null;
   }
 
   patch(data) { // eslint-disable-line complexity
@@ -197,6 +221,15 @@ class Message {
       for (const raw of channMentionsRaw) {
         const chan = this.channel.guild.channels.get(raw.match(/([0-9]{14,20})/g)[0]);
         if (chan) this.mentions.channels.set(chan.id, chan);
+      }
+    }
+    if (data.reactions) {
+      this.reactions = new Collection();
+      if (data.reactions.length > 0) {
+        for (const reaction of data.reactions) {
+          const id = reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` : reaction.emoji.name;
+          this.reactions.set(id, new MessageReaction(this, data.emoji, data.count, data.me));
+        }
       }
     }
   }
@@ -266,14 +299,16 @@ class Message {
       });
   }
 
- /**
+  /**
    * An array of cached versions of the message, including the current version.
    * Sorted from latest (first) to oldest (last).
    * @type {Message[]}
    * @readonly
    */
   get edits() {
-    return this._edits.slice().unshift(this);
+    const copy = this._edits.slice();
+    copy.unshift(this);
+    return copy;
   }
 
   /**
@@ -318,8 +353,29 @@ class Message {
   }
 
   /**
+   * Whether or not a guild member is mentioned in this message. Takes into account
+   * user mentions, role mentions, and @everyone/@here mentions.
+   * @param {GuildMember|User} member Member/user to check for a mention of
+   * @returns {boolean}
+   */
+  isMemberMentioned(member) {
+    if (this.mentions.everyone) return true;
+    if (this.mentions.users.has(member.id)) return true;
+    if (member instanceof Discord.GuildMember && member.roles.some(r => this.mentions.roles.has(r.id))) return true;
+    return false;
+  }
+
+  /**
+   * Options that can be passed into editMessage
+   * @typedef {Object} MessageEditOptions
+   * @property {Object} [embed] An embed to be added/edited
+   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
+   */
+
+  /**
    * Edit the content of the message
-   * @param {StringResolvable} content The new content for the message
+   * @param {StringResolvable} [content] The new content for the message
+   * @param {MessageEditOptions} [options] The options to provide
    * @returns {Promise<Message>}
    * @example
    * // update the content of a message
@@ -327,8 +383,14 @@ class Message {
    *  .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
    *  .catch(console.error);
    */
-  edit(content) {
-    return this.client.rest.methods.updateMessage(this, content);
+  edit(content, options) {
+    if (!options && typeof content === 'object') {
+      options = content;
+      content = '';
+    } else if (!options) {
+      options = {};
+    }
+    return this.client.rest.methods.updateMessage(this, content, options);
   }
 
   /**
@@ -359,6 +421,26 @@ class Message {
   }
 
   /**
+   * Add a reaction to the message
+   * @param {string|Emoji|ReactionEmoji} emoji Emoji to react with
+   * @returns {Promise<MessageReaction>}
+   */
+  react(emoji) {
+    emoji = this.client.resolver.resolveEmojiIdentifier(emoji);
+    if (!emoji) throw new TypeError('Emoji must be a string or Emoji/ReactionEmoji');
+
+    return this.client.rest.methods.addMessageReaction(this, emoji);
+  }
+
+  /**
+   * Remove all reactions from a message
+   * @returns {Promise<Message>}
+   */
+  clearReactions() {
+    return this.client.rest.methods.removeMessageReactions(this);
+  }
+
+  /**
    * Deletes the message
    * @param {number} [timeout=0] How long to wait to delete the message in milliseconds
    * @returns {Promise<Message>}
@@ -369,13 +451,15 @@ class Message {
    *  .catch(console.error);
    */
   delete(timeout = 0) {
-    return new Promise((resolve, reject) => {
-      this.client.setTimeout(() => {
-        this.client.rest.methods.deleteMessage(this)
-          .then(resolve)
-          .catch(reject);
-      }, timeout);
-    });
+    if (timeout <= 0) {
+      return this.client.rest.methods.deleteMessage(this);
+    } else {
+      return new Promise(resolve => {
+        this.client.setTimeout(() => {
+          resolve(this.delete());
+        }, timeout);
+      });
+    }
   }
 
   /**
@@ -385,21 +469,22 @@ class Message {
    * @returns {Promise<Message|Message[]>}
    * @example
    * // reply to a message
-   * message.reply('Hey, I'm a reply!')
+   * message.reply('Hey, I\'m a reply!')
    *  .then(msg => console.log(`Sent a reply to ${msg.author}`))
    *  .catch(console.error);
    */
   reply(content, options = {}) {
-    content = this.client.resolver.resolveString(content);
-    const prepend = this.guild ? `${this.author}, ` : '';
-    content = `${prepend}${content}`;
+    content = `${this.guild || this.channel.type === 'group' ? `${this.author}, ` : ''}${content}`;
+    return this.channel.send(content, options);
+  }
 
-    if (options.split) {
-      if (typeof options.split !== 'object') options.split = {};
-      if (!options.split.prepend) options.split.prepend = prepend;
-    }
-
-    return this.client.rest.methods.sendMessage(this.channel, content, options);
+  /**
+   * Fetches the webhook used to create this message.
+   * @returns {Promise<?Webhook>}
+   */
+  fetchWebhook() {
+    if (!this.webhookID) return Promise.reject(new Error('The message was not sent by a webhook.'));
+    return this.client.fetchWebhook(this.webhookID);
   }
 
   /**
@@ -433,7 +518,7 @@ class Message {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the Message's content instead of the object.
+   * When concatenated with a string, this automatically concatenates the message's content instead of the object.
    * @returns {string}
    * @example
    * // logs: Message: This is a message!
@@ -441,6 +526,42 @@ class Message {
    */
   toString() {
     return this.content;
+  }
+
+  _addReaction(emoji, user) {
+    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : emoji.name;
+    let reaction;
+    if (this.reactions.has(emojiID)) {
+      reaction = this.reactions.get(emojiID);
+      if (!reaction.me) reaction.me = user.id === this.client.user.id;
+    } else {
+      reaction = new MessageReaction(this, emoji, 0, user.id === this.client.user.id);
+      this.reactions.set(emojiID, reaction);
+    }
+    if (!reaction.users.has(user.id)) {
+      reaction.users.set(user.id, user);
+      reaction.count++;
+      return reaction;
+    }
+    return null;
+  }
+
+  _removeReaction(emoji, user) {
+    const emojiID = emoji.id || emoji;
+    if (this.reactions.has(emojiID)) {
+      const reaction = this.reactions.get(emojiID);
+      if (reaction.users.has(user.id)) {
+        reaction.users.delete(user.id);
+        reaction.count--;
+        if (user.id === this.client.user.id) reaction.me = false;
+        return reaction;
+      }
+    }
+    return null;
+  }
+
+  _clearReactions() {
+    this.reactions.clear();
   }
 }
 

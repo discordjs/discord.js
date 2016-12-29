@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>discord.js Webpack test</title>
+  <meta charset="utf-8" />
+</head>
+<body>
+  <script type="text/javascript" src="../webpack/discord.10.0.1.js"></script>
+  <script type="text/javascript" src="auth.js"></script>
+  <script type="text/javascript">
+    (() => {
+      const client = window.client = new Discord.Client();
+
+      client.on('ready', () => {
+        console.log('[CLIENT] Ready!');
+      });
+
+      client.on('error', console.error);
+
+      client.ws.on('close', (event) => console.log('[CLIENT] Disconnect!', event));
+
+      client.on('message', (message) => {
+        console.log(message.author.username, message.author.id, message.content);
+      });
+
+      client.login(window.token || prompt('token pls', 'abcdef123456'));
+    })();
+  </script>
+</body>
+</html>

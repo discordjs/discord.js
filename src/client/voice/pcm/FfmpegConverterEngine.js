@@ -67,7 +67,14 @@ class FfmpegConverterEngine extends ConverterEngine {
 }
 
 function chooseCommand() {
-  for (const cmd of ['ffmpeg', 'avconv', './ffmpeg', './avconv']) {
+  for (const cmd of [
+    'ffmpeg',
+    'avconv',
+    './ffmpeg',
+    './avconv',
+    'node_modules\\ffmpeg-binaries\\bin\\ffmpeg',
+    'node_modules/ffmpeg-binaries/bin/ffmpeg',
+  ]) {
     if (!ChildProcess.spawnSync(cmd, ['-h']).error) return cmd;
   }
   throw new Error(

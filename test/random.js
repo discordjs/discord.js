@@ -20,7 +20,11 @@ client.on('userUpdate', (o, n) => {
   console.log(o.username, n.username);
 });
 
-client.on('guildMemberAdd', (g, m) => console.log(`${m.user.username} joined ${g.name}`));
+client.on('guildEmojiCreate', e => console.log('create!!', e.name));
+client.on('guildEmojiDelete', e => console.log('delete!!', e.name));
+client.on('guildEmojiUpdate', (o, n) => console.log('update!!', o.name, n.name));
+
+client.on('guildMemberAdd', m => console.log(`${m.user.username} joined ${m.guild.name}`));
 
 client.on('channelCreate', channel => {
   console.log(`made ${channel.name}`);
@@ -117,10 +121,15 @@ client.on('message', message => {
 
     if (message.content === 'ratelimittest') {
       let i = 1;
+      const start = Date.now();
       while (i <= 20) {
         message.channel.sendMessage(`Testing my rates, item ${i} of 20`);
         i++;
       }
+      message.channel.sendMessage('last one...').then(m => {
+        const diff = Date.now() - start;
+        m.reply(`Each message took ${diff / 21}ms to send`);
+      });
     }
 
     if (message.content === 'makerole') {
@@ -176,4 +185,30 @@ client.on('message', msg => {
       })
       .catch(console.error);
   }
-})
+});
+
+client.on('messageReactionAdd', (reaction, user) => {
+  if (reaction.message.channel.id !== '222086648706498562') return;
+  reaction.message.channel.sendMessage(`${user.username} added reaction ${reaction.emoji}, count is now ${reaction.count}`);
+});
+
+client.on('messageReactionRemove', (reaction, user) => {
+  if (reaction.message.channel.id !== '222086648706498562') return;
+  reaction.message.channel.sendMessage(`${user.username} removed reaction ${reaction.emoji}, count is now ${reaction.count}`);
+});
+
+client.on('message', m => {
+  if (m.content.startsWith('#reactions')) {
+    const mID = m.content.split(' ')[1];
+    m.channel.fetchMessage(mID).then(rM => {
+      for (const reaction of rM.reactions.values()) {
+        reaction.fetchUsers().then(users => {
+          m.channel.sendMessage(
+            `The following gave that message ${reaction.emoji}:\n` +
+            `${users.map(u => u.username).map(t => `- ${t}`).join('\n')}`
+          );
+        });
+      }
+    });
+  }
+});

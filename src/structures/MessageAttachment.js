@@ -1,14 +1,15 @@
 /**
- * Represents an Attachment in a Message
+ * Represents an attachment in a message
  */
 class MessageAttachment {
   constructor(message, data) {
     /**
-     * The Client that instantiated this Message.
+     * The Client that instantiated this MessageAttachment.
+     * @name MessageAttachment#client
      * @type {Client}
+     * @readonly
      */
-    this.client = message.client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: message.client });
 
     /**
      * The message this attachment is part of.

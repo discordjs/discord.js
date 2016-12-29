@@ -57,7 +57,7 @@ class EvaluatedPermissions {
    * Checks whether the user has all specified permissions, and lists any missing permissions.
    * @param {PermissionResolvable[]} permissions The permissions to check for
    * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permissions
-   * @returns {array}
+   * @returns {PermissionResolvable[]}
    */
   missingPermissions(permissions, explicit = false) {
     return permissions.filter(p => !this.hasPermission(p, explicit));

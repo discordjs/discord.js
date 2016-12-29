@@ -15,43 +15,47 @@ class WebSocketPacketManager {
     this.handlers = {};
     this.queue = [];
 
-    this.register(Constants.WSEvents.READY, 'Ready');
-    this.register(Constants.WSEvents.GUILD_CREATE, 'GuildCreate');
-    this.register(Constants.WSEvents.GUILD_DELETE, 'GuildDelete');
-    this.register(Constants.WSEvents.GUILD_UPDATE, 'GuildUpdate');
-    this.register(Constants.WSEvents.GUILD_BAN_ADD, 'GuildBanAdd');
-    this.register(Constants.WSEvents.GUILD_BAN_REMOVE, 'GuildBanRemove');
-    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, 'GuildMemberAdd');
-    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, 'GuildMemberRemove');
-    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, 'GuildMemberUpdate');
-    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, 'GuildRoleCreate');
-    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, 'GuildRoleDelete');
-    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, 'GuildRoleUpdate');
-    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, 'GuildMembersChunk');
-    this.register(Constants.WSEvents.CHANNEL_CREATE, 'ChannelCreate');
-    this.register(Constants.WSEvents.CHANNEL_DELETE, 'ChannelDelete');
-    this.register(Constants.WSEvents.CHANNEL_UPDATE, 'ChannelUpdate');
-    this.register(Constants.WSEvents.PRESENCE_UPDATE, 'PresenceUpdate');
-    this.register(Constants.WSEvents.USER_UPDATE, 'UserUpdate');
-    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, 'VoiceStateUpdate');
-    this.register(Constants.WSEvents.TYPING_START, 'TypingStart');
-    this.register(Constants.WSEvents.MESSAGE_CREATE, 'MessageCreate');
-    this.register(Constants.WSEvents.MESSAGE_DELETE, 'MessageDelete');
-    this.register(Constants.WSEvents.MESSAGE_UPDATE, 'MessageUpdate');
-    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, 'VoiceServerUpdate');
-    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, 'MessageDeleteBulk');
-    this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, 'ChannelPinsUpdate');
-    this.register(Constants.WSEvents.GUILD_SYNC, 'GuildSync');
-    this.register(Constants.WSEvents.RELATIONSHIP_ADD, 'RelationshipAdd');
-    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, 'RelationshipRemove');
+    this.register(Constants.WSEvents.READY, require('./handlers/Ready'));
+    this.register(Constants.WSEvents.GUILD_CREATE, require('./handlers/GuildCreate'));
+    this.register(Constants.WSEvents.GUILD_DELETE, require('./handlers/GuildDelete'));
+    this.register(Constants.WSEvents.GUILD_UPDATE, require('./handlers/GuildUpdate'));
+    this.register(Constants.WSEvents.GUILD_BAN_ADD, require('./handlers/GuildBanAdd'));
+    this.register(Constants.WSEvents.GUILD_BAN_REMOVE, require('./handlers/GuildBanRemove'));
+    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, require('./handlers/GuildMemberAdd'));
+    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, require('./handlers/GuildMemberRemove'));
+    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, require('./handlers/GuildMemberUpdate'));
+    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, require('./handlers/GuildRoleCreate'));
+    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, require('./handlers/GuildRoleDelete'));
+    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, require('./handlers/GuildRoleUpdate'));
+    this.register(Constants.WSEvents.GUILD_EMOJIS_UPDATE, require('./handlers/GuildEmojisUpdate'));
+    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, require('./handlers/GuildMembersChunk'));
+    this.register(Constants.WSEvents.CHANNEL_CREATE, require('./handlers/ChannelCreate'));
+    this.register(Constants.WSEvents.CHANNEL_DELETE, require('./handlers/ChannelDelete'));
+    this.register(Constants.WSEvents.CHANNEL_UPDATE, require('./handlers/ChannelUpdate'));
+    this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, require('./handlers/ChannelPinsUpdate'));
+    this.register(Constants.WSEvents.PRESENCE_UPDATE, require('./handlers/PresenceUpdate'));
+    this.register(Constants.WSEvents.USER_UPDATE, require('./handlers/UserUpdate'));
+    this.register(Constants.WSEvents.USER_NOTE_UPDATE, require('./handlers/UserNoteUpdate'));
+    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, require('./handlers/VoiceStateUpdate'));
+    this.register(Constants.WSEvents.TYPING_START, require('./handlers/TypingStart'));
+    this.register(Constants.WSEvents.MESSAGE_CREATE, require('./handlers/MessageCreate'));
+    this.register(Constants.WSEvents.MESSAGE_DELETE, require('./handlers/MessageDelete'));
+    this.register(Constants.WSEvents.MESSAGE_UPDATE, require('./handlers/MessageUpdate'));
+    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, require('./handlers/MessageDeleteBulk'));
+    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, require('./handlers/VoiceServerUpdate'));
+    this.register(Constants.WSEvents.GUILD_SYNC, require('./handlers/GuildSync'));
+    this.register(Constants.WSEvents.RELATIONSHIP_ADD, require('./handlers/RelationshipAdd'));
+    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, require('./handlers/RelationshipRemove'));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, require('./handlers/MessageReactionAdd'));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, require('./handlers/MessageReactionRemove'));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, require('./handlers/MessageReactionRemoveAll'));
   }
 
   get client() {
     return this.ws.client;
   }
 
-  register(event, handle) {
-    const Handler = require(`./handlers/${handle}`);
+  register(event, Handler) {
     this.handlers[event] = new Handler(this);
   }
 
@@ -74,12 +78,28 @@ class WebSocketPacketManager {
     }
 
     if (packet.op === Constants.OPCodes.INVALID_SESSION) {
-      this.ws.sessionID = null;
-      this.ws._sendNewIdentify();
+      if (packet.d) {
+        setTimeout(() => {
+          this.ws._sendResume();
+        }, 2500);
+      } else {
+        this.ws.sessionID = null;
+        this.ws._sendNewIdentify();
+      }
       return false;
     }
 
-    if (packet.op === Constants.OPCodes.HEARTBEAT_ACK) this.ws.client.emit('debug', 'Heartbeat acknowledged');
+    if (packet.op === Constants.OPCodes.HEARTBEAT_ACK) {
+      this.ws.client._pong(this.ws.client._pingTimestamp);
+      this.ws.lastHeartbeatAck = true;
+      this.ws.client.emit('debug', 'Heartbeat acknowledged');
+    } else if (packet.op === Constants.OPCodes.HEARTBEAT) {
+      this.client.ws.send({
+        op: Constants.OPCodes.HEARTBEAT,
+        d: this.client.ws.sequence,
+      });
+      this.ws.client.emit('debug', 'Received gateway heartbeat');
+    }
 
     if (this.ws.status === Constants.Status.RECONNECTING) {
       this.ws.reconnecting = false;

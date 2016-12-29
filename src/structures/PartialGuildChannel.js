@@ -5,35 +5,36 @@ const Constants = require('../util/Constants');
 */
 
 /**
- * Represents a Guild Channel that the client only has limited information for - e.g. from invites.
+ * Represents a guild channel that the client only has limited information for - e.g. from invites.
  */
 class PartialGuildChannel {
   constructor(client, data) {
     /**
-     * The client that instantiated this PartialGuildChannel
+     * The Client that instantiated this PartialGuildChannel
+     * @name PartialGuildChannel#client
      * @type {Client}
+     * @readonly
      */
-    this.client = client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: client });
 
     this.setup(data);
   }
 
   setup(data) {
     /**
-     * The ID of this Guild Channel
+     * The ID of this guild channel
      * @type {string}
      */
     this.id = data.id;
 
     /**
-     * The name of this Guild Channel
+     * The name of this guild channel
      * @type {string}
      */
     this.name = data.name;
 
     /**
-     * The type of this Guild Channel - `text` or `voice`
+     * The type of this guild channel - `text` or `voice`
      * @type {string}
      */
     this.type = Constants.ChannelTypes.text === data.type ? 'text' : 'voice';

@@ -3,36 +3,37 @@ const Constants = require('../util/Constants');
 const Presence = require('./Presence').Presence;
 
 /**
- * Represents a User on Discord.
+ * Represents a user on Discord.
  * @implements {TextBasedChannel}
  */
 class User {
   constructor(client, data) {
     /**
      * The Client that created the instance of the the User.
+     * @name User#client
      * @type {Client}
+     * @readonly
      */
-    this.client = client;
-    Object.defineProperty(this, 'client', { enumerable: false, configurable: false });
+    Object.defineProperty(this, 'client', { value: client });
 
     if (data) this.setup(data);
   }
 
   setup(data) {
     /**
-     * The ID of the User
+     * The ID of the user
      * @type {string}
      */
     this.id = data.id;
 
     /**
-     * The username of the User
+     * The username of the user
      * @type {string}
      */
     this.username = data.username;
 
     /**
-     * A discriminator based on username for the User
+     * A discriminator based on username for the user
      * @type {string}
      */
     this.discriminator = data.discriminator;
@@ -44,16 +45,23 @@ class User {
     this.avatar = data.avatar;
 
     /**
-     * Whether or not the User is a Bot.
+     * Whether or not the user is a bot.
      * @type {boolean}
      */
     this.bot = Boolean(data.bot);
+
+    /**
+     * The ID of the last message sent by the user, if one was sent.
+     * @type {?string}
+     */
+    this.lastMessageID = null;
   }
 
   patch(data) {
     for (const prop of ['id', 'username', 'discriminator', 'avatar', 'bot']) {
       if (typeof data[prop] !== 'undefined') this[prop] = data[prop];
     }
+    if (data.token) this.client.token = data.token;
   }
 
   /**
@@ -98,6 +106,36 @@ class User {
   }
 
   /**
+   * A link to the user's default avatar
+   * @type {string}
+   * @readonly
+   */
+  get defaultAvatarURL() {
+    let defaultAvatars = Object.values(Constants.DefaultAvatars);
+    let defaultAvatar = this.discriminator % defaultAvatars.length;
+    return Constants.Endpoints.assets(`${defaultAvatars[defaultAvatar]}.png`);
+  }
+
+  /**
+   * A link to the user's avatar if they have one. Otherwise a link to their default avatar will be returned
+   * @type {string}
+   * @readonly
+   */
+  get displayAvatarURL() {
+    return this.avatarURL || this.defaultAvatarURL;
+  }
+
+  /**
+   * The note that is set for the user
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?string}
+   * @readonly
+   */
+  get note() {
+    return this.client.user.notes.get(this.id) || null;
+  }
+
+  /**
    * Check whether the user is typing in a channel.
    * @param {ChannelResolvable} channel The channel to check in
    * @returns {boolean}
@@ -128,7 +166,15 @@ class User {
   }
 
   /**
-   * Deletes a DM Channel (if one exists) between the Client and the User. Resolves with the Channel if successful.
+   * The DM between the client's user and this user
+   * @type {?DMChannel}
+   */
+  get dmChannel() {
+    return this.client.channels.filter(c => c.type === 'dm').find(c => c.recipient.id === this.id);
+  }
+
+  /**
+   * Deletes a DM channel (if one exists) between the client and the user. Resolves with the channel if successful.
    * @returns {Promise<DMChannel>}
    */
   deleteDM() {
@@ -137,6 +183,7 @@ class User {
 
   /**
    * Sends a friend request to the user
+   * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
   addFriend() {
@@ -145,6 +192,7 @@ class User {
 
   /**
    * Removes the user from your friends
+   * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
   removeFriend() {
@@ -153,6 +201,7 @@ class User {
 
   /**
    * Blocks the user
+   * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
   block() {
@@ -161,6 +210,7 @@ class User {
 
   /**
    * Unblocks the user
+   * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
   unblock() {
@@ -169,6 +219,7 @@ class User {
 
   /**
    * Get the profile of the user
+   * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<UserProfile>}
    */
   fetchProfile() {
@@ -176,9 +227,19 @@ class User {
   }
 
   /**
-   * Checks if the user is equal to another. It compares username, ID, discriminator, status and the game being played.
+   * Sets a note for the user
+   * <warn>This is only available when using a user account.</warn>
+   * @param {string} note The note to set for the user
+   * @returns {Promise<User>}
+   */
+  setNote(note) {
+    return this.client.rest.methods.setNote(this, note);
+  }
+
+  /**
+   * Checks if the user is equal to another. It compares ID, username, discriminator, avatar, and bot flags.
    * It is recommended to compare equality by using `user.id === user2.id` unless you want to compare all properties.
-   * @param {User} user The user to compare
+   * @param {User} user User to compare with
    * @returns {boolean}
    */
   equals(user) {
@@ -193,7 +254,7 @@ class User {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the User's mention instead of the User object.
+   * When concatenated with a string, this automatically concatenates the user's mention instead of the User object.
    * @returns {string}
    * @example
    * // logs: Hello from <@123456789>!
@@ -204,8 +265,9 @@ class User {
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  send() { return; }
   sendMessage() { return; }
-  sendTTSMessage() { return; }
+  sendEmbed() { return; }
   sendFile() { return; }
   sendCode() { return; }
 }

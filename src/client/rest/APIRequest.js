@@ -4,7 +4,7 @@ const Constants = require('../../util/Constants');
 function getRoute(url) {
   let route = url.split('?')[0];
   if (route.includes('/channels/') || route.includes('/guilds/')) {
-    const startInd = ~route.indexOf('/channels/') ? route.indexOf('/channels/') : route.indexOf('/guilds/');
+    const startInd = route.includes('/channels/') ? route.indexOf('/channels/') : route.indexOf('/guilds/');
     const majorID = route.substring(startInd).split('/')[2];
     route = route.replace(/(\d{8,})/g, ':id').replace(':id', majorID);
   }
@@ -37,15 +37,11 @@ class APIRequest {
     if (this.file && this.file.file) {
       apiRequest.attach('file', this.file.file, this.file.name);
       this.data = this.data || {};
-      for (const key in this.data) {
-        if (this.data[key]) {
-          apiRequest.field(key, this.data[key]);
-        }
-      }
+      apiRequest.field('payload_json', JSON.stringify(this.data));
     } else if (this.data) {
       apiRequest.send(this.data);
     }
-    apiRequest.set('User-Agent', this.rest.userAgentManager.userAgent);
+    if (!this.rest.client.browser) apiRequest.set('User-Agent', this.rest.userAgentManager.userAgent);
     return apiRequest;
   }
 }
