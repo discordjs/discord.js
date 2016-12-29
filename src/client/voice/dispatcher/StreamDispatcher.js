@@ -177,7 +177,7 @@ class StreamDispatcher extends EventEmitter {
 
       const data = this.streamingData;
 
-      if (data.missed >= 5) {
+      if (data.missed >= 5 && !controlled) {
         this.destroy('end', 'Stream is not generating quickly enough.');
         return;
       }

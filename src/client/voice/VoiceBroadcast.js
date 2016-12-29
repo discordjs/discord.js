@@ -16,6 +16,7 @@ class VoiceBroadcast extends EventEmitter {
     this.dispatchers = [];
     this.prism = new Prism();
     this.currentTranscoder = null;
+    this.tickInterval = null;
   }
 
   get _playableStream() {
@@ -24,7 +25,13 @@ class VoiceBroadcast extends EventEmitter {
   }
 
   registerDispatcher(dispatcher) {
-    if (!this.dispatchers.includes(dispatcher)) this.dispatchers.push(dispatcher);
+    if (!this.dispatchers.includes(dispatcher)) {
+      this.dispatchers.push(dispatcher);
+      dispatcher.once('end', () => {
+        const ind = this.dispatchers.indexOf(dispatcher);
+        if (ind > -1) this.dispatchers.splice(ind, 1);
+      });
+    }
   }
 
   killCurrentTranscoder() {
@@ -71,6 +78,11 @@ class VoiceBroadcast extends EventEmitter {
   }
 
   _startPlaying() {
+    if (this.tickInterval) clearInterval(this.tickInterval);
+    this.tickInterval = this.client.setInterval(this.tick.bind(this), 20);
+  }
+
+  tick() {
     if (!this._playableStream) return;
     const stream = this._playableStream;
     const buffer = stream.read(1920 * 2);
@@ -78,7 +90,13 @@ class VoiceBroadcast extends EventEmitter {
     for (const dispatcher of this.dispatchers) {
       setImmediate(() => dispatcher.process(buffer, true));
     }
-    setTimeout(this._startPlaying.bind(this), 20);
+  }
+
+  end() {
+    this.killCurrentTranscoder();
+    for (const dispatcher of this.dispatchers) {
+      dispatcher.destroy('end', 'broadcast ended');
+    }
   }
 }
 
