@@ -110,17 +110,16 @@ class TextBasedChannel {
   /**
    * Send an embed to this channel
    * @param {RichEmbed|Object} embed The embed to send
-   * @param {string|MessageOptions} contentOrOptions Content to send or message options
-   * @param {MessageOptions} options If contentOrOptions is content, this will be options
+   * @param {string|MessageOptions} [content] Content to send or message options
+   * @param {MessageOptions} [options] If contentOrOptions is content, this will be options
    * @returns {Promise<Message>}
    */
-  sendEmbed(embed, contentOrOptions, options = {}) {
-    let content;
-    if (typeof contentOrOptions === 'string') {
-      content = contentOrOptions;
-    } else {
+  sendEmbed(embed, content, options) {
+    if (!options && typeof content === 'object') {
+      options = content;
       content = '';
-      options = contentOrOptions;
+    } else if (!options) {
+      options = {};
     }
     return this.send(content, Object.assign(options, { embed }));
   }
