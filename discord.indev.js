@@ -8558,8 +8558,74 @@ class ClientUser extends User {
   }
 
   /**
-   * Set the status of the logged in user.
-   * @param {string} status can be `online`, `idle`, `invisible` or `dnd` (do not disturb)
+   * Data resembling a raw Discord presence
+   * @property {PresenceStatus} [status] Status of the user
+   * @property {boolean} [afk] Whether the user is AFK
+   * @property {Object} [game] Game the user is playing
+   * @property {string} [game.name] Name of the game
+   * @property {string} [game.url] Twitch stream URL
+   */
+
+  /**
+   * Sets the full presence of the client user.
+   * @param {PresenceData} data Data for the presence
+   * @returns {Promise<ClientUser>}
+   */
+  setPresence(data) {
+    // {"op":3,"d":{"status":"dnd","since":0,"game":null,"afk":false}}
+    return new Promise(resolve => {
+      let status = this.localPresence.status || this.presence.status;
+      let game = this.localPresence.game;
+      let afk = this.localPresence.afk || this.presence.afk;
+
+      if (!game && this.presence.game) {
+        game = {
+          name: this.presence.game.name,
+          type: this.presence.game.type,
+          url: this.presence.game.url,
+        };
+      }
+
+      if (data.status) {
+        if (typeof data.status !== 'string') throw new TypeError('Status must be a string');
+        status = data.status;
+      }
+
+      if (data.game) {
+        game = data.game;
+        if (game.url) game.type = 1;
+      }
+
+      if (typeof data.afk !== 'undefined') afk = data.afk;
+      afk = Boolean(afk);
+
+      this.localPresence = { status, game, afk };
+      this.localPresence.since = 0;
+      this.localPresence.game = this.localPresence.game || null;
+
+      this.client.ws.send({
+        op: 3,
+        d: this.localPresence,
+      });
+
+      this.client._setPresence(this.id, this.localPresence);
+
+      resolve(this);
+    });
+  }
+
+  /**
+   * A user's status. Must be one of:
+   * - `online`
+   * - `idle`
+   * - `invisible`
+   * - `dnd` (do not disturb)
+   * @typedef {string} PresenceStatus
+   */
+
+  /**
+   * Sets the status of the client user.
+   * @param {PresenceStatus} status Status to change to
    * @returns {Promise<ClientUser>}
    */
   setStatus(status) {
@@ -8567,9 +8633,9 @@ class ClientUser extends User {
   }
 
   /**
-   * Set the current game of the logged in user.
-   * @param {string} game the game being played
-   * @param {string} [streamingURL] an optional URL to a twitch stream, if one is available.
+   * Sets the game the client user is playing.
+   * @param {string} game Game being played
+   * @param {string} [streamingURL] Twitch stream URL
    * @returns {Promise<ClientUser>}
    */
   setGame(game, streamingURL) {
@@ -8580,8 +8646,8 @@ class ClientUser extends User {
   }
 
   /**
-   * Set/remove the AFK flag for the current user.
-   * @param {boolean} afk whether or not the user is AFK.
+   * Sets/removes the AFK flag for the client user.
+   * @param {boolean} afk Whether or not the user is AFK
    * @returns {Promise<ClientUser>}
    */
   setAFK(afk) {
@@ -8640,54 +8706,6 @@ class ClientUser extends User {
         this.client.rest.methods.createGuild({ name, icon: data, region })
       );
     }
-  }
-
-  /**
-   * Set the full presence of the current user.
-   * @param {Object} data the data to provide
-   * @returns {Promise<ClientUser>}
-   */
-  setPresence(data) {
-    // {"op":3,"d":{"status":"dnd","since":0,"game":null,"afk":false}}
-    return new Promise(resolve => {
-      let status = this.localPresence.status || this.presence.status;
-      let game = this.localPresence.game;
-      let afk = this.localPresence.afk || this.presence.afk;
-
-      if (!game && this.presence.game) {
-        game = {
-          name: this.presence.game.name,
-          type: this.presence.game.type,
-          url: this.presence.game.url,
-        };
-      }
-
-      if (data.status) {
-        if (typeof data.status !== 'string') throw new TypeError('Status must be a string');
-        status = data.status;
-      }
-
-      if (data.game) {
-        game = data.game;
-        if (game.url) game.type = 1;
-      }
-
-      if (typeof data.afk !== 'undefined') afk = data.afk;
-      afk = Boolean(afk);
-
-      this.localPresence = { status, game, afk };
-      this.localPresence.since = 0;
-      this.localPresence.game = this.localPresence.game || null;
-
-      this.client.ws.send({
-        op: 3,
-        d: this.localPresence,
-      });
-
-      this.client._setPresence(this.id, this.localPresence);
-
-      resolve(this);
-    });
   }
 }
 
