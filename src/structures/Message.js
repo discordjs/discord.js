@@ -369,12 +369,13 @@ class Message {
    * Options that can be passed into editMessage
    * @typedef {Object} MessageEditOptions
    * @property {Object} [embed] An embed to be added/edited
+   * @property {string} [code] Language for optional codeblock formatting to apply
    */
 
   /**
    * Edit the content of the message
-   * @param {StringResolvable} content The new content for the message
-   * @param {MessageEditOptions} [options={}] The options to provide
+   * @param {StringResolvable} [content] The new content for the message
+   * @param {MessageEditOptions} [options] The options to provide
    * @returns {Promise<Message>}
    * @example
    * // update the content of a message
@@ -382,7 +383,13 @@ class Message {
    *  .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
    *  .catch(console.error);
    */
-  edit(content, options = {}) {
+  edit(content, options) {
+    if (!options && typeof content === 'object') {
+      options = content;
+      content = '';
+    } else if (!options) {
+      options = {};
+    }
     return this.client.rest.methods.updateMessage(this, content, options);
   }
 
@@ -467,16 +474,8 @@ class Message {
    *  .catch(console.error);
    */
   reply(content, options = {}) {
-    content = this.client.resolver.resolveString(content);
-    const prepend = this.guild ? `${this.author}, ` : '';
-    content = `${prepend}${content}`;
-
-    if (options.split) {
-      if (typeof options.split !== 'object') options.split = {};
-      if (!options.split.prepend) options.split.prepend = prepend;
-    }
-
-    return this.client.rest.methods.sendMessage(this.channel, content, options);
+    content = `${this.guild || this.channel.type === 'group' ? `${this.author}, ` : ''}${content}`;
+    return this.channel.send(content, options);
   }
 
   /**
