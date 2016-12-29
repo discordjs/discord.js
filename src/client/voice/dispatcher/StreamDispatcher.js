@@ -215,7 +215,7 @@ class StreamDispatcher extends EventEmitter {
       buffer = this.applyVolume(buffer);
 
       data.count++;
-      data.sequence = (data.sequence + 1) < 65536 ? data.sequence + 1 : 0;
+      data.sequence = data.sequence < 65535 ? data.sequence + 1 : 0;
       data.timestamp = data.timestamp + 4294967295 ? data.timestamp + 960 : 0;
       this.sendBuffer(buffer, data.sequence, data.timestamp);
 
@@ -231,6 +231,7 @@ class StreamDispatcher extends EventEmitter {
     this.destroyed = true;
     this.setSpeaking(false);
     this.emit(type, reason);
+    if (type !== 'end') this.emit('end', `destroyed due to ${type} - ${reason}`);
   }
 
   startStreaming() {
