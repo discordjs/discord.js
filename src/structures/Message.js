@@ -375,7 +375,7 @@ class Message {
   /**
    * Edit the content of the message
    * @param {StringResolvable} [content] The new content for the message, or MessageEditOptions
-   * @param {MessageEditOptions} [options={}] The options to provide
+   * @param {MessageEditOptions} [options] The options to provide
    * @returns {Promise<Message>}
    * @example
    * // update the content of a message

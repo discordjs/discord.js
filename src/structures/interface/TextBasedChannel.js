@@ -110,7 +110,7 @@ class TextBasedChannel {
   /**
    * Send an embed to this channel
    * @param {RichEmbed|Object} embed The embed to send
-   * @param {string|MessageOptions} [content] Content to send
+   * @param {string} [content] Content to send
    * @param {MessageOptions} [options] The options to provide
    * @returns {Promise<Message>}
    */
@@ -140,7 +140,7 @@ class TextBasedChannel {
    * Send a code block to this channel
    * @param {string} lang Language for the code block
    * @param {StringResolvable} content Content of the code block
-   * @param {MessageOptions} options The options to provide
+   * @param {MessageOptions} [options] The options to provide
    * @returns {Promise<Message|Message[]>}
    */
   sendCode(lang, content, options = {}) {
