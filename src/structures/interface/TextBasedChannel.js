@@ -55,7 +55,7 @@ class TextBasedChannel {
 
   /**
    * Send a message to this channel
-   * @param {StringResolvable} [content] The content to send, or MessageOptions
+   * @param {StringResolvable} [content] The content to send
    * @param {MessageOptions} [options={}] The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
@@ -110,8 +110,8 @@ class TextBasedChannel {
   /**
    * Send an embed to this channel
    * @param {RichEmbed|Object} embed The embed to send
-   * @param {string|MessageOptions} [content] Content to send or message options
-   * @param {MessageOptions} [options] If contentOrOptions is content, this will be options
+   * @param {string|MessageOptions} [content] Content to send
+   * @param {MessageOptions} [options] The options to provide
    * @returns {Promise<Message>}
    */
   sendEmbed(embed, content, options) {
