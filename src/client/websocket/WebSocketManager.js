@@ -230,6 +230,11 @@ class WebSocketManager extends EventEmitter {
   }
 
   /**
+   * @external CloseEvent
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent}
+   */
+
+  /**
    * Run whenever the connection to the gateway is closed, it will try to reconnect the client.
    * @param {CloseEvent} event The WebSocket close event
    */
