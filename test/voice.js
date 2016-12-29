@@ -12,6 +12,8 @@ client.login(auth.token).then(() => console.log('logged')).catch(console.error);
 
 const connections = new Map();
 
+let broadcast;
+
 client.on('message', m => {
   if (!m.guild) return;
   if (m.content.startsWith('/join')) {
@@ -38,6 +40,13 @@ client.on('message', m => {
         return;
       }
       doQueue(connData);
+    }
+  } else if (m.content.startsWith('#eval') && m.author.id === '66564597481480192') {
+    try {
+      const com = eval(m.content.split(' ').slice(1).join(' '));
+      m.channel.sendMessage(`\`\`\`\n${com}\`\`\``);
+    } catch (e) {
+      m.channel.sendMessage(`\`\`\`\n${e}\`\`\``);
     }
   }
 });

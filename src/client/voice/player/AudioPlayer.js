@@ -3,6 +3,7 @@ const Prism = require('prism-media');
 const StreamDispatcher = require('../dispatcher/StreamDispatcher');
 const Collection = require('../../../util/Collection');
 const OpusEncoders = require('../opus/OpusEngineList');
+const VoiceBroadcast = require('../VoiceBroadcast');
 
 const ffmpegArguments = [
   '-analyzeduration', '0',
@@ -33,6 +34,10 @@ class AudioPlayer extends EventEmitter {
   }
 
   destroyStream(stream) {
+    if (stream instanceof VoiceBroadcast) {
+      this.streams.delete(stream);
+      return;
+    }
     const data = this.streams.get(stream);
     if (!data) return;
     const transcoder = data.transcoder;
@@ -75,6 +80,18 @@ class AudioPlayer extends EventEmitter {
     this.streams.get(stream).dispatcher = dispatcher;
     dispatcher.on('end', () => this.destroyStream(stream));
     dispatcher.on('error', () => this.destroyStream(stream));
+    return dispatcher;
+  }
+
+  playBroadcast(broadcast, { volume = 1, passes = 1 } = {}) {
+    const options = { volume, passes };
+    this.destroyAllStreams();
+    this.streams.set(broadcast, broadcast);
+    const dispatcher = new StreamDispatcher(this, broadcast, options);
+    dispatcher.on('end', () => this.destroyStream(broadcast));
+    dispatcher.on('error', () => this.destroyStream(broadcast));
+    dispatcher.on('speaking', value => this.voiceConnection.setSpeaking(value));
+    broadcast.registerDispatcher(dispatcher);
     return dispatcher;
   }
 }

@@ -1,5 +1,6 @@
 const EventEmitter = require('events').EventEmitter;
 const NaCl = require('tweetnacl');
+const VoiceBroadcast = require('../VoiceBroadcast');
 
 const nonce = new Buffer(24);
 nonce.fill(0);
@@ -20,9 +21,13 @@ class StreamDispatcher extends EventEmitter {
     super();
     this.player = player;
     this.stream = stream;
-    this.startStreaming();
+    if (!(this.stream instanceof VoiceBroadcast)) this.startStreaming();
     this.streamOptions = streamOptions;
     this.streamOptions.volume = this.streamOptions.volume || 0;
+
+    const data = this.streamingData;
+    data.length = 20;
+    data.missed = 0;
 
     /**
      * Whether playing is paused
@@ -163,7 +168,7 @@ class StreamDispatcher extends EventEmitter {
     return out;
   }
 
-  process() {
+  process(buffer, controlled) {
     try {
       if (this.destroyed) {
         this.setSpeaking(false);
@@ -180,7 +185,14 @@ class StreamDispatcher extends EventEmitter {
       if (this.paused) {
         // data.timestamp = data.timestamp + 4294967295 ? data.timestamp + 960 : 0;
         data.pausedTime += data.length * 10;
-        this.player.voiceConnection.voiceManager.client.setTimeout(() => this.process(), data.length * 10);
+        // if buffer is provided we are assuming a master process is controlling the dispatcher
+        if (!buffer) this.player.voiceConnection.voiceManager.client.setTimeout(() => this.process(), data.length * 10);
+        return;
+      }
+
+      if (!buffer && controlled) {
+        data.missed++;
+        data.pausedTime += data.length * 10;
         return;
       }
 
@@ -196,12 +208,14 @@ class StreamDispatcher extends EventEmitter {
       }
 
       const bufferLength = 1920 * data.channels;
-      let buffer = this.stream.read(bufferLength);
-      if (!buffer) {
-        data.missed++;
-        data.pausedTime += data.length * 10;
-        this.player.voiceConnection.voiceManager.client.setTimeout(() => this.process(), data.length * 10);
-        return;
+      if (!controlled) {
+        buffer = this.stream.read(bufferLength);
+        if (!buffer) {
+          data.missed++;
+          data.pausedTime += data.length * 10;
+          this.player.voiceConnection.voiceManager.client.setTimeout(() => this.process(), data.length * 10);
+          return;
+        }
       }
 
       data.missed = 0;
@@ -219,6 +233,7 @@ class StreamDispatcher extends EventEmitter {
       data.timestamp = data.timestamp + 4294967295 ? data.timestamp + 960 : 0;
       this.sendBuffer(buffer, data.sequence, data.timestamp);
 
+      if (controlled) return;
       const nextTime = data.length + (data.startTime + data.pausedTime + (data.count * data.length) - Date.now());
       this.player.voiceConnection.voiceManager.client.setTimeout(() => this.process(), nextTime);
     } catch (e) {
