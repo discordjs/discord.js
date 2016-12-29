@@ -47,7 +47,7 @@ class RESTMethods {
       if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
 
       if (content) {
-        if (code) {
+        if (typeof code === 'string') {
           content = escapeMarkdown(this.client.resolver.resolveString(content), true);
           content = `\`\`\`${typeof code !== 'undefined' && code !== null ? code : ''}\n${content}\n\`\`\``;
         }
