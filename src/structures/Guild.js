@@ -363,6 +363,25 @@ class Guild {
   }
 
   /**
+   * Performs a search within the entire guild.
+   * @param {MessageSearchOptions} [options={}] Options to pass to the search
+   * @returns {Promise<Array<Message[]>>}
+   * An array containing arrays of messages. Each inner array is a search context cluster.
+   * The message which has triggered the result will have the `hit` property set to `true`.
+   * @example
+   * guild.search({
+   *   content: 'discord.js',
+   *   before: '2016-11-17'
+   * }).then(res => {
+   *   const hit = res[0].find(m => m.hit).content;
+   *   console.log(`I found: **${hit}**`);
+   * }).catch(console.error);
+   */
+  search(options) {
+    return this.client.rest.methods.search(this, options);
+  }
+
+  /**
    * The data for editing a guild
    * @typedef {Object} GuildEditData
    * @property {string} [name] The name of the guild
@@ -601,8 +620,47 @@ class Guild {
   }
 
   /**
+   * Set the position of a role in this guild
+   * @param {string|Role} role the role to edit, can be a role object or a role ID.
+   * @param {number} position the new position of the role
+   * @returns {Promise<Guild>}
+   */
+  setRolePosition(role, position) {
+    if (typeof role === 'string') {
+      role = this.roles.get(role);
+      if (!role) return Promise.reject(new Error('Supplied role is not a role or string.'));
+    }
+
+    position = Number(position);
+    if (isNaN(position)) return Promise.reject(new Error('Supplied position is not a number.'));
+
+    const lowestAffected = Math.min(role.position, position);
+    const highestAffected = Math.max(role.position, position);
+
+    const rolesToUpdate = this.roles.filter(r => r.position >= lowestAffected && r.position <= highestAffected);
+
+    // stop role positions getting stupidly inflated
+    if (position > role.position) {
+      position = rolesToUpdate.first().position;
+    } else {
+      position = rolesToUpdate.last().position;
+    }
+
+    const updatedRoles = [];
+
+    for (const uRole of rolesToUpdate.values()) {
+      updatedRoles.push({
+        id: uRole.id,
+        position: uRole.id === role.id ? position : uRole.position + (position < role.position ? 1 : -1),
+      });
+    }
+
+    return this.client.rest.methods.setRolePositions(this.id, updatedRoles);
+  }
+
+  /**
    * Creates a new custom emoji in the guild.
-   * @param {BufferResolvable} attachment The image for the emoji.
+   * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji.
    * @param {string} name The name for the emoji.
    * @returns {Promise<Emoji>} The created emoji.
    * @example
@@ -618,7 +676,7 @@ class Guild {
    */
   createEmoji(attachment, name) {
     return new Promise(resolve => {
-      if (attachment.startsWith('data:')) {
+      if (typeof attachment === 'string' && attachment.startsWith('data:')) {
         resolve(this.client.rest.methods.createEmoji(this, attachment, name));
       } else {
         this.client.resolver.resolveBuffer(attachment).then(data =>
@@ -662,66 +720,6 @@ class Guild {
    */
   delete() {
     return this.client.rest.methods.deleteGuild(this);
-  }
-
-  /**
-   * Set the position of a role in this guild
-   * @param {string|Role} role the role to edit, can be a role object or a role ID.
-   * @param {number} position the new position of the role
-   * @returns {Promise<Guild>}
-   */
-  setRolePosition(role, position) {
-    if (typeof role === 'string') {
-      role = this.roles.get(role);
-      if (!role) return Promise.reject(new Error('Supplied role is not a role or string.'));
-    }
-
-    position = Number(position);
-    if (isNaN(position)) return Promise.reject(new Error('Supplied position is not a number.'));
-
-    const lowestAffected = Math.min(role.position, position);
-    const highestAffected = Math.max(role.position, position);
-
-    const rolesToUpdate = this.roles.filter(r => r.position >= lowestAffected && r.position <= highestAffected);
-
-    // stop role positions getting stupidly inflated
-    if (position > role.position) {
-      position = rolesToUpdate.first().position;
-    } else {
-      position = rolesToUpdate.last().position;
-    }
-
-    const updatedRoles = [];
-
-    for (const uRole of rolesToUpdate.values()) {
-      updatedRoles.push({
-        id: uRole.id,
-        position: uRole.id === role.id ? position : uRole.position + (position < role.position ? 1 : -1),
-      });
-    }
-
-    return this.client.rest.methods.setRolePositions(this.id, updatedRoles);
-  }
-
-  /**
-   * Performs a search
-   * @param {MessageSearchOptions} [options={}] Options to pass to the search
-   * @returns {Promise<Array<Message[]>>}
-   * An array containing arrays of messages. Each inner array is a search context cluster.
-   * The message which has triggered the result will have the `hit` property set to `true`.
-   * @example
-   * guild.search({
-   *   content: 'discord.js',
-   *   before: '2016-11-17'
-   * })
-   * .then(res => {
-   *   const hit = res[0].find(m => m.hit).content;
-   *   console.log(`I found: **${hit}**`);
-   * })
-   * .catch(console.error);
-   */
-  search(options) {
-    return this.client.rest.methods.search(this, options);
   }
 
   /**

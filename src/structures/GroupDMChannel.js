@@ -129,6 +129,7 @@ class GroupDMChannel extends Channel {
   fetchMessage() { return; }
   fetchMessages() { return; }
   fetchPinnedMessages() { return; }
+  search() { return; }
   startTyping() { return; }
   stopTyping() { return; }
   get typing() { return; }
@@ -137,7 +138,6 @@ class GroupDMChannel extends Channel {
   awaitMessages() { return; }
   bulkDelete() { return; }
   _cacheMessage() { return; }
-  search() { return; }
 }
 
 TextBasedChannel.applyToClass(GroupDMChannel, true);
