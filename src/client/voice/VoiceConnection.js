@@ -273,6 +273,17 @@ class VoiceConnection extends EventEmitter {
     return this.player.playPCMStream(stream, options);
   }
 
+  /**
+   * Plays a voice broadcast
+   * @param {VoiceBroadcast} broadcast the broadcast to play
+   * @returns {StreamDispatcher}
+   * @example
+   * // play a broadcast
+   * const broadcast = client
+   *   .createVoiceBroadcast()
+   *   .playFile('./test.mp3');
+   * const dispatcher = voiceConnection.playBroadcast(broadcast);
+   */
   playBroadcast(broadcast) {
     return this.player.playBroadcast(broadcast);
   }
