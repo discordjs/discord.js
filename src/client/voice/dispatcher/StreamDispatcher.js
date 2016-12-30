@@ -120,6 +120,7 @@ class StreamDispatcher extends EventEmitter {
   }
 
   setSpeaking(value) {
+    if (this.speaking === value) return;
     this.speaking = value;
     /**
      * Emitted when the dispatcher starts/stops speaking
