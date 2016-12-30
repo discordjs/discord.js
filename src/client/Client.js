@@ -226,6 +226,10 @@ class Client extends EventEmitter {
     return typeof window !== 'undefined';
   }
 
+  /**
+   * Creates a new voice broadcast
+   * @returns {VoiceBroadcast} the created broadcast
+   */
   createVoiceBroadcast() {
     const broadcast = new VoiceBroadcast(this);
     this.broadcasts.push(broadcast);
