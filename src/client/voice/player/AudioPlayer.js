@@ -27,6 +27,7 @@ class AudioPlayer extends EventEmitter {
       timestamp: 0,
       pausedTime: 0,
     };
+    this.voiceConnection.once('closing', () => this.destroyAllStreams());
   }
 
   get currentTranscoder() {
@@ -34,7 +35,9 @@ class AudioPlayer extends EventEmitter {
   }
 
   destroyStream(stream) {
-    if (stream instanceof VoiceBroadcast) {
+    if (stream instanceof VoiceBroadcast && this.streams.has(stream)) {
+      const data = this.streams.get(stream);
+      if (data.dispatcher) data.dispatcher.destroy('end');
       this.streams.delete(stream);
       return;
     }
