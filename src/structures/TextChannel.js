@@ -81,6 +81,7 @@ class TextChannel extends GuildChannel {
   fetchMessage() { return; }
   fetchMessages() { return; }
   fetchPinnedMessages() { return; }
+  search() { return; }
   startTyping() { return; }
   stopTyping() { return; }
   get typing() { return; }
@@ -89,7 +90,6 @@ class TextChannel extends GuildChannel {
   awaitMessages() { return; }
   bulkDelete() { return; }
   _cacheMessage() { return; }
-  search() { return; }
 }
 
 TextBasedChannel.applyToClass(TextChannel, true);

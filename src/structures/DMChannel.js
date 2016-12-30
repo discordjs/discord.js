@@ -45,6 +45,7 @@ class DMChannel extends Channel {
   fetchMessage() { return; }
   fetchMessages() { return; }
   fetchPinnedMessages() { return; }
+  search() { return; }
   startTyping() { return; }
   stopTyping() { return; }
   get typing() { return; }
@@ -53,7 +54,6 @@ class DMChannel extends Channel {
   awaitMessages() { return; }
   bulkDelete() { return; }
   _cacheMessage() { return; }
-  search() { return; }
 }
 
 TextBasedChannel.applyToClass(DMChannel, true);
