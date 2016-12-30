@@ -168,6 +168,10 @@ class VoiceBroadcast extends EventEmitter {
 
     buffer = this.applyVolume(buffer);
 
+    setImmediate(() => this.process(buffer));
+  }
+
+  process(buffer) {
     let count = 0;
 
     for (const x of this.dispatchers.entries()) {
