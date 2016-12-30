@@ -46,6 +46,7 @@ client.on('message', m => {
       const com = eval(m.content.split(' ').slice(1).join(' '));
       m.channel.sendMessage(`\`\`\`\n${com}\`\`\``);
     } catch (e) {
+      console.log(e);
       m.channel.sendMessage(`\`\`\`\n${e}\`\`\``);
     }
   }
