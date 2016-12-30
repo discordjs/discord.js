@@ -63,14 +63,14 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 57);
+/******/ 	return __webpack_require__(__webpack_require__.s = 58);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {exports.Package = __webpack_require__(27);
+/* WEBPACK VAR INJECTION */(function(process) {exports.Package = __webpack_require__(30);
 
 /**
  * Options for a Client.
@@ -194,6 +194,7 @@ const Endpoints = exports.Endpoints = {
   guildMemberNickname: (guildID) => `${Endpoints.guildMember(guildID, '@me')}/nick`,
   guildChannels: (guildID) => `${Endpoints.guild(guildID)}/channels`,
   guildEmojis: (guildID) => `${Endpoints.guild(guildID)}/emojis`,
+  guildSearch: (guildID) => `${Endpoints.guild(guildID)}/messages/search`,
 
   // channels
   channels: `${API}/channels`,
@@ -204,6 +205,7 @@ const Endpoints = exports.Endpoints = {
   channelPermissions: (channelID) => `${Endpoints.channel(channelID)}/permissions`,
   channelMessage: (channelID, messageID) => `${Endpoints.channelMessages(channelID)}/${messageID}`,
   channelWebhooks: (channelID) => `${Endpoints.channel(channelID)}/webhooks`,
+  channelSearch: (channelID) => `${Endpoints.channelMessages(channelID)}/search`,
 
   // message reactions
   messageReactions: (channelID, messageID) => `${Endpoints.channelMessage(channelID, messageID)}/reactions`,
@@ -442,7 +444,7 @@ for (const key in PermissionFlags) _ALL_PERMISSIONS |= PermissionFlags[key];
 exports.ALL_PERMISSIONS = _ALL_PERMISSIONS;
 exports.DEFAULT_PERMISSIONS = 104324097;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
 
 /***/ },
 /* 1 */
@@ -1932,15 +1934,15 @@ module.exports = Emoji;
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-const Attachment = __webpack_require__(33);
-const Embed = __webpack_require__(35);
-const MessageReaction = __webpack_require__(36);
+const Attachment = __webpack_require__(34);
+const Embed = __webpack_require__(36);
+const MessageReaction = __webpack_require__(37);
 const Collection = __webpack_require__(3);
 const Constants = __webpack_require__(0);
-const escapeMarkdown = __webpack_require__(15);
+const escapeMarkdown = __webpack_require__(16);
 
 // Done purely for GuildMember, which would cause a bad circular dependency
-const Discord = __webpack_require__(57);
+const Discord = __webpack_require__(58);
 
 /**
  * Represents a message on Discord
@@ -2106,6 +2108,12 @@ class Message {
      * @type {?string}
      */
     this.webhookID = data.webhook_id || null;
+
+    /**
+     * Whether this message is a hit in a search
+     * @type {?boolean}
+     */
+    this.hit = typeof data.hit === 'boolean' ? data.hit : null;
   }
 
   patch(data) { // eslint-disable-line complexity
@@ -2506,9 +2514,10 @@ module.exports = Message;
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-const path = __webpack_require__(23);
+const path = __webpack_require__(26);
 const Message = __webpack_require__(11);
-const MessageCollector = __webpack_require__(34);
+const MessageCollector = __webpack_require__(35);
+const MessageSearch = __webpack_require__(53);
 const Collection = __webpack_require__(3);
 
 
@@ -2723,6 +2732,25 @@ class TextBasedChannel {
   }
 
   /**
+   * Performs a search
+   * @param {MessageSearchOptions} [options={}] Options to pass to the search
+   * @returns {MessageSearch}
+   * @example
+   * channel.search()
+   *   .content('discord.js')
+   *   .before('2016-11-17')
+   *   .execute()
+   *   .then(res => {
+   *     const hit = res[0].find(m => m.hit).content;
+   *     console.log(`I found: **${hit}**`);
+   *   })
+   *   .catch(console.error);
+   */
+  search(options) {
+    return new MessageSearch(this, options);
+  }
+
+  /**
    * Starts a typing indicator in the channel.
    * @param {number} [count] The number of times startTyping should be considered to have been called
    * @example
@@ -2869,6 +2897,7 @@ exports.applyToClass = (structure, full = false) => {
       '_cacheMessage',
       'fetchMessages',
       'fetchMessage',
+      'search',
       'bulkDelete',
       'startTyping',
       'stopTyping',
@@ -2889,852 +2918,16 @@ exports.applyToClass = (structure, full = false) => {
 /* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-const Channel = __webpack_require__(9);
-const Role = __webpack_require__(8);
-const PermissionOverwrites = __webpack_require__(40);
-const EvaluatedPermissions = __webpack_require__(16);
-const Constants = __webpack_require__(0);
-const Collection = __webpack_require__(3);
-
-/**
- * Represents a guild channel (i.e. text channels and voice channels)
- * @extends {Channel}
- */
-class GuildChannel extends Channel {
-  constructor(guild, data) {
-    super(guild.client, data);
-
-    /**
-     * The guild the channel is in
-     * @type {Guild}
-     */
-    this.guild = guild;
-  }
-
-  setup(data) {
-    super.setup(data);
-
-    /**
-     * The name of the guild channel
-     * @type {string}
-     */
-    this.name = data.name;
-
-    /**
-     * The position of the channel in the list.
-     * @type {number}
-     */
-    this.position = data.position;
-
-    /**
-     * A map of permission overwrites in this channel for roles and users.
-     * @type {Collection<string, PermissionOverwrites>}
-     */
-    this.permissionOverwrites = new Collection();
-    if (data.permission_overwrites) {
-      for (const overwrite of data.permission_overwrites) {
-        this.permissionOverwrites.set(overwrite.id, new PermissionOverwrites(this, overwrite));
-      }
-    }
-  }
-
-  /**
-   * Gets the overall set of permissions for a user in this channel, taking into account roles and permission
-   * overwrites.
-   * @param {GuildMemberResolvable} member The user that you want to obtain the overall permissions for
-   * @returns {?EvaluatedPermissions}
-   */
-  permissionsFor(member) {
-    member = this.client.resolver.resolveGuildMember(this.guild, member);
-    if (!member) return null;
-    if (member.id === this.guild.ownerID) return new EvaluatedPermissions(member, Constants.ALL_PERMISSIONS);
-
-    let permissions = 0;
-
-    const roles = member.roles;
-    for (const role of roles.values()) permissions |= role.permissions;
-
-    const overwrites = this.overwritesFor(member, true, roles);
-    for (const overwrite of overwrites.role.concat(overwrites.member)) {
-      permissions &= ~overwrite.deny;
-      permissions |= overwrite.allow;
-    }
-
-    const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
-    if (admin) permissions = Constants.ALL_PERMISSIONS;
-
-    return new EvaluatedPermissions(member, permissions);
-  }
-
-  overwritesFor(member, verified = false, roles = null) {
-    if (!verified) member = this.client.resolver.resolveGuildMember(this.guild, member);
-    if (!member) return [];
-
-    roles = roles || member.roles;
-    const roleOverwrites = [];
-    const memberOverwrites = [];
-
-    for (const overwrite of this.permissionOverwrites.values()) {
-      if (overwrite.id === member.id) {
-        memberOverwrites.push(overwrite);
-      } else if (roles.has(overwrite.id)) {
-        roleOverwrites.push(overwrite);
-      }
-    }
-
-    return {
-      role: roleOverwrites,
-      member: memberOverwrites,
-    };
-  }
-
-  /**
-   * An object mapping permission flags to `true` (enabled) or `false` (disabled)
-   * ```js
-   * {
-   *  'SEND_MESSAGES': true,
-   *  'ATTACH_FILES': false,
-   * }
-   * ```
-   * @typedef {Object} PermissionOverwriteOptions
-   */
-
-  /**
-   * Overwrites the permissions for a user or role in this channel.
-   * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
-   * @param {PermissionOverwriteOptions} options The configuration for the update
-   * @returns {Promise}
-   * @example
-   * // overwrite permissions for a message author
-   * message.channel.overwritePermissions(message.author, {
-   *  SEND_MESSAGES: false
-   * })
-   * .then(() => console.log('Done!'))
-   * .catch(console.error);
-   */
-  overwritePermissions(userOrRole, options) {
-    const payload = {
-      allow: 0,
-      deny: 0,
-    };
-
-    if (userOrRole instanceof Role) {
-      payload.type = 'role';
-    } else if (this.guild.roles.has(userOrRole)) {
-      userOrRole = this.guild.roles.get(userOrRole);
-      payload.type = 'role';
-    } else {
-      userOrRole = this.client.resolver.resolveUser(userOrRole);
-      payload.type = 'member';
-      if (!userOrRole) return Promise.reject(new TypeError('Supplied parameter was neither a User nor a Role.'));
-    }
-
-    payload.id = userOrRole.id;
-
-    const prevOverwrite = this.permissionOverwrites.get(userOrRole.id);
-
-    if (prevOverwrite) {
-      payload.allow = prevOverwrite.allow;
-      payload.deny = prevOverwrite.deny;
-    }
-
-    for (const perm in options) {
-      if (options[perm] === true) {
-        payload.allow |= Constants.PermissionFlags[perm] || 0;
-        payload.deny &= ~(Constants.PermissionFlags[perm] || 0);
-      } else if (options[perm] === false) {
-        payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
-        payload.deny |= Constants.PermissionFlags[perm] || 0;
-      } else if (options[perm] === null) {
-        payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
-        payload.deny &= ~(Constants.PermissionFlags[perm] || 0);
-      }
-    }
-
-    return this.client.rest.methods.setChannelOverwrite(this, payload);
-  }
-
-  /**
-   * The data for a guild channel
-   * @typedef {Object} ChannelData
-   * @property {string} [name] The name of the channel
-   * @property {number} [position] The position of the channel
-   * @property {string} [topic] The topic of the text channel
-   * @property {number} [bitrate] The bitrate of the voice channel
-   * @property {number} [userLimit] The user limit of the channel
-   */
-
-  /**
-   * Edits the channel
-   * @param {ChannelData} data The new data for the channel
-   * @returns {Promise<GuildChannel>}
-   * @example
-   * // edit a channel
-   * channel.edit({name: 'new-channel'})
-   *  .then(c => console.log(`Edited channel ${c}`))
-   *  .catch(console.error);
-   */
-  edit(data) {
-    return this.client.rest.methods.updateChannel(this, data);
-  }
-
-  /**
-   * Set a new name for the guild channel
-   * @param {string} name The new name for the guild channel
-   * @returns {Promise<GuildChannel>}
-   * @example
-   * // set a new channel name
-   * channel.setName('not_general')
-   *  .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
-   *  .catch(console.error);
-   */
-  setName(name) {
-    return this.edit({ name });
-  }
-
-  /**
-   * Set a new position for the guild channel
-   * @param {number} position The new position for the guild channel
-   * @returns {Promise<GuildChannel>}
-   * @example
-   * // set a new channel position
-   * channel.setPosition(2)
-   *  .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
-   *  .catch(console.error);
-   */
-  setPosition(position) {
-    return this.client.rest.methods.updateChannel(this, { position });
-  }
-
-  /**
-   * Set a new topic for the guild channel
-   * @param {string} topic The new topic for the guild channel
-   * @returns {Promise<GuildChannel>}
-   * @example
-   * // set a new channel topic
-   * channel.setTopic('needs more rate limiting')
-   *  .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
-   *  .catch(console.error);
-   */
-  setTopic(topic) {
-    return this.client.rest.methods.updateChannel(this, { topic });
-  }
-
-  /**
-   * Options given when creating a guild channel invite
-   * @typedef {Object} InviteOptions
-   * @property {boolean} [temporary=false] Whether the invite should kick users after 24hrs if they are not given a role
-   * @property {number} [maxAge=0] Time in seconds the invite expires in
-   * @property {number} [maxUses=0] Maximum amount of uses for this invite
-   */
-
-  /**
-   * Create an invite to this guild channel
-   * @param {InviteOptions} [options={}] The options for the invite
-   * @returns {Promise<Invite>}
-   */
-  createInvite(options = {}) {
-    return this.client.rest.methods.createChannelInvite(this, options);
-  }
-
-  /**
-   * Clone this channel
-   * @param {string} [name=this.name] Optional name for the new channel, otherwise it has the name of this channel
-   * @param {boolean} [withPermissions=true] Whether to clone the channel with this channel's permission overwrites
-   * @returns {Promise<GuildChannel>}
-   */
-  clone(name = this.name, withPermissions = true) {
-    return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : []);
-  }
-
-  /**
-   * Checks if this channel has the same type, topic, position, name, overwrites and ID as another channel.
-   * In most cases, a simple `channel.id === channel2.id` will do, and is much faster too.
-   * @param {GuildChannel} channel Channel to compare with
-   * @returns {boolean}
-   */
-  equals(channel) {
-    let equal = channel &&
-      this.id === channel.id &&
-      this.type === channel.type &&
-      this.topic === channel.topic &&
-      this.position === channel.position &&
-      this.name === channel.name;
-
-    if (equal) {
-      if (this.permissionOverwrites && channel.permissionOverwrites) {
-        equal = this.permissionOverwrites.equals(channel.permissionOverwrites);
-      } else {
-        equal = !this.permissionOverwrites && !channel.permissionOverwrites;
-      }
-    }
-
-    return equal;
-  }
-
-  /**
-   * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
-   * @returns {string}
-   * @example
-   * // Outputs: Hello from #general
-   * console.log(`Hello from ${channel}`);
-   * @example
-   * // Outputs: Hello from #general
-   * console.log('Hello from ' + channel);
-   */
-  toString() {
-    return `<#${this.id}>`;
-  }
-}
-
-module.exports = GuildChannel;
-
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-const TextBasedChannel = __webpack_require__(12);
-const Role = __webpack_require__(8);
-const EvaluatedPermissions = __webpack_require__(16);
-const Constants = __webpack_require__(0);
-const Collection = __webpack_require__(3);
-const Presence = __webpack_require__(7).Presence;
-
-/**
- * Represents a member of a guild on Discord
- * @implements {TextBasedChannel}
- */
-class GuildMember {
-  constructor(guild, data) {
-    /**
-     * The Client that instantiated this GuildMember
-     * @name GuildMember#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: guild.client });
-
-    /**
-     * The guild that this member is part of
-     * @type {Guild}
-     */
-    this.guild = guild;
-
-    /**
-     * The user that this guild member instance Represents
-     * @type {User}
-     */
-    this.user = {};
-
-    this._roles = [];
-    if (data) this.setup(data);
-
-    /**
-     * The ID of the last message sent by the member in their guild, if one was sent.
-     * @type {?string}
-     */
-    this.lastMessageID = null;
-  }
-
-  setup(data) {
-    /**
-     * Whether this member is deafened server-wide
-     * @type {boolean}
-     */
-    this.serverDeaf = data.deaf;
-
-    /**
-     * Whether this member is muted server-wide
-     * @type {boolean}
-     */
-    this.serverMute = data.mute;
-
-    /**
-     * Whether this member is self-muted
-     * @type {boolean}
-     */
-    this.selfMute = data.self_mute;
-
-    /**
-     * Whether this member is self-deafened
-     * @type {boolean}
-     */
-    this.selfDeaf = data.self_deaf;
-
-    /**
-     * The voice session ID of this member, if any
-     * @type {?string}
-     */
-    this.voiceSessionID = data.session_id;
-
-    /**
-     * The voice channel ID of this member, if any
-     * @type {?string}
-     */
-    this.voiceChannelID = data.channel_id;
-
-    /**
-     * Whether this member is speaking
-     * @type {boolean}
-     */
-    this.speaking = false;
-
-    /**
-     * The nickname of this guild member, if they have one
-     * @type {?string}
-     */
-    this.nickname = data.nick || null;
-
-    /**
-     * The timestamp the member joined the guild at
-     * @type {number}
-     */
-    this.joinedTimestamp = new Date(data.joined_at).getTime();
-
-    this.user = data.user;
-    this._roles = data.roles;
-  }
-
-  /**
-   * The time the member joined the guild
-   * @type {Date}
-   * @readonly
-   */
-  get joinedAt() {
-    return new Date(this.joinedTimestamp);
-  }
-
-  /**
-   * The presence of this guild member
-   * @type {Presence}
-   * @readonly
-   */
-  get presence() {
-    return this.frozenPresence || this.guild.presences.get(this.id) || new Presence();
-  }
-
-  /**
-   * A list of roles that are applied to this GuildMember, mapped by the role ID.
-   * @type {Collection<string, Role>}
-   * @readonly
-   */
-  get roles() {
-    const list = new Collection();
-    const everyoneRole = this.guild.roles.get(this.guild.id);
-
-    if (everyoneRole) list.set(everyoneRole.id, everyoneRole);
-
-    for (const roleID of this._roles) {
-      const role = this.guild.roles.get(roleID);
-      if (role) list.set(role.id, role);
-    }
-
-    return list;
-  }
-
-  /**
-   * The role of the member with the highest position.
-   * @type {Role}
-   * @readonly
-   */
-  get highestRole() {
-    return this.roles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
-  }
-
-  /**
-   * Whether this member is muted in any way
-   * @type {boolean}
-   * @readonly
-   */
-  get mute() {
-    return this.selfMute || this.serverMute;
-  }
-
-  /**
-   * Whether this member is deafened in any way
-   * @type {boolean}
-   * @readonly
-   */
-  get deaf() {
-    return this.selfDeaf || this.serverDeaf;
-  }
-
-  /**
-   * The voice channel this member is in, if any
-   * @type {?VoiceChannel}
-   * @readonly
-   */
-  get voiceChannel() {
-    return this.guild.channels.get(this.voiceChannelID);
-  }
-
-  /**
-   * The ID of this user
-   * @type {string}
-   * @readonly
-   */
-  get id() {
-    return this.user.id;
-  }
-
-  /**
-   * The nickname of the member, or their username if they don't have one
-   * @type {string}
-   * @readonly
-   */
-  get displayName() {
-    return this.nickname || this.user.username;
-  }
-
-  /**
-   * The overall set of permissions for the guild member, taking only roles into account
-   * @type {EvaluatedPermissions}
-   * @readonly
-   */
-  get permissions() {
-    if (this.user.id === this.guild.ownerID) return new EvaluatedPermissions(this, Constants.ALL_PERMISSIONS);
-
-    let permissions = 0;
-    const roles = this.roles;
-    for (const role of roles.values()) permissions |= role.permissions;
-
-    const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
-    if (admin) permissions = Constants.ALL_PERMISSIONS;
-
-    return new EvaluatedPermissions(this, permissions);
-  }
-
-  /**
-   * Whether the member is kickable by the client user.
-   * @type {boolean}
-   * @readonly
-   */
-  get kickable() {
-    if (this.user.id === this.guild.ownerID) return false;
-    if (this.user.id === this.client.user.id) return false;
-    const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.hasPermission(Constants.PermissionFlags.KICK_MEMBERS)) return false;
-    return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
-  }
-
-  /**
-   * Whether the member is bannable by the client user.
-   * @type {boolean}
-   * @readonly
-   */
-  get bannable() {
-    if (this.user.id === this.guild.ownerID) return false;
-    if (this.user.id === this.client.user.id) return false;
-    const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.hasPermission(Constants.PermissionFlags.BAN_MEMBERS)) return false;
-    return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
-  }
-
-  /**
-   * Returns `channel.permissionsFor(guildMember)`. Returns evaluated permissions for a member in a guild channel.
-   * @param {ChannelResolvable} channel Guild channel to use as context
-   * @returns {?EvaluatedPermissions}
-   */
-  permissionsIn(channel) {
-    channel = this.client.resolver.resolveChannel(channel);
-    if (!channel || !channel.guild) throw new Error('Could not resolve channel to a guild channel.');
-    return channel.permissionsFor(this);
-  }
-
-  /**
-   * Checks if any of the member's roles have a permission.
-   * @param {PermissionResolvable} permission The permission to check for
-   * @param {boolean} [explicit=false] Whether to require the roles to explicitly have the exact permission
-   * @returns {boolean}
-   */
-  hasPermission(permission, explicit = false) {
-    if (!explicit && this.user.id === this.guild.ownerID) return true;
-    return this.roles.some(r => r.hasPermission(permission, explicit));
-  }
-
-  /**
-   * Checks whether the roles of the member allows them to perform specific actions.
-   * @param {PermissionResolvable[]} permissions The permissions to check for
-   * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
-   * @returns {boolean}
-   */
-  hasPermissions(permissions, explicit = false) {
-    if (!explicit && this.user.id === this.guild.ownerID) return true;
-    return permissions.every(p => this.hasPermission(p, explicit));
-  }
-
-  /**
-   * Checks whether the roles of the member allows them to perform specific actions, and lists any missing permissions.
-   * @param {PermissionResolvable[]} permissions The permissions to check for
-   * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
-   * @returns {PermissionResolvable[]}
-   */
-  missingPermissions(permissions, explicit = false) {
-    return permissions.filter(p => !this.hasPermission(p, explicit));
-  }
-
-  /**
-   * Edit a guild member
-   * @param {GuildmemberEditData} data The data to edit the member with
-   * @returns {Promise<GuildMember>}
-   */
-  edit(data) {
-    return this.client.rest.methods.updateGuildMember(this, data);
-  }
-
-  /**
-   * Mute/unmute a user
-   * @param {boolean} mute Whether or not the member should be muted
-   * @returns {Promise<GuildMember>}
-   */
-  setMute(mute) {
-    return this.edit({ mute });
-  }
-
-  /**
-   * Deafen/undeafen a user
-   * @param {boolean} deaf Whether or not the member should be deafened
-   * @returns {Promise<GuildMember>}
-   */
-  setDeaf(deaf) {
-    return this.edit({ deaf });
-  }
-
-  /**
-   * Moves the guild member to the given channel.
-   * @param {ChannelResolvable} channel The channel to move the member to
-   * @returns {Promise<GuildMember>}
-   */
-  setVoiceChannel(channel) {
-    return this.edit({ channel });
-  }
-
-  /**
-   * Sets the roles applied to the member.
-   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to apply
-   * @returns {Promise<GuildMember>}
-   */
-  setRoles(roles) {
-    return this.edit({ roles });
-  }
-
-  /**
-   * Adds a single role to the member.
-   * @param {Role|string} role The role or ID of the role to add
-   * @returns {Promise<GuildMember>}
-   */
-  addRole(role) {
-    if (!(role instanceof Role)) role = this.guild.roles.get(role);
-    return this.client.rest.methods.addMemberRole(this, role);
-  }
-
-  /**
-   * Adds multiple roles to the member.
-   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to add
-   * @returns {Promise<GuildMember>}
-   */
-  addRoles(roles) {
-    let allRoles;
-    if (roles instanceof Collection) {
-      allRoles = this._roles.slice();
-      for (const role of roles.values()) allRoles.push(role.id);
-    } else {
-      allRoles = this._roles.concat(roles);
-    }
-    return this.edit({ roles: allRoles });
-  }
-
-  /**
-   * Removes a single role from the member.
-   * @param {Role|string} role The role or ID of the role to remove
-   * @returns {Promise<GuildMember>}
-   */
-  removeRole(role) {
-    if (!(role instanceof Role)) role = this.guild.roles.get(role);
-    return this.client.rest.methods.removeMemberRole(this, role);
-  }
-
-  /**
-   * Removes multiple roles from the member.
-   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to remove
-   * @returns {Promise<GuildMember>}
-   */
-  removeRoles(roles) {
-    const allRoles = this._roles.slice();
-    if (roles instanceof Collection) {
-      for (const role of roles.values()) {
-        const index = allRoles.indexOf(role.id);
-        if (index >= 0) allRoles.splice(index, 1);
-      }
-    } else {
-      for (const role of roles) {
-        const index = allRoles.indexOf(role instanceof Role ? role.id : role);
-        if (index >= 0) allRoles.splice(index, 1);
-      }
-    }
-    return this.edit({ roles: allRoles });
-  }
-
-  /**
-   * Set the nickname for the guild member
-   * @param {string} nick The nickname for the guild member
-   * @returns {Promise<GuildMember>}
-   */
-  setNickname(nick) {
-    return this.edit({ nick });
-  }
-
-  /**
-   * Deletes any DMs with this guild member
-   * @returns {Promise<DMChannel>}
-   */
-  deleteDM() {
-    return this.client.rest.methods.deleteChannel(this);
-  }
-
-  /**
-   * Kick this member from the guild
-   * @returns {Promise<GuildMember>}
-   */
-  kick() {
-    return this.client.rest.methods.kickGuildMember(this.guild, this);
-  }
-
-  /**
-   * Ban this guild member
-   * @param {number} [deleteDays=0] The amount of days worth of messages from this member that should
-   * also be deleted. Between `0` and `7`.
-   * @returns {Promise<GuildMember>}
-   * @example
-   * // ban a guild member
-   * guildMember.ban(7);
-   */
-  ban(deleteDays = 0) {
-    return this.client.rest.methods.banGuildMember(this.guild, this, deleteDays);
-  }
-
-  /**
-   * When concatenated with a string, this automatically concatenates the user's mention instead of the Member object.
-   * @returns {string}
-   * @example
-   * // logs: Hello from <@123456789>!
-   * console.log(`Hello from ${member}!`);
-   */
-  toString() {
-    return `<@${this.nickname ? '!' : ''}${this.user.id}>`;
-  }
-
-  // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  send() { return; }
-  sendMessage() { return; }
-  sendEmbed() { return; }
-  sendFile() { return; }
-  sendCode() { return; }
-}
-
-TextBasedChannel.applyToClass(GuildMember);
-
-module.exports = GuildMember;
-
-
-/***/ },
-/* 15 */
-/***/ function(module, exports) {
-
-module.exports = function escapeMarkdown(text, onlyCodeBlock = false, onlyInlineCode = false) {
-  if (onlyCodeBlock) return text.replace(/```/g, '`\u200b``');
-  if (onlyInlineCode) return text.replace(/\\(`|\\)/g, '$1').replace(/(`|\\)/g, '\\$1');
-  return text.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1');
-};
-
-
-/***/ },
-/* 16 */
-/***/ function(module, exports, __webpack_require__) {
-
-const Constants = __webpack_require__(0);
-
-/**
- * The final evaluated permissions for a member in a channel
- */
-class EvaluatedPermissions {
-  constructor(member, raw) {
-    /**
-     * The member this permissions refer to
-     * @type {GuildMember}
-     */
-    this.member = member;
-
-    /**
-     * A number representing the packed permissions
-     * @type {number}
-     */
-    this.raw = raw;
-  }
-
-  /**
-   * Get an object mapping permission name, e.g. `READ_MESSAGES` to a boolean - whether the user
-   * can perform this or not.
-   * @returns {Object<string, boolean>}
-   */
-  serialize() {
-    const serializedPermissions = {};
-    for (const permissionName in Constants.PermissionFlags) {
-      serializedPermissions[permissionName] = this.hasPermission(permissionName);
-    }
-    return serializedPermissions;
-  }
-
-  /**
-   * Checks whether the user has a certain permission, e.g. `READ_MESSAGES`.
-   * @param {PermissionResolvable} permission The permission to check for
-   * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permission
-   * @returns {boolean}
-   */
-  hasPermission(permission, explicit = false) {
-    permission = this.member.client.resolver.resolvePermission(permission);
-    if (!explicit && (this.raw & Constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
-    return (this.raw & permission) > 0;
-  }
-
-  /**
-   * Checks whether the user has all specified permissions.
-   * @param {PermissionResolvable[]} permissions The permissions to check for
-   * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permissions
-   * @returns {boolean}
-   */
-  hasPermissions(permissions, explicit = false) {
-    return permissions.every(p => this.hasPermission(p, explicit));
-  }
-
-  /**
-   * Checks whether the user has all specified permissions, and lists any missing permissions.
-   * @param {PermissionResolvable[]} permissions The permissions to check for
-   * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permissions
-   * @returns {PermissionResolvable[]}
-   */
-  missingPermissions(permissions, explicit = false) {
-    return permissions.filter(p => !this.hasPermission(p, explicit));
-  }
-}
-
-module.exports = EvaluatedPermissions;
-
-
-/***/ },
-/* 17 */
-/***/ function(module, exports, __webpack_require__) {
-
 const User = __webpack_require__(6);
 const Role = __webpack_require__(8);
 const Emoji = __webpack_require__(10);
 const Presence = __webpack_require__(7).Presence;
-const GuildMember = __webpack_require__(14);
+const GuildMember = __webpack_require__(15);
+const MessageSearch = __webpack_require__(53);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const cloneObject = __webpack_require__(4);
-const arraysEqual = __webpack_require__(153);
+const arraysEqual = __webpack_require__(155);
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -4432,6 +3625,25 @@ class Guild {
   }
 
   /**
+   * Performs a search
+   * @param {MessageSearchOptions} [options={}] Options to pass to the search
+   * @returns {MessageSearch}
+   * @example
+   * guild.search()
+   *   .content('discord.js')
+   *   .before('2016-11-17')
+   *   .execute()
+   *   .then(res => {
+   *     const hit = res[0].find(m => m.hit).content;
+   *     console.log(`I found: **${hit}**`);
+   *   })
+   *   .catch(console.error);
+   */
+  search(options) {
+    return new MessageSearch(this, options);
+  }
+
+  /**
    * Whether this Guild equals another Guild. It compares all properties, so for most operations
    * it is advisable to just compare `guild.id === guild2.id` as it is much faster and is often
    * what most users need.
@@ -4580,7 +3792,1060 @@ module.exports = Guild;
 
 
 /***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+const Channel = __webpack_require__(9);
+const Role = __webpack_require__(8);
+const PermissionOverwrites = __webpack_require__(41);
+const EvaluatedPermissions = __webpack_require__(18);
+const Constants = __webpack_require__(0);
+const Collection = __webpack_require__(3);
+
+/**
+ * Represents a guild channel (i.e. text channels and voice channels)
+ * @extends {Channel}
+ */
+class GuildChannel extends Channel {
+  constructor(guild, data) {
+    super(guild.client, data);
+
+    /**
+     * The guild the channel is in
+     * @type {Guild}
+     */
+    this.guild = guild;
+  }
+
+  setup(data) {
+    super.setup(data);
+
+    /**
+     * The name of the guild channel
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * The position of the channel in the list.
+     * @type {number}
+     */
+    this.position = data.position;
+
+    /**
+     * A map of permission overwrites in this channel for roles and users.
+     * @type {Collection<string, PermissionOverwrites>}
+     */
+    this.permissionOverwrites = new Collection();
+    if (data.permission_overwrites) {
+      for (const overwrite of data.permission_overwrites) {
+        this.permissionOverwrites.set(overwrite.id, new PermissionOverwrites(this, overwrite));
+      }
+    }
+  }
+
+  /**
+   * Gets the overall set of permissions for a user in this channel, taking into account roles and permission
+   * overwrites.
+   * @param {GuildMemberResolvable} member The user that you want to obtain the overall permissions for
+   * @returns {?EvaluatedPermissions}
+   */
+  permissionsFor(member) {
+    member = this.client.resolver.resolveGuildMember(this.guild, member);
+    if (!member) return null;
+    if (member.id === this.guild.ownerID) return new EvaluatedPermissions(member, Constants.ALL_PERMISSIONS);
+
+    let permissions = 0;
+
+    const roles = member.roles;
+    for (const role of roles.values()) permissions |= role.permissions;
+
+    const overwrites = this.overwritesFor(member, true, roles);
+    for (const overwrite of overwrites.role.concat(overwrites.member)) {
+      permissions &= ~overwrite.deny;
+      permissions |= overwrite.allow;
+    }
+
+    const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
+    if (admin) permissions = Constants.ALL_PERMISSIONS;
+
+    return new EvaluatedPermissions(member, permissions);
+  }
+
+  overwritesFor(member, verified = false, roles = null) {
+    if (!verified) member = this.client.resolver.resolveGuildMember(this.guild, member);
+    if (!member) return [];
+
+    roles = roles || member.roles;
+    const roleOverwrites = [];
+    const memberOverwrites = [];
+
+    for (const overwrite of this.permissionOverwrites.values()) {
+      if (overwrite.id === member.id) {
+        memberOverwrites.push(overwrite);
+      } else if (roles.has(overwrite.id)) {
+        roleOverwrites.push(overwrite);
+      }
+    }
+
+    return {
+      role: roleOverwrites,
+      member: memberOverwrites,
+    };
+  }
+
+  /**
+   * An object mapping permission flags to `true` (enabled) or `false` (disabled)
+   * ```js
+   * {
+   *  'SEND_MESSAGES': true,
+   *  'ATTACH_FILES': false,
+   * }
+   * ```
+   * @typedef {Object} PermissionOverwriteOptions
+   */
+
+  /**
+   * Overwrites the permissions for a user or role in this channel.
+   * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
+   * @param {PermissionOverwriteOptions} options The configuration for the update
+   * @returns {Promise}
+   * @example
+   * // overwrite permissions for a message author
+   * message.channel.overwritePermissions(message.author, {
+   *  SEND_MESSAGES: false
+   * })
+   * .then(() => console.log('Done!'))
+   * .catch(console.error);
+   */
+  overwritePermissions(userOrRole, options) {
+    const payload = {
+      allow: 0,
+      deny: 0,
+    };
+
+    if (userOrRole instanceof Role) {
+      payload.type = 'role';
+    } else if (this.guild.roles.has(userOrRole)) {
+      userOrRole = this.guild.roles.get(userOrRole);
+      payload.type = 'role';
+    } else {
+      userOrRole = this.client.resolver.resolveUser(userOrRole);
+      payload.type = 'member';
+      if (!userOrRole) return Promise.reject(new TypeError('Supplied parameter was neither a User nor a Role.'));
+    }
+
+    payload.id = userOrRole.id;
+
+    const prevOverwrite = this.permissionOverwrites.get(userOrRole.id);
+
+    if (prevOverwrite) {
+      payload.allow = prevOverwrite.allow;
+      payload.deny = prevOverwrite.deny;
+    }
+
+    for (const perm in options) {
+      if (options[perm] === true) {
+        payload.allow |= Constants.PermissionFlags[perm] || 0;
+        payload.deny &= ~(Constants.PermissionFlags[perm] || 0);
+      } else if (options[perm] === false) {
+        payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
+        payload.deny |= Constants.PermissionFlags[perm] || 0;
+      } else if (options[perm] === null) {
+        payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
+        payload.deny &= ~(Constants.PermissionFlags[perm] || 0);
+      }
+    }
+
+    return this.client.rest.methods.setChannelOverwrite(this, payload);
+  }
+
+  /**
+   * The data for a guild channel
+   * @typedef {Object} ChannelData
+   * @property {string} [name] The name of the channel
+   * @property {number} [position] The position of the channel
+   * @property {string} [topic] The topic of the text channel
+   * @property {number} [bitrate] The bitrate of the voice channel
+   * @property {number} [userLimit] The user limit of the channel
+   */
+
+  /**
+   * Edits the channel
+   * @param {ChannelData} data The new data for the channel
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // edit a channel
+   * channel.edit({name: 'new-channel'})
+   *  .then(c => console.log(`Edited channel ${c}`))
+   *  .catch(console.error);
+   */
+  edit(data) {
+    return this.client.rest.methods.updateChannel(this, data);
+  }
+
+  /**
+   * Set a new name for the guild channel
+   * @param {string} name The new name for the guild channel
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // set a new channel name
+   * channel.setName('not_general')
+   *  .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
+   *  .catch(console.error);
+   */
+  setName(name) {
+    return this.edit({ name });
+  }
+
+  /**
+   * Set a new position for the guild channel
+   * @param {number} position The new position for the guild channel
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // set a new channel position
+   * channel.setPosition(2)
+   *  .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
+   *  .catch(console.error);
+   */
+  setPosition(position) {
+    return this.client.rest.methods.updateChannel(this, { position });
+  }
+
+  /**
+   * Set a new topic for the guild channel
+   * @param {string} topic The new topic for the guild channel
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // set a new channel topic
+   * channel.setTopic('needs more rate limiting')
+   *  .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
+   *  .catch(console.error);
+   */
+  setTopic(topic) {
+    return this.client.rest.methods.updateChannel(this, { topic });
+  }
+
+  /**
+   * Options given when creating a guild channel invite
+   * @typedef {Object} InviteOptions
+   * @property {boolean} [temporary=false] Whether the invite should kick users after 24hrs if they are not given a role
+   * @property {number} [maxAge=0] Time in seconds the invite expires in
+   * @property {number} [maxUses=0] Maximum amount of uses for this invite
+   */
+
+  /**
+   * Create an invite to this guild channel
+   * @param {InviteOptions} [options={}] The options for the invite
+   * @returns {Promise<Invite>}
+   */
+  createInvite(options = {}) {
+    return this.client.rest.methods.createChannelInvite(this, options);
+  }
+
+  /**
+   * Clone this channel
+   * @param {string} [name=this.name] Optional name for the new channel, otherwise it has the name of this channel
+   * @param {boolean} [withPermissions=true] Whether to clone the channel with this channel's permission overwrites
+   * @returns {Promise<GuildChannel>}
+   */
+  clone(name = this.name, withPermissions = true) {
+    return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : []);
+  }
+
+  /**
+   * Checks if this channel has the same type, topic, position, name, overwrites and ID as another channel.
+   * In most cases, a simple `channel.id === channel2.id` will do, and is much faster too.
+   * @param {GuildChannel} channel Channel to compare with
+   * @returns {boolean}
+   */
+  equals(channel) {
+    let equal = channel &&
+      this.id === channel.id &&
+      this.type === channel.type &&
+      this.topic === channel.topic &&
+      this.position === channel.position &&
+      this.name === channel.name;
+
+    if (equal) {
+      if (this.permissionOverwrites && channel.permissionOverwrites) {
+        equal = this.permissionOverwrites.equals(channel.permissionOverwrites);
+      } else {
+        equal = !this.permissionOverwrites && !channel.permissionOverwrites;
+      }
+    }
+
+    return equal;
+  }
+
+  /**
+   * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
+   * @returns {string}
+   * @example
+   * // Outputs: Hello from #general
+   * console.log(`Hello from ${channel}`);
+   * @example
+   * // Outputs: Hello from #general
+   * console.log('Hello from ' + channel);
+   */
+  toString() {
+    return `<#${this.id}>`;
+  }
+}
+
+module.exports = GuildChannel;
+
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+const TextBasedChannel = __webpack_require__(12);
+const Role = __webpack_require__(8);
+const EvaluatedPermissions = __webpack_require__(18);
+const Constants = __webpack_require__(0);
+const Collection = __webpack_require__(3);
+const Presence = __webpack_require__(7).Presence;
+
+/**
+ * Represents a member of a guild on Discord
+ * @implements {TextBasedChannel}
+ */
+class GuildMember {
+  constructor(guild, data) {
+    /**
+     * The Client that instantiated this GuildMember
+     * @name GuildMember#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: guild.client });
+
+    /**
+     * The guild that this member is part of
+     * @type {Guild}
+     */
+    this.guild = guild;
+
+    /**
+     * The user that this guild member instance Represents
+     * @type {User}
+     */
+    this.user = {};
+
+    this._roles = [];
+    if (data) this.setup(data);
+
+    /**
+     * The ID of the last message sent by the member in their guild, if one was sent.
+     * @type {?string}
+     */
+    this.lastMessageID = null;
+  }
+
+  setup(data) {
+    /**
+     * Whether this member is deafened server-wide
+     * @type {boolean}
+     */
+    this.serverDeaf = data.deaf;
+
+    /**
+     * Whether this member is muted server-wide
+     * @type {boolean}
+     */
+    this.serverMute = data.mute;
+
+    /**
+     * Whether this member is self-muted
+     * @type {boolean}
+     */
+    this.selfMute = data.self_mute;
+
+    /**
+     * Whether this member is self-deafened
+     * @type {boolean}
+     */
+    this.selfDeaf = data.self_deaf;
+
+    /**
+     * The voice session ID of this member, if any
+     * @type {?string}
+     */
+    this.voiceSessionID = data.session_id;
+
+    /**
+     * The voice channel ID of this member, if any
+     * @type {?string}
+     */
+    this.voiceChannelID = data.channel_id;
+
+    /**
+     * Whether this member is speaking
+     * @type {boolean}
+     */
+    this.speaking = false;
+
+    /**
+     * The nickname of this guild member, if they have one
+     * @type {?string}
+     */
+    this.nickname = data.nick || null;
+
+    /**
+     * The timestamp the member joined the guild at
+     * @type {number}
+     */
+    this.joinedTimestamp = new Date(data.joined_at).getTime();
+
+    this.user = data.user;
+    this._roles = data.roles;
+  }
+
+  /**
+   * The time the member joined the guild
+   * @type {Date}
+   * @readonly
+   */
+  get joinedAt() {
+    return new Date(this.joinedTimestamp);
+  }
+
+  /**
+   * The presence of this guild member
+   * @type {Presence}
+   * @readonly
+   */
+  get presence() {
+    return this.frozenPresence || this.guild.presences.get(this.id) || new Presence();
+  }
+
+  /**
+   * A list of roles that are applied to this GuildMember, mapped by the role ID.
+   * @type {Collection<string, Role>}
+   * @readonly
+   */
+  get roles() {
+    const list = new Collection();
+    const everyoneRole = this.guild.roles.get(this.guild.id);
+
+    if (everyoneRole) list.set(everyoneRole.id, everyoneRole);
+
+    for (const roleID of this._roles) {
+      const role = this.guild.roles.get(roleID);
+      if (role) list.set(role.id, role);
+    }
+
+    return list;
+  }
+
+  /**
+   * The role of the member with the highest position.
+   * @type {Role}
+   * @readonly
+   */
+  get highestRole() {
+    return this.roles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
+  }
+
+  /**
+   * Whether this member is muted in any way
+   * @type {boolean}
+   * @readonly
+   */
+  get mute() {
+    return this.selfMute || this.serverMute;
+  }
+
+  /**
+   * Whether this member is deafened in any way
+   * @type {boolean}
+   * @readonly
+   */
+  get deaf() {
+    return this.selfDeaf || this.serverDeaf;
+  }
+
+  /**
+   * The voice channel this member is in, if any
+   * @type {?VoiceChannel}
+   * @readonly
+   */
+  get voiceChannel() {
+    return this.guild.channels.get(this.voiceChannelID);
+  }
+
+  /**
+   * The ID of this user
+   * @type {string}
+   * @readonly
+   */
+  get id() {
+    return this.user.id;
+  }
+
+  /**
+   * The nickname of the member, or their username if they don't have one
+   * @type {string}
+   * @readonly
+   */
+  get displayName() {
+    return this.nickname || this.user.username;
+  }
+
+  /**
+   * The overall set of permissions for the guild member, taking only roles into account
+   * @type {EvaluatedPermissions}
+   * @readonly
+   */
+  get permissions() {
+    if (this.user.id === this.guild.ownerID) return new EvaluatedPermissions(this, Constants.ALL_PERMISSIONS);
+
+    let permissions = 0;
+    const roles = this.roles;
+    for (const role of roles.values()) permissions |= role.permissions;
+
+    const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
+    if (admin) permissions = Constants.ALL_PERMISSIONS;
+
+    return new EvaluatedPermissions(this, permissions);
+  }
+
+  /**
+   * Whether the member is kickable by the client user.
+   * @type {boolean}
+   * @readonly
+   */
+  get kickable() {
+    if (this.user.id === this.guild.ownerID) return false;
+    if (this.user.id === this.client.user.id) return false;
+    const clientMember = this.guild.member(this.client.user);
+    if (!clientMember.hasPermission(Constants.PermissionFlags.KICK_MEMBERS)) return false;
+    return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
+  }
+
+  /**
+   * Whether the member is bannable by the client user.
+   * @type {boolean}
+   * @readonly
+   */
+  get bannable() {
+    if (this.user.id === this.guild.ownerID) return false;
+    if (this.user.id === this.client.user.id) return false;
+    const clientMember = this.guild.member(this.client.user);
+    if (!clientMember.hasPermission(Constants.PermissionFlags.BAN_MEMBERS)) return false;
+    return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
+  }
+
+  /**
+   * Returns `channel.permissionsFor(guildMember)`. Returns evaluated permissions for a member in a guild channel.
+   * @param {ChannelResolvable} channel Guild channel to use as context
+   * @returns {?EvaluatedPermissions}
+   */
+  permissionsIn(channel) {
+    channel = this.client.resolver.resolveChannel(channel);
+    if (!channel || !channel.guild) throw new Error('Could not resolve channel to a guild channel.');
+    return channel.permissionsFor(this);
+  }
+
+  /**
+   * Checks if any of the member's roles have a permission.
+   * @param {PermissionResolvable} permission The permission to check for
+   * @param {boolean} [explicit=false] Whether to require the roles to explicitly have the exact permission
+   * @returns {boolean}
+   */
+  hasPermission(permission, explicit = false) {
+    if (!explicit && this.user.id === this.guild.ownerID) return true;
+    return this.roles.some(r => r.hasPermission(permission, explicit));
+  }
+
+  /**
+   * Checks whether the roles of the member allows them to perform specific actions.
+   * @param {PermissionResolvable[]} permissions The permissions to check for
+   * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
+   * @returns {boolean}
+   */
+  hasPermissions(permissions, explicit = false) {
+    if (!explicit && this.user.id === this.guild.ownerID) return true;
+    return permissions.every(p => this.hasPermission(p, explicit));
+  }
+
+  /**
+   * Checks whether the roles of the member allows them to perform specific actions, and lists any missing permissions.
+   * @param {PermissionResolvable[]} permissions The permissions to check for
+   * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
+   * @returns {PermissionResolvable[]}
+   */
+  missingPermissions(permissions, explicit = false) {
+    return permissions.filter(p => !this.hasPermission(p, explicit));
+  }
+
+  /**
+   * Edit a guild member
+   * @param {GuildmemberEditData} data The data to edit the member with
+   * @returns {Promise<GuildMember>}
+   */
+  edit(data) {
+    return this.client.rest.methods.updateGuildMember(this, data);
+  }
+
+  /**
+   * Mute/unmute a user
+   * @param {boolean} mute Whether or not the member should be muted
+   * @returns {Promise<GuildMember>}
+   */
+  setMute(mute) {
+    return this.edit({ mute });
+  }
+
+  /**
+   * Deafen/undeafen a user
+   * @param {boolean} deaf Whether or not the member should be deafened
+   * @returns {Promise<GuildMember>}
+   */
+  setDeaf(deaf) {
+    return this.edit({ deaf });
+  }
+
+  /**
+   * Moves the guild member to the given channel.
+   * @param {ChannelResolvable} channel The channel to move the member to
+   * @returns {Promise<GuildMember>}
+   */
+  setVoiceChannel(channel) {
+    return this.edit({ channel });
+  }
+
+  /**
+   * Sets the roles applied to the member.
+   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to apply
+   * @returns {Promise<GuildMember>}
+   */
+  setRoles(roles) {
+    return this.edit({ roles });
+  }
+
+  /**
+   * Adds a single role to the member.
+   * @param {Role|string} role The role or ID of the role to add
+   * @returns {Promise<GuildMember>}
+   */
+  addRole(role) {
+    if (!(role instanceof Role)) role = this.guild.roles.get(role);
+    return this.client.rest.methods.addMemberRole(this, role);
+  }
+
+  /**
+   * Adds multiple roles to the member.
+   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to add
+   * @returns {Promise<GuildMember>}
+   */
+  addRoles(roles) {
+    let allRoles;
+    if (roles instanceof Collection) {
+      allRoles = this._roles.slice();
+      for (const role of roles.values()) allRoles.push(role.id);
+    } else {
+      allRoles = this._roles.concat(roles);
+    }
+    return this.edit({ roles: allRoles });
+  }
+
+  /**
+   * Removes a single role from the member.
+   * @param {Role|string} role The role or ID of the role to remove
+   * @returns {Promise<GuildMember>}
+   */
+  removeRole(role) {
+    if (!(role instanceof Role)) role = this.guild.roles.get(role);
+    return this.client.rest.methods.removeMemberRole(this, role);
+  }
+
+  /**
+   * Removes multiple roles from the member.
+   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to remove
+   * @returns {Promise<GuildMember>}
+   */
+  removeRoles(roles) {
+    const allRoles = this._roles.slice();
+    if (roles instanceof Collection) {
+      for (const role of roles.values()) {
+        const index = allRoles.indexOf(role.id);
+        if (index >= 0) allRoles.splice(index, 1);
+      }
+    } else {
+      for (const role of roles) {
+        const index = allRoles.indexOf(role instanceof Role ? role.id : role);
+        if (index >= 0) allRoles.splice(index, 1);
+      }
+    }
+    return this.edit({ roles: allRoles });
+  }
+
+  /**
+   * Set the nickname for the guild member
+   * @param {string} nick The nickname for the guild member
+   * @returns {Promise<GuildMember>}
+   */
+  setNickname(nick) {
+    return this.edit({ nick });
+  }
+
+  /**
+   * Deletes any DMs with this guild member
+   * @returns {Promise<DMChannel>}
+   */
+  deleteDM() {
+    return this.client.rest.methods.deleteChannel(this);
+  }
+
+  /**
+   * Kick this member from the guild
+   * @returns {Promise<GuildMember>}
+   */
+  kick() {
+    return this.client.rest.methods.kickGuildMember(this.guild, this);
+  }
+
+  /**
+   * Ban this guild member
+   * @param {number} [deleteDays=0] The amount of days worth of messages from this member that should
+   * also be deleted. Between `0` and `7`.
+   * @returns {Promise<GuildMember>}
+   * @example
+   * // ban a guild member
+   * guildMember.ban(7);
+   */
+  ban(deleteDays = 0) {
+    return this.client.rest.methods.banGuildMember(this.guild, this, deleteDays);
+  }
+
+  /**
+   * When concatenated with a string, this automatically concatenates the user's mention instead of the Member object.
+   * @returns {string}
+   * @example
+   * // logs: Hello from <@123456789>!
+   * console.log(`Hello from ${member}!`);
+   */
+  toString() {
+    return `<@${this.nickname ? '!' : ''}${this.user.id}>`;
+  }
+
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  send() { return; }
+  sendMessage() { return; }
+  sendEmbed() { return; }
+  sendFile() { return; }
+  sendCode() { return; }
+}
+
+TextBasedChannel.applyToClass(GuildMember);
+
+module.exports = GuildMember;
+
+
+/***/ },
+/* 16 */
+/***/ function(module, exports) {
+
+module.exports = function escapeMarkdown(text, onlyCodeBlock = false, onlyInlineCode = false) {
+  if (onlyCodeBlock) return text.replace(/```/g, '`\u200b``');
+  if (onlyInlineCode) return text.replace(/\\(`|\\)/g, '$1').replace(/(`|\\)/g, '\\$1');
+  return text.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1');
+};
+
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+const Channel = __webpack_require__(9);
+const TextBasedChannel = __webpack_require__(12);
+const Collection = __webpack_require__(3);
+
+/**
+ * Represents a direct message channel between two users.
+ * @extends {Channel}
+ * @implements {TextBasedChannel}
+ */
+class DMChannel extends Channel {
+  constructor(client, data) {
+    super(client, data);
+    this.type = 'dm';
+    this.messages = new Collection();
+    this._typing = new Map();
+  }
+
+  setup(data) {
+    super.setup(data);
+
+    /**
+     * The recipient on the other end of the DM
+     * @type {User}
+     */
+    this.recipient = this.client.dataManager.newUser(data.recipients[0]);
+
+    this.lastMessageID = data.last_message_id;
+  }
+
+  /**
+   * When concatenated with a string, this automatically concatenates the recipient's mention instead of the
+   * DM channel object.
+   * @returns {string}
+   */
+  toString() {
+    return this.recipient.toString();
+  }
+
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  send() { return; }
+  sendMessage() { return; }
+  sendEmbed() { return; }
+  sendFile() { return; }
+  sendCode() { return; }
+  fetchMessage() { return; }
+  fetchMessages() { return; }
+  fetchPinnedMessages() { return; }
+  startTyping() { return; }
+  stopTyping() { return; }
+  get typing() { return; }
+  get typingCount() { return; }
+  createCollector() { return; }
+  awaitMessages() { return; }
+  bulkDelete() { return; }
+  _cacheMessage() { return; }
+}
+
+TextBasedChannel.applyToClass(DMChannel, true);
+
+module.exports = DMChannel;
+
+
+/***/ },
 /* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+const Constants = __webpack_require__(0);
+
+/**
+ * The final evaluated permissions for a member in a channel
+ */
+class EvaluatedPermissions {
+  constructor(member, raw) {
+    /**
+     * The member this permissions refer to
+     * @type {GuildMember}
+     */
+    this.member = member;
+
+    /**
+     * A number representing the packed permissions
+     * @type {number}
+     */
+    this.raw = raw;
+  }
+
+  /**
+   * Get an object mapping permission name, e.g. `READ_MESSAGES` to a boolean - whether the user
+   * can perform this or not.
+   * @returns {Object<string, boolean>}
+   */
+  serialize() {
+    const serializedPermissions = {};
+    for (const permissionName in Constants.PermissionFlags) {
+      serializedPermissions[permissionName] = this.hasPermission(permissionName);
+    }
+    return serializedPermissions;
+  }
+
+  /**
+   * Checks whether the user has a certain permission, e.g. `READ_MESSAGES`.
+   * @param {PermissionResolvable} permission The permission to check for
+   * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permission
+   * @returns {boolean}
+   */
+  hasPermission(permission, explicit = false) {
+    permission = this.member.client.resolver.resolvePermission(permission);
+    if (!explicit && (this.raw & Constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
+    return (this.raw & permission) > 0;
+  }
+
+  /**
+   * Checks whether the user has all specified permissions.
+   * @param {PermissionResolvable[]} permissions The permissions to check for
+   * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permissions
+   * @returns {boolean}
+   */
+  hasPermissions(permissions, explicit = false) {
+    return permissions.every(p => this.hasPermission(p, explicit));
+  }
+
+  /**
+   * Checks whether the user has all specified permissions, and lists any missing permissions.
+   * @param {PermissionResolvable[]} permissions The permissions to check for
+   * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permissions
+   * @returns {PermissionResolvable[]}
+   */
+  missingPermissions(permissions, explicit = false) {
+    return permissions.filter(p => !this.hasPermission(p, explicit));
+  }
+}
+
+module.exports = EvaluatedPermissions;
+
+
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+const Channel = __webpack_require__(9);
+const TextBasedChannel = __webpack_require__(12);
+const Collection = __webpack_require__(3);
+
+/*
+{ type: 3,
+  recipients:
+   [ { username: 'Charlie',
+       id: '123',
+       discriminator: '6631',
+       avatar: '123' },
+     { username: 'Ben',
+       id: '123',
+       discriminator: '2055',
+       avatar: '123' },
+     { username: 'Adam',
+       id: '123',
+       discriminator: '2406',
+       avatar: '123' } ],
+  owner_id: '123',
+  name: null,
+  last_message_id: '123',
+  id: '123',
+  icon: null }
+*/
+
+/**
+ * Represents a Group DM on Discord
+ * @extends {Channel}
+ * @implements {TextBasedChannel}
+ */
+class GroupDMChannel extends Channel {
+  constructor(client, data) {
+    super(client, data);
+    this.type = 'group';
+    this.messages = new Collection();
+    this._typing = new Map();
+  }
+
+  setup(data) {
+    super.setup(data);
+
+    /**
+     * The name of this Group DM, can be null if one isn't set.
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * A hash of the Group DM icon.
+     * @type {string}
+     */
+    this.icon = data.icon;
+
+    /**
+     * The user ID of this Group DM's owner.
+     * @type {string}
+     */
+    this.ownerID = data.owner_id;
+
+    if (!this.recipients) {
+      /**
+       * A collection of the recipients of this DM, mapped by their ID.
+       * @type {Collection<string, User>}
+       */
+      this.recipients = new Collection();
+    }
+
+    if (data.recipients) {
+      for (const recipient of data.recipients) {
+        const user = this.client.dataManager.newUser(recipient);
+        this.recipients.set(user.id, user);
+      }
+    }
+
+    this.lastMessageID = data.last_message_id;
+  }
+
+  /**
+   * The owner of this Group DM.
+   * @type {User}
+   * @readonly
+   */
+  get owner() {
+    return this.client.users.get(this.ownerID);
+  }
+
+  /**
+   * Whether this channel equals another channel. It compares all properties, so for most operations
+   * it is advisable to just compare `channel.id === channel2.id` as it is much faster and is often
+   * what most users need.
+   * @param {GroupDMChannel} channel Channel to compare with
+   * @returns {boolean}
+   */
+  equals(channel) {
+    const equal = channel &&
+      this.id === channel.id &&
+      this.name === channel.name &&
+      this.icon === channel.icon &&
+      this.ownerID === channel.ownerID;
+
+    if (equal) {
+      return this.recipients.equals(channel.recipients);
+    }
+
+    return equal;
+  }
+
+  /**
+   * When concatenated with a string, this automatically concatenates the channel's name instead of the Channel object.
+   * @returns {string}
+   * @example
+   * // logs: Hello from My Group DM!
+   * console.log(`Hello from ${channel}!`);
+   * @example
+   * // logs: Hello from My Group DM!
+   * console.log(`Hello from ' + channel + '!');
+   */
+  toString() {
+    return this.name;
+  }
+
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  send() { return; }
+  sendMessage() { return; }
+  sendEmbed() { return; }
+  sendFile() { return; }
+  sendCode() { return; }
+  fetchMessage() { return; }
+  fetchMessages() { return; }
+  fetchPinnedMessages() { return; }
+  startTyping() { return; }
+  stopTyping() { return; }
+  get typing() { return; }
+  get typingCount() { return; }
+  createCollector() { return; }
+  awaitMessages() { return; }
+  bulkDelete() { return; }
+  _cacheMessage() { return; }
+}
+
+TextBasedChannel.applyToClass(GroupDMChannel, true);
+
+module.exports = GroupDMChannel;
+
+
+/***/ },
+/* 20 */
 /***/ function(module, exports) {
 
 /**
@@ -4635,11 +4900,113 @@ module.exports = ReactionEmoji;
 
 
 /***/ },
-/* 19 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
-const path = __webpack_require__(23);
-const escapeMarkdown = __webpack_require__(15);
+const GuildChannel = __webpack_require__(14);
+const TextBasedChannel = __webpack_require__(12);
+const Collection = __webpack_require__(3);
+
+/**
+ * Represents a guild text channel on Discord.
+ * @extends {GuildChannel}
+ * @implements {TextBasedChannel}
+ */
+class TextChannel extends GuildChannel {
+  constructor(guild, data) {
+    super(guild, data);
+    this.type = 'text';
+    this.messages = new Collection();
+    this._typing = new Map();
+  }
+
+  setup(data) {
+    super.setup(data);
+
+    /**
+     * The topic of the text channel, if there is one.
+     * @type {?string}
+     */
+    this.topic = data.topic;
+
+    this.lastMessageID = data.last_message_id;
+  }
+
+  /**
+   * A collection of members that can see this channel, mapped by their ID.
+   * @type {Collection<string, GuildMember>}
+   * @readonly
+   */
+  get members() {
+    const members = new Collection();
+    for (const member of this.guild.members.values()) {
+      if (this.permissionsFor(member).hasPermission('READ_MESSAGES')) {
+        members.set(member.id, member);
+      }
+    }
+    return members;
+  }
+
+  /**
+   * Fetch all webhooks for the channel.
+   * @returns {Promise<Collection<string, Webhook>>}
+   */
+  fetchWebhooks() {
+    return this.client.rest.methods.getChannelWebhooks(this);
+  }
+
+  /**
+   * Create a webhook for the channel.
+   * @param {string} name The name of the webhook.
+   * @param {BufferResolvable} avatar The avatar for the webhook.
+   * @returns {Promise<Webhook>} webhook The created webhook.
+   * @example
+   * channel.createWebhook('Snek', 'http://snek.s3.amazonaws.com/topSnek.png')
+   *  .then(webhook => console.log(`Created Webhook ${webhook}`))
+   *  .catch(console.error)
+   */
+  createWebhook(name, avatar) {
+    return new Promise(resolve => {
+      if (avatar.startsWith('data:')) {
+        resolve(this.client.rest.methods.createWebhook(this, name, avatar));
+      } else {
+        this.client.resolver.resolveBuffer(avatar).then(data =>
+           resolve(this.client.rest.methods.createWebhook(this, name, data))
+        );
+      }
+    });
+  }
+
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  send() { return; }
+  sendMessage() { return; }
+  sendEmbed() { return; }
+  sendFile() { return; }
+  sendCode() { return; }
+  fetchMessage() { return; }
+  fetchMessages() { return; }
+  fetchPinnedMessages() { return; }
+  startTyping() { return; }
+  stopTyping() { return; }
+  get typing() { return; }
+  get typingCount() { return; }
+  createCollector() { return; }
+  awaitMessages() { return; }
+  bulkDelete() { return; }
+  _cacheMessage() { return; }
+}
+
+TextBasedChannel.applyToClass(TextChannel, true);
+
+module.exports = TextChannel;
+
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+const path = __webpack_require__(26);
+const escapeMarkdown = __webpack_require__(16);
 
 /**
  * Represents a webhook
@@ -4841,7 +5208,7 @@ module.exports = Webhook;
 
 
 /***/ },
-/* 20 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4855,9 +5222,9 @@ module.exports = Webhook;
 
 
 
-var base64 = __webpack_require__(63)
-var ieee754 = __webpack_require__(65)
-var isArray = __webpack_require__(66)
+var base64 = __webpack_require__(64)
+var ieee754 = __webpack_require__(66)
+var isArray = __webpack_require__(67)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -6635,10 +7002,10 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(80)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(82)))
 
 /***/ },
-/* 21 */
+/* 24 */
 /***/ function(module, exports) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -6946,7 +7313,7 @@ function isUndefined(arg) {
 
 
 /***/ },
-/* 22 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6966,7 +7333,7 @@ module.exports = {
 
 
 /***/ },
-/* 23 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -7194,10 +7561,10 @@ var substr = 'ab'.substr(-1) === 'b'
     }
 ;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
 
 /***/ },
-/* 24 */
+/* 27 */
 /***/ function(module, exports) {
 
 // shim for using process in browser
@@ -7383,7 +7750,7 @@ process.umask = function() { return 0; };
 
 
 /***/ },
-/* 25 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 /**
@@ -7400,11 +7767,11 @@ if (typeof window !== 'undefined') { // Browser window
   root = this;
 }
 
-var Emitter = __webpack_require__(64);
-var RequestBase = __webpack_require__(77);
-var isObject = __webpack_require__(26);
-var isFunction = __webpack_require__(76);
-var ResponseBase = __webpack_require__(78);
+var Emitter = __webpack_require__(65);
+var RequestBase = __webpack_require__(79);
+var isObject = __webpack_require__(29);
+var isFunction = __webpack_require__(78);
+var ResponseBase = __webpack_require__(80);
 
 /**
  * Noop.
@@ -8293,7 +8660,7 @@ request.put = function(url, data, fn){
 
 
 /***/ },
-/* 26 */
+/* 29 */
 /***/ function(module, exports) {
 
 /**
@@ -8312,7 +8679,7 @@ module.exports = isObject;
 
 
 /***/ },
-/* 27 */
+/* 30 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -8349,6 +8716,7 @@ module.exports = {
 	"runkitExampleFilename": "./docs/examples/ping.js",
 	"dependencies": {
 		"@types/node": "^6.0.0",
+		"long": "^3.2.0",
 		"pako": "^1.0.0",
 		"superagent": "^3.3.0",
 		"tweetnacl": "^0.14.0",
@@ -8402,11 +8770,11 @@ module.exports = {
 };
 
 /***/ },
-/* 28 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 const User = __webpack_require__(6);
-const OAuth2Application = __webpack_require__(37);
+const OAuth2Application = __webpack_require__(38);
 
 /**
  * Represents the client's OAuth2 Application
@@ -8434,7 +8802,7 @@ module.exports = ClientOAuth2Application;
 
 
 /***/ },
-/* 29 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 const User = __webpack_require__(6);
@@ -8721,227 +9089,11 @@ module.exports = ClientUser;
 
 
 /***/ },
-/* 30 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
-const Channel = __webpack_require__(9);
-const TextBasedChannel = __webpack_require__(12);
-const Collection = __webpack_require__(3);
-
-/**
- * Represents a direct message channel between two users.
- * @extends {Channel}
- * @implements {TextBasedChannel}
- */
-class DMChannel extends Channel {
-  constructor(client, data) {
-    super(client, data);
-    this.type = 'dm';
-    this.messages = new Collection();
-    this._typing = new Map();
-  }
-
-  setup(data) {
-    super.setup(data);
-
-    /**
-     * The recipient on the other end of the DM
-     * @type {User}
-     */
-    this.recipient = this.client.dataManager.newUser(data.recipients[0]);
-
-    this.lastMessageID = data.last_message_id;
-  }
-
-  /**
-   * When concatenated with a string, this automatically concatenates the recipient's mention instead of the
-   * DM channel object.
-   * @returns {string}
-   */
-  toString() {
-    return this.recipient.toString();
-  }
-
-  // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  send() { return; }
-  sendMessage() { return; }
-  sendEmbed() { return; }
-  sendFile() { return; }
-  sendCode() { return; }
-  fetchMessage() { return; }
-  fetchMessages() { return; }
-  fetchPinnedMessages() { return; }
-  startTyping() { return; }
-  stopTyping() { return; }
-  get typing() { return; }
-  get typingCount() { return; }
-  createCollector() { return; }
-  awaitMessages() { return; }
-  bulkDelete() { return; }
-  _cacheMessage() { return; }
-}
-
-TextBasedChannel.applyToClass(DMChannel, true);
-
-module.exports = DMChannel;
-
-
-/***/ },
-/* 31 */
-/***/ function(module, exports, __webpack_require__) {
-
-const Channel = __webpack_require__(9);
-const TextBasedChannel = __webpack_require__(12);
-const Collection = __webpack_require__(3);
-
-/*
-{ type: 3,
-  recipients:
-   [ { username: 'Charlie',
-       id: '123',
-       discriminator: '6631',
-       avatar: '123' },
-     { username: 'Ben',
-       id: '123',
-       discriminator: '2055',
-       avatar: '123' },
-     { username: 'Adam',
-       id: '123',
-       discriminator: '2406',
-       avatar: '123' } ],
-  owner_id: '123',
-  name: null,
-  last_message_id: '123',
-  id: '123',
-  icon: null }
-*/
-
-/**
- * Represents a Group DM on Discord
- * @extends {Channel}
- * @implements {TextBasedChannel}
- */
-class GroupDMChannel extends Channel {
-  constructor(client, data) {
-    super(client, data);
-    this.type = 'group';
-    this.messages = new Collection();
-    this._typing = new Map();
-  }
-
-  setup(data) {
-    super.setup(data);
-
-    /**
-     * The name of this Group DM, can be null if one isn't set.
-     * @type {string}
-     */
-    this.name = data.name;
-
-    /**
-     * A hash of the Group DM icon.
-     * @type {string}
-     */
-    this.icon = data.icon;
-
-    /**
-     * The user ID of this Group DM's owner.
-     * @type {string}
-     */
-    this.ownerID = data.owner_id;
-
-    if (!this.recipients) {
-      /**
-       * A collection of the recipients of this DM, mapped by their ID.
-       * @type {Collection<string, User>}
-       */
-      this.recipients = new Collection();
-    }
-
-    if (data.recipients) {
-      for (const recipient of data.recipients) {
-        const user = this.client.dataManager.newUser(recipient);
-        this.recipients.set(user.id, user);
-      }
-    }
-
-    this.lastMessageID = data.last_message_id;
-  }
-
-  /**
-   * The owner of this Group DM.
-   * @type {User}
-   * @readonly
-   */
-  get owner() {
-    return this.client.users.get(this.ownerID);
-  }
-
-  /**
-   * Whether this channel equals another channel. It compares all properties, so for most operations
-   * it is advisable to just compare `channel.id === channel2.id` as it is much faster and is often
-   * what most users need.
-   * @param {GroupDMChannel} channel Channel to compare with
-   * @returns {boolean}
-   */
-  equals(channel) {
-    const equal = channel &&
-      this.id === channel.id &&
-      this.name === channel.name &&
-      this.icon === channel.icon &&
-      this.ownerID === channel.ownerID;
-
-    if (equal) {
-      return this.recipients.equals(channel.recipients);
-    }
-
-    return equal;
-  }
-
-  /**
-   * When concatenated with a string, this automatically concatenates the channel's name instead of the Channel object.
-   * @returns {string}
-   * @example
-   * // logs: Hello from My Group DM!
-   * console.log(`Hello from ${channel}!`);
-   * @example
-   * // logs: Hello from My Group DM!
-   * console.log(`Hello from ' + channel + '!');
-   */
-  toString() {
-    return this.name;
-  }
-
-  // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  send() { return; }
-  sendMessage() { return; }
-  sendEmbed() { return; }
-  sendFile() { return; }
-  sendCode() { return; }
-  fetchMessage() { return; }
-  fetchMessages() { return; }
-  fetchPinnedMessages() { return; }
-  startTyping() { return; }
-  stopTyping() { return; }
-  get typing() { return; }
-  get typingCount() { return; }
-  createCollector() { return; }
-  awaitMessages() { return; }
-  bulkDelete() { return; }
-  _cacheMessage() { return; }
-}
-
-TextBasedChannel.applyToClass(GroupDMChannel, true);
-
-module.exports = GroupDMChannel;
-
-
-/***/ },
-/* 32 */
-/***/ function(module, exports, __webpack_require__) {
-
-const PartialGuild = __webpack_require__(38);
-const PartialGuildChannel = __webpack_require__(39);
+const PartialGuild = __webpack_require__(39);
+const PartialGuildChannel = __webpack_require__(40);
 const Constants = __webpack_require__(0);
 
 /*
@@ -9102,7 +9254,7 @@ module.exports = Invite;
 
 
 /***/ },
-/* 33 */
+/* 34 */
 /***/ function(module, exports) {
 
 /**
@@ -9176,10 +9328,10 @@ module.exports = MessageAttachment;
 
 
 /***/ },
-/* 34 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
-const EventEmitter = __webpack_require__(21).EventEmitter;
+const EventEmitter = __webpack_require__(24).EventEmitter;
 const Collection = __webpack_require__(3);
 
 /**
@@ -9333,7 +9485,7 @@ module.exports = MessageCollector;
 
 
 /***/ },
-/* 35 */
+/* 36 */
 /***/ function(module, exports) {
 
 /**
@@ -9632,12 +9784,12 @@ module.exports = MessageEmbed;
 
 
 /***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
 const Emoji = __webpack_require__(10);
-const ReactionEmoji = __webpack_require__(18);
+const ReactionEmoji = __webpack_require__(20);
 
 /**
  * Represents a reaction to a message
@@ -9730,7 +9882,7 @@ module.exports = MessageReaction;
 
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports) {
 
 /**
@@ -9818,7 +9970,7 @@ module.exports = OAuth2Application;
 
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports) {
 
 /*
@@ -9875,7 +10027,7 @@ module.exports = PartialGuild;
 
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -9925,7 +10077,7 @@ module.exports = PartialGuildChannel;
 
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports) {
 
 /**
@@ -9974,112 +10126,10 @@ module.exports = PermissionOverwrites;
 
 
 /***/ },
-/* 41 */
-/***/ function(module, exports, __webpack_require__) {
-
-const GuildChannel = __webpack_require__(13);
-const TextBasedChannel = __webpack_require__(12);
-const Collection = __webpack_require__(3);
-
-/**
- * Represents a guild text channel on Discord.
- * @extends {GuildChannel}
- * @implements {TextBasedChannel}
- */
-class TextChannel extends GuildChannel {
-  constructor(guild, data) {
-    super(guild, data);
-    this.type = 'text';
-    this.messages = new Collection();
-    this._typing = new Map();
-  }
-
-  setup(data) {
-    super.setup(data);
-
-    /**
-     * The topic of the text channel, if there is one.
-     * @type {?string}
-     */
-    this.topic = data.topic;
-
-    this.lastMessageID = data.last_message_id;
-  }
-
-  /**
-   * A collection of members that can see this channel, mapped by their ID.
-   * @type {Collection<string, GuildMember>}
-   * @readonly
-   */
-  get members() {
-    const members = new Collection();
-    for (const member of this.guild.members.values()) {
-      if (this.permissionsFor(member).hasPermission('READ_MESSAGES')) {
-        members.set(member.id, member);
-      }
-    }
-    return members;
-  }
-
-  /**
-   * Fetch all webhooks for the channel.
-   * @returns {Promise<Collection<string, Webhook>>}
-   */
-  fetchWebhooks() {
-    return this.client.rest.methods.getChannelWebhooks(this);
-  }
-
-  /**
-   * Create a webhook for the channel.
-   * @param {string} name The name of the webhook.
-   * @param {BufferResolvable} avatar The avatar for the webhook.
-   * @returns {Promise<Webhook>} webhook The created webhook.
-   * @example
-   * channel.createWebhook('Snek', 'http://snek.s3.amazonaws.com/topSnek.png')
-   *  .then(webhook => console.log(`Created Webhook ${webhook}`))
-   *  .catch(console.error)
-   */
-  createWebhook(name, avatar) {
-    return new Promise(resolve => {
-      if (avatar.startsWith('data:')) {
-        resolve(this.client.rest.methods.createWebhook(this, name, avatar));
-      } else {
-        this.client.resolver.resolveBuffer(avatar).then(data =>
-           resolve(this.client.rest.methods.createWebhook(this, name, data))
-        );
-      }
-    });
-  }
-
-  // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  send() { return; }
-  sendMessage() { return; }
-  sendEmbed() { return; }
-  sendFile() { return; }
-  sendCode() { return; }
-  fetchMessage() { return; }
-  fetchMessages() { return; }
-  fetchPinnedMessages() { return; }
-  startTyping() { return; }
-  stopTyping() { return; }
-  get typing() { return; }
-  get typingCount() { return; }
-  createCollector() { return; }
-  awaitMessages() { return; }
-  bulkDelete() { return; }
-  _cacheMessage() { return; }
-}
-
-TextBasedChannel.applyToClass(TextChannel, true);
-
-module.exports = TextChannel;
-
-
-/***/ },
 /* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
-const GuildChannel = __webpack_require__(13);
+const GuildChannel = __webpack_require__(14);
 const Collection = __webpack_require__(3);
 
 /**
@@ -10605,19 +10655,19 @@ module.exports = ZStream;
 /* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(23);
+/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(26);
 const fs = __webpack_require__(49);
-const request = __webpack_require__(25);
+const request = __webpack_require__(28);
 
 const Constants = __webpack_require__(0);
-const convertArrayBuffer = __webpack_require__(53);
+const convertArrayBuffer = __webpack_require__(54);
 const User = __webpack_require__(6);
 const Message = __webpack_require__(11);
-const Guild = __webpack_require__(17);
+const Guild = __webpack_require__(13);
 const Channel = __webpack_require__(9);
-const GuildMember = __webpack_require__(14);
+const GuildMember = __webpack_require__(15);
 const Emoji = __webpack_require__(10);
-const ReactionEmoji = __webpack_require__(18);
+const ReactionEmoji = __webpack_require__(20);
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
@@ -10727,6 +10777,19 @@ class ClientDataResolver {
     if (channel instanceof Message) return channel.channel;
     if (channel instanceof Guild) return channel.channels.get(channel.id) || null;
     if (typeof channel === 'string') return this.client.channels.get(channel) || null;
+    return null;
+  }
+
+  /**
+   * Resolves a ChannelResolvable to a Channel object
+   * @param {ChannelResolvable} channel The channel resolvable to resolve
+   * @returns {?string}
+   */
+  resolveChannelID(channel) {
+    if (channel instanceof Channel) return channel.id;
+    if (typeof channel === 'string') return channel;
+    if (channel instanceof Message) return channel.channel.id;
+    if (channel instanceof Guild) return channel.defaultChannel.id;
     return null;
   }
 
@@ -10915,17 +10978,17 @@ class ClientDataResolver {
 
 module.exports = ClientDataResolver;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23).Buffer))
 
 /***/ },
 /* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
-const UserAgentManager = __webpack_require__(114);
-const RESTMethods = __webpack_require__(111);
-const SequentialRequestHandler = __webpack_require__(113);
-const BurstRequestHandler = __webpack_require__(112);
-const APIRequest = __webpack_require__(110);
+const UserAgentManager = __webpack_require__(116);
+const RESTMethods = __webpack_require__(113);
+const SequentialRequestHandler = __webpack_require__(115);
+const BurstRequestHandler = __webpack_require__(114);
+const APIRequest = __webpack_require__(112);
 const Constants = __webpack_require__(0);
 
 class RESTManager {
@@ -11035,6 +11098,227 @@ module.exports = RequestHandler;
 /* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
+const long = __webpack_require__(68);
+let TextChannel, DMChannel, GroupDMChannel, Guild;
+
+/**
+ * @typedef {Object} MessageSearchOptions
+ * @property {string} [content] Message content
+ * @property {string} [maxID] Maximum ID for the filter
+ * @property {string} [minID] Minimum ID for the filter
+ * @property {string} [has] One of `link`, `embed`, `file`, `video`, `image`, or `sound`
+ * @property {string} [channelID] Channel ID to limit search to (only for guild search endpoint)
+ * @property {string} [authorID] Author ID to limit search
+ * @property {string} [sortBy='recent'] `recent` or `relevant`
+ * @property {number} [contextSize=2] How many messages to get around the matched message (0 to 2)
+ * @property {number} [limit=25] Maximum number of results to get (1 to 25)
+ */
+
+/**
+ * Fluent interface for running a search against a guild or channel
+ */
+class MessageSearch {
+  /**
+   * @param {TextChannel|DMChannel|GroupDMChannel|Guild} target Target of the search
+   * @param {MessageSearchOptions} [options] Options for the search
+   */
+  constructor(target, options = {}) {
+    if (!TextChannel) {
+      TextChannel = __webpack_require__(21);
+      DMChannel = __webpack_require__(17);
+      GroupDMChannel = __webpack_require__(19);
+      Guild = __webpack_require__(13);
+    }
+
+    if (target instanceof TextChannel || target instanceof DMChannel || target instanceof GroupDMChannel) {
+      /**
+       * The type of search, either `channel` or `guild`
+       * @type {string}
+       */
+      this.type = 'channel';
+    } else if (target instanceof Guild) {
+      this.type = 'guild';
+    } else {
+      throw new TypeError('Target must be a TextChannel, DMChannel, GroupDMChannel, or Guild.');
+    }
+
+    /**
+     * Client to use
+     * @type {Client}
+     */
+    this.client = target.client;
+
+    /**
+     * ID of the search target
+     * @type {string}
+     */
+    this.id = target.id;
+
+    /**
+     * Options for the search
+     * @type {MessageSearchOptions}
+     */
+    this.options = options;
+  }
+
+  /**
+   * Sets the content for the search
+   * @param {string} content Content to search for
+   * @returns {MessageSearch}
+   */
+  content(content) {
+    this.options.content = content;
+    return this;
+  }
+
+  /**
+   * Sets the minimum ID for the search
+   * @param {string} id Snowflake minimum ID
+   * @returns {MessageSearch}
+   */
+  minID(id) {
+    this.options.minID = id;
+    return this;
+  }
+
+  /**
+   * Sets the maximum ID for the search
+   * @param {string} id Snowflake maximum ID
+   * @returns {MessageSearch}
+   */
+  maxID(id) {
+    this.options.maxID = id;
+    return this;
+  }
+
+  /**
+   * Sets the before date for the search
+   * @param {Date} date Date to find messages before
+   * @returns {MessageSearch}
+   */
+  before(date) {
+    if (typeof date !== Date) date = new Date(date);
+    return this.maxID(long.fromNumber(date.getTime() - 14200704e5).shiftLeft(22).toString());
+  }
+
+  /**
+   * Sets the after date for the search
+   * @param {Date} date Date to find messages after
+   * @returns {MessageSearch}
+   */
+  after(date) {
+    if (typeof date !== Date) date = new Date(date);
+    return this.minID(long.fromNumber(date.getTime() - 14200704e5).shiftLeft(22).toString());
+  }
+
+  /**
+   * Sets the during date for the search
+   * @param {Date} date Date to find messages during (range of date to date + 24 hours)
+   * @returns {MessageSearch}
+   */
+  during(date) {
+    if (typeof date !== Date) date = new Date(date);
+    const t = date.getTime() - 14200704e5;
+    this.minID(long.fromNumber(t).shiftLeft(22).toString());
+    this.maxID(long.fromNumber(t + 86400000).shift(222).toString());
+    return this;
+  }
+
+  /**
+   * Sets the filter for the search
+   * @param {string} type Filter for some type of embed or attachment that can be in the message
+   * must be one of ['link', 'embed', 'file', 'video', 'image', 'sound']
+   * @returns {MessageSearch}
+   */
+  has(type) {
+    const allowed = ['link', 'embed', 'file', 'video', 'image', 'sound'];
+    if (!allowed.includes(type)) throw new Error(`Type must be one of [${allowed.join(', ')}]`);
+    this.options.has = type;
+    return this;
+  }
+
+  /**
+   * Sets the author for the search
+   * @param {UserResolvable} user User to only find messages from
+   * @returns {MessageSearch}
+   */
+  from(user) {
+    this.options.authorID = this.client.resolver.resolverUserID(user);
+    return this;
+  }
+
+  /**
+   * Sets the channel for the search
+   * @param {ChannelResolvable} channel Channel to only find messages from
+   * <warn>This is only for use with a guild search</warn>
+   * @returns {MessageSearch}
+   */
+  in(channel) {
+    this.options.channelID = this.client.resolver.resolveChannelID(channel);
+    return this;
+  }
+
+  /**
+   * Sets the maximum results for the search
+   * @param {number} limit Maximum number of results (1 to 25)
+   * @returns {MessageSearch}
+   */
+  limit(limit) {
+    if (limit < 1 || limit > 25) throw new RangeError('Limit must be within 1 to 25.');
+    this.options.limit = limit;
+    return this;
+  }
+
+  /**
+   * Sets the context size for the search
+   * @param {number} size Number of messages to get around the matched message (0 to 2)
+   * @returns {MessageSearch}
+   */
+  contextSize(size) {
+    if (size < 0 || size > 2) throw new RangeError('Context size must be within 0 to 2');
+    this.options.contextSize = size;
+    return this;
+  }
+
+  /**
+   * Sets the sorting order for the search
+   * @param {string} [type='recent'] Sorting type (`recent` or `relevant`)
+   * @returns {MessageSearch}
+   */
+  sort(type) {
+    if (type !== 'recent' || type !== 'relevant') throw new Error('Sort type must be `recent` or `relevant`.');
+    this.options.sortBy = type;
+    return this;
+  }
+
+  /**
+   * Executes the search
+   * @returns {Promise<Array<Message[]>>}
+   * An array containing arrays of messages. Each inner array is a search context cluster.
+   * The message which has triggered the result will have the `hit` property set to `true`.
+   */
+  execute() {
+    return this.client.rest.methods.search(this.type, this.id, {
+      content: this.options.content,
+      max_id: this.options.maxID,
+      min_id: this.options.minID,
+      has: this.options.has,
+      channel_id: this.options.channelID,
+      author_id: this.options.authorID,
+      context_size: this.options.contextSize,
+      sort_by: this.options.sortBy,
+      limit: this.options.limit,
+    });
+  }
+}
+
+module.exports = MessageSearch;
+
+
+/***/ },
+/* 54 */
+/***/ function(module, exports, __webpack_require__) {
+
 /* WEBPACK VAR INJECTION */(function(Buffer) {function arrayBufferToBuffer(ab) {
   const buffer = new Buffer(ab.byteLength);
   const view = new Uint8Array(ab);
@@ -11054,10 +11338,10 @@ module.exports = function convertArrayBuffer(x) {
   return arrayBufferToBuffer(x);
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23).Buffer))
 
 /***/ },
-/* 54 */
+/* 55 */
 /***/ function(module, exports) {
 
 module.exports = function merge(def, given) {
@@ -11075,22 +11359,22 @@ module.exports = function merge(def, given) {
 
 
 /***/ },
-/* 55 */
+/* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {const EventEmitter = __webpack_require__(21).EventEmitter;
-const mergeDefault = __webpack_require__(54);
+/* WEBPACK VAR INJECTION */(function(process) {const EventEmitter = __webpack_require__(24).EventEmitter;
+const mergeDefault = __webpack_require__(55);
 const Constants = __webpack_require__(0);
 const RESTManager = __webpack_require__(51);
-const ClientDataManager = __webpack_require__(81);
-const ClientManager = __webpack_require__(82);
+const ClientDataManager = __webpack_require__(83);
+const ClientManager = __webpack_require__(84);
 const ClientDataResolver = __webpack_require__(50);
-const ClientVoiceManager = __webpack_require__(156);
-const WebSocketManager = __webpack_require__(115);
-const ActionsManager = __webpack_require__(83);
+const ClientVoiceManager = __webpack_require__(158);
+const WebSocketManager = __webpack_require__(117);
+const ActionsManager = __webpack_require__(85);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(7).Presence;
-const ShardClientUtil = __webpack_require__(155);
+const ShardClientUtil = __webpack_require__(157);
 
 /**
  * The starting point for making a Discord Bot.
@@ -11557,16 +11841,16 @@ module.exports = Client;
  * @param {string} info The debug information
  */
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
 
 /***/ },
-/* 56 */
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
-const Webhook = __webpack_require__(19);
+const Webhook = __webpack_require__(22);
 const RESTManager = __webpack_require__(51);
 const ClientDataResolver = __webpack_require__(50);
-const mergeDefault = __webpack_require__(54);
+const mergeDefault = __webpack_require__(55);
 const Constants = __webpack_require__(0);
 
 /**
@@ -11612,52 +11896,52 @@ module.exports = WebhookClient;
 
 
 /***/ },
-/* 57 */
+/* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = {
-  Client: __webpack_require__(55),
-  WebhookClient: __webpack_require__(56),
-  Shard: __webpack_require__(60),
-  ShardClientUtil: __webpack_require__(61),
-  ShardingManager: __webpack_require__(62),
+  Client: __webpack_require__(56),
+  WebhookClient: __webpack_require__(57),
+  Shard: __webpack_require__(61),
+  ShardClientUtil: __webpack_require__(62),
+  ShardingManager: __webpack_require__(63),
 
   Collection: __webpack_require__(3),
   splitMessage: __webpack_require__(43),
-  escapeMarkdown: __webpack_require__(15),
-  fetchRecommendedShards: __webpack_require__(59),
+  escapeMarkdown: __webpack_require__(16),
+  fetchRecommendedShards: __webpack_require__(60),
 
   Channel: __webpack_require__(9),
-  ClientOAuth2Application: __webpack_require__(28),
-  ClientUser: __webpack_require__(29),
-  DMChannel: __webpack_require__(30),
+  ClientOAuth2Application: __webpack_require__(31),
+  ClientUser: __webpack_require__(32),
+  DMChannel: __webpack_require__(17),
   Emoji: __webpack_require__(10),
-  EvaluatedPermissions: __webpack_require__(16),
+  EvaluatedPermissions: __webpack_require__(18),
   Game: __webpack_require__(7).Game,
-  GroupDMChannel: __webpack_require__(31),
-  Guild: __webpack_require__(17),
-  GuildChannel: __webpack_require__(13),
-  GuildMember: __webpack_require__(14),
-  Invite: __webpack_require__(32),
+  GroupDMChannel: __webpack_require__(19),
+  Guild: __webpack_require__(13),
+  GuildChannel: __webpack_require__(14),
+  GuildMember: __webpack_require__(15),
+  Invite: __webpack_require__(33),
   Message: __webpack_require__(11),
-  MessageAttachment: __webpack_require__(33),
-  MessageCollector: __webpack_require__(34),
-  MessageEmbed: __webpack_require__(35),
-  MessageReaction: __webpack_require__(36),
-  OAuth2Application: __webpack_require__(37),
-  PartialGuild: __webpack_require__(38),
-  PartialGuildChannel: __webpack_require__(39),
-  PermissionOverwrites: __webpack_require__(40),
+  MessageAttachment: __webpack_require__(34),
+  MessageCollector: __webpack_require__(35),
+  MessageEmbed: __webpack_require__(36),
+  MessageReaction: __webpack_require__(37),
+  OAuth2Application: __webpack_require__(38),
+  PartialGuild: __webpack_require__(39),
+  PartialGuildChannel: __webpack_require__(40),
+  PermissionOverwrites: __webpack_require__(41),
   Presence: __webpack_require__(7).Presence,
-  ReactionEmoji: __webpack_require__(18),
-  RichEmbed: __webpack_require__(58),
+  ReactionEmoji: __webpack_require__(20),
+  RichEmbed: __webpack_require__(59),
   Role: __webpack_require__(8),
-  TextChannel: __webpack_require__(41),
+  TextChannel: __webpack_require__(21),
   User: __webpack_require__(6),
   VoiceChannel: __webpack_require__(42),
-  Webhook: __webpack_require__(19),
+  Webhook: __webpack_require__(22),
 
-  version: __webpack_require__(27).version,
+  version: __webpack_require__(30).version,
   Constants: __webpack_require__(0),
 };
 
@@ -11665,7 +11949,7 @@ if (typeof window !== 'undefined') window.Discord = module.exports; // eslint-di
 
 
 /***/ },
-/* 58 */
+/* 59 */
 /***/ function(module, exports) {
 
 /**
@@ -11875,10 +12159,10 @@ function resolveString(data) {
 
 
 /***/ },
-/* 59 */
+/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
-const superagent = __webpack_require__(25);
+const superagent = __webpack_require__(28);
 const botGateway = __webpack_require__(0).Endpoints.botGateway;
 
 /**
@@ -11900,12 +12184,6 @@ module.exports = function fetchRecommendedShards(token) {
 
 
 /***/ },
-/* 60 */
-/***/ function(module, exports) {
-
-/* (ignored) */
-
-/***/ },
 /* 61 */
 /***/ function(module, exports) {
 
@@ -11919,6 +12197,12 @@ module.exports = function fetchRecommendedShards(token) {
 
 /***/ },
 /* 63 */
+/***/ function(module, exports) {
+
+/* (ignored) */
+
+/***/ },
+/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12039,7 +12323,7 @@ function fromByteArray (uint8) {
 
 
 /***/ },
-/* 64 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
 
@@ -12208,7 +12492,7 @@ Emitter.prototype.hasListeners = function(event){
 
 
 /***/ },
-/* 65 */
+/* 66 */
 /***/ function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -12298,7 +12582,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ },
-/* 66 */
+/* 67 */
 /***/ function(module, exports) {
 
 var toString = {}.toString;
@@ -12309,7 +12593,1222 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ },
-/* 67 */
+/* 68 */
+/***/ function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
+ Copyright 2013 Daniel Wirtz <dcode@dcode.io>
+ Copyright 2009 The Closure Library Authors. All Rights Reserved.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS-IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
+
+/**
+ * @license long.js (c) 2013 Daniel Wirtz <dcode@dcode.io>
+ * Released under the Apache License, Version 2.0
+ * see: https://github.com/dcodeIO/long.js for details
+ */
+(function(global, factory) {
+
+    /* AMD */ if (true)
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    /* CommonJS */ else if (typeof require === 'function' && typeof module === "object" && module && module["exports"])
+        module["exports"] = factory();
+    /* Global */ else
+        (global["dcodeIO"] = global["dcodeIO"] || {})["Long"] = factory();
+
+})(this, function() {
+    "use strict";
+
+    /**
+     * Constructs a 64 bit two's-complement integer, given its low and high 32 bit values as *signed* integers.
+     *  See the from* functions below for more convenient ways of constructing Longs.
+     * @exports Long
+     * @class A Long class for representing a 64 bit two's-complement integer value.
+     * @param {number} low The low (signed) 32 bits of the long
+     * @param {number} high The high (signed) 32 bits of the long
+     * @param {boolean=} unsigned Whether unsigned or not, defaults to `false` for signed
+     * @constructor
+     */
+    function Long(low, high, unsigned) {
+
+        /**
+         * The low 32 bits as a signed value.
+         * @type {number}
+         */
+        this.low = low | 0;
+
+        /**
+         * The high 32 bits as a signed value.
+         * @type {number}
+         */
+        this.high = high | 0;
+
+        /**
+         * Whether unsigned or not.
+         * @type {boolean}
+         */
+        this.unsigned = !!unsigned;
+    }
+
+    // The internal representation of a long is the two given signed, 32-bit values.
+    // We use 32-bit pieces because these are the size of integers on which
+    // Javascript performs bit-operations.  For operations like addition and
+    // multiplication, we split each number into 16 bit pieces, which can easily be
+    // multiplied within Javascript's floating-point representation without overflow
+    // or change in sign.
+    //
+    // In the algorithms below, we frequently reduce the negative case to the
+    // positive case by negating the input(s) and then post-processing the result.
+    // Note that we must ALWAYS check specially whether those values are MIN_VALUE
+    // (-2^63) because -MIN_VALUE == MIN_VALUE (since 2^63 cannot be represented as
+    // a positive number, it overflows back into a negative).  Not handling this
+    // case would often result in infinite recursion.
+    //
+    // Common constant values ZERO, ONE, NEG_ONE, etc. are defined below the from*
+    // methods on which they depend.
+
+    /**
+     * An indicator used to reliably determine if an object is a Long or not.
+     * @type {boolean}
+     * @const
+     * @private
+     */
+    Long.prototype.__isLong__;
+
+    Object.defineProperty(Long.prototype, "__isLong__", {
+        value: true,
+        enumerable: false,
+        configurable: false
+    });
+
+    /**
+     * @function
+     * @param {*} obj Object
+     * @returns {boolean}
+     * @inner
+     */
+    function isLong(obj) {
+        return (obj && obj["__isLong__"]) === true;
+    }
+
+    /**
+     * Tests if the specified object is a Long.
+     * @function
+     * @param {*} obj Object
+     * @returns {boolean}
+     */
+    Long.isLong = isLong;
+
+    /**
+     * A cache of the Long representations of small integer values.
+     * @type {!Object}
+     * @inner
+     */
+    var INT_CACHE = {};
+
+    /**
+     * A cache of the Long representations of small unsigned integer values.
+     * @type {!Object}
+     * @inner
+     */
+    var UINT_CACHE = {};
+
+    /**
+     * @param {number} value
+     * @param {boolean=} unsigned
+     * @returns {!Long}
+     * @inner
+     */
+    function fromInt(value, unsigned) {
+        var obj, cachedObj, cache;
+        if (unsigned) {
+            value >>>= 0;
+            if (cache = (0 <= value && value < 256)) {
+                cachedObj = UINT_CACHE[value];
+                if (cachedObj)
+                    return cachedObj;
+            }
+            obj = fromBits(value, (value | 0) < 0 ? -1 : 0, true);
+            if (cache)
+                UINT_CACHE[value] = obj;
+            return obj;
+        } else {
+            value |= 0;
+            if (cache = (-128 <= value && value < 128)) {
+                cachedObj = INT_CACHE[value];
+                if (cachedObj)
+                    return cachedObj;
+            }
+            obj = fromBits(value, value < 0 ? -1 : 0, false);
+            if (cache)
+                INT_CACHE[value] = obj;
+            return obj;
+        }
+    }
+
+    /**
+     * Returns a Long representing the given 32 bit integer value.
+     * @function
+     * @param {number} value The 32 bit integer in question
+     * @param {boolean=} unsigned Whether unsigned or not, defaults to `false` for signed
+     * @returns {!Long} The corresponding Long value
+     */
+    Long.fromInt = fromInt;
+
+    /**
+     * @param {number} value
+     * @param {boolean=} unsigned
+     * @returns {!Long}
+     * @inner
+     */
+    function fromNumber(value, unsigned) {
+        if (isNaN(value) || !isFinite(value))
+            return unsigned ? UZERO : ZERO;
+        if (unsigned) {
+            if (value < 0)
+                return UZERO;
+            if (value >= TWO_PWR_64_DBL)
+                return MAX_UNSIGNED_VALUE;
+        } else {
+            if (value <= -TWO_PWR_63_DBL)
+                return MIN_VALUE;
+            if (value + 1 >= TWO_PWR_63_DBL)
+                return MAX_VALUE;
+        }
+        if (value < 0)
+            return fromNumber(-value, unsigned).neg();
+        return fromBits((value % TWO_PWR_32_DBL) | 0, (value / TWO_PWR_32_DBL) | 0, unsigned);
+    }
+
+    /**
+     * Returns a Long representing the given value, provided that it is a finite number. Otherwise, zero is returned.
+     * @function
+     * @param {number} value The number in question
+     * @param {boolean=} unsigned Whether unsigned or not, defaults to `false` for signed
+     * @returns {!Long} The corresponding Long value
+     */
+    Long.fromNumber = fromNumber;
+
+    /**
+     * @param {number} lowBits
+     * @param {number} highBits
+     * @param {boolean=} unsigned
+     * @returns {!Long}
+     * @inner
+     */
+    function fromBits(lowBits, highBits, unsigned) {
+        return new Long(lowBits, highBits, unsigned);
+    }
+
+    /**
+     * Returns a Long representing the 64 bit integer that comes by concatenating the given low and high bits. Each is
+     *  assumed to use 32 bits.
+     * @function
+     * @param {number} lowBits The low 32 bits
+     * @param {number} highBits The high 32 bits
+     * @param {boolean=} unsigned Whether unsigned or not, defaults to `false` for signed
+     * @returns {!Long} The corresponding Long value
+     */
+    Long.fromBits = fromBits;
+
+    /**
+     * @function
+     * @param {number} base
+     * @param {number} exponent
+     * @returns {number}
+     * @inner
+     */
+    var pow_dbl = Math.pow; // Used 4 times (4*8 to 15+4)
+
+    /**
+     * @param {string} str
+     * @param {(boolean|number)=} unsigned
+     * @param {number=} radix
+     * @returns {!Long}
+     * @inner
+     */
+    function fromString(str, unsigned, radix) {
+        if (str.length === 0)
+            throw Error('empty string');
+        if (str === "NaN" || str === "Infinity" || str === "+Infinity" || str === "-Infinity")
+            return ZERO;
+        if (typeof unsigned === 'number') {
+            // For goog.math.long compatibility
+            radix = unsigned,
+            unsigned = false;
+        } else {
+            unsigned = !! unsigned;
+        }
+        radix = radix || 10;
+        if (radix < 2 || 36 < radix)
+            throw RangeError('radix');
+
+        var p;
+        if ((p = str.indexOf('-')) > 0)
+            throw Error('interior hyphen');
+        else if (p === 0) {
+            return fromString(str.substring(1), unsigned, radix).neg();
+        }
+
+        // Do several (8) digits each time through the loop, so as to
+        // minimize the calls to the very expensive emulated div.
+        var radixToPower = fromNumber(pow_dbl(radix, 8));
+
+        var result = ZERO;
+        for (var i = 0; i < str.length; i += 8) {
+            var size = Math.min(8, str.length - i),
+                value = parseInt(str.substring(i, i + size), radix);
+            if (size < 8) {
+                var power = fromNumber(pow_dbl(radix, size));
+                result = result.mul(power).add(fromNumber(value));
+            } else {
+                result = result.mul(radixToPower);
+                result = result.add(fromNumber(value));
+            }
+        }
+        result.unsigned = unsigned;
+        return result;
+    }
+
+    /**
+     * Returns a Long representation of the given string, written using the specified radix.
+     * @function
+     * @param {string} str The textual representation of the Long
+     * @param {(boolean|number)=} unsigned Whether unsigned or not, defaults to `false` for signed
+     * @param {number=} radix The radix in which the text is written (2-36), defaults to 10
+     * @returns {!Long} The corresponding Long value
+     */
+    Long.fromString = fromString;
+
+    /**
+     * @function
+     * @param {!Long|number|string|!{low: number, high: number, unsigned: boolean}} val
+     * @returns {!Long}
+     * @inner
+     */
+    function fromValue(val) {
+        if (val /* is compatible */ instanceof Long)
+            return val;
+        if (typeof val === 'number')
+            return fromNumber(val);
+        if (typeof val === 'string')
+            return fromString(val);
+        // Throws for non-objects, converts non-instanceof Long:
+        return fromBits(val.low, val.high, val.unsigned);
+    }
+
+    /**
+     * Converts the specified value to a Long.
+     * @function
+     * @param {!Long|number|string|!{low: number, high: number, unsigned: boolean}} val Value
+     * @returns {!Long}
+     */
+    Long.fromValue = fromValue;
+
+    // NOTE: the compiler should inline these constant values below and then remove these variables, so there should be
+    // no runtime penalty for these.
+
+    /**
+     * @type {number}
+     * @const
+     * @inner
+     */
+    var TWO_PWR_16_DBL = 1 << 16;
+
+    /**
+     * @type {number}
+     * @const
+     * @inner
+     */
+    var TWO_PWR_24_DBL = 1 << 24;
+
+    /**
+     * @type {number}
+     * @const
+     * @inner
+     */
+    var TWO_PWR_32_DBL = TWO_PWR_16_DBL * TWO_PWR_16_DBL;
+
+    /**
+     * @type {number}
+     * @const
+     * @inner
+     */
+    var TWO_PWR_64_DBL = TWO_PWR_32_DBL * TWO_PWR_32_DBL;
+
+    /**
+     * @type {number}
+     * @const
+     * @inner
+     */
+    var TWO_PWR_63_DBL = TWO_PWR_64_DBL / 2;
+
+    /**
+     * @type {!Long}
+     * @const
+     * @inner
+     */
+    var TWO_PWR_24 = fromInt(TWO_PWR_24_DBL);
+
+    /**
+     * @type {!Long}
+     * @inner
+     */
+    var ZERO = fromInt(0);
+
+    /**
+     * Signed zero.
+     * @type {!Long}
+     */
+    Long.ZERO = ZERO;
+
+    /**
+     * @type {!Long}
+     * @inner
+     */
+    var UZERO = fromInt(0, true);
+
+    /**
+     * Unsigned zero.
+     * @type {!Long}
+     */
+    Long.UZERO = UZERO;
+
+    /**
+     * @type {!Long}
+     * @inner
+     */
+    var ONE = fromInt(1);
+
+    /**
+     * Signed one.
+     * @type {!Long}
+     */
+    Long.ONE = ONE;
+
+    /**
+     * @type {!Long}
+     * @inner
+     */
+    var UONE = fromInt(1, true);
+
+    /**
+     * Unsigned one.
+     * @type {!Long}
+     */
+    Long.UONE = UONE;
+
+    /**
+     * @type {!Long}
+     * @inner
+     */
+    var NEG_ONE = fromInt(-1);
+
+    /**
+     * Signed negative one.
+     * @type {!Long}
+     */
+    Long.NEG_ONE = NEG_ONE;
+
+    /**
+     * @type {!Long}
+     * @inner
+     */
+    var MAX_VALUE = fromBits(0xFFFFFFFF|0, 0x7FFFFFFF|0, false);
+
+    /**
+     * Maximum signed value.
+     * @type {!Long}
+     */
+    Long.MAX_VALUE = MAX_VALUE;
+
+    /**
+     * @type {!Long}
+     * @inner
+     */
+    var MAX_UNSIGNED_VALUE = fromBits(0xFFFFFFFF|0, 0xFFFFFFFF|0, true);
+
+    /**
+     * Maximum unsigned value.
+     * @type {!Long}
+     */
+    Long.MAX_UNSIGNED_VALUE = MAX_UNSIGNED_VALUE;
+
+    /**
+     * @type {!Long}
+     * @inner
+     */
+    var MIN_VALUE = fromBits(0, 0x80000000|0, false);
+
+    /**
+     * Minimum signed value.
+     * @type {!Long}
+     */
+    Long.MIN_VALUE = MIN_VALUE;
+
+    /**
+     * @alias Long.prototype
+     * @inner
+     */
+    var LongPrototype = Long.prototype;
+
+    /**
+     * Converts the Long to a 32 bit integer, assuming it is a 32 bit integer.
+     * @returns {number}
+     */
+    LongPrototype.toInt = function toInt() {
+        return this.unsigned ? this.low >>> 0 : this.low;
+    };
+
+    /**
+     * Converts the Long to a the nearest floating-point representation of this value (double, 53 bit mantissa).
+     * @returns {number}
+     */
+    LongPrototype.toNumber = function toNumber() {
+        if (this.unsigned)
+            return ((this.high >>> 0) * TWO_PWR_32_DBL) + (this.low >>> 0);
+        return this.high * TWO_PWR_32_DBL + (this.low >>> 0);
+    };
+
+    /**
+     * Converts the Long to a string written in the specified radix.
+     * @param {number=} radix Radix (2-36), defaults to 10
+     * @returns {string}
+     * @override
+     * @throws {RangeError} If `radix` is out of range
+     */
+    LongPrototype.toString = function toString(radix) {
+        radix = radix || 10;
+        if (radix < 2 || 36 < radix)
+            throw RangeError('radix');
+        if (this.isZero())
+            return '0';
+        if (this.isNegative()) { // Unsigned Longs are never negative
+            if (this.eq(MIN_VALUE)) {
+                // We need to change the Long value before it can be negated, so we remove
+                // the bottom-most digit in this base and then recurse to do the rest.
+                var radixLong = fromNumber(radix),
+                    div = this.div(radixLong),
+                    rem1 = div.mul(radixLong).sub(this);
+                return div.toString(radix) + rem1.toInt().toString(radix);
+            } else
+                return '-' + this.neg().toString(radix);
+        }
+
+        // Do several (6) digits each time through the loop, so as to
+        // minimize the calls to the very expensive emulated div.
+        var radixToPower = fromNumber(pow_dbl(radix, 6), this.unsigned),
+            rem = this;
+        var result = '';
+        while (true) {
+            var remDiv = rem.div(radixToPower),
+                intval = rem.sub(remDiv.mul(radixToPower)).toInt() >>> 0,
+                digits = intval.toString(radix);
+            rem = remDiv;
+            if (rem.isZero())
+                return digits + result;
+            else {
+                while (digits.length < 6)
+                    digits = '0' + digits;
+                result = '' + digits + result;
+            }
+        }
+    };
+
+    /**
+     * Gets the high 32 bits as a signed integer.
+     * @returns {number} Signed high bits
+     */
+    LongPrototype.getHighBits = function getHighBits() {
+        return this.high;
+    };
+
+    /**
+     * Gets the high 32 bits as an unsigned integer.
+     * @returns {number} Unsigned high bits
+     */
+    LongPrototype.getHighBitsUnsigned = function getHighBitsUnsigned() {
+        return this.high >>> 0;
+    };
+
+    /**
+     * Gets the low 32 bits as a signed integer.
+     * @returns {number} Signed low bits
+     */
+    LongPrototype.getLowBits = function getLowBits() {
+        return this.low;
+    };
+
+    /**
+     * Gets the low 32 bits as an unsigned integer.
+     * @returns {number} Unsigned low bits
+     */
+    LongPrototype.getLowBitsUnsigned = function getLowBitsUnsigned() {
+        return this.low >>> 0;
+    };
+
+    /**
+     * Gets the number of bits needed to represent the absolute value of this Long.
+     * @returns {number}
+     */
+    LongPrototype.getNumBitsAbs = function getNumBitsAbs() {
+        if (this.isNegative()) // Unsigned Longs are never negative
+            return this.eq(MIN_VALUE) ? 64 : this.neg().getNumBitsAbs();
+        var val = this.high != 0 ? this.high : this.low;
+        for (var bit = 31; bit > 0; bit--)
+            if ((val & (1 << bit)) != 0)
+                break;
+        return this.high != 0 ? bit + 33 : bit + 1;
+    };
+
+    /**
+     * Tests if this Long's value equals zero.
+     * @returns {boolean}
+     */
+    LongPrototype.isZero = function isZero() {
+        return this.high === 0 && this.low === 0;
+    };
+
+    /**
+     * Tests if this Long's value is negative.
+     * @returns {boolean}
+     */
+    LongPrototype.isNegative = function isNegative() {
+        return !this.unsigned && this.high < 0;
+    };
+
+    /**
+     * Tests if this Long's value is positive.
+     * @returns {boolean}
+     */
+    LongPrototype.isPositive = function isPositive() {
+        return this.unsigned || this.high >= 0;
+    };
+
+    /**
+     * Tests if this Long's value is odd.
+     * @returns {boolean}
+     */
+    LongPrototype.isOdd = function isOdd() {
+        return (this.low & 1) === 1;
+    };
+
+    /**
+     * Tests if this Long's value is even.
+     * @returns {boolean}
+     */
+    LongPrototype.isEven = function isEven() {
+        return (this.low & 1) === 0;
+    };
+
+    /**
+     * Tests if this Long's value equals the specified's.
+     * @param {!Long|number|string} other Other value
+     * @returns {boolean}
+     */
+    LongPrototype.equals = function equals(other) {
+        if (!isLong(other))
+            other = fromValue(other);
+        if (this.unsigned !== other.unsigned && (this.high >>> 31) === 1 && (other.high >>> 31) === 1)
+            return false;
+        return this.high === other.high && this.low === other.low;
+    };
+
+    /**
+     * Tests if this Long's value equals the specified's. This is an alias of {@link Long#equals}.
+     * @function
+     * @param {!Long|number|string} other Other value
+     * @returns {boolean}
+     */
+    LongPrototype.eq = LongPrototype.equals;
+
+    /**
+     * Tests if this Long's value differs from the specified's.
+     * @param {!Long|number|string} other Other value
+     * @returns {boolean}
+     */
+    LongPrototype.notEquals = function notEquals(other) {
+        return !this.eq(/* validates */ other);
+    };
+
+    /**
+     * Tests if this Long's value differs from the specified's. This is an alias of {@link Long#notEquals}.
+     * @function
+     * @param {!Long|number|string} other Other value
+     * @returns {boolean}
+     */
+    LongPrototype.neq = LongPrototype.notEquals;
+
+    /**
+     * Tests if this Long's value is less than the specified's.
+     * @param {!Long|number|string} other Other value
+     * @returns {boolean}
+     */
+    LongPrototype.lessThan = function lessThan(other) {
+        return this.comp(/* validates */ other) < 0;
+    };
+
+    /**
+     * Tests if this Long's value is less than the specified's. This is an alias of {@link Long#lessThan}.
+     * @function
+     * @param {!Long|number|string} other Other value
+     * @returns {boolean}
+     */
+    LongPrototype.lt = LongPrototype.lessThan;
+
+    /**
+     * Tests if this Long's value is less than or equal the specified's.
+     * @param {!Long|number|string} other Other value
+     * @returns {boolean}
+     */
+    LongPrototype.lessThanOrEqual = function lessThanOrEqual(other) {
+        return this.comp(/* validates */ other) <= 0;
+    };
+
+    /**
+     * Tests if this Long's value is less than or equal the specified's. This is an alias of {@link Long#lessThanOrEqual}.
+     * @function
+     * @param {!Long|number|string} other Other value
+     * @returns {boolean}
+     */
+    LongPrototype.lte = LongPrototype.lessThanOrEqual;
+
+    /**
+     * Tests if this Long's value is greater than the specified's.
+     * @param {!Long|number|string} other Other value
+     * @returns {boolean}
+     */
+    LongPrototype.greaterThan = function greaterThan(other) {
+        return this.comp(/* validates */ other) > 0;
+    };
+
+    /**
+     * Tests if this Long's value is greater than the specified's. This is an alias of {@link Long#greaterThan}.
+     * @function
+     * @param {!Long|number|string} other Other value
+     * @returns {boolean}
+     */
+    LongPrototype.gt = LongPrototype.greaterThan;
+
+    /**
+     * Tests if this Long's value is greater than or equal the specified's.
+     * @param {!Long|number|string} other Other value
+     * @returns {boolean}
+     */
+    LongPrototype.greaterThanOrEqual = function greaterThanOrEqual(other) {
+        return this.comp(/* validates */ other) >= 0;
+    };
+
+    /**
+     * Tests if this Long's value is greater than or equal the specified's. This is an alias of {@link Long#greaterThanOrEqual}.
+     * @function
+     * @param {!Long|number|string} other Other value
+     * @returns {boolean}
+     */
+    LongPrototype.gte = LongPrototype.greaterThanOrEqual;
+
+    /**
+     * Compares this Long's value with the specified's.
+     * @param {!Long|number|string} other Other value
+     * @returns {number} 0 if they are the same, 1 if the this is greater and -1
+     *  if the given one is greater
+     */
+    LongPrototype.compare = function compare(other) {
+        if (!isLong(other))
+            other = fromValue(other);
+        if (this.eq(other))
+            return 0;
+        var thisNeg = this.isNegative(),
+            otherNeg = other.isNegative();
+        if (thisNeg && !otherNeg)
+            return -1;
+        if (!thisNeg && otherNeg)
+            return 1;
+        // At this point the sign bits are the same
+        if (!this.unsigned)
+            return this.sub(other).isNegative() ? -1 : 1;
+        // Both are positive if at least one is unsigned
+        return (other.high >>> 0) > (this.high >>> 0) || (other.high === this.high && (other.low >>> 0) > (this.low >>> 0)) ? -1 : 1;
+    };
+
+    /**
+     * Compares this Long's value with the specified's. This is an alias of {@link Long#compare}.
+     * @function
+     * @param {!Long|number|string} other Other value
+     * @returns {number} 0 if they are the same, 1 if the this is greater and -1
+     *  if the given one is greater
+     */
+    LongPrototype.comp = LongPrototype.compare;
+
+    /**
+     * Negates this Long's value.
+     * @returns {!Long} Negated Long
+     */
+    LongPrototype.negate = function negate() {
+        if (!this.unsigned && this.eq(MIN_VALUE))
+            return MIN_VALUE;
+        return this.not().add(ONE);
+    };
+
+    /**
+     * Negates this Long's value. This is an alias of {@link Long#negate}.
+     * @function
+     * @returns {!Long} Negated Long
+     */
+    LongPrototype.neg = LongPrototype.negate;
+
+    /**
+     * Returns the sum of this and the specified Long.
+     * @param {!Long|number|string} addend Addend
+     * @returns {!Long} Sum
+     */
+    LongPrototype.add = function add(addend) {
+        if (!isLong(addend))
+            addend = fromValue(addend);
+
+        // Divide each number into 4 chunks of 16 bits, and then sum the chunks.
+
+        var a48 = this.high >>> 16;
+        var a32 = this.high & 0xFFFF;
+        var a16 = this.low >>> 16;
+        var a00 = this.low & 0xFFFF;
+
+        var b48 = addend.high >>> 16;
+        var b32 = addend.high & 0xFFFF;
+        var b16 = addend.low >>> 16;
+        var b00 = addend.low & 0xFFFF;
+
+        var c48 = 0, c32 = 0, c16 = 0, c00 = 0;
+        c00 += a00 + b00;
+        c16 += c00 >>> 16;
+        c00 &= 0xFFFF;
+        c16 += a16 + b16;
+        c32 += c16 >>> 16;
+        c16 &= 0xFFFF;
+        c32 += a32 + b32;
+        c48 += c32 >>> 16;
+        c32 &= 0xFFFF;
+        c48 += a48 + b48;
+        c48 &= 0xFFFF;
+        return fromBits((c16 << 16) | c00, (c48 << 16) | c32, this.unsigned);
+    };
+
+    /**
+     * Returns the difference of this and the specified Long.
+     * @param {!Long|number|string} subtrahend Subtrahend
+     * @returns {!Long} Difference
+     */
+    LongPrototype.subtract = function subtract(subtrahend) {
+        if (!isLong(subtrahend))
+            subtrahend = fromValue(subtrahend);
+        return this.add(subtrahend.neg());
+    };
+
+    /**
+     * Returns the difference of this and the specified Long. This is an alias of {@link Long#subtract}.
+     * @function
+     * @param {!Long|number|string} subtrahend Subtrahend
+     * @returns {!Long} Difference
+     */
+    LongPrototype.sub = LongPrototype.subtract;
+
+    /**
+     * Returns the product of this and the specified Long.
+     * @param {!Long|number|string} multiplier Multiplier
+     * @returns {!Long} Product
+     */
+    LongPrototype.multiply = function multiply(multiplier) {
+        if (this.isZero())
+            return ZERO;
+        if (!isLong(multiplier))
+            multiplier = fromValue(multiplier);
+        if (multiplier.isZero())
+            return ZERO;
+        if (this.eq(MIN_VALUE))
+            return multiplier.isOdd() ? MIN_VALUE : ZERO;
+        if (multiplier.eq(MIN_VALUE))
+            return this.isOdd() ? MIN_VALUE : ZERO;
+
+        if (this.isNegative()) {
+            if (multiplier.isNegative())
+                return this.neg().mul(multiplier.neg());
+            else
+                return this.neg().mul(multiplier).neg();
+        } else if (multiplier.isNegative())
+            return this.mul(multiplier.neg()).neg();
+
+        // If both longs are small, use float multiplication
+        if (this.lt(TWO_PWR_24) && multiplier.lt(TWO_PWR_24))
+            return fromNumber(this.toNumber() * multiplier.toNumber(), this.unsigned);
+
+        // Divide each long into 4 chunks of 16 bits, and then add up 4x4 products.
+        // We can skip products that would overflow.
+
+        var a48 = this.high >>> 16;
+        var a32 = this.high & 0xFFFF;
+        var a16 = this.low >>> 16;
+        var a00 = this.low & 0xFFFF;
+
+        var b48 = multiplier.high >>> 16;
+        var b32 = multiplier.high & 0xFFFF;
+        var b16 = multiplier.low >>> 16;
+        var b00 = multiplier.low & 0xFFFF;
+
+        var c48 = 0, c32 = 0, c16 = 0, c00 = 0;
+        c00 += a00 * b00;
+        c16 += c00 >>> 16;
+        c00 &= 0xFFFF;
+        c16 += a16 * b00;
+        c32 += c16 >>> 16;
+        c16 &= 0xFFFF;
+        c16 += a00 * b16;
+        c32 += c16 >>> 16;
+        c16 &= 0xFFFF;
+        c32 += a32 * b00;
+        c48 += c32 >>> 16;
+        c32 &= 0xFFFF;
+        c32 += a16 * b16;
+        c48 += c32 >>> 16;
+        c32 &= 0xFFFF;
+        c32 += a00 * b32;
+        c48 += c32 >>> 16;
+        c32 &= 0xFFFF;
+        c48 += a48 * b00 + a32 * b16 + a16 * b32 + a00 * b48;
+        c48 &= 0xFFFF;
+        return fromBits((c16 << 16) | c00, (c48 << 16) | c32, this.unsigned);
+    };
+
+    /**
+     * Returns the product of this and the specified Long. This is an alias of {@link Long#multiply}.
+     * @function
+     * @param {!Long|number|string} multiplier Multiplier
+     * @returns {!Long} Product
+     */
+    LongPrototype.mul = LongPrototype.multiply;
+
+    /**
+     * Returns this Long divided by the specified. The result is signed if this Long is signed or
+     *  unsigned if this Long is unsigned.
+     * @param {!Long|number|string} divisor Divisor
+     * @returns {!Long} Quotient
+     */
+    LongPrototype.divide = function divide(divisor) {
+        if (!isLong(divisor))
+            divisor = fromValue(divisor);
+        if (divisor.isZero())
+            throw Error('division by zero');
+        if (this.isZero())
+            return this.unsigned ? UZERO : ZERO;
+        var approx, rem, res;
+        if (!this.unsigned) {
+            // This section is only relevant for signed longs and is derived from the
+            // closure library as a whole.
+            if (this.eq(MIN_VALUE)) {
+                if (divisor.eq(ONE) || divisor.eq(NEG_ONE))
+                    return MIN_VALUE;  // recall that -MIN_VALUE == MIN_VALUE
+                else if (divisor.eq(MIN_VALUE))
+                    return ONE;
+                else {
+                    // At this point, we have |other| >= 2, so |this/other| < |MIN_VALUE|.
+                    var halfThis = this.shr(1);
+                    approx = halfThis.div(divisor).shl(1);
+                    if (approx.eq(ZERO)) {
+                        return divisor.isNegative() ? ONE : NEG_ONE;
+                    } else {
+                        rem = this.sub(divisor.mul(approx));
+                        res = approx.add(rem.div(divisor));
+                        return res;
+                    }
+                }
+            } else if (divisor.eq(MIN_VALUE))
+                return this.unsigned ? UZERO : ZERO;
+            if (this.isNegative()) {
+                if (divisor.isNegative())
+                    return this.neg().div(divisor.neg());
+                return this.neg().div(divisor).neg();
+            } else if (divisor.isNegative())
+                return this.div(divisor.neg()).neg();
+            res = ZERO;
+        } else {
+            // The algorithm below has not been made for unsigned longs. It's therefore
+            // required to take special care of the MSB prior to running it.
+            if (!divisor.unsigned)
+                divisor = divisor.toUnsigned();
+            if (divisor.gt(this))
+                return UZERO;
+            if (divisor.gt(this.shru(1))) // 15 >>> 1 = 7 ; with divisor = 8 ; true
+                return UONE;
+            res = UZERO;
+        }
+
+        // Repeat the following until the remainder is less than other:  find a
+        // floating-point that approximates remainder / other *from below*, add this
+        // into the result, and subtract it from the remainder.  It is critical that
+        // the approximate value is less than or equal to the real value so that the
+        // remainder never becomes negative.
+        rem = this;
+        while (rem.gte(divisor)) {
+            // Approximate the result of division. This may be a little greater or
+            // smaller than the actual value.
+            approx = Math.max(1, Math.floor(rem.toNumber() / divisor.toNumber()));
+
+            // We will tweak the approximate result by changing it in the 48-th digit or
+            // the smallest non-fractional digit, whichever is larger.
+            var log2 = Math.ceil(Math.log(approx) / Math.LN2),
+                delta = (log2 <= 48) ? 1 : pow_dbl(2, log2 - 48),
+
+            // Decrease the approximation until it is smaller than the remainder.  Note
+            // that if it is too large, the product overflows and is negative.
+                approxRes = fromNumber(approx),
+                approxRem = approxRes.mul(divisor);
+            while (approxRem.isNegative() || approxRem.gt(rem)) {
+                approx -= delta;
+                approxRes = fromNumber(approx, this.unsigned);
+                approxRem = approxRes.mul(divisor);
+            }
+
+            // We know the answer can't be zero... and actually, zero would cause
+            // infinite recursion since we would make no progress.
+            if (approxRes.isZero())
+                approxRes = ONE;
+
+            res = res.add(approxRes);
+            rem = rem.sub(approxRem);
+        }
+        return res;
+    };
+
+    /**
+     * Returns this Long divided by the specified. This is an alias of {@link Long#divide}.
+     * @function
+     * @param {!Long|number|string} divisor Divisor
+     * @returns {!Long} Quotient
+     */
+    LongPrototype.div = LongPrototype.divide;
+
+    /**
+     * Returns this Long modulo the specified.
+     * @param {!Long|number|string} divisor Divisor
+     * @returns {!Long} Remainder
+     */
+    LongPrototype.modulo = function modulo(divisor) {
+        if (!isLong(divisor))
+            divisor = fromValue(divisor);
+        return this.sub(this.div(divisor).mul(divisor));
+    };
+
+    /**
+     * Returns this Long modulo the specified. This is an alias of {@link Long#modulo}.
+     * @function
+     * @param {!Long|number|string} divisor Divisor
+     * @returns {!Long} Remainder
+     */
+    LongPrototype.mod = LongPrototype.modulo;
+
+    /**
+     * Returns the bitwise NOT of this Long.
+     * @returns {!Long}
+     */
+    LongPrototype.not = function not() {
+        return fromBits(~this.low, ~this.high, this.unsigned);
+    };
+
+    /**
+     * Returns the bitwise AND of this Long and the specified.
+     * @param {!Long|number|string} other Other Long
+     * @returns {!Long}
+     */
+    LongPrototype.and = function and(other) {
+        if (!isLong(other))
+            other = fromValue(other);
+        return fromBits(this.low & other.low, this.high & other.high, this.unsigned);
+    };
+
+    /**
+     * Returns the bitwise OR of this Long and the specified.
+     * @param {!Long|number|string} other Other Long
+     * @returns {!Long}
+     */
+    LongPrototype.or = function or(other) {
+        if (!isLong(other))
+            other = fromValue(other);
+        return fromBits(this.low | other.low, this.high | other.high, this.unsigned);
+    };
+
+    /**
+     * Returns the bitwise XOR of this Long and the given one.
+     * @param {!Long|number|string} other Other Long
+     * @returns {!Long}
+     */
+    LongPrototype.xor = function xor(other) {
+        if (!isLong(other))
+            other = fromValue(other);
+        return fromBits(this.low ^ other.low, this.high ^ other.high, this.unsigned);
+    };
+
+    /**
+     * Returns this Long with bits shifted to the left by the given amount.
+     * @param {number|!Long} numBits Number of bits
+     * @returns {!Long} Shifted Long
+     */
+    LongPrototype.shiftLeft = function shiftLeft(numBits) {
+        if (isLong(numBits))
+            numBits = numBits.toInt();
+        if ((numBits &= 63) === 0)
+            return this;
+        else if (numBits < 32)
+            return fromBits(this.low << numBits, (this.high << numBits) | (this.low >>> (32 - numBits)), this.unsigned);
+        else
+            return fromBits(0, this.low << (numBits - 32), this.unsigned);
+    };
+
+    /**
+     * Returns this Long with bits shifted to the left by the given amount. This is an alias of {@link Long#shiftLeft}.
+     * @function
+     * @param {number|!Long} numBits Number of bits
+     * @returns {!Long} Shifted Long
+     */
+    LongPrototype.shl = LongPrototype.shiftLeft;
+
+    /**
+     * Returns this Long with bits arithmetically shifted to the right by the given amount.
+     * @param {number|!Long} numBits Number of bits
+     * @returns {!Long} Shifted Long
+     */
+    LongPrototype.shiftRight = function shiftRight(numBits) {
+        if (isLong(numBits))
+            numBits = numBits.toInt();
+        if ((numBits &= 63) === 0)
+            return this;
+        else if (numBits < 32)
+            return fromBits((this.low >>> numBits) | (this.high << (32 - numBits)), this.high >> numBits, this.unsigned);
+        else
+            return fromBits(this.high >> (numBits - 32), this.high >= 0 ? 0 : -1, this.unsigned);
+    };
+
+    /**
+     * Returns this Long with bits arithmetically shifted to the right by the given amount. This is an alias of {@link Long#shiftRight}.
+     * @function
+     * @param {number|!Long} numBits Number of bits
+     * @returns {!Long} Shifted Long
+     */
+    LongPrototype.shr = LongPrototype.shiftRight;
+
+    /**
+     * Returns this Long with bits logically shifted to the right by the given amount.
+     * @param {number|!Long} numBits Number of bits
+     * @returns {!Long} Shifted Long
+     */
+    LongPrototype.shiftRightUnsigned = function shiftRightUnsigned(numBits) {
+        if (isLong(numBits))
+            numBits = numBits.toInt();
+        numBits &= 63;
+        if (numBits === 0)
+            return this;
+        else {
+            var high = this.high;
+            if (numBits < 32) {
+                var low = this.low;
+                return fromBits((low >>> numBits) | (high << (32 - numBits)), high >>> numBits, this.unsigned);
+            } else if (numBits === 32)
+                return fromBits(high, 0, this.unsigned);
+            else
+                return fromBits(high >>> (numBits - 32), 0, this.unsigned);
+        }
+    };
+
+    /**
+     * Returns this Long with bits logically shifted to the right by the given amount. This is an alias of {@link Long#shiftRightUnsigned}.
+     * @function
+     * @param {number|!Long} numBits Number of bits
+     * @returns {!Long} Shifted Long
+     */
+    LongPrototype.shru = LongPrototype.shiftRightUnsigned;
+
+    /**
+     * Converts this Long to signed.
+     * @returns {!Long} Signed long
+     */
+    LongPrototype.toSigned = function toSigned() {
+        if (!this.unsigned)
+            return this;
+        return fromBits(this.low, this.high, false);
+    };
+
+    /**
+     * Converts this Long to unsigned.
+     * @returns {!Long} Unsigned long
+     */
+    LongPrototype.toUnsigned = function toUnsigned() {
+        if (this.unsigned)
+            return this;
+        return fromBits(this.low, this.high, true);
+    };
+
+    /**
+     * Converts this Long to its byte representation.
+     * @param {boolean=} le Whether little or big endian, defaults to big endian
+     * @returns {!Array.<number>} Byte representation
+     */
+    LongPrototype.toBytes = function(le) {
+        return le ? this.toBytesLE() : this.toBytesBE();
+    }
+
+    /**
+     * Converts this Long to its little endian byte representation.
+     * @returns {!Array.<number>} Little endian byte representation
+     */
+    LongPrototype.toBytesLE = function() {
+        var hi = this.high,
+            lo = this.low;
+        return [
+             lo         & 0xff,
+            (lo >>>  8) & 0xff,
+            (lo >>> 16) & 0xff,
+            (lo >>> 24) & 0xff,
+             hi         & 0xff,
+            (hi >>>  8) & 0xff,
+            (hi >>> 16) & 0xff,
+            (hi >>> 24) & 0xff
+        ];
+    }
+
+    /**
+     * Converts this Long to its big endian byte representation.
+     * @returns {!Array.<number>} Big endian byte representation
+     */
+    LongPrototype.toBytesBE = function() {
+        var hi = this.high,
+            lo = this.low;
+        return [
+            (hi >>> 24) & 0xff,
+            (hi >>> 16) & 0xff,
+            (hi >>>  8) & 0xff,
+             hi         & 0xff,
+            (lo >>> 24) & 0xff,
+            (lo >>> 16) & 0xff,
+            (lo >>>  8) & 0xff,
+             lo         & 0xff
+        ];
+    }
+
+    return Long;
+});
+
+
+/***/ },
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12318,8 +13817,8 @@ module.exports = Array.isArray || function (arr) {
 
 var assign    = __webpack_require__(5).assign;
 
-var deflate   = __webpack_require__(68);
-var inflate   = __webpack_require__(69);
+var deflate   = __webpack_require__(70);
+var inflate   = __webpack_require__(71);
 var constants = __webpack_require__(46);
 
 var pako = {};
@@ -12330,17 +13829,17 @@ module.exports = pako;
 
 
 /***/ },
-/* 68 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 
-var zlib_deflate = __webpack_require__(70);
+var zlib_deflate = __webpack_require__(72);
 var utils        = __webpack_require__(5);
 var strings      = __webpack_require__(44);
-var msg          = __webpack_require__(22);
+var msg          = __webpack_require__(25);
 var ZStream      = __webpack_require__(48);
 
 var toString = Object.prototype.toString;
@@ -12737,20 +14236,20 @@ exports.gzip = gzip;
 
 
 /***/ },
-/* 69 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 
-var zlib_inflate = __webpack_require__(73);
+var zlib_inflate = __webpack_require__(75);
 var utils        = __webpack_require__(5);
 var strings      = __webpack_require__(44);
 var c            = __webpack_require__(46);
-var msg          = __webpack_require__(22);
+var msg          = __webpack_require__(25);
 var ZStream      = __webpack_require__(48);
-var GZheader     = __webpack_require__(71);
+var GZheader     = __webpack_require__(73);
 
 var toString = Object.prototype.toString;
 
@@ -13162,17 +14661,17 @@ exports.ungzip  = inflate;
 
 
 /***/ },
-/* 70 */
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils   = __webpack_require__(5);
-var trees   = __webpack_require__(75);
+var trees   = __webpack_require__(77);
 var adler32 = __webpack_require__(45);
 var crc32   = __webpack_require__(47);
-var msg     = __webpack_require__(22);
+var msg     = __webpack_require__(25);
 
 /* Public constants ==========================================================*/
 /* ===========================================================================*/
@@ -15024,7 +16523,7 @@ exports.deflateTune = deflateTune;
 
 
 /***/ },
-/* 71 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15071,7 +16570,7 @@ module.exports = GZheader;
 
 
 /***/ },
-/* 72 */
+/* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15404,7 +16903,7 @@ module.exports = function inflate_fast(strm, start) {
 
 
 /***/ },
-/* 73 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15414,8 +16913,8 @@ module.exports = function inflate_fast(strm, start) {
 var utils         = __webpack_require__(5);
 var adler32       = __webpack_require__(45);
 var crc32         = __webpack_require__(47);
-var inflate_fast  = __webpack_require__(72);
-var inflate_table = __webpack_require__(74);
+var inflate_fast  = __webpack_require__(74);
+var inflate_table = __webpack_require__(76);
 
 var CODES = 0;
 var LENS = 1;
@@ -16949,7 +18448,7 @@ exports.inflateUndermine = inflateUndermine;
 
 
 /***/ },
-/* 74 */
+/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17281,7 +18780,7 @@ module.exports = function inflate_table(type, lens, lens_index, codes, table, ta
 
 
 /***/ },
-/* 75 */
+/* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18490,7 +19989,7 @@ exports._tr_align = _tr_align;
 
 
 /***/ },
-/* 76 */
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
 /**
@@ -18500,7 +19999,7 @@ exports._tr_align = _tr_align;
  * @return {Boolean}
  * @api private
  */
-var isObject = __webpack_require__(26);
+var isObject = __webpack_require__(29);
 
 function isFunction(fn) {
   var tag = isObject(fn) ? Object.prototype.toString.call(fn) : '';
@@ -18511,13 +20010,13 @@ module.exports = isFunction;
 
 
 /***/ },
-/* 77 */
+/* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
 /**
  * Module of mixed-in functions shared between node and client code
  */
-var isObject = __webpack_require__(26);
+var isObject = __webpack_require__(29);
 
 /**
  * Expose `RequestBase`.
@@ -19051,7 +20550,7 @@ RequestBase.prototype._setTimeouts = function() {
 
 
 /***/ },
-/* 78 */
+/* 80 */
 /***/ function(module, exports, __webpack_require__) {
 
 
@@ -19059,7 +20558,7 @@ RequestBase.prototype._setTimeouts = function() {
  * Module dependencies.
  */
 
-var utils = __webpack_require__(79);
+var utils = __webpack_require__(81);
 
 /**
  * Expose `ResponseBase`.
@@ -19190,7 +20689,7 @@ ResponseBase.prototype._setStatusProperties = function(status){
 
 
 /***/ },
-/* 79 */
+/* 81 */
 /***/ function(module, exports) {
 
 
@@ -19264,7 +20763,7 @@ exports.cleanHeader = function(header, shouldStripCookie){
 
 
 /***/ },
-/* 80 */
+/* 82 */
 /***/ function(module, exports) {
 
 var g;
@@ -19289,19 +20788,19 @@ module.exports = g;
 
 
 /***/ },
-/* 81 */
+/* 83 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
 const cloneObject = __webpack_require__(4);
-const Guild = __webpack_require__(17);
+const Guild = __webpack_require__(13);
 const User = __webpack_require__(6);
-const DMChannel = __webpack_require__(30);
+const DMChannel = __webpack_require__(17);
 const Emoji = __webpack_require__(10);
-const TextChannel = __webpack_require__(41);
+const TextChannel = __webpack_require__(21);
 const VoiceChannel = __webpack_require__(42);
-const GuildChannel = __webpack_require__(13);
-const GroupDMChannel = __webpack_require__(31);
+const GuildChannel = __webpack_require__(14);
+const GroupDMChannel = __webpack_require__(19);
 
 class ClientDataManager {
   constructor(client) {
@@ -19424,7 +20923,7 @@ module.exports = ClientDataManager;
 
 
 /***/ },
-/* 82 */
+/* 84 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -19497,39 +20996,39 @@ module.exports = ClientManager;
 
 
 /***/ },
-/* 83 */
+/* 85 */
 /***/ function(module, exports, __webpack_require__) {
 
 class ActionsManager {
   constructor(client) {
     this.client = client;
 
-    this.register(__webpack_require__(100));
-    this.register(__webpack_require__(101));
     this.register(__webpack_require__(102));
-    this.register(__webpack_require__(106));
     this.register(__webpack_require__(103));
     this.register(__webpack_require__(104));
+    this.register(__webpack_require__(108));
     this.register(__webpack_require__(105));
-    this.register(__webpack_require__(84));
-    this.register(__webpack_require__(85));
+    this.register(__webpack_require__(106));
+    this.register(__webpack_require__(107));
     this.register(__webpack_require__(86));
-    this.register(__webpack_require__(88));
-    this.register(__webpack_require__(99));
-    this.register(__webpack_require__(92));
-    this.register(__webpack_require__(93));
     this.register(__webpack_require__(87));
+    this.register(__webpack_require__(88));
+    this.register(__webpack_require__(90));
+    this.register(__webpack_require__(101));
     this.register(__webpack_require__(94));
     this.register(__webpack_require__(95));
-    this.register(__webpack_require__(96));
-    this.register(__webpack_require__(107));
-    this.register(__webpack_require__(109));
-    this.register(__webpack_require__(108));
-    this.register(__webpack_require__(98));
     this.register(__webpack_require__(89));
-    this.register(__webpack_require__(90));
-    this.register(__webpack_require__(91));
+    this.register(__webpack_require__(96));
     this.register(__webpack_require__(97));
+    this.register(__webpack_require__(98));
+    this.register(__webpack_require__(109));
+    this.register(__webpack_require__(111));
+    this.register(__webpack_require__(110));
+    this.register(__webpack_require__(100));
+    this.register(__webpack_require__(91));
+    this.register(__webpack_require__(92));
+    this.register(__webpack_require__(93));
+    this.register(__webpack_require__(99));
   }
 
   register(Action) {
@@ -19541,7 +21040,7 @@ module.exports = ActionsManager;
 
 
 /***/ },
-/* 84 */
+/* 86 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19560,7 +21059,7 @@ module.exports = ChannelCreateAction;
 
 
 /***/ },
-/* 85 */
+/* 87 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19597,7 +21096,7 @@ module.exports = ChannelDeleteAction;
 
 
 /***/ },
-/* 86 */
+/* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19637,7 +21136,7 @@ module.exports = ChannelUpdateAction;
 
 
 /***/ },
-/* 87 */
+/* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19656,7 +21155,7 @@ module.exports = GuildBanRemove;
 
 
 /***/ },
-/* 88 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19713,7 +21212,7 @@ module.exports = GuildDeleteAction;
 
 
 /***/ },
-/* 89 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19737,7 +21236,7 @@ module.exports = GuildEmojiCreateAction;
 
 
 /***/ },
-/* 90 */
+/* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19761,7 +21260,7 @@ module.exports = GuildEmojiDeleteAction;
 
 
 /***/ },
-/* 91 */
+/* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19782,7 +21281,7 @@ module.exports = GuildEmojiUpdateAction;
 
 
 /***/ },
-/* 92 */
+/* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19800,7 +21299,7 @@ module.exports = GuildMemberGetAction;
 
 
 /***/ },
-/* 93 */
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19855,7 +21354,7 @@ module.exports = GuildMemberRemoveAction;
 
 
 /***/ },
-/* 94 */
+/* 96 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19893,7 +21392,7 @@ module.exports = GuildRoleCreate;
 
 
 /***/ },
-/* 95 */
+/* 97 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19945,7 +21444,7 @@ module.exports = GuildRoleDeleteAction;
 
 
 /***/ },
-/* 96 */
+/* 98 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19992,7 +21491,7 @@ module.exports = GuildRoleUpdateAction;
 
 
 /***/ },
-/* 97 */
+/* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20021,7 +21520,7 @@ module.exports = GuildRolesPositionUpdate;
 
 
 /***/ },
-/* 98 */
+/* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20054,7 +21553,7 @@ module.exports = GuildSync;
 
 
 /***/ },
-/* 99 */
+/* 101 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20094,7 +21593,7 @@ module.exports = GuildUpdateAction;
 
 
 /***/ },
-/* 100 */
+/* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20140,7 +21639,7 @@ module.exports = MessageCreateAction;
 
 
 /***/ },
-/* 101 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20186,7 +21685,7 @@ module.exports = MessageDeleteAction;
 
 
 /***/ },
-/* 102 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20216,7 +21715,7 @@ module.exports = MessageDeleteBulkAction;
 
 
 /***/ },
-/* 103 */
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20265,7 +21764,7 @@ module.exports = MessageReactionAdd;
 
 
 /***/ },
-/* 104 */
+/* 106 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20314,7 +21813,7 @@ module.exports = MessageReactionRemove;
 
 
 /***/ },
-/* 105 */
+/* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20345,7 +21844,7 @@ module.exports = MessageReactionRemoveAll;
 
 
 /***/ },
-/* 106 */
+/* 108 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20394,7 +21893,7 @@ module.exports = MessageUpdateAction;
 
 
 /***/ },
-/* 107 */
+/* 109 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20413,7 +21912,7 @@ module.exports = UserGetAction;
 
 
 /***/ },
-/* 108 */
+/* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20449,7 +21948,7 @@ module.exports = UserNoteUpdateAction;
 
 
 /***/ },
-/* 109 */
+/* 111 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20488,10 +21987,10 @@ module.exports = UserUpdateAction;
 
 
 /***/ },
-/* 110 */
+/* 112 */
 /***/ function(module, exports, __webpack_require__) {
 
-const request = __webpack_require__(25);
+const request = __webpack_require__(28);
 const Constants = __webpack_require__(0);
 
 function getRoute(url) {
@@ -20543,23 +22042,23 @@ module.exports = APIRequest;
 
 
 /***/ },
-/* 111 */
+/* 113 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const splitMessage = __webpack_require__(43);
-const parseEmoji = __webpack_require__(154);
-const escapeMarkdown = __webpack_require__(15);
+const parseEmoji = __webpack_require__(156);
+const escapeMarkdown = __webpack_require__(16);
 
 const User = __webpack_require__(6);
-const GuildMember = __webpack_require__(14);
+const GuildMember = __webpack_require__(15);
 const Message = __webpack_require__(11);
 const Role = __webpack_require__(8);
-const Invite = __webpack_require__(32);
-const Webhook = __webpack_require__(19);
-const UserProfile = __webpack_require__(152);
-const ClientOAuth2Application = __webpack_require__(28);
+const Invite = __webpack_require__(33);
+const Webhook = __webpack_require__(22);
+const UserProfile = __webpack_require__(154);
+const ClientOAuth2Application = __webpack_require__(31);
 
 class RESTMethods {
   constructor(restManager) {
@@ -20662,6 +22161,18 @@ class RESTMethods {
         channel_id: channel.id,
         ids: messages,
       }).messages
+    );
+  }
+
+  search(type, id, options) {
+    const queryString = Object.keys(options)
+      .filter(k => options[k])
+      .map(k => [k, options[k]])
+      .map(x => x.join('='))
+      .join('&');
+    const url = `${Constants.Endpoints[`${type}Search`](id)}?${queryString}`;
+    return this.rest.makeRequest('get', url, true).then(body =>
+      body.messages.map(x => x.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)))
     );
   }
 
@@ -21202,7 +22713,7 @@ module.exports = RESTMethods;
 
 
 /***/ },
-/* 112 */
+/* 114 */
 /***/ function(module, exports, __webpack_require__) {
 
 const RequestHandler = __webpack_require__(52);
@@ -21278,7 +22789,7 @@ module.exports = BurstRequestHandler;
 
 
 /***/ },
-/* 113 */
+/* 115 */
 /***/ function(module, exports, __webpack_require__) {
 
 const RequestHandler = __webpack_require__(52);
@@ -21388,7 +22899,7 @@ module.exports = SequentialRequestHandler;
 
 
 /***/ },
-/* 114 */
+/* 116 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -21416,16 +22927,16 @@ module.exports = UserAgentManager;
 
 
 /***/ },
-/* 115 */
+/* 117 */
 /***/ function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {const browser = typeof window !== 'undefined';
-const EventEmitter = __webpack_require__(21).EventEmitter;
+const EventEmitter = __webpack_require__(24).EventEmitter;
 const Constants = __webpack_require__(0);
-const convertArrayBuffer = __webpack_require__(53);
-const pako = __webpack_require__(67);
+const convertArrayBuffer = __webpack_require__(54);
+const pako = __webpack_require__(69);
 const zlib = __webpack_require__(49);
-const PacketManager = __webpack_require__(116);
+const PacketManager = __webpack_require__(118);
 
 let WebSocket, erlpack;
 let serialize = JSON.stringify;
@@ -21433,13 +22944,13 @@ if (browser) {
   WebSocket = window.WebSocket; // eslint-disable-line no-undef
 } else {
   try {
-    WebSocket = __webpack_require__(158);
+    WebSocket = __webpack_require__(160);
   } catch (err) {
-    WebSocket = __webpack_require__(159);
+    WebSocket = __webpack_require__(161);
   }
 
   try {
-    erlpack = __webpack_require__(157);
+    erlpack = __webpack_require__(159);
     serialize = erlpack.pack;
   } catch (err) {
     erlpack = null;
@@ -21793,10 +23304,10 @@ class WebSocketManager extends EventEmitter {
 
 module.exports = WebSocketManager;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23).Buffer))
 
 /***/ },
-/* 116 */
+/* 118 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -21816,40 +23327,40 @@ class WebSocketPacketManager {
     this.handlers = {};
     this.queue = [];
 
-    this.register(Constants.WSEvents.READY, __webpack_require__(143));
-    this.register(Constants.WSEvents.GUILD_CREATE, __webpack_require__(123));
-    this.register(Constants.WSEvents.GUILD_DELETE, __webpack_require__(124));
-    this.register(Constants.WSEvents.GUILD_UPDATE, __webpack_require__(134));
-    this.register(Constants.WSEvents.GUILD_BAN_ADD, __webpack_require__(121));
-    this.register(Constants.WSEvents.GUILD_BAN_REMOVE, __webpack_require__(122));
-    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, __webpack_require__(126));
-    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, __webpack_require__(127));
-    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, __webpack_require__(128));
-    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, __webpack_require__(130));
-    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, __webpack_require__(131));
-    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, __webpack_require__(132));
-    this.register(Constants.WSEvents.GUILD_EMOJIS_UPDATE, __webpack_require__(125));
-    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, __webpack_require__(129));
-    this.register(Constants.WSEvents.CHANNEL_CREATE, __webpack_require__(117));
-    this.register(Constants.WSEvents.CHANNEL_DELETE, __webpack_require__(118));
-    this.register(Constants.WSEvents.CHANNEL_UPDATE, __webpack_require__(120));
-    this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, __webpack_require__(119));
-    this.register(Constants.WSEvents.PRESENCE_UPDATE, __webpack_require__(142));
-    this.register(Constants.WSEvents.USER_UPDATE, __webpack_require__(148));
-    this.register(Constants.WSEvents.USER_NOTE_UPDATE, __webpack_require__(147));
-    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, __webpack_require__(150));
-    this.register(Constants.WSEvents.TYPING_START, __webpack_require__(146));
-    this.register(Constants.WSEvents.MESSAGE_CREATE, __webpack_require__(135));
-    this.register(Constants.WSEvents.MESSAGE_DELETE, __webpack_require__(136));
-    this.register(Constants.WSEvents.MESSAGE_UPDATE, __webpack_require__(141));
-    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, __webpack_require__(137));
-    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, __webpack_require__(149));
-    this.register(Constants.WSEvents.GUILD_SYNC, __webpack_require__(133));
-    this.register(Constants.WSEvents.RELATIONSHIP_ADD, __webpack_require__(144));
-    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, __webpack_require__(145));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, __webpack_require__(138));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, __webpack_require__(139));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, __webpack_require__(140));
+    this.register(Constants.WSEvents.READY, __webpack_require__(145));
+    this.register(Constants.WSEvents.GUILD_CREATE, __webpack_require__(125));
+    this.register(Constants.WSEvents.GUILD_DELETE, __webpack_require__(126));
+    this.register(Constants.WSEvents.GUILD_UPDATE, __webpack_require__(136));
+    this.register(Constants.WSEvents.GUILD_BAN_ADD, __webpack_require__(123));
+    this.register(Constants.WSEvents.GUILD_BAN_REMOVE, __webpack_require__(124));
+    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, __webpack_require__(128));
+    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, __webpack_require__(129));
+    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, __webpack_require__(130));
+    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, __webpack_require__(132));
+    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, __webpack_require__(133));
+    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, __webpack_require__(134));
+    this.register(Constants.WSEvents.GUILD_EMOJIS_UPDATE, __webpack_require__(127));
+    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, __webpack_require__(131));
+    this.register(Constants.WSEvents.CHANNEL_CREATE, __webpack_require__(119));
+    this.register(Constants.WSEvents.CHANNEL_DELETE, __webpack_require__(120));
+    this.register(Constants.WSEvents.CHANNEL_UPDATE, __webpack_require__(122));
+    this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, __webpack_require__(121));
+    this.register(Constants.WSEvents.PRESENCE_UPDATE, __webpack_require__(144));
+    this.register(Constants.WSEvents.USER_UPDATE, __webpack_require__(150));
+    this.register(Constants.WSEvents.USER_NOTE_UPDATE, __webpack_require__(149));
+    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, __webpack_require__(152));
+    this.register(Constants.WSEvents.TYPING_START, __webpack_require__(148));
+    this.register(Constants.WSEvents.MESSAGE_CREATE, __webpack_require__(137));
+    this.register(Constants.WSEvents.MESSAGE_DELETE, __webpack_require__(138));
+    this.register(Constants.WSEvents.MESSAGE_UPDATE, __webpack_require__(143));
+    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, __webpack_require__(139));
+    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, __webpack_require__(151));
+    this.register(Constants.WSEvents.GUILD_SYNC, __webpack_require__(135));
+    this.register(Constants.WSEvents.RELATIONSHIP_ADD, __webpack_require__(146));
+    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, __webpack_require__(147));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, __webpack_require__(140));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, __webpack_require__(141));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, __webpack_require__(142));
   }
 
   get client() {
@@ -21927,7 +23438,7 @@ module.exports = WebSocketPacketManager;
 
 
 /***/ },
-/* 117 */
+/* 119 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -21950,7 +23461,7 @@ module.exports = ChannelCreateHandler;
 
 
 /***/ },
-/* 118 */
+/* 120 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -21976,7 +23487,7 @@ module.exports = ChannelDeleteHandler;
 
 
 /***/ },
-/* 119 */
+/* 121 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22013,7 +23524,7 @@ module.exports = ChannelPinsUpdate;
 
 
 /***/ },
-/* 120 */
+/* 122 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22030,7 +23541,7 @@ module.exports = ChannelUpdateHandler;
 
 
 /***/ },
-/* 121 */
+/* 123 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -22059,7 +23570,7 @@ module.exports = GuildBanAddHandler;
 
 
 /***/ },
-/* 122 */
+/* 124 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -22085,7 +23596,7 @@ module.exports = GuildBanRemoveHandler;
 
 
 /***/ },
-/* 123 */
+/* 125 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22113,7 +23624,7 @@ module.exports = GuildCreateHandler;
 
 
 /***/ },
-/* 124 */
+/* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22138,7 +23649,7 @@ module.exports = GuildDeleteHandler;
 
 
 /***/ },
-/* 125 */
+/* 127 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22184,7 +23695,7 @@ module.exports = GuildEmojisUpdate;
 
 
 /***/ },
-/* 126 */
+/* 128 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -22207,7 +23718,7 @@ module.exports = GuildMemberAddHandler;
 
 
 /***/ },
-/* 127 */
+/* 129 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -22226,7 +23737,7 @@ module.exports = GuildMemberRemoveHandler;
 
 
 /***/ },
-/* 128 */
+/* 130 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -22250,7 +23761,7 @@ module.exports = GuildMemberUpdateHandler;
 
 
 /***/ },
-/* 129 */
+/* 131 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested##
@@ -22284,7 +23795,7 @@ module.exports = GuildMembersChunkHandler;
 
 
 /***/ },
-/* 130 */
+/* 132 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22301,7 +23812,7 @@ module.exports = GuildRoleCreateHandler;
 
 
 /***/ },
-/* 131 */
+/* 133 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22318,7 +23829,7 @@ module.exports = GuildRoleDeleteHandler;
 
 
 /***/ },
-/* 132 */
+/* 134 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22335,7 +23846,7 @@ module.exports = GuildRoleUpdateHandler;
 
 
 /***/ },
-/* 133 */
+/* 135 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22352,7 +23863,7 @@ module.exports = GuildSyncHandler;
 
 
 /***/ },
-/* 134 */
+/* 136 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22369,7 +23880,7 @@ module.exports = GuildUpdateHandler;
 
 
 /***/ },
-/* 135 */
+/* 137 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22394,7 +23905,7 @@ module.exports = MessageCreateHandler;
 
 
 /***/ },
-/* 136 */
+/* 138 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22419,7 +23930,7 @@ module.exports = MessageDeleteHandler;
 
 
 /***/ },
-/* 137 */
+/* 139 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22442,7 +23953,7 @@ module.exports = MessageDeleteBulkHandler;
 
 
 /***/ },
-/* 138 */
+/* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22459,7 +23970,7 @@ module.exports = MessageReactionAddHandler;
 
 
 /***/ },
-/* 139 */
+/* 141 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22476,7 +23987,7 @@ module.exports = MessageReactionRemove;
 
 
 /***/ },
-/* 140 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22493,7 +24004,7 @@ module.exports = MessageReactionRemoveAll;
 
 
 /***/ },
-/* 141 */
+/* 143 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22510,7 +24021,7 @@ module.exports = MessageUpdateHandler;
 
 
 /***/ },
-/* 142 */
+/* 144 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22588,12 +24099,12 @@ module.exports = PresenceUpdateHandler;
 
 
 /***/ },
-/* 143 */
+/* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
 
-const ClientUser = __webpack_require__(29);
+const ClientUser = __webpack_require__(32);
 
 class ReadyHandler extends AbstractHandler {
   handle(packet) {
@@ -22664,7 +24175,7 @@ module.exports = ReadyHandler;
 
 
 /***/ },
-/* 144 */
+/* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22689,7 +24200,7 @@ module.exports = RelationshipAddHandler;
 
 
 /***/ },
-/* 145 */
+/* 147 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22714,7 +24225,7 @@ module.exports = RelationshipRemoveHandler;
 
 
 /***/ },
-/* 146 */
+/* 148 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22788,7 +24299,7 @@ module.exports = TypingStartHandler;
 
 
 /***/ },
-/* 147 */
+/* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22806,7 +24317,7 @@ module.exports = UserNoteUpdateHandler;
 
 
 /***/ },
-/* 148 */
+/* 150 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22823,7 +24334,7 @@ module.exports = UserUpdateHandler;
 
 
 /***/ },
-/* 149 */
+/* 151 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22848,7 +24359,7 @@ module.exports = VoiceServerUpdate;
 
 
 /***/ },
-/* 150 */
+/* 152 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22903,7 +24414,7 @@ module.exports = VoiceStateUpdateHandler;
 
 
 /***/ },
-/* 151 */
+/* 153 */
 /***/ function(module, exports) {
 
 /**
@@ -22957,11 +24468,11 @@ module.exports = UserConnection;
 
 
 /***/ },
-/* 152 */
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
-const UserConnection = __webpack_require__(151);
+const UserConnection = __webpack_require__(153);
 
 /**
  * Represents a user's profile on Discord.
@@ -23019,7 +24530,7 @@ module.exports = UserProfile;
 
 
 /***/ },
-/* 153 */
+/* 155 */
 /***/ function(module, exports) {
 
 module.exports = function arraysEqual(a, b) {
@@ -23039,7 +24550,7 @@ module.exports = function arraysEqual(a, b) {
 
 
 /***/ },
-/* 154 */
+/* 156 */
 /***/ function(module, exports) {
 
 module.exports = function parseEmoji(text) {
@@ -23059,18 +24570,6 @@ module.exports = function parseEmoji(text) {
 
 
 /***/ },
-/* 155 */
-/***/ function(module, exports) {
-
-/* (ignored) */
-
-/***/ },
-/* 156 */
-/***/ function(module, exports) {
-
-/* (ignored) */
-
-/***/ },
 /* 157 */
 /***/ function(module, exports) {
 
@@ -23084,6 +24583,18 @@ module.exports = function parseEmoji(text) {
 
 /***/ },
 /* 159 */
+/***/ function(module, exports) {
+
+/* (ignored) */
+
+/***/ },
+/* 160 */
+/***/ function(module, exports) {
+
+/* (ignored) */
+
+/***/ },
+/* 161 */
 /***/ function(module, exports) {
 
 /* (ignored) */
