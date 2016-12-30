@@ -6,6 +6,10 @@
       path: updating.md
     - name: FAQ
       path: faq.md
+- name: Topics
+  files:
+    - name: Voice
+      path: voice.md
 - name: Examples
   files:
     - name: Ping
