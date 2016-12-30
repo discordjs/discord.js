@@ -529,7 +529,7 @@ class Message {
   }
 
   _addReaction(emoji, user) {
-    const emojiID = buildEmojiID(emoji);
+    const emojiID = emoji.identifier;
     let reaction;
     if (this.reactions.has(emojiID)) {
       reaction = this.reactions.get(emojiID);
@@ -547,7 +547,7 @@ class Message {
   }
 
   _removeReaction(emoji, user) {
-    const emojiID = buildEmojiID(emoji);
+    const emojiID = emoji.identifier;
     if (this.reactions.has(emojiID)) {
       const reaction = this.reactions.get(emojiID);
       if (reaction.users.has(user.id)) {
@@ -563,10 +563,6 @@ class Message {
   _clearReactions() {
     this.reactions.clear();
   }
-}
-
-function buildEmojiID(emoji) {
-  return emoji.id ? `${emoji.name}:${emoji.id}` : emoji.name;
 }
 
 module.exports = Message;
