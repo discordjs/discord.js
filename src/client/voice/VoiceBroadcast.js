@@ -181,7 +181,7 @@ class VoiceBroadcast extends EventEmitter {
 
   /**
    * Play the given file in the voice connection.
-   * @param {string} file The path to the file
+   * @param {string} file The absolute path to the file
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
    * @example
@@ -197,7 +197,7 @@ class VoiceBroadcast extends EventEmitter {
    */
   playFile(file, { seek = 0, volume = 1, passes = 1 } = {}) {
     const options = { seek, volume, passes };
-    return this._playTranscodable(file, options);
+    return this._playTranscodable(`file:${file}`, options);
   }
 
   _playTranscodable(media, options) {

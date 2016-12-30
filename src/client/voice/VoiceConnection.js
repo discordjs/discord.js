@@ -225,7 +225,7 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Play the given file in the voice connection.
-   * @param {string} file The path to the file
+   * @param {string} file The absolute path to the file
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
    * @example
@@ -238,7 +238,7 @@ class VoiceConnection extends EventEmitter {
    */
   playFile(file, { seek = 0, volume = 1, passes = 1 } = {}) {
     const options = { seek, volume, passes };
-    return this.player.playUnknownStream(file, options);
+    return this.player.playUnknownStream(`file:${file}`, options);
   }
 
   /**
