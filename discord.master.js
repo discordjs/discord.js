@@ -3578,7 +3578,7 @@ class Guild {
 
   /**
    * Creates a new custom emoji in the guild.
-   * @param {BufferResolvable} attachment The image for the emoji.
+   * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji.
    * @param {string} name The name for the emoji.
    * @returns {Promise<Emoji>} The created emoji.
    * @example
@@ -3594,7 +3594,7 @@ class Guild {
    */
   createEmoji(attachment, name) {
     return new Promise(resolve => {
-      if (attachment.startsWith('data:')) {
+      if (typeof attachment === 'string' && attachment.startsWith('data:')) {
         resolve(this.client.rest.methods.createEmoji(this, attachment, name));
       } else {
         this.client.resolver.resolveBuffer(attachment).then(data =>
@@ -8754,7 +8754,7 @@ class ClientUser extends User {
    */
   createGuild(name, region, icon = null) {
     if (!icon) return this.client.rest.methods.createGuild({ name, icon, region });
-    if (icon.startsWith('data:')) {
+    if (typeof icon === 'string' && icon.startsWith('data:')) {
       return this.client.rest.methods.createGuild({ name, icon, region });
     } else {
       return this.client.resolver.resolveBuffer(icon).then(data =>
@@ -10081,7 +10081,7 @@ class TextChannel extends GuildChannel {
   /**
    * Create a webhook for the channel.
    * @param {string} name The name of the webhook.
-   * @param {BufferResolvable} avatar The avatar for the webhook.
+   * @param {BufferResolvable|Base64Resolvable} avatar The avatar for the webhook.
    * @returns {Promise<Webhook>} webhook The created webhook.
    * @example
    * channel.createWebhook('Snek', 'http://snek.s3.amazonaws.com/topSnek.png')
@@ -10090,7 +10090,7 @@ class TextChannel extends GuildChannel {
    */
   createWebhook(name, avatar) {
     return new Promise(resolve => {
-      if (avatar.startsWith('data:')) {
+      if (typeof avatar === 'string' && avatar.startsWith('data:')) {
         resolve(this.client.rest.methods.createWebhook(this, name, avatar));
       } else {
         this.client.resolver.resolveBuffer(avatar).then(data =>
