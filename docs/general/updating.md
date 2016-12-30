@@ -1,6 +1,8 @@
 # Version 11
-## Significant Additions
-See [the changelog](https://github.com/hydrabolt/discord.js/releases/tag/11.0.0) for a full list.
+Version 11 contains loads of new and improved features, optimisations, and bug fixes.
+See [the changelog](https://github.com/hydrabolt/discord.js/releases/tag/11.0.0) for a full list of changes.
+
+## Significant additions
 * Message Reactions and Embeds (rich text)
 * Support for uws and erlpack for better performance
 * OAuthApplication support
