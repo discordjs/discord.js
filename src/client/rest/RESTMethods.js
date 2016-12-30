@@ -148,7 +148,7 @@ class RESTMethods {
   }
 
   search(target, options) {
-    options = transformSearchOptions(options);
+    options = transformSearchOptions(options, this.client);
 
     const queryString = Object.keys(options)
       .filter(k => options[k])
