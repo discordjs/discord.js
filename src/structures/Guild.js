@@ -3,6 +3,7 @@ const Role = require('./Role');
 const Emoji = require('./Emoji');
 const Presence = require('./Presence').Presence;
 const GuildMember = require('./GuildMember');
+const MessageSearch = require('./MessageSearch');
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const cloneObject = require('../util/CloneObject');
@@ -701,6 +702,25 @@ class Guild {
     }
 
     return this.client.rest.methods.setRolePositions(this.id, updatedRoles);
+  }
+
+  /**
+   * Performs a search
+   * @param {MessageSearchOptions} [options={}] Options to pass to the search
+   * @returns {MessageSearch}
+   * @example
+   * guild.search()
+   *   .content('discord.js')
+   *   .before('2016-11-17')
+   *   .execute()
+   *   .then(res => {
+   *     const hit = res[0].find(m => m.hit).content;
+   *     console.log(`I found: **${hit}**`);
+   *   })
+   *   .catch(console.error);
+   */
+  search(options) {
+    return new MessageSearch(this, options);
   }
 
   /**

@@ -117,6 +117,18 @@ class RESTMethods {
     );
   }
 
+  search(type, id, options) {
+    const queryString = Object.keys(options)
+      .filter(k => options[k])
+      .map(k => [k, options[k]])
+      .map(x => x.join('='))
+      .join('&');
+    const url = `${Constants.Endpoints[`${type}Search`](id)}?${queryString}`;
+    return this.rest.makeRequest('get', url, true).then(body =>
+      body.messages.map(x => x.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)))
+    );
+  }
+
   createChannel(guild, channelName, channelType, overwrites) {
     if (overwrites instanceof Collection) overwrites = overwrites.array();
     return this.rest.makeRequest('post', Constants.Endpoints.guildChannels(guild.id), true, {

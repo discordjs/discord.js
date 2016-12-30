@@ -1,6 +1,7 @@
 const path = require('path');
 const Message = require('../Message');
 const MessageCollector = require('../MessageCollector');
+const MessageSearch = require('../MessageSearch');
 const Collection = require('../../util/Collection');
 
 
@@ -215,6 +216,25 @@ class TextBasedChannel {
   }
 
   /**
+   * Performs a search
+   * @param {MessageSearchOptions} [options={}] Options to pass to the search
+   * @returns {MessageSearch}
+   * @example
+   * channel.search()
+   *   .content('discord.js')
+   *   .before('2016-11-17')
+   *   .execute()
+   *   .then(res => {
+   *     const hit = res[0].find(m => m.hit).content;
+   *     console.log(`I found: **${hit}**`);
+   *   })
+   *   .catch(console.error);
+   */
+  search(options) {
+    return new MessageSearch(this, options);
+  }
+
+  /**
    * Starts a typing indicator in the channel.
    * @param {number} [count] The number of times startTyping should be considered to have been called
    * @example
@@ -361,6 +381,7 @@ exports.applyToClass = (structure, full = false) => {
       '_cacheMessage',
       'fetchMessages',
       'fetchMessage',
+      'search',
       'bulkDelete',
       'startTyping',
       'stopTyping',
