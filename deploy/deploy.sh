@@ -19,10 +19,8 @@ if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
 fi
 
 # Ignore travis checking other branches irrelevant to users
-# Apparently Travis considers tag builds as separate branches so we need to
-# check for that separately
-if [ "$TRAVIS_BRANCH" != "master" -a "$TRAVIS_BRANCH" != "indev" -a "$TRAVIS_BRANCH" != "$TRAVIS_TAG" ]; then
-  echo "deploy.sh: Ignoring push to another branch than master/indev"
+if [ "$TRAVIS_BRANCH" == "gh-pages" -o "$TRAVIS_BRANCH" == "gh-pages-dev" -o "$TRAVIS_BRANCH" == "docs" -o "$TRAVIS_BRANCH" == "webpack" -o "$TRAVIS_BRANCH" == "v8" ]; then
+  echo "deploy.sh: Ignoring push to blacklisted branch"
   build
   exit 0
 fi
