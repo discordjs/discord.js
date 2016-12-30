@@ -137,6 +137,7 @@ class GroupDMChannel extends Channel {
   awaitMessages() { return; }
   bulkDelete() { return; }
   _cacheMessage() { return; }
+  search() { return; }
 }
 
 TextBasedChannel.applyToClass(GroupDMChannel, true);
