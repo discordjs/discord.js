@@ -33,6 +33,7 @@
   "dependencies": {
     "@types/node": "^6.0.0",
     "pako": "^1.0.0",
+    "prism-media": "hydrabolt/prism-media#master",
     "superagent": "^3.3.0",
     "tweetnacl": "^0.14.0",
     "ws": "^1.1.1"
@@ -57,6 +58,7 @@
     "ws": false,
     "uws": false,
     "erlpack": false,
+    "prism-media": false,
     "opusscript": false,
     "node-opus": false,
     "tweet-nacl": false,
