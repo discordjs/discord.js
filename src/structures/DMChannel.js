@@ -53,6 +53,7 @@ class DMChannel extends Channel {
   awaitMessages() { return; }
   bulkDelete() { return; }
   _cacheMessage() { return; }
+  search() { return; }
 }
 
 TextBasedChannel.applyToClass(DMChannel, true);
