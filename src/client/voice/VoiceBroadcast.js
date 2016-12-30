@@ -12,7 +12,7 @@ const ffmpegArguments = [
 ];
 
 /**
- * A voice broadcast that can be played across multiple voice connections
+ * A voice broadcast can be played across multiple voice connections for improved shared-stream efficiency.
  * @extends {EventEmitter}
  */
 class VoiceBroadcast extends EventEmitter {
