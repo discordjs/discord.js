@@ -8402,13 +8402,13 @@ module.exports = {
 		"ws": "^1.1.1"
 	},
 	"peerDependencies": {
-		"erlpack": "hammerandchisel/erlpack#master",
+		"erlpack": "hammerandchisel/erlpack",
 		"node-opus": "^0.2.0",
 		"opusscript": "^0.0.1",
 		"uws": "^0.12.0"
 	},
 	"devDependencies": {
-		"discord.js-docgen": "hydrabolt/discord.js-docgen#master",
+		"discord.js-docgen": "hydrabolt/discord.js-docgen",
 		"eslint": "^3.12.0",
 		"parallel-webpack": "^1.6.0",
 		"uglify-js": "mishoo/UglifyJS2#harmony",
