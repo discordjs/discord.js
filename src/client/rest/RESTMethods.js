@@ -1,3 +1,4 @@
+const long = require('long');
 const Constants = require('../../util/Constants');
 const Collection = require('../../util/Collection');
 const splitMessage = require('../../util/SplitMessage');
