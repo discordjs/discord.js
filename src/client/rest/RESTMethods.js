@@ -32,7 +32,7 @@ const Guild = require('../../structures/Guild');
  * @property {number} [offset=0] Offset the "pages" of results (since you can only see 25 at a time)
  * @property {string} [mentionedID] Mentioned user filter
  * @property {boolean} [mentionsEveryone] If everyone is mentioned
- * @property {string} [linkHostname] If you have `http://webroot.google.com/asdfasdf`, you can put `webroot.google.com`
+ * @property {string} [linkHostname] Filter links by hostname
  * @property {string} [embedProvider] The name of an embed provider
  * @property {string} [embedType] one of `image`, `video`, `url`, `rich`
  * @property {string} [attachmentFilename] The name of an attachment
