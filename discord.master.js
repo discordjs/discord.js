@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 58);
+/******/ 	return __webpack_require__(__webpack_require__.s = 57);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1942,7 +1942,7 @@ const Constants = __webpack_require__(0);
 const escapeMarkdown = __webpack_require__(16);
 
 // Done purely for GuildMember, which would cause a bad circular dependency
-const Discord = __webpack_require__(58);
+const Discord = __webpack_require__(57);
 
 /**
  * Represents a message on Discord
@@ -4905,9 +4905,9 @@ module.exports = Webhook;
 
 
 
-var base64 = __webpack_require__(64)
-var ieee754 = __webpack_require__(66)
-var isArray = __webpack_require__(67)
+var base64 = __webpack_require__(63)
+var ieee754 = __webpack_require__(65)
+var isArray = __webpack_require__(66)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -7450,7 +7450,7 @@ if (typeof window !== 'undefined') { // Browser window
   root = this;
 }
 
-var Emitter = __webpack_require__(65);
+var Emitter = __webpack_require__(64);
 var RequestBase = __webpack_require__(78);
 var isObject = __webpack_require__(26);
 var isFunction = __webpack_require__(77);
@@ -10278,6 +10278,2104 @@ module.exports = function splitMessage(text, { maxLength = 1950, char = '\n', pr
 /* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
+"use strict";
+// String encode/decode helpers
+
+
+
+var utils = __webpack_require__(5);
+
+
+// Quick check if we can use fast array to bin string conversion
+//
+// - apply(Array) can fail on Android 2.2
+// - apply(Uint8Array) can fail on iOS 5.1 Safary
+//
+var STR_APPLY_OK = true;
+var STR_APPLY_UIA_OK = true;
+
+try { String.fromCharCode.apply(null, [ 0 ]); } catch (__) { STR_APPLY_OK = false; }
+try { String.fromCharCode.apply(null, new Uint8Array(1)); } catch (__) { STR_APPLY_UIA_OK = false; }
+
+
+// Table with utf8 lengths (calculated by first byte of sequence)
+// Note, that 5 & 6-byte values and some 4-byte values can not be represented in JS,
+// because max possible codepoint is 0x10ffff
+var _utf8len = new utils.Buf8(256);
+for (var q = 0; q < 256; q++) {
+  _utf8len[q] = (q >= 252 ? 6 : q >= 248 ? 5 : q >= 240 ? 4 : q >= 224 ? 3 : q >= 192 ? 2 : 1);
+}
+_utf8len[254] = _utf8len[254] = 1; // Invalid sequence start
+
+
+// convert string to array (typed, when possible)
+exports.string2buf = function (str) {
+  var buf, c, c2, m_pos, i, str_len = str.length, buf_len = 0;
+
+  // count binary size
+  for (m_pos = 0; m_pos < str_len; m_pos++) {
+    c = str.charCodeAt(m_pos);
+    if ((c & 0xfc00) === 0xd800 && (m_pos + 1 < str_len)) {
+      c2 = str.charCodeAt(m_pos + 1);
+      if ((c2 & 0xfc00) === 0xdc00) {
+        c = 0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00);
+        m_pos++;
+      }
+    }
+    buf_len += c < 0x80 ? 1 : c < 0x800 ? 2 : c < 0x10000 ? 3 : 4;
+  }
+
+  // allocate buffer
+  buf = new utils.Buf8(buf_len);
+
+  // convert
+  for (i = 0, m_pos = 0; i < buf_len; m_pos++) {
+    c = str.charCodeAt(m_pos);
+    if ((c & 0xfc00) === 0xd800 && (m_pos + 1 < str_len)) {
+      c2 = str.charCodeAt(m_pos + 1);
+      if ((c2 & 0xfc00) === 0xdc00) {
+        c = 0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00);
+        m_pos++;
+      }
+    }
+    if (c < 0x80) {
+      /* one byte */
+      buf[i++] = c;
+    } else if (c < 0x800) {
+      /* two bytes */
+      buf[i++] = 0xC0 | (c >>> 6);
+      buf[i++] = 0x80 | (c & 0x3f);
+    } else if (c < 0x10000) {
+      /* three bytes */
+      buf[i++] = 0xE0 | (c >>> 12);
+      buf[i++] = 0x80 | (c >>> 6 & 0x3f);
+      buf[i++] = 0x80 | (c & 0x3f);
+    } else {
+      /* four bytes */
+      buf[i++] = 0xf0 | (c >>> 18);
+      buf[i++] = 0x80 | (c >>> 12 & 0x3f);
+      buf[i++] = 0x80 | (c >>> 6 & 0x3f);
+      buf[i++] = 0x80 | (c & 0x3f);
+    }
+  }
+
+  return buf;
+};
+
+// Helper (used in 2 places)
+function buf2binstring(buf, len) {
+  // use fallback for big arrays to avoid stack overflow
+  if (len < 65537) {
+    if ((buf.subarray && STR_APPLY_UIA_OK) || (!buf.subarray && STR_APPLY_OK)) {
+      return String.fromCharCode.apply(null, utils.shrinkBuf(buf, len));
+    }
+  }
+
+  var result = '';
+  for (var i = 0; i < len; i++) {
+    result += String.fromCharCode(buf[i]);
+  }
+  return result;
+}
+
+
+// Convert byte array to binary string
+exports.buf2binstring = function (buf) {
+  return buf2binstring(buf, buf.length);
+};
+
+
+// Convert binary string (typed, when possible)
+exports.binstring2buf = function (str) {
+  var buf = new utils.Buf8(str.length);
+  for (var i = 0, len = buf.length; i < len; i++) {
+    buf[i] = str.charCodeAt(i);
+  }
+  return buf;
+};
+
+
+// convert array to string
+exports.buf2string = function (buf, max) {
+  var i, out, c, c_len;
+  var len = max || buf.length;
+
+  // Reserve max possible length (2 words per char)
+  // NB: by unknown reasons, Array is significantly faster for
+  //     String.fromCharCode.apply than Uint16Array.
+  var utf16buf = new Array(len * 2);
+
+  for (out = 0, i = 0; i < len;) {
+    c = buf[i++];
+    // quick process ascii
+    if (c < 0x80) { utf16buf[out++] = c; continue; }
+
+    c_len = _utf8len[c];
+    // skip 5 & 6 byte codes
+    if (c_len > 4) { utf16buf[out++] = 0xfffd; i += c_len - 1; continue; }
+
+    // apply mask on first byte
+    c &= c_len === 2 ? 0x1f : c_len === 3 ? 0x0f : 0x07;
+    // join the rest
+    while (c_len > 1 && i < len) {
+      c = (c << 6) | (buf[i++] & 0x3f);
+      c_len--;
+    }
+
+    // terminated by end of string?
+    if (c_len > 1) { utf16buf[out++] = 0xfffd; continue; }
+
+    if (c < 0x10000) {
+      utf16buf[out++] = c;
+    } else {
+      c -= 0x10000;
+      utf16buf[out++] = 0xd800 | ((c >> 10) & 0x3ff);
+      utf16buf[out++] = 0xdc00 | (c & 0x3ff);
+    }
+  }
+
+  return buf2binstring(utf16buf, out);
+};
+
+
+// Calculate max possible position in utf8 buffer,
+// that will not break sequence. If that's not possible
+// - (very small limits) return max size as is.
+//
+// buf[] - utf8 bytes array
+// max   - length limit (mandatory);
+exports.utf8border = function (buf, max) {
+  var pos;
+
+  max = max || buf.length;
+  if (max > buf.length) { max = buf.length; }
+
+  // go back from last position, until start of sequence found
+  pos = max - 1;
+  while (pos >= 0 && (buf[pos] & 0xC0) === 0x80) { pos--; }
+
+  // Fuckup - very small and broken sequence,
+  // return max, because we should return something anyway.
+  if (pos < 0) { return max; }
+
+  // If we came to start of buffer - that means vuffer is too small,
+  // return max too.
+  if (pos === 0) { return max; }
+
+  return (pos + _utf8len[buf[pos]] > max) ? pos : max;
+};
+
+
+/***/ },
+/* 45 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// Note: adler32 takes 12% for level 0 and 2% for level 6.
+// It doesn't worth to make additional optimizationa as in original.
+// Small size is preferable.
+
+function adler32(adler, buf, len, pos) {
+  var s1 = (adler & 0xffff) |0,
+      s2 = ((adler >>> 16) & 0xffff) |0,
+      n = 0;
+
+  while (len !== 0) {
+    // Set limit ~ twice less than 5552, to keep
+    // s2 in 31-bits, because we force signed ints.
+    // in other case %= will fail.
+    n = len > 2000 ? 2000 : len;
+    len -= n;
+
+    do {
+      s1 = (s1 + buf[pos++]) |0;
+      s2 = (s2 + s1) |0;
+    } while (--n);
+
+    s1 %= 65521;
+    s2 %= 65521;
+  }
+
+  return (s1 | (s2 << 16)) |0;
+}
+
+
+module.exports = adler32;
+
+
+/***/ },
+/* 46 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+
+module.exports = {
+
+  /* Allowed flush values; see deflate() and inflate() below for details */
+  Z_NO_FLUSH:         0,
+  Z_PARTIAL_FLUSH:    1,
+  Z_SYNC_FLUSH:       2,
+  Z_FULL_FLUSH:       3,
+  Z_FINISH:           4,
+  Z_BLOCK:            5,
+  Z_TREES:            6,
+
+  /* Return codes for the compression/decompression functions. Negative values
+  * are errors, positive values are used for special but normal events.
+  */
+  Z_OK:               0,
+  Z_STREAM_END:       1,
+  Z_NEED_DICT:        2,
+  Z_ERRNO:           -1,
+  Z_STREAM_ERROR:    -2,
+  Z_DATA_ERROR:      -3,
+  //Z_MEM_ERROR:     -4,
+  Z_BUF_ERROR:       -5,
+  //Z_VERSION_ERROR: -6,
+
+  /* compression levels */
+  Z_NO_COMPRESSION:         0,
+  Z_BEST_SPEED:             1,
+  Z_BEST_COMPRESSION:       9,
+  Z_DEFAULT_COMPRESSION:   -1,
+
+
+  Z_FILTERED:               1,
+  Z_HUFFMAN_ONLY:           2,
+  Z_RLE:                    3,
+  Z_FIXED:                  4,
+  Z_DEFAULT_STRATEGY:       0,
+
+  /* Possible values of the data_type field (though see inflate()) */
+  Z_BINARY:                 0,
+  Z_TEXT:                   1,
+  //Z_ASCII:                1, // = Z_TEXT (deprecated)
+  Z_UNKNOWN:                2,
+
+  /* The deflate compression method */
+  Z_DEFLATED:               8
+  //Z_NULL:                 null // Use -1 or null inline, depending on var type
+};
+
+
+/***/ },
+/* 47 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// Note: we can't get significant speed boost here.
+// So write code to minimize size - no pregenerated tables
+// and array tools dependencies.
+
+
+// Use ordinary array, since untyped makes no boost here
+function makeTable() {
+  var c, table = [];
+
+  for (var n = 0; n < 256; n++) {
+    c = n;
+    for (var k = 0; k < 8; k++) {
+      c = ((c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
+    }
+    table[n] = c;
+  }
+
+  return table;
+}
+
+// Create table on load. Just 255 signed longs. Not a problem.
+var crcTable = makeTable();
+
+
+function crc32(crc, buf, len, pos) {
+  var t = crcTable,
+      end = pos + len;
+
+  crc ^= -1;
+
+  for (var i = pos; i < end; i++) {
+    crc = (crc >>> 8) ^ t[(crc ^ buf[i]) & 0xFF];
+  }
+
+  return (crc ^ (-1)); // >>> 0;
+}
+
+
+module.exports = crc32;
+
+
+/***/ },
+/* 48 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+
+function ZStream() {
+  /* next input byte */
+  this.input = null; // JS specific, because we have no pointers
+  this.next_in = 0;
+  /* number of bytes available at input */
+  this.avail_in = 0;
+  /* total number of input bytes read so far */
+  this.total_in = 0;
+  /* next output byte should be put there */
+  this.output = null; // JS specific, because we have no pointers
+  this.next_out = 0;
+  /* remaining free space at output */
+  this.avail_out = 0;
+  /* total number of bytes output so far */
+  this.total_out = 0;
+  /* last error message, NULL if no error */
+  this.msg = ''/*Z_NULL*/;
+  /* not visible by applications */
+  this.state = null;
+  /* best guess about the data type: binary or text */
+  this.data_type = 2/*Z_UNKNOWN*/;
+  /* adler32 value of the uncompressed data */
+  this.adler = 0;
+}
+
+module.exports = ZStream;
+
+
+/***/ },
+/* 49 */
+/***/ function(module, exports) {
+
+
+
+/***/ },
+/* 50 */
+/***/ function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(23);
+const fs = __webpack_require__(49);
+const request = __webpack_require__(25);
+
+const Constants = __webpack_require__(0);
+const convertArrayBuffer = __webpack_require__(53);
+const User = __webpack_require__(6);
+const Message = __webpack_require__(11);
+const Guild = __webpack_require__(13);
+const Channel = __webpack_require__(8);
+const GuildMember = __webpack_require__(15);
+const Emoji = __webpack_require__(10);
+const ReactionEmoji = __webpack_require__(18);
+
+/**
+ * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
+ * extracting a User from a Message object.
+ * @private
+ */
+class ClientDataResolver {
+  /**
+   * @param {Client} client The client the resolver is for
+   */
+  constructor(client) {
+    this.client = client;
+  }
+
+  /**
+   * Data that resolves to give a User object. This can be:
+   * * A User object
+   * * A user ID
+   * * A Message object (resolves to the message author)
+   * * A Guild object (owner of the guild)
+   * * A GuildMember object
+   * @typedef {User|string|Message|Guild|GuildMember} UserResolvable
+   */
+
+  /**
+   * Resolves a UserResolvable to a User object
+   * @param {UserResolvable} user The UserResolvable to identify
+   * @returns {?User}
+   */
+  resolveUser(user) {
+    if (user instanceof User) return user;
+    if (typeof user === 'string') return this.client.users.get(user) || null;
+    if (user instanceof GuildMember) return user.user;
+    if (user instanceof Message) return user.author;
+    if (user instanceof Guild) return user.owner;
+    return null;
+  }
+
+  /**
+   * Resolves a UserResolvable to a user ID string
+   * @param {UserResolvable} user The UserResolvable to identify
+   * @returns {?string}
+   */
+  resolveUserID(user) {
+    if (user instanceof User || user instanceof GuildMember) return user.id;
+    if (typeof user === 'string') return user || null;
+    if (user instanceof Message) return user.author.id;
+    if (user instanceof Guild) return user.ownerID;
+    return null;
+  }
+
+  /**
+   * Data that resolves to give a Guild object. This can be:
+   * * A Guild object
+   * * A Guild ID
+   * @typedef {Guild|string} GuildResolvable
+   */
+
+  /**
+   * Resolves a GuildResolvable to a Guild object
+   * @param {GuildResolvable} guild The GuildResolvable to identify
+   * @returns {?Guild}
+   */
+  resolveGuild(guild) {
+    if (guild instanceof Guild) return guild;
+    if (typeof guild === 'string') return this.client.guilds.get(guild) || null;
+    return null;
+  }
+
+  /**
+   * Data that resolves to give a GuildMember object. This can be:
+   * * A GuildMember object
+   * * A User object
+   * @typedef {Guild} GuildMemberResolvable
+   */
+
+  /**
+   * Resolves a GuildMemberResolvable to a GuildMember object
+   * @param {GuildResolvable} guild The guild that the member is part of
+   * @param {UserResolvable} user The user that is part of the guild
+   * @returns {?GuildMember}
+   */
+  resolveGuildMember(guild, user) {
+    if (user instanceof GuildMember) return user;
+    guild = this.resolveGuild(guild);
+    user = this.resolveUser(user);
+    if (!guild || !user) return null;
+    return guild.members.get(user.id) || null;
+  }
+
+  /**
+   * Data that can be resolved to give a Channel. This can be:
+   * * A Channel object
+   * * A Message object (the channel the message was sent in)
+   * * A Guild object (the #general channel)
+   * * A channel ID
+   * @typedef {Channel|Guild|Message|string} ChannelResolvable
+   */
+
+  /**
+   * Resolves a ChannelResolvable to a Channel object
+   * @param {ChannelResolvable} channel The channel resolvable to resolve
+   * @returns {?Channel}
+   */
+  resolveChannel(channel) {
+    if (channel instanceof Channel) return channel;
+    if (channel instanceof Message) return channel.channel;
+    if (channel instanceof Guild) return channel.channels.get(channel.id) || null;
+    if (typeof channel === 'string') return this.client.channels.get(channel) || null;
+    return null;
+  }
+
+  /**
+   * Resolves a ChannelResolvable to a Channel object
+   * @param {ChannelResolvable} channel The channel resolvable to resolve
+   * @returns {?string}
+   */
+  resolveChannelID(channel) {
+    if (channel instanceof Channel) return channel.id;
+    if (typeof channel === 'string') return channel;
+    if (channel instanceof Message) return channel.channel.id;
+    if (channel instanceof Guild) return channel.defaultChannel.id;
+    return null;
+  }
+
+  /**
+   * Data that can be resolved to give an invite code. This can be:
+   * * An invite code
+   * * An invite URL
+   * @typedef {string} InviteResolvable
+   */
+
+  /**
+   * Resolves InviteResolvable to an invite code
+   * @param {InviteResolvable} data The invite resolvable to resolve
+   * @returns {string}
+   */
+  resolveInviteCode(data) {
+    const inviteRegex = /discord(?:app)?\.(?:gg|com\/invite)\/([a-z0-9]{5})/i;
+    const match = inviteRegex.exec(data);
+    if (match && match[1]) return match[1];
+    return data;
+  }
+
+  /**
+   * Data that can be resolved to give a permission number. This can be:
+   * * A string
+   * * A permission number
+   *
+   * Possible strings:
+   * ```js
+   * [
+   *   "CREATE_INSTANT_INVITE",
+   *   "KICK_MEMBERS",
+   *   "BAN_MEMBERS",
+   *   "ADMINISTRATOR",
+   *   "MANAGE_CHANNELS",
+   *   "MANAGE_GUILD",
+   *   "ADD_REACTIONS", // add reactions to messages
+   *   "READ_MESSAGES",
+   *   "SEND_MESSAGES",
+   *   "SEND_TTS_MESSAGES",
+   *   "MANAGE_MESSAGES",
+   *   "EMBED_LINKS",
+   *   "ATTACH_FILES",
+   *   "READ_MESSAGE_HISTORY",
+   *   "MENTION_EVERYONE",
+   *   "EXTERNAL_EMOJIS", // use external emojis
+   *   "CONNECT", // connect to voice
+   *   "SPEAK", // speak on voice
+   *   "MUTE_MEMBERS", // globally mute members on voice
+   *   "DEAFEN_MEMBERS", // globally deafen members on voice
+   *   "MOVE_MEMBERS", // move member's voice channels
+   *   "USE_VAD", // use voice activity detection
+   *   "CHANGE_NICKNAME",
+   *   "MANAGE_NICKNAMES", // change nicknames of others
+   *   "MANAGE_ROLES_OR_PERMISSIONS",
+   *   "MANAGE_WEBHOOKS",
+   *   "MANAGE_EMOJIS"
+   * ]
+   * ```
+   * @typedef {string|number} PermissionResolvable
+   */
+
+  /**
+   * Resolves a PermissionResolvable to a permission number
+   * @param {PermissionResolvable} permission The permission resolvable to resolve
+   * @returns {number}
+   */
+  resolvePermission(permission) {
+    if (typeof permission === 'string') permission = Constants.PermissionFlags[permission];
+    if (typeof permission !== 'number' || permission < 1) throw new Error(Constants.Errors.NOT_A_PERMISSION);
+    return permission;
+  }
+
+  /**
+   * Turn an array of permissions into a valid Discord permission bitfield
+   * @param {PermissionResolvable[]} permissions Permissions to resolve together
+   * @returns {number}
+   */
+  resolvePermissions(permissions) {
+    let bitfield = 0;
+    for (const permission of permissions) bitfield |= this.resolvePermission(permission);
+    return bitfield;
+  }
+
+  /**
+   * Data that can be resolved to give a string. This can be:
+   * * A string
+   * * An array (joined with a new line delimiter to give a string)
+   * * Any value
+   * @typedef {string|Array|*} StringResolvable
+   */
+
+  /**
+   * Resolves a StringResolvable to a string
+   * @param {StringResolvable} data The string resolvable to resolve
+   * @returns {string}
+   */
+  resolveString(data) {
+    if (typeof data === 'string') return data;
+    if (data instanceof Array) return data.join('\n');
+    return String(data);
+  }
+
+  /**
+   * Data that resolves to give a Base64 string, typically for image uploading. This can be:
+   * * A Buffer
+   * * A base64 string
+   * @typedef {Buffer|string} Base64Resolvable
+   */
+
+  /**
+   * Resolves a Base64Resolvable to a Base 64 image
+   * @param {Base64Resolvable} data The base 64 resolvable you want to resolve
+   * @returns {?string}
+   */
+  resolveBase64(data) {
+    if (data instanceof Buffer) return `data:image/jpg;base64,${data.toString('base64')}`;
+    return data;
+  }
+
+  /**
+   * Data that can be resolved to give a Buffer. This can be:
+   * * A Buffer
+   * * The path to a local file
+   * * A URL
+   * @typedef {string|Buffer} BufferResolvable
+   */
+
+  /**
+   * Resolves a BufferResolvable to a Buffer
+   * @param {BufferResolvable} resource The buffer resolvable to resolve
+   * @returns {Promise<Buffer>}
+   */
+  resolveBuffer(resource) {
+    if (resource instanceof Buffer) return Promise.resolve(resource);
+    if (this.client.browser && resource instanceof ArrayBuffer) return Promise.resolve(convertArrayBuffer(resource));
+
+    if (typeof resource === 'string') {
+      return new Promise((resolve, reject) => {
+        if (/^https?:\/\//.test(resource)) {
+          const req = request.get(resource).set('Content-Type', 'blob');
+          if (this.client.browser) req.responseType('arraybuffer');
+          req.end((err, res) => {
+            if (err) return reject(err);
+            if (this.client.browser) return resolve(convertArrayBuffer(res.xhr.response));
+            if (!(res.body instanceof Buffer)) return reject(new TypeError('The response body isn\'t a Buffer.'));
+            return resolve(res.body);
+          });
+        } else {
+          const file = path.resolve(resource);
+          fs.stat(file, (err, stats) => {
+            if (err) reject(err);
+            if (!stats || !stats.isFile()) throw new Error(`The file could not be found: ${file}`);
+            fs.readFile(file, (err2, data) => {
+              if (err2) reject(err2); else resolve(data);
+            });
+          });
+        }
+      });
+    }
+
+    return Promise.reject(new TypeError('The resource must be a string or Buffer.'));
+  }
+
+  /**
+   * Data that can be resolved to give an emoji identifier. This can be:
+   * * A string
+   * * An Emoji
+   * * A ReactionEmoji
+   * @typedef {string|Emoji|ReactionEmoji} EmojiIdentifierResolvable
+   */
+
+  /**
+   * Resolves an EmojiResolvable to an emoji identifier
+   * @param {EmojiIdentifierResolvable} emoji The emoji resolvable to resolve
+   * @returns {string}
+   */
+  resolveEmojiIdentifier(emoji) {
+    if (emoji instanceof Emoji || emoji instanceof ReactionEmoji) return emoji.identifier;
+    if (typeof emoji === 'string') {
+      if (!emoji.includes('%')) return encodeURIComponent(emoji);
+    }
+    return null;
+  }
+}
+
+module.exports = ClientDataResolver;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20).Buffer))
+
+/***/ },
+/* 51 */
+/***/ function(module, exports, __webpack_require__) {
+
+const UserAgentManager = __webpack_require__(115);
+const RESTMethods = __webpack_require__(112);
+const SequentialRequestHandler = __webpack_require__(114);
+const BurstRequestHandler = __webpack_require__(113);
+const APIRequest = __webpack_require__(111);
+const Constants = __webpack_require__(0);
+
+class RESTManager {
+  constructor(client) {
+    this.client = client;
+    this.handlers = {};
+    this.userAgentManager = new UserAgentManager(this);
+    this.methods = new RESTMethods(this);
+    this.rateLimitedEndpoints = {};
+    this.globallyRateLimited = false;
+  }
+
+  push(handler, apiRequest) {
+    return new Promise((resolve, reject) => {
+      handler.push({
+        request: apiRequest,
+        resolve,
+        reject,
+      });
+    });
+  }
+
+  getRequestHandler() {
+    switch (this.client.options.apiRequestMethod) {
+      case 'sequential':
+        return SequentialRequestHandler;
+      case 'burst':
+        return BurstRequestHandler;
+      default:
+        throw new Error(Constants.Errors.INVALID_RATE_LIMIT_METHOD);
+    }
+  }
+
+  makeRequest(method, url, auth, data, file) {
+    const apiRequest = new APIRequest(this, method, url, auth, data, file);
+
+    if (!this.handlers[apiRequest.route]) {
+      const RequestHandlerType = this.getRequestHandler();
+      this.handlers[apiRequest.route] = new RequestHandlerType(this, apiRequest.route);
+    }
+
+    return this.push(this.handlers[apiRequest.route], apiRequest);
+  }
+}
+
+module.exports = RESTManager;
+
+
+/***/ },
+/* 52 */
+/***/ function(module, exports) {
+
+/**
+ * A base class for different types of rate limiting handlers for the REST API.
+ * @private
+ */
+class RequestHandler {
+  /**
+   * @param {RESTManager} restManager The REST manager to use
+   */
+  constructor(restManager) {
+    /**
+     * The RESTManager that instantiated this RequestHandler
+     * @type {RESTManager}
+     */
+    this.restManager = restManager;
+
+    /**
+     * A list of requests that have yet to be processed.
+     * @type {APIRequest[]}
+     */
+    this.queue = [];
+  }
+
+  /**
+   * Whether or not the client is being rate limited on every endpoint.
+   * @type {boolean}
+   */
+  get globalLimit() {
+    return this.restManager.globallyRateLimited;
+  }
+
+  set globalLimit(value) {
+    this.restManager.globallyRateLimited = value;
+  }
+
+  /**
+   * Push a new API request into this bucket
+   * @param {APIRequest} request The new request to push into the queue
+   */
+  push(request) {
+    this.queue.push(request);
+  }
+
+  /**
+   * Attempts to get this RequestHandler to process its current queue
+   */
+  handle() {
+    return;
+  }
+}
+
+module.exports = RequestHandler;
+
+
+/***/ },
+/* 53 */
+/***/ function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(Buffer) {function arrayBufferToBuffer(ab) {
+  const buffer = new Buffer(ab.byteLength);
+  const view = new Uint8Array(ab);
+  for (var i = 0; i < buffer.length; ++i) buffer[i] = view[i];
+  return buffer;
+}
+
+function str2ab(str) {
+  const buffer = new ArrayBuffer(str.length * 2);
+  const view = new Uint16Array(buffer);
+  for (var i = 0, strLen = str.length; i < strLen; i++) view[i] = str.charCodeAt(i);
+  return buffer;
+}
+
+module.exports = function convertArrayBuffer(x) {
+  if (typeof x === 'string') x = str2ab(x);
+  return arrayBufferToBuffer(x);
+};
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20).Buffer))
+
+/***/ },
+/* 54 */
+/***/ function(module, exports) {
+
+module.exports = function merge(def, given) {
+  if (!given) return def;
+  for (const key in def) {
+    if (!{}.hasOwnProperty.call(given, key)) {
+      given[key] = def[key];
+    } else if (given[key] === Object(given[key])) {
+      given[key] = merge(def[key], given[key]);
+    }
+  }
+
+  return given;
+};
+
+
+/***/ },
+/* 55 */
+/***/ function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(process) {const EventEmitter = __webpack_require__(21).EventEmitter;
+const mergeDefault = __webpack_require__(54);
+const Constants = __webpack_require__(0);
+const RESTManager = __webpack_require__(51);
+const ClientDataManager = __webpack_require__(82);
+const ClientManager = __webpack_require__(83);
+const ClientDataResolver = __webpack_require__(50);
+const ClientVoiceManager = __webpack_require__(158);
+const WebSocketManager = __webpack_require__(116);
+const ActionsManager = __webpack_require__(84);
+const Collection = __webpack_require__(3);
+const Presence = __webpack_require__(7).Presence;
+const ShardClientUtil = __webpack_require__(157);
+
+/**
+ * The starting point for making a Discord Bot.
+ * @extends {EventEmitter}
+ */
+class Client extends EventEmitter {
+  /**
+   * @param {ClientOptions} [options] Options for the client
+   */
+  constructor(options = {}) {
+    super();
+
+    // Obtain shard details from environment
+    if (!options.shardId && 'SHARD_ID' in process.env) options.shardId = Number(process.env.SHARD_ID);
+    if (!options.shardCount && 'SHARD_COUNT' in process.env) options.shardCount = Number(process.env.SHARD_COUNT);
+
+    /**
+     * The options the client was instantiated with
+     * @type {ClientOptions}
+     */
+    this.options = mergeDefault(Constants.DefaultOptions, options);
+    this._validateOptions();
+
+    /**
+     * The REST manager of the client
+     * @type {RESTManager}
+     * @private
+     */
+    this.rest = new RESTManager(this);
+
+    /**
+     * The data manager of the Client
+     * @type {ClientDataManager}
+     * @private
+     */
+    this.dataManager = new ClientDataManager(this);
+
+    /**
+     * The manager of the Client
+     * @type {ClientManager}
+     * @private
+     */
+    this.manager = new ClientManager(this);
+
+    /**
+     * The WebSocket Manager of the Client
+     * @type {WebSocketManager}
+     * @private
+     */
+    this.ws = new WebSocketManager(this);
+
+    /**
+     * The Data Resolver of the Client
+     * @type {ClientDataResolver}
+     * @private
+     */
+    this.resolver = new ClientDataResolver(this);
+
+    /**
+     * The Action Manager of the Client
+     * @type {ActionsManager}
+     * @private
+     */
+    this.actions = new ActionsManager(this);
+
+    /**
+     * The Voice Manager of the Client (`null` in browsers)
+     * @type {?ClientVoiceManager}
+     * @private
+     */
+    this.voice = !this.browser ? new ClientVoiceManager(this) : null;
+
+    /**
+     * The shard helpers for the client (only if the process was spawned as a child, such as from a ShardingManager)
+     * @type {?ShardClientUtil}
+     */
+    this.shard = process.send ? ShardClientUtil.singleton(this) : null;
+
+    /**
+     * A collection of the Client's stored users
+     * @type {Collection<string, User>}
+     */
+    this.users = new Collection();
+
+    /**
+     * A collection of the Client's stored guilds
+     * @type {Collection<string, Guild>}
+     */
+    this.guilds = new Collection();
+
+    /**
+     * A collection of the Client's stored channels
+     * @type {Collection<string, Channel>}
+     */
+    this.channels = new Collection();
+
+    /**
+     * A collection of presences for friends of the logged in user.
+     * <warn>This is only filled when using a user account.</warn>
+     * @type {Collection<string, Presence>}
+     */
+    this.presences = new Collection();
+
+    if (!this.token && 'CLIENT_TOKEN' in process.env) {
+      /**
+       * The authorization token for the logged in user/bot.
+       * @type {?string}
+       */
+      this.token = process.env.CLIENT_TOKEN;
+    } else {
+      this.token = null;
+    }
+
+    /**
+     * The ClientUser representing the logged in Client
+     * @type {?ClientUser}
+     */
+    this.user = null;
+
+    /**
+     * The date at which the Client was regarded as being in the `READY` state.
+     * @type {?Date}
+     */
+    this.readyAt = null;
+
+    /**
+     * The previous heartbeat pings of the websocket (most recent first, limited to three elements)
+     * @type {number[]}
+     */
+    this.pings = [];
+
+    this._pingTimestamp = 0;
+    this._timeouts = new Set();
+    this._intervals = new Set();
+
+    if (this.options.messageSweepInterval > 0) {
+      this.setInterval(this.sweepMessages.bind(this), this.options.messageSweepInterval * 1000);
+    }
+  }
+
+  /**
+   * The status for the logged in Client.
+   * @type {?number}
+   * @readonly
+   */
+  get status() {
+    return this.ws.status;
+  }
+
+  /**
+   * The uptime for the logged in Client.
+   * @type {?number}
+   * @readonly
+   */
+  get uptime() {
+    return this.readyAt ? Date.now() - this.readyAt : null;
+  }
+
+  /**
+   * The average heartbeat ping of the websocket
+   * @type {number}
+   * @readonly
+   */
+  get ping() {
+    return this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length;
+  }
+
+  /**
+   * Returns a collection, mapping guild ID to voice connections.
+   * @type {Collection<string, VoiceConnection>}
+   * @readonly
+   */
+  get voiceConnections() {
+    if (this.browser) return new Collection();
+    return this.voice.connections;
+  }
+
+  /**
+   * The emojis that the client can use. Mapped by emoji ID.
+   * @type {Collection<string, Emoji>}
+   * @readonly
+   */
+  get emojis() {
+    const emojis = new Collection();
+    for (const guild of this.guilds.values()) {
+      for (const emoji of guild.emojis.values()) emojis.set(emoji.id, emoji);
+    }
+    return emojis;
+  }
+
+  /**
+   * The timestamp that the client was last ready at
+   * @type {?number}
+   * @readonly
+   */
+  get readyTimestamp() {
+    return this.readyAt ? this.readyAt.getTime() : null;
+  }
+
+  /**
+   * Whether the client is in a browser environment
+   * @type {boolean}
+   * @readonly
+   */
+  get browser() {
+    return typeof window !== 'undefined';
+  }
+
+  /**
+   * Logs the client in. If successful, resolves with the account's token. <warn>If you're making a bot, it's
+   * much better to use a bot account rather than a user account.
+   * Bot accounts have higher rate limits and have access to some features user accounts don't have. User bots
+   * that are making a lot of API requests can even be banned.</warn>
+   * @param  {string} token The token used for the account.
+   * @returns {Promise<string>}
+   * @example
+   * // log the client in using a token
+   * const token = 'my token';
+   * client.login(token);
+   * @example
+   * // log the client in using email and password
+   * const email = 'user@email.com';
+   * const password = 'supersecret123';
+   * client.login(email, password);
+   */
+  login(token) {
+    return this.rest.methods.login(token);
+  }
+
+  /**
+   * Destroys the client and logs out.
+   * @returns {Promise}
+   */
+  destroy() {
+    for (const t of this._timeouts) clearTimeout(t);
+    for (const i of this._intervals) clearInterval(i);
+    this._timeouts.clear();
+    this._intervals.clear();
+    return this.manager.destroy();
+  }
+
+  /**
+   * This shouldn't really be necessary to most developers as it is automatically invoked every 30 seconds, however
+   * if you wish to force a sync of guild data, you can use this.
+   * <warn>This is only available when using a user account.</warn>
+   * @param {Guild[]|Collection<string, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
+   */
+  syncGuilds(guilds = this.guilds) {
+    if (this.user.bot) return;
+    this.ws.send({
+      op: 12,
+      d: guilds instanceof Collection ? guilds.keyArray() : guilds.map(g => g.id),
+    });
+  }
+
+  /**
+   * Caches a user, or obtains it from the cache if it's already cached.
+   * <warn>This is only available when using a bot account.</warn>
+   * @param {string} id The ID of the user to obtain
+   * @returns {Promise<User>}
+   */
+  fetchUser(id) {
+    if (this.users.has(id)) return Promise.resolve(this.users.get(id));
+    return this.rest.methods.getUser(id);
+  }
+
+  /**
+   * Fetches an invite object from an invite code.
+   * @param {InviteResolvable} invite An invite code or URL
+   * @returns {Promise<Invite>}
+   */
+  fetchInvite(invite) {
+    const code = this.resolver.resolveInviteCode(invite);
+    return this.rest.methods.getInvite(code);
+  }
+
+  /**
+   * Fetch a webhook by ID.
+   * @param {string} id ID of the webhook
+   * @param {string} [token] Token for the webhook
+   * @returns {Promise<Webhook>}
+   */
+  fetchWebhook(id, token) {
+    return this.rest.methods.getWebhook(id, token);
+  }
+
+  /**
+   * Sweeps all channels' messages and removes the ones older than the max message lifetime.
+   * If the message has been edited, the time of the edit is used rather than the time of the original message.
+   * @param {number} [lifetime=this.options.messageCacheLifetime] Messages that are older than this (in seconds)
+   * will be removed from the caches. The default is based on the client's `messageCacheLifetime` option.
+   * @returns {number} Amount of messages that were removed from the caches,
+   * or -1 if the message cache lifetime is unlimited
+   */
+  sweepMessages(lifetime = this.options.messageCacheLifetime) {
+    if (typeof lifetime !== 'number' || isNaN(lifetime)) throw new TypeError('The lifetime must be a number.');
+    if (lifetime <= 0) {
+      this.emit('debug', 'Didn\'t sweep messages - lifetime is unlimited');
+      return -1;
+    }
+
+    const lifetimeMs = lifetime * 1000;
+    const now = Date.now();
+    let channels = 0;
+    let messages = 0;
+
+    for (const channel of this.channels.values()) {
+      if (!channel.messages) continue;
+      channels++;
+
+      for (const message of channel.messages.values()) {
+        if (now - (message.editedTimestamp || message.createdTimestamp) > lifetimeMs) {
+          channel.messages.delete(message.id);
+          messages++;
+        }
+      }
+    }
+
+    this.emit('debug', `Swept ${messages} messages older than ${lifetime} seconds in ${channels} text-based channels`);
+    return messages;
+  }
+
+  /**
+   * Gets the bot's OAuth2 application.
+   * <warn>This is only available when using a bot account.</warn>
+   * @returns {Promise<ClientOAuth2Application>}
+   */
+  fetchApplication() {
+    if (!this.user.bot) throw new Error(Constants.Errors.NO_BOT_ACCOUNT);
+    return this.rest.methods.getMyApplication();
+  }
+
+  /**
+   * Generate an invite link for your bot
+   * @param {PermissionResolvable[]|number} [permissions] An array of permissions to request
+   * @returns {Promise<string>} The invite link
+   * @example
+   * client.generateInvite(['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'])
+   *   .then(link => {
+   *     console.log(`Generated bot invite link: ${link}`);
+   *   });
+   */
+  generateInvite(permissions) {
+    if (permissions) {
+      if (permissions instanceof Array) permissions = this.resolver.resolvePermissions(permissions);
+    } else {
+      permissions = 0;
+    }
+    return this.fetchApplication().then(application =>
+      `https://discordapp.com/oauth2/authorize?client_id=${application.id}&permissions=${permissions}&scope=bot`
+    );
+  }
+
+  /**
+   * Sets a timeout that will be automatically cancelled if the client is destroyed.
+   * @param {Function} fn Function to execute
+   * @param {number} delay Time to wait before executing (in milliseconds)
+   * @param {...*} args Arguments for the function
+   * @returns {Timeout}
+   */
+  setTimeout(fn, delay, ...args) {
+    const timeout = setTimeout(() => {
+      fn();
+      this._timeouts.delete(timeout);
+    }, delay, ...args);
+    this._timeouts.add(timeout);
+    return timeout;
+  }
+
+  /**
+   * Clears a timeout
+   * @param {Timeout} timeout Timeout to cancel
+   */
+  clearTimeout(timeout) {
+    clearTimeout(timeout);
+    this._timeouts.delete(timeout);
+  }
+
+  /**
+   * Sets an interval that will be automatically cancelled if the client is destroyed.
+   * @param {Function} fn Function to execute
+   * @param {number} delay Time to wait before executing (in milliseconds)
+   * @param {...*} args Arguments for the function
+   * @returns {Timeout}
+   */
+  setInterval(fn, delay, ...args) {
+    const interval = setInterval(fn, delay, ...args);
+    this._intervals.add(interval);
+    return interval;
+  }
+
+  /**
+   * Clears an interval
+   * @param {Timeout} interval Interval to cancel
+   */
+  clearInterval(interval) {
+    clearInterval(interval);
+    this._intervals.delete(interval);
+  }
+
+  _pong(startTime) {
+    this.pings.unshift(Date.now() - startTime);
+    if (this.pings.length > 3) this.pings.length = 3;
+    this.ws.lastHeartbeatAck = true;
+  }
+
+  _setPresence(id, presence) {
+    if (this.presences.get(id)) {
+      this.presences.get(id).update(presence);
+      return;
+    }
+    this.presences.set(id, new Presence(presence));
+  }
+
+  _eval(script) {
+    return eval(script);
+  }
+
+  _validateOptions(options = this.options) {
+    if (typeof options.shardCount !== 'number' || isNaN(options.shardCount)) {
+      throw new TypeError('The shardCount option must be a number.');
+    }
+    if (typeof options.shardId !== 'number' || isNaN(options.shardId)) {
+      throw new TypeError('The shardId option must be a number.');
+    }
+    if (options.shardCount < 0) throw new RangeError('The shardCount option must be at least 0.');
+    if (options.shardId < 0) throw new RangeError('The shardId option must be at least 0.');
+    if (options.shardId !== 0 && options.shardId >= options.shardCount) {
+      throw new RangeError('The shardId option must be less than shardCount.');
+    }
+    if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
+      throw new TypeError('The messageCacheMaxSize option must be a number.');
+    }
+    if (typeof options.messageCacheLifetime !== 'number' || isNaN(options.messageCacheLifetime)) {
+      throw new TypeError('The messageCacheLifetime option must be a number.');
+    }
+    if (typeof options.messageSweepInterval !== 'number' || isNaN(options.messageSweepInterval)) {
+      throw new TypeError('The messageSweepInterval option must be a number.');
+    }
+    if (typeof options.fetchAllMembers !== 'boolean') {
+      throw new TypeError('The fetchAllMembers option must be a boolean.');
+    }
+    if (typeof options.disableEveryone !== 'boolean') {
+      throw new TypeError('The disableEveryone option must be a boolean.');
+    }
+    if (typeof options.restWsBridgeTimeout !== 'number' || isNaN(options.restWsBridgeTimeout)) {
+      throw new TypeError('The restWsBridgeTimeout option must be a number.');
+    }
+    if (!(options.disabledEvents instanceof Array)) throw new TypeError('The disabledEvents option must be an Array.');
+  }
+}
+
+module.exports = Client;
+
+/**
+ * Emitted for general warnings
+ * @event Client#warn
+ * @param {string} info The warning
+ */
+
+/**
+ * Emitted for general debugging information
+ * @event Client#debug
+ * @param {string} info The debug information
+ */
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
+
+/***/ },
+/* 56 */
+/***/ function(module, exports, __webpack_require__) {
+
+const Webhook = __webpack_require__(19);
+const RESTManager = __webpack_require__(51);
+const ClientDataResolver = __webpack_require__(50);
+const mergeDefault = __webpack_require__(54);
+const Constants = __webpack_require__(0);
+
+/**
+ * The Webhook Client
+ * @extends {Webhook}
+ */
+class WebhookClient extends Webhook {
+  /**
+   * @param {string} id The id of the webhook.
+   * @param {string} token the token of the webhook.
+   * @param {ClientOptions} [options] Options for the client
+   * @example
+   * // create a new webhook and send a message
+   * let hook = new Discord.WebhookClient('1234', 'abcdef')
+   * hook.sendMessage('This will send a message').catch(console.error)
+   */
+  constructor(id, token, options) {
+    super(null, id, token);
+
+    /**
+     * The options the client was instantiated with
+     * @type {ClientOptions}
+     */
+    this.options = mergeDefault(Constants.DefaultOptions, options);
+
+    /**
+     * The REST manager of the client
+     * @type {RESTManager}
+     * @private
+     */
+    this.rest = new RESTManager(this);
+
+    /**
+     * The Data Resolver of the Client
+     * @type {ClientDataResolver}
+     * @private
+     */
+    this.resolver = new ClientDataResolver(this);
+  }
+}
+
+module.exports = WebhookClient;
+
+
+/***/ },
+/* 57 */
+/***/ function(module, exports, __webpack_require__) {
+
+module.exports = {
+  Client: __webpack_require__(55),
+  WebhookClient: __webpack_require__(56),
+  Shard: __webpack_require__(60),
+  ShardClientUtil: __webpack_require__(61),
+  ShardingManager: __webpack_require__(62),
+
+  Collection: __webpack_require__(3),
+  splitMessage: __webpack_require__(43),
+  escapeMarkdown: __webpack_require__(16),
+  fetchRecommendedShards: __webpack_require__(59),
+
+  Channel: __webpack_require__(8),
+  ClientOAuth2Application: __webpack_require__(28),
+  ClientUser: __webpack_require__(29),
+  DMChannel: __webpack_require__(30),
+  Emoji: __webpack_require__(10),
+  EvaluatedPermissions: __webpack_require__(17),
+  Game: __webpack_require__(7).Game,
+  GroupDMChannel: __webpack_require__(31),
+  Guild: __webpack_require__(13),
+  GuildChannel: __webpack_require__(14),
+  GuildMember: __webpack_require__(15),
+  Invite: __webpack_require__(32),
+  Message: __webpack_require__(11),
+  MessageAttachment: __webpack_require__(33),
+  MessageCollector: __webpack_require__(34),
+  MessageEmbed: __webpack_require__(35),
+  MessageReaction: __webpack_require__(36),
+  OAuth2Application: __webpack_require__(37),
+  PartialGuild: __webpack_require__(38),
+  PartialGuildChannel: __webpack_require__(39),
+  PermissionOverwrites: __webpack_require__(40),
+  Presence: __webpack_require__(7).Presence,
+  ReactionEmoji: __webpack_require__(18),
+  RichEmbed: __webpack_require__(58),
+  Role: __webpack_require__(9),
+  TextChannel: __webpack_require__(41),
+  User: __webpack_require__(6),
+  VoiceChannel: __webpack_require__(42),
+  Webhook: __webpack_require__(19),
+
+  version: __webpack_require__(27).version,
+  Constants: __webpack_require__(0),
+};
+
+if (typeof window !== 'undefined') window.Discord = module.exports; // eslint-disable-line no-undef
+
+
+/***/ },
+/* 58 */
+/***/ function(module, exports) {
+
+/**
+ * A rich embed to be sent with a message
+ * @param {Object} [data] Data to set in the rich embed
+ */
+class RichEmbed {
+  constructor(data = {}) {
+    /**
+     * Title for this Embed
+     * @type {string}
+     */
+    this.title = data.title;
+
+    /**
+     * Description for this Embed
+     * @type {string}
+     */
+    this.description = data.description;
+
+    /**
+     * URL for this Embed
+     * @type {string}
+     */
+    this.url = data.url;
+
+    /**
+     * Color for this Embed
+     * @type {number}
+     */
+    this.color = data.color;
+
+    /**
+     * Author for this Embed
+     * @type {Object}
+     */
+    this.author = data.author;
+
+    /**
+     * Timestamp for this Embed
+     * @type {Date}
+     */
+    this.timestamp = data.timestamp;
+
+    /**
+     * Fields for this Embed
+     * @type {Object[]}
+     */
+    this.fields = data.fields || [];
+
+    /**
+     * Thumbnail for this Embed
+     * @type {Object}
+     */
+    this.thumbnail = data.thumbnail;
+
+    /**
+     * Image for this Embed
+     * @type {Object}
+     */
+    this.image = data.image;
+
+    /**
+     * Footer for this Embed
+     * @type {Object}
+     */
+    this.footer = data.footer;
+  }
+
+  /**
+   * Sets the title of this embed
+   * @param {StringResolvable} title The title
+   * @returns {RichEmbed} This embed
+   */
+  setTitle(title) {
+    title = resolveString(title);
+    if (title.length > 256) throw new RangeError('RichEmbed titles may not exceed 256 characters.');
+    this.title = title;
+    return this;
+  }
+
+  /**
+   * Sets the description of this embed
+   * @param {StringResolvable} description The description
+   * @returns {RichEmbed} This embed
+   */
+  setDescription(description) {
+    description = resolveString(description);
+    if (description.length > 2048) throw new RangeError('RichEmbed descriptions may not exceed 2048 characters.');
+    this.description = description;
+    return this;
+  }
+
+  /**
+   * Sets the URL of this embed
+   * @param {string} url The URL
+   * @returns {RichEmbed} This embed
+   */
+  setURL(url) {
+    this.url = url;
+    return this;
+  }
+
+  /**
+   * Sets the color of this embed
+   * @param {string|number|number[]} color The color to set
+   * @returns {RichEmbed} This embed
+   */
+  setColor(color) {
+    let radix = 10;
+    if (color instanceof Array) {
+      color = (color[0] << 16) + (color[1] << 8) + color[2];
+    } else if (typeof color === 'string' && color.startsWith('#')) {
+      radix = 16;
+      color = color.replace('#', '');
+    }
+    color = parseInt(color, radix);
+    if (color < 0 || color > 0xFFFFFF) {
+      throw new RangeError('RichEmbed color must be within the range 0 - 16777215 (0xFFFFFF).');
+    } else if (color && isNaN(color)) {
+      throw new TypeError('Unable to convert RichEmbed color to a number.');
+    }
+    this.color = color;
+    return this;
+  }
+
+  /**
+   * Sets the author of this embed
+   * @param {StringResolvable} name The name of the author
+   * @param {string} [icon] The icon URL of the author
+   * @param {string} [url] The URL of the author
+   * @returns {RichEmbed} This embed
+   */
+  setAuthor(name, icon, url) {
+    this.author = { name: resolveString(name), icon_url: icon, url };
+    return this;
+  }
+
+  /**
+   * Sets the timestamp of this embed
+   * @param {Date} [timestamp=current date] The timestamp
+   * @returns {RichEmbed} This embed
+   */
+  setTimestamp(timestamp = new Date()) {
+    this.timestamp = timestamp;
+    return this;
+  }
+
+  /**
+   * Adds a field to the embed (max 25)
+   * @param {StringResolvable} name The name of the field
+   * @param {StringResolvable} value The value of the field
+   * @param {boolean} [inline=false] Set the field to display inline
+   * @returns {RichEmbed} This embed
+   */
+  addField(name, value, inline = false) {
+    if (this.fields.length >= 25) throw new RangeError('RichEmbeds may not exceed 25 fields.');
+    name = resolveString(name);
+    if (name.length > 256) throw new RangeError('RichEmbed field names may not exceed 256 characters.');
+    value = resolveString(value);
+    if (value.length > 1024) throw new RangeError('RichEmbed field values may not exceed 1024 characters.');
+    this.fields.push({ name: String(name), value: value, inline });
+    return this;
+  }
+
+  /**
+   * Set the thumbnail of this embed
+   * @param {string} url The URL of the thumbnail
+   * @returns {RichEmbed} This embed
+   */
+  setThumbnail(url) {
+    this.thumbnail = { url };
+    return this;
+  }
+
+  /**
+   * Set the image of this embed
+   * @param {string} url The URL of the thumbnail
+   * @returns {RichEmbed} This embed
+   */
+  setImage(url) {
+    this.image = { url };
+    return this;
+  }
+
+  /**
+   * Sets the footer of this embed
+   * @param {StringResolvable} text The text of the footer
+   * @param {string} [icon] The icon URL of the footer
+   * @returns {RichEmbed} This embed
+   */
+  setFooter(text, icon) {
+    text = resolveString(text);
+    if (text.length > 2048) throw new RangeError('RichEmbed footer text may not exceed 2048 characters.');
+    this.footer = { text, icon_url: icon };
+    return this;
+  }
+}
+
+module.exports = RichEmbed;
+
+function resolveString(data) {
+  if (typeof data === 'string') return data;
+  if (data instanceof Array) return data.join('\n');
+  return String(data);
+}
+
+
+/***/ },
+/* 59 */
+/***/ function(module, exports, __webpack_require__) {
+
+const superagent = __webpack_require__(25);
+const botGateway = __webpack_require__(0).Endpoints.botGateway;
+
+/**
+ * Gets the recommended shard count from Discord
+ * @param {number} token Discord auth token
+ * @returns {Promise<number>} the recommended number of shards
+ */
+module.exports = function fetchRecommendedShards(token) {
+  return new Promise((resolve, reject) => {
+    if (!token) throw new Error('A token must be provided.');
+    superagent.get(botGateway)
+      .set('Authorization', `Bot ${token.replace(/^Bot\s*/i, '')}`)
+      .end((err, res) => {
+        if (err) reject(err);
+        resolve(res.body.shards);
+      });
+  });
+};
+
+
+/***/ },
+/* 60 */
+/***/ function(module, exports) {
+
+/* (ignored) */
+
+/***/ },
+/* 61 */
+/***/ function(module, exports) {
+
+/* (ignored) */
+
+/***/ },
+/* 62 */
+/***/ function(module, exports) {
+
+/* (ignored) */
+
+/***/ },
+/* 63 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.byteLength = byteLength
+exports.toByteArray = toByteArray
+exports.fromByteArray = fromByteArray
+
+var lookup = []
+var revLookup = []
+var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
+
+var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+for (var i = 0, len = code.length; i < len; ++i) {
+  lookup[i] = code[i]
+  revLookup[code.charCodeAt(i)] = i
+}
+
+revLookup['-'.charCodeAt(0)] = 62
+revLookup['_'.charCodeAt(0)] = 63
+
+function placeHoldersCount (b64) {
+  var len = b64.length
+  if (len % 4 > 0) {
+    throw new Error('Invalid string. Length must be a multiple of 4')
+  }
+
+  // the number of equal signs (place holders)
+  // if there are two placeholders, than the two characters before it
+  // represent one byte
+  // if there is only one, then the three characters before it represent 2 bytes
+  // this is just a cheap hack to not do indexOf twice
+  return b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0
+}
+
+function byteLength (b64) {
+  // base64 is 4/3 + up to two characters of the original data
+  return b64.length * 3 / 4 - placeHoldersCount(b64)
+}
+
+function toByteArray (b64) {
+  var i, j, l, tmp, placeHolders, arr
+  var len = b64.length
+  placeHolders = placeHoldersCount(b64)
+
+  arr = new Arr(len * 3 / 4 - placeHolders)
+
+  // if there are placeholders, only get up to the last complete 4 chars
+  l = placeHolders > 0 ? len - 4 : len
+
+  var L = 0
+
+  for (i = 0, j = 0; i < l; i += 4, j += 3) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)]
+    arr[L++] = (tmp >> 16) & 0xFF
+    arr[L++] = (tmp >> 8) & 0xFF
+    arr[L++] = tmp & 0xFF
+  }
+
+  if (placeHolders === 2) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4)
+    arr[L++] = tmp & 0xFF
+  } else if (placeHolders === 1) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2)
+    arr[L++] = (tmp >> 8) & 0xFF
+    arr[L++] = tmp & 0xFF
+  }
+
+  return arr
+}
+
+function tripletToBase64 (num) {
+  return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
+}
+
+function encodeChunk (uint8, start, end) {
+  var tmp
+  var output = []
+  for (var i = start; i < end; i += 3) {
+    tmp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
+    output.push(tripletToBase64(tmp))
+  }
+  return output.join('')
+}
+
+function fromByteArray (uint8) {
+  var tmp
+  var len = uint8.length
+  var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
+  var output = ''
+  var parts = []
+  var maxChunkLength = 16383 // must be multiple of 3
+
+  // go through the array every three bytes, we'll deal with trailing stuff later
+  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
+    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
+  }
+
+  // pad the end with zeros, but make sure to not forget the extra bytes
+  if (extraBytes === 1) {
+    tmp = uint8[len - 1]
+    output += lookup[tmp >> 2]
+    output += lookup[(tmp << 4) & 0x3F]
+    output += '=='
+  } else if (extraBytes === 2) {
+    tmp = (uint8[len - 2] << 8) + (uint8[len - 1])
+    output += lookup[tmp >> 10]
+    output += lookup[(tmp >> 4) & 0x3F]
+    output += lookup[(tmp << 2) & 0x3F]
+    output += '='
+  }
+
+  parts.push(output)
+
+  return parts.join('')
+}
+
+
+/***/ },
+/* 64 */
+/***/ function(module, exports, __webpack_require__) {
+
+
+/**
+ * Expose `Emitter`.
+ */
+
+if (true) {
+  module.exports = Emitter;
+}
+
+/**
+ * Initialize a new `Emitter`.
+ *
+ * @api public
+ */
+
+function Emitter(obj) {
+  if (obj) return mixin(obj);
+};
+
+/**
+ * Mixin the emitter properties.
+ *
+ * @param {Object} obj
+ * @return {Object}
+ * @api private
+ */
+
+function mixin(obj) {
+  for (var key in Emitter.prototype) {
+    obj[key] = Emitter.prototype[key];
+  }
+  return obj;
+}
+
+/**
+ * Listen on the given `event` with `fn`.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.on =
+Emitter.prototype.addEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+  (this._callbacks['$' + event] = this._callbacks['$' + event] || [])
+    .push(fn);
+  return this;
+};
+
+/**
+ * Adds an `event` listener that will be invoked a single
+ * time then automatically removed.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.once = function(event, fn){
+  function on() {
+    this.off(event, on);
+    fn.apply(this, arguments);
+  }
+
+  on.fn = fn;
+  this.on(event, on);
+  return this;
+};
+
+/**
+ * Remove the given callback for `event` or all
+ * registered callbacks.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.off =
+Emitter.prototype.removeListener =
+Emitter.prototype.removeAllListeners =
+Emitter.prototype.removeEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+
+  // all
+  if (0 == arguments.length) {
+    this._callbacks = {};
+    return this;
+  }
+
+  // specific event
+  var callbacks = this._callbacks['$' + event];
+  if (!callbacks) return this;
+
+  // remove all handlers
+  if (1 == arguments.length) {
+    delete this._callbacks['$' + event];
+    return this;
+  }
+
+  // remove specific handler
+  var cb;
+  for (var i = 0; i < callbacks.length; i++) {
+    cb = callbacks[i];
+    if (cb === fn || cb.fn === fn) {
+      callbacks.splice(i, 1);
+      break;
+    }
+  }
+  return this;
+};
+
+/**
+ * Emit `event` with the given args.
+ *
+ * @param {String} event
+ * @param {Mixed} ...
+ * @return {Emitter}
+ */
+
+Emitter.prototype.emit = function(event){
+  this._callbacks = this._callbacks || {};
+  var args = [].slice.call(arguments, 1)
+    , callbacks = this._callbacks['$' + event];
+
+  if (callbacks) {
+    callbacks = callbacks.slice(0);
+    for (var i = 0, len = callbacks.length; i < len; ++i) {
+      callbacks[i].apply(this, args);
+    }
+  }
+
+  return this;
+};
+
+/**
+ * Return array of callbacks for `event`.
+ *
+ * @param {String} event
+ * @return {Array}
+ * @api public
+ */
+
+Emitter.prototype.listeners = function(event){
+  this._callbacks = this._callbacks || {};
+  return this._callbacks['$' + event] || [];
+};
+
+/**
+ * Check if this emitter has `event` handlers.
+ *
+ * @param {String} event
+ * @return {Boolean}
+ * @api public
+ */
+
+Emitter.prototype.hasListeners = function(event){
+  return !! this.listeners(event).length;
+};
+
+
+/***/ },
+/* 65 */
+/***/ function(module, exports) {
+
+exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+  var e, m
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var nBits = -7
+  var i = isLE ? (nBytes - 1) : 0
+  var d = isLE ? -1 : 1
+  var s = buffer[offset + i]
+
+  i += d
+
+  e = s & ((1 << (-nBits)) - 1)
+  s >>= (-nBits)
+  nBits += eLen
+  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+  m = e & ((1 << (-nBits)) - 1)
+  e >>= (-nBits)
+  nBits += mLen
+  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+  if (e === 0) {
+    e = 1 - eBias
+  } else if (e === eMax) {
+    return m ? NaN : ((s ? -1 : 1) * Infinity)
+  } else {
+    m = m + Math.pow(2, mLen)
+    e = e - eBias
+  }
+  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+}
+
+exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+  var e, m, c
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+  var i = isLE ? 0 : (nBytes - 1)
+  var d = isLE ? 1 : -1
+  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+  value = Math.abs(value)
+
+  if (isNaN(value) || value === Infinity) {
+    m = isNaN(value) ? 1 : 0
+    e = eMax
+  } else {
+    e = Math.floor(Math.log(value) / Math.LN2)
+    if (value * (c = Math.pow(2, -e)) < 1) {
+      e--
+      c *= 2
+    }
+    if (e + eBias >= 1) {
+      value += rt / c
+    } else {
+      value += rt * Math.pow(2, 1 - eBias)
+    }
+    if (value * c >= 2) {
+      e++
+      c /= 2
+    }
+
+    if (e + eBias >= eMax) {
+      m = 0
+      e = eMax
+    } else if (e + eBias >= 1) {
+      m = (value * c - 1) * Math.pow(2, mLen)
+      e = e + eBias
+    } else {
+      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+      e = 0
+    }
+  }
+
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+  e = (e << mLen) | m
+  eLen += mLen
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+  buffer[offset + i - d] |= s * 128
+}
+
+
+/***/ },
+/* 66 */
+/***/ function(module, exports) {
+
+var toString = {}.toString;
+
+module.exports = Array.isArray || function (arr) {
+  return toString.call(arr) == '[object Array]';
+};
+
+
+/***/ },
+/* 67 */
+/***/ function(module, exports, __webpack_require__) {
+
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
  Copyright 2013 Daniel Wirtz <dcode@dcode.io>
  Copyright 2009 The Closure Library Authors. All Rights Reserved.
@@ -11490,2104 +13588,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ },
-/* 45 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-// String encode/decode helpers
-
-
-
-var utils = __webpack_require__(5);
-
-
-// Quick check if we can use fast array to bin string conversion
-//
-// - apply(Array) can fail on Android 2.2
-// - apply(Uint8Array) can fail on iOS 5.1 Safary
-//
-var STR_APPLY_OK = true;
-var STR_APPLY_UIA_OK = true;
-
-try { String.fromCharCode.apply(null, [ 0 ]); } catch (__) { STR_APPLY_OK = false; }
-try { String.fromCharCode.apply(null, new Uint8Array(1)); } catch (__) { STR_APPLY_UIA_OK = false; }
-
-
-// Table with utf8 lengths (calculated by first byte of sequence)
-// Note, that 5 & 6-byte values and some 4-byte values can not be represented in JS,
-// because max possible codepoint is 0x10ffff
-var _utf8len = new utils.Buf8(256);
-for (var q = 0; q < 256; q++) {
-  _utf8len[q] = (q >= 252 ? 6 : q >= 248 ? 5 : q >= 240 ? 4 : q >= 224 ? 3 : q >= 192 ? 2 : 1);
-}
-_utf8len[254] = _utf8len[254] = 1; // Invalid sequence start
-
-
-// convert string to array (typed, when possible)
-exports.string2buf = function (str) {
-  var buf, c, c2, m_pos, i, str_len = str.length, buf_len = 0;
-
-  // count binary size
-  for (m_pos = 0; m_pos < str_len; m_pos++) {
-    c = str.charCodeAt(m_pos);
-    if ((c & 0xfc00) === 0xd800 && (m_pos + 1 < str_len)) {
-      c2 = str.charCodeAt(m_pos + 1);
-      if ((c2 & 0xfc00) === 0xdc00) {
-        c = 0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00);
-        m_pos++;
-      }
-    }
-    buf_len += c < 0x80 ? 1 : c < 0x800 ? 2 : c < 0x10000 ? 3 : 4;
-  }
-
-  // allocate buffer
-  buf = new utils.Buf8(buf_len);
-
-  // convert
-  for (i = 0, m_pos = 0; i < buf_len; m_pos++) {
-    c = str.charCodeAt(m_pos);
-    if ((c & 0xfc00) === 0xd800 && (m_pos + 1 < str_len)) {
-      c2 = str.charCodeAt(m_pos + 1);
-      if ((c2 & 0xfc00) === 0xdc00) {
-        c = 0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00);
-        m_pos++;
-      }
-    }
-    if (c < 0x80) {
-      /* one byte */
-      buf[i++] = c;
-    } else if (c < 0x800) {
-      /* two bytes */
-      buf[i++] = 0xC0 | (c >>> 6);
-      buf[i++] = 0x80 | (c & 0x3f);
-    } else if (c < 0x10000) {
-      /* three bytes */
-      buf[i++] = 0xE0 | (c >>> 12);
-      buf[i++] = 0x80 | (c >>> 6 & 0x3f);
-      buf[i++] = 0x80 | (c & 0x3f);
-    } else {
-      /* four bytes */
-      buf[i++] = 0xf0 | (c >>> 18);
-      buf[i++] = 0x80 | (c >>> 12 & 0x3f);
-      buf[i++] = 0x80 | (c >>> 6 & 0x3f);
-      buf[i++] = 0x80 | (c & 0x3f);
-    }
-  }
-
-  return buf;
-};
-
-// Helper (used in 2 places)
-function buf2binstring(buf, len) {
-  // use fallback for big arrays to avoid stack overflow
-  if (len < 65537) {
-    if ((buf.subarray && STR_APPLY_UIA_OK) || (!buf.subarray && STR_APPLY_OK)) {
-      return String.fromCharCode.apply(null, utils.shrinkBuf(buf, len));
-    }
-  }
-
-  var result = '';
-  for (var i = 0; i < len; i++) {
-    result += String.fromCharCode(buf[i]);
-  }
-  return result;
-}
-
-
-// Convert byte array to binary string
-exports.buf2binstring = function (buf) {
-  return buf2binstring(buf, buf.length);
-};
-
-
-// Convert binary string (typed, when possible)
-exports.binstring2buf = function (str) {
-  var buf = new utils.Buf8(str.length);
-  for (var i = 0, len = buf.length; i < len; i++) {
-    buf[i] = str.charCodeAt(i);
-  }
-  return buf;
-};
-
-
-// convert array to string
-exports.buf2string = function (buf, max) {
-  var i, out, c, c_len;
-  var len = max || buf.length;
-
-  // Reserve max possible length (2 words per char)
-  // NB: by unknown reasons, Array is significantly faster for
-  //     String.fromCharCode.apply than Uint16Array.
-  var utf16buf = new Array(len * 2);
-
-  for (out = 0, i = 0; i < len;) {
-    c = buf[i++];
-    // quick process ascii
-    if (c < 0x80) { utf16buf[out++] = c; continue; }
-
-    c_len = _utf8len[c];
-    // skip 5 & 6 byte codes
-    if (c_len > 4) { utf16buf[out++] = 0xfffd; i += c_len - 1; continue; }
-
-    // apply mask on first byte
-    c &= c_len === 2 ? 0x1f : c_len === 3 ? 0x0f : 0x07;
-    // join the rest
-    while (c_len > 1 && i < len) {
-      c = (c << 6) | (buf[i++] & 0x3f);
-      c_len--;
-    }
-
-    // terminated by end of string?
-    if (c_len > 1) { utf16buf[out++] = 0xfffd; continue; }
-
-    if (c < 0x10000) {
-      utf16buf[out++] = c;
-    } else {
-      c -= 0x10000;
-      utf16buf[out++] = 0xd800 | ((c >> 10) & 0x3ff);
-      utf16buf[out++] = 0xdc00 | (c & 0x3ff);
-    }
-  }
-
-  return buf2binstring(utf16buf, out);
-};
-
-
-// Calculate max possible position in utf8 buffer,
-// that will not break sequence. If that's not possible
-// - (very small limits) return max size as is.
-//
-// buf[] - utf8 bytes array
-// max   - length limit (mandatory);
-exports.utf8border = function (buf, max) {
-  var pos;
-
-  max = max || buf.length;
-  if (max > buf.length) { max = buf.length; }
-
-  // go back from last position, until start of sequence found
-  pos = max - 1;
-  while (pos >= 0 && (buf[pos] & 0xC0) === 0x80) { pos--; }
-
-  // Fuckup - very small and broken sequence,
-  // return max, because we should return something anyway.
-  if (pos < 0) { return max; }
-
-  // If we came to start of buffer - that means vuffer is too small,
-  // return max too.
-  if (pos === 0) { return max; }
-
-  return (pos + _utf8len[buf[pos]] > max) ? pos : max;
-};
-
-
-/***/ },
-/* 46 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-// Note: adler32 takes 12% for level 0 and 2% for level 6.
-// It doesn't worth to make additional optimizationa as in original.
-// Small size is preferable.
-
-function adler32(adler, buf, len, pos) {
-  var s1 = (adler & 0xffff) |0,
-      s2 = ((adler >>> 16) & 0xffff) |0,
-      n = 0;
-
-  while (len !== 0) {
-    // Set limit ~ twice less than 5552, to keep
-    // s2 in 31-bits, because we force signed ints.
-    // in other case %= will fail.
-    n = len > 2000 ? 2000 : len;
-    len -= n;
-
-    do {
-      s1 = (s1 + buf[pos++]) |0;
-      s2 = (s2 + s1) |0;
-    } while (--n);
-
-    s1 %= 65521;
-    s2 %= 65521;
-  }
-
-  return (s1 | (s2 << 16)) |0;
-}
-
-
-module.exports = adler32;
-
-
-/***/ },
-/* 47 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-
-module.exports = {
-
-  /* Allowed flush values; see deflate() and inflate() below for details */
-  Z_NO_FLUSH:         0,
-  Z_PARTIAL_FLUSH:    1,
-  Z_SYNC_FLUSH:       2,
-  Z_FULL_FLUSH:       3,
-  Z_FINISH:           4,
-  Z_BLOCK:            5,
-  Z_TREES:            6,
-
-  /* Return codes for the compression/decompression functions. Negative values
-  * are errors, positive values are used for special but normal events.
-  */
-  Z_OK:               0,
-  Z_STREAM_END:       1,
-  Z_NEED_DICT:        2,
-  Z_ERRNO:           -1,
-  Z_STREAM_ERROR:    -2,
-  Z_DATA_ERROR:      -3,
-  //Z_MEM_ERROR:     -4,
-  Z_BUF_ERROR:       -5,
-  //Z_VERSION_ERROR: -6,
-
-  /* compression levels */
-  Z_NO_COMPRESSION:         0,
-  Z_BEST_SPEED:             1,
-  Z_BEST_COMPRESSION:       9,
-  Z_DEFAULT_COMPRESSION:   -1,
-
-
-  Z_FILTERED:               1,
-  Z_HUFFMAN_ONLY:           2,
-  Z_RLE:                    3,
-  Z_FIXED:                  4,
-  Z_DEFAULT_STRATEGY:       0,
-
-  /* Possible values of the data_type field (though see inflate()) */
-  Z_BINARY:                 0,
-  Z_TEXT:                   1,
-  //Z_ASCII:                1, // = Z_TEXT (deprecated)
-  Z_UNKNOWN:                2,
-
-  /* The deflate compression method */
-  Z_DEFLATED:               8
-  //Z_NULL:                 null // Use -1 or null inline, depending on var type
-};
-
-
-/***/ },
-/* 48 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-// Note: we can't get significant speed boost here.
-// So write code to minimize size - no pregenerated tables
-// and array tools dependencies.
-
-
-// Use ordinary array, since untyped makes no boost here
-function makeTable() {
-  var c, table = [];
-
-  for (var n = 0; n < 256; n++) {
-    c = n;
-    for (var k = 0; k < 8; k++) {
-      c = ((c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
-    }
-    table[n] = c;
-  }
-
-  return table;
-}
-
-// Create table on load. Just 255 signed longs. Not a problem.
-var crcTable = makeTable();
-
-
-function crc32(crc, buf, len, pos) {
-  var t = crcTable,
-      end = pos + len;
-
-  crc ^= -1;
-
-  for (var i = pos; i < end; i++) {
-    crc = (crc >>> 8) ^ t[(crc ^ buf[i]) & 0xFF];
-  }
-
-  return (crc ^ (-1)); // >>> 0;
-}
-
-
-module.exports = crc32;
-
-
-/***/ },
-/* 49 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-
-function ZStream() {
-  /* next input byte */
-  this.input = null; // JS specific, because we have no pointers
-  this.next_in = 0;
-  /* number of bytes available at input */
-  this.avail_in = 0;
-  /* total number of input bytes read so far */
-  this.total_in = 0;
-  /* next output byte should be put there */
-  this.output = null; // JS specific, because we have no pointers
-  this.next_out = 0;
-  /* remaining free space at output */
-  this.avail_out = 0;
-  /* total number of bytes output so far */
-  this.total_out = 0;
-  /* last error message, NULL if no error */
-  this.msg = ''/*Z_NULL*/;
-  /* not visible by applications */
-  this.state = null;
-  /* best guess about the data type: binary or text */
-  this.data_type = 2/*Z_UNKNOWN*/;
-  /* adler32 value of the uncompressed data */
-  this.adler = 0;
-}
-
-module.exports = ZStream;
-
-
-/***/ },
-/* 50 */
-/***/ function(module, exports) {
-
-
-
-/***/ },
-/* 51 */
-/***/ function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(23);
-const fs = __webpack_require__(50);
-const request = __webpack_require__(25);
-
-const Constants = __webpack_require__(0);
-const convertArrayBuffer = __webpack_require__(54);
-const User = __webpack_require__(6);
-const Message = __webpack_require__(11);
-const Guild = __webpack_require__(13);
-const Channel = __webpack_require__(8);
-const GuildMember = __webpack_require__(15);
-const Emoji = __webpack_require__(10);
-const ReactionEmoji = __webpack_require__(18);
-
-/**
- * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
- * extracting a User from a Message object.
- * @private
- */
-class ClientDataResolver {
-  /**
-   * @param {Client} client The client the resolver is for
-   */
-  constructor(client) {
-    this.client = client;
-  }
-
-  /**
-   * Data that resolves to give a User object. This can be:
-   * * A User object
-   * * A user ID
-   * * A Message object (resolves to the message author)
-   * * A Guild object (owner of the guild)
-   * * A GuildMember object
-   * @typedef {User|string|Message|Guild|GuildMember} UserResolvable
-   */
-
-  /**
-   * Resolves a UserResolvable to a User object
-   * @param {UserResolvable} user The UserResolvable to identify
-   * @returns {?User}
-   */
-  resolveUser(user) {
-    if (user instanceof User) return user;
-    if (typeof user === 'string') return this.client.users.get(user) || null;
-    if (user instanceof GuildMember) return user.user;
-    if (user instanceof Message) return user.author;
-    if (user instanceof Guild) return user.owner;
-    return null;
-  }
-
-  /**
-   * Resolves a UserResolvable to a user ID string
-   * @param {UserResolvable} user The UserResolvable to identify
-   * @returns {?string}
-   */
-  resolveUserID(user) {
-    if (user instanceof User || user instanceof GuildMember) return user.id;
-    if (typeof user === 'string') return user || null;
-    if (user instanceof Message) return user.author.id;
-    if (user instanceof Guild) return user.ownerID;
-    return null;
-  }
-
-  /**
-   * Data that resolves to give a Guild object. This can be:
-   * * A Guild object
-   * * A Guild ID
-   * @typedef {Guild|string} GuildResolvable
-   */
-
-  /**
-   * Resolves a GuildResolvable to a Guild object
-   * @param {GuildResolvable} guild The GuildResolvable to identify
-   * @returns {?Guild}
-   */
-  resolveGuild(guild) {
-    if (guild instanceof Guild) return guild;
-    if (typeof guild === 'string') return this.client.guilds.get(guild) || null;
-    return null;
-  }
-
-  /**
-   * Data that resolves to give a GuildMember object. This can be:
-   * * A GuildMember object
-   * * A User object
-   * @typedef {Guild} GuildMemberResolvable
-   */
-
-  /**
-   * Resolves a GuildMemberResolvable to a GuildMember object
-   * @param {GuildResolvable} guild The guild that the member is part of
-   * @param {UserResolvable} user The user that is part of the guild
-   * @returns {?GuildMember}
-   */
-  resolveGuildMember(guild, user) {
-    if (user instanceof GuildMember) return user;
-    guild = this.resolveGuild(guild);
-    user = this.resolveUser(user);
-    if (!guild || !user) return null;
-    return guild.members.get(user.id) || null;
-  }
-
-  /**
-   * Data that can be resolved to give a Channel. This can be:
-   * * A Channel object
-   * * A Message object (the channel the message was sent in)
-   * * A Guild object (the #general channel)
-   * * A channel ID
-   * @typedef {Channel|Guild|Message|string} ChannelResolvable
-   */
-
-  /**
-   * Resolves a ChannelResolvable to a Channel object
-   * @param {ChannelResolvable} channel The channel resolvable to resolve
-   * @returns {?Channel}
-   */
-  resolveChannel(channel) {
-    if (channel instanceof Channel) return channel;
-    if (channel instanceof Message) return channel.channel;
-    if (channel instanceof Guild) return channel.channels.get(channel.id) || null;
-    if (typeof channel === 'string') return this.client.channels.get(channel) || null;
-    return null;
-  }
-
-  /**
-   * Resolves a ChannelResolvable to a Channel object
-   * @param {ChannelResolvable} channel The channel resolvable to resolve
-   * @returns {?string}
-   */
-  resolveChannelID(channel) {
-    if (channel instanceof Channel) return channel.id;
-    if (typeof channel === 'string') return channel;
-    if (channel instanceof Message) return channel.channel.id;
-    if (channel instanceof Guild) return channel.defaultChannel.id;
-    return null;
-  }
-
-  /**
-   * Data that can be resolved to give an invite code. This can be:
-   * * An invite code
-   * * An invite URL
-   * @typedef {string} InviteResolvable
-   */
-
-  /**
-   * Resolves InviteResolvable to an invite code
-   * @param {InviteResolvable} data The invite resolvable to resolve
-   * @returns {string}
-   */
-  resolveInviteCode(data) {
-    const inviteRegex = /discord(?:app)?\.(?:gg|com\/invite)\/([a-z0-9]{5})/i;
-    const match = inviteRegex.exec(data);
-    if (match && match[1]) return match[1];
-    return data;
-  }
-
-  /**
-   * Data that can be resolved to give a permission number. This can be:
-   * * A string
-   * * A permission number
-   *
-   * Possible strings:
-   * ```js
-   * [
-   *   "CREATE_INSTANT_INVITE",
-   *   "KICK_MEMBERS",
-   *   "BAN_MEMBERS",
-   *   "ADMINISTRATOR",
-   *   "MANAGE_CHANNELS",
-   *   "MANAGE_GUILD",
-   *   "ADD_REACTIONS", // add reactions to messages
-   *   "READ_MESSAGES",
-   *   "SEND_MESSAGES",
-   *   "SEND_TTS_MESSAGES",
-   *   "MANAGE_MESSAGES",
-   *   "EMBED_LINKS",
-   *   "ATTACH_FILES",
-   *   "READ_MESSAGE_HISTORY",
-   *   "MENTION_EVERYONE",
-   *   "EXTERNAL_EMOJIS", // use external emojis
-   *   "CONNECT", // connect to voice
-   *   "SPEAK", // speak on voice
-   *   "MUTE_MEMBERS", // globally mute members on voice
-   *   "DEAFEN_MEMBERS", // globally deafen members on voice
-   *   "MOVE_MEMBERS", // move member's voice channels
-   *   "USE_VAD", // use voice activity detection
-   *   "CHANGE_NICKNAME",
-   *   "MANAGE_NICKNAMES", // change nicknames of others
-   *   "MANAGE_ROLES_OR_PERMISSIONS",
-   *   "MANAGE_WEBHOOKS",
-   *   "MANAGE_EMOJIS"
-   * ]
-   * ```
-   * @typedef {string|number} PermissionResolvable
-   */
-
-  /**
-   * Resolves a PermissionResolvable to a permission number
-   * @param {PermissionResolvable} permission The permission resolvable to resolve
-   * @returns {number}
-   */
-  resolvePermission(permission) {
-    if (typeof permission === 'string') permission = Constants.PermissionFlags[permission];
-    if (typeof permission !== 'number' || permission < 1) throw new Error(Constants.Errors.NOT_A_PERMISSION);
-    return permission;
-  }
-
-  /**
-   * Turn an array of permissions into a valid Discord permission bitfield
-   * @param {PermissionResolvable[]} permissions Permissions to resolve together
-   * @returns {number}
-   */
-  resolvePermissions(permissions) {
-    let bitfield = 0;
-    for (const permission of permissions) bitfield |= this.resolvePermission(permission);
-    return bitfield;
-  }
-
-  /**
-   * Data that can be resolved to give a string. This can be:
-   * * A string
-   * * An array (joined with a new line delimiter to give a string)
-   * * Any value
-   * @typedef {string|Array|*} StringResolvable
-   */
-
-  /**
-   * Resolves a StringResolvable to a string
-   * @param {StringResolvable} data The string resolvable to resolve
-   * @returns {string}
-   */
-  resolveString(data) {
-    if (typeof data === 'string') return data;
-    if (data instanceof Array) return data.join('\n');
-    return String(data);
-  }
-
-  /**
-   * Data that resolves to give a Base64 string, typically for image uploading. This can be:
-   * * A Buffer
-   * * A base64 string
-   * @typedef {Buffer|string} Base64Resolvable
-   */
-
-  /**
-   * Resolves a Base64Resolvable to a Base 64 image
-   * @param {Base64Resolvable} data The base 64 resolvable you want to resolve
-   * @returns {?string}
-   */
-  resolveBase64(data) {
-    if (data instanceof Buffer) return `data:image/jpg;base64,${data.toString('base64')}`;
-    return data;
-  }
-
-  /**
-   * Data that can be resolved to give a Buffer. This can be:
-   * * A Buffer
-   * * The path to a local file
-   * * A URL
-   * @typedef {string|Buffer} BufferResolvable
-   */
-
-  /**
-   * Resolves a BufferResolvable to a Buffer
-   * @param {BufferResolvable} resource The buffer resolvable to resolve
-   * @returns {Promise<Buffer>}
-   */
-  resolveBuffer(resource) {
-    if (resource instanceof Buffer) return Promise.resolve(resource);
-    if (this.client.browser && resource instanceof ArrayBuffer) return Promise.resolve(convertArrayBuffer(resource));
-
-    if (typeof resource === 'string') {
-      return new Promise((resolve, reject) => {
-        if (/^https?:\/\//.test(resource)) {
-          const req = request.get(resource).set('Content-Type', 'blob');
-          if (this.client.browser) req.responseType('arraybuffer');
-          req.end((err, res) => {
-            if (err) return reject(err);
-            if (this.client.browser) return resolve(convertArrayBuffer(res.xhr.response));
-            if (!(res.body instanceof Buffer)) return reject(new TypeError('The response body isn\'t a Buffer.'));
-            return resolve(res.body);
-          });
-        } else {
-          const file = path.resolve(resource);
-          fs.stat(file, (err, stats) => {
-            if (err) reject(err);
-            if (!stats || !stats.isFile()) throw new Error(`The file could not be found: ${file}`);
-            fs.readFile(file, (err2, data) => {
-              if (err2) reject(err2); else resolve(data);
-            });
-          });
-        }
-      });
-    }
-
-    return Promise.reject(new TypeError('The resource must be a string or Buffer.'));
-  }
-
-  /**
-   * Data that can be resolved to give an emoji identifier. This can be:
-   * * A string
-   * * An Emoji
-   * * A ReactionEmoji
-   * @typedef {string|Emoji|ReactionEmoji} EmojiIdentifierResolvable
-   */
-
-  /**
-   * Resolves an EmojiResolvable to an emoji identifier
-   * @param {EmojiIdentifierResolvable} emoji The emoji resolvable to resolve
-   * @returns {string}
-   */
-  resolveEmojiIdentifier(emoji) {
-    if (emoji instanceof Emoji || emoji instanceof ReactionEmoji) return emoji.identifier;
-    if (typeof emoji === 'string') {
-      if (!emoji.includes('%')) return encodeURIComponent(emoji);
-    }
-    return null;
-  }
-}
-
-module.exports = ClientDataResolver;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20).Buffer))
-
-/***/ },
-/* 52 */
-/***/ function(module, exports, __webpack_require__) {
-
-const UserAgentManager = __webpack_require__(115);
-const RESTMethods = __webpack_require__(112);
-const SequentialRequestHandler = __webpack_require__(114);
-const BurstRequestHandler = __webpack_require__(113);
-const APIRequest = __webpack_require__(111);
-const Constants = __webpack_require__(0);
-
-class RESTManager {
-  constructor(client) {
-    this.client = client;
-    this.handlers = {};
-    this.userAgentManager = new UserAgentManager(this);
-    this.methods = new RESTMethods(this);
-    this.rateLimitedEndpoints = {};
-    this.globallyRateLimited = false;
-  }
-
-  push(handler, apiRequest) {
-    return new Promise((resolve, reject) => {
-      handler.push({
-        request: apiRequest,
-        resolve,
-        reject,
-      });
-    });
-  }
-
-  getRequestHandler() {
-    switch (this.client.options.apiRequestMethod) {
-      case 'sequential':
-        return SequentialRequestHandler;
-      case 'burst':
-        return BurstRequestHandler;
-      default:
-        throw new Error(Constants.Errors.INVALID_RATE_LIMIT_METHOD);
-    }
-  }
-
-  makeRequest(method, url, auth, data, file) {
-    const apiRequest = new APIRequest(this, method, url, auth, data, file);
-
-    if (!this.handlers[apiRequest.route]) {
-      const RequestHandlerType = this.getRequestHandler();
-      this.handlers[apiRequest.route] = new RequestHandlerType(this, apiRequest.route);
-    }
-
-    return this.push(this.handlers[apiRequest.route], apiRequest);
-  }
-}
-
-module.exports = RESTManager;
-
-
-/***/ },
-/* 53 */
-/***/ function(module, exports) {
-
-/**
- * A base class for different types of rate limiting handlers for the REST API.
- * @private
- */
-class RequestHandler {
-  /**
-   * @param {RESTManager} restManager The REST manager to use
-   */
-  constructor(restManager) {
-    /**
-     * The RESTManager that instantiated this RequestHandler
-     * @type {RESTManager}
-     */
-    this.restManager = restManager;
-
-    /**
-     * A list of requests that have yet to be processed.
-     * @type {APIRequest[]}
-     */
-    this.queue = [];
-  }
-
-  /**
-   * Whether or not the client is being rate limited on every endpoint.
-   * @type {boolean}
-   */
-  get globalLimit() {
-    return this.restManager.globallyRateLimited;
-  }
-
-  set globalLimit(value) {
-    this.restManager.globallyRateLimited = value;
-  }
-
-  /**
-   * Push a new API request into this bucket
-   * @param {APIRequest} request The new request to push into the queue
-   */
-  push(request) {
-    this.queue.push(request);
-  }
-
-  /**
-   * Attempts to get this RequestHandler to process its current queue
-   */
-  handle() {
-    return;
-  }
-}
-
-module.exports = RequestHandler;
-
-
-/***/ },
-/* 54 */
-/***/ function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(Buffer) {function arrayBufferToBuffer(ab) {
-  const buffer = new Buffer(ab.byteLength);
-  const view = new Uint8Array(ab);
-  for (var i = 0; i < buffer.length; ++i) buffer[i] = view[i];
-  return buffer;
-}
-
-function str2ab(str) {
-  const buffer = new ArrayBuffer(str.length * 2);
-  const view = new Uint16Array(buffer);
-  for (var i = 0, strLen = str.length; i < strLen; i++) view[i] = str.charCodeAt(i);
-  return buffer;
-}
-
-module.exports = function convertArrayBuffer(x) {
-  if (typeof x === 'string') x = str2ab(x);
-  return arrayBufferToBuffer(x);
-};
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20).Buffer))
-
-/***/ },
-/* 55 */
-/***/ function(module, exports) {
-
-module.exports = function merge(def, given) {
-  if (!given) return def;
-  for (const key in def) {
-    if (!{}.hasOwnProperty.call(given, key)) {
-      given[key] = def[key];
-    } else if (given[key] === Object(given[key])) {
-      given[key] = merge(def[key], given[key]);
-    }
-  }
-
-  return given;
-};
-
-
-/***/ },
-/* 56 */
-/***/ function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(process) {const EventEmitter = __webpack_require__(21).EventEmitter;
-const mergeDefault = __webpack_require__(55);
-const Constants = __webpack_require__(0);
-const RESTManager = __webpack_require__(52);
-const ClientDataManager = __webpack_require__(82);
-const ClientManager = __webpack_require__(83);
-const ClientDataResolver = __webpack_require__(51);
-const ClientVoiceManager = __webpack_require__(158);
-const WebSocketManager = __webpack_require__(116);
-const ActionsManager = __webpack_require__(84);
-const Collection = __webpack_require__(3);
-const Presence = __webpack_require__(7).Presence;
-const ShardClientUtil = __webpack_require__(157);
-
-/**
- * The starting point for making a Discord Bot.
- * @extends {EventEmitter}
- */
-class Client extends EventEmitter {
-  /**
-   * @param {ClientOptions} [options] Options for the client
-   */
-  constructor(options = {}) {
-    super();
-
-    // Obtain shard details from environment
-    if (!options.shardId && 'SHARD_ID' in process.env) options.shardId = Number(process.env.SHARD_ID);
-    if (!options.shardCount && 'SHARD_COUNT' in process.env) options.shardCount = Number(process.env.SHARD_COUNT);
-
-    /**
-     * The options the client was instantiated with
-     * @type {ClientOptions}
-     */
-    this.options = mergeDefault(Constants.DefaultOptions, options);
-    this._validateOptions();
-
-    /**
-     * The REST manager of the client
-     * @type {RESTManager}
-     * @private
-     */
-    this.rest = new RESTManager(this);
-
-    /**
-     * The data manager of the Client
-     * @type {ClientDataManager}
-     * @private
-     */
-    this.dataManager = new ClientDataManager(this);
-
-    /**
-     * The manager of the Client
-     * @type {ClientManager}
-     * @private
-     */
-    this.manager = new ClientManager(this);
-
-    /**
-     * The WebSocket Manager of the Client
-     * @type {WebSocketManager}
-     * @private
-     */
-    this.ws = new WebSocketManager(this);
-
-    /**
-     * The Data Resolver of the Client
-     * @type {ClientDataResolver}
-     * @private
-     */
-    this.resolver = new ClientDataResolver(this);
-
-    /**
-     * The Action Manager of the Client
-     * @type {ActionsManager}
-     * @private
-     */
-    this.actions = new ActionsManager(this);
-
-    /**
-     * The Voice Manager of the Client (`null` in browsers)
-     * @type {?ClientVoiceManager}
-     * @private
-     */
-    this.voice = !this.browser ? new ClientVoiceManager(this) : null;
-
-    /**
-     * The shard helpers for the client (only if the process was spawned as a child, such as from a ShardingManager)
-     * @type {?ShardClientUtil}
-     */
-    this.shard = process.send ? ShardClientUtil.singleton(this) : null;
-
-    /**
-     * A collection of the Client's stored users
-     * @type {Collection<string, User>}
-     */
-    this.users = new Collection();
-
-    /**
-     * A collection of the Client's stored guilds
-     * @type {Collection<string, Guild>}
-     */
-    this.guilds = new Collection();
-
-    /**
-     * A collection of the Client's stored channels
-     * @type {Collection<string, Channel>}
-     */
-    this.channels = new Collection();
-
-    /**
-     * A collection of presences for friends of the logged in user.
-     * <warn>This is only filled when using a user account.</warn>
-     * @type {Collection<string, Presence>}
-     */
-    this.presences = new Collection();
-
-    if (!this.token && 'CLIENT_TOKEN' in process.env) {
-      /**
-       * The authorization token for the logged in user/bot.
-       * @type {?string}
-       */
-      this.token = process.env.CLIENT_TOKEN;
-    } else {
-      this.token = null;
-    }
-
-    /**
-     * The ClientUser representing the logged in Client
-     * @type {?ClientUser}
-     */
-    this.user = null;
-
-    /**
-     * The date at which the Client was regarded as being in the `READY` state.
-     * @type {?Date}
-     */
-    this.readyAt = null;
-
-    /**
-     * The previous heartbeat pings of the websocket (most recent first, limited to three elements)
-     * @type {number[]}
-     */
-    this.pings = [];
-
-    this._pingTimestamp = 0;
-    this._timeouts = new Set();
-    this._intervals = new Set();
-
-    if (this.options.messageSweepInterval > 0) {
-      this.setInterval(this.sweepMessages.bind(this), this.options.messageSweepInterval * 1000);
-    }
-  }
-
-  /**
-   * The status for the logged in Client.
-   * @type {?number}
-   * @readonly
-   */
-  get status() {
-    return this.ws.status;
-  }
-
-  /**
-   * The uptime for the logged in Client.
-   * @type {?number}
-   * @readonly
-   */
-  get uptime() {
-    return this.readyAt ? Date.now() - this.readyAt : null;
-  }
-
-  /**
-   * The average heartbeat ping of the websocket
-   * @type {number}
-   * @readonly
-   */
-  get ping() {
-    return this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length;
-  }
-
-  /**
-   * Returns a collection, mapping guild ID to voice connections.
-   * @type {Collection<string, VoiceConnection>}
-   * @readonly
-   */
-  get voiceConnections() {
-    if (this.browser) return new Collection();
-    return this.voice.connections;
-  }
-
-  /**
-   * The emojis that the client can use. Mapped by emoji ID.
-   * @type {Collection<string, Emoji>}
-   * @readonly
-   */
-  get emojis() {
-    const emojis = new Collection();
-    for (const guild of this.guilds.values()) {
-      for (const emoji of guild.emojis.values()) emojis.set(emoji.id, emoji);
-    }
-    return emojis;
-  }
-
-  /**
-   * The timestamp that the client was last ready at
-   * @type {?number}
-   * @readonly
-   */
-  get readyTimestamp() {
-    return this.readyAt ? this.readyAt.getTime() : null;
-  }
-
-  /**
-   * Whether the client is in a browser environment
-   * @type {boolean}
-   * @readonly
-   */
-  get browser() {
-    return typeof window !== 'undefined';
-  }
-
-  /**
-   * Logs the client in. If successful, resolves with the account's token. <warn>If you're making a bot, it's
-   * much better to use a bot account rather than a user account.
-   * Bot accounts have higher rate limits and have access to some features user accounts don't have. User bots
-   * that are making a lot of API requests can even be banned.</warn>
-   * @param  {string} token The token used for the account.
-   * @returns {Promise<string>}
-   * @example
-   * // log the client in using a token
-   * const token = 'my token';
-   * client.login(token);
-   * @example
-   * // log the client in using email and password
-   * const email = 'user@email.com';
-   * const password = 'supersecret123';
-   * client.login(email, password);
-   */
-  login(token) {
-    return this.rest.methods.login(token);
-  }
-
-  /**
-   * Destroys the client and logs out.
-   * @returns {Promise}
-   */
-  destroy() {
-    for (const t of this._timeouts) clearTimeout(t);
-    for (const i of this._intervals) clearInterval(i);
-    this._timeouts.clear();
-    this._intervals.clear();
-    return this.manager.destroy();
-  }
-
-  /**
-   * This shouldn't really be necessary to most developers as it is automatically invoked every 30 seconds, however
-   * if you wish to force a sync of guild data, you can use this.
-   * <warn>This is only available when using a user account.</warn>
-   * @param {Guild[]|Collection<string, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
-   */
-  syncGuilds(guilds = this.guilds) {
-    if (this.user.bot) return;
-    this.ws.send({
-      op: 12,
-      d: guilds instanceof Collection ? guilds.keyArray() : guilds.map(g => g.id),
-    });
-  }
-
-  /**
-   * Caches a user, or obtains it from the cache if it's already cached.
-   * <warn>This is only available when using a bot account.</warn>
-   * @param {string} id The ID of the user to obtain
-   * @returns {Promise<User>}
-   */
-  fetchUser(id) {
-    if (this.users.has(id)) return Promise.resolve(this.users.get(id));
-    return this.rest.methods.getUser(id);
-  }
-
-  /**
-   * Fetches an invite object from an invite code.
-   * @param {InviteResolvable} invite An invite code or URL
-   * @returns {Promise<Invite>}
-   */
-  fetchInvite(invite) {
-    const code = this.resolver.resolveInviteCode(invite);
-    return this.rest.methods.getInvite(code);
-  }
-
-  /**
-   * Fetch a webhook by ID.
-   * @param {string} id ID of the webhook
-   * @param {string} [token] Token for the webhook
-   * @returns {Promise<Webhook>}
-   */
-  fetchWebhook(id, token) {
-    return this.rest.methods.getWebhook(id, token);
-  }
-
-  /**
-   * Sweeps all channels' messages and removes the ones older than the max message lifetime.
-   * If the message has been edited, the time of the edit is used rather than the time of the original message.
-   * @param {number} [lifetime=this.options.messageCacheLifetime] Messages that are older than this (in seconds)
-   * will be removed from the caches. The default is based on the client's `messageCacheLifetime` option.
-   * @returns {number} Amount of messages that were removed from the caches,
-   * or -1 if the message cache lifetime is unlimited
-   */
-  sweepMessages(lifetime = this.options.messageCacheLifetime) {
-    if (typeof lifetime !== 'number' || isNaN(lifetime)) throw new TypeError('The lifetime must be a number.');
-    if (lifetime <= 0) {
-      this.emit('debug', 'Didn\'t sweep messages - lifetime is unlimited');
-      return -1;
-    }
-
-    const lifetimeMs = lifetime * 1000;
-    const now = Date.now();
-    let channels = 0;
-    let messages = 0;
-
-    for (const channel of this.channels.values()) {
-      if (!channel.messages) continue;
-      channels++;
-
-      for (const message of channel.messages.values()) {
-        if (now - (message.editedTimestamp || message.createdTimestamp) > lifetimeMs) {
-          channel.messages.delete(message.id);
-          messages++;
-        }
-      }
-    }
-
-    this.emit('debug', `Swept ${messages} messages older than ${lifetime} seconds in ${channels} text-based channels`);
-    return messages;
-  }
-
-  /**
-   * Gets the bot's OAuth2 application.
-   * <warn>This is only available when using a bot account.</warn>
-   * @returns {Promise<ClientOAuth2Application>}
-   */
-  fetchApplication() {
-    if (!this.user.bot) throw new Error(Constants.Errors.NO_BOT_ACCOUNT);
-    return this.rest.methods.getMyApplication();
-  }
-
-  /**
-   * Generate an invite link for your bot
-   * @param {PermissionResolvable[]|number} [permissions] An array of permissions to request
-   * @returns {Promise<string>} The invite link
-   * @example
-   * client.generateInvite(['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'])
-   *   .then(link => {
-   *     console.log(`Generated bot invite link: ${link}`);
-   *   });
-   */
-  generateInvite(permissions) {
-    if (permissions) {
-      if (permissions instanceof Array) permissions = this.resolver.resolvePermissions(permissions);
-    } else {
-      permissions = 0;
-    }
-    return this.fetchApplication().then(application =>
-      `https://discordapp.com/oauth2/authorize?client_id=${application.id}&permissions=${permissions}&scope=bot`
-    );
-  }
-
-  /**
-   * Sets a timeout that will be automatically cancelled if the client is destroyed.
-   * @param {Function} fn Function to execute
-   * @param {number} delay Time to wait before executing (in milliseconds)
-   * @param {...*} args Arguments for the function
-   * @returns {Timeout}
-   */
-  setTimeout(fn, delay, ...args) {
-    const timeout = setTimeout(() => {
-      fn();
-      this._timeouts.delete(timeout);
-    }, delay, ...args);
-    this._timeouts.add(timeout);
-    return timeout;
-  }
-
-  /**
-   * Clears a timeout
-   * @param {Timeout} timeout Timeout to cancel
-   */
-  clearTimeout(timeout) {
-    clearTimeout(timeout);
-    this._timeouts.delete(timeout);
-  }
-
-  /**
-   * Sets an interval that will be automatically cancelled if the client is destroyed.
-   * @param {Function} fn Function to execute
-   * @param {number} delay Time to wait before executing (in milliseconds)
-   * @param {...*} args Arguments for the function
-   * @returns {Timeout}
-   */
-  setInterval(fn, delay, ...args) {
-    const interval = setInterval(fn, delay, ...args);
-    this._intervals.add(interval);
-    return interval;
-  }
-
-  /**
-   * Clears an interval
-   * @param {Timeout} interval Interval to cancel
-   */
-  clearInterval(interval) {
-    clearInterval(interval);
-    this._intervals.delete(interval);
-  }
-
-  _pong(startTime) {
-    this.pings.unshift(Date.now() - startTime);
-    if (this.pings.length > 3) this.pings.length = 3;
-    this.ws.lastHeartbeatAck = true;
-  }
-
-  _setPresence(id, presence) {
-    if (this.presences.get(id)) {
-      this.presences.get(id).update(presence);
-      return;
-    }
-    this.presences.set(id, new Presence(presence));
-  }
-
-  _eval(script) {
-    return eval(script);
-  }
-
-  _validateOptions(options = this.options) {
-    if (typeof options.shardCount !== 'number' || isNaN(options.shardCount)) {
-      throw new TypeError('The shardCount option must be a number.');
-    }
-    if (typeof options.shardId !== 'number' || isNaN(options.shardId)) {
-      throw new TypeError('The shardId option must be a number.');
-    }
-    if (options.shardCount < 0) throw new RangeError('The shardCount option must be at least 0.');
-    if (options.shardId < 0) throw new RangeError('The shardId option must be at least 0.');
-    if (options.shardId !== 0 && options.shardId >= options.shardCount) {
-      throw new RangeError('The shardId option must be less than shardCount.');
-    }
-    if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
-      throw new TypeError('The messageCacheMaxSize option must be a number.');
-    }
-    if (typeof options.messageCacheLifetime !== 'number' || isNaN(options.messageCacheLifetime)) {
-      throw new TypeError('The messageCacheLifetime option must be a number.');
-    }
-    if (typeof options.messageSweepInterval !== 'number' || isNaN(options.messageSweepInterval)) {
-      throw new TypeError('The messageSweepInterval option must be a number.');
-    }
-    if (typeof options.fetchAllMembers !== 'boolean') {
-      throw new TypeError('The fetchAllMembers option must be a boolean.');
-    }
-    if (typeof options.disableEveryone !== 'boolean') {
-      throw new TypeError('The disableEveryone option must be a boolean.');
-    }
-    if (typeof options.restWsBridgeTimeout !== 'number' || isNaN(options.restWsBridgeTimeout)) {
-      throw new TypeError('The restWsBridgeTimeout option must be a number.');
-    }
-    if (!(options.disabledEvents instanceof Array)) throw new TypeError('The disabledEvents option must be an Array.');
-  }
-}
-
-module.exports = Client;
-
-/**
- * Emitted for general warnings
- * @event Client#warn
- * @param {string} info The warning
- */
-
-/**
- * Emitted for general debugging information
- * @event Client#debug
- * @param {string} info The debug information
- */
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
-
-/***/ },
-/* 57 */
-/***/ function(module, exports, __webpack_require__) {
-
-const Webhook = __webpack_require__(19);
-const RESTManager = __webpack_require__(52);
-const ClientDataResolver = __webpack_require__(51);
-const mergeDefault = __webpack_require__(55);
-const Constants = __webpack_require__(0);
-
-/**
- * The Webhook Client
- * @extends {Webhook}
- */
-class WebhookClient extends Webhook {
-  /**
-   * @param {string} id The id of the webhook.
-   * @param {string} token the token of the webhook.
-   * @param {ClientOptions} [options] Options for the client
-   * @example
-   * // create a new webhook and send a message
-   * let hook = new Discord.WebhookClient('1234', 'abcdef')
-   * hook.sendMessage('This will send a message').catch(console.error)
-   */
-  constructor(id, token, options) {
-    super(null, id, token);
-
-    /**
-     * The options the client was instantiated with
-     * @type {ClientOptions}
-     */
-    this.options = mergeDefault(Constants.DefaultOptions, options);
-
-    /**
-     * The REST manager of the client
-     * @type {RESTManager}
-     * @private
-     */
-    this.rest = new RESTManager(this);
-
-    /**
-     * The Data Resolver of the Client
-     * @type {ClientDataResolver}
-     * @private
-     */
-    this.resolver = new ClientDataResolver(this);
-  }
-}
-
-module.exports = WebhookClient;
-
-
-/***/ },
-/* 58 */
-/***/ function(module, exports, __webpack_require__) {
-
-module.exports = {
-  Client: __webpack_require__(56),
-  WebhookClient: __webpack_require__(57),
-  Shard: __webpack_require__(61),
-  ShardClientUtil: __webpack_require__(62),
-  ShardingManager: __webpack_require__(63),
-
-  Collection: __webpack_require__(3),
-  splitMessage: __webpack_require__(43),
-  escapeMarkdown: __webpack_require__(16),
-  fetchRecommendedShards: __webpack_require__(60),
-
-  Channel: __webpack_require__(8),
-  ClientOAuth2Application: __webpack_require__(28),
-  ClientUser: __webpack_require__(29),
-  DMChannel: __webpack_require__(30),
-  Emoji: __webpack_require__(10),
-  EvaluatedPermissions: __webpack_require__(17),
-  Game: __webpack_require__(7).Game,
-  GroupDMChannel: __webpack_require__(31),
-  Guild: __webpack_require__(13),
-  GuildChannel: __webpack_require__(14),
-  GuildMember: __webpack_require__(15),
-  Invite: __webpack_require__(32),
-  Message: __webpack_require__(11),
-  MessageAttachment: __webpack_require__(33),
-  MessageCollector: __webpack_require__(34),
-  MessageEmbed: __webpack_require__(35),
-  MessageReaction: __webpack_require__(36),
-  OAuth2Application: __webpack_require__(37),
-  PartialGuild: __webpack_require__(38),
-  PartialGuildChannel: __webpack_require__(39),
-  PermissionOverwrites: __webpack_require__(40),
-  Presence: __webpack_require__(7).Presence,
-  ReactionEmoji: __webpack_require__(18),
-  RichEmbed: __webpack_require__(59),
-  Role: __webpack_require__(9),
-  TextChannel: __webpack_require__(41),
-  User: __webpack_require__(6),
-  VoiceChannel: __webpack_require__(42),
-  Webhook: __webpack_require__(19),
-
-  version: __webpack_require__(27).version,
-  Constants: __webpack_require__(0),
-};
-
-if (typeof window !== 'undefined') window.Discord = module.exports; // eslint-disable-line no-undef
-
-
-/***/ },
-/* 59 */
-/***/ function(module, exports) {
-
-/**
- * A rich embed to be sent with a message
- * @param {Object} [data] Data to set in the rich embed
- */
-class RichEmbed {
-  constructor(data = {}) {
-    /**
-     * Title for this Embed
-     * @type {string}
-     */
-    this.title = data.title;
-
-    /**
-     * Description for this Embed
-     * @type {string}
-     */
-    this.description = data.description;
-
-    /**
-     * URL for this Embed
-     * @type {string}
-     */
-    this.url = data.url;
-
-    /**
-     * Color for this Embed
-     * @type {number}
-     */
-    this.color = data.color;
-
-    /**
-     * Author for this Embed
-     * @type {Object}
-     */
-    this.author = data.author;
-
-    /**
-     * Timestamp for this Embed
-     * @type {Date}
-     */
-    this.timestamp = data.timestamp;
-
-    /**
-     * Fields for this Embed
-     * @type {Object[]}
-     */
-    this.fields = data.fields || [];
-
-    /**
-     * Thumbnail for this Embed
-     * @type {Object}
-     */
-    this.thumbnail = data.thumbnail;
-
-    /**
-     * Image for this Embed
-     * @type {Object}
-     */
-    this.image = data.image;
-
-    /**
-     * Footer for this Embed
-     * @type {Object}
-     */
-    this.footer = data.footer;
-  }
-
-  /**
-   * Sets the title of this embed
-   * @param {StringResolvable} title The title
-   * @returns {RichEmbed} This embed
-   */
-  setTitle(title) {
-    title = resolveString(title);
-    if (title.length > 256) throw new RangeError('RichEmbed titles may not exceed 256 characters.');
-    this.title = title;
-    return this;
-  }
-
-  /**
-   * Sets the description of this embed
-   * @param {StringResolvable} description The description
-   * @returns {RichEmbed} This embed
-   */
-  setDescription(description) {
-    description = resolveString(description);
-    if (description.length > 2048) throw new RangeError('RichEmbed descriptions may not exceed 2048 characters.');
-    this.description = description;
-    return this;
-  }
-
-  /**
-   * Sets the URL of this embed
-   * @param {string} url The URL
-   * @returns {RichEmbed} This embed
-   */
-  setURL(url) {
-    this.url = url;
-    return this;
-  }
-
-  /**
-   * Sets the color of this embed
-   * @param {string|number|number[]} color The color to set
-   * @returns {RichEmbed} This embed
-   */
-  setColor(color) {
-    let radix = 10;
-    if (color instanceof Array) {
-      color = (color[0] << 16) + (color[1] << 8) + color[2];
-    } else if (typeof color === 'string' && color.startsWith('#')) {
-      radix = 16;
-      color = color.replace('#', '');
-    }
-    color = parseInt(color, radix);
-    if (color < 0 || color > 0xFFFFFF) {
-      throw new RangeError('RichEmbed color must be within the range 0 - 16777215 (0xFFFFFF).');
-    } else if (color && isNaN(color)) {
-      throw new TypeError('Unable to convert RichEmbed color to a number.');
-    }
-    this.color = color;
-    return this;
-  }
-
-  /**
-   * Sets the author of this embed
-   * @param {StringResolvable} name The name of the author
-   * @param {string} [icon] The icon URL of the author
-   * @param {string} [url] The URL of the author
-   * @returns {RichEmbed} This embed
-   */
-  setAuthor(name, icon, url) {
-    this.author = { name: resolveString(name), icon_url: icon, url };
-    return this;
-  }
-
-  /**
-   * Sets the timestamp of this embed
-   * @param {Date} [timestamp=current date] The timestamp
-   * @returns {RichEmbed} This embed
-   */
-  setTimestamp(timestamp = new Date()) {
-    this.timestamp = timestamp;
-    return this;
-  }
-
-  /**
-   * Adds a field to the embed (max 25)
-   * @param {StringResolvable} name The name of the field
-   * @param {StringResolvable} value The value of the field
-   * @param {boolean} [inline=false] Set the field to display inline
-   * @returns {RichEmbed} This embed
-   */
-  addField(name, value, inline = false) {
-    if (this.fields.length >= 25) throw new RangeError('RichEmbeds may not exceed 25 fields.');
-    name = resolveString(name);
-    if (name.length > 256) throw new RangeError('RichEmbed field names may not exceed 256 characters.');
-    value = resolveString(value);
-    if (value.length > 1024) throw new RangeError('RichEmbed field values may not exceed 1024 characters.');
-    this.fields.push({ name: String(name), value: value, inline });
-    return this;
-  }
-
-  /**
-   * Set the thumbnail of this embed
-   * @param {string} url The URL of the thumbnail
-   * @returns {RichEmbed} This embed
-   */
-  setThumbnail(url) {
-    this.thumbnail = { url };
-    return this;
-  }
-
-  /**
-   * Set the image of this embed
-   * @param {string} url The URL of the thumbnail
-   * @returns {RichEmbed} This embed
-   */
-  setImage(url) {
-    this.image = { url };
-    return this;
-  }
-
-  /**
-   * Sets the footer of this embed
-   * @param {StringResolvable} text The text of the footer
-   * @param {string} [icon] The icon URL of the footer
-   * @returns {RichEmbed} This embed
-   */
-  setFooter(text, icon) {
-    text = resolveString(text);
-    if (text.length > 2048) throw new RangeError('RichEmbed footer text may not exceed 2048 characters.');
-    this.footer = { text, icon_url: icon };
-    return this;
-  }
-}
-
-module.exports = RichEmbed;
-
-function resolveString(data) {
-  if (typeof data === 'string') return data;
-  if (data instanceof Array) return data.join('\n');
-  return String(data);
-}
-
-
-/***/ },
-/* 60 */
-/***/ function(module, exports, __webpack_require__) {
-
-const superagent = __webpack_require__(25);
-const botGateway = __webpack_require__(0).Endpoints.botGateway;
-
-/**
- * Gets the recommended shard count from Discord
- * @param {number} token Discord auth token
- * @returns {Promise<number>} the recommended number of shards
- */
-module.exports = function fetchRecommendedShards(token) {
-  return new Promise((resolve, reject) => {
-    if (!token) throw new Error('A token must be provided.');
-    superagent.get(botGateway)
-      .set('Authorization', `Bot ${token.replace(/^Bot\s*/i, '')}`)
-      .end((err, res) => {
-        if (err) reject(err);
-        resolve(res.body.shards);
-      });
-  });
-};
-
-
-/***/ },
-/* 61 */
-/***/ function(module, exports) {
-
-/* (ignored) */
-
-/***/ },
-/* 62 */
-/***/ function(module, exports) {
-
-/* (ignored) */
-
-/***/ },
-/* 63 */
-/***/ function(module, exports) {
-
-/* (ignored) */
-
-/***/ },
-/* 64 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.byteLength = byteLength
-exports.toByteArray = toByteArray
-exports.fromByteArray = fromByteArray
-
-var lookup = []
-var revLookup = []
-var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
-
-var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-for (var i = 0, len = code.length; i < len; ++i) {
-  lookup[i] = code[i]
-  revLookup[code.charCodeAt(i)] = i
-}
-
-revLookup['-'.charCodeAt(0)] = 62
-revLookup['_'.charCodeAt(0)] = 63
-
-function placeHoldersCount (b64) {
-  var len = b64.length
-  if (len % 4 > 0) {
-    throw new Error('Invalid string. Length must be a multiple of 4')
-  }
-
-  // the number of equal signs (place holders)
-  // if there are two placeholders, than the two characters before it
-  // represent one byte
-  // if there is only one, then the three characters before it represent 2 bytes
-  // this is just a cheap hack to not do indexOf twice
-  return b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0
-}
-
-function byteLength (b64) {
-  // base64 is 4/3 + up to two characters of the original data
-  return b64.length * 3 / 4 - placeHoldersCount(b64)
-}
-
-function toByteArray (b64) {
-  var i, j, l, tmp, placeHolders, arr
-  var len = b64.length
-  placeHolders = placeHoldersCount(b64)
-
-  arr = new Arr(len * 3 / 4 - placeHolders)
-
-  // if there are placeholders, only get up to the last complete 4 chars
-  l = placeHolders > 0 ? len - 4 : len
-
-  var L = 0
-
-  for (i = 0, j = 0; i < l; i += 4, j += 3) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)]
-    arr[L++] = (tmp >> 16) & 0xFF
-    arr[L++] = (tmp >> 8) & 0xFF
-    arr[L++] = tmp & 0xFF
-  }
-
-  if (placeHolders === 2) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4)
-    arr[L++] = tmp & 0xFF
-  } else if (placeHolders === 1) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2)
-    arr[L++] = (tmp >> 8) & 0xFF
-    arr[L++] = tmp & 0xFF
-  }
-
-  return arr
-}
-
-function tripletToBase64 (num) {
-  return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
-}
-
-function encodeChunk (uint8, start, end) {
-  var tmp
-  var output = []
-  for (var i = start; i < end; i += 3) {
-    tmp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
-    output.push(tripletToBase64(tmp))
-  }
-  return output.join('')
-}
-
-function fromByteArray (uint8) {
-  var tmp
-  var len = uint8.length
-  var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
-  var output = ''
-  var parts = []
-  var maxChunkLength = 16383 // must be multiple of 3
-
-  // go through the array every three bytes, we'll deal with trailing stuff later
-  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
-    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
-  }
-
-  // pad the end with zeros, but make sure to not forget the extra bytes
-  if (extraBytes === 1) {
-    tmp = uint8[len - 1]
-    output += lookup[tmp >> 2]
-    output += lookup[(tmp << 4) & 0x3F]
-    output += '=='
-  } else if (extraBytes === 2) {
-    tmp = (uint8[len - 2] << 8) + (uint8[len - 1])
-    output += lookup[tmp >> 10]
-    output += lookup[(tmp >> 4) & 0x3F]
-    output += lookup[(tmp << 2) & 0x3F]
-    output += '='
-  }
-
-  parts.push(output)
-
-  return parts.join('')
-}
-
-
-/***/ },
-/* 65 */
-/***/ function(module, exports, __webpack_require__) {
-
-
-/**
- * Expose `Emitter`.
- */
-
-if (true) {
-  module.exports = Emitter;
-}
-
-/**
- * Initialize a new `Emitter`.
- *
- * @api public
- */
-
-function Emitter(obj) {
-  if (obj) return mixin(obj);
-};
-
-/**
- * Mixin the emitter properties.
- *
- * @param {Object} obj
- * @return {Object}
- * @api private
- */
-
-function mixin(obj) {
-  for (var key in Emitter.prototype) {
-    obj[key] = Emitter.prototype[key];
-  }
-  return obj;
-}
-
-/**
- * Listen on the given `event` with `fn`.
- *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
- * @api public
- */
-
-Emitter.prototype.on =
-Emitter.prototype.addEventListener = function(event, fn){
-  this._callbacks = this._callbacks || {};
-  (this._callbacks['$' + event] = this._callbacks['$' + event] || [])
-    .push(fn);
-  return this;
-};
-
-/**
- * Adds an `event` listener that will be invoked a single
- * time then automatically removed.
- *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
- * @api public
- */
-
-Emitter.prototype.once = function(event, fn){
-  function on() {
-    this.off(event, on);
-    fn.apply(this, arguments);
-  }
-
-  on.fn = fn;
-  this.on(event, on);
-  return this;
-};
-
-/**
- * Remove the given callback for `event` or all
- * registered callbacks.
- *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
- * @api public
- */
-
-Emitter.prototype.off =
-Emitter.prototype.removeListener =
-Emitter.prototype.removeAllListeners =
-Emitter.prototype.removeEventListener = function(event, fn){
-  this._callbacks = this._callbacks || {};
-
-  // all
-  if (0 == arguments.length) {
-    this._callbacks = {};
-    return this;
-  }
-
-  // specific event
-  var callbacks = this._callbacks['$' + event];
-  if (!callbacks) return this;
-
-  // remove all handlers
-  if (1 == arguments.length) {
-    delete this._callbacks['$' + event];
-    return this;
-  }
-
-  // remove specific handler
-  var cb;
-  for (var i = 0; i < callbacks.length; i++) {
-    cb = callbacks[i];
-    if (cb === fn || cb.fn === fn) {
-      callbacks.splice(i, 1);
-      break;
-    }
-  }
-  return this;
-};
-
-/**
- * Emit `event` with the given args.
- *
- * @param {String} event
- * @param {Mixed} ...
- * @return {Emitter}
- */
-
-Emitter.prototype.emit = function(event){
-  this._callbacks = this._callbacks || {};
-  var args = [].slice.call(arguments, 1)
-    , callbacks = this._callbacks['$' + event];
-
-  if (callbacks) {
-    callbacks = callbacks.slice(0);
-    for (var i = 0, len = callbacks.length; i < len; ++i) {
-      callbacks[i].apply(this, args);
-    }
-  }
-
-  return this;
-};
-
-/**
- * Return array of callbacks for `event`.
- *
- * @param {String} event
- * @return {Array}
- * @api public
- */
-
-Emitter.prototype.listeners = function(event){
-  this._callbacks = this._callbacks || {};
-  return this._callbacks['$' + event] || [];
-};
-
-/**
- * Check if this emitter has `event` handlers.
- *
- * @param {String} event
- * @return {Boolean}
- * @api public
- */
-
-Emitter.prototype.hasListeners = function(event){
-  return !! this.listeners(event).length;
-};
-
-
-/***/ },
-/* 66 */
-/***/ function(module, exports) {
-
-exports.read = function (buffer, offset, isLE, mLen, nBytes) {
-  var e, m
-  var eLen = nBytes * 8 - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var nBits = -7
-  var i = isLE ? (nBytes - 1) : 0
-  var d = isLE ? -1 : 1
-  var s = buffer[offset + i]
-
-  i += d
-
-  e = s & ((1 << (-nBits)) - 1)
-  s >>= (-nBits)
-  nBits += eLen
-  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-  m = e & ((1 << (-nBits)) - 1)
-  e >>= (-nBits)
-  nBits += mLen
-  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-  if (e === 0) {
-    e = 1 - eBias
-  } else if (e === eMax) {
-    return m ? NaN : ((s ? -1 : 1) * Infinity)
-  } else {
-    m = m + Math.pow(2, mLen)
-    e = e - eBias
-  }
-  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
-}
-
-exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
-  var e, m, c
-  var eLen = nBytes * 8 - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
-  var i = isLE ? 0 : (nBytes - 1)
-  var d = isLE ? 1 : -1
-  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
-
-  value = Math.abs(value)
-
-  if (isNaN(value) || value === Infinity) {
-    m = isNaN(value) ? 1 : 0
-    e = eMax
-  } else {
-    e = Math.floor(Math.log(value) / Math.LN2)
-    if (value * (c = Math.pow(2, -e)) < 1) {
-      e--
-      c *= 2
-    }
-    if (e + eBias >= 1) {
-      value += rt / c
-    } else {
-      value += rt * Math.pow(2, 1 - eBias)
-    }
-    if (value * c >= 2) {
-      e++
-      c /= 2
-    }
-
-    if (e + eBias >= eMax) {
-      m = 0
-      e = eMax
-    } else if (e + eBias >= 1) {
-      m = (value * c - 1) * Math.pow(2, mLen)
-      e = e + eBias
-    } else {
-      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
-      e = 0
-    }
-  }
-
-  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
-
-  e = (e << mLen) | m
-  eLen += mLen
-  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
-
-  buffer[offset + i - d] |= s * 128
-}
-
-
-/***/ },
-/* 67 */
-/***/ function(module, exports) {
-
-var toString = {}.toString;
-
-module.exports = Array.isArray || function (arr) {
-  return toString.call(arr) == '[object Array]';
-};
-
-
-/***/ },
 /* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -13599,7 +13599,7 @@ var assign    = __webpack_require__(5).assign;
 
 var deflate   = __webpack_require__(69);
 var inflate   = __webpack_require__(70);
-var constants = __webpack_require__(47);
+var constants = __webpack_require__(46);
 
 var pako = {};
 
@@ -13618,9 +13618,9 @@ module.exports = pako;
 
 var zlib_deflate = __webpack_require__(71);
 var utils        = __webpack_require__(5);
-var strings      = __webpack_require__(45);
+var strings      = __webpack_require__(44);
 var msg          = __webpack_require__(22);
-var ZStream      = __webpack_require__(49);
+var ZStream      = __webpack_require__(48);
 
 var toString = Object.prototype.toString;
 
@@ -14025,10 +14025,10 @@ exports.gzip = gzip;
 
 var zlib_inflate = __webpack_require__(74);
 var utils        = __webpack_require__(5);
-var strings      = __webpack_require__(45);
-var c            = __webpack_require__(47);
+var strings      = __webpack_require__(44);
+var c            = __webpack_require__(46);
 var msg          = __webpack_require__(22);
-var ZStream      = __webpack_require__(49);
+var ZStream      = __webpack_require__(48);
 var GZheader     = __webpack_require__(72);
 
 var toString = Object.prototype.toString;
@@ -14449,8 +14449,8 @@ exports.ungzip  = inflate;
 
 var utils   = __webpack_require__(5);
 var trees   = __webpack_require__(76);
-var adler32 = __webpack_require__(46);
-var crc32   = __webpack_require__(48);
+var adler32 = __webpack_require__(45);
+var crc32   = __webpack_require__(47);
 var msg     = __webpack_require__(22);
 
 /* Public constants ==========================================================*/
@@ -16691,8 +16691,8 @@ module.exports = function inflate_fast(strm, start) {
 
 
 var utils         = __webpack_require__(5);
-var adler32       = __webpack_require__(46);
-var crc32         = __webpack_require__(48);
+var adler32       = __webpack_require__(45);
+var crc32         = __webpack_require__(47);
 var inflate_fast  = __webpack_require__(73);
 var inflate_table = __webpack_require__(75);
 
@@ -21825,7 +21825,6 @@ module.exports = APIRequest;
 /* 112 */
 /***/ function(module, exports, __webpack_require__) {
 
-const long = __webpack_require__(44);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const splitMessage = __webpack_require__(43);
@@ -22512,7 +22511,7 @@ module.exports = RESTMethods;
 /* 113 */
 /***/ function(module, exports, __webpack_require__) {
 
-const RequestHandler = __webpack_require__(53);
+const RequestHandler = __webpack_require__(52);
 
 class BurstRequestHandler extends RequestHandler {
   constructor(restManager, endpoint) {
@@ -22588,7 +22587,7 @@ module.exports = BurstRequestHandler;
 /* 114 */
 /***/ function(module, exports, __webpack_require__) {
 
-const RequestHandler = __webpack_require__(53);
+const RequestHandler = __webpack_require__(52);
 
 /**
  * Handles API Requests sequentially, i.e. we wait until the current request is finished before moving onto
@@ -22729,9 +22728,9 @@ module.exports = UserAgentManager;
 /* WEBPACK VAR INJECTION */(function(Buffer) {const browser = typeof window !== 'undefined';
 const EventEmitter = __webpack_require__(21).EventEmitter;
 const Constants = __webpack_require__(0);
-const convertArrayBuffer = __webpack_require__(54);
+const convertArrayBuffer = __webpack_require__(53);
 const pako = __webpack_require__(68);
-const zlib = __webpack_require__(50);
+const zlib = __webpack_require__(49);
 const PacketManager = __webpack_require__(117);
 
 let WebSocket, erlpack;
@@ -24369,7 +24368,7 @@ module.exports = function parseEmoji(text) {
 /* 156 */
 /***/ function(module, exports, __webpack_require__) {
 
-const long = __webpack_require__(44);
+const long = __webpack_require__(67);
 
 /**
  * @typedef {Object} MessageSearchOptions
