@@ -6,7 +6,7 @@ cache:
     - node_modules
 install: npm install
 script:
-  - npm run test
+  - npm run lint
   - bash ./deploy/deploy.sh
 env:
   global:
