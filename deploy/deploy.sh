@@ -14,23 +14,25 @@ function build {
   VERSIONED=false npm run web-dist
 }
 
-# For PRs or Node 7, only run tests
+# Only run tests for PRs
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  echo -e "\e[36m\e[4m\e[1mThis is a PR build for #$TRAVIS_PULL_REQUEST - only running tests"
-  tests
-fi
-if [ "$TRAVIS_NODE_VERSION" != "6" ]; then
-  echo -e "\e[36m\e[4m\e[1mThis is a Node v$TRAVIS_NODE_VERSION build - only running tests"
+  echo -e "\e[36m\e[1mThis is a PR build for #$TRAVIS_PULL_REQUEST - only running tests"
   tests
 fi
 
 # Figure out the source of the build
 if [ -n "$TRAVIS_TAG" ]; then
-  echo -e "\e[36m\e[4m\e[1mThis is a tag build for $TRAVIS_TAG"
+  echo -e "\e[36m\e[1mThis is a tag build for $TRAVIS_TAG"
   SOURCE=$TRAVIS_TAG
 else
-  echo -e "\e[36m\e[4m\e[1mThis is a branch build for $TRAVIS_BRANCH"
+  echo -e "\e[36m\e[1mThis is a branch build for $TRAVIS_BRANCH"
   SOURCE=$TRAVIS_BRANCH
+fi
+
+# Only run tests for Node versions other than 6
+if [ "$TRAVIS_NODE_VERSION" != "6" ]; then
+  echo -e "\e[36m\e[1mThis is a Node v$TRAVIS_NODE_VERSION build - only running tests"
+  tests
 fi
 
 build
