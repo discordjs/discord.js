@@ -80,6 +80,7 @@ class StreamDispatcher extends EventEmitter {
    * @param {number} volume The volume that you want to set
    */
   setVolume(volume) {
+    this.emit('volumeChange', this.streamOptions.volume, volume);
     this.streamOptions.volume = volume;
   }
 
@@ -88,7 +89,7 @@ class StreamDispatcher extends EventEmitter {
    * @param {number} db The decibels
    */
   setVolumeDecibels(db) {
-    this.streamOptions.volume = Math.pow(10, db / 20);
+    this.setVolume(Math.pow(10, db / 20));
   }
 
   /**
@@ -96,7 +97,7 @@ class StreamDispatcher extends EventEmitter {
    * @param {number} value The value for the volume
    */
   setVolumeLogarithmic(value) {
-    this.streamOptions.volume = Math.pow(value, 1.660964);
+    this.setVolume(Math.pow(value, 1.660964));
   }
 
   /**
@@ -128,9 +129,10 @@ class StreamDispatcher extends EventEmitter {
     this.emit('speaking', value);
   }
 
-  sendBuffer(buffer, sequence, timestamp) {
+  sendBuffer(buffer, sequence, timestamp, opusPacket) {
+    opusPacket = opusPacket || this.player.opusEncoder.encode(buffer);
     let repeats = this.passes;
-    const packet = this.createPacket(sequence, timestamp, this.player.opusEncoder.encode(buffer));
+    const packet = this.createPacket(sequence, timestamp, opusPacket);
     while (repeats--) {
       this.player.voiceConnection.sockets.udp.send(packet)
         .catch(e => this.emit('debug', `Failed to send a packet ${e}`));
@@ -168,7 +170,7 @@ class StreamDispatcher extends EventEmitter {
     return out;
   }
 
-  process(buffer, controlled) {
+  process(buffer, controlled, packet) {
     try {
       if (this.destroyed) {
         this.setSpeaking(false);
@@ -206,6 +208,14 @@ class StreamDispatcher extends EventEmitter {
          */
         this.emit('start');
         data.startTime = Date.now();
+      }
+
+      if (packet) {
+        data.count++;
+        data.sequence = data.sequence < 65535 ? data.sequence + 1 : 0;
+        data.timestamp = data.timestamp + 4294967295 ? data.timestamp + 960 : 0;
+        this.sendBuffer(null, data.sequence, data.timestamp, packet);
+        return;
       }
 
       const bufferLength = 1920 * data.channels;
