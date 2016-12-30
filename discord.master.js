@@ -63,14 +63,14 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 58);
+/******/ 	return __webpack_require__(__webpack_require__.s = 57);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {exports.Package = __webpack_require__(30);
+/* WEBPACK VAR INJECTION */(function(process) {exports.Package = __webpack_require__(27);
 
 /**
  * Options for a Client.
@@ -444,7 +444,7 @@ for (const key in PermissionFlags) _ALL_PERMISSIONS |= PermissionFlags[key];
 exports.ALL_PERMISSIONS = _ALL_PERMISSIONS;
 exports.DEFAULT_PERMISSIONS = 104324097;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
 
 /***/ },
 /* 1 */
@@ -1366,6 +1366,79 @@ exports.Game = Game;
 
 /***/ },
 /* 8 */
+/***/ function(module, exports) {
+
+/**
+ * Represents any channel on Discord
+ */
+class Channel {
+  constructor(client, data) {
+    /**
+     * The client that instantiated the Channel
+     * @name Channel#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: client });
+
+    /**
+     * The type of the channel, either:
+     * * `dm` - a DM channel
+     * * `group` - a Group DM channel
+     * * `text` - a guild text channel
+     * * `voice` - a guild voice channel
+     * @type {string}
+     */
+    this.type = null;
+
+    if (data) this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The unique ID of the channel
+     * @type {string}
+     */
+    this.id = data.id;
+  }
+
+  /**
+   * The timestamp the channel was created at
+   * @type {number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    return (this.id / 4194304) + 1420070400000;
+  }
+
+  /**
+   * The time the channel was created
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * Deletes the channel
+   * @returns {Promise<Channel>}
+   * @example
+   * // delete the channel
+   * channel.delete()
+   *  .then() // success
+   *  .catch(console.error); // log error
+   */
+  delete() {
+    return this.client.rest.methods.deleteChannel(this);
+  }
+}
+
+module.exports = Channel;
+
+
+/***/ },
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -1712,79 +1785,6 @@ module.exports = Role;
 
 
 /***/ },
-/* 9 */
-/***/ function(module, exports) {
-
-/**
- * Represents any channel on Discord
- */
-class Channel {
-  constructor(client, data) {
-    /**
-     * The client that instantiated the Channel
-     * @name Channel#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
-
-    /**
-     * The type of the channel, either:
-     * * `dm` - a DM channel
-     * * `group` - a Group DM channel
-     * * `text` - a guild text channel
-     * * `voice` - a guild voice channel
-     * @type {string}
-     */
-    this.type = null;
-
-    if (data) this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The unique ID of the channel
-     * @type {string}
-     */
-    this.id = data.id;
-  }
-
-  /**
-   * The timestamp the channel was created at
-   * @type {number}
-   * @readonly
-   */
-  get createdTimestamp() {
-    return (this.id / 4194304) + 1420070400000;
-  }
-
-  /**
-   * The time the channel was created
-   * @type {Date}
-   * @readonly
-   */
-  get createdAt() {
-    return new Date(this.createdTimestamp);
-  }
-
-  /**
-   * Deletes the channel
-   * @returns {Promise<Channel>}
-   * @example
-   * // delete the channel
-   * channel.delete()
-   *  .then() // success
-   *  .catch(console.error); // log error
-   */
-  delete() {
-    return this.client.rest.methods.deleteChannel(this);
-  }
-}
-
-module.exports = Channel;
-
-
-/***/ },
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -1934,15 +1934,15 @@ module.exports = Emoji;
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-const Attachment = __webpack_require__(34);
-const Embed = __webpack_require__(36);
-const MessageReaction = __webpack_require__(37);
+const Attachment = __webpack_require__(33);
+const Embed = __webpack_require__(35);
+const MessageReaction = __webpack_require__(36);
 const Collection = __webpack_require__(3);
 const Constants = __webpack_require__(0);
 const escapeMarkdown = __webpack_require__(16);
 
 // Done purely for GuildMember, which would cause a bad circular dependency
-const Discord = __webpack_require__(58);
+const Discord = __webpack_require__(57);
 
 /**
  * Represents a message on Discord
@@ -2514,12 +2514,10 @@ module.exports = Message;
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-const path = __webpack_require__(26);
+const path = __webpack_require__(23);
 const Message = __webpack_require__(11);
-const MessageCollector = __webpack_require__(35);
-const MessageSearch = __webpack_require__(53);
+const MessageCollector = __webpack_require__(34);
 const Collection = __webpack_require__(3);
-
 
 /**
  * Interface for classes that have text-channel-like features
@@ -2734,20 +2732,22 @@ class TextBasedChannel {
   /**
    * Performs a search
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
-   * @returns {MessageSearch}
+   * @returns {Promise<Array<Message[]>>}
+   * An array containing arrays of messages. Each inner array is a search context cluster.
+   * The message which has triggered the result will have the `hit` property set to `true`.
    * @example
-   * channel.search()
-   *   .content('discord.js')
-   *   .before('2016-11-17')
-   *   .execute()
-   *   .then(res => {
-   *     const hit = res[0].find(m => m.hit).content;
-   *     console.log(`I found: **${hit}**`);
-   *   })
-   *   .catch(console.error);
+   * channel.search({
+   *   content: 'discord.js',
+   *   before: '2016-11-17'
+   * })
+   * .then(res => {
+   *   const hit = res[0].find(m => m.hit).content;
+   *   console.log(`I found: **${hit}**`);
+   * })
+   * .catch(console.error);
    */
   search(options) {
-    return new MessageSearch(this, options);
+    return this.client.rest.methods.search(this, options);
   }
 
   /**
@@ -2919,15 +2919,14 @@ exports.applyToClass = (structure, full = false) => {
 /***/ function(module, exports, __webpack_require__) {
 
 const User = __webpack_require__(6);
-const Role = __webpack_require__(8);
+const Role = __webpack_require__(9);
 const Emoji = __webpack_require__(10);
 const Presence = __webpack_require__(7).Presence;
 const GuildMember = __webpack_require__(15);
-const MessageSearch = __webpack_require__(53);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const cloneObject = __webpack_require__(4);
-const arraysEqual = __webpack_require__(155);
+const arraysEqual = __webpack_require__(154);
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -3627,20 +3626,22 @@ class Guild {
   /**
    * Performs a search
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
-   * @returns {MessageSearch}
+   * @returns {Promise<Array<Message[]>>}
+   * An array containing arrays of messages. Each inner array is a search context cluster.
+   * The message which has triggered the result will have the `hit` property set to `true`.
    * @example
-   * guild.search()
-   *   .content('discord.js')
-   *   .before('2016-11-17')
-   *   .execute()
-   *   .then(res => {
-   *     const hit = res[0].find(m => m.hit).content;
-   *     console.log(`I found: **${hit}**`);
-   *   })
-   *   .catch(console.error);
+   * guild.search({
+   *   content: 'discord.js',
+   *   before: '2016-11-17'
+   * })
+   * .then(res => {
+   *   const hit = res[0].find(m => m.hit).content;
+   *   console.log(`I found: **${hit}**`);
+   * })
+   * .catch(console.error);
    */
   search(options) {
-    return new MessageSearch(this, options);
+    return this.client.rest.methods.search(this, options);
   }
 
   /**
@@ -3795,10 +3796,10 @@ module.exports = Guild;
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-const Channel = __webpack_require__(9);
-const Role = __webpack_require__(8);
-const PermissionOverwrites = __webpack_require__(41);
-const EvaluatedPermissions = __webpack_require__(18);
+const Channel = __webpack_require__(8);
+const Role = __webpack_require__(9);
+const PermissionOverwrites = __webpack_require__(40);
+const EvaluatedPermissions = __webpack_require__(17);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 
@@ -4101,8 +4102,8 @@ module.exports = GuildChannel;
 /***/ function(module, exports, __webpack_require__) {
 
 const TextBasedChannel = __webpack_require__(12);
-const Role = __webpack_require__(8);
-const EvaluatedPermissions = __webpack_require__(18);
+const Role = __webpack_require__(9);
+const EvaluatedPermissions = __webpack_require__(17);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(7).Presence;
@@ -4559,72 +4560,6 @@ module.exports = function escapeMarkdown(text, onlyCodeBlock = false, onlyInline
 /* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
-const Channel = __webpack_require__(9);
-const TextBasedChannel = __webpack_require__(12);
-const Collection = __webpack_require__(3);
-
-/**
- * Represents a direct message channel between two users.
- * @extends {Channel}
- * @implements {TextBasedChannel}
- */
-class DMChannel extends Channel {
-  constructor(client, data) {
-    super(client, data);
-    this.type = 'dm';
-    this.messages = new Collection();
-    this._typing = new Map();
-  }
-
-  setup(data) {
-    super.setup(data);
-
-    /**
-     * The recipient on the other end of the DM
-     * @type {User}
-     */
-    this.recipient = this.client.dataManager.newUser(data.recipients[0]);
-
-    this.lastMessageID = data.last_message_id;
-  }
-
-  /**
-   * When concatenated with a string, this automatically concatenates the recipient's mention instead of the
-   * DM channel object.
-   * @returns {string}
-   */
-  toString() {
-    return this.recipient.toString();
-  }
-
-  // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  send() { return; }
-  sendMessage() { return; }
-  sendEmbed() { return; }
-  sendFile() { return; }
-  sendCode() { return; }
-  fetchMessage() { return; }
-  fetchMessages() { return; }
-  fetchPinnedMessages() { return; }
-  startTyping() { return; }
-  stopTyping() { return; }
-  get typing() { return; }
-  get typingCount() { return; }
-  createCollector() { return; }
-  awaitMessages() { return; }
-  bulkDelete() { return; }
-  _cacheMessage() { return; }
-}
-
-TextBasedChannel.applyToClass(DMChannel, true);
-
-module.exports = DMChannel;
-
-
-/***/ },
-/* 18 */
-/***/ function(module, exports, __webpack_require__) {
-
 const Constants = __webpack_require__(0);
 
 /**
@@ -4695,157 +4630,7 @@ module.exports = EvaluatedPermissions;
 
 
 /***/ },
-/* 19 */
-/***/ function(module, exports, __webpack_require__) {
-
-const Channel = __webpack_require__(9);
-const TextBasedChannel = __webpack_require__(12);
-const Collection = __webpack_require__(3);
-
-/*
-{ type: 3,
-  recipients:
-   [ { username: 'Charlie',
-       id: '123',
-       discriminator: '6631',
-       avatar: '123' },
-     { username: 'Ben',
-       id: '123',
-       discriminator: '2055',
-       avatar: '123' },
-     { username: 'Adam',
-       id: '123',
-       discriminator: '2406',
-       avatar: '123' } ],
-  owner_id: '123',
-  name: null,
-  last_message_id: '123',
-  id: '123',
-  icon: null }
-*/
-
-/**
- * Represents a Group DM on Discord
- * @extends {Channel}
- * @implements {TextBasedChannel}
- */
-class GroupDMChannel extends Channel {
-  constructor(client, data) {
-    super(client, data);
-    this.type = 'group';
-    this.messages = new Collection();
-    this._typing = new Map();
-  }
-
-  setup(data) {
-    super.setup(data);
-
-    /**
-     * The name of this Group DM, can be null if one isn't set.
-     * @type {string}
-     */
-    this.name = data.name;
-
-    /**
-     * A hash of the Group DM icon.
-     * @type {string}
-     */
-    this.icon = data.icon;
-
-    /**
-     * The user ID of this Group DM's owner.
-     * @type {string}
-     */
-    this.ownerID = data.owner_id;
-
-    if (!this.recipients) {
-      /**
-       * A collection of the recipients of this DM, mapped by their ID.
-       * @type {Collection<string, User>}
-       */
-      this.recipients = new Collection();
-    }
-
-    if (data.recipients) {
-      for (const recipient of data.recipients) {
-        const user = this.client.dataManager.newUser(recipient);
-        this.recipients.set(user.id, user);
-      }
-    }
-
-    this.lastMessageID = data.last_message_id;
-  }
-
-  /**
-   * The owner of this Group DM.
-   * @type {User}
-   * @readonly
-   */
-  get owner() {
-    return this.client.users.get(this.ownerID);
-  }
-
-  /**
-   * Whether this channel equals another channel. It compares all properties, so for most operations
-   * it is advisable to just compare `channel.id === channel2.id` as it is much faster and is often
-   * what most users need.
-   * @param {GroupDMChannel} channel Channel to compare with
-   * @returns {boolean}
-   */
-  equals(channel) {
-    const equal = channel &&
-      this.id === channel.id &&
-      this.name === channel.name &&
-      this.icon === channel.icon &&
-      this.ownerID === channel.ownerID;
-
-    if (equal) {
-      return this.recipients.equals(channel.recipients);
-    }
-
-    return equal;
-  }
-
-  /**
-   * When concatenated with a string, this automatically concatenates the channel's name instead of the Channel object.
-   * @returns {string}
-   * @example
-   * // logs: Hello from My Group DM!
-   * console.log(`Hello from ${channel}!`);
-   * @example
-   * // logs: Hello from My Group DM!
-   * console.log(`Hello from ' + channel + '!');
-   */
-  toString() {
-    return this.name;
-  }
-
-  // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  send() { return; }
-  sendMessage() { return; }
-  sendEmbed() { return; }
-  sendFile() { return; }
-  sendCode() { return; }
-  fetchMessage() { return; }
-  fetchMessages() { return; }
-  fetchPinnedMessages() { return; }
-  startTyping() { return; }
-  stopTyping() { return; }
-  get typing() { return; }
-  get typingCount() { return; }
-  createCollector() { return; }
-  awaitMessages() { return; }
-  bulkDelete() { return; }
-  _cacheMessage() { return; }
-}
-
-TextBasedChannel.applyToClass(GroupDMChannel, true);
-
-module.exports = GroupDMChannel;
-
-
-/***/ },
-/* 20 */
+/* 18 */
 /***/ function(module, exports) {
 
 /**
@@ -4900,112 +4685,10 @@ module.exports = ReactionEmoji;
 
 
 /***/ },
-/* 21 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
-const GuildChannel = __webpack_require__(14);
-const TextBasedChannel = __webpack_require__(12);
-const Collection = __webpack_require__(3);
-
-/**
- * Represents a guild text channel on Discord.
- * @extends {GuildChannel}
- * @implements {TextBasedChannel}
- */
-class TextChannel extends GuildChannel {
-  constructor(guild, data) {
-    super(guild, data);
-    this.type = 'text';
-    this.messages = new Collection();
-    this._typing = new Map();
-  }
-
-  setup(data) {
-    super.setup(data);
-
-    /**
-     * The topic of the text channel, if there is one.
-     * @type {?string}
-     */
-    this.topic = data.topic;
-
-    this.lastMessageID = data.last_message_id;
-  }
-
-  /**
-   * A collection of members that can see this channel, mapped by their ID.
-   * @type {Collection<string, GuildMember>}
-   * @readonly
-   */
-  get members() {
-    const members = new Collection();
-    for (const member of this.guild.members.values()) {
-      if (this.permissionsFor(member).hasPermission('READ_MESSAGES')) {
-        members.set(member.id, member);
-      }
-    }
-    return members;
-  }
-
-  /**
-   * Fetch all webhooks for the channel.
-   * @returns {Promise<Collection<string, Webhook>>}
-   */
-  fetchWebhooks() {
-    return this.client.rest.methods.getChannelWebhooks(this);
-  }
-
-  /**
-   * Create a webhook for the channel.
-   * @param {string} name The name of the webhook.
-   * @param {BufferResolvable} avatar The avatar for the webhook.
-   * @returns {Promise<Webhook>} webhook The created webhook.
-   * @example
-   * channel.createWebhook('Snek', 'http://snek.s3.amazonaws.com/topSnek.png')
-   *  .then(webhook => console.log(`Created Webhook ${webhook}`))
-   *  .catch(console.error)
-   */
-  createWebhook(name, avatar) {
-    return new Promise(resolve => {
-      if (avatar.startsWith('data:')) {
-        resolve(this.client.rest.methods.createWebhook(this, name, avatar));
-      } else {
-        this.client.resolver.resolveBuffer(avatar).then(data =>
-           resolve(this.client.rest.methods.createWebhook(this, name, data))
-        );
-      }
-    });
-  }
-
-  // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  send() { return; }
-  sendMessage() { return; }
-  sendEmbed() { return; }
-  sendFile() { return; }
-  sendCode() { return; }
-  fetchMessage() { return; }
-  fetchMessages() { return; }
-  fetchPinnedMessages() { return; }
-  startTyping() { return; }
-  stopTyping() { return; }
-  get typing() { return; }
-  get typingCount() { return; }
-  createCollector() { return; }
-  awaitMessages() { return; }
-  bulkDelete() { return; }
-  _cacheMessage() { return; }
-}
-
-TextBasedChannel.applyToClass(TextChannel, true);
-
-module.exports = TextChannel;
-
-
-/***/ },
-/* 22 */
-/***/ function(module, exports, __webpack_require__) {
-
-const path = __webpack_require__(26);
+const path = __webpack_require__(23);
 const escapeMarkdown = __webpack_require__(16);
 
 /**
@@ -5208,7 +4891,7 @@ module.exports = Webhook;
 
 
 /***/ },
-/* 23 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5222,9 +4905,9 @@ module.exports = Webhook;
 
 
 
-var base64 = __webpack_require__(64)
-var ieee754 = __webpack_require__(66)
-var isArray = __webpack_require__(67)
+var base64 = __webpack_require__(63)
+var ieee754 = __webpack_require__(65)
+var isArray = __webpack_require__(66)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -7002,10 +6685,10 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(82)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(81)))
 
 /***/ },
-/* 24 */
+/* 21 */
 /***/ function(module, exports) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -7313,7 +6996,7 @@ function isUndefined(arg) {
 
 
 /***/ },
-/* 25 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7333,7 +7016,7 @@ module.exports = {
 
 
 /***/ },
-/* 26 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -7561,10 +7244,10 @@ var substr = 'ab'.substr(-1) === 'b'
     }
 ;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
 
 /***/ },
-/* 27 */
+/* 24 */
 /***/ function(module, exports) {
 
 // shim for using process in browser
@@ -7750,7 +7433,7 @@ process.umask = function() { return 0; };
 
 
 /***/ },
-/* 28 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 /**
@@ -7767,11 +7450,11 @@ if (typeof window !== 'undefined') { // Browser window
   root = this;
 }
 
-var Emitter = __webpack_require__(65);
-var RequestBase = __webpack_require__(79);
-var isObject = __webpack_require__(29);
-var isFunction = __webpack_require__(78);
-var ResponseBase = __webpack_require__(80);
+var Emitter = __webpack_require__(64);
+var RequestBase = __webpack_require__(78);
+var isObject = __webpack_require__(26);
+var isFunction = __webpack_require__(77);
+var ResponseBase = __webpack_require__(79);
 
 /**
  * Noop.
@@ -8660,7 +8343,7 @@ request.put = function(url, data, fn){
 
 
 /***/ },
-/* 29 */
+/* 26 */
 /***/ function(module, exports) {
 
 /**
@@ -8679,7 +8362,7 @@ module.exports = isObject;
 
 
 /***/ },
-/* 30 */
+/* 27 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -8770,11 +8453,11 @@ module.exports = {
 };
 
 /***/ },
-/* 31 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 const User = __webpack_require__(6);
-const OAuth2Application = __webpack_require__(38);
+const OAuth2Application = __webpack_require__(37);
 
 /**
  * Represents the client's OAuth2 Application
@@ -8802,7 +8485,7 @@ module.exports = ClientOAuth2Application;
 
 
 /***/ },
-/* 32 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 const User = __webpack_require__(6);
@@ -9089,11 +8772,227 @@ module.exports = ClientUser;
 
 
 /***/ },
-/* 33 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
-const PartialGuild = __webpack_require__(39);
-const PartialGuildChannel = __webpack_require__(40);
+const Channel = __webpack_require__(8);
+const TextBasedChannel = __webpack_require__(12);
+const Collection = __webpack_require__(3);
+
+/**
+ * Represents a direct message channel between two users.
+ * @extends {Channel}
+ * @implements {TextBasedChannel}
+ */
+class DMChannel extends Channel {
+  constructor(client, data) {
+    super(client, data);
+    this.type = 'dm';
+    this.messages = new Collection();
+    this._typing = new Map();
+  }
+
+  setup(data) {
+    super.setup(data);
+
+    /**
+     * The recipient on the other end of the DM
+     * @type {User}
+     */
+    this.recipient = this.client.dataManager.newUser(data.recipients[0]);
+
+    this.lastMessageID = data.last_message_id;
+  }
+
+  /**
+   * When concatenated with a string, this automatically concatenates the recipient's mention instead of the
+   * DM channel object.
+   * @returns {string}
+   */
+  toString() {
+    return this.recipient.toString();
+  }
+
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  send() { return; }
+  sendMessage() { return; }
+  sendEmbed() { return; }
+  sendFile() { return; }
+  sendCode() { return; }
+  fetchMessage() { return; }
+  fetchMessages() { return; }
+  fetchPinnedMessages() { return; }
+  startTyping() { return; }
+  stopTyping() { return; }
+  get typing() { return; }
+  get typingCount() { return; }
+  createCollector() { return; }
+  awaitMessages() { return; }
+  bulkDelete() { return; }
+  _cacheMessage() { return; }
+}
+
+TextBasedChannel.applyToClass(DMChannel, true);
+
+module.exports = DMChannel;
+
+
+/***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+const Channel = __webpack_require__(8);
+const TextBasedChannel = __webpack_require__(12);
+const Collection = __webpack_require__(3);
+
+/*
+{ type: 3,
+  recipients:
+   [ { username: 'Charlie',
+       id: '123',
+       discriminator: '6631',
+       avatar: '123' },
+     { username: 'Ben',
+       id: '123',
+       discriminator: '2055',
+       avatar: '123' },
+     { username: 'Adam',
+       id: '123',
+       discriminator: '2406',
+       avatar: '123' } ],
+  owner_id: '123',
+  name: null,
+  last_message_id: '123',
+  id: '123',
+  icon: null }
+*/
+
+/**
+ * Represents a Group DM on Discord
+ * @extends {Channel}
+ * @implements {TextBasedChannel}
+ */
+class GroupDMChannel extends Channel {
+  constructor(client, data) {
+    super(client, data);
+    this.type = 'group';
+    this.messages = new Collection();
+    this._typing = new Map();
+  }
+
+  setup(data) {
+    super.setup(data);
+
+    /**
+     * The name of this Group DM, can be null if one isn't set.
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * A hash of the Group DM icon.
+     * @type {string}
+     */
+    this.icon = data.icon;
+
+    /**
+     * The user ID of this Group DM's owner.
+     * @type {string}
+     */
+    this.ownerID = data.owner_id;
+
+    if (!this.recipients) {
+      /**
+       * A collection of the recipients of this DM, mapped by their ID.
+       * @type {Collection<string, User>}
+       */
+      this.recipients = new Collection();
+    }
+
+    if (data.recipients) {
+      for (const recipient of data.recipients) {
+        const user = this.client.dataManager.newUser(recipient);
+        this.recipients.set(user.id, user);
+      }
+    }
+
+    this.lastMessageID = data.last_message_id;
+  }
+
+  /**
+   * The owner of this Group DM.
+   * @type {User}
+   * @readonly
+   */
+  get owner() {
+    return this.client.users.get(this.ownerID);
+  }
+
+  /**
+   * Whether this channel equals another channel. It compares all properties, so for most operations
+   * it is advisable to just compare `channel.id === channel2.id` as it is much faster and is often
+   * what most users need.
+   * @param {GroupDMChannel} channel Channel to compare with
+   * @returns {boolean}
+   */
+  equals(channel) {
+    const equal = channel &&
+      this.id === channel.id &&
+      this.name === channel.name &&
+      this.icon === channel.icon &&
+      this.ownerID === channel.ownerID;
+
+    if (equal) {
+      return this.recipients.equals(channel.recipients);
+    }
+
+    return equal;
+  }
+
+  /**
+   * When concatenated with a string, this automatically concatenates the channel's name instead of the Channel object.
+   * @returns {string}
+   * @example
+   * // logs: Hello from My Group DM!
+   * console.log(`Hello from ${channel}!`);
+   * @example
+   * // logs: Hello from My Group DM!
+   * console.log(`Hello from ' + channel + '!');
+   */
+  toString() {
+    return this.name;
+  }
+
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  send() { return; }
+  sendMessage() { return; }
+  sendEmbed() { return; }
+  sendFile() { return; }
+  sendCode() { return; }
+  fetchMessage() { return; }
+  fetchMessages() { return; }
+  fetchPinnedMessages() { return; }
+  startTyping() { return; }
+  stopTyping() { return; }
+  get typing() { return; }
+  get typingCount() { return; }
+  createCollector() { return; }
+  awaitMessages() { return; }
+  bulkDelete() { return; }
+  _cacheMessage() { return; }
+}
+
+TextBasedChannel.applyToClass(GroupDMChannel, true);
+
+module.exports = GroupDMChannel;
+
+
+/***/ },
+/* 32 */
+/***/ function(module, exports, __webpack_require__) {
+
+const PartialGuild = __webpack_require__(38);
+const PartialGuildChannel = __webpack_require__(39);
 const Constants = __webpack_require__(0);
 
 /*
@@ -9254,7 +9153,7 @@ module.exports = Invite;
 
 
 /***/ },
-/* 34 */
+/* 33 */
 /***/ function(module, exports) {
 
 /**
@@ -9328,10 +9227,10 @@ module.exports = MessageAttachment;
 
 
 /***/ },
-/* 35 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
-const EventEmitter = __webpack_require__(24).EventEmitter;
+const EventEmitter = __webpack_require__(21).EventEmitter;
 const Collection = __webpack_require__(3);
 
 /**
@@ -9485,7 +9384,7 @@ module.exports = MessageCollector;
 
 
 /***/ },
-/* 36 */
+/* 35 */
 /***/ function(module, exports) {
 
 /**
@@ -9784,12 +9683,12 @@ module.exports = MessageEmbed;
 
 
 /***/ },
-/* 37 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
 const Emoji = __webpack_require__(10);
-const ReactionEmoji = __webpack_require__(20);
+const ReactionEmoji = __webpack_require__(18);
 
 /**
  * Represents a reaction to a message
@@ -9882,7 +9781,7 @@ module.exports = MessageReaction;
 
 
 /***/ },
-/* 38 */
+/* 37 */
 /***/ function(module, exports) {
 
 /**
@@ -9970,7 +9869,7 @@ module.exports = OAuth2Application;
 
 
 /***/ },
-/* 39 */
+/* 38 */
 /***/ function(module, exports) {
 
 /*
@@ -10027,7 +9926,7 @@ module.exports = PartialGuild;
 
 
 /***/ },
-/* 40 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -10077,7 +9976,7 @@ module.exports = PartialGuildChannel;
 
 
 /***/ },
-/* 41 */
+/* 40 */
 /***/ function(module, exports) {
 
 /**
@@ -10123,6 +10022,108 @@ class PermissionOverwrites {
 }
 
 module.exports = PermissionOverwrites;
+
+
+/***/ },
+/* 41 */
+/***/ function(module, exports, __webpack_require__) {
+
+const GuildChannel = __webpack_require__(14);
+const TextBasedChannel = __webpack_require__(12);
+const Collection = __webpack_require__(3);
+
+/**
+ * Represents a guild text channel on Discord.
+ * @extends {GuildChannel}
+ * @implements {TextBasedChannel}
+ */
+class TextChannel extends GuildChannel {
+  constructor(guild, data) {
+    super(guild, data);
+    this.type = 'text';
+    this.messages = new Collection();
+    this._typing = new Map();
+  }
+
+  setup(data) {
+    super.setup(data);
+
+    /**
+     * The topic of the text channel, if there is one.
+     * @type {?string}
+     */
+    this.topic = data.topic;
+
+    this.lastMessageID = data.last_message_id;
+  }
+
+  /**
+   * A collection of members that can see this channel, mapped by their ID.
+   * @type {Collection<string, GuildMember>}
+   * @readonly
+   */
+  get members() {
+    const members = new Collection();
+    for (const member of this.guild.members.values()) {
+      if (this.permissionsFor(member).hasPermission('READ_MESSAGES')) {
+        members.set(member.id, member);
+      }
+    }
+    return members;
+  }
+
+  /**
+   * Fetch all webhooks for the channel.
+   * @returns {Promise<Collection<string, Webhook>>}
+   */
+  fetchWebhooks() {
+    return this.client.rest.methods.getChannelWebhooks(this);
+  }
+
+  /**
+   * Create a webhook for the channel.
+   * @param {string} name The name of the webhook.
+   * @param {BufferResolvable} avatar The avatar for the webhook.
+   * @returns {Promise<Webhook>} webhook The created webhook.
+   * @example
+   * channel.createWebhook('Snek', 'http://snek.s3.amazonaws.com/topSnek.png')
+   *  .then(webhook => console.log(`Created Webhook ${webhook}`))
+   *  .catch(console.error)
+   */
+  createWebhook(name, avatar) {
+    return new Promise(resolve => {
+      if (avatar.startsWith('data:')) {
+        resolve(this.client.rest.methods.createWebhook(this, name, avatar));
+      } else {
+        this.client.resolver.resolveBuffer(avatar).then(data =>
+           resolve(this.client.rest.methods.createWebhook(this, name, data))
+        );
+      }
+    });
+  }
+
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  send() { return; }
+  sendMessage() { return; }
+  sendEmbed() { return; }
+  sendFile() { return; }
+  sendCode() { return; }
+  fetchMessage() { return; }
+  fetchMessages() { return; }
+  fetchPinnedMessages() { return; }
+  startTyping() { return; }
+  stopTyping() { return; }
+  get typing() { return; }
+  get typingCount() { return; }
+  createCollector() { return; }
+  awaitMessages() { return; }
+  bulkDelete() { return; }
+  _cacheMessage() { return; }
+}
+
+TextBasedChannel.applyToClass(TextChannel, true);
+
+module.exports = TextChannel;
 
 
 /***/ },
@@ -10655,19 +10656,19 @@ module.exports = ZStream;
 /* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(26);
+/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(23);
 const fs = __webpack_require__(49);
-const request = __webpack_require__(28);
+const request = __webpack_require__(25);
 
 const Constants = __webpack_require__(0);
-const convertArrayBuffer = __webpack_require__(54);
+const convertArrayBuffer = __webpack_require__(53);
 const User = __webpack_require__(6);
 const Message = __webpack_require__(11);
 const Guild = __webpack_require__(13);
-const Channel = __webpack_require__(9);
+const Channel = __webpack_require__(8);
 const GuildMember = __webpack_require__(15);
 const Emoji = __webpack_require__(10);
-const ReactionEmoji = __webpack_require__(20);
+const ReactionEmoji = __webpack_require__(18);
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
@@ -10978,17 +10979,17 @@ class ClientDataResolver {
 
 module.exports = ClientDataResolver;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20).Buffer))
 
 /***/ },
 /* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
-const UserAgentManager = __webpack_require__(116);
-const RESTMethods = __webpack_require__(113);
-const SequentialRequestHandler = __webpack_require__(115);
-const BurstRequestHandler = __webpack_require__(114);
-const APIRequest = __webpack_require__(112);
+const UserAgentManager = __webpack_require__(115);
+const RESTMethods = __webpack_require__(112);
+const SequentialRequestHandler = __webpack_require__(114);
+const BurstRequestHandler = __webpack_require__(113);
+const APIRequest = __webpack_require__(111);
 const Constants = __webpack_require__(0);
 
 class RESTManager {
@@ -11098,227 +11099,6 @@ module.exports = RequestHandler;
 /* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
-const long = __webpack_require__(68);
-let TextChannel, DMChannel, GroupDMChannel, Guild;
-
-/**
- * @typedef {Object} MessageSearchOptions
- * @property {string} [content] Message content
- * @property {string} [maxID] Maximum ID for the filter
- * @property {string} [minID] Minimum ID for the filter
- * @property {string} [has] One of `link`, `embed`, `file`, `video`, `image`, or `sound`
- * @property {string} [channelID] Channel ID to limit search to (only for guild search endpoint)
- * @property {string} [authorID] Author ID to limit search
- * @property {string} [sortBy='recent'] `recent` or `relevant`
- * @property {number} [contextSize=2] How many messages to get around the matched message (0 to 2)
- * @property {number} [limit=25] Maximum number of results to get (1 to 25)
- */
-
-/**
- * Fluent interface for running a search against a guild or channel
- */
-class MessageSearch {
-  /**
-   * @param {TextChannel|DMChannel|GroupDMChannel|Guild} target Target of the search
-   * @param {MessageSearchOptions} [options] Options for the search
-   */
-  constructor(target, options = {}) {
-    if (!TextChannel) {
-      TextChannel = __webpack_require__(21);
-      DMChannel = __webpack_require__(17);
-      GroupDMChannel = __webpack_require__(19);
-      Guild = __webpack_require__(13);
-    }
-
-    if (target instanceof TextChannel || target instanceof DMChannel || target instanceof GroupDMChannel) {
-      /**
-       * The type of search, either `channel` or `guild`
-       * @type {string}
-       */
-      this.type = 'channel';
-    } else if (target instanceof Guild) {
-      this.type = 'guild';
-    } else {
-      throw new TypeError('Target must be a TextChannel, DMChannel, GroupDMChannel, or Guild.');
-    }
-
-    /**
-     * Client to use
-     * @type {Client}
-     */
-    this.client = target.client;
-
-    /**
-     * ID of the search target
-     * @type {string}
-     */
-    this.id = target.id;
-
-    /**
-     * Options for the search
-     * @type {MessageSearchOptions}
-     */
-    this.options = options;
-  }
-
-  /**
-   * Sets the content for the search
-   * @param {string} content Content to search for
-   * @returns {MessageSearch}
-   */
-  content(content) {
-    this.options.content = content;
-    return this;
-  }
-
-  /**
-   * Sets the minimum ID for the search
-   * @param {string} id Snowflake minimum ID
-   * @returns {MessageSearch}
-   */
-  minID(id) {
-    this.options.minID = id;
-    return this;
-  }
-
-  /**
-   * Sets the maximum ID for the search
-   * @param {string} id Snowflake maximum ID
-   * @returns {MessageSearch}
-   */
-  maxID(id) {
-    this.options.maxID = id;
-    return this;
-  }
-
-  /**
-   * Sets the before date for the search
-   * @param {Date} date Date to find messages before
-   * @returns {MessageSearch}
-   */
-  before(date) {
-    if (typeof date !== Date) date = new Date(date);
-    return this.maxID(long.fromNumber(date.getTime() - 14200704e5).shiftLeft(22).toString());
-  }
-
-  /**
-   * Sets the after date for the search
-   * @param {Date} date Date to find messages after
-   * @returns {MessageSearch}
-   */
-  after(date) {
-    if (typeof date !== Date) date = new Date(date);
-    return this.minID(long.fromNumber(date.getTime() - 14200704e5).shiftLeft(22).toString());
-  }
-
-  /**
-   * Sets the during date for the search
-   * @param {Date} date Date to find messages during (range of date to date + 24 hours)
-   * @returns {MessageSearch}
-   */
-  during(date) {
-    if (typeof date !== Date) date = new Date(date);
-    const t = date.getTime() - 14200704e5;
-    this.minID(long.fromNumber(t).shiftLeft(22).toString());
-    this.maxID(long.fromNumber(t + 86400000).shift(222).toString());
-    return this;
-  }
-
-  /**
-   * Sets the filter for the search
-   * @param {string} type Filter for some type of embed or attachment that can be in the message
-   * must be one of ['link', 'embed', 'file', 'video', 'image', 'sound']
-   * @returns {MessageSearch}
-   */
-  has(type) {
-    const allowed = ['link', 'embed', 'file', 'video', 'image', 'sound'];
-    if (!allowed.includes(type)) throw new Error(`Type must be one of [${allowed.join(', ')}]`);
-    this.options.has = type;
-    return this;
-  }
-
-  /**
-   * Sets the author for the search
-   * @param {UserResolvable} user User to only find messages from
-   * @returns {MessageSearch}
-   */
-  from(user) {
-    this.options.authorID = this.client.resolver.resolverUserID(user);
-    return this;
-  }
-
-  /**
-   * Sets the channel for the search
-   * @param {ChannelResolvable} channel Channel to only find messages from
-   * <warn>This is only for use with a guild search</warn>
-   * @returns {MessageSearch}
-   */
-  in(channel) {
-    this.options.channelID = this.client.resolver.resolveChannelID(channel);
-    return this;
-  }
-
-  /**
-   * Sets the maximum results for the search
-   * @param {number} limit Maximum number of results (1 to 25)
-   * @returns {MessageSearch}
-   */
-  limit(limit) {
-    if (limit < 1 || limit > 25) throw new RangeError('Limit must be within 1 to 25.');
-    this.options.limit = limit;
-    return this;
-  }
-
-  /**
-   * Sets the context size for the search
-   * @param {number} size Number of messages to get around the matched message (0 to 2)
-   * @returns {MessageSearch}
-   */
-  contextSize(size) {
-    if (size < 0 || size > 2) throw new RangeError('Context size must be within 0 to 2');
-    this.options.contextSize = size;
-    return this;
-  }
-
-  /**
-   * Sets the sorting order for the search
-   * @param {string} [type='recent'] Sorting type (`recent` or `relevant`)
-   * @returns {MessageSearch}
-   */
-  sort(type) {
-    if (type !== 'recent' || type !== 'relevant') throw new Error('Sort type must be `recent` or `relevant`.');
-    this.options.sortBy = type;
-    return this;
-  }
-
-  /**
-   * Executes the search
-   * @returns {Promise<Array<Message[]>>}
-   * An array containing arrays of messages. Each inner array is a search context cluster.
-   * The message which has triggered the result will have the `hit` property set to `true`.
-   */
-  execute() {
-    return this.client.rest.methods.search(this.type, this.id, {
-      content: this.options.content,
-      max_id: this.options.maxID,
-      min_id: this.options.minID,
-      has: this.options.has,
-      channel_id: this.options.channelID,
-      author_id: this.options.authorID,
-      context_size: this.options.contextSize,
-      sort_by: this.options.sortBy,
-      limit: this.options.limit,
-    });
-  }
-}
-
-module.exports = MessageSearch;
-
-
-/***/ },
-/* 54 */
-/***/ function(module, exports, __webpack_require__) {
-
 /* WEBPACK VAR INJECTION */(function(Buffer) {function arrayBufferToBuffer(ab) {
   const buffer = new Buffer(ab.byteLength);
   const view = new Uint8Array(ab);
@@ -11338,10 +11118,10 @@ module.exports = function convertArrayBuffer(x) {
   return arrayBufferToBuffer(x);
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20).Buffer))
 
 /***/ },
-/* 55 */
+/* 54 */
 /***/ function(module, exports) {
 
 module.exports = function merge(def, given) {
@@ -11359,22 +11139,22 @@ module.exports = function merge(def, given) {
 
 
 /***/ },
-/* 56 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {const EventEmitter = __webpack_require__(24).EventEmitter;
-const mergeDefault = __webpack_require__(55);
+/* WEBPACK VAR INJECTION */(function(process) {const EventEmitter = __webpack_require__(21).EventEmitter;
+const mergeDefault = __webpack_require__(54);
 const Constants = __webpack_require__(0);
 const RESTManager = __webpack_require__(51);
-const ClientDataManager = __webpack_require__(83);
-const ClientManager = __webpack_require__(84);
+const ClientDataManager = __webpack_require__(82);
+const ClientManager = __webpack_require__(83);
 const ClientDataResolver = __webpack_require__(50);
-const ClientVoiceManager = __webpack_require__(158);
-const WebSocketManager = __webpack_require__(117);
-const ActionsManager = __webpack_require__(85);
+const ClientVoiceManager = __webpack_require__(157);
+const WebSocketManager = __webpack_require__(116);
+const ActionsManager = __webpack_require__(84);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(7).Presence;
-const ShardClientUtil = __webpack_require__(157);
+const ShardClientUtil = __webpack_require__(156);
 
 /**
  * The starting point for making a Discord Bot.
@@ -11841,16 +11621,16 @@ module.exports = Client;
  * @param {string} info The debug information
  */
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
 
 /***/ },
-/* 57 */
+/* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
-const Webhook = __webpack_require__(22);
+const Webhook = __webpack_require__(19);
 const RESTManager = __webpack_require__(51);
 const ClientDataResolver = __webpack_require__(50);
-const mergeDefault = __webpack_require__(55);
+const mergeDefault = __webpack_require__(54);
 const Constants = __webpack_require__(0);
 
 /**
@@ -11896,52 +11676,52 @@ module.exports = WebhookClient;
 
 
 /***/ },
-/* 58 */
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = {
-  Client: __webpack_require__(56),
-  WebhookClient: __webpack_require__(57),
-  Shard: __webpack_require__(61),
-  ShardClientUtil: __webpack_require__(62),
-  ShardingManager: __webpack_require__(63),
+  Client: __webpack_require__(55),
+  WebhookClient: __webpack_require__(56),
+  Shard: __webpack_require__(60),
+  ShardClientUtil: __webpack_require__(61),
+  ShardingManager: __webpack_require__(62),
 
   Collection: __webpack_require__(3),
   splitMessage: __webpack_require__(43),
   escapeMarkdown: __webpack_require__(16),
-  fetchRecommendedShards: __webpack_require__(60),
+  fetchRecommendedShards: __webpack_require__(59),
 
-  Channel: __webpack_require__(9),
-  ClientOAuth2Application: __webpack_require__(31),
-  ClientUser: __webpack_require__(32),
-  DMChannel: __webpack_require__(17),
+  Channel: __webpack_require__(8),
+  ClientOAuth2Application: __webpack_require__(28),
+  ClientUser: __webpack_require__(29),
+  DMChannel: __webpack_require__(30),
   Emoji: __webpack_require__(10),
-  EvaluatedPermissions: __webpack_require__(18),
+  EvaluatedPermissions: __webpack_require__(17),
   Game: __webpack_require__(7).Game,
-  GroupDMChannel: __webpack_require__(19),
+  GroupDMChannel: __webpack_require__(31),
   Guild: __webpack_require__(13),
   GuildChannel: __webpack_require__(14),
   GuildMember: __webpack_require__(15),
-  Invite: __webpack_require__(33),
+  Invite: __webpack_require__(32),
   Message: __webpack_require__(11),
-  MessageAttachment: __webpack_require__(34),
-  MessageCollector: __webpack_require__(35),
-  MessageEmbed: __webpack_require__(36),
-  MessageReaction: __webpack_require__(37),
-  OAuth2Application: __webpack_require__(38),
-  PartialGuild: __webpack_require__(39),
-  PartialGuildChannel: __webpack_require__(40),
-  PermissionOverwrites: __webpack_require__(41),
+  MessageAttachment: __webpack_require__(33),
+  MessageCollector: __webpack_require__(34),
+  MessageEmbed: __webpack_require__(35),
+  MessageReaction: __webpack_require__(36),
+  OAuth2Application: __webpack_require__(37),
+  PartialGuild: __webpack_require__(38),
+  PartialGuildChannel: __webpack_require__(39),
+  PermissionOverwrites: __webpack_require__(40),
   Presence: __webpack_require__(7).Presence,
-  ReactionEmoji: __webpack_require__(20),
-  RichEmbed: __webpack_require__(59),
-  Role: __webpack_require__(8),
-  TextChannel: __webpack_require__(21),
+  ReactionEmoji: __webpack_require__(18),
+  RichEmbed: __webpack_require__(58),
+  Role: __webpack_require__(9),
+  TextChannel: __webpack_require__(41),
   User: __webpack_require__(6),
   VoiceChannel: __webpack_require__(42),
-  Webhook: __webpack_require__(22),
+  Webhook: __webpack_require__(19),
 
-  version: __webpack_require__(30).version,
+  version: __webpack_require__(27).version,
   Constants: __webpack_require__(0),
 };
 
@@ -11949,7 +11729,7 @@ if (typeof window !== 'undefined') window.Discord = module.exports; // eslint-di
 
 
 /***/ },
-/* 59 */
+/* 58 */
 /***/ function(module, exports) {
 
 /**
@@ -12159,10 +11939,10 @@ function resolveString(data) {
 
 
 /***/ },
-/* 60 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
-const superagent = __webpack_require__(28);
+const superagent = __webpack_require__(25);
 const botGateway = __webpack_require__(0).Endpoints.botGateway;
 
 /**
@@ -12184,6 +11964,12 @@ module.exports = function fetchRecommendedShards(token) {
 
 
 /***/ },
+/* 60 */
+/***/ function(module, exports) {
+
+/* (ignored) */
+
+/***/ },
 /* 61 */
 /***/ function(module, exports) {
 
@@ -12197,12 +11983,6 @@ module.exports = function fetchRecommendedShards(token) {
 
 /***/ },
 /* 63 */
-/***/ function(module, exports) {
-
-/* (ignored) */
-
-/***/ },
-/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12323,7 +12103,7 @@ function fromByteArray (uint8) {
 
 
 /***/ },
-/* 65 */
+/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
 
@@ -12492,7 +12272,7 @@ Emitter.prototype.hasListeners = function(event){
 
 
 /***/ },
-/* 66 */
+/* 65 */
 /***/ function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -12582,7 +12362,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ },
-/* 67 */
+/* 66 */
 /***/ function(module, exports) {
 
 var toString = {}.toString;
@@ -12593,7 +12373,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ },
-/* 68 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -13808,7 +13588,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ },
-/* 69 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13817,8 +13597,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var assign    = __webpack_require__(5).assign;
 
-var deflate   = __webpack_require__(70);
-var inflate   = __webpack_require__(71);
+var deflate   = __webpack_require__(69);
+var inflate   = __webpack_require__(70);
 var constants = __webpack_require__(46);
 
 var pako = {};
@@ -13829,17 +13609,17 @@ module.exports = pako;
 
 
 /***/ },
-/* 70 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 
-var zlib_deflate = __webpack_require__(72);
+var zlib_deflate = __webpack_require__(71);
 var utils        = __webpack_require__(5);
 var strings      = __webpack_require__(44);
-var msg          = __webpack_require__(25);
+var msg          = __webpack_require__(22);
 var ZStream      = __webpack_require__(48);
 
 var toString = Object.prototype.toString;
@@ -14236,20 +14016,20 @@ exports.gzip = gzip;
 
 
 /***/ },
-/* 71 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 
-var zlib_inflate = __webpack_require__(75);
+var zlib_inflate = __webpack_require__(74);
 var utils        = __webpack_require__(5);
 var strings      = __webpack_require__(44);
 var c            = __webpack_require__(46);
-var msg          = __webpack_require__(25);
+var msg          = __webpack_require__(22);
 var ZStream      = __webpack_require__(48);
-var GZheader     = __webpack_require__(73);
+var GZheader     = __webpack_require__(72);
 
 var toString = Object.prototype.toString;
 
@@ -14661,17 +14441,17 @@ exports.ungzip  = inflate;
 
 
 /***/ },
-/* 72 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils   = __webpack_require__(5);
-var trees   = __webpack_require__(77);
+var trees   = __webpack_require__(76);
 var adler32 = __webpack_require__(45);
 var crc32   = __webpack_require__(47);
-var msg     = __webpack_require__(25);
+var msg     = __webpack_require__(22);
 
 /* Public constants ==========================================================*/
 /* ===========================================================================*/
@@ -16523,7 +16303,7 @@ exports.deflateTune = deflateTune;
 
 
 /***/ },
-/* 73 */
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16570,7 +16350,7 @@ module.exports = GZheader;
 
 
 /***/ },
-/* 74 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16903,7 +16683,7 @@ module.exports = function inflate_fast(strm, start) {
 
 
 /***/ },
-/* 75 */
+/* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16913,8 +16693,8 @@ module.exports = function inflate_fast(strm, start) {
 var utils         = __webpack_require__(5);
 var adler32       = __webpack_require__(45);
 var crc32         = __webpack_require__(47);
-var inflate_fast  = __webpack_require__(74);
-var inflate_table = __webpack_require__(76);
+var inflate_fast  = __webpack_require__(73);
+var inflate_table = __webpack_require__(75);
 
 var CODES = 0;
 var LENS = 1;
@@ -18448,7 +18228,7 @@ exports.inflateUndermine = inflateUndermine;
 
 
 /***/ },
-/* 76 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18780,7 +18560,7 @@ module.exports = function inflate_table(type, lens, lens_index, codes, table, ta
 
 
 /***/ },
-/* 77 */
+/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19989,7 +19769,7 @@ exports._tr_align = _tr_align;
 
 
 /***/ },
-/* 78 */
+/* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
 /**
@@ -19999,7 +19779,7 @@ exports._tr_align = _tr_align;
  * @return {Boolean}
  * @api private
  */
-var isObject = __webpack_require__(29);
+var isObject = __webpack_require__(26);
 
 function isFunction(fn) {
   var tag = isObject(fn) ? Object.prototype.toString.call(fn) : '';
@@ -20010,13 +19790,13 @@ module.exports = isFunction;
 
 
 /***/ },
-/* 79 */
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
 /**
  * Module of mixed-in functions shared between node and client code
  */
-var isObject = __webpack_require__(29);
+var isObject = __webpack_require__(26);
 
 /**
  * Expose `RequestBase`.
@@ -20550,7 +20330,7 @@ RequestBase.prototype._setTimeouts = function() {
 
 
 /***/ },
-/* 80 */
+/* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
 
@@ -20558,7 +20338,7 @@ RequestBase.prototype._setTimeouts = function() {
  * Module dependencies.
  */
 
-var utils = __webpack_require__(81);
+var utils = __webpack_require__(80);
 
 /**
  * Expose `ResponseBase`.
@@ -20689,7 +20469,7 @@ ResponseBase.prototype._setStatusProperties = function(status){
 
 
 /***/ },
-/* 81 */
+/* 80 */
 /***/ function(module, exports) {
 
 
@@ -20763,7 +20543,7 @@ exports.cleanHeader = function(header, shouldStripCookie){
 
 
 /***/ },
-/* 82 */
+/* 81 */
 /***/ function(module, exports) {
 
 var g;
@@ -20788,19 +20568,19 @@ module.exports = g;
 
 
 /***/ },
-/* 83 */
+/* 82 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
 const cloneObject = __webpack_require__(4);
 const Guild = __webpack_require__(13);
 const User = __webpack_require__(6);
-const DMChannel = __webpack_require__(17);
+const DMChannel = __webpack_require__(30);
 const Emoji = __webpack_require__(10);
-const TextChannel = __webpack_require__(21);
+const TextChannel = __webpack_require__(41);
 const VoiceChannel = __webpack_require__(42);
 const GuildChannel = __webpack_require__(14);
-const GroupDMChannel = __webpack_require__(19);
+const GroupDMChannel = __webpack_require__(31);
 
 class ClientDataManager {
   constructor(client) {
@@ -20923,7 +20703,7 @@ module.exports = ClientDataManager;
 
 
 /***/ },
-/* 84 */
+/* 83 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -20996,39 +20776,39 @@ module.exports = ClientManager;
 
 
 /***/ },
-/* 85 */
+/* 84 */
 /***/ function(module, exports, __webpack_require__) {
 
 class ActionsManager {
   constructor(client) {
     this.client = client;
 
+    this.register(__webpack_require__(101));
     this.register(__webpack_require__(102));
     this.register(__webpack_require__(103));
+    this.register(__webpack_require__(107));
     this.register(__webpack_require__(104));
-    this.register(__webpack_require__(108));
     this.register(__webpack_require__(105));
     this.register(__webpack_require__(106));
-    this.register(__webpack_require__(107));
+    this.register(__webpack_require__(85));
     this.register(__webpack_require__(86));
     this.register(__webpack_require__(87));
-    this.register(__webpack_require__(88));
-    this.register(__webpack_require__(90));
-    this.register(__webpack_require__(101));
-    this.register(__webpack_require__(94));
-    this.register(__webpack_require__(95));
     this.register(__webpack_require__(89));
+    this.register(__webpack_require__(100));
+    this.register(__webpack_require__(93));
+    this.register(__webpack_require__(94));
+    this.register(__webpack_require__(88));
+    this.register(__webpack_require__(95));
     this.register(__webpack_require__(96));
     this.register(__webpack_require__(97));
-    this.register(__webpack_require__(98));
-    this.register(__webpack_require__(109));
-    this.register(__webpack_require__(111));
+    this.register(__webpack_require__(108));
     this.register(__webpack_require__(110));
-    this.register(__webpack_require__(100));
+    this.register(__webpack_require__(109));
+    this.register(__webpack_require__(99));
+    this.register(__webpack_require__(90));
     this.register(__webpack_require__(91));
     this.register(__webpack_require__(92));
-    this.register(__webpack_require__(93));
-    this.register(__webpack_require__(99));
+    this.register(__webpack_require__(98));
   }
 
   register(Action) {
@@ -21040,7 +20820,7 @@ module.exports = ActionsManager;
 
 
 /***/ },
-/* 86 */
+/* 85 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21059,7 +20839,7 @@ module.exports = ChannelCreateAction;
 
 
 /***/ },
-/* 87 */
+/* 86 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21096,7 +20876,7 @@ module.exports = ChannelDeleteAction;
 
 
 /***/ },
-/* 88 */
+/* 87 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21136,7 +20916,7 @@ module.exports = ChannelUpdateAction;
 
 
 /***/ },
-/* 89 */
+/* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21155,7 +20935,7 @@ module.exports = GuildBanRemove;
 
 
 /***/ },
-/* 90 */
+/* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21212,7 +20992,7 @@ module.exports = GuildDeleteAction;
 
 
 /***/ },
-/* 91 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21236,7 +21016,7 @@ module.exports = GuildEmojiCreateAction;
 
 
 /***/ },
-/* 92 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21260,7 +21040,7 @@ module.exports = GuildEmojiDeleteAction;
 
 
 /***/ },
-/* 93 */
+/* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21281,7 +21061,7 @@ module.exports = GuildEmojiUpdateAction;
 
 
 /***/ },
-/* 94 */
+/* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21299,7 +21079,7 @@ module.exports = GuildMemberGetAction;
 
 
 /***/ },
-/* 95 */
+/* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21354,12 +21134,12 @@ module.exports = GuildMemberRemoveAction;
 
 
 /***/ },
-/* 96 */
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
 const Constants = __webpack_require__(0);
-const Role = __webpack_require__(8);
+const Role = __webpack_require__(9);
 
 class GuildRoleCreate extends Action {
   handle(data) {
@@ -21392,7 +21172,7 @@ module.exports = GuildRoleCreate;
 
 
 /***/ },
-/* 97 */
+/* 96 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21444,7 +21224,7 @@ module.exports = GuildRoleDeleteAction;
 
 
 /***/ },
-/* 98 */
+/* 97 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21491,7 +21271,7 @@ module.exports = GuildRoleUpdateAction;
 
 
 /***/ },
-/* 99 */
+/* 98 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21520,7 +21300,7 @@ module.exports = GuildRolesPositionUpdate;
 
 
 /***/ },
-/* 100 */
+/* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21553,7 +21333,7 @@ module.exports = GuildSync;
 
 
 /***/ },
-/* 101 */
+/* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21593,7 +21373,7 @@ module.exports = GuildUpdateAction;
 
 
 /***/ },
-/* 102 */
+/* 101 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21639,7 +21419,7 @@ module.exports = MessageCreateAction;
 
 
 /***/ },
-/* 103 */
+/* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21685,7 +21465,7 @@ module.exports = MessageDeleteAction;
 
 
 /***/ },
-/* 104 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21715,7 +21495,7 @@ module.exports = MessageDeleteBulkAction;
 
 
 /***/ },
-/* 105 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21764,7 +21544,7 @@ module.exports = MessageReactionAdd;
 
 
 /***/ },
-/* 106 */
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21813,7 +21593,7 @@ module.exports = MessageReactionRemove;
 
 
 /***/ },
-/* 107 */
+/* 106 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21844,7 +21624,7 @@ module.exports = MessageReactionRemoveAll;
 
 
 /***/ },
-/* 108 */
+/* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21893,7 +21673,7 @@ module.exports = MessageUpdateAction;
 
 
 /***/ },
-/* 109 */
+/* 108 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21912,7 +21692,7 @@ module.exports = UserGetAction;
 
 
 /***/ },
-/* 110 */
+/* 109 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21948,7 +21728,7 @@ module.exports = UserNoteUpdateAction;
 
 
 /***/ },
-/* 111 */
+/* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21987,10 +21767,10 @@ module.exports = UserUpdateAction;
 
 
 /***/ },
-/* 112 */
+/* 111 */
 /***/ function(module, exports, __webpack_require__) {
 
-const request = __webpack_require__(28);
+const request = __webpack_require__(25);
 const Constants = __webpack_require__(0);
 
 function getRoute(url) {
@@ -22042,23 +21822,53 @@ module.exports = APIRequest;
 
 
 /***/ },
-/* 113 */
+/* 112 */
 /***/ function(module, exports, __webpack_require__) {
 
+const long = __webpack_require__(67);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const splitMessage = __webpack_require__(43);
-const parseEmoji = __webpack_require__(156);
+const parseEmoji = __webpack_require__(155);
 const escapeMarkdown = __webpack_require__(16);
 
 const User = __webpack_require__(6);
 const GuildMember = __webpack_require__(15);
 const Message = __webpack_require__(11);
-const Role = __webpack_require__(8);
-const Invite = __webpack_require__(33);
-const Webhook = __webpack_require__(22);
-const UserProfile = __webpack_require__(154);
-const ClientOAuth2Application = __webpack_require__(31);
+const Role = __webpack_require__(9);
+const Invite = __webpack_require__(32);
+const Webhook = __webpack_require__(19);
+const UserProfile = __webpack_require__(153);
+const ClientOAuth2Application = __webpack_require__(28);
+const Channel = __webpack_require__(8);
+const Guild = __webpack_require__(13);
+
+/**
+ * @typedef {Object} MessageSearchOptions
+ * @property {string} [content] Message content
+ * @property {string} [maxID] Maximum ID for the filter
+ * @property {string} [minID] Minimum ID for the filter
+ * @property {string} [has] One of `link`, `embed`, `file`, `video`, `image`, or `sound`,
+ * or add `-` to negate (e.g. `-file`)
+ * @property {ChannelResolvable} [channel] Channel to limit search to (only for guild search endpoint)
+ * @property {UserResolvable} [author] Author to limit search
+ * @property {string} [authorType] One of `user`, `bot`, `webhook`, or add `-` to negate (e.g. `-webhook`)
+ * @property {string} [sortBy='recent'] `recent` or `relevant`
+ * @property {string} [sortOrder='desc'] `asc` or `desc`
+ * @property {number} [contextSize=2] How many messages to get around the matched message (0 to 2)
+ * @property {number} [limit=25] Maximum number of results to get (1 to 25)
+ * @property {number} [offset=0] Offset the "pages" of results (since you can only see 25 at a time)
+ * @property {UserResolvable} [mentions] Mentioned user filter
+ * @property {boolean} [mentionsEveryone] If everyone is mentioned
+ * @property {string} [linkHostname] Filter links by hostname
+ * @property {string} [embedProvider] The name of an embed provider
+ * @property {string} [embedType] one of `image`, `video`, `url`, `rich`
+ * @property {string} [attachmentFilename] The name of an attachment
+ * @property {string} [attachmentExtention] The extension of an attachment
+ * @property {Date} [before] Date to find messages before
+ * @property {Date} [after] Date to find messages before
+ * @property {Date} [during] Date to find messages during (range of date to date + 24 hours)
+ */
 
 class RESTMethods {
   constructor(restManager) {
@@ -22164,13 +21974,68 @@ class RESTMethods {
     );
   }
 
-  search(type, id, options) {
+  search(target, options) {
+    if (options.before) {
+      if (!(options.before instanceof Date)) options.before = new Date(options.before);
+      options.maxID = long.fromNumber(options.before.getTime() - 14200704e5).shiftLeft(22).toString();
+    }
+
+    if (options.after) {
+      if (!(options.after instanceof Date)) options.after = new Date(options.after);
+      options.minID = long.fromNumber(options.after.getTime() - 14200704e5).shiftLeft(22).toString();
+    }
+
+    if (options.during) {
+      if (!(options.during instanceof Date)) options.during = new Date(options.during);
+      const t = options.during.getTime() - 14200704e5;
+      options.minID = long.fromNumber(t).shiftLeft(22).toString();
+      options.maxID = long.fromNumber(t + 86400000).shift(222).toString();
+    }
+
+    if (options.channel) options.channel = this.client.resolver.resolveChannelID(options.channel);
+
+    if (options.author) options.author = this.client.resolver.resolveUserID(options.author);
+
+    if (options.mentions) options.mentions = this.client.resolver.resolveUserID(options.options.mentions);
+
+    options = {
+      content: options.content,
+      max_id: options.maxID,
+      min_id: options.minID,
+      has: options.has,
+      channel_id: options.channel,
+      author_id: options.author,
+      author_type: options.authorType,
+      context_size: options.contextSize,
+      sort_by: options.sortBy,
+      sort_order: options.sortOrder,
+      limit: options.limit,
+      offset: options.offset,
+      mentions: options.mentions,
+      mentions_everyone: options.mentionsEveryone,
+      link_hostname: options.linkHostname,
+      embed_provider: options.embedProvider,
+      embed_type: options.embedType,
+      attachment_filename: options.attachmentFilename,
+      attachment_extension: options.attachmentExtension,
+    };
+
     const queryString = Object.keys(options)
       .filter(k => options[k])
       .map(k => [k, options[k]])
       .map(x => x.join('='))
       .join('&');
-    const url = `${Constants.Endpoints[`${type}Search`](id)}?${queryString}`;
+
+    let type;
+    if (target instanceof Channel) {
+      type = 'channel';
+    } else if (target instanceof Guild) {
+      type = 'guild';
+    } else {
+      throw new TypeError('Target must be a TextChannel, DMChannel, GroupDMChannel, or Guild.');
+    }
+
+    const url = `${Constants.Endpoints[`${type}Search`](target.id)}?${queryString}`;
     return this.rest.makeRequest('get', url, true).then(body =>
       body.messages.map(x => x.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)))
     );
@@ -22713,7 +22578,7 @@ module.exports = RESTMethods;
 
 
 /***/ },
-/* 114 */
+/* 113 */
 /***/ function(module, exports, __webpack_require__) {
 
 const RequestHandler = __webpack_require__(52);
@@ -22789,7 +22654,7 @@ module.exports = BurstRequestHandler;
 
 
 /***/ },
-/* 115 */
+/* 114 */
 /***/ function(module, exports, __webpack_require__) {
 
 const RequestHandler = __webpack_require__(52);
@@ -22899,7 +22764,7 @@ module.exports = SequentialRequestHandler;
 
 
 /***/ },
-/* 116 */
+/* 115 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -22927,16 +22792,16 @@ module.exports = UserAgentManager;
 
 
 /***/ },
-/* 117 */
+/* 116 */
 /***/ function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {const browser = typeof window !== 'undefined';
-const EventEmitter = __webpack_require__(24).EventEmitter;
+const EventEmitter = __webpack_require__(21).EventEmitter;
 const Constants = __webpack_require__(0);
-const convertArrayBuffer = __webpack_require__(54);
-const pako = __webpack_require__(69);
+const convertArrayBuffer = __webpack_require__(53);
+const pako = __webpack_require__(68);
 const zlib = __webpack_require__(49);
-const PacketManager = __webpack_require__(118);
+const PacketManager = __webpack_require__(117);
 
 let WebSocket, erlpack;
 let serialize = JSON.stringify;
@@ -22944,13 +22809,13 @@ if (browser) {
   WebSocket = window.WebSocket; // eslint-disable-line no-undef
 } else {
   try {
-    WebSocket = __webpack_require__(160);
+    WebSocket = __webpack_require__(159);
   } catch (err) {
-    WebSocket = __webpack_require__(161);
+    WebSocket = __webpack_require__(160);
   }
 
   try {
-    erlpack = __webpack_require__(159);
+    erlpack = __webpack_require__(158);
     serialize = erlpack.pack;
   } catch (err) {
     erlpack = null;
@@ -23304,10 +23169,10 @@ class WebSocketManager extends EventEmitter {
 
 module.exports = WebSocketManager;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20).Buffer))
 
 /***/ },
-/* 118 */
+/* 117 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -23327,40 +23192,40 @@ class WebSocketPacketManager {
     this.handlers = {};
     this.queue = [];
 
-    this.register(Constants.WSEvents.READY, __webpack_require__(145));
-    this.register(Constants.WSEvents.GUILD_CREATE, __webpack_require__(125));
-    this.register(Constants.WSEvents.GUILD_DELETE, __webpack_require__(126));
-    this.register(Constants.WSEvents.GUILD_UPDATE, __webpack_require__(136));
-    this.register(Constants.WSEvents.GUILD_BAN_ADD, __webpack_require__(123));
-    this.register(Constants.WSEvents.GUILD_BAN_REMOVE, __webpack_require__(124));
-    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, __webpack_require__(128));
-    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, __webpack_require__(129));
-    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, __webpack_require__(130));
-    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, __webpack_require__(132));
-    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, __webpack_require__(133));
-    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, __webpack_require__(134));
-    this.register(Constants.WSEvents.GUILD_EMOJIS_UPDATE, __webpack_require__(127));
-    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, __webpack_require__(131));
-    this.register(Constants.WSEvents.CHANNEL_CREATE, __webpack_require__(119));
-    this.register(Constants.WSEvents.CHANNEL_DELETE, __webpack_require__(120));
-    this.register(Constants.WSEvents.CHANNEL_UPDATE, __webpack_require__(122));
-    this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, __webpack_require__(121));
-    this.register(Constants.WSEvents.PRESENCE_UPDATE, __webpack_require__(144));
-    this.register(Constants.WSEvents.USER_UPDATE, __webpack_require__(150));
-    this.register(Constants.WSEvents.USER_NOTE_UPDATE, __webpack_require__(149));
-    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, __webpack_require__(152));
-    this.register(Constants.WSEvents.TYPING_START, __webpack_require__(148));
-    this.register(Constants.WSEvents.MESSAGE_CREATE, __webpack_require__(137));
-    this.register(Constants.WSEvents.MESSAGE_DELETE, __webpack_require__(138));
-    this.register(Constants.WSEvents.MESSAGE_UPDATE, __webpack_require__(143));
-    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, __webpack_require__(139));
-    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, __webpack_require__(151));
-    this.register(Constants.WSEvents.GUILD_SYNC, __webpack_require__(135));
-    this.register(Constants.WSEvents.RELATIONSHIP_ADD, __webpack_require__(146));
-    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, __webpack_require__(147));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, __webpack_require__(140));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, __webpack_require__(141));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, __webpack_require__(142));
+    this.register(Constants.WSEvents.READY, __webpack_require__(144));
+    this.register(Constants.WSEvents.GUILD_CREATE, __webpack_require__(124));
+    this.register(Constants.WSEvents.GUILD_DELETE, __webpack_require__(125));
+    this.register(Constants.WSEvents.GUILD_UPDATE, __webpack_require__(135));
+    this.register(Constants.WSEvents.GUILD_BAN_ADD, __webpack_require__(122));
+    this.register(Constants.WSEvents.GUILD_BAN_REMOVE, __webpack_require__(123));
+    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, __webpack_require__(127));
+    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, __webpack_require__(128));
+    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, __webpack_require__(129));
+    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, __webpack_require__(131));
+    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, __webpack_require__(132));
+    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, __webpack_require__(133));
+    this.register(Constants.WSEvents.GUILD_EMOJIS_UPDATE, __webpack_require__(126));
+    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, __webpack_require__(130));
+    this.register(Constants.WSEvents.CHANNEL_CREATE, __webpack_require__(118));
+    this.register(Constants.WSEvents.CHANNEL_DELETE, __webpack_require__(119));
+    this.register(Constants.WSEvents.CHANNEL_UPDATE, __webpack_require__(121));
+    this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, __webpack_require__(120));
+    this.register(Constants.WSEvents.PRESENCE_UPDATE, __webpack_require__(143));
+    this.register(Constants.WSEvents.USER_UPDATE, __webpack_require__(149));
+    this.register(Constants.WSEvents.USER_NOTE_UPDATE, __webpack_require__(148));
+    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, __webpack_require__(151));
+    this.register(Constants.WSEvents.TYPING_START, __webpack_require__(147));
+    this.register(Constants.WSEvents.MESSAGE_CREATE, __webpack_require__(136));
+    this.register(Constants.WSEvents.MESSAGE_DELETE, __webpack_require__(137));
+    this.register(Constants.WSEvents.MESSAGE_UPDATE, __webpack_require__(142));
+    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, __webpack_require__(138));
+    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, __webpack_require__(150));
+    this.register(Constants.WSEvents.GUILD_SYNC, __webpack_require__(134));
+    this.register(Constants.WSEvents.RELATIONSHIP_ADD, __webpack_require__(145));
+    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, __webpack_require__(146));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, __webpack_require__(139));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, __webpack_require__(140));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, __webpack_require__(141));
   }
 
   get client() {
@@ -23438,7 +23303,7 @@ module.exports = WebSocketPacketManager;
 
 
 /***/ },
-/* 119 */
+/* 118 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23461,7 +23326,7 @@ module.exports = ChannelCreateHandler;
 
 
 /***/ },
-/* 120 */
+/* 119 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23487,7 +23352,7 @@ module.exports = ChannelDeleteHandler;
 
 
 /***/ },
-/* 121 */
+/* 120 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23524,7 +23389,7 @@ module.exports = ChannelPinsUpdate;
 
 
 /***/ },
-/* 122 */
+/* 121 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23541,7 +23406,7 @@ module.exports = ChannelUpdateHandler;
 
 
 /***/ },
-/* 123 */
+/* 122 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -23570,7 +23435,7 @@ module.exports = GuildBanAddHandler;
 
 
 /***/ },
-/* 124 */
+/* 123 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -23596,7 +23461,7 @@ module.exports = GuildBanRemoveHandler;
 
 
 /***/ },
-/* 125 */
+/* 124 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23624,7 +23489,7 @@ module.exports = GuildCreateHandler;
 
 
 /***/ },
-/* 126 */
+/* 125 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23649,7 +23514,7 @@ module.exports = GuildDeleteHandler;
 
 
 /***/ },
-/* 127 */
+/* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23695,7 +23560,7 @@ module.exports = GuildEmojisUpdate;
 
 
 /***/ },
-/* 128 */
+/* 127 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -23718,7 +23583,7 @@ module.exports = GuildMemberAddHandler;
 
 
 /***/ },
-/* 129 */
+/* 128 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -23737,7 +23602,7 @@ module.exports = GuildMemberRemoveHandler;
 
 
 /***/ },
-/* 130 */
+/* 129 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -23761,7 +23626,7 @@ module.exports = GuildMemberUpdateHandler;
 
 
 /***/ },
-/* 131 */
+/* 130 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested##
@@ -23795,7 +23660,7 @@ module.exports = GuildMembersChunkHandler;
 
 
 /***/ },
-/* 132 */
+/* 131 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23812,7 +23677,7 @@ module.exports = GuildRoleCreateHandler;
 
 
 /***/ },
-/* 133 */
+/* 132 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23829,7 +23694,7 @@ module.exports = GuildRoleDeleteHandler;
 
 
 /***/ },
-/* 134 */
+/* 133 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23846,7 +23711,7 @@ module.exports = GuildRoleUpdateHandler;
 
 
 /***/ },
-/* 135 */
+/* 134 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23863,7 +23728,7 @@ module.exports = GuildSyncHandler;
 
 
 /***/ },
-/* 136 */
+/* 135 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23880,7 +23745,7 @@ module.exports = GuildUpdateHandler;
 
 
 /***/ },
-/* 137 */
+/* 136 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23905,7 +23770,7 @@ module.exports = MessageCreateHandler;
 
 
 /***/ },
-/* 138 */
+/* 137 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23930,7 +23795,7 @@ module.exports = MessageDeleteHandler;
 
 
 /***/ },
-/* 139 */
+/* 138 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23953,7 +23818,7 @@ module.exports = MessageDeleteBulkHandler;
 
 
 /***/ },
-/* 140 */
+/* 139 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23970,7 +23835,7 @@ module.exports = MessageReactionAddHandler;
 
 
 /***/ },
-/* 141 */
+/* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23987,7 +23852,7 @@ module.exports = MessageReactionRemove;
 
 
 /***/ },
-/* 142 */
+/* 141 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24004,7 +23869,7 @@ module.exports = MessageReactionRemoveAll;
 
 
 /***/ },
-/* 143 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24021,7 +23886,7 @@ module.exports = MessageUpdateHandler;
 
 
 /***/ },
-/* 144 */
+/* 143 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24099,12 +23964,12 @@ module.exports = PresenceUpdateHandler;
 
 
 /***/ },
-/* 145 */
+/* 144 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
 
-const ClientUser = __webpack_require__(32);
+const ClientUser = __webpack_require__(29);
 
 class ReadyHandler extends AbstractHandler {
   handle(packet) {
@@ -24175,7 +24040,7 @@ module.exports = ReadyHandler;
 
 
 /***/ },
-/* 146 */
+/* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24200,7 +24065,7 @@ module.exports = RelationshipAddHandler;
 
 
 /***/ },
-/* 147 */
+/* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24225,7 +24090,7 @@ module.exports = RelationshipRemoveHandler;
 
 
 /***/ },
-/* 148 */
+/* 147 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24299,7 +24164,7 @@ module.exports = TypingStartHandler;
 
 
 /***/ },
-/* 149 */
+/* 148 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24317,7 +24182,7 @@ module.exports = UserNoteUpdateHandler;
 
 
 /***/ },
-/* 150 */
+/* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24334,7 +24199,7 @@ module.exports = UserUpdateHandler;
 
 
 /***/ },
-/* 151 */
+/* 150 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24359,7 +24224,7 @@ module.exports = VoiceServerUpdate;
 
 
 /***/ },
-/* 152 */
+/* 151 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24414,7 +24279,7 @@ module.exports = VoiceStateUpdateHandler;
 
 
 /***/ },
-/* 153 */
+/* 152 */
 /***/ function(module, exports) {
 
 /**
@@ -24468,11 +24333,11 @@ module.exports = UserConnection;
 
 
 /***/ },
-/* 154 */
+/* 153 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
-const UserConnection = __webpack_require__(153);
+const UserConnection = __webpack_require__(152);
 
 /**
  * Represents a user's profile on Discord.
@@ -24530,7 +24395,7 @@ module.exports = UserProfile;
 
 
 /***/ },
-/* 155 */
+/* 154 */
 /***/ function(module, exports) {
 
 module.exports = function arraysEqual(a, b) {
@@ -24550,7 +24415,7 @@ module.exports = function arraysEqual(a, b) {
 
 
 /***/ },
-/* 156 */
+/* 155 */
 /***/ function(module, exports) {
 
 module.exports = function parseEmoji(text) {
@@ -24568,6 +24433,12 @@ module.exports = function parseEmoji(text) {
   }
 };
 
+
+/***/ },
+/* 156 */
+/***/ function(module, exports) {
+
+/* (ignored) */
 
 /***/ },
 /* 157 */
@@ -24589,12 +24460,6 @@ module.exports = function parseEmoji(text) {
 
 /***/ },
 /* 160 */
-/***/ function(module, exports) {
-
-/* (ignored) */
-
-/***/ },
-/* 161 */
 /***/ function(module, exports) {
 
 /* (ignored) */
