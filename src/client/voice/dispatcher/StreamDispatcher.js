@@ -19,7 +19,15 @@ nonce.fill(0);
 class StreamDispatcher extends EventEmitter {
   constructor(player, stream, streamOptions) {
     super();
+    /**
+     * The Audio Player that controls this dispatcher
+     * @type {AudioPlayer}
+     */
     this.player = player;
+    /**
+     * The stream that the dispatcher plays
+     * @type {ReadableStream|VoiceBroadcast}
+     */
     this.stream = stream;
     if (!(this.stream instanceof VoiceBroadcast)) this.startStreaming();
     this.streamOptions = streamOptions;
@@ -34,14 +42,26 @@ class StreamDispatcher extends EventEmitter {
      * @type {boolean}
      */
     this.paused = false;
-
+    /**
+     * Whether this dispatcher has been destroyed
+     * @type {boolean}
+     */
     this.destroyed = false;
 
     this.setVolume(streamOptions.volume || 1);
   }
 
+  /**
+   * How many passes the dispatcher should take when sending packets to reduce packet loss. Values over 5
+   * aren't recommended, as it means you are using 5x more bandwidth. You _can_ edit this at runtime.
+   * @type {number}
+   */
   get passes() {
     return this.streamOptions.passes || 1;
+  }
+
+  set passes(n) {
+    this.streamOptions.passes = n;
   }
 
   get streamingData() {
@@ -80,6 +100,12 @@ class StreamDispatcher extends EventEmitter {
    * @param {number} volume The volume that you want to set
    */
   setVolume(volume) {
+    /**
+     * Emitted when the volume of this dispatcher changes
+     * @param {number} oldVolume the old volume
+     * @param {number} newVolume the new volume
+     * @event StreamDispatcher#volumeChange
+     */
     this.emit('volumeChange', this.streamOptions.volume, volume);
     this.streamOptions.volume = volume;
   }
@@ -134,6 +160,11 @@ class StreamDispatcher extends EventEmitter {
     opusPacket = opusPacket || this.player.opusEncoder.encode(buffer);
     let repeats = this.passes;
     const packet = this.createPacket(sequence, timestamp, opusPacket);
+    /**
+     * Emitted whenever the dispatcher has debug information
+     * @event StreamDispatcher#debug
+     * @param {string} info the debug info
+     */
     while (repeats--) {
       this.player.voiceConnection.sockets.udp.send(packet)
         .catch(e => this.emit('debug', `Failed to send a packet ${e}`));
@@ -258,11 +289,20 @@ class StreamDispatcher extends EventEmitter {
     this.destroyed = true;
     this.setSpeaking(false);
     this.emit(type, reason);
+    /**
+     * Emitted once the dispatcher ends
+     * @param {string} [reason] the reason the dispatcher ended
+     * @event StreamDispatcher#end
+     */
     if (type !== 'end') this.emit('end', `destroyed due to ${type} - ${reason}`);
   }
 
   startStreaming() {
     if (!this.stream) {
+      /**
+       * Emitted if the dispatcher encounters an error
+       * @param {string} error the error message
+       */
       this.emit('error', 'No stream');
       return;
     }
