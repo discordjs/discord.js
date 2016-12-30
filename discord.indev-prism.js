@@ -8832,6 +8832,7 @@ class DMChannel extends Channel {
   awaitMessages() { return; }
   bulkDelete() { return; }
   _cacheMessage() { return; }
+  search() { return; }
 }
 
 TextBasedChannel.applyToClass(DMChannel, true);
@@ -8982,6 +8983,7 @@ class GroupDMChannel extends Channel {
   awaitMessages() { return; }
   bulkDelete() { return; }
   _cacheMessage() { return; }
+  search() { return; }
 }
 
 TextBasedChannel.applyToClass(GroupDMChannel, true);
@@ -10121,6 +10123,7 @@ class TextChannel extends GuildChannel {
   awaitMessages() { return; }
   bulkDelete() { return; }
   _cacheMessage() { return; }
+  search() { return; }
 }
 
 TextBasedChannel.applyToClass(TextChannel, true);
@@ -22740,12 +22743,12 @@ class RESTMethods {
 
   removeMessageReaction(message, emoji, user) {
     let endpoint = Constants.Endpoints.selfMessageReaction(message.channel.id, message.id, emoji);
-    if (user.id !== this.client.user.id) {
+    if (user !== this.client.user.id) {
       endpoint = Constants.Endpoints.userMessageReaction(message.channel.id, message.id, emoji, null, user.id);
     }
     return this.rest.makeRequest('delete', endpoint, true).then(() =>
       this.client.actions.MessageReactionRemove.handle({
-        user_id: user.id,
+        user_id: user,
         message_id: message.id,
         emoji: parseEmoji(emoji),
         channel_id: message.channel.id,
