@@ -16,22 +16,22 @@ function build {
 
 # Only run tests for PRs
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  echo -e "\e[36m\e[1mThis is a PR build for #$TRAVIS_PULL_REQUEST - only running tests"
+  echo -e "\e[36m\e[1mBuild triggered for PR #$TRAVIS_PULL_REQUEST to branch $TRAVIS_BRANCH - only running tests."
   tests
 fi
 
 # Figure out the source of the build
 if [ -n "$TRAVIS_TAG" ]; then
-  echo -e "\e[36m\e[1mThis is a tag build for $TRAVIS_TAG"
+  echo -e "\e[36m\e[1mBuild triggered for tag \"$TRAVIS_TAG\"."
   SOURCE=$TRAVIS_TAG
 else
-  echo -e "\e[36m\e[1mThis is a branch build for $TRAVIS_BRANCH"
+  echo -e "\e[36m\e[1mBuild triggered for branch \"$TRAVIS_BRANCH\"."
   SOURCE=$TRAVIS_BRANCH
 fi
 
 # Only run tests for Node versions other than 6
 if [ "$TRAVIS_NODE_VERSION" != "6" ]; then
-  echo -e "\e[36m\e[1mThis is a Node v$TRAVIS_NODE_VERSION build - only running tests"
+  echo -e "\e[36m\e[1mBuild triggered with Node v$TRAVIS_NODE_VERSION - only running tests."
   tests
 fi
 
