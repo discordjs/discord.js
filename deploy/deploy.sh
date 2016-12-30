@@ -16,7 +16,7 @@ function build {
 
 # For PRs or Node 7, only run tests
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  echo -e "\e[36m\e[4m\e[1mThis is a PR build - only running tests"
+  echo -e "\e[36m\e[4m\e[1mThis is a PR build for #$TRAVIS_PULL_REQUEST - only running tests"
   tests
 fi
 if [ "$TRAVIS_NODE_VERSION" != "6" ]; then
