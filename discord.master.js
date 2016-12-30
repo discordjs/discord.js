@@ -8818,6 +8818,7 @@ class DMChannel extends Channel {
   fetchMessage() { return; }
   fetchMessages() { return; }
   fetchPinnedMessages() { return; }
+  search() { return; }
   startTyping() { return; }
   stopTyping() { return; }
   get typing() { return; }
@@ -8826,7 +8827,6 @@ class DMChannel extends Channel {
   awaitMessages() { return; }
   bulkDelete() { return; }
   _cacheMessage() { return; }
-  search() { return; }
 }
 
 TextBasedChannel.applyToClass(DMChannel, true);
@@ -8969,6 +8969,7 @@ class GroupDMChannel extends Channel {
   fetchMessage() { return; }
   fetchMessages() { return; }
   fetchPinnedMessages() { return; }
+  search() { return; }
   startTyping() { return; }
   stopTyping() { return; }
   get typing() { return; }
@@ -8977,7 +8978,6 @@ class GroupDMChannel extends Channel {
   awaitMessages() { return; }
   bulkDelete() { return; }
   _cacheMessage() { return; }
-  search() { return; }
 }
 
 TextBasedChannel.applyToClass(GroupDMChannel, true);
@@ -10109,6 +10109,7 @@ class TextChannel extends GuildChannel {
   fetchMessage() { return; }
   fetchMessages() { return; }
   fetchPinnedMessages() { return; }
+  search() { return; }
   startTyping() { return; }
   stopTyping() { return; }
   get typing() { return; }
@@ -10117,7 +10118,6 @@ class TextChannel extends GuildChannel {
   awaitMessages() { return; }
   bulkDelete() { return; }
   _cacheMessage() { return; }
-  search() { return; }
 }
 
 TextBasedChannel.applyToClass(TextChannel, true);
