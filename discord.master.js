@@ -4270,12 +4270,12 @@ class Guild {
    * @example
    * // see how many members will be pruned
    * guild.pruneMembers(12, true)
-   *   .then(pruned => console.log(`This will prune ${pruned} people!`);
+   *   .then(pruned => console.log(`This will prune ${pruned} people!`))
    *   .catch(console.error);
    * @example
    * // actually prune the members
    * guild.pruneMembers(12)
-   *   .then(pruned => console.log(`I just pruned ${pruned} people!`);
+   *   .then(pruned => console.log(`I just pruned ${pruned} people!`))
    *   .catch(console.error);
    */
   pruneMembers(days, dry = false) {
