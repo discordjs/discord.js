@@ -24,11 +24,13 @@ const Guild = require('../../structures/Guild');
  * @property {string} [has] One of `link`, `embed`, `file`, `video`, `image`, or `sound`
  * @property {string} [channelID] Channel ID to limit search to (only for guild search endpoint)
  * @property {string} [authorID] Author ID to limit search
+ * @property {string} [authorType] One of `user`, `-user`, `bot`, `-bot`, `webhook`, or `-webhook`
  * @property {string} [sortBy='recent'] `recent` or `relevant`
- * @property {string} [sortOrder='ascending'] `ascending` or `descending`
+ * @property {string} [sortOrder='desc'] `asc` or `desc`
  * @property {number} [contextSize=2] How many messages to get around the matched message (0 to 2)
  * @property {number} [limit=25] Maximum number of results to get (1 to 25)
- * @property {string} [mentions] Mentioned user filter
+ * @property {number} [offset=0] Offset the "pages" of results (since you can only see 25 at a time)
+ * @property {string} [mentionedID] Mentioned user filter
  * @property {boolean} [mentionsEveryone] If everyone is mentioned
  * @property {string} [linkHostname] If you have `http://webroot.google.com/asdfasdf`, you can put `webroot.google.com`
  * @property {string} [embedProvider] The name of an embed provider
@@ -169,11 +171,13 @@ class RESTMethods {
       has: options.has,
       channel_id: options.channelID,
       author_id: options.authorID,
+      author_type: options.authorType,
       context_size: options.contextSize,
       sort_by: options.sortBy,
       sort_order: options.sortOrder,
       limit: options.limit,
-      mentions: options.mentions,
+      offset: options.offset,
+      mentions: options.mentionedID,
       mentions_everyone: options.mentionsEveryone,
       link_hostname: options.linkHostname,
       embed_provider: options.embedProvider,
