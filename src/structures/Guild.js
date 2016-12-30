@@ -3,7 +3,6 @@ const Role = require('./Role');
 const Emoji = require('./Emoji');
 const Presence = require('./Presence').Presence;
 const GuildMember = require('./GuildMember');
-const MessageSearch = require('./MessageSearch');
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const cloneObject = require('../util/CloneObject');
@@ -707,20 +706,22 @@ class Guild {
   /**
    * Performs a search
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
-   * @returns {MessageSearch}
+   * @returns {Promise<Array<Message[]>>}
+   * An array containing arrays of messages. Each inner array is a search context cluster.
+   * The message which has triggered the result will have the `hit` property set to `true`.
    * @example
-   * guild.search()
-   *   .content('discord.js')
-   *   .before('2016-11-17')
-   *   .execute()
-   *   .then(res => {
-   *     const hit = res[0].find(m => m.hit).content;
-   *     console.log(`I found: **${hit}**`);
-   *   })
-   *   .catch(console.error);
+   * guild.search({
+   *   content: 'discord.js',
+   *   before: '2016-11-17'
+   * })
+   * .then(res => {
+   *   const hit = res[0].find(m => m.hit).content;
+   *   console.log(`I found: **${hit}**`);
+   * })
+   * .catch(console.error);
    */
   search(options) {
-    return new MessageSearch(this, options);
+    return this.client.rest.methods.search(this, options);
   }
 
   /**
