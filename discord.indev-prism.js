@@ -23254,6 +23254,17 @@ class VoiceBroadcast extends EventEmitter {
   }
 
   /**
+   * Play an arbitrary input that can be [handled by ffmpeg](https://ffmpeg.org/ffmpeg-protocols.html#Description)
+   * @param {string} input the arbitrary input
+   * @param {StreamOptions} [options] Options for playing the stream
+   * @returns {VoiceBroadcast}
+   */
+  playArbitraryInput(input, { seek = 0, volume = 1, passes = 1 } = {}) {
+    const options = { seek, volume, passes };
+    return this.player.playUnknownStream(input, options);
+  }
+
+  /**
    * Pauses the entire broadcast - all dispatchers also pause
    */
   pause() {
