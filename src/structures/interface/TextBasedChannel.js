@@ -3,7 +3,6 @@ const Message = require('../Message');
 const MessageCollector = require('../MessageCollector');
 const Collection = require('../../util/Collection');
 
-
 /**
  * Interface for classes that have text-channel-like features
  * @interface
@@ -215,6 +214,27 @@ class TextBasedChannel {
   }
 
   /**
+   * Performs a search
+   * @param {MessageSearchOptions} [options={}] Options to pass to the search
+   * @returns {Promise<Array<Message[]>>}
+   * An array containing arrays of messages. Each inner array is a search context cluster.
+   * The message which has triggered the result will have the `hit` property set to `true`.
+   * @example
+   * channel.search({
+   *   content: 'discord.js',
+   *   before: '2016-11-17'
+   * })
+   * .then(res => {
+   *   const hit = res[0].find(m => m.hit).content;
+   *   console.log(`I found: **${hit}**`);
+   * })
+   * .catch(console.error);
+   */
+  search(options) {
+    return this.client.rest.methods.search(this, options);
+  }
+
+  /**
    * Starts a typing indicator in the channel.
    * @param {number} [count] The number of times startTyping should be considered to have been called
    * @example
@@ -361,6 +381,7 @@ exports.applyToClass = (structure, full = false) => {
       '_cacheMessage',
       'fetchMessages',
       'fetchMessage',
+      'search',
       'bulkDelete',
       'startTyping',
       'stopTyping',

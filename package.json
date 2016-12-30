@@ -7,7 +7,7 @@
   "scripts": {
     "test": "eslint src && docgen --source src --custom docs/index.yml",
     "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
-    "test-docs": "docgen --source src --custom docs",
+    "test-docs": "docgen --source src --custom docs/index.yml",
     "lint": "eslint src",
     "web-dist": "node ./node_modules/parallel-webpack/bin/run.js"
   },
@@ -32,6 +32,7 @@
   "runkitExampleFilename": "./docs/examples/ping.js",
   "dependencies": {
     "@types/node": "^6.0.0",
+    "long": "^3.2.0",
     "pako": "^1.0.0",
     "prism-media": "hydrabolt/prism-media#master",
     "superagent": "^3.3.0",

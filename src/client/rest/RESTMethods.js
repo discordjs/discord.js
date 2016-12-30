@@ -3,6 +3,7 @@ const Collection = require('../../util/Collection');
 const splitMessage = require('../../util/SplitMessage');
 const parseEmoji = require('../../util/ParseEmoji');
 const escapeMarkdown = require('../../util/EscapeMarkdown');
+const transformSearchOptions = require('../../util/TransformSearchOptions');
 
 const User = require('../../structures/User');
 const GuildMember = require('../../structures/GuildMember');
@@ -12,6 +13,8 @@ const Invite = require('../../structures/Invite');
 const Webhook = require('../../structures/Webhook');
 const UserProfile = require('../../structures/UserProfile');
 const ClientOAuth2Application = require('../../structures/ClientOAuth2Application');
+const Channel = require('../../structures/Channel');
+const Guild = require('../../structures/Guild');
 
 class RESTMethods {
   constructor(restManager) {
@@ -114,6 +117,30 @@ class RESTMethods {
         channel_id: channel.id,
         ids: messages,
       }).messages
+    );
+  }
+
+  search(target, options) {
+    options = transformSearchOptions(options, this.client);
+
+    const queryString = Object.keys(options)
+      .filter(k => options[k])
+      .map(k => [k, options[k]])
+      .map(x => x.join('='))
+      .join('&');
+
+    let type;
+    if (target instanceof Channel) {
+      type = 'channel';
+    } else if (target instanceof Guild) {
+      type = 'guild';
+    } else {
+      throw new TypeError('Target must be a TextChannel, DMChannel, GroupDMChannel, or Guild.');
+    }
+
+    const url = `${Constants.Endpoints[`${type}Search`](target.id)}?${queryString}`;
+    return this.rest.makeRequest('get', url, true).then(body =>
+      body.messages.map(x => x.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)))
     );
   }
 

@@ -172,6 +172,12 @@ class Message {
      * @type {?string}
      */
     this.webhookID = data.webhook_id || null;
+
+    /**
+     * Whether this message is a hit in a search
+     * @type {?boolean}
+     */
+    this.hit = typeof data.hit === 'boolean' ? data.hit : null;
   }
 
   patch(data) { // eslint-disable-line complexity
