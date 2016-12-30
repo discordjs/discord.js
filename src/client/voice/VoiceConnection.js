@@ -27,7 +27,13 @@ class VoiceConnection extends EventEmitter {
     this.voiceManager = pendingConnection.voiceManager;
 
     /**
+     * @external Prism
+     * @see {@link https://github.com/hydrabolt/prism-media}
+     */
+
+    /**
      * The audio transcoder for this connection
+     * @type {Prism}
      */
     this.prism = new Prism();
 
