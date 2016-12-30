@@ -713,12 +713,10 @@ class Guild {
    * guild.search({
    *   content: 'discord.js',
    *   before: '2016-11-17'
-   * })
-   * .then(res => {
+   * }).then(res => {
    *   const hit = res[0].find(m => m.hit).content;
    *   console.log(`I found: **${hit}**`);
-   * })
-   * .catch(console.error);
+   * }).catch(console.error);
    */
   search(options) {
     return this.client.rest.methods.search(this, options);
