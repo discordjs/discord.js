@@ -12,11 +12,28 @@ const ffmpegArguments = [
   '-ac', '2',
 ];
 
+/**
+ * An Audio Player for a Voice Connection
+ * @private
+ * @extends {EventEmitter}
+ */
 class AudioPlayer extends EventEmitter {
   constructor(voiceConnection) {
     super();
+    /**
+     * The voice connection that the player serves
+     * @type {VoiceConnection}
+     */
     this.voiceConnection = voiceConnection;
+    /**
+     * The prism transcoder that the player uses
+     * @type {Prism}
+     */
     this.prism = new Prism();
+    /**
+     * The opus encoder that the player uses
+     * @type {NodeOpusEngine|OpusScriptEngine}
+     */
     this.opusEncoder = OpusEncoders.fetch();
     this.streams = new Collection();
     this.streamingData = {

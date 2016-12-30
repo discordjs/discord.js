@@ -11,13 +11,33 @@ const ffmpegArguments = [
   '-ac', '2',
 ];
 
+/**
+ * A voice broadcast that can be played across multiple voice connections
+ * @extends {EventEmitter}
+ */
 class VoiceBroadcast extends EventEmitter {
   constructor(client) {
     super();
+    /**
+     * The client that created the broadcast
+     * @type {Client}
+     */
     this.client = client;
     this.dispatchers = new Collection();
+    /**
+     * The audio transcoder that this broadcast uses
+     * @type {Prism}
+     */
     this.prism = new Prism();
+    /**
+     * The opus encoder that this broadcast uses
+     * @type {NodeOpusEngine|OpusScriptEngine}
+     */
     this.opusEncoder = OpusEncoders.fetch();
+    /**
+     * The current audio transcoder that is being used
+     * @type {object}
+     */
     this.currentTranscoder = null;
     this.tickInterval = null;
     this._volume = 1;
@@ -37,18 +57,35 @@ class VoiceBroadcast extends EventEmitter {
     return out;
   }
 
+  /**
+   * Sets the volume relative to the input stream - i.e. 1 is normal, 0.5 is half, 2 is double.
+   * @param {number} volume The volume that you want to set
+   */
   setVolume(volume) {
     this._volume = volume;
   }
 
+  /**
+   * Set the volume in decibels
+   * @param {number} db The decibels
+   */
   setVolumeDecibels(db) {
     this.setVolume(Math.pow(10, db / 20));
   }
 
+  /**
+   * Set the volume so that a perceived value of 0.5 is half the perceived volume etc.
+   * @param {number} value The value for the volume
+   */
   setVolumeLogarithmic(value) {
     this.setVolume(Math.pow(value, 1.660964));
   }
 
+  /**
+   * The current volume of the broadcast
+   * @readonly
+   * @type {number}
+   */
   get volume() {
     return this._volume;
   }
@@ -93,12 +130,47 @@ class VoiceBroadcast extends EventEmitter {
     }
   }
 
+  /**
+   * Plays any audio stream across the broadcast
+   * @param {ReadableStream} stream The audio stream to play
+   * @param {StreamOptions} [options] Options for playing the stream
+   * @returns {VoiceBroadcast}
+   * @example
+   * // play streams using ytdl-core
+   * const ytdl = require('ytdl-core');
+   * const streamOptions = { seek: 0, volume: 1 };
+   * const broadcast = client.createVoiceBroadcast();
+   *
+   * voiceChannel.join()
+   *  .then(connection => {
+   *    const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', {filter : 'audioonly'});
+   *    broadcast.playStream(stream);
+   *    const dispatcher = connection.playBroadcast(broadcast);
+   *  })
+   *  .catch(console.error);
+   */
   playStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
     const options = { seek, volume, passes };
     options.stream = stream;
     return this._playTranscodable(stream, options);
   }
 
+  /**
+   * Play the given file in the voice connection.
+   * @param {string} file The path to the file
+   * @param {StreamOptions} [options] Options for playing the stream
+   * @returns {StreamDispatcher}
+   * @example
+   * // play files natively
+   * const broadcast = client.createVoiceBroadcast();
+   *
+   * voiceChannel.join()
+   *  .then(connection => {
+   *    broadcast.playFile('C:/Users/Discord/Desktop/music.mp3');
+   *    const dispatcher = connection.playBroadcast(broadcast);
+   *  })
+   *  .catch(console.error);
+   */
   playFile(file, { seek = 0, volume = 1, passes = 1 } = {}) {
     const options = { seek, volume, passes };
     return this._playTranscodable(file, options);
@@ -111,7 +183,20 @@ class VoiceBroadcast extends EventEmitter {
       media,
       ffmpegArguments: ffmpegArguments.concat(['-ss', String(options.seek)]),
     });
-    transcoder.once('error', e => this.emit('error', e));
+    /**
+     * Emitted whenever an error occurs
+     * @event VoiceBroadcast#error
+     * @param {Error} error the error that occurred
+     */
+    transcoder.once('error', e => {
+      if (this.listenerCount('error') > 0) this.emit('error', e);
+      /**
+       * Emitted whenever the VoiceBroadcast has any warnings
+       * @event VoiceBroadcast#warn
+       * @param {string|Error} warning the warning that was raised
+       */
+      else this.emit('warn', e);
+    });
     transcoder.once('end', () => this.killCurrentTranscoder());
     this.currentTranscoder = {
       transcoder,
@@ -121,6 +206,12 @@ class VoiceBroadcast extends EventEmitter {
     return this;
   }
 
+  /**
+   * Plays a stream of 16-bit signed stereo PCM at 48KHz.
+   * @param {ReadableStream} stream The audio stream to play.
+   * @param {StreamOptions} [options] Options for playing the stream
+   * @returns {VoiceBroadcast}
+   */
   playConvertedStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
     this.killCurrentTranscoder();
     const options = { seek, volume, passes, stream };
@@ -129,6 +220,9 @@ class VoiceBroadcast extends EventEmitter {
     return this;
   }
 
+  /**
+   * Pauses the entire broadcast - all dispatchers also pause
+   */
   pause() {
     for (const container of this.dispatchers.values()) {
       for (const dispatcher of container.values()) {
@@ -138,6 +232,9 @@ class VoiceBroadcast extends EventEmitter {
     clearInterval(this.tickInterval);
   }
 
+  /**
+   * Resumes the entire broadcast - all dispatchers also resume
+   */
   resume() {
     for (const container of this.dispatchers.values()) {
       for (const dispatcher of container.values()) {
@@ -179,6 +276,9 @@ class VoiceBroadcast extends EventEmitter {
     }
   }
 
+  /**
+   * End the current broadcast, all subscribed dispatchers will also end
+   */
   end() {
     this.killCurrentTranscoder();
     for (const container of this.dispatchers.values()) {
