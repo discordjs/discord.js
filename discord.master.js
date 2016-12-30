@@ -8923,7 +8923,7 @@ class ClientUser extends User {
    *  .catch(console.error);
    */
   setAvatar(avatar) {
-    if (avatar.startsWith('data:')) {
+    if (typeof avatar === 'string' && avatar.startsWith('data:')) {
       return this.client.rest.methods.updateCurrentUser({ avatar });
     } else {
       return this.client.resolver.resolveBuffer(avatar).then(data =>
