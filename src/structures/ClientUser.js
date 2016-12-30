@@ -268,7 +268,7 @@ class ClientUser extends User {
    */
   createGuild(name, region, icon = null) {
     if (!icon) return this.client.rest.methods.createGuild({ name, icon, region });
-    if (icon.startsWith('data:')) {
+    if (typeof icon === 'string' && icon.startsWith('data:')) {
       return this.client.rest.methods.createGuild({ name, icon, region });
     } else {
       return this.client.resolver.resolveBuffer(icon).then(data =>

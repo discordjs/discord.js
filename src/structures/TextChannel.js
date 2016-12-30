@@ -53,7 +53,7 @@ class TextChannel extends GuildChannel {
   /**
    * Create a webhook for the channel.
    * @param {string} name The name of the webhook.
-   * @param {BufferResolvable} avatar The avatar for the webhook.
+   * @param {BufferResolvable|Base64Resolvable} avatar The avatar for the webhook.
    * @returns {Promise<Webhook>} webhook The created webhook.
    * @example
    * channel.createWebhook('Snek', 'http://snek.s3.amazonaws.com/topSnek.png')
@@ -62,7 +62,7 @@ class TextChannel extends GuildChannel {
    */
   createWebhook(name, avatar) {
     return new Promise(resolve => {
-      if (avatar.startsWith('data:')) {
+      if (typeof avatar === 'string' && avatar.startsWith('data:')) {
         resolve(this.client.rest.methods.createWebhook(this, name, avatar));
       } else {
         this.client.resolver.resolveBuffer(avatar).then(data =>
@@ -81,6 +81,7 @@ class TextChannel extends GuildChannel {
   fetchMessage() { return; }
   fetchMessages() { return; }
   fetchPinnedMessages() { return; }
+  search() { return; }
   startTyping() { return; }
   stopTyping() { return; }
   get typing() { return; }
@@ -89,7 +90,6 @@ class TextChannel extends GuildChannel {
   awaitMessages() { return; }
   bulkDelete() { return; }
   _cacheMessage() { return; }
-  search() { return; }
 }
 
 TextBasedChannel.applyToClass(TextChannel, true);

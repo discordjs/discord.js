@@ -214,7 +214,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Performs a search
+   * Performs a search within the channel.
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
    * @returns {Promise<Array<Message[]>>}
    * An array containing arrays of messages. Each inner array is a search context cluster.
@@ -223,12 +223,10 @@ class TextBasedChannel {
    * channel.search({
    *   content: 'discord.js',
    *   before: '2016-11-17'
-   * })
-   * .then(res => {
+   * }).then(res => {
    *   const hit = res[0].find(m => m.hit).content;
    *   console.log(`I found: **${hit}**`);
-   * })
-   * .catch(console.error);
+   * }).catch(console.error);
    */
   search(options) {
     return this.client.rest.methods.search(this, options);
