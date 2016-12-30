@@ -21,16 +21,17 @@ const Guild = require('../../structures/Guild');
  * @property {string} [content] Message content
  * @property {string} [maxID] Maximum ID for the filter
  * @property {string} [minID] Minimum ID for the filter
- * @property {string} [has] One of `link`, `embed`, `file`, `video`, `image`, or `sound`
- * @property {string} [channelID] Channel ID to limit search to (only for guild search endpoint)
- * @property {string} [authorID] Author ID to limit search
- * @property {string} [authorType] One of `user`, `-user`, `bot`, `-bot`, `webhook`, or `-webhook`
+ * @property {string} [has] One of `link`, `embed`, `file`, `video`, `image`, or `sound`,
+ * or add `-` to negate (e.g. `-file`)
+ * @property {ChannelResolvable} [channel] Channel to limit search to (only for guild search endpoint)
+ * @property {UserResolvable} [author] Author to limit search
+ * @property {string} [authorType] One of `user`, `bot`, `webhook`, or add `-` to negate (e.g. `-webhook`)
  * @property {string} [sortBy='recent'] `recent` or `relevant`
  * @property {string} [sortOrder='desc'] `asc` or `desc`
  * @property {number} [contextSize=2] How many messages to get around the matched message (0 to 2)
  * @property {number} [limit=25] Maximum number of results to get (1 to 25)
  * @property {number} [offset=0] Offset the "pages" of results (since you can only see 25 at a time)
- * @property {string} [mentionedID] Mentioned user filter
+ * @property {UserResolvable} [mentioned] Mentioned user filter
  * @property {boolean} [mentionsEveryone] If everyone is mentioned
  * @property {string} [linkHostname] Filter links by hostname
  * @property {string} [embedProvider] The name of an embed provider
@@ -164,20 +165,26 @@ class RESTMethods {
       options.maxID = long.fromNumber(t + 86400000).shift(222).toString();
     }
 
+    if (options.channel) options.channel = this.client.resolver.resolveChannelID(options.channel);
+
+    if (options.author) options.author = this.client.resolver.resolveUserID(options.author);
+
+    if (options.mentions) options.mentions = this.client.resolver.resolveUserID(options.options.mentions);
+
     options = {
       content: options.content,
       max_id: options.maxID,
       min_id: options.minID,
       has: options.has,
-      channel_id: options.channelID,
-      author_id: options.authorID,
+      channel_id: options.channel,
+      author_id: options.author,
       author_type: options.authorType,
       context_size: options.contextSize,
       sort_by: options.sortBy,
       sort_order: options.sortOrder,
       limit: options.limit,
       offset: options.offset,
-      mentions: options.mentionedID,
+      mentions: options.mentions,
       mentions_everyone: options.mentionsEveryone,
       link_hostname: options.linkHostname,
       embed_provider: options.embedProvider,
