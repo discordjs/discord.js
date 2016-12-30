@@ -8482,6 +8482,13 @@ class ClientUser extends User {
      * @type {Collection<string, string>}
      */
     this.notes = new Collection();
+
+    /**
+     * Discord client settings, such as guild positions
+     * <warn>This is only filled when using a user account.</warn>
+     * @type {Object}
+     */
+    this.settings = {};
   }
 
   edit(data) {
@@ -22596,6 +22603,7 @@ class ReadyHandler extends AbstractHandler {
     client.ws.heartbeat();
 
     const clientUser = new ClientUser(client, data.user);
+    clientUser.settings = data.user_settings;
     client.user = clientUser;
     client.readyAt = new Date();
     client.users.set(clientUser.id, clientUser);
