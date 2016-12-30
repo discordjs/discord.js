@@ -1098,9 +1098,9 @@ class User {
    * @readonly
    */
   get defaultAvatarURL() {
-    let defaultAvatars = Object.values(Constants.DefaultAvatars);
-    let defaultAvatar = this.discriminator % defaultAvatars.length;
-    return Constants.Endpoints.assets(`${defaultAvatars[defaultAvatar]}.png`);
+    const avatars = Object.keys(Constants.DefaultAvatars);
+    const avatar = avatars[this.discriminator % avatars.length];
+    return Constants.Endpoints.assets(`${Constants.DefaultAvatars[avatar]}.png`);
   }
 
   /**
