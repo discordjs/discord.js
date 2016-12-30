@@ -31,7 +31,7 @@ const Guild = require('../../structures/Guild');
  * @property {number} [contextSize=2] How many messages to get around the matched message (0 to 2)
  * @property {number} [limit=25] Maximum number of results to get (1 to 25)
  * @property {number} [offset=0] Offset the "pages" of results (since you can only see 25 at a time)
- * @property {UserResolvable} [mentioned] Mentioned user filter
+ * @property {UserResolvable} [mentions] Mentioned user filter
  * @property {boolean} [mentionsEveryone] If everyone is mentioned
  * @property {string} [linkHostname] Filter links by hostname
  * @property {string} [embedProvider] The name of an embed provider
