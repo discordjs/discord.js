@@ -301,6 +301,7 @@ class StreamDispatcher extends EventEmitter {
     if (!this.stream) {
       /**
        * Emitted if the dispatcher encounters an error
+       * @event StreamDispatcher#error
        * @param {string} error the error message
        */
       this.emit('error', 'No stream');
