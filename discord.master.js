@@ -8324,7 +8324,7 @@ module.exports = {
 	"scripts": {
 		"test": "eslint src && docgen --source src --custom docs/index.yml",
 		"docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
-		"test-docs": "docgen --source src --custom docs",
+		"test-docs": "docgen --source src --custom docs/index.yml",
 		"lint": "eslint src",
 		"web-dist": "node ./node_modules/parallel-webpack/bin/run.js"
 	},
