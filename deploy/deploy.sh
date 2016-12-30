@@ -3,35 +3,26 @@
 
 set -e
 
-function build {
-  # Build docs
-  npm run docs
-
-  # Build the webpack
-  VERSIONED=false npm run web-dist
-}
-
-# Ignore Travis checking PRs
+# Only run tests for PRs
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  echo "deploy.sh: Ignoring PR build"
-  build
+  echo "deploy.sh: This is a PR build - only running tests"
+  npm run test-docs
+  VERSIONED=false npm run web-dist
   exit 0
 fi
 
-# Ignore travis checking other branches irrelevant to users
-if [ "$TRAVIS_BRANCH" == "gh-pages" -o "$TRAVIS_BRANCH" == "gh-pages-dev" -o "$TRAVIS_BRANCH" == "docs" -o "$TRAVIS_BRANCH" == "webpack" -o "$TRAVIS_BRANCH" == "v8" ]; then
-  echo "deploy.sh: Ignoring push to blacklisted branch"
-  build
-  exit 0
-fi
-
-SOURCE=$TRAVIS_BRANCH
-
-# Make sure tag pushes are handled
+# Figure out the source of the build
 if [ -n "$TRAVIS_TAG" ]; then
-  echo "deploy.sh: This is a tag build, proceeding accordingly"
+  echo "deploy.sh: This is a tag build for $TRAVIS_TAG"
   SOURCE=$TRAVIS_TAG
+else
+  echo "deploy.sh: This is a branch build for $TRAVIS_BRANCH"
+  SOURCE=$TRAVIS_BRANCH
 fi
+
+# Build everything
+npm run docs
+VERSIONED=false npm run web-dist
 
 # Initialise some useful variables
 REPO=`git config remote.origin.url`
@@ -48,15 +39,11 @@ chmod 600 deploy_key
 eval `ssh-agent -s`
 ssh-add deploy_key
 
-# Build everything
-build
-
 # Checkout the repo in the target branch so we can build docs and push to it
 TARGET_BRANCH="docs"
 git clone $REPO out -b $TARGET_BRANCH
 
-# Move the generated JSON file to the newly-checked-out repo, to be committed
-# and pushed
+# Move the generated JSON file to the newly-checked-out repo, to be committed and pushed
 mv docs/docs.json out/$SOURCE.json
 
 # Commit and push
