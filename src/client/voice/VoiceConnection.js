@@ -242,6 +242,17 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
+   * Play an arbitrary input that can be [handled by ffmpeg](https://ffmpeg.org/ffmpeg-protocols.html#Description)
+   * @param {string} input the arbitrary input
+   * @param {StreamOptions} [options] Options for playing the stream
+   * @returns {StreamDispatcher}
+   */
+  playArbitraryInput(input, { seek = 0, volume = 1, passes = 1 } = {}) {
+    const options = { seek, volume, passes };
+    return this.player.playUnknownStream(input, options);
+  }
+
+  /**
    * Plays and converts an audio stream in the voice connection.
    * @param {ReadableStream} stream The audio stream to play
    * @param {StreamOptions} [options] Options for playing the stream
