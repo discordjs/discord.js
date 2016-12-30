@@ -3,7 +3,6 @@ const Prism = require('prism-media');
 const StreamDispatcher = require('../dispatcher/StreamDispatcher');
 const Collection = require('../../../util/Collection');
 const OpusEncoders = require('../opus/OpusEngineList');
-const VoiceBroadcast = require('../VoiceBroadcast');
 
 const ffmpegArguments = [
   '-analyzeduration', '0',
