@@ -122,6 +122,7 @@ const Endpoints = exports.Endpoints = {
   guildMemberNickname: (guildID) => `${Endpoints.guildMember(guildID, '@me')}/nick`,
   guildChannels: (guildID) => `${Endpoints.guild(guildID)}/channels`,
   guildEmojis: (guildID) => `${Endpoints.guild(guildID)}/emojis`,
+  guildSearch: (guildID) => `${Endpoints.guild(guildID)}/messages/search`,
 
   // channels
   channels: `${API}/channels`,
@@ -132,6 +133,7 @@ const Endpoints = exports.Endpoints = {
   channelPermissions: (channelID) => `${Endpoints.channel(channelID)}/permissions`,
   channelMessage: (channelID, messageID) => `${Endpoints.channelMessages(channelID)}/${messageID}`,
   channelWebhooks: (channelID) => `${Endpoints.channel(channelID)}/webhooks`,
+  channelSearch: (channelID) => `${Endpoints.channelMessages(channelID)}/search`,
 
   // message reactions
   messageReactions: (channelID, messageID) => `${Endpoints.channelMessage(channelID, messageID)}/reactions`,
