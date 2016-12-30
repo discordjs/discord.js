@@ -1,9 +1,9 @@
-const long = require('long');
 const Constants = require('../../util/Constants');
 const Collection = require('../../util/Collection');
 const splitMessage = require('../../util/SplitMessage');
 const parseEmoji = require('../../util/ParseEmoji');
 const escapeMarkdown = require('../../util/EscapeMarkdown');
+const transformSearchOptions = require('../../util/TransformSearchOptions');
 
 const User = require('../../structures/User');
 const GuildMember = require('../../structures/GuildMember');
@@ -148,50 +148,7 @@ class RESTMethods {
   }
 
   search(target, options) {
-    if (options.before) {
-      if (!(options.before instanceof Date)) options.before = new Date(options.before);
-      options.maxID = long.fromNumber(options.before.getTime() - 14200704e5).shiftLeft(22).toString();
-    }
-
-    if (options.after) {
-      if (!(options.after instanceof Date)) options.after = new Date(options.after);
-      options.minID = long.fromNumber(options.after.getTime() - 14200704e5).shiftLeft(22).toString();
-    }
-
-    if (options.during) {
-      if (!(options.during instanceof Date)) options.during = new Date(options.during);
-      const t = options.during.getTime() - 14200704e5;
-      options.minID = long.fromNumber(t).shiftLeft(22).toString();
-      options.maxID = long.fromNumber(t + 86400000).shift(222).toString();
-    }
-
-    if (options.channel) options.channel = this.client.resolver.resolveChannelID(options.channel);
-
-    if (options.author) options.author = this.client.resolver.resolveUserID(options.author);
-
-    if (options.mentions) options.mentions = this.client.resolver.resolveUserID(options.options.mentions);
-
-    options = {
-      content: options.content,
-      max_id: options.maxID,
-      min_id: options.minID,
-      has: options.has,
-      channel_id: options.channel,
-      author_id: options.author,
-      author_type: options.authorType,
-      context_size: options.contextSize,
-      sort_by: options.sortBy,
-      sort_order: options.sortOrder,
-      limit: options.limit,
-      offset: options.offset,
-      mentions: options.mentions,
-      mentions_everyone: options.mentionsEveryone,
-      link_hostname: options.linkHostname,
-      embed_provider: options.embedProvider,
-      embed_type: options.embedType,
-      attachment_filename: options.attachmentFilename,
-      attachment_extension: options.attachmentExtension,
-    };
+    options = transformSearchOptions(options);
 
     const queryString = Object.keys(options)
       .filter(k => options[k])
