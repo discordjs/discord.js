@@ -35,12 +35,6 @@ class AudioPlayer extends EventEmitter {
   }
 
   destroyStream(stream) {
-    if (stream instanceof VoiceBroadcast && this.streams.has(stream)) {
-      const data = this.streams.get(stream);
-      if (data.dispatcher) data.dispatcher.destroy('end');
-      this.streams.delete(stream);
-      return;
-    }
     const data = this.streams.get(stream);
     if (!data) return;
     const transcoder = data.transcoder;
@@ -89,11 +83,11 @@ class AudioPlayer extends EventEmitter {
   playBroadcast(broadcast, { volume = 1, passes = 1 } = {}) {
     const options = { volume, passes };
     this.destroyAllStreams();
-    this.streams.set(broadcast, broadcast);
     const dispatcher = new StreamDispatcher(this, broadcast, options);
     dispatcher.on('end', () => this.destroyStream(broadcast));
     dispatcher.on('error', () => this.destroyStream(broadcast));
     dispatcher.on('speaking', value => this.voiceConnection.setSpeaking(value));
+    this.streams.set(broadcast, { dispatcher, input: broadcast });
     broadcast.registerDispatcher(dispatcher);
     return dispatcher;
   }
