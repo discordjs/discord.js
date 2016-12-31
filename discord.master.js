@@ -1882,6 +1882,16 @@ class Emoji {
   }
 
   /**
+   * The identifier of this emoji, used for message reactions
+   * @type {string}
+   * @readonly
+   */
+  get identifier() {
+    if (this.id) return `${this.name}:${this.id}`;
+    return encodeURIComponent(this.name);
+  }
+
+  /**
    * When concatenated with a string, this automatically returns the emoji mention rather than the object.
    * @returns {string}
    * @example
@@ -1912,18 +1922,6 @@ class Emoji {
         other.name === this.name
       );
     }
-  }
-
-  /**
-   * The identifier of this emoji, used for message reactions
-   * @readonly
-   * @type {string}
-   */
-  get identifier() {
-    if (this.id) {
-      return `${this.name}:${this.id}`;
-    }
-    return encodeURIComponent(this.name);
   }
 }
 
@@ -4657,8 +4655,8 @@ class ReactionEmoji {
 
   /**
    * The identifier of this emoji, used for message reactions
-   * @readonly
    * @type {string}
+   * @readonly
    */
   get identifier() {
     if (this.id) return `${this.name}:${this.id}`;
