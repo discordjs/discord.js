@@ -26,8 +26,8 @@ class ReactionEmoji {
 
   /**
    * The identifier of this emoji, used for message reactions
-   * @readonly
    * @type {string}
+   * @readonly
    */
   get identifier() {
     if (this.id) return `${this.name}:${this.id}`;
