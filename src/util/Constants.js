@@ -77,6 +77,7 @@ exports.Errors = {
 
 const PROTOCOL_VERSION = exports.PROTOCOL_VERSION = 6;
 exports.HOST = 'discordapp.com';
+const HOST = `https://${exports.HOST}`;
 const API = exports.API = `/api/v${PROTOCOL_VERSION}`;
 const Endpoints = exports.Endpoints = {
   // general
@@ -86,7 +87,7 @@ const Endpoints = exports.Endpoints = {
   botGateway: `${API}/gateway/bot`,
   invite: (id) => `${API}/invite/${id}`,
   inviteLink: (id) => `https://discord.gg/${id}`,
-  assets: (asset) => `/assets/${asset}`,
+  assets: (asset) => `${HOST}/assets/${asset}`,
   CDN: 'https://cdn.discordapp.com',
 
   // users

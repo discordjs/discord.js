@@ -78,7 +78,7 @@ class DiscordRequest {
             body = JSON.parse(body);
           } catch (err) {} // eslint-disable-line no-empty
           response.body = body;
-          console.log(body);
+          response.status = response.statusCode;
           if (response.statusCode >= 400) {
             reject(response);
           } else {
