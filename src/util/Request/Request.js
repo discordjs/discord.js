@@ -2,6 +2,8 @@ const http = require('http');
 const https = require('https');
 const url = require('url');
 const NodeFormData = require('./FormData');
+const pako = require('pako');
+const zlib = require('zlib');
 
 const PROTOCOLS = {
   http: 80,
@@ -74,26 +76,33 @@ class Request {
       let body = '';
       const handler = (response) => {
         response.setEncoding('utf8');
-        response.on('data', (chunk) => {
-          body += chunk;
-        });
         response.once('aborted', reject);
         response.once('abort', reject);
         response.once('error', reject);
+        response.on('data', (chunk) => {
+          body += chunk;
+        });
         response.once('end', () => {
+          if (/^\s*(?:deflate|gzip)\s*$/.test(response.headers['content-encoding'])) {
+            if (typeof document !== 'undefined') body = pako.inflate(body, { to: 'string' });
+            else body = zlib.unzipSync(body).toString();
+          }
+
           response.text = body;
-          const c = response.headers['content-type'];
-          if (c) {
-            if (c === 'application/json') {
-              try {
-                response.body = JSON.parse(body);
-              } catch (err) {} // eslint-disable-line no-empty
-            } else {
-              response.body = Buffer.from(body);
+
+          const type = response.headers['content-type'];
+          if (type === 'application/json') {
+            try {
+              body = JSON.parse(body);
+            } catch (e) {
+              body = {};
             }
           } else {
-            response.body = {};
+            body = Buffer.from(body);
           }
+
+          response.body = body;
+
           response.status = response.statusCode;
           if (response.statusCode >= 400) {
             reject(response);
