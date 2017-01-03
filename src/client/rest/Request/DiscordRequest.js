@@ -35,13 +35,12 @@ class DiscordRequest {
   }
 
   attach(field, file, options) {
-    this.set('Content-Type', 'multipart/form-data');
     this._getFormData().append(field, file, options || file.name);
+    this.set('Content-Type', `multipart/form-data; boundary=${this.data.boundary}`);
     return this;
   }
 
   field(name, val) {
-    this.set('Content-Type', 'multipart/form-data');
     if (name === null || name === undefined) throw new Error('.field(name, val) name can not be empty');
 
     if (name !== null && typeof name === 'object') {
@@ -59,6 +58,7 @@ class DiscordRequest {
     if (val === null || val === undefined) throw new Error('.field(name, val) val can not be empty');
     if (typeof val === 'boolean') val = String(val);
     this._getFormData().append(name, val);
+    this.set('Content-Type', `multipart/form-data; boundary=${this.data.boundary}`);
     return this;
   }
 
