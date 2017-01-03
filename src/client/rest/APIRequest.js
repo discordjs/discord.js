@@ -1,5 +1,5 @@
-const request = require('superagent');
 const Constants = require('../../util/Constants');
+const DiscordRequest = require('./Request/DiscordRequest');
 
 function getRoute(url) {
   let route = url.split('?')[0];
@@ -32,7 +32,7 @@ class APIRequest {
   }
 
   gen() {
-    const apiRequest = request[this.method](this.url);
+    const apiRequest = new DiscordRequest(this.method, this.url);
     if (this.auth) apiRequest.set('authorization', this.getAuth());
     if (this.file && this.file.file) {
       apiRequest.attach('file', this.file.file, this.file.name);
