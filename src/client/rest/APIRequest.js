@@ -36,7 +36,6 @@ class APIRequest {
     if (this.auth) apiRequest.set('authorization', this.getAuth());
     if (this.file && this.file.file) {
       apiRequest.attach('file', this.file.file, this.file.name);
-      // this.data = this.data || {};
       if (this.data) apiRequest.field('payload_json', JSON.stringify(this.data));
     } else if (this.data) {
       apiRequest.send(this.data);

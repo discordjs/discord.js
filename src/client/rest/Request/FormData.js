@@ -20,6 +20,7 @@ class FormData {
       this.buffer,
       new Buffer(`\r\n------------------------`),
     ]);
+    console.log(this.buffer.toString());
     return this.buffer;
   }
 }
