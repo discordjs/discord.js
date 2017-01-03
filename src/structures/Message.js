@@ -3,6 +3,7 @@ const Embed = require('./MessageEmbed');
 const MessageReaction = require('./MessageReaction');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
+const escapeMarkdown = require('../util/EscapeMarkdown');
 
 // Done purely for GuildMember, which would cause a bad circular dependency
 const Discord = require('..');
@@ -396,6 +397,17 @@ class Message {
       options = {};
     }
     return this.client.rest.methods.updateMessage(this, content, options);
+  }
+  
+  /**
+   * Edit the content of the message, with a code block
+   * @param {string} lang Language for the code block
+   * @param {StringResolvable} content The new content for the message
+   * @returns {Promise<Message>}
+   */
+  editCode(lang, content) {
+    content = escapeMarkdown(this.client.resolver.resolveString(content), true);
+    return this.edit(`\`\`\`${lang || ''}\n${content}\n\`\`\``);
   }
 
   /**
