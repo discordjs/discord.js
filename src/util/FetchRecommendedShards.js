@@ -10,7 +10,7 @@ const Constants = require('./Constants');
 module.exports = function fetchRecommendedShards(token, guildsPerShard = 1000) {
   return new Promise((resolve, reject) => {
     if (!token) throw new Error('A token must be provided.');
-    new Request('get', Constants.HOST, Constants.Endpoints.botGateway)
+    new Request('get', Constants.Endpoints.botGateway)
       .set('Authorization', `Bot ${token.replace(/^Bot\s*/i, '')}`)
       .end((err, res) => {
         if (err) reject(err);
