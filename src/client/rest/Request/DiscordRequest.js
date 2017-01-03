@@ -19,9 +19,9 @@ class DiscordRequest {
   }
 
   send(data) {
-    if (typeof data === 'object') {
-      this.set('Content-Type', 'application/json');
+    if (typeof data !== 'string' && !(data instanceof Buffer)) {
       this.data = JSON.stringify(data);
+      this.set('Content-Type', 'application/json');
     } else {
       this.data = data;
     }
