@@ -3,7 +3,6 @@ const Embed = require('./MessageEmbed');
 const MessageReaction = require('./MessageReaction');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
-const escapeMarkdown = require('../util/EscapeMarkdown');
 
 // Done purely for GuildMember, which would cause a bad circular dependency
 const Discord = require('..');
