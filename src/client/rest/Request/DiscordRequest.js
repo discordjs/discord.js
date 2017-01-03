@@ -11,7 +11,6 @@ class DiscordRequest {
       path,
       headers: {},
     };
-    this.headers = {};
   }
 
   set(header, value) {
@@ -44,9 +43,7 @@ class DiscordRequest {
     if (name === null || name === undefined) throw new Error('.field(name, val) name can not be empty');
 
     if (name !== null && typeof name === 'object') {
-      for (var key in name) {
-        this.field(key, name[key]);
-      }
+      for (var key in name) this.field(key, name[key]);
       return this;
     }
 
