@@ -4,6 +4,7 @@ const MessageReaction = require('./MessageReaction');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
 const escapeMarkdown = require('../util/EscapeMarkdown');
+const GuildMember = require('./GuildMember');
 
 // Done purely for GuildMember, which would cause a bad circular dependency
 const Discord = require('..');
@@ -367,7 +368,7 @@ class Message {
   isMemberMentioned(member) {
     if (this.mentions.everyone) return true;
     if (this.mentions.users.has(member.id)) return true;
-    if (member instanceof Discord.GuildMember && member.roles.some(r => this.mentions.roles.has(r.id))) return true;
+    if (member instanceof GuildMember && member.roles.some(r => this.mentions.roles.has(r.id))) return true;
     return false;
   }
 
