@@ -373,8 +373,8 @@ class Guild {
    *   content: 'discord.js',
    *   before: '2016-11-17'
    * }).then(res => {
-   *   const hit = res[0].find(m => m.hit).content;
-   *   console.log(`I found: **${hit}**`);
+   *   const hit = res.messages[0].find(m => m.hit).content;
+   *   console.log(`I found: **${hit}**, total results: ${res.totalResults}`);
    * }).catch(console.error);
    */
   search(options) {
