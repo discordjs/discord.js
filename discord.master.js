@@ -2738,8 +2738,8 @@ class TextBasedChannel {
    *   content: 'discord.js',
    *   before: '2016-11-17'
    * }).then(res => {
-   *   const hit = res[0].find(m => m.hit).content;
-   *   console.log(`I found: **${hit}**`);
+   *   const hit = res.messages[0].find(m => m.hit).content;
+   *   console.log(`I found: **${hit}**, total results: ${res.totalResults}`);
    * }).catch(console.error);
    */
   search(options) {
@@ -3289,8 +3289,8 @@ class Guild {
    *   content: 'discord.js',
    *   before: '2016-11-17'
    * }).then(res => {
-   *   const hit = res[0].find(m => m.hit).content;
-   *   console.log(`I found: **${hit}**`);
+   *   const hit = res.messages[0].find(m => m.hit).content;
+   *   console.log(`I found: **${hit}**, total results: ${res.totalResults}`);
    * }).catch(console.error);
    */
   search(options) {
@@ -21957,9 +21957,15 @@ class RESTMethods {
     }
 
     const url = `${Constants.Endpoints[`${type}Search`](target.id)}?${queryString}`;
-    return this.rest.makeRequest('get', url, true).then(body =>
-      body.messages.map(x => x.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)))
-    );
+    return this.rest.makeRequest('get', url, true).then(body => {
+      const messages = body.messages.map(x =>
+        x.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client))
+      );
+      return {
+        totalResults: body.total_results,
+        messages,
+      };
+    });
   }
 
   createChannel(guild, channelName, channelType, overwrites) {
@@ -24403,7 +24409,7 @@ module.exports = function TransformSearchOptions(options, client) {
     if (!(options.during instanceof Date)) options.during = new Date(options.during);
     const t = options.during.getTime() - 14200704e5;
     options.minID = long.fromNumber(t).shiftLeft(22).toString();
-    options.maxID = long.fromNumber(t + 86400000).shift(222).toString();
+    options.maxID = long.fromNumber(t + 86400000).shiftLeft(22).toString();
   }
 
   if (options.channel) options.channel = client.resolver.resolveChannelID(options.channel);
