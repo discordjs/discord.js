@@ -1,5 +1,5 @@
 const Constants = require('../../util/Constants');
-const DiscordRequest = require('./Request/DiscordRequest');
+const DiscordRequest = require('../../util/Request/Request');
 
 function getRoute(url) {
   let route = url.split('?')[0];

@@ -1,13 +1,20 @@
 const https = require('https');
+const url = require('url');
 const NodeFormData = require('./FormData');
-const Constants = require('../../../util/Constants');
 
-class DiscordRequest {
-  constructor(method, path) {
+const PROTOCOLS = {
+  http: 80,
+  https: 443,
+  ftp: 21,
+};
+
+class Request {
+  constructor(method, uri) {
+    const { hostname, path, protocol } = url.parse(uri);
     this.options = {
-      port: 443,
+      port: PROTOCOLS[protocol],
       method: method.toUpperCase(),
-      hostname: Constants.HOST,
+      hostname,
       path,
       headers: {},
     };
@@ -71,10 +78,19 @@ class DiscordRequest {
         response.once('abort', reject);
         response.once('error', reject);
         response.once('end', () => {
-          try {
-            body = JSON.parse(body);
-          } catch (err) {} // eslint-disable-line no-empty
-          response.body = body;
+          response.text = body;
+          const c = response.headers['content-type'];
+          if (c) {
+            if (c === 'application/json') {
+              try {
+                response.body = JSON.parse(body);
+              } catch (err) {} // eslint-disable-line no-empty
+            } else {
+              response.body = Buffer.from(body);
+            }
+          } else {
+            response.body = {};
+          }
           response.status = response.statusCode;
           if (response.statusCode >= 400) {
             reject(response);
@@ -91,4 +107,4 @@ class DiscordRequest {
   }
 }
 
-module.exports = DiscordRequest;
+module.exports = Request;

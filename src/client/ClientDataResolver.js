@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const request = require('superagent');
+const Request = require('../util/Request/Request');
 
 const Constants = require('../util/Constants');
 const convertArrayBuffer = require('../util/ConvertArrayBuffer');
@@ -273,7 +273,7 @@ class ClientDataResolver {
     if (typeof resource === 'string') {
       return new Promise((resolve, reject) => {
         if (/^https?:\/\//.test(resource)) {
-          const req = request.get(resource).set('Content-Type', 'blob');
+          const req = new Request('get', resource).set('Content-Type', 'blob');
           if (this.client.browser) req.responseType('arraybuffer');
           req.end((err, res) => {
             if (err) return reject(err);
