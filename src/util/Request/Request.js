@@ -12,7 +12,7 @@ class Request {
   constructor(method, uri) {
     const { hostname, path, protocol } = url.parse(uri);
     this.options = {
-      port: PROTOCOLS[protocol],
+      port: PROTOCOLS[protocol.replace(':', '')],
       method: method.toUpperCase(),
       hostname,
       path,
