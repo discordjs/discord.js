@@ -11,7 +11,7 @@ function tests {
 
 function build {
   npm run docs
-  VERSIONED=false npm run web-dist
+  npm run web-dist
 }
 
 # Only run tests for PRs

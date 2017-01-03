@@ -5,7 +5,6 @@
 
 const webpack = require('webpack');
 const createVariants = require('parallel-webpack').createVariants;
-const version = require('./package.json').version;
 
 const createConfig = (options) => {
   const plugins = [
@@ -14,7 +13,7 @@ const createConfig = (options) => {
 
   if (options.minify) plugins.push(new webpack.optimize.UglifyJsPlugin({ minimize: true }));
 
-  const filename = `./webpack/discord${process.env.VERSIONED === 'false' ? '' : '.' + version}${options.minify ? '.min' : ''}.js`; // eslint-disable-line
+  const filename = `./webpack/discord${options.minify ? '.min' : ''}.js`; // eslint-disable-line
 
   return {
     entry: './src/index.js',
