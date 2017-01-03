@@ -398,7 +398,7 @@ class Message {
     }
     return this.client.rest.methods.updateMessage(this, content, options);
   }
-  
+
   /**
    * Edit the content of the message, with a code block
    * @param {string} lang Language for the code block
