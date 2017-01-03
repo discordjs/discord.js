@@ -42,7 +42,7 @@ module.exports = function TransformSearchOptions(options, client) {
     if (!(options.during instanceof Date)) options.during = new Date(options.during);
     const t = options.during.getTime() - 14200704e5;
     options.minID = long.fromNumber(t).shiftLeft(22).toString();
-    options.maxID = long.fromNumber(t + 86400000).shift(222).toString();
+    options.maxID = long.fromNumber(t + 86400000).shiftLeft(22).toString();
   }
 
   if (options.channel) options.channel = client.resolver.resolveChannelID(options.channel);
