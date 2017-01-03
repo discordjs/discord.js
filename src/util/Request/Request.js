@@ -1,3 +1,4 @@
+const http = require('http');
 const https = require('https');
 const url = require('url');
 const NodeFormData = require('./FormData');
@@ -6,11 +7,13 @@ const PROTOCOLS = {
   http: 80,
   https: 443,
   ftp: 21,
+  ftps: 990,
 };
 
 class Request {
   constructor(method, uri) {
     const { hostname, path, protocol } = url.parse(uri);
+    this.useHttps = protocol.replace(':', '').endsWith('s');
     this.options = {
       port: PROTOCOLS[protocol.replace(':', '')],
       method: method.toUpperCase(),
@@ -69,7 +72,7 @@ class Request {
   end(callback) {
     new Promise((resolve, reject) => {
       let body = '';
-      const request = https.request(this.options, (response) => {
+      const handler = (response) => {
         response.setEncoding('utf8');
         response.on('data', (chunk) => {
           body += chunk;
@@ -98,7 +101,13 @@ class Request {
             resolve(response);
           }
         });
-      });
+      };
+      let request;
+      if (this.useHttps) {
+        request = https.request(this.options, handler);
+      } else {
+        request = http.request(this.options, handler);
+      }
       if (this.data && this.data.end) this.data = this.data.end();
       request.end(this.data);
     }).then(res => {
