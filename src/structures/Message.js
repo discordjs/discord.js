@@ -390,24 +390,13 @@ class Message {
    *  .catch(console.error);
    */
   edit(content, options) {
-    if (!options && typeof content === 'object') {
+    if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
       content = '';
     } else if (!options) {
       options = {};
     }
     return this.client.rest.methods.updateMessage(this, content, options);
-  }
-
-  /**
-   * Edit the content of the message, with a code block
-   * @param {string} lang Language for the code block
-   * @param {StringResolvable} content The new content for the message
-   * @returns {Promise<Message>}
-   */
-  editCode(lang, content) {
-    content = escapeMarkdown(this.client.resolver.resolveString(content), true);
-    return this.edit(`\`\`\`${lang || ''}\n${content}\n\`\`\``);
   }
 
   /**
