@@ -72,6 +72,7 @@ class Request {
   }
 
   end(callback) {
+    this.set('Accept-Encoding', 'gzip, deflate');
     new Promise((resolve, reject) => {
       let body = '';
       const handler = (response) => {
@@ -84,8 +85,13 @@ class Request {
         });
         response.once('end', () => {
           if (/^\s*(?:deflate|gzip)\s*$/.test(response.headers['content-encoding'])) {
-            if (typeof document !== 'undefined') body = pako.inflate(body, { to: 'string' });
-            else body = zlib.unzipSync(body).toString();
+            try {
+              if (typeof document !== 'undefined') body = pako.inflate(body, { to: 'string' });
+              else body = zlib.unzipSync(body).toString();
+            } catch (err) {
+              err.response = response;
+              reject(err);
+            }
           }
 
           response.text = body;
