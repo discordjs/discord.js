@@ -9,7 +9,7 @@ module.exports = {
   splitMessage: require('./util/SplitMessage'),
   escapeMarkdown: require('./util/EscapeMarkdown'),
   fetchRecommendedShards: require('./util/FetchRecommendedShards'),
-  snowflake: require('./util/Snowflake'),
+  Snowflake: require('./util/Snowflake'),
 
   Channel: require('./structures/Channel'),
   ClientOAuth2Application: require('./structures/ClientOAuth2Application'),
