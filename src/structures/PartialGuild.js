@@ -24,7 +24,7 @@ class PartialGuild {
   setup(data) {
     /**
      * The ID of this guild
-     * @type {string}
+     * @type {Snowflake}
      */
     this.id = data.id;
 

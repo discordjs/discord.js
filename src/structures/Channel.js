@@ -27,7 +27,7 @@ class Channel {
   setup(data) {
     /**
      * The unique ID of the channel
-     * @type {string}
+     * @type {Snowflake}
      */
     this.id = data.id;
   }

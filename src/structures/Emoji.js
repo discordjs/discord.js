@@ -26,7 +26,7 @@ class Emoji {
   setup(data) {
     /**
      * The ID of the emoji
-     * @type {string}
+     * @type {Snowflake}
      */
     this.id = data.id;
 
@@ -71,7 +71,7 @@ class Emoji {
 
   /**
    * A collection of roles this emoji is active for (empty if all), mapped by role ID.
-   * @type {Collection<string, Role>}
+   * @type {Collection<Snowflake, Role>}
    * @readonly
    */
   get roles() {

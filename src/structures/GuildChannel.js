@@ -37,7 +37,7 @@ class GuildChannel extends Channel {
 
     /**
      * A map of permission overwrites in this channel for roles and users.
-     * @type {Collection<string, PermissionOverwrites>}
+     * @type {Collection<Snowflake, PermissionOverwrites>}
      */
     this.permissionOverwrites = new Collection();
     if (data.permission_overwrites) {

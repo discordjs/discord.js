@@ -17,7 +17,7 @@ class OAuth2Application {
   setup(data) {
     /**
      * The ID of the app
-     * @type {string}
+     * @type {Snowflake}
      */
     this.id = data.id;
 

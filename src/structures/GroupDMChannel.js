@@ -61,7 +61,7 @@ class GroupDMChannel extends Channel {
     if (!this.recipients) {
       /**
        * A collection of the recipients of this DM, mapped by their ID.
-       * @type {Collection<string, User>}
+       * @type {Collection<Snowflake, User>}
        */
       this.recipients = new Collection();
     }
