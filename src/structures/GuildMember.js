@@ -36,7 +36,7 @@ class GuildMember {
 
     /**
      * The ID of the last message sent by the member in their guild, if one was sent.
-     * @type {?string}
+     * @type {?Snowflake}
      */
     this.lastMessageID = null;
   }
@@ -68,13 +68,13 @@ class GuildMember {
 
     /**
      * The voice session ID of this member, if any
-     * @type {?string}
+     * @type {?Snowflake}
      */
     this.voiceSessionID = data.session_id;
 
     /**
      * The voice channel ID of this member, if any
-     * @type {?string}
+     * @type {?Snowflake}
      */
     this.voiceChannelID = data.channel_id;
 
@@ -120,7 +120,7 @@ class GuildMember {
 
   /**
    * A list of roles that are applied to this GuildMember, mapped by the role ID.
-   * @type {Collection<string, Role>}
+   * @type {Collection<Snowflake, Role>}
    * @readonly
    */
   get roles() {
@@ -175,7 +175,7 @@ class GuildMember {
 
   /**
    * The ID of this user
-   * @type {string}
+   * @type {Snowflake}
    * @readonly
    */
   get id() {

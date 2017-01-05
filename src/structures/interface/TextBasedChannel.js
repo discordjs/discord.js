@@ -11,13 +11,13 @@ class TextBasedChannel {
   constructor() {
     /**
      * A collection containing the messages sent to this channel.
-     * @type {Collection<string, Message>}
+     * @type {Collection<Snowflake, Message>}
      */
     this.messages = new Collection();
 
     /**
      * The ID of the last message in the channel, if one was sent.
-     * @type {?string}
+     * @type {?Snowflake}
      */
     this.lastMessageID = null;
   }

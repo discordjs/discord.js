@@ -11,7 +11,7 @@ class VoiceChannel extends GuildChannel {
 
     /**
      * The members in this voice channel.
-     * @type {Collection<string, GuildMember>}
+     * @type {Collection<Snowflake, GuildMember>}
      */
     this.members = new Collection();
 

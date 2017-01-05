@@ -26,21 +26,21 @@ class ClientUser extends User {
     /**
      * A Collection of friends for the logged in user.
      * <warn>This is only filled when using a user account.</warn>
-     * @type {Collection<string, User>}
+     * @type {Collection<Snowflake, User>}
      */
     this.friends = new Collection();
 
     /**
      * A Collection of blocked users for the logged in user.
      * <warn>This is only filled when using a user account.</warn>
-     * @type {Collection<string, User>}
+     * @type {Collection<Snowflake, User>}
      */
     this.blocked = new Collection();
 
     /**
      * A Collection of notes for the logged in user.
      * <warn>This is only filled when using a user account.</warn>
-     * @type {Collection<string, string>}
+     * @type {Collection<Snowflake, string>}
      */
     this.notes = new Collection();
 
@@ -229,7 +229,7 @@ class ClientUser extends User {
    * @param {number} [options.limit=25] Maximum number of mentions to retrieve
    * @param {boolean} [options.roles=true] Whether to include role mentions
    * @param {boolean} [options.everyone=true] Whether to include everyone/here mentions
-   * @param {Guild|string} [options.guild] Limit the search to a specific guild
+   * @param {Guild|Snowflake} [options.guild] Limit the search to a specific guild
    * @returns {Promise<Message[]>}
    */
   fetchMentions(options = { limit: 25, roles: true, everyone: true, guild: null }) {

@@ -22,7 +22,7 @@ class User {
   setup(data) {
     /**
      * The ID of the user
-     * @type {string}
+     * @type {Snowflake}
      */
     this.id = data.id;
 
@@ -52,7 +52,7 @@ class User {
 
     /**
      * The ID of the last message sent by the user, if one was sent.
-     * @type {?string}
+     * @type {?Snowflake}
      */
     this.lastMessageID = null;
   }
