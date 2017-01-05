@@ -106,7 +106,7 @@ class Guild {
      * Whether the guild is "large" (has more than 250 members)
      * @type {boolean}
      */
-    this.large = data.large || this.large;
+    this.large = Boolean('large' in data ? data.large : this.large);
 
     /**
      * An array of guild features.
