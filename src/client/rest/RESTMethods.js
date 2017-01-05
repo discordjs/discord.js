@@ -139,9 +139,15 @@ class RESTMethods {
     }
 
     const url = `${Constants.Endpoints[`${type}Search`](target.id)}?${queryString}`;
-    return this.rest.makeRequest('get', url, true).then(body =>
-      body.messages.map(x => x.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)))
-    );
+    return this.rest.makeRequest('get', url, true).then(body => {
+      const messages = body.messages.map(x =>
+        x.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client))
+      );
+      return {
+        totalResults: body.total_results,
+        messages,
+      };
+    });
   }
 
   createChannel(guild, channelName, channelType, overwrites) {

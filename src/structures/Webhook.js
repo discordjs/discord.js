@@ -43,19 +43,19 @@ class Webhook {
 
     /**
      * The ID of the webhook
-     * @type {string}
+     * @type {Snowflake}
      */
     this.id = data.id;
 
     /**
      * The guild the webhook belongs to
-     * @type {string}
+     * @type {Snowflake}
      */
     this.guildID = data.guild_id;
 
     /**
      * The channel the webhook belongs to
-     * @type {string}
+     * @type {Snowflake}
      */
     this.channelID = data.channel_id;
 

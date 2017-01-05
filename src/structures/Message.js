@@ -33,7 +33,7 @@ class Message {
   setup(data) { // eslint-disable-line complexity
     /**
      * The ID of the message (unique in the channel it was sent)
-     * @type {string}
+     * @type {Snowflake}
      */
     this.id = data.id;
 
@@ -75,7 +75,7 @@ class Message {
     this.tts = data.tts;
 
     /**
-     * A random number used for checking message delivery
+     * A random number or string used for checking message delivery
      * @type {string}
      */
     this.nonce = data.nonce;
@@ -94,7 +94,7 @@ class Message {
 
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID.
-     * @type {Collection<string, MessageAttachment>}
+     * @type {Collection<Snowflake, MessageAttachment>}
      */
     this.attachments = new Collection();
     for (const attachment of data.attachments) this.attachments.set(attachment.id, new Attachment(this, attachment));
@@ -114,9 +114,9 @@ class Message {
     /**
      * An object containing a further users, roles or channels collections
      * @type {Object}
-     * @property {Collection<string, User>} mentions.users Mentioned users, maps their ID to the user object.
-     * @property {Collection<string, Role>} mentions.roles Mentioned roles, maps their ID to the role object.
-     * @property {Collection<string, GuildChannel>} mentions.channels Mentioned channels,
+     * @property {Collection<Snowflake, User>} mentions.users Mentioned users, maps their ID to the user object.
+     * @property {Collection<Snowflake, Role>} mentions.roles Mentioned roles, maps their ID to the role object.
+     * @property {Collection<Snowflake, GuildChannel>} mentions.channels Mentioned channels,
      * maps their ID to the channel object.
      * @property {boolean} mentions.everyone Whether or not @everyone was mentioned.
      */
@@ -156,7 +156,7 @@ class Message {
 
     /**
      * A collection of reactions to this message, mapped by the reaction "id".
-     * @type {Collection<string, MessageReaction>}
+     * @type {Collection<Snowflake|string, MessageReaction>}
      */
     this.reactions = new Collection();
 
@@ -169,7 +169,7 @@ class Message {
 
     /**
      * ID of the webhook that sent the message, if applicable
-     * @type {?string}
+     * @type {?Snowflake}
      */
     this.webhookID = data.webhook_id || null;
 
@@ -390,7 +390,7 @@ class Message {
    *  .catch(console.error);
    */
   edit(content, options) {
-    if (!options && typeof content === 'object') {
+    if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
       content = '';
     } else if (!options) {
