@@ -52,12 +52,14 @@ class ClientUser extends User {
     this.settings = {};
 
     /**
+     * If the user has discord premium (nitro)
      * <warn>This is only filled when using a user account.</warn>
      * @type {?boolean}
      */
     this.premium = typeof data.premium === 'boolean' ? data.premium : null;
 
     /**
+     * If the user has MFA enabled on their account
      * <warn>This is only filled when using a user account.</warn>
      * @type {?boolean}
      */
