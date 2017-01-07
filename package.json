@@ -9,7 +9,8 @@
     "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
     "test-docs": "docgen --source src --custom docs/index.yml",
     "lint": "eslint src",
-    "web-dist": "node ./node_modules/parallel-webpack/bin/run.js"
+    "web-dist": "node ./node_modules/parallel-webpack/bin/run.js",
+    "update-typings": "cd ./typings && git fetch origin master && git pull origin master"
   },
   "repository": {
     "type": "git",
