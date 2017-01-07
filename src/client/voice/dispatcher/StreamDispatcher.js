@@ -158,13 +158,18 @@ class StreamDispatcher extends EventEmitter {
 
   sendBuffer(buffer, sequence, timestamp, opusPacket) {
     opusPacket = opusPacket || this.player.opusEncoder.encode(buffer);
-    let repeats = this.passes;
     const packet = this.createPacket(sequence, timestamp, opusPacket);
+    this.sendPacket(packet);
+  }
+
+  sendPacket(packet) {
+    let repeats = this.passes;
     /**
      * Emitted whenever the dispatcher has debug information
      * @event StreamDispatcher#debug
      * @param {string} info the debug info
      */
+    this.setSpeaking(true);
     while (repeats--) {
       this.player.voiceConnection.sockets.udp.send(packet)
         .catch(e => this.emit('debug', `Failed to send a packet ${e}`));
@@ -183,7 +188,6 @@ class StreamDispatcher extends EventEmitter {
 
     packetBuffer.copy(nonce, 0, 0, 12);
     buffer = NaCl.secretbox(buffer, nonce, this.player.voiceConnection.authentication.secretKey.key);
-
     for (let i = 0; i < buffer.length; i++) packetBuffer[i + 12] = buffer[i];
 
     return packetBuffer;
@@ -230,8 +234,6 @@ class StreamDispatcher extends EventEmitter {
         data.pausedTime += data.length * 10;
         return;
       }
-
-      this.setSpeaking(true);
 
       if (!data.startTime) {
         /**
