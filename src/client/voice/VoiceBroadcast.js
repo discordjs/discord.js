@@ -327,6 +327,7 @@ class VoiceBroadcast extends EventEmitter {
     buffer = this.applyVolume(buffer);
 
     for (const x of this._dispatchers.entries()) {
+      if (x[1].size === 0) continue;
       const [volume, container] = x;
       const opusPacket = this.opusEncoder.encode(this.applyVolume(buffer, volume));
       for (const dispatcher of container.values()) {
