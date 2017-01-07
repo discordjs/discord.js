@@ -63,14 +63,14 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 58);
+/******/ 	return __webpack_require__(__webpack_require__.s = 59);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {exports.Package = __webpack_require__(27);
+/* WEBPACK VAR INJECTION */(function(process) {exports.Package = __webpack_require__(28);
 
 /**
  * Options for a Client.
@@ -444,7 +444,7 @@ for (const key in PermissionFlags) _ALL_PERMISSIONS |= PermissionFlags[key];
 exports.ALL_PERMISSIONS = _ALL_PERMISSIONS;
 exports.DEFAULT_PERMISSIONS = 104324097;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ },
 /* 1 */
@@ -1932,15 +1932,15 @@ module.exports = Emoji;
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-const Attachment = __webpack_require__(33);
-const Embed = __webpack_require__(35);
-const MessageReaction = __webpack_require__(36);
+const Attachment = __webpack_require__(34);
+const Embed = __webpack_require__(36);
+const MessageReaction = __webpack_require__(37);
 const Collection = __webpack_require__(3);
 const Constants = __webpack_require__(0);
 const escapeMarkdown = __webpack_require__(16);
 
 // Done purely for GuildMember, which would cause a bad circular dependency
-const Discord = __webpack_require__(58);
+const Discord = __webpack_require__(59);
 
 /**
  * Represents a message on Discord
@@ -2512,9 +2512,9 @@ module.exports = Message;
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-const path = __webpack_require__(23);
+const path = __webpack_require__(24);
 const Message = __webpack_require__(11);
-const MessageCollector = __webpack_require__(34);
+const MessageCollector = __webpack_require__(35);
 const Collection = __webpack_require__(3);
 
 /**
@@ -3792,7 +3792,7 @@ module.exports = Guild;
 
 const Channel = __webpack_require__(8);
 const Role = __webpack_require__(9);
-const PermissionOverwrites = __webpack_require__(40);
+const PermissionOverwrites = __webpack_require__(41);
 const EvaluatedPermissions = __webpack_require__(17);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
@@ -4682,7 +4682,7 @@ module.exports = ReactionEmoji;
 /* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
-const path = __webpack_require__(23);
+const path = __webpack_require__(24);
 const escapeMarkdown = __webpack_require__(16);
 
 /**
@@ -4886,6 +4886,77 @@ module.exports = Webhook;
 
 /***/ },
 /* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+const Long = __webpack_require__(45);
+
+// Discord epoch (2015-01-01T00:00:00.000Z)
+const EPOCH = 1420070400000;
+let INCREMENT = 0;
+
+/**
+ * A container for useful snowflake-related methods
+ */
+class SnowflakeUtil {
+  /**
+   * A Twitter snowflake, except the epoch is 2015-01-01T00:00:00.000Z
+   * ```
+   * If we have a snowflake '266241948824764416' we can represent it as binary:
+   *
+   * 64                                          22     17     12          0
+   *  000000111011000111100001101001000101000000  00001  00000  000000000000
+   *       number of ms since discord epoch       worker  pid    increment
+   * ```
+   * @typedef {string} Snowflake
+   */
+
+  /**
+   * Generates a Discord snowflake
+   * <info>This hardcodes the worker ID as 1 and the process ID as 0.</info>
+   * @returns {Snowflake} The generated snowflake
+   */
+  static generate() {
+    if (INCREMENT >= 4095) INCREMENT = 0;
+    const BINARY = `${pad((Date.now() - EPOCH).toString(2), 42)}0000100000${pad((INCREMENT++).toString(2), 12)}`;
+    return Long.fromString(BINARY, 2).toString();
+  }
+
+  /**
+   * A deconstructed snowflake
+   * @typedef {Object} DeconstructedSnowflake
+   * @property {Date} date Date in the snowflake
+   * @property {number} workerID Worker ID in the snowflake
+   * @property {number} processID Process ID in the snowflake
+   * @property {number} increment Increment in the snowflake
+   * @property {string} binary Binary representation of the snowflake
+   */
+
+  /**
+   * Deconstructs a Discord snowflake
+   * @param {Snowflake} snowflake Snowflake to deconstruct
+   * @returns {DeconstructedSnowflake} Deconstructed snowflake
+   */
+  static deconstruct(snowflake) {
+    const BINARY = pad(Long.fromString(snowflake).toString(2), 64);
+    return {
+      date: new Date(parseInt(BINARY.substring(0, 42), 2) + EPOCH),
+      workerID: parseInt(BINARY.substring(42, 47), 2),
+      processID: parseInt(BINARY.substring(47, 52), 2),
+      increment: parseInt(BINARY.substring(52, 64), 2),
+      binary: BINARY,
+    };
+  }
+}
+
+function pad(v, n, c = '0') {
+  return String(v).length >= n ? String(v) : (String(c).repeat(n) + v).slice(-n);
+}
+
+module.exports = SnowflakeUtil;
+
+
+/***/ },
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6682,7 +6753,7 @@ function isnan (val) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(82)))
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -6990,7 +7061,7 @@ function isUndefined(arg) {
 
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7010,7 +7081,7 @@ module.exports = {
 
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -7238,10 +7309,10 @@ var substr = 'ab'.substr(-1) === 'b'
     }
 ;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports) {
 
 // shim for using process in browser
@@ -7427,7 +7498,7 @@ process.umask = function() { return 0; };
 
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 /**
@@ -7446,7 +7517,7 @@ if (typeof window !== 'undefined') { // Browser window
 
 var Emitter = __webpack_require__(66);
 var RequestBase = __webpack_require__(79);
-var isObject = __webpack_require__(26);
+var isObject = __webpack_require__(27);
 var isFunction = __webpack_require__(78);
 var ResponseBase = __webpack_require__(80);
 
@@ -8337,7 +8408,7 @@ request.put = function(url, data, fn){
 
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports) {
 
 /**
@@ -8356,7 +8427,7 @@ module.exports = isObject;
 
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -8447,11 +8518,11 @@ module.exports = {
 };
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 const User = __webpack_require__(6);
-const OAuth2Application = __webpack_require__(37);
+const OAuth2Application = __webpack_require__(38);
 
 /**
  * Represents the client's OAuth2 Application
@@ -8479,7 +8550,7 @@ module.exports = ClientOAuth2Application;
 
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 const User = __webpack_require__(6);
@@ -8787,7 +8858,7 @@ module.exports = ClientUser;
 
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Channel = __webpack_require__(8);
@@ -8854,7 +8925,7 @@ module.exports = DMChannel;
 
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Channel = __webpack_require__(8);
@@ -9005,11 +9076,11 @@ module.exports = GroupDMChannel;
 
 
 /***/ },
-/* 32 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
-const PartialGuild = __webpack_require__(38);
-const PartialGuildChannel = __webpack_require__(39);
+const PartialGuild = __webpack_require__(39);
+const PartialGuildChannel = __webpack_require__(40);
 const Constants = __webpack_require__(0);
 
 /*
@@ -9170,7 +9241,7 @@ module.exports = Invite;
 
 
 /***/ },
-/* 33 */
+/* 34 */
 /***/ function(module, exports) {
 
 /**
@@ -9244,10 +9315,10 @@ module.exports = MessageAttachment;
 
 
 /***/ },
-/* 34 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
-const EventEmitter = __webpack_require__(21).EventEmitter;
+const EventEmitter = __webpack_require__(22).EventEmitter;
 const Collection = __webpack_require__(3);
 
 /**
@@ -9401,7 +9472,7 @@ module.exports = MessageCollector;
 
 
 /***/ },
-/* 35 */
+/* 36 */
 /***/ function(module, exports) {
 
 /**
@@ -9700,7 +9771,7 @@ module.exports = MessageEmbed;
 
 
 /***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
@@ -9798,7 +9869,7 @@ module.exports = MessageReaction;
 
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports) {
 
 /**
@@ -9886,7 +9957,7 @@ module.exports = OAuth2Application;
 
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports) {
 
 /*
@@ -9943,7 +10014,7 @@ module.exports = PartialGuild;
 
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -9993,7 +10064,7 @@ module.exports = PartialGuildChannel;
 
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports) {
 
 /**
@@ -10042,7 +10113,7 @@ module.exports = PermissionOverwrites;
 
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 const GuildChannel = __webpack_require__(14);
@@ -10145,7 +10216,7 @@ module.exports = TextChannel;
 
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 const GuildChannel = __webpack_require__(14);
@@ -10271,7 +10342,7 @@ module.exports = VoiceChannel;
 
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports) {
 
 module.exports = function splitMessage(text, { maxLength = 1950, char = '\n', prepend = '', append = '' } = {}) {
@@ -10293,7 +10364,7 @@ module.exports = function splitMessage(text, { maxLength = 1950, char = '\n', pr
 
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -11508,7 +11579,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11700,7 +11771,7 @@ exports.utf8border = function (buf, max) {
 
 
 /***/ },
-/* 46 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11739,7 +11810,7 @@ module.exports = adler32;
 
 
 /***/ },
-/* 47 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11796,7 +11867,7 @@ module.exports = {
 
 
 /***/ },
-/* 48 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11844,7 +11915,7 @@ module.exports = crc32;
 
 
 /***/ },
-/* 49 */
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11880,21 +11951,21 @@ module.exports = ZStream;
 
 
 /***/ },
-/* 50 */
+/* 51 */
 /***/ function(module, exports) {
 
 
 
 /***/ },
-/* 51 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(23);
-const fs = __webpack_require__(50);
-const request = __webpack_require__(25);
+/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(24);
+const fs = __webpack_require__(51);
+const request = __webpack_require__(26);
 
 const Constants = __webpack_require__(0);
-const convertArrayBuffer = __webpack_require__(54);
+const convertArrayBuffer = __webpack_require__(55);
 const User = __webpack_require__(6);
 const Message = __webpack_require__(11);
 const Guild = __webpack_require__(13);
@@ -12212,10 +12283,10 @@ class ClientDataResolver {
 
 module.exports = ClientDataResolver;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21).Buffer))
 
 /***/ },
-/* 52 */
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
 const UserAgentManager = __webpack_require__(116);
@@ -12272,7 +12343,7 @@ module.exports = RESTManager;
 
 
 /***/ },
-/* 53 */
+/* 54 */
 /***/ function(module, exports) {
 
 /**
@@ -12329,7 +12400,7 @@ module.exports = RequestHandler;
 
 
 /***/ },
-/* 54 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {function str2ab(str) {
@@ -12344,10 +12415,10 @@ module.exports = function convertArrayBuffer(x) {
   return Buffer.from(x);
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21).Buffer))
 
 /***/ },
-/* 55 */
+/* 56 */
 /***/ function(module, exports) {
 
 module.exports = function merge(def, given) {
@@ -12365,16 +12436,16 @@ module.exports = function merge(def, given) {
 
 
 /***/ },
-/* 56 */
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {const EventEmitter = __webpack_require__(21).EventEmitter;
-const mergeDefault = __webpack_require__(55);
+/* WEBPACK VAR INJECTION */(function(process) {const EventEmitter = __webpack_require__(22).EventEmitter;
+const mergeDefault = __webpack_require__(56);
 const Constants = __webpack_require__(0);
-const RESTManager = __webpack_require__(52);
+const RESTManager = __webpack_require__(53);
 const ClientDataManager = __webpack_require__(83);
 const ClientManager = __webpack_require__(84);
-const ClientDataResolver = __webpack_require__(51);
+const ClientDataResolver = __webpack_require__(52);
 const ClientVoiceManager = __webpack_require__(159);
 const WebSocketManager = __webpack_require__(117);
 const ActionsManager = __webpack_require__(85);
@@ -12847,16 +12918,16 @@ module.exports = Client;
  * @param {string} info The debug information
  */
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ },
-/* 57 */
+/* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Webhook = __webpack_require__(19);
-const RESTManager = __webpack_require__(52);
-const ClientDataResolver = __webpack_require__(51);
-const mergeDefault = __webpack_require__(55);
+const RESTManager = __webpack_require__(53);
+const ClientDataResolver = __webpack_require__(52);
+const mergeDefault = __webpack_require__(56);
 const Constants = __webpack_require__(0);
 
 /**
@@ -12902,53 +12973,54 @@ module.exports = WebhookClient;
 
 
 /***/ },
-/* 58 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = {
-  Client: __webpack_require__(56),
-  WebhookClient: __webpack_require__(57),
+  Client: __webpack_require__(57),
+  WebhookClient: __webpack_require__(58),
   Shard: __webpack_require__(62),
   ShardClientUtil: __webpack_require__(63),
   ShardingManager: __webpack_require__(64),
 
   Collection: __webpack_require__(3),
-  splitMessage: __webpack_require__(43),
+  splitMessage: __webpack_require__(44),
   escapeMarkdown: __webpack_require__(16),
-  fetchRecommendedShards: __webpack_require__(60),
-  Snowflake: __webpack_require__(61),
+  fetchRecommendedShards: __webpack_require__(61),
+  Snowflake: __webpack_require__(20),
+  SnowflakeUtil: __webpack_require__(20),
 
   Channel: __webpack_require__(8),
-  ClientOAuth2Application: __webpack_require__(28),
-  ClientUser: __webpack_require__(29),
-  DMChannel: __webpack_require__(30),
+  ClientOAuth2Application: __webpack_require__(29),
+  ClientUser: __webpack_require__(30),
+  DMChannel: __webpack_require__(31),
   Emoji: __webpack_require__(10),
   EvaluatedPermissions: __webpack_require__(17),
   Game: __webpack_require__(7).Game,
-  GroupDMChannel: __webpack_require__(31),
+  GroupDMChannel: __webpack_require__(32),
   Guild: __webpack_require__(13),
   GuildChannel: __webpack_require__(14),
   GuildMember: __webpack_require__(15),
-  Invite: __webpack_require__(32),
+  Invite: __webpack_require__(33),
   Message: __webpack_require__(11),
-  MessageAttachment: __webpack_require__(33),
-  MessageCollector: __webpack_require__(34),
-  MessageEmbed: __webpack_require__(35),
-  MessageReaction: __webpack_require__(36),
-  OAuth2Application: __webpack_require__(37),
-  PartialGuild: __webpack_require__(38),
-  PartialGuildChannel: __webpack_require__(39),
-  PermissionOverwrites: __webpack_require__(40),
+  MessageAttachment: __webpack_require__(34),
+  MessageCollector: __webpack_require__(35),
+  MessageEmbed: __webpack_require__(36),
+  MessageReaction: __webpack_require__(37),
+  OAuth2Application: __webpack_require__(38),
+  PartialGuild: __webpack_require__(39),
+  PartialGuildChannel: __webpack_require__(40),
+  PermissionOverwrites: __webpack_require__(41),
   Presence: __webpack_require__(7).Presence,
   ReactionEmoji: __webpack_require__(18),
-  RichEmbed: __webpack_require__(59),
+  RichEmbed: __webpack_require__(60),
   Role: __webpack_require__(9),
-  TextChannel: __webpack_require__(41),
+  TextChannel: __webpack_require__(42),
   User: __webpack_require__(6),
-  VoiceChannel: __webpack_require__(42),
+  VoiceChannel: __webpack_require__(43),
   Webhook: __webpack_require__(19),
 
-  version: __webpack_require__(27).version,
+  version: __webpack_require__(28).version,
   Constants: __webpack_require__(0),
 };
 
@@ -12956,7 +13028,7 @@ if (typeof window !== 'undefined') window.Discord = module.exports; // eslint-di
 
 
 /***/ },
-/* 59 */
+/* 60 */
 /***/ function(module, exports) {
 
 /**
@@ -13166,10 +13238,10 @@ function resolveString(data) {
 
 
 /***/ },
-/* 60 */
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
-const superagent = __webpack_require__(25);
+const superagent = __webpack_require__(26);
 const botGateway = __webpack_require__(0).Endpoints.botGateway;
 
 /**
@@ -13189,77 +13261,6 @@ module.exports = function fetchRecommendedShards(token, guildsPerShard = 1000) {
       });
   });
 };
-
-
-/***/ },
-/* 61 */
-/***/ function(module, exports, __webpack_require__) {
-
-const Long = __webpack_require__(44);
-
-// Discord epoch (2015-01-01T00:00:00.000Z)
-const EPOCH = 1420070400000;
-let INCREMENT = 0;
-
-/**
- * A container for useful snowflake-related methods
- */
-class Snowflake {
-  /**
-   * A Twitter snowflake, except the epoch is 2015-01-01T00:00:00.000Z
-   * ```
-   * If we have a snowflake '266241948824764416' we can represent it as binary:
-   *
-   * 64                                          22     17     12          0
-   *  000000111011000111100001101001000101000000  00001  00000  000000000000
-   *       number of ms since discord epoch       worker  pid    increment
-   * ```
-   * @typedef {string} Snowflake
-   */
-
-  /**
-   * Generates a Discord snowflake
-   * <info>This hardcodes the worker ID as 1 and the process ID as 0.</info>
-   * @returns {Snowflake} The generated snowflake
-   */
-  static generate() {
-    if (INCREMENT >= 4095) INCREMENT = 0;
-    const BINARY = `${pad((Date.now() - EPOCH).toString(2), 42)}0000100000${pad((INCREMENT++).toString(2), 12)}`;
-    return Long.fromString(BINARY, 2).toString();
-  }
-
-  /**
-   * A deconstructed snowflake
-   * @typedef {Object} DeconstructedSnowflake
-   * @property {Date} date Date in the snowflake
-   * @property {number} workerID Worker ID in the snowflake
-   * @property {number} processID Process ID in the snowflake
-   * @property {number} increment Increment in the snowflake
-   * @property {string} binary Binary representation of the snowflake
-   */
-
-  /**
-   * Deconstructs a Discord snowflake
-   * @param {Snowflake} snowflake Snowflake to deconstruct
-   * @returns {DeconstructedSnowflake} Deconstructed snowflake
-   */
-  static deconstruct(snowflake) {
-    const BINARY = pad(Long.fromString(snowflake).toString(2), 64);
-    return {
-      date: new Date(parseInt(BINARY.substring(0, 42), 2) + EPOCH),
-      workerID: parseInt(BINARY.substring(42, 47), 2),
-      processID: parseInt(BINARY.substring(47, 52), 2),
-      increment: parseInt(BINARY.substring(52, 64), 2),
-      binary: BINARY,
-    };
-  }
-}
-
-function pad(v, n, c = '0') {
-  return String(v).length >= n ? String(v) : (String(c).repeat(n) + v).slice(-n);
-}
-
-module.exports = Snowflake;
 
 
 /***/ },
@@ -13683,7 +13684,7 @@ var assign    = __webpack_require__(5).assign;
 
 var deflate   = __webpack_require__(70);
 var inflate   = __webpack_require__(71);
-var constants = __webpack_require__(47);
+var constants = __webpack_require__(48);
 
 var pako = {};
 
@@ -13702,9 +13703,9 @@ module.exports = pako;
 
 var zlib_deflate = __webpack_require__(72);
 var utils        = __webpack_require__(5);
-var strings      = __webpack_require__(45);
-var msg          = __webpack_require__(22);
-var ZStream      = __webpack_require__(49);
+var strings      = __webpack_require__(46);
+var msg          = __webpack_require__(23);
+var ZStream      = __webpack_require__(50);
 
 var toString = Object.prototype.toString;
 
@@ -14109,10 +14110,10 @@ exports.gzip = gzip;
 
 var zlib_inflate = __webpack_require__(75);
 var utils        = __webpack_require__(5);
-var strings      = __webpack_require__(45);
-var c            = __webpack_require__(47);
-var msg          = __webpack_require__(22);
-var ZStream      = __webpack_require__(49);
+var strings      = __webpack_require__(46);
+var c            = __webpack_require__(48);
+var msg          = __webpack_require__(23);
+var ZStream      = __webpack_require__(50);
 var GZheader     = __webpack_require__(73);
 
 var toString = Object.prototype.toString;
@@ -14533,9 +14534,9 @@ exports.ungzip  = inflate;
 
 var utils   = __webpack_require__(5);
 var trees   = __webpack_require__(77);
-var adler32 = __webpack_require__(46);
-var crc32   = __webpack_require__(48);
-var msg     = __webpack_require__(22);
+var adler32 = __webpack_require__(47);
+var crc32   = __webpack_require__(49);
+var msg     = __webpack_require__(23);
 
 /* Public constants ==========================================================*/
 /* ===========================================================================*/
@@ -16775,8 +16776,8 @@ module.exports = function inflate_fast(strm, start) {
 
 
 var utils         = __webpack_require__(5);
-var adler32       = __webpack_require__(46);
-var crc32         = __webpack_require__(48);
+var adler32       = __webpack_require__(47);
+var crc32         = __webpack_require__(49);
 var inflate_fast  = __webpack_require__(74);
 var inflate_table = __webpack_require__(76);
 
@@ -19863,7 +19864,7 @@ exports._tr_align = _tr_align;
  * @return {Boolean}
  * @api private
  */
-var isObject = __webpack_require__(26);
+var isObject = __webpack_require__(27);
 
 function isFunction(fn) {
   var tag = isObject(fn) ? Object.prototype.toString.call(fn) : '';
@@ -19880,7 +19881,7 @@ module.exports = isFunction;
 /**
  * Module of mixed-in functions shared between node and client code
  */
-var isObject = __webpack_require__(26);
+var isObject = __webpack_require__(27);
 
 /**
  * Expose `RequestBase`.
@@ -20659,12 +20660,12 @@ const Constants = __webpack_require__(0);
 const cloneObject = __webpack_require__(4);
 const Guild = __webpack_require__(13);
 const User = __webpack_require__(6);
-const DMChannel = __webpack_require__(30);
+const DMChannel = __webpack_require__(31);
 const Emoji = __webpack_require__(10);
-const TextChannel = __webpack_require__(41);
-const VoiceChannel = __webpack_require__(42);
+const TextChannel = __webpack_require__(42);
+const VoiceChannel = __webpack_require__(43);
 const GuildChannel = __webpack_require__(14);
-const GroupDMChannel = __webpack_require__(31);
+const GroupDMChannel = __webpack_require__(32);
 
 class ClientDataManager {
   constructor(client) {
@@ -21854,7 +21855,7 @@ module.exports = UserUpdateAction;
 /* 112 */
 /***/ function(module, exports, __webpack_require__) {
 
-const request = __webpack_require__(25);
+const request = __webpack_require__(26);
 const Constants = __webpack_require__(0);
 
 function getRoute(url) {
@@ -21911,7 +21912,7 @@ module.exports = APIRequest;
 
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
-const splitMessage = __webpack_require__(43);
+const splitMessage = __webpack_require__(44);
 const parseEmoji = __webpack_require__(156);
 const escapeMarkdown = __webpack_require__(16);
 const transformSearchOptions = __webpack_require__(157);
@@ -21920,10 +21921,10 @@ const User = __webpack_require__(6);
 const GuildMember = __webpack_require__(15);
 const Message = __webpack_require__(11);
 const Role = __webpack_require__(9);
-const Invite = __webpack_require__(32);
+const Invite = __webpack_require__(33);
 const Webhook = __webpack_require__(19);
 const UserProfile = __webpack_require__(154);
-const ClientOAuth2Application = __webpack_require__(28);
+const ClientOAuth2Application = __webpack_require__(29);
 const Channel = __webpack_require__(8);
 const Guild = __webpack_require__(13);
 
@@ -22601,7 +22602,7 @@ module.exports = RESTMethods;
 /* 114 */
 /***/ function(module, exports, __webpack_require__) {
 
-const RequestHandler = __webpack_require__(53);
+const RequestHandler = __webpack_require__(54);
 
 class BurstRequestHandler extends RequestHandler {
   constructor(restManager, endpoint) {
@@ -22677,7 +22678,7 @@ module.exports = BurstRequestHandler;
 /* 115 */
 /***/ function(module, exports, __webpack_require__) {
 
-const RequestHandler = __webpack_require__(53);
+const RequestHandler = __webpack_require__(54);
 
 /**
  * Handles API Requests sequentially, i.e. we wait until the current request is finished before moving onto
@@ -22816,11 +22817,11 @@ module.exports = UserAgentManager;
 /***/ function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {const browser = typeof window !== 'undefined';
-const EventEmitter = __webpack_require__(21).EventEmitter;
+const EventEmitter = __webpack_require__(22).EventEmitter;
 const Constants = __webpack_require__(0);
-const convertArrayBuffer = __webpack_require__(54);
+const convertArrayBuffer = __webpack_require__(55);
 const pako = __webpack_require__(69);
-const zlib = __webpack_require__(50);
+const zlib = __webpack_require__(51);
 const PacketManager = __webpack_require__(118);
 
 let WebSocket, erlpack;
@@ -23189,7 +23190,7 @@ class WebSocketManager extends EventEmitter {
 
 module.exports = WebSocketManager;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21).Buffer))
 
 /***/ },
 /* 118 */
@@ -23989,7 +23990,7 @@ module.exports = PresenceUpdateHandler;
 
 const AbstractHandler = __webpack_require__(1);
 
-const ClientUser = __webpack_require__(29);
+const ClientUser = __webpack_require__(30);
 
 class ReadyHandler extends AbstractHandler {
   handle(packet) {
@@ -24458,7 +24459,7 @@ module.exports = function parseEmoji(text) {
 /* 157 */
 /***/ function(module, exports, __webpack_require__) {
 
-const long = __webpack_require__(44);
+const long = __webpack_require__(45);
 
 /**
  * @typedef {Object} MessageSearchOptions
