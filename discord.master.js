@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 59);
+/******/ 	return __webpack_require__(__webpack_require__.s = 162);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -987,7 +987,7 @@ exports.setTyped(TYPED_OK);
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-const TextBasedChannel = __webpack_require__(12);
+const TextBasedChannel = __webpack_require__(13);
 const Constants = __webpack_require__(0);
 const Presence = __webpack_require__(7).Presence;
 
@@ -1932,15 +1932,461 @@ module.exports = Emoji;
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
+const TextBasedChannel = __webpack_require__(13);
+const Role = __webpack_require__(9);
+const EvaluatedPermissions = __webpack_require__(17);
+const Constants = __webpack_require__(0);
+const Collection = __webpack_require__(3);
+const Presence = __webpack_require__(7).Presence;
+
+/**
+ * Represents a member of a guild on Discord
+ * @implements {TextBasedChannel}
+ */
+class GuildMember {
+  constructor(guild, data) {
+    /**
+     * The Client that instantiated this GuildMember
+     * @name GuildMember#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: guild.client });
+
+    /**
+     * The guild that this member is part of
+     * @type {Guild}
+     */
+    this.guild = guild;
+
+    /**
+     * The user that this guild member instance Represents
+     * @type {User}
+     */
+    this.user = {};
+
+    this._roles = [];
+    if (data) this.setup(data);
+
+    /**
+     * The ID of the last message sent by the member in their guild, if one was sent.
+     * @type {?Snowflake}
+     */
+    this.lastMessageID = null;
+  }
+
+  setup(data) {
+    /**
+     * Whether this member is deafened server-wide
+     * @type {boolean}
+     */
+    this.serverDeaf = data.deaf;
+
+    /**
+     * Whether this member is muted server-wide
+     * @type {boolean}
+     */
+    this.serverMute = data.mute;
+
+    /**
+     * Whether this member is self-muted
+     * @type {boolean}
+     */
+    this.selfMute = data.self_mute;
+
+    /**
+     * Whether this member is self-deafened
+     * @type {boolean}
+     */
+    this.selfDeaf = data.self_deaf;
+
+    /**
+     * The voice session ID of this member, if any
+     * @type {?Snowflake}
+     */
+    this.voiceSessionID = data.session_id;
+
+    /**
+     * The voice channel ID of this member, if any
+     * @type {?Snowflake}
+     */
+    this.voiceChannelID = data.channel_id;
+
+    /**
+     * Whether this member is speaking
+     * @type {boolean}
+     */
+    this.speaking = false;
+
+    /**
+     * The nickname of this guild member, if they have one
+     * @type {?string}
+     */
+    this.nickname = data.nick || null;
+
+    /**
+     * The timestamp the member joined the guild at
+     * @type {number}
+     */
+    this.joinedTimestamp = new Date(data.joined_at).getTime();
+
+    this.user = data.user;
+    this._roles = data.roles;
+  }
+
+  /**
+   * The time the member joined the guild
+   * @type {Date}
+   * @readonly
+   */
+  get joinedAt() {
+    return new Date(this.joinedTimestamp);
+  }
+
+  /**
+   * The presence of this guild member
+   * @type {Presence}
+   * @readonly
+   */
+  get presence() {
+    return this.frozenPresence || this.guild.presences.get(this.id) || new Presence();
+  }
+
+  /**
+   * A list of roles that are applied to this GuildMember, mapped by the role ID.
+   * @type {Collection<Snowflake, Role>}
+   * @readonly
+   */
+  get roles() {
+    const list = new Collection();
+    const everyoneRole = this.guild.roles.get(this.guild.id);
+
+    if (everyoneRole) list.set(everyoneRole.id, everyoneRole);
+
+    for (const roleID of this._roles) {
+      const role = this.guild.roles.get(roleID);
+      if (role) list.set(role.id, role);
+    }
+
+    return list;
+  }
+
+  /**
+   * The role of the member with the highest position.
+   * @type {Role}
+   * @readonly
+   */
+  get highestRole() {
+    return this.roles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
+  }
+
+  /**
+   * Whether this member is muted in any way
+   * @type {boolean}
+   * @readonly
+   */
+  get mute() {
+    return this.selfMute || this.serverMute;
+  }
+
+  /**
+   * Whether this member is deafened in any way
+   * @type {boolean}
+   * @readonly
+   */
+  get deaf() {
+    return this.selfDeaf || this.serverDeaf;
+  }
+
+  /**
+   * The voice channel this member is in, if any
+   * @type {?VoiceChannel}
+   * @readonly
+   */
+  get voiceChannel() {
+    return this.guild.channels.get(this.voiceChannelID);
+  }
+
+  /**
+   * The ID of this user
+   * @type {Snowflake}
+   * @readonly
+   */
+  get id() {
+    return this.user.id;
+  }
+
+  /**
+   * The nickname of the member, or their username if they don't have one
+   * @type {string}
+   * @readonly
+   */
+  get displayName() {
+    return this.nickname || this.user.username;
+  }
+
+  /**
+   * The overall set of permissions for the guild member, taking only roles into account
+   * @type {EvaluatedPermissions}
+   * @readonly
+   */
+  get permissions() {
+    if (this.user.id === this.guild.ownerID) return new EvaluatedPermissions(this, Constants.ALL_PERMISSIONS);
+
+    let permissions = 0;
+    const roles = this.roles;
+    for (const role of roles.values()) permissions |= role.permissions;
+
+    const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
+    if (admin) permissions = Constants.ALL_PERMISSIONS;
+
+    return new EvaluatedPermissions(this, permissions);
+  }
+
+  /**
+   * Whether the member is kickable by the client user.
+   * @type {boolean}
+   * @readonly
+   */
+  get kickable() {
+    if (this.user.id === this.guild.ownerID) return false;
+    if (this.user.id === this.client.user.id) return false;
+    const clientMember = this.guild.member(this.client.user);
+    if (!clientMember.hasPermission(Constants.PermissionFlags.KICK_MEMBERS)) return false;
+    return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
+  }
+
+  /**
+   * Whether the member is bannable by the client user.
+   * @type {boolean}
+   * @readonly
+   */
+  get bannable() {
+    if (this.user.id === this.guild.ownerID) return false;
+    if (this.user.id === this.client.user.id) return false;
+    const clientMember = this.guild.member(this.client.user);
+    if (!clientMember.hasPermission(Constants.PermissionFlags.BAN_MEMBERS)) return false;
+    return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
+  }
+
+  /**
+   * Returns `channel.permissionsFor(guildMember)`. Returns evaluated permissions for a member in a guild channel.
+   * @param {ChannelResolvable} channel Guild channel to use as context
+   * @returns {?EvaluatedPermissions}
+   */
+  permissionsIn(channel) {
+    channel = this.client.resolver.resolveChannel(channel);
+    if (!channel || !channel.guild) throw new Error('Could not resolve channel to a guild channel.');
+    return channel.permissionsFor(this);
+  }
+
+  /**
+   * Checks if any of the member's roles have a permission.
+   * @param {PermissionResolvable} permission The permission to check for
+   * @param {boolean} [explicit=false] Whether to require the roles to explicitly have the exact permission
+   * @returns {boolean}
+   */
+  hasPermission(permission, explicit = false) {
+    if (!explicit && this.user.id === this.guild.ownerID) return true;
+    return this.roles.some(r => r.hasPermission(permission, explicit));
+  }
+
+  /**
+   * Checks whether the roles of the member allows them to perform specific actions.
+   * @param {PermissionResolvable[]} permissions The permissions to check for
+   * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
+   * @returns {boolean}
+   */
+  hasPermissions(permissions, explicit = false) {
+    if (!explicit && this.user.id === this.guild.ownerID) return true;
+    return permissions.every(p => this.hasPermission(p, explicit));
+  }
+
+  /**
+   * Checks whether the roles of the member allows them to perform specific actions, and lists any missing permissions.
+   * @param {PermissionResolvable[]} permissions The permissions to check for
+   * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
+   * @returns {PermissionResolvable[]}
+   */
+  missingPermissions(permissions, explicit = false) {
+    return permissions.filter(p => !this.hasPermission(p, explicit));
+  }
+
+  /**
+   * Edit a guild member
+   * @param {GuildmemberEditData} data The data to edit the member with
+   * @returns {Promise<GuildMember>}
+   */
+  edit(data) {
+    return this.client.rest.methods.updateGuildMember(this, data);
+  }
+
+  /**
+   * Mute/unmute a user
+   * @param {boolean} mute Whether or not the member should be muted
+   * @returns {Promise<GuildMember>}
+   */
+  setMute(mute) {
+    return this.edit({ mute });
+  }
+
+  /**
+   * Deafen/undeafen a user
+   * @param {boolean} deaf Whether or not the member should be deafened
+   * @returns {Promise<GuildMember>}
+   */
+  setDeaf(deaf) {
+    return this.edit({ deaf });
+  }
+
+  /**
+   * Moves the guild member to the given channel.
+   * @param {ChannelResolvable} channel The channel to move the member to
+   * @returns {Promise<GuildMember>}
+   */
+  setVoiceChannel(channel) {
+    return this.edit({ channel });
+  }
+
+  /**
+   * Sets the roles applied to the member.
+   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to apply
+   * @returns {Promise<GuildMember>}
+   */
+  setRoles(roles) {
+    return this.edit({ roles });
+  }
+
+  /**
+   * Adds a single role to the member.
+   * @param {Role|string} role The role or ID of the role to add
+   * @returns {Promise<GuildMember>}
+   */
+  addRole(role) {
+    if (!(role instanceof Role)) role = this.guild.roles.get(role);
+    return this.client.rest.methods.addMemberRole(this, role);
+  }
+
+  /**
+   * Adds multiple roles to the member.
+   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to add
+   * @returns {Promise<GuildMember>}
+   */
+  addRoles(roles) {
+    let allRoles;
+    if (roles instanceof Collection) {
+      allRoles = this._roles.slice();
+      for (const role of roles.values()) allRoles.push(role.id);
+    } else {
+      allRoles = this._roles.concat(roles);
+    }
+    return this.edit({ roles: allRoles });
+  }
+
+  /**
+   * Removes a single role from the member.
+   * @param {Role|string} role The role or ID of the role to remove
+   * @returns {Promise<GuildMember>}
+   */
+  removeRole(role) {
+    if (!(role instanceof Role)) role = this.guild.roles.get(role);
+    return this.client.rest.methods.removeMemberRole(this, role);
+  }
+
+  /**
+   * Removes multiple roles from the member.
+   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to remove
+   * @returns {Promise<GuildMember>}
+   */
+  removeRoles(roles) {
+    const allRoles = this._roles.slice();
+    if (roles instanceof Collection) {
+      for (const role of roles.values()) {
+        const index = allRoles.indexOf(role.id);
+        if (index >= 0) allRoles.splice(index, 1);
+      }
+    } else {
+      for (const role of roles) {
+        const index = allRoles.indexOf(role instanceof Role ? role.id : role);
+        if (index >= 0) allRoles.splice(index, 1);
+      }
+    }
+    return this.edit({ roles: allRoles });
+  }
+
+  /**
+   * Set the nickname for the guild member
+   * @param {string} nick The nickname for the guild member
+   * @returns {Promise<GuildMember>}
+   */
+  setNickname(nick) {
+    return this.edit({ nick });
+  }
+
+  /**
+   * Deletes any DMs with this guild member
+   * @returns {Promise<DMChannel>}
+   */
+  deleteDM() {
+    return this.client.rest.methods.deleteChannel(this);
+  }
+
+  /**
+   * Kick this member from the guild
+   * @returns {Promise<GuildMember>}
+   */
+  kick() {
+    return this.client.rest.methods.kickGuildMember(this.guild, this);
+  }
+
+  /**
+   * Ban this guild member
+   * @param {number} [deleteDays=0] The amount of days worth of messages from this member that should
+   * also be deleted. Between `0` and `7`.
+   * @returns {Promise<GuildMember>}
+   * @example
+   * // ban a guild member
+   * guildMember.ban(7);
+   */
+  ban(deleteDays = 0) {
+    return this.client.rest.methods.banGuildMember(this.guild, this, deleteDays);
+  }
+
+  /**
+   * When concatenated with a string, this automatically concatenates the user's mention instead of the Member object.
+   * @returns {string}
+   * @example
+   * // logs: Hello from <@123456789>!
+   * console.log(`Hello from ${member}!`);
+   */
+  toString() {
+    return `<@${this.nickname ? '!' : ''}${this.user.id}>`;
+  }
+
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  send() { return; }
+  sendMessage() { return; }
+  sendEmbed() { return; }
+  sendFile() { return; }
+  sendCode() { return; }
+}
+
+TextBasedChannel.applyToClass(GuildMember);
+
+module.exports = GuildMember;
+
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
 const Attachment = __webpack_require__(34);
 const Embed = __webpack_require__(36);
 const MessageReaction = __webpack_require__(37);
 const Collection = __webpack_require__(3);
 const Constants = __webpack_require__(0);
 const escapeMarkdown = __webpack_require__(16);
-
-// Done purely for GuildMember, which would cause a bad circular dependency
-const Discord = __webpack_require__(59);
+let GuildMember;
 
 /**
  * Represents a message on Discord
@@ -2299,9 +2745,11 @@ class Message {
    * @returns {boolean}
    */
   isMemberMentioned(member) {
+    // Lazy-loading is used here to get around a circular dependency that breaks things
+    if (!GuildMember) GuildMember = __webpack_require__(11);
     if (this.mentions.everyone) return true;
     if (this.mentions.users.has(member.id)) return true;
-    if (member instanceof Discord.GuildMember && member.roles.some(r => this.mentions.roles.has(r.id))) return true;
+    if (member instanceof GuildMember && member.roles.some(r => this.mentions.roles.has(r.id))) return true;
     return false;
   }
 
@@ -2509,11 +2957,11 @@ module.exports = Message;
 
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 const path = __webpack_require__(24);
-const Message = __webpack_require__(11);
+const Message = __webpack_require__(12);
 const MessageCollector = __webpack_require__(35);
 const Collection = __webpack_require__(3);
 
@@ -2911,18 +3359,18 @@ exports.applyToClass = (structure, full = false) => {
 
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 const User = __webpack_require__(6);
 const Role = __webpack_require__(9);
 const Emoji = __webpack_require__(10);
 const Presence = __webpack_require__(7).Presence;
-const GuildMember = __webpack_require__(15);
+const GuildMember = __webpack_require__(11);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const cloneObject = __webpack_require__(4);
-const arraysEqual = __webpack_require__(155);
+const arraysEqual = __webpack_require__(154);
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -3787,7 +4235,7 @@ module.exports = Guild;
 
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Channel = __webpack_require__(8);
@@ -4089,454 +4537,6 @@ class GuildChannel extends Channel {
 }
 
 module.exports = GuildChannel;
-
-
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-const TextBasedChannel = __webpack_require__(12);
-const Role = __webpack_require__(9);
-const EvaluatedPermissions = __webpack_require__(17);
-const Constants = __webpack_require__(0);
-const Collection = __webpack_require__(3);
-const Presence = __webpack_require__(7).Presence;
-
-/**
- * Represents a member of a guild on Discord
- * @implements {TextBasedChannel}
- */
-class GuildMember {
-  constructor(guild, data) {
-    /**
-     * The Client that instantiated this GuildMember
-     * @name GuildMember#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: guild.client });
-
-    /**
-     * The guild that this member is part of
-     * @type {Guild}
-     */
-    this.guild = guild;
-
-    /**
-     * The user that this guild member instance Represents
-     * @type {User}
-     */
-    this.user = {};
-
-    this._roles = [];
-    if (data) this.setup(data);
-
-    /**
-     * The ID of the last message sent by the member in their guild, if one was sent.
-     * @type {?Snowflake}
-     */
-    this.lastMessageID = null;
-  }
-
-  setup(data) {
-    /**
-     * Whether this member is deafened server-wide
-     * @type {boolean}
-     */
-    this.serverDeaf = data.deaf;
-
-    /**
-     * Whether this member is muted server-wide
-     * @type {boolean}
-     */
-    this.serverMute = data.mute;
-
-    /**
-     * Whether this member is self-muted
-     * @type {boolean}
-     */
-    this.selfMute = data.self_mute;
-
-    /**
-     * Whether this member is self-deafened
-     * @type {boolean}
-     */
-    this.selfDeaf = data.self_deaf;
-
-    /**
-     * The voice session ID of this member, if any
-     * @type {?Snowflake}
-     */
-    this.voiceSessionID = data.session_id;
-
-    /**
-     * The voice channel ID of this member, if any
-     * @type {?Snowflake}
-     */
-    this.voiceChannelID = data.channel_id;
-
-    /**
-     * Whether this member is speaking
-     * @type {boolean}
-     */
-    this.speaking = false;
-
-    /**
-     * The nickname of this guild member, if they have one
-     * @type {?string}
-     */
-    this.nickname = data.nick || null;
-
-    /**
-     * The timestamp the member joined the guild at
-     * @type {number}
-     */
-    this.joinedTimestamp = new Date(data.joined_at).getTime();
-
-    this.user = data.user;
-    this._roles = data.roles;
-  }
-
-  /**
-   * The time the member joined the guild
-   * @type {Date}
-   * @readonly
-   */
-  get joinedAt() {
-    return new Date(this.joinedTimestamp);
-  }
-
-  /**
-   * The presence of this guild member
-   * @type {Presence}
-   * @readonly
-   */
-  get presence() {
-    return this.frozenPresence || this.guild.presences.get(this.id) || new Presence();
-  }
-
-  /**
-   * A list of roles that are applied to this GuildMember, mapped by the role ID.
-   * @type {Collection<Snowflake, Role>}
-   * @readonly
-   */
-  get roles() {
-    const list = new Collection();
-    const everyoneRole = this.guild.roles.get(this.guild.id);
-
-    if (everyoneRole) list.set(everyoneRole.id, everyoneRole);
-
-    for (const roleID of this._roles) {
-      const role = this.guild.roles.get(roleID);
-      if (role) list.set(role.id, role);
-    }
-
-    return list;
-  }
-
-  /**
-   * The role of the member with the highest position.
-   * @type {Role}
-   * @readonly
-   */
-  get highestRole() {
-    return this.roles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
-  }
-
-  /**
-   * Whether this member is muted in any way
-   * @type {boolean}
-   * @readonly
-   */
-  get mute() {
-    return this.selfMute || this.serverMute;
-  }
-
-  /**
-   * Whether this member is deafened in any way
-   * @type {boolean}
-   * @readonly
-   */
-  get deaf() {
-    return this.selfDeaf || this.serverDeaf;
-  }
-
-  /**
-   * The voice channel this member is in, if any
-   * @type {?VoiceChannel}
-   * @readonly
-   */
-  get voiceChannel() {
-    return this.guild.channels.get(this.voiceChannelID);
-  }
-
-  /**
-   * The ID of this user
-   * @type {Snowflake}
-   * @readonly
-   */
-  get id() {
-    return this.user.id;
-  }
-
-  /**
-   * The nickname of the member, or their username if they don't have one
-   * @type {string}
-   * @readonly
-   */
-  get displayName() {
-    return this.nickname || this.user.username;
-  }
-
-  /**
-   * The overall set of permissions for the guild member, taking only roles into account
-   * @type {EvaluatedPermissions}
-   * @readonly
-   */
-  get permissions() {
-    if (this.user.id === this.guild.ownerID) return new EvaluatedPermissions(this, Constants.ALL_PERMISSIONS);
-
-    let permissions = 0;
-    const roles = this.roles;
-    for (const role of roles.values()) permissions |= role.permissions;
-
-    const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
-    if (admin) permissions = Constants.ALL_PERMISSIONS;
-
-    return new EvaluatedPermissions(this, permissions);
-  }
-
-  /**
-   * Whether the member is kickable by the client user.
-   * @type {boolean}
-   * @readonly
-   */
-  get kickable() {
-    if (this.user.id === this.guild.ownerID) return false;
-    if (this.user.id === this.client.user.id) return false;
-    const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.hasPermission(Constants.PermissionFlags.KICK_MEMBERS)) return false;
-    return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
-  }
-
-  /**
-   * Whether the member is bannable by the client user.
-   * @type {boolean}
-   * @readonly
-   */
-  get bannable() {
-    if (this.user.id === this.guild.ownerID) return false;
-    if (this.user.id === this.client.user.id) return false;
-    const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.hasPermission(Constants.PermissionFlags.BAN_MEMBERS)) return false;
-    return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
-  }
-
-  /**
-   * Returns `channel.permissionsFor(guildMember)`. Returns evaluated permissions for a member in a guild channel.
-   * @param {ChannelResolvable} channel Guild channel to use as context
-   * @returns {?EvaluatedPermissions}
-   */
-  permissionsIn(channel) {
-    channel = this.client.resolver.resolveChannel(channel);
-    if (!channel || !channel.guild) throw new Error('Could not resolve channel to a guild channel.');
-    return channel.permissionsFor(this);
-  }
-
-  /**
-   * Checks if any of the member's roles have a permission.
-   * @param {PermissionResolvable} permission The permission to check for
-   * @param {boolean} [explicit=false] Whether to require the roles to explicitly have the exact permission
-   * @returns {boolean}
-   */
-  hasPermission(permission, explicit = false) {
-    if (!explicit && this.user.id === this.guild.ownerID) return true;
-    return this.roles.some(r => r.hasPermission(permission, explicit));
-  }
-
-  /**
-   * Checks whether the roles of the member allows them to perform specific actions.
-   * @param {PermissionResolvable[]} permissions The permissions to check for
-   * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
-   * @returns {boolean}
-   */
-  hasPermissions(permissions, explicit = false) {
-    if (!explicit && this.user.id === this.guild.ownerID) return true;
-    return permissions.every(p => this.hasPermission(p, explicit));
-  }
-
-  /**
-   * Checks whether the roles of the member allows them to perform specific actions, and lists any missing permissions.
-   * @param {PermissionResolvable[]} permissions The permissions to check for
-   * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
-   * @returns {PermissionResolvable[]}
-   */
-  missingPermissions(permissions, explicit = false) {
-    return permissions.filter(p => !this.hasPermission(p, explicit));
-  }
-
-  /**
-   * Edit a guild member
-   * @param {GuildmemberEditData} data The data to edit the member with
-   * @returns {Promise<GuildMember>}
-   */
-  edit(data) {
-    return this.client.rest.methods.updateGuildMember(this, data);
-  }
-
-  /**
-   * Mute/unmute a user
-   * @param {boolean} mute Whether or not the member should be muted
-   * @returns {Promise<GuildMember>}
-   */
-  setMute(mute) {
-    return this.edit({ mute });
-  }
-
-  /**
-   * Deafen/undeafen a user
-   * @param {boolean} deaf Whether or not the member should be deafened
-   * @returns {Promise<GuildMember>}
-   */
-  setDeaf(deaf) {
-    return this.edit({ deaf });
-  }
-
-  /**
-   * Moves the guild member to the given channel.
-   * @param {ChannelResolvable} channel The channel to move the member to
-   * @returns {Promise<GuildMember>}
-   */
-  setVoiceChannel(channel) {
-    return this.edit({ channel });
-  }
-
-  /**
-   * Sets the roles applied to the member.
-   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to apply
-   * @returns {Promise<GuildMember>}
-   */
-  setRoles(roles) {
-    return this.edit({ roles });
-  }
-
-  /**
-   * Adds a single role to the member.
-   * @param {Role|string} role The role or ID of the role to add
-   * @returns {Promise<GuildMember>}
-   */
-  addRole(role) {
-    if (!(role instanceof Role)) role = this.guild.roles.get(role);
-    return this.client.rest.methods.addMemberRole(this, role);
-  }
-
-  /**
-   * Adds multiple roles to the member.
-   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to add
-   * @returns {Promise<GuildMember>}
-   */
-  addRoles(roles) {
-    let allRoles;
-    if (roles instanceof Collection) {
-      allRoles = this._roles.slice();
-      for (const role of roles.values()) allRoles.push(role.id);
-    } else {
-      allRoles = this._roles.concat(roles);
-    }
-    return this.edit({ roles: allRoles });
-  }
-
-  /**
-   * Removes a single role from the member.
-   * @param {Role|string} role The role or ID of the role to remove
-   * @returns {Promise<GuildMember>}
-   */
-  removeRole(role) {
-    if (!(role instanceof Role)) role = this.guild.roles.get(role);
-    return this.client.rest.methods.removeMemberRole(this, role);
-  }
-
-  /**
-   * Removes multiple roles from the member.
-   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to remove
-   * @returns {Promise<GuildMember>}
-   */
-  removeRoles(roles) {
-    const allRoles = this._roles.slice();
-    if (roles instanceof Collection) {
-      for (const role of roles.values()) {
-        const index = allRoles.indexOf(role.id);
-        if (index >= 0) allRoles.splice(index, 1);
-      }
-    } else {
-      for (const role of roles) {
-        const index = allRoles.indexOf(role instanceof Role ? role.id : role);
-        if (index >= 0) allRoles.splice(index, 1);
-      }
-    }
-    return this.edit({ roles: allRoles });
-  }
-
-  /**
-   * Set the nickname for the guild member
-   * @param {string} nick The nickname for the guild member
-   * @returns {Promise<GuildMember>}
-   */
-  setNickname(nick) {
-    return this.edit({ nick });
-  }
-
-  /**
-   * Deletes any DMs with this guild member
-   * @returns {Promise<DMChannel>}
-   */
-  deleteDM() {
-    return this.client.rest.methods.deleteChannel(this);
-  }
-
-  /**
-   * Kick this member from the guild
-   * @returns {Promise<GuildMember>}
-   */
-  kick() {
-    return this.client.rest.methods.kickGuildMember(this.guild, this);
-  }
-
-  /**
-   * Ban this guild member
-   * @param {number} [deleteDays=0] The amount of days worth of messages from this member that should
-   * also be deleted. Between `0` and `7`.
-   * @returns {Promise<GuildMember>}
-   * @example
-   * // ban a guild member
-   * guildMember.ban(7);
-   */
-  ban(deleteDays = 0) {
-    return this.client.rest.methods.banGuildMember(this.guild, this, deleteDays);
-  }
-
-  /**
-   * When concatenated with a string, this automatically concatenates the user's mention instead of the Member object.
-   * @returns {string}
-   * @example
-   * // logs: Hello from <@123456789>!
-   * console.log(`Hello from ${member}!`);
-   */
-  toString() {
-    return `<@${this.nickname ? '!' : ''}${this.user.id}>`;
-  }
-
-  // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  send() { return; }
-  sendMessage() { return; }
-  sendEmbed() { return; }
-  sendFile() { return; }
-  sendCode() { return; }
-}
-
-TextBasedChannel.applyToClass(GuildMember);
-
-module.exports = GuildMember;
 
 
 /***/ },
@@ -4970,9 +4970,9 @@ module.exports = SnowflakeUtil;
 
 
 
-var base64 = __webpack_require__(65)
-var ieee754 = __webpack_require__(67)
-var isArray = __webpack_require__(68)
+var base64 = __webpack_require__(64)
+var ieee754 = __webpack_require__(66)
+var isArray = __webpack_require__(67)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -6750,7 +6750,7 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(82)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(81)))
 
 /***/ },
 /* 22 */
@@ -7515,11 +7515,11 @@ if (typeof window !== 'undefined') { // Browser window
   root = this;
 }
 
-var Emitter = __webpack_require__(66);
-var RequestBase = __webpack_require__(79);
+var Emitter = __webpack_require__(65);
+var RequestBase = __webpack_require__(78);
 var isObject = __webpack_require__(27);
-var isFunction = __webpack_require__(78);
-var ResponseBase = __webpack_require__(80);
+var isFunction = __webpack_require__(77);
+var ResponseBase = __webpack_require__(79);
 
 /**
  * Noop.
@@ -8862,7 +8862,7 @@ module.exports = ClientUser;
 /***/ function(module, exports, __webpack_require__) {
 
 const Channel = __webpack_require__(8);
-const TextBasedChannel = __webpack_require__(12);
+const TextBasedChannel = __webpack_require__(13);
 const Collection = __webpack_require__(3);
 
 /**
@@ -8929,7 +8929,7 @@ module.exports = DMChannel;
 /***/ function(module, exports, __webpack_require__) {
 
 const Channel = __webpack_require__(8);
-const TextBasedChannel = __webpack_require__(12);
+const TextBasedChannel = __webpack_require__(13);
 const Collection = __webpack_require__(3);
 
 /*
@@ -10116,8 +10116,8 @@ module.exports = PermissionOverwrites;
 /* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
-const GuildChannel = __webpack_require__(14);
-const TextBasedChannel = __webpack_require__(12);
+const GuildChannel = __webpack_require__(15);
+const TextBasedChannel = __webpack_require__(13);
 const Collection = __webpack_require__(3);
 
 /**
@@ -10219,7 +10219,7 @@ module.exports = TextChannel;
 /* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
-const GuildChannel = __webpack_require__(14);
+const GuildChannel = __webpack_require__(15);
 const Collection = __webpack_require__(3);
 
 /**
@@ -11967,10 +11967,10 @@ const request = __webpack_require__(26);
 const Constants = __webpack_require__(0);
 const convertArrayBuffer = __webpack_require__(55);
 const User = __webpack_require__(6);
-const Message = __webpack_require__(11);
-const Guild = __webpack_require__(13);
+const Message = __webpack_require__(12);
+const Guild = __webpack_require__(14);
 const Channel = __webpack_require__(8);
-const GuildMember = __webpack_require__(15);
+const GuildMember = __webpack_require__(11);
 const Emoji = __webpack_require__(10);
 const ReactionEmoji = __webpack_require__(18);
 
@@ -12289,11 +12289,11 @@ module.exports = ClientDataResolver;
 /* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
-const UserAgentManager = __webpack_require__(116);
-const RESTMethods = __webpack_require__(113);
-const SequentialRequestHandler = __webpack_require__(115);
-const BurstRequestHandler = __webpack_require__(114);
-const APIRequest = __webpack_require__(112);
+const UserAgentManager = __webpack_require__(115);
+const RESTMethods = __webpack_require__(112);
+const SequentialRequestHandler = __webpack_require__(114);
+const BurstRequestHandler = __webpack_require__(113);
+const APIRequest = __webpack_require__(111);
 const Constants = __webpack_require__(0);
 
 class RESTManager {
@@ -12443,15 +12443,15 @@ module.exports = function merge(def, given) {
 const mergeDefault = __webpack_require__(56);
 const Constants = __webpack_require__(0);
 const RESTManager = __webpack_require__(53);
-const ClientDataManager = __webpack_require__(83);
-const ClientManager = __webpack_require__(84);
+const ClientDataManager = __webpack_require__(82);
+const ClientManager = __webpack_require__(83);
 const ClientDataResolver = __webpack_require__(52);
-const ClientVoiceManager = __webpack_require__(159);
-const WebSocketManager = __webpack_require__(117);
-const ActionsManager = __webpack_require__(85);
+const ClientVoiceManager = __webpack_require__(158);
+const WebSocketManager = __webpack_require__(116);
+const ActionsManager = __webpack_require__(84);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(7).Presence;
-const ShardClientUtil = __webpack_require__(158);
+const ShardClientUtil = __webpack_require__(157);
 
 /**
  * The starting point for making a Discord Bot.
@@ -12974,61 +12974,6 @@ module.exports = WebhookClient;
 
 /***/ },
 /* 59 */
-/***/ function(module, exports, __webpack_require__) {
-
-module.exports = {
-  Client: __webpack_require__(57),
-  WebhookClient: __webpack_require__(58),
-  Shard: __webpack_require__(62),
-  ShardClientUtil: __webpack_require__(63),
-  ShardingManager: __webpack_require__(64),
-
-  Collection: __webpack_require__(3),
-  splitMessage: __webpack_require__(44),
-  escapeMarkdown: __webpack_require__(16),
-  fetchRecommendedShards: __webpack_require__(61),
-  Snowflake: __webpack_require__(20),
-  SnowflakeUtil: __webpack_require__(20),
-
-  Channel: __webpack_require__(8),
-  ClientOAuth2Application: __webpack_require__(29),
-  ClientUser: __webpack_require__(30),
-  DMChannel: __webpack_require__(31),
-  Emoji: __webpack_require__(10),
-  EvaluatedPermissions: __webpack_require__(17),
-  Game: __webpack_require__(7).Game,
-  GroupDMChannel: __webpack_require__(32),
-  Guild: __webpack_require__(13),
-  GuildChannel: __webpack_require__(14),
-  GuildMember: __webpack_require__(15),
-  Invite: __webpack_require__(33),
-  Message: __webpack_require__(11),
-  MessageAttachment: __webpack_require__(34),
-  MessageCollector: __webpack_require__(35),
-  MessageEmbed: __webpack_require__(36),
-  MessageReaction: __webpack_require__(37),
-  OAuth2Application: __webpack_require__(38),
-  PartialGuild: __webpack_require__(39),
-  PartialGuildChannel: __webpack_require__(40),
-  PermissionOverwrites: __webpack_require__(41),
-  Presence: __webpack_require__(7).Presence,
-  ReactionEmoji: __webpack_require__(18),
-  RichEmbed: __webpack_require__(60),
-  Role: __webpack_require__(9),
-  TextChannel: __webpack_require__(42),
-  User: __webpack_require__(6),
-  VoiceChannel: __webpack_require__(43),
-  Webhook: __webpack_require__(19),
-
-  version: __webpack_require__(28).version,
-  Constants: __webpack_require__(0),
-};
-
-if (typeof window !== 'undefined') window.Discord = module.exports; // eslint-disable-line no-undef
-
-
-/***/ },
-/* 60 */
 /***/ function(module, exports) {
 
 /**
@@ -13238,7 +13183,7 @@ function resolveString(data) {
 
 
 /***/ },
-/* 61 */
+/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
 const superagent = __webpack_require__(26);
@@ -13264,6 +13209,12 @@ module.exports = function fetchRecommendedShards(token, guildsPerShard = 1000) {
 
 
 /***/ },
+/* 61 */
+/***/ function(module, exports) {
+
+/* (ignored) */
+
+/***/ },
 /* 62 */
 /***/ function(module, exports) {
 
@@ -13277,12 +13228,6 @@ module.exports = function fetchRecommendedShards(token, guildsPerShard = 1000) {
 
 /***/ },
 /* 64 */
-/***/ function(module, exports) {
-
-/* (ignored) */
-
-/***/ },
-/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13403,7 +13348,7 @@ function fromByteArray (uint8) {
 
 
 /***/ },
-/* 66 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
 
@@ -13572,7 +13517,7 @@ Emitter.prototype.hasListeners = function(event){
 
 
 /***/ },
-/* 67 */
+/* 66 */
 /***/ function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -13662,7 +13607,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ },
-/* 68 */
+/* 67 */
 /***/ function(module, exports) {
 
 var toString = {}.toString;
@@ -13673,7 +13618,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ },
-/* 69 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13682,8 +13627,8 @@ module.exports = Array.isArray || function (arr) {
 
 var assign    = __webpack_require__(5).assign;
 
-var deflate   = __webpack_require__(70);
-var inflate   = __webpack_require__(71);
+var deflate   = __webpack_require__(69);
+var inflate   = __webpack_require__(70);
 var constants = __webpack_require__(48);
 
 var pako = {};
@@ -13694,14 +13639,14 @@ module.exports = pako;
 
 
 /***/ },
-/* 70 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 
-var zlib_deflate = __webpack_require__(72);
+var zlib_deflate = __webpack_require__(71);
 var utils        = __webpack_require__(5);
 var strings      = __webpack_require__(46);
 var msg          = __webpack_require__(23);
@@ -14101,20 +14046,20 @@ exports.gzip = gzip;
 
 
 /***/ },
-/* 71 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 
-var zlib_inflate = __webpack_require__(75);
+var zlib_inflate = __webpack_require__(74);
 var utils        = __webpack_require__(5);
 var strings      = __webpack_require__(46);
 var c            = __webpack_require__(48);
 var msg          = __webpack_require__(23);
 var ZStream      = __webpack_require__(50);
-var GZheader     = __webpack_require__(73);
+var GZheader     = __webpack_require__(72);
 
 var toString = Object.prototype.toString;
 
@@ -14526,14 +14471,14 @@ exports.ungzip  = inflate;
 
 
 /***/ },
-/* 72 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils   = __webpack_require__(5);
-var trees   = __webpack_require__(77);
+var trees   = __webpack_require__(76);
 var adler32 = __webpack_require__(47);
 var crc32   = __webpack_require__(49);
 var msg     = __webpack_require__(23);
@@ -16388,7 +16333,7 @@ exports.deflateTune = deflateTune;
 
 
 /***/ },
-/* 73 */
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16435,7 +16380,7 @@ module.exports = GZheader;
 
 
 /***/ },
-/* 74 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16768,7 +16713,7 @@ module.exports = function inflate_fast(strm, start) {
 
 
 /***/ },
-/* 75 */
+/* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16778,8 +16723,8 @@ module.exports = function inflate_fast(strm, start) {
 var utils         = __webpack_require__(5);
 var adler32       = __webpack_require__(47);
 var crc32         = __webpack_require__(49);
-var inflate_fast  = __webpack_require__(74);
-var inflate_table = __webpack_require__(76);
+var inflate_fast  = __webpack_require__(73);
+var inflate_table = __webpack_require__(75);
 
 var CODES = 0;
 var LENS = 1;
@@ -18313,7 +18258,7 @@ exports.inflateUndermine = inflateUndermine;
 
 
 /***/ },
-/* 76 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18645,7 +18590,7 @@ module.exports = function inflate_table(type, lens, lens_index, codes, table, ta
 
 
 /***/ },
-/* 77 */
+/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19854,7 +19799,7 @@ exports._tr_align = _tr_align;
 
 
 /***/ },
-/* 78 */
+/* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
 /**
@@ -19875,7 +19820,7 @@ module.exports = isFunction;
 
 
 /***/ },
-/* 79 */
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
 /**
@@ -20415,7 +20360,7 @@ RequestBase.prototype._setTimeouts = function() {
 
 
 /***/ },
-/* 80 */
+/* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
 
@@ -20423,7 +20368,7 @@ RequestBase.prototype._setTimeouts = function() {
  * Module dependencies.
  */
 
-var utils = __webpack_require__(81);
+var utils = __webpack_require__(80);
 
 /**
  * Expose `ResponseBase`.
@@ -20554,7 +20499,7 @@ ResponseBase.prototype._setStatusProperties = function(status){
 
 
 /***/ },
-/* 81 */
+/* 80 */
 /***/ function(module, exports) {
 
 
@@ -20628,7 +20573,7 @@ exports.cleanHeader = function(header, shouldStripCookie){
 
 
 /***/ },
-/* 82 */
+/* 81 */
 /***/ function(module, exports) {
 
 var g;
@@ -20653,18 +20598,18 @@ module.exports = g;
 
 
 /***/ },
-/* 83 */
+/* 82 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
 const cloneObject = __webpack_require__(4);
-const Guild = __webpack_require__(13);
+const Guild = __webpack_require__(14);
 const User = __webpack_require__(6);
 const DMChannel = __webpack_require__(31);
 const Emoji = __webpack_require__(10);
 const TextChannel = __webpack_require__(42);
 const VoiceChannel = __webpack_require__(43);
-const GuildChannel = __webpack_require__(14);
+const GuildChannel = __webpack_require__(15);
 const GroupDMChannel = __webpack_require__(32);
 
 class ClientDataManager {
@@ -20788,7 +20733,7 @@ module.exports = ClientDataManager;
 
 
 /***/ },
-/* 84 */
+/* 83 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -20861,39 +20806,39 @@ module.exports = ClientManager;
 
 
 /***/ },
-/* 85 */
+/* 84 */
 /***/ function(module, exports, __webpack_require__) {
 
 class ActionsManager {
   constructor(client) {
     this.client = client;
 
+    this.register(__webpack_require__(101));
     this.register(__webpack_require__(102));
     this.register(__webpack_require__(103));
+    this.register(__webpack_require__(107));
     this.register(__webpack_require__(104));
-    this.register(__webpack_require__(108));
     this.register(__webpack_require__(105));
     this.register(__webpack_require__(106));
-    this.register(__webpack_require__(107));
+    this.register(__webpack_require__(85));
     this.register(__webpack_require__(86));
     this.register(__webpack_require__(87));
-    this.register(__webpack_require__(88));
-    this.register(__webpack_require__(90));
-    this.register(__webpack_require__(101));
-    this.register(__webpack_require__(94));
-    this.register(__webpack_require__(95));
     this.register(__webpack_require__(89));
+    this.register(__webpack_require__(100));
+    this.register(__webpack_require__(93));
+    this.register(__webpack_require__(94));
+    this.register(__webpack_require__(88));
+    this.register(__webpack_require__(95));
     this.register(__webpack_require__(96));
     this.register(__webpack_require__(97));
-    this.register(__webpack_require__(98));
-    this.register(__webpack_require__(109));
-    this.register(__webpack_require__(111));
+    this.register(__webpack_require__(108));
     this.register(__webpack_require__(110));
-    this.register(__webpack_require__(100));
+    this.register(__webpack_require__(109));
+    this.register(__webpack_require__(99));
+    this.register(__webpack_require__(90));
     this.register(__webpack_require__(91));
     this.register(__webpack_require__(92));
-    this.register(__webpack_require__(93));
-    this.register(__webpack_require__(99));
+    this.register(__webpack_require__(98));
   }
 
   register(Action) {
@@ -20905,7 +20850,7 @@ module.exports = ActionsManager;
 
 
 /***/ },
-/* 86 */
+/* 85 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20924,7 +20869,7 @@ module.exports = ChannelCreateAction;
 
 
 /***/ },
-/* 87 */
+/* 86 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20961,7 +20906,7 @@ module.exports = ChannelDeleteAction;
 
 
 /***/ },
-/* 88 */
+/* 87 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21001,7 +20946,7 @@ module.exports = ChannelUpdateAction;
 
 
 /***/ },
-/* 89 */
+/* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21020,7 +20965,7 @@ module.exports = GuildBanRemove;
 
 
 /***/ },
-/* 90 */
+/* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21077,7 +21022,7 @@ module.exports = GuildDeleteAction;
 
 
 /***/ },
-/* 91 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21101,7 +21046,7 @@ module.exports = GuildEmojiCreateAction;
 
 
 /***/ },
-/* 92 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21125,7 +21070,7 @@ module.exports = GuildEmojiDeleteAction;
 
 
 /***/ },
-/* 93 */
+/* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21146,7 +21091,7 @@ module.exports = GuildEmojiUpdateAction;
 
 
 /***/ },
-/* 94 */
+/* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21164,7 +21109,7 @@ module.exports = GuildMemberGetAction;
 
 
 /***/ },
-/* 95 */
+/* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21219,7 +21164,7 @@ module.exports = GuildMemberRemoveAction;
 
 
 /***/ },
-/* 96 */
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21257,7 +21202,7 @@ module.exports = GuildRoleCreate;
 
 
 /***/ },
-/* 97 */
+/* 96 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21309,7 +21254,7 @@ module.exports = GuildRoleDeleteAction;
 
 
 /***/ },
-/* 98 */
+/* 97 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21356,7 +21301,7 @@ module.exports = GuildRoleUpdateAction;
 
 
 /***/ },
-/* 99 */
+/* 98 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21385,7 +21330,7 @@ module.exports = GuildRolesPositionUpdate;
 
 
 /***/ },
-/* 100 */
+/* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21418,7 +21363,7 @@ module.exports = GuildSync;
 
 
 /***/ },
-/* 101 */
+/* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21458,11 +21403,11 @@ module.exports = GuildUpdateAction;
 
 
 /***/ },
-/* 102 */
+/* 101 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
-const Message = __webpack_require__(11);
+const Message = __webpack_require__(12);
 
 class MessageCreateAction extends Action {
   handle(data) {
@@ -21504,7 +21449,7 @@ module.exports = MessageCreateAction;
 
 
 /***/ },
-/* 103 */
+/* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21550,7 +21495,7 @@ module.exports = MessageDeleteAction;
 
 
 /***/ },
-/* 104 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21580,7 +21525,7 @@ module.exports = MessageDeleteBulkAction;
 
 
 /***/ },
-/* 105 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21629,7 +21574,7 @@ module.exports = MessageReactionAdd;
 
 
 /***/ },
-/* 106 */
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21678,7 +21623,7 @@ module.exports = MessageReactionRemove;
 
 
 /***/ },
-/* 107 */
+/* 106 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21709,7 +21654,7 @@ module.exports = MessageReactionRemoveAll;
 
 
 /***/ },
-/* 108 */
+/* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21758,7 +21703,7 @@ module.exports = MessageUpdateAction;
 
 
 /***/ },
-/* 109 */
+/* 108 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21777,7 +21722,7 @@ module.exports = UserGetAction;
 
 
 /***/ },
-/* 110 */
+/* 109 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21813,7 +21758,7 @@ module.exports = UserNoteUpdateAction;
 
 
 /***/ },
-/* 111 */
+/* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21852,7 +21797,7 @@ module.exports = UserUpdateAction;
 
 
 /***/ },
-/* 112 */
+/* 111 */
 /***/ function(module, exports, __webpack_require__) {
 
 const request = __webpack_require__(26);
@@ -21907,26 +21852,26 @@ module.exports = APIRequest;
 
 
 /***/ },
-/* 113 */
+/* 112 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const splitMessage = __webpack_require__(44);
-const parseEmoji = __webpack_require__(156);
+const parseEmoji = __webpack_require__(155);
 const escapeMarkdown = __webpack_require__(16);
-const transformSearchOptions = __webpack_require__(157);
+const transformSearchOptions = __webpack_require__(156);
 
 const User = __webpack_require__(6);
-const GuildMember = __webpack_require__(15);
-const Message = __webpack_require__(11);
+const GuildMember = __webpack_require__(11);
+const Message = __webpack_require__(12);
 const Role = __webpack_require__(9);
 const Invite = __webpack_require__(33);
 const Webhook = __webpack_require__(19);
-const UserProfile = __webpack_require__(154);
+const UserProfile = __webpack_require__(153);
 const ClientOAuth2Application = __webpack_require__(29);
 const Channel = __webpack_require__(8);
-const Guild = __webpack_require__(13);
+const Guild = __webpack_require__(14);
 
 class RESTMethods {
   constructor(restManager) {
@@ -22599,7 +22544,7 @@ module.exports = RESTMethods;
 
 
 /***/ },
-/* 114 */
+/* 113 */
 /***/ function(module, exports, __webpack_require__) {
 
 const RequestHandler = __webpack_require__(54);
@@ -22675,7 +22620,7 @@ module.exports = BurstRequestHandler;
 
 
 /***/ },
-/* 115 */
+/* 114 */
 /***/ function(module, exports, __webpack_require__) {
 
 const RequestHandler = __webpack_require__(54);
@@ -22785,7 +22730,7 @@ module.exports = SequentialRequestHandler;
 
 
 /***/ },
-/* 116 */
+/* 115 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -22813,16 +22758,16 @@ module.exports = UserAgentManager;
 
 
 /***/ },
-/* 117 */
+/* 116 */
 /***/ function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {const browser = typeof window !== 'undefined';
 const EventEmitter = __webpack_require__(22).EventEmitter;
 const Constants = __webpack_require__(0);
 const convertArrayBuffer = __webpack_require__(55);
-const pako = __webpack_require__(69);
+const pako = __webpack_require__(68);
 const zlib = __webpack_require__(51);
-const PacketManager = __webpack_require__(118);
+const PacketManager = __webpack_require__(117);
 
 let WebSocket, erlpack;
 let serialize = JSON.stringify;
@@ -22830,13 +22775,13 @@ if (browser) {
   WebSocket = window.WebSocket; // eslint-disable-line no-undef
 } else {
   try {
-    WebSocket = __webpack_require__(161);
+    WebSocket = __webpack_require__(160);
   } catch (err) {
-    WebSocket = __webpack_require__(162);
+    WebSocket = __webpack_require__(161);
   }
 
   try {
-    erlpack = __webpack_require__(160);
+    erlpack = __webpack_require__(159);
     serialize = erlpack.pack;
   } catch (err) {
     erlpack = null;
@@ -23193,7 +23138,7 @@ module.exports = WebSocketManager;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21).Buffer))
 
 /***/ },
-/* 118 */
+/* 117 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -23213,40 +23158,40 @@ class WebSocketPacketManager {
     this.handlers = {};
     this.queue = [];
 
-    this.register(Constants.WSEvents.READY, __webpack_require__(145));
-    this.register(Constants.WSEvents.GUILD_CREATE, __webpack_require__(125));
-    this.register(Constants.WSEvents.GUILD_DELETE, __webpack_require__(126));
-    this.register(Constants.WSEvents.GUILD_UPDATE, __webpack_require__(136));
-    this.register(Constants.WSEvents.GUILD_BAN_ADD, __webpack_require__(123));
-    this.register(Constants.WSEvents.GUILD_BAN_REMOVE, __webpack_require__(124));
-    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, __webpack_require__(128));
-    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, __webpack_require__(129));
-    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, __webpack_require__(130));
-    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, __webpack_require__(132));
-    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, __webpack_require__(133));
-    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, __webpack_require__(134));
-    this.register(Constants.WSEvents.GUILD_EMOJIS_UPDATE, __webpack_require__(127));
-    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, __webpack_require__(131));
-    this.register(Constants.WSEvents.CHANNEL_CREATE, __webpack_require__(119));
-    this.register(Constants.WSEvents.CHANNEL_DELETE, __webpack_require__(120));
-    this.register(Constants.WSEvents.CHANNEL_UPDATE, __webpack_require__(122));
-    this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, __webpack_require__(121));
-    this.register(Constants.WSEvents.PRESENCE_UPDATE, __webpack_require__(144));
-    this.register(Constants.WSEvents.USER_UPDATE, __webpack_require__(150));
-    this.register(Constants.WSEvents.USER_NOTE_UPDATE, __webpack_require__(149));
-    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, __webpack_require__(152));
-    this.register(Constants.WSEvents.TYPING_START, __webpack_require__(148));
-    this.register(Constants.WSEvents.MESSAGE_CREATE, __webpack_require__(137));
-    this.register(Constants.WSEvents.MESSAGE_DELETE, __webpack_require__(138));
-    this.register(Constants.WSEvents.MESSAGE_UPDATE, __webpack_require__(143));
-    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, __webpack_require__(139));
-    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, __webpack_require__(151));
-    this.register(Constants.WSEvents.GUILD_SYNC, __webpack_require__(135));
-    this.register(Constants.WSEvents.RELATIONSHIP_ADD, __webpack_require__(146));
-    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, __webpack_require__(147));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, __webpack_require__(140));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, __webpack_require__(141));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, __webpack_require__(142));
+    this.register(Constants.WSEvents.READY, __webpack_require__(144));
+    this.register(Constants.WSEvents.GUILD_CREATE, __webpack_require__(124));
+    this.register(Constants.WSEvents.GUILD_DELETE, __webpack_require__(125));
+    this.register(Constants.WSEvents.GUILD_UPDATE, __webpack_require__(135));
+    this.register(Constants.WSEvents.GUILD_BAN_ADD, __webpack_require__(122));
+    this.register(Constants.WSEvents.GUILD_BAN_REMOVE, __webpack_require__(123));
+    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, __webpack_require__(127));
+    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, __webpack_require__(128));
+    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, __webpack_require__(129));
+    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, __webpack_require__(131));
+    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, __webpack_require__(132));
+    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, __webpack_require__(133));
+    this.register(Constants.WSEvents.GUILD_EMOJIS_UPDATE, __webpack_require__(126));
+    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, __webpack_require__(130));
+    this.register(Constants.WSEvents.CHANNEL_CREATE, __webpack_require__(118));
+    this.register(Constants.WSEvents.CHANNEL_DELETE, __webpack_require__(119));
+    this.register(Constants.WSEvents.CHANNEL_UPDATE, __webpack_require__(121));
+    this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, __webpack_require__(120));
+    this.register(Constants.WSEvents.PRESENCE_UPDATE, __webpack_require__(143));
+    this.register(Constants.WSEvents.USER_UPDATE, __webpack_require__(149));
+    this.register(Constants.WSEvents.USER_NOTE_UPDATE, __webpack_require__(148));
+    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, __webpack_require__(151));
+    this.register(Constants.WSEvents.TYPING_START, __webpack_require__(147));
+    this.register(Constants.WSEvents.MESSAGE_CREATE, __webpack_require__(136));
+    this.register(Constants.WSEvents.MESSAGE_DELETE, __webpack_require__(137));
+    this.register(Constants.WSEvents.MESSAGE_UPDATE, __webpack_require__(142));
+    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, __webpack_require__(138));
+    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, __webpack_require__(150));
+    this.register(Constants.WSEvents.GUILD_SYNC, __webpack_require__(134));
+    this.register(Constants.WSEvents.RELATIONSHIP_ADD, __webpack_require__(145));
+    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, __webpack_require__(146));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, __webpack_require__(139));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, __webpack_require__(140));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, __webpack_require__(141));
   }
 
   get client() {
@@ -23324,7 +23269,7 @@ module.exports = WebSocketPacketManager;
 
 
 /***/ },
-/* 119 */
+/* 118 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23347,7 +23292,7 @@ module.exports = ChannelCreateHandler;
 
 
 /***/ },
-/* 120 */
+/* 119 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23373,7 +23318,7 @@ module.exports = ChannelDeleteHandler;
 
 
 /***/ },
-/* 121 */
+/* 120 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23410,7 +23355,7 @@ module.exports = ChannelPinsUpdate;
 
 
 /***/ },
-/* 122 */
+/* 121 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23427,7 +23372,7 @@ module.exports = ChannelUpdateHandler;
 
 
 /***/ },
-/* 123 */
+/* 122 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -23456,7 +23401,7 @@ module.exports = GuildBanAddHandler;
 
 
 /***/ },
-/* 124 */
+/* 123 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -23482,7 +23427,7 @@ module.exports = GuildBanRemoveHandler;
 
 
 /***/ },
-/* 125 */
+/* 124 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23510,7 +23455,7 @@ module.exports = GuildCreateHandler;
 
 
 /***/ },
-/* 126 */
+/* 125 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23535,7 +23480,7 @@ module.exports = GuildDeleteHandler;
 
 
 /***/ },
-/* 127 */
+/* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23581,7 +23526,7 @@ module.exports = GuildEmojisUpdate;
 
 
 /***/ },
-/* 128 */
+/* 127 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -23604,7 +23549,7 @@ module.exports = GuildMemberAddHandler;
 
 
 /***/ },
-/* 129 */
+/* 128 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -23623,7 +23568,7 @@ module.exports = GuildMemberRemoveHandler;
 
 
 /***/ },
-/* 130 */
+/* 129 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -23647,7 +23592,7 @@ module.exports = GuildMemberUpdateHandler;
 
 
 /***/ },
-/* 131 */
+/* 130 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested##
@@ -23681,7 +23626,7 @@ module.exports = GuildMembersChunkHandler;
 
 
 /***/ },
-/* 132 */
+/* 131 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23698,7 +23643,7 @@ module.exports = GuildRoleCreateHandler;
 
 
 /***/ },
-/* 133 */
+/* 132 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23715,7 +23660,7 @@ module.exports = GuildRoleDeleteHandler;
 
 
 /***/ },
-/* 134 */
+/* 133 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23732,7 +23677,7 @@ module.exports = GuildRoleUpdateHandler;
 
 
 /***/ },
-/* 135 */
+/* 134 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23749,7 +23694,7 @@ module.exports = GuildSyncHandler;
 
 
 /***/ },
-/* 136 */
+/* 135 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23766,7 +23711,7 @@ module.exports = GuildUpdateHandler;
 
 
 /***/ },
-/* 137 */
+/* 136 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23791,7 +23736,7 @@ module.exports = MessageCreateHandler;
 
 
 /***/ },
-/* 138 */
+/* 137 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23816,7 +23761,7 @@ module.exports = MessageDeleteHandler;
 
 
 /***/ },
-/* 139 */
+/* 138 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23839,7 +23784,7 @@ module.exports = MessageDeleteBulkHandler;
 
 
 /***/ },
-/* 140 */
+/* 139 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23856,7 +23801,7 @@ module.exports = MessageReactionAddHandler;
 
 
 /***/ },
-/* 141 */
+/* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23873,7 +23818,7 @@ module.exports = MessageReactionRemove;
 
 
 /***/ },
-/* 142 */
+/* 141 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23890,7 +23835,7 @@ module.exports = MessageReactionRemoveAll;
 
 
 /***/ },
-/* 143 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23907,7 +23852,7 @@ module.exports = MessageUpdateHandler;
 
 
 /***/ },
-/* 144 */
+/* 143 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23985,7 +23930,7 @@ module.exports = PresenceUpdateHandler;
 
 
 /***/ },
-/* 145 */
+/* 144 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24061,7 +24006,7 @@ module.exports = ReadyHandler;
 
 
 /***/ },
-/* 146 */
+/* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24086,7 +24031,7 @@ module.exports = RelationshipAddHandler;
 
 
 /***/ },
-/* 147 */
+/* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24111,7 +24056,7 @@ module.exports = RelationshipRemoveHandler;
 
 
 /***/ },
-/* 148 */
+/* 147 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24185,7 +24130,7 @@ module.exports = TypingStartHandler;
 
 
 /***/ },
-/* 149 */
+/* 148 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24203,7 +24148,7 @@ module.exports = UserNoteUpdateHandler;
 
 
 /***/ },
-/* 150 */
+/* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24220,7 +24165,7 @@ module.exports = UserUpdateHandler;
 
 
 /***/ },
-/* 151 */
+/* 150 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24245,7 +24190,7 @@ module.exports = VoiceServerUpdate;
 
 
 /***/ },
-/* 152 */
+/* 151 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24300,7 +24245,7 @@ module.exports = VoiceStateUpdateHandler;
 
 
 /***/ },
-/* 153 */
+/* 152 */
 /***/ function(module, exports) {
 
 /**
@@ -24354,11 +24299,11 @@ module.exports = UserConnection;
 
 
 /***/ },
-/* 154 */
+/* 153 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
-const UserConnection = __webpack_require__(153);
+const UserConnection = __webpack_require__(152);
 
 /**
  * Represents a user's profile on Discord.
@@ -24416,7 +24361,7 @@ module.exports = UserProfile;
 
 
 /***/ },
-/* 155 */
+/* 154 */
 /***/ function(module, exports) {
 
 module.exports = function arraysEqual(a, b) {
@@ -24436,7 +24381,7 @@ module.exports = function arraysEqual(a, b) {
 
 
 /***/ },
-/* 156 */
+/* 155 */
 /***/ function(module, exports) {
 
 module.exports = function parseEmoji(text) {
@@ -24456,7 +24401,7 @@ module.exports = function parseEmoji(text) {
 
 
 /***/ },
-/* 157 */
+/* 156 */
 /***/ function(module, exports, __webpack_require__) {
 
 const long = __webpack_require__(45);
@@ -24537,6 +24482,12 @@ module.exports = function TransformSearchOptions(options, client) {
 
 
 /***/ },
+/* 157 */
+/***/ function(module, exports) {
+
+/* (ignored) */
+
+/***/ },
 /* 158 */
 /***/ function(module, exports) {
 
@@ -24562,9 +24513,58 @@ module.exports = function TransformSearchOptions(options, client) {
 
 /***/ },
 /* 162 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-/* (ignored) */
+module.exports = {
+  Client: __webpack_require__(57),
+  WebhookClient: __webpack_require__(58),
+  Shard: __webpack_require__(61),
+  ShardClientUtil: __webpack_require__(62),
+  ShardingManager: __webpack_require__(63),
+
+  Collection: __webpack_require__(3),
+  splitMessage: __webpack_require__(44),
+  escapeMarkdown: __webpack_require__(16),
+  fetchRecommendedShards: __webpack_require__(60),
+  Snowflake: __webpack_require__(20),
+  SnowflakeUtil: __webpack_require__(20),
+
+  Channel: __webpack_require__(8),
+  ClientOAuth2Application: __webpack_require__(29),
+  ClientUser: __webpack_require__(30),
+  DMChannel: __webpack_require__(31),
+  Emoji: __webpack_require__(10),
+  EvaluatedPermissions: __webpack_require__(17),
+  Game: __webpack_require__(7).Game,
+  GroupDMChannel: __webpack_require__(32),
+  Guild: __webpack_require__(14),
+  GuildChannel: __webpack_require__(15),
+  GuildMember: __webpack_require__(11),
+  Invite: __webpack_require__(33),
+  Message: __webpack_require__(12),
+  MessageAttachment: __webpack_require__(34),
+  MessageCollector: __webpack_require__(35),
+  MessageEmbed: __webpack_require__(36),
+  MessageReaction: __webpack_require__(37),
+  OAuth2Application: __webpack_require__(38),
+  PartialGuild: __webpack_require__(39),
+  PartialGuildChannel: __webpack_require__(40),
+  PermissionOverwrites: __webpack_require__(41),
+  Presence: __webpack_require__(7).Presence,
+  ReactionEmoji: __webpack_require__(18),
+  RichEmbed: __webpack_require__(59),
+  Role: __webpack_require__(9),
+  TextChannel: __webpack_require__(42),
+  User: __webpack_require__(6),
+  VoiceChannel: __webpack_require__(43),
+  Webhook: __webpack_require__(19),
+
+  version: __webpack_require__(28).version,
+  Constants: __webpack_require__(0),
+};
+
+if (typeof window !== 'undefined') window.Discord = module.exports; // eslint-disable-line no-undef
+
 
 /***/ }
 /******/ ]);
