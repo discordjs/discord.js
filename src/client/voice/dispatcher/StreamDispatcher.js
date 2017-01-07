@@ -2,7 +2,7 @@ const EventEmitter = require('events').EventEmitter;
 const NaCl = require('tweetnacl');
 const VoiceBroadcast = require('../VoiceBroadcast');
 
-const nonce = new Buffer(24);
+const nonce = Buffer.alloc(24);
 nonce.fill(0);
 
 /**
@@ -180,7 +180,7 @@ class StreamDispatcher extends EventEmitter {
   }
 
   createPacket(sequence, timestamp, buffer) {
-    const packetBuffer = new Buffer(buffer.length + 28);
+    const packetBuffer = Buffer.alloc(buffer.length + 28);
     packetBuffer.fill(0);
     packetBuffer[0] = 0x80;
     packetBuffer[1] = 0x78;
@@ -199,7 +199,7 @@ class StreamDispatcher extends EventEmitter {
   applyVolume(buffer) {
     if (this.volume === 1) return buffer;
 
-    const out = new Buffer(buffer.length);
+    const out = Buffer.alloc(buffer.length);
     for (let i = 0; i < buffer.length; i += 2) {
       if (i >= buffer.length - 1) break;
       const uint = Math.min(32767, Math.max(-32767, Math.floor(this.volume * buffer.readInt16LE(i))));
@@ -269,7 +269,7 @@ class StreamDispatcher extends EventEmitter {
       data.missed = 0;
 
       if (buffer.length !== bufferLength) {
-        const newBuffer = new Buffer(bufferLength).fill(0);
+        const newBuffer = Buffer.alloc(bufferLength).fill(0);
         buffer.copy(newBuffer);
         buffer = newBuffer;
       }

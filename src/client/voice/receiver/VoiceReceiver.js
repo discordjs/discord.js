@@ -2,7 +2,7 @@ const EventEmitter = require('events').EventEmitter;
 const NaCl = require('tweetnacl');
 const Readable = require('./VoiceReadable');
 
-const nonce = new Buffer(24);
+const nonce = Buffer.alloc(24);
 nonce.fill(0);
 
 /**
@@ -127,7 +127,7 @@ class VoiceReceiver extends EventEmitter {
       this.emit('warn', 'Failed to decrypt voice packet');
       return;
     }
-    data = new Buffer(data);
+    data = Buffer.from(data);
     if (this.opusStreams.get(user.id)) this.opusStreams.get(user.id)._push(data);
     /**
      * Emitted whenever voice data is received from the voice connection. This is _always_ emitted (unlike PCM).
