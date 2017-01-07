@@ -160,7 +160,7 @@ class VoiceConnection extends EventEmitter {
     this.sockets.udp = new VoiceUDP(this);
     this.sockets.ws.on('error', e => this.emit('error', e));
     this.sockets.udp.on('error', e => this.emit('error', e));
-    this.sockets.ws.once('ready', d => {
+    this.sockets.ws.on('ready', d => {
       this.authentication.port = d.port;
       this.authentication.ssrc = d.ssrc;
       /**
@@ -173,7 +173,7 @@ class VoiceConnection extends EventEmitter {
           this.sockets.udp.createUDPSocket(address);
         }, e => this.emit('error', e));
     });
-    this.sockets.ws.once('sessionDescription', (mode, secret) => {
+    this.sockets.ws.on('sessionDescription', (mode, secret) => {
       this.authentication.encryptionMode = mode;
       this.authentication.secretKey = secret;
       /**

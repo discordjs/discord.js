@@ -172,7 +172,10 @@ class StreamDispatcher extends EventEmitter {
     this.setSpeaking(true);
     while (repeats--) {
       this.player.voiceConnection.sockets.udp.send(packet)
-        .catch(e => this.emit('debug', `Failed to send a packet ${e}`));
+        .catch(e => {
+          this.setSpeaking(false);
+          this.emit('debug', `Failed to send a packet ${e}`);
+        });
     }
   }
 
