@@ -13214,12 +13214,12 @@ class Snowflake {
    *  000000111011000111100001101001000101000000  00001  00000  000000000000
    *       number of ms since discord epoch       worker  pid    increment
    * ```
-   * Note: this generator hardcodes the worker id as 1 and the process id as 0
    * @typedef {string} Snowflake
    */
 
   /**
-   * Generate a Discord snowflake
+   * Generates a Discord snowflake
+   * <info>This hardcodes the worker ID as 1 and the process ID as 0.</info>
    * @returns {Snowflake} The generated snowflake
    */
   static generate() {
@@ -13232,14 +13232,14 @@ class Snowflake {
    * A deconstructed snowflake
    * @typedef {Object} DeconstructedSnowflake
    * @property {Date} date Date in the snowflake
-   * @property {number} workerID Worker id in the snowflake
-   * @property {number} processID Process id in the snowflake
+   * @property {number} workerID Worker ID in the snowflake
+   * @property {number} processID Process ID in the snowflake
    * @property {number} increment Increment in the snowflake
    * @property {string} binary Binary representation of the snowflake
    */
 
   /**
-   * Deconstruct a Discord snowflake
+   * Deconstructs a Discord snowflake
    * @param {Snowflake} snowflake Snowflake to deconstruct
    * @returns {DeconstructedSnowflake} Deconstructed snowflake
    */
