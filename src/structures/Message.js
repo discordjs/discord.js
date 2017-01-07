@@ -363,7 +363,7 @@ class Message {
    * @returns {boolean}
    */
   isMemberMentioned(member) {
-    // lazy loading ftw
+    // Lazy-loading is used here to get around a circular dependency that breaks things
     if (!GuildMember) GuildMember = require('./GuildMember');
     if (this.mentions.everyone) return true;
     if (this.mentions.users.has(member.id)) return true;
