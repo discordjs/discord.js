@@ -314,7 +314,7 @@ class VoiceBroadcast extends EventEmitter {
         this._pausedTime += 200;
         setTimeout(() => this.tick(), 200);
       } else {
-        this.end();
+        this.killCurrentTranscoder();
       }
       return;
     }
