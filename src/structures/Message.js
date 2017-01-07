@@ -4,9 +4,7 @@ const MessageReaction = require('./MessageReaction');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
 const escapeMarkdown = require('../util/EscapeMarkdown');
-
-// Done purely for GuildMember, which would cause a bad circular dependency
-const Discord = require('..');
+let GuildMember;
 
 /**
  * Represents a message on Discord
@@ -365,9 +363,11 @@ class Message {
    * @returns {boolean}
    */
   isMemberMentioned(member) {
+    // Lazy-loading is used here to get around a circular dependency that breaks things
+    if (!GuildMember) GuildMember = require('./GuildMember');
     if (this.mentions.everyone) return true;
     if (this.mentions.users.has(member.id)) return true;
-    if (member instanceof Discord.GuildMember && member.roles.some(r => this.mentions.roles.has(r.id))) return true;
+    if (member instanceof GuildMember && member.roles.some(r => this.mentions.roles.has(r.id))) return true;
     return false;
   }
 
