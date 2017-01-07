@@ -22933,6 +22933,7 @@ class VoiceBroadcast extends EventEmitter {
     if (this.currentTranscoder) {
       if (this.currentTranscoder.transcoder) this.currentTranscoder.transcoder.kill();
       this.currentTranscoder = null;
+      this.emit('end');
     }
   }
 
@@ -23007,10 +23008,7 @@ class VoiceBroadcast extends EventEmitter {
      * Emitted once the broadcast (the audio stream) ends
      * @event VoiceBroadcast#end
      */
-    transcoder.once('end', () => {
-      this.emit('end');
-      this.killCurrentTranscoder();
-    });
+    transcoder.once('end', () => this.killCurrentTranscoder());
     this.currentTranscoder = {
       transcoder,
       options,
@@ -23027,7 +23025,6 @@ class VoiceBroadcast extends EventEmitter {
    */
   playConvertedStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
     this.killCurrentTranscoder();
-    stream.once('end', () => this.emit('end'));
     const options = { seek, volume, passes, stream };
     this.currentTranscoder = { options };
     stream.once('readable', () => this._startPlaying());
