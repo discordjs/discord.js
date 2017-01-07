@@ -55,11 +55,10 @@ class VoiceBroadcast extends EventEmitter {
     return d;
   }
 
-  applyVolume(buffer, volume) {
-    volume = volume || this._volume;
+  applyVolume(buffer, volume = this._volume) {
     if (volume === 1) return buffer;
 
-    const out = new Buffer(buffer.length);
+    const out = Buffer.alloc(buffer.length);
     for (let i = 0; i < buffer.length; i += 2) {
       if (i >= buffer.length - 1) break;
       const uint = Math.min(32767, Math.max(-32767, Math.floor(volume * buffer.readInt16LE(i))));
@@ -319,7 +318,7 @@ class VoiceBroadcast extends EventEmitter {
     this._missed = 0;
 
     if (buffer.length !== bufferLength) {
-      const newBuffer = new Buffer(bufferLength).fill(0);
+      const newBuffer = Buffer.alloc(bufferLength).fill(0);
       buffer.copy(newBuffer);
       buffer = newBuffer;
     }
