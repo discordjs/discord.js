@@ -4,20 +4,10 @@ const Long = require('long');
 const EPOCH = 1420070400000;
 let INCREMENT = 0;
 
-function pad(v, n, c = '0') {
-  return String(v).length >= n ? String(v) : (String(c).repeat(n) + v).slice(-n);
-}
-
- /**
-  * A deconstructed snowflake
-  * @typedef {Object} DeconstructedSnowflake
-  * @property {Date} date Date in the snowflake
-  * @property {number} workerID Worker id in the snowflake
-  * @property {number} processID Process id in the snowflake
-  * @property {number} increment Increment in the snowflake
-  * @property {string} binary Binary representation of the snowflake
-  */
-
+/**
+ * A container for useful snowflake-related methods
+ */
+class Snowflake {
   /**
    * A Twitter snowflake, except the epoch is 2015-01-01T00:00:00.000Z
    * ```
@@ -29,9 +19,8 @@ function pad(v, n, c = '0') {
    * ```
    * Note: this generator hardcodes the worker id as 1 and the process id as 0
    * @typedef {string} Snowflake
-   * @class Snowflake
    */
-class Snowflake {
+
   /**
    * Generate a Discord snowflake
    * @returns {Snowflake} The generated snowflake
@@ -41,6 +30,16 @@ class Snowflake {
     const BINARY = `${pad((Date.now() - EPOCH).toString(2), 42)}0000100000${pad((INCREMENT++).toString(2), 12)}`;
     return Long.fromString(BINARY, 2).toString();
   }
+
+  /**
+   * A deconstructed snowflake
+   * @typedef {Object} DeconstructedSnowflake
+   * @property {Date} date Date in the snowflake
+   * @property {number} workerID Worker id in the snowflake
+   * @property {number} processID Process id in the snowflake
+   * @property {number} increment Increment in the snowflake
+   * @property {string} binary Binary representation of the snowflake
+   */
 
   /**
    * Deconstruct a Discord snowflake
@@ -57,6 +56,10 @@ class Snowflake {
       binary: BINARY,
     };
   }
+}
+
+function pad(v, n, c = '0') {
+  return String(v).length >= n ? String(v) : (String(c).repeat(n) + v).slice(-n);
 }
 
 module.exports = Snowflake;
