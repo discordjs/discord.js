@@ -21,7 +21,7 @@ const long = require('long');
  * @property {string} [embedProvider] The name of an embed provider
  * @property {string} [embedType] one of `image`, `video`, `url`, `rich`
  * @property {string} [attachmentFilename] The name of an attachment
- * @property {string} [attachmentExtention] The extension of an attachment
+ * @property {string} [attachmentExtension] The extension of an attachment
  * @property {Date} [before] Date to find messages before
  * @property {Date} [after] Date to find messages before
  * @property {Date} [during] Date to find messages during (range of date to date + 24 hours)
