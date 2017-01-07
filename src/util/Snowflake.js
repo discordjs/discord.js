@@ -7,7 +7,7 @@ let INCREMENT = 0;
 /**
  * A container for useful snowflake-related methods
  */
-class Snowflake {
+class SnowflakeUtil {
   /**
    * A Twitter snowflake, except the epoch is 2015-01-01T00:00:00.000Z
    * ```
@@ -62,4 +62,4 @@ function pad(v, n, c = '0') {
   return String(v).length >= n ? String(v) : (String(c).repeat(n) + v).slice(-n);
 }
 
-module.exports = Snowflake;
+module.exports = SnowflakeUtil;
