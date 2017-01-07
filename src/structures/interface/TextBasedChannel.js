@@ -11,13 +11,13 @@ class TextBasedChannel {
   constructor() {
     /**
      * A collection containing the messages sent to this channel.
-     * @type {Collection<string, Message>}
+     * @type {Collection<Snowflake, Message>}
      */
     this.messages = new Collection();
 
     /**
      * The ID of the last message in the channel, if one was sent.
-     * @type {?string}
+     * @type {?Snowflake}
      */
     this.lastMessageID = null;
   }
@@ -224,8 +224,8 @@ class TextBasedChannel {
    *   content: 'discord.js',
    *   before: '2016-11-17'
    * }).then(res => {
-   *   const hit = res[0].find(m => m.hit).content;
-   *   console.log(`I found: **${hit}**`);
+   *   const hit = res.messages[0].find(m => m.hit).content;
+   *   console.log(`I found: **${hit}**, total results: ${res.totalResults}`);
    * }).catch(console.error);
    */
   search(options) {

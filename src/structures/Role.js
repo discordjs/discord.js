@@ -25,7 +25,7 @@ class Role {
   setup(data) {
     /**
      * The ID of the role (unique to the guild it is part of)
-     * @type {string}
+     * @type {Snowflake}
      */
     this.id = data.id;
 
@@ -103,7 +103,7 @@ class Role {
 
   /**
    * The cached guild members that have this role.
-   * @type {Collection<string, GuildMember>}
+   * @type {Collection<Snowflake, GuildMember>}
    * @readonly
    */
   get members() {

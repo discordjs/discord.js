@@ -25,25 +25,25 @@ class Guild {
 
     /**
      * A collection of members that are in this guild. The key is the member's ID, the value is the member.
-     * @type {Collection<string, GuildMember>}
+     * @type {Collection<Snowflake, GuildMember>}
      */
     this.members = new Collection();
 
     /**
      * A collection of channels that are in this guild. The key is the channel's ID, the value is the channel.
-     * @type {Collection<string, GuildChannel>}
+     * @type {Collection<Snowflake, GuildChannel>}
      */
     this.channels = new Collection();
 
     /**
      * A collection of roles that are in this guild. The key is the role's ID, the value is the role.
-     * @type {Collection<string, Role>}
+     * @type {Collection<Snowflake, Role>}
      */
     this.roles = new Collection();
 
     /**
      * A collection of presences in this guild
-     * @type {Collection<string, Presence>}
+     * @type {Collection<Snowflake, Presence>}
      */
     this.presences = new Collection();
 
@@ -57,7 +57,7 @@ class Guild {
 
       /**
        * The Unique ID of the Guild, useful for comparisons.
-       * @type {string}
+       * @type {Snowflake}
        */
       this.id = data.id;
     } else {
@@ -106,7 +106,7 @@ class Guild {
      * Whether the guild is "large" (has more than 250 members)
      * @type {boolean}
      */
-    this.large = data.large || this.large;
+    this.large = Boolean('large' in data ? data.large : this.large);
 
     /**
      * An array of guild features.
@@ -116,13 +116,13 @@ class Guild {
 
     /**
      * The ID of the application that created this guild (if applicable)
-     * @type {?string}
+     * @type {?Snowflake}
      */
     this.applicationID = data.application_id;
 
     /**
      * A collection of emojis that are in this guild. The key is the emoji's ID, the value is the emoji.
-     * @type {Collection<string, Emoji>}
+     * @type {Collection<Snowflake, Emoji>}
      */
     this.emojis = new Collection();
     for (const emoji of data.emojis) this.emojis.set(emoji.id, new Emoji(this, emoji));
@@ -169,7 +169,7 @@ class Guild {
     if (data.owner_id) {
       /**
        * The user ID of this guild's owner.
-       * @type {string}
+       * @type {Snowflake}
        */
       this.ownerID = data.owner_id;
     }
@@ -373,8 +373,8 @@ class Guild {
    *   content: 'discord.js',
    *   before: '2016-11-17'
    * }).then(res => {
-   *   const hit = res[0].find(m => m.hit).content;
-   *   console.log(`I found: **${hit}**`);
+   *   const hit = res.messages[0].find(m => m.hit).content;
+   *   console.log(`I found: **${hit}**, total results: ${res.totalResults}`);
    * }).catch(console.error);
    */
   search(options) {

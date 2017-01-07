@@ -26,7 +26,7 @@ class Emoji {
   setup(data) {
     /**
      * The ID of the emoji
-     * @type {string}
+     * @type {Snowflake}
      */
     this.id = data.id;
 
@@ -71,7 +71,7 @@ class Emoji {
 
   /**
    * A collection of roles this emoji is active for (empty if all), mapped by role ID.
-   * @type {Collection<string, Role>}
+   * @type {Collection<Snowflake, Role>}
    * @readonly
    */
   get roles() {
@@ -89,6 +89,16 @@ class Emoji {
    */
   get url() {
     return Constants.Endpoints.emoji(this.id);
+  }
+
+  /**
+   * The identifier of this emoji, used for message reactions
+   * @type {string}
+   * @readonly
+   */
+  get identifier() {
+    if (this.id) return `${this.name}:${this.id}`;
+    return encodeURIComponent(this.name);
   }
 
   /**
@@ -122,18 +132,6 @@ class Emoji {
         other.name === this.name
       );
     }
-  }
-
-  /**
-   * The identifier of this emoji, used for message reactions
-   * @readonly
-   * @type {string}
-   */
-  get identifier() {
-    if (this.id) {
-      return `${this.name}:${this.id}`;
-    }
-    return encodeURIComponent(this.name);
   }
 }
 

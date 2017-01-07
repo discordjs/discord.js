@@ -19,15 +19,15 @@ class ReactionEmoji {
 
     /**
      * The ID of this reaction emoji.
-     * @type {string}
+     * @type {?Snowflake}
      */
     this.id = id;
   }
 
   /**
    * The identifier of this emoji, used for message reactions
-   * @readonly
    * @type {string}
+   * @readonly
    */
   get identifier() {
     if (this.id) return `${this.name}:${this.id}`;

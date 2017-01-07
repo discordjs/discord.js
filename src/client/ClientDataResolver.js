@@ -32,7 +32,7 @@ class ClientDataResolver {
    * * A Message object (resolves to the message author)
    * * A Guild object (owner of the guild)
    * * A GuildMember object
-   * @typedef {User|string|Message|Guild|GuildMember} UserResolvable
+   * @typedef {User|Snowflake|Message|Guild|GuildMember} UserResolvable
    */
 
   /**
@@ -52,7 +52,7 @@ class ClientDataResolver {
   /**
    * Resolves a UserResolvable to a user ID string
    * @param {UserResolvable} user The UserResolvable to identify
-   * @returns {?string}
+   * @returns {?Snowflake}
    */
   resolveUserID(user) {
     if (user instanceof User || user instanceof GuildMember) return user.id;
@@ -66,7 +66,7 @@ class ClientDataResolver {
    * Data that resolves to give a Guild object. This can be:
    * * A Guild object
    * * A Guild ID
-   * @typedef {Guild|string} GuildResolvable
+   * @typedef {Guild|Snowflake} GuildResolvable
    */
 
   /**
@@ -107,7 +107,7 @@ class ClientDataResolver {
    * * A Message object (the channel the message was sent in)
    * * A Guild object (the #general channel)
    * * A channel ID
-   * @typedef {Channel|Guild|Message|string} ChannelResolvable
+   * @typedef {Channel|Guild|Message|Snowflake} ChannelResolvable
    */
 
   /**
@@ -126,7 +126,7 @@ class ClientDataResolver {
   /**
    * Resolves a ChannelResolvable to a Channel object
    * @param {ChannelResolvable} channel The channel resolvable to resolve
-   * @returns {?string}
+   * @returns {?Snowflake}
    */
   resolveChannelID(channel) {
     if (channel instanceof Channel) return channel.id;

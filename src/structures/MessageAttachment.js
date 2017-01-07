@@ -23,7 +23,7 @@ class MessageAttachment {
   setup(data) {
     /**
      * The ID of this attachment
-     * @type {string}
+     * @type {Snowflake}
      */
     this.id = data.id;
 
