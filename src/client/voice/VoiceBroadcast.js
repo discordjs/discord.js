@@ -267,38 +267,59 @@ class VoiceBroadcast extends EventEmitter {
    * Pauses the entire broadcast - all dispatchers also pause
    */
   pause() {
+    this.paused = true;
     for (const container of this._dispatchers.values()) {
       for (const dispatcher of container.values()) {
         dispatcher.pause();
       }
     }
-    clearInterval(this.tickInterval);
   }
 
   /**
    * Resumes the entire broadcast - all dispatchers also resume
    */
   resume() {
+    this.paused = false;
     for (const container of this._dispatchers.values()) {
       for (const dispatcher of container.values()) {
         dispatcher.resume();
       }
     }
-    this._startPlaying();
   }
 
   _startPlaying() {
     if (this.tickInterval) clearInterval(this.tickInterval);
-    this.tickInterval = this.client.setInterval(this.tick.bind(this), 20);
+    // this.tickInterval = this.client.setInterval(this.tick.bind(this), 20);
+    this._startTime = Date.now();
+    this._count = 0;
+    this._pausedTime = 0;
+    this._missed = 0;
+    this.tick();
   }
 
   tick() {
     if (!this._playableStream) return;
+    if (this.paused) {
+      this._pausedTime += 20;
+      setTimeout(() => this.tick(), 20);
+      return;
+    }
     const stream = this._playableStream;
     const bufferLength = 1920 * 2;
     let buffer = stream.read(bufferLength);
 
-    if (!buffer) return;
+    if (!buffer) {
+      this._missed++;
+      if (this._missed < 5) {
+        this._pausedTime += 200;
+        setTimeout(() => this.tick(), 200);
+      } else {
+        this.end();
+      }
+      return;
+    }
+
+    this._missed = 0;
 
     if (buffer.length !== bufferLength) {
       const newBuffer = new Buffer(bufferLength).fill(0);
@@ -309,14 +330,15 @@ class VoiceBroadcast extends EventEmitter {
     buffer = this.applyVolume(buffer);
 
     for (const x of this._dispatchers.entries()) {
-      setImmediate(() => {
-        const [volume, container] = x;
-        const opusPacket = this.opusEncoder.encode(this.applyVolume(buffer, volume));
-        for (const dispatcher of container.values()) {
-          setImmediate(() => dispatcher.process(buffer, true, opusPacket));
-        }
-      });
+      const [volume, container] = x;
+      const opusPacket = this.opusEncoder.encode(this.applyVolume(buffer, volume));
+      for (const dispatcher of container.values()) {
+        dispatcher.process(buffer, true, opusPacket);
+      }
     }
+    const next = 20 + (this._startTime + this._pausedTime + (this._count * 20) - Date.now());
+    this._count++;
+    setTimeout(() => this.tick(), next);
   }
 
   /**

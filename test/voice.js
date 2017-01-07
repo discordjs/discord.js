@@ -41,6 +41,13 @@ client.on('message', m => {
       }
       doQueue(connData);
     }
+  } else if (m.content.startsWith('/skip')) {
+    if (connections.has(m.guild.id)) {
+      const connData = connections.get(m.guild.id);
+      if (connData.dispatcher) {
+        connData.dispatcher.end();
+      }
+    }
   } else if (m.content.startsWith('#eval') && m.author.id === '66564597481480192') {
     try {
       const com = eval(m.content.split(' ').slice(1).join(' '));
@@ -67,4 +74,5 @@ function doQueue(connData) {
     doQueue(connData);
   });
   dispatcher.on('error', (...e) => console.log('dispatcher', ...e));
+  connData.dispatcher = dispatcher;
 }
