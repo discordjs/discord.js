@@ -23121,10 +23121,17 @@ class VoiceBroadcast extends EventEmitter {
   }
 
   /**
-   * End the current broadcast, all subscribed dispatchers will also end
+   * Stop the current stream from playing without unsubscribing dispatchers.
    */
   end() {
     this.killCurrentTranscoder();
+  }
+
+  /**
+   * End the current broadcast, all subscribed dispatchers will also end
+   */
+  destroy() {
+    this.end();
     for (const container of this._dispatchers.values()) {
       for (const dispatcher of container.values()) {
         dispatcher.destroy('end', 'broadcast ended');
