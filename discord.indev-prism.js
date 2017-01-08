@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 165);
+/******/ 	return __webpack_require__(__webpack_require__.s = 167);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -444,7 +444,7 @@ for (const key in PermissionFlags) _ALL_PERMISSIONS |= PermissionFlags[key];
 exports.ALL_PERMISSIONS = _ALL_PERMISSIONS;
 exports.DEFAULT_PERMISSIONS = 104324097;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19)))
 
 /***/ },
 /* 1 */
@@ -1934,7 +1934,7 @@ module.exports = Emoji;
 
 const TextBasedChannel = __webpack_require__(13);
 const Role = __webpack_require__(9);
-const EvaluatedPermissions = __webpack_require__(19);
+const EvaluatedPermissions = __webpack_require__(20);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(7).Presence;
@@ -2960,7 +2960,7 @@ module.exports = Message;
 /* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-const path = __webpack_require__(24);
+const path = __webpack_require__(25);
 const Message = __webpack_require__(12);
 const MessageCollector = __webpack_require__(35);
 const Collection = __webpack_require__(3);
@@ -3370,7 +3370,7 @@ const GuildMember = __webpack_require__(11);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const cloneObject = __webpack_require__(4);
-const arraysEqual = __webpack_require__(155);
+const arraysEqual = __webpack_require__(157);
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -4241,7 +4241,7 @@ module.exports = Guild;
 const Channel = __webpack_require__(8);
 const Role = __webpack_require__(9);
 const PermissionOverwrites = __webpack_require__(41);
-const EvaluatedPermissions = __webpack_require__(19);
+const EvaluatedPermissions = __webpack_require__(20);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 
@@ -4565,9 +4565,9 @@ module.exports = function escapeMarkdown(text, onlyCodeBlock = false, onlyInline
 
 
 
-var base64 = __webpack_require__(64)
-var ieee754 = __webpack_require__(66)
-var isArray = __webpack_require__(67)
+var base64 = __webpack_require__(65)
+var ieee754 = __webpack_require__(67)
+var isArray = __webpack_require__(68)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -6345,7 +6345,7 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(81)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(51)))
 
 /***/ },
 /* 18 */
@@ -6657,6 +6657,192 @@ function isUndefined(arg) {
 
 /***/ },
 /* 19 */
+/***/ function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+
+/***/ },
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -6729,7 +6915,7 @@ module.exports = EvaluatedPermissions;
 
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports) {
 
 /**
@@ -6784,10 +6970,10 @@ module.exports = ReactionEmoji;
 
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
-const path = __webpack_require__(24);
+const path = __webpack_require__(25);
 const escapeMarkdown = __webpack_require__(16);
 
 /**
@@ -6990,7 +7176,7 @@ module.exports = Webhook;
 
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Long = __webpack_require__(45);
@@ -7061,7 +7247,7 @@ module.exports = SnowflakeUtil;
 
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7081,7 +7267,7 @@ module.exports = {
 
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -7309,193 +7495,7 @@ var substr = 'ab'.substr(-1) === 'b'
     }
 ;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
-
-/***/ },
-/* 25 */
-/***/ function(module, exports) {
-
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19)))
 
 /***/ },
 /* 26 */
@@ -7515,11 +7515,11 @@ if (typeof window !== 'undefined') { // Browser window
   root = this;
 }
 
-var Emitter = __webpack_require__(65);
-var RequestBase = __webpack_require__(78);
+var Emitter = __webpack_require__(66);
+var RequestBase = __webpack_require__(80);
 var isObject = __webpack_require__(27);
-var isFunction = __webpack_require__(77);
-var ResponseBase = __webpack_require__(79);
+var isFunction = __webpack_require__(79);
+var ResponseBase = __webpack_require__(81);
 
 /**
  * Noop.
@@ -9778,7 +9778,7 @@ module.exports = MessageEmbed;
 
 const Collection = __webpack_require__(3);
 const Emoji = __webpack_require__(10);
-const ReactionEmoji = __webpack_require__(20);
+const ReactionEmoji = __webpack_require__(21);
 
 /**
  * Represents a reaction to a message
@@ -11956,25 +11956,50 @@ module.exports = ZStream;
 /* 51 */
 /***/ function(module, exports) {
 
+var g;
+
+// This works in non-strict mode
+g = (function() { return this; })();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
 
 
 /***/ },
 /* 52 */
+/***/ function(module, exports) {
+
+
+
+/***/ },
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(24);
-const fs = __webpack_require__(51);
+/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(25);
+const fs = __webpack_require__(52);
 const request = __webpack_require__(26);
 
 const Constants = __webpack_require__(0);
-const convertArrayBuffer = __webpack_require__(55);
+const convertArrayBuffer = __webpack_require__(56);
 const User = __webpack_require__(6);
 const Message = __webpack_require__(12);
 const Guild = __webpack_require__(14);
 const Channel = __webpack_require__(8);
 const GuildMember = __webpack_require__(11);
 const Emoji = __webpack_require__(10);
-const ReactionEmoji = __webpack_require__(20);
+const ReactionEmoji = __webpack_require__(21);
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
@@ -12288,14 +12313,14 @@ module.exports = ClientDataResolver;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17).Buffer))
 
 /***/ },
-/* 53 */
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
-const UserAgentManager = __webpack_require__(115);
-const RESTMethods = __webpack_require__(112);
-const SequentialRequestHandler = __webpack_require__(114);
-const BurstRequestHandler = __webpack_require__(113);
-const APIRequest = __webpack_require__(111);
+const UserAgentManager = __webpack_require__(117);
+const RESTMethods = __webpack_require__(114);
+const SequentialRequestHandler = __webpack_require__(116);
+const BurstRequestHandler = __webpack_require__(115);
+const APIRequest = __webpack_require__(113);
 const Constants = __webpack_require__(0);
 
 class RESTManager {
@@ -12345,7 +12370,7 @@ module.exports = RESTManager;
 
 
 /***/ },
-/* 54 */
+/* 55 */
 /***/ function(module, exports) {
 
 /**
@@ -12402,7 +12427,7 @@ module.exports = RequestHandler;
 
 
 /***/ },
-/* 55 */
+/* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {function str2ab(str) {
@@ -12420,7 +12445,7 @@ module.exports = function convertArrayBuffer(x) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17).Buffer))
 
 /***/ },
-/* 56 */
+/* 57 */
 /***/ function(module, exports) {
 
 module.exports = function merge(def, given) {
@@ -12438,23 +12463,23 @@ module.exports = function merge(def, given) {
 
 
 /***/ },
-/* 57 */
+/* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {const EventEmitter = __webpack_require__(18).EventEmitter;
-const mergeDefault = __webpack_require__(56);
+const mergeDefault = __webpack_require__(57);
 const Constants = __webpack_require__(0);
-const RESTManager = __webpack_require__(53);
-const ClientDataManager = __webpack_require__(82);
-const ClientManager = __webpack_require__(83);
-const ClientDataResolver = __webpack_require__(52);
-const ClientVoiceManager = __webpack_require__(159);
-const WebSocketManager = __webpack_require__(117);
-const ActionsManager = __webpack_require__(84);
+const RESTManager = __webpack_require__(54);
+const ClientDataManager = __webpack_require__(84);
+const ClientManager = __webpack_require__(85);
+const ClientDataResolver = __webpack_require__(53);
+const ClientVoiceManager = __webpack_require__(161);
+const WebSocketManager = __webpack_require__(119);
+const ActionsManager = __webpack_require__(86);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(7).Presence;
-const ShardClientUtil = __webpack_require__(158);
-const VoiceBroadcast = __webpack_require__(116);
+const ShardClientUtil = __webpack_require__(160);
+const VoiceBroadcast = __webpack_require__(118);
 
 /**
  * The starting point for making a Discord Bot.
@@ -12937,16 +12962,16 @@ module.exports = Client;
  * @param {string} info The debug information
  */
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19)))
 
 /***/ },
-/* 58 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
-const Webhook = __webpack_require__(21);
-const RESTManager = __webpack_require__(53);
-const ClientDataResolver = __webpack_require__(52);
-const mergeDefault = __webpack_require__(56);
+const Webhook = __webpack_require__(22);
+const RESTManager = __webpack_require__(54);
+const ClientDataResolver = __webpack_require__(53);
+const mergeDefault = __webpack_require__(57);
 const Constants = __webpack_require__(0);
 
 /**
@@ -12992,7 +13017,7 @@ module.exports = WebhookClient;
 
 
 /***/ },
-/* 59 */
+/* 60 */
 /***/ function(module, exports) {
 
 /**
@@ -13202,7 +13227,7 @@ function resolveString(data) {
 
 
 /***/ },
-/* 60 */
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
 const superagent = __webpack_require__(26);
@@ -13228,12 +13253,6 @@ module.exports = function fetchRecommendedShards(token, guildsPerShard = 1000) {
 
 
 /***/ },
-/* 61 */
-/***/ function(module, exports) {
-
-/* (ignored) */
-
-/***/ },
 /* 62 */
 /***/ function(module, exports) {
 
@@ -13247,6 +13266,12 @@ module.exports = function fetchRecommendedShards(token, guildsPerShard = 1000) {
 
 /***/ },
 /* 64 */
+/***/ function(module, exports) {
+
+/* (ignored) */
+
+/***/ },
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13367,7 +13392,7 @@ function fromByteArray (uint8) {
 
 
 /***/ },
-/* 65 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
 
@@ -13536,7 +13561,7 @@ Emitter.prototype.hasListeners = function(event){
 
 
 /***/ },
-/* 66 */
+/* 67 */
 /***/ function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -13626,7 +13651,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ },
-/* 67 */
+/* 68 */
 /***/ function(module, exports) {
 
 var toString = {}.toString;
@@ -13637,7 +13662,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ },
-/* 68 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13646,8 +13671,8 @@ module.exports = Array.isArray || function (arr) {
 
 var assign    = __webpack_require__(5).assign;
 
-var deflate   = __webpack_require__(69);
-var inflate   = __webpack_require__(70);
+var deflate   = __webpack_require__(70);
+var inflate   = __webpack_require__(71);
 var constants = __webpack_require__(48);
 
 var pako = {};
@@ -13658,17 +13683,17 @@ module.exports = pako;
 
 
 /***/ },
-/* 69 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 
-var zlib_deflate = __webpack_require__(71);
+var zlib_deflate = __webpack_require__(72);
 var utils        = __webpack_require__(5);
 var strings      = __webpack_require__(46);
-var msg          = __webpack_require__(23);
+var msg          = __webpack_require__(24);
 var ZStream      = __webpack_require__(50);
 
 var toString = Object.prototype.toString;
@@ -14065,20 +14090,20 @@ exports.gzip = gzip;
 
 
 /***/ },
-/* 70 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 
-var zlib_inflate = __webpack_require__(74);
+var zlib_inflate = __webpack_require__(75);
 var utils        = __webpack_require__(5);
 var strings      = __webpack_require__(46);
 var c            = __webpack_require__(48);
-var msg          = __webpack_require__(23);
+var msg          = __webpack_require__(24);
 var ZStream      = __webpack_require__(50);
-var GZheader     = __webpack_require__(72);
+var GZheader     = __webpack_require__(73);
 
 var toString = Object.prototype.toString;
 
@@ -14490,17 +14515,17 @@ exports.ungzip  = inflate;
 
 
 /***/ },
-/* 71 */
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils   = __webpack_require__(5);
-var trees   = __webpack_require__(76);
+var trees   = __webpack_require__(77);
 var adler32 = __webpack_require__(47);
 var crc32   = __webpack_require__(49);
-var msg     = __webpack_require__(23);
+var msg     = __webpack_require__(24);
 
 /* Public constants ==========================================================*/
 /* ===========================================================================*/
@@ -16352,7 +16377,7 @@ exports.deflateTune = deflateTune;
 
 
 /***/ },
-/* 72 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16399,7 +16424,7 @@ module.exports = GZheader;
 
 
 /***/ },
-/* 73 */
+/* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16732,7 +16757,7 @@ module.exports = function inflate_fast(strm, start) {
 
 
 /***/ },
-/* 74 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16742,8 +16767,8 @@ module.exports = function inflate_fast(strm, start) {
 var utils         = __webpack_require__(5);
 var adler32       = __webpack_require__(47);
 var crc32         = __webpack_require__(49);
-var inflate_fast  = __webpack_require__(73);
-var inflate_table = __webpack_require__(75);
+var inflate_fast  = __webpack_require__(74);
+var inflate_table = __webpack_require__(76);
 
 var CODES = 0;
 var LENS = 1;
@@ -18277,7 +18302,7 @@ exports.inflateUndermine = inflateUndermine;
 
 
 /***/ },
-/* 75 */
+/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18609,7 +18634,7 @@ module.exports = function inflate_table(type, lens, lens_index, codes, table, ta
 
 
 /***/ },
-/* 76 */
+/* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19818,7 +19843,200 @@ exports._tr_align = _tr_align;
 
 
 /***/ },
-/* 77 */
+/* 78 */
+/***/ function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
+    "use strict";
+
+    if (global.setImmediate) {
+        return;
+    }
+
+    var nextHandle = 1; // Spec says greater than zero
+    var tasksByHandle = {};
+    var currentlyRunningATask = false;
+    var doc = global.document;
+    var registerImmediate;
+
+    function setImmediate(callback) {
+      // Callback can either be a function or a string
+      if (typeof callback !== "function") {
+        callback = new Function("" + callback);
+      }
+      // Copy function arguments
+      var args = new Array(arguments.length - 1);
+      for (var i = 0; i < args.length; i++) {
+          args[i] = arguments[i + 1];
+      }
+      // Store and register the task
+      var task = { callback: callback, args: args };
+      tasksByHandle[nextHandle] = task;
+      registerImmediate(nextHandle);
+      return nextHandle++;
+    }
+
+    function clearImmediate(handle) {
+        delete tasksByHandle[handle];
+    }
+
+    function run(task) {
+        var callback = task.callback;
+        var args = task.args;
+        switch (args.length) {
+        case 0:
+            callback();
+            break;
+        case 1:
+            callback(args[0]);
+            break;
+        case 2:
+            callback(args[0], args[1]);
+            break;
+        case 3:
+            callback(args[0], args[1], args[2]);
+            break;
+        default:
+            callback.apply(undefined, args);
+            break;
+        }
+    }
+
+    function runIfPresent(handle) {
+        // From the spec: "Wait until any invocations of this algorithm started before this one have completed."
+        // So if we're currently running a task, we'll need to delay this invocation.
+        if (currentlyRunningATask) {
+            // Delay by doing a setTimeout. setImmediate was tried instead, but in Firefox 7 it generated a
+            // "too much recursion" error.
+            setTimeout(runIfPresent, 0, handle);
+        } else {
+            var task = tasksByHandle[handle];
+            if (task) {
+                currentlyRunningATask = true;
+                try {
+                    run(task);
+                } finally {
+                    clearImmediate(handle);
+                    currentlyRunningATask = false;
+                }
+            }
+        }
+    }
+
+    function installNextTickImplementation() {
+        registerImmediate = function(handle) {
+            process.nextTick(function () { runIfPresent(handle); });
+        };
+    }
+
+    function canUsePostMessage() {
+        // The test against `importScripts` prevents this implementation from being installed inside a web worker,
+        // where `global.postMessage` means something completely different and can't be used for this purpose.
+        if (global.postMessage && !global.importScripts) {
+            var postMessageIsAsynchronous = true;
+            var oldOnMessage = global.onmessage;
+            global.onmessage = function() {
+                postMessageIsAsynchronous = false;
+            };
+            global.postMessage("", "*");
+            global.onmessage = oldOnMessage;
+            return postMessageIsAsynchronous;
+        }
+    }
+
+    function installPostMessageImplementation() {
+        // Installs an event handler on `global` for the `message` event: see
+        // * https://developer.mozilla.org/en/DOM/window.postMessage
+        // * http://www.whatwg.org/specs/web-apps/current-work/multipage/comms.html#crossDocumentMessages
+
+        var messagePrefix = "setImmediate$" + Math.random() + "$";
+        var onGlobalMessage = function(event) {
+            if (event.source === global &&
+                typeof event.data === "string" &&
+                event.data.indexOf(messagePrefix) === 0) {
+                runIfPresent(+event.data.slice(messagePrefix.length));
+            }
+        };
+
+        if (global.addEventListener) {
+            global.addEventListener("message", onGlobalMessage, false);
+        } else {
+            global.attachEvent("onmessage", onGlobalMessage);
+        }
+
+        registerImmediate = function(handle) {
+            global.postMessage(messagePrefix + handle, "*");
+        };
+    }
+
+    function installMessageChannelImplementation() {
+        var channel = new MessageChannel();
+        channel.port1.onmessage = function(event) {
+            var handle = event.data;
+            runIfPresent(handle);
+        };
+
+        registerImmediate = function(handle) {
+            channel.port2.postMessage(handle);
+        };
+    }
+
+    function installReadyStateChangeImplementation() {
+        var html = doc.documentElement;
+        registerImmediate = function(handle) {
+            // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
+            // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
+            var script = doc.createElement("script");
+            script.onreadystatechange = function () {
+                runIfPresent(handle);
+                script.onreadystatechange = null;
+                html.removeChild(script);
+                script = null;
+            };
+            html.appendChild(script);
+        };
+    }
+
+    function installSetTimeoutImplementation() {
+        registerImmediate = function(handle) {
+            setTimeout(runIfPresent, 0, handle);
+        };
+    }
+
+    // If supported, we should attach to the prototype of global, since that is where setTimeout et al. live.
+    var attachTo = Object.getPrototypeOf && Object.getPrototypeOf(global);
+    attachTo = attachTo && attachTo.setTimeout ? attachTo : global;
+
+    // Don't get fooled by e.g. browserify environments.
+    if ({}.toString.call(global.process) === "[object process]") {
+        // For Node.js before 0.9
+        installNextTickImplementation();
+
+    } else if (canUsePostMessage()) {
+        // For non-IE10 modern browsers
+        installPostMessageImplementation();
+
+    } else if (global.MessageChannel) {
+        // For web workers, where supported
+        installMessageChannelImplementation();
+
+    } else if (doc && "onreadystatechange" in doc.createElement("script")) {
+        // For IE 6–8
+        installReadyStateChangeImplementation();
+
+    } else {
+        // For older browsers
+        installSetTimeoutImplementation();
+    }
+
+    attachTo.setImmediate = setImmediate;
+    attachTo.clearImmediate = clearImmediate;
+}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(51), __webpack_require__(19)))
+
+/***/ },
+/* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
 /**
@@ -19839,7 +20057,7 @@ module.exports = isFunction;
 
 
 /***/ },
-/* 78 */
+/* 80 */
 /***/ function(module, exports, __webpack_require__) {
 
 /**
@@ -20379,7 +20597,7 @@ RequestBase.prototype._setTimeouts = function() {
 
 
 /***/ },
-/* 79 */
+/* 81 */
 /***/ function(module, exports, __webpack_require__) {
 
 
@@ -20387,7 +20605,7 @@ RequestBase.prototype._setTimeouts = function() {
  * Module dependencies.
  */
 
-var utils = __webpack_require__(80);
+var utils = __webpack_require__(82);
 
 /**
  * Expose `ResponseBase`.
@@ -20518,7 +20736,7 @@ ResponseBase.prototype._setStatusProperties = function(status){
 
 
 /***/ },
-/* 80 */
+/* 82 */
 /***/ function(module, exports) {
 
 
@@ -20592,32 +20810,66 @@ exports.cleanHeader = function(header, shouldStripCookie){
 
 
 /***/ },
-/* 81 */
-/***/ function(module, exports) {
+/* 83 */
+/***/ function(module, exports, __webpack_require__) {
 
-var g;
+var apply = Function.prototype.apply;
 
-// This works in non-strict mode
-g = (function() { return this; })();
+// DOM APIs, for completeness
 
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
+exports.setTimeout = function() {
+  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
+};
+exports.setInterval = function() {
+  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
+};
+exports.clearTimeout =
+exports.clearInterval = function(timeout) {
+  if (timeout) {
+    timeout.close();
+  }
+};
+
+function Timeout(id, clearFn) {
+  this._id = id;
+  this._clearFn = clearFn;
 }
+Timeout.prototype.unref = Timeout.prototype.ref = function() {};
+Timeout.prototype.close = function() {
+  this._clearFn.call(window, this._id);
+};
 
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
+// Does not start the time, just sets up the members needed.
+exports.enroll = function(item, msecs) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = msecs;
+};
 
-module.exports = g;
+exports.unenroll = function(item) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = -1;
+};
+
+exports._unrefActive = exports.active = function(item) {
+  clearTimeout(item._idleTimeoutId);
+
+  var msecs = item._idleTimeout;
+  if (msecs >= 0) {
+    item._idleTimeoutId = setTimeout(function onTimeout() {
+      if (item._onTimeout)
+        item._onTimeout();
+    }, msecs);
+  }
+};
+
+// setimmediate attaches itself to the global object
+__webpack_require__(78);
+exports.setImmediate = setImmediate;
+exports.clearImmediate = clearImmediate;
 
 
 /***/ },
-/* 82 */
+/* 84 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -20752,7 +21004,7 @@ module.exports = ClientDataManager;
 
 
 /***/ },
-/* 83 */
+/* 85 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -20825,39 +21077,39 @@ module.exports = ClientManager;
 
 
 /***/ },
-/* 84 */
+/* 86 */
 /***/ function(module, exports, __webpack_require__) {
 
 class ActionsManager {
   constructor(client) {
     this.client = client;
 
-    this.register(__webpack_require__(101));
-    this.register(__webpack_require__(102));
     this.register(__webpack_require__(103));
-    this.register(__webpack_require__(107));
     this.register(__webpack_require__(104));
     this.register(__webpack_require__(105));
+    this.register(__webpack_require__(109));
     this.register(__webpack_require__(106));
-    this.register(__webpack_require__(85));
-    this.register(__webpack_require__(86));
+    this.register(__webpack_require__(107));
+    this.register(__webpack_require__(108));
     this.register(__webpack_require__(87));
-    this.register(__webpack_require__(89));
-    this.register(__webpack_require__(100));
-    this.register(__webpack_require__(93));
-    this.register(__webpack_require__(94));
     this.register(__webpack_require__(88));
+    this.register(__webpack_require__(89));
+    this.register(__webpack_require__(91));
+    this.register(__webpack_require__(102));
     this.register(__webpack_require__(95));
     this.register(__webpack_require__(96));
-    this.register(__webpack_require__(97));
-    this.register(__webpack_require__(108));
-    this.register(__webpack_require__(110));
-    this.register(__webpack_require__(109));
-    this.register(__webpack_require__(99));
     this.register(__webpack_require__(90));
-    this.register(__webpack_require__(91));
-    this.register(__webpack_require__(92));
+    this.register(__webpack_require__(97));
     this.register(__webpack_require__(98));
+    this.register(__webpack_require__(99));
+    this.register(__webpack_require__(110));
+    this.register(__webpack_require__(112));
+    this.register(__webpack_require__(111));
+    this.register(__webpack_require__(101));
+    this.register(__webpack_require__(92));
+    this.register(__webpack_require__(93));
+    this.register(__webpack_require__(94));
+    this.register(__webpack_require__(100));
   }
 
   register(Action) {
@@ -20869,7 +21121,7 @@ module.exports = ActionsManager;
 
 
 /***/ },
-/* 85 */
+/* 87 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20888,7 +21140,7 @@ module.exports = ChannelCreateAction;
 
 
 /***/ },
-/* 86 */
+/* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20925,7 +21177,7 @@ module.exports = ChannelDeleteAction;
 
 
 /***/ },
-/* 87 */
+/* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20965,7 +21217,7 @@ module.exports = ChannelUpdateAction;
 
 
 /***/ },
-/* 88 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20984,7 +21236,7 @@ module.exports = GuildBanRemove;
 
 
 /***/ },
-/* 89 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21041,7 +21293,7 @@ module.exports = GuildDeleteAction;
 
 
 /***/ },
-/* 90 */
+/* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21065,7 +21317,7 @@ module.exports = GuildEmojiCreateAction;
 
 
 /***/ },
-/* 91 */
+/* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21089,7 +21341,7 @@ module.exports = GuildEmojiDeleteAction;
 
 
 /***/ },
-/* 92 */
+/* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21110,7 +21362,7 @@ module.exports = GuildEmojiUpdateAction;
 
 
 /***/ },
-/* 93 */
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21128,7 +21380,7 @@ module.exports = GuildMemberGetAction;
 
 
 /***/ },
-/* 94 */
+/* 96 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21183,7 +21435,7 @@ module.exports = GuildMemberRemoveAction;
 
 
 /***/ },
-/* 95 */
+/* 97 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21221,7 +21473,7 @@ module.exports = GuildRoleCreate;
 
 
 /***/ },
-/* 96 */
+/* 98 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21273,7 +21525,7 @@ module.exports = GuildRoleDeleteAction;
 
 
 /***/ },
-/* 97 */
+/* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21320,7 +21572,7 @@ module.exports = GuildRoleUpdateAction;
 
 
 /***/ },
-/* 98 */
+/* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21349,7 +21601,7 @@ module.exports = GuildRolesPositionUpdate;
 
 
 /***/ },
-/* 99 */
+/* 101 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21382,7 +21634,7 @@ module.exports = GuildSync;
 
 
 /***/ },
-/* 100 */
+/* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21422,7 +21674,7 @@ module.exports = GuildUpdateAction;
 
 
 /***/ },
-/* 101 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21468,7 +21720,7 @@ module.exports = MessageCreateAction;
 
 
 /***/ },
-/* 102 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21514,7 +21766,7 @@ module.exports = MessageDeleteAction;
 
 
 /***/ },
-/* 103 */
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21544,7 +21796,7 @@ module.exports = MessageDeleteBulkAction;
 
 
 /***/ },
-/* 104 */
+/* 106 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21593,7 +21845,7 @@ module.exports = MessageReactionAdd;
 
 
 /***/ },
-/* 105 */
+/* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21642,7 +21894,7 @@ module.exports = MessageReactionRemove;
 
 
 /***/ },
-/* 106 */
+/* 108 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21673,7 +21925,7 @@ module.exports = MessageReactionRemoveAll;
 
 
 /***/ },
-/* 107 */
+/* 109 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21722,7 +21974,7 @@ module.exports = MessageUpdateAction;
 
 
 /***/ },
-/* 108 */
+/* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21741,7 +21993,7 @@ module.exports = UserGetAction;
 
 
 /***/ },
-/* 109 */
+/* 111 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21777,7 +22029,7 @@ module.exports = UserNoteUpdateAction;
 
 
 /***/ },
-/* 110 */
+/* 112 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21816,7 +22068,7 @@ module.exports = UserUpdateAction;
 
 
 /***/ },
-/* 111 */
+/* 113 */
 /***/ function(module, exports, __webpack_require__) {
 
 const request = __webpack_require__(26);
@@ -21871,23 +22123,23 @@ module.exports = APIRequest;
 
 
 /***/ },
-/* 112 */
+/* 114 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const splitMessage = __webpack_require__(44);
-const parseEmoji = __webpack_require__(156);
+const parseEmoji = __webpack_require__(158);
 const escapeMarkdown = __webpack_require__(16);
-const transformSearchOptions = __webpack_require__(157);
+const transformSearchOptions = __webpack_require__(159);
 
 const User = __webpack_require__(6);
 const GuildMember = __webpack_require__(11);
 const Message = __webpack_require__(12);
 const Role = __webpack_require__(9);
 const Invite = __webpack_require__(33);
-const Webhook = __webpack_require__(21);
-const UserProfile = __webpack_require__(154);
+const Webhook = __webpack_require__(22);
+const UserProfile = __webpack_require__(156);
 const ClientOAuth2Application = __webpack_require__(29);
 const Channel = __webpack_require__(8);
 const Guild = __webpack_require__(14);
@@ -22563,10 +22815,10 @@ module.exports = RESTMethods;
 
 
 /***/ },
-/* 113 */
+/* 115 */
 /***/ function(module, exports, __webpack_require__) {
 
-const RequestHandler = __webpack_require__(54);
+const RequestHandler = __webpack_require__(55);
 
 class BurstRequestHandler extends RequestHandler {
   constructor(restManager, endpoint) {
@@ -22639,10 +22891,10 @@ module.exports = BurstRequestHandler;
 
 
 /***/ },
-/* 114 */
+/* 116 */
 /***/ function(module, exports, __webpack_require__) {
 
-const RequestHandler = __webpack_require__(54);
+const RequestHandler = __webpack_require__(55);
 
 /**
  * Handles API Requests sequentially, i.e. we wait until the current request is finished before moving onto
@@ -22749,7 +23001,7 @@ module.exports = SequentialRequestHandler;
 
 
 /***/ },
-/* 115 */
+/* 117 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -22777,12 +23029,12 @@ module.exports = UserAgentManager;
 
 
 /***/ },
-/* 116 */
+/* 118 */
 /***/ function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const EventEmitter = __webpack_require__(18).EventEmitter;
-const Prism = __webpack_require__(161);
-const OpusEncoders = __webpack_require__(160);
+/* WEBPACK VAR INJECTION */(function(Buffer, setImmediate) {const EventEmitter = __webpack_require__(18).EventEmitter;
+const Prism = __webpack_require__(163);
+const OpusEncoders = __webpack_require__(162);
 const Collection = __webpack_require__(3);
 
 const ffmpegArguments = [
@@ -22806,16 +23058,12 @@ class VoiceBroadcast extends EventEmitter {
      */
     this.client = client;
     this._dispatchers = new Collection();
+    this._encoders = new Collection();
     /**
      * The audio transcoder that this broadcast uses
      * @type {Prism}
      */
     this.prism = new Prism();
-    /**
-     * The opus encoder that this broadcast uses
-     * @type {NodeOpusEngine|OpusScriptEngine}
-     */
-    this.opusEncoder = OpusEncoders.fetch();
     /**
      * The current audio transcoder that is being used
      * @type {object}
@@ -22890,24 +23138,28 @@ class VoiceBroadcast extends EventEmitter {
   }
 
   unregisterDispatcher(dispatcher, old) {
+    const volume = old || dispatcher.volume;
+
     /**
      * Emitted whenever a Stream Dispatcher unsubscribes from the broadcast
      * @event VoiceBroadcast#unsubscribe
      * @param {dispatcher} the dispatcher that unsubscribed
      */
     this.emit('unsubscribe', dispatcher);
-    let container = this._dispatchers.get(old || dispatcher.volume);
-    if (container) {
-      if (container.delete(dispatcher)) return;
-    }
-    for (container of this._dispatchers.values()) {
+    for (const container of this._dispatchers.values()) {
       container.delete(dispatcher);
+
+      if (!container.size) {
+        this._dispatchers.delete(volume);
+        this._encoders.delete(volume);
+      }
     }
   }
 
   registerDispatcher(dispatcher) {
     if (!this._dispatchers.has(dispatcher.volume)) {
       this._dispatchers.set(dispatcher.volume, new Set());
+      this._encoders.set(dispatcher.volume, OpusEncoders.fetch());
     }
     const container = this._dispatchers.get(dispatcher.volume);
     if (!container.has(dispatcher)) {
@@ -22917,6 +23169,7 @@ class VoiceBroadcast extends EventEmitter {
         this.unregisterDispatcher(dispatcher, o);
         if (!this._dispatchers.has(n)) {
           this._dispatchers.set(n, new Set());
+          this._encoders.set(n, OpusEncoders.fetch());
         }
         this._dispatchers.get(n).add(dispatcher);
       });
@@ -23106,16 +23359,24 @@ class VoiceBroadcast extends EventEmitter {
       buffer = newBuffer;
     }
 
-    buffer = this.applyVolume(buffer);
+    let packetMatrix = {};
 
-    for (const x of this._dispatchers.entries()) {
-      if (x[1].size === 0) continue;
-      const [volume, container] = x;
-      const opusPacket = this.opusEncoder.encode(this.applyVolume(buffer, volume));
-      for (const dispatcher of container.values()) {
-        dispatcher.process(buffer, true, opusPacket);
-      }
+    const getOpusPacket = (volume) => {
+      if (packetMatrix[volume]) return packetMatrix[volume];
+
+      const opusEncoder = this._encoders.get(volume);
+      const opusPacket = opusEncoder.encode(this.applyVolume(buffer, this._volume * volume));
+      packetMatrix[volume] = opusPacket;
+      return opusPacket;
+    };
+
+    for (const dispatcher of this.dispatchers) {
+      const volume = dispatcher.volume;
+      setImmediate(() => {
+        dispatcher.process(buffer, true, getOpusPacket(volume));
+      });
     }
+
     const next = 20 + (this._startTime + this._pausedTime + (this._count * 20) - Date.now());
     this._count++;
     setTimeout(() => this.tick(), next);
@@ -23143,19 +23404,19 @@ class VoiceBroadcast extends EventEmitter {
 
 module.exports = VoiceBroadcast;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17).Buffer, __webpack_require__(83).setImmediate))
 
 /***/ },
-/* 117 */
+/* 119 */
 /***/ function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {const browser = typeof window !== 'undefined';
 const EventEmitter = __webpack_require__(18).EventEmitter;
 const Constants = __webpack_require__(0);
-const convertArrayBuffer = __webpack_require__(55);
-const pako = __webpack_require__(68);
-const zlib = __webpack_require__(51);
-const PacketManager = __webpack_require__(118);
+const convertArrayBuffer = __webpack_require__(56);
+const pako = __webpack_require__(69);
+const zlib = __webpack_require__(52);
+const PacketManager = __webpack_require__(120);
 
 let WebSocket, erlpack;
 let serialize = JSON.stringify;
@@ -23163,13 +23424,13 @@ if (browser) {
   WebSocket = window.WebSocket; // eslint-disable-line no-undef
 } else {
   try {
-    WebSocket = __webpack_require__(163);
+    WebSocket = __webpack_require__(165);
   } catch (err) {
-    WebSocket = __webpack_require__(164);
+    WebSocket = __webpack_require__(166);
   }
 
   try {
-    erlpack = __webpack_require__(162);
+    erlpack = __webpack_require__(164);
     serialize = erlpack.pack;
   } catch (err) {
     erlpack = null;
@@ -23526,7 +23787,7 @@ module.exports = WebSocketManager;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17).Buffer))
 
 /***/ },
-/* 118 */
+/* 120 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -23546,40 +23807,40 @@ class WebSocketPacketManager {
     this.handlers = {};
     this.queue = [];
 
-    this.register(Constants.WSEvents.READY, __webpack_require__(145));
-    this.register(Constants.WSEvents.GUILD_CREATE, __webpack_require__(125));
-    this.register(Constants.WSEvents.GUILD_DELETE, __webpack_require__(126));
-    this.register(Constants.WSEvents.GUILD_UPDATE, __webpack_require__(136));
-    this.register(Constants.WSEvents.GUILD_BAN_ADD, __webpack_require__(123));
-    this.register(Constants.WSEvents.GUILD_BAN_REMOVE, __webpack_require__(124));
-    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, __webpack_require__(128));
-    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, __webpack_require__(129));
-    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, __webpack_require__(130));
-    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, __webpack_require__(132));
-    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, __webpack_require__(133));
-    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, __webpack_require__(134));
-    this.register(Constants.WSEvents.GUILD_EMOJIS_UPDATE, __webpack_require__(127));
-    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, __webpack_require__(131));
-    this.register(Constants.WSEvents.CHANNEL_CREATE, __webpack_require__(119));
-    this.register(Constants.WSEvents.CHANNEL_DELETE, __webpack_require__(120));
-    this.register(Constants.WSEvents.CHANNEL_UPDATE, __webpack_require__(122));
-    this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, __webpack_require__(121));
-    this.register(Constants.WSEvents.PRESENCE_UPDATE, __webpack_require__(144));
-    this.register(Constants.WSEvents.USER_UPDATE, __webpack_require__(150));
-    this.register(Constants.WSEvents.USER_NOTE_UPDATE, __webpack_require__(149));
-    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, __webpack_require__(152));
-    this.register(Constants.WSEvents.TYPING_START, __webpack_require__(148));
-    this.register(Constants.WSEvents.MESSAGE_CREATE, __webpack_require__(137));
-    this.register(Constants.WSEvents.MESSAGE_DELETE, __webpack_require__(138));
-    this.register(Constants.WSEvents.MESSAGE_UPDATE, __webpack_require__(143));
-    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, __webpack_require__(139));
-    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, __webpack_require__(151));
-    this.register(Constants.WSEvents.GUILD_SYNC, __webpack_require__(135));
-    this.register(Constants.WSEvents.RELATIONSHIP_ADD, __webpack_require__(146));
-    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, __webpack_require__(147));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, __webpack_require__(140));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, __webpack_require__(141));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, __webpack_require__(142));
+    this.register(Constants.WSEvents.READY, __webpack_require__(147));
+    this.register(Constants.WSEvents.GUILD_CREATE, __webpack_require__(127));
+    this.register(Constants.WSEvents.GUILD_DELETE, __webpack_require__(128));
+    this.register(Constants.WSEvents.GUILD_UPDATE, __webpack_require__(138));
+    this.register(Constants.WSEvents.GUILD_BAN_ADD, __webpack_require__(125));
+    this.register(Constants.WSEvents.GUILD_BAN_REMOVE, __webpack_require__(126));
+    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, __webpack_require__(130));
+    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, __webpack_require__(131));
+    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, __webpack_require__(132));
+    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, __webpack_require__(134));
+    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, __webpack_require__(135));
+    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, __webpack_require__(136));
+    this.register(Constants.WSEvents.GUILD_EMOJIS_UPDATE, __webpack_require__(129));
+    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, __webpack_require__(133));
+    this.register(Constants.WSEvents.CHANNEL_CREATE, __webpack_require__(121));
+    this.register(Constants.WSEvents.CHANNEL_DELETE, __webpack_require__(122));
+    this.register(Constants.WSEvents.CHANNEL_UPDATE, __webpack_require__(124));
+    this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, __webpack_require__(123));
+    this.register(Constants.WSEvents.PRESENCE_UPDATE, __webpack_require__(146));
+    this.register(Constants.WSEvents.USER_UPDATE, __webpack_require__(152));
+    this.register(Constants.WSEvents.USER_NOTE_UPDATE, __webpack_require__(151));
+    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, __webpack_require__(154));
+    this.register(Constants.WSEvents.TYPING_START, __webpack_require__(150));
+    this.register(Constants.WSEvents.MESSAGE_CREATE, __webpack_require__(139));
+    this.register(Constants.WSEvents.MESSAGE_DELETE, __webpack_require__(140));
+    this.register(Constants.WSEvents.MESSAGE_UPDATE, __webpack_require__(145));
+    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, __webpack_require__(141));
+    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, __webpack_require__(153));
+    this.register(Constants.WSEvents.GUILD_SYNC, __webpack_require__(137));
+    this.register(Constants.WSEvents.RELATIONSHIP_ADD, __webpack_require__(148));
+    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, __webpack_require__(149));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, __webpack_require__(142));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, __webpack_require__(143));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, __webpack_require__(144));
   }
 
   get client() {
@@ -23657,7 +23918,7 @@ module.exports = WebSocketPacketManager;
 
 
 /***/ },
-/* 119 */
+/* 121 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23680,7 +23941,7 @@ module.exports = ChannelCreateHandler;
 
 
 /***/ },
-/* 120 */
+/* 122 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23706,7 +23967,7 @@ module.exports = ChannelDeleteHandler;
 
 
 /***/ },
-/* 121 */
+/* 123 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23743,7 +24004,7 @@ module.exports = ChannelPinsUpdate;
 
 
 /***/ },
-/* 122 */
+/* 124 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23760,7 +24021,7 @@ module.exports = ChannelUpdateHandler;
 
 
 /***/ },
-/* 123 */
+/* 125 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -23789,7 +24050,7 @@ module.exports = GuildBanAddHandler;
 
 
 /***/ },
-/* 124 */
+/* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -23815,7 +24076,7 @@ module.exports = GuildBanRemoveHandler;
 
 
 /***/ },
-/* 125 */
+/* 127 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23843,7 +24104,7 @@ module.exports = GuildCreateHandler;
 
 
 /***/ },
-/* 126 */
+/* 128 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23868,7 +24129,7 @@ module.exports = GuildDeleteHandler;
 
 
 /***/ },
-/* 127 */
+/* 129 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23914,7 +24175,7 @@ module.exports = GuildEmojisUpdate;
 
 
 /***/ },
-/* 128 */
+/* 130 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -23937,7 +24198,7 @@ module.exports = GuildMemberAddHandler;
 
 
 /***/ },
-/* 129 */
+/* 131 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -23956,7 +24217,7 @@ module.exports = GuildMemberRemoveHandler;
 
 
 /***/ },
-/* 130 */
+/* 132 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -23980,7 +24241,7 @@ module.exports = GuildMemberUpdateHandler;
 
 
 /***/ },
-/* 131 */
+/* 133 */
 /***/ function(module, exports, __webpack_require__) {
 
 // ##untested##
@@ -24014,7 +24275,7 @@ module.exports = GuildMembersChunkHandler;
 
 
 /***/ },
-/* 132 */
+/* 134 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24031,7 +24292,7 @@ module.exports = GuildRoleCreateHandler;
 
 
 /***/ },
-/* 133 */
+/* 135 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24048,7 +24309,7 @@ module.exports = GuildRoleDeleteHandler;
 
 
 /***/ },
-/* 134 */
+/* 136 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24065,7 +24326,7 @@ module.exports = GuildRoleUpdateHandler;
 
 
 /***/ },
-/* 135 */
+/* 137 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24082,7 +24343,7 @@ module.exports = GuildSyncHandler;
 
 
 /***/ },
-/* 136 */
+/* 138 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24099,7 +24360,7 @@ module.exports = GuildUpdateHandler;
 
 
 /***/ },
-/* 137 */
+/* 139 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24124,7 +24385,7 @@ module.exports = MessageCreateHandler;
 
 
 /***/ },
-/* 138 */
+/* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24149,7 +24410,7 @@ module.exports = MessageDeleteHandler;
 
 
 /***/ },
-/* 139 */
+/* 141 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24172,7 +24433,7 @@ module.exports = MessageDeleteBulkHandler;
 
 
 /***/ },
-/* 140 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24189,7 +24450,7 @@ module.exports = MessageReactionAddHandler;
 
 
 /***/ },
-/* 141 */
+/* 143 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24206,7 +24467,7 @@ module.exports = MessageReactionRemove;
 
 
 /***/ },
-/* 142 */
+/* 144 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24223,7 +24484,7 @@ module.exports = MessageReactionRemoveAll;
 
 
 /***/ },
-/* 143 */
+/* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24240,7 +24501,7 @@ module.exports = MessageUpdateHandler;
 
 
 /***/ },
-/* 144 */
+/* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24318,7 +24579,7 @@ module.exports = PresenceUpdateHandler;
 
 
 /***/ },
-/* 145 */
+/* 147 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24394,7 +24655,7 @@ module.exports = ReadyHandler;
 
 
 /***/ },
-/* 146 */
+/* 148 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24419,7 +24680,7 @@ module.exports = RelationshipAddHandler;
 
 
 /***/ },
-/* 147 */
+/* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24444,7 +24705,7 @@ module.exports = RelationshipRemoveHandler;
 
 
 /***/ },
-/* 148 */
+/* 150 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24518,7 +24779,7 @@ module.exports = TypingStartHandler;
 
 
 /***/ },
-/* 149 */
+/* 151 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24536,7 +24797,7 @@ module.exports = UserNoteUpdateHandler;
 
 
 /***/ },
-/* 150 */
+/* 152 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24553,7 +24814,7 @@ module.exports = UserUpdateHandler;
 
 
 /***/ },
-/* 151 */
+/* 153 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24578,7 +24839,7 @@ module.exports = VoiceServerUpdate;
 
 
 /***/ },
-/* 152 */
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24633,7 +24894,7 @@ module.exports = VoiceStateUpdateHandler;
 
 
 /***/ },
-/* 153 */
+/* 155 */
 /***/ function(module, exports) {
 
 /**
@@ -24687,11 +24948,11 @@ module.exports = UserConnection;
 
 
 /***/ },
-/* 154 */
+/* 156 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
-const UserConnection = __webpack_require__(153);
+const UserConnection = __webpack_require__(155);
 
 /**
  * Represents a user's profile on Discord.
@@ -24749,7 +25010,7 @@ module.exports = UserProfile;
 
 
 /***/ },
-/* 155 */
+/* 157 */
 /***/ function(module, exports) {
 
 module.exports = function arraysEqual(a, b) {
@@ -24769,7 +25030,7 @@ module.exports = function arraysEqual(a, b) {
 
 
 /***/ },
-/* 156 */
+/* 158 */
 /***/ function(module, exports) {
 
 module.exports = function parseEmoji(text) {
@@ -24789,7 +25050,7 @@ module.exports = function parseEmoji(text) {
 
 
 /***/ },
-/* 157 */
+/* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
 const long = __webpack_require__(45);
@@ -24870,18 +25131,6 @@ module.exports = function TransformSearchOptions(options, client) {
 
 
 /***/ },
-/* 158 */
-/***/ function(module, exports) {
-
-/* (ignored) */
-
-/***/ },
-/* 159 */
-/***/ function(module, exports) {
-
-/* (ignored) */
-
-/***/ },
 /* 160 */
 /***/ function(module, exports) {
 
@@ -24913,28 +25162,40 @@ module.exports = function TransformSearchOptions(options, client) {
 
 /***/ },
 /* 165 */
+/***/ function(module, exports) {
+
+/* (ignored) */
+
+/***/ },
+/* 166 */
+/***/ function(module, exports) {
+
+/* (ignored) */
+
+/***/ },
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = {
-  Client: __webpack_require__(57),
-  WebhookClient: __webpack_require__(58),
-  Shard: __webpack_require__(61),
-  ShardClientUtil: __webpack_require__(62),
-  ShardingManager: __webpack_require__(63),
+  Client: __webpack_require__(58),
+  WebhookClient: __webpack_require__(59),
+  Shard: __webpack_require__(62),
+  ShardClientUtil: __webpack_require__(63),
+  ShardingManager: __webpack_require__(64),
 
   Collection: __webpack_require__(3),
   splitMessage: __webpack_require__(44),
   escapeMarkdown: __webpack_require__(16),
-  fetchRecommendedShards: __webpack_require__(60),
-  Snowflake: __webpack_require__(22),
-  SnowflakeUtil: __webpack_require__(22),
+  fetchRecommendedShards: __webpack_require__(61),
+  Snowflake: __webpack_require__(23),
+  SnowflakeUtil: __webpack_require__(23),
 
   Channel: __webpack_require__(8),
   ClientOAuth2Application: __webpack_require__(29),
   ClientUser: __webpack_require__(30),
   DMChannel: __webpack_require__(31),
   Emoji: __webpack_require__(10),
-  EvaluatedPermissions: __webpack_require__(19),
+  EvaluatedPermissions: __webpack_require__(20),
   Game: __webpack_require__(7).Game,
   GroupDMChannel: __webpack_require__(32),
   Guild: __webpack_require__(14),
@@ -24951,13 +25212,13 @@ module.exports = {
   PartialGuildChannel: __webpack_require__(40),
   PermissionOverwrites: __webpack_require__(41),
   Presence: __webpack_require__(7).Presence,
-  ReactionEmoji: __webpack_require__(20),
-  RichEmbed: __webpack_require__(59),
+  ReactionEmoji: __webpack_require__(21),
+  RichEmbed: __webpack_require__(60),
   Role: __webpack_require__(9),
   TextChannel: __webpack_require__(42),
   User: __webpack_require__(6),
   VoiceChannel: __webpack_require__(43),
-  Webhook: __webpack_require__(21),
+  Webhook: __webpack_require__(22),
 
   version: __webpack_require__(28).version,
   Constants: __webpack_require__(0),
