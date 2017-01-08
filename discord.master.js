@@ -21805,16 +21805,6 @@ module.exports = UserUpdateAction;
 const request = __webpack_require__(26);
 const Constants = __webpack_require__(0);
 
-function getRoute(url) {
-  let route = url.split('?')[0];
-  if (route.includes('/channels/') || route.includes('/guilds/')) {
-    const startInd = route.includes('/channels/') ? route.indexOf('/channels/') : route.indexOf('/guilds/');
-    const majorID = route.substring(startInd).split('/')[2];
-    route = route.replace(/(\d{8,})/g, ':id').replace(':id', majorID);
-  }
-  return route;
-}
-
 class APIRequest {
   constructor(rest, method, url, auth, data, file) {
     this.rest = rest;
@@ -21823,7 +21813,17 @@ class APIRequest {
     this.auth = auth;
     this.data = data;
     this.file = file;
-    this.route = getRoute(this.url);
+    this.route = this.getRoute(this.url);
+  }
+
+  getRoute(url) {
+    let route = url.split('?')[0];
+    if (route.includes('/channels/') || route.includes('/guilds/')) {
+      const startInd = route.includes('/channels/') ? route.indexOf('/channels/') : route.indexOf('/guilds/');
+      const majorID = route.substring(startInd).split('/')[2];
+      route = route.replace(/(\d{8,})/g, ':id').replace(':id', majorID);
+    }
+    return route;
   }
 
   getAuth() {
