@@ -1,3 +1,4 @@
+const querystring = require('querystring');
 const Constants = require('../../util/Constants');
 const Collection = require('../../util/Collection');
 const splitMessage = require('../../util/SplitMessage');
@@ -123,11 +124,7 @@ class RESTMethods {
   search(target, options) {
     options = transformSearchOptions(options, this.client);
 
-    const queryString = Object.keys(options)
-      .filter(k => options[k])
-      .map(k => [k, options[k]])
-      .map(x => x.join('='))
-      .join('&');
+    const queryString = querystring.stringify(options);
 
     let type;
     if (target instanceof Channel) {
