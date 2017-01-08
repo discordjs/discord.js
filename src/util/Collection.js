@@ -146,7 +146,7 @@ class Collection extends Map {
   find(propOrFn, value) {
     if (typeof propOrFn === 'string') {
       if (typeof value === 'undefined') throw new Error('Value must be specified.');
-      if (propOrFn === 'id') return this.get(propOrFn, value);
+      if (propOrFn === 'id') return this.get(value);
       for (const item of this.values()) {
         if (item[propOrFn] === value) return item;
       }
@@ -204,7 +204,7 @@ class Collection extends Map {
    * }
    */
   exists(prop, value) {
-    if (prop === 'id') return this.has(prop, value);
+    if (prop === 'id') return this.has(value);
     return Boolean(this.find(prop, value));
   }
 
