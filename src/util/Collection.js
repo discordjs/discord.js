@@ -135,8 +135,6 @@ class Collection extends Map {
    * Searches for a single item where its specified property's value is identical to the given value
    * (`item[prop] === value`), or the given function returns a truthy value. In the latter case, this is identical to
    * [Array.find()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find).
-   * <warn>Do not use this to obtain an item by its ID. Instead, use `collection.get(id)`. See
-   * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get) for details.</warn>
    * @param {string|Function} propOrFn The property to test against, or the function to test with
    * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
    * @returns {*}
@@ -148,7 +146,7 @@ class Collection extends Map {
   find(propOrFn, value) {
     if (typeof propOrFn === 'string') {
       if (typeof value === 'undefined') throw new Error('Value must be specified.');
-      if (propOrFn === 'id') throw new RangeError('Don\'t use .find() with IDs. Instead, use .get(id).');
+      if (propOrFn === 'id') return this.get(value);
       for (const item of this.values()) {
         if (item[propOrFn] === value) return item;
       }
@@ -197,8 +195,6 @@ class Collection extends Map {
   /**
    * Searches for the existence of a single item where its specified property's value is identical to the given value
    * (`item[prop] === value`).
-   * <warn>Do not use this to check for an item by its ID. Instead, use `collection.has(id)`. See
-   * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/has) for details.</warn>
    * @param {string} prop The property to test against
    * @param {*} value The expected value
    * @returns {boolean}
@@ -208,7 +204,7 @@ class Collection extends Map {
    * }
    */
   exists(prop, value) {
-    if (prop === 'id') throw new RangeError('Don\'t use .exists() with IDs. Instead, use .has(id).');
+    if (prop === 'id') return this.has(value);
     return Boolean(this.find(prop, value));
   }
 
