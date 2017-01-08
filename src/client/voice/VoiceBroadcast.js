@@ -24,16 +24,12 @@ class VoiceBroadcast extends EventEmitter {
      */
     this.client = client;
     this._dispatchers = new Collection();
+    this._encoders = new Collection();
     /**
      * The audio transcoder that this broadcast uses
      * @type {Prism}
      */
     this.prism = new Prism();
-    /**
-     * The opus encoder that this broadcast uses
-     * @type {NodeOpusEngine|OpusScriptEngine}
-     */
-    this.opusEncoder = OpusEncoders.fetch();
     /**
      * The current audio transcoder that is being used
      * @type {object}
@@ -107,24 +103,28 @@ class VoiceBroadcast extends EventEmitter {
   }
 
   unregisterDispatcher(dispatcher, old) {
+    const volume = old || dispatcher.volume;
+
     /**
      * Emitted whenever a Stream Dispatcher unsubscribes from the broadcast
      * @event VoiceBroadcast#unsubscribe
      * @param {dispatcher} the dispatcher that unsubscribed
      */
     this.emit('unsubscribe', dispatcher);
-    let container = this._dispatchers.get(old || dispatcher.volume);
-    if (container) {
-      if (container.delete(dispatcher)) return;
-    }
-    for (container of this._dispatchers.values()) {
+    for (const container of this._dispatchers.values()) {
       container.delete(dispatcher);
+
+      if (!container.size) {
+        this._dispatchers.delete(volume);
+        this._encoders.delete(volume);
+      }
     }
   }
 
   registerDispatcher(dispatcher) {
     if (!this._dispatchers.has(dispatcher.volume)) {
       this._dispatchers.set(dispatcher.volume, new Set());
+      this._encoders.set(dispatcher.volume, OpusEncoders.fetch());
     }
     const container = this._dispatchers.get(dispatcher.volume);
     if (!container.has(dispatcher)) {
@@ -134,6 +134,7 @@ class VoiceBroadcast extends EventEmitter {
         this.unregisterDispatcher(dispatcher, o);
         if (!this._dispatchers.has(n)) {
           this._dispatchers.set(n, new Set());
+          this._encoders.set(n, OpusEncoders.fetch());
         }
         this._dispatchers.get(n).add(dispatcher);
       });
@@ -323,16 +324,24 @@ class VoiceBroadcast extends EventEmitter {
       buffer = newBuffer;
     }
 
-    buffer = this.applyVolume(buffer);
+    let packetMatrix = {};
 
-    for (const x of this._dispatchers.entries()) {
-      if (x[1].size === 0) continue;
-      const [volume, container] = x;
-      const opusPacket = this.opusEncoder.encode(this.applyVolume(buffer, volume));
-      for (const dispatcher of container.values()) {
-        dispatcher.process(buffer, true, opusPacket);
-      }
+    const getOpusPacket = (volume) => {
+      if (packetMatrix[volume]) return packetMatrix[volume];
+
+      const opusEncoder = this._encoders.get(volume);
+      const opusPacket = opusEncoder.encode(this.applyVolume(buffer, this._volume * volume));
+      packetMatrix[volume] = opusPacket;
+      return opusPacket;
+    };
+
+    for (const dispatcher of this.dispatchers) {
+      const volume = dispatcher.volume;
+      setImmediate(() => {
+        dispatcher.process(buffer, true, getOpusPacket(volume));
+      });
     }
+
     const next = 20 + (this._startTime + this._pausedTime + (this._count * 20) - Date.now());
     this._count++;
     setTimeout(() => this.tick(), next);
