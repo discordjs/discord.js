@@ -136,10 +136,10 @@ class GroupDMChannel extends Channel {
   get typingCount() { return; }
   createCollector() { return; }
   awaitMessages() { return; }
-  bulkDelete() { return; }
+  // doesn't work on group DMs; bulkDelete() { return; }
   _cacheMessage() { return; }
 }
 
-TextBasedChannel.applyToClass(GroupDMChannel, true);
+TextBasedChannel.applyToClass(GroupDMChannel, true, ['bulkDelete']);
 
 module.exports = GroupDMChannel;
