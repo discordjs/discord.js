@@ -58,13 +58,13 @@ class Webhook {
      */
     this.channelID = data.channel_id;
 
-    /**
-     * The owner of the webhook
-     * @type {?User|object}
-     */
     if (data.user) {
-      if (!this.client.users) this.owner = data.user;
-      this.owner = this.client.users.get(data.user.id);
+      /**
+     * The owner of the webhook
+     * @type {?User|Object}
+     */
+      if (this.client.users) this.owner = this.client.users.get(data.user.id);
+      else this.owner = data.user;
     }
   }
 
