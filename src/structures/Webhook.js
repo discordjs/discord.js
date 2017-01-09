@@ -60,11 +60,12 @@ class Webhook {
 
     if (data.user) {
       /**
-     * The owner of the webhook
-     * @type {?User|Object}
-     */
-      if (this.client.users) this.owner = this.client.users.get(data.user.id);
-      else this.owner = data.user;
+       * The owner of the webhook
+       * @type {?User|Object}
+       */
+      this.owner = this.client.users ? this.client.users.get(data.user.id) : data.user;
+    } else {
+      this.owner = null;
     }
   }
 
