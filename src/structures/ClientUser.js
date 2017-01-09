@@ -299,11 +299,11 @@ class ClientUser extends User {
   }
 
   /**
-   * @param {string} code Invite code
+   * @param {Invite|string} invite Invite to accept
    * @returns {Promise<Guild>} Joined guild
    */
-  acceptInvite(code) {
-    return this.client.rest.methods.acceptInvite(code);
+  acceptInvite(invite) {
+    return this.client.rest.methods.acceptInvite(invite);
   }
 }
 
