@@ -163,33 +163,33 @@ class ClientDataResolver {
    * Possible strings:
    * ```js
    * [
-   *   "CREATE_INSTANT_INVITE",
-   *   "KICK_MEMBERS",
-   *   "BAN_MEMBERS",
-   *   "ADMINISTRATOR",
-   *   "MANAGE_CHANNELS",
-   *   "MANAGE_GUILD",
-   *   "ADD_REACTIONS", // add reactions to messages
-   *   "READ_MESSAGES",
-   *   "SEND_MESSAGES",
-   *   "SEND_TTS_MESSAGES",
-   *   "MANAGE_MESSAGES",
-   *   "EMBED_LINKS",
-   *   "ATTACH_FILES",
-   *   "READ_MESSAGE_HISTORY",
-   *   "MENTION_EVERYONE",
-   *   "EXTERNAL_EMOJIS", // use external emojis
-   *   "CONNECT", // connect to voice
-   *   "SPEAK", // speak on voice
-   *   "MUTE_MEMBERS", // globally mute members on voice
-   *   "DEAFEN_MEMBERS", // globally deafen members on voice
-   *   "MOVE_MEMBERS", // move member's voice channels
-   *   "USE_VAD", // use voice activity detection
-   *   "CHANGE_NICKNAME",
-   *   "MANAGE_NICKNAMES", // change nicknames of others
-   *   "MANAGE_ROLES_OR_PERMISSIONS",
-   *   "MANAGE_WEBHOOKS",
-   *   "MANAGE_EMOJIS"
+   *   'CREATE_INSTANT_INVITE',
+   *   'KICK_MEMBERS',
+   *   'BAN_MEMBERS',
+   *   'ADMINISTRATOR',
+   *   'MANAGE_CHANNELS',
+   *   'MANAGE_GUILD',
+   *   'ADD_REACTIONS', // add reactions to messages
+   *   'READ_MESSAGES',
+   *   'SEND_MESSAGES',
+   *   'SEND_TTS_MESSAGES',
+   *   'MANAGE_MESSAGES',
+   *   'EMBED_LINKS',
+   *   'ATTACH_FILES',
+   *   'READ_MESSAGE_HISTORY',
+   *   'MENTION_EVERYONE',
+   *   'EXTERNAL_EMOJIS', // use external emojis
+   *   'CONNECT', // connect to voice
+   *   'SPEAK', // speak on voice
+   *   'MUTE_MEMBERS', // globally mute members on voice
+   *   'DEAFEN_MEMBERS', // globally deafen members on voice
+   *   'MOVE_MEMBERS', // move member's voice channels
+   *   'USE_VAD', // use voice activity detection
+   *   'CHANGE_NICKNAME',
+   *   'MANAGE_NICKNAMES', // change nicknames of others
+   *   'MANAGE_ROLES_OR_PERMISSIONS',
+   *   'MANAGE_WEBHOOKS',
+   *   'MANAGE_EMOJIS'
    * ]
    * ```
    * @typedef {string|number} PermissionResolvable
@@ -316,6 +316,66 @@ class ClientDataResolver {
       if (!emoji.includes('%')) return encodeURIComponent(emoji);
     }
     return null;
+  }
+
+  /**
+   * Can be a Hex Literal, Hex String, Number, or one of the following
+   * ```
+   * [
+   *   'DEFAULT',
+   *   'AQUA',
+   *   'GREEN',
+   *   'BLUE',
+   *   'PURPLE',
+   *   'GOLD',
+   *   'ORANGE',
+   *   'RED',
+   *   'GREY',
+   *   'DARKER_GREY',
+   *   'NAVY',
+   *   'DARK_AQUA',
+   *   'DARK_GREEN',
+   *   'DARK_BLUE',
+   *   'DARK_PURPLE',
+   *   'DARK_GOLD',
+   *   'DARK_ORANGE',
+   *   'DARK_RED',
+   *   'DARK_GREY',
+   *   'LIGHT_GREY',
+   *   'DARK_NAVY',
+   * ]
+   * ```
+   * @typedef {String|number} ColorResolvable
+   */
+
+  /**
+   * @param {ColorResolvable} color Color to resolve
+   * @returns {number} A color
+   */
+  static resolveColor(color) {
+    if (typeof color === 'string') {
+      if (color in Constants.Colors) {
+        color = Constants.Colors[color];
+      } else {
+        color = parseInt(color.replace('#', ''), 16);
+      }
+    } else if (color instanceof Array) {
+      color = (color[0] << 16) + (color[1] << 8) + color[2];
+    }
+    if (color < 0 || color > 0xFFFFFF) {
+      throw new RangeError('Color must be within the range 0 - 16777215 (0xFFFFFF).');
+    } else if (color && isNaN(color)) {
+      throw new TypeError('Unable to convert color to a number.');
+    }
+    return color;
+  }
+
+  /**
+   * @param {ColorResolvable} color Color to resolve
+   * @returns {number} A color
+   */
+  resolveColor(color) {
+    return ClientDataResolver.resolveColor(color);
   }
 }
 

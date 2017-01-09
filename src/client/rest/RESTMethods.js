@@ -434,9 +434,7 @@ class RESTMethods {
     data.name = _data.name || role.name;
     data.position = typeof _data.position !== 'undefined' ? _data.position : role.position;
     data.color = _data.color || role.color;
-    if (typeof data.color === 'string' && data.color.startsWith('#')) {
-      data.color = parseInt(data.color.replace('#', ''), 16);
-    }
+    data.color = this.client.resolver.resolveColor(data.color);
     data.hoist = typeof _data.hoist !== 'undefined' ? _data.hoist : role.hoist;
     data.mentionable = typeof _data.mentionable !== 'undefined' ? _data.mentionable : role.mentionable;
 

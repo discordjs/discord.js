@@ -1,3 +1,5 @@
+const ClientDataResolver = require('../client/ClientDataResolver');
+
 /**
  * A rich embed to be sent with a message
  * @param {Object} [data] Data to set in the rich embed
@@ -105,20 +107,7 @@ class RichEmbed {
    * @returns {RichEmbed} This embed
    */
   setColor(color) {
-    let radix = 10;
-    if (color instanceof Array) {
-      color = (color[0] << 16) + (color[1] << 8) + color[2];
-    } else if (typeof color === 'string' && color.startsWith('#')) {
-      radix = 16;
-      color = color.replace('#', '');
-    }
-    color = parseInt(color, radix);
-    if (color < 0 || color > 0xFFFFFF) {
-      throw new RangeError('RichEmbed color must be within the range 0 - 16777215 (0xFFFFFF).');
-    } else if (color && isNaN(color)) {
-      throw new TypeError('Unable to convert RichEmbed color to a number.');
-    }
-    this.color = color;
+    this.color = ClientDataResolver.resolveColor(color);
     return this;
   }
 
