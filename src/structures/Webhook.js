@@ -72,6 +72,8 @@ class Webhook {
   /**
    * Options that can be passed into send, sendMessage, sendFile, sendEmbed, and sendCode
    * @typedef {Object} WebhookMessageOptions
+   * @property {string} [username=this.name] Username override for the message
+   * @property {string} [avatarURL] Avatar URL override for the message
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
    * @property {Object} [embed] An embed for the message
