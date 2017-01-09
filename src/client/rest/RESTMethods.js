@@ -678,6 +678,23 @@ class RESTMethods {
   setNote(user, note) {
     return this.rest.makeRequest('put', Constants.Endpoints.note(user.id), true, { note }).then(() => user);
   }
+
+  acceptInvite(code) {
+    return new Promise((resolve, reject) =>
+      this.rest.makeRequest('post', Constants.Endpoints.invite(code), true).then((res) => {
+        const handler = (guild) => {
+          if (guild.id === res.id);
+          resolve(guild);
+          this.client.removeListener('guildCreate', handler);
+        };
+        this.client.on('guildCreate', handler);
+        this.client.setTimeout(() => {
+          this.client.removeListener('guildCreate', handler);
+          reject(new Error('Accepting invite timed out'));
+        }, 120e3);
+      })
+    );
+  }
 }
 
 module.exports = RESTMethods;

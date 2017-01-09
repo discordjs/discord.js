@@ -297,6 +297,14 @@ class ClientUser extends User {
       );
     }
   }
+
+  /**
+   * @param {string} code Invite code
+   * @returns {Promise<Guild>} Joined guild
+   */
+  acceptInvite(code) {
+    return this.client.rest.methods.acceptInvite(code);
+  }
 }
 
 module.exports = ClientUser;
