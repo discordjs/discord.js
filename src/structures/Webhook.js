@@ -1,5 +1,4 @@
 const path = require('path');
-const escapeMarkdown = require('../util/EscapeMarkdown');
 
 /**
  * Represents a webhook
