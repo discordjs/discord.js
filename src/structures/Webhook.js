@@ -70,7 +70,7 @@ class Webhook {
   }
 
   /**
-   * Options that can be passed into send, sendMessage, sendFile, sendEmbed, sendCode, and Message#reply
+   * Options that can be passed into send, sendMessage, sendFile, sendEmbed, and sendCode
    * @typedef {Object} WebhookMessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
