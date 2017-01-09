@@ -345,7 +345,7 @@ class ClientDataResolver {
    *   'DARK_NAVY',
    * ]
    * ```
-   * @typedef {String|number} ColorResolvable
+   * @typedef {String|number|Array} ColorResolvable
    */
 
   /**
