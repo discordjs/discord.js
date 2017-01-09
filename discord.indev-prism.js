@@ -3334,7 +3334,7 @@ class TextBasedChannel {
   }
 }
 
-exports.applyToClass = (structure, full = false) => {
+exports.applyToClass = (structure, full = false, ignore = []) => {
   const props = ['send', 'sendMessage', 'sendEmbed', 'sendFile', 'sendCode'];
   if (full) {
     props.push(
@@ -3353,6 +3353,7 @@ exports.applyToClass = (structure, full = false) => {
     );
   }
   for (const prop of props) {
+    if (ignore.includes(prop)) continue;
     Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
   }
 };
@@ -8917,11 +8918,11 @@ class DMChannel extends Channel {
   get typingCount() { return; }
   createCollector() { return; }
   awaitMessages() { return; }
-  bulkDelete() { return; }
+  // doesn't work on DM channels; bulkDelete() { return; }
   _cacheMessage() { return; }
 }
 
-TextBasedChannel.applyToClass(DMChannel, true);
+TextBasedChannel.applyToClass(DMChannel, true, ['bulkDelete']);
 
 module.exports = DMChannel;
 
@@ -9068,11 +9069,11 @@ class GroupDMChannel extends Channel {
   get typingCount() { return; }
   createCollector() { return; }
   awaitMessages() { return; }
-  bulkDelete() { return; }
+  // doesn't work on group DMs; bulkDelete() { return; }
   _cacheMessage() { return; }
 }
 
-TextBasedChannel.applyToClass(GroupDMChannel, true);
+TextBasedChannel.applyToClass(GroupDMChannel, true, ['bulkDelete']);
 
 module.exports = GroupDMChannel;
 
