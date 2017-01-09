@@ -319,7 +319,7 @@ class ClientDataResolver {
   }
 
   /**
-   * Can be a Hex Literal, Hex String, Number, or one of the following
+   * Can be a Hex Literal, Hex String, Number, RGB Array, or one of the following
    * ```
    * [
    *   'DEFAULT',
