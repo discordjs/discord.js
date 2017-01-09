@@ -680,12 +680,14 @@ class RESTMethods {
   }
 
   acceptInvite(code) {
+    if (code.id) code = code.id;
     return new Promise((resolve, reject) =>
       this.rest.makeRequest('post', Constants.Endpoints.invite(code), true).then((res) => {
         const handler = (guild) => {
-          if (guild.id === res.id);
-          resolve(guild);
-          this.client.removeListener('guildCreate', handler);
+          if (guild.id === res.id) {
+            resolve(guild);
+            this.client.removeListener('guildCreate', handler);
+          }
         };
         this.client.on('guildCreate', handler);
         this.client.setTimeout(() => {
