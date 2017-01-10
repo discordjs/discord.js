@@ -562,7 +562,8 @@ class RESTMethods {
     return this.rest.makeRequest('delete', Constants.Endpoints.webhook(webhook.id, webhook.token), false);
   }
 
-  sendWebhookMessage(webhook, content, { avatarURL, tts, disableEveryone, embeds } = {}, file = null) {
+  sendWebhookMessage(webhook, content, { avatarURL, tts, disableEveryone, embeds, username } = {}, file = null) {
+    username = username || webhook.name;
     if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
     if (content) {
       if (disableEveryone || (typeof disableEveryone === 'undefined' && this.client.options.disableEveryone)) {
@@ -570,13 +571,12 @@ class RESTMethods {
       }
     }
     return this.rest.makeRequest('post', `${Constants.Endpoints.webhook(webhook.id, webhook.token)}?wait=true`, false, {
-      username: webhook.name,
+      username,
       avatar_url: avatarURL,
       content,
       tts,
-      file,
       embeds,
-    });
+    }, file);
   }
 
   sendSlackWebhookMessage(webhook, body) {
