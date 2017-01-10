@@ -1936,7 +1936,7 @@ module.exports = Emoji;
 
 const TextBasedChannel = __webpack_require__(13);
 const Role = __webpack_require__(9);
-const EvaluatedPermissions = __webpack_require__(17);
+const EvaluatedPermissions = __webpack_require__(16);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(7).Presence;
@@ -2387,7 +2387,7 @@ const Embed = __webpack_require__(36);
 const MessageReaction = __webpack_require__(37);
 const Collection = __webpack_require__(3);
 const Constants = __webpack_require__(0);
-const escapeMarkdown = __webpack_require__(16);
+const escapeMarkdown = __webpack_require__(19);
 let GuildMember;
 
 /**
@@ -4243,7 +4243,7 @@ module.exports = Guild;
 const Channel = __webpack_require__(8);
 const Role = __webpack_require__(9);
 const PermissionOverwrites = __webpack_require__(41);
-const EvaluatedPermissions = __webpack_require__(17);
+const EvaluatedPermissions = __webpack_require__(16);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 
@@ -4543,17 +4543,6 @@ module.exports = GuildChannel;
 
 /***/ },
 /* 16 */
-/***/ function(module, exports) {
-
-module.exports = function escapeMarkdown(text, onlyCodeBlock = false, onlyInlineCode = false) {
-  if (onlyCodeBlock) return text.replace(/```/g, '`\u200b``');
-  if (onlyInlineCode) return text.replace(/\\(`|\\)/g, '$1').replace(/(`|\\)/g, '\\$1');
-  return text.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1');
-};
-
-
-/***/ },
-/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -4626,7 +4615,7 @@ module.exports = EvaluatedPermissions;
 
 
 /***/ },
-/* 18 */
+/* 17 */
 /***/ function(module, exports) {
 
 /**
@@ -4681,11 +4670,10 @@ module.exports = ReactionEmoji;
 
 
 /***/ },
-/* 19 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 const path = __webpack_require__(24);
-const escapeMarkdown = __webpack_require__(16);
 
 /**
  * Represents a webhook
@@ -4745,20 +4733,72 @@ class Webhook {
      */
     this.channelID = data.channel_id;
 
-    /**
-     * The owner of the webhook
-     * @type {User}
-     */
-    if (data.user) this.owner = data.user;
+    if (data.user) {
+      /**
+       * The owner of the webhook
+       * @type {?User|Object}
+       */
+      this.owner = this.client.users ? this.client.users.get(data.user.id) : data.user;
+    } else {
+      this.owner = null;
+    }
   }
 
   /**
-   * Options that can be passed into sendMessage, sendTTSMessage, sendFile, sendCode
+   * Options that can be passed into send, sendMessage, sendFile, sendEmbed, and sendCode
    * @typedef {Object} WebhookMessageOptions
+   * @property {string} [username=this.name] Username override for the message
+   * @property {string} [avatarURL] Avatar URL override for the message
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
-   * @property {boolean} [disableEveryone=this.options.disableEveryone] Whether or not @everyone and @here
+   * @property {string} [nonce=''] The nonce for the message
+   * @property {Object} [embed] An embed for the message
+   * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
+   * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
+   * @property {FileOptions|string} [file] A file to send with the message
+   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
+   * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
+   * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
    */
+
+  /**
+   * Send a message with this webhook
+   * @param {StringResolvable} content The content to send.
+   * @param {WebhookMessageOptions} [options={}] The options to provide.
+   * @returns {Promise<Message|Message[]>}
+   * @example
+   * // send a message
+   * webhook.send('hello!')
+   *  .then(message => console.log(`Sent message: ${message.content}`))
+   *  .catch(console.error);
+   */
+  send(content, options) {
+    if (!options && typeof content === 'object' && !(content instanceof Array)) {
+      options = content;
+      content = '';
+    } else if (!options) {
+      options = {};
+    }
+    if (options.file) {
+      if (typeof options.file === 'string') options.file = { attachment: options.file };
+      if (!options.file.name) {
+        if (typeof options.file.attachment === 'string') {
+          options.file.name = path.basename(options.file.attachment);
+        } else if (options.file.attachment && options.file.attachment.path) {
+          options.file.name = path.basename(options.file.attachment.path);
+        } else {
+          options.file.name = 'file.jpg';
+        }
+      }
+      return this.client.resolver.resolveBuffer(options.file.attachment).then(file =>
+        this.client.rest.methods.sendWebhookMessage(this, content, options, {
+          file,
+          name: options.file.name,
+        })
+      );
+    }
+    return this.client.rest.methods.sendWebhookMessage(this, content, options);
+  }
 
   /**
    * Send a message with this webhook
@@ -4772,7 +4812,30 @@ class Webhook {
    *  .catch(console.error);
    */
   sendMessage(content, options = {}) {
-    return this.client.rest.methods.sendWebhookMessage(this, content, options);
+    return this.send(content, options);
+  }
+
+  /**
+   * Send a file with this webhook
+   * @param {BufferResolvable} attachment The file to send
+   * @param {string} [name='file.jpg'] The name and extension of the file
+   * @param {StringResolvable} [content] Text message to send with the attachment
+   * @param {WebhookMessageOptions} [options] The options to provide
+   * @returns {Promise<Message>}
+   */
+  sendFile(attachment, name, content, options = {}) {
+    return this.send(content, Object.assign(options, { file: { attachment, name } }));
+  }
+
+  /**
+   * Send a code block with this webhook
+   * @param {string} lang Language for the code block
+   * @param {StringResolvable} content Content of the code block
+   * @param {WebhookMessageOptions} options The options to provide
+   * @returns {Promise<Message|Message[]>}
+   */
+  sendCode(lang, content, options = {}) {
+    return this.send(content, Object.assign(options, { code: lang }));
   }
 
   /**
@@ -4794,65 +4857,6 @@ class Webhook {
    */
   sendSlackMessage(body) {
     return this.client.rest.methods.sendSlackWebhookMessage(this, body);
-  }
-
-  /**
-   * Send a text-to-speech message with this webhook
-   * @param {StringResolvable} content The content to send
-   * @param {WebhookMessageOptions} [options={}] The options to provide
-   * @returns {Promise<Message|Message[]>}
-   * @example
-   * // send a TTS message
-   * webhook.sendTTSMessage('hello!')
-   *  .then(message => console.log(`Sent tts message: ${message.content}`))
-   *  .catch(console.error);
-   */
-  sendTTSMessage(content, options = {}) {
-    Object.assign(options, { tts: true });
-    return this.client.rest.methods.sendWebhookMessage(this, content, options);
-  }
-
-  /**
-   * Send a file with this webhook
-   * @param {BufferResolvable} attachment The file to send
-   * @param {string} [fileName="file.jpg"] The name and extension of the file
-   * @param {StringResolvable} [content] Text message to send with the attachment
-   * @param {WebhookMessageOptions} [options] The options to provide
-   * @returns {Promise<Message>}
-   */
-  sendFile(attachment, fileName, content, options = {}) {
-    if (!fileName) {
-      if (typeof attachment === 'string') {
-        fileName = path.basename(attachment);
-      } else if (attachment && attachment.path) {
-        fileName = path.basename(attachment.path);
-      } else {
-        fileName = 'file.jpg';
-      }
-    }
-    return this.client.resolver.resolveBuffer(attachment).then(file =>
-      this.client.rest.methods.sendWebhookMessage(this, content, options, {
-        file,
-        name: fileName,
-      })
-    );
-  }
-
-  /**
-   * Send a code block with this webhook
-   * @param {string} lang Language for the code block
-   * @param {StringResolvable} content Content of the code block
-   * @param {WebhookMessageOptions} options The options to provide
-   * @returns {Promise<Message|Message[]>}
-   */
-  sendCode(lang, content, options = {}) {
-    if (options.split) {
-      if (typeof options.split !== 'object') options.split = {};
-      if (!options.split.prepend) options.split.prepend = `\`\`\`${lang || ''}\n`;
-      if (!options.split.append) options.split.append = '\n```';
-    }
-    content = escapeMarkdown(this.client.resolver.resolveString(content), true);
-    return this.sendMessage(`\`\`\`${lang || ''}\n${content}\n\`\`\``, options);
   }
 
   /**
@@ -4884,6 +4888,17 @@ class Webhook {
 }
 
 module.exports = Webhook;
+
+
+/***/ },
+/* 19 */
+/***/ function(module, exports) {
+
+module.exports = function escapeMarkdown(text, onlyCodeBlock = false, onlyInlineCode = false) {
+  if (onlyCodeBlock) return text.replace(/```/g, '`\u200b``');
+  if (onlyInlineCode) return text.replace(/\\(`|\\)/g, '$1').replace(/(`|\\)/g, '\\$1');
+  return text.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1');
+};
 
 
 /***/ },
@@ -9778,7 +9793,7 @@ module.exports = MessageEmbed;
 
 const Collection = __webpack_require__(3);
 const Emoji = __webpack_require__(10);
-const ReactionEmoji = __webpack_require__(18);
+const ReactionEmoji = __webpack_require__(17);
 
 /**
  * Represents a reaction to a message
@@ -11974,7 +11989,7 @@ const Guild = __webpack_require__(14);
 const Channel = __webpack_require__(8);
 const GuildMember = __webpack_require__(11);
 const Emoji = __webpack_require__(10);
-const ReactionEmoji = __webpack_require__(18);
+const ReactionEmoji = __webpack_require__(17);
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
@@ -12926,7 +12941,7 @@ module.exports = Client;
 /* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
-const Webhook = __webpack_require__(19);
+const Webhook = __webpack_require__(18);
 const RESTManager = __webpack_require__(53);
 const ClientDataResolver = __webpack_require__(52);
 const mergeDefault = __webpack_require__(56);
@@ -22056,7 +22071,7 @@ const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const splitMessage = __webpack_require__(44);
 const parseEmoji = __webpack_require__(158);
-const escapeMarkdown = __webpack_require__(16);
+const escapeMarkdown = __webpack_require__(19);
 const transformSearchOptions = __webpack_require__(159);
 
 const User = __webpack_require__(6);
@@ -22064,7 +22079,7 @@ const GuildMember = __webpack_require__(11);
 const Message = __webpack_require__(12);
 const Role = __webpack_require__(9);
 const Invite = __webpack_require__(33);
-const Webhook = __webpack_require__(19);
+const Webhook = __webpack_require__(18);
 const UserProfile = __webpack_require__(156);
 const ClientOAuth2Application = __webpack_require__(29);
 const Channel = __webpack_require__(8);
@@ -22615,7 +22630,8 @@ class RESTMethods {
     return this.rest.makeRequest('delete', Constants.Endpoints.webhook(webhook.id, webhook.token), false);
   }
 
-  sendWebhookMessage(webhook, content, { avatarURL, tts, disableEveryone, embeds } = {}, file = null) {
+  sendWebhookMessage(webhook, content, { avatarURL, tts, disableEveryone, embeds, username } = {}, file = null) {
+    username = username || webhook.name;
     if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
     if (content) {
       if (disableEveryone || (typeof disableEveryone === 'undefined' && this.client.options.disableEveryone)) {
@@ -22623,13 +22639,12 @@ class RESTMethods {
       }
     }
     return this.rest.makeRequest('post', `${Constants.Endpoints.webhook(webhook.id, webhook.token)}?wait=true`, false, {
-      username: webhook.name,
+      username,
       avatar_url: avatarURL,
       content,
       tts,
-      file,
       embeds,
-    });
+    }, file);
   }
 
   sendSlackWebhookMessage(webhook, body) {
@@ -24717,7 +24732,7 @@ module.exports = {
 
   Collection: __webpack_require__(3),
   splitMessage: __webpack_require__(44),
-  escapeMarkdown: __webpack_require__(16),
+  escapeMarkdown: __webpack_require__(19),
   fetchRecommendedShards: __webpack_require__(60),
   Snowflake: __webpack_require__(20),
   SnowflakeUtil: __webpack_require__(20),
@@ -24727,7 +24742,7 @@ module.exports = {
   ClientUser: __webpack_require__(30),
   DMChannel: __webpack_require__(31),
   Emoji: __webpack_require__(10),
-  EvaluatedPermissions: __webpack_require__(17),
+  EvaluatedPermissions: __webpack_require__(16),
   Game: __webpack_require__(7).Game,
   GroupDMChannel: __webpack_require__(32),
   Guild: __webpack_require__(14),
@@ -24744,13 +24759,13 @@ module.exports = {
   PartialGuildChannel: __webpack_require__(40),
   PermissionOverwrites: __webpack_require__(41),
   Presence: __webpack_require__(7).Presence,
-  ReactionEmoji: __webpack_require__(18),
+  ReactionEmoji: __webpack_require__(17),
   RichEmbed: __webpack_require__(59),
   Role: __webpack_require__(9),
   TextChannel: __webpack_require__(42),
   User: __webpack_require__(6),
   VoiceChannel: __webpack_require__(43),
-  Webhook: __webpack_require__(19),
+  Webhook: __webpack_require__(18),
 
   version: __webpack_require__(28).version,
   Constants: __webpack_require__(0),
