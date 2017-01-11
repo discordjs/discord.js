@@ -1,5 +1,5 @@
 /**
- * A rich embed to be sent with a message
+ * A rich embed to be sent with a message with a fluent interface for creation
  * @param {Object} [data] Data to set in the rich embed
  */
 class RichEmbed {
