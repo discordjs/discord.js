@@ -2,7 +2,6 @@ const path = require('path');
 const Message = require('../Message');
 const MessageCollector = require('../MessageCollector');
 const Collection = require('../../util/Collection');
-let GuildMember;
 
 /**
  * Interface for classes that have text-channel-like features
