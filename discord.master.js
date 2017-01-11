@@ -2854,8 +2854,8 @@ class Message {
 
   /**
    * Reply to the message
-   * @param {StringResolvable} content The content for the message
-   * @param {MessageOptions} [options = {}] The options to provide
+   * @param {StringResolvable} [content] The content for the message
+   * @param {MessageOptions} [options] The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
    * // reply to a message
@@ -2863,9 +2863,14 @@ class Message {
    *  .then(msg => console.log(`Sent a reply to ${msg.author}`))
    *  .catch(console.error);
    */
-  reply(content, options = {}) {
-    content = `${this.guild || this.channel.type === 'group' ? `${this.author}, ` : ''}${content}`;
-    return this.channel.send(content, options);
+  reply(content, options) {
+    if (!options && typeof content === 'object' && !(content instanceof Array)) {
+      options = content;
+      content = '';
+    } else if (!options) {
+      options = {};
+    }
+    return this.channel.send(content, Object.assign(options, { reply: this.member || this.author }));
   }
 
   /**
@@ -2966,6 +2971,7 @@ const path = __webpack_require__(24);
 const Message = __webpack_require__(12);
 const MessageCollector = __webpack_require__(35);
 const Collection = __webpack_require__(3);
+let GuildMember;
 
 /**
  * Interface for classes that have text-channel-like features
@@ -2987,7 +2993,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Options that can be passed into send, sendMessage, sendFile, sendEmbed, sendCode, and Message#reply
+   * Options provided when sending or editing a message
    * @typedef {Object} MessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
@@ -2999,6 +3005,7 @@ class TextBasedChannel {
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
+   * @property {UserResolvable} [reply] User to reply to (prefixes the message with a mention, except in DMs)
    */
 
   /**
@@ -3034,6 +3041,7 @@ class TextBasedChannel {
     } else if (!options) {
       options = {};
     }
+
     if (options.file) {
       if (typeof options.file === 'string') options.file = { attachment: options.file };
       if (!options.file.name) {
@@ -3045,6 +3053,7 @@ class TextBasedChannel {
           options.file.name = 'file.jpg';
         }
       }
+
       return this.client.resolver.resolveBuffer(options.file.attachment).then(file =>
         this.client.rest.methods.sendMessage(this, content, options, {
           file,
@@ -3052,12 +3061,13 @@ class TextBasedChannel {
         })
       );
     }
+
     return this.client.rest.methods.sendMessage(this, content, options);
   }
 
   /**
    * Send a message to this channel
-   * @param {StringResolvable} content Text for the message
+   * @param {StringResolvable} [content] Text for the message
    * @param {MessageOptions} [options={}] Options for the message
    * @returns {Promise<Message|Message[]>}
    * @example
@@ -3078,7 +3088,7 @@ class TextBasedChannel {
    * @returns {Promise<Message>}
    */
   sendEmbed(embed, content, options) {
-    if (!options && typeof content === 'object') {
+    if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
       content = '';
     } else if (!options) {
@@ -22114,21 +22124,37 @@ class RESTMethods {
     return this.rest.makeRequest('get', Constants.Endpoints.botGateway, true);
   }
 
-  sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code } = {}, file = null) {
-    return new Promise((resolve, reject) => {
+  sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code, reply } = {}, file = null) {
+    return new Promise((resolve, reject) => { // eslint-disable-line complexity
       if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
 
       if (content) {
+        if (split && typeof split !== 'object') split = {};
+
+        // Wrap everything in a code block
         if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
           content = escapeMarkdown(this.client.resolver.resolveString(content), true);
           content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
         }
 
+        // Add zero-width spaces to @everyone/@here
         if (disableEveryone || (typeof disableEveryone === 'undefined' && this.client.options.disableEveryone)) {
           content = content.replace(/@(everyone|here)/g, '@\u200b$1');
         }
 
-        if (split) content = splitMessage(content, typeof split === 'object' ? split : {});
+        // Add the reply prefix
+        if (reply && !(channel instanceof User || channel instanceof GuildMember) && channel.type !== 'dm') {
+          const id = this.client.resolver.resolveUserID(reply);
+          const mention = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
+          content = `${mention}${content ? `, ${content}` : ''}`;
+          if (split) split.prepend = `${mention}, ${split.prepend || ''}`;
+        }
+
+        // Split the content
+        if (split) content = splitMessage(content, split);
+      } else if (reply && !(channel instanceof User || channel instanceof GuildMember) && channel.type !== 'dm') {
+        const id = this.client.resolver.resolveUserID(reply);
+        content = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
       }
 
       const send = chan => {
@@ -22157,12 +22183,22 @@ class RESTMethods {
     });
   }
 
-  updateMessage(message, content, { embed, code } = {}) {
-    content = this.client.resolver.resolveString(content);
+  updateMessage(message, content, { embed, code, reply } = {}) {
+    if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
+
+    // Wrap everything in a code block
     if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
       content = escapeMarkdown(this.client.resolver.resolveString(content), true);
       content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
     }
+
+    // Add the reply prefix
+    if (reply && message.channel.type !== 'dm') {
+      const id = this.client.resolver.resolveUserID(reply);
+      const mention = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
+      content = `${mention}${content ? `, ${content}` : ''}`;
+    }
+
     return this.rest.makeRequest('patch', Constants.Endpoints.channelMessage(message.channel.id, message.id), true, {
       content, embed,
     }).then(data => this.client.actions.MessageUpdate.handle(data).updated);
