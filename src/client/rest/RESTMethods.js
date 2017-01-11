@@ -46,21 +46,37 @@ class RESTMethods {
     return this.rest.makeRequest('get', Constants.Endpoints.botGateway, true);
   }
 
-  sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code } = {}, file = null) {
-    return new Promise((resolve, reject) => {
+  sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code, reply } = {}, file = null) {
+    return new Promise((resolve, reject) => { // eslint-disable-line complexity
       if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
 
       if (content) {
+        if (split && typeof split !== 'object') split = {};
+
+        // Wrap everything in a code block
         if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
           content = escapeMarkdown(this.client.resolver.resolveString(content), true);
           content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
         }
 
+        // Add zero-width spaces to @everyone/@here
         if (disableEveryone || (typeof disableEveryone === 'undefined' && this.client.options.disableEveryone)) {
           content = content.replace(/@(everyone|here)/g, '@\u200b$1');
         }
 
-        if (split) content = splitMessage(content, typeof split === 'object' ? split : {});
+        // Add the reply prefix
+        if (reply && !(channel instanceof User || channel instanceof GuildMember) && channel.type !== 'dm') {
+          const id = this.client.resolver.resolveUserID(reply);
+          const mention = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
+          content = `${mention}${content ? `, ${content}` : ''}`;
+          if (split) split.prepend = `${mention}, ${split.prepend || ''}`;
+        }
+
+        // Split the content
+        if (split) content = splitMessage(content, split);
+      } else if (reply && !(channel instanceof User || channel instanceof GuildMember) && channel.type !== 'dm') {
+        const id = this.client.resolver.resolveUserID(reply);
+        content = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
       }
 
       const send = chan => {
@@ -89,12 +105,22 @@ class RESTMethods {
     });
   }
 
-  updateMessage(message, content, { embed, code } = {}) {
-    content = this.client.resolver.resolveString(content);
+  updateMessage(message, content, { embed, code, reply } = {}) {
+    if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
+
+    // Wrap everything in a code block
     if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
       content = escapeMarkdown(this.client.resolver.resolveString(content), true);
       content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
     }
+
+    // Add the reply prefix
+    if (reply && message.channel.type !== 'dm') {
+      const id = this.client.resolver.resolveUserID(reply);
+      const mention = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
+      content = `${mention}${content ? `, ${content}` : ''}`;
+    }
+
     return this.rest.makeRequest('patch', Constants.Endpoints.channelMessage(message.channel.id, message.id), true, {
       content, embed,
     }).then(data => this.client.actions.MessageUpdate.handle(data).updated);
