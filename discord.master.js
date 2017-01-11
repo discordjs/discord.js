@@ -2997,7 +2997,7 @@ class TextBasedChannel {
    * @typedef {Object} MessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
-   * @property {Object} [embed] An embed for the message
+   * @property {RichEmbed|Object} [embed] An embed for the message
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
@@ -13004,7 +13004,7 @@ module.exports = WebhookClient;
 /***/ function(module, exports) {
 
 /**
- * A rich embed to be sent with a message
+ * A rich embed to be sent with a message with a fluent interface for creation
  * @param {Object} [data] Data to set in the rich embed
  */
 class RichEmbed {
