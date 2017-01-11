@@ -144,6 +144,7 @@ exports.Errors = {
   INVALID_RATE_LIMIT_METHOD: 'Unknown rate limiting method.',
   BAD_LOGIN: 'Incorrect login details were provided.',
   INVALID_SHARD: 'Invalid shard settings were provided.',
+  SHARDING_REQUIRED: 'This session would have handled too many guilds - Sharding is required.',
   INVALID_TOKEN: 'An invalid token was provided.',
 };
 
@@ -2971,7 +2972,6 @@ const path = __webpack_require__(24);
 const Message = __webpack_require__(12);
 const MessageCollector = __webpack_require__(35);
 const Collection = __webpack_require__(3);
-let GuildMember;
 
 /**
  * Interface for classes that have text-channel-like features
@@ -20994,6 +20994,7 @@ class ClientManager {
       this.client.ws.once('close', event => {
         if (event.code === 4004) reject(new Error(Constants.Errors.BAD_LOGIN));
         if (event.code === 4010) reject(new Error(Constants.Errors.INVALID_SHARD));
+        if (event.code === 4011) reject(new Error(Constants.Errors.SHARDING_REQUIRED));
       });
       this.client.once(Constants.Events.READY, () => {
         resolve(token);
@@ -23256,8 +23257,7 @@ class WebSocketManager extends EventEmitter {
      * @param {CloseEvent} event The WebSocket close event
      */
     if (!this.reconnecting) this.client.emit(Constants.Events.DISCONNECT, event);
-    if (event.code === 4004) return;
-    if (event.code === 4010) return;
+    if ([4004, 4010, 4011].includes(event.code)) return;
     if (!this.reconnecting && event.code !== 1000) this.tryReconnect();
   }
 
