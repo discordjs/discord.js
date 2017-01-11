@@ -72,6 +72,7 @@ exports.Errors = {
   INVALID_RATE_LIMIT_METHOD: 'Unknown rate limiting method.',
   BAD_LOGIN: 'Incorrect login details were provided.',
   INVALID_SHARD: 'Invalid shard settings were provided.',
+  SHARDING_REQUIRED: 'This session would have handled too many guilds - Sharding is required.',
   INVALID_TOKEN: 'An invalid token was provided.',
 };
 
