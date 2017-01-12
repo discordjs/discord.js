@@ -345,6 +345,11 @@ class ClientDataResolver {
    *   'DARK_NAVY',
    * ]
    * ```
+   * or something like
+   * ```
+   * [255, 0, 255]
+   * ```
+   * for purple
    * @typedef {String|number|Array} ColorResolvable
    */
 
@@ -354,11 +359,7 @@ class ClientDataResolver {
    */
   static resolveColor(color) {
     if (typeof color === 'string') {
-      if (color in Constants.Colors) {
-        color = Constants.Colors[color];
-      } else {
-        color = parseInt(color.replace('#', ''), 16);
-      }
+      color = Constants.Colors[color] || parseInt(color.replace('#', ''), 16);
     } else if (color instanceof Array) {
       color = (color[0] << 16) + (color[1] << 8) + color[2];
     }
