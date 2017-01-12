@@ -42,7 +42,11 @@ class PCMConversionProcess extends EventEmitter {
 class FfmpegConverterEngine extends ConverterEngine {
   constructor(player) {
     super(player);
-    this.command = chooseCommand();
+    try {
+      this.command = require('ffmpeg-binaries').ffmpegPath();
+    } catch (err) {
+      this.command = chooseCommand();
+    }
   }
 
   handleError(encoder, err) {
@@ -67,14 +71,7 @@ class FfmpegConverterEngine extends ConverterEngine {
 }
 
 function chooseCommand() {
-  for (const cmd of [
-    'ffmpeg',
-    'avconv',
-    './ffmpeg',
-    './avconv',
-    'node_modules\\ffmpeg-binaries\\bin\\ffmpeg',
-    'node_modules/ffmpeg-binaries/bin/ffmpeg',
-  ]) {
+  for (const cmd of ['ffmpeg', 'avconv', './ffmpeg', './avconv']) {
     if (!ChildProcess.spawnSync(cmd, ['-h']).error) return cmd;
   }
   throw new Error(
