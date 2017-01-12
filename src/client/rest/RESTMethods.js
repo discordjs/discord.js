@@ -433,8 +433,7 @@ class RESTMethods {
     const data = {};
     data.name = _data.name || role.name;
     data.position = typeof _data.position !== 'undefined' ? _data.position : role.position;
-    data.color = _data.color || role.color;
-    data.color = this.client.resolver.resolveColor(data.color);
+    data.color = this.client.resolver.resolveColor(_data.color || role.color);
     data.hoist = typeof _data.hoist !== 'undefined' ? _data.hoist : role.hoist;
     data.mentionable = typeof _data.mentionable !== 'undefined' ? _data.mentionable : role.mentionable;
 
