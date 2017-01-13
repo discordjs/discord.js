@@ -19,7 +19,7 @@ class ShardClientUtil {
    * @readonly
    */
   get id() {
-    return this.client.options.shardId;
+    return this.client.options.shardID;
   }
 
   /**

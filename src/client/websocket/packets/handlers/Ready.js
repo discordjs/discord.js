@@ -15,7 +15,10 @@ class ReadyHandler extends AbstractHandler {
     client.readyAt = new Date();
     client.users.set(clientUser.id, clientUser);
 
-    for (const guild of data.guilds) client.dataManager.newGuild(guild);
+    for (const guild of data.guilds) {
+      guild.shardID = packet.shardID;
+      client.dataManager.newGuild(guild);
+    }
     for (const privateDM of data.private_channels) client.dataManager.newChannel(privateDM);
 
     for (const relation of data.relationships) {

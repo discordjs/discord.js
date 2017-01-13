@@ -30,7 +30,7 @@ if (browser) {
  * @private
  */
 class WebSocketManager extends EventEmitter {
-  constructor(client) {
+  constructor(client, options = {}) {
     super();
     /**
      * The Client that instantiated this WebSocketManager
@@ -90,6 +90,9 @@ class WebSocketManager extends EventEmitter {
     this.first = true;
 
     this.lastHeartbeatAck = true;
+
+    this.shardID = options.shardID || this.client.options.shardID;
+    this.shardCount = options.shardCount || this.client.options.shardCount;
   }
 
   /**
@@ -132,7 +135,7 @@ class WebSocketManager extends EventEmitter {
 
     this.client.emit('debug', 'Sending heartbeat');
     this.client._pingTimestamp = Date.now();
-    this.client.ws.send({
+    this.send({
       op: Constants.OPCodes.HEARTBEAT,
       d: this.sequence,
     }, true);
@@ -219,7 +222,7 @@ class WebSocketManager extends EventEmitter {
     const payload = this.client.options.ws;
     payload.token = this.client.token;
     if (this.client.options.shardCount > 0) {
-      payload.shard = [Number(this.client.options.shardId), Number(this.client.options.shardCount)];
+      payload.shard = [Number(this.shardID), Number(this.client.options.shardCount)];
     }
     this.client.emit('debug', 'Identifying as new session');
     this.send({
@@ -269,6 +272,7 @@ class WebSocketManager extends EventEmitter {
     this.client.emit('raw', data);
 
     if (data.op === Constants.OPCodes.HELLO) this.client.manager.setupKeepAlive(data.d.heartbeat_interval);
+    data.shardID = this.shardID;
     return this.packetManager.handle(data);
   }
 

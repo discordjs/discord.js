@@ -64,6 +64,12 @@ class Guild {
       this.available = true;
       this.setup(data);
     }
+
+    /**
+     * The shard to which this guilds belongs
+     * @type {?Number}
+     */
+    this.shardID = data.shardID;
   }
 
   /**

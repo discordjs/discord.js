@@ -5,7 +5,7 @@ exports.Package = require('../../package.json');
  * @typedef {Object} ClientOptions
  * @property {string} [apiRequestMethod='sequential'] 'sequential' or 'burst'. Sequential executes all requests in
  * the order they are triggered, whereas burst runs multiple at a time, and doesn't guarantee a particular order.
- * @property {number} [shardId=0] The ID of this shard
+ * @property {number} [shardID=0] The ID of this shard
  * @property {number} [shardCount=0] The number of shards
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
  * (-1 or Infinity for unlimited - don't do this without message sweeping, otherwise memory usage will climb
@@ -30,7 +30,7 @@ exports.Package = require('../../package.json');
  */
 exports.DefaultOptions = {
   apiRequestMethod: 'sequential',
-  shardId: 0,
+  shardID: 0,
   shardCount: 0,
   messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
