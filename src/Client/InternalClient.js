@@ -1815,14 +1815,17 @@ export default class InternalClient {
 					this.heartbeat();
 					break;
 				case 7:
+					console.log("recieved reconnect");
 					this.disconnected(true);
 					break;
 				case 9:
+					console.log("recieved invalidate session");
 					this.sessionID = null;
 					this.sequence = 0;
 					this.identify();
 					break;
 				case 10:
+					console.log("got a packet with op code 10");
 					if(this.sessionID) {
 						this.resume();
 					} else {
@@ -1930,12 +1933,13 @@ export default class InternalClient {
 				break;
 
 			case PacketType.MESSAGE_CREATE:
+				console.log("got message create");
 				// format: https://discordapi.readthedocs.org/en/latest/reference/channels/messages.html#message-format
 				var channel = this.channels.get("id", data.channel_id) || this.private_channels.get("id", data.channel_id);
 				if (channel) {
 					var msg = channel.messages.add(new Message(data, channel, client));
 					channel.lastMessageID = msg.id;
-
+					console.log("emitting message");
 					if (this.messageAwaits[channel.id + msg.author.id]) {
 						this.messageAwaits[channel.id + msg.author.id].map( fn => fn(msg) );
 						this.messageAwaits[channel.id + msg.author.id] = null;
@@ -2636,7 +2640,7 @@ export default class InternalClient {
 	}
 
 	heartbeat() {
-		console.log("heartbeat called, value " + this.heartbeatAcked);
+		console.log("heartbeat called, value " + this.heartbeatAcked, ` current client state is ${this.state}`);
 	  if (!this.heartbeatAcked) this.disconnected(true);
 	  console.log("set it to false");
     this.heartbeatAcked = false;
