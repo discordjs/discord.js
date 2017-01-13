@@ -24212,6 +24212,10 @@ class PresenceUpdateHandler extends AbstractHandler {
         client.emit(Constants.Events.GUILD_MEMBER_AVAILABLE, member);
       }
       if (member) {
+        if (client.listenerCount(Constants.Events.PRESENCE_UPDATE) === 0) {
+          guild._setPresence(user.id, data);
+          return;
+        }
         const oldMember = cloneObject(member);
         if (member.presence) {
           oldMember.frozenPresence = cloneObject(member.presence);
