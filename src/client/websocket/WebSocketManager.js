@@ -371,8 +371,9 @@ class WebSocketManager extends EventEmitter {
     /**
      * Emitted when the Client tries to reconnect after being disconnected
      * @event Client#reconnecting
+     * @param {Number} shardID ID of the shard that is reconnecting
      */
-    this.client.emit(Constants.Events.RECONNECTING);
+    this.client.emit(Constants.Events.RECONNECTING, this.shardID);
     this.connect(this.client.ws.gateway);
   }
 }
