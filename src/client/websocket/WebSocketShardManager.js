@@ -1,21 +1,24 @@
 const EventEmitter = require('events').EventEmitter;
 const WebSocketManager = require('./WebSocketManager');
-const Constants = require('../../util/Constants');
 
 class WebSocketShardManager extends EventEmitter {
-  constructor(client) {
+  constructor(client) { // eslint-disable-line consistent-return
     super();
     this.client = client;
-
-    this.shardCount = Math.max(1, client.options.shardCount);
 
     this.managers = [];
 
     this.gateway = null;
 
-    this._spawnAll();
-
     this.afterConnect = false;
+
+    this.shardCount = Math.max(1, client.options.shardCount);
+
+    if (this.shardCount === 1) {
+      return new WebSocketManager(client);
+    } else {
+      this._spawnAll();
+    }
   }
 
   _spawnAll() {
