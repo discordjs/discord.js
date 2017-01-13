@@ -353,16 +353,17 @@ class TextBasedChannel {
   }
 
   /**
-   * Bulk delete given messages.
+   * Bulk delete given messages from less than two weeks ago.
    * <warn>This is only available when using a bot account.</warn>
    * @param {Collection<string, Message>|Message[]|number} messages Messages to delete, or number of messages to delete
+   * @param {boolean} [filterOld=false] Filter messages older than two weeks automatically
    * @returns {Promise<Collection<string, Message>>} Deleted messages
    */
-  bulkDelete(messages) {
+  bulkDelete(messages, filterOld = false) {
     if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs));
     if (messages instanceof Array || messages instanceof Collection) {
       const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
-      return this.client.rest.methods.bulkDeleteMessages(this, messageIDs);
+      return this.client.rest.methods.bulkDeleteMessages(this, messageIDs, filterOld);
     }
     throw new TypeError('The messages must be an Array, Collection, or number.');
   }
