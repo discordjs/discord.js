@@ -8,10 +8,6 @@ class WebSocketShardManager extends EventEmitter {
     super();
     this.client = client;
 
-    /**
-     * A WebSocket Packet manager, it handles all the messages
-     * @type {PacketManager}
-     */
     this.packetManager = new PacketManager(this);
 
     this.managers = [];
@@ -78,11 +74,11 @@ class WebSocketShardManager extends EventEmitter {
   checkIfReady() {
     if (this.managers.length < this.shardCount) return;
     if (this.managers.every((m) => m.status === Constants.Status.READY)) {
-      /**
-       * Emitted when the Client becomes ready to start working
-       * @event Client#ready
-       */
       if (!this.afterReady) {
+        /**
+         * Emitted when the Client becomes ready to start working
+         * @event Client#ready
+         */
         this.client.emit(Constants.Events.READY);
         this.afterReady = true;
       }
