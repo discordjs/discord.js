@@ -62,7 +62,7 @@ class ReadyHandler extends AbstractHandler {
     }
 
     client.setTimeout(() => {
-      if (!client.ws.normalReady) client.ws._emitReady(false);
+      if (!client.ws.managers[packet.shardID].normalReady) client.ws.managers[packet.shardID]._emitReady(false);
     }, 1200 * data.guilds.length);
 
     this.packetManager.ws.sessionID = data.session_id;

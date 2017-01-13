@@ -18,13 +18,7 @@ class WebSocketShardManager extends EventEmitter {
     this._spawnAll();
 
     this.client.on('shardReady', () => {
-      if (this.managers.every((m) => m.status === Constants.Status.READY)) {
-        /**
-         * Emitted when the Client becomes ready to start working
-         * @event Client#ready
-         */
-        this.client.emit(Constants.Events.READY);
-      }
+      this._checkReady();
     });
   }
 
@@ -62,7 +56,15 @@ class WebSocketShardManager extends EventEmitter {
     this.afterConnect = true;
   }
 
-  _emitReady() {}
+  _checkReady() {
+    if (this.managers.every((m) => m.status === Constants.Status.READY)) {
+      /**
+       * Emitted when the Client becomes ready to start working
+       * @event Client#ready
+       */
+      this.client.emit(Constants.Events.READY);
+    }
+  }
 }
 
 module.exports = WebSocketShardManager;
