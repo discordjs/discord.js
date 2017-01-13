@@ -1,5 +1,4 @@
 const path = require('path');
-const escapeMarkdown = require('../util/EscapeMarkdown');
 
 /**
  * Represents a webhook
@@ -59,20 +58,72 @@ class Webhook {
      */
     this.channelID = data.channel_id;
 
-    /**
-     * The owner of the webhook
-     * @type {User}
-     */
-    if (data.user) this.owner = data.user;
+    if (data.user) {
+      /**
+       * The owner of the webhook
+       * @type {?User|Object}
+       */
+      this.owner = this.client.users ? this.client.users.get(data.user.id) : data.user;
+    } else {
+      this.owner = null;
+    }
   }
 
   /**
-   * Options that can be passed into sendMessage, sendTTSMessage, sendFile, sendCode
+   * Options that can be passed into send, sendMessage, sendFile, sendEmbed, and sendCode
    * @typedef {Object} WebhookMessageOptions
+   * @property {string} [username=this.name] Username override for the message
+   * @property {string} [avatarURL] Avatar URL override for the message
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
-   * @property {boolean} [disableEveryone=this.options.disableEveryone] Whether or not @everyone and @here
+   * @property {string} [nonce=''] The nonce for the message
+   * @property {Object[]} [embeds] An array of embeds for the message
+   * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
+   * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
+   * @property {FileOptions|string} [file] A file to send with the message
+   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
+   * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
+   * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
    */
+
+  /**
+   * Send a message with this webhook
+   * @param {StringResolvable} content The content to send.
+   * @param {WebhookMessageOptions} [options={}] The options to provide.
+   * @returns {Promise<Message|Message[]>}
+   * @example
+   * // send a message
+   * webhook.send('hello!')
+   *  .then(message => console.log(`Sent message: ${message.content}`))
+   *  .catch(console.error);
+   */
+  send(content, options) {
+    if (!options && typeof content === 'object' && !(content instanceof Array)) {
+      options = content;
+      content = '';
+    } else if (!options) {
+      options = {};
+    }
+    if (options.file) {
+      if (typeof options.file === 'string') options.file = { attachment: options.file };
+      if (!options.file.name) {
+        if (typeof options.file.attachment === 'string') {
+          options.file.name = path.basename(options.file.attachment);
+        } else if (options.file.attachment && options.file.attachment.path) {
+          options.file.name = path.basename(options.file.attachment.path);
+        } else {
+          options.file.name = 'file.jpg';
+        }
+      }
+      return this.client.resolver.resolveBuffer(options.file.attachment).then(file =>
+        this.client.rest.methods.sendWebhookMessage(this, content, options, {
+          file,
+          name: options.file.name,
+        })
+      );
+    }
+    return this.client.rest.methods.sendWebhookMessage(this, content, options);
+  }
 
   /**
    * Send a message with this webhook
@@ -86,7 +137,30 @@ class Webhook {
    *  .catch(console.error);
    */
   sendMessage(content, options = {}) {
-    return this.client.rest.methods.sendWebhookMessage(this, content, options);
+    return this.send(content, options);
+  }
+
+  /**
+   * Send a file with this webhook
+   * @param {BufferResolvable} attachment The file to send
+   * @param {string} [name='file.jpg'] The name and extension of the file
+   * @param {StringResolvable} [content] Text message to send with the attachment
+   * @param {WebhookMessageOptions} [options] The options to provide
+   * @returns {Promise<Message>}
+   */
+  sendFile(attachment, name, content, options = {}) {
+    return this.send(content, Object.assign(options, { file: { attachment, name } }));
+  }
+
+  /**
+   * Send a code block with this webhook
+   * @param {string} lang Language for the code block
+   * @param {StringResolvable} content Content of the code block
+   * @param {WebhookMessageOptions} options The options to provide
+   * @returns {Promise<Message|Message[]>}
+   */
+  sendCode(lang, content, options = {}) {
+    return this.send(content, Object.assign(options, { code: lang }));
   }
 
   /**
@@ -108,65 +182,6 @@ class Webhook {
    */
   sendSlackMessage(body) {
     return this.client.rest.methods.sendSlackWebhookMessage(this, body);
-  }
-
-  /**
-   * Send a text-to-speech message with this webhook
-   * @param {StringResolvable} content The content to send
-   * @param {WebhookMessageOptions} [options={}] The options to provide
-   * @returns {Promise<Message|Message[]>}
-   * @example
-   * // send a TTS message
-   * webhook.sendTTSMessage('hello!')
-   *  .then(message => console.log(`Sent tts message: ${message.content}`))
-   *  .catch(console.error);
-   */
-  sendTTSMessage(content, options = {}) {
-    Object.assign(options, { tts: true });
-    return this.client.rest.methods.sendWebhookMessage(this, content, options);
-  }
-
-  /**
-   * Send a file with this webhook
-   * @param {BufferResolvable} attachment The file to send
-   * @param {string} [fileName="file.jpg"] The name and extension of the file
-   * @param {StringResolvable} [content] Text message to send with the attachment
-   * @param {WebhookMessageOptions} [options] The options to provide
-   * @returns {Promise<Message>}
-   */
-  sendFile(attachment, fileName, content, options = {}) {
-    if (!fileName) {
-      if (typeof attachment === 'string') {
-        fileName = path.basename(attachment);
-      } else if (attachment && attachment.path) {
-        fileName = path.basename(attachment.path);
-      } else {
-        fileName = 'file.jpg';
-      }
-    }
-    return this.client.resolver.resolveBuffer(attachment).then(file =>
-      this.client.rest.methods.sendWebhookMessage(this, content, options, {
-        file,
-        name: fileName,
-      })
-    );
-  }
-
-  /**
-   * Send a code block with this webhook
-   * @param {string} lang Language for the code block
-   * @param {StringResolvable} content Content of the code block
-   * @param {WebhookMessageOptions} options The options to provide
-   * @returns {Promise<Message|Message[]>}
-   */
-  sendCode(lang, content, options = {}) {
-    if (options.split) {
-      if (typeof options.split !== 'object') options.split = {};
-      if (!options.split.prepend) options.split.prepend = `\`\`\`${lang || ''}\n`;
-      if (!options.split.append) options.split.append = '\n```';
-    }
-    content = escapeMarkdown(this.client.resolver.resolveString(content), true);
-    return this.sendMessage(`\`\`\`${lang || ''}\n${content}\n\`\`\``, options);
   }
 
   /**

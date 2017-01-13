@@ -470,8 +470,8 @@ class Message {
 
   /**
    * Reply to the message
-   * @param {StringResolvable} content The content for the message
-   * @param {MessageOptions} [options = {}] The options to provide
+   * @param {StringResolvable} [content] The content for the message
+   * @param {MessageOptions} [options] The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
    * // reply to a message
@@ -479,9 +479,14 @@ class Message {
    *  .then(msg => console.log(`Sent a reply to ${msg.author}`))
    *  .catch(console.error);
    */
-  reply(content, options = {}) {
-    content = `${this.guild || this.channel.type === 'group' ? `${this.author}, ` : ''}${content}`;
-    return this.channel.send(content, options);
+  reply(content, options) {
+    if (!options && typeof content === 'object' && !(content instanceof Array)) {
+      options = content;
+      content = '';
+    } else if (!options) {
+      options = {};
+    }
+    return this.channel.send(content, Object.assign(options, { reply: this.member || this.author }));
   }
 
   /**
