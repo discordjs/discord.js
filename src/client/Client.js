@@ -432,8 +432,8 @@ class Client extends EventEmitter {
   }
 
   _validateOptions(options = this.options) {
-    if (typeof options.shardCount !== 'number' || isNaN(options.shardCount)) {
-      throw new TypeError('The shardCount option must be a number.');
+    if (options.shardCount !== 'auto' && (typeof options.shardCount !== 'number' || isNaN(options.shardCount))) {
+      throw new TypeError('The shardCount option must be a number or `auto`.');
     }
     if (typeof options.shardID !== 'number' || isNaN(options.shardID)) {
       throw new TypeError('The shardID option must be a number.');

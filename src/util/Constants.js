@@ -83,7 +83,7 @@ const Endpoints = exports.Endpoints = {
   // general
   login: `${API}/auth/login`,
   logout: `${API}/auth/logout`,
-  gateway: `${API}/gateway`,
+  gateway: (bot) => `${API}/gateway${bot ? '/bot' : ''}`,
   botGateway: `${API}/gateway/bot`,
   invite: (id) => `${API}/invite/${id}`,
   inviteLink: (id) => `https://discord.gg/${id}`,

@@ -21,12 +21,14 @@ class WebSocketShardManager extends EventEmitter {
     this.afterConnect = false;
     this.afterReady = false;
 
-    this.shardCount = Math.max(1, client.options.shardCount);
+    if (client.options.shardCount !== 'auto') {
+      this.shardCount = Math.max(1, client.options.shardCount);
 
-    if (this.client.options.shardID) {
-      this.spawn(0);
-    } else {
-      this._spawnAll();
+      if (this.client.options.shardID) {
+        this.spawn(0);
+      } else {
+        this._spawnAll();
+      }
     }
 
     this.client.on('shardReady', () => {
@@ -43,7 +45,7 @@ class WebSocketShardManager extends EventEmitter {
         return;
       }
       this.spawn(this.managers.length);
-    }, 5250);
+    }, 5500);
   }
 
   spawn(id) {
@@ -60,12 +62,17 @@ class WebSocketShardManager extends EventEmitter {
     this.managers.push(manager);
   }
 
-  connect(gateway) {
+  connect(gateway, shardCount) {
     this.gateway = gateway;
-    for (const manager of this.managers) {
-      manager.connect(gateway);
-    }
     this.afterConnect = true;
+    if (shardCount) {
+      this.shardCount = shardCount;
+      this._spawnAll();
+    } else {
+      for (const manager of this.managers) {
+        manager.connect(gateway);
+      }
+    }
   }
 
   checkIfReady() {

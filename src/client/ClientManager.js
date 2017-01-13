@@ -24,11 +24,16 @@ class ClientManager {
     this.client.token = token;
     const timeout = this.client.setTimeout(() =>
       reject(new Error(Constants.Errors.TOOK_TOO_LONG)),
-      this.client.ws.shardCount * 60000
+      (this.client.ws.shardCount || 1) * 60000
     );
-    this.client.rest.methods.getGateway().then(gateway => {
+    this.client.rest.methods.getGateway(this.client.options.shardCount === 'auto').then(res => {
+      const gateway = `${res.url}/?v=${Constants.PROTOCOL_VERSION}`;
       this.client.emit(Constants.Events.DEBUG, `Using gateway ${gateway}`);
-      this.client.ws.connect(gateway);
+      if (res.shards) {
+        this.client.options.shardCount = res.shards;
+        this.client.emit(Constants.Events.DEBUG, `Using recommended shard count of ${res.shards}`);
+      }
+      this.client.ws.connect(gateway, res.shards);
       this.client.ws.once('close', event => {
         if (event.code === 4004) reject(new Error(Constants.Errors.BAD_LOGIN));
         if (event.code === 4010) reject(new Error(Constants.Errors.INVALID_SHARD));

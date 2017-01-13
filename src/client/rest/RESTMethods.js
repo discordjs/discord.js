@@ -35,15 +35,9 @@ class RESTMethods {
     return this.rest.makeRequest('post', Constants.Endpoints.logout, true, {});
   }
 
-  getGateway() {
-    return this.rest.makeRequest('get', Constants.Endpoints.gateway, true).then(res => {
-      this.client.ws.gateway = `${res.url}/?v=${Constants.PROTOCOL_VERSION}`;
-      return this.client.ws.gateway;
-    });
-  }
-
-  getBotGateway() {
-    return this.rest.makeRequest('get', Constants.Endpoints.botGateway, true);
+  getGateway(bot = false) {
+    if (bot) this.client.token = `Bot ${this.client.token.replace(/^Bot\s*/i, '')}`;
+    return this.rest.makeRequest('get', Constants.Endpoints.gateway(bot), true);
   }
 
   sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code, reply } = {}, file = null) {

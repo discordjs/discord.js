@@ -1,5 +1,5 @@
 const superagent = require('superagent');
-const botGateway = require('./Constants').Endpoints.botGateway;
+const botGateway = require('./Constants').Endpoints.gateway(true);
 
 /**
  * Gets the recommended shard count from Discord
