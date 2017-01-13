@@ -22,7 +22,10 @@ class ClientManager {
   connectToWebSocket(token, resolve, reject) {
     this.client.emit(Constants.Events.DEBUG, `Authenticated using token ${token}`);
     this.client.token = token;
-    const timeout = this.client.setTimeout(() => reject(new Error(Constants.Errors.TOOK_TOO_LONG)), 1000 * 300);
+    const timeout = this.client.setTimeout(() =>
+      reject(new Error(Constants.Errors.TOOK_TOO_LONG)),
+      this.client.ws.shardCount * 60000
+    );
     this.client.rest.methods.getGateway().then(gateway => {
       this.client.emit(Constants.Events.DEBUG, `Using gateway ${gateway}`);
       this.client.ws.connect(gateway);

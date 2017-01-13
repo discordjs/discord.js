@@ -19,6 +19,7 @@ class WebSocketShardManager extends EventEmitter {
     this.gateway = null;
 
     this.afterConnect = false;
+    this.afterReady = false;
 
     this.shardCount = Math.max(1, client.options.shardCount);
 
@@ -74,7 +75,10 @@ class WebSocketShardManager extends EventEmitter {
        * Emitted when the Client becomes ready to start working
        * @event Client#ready
        */
-      this.client.emit(Constants.Events.READY);
+      if (!this.afterReady) {
+        this.client.emit(Constants.Events.READY);
+        this.afterReady = true;
+      }
     }
   }
 }
