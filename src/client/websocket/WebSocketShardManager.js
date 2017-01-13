@@ -84,6 +84,10 @@ class WebSocketShardManager extends EventEmitter {
       }
     }
   }
+
+  broadcast(data) {
+    for (const manager of this.managers) manager.send(data);
+  }
 }
 
 module.exports = WebSocketShardManager;

@@ -2,7 +2,8 @@ const request = require('superagent');
 const Constants = require('../../util/Constants');
 
 class APIRequest {
-  constructor(rest, method, url, auth, data, file) {
+  constructor(rest, method, url, auth, data, file, forceBot = false) {
+    this.client = rest.client;
     this.rest = rest;
     this.method = method;
     this.url = url;
@@ -10,6 +11,7 @@ class APIRequest {
     this.data = data;
     this.file = file;
     this.route = this.getRoute(this.url);
+    this.forceBot = forceBot;
   }
 
   getRoute(url) {
@@ -23,12 +25,15 @@ class APIRequest {
   }
 
   getAuth() {
-    if (this.rest.client.token && this.rest.client.user && this.rest.client.user.bot) {
-      return `Bot ${this.rest.client.token}`;
-    } else if (this.rest.client.token) {
-      return this.rest.client.token;
+    if (this.client.token) {
+      if ((this.client.user && this.client.user.bot) || this.forceBot) {
+        return `Bot ${this.client.token}`;
+      } else {
+        return this.client.token;
+      }
+    } else {
+      throw new Error(Constants.Errors.NO_TOKEN);
     }
-    throw new Error(Constants.Errors.NO_TOKEN);
   }
 
   gen() {
@@ -41,7 +46,7 @@ class APIRequest {
     } else if (this.data) {
       apiRequest.send(this.data);
     }
-    if (!this.rest.client.browser) apiRequest.set('User-Agent', this.rest.userAgentManager.userAgent);
+    if (!this.client.browser) apiRequest.set('User-Agent', this.rest.userAgentManager.userAgent);
     return apiRequest;
   }
 }

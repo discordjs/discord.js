@@ -193,7 +193,7 @@ class ClientUser extends User {
       this.localPresence.since = 0;
       this.localPresence.game = this.localPresence.game || null;
 
-      this.client.ws.send({
+      this.client.ws.broadcast({
         op: 3,
         d: this.localPresence,
       });

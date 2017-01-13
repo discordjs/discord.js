@@ -36,8 +36,8 @@ class RESTManager {
     }
   }
 
-  makeRequest(method, url, auth, data, file) {
-    const apiRequest = new APIRequest(this, method, url, auth, data, file);
+  makeRequest(method, url, auth, data, file, forceBot) {
+    const apiRequest = new APIRequest(this, method, url, auth, data, file, forceBot);
 
     if (!this.handlers[apiRequest.route]) {
       const RequestHandlerType = this.getRequestHandler();

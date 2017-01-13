@@ -36,8 +36,7 @@ class RESTMethods {
   }
 
   getGateway(bot = false) {
-    if (bot) this.client.token = `Bot ${this.client.token.replace(/^Bot\s*/i, '')}`;
-    return this.rest.makeRequest('get', Constants.Endpoints.gateway(bot), true);
+    return this.rest.makeRequest('get', Constants.Endpoints.gateway(bot), true, null, null, bot);
   }
 
   sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code, reply } = {}, file = null) {

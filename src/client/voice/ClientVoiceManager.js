@@ -65,7 +65,7 @@ class ClientVoiceManager {
       self_deaf: false,
     }, options);
 
-    this.client.ws.send({
+    this.client.ws.handlers[channel.guild.shardID].send({
       op: Constants.OPCodes.VOICE_STATE_UPDATE,
       d: options,
     });
