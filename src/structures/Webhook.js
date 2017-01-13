@@ -1,5 +1,4 @@
 const path = require('path');
-const escapeMarkdown = require('../util/EscapeMarkdown');
 
 /**
  * Represents a webhook
@@ -76,7 +75,7 @@ class Webhook {
    * @property {string} [avatarURL] Avatar URL override for the message
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
-   * @property {Object} [embed] An embed for the message
+   * @property {Object[]} [embeds] An array of embeds for the message
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
