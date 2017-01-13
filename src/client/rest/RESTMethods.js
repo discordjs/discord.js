@@ -140,7 +140,7 @@ class RESTMethods {
   bulkDeleteMessages(channel, messages, filterOld) {
     if (filterOld) {
       messages = messages.filter(id => 
-        Date.now() - Snowflake.deconstruct(messages[i]).date.getTime() < 1209600000)
+        Date.now() - Snowflake.deconstruct(messages[i]).date.getTime() < 1209600000
       );
     }
     return this.rest.makeRequest('post', `${Constants.Endpoints.channelMessages(channel.id)}/bulk_delete`, true, {
