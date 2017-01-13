@@ -322,11 +322,9 @@ class WebSocketManager extends EventEmitter {
   }
 
   _emitReady(normal = true) {
-    /**
-     * Emitted when the Client becomes ready to start working
-     * @event Client#ready
-     */
-    this.client.emit(Constants.Events.READY);
+    this.status = Constants.Status.READY;
+    this.packetManager.handleQueue();
+    this.normalReady = normal;
 
     /**
      * Emitted when the Client becomes ready to start working
@@ -334,10 +332,6 @@ class WebSocketManager extends EventEmitter {
      * @param {Number} shardID
      */
     this.client.emit(Constants.Events.SHARD_READY, this.shardID);
-
-    this.status = Constants.Status.READY;
-    this.packetManager.handleQueue();
-    this.normalReady = normal;
   }
 
   /**

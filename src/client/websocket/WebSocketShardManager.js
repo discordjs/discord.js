@@ -1,5 +1,6 @@
 const EventEmitter = require('events').EventEmitter;
 const WebSocketManager = require('./WebSocketManager');
+const Constants = require('../../util/Constants');
 
 class WebSocketShardManager extends EventEmitter {
   constructor(client) { // eslint-disable-line consistent-return
@@ -15,6 +16,16 @@ class WebSocketShardManager extends EventEmitter {
     this.shardCount = Math.max(1, client.options.shardCount);
 
     this._spawnAll();
+
+    this.client.on('shardReady', () => {
+      if (this.managers.every((m) => m.status === Constants.Status.READY)) {
+        /**
+         * Emitted when the Client becomes ready to start working
+         * @event Client#ready
+         */
+        this.client.emit(Constants.Events.READY);
+      }
+    });
   }
 
   _spawnAll() {
@@ -25,7 +36,7 @@ class WebSocketShardManager extends EventEmitter {
         clearInterval(interval);
         return;
       }
-      this.spawn(this.managers.size);
+      this.spawn(this.managers.length);
     }, 1000);
   }
 
@@ -51,13 +62,7 @@ class WebSocketShardManager extends EventEmitter {
     this.afterConnect = true;
   }
 
-  heartbeat() {
-    for (const manager of this.managers) manager.heartbeat();
-  }
-
-  send(data) {
-    for (const manager of this.managers) manager.send(data);
-  }
+  _emitReady() {}
 }
 
 module.exports = WebSocketShardManager;

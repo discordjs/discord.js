@@ -355,7 +355,7 @@ class Guild {
         return;
       }
       this._fetchWaiter = resolve;
-      this.client.ws.send({
+      this.client.ws.managers[this.shardID].send({
         op: Constants.OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
           guild_id: this.id,
