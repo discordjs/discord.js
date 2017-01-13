@@ -37,7 +37,7 @@ class WebSocketShardManager extends EventEmitter {
   }
 
   _spawnAll() {
-    this.client.emit('debug', `Spawning ${this.shardCount} shards`);
+    this.client.emit('debug', `Spawning ${this.shardCount} shard(s)`);
     this.spawn(0);
     const interval = setInterval(() => {
       if (this.managers.length >= this.shardCount) {
