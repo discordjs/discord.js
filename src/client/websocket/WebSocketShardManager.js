@@ -22,7 +22,11 @@ class WebSocketShardManager extends EventEmitter {
 
     this.shardCount = Math.max(1, client.options.shardCount);
 
-    this._spawnAll();
+    if (this.client.options.shardID) {
+      this.spawn(0);
+    } else {
+      this._spawnAll();
+    }
 
     this.client.on('shardReady', () => {
       this.checkIfReady();
