@@ -23,11 +23,11 @@ class TextBasedChannel {
   }
 
   /**
-   * Options that can be passed into send, sendMessage, sendFile, sendEmbed, sendCode, and Message#reply
+   * Options provided when sending or editing a message
    * @typedef {Object} MessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
-   * @property {Object} [embed] An embed for the message
+   * @property {RichEmbed|Object} [embed] An embed for the message
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
@@ -35,12 +35,13 @@ class TextBasedChannel {
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
+   * @property {UserResolvable} [reply] User to reply to (prefixes the message with a mention, except in DMs)
    */
 
   /**
    * @typedef {Object} FileOptions
-   * @property {BufferResolvable} attachment
-   * @property {string} [name='file.jpg']
+   * @property {BufferResolvable} attachment File to attach
+   * @property {string} [name='file.jpg'] Filename of the attachment
    */
 
   /**
@@ -70,6 +71,7 @@ class TextBasedChannel {
     } else if (!options) {
       options = {};
     }
+
     if (options.file) {
       if (typeof options.file === 'string') options.file = { attachment: options.file };
       if (!options.file.name) {
@@ -81,6 +83,7 @@ class TextBasedChannel {
           options.file.name = 'file.jpg';
         }
       }
+
       return this.client.resolver.resolveBuffer(options.file.attachment).then(file =>
         this.client.rest.methods.sendMessage(this, content, options, {
           file,
@@ -88,12 +91,13 @@ class TextBasedChannel {
         })
       );
     }
+
     return this.client.rest.methods.sendMessage(this, content, options);
   }
 
   /**
    * Send a message to this channel
-   * @param {StringResolvable} content Text for the message
+   * @param {StringResolvable} [content] Text for the message
    * @param {MessageOptions} [options={}] Options for the message
    * @returns {Promise<Message|Message[]>}
    * @example
@@ -114,7 +118,7 @@ class TextBasedChannel {
    * @returns {Promise<Message>}
    */
   sendEmbed(embed, content, options) {
-    if (!options && typeof content === 'object') {
+    if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
       content = '';
     } else if (!options) {

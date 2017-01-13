@@ -278,8 +278,8 @@ class Guild {
   }
 
   /**
-   * The `#general` GuildChannel of the server.
-   * @type {GuildChannel}
+   * The `#general` TextChannel of the server.
+   * @type {TextChannel}
    * @readonly
    */
   get defaultChannel() {

@@ -72,6 +72,7 @@ exports.Errors = {
   INVALID_RATE_LIMIT_METHOD: 'Unknown rate limiting method.',
   BAD_LOGIN: 'Incorrect login details were provided.',
   INVALID_SHARD: 'Invalid shard settings were provided.',
+  SHARDING_REQUIRED: 'This session would have handled too many guilds - Sharding is required.',
   INVALID_TOKEN: 'An invalid token was provided.',
 };
 
@@ -365,6 +366,34 @@ const PermissionFlags = exports.PermissionFlags = {
   MANAGE_ROLES_OR_PERMISSIONS: 1 << 28,
   MANAGE_WEBHOOKS: 1 << 29,
   MANAGE_EMOJIS: 1 << 30,
+};
+
+exports.Colors = {
+  DEFAULT: 0x000000,
+  AQUA: 0x1ABC9C,
+  GREEN: 0x2ECC71,
+  BLUE: 0x3498DB,
+  PURPLE: 0x9B59B6,
+  GOLD: 0xF1C40F,
+  ORANGE: 0xE67E22,
+  RED: 0xE74C3C,
+  GREY: 0x95A5A6,
+  NAVY: 0x34495E,
+  DARK_AQUA: 0x11806A,
+  DARK_GREEN: 0x1F8B4C,
+  DARK_BLUE: 0x206694,
+  DARK_PURPLE: 0x71368A,
+  DARK_GOLD: 0xC27C0E,
+  DARK_ORANGE: 0xA84300,
+  DARK_RED: 0x992D22,
+  DARK_GREY: 0x979C9F,
+  DARKER_GREY: 0x7F8C8D,
+  LIGHT_GREY: 0xBCC0C0,
+  DARK_NAVY: 0x2C3E50,
+  BLURPLE: 0x7289DA,
+  GREYPLE: 0x99AAB5,
+  DARK_BUT_NOT_BLACK: 0x2C2F33,
+  NOT_QUITE_BLACK: 0x23272A,
 };
 
 let _ALL_PERMISSIONS = 0;
