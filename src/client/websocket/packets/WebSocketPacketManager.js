@@ -92,13 +92,13 @@ class WebSocketPacketManager {
     if (packet.op === Constants.OPCodes.HEARTBEAT_ACK) {
       this.ws.client._pong(this.ws.client._pingTimestamp);
       this.ws.lastHeartbeatAck = true;
-      this.ws.client.emit('debug', `SHARD: ${packet.shardID} | Heartbeat acknowledged`);
+      this.ws.emit('debug', 'Heartbeat acknowledged');
     } else if (packet.op === Constants.OPCodes.HEARTBEAT) {
-      this.client.ws.send({
+      this.ws.send({
         op: Constants.OPCodes.HEARTBEAT,
-        d: this.client.ws.sequence,
+        d: this.ws.sequence,
       });
-      this.ws.client.emit('debug', 'Received gateway heartbeat');
+      this.ws.emit('debug', 'Received gateway heartbeat');
     }
 
     if (this.ws.status === Constants.Status.RECONNECTING) {

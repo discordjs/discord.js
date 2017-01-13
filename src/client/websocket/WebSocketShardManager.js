@@ -31,7 +31,7 @@ class WebSocketShardManager extends EventEmitter {
         return;
       }
       this.spawn(this.managers.length);
-    }, 1000);
+    }, 5250);
   }
 
   spawn(id) {
@@ -57,6 +57,7 @@ class WebSocketShardManager extends EventEmitter {
   }
 
   _checkReady() {
+    if (this.managers.length < this.shardCount) return;
     if (this.managers.every((m) => m.status === Constants.Status.READY)) {
       /**
        * Emitted when the Client becomes ready to start working

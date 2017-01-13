@@ -273,7 +273,9 @@ class WebSocketManager extends EventEmitter {
 
     this.client.emit('raw', data);
 
-    if (data.op === Constants.OPCodes.HELLO) this.client.manager.setupKeepAlive(data.d.heartbeat_interval);
+    if (data.op === Constants.OPCodes.HELLO) {
+      this.heartbeatInterval = this.client.setInterval(() => this.heartbeat(true), data.d.heartbeat_interval);
+    }
     data.shardID = this.shardID;
     return this.packetManager.handle(data);
   }
@@ -341,13 +343,13 @@ class WebSocketManager extends EventEmitter {
   checkIfReady() {
     if (this.status !== Constants.Status.READY && this.status !== Constants.Status.NEARLY) {
       let unavailableCount = 0;
-      for (const guildID of this.client.guilds.keys()) {
+      for (const guildID of this.client.guilds.filter(g => g.shardID === this.shardID).keys()) {
         unavailableCount += this.client.guilds.get(guildID).available ? 0 : 1;
       }
       if (unavailableCount === 0) {
         this.status = Constants.Status.NEARLY;
         if (this.client.options.fetchAllMembers) {
-          const promises = this.client.guilds.map(g => g.fetchMembers());
+          const promises = this.client.guilds.filter(g => g.shardID === this.shardId).map(g => g.fetchMembers());
           Promise.all(promises).then(() => this._emitReady(), e => {
             this.client.emit(Constants.Events.WARN, 'Error in pre-ready guild member fetching');
             this.client.emit(Constants.Events.ERROR, e);

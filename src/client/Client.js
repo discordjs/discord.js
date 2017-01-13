@@ -257,12 +257,14 @@ class Client extends EventEmitter {
    * if you wish to force a sync of guild data, you can use this.
    * <warn>This is only available when using a user account.</warn>
    * @param {Guild[]|Collection<string, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
+   * @param {number} shardID The shard id to sync
    */
-  syncGuilds(guilds = this.guilds) {
+  syncGuilds(guilds = this.guilds, shardID) {
     if (this.user.bot) return;
-    this.ws.send({
+    guilds = guilds.filter(g => g.shardID === shardID);
+    this.ws.managers[shardID].send({
       op: 12,
-      d: guilds instanceof Collection ? guilds.keyArray() : guilds.map(g => g.id),
+      d: guilds,
     });
   }
 

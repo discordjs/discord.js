@@ -6,8 +6,9 @@ class ReadyHandler extends AbstractHandler {
   handle(packet) {
     const client = this.packetManager.client;
     const data = packet.d;
+    const ws = client.ws.managers[packet.shardID];
 
-    client.ws.managers[packet.shardID].heartbeat();
+    ws.heartbeat();
 
     const clientUser = new ClientUser(client, data.user);
     clientUser.settings = data.user_settings;
@@ -45,8 +46,11 @@ class ReadyHandler extends AbstractHandler {
       }
     }
 
-    if (!client.user.bot && client.options.sync) client.setInterval(client.syncGuilds.bind(client), 30000);
-    client.once('ready', client.syncGuilds.bind(client));
+    if (!client.user.bot && client.options.sync) {
+      client.setInterval(() => client.syncGuilds(client.guilds, ws.shardID), 30000);
+    }
+
+    ws.once('shardReady', () => client.syncGuilds(client.guilds, ws.shardID));
 
     if (!client.users.has('1')) {
       client.dataManager.newUser({
@@ -62,11 +66,11 @@ class ReadyHandler extends AbstractHandler {
     }
 
     client.setTimeout(() => {
-      if (!client.ws.managers[packet.shardID].normalReady) client.ws.managers[packet.shardID]._emitReady(false);
+      if (!ws.normalReady) ws._emitReady(false);
     }, 1200 * data.guilds.length);
 
-    this.packetManager.ws.sessionID = data.session_id;
-    this.packetManager.ws.checkIfReady();
+    ws.sessionID = data.session_id;
+    ws.checkIfReady();
   }
 }
 
