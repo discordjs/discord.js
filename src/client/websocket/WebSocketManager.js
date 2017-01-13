@@ -4,7 +4,6 @@ const Constants = require('../../util/Constants');
 const convertArrayBuffer = require('../../util/ConvertArrayBuffer');
 const pako = require('pako');
 const zlib = require('zlib');
-const PacketManager = require('./packets/WebSocketPacketManager');
 
 let WebSocket, erlpack;
 let serialize = JSON.stringify;
@@ -30,7 +29,7 @@ if (browser) {
  * @private
  */
 class WebSocketManager extends EventEmitter {
-  constructor(client, options = {}) {
+  constructor(client, packetManager, options = {}) {
     super();
     /**
      * The Client that instantiated this WebSocketManager
@@ -38,11 +37,7 @@ class WebSocketManager extends EventEmitter {
      */
     this.client = client;
 
-    /**
-     * A WebSocket Packet manager, it handles all the messages
-     * @type {PacketManager}
-     */
-    this.packetManager = new PacketManager(this);
+    this.packetManager = packetManager;
 
     /**
      * The status of the WebSocketManager, a type of Constants.Status. It defaults to IDLE.
@@ -94,7 +89,7 @@ class WebSocketManager extends EventEmitter {
     this.shardID = options.shardID || this.client.options.shardID;
     this.shardCount = options.shardCount || this.client.options.shardCount;
 
-    this.on('debug', e => this.client.emit('debug', `SHARD: ${this.shardID} | ${e}`));
+    this.on('debug', e => this.client.emit('debug', `SHARD ${this.shardID}: ${e}`));
   }
 
   /**
@@ -276,6 +271,9 @@ class WebSocketManager extends EventEmitter {
     if (data.op === Constants.OPCodes.HELLO) {
       this.heartbeatInterval = this.client.setInterval(() => this.heartbeat(true), data.d.heartbeat_interval);
     }
+
+    if (data.s && data.s > this.sequence) this.sequence = data.s;
+
     data.shardID = this.shardID;
     return this.packetManager.handle(data);
   }

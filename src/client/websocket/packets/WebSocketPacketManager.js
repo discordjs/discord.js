@@ -10,8 +10,8 @@ const BeforeReadyWhitelist = [
 ];
 
 class WebSocketPacketManager {
-  constructor(websocketManager) {
-    this.ws = websocketManager;
+  constructor(websocketShardManager) {
+    this.ws = websocketShardManager;
     this.handlers = {};
     this.queue = [];
 
@@ -66,51 +66,46 @@ class WebSocketPacketManager {
     });
   }
 
-  setSequence(s) {
-    if (s && s > this.ws.sequence) this.ws.sequence = s;
-  }
-
   handle(packet) {
+    const ws = this.ws.managers[packet.shardID];
+
     if (packet.op === Constants.OPCodes.RECONNECT) {
-      this.setSequence(packet.s);
-      this.ws.tryReconnect();
+      ws.tryReconnect();
       return false;
     }
 
     if (packet.op === Constants.OPCodes.INVALID_SESSION) {
       if (packet.d) {
         setTimeout(() => {
-          this.ws._sendResume();
+          ws._sendResume();
         }, 2500);
       } else {
-        this.ws.sessionID = null;
-        this.ws._sendNewIdentify();
+        ws.sessionID = null;
+        ws._sendNewIdentify();
       }
       return false;
     }
 
     if (packet.op === Constants.OPCodes.HEARTBEAT_ACK) {
-      this.ws.client._pong(this.ws.client._pingTimestamp);
-      this.ws.lastHeartbeatAck = true;
-      this.ws.emit('debug', 'Heartbeat acknowledged');
+      ws.client._pong(this.client._pingTimestamp);
+      ws.lastHeartbeatAck = true;
+      ws.emit('debug', 'Heartbeat acknowledged');
     } else if (packet.op === Constants.OPCodes.HEARTBEAT) {
-      this.ws.send({
+      ws.send({
         op: Constants.OPCodes.HEARTBEAT,
-        d: this.ws.sequence,
+        d: ws.sequence,
       });
-      this.ws.emit('debug', 'Received gateway heartbeat');
+      ws.emit('debug', 'Received gateway heartbeat');
     }
 
     if (this.ws.status === Constants.Status.RECONNECTING) {
-      this.ws.reconnecting = false;
-      this.ws.checkIfReady();
+      ws.reconnecting = false;
+      ws.checkIfReady();
     }
 
-    this.setSequence(packet.s);
+    if (ws.disabledEvents[packet.t] !== undefined) return false;
 
-    if (this.ws.disabledEvents[packet.t] !== undefined) return false;
-
-    if (this.ws.status !== Constants.Status.READY) {
+    if (ws.status !== Constants.Status.READY) {
       if (BeforeReadyWhitelist.indexOf(packet.t) === -1) {
         this.queue.push(packet);
         return false;
