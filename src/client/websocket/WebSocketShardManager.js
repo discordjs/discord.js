@@ -14,11 +14,7 @@ class WebSocketShardManager extends EventEmitter {
 
     this.shardCount = Math.max(1, client.options.shardCount);
 
-    if (this.shardCount === 1) {
-      return new WebSocketManager(client);
-    } else {
-      this._spawnAll();
-    }
+    this._spawnAll();
   }
 
   _spawnAll() {
