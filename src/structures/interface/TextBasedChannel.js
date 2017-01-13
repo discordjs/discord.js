@@ -353,10 +353,10 @@ class TextBasedChannel {
   }
 
   /**
-   * Bulk delete given messages from less than two weeks ago.
+   * Bulk delete given messages that are newer than two weeks
    * <warn>This is only available when using a bot account.</warn>
    * @param {Collection<string, Message>|Message[]|number} messages Messages to delete, or number of messages to delete
-   * @param {boolean} [filterOld=false] Filter messages older than two weeks automatically
+   * @param {boolean} [filterOld=false] Whether to filter the messages to remove those which are older than two weeks automatically
    * @returns {Promise<Collection<string, Message>>} Deleted messages
    */
   bulkDelete(messages, filterOld = false) {
