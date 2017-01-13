@@ -2,7 +2,6 @@ const path = require('path');
 const Message = require('../Message');
 const MessageCollector = require('../MessageCollector');
 const Collection = require('../../util/Collection');
-let GuildMember;
 
 /**
  * Interface for classes that have text-channel-like features
@@ -41,8 +40,8 @@ class TextBasedChannel {
 
   /**
    * @typedef {Object} FileOptions
-   * @property {BufferResolvable} attachment
-   * @property {string} [name='file.jpg']
+   * @property {BufferResolvable} attachment File to attach
+   * @property {string} [name='file.jpg'] Filename of the attachment
    */
 
   /**
