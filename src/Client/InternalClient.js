@@ -1754,32 +1754,33 @@ export default class InternalClient {
 			this.websocket = null;
 			this.state = ConnectionState.DISCONNECTED;
 			if(event && event.code) {
-                this.client.emit("warn", "WS close: " + event.code);
-                var err;
-                if(event.code === 4001) {
-                    err = new Error("Gateway received invalid OP code");
-                } else if(event.code === 4005) {
-                    err = new Error("Gateway received invalid message");
-                } else if(event.code === 4003) {
-                    err = new Error("Not authenticated");
-                } else if(event.code === 4004) {
-                    err = new Error("Authentication failed");
-                } else if(event.code === 4005) {
-                    err = new Error("Already authenticated");
-                } if(event.code === 4006 || event.code === 4009) {
-                    err = new Error("Invalid session");
-                } else if(event.code === 4007) {
-                    this.sequence = 0;
-                    err = new Error("Invalid sequence number");
-                } else if(event.code === 4008) {
-                    err = new Error("Gateway connection was ratelimited");
-                } else if(event.code === 4010) {
-                    err = new Error("Invalid shard key");
-                }
-                if(err) {
-                	this.client.emit("error", err);
-                }
-            }
+				console.log("close event", event, event.code);
+				this.client.emit("warn", "WS close: " + event.code);
+				var err;
+				if(event.code === 4001) {
+						err = new Error("Gateway received invalid OP code");
+				} else if(event.code === 4005) {
+						err = new Error("Gateway received invalid message");
+				} else if(event.code === 4003) {
+						err = new Error("Not authenticated");
+				} else if(event.code === 4004) {
+						err = new Error("Authentication failed");
+				} else if(event.code === 4005) {
+						err = new Error("Already authenticated");
+				} if(event.code === 4006 || event.code === 4009) {
+						err = new Error("Invalid session");
+				} else if(event.code === 4007) {
+						this.sequence = 0;
+						err = new Error("Invalid sequence number");
+				} else if(event.code === 4008) {
+						err = new Error("Gateway connection was ratelimited");
+				} else if(event.code === 4010) {
+						err = new Error("Invalid shard key");
+				}
+				if(err) {
+					this.client.emit("error", err);
+				}
+		}
 			this.disconnected(this.client.options.autoReconnect);
 		};
 
@@ -1859,14 +1860,15 @@ export default class InternalClient {
 	processPacket(packet) {
 		var client = this.client;
 		var data = packet.d;
+		console.log(packet);
 		switch (packet.t) {
-			case PacketType.RESUME:
+			case PacketType.RESUMED:
 			case PacketType.READY:
 				console.log('got ready or resume, type', packet.t);
 				this.autoReconnectInterval = 1000;
 				this.state = ConnectionState.READY;
 
-				if(packet.t === PacketType.RESUME) {
+				if(packet.t === PacketType.RESUMED) {
 					break;
 				}
 
@@ -1944,6 +1946,7 @@ export default class InternalClient {
 				console.log("got message create");
 				// format: https://discordapi.readthedocs.org/en/latest/reference/channels/messages.html#message-format
 				var channel = this.channels.get("id", data.channel_id) || this.private_channels.get("id", data.channel_id);
+				console.log("typeof channel", typeof channel);
 				if (channel) {
 					var msg = channel.messages.add(new Message(data, channel, client));
 					channel.lastMessageID = msg.id;
