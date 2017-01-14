@@ -250,7 +250,7 @@ class TextBasedChannel {
         count: count || 1,
         interval: this.client.setInterval(() => {
           this.client.rest.methods.sendTyping(this.id);
-        }, 4000),
+        }, 9000),
       });
       this.client.rest.methods.sendTyping(this.id);
     } else {
