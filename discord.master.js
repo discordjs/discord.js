@@ -8841,6 +8841,7 @@ class ClientDataResolver {
    */
 
   /**
+   * Resolves a ColorResolvable into a color number
    * @param {ColorResolvable} color Color to resolve
    * @returns {number} A color
    */
@@ -8850,11 +8851,13 @@ class ClientDataResolver {
     } else if (color instanceof Array) {
       color = (color[0] << 16) + (color[1] << 8) + color[2];
     }
+
     if (color < 0 || color > 0xFFFFFF) {
       throw new RangeError('Color must be within the range 0 - 16777215 (0xFFFFFF).');
     } else if (color && isNaN(color)) {
       throw new TypeError('Unable to convert color to a number.');
     }
+
     return color;
   }
 
@@ -8863,7 +8866,7 @@ class ClientDataResolver {
    * @returns {number} A color
    */
   resolveColor(color) {
-    return ClientDataResolver.resolveColor(color);
+    return this.constructor.resolveColor(color);
   }
 }
 
