@@ -299,7 +299,7 @@ class ClientUser extends User {
   }
 
   /**
-   * @param {Invite|string} invite Invite to accept
+   * @param {Invite|string} invite Invite or code to accept
    * @returns {Promise<Guild>} Joined guild
    */
   acceptInvite(invite) {
