@@ -5,6 +5,7 @@ const splitMessage = require('../../util/SplitMessage');
 const parseEmoji = require('../../util/ParseEmoji');
 const escapeMarkdown = require('../../util/EscapeMarkdown');
 const transformSearchOptions = require('../../util/TransformSearchOptions');
+const Snowflake = require('../../util/Snowflake');
 
 const User = require('../../structures/User');
 const GuildMember = require('../../structures/GuildMember');
@@ -136,7 +137,12 @@ class RESTMethods {
       );
   }
 
-  bulkDeleteMessages(channel, messages) {
+  bulkDeleteMessages(channel, messages, filterOld) {
+    if (filterOld) {
+      messages = messages.filter(id =>
+        Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000
+      );
+    }
     return this.rest.makeRequest('post', `${Constants.Endpoints.channelMessages(channel.id)}/bulk_delete`, true, {
       messages,
     }).then(() =>
