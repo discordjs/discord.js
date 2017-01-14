@@ -1965,7 +1965,7 @@ module.exports = Emoji;
 
 const TextBasedChannel = __webpack_require__(13);
 const Role = __webpack_require__(9);
-const EvaluatedPermissions = __webpack_require__(16);
+const EvaluatedPermissions = __webpack_require__(17);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(7).Presence;
@@ -2416,7 +2416,7 @@ const Embed = __webpack_require__(37);
 const MessageReaction = __webpack_require__(38);
 const Collection = __webpack_require__(3);
 const Constants = __webpack_require__(0);
-const escapeMarkdown = __webpack_require__(19);
+const escapeMarkdown = __webpack_require__(20);
 let GuildMember;
 
 /**
@@ -3351,16 +3351,17 @@ class TextBasedChannel {
   }
 
   /**
-   * Bulk delete given messages.
+   * Bulk delete given messages that are newer than two weeks
    * <warn>This is only available when using a bot account.</warn>
    * @param {Collection<string, Message>|Message[]|number} messages Messages to delete, or number of messages to delete
+   * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
    * @returns {Promise<Collection<string, Message>>} Deleted messages
    */
-  bulkDelete(messages) {
+  bulkDelete(messages, filterOld = false) {
     if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs));
     if (messages instanceof Array || messages instanceof Collection) {
       const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
-      return this.client.rest.methods.bulkDeleteMessages(this, messageIDs);
+      return this.client.rest.methods.bulkDeleteMessages(this, messageIDs, filterOld);
     }
     throw new TypeError('The messages must be an Array, Collection, or number.');
   }
@@ -4282,7 +4283,7 @@ module.exports = Guild;
 const Channel = __webpack_require__(8);
 const Role = __webpack_require__(9);
 const PermissionOverwrites = __webpack_require__(42);
-const EvaluatedPermissions = __webpack_require__(16);
+const EvaluatedPermissions = __webpack_require__(17);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 
@@ -4584,6 +4585,77 @@ module.exports = GuildChannel;
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
+const Long = __webpack_require__(46);
+
+// Discord epoch (2015-01-01T00:00:00.000Z)
+const EPOCH = 1420070400000;
+let INCREMENT = 0;
+
+/**
+ * A container for useful snowflake-related methods
+ */
+class SnowflakeUtil {
+  /**
+   * A Twitter snowflake, except the epoch is 2015-01-01T00:00:00.000Z
+   * ```
+   * If we have a snowflake '266241948824764416' we can represent it as binary:
+   *
+   * 64                                          22     17     12          0
+   *  000000111011000111100001101001000101000000  00001  00000  000000000000
+   *       number of ms since discord epoch       worker  pid    increment
+   * ```
+   * @typedef {string} Snowflake
+   */
+
+  /**
+   * Generates a Discord snowflake
+   * <info>This hardcodes the worker ID as 1 and the process ID as 0.</info>
+   * @returns {Snowflake} The generated snowflake
+   */
+  static generate() {
+    if (INCREMENT >= 4095) INCREMENT = 0;
+    const BINARY = `${pad((Date.now() - EPOCH).toString(2), 42)}0000100000${pad((INCREMENT++).toString(2), 12)}`;
+    return Long.fromString(BINARY, 2).toString();
+  }
+
+  /**
+   * A deconstructed snowflake
+   * @typedef {Object} DeconstructedSnowflake
+   * @property {Date} date Date in the snowflake
+   * @property {number} workerID Worker ID in the snowflake
+   * @property {number} processID Process ID in the snowflake
+   * @property {number} increment Increment in the snowflake
+   * @property {string} binary Binary representation of the snowflake
+   */
+
+  /**
+   * Deconstructs a Discord snowflake
+   * @param {Snowflake} snowflake Snowflake to deconstruct
+   * @returns {DeconstructedSnowflake} Deconstructed snowflake
+   */
+  static deconstruct(snowflake) {
+    const BINARY = pad(Long.fromString(snowflake).toString(2), 64);
+    return {
+      date: new Date(parseInt(BINARY.substring(0, 42), 2) + EPOCH),
+      workerID: parseInt(BINARY.substring(42, 47), 2),
+      processID: parseInt(BINARY.substring(47, 52), 2),
+      increment: parseInt(BINARY.substring(52, 64), 2),
+      binary: BINARY,
+    };
+  }
+}
+
+function pad(v, n, c = '0') {
+  return String(v).length >= n ? String(v) : (String(c).repeat(n) + v).slice(-n);
+}
+
+module.exports = SnowflakeUtil;
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
 const Constants = __webpack_require__(0);
 
 /**
@@ -4654,7 +4726,7 @@ module.exports = EvaluatedPermissions;
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports) {
 
 /**
@@ -4709,7 +4781,7 @@ module.exports = ReactionEmoji;
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const path = __webpack_require__(24);
@@ -4930,7 +5002,7 @@ module.exports = Webhook;
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports) {
 
 module.exports = function escapeMarkdown(text, onlyCodeBlock = false, onlyInlineCode = false) {
@@ -4938,77 +5010,6 @@ module.exports = function escapeMarkdown(text, onlyCodeBlock = false, onlyInline
   if (onlyInlineCode) return text.replace(/\\(`|\\)/g, '$1').replace(/(`|\\)/g, '\\$1');
   return text.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1');
 };
-
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Long = __webpack_require__(46);
-
-// Discord epoch (2015-01-01T00:00:00.000Z)
-const EPOCH = 1420070400000;
-let INCREMENT = 0;
-
-/**
- * A container for useful snowflake-related methods
- */
-class SnowflakeUtil {
-  /**
-   * A Twitter snowflake, except the epoch is 2015-01-01T00:00:00.000Z
-   * ```
-   * If we have a snowflake '266241948824764416' we can represent it as binary:
-   *
-   * 64                                          22     17     12          0
-   *  000000111011000111100001101001000101000000  00001  00000  000000000000
-   *       number of ms since discord epoch       worker  pid    increment
-   * ```
-   * @typedef {string} Snowflake
-   */
-
-  /**
-   * Generates a Discord snowflake
-   * <info>This hardcodes the worker ID as 1 and the process ID as 0.</info>
-   * @returns {Snowflake} The generated snowflake
-   */
-  static generate() {
-    if (INCREMENT >= 4095) INCREMENT = 0;
-    const BINARY = `${pad((Date.now() - EPOCH).toString(2), 42)}0000100000${pad((INCREMENT++).toString(2), 12)}`;
-    return Long.fromString(BINARY, 2).toString();
-  }
-
-  /**
-   * A deconstructed snowflake
-   * @typedef {Object} DeconstructedSnowflake
-   * @property {Date} date Date in the snowflake
-   * @property {number} workerID Worker ID in the snowflake
-   * @property {number} processID Process ID in the snowflake
-   * @property {number} increment Increment in the snowflake
-   * @property {string} binary Binary representation of the snowflake
-   */
-
-  /**
-   * Deconstructs a Discord snowflake
-   * @param {Snowflake} snowflake Snowflake to deconstruct
-   * @returns {DeconstructedSnowflake} Deconstructed snowflake
-   */
-  static deconstruct(snowflake) {
-    const BINARY = pad(Long.fromString(snowflake).toString(2), 64);
-    return {
-      date: new Date(parseInt(BINARY.substring(0, 42), 2) + EPOCH),
-      workerID: parseInt(BINARY.substring(42, 47), 2),
-      processID: parseInt(BINARY.substring(47, 52), 2),
-      increment: parseInt(BINARY.substring(52, 64), 2),
-      binary: BINARY,
-    };
-  }
-}
-
-function pad(v, n, c = '0') {
-  return String(v).length >= n ? String(v) : (String(c).repeat(n) + v).slice(-n);
-}
-
-module.exports = SnowflakeUtil;
 
 
 /***/ }),
@@ -8498,7 +8499,7 @@ const Guild = __webpack_require__(14);
 const Channel = __webpack_require__(8);
 const GuildMember = __webpack_require__(11);
 const Emoji = __webpack_require__(10);
-const ReactionEmoji = __webpack_require__(17);
+const ReactionEmoji = __webpack_require__(18);
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
@@ -10225,7 +10226,7 @@ module.exports = MessageEmbed;
 
 const Collection = __webpack_require__(3);
 const Emoji = __webpack_require__(10);
-const ReactionEmoji = __webpack_require__(17);
+const ReactionEmoji = __webpack_require__(18);
 
 /**
  * Represents a reaction to a message
@@ -13048,7 +13049,7 @@ module.exports = Client;
 /* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Webhook = __webpack_require__(18);
+const Webhook = __webpack_require__(19);
 const RESTManager = __webpack_require__(53);
 const ClientDataResolver = __webpack_require__(28);
 const mergeDefault = __webpack_require__(56);
@@ -22174,15 +22175,16 @@ const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const splitMessage = __webpack_require__(45);
 const parseEmoji = __webpack_require__(158);
-const escapeMarkdown = __webpack_require__(19);
+const escapeMarkdown = __webpack_require__(20);
 const transformSearchOptions = __webpack_require__(159);
+const Snowflake = __webpack_require__(16);
 
 const User = __webpack_require__(6);
 const GuildMember = __webpack_require__(11);
 const Message = __webpack_require__(12);
 const Role = __webpack_require__(9);
 const Invite = __webpack_require__(34);
-const Webhook = __webpack_require__(18);
+const Webhook = __webpack_require__(19);
 const UserProfile = __webpack_require__(156);
 const ClientOAuth2Application = __webpack_require__(30);
 const Channel = __webpack_require__(8);
@@ -22307,7 +22309,12 @@ class RESTMethods {
       );
   }
 
-  bulkDeleteMessages(channel, messages) {
+  bulkDeleteMessages(channel, messages, filterOld) {
+    if (filterOld) {
+      messages = messages.filter(id =>
+        Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000
+      );
+    }
     return this.rest.makeRequest('post', `${Constants.Endpoints.channelMessages(channel.id)}/bulk_delete`, true, {
       messages,
     }).then(() =>
@@ -24869,17 +24876,17 @@ module.exports = {
 
   Collection: __webpack_require__(3),
   splitMessage: __webpack_require__(45),
-  escapeMarkdown: __webpack_require__(19),
+  escapeMarkdown: __webpack_require__(20),
   fetchRecommendedShards: __webpack_require__(60),
-  Snowflake: __webpack_require__(20),
-  SnowflakeUtil: __webpack_require__(20),
+  Snowflake: __webpack_require__(16),
+  SnowflakeUtil: __webpack_require__(16),
 
   Channel: __webpack_require__(8),
   ClientOAuth2Application: __webpack_require__(30),
   ClientUser: __webpack_require__(31),
   DMChannel: __webpack_require__(32),
   Emoji: __webpack_require__(10),
-  EvaluatedPermissions: __webpack_require__(16),
+  EvaluatedPermissions: __webpack_require__(17),
   Game: __webpack_require__(7).Game,
   GroupDMChannel: __webpack_require__(33),
   Guild: __webpack_require__(14),
@@ -24896,13 +24903,13 @@ module.exports = {
   PartialGuildChannel: __webpack_require__(41),
   PermissionOverwrites: __webpack_require__(42),
   Presence: __webpack_require__(7).Presence,
-  ReactionEmoji: __webpack_require__(17),
+  ReactionEmoji: __webpack_require__(18),
   RichEmbed: __webpack_require__(59),
   Role: __webpack_require__(9),
   TextChannel: __webpack_require__(43),
   User: __webpack_require__(6),
   VoiceChannel: __webpack_require__(44),
-  Webhook: __webpack_require__(18),
+  Webhook: __webpack_require__(19),
 
   version: __webpack_require__(29).version,
   Constants: __webpack_require__(0),
