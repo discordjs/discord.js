@@ -539,16 +539,20 @@ export default class InternalClient {
 	// def loginWithToken
 	// email and password are optional
 	loginWithToken(token, email, password) {
+		console.log("login with token, called setup");
 		this.setup();
 
+		console.log("login with token, setting state to logged in");
 		this.state = ConnectionState.LOGGED_IN;
 		this.token = token;
 		this.email = email;
 		this.password = password;
 
+		console.log("Getting Gateway");
 		var self = this;
 		return this.getGateway()
 		.then(url => {
+			console.log("Got the gateway, creating ws");
 			self.token = self.client.options.bot && !self.token.startsWith("Bot ") ? `Bot ${self.token}` : self.token;
 			self.createWS(url);
 			return self.token;
@@ -1746,6 +1750,7 @@ export default class InternalClient {
 		};
 
 		this.websocket.onclose = (event) => {
+			console.log("websocket closed");
 			this.websocket = null;
 			this.state = ConnectionState.DISCONNECTED;
 			if(event && event.code) {
@@ -1802,8 +1807,8 @@ export default class InternalClient {
 			this.client.emit("raw", packet);
 
 			if(packet.s) {
-                this.sequence = packet.s;
-            }
+				this.sequence = packet.s;
+			}
 
 			switch(packet.op) {
 				case 0:
@@ -1827,8 +1832,10 @@ export default class InternalClient {
 				case 10:
 					console.log("got a packet with op code 10");
 					if(this.sessionID) {
+						console.log("we have a session id, calling resume");
 						this.resume();
 					} else {
+						console.log("we don't have a session id, calling identify");
 						this.identify();
 					}
 					console.log("set it to true 10 1");
@@ -1855,6 +1862,7 @@ export default class InternalClient {
 		switch (packet.t) {
 			case PacketType.RESUME:
 			case PacketType.READY:
+				console.log('got ready or resume, type', packet.t);
 				this.autoReconnectInterval = 1000;
 				this.state = ConnectionState.READY;
 
@@ -2605,9 +2613,9 @@ export default class InternalClient {
 		var data = {
 			op: 6,
 			d: {
-	            token: this.token,
-	            session_id: this.sessionID,
-	            seq: this.sequence
+				token: this.token,
+				session_id: this.sessionID,
+				seq: this.sequence
 			}
 		};
 
