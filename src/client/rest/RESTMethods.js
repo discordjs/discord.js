@@ -683,7 +683,7 @@ class RESTMethods {
     if (code.id) code = code.id;
     return new Promise((resolve, reject) =>
       this.rest.makeRequest('post', Constants.Endpoints.invite(code), true).then((res) => {
-        const handler = (guild) => {
+        const handler = guild => {
           if (guild.id === res.id) {
             resolve(guild);
             this.client.removeListener('guildCreate', handler);
