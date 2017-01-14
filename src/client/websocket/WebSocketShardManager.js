@@ -2,6 +2,7 @@ const EventEmitter = require('events').EventEmitter;
 const WebSocketManager = require('./WebSocketManager');
 const Constants = require('../../util/Constants');
 const PacketManager = require('./packets/WebSocketPacketManager');
+const Collection = require('../../util/Collection');
 
 class WebSocketShardManager extends EventEmitter {
   constructor(client) { // eslint-disable-line consistent-return
@@ -10,7 +11,7 @@ class WebSocketShardManager extends EventEmitter {
 
     this.packetManager = new PacketManager(this);
 
-    this.managers = [];
+    this.managers = new Collection();
 
     this.gateway = null;
 
@@ -36,11 +37,11 @@ class WebSocketShardManager extends EventEmitter {
     this.client.emit('debug', `Spawning ${this.shardCount} shard(s)`);
     this.spawn(0);
     const interval = setInterval(() => {
-      if (this.managers.length >= this.shardCount) {
+      if (this.managers.size >= this.shardCount) {
         clearInterval(interval);
         return;
       }
-      this.spawn(this.managers.length);
+      this.spawn(this.managers.size);
     }, 5500);
   }
 
@@ -55,11 +56,7 @@ class WebSocketShardManager extends EventEmitter {
 
     if (this.afterConnect) manager.connect(this.gateway);
 
-    this.managers.push(manager);
-  }
-
-  manager(id) {
-    return this.managers.find(m => m.shardID === id);
+    this.managers.set(id, manager);
   }
 
   connect(gateway, shardCount) {
@@ -69,14 +66,14 @@ class WebSocketShardManager extends EventEmitter {
       this.shardCount = shardCount;
       this._spawnAll();
     } else {
-      for (const manager of this.managers) {
+      for (const manager of this.managers.values()) {
         manager.connect(gateway);
       }
     }
   }
 
   checkIfReady() {
-    if (this.managers.length < this.shardCount) return;
+    if (this.managers.size < this.shardCount) return;
     if (this.managers.every((m) => m.status === Constants.Status.READY)) {
       if (!this.afterReady) {
         /**
@@ -90,7 +87,7 @@ class WebSocketShardManager extends EventEmitter {
   }
 
   broadcast(data) {
-    for (const manager of this.managers) manager.send(data);
+    for (const manager of this.managers.values()) manager.send(data);
   }
 }
 

@@ -6,7 +6,7 @@ class ReadyHandler extends AbstractHandler {
   handle(packet) {
     const client = this.packetManager.client;
     const data = packet.d;
-    const ws = client.ws.manager(packet.shardID);
+    const ws = client.ws.managers.get(packet.shardID);
 
     ws.heartbeat();
 

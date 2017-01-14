@@ -268,7 +268,7 @@ class Client extends EventEmitter {
   syncGuilds(guilds = this.guilds, shardID) {
     if (this.user.bot) return;
     guilds = guilds.filter(g => g.shardID === shardID);
-    this.ws.manager(shardID).send({
+    this.ws.managers.get(shardID).send({
       op: 12,
       d: guilds,
     });
