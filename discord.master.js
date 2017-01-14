@@ -3729,14 +3729,15 @@ class Guild {
   /**
    * Fetch a single guild member from a user.
    * @param {UserResolvable} user The user to fetch the member for
+   * @param {boolean} [cache=true] Insert the user into the users cache
    * @returns {Promise<GuildMember>}
    */
-  fetchMember(user) {
+  fetchMember(user, cache = true) {
     if (this._fetchWaiter) return Promise.reject(new Error('Already fetching guild members.'));
     user = this.client.resolver.resolveUser(user);
     if (!user) return Promise.reject(new Error('User is not cached. Use Client.fetchUser first.'));
     if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
-    return this.client.rest.methods.getGuildMember(this, user);
+    return this.client.rest.methods.getGuildMember(this, user, cache);
   }
 
   /**
@@ -12833,11 +12834,12 @@ class Client extends EventEmitter {
    * Caches a user, or obtains it from the cache if it's already cached.
    * <warn>This is only available when using a bot account.</warn>
    * @param {string} id The ID of the user to obtain
+   * @param {boolean} [cache=true] Insert the user into the users cache
    * @returns {Promise<User>}
    */
-  fetchUser(id) {
+  fetchUser(id, cache = true) {
     if (this.users.has(id)) return Promise.resolve(this.users.get(id));
-    return this.rest.methods.getUser(id);
+    return this.rest.methods.getUser(id, cache);
   }
 
   /**
@@ -22427,10 +22429,14 @@ class RESTMethods {
     );
   }
 
-  getUser(userID) {
-    return this.rest.makeRequest('get', Constants.Endpoints.user(userID), true).then(data =>
-      this.client.actions.UserGet.handle(data).user
-    );
+  getUser(userID, cache) {
+    return this.rest.makeRequest('get', Constants.Endpoints.user(userID), true).then(data => {
+      if (cache) {
+        return this.client.actions.UserGet.handle(data).user;
+      } else {
+        return new User(this.client, data);
+      }
+    });
   }
 
   updateCurrentUser(_data, password) {
@@ -22520,10 +22526,14 @@ class RESTMethods {
     return this.rest.makeRequest('get', Constants.Endpoints.channelMessage(channel.id, messageID), true);
   }
 
-  getGuildMember(guild, user) {
-    return this.rest.makeRequest('get', Constants.Endpoints.guildMember(guild.id, user.id), true).then(data =>
-      this.client.actions.GuildMemberGet.handle(guild, data).member
-    );
+  getGuildMember(guild, user, cache) {
+    return this.rest.makeRequest('get', Constants.Endpoints.guildMember(guild.id, user.id), true).then(data => {
+      if (cache) {
+        return this.client.actions.GuildMemberGet.handle(guild, data).member;
+      } else {
+        return new GuildMember(guild, data);
+      }
+    });
   }
 
   updateGuildMember(member, data) {
