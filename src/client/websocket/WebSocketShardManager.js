@@ -58,6 +58,10 @@ class WebSocketShardManager extends EventEmitter {
     this.managers.push(manager);
   }
 
+  manager(id) {
+    return this.managers.find(m => m.shardID === id);
+  }
+
   connect(gateway, shardCount) {
     this.gateway = gateway;
     this.afterConnect = true;

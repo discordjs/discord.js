@@ -67,7 +67,7 @@ class WebSocketPacketManager {
   }
 
   handle(packet) {
-    const ws = this.ws.managers[packet.shardID];
+    const ws = this.ws.manager(packet.shardID);
 
     if (packet.op === Constants.OPCodes.RECONNECT) {
       ws.tryReconnect();
