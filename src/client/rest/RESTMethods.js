@@ -139,7 +139,7 @@ class RESTMethods {
 
   bulkDeleteMessages(channel, messages, filterOld) {
     if (filterOld) {
-      messages = messages.filter(id => 
+      messages = messages.filter(id =>
         Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000
       );
     }
