@@ -9302,6 +9302,14 @@ class ClientUser extends User {
       );
     }
   }
+
+  /**
+   * @param {Invite|string} invite Invite or code to accept
+   * @returns {Promise<Guild>} Joined guild
+   */
+  acceptInvite(invite) {
+    return this.client.rest.methods.acceptInvite(invite);
+  }
 }
 
 module.exports = ClientUser;
@@ -22886,6 +22894,25 @@ class RESTMethods {
 
   setNote(user, note) {
     return this.rest.makeRequest('put', Constants.Endpoints.note(user.id), true, { note }).then(() => user);
+  }
+
+  acceptInvite(code) {
+    if (code.id) code = code.id;
+    return new Promise((resolve, reject) =>
+      this.rest.makeRequest('post', Constants.Endpoints.invite(code), true).then((res) => {
+        const handler = guild => {
+          if (guild.id === res.id) {
+            resolve(guild);
+            this.client.removeListener('guildCreate', handler);
+          }
+        };
+        this.client.on('guildCreate', handler);
+        this.client.setTimeout(() => {
+          this.client.removeListener('guildCreate', handler);
+          reject(new Error('Accepting invite timed out'));
+        }, 120e3);
+      })
+    );
   }
 }
 
