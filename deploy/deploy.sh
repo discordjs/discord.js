@@ -16,9 +16,15 @@ function build {
   VERSIONED=false npm run web-dist
 }
 
-# Only run tests for PRs
+# For revert branches, do nothing
+if [[ "$TRAVIS_BRANCH" == revert-* ]]
+  echo -e "\e[36m\e[1mBuild triggered for reversion branch \"$TRAVIS_BRANCH\" - doing nothing."
+  exit 0
+fi
+
+# For PRs, only run tests
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  echo -e "\e[36m\e[1mBuild triggered for PR #$TRAVIS_PULL_REQUEST to branch $TRAVIS_BRANCH - only running tests."
+  echo -e "\e[36m\e[1mBuild triggered for PR #$TRAVIS_PULL_REQUEST to branch \"$TRAVIS_BRANCH\" - only running tests."
   tests
 fi
 
@@ -31,7 +37,7 @@ else
   SOURCE=$TRAVIS_BRANCH
 fi
 
-# Only run tests for Node versions other than 6
+# For Node != 6, only run tests
 if [ "$TRAVIS_NODE_VERSION" != "6" ]; then
   echo -e "\e[36m\e[1mBuild triggered with Node v$TRAVIS_NODE_VERSION - only running tests."
   tests
