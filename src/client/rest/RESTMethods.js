@@ -258,10 +258,14 @@ class RESTMethods {
     );
   }
 
-  getUser(userID) {
-    return this.rest.makeRequest('get', Constants.Endpoints.user(userID), true).then(data =>
-      this.client.actions.UserGet.handle(data).user
-    );
+  getUser(userID, cache) {
+    return this.rest.makeRequest('get', Constants.Endpoints.user(userID), true).then(data => {
+      if (cache) {
+        return this.client.actions.UserGet.handle(data).user;
+      } else {
+        return new User(this.client, data);
+      }
+    });
   }
 
   updateCurrentUser(_data, password) {
@@ -351,10 +355,14 @@ class RESTMethods {
     return this.rest.makeRequest('get', Constants.Endpoints.channelMessage(channel.id, messageID), true);
   }
 
-  getGuildMember(guild, user) {
-    return this.rest.makeRequest('get', Constants.Endpoints.guildMember(guild.id, user.id), true).then(data =>
-      this.client.actions.GuildMemberGet.handle(guild, data).member
-    );
+  getGuildMember(guild, user, cache) {
+    return this.rest.makeRequest('get', Constants.Endpoints.guildMember(guild.id, user.id), true).then(data => {
+      if (cache) {
+        return this.client.actions.GuildMemberGet.handle(guild, data).member;
+      } else {
+        return new GuildMember(guild, data);
+      }
+    });
   }
 
   updateGuildMember(member, data) {
