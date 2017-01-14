@@ -17,7 +17,7 @@ function build {
 }
 
 # For revert branches, do nothing
-if [[ "$TRAVIS_BRANCH" == revert-* ]]
+if [[ "$TRAVIS_BRANCH" == revert-* ]]; then
   echo -e "\e[36m\e[1mBuild triggered for reversion branch \"${TRAVIS_BRANCH}\" - doing nothing."
   exit 0
 fi
