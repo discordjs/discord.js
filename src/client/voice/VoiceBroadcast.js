@@ -1,4 +1,4 @@
-const EventEmitter = require('events').EventEmitter;
+const VolumeInterface = require('./util/VolumeInterface');
 const Prism = require('prism-media');
 const OpusEncoders = require('./opus/OpusEngineList');
 const Collection = require('../../util/Collection');
@@ -15,7 +15,7 @@ const ffmpegArguments = [
  * A voice broadcast can be played across multiple voice connections for improved shared-stream efficiency.
  * @extends {EventEmitter}
  */
-class VoiceBroadcast extends EventEmitter {
+class VoiceBroadcast extends VolumeInterface {
   constructor(client) {
     super();
     /**
@@ -51,55 +51,12 @@ class VoiceBroadcast extends EventEmitter {
     return d;
   }
 
-  applyVolume(buffer, volume = this._volume) {
-    if (volume === 1) return buffer;
-
-    const out = Buffer.alloc(buffer.length);
-    for (let i = 0; i < buffer.length; i += 2) {
-      if (i >= buffer.length - 1) break;
-      const uint = Math.min(32767, Math.max(-32767, Math.floor(volume * buffer.readInt16LE(i))));
-      out.writeInt16LE(uint, i);
-    }
-
-    return out;
-  }
-
-  /**
-   * Sets the volume relative to the input stream - i.e. 1 is normal, 0.5 is half, 2 is double.
-   * @param {number} volume The volume that you want to set
-   */
-  setVolume(volume) {
-    this._volume = volume;
-  }
-
-  /**
-   * Set the volume in decibels
-   * @param {number} db The decibels
-   */
-  setVolumeDecibels(db) {
-    this.setVolume(Math.pow(10, db / 20));
-  }
-
-  /**
-   * Set the volume so that a perceived value of 0.5 is half the perceived volume etc.
-   * @param {number} value The value for the volume
-   */
-  setVolumeLogarithmic(value) {
-    this.setVolume(Math.pow(value, 1.660964));
-  }
-
-  /**
-   * The current volume of the broadcast
-   * @readonly
-   * @type {number}
-   */
-  get volume() {
-    return this._volume;
-  }
-
   get _playableStream() {
-    if (!this.currentTranscoder) return null;
-    return this.currentTranscoder.transcoder.output || this.currentTranscoder.options.stream;
+    const currentTranscoder = this.currentTranscoder;
+    if (!currentTranscoder) return null;
+    const transcoder = currentTranscoder.transcoder;
+    const options = currentTranscoder.options;
+    return (transcoder && transcoder.output) || options.stream;
   }
 
   unregisterDispatcher(dispatcher, old) {
@@ -175,8 +132,7 @@ class VoiceBroadcast extends EventEmitter {
    *  .catch(console.error);
    */
   playStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
-    const options = { seek, volume, passes };
-    options.stream = stream;
+    const options = { seek, volume, passes, stream };
     return this._playTranscodable(stream, options);
   }
 
@@ -202,6 +158,8 @@ class VoiceBroadcast extends EventEmitter {
   }
 
   _playTranscodable(media, options) {
+    OpusEncoders.guaranteeOpusEngine();
+
     this.killCurrentTranscoder();
     const transcoder = this.prism.transcode({
       type: 'ffmpeg',
@@ -242,9 +200,25 @@ class VoiceBroadcast extends EventEmitter {
    * @returns {VoiceBroadcast}
    */
   playConvertedStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
+    OpusEncoders.guaranteeOpusEngine();
+
     this.killCurrentTranscoder();
     const options = { seek, volume, passes, stream };
     this.currentTranscoder = { options };
+    stream.once('readable', () => this._startPlaying());
+    return this;
+  }
+
+  /**
+   * Plays an Opus encoded stream at 48KHz.
+   * <warn>Note that inline volume is not compatible with this method.</warn>
+   * @param {ReadableStream} stream The Opus audio stream to play
+   * @param {StreamOptions} [options] Options for playing the stream
+   * @returns {StreamDispatcher}
+   */
+  playOpusStream(stream, { seek = 0, passes = 1 } = {}) {
+    const options = { seek, passes, stream };
+    this.currentTranscoder = { options, opus: true };
     stream.once('readable', () => this._startPlaying());
     return this;
   }
@@ -256,8 +230,10 @@ class VoiceBroadcast extends EventEmitter {
    * @returns {VoiceBroadcast}
    */
   playArbitraryInput(input, { seek = 0, volume = 1, passes = 1 } = {}) {
-    const options = { seek, volume, passes };
-    return this.player.playUnknownStream(input, options);
+    this.guaranteeOpusEngine();
+
+    const options = { seek, volume, passes, input };
+    return this._playTranscodable(input, options);
   }
 
   /**
@@ -284,6 +260,10 @@ class VoiceBroadcast extends EventEmitter {
     }
   }
 
+  guaranteeOpusEngine() {
+    if (!this.opusEncoder) throw new Error('Couldn\'t find an Opus engine.');
+  }
+
   _startPlaying() {
     if (this.tickInterval) clearInterval(this.tickInterval);
     // this.tickInterval = this.client.setInterval(this.tick.bind(this), 20);
@@ -301,9 +281,9 @@ class VoiceBroadcast extends EventEmitter {
       setTimeout(() => this.tick(), 20);
       return;
     }
-    const stream = this._playableStream;
-    const bufferLength = 1920 * 2;
-    let buffer = stream.read(bufferLength);
+
+    const opus = this.currentTranscoder.opus;
+    const buffer = this.readStreamBuffer();
 
     if (!buffer) {
       this._missed++;
@@ -318,12 +298,6 @@ class VoiceBroadcast extends EventEmitter {
 
     this._missed = 0;
 
-    if (buffer.length !== bufferLength) {
-      const newBuffer = Buffer.alloc(bufferLength).fill(0);
-      buffer.copy(newBuffer);
-      buffer = newBuffer;
-    }
-
     let packetMatrix = {};
 
     const getOpusPacket = (volume) => {
@@ -336,15 +310,36 @@ class VoiceBroadcast extends EventEmitter {
     };
 
     for (const dispatcher of this.dispatchers) {
+      if (opus) {
+        dispatcher.processPacket(buffer);
+        continue;
+      }
+
       const volume = dispatcher.volume;
       setImmediate(() => {
-        dispatcher.process(buffer, true, getOpusPacket(volume));
+        dispatcher.processPacket(getOpusPacket(volume));
       });
     }
 
     const next = 20 + (this._startTime + this._pausedTime + (this._count * 20) - Date.now());
     this._count++;
     setTimeout(() => this.tick(), next);
+  }
+
+  readStreamBuffer() {
+    const opus = this.currentTranscoder.opus;
+    const bufferLength = (opus ? 80 : 1920) * 2;
+    let buffer = this._playableStream.read(bufferLength);
+    if (opus) return buffer;
+    if (!buffer) return null;
+
+    if (buffer.length !== bufferLength) {
+      const newBuffer = Buffer.alloc(bufferLength).fill(0);
+      buffer.copy(newBuffer);
+      buffer = newBuffer;
+    }
+
+    return buffer;
   }
 
   /**

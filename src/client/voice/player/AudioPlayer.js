@@ -69,6 +69,7 @@ class AudioPlayer extends EventEmitter {
   }
 
   playUnknownStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
+    OpusEncoders.guaranteeOpusEngine();
     const options = { seek, volume, passes };
     const transcoder = this.prism.transcode({
       type: 'ffmpeg',
@@ -85,28 +86,38 @@ class AudioPlayer extends EventEmitter {
   }
 
   playPCMStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
+    OpusEncoders.guaranteeOpusEngine();
     const options = { seek, volume, passes };
     this.destroyAllStreams(stream);
-    const dispatcher = new StreamDispatcher(this, stream, options);
-    dispatcher.on('speaking', value => this.voiceConnection.setSpeaking(value));
+    const dispatcher = this.createDispatcher(stream, options);
     if (!this.streams.has(stream)) this.streams.set(stream, { dispatcher, input: stream });
     this.streams.get(stream).dispatcher = dispatcher;
-    dispatcher.on('end', () => this.destroyStream(stream));
-    dispatcher.on('error', () => this.destroyStream(stream));
+    return dispatcher;
+  }
+
+  playOpusStream(stream, { seek = 0, passes = 1 } = {}) {
+    const options = { seek, passes, opus: true };
+    this.destroyAllStreams(stream);
+    const dispatcher = this.createDispatcher(stream, options);
+    this.streams.set(stream, { dispatcher, input: stream });
     return dispatcher;
   }
 
   playBroadcast(broadcast, { volume = 1, passes = 1 } = {}) {
     const options = { volume, passes };
     this.destroyAllStreams();
-    const dispatcher = new StreamDispatcher(this, broadcast, options);
-    dispatcher.on('end', () => this.destroyStream(broadcast));
-    dispatcher.on('error', () => this.destroyStream(broadcast));
-    dispatcher.on('speaking', value => this.voiceConnection.setSpeaking(value));
+    const dispatcher = this.createDispatcher(broadcast, options);
     this.streams.set(broadcast, { dispatcher, input: broadcast });
     broadcast.registerDispatcher(dispatcher);
     return dispatcher;
   }
+
+  createDispatcher(stream, options) {
+    const dispatcher = new StreamDispatcher(this, stream, options);
+    dispatcher.on('end', () => this.destroyStream(stream));
+    dispatcher.on('error', () => this.destroyStream(stream));
+    dispatcher.on('speaking', value => this.voiceConnection.setSpeaking(value));
+    return dispatcherOpusEncoders
 }
 
 module.exports = AudioPlayer;

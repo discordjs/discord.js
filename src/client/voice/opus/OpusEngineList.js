@@ -20,5 +20,9 @@ exports.fetch = () => {
     const fetched = fetch(encoder);
     if (fetched) return fetched;
   }
-  throw new Error('Couldn\'t find an Opus engine.');
+  return null;
+};
+
+exports.guaranteeOpusEngine = () => {
+  if (!this.opusEncoder) throw new Error('Couldn\'t find an Opus engine.');
 };
