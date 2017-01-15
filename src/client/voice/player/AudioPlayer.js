@@ -117,7 +117,8 @@ class AudioPlayer extends EventEmitter {
     dispatcher.on('end', () => this.destroyStream(stream));
     dispatcher.on('error', () => this.destroyStream(stream));
     dispatcher.on('speaking', value => this.voiceConnection.setSpeaking(value));
-    return dispatcherOpusEncoders
+    return dispatcher;
+  }
 }
 
 module.exports = AudioPlayer;
