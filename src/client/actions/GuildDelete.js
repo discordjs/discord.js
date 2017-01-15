@@ -12,6 +12,8 @@ class GuildDeleteAction extends Action {
 
     let guild = client.guilds.get(data.id);
     if (guild) {
+      for (const channel of guild.channels.values()) channel.stopTyping(true);
+
       if (guild.available && data.unavailable) {
         // guild is unavailable
         guild.available = false;
