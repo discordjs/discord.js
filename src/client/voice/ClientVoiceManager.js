@@ -73,7 +73,6 @@ class ClientVoiceManager {
 
   /**
    * Sets up a request to join a voice channel
-   * Will throw an error if the voice channel is not joinable.
    * @param {VoiceChannel} channel The voice channel to join
    * @returns {Promise<VoiceConnection>}
    */
