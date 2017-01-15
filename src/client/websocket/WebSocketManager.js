@@ -86,6 +86,10 @@ class WebSocketManager extends EventEmitter {
 
     this.lastHeartbeatAck = true;
 
+    this.heartbeatInterval = null;
+
+    this.heartbeatTime = 0;
+
     this.shardID = options.shardID || this.client.options.shardID;
     this.shardCount = options.shardCount || this.client.options.shardCount;
 
@@ -185,6 +189,7 @@ class WebSocketManager extends EventEmitter {
    */
   eventOpen() {
     this.emit('debug', 'Connection to gateway opened');
+    this.emit('open', this.shardID);
     this.lastHeartbeatAck = true;
     if (this.status === Constants.Status.RECONNECTING) this._sendResume();
     else this._sendNewIdentify();
@@ -237,10 +242,11 @@ class WebSocketManager extends EventEmitter {
   /**
    * Run whenever the connection to the gateway is closed, it will try to reconnect the client.
    * @param {CloseEvent} event The WebSocket close event
+   * @param {number} shardID The shard ID
    */
   eventClose(event) {
-    this.emit('close', event);
-    this.client.clearInterval(this.client.manager.heartbeatInterval);
+    this.emit('close', event, this.shardID);
+    this.client.clearInterval(this.heartbeatInterval);
     this.status = Constants.Status.DISCONNECTED;
     this._queue = [];
     /**
@@ -269,6 +275,7 @@ class WebSocketManager extends EventEmitter {
     this.client.emit('raw', data);
 
     if (data.op === Constants.OPCodes.HELLO) {
+      this.heartbeatTime = data.d.heartbeat_interval;
       this.heartbeatInterval = this.client.setInterval(() => this.heartbeat(true), data.d.heartbeat_interval);
     }
 

@@ -52,7 +52,18 @@ class WebSocketShardManager extends EventEmitter {
     });
 
     manager.on('send', this.emit);
-    manager.on('close', this.emit);
+    manager.on('close', (event, shardID) => {
+      this.emit('close', event, shardID);
+      const handler = () => {
+        this.client.clearTimeout(timeout);
+        manager.removeListener('open', handler);
+      };
+      const timeout = this.client.setTimeout(() => {
+        manager.destroy();
+        this.spawn(id);
+      }, manager.heartbeatTime);
+      manager.on('open', handler);
+    });
 
     if (this.afterConnect) manager.connect(this.gateway);
 
