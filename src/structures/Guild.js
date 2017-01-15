@@ -344,7 +344,7 @@ class Guild {
    */
   fetchMembers(query = '') {
     return new Promise((resolve, reject) => {
-      if (this._fetchWaiter) throw new Error('Already fetching guild members in ${this.id}.');
+      if (this._fetchWaiter) throw new Error(`Already fetching guild members in ${this.id}.`);
       if (this.memberCount === this.members.size) {
         resolve(this);
         return;
