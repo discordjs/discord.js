@@ -117,12 +117,7 @@ class Request {
           }
         });
       };
-      let request;
-      if (this.useHttps) {
-        request = https.request(this.options, handler);
-      } else {
-        request = http.request(this.options, handler);
-      }
+      const request = (this.useHttps ? https : http).request(this.options, handler);
       if (this.data && this.data.end) this.data = this.data.end();
       request.end(this.data);
     }).then(res => {

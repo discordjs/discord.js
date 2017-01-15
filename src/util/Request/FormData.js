@@ -1,6 +1,6 @@
 class FormData {
   constructor() {
-    this.boundary = '--dicksword.js--';
+    this.boundary = '--discord.js--';
     this.buffer = new Buffer(0);
   }
 
