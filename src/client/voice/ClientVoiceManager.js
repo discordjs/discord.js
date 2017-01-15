@@ -79,7 +79,13 @@ class ClientVoiceManager {
   joinChannel(channel) {
     return new Promise((resolve, reject) => {
       if (this.pending.get(channel.guild.id)) throw new Error('Already connecting to this guild\'s voice server.');
-      if (!channel.joinable) throw new Error('You do not have permission to join this voice channel.');
+      if (!channel.joinable) {
+        if (channel.full) {
+          throw new Error('You do not have permission to join this voice channel; it is full.');
+        } else {
+          throw new Error('You do not have permission to join this voice channel.');
+        }
+      }
 
       const existingConnection = this.connections.get(channel.guild.id);
       if (existingConnection) {
