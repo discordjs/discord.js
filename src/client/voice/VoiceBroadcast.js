@@ -316,9 +316,7 @@ class VoiceBroadcast extends VolumeInterface {
       }
 
       const volume = dispatcher.volume;
-      setImmediate(() => {
-        dispatcher.processPacket(getOpusPacket(volume));
-      });
+      dispatcher.processPacket(getOpusPacket(volume));
     }
 
     const next = 20 + (this._startTime + this._pausedTime + (this._count * 20) - Date.now());
