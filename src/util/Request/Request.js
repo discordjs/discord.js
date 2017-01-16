@@ -105,7 +105,8 @@ class Request {
    */
 
   /**
-   * @param {Function<HTTPIncomingMessage>} callback Callback for the request
+   * Run the request
+   * @param {Function} callback Callback for the request
    * @returns {Promise<HTTPIncomingMessage>}
    */
   end(callback) {
