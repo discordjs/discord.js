@@ -13,6 +13,11 @@ const PROTOCOLS = {
 };
 
 class Request {
+  /**
+   * An HTTP Request
+   * @param {string} method Method of the request
+   * @param {string} uri URI of the request
+   */
   constructor(method, uri) {
     const { hostname, path, protocol } = url.parse(uri);
     this.useHttps = protocol.replace(':', '').endsWith('s');
@@ -25,11 +30,21 @@ class Request {
     };
   }
 
-  set(header, value) {
-    this.options.headers[header] = value;
+  /**
+   * Set a header
+   * @param {string} name Name of the header
+   * @param {string} value Value of the header
+   * @returns {Request}
+   */
+  set(name, value) {
+    this.options.headers[name] = value;
     return this;
   }
 
+  /**
+   * Attach a raw body to the request
+   * @param {*} data Data to send with the request
+   */
   send(data) {
     if (typeof data !== 'string' && !(data instanceof Buffer)) {
       this.data = JSON.stringify(data);
@@ -45,12 +60,25 @@ class Request {
     return this.data;
   }
 
-  attach(field, file, options) {
-    this._getFormData().append(field, file, options || file.name);
+  /**
+   * Attach a form data file to the request
+   * @param {string} name Name of the field
+   * @param {*} file File to attach
+   * @param {string} [filename] Name of file
+   * @returns {Request}
+   */
+  attach(name, file, filename) {
+    this._getFormData().append(name, file, filename || file.name);
     this.set('Content-Type', `multipart/form-data; boundary=${this.data.boundary}`);
     return this;
   }
 
+  /**
+   * Attach a form data field to the request
+   * @param {string} name Name of the field
+   * @param {*} val Data to attach
+   * @returns {Request}
+   */
   field(name, val) {
     if (name === null || name === undefined) throw new Error('.field(name, val) name can not be empty');
 
@@ -71,9 +99,18 @@ class Request {
     return this;
   }
 
+  /**
+   * @external HTTPIncomingMessage
+   * @see {@link https://nodejs.org/api/http.html#http_class_http_incomingmessage}
+   */
+
+  /**
+   * @param {Function<HTTPIncomingMessage>} callback Callback for the request
+   * @returns {Promise<HTTPIncomingMessage>}
+   */
   end(callback) {
     this.set('Accept-Encoding', 'gzip, deflate');
-    new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       let body = '';
       const handler = (response) => {
         response.setEncoding('utf8');
@@ -121,8 +158,10 @@ class Request {
       if (this.data && this.data.end) this.data = this.data.end();
       request.end(this.data);
     }).then(res => {
-      callback(null, res);
-    }).catch(callback);
+      if (callback) callback(null, res); // eslint-disable-line callback-return
+    }).catch(e => {
+      if (callback) callback(e); // eslint-disable-line callback-return
+    });
   }
 }
 
