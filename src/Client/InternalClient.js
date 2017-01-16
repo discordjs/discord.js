@@ -2696,7 +2696,7 @@ export default class InternalClient {
   }
 
   heartbeat() {
-    console.log("heartbeat called, value " + this.heartbeatAcked, ` current client state is ${this.state}`);
+    console.log(`heartbeat called, value ${this.heartbeatAcked} current client state is ${this.state}`);
     if (!this.heartbeatAcked) this.disconnected(true);
     console.log("set it to false");
     this.heartbeatAcked = false;
