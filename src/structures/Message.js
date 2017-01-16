@@ -540,7 +540,7 @@ class Message {
   }
 
   _addReaction(emoji, user) {
-    const emojiID = emoji.identifier;
+    const emojiID = emoji.id || emoji.name;
     let reaction;
     if (this.reactions.has(emojiID)) {
       reaction = this.reactions.get(emojiID);
@@ -549,16 +549,13 @@ class Message {
       reaction = new MessageReaction(this, emoji, 0, user.id === this.client.user.id);
       this.reactions.set(emojiID, reaction);
     }
-    if (!reaction.users.has(user.id)) {
-      reaction.users.set(user.id, user);
-      reaction.count++;
-      return reaction;
-    }
-    return null;
+    if (!reaction.users.has(user.id)) reaction.users.set(user.id, user);
+    reaction.count++;
+    return reaction;
   }
 
   _removeReaction(emoji, user) {
-    const emojiID = emoji.identifier;
+    const emojiID = emoji.id || emoji.name;
     if (this.reactions.has(emojiID)) {
       const reaction = this.reactions.get(emojiID);
       if (reaction.users.has(user.id)) {
