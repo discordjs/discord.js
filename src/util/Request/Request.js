@@ -104,9 +104,15 @@ class Request {
    * @see {@link https://nodejs.org/api/http.html#http_class_http_incomingmessage}
    */
 
+   /**
+    * The callback of a request
+    * @callback Request~callback
+    * @param {HTTPIncomingMessage} callback
+    */
+
   /**
    * Run the request
-   * @param {Function} callback Callback for the request
+   * @param {Request~callback} callback Callback for the request
    * @returns {Promise<HTTPIncomingMessage>}
    */
   end(callback) {
