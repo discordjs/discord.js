@@ -5,27 +5,16 @@
 
 const webpack = require('webpack');
 const createVariants = require('parallel-webpack').createVariants;
+const version = require('./package.json').version;
 
 const createConfig = (options) => {
   const plugins = [
     new webpack.DefinePlugin({ 'global.GENTLY': false }),
   ];
 
-  const rules = [
-    { test: /\.md$/, loader: 'ignore-loader' },
-  ];
+  if (options.minify) plugins.push(new webpack.optimize.UglifyJsPlugin({ minimize: true }));
 
-  if (options.minify) {
-    plugins.push(new webpack.optimize.UglifyJsPlugin({ minimize: true }));
-    rules.push({
-      test: /\.js$/,
-      exclude: /node_modules/,
-      loader: 'babel-loader',
-      query: { plugins: ['transform-es2015-template-literals'] },
-    });
-  }
-
-  const filename = `./webpack/discord${options.minify ? '.min' : ''}.js`; // eslint-disable-line
+  const filename = `./webpack/discord${process.env.VERSIONED === 'false' ? '' : '.' + version}${options.minify ? '.min' : ''}.js`; // eslint-disable-line
 
   return {
     entry: './src/index.js',
@@ -33,7 +22,11 @@ const createConfig = (options) => {
       path: __dirname,
       filename,
     },
-    module: { rules },
+    module: {
+      rules: [
+        { test: /\.md$/, loader: 'ignore-loader' },
+      ],
+    },
     node: {
       fs: 'empty',
       dns: 'mock',
