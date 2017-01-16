@@ -1860,7 +1860,9 @@ export default class InternalClient {
 	processPacket(packet) {
 		var client = this.client;
 		var data = packet.d;
-		console.log(packet);
+		if (packet.t !== PacketType.PRESENCE_UPDATE) {
+			console.log(packet);
+		}
 		switch (packet.t) {
 			case PacketType.RESUMED:
 			case PacketType.READY:
