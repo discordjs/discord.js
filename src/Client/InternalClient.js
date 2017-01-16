@@ -1966,7 +1966,7 @@ export default class InternalClient {
         if (channel) {
           console.log("adding message to cache");
           let msg = channel.messages.add(new Message(data, channel, client));
-          console.log(msg);
+          console.log("typeof message", typeof msg);
           channel.lastMessageID = msg.id;
           console.log("emitting message");
           if (this.messageAwaits[channel.id + msg.author.id]) {
