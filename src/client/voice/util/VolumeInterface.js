@@ -1,4 +1,4 @@
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
 
 class VolumeInterface extends EventEmitter {
   constructor({ volume = 0 } = {}) {
