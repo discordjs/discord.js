@@ -1963,6 +1963,7 @@ export default class InternalClient {
         // format: https://discordapi.readthedocs.org/en/latest/reference/channels/messages.html#message-format
         let channel = this.channels.get("id", data.channel_id) || this.private_channels.get("id", data.channel_id);
         console.log("typeof channel", typeof channel);
+        console.log(channel);
         if (channel) {
           console.log("adding message to cache");
           let msg = channel.messages.add(new Message(data, channel, client));
