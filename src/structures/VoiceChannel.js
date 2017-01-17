@@ -50,7 +50,7 @@ class VoiceChannel extends GuildChannel {
    * @type {boolean}
    */
   get full() {
-    return this.members.size >= this.userLimit;
+    return this.members.size >= this.userLimit && this.userLimit !== 0;
   }
 
   /**
