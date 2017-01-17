@@ -52,6 +52,7 @@ function delay(ms) {
 export default class InternalClient {
   constructor(discordClient) {
     this.setup(discordClient);
+    this.setupCalled = false;
   }
 
   apiRequest(method, url, useAuth, data, file) {
@@ -136,6 +137,7 @@ export default class InternalClient {
   }
 
   setup(discordClient) {
+    this.setupCalled = true;
     discordClient = discordClient || this.client;
     this.client = discordClient;
     this.state = ConnectionState.IDLE;
@@ -543,7 +545,9 @@ export default class InternalClient {
   // email and password are optional
   loginWithToken(token, email, password) {
     console.log("login with token, called setup");
-    this.setup();
+    if (!this.setupCalled) {
+      this.setup();
+    }
 
     console.log("login with token, setting state to logged in");
     this.state = ConnectionState.LOGGED_IN;
@@ -1963,7 +1967,6 @@ export default class InternalClient {
         // format: https://discordapi.readthedocs.org/en/latest/reference/channels/messages.html#message-format
         let channel = this.channels.get("id", data.channel_id) || this.private_channels.get("id", data.channel_id);
         console.log("typeof channel", typeof channel);
-        console.log(channel);
         if (channel) {
           console.log("adding message to cache");
           let msg = channel.messages.add(new Message(data, channel, client));
