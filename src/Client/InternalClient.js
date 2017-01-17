@@ -1977,6 +1977,7 @@ export default class InternalClient {
             client.emit("message", msg);
           }
         } else {
+          console.log("message created but channel is not cached");
           client.emit("warn", "message created but channel is not cached");
         }
         break;
