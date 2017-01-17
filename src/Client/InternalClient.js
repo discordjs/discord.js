@@ -51,8 +51,8 @@ function delay(ms) {
 
 export default class InternalClient {
   constructor(discordClient) {
-    this.setup(discordClient);
     this.setupCalled = false;
+    this.setup(discordClient);
   }
 
   apiRequest(method, url, useAuth, data, file) {
