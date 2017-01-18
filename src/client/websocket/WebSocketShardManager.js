@@ -35,16 +35,15 @@ class WebSocketShardManager extends EventEmitter {
 
   _spawnAll() {
     this.client.emit('debug', `Spawning ${this.shardCount} shard(s)`);
-    const spawnLoop = (id) => {
+    (function spawnLoop(id) {
       const manager = this.spawn(id);
       manager.on('ready', () => {
         if (this.managers.size >= this.shardCount) return;
         this.client.setTimeout(() => {
-          spawnLoop(++id);
+          spawnLoop.bind(this)(++id);
         }, 5000);
       });
-    };
-    spawnLoop(0);
+    }.bind(this)(0));
   }
 
   spawn(id) {
