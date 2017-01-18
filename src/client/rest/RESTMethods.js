@@ -169,11 +169,9 @@ class RESTMethods {
 
     const url = `${Constants.Endpoints[`${type}Search`](target.id)}?${queryString}`;
     return this.rest.makeRequest('get', url, true).then(body => {
-      const messages = body.messages.map(x => {
-        const collection = new Collection();
-        for (const m of x) collection.set(m.id, new Message(this.client.channels.get(m.channel_id), m, this.client));
-        return collection;
-      });
+      const messages = body.messages.map(x =>
+        new Collection(x.map(m => [m.id, new Message(this.client.channels.get(m.channel_id), m, this.client)]))
+      );
       return {
         totalResults: body.total_results,
         messages,
