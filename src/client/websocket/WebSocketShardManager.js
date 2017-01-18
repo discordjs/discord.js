@@ -35,14 +35,16 @@ class WebSocketShardManager extends EventEmitter {
 
   _spawnAll() {
     this.client.emit('debug', `Spawning ${this.shardCount} shard(s)`);
-    this.spawn(0);
-    const interval = setInterval(() => {
-      if (this.managers.size >= this.shardCount) {
-        clearInterval(interval);
-        return;
-      }
-      this.spawn(this.managers.size);
-    }, 5500);
+    const spawnLoop = (id) => {
+      const manager = this.spawn(id);
+      manager.on('ready', () => {
+        if (this.managers.size >= this.shardCount) return;
+        this.client.setTimeout(() => {
+          spawnLoop(++id);
+        }, 5000);
+      });
+    };
+    spawnLoop(0);
   }
 
   spawn(id) {
@@ -68,6 +70,8 @@ class WebSocketShardManager extends EventEmitter {
     if (this.afterConnect) manager.connect(this.gateway);
 
     this.managers.set(id, manager);
+
+    return manager;
   }
 
   connect(gateway, shardCount) {
