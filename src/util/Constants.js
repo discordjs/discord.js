@@ -105,6 +105,8 @@ const Endpoints = exports.Endpoints = {
   relationships: (userID) => `${Endpoints.user(userID)}/relationships`,
   note: (userID) => `${Endpoints.me}/notes/${userID}`,
 
+  voiceRegions: `${API}/voice/regions`,
+
   // guilds
   guilds: `${API}/guilds`,
   guild: (guildID) => `${Endpoints.guilds}/${guildID}`,
@@ -124,6 +126,7 @@ const Endpoints = exports.Endpoints = {
   guildChannels: (guildID) => `${Endpoints.guild(guildID)}/channels`,
   guildEmojis: (guildID) => `${Endpoints.guild(guildID)}/emojis`,
   guildSearch: (guildID) => `${Endpoints.guild(guildID)}/messages/search`,
+  guildVoiceRegions: (guildID) => `${Endpoints.guild(guildID)}/regions`,
 
   // channels
   channels: `${API}/channels`,
