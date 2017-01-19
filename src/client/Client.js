@@ -152,11 +152,11 @@ class Client extends EventEmitter {
 
   /**
    * The status for the logged in Client.
-   * @type {?number}
+   * @type {?Array<number>}
    * @readonly
    */
-  get status() {
-    return this.ws.status;
+  get statuses() {
+    return this.ws.managers.map(m => m.status);
   }
 
   /**
