@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 170);
+/******/ 	return __webpack_require__(__webpack_require__.s = 171);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -177,6 +177,8 @@ const Endpoints = exports.Endpoints = {
   relationships: (userID) => `${Endpoints.user(userID)}/relationships`,
   note: (userID) => `${Endpoints.me}/notes/${userID}`,
 
+  voiceRegions: `${API}/voice/regions`,
+
   // guilds
   guilds: `${API}/guilds`,
   guild: (guildID) => `${Endpoints.guilds}/${guildID}`,
@@ -196,6 +198,7 @@ const Endpoints = exports.Endpoints = {
   guildChannels: (guildID) => `${Endpoints.guild(guildID)}/channels`,
   guildEmojis: (guildID) => `${Endpoints.guild(guildID)}/emojis`,
   guildSearch: (guildID) => `${Endpoints.guild(guildID)}/messages/search`,
+  guildVoiceRegions: (guildID) => `${Endpoints.guild(guildID)}/regions`,
 
   // channels
   channels: `${API}/channels`,
@@ -2953,7 +2956,7 @@ class Message {
   }
 
   _addReaction(emoji, user) {
-    const emojiID = emoji.identifier;
+    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : encodeURIComponent(emoji.name);
     let reaction;
     if (this.reactions.has(emojiID)) {
       reaction = this.reactions.get(emojiID);
@@ -2962,16 +2965,13 @@ class Message {
       reaction = new MessageReaction(this, emoji, 0, user.id === this.client.user.id);
       this.reactions.set(emojiID, reaction);
     }
-    if (!reaction.users.has(user.id)) {
-      reaction.users.set(user.id, user);
-      reaction.count++;
-      return reaction;
-    }
-    return null;
+    if (!reaction.users.has(user.id)) reaction.users.set(user.id, user);
+    reaction.count++;
+    return reaction;
   }
 
   _removeReaction(emoji, user) {
-    const emojiID = emoji.identifier;
+    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : encodeURIComponent(emoji.name);
     if (this.reactions.has(emojiID)) {
       const reaction = this.reactions.get(emojiID);
       if (reaction.users.has(user.id)) {
@@ -3412,7 +3412,7 @@ const GuildMember = __webpack_require__(11);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const cloneObject = __webpack_require__(4);
-const arraysEqual = __webpack_require__(160);
+const arraysEqual = __webpack_require__(161);
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -3726,6 +3726,14 @@ class Guild {
    */
   fetchWebhooks() {
     return this.client.rest.methods.getGuildWebhooks(this);
+  }
+
+  /**
+   * Fetch available voice regions
+   * @returns {Collection<string, VoiceRegion>}
+   */
+  fetchVoiceRegions() {
+    return this.client.rest.methods.fetchVoiceRegions(this.id);
   }
 
   /**
@@ -9938,6 +9946,7 @@ module.exports = MessageCollector;
 
 /**
  * Represents an embed in a message (image/video preview, rich embed, etc.)
+ * <info>This class is only used for *recieved* embeds. If you wish to send one, use the {@link RichEmbed} class.</info>
  */
 class MessageEmbed {
   constructor(message, data) {
@@ -10732,7 +10741,7 @@ class VoiceChannel extends GuildChannel {
    * @type {boolean}
    */
   get full() {
-    return this.members.size >= this.userLimit;
+    return this.userLimit > 0 && this.members.size >= this.userLimit;
   }
 
   /**
@@ -12618,12 +12627,12 @@ const RESTManager = __webpack_require__(54);
 const ClientDataManager = __webpack_require__(87);
 const ClientManager = __webpack_require__(88);
 const ClientDataResolver = __webpack_require__(28);
-const ClientVoiceManager = __webpack_require__(164);
+const ClientVoiceManager = __webpack_require__(165);
 const WebSocketManager = __webpack_require__(122);
 const ActionsManager = __webpack_require__(89);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(7).Presence;
-const ShardClientUtil = __webpack_require__(163);
+const ShardClientUtil = __webpack_require__(164);
 const VoiceBroadcast = __webpack_require__(121);
 
 /**
@@ -12926,6 +12935,14 @@ class Client extends EventEmitter {
    */
   fetchWebhook(id, token) {
     return this.rest.methods.getWebhook(id, token);
+  }
+
+  /**
+   * Fetch available voice regions
+   * @returns {Collection<string, VoiceRegion>}
+   */
+  fetchVoiceRegions() {
+    return this.rest.methods.fetchVoiceRegions();
   }
 
   /**
@@ -22466,9 +22483,9 @@ const querystring = __webpack_require__(80);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const splitMessage = __webpack_require__(45);
-const parseEmoji = __webpack_require__(161);
+const parseEmoji = __webpack_require__(162);
 const escapeMarkdown = __webpack_require__(23);
-const transformSearchOptions = __webpack_require__(162);
+const transformSearchOptions = __webpack_require__(163);
 const Snowflake = __webpack_require__(16);
 
 const User = __webpack_require__(6);
@@ -22481,6 +22498,7 @@ const UserProfile = __webpack_require__(159);
 const ClientOAuth2Application = __webpack_require__(30);
 const Channel = __webpack_require__(8);
 const Guild = __webpack_require__(14);
+const VoiceRegion = __webpack_require__(160);
 
 class RESTMethods {
   constructor(restManager) {
@@ -22509,6 +22527,15 @@ class RESTMethods {
 
   getBotGateway() {
     return this.rest.makeRequest('get', Constants.Endpoints.botGateway, true);
+  }
+
+  fetchVoiceRegions(guildID) {
+    const endpoint = Constants.Endpoints[guildID ? 'guildVoiceRegions' : 'voiceRegions'];
+    return this.rest.makeRequest('get', guildID ? endpoint(guildID) : endpoint, true).then(res => {
+      const regions = new Collection();
+      for (const region of res) regions.set(region.id, new VoiceRegion(region));
+      return regions;
+    });
   }
 
   sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code, reply } = {}, file = null) {
@@ -23422,8 +23449,8 @@ module.exports = UserAgentManager;
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer, setImmediate) {const EventEmitter = __webpack_require__(18).EventEmitter;
-const Prism = __webpack_require__(166);
-const OpusEncoders = __webpack_require__(165);
+const Prism = __webpack_require__(167);
+const OpusEncoders = __webpack_require__(166);
 const Collection = __webpack_require__(3);
 
 const ffmpegArguments = [
@@ -23812,13 +23839,13 @@ if (browser) {
   WebSocket = window.WebSocket; // eslint-disable-line no-undef
 } else {
   try {
-    WebSocket = __webpack_require__(168);
-  } catch (err) {
     WebSocket = __webpack_require__(169);
+  } catch (err) {
+    WebSocket = __webpack_require__(170);
   }
 
   try {
-    erlpack = __webpack_require__(167);
+    erlpack = __webpack_require__(168);
     serialize = erlpack.pack;
   } catch (err) {
     erlpack = null;
@@ -25404,6 +25431,62 @@ module.exports = UserProfile;
 /* 160 */
 /***/ (function(module, exports) {
 
+/**
+ * Represents a Discord voice region for guilds
+ */
+class VoiceRegion {
+  constructor(data) {
+    /**
+     * ID of the region
+     * @type {string}
+     */
+    this.id = data.id;
+
+    /**
+     * Name of the region
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * Whether the region is VIP-only
+     * @type {boolean}
+     */
+    this.vip = data.vip;
+
+    /**
+     * Whether the region is deprecated
+     * @type {boolean}
+     */
+    this.deprecated = data.deprecated;
+
+    /**
+     * Whether the region is optimal
+     * @type {boolean}
+     */
+    this.optimal = data.optimal;
+
+    /**
+     * Whether the region is custom
+     * @type {boolean}
+     */
+    this.custom = data.custom;
+
+    /**
+     * A sample hostname for what a connection might look like
+     * @type {string}
+     */
+    this.sampleHostname = data.sample_hostname;
+  }
+}
+
+module.exports = VoiceRegion;
+
+
+/***/ }),
+/* 161 */
+/***/ (function(module, exports) {
+
 module.exports = function arraysEqual(a, b) {
   if (a === b) return true;
   if (a.length !== b.length) return false;
@@ -25421,7 +25504,7 @@ module.exports = function arraysEqual(a, b) {
 
 
 /***/ }),
-/* 161 */
+/* 162 */
 /***/ (function(module, exports) {
 
 module.exports = function parseEmoji(text) {
@@ -25441,7 +25524,7 @@ module.exports = function parseEmoji(text) {
 
 
 /***/ }),
-/* 162 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const long = __webpack_require__(46);
@@ -25522,12 +25605,6 @@ module.exports = function TransformSearchOptions(options, client) {
 
 
 /***/ }),
-/* 163 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
 /* 164 */
 /***/ (function(module, exports) {
 
@@ -25565,6 +25642,12 @@ module.exports = function TransformSearchOptions(options, client) {
 
 /***/ }),
 /* 170 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = {
