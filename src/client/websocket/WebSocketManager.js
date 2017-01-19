@@ -85,10 +85,10 @@ class WebSocketManager extends EventEmitter {
     this.first = true;
 
     this.lastHeartbeatAck = true;
-
     this.heartbeatInterval = null;
-
     this.heartbeatTime = 0;
+    this.lastPingTimestamp = 0;
+    this.pings = [];
 
     this.shardID = options.shardID || this.client.options.shardID;
     this.shardCount = options.shardCount || this.client.options.shardCount;
@@ -135,13 +135,23 @@ class WebSocketManager extends EventEmitter {
     }
 
     this.emit('debug', 'Sending heartbeat');
-    this.client._pingTimestamp = Date.now();
+    this.lastPingTimestamp = Date.now();
     this.send({
       op: Constants.OPCodes.HEARTBEAT,
       d: this.sequence,
     }, true);
 
     this.lastHeartbeatAck = false;
+  }
+
+  pong(startTime) {
+    this.pings.unshift(Date.now() - startTime);
+    if (this.pings.length > 3) this.pings.length = 3;
+    this.lastHeartbeatAck = true;
+  }
+
+  get ping() {
+    return (this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length) || 0;
   }
 
   /**

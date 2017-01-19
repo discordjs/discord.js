@@ -27,6 +27,9 @@ class Client extends EventEmitter {
     if (!options.shardID && 'SHARD_ID' in process.env) options.shardID = Number(process.env.SHARD_ID);
     if (!options.shardCount && 'SHARD_COUNT' in process.env) options.shardCount = Number(process.env.SHARD_COUNT);
 
+    this._timeouts = new Set();
+    this._intervals = new Set();
+
     /**
      * The options the client was instantiated with
      * @type {ClientOptions}
@@ -143,14 +146,10 @@ class Client extends EventEmitter {
     this.readyAt = null;
 
     /**
-     * The previous heartbeat pings of the websocket (most recent first, limited to three elements)
+     * The previous average heartbeat pings of the websocket (most recent first, limited to three elements)
      * @type {number[]}
      */
     this.pings = [];
-
-    this._pingTimestamp = 0;
-    this._timeouts = new Set();
-    this._intervals = new Set();
 
     if (this.options.messageSweepInterval > 0) {
       this.setInterval(this.sweepMessages.bind(this), this.options.messageSweepInterval * 1000);
@@ -176,12 +175,21 @@ class Client extends EventEmitter {
   }
 
   /**
-   * The average heartbeat ping of the websocket
+   * The average heartbeat pings of the websockets
+   * @type {number[]}
+   * @readonly
+   */
+  get pings() {
+    return this.ws.managers.map(m => m.ping);
+  }
+
+  /**
+   * The average heartbeat ping of the websockets
    * @type {number}
    * @readonly
    */
   get ping() {
-    return this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length;
+    return this.pings.reduce((a, b) => a + b, 0) / this.pings.length;
   }
 
   /**
@@ -417,12 +425,6 @@ class Client extends EventEmitter {
   clearInterval(interval) {
     clearInterval(interval);
     this._intervals.delete(interval);
-  }
-
-  _pong(startTime) {
-    this.pings.unshift(Date.now() - startTime);
-    if (this.pings.length > 3) this.pings.length = 3;
-    this.ws.lastHeartbeatAck = true;
   }
 
   _setPresence(id, presence) {

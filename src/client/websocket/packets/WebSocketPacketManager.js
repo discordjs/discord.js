@@ -87,7 +87,7 @@ class WebSocketPacketManager {
     }
 
     if (packet.op === Constants.OPCodes.HEARTBEAT_ACK) {
-      ws.client._pong(this.client._pingTimestamp);
+      ws.pong(ws.lastPingTimestamp);
       ws.lastHeartbeatAck = true;
       ws.emit('debug', 'Heartbeat acknowledged');
     } else if (packet.op === Constants.OPCodes.HEARTBEAT) {
