@@ -145,12 +145,6 @@ class Client extends EventEmitter {
      */
     this.readyAt = null;
 
-    /**
-     * The previous average heartbeat pings of the websocket (most recent first, limited to three elements)
-     * @type {number[]}
-     */
-    this.pings = [];
-
     if (this.options.messageSweepInterval > 0) {
       this.setInterval(this.sweepMessages.bind(this), this.options.messageSweepInterval * 1000);
     }
@@ -175,9 +169,8 @@ class Client extends EventEmitter {
   }
 
   /**
-   * The average heartbeat pings of the websockets
+   * The previous average heartbeat pings of the websockets
    * @type {number[]}
-   * @readonly
    */
   get pings() {
     return this.ws.managers.map(m => m.ping);
