@@ -6,14 +6,14 @@ set -e
 function tests {
   npm run lint
   npm run test-docs
-  VERSIONED=false npm run web-dist
+  npm run web-dist
   exit 0
 }
 
 function build {
   npm run lint
   npm run docs
-  VERSIONED=false npm run web-dist
+  npm run web-dist
 }
 
 # For revert branches, do nothing

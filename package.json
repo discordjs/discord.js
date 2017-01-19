@@ -45,6 +45,9 @@
     "uws": "^0.12.0"
   },
   "devDependencies": {
+    "babel-core": "^6.21.0",
+    "babel-loader": "^6.2.10",
+    "babel-plugin-transform-es2015-template-literals": "^6.8.0",
     "discord.js-docgen": "hydrabolt/discord.js-docgen",
     "eslint": "^3.13.0",
     "parallel-webpack": "^1.6.0",
