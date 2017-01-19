@@ -73,6 +73,22 @@ class WebSocketShardManager extends EventEmitter {
     return manager;
   }
 
+  kill(id) {
+    const existing = this.managers.get(id);
+    if (!existing) return false;
+    existing.destroy();
+    this.managers.delete(id);
+    return true;
+  }
+
+  respawn(id) {
+    if (this.kill(id)) {
+      return this.spawn(id);
+    } else {
+      return false;
+    }
+  }
+
   connect(gateway, shardCount) {
     this.gateway = gateway;
     this.afterConnect = true;
