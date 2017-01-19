@@ -124,7 +124,7 @@ class VoiceConnection extends EventEmitter {
   disconnect() {
     this.emit('closing');
     const guild = this.channel.guild;
-    this.voiceManager.client.ws.handlers[guild.shardID].send({
+    this.voiceManager.client.ws.managers.get(guild.shardID).send({
       op: Constants.OPCodes.VOICE_STATE_UPDATE,
       d: {
         guild_id: guild.id,

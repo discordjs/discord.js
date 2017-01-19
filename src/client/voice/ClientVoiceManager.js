@@ -33,6 +33,7 @@ class ClientVoiceManager {
   }
 
   onVoiceServer(data) {
+    console.log(data);
     if (this.pending.has(data.guild_id)) this.pending.get(data.guild_id).setTokenAndEndpoint(data.token, data.endpoint);
   }
 
@@ -65,7 +66,7 @@ class ClientVoiceManager {
       self_deaf: false,
     }, options);
 
-    this.client.ws.handlers[channel.guild.shardID].send({
+    this.client.ws.managers.get(channel.guild.shardID).send({
       op: Constants.OPCodes.VOICE_STATE_UPDATE,
       d: options,
     });

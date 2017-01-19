@@ -37,12 +37,12 @@ class WebSocketPacketManager {
     this.register(Constants.WSEvents.USER_UPDATE, require('./handlers/UserUpdate'));
     this.register(Constants.WSEvents.USER_NOTE_UPDATE, require('./handlers/UserNoteUpdate'));
     this.register(Constants.WSEvents.VOICE_STATE_UPDATE, require('./handlers/VoiceStateUpdate'));
+    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, require('./handlers/VoiceServerUpdate'));
     this.register(Constants.WSEvents.TYPING_START, require('./handlers/TypingStart'));
     this.register(Constants.WSEvents.MESSAGE_CREATE, require('./handlers/MessageCreate'));
     this.register(Constants.WSEvents.MESSAGE_DELETE, require('./handlers/MessageDelete'));
     this.register(Constants.WSEvents.MESSAGE_UPDATE, require('./handlers/MessageUpdate'));
     this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, require('./handlers/MessageDeleteBulk'));
-    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, require('./handlers/VoiceServerUpdate'));
     this.register(Constants.WSEvents.GUILD_SYNC, require('./handlers/GuildSync'));
     this.register(Constants.WSEvents.RELATIONSHIP_ADD, require('./handlers/RelationshipAdd'));
     this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, require('./handlers/RelationshipRemove'));
