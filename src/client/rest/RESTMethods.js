@@ -50,9 +50,11 @@ class RESTMethods {
 
   fetchVoiceRegions(guildID) {
     const endpoint = Constants.Endpoints[guildID ? 'guildVoiceRegions' : 'voiceRegions'];
-    return this.rest.makeRequest('get', guildID ? endpoint(guildID) : endpoint, true).then(res =>
-      new Collection(res.map(region => [region.id, new VoiceRegion(region)]))
-    );
+    return this.rest.makeRequest('get', guildID ? endpoint(guildID) : endpoint, true).then(res => {
+      const regions = new Collection();
+      for (const region of res) regions.set(region.id, new VoiceRegion(region));
+      return regions;
+    });
   }
 
   sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code, reply } = {}, file = null) {
