@@ -337,7 +337,6 @@ class Guild {
    * @returns {Promise<GuildMember>}
    */
   fetchMember(user, cache = true) {
-    if (this._fetchWaiter) return Promise.reject(new Error('Already fetching guild members.'));
     user = this.client.resolver.resolveUser(user);
     if (!user) return Promise.reject(new Error('User is not cached. Use Client.fetchUser first.'));
     if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
@@ -347,17 +346,15 @@ class Guild {
   /**
    * Fetches all the members in the guild, even if they are offline. If the guild has less than 250 members,
    * this should not be necessary.
-   * @param {string} [query=''] An optional query to provide when fetching members
-   * @returns {Promise<Guild>}
+   * @param {string} [query=''] Limit fetch to members with similar usernames
+   * @returns {Promise<Collection<GuildMember>>}
    */
   fetchMembers(query = '') {
     return new Promise((resolve, reject) => {
-      if (this._fetchWaiter) throw new Error(`Already fetching guild members in ${this.id}.`);
       if (this.memberCount === this.members.size) {
-        resolve(this);
+        resolve(this.members);
         return;
       }
-      this._fetchWaiter = resolve;
       this.client.ws.send({
         op: Constants.OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
@@ -366,7 +363,15 @@ class Guild {
           limit: 0,
         },
       });
-      this._checkChunks();
+      const handler = (members, guild) => {
+        if (guild.id !== this.id) return;
+        if (this.memberCount === this.members.size) {
+          this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
+          resolve(this.members);
+          return;
+        }
+      };
+      this.client.on(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
       this.client.setTimeout(() => reject(new Error('Members didn\'t arrive in time.')), 120 * 1000);
     });
   }
@@ -811,7 +816,6 @@ class Guild {
       this.client.emit(Constants.Events.GUILD_MEMBER_ADD, member);
     }
 
-    this._checkChunks();
     return member;
   }
 
@@ -841,7 +845,6 @@ class Guild {
 
   _removeMember(guildMember) {
     this.members.delete(guildMember.id);
-    this._checkChunks();
   }
 
   _memberSpeakUpdate(user, speaking) {
@@ -864,15 +867,6 @@ class Guild {
       return;
     }
     this.presences.set(id, new Presence(presence));
-  }
-
-  _checkChunks() {
-    if (this._fetchWaiter) {
-      if (this.members.size === this.memberCount) {
-        this._fetchWaiter(this);
-        this._fetchWaiter = null;
-      }
-    }
   }
 }
 
