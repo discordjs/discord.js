@@ -623,9 +623,7 @@ class Guild {
    *   .catch(console.error)
    */
   createRole(data) {
-    const create = this.client.rest.methods.createGuildRole(this);
-    if (!data) return create;
-    return create.then(role => role.edit(data));
+    return this.client.rest.methods.createGuildRole(this, data);
   }
 
   /**
