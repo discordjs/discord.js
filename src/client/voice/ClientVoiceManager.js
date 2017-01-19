@@ -33,7 +33,6 @@ class ClientVoiceManager {
   }
 
   onVoiceServer(data) {
-    console.log(data);
     if (this.pending.has(data.guild_id)) this.pending.get(data.guild_id).setTokenAndEndpoint(data.token, data.endpoint);
   }
 
