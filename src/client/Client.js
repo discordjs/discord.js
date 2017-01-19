@@ -316,6 +316,14 @@ class Client extends EventEmitter {
   }
 
   /**
+   * Fetch available voice regions
+   * @returns {Collection<string, VoiceRegion>}
+   */
+  fetchVoiceRegions() {
+    return this.rest.methods.fetchVoiceRegions();
+  }
+
+  /**
    * Sweeps all channels' messages and removes the ones older than the max message lifetime.
    * If the message has been edited, the time of the edit is used rather than the time of the original message.
    * @param {number} [lifetime=this.options.messageCacheLifetime] Messages that are older than this (in seconds)

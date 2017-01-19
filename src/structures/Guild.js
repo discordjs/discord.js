@@ -323,6 +323,14 @@ class Guild {
   }
 
   /**
+   * Fetch available voice regions
+   * @returns {Collection<string, VoiceRegion>}
+   */
+  fetchVoiceRegions() {
+    return this.client.rest.methods.fetchVoiceRegions(this.id);
+  }
+
+  /**
    * Fetch a single guild member from a user.
    * @param {UserResolvable} user The user to fetch the member for
    * @param {boolean} [cache=true] Insert the user into the users cache
