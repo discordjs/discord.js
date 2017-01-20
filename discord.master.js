@@ -8900,7 +8900,7 @@ module.exports = {
 		"docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
 		"test-docs": "docgen --source src --custom docs/index.yml",
 		"lint": "eslint src",
-		"web-dist": "node ./node_modules/parallel-webpack/bin/run.js"
+		"webpack": "parallel-webpack"
 	},
 	"repository": {
 		"type": "git",
