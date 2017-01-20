@@ -119,6 +119,7 @@ class Client extends EventEmitter {
 
     /**
      * The authorization token for the logged in user/bot.
+     * @name token
      * @type {?string}
      */
     Object.defineProperty(this, 'token', {
@@ -182,7 +183,7 @@ class Client extends EventEmitter {
    * @readonly
    */
   get ping() {
-    return this.pings.reduce((a, b) => a + b, 0) / this.pings.length;
+    return this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length;
   }
 
   /**
@@ -271,7 +272,7 @@ class Client extends EventEmitter {
     guilds = guilds.filter(g => g.shardID === shardID);
     this.ws.managers.get(shardID).send({
       op: 12,
-      d: guilds,
+      d: guilds instanceof Collection ? guilds.keyArray() : guilds.map(g => g.id),
     });
   }
 

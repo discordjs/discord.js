@@ -358,13 +358,16 @@ class WebSocketManager extends EventEmitter {
   checkIfReady() {
     if (this.status !== Constants.Status.READY && this.status !== Constants.Status.NEARLY) {
       let unavailableCount = 0;
-      for (const guildID of this.client.guilds.filter(g => g.shardID === this.shardID).keys()) {
-        unavailableCount += this.client.guilds.get(guildID).available ? 0 : 1;
+      for (const guild of this.client.guilds.values()) {
+        if (guild.shardID === this.shardID) if (guild.available) unavailableCount++;
       }
       if (unavailableCount === 0) {
         this.status = Constants.Status.NEARLY;
         if (this.client.options.fetchAllMembers) {
-          const promises = this.client.guilds.filter(g => g.shardID === this.shardId).map(g => g.fetchMembers());
+          const promises = [];
+          for (const guild of this.client.guilds.values()) {
+            if (guild.shardID === this.shardID) promises.push(guild.fetchMembers());
+          }
           Promise.all(promises).then(() => this._emitReady(), e => {
             this.client.emit(Constants.Events.WARN, 'Error in pre-ready guild member fetching');
             this.client.emit(Constants.Events.ERROR, e);
