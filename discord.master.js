@@ -8940,7 +8940,7 @@ module.exports = {
 		"eslint": "^3.13.0",
 		"parallel-webpack": "^1.6.0",
 		"uglify-js": "mishoo/UglifyJS2#harmony",
-		"webpack": "2.2.0-rc.4"
+		"webpack": "^2.2.0"
 	},
 	"engines": {
 		"node": ">=6.0.0"
