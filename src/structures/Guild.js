@@ -323,6 +323,14 @@ class Guild {
   }
 
   /**
+   * Fetch available voice regions
+   * @returns {Collection<string, VoiceRegion>}
+   */
+  fetchVoiceRegions() {
+    return this.client.rest.methods.fetchVoiceRegions(this.id);
+  }
+
+  /**
    * Fetch a single guild member from a user.
    * @param {UserResolvable} user The user to fetch the member for
    * @param {boolean} [cache=true] Insert the user into the users cache
@@ -600,7 +608,7 @@ class Guild {
   }
 
   /**
-   * Creates a new role in the guild, and optionally updates it with the given information.
+   * Creates a new role in the guild with given information
    * @param {RoleData} [data] The data to update the role with
    * @returns {Promise<Role>}
    * @example
@@ -610,14 +618,15 @@ class Guild {
    *  .catch(console.error);
    * @example
    * // create a new role with data
-   * guild.createRole({ name: 'Super Cool People' })
-   *   .then(role => console.log(`Created role ${role}`))
-   *   .catch(console.error)
+   * guild.createRole({
+   *   name: 'Super Cool People',
+   *   color: 'BLUE',
+   * })
+   * .then(role => console.log(`Created role ${role}`))
+   * .catch(console.error)
    */
   createRole(data) {
-    const create = this.client.rest.methods.createGuildRole(this);
-    if (!data) return create;
-    return create.then(role => role.edit(data));
+    return this.client.rest.methods.createGuildRole(this, data);
   }
 
   /**

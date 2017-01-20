@@ -17,6 +17,7 @@ const UserProfile = require('../../structures/UserProfile');
 const ClientOAuth2Application = require('../../structures/ClientOAuth2Application');
 const Channel = require('../../structures/Channel');
 const Guild = require('../../structures/Guild');
+const VoiceRegion = require('../../structures/VoiceRegion');
 
 class RESTMethods {
   constructor(restManager) {
@@ -45,6 +46,15 @@ class RESTMethods {
 
   getBotGateway() {
     return this.rest.makeRequest('get', Constants.Endpoints.botGateway, true);
+  }
+
+  fetchVoiceRegions(guildID) {
+    const endpoint = Constants.Endpoints[guildID ? 'guildVoiceRegions' : 'voiceRegions'];
+    return this.rest.makeRequest('get', guildID ? endpoint(guildID) : endpoint, true).then(res => {
+      const regions = new Collection();
+      for (const region of res) regions.set(region.id, new VoiceRegion(region));
+      return regions;
+    });
   }
 
   sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code, reply } = {}, file = null) {
@@ -313,8 +323,9 @@ class RESTMethods {
     );
   }
 
-  createGuildRole(guild) {
-    return this.rest.makeRequest('post', Constants.Endpoints.guildRoles(guild.id), true).then(role =>
+  createGuildRole(guild, data) {
+    if (data.color) data.color = this.client.resolver.resolveColor(data.color);
+    return this.rest.makeRequest('post', Constants.Endpoints.guildRoles(guild.id), true, data).then(role =>
       this.client.actions.GuildRoleCreate.handle({
         guild_id: guild.id,
         role,
