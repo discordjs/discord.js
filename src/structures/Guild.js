@@ -352,7 +352,6 @@ class Guild {
    */
   fetchMembers(query = '', limit = 0) {
     return new Promise((resolve, reject) => {
-      const fetchedMembers = new Collection();
       if (this.memberCount === this.members.size) {
         resolve(this.members);
         return;
@@ -365,6 +364,7 @@ class Guild {
           limit,
         },
       });
+      const fetchedMembers = new Collection();
       const handler = (members, guild) => {
         if (guild.id !== this.id) return;
         for (const member of members.values()) fetchedMembers.set(member.user.id, member);
