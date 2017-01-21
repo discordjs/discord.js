@@ -12,7 +12,7 @@ class GuildMembersChunkHandler extends AbstractHandler {
     const members = new Collection();
     for (const member of data.members) members.set(member.id, guild._addMember(member, false));
 
-    client.emit(Constants.Events.GUILD_MEMBERS_CHUNK, members);
+    client.emit(Constants.Events.GUILD_MEMBERS_CHUNK, members, guild);
 
     client.ws.lastHeartbeatAck = true;
   }
@@ -22,6 +22,7 @@ class GuildMembersChunkHandler extends AbstractHandler {
  * Emitted whenever a chunk of guild members is received (all members come from the same guild)
  * @event Client#guildMembersChunk
  * @param {Collection<GuildMember>} members The members in the chunk
+ * @param {Guild} guild The guild the members belong to
  */
 
 module.exports = GuildMembersChunkHandler;

@@ -347,10 +347,12 @@ class Guild {
    * Fetches all the members in the guild, even if they are offline. If the guild has less than 250 members,
    * this should not be necessary.
    * @param {string} [query=''] Limit fetch to members with similar usernames
+   * @param {number} [limit=0] Limit the size of the fetch
    * @returns {Promise<Collection<GuildMember>>}
    */
-  fetchMembers(query = '') {
+  fetchMembers(query = '', limit = 0) {
     return new Promise((resolve, reject) => {
+      const fetchedMembers = new Collection();
       if (this.memberCount === this.members.size) {
         resolve(this.members);
         return;
@@ -360,14 +362,15 @@ class Guild {
         d: {
           guild_id: this.id,
           query,
-          limit: 0,
+          limit,
         },
       });
       const handler = (members, guild) => {
         if (guild.id !== this.id) return;
-        if (this.memberCount === this.members.size) {
+        for (const member of members.values()) fetchedMembers.set(member.user.id, member);
+        if (this.memberCount === this.members.size || ((query || limit) && members.size < 1000)) {
           this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
-          resolve(this.members);
+          resolve(fetchedMembers);
           return;
         }
       };
