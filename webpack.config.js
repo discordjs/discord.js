@@ -1,5 +1,5 @@
 /*
-  ONLY RUN BUILDS WITH `npm run web-dist`!
+  ONLY RUN BUILDS WITH `npm run webpack`!
   DO NOT USE NORMAL WEBPACK! IT WILL NOT WORK!
 */
 

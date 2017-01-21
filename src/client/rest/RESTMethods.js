@@ -5,6 +5,7 @@ const splitMessage = require('../../util/SplitMessage');
 const parseEmoji = require('../../util/ParseEmoji');
 const escapeMarkdown = require('../../util/EscapeMarkdown');
 const transformSearchOptions = require('../../util/TransformSearchOptions');
+const Snowflake = require('../../util/Snowflake');
 
 const User = require('../../structures/User');
 const GuildMember = require('../../structures/GuildMember');
@@ -16,6 +17,7 @@ const UserProfile = require('../../structures/UserProfile');
 const ClientOAuth2Application = require('../../structures/ClientOAuth2Application');
 const Channel = require('../../structures/Channel');
 const Guild = require('../../structures/Guild');
+const VoiceRegion = require('../../structures/VoiceRegion');
 
 class RESTMethods {
   constructor(restManager) {
@@ -37,6 +39,15 @@ class RESTMethods {
 
   getGateway(bot = false) {
     return this.rest.makeRequest('get', Constants.Endpoints.gateway(bot), true, null, null, bot);
+  }
+
+  fetchVoiceRegions(guildID) {
+    const endpoint = Constants.Endpoints[guildID ? 'guildVoiceRegions' : 'voiceRegions'];
+    return this.rest.makeRequest('get', guildID ? endpoint(guildID) : endpoint, true).then(res => {
+      const regions = new Collection();
+      for (const region of res) regions.set(region.id, new VoiceRegion(region));
+      return regions;
+    });
   }
 
   sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code, reply } = {}, file = null) {
@@ -129,7 +140,12 @@ class RESTMethods {
       );
   }
 
-  bulkDeleteMessages(channel, messages) {
+  bulkDeleteMessages(channel, messages, filterOld) {
+    if (filterOld) {
+      messages = messages.filter(id =>
+        Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000
+      );
+    }
     return this.rest.makeRequest('post', `${Constants.Endpoints.channelMessages(channel.id)}/bulk_delete`, true, {
       messages,
     }).then(() =>
@@ -251,10 +267,14 @@ class RESTMethods {
     );
   }
 
-  getUser(userID) {
-    return this.rest.makeRequest('get', Constants.Endpoints.user(userID), true).then(data =>
-      this.client.actions.UserGet.handle(data).user
-    );
+  getUser(userID, cache) {
+    return this.rest.makeRequest('get', Constants.Endpoints.user(userID), true).then(data => {
+      if (cache) {
+        return this.client.actions.UserGet.handle(data).user;
+      } else {
+        return new User(this.client, data);
+      }
+    });
   }
 
   updateCurrentUser(_data, password) {
@@ -296,8 +316,9 @@ class RESTMethods {
     );
   }
 
-  createGuildRole(guild) {
-    return this.rest.makeRequest('post', Constants.Endpoints.guildRoles(guild.id), true).then(role =>
+  createGuildRole(guild, data) {
+    if (data.color) data.color = this.client.resolver.resolveColor(data.color);
+    return this.rest.makeRequest('post', Constants.Endpoints.guildRoles(guild.id), true, data).then(role =>
       this.client.actions.GuildRoleCreate.handle({
         guild_id: guild.id,
         role,
@@ -344,10 +365,14 @@ class RESTMethods {
     return this.rest.makeRequest('get', Constants.Endpoints.channelMessage(channel.id, messageID), true);
   }
 
-  getGuildMember(guild, user) {
-    return this.rest.makeRequest('get', Constants.Endpoints.guildMember(guild.id, user.id), true).then(data =>
-      this.client.actions.GuildMemberGet.handle(guild, data).member
-    );
+  getGuildMember(guild, user, cache) {
+    return this.rest.makeRequest('get', Constants.Endpoints.guildMember(guild.id, user.id), true).then(data => {
+      if (cache) {
+        return this.client.actions.GuildMemberGet.handle(guild, data).member;
+      } else {
+        return new GuildMember(guild, data);
+      }
+    });
   }
 
   updateGuildMember(member, data) {
@@ -693,6 +718,25 @@ class RESTMethods {
 
   setNote(user, note) {
     return this.rest.makeRequest('put', Constants.Endpoints.note(user.id), true, { note }).then(() => user);
+  }
+
+  acceptInvite(code) {
+    if (code.id) code = code.id;
+    return new Promise((resolve, reject) =>
+      this.rest.makeRequest('post', Constants.Endpoints.invite(code), true).then((res) => {
+        const handler = guild => {
+          if (guild.id === res.id) {
+            resolve(guild);
+            this.client.removeListener('guildCreate', handler);
+          }
+        };
+        this.client.on('guildCreate', handler);
+        this.client.setTimeout(() => {
+          this.client.removeListener('guildCreate', handler);
+          reject(new Error('Accepting invite timed out'));
+        }, 120e3);
+      })
+    );
   }
 }
 

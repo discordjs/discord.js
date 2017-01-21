@@ -329,32 +329,40 @@ class Guild {
   }
 
   /**
+   * Fetch available voice regions
+   * @returns {Collection<string, VoiceRegion>}
+   */
+  fetchVoiceRegions() {
+    return this.client.rest.methods.fetchVoiceRegions(this.id);
+  }
+
+  /**
    * Fetch a single guild member from a user.
    * @param {UserResolvable} user The user to fetch the member for
+   * @param {boolean} [cache=true] Insert the user into the users cache
    * @returns {Promise<GuildMember>}
    */
-  fetchMember(user) {
-    if (this._fetchWaiter) return Promise.reject(new Error('Already fetching guild members.'));
+  fetchMember(user, cache = true) {
     user = this.client.resolver.resolveUser(user);
     if (!user) return Promise.reject(new Error('User is not cached. Use Client.fetchUser first.'));
     if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
-    return this.client.rest.methods.getGuildMember(this, user);
+    return this.client.rest.methods.getGuildMember(this, user, cache);
   }
 
   /**
    * Fetches all the members in the guild, even if they are offline. If the guild has less than 250 members,
    * this should not be necessary.
-   * @param {string} [query=''] An optional query to provide when fetching members
+   * @param {string} [query=''] Limit fetch to members with similar usernames
    * @returns {Promise<Guild>}
    */
   fetchMembers(query = '') {
     return new Promise((resolve, reject) => {
-      if (this._fetchWaiter) throw new Error('Already fetching guild members in ${this.id}.');
       if (this.memberCount === this.members.size) {
+        // uncomment in v12
+        // resolve(this.members)
         resolve(this);
         return;
       }
-      this._fetchWaiter = resolve;
       this.client.ws.managers.get(this.shardID).send({
         op: Constants.OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
@@ -363,7 +371,17 @@ class Guild {
           limit: 0,
         },
       });
-      this._checkChunks();
+      const handler = (members, guild) => {
+        if (guild.id !== this.id) return;
+        if (this.memberCount === this.members.size) {
+          this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
+          // uncomment in v12
+          // resolve(this.members)
+          resolve(this);
+          return;
+        }
+      };
+      this.client.on(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
       this.client.setTimeout(() => reject(new Error('Members didn\'t arrive in time.')), 120 * 1000);
     });
   }
@@ -605,7 +623,7 @@ class Guild {
   }
 
   /**
-   * Creates a new role in the guild, and optionally updates it with the given information.
+   * Creates a new role in the guild with given information
    * @param {RoleData} [data] The data to update the role with
    * @returns {Promise<Role>}
    * @example
@@ -615,14 +633,15 @@ class Guild {
    *  .catch(console.error);
    * @example
    * // create a new role with data
-   * guild.createRole({ name: 'Super Cool People' })
-   *   .then(role => console.log(`Created role ${role}`))
-   *   .catch(console.error)
+   * guild.createRole({
+   *   name: 'Super Cool People',
+   *   color: 'BLUE',
+   * })
+   * .then(role => console.log(`Created role ${role}`))
+   * .catch(console.error)
    */
   createRole(data) {
-    const create = this.client.rest.methods.createGuildRole(this);
-    if (!data) return create;
-    return create.then(role => role.edit(data));
+    return this.client.rest.methods.createGuildRole(this, data);
   }
 
   /**
@@ -808,7 +827,6 @@ class Guild {
       this.client.emit(Constants.Events.GUILD_MEMBER_ADD, member);
     }
 
-    this._checkChunks();
     return member;
   }
 
@@ -838,7 +856,6 @@ class Guild {
 
   _removeMember(guildMember) {
     this.members.delete(guildMember.id);
-    this._checkChunks();
   }
 
   _memberSpeakUpdate(user, speaking) {
@@ -861,15 +878,6 @@ class Guild {
       return;
     }
     this.presences.set(id, new Presence(presence));
-  }
-
-  _checkChunks() {
-    if (this._fetchWaiter) {
-      if (this.members.size === this.memberCount) {
-        this._fetchWaiter(this);
-        this._fetchWaiter = null;
-      }
-    }
   }
 }
 

@@ -4,34 +4,44 @@
 set -e
 
 function tests {
+  npm run lint
   npm run test-docs
-  VERSIONED=false npm run web-dist
+  VERSIONED=false npm run webpack
   exit 0
 }
 
 function build {
+  npm run lint
   npm run docs
-  VERSIONED=false npm run web-dist
+  VERSIONED=false npm run webpack
 }
 
-# Only run tests for PRs
+# For revert branches, do nothing
+if [[ "$TRAVIS_BRANCH" == revert-* ]]; then
+  echo -e "\e[36m\e[1mBuild triggered for reversion branch \"${TRAVIS_BRANCH}\" - doing nothing."
+  exit 0
+fi
+
+# For PRs, only run tests
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  echo -e "\e[36m\e[1mBuild triggered for PR #$TRAVIS_PULL_REQUEST to branch $TRAVIS_BRANCH - only running tests."
+  echo -e "\e[36m\e[1mBuild triggered for PR #${TRAVIS_PULL_REQUEST} to branch \"${TRAVIS_BRANCH}\" - only running tests."
   tests
 fi
 
 # Figure out the source of the build
 if [ -n "$TRAVIS_TAG" ]; then
-  echo -e "\e[36m\e[1mBuild triggered for tag \"$TRAVIS_TAG\"."
+  echo -e "\e[36m\e[1mBuild triggered for tag \"${TRAVIS_TAG}\"."
   SOURCE=$TRAVIS_TAG
+  SOURCE_TYPE="tag"
 else
-  echo -e "\e[36m\e[1mBuild triggered for branch \"$TRAVIS_BRANCH\"."
+  echo -e "\e[36m\e[1mBuild triggered for branch \"${TRAVIS_BRANCH}\"."
   SOURCE=$TRAVIS_BRANCH
+  SOURCE_TYPE="branch"
 fi
 
-# Only run tests for Node versions other than 6
+# For Node != 6, only run tests
 if [ "$TRAVIS_NODE_VERSION" != "6" ]; then
-  echo -e "\e[36m\e[1mBuild triggered with Node v$TRAVIS_NODE_VERSION - only running tests."
+  echo -e "\e[36m\e[1mBuild triggered with Node v${TRAVIS_NODE_VERSION} - only running tests."
   tests
 fi
 
@@ -64,7 +74,7 @@ cd out
 git add .
 git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
-git commit -m "Docs build: ${SHA}" || true
+git commit -m "Docs build for ${SOURCE_TYPE} ${SOURCE}: ${SHA}" || true
 git push $SSH_REPO $TARGET_BRANCH
 
 # Clean up...
@@ -84,5 +94,5 @@ cd out
 git add .
 git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
-git commit -m "Webpack build: ${SHA}" || true
+git commit -m "Webpack build for ${SOURCE_TYPE} ${SOURCE}: ${SHA}" || true
 git push $SSH_REPO $TARGET_BRANCH

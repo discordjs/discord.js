@@ -280,11 +280,12 @@ class Client extends EventEmitter {
    * Caches a user, or obtains it from the cache if it's already cached.
    * <warn>This is only available when using a bot account.</warn>
    * @param {string} id The ID of the user to obtain
+   * @param {boolean} [cache=true] Insert the user into the users cache
    * @returns {Promise<User>}
    */
-  fetchUser(id) {
+  fetchUser(id, cache = true) {
     if (this.users.has(id)) return Promise.resolve(this.users.get(id));
-    return this.rest.methods.getUser(id);
+    return this.rest.methods.getUser(id, cache);
   }
 
   /**
@@ -305,6 +306,14 @@ class Client extends EventEmitter {
    */
   fetchWebhook(id, token) {
     return this.rest.methods.getWebhook(id, token);
+  }
+
+  /**
+   * Fetch available voice regions
+   * @returns {Collection<string, VoiceRegion>}
+   */
+  fetchVoiceRegions() {
+    return this.rest.methods.fetchVoiceRegions();
   }
 
   /**

@@ -1,5 +1,6 @@
 /**
  * Represents an embed in a message (image/video preview, rich embed, etc.)
+ * <info>This class is only used for *recieved* embeds. If you wish to send one, use the {@link RichEmbed} class.</info>
  */
 class MessageEmbed {
   constructor(message, data) {

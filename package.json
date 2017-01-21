@@ -9,7 +9,7 @@
     "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
     "test-docs": "docgen --source src --custom docs/index.yml",
     "lint": "eslint src",
-    "web-dist": "node ./node_modules/parallel-webpack/bin/run.js"
+    "webpack": "parallel-webpack"
   },
   "repository": {
     "type": "git",
@@ -31,7 +31,7 @@
   "homepage": "https://github.com/hydrabolt/discord.js#readme",
   "runkitExampleFilename": "./docs/examples/ping.js",
   "dependencies": {
-    "@types/node": "^6.0.0",
+    "@types/node": "^7.0.0",
     "long": "^3.2.0",
     "pako": "^1.0.0",
     "superagent": "^3.3.0",
@@ -46,10 +46,10 @@
   },
   "devDependencies": {
     "discord.js-docgen": "hydrabolt/discord.js-docgen",
-    "eslint": "^3.12.0",
+    "eslint": "^3.13.0",
     "parallel-webpack": "^1.6.0",
     "uglify-js": "mishoo/UglifyJS2#harmony",
-    "webpack": "2.2.0-rc.3"
+    "webpack": "^2.2.0"
   },
   "engines": {
     "node": ">=6.0.0"

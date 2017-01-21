@@ -40,8 +40,8 @@ class TextBasedChannel {
 
   /**
    * @typedef {Object} FileOptions
-   * @property {BufferResolvable} attachment
-   * @property {string} [name='file.jpg']
+   * @property {BufferResolvable} attachment File to attach
+   * @property {string} [name='file.jpg'] Filename of the attachment
    */
 
   /**
@@ -250,7 +250,7 @@ class TextBasedChannel {
         count: count || 1,
         interval: this.client.setInterval(() => {
           this.client.rest.methods.sendTyping(this.id);
-        }, 4000),
+        }, 9000),
       });
       this.client.rest.methods.sendTyping(this.id);
     } else {
@@ -353,16 +353,17 @@ class TextBasedChannel {
   }
 
   /**
-   * Bulk delete given messages.
+   * Bulk delete given messages that are newer than two weeks
    * <warn>This is only available when using a bot account.</warn>
    * @param {Collection<string, Message>|Message[]|number} messages Messages to delete, or number of messages to delete
+   * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
    * @returns {Promise<Collection<string, Message>>} Deleted messages
    */
-  bulkDelete(messages) {
+  bulkDelete(messages, filterOld = false) {
     if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs));
     if (messages instanceof Array || messages instanceof Collection) {
       const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
-      return this.client.rest.methods.bulkDeleteMessages(this, messageIDs);
+      return this.client.rest.methods.bulkDeleteMessages(this, messageIDs, filterOld);
     }
     throw new TypeError('The messages must be an Array, Collection, or number.');
   }
