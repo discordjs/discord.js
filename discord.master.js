@@ -22902,7 +22902,7 @@ class RESTMethods {
   removeMessageReaction(message, emoji, user) {
     let endpoint = Constants.Endpoints.selfMessageReaction(message.channel.id, message.id, emoji);
     if (user !== this.client.user.id) {
-      endpoint = Constants.Endpoints.userMessageReaction(message.channel.id, message.id, emoji, null, user.id);
+      endpoint = Constants.Endpoints.userMessageReaction(message.channel.id, message.id, emoji, null, user);
     }
     return this.rest.makeRequest('delete', endpoint, true).then(() =>
       this.client.actions.MessageReactionRemove.handle({
