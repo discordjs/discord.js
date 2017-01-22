@@ -170,6 +170,15 @@ class Client extends EventEmitter {
   }
 
   /**
+   * The uptimes for the websocket managers
+   * @type {?number}
+   * @readonly
+   */
+  get uptimes() {
+    return this.ws.managers.map(m => m.uptime);
+  }
+
+  /**
    * The previous average heartbeat pings of the websockets
    * @type {number[]}
    */

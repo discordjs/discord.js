@@ -93,6 +93,12 @@ class WebSocketManager extends EventEmitter {
     this.shardID = options.shardID || this.client.options.shardID;
     this.shardCount = options.shardCount || this.client.options.shardCount;
 
+    /**
+     * The date at which this Websocket Manager was regarded as being in the `READY` state.
+     * @type {?Date}
+     */
+    this.readyAt = null;
+
     this.on('debug', e => this.client.emit('debug', `SHARD ${this.shardID}: ${e}`));
   }
 
@@ -349,6 +355,7 @@ class WebSocketManager extends EventEmitter {
      * @param {Number} shardID
      */
     this.client.emit(Constants.Events.SHARD_READY, this.shardID);
+    this.readyAt = Date.now();
   }
 
   /**
@@ -395,6 +402,15 @@ class WebSocketManager extends EventEmitter {
      */
     this.client.emit(Constants.Events.RECONNECTING, this.shardID);
     this.connect(this.client.ws.gateway);
+  }
+
+  /**
+   * The uptime for the logged in Client.
+   * @type {?number}
+   * @readonly
+   */
+  get uptime() {
+    return this.readyAt ? Date.now() - this.readyAt : null;
   }
 }
 
