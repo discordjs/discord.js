@@ -22770,12 +22770,12 @@ class RESTMethods {
 
   createEmoji(guild, image, name) {
     return this.rest.makeRequest('post', `${Constants.Endpoints.guildEmojis(guild.id)}`, true, { name, image })
-      .then(data => this.client.actions.EmojiCreate.handle(data, guild).emoji);
+      .then(data => this.client.actions.GuildEmojiCreate.handle(data, guild).emoji);
   }
 
   deleteEmoji(emoji) {
     return this.rest.makeRequest('delete', `${Constants.Endpoints.guildEmojis(emoji.guild.id)}/${emoji.id}`, true)
-      .then(() => this.client.actions.EmojiDelete.handle(emoji).data);
+      .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);
   }
 
   getWebhook(id, token) {
