@@ -348,7 +348,7 @@ class Guild {
    * this should not be necessary.
    * @param {string} [query=''] Limit fetch to members with similar usernames
    * @param {number} [limit=0] Maximum number of members to request
-   * @returns {Promise<Guild>}
+   * @returns {Promise<Collection<GuildMember>>}
    */
   fetchMembers(query = '', limit = 0) {
     return new Promise((resolve, reject) => {
