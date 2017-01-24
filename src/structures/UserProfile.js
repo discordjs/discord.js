@@ -42,6 +42,12 @@ class UserProfile {
      */
     this.premium = data.premium;
 
+    /**
+     * The date since which the user has had Discord Premium
+     * @type {?Date}
+     */
+    this.premiumSince = data.premium_since ? new Date(data.premium_since) : null;
+
     for (const guild of data.mutual_guilds) {
       if (this.client.guilds.has(guild.id)) {
         this.mutualGuilds.set(guild.id, this.client.guilds.get(guild.id));

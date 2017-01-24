@@ -347,8 +347,8 @@ class Guild {
    * Fetches all the members in the guild, even if they are offline. If the guild has less than 250 members,
    * this should not be necessary.
    * @param {string} [query=''] Limit fetch to members with similar usernames
-   * @param {number} [limit=0] Limit the size of the fetch
-   * @returns {Promise<Collection<GuildMember>>}
+   * @param {number} [limit=0] Maximum number of members to request
+   * @returns {Promise<Guild>}
    */
   fetchMembers(query = '', limit = 0) {
     return new Promise((resolve, reject) => {
