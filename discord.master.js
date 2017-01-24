@@ -22374,8 +22374,9 @@ class RESTMethods {
 
   search(target, options) {
     options = transformSearchOptions(options, this.client);
+    for (const key in options) if (options[key] === undefined) delete options[key];
 
-    const queryString = querystring.stringify(options);
+    const queryString = (querystring.stringify(options).match(/[^=&?]+=[^=&?]+/g) || []).join('&');
 
     let type;
     if (target instanceof Channel) {
