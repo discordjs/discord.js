@@ -1,6 +1,7 @@
 const EventEmitter = require('events').EventEmitter;
 const NaCl = require('tweetnacl');
 const Readable = require('./VoiceReadable');
+const OpusEncoders = require('../opus/OpusEngineList');
 
 const nonce = Buffer.alloc(24);
 nonce.fill(0);
@@ -25,6 +26,7 @@ class VoiceReceiver extends EventEmitter {
     this.queues = new Map();
     this.pcmStreams = new Map();
     this.opusStreams = new Map();
+    this.opusEncoders = new Map();
 
     /**
      * Whether or not this receiver has been destroyed.
@@ -112,6 +114,7 @@ class VoiceReceiver extends EventEmitter {
     if (this.pcmStreams.get(user.id)) throw new Error('There is already an existing stream for that user.');
     const stream = new Readable();
     this.pcmStreams.set(user.id, stream);
+    this.opusEncoders.set(user.id, OpusEncoders.fetch());
     return stream;
   }
 
@@ -144,7 +147,7 @@ class VoiceReceiver extends EventEmitter {
        * @param {User} user The user that is sending the buffer (is speaking)
        * @param {Buffer} buffer The decoded buffer
        */
-      const pcm = this.voiceConnection.player.opusEncoder.decode(data);
+      const pcm = this.opusEncoders.get(user.id).decode(data);
       if (this.pcmStreams.get(user.id)) this.pcmStreams.get(user.id)._push(pcm);
       this.emit('pcm', user, pcm);
     }
