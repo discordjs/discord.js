@@ -99,6 +99,8 @@ const Endpoints = exports.Endpoints = {
     return `${Endpoints.CDN}/avatars/${userID}/${avatar}.${avatar.startsWith('a_') ? 'gif' : 'jpg'}?size=1024`;
   },
   me: `${API}/users/@me`,
+  meBilling: `${API}/users/@me/billing`,
+  mePayments: `${API}/users/@me/billing/payments`,
   meGuild: (guildID) => `${Endpoints.me}/guilds/${guildID}`,
   meMentions: (limit, roles, everyone, guildID) =>
     `users/@me/mentions?limit=${limit}&roles=${roles}&everyone=${everyone}${guildID ? `&guild_id=${guildID}` : ''}`,
