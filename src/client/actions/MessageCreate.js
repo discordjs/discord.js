@@ -19,15 +19,24 @@ class MessageCreateAction extends Action {
           user.lastMessageID = messages[messages.length - 1].id;
           user.lastMessage = messages[messages.length - 1];
         }
-        if (member) member.lastMessageID = messages[messages.length - 1].id;
+        if (member) {
+          member.lastMessageID = messages[messages.length - 1].id;
+          member.lastMessage = messages[messages.length - 1];
+        }
         return {
           messages,
         };
       } else {
         const message = channel._cacheMessage(new Message(channel, data, client));
         channel.lastMessageID = data.id;
-        if (user) user.lastMessageID = data.id;
-        if (member) member.lastMessageID = data.id;
+        if (user) {
+          user.lastMessageID = data.id;
+          user.lastMessage = message;
+        }
+        if (member) {
+          member.lastMessageID = data.id;
+          member.lastMessage = message;
+        }
         return {
           message,
         };
