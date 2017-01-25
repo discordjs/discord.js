@@ -76,13 +76,16 @@ class VoiceReceiver extends EventEmitter {
    */
   destroy() {
     this.voiceConnection.sockets.udp.socket.removeListener('message', this._listener);
-    for (const stream of this.pcmStreams) {
-      stream[1]._push(null);
-      this.pcmStreams.delete(stream[0]);
+    for (const [id, stream] of this.pcmStreams) {
+      stream._push(null);
+      this.pcmStreams.delete(id);
     }
-    for (const stream of this.opusStreams) {
-      stream[1]._push(null);
-      this.opusStreams.delete(stream[0]);
+    for (const [id, stream] of this.opusStreams) {
+      stream._push(null);
+      this.opusStreams.delete(id);
+    }
+    for (const [id] of this.opusEncoders) {
+      this.opusEncoders.delete(id);
     }
     this.destroyed = true;
   }
@@ -114,7 +117,6 @@ class VoiceReceiver extends EventEmitter {
     if (this.pcmStreams.get(user.id)) throw new Error('There is already an existing stream for that user.');
     const stream = new Readable();
     this.pcmStreams.set(user.id, stream);
-    this.opusEncoders.set(user.id, OpusEncoders.fetch());
     return stream;
   }
 
@@ -140,6 +142,10 @@ class VoiceReceiver extends EventEmitter {
      */
     this.emit('opus', user, data);
     if (this.listenerCount('pcm') > 0 || this.pcmStreams.size > 0) {
+      if (!this.opusEncoders.get(user.id)) this.opusEncoders.set(user.id, OpusEncoders.fetch());
+      const pcm = this.opusEncoders.get(user.id).decode(data);
+      if (this.pcmStreams.get(user.id)) this.pcmStreams.get(user.id)._push(pcm);
+
       /**
        * Emits decoded voice data when it's received. For performance reasons, the decoding will only
        * happen if there is at least one `pcm` listener on this receiver.
@@ -147,8 +153,6 @@ class VoiceReceiver extends EventEmitter {
        * @param {User} user The user that is sending the buffer (is speaking)
        * @param {Buffer} buffer The decoded buffer
        */
-      const pcm = this.opusEncoders.get(user.id).decode(data);
-      if (this.pcmStreams.get(user.id)) this.pcmStreams.get(user.id)._push(pcm);
       this.emit('pcm', user, pcm);
     }
   }
