@@ -20,6 +20,12 @@ class TextBasedChannel {
      * @type {?Snowflake}
      */
     this.lastMessageID = null;
+
+    /**
+     * The Message object of the last message in the channel, if one was sent.
+     * @type {?Message}
+     */
+    this.lastMessage = null;
   }
 
   /**
