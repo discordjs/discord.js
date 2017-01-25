@@ -25,7 +25,7 @@ class Payment {
     this.amount = data.amount;
 
     /**
-     * Amound refunded, if any
+     * Amount refunded, if any
      * @type {number}
      */
     this.amountRefunded = data.amount_refunded;
