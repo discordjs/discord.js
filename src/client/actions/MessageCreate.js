@@ -15,7 +15,10 @@ class MessageCreateAction extends Action {
           messages[i] = channel._cacheMessage(new Message(channel, data[i], client));
         }
         channel.lastMessageID = messages[messages.length - 1].id;
-        if (user) user.lastMessageID = messages[messages.length - 1].id;
+        if (user) {
+          user.lastMessageID = messages[messages.length - 1].id;
+          user.lastMessage = messages[messages.length - 1];
+        }
         if (member) member.lastMessageID = messages[messages.length - 1].id;
         return {
           messages,
