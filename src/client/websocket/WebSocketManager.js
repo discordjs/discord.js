@@ -1,4 +1,4 @@
-const browser = typeof window !== 'undefined';
+const browser = require('os').platform() === 'browser';
 const EventEmitter = require('events').EventEmitter;
 const Constants = require('../../util/Constants');
 const convertArrayBuffer = require('../../util/ConvertArrayBuffer');
