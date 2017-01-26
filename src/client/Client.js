@@ -216,7 +216,7 @@ class Client extends EventEmitter {
    * @readonly
    */
   get browser() {
-    return typeof window !== 'undefined';
+    return require('os').platform() === 'browser';
   }
 
   /**
