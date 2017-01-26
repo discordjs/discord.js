@@ -50,6 +50,10 @@ class AudioPlayer extends EventEmitter {
     return this.streams.last().transcoder;
   }
 
+  destroy() {
+    this.opusEncoder.destroy();
+  }
+
   destroyStream(stream) {
     const data = this.streams.get(stream);
     if (!data) return;

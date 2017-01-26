@@ -142,6 +142,7 @@ class VoiceConnection extends EventEmitter {
         self_deaf: false,
       },
     });
+    this.player.destroy();
     /**
      * Emitted when the voice connection disconnects
      * @event VoiceConnection#disconnect

@@ -72,6 +72,7 @@ class VoiceBroadcast extends VolumeInterface {
       container.delete(dispatcher);
 
       if (!container.size) {
+        this._encoders.get(volume).destroy();
         this._dispatchers.delete(volume);
         this._encoders.delete(volume);
       }
