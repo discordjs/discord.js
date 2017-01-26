@@ -232,7 +232,7 @@ class Message {
       if (data.reactions.length > 0) {
         for (const reaction of data.reactions) {
           const id = reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` : reaction.emoji.name;
-          this.reactions.set(id, new MessageReaction(this, data.emoji, data.count, data.me));
+          this.reactions.set(id, new MessageReaction(this, reaction.emoji, reaction.count, reaction.me));
         }
       }
     }
