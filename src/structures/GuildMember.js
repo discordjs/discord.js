@@ -39,6 +39,12 @@ class GuildMember {
      * @type {?Snowflake}
      */
     this.lastMessageID = null;
+
+    /**
+     * The Message object of the last message sent by the member in their guild, if one was sent.
+     * @type {?Message}
+     */
+    this.lastMessage = null;
   }
 
   setup(data) {
