@@ -55,6 +55,12 @@ class User {
      * @type {?Snowflake}
      */
     this.lastMessageID = null;
+
+    /**
+     * The Message object of the last message sent by the user, if one was sent.
+     * @type {?Message}
+     */
+    this.lastMessage = null;
   }
 
   patch(data) {
