@@ -24,8 +24,8 @@ class OpusScriptEngine extends OpusEngine {
   }
 
   destroy() {
-    super.delete();
-    this.encoder.destroy();
+    super.destroy();
+    this.encoder.delete();
   }
 }
 
