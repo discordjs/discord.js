@@ -14,15 +14,16 @@ class MessageCreateAction extends Action {
         for (let i = 0; i < data.length; i++) {
           messages[i] = channel._cacheMessage(new Message(channel, data[i], client));
         }
-        channel.lastMessageID = messages[messages.length - 1].id;
-        channel.lastMessage = messages[messages.length - 1];
+        const lastMessage = messages[messages.length - 1];
+        channel.lastMessageID = lastMessage.id;
+        channel.lastMessage = lastMessage;
         if (user) {
-          user.lastMessageID = messages[messages.length - 1].id;
-          user.lastMessage = messages[messages.length - 1];
+          user.lastMessageID = lastMessage.id;
+          user.lastMessage = lastMessage;
         }
         if (member) {
-          member.lastMessageID = messages[messages.length - 1].id;
-          member.lastMessage = messages[messages.length - 1];
+          member.lastMessageID = lastMessage.id;
+          member.lastMessage = lastMessage;
         }
         return {
           messages,
