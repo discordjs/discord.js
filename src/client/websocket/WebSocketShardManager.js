@@ -5,7 +5,11 @@ const PacketManager = require('./packets/WebSocketPacketManager');
 const Collection = require('../../util/Collection');
 
 class WebSocketShardManager extends EventEmitter {
-  constructor(client) { // eslint-disable-line consistent-return
+  /**
+   * A manager for the WebSocketManagers
+   * @param {Client} client Client this was intantiated with
+   */
+  constructor(client) {
     super();
 
     /**
