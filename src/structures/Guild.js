@@ -348,12 +348,12 @@ class Guild {
    * this should not be necessary.
    * @param {string} [query=''] Limit fetch to members with similar usernames
    * @param {number} [limit=0] Maximum number of members to request
-   * @returns {Promise<Collection<GuildMember>>}
+   * @returns {Promise<Collection<Snowflake, GuildMember>>}
    */
   fetchMembers(query = '', limit = 0) {
     return new Promise((resolve, reject) => {
       if (this.memberCount === this.members.size) {
-        resolve(this.members);
+        resolve(new Collection());
         return;
       }
       this.client.ws.send({
