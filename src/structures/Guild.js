@@ -375,7 +375,10 @@ class Guild {
         }
       };
       this.client.on(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
-      this.client.setTimeout(() => reject(new Error('Members didn\'t arrive in time.')), 120 * 1000);
+      this.client.setTimeout(() => {
+        this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
+        reject(new Error('Members didn\'t arrive in time.'));
+      }, 120 * 1000);
     });
   }
 
