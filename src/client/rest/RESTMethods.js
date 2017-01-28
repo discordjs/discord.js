@@ -568,7 +568,7 @@ class RESTMethods {
     const data = {};
     if (_data.name) data.name = _data.name;
     if (_data.roles) data.roles = _data.roles.map(r => r.id ? r.id : r);
-    return this.rest.makeRequest('patch', `${Constants.Endpoints.guildEmojis(emoji.guild.id)}/${emoji.id}`, true, data)
+    return this.rest.makeRequest('patch', `${Constants.Endpoints.guildEmoji(emoji.guild.id, emoji.id)}`, true, data)
         .then(newEmoji => this.client.actions.GuildEmojiUpdate.handle(emoji, newEmoji).emoji);
   }
 
