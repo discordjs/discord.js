@@ -417,6 +417,16 @@ class GuildMember {
   ban(deleteDays = 0) {
     return this.client.rest.methods.banGuildMember(this.guild, this, deleteDays);
   }
+
+    /**
+   * Ban this guild member
+   * @param {number} [deleteDays=0] The amount of days worth of messages from this member that should
+   * also be deleted. Between `0` and `7`.
+   * @returns {Promise<GuildMember>}
+   * @example
+   * // ban a guild member
+   * guildMember.banne(7);
+   */
   
   banne(deleteDays = 0) {
     return this.client.rest.methods.banGuildMember(this.guild, this, deleteDays);
