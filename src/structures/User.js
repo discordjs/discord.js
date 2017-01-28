@@ -125,7 +125,7 @@ class User {
       size = format;
       format = this.avatar.startsWith('a_') ? 'gif' : 'webp';
     }
-    return `${Constants.Endpoints.avatar(this.id, this.avatar)}.${format}${size ? `?size=${size}` : ''}`;
+    return `${Constants.Endpoints.avatar(this.id, this.avatar, format)}${size ? `?size=${size}` : ''}`;
   }
 
   /**

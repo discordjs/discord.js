@@ -240,12 +240,21 @@ class Guild {
 
   /**
    * Gets the URL to this guild's icon (if it has one, otherwise it returns null)
-   * @type {?string}
+   * @param {string} [format='webp'] One of `webp`, `png`, `jpg`, `gif`
+   * @returns {?string}
+   */
+  iconURL(format = 'webp') {
+    if (!this.icon) return null;
+    return Constants.Endpoints.guildIcon(this.id, this.icon, format);
+  }
+
+  /**
+   * Gets the acronym that shows up in place of a guild icon
+   * @type {string}
    * @readonly
    */
-  get iconURL() {
-    if (!this.icon) return null;
-    return Constants.Endpoints.guildIcon(this.id, this.icon);
+  get nameAcronym() {
+    return this.name.replace(/\w+/g, (name) => name[0]).replace(/\s/g, '');
   }
 
   /**

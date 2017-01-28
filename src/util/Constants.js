@@ -94,9 +94,9 @@ const Endpoints = exports.Endpoints = {
   user: (userID) => `${API}/users/${userID}`,
   userChannels: (userID) => `${Endpoints.user(userID)}/channels`,
   userProfile: (userID) => `${Endpoints.user(userID)}/profile`,
-  avatar: (userID, avatar) => {
+  avatar: (userID, avatar, format = 'webp') => {
     if (userID === '1') return avatar;
-    return `${Endpoints.CDN}/avatars/${userID}/${avatar}`;
+    return `${Endpoints.CDN}/avatars/${userID}/${avatar}.${format}`;
   },
   me: `${API}/users/@me`,
   meGuild: (guildID) => `${Endpoints.me}/guilds/${guildID}`,
@@ -110,7 +110,7 @@ const Endpoints = exports.Endpoints = {
   // guilds
   guilds: `${API}/guilds`,
   guild: (guildID) => `${Endpoints.guilds}/${guildID}`,
-  guildIcon: (guildID, hash) => `${Endpoints.CDN}/icons/${guildID}/${hash}.jpg`,
+  guildIcon: (guildID, hash, format = 'webp') => `${Endpoints.CDN}/icons/${guildID}/${hash}.${format}`,
   guildSplash: (guildID, hash) => `${Endpoints.CDN}/splashes/${guildID}/${hash}.jpg`,
   guildPrune: (guildID) => `${Endpoints.guild(guildID)}/prune`,
   guildEmbed: (guildID) => `${Endpoints.guild(guildID)}/embed`,
