@@ -110,7 +110,7 @@ class Emoji {
 
   /**
    * Edits the emoji
-   * @param {EmojiEditData} data The new data for the role
+   * @param {EmojiEditData} data The new data for the emoji
    * @returns {Promise<Emoji>}
    * @example
    * // edit a emoji
