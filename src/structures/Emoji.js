@@ -102,6 +102,27 @@ class Emoji {
   }
 
   /**
+   * The data for editing a emoji
+   * @typedef {Object} EmojiEditData
+   * @property {string} [name] The name of the emoji
+   * @property {Collection|Array} [roles] Roles to restrict emoji to
+   */
+
+  /**
+   * Edits the emoji
+   * @param {EmojiEditData} data The new data for the role
+   * @returns {Promise<Emoji>}
+   * @example
+   * // edit a emoji
+   * emoji.edit({name: 'newemoji'})
+   *  .then(e => console.log(`Edited emoji ${e}`))
+   *  .catch(console.error);
+   */
+  edit(data) {
+    return this.client.rest.methods.updateEmoji(this, data);
+  }
+
+  /**
    * When concatenated with a string, this automatically returns the emoji mention rather than the object.
    * @returns {string}
    * @example
