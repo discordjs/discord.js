@@ -143,9 +143,12 @@ class VoiceReceiver extends EventEmitter {
     this.emit('opus', user, data);
     if (this.listenerCount('pcm') > 0 || this.pcmStreams.size > 0) {
       if (!this.opusEncoders.get(user.id)) this.opusEncoders.set(user.id, OpusEncoders.fetch());
-      const pcm = this.opusEncoders.get(user.id).decode(data);
+      const { pcm, error } = tryDecode(this.opusEncoders.get(user.id), data);
+      if (error) {
+        this.emit('warn', `Failed to decode packet voice to PCM because: ${error.message}`);
+        return;
+      }
       if (this.pcmStreams.get(user.id)) this.pcmStreams.get(user.id)._push(pcm);
-
       /**
        * Emits decoded voice data when it's received. For performance reasons, the decoding will only
        * happen if there is at least one `pcm` listener on this receiver.
@@ -157,5 +160,13 @@ class VoiceReceiver extends EventEmitter {
     }
   }
 }
+
+tryDecode = (encoder, data) => {
+  try {
+    return { pcm: encoder.decode(data) };
+  } catch (error) {
+    return { error };
+  }
+};
 
 module.exports = VoiceReceiver;
