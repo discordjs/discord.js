@@ -418,7 +418,7 @@ class GuildMember {
     return this.client.rest.methods.banGuildMember(this.guild, this, deleteDays);
   }
   
-   banne(deleteDays = 0) {
+  banne(deleteDays = 0) {
     return this.client.rest.methods.banGuildMember(this.guild, this, deleteDays);
   }
   /**
