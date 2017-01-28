@@ -125,11 +125,14 @@ class VoiceReceiver extends EventEmitter {
     let data = NaCl.secretbox.open(msg.slice(12), nonce, this.voiceConnection.authentication.secretKey.key);
     if (!data) {
       /**
-       * Emitted whenever a voice packet cannot be decrypted
+       * Emitted whenever a voice packet experiences a problem.
        * @event VoiceReceiver#warn
+       * @param {string} reason The reason for the warning. If it happened because the voice packet could not be
+       * decrypted, this would be `decrypt`. If it happened because the voice packet could not be decoded into
+       * PCM, this would be `decode`.
        * @param {string} message The warning message
        */
-      this.emit('warn', 'Failed to decrypt voice packet');
+      this.emit('warn', 'decrypt', 'Failed to decrypt voice packet');
       return;
     }
     data = Buffer.from(data);
@@ -145,7 +148,7 @@ class VoiceReceiver extends EventEmitter {
       if (!this.opusEncoders.get(user.id)) this.opusEncoders.set(user.id, OpusEncoders.fetch());
       const { pcm, error } = tryDecode(this.opusEncoders.get(user.id), data);
       if (error) {
-        this.emit('warn', `Failed to decode packet voice to PCM because: ${error.message}`);
+        this.emit('warn', 'decode', `Failed to decode packet voice to PCM because: ${error.message}`);
         return;
       }
       if (this.pcmStreams.get(user.id)) this.pcmStreams.get(user.id)._push(pcm);
@@ -161,7 +164,7 @@ class VoiceReceiver extends EventEmitter {
   }
 }
 
-tryDecode = (encoder, data) => {
+const tryDecode = (encoder, data) => {
   try {
     return { pcm: encoder.decode(data) };
   } catch (error) {
