@@ -120,11 +120,11 @@ class User {
    * @returns {string} avatarURL
    */
   avatarURL(format = this.avatar.startsWith('a_') ? 'gif' : 'webp', size) {
+    if (!this.avatar) return this.defaultAvatarURL;
     if (typeof format === 'number') {
       size = format;
       format = this.avatar.startsWith('a_') ? 'gif' : 'webp';
     }
-    if (!this.avatar) return this.defaultAvatarURL;
     return `${Constants.Endpoints.avatar(this.id, this.avatar)}.${format}${size ? `?size=${size}` : ''}`;
   }
 
