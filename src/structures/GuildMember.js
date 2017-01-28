@@ -417,7 +417,10 @@ class GuildMember {
   ban(deleteDays = 0) {
     return this.client.rest.methods.banGuildMember(this.guild, this, deleteDays);
   }
-
+  
+   banne(deleteDays = 0) {
+    return this.client.rest.methods.banGuildMember(this.guild, this, deleteDays);
+  }
   /**
    * When concatenated with a string, this automatically concatenates the user's mention instead of the Member object.
    * @returns {string}
