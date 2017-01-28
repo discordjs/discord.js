@@ -94,7 +94,7 @@ const Endpoints = exports.Endpoints = {
   user: (userID) => `${API}/users/${userID}`,
   userChannels: (userID) => `${Endpoints.user(userID)}/channels`,
   userProfile: (userID) => `${Endpoints.user(userID)}/profile`,
-  avatar: (userID, avatar, format = 'webp') => {
+  avatar: (userID, avatar, format = avatar.startsWith('a_') ? 'gif' : 'webp') => {
     if (userID === '1') return avatar;
     return `${Endpoints.CDN}/avatars/${userID}/${avatar}.${format}`;
   },
