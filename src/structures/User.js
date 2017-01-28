@@ -102,16 +102,6 @@ class User {
   }
 
   /**
-   * A link to the user's avatar (if they have one, otherwise null)
-   * @type {?string}
-   * @readonly
-   */
-  get avatarURL() {
-    if (!this.avatar) return null;
-    return Constants.Endpoints.avatar(this.id, this.avatar);
-  }
-
-  /**
    * A link to the user's default avatar
    * @type {string}
    * @readonly
@@ -124,11 +114,27 @@ class User {
 
   /**
    * A link to the user's avatar if they have one. Otherwise a link to their default avatar will be returned
+   * @param {string} [format] One of `webp`, `png`, `jpg`, or `gif` if a gif is available. If none is provided,
+   * it will be `gif` for animated avatars or otherwise `webp`
+   * @param {number} [size=128] One of `128`, `512`, `1024`, `2048`.
+   * @returns {string} avatarURL
+   */
+  avatarURL(format = this.avatar.startsWith('a_') ? 'gif' : 'webp', size) {
+    if (typeof format === 'number') {
+      size = format;
+      format = this.avatar.startsWith('a_') ? 'gif' : 'webp';
+    }
+    if (!this.avatar) return this.defaultAvatarURL;
+    return `${Constants.Endpoints.avatar(this.id, this.avatar)}.${format}${size ? `?size=${size}` : ''}`;
+  }
+
+  /**
+   * A link to the user's avatar if they have one. Otherwise a link to their default avatar will be returned
    * @type {string}
    * @readonly
    */
   get displayAvatarURL() {
-    return this.avatarURL || this.defaultAvatarURL;
+    return this.avatarURL();
   }
 
   /**
