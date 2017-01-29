@@ -197,12 +197,13 @@ class Message {
       if (data.type === 6) this.system = true;
     }
     if (data.attachments) {
-      this.attachments = new Collection();
+      this.attachments.clear();
       for (const attachment of data.attachments) {
         this.attachments.set(attachment.id, new Attachment(this, attachment));
       }
     }
     if (data.mentions) {
+      this.mentions.users.clear();
       for (const mention of data.mentions) {
         let user = this.client.users.get(mention.id);
         if (user) {
@@ -214,6 +215,7 @@ class Message {
       }
     }
     if (data.mention_roles) {
+      this.mentions.roles.clear();
       for (const mention of data.mention_roles) {
         const role = this.channel.guild.roles.get(mention);
         if (role) this.mentions.roles.set(role.id, role);
@@ -221,6 +223,7 @@ class Message {
     }
     if (data.id) this.id = data.id;
     if (this.channel.guild && data.content) {
+      this.mentions.channels.clear();
       const channMentionsRaw = data.content.match(/<#([0-9]{14,20})>/g) || [];
       for (const raw of channMentionsRaw) {
         const chan = this.channel.guild.channels.get(raw.match(/([0-9]{14,20})/g)[0]);
@@ -228,7 +231,7 @@ class Message {
       }
     }
     if (data.reactions) {
-      this.reactions = new Collection();
+      this.reactions.clear();
       if (data.reactions.length > 0) {
         for (const reaction of data.reactions) {
           const id = reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` : reaction.emoji.name;
