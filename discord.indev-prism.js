@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 171);
+/******/ 	return __webpack_require__(__webpack_require__.s = 170);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -476,7 +476,7 @@ for (const key in PermissionFlags) _ALL_PERMISSIONS |= PermissionFlags[key];
 exports.ALL_PERMISSIONS = _ALL_PERMISSIONS;
 exports.DEFAULT_PERMISSIONS = 104324097;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ }),
 /* 1 */
@@ -1021,7 +1021,7 @@ exports.setTyped(TYPED_OK);
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const TextBasedChannel = __webpack_require__(13);
+const TextBasedChannel = __webpack_require__(14);
 const Constants = __webpack_require__(0);
 const Presence = __webpack_require__(7).Presence;
 
@@ -1966,9 +1966,9 @@ module.exports = Emoji;
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const TextBasedChannel = __webpack_require__(13);
+const TextBasedChannel = __webpack_require__(14);
 const Role = __webpack_require__(9);
-const EvaluatedPermissions = __webpack_require__(20);
+const EvaluatedPermissions = __webpack_require__(19);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(7).Presence;
@@ -2419,7 +2419,7 @@ const Embed = __webpack_require__(37);
 const MessageReaction = __webpack_require__(38);
 const Collection = __webpack_require__(3);
 const Constants = __webpack_require__(0);
-const escapeMarkdown = __webpack_require__(23);
+const escapeMarkdown = __webpack_require__(22);
 let GuildMember;
 
 /**
@@ -2996,1675 +2996,6 @@ module.exports = Message;
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const path = __webpack_require__(25);
-const Message = __webpack_require__(12);
-const MessageCollector = __webpack_require__(36);
-const Collection = __webpack_require__(3);
-
-/**
- * Interface for classes that have text-channel-like features
- * @interface
- */
-class TextBasedChannel {
-  constructor() {
-    /**
-     * A collection containing the messages sent to this channel.
-     * @type {Collection<Snowflake, Message>}
-     */
-    this.messages = new Collection();
-
-    /**
-     * The ID of the last message in the channel, if one was sent.
-     * @type {?Snowflake}
-     */
-    this.lastMessageID = null;
-  }
-
-  /**
-   * Options provided when sending or editing a message
-   * @typedef {Object} MessageOptions
-   * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
-   * @property {string} [nonce=''] The nonce for the message
-   * @property {RichEmbed|Object} [embed] An embed for the message
-   * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
-   * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
-   * should be replaced with plain-text
-   * @property {FileOptions|string} [file] A file to send with the message
-   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
-   * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
-   * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
-   * @property {UserResolvable} [reply] User to reply to (prefixes the message with a mention, except in DMs)
-   */
-
-  /**
-   * @typedef {Object} FileOptions
-   * @property {BufferResolvable} attachment File to attach
-   * @property {string} [name='file.jpg'] Filename of the attachment
-   */
-
-  /**
-   * Options for splitting a message
-   * @typedef {Object} SplitOptions
-   * @property {number} [maxLength=1950] Maximum character length per message piece
-   * @property {string} [char='\n'] Character to split the message with
-   * @property {string} [prepend=''] Text to prepend to every piece except the first
-   * @property {string} [append=''] Text to append to every piece except the last
-   */
-
-  /**
-   * Send a message to this channel
-   * @param {StringResolvable} [content] Text for the message
-   * @param {MessageOptions} [options={}] Options for the message
-   * @returns {Promise<Message|Message[]>}
-   * @example
-   * // send a message
-   * channel.send('hello!')
-   *  .then(message => console.log(`Sent message: ${message.content}`))
-   *  .catch(console.error);
-   */
-  send(content, options) {
-    if (!options && typeof content === 'object' && !(content instanceof Array)) {
-      options = content;
-      content = '';
-    } else if (!options) {
-      options = {};
-    }
-
-    if (options.file) {
-      if (typeof options.file === 'string') options.file = { attachment: options.file };
-      if (!options.file.name) {
-        if (typeof options.file.attachment === 'string') {
-          options.file.name = path.basename(options.file.attachment);
-        } else if (options.file.attachment && options.file.attachment.path) {
-          options.file.name = path.basename(options.file.attachment.path);
-        } else {
-          options.file.name = 'file.jpg';
-        }
-      }
-
-      return this.client.resolver.resolveBuffer(options.file.attachment).then(file =>
-        this.client.rest.methods.sendMessage(this, content, options, {
-          file,
-          name: options.file.name,
-        })
-      );
-    }
-
-    return this.client.rest.methods.sendMessage(this, content, options);
-  }
-
-  /**
-   * Send a message to this channel
-   * @param {StringResolvable} [content] Text for the message
-   * @param {MessageOptions} [options={}] Options for the message
-   * @returns {Promise<Message|Message[]>}
-   * @example
-   * // send a message
-   * channel.sendMessage('hello!')
-   *  .then(message => console.log(`Sent message: ${message.content}`))
-   *  .catch(console.error);
-   */
-  sendMessage(content, options) {
-    return this.send(content, options);
-  }
-
-  /**
-   * Send an embed to this channel
-   * @param {RichEmbed|Object} embed Embed for the message
-   * @param {string} [content] Text for the message
-   * @param {MessageOptions} [options] Options for the message
-   * @returns {Promise<Message>}
-   */
-  sendEmbed(embed, content, options) {
-    if (!options && typeof content === 'object' && !(content instanceof Array)) {
-      options = content;
-      content = '';
-    } else if (!options) {
-      options = {};
-    }
-    return this.send(content, Object.assign(options, { embed }));
-  }
-
-  /**
-   * Send a file to this channel
-   * @param {BufferResolvable} attachment File to send
-   * @param {string} [name='file.jpg'] Name and extension of the file
-   * @param {StringResolvable} [content] Text for the message
-   * @param {MessageOptions} [options] Options for the message
-   * @returns {Promise<Message>}
-   */
-  sendFile(attachment, name, content, options = {}) {
-    return this.send(content, Object.assign(options, { file: { attachment, name } }));
-  }
-
-  /**
-   * Send a code block to this channel
-   * @param {string} lang Language for the code block
-   * @param {StringResolvable} content Content of the code block
-   * @param {MessageOptions} [options] Options for the message
-   * @returns {Promise<Message|Message[]>}
-   */
-  sendCode(lang, content, options = {}) {
-    return this.send(content, Object.assign(options, { code: lang }));
-  }
-
-  /**
-   * Gets a single message from this channel, regardless of it being cached or not.
-   * <warn>This is only available when using a bot account.</warn>
-   * @param {string} messageID ID of the message to get
-   * @returns {Promise<Message>}
-   * @example
-   * // get message
-   * channel.fetchMessage('99539446449315840')
-   *   .then(message => console.log(message.content))
-   *   .catch(console.error);
-   */
-  fetchMessage(messageID) {
-    return this.client.rest.methods.getChannelMessage(this, messageID).then(data => {
-      const msg = data instanceof Message ? data : new Message(this, data, this.client);
-      this._cacheMessage(msg);
-      return msg;
-    });
-  }
-
-  /**
-   * The parameters to pass in when requesting previous messages from a channel. `around`, `before` and
-   * `after` are mutually exclusive. All the parameters are optional.
-   * @typedef {Object} ChannelLogsQueryOptions
-   * @property {number} [limit=50] Number of messages to acquire
-   * @property {string} [before] ID of a message to get the messages that were posted before it
-   * @property {string} [after] ID of a message to get the messages that were posted after it
-   * @property {string} [around] ID of a message to get the messages that were posted around it
-   */
-
-  /**
-   * Gets the past messages sent in this channel. Resolves with a collection mapping message ID's to Message objects.
-   * @param {ChannelLogsQueryOptions} [options={}] Query parameters to pass in
-   * @returns {Promise<Collection<string, Message>>}
-   * @example
-   * // get messages
-   * channel.fetchMessages({limit: 10})
-   *  .then(messages => console.log(`Received ${messages.size} messages`))
-   *  .catch(console.error);
-   */
-  fetchMessages(options = {}) {
-    return this.client.rest.methods.getChannelMessages(this, options).then(data => {
-      const messages = new Collection();
-      for (const message of data) {
-        const msg = new Message(this, message, this.client);
-        messages.set(message.id, msg);
-        this._cacheMessage(msg);
-      }
-      return messages;
-    });
-  }
-
-  /**
-   * Fetches the pinned messages of this channel and returns a collection of them.
-   * @returns {Promise<Collection<string, Message>>}
-   */
-  fetchPinnedMessages() {
-    return this.client.rest.methods.getChannelPinnedMessages(this).then(data => {
-      const messages = new Collection();
-      for (const message of data) {
-        const msg = new Message(this, message, this.client);
-        messages.set(message.id, msg);
-        this._cacheMessage(msg);
-      }
-      return messages;
-    });
-  }
-
-  /**
-   * Performs a search within the channel.
-   * @param {MessageSearchOptions} [options={}] Options to pass to the search
-   * @returns {Promise<Array<Message[]>>}
-   * An array containing arrays of messages. Each inner array is a search context cluster.
-   * The message which has triggered the result will have the `hit` property set to `true`.
-   * @example
-   * channel.search({
-   *   content: 'discord.js',
-   *   before: '2016-11-17'
-   * }).then(res => {
-   *   const hit = res.messages[0].find(m => m.hit).content;
-   *   console.log(`I found: **${hit}**, total results: ${res.totalResults}`);
-   * }).catch(console.error);
-   */
-  search(options) {
-    return this.client.rest.methods.search(this, options);
-  }
-
-  /**
-   * Starts a typing indicator in the channel.
-   * @param {number} [count] The number of times startTyping should be considered to have been called
-   * @example
-   * // start typing in a channel
-   * channel.startTyping();
-   */
-  startTyping(count) {
-    if (typeof count !== 'undefined' && count < 1) throw new RangeError('Count must be at least 1.');
-    if (!this.client.user._typing.has(this.id)) {
-      this.client.user._typing.set(this.id, {
-        count: count || 1,
-        interval: this.client.setInterval(() => {
-          this.client.rest.methods.sendTyping(this.id);
-        }, 9000),
-      });
-      this.client.rest.methods.sendTyping(this.id);
-    } else {
-      const entry = this.client.user._typing.get(this.id);
-      entry.count = count || entry.count + 1;
-    }
-  }
-
-  /**
-   * Stops the typing indicator in the channel.
-   * The indicator will only stop if this is called as many times as startTyping().
-   * <info>It can take a few seconds for the client user to stop typing.</info>
-   * @param {boolean} [force=false] Whether or not to reset the call count and force the indicator to stop
-   * @example
-   * // stop typing in a channel
-   * channel.stopTyping();
-   * @example
-   * // force typing to fully stop in a channel
-   * channel.stopTyping(true);
-   */
-  stopTyping(force = false) {
-    if (this.client.user._typing.has(this.id)) {
-      const entry = this.client.user._typing.get(this.id);
-      entry.count--;
-      if (entry.count <= 0 || force) {
-        this.client.clearInterval(entry.interval);
-        this.client.user._typing.delete(this.id);
-      }
-    }
-  }
-
-  /**
-   * Whether or not the typing indicator is being shown in the channel.
-   * @type {boolean}
-   * @readonly
-   */
-  get typing() {
-    return this.client.user._typing.has(this.id);
-  }
-
-  /**
-   * Number of times `startTyping` has been called.
-   * @type {number}
-   * @readonly
-   */
-  get typingCount() {
-    if (this.client.user._typing.has(this.id)) return this.client.user._typing.get(this.id).count;
-    return 0;
-  }
-
-  /**
-   * Creates a Message Collector
-   * @param {CollectorFilterFunction} filter The filter to create the collector with
-   * @param {CollectorOptions} [options={}] The options to pass to the collector
-   * @returns {MessageCollector}
-   * @example
-   * // create a message collector
-   * const collector = channel.createCollector(
-   *  m => m.content.includes('discord'),
-   *  { time: 15000 }
-   * );
-   * collector.on('message', m => console.log(`Collected ${m.content}`));
-   * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
-   */
-  createCollector(filter, options = {}) {
-    return new MessageCollector(this, filter, options);
-  }
-
-  /**
-   * An object containing the same properties as CollectorOptions, but a few more:
-   * @typedef {CollectorOptions} AwaitMessagesOptions
-   * @property {string[]} [errors] Stop/end reasons that cause the promise to reject
-   */
-
-  /**
-   * Similar to createCollector but in promise form. Resolves with a collection of messages that pass the specified
-   * filter.
-   * @param {CollectorFilterFunction} filter The filter function to use
-   * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector
-   * @returns {Promise<Collection<string, Message>>}
-   * @example
-   * // await !vote messages
-   * const filter = m => m.content.startsWith('!vote');
-   * // errors: ['time'] treats ending because of the time limit as an error
-   * channel.awaitMessages(filter, { max: 4, time: 60000, errors: ['time'] })
-   *  .then(collected => console.log(collected.size))
-   *  .catch(collected => console.log(`After a minute, only ${collected.size} out of 4 voted.`));
-   */
-  awaitMessages(filter, options = {}) {
-    return new Promise((resolve, reject) => {
-      const collector = this.createCollector(filter, options);
-      collector.on('end', (collection, reason) => {
-        if (options.errors && options.errors.includes(reason)) {
-          reject(collection);
-        } else {
-          resolve(collection);
-        }
-      });
-    });
-  }
-
-  /**
-   * Bulk delete given messages that are newer than two weeks
-   * <warn>This is only available when using a bot account.</warn>
-   * @param {Collection<string, Message>|Message[]|number} messages Messages to delete, or number of messages to delete
-   * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
-   * @returns {Promise<Collection<string, Message>>} Deleted messages
-   */
-  bulkDelete(messages, filterOld = false) {
-    if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs));
-    if (messages instanceof Array || messages instanceof Collection) {
-      const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
-      return this.client.rest.methods.bulkDeleteMessages(this, messageIDs, filterOld);
-    }
-    throw new TypeError('The messages must be an Array, Collection, or number.');
-  }
-
-  _cacheMessage(message) {
-    const maxSize = this.client.options.messageCacheMaxSize;
-    if (maxSize === 0) return null;
-    if (this.messages.size >= maxSize && maxSize > 0) this.messages.delete(this.messages.firstKey());
-    this.messages.set(message.id, message);
-    return message;
-  }
-}
-
-exports.applyToClass = (structure, full = false, ignore = []) => {
-  const props = ['send', 'sendMessage', 'sendEmbed', 'sendFile', 'sendCode'];
-  if (full) {
-    props.push(
-      '_cacheMessage',
-      'fetchMessages',
-      'fetchMessage',
-      'search',
-      'bulkDelete',
-      'startTyping',
-      'stopTyping',
-      'typing',
-      'typingCount',
-      'fetchPinnedMessages',
-      'createCollector',
-      'awaitMessages'
-    );
-  }
-  for (const prop of props) {
-    if (ignore.includes(prop)) continue;
-    Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
-  }
-};
-
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const User = __webpack_require__(6);
-const Role = __webpack_require__(9);
-const Emoji = __webpack_require__(10);
-const Presence = __webpack_require__(7).Presence;
-const GuildMember = __webpack_require__(11);
-const Constants = __webpack_require__(0);
-const Collection = __webpack_require__(3);
-const cloneObject = __webpack_require__(4);
-const arraysEqual = __webpack_require__(161);
-
-/**
- * Represents a guild (or a server) on Discord.
- * <info>It's recommended to see if a guild is available before performing operations or reading data from it. You can
- * check this with `guild.available`.</info>
- */
-class Guild {
-  constructor(client, data) {
-    /**
-     * The Client that created the instance of the the Guild.
-     * @name Guild#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
-
-    /**
-     * A collection of members that are in this guild. The key is the member's ID, the value is the member.
-     * @type {Collection<Snowflake, GuildMember>}
-     */
-    this.members = new Collection();
-
-    /**
-     * A collection of channels that are in this guild. The key is the channel's ID, the value is the channel.
-     * @type {Collection<Snowflake, GuildChannel>}
-     */
-    this.channels = new Collection();
-
-    /**
-     * A collection of roles that are in this guild. The key is the role's ID, the value is the role.
-     * @type {Collection<Snowflake, Role>}
-     */
-    this.roles = new Collection();
-
-    /**
-     * A collection of presences in this guild
-     * @type {Collection<Snowflake, Presence>}
-     */
-    this.presences = new Collection();
-
-    if (!data) return;
-    if (data.unavailable) {
-      /**
-       * Whether the guild is available to access. If it is not available, it indicates a server outage.
-       * @type {boolean}
-       */
-      this.available = false;
-
-      /**
-       * The Unique ID of the Guild, useful for comparisons.
-       * @type {Snowflake}
-       */
-      this.id = data.id;
-    } else {
-      this.available = true;
-      this.setup(data);
-    }
-  }
-
-  /**
-   * Sets up the Guild
-   * @param {*} data The raw data of the guild
-   * @private
-   */
-  setup(data) {
-    /**
-     * The name of the guild
-     * @type {string}
-     */
-    this.name = data.name;
-
-    /**
-     * The hash of the guild icon, or null if there is no icon.
-     * @type {?string}
-     */
-    this.icon = data.icon;
-
-    /**
-     * The hash of the guild splash image, or null if no splash (VIP only)
-     * @type {?string}
-     */
-    this.splash = data.splash;
-
-    /**
-     * The region the guild is located in
-     * @type {string}
-     */
-    this.region = data.region;
-
-    /**
-     * The full amount of members in this guild as of `READY`
-     * @type {number}
-     */
-    this.memberCount = data.member_count || this.memberCount;
-
-    /**
-     * Whether the guild is "large" (has more than 250 members)
-     * @type {boolean}
-     */
-    this.large = Boolean('large' in data ? data.large : this.large);
-
-    /**
-     * An array of guild features.
-     * @type {Object[]}
-     */
-    this.features = data.features;
-
-    /**
-     * The ID of the application that created this guild (if applicable)
-     * @type {?Snowflake}
-     */
-    this.applicationID = data.application_id;
-
-    /**
-     * A collection of emojis that are in this guild. The key is the emoji's ID, the value is the emoji.
-     * @type {Collection<Snowflake, Emoji>}
-     */
-    this.emojis = new Collection();
-    for (const emoji of data.emojis) this.emojis.set(emoji.id, new Emoji(this, emoji));
-
-    /**
-     * The time in seconds before a user is counted as "away from keyboard".
-     * @type {?number}
-     */
-    this.afkTimeout = data.afk_timeout;
-
-    /**
-     * The ID of the voice channel where AFK members are moved.
-     * @type {?string}
-     */
-    this.afkChannelID = data.afk_channel_id;
-
-    /**
-     * Whether embedded images are enabled on this guild.
-     * @type {boolean}
-     */
-    this.embedEnabled = data.embed_enabled;
-
-    /**
-     * The verification level of the guild.
-     * @type {number}
-     */
-    this.verificationLevel = data.verification_level;
-
-    /**
-     * The timestamp the client user joined the guild at
-     * @type {number}
-     */
-    this.joinedTimestamp = data.joined_at ? new Date(data.joined_at).getTime() : this.joinedTimestamp;
-
-    this.id = data.id;
-    this.available = !data.unavailable;
-    this.features = data.features || this.features || [];
-
-    if (data.members) {
-      this.members.clear();
-      for (const guildUser of data.members) this._addMember(guildUser, false);
-    }
-
-    if (data.owner_id) {
-      /**
-       * The user ID of this guild's owner.
-       * @type {Snowflake}
-       */
-      this.ownerID = data.owner_id;
-    }
-
-    if (data.channels) {
-      this.channels.clear();
-      for (const channel of data.channels) this.client.dataManager.newChannel(channel, this);
-    }
-
-    if (data.roles) {
-      this.roles.clear();
-      for (const role of data.roles) {
-        const newRole = new Role(this, role);
-        this.roles.set(newRole.id, newRole);
-      }
-    }
-
-    if (data.presences) {
-      for (const presence of data.presences) {
-        this._setPresence(presence.user.id, presence);
-      }
-    }
-
-    this._rawVoiceStates = new Collection();
-    if (data.voice_states) {
-      for (const voiceState of data.voice_states) {
-        this._rawVoiceStates.set(voiceState.user_id, voiceState);
-        const member = this.members.get(voiceState.user_id);
-        if (member) {
-          member.serverMute = voiceState.mute;
-          member.serverDeaf = voiceState.deaf;
-          member.selfMute = voiceState.self_mute;
-          member.selfDeaf = voiceState.self_deaf;
-          member.voiceSessionID = voiceState.session_id;
-          member.voiceChannelID = voiceState.channel_id;
-          this.channels.get(voiceState.channel_id).members.set(member.user.id, member);
-        }
-      }
-    }
-  }
-
-  /**
-   * The timestamp the guild was created at
-   * @type {number}
-   * @readonly
-   */
-  get createdTimestamp() {
-    return (this.id / 4194304) + 1420070400000;
-  }
-
-  /**
-   * The time the guild was created
-   * @type {Date}
-   * @readonly
-   */
-  get createdAt() {
-    return new Date(this.createdTimestamp);
-  }
-
-  /**
-   * The time the client user joined the guild
-   * @type {Date}
-   * @readonly
-   */
-  get joinedAt() {
-    return new Date(this.joinedTimestamp);
-  }
-
-  /**
-   * Gets the URL to this guild's icon (if it has one, otherwise it returns null)
-   * @type {?string}
-   * @readonly
-   */
-  get iconURL() {
-    if (!this.icon) return null;
-    return Constants.Endpoints.guildIcon(this.id, this.icon);
-  }
-
-  /**
-   * Gets the URL to this guild's splash (if it has one, otherwise it returns null)
-   * @type {?string}
-   * @readonly
-   */
-  get splashURL() {
-    if (!this.splash) return null;
-    return Constants.Endpoints.guildSplash(this.id, this.splash);
-  }
-
-  /**
-   * The owner of the guild
-   * @type {GuildMember}
-   * @readonly
-   */
-  get owner() {
-    return this.members.get(this.ownerID);
-  }
-
-  /**
-   * If the client is connected to any voice channel in this guild, this will be the relevant VoiceConnection.
-   * @type {?VoiceConnection}
-   * @readonly
-   */
-  get voiceConnection() {
-    if (this.client.browser) return null;
-    return this.client.voice.connections.get(this.id) || null;
-  }
-
-  /**
-   * The `#general` TextChannel of the server.
-   * @type {TextChannel}
-   * @readonly
-   */
-  get defaultChannel() {
-    return this.channels.get(this.id);
-  }
-
-  /**
-   * Returns the GuildMember form of a User object, if the user is present in the guild.
-   * @param {UserResolvable} user The user that you want to obtain the GuildMember of
-   * @returns {?GuildMember}
-   * @example
-   * // get the guild member of a user
-   * const member = guild.member(message.author);
-   */
-  member(user) {
-    return this.client.resolver.resolveGuildMember(this, user);
-  }
-
-  /**
-   * Fetch a collection of banned users in this guild.
-   * @returns {Promise<Collection<string, User>>}
-   */
-  fetchBans() {
-    return this.client.rest.methods.getGuildBans(this);
-  }
-
-  /**
-   * Fetch a collection of invites to this guild. Resolves with a collection mapping invites by their codes.
-   * @returns {Promise<Collection<string, Invite>>}
-   */
-  fetchInvites() {
-    return this.client.rest.methods.getGuildInvites(this);
-  }
-
-  /**
-   * Fetch all webhooks for the guild.
-   * @returns {Collection<Webhook>}
-   */
-  fetchWebhooks() {
-    return this.client.rest.methods.getGuildWebhooks(this);
-  }
-
-  /**
-   * Fetch available voice regions
-   * @returns {Collection<string, VoiceRegion>}
-   */
-  fetchVoiceRegions() {
-    return this.client.rest.methods.fetchVoiceRegions(this.id);
-  }
-
-  /**
-   * Fetch a single guild member from a user.
-   * @param {UserResolvable} user The user to fetch the member for
-   * @param {boolean} [cache=true] Insert the user into the users cache
-   * @returns {Promise<GuildMember>}
-   */
-  fetchMember(user, cache = true) {
-    if (this._fetchWaiter) return Promise.reject(new Error('Already fetching guild members.'));
-    user = this.client.resolver.resolveUser(user);
-    if (!user) return Promise.reject(new Error('User is not cached. Use Client.fetchUser first.'));
-    if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
-    return this.client.rest.methods.getGuildMember(this, user, cache);
-  }
-
-  /**
-   * Fetches all the members in the guild, even if they are offline. If the guild has less than 250 members,
-   * this should not be necessary.
-   * @param {string} [query=''] An optional query to provide when fetching members
-   * @returns {Promise<Guild>}
-   */
-  fetchMembers(query = '') {
-    return new Promise((resolve, reject) => {
-      if (this._fetchWaiter) throw new Error(`Already fetching guild members in ${this.id}.`);
-      if (this.memberCount === this.members.size) {
-        resolve(this);
-        return;
-      }
-      this._fetchWaiter = resolve;
-      this.client.ws.send({
-        op: Constants.OPCodes.REQUEST_GUILD_MEMBERS,
-        d: {
-          guild_id: this.id,
-          query,
-          limit: 0,
-        },
-      });
-      this._checkChunks();
-      this.client.setTimeout(() => reject(new Error('Members didn\'t arrive in time.')), 120 * 1000);
-    });
-  }
-
-  /**
-   * Performs a search within the entire guild.
-   * @param {MessageSearchOptions} [options={}] Options to pass to the search
-   * @returns {Promise<Array<Message[]>>}
-   * An array containing arrays of messages. Each inner array is a search context cluster.
-   * The message which has triggered the result will have the `hit` property set to `true`.
-   * @example
-   * guild.search({
-   *   content: 'discord.js',
-   *   before: '2016-11-17'
-   * }).then(res => {
-   *   const hit = res.messages[0].find(m => m.hit).content;
-   *   console.log(`I found: **${hit}**, total results: ${res.totalResults}`);
-   * }).catch(console.error);
-   */
-  search(options) {
-    return this.client.rest.methods.search(this, options);
-  }
-
-  /**
-   * The data for editing a guild
-   * @typedef {Object} GuildEditData
-   * @property {string} [name] The name of the guild
-   * @property {string} [region] The region of the guild
-   * @property {number} [verificationLevel] The verification level of the guild
-   * @property {ChannelResolvable} [afkChannel] The AFK channel of the guild
-   * @property {number} [afkTimeout] The AFK timeout of the guild
-   * @property {Base64Resolvable} [icon] The icon of the guild
-   * @property {GuildMemberResolvable} [owner] The owner of the guild
-   * @property {Base64Resolvable} [splash] The splash screen of the guild
-   */
-
-  /**
-   * Updates the Guild with new information - e.g. a new name.
-   * @param {GuildEditData} data The data to update the guild with
-   * @returns {Promise<Guild>}
-   * @example
-   * // set the guild name and region
-   * guild.edit({
-   *  name: 'Discord Guild',
-   *  region: 'london',
-   * })
-   * .then(updated => console.log(`New guild name ${updated.name} in region ${updated.region}`))
-   * .catch(console.error);
-   */
-  edit(data) {
-    return this.client.rest.methods.updateGuild(this, data);
-  }
-
-  /**
-   * Edit the name of the guild.
-   * @param {string} name The new name of the guild
-   * @returns {Promise<Guild>}
-   * @example
-   * // edit the guild name
-   * guild.setName('Discord Guild')
-   *  .then(updated => console.log(`Updated guild name to ${guild.name}`))
-   *  .catch(console.error);
-   */
-  setName(name) {
-    return this.edit({ name });
-  }
-
-  /**
-   * Edit the region of the guild.
-   * @param {string} region The new region of the guild.
-   * @returns {Promise<Guild>}
-   * @example
-   * // edit the guild region
-   * guild.setRegion('london')
-   *  .then(updated => console.log(`Updated guild region to ${guild.region}`))
-   *  .catch(console.error);
-   */
-  setRegion(region) {
-    return this.edit({ region });
-  }
-
-  /**
-   * Edit the verification level of the guild.
-   * @param {number} verificationLevel The new verification level of the guild
-   * @returns {Promise<Guild>}
-   * @example
-   * // edit the guild verification level
-   * guild.setVerificationLevel(1)
-   *  .then(updated => console.log(`Updated guild verification level to ${guild.verificationLevel}`))
-   *  .catch(console.error);
-   */
-  setVerificationLevel(verificationLevel) {
-    return this.edit({ verificationLevel });
-  }
-
-  /**
-   * Edit the AFK channel of the guild.
-   * @param {ChannelResolvable} afkChannel The new AFK channel
-   * @returns {Promise<Guild>}
-   * @example
-   * // edit the guild AFK channel
-   * guild.setAFKChannel(channel)
-   *  .then(updated => console.log(`Updated guild AFK channel to ${guild.afkChannel}`))
-   *  .catch(console.error);
-   */
-  setAFKChannel(afkChannel) {
-    return this.edit({ afkChannel });
-  }
-
-  /**
-   * Edit the AFK timeout of the guild.
-   * @param {number} afkTimeout The time in seconds that a user must be idle to be considered AFK
-   * @returns {Promise<Guild>}
-   * @example
-   * // edit the guild AFK channel
-   * guild.setAFKTimeout(60)
-   *  .then(updated => console.log(`Updated guild AFK timeout to ${guild.afkTimeout}`))
-   *  .catch(console.error);
-   */
-  setAFKTimeout(afkTimeout) {
-    return this.edit({ afkTimeout });
-  }
-
-  /**
-   * Set a new guild icon.
-   * @param {Base64Resolvable} icon The new icon of the guild
-   * @returns {Promise<Guild>}
-   * @example
-   * // edit the guild icon
-   * guild.setIcon(fs.readFileSync('./icon.png'))
-   *  .then(updated => console.log('Updated the guild icon'))
-   *  .catch(console.error);
-   */
-  setIcon(icon) {
-    return this.edit({ icon });
-  }
-
-  /**
-   * Sets a new owner of the guild.
-   * @param {GuildMemberResolvable} owner The new owner of the guild
-   * @returns {Promise<Guild>}
-   * @example
-   * // edit the guild owner
-   * guild.setOwner(guilds.members[0])
-   *  .then(updated => console.log(`Updated the guild owner to ${updated.owner.username}`))
-   *  .catch(console.error);
-   */
-  setOwner(owner) {
-    return this.edit({ owner });
-  }
-
-  /**
-   * Set a new guild splash screen.
-   * @param {Base64Resolvable} splash The new splash screen of the guild
-   * @returns {Promise<Guild>}
-   * @example
-   * // edit the guild splash
-   * guild.setIcon(fs.readFileSync('./splash.png'))
-   *  .then(updated => console.log('Updated the guild splash'))
-   *  .catch(console.error);
-   */
-  setSplash(splash) {
-    return this.edit({ splash });
-  }
-
-  /**
-   * Bans a user from the guild.
-   * @param {UserResolvable} user The user to ban
-   * @param {number} [deleteDays=0] The amount of days worth of messages from this user that should
-   * also be deleted. Between `0` and `7`.
-   * @returns {Promise<GuildMember|User|string>} Result object will be resolved as specifically as possible.
-   * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
-   * be resolved, the user ID will be the result.
-   * @example
-   * // ban a user
-   * guild.ban('123123123123');
-   */
-  ban(user, deleteDays = 0) {
-    return this.client.rest.methods.banGuildMember(this, user, deleteDays);
-  }
-
-  /**
-   * Unbans a user from the guild.
-   * @param {UserResolvable} user The user to unban
-   * @returns {Promise<User>}
-   * @example
-   * // unban a user
-   * guild.unban('123123123123')
-   *  .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
-   *  .catch(reject);
-   */
-  unban(user) {
-    return this.client.rest.methods.unbanGuildMember(this, user);
-  }
-
-  /**
-   * Prunes members from the guild based on how long they have been inactive.
-   * @param {number} days Number of days of inactivity required to kick
-   * @param {boolean} [dry=false] If true, will return number of users that will be kicked, without actually doing it
-   * @returns {Promise<number>} The number of members that were/will be kicked
-   * @example
-   * // see how many members will be pruned
-   * guild.pruneMembers(12, true)
-   *   .then(pruned => console.log(`This will prune ${pruned} people!`))
-   *   .catch(console.error);
-   * @example
-   * // actually prune the members
-   * guild.pruneMembers(12)
-   *   .then(pruned => console.log(`I just pruned ${pruned} people!`))
-   *   .catch(console.error);
-   */
-  pruneMembers(days, dry = false) {
-    if (typeof days !== 'number') throw new TypeError('Days must be a number.');
-    return this.client.rest.methods.pruneGuildMembers(this, days, dry);
-  }
-
-  /**
-   * Syncs this guild (already done automatically every 30 seconds).
-   * <warn>This is only available when using a user account.</warn>
-   */
-  sync() {
-    if (!this.client.user.bot) this.client.syncGuilds([this]);
-  }
-
-  /**
-   * Creates a new channel in the guild.
-   * @param {string} name The name of the new channel
-   * @param {string} type The type of the new channel, either `text` or `voice`
-   * @param {Array<PermissionOverwrites|Object>} overwrites Permission overwrites to apply to the new channel
-   * @returns {Promise<TextChannel|VoiceChannel>}
-   * @example
-   * // create a new text channel
-   * guild.createChannel('new-general', 'text')
-   *  .then(channel => console.log(`Created new channel ${channel}`))
-   *  .catch(console.error);
-   */
-  createChannel(name, type, overwrites) {
-    return this.client.rest.methods.createChannel(this, name, type, overwrites);
-  }
-
-  /**
-   * Creates a new role in the guild, and optionally updates it with the given information.
-   * @param {RoleData} [data] The data to update the role with
-   * @returns {Promise<Role>}
-   * @example
-   * // create a new role
-   * guild.createRole()
-   *  .then(role => console.log(`Created role ${role}`))
-   *  .catch(console.error);
-   * @example
-   * // create a new role with data
-   * guild.createRole({ name: 'Super Cool People' })
-   *   .then(role => console.log(`Created role ${role}`))
-   *   .catch(console.error)
-   */
-  createRole(data) {
-    const create = this.client.rest.methods.createGuildRole(this);
-    if (!data) return create;
-    return create.then(role => role.edit(data));
-  }
-
-  /**
-   * Set the position of a role in this guild
-   * @param {string|Role} role the role to edit, can be a role object or a role ID.
-   * @param {number} position the new position of the role
-   * @returns {Promise<Guild>}
-   */
-  setRolePosition(role, position) {
-    if (typeof role === 'string') {
-      role = this.roles.get(role);
-      if (!role) return Promise.reject(new Error('Supplied role is not a role or string.'));
-    }
-
-    position = Number(position);
-    if (isNaN(position)) return Promise.reject(new Error('Supplied position is not a number.'));
-
-    const lowestAffected = Math.min(role.position, position);
-    const highestAffected = Math.max(role.position, position);
-
-    const rolesToUpdate = this.roles.filter(r => r.position >= lowestAffected && r.position <= highestAffected);
-
-    // stop role positions getting stupidly inflated
-    if (position > role.position) {
-      position = rolesToUpdate.first().position;
-    } else {
-      position = rolesToUpdate.last().position;
-    }
-
-    const updatedRoles = [];
-
-    for (const uRole of rolesToUpdate.values()) {
-      updatedRoles.push({
-        id: uRole.id,
-        position: uRole.id === role.id ? position : uRole.position + (position < role.position ? 1 : -1),
-      });
-    }
-
-    return this.client.rest.methods.setRolePositions(this.id, updatedRoles);
-  }
-
-  /**
-   * Creates a new custom emoji in the guild.
-   * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji.
-   * @param {string} name The name for the emoji.
-   * @returns {Promise<Emoji>} The created emoji.
-   * @example
-   * // create a new emoji from a url
-   * guild.createEmoji('https://i.imgur.com/w3duR07.png', 'rip')
-   *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
-   *  .catch(console.error);
-   * @example
-   * // create a new emoji from a file on your computer
-   * guild.createEmoji('./memes/banana.png', 'banana')
-   *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
-   *  .catch(console.error);
-   */
-  createEmoji(attachment, name) {
-    return new Promise(resolve => {
-      if (typeof attachment === 'string' && attachment.startsWith('data:')) {
-        resolve(this.client.rest.methods.createEmoji(this, attachment, name));
-      } else {
-        this.client.resolver.resolveBuffer(attachment).then(data =>
-          resolve(this.client.rest.methods.createEmoji(this, data, name))
-        );
-      }
-    });
-  }
-
-  /**
-   * Delete an emoji.
-   * @param {Emoji|string} emoji The emoji to delete.
-   * @returns {Promise}
-   */
-  deleteEmoji(emoji) {
-    if (!(emoji instanceof Emoji)) emoji = this.emojis.get(emoji);
-    return this.client.rest.methods.deleteEmoji(emoji);
-  }
-
-  /**
-   * Causes the Client to leave the guild.
-   * @returns {Promise<Guild>}
-   * @example
-   * // leave a guild
-   * guild.leave()
-   *  .then(g => console.log(`Left the guild ${g}`))
-   *  .catch(console.error);
-   */
-  leave() {
-    return this.client.rest.methods.leaveGuild(this);
-  }
-
-  /**
-   * Causes the Client to delete the guild.
-   * @returns {Promise<Guild>}
-   * @example
-   * // delete a guild
-   * guild.delete()
-   *  .then(g => console.log(`Deleted the guild ${g}`))
-   *  .catch(console.error);
-   */
-  delete() {
-    return this.client.rest.methods.deleteGuild(this);
-  }
-
-  /**
-   * Whether this Guild equals another Guild. It compares all properties, so for most operations
-   * it is advisable to just compare `guild.id === guild2.id` as it is much faster and is often
-   * what most users need.
-   * @param {Guild} guild Guild to compare with
-   * @returns {boolean}
-   */
-  equals(guild) {
-    let equal =
-      guild &&
-      this.id === guild.id &&
-      this.available === !guild.unavailable &&
-      this.splash === guild.splash &&
-      this.region === guild.region &&
-      this.name === guild.name &&
-      this.memberCount === guild.member_count &&
-      this.large === guild.large &&
-      this.icon === guild.icon &&
-      arraysEqual(this.features, guild.features) &&
-      this.ownerID === guild.owner_id &&
-      this.verificationLevel === guild.verification_level &&
-      this.embedEnabled === guild.embed_enabled;
-
-    if (equal) {
-      if (this.embedChannel) {
-        if (this.embedChannel.id !== guild.embed_channel_id) equal = false;
-      } else if (guild.embed_channel_id) {
-        equal = false;
-      }
-    }
-
-    return equal;
-  }
-
-  /**
-   * When concatenated with a string, this automatically concatenates the guild's name instead of the Guild object.
-   * @returns {string}
-   * @example
-   * // logs: Hello from My Guild!
-   * console.log(`Hello from ${guild}!`);
-   * @example
-   * // logs: Hello from My Guild!
-   * console.log(`Hello from ' + guild + '!');
-   */
-  toString() {
-    return this.name;
-  }
-
-  _addMember(guildUser, emitEvent = true) {
-    const existing = this.members.has(guildUser.user.id);
-    if (!(guildUser.user instanceof User)) guildUser.user = this.client.dataManager.newUser(guildUser.user);
-
-    guildUser.joined_at = guildUser.joined_at || 0;
-    const member = new GuildMember(this, guildUser);
-    this.members.set(member.id, member);
-
-    if (this._rawVoiceStates && this._rawVoiceStates.has(member.user.id)) {
-      const voiceState = this._rawVoiceStates.get(member.user.id);
-      member.serverMute = voiceState.mute;
-      member.serverDeaf = voiceState.deaf;
-      member.selfMute = voiceState.self_mute;
-      member.selfDeaf = voiceState.self_deaf;
-      member.voiceSessionID = voiceState.session_id;
-      member.voiceChannelID = voiceState.channel_id;
-      if (this.client.channels.has(voiceState.channel_id)) {
-        this.client.channels.get(voiceState.channel_id).members.set(member.user.id, member);
-      } else {
-        this.client.emit('warn', `Member ${member.id} added in guild ${this.id} with an uncached voice channel`);
-      }
-    }
-
-    /**
-     * Emitted whenever a user joins a guild.
-     * @event Client#guildMemberAdd
-     * @param {GuildMember} member The member that has joined a guild
-     */
-    if (this.client.ws.status === Constants.Status.READY && emitEvent && !existing) {
-      this.client.emit(Constants.Events.GUILD_MEMBER_ADD, member);
-    }
-
-    this._checkChunks();
-    return member;
-  }
-
-  _updateMember(member, data) {
-    const oldMember = cloneObject(member);
-
-    if (data.roles) member._roles = data.roles;
-    if (typeof data.nick !== 'undefined') member.nickname = data.nick;
-
-    const notSame = member.nickname !== oldMember.nickname || !arraysEqual(member._roles, oldMember._roles);
-
-    if (this.client.ws.status === Constants.Status.READY && notSame) {
-      /**
-       * Emitted whenever a guild member changes - i.e. new role, removed role, nickname
-       * @event Client#guildMemberUpdate
-       * @param {GuildMember} oldMember The member before the update
-       * @param {GuildMember} newMember The member after the update
-       */
-      this.client.emit(Constants.Events.GUILD_MEMBER_UPDATE, oldMember, member);
-    }
-
-    return {
-      old: oldMember,
-      mem: member,
-    };
-  }
-
-  _removeMember(guildMember) {
-    this.members.delete(guildMember.id);
-    this._checkChunks();
-  }
-
-  _memberSpeakUpdate(user, speaking) {
-    const member = this.members.get(user);
-    if (member && member.speaking !== speaking) {
-      member.speaking = speaking;
-      /**
-       * Emitted once a guild member starts/stops speaking
-       * @event Client#guildMemberSpeaking
-       * @param {GuildMember} member The member that started/stopped speaking
-       * @param {boolean} speaking Whether or not the member is speaking
-       */
-      this.client.emit(Constants.Events.GUILD_MEMBER_SPEAKING, member, speaking);
-    }
-  }
-
-  _setPresence(id, presence) {
-    if (this.presences.get(id)) {
-      this.presences.get(id).update(presence);
-      return;
-    }
-    this.presences.set(id, new Presence(presence));
-  }
-
-  _checkChunks() {
-    if (this._fetchWaiter) {
-      if (this.members.size === this.memberCount) {
-        this._fetchWaiter(this);
-        this._fetchWaiter = null;
-      }
-    }
-  }
-}
-
-module.exports = Guild;
-
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Channel = __webpack_require__(8);
-const Role = __webpack_require__(9);
-const PermissionOverwrites = __webpack_require__(42);
-const EvaluatedPermissions = __webpack_require__(20);
-const Constants = __webpack_require__(0);
-const Collection = __webpack_require__(3);
-
-/**
- * Represents a guild channel (i.e. text channels and voice channels)
- * @extends {Channel}
- */
-class GuildChannel extends Channel {
-  constructor(guild, data) {
-    super(guild.client, data);
-
-    /**
-     * The guild the channel is in
-     * @type {Guild}
-     */
-    this.guild = guild;
-  }
-
-  setup(data) {
-    super.setup(data);
-
-    /**
-     * The name of the guild channel
-     * @type {string}
-     */
-    this.name = data.name;
-
-    /**
-     * The position of the channel in the list.
-     * @type {number}
-     */
-    this.position = data.position;
-
-    /**
-     * A map of permission overwrites in this channel for roles and users.
-     * @type {Collection<Snowflake, PermissionOverwrites>}
-     */
-    this.permissionOverwrites = new Collection();
-    if (data.permission_overwrites) {
-      for (const overwrite of data.permission_overwrites) {
-        this.permissionOverwrites.set(overwrite.id, new PermissionOverwrites(this, overwrite));
-      }
-    }
-  }
-
-  /**
-   * Gets the overall set of permissions for a user in this channel, taking into account roles and permission
-   * overwrites.
-   * @param {GuildMemberResolvable} member The user that you want to obtain the overall permissions for
-   * @returns {?EvaluatedPermissions}
-   */
-  permissionsFor(member) {
-    member = this.client.resolver.resolveGuildMember(this.guild, member);
-    if (!member) return null;
-    if (member.id === this.guild.ownerID) return new EvaluatedPermissions(member, Constants.ALL_PERMISSIONS);
-
-    let permissions = 0;
-
-    const roles = member.roles;
-    for (const role of roles.values()) permissions |= role.permissions;
-
-    const overwrites = this.overwritesFor(member, true, roles);
-    for (const overwrite of overwrites.role.concat(overwrites.member)) {
-      permissions &= ~overwrite.deny;
-      permissions |= overwrite.allow;
-    }
-
-    const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
-    if (admin) permissions = Constants.ALL_PERMISSIONS;
-
-    return new EvaluatedPermissions(member, permissions);
-  }
-
-  overwritesFor(member, verified = false, roles = null) {
-    if (!verified) member = this.client.resolver.resolveGuildMember(this.guild, member);
-    if (!member) return [];
-
-    roles = roles || member.roles;
-    const roleOverwrites = [];
-    const memberOverwrites = [];
-
-    for (const overwrite of this.permissionOverwrites.values()) {
-      if (overwrite.id === member.id) {
-        memberOverwrites.push(overwrite);
-      } else if (roles.has(overwrite.id)) {
-        roleOverwrites.push(overwrite);
-      }
-    }
-
-    return {
-      role: roleOverwrites,
-      member: memberOverwrites,
-    };
-  }
-
-  /**
-   * An object mapping permission flags to `true` (enabled) or `false` (disabled)
-   * ```js
-   * {
-   *  'SEND_MESSAGES': true,
-   *  'ATTACH_FILES': false,
-   * }
-   * ```
-   * @typedef {Object} PermissionOverwriteOptions
-   */
-
-  /**
-   * Overwrites the permissions for a user or role in this channel.
-   * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
-   * @param {PermissionOverwriteOptions} options The configuration for the update
-   * @returns {Promise}
-   * @example
-   * // overwrite permissions for a message author
-   * message.channel.overwritePermissions(message.author, {
-   *  SEND_MESSAGES: false
-   * })
-   * .then(() => console.log('Done!'))
-   * .catch(console.error);
-   */
-  overwritePermissions(userOrRole, options) {
-    const payload = {
-      allow: 0,
-      deny: 0,
-    };
-
-    if (userOrRole instanceof Role) {
-      payload.type = 'role';
-    } else if (this.guild.roles.has(userOrRole)) {
-      userOrRole = this.guild.roles.get(userOrRole);
-      payload.type = 'role';
-    } else {
-      userOrRole = this.client.resolver.resolveUser(userOrRole);
-      payload.type = 'member';
-      if (!userOrRole) return Promise.reject(new TypeError('Supplied parameter was neither a User nor a Role.'));
-    }
-
-    payload.id = userOrRole.id;
-
-    const prevOverwrite = this.permissionOverwrites.get(userOrRole.id);
-
-    if (prevOverwrite) {
-      payload.allow = prevOverwrite.allow;
-      payload.deny = prevOverwrite.deny;
-    }
-
-    for (const perm in options) {
-      if (options[perm] === true) {
-        payload.allow |= Constants.PermissionFlags[perm] || 0;
-        payload.deny &= ~(Constants.PermissionFlags[perm] || 0);
-      } else if (options[perm] === false) {
-        payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
-        payload.deny |= Constants.PermissionFlags[perm] || 0;
-      } else if (options[perm] === null) {
-        payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
-        payload.deny &= ~(Constants.PermissionFlags[perm] || 0);
-      }
-    }
-
-    return this.client.rest.methods.setChannelOverwrite(this, payload);
-  }
-
-  /**
-   * The data for a guild channel
-   * @typedef {Object} ChannelData
-   * @property {string} [name] The name of the channel
-   * @property {number} [position] The position of the channel
-   * @property {string} [topic] The topic of the text channel
-   * @property {number} [bitrate] The bitrate of the voice channel
-   * @property {number} [userLimit] The user limit of the channel
-   */
-
-  /**
-   * Edits the channel
-   * @param {ChannelData} data The new data for the channel
-   * @returns {Promise<GuildChannel>}
-   * @example
-   * // edit a channel
-   * channel.edit({name: 'new-channel'})
-   *  .then(c => console.log(`Edited channel ${c}`))
-   *  .catch(console.error);
-   */
-  edit(data) {
-    return this.client.rest.methods.updateChannel(this, data);
-  }
-
-  /**
-   * Set a new name for the guild channel
-   * @param {string} name The new name for the guild channel
-   * @returns {Promise<GuildChannel>}
-   * @example
-   * // set a new channel name
-   * channel.setName('not_general')
-   *  .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
-   *  .catch(console.error);
-   */
-  setName(name) {
-    return this.edit({ name });
-  }
-
-  /**
-   * Set a new position for the guild channel
-   * @param {number} position The new position for the guild channel
-   * @returns {Promise<GuildChannel>}
-   * @example
-   * // set a new channel position
-   * channel.setPosition(2)
-   *  .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
-   *  .catch(console.error);
-   */
-  setPosition(position) {
-    return this.client.rest.methods.updateChannel(this, { position });
-  }
-
-  /**
-   * Set a new topic for the guild channel
-   * @param {string} topic The new topic for the guild channel
-   * @returns {Promise<GuildChannel>}
-   * @example
-   * // set a new channel topic
-   * channel.setTopic('needs more rate limiting')
-   *  .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
-   *  .catch(console.error);
-   */
-  setTopic(topic) {
-    return this.client.rest.methods.updateChannel(this, { topic });
-  }
-
-  /**
-   * Options given when creating a guild channel invite
-   * @typedef {Object} InviteOptions
-   * @property {boolean} [temporary=false] Whether the invite should kick users after 24hrs if they are not given a role
-   * @property {number} [maxAge=0] Time in seconds the invite expires in
-   * @property {number} [maxUses=0] Maximum amount of uses for this invite
-   */
-
-  /**
-   * Create an invite to this guild channel
-   * @param {InviteOptions} [options={}] The options for the invite
-   * @returns {Promise<Invite>}
-   */
-  createInvite(options = {}) {
-    return this.client.rest.methods.createChannelInvite(this, options);
-  }
-
-  /**
-   * Clone this channel
-   * @param {string} [name=this.name] Optional name for the new channel, otherwise it has the name of this channel
-   * @param {boolean} [withPermissions=true] Whether to clone the channel with this channel's permission overwrites
-   * @returns {Promise<GuildChannel>}
-   */
-  clone(name = this.name, withPermissions = true) {
-    return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : []);
-  }
-
-  /**
-   * Checks if this channel has the same type, topic, position, name, overwrites and ID as another channel.
-   * In most cases, a simple `channel.id === channel2.id` will do, and is much faster too.
-   * @param {GuildChannel} channel Channel to compare with
-   * @returns {boolean}
-   */
-  equals(channel) {
-    let equal = channel &&
-      this.id === channel.id &&
-      this.type === channel.type &&
-      this.topic === channel.topic &&
-      this.position === channel.position &&
-      this.name === channel.name;
-
-    if (equal) {
-      if (this.permissionOverwrites && channel.permissionOverwrites) {
-        equal = this.permissionOverwrites.equals(channel.permissionOverwrites);
-      } else {
-        equal = !this.permissionOverwrites && !channel.permissionOverwrites;
-      }
-    }
-
-    return equal;
-  }
-
-  /**
-   * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
-   * @returns {string}
-   * @example
-   * // Outputs: Hello from #general
-   * console.log(`Hello from ${channel}`);
-   * @example
-   * // Outputs: Hello from #general
-   * console.log('Hello from ' + channel);
-   */
-  toString() {
-    return `<#${this.id}>`;
-  }
-}
-
-module.exports = GuildChannel;
-
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Long = __webpack_require__(46);
-
-// Discord epoch (2015-01-01T00:00:00.000Z)
-const EPOCH = 1420070400000;
-let INCREMENT = 0;
-
-/**
- * A container for useful snowflake-related methods
- */
-class SnowflakeUtil {
-  /**
-   * A Twitter snowflake, except the epoch is 2015-01-01T00:00:00.000Z
-   * ```
-   * If we have a snowflake '266241948824764416' we can represent it as binary:
-   *
-   * 64                                          22     17     12          0
-   *  000000111011000111100001101001000101000000  00001  00000  000000000000
-   *       number of ms since discord epoch       worker  pid    increment
-   * ```
-   * @typedef {string} Snowflake
-   */
-
-  /**
-   * Generates a Discord snowflake
-   * <info>This hardcodes the worker ID as 1 and the process ID as 0.</info>
-   * @returns {Snowflake} The generated snowflake
-   */
-  static generate() {
-    if (INCREMENT >= 4095) INCREMENT = 0;
-    const BINARY = `${pad((Date.now() - EPOCH).toString(2), 42)}0000100000${pad((INCREMENT++).toString(2), 12)}`;
-    return Long.fromString(BINARY, 2).toString();
-  }
-
-  /**
-   * A deconstructed snowflake
-   * @typedef {Object} DeconstructedSnowflake
-   * @property {Date} date Date in the snowflake
-   * @property {number} workerID Worker ID in the snowflake
-   * @property {number} processID Process ID in the snowflake
-   * @property {number} increment Increment in the snowflake
-   * @property {string} binary Binary representation of the snowflake
-   */
-
-  /**
-   * Deconstructs a Discord snowflake
-   * @param {Snowflake} snowflake Snowflake to deconstruct
-   * @returns {DeconstructedSnowflake} Deconstructed snowflake
-   */
-  static deconstruct(snowflake) {
-    const BINARY = pad(Long.fromString(snowflake).toString(2), 64);
-    return {
-      date: new Date(parseInt(BINARY.substring(0, 42), 2) + EPOCH),
-      workerID: parseInt(BINARY.substring(42, 47), 2),
-      processID: parseInt(BINARY.substring(47, 52), 2),
-      increment: parseInt(BINARY.substring(52, 64), 2),
-      binary: BINARY,
-    };
-  }
-}
-
-function pad(v, n, c = '0') {
-  return String(v).length >= n ? String(v) : (String(c).repeat(n) + v).slice(-n);
-}
-
-module.exports = SnowflakeUtil;
-
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global) {/*!
  * The buffer module from node.js, for the browser.
@@ -4676,9 +3007,9 @@ module.exports = SnowflakeUtil;
 
 
 
-var base64 = __webpack_require__(65)
-var ieee754 = __webpack_require__(67)
-var isArray = __webpack_require__(68)
+var base64 = __webpack_require__(64)
+var ieee754 = __webpack_require__(66)
+var isArray = __webpack_require__(67)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -6456,7 +4787,1676 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(52)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(84)))
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const path = __webpack_require__(24);
+const Message = __webpack_require__(12);
+const MessageCollector = __webpack_require__(36);
+const Collection = __webpack_require__(3);
+
+/**
+ * Interface for classes that have text-channel-like features
+ * @interface
+ */
+class TextBasedChannel {
+  constructor() {
+    /**
+     * A collection containing the messages sent to this channel.
+     * @type {Collection<Snowflake, Message>}
+     */
+    this.messages = new Collection();
+
+    /**
+     * The ID of the last message in the channel, if one was sent.
+     * @type {?Snowflake}
+     */
+    this.lastMessageID = null;
+  }
+
+  /**
+   * Options provided when sending or editing a message
+   * @typedef {Object} MessageOptions
+   * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
+   * @property {string} [nonce=''] The nonce for the message
+   * @property {RichEmbed|Object} [embed] An embed for the message
+   * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
+   * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
+   * should be replaced with plain-text
+   * @property {FileOptions|string} [file] A file to send with the message
+   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
+   * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
+   * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
+   * @property {UserResolvable} [reply] User to reply to (prefixes the message with a mention, except in DMs)
+   */
+
+  /**
+   * @typedef {Object} FileOptions
+   * @property {BufferResolvable} attachment File to attach
+   * @property {string} [name='file.jpg'] Filename of the attachment
+   */
+
+  /**
+   * Options for splitting a message
+   * @typedef {Object} SplitOptions
+   * @property {number} [maxLength=1950] Maximum character length per message piece
+   * @property {string} [char='\n'] Character to split the message with
+   * @property {string} [prepend=''] Text to prepend to every piece except the first
+   * @property {string} [append=''] Text to append to every piece except the last
+   */
+
+  /**
+   * Send a message to this channel
+   * @param {StringResolvable} [content] Text for the message
+   * @param {MessageOptions} [options={}] Options for the message
+   * @returns {Promise<Message|Message[]>}
+   * @example
+   * // send a message
+   * channel.send('hello!')
+   *  .then(message => console.log(`Sent message: ${message.content}`))
+   *  .catch(console.error);
+   */
+  send(content, options) {
+    if (!options && typeof content === 'object' && !(content instanceof Array)) {
+      options = content;
+      content = '';
+    } else if (!options) {
+      options = {};
+    }
+
+    if (options.file) {
+      if (typeof options.file === 'string') options.file = { attachment: options.file };
+      if (!options.file.name) {
+        if (typeof options.file.attachment === 'string') {
+          options.file.name = path.basename(options.file.attachment);
+        } else if (options.file.attachment && options.file.attachment.path) {
+          options.file.name = path.basename(options.file.attachment.path);
+        } else {
+          options.file.name = 'file.jpg';
+        }
+      }
+
+      return this.client.resolver.resolveBuffer(options.file.attachment).then(file =>
+        this.client.rest.methods.sendMessage(this, content, options, {
+          file,
+          name: options.file.name,
+        })
+      );
+    }
+
+    return this.client.rest.methods.sendMessage(this, content, options);
+  }
+
+  /**
+   * Send a message to this channel
+   * @param {StringResolvable} [content] Text for the message
+   * @param {MessageOptions} [options={}] Options for the message
+   * @returns {Promise<Message|Message[]>}
+   * @example
+   * // send a message
+   * channel.sendMessage('hello!')
+   *  .then(message => console.log(`Sent message: ${message.content}`))
+   *  .catch(console.error);
+   */
+  sendMessage(content, options) {
+    return this.send(content, options);
+  }
+
+  /**
+   * Send an embed to this channel
+   * @param {RichEmbed|Object} embed Embed for the message
+   * @param {string} [content] Text for the message
+   * @param {MessageOptions} [options] Options for the message
+   * @returns {Promise<Message>}
+   */
+  sendEmbed(embed, content, options) {
+    if (!options && typeof content === 'object' && !(content instanceof Array)) {
+      options = content;
+      content = '';
+    } else if (!options) {
+      options = {};
+    }
+    return this.send(content, Object.assign(options, { embed }));
+  }
+
+  /**
+   * Send a file to this channel
+   * @param {BufferResolvable} attachment File to send
+   * @param {string} [name='file.jpg'] Name and extension of the file
+   * @param {StringResolvable} [content] Text for the message
+   * @param {MessageOptions} [options] Options for the message
+   * @returns {Promise<Message>}
+   */
+  sendFile(attachment, name, content, options = {}) {
+    return this.send(content, Object.assign(options, { file: { attachment, name } }));
+  }
+
+  /**
+   * Send a code block to this channel
+   * @param {string} lang Language for the code block
+   * @param {StringResolvable} content Content of the code block
+   * @param {MessageOptions} [options] Options for the message
+   * @returns {Promise<Message|Message[]>}
+   */
+  sendCode(lang, content, options = {}) {
+    return this.send(content, Object.assign(options, { code: lang }));
+  }
+
+  /**
+   * Gets a single message from this channel, regardless of it being cached or not.
+   * <warn>This is only available when using a bot account.</warn>
+   * @param {string} messageID ID of the message to get
+   * @returns {Promise<Message>}
+   * @example
+   * // get message
+   * channel.fetchMessage('99539446449315840')
+   *   .then(message => console.log(message.content))
+   *   .catch(console.error);
+   */
+  fetchMessage(messageID) {
+    return this.client.rest.methods.getChannelMessage(this, messageID).then(data => {
+      const msg = data instanceof Message ? data : new Message(this, data, this.client);
+      this._cacheMessage(msg);
+      return msg;
+    });
+  }
+
+  /**
+   * The parameters to pass in when requesting previous messages from a channel. `around`, `before` and
+   * `after` are mutually exclusive. All the parameters are optional.
+   * @typedef {Object} ChannelLogsQueryOptions
+   * @property {number} [limit=50] Number of messages to acquire
+   * @property {string} [before] ID of a message to get the messages that were posted before it
+   * @property {string} [after] ID of a message to get the messages that were posted after it
+   * @property {string} [around] ID of a message to get the messages that were posted around it
+   */
+
+  /**
+   * Gets the past messages sent in this channel. Resolves with a collection mapping message ID's to Message objects.
+   * @param {ChannelLogsQueryOptions} [options={}] Query parameters to pass in
+   * @returns {Promise<Collection<string, Message>>}
+   * @example
+   * // get messages
+   * channel.fetchMessages({limit: 10})
+   *  .then(messages => console.log(`Received ${messages.size} messages`))
+   *  .catch(console.error);
+   */
+  fetchMessages(options = {}) {
+    return this.client.rest.methods.getChannelMessages(this, options).then(data => {
+      const messages = new Collection();
+      for (const message of data) {
+        const msg = new Message(this, message, this.client);
+        messages.set(message.id, msg);
+        this._cacheMessage(msg);
+      }
+      return messages;
+    });
+  }
+
+  /**
+   * Fetches the pinned messages of this channel and returns a collection of them.
+   * @returns {Promise<Collection<string, Message>>}
+   */
+  fetchPinnedMessages() {
+    return this.client.rest.methods.getChannelPinnedMessages(this).then(data => {
+      const messages = new Collection();
+      for (const message of data) {
+        const msg = new Message(this, message, this.client);
+        messages.set(message.id, msg);
+        this._cacheMessage(msg);
+      }
+      return messages;
+    });
+  }
+
+  /**
+   * Performs a search within the channel.
+   * @param {MessageSearchOptions} [options={}] Options to pass to the search
+   * @returns {Promise<Array<Message[]>>}
+   * An array containing arrays of messages. Each inner array is a search context cluster.
+   * The message which has triggered the result will have the `hit` property set to `true`.
+   * @example
+   * channel.search({
+   *   content: 'discord.js',
+   *   before: '2016-11-17'
+   * }).then(res => {
+   *   const hit = res.messages[0].find(m => m.hit).content;
+   *   console.log(`I found: **${hit}**, total results: ${res.totalResults}`);
+   * }).catch(console.error);
+   */
+  search(options) {
+    return this.client.rest.methods.search(this, options);
+  }
+
+  /**
+   * Starts a typing indicator in the channel.
+   * @param {number} [count] The number of times startTyping should be considered to have been called
+   * @example
+   * // start typing in a channel
+   * channel.startTyping();
+   */
+  startTyping(count) {
+    if (typeof count !== 'undefined' && count < 1) throw new RangeError('Count must be at least 1.');
+    if (!this.client.user._typing.has(this.id)) {
+      this.client.user._typing.set(this.id, {
+        count: count || 1,
+        interval: this.client.setInterval(() => {
+          this.client.rest.methods.sendTyping(this.id);
+        }, 9000),
+      });
+      this.client.rest.methods.sendTyping(this.id);
+    } else {
+      const entry = this.client.user._typing.get(this.id);
+      entry.count = count || entry.count + 1;
+    }
+  }
+
+  /**
+   * Stops the typing indicator in the channel.
+   * The indicator will only stop if this is called as many times as startTyping().
+   * <info>It can take a few seconds for the client user to stop typing.</info>
+   * @param {boolean} [force=false] Whether or not to reset the call count and force the indicator to stop
+   * @example
+   * // stop typing in a channel
+   * channel.stopTyping();
+   * @example
+   * // force typing to fully stop in a channel
+   * channel.stopTyping(true);
+   */
+  stopTyping(force = false) {
+    if (this.client.user._typing.has(this.id)) {
+      const entry = this.client.user._typing.get(this.id);
+      entry.count--;
+      if (entry.count <= 0 || force) {
+        this.client.clearInterval(entry.interval);
+        this.client.user._typing.delete(this.id);
+      }
+    }
+  }
+
+  /**
+   * Whether or not the typing indicator is being shown in the channel.
+   * @type {boolean}
+   * @readonly
+   */
+  get typing() {
+    return this.client.user._typing.has(this.id);
+  }
+
+  /**
+   * Number of times `startTyping` has been called.
+   * @type {number}
+   * @readonly
+   */
+  get typingCount() {
+    if (this.client.user._typing.has(this.id)) return this.client.user._typing.get(this.id).count;
+    return 0;
+  }
+
+  /**
+   * Creates a Message Collector
+   * @param {CollectorFilterFunction} filter The filter to create the collector with
+   * @param {CollectorOptions} [options={}] The options to pass to the collector
+   * @returns {MessageCollector}
+   * @example
+   * // create a message collector
+   * const collector = channel.createCollector(
+   *  m => m.content.includes('discord'),
+   *  { time: 15000 }
+   * );
+   * collector.on('message', m => console.log(`Collected ${m.content}`));
+   * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
+   */
+  createCollector(filter, options = {}) {
+    return new MessageCollector(this, filter, options);
+  }
+
+  /**
+   * An object containing the same properties as CollectorOptions, but a few more:
+   * @typedef {CollectorOptions} AwaitMessagesOptions
+   * @property {string[]} [errors] Stop/end reasons that cause the promise to reject
+   */
+
+  /**
+   * Similar to createCollector but in promise form. Resolves with a collection of messages that pass the specified
+   * filter.
+   * @param {CollectorFilterFunction} filter The filter function to use
+   * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector
+   * @returns {Promise<Collection<string, Message>>}
+   * @example
+   * // await !vote messages
+   * const filter = m => m.content.startsWith('!vote');
+   * // errors: ['time'] treats ending because of the time limit as an error
+   * channel.awaitMessages(filter, { max: 4, time: 60000, errors: ['time'] })
+   *  .then(collected => console.log(collected.size))
+   *  .catch(collected => console.log(`After a minute, only ${collected.size} out of 4 voted.`));
+   */
+  awaitMessages(filter, options = {}) {
+    return new Promise((resolve, reject) => {
+      const collector = this.createCollector(filter, options);
+      collector.on('end', (collection, reason) => {
+        if (options.errors && options.errors.includes(reason)) {
+          reject(collection);
+        } else {
+          resolve(collection);
+        }
+      });
+    });
+  }
+
+  /**
+   * Bulk delete given messages that are newer than two weeks
+   * <warn>This is only available when using a bot account.</warn>
+   * @param {Collection<string, Message>|Message[]|number} messages Messages to delete, or number of messages to delete
+   * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
+   * @returns {Promise<Collection<string, Message>>} Deleted messages
+   */
+  bulkDelete(messages, filterOld = false) {
+    if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs));
+    if (messages instanceof Array || messages instanceof Collection) {
+      const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
+      return this.client.rest.methods.bulkDeleteMessages(this, messageIDs, filterOld);
+    }
+    throw new TypeError('The messages must be an Array, Collection, or number.');
+  }
+
+  _cacheMessage(message) {
+    const maxSize = this.client.options.messageCacheMaxSize;
+    if (maxSize === 0) return null;
+    if (this.messages.size >= maxSize && maxSize > 0) this.messages.delete(this.messages.firstKey());
+    this.messages.set(message.id, message);
+    return message;
+  }
+}
+
+exports.applyToClass = (structure, full = false, ignore = []) => {
+  const props = ['send', 'sendMessage', 'sendEmbed', 'sendFile', 'sendCode'];
+  if (full) {
+    props.push(
+      '_cacheMessage',
+      'fetchMessages',
+      'fetchMessage',
+      'search',
+      'bulkDelete',
+      'startTyping',
+      'stopTyping',
+      'typing',
+      'typingCount',
+      'fetchPinnedMessages',
+      'createCollector',
+      'awaitMessages'
+    );
+  }
+  for (const prop of props) {
+    if (ignore.includes(prop)) continue;
+    Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
+  }
+};
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const User = __webpack_require__(6);
+const Role = __webpack_require__(9);
+const Emoji = __webpack_require__(10);
+const Presence = __webpack_require__(7).Presence;
+const GuildMember = __webpack_require__(11);
+const Constants = __webpack_require__(0);
+const Collection = __webpack_require__(3);
+const cloneObject = __webpack_require__(4);
+const arraysEqual = __webpack_require__(160);
+
+/**
+ * Represents a guild (or a server) on Discord.
+ * <info>It's recommended to see if a guild is available before performing operations or reading data from it. You can
+ * check this with `guild.available`.</info>
+ */
+class Guild {
+  constructor(client, data) {
+    /**
+     * The Client that created the instance of the the Guild.
+     * @name Guild#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: client });
+
+    /**
+     * A collection of members that are in this guild. The key is the member's ID, the value is the member.
+     * @type {Collection<Snowflake, GuildMember>}
+     */
+    this.members = new Collection();
+
+    /**
+     * A collection of channels that are in this guild. The key is the channel's ID, the value is the channel.
+     * @type {Collection<Snowflake, GuildChannel>}
+     */
+    this.channels = new Collection();
+
+    /**
+     * A collection of roles that are in this guild. The key is the role's ID, the value is the role.
+     * @type {Collection<Snowflake, Role>}
+     */
+    this.roles = new Collection();
+
+    /**
+     * A collection of presences in this guild
+     * @type {Collection<Snowflake, Presence>}
+     */
+    this.presences = new Collection();
+
+    if (!data) return;
+    if (data.unavailable) {
+      /**
+       * Whether the guild is available to access. If it is not available, it indicates a server outage.
+       * @type {boolean}
+       */
+      this.available = false;
+
+      /**
+       * The Unique ID of the Guild, useful for comparisons.
+       * @type {Snowflake}
+       */
+      this.id = data.id;
+    } else {
+      this.available = true;
+      this.setup(data);
+    }
+  }
+
+  /**
+   * Sets up the Guild
+   * @param {*} data The raw data of the guild
+   * @private
+   */
+  setup(data) {
+    /**
+     * The name of the guild
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * The hash of the guild icon, or null if there is no icon.
+     * @type {?string}
+     */
+    this.icon = data.icon;
+
+    /**
+     * The hash of the guild splash image, or null if no splash (VIP only)
+     * @type {?string}
+     */
+    this.splash = data.splash;
+
+    /**
+     * The region the guild is located in
+     * @type {string}
+     */
+    this.region = data.region;
+
+    /**
+     * The full amount of members in this guild as of `READY`
+     * @type {number}
+     */
+    this.memberCount = data.member_count || this.memberCount;
+
+    /**
+     * Whether the guild is "large" (has more than 250 members)
+     * @type {boolean}
+     */
+    this.large = Boolean('large' in data ? data.large : this.large);
+
+    /**
+     * An array of guild features.
+     * @type {Object[]}
+     */
+    this.features = data.features;
+
+    /**
+     * The ID of the application that created this guild (if applicable)
+     * @type {?Snowflake}
+     */
+    this.applicationID = data.application_id;
+
+    /**
+     * A collection of emojis that are in this guild. The key is the emoji's ID, the value is the emoji.
+     * @type {Collection<Snowflake, Emoji>}
+     */
+    this.emojis = new Collection();
+    for (const emoji of data.emojis) this.emojis.set(emoji.id, new Emoji(this, emoji));
+
+    /**
+     * The time in seconds before a user is counted as "away from keyboard".
+     * @type {?number}
+     */
+    this.afkTimeout = data.afk_timeout;
+
+    /**
+     * The ID of the voice channel where AFK members are moved.
+     * @type {?string}
+     */
+    this.afkChannelID = data.afk_channel_id;
+
+    /**
+     * Whether embedded images are enabled on this guild.
+     * @type {boolean}
+     */
+    this.embedEnabled = data.embed_enabled;
+
+    /**
+     * The verification level of the guild.
+     * @type {number}
+     */
+    this.verificationLevel = data.verification_level;
+
+    /**
+     * The timestamp the client user joined the guild at
+     * @type {number}
+     */
+    this.joinedTimestamp = data.joined_at ? new Date(data.joined_at).getTime() : this.joinedTimestamp;
+
+    this.id = data.id;
+    this.available = !data.unavailable;
+    this.features = data.features || this.features || [];
+
+    if (data.members) {
+      this.members.clear();
+      for (const guildUser of data.members) this._addMember(guildUser, false);
+    }
+
+    if (data.owner_id) {
+      /**
+       * The user ID of this guild's owner.
+       * @type {Snowflake}
+       */
+      this.ownerID = data.owner_id;
+    }
+
+    if (data.channels) {
+      this.channels.clear();
+      for (const channel of data.channels) this.client.dataManager.newChannel(channel, this);
+    }
+
+    if (data.roles) {
+      this.roles.clear();
+      for (const role of data.roles) {
+        const newRole = new Role(this, role);
+        this.roles.set(newRole.id, newRole);
+      }
+    }
+
+    if (data.presences) {
+      for (const presence of data.presences) {
+        this._setPresence(presence.user.id, presence);
+      }
+    }
+
+    this._rawVoiceStates = new Collection();
+    if (data.voice_states) {
+      for (const voiceState of data.voice_states) {
+        this._rawVoiceStates.set(voiceState.user_id, voiceState);
+        const member = this.members.get(voiceState.user_id);
+        if (member) {
+          member.serverMute = voiceState.mute;
+          member.serverDeaf = voiceState.deaf;
+          member.selfMute = voiceState.self_mute;
+          member.selfDeaf = voiceState.self_deaf;
+          member.voiceSessionID = voiceState.session_id;
+          member.voiceChannelID = voiceState.channel_id;
+          this.channels.get(voiceState.channel_id).members.set(member.user.id, member);
+        }
+      }
+    }
+  }
+
+  /**
+   * The timestamp the guild was created at
+   * @type {number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    return (this.id / 4194304) + 1420070400000;
+  }
+
+  /**
+   * The time the guild was created
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * The time the client user joined the guild
+   * @type {Date}
+   * @readonly
+   */
+  get joinedAt() {
+    return new Date(this.joinedTimestamp);
+  }
+
+  /**
+   * Gets the URL to this guild's icon (if it has one, otherwise it returns null)
+   * @type {?string}
+   * @readonly
+   */
+  get iconURL() {
+    if (!this.icon) return null;
+    return Constants.Endpoints.guildIcon(this.id, this.icon);
+  }
+
+  /**
+   * Gets the URL to this guild's splash (if it has one, otherwise it returns null)
+   * @type {?string}
+   * @readonly
+   */
+  get splashURL() {
+    if (!this.splash) return null;
+    return Constants.Endpoints.guildSplash(this.id, this.splash);
+  }
+
+  /**
+   * The owner of the guild
+   * @type {GuildMember}
+   * @readonly
+   */
+  get owner() {
+    return this.members.get(this.ownerID);
+  }
+
+  /**
+   * If the client is connected to any voice channel in this guild, this will be the relevant VoiceConnection.
+   * @type {?VoiceConnection}
+   * @readonly
+   */
+  get voiceConnection() {
+    if (this.client.browser) return null;
+    return this.client.voice.connections.get(this.id) || null;
+  }
+
+  /**
+   * The `#general` TextChannel of the server.
+   * @type {TextChannel}
+   * @readonly
+   */
+  get defaultChannel() {
+    return this.channels.get(this.id);
+  }
+
+  /**
+   * Returns the GuildMember form of a User object, if the user is present in the guild.
+   * @param {UserResolvable} user The user that you want to obtain the GuildMember of
+   * @returns {?GuildMember}
+   * @example
+   * // get the guild member of a user
+   * const member = guild.member(message.author);
+   */
+  member(user) {
+    return this.client.resolver.resolveGuildMember(this, user);
+  }
+
+  /**
+   * Fetch a collection of banned users in this guild.
+   * @returns {Promise<Collection<string, User>>}
+   */
+  fetchBans() {
+    return this.client.rest.methods.getGuildBans(this);
+  }
+
+  /**
+   * Fetch a collection of invites to this guild. Resolves with a collection mapping invites by their codes.
+   * @returns {Promise<Collection<string, Invite>>}
+   */
+  fetchInvites() {
+    return this.client.rest.methods.getGuildInvites(this);
+  }
+
+  /**
+   * Fetch all webhooks for the guild.
+   * @returns {Collection<Webhook>}
+   */
+  fetchWebhooks() {
+    return this.client.rest.methods.getGuildWebhooks(this);
+  }
+
+  /**
+   * Fetch available voice regions
+   * @returns {Collection<string, VoiceRegion>}
+   */
+  fetchVoiceRegions() {
+    return this.client.rest.methods.fetchVoiceRegions(this.id);
+  }
+
+  /**
+   * Fetch a single guild member from a user.
+   * @param {UserResolvable} user The user to fetch the member for
+   * @param {boolean} [cache=true] Insert the user into the users cache
+   * @returns {Promise<GuildMember>}
+   */
+  fetchMember(user, cache = true) {
+    if (this._fetchWaiter) return Promise.reject(new Error('Already fetching guild members.'));
+    user = this.client.resolver.resolveUser(user);
+    if (!user) return Promise.reject(new Error('User is not cached. Use Client.fetchUser first.'));
+    if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
+    return this.client.rest.methods.getGuildMember(this, user, cache);
+  }
+
+  /**
+   * Fetches all the members in the guild, even if they are offline. If the guild has less than 250 members,
+   * this should not be necessary.
+   * @param {string} [query=''] An optional query to provide when fetching members
+   * @returns {Promise<Guild>}
+   */
+  fetchMembers(query = '') {
+    return new Promise((resolve, reject) => {
+      if (this._fetchWaiter) throw new Error(`Already fetching guild members in ${this.id}.`);
+      if (this.memberCount === this.members.size) {
+        resolve(this);
+        return;
+      }
+      this._fetchWaiter = resolve;
+      this.client.ws.send({
+        op: Constants.OPCodes.REQUEST_GUILD_MEMBERS,
+        d: {
+          guild_id: this.id,
+          query,
+          limit: 0,
+        },
+      });
+      this._checkChunks();
+      this.client.setTimeout(() => reject(new Error('Members didn\'t arrive in time.')), 120 * 1000);
+    });
+  }
+
+  /**
+   * Performs a search within the entire guild.
+   * @param {MessageSearchOptions} [options={}] Options to pass to the search
+   * @returns {Promise<Array<Message[]>>}
+   * An array containing arrays of messages. Each inner array is a search context cluster.
+   * The message which has triggered the result will have the `hit` property set to `true`.
+   * @example
+   * guild.search({
+   *   content: 'discord.js',
+   *   before: '2016-11-17'
+   * }).then(res => {
+   *   const hit = res.messages[0].find(m => m.hit).content;
+   *   console.log(`I found: **${hit}**, total results: ${res.totalResults}`);
+   * }).catch(console.error);
+   */
+  search(options) {
+    return this.client.rest.methods.search(this, options);
+  }
+
+  /**
+   * The data for editing a guild
+   * @typedef {Object} GuildEditData
+   * @property {string} [name] The name of the guild
+   * @property {string} [region] The region of the guild
+   * @property {number} [verificationLevel] The verification level of the guild
+   * @property {ChannelResolvable} [afkChannel] The AFK channel of the guild
+   * @property {number} [afkTimeout] The AFK timeout of the guild
+   * @property {Base64Resolvable} [icon] The icon of the guild
+   * @property {GuildMemberResolvable} [owner] The owner of the guild
+   * @property {Base64Resolvable} [splash] The splash screen of the guild
+   */
+
+  /**
+   * Updates the Guild with new information - e.g. a new name.
+   * @param {GuildEditData} data The data to update the guild with
+   * @returns {Promise<Guild>}
+   * @example
+   * // set the guild name and region
+   * guild.edit({
+   *  name: 'Discord Guild',
+   *  region: 'london',
+   * })
+   * .then(updated => console.log(`New guild name ${updated.name} in region ${updated.region}`))
+   * .catch(console.error);
+   */
+  edit(data) {
+    return this.client.rest.methods.updateGuild(this, data);
+  }
+
+  /**
+   * Edit the name of the guild.
+   * @param {string} name The new name of the guild
+   * @returns {Promise<Guild>}
+   * @example
+   * // edit the guild name
+   * guild.setName('Discord Guild')
+   *  .then(updated => console.log(`Updated guild name to ${guild.name}`))
+   *  .catch(console.error);
+   */
+  setName(name) {
+    return this.edit({ name });
+  }
+
+  /**
+   * Edit the region of the guild.
+   * @param {string} region The new region of the guild.
+   * @returns {Promise<Guild>}
+   * @example
+   * // edit the guild region
+   * guild.setRegion('london')
+   *  .then(updated => console.log(`Updated guild region to ${guild.region}`))
+   *  .catch(console.error);
+   */
+  setRegion(region) {
+    return this.edit({ region });
+  }
+
+  /**
+   * Edit the verification level of the guild.
+   * @param {number} verificationLevel The new verification level of the guild
+   * @returns {Promise<Guild>}
+   * @example
+   * // edit the guild verification level
+   * guild.setVerificationLevel(1)
+   *  .then(updated => console.log(`Updated guild verification level to ${guild.verificationLevel}`))
+   *  .catch(console.error);
+   */
+  setVerificationLevel(verificationLevel) {
+    return this.edit({ verificationLevel });
+  }
+
+  /**
+   * Edit the AFK channel of the guild.
+   * @param {ChannelResolvable} afkChannel The new AFK channel
+   * @returns {Promise<Guild>}
+   * @example
+   * // edit the guild AFK channel
+   * guild.setAFKChannel(channel)
+   *  .then(updated => console.log(`Updated guild AFK channel to ${guild.afkChannel}`))
+   *  .catch(console.error);
+   */
+  setAFKChannel(afkChannel) {
+    return this.edit({ afkChannel });
+  }
+
+  /**
+   * Edit the AFK timeout of the guild.
+   * @param {number} afkTimeout The time in seconds that a user must be idle to be considered AFK
+   * @returns {Promise<Guild>}
+   * @example
+   * // edit the guild AFK channel
+   * guild.setAFKTimeout(60)
+   *  .then(updated => console.log(`Updated guild AFK timeout to ${guild.afkTimeout}`))
+   *  .catch(console.error);
+   */
+  setAFKTimeout(afkTimeout) {
+    return this.edit({ afkTimeout });
+  }
+
+  /**
+   * Set a new guild icon.
+   * @param {Base64Resolvable} icon The new icon of the guild
+   * @returns {Promise<Guild>}
+   * @example
+   * // edit the guild icon
+   * guild.setIcon(fs.readFileSync('./icon.png'))
+   *  .then(updated => console.log('Updated the guild icon'))
+   *  .catch(console.error);
+   */
+  setIcon(icon) {
+    return this.edit({ icon });
+  }
+
+  /**
+   * Sets a new owner of the guild.
+   * @param {GuildMemberResolvable} owner The new owner of the guild
+   * @returns {Promise<Guild>}
+   * @example
+   * // edit the guild owner
+   * guild.setOwner(guilds.members[0])
+   *  .then(updated => console.log(`Updated the guild owner to ${updated.owner.username}`))
+   *  .catch(console.error);
+   */
+  setOwner(owner) {
+    return this.edit({ owner });
+  }
+
+  /**
+   * Set a new guild splash screen.
+   * @param {Base64Resolvable} splash The new splash screen of the guild
+   * @returns {Promise<Guild>}
+   * @example
+   * // edit the guild splash
+   * guild.setIcon(fs.readFileSync('./splash.png'))
+   *  .then(updated => console.log('Updated the guild splash'))
+   *  .catch(console.error);
+   */
+  setSplash(splash) {
+    return this.edit({ splash });
+  }
+
+  /**
+   * Bans a user from the guild.
+   * @param {UserResolvable} user The user to ban
+   * @param {number} [deleteDays=0] The amount of days worth of messages from this user that should
+   * also be deleted. Between `0` and `7`.
+   * @returns {Promise<GuildMember|User|string>} Result object will be resolved as specifically as possible.
+   * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
+   * be resolved, the user ID will be the result.
+   * @example
+   * // ban a user
+   * guild.ban('123123123123');
+   */
+  ban(user, deleteDays = 0) {
+    return this.client.rest.methods.banGuildMember(this, user, deleteDays);
+  }
+
+  /**
+   * Unbans a user from the guild.
+   * @param {UserResolvable} user The user to unban
+   * @returns {Promise<User>}
+   * @example
+   * // unban a user
+   * guild.unban('123123123123')
+   *  .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
+   *  .catch(reject);
+   */
+  unban(user) {
+    return this.client.rest.methods.unbanGuildMember(this, user);
+  }
+
+  /**
+   * Prunes members from the guild based on how long they have been inactive.
+   * @param {number} days Number of days of inactivity required to kick
+   * @param {boolean} [dry=false] If true, will return number of users that will be kicked, without actually doing it
+   * @returns {Promise<number>} The number of members that were/will be kicked
+   * @example
+   * // see how many members will be pruned
+   * guild.pruneMembers(12, true)
+   *   .then(pruned => console.log(`This will prune ${pruned} people!`))
+   *   .catch(console.error);
+   * @example
+   * // actually prune the members
+   * guild.pruneMembers(12)
+   *   .then(pruned => console.log(`I just pruned ${pruned} people!`))
+   *   .catch(console.error);
+   */
+  pruneMembers(days, dry = false) {
+    if (typeof days !== 'number') throw new TypeError('Days must be a number.');
+    return this.client.rest.methods.pruneGuildMembers(this, days, dry);
+  }
+
+  /**
+   * Syncs this guild (already done automatically every 30 seconds).
+   * <warn>This is only available when using a user account.</warn>
+   */
+  sync() {
+    if (!this.client.user.bot) this.client.syncGuilds([this]);
+  }
+
+  /**
+   * Creates a new channel in the guild.
+   * @param {string} name The name of the new channel
+   * @param {string} type The type of the new channel, either `text` or `voice`
+   * @param {Array<PermissionOverwrites|Object>} overwrites Permission overwrites to apply to the new channel
+   * @returns {Promise<TextChannel|VoiceChannel>}
+   * @example
+   * // create a new text channel
+   * guild.createChannel('new-general', 'text')
+   *  .then(channel => console.log(`Created new channel ${channel}`))
+   *  .catch(console.error);
+   */
+  createChannel(name, type, overwrites) {
+    return this.client.rest.methods.createChannel(this, name, type, overwrites);
+  }
+
+  /**
+   * Creates a new role in the guild, and optionally updates it with the given information.
+   * @param {RoleData} [data] The data to update the role with
+   * @returns {Promise<Role>}
+   * @example
+   * // create a new role
+   * guild.createRole()
+   *  .then(role => console.log(`Created role ${role}`))
+   *  .catch(console.error);
+   * @example
+   * // create a new role with data
+   * guild.createRole({ name: 'Super Cool People' })
+   *   .then(role => console.log(`Created role ${role}`))
+   *   .catch(console.error)
+   */
+  createRole(data) {
+    const create = this.client.rest.methods.createGuildRole(this);
+    if (!data) return create;
+    return create.then(role => role.edit(data));
+  }
+
+  /**
+   * Set the position of a role in this guild
+   * @param {string|Role} role the role to edit, can be a role object or a role ID.
+   * @param {number} position the new position of the role
+   * @returns {Promise<Guild>}
+   */
+  setRolePosition(role, position) {
+    if (typeof role === 'string') {
+      role = this.roles.get(role);
+      if (!role) return Promise.reject(new Error('Supplied role is not a role or string.'));
+    }
+
+    position = Number(position);
+    if (isNaN(position)) return Promise.reject(new Error('Supplied position is not a number.'));
+
+    const lowestAffected = Math.min(role.position, position);
+    const highestAffected = Math.max(role.position, position);
+
+    const rolesToUpdate = this.roles.filter(r => r.position >= lowestAffected && r.position <= highestAffected);
+
+    // stop role positions getting stupidly inflated
+    if (position > role.position) {
+      position = rolesToUpdate.first().position;
+    } else {
+      position = rolesToUpdate.last().position;
+    }
+
+    const updatedRoles = [];
+
+    for (const uRole of rolesToUpdate.values()) {
+      updatedRoles.push({
+        id: uRole.id,
+        position: uRole.id === role.id ? position : uRole.position + (position < role.position ? 1 : -1),
+      });
+    }
+
+    return this.client.rest.methods.setRolePositions(this.id, updatedRoles);
+  }
+
+  /**
+   * Creates a new custom emoji in the guild.
+   * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji.
+   * @param {string} name The name for the emoji.
+   * @returns {Promise<Emoji>} The created emoji.
+   * @example
+   * // create a new emoji from a url
+   * guild.createEmoji('https://i.imgur.com/w3duR07.png', 'rip')
+   *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
+   *  .catch(console.error);
+   * @example
+   * // create a new emoji from a file on your computer
+   * guild.createEmoji('./memes/banana.png', 'banana')
+   *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
+   *  .catch(console.error);
+   */
+  createEmoji(attachment, name) {
+    return new Promise(resolve => {
+      if (typeof attachment === 'string' && attachment.startsWith('data:')) {
+        resolve(this.client.rest.methods.createEmoji(this, attachment, name));
+      } else {
+        this.client.resolver.resolveBuffer(attachment).then(data =>
+          resolve(this.client.rest.methods.createEmoji(this, data, name))
+        );
+      }
+    });
+  }
+
+  /**
+   * Delete an emoji.
+   * @param {Emoji|string} emoji The emoji to delete.
+   * @returns {Promise}
+   */
+  deleteEmoji(emoji) {
+    if (!(emoji instanceof Emoji)) emoji = this.emojis.get(emoji);
+    return this.client.rest.methods.deleteEmoji(emoji);
+  }
+
+  /**
+   * Causes the Client to leave the guild.
+   * @returns {Promise<Guild>}
+   * @example
+   * // leave a guild
+   * guild.leave()
+   *  .then(g => console.log(`Left the guild ${g}`))
+   *  .catch(console.error);
+   */
+  leave() {
+    return this.client.rest.methods.leaveGuild(this);
+  }
+
+  /**
+   * Causes the Client to delete the guild.
+   * @returns {Promise<Guild>}
+   * @example
+   * // delete a guild
+   * guild.delete()
+   *  .then(g => console.log(`Deleted the guild ${g}`))
+   *  .catch(console.error);
+   */
+  delete() {
+    return this.client.rest.methods.deleteGuild(this);
+  }
+
+  /**
+   * Whether this Guild equals another Guild. It compares all properties, so for most operations
+   * it is advisable to just compare `guild.id === guild2.id` as it is much faster and is often
+   * what most users need.
+   * @param {Guild} guild Guild to compare with
+   * @returns {boolean}
+   */
+  equals(guild) {
+    let equal =
+      guild &&
+      this.id === guild.id &&
+      this.available === !guild.unavailable &&
+      this.splash === guild.splash &&
+      this.region === guild.region &&
+      this.name === guild.name &&
+      this.memberCount === guild.member_count &&
+      this.large === guild.large &&
+      this.icon === guild.icon &&
+      arraysEqual(this.features, guild.features) &&
+      this.ownerID === guild.owner_id &&
+      this.verificationLevel === guild.verification_level &&
+      this.embedEnabled === guild.embed_enabled;
+
+    if (equal) {
+      if (this.embedChannel) {
+        if (this.embedChannel.id !== guild.embed_channel_id) equal = false;
+      } else if (guild.embed_channel_id) {
+        equal = false;
+      }
+    }
+
+    return equal;
+  }
+
+  /**
+   * When concatenated with a string, this automatically concatenates the guild's name instead of the Guild object.
+   * @returns {string}
+   * @example
+   * // logs: Hello from My Guild!
+   * console.log(`Hello from ${guild}!`);
+   * @example
+   * // logs: Hello from My Guild!
+   * console.log(`Hello from ' + guild + '!');
+   */
+  toString() {
+    return this.name;
+  }
+
+  _addMember(guildUser, emitEvent = true) {
+    const existing = this.members.has(guildUser.user.id);
+    if (!(guildUser.user instanceof User)) guildUser.user = this.client.dataManager.newUser(guildUser.user);
+
+    guildUser.joined_at = guildUser.joined_at || 0;
+    const member = new GuildMember(this, guildUser);
+    this.members.set(member.id, member);
+
+    if (this._rawVoiceStates && this._rawVoiceStates.has(member.user.id)) {
+      const voiceState = this._rawVoiceStates.get(member.user.id);
+      member.serverMute = voiceState.mute;
+      member.serverDeaf = voiceState.deaf;
+      member.selfMute = voiceState.self_mute;
+      member.selfDeaf = voiceState.self_deaf;
+      member.voiceSessionID = voiceState.session_id;
+      member.voiceChannelID = voiceState.channel_id;
+      if (this.client.channels.has(voiceState.channel_id)) {
+        this.client.channels.get(voiceState.channel_id).members.set(member.user.id, member);
+      } else {
+        this.client.emit('warn', `Member ${member.id} added in guild ${this.id} with an uncached voice channel`);
+      }
+    }
+
+    /**
+     * Emitted whenever a user joins a guild.
+     * @event Client#guildMemberAdd
+     * @param {GuildMember} member The member that has joined a guild
+     */
+    if (this.client.ws.status === Constants.Status.READY && emitEvent && !existing) {
+      this.client.emit(Constants.Events.GUILD_MEMBER_ADD, member);
+    }
+
+    this._checkChunks();
+    return member;
+  }
+
+  _updateMember(member, data) {
+    const oldMember = cloneObject(member);
+
+    if (data.roles) member._roles = data.roles;
+    if (typeof data.nick !== 'undefined') member.nickname = data.nick;
+
+    const notSame = member.nickname !== oldMember.nickname || !arraysEqual(member._roles, oldMember._roles);
+
+    if (this.client.ws.status === Constants.Status.READY && notSame) {
+      /**
+       * Emitted whenever a guild member changes - i.e. new role, removed role, nickname
+       * @event Client#guildMemberUpdate
+       * @param {GuildMember} oldMember The member before the update
+       * @param {GuildMember} newMember The member after the update
+       */
+      this.client.emit(Constants.Events.GUILD_MEMBER_UPDATE, oldMember, member);
+    }
+
+    return {
+      old: oldMember,
+      mem: member,
+    };
+  }
+
+  _removeMember(guildMember) {
+    this.members.delete(guildMember.id);
+    this._checkChunks();
+  }
+
+  _memberSpeakUpdate(user, speaking) {
+    const member = this.members.get(user);
+    if (member && member.speaking !== speaking) {
+      member.speaking = speaking;
+      /**
+       * Emitted once a guild member starts/stops speaking
+       * @event Client#guildMemberSpeaking
+       * @param {GuildMember} member The member that started/stopped speaking
+       * @param {boolean} speaking Whether or not the member is speaking
+       */
+      this.client.emit(Constants.Events.GUILD_MEMBER_SPEAKING, member, speaking);
+    }
+  }
+
+  _setPresence(id, presence) {
+    if (this.presences.get(id)) {
+      this.presences.get(id).update(presence);
+      return;
+    }
+    this.presences.set(id, new Presence(presence));
+  }
+
+  _checkChunks() {
+    if (this._fetchWaiter) {
+      if (this.members.size === this.memberCount) {
+        this._fetchWaiter(this);
+        this._fetchWaiter = null;
+      }
+    }
+  }
+}
+
+module.exports = Guild;
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Channel = __webpack_require__(8);
+const Role = __webpack_require__(9);
+const PermissionOverwrites = __webpack_require__(42);
+const EvaluatedPermissions = __webpack_require__(19);
+const Constants = __webpack_require__(0);
+const Collection = __webpack_require__(3);
+
+/**
+ * Represents a guild channel (i.e. text channels and voice channels)
+ * @extends {Channel}
+ */
+class GuildChannel extends Channel {
+  constructor(guild, data) {
+    super(guild.client, data);
+
+    /**
+     * The guild the channel is in
+     * @type {Guild}
+     */
+    this.guild = guild;
+  }
+
+  setup(data) {
+    super.setup(data);
+
+    /**
+     * The name of the guild channel
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * The position of the channel in the list.
+     * @type {number}
+     */
+    this.position = data.position;
+
+    /**
+     * A map of permission overwrites in this channel for roles and users.
+     * @type {Collection<Snowflake, PermissionOverwrites>}
+     */
+    this.permissionOverwrites = new Collection();
+    if (data.permission_overwrites) {
+      for (const overwrite of data.permission_overwrites) {
+        this.permissionOverwrites.set(overwrite.id, new PermissionOverwrites(this, overwrite));
+      }
+    }
+  }
+
+  /**
+   * Gets the overall set of permissions for a user in this channel, taking into account roles and permission
+   * overwrites.
+   * @param {GuildMemberResolvable} member The user that you want to obtain the overall permissions for
+   * @returns {?EvaluatedPermissions}
+   */
+  permissionsFor(member) {
+    member = this.client.resolver.resolveGuildMember(this.guild, member);
+    if (!member) return null;
+    if (member.id === this.guild.ownerID) return new EvaluatedPermissions(member, Constants.ALL_PERMISSIONS);
+
+    let permissions = 0;
+
+    const roles = member.roles;
+    for (const role of roles.values()) permissions |= role.permissions;
+
+    const overwrites = this.overwritesFor(member, true, roles);
+    for (const overwrite of overwrites.role.concat(overwrites.member)) {
+      permissions &= ~overwrite.deny;
+      permissions |= overwrite.allow;
+    }
+
+    const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
+    if (admin) permissions = Constants.ALL_PERMISSIONS;
+
+    return new EvaluatedPermissions(member, permissions);
+  }
+
+  overwritesFor(member, verified = false, roles = null) {
+    if (!verified) member = this.client.resolver.resolveGuildMember(this.guild, member);
+    if (!member) return [];
+
+    roles = roles || member.roles;
+    const roleOverwrites = [];
+    const memberOverwrites = [];
+
+    for (const overwrite of this.permissionOverwrites.values()) {
+      if (overwrite.id === member.id) {
+        memberOverwrites.push(overwrite);
+      } else if (roles.has(overwrite.id)) {
+        roleOverwrites.push(overwrite);
+      }
+    }
+
+    return {
+      role: roleOverwrites,
+      member: memberOverwrites,
+    };
+  }
+
+  /**
+   * An object mapping permission flags to `true` (enabled) or `false` (disabled)
+   * ```js
+   * {
+   *  'SEND_MESSAGES': true,
+   *  'ATTACH_FILES': false,
+   * }
+   * ```
+   * @typedef {Object} PermissionOverwriteOptions
+   */
+
+  /**
+   * Overwrites the permissions for a user or role in this channel.
+   * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
+   * @param {PermissionOverwriteOptions} options The configuration for the update
+   * @returns {Promise}
+   * @example
+   * // overwrite permissions for a message author
+   * message.channel.overwritePermissions(message.author, {
+   *  SEND_MESSAGES: false
+   * })
+   * .then(() => console.log('Done!'))
+   * .catch(console.error);
+   */
+  overwritePermissions(userOrRole, options) {
+    const payload = {
+      allow: 0,
+      deny: 0,
+    };
+
+    if (userOrRole instanceof Role) {
+      payload.type = 'role';
+    } else if (this.guild.roles.has(userOrRole)) {
+      userOrRole = this.guild.roles.get(userOrRole);
+      payload.type = 'role';
+    } else {
+      userOrRole = this.client.resolver.resolveUser(userOrRole);
+      payload.type = 'member';
+      if (!userOrRole) return Promise.reject(new TypeError('Supplied parameter was neither a User nor a Role.'));
+    }
+
+    payload.id = userOrRole.id;
+
+    const prevOverwrite = this.permissionOverwrites.get(userOrRole.id);
+
+    if (prevOverwrite) {
+      payload.allow = prevOverwrite.allow;
+      payload.deny = prevOverwrite.deny;
+    }
+
+    for (const perm in options) {
+      if (options[perm] === true) {
+        payload.allow |= Constants.PermissionFlags[perm] || 0;
+        payload.deny &= ~(Constants.PermissionFlags[perm] || 0);
+      } else if (options[perm] === false) {
+        payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
+        payload.deny |= Constants.PermissionFlags[perm] || 0;
+      } else if (options[perm] === null) {
+        payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
+        payload.deny &= ~(Constants.PermissionFlags[perm] || 0);
+      }
+    }
+
+    return this.client.rest.methods.setChannelOverwrite(this, payload);
+  }
+
+  /**
+   * The data for a guild channel
+   * @typedef {Object} ChannelData
+   * @property {string} [name] The name of the channel
+   * @property {number} [position] The position of the channel
+   * @property {string} [topic] The topic of the text channel
+   * @property {number} [bitrate] The bitrate of the voice channel
+   * @property {number} [userLimit] The user limit of the channel
+   */
+
+  /**
+   * Edits the channel
+   * @param {ChannelData} data The new data for the channel
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // edit a channel
+   * channel.edit({name: 'new-channel'})
+   *  .then(c => console.log(`Edited channel ${c}`))
+   *  .catch(console.error);
+   */
+  edit(data) {
+    return this.client.rest.methods.updateChannel(this, data);
+  }
+
+  /**
+   * Set a new name for the guild channel
+   * @param {string} name The new name for the guild channel
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // set a new channel name
+   * channel.setName('not_general')
+   *  .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
+   *  .catch(console.error);
+   */
+  setName(name) {
+    return this.edit({ name });
+  }
+
+  /**
+   * Set a new position for the guild channel
+   * @param {number} position The new position for the guild channel
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // set a new channel position
+   * channel.setPosition(2)
+   *  .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
+   *  .catch(console.error);
+   */
+  setPosition(position) {
+    return this.client.rest.methods.updateChannel(this, { position });
+  }
+
+  /**
+   * Set a new topic for the guild channel
+   * @param {string} topic The new topic for the guild channel
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // set a new channel topic
+   * channel.setTopic('needs more rate limiting')
+   *  .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
+   *  .catch(console.error);
+   */
+  setTopic(topic) {
+    return this.client.rest.methods.updateChannel(this, { topic });
+  }
+
+  /**
+   * Options given when creating a guild channel invite
+   * @typedef {Object} InviteOptions
+   * @property {boolean} [temporary=false] Whether the invite should kick users after 24hrs if they are not given a role
+   * @property {number} [maxAge=0] Time in seconds the invite expires in
+   * @property {number} [maxUses=0] Maximum amount of uses for this invite
+   */
+
+  /**
+   * Create an invite to this guild channel
+   * @param {InviteOptions} [options={}] The options for the invite
+   * @returns {Promise<Invite>}
+   */
+  createInvite(options = {}) {
+    return this.client.rest.methods.createChannelInvite(this, options);
+  }
+
+  /**
+   * Clone this channel
+   * @param {string} [name=this.name] Optional name for the new channel, otherwise it has the name of this channel
+   * @param {boolean} [withPermissions=true] Whether to clone the channel with this channel's permission overwrites
+   * @returns {Promise<GuildChannel>}
+   */
+  clone(name = this.name, withPermissions = true) {
+    return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : []);
+  }
+
+  /**
+   * Checks if this channel has the same type, topic, position, name, overwrites and ID as another channel.
+   * In most cases, a simple `channel.id === channel2.id` will do, and is much faster too.
+   * @param {GuildChannel} channel Channel to compare with
+   * @returns {boolean}
+   */
+  equals(channel) {
+    let equal = channel &&
+      this.id === channel.id &&
+      this.type === channel.type &&
+      this.topic === channel.topic &&
+      this.position === channel.position &&
+      this.name === channel.name;
+
+    if (equal) {
+      if (this.permissionOverwrites && channel.permissionOverwrites) {
+        equal = this.permissionOverwrites.equals(channel.permissionOverwrites);
+      } else {
+        equal = !this.permissionOverwrites && !channel.permissionOverwrites;
+      }
+    }
+
+    return equal;
+  }
+
+  /**
+   * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
+   * @returns {string}
+   * @example
+   * // Outputs: Hello from #general
+   * console.log(`Hello from ${channel}`);
+   * @example
+   * // Outputs: Hello from #general
+   * console.log('Hello from ' + channel);
+   */
+  toString() {
+    return `<#${this.id}>`;
+  }
+}
+
+module.exports = GuildChannel;
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Long = __webpack_require__(46);
+
+// Discord epoch (2015-01-01T00:00:00.000Z)
+const EPOCH = 1420070400000;
+let INCREMENT = 0;
+
+/**
+ * A container for useful snowflake-related methods
+ */
+class SnowflakeUtil {
+  /**
+   * A Twitter snowflake, except the epoch is 2015-01-01T00:00:00.000Z
+   * ```
+   * If we have a snowflake '266241948824764416' we can represent it as binary:
+   *
+   * 64                                          22     17     12          0
+   *  000000111011000111100001101001000101000000  00001  00000  000000000000
+   *       number of ms since discord epoch       worker  pid    increment
+   * ```
+   * @typedef {string} Snowflake
+   */
+
+  /**
+   * Generates a Discord snowflake
+   * <info>This hardcodes the worker ID as 1 and the process ID as 0.</info>
+   * @returns {Snowflake} The generated snowflake
+   */
+  static generate() {
+    if (INCREMENT >= 4095) INCREMENT = 0;
+    const BINARY = `${pad((Date.now() - EPOCH).toString(2), 42)}0000100000${pad((INCREMENT++).toString(2), 12)}`;
+    return Long.fromString(BINARY, 2).toString();
+  }
+
+  /**
+   * A deconstructed snowflake
+   * @typedef {Object} DeconstructedSnowflake
+   * @property {Date} date Date in the snowflake
+   * @property {number} workerID Worker ID in the snowflake
+   * @property {number} processID Process ID in the snowflake
+   * @property {number} increment Increment in the snowflake
+   * @property {string} binary Binary representation of the snowflake
+   */
+
+  /**
+   * Deconstructs a Discord snowflake
+   * @param {Snowflake} snowflake Snowflake to deconstruct
+   * @returns {DeconstructedSnowflake} Deconstructed snowflake
+   */
+  static deconstruct(snowflake) {
+    const BINARY = pad(Long.fromString(snowflake).toString(2), 64);
+    return {
+      date: new Date(parseInt(BINARY.substring(0, 42), 2) + EPOCH),
+      workerID: parseInt(BINARY.substring(42, 47), 2),
+      processID: parseInt(BINARY.substring(47, 52), 2),
+      increment: parseInt(BINARY.substring(52, 64), 2),
+      binary: BINARY,
+    };
+  }
+}
+
+function pad(v, n, c = '0') {
+  return String(v).length >= n ? String(v) : (String(c).repeat(n) + v).slice(-n);
+}
+
+module.exports = SnowflakeUtil;
+
 
 /***/ }),
 /* 18 */
@@ -6768,192 +6768,6 @@ function isUndefined(arg) {
 
 /***/ }),
 /* 19 */
-/***/ (function(module, exports) {
-
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-
-/***/ }),
-/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -7026,7 +6840,7 @@ module.exports = EvaluatedPermissions;
 
 
 /***/ }),
-/* 21 */
+/* 20 */
 /***/ (function(module, exports) {
 
 /**
@@ -7081,10 +6895,10 @@ module.exports = ReactionEmoji;
 
 
 /***/ }),
-/* 22 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const path = __webpack_require__(25);
+const path = __webpack_require__(24);
 
 /**
  * Represents a webhook
@@ -7302,7 +7116,7 @@ module.exports = Webhook;
 
 
 /***/ }),
-/* 23 */
+/* 22 */
 /***/ (function(module, exports) {
 
 module.exports = function escapeMarkdown(text, onlyCodeBlock = false, onlyInlineCode = false) {
@@ -7313,7 +7127,7 @@ module.exports = function escapeMarkdown(text, onlyCodeBlock = false, onlyInline
 
 
 /***/ }),
-/* 24 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7333,7 +7147,7 @@ module.exports = {
 
 
 /***/ }),
-/* 25 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -7561,7 +7375,193 @@ var substr = 'ab'.substr(-1) === 'b'
     }
 ;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
 
 /***/ }),
 /* 26 */
@@ -7581,11 +7581,11 @@ if (typeof window !== 'undefined') { // Browser window
   root = this;
 }
 
-var Emitter = __webpack_require__(66);
-var RequestBase = __webpack_require__(83);
+var Emitter = __webpack_require__(65);
+var RequestBase = __webpack_require__(81);
 var isObject = __webpack_require__(27);
-var isFunction = __webpack_require__(82);
-var ResponseBase = __webpack_require__(84);
+var isFunction = __webpack_require__(80);
+var ResponseBase = __webpack_require__(82);
 
 /**
  * Noop.
@@ -8496,19 +8496,19 @@ module.exports = isObject;
 /* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(25);
-const fs = __webpack_require__(53);
+/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(24);
+const fs = __webpack_require__(52);
 const request = __webpack_require__(26);
 
 const Constants = __webpack_require__(0);
-const convertArrayBuffer = __webpack_require__(56);
+const convertArrayBuffer = __webpack_require__(55);
 const User = __webpack_require__(6);
 const Message = __webpack_require__(12);
-const Guild = __webpack_require__(14);
+const Guild = __webpack_require__(15);
 const Channel = __webpack_require__(8);
 const GuildMember = __webpack_require__(11);
 const Emoji = __webpack_require__(10);
-const ReactionEmoji = __webpack_require__(21);
+const ReactionEmoji = __webpack_require__(20);
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
@@ -8883,7 +8883,7 @@ class ClientDataResolver {
 
 module.exports = ClientDataResolver;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ }),
 /* 29 */
@@ -9331,7 +9331,7 @@ module.exports = ClientUser;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Channel = __webpack_require__(8);
-const TextBasedChannel = __webpack_require__(13);
+const TextBasedChannel = __webpack_require__(14);
 const Collection = __webpack_require__(3);
 
 /**
@@ -9398,7 +9398,7 @@ module.exports = DMChannel;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Channel = __webpack_require__(8);
-const TextBasedChannel = __webpack_require__(13);
+const TextBasedChannel = __webpack_require__(14);
 const Collection = __webpack_require__(3);
 
 /*
@@ -10246,7 +10246,7 @@ module.exports = MessageEmbed;
 
 const Collection = __webpack_require__(3);
 const Emoji = __webpack_require__(10);
-const ReactionEmoji = __webpack_require__(21);
+const ReactionEmoji = __webpack_require__(20);
 
 /**
  * Represents a reaction to a message
@@ -10586,8 +10586,8 @@ module.exports = PermissionOverwrites;
 /* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const GuildChannel = __webpack_require__(15);
-const TextBasedChannel = __webpack_require__(13);
+const GuildChannel = __webpack_require__(16);
+const TextBasedChannel = __webpack_require__(14);
 const Collection = __webpack_require__(3);
 
 /**
@@ -10689,7 +10689,7 @@ module.exports = TextChannel;
 /* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const GuildChannel = __webpack_require__(15);
+const GuildChannel = __webpack_require__(16);
 const Collection = __webpack_require__(3);
 
 /**
@@ -12437,44 +12437,17 @@ module.exports = ZStream;
 /* 52 */
 /***/ (function(module, exports) {
 
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
 
 
 /***/ }),
 /* 53 */
-/***/ (function(module, exports) {
-
-
-
-/***/ }),
-/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const UserAgentManager = __webpack_require__(120);
-const RESTMethods = __webpack_require__(117);
-const SequentialRequestHandler = __webpack_require__(119);
-const BurstRequestHandler = __webpack_require__(118);
-const APIRequest = __webpack_require__(116);
+const UserAgentManager = __webpack_require__(118);
+const RESTMethods = __webpack_require__(115);
+const SequentialRequestHandler = __webpack_require__(117);
+const BurstRequestHandler = __webpack_require__(116);
+const APIRequest = __webpack_require__(114);
 const Constants = __webpack_require__(0);
 
 class RESTManager {
@@ -12524,7 +12497,7 @@ module.exports = RESTManager;
 
 
 /***/ }),
-/* 55 */
+/* 54 */
 /***/ (function(module, exports) {
 
 /**
@@ -12581,7 +12554,7 @@ module.exports = RequestHandler;
 
 
 /***/ }),
-/* 56 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {function str2ab(str) {
@@ -12596,10 +12569,10 @@ module.exports = function convertArrayBuffer(x) {
   return Buffer.from(x);
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ }),
-/* 57 */
+/* 56 */
 /***/ (function(module, exports) {
 
 module.exports = function merge(def, given) {
@@ -12617,23 +12590,23 @@ module.exports = function merge(def, given) {
 
 
 /***/ }),
-/* 58 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {const EventEmitter = __webpack_require__(18).EventEmitter;
-const mergeDefault = __webpack_require__(57);
+const mergeDefault = __webpack_require__(56);
 const Constants = __webpack_require__(0);
-const RESTManager = __webpack_require__(54);
-const ClientDataManager = __webpack_require__(87);
-const ClientManager = __webpack_require__(88);
+const RESTManager = __webpack_require__(53);
+const ClientDataManager = __webpack_require__(85);
+const ClientManager = __webpack_require__(86);
 const ClientDataResolver = __webpack_require__(28);
-const ClientVoiceManager = __webpack_require__(165);
-const WebSocketManager = __webpack_require__(122);
-const ActionsManager = __webpack_require__(89);
+const ClientVoiceManager = __webpack_require__(164);
+const WebSocketManager = __webpack_require__(121);
+const ActionsManager = __webpack_require__(87);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(7).Presence;
-const ShardClientUtil = __webpack_require__(164);
-const VoiceBroadcast = __webpack_require__(121);
+const ShardClientUtil = __webpack_require__(163);
+const VoiceBroadcast = __webpack_require__(119);
 
 /**
  * The starting point for making a Discord Bot.
@@ -13125,16 +13098,16 @@ module.exports = Client;
  * @param {string} info The debug information
  */
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ }),
-/* 59 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Webhook = __webpack_require__(22);
-const RESTManager = __webpack_require__(54);
+const Webhook = __webpack_require__(21);
+const RESTManager = __webpack_require__(53);
 const ClientDataResolver = __webpack_require__(28);
-const mergeDefault = __webpack_require__(57);
+const mergeDefault = __webpack_require__(56);
 const Constants = __webpack_require__(0);
 
 /**
@@ -13180,7 +13153,7 @@ module.exports = WebhookClient;
 
 
 /***/ }),
-/* 60 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const ClientDataResolver = __webpack_require__(28);
@@ -13379,7 +13352,7 @@ function resolveString(data) {
 
 
 /***/ }),
-/* 61 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const superagent = __webpack_require__(26);
@@ -13405,6 +13378,12 @@ module.exports = function fetchRecommendedShards(token, guildsPerShard = 1000) {
 
 
 /***/ }),
+/* 61 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
 /* 62 */
 /***/ (function(module, exports) {
 
@@ -13418,12 +13397,6 @@ module.exports = function fetchRecommendedShards(token, guildsPerShard = 1000) {
 
 /***/ }),
 /* 64 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
-/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13544,7 +13517,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 66 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -13713,7 +13686,7 @@ Emitter.prototype.hasListeners = function(event){
 
 
 /***/ }),
-/* 67 */
+/* 66 */
 /***/ (function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -13803,7 +13776,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 68 */
+/* 67 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -13814,7 +13787,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 69 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13823,8 +13796,8 @@ module.exports = Array.isArray || function (arr) {
 
 var assign    = __webpack_require__(5).assign;
 
-var deflate   = __webpack_require__(70);
-var inflate   = __webpack_require__(71);
+var deflate   = __webpack_require__(69);
+var inflate   = __webpack_require__(70);
 var constants = __webpack_require__(49);
 
 var pako = {};
@@ -13835,17 +13808,17 @@ module.exports = pako;
 
 
 /***/ }),
-/* 70 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 
-var zlib_deflate = __webpack_require__(72);
+var zlib_deflate = __webpack_require__(71);
 var utils        = __webpack_require__(5);
 var strings      = __webpack_require__(47);
-var msg          = __webpack_require__(24);
+var msg          = __webpack_require__(23);
 var ZStream      = __webpack_require__(51);
 
 var toString = Object.prototype.toString;
@@ -14242,20 +14215,20 @@ exports.gzip = gzip;
 
 
 /***/ }),
-/* 71 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 
-var zlib_inflate = __webpack_require__(75);
+var zlib_inflate = __webpack_require__(74);
 var utils        = __webpack_require__(5);
 var strings      = __webpack_require__(47);
 var c            = __webpack_require__(49);
-var msg          = __webpack_require__(24);
+var msg          = __webpack_require__(23);
 var ZStream      = __webpack_require__(51);
-var GZheader     = __webpack_require__(73);
+var GZheader     = __webpack_require__(72);
 
 var toString = Object.prototype.toString;
 
@@ -14667,17 +14640,17 @@ exports.ungzip  = inflate;
 
 
 /***/ }),
-/* 72 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils   = __webpack_require__(5);
-var trees   = __webpack_require__(77);
+var trees   = __webpack_require__(76);
 var adler32 = __webpack_require__(48);
 var crc32   = __webpack_require__(50);
-var msg     = __webpack_require__(24);
+var msg     = __webpack_require__(23);
 
 /* Public constants ==========================================================*/
 /* ===========================================================================*/
@@ -16529,7 +16502,7 @@ exports.deflateTune = deflateTune;
 
 
 /***/ }),
-/* 73 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16576,7 +16549,7 @@ module.exports = GZheader;
 
 
 /***/ }),
-/* 74 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16909,7 +16882,7 @@ module.exports = function inflate_fast(strm, start) {
 
 
 /***/ }),
-/* 75 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16919,8 +16892,8 @@ module.exports = function inflate_fast(strm, start) {
 var utils         = __webpack_require__(5);
 var adler32       = __webpack_require__(48);
 var crc32         = __webpack_require__(50);
-var inflate_fast  = __webpack_require__(74);
-var inflate_table = __webpack_require__(76);
+var inflate_fast  = __webpack_require__(73);
+var inflate_table = __webpack_require__(75);
 
 var CODES = 0;
 var LENS = 1;
@@ -18454,7 +18427,7 @@ exports.inflateUndermine = inflateUndermine;
 
 
 /***/ }),
-/* 76 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18786,7 +18759,7 @@ module.exports = function inflate_table(type, lens, lens_index, codes, table, ta
 
 
 /***/ }),
-/* 77 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19995,7 +19968,7 @@ exports._tr_align = _tr_align;
 
 
 /***/ }),
-/* 78 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20086,7 +20059,7 @@ var isArray = Array.isArray || function (xs) {
 
 
 /***/ }),
-/* 79 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20178,211 +20151,18 @@ var objectKeys = Object.keys || function (obj) {
 
 
 /***/ }),
-/* 80 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-exports.decode = exports.parse = __webpack_require__(78);
-exports.encode = exports.stringify = __webpack_require__(79);
+exports.decode = exports.parse = __webpack_require__(77);
+exports.encode = exports.stringify = __webpack_require__(78);
 
 
 /***/ }),
-/* 81 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
-    "use strict";
-
-    if (global.setImmediate) {
-        return;
-    }
-
-    var nextHandle = 1; // Spec says greater than zero
-    var tasksByHandle = {};
-    var currentlyRunningATask = false;
-    var doc = global.document;
-    var registerImmediate;
-
-    function setImmediate(callback) {
-      // Callback can either be a function or a string
-      if (typeof callback !== "function") {
-        callback = new Function("" + callback);
-      }
-      // Copy function arguments
-      var args = new Array(arguments.length - 1);
-      for (var i = 0; i < args.length; i++) {
-          args[i] = arguments[i + 1];
-      }
-      // Store and register the task
-      var task = { callback: callback, args: args };
-      tasksByHandle[nextHandle] = task;
-      registerImmediate(nextHandle);
-      return nextHandle++;
-    }
-
-    function clearImmediate(handle) {
-        delete tasksByHandle[handle];
-    }
-
-    function run(task) {
-        var callback = task.callback;
-        var args = task.args;
-        switch (args.length) {
-        case 0:
-            callback();
-            break;
-        case 1:
-            callback(args[0]);
-            break;
-        case 2:
-            callback(args[0], args[1]);
-            break;
-        case 3:
-            callback(args[0], args[1], args[2]);
-            break;
-        default:
-            callback.apply(undefined, args);
-            break;
-        }
-    }
-
-    function runIfPresent(handle) {
-        // From the spec: "Wait until any invocations of this algorithm started before this one have completed."
-        // So if we're currently running a task, we'll need to delay this invocation.
-        if (currentlyRunningATask) {
-            // Delay by doing a setTimeout. setImmediate was tried instead, but in Firefox 7 it generated a
-            // "too much recursion" error.
-            setTimeout(runIfPresent, 0, handle);
-        } else {
-            var task = tasksByHandle[handle];
-            if (task) {
-                currentlyRunningATask = true;
-                try {
-                    run(task);
-                } finally {
-                    clearImmediate(handle);
-                    currentlyRunningATask = false;
-                }
-            }
-        }
-    }
-
-    function installNextTickImplementation() {
-        registerImmediate = function(handle) {
-            process.nextTick(function () { runIfPresent(handle); });
-        };
-    }
-
-    function canUsePostMessage() {
-        // The test against `importScripts` prevents this implementation from being installed inside a web worker,
-        // where `global.postMessage` means something completely different and can't be used for this purpose.
-        if (global.postMessage && !global.importScripts) {
-            var postMessageIsAsynchronous = true;
-            var oldOnMessage = global.onmessage;
-            global.onmessage = function() {
-                postMessageIsAsynchronous = false;
-            };
-            global.postMessage("", "*");
-            global.onmessage = oldOnMessage;
-            return postMessageIsAsynchronous;
-        }
-    }
-
-    function installPostMessageImplementation() {
-        // Installs an event handler on `global` for the `message` event: see
-        // * https://developer.mozilla.org/en/DOM/window.postMessage
-        // * http://www.whatwg.org/specs/web-apps/current-work/multipage/comms.html#crossDocumentMessages
-
-        var messagePrefix = "setImmediate$" + Math.random() + "$";
-        var onGlobalMessage = function(event) {
-            if (event.source === global &&
-                typeof event.data === "string" &&
-                event.data.indexOf(messagePrefix) === 0) {
-                runIfPresent(+event.data.slice(messagePrefix.length));
-            }
-        };
-
-        if (global.addEventListener) {
-            global.addEventListener("message", onGlobalMessage, false);
-        } else {
-            global.attachEvent("onmessage", onGlobalMessage);
-        }
-
-        registerImmediate = function(handle) {
-            global.postMessage(messagePrefix + handle, "*");
-        };
-    }
-
-    function installMessageChannelImplementation() {
-        var channel = new MessageChannel();
-        channel.port1.onmessage = function(event) {
-            var handle = event.data;
-            runIfPresent(handle);
-        };
-
-        registerImmediate = function(handle) {
-            channel.port2.postMessage(handle);
-        };
-    }
-
-    function installReadyStateChangeImplementation() {
-        var html = doc.documentElement;
-        registerImmediate = function(handle) {
-            // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
-            // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
-            var script = doc.createElement("script");
-            script.onreadystatechange = function () {
-                runIfPresent(handle);
-                script.onreadystatechange = null;
-                html.removeChild(script);
-                script = null;
-            };
-            html.appendChild(script);
-        };
-    }
-
-    function installSetTimeoutImplementation() {
-        registerImmediate = function(handle) {
-            setTimeout(runIfPresent, 0, handle);
-        };
-    }
-
-    // If supported, we should attach to the prototype of global, since that is where setTimeout et al. live.
-    var attachTo = Object.getPrototypeOf && Object.getPrototypeOf(global);
-    attachTo = attachTo && attachTo.setTimeout ? attachTo : global;
-
-    // Don't get fooled by e.g. browserify environments.
-    if ({}.toString.call(global.process) === "[object process]") {
-        // For Node.js before 0.9
-        installNextTickImplementation();
-
-    } else if (canUsePostMessage()) {
-        // For non-IE10 modern browsers
-        installPostMessageImplementation();
-
-    } else if (global.MessageChannel) {
-        // For web workers, where supported
-        installMessageChannelImplementation();
-
-    } else if (doc && "onreadystatechange" in doc.createElement("script")) {
-        // For IE 6–8
-        installReadyStateChangeImplementation();
-
-    } else {
-        // For older browsers
-        installSetTimeoutImplementation();
-    }
-
-    attachTo.setImmediate = setImmediate;
-    attachTo.clearImmediate = clearImmediate;
-}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(52), __webpack_require__(19)))
-
-/***/ }),
-/* 82 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -20403,7 +20183,7 @@ module.exports = isFunction;
 
 
 /***/ }),
-/* 83 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -20943,7 +20723,7 @@ RequestBase.prototype._setTimeouts = function() {
 
 
 /***/ }),
-/* 84 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -20951,7 +20731,7 @@ RequestBase.prototype._setTimeouts = function() {
  * Module dependencies.
  */
 
-var utils = __webpack_require__(85);
+var utils = __webpack_require__(83);
 
 /**
  * Expose `ResponseBase`.
@@ -21082,7 +20862,7 @@ ResponseBase.prototype._setStatusProperties = function(status){
 
 
 /***/ }),
-/* 85 */
+/* 83 */
 /***/ (function(module, exports) {
 
 
@@ -21156,77 +20936,45 @@ exports.cleanHeader = function(header, shouldStripCookie){
 
 
 /***/ }),
-/* 86 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 84 */
+/***/ (function(module, exports) {
 
-var apply = Function.prototype.apply;
+var g;
 
-// DOM APIs, for completeness
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
 
-exports.setTimeout = function() {
-  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
-};
-exports.setInterval = function() {
-  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
-};
-exports.clearTimeout =
-exports.clearInterval = function(timeout) {
-  if (timeout) {
-    timeout.close();
-  }
-};
-
-function Timeout(id, clearFn) {
-  this._id = id;
-  this._clearFn = clearFn;
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
 }
-Timeout.prototype.unref = Timeout.prototype.ref = function() {};
-Timeout.prototype.close = function() {
-  this._clearFn.call(window, this._id);
-};
 
-// Does not start the time, just sets up the members needed.
-exports.enroll = function(item, msecs) {
-  clearTimeout(item._idleTimeoutId);
-  item._idleTimeout = msecs;
-};
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
 
-exports.unenroll = function(item) {
-  clearTimeout(item._idleTimeoutId);
-  item._idleTimeout = -1;
-};
-
-exports._unrefActive = exports.active = function(item) {
-  clearTimeout(item._idleTimeoutId);
-
-  var msecs = item._idleTimeout;
-  if (msecs >= 0) {
-    item._idleTimeoutId = setTimeout(function onTimeout() {
-      if (item._onTimeout)
-        item._onTimeout();
-    }, msecs);
-  }
-};
-
-// setimmediate attaches itself to the global object
-__webpack_require__(81);
-exports.setImmediate = setImmediate;
-exports.clearImmediate = clearImmediate;
+module.exports = g;
 
 
 /***/ }),
-/* 87 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
 const cloneObject = __webpack_require__(4);
-const Guild = __webpack_require__(14);
+const Guild = __webpack_require__(15);
 const User = __webpack_require__(6);
 const DMChannel = __webpack_require__(32);
 const Emoji = __webpack_require__(10);
 const TextChannel = __webpack_require__(43);
 const VoiceChannel = __webpack_require__(44);
-const GuildChannel = __webpack_require__(15);
+const GuildChannel = __webpack_require__(16);
 const GroupDMChannel = __webpack_require__(33);
 
 class ClientDataManager {
@@ -21350,7 +21098,7 @@ module.exports = ClientDataManager;
 
 
 /***/ }),
-/* 88 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -21424,39 +21172,39 @@ module.exports = ClientManager;
 
 
 /***/ }),
-/* 89 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 class ActionsManager {
   constructor(client) {
     this.client = client;
 
+    this.register(__webpack_require__(104));
+    this.register(__webpack_require__(105));
     this.register(__webpack_require__(106));
+    this.register(__webpack_require__(110));
     this.register(__webpack_require__(107));
     this.register(__webpack_require__(108));
-    this.register(__webpack_require__(112));
     this.register(__webpack_require__(109));
-    this.register(__webpack_require__(110));
-    this.register(__webpack_require__(111));
+    this.register(__webpack_require__(88));
+    this.register(__webpack_require__(89));
     this.register(__webpack_require__(90));
-    this.register(__webpack_require__(91));
     this.register(__webpack_require__(92));
-    this.register(__webpack_require__(94));
-    this.register(__webpack_require__(105));
-    this.register(__webpack_require__(98));
-    this.register(__webpack_require__(99));
-    this.register(__webpack_require__(93));
-    this.register(__webpack_require__(100));
-    this.register(__webpack_require__(101));
-    this.register(__webpack_require__(102));
-    this.register(__webpack_require__(113));
-    this.register(__webpack_require__(115));
-    this.register(__webpack_require__(114));
-    this.register(__webpack_require__(104));
-    this.register(__webpack_require__(95));
+    this.register(__webpack_require__(103));
     this.register(__webpack_require__(96));
     this.register(__webpack_require__(97));
-    this.register(__webpack_require__(103));
+    this.register(__webpack_require__(91));
+    this.register(__webpack_require__(98));
+    this.register(__webpack_require__(99));
+    this.register(__webpack_require__(100));
+    this.register(__webpack_require__(111));
+    this.register(__webpack_require__(113));
+    this.register(__webpack_require__(112));
+    this.register(__webpack_require__(102));
+    this.register(__webpack_require__(93));
+    this.register(__webpack_require__(94));
+    this.register(__webpack_require__(95));
+    this.register(__webpack_require__(101));
   }
 
   register(Action) {
@@ -21468,7 +21216,7 @@ module.exports = ActionsManager;
 
 
 /***/ }),
-/* 90 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21487,7 +21235,7 @@ module.exports = ChannelCreateAction;
 
 
 /***/ }),
-/* 91 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21524,7 +21272,7 @@ module.exports = ChannelDeleteAction;
 
 
 /***/ }),
-/* 92 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21564,7 +21312,7 @@ module.exports = ChannelUpdateAction;
 
 
 /***/ }),
-/* 93 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21583,7 +21331,7 @@ module.exports = GuildBanRemove;
 
 
 /***/ }),
-/* 94 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21644,7 +21392,7 @@ module.exports = GuildDeleteAction;
 
 
 /***/ }),
-/* 95 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21668,7 +21416,7 @@ module.exports = GuildEmojiCreateAction;
 
 
 /***/ }),
-/* 96 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21692,7 +21440,7 @@ module.exports = GuildEmojiDeleteAction;
 
 
 /***/ }),
-/* 97 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21713,7 +21461,7 @@ module.exports = GuildEmojiUpdateAction;
 
 
 /***/ }),
-/* 98 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21731,7 +21479,7 @@ module.exports = GuildMemberGetAction;
 
 
 /***/ }),
-/* 99 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21786,7 +21534,7 @@ module.exports = GuildMemberRemoveAction;
 
 
 /***/ }),
-/* 100 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21824,7 +21572,7 @@ module.exports = GuildRoleCreate;
 
 
 /***/ }),
-/* 101 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21876,7 +21624,7 @@ module.exports = GuildRoleDeleteAction;
 
 
 /***/ }),
-/* 102 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21923,7 +21671,7 @@ module.exports = GuildRoleUpdateAction;
 
 
 /***/ }),
-/* 103 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21952,7 +21700,7 @@ module.exports = GuildRolesPositionUpdate;
 
 
 /***/ }),
-/* 104 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21987,7 +21735,7 @@ module.exports = GuildSync;
 
 
 /***/ }),
-/* 105 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22027,7 +21775,7 @@ module.exports = GuildUpdateAction;
 
 
 /***/ }),
-/* 106 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22073,7 +21821,7 @@ module.exports = MessageCreateAction;
 
 
 /***/ }),
-/* 107 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22119,7 +21867,7 @@ module.exports = MessageDeleteAction;
 
 
 /***/ }),
-/* 108 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22149,7 +21897,7 @@ module.exports = MessageDeleteBulkAction;
 
 
 /***/ }),
-/* 109 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22198,7 +21946,7 @@ module.exports = MessageReactionAdd;
 
 
 /***/ }),
-/* 110 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22247,7 +21995,7 @@ module.exports = MessageReactionRemove;
 
 
 /***/ }),
-/* 111 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22278,7 +22026,7 @@ module.exports = MessageReactionRemoveAll;
 
 
 /***/ }),
-/* 112 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22327,7 +22075,7 @@ module.exports = MessageUpdateAction;
 
 
 /***/ }),
-/* 113 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22346,7 +22094,7 @@ module.exports = UserGetAction;
 
 
 /***/ }),
-/* 114 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22382,7 +22130,7 @@ module.exports = UserNoteUpdateAction;
 
 
 /***/ }),
-/* 115 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22421,7 +22169,7 @@ module.exports = UserUpdateAction;
 
 
 /***/ }),
-/* 116 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const request = __webpack_require__(26);
@@ -22476,29 +22224,29 @@ module.exports = APIRequest;
 
 
 /***/ }),
-/* 117 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const querystring = __webpack_require__(80);
+const querystring = __webpack_require__(79);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const splitMessage = __webpack_require__(45);
-const parseEmoji = __webpack_require__(162);
-const escapeMarkdown = __webpack_require__(23);
-const transformSearchOptions = __webpack_require__(163);
-const Snowflake = __webpack_require__(16);
+const parseEmoji = __webpack_require__(161);
+const escapeMarkdown = __webpack_require__(22);
+const transformSearchOptions = __webpack_require__(162);
+const Snowflake = __webpack_require__(17);
 
 const User = __webpack_require__(6);
 const GuildMember = __webpack_require__(11);
 const Message = __webpack_require__(12);
 const Role = __webpack_require__(9);
 const Invite = __webpack_require__(34);
-const Webhook = __webpack_require__(22);
-const UserProfile = __webpack_require__(159);
+const Webhook = __webpack_require__(21);
+const UserProfile = __webpack_require__(158);
 const ClientOAuth2Application = __webpack_require__(30);
 const Channel = __webpack_require__(8);
-const Guild = __webpack_require__(14);
-const VoiceRegion = __webpack_require__(160);
+const Guild = __webpack_require__(15);
+const VoiceRegion = __webpack_require__(159);
 
 class RESTMethods {
   constructor(restManager) {
@@ -23231,10 +22979,10 @@ module.exports = RESTMethods;
 
 
 /***/ }),
-/* 118 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const RequestHandler = __webpack_require__(55);
+const RequestHandler = __webpack_require__(54);
 
 class BurstRequestHandler extends RequestHandler {
   constructor(restManager, endpoint) {
@@ -23307,10 +23055,10 @@ module.exports = BurstRequestHandler;
 
 
 /***/ }),
-/* 119 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const RequestHandler = __webpack_require__(55);
+const RequestHandler = __webpack_require__(54);
 
 /**
  * Handles API Requests sequentially, i.e. we wait until the current request is finished before moving onto
@@ -23417,7 +23165,7 @@ module.exports = SequentialRequestHandler;
 
 
 /***/ }),
-/* 120 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -23445,12 +23193,12 @@ module.exports = UserAgentManager;
 
 
 /***/ }),
-/* 121 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer, setImmediate) {const EventEmitter = __webpack_require__(18).EventEmitter;
-const Prism = __webpack_require__(167);
-const OpusEncoders = __webpack_require__(166);
+/* WEBPACK VAR INJECTION */(function(Buffer) {const VolumeInterface = __webpack_require__(120);
+const Prism = __webpack_require__(166);
+const OpusEncoders = __webpack_require__(165);
 const Collection = __webpack_require__(3);
 
 const ffmpegArguments = [
@@ -23465,7 +23213,7 @@ const ffmpegArguments = [
  * A voice broadcast can be played across multiple voice connections for improved shared-stream efficiency.
  * @extends {EventEmitter}
  */
-class VoiceBroadcast extends EventEmitter {
+class VoiceBroadcast extends VolumeInterface {
   constructor(client) {
     super();
     /**
@@ -23501,55 +23249,12 @@ class VoiceBroadcast extends EventEmitter {
     return d;
   }
 
-  applyVolume(buffer, volume = this._volume) {
-    if (volume === 1) return buffer;
-
-    const out = Buffer.alloc(buffer.length);
-    for (let i = 0; i < buffer.length; i += 2) {
-      if (i >= buffer.length - 1) break;
-      const uint = Math.min(32767, Math.max(-32767, Math.floor(volume * buffer.readInt16LE(i))));
-      out.writeInt16LE(uint, i);
-    }
-
-    return out;
-  }
-
-  /**
-   * Sets the volume relative to the input stream - i.e. 1 is normal, 0.5 is half, 2 is double.
-   * @param {number} volume The volume that you want to set
-   */
-  setVolume(volume) {
-    this._volume = volume;
-  }
-
-  /**
-   * Set the volume in decibels
-   * @param {number} db The decibels
-   */
-  setVolumeDecibels(db) {
-    this.setVolume(Math.pow(10, db / 20));
-  }
-
-  /**
-   * Set the volume so that a perceived value of 0.5 is half the perceived volume etc.
-   * @param {number} value The value for the volume
-   */
-  setVolumeLogarithmic(value) {
-    this.setVolume(Math.pow(value, 1.660964));
-  }
-
-  /**
-   * The current volume of the broadcast
-   * @readonly
-   * @type {number}
-   */
-  get volume() {
-    return this._volume;
-  }
-
   get _playableStream() {
-    if (!this.currentTranscoder) return null;
-    return this.currentTranscoder.transcoder.output || this.currentTranscoder.options.stream;
+    const currentTranscoder = this.currentTranscoder;
+    if (!currentTranscoder) return null;
+    const transcoder = currentTranscoder.transcoder;
+    const options = currentTranscoder.options;
+    return (transcoder && transcoder.output) || options.stream;
   }
 
   unregisterDispatcher(dispatcher, old) {
@@ -23565,6 +23270,7 @@ class VoiceBroadcast extends EventEmitter {
       container.delete(dispatcher);
 
       if (!container.size) {
+        this._encoders.get(volume).destroy();
         this._dispatchers.delete(volume);
         this._encoders.delete(volume);
       }
@@ -23625,8 +23331,7 @@ class VoiceBroadcast extends EventEmitter {
    *  .catch(console.error);
    */
   playStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
-    const options = { seek, volume, passes };
-    options.stream = stream;
+    const options = { seek, volume, passes, stream };
     return this._playTranscodable(stream, options);
   }
 
@@ -23652,6 +23357,8 @@ class VoiceBroadcast extends EventEmitter {
   }
 
   _playTranscodable(media, options) {
+    OpusEncoders.guaranteeOpusEngine();
+
     this.killCurrentTranscoder();
     const transcoder = this.prism.transcode({
       type: 'ffmpeg',
@@ -23692,9 +23399,25 @@ class VoiceBroadcast extends EventEmitter {
    * @returns {VoiceBroadcast}
    */
   playConvertedStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
+    OpusEncoders.guaranteeOpusEngine();
+
     this.killCurrentTranscoder();
     const options = { seek, volume, passes, stream };
     this.currentTranscoder = { options };
+    stream.once('readable', () => this._startPlaying());
+    return this;
+  }
+
+  /**
+   * Plays an Opus encoded stream at 48KHz.
+   * <warn>Note that inline volume is not compatible with this method.</warn>
+   * @param {ReadableStream} stream The Opus audio stream to play
+   * @param {StreamOptions} [options] Options for playing the stream
+   * @returns {StreamDispatcher}
+   */
+  playOpusStream(stream, { seek = 0, passes = 1 } = {}) {
+    const options = { seek, passes, stream };
+    this.currentTranscoder = { options, opus: true };
     stream.once('readable', () => this._startPlaying());
     return this;
   }
@@ -23706,8 +23429,10 @@ class VoiceBroadcast extends EventEmitter {
    * @returns {VoiceBroadcast}
    */
   playArbitraryInput(input, { seek = 0, volume = 1, passes = 1 } = {}) {
-    const options = { seek, volume, passes };
-    return this.player.playUnknownStream(input, options);
+    this.guaranteeOpusEngine();
+
+    const options = { seek, volume, passes, input };
+    return this._playTranscodable(input, options);
   }
 
   /**
@@ -23734,6 +23459,10 @@ class VoiceBroadcast extends EventEmitter {
     }
   }
 
+  guaranteeOpusEngine() {
+    if (!this.opusEncoder) throw new Error('Couldn\'t find an Opus engine.');
+  }
+
   _startPlaying() {
     if (this.tickInterval) clearInterval(this.tickInterval);
     // this.tickInterval = this.client.setInterval(this.tick.bind(this), 20);
@@ -23751,9 +23480,9 @@ class VoiceBroadcast extends EventEmitter {
       setTimeout(() => this.tick(), 20);
       return;
     }
-    const stream = this._playableStream;
-    const bufferLength = 1920 * 2;
-    let buffer = stream.read(bufferLength);
+
+    const opus = this.currentTranscoder.opus;
+    const buffer = this.readStreamBuffer();
 
     if (!buffer) {
       this._missed++;
@@ -23768,12 +23497,6 @@ class VoiceBroadcast extends EventEmitter {
 
     this._missed = 0;
 
-    if (buffer.length !== bufferLength) {
-      const newBuffer = Buffer.alloc(bufferLength).fill(0);
-      buffer.copy(newBuffer);
-      buffer = newBuffer;
-    }
-
     let packetMatrix = {};
 
     const getOpusPacket = (volume) => {
@@ -23786,15 +23509,34 @@ class VoiceBroadcast extends EventEmitter {
     };
 
     for (const dispatcher of this.dispatchers) {
+      if (opus) {
+        dispatcher.processPacket(buffer);
+        continue;
+      }
+
       const volume = dispatcher.volume;
-      setImmediate(() => {
-        dispatcher.process(buffer, true, getOpusPacket(volume));
-      });
+      dispatcher.processPacket(getOpusPacket(volume));
     }
 
     const next = 20 + (this._startTime + this._pausedTime + (this._count * 20) - Date.now());
     this._count++;
     setTimeout(() => this.tick(), next);
+  }
+
+  readStreamBuffer() {
+    const opus = this.currentTranscoder.opus;
+    const bufferLength = (opus ? 80 : 1920) * 2;
+    let buffer = this._playableStream.read(bufferLength);
+    if (opus) return buffer;
+    if (!buffer) return null;
+
+    if (buffer.length !== bufferLength) {
+      const newBuffer = Buffer.alloc(bufferLength).fill(0);
+      buffer.copy(newBuffer);
+      buffer = newBuffer;
+    }
+
+    return buffer;
   }
 
   /**
@@ -23819,19 +23561,83 @@ class VoiceBroadcast extends EventEmitter {
 
 module.exports = VoiceBroadcast;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17).Buffer, __webpack_require__(86).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ }),
-/* 122 */
+/* 120 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(Buffer) {const EventEmitter = __webpack_require__(18);
+
+class VolumeInterface extends EventEmitter {
+  constructor({ volume = 0 } = {}) {
+    super();
+    this.setVolume(volume || 1);
+  }
+
+  applyVolume(buffer, volume) {
+    volume = volume || this._volume;
+    if (volume === 1) return buffer;
+
+    const out = new Buffer(buffer.length);
+    for (let i = 0; i < buffer.length; i += 2) {
+      if (i >= buffer.length - 1) break;
+      const uint = Math.min(32767, Math.max(-32767, Math.floor(volume * buffer.readInt16LE(i))));
+      out.writeInt16LE(uint, i);
+    }
+
+    return out;
+  }
+
+  /**
+   * Sets the volume relative to the input stream - i.e. 1 is normal, 0.5 is half, 2 is double.
+   * @param {number} volume The volume that you want to set
+   */
+  setVolume(volume) {
+    this._volume = volume;
+  }
+
+  /**
+   * Set the volume in decibels
+   * @param {number} db The decibels
+   */
+  setVolumeDecibels(db) {
+    this.setVolume(Math.pow(10, db / 20));
+  }
+
+  /**
+   * Set the volume so that a perceived value of 0.5 is half the perceived volume etc.
+   * @param {number} value The value for the volume
+   */
+  setVolumeLogarithmic(value) {
+    this.setVolume(Math.pow(value, 1.660964));
+  }
+
+  /**
+   * The current volume of the broadcast
+   * @readonly
+   * @type {number}
+   */
+  get volume() {
+    return this._volume;
+  }
+}
+
+module.exports = VolumeInterface;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
+
+/***/ }),
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {const browser = typeof window !== 'undefined';
 const EventEmitter = __webpack_require__(18).EventEmitter;
 const Constants = __webpack_require__(0);
-const convertArrayBuffer = __webpack_require__(56);
-const pako = __webpack_require__(69);
-const zlib = __webpack_require__(53);
-const PacketManager = __webpack_require__(123);
+const convertArrayBuffer = __webpack_require__(55);
+const pako = __webpack_require__(68);
+const zlib = __webpack_require__(52);
+const PacketManager = __webpack_require__(122);
 
 let WebSocket, erlpack;
 let serialize = JSON.stringify;
@@ -23839,13 +23645,13 @@ if (browser) {
   WebSocket = window.WebSocket; // eslint-disable-line no-undef
 } else {
   try {
-    WebSocket = __webpack_require__(169);
+    WebSocket = __webpack_require__(168);
   } catch (err) {
-    WebSocket = __webpack_require__(170);
+    WebSocket = __webpack_require__(169);
   }
 
   try {
-    erlpack = __webpack_require__(168);
+    erlpack = __webpack_require__(167);
     serialize = erlpack.pack;
   } catch (err) {
     erlpack = null;
@@ -24198,10 +24004,10 @@ class WebSocketManager extends EventEmitter {
 
 module.exports = WebSocketManager;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).Buffer))
 
 /***/ }),
-/* 123 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -24221,40 +24027,40 @@ class WebSocketPacketManager {
     this.handlers = {};
     this.queue = [];
 
-    this.register(Constants.WSEvents.READY, __webpack_require__(150));
-    this.register(Constants.WSEvents.GUILD_CREATE, __webpack_require__(130));
-    this.register(Constants.WSEvents.GUILD_DELETE, __webpack_require__(131));
-    this.register(Constants.WSEvents.GUILD_UPDATE, __webpack_require__(141));
-    this.register(Constants.WSEvents.GUILD_BAN_ADD, __webpack_require__(128));
-    this.register(Constants.WSEvents.GUILD_BAN_REMOVE, __webpack_require__(129));
-    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, __webpack_require__(133));
-    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, __webpack_require__(134));
-    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, __webpack_require__(135));
-    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, __webpack_require__(137));
-    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, __webpack_require__(138));
-    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, __webpack_require__(139));
-    this.register(Constants.WSEvents.GUILD_EMOJIS_UPDATE, __webpack_require__(132));
-    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, __webpack_require__(136));
-    this.register(Constants.WSEvents.CHANNEL_CREATE, __webpack_require__(124));
-    this.register(Constants.WSEvents.CHANNEL_DELETE, __webpack_require__(125));
-    this.register(Constants.WSEvents.CHANNEL_UPDATE, __webpack_require__(127));
-    this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, __webpack_require__(126));
-    this.register(Constants.WSEvents.PRESENCE_UPDATE, __webpack_require__(149));
-    this.register(Constants.WSEvents.USER_UPDATE, __webpack_require__(155));
-    this.register(Constants.WSEvents.USER_NOTE_UPDATE, __webpack_require__(154));
-    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, __webpack_require__(157));
-    this.register(Constants.WSEvents.TYPING_START, __webpack_require__(153));
-    this.register(Constants.WSEvents.MESSAGE_CREATE, __webpack_require__(142));
-    this.register(Constants.WSEvents.MESSAGE_DELETE, __webpack_require__(143));
-    this.register(Constants.WSEvents.MESSAGE_UPDATE, __webpack_require__(148));
-    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, __webpack_require__(144));
-    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, __webpack_require__(156));
-    this.register(Constants.WSEvents.GUILD_SYNC, __webpack_require__(140));
-    this.register(Constants.WSEvents.RELATIONSHIP_ADD, __webpack_require__(151));
-    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, __webpack_require__(152));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, __webpack_require__(145));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, __webpack_require__(146));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, __webpack_require__(147));
+    this.register(Constants.WSEvents.READY, __webpack_require__(149));
+    this.register(Constants.WSEvents.GUILD_CREATE, __webpack_require__(129));
+    this.register(Constants.WSEvents.GUILD_DELETE, __webpack_require__(130));
+    this.register(Constants.WSEvents.GUILD_UPDATE, __webpack_require__(140));
+    this.register(Constants.WSEvents.GUILD_BAN_ADD, __webpack_require__(127));
+    this.register(Constants.WSEvents.GUILD_BAN_REMOVE, __webpack_require__(128));
+    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, __webpack_require__(132));
+    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, __webpack_require__(133));
+    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, __webpack_require__(134));
+    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, __webpack_require__(136));
+    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, __webpack_require__(137));
+    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, __webpack_require__(138));
+    this.register(Constants.WSEvents.GUILD_EMOJIS_UPDATE, __webpack_require__(131));
+    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, __webpack_require__(135));
+    this.register(Constants.WSEvents.CHANNEL_CREATE, __webpack_require__(123));
+    this.register(Constants.WSEvents.CHANNEL_DELETE, __webpack_require__(124));
+    this.register(Constants.WSEvents.CHANNEL_UPDATE, __webpack_require__(126));
+    this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, __webpack_require__(125));
+    this.register(Constants.WSEvents.PRESENCE_UPDATE, __webpack_require__(148));
+    this.register(Constants.WSEvents.USER_UPDATE, __webpack_require__(154));
+    this.register(Constants.WSEvents.USER_NOTE_UPDATE, __webpack_require__(153));
+    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, __webpack_require__(156));
+    this.register(Constants.WSEvents.TYPING_START, __webpack_require__(152));
+    this.register(Constants.WSEvents.MESSAGE_CREATE, __webpack_require__(141));
+    this.register(Constants.WSEvents.MESSAGE_DELETE, __webpack_require__(142));
+    this.register(Constants.WSEvents.MESSAGE_UPDATE, __webpack_require__(147));
+    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, __webpack_require__(143));
+    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, __webpack_require__(155));
+    this.register(Constants.WSEvents.GUILD_SYNC, __webpack_require__(139));
+    this.register(Constants.WSEvents.RELATIONSHIP_ADD, __webpack_require__(150));
+    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, __webpack_require__(151));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, __webpack_require__(144));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, __webpack_require__(145));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, __webpack_require__(146));
   }
 
   get client() {
@@ -24332,7 +24138,7 @@ module.exports = WebSocketPacketManager;
 
 
 /***/ }),
-/* 124 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24355,7 +24161,7 @@ module.exports = ChannelCreateHandler;
 
 
 /***/ }),
-/* 125 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24381,7 +24187,7 @@ module.exports = ChannelDeleteHandler;
 
 
 /***/ }),
-/* 126 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24418,7 +24224,7 @@ module.exports = ChannelPinsUpdate;
 
 
 /***/ }),
-/* 127 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24435,7 +24241,7 @@ module.exports = ChannelUpdateHandler;
 
 
 /***/ }),
-/* 128 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -24464,7 +24270,7 @@ module.exports = GuildBanAddHandler;
 
 
 /***/ }),
-/* 129 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -24490,7 +24296,7 @@ module.exports = GuildBanRemoveHandler;
 
 
 /***/ }),
-/* 130 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24518,7 +24324,7 @@ module.exports = GuildCreateHandler;
 
 
 /***/ }),
-/* 131 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24543,7 +24349,7 @@ module.exports = GuildDeleteHandler;
 
 
 /***/ }),
-/* 132 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24589,7 +24395,7 @@ module.exports = GuildEmojisUpdate;
 
 
 /***/ }),
-/* 133 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -24612,7 +24418,7 @@ module.exports = GuildMemberAddHandler;
 
 
 /***/ }),
-/* 134 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -24631,7 +24437,7 @@ module.exports = GuildMemberRemoveHandler;
 
 
 /***/ }),
-/* 135 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -24655,7 +24461,7 @@ module.exports = GuildMemberUpdateHandler;
 
 
 /***/ }),
-/* 136 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // ##untested##
@@ -24689,7 +24495,7 @@ module.exports = GuildMembersChunkHandler;
 
 
 /***/ }),
-/* 137 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24706,7 +24512,7 @@ module.exports = GuildRoleCreateHandler;
 
 
 /***/ }),
-/* 138 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24723,7 +24529,7 @@ module.exports = GuildRoleDeleteHandler;
 
 
 /***/ }),
-/* 139 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24740,7 +24546,7 @@ module.exports = GuildRoleUpdateHandler;
 
 
 /***/ }),
-/* 140 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24757,7 +24563,7 @@ module.exports = GuildSyncHandler;
 
 
 /***/ }),
-/* 141 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24774,7 +24580,7 @@ module.exports = GuildUpdateHandler;
 
 
 /***/ }),
-/* 142 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24799,7 +24605,7 @@ module.exports = MessageCreateHandler;
 
 
 /***/ }),
-/* 143 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24824,7 +24630,7 @@ module.exports = MessageDeleteHandler;
 
 
 /***/ }),
-/* 144 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24847,7 +24653,7 @@ module.exports = MessageDeleteBulkHandler;
 
 
 /***/ }),
-/* 145 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24864,7 +24670,7 @@ module.exports = MessageReactionAddHandler;
 
 
 /***/ }),
-/* 146 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24881,7 +24687,7 @@ module.exports = MessageReactionRemove;
 
 
 /***/ }),
-/* 147 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24898,7 +24704,7 @@ module.exports = MessageReactionRemoveAll;
 
 
 /***/ }),
-/* 148 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24915,7 +24721,7 @@ module.exports = MessageUpdateHandler;
 
 
 /***/ }),
-/* 149 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24997,7 +24803,7 @@ module.exports = PresenceUpdateHandler;
 
 
 /***/ }),
-/* 150 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -25073,7 +24879,7 @@ module.exports = ReadyHandler;
 
 
 /***/ }),
-/* 151 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -25098,7 +24904,7 @@ module.exports = RelationshipAddHandler;
 
 
 /***/ }),
-/* 152 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -25123,7 +24929,7 @@ module.exports = RelationshipRemoveHandler;
 
 
 /***/ }),
-/* 153 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -25197,7 +25003,7 @@ module.exports = TypingStartHandler;
 
 
 /***/ }),
-/* 154 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -25215,7 +25021,7 @@ module.exports = UserNoteUpdateHandler;
 
 
 /***/ }),
-/* 155 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -25232,7 +25038,7 @@ module.exports = UserUpdateHandler;
 
 
 /***/ }),
-/* 156 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -25257,7 +25063,7 @@ module.exports = VoiceServerUpdate;
 
 
 /***/ }),
-/* 157 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -25312,7 +25118,7 @@ module.exports = VoiceStateUpdateHandler;
 
 
 /***/ }),
-/* 158 */
+/* 157 */
 /***/ (function(module, exports) {
 
 /**
@@ -25366,11 +25172,11 @@ module.exports = UserConnection;
 
 
 /***/ }),
-/* 159 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
-const UserConnection = __webpack_require__(158);
+const UserConnection = __webpack_require__(157);
 
 /**
  * Represents a user's profile on Discord.
@@ -25428,7 +25234,7 @@ module.exports = UserProfile;
 
 
 /***/ }),
-/* 160 */
+/* 159 */
 /***/ (function(module, exports) {
 
 /**
@@ -25484,7 +25290,7 @@ module.exports = VoiceRegion;
 
 
 /***/ }),
-/* 161 */
+/* 160 */
 /***/ (function(module, exports) {
 
 module.exports = function arraysEqual(a, b) {
@@ -25504,7 +25310,7 @@ module.exports = function arraysEqual(a, b) {
 
 
 /***/ }),
-/* 162 */
+/* 161 */
 /***/ (function(module, exports) {
 
 module.exports = function parseEmoji(text) {
@@ -25524,7 +25330,7 @@ module.exports = function parseEmoji(text) {
 
 
 /***/ }),
-/* 163 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const long = __webpack_require__(46);
@@ -25605,6 +25411,12 @@ module.exports = function TransformSearchOptions(options, client) {
 
 
 /***/ }),
+/* 163 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
 /* 164 */
 /***/ (function(module, exports) {
 
@@ -25642,38 +25454,32 @@ module.exports = function TransformSearchOptions(options, client) {
 
 /***/ }),
 /* 170 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
-/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = {
-  Client: __webpack_require__(58),
-  WebhookClient: __webpack_require__(59),
-  Shard: __webpack_require__(62),
-  ShardClientUtil: __webpack_require__(63),
-  ShardingManager: __webpack_require__(64),
+  Client: __webpack_require__(57),
+  WebhookClient: __webpack_require__(58),
+  Shard: __webpack_require__(61),
+  ShardClientUtil: __webpack_require__(62),
+  ShardingManager: __webpack_require__(63),
 
   Collection: __webpack_require__(3),
   splitMessage: __webpack_require__(45),
-  escapeMarkdown: __webpack_require__(23),
-  fetchRecommendedShards: __webpack_require__(61),
-  Snowflake: __webpack_require__(16),
-  SnowflakeUtil: __webpack_require__(16),
+  escapeMarkdown: __webpack_require__(22),
+  fetchRecommendedShards: __webpack_require__(60),
+  Snowflake: __webpack_require__(17),
+  SnowflakeUtil: __webpack_require__(17),
 
   Channel: __webpack_require__(8),
   ClientOAuth2Application: __webpack_require__(30),
   ClientUser: __webpack_require__(31),
   DMChannel: __webpack_require__(32),
   Emoji: __webpack_require__(10),
-  EvaluatedPermissions: __webpack_require__(20),
+  EvaluatedPermissions: __webpack_require__(19),
   Game: __webpack_require__(7).Game,
   GroupDMChannel: __webpack_require__(33),
-  Guild: __webpack_require__(14),
-  GuildChannel: __webpack_require__(15),
+  Guild: __webpack_require__(15),
+  GuildChannel: __webpack_require__(16),
   GuildMember: __webpack_require__(11),
   Invite: __webpack_require__(34),
   Message: __webpack_require__(12),
@@ -25686,13 +25492,13 @@ module.exports = {
   PartialGuildChannel: __webpack_require__(41),
   PermissionOverwrites: __webpack_require__(42),
   Presence: __webpack_require__(7).Presence,
-  ReactionEmoji: __webpack_require__(21),
-  RichEmbed: __webpack_require__(60),
+  ReactionEmoji: __webpack_require__(20),
+  RichEmbed: __webpack_require__(59),
   Role: __webpack_require__(9),
   TextChannel: __webpack_require__(43),
   User: __webpack_require__(6),
   VoiceChannel: __webpack_require__(44),
-  Webhook: __webpack_require__(22),
+  Webhook: __webpack_require__(21),
 
   version: __webpack_require__(29).version,
   Constants: __webpack_require__(0),
