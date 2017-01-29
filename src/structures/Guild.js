@@ -254,7 +254,7 @@ class Guild {
    * @readonly
    */
   get nameAcronym() {
-    return this.name.replace(/\w+/g, (name) => name[0]).replace(/\s/g, '');
+    return this.name.replace(/\w+/g, name => name[0]).replace(/\s/g, '');
   }
 
   /**
