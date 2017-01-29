@@ -84,7 +84,8 @@ class VoiceReceiver extends EventEmitter {
       stream._push(null);
       this.opusStreams.delete(id);
     }
-    for (const [id] of this.opusEncoders) {
+    for (const [id, encoder] of this.opusEncoders) {
+      encoder.destroy();
       this.opusEncoders.delete(id);
     }
     this.destroyed = true;

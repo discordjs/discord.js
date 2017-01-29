@@ -142,6 +142,7 @@ class VoiceConnection extends EventEmitter {
         self_deaf: false,
       },
     });
+    this.player.destroy();
     /**
      * Emitted when the voice connection disconnects
      * @event VoiceConnection#disconnect
@@ -236,8 +237,7 @@ class VoiceConnection extends EventEmitter {
    *  })
    *  .catch(console.error);
    */
-  playFile(file, { seek = 0, volume = 1, passes = 1 } = {}) {
-    const options = { seek, volume, passes };
+  playFile(file, options) {
     return this.player.playUnknownStream(`file:${file}`, options);
   }
 
@@ -247,8 +247,7 @@ class VoiceConnection extends EventEmitter {
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
    */
-  playArbitraryInput(input, { seek = 0, volume = 1, passes = 1 } = {}) {
-    const options = { seek, volume, passes };
+  playArbitraryInput(input, options) {
     return this.player.playUnknownStream(input, options);
   }
 
@@ -268,20 +267,29 @@ class VoiceConnection extends EventEmitter {
    *  })
    *  .catch(console.error);
    */
-  playStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
-    const options = { seek, volume, passes };
+  playStream(stream, options) {
     return this.player.playUnknownStream(stream, options);
   }
 
   /**
    * Plays a stream of 16-bit signed stereo PCM at 48KHz.
-   * @param {ReadableStream} stream The audio stream to play.
+   * @param {ReadableStream} stream The audio stream to play
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
    */
-  playConvertedStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
-    const options = { seek, volume, passes };
+  playConvertedStream(stream, options) {
     return this.player.playPCMStream(stream, options);
+  }
+
+  /**
+   * Plays an Opus encoded stream at 48KHz.
+   * <warn>Note that inline volume is not compatible with this method.</warn>
+   * @param {ReadableStream} stream The Opus audio stream to play
+   * @param {StreamOptions} [options] Options for playing the stream
+   * @returns {StreamDispatcher}
+   */
+  playOpusStream(stream, options) {
+    return this.player.playOpusStream(stream, options);
   }
 
   /**
