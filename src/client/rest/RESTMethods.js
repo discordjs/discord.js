@@ -6,6 +6,7 @@ const parseEmoji = require('../../util/ParseEmoji');
 const escapeMarkdown = require('../../util/EscapeMarkdown');
 const transformSearchOptions = require('../../util/TransformSearchOptions');
 const Snowflake = require('../../util/Snowflake');
+const cloneObject = require('../../util/CloneObject');
 
 const User = require('../../structures/User');
 const GuildMember = require('../../structures/GuildMember');
@@ -401,16 +402,25 @@ class RESTMethods {
   }
 
   addMemberRole(member, role) {
+    let clonedMember = cloneObject(member);
     return this.rest.makeRequest('put', Constants.Endpoints.guildMemberRole(member.guild.id, member.id, role.id), true)
-      .then(() => member);
+      .then(() => {
+        if (!clonedMember._roles.includes(role.id)) clonedMember._roles.push(role.id);
+        return clonedMember;
+      });
   }
 
   removeMemberRole(member, role) {
+    let clonedMember = cloneObject(member);
     return this.rest.makeRequest(
       'delete',
       Constants.Endpoints.guildMemberRole(member.guild.id, member.id, role.id),
       true
-    ).then(() => member);
+    ).then(() => {
+      const index = clonedMember._roles.indexOf(role.id);
+      if (index >= 0) clonedMember._roles.splice(index, 1);
+      return clonedMember;
+    });
   }
 
   sendTyping(channelID) {
