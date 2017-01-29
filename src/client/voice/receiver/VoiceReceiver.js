@@ -125,11 +125,14 @@ class VoiceReceiver extends EventEmitter {
     let data = NaCl.secretbox.open(msg.slice(12), nonce, this.voiceConnection.authentication.secretKey.key);
     if (!data) {
       /**
-       * Emitted whenever a voice packet cannot be decrypted
+       * Emitted whenever a voice packet experiences a problem.
        * @event VoiceReceiver#warn
+       * @param {string} reason The reason for the warning. If it happened because the voice packet could not be
+       * decrypted, this would be `decrypt`. If it happened because the voice packet could not be decoded into
+       * PCM, this would be `decode`.
        * @param {string} message The warning message
        */
-      this.emit('warn', 'Failed to decrypt voice packet');
+      this.emit('warn', 'decrypt', 'Failed to decrypt voice packet');
       return;
     }
     data = Buffer.from(data);
@@ -143,9 +146,12 @@ class VoiceReceiver extends EventEmitter {
     this.emit('opus', user, data);
     if (this.listenerCount('pcm') > 0 || this.pcmStreams.size > 0) {
       if (!this.opusEncoders.get(user.id)) this.opusEncoders.set(user.id, OpusEncoders.fetch());
-      const pcm = this.opusEncoders.get(user.id).decode(data);
+      const { pcm, error } = VoiceReceiver._tryDecode(this.opusEncoders.get(user.id), data);
+      if (error) {
+        this.emit('warn', 'decode', `Failed to decode packet voice to PCM because: ${error.message}`);
+        return;
+      }
       if (this.pcmStreams.get(user.id)) this.pcmStreams.get(user.id)._push(pcm);
-
       /**
        * Emits decoded voice data when it's received. For performance reasons, the decoding will only
        * happen if there is at least one `pcm` listener on this receiver.
@@ -154,6 +160,14 @@ class VoiceReceiver extends EventEmitter {
        * @param {Buffer} buffer The decoded buffer
        */
       this.emit('pcm', user, pcm);
+    }
+  }
+
+  static _tryDecode(encoder, data) {
+    try {
+      return { pcm: encoder.decode(data) };
+    } catch (error) {
+      return { error };
     }
   }
 }
