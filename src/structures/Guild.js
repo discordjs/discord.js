@@ -682,7 +682,7 @@ class Guild {
    * Creates a new custom emoji in the guild.
    * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji.
    * @param {string} name The name for the emoji.
-   * @param {Collection|Array} [roles] Roles to limit the emoji to
+   * @param {Collection<Role>|Role[]} [roles] Roles to limit the emoji to
    * @returns {Promise<Emoji>} The created emoji.
    * @example
    * // create a new emoji from a url
