@@ -3,6 +3,8 @@ const list = [
   require('./OpusScriptEngine'),
 ];
 
+let opusEngineFound;
+
 function fetch(Encoder) {
   try {
     return new Encoder();
@@ -24,5 +26,6 @@ exports.fetch = () => {
 };
 
 exports.guaranteeOpusEngine = () => {
-  if (!this.opusEncoder) throw new Error('Couldn\'t find an Opus engine.');
+  if (opusEngineFound === undefined) opusEngine = !!exports.fetch();
+  if (!opusEngineFound) throw new Error('Couldn\'t find an Opus engine.');
 };
