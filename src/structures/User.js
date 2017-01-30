@@ -179,6 +179,10 @@ class User {
     return this.client.channels.filter(c => c.type === 'dm').find(c => c.recipient.id === this.id);
   }
 
+  createDM() {
+    return this.client.rest.methods.createDM(this);
+  }
+
   /**
    * Deletes a DM channel (if one exists) between the client and the user. Resolves with the channel if successful.
    * @returns {Promise<DMChannel>}
