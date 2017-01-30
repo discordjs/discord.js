@@ -26,6 +26,6 @@ exports.fetch = () => {
 };
 
 exports.guaranteeOpusEngine = () => {
-  if (opusEngineFound === undefined) opusEngineFound = !!exports.fetch();
+  if (typeof opusEngineFound === 'undefined') opusEngineFound = Boolean(exports.fetch());
   if (!opusEngineFound) throw new Error('Couldn\'t find an Opus engine.');
 };
