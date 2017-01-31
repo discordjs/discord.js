@@ -23007,7 +23007,7 @@ class RESTMethods {
     const data = { image, name };
     if (roles) data.roles = roles.map(r => r.id ? r.id : r);
     return this.rest.makeRequest('post', `${Constants.Endpoints.guildEmojis(guild.id)}`, true, data)
-      .then(emoji => this.client.actions.GuildEmojiCreate.handle(emoji, guild).emoji);
+      .then(emoji => this.client.actions.GuildEmojiCreate.handle(guild, emoji).emoji);
   }
 
   updateEmoji(emoji, _data) {
