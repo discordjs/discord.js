@@ -4,6 +4,9 @@ const Constants = require('../../util/Constants');
 const PacketManager = require('./packets/WebSocketPacketManager');
 const Collection = require('../../util/Collection');
 
+/**
+ * A manager for the WebSocketManagers
+ */
 class WebSocketShardManager extends EventEmitter {
   /**
    * A manager for the WebSocketManagers
