@@ -51,7 +51,7 @@ exports.DefaultOptions = {
    */
   ws: {
     large_threshold: 250,
-    compress: typeof window === 'undefined',
+    compress: require('os').platform() !== 'browser',
     properties: {
       $os: process ? process.platform : 'discord.js',
       $browser: 'discord.js',
