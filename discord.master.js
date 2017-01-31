@@ -23564,7 +23564,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   destroy() {
-    this.ws.close(1000);
+    if (this.ws) this.ws.close(1000);
     this._queue = [];
     this.status = Constants.Status.IDLE;
   }
