@@ -5,10 +5,11 @@
   "main": "./src/index",
   "types": "./typings/index.d.ts",
   "scripts": {
-    "test": "eslint src && docgen --source src --custom docs/index.yml",
+    "test": "npm run lint && npm run docs:test",
     "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
-    "test-docs": "docgen --source src --custom docs/index.yml",
+    "docs:test": "docgen --source src --custom docs/index.yml",
     "lint": "eslint src",
+    "lint:fix": "eslint --fix src",
     "webpack": "parallel-webpack"
   },
   "repository": {
