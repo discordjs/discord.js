@@ -197,6 +197,7 @@ const Endpoints = exports.Endpoints = {
   guildMemberNickname: (guildID) => `${Endpoints.guildMember(guildID, '@me')}/nick`,
   guildChannels: (guildID) => `${Endpoints.guild(guildID)}/channels`,
   guildEmojis: (guildID) => `${Endpoints.guild(guildID)}/emojis`,
+  guildEmoji: (guildID, emojiID) => `${Endpoints.guildEmojis(guildID)}/${emojiID}`,
   guildSearch: (guildID) => `${Endpoints.guild(guildID)}/messages/search`,
   guildVoiceRegions: (guildID) => `${Endpoints.guild(guildID)}/regions`,
 
@@ -1929,6 +1930,27 @@ class Emoji {
   get identifier() {
     if (this.id) return `${this.name}:${this.id}`;
     return encodeURIComponent(this.name);
+  }
+
+  /**
+   * Data for editing an emoji
+   * @typedef {Object} EmojiEditData
+   * @property {string} [name] The name of the emoji
+   * @property {Collection<string, Role>|Array<string|Role>} [roles] Roles to restrict emoji to
+   */
+
+  /**
+   * Edits the emoji
+   * @param {EmojiEditData} data The new data for the emoji
+   * @returns {Promise<Emoji>}
+   * @example
+   * // edit a emoji
+   * emoji.edit({name: 'newemoji'})
+   *  .then(e => console.log(`Edited emoji ${e}`))
+   *  .catch(console.error);
+   */
+  edit(data) {
+    return this.client.rest.methods.updateEmoji(this, data);
   }
 
   /**
@@ -21248,6 +21270,7 @@ class ClientDataManager {
     const oldEmoji = cloneObject(currentEmoji);
     currentEmoji.setup(newData);
     this.client.emit(Constants.Events.GUILD_EMOJI_UPDATE, oldEmoji, currentEmoji);
+    return currentEmoji;
   }
 }
 
@@ -21604,7 +21627,10 @@ const Action = __webpack_require__(2);
 
 class GuildEmojiUpdateAction extends Action {
   handle(oldEmoji, newEmoji) {
-    this.client.dataManager.updateEmoji(oldEmoji, newEmoji);
+    const emoji = this.client.dataManager.updateEmoji(oldEmoji, newEmoji);
+    return {
+      emoji,
+    };
   }
 }
 
@@ -22963,6 +22989,14 @@ class RESTMethods {
   createEmoji(guild, image, name) {
     return this.rest.makeRequest('post', `${Constants.Endpoints.guildEmojis(guild.id)}`, true, { name, image })
       .then(data => this.client.actions.GuildEmojiCreate.handle(data, guild).emoji);
+  }
+
+  updateEmoji(emoji, _data) {
+    const data = {};
+    if (_data.name) data.name = _data.name;
+    if (_data.roles) data.roles = _data.roles.map(r => r.id ? r.id : r);
+    return this.rest.makeRequest('patch', Constants.Endpoints.guildEmoji(emoji.guild.id, emoji.id), true, data)
+        .then(newEmoji => this.client.actions.GuildEmojiUpdate.handle(emoji, newEmoji).emoji);
   }
 
   deleteEmoji(emoji) {
