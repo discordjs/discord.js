@@ -119,13 +119,13 @@ class Client extends EventEmitter {
 
     /**
      * The authorization token for the logged in user/bot.
-     * @name token
+     * @name Client#token
      * @type {?string}
      */
     Object.defineProperty(this, 'token', {
       value: null,
-      enumerable: false,
       writable: true,
+      configurable: true,
     });
 
     if (!this.token && 'CLIENT_TOKEN' in process.env) {
