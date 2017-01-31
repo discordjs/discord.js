@@ -396,7 +396,7 @@ class GuildMember {
   }
 
   /**
-   * Creates a DM channel between the client and the member. Resolves with the channel if successful.
+   * Creates a DM channel between the client and the member
    * @returns {Promise<DMChannel>}
    */
   createDM() {
