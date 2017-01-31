@@ -396,11 +396,19 @@ class GuildMember {
   }
 
   /**
+   * Creates a DM channel between the client and the member. Resolves with the channel if successful.
+   * @returns {Promise<DMChannel>}
+   */
+  createDM() {
+    return this.user.createDM();
+  }
+
+  /**
    * Deletes any DMs with this guild member
    * @returns {Promise<DMChannel>}
    */
   deleteDM() {
-    return this.client.rest.methods.deleteChannel(this);
+    return this.user.deleteDM();
   }
 
   /**
