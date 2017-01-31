@@ -564,6 +564,14 @@ class RESTMethods {
       .then(data => this.client.actions.GuildEmojiCreate.handle(data, guild).emoji);
   }
 
+  updateEmoji(emoji, _data) {
+    const data = {};
+    if (_data.name) data.name = _data.name;
+    if (_data.roles) data.roles = _data.roles.map(r => r.id ? r.id : r);
+    return this.rest.makeRequest('patch', Constants.Endpoints.guildEmoji(emoji.guild.id, emoji.id), true, data)
+        .then(newEmoji => this.client.actions.GuildEmojiUpdate.handle(emoji, newEmoji).emoji);
+  }
+
   deleteEmoji(emoji) {
     return this.rest.makeRequest('delete', `${Constants.Endpoints.guildEmojis(emoji.guild.id)}/${emoji.id}`, true)
       .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);

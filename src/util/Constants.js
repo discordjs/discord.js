@@ -125,6 +125,7 @@ const Endpoints = exports.Endpoints = {
   guildMemberNickname: (guildID) => `${Endpoints.guildMember(guildID, '@me')}/nick`,
   guildChannels: (guildID) => `${Endpoints.guild(guildID)}/channels`,
   guildEmojis: (guildID) => `${Endpoints.guild(guildID)}/emojis`,
+  guildEmoji: (guildID, emojiID) => `${Endpoints.guildEmojis(guildID)}/${emojiID}`,
   guildSearch: (guildID) => `${Endpoints.guild(guildID)}/messages/search`,
   guildVoiceRegions: (guildID) => `${Endpoints.guild(guildID)}/regions`,
 
