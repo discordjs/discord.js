@@ -102,7 +102,7 @@ class Emoji {
   }
 
   /**
-   * The data for editing a emoji
+   * Data for editing an emoji
    * @typedef {Object} EmojiEditData
    * @property {string} [name] The name of the emoji
    * @property {Collection<string, Role>|Array<string|Role>} [roles] Roles to restrict emoji to
