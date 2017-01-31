@@ -27,7 +27,7 @@ discord.js is a powerful node.js module that allows you to interact with the
 
 ## Installation
 **Node.js 6.0.0 or newer is required.**  
-Ignore any warnings about unmet peer dependencies - all peer dependencies are optional.
+Ignore any warnings about unmet peer dependencies, as they're are optional.
 
 Without voice support: `npm install discord.js --save`  
 With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discord.js node-opus --save`  
@@ -62,19 +62,11 @@ client.login('your token');
 
 A bot template using discord.js can be generated using [generator-discordbot](https://www.npmjs.com/package/generator-discordbot).
 
-## Web distributions
-Web builds of discord.js that are fully capable of running in browsers are available [here](https://github.com/hydrabolt/discord.js/tree/webpack).
-These are built using [Webpack 2](https://webpack.js.org/). The API is identical, but rather than using `require('discord.js')`,
-the entire `Discord` object is available as a global (on the `window` object).
-The ShardingManager and any voice-related functionality is unavailable in these builds.
-
 ## Links
-* [Website](https://discord.js.org/)
+* [Website](https://discord.js.org/) ([source](https://github.com/hydrabolt/discord.js-site))
+* [Documentation](https://discord.js.org/#/docs)
 * [Discord.js server](https://discord.gg/bRCvFy9)
 * [Discord API server](https://discord.gg/rV4BwdK)
-* [Documentation](https://discord.js.org/#/docs)
-* [Legacy (v8) documentation](http://discordjs.readthedocs.io/en/8.2.0/docs_client.html)
-* [Examples](https://github.com/hydrabolt/discord.js/tree/master/docs/examples)
 * [GitHub](https://github.com/hydrabolt/discord.js)
 * [NPM](https://www.npmjs.com/package/discord.js)
 * [Related libraries](https://discordapi.com/unofficial/libs.html) (see also [discord-rpc](https://www.npmjs.com/package/discord-rpc))
