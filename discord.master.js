@@ -4181,6 +4181,7 @@ class Guild {
    * Creates a new custom emoji in the guild.
    * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji.
    * @param {string} name The name for the emoji.
+   * @param {Collection<Role>|Role[]} [roles] Roles to limit the emoji to
    * @returns {Promise<Emoji>} The created emoji.
    * @example
    * // create a new emoji from a url
@@ -4193,13 +4194,13 @@ class Guild {
    *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
    *  .catch(console.error);
    */
-  createEmoji(attachment, name) {
+  createEmoji(attachment, name, roles) {
     return new Promise(resolve => {
       if (typeof attachment === 'string' && attachment.startsWith('data:')) {
-        resolve(this.client.rest.methods.createEmoji(this, attachment, name));
+        resolve(this.client.rest.methods.createEmoji(this, attachment, name, roles));
       } else {
         this.client.resolver.resolveBuffer(attachment).then(data =>
-          resolve(this.client.rest.methods.createEmoji(this, data, name))
+          resolve(this.client.rest.methods.createEmoji(this, data, name, roles))
         );
       }
     });
@@ -22986,9 +22987,11 @@ class RESTMethods {
       .then(data => data.pruned);
   }
 
-  createEmoji(guild, image, name) {
-    return this.rest.makeRequest('post', `${Constants.Endpoints.guildEmojis(guild.id)}`, true, { name, image })
-      .then(data => this.client.actions.GuildEmojiCreate.handle(data, guild).emoji);
+  createEmoji(guild, image, name, roles) {
+    const data = { image, name };
+    if (roles) data.roles = roles.map(r => r.id ? r.id : r);
+    return this.rest.makeRequest('post', `${Constants.Endpoints.guildEmojis(guild.id)}`, true, data)
+      .then(emoji => this.client.actions.GuildEmojiCreate.handle(emoji, guild).emoji);
   }
 
   updateEmoji(emoji, _data) {
