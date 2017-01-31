@@ -6,6 +6,10 @@
       path: updating.md
     - name: FAQ
       path: faq.md
+- name: Topics
+  files:
+    - name: Web builds
+      path: web.md
 - name: Examples
   files:
     - name: Ping
