@@ -45,7 +45,7 @@ For production bots, using node-opus should be considered a necessity, especiall
   **Note:** This package does not handle disconnects entirely correctly, which causes automatic reconnection to Discord to not function.
   If you use this package, it may be wise to destroy + recreate the client entirely or restart the process upon disconnect.
 
-## Example Usage
+## Example usage
 ```js
 const Discord = require('discord.js');
 const client = new Discord.Client();
