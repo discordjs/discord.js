@@ -68,6 +68,8 @@ class RESTMethods {
         if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
           content = escapeMarkdown(this.client.resolver.resolveString(content), true);
           content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
+          split.prepend = '```';
+          split.append = '```';
         }
 
         // Add zero-width spaces to @everyone/@here
