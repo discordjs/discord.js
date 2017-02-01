@@ -256,6 +256,7 @@ class Role {
   /**
    * Set the position of the role
    * @param {number} position The position of the role
+   * @param {boolean} [relative=false] Move the position relative to its current value
    * @returns {Promise<Role>}
    * @example
    * // set the position of the role
@@ -263,8 +264,8 @@ class Role {
    *  .then(r => console.log(`Role position: ${r.position}`))
    *  .catch(console.error);
    */
-  setPosition(position) {
-    return this.guild.setRolePosition(this, position).then(() => this);
+  setPosition(position, relative) {
+    return this.guild.setRolePosition(this, position, relative).then(() => this);
   }
 
   /**
