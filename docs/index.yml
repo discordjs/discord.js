@@ -10,6 +10,8 @@
   files:
     - name: Voice
       path: voice.md
+    - name: Web builds
+      path: web.md
 - name: Examples
   files:
     - name: Ping
