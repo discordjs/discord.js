@@ -97,7 +97,7 @@ class RESTMethods {
             const options = index === list.length ? { tts, embed } : { tts };
             chan.send(list[index], options, index === list.length ? file : null).then((message) => {
               messages.push(message);
-              if (index >= list.length) return resolve(messages);
+              if (index >= list.length - 1) return resolve(messages);
               return sendChunk(list, ++index);
             });
           }(content, 0));
@@ -165,8 +165,9 @@ class RESTMethods {
 
   search(target, options) {
     options = transformSearchOptions(options, this.client);
+    for (const key in options) if (options[key] === undefined) delete options[key];
 
-    const queryString = querystring.stringify(options);
+    const queryString = (querystring.stringify(options).match(/[^=&?]+=[^=&?]+/g) || []).join('&');
 
     let type;
     if (target instanceof Channel) {
@@ -323,8 +324,9 @@ class RESTMethods {
     );
   }
 
-  createGuildRole(guild) {
-    return this.rest.makeRequest('post', Constants.Endpoints.guildRoles(guild.id), true).then(role =>
+  createGuildRole(guild, data) {
+    if (data.color) data.color = this.client.resolver.resolveColor(data.color);
+    return this.rest.makeRequest('post', Constants.Endpoints.guildRoles(guild.id), true, data).then(role =>
       this.client.actions.GuildRoleCreate.handle({
         guild_id: guild.id,
         role,
@@ -557,14 +559,24 @@ class RESTMethods {
       .then(data => data.pruned);
   }
 
-  createEmoji(guild, image, name) {
-    return this.rest.makeRequest('post', `${Constants.Endpoints.guildEmojis(guild.id)}`, true, { name, image })
-      .then(data => this.client.actions.EmojiCreate.handle(data, guild).emoji);
+  createEmoji(guild, image, name, roles) {
+    const data = { image, name };
+    if (roles) data.roles = roles.map(r => r.id ? r.id : r);
+    return this.rest.makeRequest('post', `${Constants.Endpoints.guildEmojis(guild.id)}`, true, data)
+      .then(emoji => this.client.actions.GuildEmojiCreate.handle(guild, emoji).emoji);
+  }
+
+  updateEmoji(emoji, _data) {
+    const data = {};
+    if (_data.name) data.name = _data.name;
+    if (_data.roles) data.roles = _data.roles.map(r => r.id ? r.id : r);
+    return this.rest.makeRequest('patch', Constants.Endpoints.guildEmoji(emoji.guild.id, emoji.id), true, data)
+        .then(newEmoji => this.client.actions.GuildEmojiUpdate.handle(emoji, newEmoji).emoji);
   }
 
   deleteEmoji(emoji) {
     return this.rest.makeRequest('delete', `${Constants.Endpoints.guildEmojis(emoji.guild.id)}/${emoji.id}`, true)
-      .then(() => this.client.actions.EmojiDelete.handle(emoji).data);
+      .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);
   }
 
   getWebhook(id, token) {
@@ -693,7 +705,7 @@ class RESTMethods {
   removeMessageReaction(message, emoji, user) {
     let endpoint = Constants.Endpoints.selfMessageReaction(message.channel.id, message.id, emoji);
     if (user !== this.client.user.id) {
-      endpoint = Constants.Endpoints.userMessageReaction(message.channel.id, message.id, emoji, null, user.id);
+      endpoint = Constants.Endpoints.userMessageReaction(message.channel.id, message.id, emoji, null, user);
     }
     return this.rest.makeRequest('delete', endpoint, true).then(() =>
       this.client.actions.MessageReactionRemove.handle({

@@ -1,3 +1,4 @@
+const os = require('os');
 const EventEmitter = require('events').EventEmitter;
 const mergeDefault = require('../util/MergeDefault');
 const Constants = require('../util/Constants');
@@ -223,7 +224,7 @@ class Client extends EventEmitter {
    * @readonly
    */
   get browser() {
-    return typeof window !== 'undefined';
+    return os.platform() === 'browser';
   }
 
   /**

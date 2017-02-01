@@ -39,6 +39,12 @@ class GuildMember {
      * @type {?Snowflake}
      */
     this.lastMessageID = null;
+
+    /**
+     * The Message object of the last message sent by the member in their guild, if one was sent.
+     * @type {?Message}
+     */
+    this.lastMessage = null;
   }
 
   setup(data) {
@@ -390,11 +396,19 @@ class GuildMember {
   }
 
   /**
+   * Creates a DM channel between the client and the member
+   * @returns {Promise<DMChannel>}
+   */
+  createDM() {
+    return this.user.createDM();
+  }
+
+  /**
    * Deletes any DMs with this guild member
    * @returns {Promise<DMChannel>}
    */
   deleteDM() {
-    return this.client.rest.methods.deleteChannel(this);
+    return this.user.deleteDM();
   }
 
   /**

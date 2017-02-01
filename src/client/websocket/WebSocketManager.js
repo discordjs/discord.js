@@ -1,4 +1,4 @@
-const browser = typeof window !== 'undefined';
+const browser = require('os').platform() === 'browser';
 const EventEmitter = require('events').EventEmitter;
 const Constants = require('../../util/Constants');
 const convertArrayBuffer = require('../../util/ConvertArrayBuffer');
@@ -155,7 +155,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   destroy() {
-    this.ws.close(1000);
+    if (this.ws) this.ws.close(1000);
     this._queue = [];
     this.status = Constants.Status.IDLE;
   }

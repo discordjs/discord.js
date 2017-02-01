@@ -55,6 +55,12 @@ class User {
      * @type {?Snowflake}
      */
     this.lastMessageID = null;
+
+    /**
+     * The Message object of the last message sent by the user, if one was sent.
+     * @type {?Message}
+     */
+    this.lastMessage = null;
   }
 
   patch(data) {
@@ -171,6 +177,14 @@ class User {
    */
   get dmChannel() {
     return this.client.channels.filter(c => c.type === 'dm').find(c => c.recipient.id === this.id);
+  }
+
+  /**
+   * Creates a DM channel between the client and the user
+   * @returns {Promise<DMChannel>}
+   */
+  createDM() {
+    return this.client.rest.methods.createDM(this);
   }
 
   /**

@@ -337,7 +337,6 @@ class Guild {
    * @returns {Promise<GuildMember>}
    */
   fetchMember(user, cache = true) {
-    if (this._fetchWaiter) return Promise.reject(new Error('Already fetching guild members.'));
     user = this.client.resolver.resolveUser(user);
     if (!user) return Promise.reject(new Error('User is not cached. Use Client.fetchUser first.'));
     if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
@@ -347,26 +346,37 @@ class Guild {
   /**
    * Fetches all the members in the guild, even if they are offline. If the guild has less than 250 members,
    * this should not be necessary.
-   * @param {string} [query=''] An optional query to provide when fetching members
+   * @param {string} [query=''] Limit fetch to members with similar usernames
+   * @param {number} [limit=0] Maximum number of members to request
    * @returns {Promise<Guild>}
    */
-  fetchMembers(query = '') {
+  fetchMembers(query = '', limit = 0) {
     return new Promise((resolve, reject) => {
-      if (this._fetchWaiter) throw new Error(`Already fetching guild members in ${this.id}.`);
       if (this.memberCount === this.members.size) {
+        // uncomment in v12
+        // resolve(this.members)
         resolve(this);
         return;
       }
-      this._fetchWaiter = resolve;
       this.client.ws.send({
         op: Constants.OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
           guild_id: this.id,
           query,
-          limit: 0,
+          limit,
         },
       });
-      this._checkChunks();
+      const handler = (members, guild) => {
+        if (guild.id !== this.id) return;
+        if (this.memberCount === this.members.size || members.length < 1000) {
+          this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
+          // uncomment in v12
+          // resolve(this.members)
+          resolve(this);
+          return;
+        }
+      };
+      this.client.on(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
       this.client.setTimeout(() => reject(new Error('Members didn\'t arrive in time.')), 120 * 1000);
     });
   }
@@ -608,7 +618,7 @@ class Guild {
   }
 
   /**
-   * Creates a new role in the guild, and optionally updates it with the given information.
+   * Creates a new role in the guild with given information
    * @param {RoleData} [data] The data to update the role with
    * @returns {Promise<Role>}
    * @example
@@ -618,14 +628,15 @@ class Guild {
    *  .catch(console.error);
    * @example
    * // create a new role with data
-   * guild.createRole({ name: 'Super Cool People' })
-   *   .then(role => console.log(`Created role ${role}`))
-   *   .catch(console.error)
+   * guild.createRole({
+   *   name: 'Super Cool People',
+   *   color: 'BLUE',
+   * })
+   * .then(role => console.log(`Created role ${role}`))
+   * .catch(console.error)
    */
   createRole(data) {
-    const create = this.client.rest.methods.createGuildRole(this);
-    if (!data) return create;
-    return create.then(role => role.edit(data));
+    return this.client.rest.methods.createGuildRole(this, data);
   }
 
   /**
@@ -671,6 +682,7 @@ class Guild {
    * Creates a new custom emoji in the guild.
    * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji.
    * @param {string} name The name for the emoji.
+   * @param {Collection<Role>|Role[]} [roles] Roles to limit the emoji to
    * @returns {Promise<Emoji>} The created emoji.
    * @example
    * // create a new emoji from a url
@@ -683,13 +695,13 @@ class Guild {
    *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
    *  .catch(console.error);
    */
-  createEmoji(attachment, name) {
+  createEmoji(attachment, name, roles) {
     return new Promise(resolve => {
       if (typeof attachment === 'string' && attachment.startsWith('data:')) {
-        resolve(this.client.rest.methods.createEmoji(this, attachment, name));
+        resolve(this.client.rest.methods.createEmoji(this, attachment, name, roles));
       } else {
         this.client.resolver.resolveBuffer(attachment).then(data =>
-          resolve(this.client.rest.methods.createEmoji(this, data, name))
+          resolve(this.client.rest.methods.createEmoji(this, data, name, roles))
         );
       }
     });
@@ -811,7 +823,6 @@ class Guild {
       this.client.emit(Constants.Events.GUILD_MEMBER_ADD, member);
     }
 
-    this._checkChunks();
     return member;
   }
 
@@ -841,7 +852,6 @@ class Guild {
 
   _removeMember(guildMember) {
     this.members.delete(guildMember.id);
-    this._checkChunks();
   }
 
   _memberSpeakUpdate(user, speaking) {
@@ -864,15 +874,6 @@ class Guild {
       return;
     }
     this.presences.set(id, new Presence(presence));
-  }
-
-  _checkChunks() {
-    if (this._fetchWaiter) {
-      if (this.members.size === this.memberCount) {
-        this._fetchWaiter(this);
-        this._fetchWaiter = null;
-      }
-    }
   }
 }
 

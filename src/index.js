@@ -46,4 +46,4 @@ module.exports = {
   Constants: require('./util/Constants'),
 };
 
-if (typeof window !== 'undefined') window.Discord = module.exports; // eslint-disable-line no-undef
+if (require('os').platform() === 'browser') window.Discord = module.exports; // eslint-disable-line no-undef

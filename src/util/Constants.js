@@ -51,7 +51,7 @@ exports.DefaultOptions = {
    */
   ws: {
     large_threshold: 250,
-    compress: typeof window === 'undefined',
+    compress: require('os').platform() !== 'browser',
     properties: {
       $os: process ? process.platform : 'discord.js',
       $browser: 'discord.js',
@@ -125,6 +125,7 @@ const Endpoints = exports.Endpoints = {
   guildMemberNickname: (guildID) => `${Endpoints.guildMember(guildID, '@me')}/nick`,
   guildChannels: (guildID) => `${Endpoints.guild(guildID)}/channels`,
   guildEmojis: (guildID) => `${Endpoints.guild(guildID)}/emojis`,
+  guildEmoji: (guildID, emojiID) => `${Endpoints.guildEmojis(guildID)}/${emojiID}`,
   guildSearch: (guildID) => `${Endpoints.guild(guildID)}/messages/search`,
   guildVoiceRegions: (guildID) => `${Endpoints.guild(guildID)}/regions`,
 

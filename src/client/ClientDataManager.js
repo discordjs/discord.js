@@ -123,6 +123,7 @@ class ClientDataManager {
     const oldEmoji = cloneObject(currentEmoji);
     currentEmoji.setup(newData);
     this.client.emit(Constants.Events.GUILD_EMOJI_UPDATE, oldEmoji, currentEmoji);
+    return currentEmoji;
   }
 }
 
