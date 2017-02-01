@@ -6,7 +6,6 @@ const parseEmoji = require('../../util/ParseEmoji');
 const escapeMarkdown = require('../../util/EscapeMarkdown');
 const transformSearchOptions = require('../../util/TransformSearchOptions');
 const Snowflake = require('../../util/Snowflake');
-const cloneObject = require('../../util/CloneObject');
 
 const User = require('../../structures/User');
 const GuildMember = require('../../structures/GuildMember');
@@ -406,7 +405,7 @@ class RESTMethods {
       const listener = (oldMember, newMember) => {
         if (!oldMember._roles.includes(role.id) && newMember._roles.includes(role.id)) {
           this.client.removeListener('guildMemberUpdate', listener);
-          return resolve(newMember);
+          resolve(newMember);
         }
       };
 
@@ -425,7 +424,7 @@ class RESTMethods {
       const listener = (oldMember, newMember) => {
         if (oldMember._roles.includes(role.id) && !newMember._roles.includes(role.id)) {
           this.client.removeListener('guildMemberUpdate', listener);
-          return resolve(newMember);
+          resolve(newMember);
         }
       };
 
