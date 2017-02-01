@@ -9066,12 +9066,12 @@ module.exports = {
 		"pako": "^1.0.0",
 		"superagent": "^3.3.0",
 		"tweetnacl": "^0.14.0",
-		"ws": "^1.1.1"
+		"ws": "^2.0.0"
 	},
 	"peerDependencies": {
 		"erlpack": "hammerandchisel/erlpack",
 		"node-opus": "^0.2.0",
-		"opusscript": "^0.0.1",
+		"opusscript": "^0.0.2",
 		"uws": "^0.12.0"
 	},
 	"devDependencies": {
