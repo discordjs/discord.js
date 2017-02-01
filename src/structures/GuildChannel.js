@@ -250,10 +250,14 @@ class GuildChannel extends Channel {
    * Clone this channel
    * @param {string} [name=this.name] Optional name for the new channel, otherwise it has the name of this channel
    * @param {boolean} [withPermissions=true] Whether to clone the channel with this channel's permission overwrites
+   * @param {boolean} [withTopic=false] Whether to clone the channel with this channel's topic 
    * @returns {Promise<GuildChannel>}
    */
-  clone(name = this.name, withPermissions = true) {
-    return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : []);
+  clone(name = this.name, withPermissions = true, withTopic = false) {
+    if (withTopic) {
+      
+    }
+    else return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : []);
   }
 
   /**
