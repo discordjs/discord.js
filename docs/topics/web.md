@@ -19,7 +19,7 @@ The usage of the API isn't any different from using it in Node.js.
 - Any voice-related functionality is unavailable, as there is currently no audio encoding/decoding capabilities without external native libraries,
   which web browsers do not support.
 - The ShardingManager cannot be used, since it relies on being able to spawn child processes for shards.
-- Neither of the optional packages (uws and erlpack) are usable, since they're native libraries.
+- None of the optional packages are usable, since they're native libraries.
 
 ## Example
 ```html
