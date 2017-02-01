@@ -48,7 +48,7 @@ class Role {
     this.hoist = data.hoist;
 
     /**
-     * The position of the role from the api
+     * The position of the role from the API
      * @type {number}
      */
     this.position = data.position;
