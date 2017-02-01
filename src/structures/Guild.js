@@ -7,7 +7,7 @@ const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const cloneObject = require('../util/CloneObject');
 const arraysEqual = require('../util/ArraysEqual');
-const moveElementInArray = require('../util/moveElementInArray');
+const moveElementInArray = require('../util/MoveElementInArray');
 
 /**
  * Represents a guild (or a server) on Discord.
