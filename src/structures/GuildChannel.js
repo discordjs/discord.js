@@ -255,7 +255,8 @@ class GuildChannel extends Channel {
    */
   clone(name = this.name, withPermissions = true, withTopic = false) {
     if (withTopic) {
-      
+       this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : [])
+         .then(channel => channel.setTopic(this.topic));
     }
     else return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : []);
   }
