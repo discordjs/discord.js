@@ -22,13 +22,13 @@ class UserProfile {
 
     /**
      * Guilds that the client user and the user share
-     * @type {Collection<Guild>}
+     * @type {Collection<Snowflake, Guild>}
      */
     this.mutualGuilds = new Collection();
 
     /**
      * The user's connections
-     * @type {Collection<UserConnection>}
+     * @type {Collection<String, UserConnection>}
      */
     this.connections = new Collection();
 
