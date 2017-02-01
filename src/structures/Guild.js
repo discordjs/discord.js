@@ -7,6 +7,7 @@ const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const cloneObject = require('../util/CloneObject');
 const arraysEqual = require('../util/ArraysEqual');
+const moveElementInArray = require('../util/moveElementInArray');
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -654,27 +655,12 @@ class Guild {
     position = Number(position);
     if (isNaN(position)) return Promise.reject(new Error('Supplied position is not a number.'));
 
-    const lowestAffected = Math.min(role.position, position);
-    const highestAffected = Math.max(role.position, position);
+    let updatedRoles = Object.assign([], this.roles.array()
+      .sort((r1, r2) => r1.position !== r2.position ? r1.position - r2.position : r1.id - r2.id));
 
-    const rolesToUpdate = this.roles.filter(r => r.position >= lowestAffected && r.position <= highestAffected);
+    moveElementInArray(updatedRoles, role, position, false);
 
-    // stop role positions getting stupidly inflated
-    if (position > role.position) {
-      position = rolesToUpdate.first().position;
-    } else {
-      position = rolesToUpdate.last().position;
-    }
-
-    const updatedRoles = [];
-
-    for (const uRole of rolesToUpdate.values()) {
-      updatedRoles.push({
-        id: uRole.id,
-        position: uRole.id === role.id ? position : uRole.position + (position < role.position ? 1 : -1),
-      });
-    }
-
+    updatedRoles = updatedRoles.map((r, i) => ({ id: r.id, position: i }));
     return this.client.rest.methods.setRolePositions(this.id, updatedRoles);
   }
 

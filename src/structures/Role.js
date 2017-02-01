@@ -48,7 +48,7 @@ class Role {
     this.hoist = data.hoist;
 
     /**
-     * The position of the role in the role manager
+     * The position of the role from the api
      * @type {number}
      */
     this.position = data.position;
@@ -120,6 +120,16 @@ class Role {
     const clientMember = this.guild.member(this.client.user);
     if (!clientMember.hasPermission(Constants.PermissionFlags.MANAGE_ROLES_OR_PERMISSIONS)) return false;
     return clientMember.highestRole.comparePositionTo(this) > 0;
+  }
+
+  /**
+   * The position of the role in the role manager
+   * @type {number}
+   */
+  get calculatedPosition() {
+    const sorted = this.guild.roles.array()
+      .sort((r1, r2) => r1.position !== r2.position ? r1.position - r2.position : r1.id - r2.id);
+    return sorted.indexOf(sorted.find(r => r.id === this.id));
   }
 
   /**
