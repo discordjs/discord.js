@@ -644,9 +644,10 @@ class Guild {
    * Set the position of a role in this guild
    * @param {string|Role} role the role to edit, can be a role object or a role ID.
    * @param {number} position the new position of the role
+   * @param {boolean} [relative=false] Position moves the role relative to its current position
    * @returns {Promise<Guild>}
    */
-  setRolePosition(role, position) {
+  setRolePosition(role, position, relative = false) {
     if (typeof role === 'string') {
       role = this.roles.get(role);
       if (!role) return Promise.reject(new Error('Supplied role is not a role or string.'));
@@ -658,7 +659,7 @@ class Guild {
     let updatedRoles = Object.assign([], this.roles.array()
       .sort((r1, r2) => r1.position !== r2.position ? r1.position - r2.position : r1.id - r2.id));
 
-    moveElementInArray(updatedRoles, role, position, false);
+    moveElementInArray(updatedRoles, role, position, relative);
 
     updatedRoles = updatedRoles.map((r, i) => ({ id: r.id, position: i }));
     return this.client.rest.methods.setRolePositions(this.id, updatedRoles);
