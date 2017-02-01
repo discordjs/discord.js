@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 168);
+/******/ 	return __webpack_require__(__webpack_require__.s = 169);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1540,7 +1540,7 @@ class Role {
     this.hoist = data.hoist;
 
     /**
-     * The position of the role in the role manager
+     * The position of the role from the API
      * @type {number}
      */
     this.position = data.position;
@@ -1612,6 +1612,16 @@ class Role {
     const clientMember = this.guild.member(this.client.user);
     if (!clientMember.hasPermission(Constants.PermissionFlags.MANAGE_ROLES_OR_PERMISSIONS)) return false;
     return clientMember.highestRole.comparePositionTo(this) > 0;
+  }
+
+  /**
+   * The position of the role in the role manager
+   * @type {number}
+   */
+  get calculatedPosition() {
+    const sorted = this.guild.roles.array()
+      .sort((r1, r2) => r1.position !== r2.position ? r1.position - r2.position : r1.id - r2.id);
+    return sorted.indexOf(sorted.find(r => r.id === this.id));
   }
 
   /**
@@ -1738,6 +1748,7 @@ class Role {
   /**
    * Set the position of the role
    * @param {number} position The position of the role
+   * @param {boolean} [relative=false] Move the position relative to its current value
    * @returns {Promise<Role>}
    * @example
    * // set the position of the role
@@ -1745,8 +1756,8 @@ class Role {
    *  .then(r => console.log(`Role position: ${r.position}`))
    *  .catch(console.error);
    */
-  setPosition(position) {
-    return this.guild.setRolePosition(this, position).then(() => this);
+  setPosition(position, relative) {
+    return this.guild.setRolePosition(this, position, relative).then(() => this);
   }
 
   /**
@@ -3522,6 +3533,7 @@ const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const cloneObject = __webpack_require__(4);
 const arraysEqual = __webpack_require__(160);
+const moveElementInArray = __webpack_require__(161);
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -4158,9 +4170,10 @@ class Guild {
    * Set the position of a role in this guild
    * @param {string|Role} role the role to edit, can be a role object or a role ID.
    * @param {number} position the new position of the role
+   * @param {boolean} [relative=false] Position moves the role relative to its current position
    * @returns {Promise<Guild>}
    */
-  setRolePosition(role, position) {
+  setRolePosition(role, position, relative = false) {
     if (typeof role === 'string') {
       role = this.roles.get(role);
       if (!role) return Promise.reject(new Error('Supplied role is not a role or string.'));
@@ -4169,27 +4182,12 @@ class Guild {
     position = Number(position);
     if (isNaN(position)) return Promise.reject(new Error('Supplied position is not a number.'));
 
-    const lowestAffected = Math.min(role.position, position);
-    const highestAffected = Math.max(role.position, position);
+    let updatedRoles = Object.assign([], this.roles.array()
+      .sort((r1, r2) => r1.position !== r2.position ? r1.position - r2.position : r1.id - r2.id));
 
-    const rolesToUpdate = this.roles.filter(r => r.position >= lowestAffected && r.position <= highestAffected);
+    moveElementInArray(updatedRoles, role, position, relative);
 
-    // stop role positions getting stupidly inflated
-    if (position > role.position) {
-      position = rolesToUpdate.first().position;
-    } else {
-      position = rolesToUpdate.last().position;
-    }
-
-    const updatedRoles = [];
-
-    for (const uRole of rolesToUpdate.values()) {
-      updatedRoles.push({
-        id: uRole.id,
-        position: uRole.id === role.id ? position : uRole.position + (position < role.position ? 1 : -1),
-      });
-    }
-
+    updatedRoles = updatedRoles.map((r, i) => ({ id: r.id, position: i }));
     return this.client.rest.methods.setRolePositions(this.id, updatedRoles);
   }
 
@@ -12739,12 +12737,12 @@ const RESTManager = __webpack_require__(54);
 const ClientDataManager = __webpack_require__(87);
 const ClientManager = __webpack_require__(88);
 const ClientDataResolver = __webpack_require__(29);
-const ClientVoiceManager = __webpack_require__(164);
+const ClientVoiceManager = __webpack_require__(165);
 const WebSocketManager = __webpack_require__(121);
 const ActionsManager = __webpack_require__(89);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(7).Presence;
-const ShardClientUtil = __webpack_require__(163);
+const ShardClientUtil = __webpack_require__(164);
 
 /**
  * The starting point for making a Discord Bot.
@@ -21752,6 +21750,7 @@ class GuildRoleCreate extends Action {
       const role = new Role(guild, data.role);
       guild.roles.set(role.id, role);
       if (!already) client.emit(Constants.Events.GUILD_ROLE_CREATE, role);
+
       return {
         role,
       };
@@ -22447,9 +22446,9 @@ const querystring = __webpack_require__(80);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const splitMessage = __webpack_require__(46);
-const parseEmoji = __webpack_require__(161);
+const parseEmoji = __webpack_require__(162);
 const escapeMarkdown = __webpack_require__(21);
-const transformSearchOptions = __webpack_require__(162);
+const transformSearchOptions = __webpack_require__(163);
 const Snowflake = __webpack_require__(17);
 
 const User = __webpack_require__(6);
@@ -23440,13 +23439,13 @@ if (browser) {
   WebSocket = window.WebSocket; // eslint-disable-line no-undef
 } else {
   try {
-    WebSocket = __webpack_require__(166);
-  } catch (err) {
     WebSocket = __webpack_require__(167);
+  } catch (err) {
+    WebSocket = __webpack_require__(168);
   }
 
   try {
-    erlpack = __webpack_require__(165);
+    erlpack = __webpack_require__(166);
     serialize = erlpack.pack;
   } catch (err) {
     erlpack = null;
@@ -25119,6 +25118,29 @@ module.exports = function arraysEqual(a, b) {
 /* 161 */
 /***/ (function(module, exports) {
 
+/**
+ * Moves an element in an array *in place*
+ * @param {Array} array Array to modify
+ * @param {*} element Element to move
+ * @param {number} newIndex Index or offset to move the element to
+ * @param {boolean} [offset=false] Move the element by an offset amount rather than to a set index
+ * @returns {Array}
+ */
+module.exports = function moveElementInArray(array, element, newIndex, offset = false) {
+  const index = array.indexOf(element);
+  newIndex = (offset ? index : 0) + newIndex;
+  if (newIndex > -1 && newIndex < array.length) {
+    const removedElement = array.splice(index, 1)[0];
+    array.splice(newIndex, 0, removedElement);
+  }
+  return array;
+};
+
+
+/***/ }),
+/* 162 */
+/***/ (function(module, exports) {
+
 module.exports = function parseEmoji(text) {
   if (text.includes('%')) {
     text = decodeURIComponent(text);
@@ -25136,7 +25158,7 @@ module.exports = function parseEmoji(text) {
 
 
 /***/ }),
-/* 162 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const long = __webpack_require__(47);
@@ -25217,12 +25239,6 @@ module.exports = function TransformSearchOptions(options, client) {
 
 
 /***/ }),
-/* 163 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
 /* 164 */
 /***/ (function(module, exports) {
 
@@ -25248,6 +25264,12 @@ module.exports = function TransformSearchOptions(options, client) {
 
 /***/ }),
 /* 168 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = {
