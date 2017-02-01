@@ -402,24 +402,40 @@ class RESTMethods {
   }
 
   addMemberRole(member, role) {
-    let clonedMember = cloneObject(member);
-    return this.rest.makeRequest('put', Constants.Endpoints.guildMemberRole(member.guild.id, member.id, role.id), true)
-      .then(() => {
-        if (!clonedMember._roles.includes(role.id)) clonedMember._roles.push(role.id);
-        return clonedMember;
-      });
+    return new Promise(resolve => {
+      const listener = (oldMember, newMember) => {
+        if (!oldMember._roles.includes(role.id) && newMember._roles.includes(role.id)) {
+          this.client.removeListener('guildMemberUpdate', listener);
+          return resolve(newMember);
+        }
+      };
+
+      this.client.on('guildMemberUpdate', listener);
+
+      this.rest.makeRequest(
+        'put',
+        Constants.Endpoints.guildMemberRole(member.guild.id, member.id, role.id),
+        true
+      );
+    });
   }
 
   removeMemberRole(member, role) {
-    let clonedMember = cloneObject(member);
-    return this.rest.makeRequest(
-      'delete',
-      Constants.Endpoints.guildMemberRole(member.guild.id, member.id, role.id),
-      true
-    ).then(() => {
-      const index = clonedMember._roles.indexOf(role.id);
-      if (index >= 0) clonedMember._roles.splice(index, 1);
-      return clonedMember;
+    return new Promise(resolve => {
+      const listener = (oldMember, newMember) => {
+        if (oldMember._roles.includes(role.id) && !newMember._roles.includes(role.id)) {
+          this.client.removeListener('guildMemberUpdate', listener);
+          return resolve(newMember);
+        }
+      };
+
+      this.client.on('guildMemberUpdate', listener);
+
+      this.rest.makeRequest(
+        'delete',
+        Constants.Endpoints.guildMemberRole(member.guild.id, member.id, role.id),
+        true
+      );
     });
   }
 
