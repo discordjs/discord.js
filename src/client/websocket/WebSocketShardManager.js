@@ -1,5 +1,6 @@
 const EventEmitter = require('events').EventEmitter;
 const WebSocketManager = require('./WebSocketManager');
+const WebSocketConnection = require('./WebSocketConnection');
 const Constants = require('../../util/Constants');
 const PacketManager = require('./packets/WebSocketPacketManager');
 const Collection = require('../../util/Collection');
@@ -68,6 +69,10 @@ class WebSocketShardManager extends EventEmitter {
     this.client.on('shardReady', () => {
       this.checkIfReady();
     });
+  }
+
+  get encoding() {
+    return WebSocketConnection.encoding;
   }
 
   /**
