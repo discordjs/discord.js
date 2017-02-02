@@ -139,7 +139,8 @@ class Collection extends Map {
    * Searches for a single item where its specified property's value is identical to the given value
    * (`item[prop] === value`), or the given function returns a truthy value. In the latter case, this is identical to
    * [Array.find()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find).
-   * <warn>Do not use this to obtain an item by its ID. Instead, use `collection.get(id)`. See
+   * <warn>All collections used in Discord.js are mapped using their `id` property, and if you want to find by id you
+   * should use the `get` method. See
    * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get) for details.</warn>
    * @param {string|Function} propOrFn The property to test against, or the function to test with
    * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
