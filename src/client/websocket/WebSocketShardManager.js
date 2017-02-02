@@ -193,7 +193,7 @@ class WebSocketShardManager extends EventEmitter {
    * @readonly
    */
   get statuses() {
-    return this.ws.managers.map(m => m.status);
+    return this.managers.map(m => m.status);
   }
 
   /**

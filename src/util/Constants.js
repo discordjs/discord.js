@@ -62,7 +62,7 @@ exports.DefaultOptions = {
   },
 };
 
-exports.Errors = {
+const Errors = exports.Errors = {
   NO_TOKEN: 'Request to use token, but token was unavailable to the client.',
   NO_BOT_ACCOUNT: 'Only bot accounts are able to make use of this feature.',
   NO_USER_ACCOUNT: 'Only user accounts are able to make use of this feature.',
@@ -169,6 +169,12 @@ exports.Status = {
   IDLE: 3,
   NEARLY: 4,
   DISCONNECTED: 5,
+};
+
+exports.ClosableCodes = {
+  4004: Errors.BAD_LOGIN,
+  4010: Errors.INVALID_SHARD,
+  4011: Errors.SHARDING_REQUIRED,
 };
 
 exports.ChannelTypes = {

@@ -31,13 +31,13 @@ class ClientManager {
       }
       const timeout = this.client.setTimeout(() => {
         reject(new Error(Constants.Errors.TOOK_TOO_LONG));
-        this.ws.killAll();
+        this.client.ws.killAll();
       }, Math.max(this.client.options.shardCount, 1) * 60000);
       this.client.ws.connect(gateway, res.shards);
       this.client.ws.once('close', event => {
-        if (event.code === 4004) reject(new Error(Constants.Errors.BAD_LOGIN));
-        if (event.code === 4010) reject(new Error(Constants.Errors.INVALID_SHARD));
-        if (event.code === 4011) reject(new Error(Constants.Errors.SHARDING_REQUIRED));
+        if (!Object.keys(Constants.ClosableCodes).includes(event.code.toString())) return;
+        this.client.ws.killAll();
+        reject(Constants.ClosableCodes[event.code]);
       });
       this.client.once(Constants.Events.READY, () => {
         resolve(token);
