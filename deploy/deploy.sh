@@ -5,7 +5,7 @@ set -e
 
 function tests {
   npm run lint
-  npm run test-docs
+  npm run docs:test
   VERSIONED=false npm run webpack
   exit 0
 }

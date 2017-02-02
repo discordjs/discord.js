@@ -7,6 +7,7 @@ const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const cloneObject = require('../util/CloneObject');
 const arraysEqual = require('../util/ArraysEqual');
+const moveElementInArray = require('../util/MoveElementInArray');
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -649,9 +650,10 @@ class Guild {
    * Set the position of a role in this guild
    * @param {string|Role} role the role to edit, can be a role object or a role ID.
    * @param {number} position the new position of the role
+   * @param {boolean} [relative=false] Position moves the role relative to its current position
    * @returns {Promise<Guild>}
    */
-  setRolePosition(role, position) {
+  setRolePosition(role, position, relative = false) {
     if (typeof role === 'string') {
       role = this.roles.get(role);
       if (!role) return Promise.reject(new Error('Supplied role is not a role or string.'));
@@ -660,27 +662,12 @@ class Guild {
     position = Number(position);
     if (isNaN(position)) return Promise.reject(new Error('Supplied position is not a number.'));
 
-    const lowestAffected = Math.min(role.position, position);
-    const highestAffected = Math.max(role.position, position);
+    let updatedRoles = Object.assign([], this.roles.array()
+      .sort((r1, r2) => r1.position !== r2.position ? r1.position - r2.position : r1.id - r2.id));
 
-    const rolesToUpdate = this.roles.filter(r => r.position >= lowestAffected && r.position <= highestAffected);
+    moveElementInArray(updatedRoles, role, position, relative);
 
-    // stop role positions getting stupidly inflated
-    if (position > role.position) {
-      position = rolesToUpdate.first().position;
-    } else {
-      position = rolesToUpdate.last().position;
-    }
-
-    const updatedRoles = [];
-
-    for (const uRole of rolesToUpdate.values()) {
-      updatedRoles.push({
-        id: uRole.id,
-        position: uRole.id === role.id ? position : uRole.position + (position < role.position ? 1 : -1),
-      });
-    }
-
+    updatedRoles = updatedRoles.map((r, i) => ({ id: r.id, position: i }));
     return this.client.rest.methods.setRolePositions(this.id, updatedRoles);
   }
 
@@ -688,6 +675,7 @@ class Guild {
    * Creates a new custom emoji in the guild.
    * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji.
    * @param {string} name The name for the emoji.
+   * @param {Collection<Role>|Role[]} [roles] Roles to limit the emoji to
    * @returns {Promise<Emoji>} The created emoji.
    * @example
    * // create a new emoji from a url
@@ -700,13 +688,13 @@ class Guild {
    *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
    *  .catch(console.error);
    */
-  createEmoji(attachment, name) {
+  createEmoji(attachment, name, roles) {
     return new Promise(resolve => {
       if (typeof attachment === 'string' && attachment.startsWith('data:')) {
-        resolve(this.client.rest.methods.createEmoji(this, attachment, name));
+        resolve(this.client.rest.methods.createEmoji(this, attachment, name, roles));
       } else {
         this.client.resolver.resolveBuffer(attachment).then(data =>
-          resolve(this.client.rest.methods.createEmoji(this, data, name))
+          resolve(this.client.rest.methods.createEmoji(this, data, name, roles))
         );
       }
     });

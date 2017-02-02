@@ -61,6 +61,8 @@ class RESTMethods {
         if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
           content = escapeMarkdown(this.client.resolver.resolveString(content), true);
           content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
+          split.prepend = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n`;
+          split.append = '\n```';
         }
 
         // Add zero-width spaces to @everyone/@here
@@ -552,9 +554,19 @@ class RESTMethods {
       .then(data => data.pruned);
   }
 
-  createEmoji(guild, image, name) {
-    return this.rest.makeRequest('post', `${Constants.Endpoints.guildEmojis(guild.id)}`, true, { name, image })
-      .then(data => this.client.actions.GuildEmojiCreate.handle(data, guild).emoji);
+  createEmoji(guild, image, name, roles) {
+    const data = { image, name };
+    if (roles) data.roles = roles.map(r => r.id ? r.id : r);
+    return this.rest.makeRequest('post', `${Constants.Endpoints.guildEmojis(guild.id)}`, true, data)
+      .then(emoji => this.client.actions.GuildEmojiCreate.handle(guild, emoji).emoji);
+  }
+
+  updateEmoji(emoji, _data) {
+    const data = {};
+    if (_data.name) data.name = _data.name;
+    if (_data.roles) data.roles = _data.roles.map(r => r.id ? r.id : r);
+    return this.rest.makeRequest('patch', Constants.Endpoints.guildEmoji(emoji.guild.id, emoji.id), true, data)
+        .then(newEmoji => this.client.actions.GuildEmojiUpdate.handle(emoji, newEmoji).emoji);
   }
 
   deleteEmoji(emoji) {

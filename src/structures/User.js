@@ -180,6 +180,14 @@ class User {
   }
 
   /**
+   * Creates a DM channel between the client and the user
+   * @returns {Promise<DMChannel>}
+   */
+  createDM() {
+    return this.client.rest.methods.createDM(this);
+  }
+
+  /**
    * Deletes a DM channel (if one exists) between the client and the user. Resolves with the channel if successful.
    * @returns {Promise<DMChannel>}
    */
