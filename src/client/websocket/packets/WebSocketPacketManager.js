@@ -15,6 +15,13 @@ class WebSocketPacketManager {
     this.handlers = {};
     this.queue = [];
 
+    /**
+     * An object with keys that are websocket event names that should be ignored
+     * @type {Object}
+     */
+    this.disabledEvents = {};
+    for (const event of this.ws.client.options.disabledEvents) this.disabledEvents[event] = true;
+
     this.register(Constants.WSEvents.READY, require('./handlers/Ready'));
     this.register(Constants.WSEvents.GUILD_CREATE, require('./handlers/GuildCreate'));
     this.register(Constants.WSEvents.GUILD_DELETE, require('./handlers/GuildDelete'));
@@ -90,13 +97,9 @@ class WebSocketPacketManager {
 
     if (packet.op === Constants.OPCodes.HEARTBEAT_ACK) {
       ws.pong(ws.lastPingTimestamp);
-      ws.lastHeartbeatAck = true;
       ws.emit('debug', 'Heartbeat acknowledged');
     } else if (packet.op === Constants.OPCodes.HEARTBEAT) {
-      ws.send({
-        op: Constants.OPCodes.HEARTBEAT,
-        d: ws.sequence,
-      });
+      ws.heartbeat(false);
       ws.emit('debug', 'Received gateway heartbeat');
     }
 
@@ -105,10 +108,10 @@ class WebSocketPacketManager {
       ws.checkIfReady();
     }
 
-    if (ws.disabledEvents[packet.t] !== undefined) return false;
+    if (this.disabledEvents[packet.t] !== undefined) return false;
 
     if (ws.status !== Constants.Status.READY) {
-      if (BeforeReadyWhitelist.indexOf(packet.t) === -1) {
+      if (!BeforeReadyWhitelist.includes(packet.t)) {
         this.queue.push(packet);
         return false;
       }

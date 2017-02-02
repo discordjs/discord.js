@@ -75,13 +75,6 @@ class WebSocketManager extends EventEmitter {
      */
     this.ws = null;
 
-    /**
-     * An object with keys that are websocket event names that should be ignored
-     * @type {Object}
-     */
-    this.disabledEvents = {};
-    for (const event of client.options.disabledEvents) this.disabledEvents[event] = true;
-
     this.first = true;
 
     this.lastHeartbeatAck = true;
@@ -385,7 +378,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   /**
-   * Tries to reconnect the client, changing the status to Constants.Status.RECONNECTING.
+   * Tries to reconnect the manager, changing the status to Constants.Status.RECONNECTING
    */
   tryReconnect() {
     if (this.status === Constants.Status.RECONNECTING || this.status === Constants.Status.CONNECTING) return;
@@ -397,7 +390,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   /**
-   * The uptime for the logged in Client.
+   * The uptime for the Manager
    * @type {?number}
    * @readonly
    */

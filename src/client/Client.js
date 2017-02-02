@@ -153,47 +153,12 @@ class Client extends EventEmitter {
   }
 
   /**
-   * The status for the logged in Client.
-   * @type {?Array<number>}
-   * @readonly
-   */
-  get statuses() {
-    return this.ws.managers.map(m => m.status);
-  }
-
-  /**
    * The uptime for the logged in Client.
    * @type {?number}
    * @readonly
    */
   get uptime() {
     return this.readyAt ? Date.now() - this.readyAt : null;
-  }
-
-  /**
-   * The uptimes for the websocket managers
-   * @type {?number}
-   * @readonly
-   */
-  get uptimes() {
-    return this.ws.managers.map(m => m.uptime);
-  }
-
-  /**
-   * The previous average heartbeat pings of the websockets
-   * @type {number[]}
-   */
-  get pings() {
-    return this.ws.managers.map(m => m.ping);
-  }
-
-  /**
-   * The average heartbeat ping of the websockets
-   * @type {number}
-   * @readonly
-   */
-  get ping() {
-    return this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length;
   }
 
   /**

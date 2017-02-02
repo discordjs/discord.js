@@ -138,11 +138,14 @@ class WebSocketShardManager extends EventEmitter {
    * @returns {boolean}
    */
   kill(id) {
-    const existing = this.managers.get(id);
-    if (!existing) return false;
-    existing.destroy();
+    if (!this.managers.has(id)) return false;
+    this.managers.get(id).destroy();
     this.managers.delete(id);
     return true;
+  }
+
+  killAll() {
+    for (const key of this.managers.keys()) this.kill(key);
   }
 
   /**
@@ -182,6 +185,41 @@ class WebSocketShardManager extends EventEmitter {
    */
   broadcast(data) {
     for (const manager of this.managers.values()) manager.send(data);
+  }
+
+  /**
+   * The statuses of the websocket managers
+   * @type {?Array<number>}
+   * @readonly
+   */
+  get statuses() {
+    return this.ws.managers.map(m => m.status);
+  }
+
+  /**
+   * The uptimes for the websocket managers
+   * @type {?number}
+   * @readonly
+   */
+  get uptimes() {
+    return this.managers.map(m => m.uptime);
+  }
+
+  /**
+   * The previous average heartbeat pings of the websockets
+   * @type {number[]}
+   */
+  get pings() {
+    return this.managers.map(m => m.ping);
+  }
+
+  /**
+   * The average heartbeat ping of the websockets
+   * @type {number}
+   * @readonly
+   */
+  get ping() {
+    return this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length;
   }
 
   /**

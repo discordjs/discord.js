@@ -29,10 +29,10 @@ class ClientManager {
         this.client.options.shardCount = res.shards;
         this.client.emit(Constants.Events.DEBUG, `Using recommended shard count of ${res.shards}`);
       }
-      const timeout = this.client.setTimeout(
-        () => reject(new Error(Constants.Errors.TOOK_TOO_LONG)),
-        Math.max(this.client.options.shardCount, 1) * 60000
-      );
+      const timeout = this.client.setTimeout(() => {
+        reject(new Error(Constants.Errors.TOOK_TOO_LONG));
+        this.ws.killAll();
+      }, Math.max(this.client.options.shardCount, 1) * 60000);
       this.client.ws.connect(gateway, res.shards);
       this.client.ws.once('close', event => {
         if (event.code === 4004) reject(new Error(Constants.Errors.BAD_LOGIN));
