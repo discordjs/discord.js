@@ -1,3 +1,5 @@
+const assert = require('assert');
+
 /**
  * A Map with additional utility methods. This is used throughout discord.js rather than Arrays for anything that has
  * an ID, for significantly improved performance and ease-of-use.
@@ -137,8 +139,7 @@ class Collection extends Map {
    * Searches for a single item where its specified property's value is identical to the given value
    * (`item[prop] === value`), or the given function returns a truthy value. In the latter case, this is identical to
    * [Array.find()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find).
-   * <warn>All collections used in Discord.js are mapped using their `id` property, and if you want to find by id you
-   * should use the `get` method. See
+   * <warn>Do not use this to obtain an item by its ID. Instead, use `collection.get(id)`. See
    * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get) for details.</warn>
    * @param {string|Function} propOrFn The property to test against, or the function to test with
    * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
@@ -151,6 +152,7 @@ class Collection extends Map {
   find(propOrFn, value) {
     if (typeof propOrFn === 'string') {
       if (typeof value === 'undefined') throw new Error('Value must be specified.');
+      if (propOrFn === 'id') throw new RangeError('Don\'t use .find() with IDs. Instead, use .get(id).');
       for (const item of this.values()) {
         if (item[propOrFn] === value) return item;
       }
@@ -360,7 +362,11 @@ class Collection extends Map {
     return this.every((value, key) => {
       if (!collection.has(key)) return false;
       const testVal = collection.get(key);
-      return testVal === value || (testVal && testVal.equals && value && value.equals && testVal.equals(value));
+      try {
+        return testVal === value ||
+          (testVal && testVal.equals && value && value.equals && testVal.equals(value)) ||
+          assert.deepStrictEqual(testVal, value) || true;
+      } catch (err) { return false; }
     });
   }
 }
