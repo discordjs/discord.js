@@ -241,11 +241,12 @@ class WebSocketManager extends EventEmitter {
   }
 
   heartbeat(normal) {
-    this.emit('debug', `Sending ${normal ? 'normal ' : ''}heartbeat`);
     if (normal && !this.lastHeartbeatAck) {
       this.ws.close(1007);
       return;
     }
+
+    this.emit('debug', `Sending ${normal ? 'normal ' : ''}heartbeat`);
     this.lastPingTimestamp = Date.now();
     this.send({
       op: Constants.OPCodes.HEARTBEAT,

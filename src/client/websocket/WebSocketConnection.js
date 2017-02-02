@@ -60,10 +60,7 @@ class WebSocketConnection extends EventEmitter {
 
   eventMessage(event) {
     if (this.listenerCount('message') > 0) this.emit('message', event);
-    let data = event.data;
-    // if (data instanceof Uint8Array) data = data.buffer;
-    // if (data instanceof ArrayBuffer) data = this.inflate(data);
-    data = this.unpack(data);
+    const data = this.unpack(event.data);
     this.emit('packet', data);
   }
 
