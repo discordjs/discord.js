@@ -1,33 +1,7 @@
-const browser = require('os').platform() === 'browser';
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
+const WebSocketConnection = require('./WebSocketConnection');
 const Constants = require('../../util/Constants');
-const convertArrayBuffer = require('../../util/ConvertArrayBuffer');
-const pako = require('pako');
-const zlib = require('zlib');
 
-let WebSocket, erlpack;
-let serialize = JSON.stringify;
-if (browser) {
-  WebSocket = window.WebSocket; // eslint-disable-line no-undef
-} else {
-  try {
-    WebSocket = require('uws');
-  } catch (err) {
-    WebSocket = require('ws');
-  }
-
-  try {
-    erlpack = require('erlpack');
-    serialize = erlpack.pack;
-  } catch (err) {
-    erlpack = null;
-  }
-}
-
-/**
- * The WebSocket Manager of the Client
- * @private
- */
 class WebSocketManager extends EventEmitter {
   constructor(client, packetManager, options = {}) {
     super();
@@ -95,20 +69,15 @@ class WebSocketManager extends EventEmitter {
     this.on('debug', e => this.client.emit('debug', `SHARD ${this.shardID}: ${e}`));
   }
 
-  /**
-   * Connects the client to a given gateway
-   * @param {string} gateway The gateway to connect to
-   */
   _connect(gateway) {
     this.emit('debug', `Connecting to gateway ${gateway}`);
     this.normalReady = false;
     if (this.status !== Constants.Status.RECONNECTING) this.status = Constants.Status.CONNECTING;
-    this.ws = new WebSocket(gateway);
-    if (browser) this.ws.binaryType = 'arraybuffer';
-    this.ws.onopen = this.eventOpen.bind(this);
-    this.ws.onmessage = this.eventMessage.bind(this);
-    this.ws.onclose = this.eventClose.bind(this);
-    this.ws.onerror = this.eventError.bind(this);
+    this.ws = new WebSocketConnection(gateway);
+    this.ws.on('open', this.eventOpen.bind(this));
+    this.ws.on('close', this.eventClose.bind(this));
+    this.ws.on('error', this.eventError.bind(this));
+    this.ws.on('packet', this.eventPacket.bind(this));
     this._queue = [];
     this._remaining = 120;
     this.client.setInterval(() => {
@@ -117,8 +86,12 @@ class WebSocketManager extends EventEmitter {
     }, 60e3);
   }
 
+  /**
+   * Connects the client to a given gateway
+   * @param {string} gateway The gateway to connect to
+   */
   connect(gateway) {
-    gateway = `${gateway}&encoding=${erlpack ? 'etf' : 'json'}`;
+    gateway = `${gateway}&encoding=${WebSocketConnection.getEncoding()}`;
     if (this.first) {
       this._connect(gateway);
       this.first = false;
@@ -127,70 +100,10 @@ class WebSocketManager extends EventEmitter {
     }
   }
 
-  heartbeat(normal) {
-    if (normal && !this.lastHeartbeatAck) {
-      this.ws.close(1007);
-      return;
-    }
-
-    this.emit('debug', 'Sending heartbeat');
-    this.lastPingTimestamp = Date.now();
-    this.send({
-      op: Constants.OPCodes.HEARTBEAT,
-      d: this.sequence,
-    }, true);
-
-    this.lastHeartbeatAck = false;
-  }
-
-  pong(startTime) {
-    this.pings.unshift(Date.now() - startTime);
-    if (this.pings.length > 3) this.pings.length = 3;
-    this.lastHeartbeatAck = true;
-  }
-
-  get ping() {
-    return (this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length) || 0;
-  }
-
-  /**
-   * Sends a packet to the gateway
-   * @param {Object} data An object that can be JSON stringified
-   * @param {boolean} force Whether or not to send the packet immediately
-   */
-  send(data, force = false) {
-    if (force) {
-      this._send(serialize(data));
-      return;
-    }
-    this._queue.push(serialize(data));
-    this.doQueue();
-  }
-
   destroy() {
     if (this.ws) this.ws.close(1000);
     this._queue = [];
     this.status = Constants.Status.IDLE;
-  }
-
-  _send(data) {
-    if (this.ws.readyState === WebSocket.OPEN) {
-      this.emit('send', data);
-      this.ws.send(data);
-    }
-  }
-
-  doQueue() {
-    const item = this._queue[0];
-    if (!(this.ws.readyState === WebSocket.OPEN && item)) return;
-    if (this.remaining === 0) {
-      this.client.setTimeout(this.doQueue.bind(this), Date.now() - this.remainingReset);
-      return;
-    }
-    this._remaining--;
-    this._send(item);
-    this._queue.shift();
-    this.doQueue();
   }
 
   /**
@@ -200,53 +113,9 @@ class WebSocketManager extends EventEmitter {
     this.emit('debug', 'Connection to gateway opened');
     this.emit('open', this.shardID);
     this.lastHeartbeatAck = true;
-    if (this.status === Constants.Status.RECONNECTING) this._sendResume();
-    else this._sendNewIdentify();
+    if (this.status === Constants.Status.RECONNECTING) this.sendResume();
+    else this.sendNewIdentify();
   }
-
-  /**
-   * Sends a gateway resume packet, in cases of unexpected disconnections.
-   */
-  _sendResume() {
-    if (!this.sessionID) {
-      this._sendNewIdentify();
-      return;
-    }
-    this.emit('debug', 'Identifying as resumed session');
-    const payload = {
-      token: this.client.token,
-      session_id: this.sessionID,
-      seq: this.sequence,
-    };
-
-    this.send({
-      op: Constants.OPCodes.RESUME,
-      d: payload,
-    });
-  }
-
-  /**
-   * Sends a new identification packet, in cases of new connections or failed reconnections.
-   */
-  _sendNewIdentify() {
-    this.reconnecting = false;
-    const payload = this.client.options.ws;
-    payload.token = this.client.token;
-    if (this.client.options.shardCount > 0) {
-      payload.shard = [Number(this.shardID), Number(this.client.options.shardCount)];
-    }
-    this.emit('debug', 'Identifying as new session');
-    this.send({
-      op: Constants.OPCodes.IDENTIFY,
-      d: payload,
-    });
-    this.sequence = -1;
-  }
-
-  /**
-   * @external CloseEvent
-   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent}
-   */
 
   /**
    * Run whenever the connection to the gateway is closed, it will try to reconnect the client.
@@ -269,56 +138,26 @@ class WebSocketManager extends EventEmitter {
   }
 
   /**
-   * Run whenever a message is received from the WebSocket. Returns `true` if the message
+   * Run whenever a packet is received from the WebSocketConnection. Returns `true` if the message
    * was handled properly.
-   * @param {Object} event The received websocket data
+   * @param {Object} packet The parsed event packet
    * @returns {boolean}
    */
-  eventMessage(event) {
-    const data = this.tryParseEventData(event.data);
-    if (data === null) {
+  eventPacket(packet) {
+    if (packet === null) {
       this.eventError(new Error(Constants.Errors.BAD_WS_MESSAGE));
       return false;
     }
 
-    if (data.op === Constants.OPCodes.HELLO) {
-      this.heartbeatTime = data.d.heartbeat_interval;
-      this.heartbeatInterval = this.client.setInterval(() => this.heartbeat(true), data.d.heartbeat_interval);
+    if (packet.op === Constants.OPCodes.HELLO) {
+      this.heartbeatTime = packet.d.heartbeat_interval;
+      this.heartbeatInterval = this.client.setInterval(() => this.heartbeat(true), packet.d.heartbeat_interval);
     }
 
-    if (data.s && data.s > this.sequence) this.sequence = data.s;
+    if (packet.s && packet.s > this.sequence) this.sequence = packet.s;
 
-    data.shardID = this.shardID;
-    return this.packetManager.handle(data);
-  }
-
-  /**
-   * Parses the raw data from a websocket event, inflating it if necessary
-   * @param {*} data Event data
-   * @returns {Object}
-   */
-  parseEventData(data) {
-    if (erlpack) {
-      if (data instanceof ArrayBuffer) data = convertArrayBuffer(data);
-      return erlpack.unpack(data);
-    } else {
-      if (data instanceof ArrayBuffer) data = pako.inflate(data, { to: 'string' });
-      else if (data instanceof Buffer) data = zlib.inflateSync(data).toString();
-      return JSON.parse(data);
-    }
-  }
-
-  /**
-   * Tries to call `parseEventData()` and return its result, or returns `null` upon thrown errors.
-   * @param {*} data Event data
-   * @returns {?Object}
-   */
-  tryParseEventData(data) {
-    try {
-      return this.parseEventData(data);
-    } catch (err) {
-      return null;
-    }
+    packet.shardID = this.shardID;
+    return this.packetManager.handle(packet);
   }
 
   /**
@@ -335,18 +174,94 @@ class WebSocketManager extends EventEmitter {
     this.tryReconnect();
   }
 
-  _emitReady(normal = true) {
-    this.status = Constants.Status.READY;
-    this.packetManager.handleQueue();
-    this.normalReady = normal;
+  /**
+   * Sends a packet to the gateway
+   * @param {Object} data An object that can be JSON stringified
+   * @param {boolean} force Whether or not to send the packet immediately
+   */
+  send(data, force = false) {
+    if (force) {
+      this._send(data);
+      return;
+    }
+    this._queue.push(data);
+    this.doQueue();
+  }
 
-    /**
-     * Emitted when the Client becomes ready to start working
-     * @event Client#shardReady
-     * @param {Number} shardID
-     */
-    this.client.emit(Constants.Events.SHARD_READY, this.shardID);
-    this.readyAt = Date.now();
+  doQueue() {
+    const item = this._queue[0];
+    if (!(this.ws.readyState === WebSocketConnection.OPEN && item)) return;
+    if (this.remaining === 0) {
+      this.client.setTimeout(this.doQueue.bind(this), Date.now() - this.remainingReset);
+      return;
+    }
+    this._remaining--;
+    this._send(item);
+    this._queue.shift();
+    this.doQueue();
+  }
+
+  /**
+   * Sends a gateway resume packet, in cases of unexpected disconnections.
+   */
+  sendResume() {
+    if (!this.sessionID) {
+      this.sendNewIdentify();
+      return;
+    }
+    this.emit('debug', 'Identifying as resumed session');
+    const payload = {
+      token: this.client.token,
+      session_id: this.sessionID,
+      seq: this.sequence,
+    };
+
+    this.send({
+      op: Constants.OPCodes.RESUME,
+      d: payload,
+    });
+  }
+
+  /**
+   * Sends a new identification packet, in cases of new connections or failed reconnections.
+   */
+  sendNewIdentify() {
+    this.reconnecting = false;
+    const payload = this.client.options.ws;
+    payload.token = this.client.token;
+    if (this.client.options.shardCount > 0) {
+      payload.shard = [Number(this.shardID), Number(this.client.options.shardCount)];
+    }
+    this.emit('debug', 'Identifying as new session');
+    this.send({
+      op: Constants.OPCodes.IDENTIFY,
+      d: payload,
+    });
+    this.sequence = -1;
+  }
+
+  heartbeat(normal) {
+    this.emit('debug', `Sending ${normal ? 'normal ' : ''}heartbeat`);
+    if (normal && !this.lastHeartbeatAck) {
+      this.ws.close(1007);
+      return;
+    }
+    this.lastPingTimestamp = Date.now();
+    this.send({
+      op: Constants.OPCodes.HEARTBEAT,
+      d: this.sequence,
+    }, true);
+
+    this.lastHeartbeatAck = false;
+  }
+
+  tryReconnect() {
+    if (this.status === Constants.Status.RECONNECTING || this.status === Constants.Status.CONNECTING) return;
+    this.status = Constants.Status.RECONNECTING;
+    this.ws.close();
+    this.packetManager.handleQueue();
+    this.emit(Constants.Events.RECONNECTING);
+    this.connect(this.client.ws.gateway);
   }
 
   /**
@@ -377,25 +292,35 @@ class WebSocketManager extends EventEmitter {
     }
   }
 
-  /**
-   * Tries to reconnect the manager, changing the status to Constants.Status.RECONNECTING
-   */
-  tryReconnect() {
-    if (this.status === Constants.Status.RECONNECTING || this.status === Constants.Status.CONNECTING) return;
-    this.status = Constants.Status.RECONNECTING;
-    this.ws.close();
-    this.packetManager.handleQueue();
-    this.emit(Constants.Events.RECONNECTING);
-    this.connect(this.client.ws.gateway);
+  pong(startTime) {
+    this.pings.unshift(Date.now() - startTime);
+    if (this.pings.length > 3) this.pings.length = 3;
+    this.lastHeartbeatAck = true;
   }
 
-  /**
-   * The uptime for the Manager
-   * @type {?number}
-   * @readonly
-   */
-  get uptime() {
-    return this.readyAt ? Date.now() - this.readyAt : null;
+  get ping() {
+    return (this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length) || 0;
+  }
+
+  _send(data) {
+    if (this.ws.readyState === WebSocketConnection.OPEN) {
+      if (this.listenerCount('send') > 0) this.emit('send', data);
+      this.ws.send(data);
+    }
+  }
+
+  _emitReady(normal = true) {
+    this.status = Constants.Status.READY;
+    this.packetManager.handleQueue();
+    this.normalReady = normal;
+
+    /**
+     * Emitted when the Client becomes ready to start working
+     * @event Client#shardReady
+     * @param {Number} shardID
+     */
+    this.client.emit(Constants.Events.SHARD_READY, this.shardID);
+    this.readyAt = Date.now();
   }
 }
 
