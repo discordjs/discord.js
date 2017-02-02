@@ -62,14 +62,16 @@ class RESTMethods {
       if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
 
       if (content) {
-        if (!split || split && typeof split !== 'object') split = {};
+        if (split && typeof split !== 'object') split = {};
 
         // Wrap everything in a code block
         if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
           content = escapeMarkdown(this.client.resolver.resolveString(content), true);
           content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
-          split.prepend = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n`;
-          split.append = '\n```';
+          if (split) {
+            split.prepend = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n`;
+            split.append = '\n```';
+          }
         }
 
         // Add zero-width spaces to @everyone/@here
