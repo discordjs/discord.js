@@ -91,7 +91,6 @@ class WebSocketManager extends EventEmitter {
    * @param {string} gateway The gateway to connect to
    */
   connect(gateway) {
-    gateway = `${gateway}&encoding=${WebSocketConnection.encoding}`;
     if (this.first) {
       this._connect(gateway);
       this.first = false;

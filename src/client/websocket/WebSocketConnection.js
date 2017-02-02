@@ -75,7 +75,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   unpack(data) {
-    if (erlpack) {
+    if (erlpack && typeof data !== 'string') {
       if (data instanceof ArrayBuffer) data = Buffer.from(new Uint8Array(data));
       return erlpack.unpack(data);
     } else {
