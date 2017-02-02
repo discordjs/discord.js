@@ -62,7 +62,7 @@ class RESTMethods {
       if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
 
       if (content) {
-        if (split && typeof split !== 'object') split = {};
+        if (!split || split && typeof split !== 'object') split = {};
 
         // Wrap everything in a code block
         if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
