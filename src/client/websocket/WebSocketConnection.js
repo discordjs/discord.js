@@ -2,7 +2,9 @@ const browser = require('os').platform() === 'browser';
 const EventEmitter = require('events');
 const erlpack = (function findErlpack() {
   try {
-    return require('erlpack');
+    const e = require('erlpack');
+    if (!e.pack) return null;
+    return e;
   } catch (e) {
     return null;
   }
@@ -86,7 +88,7 @@ class WebSocketConnection extends EventEmitter {
     return erlpack !== null ? data : inflate(data);
   }
 
-  static getEncoding() {
+  static get encoding() {
     return erlpack ? 'etf' : 'json';
   }
 }
