@@ -98,6 +98,20 @@ class WebSocketShardManager extends EventEmitter {
     });
 
     manager.on('send', this.emit);
+
+    manager.on(Constants.Events.RECONNECTING, () => {
+      /**
+       * Emitted when the Client tries to reconnect after being disconnected
+       * @event Client#reconnecting
+       * @param {Number} shardID ID of the shard that is reconnecting
+       */
+      this.client.emit(Constants.Events.RECONNECTING, id);
+    });
+
+    manager.on(Constants.Events.DISCONNECT, event => {
+      this.client.emit(Constants.Events.DISCONNECT, event, id);
+    });
+
     manager.on('close', (event, shardID) => {
       this.emit('close', event, shardID);
       const handler = () => {
@@ -172,6 +186,7 @@ class WebSocketShardManager extends EventEmitter {
 
   /**
    * Check if the client is ready
+   * @param {number} [shardID] ID of shard to prompt a ready check on
    */
   checkIfReady() {
     if (this.managers.size < this.shardCount) return;

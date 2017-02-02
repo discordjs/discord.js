@@ -270,7 +270,7 @@ class WebSocketManager extends EventEmitter {
      * @event Client#disconnect
      * @param {CloseEvent} event The WebSocket close event
      */
-    if (!this.reconnecting) this.client.emit(Constants.Events.DISCONNECT, event, this.shardID);
+    if (!this.reconnecting) this.emit(Constants.Events.DISCONNECT, event);
     if ([4004, 4010, 4011].includes(event.code)) return;
     if (!this.reconnecting && event.code !== 1000) this.tryReconnect();
   }
@@ -287,8 +287,6 @@ class WebSocketManager extends EventEmitter {
       this.eventError(new Error(Constants.Errors.BAD_WS_MESSAGE));
       return false;
     }
-
-    this.client.emit('raw', data);
 
     if (data.op === Constants.OPCodes.HELLO) {
       this.heartbeatTime = data.d.heartbeat_interval;
@@ -340,7 +338,7 @@ class WebSocketManager extends EventEmitter {
      * @event Client#error
      * @param {Error} error The encountered error
      */
-    if (this.client.listenerCount('error') > 0) this.client.emit('error', err);
+    if (this.client.listenerCount('error') > 0) this.emit('error', err);
     this.tryReconnect();
   }
 
@@ -359,31 +357,30 @@ class WebSocketManager extends EventEmitter {
   }
 
   /**
-   * Runs on new packets before `READY` to see if the Client is ready yet, if it is prepares
-   * the `READY` event.
+   * Runs on new packets before `READY` to see if the Manager is ready yet, if it is prepares
+   * the `SHARD_READY` event.
    */
   checkIfReady() {
-    if (this.status !== Constants.Status.READY && this.status !== Constants.Status.NEARLY) {
-      let unavailableCount = 0;
-      for (const guild of this.client.guilds.values()) {
-        if (guild.shardID === this.shardID) if (guild.available) unavailableCount++;
-      }
-      if (unavailableCount === 0) {
-        this.status = Constants.Status.NEARLY;
-        if (this.client.options.fetchAllMembers) {
-          const promises = [];
-          for (const guild of this.client.guilds.values()) {
-            if (guild.shardID === this.shardID) promises.push(guild.fetchMembers());
-          }
-          Promise.all(promises).then(() => this._emitReady(), e => {
-            this.client.emit(Constants.Events.WARN, 'Error in pre-ready guild member fetching');
-            this.client.emit(Constants.Events.ERROR, e);
-            this._emitReady();
-          });
-          return;
+    if (!(this.status !== Constants.Status.READY && this.status !== Constants.Status.NEARLY)) return;
+    let unavailableCount = 0;
+    for (const guild of this.client.guilds.values()) {
+      if (guild.shardID === this.shardID) if (!guild.available) unavailableCount++;
+    }
+    if (unavailableCount === 0) {
+      this.status = Constants.Status.NEARLY;
+      if (this.client.options.fetchAllMembers) {
+        const promises = [];
+        for (const guild of this.client.guilds.values()) {
+          if (guild.shardID === this.shardID) promises.push(guild.fetchMembers());
         }
-        this._emitReady();
+        Promise.all(promises).then(() => this._emitReady(), e => {
+          this.client.emit(Constants.Events.WARN, 'Error in pre-ready guild member fetching');
+          this.emit(Constants.Events.ERROR, e);
+          this._emitReady();
+        });
+        return;
       }
+      this._emitReady();
     }
   }
 
@@ -395,12 +392,7 @@ class WebSocketManager extends EventEmitter {
     this.status = Constants.Status.RECONNECTING;
     this.ws.close();
     this.packetManager.handleQueue();
-    /**
-     * Emitted when the Client tries to reconnect after being disconnected
-     * @event Client#reconnecting
-     * @param {Number} shardID ID of the shard that is reconnecting
-     */
-    this.client.emit(Constants.Events.RECONNECTING, this.shardID);
+    this.emit(Constants.Events.RECONNECTING);
     this.connect(this.client.ws.gateway);
   }
 

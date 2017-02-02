@@ -69,6 +69,8 @@ class WebSocketPacketManager {
   handle(packet) {
     const ws = this.ws.managers.get(packet.shardID);
 
+    this.client.emit('raw', packet);
+
     if (packet.op === Constants.OPCodes.RECONNECT) {
       ws.tryReconnect();
       return false;
@@ -98,7 +100,7 @@ class WebSocketPacketManager {
       ws.emit('debug', 'Received gateway heartbeat');
     }
 
-    if (this.ws.status === Constants.Status.RECONNECTING) {
+    if (ws.status === Constants.Status.RECONNECTING) {
       ws.reconnecting = false;
       ws.checkIfReady();
     }
