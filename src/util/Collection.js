@@ -1,5 +1,3 @@
-const assert = require('assert');
-
 /**
  * A Map with additional utility methods. This is used throughout discord.js rather than Arrays for anything that has
  * an ID, for significantly improved performance and ease-of-use.
@@ -363,11 +361,7 @@ class Collection extends Map {
     return this.every((value, key) => {
       if (!collection.has(key)) return false;
       const testVal = collection.get(key);
-      try {
-        return testVal === value ||
-          (testVal && testVal.equals && value && value.equals && testVal.equals(value)) ||
-          assert.deepStrictEqual(testVal, value) || true;
-      } catch (err) { return false; }
+      return testVal === value || (testVal && testVal.equals && value && value.equals && testVal.equals(value));
     });
   }
 }
