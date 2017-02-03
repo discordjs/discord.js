@@ -23,6 +23,7 @@ class WebSocketPacketManager {
     for (const event of this.ws.client.options.disabledEvents) this.disabledEvents[event] = true;
 
     this.register(Constants.WSEvents.READY, require('./handlers/Ready'));
+    this.register(Constants.WSEvents.RESUMED, require('./handlers/Resumed'));
     this.register(Constants.WSEvents.GUILD_CREATE, require('./handlers/GuildCreate'));
     this.register(Constants.WSEvents.GUILD_DELETE, require('./handlers/GuildDelete'));
     this.register(Constants.WSEvents.GUILD_UPDATE, require('./handlers/GuildUpdate'));
@@ -86,11 +87,11 @@ class WebSocketPacketManager {
     if (packet.op === Constants.OPCodes.INVALID_SESSION) {
       if (packet.d) {
         setTimeout(() => {
-          ws._sendResume();
+          ws.sendResume();
         }, 2500);
       } else {
         ws.sessionID = null;
-        ws._sendNewIdentify();
+        ws.sendNewIdentify();
       }
       return false;
     }

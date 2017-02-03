@@ -12,7 +12,7 @@
       const start = Date.now();
       const log = (...args) => console.log(...args);
 
-      const client = new Discord.Client({
+      const client = window.client = new Discord.Client({
         disabledEvents: ['TYPING_START', 'PRESENCE_UPDATE'],
         sync: true,
         fetchAllUsers: true,
@@ -25,10 +25,6 @@
       client.ws.on('close', (event, shardID) => log('[WS CLOSE]', event.code, shardID));
 
       client.on('ready', () => log('[CLIENT READY]', client.user.username, client.user.id));
-
-      client.on('message', (message) => {
-        console.log(message.author.username, message.author.id, message.content);
-      });
 
       client.login(localStorage.token || window.token || prompt('token pls', 'abcdef123456'))
       .then((token) => {

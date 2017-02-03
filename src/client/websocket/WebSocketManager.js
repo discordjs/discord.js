@@ -209,6 +209,7 @@ class WebSocketManager extends EventEmitter {
       return;
     }
     this.emit('debug', 'Identifying as resumed session');
+    this.resumeStart = this.sequence;
     const payload = {
       token: this.client.token,
       session_id: this.sessionID,
@@ -255,10 +256,20 @@ class WebSocketManager extends EventEmitter {
     this.lastHeartbeatAck = false;
   }
 
+  pong(startTime) {
+    this.pings.unshift(Date.now() - startTime);
+    if (this.pings.length > 3) this.pings.length = 3;
+    this.lastHeartbeatAck = true;
+  }
+
+  get ping() {
+    return (this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length) || 0;
+  }
+
   tryReconnect() {
     if (this.status === Constants.Status.RECONNECTING || this.status === Constants.Status.CONNECTING) return;
     this.status = Constants.Status.RECONNECTING;
-    this.ws.close();
+    if (this.ws) this.ws.close();
     this.packetManager.handleQueue();
     this.emit(Constants.Events.RECONNECTING);
     this.connect(this.client.ws.gateway);
@@ -290,16 +301,6 @@ class WebSocketManager extends EventEmitter {
       }
       this._emitReady();
     }
-  }
-
-  pong(startTime) {
-    this.pings.unshift(Date.now() - startTime);
-    if (this.pings.length > 3) this.pings.length = 3;
-    this.lastHeartbeatAck = true;
-  }
-
-  get ping() {
-    return (this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length) || 0;
   }
 
   _send(data) {

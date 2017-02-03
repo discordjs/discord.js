@@ -293,6 +293,7 @@ exports.Events = {
  */
 exports.WSEvents = {
   READY: 'READY',
+  RESUMED: 'RESUMED',
   GUILD_SYNC: 'GUILD_SYNC',
   GUILD_CREATE: 'GUILD_CREATE',
   GUILD_DELETE: 'GUILD_DELETE',
