@@ -1,10 +1,13 @@
 {
   "name": "discord.js",
-  "version": "8.2.0",
+  "version": "8.3.0",
   "description": "A way to interface with the Discord API",
   "main": "./entrypoint.js",
   "scripts": {
-    "test": "eslint *.js src test && node test/lib-test.js"
+    "test": "eslint *.js src test && node test/lib-test.js",
+    "build": "grunt --dev && grunt web",
+    "build-web": "grunt web",
+    "build-grunt": "grunt --dev"
   },
   "repository": {
     "type": "git",
@@ -37,7 +40,7 @@
     "grunt-browserify": "^5.0.0",
     "grunt-contrib-uglify": "^2.0.0",
     "load-grunt-tasks": "^3.4.0",
-    "mocha": "^3.1.2"
+    "mocha": "^3.2.0"
   },
   "optionalDependencies": {
     "node-opus": "^0.2.2",
