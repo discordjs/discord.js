@@ -25,6 +25,7 @@
       client.ws.on('close', (event, shardID) => log('[WS CLOSE]', event.code, shardID));
 
       client.on('ready', () => log('[CLIENT READY]', client.user.username, client.user.id));
+      client.on('resume', (replayed, id) => log('[CLIENT RESUME]', replayed.toString(), id.toString()));
 
       client.login(localStorage.token || window.token || prompt('token pls', 'abcdef123456'))
       .then((token) => {

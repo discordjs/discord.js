@@ -112,7 +112,7 @@ class WebSocketManager extends EventEmitter {
     this.emit('debug', 'Connection to gateway opened');
     this.emit('open', this.shardID);
     this.lastHeartbeatAck = true;
-    if (this.status === Constants.Status.RECONNECTING) this.sendResume();
+    if (this.status === Constants.Status.RECONNECTING || this.sessionID) this.sendResume();
     else this.sendNewIdentify();
   }
 
@@ -242,7 +242,7 @@ class WebSocketManager extends EventEmitter {
 
   heartbeat(normal) {
     if (normal && !this.lastHeartbeatAck) {
-      this.ws.close(1007);
+      this.ws.close(this.client.browser ? 1000 : 1007);
       return;
     }
 
