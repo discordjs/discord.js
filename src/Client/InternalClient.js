@@ -544,22 +544,18 @@ export default class InternalClient {
   // def loginWithToken
   // email and password are optional
   loginWithToken(token, email, password) {
-    console.log("login with token, called setup");
     if (!this.setupCalled) {
       this.setup();
     }
 
-    console.log("login with token, setting state to logged in");
     this.state = ConnectionState.LOGGED_IN;
     this.token = token;
     this.email = email;
     this.password = password;
 
-    console.log("Getting Gateway");
     let self = this;
     return this.getGateway()
       .then(url => {
-        console.log("Got the gateway, creating ws");
         self.token = self.client.options.bot && !self.token.startsWith("Bot ") ? `Bot ${self.token}` : self.token;
         self.createWS(url);
         return self.token;
@@ -1765,11 +1761,9 @@ export default class InternalClient {
     };
 
     this.websocket.onclose = (event) => {
-      console.log("websocket closed");
       this.websocket = null;
       this.state = ConnectionState.DISCONNECTED;
       if (event && event.code) {
-        console.log("close event", event, event.code);
         this.client.emit("warn", "WS close: " + event.code);
         let err;
         if (event.code === 4001) {
@@ -1832,38 +1826,29 @@ export default class InternalClient {
           this.processPacket(packet);
           break;
         case 1:
-          console.log("set it to true 1");
           this.heartbeatAcked = true;
           this.heartbeat();
           break;
         case 7:
-          console.log("received reconnect");
           this.disconnected(true);
           break;
         case 9:
-          console.log("received invalidate session");
           this.sessionID = null;
           this.sequence = 0;
           this.identify();
           break;
         case 10:
-          console.log("got a packet with op code 10");
           if (this.sessionID) {
-            console.log("we have a session id, calling resume");
             this.resume();
           } else {
-            console.log("we don't have a session id, calling identify");
             this.identify();
           }
-          console.log("set it to true 10 1");
           this.heartbeatAcked = true; // start off without assuming we didn't get a missed heartbeat acknowledge right away;
           this.heartbeat();
-          console.log("set it to true 10 2");
           this.heartbeatAcked = true;
           this.intervals.kai = setInterval(() => this.heartbeat(), packet.d.heartbeat_interval);
           break;
         case 11:
-          console.log("set heartbeatAcked to true because heartbeat was acked.");
           this.heartbeatAcked = true;
           break;
         default:
@@ -1876,13 +1861,9 @@ export default class InternalClient {
   processPacket(packet) {
     let client = this.client;
     let data = packet.d;
-    if (packet.t !== PacketType.PRESENCE_UPDATE) {
-      console.log(packet);
-    }
     switch (packet.t) {
       case PacketType.RESUMED:
       case PacketType.READY: {
-        console.log('got ready or resume, type', packet.t);
         this.autoReconnectInterval = 1000;
         this.state = ConnectionState.READY;
 
@@ -1963,16 +1944,11 @@ export default class InternalClient {
         break;
       }
       case PacketType.MESSAGE_CREATE: {
-        console.log("got message create");
         // format: https://discordapi.readthedocs.org/en/latest/reference/channels/messages.html#message-format
         let channel = this.channels.get("id", data.channel_id) || this.private_channels.get("id", data.channel_id);
-        console.log("typeof channel", typeof channel);
         if (channel) {
-          console.log("adding message to cache");
           let msg = channel.messages.add(new Message(data, channel, client));
-          console.log("typeof message", typeof msg);
           channel.lastMessageID = msg.id;
-          console.log("emitting message");
           if (this.messageAwaits[channel.id + msg.author.id]) {
             this.messageAwaits[channel.id + msg.author.id].map(fn => fn(msg));
             this.messageAwaits[channel.id + msg.author.id] = null;
@@ -1981,7 +1957,6 @@ export default class InternalClient {
             client.emit("message", msg);
           }
         } else {
-          console.log("message created but channel is not cached");
           client.emit("warn", "message created but channel is not cached");
         }
         break;
@@ -2701,9 +2676,7 @@ export default class InternalClient {
   }
 
   heartbeat() {
-    console.log(`heartbeat called, value ${this.heartbeatAcked} current client state is ${this.state}`);
     if (!this.heartbeatAcked) this.disconnected(true);
-    console.log("set it to false");
     this.heartbeatAcked = false;
     this.sendWS({op: 1, d: Date.now()});
   }
