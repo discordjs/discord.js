@@ -188,7 +188,7 @@ class TextBasedChannel {
   /**
    * Gets the past messages sent in this channel. Resolves with a collection mapping message ID's to Message objects.
    * @param {ChannelLogsQueryOptions} [options={}] Query parameters to pass in
-   * @returns {Promise<Collection<string, Message>>}
+   * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
    * // get messages
    * channel.fetchMessages({limit: 10})
@@ -209,7 +209,7 @@ class TextBasedChannel {
 
   /**
    * Fetches the pinned messages of this channel and returns a collection of them.
-   * @returns {Promise<Collection<string, Message>>}
+   * @returns {Promise<Collection<Snowflake, Message>>}
    */
   fetchPinnedMessages() {
     return this.client.rest.methods.getChannelPinnedMessages(this).then(data => {
@@ -336,7 +336,7 @@ class TextBasedChannel {
    * filter.
    * @param {CollectorFilterFunction} filter The filter function to use
    * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector
-   * @returns {Promise<Collection<string, Message>>}
+   * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
    * // await !vote messages
    * const filter = m => m.content.startsWith('!vote');
@@ -361,9 +361,9 @@ class TextBasedChannel {
   /**
    * Bulk delete given messages that are newer than two weeks
    * <warn>This is only available when using a bot account.</warn>
-   * @param {Collection<string, Message>|Message[]|number} messages Messages to delete, or number of messages to delete
+   * @param {Collection<Snowflake, Message>|Message[]|number} messages Messages or number of messages to delete
    * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
-   * @returns {Promise<Collection<string, Message>>} Deleted messages
+   * @returns {Promise<Collection<Snowflake, Message>>} Deleted messages
    */
   bulkDelete(messages, filterOld = false) {
     if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs));

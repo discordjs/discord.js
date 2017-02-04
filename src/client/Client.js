@@ -92,26 +92,26 @@ class Client extends EventEmitter {
 
     /**
      * A collection of the Client's stored users
-     * @type {Collection<string, User>}
+     * @type {Collection<Snowflake, User>}
      */
     this.users = new Collection();
 
     /**
      * A collection of the Client's stored guilds
-     * @type {Collection<string, Guild>}
+     * @type {Collection<Snowflake, Guild>}
      */
     this.guilds = new Collection();
 
     /**
      * A collection of the Client's stored channels
-     * @type {Collection<string, Channel>}
+     * @type {Collection<Snowflake, Channel>}
      */
     this.channels = new Collection();
 
     /**
      * A collection of presences for friends of the logged in user.
      * <warn>This is only filled when using a user account.</warn>
-     * @type {Collection<string, Presence>}
+     * @type {Collection<Snowflake, Presence>}
      */
     this.presences = new Collection();
 
@@ -191,7 +191,7 @@ class Client extends EventEmitter {
 
   /**
    * The emojis that the client can use. Mapped by emoji ID.
-   * @type {Collection<string, Emoji>}
+   * @type {Collection<Snowflake, Emoji>}
    * @readonly
    */
   get emojis() {
@@ -257,7 +257,7 @@ class Client extends EventEmitter {
    * This shouldn't really be necessary to most developers as it is automatically invoked every 30 seconds, however
    * if you wish to force a sync of guild data, you can use this.
    * <warn>This is only available when using a user account.</warn>
-   * @param {Guild[]|Collection<string, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
+   * @param {Guild[]|Collection<Snowflake, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
    */
   syncGuilds(guilds = this.guilds) {
     if (this.user.bot) return;
