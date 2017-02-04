@@ -301,7 +301,7 @@ class Guild {
 
   /**
    * Fetch a collection of banned users in this guild.
-   * @returns {Promise<Collection<string, User>>}
+   * @returns {Promise<Collection<Snowflake, User>>}
    */
   fetchBans() {
     return this.client.rest.methods.getGuildBans(this);
@@ -317,7 +317,7 @@ class Guild {
 
   /**
    * Fetch all webhooks for the guild.
-   * @returns {Collection<Webhook>}
+   * @returns {Collection<Snowflake, Webhook>}
    */
   fetchWebhooks() {
     return this.client.rest.methods.getGuildWebhooks(this);

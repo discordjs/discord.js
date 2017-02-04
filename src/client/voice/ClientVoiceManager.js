@@ -18,13 +18,13 @@ class ClientVoiceManager {
 
     /**
      * A collection mapping connection IDs to the Connection objects
-     * @type {Collection<string, VoiceConnection>}
+     * @type {Collection<Snowflake, VoiceConnection>}
      */
     this.connections = new Collection();
 
     /**
      * Pending connection attempts, maps guild ID to VoiceChannel
-     * @type {Collection<string, VoiceChannel>}
+     * @type {Collection<Snowflake, VoiceChannel>}
      */
     this.pending = new Collection();
 

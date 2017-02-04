@@ -64,10 +64,12 @@ class GuildChannel extends Channel {
     for (const role of roles.values()) permissions |= role.permissions;
 
     const overwrites = this.overwritesFor(member, true, roles);
+    let allow = 0;
     for (const overwrite of overwrites.role.concat(overwrites.member)) {
       permissions &= ~overwrite.deny;
-      permissions |= overwrite.allow;
+      allow |= overwrite.allow;
     }
+    permissions |= allow;
 
     const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
     if (admin) permissions = Constants.ALL_PERMISSIONS;
