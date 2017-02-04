@@ -1,0 +1,187 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+var Constants = {};
+
+var API = exports.API = Constants.API = "https://discordapp.com/api";
+var CDN = exports.CDN = Constants.CDN = "https://cdn.discordapp.com";
+
+var Endpoints = exports.Endpoints = Constants.Endpoints = {
+	// general endpoints
+	LOGIN: API + "/auth/login",
+	LOGOUT: API + "/auth/logout",
+	ME: API + "/users/@me",
+	ME_CHANNELS: API + "/users/@me/channels",
+	ME_SERVER: function ME_SERVER(serverID) {
+		return Endpoints.ME + "/guilds/" + serverID;
+	},
+	OAUTH2_APPLICATION: function OAUTH2_APPLICATION(appID) {
+		return API + "/oauth2/applications/" + appID;
+	},
+	ME_NOTES: API + "/users/@me/notes",
+	GATEWAY: API + "/gateway",
+	AVATAR: function AVATAR(userID, avatar) {
+		return API + "/users/" + userID + "/avatars/" + avatar + ".jpg";
+	},
+	INVITE: function INVITE(id) {
+		return API + "/invite/" + id;
+	},
+
+	// emojis
+	EMOJI: function EMOJI(emojiID) {
+		return CDN + "/emojis/" + emojiID + ".png";
+	},
+
+	// servers
+	SERVERS: API + "/guilds",
+	SERVER: function SERVER(serverID) {
+		return Endpoints.SERVERS + "/" + serverID;
+	},
+	SERVER_ICON: function SERVER_ICON(serverID, hash) {
+		return Endpoints.SERVER(serverID) + "/icons/" + hash + ".jpg";
+	},
+	SERVER_PRUNE: function SERVER_PRUNE(serverID) {
+		return Endpoints.SERVER(serverID) + "/prune";
+	},
+	SERVER_EMBED: function SERVER_EMBED(serverID) {
+		return Endpoints.SERVER(serverID) + "/embed";
+	},
+	SERVER_INVITES: function SERVER_INVITES(serverID) {
+		return Endpoints.SERVER(serverID) + "/invites";
+	},
+	SERVER_ROLES: function SERVER_ROLES(serverID) {
+		return Endpoints.SERVER(serverID) + "/roles";
+	},
+	SERVER_BANS: function SERVER_BANS(serverID) {
+		return Endpoints.SERVER(serverID) + "/bans";
+	},
+	SERVER_INTEGRATIONS: function SERVER_INTEGRATIONS(serverID) {
+		return Endpoints.SERVER(serverID) + "/integrations";
+	},
+	SERVER_MEMBERS: function SERVER_MEMBERS(serverID) {
+		return Endpoints.SERVER(serverID) + "/members";
+	},
+	SERVER_CHANNELS: function SERVER_CHANNELS(serverID) {
+		return Endpoints.SERVER(serverID) + "/channels";
+	},
+	SERVER_WEBHOOKS: function SERVER_WEBHOOKS(serverID) {
+		return Endpoints.SERVER(serverID) + "/webhooks";
+	},
+
+	// channels
+	CHANNELS: API + "/channels",
+	CHANNEL: function CHANNEL(channelID) {
+		return Endpoints.CHANNELS + "/" + channelID;
+	},
+	CHANNEL_MESSAGES: function CHANNEL_MESSAGES(channelID) {
+		return Endpoints.CHANNEL(channelID) + "/messages";
+	},
+	CHANNEL_INVITES: function CHANNEL_INVITES(channelID) {
+		return Endpoints.CHANNEL(channelID) + "/invites";
+	},
+	CHANNEL_TYPING: function CHANNEL_TYPING(channelID) {
+		return Endpoints.CHANNEL(channelID) + "/typing";
+	},
+	CHANNEL_PERMISSIONS: function CHANNEL_PERMISSIONS(channelID) {
+		return Endpoints.CHANNEL(channelID) + "/permissions";
+	},
+	CHANNEL_MESSAGE: function CHANNEL_MESSAGE(channelID, messageID) {
+		return Endpoints.CHANNEL_MESSAGES(channelID) + "/" + messageID;
+	},
+	CHANNEL_PINS: function CHANNEL_PINS(channelID) {
+		return Endpoints.CHANNEL(channelID) + "/pins";
+	},
+	CHANNEL_PIN: function CHANNEL_PIN(channelID, messageID) {
+		return Endpoints.CHANNEL_PINS(channelID) + "/" + messageID;
+	},
+	CHANNEL_WEBHOOKS: function CHANNEL_WEBHOOKS(channelID) {
+		return Endpoints.CHANNEL(channelID) + "/webhooks";
+	},
+
+	// webhooks
+	WEBHOOKS: API + "/webhooks",
+	WEBHOOK: function WEBHOOK(webhookID) {
+		return Endpoints.WEBHOOKS + "/" + webhookID;
+	},
+	WEBHOOK_WITH_TOKEN: function WEBHOOK_WITH_TOKEN(webhookID, webhookToken) {
+		return Endpoints.WEBHOOKS + "/" + webhookToken;
+	},
+	WEBHOOK_MESSAGE: function WEBHOOK_MESSAGE(webhookID, webhookToken) {
+		return Endpoints.WEBHOOK(webhookID) + "/" + webhookToken;
+	},
+	WEBHOOK_MESSAGE_SLACK: function WEBHOOK_MESSAGE_SLACK(webhookID, webhookToken) {
+		return Endpoints.WEBHOOK_MESSAGE(webhookID, webhookToken) + "/slack";
+	},
+
+	// friends
+	FRIENDS: API + "/users/@me/relationships"
+};
+
+var Permissions = exports.Permissions = Constants.Permissions = {
+	// general
+	createInstantInvite: 1 << 0,
+	kickMembers: 1 << 1,
+	banMembers: 1 << 2,
+	administrator: 1 << 3,
+	manageChannels: 1 << 4,
+	manageChannel: 1 << 4,
+	manageServer: 1 << 5,
+	changeNickname: 1 << 26,
+	manageNicknames: 1 << 27,
+	manageRoles: 1 << 28,
+	managePermissions: 1 << 28,
+	// text
+	readMessages: 1 << 10,
+	sendMessages: 1 << 11,
+	sendTTSMessages: 1 << 12,
+	manageMessages: 1 << 13,
+	embedLinks: 1 << 14,
+	attachFiles: 1 << 15,
+	readMessageHistory: 1 << 16,
+	mentionEveryone: 1 << 17,
+	// voice
+	voiceConnect: 1 << 20,
+	voiceSpeak: 1 << 21,
+	voiceMuteMembers: 1 << 22,
+	voiceDeafenMembers: 1 << 23,
+	voiceMoveMembers: 1 << 24,
+	voiceUseVAD: 1 << 25
+
+};
+
+var PacketType = exports.PacketType = Constants.PacketType = {
+	CHANNEL_CREATE: "CHANNEL_CREATE",
+	CHANNEL_DELETE: "CHANNEL_DELETE",
+	CHANNEL_UPDATE: "CHANNEL_UPDATE",
+	MESSAGE_CREATE: "MESSAGE_CREATE",
+	MESSAGE_DELETE: "MESSAGE_DELETE",
+	MESSAGE_DELETE_BULK: "MESSAGE_DELETE_BULK",
+	MESSAGE_UPDATE: "MESSAGE_UPDATE",
+	PRESENCE_UPDATE: "PRESENCE_UPDATE",
+	READY: "READY",
+	RESUMED: "RESUMED",
+	SERVER_BAN_ADD: "GUILD_BAN_ADD",
+	SERVER_BAN_REMOVE: "GUILD_BAN_REMOVE",
+	SERVER_CREATE: "GUILD_CREATE",
+	SERVER_DELETE: "GUILD_DELETE",
+	SERVER_MEMBER_ADD: "GUILD_MEMBER_ADD",
+	SERVER_MEMBER_REMOVE: "GUILD_MEMBER_REMOVE",
+	SERVER_MEMBER_UPDATE: "GUILD_MEMBER_UPDATE",
+	SERVER_MEMBERS_CHUNK: "GUILD_MEMBERS_CHUNK",
+	SERVER_ROLE_CREATE: "GUILD_ROLE_CREATE",
+	SERVER_ROLE_DELETE: "GUILD_ROLE_DELETE",
+	SERVER_ROLE_UPDATE: "GUILD_ROLE_UPDATE",
+	SERVER_SYNC: "GUILD_SYNC",
+	SERVER_UPDATE: "GUILD_UPDATE",
+	TYPING: "TYPING_START",
+	USER_UPDATE: "USER_UPDATE",
+	USER_NOTE_UPDATE: "USER_NOTE_UPDATE",
+	VOICE_STATE_UPDATE: "VOICE_STATE_UPDATE",
+	FRIEND_ADD: "RELATIONSHIP_ADD",
+	FRIEND_REMOVE: "RELATIONSHIP_REMOVE"
+};
+
+exports.default = Constants;
+//# sourceMappingURL=Constants.js.map

@@ -5,9 +5,7 @@
   "main": "./entrypoint.js",
   "scripts": {
     "test": "eslint *.js src test && node test/lib-test.js",
-    "build": "grunt --dev && grunt web",
-    "build-web": "grunt web",
-    "build-grunt": "grunt --dev"
+    "build": "grunt --dev && grunt --v4 --dev"
   },
   "repository": {
     "type": "git",
@@ -33,6 +31,7 @@
     "ws": "^1.1.1"
   },
   "devDependencies": {
+    "babel-preset-latest": "^6.22.0",
     "colors": "^1.1.2",
     "eslint": "^3.0",
     "grunt": "^1.0.1",
