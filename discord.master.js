@@ -2337,7 +2337,7 @@ class GuildMember {
 
   /**
    * Sets the roles applied to the member.
-   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to apply
+   * @param {Collection<Snowflake, Role>|Role[]|string[]} roles The roles or role IDs to apply
    * @returns {Promise<GuildMember>}
    */
   setRoles(roles) {
@@ -2356,7 +2356,7 @@ class GuildMember {
 
   /**
    * Adds multiple roles to the member.
-   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to add
+   * @param {Collection<Snowflake, Role>|Role[]|string[]} roles The roles or role IDs to add
    * @returns {Promise<GuildMember>}
    */
   addRoles(roles) {
@@ -2382,7 +2382,7 @@ class GuildMember {
 
   /**
    * Removes multiple roles from the member.
-   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to remove
+   * @param {Collection<Snowflake, Role>|Role[]|string[]} roles The roles or role IDs to remove
    * @returns {Promise<GuildMember>}
    */
   removeRoles(roles) {
@@ -3250,7 +3250,7 @@ class TextBasedChannel {
   /**
    * Gets the past messages sent in this channel. Resolves with a collection mapping message ID's to Message objects.
    * @param {ChannelLogsQueryOptions} [options={}] Query parameters to pass in
-   * @returns {Promise<Collection<string, Message>>}
+   * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
    * // get messages
    * channel.fetchMessages({limit: 10})
@@ -3271,7 +3271,7 @@ class TextBasedChannel {
 
   /**
    * Fetches the pinned messages of this channel and returns a collection of them.
-   * @returns {Promise<Collection<string, Message>>}
+   * @returns {Promise<Collection<Snowflake, Message>>}
    */
   fetchPinnedMessages() {
     return this.client.rest.methods.getChannelPinnedMessages(this).then(data => {
@@ -3398,7 +3398,7 @@ class TextBasedChannel {
    * filter.
    * @param {CollectorFilterFunction} filter The filter function to use
    * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector
-   * @returns {Promise<Collection<string, Message>>}
+   * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
    * // await !vote messages
    * const filter = m => m.content.startsWith('!vote');
@@ -3423,9 +3423,9 @@ class TextBasedChannel {
   /**
    * Bulk delete given messages that are newer than two weeks
    * <warn>This is only available when using a bot account.</warn>
-   * @param {Collection<string, Message>|Message[]|number} messages Messages to delete, or number of messages to delete
+   * @param {Collection<Snowflake, Message>|Message[]|number} messages Messages or number of messages to delete
    * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
-   * @returns {Promise<Collection<string, Message>>} Deleted messages
+   * @returns {Promise<Collection<Snowflake, Message>>} Deleted messages
    */
   bulkDelete(messages, filterOld = false) {
     if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs));
@@ -3827,7 +3827,7 @@ class Guild {
 
   /**
    * Fetch a collection of banned users in this guild.
-   * @returns {Promise<Collection<string, User>>}
+   * @returns {Promise<Collection<Snowflake, User>>}
    */
   fetchBans() {
     return this.client.rest.methods.getGuildBans(this);
@@ -3843,7 +3843,7 @@ class Guild {
 
   /**
    * Fetch all webhooks for the guild.
-   * @returns {Collection<Webhook>}
+   * @returns {Collection<Snowflake, Webhook>}
    */
   fetchWebhooks() {
     return this.client.rest.methods.getGuildWebhooks(this);
@@ -10064,7 +10064,7 @@ class MessageCollector extends EventEmitter {
     this.channel.client.removeListener('message', this.listener);
     /**
      * Emitted when the Collector stops collecting.
-     * @param {Collection<string, Message>} collection A collection of messages collected
+     * @param {Collection<Snowflake, Message>} collection A collection of messages collected
      * during the lifetime of the collector, mapped by the ID of the messages.
      * @param {string} reason The reason for the end of the collector. If it ended because it reached the specified time
      * limit, this would be `time`. If you invoke `.stop()` without specifying a reason, this would be `user`. If it
@@ -12825,26 +12825,26 @@ class Client extends EventEmitter {
 
     /**
      * A collection of the Client's stored users
-     * @type {Collection<string, User>}
+     * @type {Collection<Snowflake, User>}
      */
     this.users = new Collection();
 
     /**
      * A collection of the Client's stored guilds
-     * @type {Collection<string, Guild>}
+     * @type {Collection<Snowflake, Guild>}
      */
     this.guilds = new Collection();
 
     /**
      * A collection of the Client's stored channels
-     * @type {Collection<string, Channel>}
+     * @type {Collection<Snowflake, Channel>}
      */
     this.channels = new Collection();
 
     /**
      * A collection of presences for friends of the logged in user.
      * <warn>This is only filled when using a user account.</warn>
-     * @type {Collection<string, Presence>}
+     * @type {Collection<Snowflake, Presence>}
      */
     this.presences = new Collection();
 
@@ -12924,7 +12924,7 @@ class Client extends EventEmitter {
 
   /**
    * The emojis that the client can use. Mapped by emoji ID.
-   * @type {Collection<string, Emoji>}
+   * @type {Collection<Snowflake, Emoji>}
    * @readonly
    */
   get emojis() {
@@ -12990,7 +12990,7 @@ class Client extends EventEmitter {
    * This shouldn't really be necessary to most developers as it is automatically invoked every 30 seconds, however
    * if you wish to force a sync of guild data, you can use this.
    * <warn>This is only available when using a user account.</warn>
-   * @param {Guild[]|Collection<string, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
+   * @param {Guild[]|Collection<Snowflake, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
    */
   syncGuilds(guilds = this.guilds) {
     if (this.user.bot) return;
@@ -24290,7 +24290,7 @@ class GuildMembersChunkHandler extends AbstractHandler {
 /**
  * Emitted whenever a chunk of guild members is received (all members come from the same guild)
  * @event Client#guildMembersChunk
- * @param {Collection<GuildMember>} members The members in the chunk
+ * @param {Collection<Snowflake, GuildMember>} members The members in the chunk
  * @param {Guild} guild The guild related to the member chunk
  */
 
@@ -24449,7 +24449,7 @@ class MessageDeleteBulkHandler extends AbstractHandler {
 /**
  * Emitted whenever messages are deleted in bulk
  * @event Client#messageDeleteBulk
- * @param {Collection<string, Message>} messages The deleted messages, mapped by their ID
+ * @param {Collection<Snowflake, Message>} messages The deleted messages, mapped by their ID
  */
 
 module.exports = MessageDeleteBulkHandler;
@@ -25002,13 +25002,13 @@ class UserProfile {
 
     /**
      * Guilds that the client user and the user share
-     * @type {Collection<Guild>}
+     * @type {Collection<Snowflake, Guild>}
      */
     this.mutualGuilds = new Collection();
 
     /**
      * The user's connections
-     * @type {Collection<UserConnection>}
+     * @type {Collection<String, UserConnection>}
      */
     this.connections = new Collection();
 
