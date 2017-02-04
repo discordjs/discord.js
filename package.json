@@ -1,10 +1,11 @@
 {
   "name": "discord.js",
-  "version": "8.2.0",
+  "version": "8.3.0",
   "description": "A way to interface with the Discord API",
   "main": "./entrypoint.js",
   "scripts": {
-    "test": "eslint *.js src test && node test/lib-test.js"
+    "test": "eslint *.js src test && node test/lib-test.js",
+    "build": "grunt --dev && grunt --v4 --dev"
   },
   "repository": {
     "type": "git",
@@ -25,26 +26,27 @@
   },
   "homepage": "https://github.com/hydrabolt/discord.js#readme",
   "dependencies": {
-    "superagent": "^2.3.0",
+    "superagent": "^3.3.0",
     "unpipe": "^1.0.0",
     "ws": "^1.1.1"
   },
   "devDependencies": {
+    "babel-preset-latest": "^6.22.0",
     "colors": "^1.1.2",
-    "eslint": "^1.10.3",
-    "grunt": "^0.4.5",
-    "grunt-babel": "<6.0.0",
-    "grunt-browserify": "^4.0.1",
-    "grunt-contrib-uglify": "^0.11.0",
+    "eslint": "^3.0",
+    "grunt": "^1.0.1",
+    "grunt-babel": "^6.0.0",
+    "grunt-browserify": "^5.0.0",
+    "grunt-contrib-uglify": "^2.0.0",
     "load-grunt-tasks": "^3.4.0",
-    "mocha": "^2.4.5"
+    "mocha": "^3.2.0"
   },
   "optionalDependencies": {
     "node-opus": "^0.2.2",
     "tweetnacl": "^0.14.3"
   },
   "engines": {
-    "node": ">=0.12.7"
+    "node": ">=4.0"
   },
   "browser": {
     "./src/Util/TokenCacher.js": "./src/Util/TokenCacher-shim.js",

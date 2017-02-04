@@ -225,6 +225,9 @@ export default class Resolver {
 				return Promise.resolve(server.webhooks.get("id", resource));
 			}
 		}
+		if (typeof resource === "object" && resource.hasOwnProperty("id") && resource.hasOwnProperty("token")) {
+			return Promise.resolve(resource);
+		}
 
 		var error = new Error("Could not resolve webhook");
 		error.resource = resource;

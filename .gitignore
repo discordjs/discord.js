@@ -38,3 +38,6 @@ node_modules
 test/auth.json
 examples/auth.json
 docs/_build
+
+# IDE specific config files
+.idea
