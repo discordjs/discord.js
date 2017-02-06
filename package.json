@@ -44,7 +44,8 @@
     "bufferutil": "^1.3.0",
     "erlpack": "hammerandchisel/erlpack",
     "node-opus": "^0.2.0",
-    "opusscript": "^0.0.2",
+    "opusscript": "^0.0.1",
+    "sodium": "^2.0.2",
     "uws": "^0.12.0"
   },
   "devDependencies": {
@@ -64,7 +65,8 @@
     "prism-media": false,
     "opusscript": false,
     "node-opus": false,
-    "tweet-nacl": false,
+    "tweetnacl": false,
+    "sodium": false,
     "src/sharding/Shard.js": false,
     "src/sharding/ShardClientUtil.js": false,
     "src/sharding/ShardingManager.js": false,
