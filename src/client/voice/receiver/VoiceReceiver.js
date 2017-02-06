@@ -1,5 +1,5 @@
 const EventEmitter = require('events').EventEmitter;
-const NaCl = require('tweetnacl');
+const secretbox = require('../util/Secretbox');
 const Readable = require('./VoiceReadable');
 
 const nonce = new Buffer(24);
@@ -117,7 +117,7 @@ class VoiceReceiver extends EventEmitter {
 
   handlePacket(msg, user) {
     msg.copy(nonce, 0, 0, 12);
-    let data = NaCl.secretbox.open(msg.slice(12), nonce, this.voiceConnection.authentication.secretKey.key);
+    let data = secretbox.open(msg.slice(12), nonce, this.voiceConnection.authentication.secretKey.key);
     if (!data) {
       /**
        * Emitted whenever a voice packet cannot be decrypted
