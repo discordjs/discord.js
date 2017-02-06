@@ -6,7 +6,7 @@ try {
   };
 } catch (e) {
   const tweetnacl = require('tweetnacl');
-  module.exporpts = {
+  module.exports = {
     open: tweetnacl.secretbox.open,
     close: tweetnacl.secretbox,
   };
