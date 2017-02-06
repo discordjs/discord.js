@@ -9075,6 +9075,7 @@ module.exports = {
 		"erlpack": "hammerandchisel/erlpack",
 		"node-opus": "^0.2.0",
 		"opusscript": "^0.0.2",
+		"sodium": "^2.0.1",
 		"uws": "^0.12.0"
 	},
 	"devDependencies": {
@@ -9095,6 +9096,7 @@ module.exports = {
 		"opusscript": false,
 		"node-opus": false,
 		"tweet-nacl": false,
+		"sodium": false,
 		"src/sharding/Shard.js": false,
 		"src/sharding/ShardClientUtil.js": false,
 		"src/sharding/ShardingManager.js": false,
@@ -9112,6 +9114,7 @@ module.exports = {
 		"src/client/voice/receiver/VoiceReadable.js": false,
 		"src/client/voice/receiver/VoiceReceiver.js": false,
 		"src/client/voice/util/SecretKey.js": false,
+		"src/client/voice/util/Secretbox.js": false,
 		"src/client/voice/ClientVoiceManager.js": false,
 		"src/client/voice/VoiceConnection.js": false,
 		"src/client/voice/VoiceUDPClient.js": false,
