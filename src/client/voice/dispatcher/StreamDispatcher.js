@@ -1,6 +1,7 @@
 const VolumeInterface = require('../util/VolumeInterface');
-const NaCl = require('tweetnacl');
 const VoiceBroadcast = require('../VoiceBroadcast');
+
+const secretbox = require('../util/Secretbox');
 
 const nonce = Buffer.alloc(24);
 nonce.fill(0);
@@ -149,7 +150,7 @@ class StreamDispatcher extends VolumeInterface {
     packetBuffer.writeUIntBE(this.player.voiceConnection.authentication.ssrc, 8, 4);
 
     packetBuffer.copy(nonce, 0, 0, 12);
-    buffer = NaCl.secretbox(buffer, nonce, this.player.voiceConnection.authentication.secretKey.key);
+    buffer = secretbox.close(buffer, nonce, this.player.voiceConnection.authentication.secretKey.key);
     for (let i = 0; i < buffer.length; i++) packetBuffer[i + 12] = buffer[i];
 
     return packetBuffer;
