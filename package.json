@@ -84,6 +84,7 @@
     "src/client/voice/receiver/VoiceReadable.js": false,
     "src/client/voice/receiver/VoiceReceiver.js": false,
     "src/client/voice/util/SecretKey.js": false,
+    "src/client/voice/util/Secretbox.js": false,
     "src/client/voice/ClientVoiceManager.js": false,
     "src/client/voice/VoiceConnection.js": false,
     "src/client/voice/VoiceUDPClient.js": false,
