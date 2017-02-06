@@ -45,7 +45,7 @@ class ClientDataManager {
     return user;
   }
 
-  newChannel(data, guild) {
+  newChannel(data, guild, force) {
     const already = this.client.channels.has(data.id);
     let channel;
     if (data.type === Constants.ChannelTypes.DM) {
@@ -66,7 +66,7 @@ class ClientDataManager {
     }
 
     if (channel) {
-      if (this.pastReady(guild ? guild.shardID : data.shardID) && !already) {
+      if ((force || this.pastReady(guild ? guild.shardID : data.shardID)) && !already) {
         this.client.emit(Constants.Events.CHANNEL_CREATE, channel);
       }
       this.client.channels.set(channel.id, channel);

@@ -193,7 +193,7 @@ class RESTMethods {
       name: channelName,
       type: channelType,
       permission_overwrites: overwrites,
-    }).then(data => this.client.actions.ChannelCreate.handle(data).channel);
+    }).then(data => this.client.actions.ChannelCreate.handle(data, guild).channel);
   }
 
   createDM(recipient) {
@@ -201,7 +201,7 @@ class RESTMethods {
     if (dmChannel) return Promise.resolve(dmChannel);
     return this.rest.makeRequest('post', Constants.Endpoints.userChannels(this.client.user.id), true, {
       recipient_id: recipient.id,
-    }).then(data => this.client.actions.ChannelCreate.handle(data).channel);
+    }).then(data => this.client.actions.ChannelCreate.handle(data, null, true).channel);
   }
 
   getExistingDM(recipient) {

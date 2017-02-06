@@ -1,9 +1,9 @@
 const Action = require('./Action');
 
 class ChannelCreateAction extends Action {
-  handle(data) {
+  handle(data, guild, force) {
     const client = this.client;
-    const channel = client.dataManager.newChannel(data);
+    const channel = client.dataManager.newChannel(data, guild, force);
     return {
       channel,
     };
