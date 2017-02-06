@@ -63,7 +63,7 @@
     "erlpack": false,
     "opusscript": false,
     "node-opus": false,
-    "tweet-nacl": false,
+    "tweetnacl": false,
     "sodium": false,
     "src/sharding/Shard.js": false,
     "src/sharding/ShardClientUtil.js": false,
