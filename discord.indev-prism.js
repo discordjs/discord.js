@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 172);
+/******/ 	return __webpack_require__(__webpack_require__.s = 173);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -75,24 +75,25 @@
 /**
  * Options for a Client.
  * @typedef {Object} ClientOptions
- * @property {string} [apiRequestMethod='sequential'] 'sequential' or 'burst'. Sequential executes all requests in
- * the order they are triggered, whereas burst runs multiple at a time, and doesn't guarantee a particular order.
- * @property {number} [shardId=0] The ID of this shard
- * @property {number} [shardCount=0] The number of shards
+ * @property {string} [apiRequestMethod='sequential'] One of `sequential` or `burst`. The sequential handler executes
+ * all requests in the order they are triggered, whereas the burst handler runs multiple in parallel, and doesn't
+ * provide the guarantee of any particular order.
+ * @property {number} [shardId=0] ID of the shard to run
+ * @property {number} [shardCount=0] Total number of shards
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
  * (-1 or Infinity for unlimited - don't do this without message sweeping, otherwise memory usage will climb
  * indefinitely)
- * @property {number} [messageCacheLifetime=0] How long until a message should be uncached by the message sweeping
- * (in seconds, 0 for forever)
+ * @property {number} [messageCacheLifetime=0] How long a message should stay in the cache until it is considered
+ * sweepable (in seconds, 0 for forever)
  * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
  * the message cache lifetime (in seconds, 0 for never)
  * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup, as well as
- * upon joining a guild
- * @property {boolean} [disableEveryone=false] Default value for MessageOptions.disableEveryone
- * @property {boolean} [sync=false] Whether to periodically sync guilds (for userbots)
+ * upon joining a guild (should be avoided whenever possible)
+ * @property {boolean} [disableEveryone=false] Default value for {@link MessageOptions#disableEveryone}
+ * @property {boolean} [sync=false] Whether to periodically sync guilds (for user accounts)
  * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
  * corresponding websocket events
- * @property {number} [restTimeOffset=500] The extra time in millseconds to wait before continuing to make REST
+ * @property {number} [restTimeOffset=500] Extra time in millseconds to wait before continuing to make REST
  * requests (higher values will reduce rate-limiting errors on bad connections)
  * @property {WSEventType[]} [disabledEvents] An array of disabled websocket events. Events in this array will not be
  * processed, potentially resulting in performance improvements for larger bots. Only disable events you are
@@ -115,11 +116,11 @@ exports.DefaultOptions = {
   restTimeOffset: 500,
 
   /**
-   * Websocket options. These are left as snake_case to match the API.
+   * Websocket options (these are left as snake_case to match the API)
    * @typedef {Object} WebsocketOptions
    * @property {number} [large_threshold=250] Number of members in a guild to be considered large
-   * @property {boolean} [compress=true] Whether to compress data sent on the connection.
-   * Defaults to `false` for browsers.
+   * @property {boolean} [compress=true] Whether to compress data sent on the connection
+   * (defaults to `false` for browsers)
    */
   ws: {
     large_threshold: 250,
@@ -1540,7 +1541,7 @@ class Role {
     this.hoist = data.hoist;
 
     /**
-     * The position of the role in the role manager
+     * The position of the role from the API
      * @type {number}
      */
     this.position = data.position;
@@ -1612,6 +1613,16 @@ class Role {
     const clientMember = this.guild.member(this.client.user);
     if (!clientMember.hasPermission(Constants.PermissionFlags.MANAGE_ROLES_OR_PERMISSIONS)) return false;
     return clientMember.highestRole.comparePositionTo(this) > 0;
+  }
+
+  /**
+   * The position of the role in the role manager
+   * @type {number}
+   */
+  get calculatedPosition() {
+    const sorted = this.guild.roles.array()
+      .sort((r1, r2) => r1.position !== r2.position ? r1.position - r2.position : r1.id - r2.id);
+    return sorted.indexOf(sorted.find(r => r.id === this.id));
   }
 
   /**
@@ -1738,6 +1749,7 @@ class Role {
   /**
    * Set the position of the role
    * @param {number} position The position of the role
+   * @param {boolean} [relative=false] Move the position relative to its current value
    * @returns {Promise<Role>}
    * @example
    * // set the position of the role
@@ -1745,8 +1757,8 @@ class Role {
    *  .then(r => console.log(`Role position: ${r.position}`))
    *  .catch(console.error);
    */
-  setPosition(position) {
-    return this.guild.setRolePosition(this, position).then(() => this);
+  setPosition(position, relative) {
+    return this.guild.setRolePosition(this, position, relative).then(() => this);
   }
 
   /**
@@ -2326,7 +2338,7 @@ class GuildMember {
 
   /**
    * Sets the roles applied to the member.
-   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to apply
+   * @param {Collection<Snowflake, Role>|Role[]|string[]} roles The roles or role IDs to apply
    * @returns {Promise<GuildMember>}
    */
   setRoles(roles) {
@@ -2345,7 +2357,7 @@ class GuildMember {
 
   /**
    * Adds multiple roles to the member.
-   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to add
+   * @param {Collection<Snowflake, Role>|Role[]|string[]} roles The roles or role IDs to add
    * @returns {Promise<GuildMember>}
    */
   addRoles(roles) {
@@ -2371,7 +2383,7 @@ class GuildMember {
 
   /**
    * Removes multiple roles from the member.
-   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to remove
+   * @param {Collection<Snowflake, Role>|Role[]|string[]} roles The roles or role IDs to remove
    * @returns {Promise<GuildMember>}
    */
   removeRoles(roles) {
@@ -5036,7 +5048,7 @@ class TextBasedChannel {
   /**
    * Gets the past messages sent in this channel. Resolves with a collection mapping message ID's to Message objects.
    * @param {ChannelLogsQueryOptions} [options={}] Query parameters to pass in
-   * @returns {Promise<Collection<string, Message>>}
+   * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
    * // get messages
    * channel.fetchMessages({limit: 10})
@@ -5057,7 +5069,7 @@ class TextBasedChannel {
 
   /**
    * Fetches the pinned messages of this channel and returns a collection of them.
-   * @returns {Promise<Collection<string, Message>>}
+   * @returns {Promise<Collection<Snowflake, Message>>}
    */
   fetchPinnedMessages() {
     return this.client.rest.methods.getChannelPinnedMessages(this).then(data => {
@@ -5184,7 +5196,7 @@ class TextBasedChannel {
    * filter.
    * @param {CollectorFilterFunction} filter The filter function to use
    * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector
-   * @returns {Promise<Collection<string, Message>>}
+   * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
    * // await !vote messages
    * const filter = m => m.content.startsWith('!vote');
@@ -5209,9 +5221,9 @@ class TextBasedChannel {
   /**
    * Bulk delete given messages that are newer than two weeks
    * <warn>This is only available when using a bot account.</warn>
-   * @param {Collection<string, Message>|Message[]|number} messages Messages to delete, or number of messages to delete
+   * @param {Collection<Snowflake, Message>|Message[]|number} messages Messages or number of messages to delete
    * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
-   * @returns {Promise<Collection<string, Message>>} Deleted messages
+   * @returns {Promise<Collection<Snowflake, Message>>} Deleted messages
    */
   bulkDelete(messages, filterOld = false) {
     if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs));
@@ -5320,6 +5332,7 @@ const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const cloneObject = __webpack_require__(4);
 const arraysEqual = __webpack_require__(162);
+const moveElementInArray = __webpack_require__(163);
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -5613,7 +5626,7 @@ class Guild {
 
   /**
    * Fetch a collection of banned users in this guild.
-   * @returns {Promise<Collection<string, User>>}
+   * @returns {Promise<Collection<Snowflake, User>>}
    */
   fetchBans() {
     return this.client.rest.methods.getGuildBans(this);
@@ -5629,7 +5642,7 @@ class Guild {
 
   /**
    * Fetch all webhooks for the guild.
-   * @returns {Collection<Webhook>}
+   * @returns {Collection<Snowflake, Webhook>}
    */
   fetchWebhooks() {
     return this.client.rest.methods.getGuildWebhooks(this);
@@ -5956,9 +5969,10 @@ class Guild {
    * Set the position of a role in this guild
    * @param {string|Role} role the role to edit, can be a role object or a role ID.
    * @param {number} position the new position of the role
+   * @param {boolean} [relative=false] Position moves the role relative to its current position
    * @returns {Promise<Guild>}
    */
-  setRolePosition(role, position) {
+  setRolePosition(role, position, relative = false) {
     if (typeof role === 'string') {
       role = this.roles.get(role);
       if (!role) return Promise.reject(new Error('Supplied role is not a role or string.'));
@@ -5967,27 +5981,12 @@ class Guild {
     position = Number(position);
     if (isNaN(position)) return Promise.reject(new Error('Supplied position is not a number.'));
 
-    const lowestAffected = Math.min(role.position, position);
-    const highestAffected = Math.max(role.position, position);
+    let updatedRoles = Object.assign([], this.roles.array()
+      .sort((r1, r2) => r1.position !== r2.position ? r1.position - r2.position : r1.id - r2.id));
 
-    const rolesToUpdate = this.roles.filter(r => r.position >= lowestAffected && r.position <= highestAffected);
+    moveElementInArray(updatedRoles, role, position, relative);
 
-    // stop role positions getting stupidly inflated
-    if (position > role.position) {
-      position = rolesToUpdate.first().position;
-    } else {
-      position = rolesToUpdate.last().position;
-    }
-
-    const updatedRoles = [];
-
-    for (const uRole of rolesToUpdate.values()) {
-      updatedRoles.push({
-        id: uRole.id,
-        position: uRole.id === role.id ? position : uRole.position + (position < role.position ? 1 : -1),
-      });
-    }
-
+    updatedRoles = updatedRoles.map((r, i) => ({ id: r.id, position: i }));
     return this.client.rest.methods.setRolePositions(this.id, updatedRoles);
   }
 
@@ -6263,10 +6262,12 @@ class GuildChannel extends Channel {
     for (const role of roles.values()) permissions |= role.permissions;
 
     const overwrites = this.overwritesFor(member, true, roles);
+    let allow = 0;
     for (const overwrite of overwrites.role.concat(overwrites.member)) {
       permissions &= ~overwrite.deny;
-      permissions |= overwrite.allow;
+      allow |= overwrite.allow;
     }
+    permissions |= allow;
 
     const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
     if (admin) permissions = Constants.ALL_PERMISSIONS;
@@ -6449,10 +6450,12 @@ class GuildChannel extends Channel {
    * Clone this channel
    * @param {string} [name=this.name] Optional name for the new channel, otherwise it has the name of this channel
    * @param {boolean} [withPermissions=true] Whether to clone the channel with this channel's permission overwrites
+   * @param {boolean} [withTopic=true] Whether to clone the channel with this channel's topic
    * @returns {Promise<GuildChannel>}
    */
-  clone(name = this.name, withPermissions = true) {
-    return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : []);
+  clone(name = this.name, withPermissions = true, withTopic = true) {
+    return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : [])
+      .then(channel => withTopic ? channel.setTopic(this.topic) : channel);
   }
 
   /**
@@ -9065,13 +9068,13 @@ module.exports = {
 		"@types/node": "^7.0.0",
 		"long": "^3.2.0",
 		"pako": "^1.0.0",
-		"prism-media": "hydrabolt/prism-media#master",
-		"superagent": "^3.3.0",
+		"prism-media": "hydrabolt/prism-media",
+		"superagent": "^3.4.0",
 		"tweetnacl": "^0.14.0",
 		"ws": "^2.0.0"
 	},
 	"peerDependencies": {
-		"bufferutil": "^1.3.0",
+		"bufferutil": "^2.0.0",
 		"erlpack": "hammerandchisel/erlpack",
 		"node-opus": "^0.2.0",
 		"opusscript": "^0.0.2",
@@ -9095,7 +9098,7 @@ module.exports = {
 		"prism-media": false,
 		"opusscript": false,
 		"node-opus": false,
-		"tweet-nacl": false,
+		"tweetnacl": false,
 		"sodium": false,
 		"src/sharding/Shard.js": false,
 		"src/sharding/ShardClientUtil.js": false,
@@ -10070,7 +10073,7 @@ class MessageCollector extends EventEmitter {
     this.channel.client.removeListener('message', this.listener);
     /**
      * Emitted when the Collector stops collecting.
-     * @param {Collection<string, Message>} collection A collection of messages collected
+     * @param {Collection<Snowflake, Message>} collection A collection of messages collected
      * during the lifetime of the collector, mapped by the ID of the messages.
      * @param {string} reason The reason for the end of the collector. If it ended because it reached the specified time
      * limit, this would be `time`. If you invoke `.stop()` without specifying a reason, this would be `user`. If it
@@ -12745,16 +12748,16 @@ const RESTManager = __webpack_require__(54);
 const ClientDataManager = __webpack_require__(87);
 const ClientManager = __webpack_require__(88);
 const ClientDataResolver = __webpack_require__(29);
-const ClientVoiceManager = __webpack_require__(166);
+const ClientVoiceManager = __webpack_require__(167);
 const WebSocketManager = __webpack_require__(123);
 const ActionsManager = __webpack_require__(89);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(7).Presence;
-const ShardClientUtil = __webpack_require__(165);
+const ShardClientUtil = __webpack_require__(166);
 const VoiceBroadcast = __webpack_require__(121);
 
 /**
- * The starting point for making a Discord Bot.
+ * The main hub for interacting with the Discord API, and the starting point for any bot.
  * @extends {EventEmitter}
  */
 class Client extends EventEmitter {
@@ -12825,39 +12828,43 @@ class Client extends EventEmitter {
     this.voice = !this.browser ? new ClientVoiceManager(this) : null;
 
     /**
-     * The shard helpers for the client (only if the process was spawned as a child, such as from a ShardingManager)
+     * The shard helpers for the client
+     * (only if the process was spawned as a child, such as from a {@link ShardingManager})
      * @type {?ShardClientUtil}
      */
     this.shard = process.send ? ShardClientUtil.singleton(this) : null;
 
     /**
-     * A collection of the Client's stored users
-     * @type {Collection<string, User>}
+     * All of the {@link User} objects that have been cached at any point, mapped by their IDs
+     * @type {Collection<Snowflake, User>}
      */
     this.users = new Collection();
 
     /**
-     * A collection of the Client's stored guilds
-     * @type {Collection<string, Guild>}
+     * All of the guilds the client is currently handling, mapped by their IDs -
+     * as long as sharding isn't being used, this will be *every* guild the bot is a member of
+     * @type {Collection<Snowflake, Guild>}
      */
     this.guilds = new Collection();
 
     /**
-     * A collection of the Client's stored channels
-     * @type {Collection<string, Channel>}
+     * All of the {@link Channel}s that the client is currently handling, mapped by their IDs -
+     * as long as sharding isn't being used, this will be *every* channel in *every* guild, and all DM channels
+     * @type {Collection<Snowflake, Channel>}
      */
     this.channels = new Collection();
 
     /**
-     * A collection of presences for friends of the logged in user.
+     * Presences that have been received for the client user's friends, mapped by user IDs
      * <warn>This is only filled when using a user account.</warn>
-     * @type {Collection<string, Presence>}
+     * @type {Collection<Snowflake, Presence>}
      */
     this.presences = new Collection();
 
     if (!this.token && 'CLIENT_TOKEN' in process.env) {
       /**
-       * The authorization token for the logged in user/bot.
+       * Authorization token for the logged in user/bot
+       * <warn>This should be kept private at all times.</warn>
        * @type {?string}
        */
       this.token = process.env.CLIENT_TOKEN;
@@ -12866,25 +12873,26 @@ class Client extends EventEmitter {
     }
 
     /**
-     * The ClientUser representing the logged in Client
+     * User that the client is logged in as
      * @type {?ClientUser}
      */
     this.user = null;
 
     /**
-     * The date at which the Client was regarded as being in the `READY` state.
+     * Time at which the client was last regarded as being in the `READY` state
+     * (each time the client disconnects and successfully reconnects, this will be overwritten)
      * @type {?Date}
      */
     this.readyAt = null;
 
     /**
-     * An array of voice broadcasts
+     * Active voice broadcasts that have been created
      * @type {VoiceBroadcast[]}
      */
     this.broadcasts = [];
 
     /**
-     * The previous heartbeat pings of the websocket (most recent first, limited to three elements)
+     * Previous heartbeat pings of the websocket (most recent first, limited to three elements)
      * @type {number[]}
      */
     this.pings = [];
@@ -12899,7 +12907,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * The status for the logged in Client.
+   * Current status of the client's connection to Discord
    * @type {?number}
    * @readonly
    */
@@ -12908,7 +12916,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * The uptime for the logged in Client.
+   * How long it has been since the client last entered the `READY` state
    * @type {?number}
    * @readonly
    */
@@ -12917,7 +12925,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * The average heartbeat ping of the websocket
+   * Average heartbeat ping of the websocket, obtained by averaging the {@link Client#pings} property
    * @type {number}
    * @readonly
    */
@@ -12926,7 +12934,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Returns a collection, mapping guild ID to voice connections.
+   * All active voice connections that have been established, mapped by channel ID
    * @type {Collection<string, VoiceConnection>}
    * @readonly
    */
@@ -12936,8 +12944,8 @@ class Client extends EventEmitter {
   }
 
   /**
-   * The emojis that the client can use. Mapped by emoji ID.
-   * @type {Collection<string, Emoji>}
+   * All custom emojis that the client has access to, mapped by their IDs
+   * @type {Collection<Snowflake, Emoji>}
    * @readonly
    */
   get emojis() {
@@ -12949,7 +12957,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * The timestamp that the client was last ready at
+   * Timestamp of the time the client was last `READY` at
    * @type {?number}
    * @readonly
    */
@@ -12967,8 +12975,8 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Creates a new voice broadcast
-   * @returns {VoiceBroadcast} the created broadcast
+   * Creates a voice broadcast.
+   * @returns {VoiceBroadcast}
    */
   createVoiceBroadcast() {
     const broadcast = new VoiceBroadcast(this);
@@ -12977,28 +12985,22 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Logs the client in. If successful, resolves with the account's token. <warn>If you're making a bot, it's
-   * much better to use a bot account rather than a user account.
-   * Bot accounts have higher rate limits and have access to some features user accounts don't have. User bots
-   * that are making a lot of API requests can even be banned.</warn>
-   * @param  {string} token The token used for the account.
-   * @returns {Promise<string>}
+   * Logs the client in, establishing a websocket connection to Discord.
+   * <info>Both bot and regular user accounts are supported, but it is highly recommended to use a bot account whenever
+   * possible. User accounts are subject to harsher ratelimits and other restrictions that don't apply to bot accounts.
+   * Bot accounts also have access to many features that user accounts cannot utilise. User accounts that are found to
+   * be abusing/overusing the API will be banned, locking you out of Discord entirely.</info>
+   * @param {string} token Token of the account to log in with
+   * @returns {Promise<string>} Token of the account used
    * @example
-   * // log the client in using a token
-   * const token = 'my token';
-   * client.login(token);
-   * @example
-   * // log the client in using email and password
-   * const email = 'user@email.com';
-   * const password = 'supersecret123';
-   * client.login(email, password);
+   * client.login('my token');
    */
   login(token) {
     return this.rest.methods.login(token);
   }
 
   /**
-   * Destroys the client and logs out.
+   * Logs out, terminates the connection to Discord, and destroys the client
    * @returns {Promise}
    */
   destroy() {
@@ -13010,10 +13012,10 @@ class Client extends EventEmitter {
   }
 
   /**
-   * This shouldn't really be necessary to most developers as it is automatically invoked every 30 seconds, however
-   * if you wish to force a sync of guild data, you can use this.
+   * Requests a sync of guild data with Discord.
+   * <info>This can be done automatically every 30 seconds by enabling {@link ClientOptions#sync}.</info>
    * <warn>This is only available when using a user account.</warn>
-   * @param {Guild[]|Collection<string, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
+   * @param {Guild[]|Collection<Snowflake, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
    */
   syncGuilds(guilds = this.guilds) {
     if (this.user.bot) return;
@@ -13024,10 +13026,10 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Caches a user, or obtains it from the cache if it's already cached.
+   * Obtains a user from Discord, or the user cache if it's already available.
    * <warn>This is only available when using a bot account.</warn>
-   * @param {string} id The ID of the user to obtain
-   * @param {boolean} [cache=true] Insert the user into the users cache
+   * @param {string} id ID of the user
+   * @param {boolean} [cache=true] Whether to cache the new user object if it isn't already
    * @returns {Promise<User>}
    */
   fetchUser(id, cache = true) {
@@ -13036,8 +13038,8 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Fetches an invite object from an invite code.
-   * @param {InviteResolvable} invite An invite code or URL
+   * Obtains an invite from Discord.
+   * @param {InviteResolvable} invite Invite code or URL
    * @returns {Promise<Invite>}
    */
   fetchInvite(invite) {
@@ -13046,7 +13048,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Fetch a webhook by ID.
+   * Obtains a webhook from Discord.
    * @param {string} id ID of the webhook
    * @param {string} [token] Token for the webhook
    * @returns {Promise<Webhook>}
@@ -13056,7 +13058,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Fetch available voice regions
+   * Obtains the available voice regions from Discord.
    * @returns {Collection<string, VoiceRegion>}
    */
   fetchVoiceRegions() {
@@ -13064,10 +13066,10 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Sweeps all channels' messages and removes the ones older than the max message lifetime.
+   * Sweeps all text-based channels' messages and removes the ones older than the max message lifetime.
    * If the message has been edited, the time of the edit is used rather than the time of the original message.
    * @param {number} [lifetime=this.options.messageCacheLifetime] Messages that are older than this (in seconds)
-   * will be removed from the caches. The default is based on the client's `messageCacheLifetime` option.
+   * will be removed from the caches. The default is based on {@link ClientOptions#messageCacheLifetime}.
    * @returns {number} Amount of messages that were removed from the caches,
    * or -1 if the message cache lifetime is unlimited
    */
@@ -13100,7 +13102,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Gets the bot's OAuth2 application.
+   * Obtains the OAuth Application of the bot from Discord.
    * <warn>This is only available when using a bot account.</warn>
    * @returns {Promise<ClientOAuth2Application>}
    */
@@ -13110,9 +13112,10 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Generate an invite link for your bot
-   * @param {PermissionResolvable[]|number} [permissions] An array of permissions to request
-   * @returns {Promise<string>} The invite link
+   * Generates a link that can be used to invite the bot to a guild.
+   * <warn>This is only available when using a bot account.</warn>
+   * @param {PermissionResolvable[]|number} [permissions] Permissions to request
+   * @returns {Promise<string>}
    * @example
    * client.generateInvite(['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'])
    *   .then(link => {
@@ -13177,24 +13180,46 @@ class Client extends EventEmitter {
     this._intervals.delete(interval);
   }
 
+  /**
+   * Adds a ping to {@link Client#pings}.
+   * @param {number} startTime Starting time of the ping
+   * @private
+   */
   _pong(startTime) {
     this.pings.unshift(Date.now() - startTime);
     if (this.pings.length > 3) this.pings.length = 3;
     this.ws.lastHeartbeatAck = true;
   }
 
+  /**
+   * Adds/updates a friend's presence in {@link Client#presences}.
+   * @param {string} id ID of the user
+   * @param {Object} presence Raw presence object from Discord
+   * @private
+   */
   _setPresence(id, presence) {
-    if (this.presences.get(id)) {
+    if (this.presences.has(id)) {
       this.presences.get(id).update(presence);
       return;
     }
     this.presences.set(id, new Presence(presence));
   }
 
+  /**
+   * Calls `eval(script)` with the client as `this`.
+   * @param {string} script Script to eval
+   * @returns {*}
+   * @private
+   */
   _eval(script) {
     return eval(script);
   }
 
+  /**
+   * Validates client options
+   * @param {ClientOptions} [options=this.options] Options to validate
+   * @private
+   */
   _validateOptions(options = this.options) {
     if (typeof options.shardCount !== 'number' || isNaN(options.shardCount)) {
       throw new TypeError('The shardCount option must be a number.');
@@ -13509,7 +13534,7 @@ const botGateway = __webpack_require__(0).Endpoints.botGateway;
  * @param {number} [guildsPerShard=1000] Number of guilds per shard
  * @returns {Promise<number>} the recommended number of shards
  */
-module.exports = function fetchRecommendedShards(token, guildsPerShard = 1000) {
+function fetchRecommendedShards(token, guildsPerShard = 1000) {
   return new Promise((resolve, reject) => {
     if (!token) throw new Error('A token must be provided.');
     superagent.get(botGateway)
@@ -13519,7 +13544,9 @@ module.exports = function fetchRecommendedShards(token, guildsPerShard = 1000) {
         resolve(res.body.shards * (1000 / guildsPerShard));
       });
   });
-};
+}
+
+module.exports = fetchRecommendedShards;
 
 
 /***/ }),
@@ -21775,6 +21802,7 @@ class GuildRoleCreate extends Action {
       const role = new Role(guild, data.role);
       guild.roles.set(role.id, role);
       if (!already) client.emit(Constants.Events.GUILD_ROLE_CREATE, role);
+
       return {
         role,
       };
@@ -22470,9 +22498,9 @@ const querystring = __webpack_require__(80);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const splitMessage = __webpack_require__(46);
-const parseEmoji = __webpack_require__(163);
+const parseEmoji = __webpack_require__(164);
 const escapeMarkdown = __webpack_require__(23);
-const transformSearchOptions = __webpack_require__(164);
+const transformSearchOptions = __webpack_require__(165);
 const Snowflake = __webpack_require__(18);
 
 const User = __webpack_require__(6);
@@ -22536,8 +22564,10 @@ class RESTMethods {
         if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
           content = escapeMarkdown(this.client.resolver.resolveString(content), true);
           content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
-          split.prepend = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n`;
-          split.append = '\n```';
+          if (split) {
+            split.prepend = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n`;
+            split.append = '\n```';
+          }
         }
 
         // Add zero-width spaces to @everyone/@here
@@ -23450,8 +23480,8 @@ module.exports = UserAgentManager;
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {const VolumeInterface = __webpack_require__(122);
-const Prism = __webpack_require__(168);
-const OpusEncoders = __webpack_require__(167);
+const Prism = __webpack_require__(169);
+const OpusEncoders = __webpack_require__(168);
 const Collection = __webpack_require__(3);
 
 const ffmpegArguments = [
@@ -23898,13 +23928,13 @@ if (browser) {
   WebSocket = window.WebSocket; // eslint-disable-line no-undef
 } else {
   try {
-    WebSocket = __webpack_require__(170);
-  } catch (err) {
     WebSocket = __webpack_require__(171);
+  } catch (err) {
+    WebSocket = __webpack_require__(172);
   }
 
   try {
-    erlpack = __webpack_require__(169);
+    erlpack = __webpack_require__(170);
     serialize = erlpack.pack;
   } catch (err) {
     erlpack = null;
@@ -24745,7 +24775,7 @@ class GuildMembersChunkHandler extends AbstractHandler {
 /**
  * Emitted whenever a chunk of guild members is received (all members come from the same guild)
  * @event Client#guildMembersChunk
- * @param {Collection<GuildMember>} members The members in the chunk
+ * @param {Collection<Snowflake, GuildMember>} members The members in the chunk
  * @param {Guild} guild The guild related to the member chunk
  */
 
@@ -24904,7 +24934,7 @@ class MessageDeleteBulkHandler extends AbstractHandler {
 /**
  * Emitted whenever messages are deleted in bulk
  * @event Client#messageDeleteBulk
- * @param {Collection<string, Message>} messages The deleted messages, mapped by their ID
+ * @param {Collection<Snowflake, Message>} messages The deleted messages, mapped by their ID
  */
 
 module.exports = MessageDeleteBulkHandler;
@@ -25457,13 +25487,13 @@ class UserProfile {
 
     /**
      * Guilds that the client user and the user share
-     * @type {Collection<Guild>}
+     * @type {Collection<Snowflake, Guild>}
      */
     this.mutualGuilds = new Collection();
 
     /**
      * The user's connections
-     * @type {Collection<UserConnection>}
+     * @type {Collection<String, UserConnection>}
      */
     this.connections = new Collection();
 
@@ -25577,6 +25607,29 @@ module.exports = function arraysEqual(a, b) {
 /* 163 */
 /***/ (function(module, exports) {
 
+/**
+ * Moves an element in an array *in place*
+ * @param {Array} array Array to modify
+ * @param {*} element Element to move
+ * @param {number} newIndex Index or offset to move the element to
+ * @param {boolean} [offset=false] Move the element by an offset amount rather than to a set index
+ * @returns {Array}
+ */
+module.exports = function moveElementInArray(array, element, newIndex, offset = false) {
+  const index = array.indexOf(element);
+  newIndex = (offset ? index : 0) + newIndex;
+  if (newIndex > -1 && newIndex < array.length) {
+    const removedElement = array.splice(index, 1)[0];
+    array.splice(newIndex, 0, removedElement);
+  }
+  return array;
+};
+
+
+/***/ }),
+/* 164 */
+/***/ (function(module, exports) {
+
 module.exports = function parseEmoji(text) {
   if (text.includes('%')) {
     text = decodeURIComponent(text);
@@ -25594,7 +25647,7 @@ module.exports = function parseEmoji(text) {
 
 
 /***/ }),
-/* 164 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const long = __webpack_require__(47);
@@ -25675,12 +25728,6 @@ module.exports = function TransformSearchOptions(options, client) {
 
 
 /***/ }),
-/* 165 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
 /* 166 */
 /***/ (function(module, exports) {
 
@@ -25718,6 +25765,12 @@ module.exports = function TransformSearchOptions(options, client) {
 
 /***/ }),
 /* 172 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = {
