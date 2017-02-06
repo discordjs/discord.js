@@ -3,7 +3,7 @@ const botGateway = require('./Constants').Endpoints.botGateway;
 
 /**
  * Gets the recommended shard count from Discord
- * @param {string} token Discord auth token
+ * @param {number} token Discord auth token
  * @returns {Promise<number>} the recommended number of shards
  */
 module.exports = function fetchRecommendedShards(token) {
