@@ -64,10 +64,12 @@ class GuildChannel extends Channel {
     for (const role of roles.values()) permissions |= role.permissions;
 
     const overwrites = this.overwritesFor(member, true, roles);
+    let allow = 0;
     for (const overwrite of overwrites.role.concat(overwrites.member)) {
       permissions &= ~overwrite.deny;
-      permissions |= overwrite.allow;
+      allow |= overwrite.allow;
     }
+    permissions |= allow;
 
     const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
     if (admin) permissions = Constants.ALL_PERMISSIONS;
@@ -250,10 +252,12 @@ class GuildChannel extends Channel {
    * Clone this channel
    * @param {string} [name=this.name] Optional name for the new channel, otherwise it has the name of this channel
    * @param {boolean} [withPermissions=true] Whether to clone the channel with this channel's permission overwrites
+   * @param {boolean} [withTopic=true] Whether to clone the channel with this channel's topic
    * @returns {Promise<GuildChannel>}
    */
-  clone(name = this.name, withPermissions = true) {
-    return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : []);
+  clone(name = this.name, withPermissions = true, withTopic = true) {
+    return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : [])
+      .then(channel => withTopic ? channel.setTopic(this.topic) : channel);
   }
 
   /**
