@@ -4,7 +4,7 @@ try {
     open: sodium.api.crypto_secretbox_open,
     close: sodium.api.crypto_secretbox,
   };
-} catch (e) {
+} catch (err) {
   const tweetnacl = require('tweetnacl');
   module.exports = {
     open: tweetnacl.secretbox.open,
