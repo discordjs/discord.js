@@ -9,17 +9,19 @@ class Collection extends Map {
 
     /**
      * Cached array for the `array()` method - will be reset to `null` whenever `set()` or `delete()` are called.
+     * @name Collection#_array
      * @type {?Array}
      * @private
      */
-    this._array = null;
+    Object.defineProperty(this, '_array', { value: null, writable: true, configurable: true });
 
     /**
      * Cached array for the `keyArray()` method - will be reset to `null` whenever `set()` or `delete()` are called.
+     * @name Collection#_keyArray
      * @type {?Array}
      * @private
      */
-    this._keyArray = null;
+    Object.defineProperty(this, '_keyArray', { value: null, writable: true, configurable: true });
   }
 
   set(key, val) {
@@ -135,7 +137,8 @@ class Collection extends Map {
    * Searches for a single item where its specified property's value is identical to the given value
    * (`item[prop] === value`), or the given function returns a truthy value. In the latter case, this is identical to
    * [Array.find()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find).
-   * <warn>Do not use this to obtain an item by its ID. Instead, use `collection.get(id)`. See
+   * <warn>All collections used in Discord.js are mapped using their `id` property, and if you want to find by id you
+   * should use the `get` method. See
    * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get) for details.</warn>
    * @param {string|Function} propOrFn The property to test against, or the function to test with
    * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
@@ -148,7 +151,6 @@ class Collection extends Map {
   find(propOrFn, value) {
     if (typeof propOrFn === 'string') {
       if (typeof value === 'undefined') throw new Error('Value must be specified.');
-      if (propOrFn === 'id') throw new RangeError('Don\'t use .find() with IDs. Instead, use .get(id).');
       for (const item of this.values()) {
         if (item[propOrFn] === value) return item;
       }

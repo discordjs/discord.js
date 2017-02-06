@@ -7,6 +7,7 @@ const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const cloneObject = require('../util/CloneObject');
 const arraysEqual = require('../util/ArraysEqual');
+const moveElementInArray = require('../util/MoveElementInArray');
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -25,25 +26,25 @@ class Guild {
 
     /**
      * A collection of members that are in this guild. The key is the member's ID, the value is the member.
-     * @type {Collection<string, GuildMember>}
+     * @type {Collection<Snowflake, GuildMember>}
      */
     this.members = new Collection();
 
     /**
      * A collection of channels that are in this guild. The key is the channel's ID, the value is the channel.
-     * @type {Collection<string, GuildChannel>}
+     * @type {Collection<Snowflake, GuildChannel>}
      */
     this.channels = new Collection();
 
     /**
      * A collection of roles that are in this guild. The key is the role's ID, the value is the role.
-     * @type {Collection<string, Role>}
+     * @type {Collection<Snowflake, Role>}
      */
     this.roles = new Collection();
 
     /**
      * A collection of presences in this guild
-     * @type {Collection<string, Presence>}
+     * @type {Collection<Snowflake, Presence>}
      */
     this.presences = new Collection();
 
@@ -57,7 +58,7 @@ class Guild {
 
       /**
        * The Unique ID of the Guild, useful for comparisons.
-       * @type {string}
+       * @type {Snowflake}
        */
       this.id = data.id;
     } else {
@@ -106,7 +107,7 @@ class Guild {
      * Whether the guild is "large" (has more than 250 members)
      * @type {boolean}
      */
-    this.large = data.large || this.large;
+    this.large = Boolean('large' in data ? data.large : this.large);
 
     /**
      * An array of guild features.
@@ -116,13 +117,13 @@ class Guild {
 
     /**
      * The ID of the application that created this guild (if applicable)
-     * @type {?string}
+     * @type {?Snowflake}
      */
     this.applicationID = data.application_id;
 
     /**
      * A collection of emojis that are in this guild. The key is the emoji's ID, the value is the emoji.
-     * @type {Collection<string, Emoji>}
+     * @type {Collection<Snowflake, Emoji>}
      */
     this.emojis = new Collection();
     for (const emoji of data.emojis) this.emojis.set(emoji.id, new Emoji(this, emoji));
@@ -169,7 +170,7 @@ class Guild {
     if (data.owner_id) {
       /**
        * The user ID of this guild's owner.
-       * @type {string}
+       * @type {Snowflake}
        */
       this.ownerID = data.owner_id;
     }
@@ -278,8 +279,8 @@ class Guild {
   }
 
   /**
-   * The `#general` GuildChannel of the server.
-   * @type {GuildChannel}
+   * The `#general` TextChannel of the server.
+   * @type {TextChannel}
    * @readonly
    */
   get defaultChannel() {
@@ -300,7 +301,7 @@ class Guild {
 
   /**
    * Fetch a collection of banned users in this guild.
-   * @returns {Promise<Collection<string, User>>}
+   * @returns {Promise<Collection<Snowflake, User>>}
    */
   fetchBans() {
     return this.client.rest.methods.getGuildBans(this);
@@ -316,48 +317,67 @@ class Guild {
 
   /**
    * Fetch all webhooks for the guild.
-   * @returns {Collection<Webhook>}
+   * @returns {Collection<Snowflake, Webhook>}
    */
   fetchWebhooks() {
     return this.client.rest.methods.getGuildWebhooks(this);
   }
 
   /**
+   * Fetch available voice regions
+   * @returns {Collection<string, VoiceRegion>}
+   */
+  fetchVoiceRegions() {
+    return this.client.rest.methods.fetchVoiceRegions(this.id);
+  }
+
+  /**
    * Fetch a single guild member from a user.
    * @param {UserResolvable} user The user to fetch the member for
+   * @param {boolean} [cache=true] Insert the user into the users cache
    * @returns {Promise<GuildMember>}
    */
-  fetchMember(user) {
-    if (this._fetchWaiter) return Promise.reject(new Error('Already fetching guild members.'));
+  fetchMember(user, cache = true) {
     user = this.client.resolver.resolveUser(user);
     if (!user) return Promise.reject(new Error('User is not cached. Use Client.fetchUser first.'));
     if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
-    return this.client.rest.methods.getGuildMember(this, user);
+    return this.client.rest.methods.getGuildMember(this, user, cache);
   }
 
   /**
    * Fetches all the members in the guild, even if they are offline. If the guild has less than 250 members,
    * this should not be necessary.
-   * @param {string} [query=''] An optional query to provide when fetching members
+   * @param {string} [query=''] Limit fetch to members with similar usernames
+   * @param {number} [limit=0] Maximum number of members to request
    * @returns {Promise<Guild>}
    */
-  fetchMembers(query = '') {
+  fetchMembers(query = '', limit = 0) {
     return new Promise((resolve, reject) => {
-      if (this._fetchWaiter) throw new Error('Already fetching guild members in ${this.id}.');
       if (this.memberCount === this.members.size) {
+        // uncomment in v12
+        // resolve(this.members)
         resolve(this);
         return;
       }
-      this._fetchWaiter = resolve;
       this.client.ws.send({
         op: Constants.OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
           guild_id: this.id,
           query,
-          limit: 0,
+          limit,
         },
       });
-      this._checkChunks();
+      const handler = (members, guild) => {
+        if (guild.id !== this.id) return;
+        if (this.memberCount === this.members.size || members.length < 1000) {
+          this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
+          // uncomment in v12
+          // resolve(this.members)
+          resolve(this);
+          return;
+        }
+      };
+      this.client.on(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
       this.client.setTimeout(() => reject(new Error('Members didn\'t arrive in time.')), 120 * 1000);
     });
   }
@@ -373,8 +393,8 @@ class Guild {
    *   content: 'discord.js',
    *   before: '2016-11-17'
    * }).then(res => {
-   *   const hit = res[0].find(m => m.hit).content;
-   *   console.log(`I found: **${hit}**`);
+   *   const hit = res.messages[0].find(m => m.hit).content;
+   *   console.log(`I found: **${hit}**, total results: ${res.totalResults}`);
    * }).catch(console.error);
    */
   search(options) {
@@ -599,7 +619,7 @@ class Guild {
   }
 
   /**
-   * Creates a new role in the guild, and optionally updates it with the given information.
+   * Creates a new role in the guild with given information
    * @param {RoleData} [data] The data to update the role with
    * @returns {Promise<Role>}
    * @example
@@ -609,23 +629,25 @@ class Guild {
    *  .catch(console.error);
    * @example
    * // create a new role with data
-   * guild.createRole({ name: 'Super Cool People' })
-   *   .then(role => console.log(`Created role ${role}`))
-   *   .catch(console.error)
+   * guild.createRole({
+   *   name: 'Super Cool People',
+   *   color: 'BLUE',
+   * })
+   * .then(role => console.log(`Created role ${role}`))
+   * .catch(console.error)
    */
   createRole(data) {
-    const create = this.client.rest.methods.createGuildRole(this);
-    if (!data) return create;
-    return create.then(role => role.edit(data));
+    return this.client.rest.methods.createGuildRole(this, data);
   }
 
   /**
    * Set the position of a role in this guild
    * @param {string|Role} role the role to edit, can be a role object or a role ID.
    * @param {number} position the new position of the role
+   * @param {boolean} [relative=false] Position moves the role relative to its current position
    * @returns {Promise<Guild>}
    */
-  setRolePosition(role, position) {
+  setRolePosition(role, position, relative = false) {
     if (typeof role === 'string') {
       role = this.roles.get(role);
       if (!role) return Promise.reject(new Error('Supplied role is not a role or string.'));
@@ -634,27 +656,12 @@ class Guild {
     position = Number(position);
     if (isNaN(position)) return Promise.reject(new Error('Supplied position is not a number.'));
 
-    const lowestAffected = Math.min(role.position, position);
-    const highestAffected = Math.max(role.position, position);
+    let updatedRoles = Object.assign([], this.roles.array()
+      .sort((r1, r2) => r1.position !== r2.position ? r1.position - r2.position : r1.id - r2.id));
 
-    const rolesToUpdate = this.roles.filter(r => r.position >= lowestAffected && r.position <= highestAffected);
+    moveElementInArray(updatedRoles, role, position, relative);
 
-    // stop role positions getting stupidly inflated
-    if (position > role.position) {
-      position = rolesToUpdate.first().position;
-    } else {
-      position = rolesToUpdate.last().position;
-    }
-
-    const updatedRoles = [];
-
-    for (const uRole of rolesToUpdate.values()) {
-      updatedRoles.push({
-        id: uRole.id,
-        position: uRole.id === role.id ? position : uRole.position + (position < role.position ? 1 : -1),
-      });
-    }
-
+    updatedRoles = updatedRoles.map((r, i) => ({ id: r.id, position: i }));
     return this.client.rest.methods.setRolePositions(this.id, updatedRoles);
   }
 
@@ -662,6 +669,7 @@ class Guild {
    * Creates a new custom emoji in the guild.
    * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji.
    * @param {string} name The name for the emoji.
+   * @param {Collection<Role>|Role[]} [roles] Roles to limit the emoji to
    * @returns {Promise<Emoji>} The created emoji.
    * @example
    * // create a new emoji from a url
@@ -674,14 +682,15 @@ class Guild {
    *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
    *  .catch(console.error);
    */
-  createEmoji(attachment, name) {
+  createEmoji(attachment, name, roles) {
     return new Promise(resolve => {
       if (typeof attachment === 'string' && attachment.startsWith('data:')) {
-        resolve(this.client.rest.methods.createEmoji(this, attachment, name));
+        resolve(this.client.rest.methods.createEmoji(this, attachment, name, roles));
       } else {
-        this.client.resolver.resolveBuffer(attachment).then(data =>
-          resolve(this.client.rest.methods.createEmoji(this, data, name))
-        );
+        this.client.resolver.resolveBuffer(attachment).then(data => {
+          const dataURI = this.client.resolver.resolveBase64(data);
+          resolve(this.client.rest.methods.createEmoji(this, dataURI, name, roles));
+        });
       }
     });
   }
@@ -802,7 +811,6 @@ class Guild {
       this.client.emit(Constants.Events.GUILD_MEMBER_ADD, member);
     }
 
-    this._checkChunks();
     return member;
   }
 
@@ -832,7 +840,6 @@ class Guild {
 
   _removeMember(guildMember) {
     this.members.delete(guildMember.id);
-    this._checkChunks();
   }
 
   _memberSpeakUpdate(user, speaking) {
@@ -855,15 +862,6 @@ class Guild {
       return;
     }
     this.presences.set(id, new Presence(presence));
-  }
-
-  _checkChunks() {
-    if (this._fetchWaiter) {
-      if (this.members.size === this.memberCount) {
-        this._fetchWaiter(this);
-        this._fetchWaiter = null;
-      }
-    }
   }
 }
 

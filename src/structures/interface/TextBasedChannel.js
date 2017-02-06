@@ -11,23 +11,29 @@ class TextBasedChannel {
   constructor() {
     /**
      * A collection containing the messages sent to this channel.
-     * @type {Collection<string, Message>}
+     * @type {Collection<Snowflake, Message>}
      */
     this.messages = new Collection();
 
     /**
      * The ID of the last message in the channel, if one was sent.
-     * @type {?string}
+     * @type {?Snowflake}
      */
     this.lastMessageID = null;
+
+    /**
+     * The Message object of the last message in the channel, if one was sent.
+     * @type {?Message}
+     */
+    this.lastMessage = null;
   }
 
   /**
-   * Options that can be passed into send, sendMessage, sendFile, sendEmbed, sendCode, and Message#reply
+   * Options provided when sending or editing a message
    * @typedef {Object} MessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
-   * @property {Object} [embed] An embed for the message
+   * @property {RichEmbed|Object} [embed] An embed for the message
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
@@ -35,12 +41,13 @@ class TextBasedChannel {
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
+   * @property {UserResolvable} [reply] User to reply to (prefixes the message with a mention, except in DMs)
    */
 
   /**
    * @typedef {Object} FileOptions
-   * @property {BufferResolvable} attachment
-   * @property {string} [name='file.jpg']
+   * @property {BufferResolvable} attachment File to attach
+   * @property {string} [name='file.jpg'] Filename of the attachment
    */
 
   /**
@@ -70,6 +77,7 @@ class TextBasedChannel {
     } else if (!options) {
       options = {};
     }
+
     if (options.file) {
       if (typeof options.file === 'string') options.file = { attachment: options.file };
       if (!options.file.name) {
@@ -81,6 +89,7 @@ class TextBasedChannel {
           options.file.name = 'file.jpg';
         }
       }
+
       return this.client.resolver.resolveBuffer(options.file.attachment).then(file =>
         this.client.rest.methods.sendMessage(this, content, options, {
           file,
@@ -88,12 +97,13 @@ class TextBasedChannel {
         })
       );
     }
+
     return this.client.rest.methods.sendMessage(this, content, options);
   }
 
   /**
    * Send a message to this channel
-   * @param {StringResolvable} content Text for the message
+   * @param {StringResolvable} [content] Text for the message
    * @param {MessageOptions} [options={}] Options for the message
    * @returns {Promise<Message|Message[]>}
    * @example
@@ -114,7 +124,7 @@ class TextBasedChannel {
    * @returns {Promise<Message>}
    */
   sendEmbed(embed, content, options) {
-    if (!options && typeof content === 'object') {
+    if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
       content = '';
     } else if (!options) {
@@ -178,7 +188,7 @@ class TextBasedChannel {
   /**
    * Gets the past messages sent in this channel. Resolves with a collection mapping message ID's to Message objects.
    * @param {ChannelLogsQueryOptions} [options={}] Query parameters to pass in
-   * @returns {Promise<Collection<string, Message>>}
+   * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
    * // get messages
    * channel.fetchMessages({limit: 10})
@@ -199,7 +209,7 @@ class TextBasedChannel {
 
   /**
    * Fetches the pinned messages of this channel and returns a collection of them.
-   * @returns {Promise<Collection<string, Message>>}
+   * @returns {Promise<Collection<Snowflake, Message>>}
    */
   fetchPinnedMessages() {
     return this.client.rest.methods.getChannelPinnedMessages(this).then(data => {
@@ -224,8 +234,8 @@ class TextBasedChannel {
    *   content: 'discord.js',
    *   before: '2016-11-17'
    * }).then(res => {
-   *   const hit = res[0].find(m => m.hit).content;
-   *   console.log(`I found: **${hit}**`);
+   *   const hit = res.messages[0].find(m => m.hit).content;
+   *   console.log(`I found: **${hit}**, total results: ${res.totalResults}`);
    * }).catch(console.error);
    */
   search(options) {
@@ -246,7 +256,7 @@ class TextBasedChannel {
         count: count || 1,
         interval: this.client.setInterval(() => {
           this.client.rest.methods.sendTyping(this.id);
-        }, 4000),
+        }, 9000),
       });
       this.client.rest.methods.sendTyping(this.id);
     } else {
@@ -326,7 +336,7 @@ class TextBasedChannel {
    * filter.
    * @param {CollectorFilterFunction} filter The filter function to use
    * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector
-   * @returns {Promise<Collection<string, Message>>}
+   * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
    * // await !vote messages
    * const filter = m => m.content.startsWith('!vote');
@@ -349,16 +359,17 @@ class TextBasedChannel {
   }
 
   /**
-   * Bulk delete given messages.
+   * Bulk delete given messages that are newer than two weeks
    * <warn>This is only available when using a bot account.</warn>
-   * @param {Collection<string, Message>|Message[]|number} messages Messages to delete, or number of messages to delete
-   * @returns {Promise<Collection<string, Message>>} Deleted messages
+   * @param {Collection<Snowflake, Message>|Message[]|number} messages Messages or number of messages to delete
+   * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
+   * @returns {Promise<Collection<Snowflake, Message>>} Deleted messages
    */
-  bulkDelete(messages) {
+  bulkDelete(messages, filterOld = false) {
     if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs));
     if (messages instanceof Array || messages instanceof Collection) {
       const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
-      return this.client.rest.methods.bulkDeleteMessages(this, messageIDs);
+      return this.client.rest.methods.bulkDeleteMessages(this, messageIDs, filterOld);
     }
     throw new TypeError('The messages must be an Array, Collection, or number.');
   }

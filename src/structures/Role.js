@@ -25,7 +25,7 @@ class Role {
   setup(data) {
     /**
      * The ID of the role (unique to the guild it is part of)
-     * @type {string}
+     * @type {Snowflake}
      */
     this.id = data.id;
 
@@ -48,7 +48,7 @@ class Role {
     this.hoist = data.hoist;
 
     /**
-     * The position of the role in the role manager
+     * The position of the role from the API
      * @type {number}
      */
     this.position = data.position;
@@ -103,7 +103,7 @@ class Role {
 
   /**
    * The cached guild members that have this role.
-   * @type {Collection<string, GuildMember>}
+   * @type {Collection<Snowflake, GuildMember>}
    * @readonly
    */
   get members() {
@@ -120,6 +120,16 @@ class Role {
     const clientMember = this.guild.member(this.client.user);
     if (!clientMember.hasPermission(Constants.PermissionFlags.MANAGE_ROLES_OR_PERMISSIONS)) return false;
     return clientMember.highestRole.comparePositionTo(this) > 0;
+  }
+
+  /**
+   * The position of the role in the role manager
+   * @type {number}
+   */
+  get calculatedPosition() {
+    const sorted = this.guild.roles.array()
+      .sort((r1, r2) => r1.position !== r2.position ? r1.position - r2.position : r1.id - r2.id);
+    return sorted.indexOf(sorted.find(r => r.id === this.id));
   }
 
   /**
@@ -180,7 +190,7 @@ class Role {
    * The data for a role
    * @typedef {Object} RoleData
    * @property {string} [name] The name of the role
-   * @property {number|string} [color] The color of the role, either a hex string or a base 10 number
+   * @property {ColorResolvable} [color] The color of the role, either a hex string or a base 10 number
    * @property {boolean} [hoist] Whether or not the role should be hoisted
    * @property {number} [position] The position of the role
    * @property {string[]} [permissions] The permissions of the role
@@ -246,6 +256,7 @@ class Role {
   /**
    * Set the position of the role
    * @param {number} position The position of the role
+   * @param {boolean} [relative=false] Move the position relative to its current value
    * @returns {Promise<Role>}
    * @example
    * // set the position of the role
@@ -253,8 +264,8 @@ class Role {
    *  .then(r => console.log(`Role position: ${r.position}`))
    *  .catch(console.error);
    */
-  setPosition(position) {
-    return this.guild.setRolePosition(this, position).then(() => this);
+  setPosition(position, relative) {
+    return this.guild.setRolePosition(this, position, relative).then(() => this);
   }
 
   /**

@@ -4,9 +4,7 @@ const MessageReaction = require('./MessageReaction');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
 const escapeMarkdown = require('../util/EscapeMarkdown');
-
-// Done purely for GuildMember, which would cause a bad circular dependency
-const Discord = require('..');
+let GuildMember;
 
 /**
  * Represents a message on Discord
@@ -33,7 +31,7 @@ class Message {
   setup(data) { // eslint-disable-line complexity
     /**
      * The ID of the message (unique in the channel it was sent)
-     * @type {string}
+     * @type {Snowflake}
      */
     this.id = data.id;
 
@@ -75,7 +73,7 @@ class Message {
     this.tts = data.tts;
 
     /**
-     * A random number used for checking message delivery
+     * A random number or string used for checking message delivery
      * @type {string}
      */
     this.nonce = data.nonce;
@@ -94,7 +92,7 @@ class Message {
 
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID.
-     * @type {Collection<string, MessageAttachment>}
+     * @type {Collection<Snowflake, MessageAttachment>}
      */
     this.attachments = new Collection();
     for (const attachment of data.attachments) this.attachments.set(attachment.id, new Attachment(this, attachment));
@@ -114,9 +112,9 @@ class Message {
     /**
      * An object containing a further users, roles or channels collections
      * @type {Object}
-     * @property {Collection<string, User>} mentions.users Mentioned users, maps their ID to the user object.
-     * @property {Collection<string, Role>} mentions.roles Mentioned roles, maps their ID to the role object.
-     * @property {Collection<string, GuildChannel>} mentions.channels Mentioned channels,
+     * @property {Collection<Snowflake, User>} mentions.users Mentioned users, maps their ID to the user object.
+     * @property {Collection<Snowflake, Role>} mentions.roles Mentioned roles, maps their ID to the role object.
+     * @property {Collection<Snowflake, GuildChannel>} mentions.channels Mentioned channels,
      * maps their ID to the channel object.
      * @property {boolean} mentions.everyone Whether or not @everyone was mentioned.
      */
@@ -156,7 +154,7 @@ class Message {
 
     /**
      * A collection of reactions to this message, mapped by the reaction "id".
-     * @type {Collection<string, MessageReaction>}
+     * @type {Collection<Snowflake|string, MessageReaction>}
      */
     this.reactions = new Collection();
 
@@ -169,7 +167,7 @@ class Message {
 
     /**
      * ID of the webhook that sent the message, if applicable
-     * @type {?string}
+     * @type {?Snowflake}
      */
     this.webhookID = data.webhook_id || null;
 
@@ -199,12 +197,13 @@ class Message {
       if (data.type === 6) this.system = true;
     }
     if (data.attachments) {
-      this.attachments = new Collection();
+      this.attachments.clear();
       for (const attachment of data.attachments) {
         this.attachments.set(attachment.id, new Attachment(this, attachment));
       }
     }
     if (data.mentions) {
+      this.mentions.users.clear();
       for (const mention of data.mentions) {
         let user = this.client.users.get(mention.id);
         if (user) {
@@ -216,6 +215,7 @@ class Message {
       }
     }
     if (data.mention_roles) {
+      this.mentions.roles.clear();
       for (const mention of data.mention_roles) {
         const role = this.channel.guild.roles.get(mention);
         if (role) this.mentions.roles.set(role.id, role);
@@ -223,6 +223,7 @@ class Message {
     }
     if (data.id) this.id = data.id;
     if (this.channel.guild && data.content) {
+      this.mentions.channels.clear();
       const channMentionsRaw = data.content.match(/<#([0-9]{14,20})>/g) || [];
       for (const raw of channMentionsRaw) {
         const chan = this.channel.guild.channels.get(raw.match(/([0-9]{14,20})/g)[0]);
@@ -230,11 +231,11 @@ class Message {
       }
     }
     if (data.reactions) {
-      this.reactions = new Collection();
+      this.reactions.clear();
       if (data.reactions.length > 0) {
         for (const reaction of data.reactions) {
           const id = reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` : reaction.emoji.name;
-          this.reactions.set(id, new MessageReaction(this, data.emoji, data.count, data.me));
+          this.reactions.set(id, new MessageReaction(this, reaction.emoji, reaction.count, reaction.me));
         }
       }
     }
@@ -365,9 +366,11 @@ class Message {
    * @returns {boolean}
    */
   isMemberMentioned(member) {
+    // Lazy-loading is used here to get around a circular dependency that breaks things
+    if (!GuildMember) GuildMember = require('./GuildMember');
     if (this.mentions.everyone) return true;
     if (this.mentions.users.has(member.id)) return true;
-    if (member instanceof Discord.GuildMember && member.roles.some(r => this.mentions.roles.has(r.id))) return true;
+    if (member instanceof GuildMember && member.roles.some(r => this.mentions.roles.has(r.id))) return true;
     return false;
   }
 
@@ -390,7 +393,7 @@ class Message {
    *  .catch(console.error);
    */
   edit(content, options) {
-    if (!options && typeof content === 'object') {
+    if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
       content = '';
     } else if (!options) {
@@ -470,8 +473,8 @@ class Message {
 
   /**
    * Reply to the message
-   * @param {StringResolvable} content The content for the message
-   * @param {MessageOptions} [options = {}] The options to provide
+   * @param {StringResolvable} [content] The content for the message
+   * @param {MessageOptions} [options] The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
    * // reply to a message
@@ -479,9 +482,14 @@ class Message {
    *  .then(msg => console.log(`Sent a reply to ${msg.author}`))
    *  .catch(console.error);
    */
-  reply(content, options = {}) {
-    content = `${this.guild || this.channel.type === 'group' ? `${this.author}, ` : ''}${content}`;
-    return this.channel.send(content, options);
+  reply(content, options) {
+    if (!options && typeof content === 'object' && !(content instanceof Array)) {
+      options = content;
+      content = '';
+    } else if (!options) {
+      options = {};
+    }
+    return this.channel.send(content, Object.assign(options, { reply: this.member || this.author }));
   }
 
   /**
@@ -535,7 +543,7 @@ class Message {
   }
 
   _addReaction(emoji, user) {
-    const emojiID = emoji.identifier;
+    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : encodeURIComponent(emoji.name);
     let reaction;
     if (this.reactions.has(emojiID)) {
       reaction = this.reactions.get(emojiID);
@@ -544,16 +552,13 @@ class Message {
       reaction = new MessageReaction(this, emoji, 0, user.id === this.client.user.id);
       this.reactions.set(emojiID, reaction);
     }
-    if (!reaction.users.has(user.id)) {
-      reaction.users.set(user.id, user);
-      reaction.count++;
-      return reaction;
-    }
-    return null;
+    if (!reaction.users.has(user.id)) reaction.users.set(user.id, user);
+    reaction.count++;
+    return reaction;
   }
 
   _removeReaction(emoji, user) {
-    const emojiID = emoji.identifier;
+    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : encodeURIComponent(emoji.name);
     if (this.reactions.has(emojiID)) {
       const reaction = this.reactions.get(emojiID);
       if (reaction.users.has(user.id)) {

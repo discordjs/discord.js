@@ -19,7 +19,7 @@ class ReactionEmoji {
 
     /**
      * The ID of this reaction emoji.
-     * @type {string}
+     * @type {?Snowflake}
      */
     this.id = id;
   }

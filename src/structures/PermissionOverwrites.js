@@ -17,7 +17,7 @@ class PermissionOverwrites {
   setup(data) {
     /**
      * The ID of this overwrite, either a user ID or a role ID
-     * @type {string}
+     * @type {Snowflake}
      */
     this.id = data.id;
 

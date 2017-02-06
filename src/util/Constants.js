@@ -3,24 +3,25 @@ exports.Package = require('../../package.json');
 /**
  * Options for a Client.
  * @typedef {Object} ClientOptions
- * @property {string} [apiRequestMethod='sequential'] 'sequential' or 'burst'. Sequential executes all requests in
- * the order they are triggered, whereas burst runs multiple at a time, and doesn't guarantee a particular order.
- * @property {number} [shardId=0] The ID of this shard
- * @property {number} [shardCount=0] The number of shards
+ * @property {string} [apiRequestMethod='sequential'] One of `sequential` or `burst`. The sequential handler executes
+ * all requests in the order they are triggered, whereas the burst handler runs multiple in parallel, and doesn't
+ * provide the guarantee of any particular order.
+ * @property {number} [shardId=0] ID of the shard to run
+ * @property {number} [shardCount=0] Total number of shards
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
  * (-1 or Infinity for unlimited - don't do this without message sweeping, otherwise memory usage will climb
  * indefinitely)
- * @property {number} [messageCacheLifetime=0] How long until a message should be uncached by the message sweeping
- * (in seconds, 0 for forever)
+ * @property {number} [messageCacheLifetime=0] How long a message should stay in the cache until it is considered
+ * sweepable (in seconds, 0 for forever)
  * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
  * the message cache lifetime (in seconds, 0 for never)
  * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup, as well as
- * upon joining a guild
- * @property {boolean} [disableEveryone=false] Default value for MessageOptions.disableEveryone
- * @property {boolean} [sync=false] Whether to periodically sync guilds (for userbots)
+ * upon joining a guild (should be avoided whenever possible)
+ * @property {boolean} [disableEveryone=false] Default value for {@link MessageOptions#disableEveryone}
+ * @property {boolean} [sync=false] Whether to periodically sync guilds (for user accounts)
  * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
  * corresponding websocket events
- * @property {number} [restTimeOffset=500] The extra time in millseconds to wait before continuing to make REST
+ * @property {number} [restTimeOffset=500] Extra time in millseconds to wait before continuing to make REST
  * requests (higher values will reduce rate-limiting errors on bad connections)
  * @property {WSEventType[]} [disabledEvents] An array of disabled websocket events. Events in this array will not be
  * processed, potentially resulting in performance improvements for larger bots. Only disable events you are
@@ -43,15 +44,15 @@ exports.DefaultOptions = {
   restTimeOffset: 500,
 
   /**
-   * Websocket options. These are left as snake_case to match the API.
+   * Websocket options (these are left as snake_case to match the API)
    * @typedef {Object} WebsocketOptions
    * @property {number} [large_threshold=250] Number of members in a guild to be considered large
-   * @property {boolean} [compress=true] Whether to compress data sent on the connection.
-   * Defaults to `false` for browsers.
+   * @property {boolean} [compress=true] Whether to compress data sent on the connection
+   * (defaults to `false` for browsers)
    */
   ws: {
     large_threshold: 250,
-    compress: typeof window === 'undefined',
+    compress: require('os').platform() !== 'browser',
     properties: {
       $os: process ? process.platform : 'discord.js',
       $browser: 'discord.js',
@@ -72,6 +73,7 @@ exports.Errors = {
   INVALID_RATE_LIMIT_METHOD: 'Unknown rate limiting method.',
   BAD_LOGIN: 'Incorrect login details were provided.',
   INVALID_SHARD: 'Invalid shard settings were provided.',
+  SHARDING_REQUIRED: 'This session would have handled too many guilds - Sharding is required.',
   INVALID_TOKEN: 'An invalid token was provided.',
 };
 
@@ -104,6 +106,8 @@ const Endpoints = exports.Endpoints = {
   relationships: (userID) => `${Endpoints.user(userID)}/relationships`,
   note: (userID) => `${Endpoints.me}/notes/${userID}`,
 
+  voiceRegions: `${API}/voice/regions`,
+
   // guilds
   guilds: `${API}/guilds`,
   guild: (guildID) => `${Endpoints.guilds}/${guildID}`,
@@ -122,7 +126,9 @@ const Endpoints = exports.Endpoints = {
   guildMemberNickname: (guildID) => `${Endpoints.guildMember(guildID, '@me')}/nick`,
   guildChannels: (guildID) => `${Endpoints.guild(guildID)}/channels`,
   guildEmojis: (guildID) => `${Endpoints.guild(guildID)}/emojis`,
+  guildEmoji: (guildID, emojiID) => `${Endpoints.guildEmojis(guildID)}/${emojiID}`,
   guildSearch: (guildID) => `${Endpoints.guild(guildID)}/messages/search`,
+  guildVoiceRegions: (guildID) => `${Endpoints.guild(guildID)}/regions`,
 
   // channels
   channels: `${API}/channels`,
@@ -365,6 +371,34 @@ const PermissionFlags = exports.PermissionFlags = {
   MANAGE_ROLES_OR_PERMISSIONS: 1 << 28,
   MANAGE_WEBHOOKS: 1 << 29,
   MANAGE_EMOJIS: 1 << 30,
+};
+
+exports.Colors = {
+  DEFAULT: 0x000000,
+  AQUA: 0x1ABC9C,
+  GREEN: 0x2ECC71,
+  BLUE: 0x3498DB,
+  PURPLE: 0x9B59B6,
+  GOLD: 0xF1C40F,
+  ORANGE: 0xE67E22,
+  RED: 0xE74C3C,
+  GREY: 0x95A5A6,
+  NAVY: 0x34495E,
+  DARK_AQUA: 0x11806A,
+  DARK_GREEN: 0x1F8B4C,
+  DARK_BLUE: 0x206694,
+  DARK_PURPLE: 0x71368A,
+  DARK_GOLD: 0xC27C0E,
+  DARK_ORANGE: 0xA84300,
+  DARK_RED: 0x992D22,
+  DARK_GREY: 0x979C9F,
+  DARKER_GREY: 0x7F8C8D,
+  LIGHT_GREY: 0xBCC0C0,
+  DARK_NAVY: 0x2C3E50,
+  BLURPLE: 0x7289DA,
+  GREYPLE: 0x99AAB5,
+  DARK_BUT_NOT_BLACK: 0x2C2F33,
+  NOT_QUITE_BLACK: 0x23272A,
 };
 
 let _ALL_PERMISSIONS = 0;

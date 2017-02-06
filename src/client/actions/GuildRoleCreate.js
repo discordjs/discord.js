@@ -12,6 +12,7 @@ class GuildRoleCreate extends Action {
       const role = new Role(guild, data.role);
       guild.roles.set(role.id, role);
       if (!already) client.emit(Constants.Events.GUILD_ROLE_CREATE, role);
+
       return {
         role,
       };

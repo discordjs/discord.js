@@ -22,13 +22,13 @@ class UserProfile {
 
     /**
      * Guilds that the client user and the user share
-     * @type {Collection<Guild>}
+     * @type {Collection<Snowflake, Guild>}
      */
     this.mutualGuilds = new Collection();
 
     /**
      * The user's connections
-     * @type {Collection<UserConnection>}
+     * @type {Collection<String, UserConnection>}
      */
     this.connections = new Collection();
 
@@ -41,6 +41,12 @@ class UserProfile {
      * @type {boolean}
      */
     this.premium = data.premium;
+
+    /**
+     * The date since which the user has had Discord Premium
+     * @type {?Date}
+     */
+    this.premiumSince = data.premium_since ? new Date(data.premium_since) : null;
 
     for (const guild of data.mutual_guilds) {
       if (this.client.guilds.has(guild.id)) {

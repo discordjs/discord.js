@@ -23,7 +23,7 @@ class PartialGuildChannel {
   setup(data) {
     /**
      * The ID of this guild channel
-     * @type {string}
+     * @type {Snowflake}
      */
     this.id = data.id;
 

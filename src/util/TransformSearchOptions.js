@@ -21,7 +21,7 @@ const long = require('long');
  * @property {string} [embedProvider] The name of an embed provider
  * @property {string} [embedType] one of `image`, `video`, `url`, `rich`
  * @property {string} [attachmentFilename] The name of an attachment
- * @property {string} [attachmentExtention] The extension of an attachment
+ * @property {string} [attachmentExtension] The extension of an attachment
  * @property {Date} [before] Date to find messages before
  * @property {Date} [after] Date to find messages before
  * @property {Date} [during] Date to find messages during (range of date to date + 24 hours)
@@ -42,7 +42,7 @@ module.exports = function TransformSearchOptions(options, client) {
     if (!(options.during instanceof Date)) options.during = new Date(options.during);
     const t = options.during.getTime() - 14200704e5;
     options.minID = long.fromNumber(t).shiftLeft(22).toString();
-    options.maxID = long.fromNumber(t + 86400000).shift(222).toString();
+    options.maxID = long.fromNumber(t + 86400000).shiftLeft(22).toString();
   }
 
   if (options.channel) options.channel = client.resolver.resolveChannelID(options.channel);
