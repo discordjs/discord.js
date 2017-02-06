@@ -1,9 +1,11 @@
+const querystring = require('querystring');
 const Constants = require('../../util/Constants');
 const Collection = require('../../util/Collection');
 const splitMessage = require('../../util/SplitMessage');
 const parseEmoji = require('../../util/ParseEmoji');
 const escapeMarkdown = require('../../util/EscapeMarkdown');
 const transformSearchOptions = require('../../util/TransformSearchOptions');
+const Snowflake = require('../../util/Snowflake');
 
 const User = require('../../structures/User');
 const GuildMember = require('../../structures/GuildMember');
@@ -15,6 +17,7 @@ const UserProfile = require('../../structures/UserProfile');
 const ClientOAuth2Application = require('../../structures/ClientOAuth2Application');
 const Channel = require('../../structures/Channel');
 const Guild = require('../../structures/Guild');
+const VoiceRegion = require('../../structures/VoiceRegion');
 
 class RESTMethods {
   constructor(restManager) {
@@ -45,21 +48,48 @@ class RESTMethods {
     return this.rest.makeRequest('get', Constants.Endpoints.botGateway, true);
   }
 
-  sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code } = {}, file = null) {
-    return new Promise((resolve, reject) => {
+  fetchVoiceRegions(guildID) {
+    const endpoint = Constants.Endpoints[guildID ? 'guildVoiceRegions' : 'voiceRegions'];
+    return this.rest.makeRequest('get', guildID ? endpoint(guildID) : endpoint, true).then(res => {
+      const regions = new Collection();
+      for (const region of res) regions.set(region.id, new VoiceRegion(region));
+      return regions;
+    });
+  }
+
+  sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code, reply } = {}, file = null) {
+    return new Promise((resolve, reject) => { // eslint-disable-line complexity
       if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
 
       if (content) {
+        if (split && typeof split !== 'object') split = {};
+
+        // Wrap everything in a code block
         if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
           content = escapeMarkdown(this.client.resolver.resolveString(content), true);
           content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
+          split.prepend = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n`;
+          split.append = '\n```';
         }
 
+        // Add zero-width spaces to @everyone/@here
         if (disableEveryone || (typeof disableEveryone === 'undefined' && this.client.options.disableEveryone)) {
           content = content.replace(/@(everyone|here)/g, '@\u200b$1');
         }
 
-        if (split) content = splitMessage(content, typeof split === 'object' ? split : {});
+        // Add the reply prefix
+        if (reply && !(channel instanceof User || channel instanceof GuildMember) && channel.type !== 'dm') {
+          const id = this.client.resolver.resolveUserID(reply);
+          const mention = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
+          content = `${mention}${content ? `, ${content}` : ''}`;
+          if (split) split.prepend = `${mention}, ${split.prepend || ''}`;
+        }
+
+        // Split the content
+        if (split) content = splitMessage(content, split);
+      } else if (reply && !(channel instanceof User || channel instanceof GuildMember) && channel.type !== 'dm') {
+        const id = this.client.resolver.resolveUserID(reply);
+        content = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
       }
 
       const send = chan => {
@@ -69,7 +99,7 @@ class RESTMethods {
             const options = index === list.length ? { tts, embed } : { tts };
             chan.send(list[index], options, index === list.length ? file : null).then((message) => {
               messages.push(message);
-              if (index >= list.length) return resolve(messages);
+              if (index >= list.length - 1) return resolve(messages);
               return sendChunk(list, ++index);
             });
           }(content, 0));
@@ -88,12 +118,22 @@ class RESTMethods {
     });
   }
 
-  updateMessage(message, content, { embed, code } = {}) {
-    content = this.client.resolver.resolveString(content);
+  updateMessage(message, content, { embed, code, reply } = {}) {
+    if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
+
+    // Wrap everything in a code block
     if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
       content = escapeMarkdown(this.client.resolver.resolveString(content), true);
       content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
     }
+
+    // Add the reply prefix
+    if (reply && message.channel.type !== 'dm') {
+      const id = this.client.resolver.resolveUserID(reply);
+      const mention = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
+      content = `${mention}${content ? `, ${content}` : ''}`;
+    }
+
     return this.rest.makeRequest('patch', Constants.Endpoints.channelMessage(message.channel.id, message.id), true, {
       content, embed,
     }).then(data => this.client.actions.MessageUpdate.handle(data).updated);
@@ -109,7 +149,12 @@ class RESTMethods {
       );
   }
 
-  bulkDeleteMessages(channel, messages) {
+  bulkDeleteMessages(channel, messages, filterOld) {
+    if (filterOld) {
+      messages = messages.filter(id =>
+        Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000
+      );
+    }
     return this.rest.makeRequest('post', `${Constants.Endpoints.channelMessages(channel.id)}/bulk_delete`, true, {
       messages,
     }).then(() =>
@@ -122,12 +167,9 @@ class RESTMethods {
 
   search(target, options) {
     options = transformSearchOptions(options, this.client);
+    for (const key in options) if (options[key] === undefined) delete options[key];
 
-    const queryString = Object.keys(options)
-      .filter(k => options[k])
-      .map(k => [k, options[k]])
-      .map(x => x.join('='))
-      .join('&');
+    const queryString = (querystring.stringify(options).match(/[^=&?]+=[^=&?]+/g) || []).join('&');
 
     let type;
     if (target instanceof Channel) {
@@ -139,9 +181,15 @@ class RESTMethods {
     }
 
     const url = `${Constants.Endpoints[`${type}Search`](target.id)}?${queryString}`;
-    return this.rest.makeRequest('get', url, true).then(body =>
-      body.messages.map(x => x.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)))
-    );
+    return this.rest.makeRequest('get', url, true).then(body => {
+      const messages = body.messages.map(x =>
+        x.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client))
+      );
+      return {
+        totalResults: body.total_results,
+        messages,
+      };
+    });
   }
 
   createChannel(guild, channelName, channelType, overwrites) {
@@ -229,10 +277,14 @@ class RESTMethods {
     );
   }
 
-  getUser(userID) {
-    return this.rest.makeRequest('get', Constants.Endpoints.user(userID), true).then(data =>
-      this.client.actions.UserGet.handle(data).user
-    );
+  getUser(userID, cache) {
+    return this.rest.makeRequest('get', Constants.Endpoints.user(userID), true).then(data => {
+      if (cache) {
+        return this.client.actions.UserGet.handle(data).user;
+      } else {
+        return new User(this.client, data);
+      }
+    });
   }
 
   updateCurrentUser(_data, password) {
@@ -274,8 +326,9 @@ class RESTMethods {
     );
   }
 
-  createGuildRole(guild) {
-    return this.rest.makeRequest('post', Constants.Endpoints.guildRoles(guild.id), true).then(role =>
+  createGuildRole(guild, data) {
+    if (data.color) data.color = this.client.resolver.resolveColor(data.color);
+    return this.rest.makeRequest('post', Constants.Endpoints.guildRoles(guild.id), true, data).then(role =>
       this.client.actions.GuildRoleCreate.handle({
         guild_id: guild.id,
         role,
@@ -322,10 +375,14 @@ class RESTMethods {
     return this.rest.makeRequest('get', Constants.Endpoints.channelMessage(channel.id, messageID), true);
   }
 
-  getGuildMember(guild, user) {
-    return this.rest.makeRequest('get', Constants.Endpoints.guildMember(guild.id, user.id), true).then(data =>
-      this.client.actions.GuildMemberGet.handle(guild, data).member
-    );
+  getGuildMember(guild, user, cache) {
+    return this.rest.makeRequest('get', Constants.Endpoints.guildMember(guild.id, user.id), true).then(data => {
+      if (cache) {
+        return this.client.actions.GuildMemberGet.handle(guild, data).member;
+      } else {
+        return new GuildMember(guild, data);
+      }
+    });
   }
 
   updateGuildMember(member, data) {
@@ -430,10 +487,7 @@ class RESTMethods {
     const data = {};
     data.name = _data.name || role.name;
     data.position = typeof _data.position !== 'undefined' ? _data.position : role.position;
-    data.color = _data.color || role.color;
-    if (typeof data.color === 'string' && data.color.startsWith('#')) {
-      data.color = parseInt(data.color.replace('#', ''), 16);
-    }
+    data.color = this.client.resolver.resolveColor(_data.color || role.color);
     data.hoist = typeof _data.hoist !== 'undefined' ? _data.hoist : role.hoist;
     data.mentionable = typeof _data.mentionable !== 'undefined' ? _data.mentionable : role.mentionable;
 
@@ -507,14 +561,24 @@ class RESTMethods {
       .then(data => data.pruned);
   }
 
-  createEmoji(guild, image, name) {
-    return this.rest.makeRequest('post', `${Constants.Endpoints.guildEmojis(guild.id)}`, true, { name, image })
-      .then(data => this.client.actions.EmojiCreate.handle(data, guild).emoji);
+  createEmoji(guild, image, name, roles) {
+    const data = { image, name };
+    if (roles) data.roles = roles.map(r => r.id ? r.id : r);
+    return this.rest.makeRequest('post', `${Constants.Endpoints.guildEmojis(guild.id)}`, true, data)
+      .then(emoji => this.client.actions.GuildEmojiCreate.handle(guild, emoji).emoji);
+  }
+
+  updateEmoji(emoji, _data) {
+    const data = {};
+    if (_data.name) data.name = _data.name;
+    if (_data.roles) data.roles = _data.roles.map(r => r.id ? r.id : r);
+    return this.rest.makeRequest('patch', Constants.Endpoints.guildEmoji(emoji.guild.id, emoji.id), true, data)
+        .then(newEmoji => this.client.actions.GuildEmojiUpdate.handle(emoji, newEmoji).emoji);
   }
 
   deleteEmoji(emoji) {
     return this.rest.makeRequest('delete', `${Constants.Endpoints.guildEmojis(emoji.guild.id)}/${emoji.id}`, true)
-      .then(() => this.client.actions.EmojiDelete.handle(emoji).data);
+      .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);
   }
 
   getWebhook(id, token) {
@@ -559,7 +623,8 @@ class RESTMethods {
     return this.rest.makeRequest('delete', Constants.Endpoints.webhook(webhook.id, webhook.token), false);
   }
 
-  sendWebhookMessage(webhook, content, { avatarURL, tts, disableEveryone, embeds } = {}, file = null) {
+  sendWebhookMessage(webhook, content, { avatarURL, tts, disableEveryone, embeds, username } = {}, file = null) {
+    username = username || webhook.name;
     if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
     if (content) {
       if (disableEveryone || (typeof disableEveryone === 'undefined' && this.client.options.disableEveryone)) {
@@ -567,13 +632,12 @@ class RESTMethods {
       }
     }
     return this.rest.makeRequest('post', `${Constants.Endpoints.webhook(webhook.id, webhook.token)}?wait=true`, false, {
-      username: webhook.name,
+      username,
       avatar_url: avatarURL,
       content,
       tts,
-      file,
       embeds,
-    });
+    }, file);
   }
 
   sendSlackWebhookMessage(webhook, body) {
@@ -643,7 +707,7 @@ class RESTMethods {
   removeMessageReaction(message, emoji, user) {
     let endpoint = Constants.Endpoints.selfMessageReaction(message.channel.id, message.id, emoji);
     if (user !== this.client.user.id) {
-      endpoint = Constants.Endpoints.userMessageReaction(message.channel.id, message.id, emoji, null, user.id);
+      endpoint = Constants.Endpoints.userMessageReaction(message.channel.id, message.id, emoji, null, user);
     }
     return this.rest.makeRequest('delete', endpoint, true).then(() =>
       this.client.actions.MessageReactionRemove.handle({
@@ -674,6 +738,25 @@ class RESTMethods {
 
   setNote(user, note) {
     return this.rest.makeRequest('put', Constants.Endpoints.note(user.id), true, { note }).then(() => user);
+  }
+
+  acceptInvite(code) {
+    if (code.id) code = code.id;
+    return new Promise((resolve, reject) =>
+      this.rest.makeRequest('post', Constants.Endpoints.invite(code), true).then((res) => {
+        const handler = guild => {
+          if (guild.id === res.id) {
+            resolve(guild);
+            this.client.removeListener('guildCreate', handler);
+          }
+        };
+        this.client.on('guildCreate', handler);
+        this.client.setTimeout(() => {
+          this.client.removeListener('guildCreate', handler);
+          reject(new Error('Accepting invite timed out'));
+        }, 120e3);
+      })
+    );
   }
 }
 

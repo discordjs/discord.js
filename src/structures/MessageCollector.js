@@ -61,7 +61,7 @@ class MessageCollector extends EventEmitter {
 
     /**
      * A collection of collected messages, mapped by message ID.
-     * @type {Collection<string, Message>}
+     * @type {Collection<Snowflake, Message>}
      */
     this.collected = new Collection();
 

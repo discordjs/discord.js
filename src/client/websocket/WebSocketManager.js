@@ -1,4 +1,4 @@
-const browser = typeof window !== 'undefined';
+const browser = require('os').platform() === 'browser';
 const EventEmitter = require('events').EventEmitter;
 const Constants = require('../../util/Constants');
 const convertArrayBuffer = require('../../util/ConvertArrayBuffer');
@@ -155,7 +155,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   destroy() {
-    this.ws.close(1000);
+    if (this.ws) this.ws.close(1000);
     this._queue = [];
     this.status = Constants.Status.IDLE;
   }
@@ -249,8 +249,7 @@ class WebSocketManager extends EventEmitter {
      * @param {CloseEvent} event The WebSocket close event
      */
     if (!this.reconnecting) this.client.emit(Constants.Events.DISCONNECT, event);
-    if (event.code === 4004) return;
-    if (event.code === 4010) return;
+    if ([4004, 4010, 4011].includes(event.code)) return;
     if (!this.reconnecting && event.code !== 1000) this.tryReconnect();
   }
 

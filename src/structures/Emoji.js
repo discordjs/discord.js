@@ -26,7 +26,7 @@ class Emoji {
   setup(data) {
     /**
      * The ID of the emoji
-     * @type {string}
+     * @type {Snowflake}
      */
     this.id = data.id;
 
@@ -71,7 +71,7 @@ class Emoji {
 
   /**
    * A collection of roles this emoji is active for (empty if all), mapped by role ID.
-   * @type {Collection<string, Role>}
+   * @type {Collection<Snowflake, Role>}
    * @readonly
    */
   get roles() {
@@ -89,6 +89,37 @@ class Emoji {
    */
   get url() {
     return Constants.Endpoints.emoji(this.id);
+  }
+
+  /**
+   * The identifier of this emoji, used for message reactions
+   * @type {string}
+   * @readonly
+   */
+  get identifier() {
+    if (this.id) return `${this.name}:${this.id}`;
+    return encodeURIComponent(this.name);
+  }
+
+  /**
+   * Data for editing an emoji
+   * @typedef {Object} EmojiEditData
+   * @property {string} [name] The name of the emoji
+   * @property {Collection<string, Role>|Array<string|Role>} [roles] Roles to restrict emoji to
+   */
+
+  /**
+   * Edits the emoji
+   * @param {EmojiEditData} data The new data for the emoji
+   * @returns {Promise<Emoji>}
+   * @example
+   * // edit a emoji
+   * emoji.edit({name: 'newemoji'})
+   *  .then(e => console.log(`Edited emoji ${e}`))
+   *  .catch(console.error);
+   */
+  edit(data) {
+    return this.client.rest.methods.updateEmoji(this, data);
   }
 
   /**
@@ -122,18 +153,6 @@ class Emoji {
         other.name === this.name
       );
     }
-  }
-
-  /**
-   * The identifier of this emoji, used for message reactions
-   * @readonly
-   * @type {string}
-   */
-  get identifier() {
-    if (this.id) {
-      return `${this.name}:${this.id}`;
-    }
-    return encodeURIComponent(this.name);
   }
 }
 

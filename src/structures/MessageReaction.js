@@ -27,7 +27,7 @@ class MessageReaction {
 
     /**
      * The users that have given this reaction, mapped by their ID.
-     * @type {Collection<string, User>}
+     * @type {Collection<Snowflake, User>}
      */
     this.users = new Collection();
 

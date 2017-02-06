@@ -4,7 +4,7 @@ const Constants = require('../../util/Constants');
 const AudioPlayer = require('./player/AudioPlayer');
 const VoiceReceiver = require('./receiver/VoiceReceiver');
 const EventEmitter = require('events').EventEmitter;
-const fs = require('fs');
+const Prism = require('prism-media');
 
 /**
  * Represents a connection to a voice channel in Discord.
@@ -25,6 +25,17 @@ class VoiceConnection extends EventEmitter {
      * @type {ClientVoiceManager}
      */
     this.voiceManager = pendingConnection.voiceManager;
+
+    /**
+     * @external Prism
+     * @see {@link https://github.com/hydrabolt/prism-media}
+     */
+
+    /**
+     * The audio transcoder for this connection
+     * @type {Prism}
+     */
+    this.prism = new Prism();
 
     /**
      * The voice channel this connection is currently serving
@@ -73,7 +84,6 @@ class VoiceConnection extends EventEmitter {
        * @param {string|Error} warning the warning
        */
       this.emit('warn', e);
-      this.player.cleanup();
     });
 
     /**
@@ -132,6 +142,7 @@ class VoiceConnection extends EventEmitter {
         self_deaf: false,
       },
     });
+    this.player.destroy();
     /**
      * Emitted when the voice connection disconnects
      * @event VoiceConnection#disconnect
@@ -150,7 +161,7 @@ class VoiceConnection extends EventEmitter {
     this.sockets.udp = new VoiceUDP(this);
     this.sockets.ws.on('error', e => this.emit('error', e));
     this.sockets.udp.on('error', e => this.emit('error', e));
-    this.sockets.ws.once('ready', d => {
+    this.sockets.ws.on('ready', d => {
       this.authentication.port = d.port;
       this.authentication.ssrc = d.ssrc;
       /**
@@ -163,7 +174,7 @@ class VoiceConnection extends EventEmitter {
           this.sockets.udp.createUDPSocket(address);
         }, e => this.emit('error', e));
     });
-    this.sockets.ws.once('sessionDescription', (mode, secret) => {
+    this.sockets.ws.on('sessionDescription', (mode, secret) => {
       this.authentication.encryptionMode = mode;
       this.authentication.secretKey = secret;
       /**
@@ -215,7 +226,7 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Play the given file in the voice connection.
-   * @param {string} file The path to the file
+   * @param {string} file The absolute path to the file
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
    * @example
@@ -227,7 +238,17 @@ class VoiceConnection extends EventEmitter {
    *  .catch(console.error);
    */
   playFile(file, options) {
-    return this.playStream(fs.createReadStream(file), options);
+    return this.player.playUnknownStream(`file:${file}`, options);
+  }
+
+  /**
+   * Play an arbitrary input that can be [handled by ffmpeg](https://ffmpeg.org/ffmpeg-protocols.html#Description)
+   * @param {string} input the arbitrary input
+   * @param {StreamOptions} [options] Options for playing the stream
+   * @returns {StreamDispatcher}
+   */
+  playArbitraryInput(input, options) {
+    return this.player.playUnknownStream(input, options);
   }
 
   /**
@@ -246,20 +267,44 @@ class VoiceConnection extends EventEmitter {
    *  })
    *  .catch(console.error);
    */
-  playStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
-    const options = { seek, volume, passes };
+  playStream(stream, options) {
     return this.player.playUnknownStream(stream, options);
   }
 
   /**
    * Plays a stream of 16-bit signed stereo PCM at 48KHz.
-   * @param {ReadableStream} stream The audio stream to play.
+   * @param {ReadableStream} stream The audio stream to play
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
    */
-  playConvertedStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
-    const options = { seek, volume, passes };
-    return this.player.playPCMStream(stream, null, options);
+  playConvertedStream(stream, options) {
+    return this.player.playPCMStream(stream, options);
+  }
+
+  /**
+   * Plays an Opus encoded stream at 48KHz.
+   * <warn>Note that inline volume is not compatible with this method.</warn>
+   * @param {ReadableStream} stream The Opus audio stream to play
+   * @param {StreamOptions} [options] Options for playing the stream
+   * @returns {StreamDispatcher}
+   */
+  playOpusStream(stream, options) {
+    return this.player.playOpusStream(stream, options);
+  }
+
+  /**
+   * Plays a voice broadcast
+   * @param {VoiceBroadcast} broadcast the broadcast to play
+   * @returns {StreamDispatcher}
+   * @example
+   * // play a broadcast
+   * const broadcast = client
+   *   .createVoiceBroadcast()
+   *   .playFile('./test.mp3');
+   * const dispatcher = voiceConnection.playBroadcast(broadcast);
+   */
+  playBroadcast(broadcast) {
+    return this.player.playBroadcast(broadcast);
   }
 
   /**

@@ -36,9 +36,15 @@ class GuildMember {
 
     /**
      * The ID of the last message sent by the member in their guild, if one was sent.
-     * @type {?string}
+     * @type {?Snowflake}
      */
     this.lastMessageID = null;
+
+    /**
+     * The Message object of the last message sent by the member in their guild, if one was sent.
+     * @type {?Message}
+     */
+    this.lastMessage = null;
   }
 
   setup(data) {
@@ -68,13 +74,13 @@ class GuildMember {
 
     /**
      * The voice session ID of this member, if any
-     * @type {?string}
+     * @type {?Snowflake}
      */
     this.voiceSessionID = data.session_id;
 
     /**
      * The voice channel ID of this member, if any
-     * @type {?string}
+     * @type {?Snowflake}
      */
     this.voiceChannelID = data.channel_id;
 
@@ -120,7 +126,7 @@ class GuildMember {
 
   /**
    * A list of roles that are applied to this GuildMember, mapped by the role ID.
-   * @type {Collection<string, Role>}
+   * @type {Collection<Snowflake, Role>}
    * @readonly
    */
   get roles() {
@@ -175,7 +181,7 @@ class GuildMember {
 
   /**
    * The ID of this user
-   * @type {string}
+   * @type {Snowflake}
    * @readonly
    */
   get id() {
@@ -390,11 +396,19 @@ class GuildMember {
   }
 
   /**
+   * Creates a DM channel between the client and the member
+   * @returns {Promise<DMChannel>}
+   */
+  createDM() {
+    return this.user.createDM();
+  }
+
+  /**
    * Deletes any DMs with this guild member
    * @returns {Promise<DMChannel>}
    */
   deleteDM() {
-    return this.client.rest.methods.deleteChannel(this);
+    return this.user.deleteDM();
   }
 
   /**

@@ -10,8 +10,6 @@ const { email, password, token, usertoken, song } = require('./auth.json');
 
 client.login(token).then(atoken => console.log('logged in with token ' + atoken)).catch(console.error);
 
-client.ws.on('send', console.log);
-
 client.on('ready', () => {
   console.log('ready');
 });
@@ -171,7 +169,9 @@ client.on('message', msg => {
   if (msg.content.startsWith('/play')) {
     console.log('I am now going to play', msg.content);
     const chan = msg.content.split(' ').slice(1).join(' ');
-    con.playStream(ytdl(chan, {filter : 'audioonly'}), { passes : 4 });
+        const s = ytdl(chan, {filter:'audioonly'}, { passes : 3 });
+    s.on('error', e => console.log(`e w stream 1 ${e}`));
+    con.playStream(s);
   }
   if (msg.content.startsWith('/join')) {
     const chan = msg.content.split(' ').slice(1).join(' ');
@@ -179,7 +179,9 @@ client.on('message', msg => {
       .then(conn => {
         con = conn;
         msg.reply('done');
-        disp = conn.playStream(ytdl(song, {filter:'audioonly'}), { passes : 3 });
+        const s = ytdl(song, {filter:'audioonly'}, { passes : 3 });
+        s.on('error', e => console.log(`e w stream 2 ${e}`));
+        disp = conn.playStream(s);
         conn.player.on('debug', console.log);
         conn.player.on('error', err => console.log(123, err));
       })

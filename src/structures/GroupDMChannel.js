@@ -61,7 +61,7 @@ class GroupDMChannel extends Channel {
     if (!this.recipients) {
       /**
        * A collection of the recipients of this DM, mapped by their ID.
-       * @type {Collection<string, User>}
+       * @type {Collection<Snowflake, User>}
        */
       this.recipients = new Collection();
     }
@@ -136,10 +136,10 @@ class GroupDMChannel extends Channel {
   get typingCount() { return; }
   createCollector() { return; }
   awaitMessages() { return; }
-  bulkDelete() { return; }
+  // doesn't work on group DMs; bulkDelete() { return; }
   _cacheMessage() { return; }
 }
 
-TextBasedChannel.applyToClass(GroupDMChannel, true);
+TextBasedChannel.applyToClass(GroupDMChannel, true, ['bulkDelete']);
 
 module.exports = GroupDMChannel;

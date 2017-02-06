@@ -1,3 +1,4 @@
+const os = require('os');
 const EventEmitter = require('events').EventEmitter;
 const mergeDefault = require('../util/MergeDefault');
 const Constants = require('../util/Constants');
@@ -11,6 +12,7 @@ const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
 const Presence = require('../structures/Presence').Presence;
 const ShardClientUtil = require('../sharding/ShardClientUtil');
+const VoiceBroadcast = require('./voice/VoiceBroadcast');
 
 /**
  * The starting point for making a Discord Bot.
@@ -137,6 +139,12 @@ class Client extends EventEmitter {
     this.readyAt = null;
 
     /**
+     * An array of voice broadcasts
+     * @type {VoiceBroadcast[]}
+     */
+    this.broadcasts = [];
+
+    /**
      * The previous heartbeat pings of the websocket (most recent first, limited to three elements)
      * @type {number[]}
      */
@@ -216,7 +224,17 @@ class Client extends EventEmitter {
    * @readonly
    */
   get browser() {
-    return typeof window !== 'undefined';
+    return os.platform() === 'browser';
+  }
+
+  /**
+   * Creates a new voice broadcast
+   * @returns {VoiceBroadcast} the created broadcast
+   */
+  createVoiceBroadcast() {
+    const broadcast = new VoiceBroadcast(this);
+    this.broadcasts.push(broadcast);
+    return broadcast;
   }
 
   /**
@@ -270,11 +288,12 @@ class Client extends EventEmitter {
    * Caches a user, or obtains it from the cache if it's already cached.
    * <warn>This is only available when using a bot account.</warn>
    * @param {string} id The ID of the user to obtain
+   * @param {boolean} [cache=true] Insert the user into the users cache
    * @returns {Promise<User>}
    */
-  fetchUser(id) {
+  fetchUser(id, cache = true) {
     if (this.users.has(id)) return Promise.resolve(this.users.get(id));
-    return this.rest.methods.getUser(id);
+    return this.rest.methods.getUser(id, cache);
   }
 
   /**
@@ -295,6 +314,14 @@ class Client extends EventEmitter {
    */
   fetchWebhook(id, token) {
     return this.rest.methods.getWebhook(id, token);
+  }
+
+  /**
+   * Fetch available voice regions
+   * @returns {Collection<string, VoiceRegion>}
+   */
+  fetchVoiceRegions() {
+    return this.rest.methods.fetchVoiceRegions();
   }
 
   /**

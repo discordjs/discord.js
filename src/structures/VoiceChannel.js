@@ -11,7 +11,7 @@ class VoiceChannel extends GuildChannel {
 
     /**
      * The members in this voice channel.
-     * @type {Collection<string, GuildMember>}
+     * @type {Collection<Snowflake, GuildMember>}
      */
     this.members = new Collection();
 
@@ -46,12 +46,22 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
+   * Checks if the voice channel is full
+   * @type {boolean}
+   */
+  get full() {
+    return this.userLimit > 0 && this.members.size >= this.userLimit;
+  }
+
+  /**
    * Checks if the client has permission join the voice channel
    * @type {boolean}
    */
   get joinable() {
     if (this.client.browser) return false;
-    return this.permissionsFor(this.client.user).hasPermission('CONNECT');
+    if (!this.permissionsFor(this.client.user).hasPermission('CONNECT')) return false;
+    if (this.full && !this.permissionsFor(this.client.user).hasPermission('MOVE_MEMBERS')) return false;
+    return true;
   }
 
   /**
