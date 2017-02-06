@@ -22,7 +22,10 @@ class ReadyHandler extends AbstractHandler {
       guild.shardID = packet.shardID;
       client.dataManager.newGuild(guild);
     }
-    for (const privateDM of data.private_channels) client.dataManager.newChannel(privateDM);
+    for (const privateDM of data.private_channels) {
+      privateDM.shardID = data.shardID;
+      client.dataManager.newChannel(privateDM);
+    }
 
     for (const relation of data.relationships) {
       const user = client.dataManager.newUser(relation.user);

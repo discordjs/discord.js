@@ -79,6 +79,8 @@ class WebSocketPacketManager {
 
     this.client.emit('raw', packet);
 
+    if (packet.d) packet.d.shardID = packet.shardID;
+
     if (packet.op === Constants.OPCodes.RECONNECT) {
       ws.tryReconnect();
       return false;

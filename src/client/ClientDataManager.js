@@ -66,7 +66,9 @@ class ClientDataManager {
     }
 
     if (channel) {
-      if (this.pastReady(data.shardID) && !already) this.client.emit(Constants.Events.CHANNEL_CREATE, channel);
+      if (this.pastReady(guild ? guild.shardID : data.shardID) && !already) {
+        this.client.emit(Constants.Events.CHANNEL_CREATE, channel);
+      }
       this.client.channels.set(channel.id, channel);
       return channel;
     }

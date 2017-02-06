@@ -25,6 +25,13 @@ class DMChannel extends Channel {
     this.recipient = this.client.dataManager.newUser(data.recipients[0]);
 
     this.lastMessageID = data.last_message_id;
+
+    /**
+     * The shard to which this channel belongs.
+     * At the moment, Discord always assigns DMs to shard 0
+     * @type {?Number}
+     */
+    this.shardID = data.shardID;
   }
 
   /**

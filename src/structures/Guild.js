@@ -48,6 +48,12 @@ class Guild {
      */
     this.presences = new Collection();
 
+    /**
+     * The shard to which this guilds belongs
+     * @type {?Number}
+     */
+    this.shardID = data.shardID;
+
     if (!data) return;
     if (data.unavailable) {
       /**
@@ -65,12 +71,6 @@ class Guild {
       this.available = true;
       this.setup(data);
     }
-
-    /**
-     * The shard to which this guilds belongs
-     * @type {?Number}
-     */
-    this.shardID = data.shardID;
   }
 
   /**
