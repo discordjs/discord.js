@@ -7,7 +7,7 @@ const botGateway = require('./Constants').Endpoints.gateway(true);
  * @param {number} [guildsPerShard=1000] Number of guilds per shard
  * @returns {Promise<number>} the recommended number of shards
  */
-module.exports = function fetchRecommendedShards(token, guildsPerShard = 1000) {
+function fetchRecommendedShards(token, guildsPerShard = 1000) {
   return new Promise((resolve, reject) => {
     if (!token) throw new Error('A token must be provided.');
     superagent.get(botGateway)
@@ -17,4 +17,6 @@ module.exports = function fetchRecommendedShards(token, guildsPerShard = 1000) {
         resolve(res.body.shards * (1000 / guildsPerShard));
       });
   });
-};
+}
+
+module.exports = fetchRecommendedShards;

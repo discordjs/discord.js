@@ -14,7 +14,7 @@ const Presence = require('../structures/Presence').Presence;
 const ShardClientUtil = require('../sharding/ShardClientUtil');
 
 /**
- * The starting point for making a Discord Bot.
+ * The main hub for interacting with the Discord API, and the starting point for any bot.
  * @extends {EventEmitter}
  */
 class Client extends EventEmitter {
@@ -88,39 +88,42 @@ class Client extends EventEmitter {
     this.voice = !this.browser ? new ClientVoiceManager(this) : null;
 
     /**
-     * The shard helpers for the client (only if the process was spawned as a child, such as from a ShardingManager)
+     * The shard helpers for the client
+     * (only if the process was spawned as a child, such as from a {@link ShardingManager})
      * @type {?ShardClientUtil}
      */
     this.shard = process.send ? ShardClientUtil.singleton(this) : null;
 
     /**
-     * A collection of the Client's stored users
-     * @type {Collection<string, User>}
+     * All of the {@link User} objects that have been cached at any point, mapped by their IDs
+     * @type {Collection<Snowflake, User>}
      */
     this.users = new Collection();
 
     /**
-     * A collection of the Client's stored guilds
-     * @type {Collection<string, Guild>}
+     * All of the guilds the client is currently handling, mapped by their IDs -
+     * as long as sharding isn't being used, this will be *every* guild the bot is a member of
+     * @type {Collection<Snowflake, Guild>}
      */
     this.guilds = new Collection();
 
     /**
-     * A collection of the Client's stored channels
-     * @type {Collection<string, Channel>}
+     * All of the {@link Channel}s that the client is currently handling, mapped by their IDs -
+     * as long as sharding isn't being used, this will be *every* channel in *every* guild, and all DM channels
+     * @type {Collection<Snowflake, Channel>}
      */
     this.channels = new Collection();
 
     /**
-     * A collection of presences for friends of the logged in user.
+     * Presences that have been received for the client user's friends, mapped by user IDs
      * <warn>This is only filled when using a user account.</warn>
-     * @type {Collection<string, Presence>}
+     * @type {Collection<Snowflake, Presence>}
      */
     this.presences = new Collection();
 
     /**
-     * The authorization token for the logged in user/bot.
-     * @name Client#token
+     * Authorization token for the logged in user/bot
+     * <warn>This should be kept private at all times.</warn>
      * @type {?string}
      */
     Object.defineProperty(this, 'token', {
@@ -136,13 +139,14 @@ class Client extends EventEmitter {
     }
 
     /**
-     * The ClientUser representing the logged in Client
+     * User that the client is logged in as
      * @type {?ClientUser}
      */
     this.user = null;
 
     /**
-     * The date at which the Client was regarded as being in the `READY` state.
+     * Time at which the client was last regarded as being in the `READY` state
+     * (each time the client disconnects and successfully reconnects, this will be overwritten)
      * @type {?Date}
      */
     this.readyAt = null;
@@ -153,7 +157,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * The uptime for the logged in Client.
+   * How long it has been since the client last entered the `READY` state
    * @type {?number}
    * @readonly
    */
@@ -162,7 +166,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Returns a collection, mapping guild ID to voice connections.
+   * All active voice connections that have been established, mapped by channel I
    * @type {Collection<string, VoiceConnection>}
    * @readonly
    */
@@ -172,8 +176,8 @@ class Client extends EventEmitter {
   }
 
   /**
-   * The emojis that the client can use. Mapped by emoji ID.
-   * @type {Collection<string, Emoji>}
+   * All custom emojis that the client has access to, mapped by their IDs
+   * @type {Collection<Snowflake, Emoji>}
    * @readonly
    */
   get emojis() {
@@ -185,7 +189,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * The timestamp that the client was last ready at
+   * Timestamp of the time the client was last `READY` at
    * @type {?number}
    * @readonly
    */
@@ -203,28 +207,22 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Logs the client in. If successful, resolves with the account's token. <warn>If you're making a bot, it's
-   * much better to use a bot account rather than a user account.
-   * Bot accounts have higher rate limits and have access to some features user accounts don't have. User bots
-   * that are making a lot of API requests can even be banned.</warn>
-   * @param  {string} token The token used for the account.
-   * @returns {Promise<string>}
+   * Logs the client in, establishing a websocket connection to Discord.
+   * <info>Both bot and regular user accounts are supported, but it is highly recommended to use a bot account whenever
+   * possible. User accounts are subject to harsher ratelimits and other restrictions that don't apply to bot accounts.
+   * Bot accounts also have access to many features that user accounts cannot utilise. User accounts that are found to
+   * be abusing/overusing the API will be banned, locking you out of Discord entirely.</info>
+   * @param {string} token Token of the account to log in with
+   * @returns {Promise<string>} Token of the account used
    * @example
-   * // log the client in using a token
-   * const token = 'my token';
-   * client.login(token);
-   * @example
-   * // log the client in using email and password
-   * const email = 'user@email.com';
-   * const password = 'supersecret123';
-   * client.login(email, password);
+   * client.login('my token');
    */
   login(token) {
     return this.rest.methods.login(token);
   }
 
   /**
-   * Destroys the client and logs out.
+   * Logs out, terminates the connection to Discord, and destroys the client
    * @returns {Promise}
    */
   destroy() {
@@ -236,10 +234,10 @@ class Client extends EventEmitter {
   }
 
   /**
-   * This shouldn't really be necessary to most developers as it is automatically invoked every 30 seconds, however
-   * if you wish to force a sync of guild data, you can use this.
+   * Requests a sync of guild data with Discord.
+   * <info>This can be done automatically every 30 seconds by enabling {@link ClientOptions#sync}.</info>
    * <warn>This is only available when using a user account.</warn>
-   * @param {Guild[]|Collection<string, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
+   * @param {Guild[]|Collection<Snowflake, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
    * @param {number} shardID The shard id to sync
    */
   syncGuilds(guilds = this.guilds, shardID) {
@@ -252,10 +250,10 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Caches a user, or obtains it from the cache if it's already cached.
+   * Obtains a user from Discord, or the user cache if it's already available.
    * <warn>This is only available when using a bot account.</warn>
-   * @param {string} id The ID of the user to obtain
-   * @param {boolean} [cache=true] Insert the user into the users cache
+   * @param {string} id ID of the user
+   * @param {boolean} [cache=true] Whether to cache the new user object if it isn't already
    * @returns {Promise<User>}
    */
   fetchUser(id, cache = true) {
@@ -264,8 +262,8 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Fetches an invite object from an invite code.
-   * @param {InviteResolvable} invite An invite code or URL
+   * Obtains an invite from Discord.
+   * @param {InviteResolvable} invite Invite code or URL
    * @returns {Promise<Invite>}
    */
   fetchInvite(invite) {
@@ -274,7 +272,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Fetch a webhook by ID.
+   * Obtains a webhook from Discord.
    * @param {string} id ID of the webhook
    * @param {string} [token] Token for the webhook
    * @returns {Promise<Webhook>}
@@ -284,7 +282,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Fetch available voice regions
+   * Obtains the available voice regions from Discord.
    * @returns {Collection<string, VoiceRegion>}
    */
   fetchVoiceRegions() {
@@ -292,10 +290,10 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Sweeps all channels' messages and removes the ones older than the max message lifetime.
+   * Sweeps all text-based channels' messages and removes the ones older than the max message lifetime.
    * If the message has been edited, the time of the edit is used rather than the time of the original message.
    * @param {number} [lifetime=this.options.messageCacheLifetime] Messages that are older than this (in seconds)
-   * will be removed from the caches. The default is based on the client's `messageCacheLifetime` option.
+   * will be removed from the caches. The default is based on {@link ClientOptions#messageCacheLifetime}.
    * @returns {number} Amount of messages that were removed from the caches,
    * or -1 if the message cache lifetime is unlimited
    */
@@ -328,7 +326,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Gets the bot's OAuth2 application.
+   * Obtains the OAuth Application of the bot from Discord.
    * <warn>This is only available when using a bot account.</warn>
    * @returns {Promise<ClientOAuth2Application>}
    */
@@ -338,9 +336,10 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Generate an invite link for your bot
-   * @param {PermissionResolvable[]|number} [permissions] An array of permissions to request
-   * @returns {Promise<string>} The invite link
+   * Generates a link that can be used to invite the bot to a guild.
+   * <warn>This is only available when using a bot account.</warn>
+   * @param {PermissionResolvable[]|number} [permissions] Permissions to request
+   * @returns {Promise<string>}
    * @example
    * client.generateInvite(['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'])
    *   .then(link => {
@@ -405,18 +404,35 @@ class Client extends EventEmitter {
     this._intervals.delete(interval);
   }
 
+  /**
+   * Adds/updates a friend's presence in {@link Client#presences}.
+   * @param {string} id ID of the user
+   * @param {Object} presence Raw presence object from Discord
+   * @private
+   */
   _setPresence(id, presence) {
-    if (this.presences.get(id)) {
+    if (this.presences.has(id)) {
       this.presences.get(id).update(presence);
       return;
     }
     this.presences.set(id, new Presence(presence));
   }
 
+  /**
+   * Calls `eval(script)` with the client as `this`.
+   * @param {string} script Script to eval
+   * @returns {*}
+   * @private
+   */
   _eval(script) {
     return eval(script);
   }
 
+  /**
+   * Validates client options
+   * @param {ClientOptions} [options=this.options] Options to validate
+   * @private
+   */
   _validateOptions(options = this.options) {
     if (options.shardCount !== 'auto' && (typeof options.shardCount !== 'number' || isNaN(options.shardCount))) {
       throw new TypeError('The shardCount option must be a number or `auto`.');

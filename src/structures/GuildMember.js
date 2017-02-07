@@ -322,7 +322,7 @@ class GuildMember {
 
   /**
    * Sets the roles applied to the member.
-   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to apply
+   * @param {Collection<Snowflake, Role>|Role[]|string[]} roles The roles or role IDs to apply
    * @returns {Promise<GuildMember>}
    */
   setRoles(roles) {
@@ -341,7 +341,7 @@ class GuildMember {
 
   /**
    * Adds multiple roles to the member.
-   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to add
+   * @param {Collection<Snowflake, Role>|Role[]|string[]} roles The roles or role IDs to add
    * @returns {Promise<GuildMember>}
    */
   addRoles(roles) {
@@ -367,7 +367,7 @@ class GuildMember {
 
   /**
    * Removes multiple roles from the member.
-   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to remove
+   * @param {Collection<Snowflake, Role>|Role[]|string[]} roles The roles or role IDs to remove
    * @returns {Promise<GuildMember>}
    */
   removeRoles(roles) {
