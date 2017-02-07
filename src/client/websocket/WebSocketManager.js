@@ -190,8 +190,8 @@ class WebSocketManager extends EventEmitter {
   doQueue() {
     const item = this._queue[0];
     if (!(this.ws.readyState === WebSocketConnection.OPEN && item)) return;
-    if (this.remaining === 0) {
-      this.client.setTimeout(this.doQueue.bind(this), Date.now() - this.remainingReset);
+    if (this._remaining === 0) {
+      this.client.setTimeout(this.doQueue.bind(this), Date.now() - this._remainingReset);
       return;
     }
     this._remaining--;
