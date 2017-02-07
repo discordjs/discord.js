@@ -194,7 +194,7 @@ class WebSocketShardManager extends EventEmitter {
 
   /**
    * The statuses of the websocket managers
-   * @type {?Array<number>}
+   * @type {number[]}
    * @readonly
    */
   get statuses() {
@@ -203,7 +203,7 @@ class WebSocketShardManager extends EventEmitter {
 
   /**
    * The uptimes for the websocket managers
-   * @type {?number}
+   * @type {number[]}
    * @readonly
    */
   get uptimes() {
@@ -220,10 +220,11 @@ class WebSocketShardManager extends EventEmitter {
 
   /**
    * The average heartbeat ping of the websockets
-   * @type {number}
+   * @type {?number}
    * @readonly
    */
   get ping() {
+    if (this.pings.length === 0) return null;
     return this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length;
   }
 
