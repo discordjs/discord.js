@@ -349,18 +349,6 @@ class Guild {
    * @returns {Promise<GuildMember>}
    */
   addMember(user, options) {
-    if (options.roles) {
-      var roles = options.roles;
-      if (roles instanceof Collection || (roles instanceof Array && roles[0] instanceof Role)) {
-        options.roles = roles.map(role => role.id);
-      }
-    }
-    if (options.accessToken) {
-      options.access_token = options.accessToken;
-      delete options.accessToken;
-    } else {
-      return Promise.reject(new Error('OAuth2 access token was not specified.'));
-    }
     if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
     return this.client.rest.methods.putGuildMember(this, user, options);
   }

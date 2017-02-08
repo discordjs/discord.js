@@ -378,9 +378,19 @@ class RESTMethods {
   }
 
   putGuildMember(guild, user, options) {
-    return this.rest.makeRequest('put', Constants.Endpoints.guildMember(guild.id, user.id), true, options).then(data =>
-      this.client.actions.GuildMemberGet.handle(guild, data).member
-    );
+    if (options.roles) {
+      var roles = options.roles;
+      if (roles instanceof Collection || (roles instanceof Array && roles[0] instanceof Role)) {
+        options.roles = roles.map(role => role.id);
+      }
+    }
+    if (options.accessToken) {
+      options.access_token = options.accessToken;
+    } else {
+      return Promise.reject(new Error('OAuth2 access token was not specified.'));
+    }
+    return this.rest.makeRequest('put', Constants.Endpoints.guildMember(guild.id, user.id), true, options)
+      .then(data => this.client.actions.GuildMemberGet.handle(guild, data).member);
   }
 
   getGuildMember(guild, user, cache) {
