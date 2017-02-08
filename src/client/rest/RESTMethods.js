@@ -410,6 +410,7 @@ class RESTMethods {
       };
 
       this.client.on('guildMemberUpdate', listener);
+      this.client.setTimeout(() => this.client.removeListener('guildMemberUpdate', listener), 10e3);
 
       this.rest.makeRequest(
         'put',
@@ -429,6 +430,7 @@ class RESTMethods {
       };
 
       this.client.on('guildMemberUpdate', listener);
+      this.client.setTimeout(() => this.client.removeListener('guildMemberUpdate', listener), 10e3);
 
       this.rest.makeRequest(
         'delete',
