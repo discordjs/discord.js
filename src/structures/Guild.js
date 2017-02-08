@@ -334,7 +334,8 @@ class Guild {
   /**
    * The data for a role
    * @typedef {Object} AddGuildMemberOptions
-   * @property {string} access_token An oauth2 access token granted with the guilds.join to the bot's application for the user you want to add to the guild
+   * @property {string} access_token An oauth2 access token granted with the guilds.join to the bot's application
+   * for the user you want to add to the guild
    * @property {string} [nick] Value to set users nickname to
    * @property {Collection<Snowflake, Role>|Role[]|string[]} [roles] The roles or role IDs to add
    * @property {boolean} [mute] If the user is muted
@@ -349,12 +350,12 @@ class Guild {
    */
   addMember(user, options) {
     if (options.roles) {
-      var roles = options.roles
+      var roles = options.roles;
       if (roles instanceof Collection || (roles instanceof Array && roles[0] instanceof Role)) {
-        options.roles = roles.map(role => role.id)
+        options.roles = roles.map(role => role.id);
       }
     }
-    if (!options.access_token) return Promise.reject(new Error('User oauth2 access_token was not specified in options.'));
+    if (!options.access_token) return Promise.reject(new Error('User oauth2 access_token was not specified.'));
     if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
     return this.client.rest.methods.putGuildMember(this, user, options);
   }
