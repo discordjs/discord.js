@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const Request = require('../util/Request/Request');
+const Request = require('../util/Request');
 
 const Constants = require('../util/Constants');
 const convertArrayBuffer = require('../util/ConvertArrayBuffer');

@@ -1,5 +1,5 @@
 const Constants = require('../../util/Constants');
-const DiscordRequest = require('../../util/Request/Request');
+const Request = require('../../util/Request');
 
 class APIRequest {
   constructor(rest, method, url, auth, data, file) {
@@ -32,7 +32,7 @@ class APIRequest {
   }
 
   gen() {
-    const apiRequest = new DiscordRequest(this.method, this.url);
+    const apiRequest = new Request(this.method, this.url);
     if (this.auth) apiRequest.set('authorization', this.getAuth());
     if (this.file && this.file.file) {
       apiRequest.attach('file', this.file.file, this.file.name);

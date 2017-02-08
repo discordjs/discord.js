@@ -1,4 +1,4 @@
-const Request = require('./Request/Request');
+const Request = require('./Request');
 const Constants = require('./Constants');
 
 /**
