@@ -377,6 +377,12 @@ class RESTMethods {
     return this.rest.makeRequest('get', Constants.Endpoints.channelMessage(channel.id, messageID), true);
   }
 
+  putGuildMember(guild, user, options) {
+    return this.rest.makeRequest('put', Constants.Endpoints.guildMember(guild.id, user.id), true, options).then(data =>
+      this.client.actions.GuildMemberGet.handle(guild, data).member
+    );
+  }
+
   getGuildMember(guild, user, cache) {
     return this.rest.makeRequest('get', Constants.Endpoints.guildMember(guild.id, user.id), true).then(data => {
       if (cache) {
