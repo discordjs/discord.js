@@ -3859,6 +3859,28 @@ class Guild {
   }
 
   /**
+   * The data for a role
+   * @typedef {Object} AddGuildMemberOptions
+   * @property {string} accessToken An oauth2 access token granted with the guilds.join to the bot's application
+   * for the user you want to add to the guild
+   * @property {string} [nick] Value to set users nickname to
+   * @property {Collection<Snowflake, Role>|Role[]|string[]} [roles] The roles or role IDs to add
+   * @property {boolean} [mute] If the user is muted
+   * @property {boolean} [deaf] If the user is deafened
+   */
+
+  /**
+   * Add a user to this guild using OAuth2
+   * @param {UserResolvable|string} user The user or ID of the user to add to guild
+   * @param {AddGuildMemberOptions} options Options object containing the access_token
+   * @returns {Promise<GuildMember>}
+   */
+  addMember(user, options) {
+    if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
+    return this.client.rest.methods.putGuildMember(this, user, options);
+  }
+
+  /**
    * Fetch a single guild member from a user.
    * @param {UserResolvable} user The user to fetch the member for
    * @param {boolean} [cache=true] Insert the user into the users cache
@@ -22860,6 +22882,22 @@ class RESTMethods {
     const msg = channel.messages.get(messageID);
     if (msg) return Promise.resolve(msg);
     return this.rest.makeRequest('get', Constants.Endpoints.channelMessage(channel.id, messageID), true);
+  }
+
+  putGuildMember(guild, user, options) {
+    if (options.roles) {
+      var roles = options.roles;
+      if (roles instanceof Collection || (roles instanceof Array && roles[0] instanceof Role)) {
+        options.roles = roles.map(role => role.id);
+      }
+    }
+    if (options.accessToken) {
+      options.access_token = options.accessToken;
+    } else {
+      return Promise.reject(new Error('OAuth2 access token was not specified.'));
+    }
+    return this.rest.makeRequest('put', Constants.Endpoints.guildMember(guild.id, user.id), true, options)
+      .then(data => this.client.actions.GuildMemberGet.handle(guild, data).member);
   }
 
   getGuildMember(guild, user, cache) {
