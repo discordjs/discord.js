@@ -13479,7 +13479,7 @@ class RichEmbed {
 
   /**
    * Set the image of this embed
-   * @param {string} url The URL of the thumbnail
+   * @param {string} url The URL of the image
    * @returns {RichEmbed} This embed
    */
   setImage(url) {
