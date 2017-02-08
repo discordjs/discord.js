@@ -118,17 +118,18 @@ class Request {
   end(callback) {
     this.set('Accept-Encoding', 'gzip, deflate');
     return new Promise((resolve, reject) => {
-      let body = '';
+      let body = [];
       const handler = (response) => {
         response.setEncoding('utf8');
         response.once('aborted', reject);
         response.once('abort', reject);
         response.once('error', reject);
         response.on('data', (chunk) => {
-          body += chunk;
+          body.push(chunk);
         });
         response.once('end', () => {
-          if (/^\s*(?:deflate|gzip)\s*$/.test(response.headers['content-encoding'])) {
+          if (body[0] instanceof Buffer) body = Buffer.concat(body);
+          if (this._shouldUnzip(response)) {
             try {
               if (typeof document !== 'undefined') body = pako.inflate(body, { to: 'string' });
               else body = zlib.unzipSync(body).toString();
@@ -169,6 +170,12 @@ class Request {
     }).catch(e => {
       if (callback) callback(e); // eslint-disable-line callback-return
     });
+  }
+
+  _shouldUnzip(res) {
+    if (res.statusCode === 204 || res.statusCode === 304) return false;
+    if (res.headers['content-length'] === '0') return false;
+    return /^\s*(?:deflate|gzip)\s*$/.test(res.headers['content-encoding']);
   }
 }
 
