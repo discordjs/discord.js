@@ -121,12 +121,10 @@ class Request {
       let body = [];
       const handler = (response) => {
         response.setEncoding('utf8');
-        response.once('aborted', reject);
-        response.once('abort', reject);
-        response.once('error', reject);
-        response.on('data', (chunk) => {
-          body.push(chunk);
-        });
+        response.once('aborted', reject.bind(this));
+        response.once('abort', reject.bind(this));
+        response.once('error', reject.bind(this));
+        response.on('data', (chunk) => body.push(chunk));
         response.once('end', () => {
           if (body[0] instanceof Buffer) body = Buffer.concat(body);
           if (this._shouldUnzip(response)) {
