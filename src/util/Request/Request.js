@@ -2,7 +2,7 @@ const http = require('http');
 const https = require('https');
 const url = require('url');
 const NodeFormData = require('./FormData');
-const pako = require('pako');
+const Stream = require('stream');
 const zlib = require('zlib');
 
 const PROTOCOLS = {
@@ -118,27 +118,32 @@ class Request {
   end(callback) {
     this.set('Accept-Encoding', 'gzip, deflate');
     return new Promise((resolve, reject) => {
-      let body = [];
       const handler = (response) => {
-        response.setEncoding('utf8');
+        let body = [];
         response.once('aborted', reject.bind(this));
         response.once('abort', reject.bind(this));
         response.once('error', reject.bind(this));
-        response.on('data', (chunk) => body.push(chunk));
-        response.once('end', () => {
-          if (body[0] instanceof Buffer) body = Buffer.concat(body);
-          if (this._shouldUnzip(response)) {
-            try {
-              if (typeof document !== 'undefined') body = pako.inflate(body, { to: 'string' });
-              else body = zlib.unzipSync(body).toString();
-            } catch (err) {
-              err.response = response;
-              reject(err);
-            }
-          }
+        const stream = new Stream();
+        stream.req = request;
+        if (this._shouldUnzip(response)) {
+          const unzip = zlib.createUnzip();
+          unzip.on('data', stream.emit.bind(stream, 'data'));
+          unzip.once('end', stream.emit.bind(stream, 'end'));
+          unzip.once('error', (err) => {
+            if (err && err.code === 'Z_BUF_ERROR') stream.emit('end');
+            else stream.emit('error', err);
+          });
+          response.pipe(unzip);
+        } else {
+          response.on('data', stream.emit.bind(stream, 'data'));
+          response.once('end', stream.emit.bind(stream, 'end'));
+        }
 
+        stream.on('data', (chunk) => body.push(chunk));
+        stream.once('end', () => {
+          if (body[0] instanceof Buffer) body = Buffer.concat(body).toString();
+          else body = body.join('');
           response.text = body;
-
           const type = response.headers['content-type'];
           if (type === 'application/json') {
             try {
@@ -149,9 +154,7 @@ class Request {
           } else {
             body = Buffer.from(body);
           }
-
           response.body = body;
-
           response.status = response.statusCode;
           if (response.statusCode >= 400) {
             reject(response);
