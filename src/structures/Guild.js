@@ -358,8 +358,9 @@ class Guild {
     if (options.accessToken) {
       options.access_token = options.accessToken;
       delete options.accessToken;
+    } else {
+      return Promise.reject(new Error('OAuth2 access token was not specified.'));
     }
-    if (!options.access_token) return Promise.reject(new Error('User oauth2 access_token was not specified.'));
     if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
     return this.client.rest.methods.putGuildMember(this, user, options);
   }
