@@ -175,7 +175,7 @@ class WebSocketManager extends EventEmitter {
 
   /**
    * Sends a packet to the gateway
-   * @param {Object} data An object that can be JSON stringified
+   * @param {Object} data An object that can be sent to the gateway
    * @param {boolean} force Whether or not to send the packet immediately
    */
   send(data, force = false) {
