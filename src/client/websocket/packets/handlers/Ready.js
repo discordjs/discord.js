@@ -1,6 +1,7 @@
 const AbstractHandler = require('./AbstractHandler');
 
 const ClientUser = require('../../../../structures/ClientUser');
+const Constants = require('../../../../util/Constants');
 
 class ReadyHandler extends AbstractHandler {
   handle(packet) {
@@ -8,7 +9,7 @@ class ReadyHandler extends AbstractHandler {
     const data = packet.d;
     const ws = client.ws.managers.get(packet.shardID);
 
-    ws.emit('ready', ws.shardID);
+    ws.emit('ready');
 
     ws.heartbeat();
 
@@ -71,7 +72,7 @@ class ReadyHandler extends AbstractHandler {
     }
 
     client.setTimeout(() => {
-      if (!ws.normalReady) ws._emitReady(false);
+      if (ws.status !== Constants.Status.READY) ws._emitReady();
     }, 1200 * data.guilds.length);
 
     ws.sessionID = data.session_id;

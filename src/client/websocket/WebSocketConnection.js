@@ -63,15 +63,18 @@ class WebSocketConnection extends EventEmitter {
   eventMessage(event) {
     if (this.listenerCount('message') > 0) this.emit('message', event);
     const data = this.unpack(event.data);
+    // unpack can take a while and cause a race condition where the ws is closed but a packet gets emitted
+    if (this.ws.readyState !== this.ws.OPEN) return false;
     this.emit('packet', data);
+    return true;
   }
 
   send(data) {
-    this.ws.send(this.pack(data));
+    return this.ws.send(this.pack(data));
   }
 
   pack(data) {
-    return erlpack !== null ? erlpack.pack(data).buffer : JSON.stringify(data);
+    return erlpack ? erlpack.pack(data).buffer : JSON.stringify(data);
   }
 
   unpack(data) {
@@ -85,7 +88,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   inflate(data) {
-    return erlpack !== null ? data : inflate(data);
+    return erlpack ? data : inflate(data);
   }
 
   static get encoding() {

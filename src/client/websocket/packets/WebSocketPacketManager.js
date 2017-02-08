@@ -106,11 +106,6 @@ class WebSocketPacketManager {
       ws.emit('debug', 'Received gateway heartbeat');
     }
 
-    if (ws.status === Constants.Status.RECONNECTING) {
-      ws.reconnecting = false;
-      ws.checkIfReady();
-    }
-
     if (this.disabledEvents[packet.t] !== undefined) return false;
 
     if (ws.status !== Constants.Status.READY) {

@@ -216,6 +216,8 @@ class Guild {
         }
       }
     }
+
+    if (this.client.options.fetchAllMembers) this.fetchMembers();
   }
 
   /**
