@@ -24,6 +24,7 @@ class WebSocketManager extends EventEmitter {
     this.pings = [];
 
     this.first = true;
+    this.connectionTimeout = null;
 
     this._reset();
 
@@ -35,7 +36,7 @@ class WebSocketManager extends EventEmitter {
       this._connect(gateway);
       this.first = false;
     } else {
-      this.setTimeout(this._connect.bind(this, gateway), 5500);
+      this.connectionTimeout = this.client.setTimeout(this._connect.bind(this, gateway), 5500);
     }
   }
 
@@ -238,6 +239,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   _reset() {
+    this.client.clearTimeout(this.connectionTimeout);
     this._queue = [];
     this._remaining = 120;
     this.client.setInterval(() => {
