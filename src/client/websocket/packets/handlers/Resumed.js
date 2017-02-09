@@ -8,7 +8,7 @@ class ResumedHandler extends AbstractHandler {
     const replayed = ws.sequence - ws.resumeStart;
     ws.resumeStart = -1;
 
-    client.emit('debug', `SHARD ${ws.shardID}: Resumed with ${replayed} replayed events`);
+    ws.emit('debug', `Resumed with ${replayed} replayed events`);
     client.emit('resume', replayed, ws.shardID);
 
     ws.heartbeat();

@@ -31,12 +31,12 @@ class WebSocketManager extends EventEmitter {
     this.on('debug', e => this.client.emit('debug', `SHARD ${this.shardID}: ${e}`));
   }
 
-  connect(gateway) {
+  connect(gateway = this.client.ws.gateway) {
     if (this.first) {
       this._connect(gateway);
       this.first = false;
     } else {
-      this.connectionTimeout = this.client.setTimeout(this._connect.bind(this, gateway), 5500);
+      this.client.setTimeout(this._connect.bind(this, gateway), 2500);
     }
   }
 
@@ -46,7 +46,7 @@ class WebSocketManager extends EventEmitter {
     if (this.ws) this.ws.close();
     this.packetManager.handleQueue();
     this.emit(Constants.Events.RECONNECTING);
-    this.connect(this.client.ws.gateway);
+    this.connect();
   }
 
   destroy() {
@@ -175,7 +175,7 @@ class WebSocketManager extends EventEmitter {
    */
   eventOpen() {
     this.emit('debug', 'Connection to gateway opened');
-    this.emit('open', this.shardID);
+    this.emit('open');
     this.lastHeartbeatAck = true;
     if (this.sessionID) this.sendResume();
     else this.sendNewIdentify();

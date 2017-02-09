@@ -87,6 +87,7 @@ class WebSocketPacketManager {
     }
 
     if (packet.op === Constants.OPCodes.INVALID_SESSION) {
+      ws.emit('debug', `Invalid session! Should wait: ${packet.d}`);
       if (packet.d) {
         setTimeout(() => {
           ws.sendResume();
