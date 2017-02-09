@@ -121,6 +121,22 @@ class WebSocketManager extends EventEmitter {
     });
   }
 
+  /**
+   * Requests a sync of guild data with Discord.
+   * <info>This can be done automatically every 30 seconds by enabling {@link ClientOptions#sync}.</info>
+   * <warn>This is only available when using a user account.</warn>
+   * @param {Guild[]|Collection<Snowflake, Guild>} [guilds=client.guilds] An array or collection of guilds to sync
+   */
+  syncGuilds(guilds = this.client.guilds) {
+    if (!this.client.user || this.client.user.bot) return;
+    guilds = guilds.filter(g => g.shardID === this.shardID).map(g => g.id);
+    this.emit('debug', `Syncing ${guilds.length} guilds`);
+    this.send({
+      op: 12,
+      d: guilds,
+    });
+  }
+
   heartbeat(normal) {
     if (normal && !this.lastHeartbeatAck) {
       this.ws.close(this.client.browser ? 1000 : 1007);
@@ -274,6 +290,7 @@ class WebSocketManager extends EventEmitter {
      * @param {Number} shardID
      */
     this.client.emit(Constants.Events.SHARD_READY, this.shardID);
+    this.syncGuilds();
     this.readyAt = Date.now();
   }
 }

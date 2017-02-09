@@ -53,10 +53,8 @@ class ReadyHandler extends AbstractHandler {
     }
 
     if (!client.user.bot && client.options.sync) {
-      client.setInterval(() => client.syncGuilds(client.guilds, ws.shardID), 30000);
+      client.setInterval(ws.syncGuilds.bind(ws), 30000);
     }
-
-    ws.once('shardReady', () => client.syncGuilds(client.guilds, ws.shardID));
 
     if (!client.users.has('1')) {
       client.dataManager.newUser({

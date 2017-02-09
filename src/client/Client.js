@@ -234,22 +234,6 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Requests a sync of guild data with Discord.
-   * <info>This can be done automatically every 30 seconds by enabling {@link ClientOptions#sync}.</info>
-   * <warn>This is only available when using a user account.</warn>
-   * @param {Guild[]|Collection<Snowflake, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
-   * @param {number} shardID The shard id to sync
-   */
-  syncGuilds(guilds = this.guilds, shardID) {
-    if (this.user.bot) return;
-    guilds = guilds.filter(g => g.shardID === shardID);
-    this.ws.managers.get(shardID).send({
-      op: 12,
-      d: guilds instanceof Collection ? guilds.keyArray() : guilds.map(g => g.id),
-    });
-  }
-
-  /**
    * Obtains a user from Discord, or the user cache if it's already available.
    * <warn>This is only available when using a bot account.</warn>
    * @param {string} id ID of the user
