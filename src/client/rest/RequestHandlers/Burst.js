@@ -6,9 +6,9 @@ class BurstRequestHandler extends RequestHandler {
 
     this.client = restManager.client;
 
-    this.limit = null;
+    this.limit = Infinity;
     this.resetTime = null;
-    this.remaining = null;
+    this.remaining = 1;
     this.timeDifference = 0;
 
     this.first = true;
@@ -33,6 +33,7 @@ class BurstRequestHandler extends RequestHandler {
           if (res.headers['x-ratelimit-global']) this.globalLimit = true;
           this.client.setTimeout(() => {
             this.globalLimit = false;
+            this.remaining = this.limit;
             this.handle();
           }, Number(res.headers['retry-after']) + this.client.options.restTimeOffset);
         } else {
@@ -52,9 +53,8 @@ class BurstRequestHandler extends RequestHandler {
 
   handle() {
     super.handle();
-    if (this.remaining === 0 || this.queue.length === 0 || this.globalLimit) return;
+    if (this.remaining <= 0 || this.queue.length === 0 || this.globalLimit) return;
     this.execute(this.queue.shift());
-    this.remaining--;
   }
 }
 
