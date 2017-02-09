@@ -137,8 +137,8 @@ class WebSocketManager extends EventEmitter {
     this.lastHeartbeatAck = false;
   }
 
-  pong(startTime) {
-    this.pings.unshift(Date.now() - startTime);
+  pong() {
+    this.pings.unshift(Date.now() - this.lastPingTimestamp);
     if (this.pings.length > 3) this.pings.length = 3;
     this.lastHeartbeatAck = true;
   }

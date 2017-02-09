@@ -81,6 +81,8 @@ class WebSocketPacketManager {
 
     if (packet.d) packet.d.shardID = packet.shardID;
 
+    if (ws.status === Constants.Status.RECONNECTING) ws.checkIfReady();
+
     if (packet.op === Constants.OPCodes.RECONNECT) {
       ws.tryReconnect();
       return false;
@@ -100,7 +102,7 @@ class WebSocketPacketManager {
     }
 
     if (packet.op === Constants.OPCodes.HEARTBEAT_ACK) {
-      ws.pong(ws.lastPingTimestamp);
+      ws.pong();
       ws.emit('debug', 'Heartbeat acknowledged');
     } else if (packet.op === Constants.OPCodes.HEARTBEAT) {
       ws.heartbeat(false);
