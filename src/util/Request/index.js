@@ -94,7 +94,7 @@ class Request {
 
     if (val === null || val === undefined) throw new Error('.field(name, val) val can not be empty');
     if (typeof val === 'boolean') val = String(val);
-    this._getFormData().append(name, val);
+    this._getFormData().append(name, val, name);
     this.set('Content-Type', `multipart/form-data; boundary=${this.data.boundary}`);
     return this;
   }

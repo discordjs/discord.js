@@ -274,10 +274,8 @@ class ClientDataResolver {
       return new Promise((resolve, reject) => {
         if (/^https?:\/\//.test(resource)) {
           const req = new Request('get', resource).set('Content-Type', 'blob');
-          if (this.client.browser) req.responseType('arraybuffer');
           req.end((err, res) => {
             if (err) return reject(err);
-            if (this.client.browser) return resolve(convertArrayBuffer(res.xhr.response));
             if (!(res.body instanceof Buffer)) return reject(new TypeError('The response body isn\'t a Buffer.'));
             return resolve(res.body);
           });
