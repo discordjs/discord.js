@@ -3,7 +3,14 @@ const RequestHandler = require('./RequestHandler');
 class BurstRequestHandler extends RequestHandler {
   constructor(restManager, endpoint) {
     super(restManager, endpoint);
-    this.requestRemaining = 1;
+
+    this.client = restManager.client;
+
+    this.limit = null;
+    this.resetTime = null;
+    this.remaining = null;
+    this.timeDifference = 0;
+
     this.first = true;
   }
 
@@ -12,36 +19,22 @@ class BurstRequestHandler extends RequestHandler {
     this.handle();
   }
 
-  handleNext(time) {
-    if (this.waiting) return;
-    this.waiting = true;
-    this.restManager.client.setTimeout(() => {
-      this.requestRemaining = this.requestLimit;
-      this.waiting = false;
-      this.handle();
-    }, time);
-  }
-
   execute(item) {
     item.request.gen().end((err, res) => {
       if (res && res.headers) {
-        this.requestLimit = res.headers['x-ratelimit-limit'];
-        this.requestResetTime = Number(res.headers['x-ratelimit-reset']) * 1000;
-        this.requestRemaining = Number(res.headers['x-ratelimit-remaining']);
+        this.limit = Number(res.headers['x-ratelimit-limit']);
+        this.resetTime = Number(res.headers['x-ratelimit-reset']) * 1000;
+        this.remaining = Number(res.headers['x-ratelimit-remaining']);
         this.timeDifference = Date.now() - new Date(res.headers.date).getTime();
-        this.handleNext(
-          this.requestResetTime - Date.now() + this.timeDifference + this.restManager.client.options.restTimeOffset
-        );
       }
       if (err) {
         if (err.status === 429) {
-          this.requestRemaining = 0;
           this.queue.unshift(item);
-          this.restManager.client.setTimeout(() => {
+          if (res.headers['x-ratelimit-global']) this.globalLimit = true;
+          this.client.setTimeout(() => {
             this.globalLimit = false;
             this.handle();
-          }, Number(res.headers['retry-after']) + this.restManager.client.options.restTimeOffset);
-          if (res.headers['x-ratelimit-global']) this.globalLimit = true;
+          }, Number(res.headers['retry-after']) + this.client.options.restTimeOffset);
         } else {
           item.reject(err);
         }
@@ -59,11 +52,9 @@ class BurstRequestHandler extends RequestHandler {
 
   handle() {
     super.handle();
-    if (this.requestRemaining < 1 || this.queue.length === 0 || this.globalLimit) return;
-    while (this.queue.length > 0 && this.requestRemaining > 0) {
-      this.execute(this.queue.shift());
-      this.requestRemaining--;
-    }
+    if (this.remaining === 0 || this.queue.length === 0 || this.globalLimit) return;
+    this.execute(this.queue.shift());
+    this.remaining--;
   }
 }
 
