@@ -5,10 +5,12 @@ class ResumedHandler extends AbstractHandler {
     const client = this.packetManager.client;
     const ws = client.ws.managers.get(packet.shardID);
 
+    ws._trace = packet.d._trace;
+
     const replayed = ws.sequence - ws.resumeStart;
     ws.resumeStart = -1;
 
-    ws.emit('debug', `Resumed with ${replayed} replayed events`);
+    ws.emit('debug', `Resumed ${ws._trace.join(' -> ')} | replayed ${replayed} events. `);
     client.emit('resume', replayed, ws.shardID);
 
     ws.heartbeat();

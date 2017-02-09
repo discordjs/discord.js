@@ -77,7 +77,7 @@ class WebSocketPacketManager {
   handle(packet) {
     const ws = this.ws.managers.get(packet.shardID);
 
-    this.client.emit('raw', packet);
+    this.client.emit('raw', packet, ws.shardID);
 
     if (packet.d) packet.d.shardID = packet.shardID;
 

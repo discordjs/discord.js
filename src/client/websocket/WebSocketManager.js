@@ -14,6 +14,7 @@ class WebSocketManager extends EventEmitter {
 
     this.sessionID = null;
     this.sequence = -1;
+    this._trace = [];
 
     this.ws = null;
 
@@ -28,7 +29,9 @@ class WebSocketManager extends EventEmitter {
 
     this._reset();
 
-    this.on('debug', e => this.client.emit('debug', `SHARD ${this.shardID}: ${e}`));
+    this.on('debug', e => {
+      if (this.client.listenerCount('debug')) this.client.emit('debug', `SHARD ${this.shardID}: ${e}`);
+    });
   }
 
   connect(gateway = this.client.ws.gateway) {
@@ -230,7 +233,9 @@ class WebSocketManager extends EventEmitter {
     }
 
     if (packet.op === Constants.OPCodes.HELLO) {
+      this.emit('debug', `HELLO ${packet.d._trace} ${packet.d.heartbeat_interval}`);
       this.heartbeatTime = packet.d.heartbeat_interval;
+      this._trace = packet.d._trace;
       this.heartbeatInterval = this.client.setInterval(() => this.heartbeat(true), packet.d.heartbeat_interval);
     }
 
