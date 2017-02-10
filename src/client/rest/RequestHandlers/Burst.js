@@ -11,7 +11,7 @@ class BurstRequestHandler extends RequestHandler {
     this.remaining = 1;
     this.timeDifference = 0;
 
-    this.first = true;
+    this.resetTimeout = null;
   }
 
   push(request) {
@@ -20,6 +20,7 @@ class BurstRequestHandler extends RequestHandler {
   }
 
   execute(item) {
+    if (!item) return;
     item.request.gen().end((err, res) => {
       if (res && res.headers) {
         this.limit = Number(res.headers['x-ratelimit-limit']);
@@ -31,22 +32,22 @@ class BurstRequestHandler extends RequestHandler {
         if (err.status === 429) {
           this.queue.unshift(item);
           if (res.headers['x-ratelimit-global']) this.globalLimit = true;
-          this.client.setTimeout(() => {
-            this.globalLimit = false;
+          if (this.resetTimeout) return;
+          this.resetTimeout = this.client.setTimeout(() => {
             this.remaining = this.limit;
+            this.globalLimit = false;
             this.handle();
+            this.resetTimeout = null;
           }, Number(res.headers['retry-after']) + this.client.options.restTimeOffset);
         } else {
           item.reject(err);
+          this.handle();
         }
       } else {
         this.globalLimit = false;
         const data = res && res.body ? res.body : {};
         item.resolve(data);
-        if (this.first) {
-          this.first = false;
-          this.handle();
-        }
+        this.handle();
       }
     });
   }
@@ -55,6 +56,8 @@ class BurstRequestHandler extends RequestHandler {
     super.handle();
     if (this.remaining <= 0 || this.queue.length === 0 || this.globalLimit) return;
     this.execute(this.queue.shift());
+    this.remaining--;
+    this.handle();
   }
 }
 
