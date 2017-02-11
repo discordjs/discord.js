@@ -357,9 +357,10 @@ class Collection extends Map {
     if (!collection) return false;
     if (this === collection) return true;
     if (this.size !== collection.size) return false;
-    return !this.find((value, key) => {
+    return this.every((value, key) => {
+      if (!collection.has(key)) return false;
       const testVal = collection.get(key);
-      return testVal !== value || (testVal === undefined && !collection.has(key));
+      return testVal === value || (testVal && testVal.equals && value && value.equals && testVal.equals(value));
     });
   }
 }
