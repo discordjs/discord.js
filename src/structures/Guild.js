@@ -340,6 +340,28 @@ class Guild {
   }
 
   /**
+   * The data for a role
+   * @typedef {Object} AddGuildMemberOptions
+   * @property {string} accessToken An oauth2 access token granted with the guilds.join to the bot's application
+   * for the user you want to add to the guild
+   * @property {string} [nick] Value to set users nickname to
+   * @property {Collection<Snowflake, Role>|Role[]|string[]} [roles] The roles or role IDs to add
+   * @property {boolean} [mute] If the user is muted
+   * @property {boolean} [deaf] If the user is deafened
+   */
+
+  /**
+   * Add a user to this guild using OAuth2
+   * @param {UserResolvable|string} user The user or ID of the user to add to guild
+   * @param {AddGuildMemberOptions} options Options object containing the access_token
+   * @returns {Promise<GuildMember>}
+   */
+  addMember(user, options) {
+    if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
+    return this.client.rest.methods.putGuildMember(this, user, options);
+  }
+
+  /**
    * Fetch a single guild member from a user.
    * @param {UserResolvable} user The user to fetch the member for
    * @param {boolean} [cache=true] Insert the user into the users cache

@@ -151,6 +151,15 @@ class RichEmbed {
   }
 
   /**
+   * Convenience function for `<RichEmbed>.addField('\u200B', '\u200B', inline)`.
+   * @param {boolean} [inline=false] Set the field to display inline
+   * @returns {RichEmbed} This embed
+   */
+  addBlankField(inline = false) {
+    return this.addField('\u200B', '\u200B', inline);
+  }
+
+  /**
    * Set the thumbnail of this embed
    * @param {string} url The URL of the thumbnail
    * @returns {RichEmbed} This embed
@@ -162,7 +171,7 @@ class RichEmbed {
 
   /**
    * Set the image of this embed
-   * @param {string} url The URL of the thumbnail
+   * @param {string} url The URL of the image
    * @returns {RichEmbed} This embed
    */
   setImage(url) {

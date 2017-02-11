@@ -370,6 +370,22 @@ class RESTMethods {
     return this.rest.makeRequest('get', Constants.Endpoints.channelMessage(channel.id, messageID), true);
   }
 
+  putGuildMember(guild, user, options) {
+    if (options.roles) {
+      var roles = options.roles;
+      if (roles instanceof Collection || (roles instanceof Array && roles[0] instanceof Role)) {
+        options.roles = roles.map(role => role.id);
+      }
+    }
+    if (options.accessToken) {
+      options.access_token = options.accessToken;
+    } else {
+      return Promise.reject(new Error('OAuth2 access token was not specified.'));
+    }
+    return this.rest.makeRequest('put', Constants.Endpoints.guildMember(guild.id, user.id), true, options)
+      .then(data => this.client.actions.GuildMemberGet.handle(guild, data).member);
+  }
+
   getGuildMember(guild, user, cache) {
     return this.rest.makeRequest('get', Constants.Endpoints.guildMember(guild.id, user.id), true).then(data => {
       if (cache) {
@@ -399,22 +415,42 @@ class RESTMethods {
   }
 
   addMemberRole(member, role) {
-    return this.rest.makeRequest('put', Constants.Endpoints.guildMemberRole(member.guild.id, member.id, role.id), true)
-      .then(() => {
-        if (!member._roles.includes(role.id)) member._roles.push(role.id);
-        return member;
-      });
+    return new Promise(resolve => {
+      const listener = (oldMember, newMember) => {
+        if (!oldMember._roles.includes(role.id) && newMember._roles.includes(role.id)) {
+          this.client.removeListener('guildMemberUpdate', listener);
+          resolve(newMember);
+        }
+      };
+
+      this.client.on('guildMemberUpdate', listener);
+      this.client.setTimeout(() => this.client.removeListener('guildMemberUpdate', listener), 10e3);
+
+      this.rest.makeRequest(
+        'put',
+        Constants.Endpoints.guildMemberRole(member.guild.id, member.id, role.id),
+        true
+      );
+    });
   }
 
   removeMemberRole(member, role) {
-    return this.rest.makeRequest(
-      'delete',
-      Constants.Endpoints.guildMemberRole(member.guild.id, member.id, role.id),
-      true
-    ).then(() => {
-      const index = member._roles.indexOf(role.id);
-      if (index >= 0) member._roles.splice(index, 1);
-      return member;
+    return new Promise(resolve => {
+      const listener = (oldMember, newMember) => {
+        if (oldMember._roles.includes(role.id) && !newMember._roles.includes(role.id)) {
+          this.client.removeListener('guildMemberUpdate', listener);
+          resolve(newMember);
+        }
+      };
+
+      this.client.on('guildMemberUpdate', listener);
+      this.client.setTimeout(() => this.client.removeListener('guildMemberUpdate', listener), 10e3);
+
+      this.rest.makeRequest(
+        'delete',
+        Constants.Endpoints.guildMemberRole(member.guild.id, member.id, role.id),
+        true
+      );
     });
   }
 
