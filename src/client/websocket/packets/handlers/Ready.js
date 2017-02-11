@@ -74,6 +74,8 @@ class ReadyHandler extends AbstractHandler {
     }, 1200 * data.guilds.length);
 
     ws.sessionID = data.session_id;
+    ws._trace = data._trace;
+    ws.emit('debug', `Ready ${ws._trace.join(' -> ')} ${ws.sessionID}`);
     ws.checkIfReady();
   }
 }

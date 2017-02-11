@@ -142,6 +142,7 @@ class WebSocketManager extends EventEmitter {
 
   heartbeat(normal) {
     if (normal && !this.lastHeartbeatAck) {
+      this.emit('debug', 'Failed to recieve heartbeat ACK! Attempting to reconnect');
       this.ws.close(this.client.browser ? 1000 : 1007);
       return;
     }
@@ -233,7 +234,7 @@ class WebSocketManager extends EventEmitter {
     }
 
     if (packet.op === Constants.OPCodes.HELLO) {
-      this.emit('debug', `HELLO ${packet.d._trace} ${packet.d.heartbeat_interval}`);
+      this.emit('debug', `HELLO ${packet.d._trace.join(' -> ')} ${packet.d.heartbeat_interval}`);
       this.heartbeatTime = packet.d.heartbeat_interval;
       this._trace = packet.d._trace;
       this.heartbeatInterval = this.client.setInterval(() => this.heartbeat(true), packet.d.heartbeat_interval);
