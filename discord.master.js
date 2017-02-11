@@ -78,6 +78,8 @@
  * @property {string} [apiRequestMethod='sequential'] One of `sequential` or `burst`. The sequential handler executes
  * all requests in the order they are triggered, whereas the burst handler runs multiple in parallel, and doesn't
  * provide the guarantee of any particular order.
+ * <warn>Burst mode is more likely to hit a 429 ratelimit by its nature,
+ * be advised if you are very unlucky you could be IP banned</warn>
  * @property {number} [shardId=0] ID of the shard to run
  * @property {number} [shardCount=0] Total number of shards
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
@@ -23317,8 +23319,15 @@ const RequestHandler = __webpack_require__(55);
 class BurstRequestHandler extends RequestHandler {
   constructor(restManager, endpoint) {
     super(restManager, endpoint);
-    this.requestRemaining = 1;
-    this.first = true;
+
+    this.client = restManager.client;
+
+    this.limit = Infinity;
+    this.resetTime = null;
+    this.remaining = 1;
+    this.timeDifference = 0;
+
+    this.resetTimeout = null;
   }
 
   push(request) {
@@ -23326,58 +23335,45 @@ class BurstRequestHandler extends RequestHandler {
     this.handle();
   }
 
-  handleNext(time) {
-    if (this.waiting) return;
-    this.waiting = true;
-    this.restManager.client.setTimeout(() => {
-      this.requestRemaining = this.requestLimit;
-      this.waiting = false;
-      this.handle();
-    }, time);
-  }
-
   execute(item) {
+    if (!item) return;
     item.request.gen().end((err, res) => {
       if (res && res.headers) {
-        this.requestLimit = res.headers['x-ratelimit-limit'];
-        this.requestResetTime = Number(res.headers['x-ratelimit-reset']) * 1000;
-        this.requestRemaining = Number(res.headers['x-ratelimit-remaining']);
+        this.limit = Number(res.headers['x-ratelimit-limit']);
+        this.resetTime = Number(res.headers['x-ratelimit-reset']) * 1000;
+        this.remaining = Number(res.headers['x-ratelimit-remaining']);
         this.timeDifference = Date.now() - new Date(res.headers.date).getTime();
-        this.handleNext(
-          this.requestResetTime - Date.now() + this.timeDifference + this.restManager.client.options.restTimeOffset
-        );
       }
       if (err) {
         if (err.status === 429) {
-          this.requestRemaining = 0;
           this.queue.unshift(item);
-          this.restManager.client.setTimeout(() => {
+          if (res.headers['x-ratelimit-global']) this.globalLimit = true;
+          if (this.resetTimeout) return;
+          this.resetTimeout = this.client.setTimeout(() => {
+            this.remaining = this.limit;
             this.globalLimit = false;
             this.handle();
-          }, Number(res.headers['retry-after']) + this.restManager.client.options.restTimeOffset);
-          if (res.headers['x-ratelimit-global']) this.globalLimit = true;
+            this.resetTimeout = null;
+          }, Number(res.headers['retry-after']) + this.client.options.restTimeOffset);
         } else {
           item.reject(err);
+          this.handle();
         }
       } else {
         this.globalLimit = false;
         const data = res && res.body ? res.body : {};
         item.resolve(data);
-        if (this.first) {
-          this.first = false;
-          this.handle();
-        }
+        this.handle();
       }
     });
   }
 
   handle() {
     super.handle();
-    if (this.requestRemaining < 1 || this.queue.length === 0 || this.globalLimit) return;
-    while (this.queue.length > 0 && this.requestRemaining > 0) {
-      this.execute(this.queue.shift());
-      this.requestRemaining--;
-    }
+    if (this.remaining <= 0 || this.queue.length === 0 || this.globalLimit) return;
+    this.execute(this.queue.shift());
+    this.remaining--;
+    this.handle();
   }
 }
 
@@ -23404,12 +23400,6 @@ class SequentialRequestHandler extends RequestHandler {
    */
   constructor(restManager, endpoint) {
     super(restManager, endpoint);
-
-    /**
-     * Whether this rate limiter is waiting for a response from a request
-     * @type {boolean}
-     */
-    this.waiting = false;
 
     /**
      * The endpoint that this handler is handling
@@ -23439,27 +23429,24 @@ class SequentialRequestHandler extends RequestHandler {
     return new Promise(resolve => {
       item.request.gen().end((err, res) => {
         if (res && res.headers) {
-          this.requestLimit = res.headers['x-ratelimit-limit'];
+          this.requestLimit = Number(res.headers['x-ratelimit-limit']);
           this.requestResetTime = Number(res.headers['x-ratelimit-reset']) * 1000;
           this.requestRemaining = Number(res.headers['x-ratelimit-remaining']);
           this.timeDifference = Date.now() - new Date(res.headers.date).getTime();
         }
         if (err) {
           if (err.status === 429) {
+            this.queue.unshift(item);
             this.restManager.client.setTimeout(() => {
-              this.waiting = false;
               this.globalLimit = false;
               resolve();
             }, Number(res.headers['retry-after']) + this.restManager.client.options.restTimeOffset);
             if (res.headers['x-ratelimit-global']) this.globalLimit = true;
           } else {
-            this.queue.shift();
-            this.waiting = false;
             item.reject(err);
             resolve(err);
           }
         } else {
-          this.queue.shift();
           this.globalLimit = false;
           const data = res && res.body ? res.body : {};
           item.resolve(data);
@@ -23472,7 +23459,6 @@ class SequentialRequestHandler extends RequestHandler {
               this.requestResetTime - Date.now() + this.timeDifference + this.restManager.client.options.restTimeOffset
             );
           } else {
-            this.waiting = false;
             resolve(data);
           }
         }
@@ -23482,12 +23468,8 @@ class SequentialRequestHandler extends RequestHandler {
 
   handle() {
     super.handle();
-
-    if (this.waiting || this.queue.length === 0 || this.globalLimit) return;
-    this.waiting = true;
-
-    const item = this.queue[0];
-    this.execute(item).then(() => this.handle());
+    if (this.remaining === 0 || this.queue.length === 0 || this.globalLimit) return;
+    this.execute(this.queue.shift()).then(() => this.handle());
   }
 }
 
