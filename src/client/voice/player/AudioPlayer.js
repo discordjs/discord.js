@@ -51,7 +51,7 @@ class AudioPlayer extends EventEmitter {
   }
 
   destroy() {
-    this.opusEncoder.destroy();
+    if (this.opusEncoder) this.opusEncoder.destroy();
   }
 
   destroyStream(stream) {

@@ -172,6 +172,14 @@ exports.Status = {
   DISCONNECTED: 5,
 };
 
+exports.VoiceStatus = {
+  CONNECTED: 0,
+  CONNECTING: 1,
+  AUTHENTICATING: 2,
+  RECONNECTING: 3,
+  DISCONNECTED: 4,
+};
+
 exports.ChannelTypes = {
   text: 0,
   DM: 1,

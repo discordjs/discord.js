@@ -22,22 +22,21 @@ class ClientVoiceManager {
      */
     this.connections = new Collection();
 
-    /**
-     * Pending connection attempts, maps guild ID to VoiceChannel
-     * @type {Collection<Snowflake, VoiceChannel>}
-     */
-    this.pending = new Collection();
-
     this.client.on('self.voiceServer', this.onVoiceServer.bind(this));
     this.client.on('self.voiceStateUpdate', this.onVoiceStateUpdate.bind(this));
   }
 
-  onVoiceServer(data) {
-    if (this.pending.has(data.guild_id)) this.pending.get(data.guild_id).setTokenAndEndpoint(data.token, data.endpoint);
+  onVoiceServer({ guild_id, token, endpoint }) {
+    const connection = this.connections.get(guild_id);
+    if (connection) connection.setTokenAndEndpoint(token, endpoint);
   }
 
-  onVoiceStateUpdate(data) {
-    if (this.pending.has(data.guild_id)) this.pending.get(data.guild_id).setSessionID(data.session_id);
+  onVoiceStateUpdate({ guild_id, session_id, channel_id }) {
+    const connection = this.connections.get(guild_id);
+    if (connection) {
+      connection.channel = this.client.channels.get(channel_id);
+      connection.setSessionID(session_id);
+    }
   }
 
   /**
@@ -78,7 +77,6 @@ class ClientVoiceManager {
    */
   joinChannel(channel) {
     return new Promise((resolve, reject) => {
-      if (this.pending.get(channel.guild.id)) throw new Error('Already connecting to this guild\'s voice server.');
       if (!channel.joinable) {
         if (channel.full) {
           throw new Error('You do not have permission to join this voice channel; it is full.');
@@ -87,30 +85,28 @@ class ClientVoiceManager {
         }
       }
 
-      const existingConnection = this.connections.get(channel.guild.id);
-      if (existingConnection) {
-        if (existingConnection.channel.id !== channel.id) {
-          this.sendVoiceStateUpdate(channel);
-          this.connections.get(channel.guild.id).channel = channel;
+      let connection = this.connections.get(channel.guild.id);
+
+      if (connection) {
+        if (connection.channel.id !== channel.id) {
+          this.connections.get(channel.guild.id).updateChannel(channel);
         }
-        resolve(existingConnection);
+        resolve(connection);
         return;
+      } else {
+        connection = new VoiceConnection(this, channel);
+        this.connections.set(channel.guild.id, connection);
       }
 
-      const pendingConnection = new PendingVoiceConnection(this, channel);
-      this.pending.set(channel.guild.id, pendingConnection);
-
-      pendingConnection.on('fail', reason => {
-        this.pending.delete(channel.guild.id);
+      connection.once('failed', reason => {
+        this.connections.delete(channel.guild.id);
         reject(reason);
       });
 
-      pendingConnection.on('pass', voiceConnection => {
-        this.pending.delete(channel.guild.id);
-        this.connections.set(channel.guild.id, voiceConnection);
-        voiceConnection.once('ready', () => resolve(voiceConnection));
-        voiceConnection.once('error', reject);
-        voiceConnection.once('disconnect', () => this.connections.delete(channel.guild.id));
+      connection.once('authenticated', () => {
+        connection.once('ready', () => resolve(connection));
+        connection.once('error', reject);
+        connection.once('disconnect', () => this.connections.delete(channel.guild.id));
       });
     });
   }
