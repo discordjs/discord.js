@@ -1,8 +1,5 @@
 const Collection = require('../../util/Collection');
-const mergeDefault = require('../../util/MergeDefault');
-const Constants = require('../../util/Constants');
 const VoiceConnection = require('./VoiceConnection');
-const EventEmitter = require('events').EventEmitter;
 
 /**
  * Manages all the voice stuff for the Client
@@ -37,37 +34,6 @@ class ClientVoiceManager {
       connection.channel = this.client.channels.get(channel_id);
       connection.setSessionID(session_id);
     }
-  }
-
-  /**
-   * Sends a request to the main gateway to join a voice channel
-   * @param {VoiceChannel} channel The channel to join
-   * @param {Object} [options] The options to provide
-   */
-  sendVoiceStateUpdate(channel, options = {}) {
-    if (!this.client.user) throw new Error('Unable to join because there is no client user.');
-    if (!channel.permissionsFor) {
-      throw new Error('Channel does not support permissionsFor; is it really a voice channel?');
-    }
-    const permissions = channel.permissionsFor(this.client.user);
-    if (!permissions) {
-      throw new Error('There is no permission set for the client user in this channel - are they part of the guild?');
-    }
-    if (!permissions.hasPermission('CONNECT')) {
-      throw new Error('You do not have permission to join this voice channel.');
-    }
-
-    options = mergeDefault({
-      guild_id: channel.guild.id,
-      channel_id: channel.id,
-      self_mute: false,
-      self_deaf: false,
-    }, options);
-
-    this.client.ws.send({
-      op: Constants.OPCodes.VOICE_STATE_UPDATE,
-      d: options,
-    });
   }
 
   /**
@@ -109,138 +75,6 @@ class ClientVoiceManager {
         connection.once('disconnect', () => this.connections.delete(channel.guild.id));
       });
     });
-  }
-}
-
-/**
- * Represents a Pending Voice Connection
- * @private
- */
-class PendingVoiceConnection extends EventEmitter {
-  constructor(voiceManager, channel) {
-    super();
-
-    /**
-     * The ClientVoiceManager that instantiated this pending connection
-     * @type {ClientVoiceManager}
-     */
-    this.voiceManager = voiceManager;
-
-    /**
-     * The channel that this pending voice connection will attempt to join
-     * @type {VoiceChannel}
-     */
-    this.channel = channel;
-
-    /**
-     * The timeout that will be invoked after 15 seconds signifying a failure to connect
-     * @type {Timeout}
-     */
-    this.deathTimer = this.voiceManager.client.setTimeout(
-      () => this.fail(new Error('Connection not established within 15 seconds.')), 15000);
-
-    /**
-     * An object containing data required to connect to the voice servers with
-     * @type {Object}
-     */
-    this.data = {};
-
-    this.sendVoiceStateUpdate();
-  }
-
-  checkReady() {
-    if (this.data.token && this.data.endpoint && this.data.session_id) {
-      this.pass();
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  /**
-   * Set the token and endpoint required to connect to the the voice servers
-   * @param {string} token the token
-   * @param {string} endpoint the endpoint
-   * @returns {void}
-   */
-  setTokenAndEndpoint(token, endpoint) {
-    if (!token) {
-      this.fail(new Error('Token not provided from voice server packet.'));
-      return;
-    }
-    if (!endpoint) {
-      this.fail(new Error('Endpoint not provided from voice server packet.'));
-      return;
-    }
-    if (this.data.token) {
-      this.fail(new Error('There is already a registered token for this connection.'));
-      return;
-    }
-    if (this.data.endpoint) {
-      this.fail(new Error('There is already a registered endpoint for this connection.'));
-      return;
-    }
-
-    endpoint = endpoint.match(/([^:]*)/)[0];
-
-    if (!endpoint) {
-      this.fail(new Error('Failed to find an endpoint.'));
-      return;
-    }
-
-    this.data.token = token;
-    this.data.endpoint = endpoint;
-
-    this.checkReady();
-  }
-
-  /**
-   * Sets the Session ID for the connection
-   * @param {string} sessionID the session ID
-   */
-  setSessionID(sessionID) {
-    if (!sessionID) {
-      this.fail(new Error('Session ID not supplied.'));
-      return;
-    }
-    if (this.data.session_id) {
-      this.fail(new Error('There is already a registered session ID for this connection.'));
-      return;
-    }
-    this.data.session_id = sessionID;
-
-    this.checkReady();
-  }
-
-  clean() {
-    clearInterval(this.deathTimer);
-    this.emit('fail', new Error('Clean-up triggered :fourTriggered:'));
-  }
-
-  pass() {
-    clearInterval(this.deathTimer);
-    this.emit('pass', this.upgrade());
-  }
-
-  fail(reason) {
-    this.emit('fail', reason);
-    this.clean();
-  }
-
-  sendVoiceStateUpdate() {
-    try {
-      this.voiceManager.sendVoiceStateUpdate(this.channel);
-    } catch (error) {
-      this.fail(error);
-    }
-  }
-
-  /**
-   * Upgrades this Pending Connection to a full Voice Connection
-   * @returns {VoiceConnection}
-   */
-  upgrade() {
-    return new VoiceConnection(this);
   }
 }
 
