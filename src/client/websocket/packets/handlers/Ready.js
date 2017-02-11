@@ -53,7 +53,7 @@ class ReadyHandler extends AbstractHandler {
     }
 
     if (!client.user.bot && client.options.sync) {
-      client.setInterval(ws.syncGuilds.bind(ws), 30000);
+      ws.syncInterval = client.setInterval(ws.syncGuilds.bind(ws), 30000);
     }
 
     if (!client.users.has('1')) {

@@ -27,6 +27,8 @@ class WebSocketManager extends EventEmitter {
     this.first = true;
     this.connectionTimeout = null;
 
+    this.syncInterval = null;
+
     this._reset();
 
     this.on('debug', e => {
@@ -209,6 +211,7 @@ class WebSocketManager extends EventEmitter {
   eventClose(event) {
     this.emit('close', event, this.shardID);
     this.client.clearInterval(this.heartbeatInterval);
+    this.client.clearInterval(this.syncInterval);
     this.status = Constants.Status.DISCONNECTED;
     this._reset();
     /**
