@@ -107,13 +107,6 @@ class VoiceConnection extends EventEmitter {
     this.ssrcMap = new Map();
 
     /**
-     * Whether this connection is ready
-     * @type {boolean}
-     * @private
-     */
-    this.ready = false;
-
-    /**
      * Object that wraps contains the `ws` and `udp` sockets of this voice connection
      * @type {Object}
      * @private
@@ -162,8 +155,8 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Set the token and endpoint required to connect to the the voice servers
-   * @param {string} token the token
-   * @param {string} endpoint the endpoint
+   * @param {string} token The voice token
+   * @param {string} endpoint The voice endpoint
    * @returns {void}
    */
   setTokenAndEndpoint(token, endpoint) {
@@ -194,7 +187,7 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Sets the Session ID for the connection
-   * @param {string} sessionID the session ID
+   * @param {string} sessionID The voice session ID
    */
   setSessionID(sessionID) {
     if (!sessionID) {
@@ -277,9 +270,14 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Attempts to reconnect to the voice server (typically after a region change)
+   * @param {string} token The voice token
+   * @param {string} endpoint The voice endpoint
    * @private
    */
-  reconnect() {
+  reconnect(token, endpoint) {
+    this.authentication.token = token;
+    this.authentication.endpoint = endpoint;
+
     this.status = Constants.VoiceStatus.RECONNECTING;
     /**
      * Emitted when the voice connection is reconnecting (typically after a region change)
@@ -378,7 +376,6 @@ class VoiceConnection extends EventEmitter {
     this.authentication.encryptionMode = mode;
     this.authentication.secretKey = secret;
 
-    this.ready = true;
     this.status = Constants.VoiceStatus.CONNECTED;
     /**
      * Emitted once the connection is ready, when a promise to join a voice channel resolves,
@@ -408,7 +405,7 @@ class VoiceConnection extends EventEmitter {
      * @param {User} user The user that has started/stopped speaking
      * @param {boolean} speaking Whether or not the user is speaking
      */
-    if (this.ready) this.emit('speaking', user, speaking);
+    if (this.status === Constants.Status.CONNECTED) this.emit('speaking', user, speaking);
     guild._memberSpeakUpdate(user_id, speaking);
   }
 
