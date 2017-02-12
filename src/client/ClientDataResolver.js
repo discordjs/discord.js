@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const request = require('superagent');
+const Request = require('../util/Request');
 
 const Constants = require('../util/Constants');
 const convertArrayBuffer = require('../util/ConvertArrayBuffer');
@@ -273,11 +273,9 @@ class ClientDataResolver {
     if (typeof resource === 'string') {
       return new Promise((resolve, reject) => {
         if (/^https?:\/\//.test(resource)) {
-          const req = request.get(resource).set('Content-Type', 'blob');
-          if (this.client.browser) req.responseType('arraybuffer');
+          const req = new Request('get', resource).set('Content-Type', 'blob');
           req.end((err, res) => {
             if (err) return reject(err);
-            if (this.client.browser) return resolve(convertArrayBuffer(res.xhr.response));
             if (!(res.body instanceof Buffer)) return reject(new TypeError('The response body isn\'t a Buffer.'));
             return resolve(res.body);
           });

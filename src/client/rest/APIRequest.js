@@ -1,5 +1,5 @@
-const request = require('superagent');
 const Constants = require('../../util/Constants');
+const Request = require('../../util/Request');
 
 class APIRequest {
   constructor(rest, method, url, auth, data, file) {
@@ -32,12 +32,11 @@ class APIRequest {
   }
 
   gen() {
-    const apiRequest = request[this.method](this.url);
+    const apiRequest = new Request(this.method, this.url);
     if (this.auth) apiRequest.set('authorization', this.getAuth());
     if (this.file && this.file.file) {
       apiRequest.attach('file', this.file.file, this.file.name);
-      this.data = this.data || {};
-      apiRequest.field('payload_json', JSON.stringify(this.data));
+      if (this.data) apiRequest.field('payload_json', JSON.stringify(this.data));
     } else if (this.data) {
       apiRequest.send(this.data);
     }

@@ -80,7 +80,7 @@ exports.Errors = {
 };
 
 const PROTOCOL_VERSION = exports.PROTOCOL_VERSION = 6;
-const HOST = exports.HOST = `https://discordapp.com`;
+const HOST = exports.HOST = 'https://discordapp.com';
 const API = exports.API = `${HOST}/api/v${PROTOCOL_VERSION}`;
 const Endpoints = exports.Endpoints = {
   // general

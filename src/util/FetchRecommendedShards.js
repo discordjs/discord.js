@@ -1,5 +1,5 @@
-const superagent = require('superagent');
-const botGateway = require('./Constants').Endpoints.botGateway;
+const Request = require('./Request');
+const Constants = require('./Constants');
 
 /**
  * Gets the recommended shard count from Discord
@@ -10,7 +10,7 @@ const botGateway = require('./Constants').Endpoints.botGateway;
 function fetchRecommendedShards(token, guildsPerShard = 1000) {
   return new Promise((resolve, reject) => {
     if (!token) throw new Error('A token must be provided.');
-    superagent.get(botGateway)
+    new Request('get', Constants.Endpoints.botGateway)
       .set('Authorization', `Bot ${token.replace(/^Bot\s*/i, '')}`)
       .end((err, res) => {
         if (err) reject(err);
