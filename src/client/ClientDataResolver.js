@@ -217,6 +217,20 @@ class ClientDataResolver {
     return bitfield;
   }
 
+  hasPermission(bitfield, name, explicit = false) {
+    const permission = this.resolvePermission(name);
+    if (!explicit && (bitfield & Constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
+    return (bitfield & permission) > 0;
+  }
+
+  serializePermissions(bitfield) {
+    const serializedPermissions = {};
+    for (const name in Constants.PermissionFlags) {
+      serializedPermissions[name] = this.hasPermission(bitfield, name);
+    }
+    return serializedPermissions;
+  }
+
   /**
    * Data that can be resolved to give a string. This can be:
    * * A string
