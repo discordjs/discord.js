@@ -187,7 +187,7 @@ class ClientUser extends User {
       }
       
       if(data.game ===  null){
-        game = null
+        game = null;
       }
 
       if (typeof data.afk !== 'undefined') afk = data.afk;
@@ -246,7 +246,7 @@ class ClientUser extends User {
   resetGame(){
     return this.setPresence({
       game: null
-    })
+    });
   }
   
   /**
