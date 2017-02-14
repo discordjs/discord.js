@@ -185,6 +185,10 @@ class ClientUser extends User {
         game = data.game;
         if (game.url) game.type = 1;
       }
+      
+      if(data.game ===  null){
+        game = null
+      }
 
       if (typeof data.afk !== 'undefined') afk = data.afk;
       afk = Boolean(afk);
@@ -234,7 +238,17 @@ class ClientUser extends User {
       url: streamingURL,
     } });
   }
-
+  
+  /**
+   * Resets the game the client user is playing.
+   * @returns {Promise<ClientUser>}
+   */
+  resetGame(){
+    return this.setPresence({
+      game: null
+    })
+  }
+  
   /**
    * Sets/removes the AFK flag for the client user.
    * @param {boolean} afk Whether or not the user is AFK
