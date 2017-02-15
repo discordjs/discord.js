@@ -231,7 +231,7 @@ class ClientUser extends User {
    * @returns {Promise<ClientUser>}
    */
   setGame(game, streamingURL) {
-    if(game === null) return this.setPresence({ game });
+    if (game === null) return this.setPresence({ game });
     return this.setPresence({ game: {
       name: game,
       url: streamingURL,
