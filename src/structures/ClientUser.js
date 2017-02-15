@@ -186,9 +186,7 @@ class ClientUser extends User {
         if (game.url) game.type = 1;
       }
 
-      if (data.game === null) {
-        game = null;
-      }
+      if (data.game === null) game = null;
 
       if (typeof data.afk !== 'undefined') afk = data.afk;
       afk = Boolean(afk);
@@ -228,25 +226,16 @@ class ClientUser extends User {
 
   /**
    * Sets the game the client user is playing.
-   * @param {string} game Game being played
+   * @param {string|null} game Game being played
    * @param {string} [streamingURL] Twitch stream URL
    * @returns {Promise<ClientUser>}
    */
   setGame(game, streamingURL) {
+    if(game === null) return this.setPresence({ game });
     return this.setPresence({ game: {
       name: game,
       url: streamingURL,
     } });
-  }
-
-  /**
-   * Resets the game the client user is playing.
-   * @returns {Promise<ClientUser>}
-   */
-  resetGame() {
-    return this.setPresence({
-      game: null,
-    });
   }
 
   /**
