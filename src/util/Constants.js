@@ -6,6 +6,8 @@ exports.Package = require('../../package.json');
  * @property {string} [apiRequestMethod='sequential'] One of `sequential` or `burst`. The sequential handler executes
  * all requests in the order they are triggered, whereas the burst handler runs multiple in parallel, and doesn't
  * provide the guarantee of any particular order.
+ * <warn>Burst mode is more likely to hit a 429 ratelimit by its nature,
+ * be advised if you are very unlucky you could be IP banned</warn>
  * @property {number} [shardId=0] ID of the shard to run
  * @property {number} [shardCount=0] Total number of shards
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
