@@ -8948,11 +8948,12 @@ class ClientDataResolver {
         } else {
           const file = path.resolve(resource);
           fs.stat(file, (err, stats) => {
-            if (err) reject(err);
-            if (!stats || !stats.isFile()) throw new Error(`The file could not be found: ${file}`);
+            if (err) return reject(err);
+            if (!stats || !stats.isFile()) return reject(new Error(`The file could not be found: ${file}`));
             fs.readFile(file, (err2, data) => {
               if (err2) reject(err2); else resolve(data);
             });
+            return null;
           });
         }
       });
