@@ -1,7 +1,7 @@
 const os = require('os');
 const EventEmitter = require('events').EventEmitter;
-const mergeDefault = require('../util/MergeDefault');
 const Constants = require('../util/Constants');
+const Util = require('../util/Util');
 const RESTManager = require('./rest/RESTManager');
 const ClientDataManager = require('./ClientDataManager');
 const ClientManager = require('./ClientManager');
@@ -32,7 +32,7 @@ class Client extends EventEmitter {
      * The options the client was instantiated with
      * @type {ClientOptions}
      */
-    this.options = mergeDefault(Constants.DefaultOptions, options);
+    this.options = Util.mergeDefault(Constants.DefaultOptions, options);
     this._validateOptions();
 
     /**

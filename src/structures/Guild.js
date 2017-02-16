@@ -5,9 +5,7 @@ const Presence = require('./Presence').Presence;
 const GuildMember = require('./GuildMember');
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
-const cloneObject = require('../util/CloneObject');
-const arraysEqual = require('../util/ArraysEqual');
-const moveElementInArray = require('../util/MoveElementInArray');
+const Util = require('../util/Util');
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -681,7 +679,7 @@ class Guild {
     let updatedRoles = Object.assign([], this.roles.array()
       .sort((r1, r2) => r1.position !== r2.position ? r1.position - r2.position : r1.id - r2.id));
 
-    moveElementInArray(updatedRoles, role, position, relative);
+    Util.moveElementInArray(updatedRoles, role, position, relative);
 
     updatedRoles = updatedRoles.map((r, i) => ({ id: r.id, position: i }));
     return this.client.rest.methods.setRolePositions(this.id, updatedRoles);
@@ -771,7 +769,7 @@ class Guild {
       this.memberCount === guild.member_count &&
       this.large === guild.large &&
       this.icon === guild.icon &&
-      arraysEqual(this.features, guild.features) &&
+      Util.arraysEqual(this.features, guild.features) &&
       this.ownerID === guild.owner_id &&
       this.verificationLevel === guild.verification_level &&
       this.embedEnabled === guild.embed_enabled;
@@ -837,12 +835,12 @@ class Guild {
   }
 
   _updateMember(member, data) {
-    const oldMember = cloneObject(member);
+    const oldMember = Util.cloneObject(member);
 
     if (data.roles) member._roles = data.roles;
     if (typeof data.nick !== 'undefined') member.nickname = data.nick;
 
-    const notSame = member.nickname !== oldMember.nickname || !arraysEqual(member._roles, oldMember._roles);
+    const notSame = member.nickname !== oldMember.nickname || !Util.arraysEqual(member._roles, oldMember._roles);
 
     if (this.client.ws.status === Constants.Status.READY && notSame) {
       /**
