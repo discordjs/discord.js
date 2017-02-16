@@ -1,11 +1,9 @@
 const querystring = require('querystring');
+const long = require('long');
 const Constants = require('../../util/Constants');
 const Collection = require('../../util/Collection');
-const splitMessage = require('../../util/SplitMessage');
-const parseEmoji = require('../../util/ParseEmoji');
-const escapeMarkdown = require('../../util/EscapeMarkdown');
-const transformSearchOptions = require('../../util/TransformSearchOptions');
 const Snowflake = require('../../util/Snowflake');
+const Util = require('../../util/Util');
 
 const User = require('../../structures/User');
 const GuildMember = require('../../structures/GuildMember');
@@ -66,7 +64,7 @@ class RESTMethods {
 
         // Wrap everything in a code block
         if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
-          content = escapeMarkdown(this.client.resolver.resolveString(content), true);
+          content = Util.escapeMarkdown(this.client.resolver.resolveString(content), true);
           content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
           if (split) {
             split.prepend = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n`;
@@ -88,7 +86,7 @@ class RESTMethods {
         }
 
         // Split the content
-        if (split) content = splitMessage(content, split);
+        if (split) content = Util.splitMessage(content, split);
       } else if (reply && !(channel instanceof User || channel instanceof GuildMember) && channel.type !== 'dm') {
         const id = this.client.resolver.resolveUserID(reply);
         content = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
@@ -125,7 +123,7 @@ class RESTMethods {
 
     // Wrap everything in a code block
     if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
-      content = escapeMarkdown(this.client.resolver.resolveString(content), true);
+      content = Util.escapeMarkdown(this.client.resolver.resolveString(content), true);
       content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
     }
 
@@ -168,9 +166,46 @@ class RESTMethods {
   }
 
   search(target, options) {
-    options = transformSearchOptions(options, this.client);
-    for (const key in options) if (options[key] === undefined) delete options[key];
+    if (options.before) {
+      if (!(options.before instanceof Date)) options.before = new Date(options.before);
+      options.maxID = long.fromNumber(options.before.getTime() - 14200704e5).shiftLeft(22).toString();
+    }
+    if (options.after) {
+      if (!(options.after instanceof Date)) options.after = new Date(options.after);
+      options.minID = long.fromNumber(options.after.getTime() - 14200704e5).shiftLeft(22).toString();
+    }
+    if (options.during) {
+      if (!(options.during instanceof Date)) options.during = new Date(options.during);
+      const t = options.during.getTime() - 14200704e5;
+      options.minID = long.fromNumber(t).shiftLeft(22).toString();
+      options.maxID = long.fromNumber(t + 86400000).shiftLeft(22).toString();
+    }
+    if (options.channel) options.channel = this.client.resolver.resolveChannelID(options.channel);
+    if (options.author) options.author = this.client.resolver.resolveUserID(options.author);
+    if (options.mentions) options.mentions = this.client.resolver.resolveUserID(options.options.mentions);
+    options = {
+      content: options.content,
+      max_id: options.maxID,
+      min_id: options.minID,
+      has: options.has,
+      channel_id: options.channel,
+      author_id: options.author,
+      author_type: options.authorType,
+      context_size: options.contextSize,
+      sort_by: options.sortBy,
+      sort_order: options.sortOrder,
+      limit: options.limit,
+      offset: options.offset,
+      mentions: options.mentions,
+      mentions_everyone: options.mentionsEveryone,
+      link_hostname: options.linkHostname,
+      embed_provider: options.embedProvider,
+      embed_type: options.embedType,
+      attachment_filename: options.attachmentFilename,
+      attachment_extension: options.attachmentExtension,
+    };
 
+    for (const key in options) if (options[key] === undefined) delete options[key];
     const queryString = (querystring.stringify(options).match(/[^=&?]+=[^=&?]+/g) || []).join('&');
 
     let type;
@@ -736,7 +771,7 @@ class RESTMethods {
       this.client.actions.MessageReactionAdd.handle({
         user_id: this.client.user.id,
         message_id: message.id,
-        emoji: parseEmoji(emoji),
+        emoji: Util.parseEmoji(emoji),
         channel_id: message.channel.id,
       }).reaction
     );
@@ -751,7 +786,7 @@ class RESTMethods {
       this.client.actions.MessageReactionRemove.handle({
         user_id: user,
         message_id: message.id,
-        emoji: parseEmoji(emoji),
+        emoji: Util.parseEmoji(emoji),
         channel_id: message.channel.id,
       }).reaction
     );

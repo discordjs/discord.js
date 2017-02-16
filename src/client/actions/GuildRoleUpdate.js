@@ -1,6 +1,6 @@
 const Action = require('./Action');
 const Constants = require('../../util/Constants');
-const cloneObject = require('../../util/CloneObject');
+const Util = require('../../util/Util');
 
 class GuildRoleUpdateAction extends Action {
   handle(data) {
@@ -13,7 +13,7 @@ class GuildRoleUpdateAction extends Action {
 
       const role = guild.roles.get(roleData.id);
       if (role) {
-        oldRole = cloneObject(role);
+        oldRole = Util.cloneObject(role);
         role.setup(data.role);
         client.emit(Constants.Events.GUILD_ROLE_UPDATE, oldRole, role);
       }

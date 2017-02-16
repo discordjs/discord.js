@@ -1,6 +1,6 @@
 const Collection = require('../../util/Collection');
-const mergeDefault = require('../../util/MergeDefault');
 const Constants = require('../../util/Constants');
+const Util = require('../../util/Util');
 const VoiceConnection = require('./VoiceConnection');
 const EventEmitter = require('events').EventEmitter;
 
@@ -58,7 +58,7 @@ class ClientVoiceManager {
       throw new Error('You do not have permission to join this voice channel.');
     }
 
-    options = mergeDefault({
+    options = Util.mergeDefault({
       guild_id: channel.guild.id,
       channel_id: channel.id,
       self_mute: false,

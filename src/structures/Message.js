@@ -1,9 +1,9 @@
 const Attachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
 const MessageReaction = require('./MessageReaction');
+const Util = require('../util/Util');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
-const escapeMarkdown = require('../util/EscapeMarkdown');
 let GuildMember;
 
 /**
@@ -409,7 +409,7 @@ class Message {
    * @returns {Promise<Message>}
    */
   editCode(lang, content) {
-    content = escapeMarkdown(this.client.resolver.resolveString(content), true);
+    content = Util.escapeMarkdown(this.client.resolver.resolveString(content), true);
     return this.edit(`\`\`\`${lang || ''}\n${content}\n\`\`\``);
   }
 

@@ -1,5 +1,5 @@
 const Constants = require('../util/Constants');
-const cloneObject = require('../util/CloneObject');
+const Util = require('../util/Util');
 const Guild = require('../structures/Guild');
 const User = require('../structures/User');
 const DMChannel = require('../structures/DMChannel');
@@ -110,7 +110,7 @@ class ClientDataManager {
   }
 
   updateGuild(currentGuild, newData) {
-    const oldGuild = cloneObject(currentGuild);
+    const oldGuild = Util.cloneObject(currentGuild);
     currentGuild.setup(newData);
     if (this.pastReady) this.client.emit(Constants.Events.GUILD_UPDATE, oldGuild, currentGuild);
   }
@@ -120,7 +120,7 @@ class ClientDataManager {
   }
 
   updateEmoji(currentEmoji, newData) {
-    const oldEmoji = cloneObject(currentEmoji);
+    const oldEmoji = Util.cloneObject(currentEmoji);
     currentEmoji.setup(newData);
     this.client.emit(Constants.Events.GUILD_EMOJI_UPDATE, oldEmoji, currentEmoji);
     return currentEmoji;

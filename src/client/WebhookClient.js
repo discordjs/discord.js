@@ -1,8 +1,8 @@
 const Webhook = require('../structures/Webhook');
 const RESTManager = require('./rest/RESTManager');
 const ClientDataResolver = require('./ClientDataResolver');
-const mergeDefault = require('../util/MergeDefault');
 const Constants = require('../util/Constants');
+const Util = require('../util/Util');
 
 /**
  * The Webhook Client
@@ -25,7 +25,7 @@ class WebhookClient extends Webhook {
      * The options the client was instantiated with
      * @type {ClientOptions}
      */
-    this.options = mergeDefault(Constants.DefaultOptions, options);
+    this.options = Util.mergeDefault(Constants.DefaultOptions, options);
 
     /**
      * The REST manager of the client
