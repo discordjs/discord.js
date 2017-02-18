@@ -574,8 +574,8 @@ class Guild {
    * @example
    * // ban a user
    * guild.ban(user)
-      .then(user => console.log(`Banned ${user} from ${guild.name}`))
-      .catch(console.error);
+   *  .then(user => console.log(`Banned ${user} from ${guild.name}`))
+   *  .catch(console.error);
    */
   ban(user, deleteDays = 0) {
     return this.client.rest.methods.banGuildMember(this, user, deleteDays);
