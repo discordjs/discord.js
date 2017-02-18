@@ -12,7 +12,7 @@ const client = new Discord.Client();
 const token = 'your bot token here';
 
 // the ID of the channel in which the bot will greet new users
-const channel_id = 'your channel ID here';
+const channelID = 'your channel ID here';
 
 // the ready event is vital, it means that your bot will only start reacting to information
 // from Discord _after_ ready is emitted.
@@ -21,12 +21,12 @@ client.on('ready', () => {
 });
 
 // create an event listener for new guild members
-client.on('guildMemberAdd', (member) => {
-  // get the channel
-  var channel = client.channels.get(channel_id);
+client.on('guildMemberAdd', member => {
+  // get the channel by its ID
+  const channel = client.channels.get(channelID);
 
   // send the message, mentioning the member
-  channel.sendMessage(`Welcome to the server, ${member}`);
+  channel.sendMessage(`Welcome to the server, ${member}!`);
 });
 
 // log our bot in
