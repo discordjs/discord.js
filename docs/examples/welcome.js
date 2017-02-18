@@ -26,7 +26,7 @@ client.on('guildMemberAdd', (member) => {
   var channel = client.channels.get(channel_id);
 
   // send the message, mentioning the member
-  channel.sendMessage(`Welcome ${member} to the server!`);
+  channel.sendMessage(`Welcome to the server, ${member}`);
 });
 
 // log our bot in
