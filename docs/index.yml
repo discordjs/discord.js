@@ -18,3 +18,5 @@
       path: avatars.js
     - name: Webhook
       path: webhook.js
+    - name: Welcome
+      path: welcome.js
