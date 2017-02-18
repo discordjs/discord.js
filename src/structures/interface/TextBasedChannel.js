@@ -4,7 +4,7 @@ const MessageCollector = require('../MessageCollector');
 const Collection = require('../../util/Collection');
 
 /**
- * Interface for classes that have text-channel-like features
+ * Interface for classes that have text-channel-like features.
  * @interface
  */
 class TextBasedChannel {
@@ -29,7 +29,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Options provided when sending or editing a message
+   * Options provided when sending or editing a message.
    * @typedef {Object} MessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
@@ -51,7 +51,7 @@ class TextBasedChannel {
    */
 
   /**
-   * Options for splitting a message
+   * Options for splitting a message.
    * @typedef {Object} SplitOptions
    * @property {number} [maxLength=1950] Maximum character length per message piece
    * @property {string} [char='\n'] Character to split the message with
@@ -60,7 +60,7 @@ class TextBasedChannel {
    */
 
   /**
-   * Send a message to this channel
+   * Send a message to this channel.
    * @param {StringResolvable} [content] Text for the message
    * @param {MessageOptions} [options={}] Options for the message
    * @returns {Promise<Message|Message[]>}
@@ -102,7 +102,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Send a message to this channel
+   * Send a message to this channel.
    * @param {StringResolvable} [content] Text for the message
    * @param {MessageOptions} [options={}] Options for the message
    * @returns {Promise<Message|Message[]>}
@@ -117,7 +117,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Send an embed to this channel
+   * Send an embed to this channel.
    * @param {RichEmbed|Object} embed Embed for the message
    * @param {string} [content] Text for the message
    * @param {MessageOptions} [options] Options for the message
@@ -134,7 +134,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Send a file to this channel
+   * Send a file to this channel.
    * @param {BufferResolvable} attachment File to send
    * @param {string} [name='file.jpg'] Name and extension of the file
    * @param {StringResolvable} [content] Text for the message
@@ -146,7 +146,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Send a code block to this channel
+   * Send a code block to this channel.
    * @param {string} lang Language for the code block
    * @param {StringResolvable} content Content of the code block
    * @param {MessageOptions} [options] Options for the message
@@ -335,7 +335,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Creates a Message Collector
+   * Creates a Message Collector.
    * @param {CollectorFilterFunction} filter The filter to create the collector with
    * @param {CollectorOptions} [options={}] The options to pass to the collector
    * @returns {MessageCollector}
@@ -386,7 +386,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Bulk delete given messages that are newer than two weeks
+   * Bulk delete given messages that are newer than two weeks.
    * <warn>This is only available when using a bot account.</warn>
    * @param {Collection<Snowflake, Message>|Message[]|number} messages Messages or number of messages to delete
    * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically

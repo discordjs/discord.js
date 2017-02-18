@@ -10,13 +10,13 @@ class ClientOAuth2Application extends OAuth2Application {
     super.setup(data);
 
     /**
-     * The app's flags
+     * The app's flags.
      * @type {number}
      */
     this.flags = data.flags;
 
     /**
-     * The app's owner
+     * The app's owner.
      * @type {User}
      */
     this.owner = new User(this.client, data.owner);

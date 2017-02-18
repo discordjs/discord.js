@@ -10,13 +10,13 @@ class ClientUser extends User {
     super.setup(data);
 
     /**
-     * Whether or not this account has been verified
+     * Whether or not this account has been verified.
      * @type {boolean}
      */
     this.verified = data.verified;
 
     /**
-     * The email of this account
+     * The email of this account.
      * @type {string}
      */
     this.email = data.email;
@@ -45,28 +45,28 @@ class ClientUser extends User {
     this.notes = new Collection();
 
     /**
-     * Discord client settings, such as guild positions
+     * Discord client settings, such as guild positions.
      * <warn>This is only filled when using a user account.</warn>
      * @type {Object}
      */
     this.settings = {};
 
     /**
-     * If the user has discord premium (nitro)
+     * If the user has discord premium (nitro).
      * <warn>This is only filled when using a user account.</warn>
      * @type {?boolean}
      */
     this.premium = typeof data.premium === 'boolean' ? data.premium : null;
 
     /**
-     * If the user has MFA enabled on their account
+     * If the user has MFA enabled on their account.
      * <warn>This is only filled when using a user account.</warn>
      * @type {?boolean}
      */
     this.mfaEnabled = typeof data.mfa_enabled === 'boolean' ? data.mfa_enabled : null;
 
     /**
-     * If the user has ever used a mobile device on discord
+     * If the user has ever used a mobile device on discord.
      * <warn>This is only filled when using a user account.</warn>
      * @type {?boolean}
      */
@@ -147,7 +147,7 @@ class ClientUser extends User {
   }
 
   /**
-   * Data resembling a raw Discord presence
+   * Data resembling a raw Discord presence.
    * @typedef {Object} PresenceData
    * @property {PresenceStatus} [status] Status of the user
    * @property {boolean} [afk] Whether the user is AFK
@@ -245,7 +245,7 @@ class ClientUser extends User {
   }
 
   /**
-   * Fetches messages that mentioned the client's user
+   * Fetches messages that mentioned the client's user.
    * @param {Object} [options] Options for the fetch
    * @param {number} [options.limit=25] Maximum number of mentions to retrieve
    * @param {boolean} [options.roles=true] Whether to include role mentions
@@ -258,7 +258,7 @@ class ClientUser extends User {
   }
 
   /**
-   * Send a friend request
+   * Send a friend request.
    * <warn>This is only available when using a user account.</warn>
    * @param {UserResolvable} user The user to send the friend request to.
    * @returns {Promise<User>} The user the friend request was sent to.
@@ -269,7 +269,7 @@ class ClientUser extends User {
   }
 
   /**
-   * Remove a friend
+   * Remove a friend.
    * <warn>This is only available when using a user account.</warn>
    * @param {UserResolvable} user The user to remove from your friends
    * @returns {Promise<User>} The user that was removed
@@ -280,7 +280,7 @@ class ClientUser extends User {
   }
 
   /**
-   * Creates a guild
+   * Creates a guild.
    * <warn>This is only available when using a user account.</warn>
    * @param {string} name The name of the guild
    * @param {string} region The region for the server

@@ -1,26 +1,26 @@
 const Constants = require('../util/Constants');
 
 /**
- * Manages the State and Background Tasks of the Client
+ * Manages the State and Background Tasks of the Client.
  * @private
  */
 class ClientManager {
   constructor(client) {
     /**
-     * The Client that instantiated this Manager
+     * The Client that instantiated this Manager.
      * @type {Client}
      */
     this.client = client;
 
     /**
-     * The heartbeat interval, null if not yet set
+     * The heartbeat interval, null if not yet set.
      * @type {?number}
      */
     this.heartbeatInterval = null;
   }
 
   /**
-   * Connects the Client to the WebSocket
+   * Connects the Client to the WebSocket.
    * @param {string} token The authorization token
    * @param {Function} resolve Function to run when connection is successful
    * @param {Function} reject Function to run when connection fails
@@ -45,7 +45,7 @@ class ClientManager {
   }
 
   /**
-   * Sets up a keep-alive interval to keep the Client's connection valid
+   * Sets up a keep-alive interval to keep the Client's connection valid.
    * @param {number} time The interval in milliseconds at which heartbeat packets should be sent
    */
   setupKeepAlive(time) {

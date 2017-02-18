@@ -41,7 +41,7 @@ class Guild {
     this.roles = new Collection();
 
     /**
-     * A collection of presences in this guild
+     * A collection of presences in this guild.
      * @type {Collection<Snowflake, Presence>}
      */
     this.presences = new Collection();
@@ -66,13 +66,13 @@ class Guild {
   }
 
   /**
-   * Sets up the Guild
+   * Sets up the Guild.
    * @param {*} data The raw data of the guild
    * @private
    */
   setup(data) {
     /**
-     * The name of the guild
+     * The name of the guild.
      * @type {string}
      */
     this.name = data.name;
@@ -84,13 +84,13 @@ class Guild {
     this.icon = data.icon;
 
     /**
-     * The hash of the guild splash image, or null if no splash (VIP only)
+     * The hash of the guild splash image, or null if no splash (VIP only).
      * @type {?string}
      */
     this.splash = data.splash;
 
     /**
-     * The region the guild is located in
+     * The region the guild is located in.
      * @type {string}
      */
     this.region = data.region;
@@ -114,7 +114,7 @@ class Guild {
     this.features = data.features;
 
     /**
-     * The ID of the application that created this guild (if applicable)
+     * The ID of the application that created this guild (if applicable).
      * @type {?Snowflake}
      */
     this.applicationID = data.application_id;
@@ -211,7 +211,7 @@ class Guild {
   }
 
   /**
-   * The timestamp the guild was created at
+   * The timestamp the guild was created at.
    * @type {number}
    * @readonly
    */
@@ -220,7 +220,7 @@ class Guild {
   }
 
   /**
-   * The time the guild was created
+   * The time the guild was created.
    * @type {Date}
    * @readonly
    */
@@ -229,7 +229,7 @@ class Guild {
   }
 
   /**
-   * The time the client user joined the guild
+   * The time the client user joined the guild.
    * @type {Date}
    * @readonly
    */
@@ -238,7 +238,7 @@ class Guild {
   }
 
   /**
-   * Gets the URL to this guild's icon (if it has one, otherwise it returns null)
+   * Gets the URL to this guild's icon (if it has one, otherwise it returns null).
    * @type {?string}
    * @readonly
    */
@@ -248,7 +248,7 @@ class Guild {
   }
 
   /**
-   * Gets the URL to this guild's splash (if it has one, otherwise it returns null)
+   * Gets the URL to this guild's splash (if it has one, otherwise it returns null).
    * @type {?string}
    * @readonly
    */
@@ -258,7 +258,7 @@ class Guild {
   }
 
   /**
-   * The owner of the guild
+   * The owner of the guild.
    * @type {GuildMember}
    * @readonly
    */
@@ -322,7 +322,7 @@ class Guild {
   }
 
   /**
-   * Fetch available voice regions
+   * Fetch available voice regions.
    * @returns {Collection<string, VoiceRegion>}
    */
   fetchVoiceRegions() {
@@ -330,7 +330,7 @@ class Guild {
   }
 
   /**
-   * The data for a role
+   * The data for a role.
    * @typedef {Object} AddGuildMemberOptions
    * @property {string} accessToken An oauth2 access token granted with the guilds.join to the bot's application
    * for the user you want to add to the guild
@@ -341,7 +341,7 @@ class Guild {
    */
 
   /**
-   * Add a user to this guild using OAuth2
+   * Add a user to this guild using OAuth2.
    * @param {UserResolvable|string} user The user or ID of the user to add to guild
    * @param {AddGuildMemberOptions} options Options object containing the access_token
    * @returns {Promise<GuildMember>}
@@ -422,7 +422,7 @@ class Guild {
   }
 
   /**
-   * The data for editing a guild
+   * The data for editing a guild.
    * @typedef {Object} GuildEditData
    * @property {string} [name] The name of the guild
    * @property {string} [region] The region of the guild
@@ -639,7 +639,7 @@ class Guild {
   }
 
   /**
-   * Creates a new role in the guild with given information
+   * Creates a new role in the guild with given information.
    * @param {RoleData} [data] The data to update the role with
    * @returns {Promise<Role>}
    * @example
@@ -661,7 +661,7 @@ class Guild {
   }
 
   /**
-   * Set the position of a role in this guild
+   * Set the position of a role in this guild.
    * @param {string|Role} role the role to edit, can be a role object or a role ID.
    * @param {number} position the new position of the role
    * @param {boolean} [relative=false] Position moves the role relative to its current position
@@ -844,7 +844,7 @@ class Guild {
 
     if (this.client.ws.status === Constants.Status.READY && notSame) {
       /**
-       * Emitted whenever a guild member changes - i.e. new role, removed role, nickname
+       * Emitted whenever a guild member changes - i.e. new role, removed role, nickname.
        * @event Client#guildMemberUpdate
        * @param {GuildMember} oldMember The member before the update
        * @param {GuildMember} newMember The member after the update
@@ -867,7 +867,7 @@ class Guild {
     if (member && member.speaking !== speaking) {
       member.speaking = speaking;
       /**
-       * Emitted once a guild member starts/stops speaking
+       * Emitted once a guild member starts/stops speaking.
        * @event Client#guildMemberSpeaking
        * @param {GuildMember} member The member that started/stopped speaking
        * @param {boolean} speaking Whether or not the member is speaking

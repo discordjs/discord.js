@@ -1,18 +1,18 @@
 const Constants = require('../util/Constants');
 
 /**
- * The final evaluated permissions for a member in a channel
+ * The final evaluated permissions for a member in a channel.
  */
 class EvaluatedPermissions {
   constructor(member, raw) {
     /**
-     * The member this permissions refer to
+     * The member this permissions refer to.
      * @type {GuildMember}
      */
     this.member = member;
 
     /**
-     * A number representing the packed permissions
+     * A number representing the packed permissions.
      * @type {number}
      */
     this.raw = raw;

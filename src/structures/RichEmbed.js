@@ -1,74 +1,74 @@
 const ClientDataResolver = require('../client/ClientDataResolver');
 
 /**
- * A rich embed to be sent with a message with a fluent interface for creation
+ * A rich embed to be sent with a message with a fluent interface for creation.
  * @param {Object} [data] Data to set in the rich embed
  */
 class RichEmbed {
   constructor(data = {}) {
     /**
-     * Title for this Embed
+     * Title for this Embed.
      * @type {string}
      */
     this.title = data.title;
 
     /**
-     * Description for this Embed
+     * Description for this Embed.
      * @type {string}
      */
     this.description = data.description;
 
     /**
-     * URL for this Embed
+     * URL for this Embed.
      * @type {string}
      */
     this.url = data.url;
 
     /**
-     * Color for this Embed
+     * Color for this Embed.
      * @type {number}
      */
     this.color = data.color;
 
     /**
-     * Author for this Embed
+     * Author for this Embed.
      * @type {Object}
      */
     this.author = data.author;
 
     /**
-     * Timestamp for this Embed
+     * Timestamp for this Embed.
      * @type {Date}
      */
     this.timestamp = data.timestamp;
 
     /**
-     * Fields for this Embed
+     * Fields for this Embed.
      * @type {Object[]}
      */
     this.fields = data.fields || [];
 
     /**
-     * Thumbnail for this Embed
+     * Thumbnail for this Embed.
      * @type {Object}
      */
     this.thumbnail = data.thumbnail;
 
     /**
-     * Image for this Embed
+     * Image for this Embed.
      * @type {Object}
      */
     this.image = data.image;
 
     /**
-     * Footer for this Embed
+     * Footer for this Embed.
      * @type {Object}
      */
     this.footer = data.footer;
   }
 
   /**
-   * Sets the title of this embed
+   * Sets the title of this embed.
    * @param {StringResolvable} title The title
    * @returns {RichEmbed} This embed
    */
@@ -80,7 +80,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the description of this embed
+   * Sets the description of this embed.
    * @param {StringResolvable} description The description
    * @returns {RichEmbed} This embed
    */
@@ -92,7 +92,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the URL of this embed
+   * Sets the URL of this embed.
    * @param {string} url The URL
    * @returns {RichEmbed} This embed
    */
@@ -102,7 +102,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the color of this embed
+   * Sets the color of this embed.
    * @param {ColorResolvable} color The color to set
    * @returns {RichEmbed} This embed
    */
@@ -112,7 +112,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the author of this embed
+   * Sets the author of this embed.
    * @param {StringResolvable} name The name of the author
    * @param {string} [icon] The icon URL of the author
    * @param {string} [url] The URL of the author
@@ -124,7 +124,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the timestamp of this embed
+   * Sets the timestamp of this embed.
    * @param {Date} [timestamp=current date] The timestamp
    * @returns {RichEmbed} This embed
    */
@@ -134,7 +134,7 @@ class RichEmbed {
   }
 
   /**
-   * Adds a field to the embed (max 25)
+   * Adds a field to the embed (max 25).
    * @param {StringResolvable} name The name of the field
    * @param {StringResolvable} value The value of the field
    * @param {boolean} [inline=false] Set the field to display inline
@@ -160,7 +160,7 @@ class RichEmbed {
   }
 
   /**
-   * Set the thumbnail of this embed
+   * Set the thumbnail of this embed.
    * @param {string} url The URL of the thumbnail
    * @returns {RichEmbed} This embed
    */
@@ -170,7 +170,7 @@ class RichEmbed {
   }
 
   /**
-   * Set the image of this embed
+   * Set the image of this embed.
    * @param {string} url The URL of the image
    * @returns {RichEmbed} This embed
    */
@@ -180,7 +180,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the footer of this embed
+   * Sets the footer of this embed.
    * @param {StringResolvable} text The text of the footer
    * @param {string} [icon] The icon URL of the footer
    * @returns {RichEmbed} This embed

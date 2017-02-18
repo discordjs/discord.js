@@ -11,7 +11,7 @@
 class PartialGuild {
   constructor(client, data) {
     /**
-     * The Client that instantiated this PartialGuild
+     * The Client that instantiated this PartialGuild.
      * @name PartialGuild#client
      * @type {Client}
      * @readonly
@@ -23,13 +23,13 @@ class PartialGuild {
 
   setup(data) {
     /**
-     * The ID of this guild
+     * The ID of this guild.
      * @type {Snowflake}
      */
     this.id = data.id;
 
     /**
-     * The name of this guild
+     * The name of this guild.
      * @type {string}
      */
     this.name = data.name;
@@ -41,7 +41,7 @@ class PartialGuild {
     this.icon = data.icon;
 
     /**
-     * The hash of the guild splash image, or null if no splash (VIP only)
+     * The hash of the guild splash image, or null if no splash (VIP only).
      * @type {?string}
      */
     this.splash = data.splash;

@@ -6,7 +6,7 @@ const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 
 /**
- * Represents a guild channel (i.e. text channels and voice channels)
+ * Represents a guild channel (i.e. text channels and voice channels).
  * @extends {Channel}
  */
 class GuildChannel extends Channel {
@@ -14,7 +14,7 @@ class GuildChannel extends Channel {
     super(guild.client, data);
 
     /**
-     * The guild the channel is in
+     * The guild the channel is in.
      * @type {Guild}
      */
     this.guild = guild;
@@ -24,7 +24,7 @@ class GuildChannel extends Channel {
     super.setup(data);
 
     /**
-     * The name of the guild channel
+     * The name of the guild channel.
      * @type {string}
      */
     this.name = data.name;
@@ -100,7 +100,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * An object mapping permission flags to `true` (enabled) or `false` (disabled)
+   * An object mapping permission flags to `true` (enabled) or `false` (disabled).
    * ```js
    * {
    *  'SEND_MESSAGES': true,
@@ -166,7 +166,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * The data for a guild channel
+   * The data for a guild channel.
    * @typedef {Object} ChannelData
    * @property {string} [name] The name of the channel
    * @property {number} [position] The position of the channel
@@ -176,7 +176,7 @@ class GuildChannel extends Channel {
    */
 
   /**
-   * Edits the channel
+   * Edits the channel.
    * @param {ChannelData} data The new data for the channel
    * @returns {Promise<GuildChannel>}
    * @example
@@ -190,7 +190,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Set a new name for the guild channel
+   * Set a new name for the guild channel.
    * @param {string} name The new name for the guild channel
    * @returns {Promise<GuildChannel>}
    * @example
@@ -204,7 +204,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Set a new position for the guild channel
+   * Set a new position for the guild channel.
    * @param {number} position The new position for the guild channel
    * @returns {Promise<GuildChannel>}
    * @example
@@ -218,7 +218,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Set a new topic for the guild channel
+   * Set a new topic for the guild channel.
    * @param {string} topic The new topic for the guild channel
    * @returns {Promise<GuildChannel>}
    * @example
@@ -232,7 +232,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Options given when creating a guild channel invite
+   * Options given when creating a guild channel invite.
    * @typedef {Object} InviteOptions
    * @property {boolean} [temporary=false] Whether the invite should kick users after 24hrs if they are not given a role
    * @property {number} [maxAge=0] Time in seconds the invite expires in
@@ -240,7 +240,7 @@ class GuildChannel extends Channel {
    */
 
   /**
-   * Create an invite to this guild channel
+   * Create an invite to this guild channel.
    * @param {InviteOptions} [options={}] The options for the invite
    * @returns {Promise<Invite>}
    */
@@ -249,7 +249,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Clone this channel
+   * Clone this channel.
    * @param {string} [name=this.name] Optional name for the new channel, otherwise it has the name of this channel
    * @param {boolean} [withPermissions=true] Whether to clone the channel with this channel's permission overwrites
    * @param {boolean} [withTopic=true] Whether to clone the channel with this channel's topic

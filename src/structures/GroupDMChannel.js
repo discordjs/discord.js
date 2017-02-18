@@ -25,7 +25,7 @@ const Collection = require('../util/Collection');
 */
 
 /**
- * Represents a Group DM on Discord
+ * Represents a Group DM on Discord.
  * @extends {Channel}
  * @implements {TextBasedChannel}
  */

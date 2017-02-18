@@ -36,7 +36,7 @@ class MessageCollector extends EventEmitter {
     super();
 
     /**
-     * The channel this collector is operating on
+     * The channel this collector is operating on.
      * @type {Channel}
      */
     this.channel = channel;
@@ -71,7 +71,7 @@ class MessageCollector extends EventEmitter {
   }
 
   /**
-   * Verifies a message against the filter and options
+   * Verifies a message against the filter and options.
    * @private
    * @param {Message} message The message
    * @returns {boolean}

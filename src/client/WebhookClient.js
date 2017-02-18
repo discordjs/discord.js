@@ -22,20 +22,20 @@ class WebhookClient extends Webhook {
     super(null, id, token);
 
     /**
-     * The options the client was instantiated with
+     * The options the client was instantiated with.
      * @type {ClientOptions}
      */
     this.options = Util.mergeDefault(Constants.DefaultOptions, options);
 
     /**
-     * The REST manager of the client
+     * The REST manager of the client.
      * @type {RESTManager}
      * @private
      */
     this.rest = new RESTManager(this);
 
     /**
-     * The Data Resolver of the Client
+     * The Data Resolver of the Client.
      * @type {ClientDataResolver}
      * @private
      */
