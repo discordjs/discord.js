@@ -573,7 +573,9 @@ class Guild {
    * be resolved, the user ID will be the result.
    * @example
    * // ban a user
-   * guild.ban('123123123123');
+   * guild.ban(user)
+      .then(user => console.log(`Banned ${user} from ${guild.name}`))
+      .catch(console.error);
    */
   ban(user, deleteDays = 0) {
     return this.client.rest.methods.banGuildMember(this, user, deleteDays);
@@ -585,9 +587,9 @@ class Guild {
    * @returns {Promise<User>}
    * @example
    * // unban a user
-   * guild.unban('123123123123')
+   * guild.unban(user)
    *  .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
-   *  .catch(reject);
+   *  .catch(console.error);
    */
   unban(user) {
     return this.client.rest.methods.unbanGuildMember(this, user);
