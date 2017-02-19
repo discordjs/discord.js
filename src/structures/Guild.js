@@ -635,7 +635,27 @@ class Guild {
    *  .catch(console.error);
    */
   createChannel(name, type, overwrites) {
-    return this.client.rest.methods.createChannel(this, name, type, overwrites);
+    return this.client.rest.methods.updateChannel(this, name, type, overwrites);
+  }
+
+  /**
+   * Shuffles this guild's channel positions.
+   * @returns {Promise<Guild>}
+   * @example
+   * // create a new text channel
+   * guild.shuffleChannels()
+   *  .then(guild => console.log(`Shuffled all channels for ${guild.id}`))
+   *  .catch(console.error);
+   */
+  shuffleChannels() {
+    const newChannels = [];
+    console.log(this.channels.array());
+    const shuffledChannels = Util.shuffleArray(this.channels.array());
+    shuffledChannels.forEach((channel, index) => {
+      newChannels.push({ id: channel.id, position: index });
+    });
+    console.log(newChannels);
+    return this.client.rest.methods.updateChannelPositions(this.id, newChannels);
   }
 
   /**

@@ -28,6 +28,7 @@ class ActionsManager {
     this.register(require('./GuildEmojiDelete'));
     this.register(require('./GuildEmojiUpdate'));
     this.register(require('./GuildRolesPositionUpdate'));
+    this.register(require('./GuildChannelsPositionUpdate'));
   }
 
   register(Action) {
