@@ -4337,8 +4337,10 @@ class Guild {
    * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
    * be resolved, the user ID will be the result.
    * @example
-   * // ban a user
-   * guild.ban('123123123123');
+   * // ban a user by ID (or with a user/guild member object)
+   * guild.ban('some user ID')
+   *  .then(user => console.log(`Banned ${user.username || user.id || user} from ${guild.name}`))
+   *  .catch(console.error);
    */
   ban(user, deleteDays = 0) {
     return this.client.rest.methods.banGuildMember(this, user, deleteDays);
@@ -4349,10 +4351,10 @@ class Guild {
    * @param {UserResolvable} user The user to unban
    * @returns {Promise<User>}
    * @example
-   * // unban a user
-   * guild.unban('123123123123')
+   * // unban a user by ID (or with a user/guild member object)
+   * guild.unban('some user ID')
    *  .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
-   *  .catch(reject);
+   *  .catch(console.error);
    */
   unban(user) {
     return this.client.rest.methods.unbanGuildMember(this, user);
