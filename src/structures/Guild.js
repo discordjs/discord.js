@@ -574,7 +574,7 @@ class Guild {
    * @example
    * // ban a user by ID (or with a user/guild member object)
    * guild.ban('some user ID')
-   *  .then(user => console.log(`Banned ${user.username} from ${guild.name}`))
+   *  .then(user => console.log(`Banned ${user.username || user.id || user} from ${guild.name}`))
    *  .catch(console.error);
    */
   ban(user, deleteDays = 0) {
