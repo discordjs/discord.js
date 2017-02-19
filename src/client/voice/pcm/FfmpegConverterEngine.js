@@ -67,20 +67,17 @@ class FfmpegConverterEngine extends ConverterEngine {
 }
 
 function chooseCommand() {
-  for (const cmd of [
-    'ffmpeg',
-    'avconv',
-    './ffmpeg',
-    './avconv',
-    'node_modules\\ffmpeg-binaries\\bin\\ffmpeg',
-    'node_modules/ffmpeg-binaries/bin/ffmpeg',
-  ]) {
-    if (!ChildProcess.spawnSync(cmd, ['-h']).error) return cmd;
+  try {
+    return require('ffmpeg-binaries').ffmpegPath();
+  } catch (err) {
+    for (const cmd of ['ffmpeg', 'avconv', './ffmpeg', './avconv']) {
+      if (!ChildProcess.spawnSync(cmd, ['-h']).error) return cmd;
+    }
+    throw new Error(
+      'FFMPEG was not found on your system, so audio cannot be played. ' +
+      'Please make sure FFMPEG is installed and in your PATH.'
+    );
   }
-  throw new Error(
-    'FFMPEG was not found on your system, so audio cannot be played. ' +
-    'Please make sure FFMPEG is installed and in your PATH.'
-  );
 }
 
 module.exports = FfmpegConverterEngine;
