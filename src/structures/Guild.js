@@ -639,20 +639,17 @@ class Guild {
   }
 
   /**
-   * Shuffles this guild's channel positions.
+   * Updates this guild's channel positions as a batch.
+   * @param {Object[]} newChannelPositions Array of objects with an id and a position.
+   * Position should be an integer specifying the new position for the channel.
    * @returns {Promise<Guild>}
    * @example
-   * guild.shuffleChannels()
-   *  .then(guild => console.log(`Shuffled all channels for ${guild.id}`))
+   * guild.updateChannels([{ id: channelId, position: newChannelIndex }])
+   *  .then(guild => console.log(`Updated channels for ${guild.id}`))
    *  .catch(console.error);
    */
-  shuffleChannels() {
-    const newChannels = [];
-    const shuffledChannels = Util.shuffleArray(this.channels.array());
-    shuffledChannels.forEach((channel, index) => {
-      newChannels.push({ id: channel.id, position: index });
-    });
-    return this.client.rest.methods.updateChannelPositions(this.id, newChannels);
+  updateChannels(newChannelPositions) {
+    return this.client.rest.methods.updateChannelPositions(this.id, newChannelPositions);
   }
 
   /**
