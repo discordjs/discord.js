@@ -574,7 +574,7 @@ class Guild {
    * @example
    * // ban a user by ID (or with a user/guild member object)
    * guild.ban('some user ID')
-   *  .then(user => console.log(`Banned ${user} from ${guild.name}`))
+   *  .then(user => console.log(`Banned ${user.username} from ${guild.name}`))
    *  .catch(console.error);
    */
   ban(user, deleteDays = 0) {
@@ -586,8 +586,8 @@ class Guild {
    * @param {UserResolvable} user The user to unban
    * @returns {Promise<User>}
    * @example
-   * // unban a user
-   * guild.unban(user)
+   * // unban a user by ID (or with a user/guild member object)
+   * guild.unban('some user ID')
    *  .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
    *  .catch(console.error);
    */
