@@ -572,8 +572,8 @@ class Guild {
    * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
    * be resolved, the user ID will be the result.
    * @example
-   * // ban a user
-   * guild.ban(user)
+   * // ban a user by ID (or with a user/guild member object)
+   * guild.ban('some user ID')
    *  .then(user => console.log(`Banned ${user} from ${guild.name}`))
    *  .catch(console.error);
    */
