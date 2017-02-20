@@ -648,7 +648,7 @@ class Guild {
    *  .then(guild => console.log(`Updated channels for ${guild.id}`))
    *  .catch(console.error);
    */
-  updateChannels(newChannelPositions) {
+  updateChannelPositions(newChannelPositions) {
     return this.client.rest.methods.updateChannelPositions(this.id, newChannelPositions);
   }
 

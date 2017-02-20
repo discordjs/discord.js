@@ -755,10 +755,10 @@ class RESTMethods {
       .then(() => user);
   }
 
-  updateChannelPositions(guildId, channels) {
-    return this.rest.makeRequest('patch', Constants.Endpoints.guildChannels(guildId), true, channels).then(() =>
+  updateChannelPositions(guildID, channels) {
+    return this.rest.makeRequest('patch', Constants.Endpoints.guildChannels(guildID), true, channels).then(() =>
       this.client.actions.GuildChannelsPositionUpdate.handle({
-        guild_id: guildId,
+        guild_id: guildID,
         channels,
       }).guild
     );
