@@ -202,7 +202,7 @@ class RichEmbed {
    * Sets the file to upload alongside this embed that can
    * be accessed via `attachment://fileName.extension` when
    * setting an embed image, or author/footer icons
-   * @param {string} file Path or Url to the file to attach
+   * @param {FileOptions|string} file Local path or Url to the file to attach, or valid FileOptions for a file to attach
    * @returns {RichEmbed} This embed
    */
   attachFile(file) {
