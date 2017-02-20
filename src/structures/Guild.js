@@ -644,7 +644,7 @@ class Guild {
    * Position should be an integer specifying the new position for the channel.
    * @returns {Promise<Guild>}
    * @example
-   * guild.updateChannels([{ id: channelId, position: newChannelIndex }])
+   * guild.updateChannels([{ id: channelID, position: newChannelIndex }])
    *  .then(guild => console.log(`Updated channels for ${guild.id}`))
    *  .catch(console.error);
    */
