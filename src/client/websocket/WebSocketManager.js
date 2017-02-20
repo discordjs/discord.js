@@ -10,7 +10,6 @@ class WebSocketManager extends EventEmitter {
     this.packetManager = packetManager;
 
     this.shardID = options.shardID || this.client.options.shardID;
-    this.shardCount = options.shardCount || this.client.options.shardCount;
 
     this.sessionID = null;
     this.sequence = -1;

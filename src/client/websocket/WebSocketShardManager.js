@@ -57,10 +57,10 @@ class WebSocketShardManager extends EventEmitter {
        * The initial number of shards to spawn
        * @type {number}
        */
-      this.shardCount = Math.max(1, client.options.shardCount);
+      client.options.shardCount = Math.max(1, client.options.shardCount);
 
       if (this.client.options.shardID) {
-        this.spawn(0);
+        this.spawn(this.client.options.shardID);
       } else {
         this._spawnAll();
       }
@@ -167,6 +167,22 @@ class WebSocketShardManager extends EventEmitter {
   }
 
   /**
+   * Reshard
+   * @param {number} count Number of shards
+   * @param {number} [id] ID of shard if only one shard in the process
+   */
+  reshard(count, id) {
+    this.shardCount = count;
+    this.killAll();
+    if (id) {
+      this.client.options.shardID = id;
+      this.spawn(id);
+    } else {
+      this._spawnAll();
+    }
+  }
+
+  /**
    * Connect to the gateway
    * @param {string} gateway The gateway to connect to
    * @param {number} [shardCount] Number of shards to spawn
@@ -244,6 +260,15 @@ class WebSocketShardManager extends EventEmitter {
         this.afterReady = true;
       }
     }
+  }
+
+  get shardCount() {
+    return this.client.options.shardCount;
+  }
+
+  set shardCount(count) {
+    this.client.options.shardCount = count;
+    return count;
   }
 }
 
