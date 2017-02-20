@@ -368,7 +368,7 @@ class Collection extends Map {
    * @param {Function} fn Function used for comparing two objects
    * @returns {Collection}
    */
-   sort = (fn) {
+   sort(fn) {
     if (typeof fn !== 'function') {
       throw new TypeError("Argument must be a function.");
     }
