@@ -65,6 +65,12 @@ class RichEmbed {
      * @type {Object}
      */
     this.footer = data.footer;
+
+    /**
+     * File to upload alongside this Embed
+     * @type {string}
+     */
+    this.file = data.file;
   }
 
   /**
@@ -189,6 +195,19 @@ class RichEmbed {
     text = resolveString(text);
     if (text.length > 2048) throw new RangeError('RichEmbed footer text may not exceed 2048 characters.');
     this.footer = { text, icon_url: icon };
+    return this;
+  }
+
+  /**
+   * Sets the file to upload alongside this embed that can
+   * be accessed via `attachment://fileName.extension` when
+   * setting an embed image, or author/footer icons
+   * @param {string} file Path or Url to the file to attach
+   * @returns {RichEmbed} This embed
+   */
+  attachFile(file) {
+    if (this.file) throw new RangeError('You may not upload more than one file at once.');
+    this.file = file;
     return this;
   }
 }
