@@ -362,22 +362,22 @@ class Collection extends Map {
       return testVal !== value || (testVal === undefined && !collection.has(key));
     });
   }
-  
+
   /**
    * Sort a collection based on a function given
    * @param {Function} fn Function used for comparing two objects
    * @returns {Collection}
    */
-   sort(fn) {
+  sort(fn) {
     if (typeof fn !== 'function') {
-      throw new TypeError("Argument must be a function.");
+      throw new TypeError('Argument must be a function.');
     }
     if (this.size < 2) {
       return this;
     }
-  
+
     function merge(left, right) {
-      let merged = new Collection()
+      let merged = new Collection();
       let leftkeys = left.keys();
       let rightkeys = right.keys();
       let lv, rv, templeft = leftkeys, tempright = rightkeys;
@@ -385,8 +385,7 @@ class Collection extends Map {
         if (fn(left.get(lv), right.get(rv)) <= 0) {
           merged.set(lv, left.get(lv));
           templeft = templeft.next();
-        }
-        else {
+        } else {
           merged.set(rv, right.get(rv));
           tempright = tempright.next();
         }
