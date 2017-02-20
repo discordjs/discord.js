@@ -12,7 +12,7 @@ const Role = require('../../structures/Role');
 const Invite = require('../../structures/Invite');
 const Webhook = require('../../structures/Webhook');
 const UserProfile = require('../../structures/UserProfile');
-const ClientOAuth2Application = require('../../structures/ClientOAuth2Application');
+const OAuth2Application = require('../../structures/OAuth2Application');
 const Channel = require('../../structures/Channel');
 const Guild = require('../../structures/Guild');
 const VoiceRegion = require('../../structures/VoiceRegion');
@@ -803,10 +803,18 @@ class RESTMethods {
     );
   }
 
-  getMyApplication() {
-    return this.rest.makeRequest('get', Constants.Endpoints.myApplication, true).then(app =>
-      new ClientOAuth2Application(this.client, app)
+  getApplication(id) {
+    return this.rest.makeRequest('get', Constants.Endpoints.oauth2Application(id), true).then(app =>
+      new OAuth2Application(this.client, app)
     );
+  }
+
+  resetApplication(id) {
+    return this.rest.makeRequest(
+      'post',
+      `${Constants.Endpoints.oauth2Application(id)}/reset`,
+      true
+    ).then(app => new OAuth2Application(this.client, app));
   }
 
   setNote(user, note) {
