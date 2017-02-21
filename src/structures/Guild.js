@@ -639,17 +639,23 @@ class Guild {
   }
 
   /**
+   * The data needed for updating a channel's position.
+   * @typedef {Object} ChannelPosition
+   * @property {string} id The channel being updated's unique id.
+   * @property {number} position The new position of the channel.
+   */
+
+  /**
    * Updates this guild's channel positions as a batch.
-   * @param {Object[]} newChannelPositions Array of objects with an id and a position.
-   * Position should be an integer specifying the new position for the channel.
+   * @param {Array<ChannelPosition>} channelPositions Array of objects that defines which channel is going where.
    * @returns {Promise<Guild>}
    * @example
    * guild.updateChannels([{ id: channelID, position: newChannelIndex }])
    *  .then(guild => console.log(`Updated channels for ${guild.id}`))
    *  .catch(console.error);
    */
-  updateChannelPositions(newChannelPositions) {
-    return this.client.rest.methods.updateChannelPositions(this.id, newChannelPositions);
+  updateChannelPositions(channelPositions) {
+    return this.client.rest.methods.updateChannelPositions(this.id, channelPositions);
   }
 
   /**
