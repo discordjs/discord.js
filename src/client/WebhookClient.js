@@ -47,7 +47,7 @@ class WebhookClient extends Webhook {
      * @private
      */
     this._timeouts = new Set();
-    
+
     /**
      * Intervals set by {@link WebhookClient#setInterval} that are still active
      * @type {Set<Timeout>}
