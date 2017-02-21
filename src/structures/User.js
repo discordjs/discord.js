@@ -21,25 +21,25 @@ class User {
 
   setup(data) {
     /**
-     * The ID of the user
+     * The ID of the user.
      * @type {Snowflake}
      */
     this.id = data.id;
 
     /**
-     * The username of the user
+     * The username of the user.
      * @type {string}
      */
     this.username = data.username;
 
     /**
-     * A discriminator based on username for the user
+     * A discriminator based on username for the user.
      * @type {string}
      */
     this.discriminator = data.discriminator;
 
     /**
-     * The ID of the user's avatar
+     * The ID of the user's avatar.
      * @type {string}
      */
     this.avatar = data.avatar;
@@ -71,7 +71,7 @@ class User {
   }
 
   /**
-   * The timestamp the user was created at
+   * The timestamp the user was created at.
    * @type {number}
    * @readonly
    */
@@ -80,7 +80,7 @@ class User {
   }
 
   /**
-   * The time the user was created
+   * The time the user was created.
    * @type {Date}
    * @readonly
    */
@@ -89,7 +89,7 @@ class User {
   }
 
   /**
-   * The presence of this user
+   * The presence of this user.
    * @type {Presence}
    * @readonly
    */
@@ -102,7 +102,7 @@ class User {
   }
 
   /**
-   * A link to the user's avatar (if they have one, otherwise null)
+   * A link to the user's avatar (if they have one, otherwise null).
    * @type {?string}
    * @readonly
    */
@@ -112,7 +112,7 @@ class User {
   }
 
   /**
-   * A link to the user's default avatar
+   * A link to the user's default avatar.
    * @type {string}
    * @readonly
    */
@@ -123,7 +123,7 @@ class User {
   }
 
   /**
-   * A link to the user's avatar if they have one. Otherwise a link to their default avatar will be returned
+   * A link to the user's avatar if they have one. Otherwise a link to their default avatar will be returned.
    * @type {string}
    * @readonly
    */
@@ -132,7 +132,7 @@ class User {
   }
 
   /**
-   * The note that is set for the user
+   * The note that is set for the user.
    * <warn>This is only available when using a user account.</warn>
    * @type {?string}
    * @readonly
@@ -172,7 +172,7 @@ class User {
   }
 
   /**
-   * The DM between the client's user and this user
+   * The DM between the client's user and this user.
    * @type {?DMChannel}
    */
   get dmChannel() {
@@ -180,7 +180,7 @@ class User {
   }
 
   /**
-   * Creates a DM channel between the client and the user
+   * Creates a DM channel between the client and the user.
    * @returns {Promise<DMChannel>}
    */
   createDM() {
@@ -196,7 +196,7 @@ class User {
   }
 
   /**
-   * Sends a friend request to the user
+   * Sends a friend request to the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
@@ -205,7 +205,7 @@ class User {
   }
 
   /**
-   * Removes the user from your friends
+   * Removes the user from your friends.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
@@ -214,7 +214,7 @@ class User {
   }
 
   /**
-   * Blocks the user
+   * Blocks the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
@@ -223,7 +223,7 @@ class User {
   }
 
   /**
-   * Unblocks the user
+   * Unblocks the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
@@ -232,7 +232,7 @@ class User {
   }
 
   /**
-   * Get the profile of the user
+   * Get the profile of the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<UserProfile>}
    */
@@ -241,7 +241,7 @@ class User {
   }
 
   /**
-   * Sets a note for the user
+   * Sets a note for the user.
    * <warn>This is only available when using a user account.</warn>
    * @param {string} note The note to set for the user
    * @returns {Promise<User>}

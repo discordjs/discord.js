@@ -5,7 +5,7 @@
 class MessageEmbed {
   constructor(message, data) {
     /**
-     * The client that instantiated this embed
+     * The client that instantiated this embed.
      * @name MessageEmbed#client
      * @type {Client}
      * @readonly
@@ -13,7 +13,7 @@ class MessageEmbed {
     Object.defineProperty(this, 'client', { value: message.client });
 
     /**
-     * The message this embed is part of
+     * The message this embed is part of.
      * @type {Message}
      */
     this.message = message;
@@ -23,75 +23,75 @@ class MessageEmbed {
 
   setup(data) {
     /**
-     * The type of this embed
+     * The type of this embed.
      * @type {string}
      */
     this.type = data.type;
 
     /**
-     * The title of this embed, if there is one
+     * The title of this embed, if there is one.
      * @type {?string}
      */
     this.title = data.title;
 
     /**
-     * The description of this embed, if there is one
+     * The description of this embed, if there is one.
      * @type {?string}
      */
     this.description = data.description;
 
     /**
-     * The URL of this embed
+     * The URL of this embed.
      * @type {string}
      */
     this.url = data.url;
 
     /**
-     * The color of the embed
+     * The color of the embed.
      * @type {number}
      */
     this.color = data.color;
 
     /**
-     * The fields of this embed
+     * The fields of this embed.
      * @type {MessageEmbedField[]}
      */
     this.fields = [];
     if (data.fields) for (const field of data.fields) this.fields.push(new MessageEmbedField(this, field));
 
     /**
-     * The timestamp of this embed
+     * The timestamp of this embed.
      * @type {number}
      */
     this.createdTimestamp = data.timestamp;
 
     /**
-     * The thumbnail of this embed, if there is one
+     * The thumbnail of this embed, if there is one.
      * @type {MessageEmbedThumbnail}
      */
     this.thumbnail = data.thumbnail ? new MessageEmbedThumbnail(this, data.thumbnail) : null;
 
     /**
-     * The author of this embed, if there is one
+     * The author of this embed, if there is one.
      * @type {MessageEmbedAuthor}
      */
     this.author = data.author ? new MessageEmbedAuthor(this, data.author) : null;
 
     /**
-     * The provider of this embed, if there is one
+     * The provider of this embed, if there is one.
      * @type {MessageEmbedProvider}
      */
     this.provider = data.provider ? new MessageEmbedProvider(this, data.provider) : null;
 
     /**
-     * The footer of this embed
+     * The footer of this embed.
      * @type {MessageEmbedFooter}
      */
     this.footer = data.footer ? new MessageEmbedFooter(this, data.footer) : null;
   }
 
   /**
-   * The date this embed was created
+   * The date this embed was created.
    * @type {Date}
    */
   get createdAt() {
@@ -111,12 +111,12 @@ class MessageEmbed {
 }
 
 /**
- * Represents a thumbnail for a message embed
+ * Represents a thumbnail for a message embed.
  */
 class MessageEmbedThumbnail {
   constructor(embed, data) {
     /**
-     * The embed this thumbnail is part of
+     * The embed this thumbnail is part of.
      * @type {MessageEmbed}
      */
     this.embed = embed;
@@ -126,25 +126,25 @@ class MessageEmbedThumbnail {
 
   setup(data) {
     /**
-     * The URL for this thumbnail
+     * The URL for this thumbnail.
      * @type {string}
      */
     this.url = data.url;
 
     /**
-     * The Proxy URL for this thumbnail
+     * The Proxy URL for this thumbnail.
      * @type {string}
      */
     this.proxyURL = data.proxy_url;
 
     /**
-     * The height of the thumbnail
+     * The height of the thumbnail.
      * @type {number}
      */
     this.height = data.height;
 
     /**
-     * The width of the thumbnail
+     * The width of the thumbnail.
      * @type {number}
      */
     this.width = data.width;
@@ -152,12 +152,12 @@ class MessageEmbedThumbnail {
 }
 
 /**
- * Represents a provider for a message embed
+ * Represents a provider for a message embed.
  */
 class MessageEmbedProvider {
   constructor(embed, data) {
     /**
-     * The embed this provider is part of
+     * The embed this provider is part of.
      * @type {MessageEmbed}
      */
     this.embed = embed;
@@ -167,13 +167,13 @@ class MessageEmbedProvider {
 
   setup(data) {
     /**
-     * The name of this provider
+     * The name of this provider.
      * @type {string}
      */
     this.name = data.name;
 
     /**
-     * The URL of this provider
+     * The URL of this provider.
      * @type {string}
      */
     this.url = data.url;
@@ -181,12 +181,12 @@ class MessageEmbedProvider {
 }
 
 /**
- * Represents an author for a message embed
+ * Represents an author for a message embed.
  */
 class MessageEmbedAuthor {
   constructor(embed, data) {
     /**
-     * The embed this author is part of
+     * The embed this author is part of.
      * @type {MessageEmbed}
      */
     this.embed = embed;
@@ -196,19 +196,19 @@ class MessageEmbedAuthor {
 
   setup(data) {
     /**
-     * The name of this author
+     * The name of this author.
      * @type {string}
      */
     this.name = data.name;
 
     /**
-     * The URL of this author
+     * The URL of this author.
      * @type {string}
      */
     this.url = data.url;
 
     /**
-     * The icon URL of this author
+     * The icon URL of this author.
      * @type {string}
      */
     this.iconURL = data.icon_url;
@@ -216,12 +216,12 @@ class MessageEmbedAuthor {
 }
 
 /**
- * Represents a field for a message embed
+ * Represents a field for a message embed.
  */
 class MessageEmbedField {
   constructor(embed, data) {
     /**
-     * The embed this footer is part of
+     * The embed this footer is part of.
      * @type {MessageEmbed}
      */
     this.embed = embed;
@@ -231,19 +231,19 @@ class MessageEmbedField {
 
   setup(data) {
     /**
-     * The name of this field
+     * The name of this field.
      * @type {string}
      */
     this.name = data.name;
 
     /**
-     * The value of this field
+     * The value of this field.
      * @type {string}
      */
     this.value = data.value;
 
     /**
-     * If this field is displayed inline
+     * If this field is displayed inline.
      * @type {boolean}
      */
     this.inline = data.inline;
@@ -251,12 +251,12 @@ class MessageEmbedField {
 }
 
 /**
- * Represents the footer of a message embed
+ * Represents the footer of a message embed.
  */
 class MessageEmbedFooter {
   constructor(embed, data) {
     /**
-     * The embed this footer is part of
+     * The embed this footer is part of.
      * @type {MessageEmbed}
      */
     this.embed = embed;

@@ -7,7 +7,7 @@ const UserConnection = require('./UserConnection');
 class UserProfile {
   constructor(user, data) {
     /**
-     * The owner of the profile
+     * The owner of the profile.
      * @type {User}
      */
     this.user = user;
@@ -21,13 +21,13 @@ class UserProfile {
     Object.defineProperty(this, 'client', { value: user.client });
 
     /**
-     * Guilds that the client user and the user share
+     * Guilds that the client user and the user share.
      * @type {Collection<Snowflake, Guild>}
      */
     this.mutualGuilds = new Collection();
 
     /**
-     * The user's connections
+     * The user's connections.
      * @type {Collection<String, UserConnection>}
      */
     this.connections = new Collection();
@@ -37,13 +37,13 @@ class UserProfile {
 
   setup(data) {
     /**
-     * If the user has Discord Premium
+     * If the user has Discord Premium.
      * @type {boolean}
      */
     this.premium = data.premium;
 
     /**
-     * The date since which the user has had Discord Premium
+     * The date since which the user has had Discord Premium.
      * @type {?Date}
      */
     this.premiumSince = data.premium_since ? new Date(data.premium_since) : null;

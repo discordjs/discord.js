@@ -3,18 +3,18 @@ const Emoji = require('./Emoji');
 const ReactionEmoji = require('./ReactionEmoji');
 
 /**
- * Represents a reaction to a message
+ * Represents a reaction to a message.
  */
 class MessageReaction {
   constructor(message, emoji, count, me) {
     /**
-     * The message that this reaction refers to
+     * The message that this reaction refers to.
      * @type {Message}
      */
     this.message = message;
 
     /**
-     * Whether the client has given this reaction
+     * Whether the client has given this reaction.
      * @type {boolean}
      */
     this.me = me;

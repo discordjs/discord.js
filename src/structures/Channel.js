@@ -4,7 +4,7 @@
 class Channel {
   constructor(client, data) {
     /**
-     * The client that instantiated the Channel
+     * The client that instantiated the Channel.
      * @name Channel#client
      * @type {Client}
      * @readonly
@@ -26,14 +26,14 @@ class Channel {
 
   setup(data) {
     /**
-     * The unique ID of the channel
+     * The unique ID of the channel.
      * @type {Snowflake}
      */
     this.id = data.id;
   }
 
   /**
-   * The timestamp the channel was created at
+   * The timestamp the channel was created at.
    * @type {number}
    * @readonly
    */
@@ -42,7 +42,7 @@ class Channel {
   }
 
   /**
-   * The time the channel was created
+   * The time the channel was created.
    * @type {Date}
    * @readonly
    */
@@ -51,7 +51,7 @@ class Channel {
   }
 
   /**
-   * Deletes the channel
+   * Deletes the channel.
    * @returns {Promise<Channel>}
    * @example
    * // delete the channel

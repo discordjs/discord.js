@@ -19,7 +19,7 @@ class DMChannel extends Channel {
     super.setup(data);
 
     /**
-     * The recipient on the other end of the DM
+     * The recipient on the other end of the DM.
      * @type {User}
      */
     this.recipient = this.client.dataManager.newUser(data.recipients[0]);

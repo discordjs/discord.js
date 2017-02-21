@@ -6,13 +6,13 @@ const Collection = require('../util/Collection');
 const Presence = require('./Presence').Presence;
 
 /**
- * Represents a member of a guild on Discord
+ * Represents a member of a guild on Discord.
  * @implements {TextBasedChannel}
  */
 class GuildMember {
   constructor(guild, data) {
     /**
-     * The Client that instantiated this GuildMember
+     * The Client that instantiated this GuildMember.
      * @name GuildMember#client
      * @type {Client}
      * @readonly
@@ -20,13 +20,13 @@ class GuildMember {
     Object.defineProperty(this, 'client', { value: guild.client });
 
     /**
-     * The guild that this member is part of
+     * The guild that this member is part of.
      * @type {Guild}
      */
     this.guild = guild;
 
     /**
-     * The user that this guild member instance Represents
+     * The user that this guild member instance Represents.
      * @type {User}
      */
     this.user = {};
@@ -49,55 +49,55 @@ class GuildMember {
 
   setup(data) {
     /**
-     * Whether this member is deafened server-wide
+     * Whether this member is deafened server-wide.
      * @type {boolean}
      */
     this.serverDeaf = data.deaf;
 
     /**
-     * Whether this member is muted server-wide
+     * Whether this member is muted server-wide.
      * @type {boolean}
      */
     this.serverMute = data.mute;
 
     /**
-     * Whether this member is self-muted
+     * Whether this member is self-muted.
      * @type {boolean}
      */
     this.selfMute = data.self_mute;
 
     /**
-     * Whether this member is self-deafened
+     * Whether this member is self-deafened.
      * @type {boolean}
      */
     this.selfDeaf = data.self_deaf;
 
     /**
-     * The voice session ID of this member, if any
+     * The voice session ID of this member, if any.
      * @type {?Snowflake}
      */
     this.voiceSessionID = data.session_id;
 
     /**
-     * The voice channel ID of this member, if any
+     * The voice channel ID of this member, if any.
      * @type {?Snowflake}
      */
     this.voiceChannelID = data.channel_id;
 
     /**
-     * Whether this member is speaking
+     * Whether this member is speaking.
      * @type {boolean}
      */
     this.speaking = false;
 
     /**
-     * The nickname of this guild member, if they have one
+     * The nickname of this guild member, if they have one.
      * @type {?string}
      */
     this.nickname = data.nick || null;
 
     /**
-     * The timestamp the member joined the guild at
+     * The timestamp the member joined the guild at.
      * @type {number}
      */
     this.joinedTimestamp = new Date(data.joined_at).getTime();
@@ -107,7 +107,7 @@ class GuildMember {
   }
 
   /**
-   * The time the member joined the guild
+   * The time the member joined the guild.
    * @type {Date}
    * @readonly
    */
@@ -116,7 +116,7 @@ class GuildMember {
   }
 
   /**
-   * The presence of this guild member
+   * The presence of this guild member.
    * @type {Presence}
    * @readonly
    */
@@ -153,7 +153,7 @@ class GuildMember {
   }
 
   /**
-   * Whether this member is muted in any way
+   * Whether this member is muted in any way.
    * @type {boolean}
    * @readonly
    */
@@ -162,7 +162,7 @@ class GuildMember {
   }
 
   /**
-   * Whether this member is deafened in any way
+   * Whether this member is deafened in any way.
    * @type {boolean}
    * @readonly
    */
@@ -171,7 +171,7 @@ class GuildMember {
   }
 
   /**
-   * The voice channel this member is in, if any
+   * The voice channel this member is in, if any.
    * @type {?VoiceChannel}
    * @readonly
    */
@@ -180,7 +180,7 @@ class GuildMember {
   }
 
   /**
-   * The ID of this user
+   * The ID of this user.
    * @type {Snowflake}
    * @readonly
    */
@@ -189,7 +189,7 @@ class GuildMember {
   }
 
   /**
-   * The nickname of the member, or their username if they don't have one
+   * The nickname of the member, or their username if they don't have one.
    * @type {string}
    * @readonly
    */
@@ -198,7 +198,7 @@ class GuildMember {
   }
 
   /**
-   * The overall set of permissions for the guild member, taking only roles into account
+   * The overall set of permissions for the guild member, taking only roles into account.
    * @type {EvaluatedPermissions}
    * @readonly
    */
@@ -285,7 +285,7 @@ class GuildMember {
   }
 
   /**
-   * Edit a guild member
+   * Edit a guild member.
    * @param {GuildmemberEditData} data The data to edit the member with
    * @returns {Promise<GuildMember>}
    */
@@ -294,7 +294,7 @@ class GuildMember {
   }
 
   /**
-   * Mute/unmute a user
+   * Mute/unmute a user.
    * @param {boolean} mute Whether or not the member should be muted
    * @returns {Promise<GuildMember>}
    */
@@ -303,7 +303,7 @@ class GuildMember {
   }
 
   /**
-   * Deafen/undeafen a user
+   * Deafen/undeafen a user.
    * @param {boolean} deaf Whether or not the member should be deafened
    * @returns {Promise<GuildMember>}
    */
@@ -387,7 +387,7 @@ class GuildMember {
   }
 
   /**
-   * Set the nickname for the guild member
+   * Set the nickname for the guild member.
    * @param {string} nick The nickname for the guild member
    * @returns {Promise<GuildMember>}
    */
@@ -396,7 +396,7 @@ class GuildMember {
   }
 
   /**
-   * Creates a DM channel between the client and the member
+   * Creates a DM channel between the client and the member.
    * @returns {Promise<DMChannel>}
    */
   createDM() {
@@ -404,7 +404,7 @@ class GuildMember {
   }
 
   /**
-   * Deletes any DMs with this guild member
+   * Deletes any DMs with this guild member.
    * @returns {Promise<DMChannel>}
    */
   deleteDM() {
@@ -412,7 +412,7 @@ class GuildMember {
   }
 
   /**
-   * Kick this member from the guild
+   * Kick this member from the guild.
    * @returns {Promise<GuildMember>}
    */
   kick() {
@@ -420,7 +420,7 @@ class GuildMember {
   }
 
   /**
-   * Ban this guild member
+   * Ban this guild member.
    * @param {number} [deleteDays=0] The amount of days worth of messages from this member that should
    * also be deleted. Between `0` and `7`.
    * @returns {Promise<GuildMember>}
@@ -443,7 +443,7 @@ class GuildMember {
     return `<@${this.nickname ? '!' : ''}${this.user.id}>`;
   }
 
-  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel.
   send() { return; }
   sendMessage() { return; }
   sendEmbed() { return; }

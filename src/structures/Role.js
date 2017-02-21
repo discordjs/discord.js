@@ -1,12 +1,12 @@
 const Constants = require('../util/Constants');
 
 /**
- * Represents a role on Discord
+ * Represents a role on Discord.
  */
 class Role {
   constructor(guild, data) {
     /**
-     * The client that instantiated the role
+     * The client that instantiated the role.
      * @name Role#client
      * @type {Client}
      * @readonly
@@ -14,7 +14,7 @@ class Role {
     Object.defineProperty(this, 'client', { value: guild.client });
 
     /**
-     * The guild that the role belongs to
+     * The guild that the role belongs to.
      * @type {Guild}
      */
     this.guild = guild;
@@ -24,56 +24,56 @@ class Role {
 
   setup(data) {
     /**
-     * The ID of the role (unique to the guild it is part of)
+     * The ID of the role (unique to the guild it is part of).
      * @type {Snowflake}
      */
     this.id = data.id;
 
     /**
-     * The name of the role
+     * The name of the role.
      * @type {string}
      */
     this.name = data.name;
 
     /**
-     * The base 10 color of the role
+     * The base 10 color of the role.
      * @type {number}
      */
     this.color = data.color;
 
     /**
-     * If true, users that are part of this role will appear in a separate category in the users list
+     * If true, users that are part of this role will appear in a separate category in the users list.
      * @type {boolean}
      */
     this.hoist = data.hoist;
 
     /**
-     * The position of the role from the API
+     * The position of the role from the API.
      * @type {number}
      */
     this.position = data.position;
 
     /**
-     * The evaluated permissions number
+     * The evaluated permissions number.
      * @type {number}
      */
     this.permissions = data.permissions;
 
     /**
-     * Whether or not the role is managed by an external service
+     * Whether or not the role is managed by an external service.
      * @type {boolean}
      */
     this.managed = data.managed;
 
     /**
-     * Whether or not the role can be mentioned by anyone
+     * Whether or not the role can be mentioned by anyone.
      * @type {boolean}
      */
     this.mentionable = data.mentionable;
   }
 
   /**
-   * The timestamp the role was created at
+   * The timestamp the role was created at.
    * @type {number}
    * @readonly
    */
@@ -82,7 +82,7 @@ class Role {
   }
 
   /**
-   * The time the role was created
+   * The time the role was created.
    * @type {Date}
    * @readonly
    */
@@ -123,7 +123,7 @@ class Role {
   }
 
   /**
-   * The position of the role in the role manager
+   * The position of the role in the role manager.
    * @type {number}
    */
   get calculatedPosition() {
@@ -133,7 +133,7 @@ class Role {
   }
 
   /**
-   * Get an object mapping permission names to whether or not the role enables that permission
+   * Get an object mapping permission names to whether or not the role enables that permission.
    * @returns {Object<string, boolean>}
    * @example
    * // print the serialized role
@@ -187,7 +187,7 @@ class Role {
   }
 
   /**
-   * The data for a role
+   * The data for a role.
    * @typedef {Object} RoleData
    * @property {string} [name] The name of the role
    * @property {ColorResolvable} [color] The color of the role, either a hex string or a base 10 number
@@ -198,7 +198,7 @@ class Role {
    */
 
   /**
-   * Edits the role
+   * Edits the role.
    * @param {RoleData} data The new data for the role
    * @returns {Promise<Role>}
    * @example
@@ -212,7 +212,7 @@ class Role {
   }
 
   /**
-   * Set a new name for the role
+   * Set a new name for the role.
    * @param {string} name The new name of the role
    * @returns {Promise<Role>}
    * @example
@@ -226,7 +226,7 @@ class Role {
   }
 
   /**
-   * Set a new color for the role
+   * Set a new color for the role.
    * @param {number|string} color The new color for the role, either a hex string or a base 10 number
    * @returns {Promise<Role>}
    * @example
@@ -240,7 +240,7 @@ class Role {
   }
 
   /**
-   * Set whether or not the role should be hoisted
+   * Set whether or not the role should be hoisted.
    * @param {boolean} hoist Whether or not to hoist the role
    * @returns {Promise<Role>}
    * @example
@@ -254,7 +254,7 @@ class Role {
   }
 
   /**
-   * Set the position of the role
+   * Set the position of the role.
    * @param {number} position The position of the role
    * @param {boolean} [relative=false] Move the position relative to its current value
    * @returns {Promise<Role>}
@@ -269,7 +269,7 @@ class Role {
   }
 
   /**
-   * Set the permissions of the role
+   * Set the permissions of the role.
    * @param {string[]} permissions The permissions of the role
    * @returns {Promise<Role>}
    * @example
@@ -283,7 +283,7 @@ class Role {
   }
 
   /**
-   * Set whether this role is mentionable
+   * Set whether this role is mentionable.
    * @param {boolean} mentionable Whether this role should be mentionable
    * @returns {Promise<Role>}
    * @example
@@ -297,7 +297,7 @@ class Role {
   }
 
   /**
-   * Deletes the role
+   * Deletes the role.
    * @returns {Promise<Role>}
    * @example
    * // delete a role

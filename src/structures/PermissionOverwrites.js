@@ -4,7 +4,7 @@
 class PermissionOverwrites {
   constructor(guildChannel, data) {
     /**
-     * The GuildChannel this overwrite is for
+     * The GuildChannel this overwrite is for.
      * @name PermissionOverwrites#channel
      * @type {GuildChannel}
      * @readonly
@@ -16,13 +16,13 @@ class PermissionOverwrites {
 
   setup(data) {
     /**
-     * The ID of this overwrite, either a user ID or a role ID
+     * The ID of this overwrite, either a user ID or a role ID.
      * @type {Snowflake}
      */
     this.id = data.id;
 
     /**
-     * The type of this overwrite
+     * The type of this overwrite.
      * @type {string}
      */
     this.type = data.type;

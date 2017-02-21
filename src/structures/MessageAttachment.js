@@ -22,43 +22,43 @@ class MessageAttachment {
 
   setup(data) {
     /**
-     * The ID of this attachment
+     * The ID of this attachment.
      * @type {Snowflake}
      */
     this.id = data.id;
 
     /**
-     * The file name of this attachment
+     * The file name of this attachment.
      * @type {string}
      */
     this.filename = data.filename;
 
     /**
-     * The size of this attachment in bytes
+     * The size of this attachment in bytes.
      * @type {number}
      */
     this.filesize = data.size;
 
     /**
-     * The URL to this attachment
+     * The URL to this attachment.
      * @type {string}
      */
     this.url = data.url;
 
     /**
-     * The Proxy URL to this attachment
+     * The Proxy URL to this attachment.
      * @type {string}
      */
     this.proxyURL = data.proxy_url;
 
     /**
-     * The height of this attachment (if an image)
+     * The height of this attachment (if an image).
      * @type {?number}
      */
     this.height = data.height;
 
     /**
-     * The width of this attachment (if an image)
+     * The width of this attachment (if an image).
      * @type {?number}
      */
     this.width = data.width;

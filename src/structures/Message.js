@@ -7,12 +7,12 @@ const Constants = require('../util/Constants');
 let GuildMember;
 
 /**
- * Represents a message on Discord
+ * Represents a message on Discord.
  */
 class Message {
   constructor(channel, data, client) {
     /**
-     * The Client that instantiated the Message
+     * The Client that instantiated the Message.
      * @name Message#client
      * @type {Client}
      * @readonly
@@ -20,7 +20,7 @@ class Message {
     Object.defineProperty(this, 'client', { value: client });
 
     /**
-     * The channel that the message was sent in
+     * The channel that the message was sent in.
      * @type {TextChannel|DMChannel|GroupDMChannel}
      */
     this.channel = channel;
@@ -30,25 +30,25 @@ class Message {
 
   setup(data) { // eslint-disable-line complexity
     /**
-     * The ID of the message (unique in the channel it was sent)
+     * The ID of the message (unique in the channel it was sent).
      * @type {Snowflake}
      */
     this.id = data.id;
 
     /**
-     * The type of the message
+     * The type of the message.
      * @type {string}
      */
     this.type = Constants.MessageTypes[data.type];
 
     /**
-     * The content of the message
+     * The content of the message.
      * @type {string}
      */
     this.content = data.content;
 
     /**
-     * The author of the message
+     * The author of the message.
      * @type {User}
      */
     this.author = this.client.dataManager.newUser(data.author);
@@ -61,31 +61,31 @@ class Message {
     this.member = this.guild ? this.guild.member(this.author) || null : null;
 
     /**
-     * Whether or not this message is pinned
+     * Whether or not this message is pinned.
      * @type {boolean}
      */
     this.pinned = data.pinned;
 
     /**
-     * Whether or not the message was Text-To-Speech
+     * Whether or not the message was Text-To-Speech.
      * @type {boolean}
      */
     this.tts = data.tts;
 
     /**
-     * A random number or string used for checking message delivery
+     * A random number or string used for checking message delivery.
      * @type {string}
      */
     this.nonce = data.nonce;
 
     /**
-     * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
+     * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications).
      * @type {boolean}
      */
     this.system = data.type === 6;
 
     /**
-     * A list of embeds in the message - e.g. YouTube Player
+     * A list of embeds in the message - e.g. YouTube Player.
      * @type {MessageEmbed[]}
      */
     this.embeds = data.embeds.map(e => new Embed(this, e));
@@ -98,19 +98,19 @@ class Message {
     for (const attachment of data.attachments) this.attachments.set(attachment.id, new Attachment(this, attachment));
 
     /**
-     * The timestamp the message was sent at
+     * The timestamp the message was sent at.
      * @type {number}
      */
     this.createdTimestamp = new Date(data.timestamp).getTime();
 
     /**
-     * The timestamp the message was last edited at (if applicable)
+     * The timestamp the message was last edited at (if applicable).
      * @type {?number}
      */
     this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
 
     /**
-     * An object containing a further users, roles or channels collections
+     * An object containing a further users, roles or channels collections.
      * @type {Object}
      * @property {Collection<Snowflake, User>} mentions.users Mentioned users, maps their ID to the user object.
      * @property {Collection<Snowflake, Role>} mentions.roles Mentioned roles, maps their ID to the role object.
@@ -166,13 +166,13 @@ class Message {
     }
 
     /**
-     * ID of the webhook that sent the message, if applicable
+     * ID of the webhook that sent the message, if applicable.
      * @type {?Snowflake}
      */
     this.webhookID = data.webhook_id || null;
 
     /**
-     * Whether this message is a hit in a search
+     * Whether this message is a hit in a search.
      * @type {?boolean}
      */
     this.hit = typeof data.hit === 'boolean' ? data.hit : null;
@@ -242,7 +242,7 @@ class Message {
   }
 
   /**
-   * The time the message was sent
+   * The time the message was sent.
    * @type {Date}
    * @readonly
    */
@@ -251,7 +251,7 @@ class Message {
   }
 
   /**
-   * The time the message was last edited at (if applicable)
+   * The time the message was last edited at (if applicable).
    * @type {?Date}
    * @readonly
    */
@@ -260,7 +260,7 @@ class Message {
   }
 
   /**
-   * The guild the message was sent in (if in a guild channel)
+   * The guild the message was sent in (if in a guild channel).
    * @type {?Guild}
    * @readonly
    */
@@ -366,7 +366,7 @@ class Message {
    * @returns {boolean}
    */
   isMemberMentioned(member) {
-    // Lazy-loading is used here to get around a circular dependency that breaks things
+    // Lazy-loading is used here to get around a circular dependency that breaks things.
     if (!GuildMember) GuildMember = require('./GuildMember');
     if (this.mentions.everyone) return true;
     if (this.mentions.users.has(member.id)) return true;
@@ -375,14 +375,14 @@ class Message {
   }
 
   /**
-   * Options that can be passed into editMessage
+   * Options that can be passed into editMessage.
    * @typedef {Object} MessageEditOptions
    * @property {Object} [embed] An embed to be added/edited
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    */
 
   /**
-   * Edit the content of the message
+   * Edit the content of the message.
    * @param {StringResolvable} [content] The new content for the message
    * @param {MessageEditOptions} [options] The options to provide
    * @returns {Promise<Message>}
@@ -403,7 +403,7 @@ class Message {
   }
 
   /**
-   * Edit the content of the message, with a code block
+   * Edit the content of the message, with a code block.
    * @param {string} lang Language for the code block
    * @param {StringResolvable} content The new content for the message
    * @returns {Promise<Message>}
@@ -414,7 +414,7 @@ class Message {
   }
 
   /**
-   * Pins this message to the channel's pinned messages
+   * Pins this message to the channel's pinned messages.
    * @returns {Promise<Message>}
    */
   pin() {
@@ -422,7 +422,7 @@ class Message {
   }
 
   /**
-   * Unpins this message from the channel's pinned messages
+   * Unpins this message from the channel's pinned messages.
    * @returns {Promise<Message>}
    */
   unpin() {
@@ -430,7 +430,7 @@ class Message {
   }
 
   /**
-   * Add a reaction to the message
+   * Add a reaction to the message.
    * @param {string|Emoji|ReactionEmoji} emoji Emoji to react with
    * @returns {Promise<MessageReaction>}
    */
@@ -442,7 +442,7 @@ class Message {
   }
 
   /**
-   * Remove all reactions from a message
+   * Remove all reactions from a message.
    * @returns {Promise<Message>}
    */
   clearReactions() {
@@ -450,7 +450,7 @@ class Message {
   }
 
   /**
-   * Deletes the message
+   * Deletes the message.
    * @param {number} [timeout=0] How long to wait to delete the message in milliseconds
    * @returns {Promise<Message>}
    * @example
@@ -472,7 +472,7 @@ class Message {
   }
 
   /**
-   * Reply to the message
+   * Reply to the message.
    * @param {StringResolvable} [content] The content for the message
    * @param {MessageOptions} [options] The options to provide
    * @returns {Promise<Message|Message[]>}

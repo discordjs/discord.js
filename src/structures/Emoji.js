@@ -2,12 +2,12 @@ const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 
 /**
- * Represents a custom emoji
+ * Represents a custom emoji.
  */
 class Emoji {
   constructor(guild, data) {
     /**
-     * The Client that instantiated this object
+     * The Client that instantiated this object.
      * @name Emoji#client
      * @type {Client}
      * @readonly
@@ -15,7 +15,7 @@ class Emoji {
     Object.defineProperty(this, 'client', { value: guild.client });
 
     /**
-     * The guild this emoji is part of
+     * The guild this emoji is part of.
      * @type {Guild}
      */
     this.guild = guild;
@@ -25,25 +25,25 @@ class Emoji {
 
   setup(data) {
     /**
-     * The ID of the emoji
+     * The ID of the emoji.
      * @type {Snowflake}
      */
     this.id = data.id;
 
     /**
-     * The name of the emoji
+     * The name of the emoji.
      * @type {string}
      */
     this.name = data.name;
 
     /**
-     * Whether or not this emoji requires colons surrounding it
+     * Whether or not this emoji requires colons surrounding it.
      * @type {boolean}
      */
     this.requiresColons = data.require_colons;
 
     /**
-     * Whether this emoji is managed by an external service
+     * Whether this emoji is managed by an external service.
      * @type {boolean}
      */
     this.managed = data.managed;
@@ -52,7 +52,7 @@ class Emoji {
   }
 
   /**
-   * The timestamp the emoji was created at
+   * The timestamp the emoji was created at.
    * @type {number}
    * @readonly
    */
@@ -61,7 +61,7 @@ class Emoji {
   }
 
   /**
-   * The time the emoji was created
+   * The time the emoji was created.
    * @type {Date}
    * @readonly
    */
@@ -83,7 +83,7 @@ class Emoji {
   }
 
   /**
-   * The URL to the emoji file
+   * The URL to the emoji file.
    * @type {string}
    * @readonly
    */
@@ -92,7 +92,7 @@ class Emoji {
   }
 
   /**
-   * The identifier of this emoji, used for message reactions
+   * The identifier of this emoji, used for message reactions.
    * @type {string}
    * @readonly
    */
@@ -102,14 +102,14 @@ class Emoji {
   }
 
   /**
-   * Data for editing an emoji
+   * Data for editing an emoji.
    * @typedef {Object} EmojiEditData
    * @property {string} [name] The name of the emoji
    * @property {Collection<string, Role>|Array<string|Role>} [roles] Roles to restrict emoji to
    */
 
   /**
-   * Edits the emoji
+   * Edits the emoji.
    * @param {EmojiEditData} data The new data for the emoji
    * @returns {Promise<Emoji>}
    * @example
@@ -135,7 +135,7 @@ class Emoji {
   }
 
   /**
-   * Whether this emoji is the same as another one
+   * Whether this emoji is the same as another one.
    * @param {Emoji|Object} other the emoji to compare it to
    * @returns {boolean} whether the emoji is equal to the given emoji or not
    */

@@ -19,7 +19,7 @@ const ShardClientUtil = require('../sharding/ShardClientUtil');
  */
 class Client extends EventEmitter {
   /**
-   * @param {ClientOptions} [options] Options for the client
+   * @param {ClientOptions} [options] Options for the client.
    */
   constructor(options = {}) {
     super();
@@ -29,90 +29,90 @@ class Client extends EventEmitter {
     if (!options.shardCount && 'SHARD_COUNT' in process.env) options.shardCount = Number(process.env.SHARD_COUNT);
 
     /**
-     * The options the client was instantiated with
+     * The options the client was instantiated with.
      * @type {ClientOptions}
      */
     this.options = Util.mergeDefault(Constants.DefaultOptions, options);
     this._validateOptions();
 
     /**
-     * The REST manager of the client
+     * The REST manager of the client.
      * @type {RESTManager}
      * @private
      */
     this.rest = new RESTManager(this);
 
     /**
-     * The data manager of the Client
+     * The data manager of the Client.
      * @type {ClientDataManager}
      * @private
      */
     this.dataManager = new ClientDataManager(this);
 
     /**
-     * The manager of the Client
+     * The manager of the Client.
      * @type {ClientManager}
      * @private
      */
     this.manager = new ClientManager(this);
 
     /**
-     * The WebSocket Manager of the Client
+     * The WebSocket Manager of the Client.
      * @type {WebSocketManager}
      * @private
      */
     this.ws = new WebSocketManager(this);
 
     /**
-     * The Data Resolver of the Client
+     * The Data Resolver of the Client.
      * @type {ClientDataResolver}
      * @private
      */
     this.resolver = new ClientDataResolver(this);
 
     /**
-     * The Action Manager of the Client
+     * The Action Manager of the Client.
      * @type {ActionsManager}
      * @private
      */
     this.actions = new ActionsManager(this);
 
     /**
-     * The Voice Manager of the Client (`null` in browsers)
+     * The Voice Manager of the Client (`null` in browsers).
      * @type {?ClientVoiceManager}
      * @private
      */
     this.voice = !this.browser ? new ClientVoiceManager(this) : null;
 
     /**
-     * The shard helpers for the client
-     * (only if the process was spawned as a child, such as from a {@link ShardingManager})
+     * The shard helpers for the client.
+     * (only if the process was spawned as a child, such as from a {@link ShardingManager}).
      * @type {?ShardClientUtil}
      */
     this.shard = process.send ? ShardClientUtil.singleton(this) : null;
 
     /**
-     * All of the {@link User} objects that have been cached at any point, mapped by their IDs
+     * All of the {@link User} objects that have been cached at any point, mapped by their IDs.
      * @type {Collection<Snowflake, User>}
      */
     this.users = new Collection();
 
     /**
      * All of the guilds the client is currently handling, mapped by their IDs -
-     * as long as sharding isn't being used, this will be *every* guild the bot is a member of
+     * as long as sharding isn't being used, this will be *every* guild the bot is a member of.
      * @type {Collection<Snowflake, Guild>}
      */
     this.guilds = new Collection();
 
     /**
      * All of the {@link Channel}s that the client is currently handling, mapped by their IDs -
-     * as long as sharding isn't being used, this will be *every* channel in *every* guild, and all DM channels
+     * as long as sharding isn't being used, this will be *every* channel in *every* guild, and all DM channels.
      * @type {Collection<Snowflake, Channel>}
      */
     this.channels = new Collection();
 
     /**
-     * Presences that have been received for the client user's friends, mapped by user IDs
+     * Presences that have been received for the client user's friends, mapped by user IDs.
      * <warn>This is only filled when using a user account.</warn>
      * @type {Collection<Snowflake, Presence>}
      */
@@ -120,7 +120,7 @@ class Client extends EventEmitter {
 
     if (!this.token && 'CLIENT_TOKEN' in process.env) {
       /**
-       * Authorization token for the logged in user/bot
+       * Authorization token for the logged in user/bot.
        * <warn>This should be kept private at all times.</warn>
        * @type {?string}
        */
@@ -130,20 +130,20 @@ class Client extends EventEmitter {
     }
 
     /**
-     * User that the client is logged in as
+     * User that the client is logged in as.
      * @type {?ClientUser}
      */
     this.user = null;
 
     /**
      * Time at which the client was last regarded as being in the `READY` state
-     * (each time the client disconnects and successfully reconnects, this will be overwritten)
+     * (each time the client disconnects and successfully reconnects, this will be overwritten).
      * @type {?Date}
      */
     this.readyAt = null;
 
     /**
-     * Previous heartbeat pings of the websocket (most recent first, limited to three elements)
+     * Previous heartbeat pings of the websocket (most recent first, limited to three elements).
      * @type {number[]}
      */
     this.pings = [];
@@ -158,7 +158,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Current status of the client's connection to Discord
+   * Current status of the client's connection to Discord.
    * @type {?number}
    * @readonly
    */
@@ -167,7 +167,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * How long it has been since the client last entered the `READY` state
+   * How long it has been since the client last entered the `READY` state.
    * @type {?number}
    * @readonly
    */
@@ -176,7 +176,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Average heartbeat ping of the websocket, obtained by averaging the {@link Client#pings} property
+   * Average heartbeat ping of the websocket, obtained by averaging the {@link Client#pings} property.
    * @type {number}
    * @readonly
    */
@@ -185,7 +185,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * All active voice connections that have been established, mapped by channel ID
+   * All active voice connections that have been established, mapped by channel ID.
    * @type {Collection<string, VoiceConnection>}
    * @readonly
    */
@@ -195,7 +195,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * All custom emojis that the client has access to, mapped by their IDs
+   * All custom emojis that the client has access to, mapped by their IDs.
    * @type {Collection<Snowflake, Emoji>}
    * @readonly
    */
@@ -208,7 +208,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Timestamp of the time the client was last `READY` at
+   * Timestamp of the time the client was last `READY` at.
    * @type {?number}
    * @readonly
    */
@@ -217,7 +217,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Whether the client is in a browser environment
+   * Whether the client is in a browser environment.
    * @type {boolean}
    * @readonly
    */
@@ -241,7 +241,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Logs out, terminates the connection to Discord, and destroys the client
+   * Logs out, terminates the connection to Discord, and destroys the client.
    * @returns {Promise}
    */
   destroy() {
@@ -391,7 +391,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Clears a timeout
+   * Clears a timeout.
    * @param {Timeout} timeout Timeout to cancel
    */
   clearTimeout(timeout) {
@@ -413,7 +413,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Clears an interval
+   * Clears an interval.
    * @param {Timeout} interval Interval to cancel
    */
   clearInterval(interval) {
@@ -457,7 +457,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Validates client options
+   * Validates client options.
    * @param {ClientOptions} [options=this.options] Options to validate
    * @private
    */
@@ -498,13 +498,13 @@ class Client extends EventEmitter {
 module.exports = Client;
 
 /**
- * Emitted for general warnings
+ * Emitted for general warnings.
  * @event Client#warn
  * @param {string} info The warning
  */
 
 /**
- * Emitted for general debugging information
+ * Emitted for general debugging information.
  * @event Client#debug
  * @param {string} info The debug information
  */

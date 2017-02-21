@@ -22,7 +22,7 @@ class VoiceChannel extends GuildChannel {
     super.setup(data);
 
     /**
-     * The bitrate of this voice channel
+     * The bitrate of this voice channel.
      * @type {number}
      */
     this.bitrate = data.bitrate;
@@ -35,7 +35,7 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * The voice connection for this voice channel, if the client is connected
+   * The voice connection for this voice channel, if the client is connected.
    * @type {?VoiceConnection}
    * @readonly
    */
@@ -46,7 +46,7 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * Checks if the voice channel is full
+   * Checks if the voice channel is full.
    * @type {boolean}
    */
   get full() {
@@ -54,7 +54,7 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * Checks if the client has permission join the voice channel
+   * Checks if the client has permission join the voice channel.
    * @type {boolean}
    */
   get joinable() {
@@ -65,7 +65,7 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * Checks if the client has permission to send audio to the voice channel
+   * Checks if the client has permission to send audio to the voice channel.
    * @type {boolean}
    */
   get speakable() {
@@ -73,7 +73,7 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * Sets the bitrate of the channel
+   * Sets the bitrate of the channel.
    * @param {number} bitrate The new bitrate
    * @returns {Promise<VoiceChannel>}
    * @example
@@ -87,7 +87,7 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * Sets the user limit of the channel
+   * Sets the user limit of the channel.
    * @param {number} userLimit The new user limit
    * @returns {Promise<VoiceChannel>}
    * @example
@@ -101,7 +101,7 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * Attempts to join this voice channel
+   * Attempts to join this voice channel.
    * @returns {Promise<VoiceConnection>}
    * @example
    * // join a voice channel

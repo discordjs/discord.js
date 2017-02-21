@@ -6,7 +6,7 @@
 class ReactionEmoji {
   constructor(reaction, name, id) {
     /**
-     * The message reaction this emoji refers to
+     * The message reaction this emoji refers to.
      * @type {MessageReaction}
      */
     this.reaction = reaction;
@@ -25,7 +25,7 @@ class ReactionEmoji {
   }
 
   /**
-   * The identifier of this emoji, used for message reactions
+   * The identifier of this emoji, used for message reactions.
    * @type {string}
    * @readonly
    */

@@ -10,7 +10,7 @@ const Constants = require('../util/Constants');
 class PartialGuildChannel {
   constructor(client, data) {
     /**
-     * The Client that instantiated this PartialGuildChannel
+     * The Client that instantiated this PartialGuildChannel.
      * @name PartialGuildChannel#client
      * @type {Client}
      * @readonly
@@ -22,19 +22,19 @@ class PartialGuildChannel {
 
   setup(data) {
     /**
-     * The ID of this guild channel
+     * The ID of this guild channel.
      * @type {Snowflake}
      */
     this.id = data.id;
 
     /**
-     * The name of this guild channel
+     * The name of this guild channel.
      * @type {string}
      */
     this.name = data.name;
 
     /**
-     * The type of this guild channel - `text` or `voice`
+     * The type of this guild channel - `text` or `voice`.
      * @type {string}
      */
     this.type = Constants.ChannelTypes.text === data.type ? 'text' : 'voice';

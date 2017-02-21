@@ -30,7 +30,7 @@ const Constants = require('../util/Constants');
 class Invite {
   constructor(client, data) {
     /**
-     * The client that instantiated the invite
+     * The client that instantiated the invite.
      * @name Invite#client
      * @type {Client}
      * @readonly
@@ -49,38 +49,38 @@ class Invite {
     this.guild = this.client.guilds.get(data.guild.id) || new PartialGuild(this.client, data.guild);
 
     /**
-     * The code for this invite
+     * The code for this invite.
      * @type {string}
      */
     this.code = data.code;
 
     /**
-     * Whether or not this invite is temporary
+     * Whether or not this invite is temporary.
      * @type {boolean}
      */
     this.temporary = data.temporary;
 
     /**
-     * The maximum age of the invite, in seconds
+     * The maximum age of the invite, in seconds.
      * @type {?number}
      */
     this.maxAge = data.max_age;
 
     /**
-     * How many times this invite has been used
+     * How many times this invite has been used.
      * @type {number}
      */
     this.uses = data.uses;
 
     /**
-     * The maximum uses of this invite
+     * The maximum uses of this invite.
      * @type {number}
      */
     this.maxUses = data.max_uses;
 
     if (data.inviter) {
       /**
-       * The user who created this invite
+       * The user who created this invite.
        * @type {User}
        */
       this.inviter = this.client.dataManager.newUser(data.inviter);
@@ -94,14 +94,14 @@ class Invite {
     this.channel = this.client.channels.get(data.channel.id) || new PartialGuildChannel(this.client, data.channel);
 
     /**
-     * The timestamp the invite was created at
+     * The timestamp the invite was created at.
      * @type {number}
      */
     this.createdTimestamp = new Date(data.created_at).getTime();
   }
 
   /**
-   * The time the invite was created
+   * The time the invite was created.
    * @type {Date}
    * @readonly
    */
@@ -110,7 +110,7 @@ class Invite {
   }
 
   /**
-   * The timestamp the invite will expire at
+   * The timestamp the invite will expire at.
    * @type {number}
    * @readonly
    */
@@ -119,7 +119,7 @@ class Invite {
   }
 
   /**
-   * The time the invite will expire
+   * The time the invite will expire.
    * @type {Date}
    * @readonly
    */
@@ -128,7 +128,7 @@ class Invite {
   }
 
   /**
-   * The URL to the invite
+   * The URL to the invite.
    * @type {string}
    * @readonly
    */
@@ -137,7 +137,7 @@ class Invite {
   }
 
   /**
-   * Deletes this invite
+   * Deletes this invite.
    * @returns {Promise<Invite>}
    */
   delete() {
