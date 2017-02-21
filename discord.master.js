@@ -4102,10 +4102,11 @@ class Guild {
    * @param {Object} options Options for the addition
    * @param {string} options.accessToken An OAuth2 access token for the user with the `guilds.join` scope granted to the
    * bot's application
-   * @param {string} [options.nick] Nickname to give the member
+   * @param {string} [options.nick] Nickname to give the member (requires `MANAGE_NICKNAMES`)
    * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} [options.roles] Roles to add to the member
-   * @param {boolean} [options.mute] Whether the member should be muted
-   * @param {boolean} [options.deaf] Whether the member should be deafened
+   * (requires `MANAGE_ROLES`)
+   * @param {boolean} [options.mute] Whether the member should be muted (requires `MUTE_MEMBERS`)
+   * @param {boolean} [options.deaf] Whether the member should be deafened (requires `DEAFEN_MEMBERS`)
    * @returns {Promise<GuildMember>}
    */
   addMember(user, options) {
