@@ -43,42 +43,42 @@ class Client extends EventEmitter {
     this.rest = new RESTManager(this);
 
     /**
-     * The data manager of the Client
+     * The data manager of the client
      * @type {ClientDataManager}
      * @private
      */
     this.dataManager = new ClientDataManager(this);
 
     /**
-     * The manager of the Client
+     * The manager of the client
      * @type {ClientManager}
      * @private
      */
     this.manager = new ClientManager(this);
 
     /**
-     * The WebSocket Manager of the Client
+     * The WebSocket manager of the client
      * @type {WebSocketManager}
      * @private
      */
     this.ws = new WebSocketManager(this);
 
     /**
-     * The Data Resolver of the Client
+     * The data resolver of the client
      * @type {ClientDataResolver}
      * @private
      */
     this.resolver = new ClientDataResolver(this);
 
     /**
-     * The Action Manager of the Client
+     * The action manager of the client
      * @type {ActionsManager}
      * @private
      */
     this.actions = new ActionsManager(this);
 
     /**
-     * The Voice Manager of the Client (`null` in browsers)
+     * The voice manager of the client (`null` in browsers)
      * @type {?ClientVoiceManager}
      * @private
      */
@@ -148,8 +148,25 @@ class Client extends EventEmitter {
      */
     this.pings = [];
 
+    /**
+     * Timestamp of the latest ping's start time
+     * @type {number}
+     * @private
+     */
     this._pingTimestamp = 0;
+
+    /**
+     * Timeouts set by {@link Client#setTimeout} that are still active
+     * @type {Set<Timeout>}
+     * @private
+     */
     this._timeouts = new Set();
+
+    /**
+     * Intervals set by {@link Client#setInterval} that are still active
+     * @type {Set<Timeout>}
+     * @private
+     */
     this._intervals = new Set();
 
     if (this.options.messageSweepInterval > 0) {
@@ -241,7 +258,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Logs out, terminates the connection to Discord, and destroys the client
+   * Logs out, terminates the connection to Discord, and destroys the client.
    * @returns {Promise}
    */
   destroy() {
@@ -391,7 +408,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Clears a timeout
+   * Clears a timeout.
    * @param {Timeout} timeout Timeout to cancel
    */
   clearTimeout(timeout) {
@@ -413,7 +430,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Clears an interval
+   * Clears an interval.
    * @param {Timeout} interval Interval to cancel
    */
   clearInterval(interval) {
@@ -447,7 +464,8 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Calls `eval(script)` with the client as `this`.
+   * Calls {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval} on a script
+   * with the client as `this`.
    * @param {string} script Script to eval
    * @returns {*}
    * @private
@@ -457,7 +475,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Validates client options
+   * Validates the client options.
    * @param {ClientOptions} [options=this.options] Options to validate
    * @private
    */
