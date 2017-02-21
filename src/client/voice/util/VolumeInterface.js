@@ -25,6 +25,13 @@ class VolumeInterface extends EventEmitter {
    * @param {number} volume The volume that you want to set
    */
   setVolume(volume) {
+    /**
+     * Emitted when the volume of this interface changes
+     * @event VolumeInterface#volumeChange
+     * @param {number} oldVolume The old volume of this interface
+     * @param {number} newVolume The new volume of this interface
+     */
+    this.emit('volumeChange', this._volume, volume);
     this._volume = volume;
   }
 
