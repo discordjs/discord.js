@@ -78,9 +78,7 @@ class TextBasedChannel {
       options = {};
     }
 
-    if (options.embed && options.embed.file) {
-      options.file = options.embed.file;
-    }
+    if (options.embed && options.embed.file) options.file = options.embed.file;
 
     if (options.file) {
       if (typeof options.file === 'string') options.file = { attachment: options.file };
