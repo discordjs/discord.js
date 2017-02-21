@@ -330,20 +330,15 @@ class Guild {
   }
 
   /**
-   * The data for a role
-   * @typedef {Object} AddGuildMemberOptions
-   * @property {string} accessToken An oauth2 access token granted with the guilds.join to the bot's application
-   * for the user you want to add to the guild
-   * @property {string} [nick] Value to set users nickname to
-   * @property {Collection<Snowflake, Role>|Role[]|string[]} [roles] The roles or role IDs to add
-   * @property {boolean} [mute] If the user is muted
-   * @property {boolean} [deaf] If the user is deafened
-   */
-
-  /**
-   * Add a user to this guild using OAuth2
-   * @param {UserResolvable|string} user The user or ID of the user to add to guild
-   * @param {AddGuildMemberOptions} options Options object containing the access_token
+   * Adds a user to the guild using OAuth2. Requires the `CREATE_INSTANT_INVITE` permission.
+   * @param {UserResolvable} user User to add to the guild
+   * @param {Object} options Options for the addition
+   * @param {string} options.accessToken An OAuth2 access token for the user with the `guilds.join` scope granted to the
+   * bot's application
+   * @param {string} [options.nick] Nickname to give the member
+   * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} [options.roles] Roles to add to the member
+   * @param {boolean} [options.mute] Whether the member should be muted
+   * @param {boolean} [options.deaf] Whether the member should be deafened
    * @returns {Promise<GuildMember>}
    */
   addMember(user, options) {
