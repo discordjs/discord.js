@@ -1,6 +1,6 @@
 const VoiceWebSocket = require('./VoiceWebSocket');
 const VoiceUDP = require('./VoiceUDPClient');
-const mergeDefault = require('../../util/MergeDefault');
+const Util = require('../../util/Util');
 const Constants = require('../../util/Constants');
 const AudioPlayer = require('./player/AudioPlayer');
 const VoiceReceiver = require('./receiver/VoiceReceiver');
@@ -140,7 +140,7 @@ class VoiceConnection extends EventEmitter {
    * @param {Object} [options] The options to provide
    */
   sendVoiceStateUpdate(options = {}) {
-    options = mergeDefault({
+    options = Util.mergeDefault({
       guild_id: this.channel.guild.id,
       channel_id: this.channel.id,
       self_mute: false,
