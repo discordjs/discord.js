@@ -70,7 +70,7 @@
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {exports.Package = __webpack_require__(29);
+/* WEBPACK VAR INJECTION */(function(process) {exports.Package = __webpack_require__(30);
 
 /**
  * Options for a Client.
@@ -175,6 +175,7 @@ const Endpoints = exports.Endpoints = {
   },
   me: `${API}/users/@me`,
   meGuild: (guildID) => `${Endpoints.me}/guilds/${guildID}`,
+  meChannels: `${API}/users/@me/channels`,
   meMentions: (limit, roles, everyone, guildID) =>
     `users/@me/mentions?limit=${limit}&roles=${roles}&everyone=${everyone}${guildID ? `&guild_id=${guildID}` : ''}`,
   relationships: (userID) => `${Endpoints.user(userID)}/relationships`,
@@ -214,6 +215,8 @@ const Endpoints = exports.Endpoints = {
   channelMessage: (channelID, messageID) => `${Endpoints.channelMessages(channelID)}/${messageID}`,
   channelWebhooks: (channelID) => `${Endpoints.channel(channelID)}/webhooks`,
   channelSearch: (channelID) => `${Endpoints.channelMessages(channelID)}/search`,
+
+  dmChannelRecipient: (channelID, recipientID) => `${Endpoints.channel(channelID)}/recipients/${recipientID}`,
 
   // message reactions
   messageReactions: (channelID, messageID) => `${Endpoints.channelMessage(channelID, messageID)}/reactions`,
@@ -480,7 +483,7 @@ for (const key in PermissionFlags) _ALL_PERMISSIONS |= PermissionFlags[key];
 exports.ALL_PERMISSIONS = _ALL_PERMISSIONS;
 exports.DEFAULT_PERMISSIONS = 104324097;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26)))
 
 /***/ }),
 /* 1 */
@@ -905,7 +908,7 @@ module.exports = Collection;
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const superagent = __webpack_require__(26);
+/* WEBPACK VAR INJECTION */(function(Buffer) {const superagent = __webpack_require__(27);
 const botGateway = __webpack_require__(0).Endpoints.botGateway;
 
 /**
@@ -1119,7 +1122,7 @@ class Util {
 
 module.exports = Util;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22).Buffer))
 
 /***/ }),
 /* 5 */
@@ -3266,7 +3269,7 @@ module.exports = Message;
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const path = __webpack_require__(24);
+const path = __webpack_require__(25);
 const Message = __webpack_require__(12);
 const MessageCollector = __webpack_require__(35);
 const Collection = __webpack_require__(3);
@@ -5132,6 +5135,189 @@ module.exports = EvaluatedPermissions;
 
 /***/ }),
 /* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Channel = __webpack_require__(7);
+const TextBasedChannel = __webpack_require__(13);
+const Collection = __webpack_require__(3);
+
+/*
+{ type: 3,
+  recipients:
+   [ { username: 'Charlie',
+       id: '123',
+       discriminator: '6631',
+       avatar: '123' },
+     { username: 'Ben',
+       id: '123',
+       discriminator: '2055',
+       avatar: '123' },
+     { username: 'Adam',
+       id: '123',
+       discriminator: '2406',
+       avatar: '123' } ],
+  owner_id: '123',
+  name: null,
+  last_message_id: '123',
+  id: '123',
+  icon: null }
+*/
+
+/**
+ * Represents a Group DM on Discord
+ * @extends {Channel}
+ * @implements {TextBasedChannel}
+ */
+class GroupDMChannel extends Channel {
+  constructor(client, data) {
+    super(client, data);
+    this.type = 'group';
+    this.messages = new Collection();
+    this._typing = new Map();
+  }
+
+  setup(data) {
+    super.setup(data);
+
+    /**
+     * The name of this Group DM, can be null if one isn't set.
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * A hash of the Group DM icon.
+     * @type {string}
+     */
+    this.icon = data.icon;
+
+    /**
+     * The user ID of this Group DM's owner.
+     * @type {string}
+     */
+    this.ownerID = data.owner_id;
+
+    /**
+     * If the dm is managed by an application
+     * @type {boolean}
+     */
+    this.managed = data.managed;
+
+    /**
+     * Application ID of the application that made this group dm, if applicable
+     * @type {?string}
+     */
+    this.applicationID = data.application_id;
+
+    /**
+     * Nicknames for group members
+     * @type {?Collection<Snowflake, String>}
+     */
+    if (data.nicks) this.nicks = new Collection(data.nicks.map(n => [n.id, n.nick]));
+
+    if (!this.recipients) {
+      /**
+       * A collection of the recipients of this DM, mapped by their ID.
+       * @type {Collection<Snowflake, User>}
+       */
+      this.recipients = new Collection();
+    }
+
+    if (data.recipients) {
+      for (const recipient of data.recipients) {
+        const user = this.client.dataManager.newUser(recipient);
+        this.recipients.set(user.id, user);
+      }
+    }
+
+    this.lastMessageID = data.last_message_id;
+  }
+
+  /**
+   * The owner of this Group DM.
+   * @type {User}
+   * @readonly
+   */
+  get owner() {
+    return this.client.users.get(this.ownerID);
+  }
+
+  /**
+   * Whether this channel equals another channel. It compares all properties, so for most operations
+   * it is advisable to just compare `channel.id === channel2.id` as it is much faster and is often
+   * what most users need.
+   * @param {GroupDMChannel} channel Channel to compare with
+   * @returns {boolean}
+   */
+  equals(channel) {
+    const equal = channel &&
+      this.id === channel.id &&
+      this.name === channel.name &&
+      this.icon === channel.icon &&
+      this.ownerID === channel.ownerID;
+
+    if (equal) {
+      return this.recipients.equals(channel.recipients);
+    }
+
+    return equal;
+  }
+
+  /**
+   * Add a user to the dm
+   * @param {UserResolvable|String} accessTokenOrID Access token or user resolvable
+   * @param {string} [nick] Permanent nickname to give the user (only available if a bot is creating the dm)
+   */
+
+  addUser(accessTokenOrID, nick) {
+    return this.client.rest.methods.addUserToGroupDM(this, {
+      nick,
+      id: this.client.resolver.resolveUserID(accessTokenOrID),
+      accessToken: accessTokenOrID,
+    });
+  }
+
+  /**
+   * When concatenated with a string, this automatically concatenates the channel's name instead of the Channel object.
+   * @returns {string}
+   * @example
+   * // logs: Hello from My Group DM!
+   * console.log(`Hello from ${channel}!`);
+   * @example
+   * // logs: Hello from My Group DM!
+   * console.log(`Hello from ' + channel + '!');
+   */
+  toString() {
+    return this.name;
+  }
+
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  send() { return; }
+  sendMessage() { return; }
+  sendEmbed() { return; }
+  sendFile() { return; }
+  sendCode() { return; }
+  fetchMessage() { return; }
+  fetchMessages() { return; }
+  fetchPinnedMessages() { return; }
+  search() { return; }
+  startTyping() { return; }
+  stopTyping() { return; }
+  get typing() { return; }
+  get typingCount() { return; }
+  createCollector() { return; }
+  awaitMessages() { return; }
+  bulkDelete() { return; }
+  _cacheMessage() { return; }
+}
+
+TextBasedChannel.applyToClass(GroupDMChannel, true);
+
+module.exports = GroupDMChannel;
+
+
+/***/ }),
+/* 20 */
 /***/ (function(module, exports) {
 
 /**
@@ -5186,10 +5372,10 @@ module.exports = ReactionEmoji;
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const path = __webpack_require__(24);
+const path = __webpack_require__(25);
 
 /**
  * Represents a webhook
@@ -5407,7 +5593,7 @@ module.exports = Webhook;
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7204,7 +7390,7 @@ function isnan (val) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(80)))
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -7512,7 +7698,7 @@ function isUndefined(arg) {
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7532,7 +7718,7 @@ module.exports = {
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -7760,10 +7946,10 @@ var substr = 'ab'.substr(-1) === 'b'
     }
 ;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26)))
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -7949,7 +8135,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -7968,7 +8154,7 @@ if (typeof window !== 'undefined') { // Browser window
 
 var Emitter = __webpack_require__(60);
 var RequestBase = __webpack_require__(76);
-var isObject = __webpack_require__(27);
+var isObject = __webpack_require__(28);
 var isFunction = __webpack_require__(75);
 var ResponseBase = __webpack_require__(77);
 var shouldRetry = __webpack_require__(78);
@@ -8877,7 +9063,7 @@ request.put = function(url, data, fn){
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports) {
 
 /**
@@ -8896,12 +9082,12 @@ module.exports = isObject;
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(24);
+/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(25);
 const fs = __webpack_require__(50);
-const request = __webpack_require__(26);
+const request = __webpack_require__(27);
 
 const Constants = __webpack_require__(0);
 const convertToBuffer = __webpack_require__(4).convertToBuffer;
@@ -8911,7 +9097,7 @@ const Guild = __webpack_require__(15);
 const Channel = __webpack_require__(7);
 const GuildMember = __webpack_require__(11);
 const Emoji = __webpack_require__(10);
-const ReactionEmoji = __webpack_require__(19);
+const ReactionEmoji = __webpack_require__(20);
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
@@ -9303,10 +9489,10 @@ class ClientDataResolver {
 
 module.exports = ClientDataResolver;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22).Buffer))
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -9399,7 +9585,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const User = __webpack_require__(9);
@@ -9706,6 +9892,29 @@ class ClientUser extends User {
   }
 
   /**
+   * An object containing either a user or access token, and an optional nickname
+   * @typedef {Object} GroupDMRecipientOptions
+   * @property {UserResolvable|Snowflake} [user] User to add to the group dm
+   * (only available if a user is creating the dm)
+   * @property {string} [accessToken] Access token to use to add a user to the group dm
+   * (only available if a bot is creating the dm)
+   * @property {string} [nick] Permanent nickname (only available if a bot is creating the dm)
+   */
+
+  /**
+   * Create a group dm
+   * @param {GroupDMRecipientOptions[]} recipients The recipients
+   * @returns {Promise<GroupDMChannel>}
+   */
+  createGroupDM(recipients) {
+    return this.client.rest.methods.createGroupDM({
+      recipients: recipients.map(u => this.client.resolver.resolveUserID(u.user)),
+      accessTokens: recipients.map(u => u.accessToken),
+      nicks: recipients.map(u => u.nick),
+    });
+  }
+
+  /**
    * @param {Invite|string} invite Invite or code to accept
    * @returns {Promise<Guild>} Joined guild
    */
@@ -9718,7 +9927,7 @@ module.exports = ClientUser;
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Channel = __webpack_require__(7);
@@ -9782,157 +9991,6 @@ class DMChannel extends Channel {
 TextBasedChannel.applyToClass(DMChannel, true);
 
 module.exports = DMChannel;
-
-
-/***/ }),
-/* 32 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Channel = __webpack_require__(7);
-const TextBasedChannel = __webpack_require__(13);
-const Collection = __webpack_require__(3);
-
-/*
-{ type: 3,
-  recipients:
-   [ { username: 'Charlie',
-       id: '123',
-       discriminator: '6631',
-       avatar: '123' },
-     { username: 'Ben',
-       id: '123',
-       discriminator: '2055',
-       avatar: '123' },
-     { username: 'Adam',
-       id: '123',
-       discriminator: '2406',
-       avatar: '123' } ],
-  owner_id: '123',
-  name: null,
-  last_message_id: '123',
-  id: '123',
-  icon: null }
-*/
-
-/**
- * Represents a Group DM on Discord
- * @extends {Channel}
- * @implements {TextBasedChannel}
- */
-class GroupDMChannel extends Channel {
-  constructor(client, data) {
-    super(client, data);
-    this.type = 'group';
-    this.messages = new Collection();
-    this._typing = new Map();
-  }
-
-  setup(data) {
-    super.setup(data);
-
-    /**
-     * The name of this Group DM, can be null if one isn't set.
-     * @type {string}
-     */
-    this.name = data.name;
-
-    /**
-     * A hash of the Group DM icon.
-     * @type {string}
-     */
-    this.icon = data.icon;
-
-    /**
-     * The user ID of this Group DM's owner.
-     * @type {string}
-     */
-    this.ownerID = data.owner_id;
-
-    if (!this.recipients) {
-      /**
-       * A collection of the recipients of this DM, mapped by their ID.
-       * @type {Collection<Snowflake, User>}
-       */
-      this.recipients = new Collection();
-    }
-
-    if (data.recipients) {
-      for (const recipient of data.recipients) {
-        const user = this.client.dataManager.newUser(recipient);
-        this.recipients.set(user.id, user);
-      }
-    }
-
-    this.lastMessageID = data.last_message_id;
-  }
-
-  /**
-   * The owner of this Group DM.
-   * @type {User}
-   * @readonly
-   */
-  get owner() {
-    return this.client.users.get(this.ownerID);
-  }
-
-  /**
-   * Whether this channel equals another channel. It compares all properties, so for most operations
-   * it is advisable to just compare `channel.id === channel2.id` as it is much faster and is often
-   * what most users need.
-   * @param {GroupDMChannel} channel Channel to compare with
-   * @returns {boolean}
-   */
-  equals(channel) {
-    const equal = channel &&
-      this.id === channel.id &&
-      this.name === channel.name &&
-      this.icon === channel.icon &&
-      this.ownerID === channel.ownerID;
-
-    if (equal) {
-      return this.recipients.equals(channel.recipients);
-    }
-
-    return equal;
-  }
-
-  /**
-   * When concatenated with a string, this automatically concatenates the channel's name instead of the Channel object.
-   * @returns {string}
-   * @example
-   * // logs: Hello from My Group DM!
-   * console.log(`Hello from ${channel}!`);
-   * @example
-   * // logs: Hello from My Group DM!
-   * console.log(`Hello from ' + channel + '!');
-   */
-  toString() {
-    return this.name;
-  }
-
-  // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  send() { return; }
-  sendMessage() { return; }
-  sendEmbed() { return; }
-  sendFile() { return; }
-  sendCode() { return; }
-  fetchMessage() { return; }
-  fetchMessages() { return; }
-  fetchPinnedMessages() { return; }
-  search() { return; }
-  startTyping() { return; }
-  stopTyping() { return; }
-  get typing() { return; }
-  get typingCount() { return; }
-  createCollector() { return; }
-  awaitMessages() { return; }
-  bulkDelete() { return; }
-  _cacheMessage() { return; }
-}
-
-TextBasedChannel.applyToClass(GroupDMChannel, true);
-
-module.exports = GroupDMChannel;
 
 
 /***/ }),
@@ -10178,7 +10236,7 @@ module.exports = MessageAttachment;
 /* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const EventEmitter = __webpack_require__(22).EventEmitter;
+const EventEmitter = __webpack_require__(23).EventEmitter;
 const Collection = __webpack_require__(3);
 
 /**
@@ -10637,7 +10695,7 @@ module.exports = MessageEmbed;
 
 const Collection = __webpack_require__(3);
 const Emoji = __webpack_require__(10);
-const ReactionEmoji = __webpack_require__(19);
+const ReactionEmoji = __webpack_require__(20);
 
 /**
  * Represents a reaction to a message
@@ -12977,13 +13035,13 @@ module.exports = RequestHandler;
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {const os = __webpack_require__(14);
-const EventEmitter = __webpack_require__(22).EventEmitter;
+const EventEmitter = __webpack_require__(23).EventEmitter;
 const Constants = __webpack_require__(0);
 const Util = __webpack_require__(4);
 const RESTManager = __webpack_require__(51);
 const ClientDataManager = __webpack_require__(81);
 const ClientManager = __webpack_require__(82);
-const ClientDataResolver = __webpack_require__(28);
+const ClientDataResolver = __webpack_require__(29);
 const ClientVoiceManager = __webpack_require__(156);
 const WebSocketManager = __webpack_require__(116);
 const ActionsManager = __webpack_require__(83);
@@ -13504,15 +13562,15 @@ module.exports = Client;
  * @param {string} info The debug information
  */
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26)))
 
 /***/ }),
 /* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Webhook = __webpack_require__(20);
+const Webhook = __webpack_require__(21);
 const RESTManager = __webpack_require__(51);
-const ClientDataResolver = __webpack_require__(28);
+const ClientDataResolver = __webpack_require__(29);
 const Constants = __webpack_require__(0);
 const Util = __webpack_require__(4);
 
@@ -13634,7 +13692,7 @@ module.exports = WebhookClient;
 /* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const ClientDataResolver = __webpack_require__(28);
+const ClientDataResolver = __webpack_require__(29);
 
 /**
  * A rich embed to be sent with a message with a fluent interface for creation
@@ -14297,7 +14355,7 @@ module.exports = pako;
 var zlib_deflate = __webpack_require__(66);
 var utils        = __webpack_require__(5);
 var strings      = __webpack_require__(45);
-var msg          = __webpack_require__(23);
+var msg          = __webpack_require__(24);
 var ZStream      = __webpack_require__(49);
 
 var toString = Object.prototype.toString;
@@ -14705,7 +14763,7 @@ var zlib_inflate = __webpack_require__(69);
 var utils        = __webpack_require__(5);
 var strings      = __webpack_require__(45);
 var c            = __webpack_require__(47);
-var msg          = __webpack_require__(23);
+var msg          = __webpack_require__(24);
 var ZStream      = __webpack_require__(49);
 var GZheader     = __webpack_require__(67);
 
@@ -15129,7 +15187,7 @@ var utils   = __webpack_require__(5);
 var trees   = __webpack_require__(71);
 var adler32 = __webpack_require__(46);
 var crc32   = __webpack_require__(48);
-var msg     = __webpack_require__(23);
+var msg     = __webpack_require__(24);
 
 /* Public constants ==========================================================*/
 /* ===========================================================================*/
@@ -20651,7 +20709,7 @@ exports.encode = exports.stringify = __webpack_require__(73);
  * @return {Boolean}
  * @api private
  */
-var isObject = __webpack_require__(27);
+var isObject = __webpack_require__(28);
 
 function isFunction(fn) {
   var tag = isObject(fn) ? Object.prototype.toString.call(fn) : '';
@@ -20668,7 +20726,7 @@ module.exports = isFunction;
 /**
  * Module of mixed-in functions shared between node and client code
  */
-var isObject = __webpack_require__(27);
+var isObject = __webpack_require__(28);
 
 /**
  * Expose `RequestBase`.
@@ -21524,12 +21582,12 @@ const Constants = __webpack_require__(0);
 const Util = __webpack_require__(4);
 const Guild = __webpack_require__(15);
 const User = __webpack_require__(9);
-const DMChannel = __webpack_require__(31);
+const DMChannel = __webpack_require__(32);
 const Emoji = __webpack_require__(10);
 const TextChannel = __webpack_require__(42);
 const VoiceChannel = __webpack_require__(43);
 const GuildChannel = __webpack_require__(16);
-const GroupDMChannel = __webpack_require__(32);
+const GroupDMChannel = __webpack_require__(19);
 
 class ClientDataManager {
   constructor(client) {
@@ -22776,7 +22834,7 @@ module.exports = UserUpdateAction;
 /* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const request = __webpack_require__(26);
+const request = __webpack_require__(27);
 const Constants = __webpack_require__(0);
 
 class APIRequest {
@@ -22843,10 +22901,11 @@ const GuildMember = __webpack_require__(11);
 const Message = __webpack_require__(12);
 const Role = __webpack_require__(8);
 const Invite = __webpack_require__(33);
-const Webhook = __webpack_require__(20);
+const Webhook = __webpack_require__(21);
 const UserProfile = __webpack_require__(153);
 const OAuth2Application = __webpack_require__(38);
 const Channel = __webpack_require__(7);
+const GroupDMChannel = __webpack_require__(19);
 const Guild = __webpack_require__(15);
 const VoiceRegion = __webpack_require__(154);
 
@@ -23077,6 +23136,23 @@ class RESTMethods {
     return this.rest.makeRequest('post', Constants.Endpoints.userChannels(this.client.user.id), true, {
       recipient_id: recipient.id,
     }).then(data => this.client.actions.ChannelCreate.handle(data).channel);
+  }
+
+  createGroupDM(options) {
+    const data = this.client.user.bot ?
+      { access_tokens: options.accessTokens, nicks: options.nicks } :
+      { recipients: options.recipients };
+
+    return this.rest.makeRequest('post', Constants.Endpoints.meChannels, true, data)
+    .then(res => new GroupDMChannel(this.client, res));
+  }
+
+  addUserToGroupDM(channel, options) {
+    const data = this.client.user.bot ?
+      { nick: options.nick, access_token: options.accessToken } :
+      { recipient: options.id };
+    return this.rest.makeRequest('put', Constants.Endpoints.dmChannelRecipient(channel.id, options.id), true, data)
+    .then(() => channel);
   }
 
   getExistingDM(recipient) {
@@ -23881,7 +23957,7 @@ module.exports = UserAgentManager;
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {const browser = __webpack_require__(14).platform() === 'browser';
-const EventEmitter = __webpack_require__(22).EventEmitter;
+const EventEmitter = __webpack_require__(23).EventEmitter;
 const Constants = __webpack_require__(0);
 const convertToBuffer = __webpack_require__(4).convertToBuffer;
 const pako = __webpack_require__(63);
@@ -24253,7 +24329,7 @@ class WebSocketManager extends EventEmitter {
 
 module.exports = WebSocketManager;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22).Buffer))
 
 /***/ }),
 /* 117 */
@@ -25062,7 +25138,7 @@ module.exports = PresenceUpdateHandler;
 
 const AbstractHandler = __webpack_require__(1);
 
-const ClientUser = __webpack_require__(30);
+const ClientUser = __webpack_require__(31);
 
 class ReadyHandler extends AbstractHandler {
   handle(packet) {
@@ -25600,7 +25676,7 @@ module.exports = {
   SnowflakeUtil: __webpack_require__(17),
   Util: Util,
   util: Util,
-  version: __webpack_require__(29).version,
+  version: __webpack_require__(30).version,
 
   // Shortcuts to Util methods
   escapeMarkdown: Util.escapeMarkdown,
@@ -25609,12 +25685,12 @@ module.exports = {
 
   // Structures
   Channel: __webpack_require__(7),
-  ClientUser: __webpack_require__(30),
-  DMChannel: __webpack_require__(31),
+  ClientUser: __webpack_require__(31),
+  DMChannel: __webpack_require__(32),
   Emoji: __webpack_require__(10),
   EvaluatedPermissions: __webpack_require__(18),
   Game: __webpack_require__(6).Game,
-  GroupDMChannel: __webpack_require__(32),
+  GroupDMChannel: __webpack_require__(19),
   Guild: __webpack_require__(15),
   GuildChannel: __webpack_require__(16),
   GuildMember: __webpack_require__(11),
@@ -25629,13 +25705,13 @@ module.exports = {
   PartialGuildChannel: __webpack_require__(40),
   PermissionOverwrites: __webpack_require__(41),
   Presence: __webpack_require__(6).Presence,
-  ReactionEmoji: __webpack_require__(19),
+  ReactionEmoji: __webpack_require__(20),
   RichEmbed: __webpack_require__(55),
   Role: __webpack_require__(8),
   TextChannel: __webpack_require__(42),
   User: __webpack_require__(9),
   VoiceChannel: __webpack_require__(43),
-  Webhook: __webpack_require__(20),
+  Webhook: __webpack_require__(21),
 };
 
 if (__webpack_require__(14).platform() === 'browser') window.Discord = module.exports; // eslint-disable-line no-undef
