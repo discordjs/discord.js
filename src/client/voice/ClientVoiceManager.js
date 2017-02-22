@@ -1,6 +1,4 @@
 const Collection = require('../../util/Collection');
-const Constants = require('../../util/Constants');
-const Util = require('../../util/Util');
 const VoiceConnection = require('./VoiceConnection');
 
 /**
@@ -36,18 +34,6 @@ class ClientVoiceManager {
       connection.channel = this.client.channels.get(channel_id);
       connection.setSessionID(session_id);
     }
-
-    options = Util.mergeDefault({
-      guild_id: channel.guild.id,
-      channel_id: channel.id,
-      self_mute: false,
-      self_deaf: false,
-    }, options);
-
-    this.client.ws.send({
-      op: Constants.OPCodes.VOICE_STATE_UPDATE,
-      d: options,
-    });
   }
 
   /**
