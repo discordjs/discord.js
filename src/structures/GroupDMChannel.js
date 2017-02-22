@@ -127,7 +127,7 @@ class GroupDMChannel extends Channel {
   /**
    * Add a user to the dm
    * @param {UserResolvable|String} accessTokenOrID Access token or user resolvable
-   * @param {String} [nick] Permanent nickname to give the user (only available if a bot is creating the dm)
+   * @param {string} [nick] Permanent nickname to give the user (only available if a bot is creating the dm)
    */
 
   addUser(accessTokenOrID, nick) {

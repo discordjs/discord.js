@@ -303,9 +303,9 @@ class ClientUser extends User {
    * @typedef {Object} GroupDMRecipientOptions
    * @property {UserResolvable|Snowflake} [user] User to add to the group dm
    * (only available if a user is creating the dm)
-   * @property {String} [accessToken] Access token to use to add a user to the group dm
+   * @property {string} [accessToken] Access token to use to add a user to the group dm
    * (only available if a bot is creating the dm)
-   * @property {String} [nick] Permanent nickname (only available if a bot is creating the dm)
+   * @property {string} [nick] Permanent nickname (only available if a bot is creating the dm)
    */
 
   /**
