@@ -163,6 +163,16 @@ const Endpoints = exports.Endpoints = {
   emoji: (emojiID) => `${Endpoints.CDN}/emojis/${emojiID}.png`,
 };
 
+/**
+ * The current status of the client. Here are the available statuses:
+ * - READY
+ * - CONNECTING
+ * - RECONNECTING
+ * - IDLE
+ * - NEARLY
+ * - DISCONNECTED
+ * @typedef {number} Status
+ */
 exports.Status = {
   READY: 0,
   CONNECTING: 1,
@@ -172,6 +182,15 @@ exports.Status = {
   DISCONNECTED: 5,
 };
 
+/**
+ * The current status of a voice connection. Here are the available statuses:
+ * - CONNECTED
+ * - CONNECTING
+ * - AUTHENTICATING
+ * - RECONNECTING
+ * - DISCONNECTED
+ * @typedef {number} VoiceStatus
+ */
 exports.VoiceStatus = {
   CONNECTED: 0,
   CONNECTING: 1,
