@@ -299,6 +299,29 @@ class ClientUser extends User {
   }
 
   /**
+   * An object containing either a user or access token, and an optional nickname
+   * @typedef {Object} GroupDMRecipientOptions
+   * @property {UserResolvable|Snowflake} [user] User to add to the group dm
+   * (only available if a user is creating the dm)
+   * @property {String} [accessToken] Access token to use to add a user to the group dm
+   * (only available if a bot is creating the dm)
+   * @property {String} [nick] Permanent nickname (only available if a bot is creating the dm)
+   */
+
+  /**
+   * Create a group dm
+   * @param {GroupDMRecipientOptions[]} recipients The recipients
+   * @returns {Promise<GroupDMChannel>}
+   */
+  createGroupDM(recipients) {
+    return this.client.rest.methods.createGroupDM({
+      recipients: recipients.map(u => this.client.resolver.resolveUserID(u.user)),
+      accessTokens: recipients.map(u => u.accessToken),
+      nicks: recipients.map(u => u.nick),
+    });
+  }
+
+  /**
    * @param {Invite|string} invite Invite or code to accept
    * @returns {Promise<Guild>} Joined guild
    */
