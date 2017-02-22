@@ -24,7 +24,6 @@ module.exports = {
 
   // Structures
   Channel: require('./structures/Channel'),
-  ClientOAuth2Application: require('./structures/ClientOAuth2Application'),
   ClientUser: require('./structures/ClientUser'),
   DMChannel: require('./structures/DMChannel'),
   Emoji: require('./structures/Emoji'),
