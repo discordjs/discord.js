@@ -14,6 +14,7 @@ const Webhook = require('../../structures/Webhook');
 const UserProfile = require('../../structures/UserProfile');
 const OAuth2Application = require('../../structures/OAuth2Application');
 const Channel = require('../../structures/Channel');
+const GroupDMChannel = require('../../structures/GroupDMChannel');
 const Guild = require('../../structures/Guild');
 const VoiceRegion = require('../../structures/VoiceRegion');
 
@@ -244,6 +245,23 @@ class RESTMethods {
     return this.rest.makeRequest('post', Constants.Endpoints.userChannels(this.client.user.id), true, {
       recipient_id: recipient.id,
     }).then(data => this.client.actions.ChannelCreate.handle(data).channel);
+  }
+
+  createGroupDM(options) {
+    const data = this.client.user.bot ?
+      { access_tokens: options.accessTokens, nicks: options.nicks } :
+      { recipients: options.recipients };
+
+    return this.rest.makeRequest('post', Constants.Endpoints.meChannels, true, data)
+    .then(res => new GroupDMChannel(this.client, res));
+  }
+
+  addUserToGroupDM(channel, options) {
+    const data = this.client.user.bot ?
+      { nick: options.nick, access_token: options.accessToken } :
+      { recipient: options.id };
+    return this.rest.makeRequest('put', Constants.Endpoints.dmChannelRecipient(channel.id, options.id), true, data)
+    .then(() => channel);
   }
 
   getExistingDM(recipient) {

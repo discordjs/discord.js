@@ -58,6 +58,24 @@ class GroupDMChannel extends Channel {
      */
     this.ownerID = data.owner_id;
 
+    /**
+     * If the dm is managed by an application
+     * @type {boolean}
+     */
+    this.managed = data.managed;
+
+    /**
+     * Application ID of the application that made this group dm, if applicable
+     * @type {?string}
+     */
+    this.applicationID = data.application_id;
+
+    /**
+     * Nicknames for group members
+     * @type {?Collection<Snowflake, String>}
+     */
+    if (data.nicks) this.nicks = new Collection(data.nicks.map(n => [n.id, n.nick]));
+
     if (!this.recipients) {
       /**
        * A collection of the recipients of this DM, mapped by their ID.
@@ -104,6 +122,20 @@ class GroupDMChannel extends Channel {
     }
 
     return equal;
+  }
+
+  /**
+   * Add a user to the dm
+   * @param {UserResolvable|String} accessTokenOrID Access token or user resolvable
+   * @param {string} [nick] Permanent nickname to give the user (only available if a bot is creating the dm)
+   */
+
+  addUser(accessTokenOrID, nick) {
+    return this.client.rest.methods.addUserToGroupDM(this, {
+      nick,
+      id: this.client.resolver.resolveUserID(accessTokenOrID),
+      accessToken: accessTokenOrID,
+    });
   }
 
   /**
