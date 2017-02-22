@@ -5,9 +5,7 @@ const Presence = require('./Presence').Presence;
 const GuildMember = require('./GuildMember');
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
-const cloneObject = require('../util/CloneObject');
-const arraysEqual = require('../util/ArraysEqual');
-const moveElementInArray = require('../util/MoveElementInArray');
+const Util = require('../util/Util');
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -332,6 +330,24 @@ class Guild {
   }
 
   /**
+   * Adds a user to the guild using OAuth2. Requires the `CREATE_INSTANT_INVITE` permission.
+   * @param {UserResolvable} user User to add to the guild
+   * @param {Object} options Options for the addition
+   * @param {string} options.accessToken An OAuth2 access token for the user with the `guilds.join` scope granted to the
+   * bot's application
+   * @param {string} [options.nick] Nickname to give the member (requires `MANAGE_NICKNAMES`)
+   * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} [options.roles] Roles to add to the member
+   * (requires `MANAGE_ROLES`)
+   * @param {boolean} [options.mute] Whether the member should be muted (requires `MUTE_MEMBERS`)
+   * @param {boolean} [options.deaf] Whether the member should be deafened (requires `DEAFEN_MEMBERS`)
+   * @returns {Promise<GuildMember>}
+   */
+  addMember(user, options) {
+    if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
+    return this.client.rest.methods.putGuildMember(this, user, options);
+  }
+
+  /**
    * Fetch a single guild member from a user.
    * @param {UserResolvable} user The user to fetch the member for
    * @param {boolean} [cache=true] Insert the user into the users cache
@@ -552,8 +568,10 @@ class Guild {
    * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
    * be resolved, the user ID will be the result.
    * @example
-   * // ban a user
-   * guild.ban('123123123123');
+   * // ban a user by ID (or with a user/guild member object)
+   * guild.ban('some user ID')
+   *  .then(user => console.log(`Banned ${user.username || user.id || user} from ${guild.name}`))
+   *  .catch(console.error);
    */
   ban(user, deleteDays = 0) {
     return this.client.rest.methods.banGuildMember(this, user, deleteDays);
@@ -564,10 +582,10 @@ class Guild {
    * @param {UserResolvable} user The user to unban
    * @returns {Promise<User>}
    * @example
-   * // unban a user
-   * guild.unban('123123123123')
+   * // unban a user by ID (or with a user/guild member object)
+   * guild.unban('some user ID')
    *  .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
-   *  .catch(reject);
+   *  .catch(console.error);
    */
   unban(user) {
     return this.client.rest.methods.unbanGuildMember(this, user);
@@ -659,7 +677,7 @@ class Guild {
     let updatedRoles = Object.assign([], this.roles.array()
       .sort((r1, r2) => r1.position !== r2.position ? r1.position - r2.position : r1.id - r2.id));
 
-    moveElementInArray(updatedRoles, role, position, relative);
+    Util.moveElementInArray(updatedRoles, role, position, relative);
 
     updatedRoles = updatedRoles.map((r, i) => ({ id: r.id, position: i }));
     return this.client.rest.methods.setRolePositions(this.id, updatedRoles);
@@ -687,9 +705,10 @@ class Guild {
       if (typeof attachment === 'string' && attachment.startsWith('data:')) {
         resolve(this.client.rest.methods.createEmoji(this, attachment, name, roles));
       } else {
-        this.client.resolver.resolveBuffer(attachment).then(data =>
-          resolve(this.client.rest.methods.createEmoji(this, data, name, roles))
-        );
+        this.client.resolver.resolveBuffer(attachment).then(data => {
+          const dataURI = this.client.resolver.resolveBase64(data);
+          resolve(this.client.rest.methods.createEmoji(this, dataURI, name, roles));
+        });
       }
     });
   }
@@ -748,7 +767,7 @@ class Guild {
       this.memberCount === guild.member_count &&
       this.large === guild.large &&
       this.icon === guild.icon &&
-      arraysEqual(this.features, guild.features) &&
+      Util.arraysEqual(this.features, guild.features) &&
       this.ownerID === guild.owner_id &&
       this.verificationLevel === guild.verification_level &&
       this.embedEnabled === guild.embed_enabled;
@@ -814,12 +833,12 @@ class Guild {
   }
 
   _updateMember(member, data) {
-    const oldMember = cloneObject(member);
+    const oldMember = Util.cloneObject(member);
 
     if (data.roles) member._roles = data.roles;
     if (typeof data.nick !== 'undefined') member.nickname = data.nick;
 
-    const notSame = member.nickname !== oldMember.nickname || !arraysEqual(member._roles, oldMember._roles);
+    const notSame = member.nickname !== oldMember.nickname || !Util.arraysEqual(member._roles, oldMember._roles);
 
     if (this.client.ws.status === Constants.Status.READY && notSame) {
       /**

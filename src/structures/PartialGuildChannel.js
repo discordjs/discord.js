@@ -37,7 +37,7 @@ class PartialGuildChannel {
      * The type of this guild channel - `text` or `voice`
      * @type {string}
      */
-    this.type = Constants.ChannelTypes.text === data.type ? 'text' : 'voice';
+    this.type = Constants.ChannelTypes.TEXT === data.type ? 'text' : 'voice';
   }
 }
 

@@ -18,5 +18,7 @@
       path: ping.js
     - name: Avatars
       path: avatars.js
+    - name: Server greeting
+      path: greeting.js
     - name: Webhook
       path: webhook.js
