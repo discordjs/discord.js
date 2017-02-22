@@ -39,7 +39,7 @@ Using opusscript is only recommended for development environments where node-opu
 For production bots, using node-opus should be considered a necessity, especially if they're going to be running on multiple servers.
 
 ### Optional packages
-- [bufferutil](https://www.npmjs.com/package/bufferutil) to greatly speed up the `ws` WebSocket connection (`npm install bufferutil --save`)
+- [bufferutil](https://www.npmjs.com/package/bufferutil) to greatly speed up the WebSocket when *not* using uws (`npm install bufferutil --save`)
 - [erlpack](https://github.com/hammerandchisel/erlpack) for significantly faster WebSocket data (de)serialisation (`npm install hammerandchisel/erlpack --save`)
 - [sodium](https://www.npmjs.com/package/sodium) for faster voice packet encryption/decryption (`npm install sodium --save`)
 - [uws](https://www.npmjs.com/package/uws) for a much faster WebSocket connection (`npm install uws --save`)  

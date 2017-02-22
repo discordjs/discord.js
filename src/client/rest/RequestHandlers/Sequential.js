@@ -16,12 +16,6 @@ class SequentialRequestHandler extends RequestHandler {
     super(restManager, endpoint);
 
     /**
-     * Whether this rate limiter is waiting for a response from a request
-     * @type {boolean}
-     */
-    this.waiting = false;
-
-    /**
      * The endpoint that this handler is handling
      * @type {string}
      */
@@ -49,27 +43,24 @@ class SequentialRequestHandler extends RequestHandler {
     return new Promise(resolve => {
       item.request.gen().end((err, res) => {
         if (res && res.headers) {
-          this.requestLimit = res.headers['x-ratelimit-limit'];
+          this.requestLimit = Number(res.headers['x-ratelimit-limit']);
           this.requestResetTime = Number(res.headers['x-ratelimit-reset']) * 1000;
           this.requestRemaining = Number(res.headers['x-ratelimit-remaining']);
           this.timeDifference = Date.now() - new Date(res.headers.date).getTime();
         }
         if (err) {
           if (err.status === 429) {
+            this.queue.unshift(item);
             this.restManager.client.setTimeout(() => {
-              this.waiting = false;
               this.globalLimit = false;
               resolve();
             }, Number(res.headers['retry-after']) + this.restManager.client.options.restTimeOffset);
             if (res.headers['x-ratelimit-global']) this.globalLimit = true;
           } else {
-            this.queue.shift();
-            this.waiting = false;
             item.reject(err);
             resolve(err);
           }
         } else {
-          this.queue.shift();
           this.globalLimit = false;
           const data = res && res.body ? res.body : {};
           item.resolve(data);
@@ -82,7 +73,6 @@ class SequentialRequestHandler extends RequestHandler {
               this.requestResetTime - Date.now() + this.timeDifference + this.restManager.client.options.restTimeOffset
             );
           } else {
-            this.waiting = false;
             resolve(data);
           }
         }
@@ -92,12 +82,8 @@ class SequentialRequestHandler extends RequestHandler {
 
   handle() {
     super.handle();
-
-    if (this.waiting || this.queue.length === 0 || this.globalLimit) return;
-    this.waiting = true;
-
-    const item = this.queue[0];
-    this.execute(item).then(() => this.handle());
+    if (this.remaining === 0 || this.queue.length === 0 || this.globalLimit) return;
+    this.execute(this.queue.shift()).then(() => this.handle());
   }
 }
 
