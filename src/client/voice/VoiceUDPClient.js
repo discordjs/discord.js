@@ -47,12 +47,12 @@ class VoiceConnectionUDPClient extends EventEmitter {
 
   shutdown() {
     if (this.socket) {
+      this.socket.removeAllListeners('message');
       try {
         this.socket.close();
-      } catch (e) {
-        return;
+      } finally {
+        this.socket = null;
       }
-      this.socket = null;
     }
   }
 

@@ -92,6 +92,30 @@ class VoiceReceiver extends EventEmitter {
   }
 
   /**
+   * Invoked when a user stops speaking
+   * @param {User} user The user that stopped speaking
+   * @private
+   */
+  stoppedSpeaking(user) {
+    const opusStream = this.opusStreams.get(user.id);
+    const pcmStream = this.pcmStreams.get(user.id);
+    const opusEncoder = this.opusEncoders.get(user.id);
+    if (opusStream) {
+      opusStream.push(null);
+      opusStream.open = false;
+      this.opusStreams.delete(user.id);
+    }
+    if (pcmStream) {
+      pcmStream.push(null);
+      pcmStream.open = false;
+      this.pcmStreams.delete(user.id);
+    }
+    if (opusEncoder) {
+      opusEncoder.destroy();
+    }
+  }
+
+  /**
    * Creates a readable stream for a user that provides opus data while the user is speaking. When the user
    * stops speaking, the stream is destroyed.
    * @param {UserResolvable} user The user to create the stream for
