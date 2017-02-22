@@ -247,10 +247,10 @@ exports.Status = {
 };
 
 exports.ChannelTypes = {
-  text: 0,
+  TEXT: 0,
   DM: 1,
-  voice: 2,
-  groupDM: 3,
+  VOICE: 2,
+  GROUP_DM: 3,
 };
 
 exports.OPCodes = {
@@ -10918,7 +10918,7 @@ class PartialGuildChannel {
      * The type of this guild channel - `text` or `voice`
      * @type {string}
      */
-    this.type = Constants.ChannelTypes.text === data.type ? 'text' : 'voice';
+    this.type = Constants.ChannelTypes.TEXT === data.type ? 'text' : 'voice';
   }
 }
 
@@ -21524,15 +21524,15 @@ class ClientDataManager {
     let channel;
     if (data.type === Constants.ChannelTypes.DM) {
       channel = new DMChannel(this.client, data);
-    } else if (data.type === Constants.ChannelTypes.groupDM) {
+    } else if (data.type === Constants.ChannelTypes.GROUP_DM) {
       channel = new GroupDMChannel(this.client, data);
     } else {
       guild = guild || this.client.guilds.get(data.guild_id);
       if (guild) {
-        if (data.type === Constants.ChannelTypes.text) {
+        if (data.type === Constants.ChannelTypes.TEXT) {
           channel = new TextChannel(guild, data);
           guild.channels.set(channel.id, channel);
-        } else if (data.type === Constants.ChannelTypes.voice) {
+        } else if (data.type === Constants.ChannelTypes.VOICE) {
           channel = new VoiceChannel(guild, data);
           guild.channels.set(channel.id, channel);
         }
