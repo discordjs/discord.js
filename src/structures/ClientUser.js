@@ -226,7 +226,7 @@ class ClientUser extends User {
 
   /**
    * Sets the game the client user is playing.
-   * @param {string|null} game Game being played
+   * @param {?string} game Game being played
    * @param {string} [streamingURL] Twitch stream URL
    * @returns {Promise<ClientUser>}
    */
