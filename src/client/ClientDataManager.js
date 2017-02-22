@@ -50,15 +50,15 @@ class ClientDataManager {
     let channel;
     if (data.type === Constants.ChannelTypes.DM) {
       channel = new DMChannel(this.client, data);
-    } else if (data.type === Constants.ChannelTypes.groupDM) {
+    } else if (data.type === Constants.ChannelTypes.GROUP_DM) {
       channel = new GroupDMChannel(this.client, data);
     } else {
       guild = guild || this.client.guilds.get(data.guild_id);
       if (guild) {
-        if (data.type === Constants.ChannelTypes.text) {
+        if (data.type === Constants.ChannelTypes.TEXT) {
           channel = new TextChannel(guild, data);
           guild.channels.set(channel.id, channel);
-        } else if (data.type === Constants.ChannelTypes.voice) {
+        } else if (data.type === Constants.ChannelTypes.VOICE) {
           channel = new VoiceChannel(guild, data);
           guild.channels.set(channel.id, channel);
         }
