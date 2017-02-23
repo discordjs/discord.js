@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 160);
+/******/ 	return __webpack_require__(__webpack_require__.s = 161);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -240,6 +240,16 @@ const Endpoints = exports.Endpoints = {
   emoji: (emojiID) => `${Endpoints.CDN}/emojis/${emojiID}.png`,
 };
 
+/**
+ * The current status of the client. Here are the available statuses:
+ * - READY
+ * - CONNECTING
+ * - RECONNECTING
+ * - IDLE
+ * - NEARLY
+ * - DISCONNECTED
+ * @typedef {number} Status
+ */
 exports.Status = {
   READY: 0,
   CONNECTING: 1,
@@ -247,6 +257,23 @@ exports.Status = {
   IDLE: 3,
   NEARLY: 4,
   DISCONNECTED: 5,
+};
+
+/**
+ * The current status of a voice connection. Here are the available statuses:
+ * - CONNECTED
+ * - CONNECTING
+ * - AUTHENTICATING
+ * - RECONNECTING
+ * - DISCONNECTED
+ * @typedef {number} VoiceStatus
+ */
+exports.VoiceStatus = {
+  CONNECTED: 0,
+  CONNECTING: 1,
+  AUTHENTICATING: 2,
+  RECONNECTING: 3,
+  DISCONNECTED: 4,
 };
 
 exports.ChannelTypes = {
@@ -3683,7 +3710,7 @@ class TextBasedChannel {
   }
 }
 
-exports.applyToClass = (structure, full = false) => {
+exports.applyToClass = (structure, full = false, ignore = []) => {
   const props = ['send', 'sendMessage', 'sendEmbed', 'sendFile', 'sendCode'];
   if (full) {
     props.push(
@@ -3702,6 +3729,7 @@ exports.applyToClass = (structure, full = false) => {
     );
   }
   for (const prop of props) {
+    if (ignore.includes(prop)) continue;
     Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
   }
 };
@@ -5307,11 +5335,11 @@ class GroupDMChannel extends Channel {
   get typingCount() { return; }
   createCollector() { return; }
   awaitMessages() { return; }
-  bulkDelete() { return; }
+  // doesn't work on group DMs; bulkDelete() { return; }
   _cacheMessage() { return; }
 }
 
-TextBasedChannel.applyToClass(GroupDMChannel, true);
+TextBasedChannel.applyToClass(GroupDMChannel, true, ['bulkDelete']);
 
 module.exports = GroupDMChannel;
 
@@ -9532,6 +9560,7 @@ module.exports = {
 		"@types/node": "^7.0.0",
 		"long": "^3.2.0",
 		"pako": "^1.0.0",
+		"prism-media": "hydrabolt/prism-media",
 		"superagent": "^3.4.0",
 		"tweetnacl": "^0.14.0",
 		"ws": "^2.0.0"
@@ -9541,6 +9570,7 @@ module.exports = {
 		"erlpack": "hammerandchisel/erlpack",
 		"node-opus": "^0.2.0",
 		"opusscript": "^0.0.2",
+		"sodium": "^2.0.1",
 		"uws": "^0.12.0"
 	},
 	"devDependencies": {
@@ -9557,9 +9587,11 @@ module.exports = {
 		"ws": false,
 		"uws": false,
 		"erlpack": false,
+		"prism-media": false,
 		"opusscript": false,
 		"node-opus": false,
 		"tweetnacl": false,
+		"sodium": false,
 		"src/sharding/Shard.js": false,
 		"src/sharding/ShardClientUtil.js": false,
 		"src/sharding/ShardingManager.js": false,
@@ -9572,12 +9604,13 @@ module.exports = {
 		"src/client/voice/pcm/ConverterEngineList.js": false,
 		"src/client/voice/pcm/FfmpegConverterEngine.js": false,
 		"src/client/voice/player/AudioPlayer.js": false,
-		"src/client/voice/player/BasePlayer.js": false,
-		"src/client/voice/player/DefaultPlayer.js": false,
 		"src/client/voice/receiver/VoiceReadable.js": false,
 		"src/client/voice/receiver/VoiceReceiver.js": false,
+		"src/client/voice/util/Secretbox.js": false,
 		"src/client/voice/util/SecretKey.js": false,
+		"src/client/voice/util/VolumeInterface.js": false,
 		"src/client/voice/ClientVoiceManager.js": false,
+		"src/client/voice/VoiceBroadcast.js": false,
 		"src/client/voice/VoiceConnection.js": false,
 		"src/client/voice/VoiceUDPClient.js": false,
 		"src/client/voice/VoiceWebSocket.js": false
@@ -9984,11 +10017,11 @@ class DMChannel extends Channel {
   get typingCount() { return; }
   createCollector() { return; }
   awaitMessages() { return; }
-  bulkDelete() { return; }
+  // doesn't work on DM channels; bulkDelete() { return; }
   _cacheMessage() { return; }
 }
 
-TextBasedChannel.applyToClass(DMChannel, true);
+TextBasedChannel.applyToClass(DMChannel, true, ['bulkDelete']);
 
 module.exports = DMChannel;
 
@@ -13048,6 +13081,7 @@ const ActionsManager = __webpack_require__(83);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(6).Presence;
 const ShardClientUtil = __webpack_require__(155);
+const VoiceBroadcast = __webpack_require__(157);
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -13179,6 +13213,12 @@ class Client extends EventEmitter {
     this.readyAt = null;
 
     /**
+     * Active voice broadcasts that have been created
+     * @type {VoiceBroadcast[]}
+     */
+    this.broadcasts = [];
+
+    /**
      * Previous heartbeat pings of the websocket (most recent first, limited to three elements)
      * @type {number[]}
      */
@@ -13276,6 +13316,16 @@ class Client extends EventEmitter {
    */
   get browser() {
     return os.platform() === 'browser';
+  }
+
+  /**
+   * Creates a voice broadcast.
+   * @returns {VoiceBroadcast}
+   */
+  createVoiceBroadcast() {
+    const broadcast = new VoiceBroadcast(this);
+    this.broadcasts.push(broadcast);
+    return broadcast;
   }
 
   /**
@@ -23970,13 +24020,13 @@ if (browser) {
   WebSocket = window.WebSocket; // eslint-disable-line no-undef
 } else {
   try {
-    WebSocket = __webpack_require__(158);
-  } catch (err) {
     WebSocket = __webpack_require__(159);
+  } catch (err) {
+    WebSocket = __webpack_require__(160);
   }
 
   try {
-    erlpack = __webpack_require__(157);
+    erlpack = __webpack_require__(158);
     serialize = erlpack.pack;
   } catch (err) {
     erlpack = null;
@@ -25657,6 +25707,12 @@ module.exports = VoiceRegion;
 
 /***/ }),
 /* 160 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Util = __webpack_require__(4);
