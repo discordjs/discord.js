@@ -105,16 +105,16 @@ class User {
    * A link to the user's avatar if they have one.
    * @param {string} [format] One of `webp`, `png`, `jpg`, `gif`. If no format is provided, it will be `gif`
    * for animated avatars or otherwise `webp`
-   * @param {number} [size=128] One of `128`, `256`, `512`, `1024`, `2048`.
+   * @param {number} [size=128] One of `128`, '256', `512`, `1024`, `2048`
    * @returns {?string} avatarURL
    */
   avatarURL(format, size) {
     if (!this.avatar) return null;
     if (typeof format === 'number') {
       size = format;
-      format = null;
+      format = 'default';
     }
-    return `${Constants.Endpoints.avatar(this.id, this.avatar, format)}${size ? `?size=${size}` : ''}`;
+    return Constants.Endpoints.avatar(this.id, this.avatar, format, size);
   }
 
   /**

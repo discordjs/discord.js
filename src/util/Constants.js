@@ -76,6 +76,21 @@ exports.Errors = {
   INVALID_TOKEN: 'An invalid token was provided.',
 };
 
+exports.AllowedImageFormats = [
+  'webp',
+  'png',
+  'jpg',
+  'gif',
+];
+
+exports.AllowedImageSizes = [
+  128,
+  256,
+  512,
+  1024,
+  2048,
+];
+
 const PROTOCOL_VERSION = exports.PROTOCOL_VERSION = 6;
 const HOST = exports.HOST = `https://discordapp.com`;
 const API = exports.API = `${HOST}/api/v${PROTOCOL_VERSION}`;
@@ -94,9 +109,12 @@ const Endpoints = exports.Endpoints = {
   user: (userID) => `${API}/users/${userID}`,
   userChannels: (userID) => `${Endpoints.user(userID)}/channels`,
   userProfile: (userID) => `${Endpoints.user(userID)}/profile`,
-  avatar: (userID, avatar, format = avatar.startsWith('a_') ? 'gif' : 'webp') => {
+  avatar: (userID, avatar, format, size) => {
     if (userID === '1') return avatar;
-    return `${Endpoints.CDN}/avatars/${userID}/${avatar}.${format}`;
+    if (!format || format === 'default') format = avatar.startsWith('a_') ? 'gif' : 'webp';
+    if (!exports.AllowedImageFormats.includes(format)) throw new Error(`Invalid image format: ${format}`);
+    if (size && !exports.AllowedImageSizes.includes(size)) throw new RangeError(`Invalid size: ${size}`);
+    return `${Endpoints.CDN}/avatars/${userID}/${avatar}.${format}${size ? `?size=${size}` : ''}`;
   },
   me: `${API}/users/@me`,
   meGuild: (guildID) => `${Endpoints.me}/guilds/${guildID}`,
@@ -110,7 +128,12 @@ const Endpoints = exports.Endpoints = {
   // guilds
   guilds: `${API}/guilds`,
   guild: (guildID) => `${Endpoints.guilds}/${guildID}`,
-  guildIcon: (guildID, hash, format = 'webp') => `${Endpoints.CDN}/icons/${guildID}/${hash}.${format}`,
+  guildIcon: (guildID, hash, format, size) => {
+    if (!format || format === 'default') format = 'webp';
+    if (!exports.AllowedImageFormats.includes(format)) throw new Error(`Invalid image format: ${format}`);
+    if (size && !exports.AllowedImageSizes.includes(size)) throw new RangeError(`Invalid size: ${size}`);
+    return `${Endpoints.CDN}/icons/${guildID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
+  },
   guildSplash: (guildID, hash) => `${Endpoints.CDN}/splashes/${guildID}/${hash}.jpg`,
   guildPrune: (guildID) => `${Endpoints.guild(guildID)}/prune`,
   guildEmbed: (guildID) => `${Endpoints.guild(guildID)}/embed`,
