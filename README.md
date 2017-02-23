@@ -17,7 +17,7 @@
 </div>
 
 ## About
-discord.js is a powerful node.js module that allows you to interact with the
+discord.js is a powerful [node.js](https://nodejs.org) module that allows you to interact with the
 [Discord API](https://discordapp.com/developers/docs/intro) very easily.
 
 - Object-oriented
@@ -77,7 +77,7 @@ A bot template using discord.js can be generated using [generator-discordbot](ht
 ## Contributing
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
 [documentation](https://discord.js.org/#/docs).  
-See [the contribution guide](CONTRIBUTING.md) if you'd like to submit a PR.
+See [the contribution guide](https://github.com/hydrabolt/discord.js/blob/master/CONTRIBUTING.md) if you'd like to submit a PR.
 
 ## Help
 If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle
