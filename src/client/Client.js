@@ -12,6 +12,7 @@ const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
 const Presence = require('../structures/Presence').Presence;
 const ShardClientUtil = require('../sharding/ShardClientUtil');
+const VoiceBroadcast = require('./voice/VoiceBroadcast');
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -143,6 +144,12 @@ class Client extends EventEmitter {
     this.readyAt = null;
 
     /**
+     * Active voice broadcasts that have been created
+     * @type {VoiceBroadcast[]}
+     */
+    this.broadcasts = [];
+
+    /**
      * Previous heartbeat pings of the websocket (most recent first, limited to three elements)
      * @type {number[]}
      */
@@ -240,6 +247,16 @@ class Client extends EventEmitter {
    */
   get browser() {
     return os.platform() === 'browser';
+  }
+
+  /**
+   * Creates a voice broadcast.
+   * @returns {VoiceBroadcast}
+   */
+  createVoiceBroadcast() {
+    const broadcast = new VoiceBroadcast(this);
+    this.broadcasts.push(broadcast);
+    return broadcast;
   }
 
   /**

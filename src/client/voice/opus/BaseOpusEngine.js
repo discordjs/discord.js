@@ -10,6 +10,10 @@ class BaseOpus {
   decode(buffer) {
     return buffer;
   }
+
+  destroy() {
+    return;
+  }
 }
 
 module.exports = BaseOpus;

@@ -2,7 +2,7 @@ const OpusEngine = require('./BaseOpusEngine');
 
 let OpusScript;
 
-class NodeOpusEngine extends OpusEngine {
+class OpusScriptEngine extends OpusEngine {
   constructor(player) {
     super(player);
     try {
@@ -22,6 +22,11 @@ class NodeOpusEngine extends OpusEngine {
     super.decode(buffer);
     return this.encoder.decode(buffer);
   }
+
+  destroy() {
+    super.destroy();
+    this.encoder.delete();
+  }
 }
 
-module.exports = NodeOpusEngine;
+module.exports = OpusScriptEngine;
