@@ -35,6 +35,7 @@
     "@types/node": "^7.0.0",
     "long": "^3.2.0",
     "pako": "^1.0.0",
+    "prism-media": "hydrabolt/prism-media",
     "superagent": "^3.4.0",
     "tweetnacl": "^0.14.0",
     "ws": "^2.0.0"
@@ -44,6 +45,7 @@
     "erlpack": "hammerandchisel/erlpack",
     "node-opus": "^0.2.0",
     "opusscript": "^0.0.2",
+    "sodium": "^2.0.1",
     "uws": "^0.12.0"
   },
   "devDependencies": {
@@ -60,9 +62,11 @@
     "ws": false,
     "uws": false,
     "erlpack": false,
+    "prism-media": false,
     "opusscript": false,
     "node-opus": false,
     "tweetnacl": false,
+    "sodium": false,
     "src/sharding/Shard.js": false,
     "src/sharding/ShardClientUtil.js": false,
     "src/sharding/ShardingManager.js": false,
@@ -75,12 +79,13 @@
     "src/client/voice/pcm/ConverterEngineList.js": false,
     "src/client/voice/pcm/FfmpegConverterEngine.js": false,
     "src/client/voice/player/AudioPlayer.js": false,
-    "src/client/voice/player/BasePlayer.js": false,
-    "src/client/voice/player/DefaultPlayer.js": false,
     "src/client/voice/receiver/VoiceReadable.js": false,
     "src/client/voice/receiver/VoiceReceiver.js": false,
+    "src/client/voice/util/Secretbox.js": false,
     "src/client/voice/util/SecretKey.js": false,
+    "src/client/voice/util/VolumeInterface.js": false,
     "src/client/voice/ClientVoiceManager.js": false,
+    "src/client/voice/VoiceBroadcast.js": false,
     "src/client/voice/VoiceConnection.js": false,
     "src/client/voice/VoiceUDPClient.js": false,
     "src/client/voice/VoiceWebSocket.js": false

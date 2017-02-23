@@ -412,7 +412,7 @@ class TextBasedChannel {
   }
 }
 
-exports.applyToClass = (structure, full = false) => {
+exports.applyToClass = (structure, full = false, ignore = []) => {
   const props = ['send', 'sendMessage', 'sendEmbed', 'sendFile', 'sendCode'];
   if (full) {
     props.push(
@@ -431,6 +431,7 @@ exports.applyToClass = (structure, full = false) => {
     );
   }
   for (const prop of props) {
+    if (ignore.includes(prop)) continue;
     Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
   }
 };
