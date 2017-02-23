@@ -1,3 +1,4 @@
+const Long = require('long');
 const User = require('./User');
 const Role = require('./Role');
 const Emoji = require('./Emoji');
@@ -678,8 +679,7 @@ class Guild {
     position = Number(position);
     if (isNaN(position)) return Promise.reject(new Error('Supplied position is not a number.'));
 
-    let updatedRoles = Object.assign([], this.roles.array()
-      .sort((r1, r2) => r1.position !== r2.position ? r1.position - r2.position : r1.id - r2.id));
+    let updatedRoles = this.sortedRoles;
 
     Util.moveElementInArray(updatedRoles, role, position, relative);
 
@@ -884,6 +884,14 @@ class Guild {
       return;
     }
     this.presences.set(id, new Presence(presence));
+  }
+
+  get sortedRoles() {
+    return this.roles.sort((r1, r2) =>
+      r1.position !== r2.position ?
+      r1.position - r2.position :
+      Long.fromString(r1.id).sub(Long.fromString(r2.id)).toNumber()
+    );
   }
 }
 
