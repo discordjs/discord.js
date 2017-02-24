@@ -63,9 +63,9 @@ class VoiceBroadcast extends VolumeInterface {
     const volume = old || dispatcher.volume;
 
     /**
-     * Emitted whenever a Stream Dispatcher unsubscribes from the broadcast
+     * Emitted whenever a stream dispatcher unsubscribes from the broadcast
      * @event VoiceBroadcast#unsubscribe
-     * @param {dispatcher} the dispatcher that unsubscribed
+     * @param {StreamDispatcher} dispatcher The unsubscribed dispatcher
      */
     this.emit('unsubscribe', dispatcher);
     for (const container of this._dispatchers.values()) {
@@ -99,7 +99,7 @@ class VoiceBroadcast extends VolumeInterface {
       /**
        * Emitted whenever a stream dispatcher subscribes to the broadcast
        * @event VoiceBroadcast#subscribe
-       * @param {StreamDispatcher} dispatcher the subscribed dispatcher
+       * @param {StreamDispatcher} dispatcher The subscribed dispatcher
        */
       this.emit('subscribe', dispatcher);
     }
