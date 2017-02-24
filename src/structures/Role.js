@@ -221,7 +221,7 @@ class Role {
 
   /**
    * Set a new color for the role
-   * @param {number|string} color The new color for the role, either a hex string or a base 10 number
+   * @param {ColorResolvable} color The color of the role
    * @returns {Promise<Role>}
    * @example
    * // set the color of a role
