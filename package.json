@@ -40,7 +40,7 @@
     "tweetnacl": "^0.14.0",
     "ws": "^2.0.0"
   },
-  "peerDependencies": {
+  "optionalDependencies": {
     "bufferutil": "^2.0.0",
     "erlpack": "hammerandchisel/erlpack",
     "node-opus": "^0.2.0",
