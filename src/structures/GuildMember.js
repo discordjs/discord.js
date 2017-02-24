@@ -322,26 +322,31 @@ class GuildMember {
 
   /**
    * Sets the roles applied to the member.
-   * @param {Collection<Snowflake, Role>|Role[]|string[]} roles The roles or role IDs to apply
+   * @param {Collection<Snowflake, Role>|Role[]|string[]} roles The roles, role IDs or role names to apply
    * @returns {Promise<GuildMember>}
    */
   setRoles(roles) {
+    if (!(roles instanceof Collection)) {
+      for (const role of roles) {
+        if (!this.guild.roles.has(role)) roles[roles.indexOf(role)] = this.guild.roles.find('name', role);
+      }
+    }
     return this.edit({ roles });
   }
 
   /**
    * Adds a single role to the member.
-   * @param {Role|string} role The role or ID of the role to add
+   * @param {Role|string} role The role, ID or name of the role to add
    * @returns {Promise<GuildMember>}
    */
   addRole(role) {
-    if (!(role instanceof Role)) role = this.guild.roles.get(role);
+    if (!(role instanceof Role)) role = this.guild.roles.get(role) || this.guild.roles.find('name', role);
     return this.client.rest.methods.addMemberRole(this, role);
   }
 
   /**
    * Adds multiple roles to the member.
-   * @param {Collection<Snowflake, Role>|Role[]|string[]} roles The roles or role IDs to add
+   * @param {Collection<Snowflake, Role>|Role[]|string[]} roles The roles, role IDs or role names to add
    * @returns {Promise<GuildMember>}
    */
   addRoles(roles) {
@@ -350,6 +355,9 @@ class GuildMember {
       allRoles = this._roles.slice();
       for (const role of roles.values()) allRoles.push(role.id);
     } else {
+      for (const role of roles) {
+        if (!this.guild.roles.has(role)) roles[roles.indexOf(role)] = this.guild.roles.find('name', role);
+      }
       allRoles = this._roles.concat(roles);
     }
     return this.edit({ roles: allRoles });
@@ -357,17 +365,17 @@ class GuildMember {
 
   /**
    * Removes a single role from the member.
-   * @param {Role|string} role The role or ID of the role to remove
+   * @param {Role|string} role The role, ID or name of the role to remove
    * @returns {Promise<GuildMember>}
    */
   removeRole(role) {
-    if (!(role instanceof Role)) role = this.guild.roles.get(role);
+    if (!(role instanceof Role)) role = this.guild.roles.get(role) || this.guild.roles.find('name', role);
     return this.client.rest.methods.removeMemberRole(this, role);
   }
 
   /**
    * Removes multiple roles from the member.
-   * @param {Collection<Snowflake, Role>|Role[]|string[]} roles The roles or role IDs to remove
+   * @param {Collection<Snowflake, Role>|Role[]|string[]} roles The roles, role IDs or role names to remove
    * @returns {Promise<GuildMember>}
    */
   removeRoles(roles) {
@@ -379,7 +387,10 @@ class GuildMember {
       }
     } else {
       for (const role of roles) {
-        const index = allRoles.indexOf(role instanceof Role ? role.id : role);
+        let index = allRoles.indexOf(role instanceof Role ? role.id : role);
+        if (index === -1 && this.guild.roles.exists('name', role)) {
+          index = allRoles.indexOf(this.guild.roles.find('name', role).id);
+        }
         if (index >= 0) allRoles.splice(index, 1);
       }
     }

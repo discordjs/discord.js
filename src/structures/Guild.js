@@ -680,14 +680,14 @@ class Guild {
 
   /**
    * Set the position of a role in this guild
-   * @param {string|Role} role the role to edit, can be a role object or a role ID.
+   * @param {string|Role} role the role to edit, can be a role object, a role ID or a role name.
    * @param {number} position the new position of the role
    * @param {boolean} [relative=false] Position moves the role relative to its current position
    * @returns {Promise<Guild>}
    */
   setRolePosition(role, position, relative = false) {
     if (typeof role === 'string') {
-      role = this.roles.get(role);
+      role = this.roles.get(role) || this.roles.find('name', role);
       if (!role) return Promise.reject(new Error('Supplied role is not a role or string.'));
     }
 
