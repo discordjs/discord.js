@@ -1658,7 +1658,7 @@ class Role {
 
   /**
    * Set a new color for the role
-   * @param {number|string} color The new color for the role, either a hex string or a base 10 number
+   * @param {ColorResolvable} color The color of the role
    * @returns {Promise<Role>}
    * @example
    * // set the color of a role
@@ -2191,7 +2191,7 @@ class Emoji {
    * Data for editing an emoji
    * @typedef {Object} EmojiEditData
    * @property {string} [name] The name of the emoji
-   * @property {Collection<string, Role>|Array<string|Role>} [roles] Roles to restrict emoji to
+   * @property {Collection<Snowflake, Role>|Array<Snowflake|Role>} [roles] Roles to restrict emoji to
    */
 
   /**
@@ -2573,7 +2573,7 @@ class GuildMember {
 
   /**
    * Sets the roles applied to the member.
-   * @param {Collection<Snowflake, Role>|Role[]|string[]} roles The roles or role IDs to apply
+   * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to apply
    * @returns {Promise<GuildMember>}
    */
   setRoles(roles) {
@@ -2582,7 +2582,7 @@ class GuildMember {
 
   /**
    * Adds a single role to the member.
-   * @param {Role|string} role The role or ID of the role to add
+   * @param {Role|Snowflake} role The role or ID of the role to add
    * @returns {Promise<GuildMember>}
    */
   addRole(role) {
@@ -2592,7 +2592,7 @@ class GuildMember {
 
   /**
    * Adds multiple roles to the member.
-   * @param {Collection<Snowflake, Role>|Role[]|string[]} roles The roles or role IDs to add
+   * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to add
    * @returns {Promise<GuildMember>}
    */
   addRoles(roles) {
@@ -2608,7 +2608,7 @@ class GuildMember {
 
   /**
    * Removes a single role from the member.
-   * @param {Role|string} role The role or ID of the role to remove
+   * @param {Role|Snowflake} role The role or ID of the role to remove
    * @returns {Promise<GuildMember>}
    */
   removeRole(role) {
@@ -2618,7 +2618,7 @@ class GuildMember {
 
   /**
    * Removes multiple roles from the member.
-   * @param {Collection<Snowflake, Role>|Role[]|string[]} roles The roles or role IDs to remove
+   * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to remove
    * @returns {Promise<GuildMember>}
    */
   removeRoles(roles) {
@@ -2867,7 +2867,7 @@ class Message {
 
     /**
      * A collection of reactions to this message, mapped by the reaction "id".
-     * @type {Collection<Snowflake|string, MessageReaction>}
+     * @type {Collection<Snowflake, MessageReaction>}
      */
     this.reactions = new Collection();
 
@@ -3459,7 +3459,7 @@ class TextBasedChannel {
   /**
    * Gets a single message from this channel, regardless of it being cached or not.
    * <warn>This is only available when using a bot account.</warn>
-   * @param {string} messageID ID of the message to get
+   * @param {Snowflake} messageID ID of the message to get
    * @returns {Promise<Message>}
    * @example
    * // get message
@@ -3480,9 +3480,9 @@ class TextBasedChannel {
    * `after` are mutually exclusive. All the parameters are optional.
    * @typedef {Object} ChannelLogsQueryOptions
    * @property {number} [limit=50] Number of messages to acquire
-   * @property {string} [before] ID of a message to get the messages that were posted before it
-   * @property {string} [after] ID of a message to get the messages that were posted after it
-   * @property {string} [around] ID of a message to get the messages that were posted around it
+   * @property {Snowflake} [before] ID of a message to get the messages that were posted before it
+   * @property {Snowflake} [after] ID of a message to get the messages that were posted after it
+   * @property {Snowflake} [around] ID of a message to get the messages that were posted around it
    */
 
   /**
@@ -3526,8 +3526,8 @@ class TextBasedChannel {
   /**
    * @typedef {Object} MessageSearchOptions
    * @property {string} [content] Message content
-   * @property {string} [maxID] Maximum ID for the filter
-   * @property {string} [minID] Minimum ID for the filter
+   * @property {Snowflake} [maxID] Maximum ID for the filter
+   * @property {Snowflake} [minID] Minimum ID for the filter
    * @property {string} [has] One of `link`, `embed`, `file`, `video`, `image`, or `sound`,
    * or add `-` to negate (e.g. `-file`)
    * @property {ChannelResolvable} [channel] Channel to limit search to (only for guild search endpoint)
@@ -4431,7 +4431,7 @@ class Guild {
   /**
    * The data needed for updating a channel's position.
    * @typedef {Object} ChannelPosition
-   * @property {string} id The channel being updated's unique id.
+   * @property {Snowflake} id The channel being updated's unique id.
    * @property {number} position The new position of the channel.
    */
 
@@ -4472,7 +4472,7 @@ class Guild {
 
   /**
    * Set the position of a role in this guild
-   * @param {string|Role} role the role to edit, can be a role object or a role ID.
+   * @param {Role|Snowflake} role the role to edit, can be a role object or a role ID.
    * @param {number} position the new position of the role
    * @param {boolean} [relative=false] Position moves the role relative to its current position
    * @returns {Promise<Guild>}
@@ -4499,7 +4499,7 @@ class Guild {
    * Creates a new custom emoji in the guild.
    * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji.
    * @param {string} name The name for the emoji.
-   * @param {Collection<Role>|Role[]} [roles] Roles to limit the emoji to
+   * @param {Collection<Snowflake, Role>|Role[]} [roles] Roles to limit the emoji to
    * @returns {Promise<Emoji>} The created emoji.
    * @example
    * // create a new emoji from a url
@@ -9217,7 +9217,7 @@ class ClientDataResolver {
   }
 
   /**
-   * Data that can be resolved to give a Channel. This can be:
+   * Data that can be resolved to give a Channel object. This can be:
    * * A Channel object
    * * A Message object (the channel the message was sent in)
    * * A Guild object (the #general channel)
@@ -9239,7 +9239,7 @@ class ClientDataResolver {
   }
 
   /**
-   * Resolves a ChannelResolvable to a Channel object
+   * Resolves a ChannelResolvable to a channel ID
    * @param {ChannelResolvable} channel The channel resolvable to resolve
    * @returns {?Snowflake}
    */
@@ -10799,7 +10799,7 @@ class MessageReaction {
   /**
    * Fetch all the users that gave this reaction. Resolves with a collection of users, mapped by their IDs.
    * @param {number} [limit=100] the maximum amount of users to fetch, defaults to 100
-   * @returns {Promise<Collection<string, User>>}
+   * @returns {Promise<Collection<Snowflake, User>>}
    */
   fetchUsers(limit = 100) {
     const message = this.message;
@@ -11164,7 +11164,7 @@ class TextChannel extends GuildChannel {
 
   /**
    * Fetch all webhooks for the channel.
-   * @returns {Promise<Collection<string, Webhook>>}
+   * @returns {Promise<Collection<Snowflake, Webhook>>}
    */
   fetchWebhooks() {
     return this.client.rest.methods.getChannelWebhooks(this);
@@ -13279,7 +13279,7 @@ class Client extends EventEmitter {
 
   /**
    * All active voice connections that have been established, mapped by channel ID
-   * @type {Collection<string, VoiceConnection>}
+   * @type {Collection<Snowflake, VoiceConnection>}
    * @readonly
    */
   get voiceConnections() {
@@ -13372,7 +13372,7 @@ class Client extends EventEmitter {
   /**
    * Obtains a user from Discord, or the user cache if it's already available.
    * <warn>This is only available when using a bot account.</warn>
-   * @param {string} id ID of the user
+   * @param {Snowflake} id ID of the user
    * @param {boolean} [cache=true] Whether to cache the new user object if it isn't already
    * @returns {Promise<User>}
    */
@@ -13393,7 +13393,7 @@ class Client extends EventEmitter {
 
   /**
    * Obtains a webhook from Discord.
-   * @param {string} id ID of the webhook
+   * @param {Snowflake} id ID of the webhook
    * @param {string} [token] Token for the webhook
    * @returns {Promise<Webhook>}
    */
@@ -13536,7 +13536,7 @@ class Client extends EventEmitter {
 
   /**
    * Adds/updates a friend's presence in {@link Client#presences}.
-   * @param {string} id ID of the user
+   * @param {Snowflake} id ID of the user
    * @param {Object} presence Raw presence object from Discord
    * @private
    */
@@ -13630,7 +13630,7 @@ const Util = __webpack_require__(4);
  */
 class WebhookClient extends Webhook {
   /**
-   * @param {string} id ID of the webhook
+   * @param {Snowflake} id ID of the webhook
    * @param {string} token Token of the webhook
    * @param {ClientOptions} [options] Options for the client
    * @example
@@ -13853,7 +13853,7 @@ class RichEmbed {
 
   /**
    * Sets the color of this embed
-   * @param {ColorResolvable} color The color to set
+   * @param {ColorResolvable} color The color of the embed
    * @returns {RichEmbed} This embed
    */
   setColor(color) {
