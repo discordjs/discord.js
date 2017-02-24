@@ -47,12 +47,12 @@ class VoiceConnectionUDPClient extends EventEmitter {
 
   shutdown() {
     if (this.socket) {
+      this.socket.removeAllListeners('message');
       try {
         this.socket.close();
-      } catch (e) {
-        return;
+      } finally {
+        this.socket = null;
       }
-      this.socket = null;
     }
   }
 
@@ -124,7 +124,7 @@ class VoiceConnectionUDPClient extends EventEmitter {
       });
     });
 
-    const blankMessage = new Buffer(70);
+    const blankMessage = Buffer.alloc(70);
     blankMessage.writeUIntBE(this.voiceConnection.authentication.ssrc, 0, 4);
     this.send(blankMessage);
   }
@@ -132,7 +132,7 @@ class VoiceConnectionUDPClient extends EventEmitter {
 
 function parseLocalPacket(message) {
   try {
-    const packet = new Buffer(message);
+    const packet = Buffer.from(message);
     let address = '';
     for (let i = 4; i < packet.indexOf(0, i); i++) address += String.fromCharCode(packet[i]);
     const port = parseInt(packet.readUIntLE(packet.length - 2, 2).toString(10), 10);

@@ -1,19 +1,29 @@
+const Util = require('./util/Util');
+
 module.exports = {
+  // "Root" classes (starting points)
   Client: require('./client/Client'),
-  WebhookClient: require('./client/WebhookClient'),
   Shard: require('./sharding/Shard'),
   ShardClientUtil: require('./sharding/ShardClientUtil'),
   ShardingManager: require('./sharding/ShardingManager'),
+  WebhookClient: require('./client/WebhookClient'),
 
+  // Utilities
   Collection: require('./util/Collection'),
-  splitMessage: require('./util/SplitMessage'),
-  escapeMarkdown: require('./util/EscapeMarkdown'),
-  fetchRecommendedShards: require('./util/FetchRecommendedShards'),
+  Constants: require('./util/Constants'),
   Snowflake: require('./util/Snowflake'),
   SnowflakeUtil: require('./util/Snowflake'),
+  Util: Util,
+  util: Util,
+  version: require('../package').version,
 
+  // Shortcuts to Util methods
+  escapeMarkdown: Util.escapeMarkdown,
+  fetchRecommendedShards: Util.fetchRecommendedShards,
+  splitMessage: Util.splitMessage,
+
+  // Structures
   Channel: require('./structures/Channel'),
-  ClientOAuth2Application: require('./structures/ClientOAuth2Application'),
   ClientUser: require('./structures/ClientUser'),
   DMChannel: require('./structures/DMChannel'),
   Emoji: require('./structures/Emoji'),
@@ -41,9 +51,6 @@ module.exports = {
   User: require('./structures/User'),
   VoiceChannel: require('./structures/VoiceChannel'),
   Webhook: require('./structures/Webhook'),
-
-  version: require('../package').version,
-  Constants: require('./util/Constants'),
 };
 
 if (require('os').platform() === 'browser') window.Discord = module.exports; // eslint-disable-line no-undef

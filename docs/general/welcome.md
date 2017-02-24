@@ -21,7 +21,7 @@ Welcome to the discord.js v11 documentation.
 v11 contains loads of new and improved features, optimisations, and bug fixes.
 
 ## About
-discord.js is a powerful node.js module that allows you to interact with the
+discord.js is a powerful [node.js](https://nodejs.org) module that allows you to interact with the
 [Discord API](https://discordapp.com/developers/docs/intro) very easily.
 
 - Object-oriented
@@ -31,7 +31,7 @@ discord.js is a powerful node.js module that allows you to interact with the
 
 ## Installation
 **Node.js 6.0.0 or newer is required.**  
-Ignore any warnings about unmet peer dependencies, as they're optional.
+Ignore any warnings about unmet peer dependencies, as they're all optional.
 
 Without voice support: `npm install discord.js --save`  
 With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discord.js node-opus --save`  
@@ -43,8 +43,9 @@ Using opusscript is only recommended for development environments where node-opu
 For production bots, using node-opus should be considered a necessity, especially if they're going to be running on multiple servers.
 
 ### Optional packages
-- [bufferutil](https://www.npmjs.com/package/bufferutil) to greatly speed up the `ws` WebSocket connection (`npm install bufferutil --save`)
+- [bufferutil](https://www.npmjs.com/package/bufferutil) to greatly speed up the WebSocket when *not* using uws (`npm install bufferutil --save`)
 - [erlpack](https://github.com/hammerandchisel/erlpack) for significantly faster WebSocket data (de)serialisation (`npm install hammerandchisel/erlpack --save`)
+- [sodium](https://www.npmjs.com/package/sodium) for faster voice packet encryption/decryption (`npm install sodium --save`)
 - [uws](https://www.npmjs.com/package/uws) for a much faster WebSocket connection (`npm install uws --save`)  
   **Note:** This package does not handle disconnects entirely correctly, which causes automatic reconnection to Discord to not function.
   If you use this package, it may be wise to destroy + recreate the client entirely or restart the process upon disconnect.
@@ -81,7 +82,7 @@ A bot template using discord.js can be generated using [generator-discordbot](ht
 ## Contributing
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
 [documentation](https://discord.js.org/#/docs).  
-See [the contribution guide](CONTRIBUTING.md) if you'd like to submit a PR.
+See [the contribution guide](https://github.com/hydrabolt/discord.js/blob/master/CONTRIBUTING.md) if you'd like to submit a PR.
 
 ## Help
 If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle

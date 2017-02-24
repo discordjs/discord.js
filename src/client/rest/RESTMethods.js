@@ -1,11 +1,9 @@
 const querystring = require('querystring');
+const long = require('long');
 const Constants = require('../../util/Constants');
 const Collection = require('../../util/Collection');
-const splitMessage = require('../../util/SplitMessage');
-const parseEmoji = require('../../util/ParseEmoji');
-const escapeMarkdown = require('../../util/EscapeMarkdown');
-const transformSearchOptions = require('../../util/TransformSearchOptions');
 const Snowflake = require('../../util/Snowflake');
+const Util = require('../../util/Util');
 
 const User = require('../../structures/User');
 const GuildMember = require('../../structures/GuildMember');
@@ -14,8 +12,9 @@ const Role = require('../../structures/Role');
 const Invite = require('../../structures/Invite');
 const Webhook = require('../../structures/Webhook');
 const UserProfile = require('../../structures/UserProfile');
-const ClientOAuth2Application = require('../../structures/ClientOAuth2Application');
+const OAuth2Application = require('../../structures/OAuth2Application');
 const Channel = require('../../structures/Channel');
+const GroupDMChannel = require('../../structures/GroupDMChannel');
 const Guild = require('../../structures/Guild');
 const VoiceRegion = require('../../structures/VoiceRegion');
 
@@ -59,7 +58,7 @@ class RESTMethods {
 
         // Wrap everything in a code block
         if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
-          content = escapeMarkdown(this.client.resolver.resolveString(content), true);
+          content = Util.escapeMarkdown(this.client.resolver.resolveString(content), true);
           content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
           if (split) {
             split.prepend = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n`;
@@ -81,7 +80,7 @@ class RESTMethods {
         }
 
         // Split the content
-        if (split) content = splitMessage(content, split);
+        if (split) content = Util.splitMessage(content, split);
       } else if (reply && !(channel instanceof User || channel instanceof GuildMember) && channel.type !== 'dm') {
         const id = this.client.resolver.resolveUserID(reply);
         content = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
@@ -118,7 +117,7 @@ class RESTMethods {
 
     // Wrap everything in a code block
     if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
-      content = escapeMarkdown(this.client.resolver.resolveString(content), true);
+      content = Util.escapeMarkdown(this.client.resolver.resolveString(content), true);
       content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
     }
 
@@ -161,9 +160,46 @@ class RESTMethods {
   }
 
   search(target, options) {
-    options = transformSearchOptions(options, this.client);
-    for (const key in options) if (options[key] === undefined) delete options[key];
+    if (options.before) {
+      if (!(options.before instanceof Date)) options.before = new Date(options.before);
+      options.maxID = long.fromNumber(options.before.getTime() - 14200704e5).shiftLeft(22).toString();
+    }
+    if (options.after) {
+      if (!(options.after instanceof Date)) options.after = new Date(options.after);
+      options.minID = long.fromNumber(options.after.getTime() - 14200704e5).shiftLeft(22).toString();
+    }
+    if (options.during) {
+      if (!(options.during instanceof Date)) options.during = new Date(options.during);
+      const t = options.during.getTime() - 14200704e5;
+      options.minID = long.fromNumber(t).shiftLeft(22).toString();
+      options.maxID = long.fromNumber(t + 86400000).shiftLeft(22).toString();
+    }
+    if (options.channel) options.channel = this.client.resolver.resolveChannelID(options.channel);
+    if (options.author) options.author = this.client.resolver.resolveUserID(options.author);
+    if (options.mentions) options.mentions = this.client.resolver.resolveUserID(options.options.mentions);
+    options = {
+      content: options.content,
+      max_id: options.maxID,
+      min_id: options.minID,
+      has: options.has,
+      channel_id: options.channel,
+      author_id: options.author,
+      author_type: options.authorType,
+      context_size: options.contextSize,
+      sort_by: options.sortBy,
+      sort_order: options.sortOrder,
+      limit: options.limit,
+      offset: options.offset,
+      mentions: options.mentions,
+      mentions_everyone: options.mentionsEveryone,
+      link_hostname: options.linkHostname,
+      embed_provider: options.embedProvider,
+      embed_type: options.embedType,
+      attachment_filename: options.attachmentFilename,
+      attachment_extension: options.attachmentExtension,
+    };
 
+    for (const key in options) if (options[key] === undefined) delete options[key];
     const queryString = (querystring.stringify(options).match(/[^=&?]+=[^=&?]+/g) || []).join('&');
 
     let type;
@@ -202,6 +238,23 @@ class RESTMethods {
     return this.rest.makeRequest('post', Constants.Endpoints.userChannels(this.client.user.id), true, {
       recipient_id: recipient.id,
     }).then(data => this.client.actions.ChannelCreate.handle(data, null, true).channel);
+  }
+
+  createGroupDM(options) {
+    const data = this.client.user.bot ?
+      { access_tokens: options.accessTokens, nicks: options.nicks } :
+      { recipients: options.recipients };
+
+    return this.rest.makeRequest('post', Constants.Endpoints.meChannels, true, data)
+    .then(res => new GroupDMChannel(this.client, res));
+  }
+
+  addUserToGroupDM(channel, options) {
+    const data = this.client.user.bot ?
+      { nick: options.nick, access_token: options.accessToken } :
+      { recipient: options.id };
+    return this.rest.makeRequest('put', Constants.Endpoints.dmChannelRecipient(channel.id, options.id), true, data)
+    .then(() => channel);
   }
 
   getExistingDM(recipient) {
@@ -371,16 +424,12 @@ class RESTMethods {
   }
 
   putGuildMember(guild, user, options) {
+    options.access_token = options.accessToken;
     if (options.roles) {
-      var roles = options.roles;
+      const roles = options.roles;
       if (roles instanceof Collection || (roles instanceof Array && roles[0] instanceof Role)) {
         options.roles = roles.map(role => role.id);
       }
-    }
-    if (options.accessToken) {
-      options.access_token = options.accessToken;
-    } else {
-      return Promise.reject(new Error('OAuth2 access token was not specified.'));
     }
     return this.rest.makeRequest('put', Constants.Endpoints.guildMember(guild.id, user.id), true, options)
       .then(data => this.client.actions.GuildMemberGet.handle(guild, data).member);
@@ -713,6 +762,15 @@ class RESTMethods {
       .then(() => user);
   }
 
+  updateChannelPositions(guildID, channels) {
+    return this.rest.makeRequest('patch', Constants.Endpoints.guildChannels(guildID), true, channels).then(() =>
+      this.client.actions.GuildChannelsPositionUpdate.handle({
+        guild_id: guildID,
+        channels,
+      }).guild
+    );
+  }
+
   setRolePositions(guildID, roles) {
     return this.rest.makeRequest('patch', Constants.Endpoints.guildRoles(guildID), true, roles).then(() =>
       this.client.actions.GuildRolesPositionUpdate.handle({
@@ -729,7 +787,7 @@ class RESTMethods {
       this.client.actions.MessageReactionAdd.handle({
         user_id: this.client.user.id,
         message_id: message.id,
-        emoji: parseEmoji(emoji),
+        emoji: Util.parseEmoji(emoji),
         channel_id: message.channel.id,
       }).reaction
     );
@@ -744,7 +802,7 @@ class RESTMethods {
       this.client.actions.MessageReactionRemove.handle({
         user_id: user,
         message_id: message.id,
-        emoji: parseEmoji(emoji),
+        emoji: Util.parseEmoji(emoji),
         channel_id: message.channel.id,
       }).reaction
     );
@@ -761,10 +819,18 @@ class RESTMethods {
     );
   }
 
-  getMyApplication() {
-    return this.rest.makeRequest('get', Constants.Endpoints.myApplication, true).then(app =>
-      new ClientOAuth2Application(this.client, app)
+  getApplication(id) {
+    return this.rest.makeRequest('get', Constants.Endpoints.oauth2Application(id), true).then(app =>
+      new OAuth2Application(this.client, app)
     );
+  }
+
+  resetApplication(id) {
+    return this.rest.makeRequest(
+      'post',
+      `${Constants.Endpoints.oauth2Application(id)}/reset`,
+      true
+    ).then(app => new OAuth2Application(this.client, app));
   }
 
   setNote(user, note) {

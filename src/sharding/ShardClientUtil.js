@@ -1,5 +1,4 @@
-const makeError = require('../util/MakeError');
-const makePlainError = require('../util/MakePlainError');
+const Util = require('../util/Util');
 
 /**
  * Helper class for sharded clients spawned as a child process, such as from a ShardingManager
@@ -59,7 +58,7 @@ class ShardClientUtil {
       const listener = message => {
         if (!message || message._sFetchProp !== prop) return;
         process.removeListener('message', listener);
-        if (!message._error) resolve(message._result); else reject(makeError(message._error));
+        if (!message._error) resolve(message._result); else reject(Util.makeError(message._error));
       };
       process.on('message', listener);
 
@@ -80,7 +79,7 @@ class ShardClientUtil {
       const listener = message => {
         if (!message || message._sEval !== script) return;
         process.removeListener('message', listener);
-        if (!message._error) resolve(message._result); else reject(makeError(message._error));
+        if (!message._error) resolve(message._result); else reject(Util.makeError(message._error));
       };
       process.on('message', listener);
 
@@ -107,7 +106,7 @@ class ShardClientUtil {
       try {
         this._respond('eval', { _eval: message._eval, _result: this.client._eval(message._eval) });
       } catch (err) {
-        this._respond('eval', { _eval: message._eval, _error: makePlainError(err) });
+        this._respond('eval', { _eval: message._eval, _error: Util.makePlainError(err) });
       }
     }
   }
