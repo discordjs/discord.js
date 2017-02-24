@@ -109,7 +109,7 @@ class RichEmbed {
 
   /**
    * Sets the color of this embed
-   * @param {ColorResolvable} color The color to set
+   * @param {ColorResolvable} color The color of the embed
    * @returns {RichEmbed} This embed
    */
   setColor(color) {

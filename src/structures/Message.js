@@ -154,7 +154,7 @@ class Message {
 
     /**
      * A collection of reactions to this message, mapped by the reaction "id".
-     * @type {Collection<Snowflake|string, MessageReaction>}
+     * @type {Collection<Snowflake, MessageReaction>}
      */
     this.reactions = new Collection();
 

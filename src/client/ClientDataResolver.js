@@ -102,7 +102,7 @@ class ClientDataResolver {
   }
 
   /**
-   * Data that can be resolved to give a Channel. This can be:
+   * Data that can be resolved to give a Channel object. This can be:
    * * A Channel object
    * * A Message object (the channel the message was sent in)
    * * A Guild object (the #general channel)
@@ -124,7 +124,7 @@ class ClientDataResolver {
   }
 
   /**
-   * Resolves a ChannelResolvable to a Channel object
+   * Resolves a ChannelResolvable to a channel ID
    * @param {ChannelResolvable} channel The channel resolvable to resolve
    * @returns {?Snowflake}
    */

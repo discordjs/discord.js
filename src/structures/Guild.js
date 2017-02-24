@@ -639,7 +639,7 @@ class Guild {
   /**
    * The data needed for updating a channel's position.
    * @typedef {Object} ChannelPosition
-   * @property {string} id The channel being updated's unique id.
+   * @property {Snowflake} id The channel being updated's unique id.
    * @property {number} position The new position of the channel.
    */
 
@@ -680,7 +680,7 @@ class Guild {
 
   /**
    * Set the position of a role in this guild
-   * @param {string|Role} role the role to edit, can be a role object or a role ID.
+   * @param {Role|Snowflake} role the role to edit, can be a role object or a role ID.
    * @param {number} position the new position of the role
    * @param {boolean} [relative=false] Position moves the role relative to its current position
    * @returns {Promise<Guild>}
@@ -707,7 +707,7 @@ class Guild {
    * Creates a new custom emoji in the guild.
    * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji.
    * @param {string} name The name for the emoji.
-   * @param {Collection<Role>|Role[]} [roles] Roles to limit the emoji to
+   * @param {Collection<Snowflake, Role>|Role[]} [roles] Roles to limit the emoji to
    * @returns {Promise<Emoji>} The created emoji.
    * @example
    * // create a new emoji from a url
