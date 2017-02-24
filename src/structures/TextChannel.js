@@ -44,7 +44,7 @@ class TextChannel extends GuildChannel {
 
   /**
    * Fetch all webhooks for the channel.
-   * @returns {Promise<Collection<string, Webhook>>}
+   * @returns {Promise<Collection<Snowflake, Webhook>>}
    */
   fetchWebhooks() {
     return this.client.rest.methods.getChannelWebhooks(this);
