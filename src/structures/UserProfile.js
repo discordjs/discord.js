@@ -41,6 +41,12 @@ class UserProfile {
      * @type {boolean}
      */
     this.premium = data.premium;
+    
+    /**
+     * If the user is a Discord Partner
+     * @type {boolean}
+     */
+    this.partner = data.premium_since == null && data.premium == True
 
     for (const guild of data.mutual_guilds) {
       if (this.client.guilds.has(guild.id)) {
