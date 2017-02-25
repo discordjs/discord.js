@@ -639,20 +639,20 @@ class Guild {
   /**
    * The data needed for updating a channel's position.
    * @typedef {Object} ChannelPosition
-   * @property {Snowflake} id The channel being updated's unique id.
-   * @property {number} position The new position of the channel.
+   * @property {ChannelResolvable} channel Channel to update
+   * @property {number} position New position for the channel
    */
 
   /**
-   * Updates this guild's channel positions as a batch.
-   * @param {Array<ChannelPosition>} channelPositions Array of objects that defines which channel is going where.
+   * Batch-updates the guild's channels' positions.
+   * @param {ChannelPosition[]} channelPositions Channel positions to update
    * @returns {Promise<Guild>}
    * @example
-   * guild.updateChannels([{ id: channelID, position: newChannelIndex }])
-   *  .then(guild => console.log(`Updated channels for ${guild.id}`))
+   * guild.updateChannels([{ channel: channelID, position: newChannelIndex }])
+   *  .then(guild => console.log(`Updated channel positions for ${guild.id}`))
    *  .catch(console.error);
    */
-  updateChannelPositions(channelPositions) {
+  setChannelPositions(channelPositions) {
     return this.client.rest.methods.updateChannelPositions(this.id, channelPositions);
   }
 

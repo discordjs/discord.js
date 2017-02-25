@@ -8,9 +8,7 @@ class GuildChannelsPositionUpdate extends Action {
     if (guild) {
       for (const partialChannel of data.channels) {
         const channel = guild.roles.get(partialChannel.id);
-        if (channel) {
-          channel.position = partialChannel.position;
-        }
+        if (channel) channel.position = partialChannel.position;
       }
     }
 
