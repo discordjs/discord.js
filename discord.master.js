@@ -4431,20 +4431,20 @@ class Guild {
   /**
    * The data needed for updating a channel's position.
    * @typedef {Object} ChannelPosition
-   * @property {Snowflake} id The channel being updated's unique id.
-   * @property {number} position The new position of the channel.
+   * @property {ChannelResolvable} channel Channel to update
+   * @property {number} position New position for the channel
    */
 
   /**
-   * Updates this guild's channel positions as a batch.
-   * @param {Array<ChannelPosition>} channelPositions Array of objects that defines which channel is going where.
+   * Batch-updates the guild's channels' positions.
+   * @param {ChannelPosition[]} channelPositions Channel positions to update
    * @returns {Promise<Guild>}
    * @example
-   * guild.updateChannels([{ id: channelID, position: newChannelIndex }])
-   *  .then(guild => console.log(`Updated channels for ${guild.id}`))
+   * guild.updateChannels([{ channel: channelID, position: newChannelIndex }])
+   *  .then(guild => console.log(`Updated channel positions for ${guild.id}`))
    *  .catch(console.error);
    */
-  updateChannelPositions(channelPositions) {
+  setChannelPositions(channelPositions) {
     return this.client.rest.methods.updateChannelPositions(this.id, channelPositions);
   }
 
@@ -9232,9 +9232,9 @@ class ClientDataResolver {
    */
   resolveChannel(channel) {
     if (channel instanceof Channel) return channel;
+    if (typeof channel === 'string') return this.client.channels.get(channel) || null;
     if (channel instanceof Message) return channel.channel;
     if (channel instanceof Guild) return channel.channels.get(channel.id) || null;
-    if (typeof channel === 'string') return this.client.channels.get(channel) || null;
     return null;
   }
 
@@ -9927,15 +9927,15 @@ class ClientUser extends User {
   /**
    * An object containing either a user or access token, and an optional nickname
    * @typedef {Object} GroupDMRecipientOptions
-   * @property {UserResolvable|Snowflake} [user] User to add to the group dm
-   * (only available if a user is creating the dm)
-   * @property {string} [accessToken] Access token to use to add a user to the group dm
-   * (only available if a bot is creating the dm)
-   * @property {string} [nick] Permanent nickname (only available if a bot is creating the dm)
+   * @property {UserResolvable|Snowflake} [user] User to add to the group DM
+   * (only available if a user is creating the DM)
+   * @property {string} [accessToken] Access token to use to add a user to the group DM
+   * (only available if a bot is creating the DM)
+   * @property {string} [nick] Permanent nickname (only available if a bot is creating the DM)
    */
 
   /**
-   * Create a group dm
+   * Creates a group DM
    * @param {GroupDMRecipientOptions[]} recipients The recipients
    * @returns {Promise<GroupDMChannel>}
    */
@@ -9948,6 +9948,7 @@ class ClientUser extends User {
   }
 
   /**
+   * Accepts an invite to join a guild
    * @param {Invite|string} invite Invite or code to accept
    * @returns {Promise<Guild>} Joined guild
    */
@@ -22008,9 +22009,7 @@ class GuildChannelsPositionUpdate extends Action {
     if (guild) {
       for (const partialChannel of data.channels) {
         const channel = guild.roles.get(partialChannel.id);
-        if (channel) {
-          channel.position = partialChannel.position;
-        }
+        if (channel) channel.position = partialChannel.position;
       }
     }
 
@@ -23711,7 +23710,15 @@ class RESTMethods {
   }
 
   updateChannelPositions(guildID, channels) {
-    return this.rest.makeRequest('patch', Constants.Endpoints.guildChannels(guildID), true, channels).then(() =>
+    const data = new Array(channels.length);
+    for (let i = 0; i < channels.length; i++) {
+      data[i] = {
+        id: this.client.resolver.resolveChannelID(channels[i].channel),
+        position: channels[i].position,
+      };
+    }
+
+    return this.rest.makeRequest('patch', Constants.Endpoints.guildChannels(guildID), true, data).then(() =>
       this.client.actions.GuildChannelsPositionUpdate.handle({
         guild_id: guildID,
         channels,
