@@ -1,7 +1,7 @@
 const browser = require('os').platform() === 'browser';
 const EventEmitter = require('events').EventEmitter;
 const Constants = require('../../util/Constants');
-const convertArrayBuffer = require('../../util/ConvertArrayBuffer');
+const convertToBuffer = require('../../util/Util').convertToBuffer;
 const pako = require('pako');
 const zlib = require('zlib');
 const PacketManager = require('./packets/WebSocketPacketManager');
@@ -279,7 +279,7 @@ class WebSocketManager extends EventEmitter {
    */
   parseEventData(data) {
     if (erlpack) {
-      if (data instanceof ArrayBuffer) data = convertArrayBuffer(data);
+      if (data instanceof ArrayBuffer) data = convertToBuffer(data);
       return erlpack.unpack(data);
     } else {
       if (data instanceof ArrayBuffer) data = pako.inflate(data, { to: 'string' });

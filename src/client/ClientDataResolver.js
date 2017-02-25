@@ -3,7 +3,7 @@ const fs = require('fs');
 const request = require('superagent');
 
 const Constants = require('../util/Constants');
-const convertArrayBuffer = require('../util/ConvertArrayBuffer');
+const convertToBuffer = require('../util/Util').convertToBuffer;
 const User = require('../structures/User');
 const Message = require('../structures/Message');
 const Guild = require('../structures/Guild');
@@ -102,7 +102,7 @@ class ClientDataResolver {
   }
 
   /**
-   * Data that can be resolved to give a Channel. This can be:
+   * Data that can be resolved to give a Channel object. This can be:
    * * A Channel object
    * * A Message object (the channel the message was sent in)
    * * A Guild object (the #general channel)
@@ -124,7 +124,7 @@ class ClientDataResolver {
   }
 
   /**
-   * Resolves a ChannelResolvable to a Channel object
+   * Resolves a ChannelResolvable to a channel ID
    * @param {ChannelResolvable} channel The channel resolvable to resolve
    * @returns {?Snowflake}
    */
@@ -217,6 +217,20 @@ class ClientDataResolver {
     return bitfield;
   }
 
+  hasPermission(bitfield, name, explicit = false) {
+    const permission = this.resolvePermission(name);
+    if (!explicit && (bitfield & Constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
+    return (bitfield & permission) > 0;
+  }
+
+  serializePermissions(bitfield) {
+    const serializedPermissions = {};
+    for (const name in Constants.PermissionFlags) {
+      serializedPermissions[name] = this.hasPermission(bitfield, name);
+    }
+    return serializedPermissions;
+  }
+
   /**
    * Data that can be resolved to give a string. This can be:
    * * A string
@@ -268,7 +282,7 @@ class ClientDataResolver {
    */
   resolveBuffer(resource) {
     if (resource instanceof Buffer) return Promise.resolve(resource);
-    if (this.client.browser && resource instanceof ArrayBuffer) return Promise.resolve(convertArrayBuffer(resource));
+    if (this.client.browser && resource instanceof ArrayBuffer) return Promise.resolve(convertToBuffer(resource));
 
     if (typeof resource === 'string') {
       return new Promise((resolve, reject) => {
@@ -277,18 +291,19 @@ class ClientDataResolver {
           if (this.client.browser) req.responseType('arraybuffer');
           req.end((err, res) => {
             if (err) return reject(err);
-            if (this.client.browser) return resolve(convertArrayBuffer(res.xhr.response));
+            if (this.client.browser) return resolve(convertToBuffer(res.xhr.response));
             if (!(res.body instanceof Buffer)) return reject(new TypeError('The response body isn\'t a Buffer.'));
             return resolve(res.body);
           });
         } else {
           const file = path.resolve(resource);
           fs.stat(file, (err, stats) => {
-            if (err) reject(err);
-            if (!stats || !stats.isFile()) throw new Error(`The file could not be found: ${file}`);
+            if (err) return reject(err);
+            if (!stats || !stats.isFile()) return reject(new Error(`The file could not be found: ${file}`));
             fs.readFile(file, (err2, data) => {
               if (err2) reject(err2); else resolve(data);
             });
+            return null;
           });
         }
       });

@@ -6,6 +6,8 @@ exports.Package = require('../../package.json');
  * @property {string} [apiRequestMethod='sequential'] One of `sequential` or `burst`. The sequential handler executes
  * all requests in the order they are triggered, whereas the burst handler runs multiple in parallel, and doesn't
  * provide the guarantee of any particular order.
+ * <warn>Burst mode is more likely to hit a 429 ratelimit by its nature,
+ * be advised if you are very unlucky you could be IP banned</warn>
  * @property {number} [shardId=0] ID of the shard to run
  * @property {number} [shardCount=0] Total number of shards
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
@@ -101,6 +103,7 @@ const Endpoints = exports.Endpoints = {
   },
   me: `${API}/users/@me`,
   meGuild: (guildID) => `${Endpoints.me}/guilds/${guildID}`,
+  meChannels: `${API}/users/@me/channels`,
   meMentions: (limit, roles, everyone, guildID) =>
     `users/@me/mentions?limit=${limit}&roles=${roles}&everyone=${everyone}${guildID ? `&guild_id=${guildID}` : ''}`,
   relationships: (userID) => `${Endpoints.user(userID)}/relationships`,
@@ -141,6 +144,8 @@ const Endpoints = exports.Endpoints = {
   channelWebhooks: (channelID) => `${Endpoints.channel(channelID)}/webhooks`,
   channelSearch: (channelID) => `${Endpoints.channelMessages(channelID)}/search`,
 
+  dmChannelRecipient: (channelID, recipientID) => `${Endpoints.channel(channelID)}/recipients/${recipientID}`,
+
   // message reactions
   messageReactions: (channelID, messageID) => `${Endpoints.channelMessage(channelID, messageID)}/reactions`,
   messageReaction:
@@ -156,13 +161,23 @@ const Endpoints = exports.Endpoints = {
   webhook: (webhookID, token) => `${API}/webhooks/${webhookID}${token ? `/${token}` : ''}`,
 
   // oauth
-  myApplication: `${API}/oauth2/applications/@me`,
+  oauth2Application: (appID) => `${API}/oauth2/applications/${appID}`,
   getApp: (id) => `${API}/oauth2/authorize?client_id=${id}`,
 
   // emoji
   emoji: (emojiID) => `${Endpoints.CDN}/emojis/${emojiID}.png`,
 };
 
+/**
+ * The current status of the client. Here are the available statuses:
+ * - READY
+ * - CONNECTING
+ * - RECONNECTING
+ * - IDLE
+ * - NEARLY
+ * - DISCONNECTED
+ * @typedef {number} Status
+ */
 exports.Status = {
   READY: 0,
   CONNECTING: 1,
@@ -172,11 +187,28 @@ exports.Status = {
   DISCONNECTED: 5,
 };
 
+/**
+ * The current status of a voice connection. Here are the available statuses:
+ * - CONNECTED
+ * - CONNECTING
+ * - AUTHENTICATING
+ * - RECONNECTING
+ * - DISCONNECTED
+ * @typedef {number} VoiceStatus
+ */
+exports.VoiceStatus = {
+  CONNECTED: 0,
+  CONNECTING: 1,
+  AUTHENTICATING: 2,
+  RECONNECTING: 3,
+  DISCONNECTED: 4,
+};
+
 exports.ChannelTypes = {
-  text: 0,
+  TEXT: 0,
   DM: 1,
-  voice: 2,
-  groupDM: 3,
+  VOICE: 2,
+  GROUP_DM: 3,
 };
 
 exports.OPCodes = {

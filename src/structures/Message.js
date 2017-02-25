@@ -1,9 +1,9 @@
 const Attachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
 const MessageReaction = require('./MessageReaction');
+const Util = require('../util/Util');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
-const escapeMarkdown = require('../util/EscapeMarkdown');
 let GuildMember;
 
 /**
@@ -56,7 +56,7 @@ class Message {
     /**
      * Represents the author of the message as a guild member. Only available if the message comes from a guild
      * where the author is still a member.
-     * @type {GuildMember}
+     * @type {?GuildMember}
      */
     this.member = this.guild ? this.guild.member(this.author) || null : null;
 
@@ -154,7 +154,7 @@ class Message {
 
     /**
      * A collection of reactions to this message, mapped by the reaction "id".
-     * @type {Collection<Snowflake|string, MessageReaction>}
+     * @type {Collection<Snowflake, MessageReaction>}
      */
     this.reactions = new Collection();
 
@@ -409,7 +409,7 @@ class Message {
    * @returns {Promise<Message>}
    */
   editCode(lang, content) {
-    content = escapeMarkdown(this.client.resolver.resolveString(content), true);
+    content = Util.escapeMarkdown(this.client.resolver.resolveString(content), true);
     return this.edit(`\`\`\`${lang || ''}\n${content}\n\`\`\``);
   }
 

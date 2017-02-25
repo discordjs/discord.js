@@ -1,7 +1,7 @@
 const os = require('os');
 const EventEmitter = require('events').EventEmitter;
-const mergeDefault = require('../util/MergeDefault');
 const Constants = require('../util/Constants');
+const Util = require('../util/Util');
 const RESTManager = require('./rest/RESTManager');
 const ClientDataManager = require('./ClientDataManager');
 const ClientManager = require('./ClientManager');
@@ -12,6 +12,7 @@ const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
 const Presence = require('../structures/Presence').Presence;
 const ShardClientUtil = require('../sharding/ShardClientUtil');
+const VoiceBroadcast = require('./voice/VoiceBroadcast');
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -32,7 +33,7 @@ class Client extends EventEmitter {
      * The options the client was instantiated with
      * @type {ClientOptions}
      */
-    this.options = mergeDefault(Constants.DefaultOptions, options);
+    this.options = Util.mergeDefault(Constants.DefaultOptions, options);
     this._validateOptions();
 
     /**
@@ -43,42 +44,42 @@ class Client extends EventEmitter {
     this.rest = new RESTManager(this);
 
     /**
-     * The data manager of the Client
+     * The data manager of the client
      * @type {ClientDataManager}
      * @private
      */
     this.dataManager = new ClientDataManager(this);
 
     /**
-     * The manager of the Client
+     * The manager of the client
      * @type {ClientManager}
      * @private
      */
     this.manager = new ClientManager(this);
 
     /**
-     * The WebSocket Manager of the Client
+     * The WebSocket manager of the client
      * @type {WebSocketManager}
      * @private
      */
     this.ws = new WebSocketManager(this);
 
     /**
-     * The Data Resolver of the Client
+     * The data resolver of the client
      * @type {ClientDataResolver}
      * @private
      */
     this.resolver = new ClientDataResolver(this);
 
     /**
-     * The Action Manager of the Client
+     * The action manager of the client
      * @type {ActionsManager}
      * @private
      */
     this.actions = new ActionsManager(this);
 
     /**
-     * The Voice Manager of the Client (`null` in browsers)
+     * The voice manager of the client (`null` in browsers)
      * @type {?ClientVoiceManager}
      * @private
      */
@@ -143,13 +144,36 @@ class Client extends EventEmitter {
     this.readyAt = null;
 
     /**
+     * Active voice broadcasts that have been created
+     * @type {VoiceBroadcast[]}
+     */
+    this.broadcasts = [];
+
+    /**
      * Previous heartbeat pings of the websocket (most recent first, limited to three elements)
      * @type {number[]}
      */
     this.pings = [];
 
+    /**
+     * Timestamp of the latest ping's start time
+     * @type {number}
+     * @private
+     */
     this._pingTimestamp = 0;
+
+    /**
+     * Timeouts set by {@link Client#setTimeout} that are still active
+     * @type {Set<Timeout>}
+     * @private
+     */
     this._timeouts = new Set();
+
+    /**
+     * Intervals set by {@link Client#setInterval} that are still active
+     * @type {Set<Timeout>}
+     * @private
+     */
     this._intervals = new Set();
 
     if (this.options.messageSweepInterval > 0) {
@@ -186,7 +210,7 @@ class Client extends EventEmitter {
 
   /**
    * All active voice connections that have been established, mapped by channel ID
-   * @type {Collection<string, VoiceConnection>}
+   * @type {Collection<Snowflake, VoiceConnection>}
    * @readonly
    */
   get voiceConnections() {
@@ -226,6 +250,16 @@ class Client extends EventEmitter {
   }
 
   /**
+   * Creates a voice broadcast.
+   * @returns {VoiceBroadcast}
+   */
+  createVoiceBroadcast() {
+    const broadcast = new VoiceBroadcast(this);
+    this.broadcasts.push(broadcast);
+    return broadcast;
+  }
+
+  /**
    * Logs the client in, establishing a websocket connection to Discord.
    * <info>Both bot and regular user accounts are supported, but it is highly recommended to use a bot account whenever
    * possible. User accounts are subject to harsher ratelimits and other restrictions that don't apply to bot accounts.
@@ -241,7 +275,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Logs out, terminates the connection to Discord, and destroys the client
+   * Logs out, terminates the connection to Discord, and destroys the client.
    * @returns {Promise}
    */
   destroy() {
@@ -269,7 +303,7 @@ class Client extends EventEmitter {
   /**
    * Obtains a user from Discord, or the user cache if it's already available.
    * <warn>This is only available when using a bot account.</warn>
-   * @param {string} id ID of the user
+   * @param {Snowflake} id ID of the user
    * @param {boolean} [cache=true] Whether to cache the new user object if it isn't already
    * @returns {Promise<User>}
    */
@@ -290,7 +324,7 @@ class Client extends EventEmitter {
 
   /**
    * Obtains a webhook from Discord.
-   * @param {string} id ID of the webhook
+   * @param {Snowflake} id ID of the webhook
    * @param {string} [token] Token for the webhook
    * @returns {Promise<Webhook>}
    */
@@ -344,12 +378,11 @@ class Client extends EventEmitter {
 
   /**
    * Obtains the OAuth Application of the bot from Discord.
-   * <warn>This is only available when using a bot account.</warn>
+   * @param {Snowflake} [id='@me'] ID of application to fetch
    * @returns {Promise<ClientOAuth2Application>}
    */
-  fetchApplication() {
-    if (!this.user.bot) throw new Error(Constants.Errors.NO_BOT_ACCOUNT);
-    return this.rest.methods.getMyApplication();
+  fetchApplication(id = '@me') {
+    return this.rest.methods.getApplication(id);
   }
 
   /**
@@ -391,7 +424,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Clears a timeout
+   * Clears a timeout.
    * @param {Timeout} timeout Timeout to cancel
    */
   clearTimeout(timeout) {
@@ -413,7 +446,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Clears an interval
+   * Clears an interval.
    * @param {Timeout} interval Interval to cancel
    */
   clearInterval(interval) {
@@ -434,7 +467,7 @@ class Client extends EventEmitter {
 
   /**
    * Adds/updates a friend's presence in {@link Client#presences}.
-   * @param {string} id ID of the user
+   * @param {Snowflake} id ID of the user
    * @param {Object} presence Raw presence object from Discord
    * @private
    */
@@ -447,7 +480,8 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Calls `eval(script)` with the client as `this`.
+   * Calls {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval} on a script
+   * with the client as `this`.
    * @param {string} script Script to eval
    * @returns {*}
    * @private
@@ -457,7 +491,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Validates client options
+   * Validates the client options.
    * @param {ClientOptions} [options=this.options] Options to validate
    * @private
    */

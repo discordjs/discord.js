@@ -140,11 +140,7 @@ class Role {
    * console.log(role.serialize());
    */
   serialize() {
-    const serializedPermissions = {};
-    for (const permissionName in Constants.PermissionFlags) {
-      serializedPermissions[permissionName] = this.hasPermission(permissionName);
-    }
-    return serializedPermissions;
+    return this.client.resolver.serializePermissions(this.permissions);
   }
 
   /**
@@ -160,10 +156,8 @@ class Role {
    *   console.log('This role can\'t ban members');
    * }
    */
-  hasPermission(permission, explicit = false) {
-    permission = this.client.resolver.resolvePermission(permission);
-    if (!explicit && (this.permissions & Constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
-    return (this.permissions & permission) > 0;
+  hasPermission(permission, explicit) {
+    return this.client.resolver.hasPermission(this.permissions, permission, explicit);
   }
 
   /**
@@ -227,7 +221,7 @@ class Role {
 
   /**
    * Set a new color for the role
-   * @param {number|string} color The new color for the role, either a hex string or a base 10 number
+   * @param {ColorResolvable} color The color of the role
    * @returns {Promise<Role>}
    * @example
    * // set the color of a role
