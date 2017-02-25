@@ -319,9 +319,7 @@ class VoiceConnection extends EventEmitter {
       ws.removeAllListeners('speaking');
     }
 
-    if (udp) {
-      udp.removeAllListeners('error');
-    }
+    if (udp) udp.removeAllListeners('error');
 
     this.sockets.ws = null;
     this.sockets.udp = null;
