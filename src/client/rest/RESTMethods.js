@@ -770,7 +770,15 @@ class RESTMethods {
   }
 
   updateChannelPositions(guildID, channels) {
-    return this.rest.makeRequest('patch', Constants.Endpoints.guildChannels(guildID), true, channels).then(() =>
+    const data = new Array(channels.length);
+    for (let i = 0; i < channels.length; i++) {
+      data[i] = {
+        id: this.client.resolver.resolveChannelID(channels[i].channel),
+        position: channels[i].position,
+      };
+    }
+
+    return this.rest.makeRequest('patch', Constants.Endpoints.guildChannels(guildID), true, data).then(() =>
       this.client.actions.GuildChannelsPositionUpdate.handle({
         guild_id: guildID,
         channels,

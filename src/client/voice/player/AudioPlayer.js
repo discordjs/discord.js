@@ -55,7 +55,7 @@ class AudioPlayer extends EventEmitter {
    * @type {?StreamDispatcher}
    */
   get currentDispatcher() {
-    return (this.streams.last() || {}).dispatcher;
+    return this.streams.size > 0 ? this.streams.last().dispatcher || null : null;
   }
 
   destroy() {

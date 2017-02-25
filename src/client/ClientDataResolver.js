@@ -117,9 +117,9 @@ class ClientDataResolver {
    */
   resolveChannel(channel) {
     if (channel instanceof Channel) return channel;
+    if (typeof channel === 'string') return this.client.channels.get(channel) || null;
     if (channel instanceof Message) return channel.channel;
     if (channel instanceof Guild) return channel.channels.get(channel.id) || null;
-    if (typeof channel === 'string') return this.client.channels.get(channel) || null;
     return null;
   }
 
