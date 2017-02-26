@@ -1,8 +1,8 @@
 try {
   const sodium = require('sodium');
   module.exports = {
-    open: sodium.api.crypto_secretbox_xsalsa20poly1305_open,
-    close: sodium.api.crypto_secretbox_xsalsa20poly1305,
+    open: sodium.api.crypto_secretbox_easy_open,
+    close: sodium.api.crypto_secretbox_easy,
   };
 } catch (err) {
   const tweetnacl = require('tweetnacl');
