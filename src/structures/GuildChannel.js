@@ -48,6 +48,15 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * The position of the channel
+   * @type {number}
+   */
+  get calculatedPosition() {
+    const sorted = this.guild._sortedChannels(this.type);
+    return sorted.array().indexOf(sorted.get(this.id));
+  }
+
+  /**
    * Gets the overall set of permissions for a user in this channel, taking into account roles and permission
    * overwrites.
    * @param {GuildMemberResolvable} member The user that you want to obtain the overall permissions for
@@ -206,6 +215,7 @@ class GuildChannel extends Channel {
   /**
    * Set a new position for the guild channel
    * @param {number} position The new position for the guild channel
+   * @param {boolean} [relative=false] Move the position relative to its current value
    * @returns {Promise<GuildChannel>}
    * @example
    * // set a new channel position
@@ -213,8 +223,8 @@ class GuildChannel extends Channel {
    *  .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
    *  .catch(console.error);
    */
-  setPosition(position) {
-    return this.client.rest.methods.updateChannel(this, { position });
+  setPosition(position, relative) {
+    return this.guild.setChannelPosition(this, position, relative).then(() => this);
   }
 
   /**

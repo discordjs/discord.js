@@ -127,7 +127,7 @@ class Role {
    * @type {number}
    */
   get calculatedPosition() {
-    const sorted = this.guild.sortedRoles;
+    const sorted = this.guild._sortedRoles();
     return sorted.array().indexOf(sorted.get(this.id));
   }
 
