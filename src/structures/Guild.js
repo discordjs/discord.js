@@ -633,7 +633,7 @@ class Guild {
    *  .catch(console.error);
    */
   createChannel(name, type, overwrites) {
-    return this.client.rest.methods.updateChannel(this, name, type, overwrites);
+    return this.client.rest.methods.createChannel(this, name, type, overwrites);
   }
 
   /**
