@@ -11,8 +11,7 @@ class MessageUpdateAction extends Action {
       const message = channel.messages.get(data.id);
       if (message) {
         const newMessage = new Message(message.channel, data, client);
-        newMessage._edits.push(...message._edits);
-        newMessage._edits.unshift(message);
+        newMessage._edits.push(message, ...message._edits);
         channel.messages.set(data.id, newMessage);
         client.emit(Constants.Events.MESSAGE_UPDATE, message, newMessage);
         return {
