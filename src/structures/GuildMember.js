@@ -285,6 +285,16 @@ class GuildMember {
   }
 
   /**
+   * The data for editing a guild member
+   * @typedef {Object} GuildmemberEditData
+   * @property {string} [nick] The nickname to set for the member
+   * @property {Collection<Snowflake, Role>|Role[]|Snowflake[]} [roles] The roles or role IDs to apply
+   * @property {boolean} [mute] Whether or not the member should be muted
+   * @property {boolean} [deaf] Whether or not the member should be deafened
+   * @property {ChannelResolvable} [channel] Channel to move user to (if they are connected to voice)
+   */
+
+  /**
    * Edit a guild member
    * @param {GuildmemberEditData} data The data to edit the member with
    * @returns {Promise<GuildMember>}
