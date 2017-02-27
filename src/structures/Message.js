@@ -178,69 +178,6 @@ class Message {
     this.hit = typeof data.hit === 'boolean' ? data.hit : null;
   }
 
-  patch(data) { // eslint-disable-line complexity
-    if (data.author) {
-      this.author = this.client.users.get(data.author.id);
-      if (this.guild) this.member = this.guild.member(this.author);
-    }
-    if (data.content) this.content = data.content;
-    if (data.timestamp) this.createdTimestamp = new Date(data.timestamp).getTime();
-    if (data.edited_timestamp) {
-      this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
-    }
-    if ('tts' in data) this.tts = data.tts;
-    if ('mention_everyone' in data) this.mentions.everyone = data.mention_everyone;
-    if (data.nonce) this.nonce = data.nonce;
-    if (data.embeds) this.embeds = data.embeds.map(e => new Embed(this, e));
-    if (data.type > -1) {
-      this.system = false;
-      if (data.type === 6) this.system = true;
-    }
-    if (data.attachments) {
-      this.attachments.clear();
-      for (const attachment of data.attachments) {
-        this.attachments.set(attachment.id, new Attachment(this, attachment));
-      }
-    }
-    if (data.mentions) {
-      this.mentions.users.clear();
-      for (const mention of data.mentions) {
-        let user = this.client.users.get(mention.id);
-        if (user) {
-          this.mentions.users.set(user.id, user);
-        } else {
-          user = this.client.dataManager.newUser(mention);
-          this.mentions.users.set(user.id, user);
-        }
-      }
-    }
-    if (data.mention_roles) {
-      this.mentions.roles.clear();
-      for (const mention of data.mention_roles) {
-        const role = this.channel.guild.roles.get(mention);
-        if (role) this.mentions.roles.set(role.id, role);
-      }
-    }
-    if (data.id) this.id = data.id;
-    if (this.channel.guild && data.content) {
-      this.mentions.channels.clear();
-      const channMentionsRaw = data.content.match(/<#([0-9]{14,20})>/g) || [];
-      for (const raw of channMentionsRaw) {
-        const chan = this.channel.guild.channels.get(raw.match(/([0-9]{14,20})/g)[0]);
-        if (chan) this.mentions.channels.set(chan.id, chan);
-      }
-    }
-    if (data.reactions) {
-      this.reactions.clear();
-      if (data.reactions.length > 0) {
-        for (const reaction of data.reactions) {
-          const id = reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` : reaction.emoji.name;
-          this.reactions.set(id, new MessageReaction(this, reaction.emoji, reaction.count, reaction.me));
-        }
-      }
-    }
-  }
-
   /**
    * The time the message was sent
    * @type {Date}
