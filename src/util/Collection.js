@@ -335,6 +335,17 @@ class Collection extends Map {
   }
 
   /**
+   * Clones this collection into a new collection. The source collection isn't modified.
+   * @returns {Collection}
+   * @example const newColl = someColl.clone();
+   */
+  clone() {
+    const newColl = new this.constructor();
+    for (const [key, val] of this) newColl.set(key, val);
+    return newColl;
+  }
+
+  /**
    * Calls the `delete()` method on all items that have it.
    * @returns {Promise[]}
    */
