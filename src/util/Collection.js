@@ -320,28 +320,25 @@ class Collection extends Map {
   }
 
   /**
+   * Clones this collection into a new collection. The source collection isn't modified.
+   * @returns {Collection}
+   * @example const newColl = someColl.clone();
+   */
+  clone() {
+    return new this.constructor(this);
+  }
+
+  /**
    * Combines this collection with others into a new collection. None of the source collections are modified.
    * @param {...Collection} collections Collections to merge
    * @returns {Collection}
    * @example const newColl = someColl.concat(someOtherColl, anotherColl, ohBoyAColl);
    */
   concat(...collections) {
-    const newColl = new this.constructor();
-    for (const [key, val] of this) newColl.set(key, val);
+    const newColl = this.clone();
     for (const coll of collections) {
       for (const [key, val] of coll) newColl.set(key, val);
     }
-    return newColl;
-  }
-
-  /**
-   * Clones this collection into a new collection. The source collection isn't modified.
-   * @returns {Collection}
-   * @example const newColl = someColl.clone();
-   */
-  clone() {
-    const newColl = new this.constructor();
-    for (const [key, val] of this) newColl.set(key, val);
     return newColl;
   }
 
