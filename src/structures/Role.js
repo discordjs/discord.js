@@ -1,4 +1,5 @@
 const Constants = require('../util/Constants');
+const Snowflake = require('../util/Snowflake');
 
 /**
  * Represents a role on Discord
@@ -78,7 +79,7 @@ class Role {
    * @readonly
    */
   get createdTimestamp() {
-    return (this.id / 4194304) + 1420070400000;
+    return Snowflake.deconstruct(this.id).date.getTime();
   }
 
   /**

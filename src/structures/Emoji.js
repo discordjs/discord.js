@@ -1,5 +1,6 @@
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
+const Snowflake = require('../util/Snowflake');
 
 /**
  * Represents a custom emoji
@@ -57,7 +58,7 @@ class Emoji {
    * @readonly
    */
   get createdTimestamp() {
-    return (this.id / 4194304) + 1420070400000;
+    return Snowflake.deconstruct(this.id).date.getTime();
   }
 
   /**

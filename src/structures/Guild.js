@@ -6,6 +6,7 @@ const GuildMember = require('./GuildMember');
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
+const Snowflake = require('../util/Snowflake');
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -216,7 +217,7 @@ class Guild {
    * @readonly
    */
   get createdTimestamp() {
-    return (this.id / 4194304) + 1420070400000;
+    return Snowflake.deconstruct(this.id).date.getTime();
   }
 
   /**
