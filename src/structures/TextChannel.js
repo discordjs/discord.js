@@ -89,6 +89,7 @@ class TextChannel extends GuildChannel {
   createCollector() { return; }
   awaitMessages() { return; }
   bulkDelete() { return; }
+  ack() { return; }
   _cacheMessage() { return; }
 }
 

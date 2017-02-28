@@ -169,6 +169,7 @@ class GroupDMChannel extends Channel {
   createCollector() { return; }
   awaitMessages() { return; }
   // doesn't work on group DMs; bulkDelete() { return; }
+  ack() { return; }
   _cacheMessage() { return; }
 }
 

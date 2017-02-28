@@ -403,6 +403,15 @@ class TextBasedChannel {
     throw new TypeError('The messages must be an Array, Collection, or number.');
   }
 
+  /**
+   * Marks all messages in this channel as read
+   * <warn>This only works for user accounts</warn>
+   * @returns {Promise<TextChannel>}
+   */
+  ack() {
+    return this.client.rest.methods.ackTextMessage(this);
+  }
+
   _cacheMessage(message) {
     const maxSize = this.client.options.messageCacheMaxSize;
     if (maxSize === 0) return null;
