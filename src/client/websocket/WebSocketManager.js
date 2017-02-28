@@ -173,8 +173,8 @@ class WebSocketManager extends EventEmitter {
     if (data.game) {
       game = {
         name: data.game.name,
-        type: typeof data.game.url !== 'undefined',
-        url: data.game.url,
+        type: +(typeof data.game.url === 'string'),
+        url: data.game.url || null,
       };
     }
 

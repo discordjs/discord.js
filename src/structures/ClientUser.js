@@ -151,7 +151,24 @@ class ClientUser extends User {
    * @param {PresenceData} data Data for the presence
    */
   setPresence(data) {
-    for (const manager of this.client.ws.managers.values()) manager.setPresence(data);
+    this.client.ws.setPresence(data);
+  }
+
+  /**
+   * Set the status of this shard
+   * @param {PresenceStatus} status Status to set
+   */
+  setStatus(status) {
+    this.client.ws.setStatus(status);
+  }
+
+  /**
+   * Set the game this shard is playing
+   * @param {string} [name] Name of the game
+   * @param {string} [url] URL for a stream
+   */
+  setGame(name, url) {
+    this.client.ws.setGame(name, url);
   }
 
   /**

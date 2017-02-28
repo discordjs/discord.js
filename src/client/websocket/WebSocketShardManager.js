@@ -209,6 +209,31 @@ class WebSocketShardManager extends EventEmitter {
   }
 
   /**
+   * Sets the full presence of the client user for all shards
+   * @param {PresenceData} data Data for the presence
+   */
+  setPresence(data) {
+    for (const manager of this.managers.values()) manager.setPresence(data);
+  }
+
+  /**
+   * Set the status of this shard
+   * @param {PresenceStatus} status Status to set
+   */
+  setStatus(status) {
+    for (const manager of this.managers.values()) manager.setStatus(status);
+  }
+
+  /**
+   * Set the game this shard is playing
+   * @param {string} [name] Name of the game
+   * @param {string} [url] URL for a stream
+   */
+  setGame(name, url) {
+    for (const manager of this.managers.values()) manager.setGame(name, url);
+  }
+
+  /**
    * The statuses of the websocket managers
    * @type {number[]}
    * @readonly
