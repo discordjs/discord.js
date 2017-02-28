@@ -141,6 +141,73 @@ class WebSocketManager extends EventEmitter {
     });
   }
 
+  /**
+   * Data resembling a raw Discord presence
+   * @typedef {Object} PresenceData
+   * @property {PresenceStatus} [status] Status of the user
+   * @property {boolean} [afk] Whether the user is AFK
+   * @property {Object} [game] Game the user is playing
+   * @property {string} [game.name] Name of the game
+   * @property {string} [game.url] Twitch stream URL
+   */
+
+  /**
+   * A user's status. Must be one of:
+   * - `online`
+   * - `idle`
+   * - `invisible`
+   * - `dnd` (do not disturb)
+   * @typedef {string} PresenceStatus
+   */
+
+  /**
+   * Sets the full presence of the client user.
+   * @param {PresenceData} data Data for the presence
+   */
+  setPresence(data) {
+    // {"op":3,"d":{"status":"dnd","game":{name:"Garry's Mod",type:1,"url":"https://twitch.tv"},"afk":false,"since":0}}
+    // { game: { name: 'Garry\'s Mod', url: 'https://twitch.tv' }, status: 'idle' }
+
+    let game = null;
+
+    if (data.game) {
+      game = {
+        name: data.game.name,
+        type: typeof data.game.url !== 'undefined',
+        url: data.game.url,
+      };
+    }
+
+    const d = {
+      afk: false,
+      since: 0,
+      status: data.status,
+      game,
+    };
+
+    this.send({
+      op: Constants.OPCodes.PRESENCE_UPDATE,
+      d,
+    });
+  }
+
+  /**
+   * Set the status of this shard
+   * @param {PresenceStatus} status Status to set
+   */
+  setStatus(status) {
+    this.setPresence({ status });
+  }
+
+  /**
+   * Set the game this shard is playing
+   * @param {string} [name] Name of the game
+   * @param {string} [url] URL for a stream
+   */
+  setGame(name, url) {
+    this.setPresence({ game: { name, url } });
+  }
+
   heartbeat(normal) {
     if (normal && !this.lastHeartbeatAck) {
       this.emit('debug', 'Failed to recieve heartbeat ACK! Attempting to reconnect');
