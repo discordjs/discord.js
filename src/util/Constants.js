@@ -10,6 +10,8 @@ exports.Package = require('../../package.json');
  * be advised if you are very unlucky you could be IP banned</warn>
  * @property {number} [shardID=0] ID of the shard to run
  * @property {number} [shardCount=0] Total number of shards
+ * @property {number} [shardOffset=0] Offset shard IDs
+ * @property {number} [shardLimit=0] Limit shards when using shard offset
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
  * (-1 or Infinity for unlimited - don't do this without message sweeping, otherwise memory usage will climb
  * indefinitely)
@@ -35,6 +37,8 @@ exports.DefaultOptions = {
   apiRequestMethod: 'sequential',
   shardID: 0,
   shardCount: 0,
+  shardOffset: 0,
+  shardLimit: 0,
   messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,

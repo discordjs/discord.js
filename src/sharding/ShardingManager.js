@@ -24,6 +24,7 @@ class ShardingManager extends EventEmitter {
     super();
     options = Util.mergeDefault({
       totalShards: 'auto',
+      shardsPerProcess: 1,
       respawn: true,
       shardArgs: [],
       token: null,

@@ -26,8 +26,14 @@ class Client extends EventEmitter {
     super();
 
     // Obtain shard details from environment
-    if (!options.shardID && 'SHARD_ID' in process.env) options.shardID = Number(process.env.SHARD_ID);
-    if (!options.shardCount && 'SHARD_COUNT' in process.env) options.shardCount = Number(process.env.SHARD_COUNT);
+    for (const [op, prop] of [
+      ['shardID', 'SHARD_ID'],
+      ['shardCount', 'SHARD_COUNT'],
+      ['shardOffset', 'SHARD_OFFSET'],
+      ['shardLimit', 'SHARD_LIMIT'],
+    ]) {
+      if (!options[op] && prop in process.env) options[op] = Number(process.env[prop]);
+    }
 
     this._timeouts = new Set();
     this._intervals = new Set();
