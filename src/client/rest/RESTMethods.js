@@ -154,7 +154,7 @@ class RESTMethods {
   ackMessage(message) {
     return this.rest.makeRequest('post',
       `${Constants.Endpoints.channelMessage(message.channel.id, message.id)}/ack`,
-      false,
+      true,
       { token: this._ackToken }
     ).then((res) => {
       this._ackToken = res.token;
@@ -165,7 +165,7 @@ class RESTMethods {
   ackTextChannel(channel) {
     return this.rest.makeRequest('post',
       `${Constants.Endpoints.channel(channel.id)}/ack`,
-      false,
+      true,
       { token: this._ackToken }
     ).then((res) => {
       this._ackToken = res.token;
