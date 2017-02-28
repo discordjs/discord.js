@@ -63,7 +63,7 @@ class RESTMethods {
       // nonce has to be a uint64 :<
       if (nonce !== undefined) {
         nonce = Math.abs(parseInt(nonce));
-        if (isNaN(nonce)) reject(new Error('`nonce` must be a positive integer.'));
+        if (isNaN(nonce)) throw new Error('`nonce` must be a positive integer.');
       }
 
       if (content) {
