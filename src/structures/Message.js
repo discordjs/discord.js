@@ -493,6 +493,15 @@ class Message {
   }
 
   /**
+   * Marks the message as read
+   * <warn>This only works for user accounts</warn>
+   * @returns {Promise<Message>}
+   */
+  ack() {
+    return this.client.rest.methods.ackMessage(this);
+  }
+
+  /**
    * Fetches the webhook used to create this message.
    * @returns {Promise<?Webhook>}
    */

@@ -22,6 +22,7 @@ class RESTMethods {
   constructor(restManager) {
     this.rest = restManager;
     this.client = restManager.client;
+    this._ackToken = null;
   }
 
   login(token = this.client.token) {
@@ -148,6 +149,22 @@ class RESTMethods {
           channel_id: message.channel.id,
         }).message
       );
+  }
+
+  ackMessage(message) {
+    return this.rest.makeRequest('post',
+      `${Constants.Endpoints.channelMessage(message.channel.id, message.id)}/ack`,
+      false,
+      { token: this._ackToken }
+    ).then((res) => {
+      this._ackToken = res.token;
+      return message;
+    });
+  }
+
+  ackGuild(guild) {
+    return this.rest.makeRequest('post', `${Constants.Endpoints.guild(guild.id)}/ack`, true)
+    .then(() => guild);
   }
 
   bulkDeleteMessages(channel, messages, filterOld) {

@@ -770,6 +770,15 @@ class Guild {
   }
 
   /**
+   * Marks all messages in this guild as read
+   * <warn>This only works for user accounts</warn>
+   * @returns {Promise<Guild>} this guild
+   */
+  ack() {
+    return this.client.rest.methods.ackGuild(this);
+  }
+
+  /**
    * Whether this Guild equals another Guild. It compares all properties, so for most operations
    * it is advisable to just compare `guild.id === guild2.id` as it is much faster and is often
    * what most users need.
