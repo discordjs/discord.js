@@ -406,7 +406,7 @@ class TextBasedChannel {
   /**
    * Marks all messages in this channel as read
    * <warn>This only works for user accounts</warn>
-   * @returns {Promise<TextChannel>}
+   * @returns {Promise<TextChannel|GroupDMChannel|DMChannel>}
    */
   ack() {
     return this.client.rest.methods.ackTextMessage(this);
