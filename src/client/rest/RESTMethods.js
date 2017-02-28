@@ -60,6 +60,12 @@ class RESTMethods {
     return new Promise((resolve, reject) => { // eslint-disable-line complexity
       if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
 
+      // nonce has to be a positive uint64 :<
+      if (nonce !== undefined) {
+        nonce = Math.abs(parseInt(nonce));
+        if (isNaN(nonce)) nonce = null;
+      }
+
       if (content) {
         if (split && typeof split !== 'object') split = {};
 
