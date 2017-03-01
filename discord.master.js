@@ -2411,6 +2411,48 @@ class GuildMember {
   }
 
   /**
+   * The role of the member used to set their color.
+   * @type {?Role}
+   * @readonly
+   */
+  get colorRole() {
+    const coloredRoles = this.roles.filter(role => role.color);
+    if (!coloredRoles.size) return null;
+    return coloredRoles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
+  }
+
+  /**
+   * The displayed color of the member in base 10.
+   * @type {number}
+   * @readonly
+   */
+  get displayColor() {
+    const role = this.colorRole;
+    return (role && role.color) || 0;
+  }
+
+  /**
+   * The displayed color of the member in hexadecimal.
+   * @type {string}
+   * @readonly
+   */
+  get displayHexColor() {
+    const role = this.colorRole;
+    return (role && role.hexColor) || '#000000';
+  }
+
+  /**
+   * The role of the member used to hoist them in a separate category in the users list.
+   * @type {?Role}
+   * @readonly
+   */
+  get hoistRole() {
+    const hoistedRoles = this.roles.filter(role => role.hoist);
+    if (!hoistedRoles.size) return null;
+    return hoistedRoles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
+  }
+
+  /**
    * Whether this member is muted in any way
    * @type {boolean}
    * @readonly
