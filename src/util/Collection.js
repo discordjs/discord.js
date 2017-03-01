@@ -320,7 +320,7 @@ class Collection extends Map {
   }
 
   /**
-   * Clones this collection into a new collection. The source collection isn't modified.
+   * Clones this collection into a new collection.
    * @returns {Collection}
    * @example const newColl = someColl.clone();
    */
