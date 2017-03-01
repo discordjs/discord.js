@@ -405,7 +405,7 @@ class TextBasedChannel {
 
   /**
    * Marks all messages in this channel as read
-   * <warn>This only works for user accounts</warn>
+   * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<TextChannel|GroupDMChannel|DMChannel>}
    */
   ack() {
