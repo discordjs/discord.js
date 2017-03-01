@@ -494,7 +494,7 @@ class Message {
 
   /**
    * Marks the message as read
-   * <warn>This only works for user accounts</warn>
+   * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<Message>}
    */
   ack() {
