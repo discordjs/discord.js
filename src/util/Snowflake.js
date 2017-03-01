@@ -34,7 +34,8 @@ class SnowflakeUtil {
   /**
    * A deconstructed snowflake
    * @typedef {Object} DeconstructedSnowflake
-   * @property {Date} date Date in the snowflake
+   * @property {number} createdTimestamp Timestamp the snowflake was created
+   * @property {Date} createdAt Date the snowflake was created
    * @property {number} workerID Worker ID in the snowflake
    * @property {number} processID Process ID in the snowflake
    * @property {number} increment Increment in the snowflake
@@ -48,13 +49,17 @@ class SnowflakeUtil {
    */
   static deconstruct(snowflake) {
     const BINARY = pad(Long.fromString(snowflake).toString(2), 64);
-    return {
-      date: new Date(parseInt(BINARY.substring(0, 42), 2) + EPOCH),
+    const res = {
+      createdTimestamp: parseInt(BINARY.substring(0, 42), 2) + EPOCH,
       workerID: parseInt(BINARY.substring(42, 47), 2),
       processID: parseInt(BINARY.substring(47, 52), 2),
       increment: parseInt(BINARY.substring(52, 64), 2),
       binary: BINARY,
     };
+    Object.defineProperty(res, 'createdAt', {
+      get: function get() { return new Date(this.createdTimestamp); },
+    });
+    return res;
   }
 }
 

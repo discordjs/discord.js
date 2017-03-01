@@ -58,7 +58,7 @@ class Emoji {
    * @readonly
    */
   get createdTimestamp() {
-    return Snowflake.deconstruct(this.id).date.getTime();
+    return Snowflake.deconstruct(this.id).createdTimestamp;
   }
 
   /**
