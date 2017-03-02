@@ -50,14 +50,14 @@ class SnowflakeUtil {
   static deconstruct(snowflake) {
     const BINARY = pad(Long.fromString(snowflake).toString(2), 64);
     const res = {
-      createdTimestamp: parseInt(BINARY.substring(0, 42), 2) + EPOCH,
+      timestamp: parseInt(BINARY.substring(0, 42), 2) + EPOCH,
       workerID: parseInt(BINARY.substring(42, 47), 2),
       processID: parseInt(BINARY.substring(47, 52), 2),
       increment: parseInt(BINARY.substring(52, 64), 2),
       binary: BINARY,
     };
-    Object.defineProperty(res, 'createdAt', {
-      get: function get() { return new Date(this.createdTimestamp); },
+    Object.defineProperty(res, 'date', {
+      get: function get() { return new Date(this.timestamp); },
       enumerable: true,
     });
     return res;
