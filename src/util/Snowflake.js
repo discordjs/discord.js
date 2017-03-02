@@ -34,8 +34,8 @@ class SnowflakeUtil {
   /**
    * A deconstructed snowflake
    * @typedef {Object} DeconstructedSnowflake
-   * @property {number} createdTimestamp Timestamp the snowflake was created
-   * @property {Date} createdAt Date the snowflake was created
+   * @property {number} timestamp Timestamp the snowflake was created
+   * @property {Date} date Date the snowflake was created
    * @property {number} workerID Worker ID in the snowflake
    * @property {number} processID Process ID in the snowflake
    * @property {number} increment Increment in the snowflake
