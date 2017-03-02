@@ -58,6 +58,7 @@ class SnowflakeUtil {
     };
     Object.defineProperty(res, 'createdAt', {
       get: function get() { return new Date(this.createdTimestamp); },
+      enumerable: true,
     });
     return res;
   }
