@@ -40,6 +40,9 @@
     "tweetnacl": "^0.14.0",
     "ws": "^2.0.0"
   },
+  "optionalDependencies": {
+    "discord.js-prebuilts": "^1.0.0-rc.1"
+  },
   "peerDependencies": {
     "bufferutil": "^2.0.0",
     "erlpack": "hammerandchisel/erlpack",
