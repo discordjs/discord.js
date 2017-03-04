@@ -432,6 +432,10 @@ exports.Colors = {
   NOT_QUITE_BLACK: 0x23272A,
 };
 
+Object.defineProperty(exports.Colors, 'RANDOM', {
+  get: function get() { return Math.floor(Math.random() * 16777214) + 1; },
+});
+
 let _ALL_PERMISSIONS = 0;
 for (const key in PermissionFlags) _ALL_PERMISSIONS |= PermissionFlags[key];
 exports.ALL_PERMISSIONS = _ALL_PERMISSIONS;
