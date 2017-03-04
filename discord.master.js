@@ -23157,7 +23157,7 @@ class RESTMethods {
         Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000
       );
     }
-    return this.rest.makeRequest('post', `${Constants.Endpoints.channelMessages(channel.id)}/bulk_delete`, true, {
+    return this.rest.makeRequest('post', `${Constants.Endpoints.channelMessages(channel.id)}/bulk-delete`, true, {
       messages,
     }).then(() =>
       this.client.actions.MessageDeleteBulk.handle({
