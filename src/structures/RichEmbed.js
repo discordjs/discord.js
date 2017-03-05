@@ -154,7 +154,7 @@ class RichEmbed {
     value = resolveString(value);
     if (value.length > 1024) throw new RangeError('RichEmbed field values may not exceed 1024 characters.');
     if (!/\S/.test(value)) throw new RangeError('RichEmbed field values may not be blank.');
-    this.fields.push({ name: name, value: value, inline });
+    this.fields.push({ name, value, inline });
     return this;
   }
 
