@@ -186,6 +186,8 @@ class ClientUser extends User {
         if (game.url) game.type = 1;
       }
 
+      if (data.game === null) game = null;
+
       if (typeof data.afk !== 'undefined') afk = data.afk;
       afk = Boolean(afk);
 
@@ -224,11 +226,12 @@ class ClientUser extends User {
 
   /**
    * Sets the game the client user is playing.
-   * @param {string} game Game being played
+   * @param {?string} game Game being played
    * @param {string} [streamingURL] Twitch stream URL
    * @returns {Promise<ClientUser>}
    */
   setGame(game, streamingURL) {
+    if (game === null) return this.setPresence({ game });
     return this.setPresence({ game: {
       name: game,
       url: streamingURL,
@@ -299,6 +302,30 @@ class ClientUser extends User {
   }
 
   /**
+   * An object containing either a user or access token, and an optional nickname
+   * @typedef {Object} GroupDMRecipientOptions
+   * @property {UserResolvable|Snowflake} [user] User to add to the group DM
+   * (only available if a user is creating the DM)
+   * @property {string} [accessToken] Access token to use to add a user to the group DM
+   * (only available if a bot is creating the DM)
+   * @property {string} [nick] Permanent nickname (only available if a bot is creating the DM)
+   */
+
+  /**
+   * Creates a group DM
+   * @param {GroupDMRecipientOptions[]} recipients The recipients
+   * @returns {Promise<GroupDMChannel>}
+   */
+  createGroupDM(recipients) {
+    return this.client.rest.methods.createGroupDM({
+      recipients: recipients.map(u => this.client.resolver.resolveUserID(u.user)),
+      accessTokens: recipients.map(u => u.accessToken),
+      nicks: recipients.map(u => u.nick),
+    });
+  }
+
+  /**
+   * Accepts an invite to join a guild
    * @param {Invite|string} invite Invite or code to accept
    * @returns {Promise<Guild>} Joined guild
    */

@@ -161,7 +161,7 @@ class TextBasedChannel {
   /**
    * Gets a single message from this channel, regardless of it being cached or not.
    * <warn>This is only available when using a bot account.</warn>
-   * @param {string} messageID ID of the message to get
+   * @param {Snowflake} messageID ID of the message to get
    * @returns {Promise<Message>}
    * @example
    * // get message
@@ -182,9 +182,9 @@ class TextBasedChannel {
    * `after` are mutually exclusive. All the parameters are optional.
    * @typedef {Object} ChannelLogsQueryOptions
    * @property {number} [limit=50] Number of messages to acquire
-   * @property {string} [before] ID of a message to get the messages that were posted before it
-   * @property {string} [after] ID of a message to get the messages that were posted after it
-   * @property {string} [around] ID of a message to get the messages that were posted around it
+   * @property {Snowflake} [before] ID of a message to get the messages that were posted before it
+   * @property {Snowflake} [after] ID of a message to get the messages that were posted after it
+   * @property {Snowflake} [around] ID of a message to get the messages that were posted around it
    */
 
   /**
@@ -228,8 +228,8 @@ class TextBasedChannel {
   /**
    * @typedef {Object} MessageSearchOptions
    * @property {string} [content] Message content
-   * @property {string} [maxID] Maximum ID for the filter
-   * @property {string} [minID] Minimum ID for the filter
+   * @property {Snowflake} [maxID] Maximum ID for the filter
+   * @property {Snowflake} [minID] Minimum ID for the filter
    * @property {string} [has] One of `link`, `embed`, `file`, `video`, `image`, or `sound`,
    * or add `-` to negate (e.g. `-file`)
    * @property {ChannelResolvable} [channel] Channel to limit search to (only for guild search endpoint)
@@ -412,7 +412,7 @@ class TextBasedChannel {
   }
 }
 
-exports.applyToClass = (structure, full = false) => {
+exports.applyToClass = (structure, full = false, ignore = []) => {
   const props = ['send', 'sendMessage', 'sendEmbed', 'sendFile', 'sendCode'];
   if (full) {
     props.push(
@@ -431,6 +431,7 @@ exports.applyToClass = (structure, full = false) => {
     );
   }
   for (const prop of props) {
+    if (ignore.includes(prop)) continue;
     Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
   }
 };

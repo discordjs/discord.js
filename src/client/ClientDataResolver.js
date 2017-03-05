@@ -102,7 +102,7 @@ class ClientDataResolver {
   }
 
   /**
-   * Data that can be resolved to give a Channel. This can be:
+   * Data that can be resolved to give a Channel object. This can be:
    * * A Channel object
    * * A Message object (the channel the message was sent in)
    * * A Guild object (the #general channel)
@@ -117,14 +117,14 @@ class ClientDataResolver {
    */
   resolveChannel(channel) {
     if (channel instanceof Channel) return channel;
+    if (typeof channel === 'string') return this.client.channels.get(channel) || null;
     if (channel instanceof Message) return channel.channel;
     if (channel instanceof Guild) return channel.channels.get(channel.id) || null;
-    if (typeof channel === 'string') return this.client.channels.get(channel) || null;
     return null;
   }
 
   /**
-   * Resolves a ChannelResolvable to a Channel object
+   * Resolves a ChannelResolvable to a channel ID
    * @param {ChannelResolvable} channel The channel resolvable to resolve
    * @returns {?Snowflake}
    */
@@ -215,6 +215,20 @@ class ClientDataResolver {
     let bitfield = 0;
     for (const permission of permissions) bitfield |= this.resolvePermission(permission);
     return bitfield;
+  }
+
+  hasPermission(bitfield, name, explicit = false) {
+    const permission = this.resolvePermission(name);
+    if (!explicit && (bitfield & Constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
+    return (bitfield & permission) > 0;
+  }
+
+  serializePermissions(bitfield) {
+    const serializedPermissions = {};
+    for (const name in Constants.PermissionFlags) {
+      serializedPermissions[name] = this.hasPermission(bitfield, name);
+    }
+    return serializedPermissions;
   }
 
   /**

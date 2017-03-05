@@ -331,20 +331,16 @@ class Guild {
   }
 
   /**
-   * The data for a role
-   * @typedef {Object} AddGuildMemberOptions
-   * @property {string} accessToken An oauth2 access token granted with the guilds.join to the bot's application
-   * for the user you want to add to the guild
-   * @property {string} [nick] Value to set users nickname to
-   * @property {Collection<Snowflake, Role>|Role[]|string[]} [roles] The roles or role IDs to add
-   * @property {boolean} [mute] If the user is muted
-   * @property {boolean} [deaf] If the user is deafened
-   */
-
-  /**
-   * Add a user to this guild using OAuth2
-   * @param {UserResolvable|string} user The user or ID of the user to add to guild
-   * @param {AddGuildMemberOptions} options Options object containing the access_token
+   * Adds a user to the guild using OAuth2. Requires the `CREATE_INSTANT_INVITE` permission.
+   * @param {UserResolvable} user User to add to the guild
+   * @param {Object} options Options for the addition
+   * @param {string} options.accessToken An OAuth2 access token for the user with the `guilds.join` scope granted to the
+   * bot's application
+   * @param {string} [options.nick] Nickname to give the member (requires `MANAGE_NICKNAMES`)
+   * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} [options.roles] Roles to add to the member
+   * (requires `MANAGE_ROLES`)
+   * @param {boolean} [options.mute] Whether the member should be muted (requires `MUTE_MEMBERS`)
+   * @param {boolean} [options.deaf] Whether the member should be deafened (requires `DEAFEN_MEMBERS`)
    * @returns {Promise<GuildMember>}
    */
   addMember(user, options) {
@@ -642,6 +638,26 @@ class Guild {
   }
 
   /**
+   * The data needed for updating a channel's position.
+   * @typedef {Object} ChannelPosition
+   * @property {ChannelResolvable} channel Channel to update
+   * @property {number} position New position for the channel
+   */
+
+  /**
+   * Batch-updates the guild's channels' positions.
+   * @param {ChannelPosition[]} channelPositions Channel positions to update
+   * @returns {Promise<Guild>}
+   * @example
+   * guild.updateChannels([{ channel: channelID, position: newChannelIndex }])
+   *  .then(guild => console.log(`Updated channel positions for ${guild.id}`))
+   *  .catch(console.error);
+   */
+  setChannelPositions(channelPositions) {
+    return this.client.rest.methods.updateChannelPositions(this.id, channelPositions);
+  }
+
+  /**
    * Creates a new role in the guild with given information
    * @param {RoleData} [data] The data to update the role with
    * @returns {Promise<Role>}
@@ -667,7 +683,7 @@ class Guild {
    * Creates a new custom emoji in the guild.
    * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji.
    * @param {string} name The name for the emoji.
-   * @param {Collection<Role>|Role[]} [roles] Roles to limit the emoji to
+   * @param {Collection<Snowflake, Role>|Role[]} [roles] Roles to limit the emoji to
    * @returns {Promise<Emoji>} The created emoji.
    * @example
    * // create a new emoji from a url

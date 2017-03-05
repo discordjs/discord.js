@@ -12,8 +12,9 @@ const Role = require('../../structures/Role');
 const Invite = require('../../structures/Invite');
 const Webhook = require('../../structures/Webhook');
 const UserProfile = require('../../structures/UserProfile');
-const ClientOAuth2Application = require('../../structures/ClientOAuth2Application');
+const OAuth2Application = require('../../structures/OAuth2Application');
 const Channel = require('../../structures/Channel');
+const GroupDMChannel = require('../../structures/GroupDMChannel');
 const Guild = require('../../structures/Guild');
 const VoiceRegion = require('../../structures/VoiceRegion');
 
@@ -155,7 +156,7 @@ class RESTMethods {
         Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000
       );
     }
-    return this.rest.makeRequest('post', `${Constants.Endpoints.channelMessages(channel.id)}/bulk_delete`, true, {
+    return this.rest.makeRequest('post', `${Constants.Endpoints.channelMessages(channel.id)}/bulk-delete`, true, {
       messages,
     }).then(() =>
       this.client.actions.MessageDeleteBulk.handle({
@@ -244,6 +245,23 @@ class RESTMethods {
     return this.rest.makeRequest('post', Constants.Endpoints.userChannels(this.client.user.id), true, {
       recipient_id: recipient.id,
     }).then(data => this.client.actions.ChannelCreate.handle(data).channel);
+  }
+
+  createGroupDM(options) {
+    const data = this.client.user.bot ?
+      { access_tokens: options.accessTokens, nicks: options.nicks } :
+      { recipients: options.recipients };
+
+    return this.rest.makeRequest('post', Constants.Endpoints.meChannels, true, data)
+    .then(res => new GroupDMChannel(this.client, res));
+  }
+
+  addUserToGroupDM(channel, options) {
+    const data = this.client.user.bot ?
+      { nick: options.nick, access_token: options.accessToken } :
+      { recipient: options.id };
+    return this.rest.makeRequest('put', Constants.Endpoints.dmChannelRecipient(channel.id, options.id), true, data)
+    .then(() => channel);
   }
 
   getExistingDM(recipient) {
@@ -413,16 +431,12 @@ class RESTMethods {
   }
 
   putGuildMember(guild, user, options) {
+    options.access_token = options.accessToken;
     if (options.roles) {
-      var roles = options.roles;
+      const roles = options.roles;
       if (roles instanceof Collection || (roles instanceof Array && roles[0] instanceof Role)) {
         options.roles = roles.map(role => role.id);
       }
-    }
-    if (options.accessToken) {
-      options.access_token = options.accessToken;
-    } else {
-      return Promise.reject(new Error('OAuth2 access token was not specified.'));
     }
     return this.rest.makeRequest('put', Constants.Endpoints.guildMember(guild.id, user.id), true, options)
       .then(data => this.client.actions.GuildMemberGet.handle(guild, data).member);
@@ -755,6 +769,23 @@ class RESTMethods {
       .then(() => user);
   }
 
+  updateChannelPositions(guildID, channels) {
+    const data = new Array(channels.length);
+    for (let i = 0; i < channels.length; i++) {
+      data[i] = {
+        id: this.client.resolver.resolveChannelID(channels[i].channel),
+        position: channels[i].position,
+      };
+    }
+
+    return this.rest.makeRequest('patch', Constants.Endpoints.guildChannels(guildID), true, data).then(() =>
+      this.client.actions.GuildChannelsPositionUpdate.handle({
+        guild_id: guildID,
+        channels,
+      }).guild
+    );
+  }
+
   setRolePositions(guildID, roles) {
     return this.rest.makeRequest('patch', Constants.Endpoints.guildRoles(guildID), true, roles).then(() =>
       this.client.actions.GuildRolesPositionUpdate.handle({
@@ -812,10 +843,18 @@ class RESTMethods {
     );
   }
 
-  getMyApplication() {
-    return this.rest.makeRequest('get', Constants.Endpoints.myApplication, true).then(app =>
-      new ClientOAuth2Application(this.client, app)
+  getApplication(id) {
+    return this.rest.makeRequest('get', Constants.Endpoints.oauth2Application(id), true).then(app =>
+      new OAuth2Application(this.client, app)
     );
+  }
+
+  resetApplication(id) {
+    return this.rest.makeRequest(
+      'post',
+      `${Constants.Endpoints.oauth2Application(id)}/reset`,
+      true
+    ).then(app => new OAuth2Application(this.client, app));
   }
 
   setNote(user, note) {

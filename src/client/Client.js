@@ -12,6 +12,7 @@ const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
 const Presence = require('../structures/Presence').Presence;
 const ShardClientUtil = require('../sharding/ShardClientUtil');
+const VoiceBroadcast = require('./voice/VoiceBroadcast');
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -143,6 +144,12 @@ class Client extends EventEmitter {
     this.readyAt = null;
 
     /**
+     * Active voice broadcasts that have been created
+     * @type {VoiceBroadcast[]}
+     */
+    this.broadcasts = [];
+
+    /**
      * Previous heartbeat pings of the websocket (most recent first, limited to three elements)
      * @type {number[]}
      */
@@ -203,7 +210,7 @@ class Client extends EventEmitter {
 
   /**
    * All active voice connections that have been established, mapped by channel ID
-   * @type {Collection<string, VoiceConnection>}
+   * @type {Collection<Snowflake, VoiceConnection>}
    * @readonly
    */
   get voiceConnections() {
@@ -240,6 +247,16 @@ class Client extends EventEmitter {
    */
   get browser() {
     return os.platform() === 'browser';
+  }
+
+  /**
+   * Creates a voice broadcast.
+   * @returns {VoiceBroadcast}
+   */
+  createVoiceBroadcast() {
+    const broadcast = new VoiceBroadcast(this);
+    this.broadcasts.push(broadcast);
+    return broadcast;
   }
 
   /**
@@ -286,7 +303,7 @@ class Client extends EventEmitter {
   /**
    * Obtains a user from Discord, or the user cache if it's already available.
    * <warn>This is only available when using a bot account.</warn>
-   * @param {string} id ID of the user
+   * @param {Snowflake} id ID of the user
    * @param {boolean} [cache=true] Whether to cache the new user object if it isn't already
    * @returns {Promise<User>}
    */
@@ -307,7 +324,7 @@ class Client extends EventEmitter {
 
   /**
    * Obtains a webhook from Discord.
-   * @param {string} id ID of the webhook
+   * @param {Snowflake} id ID of the webhook
    * @param {string} [token] Token for the webhook
    * @returns {Promise<Webhook>}
    */
@@ -361,12 +378,11 @@ class Client extends EventEmitter {
 
   /**
    * Obtains the OAuth Application of the bot from Discord.
-   * <warn>This is only available when using a bot account.</warn>
+   * @param {Snowflake} [id='@me'] ID of application to fetch
    * @returns {Promise<ClientOAuth2Application>}
    */
-  fetchApplication() {
-    if (!this.user.bot) throw new Error(Constants.Errors.NO_BOT_ACCOUNT);
-    return this.rest.methods.getMyApplication();
+  fetchApplication(id = '@me') {
+    return this.rest.methods.getApplication(id);
   }
 
   /**
@@ -451,7 +467,7 @@ class Client extends EventEmitter {
 
   /**
    * Adds/updates a friend's presence in {@link Client#presences}.
-   * @param {string} id ID of the user
+   * @param {Snowflake} id ID of the user
    * @param {Object} presence Raw presence object from Discord
    * @private
    */

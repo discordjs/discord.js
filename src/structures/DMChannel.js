@@ -52,10 +52,10 @@ class DMChannel extends Channel {
   get typingCount() { return; }
   createCollector() { return; }
   awaitMessages() { return; }
-  bulkDelete() { return; }
+  // doesn't work on DM channels; bulkDelete() { return; }
   _cacheMessage() { return; }
 }
 
-TextBasedChannel.applyToClass(DMChannel, true);
+TextBasedChannel.applyToClass(DMChannel, true, ['bulkDelete']);
 
 module.exports = DMChannel;

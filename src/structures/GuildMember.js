@@ -153,6 +153,48 @@ class GuildMember {
   }
 
   /**
+   * The role of the member used to set their color.
+   * @type {?Role}
+   * @readonly
+   */
+  get colorRole() {
+    const coloredRoles = this.roles.filter(role => role.color);
+    if (!coloredRoles.size) return null;
+    return coloredRoles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
+  }
+
+  /**
+   * The displayed color of the member in base 10.
+   * @type {number}
+   * @readonly
+   */
+  get displayColor() {
+    const role = this.colorRole;
+    return (role && role.color) || 0;
+  }
+
+  /**
+   * The displayed color of the member in hexadecimal.
+   * @type {string}
+   * @readonly
+   */
+  get displayHexColor() {
+    const role = this.colorRole;
+    return (role && role.hexColor) || '#000000';
+  }
+
+  /**
+   * The role of the member used to hoist them in a separate category in the users list.
+   * @type {?Role}
+   * @readonly
+   */
+  get hoistRole() {
+    const hoistedRoles = this.roles.filter(role => role.hoist);
+    if (!hoistedRoles.size) return null;
+    return hoistedRoles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
+  }
+
+  /**
    * Whether this member is muted in any way
    * @type {boolean}
    * @readonly
@@ -285,8 +327,18 @@ class GuildMember {
   }
 
   /**
+   * The data for editing a guild member
+   * @typedef {Object} GuildMemberEditData
+   * @property {string} [nick] The nickname to set for the member
+   * @property {Collection<Snowflake, Role>|Role[]|Snowflake[]} [roles] The roles or role IDs to apply
+   * @property {boolean} [mute] Whether or not the member should be muted
+   * @property {boolean} [deaf] Whether or not the member should be deafened
+   * @property {ChannelResolvable} [channel] Channel to move member to (if they are connected to voice)
+   */
+
+  /**
    * Edit a guild member
-   * @param {GuildmemberEditData} data The data to edit the member with
+   * @param {GuildMemberEditData} data The data to edit the member with
    * @returns {Promise<GuildMember>}
    */
   edit(data) {
@@ -322,7 +374,7 @@ class GuildMember {
 
   /**
    * Sets the roles applied to the member.
-   * @param {Collection<Snowflake, Role>|Role[]|string[]} roles The roles or role IDs to apply
+   * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to apply
    * @returns {Promise<GuildMember>}
    */
   setRoles(roles) {
@@ -331,7 +383,7 @@ class GuildMember {
 
   /**
    * Adds a single role to the member.
-   * @param {Role|string} role The role or ID of the role to add
+   * @param {Role|Snowflake} role The role or ID of the role to add
    * @returns {Promise<GuildMember>}
    */
   addRole(role) {
@@ -341,7 +393,7 @@ class GuildMember {
 
   /**
    * Adds multiple roles to the member.
-   * @param {Collection<Snowflake, Role>|Role[]|string[]} roles The roles or role IDs to add
+   * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to add
    * @returns {Promise<GuildMember>}
    */
   addRoles(roles) {
@@ -357,7 +409,7 @@ class GuildMember {
 
   /**
    * Removes a single role from the member.
-   * @param {Role|string} role The role or ID of the role to remove
+   * @param {Role|Snowflake} role The role or ID of the role to remove
    * @returns {Promise<GuildMember>}
    */
   removeRole(role) {
@@ -367,7 +419,7 @@ class GuildMember {
 
   /**
    * Removes multiple roles from the member.
-   * @param {Collection<Snowflake, Role>|Role[]|string[]} roles The roles or role IDs to remove
+   * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to remove
    * @returns {Promise<GuildMember>}
    */
   removeRoles(roles) {
