@@ -1,6 +1,7 @@
 const os = require('os');
 const EventEmitter = require('events').EventEmitter;
 const Constants = require('../util/Constants');
+const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
 const RESTManager = require('./rest/RESTManager');
 const ClientDataManager = require('./ClientDataManager');
@@ -398,7 +399,7 @@ class Client extends EventEmitter {
    */
   generateInvite(permissions) {
     if (permissions) {
-      if (permissions instanceof Array) permissions = this.resolver.resolvePermissions(permissions);
+      if (permissions instanceof Array) permissions = Permissions.resolve(permissions);
     } else {
       permissions = 0;
     }

@@ -1,4 +1,4 @@
-const Constants = require('../util/Constants');
+const Permissions = require('../util/Permissions');
 
 /**
  * Represents a role on Discord
@@ -118,7 +118,7 @@ class Role {
   get editable() {
     if (this.managed) return false;
     const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.hasPermission(Constants.PermissionFlags.MANAGE_ROLES_OR_PERMISSIONS)) return false;
+    if (!clientMember.hasPermission(Permissions.FLAGS.MANAGE_ROLES_OR_PERMISSIONS)) return false;
     return clientMember.highestRole.comparePositionTo(this) > 0;
   }
 
