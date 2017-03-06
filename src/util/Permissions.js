@@ -7,7 +7,7 @@ const Constants = require('../util/Constants');
  */
 class Permissions {
   /**
-   * @param {GuildMember} [member] Member the permissions are for __**(deprecated)**__
+   * @param {GuildMember} [member] Member the permissions are for **(deprecated)**
    * @param {number} bitfield Permissions bitfield to read from
    */
   constructor(member, bitfield) {
@@ -176,7 +176,7 @@ class Permissions {
  * - `READ_MESSAGE_HISTORY` (view messages that were posted prior to opening Discord)
  * - `MENTION_EVERYONE`
  * - `USE_EXTERNAL_EMOJIS` (use emojis from different guilds)
- * - `EXTERNAL_EMOJIS` __**(deprecated)**__
+ * - `EXTERNAL_EMOJIS` **(deprecated)**
  * - `CONNECT` (connect to a voice channel)
  * - `SPEAK` (speak in a voice channel)
  * - `MUTE_MEMBERS` (mute members across all voice channels)
@@ -186,7 +186,7 @@ class Permissions {
  * - `CHANGE_NICKNAME`
  * - `MANAGE_NICKNAMES` (change other members' nicknames)
  * - `MANAGE_ROLES`
- * - `MANAGE_ROLES_OR_PERMISSIONS` __**(deprecated)**__
+ * - `MANAGE_ROLES_OR_PERMISSIONS` **(deprecated)**
  * - `MANAGE_WEBHOOKS`
  * - `MANAGE_EMOJIS`
  * @type {Object}
