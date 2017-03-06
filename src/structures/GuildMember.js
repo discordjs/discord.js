@@ -1,7 +1,6 @@
 const TextBasedChannel = require('./interface/TextBasedChannel');
 const Role = require('./Role');
 const Permissions = require('../util/Permissions');
-const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Presence = require('./Presence').Presence;
 
