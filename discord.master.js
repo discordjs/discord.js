@@ -1314,7 +1314,7 @@ class Permissions {
  * - `MANAGE_ROLES`
  * - `MANAGE_ROLES_OR_PERMISSIONS` __**(deprecated)**__
  * - `MANAGE_WEBHOOKS`
- * - `MANAGE_EMOJIS'
+ * - `MANAGE_EMOJIS`
  * @type {Object}
  * @see {@link https://discordapp.com/developers/docs/topics/permissions}
  */
@@ -1366,8 +1366,8 @@ Permissions.ALL = Object.values(Permissions.FLAGS).reduce((all, p) => all | p, 0
 Permissions.DEFAULT = 104324097;
 
 /**
- * The final evaluated permissions for a member in a channel
  * @class EvaluatedPermissions
+ * @classdesc The final evaluated permissions for a member in a channel
  * @see {@link Permissions}
  * @deprecated
  */
