@@ -125,7 +125,7 @@ exports.DefaultOptions = {
    */
   ws: {
     large_threshold: 250,
-    compress: __webpack_require__(14).platform() !== 'browser',
+    compress: __webpack_require__(15).platform() !== 'browser',
     properties: {
       $os: process ? process.platform : 'discord.js',
       $browser: 'discord.js',
@@ -443,39 +443,6 @@ exports.DefaultAvatars = {
   RED: '1cbd08c76f8af6dddce02c5138971129',
 };
 
-const PermissionFlags = exports.PermissionFlags = {
-  CREATE_INSTANT_INVITE: 1 << 0,
-  KICK_MEMBERS: 1 << 1,
-  BAN_MEMBERS: 1 << 2,
-  ADMINISTRATOR: 1 << 3,
-  MANAGE_CHANNELS: 1 << 4,
-  MANAGE_GUILD: 1 << 5,
-  ADD_REACTIONS: 1 << 6,
-
-  READ_MESSAGES: 1 << 10,
-  SEND_MESSAGES: 1 << 11,
-  SEND_TTS_MESSAGES: 1 << 12,
-  MANAGE_MESSAGES: 1 << 13,
-  EMBED_LINKS: 1 << 14,
-  ATTACH_FILES: 1 << 15,
-  READ_MESSAGE_HISTORY: 1 << 16,
-  MENTION_EVERYONE: 1 << 17,
-  EXTERNAL_EMOJIS: 1 << 18,
-
-  CONNECT: 1 << 20,
-  SPEAK: 1 << 21,
-  MUTE_MEMBERS: 1 << 22,
-  DEAFEN_MEMBERS: 1 << 23,
-  MOVE_MEMBERS: 1 << 24,
-  USE_VAD: 1 << 25,
-
-  CHANGE_NICKNAME: 1 << 26,
-  MANAGE_NICKNAMES: 1 << 27,
-  MANAGE_ROLES_OR_PERMISSIONS: 1 << 28,
-  MANAGE_WEBHOOKS: 1 << 29,
-  MANAGE_EMOJIS: 1 << 30,
-};
-
 exports.Colors = {
   DEFAULT: 0x000000,
   AQUA: 0x1ABC9C,
@@ -503,11 +470,6 @@ exports.Colors = {
   DARK_BUT_NOT_BLACK: 0x2C2F33,
   NOT_QUITE_BLACK: 0x23272A,
 };
-
-let _ALL_PERMISSIONS = 0;
-for (const key in PermissionFlags) _ALL_PERMISSIONS |= PermissionFlags[key];
-exports.ALL_PERMISSIONS = _ALL_PERMISSIONS;
-exports.DEFAULT_PERMISSIONS = 104324097;
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26)))
 
@@ -1162,6 +1124,261 @@ module.exports = Util;
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
+const Constants = __webpack_require__(0);
+
+/**
+ * Data structure that makes it easy to interact with a permission bitfield. All {@link GuildMember}s have a set of
+ * permissions in their guild, and each channel in the guild may also have {@link PermissionOverwrites} for the member
+ * that override their default permissions.
+ */
+class Permissions {
+  /**
+   * @param {GuildMember} [member] Member the permissions are for __**(deprecated)**__
+   * @param {number} bitfield Permissions bitfield to read from
+   */
+  constructor(member, bitfield) {
+    /**
+     * Member the permissions are for
+     * @type {GuildMember}
+     * @deprecated
+     */
+    this.member = typeof member === 'object' ? member : null;
+
+    /**
+     * Bitfield of the packed permissions
+     * @type {number}
+     */
+    this.bitfield = typeof member === 'object' ? bitfield : member;
+  }
+
+  /**
+   * Bitfield of the packed permissions
+   * @type {number}
+   * @see {@link Permissions#bitfield}
+   * @deprecated
+   */
+  get raw() {
+    return this.bitfield;
+  }
+
+  set raw(raw) {
+    this.bitfield = raw;
+  }
+
+  /**
+   * Checks whether the bitfield has a permission, or multiple permissions.
+   * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
+   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
+   * @returns {boolean}
+   */
+  has(permission, checkAdmin = true) {
+    if (permission instanceof Array) return permission.every(p => this.has(p, checkAdmin));
+    permission = this.constructor.resolve(permission);
+    if (checkAdmin && (this.bitfield & this.constructor.FLAGS.ADMINISTRATOR) > 0) return true;
+    return (this.bitfield & permission) === permission;
+  }
+
+  /**
+   * Gets all given permissions that are missing from the bitfield.
+   * @param {PermissionResolvable[]} permissions Permissions to check for
+   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
+   * @returns {PermissionResolvable[]}
+   */
+  missing(permissions, checkAdmin = true) {
+    return permissions.filter(p => !this.has(p, checkAdmin));
+  }
+
+  /**
+   * Adds permissions to this one, creating a new instance to represent the new bitfield.
+   * @param {...PermissionResolvable} permissions Permissions to add
+   * @returns {Permissions}
+   */
+  add(...permissions) {
+    let total = 0;
+    for (let p = 0; p < permissions.length; p++) {
+      const perm = this.constructor.resolve(permissions[p]);
+      if ((this.bitfield & perm) !== perm) total |= perm;
+    }
+    return new this.constructor(this.bitfield | total);
+  }
+
+  /**
+   * Removes permissions to this one, creating a new instance to represent the new bitfield.
+   * @param {...PermissionResolvable} permissions Permissions to remove
+   * @returns {Permissions}
+   */
+  remove(...permissions) {
+    let total = 0;
+    for (let p = 0; p < permissions.length; p++) {
+      const perm = this.constructor.resolve(permissions[p]);
+      if ((this.bitfield & perm) === perm) total |= perm;
+    }
+    return new this.constructor(this.bitfield & ~total);
+  }
+
+  /**
+   * Gets an object mapping permission name (like `READ_MESSAGES`) to a {@link boolean} indicating whether the
+   * permission is available.
+   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
+   * @returns {Object}
+   */
+  serialize(checkAdmin = true) {
+    const serialized = {};
+    for (const perm in this.constructor.FLAGS) serialized[perm] = this.has(perm, checkAdmin);
+    return serialized;
+  }
+
+  /**
+   * Checks whether the user has a certain permission, e.g. `READ_MESSAGES`.
+   * @param {PermissionResolvable} permission The permission to check for
+   * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permission
+   * @returns {boolean}
+   * @see {@link Permissions#has}
+   * @deprecated
+   */
+  hasPermission(permission, explicit = false) {
+    return this.has(permission, !explicit);
+  }
+
+  /**
+   * Checks whether the user has all specified permissions.
+   * @param {PermissionResolvable[]} permissions The permissions to check for
+   * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permissions
+   * @returns {boolean}
+   * @see {@link Permissions#has}
+   * @deprecated
+   */
+  hasPermissions(permissions, explicit = false) {
+    return this.has(permissions, !explicit);
+  }
+
+  /**
+   * Checks whether the user has all specified permissions, and lists any missing permissions.
+   * @param {PermissionResolvable[]} permissions The permissions to check for
+   * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permissions
+   * @returns {PermissionResolvable[]}
+   * @see {@link Permissions#missing}
+   * @deprecated
+   */
+  missingPermissions(permissions, explicit = false) {
+    return this.missing(permissions, !explicit);
+  }
+
+  /**
+   * Data that can be resolved to give a permission number. This can be:
+   * - A string (see {@link Permissions.flags})
+   * - A permission number
+   * @typedef {string|number} PermissionResolvable
+   */
+
+  /**
+   * Resolves permissions to their numeric form.
+   * @param {PermissionResolvable|Permissions[]} permission - Permission(s) to resolve
+   * @returns {number|number[]}
+   */
+  static resolve(permission) {
+    if (permission instanceof Array) return permission.map(p => this.resolve(p));
+    if (typeof permission === 'string') permission = this.FLAGS[permission];
+    if (typeof permission !== 'number' || permission < 1) throw new RangeError(Constants.Errors.NOT_A_PERMISSION);
+    return permission;
+  }
+}
+
+/**
+ * Numeric permission flags. All available properties:
+ * - `ADMINISTRATOR` (implicitly has *all* permissions, and bypasses all channel overwrites)
+ * - `CREATE_INSTANT_INVITE` (create invitations to the guild)
+ * - `KICK_MEMBERS`
+ * - `BAN_MEMBERS`
+ * - `MANAGE_CHANNELS` (edit and reorder channels)
+ * - `MANAGE_GUILD` (edit the guild information, region, etc.)
+ * - `ADD_REACTIONS` (add new reactions to messages)
+ * - `READ_MESSAGES`
+ * - `SEND_MESSAGES`
+ * - `SEND_TTS_MESSAGES`
+ * - `MANAGE_MESSAGES` (delete messages and reactions)
+ * - `EMBED_LINKS` (links posted will have a preview embedded)
+ * - `ATTACH_FILES`
+ * - `READ_MESSAGE_HISTORY` (view messages that were posted prior to opening Discord)
+ * - `MENTION_EVERYONE`
+ * - `USE_EXTERNAL_EMOJIS` (use emojis from different guilds)
+ * - `EXTERNAL_EMOJIS` __**(deprecated)**__
+ * - `CONNECT` (connect to a voice channel)
+ * - `SPEAK` (speak in a voice channel)
+ * - `MUTE_MEMBERS` (mute members across all voice channels)
+ * - `DEAFEN_MEMBERS` (deafen members across all voice channels)
+ * - `MOVE_MEMBERS` (move members between voice channels)
+ * - `USE_VAD` (use voice activity detection)
+ * - `CHANGE_NICKNAME`
+ * - `MANAGE_NICKNAMES` (change other members' nicknames)
+ * - `MANAGE_ROLES`
+ * - `MANAGE_ROLES_OR_PERMISSIONS` __**(deprecated)**__
+ * - `MANAGE_WEBHOOKS`
+ * - `MANAGE_EMOJIS'
+ * @type {Object}
+ * @see {@link https://discordapp.com/developers/docs/topics/permissions}
+ */
+Permissions.FLAGS = {
+  CREATE_INSTANT_INVITE: 1 << 0,
+  KICK_MEMBERS: 1 << 1,
+  BAN_MEMBERS: 1 << 2,
+  ADMINISTRATOR: 1 << 3,
+  MANAGE_CHANNELS: 1 << 4,
+  MANAGE_GUILD: 1 << 5,
+  ADD_REACTIONS: 1 << 6,
+
+  READ_MESSAGES: 1 << 10,
+  SEND_MESSAGES: 1 << 11,
+  SEND_TTS_MESSAGES: 1 << 12,
+  MANAGE_MESSAGES: 1 << 13,
+  EMBED_LINKS: 1 << 14,
+  ATTACH_FILES: 1 << 15,
+  READ_MESSAGE_HISTORY: 1 << 16,
+  MENTION_EVERYONE: 1 << 17,
+  EXTERNAL_EMOJIS: 1 << 18,
+  USE_EXTERNAL_EMOJIS: 1 << 18,
+
+  CONNECT: 1 << 20,
+  SPEAK: 1 << 21,
+  MUTE_MEMBERS: 1 << 22,
+  DEAFEN_MEMBERS: 1 << 23,
+  MOVE_MEMBERS: 1 << 24,
+  USE_VAD: 1 << 25,
+
+  CHANGE_NICKNAME: 1 << 26,
+  MANAGE_NICKNAMES: 1 << 27,
+  MANAGE_ROLES: 1 << 28,
+  MANAGE_ROLES_OR_PERMISSIONS: 1 << 28,
+  MANAGE_WEBHOOKS: 1 << 29,
+  MANAGE_EMOJIS: 1 << 30,
+};
+
+/**
+ * Bitfield representing every permission combined
+ * @type {number}
+ */
+Permissions.ALL = Object.values(Permissions.FLAGS).reduce((all, p) => all | p, 0);
+
+/**
+ * Bitfield representing the default permissions for users
+ * @type {number}
+ */
+Permissions.DEFAULT = 104324097;
+
+/**
+ * The final evaluated permissions for a member in a channel
+ * @class EvaluatedPermissions
+ * @see {@link Permissions}
+ * @deprecated
+ */
+
+module.exports = Permissions;
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
 
@@ -1268,7 +1485,7 @@ exports.setTyped(TYPED_OK);
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 /**
@@ -1366,7 +1583,7 @@ exports.Game = Game;
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 /**
@@ -1439,10 +1656,10 @@ module.exports = Channel;
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Constants = __webpack_require__(0);
+const Permissions = __webpack_require__(5);
 
 /**
  * Represents a role on Discord
@@ -1562,7 +1779,7 @@ class Role {
   get editable() {
     if (this.managed) return false;
     const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.hasPermission(Constants.PermissionFlags.MANAGE_ROLES_OR_PERMISSIONS)) return false;
+    if (!clientMember.hasPermission(Permissions.FLAGS.MANAGE_ROLES_OR_PERMISSIONS)) return false;
     return clientMember.highestRole.comparePositionTo(this) > 0;
   }
 
@@ -1791,12 +2008,12 @@ module.exports = Role;
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const TextBasedChannel = __webpack_require__(13);
+const TextBasedChannel = __webpack_require__(14);
 const Constants = __webpack_require__(0);
-const Presence = __webpack_require__(6).Presence;
+const Presence = __webpack_require__(7).Presence;
 
 /**
  * Represents a user on Discord.
@@ -2088,7 +2305,7 @@ module.exports = User;
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -2253,15 +2470,14 @@ module.exports = Emoji;
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const TextBasedChannel = __webpack_require__(13);
-const Role = __webpack_require__(8);
-const EvaluatedPermissions = __webpack_require__(18);
-const Constants = __webpack_require__(0);
+const TextBasedChannel = __webpack_require__(14);
+const Role = __webpack_require__(9);
+const Permissions = __webpack_require__(5);
 const Collection = __webpack_require__(3);
-const Presence = __webpack_require__(6).Presence;
+const Presence = __webpack_require__(7).Presence;
 
 /**
  * Represents a member of a guild on Discord
@@ -2499,20 +2715,17 @@ class GuildMember {
 
   /**
    * The overall set of permissions for the guild member, taking only roles into account
-   * @type {EvaluatedPermissions}
+   * @type {Permissions}
    * @readonly
    */
   get permissions() {
-    if (this.user.id === this.guild.ownerID) return new EvaluatedPermissions(this, Constants.ALL_PERMISSIONS);
+    if (this.user.id === this.guild.ownerID) return new Permissions(this, Permissions.ALL);
 
     let permissions = 0;
     const roles = this.roles;
     for (const role of roles.values()) permissions |= role.permissions;
 
-    const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
-    if (admin) permissions = Constants.ALL_PERMISSIONS;
-
-    return new EvaluatedPermissions(this, permissions);
+    return new Permissions(this, permissions);
   }
 
   /**
@@ -2524,7 +2737,7 @@ class GuildMember {
     if (this.user.id === this.guild.ownerID) return false;
     if (this.user.id === this.client.user.id) return false;
     const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.hasPermission(Constants.PermissionFlags.KICK_MEMBERS)) return false;
+    if (!clientMember.hasPermission(Permissions.FLAGS.KICK_MEMBERS)) return false;
     return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
   }
 
@@ -2537,14 +2750,14 @@ class GuildMember {
     if (this.user.id === this.guild.ownerID) return false;
     if (this.user.id === this.client.user.id) return false;
     const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.hasPermission(Constants.PermissionFlags.BAN_MEMBERS)) return false;
+    if (!clientMember.hasPermission(Permissions.FLAGS.BAN_MEMBERS)) return false;
     return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
   }
 
   /**
    * Returns `channel.permissionsFor(guildMember)`. Returns evaluated permissions for a member in a guild channel.
    * @param {ChannelResolvable} channel Guild channel to use as context
-   * @returns {?EvaluatedPermissions}
+   * @returns {?Permissions}
    */
   permissionsIn(channel) {
     channel = this.client.resolver.resolveChannel(channel);
@@ -2767,7 +2980,7 @@ module.exports = GuildMember;
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Attachment = __webpack_require__(34);
@@ -2776,6 +2989,7 @@ const MessageReaction = __webpack_require__(37);
 const Util = __webpack_require__(4);
 const Collection = __webpack_require__(3);
 const Constants = __webpack_require__(0);
+const Permissions = __webpack_require__(5);
 let GuildMember;
 
 /**
@@ -3106,7 +3320,7 @@ class Message {
    */
   get deletable() {
     return this.author.id === this.client.user.id || (this.guild &&
-      this.channel.permissionsFor(this.client.user).hasPermission(Constants.PermissionFlags.MANAGE_MESSAGES)
+      this.channel.permissionsFor(this.client.user).hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)
     );
   }
 
@@ -3117,7 +3331,7 @@ class Message {
    */
   get pinnable() {
     return !this.guild ||
-      this.channel.permissionsFor(this.client.user).hasPermission(Constants.PermissionFlags.MANAGE_MESSAGES);
+      this.channel.permissionsFor(this.client.user).hasPermission(Permissions.FLAGS.MANAGE_MESSAGES);
   }
 
   /**
@@ -3139,7 +3353,7 @@ class Message {
    */
   isMemberMentioned(member) {
     // Lazy-loading is used here to get around a circular dependency that breaks things
-    if (!GuildMember) GuildMember = __webpack_require__(11);
+    if (!GuildMember) GuildMember = __webpack_require__(12);
     if (this.mentions.everyone) return true;
     if (this.mentions.users.has(member.id)) return true;
     if (member instanceof GuildMember && member.roles.some(r => this.mentions.roles.has(r.id))) return true;
@@ -3352,11 +3566,11 @@ module.exports = Message;
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const path = __webpack_require__(25);
-const Message = __webpack_require__(12);
+const Message = __webpack_require__(13);
 const MessageCollector = __webpack_require__(35);
 const Collection = __webpack_require__(3);
 
@@ -3795,7 +4009,7 @@ exports.applyToClass = (structure, full = false, ignore = []) => {
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports) {
 
 exports.endianness = function () { return 'LE' };
@@ -3846,14 +4060,14 @@ exports.EOL = '\n';
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const User = __webpack_require__(9);
-const Role = __webpack_require__(8);
-const Emoji = __webpack_require__(10);
-const Presence = __webpack_require__(6).Presence;
-const GuildMember = __webpack_require__(11);
+const User = __webpack_require__(10);
+const Role = __webpack_require__(9);
+const Emoji = __webpack_require__(11);
+const Presence = __webpack_require__(7).Presence;
+const GuildMember = __webpack_require__(12);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const Util = __webpack_require__(4);
@@ -4758,14 +4972,13 @@ module.exports = Guild;
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Channel = __webpack_require__(7);
-const Role = __webpack_require__(8);
+const Channel = __webpack_require__(8);
+const Role = __webpack_require__(9);
 const PermissionOverwrites = __webpack_require__(41);
-const EvaluatedPermissions = __webpack_require__(18);
-const Constants = __webpack_require__(0);
+const Permissions = __webpack_require__(5);
 const Collection = __webpack_require__(3);
 
 /**
@@ -4814,12 +5027,12 @@ class GuildChannel extends Channel {
    * Gets the overall set of permissions for a user in this channel, taking into account roles and permission
    * overwrites.
    * @param {GuildMemberResolvable} member The user that you want to obtain the overall permissions for
-   * @returns {?EvaluatedPermissions}
+   * @returns {?Permissions}
    */
   permissionsFor(member) {
     member = this.client.resolver.resolveGuildMember(this.guild, member);
     if (!member) return null;
-    if (member.id === this.guild.ownerID) return new EvaluatedPermissions(member, Constants.ALL_PERMISSIONS);
+    if (member.id === this.guild.ownerID) return new Permissions(member, Permissions.ALL);
 
     let permissions = 0;
 
@@ -4834,10 +5047,10 @@ class GuildChannel extends Channel {
     }
     permissions |= allow;
 
-    const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
-    if (admin) permissions = Constants.ALL_PERMISSIONS;
+    const admin = Boolean(permissions & Permissions.FLAGS.ADMINISTRATOR);
+    if (admin) permissions = Permissions.ALL;
 
-    return new EvaluatedPermissions(member, permissions);
+    return new Permissions(member, permissions);
   }
 
   overwritesFor(member, verified = false, roles = null) {
@@ -4914,14 +5127,14 @@ class GuildChannel extends Channel {
 
     for (const perm in options) {
       if (options[perm] === true) {
-        payload.allow |= Constants.PermissionFlags[perm] || 0;
-        payload.deny &= ~(Constants.PermissionFlags[perm] || 0);
+        payload.allow |= Permissions.FLAGS[perm] || 0;
+        payload.deny &= ~(Permissions.FLAGS[perm] || 0);
       } else if (options[perm] === false) {
-        payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
-        payload.deny |= Constants.PermissionFlags[perm] || 0;
+        payload.allow &= ~(Permissions.FLAGS[perm] || 0);
+        payload.deny |= Permissions.FLAGS[perm] || 0;
       } else if (options[perm] === null) {
-        payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
-        payload.deny &= ~(Constants.PermissionFlags[perm] || 0);
+        payload.allow &= ~(Permissions.FLAGS[perm] || 0);
+        payload.deny &= ~(Permissions.FLAGS[perm] || 0);
       }
     }
 
@@ -5057,7 +5270,7 @@ class GuildChannel extends Channel {
    */
   get deletable() {
     return this.id !== this.guild.id &&
-      this.permissionsFor(this.client.user).hasPermission(Constants.PermissionFlags.MANAGE_CHANNELS);
+      this.permissionsFor(this.client.user).hasPermission(Permissions.FLAGS.MANAGE_CHANNELS);
   }
 
   /**
@@ -5079,7 +5292,7 @@ module.exports = GuildChannel;
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Long = __webpack_require__(44);
@@ -5150,84 +5363,11 @@ module.exports = SnowflakeUtil;
 
 
 /***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Constants = __webpack_require__(0);
-
-/**
- * The final evaluated permissions for a member in a channel
- */
-class EvaluatedPermissions {
-  constructor(member, raw) {
-    /**
-     * The member this permissions refer to
-     * @type {GuildMember}
-     */
-    this.member = member;
-
-    /**
-     * A number representing the packed permissions
-     * @type {number}
-     */
-    this.raw = raw;
-  }
-
-  /**
-   * Get an object mapping permission name, e.g. `READ_MESSAGES` to a boolean - whether the user
-   * can perform this or not.
-   * @returns {Object<string, boolean>}
-   */
-  serialize() {
-    const serializedPermissions = {};
-    for (const permissionName in Constants.PermissionFlags) {
-      serializedPermissions[permissionName] = this.hasPermission(permissionName);
-    }
-    return serializedPermissions;
-  }
-
-  /**
-   * Checks whether the user has a certain permission, e.g. `READ_MESSAGES`.
-   * @param {PermissionResolvable} permission The permission to check for
-   * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permission
-   * @returns {boolean}
-   */
-  hasPermission(permission, explicit = false) {
-    permission = this.member.client.resolver.resolvePermission(permission);
-    if (!explicit && (this.raw & Constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
-    return (this.raw & permission) > 0;
-  }
-
-  /**
-   * Checks whether the user has all specified permissions.
-   * @param {PermissionResolvable[]} permissions The permissions to check for
-   * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permissions
-   * @returns {boolean}
-   */
-  hasPermissions(permissions, explicit = false) {
-    return permissions.every(p => this.hasPermission(p, explicit));
-  }
-
-  /**
-   * Checks whether the user has all specified permissions, and lists any missing permissions.
-   * @param {PermissionResolvable[]} permissions The permissions to check for
-   * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permissions
-   * @returns {PermissionResolvable[]}
-   */
-  missingPermissions(permissions, explicit = false) {
-    return permissions.filter(p => !this.hasPermission(p, explicit));
-  }
-}
-
-module.exports = EvaluatedPermissions;
-
-
-/***/ }),
 /* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Channel = __webpack_require__(7);
-const TextBasedChannel = __webpack_require__(13);
+const Channel = __webpack_require__(8);
+const TextBasedChannel = __webpack_require__(14);
 const Collection = __webpack_require__(3);
 
 /*
@@ -9180,12 +9320,12 @@ const request = __webpack_require__(27);
 
 const Constants = __webpack_require__(0);
 const convertToBuffer = __webpack_require__(4).convertToBuffer;
-const User = __webpack_require__(9);
-const Message = __webpack_require__(12);
-const Guild = __webpack_require__(15);
-const Channel = __webpack_require__(7);
-const GuildMember = __webpack_require__(11);
-const Emoji = __webpack_require__(10);
+const User = __webpack_require__(10);
+const Message = __webpack_require__(13);
+const Guild = __webpack_require__(16);
+const Channel = __webpack_require__(8);
+const GuildMember = __webpack_require__(12);
+const Emoji = __webpack_require__(11);
 const ReactionEmoji = __webpack_require__(20);
 
 /**
@@ -9329,82 +9469,6 @@ class ClientDataResolver {
     const match = inviteRegex.exec(data);
     if (match && match[1]) return match[1];
     return data;
-  }
-
-  /**
-   * Data that can be resolved to give a permission number. This can be:
-   * * A string
-   * * A permission number
-   *
-   * Possible strings:
-   * ```js
-   * [
-   *   'CREATE_INSTANT_INVITE',
-   *   'KICK_MEMBERS',
-   *   'BAN_MEMBERS',
-   *   'ADMINISTRATOR',
-   *   'MANAGE_CHANNELS',
-   *   'MANAGE_GUILD',
-   *   'ADD_REACTIONS', // add reactions to messages
-   *   'READ_MESSAGES',
-   *   'SEND_MESSAGES',
-   *   'SEND_TTS_MESSAGES',
-   *   'MANAGE_MESSAGES',
-   *   'EMBED_LINKS',
-   *   'ATTACH_FILES',
-   *   'READ_MESSAGE_HISTORY',
-   *   'MENTION_EVERYONE',
-   *   'EXTERNAL_EMOJIS', // use external emojis
-   *   'CONNECT', // connect to voice
-   *   'SPEAK', // speak on voice
-   *   'MUTE_MEMBERS', // globally mute members on voice
-   *   'DEAFEN_MEMBERS', // globally deafen members on voice
-   *   'MOVE_MEMBERS', // move member's voice channels
-   *   'USE_VAD', // use voice activity detection
-   *   'CHANGE_NICKNAME',
-   *   'MANAGE_NICKNAMES', // change nicknames of others
-   *   'MANAGE_ROLES_OR_PERMISSIONS',
-   *   'MANAGE_WEBHOOKS',
-   *   'MANAGE_EMOJIS'
-   * ]
-   * ```
-   * @typedef {string|number} PermissionResolvable
-   */
-
-  /**
-   * Resolves a PermissionResolvable to a permission number
-   * @param {PermissionResolvable} permission The permission resolvable to resolve
-   * @returns {number}
-   */
-  resolvePermission(permission) {
-    if (typeof permission === 'string') permission = Constants.PermissionFlags[permission];
-    if (typeof permission !== 'number' || permission < 1) throw new Error(Constants.Errors.NOT_A_PERMISSION);
-    return permission;
-  }
-
-  /**
-   * Turn an array of permissions into a valid Discord permission bitfield
-   * @param {PermissionResolvable[]} permissions Permissions to resolve together
-   * @returns {number}
-   */
-  resolvePermissions(permissions) {
-    let bitfield = 0;
-    for (const permission of permissions) bitfield |= this.resolvePermission(permission);
-    return bitfield;
-  }
-
-  hasPermission(bitfield, name, explicit = false) {
-    const permission = this.resolvePermission(name);
-    if (!explicit && (bitfield & Constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
-    return (bitfield & permission) > 0;
-  }
-
-  serializePermissions(bitfield) {
-    const serializedPermissions = {};
-    for (const name in Constants.PermissionFlags) {
-      serializedPermissions[name] = this.hasPermission(bitfield, name);
-    }
-    return serializedPermissions;
   }
 
   /**
@@ -9682,7 +9746,7 @@ module.exports = {
 /* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const User = __webpack_require__(9);
+const User = __webpack_require__(10);
 const Collection = __webpack_require__(3);
 
 /**
@@ -10025,8 +10089,8 @@ module.exports = ClientUser;
 /* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Channel = __webpack_require__(7);
-const TextBasedChannel = __webpack_require__(13);
+const Channel = __webpack_require__(8);
+const TextBasedChannel = __webpack_require__(14);
 const Collection = __webpack_require__(3);
 
 /**
@@ -10789,7 +10853,7 @@ module.exports = MessageEmbed;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
-const Emoji = __webpack_require__(10);
+const Emoji = __webpack_require__(11);
 const ReactionEmoji = __webpack_require__(20);
 
 /**
@@ -11180,8 +11244,8 @@ module.exports = PermissionOverwrites;
 /* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const GuildChannel = __webpack_require__(16);
-const TextBasedChannel = __webpack_require__(13);
+const GuildChannel = __webpack_require__(17);
+const TextBasedChannel = __webpack_require__(14);
 const Collection = __webpack_require__(3);
 
 /**
@@ -11283,7 +11347,7 @@ module.exports = TextChannel;
 /* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const GuildChannel = __webpack_require__(16);
+const GuildChannel = __webpack_require__(17);
 const Collection = __webpack_require__(3);
 
 /**
@@ -12642,7 +12706,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 
-var utils = __webpack_require__(5);
+var utils = __webpack_require__(6);
 
 
 // Quick check if we can use fast array to bin string conversion
@@ -13129,9 +13193,10 @@ module.exports = RequestHandler;
 /* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {const os = __webpack_require__(14);
+/* WEBPACK VAR INJECTION */(function(process) {const os = __webpack_require__(15);
 const EventEmitter = __webpack_require__(23).EventEmitter;
 const Constants = __webpack_require__(0);
+const Permissions = __webpack_require__(5);
 const Util = __webpack_require__(4);
 const RESTManager = __webpack_require__(51);
 const ClientDataManager = __webpack_require__(81);
@@ -13141,7 +13206,7 @@ const ClientVoiceManager = __webpack_require__(156);
 const WebSocketManager = __webpack_require__(116);
 const ActionsManager = __webpack_require__(83);
 const Collection = __webpack_require__(3);
-const Presence = __webpack_require__(6).Presence;
+const Presence = __webpack_require__(7).Presence;
 const ShardClientUtil = __webpack_require__(155);
 const VoiceBroadcast = __webpack_require__(157);
 
@@ -13529,7 +13594,7 @@ class Client extends EventEmitter {
    */
   generateInvite(permissions) {
     if (permissions) {
-      if (permissions instanceof Array) permissions = this.resolver.resolvePermissions(permissions);
+      if (permissions instanceof Array) permissions = Permissions.resolve(permissions);
     } else {
       permissions = 0;
     }
@@ -14443,7 +14508,7 @@ module.exports = Array.isArray || function (arr) {
 // Top level file is just a mixin of submodules & constants
 
 
-var assign    = __webpack_require__(5).assign;
+var assign    = __webpack_require__(6).assign;
 
 var deflate   = __webpack_require__(64);
 var inflate   = __webpack_require__(65);
@@ -14465,7 +14530,7 @@ module.exports = pako;
 
 
 var zlib_deflate = __webpack_require__(66);
-var utils        = __webpack_require__(5);
+var utils        = __webpack_require__(6);
 var strings      = __webpack_require__(45);
 var msg          = __webpack_require__(24);
 var ZStream      = __webpack_require__(49);
@@ -14872,7 +14937,7 @@ exports.gzip = gzip;
 
 
 var zlib_inflate = __webpack_require__(69);
-var utils        = __webpack_require__(5);
+var utils        = __webpack_require__(6);
 var strings      = __webpack_require__(45);
 var c            = __webpack_require__(47);
 var msg          = __webpack_require__(24);
@@ -15295,7 +15360,7 @@ exports.ungzip  = inflate;
 "use strict";
 
 
-var utils   = __webpack_require__(5);
+var utils   = __webpack_require__(6);
 var trees   = __webpack_require__(71);
 var adler32 = __webpack_require__(46);
 var crc32   = __webpack_require__(48);
@@ -17538,7 +17603,7 @@ module.exports = function inflate_fast(strm, start) {
 
 
 
-var utils         = __webpack_require__(5);
+var utils         = __webpack_require__(6);
 var adler32       = __webpack_require__(46);
 var crc32         = __webpack_require__(48);
 var inflate_fast  = __webpack_require__(68);
@@ -19083,7 +19148,7 @@ exports.inflateUndermine = inflateUndermine;
 
 
 
-var utils = __webpack_require__(5);
+var utils = __webpack_require__(6);
 
 var MAXBITS = 15;
 var ENOUGH_LENS = 852;
@@ -19415,7 +19480,7 @@ module.exports = function inflate_table(type, lens, lens_index, codes, table, ta
 
 
 
-var utils = __webpack_require__(5);
+var utils = __webpack_require__(6);
 
 /* Public constants ==========================================================*/
 /* ===========================================================================*/
@@ -21692,13 +21757,13 @@ module.exports = g;
 
 const Constants = __webpack_require__(0);
 const Util = __webpack_require__(4);
-const Guild = __webpack_require__(15);
-const User = __webpack_require__(9);
+const Guild = __webpack_require__(16);
+const User = __webpack_require__(10);
 const DMChannel = __webpack_require__(32);
-const Emoji = __webpack_require__(10);
+const Emoji = __webpack_require__(11);
 const TextChannel = __webpack_require__(42);
 const VoiceChannel = __webpack_require__(43);
-const GuildChannel = __webpack_require__(16);
+const GuildChannel = __webpack_require__(17);
 const GroupDMChannel = __webpack_require__(19);
 
 class ClientDataManager {
@@ -22295,7 +22360,7 @@ module.exports = GuildMemberRemoveAction;
 
 const Action = __webpack_require__(2);
 const Constants = __webpack_require__(0);
-const Role = __webpack_require__(8);
+const Role = __webpack_require__(9);
 
 class GuildRoleCreate extends Action {
   handle(data) {
@@ -22536,7 +22601,7 @@ module.exports = GuildUpdateAction;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
-const Message = __webpack_require__(12);
+const Message = __webpack_require__(13);
 
 class MessageCreateAction extends Action {
   handle(data) {
@@ -23001,22 +23066,23 @@ module.exports = APIRequest;
 
 const querystring = __webpack_require__(74);
 const long = __webpack_require__(44);
+const Permissions = __webpack_require__(5);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
-const Snowflake = __webpack_require__(17);
+const Snowflake = __webpack_require__(18);
 const Util = __webpack_require__(4);
 
-const User = __webpack_require__(9);
-const GuildMember = __webpack_require__(11);
-const Message = __webpack_require__(12);
-const Role = __webpack_require__(8);
+const User = __webpack_require__(10);
+const GuildMember = __webpack_require__(12);
+const Message = __webpack_require__(13);
+const Role = __webpack_require__(9);
 const Invite = __webpack_require__(33);
 const Webhook = __webpack_require__(21);
 const UserProfile = __webpack_require__(153);
 const OAuth2Application = __webpack_require__(38);
-const Channel = __webpack_require__(7);
+const Channel = __webpack_require__(8);
 const GroupDMChannel = __webpack_require__(19);
-const Guild = __webpack_require__(15);
+const Guild = __webpack_require__(16);
 const VoiceRegion = __webpack_require__(154);
 
 class RESTMethods {
@@ -23582,7 +23648,7 @@ class RESTMethods {
     if (_data.permissions) {
       let perms = 0;
       for (let perm of _data.permissions) {
-        if (typeof perm === 'string') perm = Constants.PermissionFlags[perm];
+        if (typeof perm === 'string') perm = Permissions.FLAGS[perm];
         perms |= perm;
       }
       data.permissions = perms;
@@ -24074,7 +24140,7 @@ module.exports = UserAgentManager;
 /* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const browser = __webpack_require__(14).platform() === 'browser';
+/* WEBPACK VAR INJECTION */(function(Buffer) {const browser = __webpack_require__(15).platform() === 'browser';
 const EventEmitter = __webpack_require__(23).EventEmitter;
 const Constants = __webpack_require__(0);
 const convertToBuffer = __webpack_require__(4).convertToBuffer;
@@ -25796,8 +25862,10 @@ module.exports = {
   // Utilities
   Collection: __webpack_require__(3),
   Constants: __webpack_require__(0),
-  Snowflake: __webpack_require__(17),
-  SnowflakeUtil: __webpack_require__(17),
+  EvaluatedPermissions: __webpack_require__(5),
+  Permissions: __webpack_require__(5),
+  Snowflake: __webpack_require__(18),
+  SnowflakeUtil: __webpack_require__(18),
   Util: Util,
   util: Util,
   version: __webpack_require__(30).version,
@@ -25808,18 +25876,17 @@ module.exports = {
   splitMessage: Util.splitMessage,
 
   // Structures
-  Channel: __webpack_require__(7),
+  Channel: __webpack_require__(8),
   ClientUser: __webpack_require__(31),
   DMChannel: __webpack_require__(32),
-  Emoji: __webpack_require__(10),
-  EvaluatedPermissions: __webpack_require__(18),
-  Game: __webpack_require__(6).Game,
+  Emoji: __webpack_require__(11),
+  Game: __webpack_require__(7).Game,
   GroupDMChannel: __webpack_require__(19),
-  Guild: __webpack_require__(15),
-  GuildChannel: __webpack_require__(16),
-  GuildMember: __webpack_require__(11),
+  Guild: __webpack_require__(16),
+  GuildChannel: __webpack_require__(17),
+  GuildMember: __webpack_require__(12),
   Invite: __webpack_require__(33),
-  Message: __webpack_require__(12),
+  Message: __webpack_require__(13),
   MessageAttachment: __webpack_require__(34),
   MessageCollector: __webpack_require__(35),
   MessageEmbed: __webpack_require__(36),
@@ -25828,17 +25895,17 @@ module.exports = {
   PartialGuild: __webpack_require__(39),
   PartialGuildChannel: __webpack_require__(40),
   PermissionOverwrites: __webpack_require__(41),
-  Presence: __webpack_require__(6).Presence,
+  Presence: __webpack_require__(7).Presence,
   ReactionEmoji: __webpack_require__(20),
   RichEmbed: __webpack_require__(55),
-  Role: __webpack_require__(8),
+  Role: __webpack_require__(9),
   TextChannel: __webpack_require__(42),
-  User: __webpack_require__(9),
+  User: __webpack_require__(10),
   VoiceChannel: __webpack_require__(43),
   Webhook: __webpack_require__(21),
 };
 
-if (__webpack_require__(14).platform() === 'browser') window.Discord = module.exports; // eslint-disable-line no-undef
+if (__webpack_require__(15).platform() === 'browser') window.Discord = module.exports; // eslint-disable-line no-undef
 
 
 /***/ })
