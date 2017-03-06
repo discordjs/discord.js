@@ -1199,7 +1199,7 @@ class Permissions {
       const perm = this.constructor.resolve(permissions[p]);
       if ((this.bitfield & perm) !== perm) total |= perm;
     }
-    return new this.constructor(this.bitfield | total);
+    return new this.constructor(this.member, this.bitfield | total);
   }
 
   /**
@@ -1213,7 +1213,7 @@ class Permissions {
       const perm = this.constructor.resolve(permissions[p]);
       if ((this.bitfield & perm) === perm) total |= perm;
     }
-    return new this.constructor(this.bitfield & ~total);
+    return new this.constructor(this.member, this.bitfield & ~total);
   }
 
   /**
