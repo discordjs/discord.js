@@ -280,7 +280,8 @@ class GuildMember {
   }
 
   /**
-   * Returns `channel.permissionsFor(guildMember)`. Returns evaluated permissions for a member in a guild channel.
+   * Returns `channel.permissionsFor(guildMember)`. Returns permissions for a member in a guild channel,
+   * taking into account roles and permission overwrites.
    * @param {ChannelResolvable} channel Guild channel to use as context
    * @returns {?Permissions}
    */
