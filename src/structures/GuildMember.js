@@ -1,6 +1,6 @@
 const TextBasedChannel = require('./interface/TextBasedChannel');
 const Role = require('./Role');
-const EvaluatedPermissions = require('./EvaluatedPermissions');
+const Permissions = require('../util/Permissions');
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Presence = require('./Presence').Presence;
@@ -241,20 +241,17 @@ class GuildMember {
 
   /**
    * The overall set of permissions for the guild member, taking only roles into account
-   * @type {EvaluatedPermissions}
+   * @type {Permissions}
    * @readonly
    */
   get permissions() {
-    if (this.user.id === this.guild.ownerID) return new EvaluatedPermissions(this, Constants.ALL_PERMISSIONS);
+    if (this.user.id === this.guild.ownerID) return new Permissions(this, Permissions.ALL);
 
     let permissions = 0;
     const roles = this.roles;
     for (const role of roles.values()) permissions |= role.permissions;
 
-    const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
-    if (admin) permissions = Constants.ALL_PERMISSIONS;
-
-    return new EvaluatedPermissions(this, permissions);
+    return new Permissions(this, permissions);
   }
 
   /**
@@ -266,7 +263,7 @@ class GuildMember {
     if (this.user.id === this.guild.ownerID) return false;
     if (this.user.id === this.client.user.id) return false;
     const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.hasPermission(Constants.PermissionFlags.KICK_MEMBERS)) return false;
+    if (!clientMember.hasPermission(Permissions.FLAGS.KICK_MEMBERS)) return false;
     return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
   }
 
@@ -279,14 +276,14 @@ class GuildMember {
     if (this.user.id === this.guild.ownerID) return false;
     if (this.user.id === this.client.user.id) return false;
     const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.hasPermission(Constants.PermissionFlags.BAN_MEMBERS)) return false;
+    if (!clientMember.hasPermission(Permissions.FLAGS.BAN_MEMBERS)) return false;
     return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
   }
 
   /**
    * Returns `channel.permissionsFor(guildMember)`. Returns evaluated permissions for a member in a guild channel.
    * @param {ChannelResolvable} channel Guild channel to use as context
-   * @returns {?EvaluatedPermissions}
+   * @returns {?Permissions}
    */
   permissionsIn(channel) {
     channel = this.client.resolver.resolveChannel(channel);

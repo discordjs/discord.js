@@ -1,5 +1,6 @@
 const querystring = require('querystring');
 const long = require('long');
+const Permissions = require('../../util/Permissions');
 const Constants = require('../../util/Constants');
 const Collection = require('../../util/Collection');
 const Snowflake = require('../../util/Snowflake');
@@ -581,7 +582,7 @@ class RESTMethods {
     if (_data.permissions) {
       let perms = 0;
       for (let perm of _data.permissions) {
-        if (typeof perm === 'string') perm = Constants.PermissionFlags[perm];
+        if (typeof perm === 'string') perm = Permissions.FLAGS[perm];
         perms |= perm;
       }
       data.permissions = perms;
