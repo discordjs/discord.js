@@ -292,13 +292,20 @@ class GuildMember {
 
   /**
    * Checks if any of the member's roles have a permission.
-   * @param {PermissionResolvable} permission The permission to check for
-   * @param {boolean} [explicit=false] Whether to require the roles to explicitly have the exact permission
+   * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
+   * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permission
+   * **(deprecated)**
+   * @param {boolean} [checkAdmin] Whether to allow the administrator permission to override
+   * (takes priority over `explicit`)
+   * @param {boolean} [checkOwner] Whether to allow being the guild's owner to override
+   * (takes priority over `explicit`)
    * @returns {boolean}
    */
-  hasPermission(permission, explicit = false) {
-    if (!explicit && this.user.id === this.guild.ownerID) return true;
-    return this.roles.some(r => r.hasPermission(permission, explicit));
+  hasPermission(permission, explicit = false, checkAdmin, checkOwner) {
+    if (typeof checkAdmin === 'undefined') checkAdmin = !explicit;
+    if (typeof checkOwner === 'undefined') checkOwner = !explicit;
+    if (checkOwner && this.user.id === this.guild.ownerID) return true;
+    return this.roles.some(r => r.hasPermission(permission, undefined, checkAdmin));
   }
 
   /**
@@ -306,6 +313,7 @@ class GuildMember {
    * @param {PermissionResolvable[]} permissions The permissions to check for
    * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
    * @returns {boolean}
+   * @deprecated
    */
   hasPermissions(permissions, explicit = false) {
     if (!explicit && this.user.id === this.guild.ownerID) return true;
