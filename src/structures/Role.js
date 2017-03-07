@@ -145,8 +145,11 @@ class Role {
 
   /**
    * Checks if the role has a permission.
-   * @param {PermissionResolvable} permission The permission to check for
+   * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
    * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permission
+   * **(deprecated)**
+   * @param {boolean} [checkAdmin] Whether to allow the administrator permission to override
+   * (takes priority over `explicit`)
    * @returns {boolean}
    * @example
    * // see if a role can ban a member
@@ -156,8 +159,10 @@ class Role {
    *   console.log('This role can\'t ban members');
    * }
    */
-  hasPermission(permission, explicit) {
-    return new Permissions(this.permissions).has(permission, !explicit);
+  hasPermission(permission, explicit = false, checkAdmin) {
+    return new Permissions(this.permissions).has(
+      permission, typeof checkAdmin !== 'undefined' ? checkAdmin : !explicit
+    );
   }
 
   /**
@@ -165,6 +170,7 @@ class Role {
    * @param {PermissionResolvable[]} permissions The permissions to check for
    * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permissions
    * @returns {boolean}
+   * @deprecated
    */
   hasPermissions(permissions, explicit = false) {
     return new Permissions(this.permissions).has(permissions, !explicit);
