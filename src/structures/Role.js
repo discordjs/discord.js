@@ -157,7 +157,7 @@ class Role {
    * }
    */
   hasPermission(permission, explicit) {
-    return this.client.resolver.hasPermission(this.permissions, permission, explicit);
+    return new Permissions(this.permissions).has(permission, !explicit);
   }
 
   /**
@@ -167,7 +167,7 @@ class Role {
    * @returns {boolean}
    */
   hasPermissions(permissions, explicit = false) {
-    return permissions.every(p => this.hasPermission(p, explicit));
+    return new Permissions(this.permissions).has(permissions, !explicit);
   }
 
   /**
