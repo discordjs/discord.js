@@ -1,7 +1,6 @@
 const TextBasedChannel = require('./interface/TextBasedChannel');
 const Role = require('./Role');
-const EvaluatedPermissions = require('./EvaluatedPermissions');
-const Constants = require('../util/Constants');
+const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
 const Presence = require('./Presence').Presence;
 
@@ -153,6 +152,48 @@ class GuildMember {
   }
 
   /**
+   * The role of the member used to set their color.
+   * @type {?Role}
+   * @readonly
+   */
+  get colorRole() {
+    const coloredRoles = this.roles.filter(role => role.color);
+    if (!coloredRoles.size) return null;
+    return coloredRoles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
+  }
+
+  /**
+   * The displayed color of the member in base 10.
+   * @type {number}
+   * @readonly
+   */
+  get displayColor() {
+    const role = this.colorRole;
+    return (role && role.color) || 0;
+  }
+
+  /**
+   * The displayed color of the member in hexadecimal.
+   * @type {string}
+   * @readonly
+   */
+  get displayHexColor() {
+    const role = this.colorRole;
+    return (role && role.hexColor) || '#000000';
+  }
+
+  /**
+   * The role of the member used to hoist them in a separate category in the users list.
+   * @type {?Role}
+   * @readonly
+   */
+  get hoistRole() {
+    const hoistedRoles = this.roles.filter(role => role.hoist);
+    if (!hoistedRoles.size) return null;
+    return hoistedRoles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
+  }
+
+  /**
    * Whether this member is muted in any way
    * @type {boolean}
    * @readonly
@@ -199,20 +240,17 @@ class GuildMember {
 
   /**
    * The overall set of permissions for the guild member, taking only roles into account
-   * @type {EvaluatedPermissions}
+   * @type {Permissions}
    * @readonly
    */
   get permissions() {
-    if (this.user.id === this.guild.ownerID) return new EvaluatedPermissions(this, Constants.ALL_PERMISSIONS);
+    if (this.user.id === this.guild.ownerID) return new Permissions(this, Permissions.ALL);
 
     let permissions = 0;
     const roles = this.roles;
     for (const role of roles.values()) permissions |= role.permissions;
 
-    const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
-    if (admin) permissions = Constants.ALL_PERMISSIONS;
-
-    return new EvaluatedPermissions(this, permissions);
+    return new Permissions(this, permissions);
   }
 
   /**
@@ -224,7 +262,7 @@ class GuildMember {
     if (this.user.id === this.guild.ownerID) return false;
     if (this.user.id === this.client.user.id) return false;
     const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.hasPermission(Constants.PermissionFlags.KICK_MEMBERS)) return false;
+    if (!clientMember.hasPermission(Permissions.FLAGS.KICK_MEMBERS)) return false;
     return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
   }
 
@@ -237,14 +275,14 @@ class GuildMember {
     if (this.user.id === this.guild.ownerID) return false;
     if (this.user.id === this.client.user.id) return false;
     const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.hasPermission(Constants.PermissionFlags.BAN_MEMBERS)) return false;
+    if (!clientMember.hasPermission(Permissions.FLAGS.BAN_MEMBERS)) return false;
     return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
   }
 
   /**
    * Returns `channel.permissionsFor(guildMember)`. Returns evaluated permissions for a member in a guild channel.
    * @param {ChannelResolvable} channel Guild channel to use as context
-   * @returns {?EvaluatedPermissions}
+   * @returns {?Permissions}
    */
   permissionsIn(channel) {
     channel = this.client.resolver.resolveChannel(channel);
@@ -254,13 +292,20 @@ class GuildMember {
 
   /**
    * Checks if any of the member's roles have a permission.
-   * @param {PermissionResolvable} permission The permission to check for
-   * @param {boolean} [explicit=false] Whether to require the roles to explicitly have the exact permission
+   * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
+   * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permission
+   * **(deprecated)**
+   * @param {boolean} [checkAdmin] Whether to allow the administrator permission to override
+   * (takes priority over `explicit`)
+   * @param {boolean} [checkOwner] Whether to allow being the guild's owner to override
+   * (takes priority over `explicit`)
    * @returns {boolean}
    */
-  hasPermission(permission, explicit = false) {
-    if (!explicit && this.user.id === this.guild.ownerID) return true;
-    return this.roles.some(r => r.hasPermission(permission, explicit));
+  hasPermission(permission, explicit = false, checkAdmin, checkOwner) {
+    if (typeof checkAdmin === 'undefined') checkAdmin = !explicit;
+    if (typeof checkOwner === 'undefined') checkOwner = !explicit;
+    if (checkOwner && this.user.id === this.guild.ownerID) return true;
+    return this.roles.some(r => r.hasPermission(permission, undefined, checkAdmin));
   }
 
   /**
@@ -268,6 +313,7 @@ class GuildMember {
    * @param {PermissionResolvable[]} permissions The permissions to check for
    * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
    * @returns {boolean}
+   * @deprecated
    */
   hasPermissions(permissions, explicit = false) {
     if (!explicit && this.user.id === this.guild.ownerID) return true;
@@ -285,8 +331,18 @@ class GuildMember {
   }
 
   /**
+   * The data for editing a guild member
+   * @typedef {Object} GuildMemberEditData
+   * @property {string} [nick] The nickname to set for the member
+   * @property {Collection<Snowflake, Role>|Role[]|Snowflake[]} [roles] The roles or role IDs to apply
+   * @property {boolean} [mute] Whether or not the member should be muted
+   * @property {boolean} [deaf] Whether or not the member should be deafened
+   * @property {ChannelResolvable} [channel] Channel to move member to (if they are connected to voice)
+   */
+
+  /**
    * Edit a guild member
-   * @param {GuildmemberEditData} data The data to edit the member with
+   * @param {GuildMemberEditData} data The data to edit the member with
    * @returns {Promise<GuildMember>}
    */
   edit(data) {

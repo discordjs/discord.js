@@ -5,9 +5,8 @@ exports.Package = require('../../package.json');
  * @typedef {Object} ClientOptions
  * @property {string} [apiRequestMethod='sequential'] One of `sequential` or `burst`. The sequential handler executes
  * all requests in the order they are triggered, whereas the burst handler runs multiple in parallel, and doesn't
- * provide the guarantee of any particular order.
- * <warn>Burst mode is more likely to hit a 429 ratelimit by its nature,
- * be advised if you are very unlucky you could be IP banned</warn>
+ * provide the guarantee of any particular order. Burst mode is more likely to hit a 429 ratelimit error by its nature,
+ * and is therefore slightly riskier to use.
  * @property {number} [shardId=0] ID of the shard to run
  * @property {number} [shardCount=0] Total number of shards
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
@@ -372,39 +371,6 @@ exports.DefaultAvatars = {
   RED: '1cbd08c76f8af6dddce02c5138971129',
 };
 
-const PermissionFlags = exports.PermissionFlags = {
-  CREATE_INSTANT_INVITE: 1 << 0,
-  KICK_MEMBERS: 1 << 1,
-  BAN_MEMBERS: 1 << 2,
-  ADMINISTRATOR: 1 << 3,
-  MANAGE_CHANNELS: 1 << 4,
-  MANAGE_GUILD: 1 << 5,
-  ADD_REACTIONS: 1 << 6,
-
-  READ_MESSAGES: 1 << 10,
-  SEND_MESSAGES: 1 << 11,
-  SEND_TTS_MESSAGES: 1 << 12,
-  MANAGE_MESSAGES: 1 << 13,
-  EMBED_LINKS: 1 << 14,
-  ATTACH_FILES: 1 << 15,
-  READ_MESSAGE_HISTORY: 1 << 16,
-  MENTION_EVERYONE: 1 << 17,
-  EXTERNAL_EMOJIS: 1 << 18,
-
-  CONNECT: 1 << 20,
-  SPEAK: 1 << 21,
-  MUTE_MEMBERS: 1 << 22,
-  DEAFEN_MEMBERS: 1 << 23,
-  MOVE_MEMBERS: 1 << 24,
-  USE_VAD: 1 << 25,
-
-  CHANGE_NICKNAME: 1 << 26,
-  MANAGE_NICKNAMES: 1 << 27,
-  MANAGE_ROLES_OR_PERMISSIONS: 1 << 28,
-  MANAGE_WEBHOOKS: 1 << 29,
-  MANAGE_EMOJIS: 1 << 30,
-};
-
 exports.Colors = {
   DEFAULT: 0x000000,
   AQUA: 0x1ABC9C,
@@ -432,8 +398,3 @@ exports.Colors = {
   DARK_BUT_NOT_BLACK: 0x2C2F33,
   NOT_QUITE_BLACK: 0x23272A,
 };
-
-let _ALL_PERMISSIONS = 0;
-for (const key in PermissionFlags) _ALL_PERMISSIONS |= PermissionFlags[key];
-exports.ALL_PERMISSIONS = _ALL_PERMISSIONS;
-exports.DEFAULT_PERMISSIONS = 104324097;

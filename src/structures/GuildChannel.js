@@ -1,8 +1,7 @@
 const Channel = require('./Channel');
 const Role = require('./Role');
 const PermissionOverwrites = require('./PermissionOverwrites');
-const EvaluatedPermissions = require('./EvaluatedPermissions');
-const Constants = require('../util/Constants');
+const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
 
 /**
@@ -51,12 +50,12 @@ class GuildChannel extends Channel {
    * Gets the overall set of permissions for a user in this channel, taking into account roles and permission
    * overwrites.
    * @param {GuildMemberResolvable} member The user that you want to obtain the overall permissions for
-   * @returns {?EvaluatedPermissions}
+   * @returns {?Permissions}
    */
   permissionsFor(member) {
     member = this.client.resolver.resolveGuildMember(this.guild, member);
     if (!member) return null;
-    if (member.id === this.guild.ownerID) return new EvaluatedPermissions(member, Constants.ALL_PERMISSIONS);
+    if (member.id === this.guild.ownerID) return new Permissions(member, Permissions.ALL);
 
     let permissions = 0;
 
@@ -71,10 +70,10 @@ class GuildChannel extends Channel {
     }
     permissions |= allow;
 
-    const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
-    if (admin) permissions = Constants.ALL_PERMISSIONS;
+    const admin = Boolean(permissions & Permissions.FLAGS.ADMINISTRATOR);
+    if (admin) permissions = Permissions.ALL;
 
-    return new EvaluatedPermissions(member, permissions);
+    return new Permissions(member, permissions);
   }
 
   overwritesFor(member, verified = false, roles = null) {
@@ -151,14 +150,14 @@ class GuildChannel extends Channel {
 
     for (const perm in options) {
       if (options[perm] === true) {
-        payload.allow |= Constants.PermissionFlags[perm] || 0;
-        payload.deny &= ~(Constants.PermissionFlags[perm] || 0);
+        payload.allow |= Permissions.FLAGS[perm] || 0;
+        payload.deny &= ~(Permissions.FLAGS[perm] || 0);
       } else if (options[perm] === false) {
-        payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
-        payload.deny |= Constants.PermissionFlags[perm] || 0;
+        payload.allow &= ~(Permissions.FLAGS[perm] || 0);
+        payload.deny |= Permissions.FLAGS[perm] || 0;
       } else if (options[perm] === null) {
-        payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
-        payload.deny &= ~(Constants.PermissionFlags[perm] || 0);
+        payload.allow &= ~(Permissions.FLAGS[perm] || 0);
+        payload.deny &= ~(Permissions.FLAGS[perm] || 0);
       }
     }
 
@@ -234,14 +233,16 @@ class GuildChannel extends Channel {
   /**
    * Options given when creating a guild channel invite
    * @typedef {Object} InviteOptions
-   * @property {boolean} [temporary=false] Whether the invite should kick users after 24hrs if they are not given a role
-   * @property {number} [maxAge=0] Time in seconds the invite expires in
-   * @property {number} [maxUses=0] Maximum amount of uses for this invite
+
    */
 
   /**
    * Create an invite to this guild channel
-   * @param {InviteOptions} [options={}] The options for the invite
+   * @param {InviteOptions} [options={}] Options for the invite
+   * @param {boolean} [options.temporary=false] Whether members that joined via the invite should be automatically
+   * kicked after 24 hours if they have not yet received a role
+   * @param {number} [options.maxAge=86400] How long the invite should last (in seconds, 0 for forever)
+   * @param {number} [options.maxUses=0] Maximum number of uses
    * @returns {Promise<Invite>}
    */
   createInvite(options = {}) {
@@ -292,7 +293,7 @@ class GuildChannel extends Channel {
    */
   get deletable() {
     return this.id !== this.guild.id &&
-      this.permissionsFor(this.client.user).hasPermission(Constants.PermissionFlags.MANAGE_CHANNELS);
+      this.permissionsFor(this.client.user).hasPermission(Permissions.FLAGS.MANAGE_CHANNELS);
   }
 
   /**
