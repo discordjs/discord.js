@@ -36,7 +36,7 @@
     "long": "^3.2.0",
     "pako": "^1.0.0",
     "prism-media": "hydrabolt/prism-media",
-    "superagent": "^3.4.0",
+    "tinyhttp": "github:hackzzila/tinyhttp",
     "tweetnacl": "^0.14.0",
     "ws": "^2.0.0"
   },

@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const request = require('superagent');
+const request = require('tinyhttp');
 
 const Constants = require('../util/Constants');
 const convertToBuffer = require('../util/Util').convertToBuffer;

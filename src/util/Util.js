@@ -1,4 +1,4 @@
-const superagent = require('superagent');
+const request = require('tinyhttp');
 const botGateway = require('./Constants').Endpoints.botGateway;
 
 /**
@@ -54,7 +54,7 @@ class Util {
   static fetchRecommendedShards(token, guildsPerShard = 1000) {
     return new Promise((resolve, reject) => {
       if (!token) throw new Error('A token must be provided.');
-      superagent.get(botGateway)
+      request.get(botGateway)
         .set('Authorization', `Bot ${token.replace(/^Bot\s*/i, '')}`)
         .end((err, res) => {
           if (err) reject(err);
