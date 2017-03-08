@@ -97,11 +97,11 @@ class GuildChannel extends Channel {
     let everyoneOverwrites;
 
     for (const overwrite of this.permissionOverwrites.values()) {
-      if (overwrite.id === member.id) {
-        memberOverwrites = overwrite;
-      } else if (roles.has(overwrite.id) && roles.get(overwrite.id).name !== '@everyone') {
+      if (roles.has(overwrite.id) && overwrite.id !== this.guild.id) {
         roleOverwrites.push(overwrite);
-      } else if (roles.has(overwrite.id) && roles.get(overwrite.id).name === '@everyone') {
+      } else if (overwrite.id === member.id) {
+        memberOverwrites = overwrite;
+      } else if (overwrite.id === this.guild.id) {
         everyoneOverwrites = overwrite;
       }
     }
