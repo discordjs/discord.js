@@ -101,7 +101,7 @@ class GuildChannel extends Channel {
         memberOverwrites = overwrite;
       } else if (roles.has(overwrite.id) && roles.get(overwrite.id).name !== '@everyone') {
         roleOverwrites.push(overwrite);
-      } else {
+      } else if (roles.has(overwrite.id) && roles.get(overwrite.id).name === '@everyone') {
         everyoneOverwrites = overwrite;
       }
     }
