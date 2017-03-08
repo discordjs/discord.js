@@ -1,3 +1,5 @@
+const Util = require('../util/Util');
+
 class UserBillingProfile {
   constructor(data) {
     /**
@@ -108,8 +110,7 @@ class PaymentSource {
      * @type {?String}
      * Last four digits of card, if payment source is a card
      */
-    this.last4 = data.last_4 ? data.last_4.toString() : null;
-    if (this.last4 && this.last4.length === 3) this.last4 = `0${this.last4}`;
+    this.last4 = data.last_4 ? Util.padStart(data.last_4.toString(), 4, '0') : null;
 
     /**
      * @type {number}
