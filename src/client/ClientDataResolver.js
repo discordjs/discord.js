@@ -3,7 +3,6 @@ const fs = require('fs');
 const request = require('tinyhttp');
 
 const Constants = require('../util/Constants');
-const convertToBuffer = require('../util/Util').convertToBuffer;
 const User = require('../structures/User');
 const Message = require('../structures/Message');
 const Guild = require('../structures/Guild');
