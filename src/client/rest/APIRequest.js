@@ -1,4 +1,4 @@
-const mime = require('mime');
+const mime = require('mime-types');
 const request = require('tinyhttp');
 const Constants = require('../../util/Constants');
 
@@ -36,7 +36,8 @@ class APIRequest {
     const apiRequest = request.request(this.method.toUpperCase(), this.url);
     if (this.auth) apiRequest.set('authorization', this.getAuth());
     if (this.file && this.file.file) {
-      apiRequest.attach('file', this.file.file, this.file.name, mime.lookup(this.file.name));
+      apiRequest.attach('file', this.file.file, this.file.name,
+        mime.lookup(this.file.name) || 'application/octet-stream');
       this.data = this.data || {};
       apiRequest.field('payload_json', JSON.stringify(this.data));
     } else if (this.data) {
