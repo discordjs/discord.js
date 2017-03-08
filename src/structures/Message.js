@@ -4,6 +4,7 @@ const MessageReaction = require('./MessageReaction');
 const Util = require('../util/Util');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
+const Permissions = require('../util/Permissions');
 let GuildMember;
 
 /**
@@ -154,7 +155,7 @@ class Message {
 
     /**
      * A collection of reactions to this message, mapped by the reaction "id".
-     * @type {Collection<Snowflake|string, MessageReaction>}
+     * @type {Collection<Snowflake, MessageReaction>}
      */
     this.reactions = new Collection();
 
@@ -334,7 +335,7 @@ class Message {
    */
   get deletable() {
     return this.author.id === this.client.user.id || (this.guild &&
-      this.channel.permissionsFor(this.client.user).hasPermission(Constants.PermissionFlags.MANAGE_MESSAGES)
+      this.channel.permissionsFor(this.client.user).hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)
     );
   }
 
@@ -345,7 +346,7 @@ class Message {
    */
   get pinnable() {
     return !this.guild ||
-      this.channel.permissionsFor(this.client.user).hasPermission(Constants.PermissionFlags.MANAGE_MESSAGES);
+      this.channel.permissionsFor(this.client.user).hasPermission(Permissions.FLAGS.MANAGE_MESSAGES);
   }
 
   /**

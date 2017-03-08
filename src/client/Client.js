@@ -1,6 +1,7 @@
 const os = require('os');
 const EventEmitter = require('events').EventEmitter;
 const Constants = require('../util/Constants');
+const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
 const RESTManager = require('./rest/RESTManager');
 const ClientDataManager = require('./ClientDataManager');
@@ -210,7 +211,7 @@ class Client extends EventEmitter {
 
   /**
    * All active voice connections that have been established, mapped by channel ID
-   * @type {Collection<string, VoiceConnection>}
+   * @type {Collection<Snowflake, VoiceConnection>}
    * @readonly
    */
   get voiceConnections() {
@@ -303,7 +304,7 @@ class Client extends EventEmitter {
   /**
    * Obtains a user from Discord, or the user cache if it's already available.
    * <warn>This is only available when using a bot account.</warn>
-   * @param {string} id ID of the user
+   * @param {Snowflake} id ID of the user
    * @param {boolean} [cache=true] Whether to cache the new user object if it isn't already
    * @returns {Promise<User>}
    */
@@ -324,7 +325,7 @@ class Client extends EventEmitter {
 
   /**
    * Obtains a webhook from Discord.
-   * @param {string} id ID of the webhook
+   * @param {Snowflake} id ID of the webhook
    * @param {string} [token] Token for the webhook
    * @returns {Promise<Webhook>}
    */
@@ -398,7 +399,7 @@ class Client extends EventEmitter {
    */
   generateInvite(permissions) {
     if (permissions) {
-      if (permissions instanceof Array) permissions = this.resolver.resolvePermissions(permissions);
+      if (permissions instanceof Array) permissions = Permissions.resolve(permissions);
     } else {
       permissions = 0;
     }
@@ -467,7 +468,7 @@ class Client extends EventEmitter {
 
   /**
    * Adds/updates a friend's presence in {@link Client#presences}.
-   * @param {string} id ID of the user
+   * @param {Snowflake} id ID of the user
    * @param {Object} presence Raw presence object from Discord
    * @private
    */

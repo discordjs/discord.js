@@ -1,5 +1,6 @@
 const querystring = require('querystring');
 const long = require('long');
+const Permissions = require('../../util/Permissions');
 const Constants = require('../../util/Constants');
 const Collection = require('../../util/Collection');
 const Snowflake = require('../../util/Snowflake');
@@ -156,7 +157,7 @@ class RESTMethods {
         Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000
       );
     }
-    return this.rest.makeRequest('post', `${Constants.Endpoints.channelMessages(channel.id)}/bulk_delete`, true, {
+    return this.rest.makeRequest('post', `${Constants.Endpoints.channelMessages(channel.id)}/bulk-delete`, true, {
       messages,
     }).then(() =>
       this.client.actions.MessageDeleteBulk.handle({
@@ -581,7 +582,7 @@ class RESTMethods {
     if (_data.permissions) {
       let perms = 0;
       for (let perm of _data.permissions) {
-        if (typeof perm === 'string') perm = Constants.PermissionFlags[perm];
+        if (typeof perm === 'string') perm = Permissions.FLAGS[perm];
         perms |= perm;
       }
       data.permissions = perms;
@@ -770,7 +771,15 @@ class RESTMethods {
   }
 
   updateChannelPositions(guildID, channels) {
-    return this.rest.makeRequest('patch', Constants.Endpoints.guildChannels(guildID), true, channels).then(() =>
+    const data = new Array(channels.length);
+    for (let i = 0; i < channels.length; i++) {
+      data[i] = {
+        id: this.client.resolver.resolveChannelID(channels[i].channel),
+        position: channels[i].position,
+      };
+    }
+
+    return this.rest.makeRequest('patch', Constants.Endpoints.guildChannels(guildID), true, data).then(() =>
       this.client.actions.GuildChannelsPositionUpdate.handle({
         guild_id: guildID,
         channels,

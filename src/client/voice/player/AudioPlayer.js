@@ -47,7 +47,15 @@ class AudioPlayer extends EventEmitter {
   }
 
   get currentTranscoder() {
-    return this.streams.last().transcoder;
+    return (this.streams.last() || {}).transcoder;
+  }
+
+  /**
+   * The current dispatcher
+   * @type {?StreamDispatcher}
+   */
+  get currentDispatcher() {
+    return this.streams.size > 0 ? this.streams.last().dispatcher || null : null;
   }
 
   destroy() {

@@ -10,7 +10,7 @@ const Util = require('../util/Util');
  */
 class WebhookClient extends Webhook {
   /**
-   * @param {string} id ID of the webhook
+   * @param {Snowflake} id ID of the webhook
    * @param {string} token Token of the webhook
    * @param {ClientOptions} [options] Options for the client
    * @example
