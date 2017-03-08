@@ -208,6 +208,32 @@ class Util {
     }
     return array;
   }
+
+  static padStart(str, targetLength, padString) {
+    targetLength >>= 0;
+    padString = String(padString || ' ');
+    if (str.length > targetLength) {
+      return String(str);
+    } else {
+      targetLength -= str.length;
+      if (targetLength > padString.length) padString += padString.repeat(targetLength / padString.length);
+      return padString.slice(0, targetLength) + String(str);
+    }
+  }
+
+  static padEnd(str, targetLength, padString) {
+    targetLength >>= 0;
+    padString = String(padString || ' ');
+    if (str.length > targetLength) {
+      return String(str);
+    } else {
+      targetLength -= str.length;
+      if (targetLength > padString.length) {
+        padString += padString.repeat(targetLength / padString.length);
+      }
+      return String(str) + padString.slice(0, targetLength);
+    }
+  }
 }
 
 module.exports = Util;
