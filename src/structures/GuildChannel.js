@@ -63,12 +63,21 @@ class GuildChannel extends Channel {
     for (const role of roles.values()) permissions |= role.permissions;
 
     const overwrites = this.overwritesFor(member, true, roles);
+
+    permissions &= ~overwrites.everyone.deny;
+    permissions |= overwrites.everyone.allow;
+
     let allow = 0;
-    for (const overwrite of overwrites.role.concat(overwrites.member)) {
+    for (const overwrite of overwrites.roles) {
       permissions &= ~overwrite.deny;
       allow |= overwrite.allow;
     }
     permissions |= allow;
+
+    if (overwrites.member) {
+      permissions &= ~overwrites.member.deny;
+      permissions |= overwrites.member.allow;
+    }
 
     const admin = Boolean(permissions & Permissions.FLAGS.ADMINISTRATOR);
     if (admin) permissions = Permissions.ALL;
@@ -82,18 +91,22 @@ class GuildChannel extends Channel {
 
     roles = roles || member.roles;
     const roleOverwrites = [];
-    const memberOverwrites = [];
+    let memberOverwrites;
+    let everyoneOverwrites;
 
     for (const overwrite of this.permissionOverwrites.values()) {
       if (overwrite.id === member.id) {
-        memberOverwrites.push(overwrite);
-      } else if (roles.has(overwrite.id)) {
+        memberOverwrites = overwrite;
+      } else if (roles.has(overwrite.id) && roles.get(overwrite.id).name !== '@everyone') {
         roleOverwrites.push(overwrite);
+      } else {
+        everyoneOverwrites = overwrite;
       }
     }
 
     return {
-      role: roleOverwrites,
+      everyone: everyoneOverwrites,
+      roles: roleOverwrites,
       member: memberOverwrites,
     };
   }
