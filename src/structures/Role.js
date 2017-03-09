@@ -54,7 +54,7 @@ class Role {
     this.position = data.position;
 
     /**
-     * The bitwise number of the role's permissions
+     * The permissions bitfield of the role
      * @type {number}
      */
     this.permissions = data.permissions;
