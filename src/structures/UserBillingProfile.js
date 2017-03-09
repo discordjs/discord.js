@@ -79,17 +79,14 @@ class PremiumSubscription {
     const curPerStart = new Date(data.current_period_start);
     const curPerEnd = new Date(data.current_period_end);
 
-    /**
-     * @typedef PremiumSubscriptionCurrentPeriod
-     * @prop {Date} startedAt Date the period started at
-     * @prop {number} startedTimestamp Date the period started at
-     * @prop {Date} endsAt Date the period started at
-     * @prop {number} endsTimestamp Date the period started at
-     */
-
-    /**
-     * @type {PremiumSubscriptionCurrentPeriod}
-     */
+     /**
+      * An object containing information on the current billiog period
+      * @type {Object}
+      * @prop {Date} currentPeriod.startedAt Date the period started at
+      * @prop {number} currentPeriod.startedTimestamp Date the period started at
+      * @prop {Date} currentPeriod.endsAt Date the period started at
+      * @prop {number} currentPeriod.endsTimestamp Date the period started at
+      */
     this.currentPeriod = {
       startedAt: curPerStart,
       startedTimetamp: curPerStart.getTime(),
