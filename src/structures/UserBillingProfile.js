@@ -1,5 +1,8 @@
 const Util = require('../util/Util');
 
+/**
+ * Billing profile containing information about the premium subscription and payment source
+ */
 class UserBillingProfile {
   constructor(data) {
     /**
@@ -20,6 +23,9 @@ class UserBillingProfile {
   }
 }
 
+/**
+ * Information about a user's premium subscription
+ */
 class PremiumSubscription {
   constructor(data) {
     /**
@@ -74,8 +80,15 @@ class PremiumSubscription {
     const curPerEnd = new Date(data.current_period_end);
 
     /**
-     * @type {Object}
-     * current period start and end
+     * @typedef PremiumSubscriptionCurrentPeriod
+     * @prop {Date} startedAt Date the period started at
+     * @prop {number} startedTimestamp Date the period started at
+     * @prop {Date} endsAt Date the period started at
+     * @prop {number} endsTimestamp Date the period started at
+     */
+
+    /**
+     * @type {PremiumSubscriptionCurrentPeriod}
      */
     this.currentPeriod = {
       startedAt: curPerStart,
@@ -86,6 +99,9 @@ class PremiumSubscription {
   }
 }
 
+/**
+ * Information about a user's billing payment source
+ */
 class PaymentSource {
   constructor(data) {
     /**
