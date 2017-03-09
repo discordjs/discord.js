@@ -1,3 +1,4 @@
+const Snowflake = require('../util/Snowflake');
 const Permissions = require('../util/Permissions');
 
 /**
@@ -78,7 +79,7 @@ class Role {
    * @readonly
    */
   get createdTimestamp() {
-    return (this.id / 4194304) + 1420070400000;
+    return Snowflake.deconstruct(this.id).timestamp;
   }
 
   /**
