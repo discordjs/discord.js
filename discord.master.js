@@ -1795,7 +1795,7 @@ class Role {
     this.position = data.position;
 
     /**
-     * The evaluated permissions number
+     * The permissions bitfield of the role
      * @type {number}
      */
     this.permissions = data.permissions;
@@ -2843,7 +2843,8 @@ class GuildMember {
   }
 
   /**
-   * Returns `channel.permissionsFor(guildMember)`. Returns evaluated permissions for a member in a guild channel.
+   * Returns `channel.permissionsFor(guildMember)`. Returns permissions for a member in a guild channel,
+   * taking into account roles and permission overwrites.
    * @param {ChannelResolvable} channel Guild channel to use as context
    * @returns {?Permissions}
    */
