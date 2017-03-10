@@ -91,10 +91,26 @@ class HTTPRequest {
     });
   }
 
+  then(s, f) {
+    return new Promise((resolve, reject) => {
+      this.end((err, res) => {
+        if (err) reject(f(err));
+        else resolve(s ? s(res) : null);
+      });
+    });
+  }
+
+  catch(f) {
+    return this.then(null, f);
+  }
+
   _getFormData() {
     if (!this._formData) this._formData = new FormData();
     return this._formData;
   }
 }
+
+const methods = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'];
+for (const method of methods) HTTPRequest[method.toLowerCase()] = (url) => new HTTPRequest(method, url);
 
 module.exports = HTTPRequest;

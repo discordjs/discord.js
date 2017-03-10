@@ -211,8 +211,8 @@ class ClientDataResolver {
     if (typeof resource === 'string') {
       return new Promise((resolve, reject) => {
         if (/^https?:\/\//.test(resource)) {
-          const req = new HTTPRequest('get', resource);
-          req.end((err, res) => {
+          HTTPRequest.get(resource)
+          .end((err, res) => {
             if (err) return reject(err);
             if (!(res.body instanceof Buffer)) return reject(new TypeError('The response body isn\'t a Buffer.'));
             return resolve(res.body);
