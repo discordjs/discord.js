@@ -44,6 +44,12 @@ class HTTPRequest {
   }
 
   end(cb) {
+    // in a browser, the response is actually immutable, so we make a new one
+    let response = {
+      headers: {},
+      text: '',
+      body: {},
+    };
     const data = this.data ? this.data.end ? this.data.end() : this.data : null;
     return fetch(this.url, {
       method: this.method,
@@ -53,22 +59,32 @@ class HTTPRequest {
       const ctype = res.headers.get('Content-Type');
       if (ctype === 'application/json') {
         return res.text().then((t) => {
-          res.text = t;
-          res.body = JSON.parse(t);
+          response.text = t;
+          response.body = JSON.parse(t);
           return res;
         });
       } else {
         return (browser ? res.arrayBuffer() : res.buffer())
         .then((b) => {
           if (b instanceof ArrayBuffer) b = convertToBuffer(b);
-          res.body = b;
-          res.text = b.toString();
+          response.body = b;
+          response.text = b.toString();
           return res;
         });
       }
     })
     .then((res) => {
-      cb(null, res);
+      const body = response.body;
+      const text = response.text;
+      Object.assign(response, res);
+      response.body = body;
+      response.text = text;
+      if (res.headers.raw) {
+        for (const [name, value] of Object.entries(res.headers.raw())) response.headers[name] = value[0];
+      } else {
+        for (const [name, value] of res.headers.entries()) response.headers[name] = value;
+      }
+      cb(null, response);
     })
     .catch((err) => {
       cb(err);
