@@ -33,7 +33,6 @@
   "runkitExampleFilename": "./docs/examples/ping.js",
   "dependencies": {
     "@types/node": "^7.0.0",
-    "form-data": "^2.1.2",
     "long": "^3.2.0",
     "pako": "^1.0.0",
     "prism-media": "hydrabolt/prism-media",
