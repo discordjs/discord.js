@@ -1,4 +1,4 @@
-const superagent = require('superagent');
+const HTTPRequest = require('./HTTPRequest');
 const botGateway = require('./Constants').Endpoints.botGateway;
 
 /**
@@ -54,12 +54,12 @@ class Util {
   static fetchRecommendedShards(token, guildsPerShard = 1000) {
     return new Promise((resolve, reject) => {
       if (!token) throw new Error('A token must be provided.');
-      superagent.get(botGateway)
-        .set('Authorization', `Bot ${token.replace(/^Bot\s*/i, '')}`)
-        .end((err, res) => {
-          if (err) reject(err);
-          resolve(res.body.shards * (1000 / guildsPerShard));
-        });
+      const req = new HTTPRequest('get', botGateway);
+      req.set('Authorization', `Bot ${token.replace(/^Bot\s*/i, '')}`);
+      req.end((err, res) => {
+        if (err) reject(err);
+        resolve(res.body.shards * (1000 / guildsPerShard));
+      });
     });
   }
 
