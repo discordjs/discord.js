@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const HTTPRequest = require('../util/HTTPRequest');
+const Fetcher = require('node-fetcher');
 
 const Constants = require('../util/Constants');
 const convertToBuffer = require('../util/Util').convertToBuffer;
@@ -211,7 +211,7 @@ class ClientDataResolver {
     if (typeof resource === 'string') {
       return new Promise((resolve, reject) => {
         if (/^https?:\/\//.test(resource)) {
-          HTTPRequest.get(resource)
+          Fetcher.get(resource)
           .end((err, res) => {
             if (err) return reject(err);
             if (!(res.body instanceof Buffer)) return reject(new TypeError('The response body isn\'t a Buffer.'));

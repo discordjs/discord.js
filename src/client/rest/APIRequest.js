@@ -1,4 +1,4 @@
-const HTTPRequest = require('../../util/HTTPRequest');
+const Fetcher = require('node-fetcher');
 const Constants = require('../../util/Constants');
 
 class APIRequest {
@@ -32,7 +32,7 @@ class APIRequest {
   }
 
   gen() {
-    const request = new HTTPRequest(this.method, this.url);
+    const request = new Fetcher(this.method, this.url);
     if (this.auth) request.set('Authorization', this.getAuth());
     if (!this.rest.client.browser) request.set('User-Agent', this.rest.userAgentManager.userAgent);
     if (this.file && this.file.file) {
