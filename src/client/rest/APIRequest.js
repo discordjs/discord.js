@@ -1,4 +1,4 @@
-const request = require('superagent');
+const HTTPRequest = require('../../util/HTTPRequest');
 const Constants = require('../../util/Constants');
 
 class APIRequest {
@@ -32,17 +32,16 @@ class APIRequest {
   }
 
   gen() {
-    const apiRequest = request[this.method](this.url);
-    if (this.auth) apiRequest.set('authorization', this.getAuth());
+    const request = new HTTPRequest(this.method, this.url);
+    if (this.auth) request.set('Authorization', this.getAuth());
+    if (!this.rest.client.browser) request.set('User-Agent', this.rest.userAgentManager.userAgent);
     if (this.file && this.file.file) {
-      apiRequest.attach('file', this.file.file, this.file.name);
-      this.data = this.data || {};
-      apiRequest.field('payload_json', JSON.stringify(this.data));
+      request.attach('file', this.file.file, this.file.name);
+      if (typeof this.data !== 'undefined') request.attach('payload_json', JSON.stringify(this.data));
     } else if (this.data) {
-      apiRequest.send(this.data);
+      request.send(this.data);
     }
-    if (!this.rest.client.browser) apiRequest.set('User-Agent', this.rest.userAgentManager.userAgent);
-    return apiRequest;
+    return request;
   }
 }
 
