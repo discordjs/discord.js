@@ -46,6 +46,26 @@ class Util {
   }
 
   /**
+   * Format a string
+   * @param {string} format one of `bold`, `italic`, `underlined`, `strikethrough`
+   * @param {string} str String to format
+   * @returns {string} formatted string
+   */
+  static applyFormat(format, str) {
+    const formatters = {
+      bold: '**',
+      italic: '_',
+      underlined: '__',
+      strikethrough: '~~',
+    };
+    if (!(format in formatters)) return str;
+    const token = formatters[format];
+    if (str.startsWith(token[0])) str = `\u200b${str}`;
+    if (str.endsWith(token[token.length - 1])) str = `${str}\u200b`;
+    return `${token}${str}${token}`;
+  }
+
+  /**
    * Gets the recommended shard count from Discord.
    * @param {string} token Discord auth token
    * @param {number} [guildsPerShard=1000] Number of guilds per shard
