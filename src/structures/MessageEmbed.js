@@ -119,15 +119,16 @@ class MessageEmbed {
   get richEmbed() {
     const result = {};
     for (const prop of Object.keys(this)) {
-      let thing = this[prop];
-      if (typeof thing === 'object' && !(thing instanceof Array)) {
+      let item = this[prop];
+      if (typeof item === 'object' && !(item instanceof Array)) {
         result[prop] = {};
-        for (const key in thing) {
-          if (key !== 'embed' && key !== 'height' && key !== 'width') result[prop][key] = thing[key];
+        for (const key in item) {
+          if (!/^(?:embed|height|width|proxyURL|proxyIconUrl)$/i.test(key))// eslint-disable-line curly
+            result[prop][key === 'iconURL' ? 'icon_url' : key] = item[key];
         }
-      } else if (thing instanceof Array) {
+      } else if (item instanceof Array) {
         result[prop] = [];
-        thing.map(field => {
+        item.map(field => {
           const addedField = result[prop][result[prop].push({}) - 1];
           for (const key of Object.keys(field)) {
             if (key !== 'embed') addedField[key] = field[key];
@@ -135,7 +136,7 @@ class MessageEmbed {
           return addedField;
         });
       } else {
-        result[prop] = thing;
+        result[prop] = item;
       }
     }
     return new RichEmbed(result);

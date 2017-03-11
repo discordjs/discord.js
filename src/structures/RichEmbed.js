@@ -219,12 +219,20 @@ class RichEmbed {
    * @readonly
    */
   get messageEmbed() {
-    if (!(this instanceof RichEmbed)) throw new TypeError('Embed must be an instance of the RichEmbed class.');
     const result = {};
     for (const prop of Object.keys(this)) {
-      result[prop] = this[prop];
+      let item = this[prop];
+      if (typeof item === 'object' && !(item instanceof Array)) {
+        const oldItem = item;
+        item = {};
+        for (const anotherprop of Object.keys(oldItem)) {
+          if (anotherprop === 'icon_url') item.iconURL = oldItem[anotherprop];
+          else item[anotherprop] = oldItem[anotherprop];
+        }
+      }
+      result[prop] = item;
     }
-    return new MessageEmbed({ client: null }, result);
+    return new MessageEmbed({}, this);
   }
 }
 
