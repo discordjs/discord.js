@@ -1,4 +1,5 @@
 const ClientDataResolver = require('../client/ClientDataResolver');
+const MessageEmbed = require('./MessageEmbed.js');
 
 /**
  * A rich embed to be sent with a message with a fluent interface for creation
@@ -210,6 +211,20 @@ class RichEmbed {
     if (this.file) throw new RangeError('You may not upload more than one file at once.');
     this.file = file;
     return this;
+  }
+
+  /**
+   * The MessageEmbed representation of this RichEmbed.
+   * @type {MessageEmbed}
+   * @readonly
+   */
+  get messageEmbed() {
+    if (!(this instanceof RichEmbed)) throw new TypeError('Embed must be an instance of the RichEmbed class.');
+    const result = {};
+    for (const prop of Object.keys(this)) {
+      result[prop] = this[prop];
+    }
+    return new MessageEmbed({ client: null }, result);
   }
 }
 

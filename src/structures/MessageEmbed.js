@@ -1,3 +1,5 @@
+const RichEmbed = require("./RichEmbed.js");
+
 /**
  * Represents an embed in a message (image/video preview, rich embed, etc.)
  * <info>This class is only used for *recieved* embeds. If you wish to send one, use the {@link RichEmbed} class.</info>
@@ -107,6 +109,36 @@ class MessageEmbed {
     let col = this.color.toString(16);
     while (col.length < 6) col = `0${col}`;
     return `#${col}`;
+  }
+
+  /**
+   * The RichEmbed representation of this MessageEmbed.
+   * @type {RichEmbed}
+   * @readonly
+   */
+  get richEmbed() {
+    const result = {};
+    for (const prop of Object.keys(this)) {
+      let thing = this[prop];
+      if (typeof thing === 'object' && !(thing instanceof Array)) {
+        result[prop] = {};
+        for (const key in thing) {
+          if (key !== 'embed' && key !== 'height' && key !== 'width') result[prop][key] = thing[key];
+        }
+      } else if (thing instanceof Array) {
+        result[prop] = [];
+        thing.map(field => {
+          const addedField = result[prop][result[prop].push({}) - 1];
+          for (const key of Object.keys(field)) {
+            if (key !== 'embed') addedField[key] = field[key];
+          }
+          return addedField;
+        });
+      } else {
+        result[prop] = thing;
+      }
+    }
+    return new RichEmbed(result);
   }
 }
 
