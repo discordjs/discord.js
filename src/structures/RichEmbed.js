@@ -232,7 +232,7 @@ class RichEmbed {
       }
       result[prop] = item;
     }
-    return new MessageEmbed({}, this);
+    return new MessageEmbed({}, result);
   }
 }
 
