@@ -1,4 +1,4 @@
-const RichEmbed = require("./RichEmbed.js");
+const RichEmbed = require('./RichEmbed.js');
 
 /**
  * Represents an embed in a message (image/video preview, rich embed, etc.)
