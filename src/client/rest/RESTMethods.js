@@ -61,9 +61,9 @@ class RESTMethods {
       if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
 
       // nonce has to be a uint64 :<
-      if (nonce !== undefined) {
+      if (typeof nonce !== 'undefined') {
         nonce = Math.abs(parseInt(nonce));
-        if (isNaN(nonce)) throw new Error('`nonce` must be a positive integer.');
+        if (isNaN(nonce)) throw new Error('nonce must be a unsigned 64bit integer');
       }
 
       if (content) {
