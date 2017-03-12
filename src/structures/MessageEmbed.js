@@ -117,32 +117,33 @@ class MessageEmbed {
    * @readonly
    */
   get richEmbed() {
-    const result = Object.assign(new Proxy({}, {
+    const handler = {
       set: (target, name, value) => {
         if (typeof value === 'object') {
-          target[name] = Object.assign(new Proxy(value instanceof Array ? [] : {}, {
+          target[name] = new Proxy(value, {
             set: (target2, name2, value2) => {
               if (/^(?:embed|height|width|proxyURL|proxyIconUrl)$/i.test(name2)) return true;
               if (typeof value2 === 'object') {
-                target2[name2] = Object.assign(new Proxy({}, {
+                target2[name2] = new Proxy(value2, {
                   set: (target3, name3, value3) => {
                     if (name3 === 'embed') return true;
                     target3[name3] = value3;
                     return true;
                   },
-                }), value2);
+                });
               } else {
                 target2[name2] = value2;
               }
               return true;
             },
-          }), value);
+          });
         } else {
           target[name] = value;
         }
         return true;
       },
-    }), this);
+    };
+    const result = new Proxy(this, handler);
     return new RichEmbed(result);
   }
 }
