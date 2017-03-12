@@ -1,5 +1,6 @@
 const browser = require('os').platform() === 'browser';
 const EventEmitter = require('events');
+const zlib = require('zlib');
 const erlpack = (function findErlpack() {
   try {
     const e = require('erlpack');
@@ -8,14 +9,6 @@ const erlpack = (function findErlpack() {
   } catch (e) {
     return null;
   }
-}());
-
-const inflate = (function findInflate() {
-  const pako = require('pako');
-  const zlib = require('zlib');
-  return browser ?
-  (data) => pako.inflate(data, { to: 'string' }) :
-  (data) => zlib.inflateSync(data).toString();
 }());
 
 const WebSocket = (function findWebSocket() {
@@ -61,12 +54,17 @@ class WebSocketConnection extends EventEmitter {
   }
 
   eventMessage(event) {
-    if (this.listenerCount('message') > 0) this.emit('message', event);
-    const data = this.unpack(event.data);
-    // unpack can take a while and cause a race condition where the ws is closed but a packet gets emitted
-    if (this.ws.readyState !== this.ws.OPEN) return false;
-    this.emit('packet', data);
-    return true;
+    if (this.listenerCount('message')) this.emit('message', event);
+    try {
+      const data = this.unpack(event.data);
+      // unpack can take a while and cause a race condition where the ws is closed but a packet gets emitted
+      if (this.ws.readyState !== this.ws.OPEN) return false;
+      this.emit('packet', data);
+      return true;
+    } catch (err) {
+      if (this.listenerCount('decodeError')) this.emit('decodeError', err);
+      return false;
+    }
   }
 
   send(data) {
@@ -74,7 +72,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   pack(data) {
-    return erlpack ? erlpack.pack(data).buffer : JSON.stringify(data);
+    return erlpack ? erlpack.pack(data) : JSON.stringify(data);
   }
 
   unpack(data) {
@@ -88,7 +86,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   inflate(data) {
-    return erlpack ? data : inflate(data);
+    return erlpack ? data : zlib.inflateSync(data).toString();
   }
 
   static get encoding() {
