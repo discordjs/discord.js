@@ -19,7 +19,7 @@ class OpusScriptEngine extends OpusEngine {
   }
 
   setPLP(percent) {
-    this.encoder.encoderCTL(this.ctl.PLP, Math.max(100, Math.min(0, percent * 100)));
+    this.encoder.encoderCTL(this.ctl.PLP, Math.min(100, Math.max(0, percent * 100)));
   }
 
   encode(buffer) {
