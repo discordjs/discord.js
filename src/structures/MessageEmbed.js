@@ -1,4 +1,4 @@
-const RichEmbed = require('./RichEmbed.js');
+const RichEmbed = require('./RichEmbed');
 
 /**
  * Represents an embed in a message (image/video preview, rich embed, etc.)
@@ -117,28 +117,32 @@ class MessageEmbed {
    * @readonly
    */
   get richEmbed() {
-    const result = {};
-    for (const prop of Object.keys(this)) {
-      let item = this[prop];
-      if (typeof item === 'object' && !(item instanceof Array)) {
-        result[prop] = {};
-        for (const key in item) {
-          if (!/^(?:embed|height|width|proxyURL|proxyIconUrl)$/i.test(key))// eslint-disable-line curly
-            result[prop][key === 'iconURL' ? 'icon_url' : key] = item[key];
+    const result = Object.assign(new Proxy({}, {
+      set: (target, name, value) => {
+        if (typeof value === 'object') {
+          target[name] = Object.assign(new Proxy(value instanceof Array ? [] : {}, {
+            set: (target2, name2, value2) => {
+              if (/^(?:embed|height|width|proxyURL|proxyIconUrl)$/i.test(name2)) return true;
+              if (typeof value2 === 'object') {
+                target2[name2] = Object.assign(new Proxy({}, {
+                  set: (target3, name3, value3) => {
+                    if (name3 === 'embed') return true;
+                    target3[name3] = value3;
+                    return true;
+                  },
+                }), value2);
+              } else {
+                target2[name2] = value2;
+              }
+              return true;
+            },
+          }), value);
+        } else {
+          target[name] = value;
         }
-      } else if (item instanceof Array) {
-        result[prop] = [];
-        item.map(field => {
-          const addedField = result[prop][result[prop].push({}) - 1];
-          for (const key of Object.keys(field)) {
-            if (key !== 'embed') addedField[key] = field[key];
-          }
-          return addedField;
-        });
-      } else {
-        result[prop] = item;
-      }
-    }
+        return true;
+      },
+    }), this);
     return new RichEmbed(result);
   }
 }

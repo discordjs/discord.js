@@ -1,5 +1,5 @@
 const ClientDataResolver = require('../client/ClientDataResolver');
-const MessageEmbed = require('./MessageEmbed.js');
+const MessageEmbed = require('./MessageEmbed');
 
 /**
  * A rich embed to be sent with a message with a fluent interface for creation
@@ -219,19 +219,22 @@ class RichEmbed {
    * @readonly
    */
   get messageEmbed() {
-    const result = {};
-    for (const prop of Object.keys(this)) {
-      let item = this[prop];
-      if (typeof item === 'object' && !(item instanceof Array)) {
-        const oldItem = item;
-        item = {};
-        for (const anotherprop of Object.keys(oldItem)) {
-          if (anotherprop === 'icon_url') item.iconURL = oldItem[anotherprop];
-          else item[anotherprop] = oldItem[anotherprop];
+    const result = Object.assign(new Proxy({}, {
+      set: (target, name, value) => {
+        if (typeof value === 'object') {
+          target[name] = Object.assign(new Proxy(value instanceof Array ? [] : {}, {
+            set: (target2, name2, value2) => {
+              if (name2 === 'icon_url') name2 = 'iconURL';
+              target2[name2] = value2;
+              return true;
+            },
+          }), value);
+        } else {
+          target[name] = value;
         }
-      }
-      result[prop] = item;
-    }
+        return true;
+      },
+    }), this);
     return new MessageEmbed({}, result);
   }
 }
