@@ -37,7 +37,7 @@ class TextBasedChannel {
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
-   * @property {FileOptions|string[]} [files] Files to send with the message
+   * @property {FileOptions[]|string[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
@@ -144,6 +144,17 @@ class TextBasedChannel {
   }
 
   /**
+   * Send files to this channel
+   * @param {FileOptions[]|string[]} files Files to send with the message
+   * @param {StringResolvable} [content] Text for the message
+   * @param {MessageOptions} [options] Options for the message
+   * @returns {Promise<Message>}
+   */
+  sendFiles(files, content, options) {
+    return this.send(content, Object.assign(options, { files }));
+  }
+
+  /**
    * Send a file to this channel
    * @param {BufferResolvable} attachment File to send
    * @param {string} [name='file.jpg'] Name and extension of the file
@@ -152,7 +163,7 @@ class TextBasedChannel {
    * @returns {Promise<Message>}
    */
   sendFile(attachment, name, content, options = {}) {
-    return this.send(content, Object.assign(options, { file: { attachment, name } }));
+    return this.sendFiles([{ attachment, name }], content, options);
   }
 
   /**
