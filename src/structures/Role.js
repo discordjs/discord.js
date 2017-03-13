@@ -1,3 +1,4 @@
+const Snowflake = require('../util/Snowflake');
 const Permissions = require('../util/Permissions');
 
 /**
@@ -54,7 +55,7 @@ class Role {
     this.position = data.position;
 
     /**
-     * The evaluated permissions number
+     * The permissions bitfield of the role
      * @type {number}
      */
     this.permissions = data.permissions;
@@ -78,7 +79,7 @@ class Role {
    * @readonly
    */
   get createdTimestamp() {
-    return (this.id / 4194304) + 1420070400000;
+    return Snowflake.deconstruct(this.id).timestamp;
   }
 
   /**
