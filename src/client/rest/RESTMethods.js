@@ -99,7 +99,7 @@ class RESTMethods {
           const messages = [];
           (function sendChunk(list, index) {
             const options = index === list.length ? { tts, embed } : { tts };
-            chan.send(list[index], options, index === list.length ? file : null).then(message => {
+            chan.send(list[index], options, index === list.length ? files : null).then(message => {
               messages.push(message);
               if (index >= list.length - 1) return resolve(messages);
               return sendChunk(list, ++index);
