@@ -18,6 +18,8 @@ const Channel = require('../../structures/Channel');
 const GroupDMChannel = require('../../structures/GroupDMChannel');
 const Guild = require('../../structures/Guild');
 const VoiceRegion = require('../../structures/VoiceRegion');
+const UserBillingProfile = require('../../structures/UserBillingProfile');
+const Payment = require('../../structures/Payment');
 
 class RESTMethods {
   constructor(restManager) {
@@ -46,6 +48,16 @@ class RESTMethods {
 
   getBotGateway() {
     return this.rest.makeRequest('get', Constants.Endpoints.botGateway, true);
+  }
+
+  fetchMeBilling() {
+    return this.rest.makeRequest('get', Constants.Endpoints.meBilling, true)
+      .then(res => new UserBillingProfile(res));
+  }
+
+  fetchMePayments() {
+    return this.rest.makeRequest('get', Constants.Endpoints.mePayments, true)
+      .then(res => res.map(p => new Payment(p)));
   }
 
   fetchVoiceRegions(guildID) {

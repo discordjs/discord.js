@@ -333,6 +333,22 @@ class ClientUser extends User {
   acceptInvite(invite) {
     return this.client.rest.methods.acceptInvite(invite);
   }
+
+  /**
+   * Fetch billing information for the current user
+   * @returns {UserBillingProfile}
+   */
+  fetchBilling() {
+    return this.client.rest.methods.fetchMeBilling();
+  }
+
+  /**
+   * Fetch payment history for the current user
+   * @returns {Payment[]}
+   */
+  fetchPayments() {
+    return this.client.rest.methods.fetchPayments();
+  }
 }
 
 module.exports = ClientUser;
