@@ -4,6 +4,7 @@ const MessageReaction = require('./MessageReaction');
 const Util = require('../util/Util');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
+const Permissions = require('../util/Permissions');
 let GuildMember;
 
 /**
@@ -154,7 +155,7 @@ class Message {
 
     /**
      * A collection of reactions to this message, mapped by the reaction "id".
-     * @type {Collection<Snowflake|string, MessageReaction>}
+     * @type {Collection<Snowflake, MessageReaction>}
      */
     this.reactions = new Collection();
 
@@ -277,7 +278,7 @@ class Message {
   get cleanContent() {
     return this.content
       .replace(/@(everyone|here)/g, '@\u200b$1')
-      .replace(/<@!?[0-9]+>/g, (input) => {
+      .replace(/<@!?[0-9]+>/g, input => {
         const id = input.replace(/<|!|>|@/g, '');
         if (this.channel.type === 'dm' || this.channel.type === 'group') {
           return this.client.users.has(id) ? `@${this.client.users.get(id).username}` : input;
@@ -293,12 +294,12 @@ class Message {
           return input;
         }
       })
-      .replace(/<#[0-9]+>/g, (input) => {
+      .replace(/<#[0-9]+>/g, input => {
         const channel = this.client.channels.get(input.replace(/<|#|>/g, ''));
         if (channel) return `#${channel.name}`;
         return input;
       })
-      .replace(/<@&[0-9]+>/g, (input) => {
+      .replace(/<@&[0-9]+>/g, input => {
         if (this.channel.type === 'dm' || this.channel.type === 'group') return input;
         const role = this.guild.roles.get(input.replace(/<|@|>|&/g, ''));
         if (role) return `@${role.name}`;
@@ -334,7 +335,7 @@ class Message {
    */
   get deletable() {
     return this.author.id === this.client.user.id || (this.guild &&
-      this.channel.permissionsFor(this.client.user).hasPermission(Constants.PermissionFlags.MANAGE_MESSAGES)
+      this.channel.permissionsFor(this.client.user).hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)
     );
   }
 
@@ -345,7 +346,7 @@ class Message {
    */
   get pinnable() {
     return !this.guild ||
-      this.channel.permissionsFor(this.client.user).hasPermission(Constants.PermissionFlags.MANAGE_MESSAGES);
+      this.channel.permissionsFor(this.client.user).hasPermission(Permissions.FLAGS.MANAGE_MESSAGES);
   }
 
   /**

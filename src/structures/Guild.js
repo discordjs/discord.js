@@ -6,6 +6,7 @@ const GuildMember = require('./GuildMember');
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
+const Snowflake = require('../util/Snowflake');
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -216,7 +217,7 @@ class Guild {
    * @readonly
    */
   get createdTimestamp() {
-    return (this.id / 4194304) + 1420070400000;
+    return Snowflake.deconstruct(this.id).timestamp;
   }
 
   /**
@@ -633,26 +634,26 @@ class Guild {
    *  .catch(console.error);
    */
   createChannel(name, type, overwrites) {
-    return this.client.rest.methods.updateChannel(this, name, type, overwrites);
+    return this.client.rest.methods.createChannel(this, name, type, overwrites);
   }
 
   /**
    * The data needed for updating a channel's position.
    * @typedef {Object} ChannelPosition
-   * @property {string} id The channel being updated's unique id.
-   * @property {number} position The new position of the channel.
+   * @property {ChannelResolvable} channel Channel to update
+   * @property {number} position New position for the channel
    */
 
   /**
-   * Updates this guild's channel positions as a batch.
-   * @param {Array<ChannelPosition>} channelPositions Array of objects that defines which channel is going where.
+   * Batch-updates the guild's channels' positions.
+   * @param {ChannelPosition[]} channelPositions Channel positions to update
    * @returns {Promise<Guild>}
    * @example
-   * guild.updateChannels([{ id: channelID, position: newChannelIndex }])
-   *  .then(guild => console.log(`Updated channels for ${guild.id}`))
+   * guild.updateChannels([{ channel: channelID, position: newChannelIndex }])
+   *  .then(guild => console.log(`Updated channel positions for ${guild.id}`))
    *  .catch(console.error);
    */
-  updateChannelPositions(channelPositions) {
+  setChannelPositions(channelPositions) {
     return this.client.rest.methods.updateChannelPositions(this.id, channelPositions);
   }
 
@@ -680,7 +681,7 @@ class Guild {
 
   /**
    * Set the position of a role in this guild
-   * @param {string|Role} role the role to edit, can be a role object or a role ID.
+   * @param {Role|Snowflake} role the role to edit, can be a role object or a role ID.
    * @param {number} position the new position of the role
    * @param {boolean} [relative=false] Position moves the role relative to its current position
    * @returns {Promise<Guild>}
@@ -707,7 +708,7 @@ class Guild {
    * Creates a new custom emoji in the guild.
    * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji.
    * @param {string} name The name for the emoji.
-   * @param {Collection<Role>|Role[]} [roles] Roles to limit the emoji to
+   * @param {Collection<Snowflake, Role>|Role[]} [roles] Roles to limit the emoji to
    * @returns {Promise<Emoji>} The created emoji.
    * @example
    * // create a new emoji from a url

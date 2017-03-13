@@ -311,11 +311,16 @@ class VoiceConnection extends EventEmitter {
    */
   cleanup() {
     const { ws, udp } = this.sockets;
-    ws.removeAllListeners('error');
-    udp.removeAllListeners('error');
-    ws.removeAllListeners('ready');
-    ws.removeAllListeners('sessionDescription');
-    ws.removeAllListeners('speaking');
+
+    if (ws) {
+      ws.removeAllListeners('error');
+      ws.removeAllListeners('ready');
+      ws.removeAllListeners('sessionDescription');
+      ws.removeAllListeners('speaking');
+    }
+
+    if (udp) udp.removeAllListeners('error');
+
     this.sockets.ws = null;
     this.sockets.udp = null;
   }

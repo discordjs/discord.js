@@ -304,15 +304,15 @@ class ClientUser extends User {
   /**
    * An object containing either a user or access token, and an optional nickname
    * @typedef {Object} GroupDMRecipientOptions
-   * @property {UserResolvable|Snowflake} [user] User to add to the group dm
-   * (only available if a user is creating the dm)
-   * @property {string} [accessToken] Access token to use to add a user to the group dm
-   * (only available if a bot is creating the dm)
-   * @property {string} [nick] Permanent nickname (only available if a bot is creating the dm)
+   * @property {UserResolvable|Snowflake} [user] User to add to the group DM
+   * (only available if a user is creating the DM)
+   * @property {string} [accessToken] Access token to use to add a user to the group DM
+   * (only available if a bot is creating the DM)
+   * @property {string} [nick] Permanent nickname (only available if a bot is creating the DM)
    */
 
   /**
-   * Create a group dm
+   * Creates a group DM
    * @param {GroupDMRecipientOptions[]} recipients The recipients
    * @returns {Promise<GroupDMChannel>}
    */
@@ -325,6 +325,8 @@ class ClientUser extends User {
   }
 
   /**
+   * Accepts an invite to join a guild
+   * <warn>This is only available when using a user account.</warn>
    * @param {Invite|string} invite Invite or code to accept
    * @returns {Promise<Guild>} Joined guild
    */

@@ -11,6 +11,9 @@
     "no-extra-parens": ["warn", "all", {
       "nestedBinaryExpressions": false
     }],
+    "arrow-parens": ["error", "as-needed", {
+      "requireForBlockBody": false
+    }],
     "valid-jsdoc": ["error", {
       "requireReturn": false,
       "requireReturnDescription": false,
