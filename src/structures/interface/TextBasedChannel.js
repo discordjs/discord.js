@@ -101,11 +101,11 @@ class TextBasedChannel {
       }
 
       return Promise.all(options.files.map(file =>
-        this.client.resolver.resolveBuffer(file.attachment).then((buffer) => {
+        this.client.resolver.resolveBuffer(file.attachment).then(buffer => {
           file.file = buffer;
           return file;
         })
-      )).then((files) => this.client.rest.methods.sendMessage(this, content, options, files));
+      )).then(files => this.client.rest.methods.sendMessage(this, content, options, files));
     }
 
     return this.client.rest.methods.sendMessage(this, content, options);
