@@ -776,14 +776,14 @@ class RESTMethods {
     return this.rest.makeRequest('post', Constants.Endpoints.meMFACodes, true, {
       password,
       regenerate,
-    }).then((res) => new Collection(res.backup_codes.map(c => [c.code, c.consumed])));
+    }).then(res => new Collection(res.backup_codes.map(c => [c.code, c.consumed])));
   }
 
   enableMeTOTP(secret, code) {
     return this.rest.makeRequest('post', Constants.Endpoints.meTOTPEnable, true, {
       secret,
       code,
-    }).then((res) => {
+    }).then(res => {
       if (res.token) this.client.token = res.token;
       return new Collection(res.backup_codes.map(c => [c.code, c.consumed]));
     });
@@ -792,24 +792,24 @@ class RESTMethods {
   disableMeTOTP(code) {
     return this.rest.makeRequest('post', Constants.Endpoints.meTOTPDisable, true, {
       code,
-    }).then((res) => {
+    }).then(res => {
       if (res.token) this.client.token = res.token;
     });
   }
 
   fetchMeBillingProfile() {
     return this.rest.makeRequest('get', Constants.Endpoints.meBilling, true)
-    .then((data) => new UserBillingProfile(data));
+    .then(data => new UserBillingProfile(data));
   }
 
   fetchMePaymentHistory() {
     return this.rest.makeRequest('get', Constants.Endpoints.mePayments, true)
-    .then((data) => data.map(p => new Payment(p)));
+    .then(data => data.map(p => new Payment(p)));
   }
 
   fetchMePremiumSubscription() {
     return this.rest.makeRequest('get', Constants.Endpoints.mePremiumSubscription, true)
-    .then((res) => new UserBillingProfile.PremiumSubscription(res));
+    .then(res => new UserBillingProfile.PremiumSubscription(res));
   }
 
   updateChannelPositions(guildID, channels) {
