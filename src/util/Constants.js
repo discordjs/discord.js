@@ -87,61 +87,61 @@ const Endpoints = exports.Endpoints = {
   logout: `${API}/auth/logout`,
   gateway: `${API}/gateway`,
   botGateway: `${API}/gateway/bot`,
-  invite: (id) => `${API}/invite/${id}`,
-  inviteLink: (id) => `https://discord.gg/${id}`,
-  assets: (asset) => `${HOST}/assets/${asset}`,
+  invite: id => `${API}/invite/${id}`,
+  inviteLink: id => `https://discord.gg/${id}`,
+  assets: asset => `${HOST}/assets/${asset}`,
   CDN: 'https://cdn.discordapp.com',
 
   // users
-  user: (userID) => `${API}/users/${userID}`,
-  userChannels: (userID) => `${Endpoints.user(userID)}/channels`,
-  userProfile: (userID) => `${Endpoints.user(userID)}/profile`,
+  user: userID => `${API}/users/${userID}`,
+  userChannels: userID => `${Endpoints.user(userID)}/channels`,
+  userProfile: userID => `${Endpoints.user(userID)}/profile`,
   avatar: (userID, avatar) => {
     if (userID === '1') return avatar;
     return `${Endpoints.CDN}/avatars/${userID}/${avatar}.${avatar.startsWith('a_') ? 'gif' : 'jpg'}?size=1024`;
   },
   me: `${API}/users/@me`,
-  meGuild: (guildID) => `${Endpoints.me}/guilds/${guildID}`,
+  meGuild: guildID => `${Endpoints.me}/guilds/${guildID}`,
   meChannels: `${API}/users/@me/channels`,
   meMentions: (limit, roles, everyone, guildID) =>
     `users/@me/mentions?limit=${limit}&roles=${roles}&everyone=${everyone}${guildID ? `&guild_id=${guildID}` : ''}`,
-  relationships: (userID) => `${Endpoints.user(userID)}/relationships`,
-  note: (userID) => `${Endpoints.me}/notes/${userID}`,
+  relationships: userID => `${Endpoints.user(userID)}/relationships`,
+  note: userID => `${Endpoints.me}/notes/${userID}`,
 
   voiceRegions: `${API}/voice/regions`,
 
   // guilds
   guilds: `${API}/guilds`,
-  guild: (guildID) => `${Endpoints.guilds}/${guildID}`,
+  guild: guildID => `${Endpoints.guilds}/${guildID}`,
   guildIcon: (guildID, hash) => `${Endpoints.CDN}/icons/${guildID}/${hash}.jpg`,
   guildSplash: (guildID, hash) => `${Endpoints.CDN}/splashes/${guildID}/${hash}.jpg`,
-  guildPrune: (guildID) => `${Endpoints.guild(guildID)}/prune`,
-  guildEmbed: (guildID) => `${Endpoints.guild(guildID)}/embed`,
-  guildInvites: (guildID) => `${Endpoints.guild(guildID)}/invites`,
-  guildRoles: (guildID) => `${Endpoints.guild(guildID)}/roles`,
+  guildPrune: guildID => `${Endpoints.guild(guildID)}/prune`,
+  guildEmbed: guildID => `${Endpoints.guild(guildID)}/embed`,
+  guildInvites: guildID => `${Endpoints.guild(guildID)}/invites`,
+  guildRoles: guildID => `${Endpoints.guild(guildID)}/roles`,
   guildRole: (guildID, roleID) => `${Endpoints.guildRoles(guildID)}/${roleID}`,
-  guildBans: (guildID) => `${Endpoints.guild(guildID)}/bans`,
-  guildIntegrations: (guildID) => `${Endpoints.guild(guildID)}/integrations`,
-  guildMembers: (guildID) => `${Endpoints.guild(guildID)}/members`,
+  guildBans: guildID => `${Endpoints.guild(guildID)}/bans`,
+  guildIntegrations: guildID => `${Endpoints.guild(guildID)}/integrations`,
+  guildMembers: guildID => `${Endpoints.guild(guildID)}/members`,
   guildMember: (guildID, memberID) => `${Endpoints.guildMembers(guildID)}/${memberID}`,
   guildMemberRole: (guildID, memberID, roleID) => `${Endpoints.guildMember(guildID, memberID)}/roles/${roleID}`,
-  guildMemberNickname: (guildID) => `${Endpoints.guildMember(guildID, '@me')}/nick`,
-  guildChannels: (guildID) => `${Endpoints.guild(guildID)}/channels`,
-  guildEmojis: (guildID) => `${Endpoints.guild(guildID)}/emojis`,
+  guildMemberNickname: guildID => `${Endpoints.guildMember(guildID, '@me')}/nick`,
+  guildChannels: guildID => `${Endpoints.guild(guildID)}/channels`,
+  guildEmojis: guildID => `${Endpoints.guild(guildID)}/emojis`,
   guildEmoji: (guildID, emojiID) => `${Endpoints.guildEmojis(guildID)}/${emojiID}`,
-  guildSearch: (guildID) => `${Endpoints.guild(guildID)}/messages/search`,
-  guildVoiceRegions: (guildID) => `${Endpoints.guild(guildID)}/regions`,
+  guildSearch: guildID => `${Endpoints.guild(guildID)}/messages/search`,
+  guildVoiceRegions: guildID => `${Endpoints.guild(guildID)}/regions`,
 
   // channels
   channels: `${API}/channels`,
-  channel: (channelID) => `${Endpoints.channels}/${channelID}`,
-  channelMessages: (channelID) => `${Endpoints.channel(channelID)}/messages`,
-  channelInvites: (channelID) => `${Endpoints.channel(channelID)}/invites`,
-  channelTyping: (channelID) => `${Endpoints.channel(channelID)}/typing`,
-  channelPermissions: (channelID) => `${Endpoints.channel(channelID)}/permissions`,
+  channel: channelID => `${Endpoints.channels}/${channelID}`,
+  channelMessages: channelID => `${Endpoints.channel(channelID)}/messages`,
+  channelInvites: channelID => `${Endpoints.channel(channelID)}/invites`,
+  channelTyping: channelID => `${Endpoints.channel(channelID)}/typing`,
+  channelPermissions: channelID => `${Endpoints.channel(channelID)}/permissions`,
   channelMessage: (channelID, messageID) => `${Endpoints.channelMessages(channelID)}/${messageID}`,
-  channelWebhooks: (channelID) => `${Endpoints.channel(channelID)}/webhooks`,
-  channelSearch: (channelID) => `${Endpoints.channelMessages(channelID)}/search`,
+  channelWebhooks: channelID => `${Endpoints.channel(channelID)}/webhooks`,
+  channelSearch: channelID => `${Endpoints.channelMessages(channelID)}/search`,
 
   dmChannelRecipient: (channelID, recipientID) => `${Endpoints.channel(channelID)}/recipients/${recipientID}`,
 
@@ -160,11 +160,11 @@ const Endpoints = exports.Endpoints = {
   webhook: (webhookID, token) => `${API}/webhooks/${webhookID}${token ? `/${token}` : ''}`,
 
   // oauth
-  oauth2Application: (appID) => `${API}/oauth2/applications/${appID}`,
-  getApp: (id) => `${API}/oauth2/authorize?client_id=${id}`,
+  oauth2Application: appID => `${API}/oauth2/applications/${appID}`,
+  getApp: id => `${API}/oauth2/authorize?client_id=${id}`,
 
   // emoji
-  emoji: (emojiID) => `${Endpoints.CDN}/emojis/${emojiID}.png`,
+  emoji: emojiID => `${Endpoints.CDN}/emojis/${emojiID}.png`,
 };
 
 /**
