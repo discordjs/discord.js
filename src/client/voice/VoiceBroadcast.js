@@ -301,7 +301,7 @@ class VoiceBroadcast extends VolumeInterface {
 
     let packetMatrix = {};
 
-    const getOpusPacket = (volume) => {
+    const getOpusPacket = volume => {
       if (packetMatrix[volume]) return packetMatrix[volume];
 
       const opusEncoder = this._encoders.get(volume);
