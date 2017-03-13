@@ -3,7 +3,7 @@ const fs = require('fs');
 const request = require('superagent');
 
 const Constants = require('../util/Constants');
-const convertArrayBuffer = require('../util/ConvertArrayBuffer');
+const convertToBuffer = require('../util/Util').convertToBuffer;
 const User = require('../structures/User');
 const Message = require('../structures/Message');
 const Guild = require('../structures/Guild');
@@ -102,7 +102,7 @@ class ClientDataResolver {
   }
 
   /**
-   * Data that can be resolved to give a Channel. This can be:
+   * Data that can be resolved to give a Channel object. This can be:
    * * A Channel object
    * * A Message object (the channel the message was sent in)
    * * A Guild object (the #general channel)
@@ -117,14 +117,14 @@ class ClientDataResolver {
    */
   resolveChannel(channel) {
     if (channel instanceof Channel) return channel;
+    if (typeof channel === 'string') return this.client.channels.get(channel) || null;
     if (channel instanceof Message) return channel.channel;
     if (channel instanceof Guild) return channel.channels.get(channel.id) || null;
-    if (typeof channel === 'string') return this.client.channels.get(channel) || null;
     return null;
   }
 
   /**
-   * Resolves a ChannelResolvable to a Channel object
+   * Resolves a ChannelResolvable to a channel ID
    * @param {ChannelResolvable} channel The channel resolvable to resolve
    * @returns {?Snowflake}
    */
@@ -153,68 +153,6 @@ class ClientDataResolver {
     const match = inviteRegex.exec(data);
     if (match && match[1]) return match[1];
     return data;
-  }
-
-  /**
-   * Data that can be resolved to give a permission number. This can be:
-   * * A string
-   * * A permission number
-   *
-   * Possible strings:
-   * ```js
-   * [
-   *   'CREATE_INSTANT_INVITE',
-   *   'KICK_MEMBERS',
-   *   'BAN_MEMBERS',
-   *   'ADMINISTRATOR',
-   *   'MANAGE_CHANNELS',
-   *   'MANAGE_GUILD',
-   *   'ADD_REACTIONS', // add reactions to messages
-   *   'READ_MESSAGES',
-   *   'SEND_MESSAGES',
-   *   'SEND_TTS_MESSAGES',
-   *   'MANAGE_MESSAGES',
-   *   'EMBED_LINKS',
-   *   'ATTACH_FILES',
-   *   'READ_MESSAGE_HISTORY',
-   *   'MENTION_EVERYONE',
-   *   'EXTERNAL_EMOJIS', // use external emojis
-   *   'CONNECT', // connect to voice
-   *   'SPEAK', // speak on voice
-   *   'MUTE_MEMBERS', // globally mute members on voice
-   *   'DEAFEN_MEMBERS', // globally deafen members on voice
-   *   'MOVE_MEMBERS', // move member's voice channels
-   *   'USE_VAD', // use voice activity detection
-   *   'CHANGE_NICKNAME',
-   *   'MANAGE_NICKNAMES', // change nicknames of others
-   *   'MANAGE_ROLES_OR_PERMISSIONS',
-   *   'MANAGE_WEBHOOKS',
-   *   'MANAGE_EMOJIS'
-   * ]
-   * ```
-   * @typedef {string|number} PermissionResolvable
-   */
-
-  /**
-   * Resolves a PermissionResolvable to a permission number
-   * @param {PermissionResolvable} permission The permission resolvable to resolve
-   * @returns {number}
-   */
-  resolvePermission(permission) {
-    if (typeof permission === 'string') permission = Constants.PermissionFlags[permission];
-    if (typeof permission !== 'number' || permission < 1) throw new Error(Constants.Errors.NOT_A_PERMISSION);
-    return permission;
-  }
-
-  /**
-   * Turn an array of permissions into a valid Discord permission bitfield
-   * @param {PermissionResolvable[]} permissions Permissions to resolve together
-   * @returns {number}
-   */
-  resolvePermissions(permissions) {
-    let bitfield = 0;
-    for (const permission of permissions) bitfield |= this.resolvePermission(permission);
-    return bitfield;
   }
 
   /**
@@ -268,7 +206,7 @@ class ClientDataResolver {
    */
   resolveBuffer(resource) {
     if (resource instanceof Buffer) return Promise.resolve(resource);
-    if (this.client.browser && resource instanceof ArrayBuffer) return Promise.resolve(convertArrayBuffer(resource));
+    if (this.client.browser && resource instanceof ArrayBuffer) return Promise.resolve(convertToBuffer(resource));
 
     if (typeof resource === 'string') {
       return new Promise((resolve, reject) => {
@@ -277,18 +215,19 @@ class ClientDataResolver {
           if (this.client.browser) req.responseType('arraybuffer');
           req.end((err, res) => {
             if (err) return reject(err);
-            if (this.client.browser) return resolve(convertArrayBuffer(res.xhr.response));
+            if (this.client.browser) return resolve(convertToBuffer(res.xhr.response));
             if (!(res.body instanceof Buffer)) return reject(new TypeError('The response body isn\'t a Buffer.'));
             return resolve(res.body);
           });
         } else {
           const file = path.resolve(resource);
           fs.stat(file, (err, stats) => {
-            if (err) reject(err);
-            if (!stats || !stats.isFile()) throw new Error(`The file could not be found: ${file}`);
+            if (err) return reject(err);
+            if (!stats || !stats.isFile()) return reject(new Error(`The file could not be found: ${file}`));
             fs.readFile(file, (err2, data) => {
               if (err2) reject(err2); else resolve(data);
             });
+            return null;
           });
         }
       });
@@ -343,6 +282,7 @@ class ClientDataResolver {
    *   'DARK_GREY',
    *   'LIGHT_GREY',
    *   'DARK_NAVY',
+   *   'RANDOM',
    * ]
    * ```
    * or something like
@@ -360,6 +300,7 @@ class ClientDataResolver {
    */
   static resolveColor(color) {
     if (typeof color === 'string') {
+      if (color === 'RANDOM') return Math.floor(Math.random() * (0xFFFFFF + 1));
       color = Constants.Colors[color] || parseInt(color.replace('#', ''), 16);
     } else if (color instanceof Array) {
       color = (color[0] << 16) + (color[1] << 8) + color[2];

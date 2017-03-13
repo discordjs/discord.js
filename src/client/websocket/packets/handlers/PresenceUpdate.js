@@ -1,6 +1,6 @@
 const AbstractHandler = require('./AbstractHandler');
 const Constants = require('../../../../util/Constants');
-const cloneObject = require('../../../../util/CloneObject');
+const Util = require('../../../../util/Util');
 
 class PresenceUpdateHandler extends AbstractHandler {
   handle(packet) {
@@ -18,7 +18,7 @@ class PresenceUpdateHandler extends AbstractHandler {
       }
     }
 
-    const oldUser = cloneObject(user);
+    const oldUser = Util.cloneObject(user);
     user.patch(data.user);
     if (!user.equals(oldUser)) {
       client.emit(Constants.Events.USER_UPDATE, oldUser, user);
@@ -40,9 +40,9 @@ class PresenceUpdateHandler extends AbstractHandler {
           guild._setPresence(user.id, data);
           return;
         }
-        const oldMember = cloneObject(member);
+        const oldMember = Util.cloneObject(member);
         if (member.presence) {
-          oldMember.frozenPresence = cloneObject(member.presence);
+          oldMember.frozenPresence = Util.cloneObject(member.presence);
         }
         guild._setPresence(user.id, data);
         client.emit(Constants.Events.PRESENCE_UPDATE, oldMember, member);

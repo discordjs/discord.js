@@ -66,8 +66,8 @@ class VoiceWebSocket extends EventEmitter {
   connect() {
     if (this.dead) return;
     if (this.ws) this.reset();
-    if (this.attempts > 5) {
-      this.emit('error', new Error(`Too many connection attempts (${this.attempts}).`));
+    if (this.attempts >= 5) {
+      this.emit('debug', new Error(`Too many connection attempts (${this.attempts}).`));
       return;
     }
 
@@ -124,7 +124,7 @@ class VoiceWebSocket extends EventEmitter {
         server_id: this.voiceConnection.channel.guild.id,
         user_id: this.client.user.id,
         token: this.voiceConnection.authentication.token,
-        session_id: this.voiceConnection.authentication.session_id,
+        session_id: this.voiceConnection.authentication.sessionID,
       },
     }).catch(() => {
       this.emit('error', new Error('Tried to send join packet, but the WebSocket is not open.'));

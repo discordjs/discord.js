@@ -1,6 +1,7 @@
 const TextBasedChannel = require('./interface/TextBasedChannel');
 const Constants = require('../util/Constants');
 const Presence = require('./Presence').Presence;
+const Snowflake = require('../util/Snowflake');
 
 /**
  * Represents a user on Discord.
@@ -76,7 +77,7 @@ class User {
    * @readonly
    */
   get createdTimestamp() {
-    return (this.id / 4194304) + 1420070400000;
+    return Snowflake.deconstruct(this.id).timestamp;
   }
 
   /**
@@ -183,6 +184,14 @@ class User {
    */
   get dmChannel() {
     return this.client.channels.filter(c => c.type === 'dm').find(c => c.recipient.id === this.id);
+  }
+
+  /**
+   * Creates a DM channel between the client and the user
+   * @returns {Promise<DMChannel>}
+   */
+  createDM() {
+    return this.client.rest.methods.createDM(this);
   }
 
   /**

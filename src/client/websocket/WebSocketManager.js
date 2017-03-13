@@ -1,7 +1,7 @@
 const browser = require('os').platform() === 'browser';
 const EventEmitter = require('events').EventEmitter;
 const Constants = require('../../util/Constants');
-const convertArrayBuffer = require('../../util/ConvertArrayBuffer');
+const convertToBuffer = require('../../util/Util').convertToBuffer;
 const pako = require('pako');
 const zlib = require('zlib');
 const PacketManager = require('./packets/WebSocketPacketManager');
@@ -155,7 +155,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   destroy() {
-    this.ws.close(1000);
+    if (this.ws) this.ws.close(1000);
     this._queue = [];
     this.status = Constants.Status.IDLE;
   }
@@ -279,7 +279,7 @@ class WebSocketManager extends EventEmitter {
    */
   parseEventData(data) {
     if (erlpack) {
-      if (data instanceof ArrayBuffer) data = convertArrayBuffer(data);
+      if (data instanceof ArrayBuffer) data = convertToBuffer(data);
       return erlpack.unpack(data);
     } else {
       if (data instanceof ArrayBuffer) data = pako.inflate(data, { to: 'string' });
