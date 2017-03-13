@@ -1,4 +1,5 @@
-const Constants = require('../util/Constants');
+const Snowflake = require('../util/Snowflake');
+const Permissions = require('../util/Permissions');
 
 /**
  * Represents a role on Discord
@@ -54,7 +55,7 @@ class Role {
     this.position = data.position;
 
     /**
-     * The evaluated permissions number
+     * The permissions bitfield of the role
      * @type {number}
      */
     this.permissions = data.permissions;
@@ -78,7 +79,7 @@ class Role {
    * @readonly
    */
   get createdTimestamp() {
-    return (this.id / 4194304) + 1420070400000;
+    return Snowflake.deconstruct(this.id).timestamp;
   }
 
   /**
@@ -118,7 +119,7 @@ class Role {
   get editable() {
     if (this.managed) return false;
     const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.hasPermission(Constants.PermissionFlags.MANAGE_ROLES_OR_PERMISSIONS)) return false;
+    if (!clientMember.hasPermission(Permissions.FLAGS.MANAGE_ROLES_OR_PERMISSIONS)) return false;
     return clientMember.highestRole.comparePositionTo(this) > 0;
   }
 
@@ -145,8 +146,11 @@ class Role {
 
   /**
    * Checks if the role has a permission.
-   * @param {PermissionResolvable} permission The permission to check for
+   * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
    * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permission
+   * **(deprecated)**
+   * @param {boolean} [checkAdmin] Whether to allow the administrator permission to override
+   * (takes priority over `explicit`)
    * @returns {boolean}
    * @example
    * // see if a role can ban a member
@@ -156,8 +160,10 @@ class Role {
    *   console.log('This role can\'t ban members');
    * }
    */
-  hasPermission(permission, explicit) {
-    return this.client.resolver.hasPermission(this.permissions, permission, explicit);
+  hasPermission(permission, explicit = false, checkAdmin) {
+    return new Permissions(this.permissions).has(
+      permission, typeof checkAdmin !== 'undefined' ? checkAdmin : !explicit
+    );
   }
 
   /**
@@ -165,9 +171,10 @@ class Role {
    * @param {PermissionResolvable[]} permissions The permissions to check for
    * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permissions
    * @returns {boolean}
+   * @deprecated
    */
   hasPermissions(permissions, explicit = false) {
-    return permissions.every(p => this.hasPermission(p, explicit));
+    return new Permissions(this.permissions).has(permissions, !explicit);
   }
 
   /**
@@ -221,7 +228,7 @@ class Role {
 
   /**
    * Set a new color for the role
-   * @param {number|string} color The new color for the role, either a hex string or a base 10 number
+   * @param {ColorResolvable} color The color of the role
    * @returns {Promise<Role>}
    * @example
    * // set the color of a role
