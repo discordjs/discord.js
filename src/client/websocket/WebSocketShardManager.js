@@ -275,7 +275,7 @@ class WebSocketShardManager extends EventEmitter {
    */
   checkIfReady() {
     if (this.managers.size < this.shardCount) return;
-    if (this.managers.every((m) => m.status === Constants.Status.READY)) {
+    if (this.managers.every(m => m.status === Constants.Status.READY)) {
       if (!this.afterReady) {
         /**
          * Emitted when the Client becomes ready to start working
