@@ -333,6 +333,59 @@ class ClientUser extends User {
   acceptInvite(invite) {
     return this.client.rest.methods.acceptInvite(invite);
   }
+
+  /**
+   * Fetch backup MFA codes
+   * @param {string} password Your password
+   * @param {boolean} [regenerate=false] Regenerate the codes
+   * @returns {Promise<Collection<string, boolean>>} Backup codes mapped from code to whether the code has been used
+   */
+  fetchMFACodes(password, regenerate = false) {
+    return this.client.rest.methods.fetchMeMFACodes(password, regenerate);
+  }
+
+  /**
+   * Enable MFA TOTP
+   * @param {string} secret TOTP secret
+   * @param {boolean} code Timed auth code
+   * @returns {Promise<Collection<string, boolean>>} Backup codes mapped from code to whether the code has been used
+   */
+  enableTOTP(secret, code) {
+    return this.client.rest.methods.enableMeTOTP(secret, code);
+  }
+
+  /**
+   * Enable MFA TOTP
+   * @param {boolean} code Timed auth code
+   * @returns {Promise}
+   */
+  disabeTOTP(code) {
+    return this.client.rest.methods.disableMeTOTP(code);
+  }
+
+  /**
+   * Fetch billing profile for this user
+   * @returns {Promise<UserBillingProfile>}
+   */
+  fetchBillingProfile() {
+    return this.client.rest.methods.fetchMeBillingProfile();
+  }
+
+  /**
+   * Fetch payment history for this user
+   * @returns {Promise<Payment[]>}
+   */
+  fetchPaymentHistory() {
+    return this.client.rest.methods.fetchMePaymentHistory();
+  }
+
+  /**
+   * Fetch premium subscription for this user
+   * @returns {Promise<PremiumSubscription>}
+   */
+  fetchPremiumSubscription() {
+    return this.client.rest.methods.fetchMePremiumSubscription();
+  }
 }
 
 module.exports = ClientUser;

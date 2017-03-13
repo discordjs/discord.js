@@ -105,6 +105,12 @@ const Endpoints = exports.Endpoints = {
   meChannels: `${API}/users/@me/channels`,
   meMentions: (limit, roles, everyone, guildID) =>
     `users/@me/mentions?limit=${limit}&roles=${roles}&everyone=${everyone}${guildID ? `&guild_id=${guildID}` : ''}`,
+  meBilling: `${API}/users/@me/billing`,
+  mePayments: `${API}/users/@me/billing/payments`,
+  mePremiumSubscription: `${API}/users/@me/billing/premium-subscription`,
+  meMFACodes: `${API}/users/@me/mfa/codes`,
+  meTOTPEnable: `${API}/users/@me/mfa/totp/enable`,
+  meTOTPDisable: `${API}/users/@me/mfa/totp/disable`,
   relationships: (userID) => `${Endpoints.user(userID)}/relationships`,
   note: (userID) => `${Endpoints.me}/notes/${userID}`,
 
