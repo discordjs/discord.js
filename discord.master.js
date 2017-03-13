@@ -10101,6 +10101,7 @@ class ClientUser extends User {
 
   /**
    * Accepts an invite to join a guild
+   * <warn>This is only available when using a user account.</warn>
    * @param {Invite|string} invite Invite or code to accept
    * @returns {Promise<Guild>} Joined guild
    */
