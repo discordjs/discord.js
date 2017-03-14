@@ -10,12 +10,20 @@ const BeforeReadyWhitelist = [
 ];
 
 class WebSocketPacketManager {
-  constructor(websocketManager) {
-    this.ws = websocketManager;
+  constructor(websocketShardManager) {
+    this.ws = websocketShardManager;
     this.handlers = {};
     this.queue = [];
 
+    /**
+     * An object with keys that are websocket event names that should be ignored
+     * @type {Object}
+     */
+    this.disabledEvents = {};
+    for (const event of this.ws.client.options.disabledEvents) this.disabledEvents[event] = true;
+
     this.register(Constants.WSEvents.READY, require('./handlers/Ready'));
+    this.register(Constants.WSEvents.RESUMED, require('./handlers/Resumed'));
     this.register(Constants.WSEvents.GUILD_CREATE, require('./handlers/GuildCreate'));
     this.register(Constants.WSEvents.GUILD_DELETE, require('./handlers/GuildDelete'));
     this.register(Constants.WSEvents.GUILD_UPDATE, require('./handlers/GuildUpdate'));
@@ -37,12 +45,12 @@ class WebSocketPacketManager {
     this.register(Constants.WSEvents.USER_UPDATE, require('./handlers/UserUpdate'));
     this.register(Constants.WSEvents.USER_NOTE_UPDATE, require('./handlers/UserNoteUpdate'));
     this.register(Constants.WSEvents.VOICE_STATE_UPDATE, require('./handlers/VoiceStateUpdate'));
+    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, require('./handlers/VoiceServerUpdate'));
     this.register(Constants.WSEvents.TYPING_START, require('./handlers/TypingStart'));
     this.register(Constants.WSEvents.MESSAGE_CREATE, require('./handlers/MessageCreate'));
     this.register(Constants.WSEvents.MESSAGE_DELETE, require('./handlers/MessageDelete'));
     this.register(Constants.WSEvents.MESSAGE_UPDATE, require('./handlers/MessageUpdate'));
     this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, require('./handlers/MessageDeleteBulk'));
-    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, require('./handlers/VoiceServerUpdate'));
     this.register(Constants.WSEvents.GUILD_SYNC, require('./handlers/GuildSync'));
     this.register(Constants.WSEvents.RELATIONSHIP_ADD, require('./handlers/RelationshipAdd'));
     this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, require('./handlers/RelationshipRemove'));
@@ -66,52 +74,45 @@ class WebSocketPacketManager {
     });
   }
 
-  setSequence(s) {
-    if (s && s > this.ws.sequence) this.ws.sequence = s;
-  }
-
   handle(packet) {
+    const ws = this.ws.managers.get(packet.shardID);
+
+    this.client.emit('raw', packet, ws.shardID);
+
+    if (packet.d) packet.d.shardID = packet.shardID;
+
+    if (ws.status === Constants.Status.RECONNECTING) ws.checkIfReady();
+
     if (packet.op === Constants.OPCodes.RECONNECT) {
-      this.setSequence(packet.s);
-      this.ws.tryReconnect();
+      ws.tryReconnect();
       return false;
     }
 
     if (packet.op === Constants.OPCodes.INVALID_SESSION) {
+      ws.emit('debug', `Invalid session! Should wait: ${packet.d}`);
       if (packet.d) {
         setTimeout(() => {
-          this.ws._sendResume();
+          ws.sendResume();
         }, 2500);
       } else {
-        this.ws.sessionID = null;
-        this.ws._sendNewIdentify();
+        ws.sessionID = null;
+        ws.sendNewIdentify();
       }
       return false;
     }
 
     if (packet.op === Constants.OPCodes.HEARTBEAT_ACK) {
-      this.ws.client._pong(this.ws.client._pingTimestamp);
-      this.ws.lastHeartbeatAck = true;
-      this.ws.client.emit('debug', 'Heartbeat acknowledged');
+      ws.pong();
+      ws.emit('debug', 'Heartbeat acknowledged');
     } else if (packet.op === Constants.OPCodes.HEARTBEAT) {
-      this.client.ws.send({
-        op: Constants.OPCodes.HEARTBEAT,
-        d: this.client.ws.sequence,
-      });
-      this.ws.client.emit('debug', 'Received gateway heartbeat');
+      ws.heartbeat(false);
+      ws.emit('debug', 'Received gateway heartbeat');
     }
 
-    if (this.ws.status === Constants.Status.RECONNECTING) {
-      this.ws.reconnecting = false;
-      this.ws.checkIfReady();
-    }
+    if (this.disabledEvents[packet.t] !== undefined) return false;
 
-    this.setSequence(packet.s);
-
-    if (this.ws.disabledEvents[packet.t] !== undefined) return false;
-
-    if (this.ws.status !== Constants.Status.READY) {
-      if (BeforeReadyWhitelist.indexOf(packet.t) === -1) {
+    if (ws.status !== Constants.Status.READY) {
+      if (!BeforeReadyWhitelist.includes(packet.t)) {
         this.queue.push(packet);
         return false;
       }

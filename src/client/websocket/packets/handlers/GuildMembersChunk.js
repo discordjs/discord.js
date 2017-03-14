@@ -19,7 +19,7 @@ class GuildMembersChunkHandler extends AbstractHandler {
 
     client.emit(Constants.Events.GUILD_MEMBERS_CHUNK, members, guild);
 
-    client.ws.lastHeartbeatAck = true;
+    client.ws.managers.get(packet.shardID).lastHeartbeatAck = true;
   }
 }
 

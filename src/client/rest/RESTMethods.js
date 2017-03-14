@@ -37,15 +37,8 @@ class RESTMethods {
     return this.rest.makeRequest('post', Constants.Endpoints.logout, true, {});
   }
 
-  getGateway() {
-    return this.rest.makeRequest('get', Constants.Endpoints.gateway, true).then(res => {
-      this.client.ws.gateway = `${res.url}/?v=${Constants.PROTOCOL_VERSION}`;
-      return this.client.ws.gateway;
-    });
-  }
-
-  getBotGateway() {
-    return this.rest.makeRequest('get', Constants.Endpoints.botGateway, true);
+  getGateway(bot = false) {
+    return this.rest.makeRequest('get', Constants.Endpoints.gateway(bot), true, null, null, bot);
   }
 
   fetchVoiceRegions(guildID) {
@@ -237,7 +230,7 @@ class RESTMethods {
       name: channelName,
       type: channelType,
       permission_overwrites: overwrites,
-    }).then(data => this.client.actions.ChannelCreate.handle(data).channel);
+    }).then(data => this.client.actions.ChannelCreate.handle(data, guild).channel);
   }
 
   createDM(recipient) {
@@ -245,7 +238,7 @@ class RESTMethods {
     if (dmChannel) return Promise.resolve(dmChannel);
     return this.rest.makeRequest('post', Constants.Endpoints.userChannels(this.client.user.id), true, {
       recipient_id: recipient.id,
-    }).then(data => this.client.actions.ChannelCreate.handle(data).channel);
+    }).then(data => this.client.actions.ChannelCreate.handle(data, null, true).channel);
   }
 
   createGroupDM(options) {

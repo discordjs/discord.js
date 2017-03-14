@@ -8,7 +8,7 @@ const ClientDataManager = require('./ClientDataManager');
 const ClientManager = require('./ClientManager');
 const ClientDataResolver = require('./ClientDataResolver');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
-const WebSocketManager = require('./websocket/WebSocketManager');
+const WebSocketShardManager = require('./websocket/WebSocketShardManager');
 const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
 const Presence = require('../structures/Presence').Presence;
@@ -26,9 +26,11 @@ class Client extends EventEmitter {
   constructor(options = {}) {
     super();
 
-    // Obtain shard details from environment
-    if (!options.shardId && 'SHARD_ID' in process.env) options.shardId = Number(process.env.SHARD_ID);
+    if (!options.shardID && 'SHARD_ID' in process.env) options.shardID = Number(process.env.SHARD_ID);
     if (!options.shardCount && 'SHARD_COUNT' in process.env) options.shardCount = Number(process.env.SHARD_COUNT);
+
+    this._timeouts = new Set();
+    this._intervals = new Set();
 
     /**
      * The options the client was instantiated with
@@ -59,11 +61,11 @@ class Client extends EventEmitter {
     this.manager = new ClientManager(this);
 
     /**
-     * The WebSocket manager of the client
-     * @type {WebSocketManager}
+     * The WebSocket Manager of the client
+     * @type {WebSocketShardManager}
      * @private
      */
-    this.ws = new WebSocketManager(this);
+    this.ws = new WebSocketShardManager(this);
 
     /**
      * The data resolver of the client
@@ -120,12 +122,18 @@ class Client extends EventEmitter {
      */
     this.presences = new Collection();
 
+    /**
+     * Authorization token for the logged in user/bot
+     * <warn>This should be kept private at all times.</warn>
+     * @type {?string}
+     */
+    Object.defineProperty(this, 'token', {
+      value: null,
+      writable: true,
+      configurable: true,
+    });
+
     if (!this.token && 'CLIENT_TOKEN' in process.env) {
-      /**
-       * Authorization token for the logged in user/bot
-       * <warn>This should be kept private at all times.</warn>
-       * @type {?string}
-       */
       this.token = process.env.CLIENT_TOKEN;
     } else {
       this.token = null;
@@ -144,51 +152,9 @@ class Client extends EventEmitter {
      */
     this.readyAt = null;
 
-    /**
-     * Active voice broadcasts that have been created
-     * @type {VoiceBroadcast[]}
-     */
-    this.broadcasts = [];
-
-    /**
-     * Previous heartbeat pings of the websocket (most recent first, limited to three elements)
-     * @type {number[]}
-     */
-    this.pings = [];
-
-    /**
-     * Timestamp of the latest ping's start time
-     * @type {number}
-     * @private
-     */
-    this._pingTimestamp = 0;
-
-    /**
-     * Timeouts set by {@link Client#setTimeout} that are still active
-     * @type {Set<Timeout>}
-     * @private
-     */
-    this._timeouts = new Set();
-
-    /**
-     * Intervals set by {@link Client#setInterval} that are still active
-     * @type {Set<Timeout>}
-     * @private
-     */
-    this._intervals = new Set();
-
     if (this.options.messageSweepInterval > 0) {
       this.setInterval(this.sweepMessages.bind(this), this.options.messageSweepInterval * 1000);
     }
-  }
-
-  /**
-   * Current status of the client's connection to Discord
-   * @type {?number}
-   * @readonly
-   */
-  get status() {
-    return this.ws.status;
   }
 
   /**
@@ -285,20 +251,6 @@ class Client extends EventEmitter {
     this._timeouts.clear();
     this._intervals.clear();
     return this.manager.destroy();
-  }
-
-  /**
-   * Requests a sync of guild data with Discord.
-   * <info>This can be done automatically every 30 seconds by enabling {@link ClientOptions#sync}.</info>
-   * <warn>This is only available when using a user account.</warn>
-   * @param {Guild[]|Collection<Snowflake, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
-   */
-  syncGuilds(guilds = this.guilds) {
-    if (this.user.bot) return;
-    this.ws.send({
-      op: 12,
-      d: guilds instanceof Collection ? guilds.keyArray() : guilds.map(g => g.id),
-    });
   }
 
   /**
@@ -456,17 +408,6 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Adds a ping to {@link Client#pings}.
-   * @param {number} startTime Starting time of the ping
-   * @private
-   */
-  _pong(startTime) {
-    this.pings.unshift(Date.now() - startTime);
-    if (this.pings.length > 3) this.pings.length = 3;
-    this.ws.lastHeartbeatAck = true;
-  }
-
-  /**
    * Adds/updates a friend's presence in {@link Client#presences}.
    * @param {Snowflake} id ID of the user
    * @param {Object} presence Raw presence object from Discord
@@ -497,16 +438,16 @@ class Client extends EventEmitter {
    * @private
    */
   _validateOptions(options = this.options) {
-    if (typeof options.shardCount !== 'number' || isNaN(options.shardCount)) {
-      throw new TypeError('The shardCount option must be a number.');
+    if (options.shardCount !== 'auto' && (typeof options.shardCount !== 'number' || isNaN(options.shardCount))) {
+      throw new TypeError('The shardCount option must be a number or `auto`.');
     }
-    if (typeof options.shardId !== 'number' || isNaN(options.shardId)) {
-      throw new TypeError('The shardId option must be a number.');
+    if (typeof options.shardID !== 'number' || isNaN(options.shardID)) {
+      throw new TypeError('The shardID option must be a number.');
     }
     if (options.shardCount < 0) throw new RangeError('The shardCount option must be at least 0.');
-    if (options.shardId < 0) throw new RangeError('The shardId option must be at least 0.');
-    if (options.shardId !== 0 && options.shardId >= options.shardCount) {
-      throw new RangeError('The shardId option must be less than shardCount.');
+    if (options.shardID < 0) throw new RangeError('The shardID option must be at least 0.');
+    if (options.shardID !== 0 && options.shardID >= options.shardCount) {
+      throw new RangeError('The shardID option must be less than shardCount.');
     }
     if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
       throw new TypeError('The messageCacheMaxSize option must be a number.');

@@ -243,6 +243,14 @@ class Message {
   }
 
   /**
+   * The shard to which this message belongs
+   * @type {?number}
+   */
+  get shardID() {
+    return this.channel.guild ? this.channel.guild.shardID : this.channel.shardID;
+  }
+
+  /**
    * The time the message was sent
    * @type {Date}
    * @readonly
