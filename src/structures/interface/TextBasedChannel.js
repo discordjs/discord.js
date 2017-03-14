@@ -395,7 +395,7 @@ class TextBasedChannel {
    * @returns {Promise<Collection<Snowflake, Message>>} Deleted messages
    */
   bulkDelete(messages, filterOld = false) {
-    if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs));
+    if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs, filterOld));
     if (messages instanceof Array || messages instanceof Collection) {
       const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
       return this.client.rest.methods.bulkDeleteMessages(this, messageIDs, filterOld);
