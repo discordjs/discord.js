@@ -136,13 +136,16 @@ class Message {
       this.mentions.users.set(user.id, user);
     }
 
-    if (this.guild) {
-      this.mentions.members = new Collection();
-      for (const mention of data.mentions) {
-        const member = this.channel.guild.members.get(mention.id);
-        if (member) this.mentions.members.set(member.id, member);
-      }
-    }
+    Object.defineProperty(this.mentions, 'members', {
+      get: () => {
+        const memberMentions = new Collection();
+        for (const mention of this.mentions.users.values()) {
+          const member = this.client.resolver.resolveGuildMember(this.guild, mention);
+          if (member) memberMentions.set(member.id, member);
+        }
+        return memberMentions;
+      },
+    });
 
     if (data.mention_roles) {
       for (const mention of data.mention_roles) {
