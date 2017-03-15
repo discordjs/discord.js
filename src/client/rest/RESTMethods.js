@@ -57,7 +57,7 @@ class RESTMethods {
     });
   }
 
-  sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code, reply } = {}, files = null) {
+  sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code, format, reply } = {}, files = null) {
     return new Promise((resolve, reject) => { // eslint-disable-line complexity
       if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
 
