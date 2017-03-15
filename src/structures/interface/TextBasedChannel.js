@@ -37,7 +37,8 @@ class TextBasedChannel {
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
-   * @property {FileOptions|string} [file] A file to send with the message
+   * @property {FileOptions|string} [file] A file to send with the message **(deprecated)**
+   * @property {FileOptions[]|string[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {string|string[]} [format] Markdown formatting to apply; This is always applied *after* code
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
@@ -79,26 +80,34 @@ class TextBasedChannel {
       options = {};
     }
 
-    if (options.embed && options.embed.file) options.file = options.embed.file;
-
+    // backward compat
     if (options.file) {
-      if (typeof options.file === 'string') options.file = { attachment: options.file };
-      if (!options.file.name) {
-        if (typeof options.file.attachment === 'string') {
-          options.file.name = path.basename(options.file.attachment);
-        } else if (options.file.attachment && options.file.attachment.path) {
-          options.file.name = path.basename(options.file.attachment.path);
-        } else {
-          options.file.name = 'file.jpg';
+      if (options.files) options.files.push(options.file);
+      else options.files = [options.file];
+    }
+
+    if (options.files) {
+      for (const i in options.files) {
+        let file = options.files[i];
+        if (typeof file === 'string') file = { attachment: file };
+        if (!file.name) {
+          if (typeof file.attachment === 'string') {
+            file.name = path.basename(file.attachment);
+          } else if (file.attachment && file.attachment.path) {
+            file.name = path.basename(file.attachment.path);
+          } else {
+            file.name = 'file.jpg';
+          }
         }
+        options.files[i] = file;
       }
 
-      return this.client.resolver.resolveBuffer(options.file.attachment).then(file =>
-        this.client.rest.methods.sendMessage(this, content, options, {
-          file,
-          name: options.file.name,
+      return Promise.all(options.files.map(file =>
+        this.client.resolver.resolveBuffer(file.attachment).then(buffer => {
+          file.file = buffer;
+          return file;
         })
-      );
+      )).then(files => this.client.rest.methods.sendMessage(this, content, options, files));
     }
 
     return this.client.rest.methods.sendMessage(this, content, options);
@@ -137,6 +146,17 @@ class TextBasedChannel {
   }
 
   /**
+   * Send files to this channel
+   * @param {FileOptions[]|string[]} files Files to send with the message
+   * @param {StringResolvable} [content] Text for the message
+   * @param {MessageOptions} [options] Options for the message
+   * @returns {Promise<Message>}
+   */
+  sendFiles(files, content, options) {
+    return this.send(content, Object.assign(options, { files }));
+  }
+
+  /**
    * Send a file to this channel
    * @param {BufferResolvable} attachment File to send
    * @param {string} [name='file.jpg'] Name and extension of the file
@@ -145,7 +165,7 @@ class TextBasedChannel {
    * @returns {Promise<Message>}
    */
   sendFile(attachment, name, content, options = {}) {
-    return this.send(content, Object.assign(options, { file: { attachment, name } }));
+    return this.sendFiles([{ attachment, name }], content, options);
   }
 
   /**
@@ -396,7 +416,7 @@ class TextBasedChannel {
    * @returns {Promise<Collection<Snowflake, Message>>} Deleted messages
    */
   bulkDelete(messages, filterOld = false) {
-    if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs));
+    if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs, filterOld));
     if (messages instanceof Array || messages instanceof Collection) {
       const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
       return this.client.rest.methods.bulkDeleteMessages(this, messageIDs, filterOld);
