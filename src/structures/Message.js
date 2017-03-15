@@ -114,6 +114,8 @@ class Message {
      * An object containing a further users, roles or channels collections
      * @type {Object}
      * @property {Collection<Snowflake, User>} mentions.users Mentioned users, maps their ID to the user object.
+     * @property {Collection<Snowflake, GuildMember>} mentions.members Mentioned members, maps their ID
+     * to the member object.
      * @property {Collection<Snowflake, Role>} mentions.roles Mentioned roles, maps their ID to the role object.
      * @property {Collection<Snowflake, GuildChannel>} mentions.channels Mentioned channels,
      * maps their ID to the channel object.
@@ -121,6 +123,7 @@ class Message {
      */
     this.mentions = {
       users: new Collection(),
+      members: new Collection(),
       roles: new Collection(),
       channels: new Collection(),
       everyone: data.mention_everyone,
@@ -128,11 +131,14 @@ class Message {
 
     for (const mention of data.mentions) {
       let user = this.client.users.get(mention.id);
-      if (user) {
-        this.mentions.users.set(user.id, user);
-      } else {
+      if (!user) {
         user = this.client.dataManager.newUser(mention);
-        this.mentions.users.set(user.id, user);
+      }
+      this.mentions.users.set(user.id, user);
+
+      if (this.channel.guild) {
+        const member = this.channel.guild.members.get(mention.id);
+        if (member) this.mentions.members.set(member.id, member);
       }
     }
 
