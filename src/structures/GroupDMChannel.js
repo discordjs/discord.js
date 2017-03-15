@@ -157,6 +157,7 @@ class GroupDMChannel extends Channel {
   sendMessage() { return; }
   sendEmbed() { return; }
   sendFile() { return; }
+  sendFiles() { return; }
   sendCode() { return; }
   fetchMessage() { return; }
   fetchMessages() { return; }

@@ -433,7 +433,7 @@ class TextBasedChannel {
 }
 
 exports.applyToClass = (structure, full = false, ignore = []) => {
-  const props = ['send', 'sendMessage', 'sendEmbed', 'sendFile', 'sendCode'];
+  const props = ['send', 'sendMessage', 'sendEmbed', 'sendFile', 'sendFiles', 'sendCode'];
   if (full) {
     props.push(
       '_cacheMessage',
