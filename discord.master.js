@@ -4101,7 +4101,7 @@ class TextBasedChannel {
 }
 
 exports.applyToClass = (structure, full = false, ignore = []) => {
-  const props = ['send', 'sendMessage', 'sendEmbed', 'sendFile', 'sendCode'];
+  const props = ['send', 'sendMessage', 'sendEmbed', 'sendFile', 'sendFiles', 'sendCode'];
   if (full) {
     props.push(
       '_cacheMessage',
@@ -5587,6 +5587,7 @@ class GroupDMChannel extends Channel {
   sendMessage() { return; }
   sendEmbed() { return; }
   sendFile() { return; }
+  sendFiles() { return; }
   sendCode() { return; }
   fetchMessage() { return; }
   fetchMessages() { return; }
@@ -10195,6 +10196,7 @@ class DMChannel extends Channel {
   sendMessage() { return; }
   sendEmbed() { return; }
   sendFile() { return; }
+  sendFiles() { return; }
   sendCode() { return; }
   fetchMessage() { return; }
   fetchMessages() { return; }
@@ -11388,6 +11390,7 @@ class TextChannel extends GuildChannel {
   sendMessage() { return; }
   sendEmbed() { return; }
   sendFile() { return; }
+  sendFiles() { return; }
   sendCode() { return; }
   fetchMessage() { return; }
   fetchMessages() { return; }
