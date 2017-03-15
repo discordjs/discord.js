@@ -57,7 +57,7 @@ class RESTMethods {
     });
   }
 
-  sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code, reply } = {}, file = null) {
+  sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code, reply } = {}, files = null) {
     return new Promise((resolve, reject) => { // eslint-disable-line complexity
       if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
 
@@ -99,7 +99,7 @@ class RESTMethods {
           const messages = [];
           (function sendChunk(list, index) {
             const options = index === list.length ? { tts, embed } : { tts };
-            chan.send(list[index], options, index === list.length ? file : null).then(message => {
+            chan.send(list[index], options, index === list.length ? files : null).then(message => {
               messages.push(message);
               if (index >= list.length - 1) return resolve(messages);
               return sendChunk(list, ++index);
@@ -108,7 +108,7 @@ class RESTMethods {
         } else {
           this.rest.makeRequest('post', Constants.Endpoints.channelMessages(chan.id), true, {
             content, tts, nonce, embed,
-          }, file).then(data => resolve(this.client.actions.MessageCreate.handle(data).message), reject);
+          }, files).then(data => resolve(this.client.actions.MessageCreate.handle(data).message), reject);
         }
       };
 
