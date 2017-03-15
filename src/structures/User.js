@@ -62,6 +62,12 @@ class User {
      * @type {?Message}
      */
     this.lastMessage = null;
+
+    /**
+     * Flag on the user. One of `STAFF`, `PARTNER`, `HYPESQUAD`
+     * @type {?String}
+     */
+    this.flag = data.flags ? Constants.UserFlags[data.flags] : null;
   }
 
   patch(data) {

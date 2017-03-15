@@ -371,6 +371,12 @@ exports.DefaultAvatars = {
   RED: '1cbd08c76f8af6dddce02c5138971129',
 };
 
+exports.UserFlags = {
+  1: 'STAFF',
+  2: 'PARTNER',
+  4: 'HYPESQUAD',
+};
+
 exports.Colors = {
   DEFAULT: 0x000000,
   AQUA: 0x1ABC9C,
