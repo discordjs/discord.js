@@ -3705,7 +3705,8 @@ class TextBasedChannel {
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
-   * @property {FileOptions|string} [file] A file to send with the message
+   * @property {FileOptions|string} [file] A file to send with the message **(deprecated)**
+   * @property {FileOptions[]|string[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
@@ -3746,26 +3747,34 @@ class TextBasedChannel {
       options = {};
     }
 
-    if (options.embed && options.embed.file) options.file = options.embed.file;
-
+    // backward compat
     if (options.file) {
-      if (typeof options.file === 'string') options.file = { attachment: options.file };
-      if (!options.file.name) {
-        if (typeof options.file.attachment === 'string') {
-          options.file.name = path.basename(options.file.attachment);
-        } else if (options.file.attachment && options.file.attachment.path) {
-          options.file.name = path.basename(options.file.attachment.path);
-        } else {
-          options.file.name = 'file.jpg';
+      if (options.files) options.files.push(options.file);
+      else options.files = [options.file];
+    }
+
+    if (options.files) {
+      for (const i in options.files) {
+        let file = options.files[i];
+        if (typeof file === 'string') file = { attachment: file };
+        if (!file.name) {
+          if (typeof file.attachment === 'string') {
+            file.name = path.basename(file.attachment);
+          } else if (file.attachment && file.attachment.path) {
+            file.name = path.basename(file.attachment.path);
+          } else {
+            file.name = 'file.jpg';
+          }
         }
+        options.files[i] = file;
       }
 
-      return this.client.resolver.resolveBuffer(options.file.attachment).then(file =>
-        this.client.rest.methods.sendMessage(this, content, options, {
-          file,
-          name: options.file.name,
+      return Promise.all(options.files.map(file =>
+        this.client.resolver.resolveBuffer(file.attachment).then(buffer => {
+          file.file = buffer;
+          return file;
         })
-      );
+      )).then(files => this.client.rest.methods.sendMessage(this, content, options, files));
     }
 
     return this.client.rest.methods.sendMessage(this, content, options);
@@ -3804,6 +3813,17 @@ class TextBasedChannel {
   }
 
   /**
+   * Send files to this channel
+   * @param {FileOptions[]|string[]} files Files to send with the message
+   * @param {StringResolvable} [content] Text for the message
+   * @param {MessageOptions} [options] Options for the message
+   * @returns {Promise<Message>}
+   */
+  sendFiles(files, content, options) {
+    return this.send(content, Object.assign(options, { files }));
+  }
+
+  /**
    * Send a file to this channel
    * @param {BufferResolvable} attachment File to send
    * @param {string} [name='file.jpg'] Name and extension of the file
@@ -3812,7 +3832,7 @@ class TextBasedChannel {
    * @returns {Promise<Message>}
    */
   sendFile(attachment, name, content, options = {}) {
-    return this.send(content, Object.assign(options, { file: { attachment, name } }));
+    return this.sendFiles([{ attachment, name }], content, options);
   }
 
   /**
@@ -23045,13 +23065,13 @@ const request = __webpack_require__(27);
 const Constants = __webpack_require__(0);
 
 class APIRequest {
-  constructor(rest, method, url, auth, data, file) {
+  constructor(rest, method, url, auth, data, files) {
     this.rest = rest;
     this.method = method;
     this.url = url;
     this.auth = auth;
     this.data = data;
-    this.file = file;
+    this.files = files;
     this.route = this.getRoute(this.url);
   }
 
@@ -23077,8 +23097,8 @@ class APIRequest {
   gen() {
     const apiRequest = request[this.method](this.url);
     if (this.auth) apiRequest.set('authorization', this.getAuth());
-    if (this.file && this.file.file) {
-      apiRequest.attach('file', this.file.file, this.file.name);
+    if (this.files) {
+      for (const file of this.files) if (file && file.file) apiRequest.attach(file.name, file.file, file.name);
       this.data = this.data || {};
       apiRequest.field('payload_json', JSON.stringify(this.data));
     } else if (this.data) {
@@ -23155,7 +23175,7 @@ class RESTMethods {
     });
   }
 
-  sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code, reply } = {}, file = null) {
+  sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code, reply } = {}, files = null) {
     return new Promise((resolve, reject) => { // eslint-disable-line complexity
       if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
 
@@ -23197,7 +23217,7 @@ class RESTMethods {
           const messages = [];
           (function sendChunk(list, index) {
             const options = index === list.length ? { tts, embed } : { tts };
-            chan.send(list[index], options, index === list.length ? file : null).then(message => {
+            chan.send(list[index], options, index === list.length ? files : null).then(message => {
               messages.push(message);
               if (index >= list.length - 1) return resolve(messages);
               return sendChunk(list, ++index);
@@ -23206,7 +23226,7 @@ class RESTMethods {
         } else {
           this.rest.makeRequest('post', Constants.Endpoints.channelMessages(chan.id), true, {
             content, tts, nonce, embed,
-          }, file).then(data => resolve(this.client.actions.MessageCreate.handle(data).message), reject);
+          }, files).then(data => resolve(this.client.actions.MessageCreate.handle(data).message), reject);
         }
       };
 
