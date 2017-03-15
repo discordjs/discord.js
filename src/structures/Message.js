@@ -123,7 +123,6 @@ class Message {
      */
     this.mentions = {
       users: new Collection(),
-      members: new Collection(),
       roles: new Collection(),
       channels: new Collection(),
       everyone: data.mention_everyone,
@@ -135,8 +134,11 @@ class Message {
         user = this.client.dataManager.newUser(mention);
       }
       this.mentions.users.set(user.id, user);
+    }
 
-      if (this.channel.guild) {
+    if (this.guild) {
+      this.mentions.members = new Collection();
+      for (const mention of data.mentions) {
         const member = this.channel.guild.members.get(mention.id);
         if (member) this.mentions.members.set(member.id, member);
       }
