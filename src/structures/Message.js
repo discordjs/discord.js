@@ -497,7 +497,7 @@ class Message {
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<Message>}
    */
-  ack() {
+  acknowledge() {
     return this.client.rest.methods.ackMessage(this);
   }
 

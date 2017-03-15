@@ -408,7 +408,7 @@ class TextBasedChannel {
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<TextChannel|GroupDMChannel|DMChannel>}
    */
-  ack() {
+  acknowledge() {
     return this.client.rest.methods.ackTextMessage(this);
   }
 

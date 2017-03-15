@@ -774,7 +774,7 @@ class Guild {
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<Guild>} this guild
    */
-  ack() {
+  acknowledge() {
     return this.client.rest.methods.ackGuild(this);
   }
 
