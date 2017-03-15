@@ -53,7 +53,7 @@ class DMChannel extends Channel {
   createCollector() { return; }
   awaitMessages() { return; }
   // doesn't work on DM channels; bulkDelete() { return; }
-  ack() { return; }
+  acknowledge() { return; }
   _cacheMessage() { return; }
 }
 
