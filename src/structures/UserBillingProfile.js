@@ -1,3 +1,4 @@
+const Constants = require('../util/Constants');
 const Util = require('../util/Util');
 
 /**
@@ -31,8 +32,9 @@ class PremiumSubscription {
     /**
      * @type {number}
      * Status of the subscription
+     * One of `UNPAID`, `ACTIVE`, `PAST_DUE`, `CANCELED`
      */
-    this.status = data.status;
+    this.status = Constants.PremiumStatus[data.status];
 
     /**
      * @type {string}

@@ -1,3 +1,5 @@
+const Constants = require('../util/Constants');
+
 /**
  * Represents a single payment to Discord
  */
@@ -5,9 +7,10 @@ class Payment {
   constructor(data) {
     /**
      * Status of the payment
+     * One of `PENDING`, `COMPLETED`, `FAILED`, `REVERSED`, `REFUNDED`
      * @type {string}
      */
-    this.status = ['', 'SUCCEEDED', 'FAILED'][data.status];
+    this.status = Constants.PaymentStatus[data.status];
 
     /**
      * @type {number}
