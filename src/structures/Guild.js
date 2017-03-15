@@ -880,9 +880,9 @@ class Guild {
 
   /**
    * Set the position of a role in this guild
-   * @param {string|Role} role the role to edit, can be a role object or a role ID.
-   * @param {number} position the new position of the role
-   * @param {boolean} [relative=false] Position moves the role relative to its current position
+   * @param {string|Role} role The role to edit, can be a role object or a role ID.
+   * @param {number} position The new position of the role
+   * @param {boolean} [relative=false] Position Moves the role relative to its current position
    * @returns {Promise<Guild>}
    */
   setRolePosition(role, position, relative = false) {
@@ -902,9 +902,16 @@ class Guild {
     return this.client.rest.methods.setRolePositions(this.id, updatedRoles);
   }
 
+  /**
+   * Set the position of a channel in this guild
+   * @param {string|GuildChannel} channel The channel to edit, can be a channel object or a channel ID.
+   * @param {number} position The new position of the channel
+   * @param {boolean} [relative=false] Position Moves the channel relative to its current position
+   * @returns {Promise<Guild>}
+   */
   setChannelPosition(channel, position, relative = false) {
     if (typeof channel === 'string') {
-      channel = this.roles.get(channel);
+      channel = this.channels.get(channel);
       if (!channel) return Promise.reject(new Error('Supplied channel is not a channel or snowflake.'));
     }
 
