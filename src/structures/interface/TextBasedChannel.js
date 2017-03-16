@@ -151,7 +151,7 @@ class TextBasedChannel {
    * @param {MessageOptions} [options] Options for the message
    * @returns {Promise<Message>}
    */
-  sendFiles(files, content, options) {
+  sendFiles(files, content, options = {}) {
     return this.send(content, Object.assign(options, { files }));
   }
 
@@ -421,6 +421,15 @@ class TextBasedChannel {
       return this.client.rest.methods.bulkDeleteMessages(this, messageIDs, filterOld);
     }
     throw new TypeError('The messages must be an Array, Collection, or number.');
+  }
+
+  /**
+   * Marks all messages in this channel as read
+   * <warn>This is only available when using a user account.</warn>
+   * @returns {Promise<TextChannel|GroupDMChannel|DMChannel>}
+   */
+  acknowledge() {
+    return this.client.rest.methods.ackTextMessage(this);
   }
 
   _cacheMessage(message) {
