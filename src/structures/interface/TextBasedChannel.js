@@ -423,6 +423,15 @@ class TextBasedChannel {
     throw new TypeError('The messages must be an Array, Collection, or number.');
   }
 
+  /**
+   * Marks all messages in this channel as read
+   * <warn>This is only available when using a user account.</warn>
+   * @returns {Promise<TextChannel|GroupDMChannel|DMChannel>}
+   */
+  acknowledge() {
+    return this.client.rest.methods.ackTextMessage(this);
+  }
+
   _cacheMessage(message) {
     const maxSize = this.client.options.messageCacheMaxSize;
     if (maxSize === 0) return null;
