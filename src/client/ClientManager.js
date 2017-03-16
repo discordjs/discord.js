@@ -1,4 +1,5 @@
 const Constants = require('../util/Constants');
+const WebSocketConnection = require('./websocket/WebSocketConnection');
 
 /**
  * Manages the State and Background Tasks of the Client
@@ -29,7 +30,8 @@ class ClientManager {
     this.client.emit(Constants.Events.DEBUG, `Authenticated using token ${token}`);
     this.client.token = token;
     const timeout = this.client.setTimeout(() => reject(new Error(Constants.Errors.TOOK_TOO_LONG)), 1000 * 300);
-    this.client.rest.methods.getGateway().then(gateway => {
+    this.client.rest.methods.getGateway(this.client.options.shardCount === 'auto').then(res => {
+      const gateway = `${res.url}/?v=${Constants.PROTOCOL_VERSION}&encoding=${WebSocketConnection.encoding}`;
       this.client.emit(Constants.Events.DEBUG, `Using gateway ${gateway}`);
       this.client.ws.connect(gateway);
       this.client.ws.once('close', event => {
