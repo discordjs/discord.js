@@ -55,16 +55,16 @@ class WebSocketConnection extends EventEmitter {
 
   eventMessage(event) {
     if (this.listenerCount('message')) this.emit('message', event);
-    try {
-      const data = this.unpack(event.data);
-      // unpack can take a while and cause a race condition where the ws is closed but a packet gets emitted
+    return this.unpack(event.data)
+    .then(data => {
       if (this.ws.readyState !== this.ws.OPEN) return false;
       this.emit('packet', data);
       return true;
-    } catch (err) {
+    })
+    .catch(err => {
       if (this.listenerCount('decodeError')) this.emit('decodeError', err);
       return false;
-    }
+    });
   }
 
   send(data) {
@@ -78,15 +78,23 @@ class WebSocketConnection extends EventEmitter {
   unpack(data) {
     if (erlpack && typeof data !== 'string') {
       if (data instanceof ArrayBuffer) data = Buffer.from(new Uint8Array(data));
-      return erlpack.unpack(data);
+      return Promise.resolve(erlpack.unpack(data));
     } else {
-      if (data instanceof ArrayBuffer || data instanceof Buffer) data = this.inflate(data);
-      return JSON.parse(data);
+      if (data instanceof ArrayBuffer || data instanceof Buffer) {
+        return this.inflate(data).then(JSON.parse);
+      }
+      return Promise.resolve(JSON.parse(data));
     }
   }
 
   inflate(data) {
-    return erlpack ? data : zlib.inflateSync(data).toString();
+    if (erlpack) return Promise.resolve(data);
+    return new Promise((resolve, reject) => {
+      zlib.inflate(data, (err, res) => {
+        if (err) reject(err);
+        else resolve(res.toString());
+      });
+    });
   }
 
   static get encoding() {
