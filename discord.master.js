@@ -3467,6 +3467,15 @@ class Message {
   }
 
   /**
+   * Marks the message as read
+   * <warn>This is only available when using a user account.</warn>
+   * @returns {Promise<Message>}
+   */
+  acknowledge() {
+    return this.client.rest.methods.ackMessage(this);
+  }
+
+  /**
    * Fetches the webhook used to create this message.
    * @returns {Promise<?Webhook>}
    */
@@ -3980,6 +3989,15 @@ class TextBasedChannel {
       return this.client.rest.methods.bulkDeleteMessages(this, messageIDs, filterOld);
     }
     throw new TypeError('The messages must be an Array, Collection, or number.');
+  }
+
+  /**
+   * Marks all messages in this channel as read
+   * <warn>This is only available when using a user account.</warn>
+   * @returns {Promise<TextChannel|GroupDMChannel|DMChannel>}
+   */
+  acknowledge() {
+    return this.client.rest.methods.ackTextMessage(this);
   }
 
   _cacheMessage(message) {
@@ -4844,6 +4862,15 @@ class Guild {
   }
 
   /**
+   * Marks all messages in this guild as read
+   * <warn>This is only available when using a user account.</warn>
+   * @returns {Promise<Guild>} this guild
+   */
+  acknowledge() {
+    return this.client.rest.methods.ackGuild(this);
+  }
+
+  /**
    * Whether this Guild equals another Guild. It compares all properties, so for most operations
    * it is advisable to just compare `guild.id === guild2.id` as it is much faster and is often
    * what most users need.
@@ -5491,6 +5518,7 @@ class GroupDMChannel extends Channel {
   createCollector() { return; }
   awaitMessages() { return; }
   // doesn't work on group DMs; bulkDelete() { return; }
+  acknowledge() { return; }
   _cacheMessage() { return; }
 }
 
@@ -10079,6 +10107,7 @@ class DMChannel extends Channel {
   createCollector() { return; }
   awaitMessages() { return; }
   // doesn't work on DM channels; bulkDelete() { return; }
+  acknowledge() { return; }
   _cacheMessage() { return; }
 }
 
@@ -11273,6 +11302,7 @@ class TextChannel extends GuildChannel {
   createCollector() { return; }
   awaitMessages() { return; }
   bulkDelete() { return; }
+  acknowledge() { return; }
   _cacheMessage() { return; }
 }
 
@@ -16476,6 +16506,7 @@ class RESTMethods {
   constructor(restManager) {
     this.rest = restManager;
     this.client = restManager.client;
+    this._ackToken = null;
   }
 
   login(token = this.client.token) {
@@ -16602,6 +16633,33 @@ class RESTMethods {
           channel_id: message.channel.id,
         }).message
       );
+  }
+
+  ackMessage(message) {
+    return this.rest.makeRequest('post',
+      `${Constants.Endpoints.channelMessage(message.channel.id, message.id)}/ack`,
+      true,
+      { token: this._ackToken }
+    ).then(res => {
+      this._ackToken = res.token;
+      return message;
+    });
+  }
+
+  ackTextChannel(channel) {
+    return this.rest.makeRequest('post',
+      `${Constants.Endpoints.channel(channel.id)}/ack`,
+      true,
+      { token: this._ackToken }
+    ).then(res => {
+      this._ackToken = res.token;
+      return channel;
+    });
+  }
+
+  ackGuild(guild) {
+    return this.rest.makeRequest('post', `${Constants.Endpoints.guild(guild.id)}/ack`, true)
+    .then(() => guild);
   }
 
   bulkDeleteMessages(channel, messages, filterOld) {
