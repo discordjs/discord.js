@@ -354,15 +354,15 @@ exports.WSEvents = {
   RELATIONSHIP_REMOVE: 'RELATIONSHIP_REMOVE',
 };
 
-exports.MessageTypes = {
-  0: 'DEFAULT',
-  1: 'RECIPIENT_ADD',
-  2: 'RECIPIENT_REMOVE',
-  3: 'CALL',
-  4: 'CHANNEL_NAME_CHANGE',
-  5: 'CHANNEL_ICON_CHANGE',
-  6: 'PINS_ADD',
-};
+exports.MessageTypes = [
+  'DEFAULT',
+  'RECIPIENT_ADD',
+  'RECIPIENT_REMOVE',
+  'CALL',
+  'CHANNEL_NAME_CHANGE',
+  'CHANNEL_ICON_CHANGE',
+  'PINS_ADD',
+];
 
 exports.DefaultAvatars = {
   BLURPLE: '6debd47ed13483642cf09e832ed0bc1b',
