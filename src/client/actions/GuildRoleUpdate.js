@@ -1,6 +1,6 @@
 const Action = require('./Action');
 const Constants = require('../../util/Constants');
-const Util = require('../../util/Util');
+const Role = require('../../structures/Role');
 
 class GuildRoleUpdateAction extends Action {
   handle(data) {
@@ -8,19 +8,20 @@ class GuildRoleUpdateAction extends Action {
 
     const guild = client.guilds.get(data.guild_id);
     if (guild) {
-      const roleData = data.role;
-      let oldRole = null;
-
-      const role = guild.roles.get(roleData.id);
+      const role = guild.roles.get(data.role.id);
       if (role) {
-        oldRole = Util.cloneObject(role);
-        role.setup(data.role);
-        client.emit(Constants.Events.GUILD_ROLE_UPDATE, oldRole, role);
+        const newRole = new Role(guild, data.role);
+        client.emit(Constants.Events.GUILD_ROLE_UPDATE, role, newRole);
+        guild.roles.set(newRole.id, newRole);
+        return {
+          old: role,
+          updated: newRole,
+        };
       }
 
       return {
-        old: oldRole,
-        updated: role,
+        old: null,
+        updated: null,
       };
     }
 

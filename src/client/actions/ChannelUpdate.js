@@ -1,6 +1,6 @@
 const Action = require('./Action');
 const Constants = require('../../util/Constants');
-const Util = require('../../util/Util');
+const GuildChannel = require('../../structures/GuildChannel');
 
 class ChannelUpdateAction extends Action {
   handle(data) {
@@ -8,12 +8,13 @@ class ChannelUpdateAction extends Action {
 
     const channel = client.channels.get(data.id);
     if (channel) {
-      const oldChannel = Util.cloneObject(channel);
-      channel.setup(data);
-      client.emit(Constants.Events.CHANNEL_UPDATE, oldChannel, channel);
+      const newChannel = new GuildChannel(channel.guild, data);
+      client.emit(Constants.Events.CHANNEL_UPDATE, channel, newChannel);
+      channel.guild.channels.set(newChannel.id, newChannel);
+      this.client.channels.set(newChannel.id, newChannel);
       return {
-        old: oldChannel,
-        updated: channel,
+        old: channel,
+        updated: newChannel,
       };
     }
 
