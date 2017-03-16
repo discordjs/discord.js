@@ -882,6 +882,7 @@ class Guild {
        * @param {GuildMember} newMember The member after the update
        */
       this.client.emit(Constants.Events.GUILD_MEMBER_UPDATE, member, newMember);
+      this.members.set(newMember.id, newMember);
     }
 
     return {
