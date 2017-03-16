@@ -151,7 +151,7 @@ class TextBasedChannel {
    * @param {MessageOptions} [options] Options for the message
    * @returns {Promise<Message>}
    */
-  sendFiles(files, content, options) {
+  sendFiles(files, content, options = {}) {
     return this.send(content, Object.assign(options, { files }));
   }
 
