@@ -29,53 +29,53 @@ class Bitfield {
    * Data that can be used to resolve from a bitfield. This can be:
    * - A string
    * - A number
-   * @typedef {string|number} BitfieldResolvable
+   * @typedef {string|number} FlagResolvable
    */
 
   /**
    * Checks whether the bitfield has a bit, or multiple bits.
-   * @param {BitResolvable|BitResolvable[]} bit bit(s) to check for
+   * @param {FlagResolvable|FlagResolvable[]} flag Flag(s) to check for
    * @returns {boolean}
    */
-  has(bit) {
-    if (bit instanceof Array) return bit.every(p => this.has(p));
-    bit = this.resolve(bit);
-    return (this.bitfield & bit) === bit;
+  has(flag) {
+    if (flag instanceof Array) return flag.every(f => this.has(f));
+    flag = this.resolve(flag);
+    return (this.bitfield & flag) === flag;
   }
 
   /**
    * Gets all given bits that are missing from the bitfield.
-   * @param {BitResolvable[]} bits Bits to check for
-   * @returns {BitResolvable[]}
+   * @param {FlagResolvable[]} flags Flag to check for
+   * @returns {FlagResolvable[]}
    */
-  missing(bits) {
-    return bits.filter(p => !this.has(p));
+  missing(flags) {
+    return flags.filter(f => !this.has(f));
   }
 
   /**
-   * Adds bits to this one, creating a new instance to represent the new bitfield.
-   * @param {...bitResolvable} bits bits to add
+   * Adds flags to this one, creating a new instance to represent the new bitfield.
+   * @param {...FlagResolvable} flags Flags to add
    * @returns {bits}
    */
-  add(...bits) {
+  add(...flags) {
     let total = 0;
-    for (let p = 0; p < bits.length; p++) {
-      const perm = this.resolve(bits[p]);
-      if ((this.bitfield & perm) !== perm) total |= perm;
+    for (let p = 0; p < flags.length; p++) {
+      const flag = this.resolve(flags[p]);
+      if ((this.bitfield & flag) !== flag) total |= flag;
     }
     return new this.constructor(this.bitfield | total, this.map);
   }
 
   /**
-   * Removes bits to this one, creating a new instance to represent the new bitfield.
-   * @param {...bitResolvable} keys bits to remove
+   * Removes flags to this one, creating a new instance to represent the new bitfield.
+   * @param {...FlagResolvable} flags Flags to remove
    * @returns {bits}
    */
-  remove(...bits) {
+  remove(...flags) {
     let total = 0;
-    for (let p = 0; p < bits.length; p++) {
-      const perm = this.resolve(bits[p]);
-      if ((this.bitfield & perm) === perm) total |= perm;
+    for (let p = 0; p < flags.length; p++) {
+      const flag = this.resolve(flag[p]);
+      if ((this.bitfield & flag) === flag) total |= flag;
     }
     return new this.constructor(this.member, this.bitfield & ~total);
   }
@@ -86,20 +86,20 @@ class Bitfield {
    */
   serialize() {
     const serialized = {};
-    for (const key in this.map) serialized[key] = this.has(key);
+    for (const flag in this.map) serialized[flag] = this.has(flag);
     return serialized;
   }
 
   /**
    * Resolves bits to their numeric form.
-   * @param {bitResolvable|bits[]} bit - bit(s) to resolve
+   * @param {FlagResolvable|FlagResolvable[]} flag - bit(s) to resolve
    * @returns {number|number[]}
    */
-  resolve(bit) {
-    if (bit instanceof Array) return bit.map(p => this.resolve(p));
-    if (typeof bit === 'string') bit = this.map[bit];
-    if (typeof bit !== 'number' || bit < 1) throw new RangeError(Constants.Errors.NOT_A_BIT);
-    return bit;
+  resolve(flag) {
+    if (flag instanceof Array) return flag.map(p => this.resolve(p));
+    if (typeof flag === 'string') flag = this.map[flag];
+    if (typeof flag !== 'number' || flag < 1) throw new RangeError(Constants.Errors.NOT_A_BITFIELD_FLAG);
+    return flag;
   }
 }
 

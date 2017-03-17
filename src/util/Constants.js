@@ -71,6 +71,7 @@ exports.Errors = {
   BAD_WS_MESSAGE: 'A bad message was received from the websocket; either bad compression, or not JSON.',
   TOOK_TOO_LONG: 'Something took too long to do.',
   NOT_A_PERMISSION: 'Invalid permission string or number.',
+  NOT_A_BITFIELD_FLAG: 'Invalid bitfield flag string or number',
   INVALID_RATE_LIMIT_METHOD: 'Unknown rate limiting method.',
   BAD_LOGIN: 'Incorrect login details were provided.',
   INVALID_SHARD: 'Invalid shard settings were provided.',
