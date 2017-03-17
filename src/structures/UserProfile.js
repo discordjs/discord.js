@@ -1,5 +1,4 @@
 const Collection = require('../util/Collection');
-const Constants = require('../util/Constants');
 const UserConnection = require('./UserConnection');
 
 /**
@@ -58,7 +57,7 @@ class UserProfile {
       this.connections.set(connection.id, new UserConnection(this.user, connection));
     }
 
-    if (data.user && data.user.flags) this.user.flag = Constants.UserFlags[data.user.flags];
+    if (data.user && data.user.flags) this.user.flags.raw = data.user.flags;
   }
 }
 

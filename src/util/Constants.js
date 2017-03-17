@@ -372,9 +372,9 @@ exports.DefaultAvatars = {
 };
 
 exports.UserFlags = {
-  1: 'STAFF',
-  2: 'PARTNER',
-  4: 'HYPESQUAD',
+  STAFF: 1,
+  PARTNER: 2,
+  HYPESQUAD: 4,
 };
 
 exports.Colors = {

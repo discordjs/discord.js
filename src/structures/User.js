@@ -2,6 +2,7 @@ const TextBasedChannel = require('./interface/TextBasedChannel');
 const Constants = require('../util/Constants');
 const Presence = require('./Presence').Presence;
 const Snowflake = require('../util/Snowflake');
+const Bitfield = require('../util/Bitfield');
 
 /**
  * Represents a user on Discord.
@@ -64,10 +65,10 @@ class User {
     this.lastMessage = null;
 
     /**
-     * Flag on the user. One of `STAFF`, `PARTNER`, `HYPESQUAD`
-     * @type {?String}
+     * Flags on the user.
+     * @type {Bitfield}
      */
-    this.flag = data.flags ? Constants.UserFlags[data.flags] : null;
+    this.flags = new Bitfield(data.flags, Constants.UserFlags);
   }
 
   patch(data) {

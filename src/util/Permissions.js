@@ -1,105 +1,25 @@
 const Constants = require('../util/Constants');
+const Bitfield = require('./Bitfield');
 
 /**
  * Data structure that makes it easy to interact with a permission bitfield. All {@link GuildMember}s have a set of
  * permissions in their guild, and each channel in the guild may also have {@link PermissionOverwrites} for the member
  * that override their default permissions.
  */
-class Permissions {
+class Permissions extends Bitfield {
   /**
    * @param {GuildMember} [member] Member the permissions are for **(deprecated)**
    * @param {number} bitfield Permissions bitfield to read from
    */
   constructor(member, bitfield) {
+    super(typeof member === 'object' ? bitfield : member, Permissions.FLAGS);
+
     /**
      * Member the permissions are for
      * @type {GuildMember}
      * @deprecated
      */
     this.member = typeof member === 'object' ? member : null;
-
-    /**
-     * Bitfield of the packed permissions
-     * @type {number}
-     */
-    this.bitfield = typeof member === 'object' ? bitfield : member;
-  }
-
-  /**
-   * Bitfield of the packed permissions
-   * @type {number}
-   * @see {@link Permissions#bitfield}
-   * @deprecated
-   */
-  get raw() {
-    return this.bitfield;
-  }
-
-  set raw(raw) {
-    this.bitfield = raw;
-  }
-
-  /**
-   * Checks whether the bitfield has a permission, or multiple permissions.
-   * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
-   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
-   * @returns {boolean}
-   */
-  has(permission, checkAdmin = true) {
-    if (permission instanceof Array) return permission.every(p => this.has(p, checkAdmin));
-    permission = this.constructor.resolve(permission);
-    if (checkAdmin && (this.bitfield & this.constructor.FLAGS.ADMINISTRATOR) > 0) return true;
-    return (this.bitfield & permission) === permission;
-  }
-
-  /**
-   * Gets all given permissions that are missing from the bitfield.
-   * @param {PermissionResolvable[]} permissions Permissions to check for
-   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
-   * @returns {PermissionResolvable[]}
-   */
-  missing(permissions, checkAdmin = true) {
-    return permissions.filter(p => !this.has(p, checkAdmin));
-  }
-
-  /**
-   * Adds permissions to this one, creating a new instance to represent the new bitfield.
-   * @param {...PermissionResolvable} permissions Permissions to add
-   * @returns {Permissions}
-   */
-  add(...permissions) {
-    let total = 0;
-    for (let p = 0; p < permissions.length; p++) {
-      const perm = this.constructor.resolve(permissions[p]);
-      if ((this.bitfield & perm) !== perm) total |= perm;
-    }
-    return new this.constructor(this.member, this.bitfield | total);
-  }
-
-  /**
-   * Removes permissions to this one, creating a new instance to represent the new bitfield.
-   * @param {...PermissionResolvable} permissions Permissions to remove
-   * @returns {Permissions}
-   */
-  remove(...permissions) {
-    let total = 0;
-    for (let p = 0; p < permissions.length; p++) {
-      const perm = this.constructor.resolve(permissions[p]);
-      if ((this.bitfield & perm) === perm) total |= perm;
-    }
-    return new this.constructor(this.member, this.bitfield & ~total);
-  }
-
-  /**
-   * Gets an object mapping permission name (like `READ_MESSAGES`) to a {@link boolean} indicating whether the
-   * permission is available.
-   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
-   * @returns {Object}
-   */
-  serialize(checkAdmin = true) {
-    const serialized = {};
-    for (const perm in this.constructor.FLAGS) serialized[perm] = this.has(perm, checkAdmin);
-    return serialized;
   }
 
   /**
