@@ -373,9 +373,9 @@ exports.DefaultAvatars = {
 };
 
 exports.UserFlags = {
-  STAFF: 1,
-  PARTNER: 2,
-  HYPESQUAD: 4,
+  STAFF: 1 << 0,
+  PARTNER: 1 << 1,
+  HYPESQUAD: 1 << 2,
 };
 
 exports.Colors = {
