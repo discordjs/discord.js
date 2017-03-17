@@ -20,7 +20,7 @@ class VoiceReceiver extends EventEmitter {
   constructor(connection) {
     super();
     /*
-      need a queue because we don't get the ssrc of the user speaking until after the first few packets,
+      Need a queue because we don't get the ssrc of the user speaking until after the first few packets,
       so we queue up unknown SSRCs until they become known, then empty the queue.
     */
     this.queues = new Map();
@@ -68,7 +68,6 @@ class VoiceReceiver extends EventEmitter {
     if (!this.destroyed) return;
     this.voiceConnection.sockets.udp.socket.on('message', this._listener);
     this.destroyed = false;
-    return;
   }
 
   /**

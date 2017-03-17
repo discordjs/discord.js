@@ -38,7 +38,7 @@ class UserConnection {
     this.revoked = data.revoked;
 
     /**
-     * an array of partial server integrations (not yet implemented in this lib)
+     * Partial server integrations (not yet implemented)
      * @type {Object[]}
      */
     this.integrations = data.integrations;
