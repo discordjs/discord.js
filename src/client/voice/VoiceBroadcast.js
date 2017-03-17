@@ -267,6 +267,7 @@ class VoiceBroadcast extends VolumeInterface {
 
   _startPlaying() {
     if (this.tickInterval) clearInterval(this.tickInterval);
+    // Old code?
     // this.tickInterval = this.client.setInterval(this.tick.bind(this), 20);
     this._startTime = Date.now();
     this._count = 0;

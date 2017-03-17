@@ -8,12 +8,12 @@ class GuildCreateHandler extends AbstractHandler {
     const guild = client.guilds.get(data.id);
     if (guild) {
       if (!guild.available && !data.unavailable) {
-        // a newly available guild
+        // A newly available guild
         guild.setup(data);
         this.packetManager.ws.checkIfReady();
       }
     } else {
-      // a new guild
+      // A new guild
       client.dataManager.newGuild(data);
     }
   }

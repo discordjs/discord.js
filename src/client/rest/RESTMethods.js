@@ -354,7 +354,7 @@ class RESTMethods {
     });
   }
 
-  // untested but probably will work
+  // Untested but probably will work
   deleteGuild(guild) {
     return this.rest.makeRequest('del', Constants.Endpoints.guild(guild.id), true).then(() =>
       this.client.actions.GuildDelete.handle({ id: guild.id }).guild
@@ -486,7 +486,7 @@ class RESTMethods {
     if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
 
     let endpoint = Constants.Endpoints.guildMember(member.guild.id, member.id);
-    // fix your endpoints, discord ;-;
+    // Fix your endpoints, discord ;-;
     if (member.id === this.client.user.id) {
       const keys = Object.keys(data);
       if (keys.length === 1 && keys[0] === 'nick') {

@@ -81,7 +81,6 @@ class TextBasedChannel {
 
     if (options.embed && options.embed.file) options.file = options.embed.file;
 
-    // backward compat
     if (options.file) {
       if (options.files) options.files.push(options.file);
       else options.files = [options.file];
