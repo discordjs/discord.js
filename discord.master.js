@@ -154,7 +154,7 @@ const PROTOCOL_VERSION = exports.PROTOCOL_VERSION = 6;
 const HOST = exports.HOST = `https://discordapp.com`;
 const API = exports.API = `${HOST}/api/v${PROTOCOL_VERSION}`;
 const Endpoints = exports.Endpoints = {
-  // general
+  // General
   login: `${API}/auth/login`,
   logout: `${API}/auth/logout`,
   gateway: `${API}/gateway`,
@@ -164,7 +164,7 @@ const Endpoints = exports.Endpoints = {
   assets: asset => `${HOST}/assets/${asset}`,
   CDN: 'https://cdn.discordapp.com',
 
-  // users
+  // Users
   user: userID => `${API}/users/${userID}`,
   userChannels: userID => `${Endpoints.user(userID)}/channels`,
   userProfile: userID => `${Endpoints.user(userID)}/profile`,
@@ -182,7 +182,7 @@ const Endpoints = exports.Endpoints = {
 
   voiceRegions: `${API}/voice/regions`,
 
-  // guilds
+  // Guilds
   guilds: `${API}/guilds`,
   guild: guildID => `${Endpoints.guilds}/${guildID}`,
   guildIcon: (guildID, hash) => `${Endpoints.CDN}/icons/${guildID}/${hash}.jpg`,
@@ -204,7 +204,7 @@ const Endpoints = exports.Endpoints = {
   guildSearch: guildID => `${Endpoints.guild(guildID)}/messages/search`,
   guildVoiceRegions: guildID => `${Endpoints.guild(guildID)}/regions`,
 
-  // channels
+  // Channels
   channels: `${API}/channels`,
   channel: channelID => `${Endpoints.channels}/${channelID}`,
   channelMessages: channelID => `${Endpoints.channel(channelID)}/messages`,
@@ -217,7 +217,7 @@ const Endpoints = exports.Endpoints = {
 
   dmChannelRecipient: (channelID, recipientID) => `${Endpoints.channel(channelID)}/recipients/${recipientID}`,
 
-  // message reactions
+  // Message reactions
   messageReactions: (channelID, messageID) => `${Endpoints.channelMessage(channelID, messageID)}/reactions`,
   messageReaction:
     (channel, msg, emoji, limit) =>
@@ -228,14 +228,14 @@ const Endpoints = exports.Endpoints = {
   userMessageReaction: (channel, msg, emoji, limit, id) =>
           `${Endpoints.messageReaction(channel, msg, emoji, limit)}/${id}`,
 
-  // webhooks
+  // Webhooks
   webhook: (webhookID, token) => `${API}/webhooks/${webhookID}${token ? `/${token}` : ''}`,
 
-  // oauth
+  // OAuth
   oauth2Application: appID => `${API}/oauth2/applications/${appID}`,
   getApp: id => `${API}/oauth2/authorize?client_id=${id}`,
 
-  // emoji
+  // Emoji
   emoji: emojiID => `${Endpoints.CDN}/emojis/${emojiID}.png`,
 };
 
@@ -2270,11 +2270,12 @@ class User {
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  send() { return; }
-  sendMessage() { return; }
-  sendEmbed() { return; }
-  sendFile() { return; }
-  sendCode() { return; }
+  /* eslint-disable no-empty-function */
+  send() {}
+  sendMessage() {}
+  sendEmbed() {}
+  sendFile() {}
+  sendCode() {}
 }
 
 TextBasedChannel.applyToClass(User);
@@ -2955,11 +2956,12 @@ class GuildMember {
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  send() { return; }
-  sendMessage() { return; }
-  sendEmbed() { return; }
-  sendFile() { return; }
-  sendCode() { return; }
+  /* eslint-disable no-empty-function */
+  send() {}
+  sendMessage() {}
+  sendEmbed() {}
+  sendFile() {}
+  sendCode() {}
 }
 
 TextBasedChannel.applyToClass(GuildMember);
@@ -3649,7 +3651,6 @@ class TextBasedChannel {
 
     if (options.embed && options.embed.file) options.file = options.embed.file;
 
-    // backward compat
     if (options.file) {
       if (options.files) options.files.push(options.file);
       else options.files = [options.file];
@@ -4464,7 +4465,7 @@ class Guild {
   fetchMembers(query = '', limit = 0) {
     return new Promise((resolve, reject) => {
       if (this.memberCount === this.members.size) {
-        // uncomment in v12
+        // Uncomment in v12
         // resolve(this.members)
         resolve(this);
         return;
@@ -4481,10 +4482,9 @@ class Guild {
         if (guild.id !== this.id) return;
         if (this.memberCount === this.members.size || members.length < 1000) {
           this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
-          // uncomment in v12
+          // Uncomment in v12
           // resolve(this.members)
           resolve(this);
-          return;
         }
       };
       this.client.on(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
@@ -5503,25 +5503,26 @@ class GroupDMChannel extends Channel {
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  send() { return; }
-  sendMessage() { return; }
-  sendEmbed() { return; }
-  sendFile() { return; }
-  sendFiles() { return; }
-  sendCode() { return; }
-  fetchMessage() { return; }
-  fetchMessages() { return; }
-  fetchPinnedMessages() { return; }
-  search() { return; }
-  startTyping() { return; }
-  stopTyping() { return; }
-  get typing() { return; }
-  get typingCount() { return; }
-  createCollector() { return; }
-  awaitMessages() { return; }
-  // doesn't work on group DMs; bulkDelete() { return; }
-  acknowledge() { return; }
-  _cacheMessage() { return; }
+  /* eslint-disable no-empty-function */
+  send() {}
+  sendMessage() {}
+  sendEmbed() {}
+  sendFile() {}
+  sendFiles() {}
+  sendCode() {}
+  fetchMessage() {}
+  fetchMessages() {}
+  fetchPinnedMessages() {}
+  search() {}
+  startTyping() {}
+  stopTyping() {}
+  get typing() {}
+  get typingCount() {}
+  createCollector() {}
+  awaitMessages() {}
+  // Doesn't work on group DMs; bulkDelete() {}
+  acknowledge() {}
+  _cacheMessage() {}
 }
 
 TextBasedChannel.applyToClass(GroupDMChannel, true, ['bulkDelete']);
@@ -9663,7 +9664,7 @@ module.exports = {
 	},
 	"devDependencies": {
 		"discord.js-docgen": "hydrabolt/discord.js-docgen",
-		"eslint": "^3.13.0",
+		"eslint": "^3.17.0",
 		"parallel-webpack": "^1.6.0",
 		"uglify-js": "mishoo/UglifyJS2#harmony",
 		"webpack": "^2.2.0"
@@ -10092,25 +10093,26 @@ class DMChannel extends Channel {
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  send() { return; }
-  sendMessage() { return; }
-  sendEmbed() { return; }
-  sendFile() { return; }
-  sendFiles() { return; }
-  sendCode() { return; }
-  fetchMessage() { return; }
-  fetchMessages() { return; }
-  fetchPinnedMessages() { return; }
-  search() { return; }
-  startTyping() { return; }
-  stopTyping() { return; }
-  get typing() { return; }
-  get typingCount() { return; }
-  createCollector() { return; }
-  awaitMessages() { return; }
-  // doesn't work on DM channels; bulkDelete() { return; }
-  acknowledge() { return; }
-  _cacheMessage() { return; }
+  /* eslint-disable no-empty-function */
+  send() {}
+  sendMessage() {}
+  sendEmbed() {}
+  sendFile() {}
+  sendFiles() {}
+  sendCode() {}
+  fetchMessage() {}
+  fetchMessages() {}
+  fetchPinnedMessages() {}
+  search() {}
+  startTyping() {}
+  stopTyping() {}
+  get typing() {}
+  get typingCount() {}
+  createCollector() {}
+  awaitMessages() {}
+  // Doesn't work on DM channels; bulkDelete() {}
+  acknowledge() {}
+  _cacheMessage() {}
 }
 
 TextBasedChannel.applyToClass(DMChannel, true, ['bulkDelete']);
@@ -10482,7 +10484,7 @@ class MessageCollector extends EventEmitter {
 
       const onEnd = (...args) => {
         cleanup();
-        reject(...args);
+        reject(...args); // eslint-disable-line prefer-promise-reject-errors
       };
 
       this.once('message', onMessage);
@@ -10862,7 +10864,7 @@ class MessageReaction {
    */
   get emoji() {
     if (this._emoji instanceof Emoji) return this._emoji;
-    // check to see if the emoji has become known to the client
+    // Check to see if the emoji has become known to the client
     if (this._emoji.id) {
       const emojis = this.message.client.emojis;
       if (emojis.has(this._emoji.id)) {
@@ -10882,7 +10884,7 @@ class MessageReaction {
   remove(user = this.message.client.user) {
     const message = this.message;
     user = this.message.client.resolver.resolveUserID(user);
-    if (!user) return Promise.reject('Couldn\'t resolve the user ID to remove from the reaction.');
+    if (!user) return Promise.reject(new Error('Couldn\'t resolve the user ID to remove from the reaction.'));
     return message.client.rest.methods.removeMessageReaction(
       message, this.emoji.identifier, user
     );
@@ -11008,7 +11010,7 @@ class OAuth2Application {
     this.flags = data.flags;
 
     /**
-     * oauth2 secret for the app
+     * OAuth2 secret for the application
      * @type {boolean}
      */
     this.secret = data.secret;
@@ -11287,25 +11289,26 @@ class TextChannel extends GuildChannel {
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  send() { return; }
-  sendMessage() { return; }
-  sendEmbed() { return; }
-  sendFile() { return; }
-  sendFiles() { return; }
-  sendCode() { return; }
-  fetchMessage() { return; }
-  fetchMessages() { return; }
-  fetchPinnedMessages() { return; }
-  search() { return; }
-  startTyping() { return; }
-  stopTyping() { return; }
-  get typing() { return; }
-  get typingCount() { return; }
-  createCollector() { return; }
-  awaitMessages() { return; }
-  bulkDelete() { return; }
-  acknowledge() { return; }
-  _cacheMessage() { return; }
+  /* eslint-disable no-empty-function */
+  send() {}
+  sendMessage() {}
+  sendEmbed() {}
+  sendFile() {}
+  sendFiles() {}
+  sendCode() {}
+  fetchMessage() {}
+  fetchMessages() {}
+  fetchPinnedMessages() {}
+  search() {}
+  startTyping() {}
+  stopTyping() {}
+  get typing() {}
+  get typingCount() {}
+  createCollector() {}
+  awaitMessages() {}
+  bulkDelete() {}
+  acknowledge() {}
+  _cacheMessage() {}
 }
 
 TextBasedChannel.applyToClass(TextChannel, true);
@@ -12779,9 +12782,7 @@ class RequestHandler {
   /**
    * Attempts to get this RequestHandler to process its current queue
    */
-  handle() {
-    return;
-  }
+  handle() {} // eslint-disable-line no-empty-function
 }
 
 module.exports = RequestHandler;
@@ -15590,18 +15591,18 @@ class GuildDeleteAction extends Action {
       }
 
       if (guild.available && data.unavailable) {
-        // guild is unavailable
+        // Guild is unavailable
         guild.available = false;
         client.emit(Constants.Events.GUILD_UNAVAILABLE, guild);
 
-        // stops the GuildDelete packet thinking a guild was actually deleted,
+        // Stops the GuildDelete packet thinking a guild was actually deleted,
         // handles emitting of event itself
         return {
           guild: null,
         };
       }
 
-      // delete guild
+      // Delete guild
       client.guilds.delete(guild.id);
       this.deleted.set(guild.id, guild);
       this.scheduleForDeletion(guild.id);
@@ -16839,7 +16840,7 @@ class RESTMethods {
     });
   }
 
-  // untested but probably will work
+  // Untested but probably will work
   deleteGuild(guild) {
     return this.rest.makeRequest('del', Constants.Endpoints.guild(guild.id), true).then(() =>
       this.client.actions.GuildDelete.handle({ id: guild.id }).guild
@@ -16971,7 +16972,7 @@ class RESTMethods {
     if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
 
     let endpoint = Constants.Endpoints.guildMember(member.guild.id, member.id);
-    // fix your endpoints, discord ;-;
+    // Fix your endpoints, discord ;-;
     if (member.id === this.client.user.id) {
       const keys = Object.keys(data);
       if (keys.length === 1 && keys[0] === 'nick') {
@@ -18263,12 +18264,12 @@ class GuildCreateHandler extends AbstractHandler {
     const guild = client.guilds.get(data.id);
     if (guild) {
       if (!guild.available && !data.unavailable) {
-        // a newly available guild
+        // A newly available guild
         guild.setup(data);
         this.packetManager.ws.checkIfReady();
       }
     } else {
-      // a new guild
+      // A new guild
       client.dataManager.newGuild(data);
     }
   }
@@ -18324,22 +18325,22 @@ class GuildEmojisUpdate extends AbstractHandler {
     const deletions = mappify(guild.emojis.entries());
 
     for (const emoji of data.emojis) {
-      // determine type of emoji event
+      // Determine type of emoji event
       const cachedEmoji = guild.emojis.get(emoji.id);
       if (cachedEmoji) {
         deletions.delete(emoji.id);
         if (!cachedEmoji.equals(emoji, true)) {
-          // emoji updated
+          // Emoji updated
           client.actions.GuildEmojiUpdate.handle(cachedEmoji, emoji);
         }
       } else {
-        // emoji added
+        // Emoji added
         client.actions.GuildEmojiCreate.handle(guild, emoji);
       }
     }
 
     for (const emoji of deletions.values()) {
-      // emoji deleted
+      // Emoji deleted
       client.actions.GuildEmojiDelete.handle(emoji);
     }
   }
@@ -18420,7 +18421,7 @@ module.exports = GuildMemberUpdateHandler;
 
 const AbstractHandler = __webpack_require__(1);
 const Constants = __webpack_require__(0);
-// uncomment in v12
+// Uncomment in v12
 // const Collection = require('../../../../util/Collection');
 
 class GuildMembersChunkHandler extends AbstractHandler {
@@ -18430,7 +18431,7 @@ class GuildMembersChunkHandler extends AbstractHandler {
     const guild = client.guilds.get(data.guild_id);
     if (!guild) return;
 
-    // uncomment in v12
+    // Uncomment in v12
     // const members = new Collection();
     //
     // for (const member of data.members) members.set(member.id, guild._addMember(member, false));
@@ -18694,7 +18695,7 @@ class PresenceUpdateHandler extends AbstractHandler {
     let user = client.users.get(data.user.id);
     const guild = client.guilds.get(data.guild_id);
 
-    // step 1
+    // Step 1
     if (!user) {
       if (data.user.username) {
         user = client.dataManager.newUser(data.user);
@@ -19044,7 +19045,7 @@ class VoiceStateUpdateHandler extends AbstractHandler {
           member.voiceChannel.members.delete(oldVoiceChannelMember.id);
         }
 
-        // if the member left the voice channel, unset their speaking property
+        // If the member left the voice channel, unset their speaking property
         if (!data.channel_id) member.speaking = null;
 
         if (member.user.id === client.user.id && data.channel_id) {
@@ -19120,7 +19121,7 @@ class UserConnection {
     this.revoked = data.revoked;
 
     /**
-     * an array of partial server integrations (not yet implemented in this lib)
+     * Partial server integrations (not yet implemented)
      * @type {Object[]}
      */
     this.integrations = data.integrations;
