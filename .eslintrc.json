@@ -13,9 +13,8 @@
     "no-extra-parens": ["warn", "all", {
       "nestedBinaryExpressions": false
     }],
-    "arrow-parens": ["error", "as-needed", {
-      "requireForBlockBody": false
-    }],
+    "no-template-curly-in-string": "error",
+    "no-unsafe-negation": "error",
     "valid-jsdoc": ["error", {
       "requireReturn": false,
       "requireReturnDescription": false,
@@ -133,6 +132,9 @@
     "unicode-bom": "error",
 
     "arrow-body-style": "error",
+    "arrow-parens": ["error", "as-needed", {
+      "requireForBlockBody": false
+    }],
     "arrow-spacing": "error",
     "no-duplicate-imports": "error",
     "no-useless-computed-key": "error",
