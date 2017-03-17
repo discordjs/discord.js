@@ -14,15 +14,10 @@ class UserAgentManager {
     this._override.version = version;
   }
 
-  get _current() {
-    return {
-      url: this._override.url || this._default.url,
-      version: this._override.version || this._default.version,
-    };
-  }
-
   get userAgent() {
-    return `DiscordBot (${this._current.url}, ${this._current.version}) Node.js/${process.version}`;
+    const url = this._override.url || this._default.url;
+    const version = this._override.version || this._default.version;
+    return `DiscordBot (${url}, ${version}) Node.js/${process.version}`;
   }
 }
 
