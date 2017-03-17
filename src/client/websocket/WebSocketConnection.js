@@ -22,6 +22,9 @@ const WebSocket = (function findWebSocket() {
 
 
 class WebSocketConnection extends EventEmitter {
+  /**
+   * @param {string} gateway Websocket gateway to connect to
+   */
   constructor(gateway) {
     super();
     this.gateway = gateway;
@@ -33,26 +36,50 @@ class WebSocketConnection extends EventEmitter {
     this.ws.onerror = this.eventError.bind(this);
   }
 
+  /**
+   * @type {number}
+   */
   get readyState() {
     return this.ws.readyState;
   }
 
+  /**
+   * Close the websocket
+   * @param {number} code Code to close with
+   * @param {string} [reason] Human readable reason
+   */
   close(code, reason) {
-    return this.ws.close(code, reason);
+    this.ws.close(code, reason);
   }
 
+  /**
+   * Called when the websocket opens
+   */
   eventOpen() {
     this.emit('open');
   }
 
+  /**
+   * Called when the websocket closes
+   * @param {Object} event Close event object
+   */
   eventClose(event) {
     this.emit('close', event);
   }
 
+  /**
+   * Called when the websocket errors
+   * @param {Object} event Error event object
+   */
   eventError(event) {
     this.emit('error', event);
   }
 
+  /**
+   * Called when the websocket gets a message
+   * @param {Object} event Close event object
+   * @returns {Promise<boolean>}
+   */
   eventMessage(event) {
     if (this.listenerCount('message')) this.emit('message', event);
     return this.unpack(event.data)
@@ -67,14 +94,28 @@ class WebSocketConnection extends EventEmitter {
     });
   }
 
+  /**
+   * Send data over the websocket
+   * @param {string|Buffer} data Data to send
+   */
   send(data) {
-    return this.ws.send(this.pack(data));
+    this.ws.send(this.pack(data));
   }
 
+  /**
+   * Pack data using JSON or Erlpack
+   * @param {*} data Data to pack
+   * @returns {string|Buffer}
+   */
   pack(data) {
     return erlpack ? erlpack.pack(data) : JSON.stringify(data);
   }
 
+  /**
+   * Unpack data using JSON or Erlpack
+   * @param {string|ArrayBuffer|Buffer} data Data to unpack
+   * @returns {string|Object}
+   */
   unpack(data) {
     if (erlpack && typeof data !== 'string') {
       if (data instanceof ArrayBuffer) data = Buffer.from(new Uint8Array(data));
@@ -87,6 +128,11 @@ class WebSocketConnection extends EventEmitter {
     }
   }
 
+  /**
+   * Zlib inflate data
+   * @param {string|Buffer} data Data to inflate
+   * @returns {string|Buffer}
+   */
   inflate(data) {
     if (erlpack) return Promise.resolve(data);
     return new Promise((resolve, reject) => {
@@ -97,10 +143,18 @@ class WebSocketConnection extends EventEmitter {
     });
   }
 
+  /**
+   * The encoding this connection will use
+   * @type {string}
+   */
   get encoding() {
     return this.constructor.encoding;
   }
 
+  /**
+   * The encoding this connection will use
+   * @type {string}
+   */
   static get encoding() {
     return erlpack ? 'etf' : 'json';
   }
