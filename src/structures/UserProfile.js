@@ -37,12 +37,6 @@ class UserProfile {
 
   setup(data) {
     /**
-     * If the user has Discord Premium
-     * @type {boolean}
-     */
-    this.premium = data.premium;
-
-    /**
      * The date since which the user has had Discord Premium
      * @type {?Date}
      */
