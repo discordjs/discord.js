@@ -181,7 +181,7 @@ class TextBasedChannel {
 
   /**
    * Gets a single message from this channel, regardless of it being cached or not.
-   * When not using a bot account, it will use fetchMessages instead.
+   * When not using a bot account, it will use fetchMessages to fetch the message ID instead.
    * @param {Snowflake} messageID ID of the message to get
    * @returns {Promise<Message>}
    * @example
