@@ -26,6 +26,7 @@
         "String": "string",
         "Number": "number",
         "Boolean": "boolean",
+        "Symbol": "symbol",
         "object": "Object",
         "function": "Function",
         "array": "Array",
