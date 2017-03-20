@@ -146,14 +146,7 @@ class WebSocketConnection extends EventEmitter {
   /**
    * The encoding this connection will use
    * @type {string}
-   */
-  get encoding() {
-    return this.constructor.encoding;
-  }
-
-  /**
-   * The encoding this connection will use
-   * @type {string}
+   * @static
    */
   static get encoding() {
     return erlpack ? 'etf' : 'json';
