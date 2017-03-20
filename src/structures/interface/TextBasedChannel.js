@@ -191,7 +191,9 @@ class TextBasedChannel {
    *   .catch(console.error);
    */
   fetchMessage(messageID) {
-    if (!this.client.user.bot) return this.fetchMessages({ limit: 1, around: messageID });
+    if (!this.client.user.bot) {
+      return this.fetchMessages({ limit: 1, around: messageID }).then(messageCol => messageCol.first());
+    }
     return this.client.rest.methods.getChannelMessage(this, messageID).then(data => {
       const msg = data instanceof Message ? data : new Message(this, data, this.client);
       this._cacheMessage(msg);
