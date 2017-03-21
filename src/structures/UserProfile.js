@@ -37,12 +37,6 @@ class UserProfile {
 
   setup(data) {
     /**
-     * If the user has Discord Premium
-     * @type {boolean}
-     */
-    this.premium = data.premium;
-
-    /**
      * The date since which the user has had Discord Premium
      * @type {?Date}
      */
@@ -56,6 +50,8 @@ class UserProfile {
     for (const connection of data.connected_accounts) {
       this.connections.set(connection.id, new UserConnection(this.user, connection));
     }
+
+    if (data.user && data.user.flags) this.user.flags.raw = data.user.flags;
   }
 }
 

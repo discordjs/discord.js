@@ -9,6 +9,7 @@ module.exports = {
   WebhookClient: require('./client/WebhookClient'),
 
   // Utilities
+  Bitfield: require('./util/Bitfield'),
   Collection: require('./util/Collection'),
   Constants: require('./util/Constants'),
   EvaluatedPermissions: require('./util/Permissions'),
