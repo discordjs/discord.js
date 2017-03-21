@@ -46,7 +46,7 @@ class Util {
   }
 
   /**
-   * Format a string
+   * Format a string with markdown
    * @param {string} format one of `bold`, `italic`, `underlined`, `strikethrough`
    * @param {string} str String to format
    * @returns {string} formatted string
