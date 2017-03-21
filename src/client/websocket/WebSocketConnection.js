@@ -23,58 +23,18 @@ const WebSocket = (function findWebSocket() {
 /**
  * Abstracts a WebSocket connection with decoding/encoding for the discord gateway
  */
-class WebSocketConnection extends EventEmitter {
+class WebSocketConnection extends WebSocket {
   /**
    * @param {string} gateway Websocket gateway to connect to
    */
   constructor(gateway) {
-    super();
-    this.gateway = gateway;
-    this.ws = new WebSocket(gateway);
-    if (browser) this.ws.binaryType = 'arraybuffer';
-    this.ws.onopen = this.eventOpen.bind(this);
-    this.ws.onclose = this.eventClose.bind(this);
-    this.ws.onmessage = this.eventMessage.bind(this);
-    this.ws.onerror = this.eventError.bind(this);
-  }
-
-  /**
-   * @type {number}
-   */
-  get readyState() {
-    return this.ws.readyState;
-  }
-
-  /**
-   * Close the websocket
-   * @param {number} code Code to close with
-   * @param {string} [reason] Human readable reason
-   */
-  close(code, reason) {
-    this.ws.close(code, reason);
-  }
-
-  /**
-   * Called when the websocket opens
-   */
-  eventOpen() {
-    this.emit('open');
-  }
-
-  /**
-   * Called when the websocket closes
-   * @param {Object} event Close event object
-   */
-  eventClose(event) {
-    this.emit('close', event);
-  }
-
-  /**
-   * Called when the websocket errors
-   * @param {Object} event Error event object
-   */
-  eventError(event) {
-    this.emit('error', event);
+    super(gateway);
+    this.e = new EventEmitter();
+    if (browser) this.binaryType = 'arraybuffer';
+    this.onmessage = this.eventMessage.bind(this);
+    this.onopen = this.e.emit.bind(this.e, 'open');
+    this.onclose = this.e.emit.bind(this.e, 'close');
+    this.onerror = this.e.emit.bind(this.e, 'error');
   }
 
   /**
@@ -83,14 +43,11 @@ class WebSocketConnection extends EventEmitter {
    * @returns {Promise<boolean>}
    */
   eventMessage(event) {
-    if (this.listenerCount('message')) this.emit('message', event);
-    return this.unpack(event.data)
-    .then(data => {
-      this.emit('packet', data);
+    return this.unpack(event.data).then(data => {
+      this.e.emit('packet', data);
       return true;
-    })
-    .catch(err => {
-      if (this.listenerCount('decodeError')) this.emit('decodeError', err);
+    }).catch(err => {
+      if (this.e.listenerCount('decodeError')) this.e.emit('decodeError', err);
       return false;
     });
   }
@@ -100,7 +57,7 @@ class WebSocketConnection extends EventEmitter {
    * @param {string|Buffer} data Data to send
    */
   send(data) {
-    this.ws.send(this.pack(data));
+    super.send(this.pack(data));
   }
 
   /**
@@ -150,12 +107,5 @@ class WebSocketConnection extends EventEmitter {
  * @type {string}
  */
 WebSocketConnection.ENCODING = erlpack ? 'etf' : 'json';
-
-/**
- * WebSocket class exposed for constants
- * @type {Function}
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API}
- */
-WebSocketConnection.WS = WebSocket;
 
 module.exports = WebSocketConnection;
