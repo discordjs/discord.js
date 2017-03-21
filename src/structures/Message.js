@@ -278,7 +278,7 @@ class Message {
   get cleanContent() {
     return this.content
       .replace(/@(everyone|here)/g, '@\u200b$1')
-      .replace(/<@!?[0-9]+>/g, (input) => {
+      .replace(/<@!?[0-9]+>/g, input => {
         const id = input.replace(/<|!|>|@/g, '');
         if (this.channel.type === 'dm' || this.channel.type === 'group') {
           return this.client.users.has(id) ? `@${this.client.users.get(id).username}` : input;
@@ -294,12 +294,12 @@ class Message {
           return input;
         }
       })
-      .replace(/<#[0-9]+>/g, (input) => {
+      .replace(/<#[0-9]+>/g, input => {
         const channel = this.client.channels.get(input.replace(/<|#|>/g, ''));
         if (channel) return `#${channel.name}`;
         return input;
       })
-      .replace(/<@&[0-9]+>/g, (input) => {
+      .replace(/<@&[0-9]+>/g, input => {
         if (this.channel.type === 'dm' || this.channel.type === 'group') return input;
         const role = this.guild.roles.get(input.replace(/<|@|>|&/g, ''));
         if (role) return `@${role.name}`;
@@ -491,6 +491,15 @@ class Message {
       options = {};
     }
     return this.channel.send(content, Object.assign(options, { reply: this.member || this.author }));
+  }
+
+  /**
+   * Marks the message as read
+   * <warn>This is only available when using a user account.</warn>
+   * @returns {Promise<Message>}
+   */
+  acknowledge() {
+    return this.client.rest.methods.ackMessage(this);
   }
 
   /**

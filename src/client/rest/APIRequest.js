@@ -1,14 +1,14 @@
-const Fetcher = require('node-fetcher');
+const fetcher = require('node-fetcher');
 const Constants = require('../../util/Constants');
 
 class APIRequest {
-  constructor(rest, method, url, auth, data, file) {
+  constructor(rest, method, url, auth, data, files) {
     this.rest = rest;
     this.method = method;
     this.url = url;
     this.auth = auth;
     this.data = data;
-    this.file = file;
+    this.files = files;
     this.route = this.getRoute(this.url);
   }
 
@@ -32,11 +32,11 @@ class APIRequest {
   }
 
   gen() {
-    const request = new Fetcher(this.method, this.url);
+    const request = fetcher[this.method](this.url);
     if (this.auth) request.set('Authorization', this.getAuth());
     if (!this.rest.client.browser) request.set('User-Agent', this.rest.userAgentManager.userAgent);
-    if (this.file && this.file.file) {
-      request.attach('file', this.file.file, this.file.name);
+    if (this.files) {
+      for (const file of this.files) if (file && file.file) request.attach(file.name, file.file, file.name);
       if (typeof this.data !== 'undefined') request.attach('payload_json', JSON.stringify(this.data));
     } else if (this.data) {
       request.send(this.data);
