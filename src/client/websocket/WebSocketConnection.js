@@ -20,7 +20,9 @@ const WebSocket = (function findWebSocket() {
   }
 }());
 
-
+/**
+ * Abstracts a WebSocket connection with decoding/encoding for the discord gateway
+ */
 class WebSocketConnection extends EventEmitter {
   /**
    * @param {string} gateway Websocket gateway to connect to
