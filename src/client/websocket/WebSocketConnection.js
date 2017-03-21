@@ -103,7 +103,7 @@ class WebSocketConnection extends WebSocket {
 }
 
 /**
- * The encoding this WebSocket Connection will use
+ * Encoding the WebSocket connections will use
  * @type {string}
  */
 WebSocketConnection.ENCODING = erlpack ? 'etf' : 'json';
