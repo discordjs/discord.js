@@ -1211,10 +1211,10 @@ const Constants = __webpack_require__(0);
 class Permissions {
   /**
    * @param {GuildMember} [member] Member the permissions are for **(deprecated)**
-   * @param {number|PermissionResolvable[]} bitfield Permissions or bitfield to read from
+   * @param {number|PermissionResolvable[]} permissions Permissions or bitfield to read from
    */
-  constructor(member, bitfield) {
-    bitfield = typeof member === 'object' && !(member instanceof Array) ? bitfield : member;
+  constructor(member, permissions) {
+    permissions = typeof member === 'object' && !(member instanceof Array) ? permissions : member;
 
     /**
      * Member the permissions are for
@@ -1227,7 +1227,7 @@ class Permissions {
      * Bitfield of the packed permissions
      * @type {number}
      */
-    this.bitfield = bitfield instanceof Array ? this.constructor.resolve(bitfield) : bitfield;
+    this.bitfield = typeof permissions === 'number' ? permissions : this.constructor.resolve(permissions);
   }
 
   /**
@@ -1352,8 +1352,8 @@ class Permissions {
 
   /**
    * Resolves permissions to their numeric form.
-   * @param {PermissionResolvable|Permissions[]} permission - Permission(s) to resolve
-   * @returns {number|number[]}
+   * @param {PermissionResolvable|PermissionResolvable[]} permission - Permission(s) to resolve
+   * @returns {number}
    */
   static resolve(permission) {
     if (permission instanceof Array) return permission.map(p => this.resolve(p)).reduce((prev, p) => prev | p, 0);
