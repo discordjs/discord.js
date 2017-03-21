@@ -8,9 +8,11 @@ const Constants = require('../util/Constants');
 class Permissions {
   /**
    * @param {GuildMember} [member] Member the permissions are for **(deprecated)**
-   * @param {number} bitfield Permissions bitfield to read from
+   * @param {number|PermissionResolvable[]} bitfield Permissions or bitfield to read from
    */
   constructor(member, bitfield) {
+    bitfield = typeof member === 'object' && !(member instanceof Array) ? bitfield : member;
+
     /**
      * Member the permissions are for
      * @type {GuildMember}
@@ -22,7 +24,7 @@ class Permissions {
      * Bitfield of the packed permissions
      * @type {number}
      */
-    this.bitfield = typeof member === 'object' ? bitfield : member;
+    this.bitfield = bitfield instanceof Array ? this.constructor.resolve(bitfield) : bitfield;
   }
 
   /**
