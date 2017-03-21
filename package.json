@@ -34,8 +34,8 @@
   "dependencies": {
     "@types/node": "^7.0.0",
     "long": "^3.2.0",
-    "node-fetcher": "github:guscaplan/node-fetcher",
     "prism-media": "hydrabolt/prism-media",
+    "snekfetch": "github:guscaplan/snekfetch",
     "tweetnacl": "^0.14.0",
     "ws": "^2.0.0"
   },

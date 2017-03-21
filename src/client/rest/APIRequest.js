@@ -1,4 +1,4 @@
-const fetcher = require('node-fetcher');
+const snekfetch = require('snekfetch');
 const Constants = require('../../util/Constants');
 
 class APIRequest {
@@ -32,7 +32,7 @@ class APIRequest {
   }
 
   gen() {
-    const request = fetcher[this.method](this.url);
+    const request = snekfetch[this.method](this.url);
     if (this.auth) request.set('Authorization', this.getAuth());
     if (!this.rest.client.browser) request.set('User-Agent', this.rest.userAgentManager.userAgent);
     if (this.files) {
