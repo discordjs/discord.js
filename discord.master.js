@@ -16995,6 +16995,11 @@ class RESTMethods {
 
   addMemberRole(member, role) {
     return new Promise(resolve => {
+      if (member._roles.includes(role.id)) {
+        resolve(member);
+        return;
+      }
+
       const listener = (oldMember, newMember) => {
         if (!oldMember._roles.includes(role.id) && newMember._roles.includes(role.id)) {
           this.client.removeListener('guildMemberUpdate', listener);
@@ -17015,6 +17020,11 @@ class RESTMethods {
 
   removeMemberRole(member, role) {
     return new Promise(resolve => {
+      if (!member._roles.includes(role.id)) {
+        resolve(member);
+        return;
+      }
+
       const listener = (oldMember, newMember) => {
         if (oldMember._roles.includes(role.id) && !newMember._roles.includes(role.id)) {
           this.client.removeListener('guildMemberUpdate', listener);
