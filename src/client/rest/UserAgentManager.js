@@ -2,19 +2,18 @@ const Constants = require('../../util/Constants');
 
 class UserAgentManager {
   constructor() {
-    this._override = {};
+    this.build(Object.assign({}, this.constructor.DEFAULT));
   }
 
   set({ url, version } = {}) {
-    this._override.url = url;
-    this._override.version = version;
+    this.build({
+      url: url || this.constructor.DFEAULT.url,
+      version: version || this.constructor.DEFAULT.version,
+    });
   }
-
-  get userAgent() {
-    const default = this.constructor.DEFAULT;
-    const url = this._override.url || default.url;
-    const version = this._override.version || default.version;
-    return `DiscordBot (${url}, ${version}) Node.js/${process.version}`;
+  
+  _build(ua) {
+    this.userAgent = `DiscordBot (${ua.url}, ${ua.version}) Node.js/${process.version}`;
   }
 }
 
