@@ -2,11 +2,11 @@ const Constants = require('../../util/Constants');
 
 class UserAgentManager {
   constructor() {
-    this.build(Object.assign({}, this.constructor.DEFAULT));
+    this._build(Object.assign({}, this.constructor.DEFAULT));
   }
 
   set({ url, version } = {}) {
-    this.build({
+    this._build({
       url: url || this.constructor.DFEAULT.url,
       version: version || this.constructor.DEFAULT.version,
     });
