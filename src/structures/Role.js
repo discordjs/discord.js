@@ -137,11 +137,11 @@ class Role {
    * Get an object mapping permission names to whether or not the role enables that permission
    * @returns {Object<string, boolean>}
    * @example
-   * // print the serialized role
+   * // print the serialized role permissions
    * console.log(role.serialize());
    */
   serialize() {
-    return this.client.resolver.serializePermissions(this.permissions);
+    return new Permissions(this.permissions).serialize();
   }
 
   /**
