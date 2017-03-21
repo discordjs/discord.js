@@ -203,6 +203,7 @@ const Endpoints = exports.Endpoints = {
   guildEmoji: (guildID, emojiID) => `${Endpoints.guildEmojis(guildID)}/${emojiID}`,
   guildSearch: guildID => `${Endpoints.guild(guildID)}/messages/search`,
   guildVoiceRegions: guildID => `${Endpoints.guild(guildID)}/regions`,
+  guildWebhooks: guildID => `${Endpoints.guild(guildID)}/webhooks`,
 
   // Channels
   channels: `${API}/channels`,
