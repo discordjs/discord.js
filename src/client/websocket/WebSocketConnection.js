@@ -43,13 +43,14 @@ class WebSocketConnection extends WebSocket {
    * @returns {Promise<boolean>}
    */
   eventMessage(event) {
-    return this.unpack(event.data).then(data => {
+    try {
+      const data = this.unpack(event.data);
       this.e.emit('packet', data);
       return true;
-    }).catch(err => {
+    } catch (err) {
       if (this.e.listenerCount('decodeError')) this.e.emit('decodeError', err);
       return false;
-    });
+    }
   }
 
   /**
@@ -77,12 +78,10 @@ class WebSocketConnection extends WebSocket {
   unpack(data) {
     if (erlpack && typeof data !== 'string') {
       if (data instanceof ArrayBuffer) data = Buffer.from(new Uint8Array(data));
-      return Promise.resolve(erlpack.unpack(data));
+      return erlpack.unpack(data);
     } else {
-      if (data instanceof ArrayBuffer || data instanceof Buffer) {
-        return this.inflate(data).then(JSON.parse);
-      }
-      return Promise.resolve(JSON.parse(data));
+      if (data instanceof ArrayBuffer || data instanceof Buffer) data = this.inflate(data);
+      return JSON.parse(data);
     }
   }
 
@@ -92,13 +91,7 @@ class WebSocketConnection extends WebSocket {
    * @returns {string|Buffer}
    */
   inflate(data) {
-    if (erlpack) return Promise.resolve(data);
-    return new Promise((resolve, reject) => {
-      zlib.inflate(data, (err, res) => {
-        if (err) reject(err);
-        else resolve(res.toString());
-      });
-    });
+    return erlpack ? data : zlib.inflateSync(data).toString();
   }
 }
 
