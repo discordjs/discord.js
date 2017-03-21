@@ -2,7 +2,7 @@ const Constants = require('../../util/Constants');
 
 class UserAgentManager {
   constructor() {
-    this.build(Object.assign({}, this.constructor.DEFAULT));
+    this.build(this.constructor.DEFAULT);
   }
 
   set({ url, version } = {}) {
@@ -11,7 +11,7 @@ class UserAgentManager {
       version: version || this.constructor.DEFAULT.version,
     });
   }
-  
+
   build(ua) {
     this.userAgent = `DiscordBot (${ua.url}, ${ua.version}) Node.js/${process.version}`;
   }
