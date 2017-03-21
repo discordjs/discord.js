@@ -86,7 +86,6 @@ class WebSocketConnection extends EventEmitter {
     if (this.listenerCount('message')) this.emit('message', event);
     return this.unpack(event.data)
     .then(data => {
-      if (this.ws.readyState !== this.ws.OPEN) return false;
       this.emit('packet', data);
       return true;
     })
@@ -144,20 +143,19 @@ class WebSocketConnection extends EventEmitter {
       });
     });
   }
-
-  /**
-   * The encoding this connection will use
-   * @type {string}
-   * @static
-   */
-  static get encoding() {
-    return erlpack ? 'etf' : 'json';
-  }
 }
 
-WebSocketConnection.CONNECTING = 0;
-WebSocketConnection.OPEN = 1;
-WebSocketConnection.CLOSING = 2;
-WebSocketConnection.CLOSED = 3;
+/**
+ * The encoding this WebSocket Connection will use
+ * @type {string}
+ */
+WebSocketConnection.ENCODING = erlpack ? 'etf' : 'json';
+
+/**
+ * WebSocket class exposed for constants
+ * @type {Function}
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API}
+ */
+WebSocketConnection.WS = WebSocket;
 
 module.exports = WebSocketConnection;

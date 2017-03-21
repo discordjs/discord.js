@@ -137,7 +137,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   _send(data) {
-    if (this.ws.readyState === WebSocketConnection.OPEN) {
+    if (this.ws.readyState === WebSocketConnection.WS.OPEN) {
       this.emit('send', data);
       this.ws.send(data);
     }
@@ -145,7 +145,7 @@ class WebSocketManager extends EventEmitter {
 
   doQueue() {
     const item = this._queue[0];
-    if (!(this.ws.readyState === WebSocketConnection.OPEN && item)) return;
+    if (!(this.ws.readyState === WebSocketConnection.WS.OPEN && item)) return;
     if (this.remaining === 0) {
       this.client.setTimeout(this.doQueue.bind(this), Date.now() - this.remainingReset);
       return;
