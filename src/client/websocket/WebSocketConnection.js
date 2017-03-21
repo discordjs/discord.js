@@ -22,6 +22,7 @@ const WebSocket = (function findWebSocket() {
 
 /**
  * Abstracts a WebSocket connection with decoding/encoding for the discord gateway
+ * @private
  */
 class WebSocketConnection extends WebSocket {
   /**
