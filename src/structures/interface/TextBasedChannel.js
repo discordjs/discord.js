@@ -181,7 +181,7 @@ class TextBasedChannel {
 
   /**
    * Gets a single message from this channel, regardless of it being cached or not.
-   * When not using a bot account, it will use fetchMessages to fetch the message ID instead.
+   * When using a user account, this abstracts {@link #fetchMessages} to obtain the single message.
    * @param {Snowflake} messageID ID of the message to get
    * @returns {Promise<Message>}
    * @example
@@ -192,12 +192,10 @@ class TextBasedChannel {
    */
   fetchMessage(messageID) {
     if (!this.client.user.bot) {
-      return new Promise((resolve, reject) => {
-        this.fetchMessages({ limit: 1, around: messageID }).then(messageCol => {
-          const message = messageCol.first();
-          if (message.id !== messageID) return reject(new Error('Error: Not Found'));
-          return resolve(message);
-        }).catch(reject);
+      return this.fetchMessages({ limit: 1, around: messageID }).then(messages => {
+        const msg = messages.first();
+        if (msg.id !== messageID) throw new Error('Message not found.');
+        return msg;
       });
     }
     return this.client.rest.methods.getChannelMessage(this, messageID).then(data => {
