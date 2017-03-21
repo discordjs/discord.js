@@ -63,7 +63,7 @@ class RESTMethods {
       // The nonce has to be a uint64 :<
       if (typeof nonce !== 'undefined') {
         nonce = parseInt(nonce);
-        if (isNaN(nonce) || nonce < 0) throw new Error('Nonce must be a unsigned 64 bit integer');
+        if (isNaN(nonce) || nonce < 0) throw new RangeError('Message nonce must fit in an unsigned 64-bit integer.');
       }
 
       if (content) {
