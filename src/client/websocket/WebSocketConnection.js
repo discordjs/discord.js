@@ -146,16 +146,16 @@ class WebSocketConnection extends EventEmitter {
 }
 
 /**
- * The encoding this WebSocket Connection will use
- * @type {string}
- */
-WebSocketConnection.ENCODING = erlpack ? 'etf' : 'json';
-
-/**
  * WebSocket implementation being used
  * @type {Function}
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API}
  */
 WebSocketConnection.WS = WebSocket;
+
+/**
+ * Encoding the WebSocket connections will use
+ * @type {string}
+ */
+WebSocketConnection.ENCODING = erlpack ? 'etf' : 'json';
 
 module.exports = WebSocketConnection;
