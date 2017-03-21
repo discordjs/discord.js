@@ -2,10 +2,6 @@ const Constants = require('../../util/Constants');
 
 class UserAgentManager {
   constructor() {
-    this._default = {
-      url: Constants.Package.homepage.split('#')[0],
-      version: Constants.Package.version,
-    };
     this._override = {};
   }
 
@@ -15,10 +11,16 @@ class UserAgentManager {
   }
 
   get userAgent() {
-    const url = this._override.url || this._default.url;
-    const version = this._override.version || this._default.version;
+    const default = this.constructor.DEFAULT;
+    const url = this._override.url || default.url;
+    const version = this._override.version || default.version;
     return `DiscordBot (${url}, ${version}) Node.js/${process.version}`;
   }
 }
+
+UserAgentManager.DEFAULT = {
+  url: Constants.Package.homepage.split('#')[0],
+  version: Constants.Package.version,
+};
 
 module.exports = UserAgentManager;
