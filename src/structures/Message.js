@@ -130,14 +130,13 @@ class Message {
 
     for (const mention of data.mentions) {
       let user = this.client.users.get(mention.id);
-      if (!user) {
-        user = this.client.dataManager.newUser(mention);
-      }
+      if (!user) user = this.client.dataManager.newUser(mention);
       this.mentions.users.set(user.id, user);
     }
 
     Object.defineProperty(this.mentions, 'members', {
       get: () => {
+        if (this.channel.type !== 'text') return null;
         const memberMentions = new Collection();
         for (const mention of this.mentions.users.values()) {
           const member = this.client.resolver.resolveGuildMember(this.guild, mention);
