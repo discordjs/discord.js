@@ -137,12 +137,12 @@ class Message {
     Object.defineProperty(this.mentions, 'members', {
       get: () => {
         if (this.channel.type !== 'text') return null;
-        const memberMentions = new Collection();
-        for (const mention of this.mentions.users.values()) {
-          const member = this.client.resolver.resolveGuildMember(this.guild, mention);
-          if (member) memberMentions.set(member.id, member);
-        }
-        return memberMentions;
+        const members = new Collection();
+        this.mentions.users.forEach(user => {
+          const member = this.client.resolver.resolveGuildMember(this.guild, user);
+          if (member) members.set(member.id, member);
+        });
+        return members;
       },
     });
 
