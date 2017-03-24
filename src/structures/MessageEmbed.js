@@ -375,7 +375,7 @@ class MessageEmbedFooter {
 
 MessageEmbed.Thumbnail = MessageEmbedThumbnail;
 MessageEmbed.Image = MessageEmbedImage;
-MessageEmbed.Video = MessageEmbed.Video;
+MessageEmbed.Video = MessageEmbedVideo;
 MessageEmbed.Provider = MessageEmbedProvider;
 MessageEmbed.Author = MessageEmbedAuthor;
 MessageEmbed.Field = MessageEmbedField;
