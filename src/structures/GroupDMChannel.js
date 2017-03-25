@@ -160,23 +160,26 @@ class GroupDMChannel extends Channel {
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  send() { return; }
-  sendMessage() { return; }
-  sendEmbed() { return; }
-  sendFile() { return; }
-  sendCode() { return; }
-  fetchMessage() { return; }
-  fetchMessages() { return; }
-  fetchPinnedMessages() { return; }
-  search() { return; }
-  startTyping() { return; }
-  stopTyping() { return; }
-  get typing() { return; }
-  get typingCount() { return; }
-  createCollector() { return; }
-  awaitMessages() { return; }
-  // doesn't work on group DMs; bulkDelete() { return; }
-  _cacheMessage() { return; }
+  /* eslint-disable no-empty-function */
+  send() {}
+  sendMessage() {}
+  sendEmbed() {}
+  sendFile() {}
+  sendFiles() {}
+  sendCode() {}
+  fetchMessage() {}
+  fetchMessages() {}
+  fetchPinnedMessages() {}
+  search() {}
+  startTyping() {}
+  stopTyping() {}
+  get typing() {}
+  get typingCount() {}
+  createCollector() {}
+  awaitMessages() {}
+  // Doesn't work on group DMs; bulkDelete() {}
+  acknowledge() {}
+  _cacheMessage() {}
 }
 
 TextBasedChannel.applyToClass(GroupDMChannel, true, ['bulkDelete']);

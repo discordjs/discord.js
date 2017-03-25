@@ -1,6 +1,6 @@
 const AbstractHandler = require('./AbstractHandler');
 const Constants = require('../../../../util/Constants');
-// uncomment in v12
+// Uncomment in v12
 // const Collection = require('../../../../util/Collection');
 
 class GuildMembersChunkHandler extends AbstractHandler {
@@ -10,7 +10,7 @@ class GuildMembersChunkHandler extends AbstractHandler {
     const guild = client.guilds.get(data.guild_id);
     if (!guild) return;
 
-    // uncomment in v12
+    // Uncomment in v12
     // const members = new Collection();
     //
     // for (const member of data.members) members.set(member.id, guild._addMember(member, false));

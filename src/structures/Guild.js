@@ -379,7 +379,7 @@ class Guild {
   fetchMembers(query = '', limit = 0) {
     return new Promise((resolve, reject) => {
       if (this.memberCount === this.members.size) {
-        // uncomment in v12
+        // Uncomment in v12
         // resolve(this.members)
         resolve(this);
         return;
@@ -396,10 +396,9 @@ class Guild {
         if (guild.id !== this.id) return;
         if (this.memberCount === this.members.size || members.length < 1000) {
           this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
-          // uncomment in v12
+          // Uncomment in v12
           // resolve(this.members)
           resolve(this);
-          return;
         }
       };
       this.client.on(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
@@ -776,6 +775,15 @@ class Guild {
    */
   delete() {
     return this.client.rest.methods.deleteGuild(this);
+  }
+
+  /**
+   * Marks all messages in this guild as read
+   * <warn>This is only available when using a user account.</warn>
+   * @returns {Promise<Guild>} this guild
+   */
+  acknowledge() {
+    return this.client.rest.methods.ackGuild(this);
   }
 
   /**

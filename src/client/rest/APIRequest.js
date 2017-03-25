@@ -2,14 +2,14 @@ const request = require('superagent');
 const Constants = require('../../util/Constants');
 
 class APIRequest {
-  constructor(rest, method, url, auth, data, file, forceBot = false) {
+  constructor(rest, method, url, auth, data, files, forceBot = false) {
     this.client = rest.client;
     this.rest = rest;
     this.method = method;
     this.url = url;
     this.auth = auth;
     this.data = data;
-    this.file = file;
+    this.files = files;
     this.route = this.getRoute(this.url);
     this.forceBot = forceBot;
   }
@@ -39,8 +39,8 @@ class APIRequest {
   gen() {
     const apiRequest = request[this.method](this.url);
     if (this.auth) apiRequest.set('authorization', this.getAuth());
-    if (this.file && this.file.file) {
-      apiRequest.attach('file', this.file.file, this.file.name);
+    if (this.files) {
+      for (const file of this.files) if (file && file.file) apiRequest.attach(file.name, file.file, file.name);
       this.data = this.data || {};
       apiRequest.field('payload_json', JSON.stringify(this.data));
     } else if (this.data) {

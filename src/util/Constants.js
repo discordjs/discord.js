@@ -82,7 +82,7 @@ const PROTOCOL_VERSION = exports.PROTOCOL_VERSION = 6;
 const HOST = exports.HOST = 'https://discordapp.com';
 const API = exports.API = `${HOST}/api/v${PROTOCOL_VERSION}`;
 const Endpoints = exports.Endpoints = {
-  // general
+  // General
   login: `${API}/auth/login`,
   logout: `${API}/auth/logout`,
   gateway: bot => `${API}/gateway${bot ? '/bot' : ''}`,
@@ -92,7 +92,7 @@ const Endpoints = exports.Endpoints = {
   assets: asset => `${HOST}/assets/${asset}`,
   CDN: 'https://cdn.discordapp.com',
 
-  // users
+  // Users
   user: userID => `${API}/users/${userID}`,
   userChannels: userID => `${Endpoints.user(userID)}/channels`,
   userProfile: userID => `${Endpoints.user(userID)}/profile`,
@@ -110,7 +110,7 @@ const Endpoints = exports.Endpoints = {
 
   voiceRegions: `${API}/voice/regions`,
 
-  // guilds
+  // Guilds
   guilds: `${API}/guilds`,
   guild: guildID => `${Endpoints.guilds}/${guildID}`,
   guildIcon: (guildID, hash) => `${Endpoints.CDN}/icons/${guildID}/${hash}.jpg`,
@@ -131,8 +131,9 @@ const Endpoints = exports.Endpoints = {
   guildEmoji: (guildID, emojiID) => `${Endpoints.guildEmojis(guildID)}/${emojiID}`,
   guildSearch: guildID => `${Endpoints.guild(guildID)}/messages/search`,
   guildVoiceRegions: guildID => `${Endpoints.guild(guildID)}/regions`,
+  guildWebhooks: guildID => `${Endpoints.guild(guildID)}/webhooks`,
 
-  // channels
+  // Channels
   channels: `${API}/channels`,
   channel: channelID => `${Endpoints.channels}/${channelID}`,
   channelMessages: channelID => `${Endpoints.channel(channelID)}/messages`,
@@ -145,7 +146,7 @@ const Endpoints = exports.Endpoints = {
 
   dmChannelRecipient: (channelID, recipientID) => `${Endpoints.channel(channelID)}/recipients/${recipientID}`,
 
-  // message reactions
+  // Message reactions
   messageReactions: (channelID, messageID) => `${Endpoints.channelMessage(channelID, messageID)}/reactions`,
   messageReaction:
     (channel, msg, emoji, limit) =>
@@ -156,14 +157,14 @@ const Endpoints = exports.Endpoints = {
   userMessageReaction: (channel, msg, emoji, limit, id) =>
           `${Endpoints.messageReaction(channel, msg, emoji, limit)}/${id}`,
 
-  // webhooks
+  // Webhooks
   webhook: (webhookID, token) => `${API}/webhooks/${webhookID}${token ? `/${token}` : ''}`,
 
-  // oauth
+  // OAuth
   oauth2Application: appID => `${API}/oauth2/applications/${appID}`,
   getApp: id => `${API}/oauth2/authorize?client_id=${id}`,
 
-  // emoji
+  // Emoji
   emoji: emojiID => `${Endpoints.CDN}/emojis/${emojiID}.png`,
 };
 

@@ -280,11 +280,12 @@ class User {
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  send() { return; }
-  sendMessage() { return; }
-  sendEmbed() { return; }
-  sendFile() { return; }
-  sendCode() { return; }
+  /* eslint-disable no-empty-function */
+  send() {}
+  sendMessage() {}
+  sendEmbed() {}
+  sendFile() {}
+  sendCode() {}
 }
 
 TextBasedChannel.applyToClass(User);

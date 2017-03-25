@@ -11,9 +11,7 @@ class BaseOpus {
     return buffer;
   }
 
-  destroy() {
-    return;
-  }
+  destroy() {} // eslint-disable-line no-empty-function
 }
 
 module.exports = BaseOpus;

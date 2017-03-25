@@ -23,6 +23,7 @@ class RESTMethods {
   constructor(restManager) {
     this.rest = restManager;
     this.client = restManager.client;
+    this._ackToken = null;
   }
 
   login(token = this.client.token) {
@@ -50,9 +51,15 @@ class RESTMethods {
     });
   }
 
-  sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code, reply } = {}, file = null) {
+  sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code, reply } = {}, files = null) {
     return new Promise((resolve, reject) => { // eslint-disable-line complexity
       if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
+
+      // The nonce has to be a uint64 :<
+      if (typeof nonce !== 'undefined') {
+        nonce = parseInt(nonce);
+        if (isNaN(nonce) || nonce < 0) throw new RangeError('Message nonce must fit in an unsigned 64-bit integer.');
+      }
 
       if (content) {
         if (split && typeof split !== 'object') split = {};
@@ -92,7 +99,7 @@ class RESTMethods {
           const messages = [];
           (function sendChunk(list, index) {
             const options = index === list.length ? { tts, embed } : { tts };
-            chan.send(list[index], options, index === list.length ? file : null).then(message => {
+            chan.send(list[index], options, index === list.length ? files : null).then(message => {
               messages.push(message);
               if (index >= list.length - 1) return resolve(messages);
               return sendChunk(list, ++index);
@@ -101,7 +108,7 @@ class RESTMethods {
         } else {
           this.rest.makeRequest('post', Constants.Endpoints.channelMessages(chan.id), true, {
             content, tts, nonce, embed,
-          }, file).then(data => resolve(this.client.actions.MessageCreate.handle(data).message), reject);
+          }, files).then(data => resolve(this.client.actions.MessageCreate.handle(data).message), reject);
         }
       };
 
@@ -142,6 +149,33 @@ class RESTMethods {
           channel_id: message.channel.id,
         }).message
       );
+  }
+
+  ackMessage(message) {
+    return this.rest.makeRequest('post',
+      `${Constants.Endpoints.channelMessage(message.channel.id, message.id)}/ack`,
+      true,
+      { token: this._ackToken }
+    ).then(res => {
+      this._ackToken = res.token;
+      return message;
+    });
+  }
+
+  ackTextChannel(channel) {
+    return this.rest.makeRequest('post',
+      `${Constants.Endpoints.channel(channel.id)}/ack`,
+      true,
+      { token: this._ackToken }
+    ).then(res => {
+      this._ackToken = res.token;
+      return channel;
+    });
+  }
+
+  ackGuild(guild) {
+    return this.rest.makeRequest('post', `${Constants.Endpoints.guild(guild.id)}/ack`, true)
+    .then(() => guild);
   }
 
   bulkDeleteMessages(channel, messages, filterOld) {
@@ -319,7 +353,7 @@ class RESTMethods {
     });
   }
 
-  // untested but probably will work
+  // Untested but probably will work
   deleteGuild(guild) {
     return this.rest.makeRequest('del', Constants.Endpoints.guild(guild.id), true).then(() =>
       this.client.actions.GuildDelete.handle({ id: guild.id }).guild
@@ -451,7 +485,7 @@ class RESTMethods {
     if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
 
     let endpoint = Constants.Endpoints.guildMember(member.guild.id, member.id);
-    // fix your endpoints, discord ;-;
+    // Fix your endpoints, discord ;-;
     if (member.id === this.client.user.id) {
       const keys = Object.keys(data);
       if (keys.length === 1 && keys[0] === 'nick') {
@@ -466,6 +500,11 @@ class RESTMethods {
 
   addMemberRole(member, role) {
     return new Promise(resolve => {
+      if (member._roles.includes(role.id)) {
+        resolve(member);
+        return;
+      }
+
       const listener = (oldMember, newMember) => {
         if (!oldMember._roles.includes(role.id) && newMember._roles.includes(role.id)) {
           this.client.removeListener('guildMemberUpdate', listener);
@@ -486,6 +525,11 @@ class RESTMethods {
 
   removeMemberRole(member, role) {
     return new Promise(resolve => {
+      if (!member._roles.includes(role.id)) {
+        resolve(member);
+        return;
+      }
+
       const listener = (oldMember, newMember) => {
         if (oldMember._roles.includes(role.id) && !newMember._roles.includes(role.id)) {
           this.client.removeListener('guildMemberUpdate', listener);
