@@ -926,10 +926,19 @@ class Guild {
     return this.client.rest.methods.setChannelPositions(this.id, updatedChannels);
   }
 
+  /**
+   * Fetches a collection of roles in the current guild sorted by position.
+   * @returns {Collection<Snowflake, Role>}
+   */
   _sortedRoles() {
     return this._sortPositionWithID(this.roles);
   }
 
+  /**
+   * Fetches a collection of channels in the current guild sorted by position.
+   * @param {string} type Channel type
+   * @returns {Collection<Snowflake, GuildChannel>}
+   */
   _sortedChannels(type) {
     return this._sortPositionWithID(this.channels.filter(c => {
       if (type === 'voice' && c.type === 'voice') return true;
@@ -938,6 +947,12 @@ class Guild {
     }));
   }
 
+  /**
+   * Sorts a collection by object position or ID if the positions are equivalent.
+   * Intended to be identical to Discord's sorting method.
+   * @param {Collection} collection The collection to sort
+   * @returns {Collection}
+   */
   _sortPositionWithID(collection) {
     return collection.sort((a, b) =>
       a.position !== b.position ?
