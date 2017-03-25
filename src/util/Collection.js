@@ -370,6 +370,60 @@ class Collection extends Map {
       return testVal !== value || (testVal === undefined && !collection.has(key));
     });
   }
+
+  /**
+   * Sort a collection based on a function given
+   * @param {Function} fn Function used for comparing two objects
+   * @returns {Collection}
+   */
+  sort(fn) {
+    if (typeof fn !== 'function') {
+      throw new TypeError('Argument must be a function.');
+    }
+    if (this.size < 2) {
+      return this;
+    }
+
+    function merge(left, right) {
+      let merged = new Collection();
+      let leftkeys = left.keys();
+      let rightkeys = right.keys();
+      let lv, rv, templeft = leftkeys, tempright = rightkeys;
+      while ((lv = templeft.value) && (rv = tempright.value)) {
+        if (fn(left.get(lv), right.get(rv)) <= 0) {
+          merged.set(lv, left.get(lv));
+          templeft = templeft.next();
+        } else {
+          merged.set(rv, right.get(rv));
+          tempright = tempright.next();
+        }
+      }
+      while ((lv = leftkeys.next().value)) {
+        merged.set(lv, left.get(lv));
+      }
+      while ((rv = rightkeys.next().value)) {
+        merged.set(rv, right.get(rv));
+      }
+      return merged;
+    }
+
+    let c1 = new Collection();
+    let c2 = new Collection();
+    let center = (this.size / 2) << 0;
+    let num = 0;
+    let keys = this.keys();
+    let nextThing;
+    while (num < center && (nextThing = keys.next().value)) {
+      c1.set(nextThing, this.get(nextThing));
+      num++;
+    }
+    while (num < this.size && (nextThing = keys.next().value)) {
+      c2.set(nextThing, this.get(nextThing));
+      num++;
+    }
+    return merge(c1.sort(fn), c2.sort(fn));
+  }
+
 }
 
 module.exports = Collection;
