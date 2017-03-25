@@ -20,91 +20,86 @@ const WebSocket = (function findWebSocket() {
   }
 }());
 
-
-class WebSocketConnection extends EventEmitter {
+/**
+ * Abstracts a WebSocket connection with decoding/encoding for the discord gateway
+ * @private
+ */
+class WebSocketConnection extends WebSocket {
+  /**
+   * @param {string} gateway Websocket gateway to connect to
+   */
   constructor(gateway) {
-    super();
-    this.gateway = gateway;
-    this.ws = new WebSocket(gateway);
-    if (browser) this.ws.binaryType = 'arraybuffer';
-    this.ws.onopen = this.eventOpen.bind(this);
-    this.ws.onclose = this.eventClose.bind(this);
-    this.ws.onmessage = this.eventMessage.bind(this);
-    this.ws.onerror = this.eventError.bind(this);
+    super(gateway);
+    this.e = new EventEmitter();
+    if (browser) this.binaryType = 'arraybuffer';
+    this.onmessage = this.eventMessage.bind(this);
+    this.onopen = this.e.emit.bind(this.e, 'open');
+    this.onclose = this.e.emit.bind(this.e, 'close');
+    this.onerror = this.e.emit.bind(this.e, 'error');
   }
 
-  get readyState() {
-    return this.ws.readyState;
-  }
-
-  close(code, reason) {
-    return this.ws.close(code, reason);
-  }
-
-  eventOpen() {
-    this.emit('open');
-  }
-
-  eventClose(event) {
-    this.emit('close', event);
-  }
-
-  eventError(event) {
-    this.emit('error', event);
-  }
-
+  /**
+   * Called when the websocket gets a message
+   * @param {Object} event Close event object
+   * @returns {Promise<boolean>}
+   */
   eventMessage(event) {
-    if (this.listenerCount('message')) this.emit('message', event);
-    return this.unpack(event.data)
-    .then(data => {
-      if (this.ws.readyState !== this.ws.OPEN) return false;
-      this.emit('packet', data);
+    try {
+      const data = this.unpack(event.data);
+      this.e.emit('packet', data);
       return true;
-    })
-    .catch(err => {
-      if (this.listenerCount('decodeError')) this.emit('decodeError', err);
+    } catch (err) {
+      if (this.e.listenerCount('decodeError')) this.e.emit('decodeError', err);
       return false;
-    });
+    }
   }
 
+  /**
+   * Send data over the websocket
+   * @param {string|Buffer} data Data to send
+   */
   send(data) {
-    return this.ws.send(this.pack(data));
+    super.send(this.pack(data));
   }
 
+  /**
+   * Pack data using JSON or Erlpack
+   * @param {*} data Data to pack
+   * @returns {string|Buffer}
+   */
   pack(data) {
     return erlpack ? erlpack.pack(data) : JSON.stringify(data);
   }
 
+  /**
+   * Unpack data using JSON or Erlpack
+   * @param {string|ArrayBuffer|Buffer} data Data to unpack
+   * @returns {string|Object}
+   */
   unpack(data) {
     if (erlpack && typeof data !== 'string') {
       if (data instanceof ArrayBuffer) data = Buffer.from(new Uint8Array(data));
-      return Promise.resolve(erlpack.unpack(data));
+      return erlpack.unpack(data);
     } else {
-      if (data instanceof ArrayBuffer || data instanceof Buffer) {
-        return this.inflate(data).then(JSON.parse);
-      }
-      return Promise.resolve(JSON.parse(data));
+      if (data instanceof ArrayBuffer || data instanceof Buffer) data = this.inflate(data);
+      return JSON.parse(data);
     }
   }
 
+  /**
+   * Zlib inflate data
+   * @param {string|Buffer} data Data to inflate
+   * @returns {string|Buffer}
+   */
   inflate(data) {
-    if (erlpack) return Promise.resolve(data);
-    return new Promise((resolve, reject) => {
-      zlib.inflate(data, (err, res) => {
-        if (err) reject(err);
-        else resolve(res.toString());
-      });
-    });
-  }
-
-  static get encoding() {
-    return erlpack ? 'etf' : 'json';
+    return erlpack ? data : zlib.inflateSync(data).toString();
   }
 }
 
-WebSocketConnection.CONNECTING = 0;
-WebSocketConnection.OPEN = 1;
-WebSocketConnection.CLOSING = 2;
-WebSocketConnection.CLOSED = 3;
+/**
+ * Encoding the WebSocket connections will use
+ * @type {string}
+ */
+WebSocketConnection.ENCODING = erlpack ? 'etf' : 'json';
 
 module.exports = WebSocketConnection;

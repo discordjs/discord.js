@@ -10,7 +10,7 @@ class GuildCreateHandler extends AbstractHandler {
       if (!guild.available && !data.unavailable) {
         // a newly available guild
         guild.setup(data);
-        client.ws.managers.get(packet.shardID).checkIfReady();
+        packet.shard.checkIfReady();
       }
     } else {
       // a new guild

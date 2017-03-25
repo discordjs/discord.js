@@ -75,11 +75,7 @@ class WebSocketPacketManager {
   }
 
   handle(packet) {
-    const ws = this.ws.managers.get(packet.shardID);
-
-    this.client.emit('raw', packet, ws.shardID);
-
-    if (packet.d) packet.d.shardID = packet.shardID;
+    const ws = packet.shard;
 
     if (ws.status === Constants.Status.RECONNECTING) ws.checkIfReady();
 
@@ -92,11 +88,10 @@ class WebSocketPacketManager {
       ws.emit('debug', `Invalid session! Should wait: ${packet.d}`);
       if (packet.d) {
         setTimeout(() => {
-          ws.sendResume();
+          ws.identify(false);
         }, 2500);
       } else {
-        ws.sessionID = null;
-        ws.sendNewIdentify();
+        ws.identify(true);
       }
       return false;
     }

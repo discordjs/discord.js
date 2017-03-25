@@ -96,9 +96,9 @@ class GroupDMChannel extends Channel {
     /**
      * The shard to which this channel belongs.
      * At the moment, Discord always assigns DMs to shard 0
-     * @type {?Number}
+     * @type {websocketShard}
      */
-    this.shardID = data.shardID;
+    this.shard = data.shard;
   }
 
   /**

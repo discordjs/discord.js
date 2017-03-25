@@ -1,4 +1,5 @@
 const Constants = require('../util/Constants');
+const WebSocketConnection = require('./websocket/WebSocketConnection');
 
 /**
  * Manages the State and Background Tasks of the Client
@@ -23,7 +24,7 @@ class ClientManager {
     this.client.emit(Constants.Events.DEBUG, `Authenticated using token ${token}`);
     this.client.token = token;
     this.client.rest.methods.getGateway(this.client.options.shardCount === 'auto').then(res => {
-      const gateway = `${res.url}/?v=${Constants.PROTOCOL_VERSION}&encoding=${this.client.ws.encoding}`;
+      const gateway = `${res.url}/?v=${Constants.PROTOCOL_VERSION}&encoding=${WebSocketConnection.ENCODING}`;
       this.client.emit(Constants.Events.DEBUG, `Using gateway ${gateway}`);
       if (res.shards) {
         this.client.options.shardCount = res.shards;

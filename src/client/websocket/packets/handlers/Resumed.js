@@ -3,7 +3,7 @@ const AbstractHandler = require('./AbstractHandler');
 class ResumedHandler extends AbstractHandler {
   handle(packet) {
     const client = this.packetManager.client;
-    const ws = client.ws.managers.get(packet.shardID);
+    const ws = packet.shard;
 
     ws._trace = packet.d._trace;
 
@@ -11,7 +11,7 @@ class ResumedHandler extends AbstractHandler {
     ws.resumeStart = -1;
 
     ws.emit('debug', `Resumed ${ws._trace.join(' -> ')} | replayed ${replayed} events. `);
-    client.emit('resume', replayed, ws.shardID);
+    client.emit('resume', replayed, ws.id);
 
     ws.heartbeat();
   }

@@ -14,15 +14,15 @@ class ClientDataManager {
     this.client = client;
   }
 
-  pastReady(shardID) {
-    return this.client.ws.managers.get(shardID).status === Constants.Status.READY;
+  pastReady(shard) {
+    return shard.status === Constants.Status.READY;
   }
 
   newGuild(data) {
     const already = this.client.guilds.has(data.id);
     const guild = new Guild(this.client, data);
     this.client.guilds.set(guild.id, guild);
-    if (this.pastReady(data.shardID) && !already) {
+    if (this.pastReady(data.shard) && !already) {
       /**
        * Emitted whenever the client joins a guild.
        * @event Client#guildCreate
@@ -66,7 +66,7 @@ class ClientDataManager {
     }
 
     if (channel) {
-      if ((force || this.pastReady(guild ? guild.shardID : data.shardID)) && !already) {
+      if ((force || this.pastReady(guild ? guild.shard : data.shard)) && !already) {
         this.client.emit(Constants.Events.CHANNEL_CREATE, channel);
       }
       this.client.channels.set(channel.id, channel);
@@ -99,7 +99,7 @@ class ClientDataManager {
   killGuild(guild) {
     const already = this.client.guilds.has(guild.id);
     this.client.guilds.delete(guild.id);
-    if (already && this.pastReady(guild.shardID)) this.client.emit(Constants.Events.GUILD_DELETE, guild);
+    if (already && this.pastReady(guild.shard)) this.client.emit(Constants.Events.GUILD_DELETE, guild);
   }
 
   killUser(user) {
@@ -114,7 +114,7 @@ class ClientDataManager {
   updateGuild(currentGuild, newData) {
     const oldGuild = Util.cloneObject(currentGuild);
     currentGuild.setup(newData);
-    if (this.pastReady(newData.shardID)) this.client.emit(Constants.Events.GUILD_UPDATE, oldGuild, currentGuild);
+    if (this.pastReady(newData.shard)) this.client.emit(Constants.Events.GUILD_UPDATE, oldGuild, currentGuild);
   }
 
   updateChannel(currentChannel, newData) {

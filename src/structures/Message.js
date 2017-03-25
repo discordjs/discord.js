@@ -244,10 +244,10 @@ class Message {
 
   /**
    * The shard to which this message belongs
-   * @type {?number}
+   * @type {WebSocketShard}
    */
-  get shardID() {
-    return this.channel.guild ? this.channel.guild.shardID : this.channel.shardID;
+  get shard() {
+    return this.channel.guild ? this.channel.guild.shard : this.channel.shard;
   }
 
   /**

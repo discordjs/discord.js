@@ -361,6 +361,15 @@ class Client extends EventEmitter {
   }
 
   /**
+   * Get a shard
+   * @param {number} id ID of the shard
+   * @returns {?WebSocketShard}
+   */
+  shard(id) {
+    return this.ws.managers.get(id);
+  }
+
+  /**
    * Sets a timeout that will be automatically cancelled if the client is destroyed.
    * @param {Function} fn Function to execute
    * @param {number} delay Time to wait before executing (in milliseconds)

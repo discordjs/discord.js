@@ -7,7 +7,7 @@ class ReadyHandler extends AbstractHandler {
   handle(packet) {
     const client = this.packetManager.client;
     const data = packet.d;
-    const ws = client.ws.managers.get(packet.shardID);
+    const ws = packet.shard;
 
     ws.emit('ready');
 
@@ -20,11 +20,12 @@ class ReadyHandler extends AbstractHandler {
     client.users.set(clientUser.id, clientUser);
 
     for (const guild of data.guilds) {
-      guild.shardID = packet.shardID;
+      guild.shard = packet.shard;
       client.dataManager.newGuild(guild);
     }
+
     for (const privateDM of data.private_channels) {
-      privateDM.shardID = data.shardID;
+      privateDM.shard = data.shard;
       client.dataManager.newChannel(privateDM);
     }
 
@@ -75,7 +76,7 @@ class ReadyHandler extends AbstractHandler {
 
     ws.sessionID = data.session_id;
     ws._trace = data._trace;
-    ws.emit('debug', `Ready ${ws._trace.join(' -> ')} ${ws.sessionID}`);
+    ws.emit('debug', `READY ${ws._trace.join(' -> ')} ${ws.sessionID}`);
     ws.checkIfReady();
   }
 }

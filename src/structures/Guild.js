@@ -49,9 +49,9 @@ class Guild {
 
     /**
      * The shard to which this guilds belongs
-     * @type {?Number}
+     * @type {WebSocketShard}
      */
-    this.shardID = data.shardID;
+    this.shard = data.shard;
 
     if (!data) return;
     if (data.unavailable) {
@@ -384,7 +384,7 @@ class Guild {
         resolve(this);
         return;
       }
-      this.client.ws.managers.get(this.shardID).send({
+      this.shard.send({
         op: Constants.OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
           guild_id: this.id,
@@ -626,7 +626,7 @@ class Guild {
    * <warn>This is only available when using a user account.</warn>
    */
   sync() {
-    if (!this.client.user.bot) this.client.ws.managers.get(this.shardID).syncGuilds([this]);
+    if (!this.client.user.bot) this.shard.syncGuilds([this]);
   }
 
   /**

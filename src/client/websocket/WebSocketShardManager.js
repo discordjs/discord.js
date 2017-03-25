@@ -1,6 +1,5 @@
 const EventEmitter = require('events').EventEmitter;
-const WebSocketManager = require('./WebSocketManager');
-const WebSocketConnection = require('./WebSocketConnection');
+const WebSocketShard = require('./WebSocketShard');
 const Constants = require('../../util/Constants');
 const PacketManager = require('./packets/WebSocketPacketManager');
 const Collection = require('../../util/Collection');
@@ -57,7 +56,7 @@ class WebSocketShardManager extends EventEmitter {
        * The initial number of shards to spawn
        * @type {number}
        */
-      client.options.shardCount = Math.max(1, client.options.shardCount);
+      this.shardCount = Math.max(1, client.options.shardCount);
 
       if (this.client.options.shardID) {
         this.spawn(this.client.options.shardID);
@@ -71,23 +70,18 @@ class WebSocketShardManager extends EventEmitter {
     });
   }
 
-  get encoding() {
-    return WebSocketConnection.encoding;
-  }
-
   /**
    * Spawn all shards
    */
   _spawnAll() {
     this.client.emit('debug', `Spawning ${this.shardCount} shard(s)`);
+    this.killAll();
     (function spawnLoop(id) {
-      const manager = this.spawn(id);
-      manager.once('ready', () => {
-        if (this.managers.size >= this.shardCount) return;
-        this.client.setTimeout(() => {
-          spawnLoop.bind(this)(++id);
-        }, 5000);
-      });
+      this.spawn(id);
+      if (this.managers.size >= this.shardCount) return;
+      this.client.setTimeout(() => {
+        spawnLoop.bind(this)(++id);
+      }, 5500);
     }.bind(this)(0));
   }
 
@@ -97,12 +91,14 @@ class WebSocketShardManager extends EventEmitter {
    * @returns {WebSocketManager}
    */
   spawn(id) {
-    const manager = new WebSocketManager(this.client, this.packetManager, {
+    const manager = new WebSocketShard(this.client, this.packetManager, {
       shardID: id,
       shardCount: this.shardCount,
     });
 
-    manager.on('send', this.emit);
+    this.managers.set(id, manager);
+
+    manager.on('send', this.emit.bind(this, 'send'));
 
     manager.on(Constants.Events.RECONNECTING, () => {
       /**
@@ -131,8 +127,6 @@ class WebSocketShardManager extends EventEmitter {
     });
 
     if (this.afterConnect) manager.connect(this.gateway);
-
-    this.managers.set(id, manager);
 
     return manager;
   }
@@ -194,9 +188,7 @@ class WebSocketShardManager extends EventEmitter {
       this.shardCount = shardCount;
       this._spawnAll();
     } else {
-      for (const manager of this.managers.values()) {
-        manager.connect(gateway);
-      }
+      for (const manager of this.managers.values()) manager.connect(gateway);
     }
   }
 

@@ -2,14 +2,14 @@ const EventEmitter = require('events');
 const WebSocketConnection = require('./WebSocketConnection');
 const Constants = require('../../util/Constants');
 
-class WebSocketManager extends EventEmitter {
+class WebSocketShard extends EventEmitter {
   constructor(client, packetManager, options = {}) {
     super();
 
     this.client = client;
     this.packetManager = packetManager;
 
-    this.shardID = options.shardID || this.client.options.shardID;
+    this.id = options.shardID || this.client.options.shardID;
 
     this.sessionID = null;
     this.sequence = -1;
@@ -31,7 +31,7 @@ class WebSocketManager extends EventEmitter {
     this._reset();
 
     this.on('debug', e => {
-      if (this.client.listenerCount('debug')) this.client.emit('debug', `SHARD ${this.shardID}: ${e}`);
+      if (this.client.listenerCount('debug')) this.client.emit('debug', `SHARD ${this.id}: ${e}`);
     });
   }
 
@@ -87,42 +87,34 @@ class WebSocketManager extends EventEmitter {
   }
 
   /**
-   * Sends a new identification packet, in cases of new connections or failed reconnections.
+   * Sends a resume or identify packet, in cases of new connections or failed reconnections.
+   * @param {boolean} [force=false] Force re-identify over resume
    */
-  sendNewIdentify() {
-    const payload = this.client.options.ws;
-    payload.token = this.client.token;
-    if (this.client.options.shardCount > 0) {
-      payload.shard = [Number(this.shardID), Number(this.client.options.shardCount)];
+  identify(force = false) {
+    let d;
+    let op;
+    if (!this.sessionID || force) {
+      op = Constants.OPCodes.IDENTIFY;
+      d = this.client.options.ws;
+      d.token = this.client.token;
+      if (this.client.options.shardCount > 0) {
+        d.shard = [Number(this.id), Number(this.client.options.shardCount)];
+      }
+      this.sessionID = null;
+      this.sequence = -1;
+      this.emit('debug', 'Identifying as new session');
+    } else {
+      op = Constants.OPCodes.RESUME;
+      d = {
+        token: this.client.token,
+        session_id: this.sessionID,
+        seq: this.sequence,
+      };
+      this.resumeStart = this.sequence;
+      this.emit('debug', 'Identifying as resumed session');
     }
-    this.emit('debug', 'Identifying as new session');
-    this.send({
-      op: Constants.OPCodes.IDENTIFY,
-      d: payload,
-    });
-    this.sequence = -1;
-  }
 
-  /**
-   * Sends a gateway resume packet, in cases of unexpected disconnections.
-   */
-  sendResume() {
-    if (!this.sessionID) {
-      this.sendNewIdentify();
-      return;
-    }
-    this.emit('debug', 'Identifying as resumed session');
-    this.resumeStart = this.sequence;
-    const payload = {
-      token: this.client.token,
-      session_id: this.sessionID,
-      seq: this.sequence,
-    };
-
-    this.send({
-      op: Constants.OPCodes.RESUME,
-      d: payload,
-    });
+    this.send({ op, d });
   }
 
   /**
@@ -133,7 +125,7 @@ class WebSocketManager extends EventEmitter {
    */
   syncGuilds(guilds = this.client.guilds) {
     if (!this.client.user || this.client.user.bot) return;
-    guilds = guilds.filter(g => g.shardID === this.shardID).map(g => g.id);
+    guilds = guilds.filter(g => g.shard.id === this.id).map(g => g.id);
     this.emit('debug', `Syncing ${guilds.length} guilds`);
     this.send({
       op: 12,
@@ -148,7 +140,7 @@ class WebSocketManager extends EventEmitter {
       return;
     }
 
-    this.emit('debug', `Sending ${normal ? 'normal ' : ''}heartbeat`);
+    this.emit('debug', `Sending ${normal ? 'normal ' : ''}heartbeat @ ${this.sequence} seq`);
     this.lastPingTimestamp = Date.now();
     this.send({
       op: Constants.OPCodes.HEARTBEAT,
@@ -171,14 +163,14 @@ class WebSocketManager extends EventEmitter {
   checkIfReady() {
     let unavailableCount = 0;
     for (const guild of this.client.guilds.values()) {
-      if (guild.shardID === this.shardID) if (!guild.available) unavailableCount++;
+      if (guild.shard.id === this.id) if (!guild.available) unavailableCount++;
     }
     if (unavailableCount === 0) {
       this.status = Constants.Status.NEARLY;
       if (this.client.options.fetchAllMembers) {
         const promises = [];
         for (const guild of this.client.guilds.values()) {
-          if (guild.shardID === this.shardID) promises.push(guild.fetchMembers());
+          if (guild.shard.id === this.id) promises.push(guild.fetchMembers());
         }
         Promise.all(promises).then(this._emitReady.bind(this), e => {
           this.client.emit(Constants.Events.WARN, 'Error in pre-ready guild member fetching');
@@ -198,8 +190,7 @@ class WebSocketManager extends EventEmitter {
     this.emit('debug', 'Connection to gateway opened');
     this.emit('open');
     this.lastHeartbeatAck = true;
-    if (this.sessionID) this.sendResume();
-    else this.sendNewIdentify();
+    this.identify();
   }
 
   /**
@@ -208,7 +199,7 @@ class WebSocketManager extends EventEmitter {
    * @param {number} shardID The shard ID
    */
   eventClose(event) {
-    this.emit('close', event, this.shardID);
+    this.emit('close', event, this.id);
     this.client.clearInterval(this.heartbeatInterval);
     this.client.clearInterval(this.syncInterval);
     this.status = Constants.Status.DISCONNECTED;
@@ -235,6 +226,8 @@ class WebSocketManager extends EventEmitter {
       return false;
     }
 
+    this.client.emit('raw', packet, this.id);
+
     if (packet.op === Constants.OPCodes.HELLO) {
       this.emit('debug', `HELLO ${packet.d._trace.join(' -> ')} ${packet.d.heartbeat_interval}`);
       this.heartbeatTime = packet.d.heartbeat_interval;
@@ -244,7 +237,10 @@ class WebSocketManager extends EventEmitter {
 
     if (packet.s && packet.s > this.sequence) this.sequence = packet.s;
 
-    packet.shardID = this.shardID;
+    packet.shard = this;
+    if (packet.d) packet.d.shard = this;
+
+
     return this.packetManager.handle(packet);
   }
 
@@ -275,10 +271,10 @@ class WebSocketManager extends EventEmitter {
   _connect(gateway) {
     this.emit('debug', `Connecting to gateway ${gateway}`);
     this.ws = new WebSocketConnection(gateway);
-    this.ws.on('open', this.eventOpen.bind(this));
-    this.ws.on('close', this.eventClose.bind(this));
-    this.ws.on('error', this.eventError.bind(this));
-    this.ws.on('packet', this.eventPacket.bind(this));
+    this.ws.e.on('open', this.eventOpen.bind(this));
+    this.ws.e.on('close', this.eventClose.bind(this));
+    this.ws.e.on('error', this.eventError.bind(this));
+    this.ws.e.on('packet', this.eventPacket.bind(this));
     this._reset();
   }
 
@@ -297,10 +293,10 @@ class WebSocketManager extends EventEmitter {
      * @event Client#shardReady
      * @param {Number} shardID
      */
-    this.client.emit(Constants.Events.SHARD_READY, this.shardID);
+    this.client.emit(Constants.Events.SHARD_READY, this.id);
     this.syncGuilds();
     this.readyAt = Date.now();
   }
 }
 
-module.exports = WebSocketManager;
+module.exports = WebSocketShard;
