@@ -13,6 +13,7 @@ class WebSocketShard extends EventEmitter {
 
     this.sessionID = null;
     this.sequence = -1;
+    this.resumeStart = -1;
     this._trace = [];
 
     this.ws = null;
