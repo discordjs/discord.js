@@ -57,12 +57,6 @@ class WebSocketShardManager extends EventEmitter {
        * @type {number}
        */
       this.shardCount = Math.max(1, client.options.shardCount);
-
-      if (this.client.options.shardID) {
-        this.spawn(this.client.options.shardID);
-      } else {
-        this._spawnAll();
-      }
     }
 
     this.client.on('shardReady', () => {
@@ -81,6 +75,7 @@ class WebSocketShardManager extends EventEmitter {
       const manager = this.spawn(id);
       if (this.managers.size >= this.shardCount) return;
       manager.once('ready', () => {
+        manager.removeListener('close', cb);
         this.client.setTimeout(cb, 5000);
       });
       manager.once('close', cb);
@@ -163,34 +158,16 @@ class WebSocketShardManager extends EventEmitter {
   }
 
   /**
-   * Reshard
-   * @param {number} count Number of shards
-   * @param {number} [id] ID of shard if only one shard in the process
-   */
-  reshard(count, id) {
-    this.shardCount = count;
-    this.killAll();
-    if (id) {
-      this.client.options.shardID = id;
-      this.spawn(id);
-    } else {
-      this._spawnAll();
-    }
-  }
-
-  /**
    * Connect to the gateway
    * @param {string} gateway The gateway to connect to
-   * @param {number} [shardCount] Number of shards to spawn
    */
-  connect(gateway, shardCount) {
+  connect(gateway) {
     this.gateway = gateway;
     this.afterConnect = true;
-    if (shardCount) {
-      this.shardCount = shardCount;
-      this._spawnAll();
+    if (this.client.options.shardID) {
+      this.spawn(this.client.options.shardID);
     } else {
-      for (const manager of this.managers.values()) manager.connect(gateway);
+      this._spawnAll();
     }
   }
 
