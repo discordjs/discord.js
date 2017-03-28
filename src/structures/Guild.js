@@ -285,7 +285,7 @@ class Guild {
   get defaultChannel() {
     return this.channels.get(this.id);
   }
-  
+
   /**
    * The `@everyone` Role of the guild.
    * @type {Role}
