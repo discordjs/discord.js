@@ -95,7 +95,7 @@ class WebSocketShardManager extends EventEmitter {
 
     this.managers.set(id, manager);
 
-    manager.on('send', this.emit.bind(this, 'send'));
+    manager.on('send', packet => this.emit('send', packet, this.id));
 
     manager.on(Constants.Events.RECONNECTING, () => {
       /**
@@ -107,7 +107,7 @@ class WebSocketShardManager extends EventEmitter {
     });
 
     manager.on(Constants.Events.DISCONNECT, event => {
-      this.client.emit(Constants.Events.DISCONNECT, event, id);
+      this.client.emit(Constants.Events.DISCONNECT, event, manager.id);
     });
 
     manager.on('close', (event, shardID) => {
@@ -116,11 +116,13 @@ class WebSocketShardManager extends EventEmitter {
         this.client.clearTimeout(timeout);
         manager.removeListener('open', handler);
       };
+      // Copy the value to remove references in case we destroy it
+      const time = manager.heartbeatTime;
       const timeout = this.client.setTimeout(() => {
         manager.destroy();
         this.spawn(id);
-      }, manager.heartbeatTime);
-      manager.on('open', handler);
+      }, time);
+      manager.once('open', handler);
     });
 
     if (this.afterConnect) manager.connect(this.gateway);

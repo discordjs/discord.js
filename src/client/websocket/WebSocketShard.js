@@ -162,26 +162,23 @@ class WebSocketShard extends EventEmitter {
   }
 
   checkIfReady() {
-    let unavailableCount = 0;
     for (const guild of this.client.guilds.values()) {
-      if (guild.shard.id === this.id) if (!guild.available) unavailableCount++;
+      if (guild.shard.id === this.id) if (!guild.available) return;
     }
-    if (unavailableCount === 0) {
-      this.status = Constants.Status.NEARLY;
-      if (this.client.options.fetchAllMembers) {
-        const promises = [];
-        for (const guild of this.client.guilds.values()) {
-          if (guild.shard.id === this.id) promises.push(guild.fetchMembers());
-        }
-        Promise.all(promises).then(this._emitReady.bind(this), e => {
-          this.client.emit(Constants.Events.WARN, 'Error in pre-ready guild member fetching');
-          this.emit(Constants.Events.ERROR, e);
-          this._emitReady();
-        });
-        return;
+    this.status = Constants.Status.NEARLY;
+    if (this.client.options.fetchAllMembers) {
+      const promises = [];
+      for (const guild of this.client.guilds.values()) {
+        if (guild.shard.id === this.id) promises.push(guild.fetchMembers());
       }
-      this._emitReady();
+      Promise.all(promises).then(this._emitReady.bind(this), e => {
+        this.client.emit(Constants.Events.WARN, 'Error in pre-ready guild member fetching');
+        this.emit(Constants.Events.ERROR, e);
+        this._emitReady();
+      });
+      return;
     }
+    this._emitReady();
   }
 
   /**
