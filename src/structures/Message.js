@@ -246,11 +246,22 @@ class Message {
       }
     }
     if (data.reactions) {
+      const reactionUsers = new Collection();
+      this.reactions.forEach(reaction => {
+        const id = reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` :
+          encodeURIComponent(reaction.emoji.name);
+        reactionUsers.set(id, reaction.users);
+      });
       this.reactions.clear();
       if (data.reactions.length > 0) {
         for (const reaction of data.reactions) {
-          const id = reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` : reaction.emoji.name;
-          this.reactions.set(id, new MessageReaction(this, reaction.emoji, reaction.count, reaction.me));
+          const id = reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` :
+            encodeURIComponent(reaction.emoji.name);
+          const newReaction = new MessageReaction(this, reaction.emoji, reaction.count, reaction.me);
+          if (reactionUsers.has(id)) {
+            newReaction.users = reactionUsers.get(id);
+          }
+          this.reactions.set(id, newReaction);
         }
       }
     }
