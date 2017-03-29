@@ -70,9 +70,7 @@ class ClientUserSettings {
     if (has('inline_embed_media')) this.inlineEmbedMedia = data.inline_embed_media;
 
     /**
-     * Language the Discord client will use.
-     * Formatted as <ISO-639-1 (lower case)> <dash> <ISO-3166 ALPHA 2 (upper case)>
-     * Example: `en-US`
+     * Language the Discord client will use, as an RFC 3066 language identifier
      * @type {string}
      */
     if (has('locale')) this.locale = data.locale;
