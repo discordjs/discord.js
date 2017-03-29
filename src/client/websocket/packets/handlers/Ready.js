@@ -7,10 +7,13 @@ class ReadyHandler extends AbstractHandler {
     const client = this.packetManager.client;
     const data = packet.d;
 
+    require('fs').writeFileSync('user_settings.json', JSON.stringify(data.user_settings, null, '  '));
+
     client.ws.heartbeat();
 
+    data.user.user_settings = data.user_settings;
+
     const clientUser = new ClientUser(client, data.user);
-    clientUser.settings = data.user_settings;
     client.user = clientUser;
     client.readyAt = new Date();
     client.users.set(clientUser.id, clientUser);

@@ -915,6 +915,10 @@ class RESTMethods {
       })
     );
   }
+
+  patchUserSettings(data) {
+    return this.rest.makeRequest('patch', Constants.Endpoints.meSettings, true, data);
+  }
 }
 
 module.exports = RESTMethods;

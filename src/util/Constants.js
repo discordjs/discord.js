@@ -105,6 +105,7 @@ const Endpoints = exports.Endpoints = {
   meChannels: `${API}/users/@me/channels`,
   meMentions: (limit, roles, everyone, guildID) =>
     `users/@me/mentions?limit=${limit}&roles=${roles}&everyone=${everyone}${guildID ? `&guild_id=${guildID}` : ''}`,
+  meSettings: `${API}/users/@me/settings`,
   relationships: userID => `${Endpoints.user(userID)}/relationships`,
   note: userID => `${Endpoints.me}/notes/${userID}`,
 
@@ -269,6 +270,7 @@ exports.Events = {
   MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll',
   USER_UPDATE: 'userUpdate',
   USER_NOTE_UPDATE: 'userNoteUpdate',
+  USER_SETTINGS_UPDATE: 'userSettingsUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
   TYPING_START: 'typingStart',
@@ -309,6 +311,7 @@ exports.Events = {
  * - MESSAGE_REACTION_REMOVE_ALL
  * - USER_UPDATE
  * - USER_NOTE_UPDATE
+ * - USER_SETTINGS_UPDATE
  * - PRESENCE_UPDATE
  * - VOICE_STATE_UPDATE
  * - TYPING_START
@@ -346,6 +349,7 @@ exports.WSEvents = {
   MESSAGE_REACTION_REMOVE_ALL: 'MESSAGE_REACTION_REMOVE_ALL',
   USER_UPDATE: 'USER_UPDATE',
   USER_NOTE_UPDATE: 'USER_NOTE_UPDATE',
+  USER_SETTINGS_UPDATE: 'USER_SETTINGS_UPDATE',
   PRESENCE_UPDATE: 'PRESENCE_UPDATE',
   VOICE_STATE_UPDATE: 'VOICE_STATE_UPDATE',
   TYPING_START: 'TYPING_START',
@@ -371,6 +375,12 @@ exports.DefaultAvatars = {
   ORANGE: '0e291f67c9274a1abdddeb3fd919cbaa',
   RED: '1cbd08c76f8af6dddce02c5138971129',
 };
+
+exports.ExplicitContentFilterTypes = [
+  'DISABLED',
+  'NON_FRIENDS',
+  'FRIENDS_AND_NON_FRIENDS',
+];
 
 exports.Colors = {
   DEFAULT: 0x000000,

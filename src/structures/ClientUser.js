@@ -1,6 +1,6 @@
 const User = require('./User');
 const Collection = require('../util/Collection');
-
+const ClientUserSettings = require('./ClientUserSettings');
 /**
  * Represents the logged in client's Discord user
  * @extends {User}
@@ -45,13 +45,6 @@ class ClientUser extends User {
     this.notes = new Collection();
 
     /**
-     * Discord client settings, such as guild positions
-     * <warn>This is only filled when using a user account.</warn>
-     * @type {Object}
-     */
-    this.settings = {};
-
-    /**
      * If the user has discord premium (nitro)
      * <warn>This is only filled when using a user account.</warn>
      * @type {?boolean}
@@ -71,6 +64,13 @@ class ClientUser extends User {
      * @type {?boolean}
      */
     this.mobile = typeof data.mobile === 'boolean' ? data.mobile : null;
+
+    /**
+     * Various settings for this user
+     * @type {?ClientUserSettings}
+     * <warn>This is only filled when using a user account</warn>
+     */
+    if (data.user_settings) this.settings = new ClientUserSettings(this, data.user_settings);
   }
 
   edit(data) {
