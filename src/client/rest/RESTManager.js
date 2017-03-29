@@ -13,6 +13,7 @@ class RESTManager {
     this.methods = new RESTMethods(this);
     this.rateLimitedEndpoints = {};
     this.globallyRateLimited = false;
+    this.middleware = [];
   }
 
   push(handler, apiRequest) {
@@ -45,6 +46,10 @@ class RESTManager {
     }
 
     return this.push(this.handlers[apiRequest.route], apiRequest);
+  }
+
+  addMiddleware(fn) {
+    this.middleware.push(fn);
   }
 }
 

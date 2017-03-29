@@ -41,6 +41,7 @@ class APIRequest {
     } else if (this.data) {
       request.send(this.data);
     }
+    for (const fn of this.rest.middleware) fn(request);
     return request;
   }
 }
