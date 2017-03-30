@@ -78,7 +78,7 @@ class MessageEmbed {
     this.image = data.image ? new MessageEmbedImage(this, data.image) : null;
 
     /**
-     * The image of this embed, if there is one
+     * The video of this embed, if there is one
      * @type {?MessageEmbedVideo}
      */
     this.video = data.video ? new MessageEmbedVideo(this, data.video) : null;
