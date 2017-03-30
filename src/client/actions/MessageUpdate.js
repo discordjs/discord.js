@@ -34,24 +34,24 @@ class MessageUpdateAction extends Action {
   }
 
   patchDataPacket(data, message) {
-    data.type = data.hasOwnProperty('type') ? data.type : Constants.MessageTypes.indexOf(message.type);
-    data.tts = data.hasOwnProperty('tts') ? data.tts : message.tts;
-    data.timestamp = data.hasOwnProperty('timestamp') ? data.timestamp : message.createdAt.toString();
-    data.pinned = data.hasOwnProperty('pinned') ? data.pinned : message.pinned;
-    data.nonce = data.hasOwnProperty('nonce') ? data.nonce : message.nonce;
-    data.mentions = data.hasOwnProperty('mentions') ? data.mentions : message.mentions.users.keyArray();
-    data.mentions_roles = data.hasOwnProperty('mentions_roles') ?
+    data.type = 'type' in data ? data.type : Constants.MessageTypes.indexOf(message.type);
+    data.tts = 'tts' in data ? data.tts : message.tts;
+    data.timestamp = 'timestamp' in data ? data.timestamp : message.createdAt.toString();
+    data.pinned = 'pinned' in data ? data.pinned : message.pinned;
+    data.nonce = 'nonce' in data ? data.nonce : message.nonce;
+    data.mentions = 'mentions' in data ? data.mentions : message.mentions.users.keyArray();
+    data.mentions_roles = 'mentions_roles' in data ?
 			data.mentions_roles : message.mentions.roles.keyArray();
-    data.mention_everyone = data.hasOwnProperty('mention_everyone') ? data.mention_everyone : message.mentions.everyone;
-    data.embeds = data.hasOwnProperty('embeds') ? data.embeds : message.embeds;
-    data.content = data.hasOwnProperty('content') ? data.content : message.content;
-    data.author = data.hasOwnProperty('author') ? data.author : {
+    data.mention_everyone = 'mention_everyone' in data ? data.mention_everyone : message.mentions.everyone;
+    data.embeds = 'embeds' in data ? data.embeds : message.embeds;
+    data.content = 'content' in data ? data.content : message.content;
+    data.author = 'author' in data ? data.author : {
       username: message.author.username,
       id: message.author.id,
       discriminator: message.author.discriminator,
       avatar: message.author.avatar,
     };
-    data.attachments = data.hasOwnProperty('attachments') ? data.attachments : message.attachments.array();
+    data.attachments = 'attachments' in data ? data.attachments : message.attachments.array();
     return data;
   }
 
