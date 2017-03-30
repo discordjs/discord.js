@@ -10623,25 +10623,37 @@ class MessageEmbed {
 
     /**
      * The thumbnail of this embed, if there is one
-     * @type {MessageEmbedThumbnail}
+     * @type {?MessageEmbedThumbnail}
      */
     this.thumbnail = data.thumbnail ? new MessageEmbedThumbnail(this, data.thumbnail) : null;
 
     /**
+     * The image of this embed, if there is one
+     * @type {?MessageEmbedImage}
+     */
+    this.image = data.image ? new MessageEmbedImage(this, data.image) : null;
+
+    /**
+     * The image of this embed, if there is one
+     * @type {?MessageEmbedVideo}
+     */
+    this.video = data.video ? new MessageEmbedVideo(this, data.video) : null;
+
+    /**
      * The author of this embed, if there is one
-     * @type {MessageEmbedAuthor}
+     * @type {?MessageEmbedAuthor}
      */
     this.author = data.author ? new MessageEmbedAuthor(this, data.author) : null;
 
     /**
      * The provider of this embed, if there is one
-     * @type {MessageEmbedProvider}
+     * @type {?MessageEmbedProvider}
      */
     this.provider = data.provider ? new MessageEmbedProvider(this, data.provider) : null;
 
     /**
      * The footer of this embed
-     * @type {MessageEmbedFooter}
+     * @type {?MessageEmbedFooter}
      */
     this.footer = data.footer ? new MessageEmbedFooter(this, data.footer) : null;
   }
@@ -10701,6 +10713,82 @@ class MessageEmbedThumbnail {
 
     /**
      * The width of the thumbnail
+     * @type {number}
+     */
+    this.width = data.width;
+  }
+}
+
+/**
+ * Represents an image for a message embed
+ */
+class MessageEmbedImage {
+  constructor(embed, data) {
+    /**
+     * The embed this image is part of
+     * @type {MessageEmbed}
+     */
+    this.embed = embed;
+
+    this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The URL for this image
+     * @type {string}
+     */
+    this.url = data.url;
+
+    /**
+     * The Proxy URL for this image
+     * @type {string}
+     */
+    this.proxyURL = data.proxy_url;
+
+    /**
+     * The height of the image
+     * @type {number}
+     */
+    this.height = data.height;
+
+    /**
+     * The width of the image
+     * @type {number}
+     */
+    this.width = data.width;
+  }
+}
+
+/**
+ * Represents a video for a message embed
+ */
+class MessageEmbedVideo {
+  constructor(embed, data) {
+    /**
+     * The embed this video is part of
+     * @type {MessageEmbed}
+     */
+    this.embed = embed;
+
+    this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The source URL for this video
+     * @type {string}
+     */
+    this.url = data.url;
+
+    /**
+     * The height of the video
+     * @type {number}
+     */
+    this.height = data.height;
+
+    /**
+     * The width of the video
      * @type {number}
      */
     this.width = data.width;
@@ -10842,6 +10930,8 @@ class MessageEmbedFooter {
 }
 
 MessageEmbed.Thumbnail = MessageEmbedThumbnail;
+MessageEmbed.Image = MessageEmbedImage;
+MessageEmbed.Video = MessageEmbedVideo;
 MessageEmbed.Provider = MessageEmbedProvider;
 MessageEmbed.Author = MessageEmbedAuthor;
 MessageEmbed.Field = MessageEmbedField;
