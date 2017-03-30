@@ -500,9 +500,17 @@ exports.UserSettingsMap = {
   },
   friend_source_flags: function friendSources(flags) { // eslint-disable-line func-name-matching
     /**
+     * Properties for friend sources
+     * @typedef {Object} ClientUserSettingsFriendSources
+     * @property {boolean} all Mutual friends and mutual guilds
+     * @property {boolean} mutualGuilds Only mutual guilds
+     * @property {boolean} mutualFriends Only mutual friends
+     */
+
+    /**
      * Who can add you as a friend
      * @name ClientUserSettings#friendSources
-     * @type {Object}
+     * @type {ClientUserSettingsFriendSources}
      */
     return {
       all: flags.all || false,
