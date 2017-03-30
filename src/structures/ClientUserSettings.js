@@ -1,6 +1,9 @@
 const Constants = require('../util/Constants');
 const Util = require('../util/Util');
 
+/**
+ * A wrapper around the ClientUser's settings
+ */
 class ClientUserSettings {
   constructor(user, data) {
     this.user = user;
