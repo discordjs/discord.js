@@ -210,7 +210,6 @@ class Collection extends Map {
    * }
    */
   exists(prop, value) {
-    if (prop === 'id') throw new RangeError('Don\'t use .exists() with IDs. Instead, use .has(id).');
     return Boolean(this.find(prop, value));
   }
 
