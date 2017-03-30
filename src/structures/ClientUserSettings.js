@@ -41,6 +41,11 @@ class ClientUserSettings {
     return this.update('guild_positions', temp).then(() => guild);
   }
 
+  /**
+   * Add a guild to the list of restricted guilds
+   * @param {Guild} guild Guild to add
+   * @returns {Promise<Guild>}
+   */
   addRestrictedGuild(guild) {
     const temp = Object.assign([], this.restrictedGuilds);
     if (temp.includes(guild.id)) return Promise.reject(new Error('Guild is already restricted'));
@@ -48,6 +53,11 @@ class ClientUserSettings {
     return this.update('restricted_guilds', temp).then(() => guild);
   }
 
+  /**
+   * Remove a guild from the list of restricted guilds
+   * @param {Guild} guild Guild to remove
+   * @returns {Promise<Guild>}
+   */
   removeRestrictedGuild(guild) {
     const temp = Object.assign([], this.restrictedGuilds);
     const index = temp.indexOf(guild.id);
