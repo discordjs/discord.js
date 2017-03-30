@@ -278,7 +278,7 @@ class Guild {
   }
 
   /**
-   * The `#general` TextChannel of the server.
+   * The `#general` TextChannel of the guild.
    * @type {TextChannel}
    * @readonly
    */
@@ -295,6 +295,15 @@ class Guild {
     if (this.client.user.bot) return null;
     if (!this.client.user.settings.guildPositions) return null;
     return this.client.user.settings.guildPositions.indexOf(this.id);
+  }
+
+  /*
+   * The `@everyone` Role of the guild.
+   * @type {Role}
+   * @readonly
+   */
+  get defaultRole() {
+    return this.roles.get(this.id);
   }
 
   /**
