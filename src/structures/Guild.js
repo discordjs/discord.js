@@ -286,12 +286,21 @@ class Guild {
   }
 
   /**
-   * The `#general` TextChannel of the server.
+   * The `#general` TextChannel of the guild.
    * @type {TextChannel}
    * @readonly
    */
   get defaultChannel() {
     return this.channels.get(this.id);
+  }
+
+  /**
+   * The `@everyone` Role of the guild.
+   * @type {Role}
+   * @readonly
+   */
+  get defaultRole() {
+    return this.roles.get(this.id);
   }
 
   /**
@@ -682,7 +691,7 @@ class Guild {
    * .then(role => console.log(`Created role ${role}`))
    * .catch(console.error)
    */
-  createRole(data) {
+  createRole(data = {}) {
     return this.client.rest.methods.createGuildRole(this, data);
   }
 

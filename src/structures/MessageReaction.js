@@ -84,7 +84,7 @@ class MessageReaction {
         this.users.set(user.id, user);
       }
       this.count = this.users.size;
-      return users;
+      return this.users;
     });
   }
 }
