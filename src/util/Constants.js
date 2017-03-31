@@ -122,6 +122,7 @@ exports.Endpoints = {
       voiceRegions: `${base}/regions`,
       webhooks: `${base}/webhooks`,
       ack: `${base}/ack`,
+      settings: `${base}/settings`,
       Emoji: emojiID => `${base}/emojis/${emojiID}`,
       Icon: hash => `cdn/${hash}`,
       Splash: hash => `cdn/${hash}`,
