@@ -208,6 +208,48 @@ class Util {
     }
     return array;
   }
+
+  /**
+   * @param {string} str A string to apply the padding to
+   * @param {number} targetLength The length of the resulting string once the current string has been padded. If this
+   * parameter is smaller than the current string's length, the current string will be returned as it is.
+   * @param {string} [padString=' '] The string to pad the current string with. If this string is too long, it will be
+   * truncated and the left-most part will be applied.
+   * @returns {string} A String of the specified length with the pad string applied from the start.
+   */
+  static padStart(str, targetLength, padString = ' ') {
+    targetLength >>= 0;
+    padString = String(padString);
+    if (str.length > targetLength) {
+      return String(str);
+    } else {
+      targetLength -= str.length;
+      if (targetLength > padString.length) padString += padString.repeat(targetLength / padString.length);
+      return padString.slice(0, targetLength) + String(str);
+    }
+  }
+
+  /**
+   * @param {string} str A string to apply the padding to
+   * @param {number} targetLength The length of the resulting string once the current string has been padded. If this
+   * parameter is smaller than the current string's length, the current string will be returned as it is.
+   * @param {string} [padString=' '] The string to pad the current string with. If this string is too long, it will be
+   * truncated and the left-most part will be applied.
+   * @returns {string} A String of the specified length with the pad string applied at the end of the current string.
+   */
+  static padEnd(str, targetLength, padString) {
+    targetLength >>= 0;
+    padString = String(padString || ' ');
+    if (str.length > targetLength) {
+      return String(str);
+    } else {
+      targetLength -= str.length;
+      if (targetLength > padString.length) {
+        padString += padString.repeat(targetLength / padString.length);
+      }
+      return String(str) + padString.slice(0, targetLength);
+    }
+  }
 }
 
 module.exports = Util;

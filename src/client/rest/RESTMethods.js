@@ -18,6 +18,8 @@ const Channel = require('../../structures/Channel');
 const GroupDMChannel = require('../../structures/GroupDMChannel');
 const Guild = require('../../structures/Guild');
 const VoiceRegion = require('../../structures/VoiceRegion');
+const UserBillingProfile = require('../../structures/UserBillingProfile');
+const Payment = require('../../structures/Payment');
 
 class RESTMethods {
   constructor(restManager) {
@@ -813,6 +815,46 @@ class RESTMethods {
   unblockUser(user) {
     return this.rest.makeRequest('delete', `${Constants.Endpoints.relationships('@me')}/${user.id}`, true)
       .then(() => user);
+  }
+
+  fetchMeMFACodes(password, regenerate) {
+    return this.rest.makeRequest('post', Constants.Endpoints.meMFACodes, true, {
+      password,
+      regenerate,
+    }).then(res => new Collection(res.backup_codes.map(c => [c.code, c.consumed])));
+  }
+
+  enableMeTOTP(secret, code) {
+    return this.rest.makeRequest('post', Constants.Endpoints.meTOTPEnable, true, {
+      secret,
+      code,
+    }).then(res => {
+      if (res.token) this.client.token = res.token;
+      return new Collection(res.backup_codes.map(c => [c.code, c.consumed]));
+    });
+  }
+
+  disableMeTOTP(code) {
+    return this.rest.makeRequest('post', Constants.Endpoints.meTOTPDisable, true, {
+      code,
+    }).then(res => {
+      if (res.token) this.client.token = res.token;
+    });
+  }
+
+  fetchMeBillingProfile() {
+    return this.rest.makeRequest('get', Constants.Endpoints.meBilling, true)
+    .then(data => new UserBillingProfile(data));
+  }
+
+  fetchMePaymentHistory() {
+    return this.rest.makeRequest('get', Constants.Endpoints.mePayments, true)
+    .then(data => data.map(p => new Payment(p)));
+  }
+
+  fetchMePremiumSubscription() {
+    return this.rest.makeRequest('get', Constants.Endpoints.mePremiumSubscription, true)
+    .then(res => new UserBillingProfile.PremiumSubscription(res));
   }
 
   updateChannelPositions(guildID, channels) {
