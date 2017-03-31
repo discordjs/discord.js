@@ -33,7 +33,6 @@ const createConfig = (options) => {
       tls: 'mock',
       child_process: 'empty',
       dgram: 'empty',
-      zlib: 'empty',
       __dirname: true,
     },
     plugins,

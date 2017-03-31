@@ -1,5 +1,7 @@
-const request = require('superagent');
+const request = require('tinyhttp');
 const Constants = require('../../util/Constants');
+
+request.mime.default = 'application/octet-stream';
 
 class APIRequest {
   constructor(rest, method, url, auth, data, files) {
@@ -32,7 +34,7 @@ class APIRequest {
   }
 
   gen() {
-    const apiRequest = request[this.method](this.url);
+    const apiRequest = request.request(this.method.toUpperCase(), this.url);
     if (this.auth) apiRequest.set('authorization', this.getAuth());
     if (this.files) {
       for (const file of this.files) if (file && file.file) apiRequest.attach(file.name, file.file, file.name);

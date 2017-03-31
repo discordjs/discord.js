@@ -1,7 +1,7 @@
 'use strict';
 
 const Discord = require('../');
-const request = require('superagent');
+const request = require('tinyhttp');
 const fs = require('fs');
 
 const client = new Discord.Client({ fetchAllMembers: false, apiRequestMethod: 'sequential' });
