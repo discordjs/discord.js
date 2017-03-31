@@ -694,7 +694,7 @@ class Guild {
    * .then(role => console.log(`Created role ${role}`))
    * .catch(console.error)
    */
-  createRole(data) {
+  createRole(data = {}) {
     return this.client.rest.methods.createGuildRole(this, data);
   }
 
