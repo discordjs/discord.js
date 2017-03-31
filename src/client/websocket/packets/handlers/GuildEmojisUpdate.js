@@ -16,22 +16,22 @@ class GuildEmojisUpdate extends AbstractHandler {
     const deletions = mappify(guild.emojis.entries());
 
     for (const emoji of data.emojis) {
-      // determine type of emoji event
+      // Determine type of emoji event
       const cachedEmoji = guild.emojis.get(emoji.id);
       if (cachedEmoji) {
         deletions.delete(emoji.id);
         if (!cachedEmoji.equals(emoji, true)) {
-          // emoji updated
+          // Emoji updated
           client.actions.GuildEmojiUpdate.handle(cachedEmoji, emoji);
         }
       } else {
-        // emoji added
+        // Emoji added
         client.actions.GuildEmojiCreate.handle(guild, emoji);
       }
     }
 
     for (const emoji of deletions.values()) {
-      // emoji deleted
+      // Emoji deleted
       client.actions.GuildEmojiDelete.handle(emoji);
     }
   }

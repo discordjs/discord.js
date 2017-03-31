@@ -79,7 +79,8 @@ class TextBasedChannel {
       options = {};
     }
 
-    // backward compat
+    if (options.embed && options.embed.file) options.file = options.embed.file;
+
     if (options.file) {
       if (options.files) options.files.push(options.file);
       else options.files = [options.file];
@@ -179,8 +180,9 @@ class TextBasedChannel {
   }
 
   /**
-   * Gets a single message from this channel, regardless of it being cached or not.
-   * <warn>This is only available when using a bot account.</warn>
+   * Gets a single message from this channel, regardless of it being cached or not. Since the single message fetching
+   * endpoint is reserved for bot accounts, this abstracts the `fetchMessages` method to obtain the single message when
+   * using a user account.
    * @param {Snowflake} messageID ID of the message to get
    * @returns {Promise<Message>}
    * @example
@@ -190,6 +192,13 @@ class TextBasedChannel {
    *   .catch(console.error);
    */
   fetchMessage(messageID) {
+    if (!this.client.user.bot) {
+      return this.fetchMessages({ limit: 1, around: messageID }).then(messages => {
+        const msg = messages.first();
+        if (msg.id !== messageID) throw new Error('Message not found.');
+        return msg;
+      });
+    }
     return this.client.rest.methods.getChannelMessage(this, messageID).then(data => {
       const msg = data instanceof Message ? data : new Message(this, data, this.client);
       this._cacheMessage(msg);

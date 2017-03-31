@@ -2,15 +2,16 @@ const request = require('superagent');
 const Constants = require('../../util/Constants');
 
 class APIRequest {
-  constructor(rest, method, url, auth, data, files, forceBot = false) {
+  constructor(rest, method, path, auth, data, files, forceBot = false) {
     this.client = rest.client;
     this.rest = rest;
+    this.client = rest.client;
     this.method = method;
-    this.url = url;
+    this.path = path.toString();
     this.auth = auth;
     this.data = data;
     this.files = files;
-    this.route = this.getRoute(this.url);
+    this.route = this.getRoute(this.path);
     this.forceBot = forceBot;
   }
 
@@ -37,7 +38,8 @@ class APIRequest {
   }
 
   gen() {
-    const apiRequest = request[this.method](this.url);
+    const API = `${this.client.options.http.host}/api/v${this.client.options.http.version}`;
+    const apiRequest = request[this.method](`${API}${this.path}`);
     if (this.auth) apiRequest.set('authorization', this.getAuth());
     if (this.files) {
       for (const file of this.files) if (file && file.file) apiRequest.attach(file.name, file.file, file.name);
@@ -46,7 +48,7 @@ class APIRequest {
     } else if (this.data) {
       apiRequest.send(this.data);
     }
-    if (!this.rest.client.browser) apiRequest.set('User-Agent', this.rest.userAgentManager.userAgent);
+    if (!this.client.browser) apiRequest.set('User-Agent', this.rest.userAgentManager.userAgent);
     return apiRequest;
   }
 }

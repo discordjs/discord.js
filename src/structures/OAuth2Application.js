@@ -90,7 +90,7 @@ class OAuth2Application {
     this.flags = data.flags;
 
     /**
-     * oauth2 secret for the app
+     * OAuth2 secret for the application
      * @type {boolean}
      */
     this.secret = data.secret;

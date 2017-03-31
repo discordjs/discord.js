@@ -203,6 +203,7 @@ class StreamDispatcher extends VolumeInterface {
 
       if (this.paused) {
         this.setSpeaking(false);
+        // Old code?
         // data.timestamp = data.timestamp + 4294967295 ? data.timestamp + 960 : 0;
         data.pausedTime += data.length * 10;
         this.player.voiceConnection.voiceManager.client.setTimeout(() => this.process(), data.length * 10);
