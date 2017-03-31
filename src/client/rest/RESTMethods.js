@@ -536,10 +536,10 @@ class RESTMethods {
 
   removeMemberRole(member, role) {
     return new Promise(resolve => {
-		if (!role) {
-		  Promise.reject(new Error('Could not resolve to a role.'));
-		  return;
-		}
+      if (!role) {
+        Promise.reject(new Error('Could not resolve to a role.'));
+        return;
+      }
       if (!member._roles.includes(role.id)) {
         resolve(member);
         return;
