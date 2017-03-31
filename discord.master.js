@@ -4801,7 +4801,7 @@ class Guild {
    * .then(role => console.log(`Created role ${role}`))
    * .catch(console.error)
    */
-  createRole(data) {
+  createRole(data = {}) {
     return this.client.rest.methods.createGuildRole(this, data);
   }
 
@@ -17027,6 +17027,7 @@ class RESTMethods {
 
   createGuildRole(guild, data) {
     if (data.color) data.color = this.client.resolver.resolveColor(data.color);
+    if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
     return this.rest.makeRequest('post', Constants.Endpoints.guildRoles(guild.id), true, data).then(role =>
       this.client.actions.GuildRoleCreate.handle({
         guild_id: guild.id,
