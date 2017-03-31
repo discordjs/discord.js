@@ -20,6 +20,12 @@ class TextBasedChannel {
      * @type {?Snowflake}
      */
     this.lastMessageID = null;
+
+    /**
+     * The Message object of the last message in the channel, if one was sent.
+     * @type {?Message}
+     */
+    this.lastMessage = null;
   }
 
   /**
@@ -31,7 +37,8 @@ class TextBasedChannel {
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
-   * @property {FileOptions|string} [file] A file to send with the message
+   * @property {FileOptions|string} [file] A file to send with the message **(deprecated)**
+   * @property {FileOptions[]|string[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
@@ -72,24 +79,35 @@ class TextBasedChannel {
       options = {};
     }
 
+    if (options.embed && options.embed.file) options.file = options.embed.file;
+
     if (options.file) {
-      if (typeof options.file === 'string') options.file = { attachment: options.file };
-      if (!options.file.name) {
-        if (typeof options.file.attachment === 'string') {
-          options.file.name = path.basename(options.file.attachment);
-        } else if (options.file.attachment && options.file.attachment.path) {
-          options.file.name = path.basename(options.file.attachment.path);
-        } else {
-          options.file.name = 'file.jpg';
+      if (options.files) options.files.push(options.file);
+      else options.files = [options.file];
+    }
+
+    if (options.files) {
+      for (const i in options.files) {
+        let file = options.files[i];
+        if (typeof file === 'string') file = { attachment: file };
+        if (!file.name) {
+          if (typeof file.attachment === 'string') {
+            file.name = path.basename(file.attachment);
+          } else if (file.attachment && file.attachment.path) {
+            file.name = path.basename(file.attachment.path);
+          } else {
+            file.name = 'file.jpg';
+          }
         }
+        options.files[i] = file;
       }
 
-      return this.client.resolver.resolveBuffer(options.file.attachment).then(file =>
-        this.client.rest.methods.sendMessage(this, content, options, {
-          file,
-          name: options.file.name,
+      return Promise.all(options.files.map(file =>
+        this.client.resolver.resolveBuffer(file.attachment).then(buffer => {
+          file.file = buffer;
+          return file;
         })
-      );
+      )).then(files => this.client.rest.methods.sendMessage(this, content, options, files));
     }
 
     return this.client.rest.methods.sendMessage(this, content, options);
@@ -128,6 +146,17 @@ class TextBasedChannel {
   }
 
   /**
+   * Send files to this channel
+   * @param {FileOptions[]|string[]} files Files to send with the message
+   * @param {StringResolvable} [content] Text for the message
+   * @param {MessageOptions} [options] Options for the message
+   * @returns {Promise<Message>}
+   */
+  sendFiles(files, content, options = {}) {
+    return this.send(content, Object.assign(options, { files }));
+  }
+
+  /**
    * Send a file to this channel
    * @param {BufferResolvable} attachment File to send
    * @param {string} [name='file.jpg'] Name and extension of the file
@@ -136,7 +165,7 @@ class TextBasedChannel {
    * @returns {Promise<Message>}
    */
   sendFile(attachment, name, content, options = {}) {
-    return this.send(content, Object.assign(options, { file: { attachment, name } }));
+    return this.sendFiles([{ attachment, name }], content, options);
   }
 
   /**
@@ -151,9 +180,10 @@ class TextBasedChannel {
   }
 
   /**
-   * Gets a single message from this channel, regardless of it being cached or not.
-   * <warn>This is only available when using a bot account.</warn>
-   * @param {string} messageID ID of the message to get
+   * Gets a single message from this channel, regardless of it being cached or not. Since the single message fetching
+   * endpoint is reserved for bot accounts, this abstracts the `fetchMessages` method to obtain the single message when
+   * using a user account.
+   * @param {Snowflake} messageID ID of the message to get
    * @returns {Promise<Message>}
    * @example
    * // get message
@@ -162,6 +192,13 @@ class TextBasedChannel {
    *   .catch(console.error);
    */
   fetchMessage(messageID) {
+    if (!this.client.user.bot) {
+      return this.fetchMessages({ limit: 1, around: messageID }).then(messages => {
+        const msg = messages.first();
+        if (msg.id !== messageID) throw new Error('Message not found.');
+        return msg;
+      });
+    }
     return this.client.rest.methods.getChannelMessage(this, messageID).then(data => {
       const msg = data instanceof Message ? data : new Message(this, data, this.client);
       this._cacheMessage(msg);
@@ -174,15 +211,15 @@ class TextBasedChannel {
    * `after` are mutually exclusive. All the parameters are optional.
    * @typedef {Object} ChannelLogsQueryOptions
    * @property {number} [limit=50] Number of messages to acquire
-   * @property {string} [before] ID of a message to get the messages that were posted before it
-   * @property {string} [after] ID of a message to get the messages that were posted after it
-   * @property {string} [around] ID of a message to get the messages that were posted around it
+   * @property {Snowflake} [before] ID of a message to get the messages that were posted before it
+   * @property {Snowflake} [after] ID of a message to get the messages that were posted after it
+   * @property {Snowflake} [around] ID of a message to get the messages that were posted around it
    */
 
   /**
    * Gets the past messages sent in this channel. Resolves with a collection mapping message ID's to Message objects.
    * @param {ChannelLogsQueryOptions} [options={}] Query parameters to pass in
-   * @returns {Promise<Collection<string, Message>>}
+   * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
    * // get messages
    * channel.fetchMessages({limit: 10})
@@ -203,7 +240,7 @@ class TextBasedChannel {
 
   /**
    * Fetches the pinned messages of this channel and returns a collection of them.
-   * @returns {Promise<Collection<string, Message>>}
+   * @returns {Promise<Collection<Snowflake, Message>>}
    */
   fetchPinnedMessages() {
     return this.client.rest.methods.getChannelPinnedMessages(this).then(data => {
@@ -216,6 +253,33 @@ class TextBasedChannel {
       return messages;
     });
   }
+
+  /**
+   * @typedef {Object} MessageSearchOptions
+   * @property {string} [content] Message content
+   * @property {Snowflake} [maxID] Maximum ID for the filter
+   * @property {Snowflake} [minID] Minimum ID for the filter
+   * @property {string} [has] One of `link`, `embed`, `file`, `video`, `image`, or `sound`,
+   * or add `-` to negate (e.g. `-file`)
+   * @property {ChannelResolvable} [channel] Channel to limit search to (only for guild search endpoint)
+   * @property {UserResolvable} [author] Author to limit search
+   * @property {string} [authorType] One of `user`, `bot`, `webhook`, or add `-` to negate (e.g. `-webhook`)
+   * @property {string} [sortBy='recent'] `recent` or `relevant`
+   * @property {string} [sortOrder='desc'] `asc` or `desc`
+   * @property {number} [contextSize=2] How many messages to get around the matched message (0 to 2)
+   * @property {number} [limit=25] Maximum number of results to get (1 to 25)
+   * @property {number} [offset=0] Offset the "pages" of results (since you can only see 25 at a time)
+   * @property {UserResolvable} [mentions] Mentioned user filter
+   * @property {boolean} [mentionsEveryone] If everyone is mentioned
+   * @property {string} [linkHostname] Filter links by hostname
+   * @property {string} [embedProvider] The name of an embed provider
+   * @property {string} [embedType] one of `image`, `video`, `url`, `rich`
+   * @property {string} [attachmentFilename] The name of an attachment
+   * @property {string} [attachmentExtension] The extension of an attachment
+   * @property {Date} [before] Date to find messages before
+   * @property {Date} [after] Date to find messages before
+   * @property {Date} [during] Date to find messages during (range of date to date + 24 hours)
+   */
 
   /**
    * Performs a search within the channel.
@@ -330,7 +394,7 @@ class TextBasedChannel {
    * filter.
    * @param {CollectorFilterFunction} filter The filter function to use
    * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector
-   * @returns {Promise<Collection<string, Message>>}
+   * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
    * // await !vote messages
    * const filter = m => m.content.startsWith('!vote');
@@ -355,17 +419,26 @@ class TextBasedChannel {
   /**
    * Bulk delete given messages that are newer than two weeks
    * <warn>This is only available when using a bot account.</warn>
-   * @param {Collection<string, Message>|Message[]|number} messages Messages to delete, or number of messages to delete
+   * @param {Collection<Snowflake, Message>|Message[]|number} messages Messages or number of messages to delete
    * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
-   * @returns {Promise<Collection<string, Message>>} Deleted messages
+   * @returns {Promise<Collection<Snowflake, Message>>} Deleted messages
    */
   bulkDelete(messages, filterOld = false) {
-    if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs));
+    if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs, filterOld));
     if (messages instanceof Array || messages instanceof Collection) {
       const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
       return this.client.rest.methods.bulkDeleteMessages(this, messageIDs, filterOld);
     }
     throw new TypeError('The messages must be an Array, Collection, or number.');
+  }
+
+  /**
+   * Marks all messages in this channel as read
+   * <warn>This is only available when using a user account.</warn>
+   * @returns {Promise<TextChannel|GroupDMChannel|DMChannel>}
+   */
+  acknowledge() {
+    return this.client.rest.methods.ackTextMessage(this);
   }
 
   _cacheMessage(message) {
@@ -377,8 +450,8 @@ class TextBasedChannel {
   }
 }
 
-exports.applyToClass = (structure, full = false) => {
-  const props = ['send', 'sendMessage', 'sendEmbed', 'sendFile', 'sendCode'];
+exports.applyToClass = (structure, full = false, ignore = []) => {
+  const props = ['send', 'sendMessage', 'sendEmbed', 'sendFile', 'sendFiles', 'sendCode'];
   if (full) {
     props.push(
       '_cacheMessage',
@@ -396,6 +469,7 @@ exports.applyToClass = (structure, full = false) => {
     );
   }
   for (const prop of props) {
+    if (ignore.includes(prop)) continue;
     Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
   }
 };

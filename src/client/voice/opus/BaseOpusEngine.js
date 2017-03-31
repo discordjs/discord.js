@@ -10,6 +10,8 @@ class BaseOpus {
   decode(buffer) {
     return buffer;
   }
+
+  destroy() {} // eslint-disable-line no-empty-function
 }
 
 module.exports = BaseOpus;

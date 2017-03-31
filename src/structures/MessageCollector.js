@@ -119,7 +119,7 @@ class MessageCollector extends EventEmitter {
 
       const onEnd = (...args) => {
         cleanup();
-        reject(...args);
+        reject(...args); // eslint-disable-line prefer-promise-reject-errors
       };
 
       this.once('message', onMessage);
@@ -137,7 +137,7 @@ class MessageCollector extends EventEmitter {
     this.channel.client.removeListener('message', this.listener);
     /**
      * Emitted when the Collector stops collecting.
-     * @param {Collection<string, Message>} collection A collection of messages collected
+     * @param {Collection<Snowflake, Message>} collection A collection of messages collected
      * during the lifetime of the collector, mapped by the ID of the messages.
      * @param {string} reason The reason for the end of the collector. If it ended because it reached the specified time
      * limit, this would be `time`. If you invoke `.stop()` without specifying a reason, this would be `user`. If it
