@@ -61,10 +61,11 @@ exports.DefaultOptions = {
       $referrer: '',
       $referring_domain: '',
     },
+    version: 6,
   },
   http: {
-    PROTOCOL_VERSION: 6,
-    HOST: 'https://discordapp.com',
+    version: 6,
+    host: 'https://discordapp.com',
   },
 };
 

@@ -41,7 +41,7 @@ class RESTMethods {
 
   getGateway() {
     return this.rest.makeRequest('get', Endpoints.gateway, true).then(res => {
-      this.client.ws.gateway = `${res.url}/?v=${this.client.options.http.PROTOCOL_VERSION}`;
+      this.client.ws.gateway = `${res.url}/?v=${this.client.options.ws.version}`;
       return this.client.ws.gateway;
     });
   }

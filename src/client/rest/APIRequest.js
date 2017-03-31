@@ -32,13 +32,9 @@ class APIRequest {
     throw new Error(Constants.Errors.NO_TOKEN);
   }
 
-  getAPI() {
-    const http = this.client.options.http;
-    return `${http.HOST}/api/v${http.PROTOCOL_VERSION}`;
-  }
-
   gen() {
-    const apiRequest = request[this.method](`${this.getAPI()}${this.path}`);
+    const API = `${this.client.options.http.host}/api/v${this.client.options.http.version}`;
+    const apiRequest = request[this.method](`${API}${this.path}`);
     if (this.auth) apiRequest.set('authorization', this.getAuth());
     if (this.files) {
       for (const file of this.files) if (file && file.file) apiRequest.attach(file.name, file.file, file.name);
