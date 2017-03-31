@@ -506,9 +506,9 @@ class RESTMethods {
   }
 
   addMemberRole(member, role) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       if (!role) {
-        Promise.reject(new Error('Could not resolve to a role.'));
+        reject(new Error('Could not resolve to a role.'));
         return;
       }
       if (member._roles.includes(role.id)) {
@@ -535,9 +535,9 @@ class RESTMethods {
   }
 
   removeMemberRole(member, role) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       if (!role) {
-        Promise.reject(new Error('Could not resolve to a role.'));
+        reject(new Error('Could not resolve to a role.'));
         return;
       }
       if (!member._roles.includes(role.id)) {
