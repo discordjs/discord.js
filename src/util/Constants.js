@@ -66,6 +66,7 @@ exports.DefaultOptions = {
   http: {
     version: 6,
     host: 'https://discordapp.com',
+    cdn: 'https://cdn.discordapp.com',
   },
 };
 
@@ -83,7 +84,7 @@ exports.Errors = {
   INVALID_TOKEN: 'An invalid token was provided.',
 };
 
-exports.Endpoints = {
+const Endpoints = exports.Endpoints = {
   User: userID => {
     if (userID.id) userID = userID.id;
     const base = `/users/${userID}`;
@@ -97,9 +98,9 @@ exports.Endpoints = {
       Note: id => `${base}/notes/${id}`,
       Mentions: (limit, roles, everyone, guildID) =>
         `${base}/mentions?limit=${limit}&roles=${roles}&everyone=${everyone}${guildID ? `&guild_id=${guildID}` : ''}`,
-      Avatar: hash => {
+      Avatar: (root, hash) => {
         if (userID === '1') return hash;
-        return hash;
+        return Endpoints.CDN(root).Avatar(userID, hash);
       },
     };
   },
@@ -124,8 +125,8 @@ exports.Endpoints = {
       ack: `${base}/ack`,
       settings: `${base}/settings`,
       Emoji: emojiID => `${base}/emojis/${emojiID}`,
-      Icon: hash => `cdn/${hash}`,
-      Splash: hash => `cdn/${hash}`,
+      Icon: (root, hash) => Endpoints.CDN(root).Icon(guildID, hash),
+      Splash: (root, hash) => Endpoints.CDN(root).Splash(guildID, hash),
       Role: roleID => `${base}/roles/${roleID}`,
       Member: memberID => {
         const mbase = `${base}/members/${memberID}`;
@@ -176,9 +177,14 @@ exports.Endpoints = {
   },
   Message: m => exports.Endpoints.Channel(m.channel).Message(m),
   Member: m => exports.Endpoints.Guild(m.guild).Member(m),
-  CDN: {
-    Emoji: emojiID => `/emojis/$${emojiID}.png`,
-    Asset: name => `/assets/${name}`,
+  CDN(root) {
+    return {
+      Emoji: emojiID => `${root}/emojis/$${emojiID}.png`,
+      Asset: name => `${root}/assets/${name}`,
+      Avatar: (userID, hash) => `${root}/avatars/${userID}/${hash}.${hash.startsWith('a_') ? 'gif' : 'png'}?size=2048`,
+      Icon: (guildID, hash) => `${root}/icons/${guildID}/${hash}.jpg`,
+      Splash: (guildID, hash) => `${root}/splashes/${guildID}/${hash}.jpg`,
+    };
   },
   OAUTH2: {
     Application: appID => {

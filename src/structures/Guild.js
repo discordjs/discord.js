@@ -245,7 +245,7 @@ class Guild {
    */
   get iconURL() {
     if (!this.icon) return null;
-    return Constants.Endpoints.guildIcon(this.id, this.icon);
+    return Constants.Endpoints.Guild(this).Icon(this.client.options.http.cdn, this.icon);
   }
 
   /**
@@ -255,7 +255,7 @@ class Guild {
    */
   get splashURL() {
     if (!this.splash) return null;
-    return Constants.Endpoints.guildSplash(this.id, this.splash);
+    return Constants.Endpoints.Guild(this).Splash(this.client.options.http.cdn, this.splash);
   }
 
   /**
