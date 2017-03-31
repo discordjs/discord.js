@@ -58,7 +58,7 @@ class RESTMethods {
     });
   }
 
-  sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code, reply } = {}, files = null) {
+  sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code, format, reply } = {}, files = null) {
     return new Promise((resolve, reject) => { // eslint-disable-line complexity
       if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
 
@@ -92,6 +92,14 @@ class RESTMethods {
           const mention = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
           content = `${mention}${content ? `, ${content}` : ''}`;
           if (split) split.prepend = `${mention}, ${split.prepend || ''}`;
+        }
+
+        if (format) {
+          if (Array.isArray(format)) {
+            for (const f of format) content = Util.applyFormat(f, content);
+          } else {
+            content = Util.applyFormat(format, content);
+          }
         }
 
         // Split the content

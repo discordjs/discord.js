@@ -40,6 +40,7 @@ class TextBasedChannel {
    * @property {FileOptions|string} [file] A file to send with the message **(deprecated)**
    * @property {FileOptions[]|string[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
+   * @property {string|string[]} [format] Markdown formatting to apply; This is always applied *after* code
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
    * @property {UserResolvable} [reply] User to reply to (prefixes the message with a mention, except in DMs)

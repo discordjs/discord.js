@@ -1,5 +1,5 @@
 const superagent = require('superagent');
-const botGateway = require('./Constants').Endpoints.botGateway;
+const Constants = require('./Constants');
 
 /**
  * Contains various general-purpose utility methods. These functions are also available on the base `Discord` object.
@@ -46,6 +46,20 @@ class Util {
   }
 
   /**
+   * Format a string with markdown
+   * @param {string} format one of `bold`, `italic`, `underlined`, `strikethrough`
+   * @param {string} str String to format
+   * @returns {string} formatted string
+   */
+  static formatString(format, str) {
+    if (!(format in Constants.MarkdownFormats)) throw new Error(`Inavlid markdown format: ${format}`);
+    const token = Constants.MarkdownFormats[format];
+    if (str.startsWith(token[0])) str = `\u200b${str}`;
+    if (str.endsWith(token[token.length - 1])) str = `${str}\u200b`;
+    return `${token}${str}${token}`;
+  }
+
+  /**
    * Gets the recommended shard count from Discord.
    * @param {string} token Discord auth token
    * @param {number} [guildsPerShard=1000] Number of guilds per shard
@@ -54,7 +68,7 @@ class Util {
   static fetchRecommendedShards(token, guildsPerShard = 1000) {
     return new Promise((resolve, reject) => {
       if (!token) throw new Error('A token must be provided.');
-      superagent.get(botGateway)
+      superagent.get(Constants.Endpoints.botGateway)
         .set('Authorization', `Bot ${token.replace(/^Bot\s*/i, '')}`)
         .end((err, res) => {
           if (err) reject(err);
