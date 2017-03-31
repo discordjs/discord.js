@@ -267,6 +267,7 @@ class VoiceBroadcast extends VolumeInterface {
 
   _startPlaying() {
     if (this.tickInterval) clearInterval(this.tickInterval);
+    // Old code?
     // this.tickInterval = this.client.setInterval(this.tick.bind(this), 20);
     this._startTime = Date.now();
     this._count = 0;
@@ -301,7 +302,7 @@ class VoiceBroadcast extends VolumeInterface {
 
     let packetMatrix = {};
 
-    const getOpusPacket = (volume) => {
+    const getOpusPacket = volume => {
       if (packetMatrix[volume]) return packetMatrix[volume];
 
       const opusEncoder = this._encoders.get(volume);

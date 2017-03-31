@@ -37,7 +37,8 @@ class TextBasedChannel {
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
-   * @property {FileOptions|string} [file] A file to send with the message
+   * @property {FileOptions|string} [file] A file to send with the message **(deprecated)**
+   * @property {FileOptions[]|string[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
@@ -81,23 +82,32 @@ class TextBasedChannel {
     if (options.embed && options.embed.file) options.file = options.embed.file;
 
     if (options.file) {
-      if (typeof options.file === 'string') options.file = { attachment: options.file };
-      if (!options.file.name) {
-        if (typeof options.file.attachment === 'string') {
-          options.file.name = path.basename(options.file.attachment);
-        } else if (options.file.attachment && options.file.attachment.path) {
-          options.file.name = path.basename(options.file.attachment.path);
-        } else {
-          options.file.name = 'file.jpg';
+      if (options.files) options.files.push(options.file);
+      else options.files = [options.file];
+    }
+
+    if (options.files) {
+      for (const i in options.files) {
+        let file = options.files[i];
+        if (typeof file === 'string') file = { attachment: file };
+        if (!file.name) {
+          if (typeof file.attachment === 'string') {
+            file.name = path.basename(file.attachment);
+          } else if (file.attachment && file.attachment.path) {
+            file.name = path.basename(file.attachment.path);
+          } else {
+            file.name = 'file.jpg';
+          }
         }
+        options.files[i] = file;
       }
 
-      return this.client.resolver.resolveBuffer(options.file.attachment).then(file =>
-        this.client.rest.methods.sendMessage(this, content, options, {
-          file,
-          name: options.file.name,
+      return Promise.all(options.files.map(file =>
+        this.client.resolver.resolveBuffer(file.attachment).then(buffer => {
+          file.file = buffer;
+          return file;
         })
-      );
+      )).then(files => this.client.rest.methods.sendMessage(this, content, options, files));
     }
 
     return this.client.rest.methods.sendMessage(this, content, options);
@@ -136,6 +146,17 @@ class TextBasedChannel {
   }
 
   /**
+   * Send files to this channel
+   * @param {FileOptions[]|string[]} files Files to send with the message
+   * @param {StringResolvable} [content] Text for the message
+   * @param {MessageOptions} [options] Options for the message
+   * @returns {Promise<Message>}
+   */
+  sendFiles(files, content, options = {}) {
+    return this.send(content, Object.assign(options, { files }));
+  }
+
+  /**
    * Send a file to this channel
    * @param {BufferResolvable} attachment File to send
    * @param {string} [name='file.jpg'] Name and extension of the file
@@ -144,7 +165,7 @@ class TextBasedChannel {
    * @returns {Promise<Message>}
    */
   sendFile(attachment, name, content, options = {}) {
-    return this.send(content, Object.assign(options, { file: { attachment, name } }));
+    return this.sendFiles([{ attachment, name }], content, options);
   }
 
   /**
@@ -159,8 +180,9 @@ class TextBasedChannel {
   }
 
   /**
-   * Gets a single message from this channel, regardless of it being cached or not.
-   * <warn>This is only available when using a bot account.</warn>
+   * Gets a single message from this channel, regardless of it being cached or not. Since the single message fetching
+   * endpoint is reserved for bot accounts, this abstracts the `fetchMessages` method to obtain the single message when
+   * using a user account.
    * @param {Snowflake} messageID ID of the message to get
    * @returns {Promise<Message>}
    * @example
@@ -170,6 +192,13 @@ class TextBasedChannel {
    *   .catch(console.error);
    */
   fetchMessage(messageID) {
+    if (!this.client.user.bot) {
+      return this.fetchMessages({ limit: 1, around: messageID }).then(messages => {
+        const msg = messages.first();
+        if (msg.id !== messageID) throw new Error('Message not found.');
+        return msg;
+      });
+    }
     return this.client.rest.methods.getChannelMessage(this, messageID).then(data => {
       const msg = data instanceof Message ? data : new Message(this, data, this.client);
       this._cacheMessage(msg);
@@ -395,12 +424,21 @@ class TextBasedChannel {
    * @returns {Promise<Collection<Snowflake, Message>>} Deleted messages
    */
   bulkDelete(messages, filterOld = false) {
-    if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs));
+    if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs, filterOld));
     if (messages instanceof Array || messages instanceof Collection) {
       const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
       return this.client.rest.methods.bulkDeleteMessages(this, messageIDs, filterOld);
     }
     throw new TypeError('The messages must be an Array, Collection, or number.');
+  }
+
+  /**
+   * Marks all messages in this channel as read
+   * <warn>This is only available when using a user account.</warn>
+   * @returns {Promise<TextChannel|GroupDMChannel|DMChannel>}
+   */
+  acknowledge() {
+    return this.client.rest.methods.ackTextMessage(this);
   }
 
   _cacheMessage(message) {
@@ -413,7 +451,7 @@ class TextBasedChannel {
 }
 
 exports.applyToClass = (structure, full = false, ignore = []) => {
-  const props = ['send', 'sendMessage', 'sendEmbed', 'sendFile', 'sendCode'];
+  const props = ['send', 'sendMessage', 'sendEmbed', 'sendFile', 'sendFiles', 'sendCode'];
   if (full) {
     props.push(
       '_cacheMessage',

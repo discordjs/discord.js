@@ -149,86 +149,10 @@ class ClientDataResolver {
    * @returns {string}
    */
   resolveInviteCode(data) {
-    const inviteRegex = /discord(?:app)?\.(?:gg|com\/invite)\/([a-z0-9]{5})/i;
+    const inviteRegex = /discord(?:app\.com\/invite|\.gg)\/([\w-]{2,255})/i;
     const match = inviteRegex.exec(data);
     if (match && match[1]) return match[1];
     return data;
-  }
-
-  /**
-   * Data that can be resolved to give a permission number. This can be:
-   * * A string
-   * * A permission number
-   *
-   * Possible strings:
-   * ```js
-   * [
-   *   'CREATE_INSTANT_INVITE',
-   *   'KICK_MEMBERS',
-   *   'BAN_MEMBERS',
-   *   'ADMINISTRATOR',
-   *   'MANAGE_CHANNELS',
-   *   'MANAGE_GUILD',
-   *   'ADD_REACTIONS', // add reactions to messages
-   *   'READ_MESSAGES',
-   *   'SEND_MESSAGES',
-   *   'SEND_TTS_MESSAGES',
-   *   'MANAGE_MESSAGES',
-   *   'EMBED_LINKS',
-   *   'ATTACH_FILES',
-   *   'READ_MESSAGE_HISTORY',
-   *   'MENTION_EVERYONE',
-   *   'EXTERNAL_EMOJIS', // use external emojis
-   *   'CONNECT', // connect to voice
-   *   'SPEAK', // speak on voice
-   *   'MUTE_MEMBERS', // globally mute members on voice
-   *   'DEAFEN_MEMBERS', // globally deafen members on voice
-   *   'MOVE_MEMBERS', // move member's voice channels
-   *   'USE_VAD', // use voice activity detection
-   *   'CHANGE_NICKNAME',
-   *   'MANAGE_NICKNAMES', // change nicknames of others
-   *   'MANAGE_ROLES_OR_PERMISSIONS',
-   *   'MANAGE_WEBHOOKS',
-   *   'MANAGE_EMOJIS'
-   * ]
-   * ```
-   * @typedef {string|number} PermissionResolvable
-   */
-
-  /**
-   * Resolves a PermissionResolvable to a permission number
-   * @param {PermissionResolvable} permission The permission resolvable to resolve
-   * @returns {number}
-   */
-  resolvePermission(permission) {
-    if (typeof permission === 'string') permission = Constants.PermissionFlags[permission];
-    if (typeof permission !== 'number' || permission < 1) throw new Error(Constants.Errors.NOT_A_PERMISSION);
-    return permission;
-  }
-
-  /**
-   * Turn an array of permissions into a valid Discord permission bitfield
-   * @param {PermissionResolvable[]} permissions Permissions to resolve together
-   * @returns {number}
-   */
-  resolvePermissions(permissions) {
-    let bitfield = 0;
-    for (const permission of permissions) bitfield |= this.resolvePermission(permission);
-    return bitfield;
-  }
-
-  hasPermission(bitfield, name, explicit = false) {
-    const permission = this.resolvePermission(name);
-    if (!explicit && (bitfield & Constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
-    return (bitfield & permission) > 0;
-  }
-
-  serializePermissions(bitfield) {
-    const serializedPermissions = {};
-    for (const name in Constants.PermissionFlags) {
-      serializedPermissions[name] = this.hasPermission(bitfield, name);
-    }
-    return serializedPermissions;
   }
 
   /**
