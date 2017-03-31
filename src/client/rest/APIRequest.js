@@ -2,14 +2,15 @@ const request = require('superagent');
 const Constants = require('../../util/Constants');
 
 class APIRequest {
-  constructor(rest, method, url, auth, data, files) {
+  constructor(rest, method, path, auth, data, files) {
     this.rest = rest;
+    this.client = rest.client;
     this.method = method;
-    this.url = url;
+    this.path = path.toString();
     this.auth = auth;
     this.data = data;
     this.files = files;
-    this.route = this.getRoute(this.url);
+    this.route = this.getRoute(this.path);
   }
 
   getRoute(url) {
@@ -23,16 +24,21 @@ class APIRequest {
   }
 
   getAuth() {
-    if (this.rest.client.token && this.rest.client.user && this.rest.client.user.bot) {
-      return `Bot ${this.rest.client.token}`;
-    } else if (this.rest.client.token) {
-      return this.rest.client.token;
+    if (this.client.token && this.client.user && this.client.user.bot) {
+      return `Bot ${this.client.token}`;
+    } else if (this.client.token) {
+      return this.client.token;
     }
     throw new Error(Constants.Errors.NO_TOKEN);
   }
 
+  getAPI() {
+    const http = this.client.options.http;
+    return `${http.HOST}/api/v${http.PROTOCOL_VERSION}`;
+  }
+
   gen() {
-    const apiRequest = request[this.method](this.url);
+    const apiRequest = request[this.method](`${this.getAPI()}${this.path}`);
     if (this.auth) apiRequest.set('authorization', this.getAuth());
     if (this.files) {
       for (const file of this.files) if (file && file.file) apiRequest.attach(file.name, file.file, file.name);
@@ -41,7 +47,7 @@ class APIRequest {
     } else if (this.data) {
       apiRequest.send(this.data);
     }
-    if (!this.rest.client.browser) apiRequest.set('User-Agent', this.rest.userAgentManager.userAgent);
+    if (!this.client.browser) apiRequest.set('User-Agent', this.rest.userAgentManager.userAgent);
     return apiRequest;
   }
 }

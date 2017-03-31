@@ -62,6 +62,10 @@ exports.DefaultOptions = {
       $referring_domain: '',
     },
   },
+  http: {
+    PROTOCOL_VERSION: 6,
+    HOST: 'https://discordapp.com',
+  },
 };
 
 exports.Errors = {
@@ -78,95 +82,123 @@ exports.Errors = {
   INVALID_TOKEN: 'An invalid token was provided.',
 };
 
-const PROTOCOL_VERSION = exports.PROTOCOL_VERSION = 6;
-const HOST = exports.HOST = `https://discordapp.com`;
-const API = exports.API = `${HOST}/api/v${PROTOCOL_VERSION}`;
-const Endpoints = exports.Endpoints = {
-  // General
-  login: `${API}/auth/login`,
-  logout: `${API}/auth/logout`,
-  gateway: `${API}/gateway`,
-  botGateway: `${API}/gateway/bot`,
-  invite: id => `${API}/invite/${id}`,
-  inviteLink: id => `https://discord.gg/${id}`,
-  assets: asset => `${HOST}/assets/${asset}`,
-  CDN: 'https://cdn.discordapp.com',
-
-  // Users
-  user: userID => `${API}/users/${userID}`,
-  userChannels: userID => `${Endpoints.user(userID)}/channels`,
-  userProfile: userID => `${Endpoints.user(userID)}/profile`,
-  avatar: (userID, avatar) => {
-    if (userID === '1') return avatar;
-    return `${Endpoints.CDN}/avatars/${userID}/${avatar}.${avatar.startsWith('a_') ? 'gif' : 'jpg'}?size=1024`;
+exports.Endpoints = {
+  User: userID => {
+    if (userID.id) userID = userID.id;
+    const base = `/users/${userID}`;
+    return {
+      toString: () => base,
+      channels: `${base}/channels`,
+      profile: `${base}/profile`,
+      relationships: `${base}/relationships`,
+      Relationship: uID => `${base}/relationships/${uID}`,
+      Guild: guildID => `${base}/guilds/${guildID}`,
+      Note: id => `${base}/notes/${id}`,
+      Mentions: (limit, roles, everyone, guildID) =>
+        `${base}/mentions?limit=${limit}&roles=${roles}&everyone=${everyone}${guildID ? `&guild_id=${guildID}` : ''}`,
+      Avatar: hash => {
+        if (userID === '1') return hash;
+        return hash;
+      },
+    };
   },
-  me: `${API}/users/@me`,
-  meGuild: guildID => `${Endpoints.me}/guilds/${guildID}`,
-  meChannels: `${API}/users/@me/channels`,
-  meMentions: (limit, roles, everyone, guildID) =>
-    `users/@me/mentions?limit=${limit}&roles=${roles}&everyone=${everyone}${guildID ? `&guild_id=${guildID}` : ''}`,
-  relationships: userID => `${Endpoints.user(userID)}/relationships`,
-  note: userID => `${Endpoints.me}/notes/${userID}`,
-
-  voiceRegions: `${API}/voice/regions`,
-
-  // Guilds
-  guilds: `${API}/guilds`,
-  guild: guildID => `${Endpoints.guilds}/${guildID}`,
-  guildIcon: (guildID, hash) => `${Endpoints.CDN}/icons/${guildID}/${hash}.jpg`,
-  guildSplash: (guildID, hash) => `${Endpoints.CDN}/splashes/${guildID}/${hash}.jpg`,
-  guildPrune: guildID => `${Endpoints.guild(guildID)}/prune`,
-  guildEmbed: guildID => `${Endpoints.guild(guildID)}/embed`,
-  guildInvites: guildID => `${Endpoints.guild(guildID)}/invites`,
-  guildRoles: guildID => `${Endpoints.guild(guildID)}/roles`,
-  guildRole: (guildID, roleID) => `${Endpoints.guildRoles(guildID)}/${roleID}`,
-  guildBans: guildID => `${Endpoints.guild(guildID)}/bans`,
-  guildIntegrations: guildID => `${Endpoints.guild(guildID)}/integrations`,
-  guildMembers: guildID => `${Endpoints.guild(guildID)}/members`,
-  guildMember: (guildID, memberID) => `${Endpoints.guildMembers(guildID)}/${memberID}`,
-  guildMemberRole: (guildID, memberID, roleID) => `${Endpoints.guildMember(guildID, memberID)}/roles/${roleID}`,
-  guildMemberNickname: guildID => `${Endpoints.guildMember(guildID, '@me')}/nick`,
-  guildChannels: guildID => `${Endpoints.guild(guildID)}/channels`,
-  guildEmojis: guildID => `${Endpoints.guild(guildID)}/emojis`,
-  guildEmoji: (guildID, emojiID) => `${Endpoints.guildEmojis(guildID)}/${emojiID}`,
-  guildSearch: guildID => `${Endpoints.guild(guildID)}/messages/search`,
-  guildVoiceRegions: guildID => `${Endpoints.guild(guildID)}/regions`,
-  guildWebhooks: guildID => `${Endpoints.guild(guildID)}/webhooks`,
-
-  // Channels
-  channels: `${API}/channels`,
-  channel: channelID => `${Endpoints.channels}/${channelID}`,
-  channelMessages: channelID => `${Endpoints.channel(channelID)}/messages`,
-  channelInvites: channelID => `${Endpoints.channel(channelID)}/invites`,
-  channelTyping: channelID => `${Endpoints.channel(channelID)}/typing`,
-  channelPermissions: channelID => `${Endpoints.channel(channelID)}/permissions`,
-  channelMessage: (channelID, messageID) => `${Endpoints.channelMessages(channelID)}/${messageID}`,
-  channelWebhooks: channelID => `${Endpoints.channel(channelID)}/webhooks`,
-  channelSearch: channelID => `${Endpoints.channelMessages(channelID)}/search`,
-
-  dmChannelRecipient: (channelID, recipientID) => `${Endpoints.channel(channelID)}/recipients/${recipientID}`,
-
-  // Message reactions
-  messageReactions: (channelID, messageID) => `${Endpoints.channelMessage(channelID, messageID)}/reactions`,
-  messageReaction:
-    (channel, msg, emoji, limit) =>
-          `${Endpoints.messageReactions(channel, msg)}/${emoji}` +
-          `${limit ? `?limit=${limit}` : ''}`,
-  selfMessageReaction: (channel, msg, emoji, limit) =>
-          `${Endpoints.messageReaction(channel, msg, emoji, limit)}/@me`,
-  userMessageReaction: (channel, msg, emoji, limit, id) =>
-          `${Endpoints.messageReaction(channel, msg, emoji, limit)}/${id}`,
-
-  // Webhooks
-  webhook: (webhookID, token) => `${API}/webhooks/${webhookID}${token ? `/${token}` : ''}`,
-
-  // OAuth
-  oauth2Application: appID => `${API}/oauth2/applications/${appID}`,
-  getApp: id => `${API}/oauth2/authorize?client_id=${id}`,
-
-  // Emoji
-  emoji: emojiID => `${Endpoints.CDN}/emojis/${emojiID}.png`,
+  guilds: '/guilds',
+  Guild: guildID => {
+    if (guildID.id) guildID = guildID.id;
+    const base = `/guilds/${guildID}`;
+    return {
+      toString: () => base,
+      prune: `${base}/prune`,
+      embed: `${base}/embed`,
+      bans: `${base}/bans`,
+      integrations: `${base}/integrations`,
+      members: `${base}/members`,
+      channels: `${base}/channels`,
+      invites: `${base}/invites`,
+      roles: `${base}/roles`,
+      emojis: `${base}/emojis`,
+      search: `${base}/messages/search`,
+      voiceRegions: `${base}/regions`,
+      webhooks: `${base}/webhooks`,
+      ack: `${base}/ack`,
+      Emoji: emojiID => `${base}/emojis/${emojiID}`,
+      Icon: hash => `cdn/${hash}`,
+      Splash: hash => `cdn/${hash}`,
+      Role: roleID => `${base}/roles/${roleID}`,
+      Member: memberID => {
+        const mbase = `${base}/members/${memberID}`;
+        return {
+          toString: () => mbase,
+          role: roleID => `${mbase}/roles/${roleID}`,
+          nickname: `${mbase}/nick`,
+        };
+      },
+    };
+  },
+  channels: '/channels',
+  Channel: channelID => {
+    if (channelID.id) channelID = channelID.id;
+    const base = `/channels/${channelID}`;
+    return {
+      toString: () => base,
+      messages: {
+        toString: () => `${base}/messages`,
+        bulkDelete: `${base}/messages/bulk-delete`,
+      },
+      invites: `${base}/invites`,
+      typing: `${base}/typing`,
+      permissions: `${base}/permissions`,
+      webhooks: `${base}/webhooks`,
+      search: `${base}/search`,
+      ack: `${base}/ack`,
+      pins: `${base}/pins`,
+      Pin: messageID => `${base}/pins/${messageID}`,
+      Recipient: recipientID => `${base}/recipients/${recipientID}`,
+      Message: messageID => {
+        if (messageID.id) messageID = messageID.id;
+        const mbase = `${base}/messages/${messageID}`;
+        return {
+          toString: () => mbase,
+          reactions: `${mbase}/reactions`,
+          ack: `${base}/ack`,
+          Reaction: (emoji, limit) => {
+            const rbase = `${mbase}/reactions/${emoji}${limit ? `?limit=${limit}` : ''}`;
+            return {
+              toString: () => rbase,
+              User: userID => `${rbase}/${userID}`,
+            };
+          },
+        };
+      },
+    };
+  },
+  Message: m => exports.Endpoints.Channel(m.channel).Message(m),
+  Member: m => exports.Endpoints.Guild(m.guild).Member(m),
+  CDN: {
+    Emoji: emojiID => `/emojis/$${emojiID}.png`,
+    Asset: name => `/assets/${name}`,
+  },
+  OAUTH2: {
+    Application: appID => {
+      const base = `/oauth2/applications/${appID}`;
+      return {
+        toString: () => base,
+        reset: `${base}/reset`,
+      };
+    },
+    App: appID => `/oauth2/authorize?client_id=${appID}`,
+  },
+  login: '/auth/login',
+  logout: '/auth/logout',
+  voiceRegions: '/voice/regions',
+  gateway: {
+    toString: () => '/gateway',
+    bot: '/gateway/bot',
+  },
+  Invite: inviteID => `/invite/${inviteID}`,
+  Webhook: (webhookID, token) => `/webhooks/${webhookID}${token ? `/${token}` : ''}`,
 };
+
 
 /**
  * The current status of the client. Here are the available statuses:
