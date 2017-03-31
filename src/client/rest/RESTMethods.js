@@ -418,6 +418,7 @@ class RESTMethods {
 
   createGuildRole(guild, data) {
     if (data.color) data.color = this.client.resolver.resolveColor(data.color);
+    if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
     return this.rest.makeRequest('post', Constants.Endpoints.guildRoles(guild.id), true, data).then(role =>
       this.client.actions.GuildRoleCreate.handle({
         guild_id: guild.id,
