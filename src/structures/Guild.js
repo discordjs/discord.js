@@ -379,10 +379,7 @@ class Guild {
    */
   fetchMembers(query = '', limit = 0) {
     return new Promise((resolve, reject) => {
-      if (this.memberCount === this.members.size) {
-        resolve(new Collection());
-        return;
-      }
+      if (this.memberCount === this.members.size) return resolve(new Collection());
       this.client.ws.send({
         op: Constants.OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
@@ -405,6 +402,7 @@ class Guild {
         this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
         reject(new Error('Members didn\'t arrive in time.'));
       }, 120 * 1000);
+      return undefined;
     });
   }
 
