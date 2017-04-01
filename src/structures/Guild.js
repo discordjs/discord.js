@@ -921,7 +921,7 @@ class Guild {
     position = Number(position);
     if (isNaN(position)) return Promise.reject(new Error('Supplied position is not a number.'));
 
-    let updatedRoles = this._sortedRoles().array();
+    let updatedRoles = this._sortedRoles.array();
 
     Util.moveElementInArray(updatedRoles, role, position, relative);
 
