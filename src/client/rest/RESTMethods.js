@@ -149,7 +149,7 @@ class RESTMethods {
   }
 
   deleteMessage(message) {
-    return this.rest.makeRequest('del', Endpoints.Message(message), true)
+    return this.rest.makeRequest('delete', Endpoints.Message(message), true)
       .then(() =>
         this.client.actions.MessageDelete.handle({
           id: message.id,
@@ -296,7 +296,7 @@ class RESTMethods {
   deleteChannel(channel) {
     if (channel instanceof User || channel instanceof GuildMember) channel = this.getExistingDM(channel);
     if (!channel) return Promise.reject(new Error('No channel to delete.'));
-    return this.rest.makeRequest('del', Endpoints.Channel(channel), true).then(data => {
+    return this.rest.makeRequest('delete', Endpoints.Channel(channel), true).then(data => {
       data.id = channel.id;
       return this.client.actions.ChannelDelete.handle(data).channel;
     });
@@ -316,7 +316,7 @@ class RESTMethods {
 
   leaveGuild(guild) {
     if (guild.ownerID === this.client.user.id) return Promise.reject(new Error('Guild is owned by the client.'));
-    return this.rest.makeRequest('del', Endpoints.User('@me').Guild(guild.id), true).then(() =>
+    return this.rest.makeRequest('delete', Endpoints.User('@me').Guild(guild.id), true).then(() =>
       this.client.actions.GuildDelete.handle({ id: guild.id }).guild
     );
   }
@@ -348,7 +348,7 @@ class RESTMethods {
 
   // Untested but probably will work
   deleteGuild(guild) {
-    return this.rest.makeRequest('del', Endpoints.Guild(guild), true).then(() =>
+    return this.rest.makeRequest('delete', Endpoints.Guild(guild), true).then(() =>
       this.client.actions.GuildDelete.handle({ id: guild.id }).guild
     );
   }
@@ -391,7 +391,7 @@ class RESTMethods {
   }
 
   kickGuildMember(guild, member) {
-    return this.rest.makeRequest('del', Endpoints.Guild(guild).Member(member), true).then(() =>
+    return this.rest.makeRequest('delete', Endpoints.Guild(guild).Member(member), true).then(() =>
       this.client.actions.GuildMemberRemove.handle({
         guild_id: guild.id,
         user: member.user,
@@ -411,7 +411,7 @@ class RESTMethods {
   }
 
   deleteGuildRole(role) {
-    return this.rest.makeRequest('del', Endpoints.Guild(role.guild).Role(role.id), true).then(() =>
+    return this.rest.makeRequest('delete', Endpoints.Guild(role.guild).Role(role.id), true).then(() =>
       this.client.actions.GuildRoleDelete.handle({
         guild_id: role.guild.id,
         role_id: role.id,
@@ -425,7 +425,7 @@ class RESTMethods {
 
   deletePermissionOverwrites(overwrite) {
     return this.rest.makeRequest(
-      'del', `${Endpoints.Channel(overwrite.channel).permissions}/${overwrite.id}`, true
+      'delete', `${Endpoints.Channel(overwrite.channel).permissions}/${overwrite.id}`, true
     ).then(() => overwrite);
   }
 
@@ -571,7 +571,7 @@ class RESTMethods {
         reject(new Error('Took too long to receive the ban remove event.'));
       }, 10000);
 
-      this.rest.makeRequest('del', `${Endpoints.Guild(guild).bans}/${id}`, true).catch(err => {
+      this.rest.makeRequest('delete', `${Endpoints.Guild(guild).bans}/${id}`, true).catch(err => {
         this.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
         this.client.clearTimeout(timeout);
         reject(err);
@@ -615,7 +615,7 @@ class RESTMethods {
   }
 
   unpinMessage(message) {
-    return this.rest.makeRequest('del', Endpoints.Channel(message.channel).Pin(message.id), true)
+    return this.rest.makeRequest('delete', Endpoints.Channel(message.channel).Pin(message.id), true)
       .then(() => message);
   }
 
@@ -633,7 +633,7 @@ class RESTMethods {
   }
 
   deleteInvite(invite) {
-    return this.rest.makeRequest('del', Endpoints.Invite(invite.code), true).then(() => invite);
+    return this.rest.makeRequest('delete', Endpoints.Invite(invite.code), true).then(() => invite);
   }
 
   getInvite(code) {
