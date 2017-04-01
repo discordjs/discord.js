@@ -6057,7 +6057,7 @@ class Guild {
      */
     this.verificationLevel = data.verification_level;
 
-     /**
+    /**
      * The explicit content filter level of the guild.
      * @type {number}
      */
