@@ -805,6 +805,15 @@ class RESTMethods {
     );
   }
 
+  setChannelPositions(guildID, channels) {
+    return this.rest.makeRequest('patch', Endpoints.Guild(guildID).channels, true, channels).then(() =>
+      this.client.actions.GuildChannelsPositionUpdate.handle({
+        guild_id: guildID,
+        channels,
+      }).guild
+    );
+  }
+
   addMessageReaction(message, emoji) {
     return this.rest.makeRequest(
       'put', Endpoints.Message(message).Reaction(emoji).User('@me'), true
