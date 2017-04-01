@@ -397,8 +397,7 @@ class Guild {
         for (const member of members.values()) fetchedMembers.set(member.user.id, member);
         if (this.memberCount === this.members.size || ((query || limit) && members.size < 1000)) {
           this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
-          resolve(fetchedMembers);
-          return;
+          return resolve(fetchedMembers);
         }
       };
       this.client.on(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
