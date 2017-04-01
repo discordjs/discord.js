@@ -329,11 +329,9 @@ class RESTMethods {
     options.icon = this.client.resolver.resolveBase64(options.icon) || null;
     options.region = options.region || 'us-central';
     return new Promise((resolve, reject) => {
+      // eslint-disable-next-line consistent-return
       this.rest.makeRequest('post', Endpoints.guilds, true, options).then(data => {
-        if (this.client.guilds.has(data.id)) {
-          resolve(this.client.guilds.get(data.id));
-          return;
-        }
+        if (this.client.guilds.has(data.id)) return resolve(this.client.guilds.get(data.id));
 
         const handleGuild = guild => {
           if (guild.id === data.id) {
@@ -492,10 +490,7 @@ class RESTMethods {
 
   addMemberRole(member, role) {
     return new Promise((resolve, reject) => {
-      if (member._roles.includes(role.id)) {
-        resolve(member);
-        return;
-      }
+      if (member._roles.includes(role.id)) return resolve(member);
 
       const listener = (oldMember, newMember) => {
         if (!oldMember._roles.includes(role.id) && newMember._roles.includes(role.id)) {
@@ -505,18 +500,20 @@ class RESTMethods {
       };
 
       this.client.on(Constants.Events.GUILD_MEMBER_UPDATE, listener);
-      this.client.setTimeout(() => this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener), 10e3);
+      const timeout = this.client.setTimeout(() =>
+        this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener), 10e3);
 
-      this.rest.makeRequest('put', Endpoints.Member(member).Role(role.id), true).catch(reject);
+      return this.rest.makeRequest('put', Endpoints.Member(member).Role(role.id), true).catch(err => {
+        this.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
+        this.client.clearTimeout(timeout);
+        reject(err);
+      });
     });
   }
 
   removeMemberRole(member, role) {
     return new Promise((resolve, reject) => {
-      if (!member._roles.includes(role.id)) {
-        resolve(member);
-        return;
-      }
+      if (!member._roles.includes(role.id)) return resolve(member);
 
       const listener = (oldMember, newMember) => {
         if (oldMember._roles.includes(role.id) && !newMember._roles.includes(role.id)) {
@@ -526,9 +523,14 @@ class RESTMethods {
       };
 
       this.client.on(Constants.Events.GUILD_MEMBER_UPDATE, listener);
-      this.client.setTimeout(() => this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener), 10e3);
+      const timeout = this.client.setTimeout(() =>
+        this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener), 10e3);
 
-      this.rest.makeRequest('delete', Endpoints.Member(member).Role(role.id), true).catch(reject);
+      return this.rest.makeRequest('delete', Endpoints.Member(member).Role(role.id), true).catch(err => {
+        this.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
+        this.client.clearTimeout(timeout);
+        reject(err);
+      });
     });
   }
 
@@ -600,16 +602,8 @@ class RESTMethods {
     data.hoist = typeof _data.hoist !== 'undefined' ? _data.hoist : role.hoist;
     data.mentionable = typeof _data.mentionable !== 'undefined' ? _data.mentionable : role.mentionable;
 
-    if (_data.permissions) {
-      let perms = 0;
-      for (let perm of _data.permissions) {
-        if (typeof perm === 'string') perm = Permissions.FLAGS[perm];
-        perms |= perm;
-      }
-      data.permissions = perms;
-    } else {
-      data.permissions = role.permissions;
-    }
+    if (_data.permissions) data.permissions = Permissions.resolve(_data.permissions);
+    else data.permissions = role.permissions;
 
     return this.rest.makeRequest('patch', Endpoints.Guild(role.guild).Role(role.id), true, data).then(_role =>
       this.client.actions.GuildRoleUpdate.handle({
