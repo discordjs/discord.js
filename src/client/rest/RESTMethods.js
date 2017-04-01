@@ -122,11 +122,8 @@ class RESTMethods {
         }
       };
 
-      if (channel instanceof User || channel instanceof GuildMember) {
-        this.createDM(channel).then(send, reject);
-      } else {
-        send(channel);
-      }
+      if (channel instanceof User || channel instanceof GuildMember) this.createDM(channel).then(send, reject);
+      else send(channel);
     });
   }
 
@@ -192,7 +189,7 @@ class RESTMethods {
         channel_id: channel.id,
         ids: messages,
       }).messages
-      );
+    );
   }
 
   search(target, options) {
@@ -278,7 +275,6 @@ class RESTMethods {
     const data = this.client.user.bot ?
       { access_tokens: options.accessTokens, nicks: options.nicks } :
       { recipients: options.recipients };
-
     return this.rest.makeRequest('post', Endpoints.User('@me').channels, true, data)
       .then(res => new GroupDMChannel(this.client, res));
   }
@@ -329,7 +325,6 @@ class RESTMethods {
     options.icon = this.client.resolver.resolveBase64(options.icon) || null;
     options.region = options.region || 'us-central';
     return new Promise((resolve, reject) => {
-      // eslint-disable-next-line consistent-return
       this.rest.makeRequest('post', Endpoints.guilds, true, options).then(data => {
         if (this.client.guilds.has(data.id)) return resolve(this.client.guilds.get(data.id));
 
@@ -346,6 +341,7 @@ class RESTMethods {
           this.client.removeListener(Constants.Events.GUILD_CREATE, handleGuild);
           reject(new Error('Took too long to receive guild data.'));
         }, 10000);
+        return undefined;
       }, reject);
     });
   }
@@ -823,7 +819,7 @@ class RESTMethods {
   }
 
   removeMessageReaction(message, emoji, user) {
-    let endpoint = Endpoints.Message(message).Reaction(emoji).User(user === this.client.user.id ? '@me' : user.id);
+    const endpoint = Endpoints.Message(message).Reaction(emoji).User(user === this.client.user.id ? '@me' : user.id);
     return this.rest.makeRequest('delete', endpoint, true).then(() =>
       this.client.actions.MessageReactionRemove.handle({
         user_id: user,
