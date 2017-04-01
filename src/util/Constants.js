@@ -129,11 +129,12 @@ const Endpoints = exports.Endpoints = {
       Splash: (root, hash) => Endpoints.CDN(root).Splash(guildID, hash),
       Role: roleID => `${base}/roles/${roleID}`,
       Member: memberID => {
+        if (memberID.id) memberID = memberID.id;
         const mbase = `${base}/members/${memberID}`;
         return {
           toString: () => mbase,
-          role: roleID => `${mbase}/roles/${roleID}`,
-          nickname: `${mbase}/nick`,
+          Role: roleID => `${mbase}/roles/${roleID}`,
+          nickname: `${base}/members/@me/nick`,
         };
       },
     };
