@@ -1,8 +1,7 @@
 const Channel = require('./Channel');
 const Role = require('./Role');
 const PermissionOverwrites = require('./PermissionOverwrites');
-const EvaluatedPermissions = require('./EvaluatedPermissions');
-const Constants = require('../util/Constants');
+const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
 
 /**
@@ -60,12 +59,12 @@ class GuildChannel extends Channel {
    * Gets the overall set of permissions for a user in this channel, taking into account roles and permission
    * overwrites.
    * @param {GuildMemberResolvable} member The user that you want to obtain the overall permissions for
-   * @returns {?EvaluatedPermissions}
+   * @returns {?Permissions}
    */
   permissionsFor(member) {
     member = this.client.resolver.resolveGuildMember(this.guild, member);
     if (!member) return null;
-    if (member.id === this.guild.ownerID) return new EvaluatedPermissions(member, Constants.ALL_PERMISSIONS);
+    if (member.id === this.guild.ownerID) return new Permissions(member, Permissions.ALL);
 
     let permissions = 0;
 
@@ -73,17 +72,28 @@ class GuildChannel extends Channel {
     for (const role of roles.values()) permissions |= role.permissions;
 
     const overwrites = this.overwritesFor(member, true, roles);
+
+    if (overwrites.everyone) {
+      permissions &= ~overwrites.everyone.deny;
+      permissions |= overwrites.everyone.allow;
+    }
+
     let allow = 0;
-    for (const overwrite of overwrites.role.concat(overwrites.member)) {
+    for (const overwrite of overwrites.roles) {
       permissions &= ~overwrite.deny;
       allow |= overwrite.allow;
     }
     permissions |= allow;
 
-    const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
-    if (admin) permissions = Constants.ALL_PERMISSIONS;
+    if (overwrites.member) {
+      permissions &= ~overwrites.member.deny;
+      permissions |= overwrites.member.allow;
+    }
 
-    return new EvaluatedPermissions(member, permissions);
+    const admin = Boolean(permissions & Permissions.FLAGS.ADMINISTRATOR);
+    if (admin) permissions = Permissions.ALL;
+
+    return new Permissions(member, permissions);
   }
 
   overwritesFor(member, verified = false, roles = null) {
@@ -92,18 +102,22 @@ class GuildChannel extends Channel {
 
     roles = roles || member.roles;
     const roleOverwrites = [];
-    const memberOverwrites = [];
+    let memberOverwrites;
+    let everyoneOverwrites;
 
     for (const overwrite of this.permissionOverwrites.values()) {
-      if (overwrite.id === member.id) {
-        memberOverwrites.push(overwrite);
+      if (overwrite.id === this.guild.id) {
+        everyoneOverwrites = overwrite;
       } else if (roles.has(overwrite.id)) {
         roleOverwrites.push(overwrite);
+      } else if (overwrite.id === member.id) {
+        memberOverwrites = overwrite;
       }
     }
 
     return {
-      role: roleOverwrites,
+      everyone: everyoneOverwrites,
+      roles: roleOverwrites,
       member: memberOverwrites,
     };
   }
@@ -160,14 +174,14 @@ class GuildChannel extends Channel {
 
     for (const perm in options) {
       if (options[perm] === true) {
-        payload.allow |= Constants.PermissionFlags[perm] || 0;
-        payload.deny &= ~(Constants.PermissionFlags[perm] || 0);
+        payload.allow |= Permissions.FLAGS[perm] || 0;
+        payload.deny &= ~(Permissions.FLAGS[perm] || 0);
       } else if (options[perm] === false) {
-        payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
-        payload.deny |= Constants.PermissionFlags[perm] || 0;
+        payload.allow &= ~(Permissions.FLAGS[perm] || 0);
+        payload.deny |= Permissions.FLAGS[perm] || 0;
       } else if (options[perm] === null) {
-        payload.allow &= ~(Constants.PermissionFlags[perm] || 0);
-        payload.deny &= ~(Constants.PermissionFlags[perm] || 0);
+        payload.allow &= ~(Permissions.FLAGS[perm] || 0);
+        payload.deny &= ~(Permissions.FLAGS[perm] || 0);
       }
     }
 
@@ -304,7 +318,7 @@ class GuildChannel extends Channel {
    */
   get deletable() {
     return this.id !== this.guild.id &&
-      this.permissionsFor(this.client.user).hasPermission(Constants.PermissionFlags.MANAGE_CHANNELS);
+      this.permissionsFor(this.client.user).hasPermission(Permissions.FLAGS.MANAGE_CHANNELS);
   }
 
   /**

@@ -42,7 +42,7 @@ class MessageReaction {
    */
   get emoji() {
     if (this._emoji instanceof Emoji) return this._emoji;
-    // check to see if the emoji has become known to the client
+    // Check to see if the emoji has become known to the client
     if (this._emoji.id) {
       const emojis = this.message.client.emojis;
       if (emojis.has(this._emoji.id)) {
@@ -62,7 +62,7 @@ class MessageReaction {
   remove(user = this.message.client.user) {
     const message = this.message;
     user = this.message.client.resolver.resolveUserID(user);
-    if (!user) return Promise.reject('Couldn\'t resolve the user ID to remove from the reaction.');
+    if (!user) return Promise.reject(new Error('Couldn\'t resolve the user ID to remove from the reaction.'));
     return message.client.rest.methods.removeMessageReaction(
       message, this.emoji.identifier, user
     );
@@ -84,7 +84,7 @@ class MessageReaction {
         this.users.set(user.id, user);
       }
       this.count = this.users.size;
-      return users;
+      return this.users;
     });
   }
 }

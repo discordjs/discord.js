@@ -1,3 +1,5 @@
+const Snowflake = require('../util/Snowflake');
+
 /**
  * Represents an OAuth2 Application
  */
@@ -88,7 +90,7 @@ class OAuth2Application {
     this.flags = data.flags;
 
     /**
-     * oauth2 secret for the app
+     * OAuth2 secret for the application
      * @type {boolean}
      */
     this.secret = data.secret;
@@ -100,7 +102,7 @@ class OAuth2Application {
    * @readonly
    */
   get createdTimestamp() {
-    return (this.id / 4194304) + 1420070400000;
+    return Snowflake.deconstruct(this.id).timestamp;
   }
 
   /**

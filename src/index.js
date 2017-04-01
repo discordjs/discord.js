@@ -11,6 +11,8 @@ module.exports = {
   // Utilities
   Collection: require('./util/Collection'),
   Constants: require('./util/Constants'),
+  EvaluatedPermissions: require('./util/Permissions'),
+  Permissions: require('./util/Permissions'),
   Snowflake: require('./util/Snowflake'),
   SnowflakeUtil: require('./util/Snowflake'),
   Util: Util,
@@ -27,7 +29,6 @@ module.exports = {
   ClientUser: require('./structures/ClientUser'),
   DMChannel: require('./structures/DMChannel'),
   Emoji: require('./structures/Emoji'),
-  EvaluatedPermissions: require('./structures/EvaluatedPermissions'),
   Game: require('./structures/Presence').Game,
   GroupDMChannel: require('./structures/GroupDMChannel'),
   Guild: require('./structures/Guild'),

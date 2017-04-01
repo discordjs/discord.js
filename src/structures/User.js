@@ -1,6 +1,7 @@
 const TextBasedChannel = require('./interface/TextBasedChannel');
 const Constants = require('../util/Constants');
 const Presence = require('./Presence').Presence;
+const Snowflake = require('../util/Snowflake');
 
 /**
  * Represents a user on Discord.
@@ -76,7 +77,7 @@ class User {
    * @readonly
    */
   get createdTimestamp() {
-    return (this.id / 4194304) + 1420070400000;
+    return Snowflake.deconstruct(this.id).timestamp;
   }
 
   /**
@@ -108,7 +109,7 @@ class User {
    */
   get avatarURL() {
     if (!this.avatar) return null;
-    return Constants.Endpoints.avatar(this.id, this.avatar);
+    return Constants.Endpoints.User(this).Avatar(this.client.options.http.cdn, this.avatar);
   }
 
   /**
@@ -279,11 +280,12 @@ class User {
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  send() { return; }
-  sendMessage() { return; }
-  sendEmbed() { return; }
-  sendFile() { return; }
-  sendCode() { return; }
+  /* eslint-disable no-empty-function */
+  send() {}
+  sendMessage() {}
+  sendEmbed() {}
+  sendFile() {}
+  sendCode() {}
 }
 
 TextBasedChannel.applyToClass(User);

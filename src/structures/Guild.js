@@ -7,6 +7,7 @@ const GuildMember = require('./GuildMember');
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
+const Snowflake = require('../util/Snowflake');
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -217,7 +218,7 @@ class Guild {
    * @readonly
    */
   get createdTimestamp() {
-    return (this.id / 4194304) + 1420070400000;
+    return Snowflake.deconstruct(this.id).timestamp;
   }
 
   /**
@@ -245,7 +246,7 @@ class Guild {
    */
   get iconURL() {
     if (!this.icon) return null;
-    return Constants.Endpoints.guildIcon(this.id, this.icon);
+    return Constants.Endpoints.Guild(this).Icon(this.client.options.http.cdn, this.icon);
   }
 
   /**
@@ -255,7 +256,7 @@ class Guild {
    */
   get splashURL() {
     if (!this.splash) return null;
-    return Constants.Endpoints.guildSplash(this.id, this.splash);
+    return Constants.Endpoints.Guild(this).Splash(this.client.options.http.cdn, this.splash);
   }
 
   /**
@@ -278,7 +279,7 @@ class Guild {
   }
 
   /**
-   * The `#general` TextChannel of the server.
+   * The `#general` TextChannel of the guild.
    * @type {TextChannel}
    * @readonly
    */
@@ -287,8 +288,18 @@ class Guild {
   }
 
   /**
+   * The `@everyone` Role of the guild.
+   * @type {Role}
+   * @readonly
+   */
+  get defaultRole() {
+    return this.roles.get(this.id);
+  }
+
+  /**
    * Fetches a collection of roles in the current guild sorted by position.
-   * @returns {Collection<Snowflake, Role>}
+   * @type {Collection<Snowflake, Role>}
+   * @readonly
    */
   get _sortedRoles() {
     return this._sortPositionWithID(this.roles);
@@ -379,7 +390,7 @@ class Guild {
   fetchMembers(query = '', limit = 0) {
     return new Promise((resolve, reject) => {
       if (this.memberCount === this.members.size) {
-        // uncomment in v12
+        // Uncomment in v12
         // resolve(this.members)
         resolve(this);
         return;
@@ -396,10 +407,9 @@ class Guild {
         if (guild.id !== this.id) return;
         if (this.memberCount === this.members.size || members.length < 1000) {
           this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
-          // uncomment in v12
+          // Uncomment in v12
           // resolve(this.members)
           resolve(this);
-          return;
         }
       };
       this.client.on(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
@@ -683,7 +693,7 @@ class Guild {
    * .then(role => console.log(`Created role ${role}`))
    * .catch(console.error)
    */
-  createRole(data) {
+  createRole(data = {}) {
     return this.client.rest.methods.createGuildRole(this, data);
   }
 
@@ -751,6 +761,15 @@ class Guild {
    */
   delete() {
     return this.client.rest.methods.deleteGuild(this);
+  }
+
+  /**
+   * Marks all messages in this guild as read
+   * <warn>This is only available when using a user account.</warn>
+   * @returns {Promise<Guild>} this guild
+   */
+  acknowledge() {
+    return this.client.rest.methods.ackGuild(this);
   }
 
   /**
