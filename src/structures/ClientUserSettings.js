@@ -10,6 +10,10 @@ class ClientUserSettings {
     this.patch(data);
   }
 
+  /**
+   * Patch the data contained in this class with new partial data
+   * @param {Object} data Data to patch this with
+   */
   patch(data) {
     for (const key of Object.keys(Constants.UserSettingsMap)) {
       const value = Constants.UserSettingsMap[key];
