@@ -285,6 +285,14 @@ class Guild {
   get defaultChannel() {
     return this.channels.get(this.id);
   }
+  
+  /**
+   * Fetches a collection of roles in the current guild sorted by position.
+   * @returns {Collection<Snowflake, Role>}
+   */
+  get _sortedRoles() {
+    return this._sortPositionWithID(this.roles);
+  }
 
   /**
    * Returns the GuildMember form of a User object, if the user is present in the guild.
@@ -924,14 +932,6 @@ class Guild {
 
     updatedChannels = updatedChannels.map((r, i) => ({ id: r.id, position: i }));
     return this.client.rest.methods.setChannelPositions(this.id, updatedChannels);
-  }
-
-  /**
-   * Fetches a collection of roles in the current guild sorted by position.
-   * @returns {Collection<Snowflake, Role>}
-   */
-  _sortedRoles() {
-    return this._sortPositionWithID(this.roles);
   }
 
   /**
