@@ -9,7 +9,7 @@ class GuildMembersChunkHandler extends AbstractHandler {
     const guild = client.guilds.get(data.guild_id);
     if (!guild) return;
     const members = new Collection();
-    
+
     for (const member of data.members) members.set(member.id, guild._addMember(member, false));
 
     client.emit(Constants.Events.GUILD_MEMBERS_CHUNK, members, guild);
@@ -23,7 +23,6 @@ class GuildMembersChunkHandler extends AbstractHandler {
  * @event Client#guildMembersChunk
  * @param {Collection<Snowflake, GuildMember>} members The members in the chunk
  * @param {Guild} guild The guild related to the member chunk
-
  */
 
 module.exports = GuildMembersChunkHandler;
