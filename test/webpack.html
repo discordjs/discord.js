@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
 </head>
 <body>
-  <script type="text/javascript" src="../webpack/discord.11.0.0.js"></script>
+  <script type="text/javascript" src="../webpack/discord.js"></script>
   <script type="text/javascript" src="auth.js"></script>
   <script type="text/javascript">
     (() => {
@@ -28,12 +28,7 @@
       client.on('resume', (replayed, id) => log('[CLIENT RESUME]', replayed.toString(), id.toString()));
 
       client.login(localStorage.token || window.token || prompt('token pls', 'abcdef123456'))
-      .then((token) => {
-        localStorage.token = token;
-      }).catch((err) => {
-        console.log(err);
-        localStorage.token = null;
-      });
+        .then((token) => localStorage.token = token);
     })();
   </script>
 </body>

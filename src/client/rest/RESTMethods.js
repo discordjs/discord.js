@@ -115,11 +115,8 @@ class RESTMethods {
         }
       };
 
-      if (channel instanceof User || channel instanceof GuildMember) {
-        this.createDM(channel).then(send, reject);
-      } else {
-        send(channel);
-      }
+      if (channel instanceof User || channel instanceof GuildMember) this.createDM(channel).then(send, reject);
+      else send(channel);
     });
   }
 
@@ -252,7 +249,7 @@ class RESTMethods {
 
   createChannel(guild, channelName, channelType, overwrites) {
     if (overwrites instanceof Collection) overwrites = overwrites.array();
-    return this.rest.makeRequest('post', Endpoints.Guild(guild).channel, true, {
+    return this.rest.makeRequest('post', Endpoints.Guild(guild).channels, true, {
       name: channelName,
       type: channelType,
       permission_overwrites: overwrites,
@@ -271,9 +268,8 @@ class RESTMethods {
     const data = this.client.user.bot ?
       { access_tokens: options.accessTokens, nicks: options.nicks } :
       { recipients: options.recipients };
-
     return this.rest.makeRequest('post', Endpoints.User('@me').channels, true, data)
-    .then(res => new GroupDMChannel(this.client, res));
+      .then(res => new GroupDMChannel(this.client, res));
   }
 
   addUserToGroupDM(channel, options) {
@@ -281,7 +277,7 @@ class RESTMethods {
       { nick: options.nick, access_token: options.accessToken } :
       { recipient: options.id };
     return this.rest.makeRequest('put', Endpoints.Channel(channel).Recipient(options.id), true, data)
-    .then(() => channel);
+      .then(() => channel);
   }
 
   getExistingDM(recipient) {
@@ -323,24 +319,22 @@ class RESTMethods {
     options.region = options.region || 'us-central';
     return new Promise((resolve, reject) => {
       this.rest.makeRequest('post', Endpoints.guilds, true, options).then(data => {
-        if (this.client.guilds.has(data.id)) {
-          resolve(this.client.guilds.get(data.id));
-          return;
-        }
+        if (this.client.guilds.has(data.id)) return resolve(this.client.guilds.get(data.id));
 
         const handleGuild = guild => {
           if (guild.id === data.id) {
-            this.client.removeListener('guildCreate', handleGuild);
+            this.client.removeListener(Constants.Events.GUILD_CREATE, handleGuild);
             this.client.clearTimeout(timeout);
             resolve(guild);
           }
         };
-        this.client.on('guildCreate', handleGuild);
+        this.client.on(Constants.Events.GUILD_CREATE, handleGuild);
 
         const timeout = this.client.setTimeout(() => {
-          this.client.removeListener('guildCreate', handleGuild);
+          this.client.removeListener(Constants.Events.GUILD_CREATE, handleGuild);
           reject(new Error('Took too long to receive guild data.'));
         }, 10000);
+        return undefined;
       }, reject);
     });
   }
@@ -354,11 +348,8 @@ class RESTMethods {
 
   getUser(userID, cache) {
     return this.rest.makeRequest('get', Endpoints.User(userID), true).then(data => {
-      if (cache) {
-        return this.client.actions.UserGet.handle(data).user;
-      } else {
-        return new User(this.client, data);
-      }
+      if (cache) return this.client.actions.UserGet.handle(data).user;
+      else return new User(this.client, data);
     });
   }
 
@@ -463,11 +454,8 @@ class RESTMethods {
 
   getGuildMember(guild, user, cache) {
     return this.rest.makeRequest('get', Endpoints.Guild(guild).Member(user.id), true).then(data => {
-      if (cache) {
-        return this.client.actions.GuildMemberGet.handle(guild, data).member;
-      } else {
-        return new GuildMember(guild, data);
-      }
+      if (cache) return this.client.actions.GuildMemberGet.handle(guild, data).member;
+      else return new GuildMember(guild, data);
     });
   }
 
@@ -490,44 +478,48 @@ class RESTMethods {
   }
 
   addMemberRole(member, role) {
-    return new Promise(resolve => {
-      if (member._roles.includes(role.id)) {
-        resolve(member);
-        return;
-      }
+    return new Promise((resolve, reject) => {
+      if (member._roles.includes(role.id)) return resolve(member);
 
       const listener = (oldMember, newMember) => {
         if (!oldMember._roles.includes(role.id) && newMember._roles.includes(role.id)) {
-          this.client.removeListener('guildMemberUpdate', listener);
+          this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener);
           resolve(newMember);
         }
       };
 
-      this.client.on('guildMemberUpdate', listener);
-      this.client.setTimeout(() => this.client.removeListener('guildMemberUpdate', listener), 10e3);
+      this.client.on(Constants.Events.GUILD_MEMBER_UPDATE, listener);
+      const timeout = this.client.setTimeout(() =>
+        this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener), 10e3);
 
-      this.rest.makeRequest('put', Endpoints.Member(member).Role(role.id), true);
+      return this.rest.makeRequest('put', Endpoints.Member(member).Role(role.id), true).catch(err => {
+        this.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
+        this.client.clearTimeout(timeout);
+        reject(err);
+      });
     });
   }
 
   removeMemberRole(member, role) {
-    return new Promise(resolve => {
-      if (!member._roles.includes(role.id)) {
-        resolve(member);
-        return;
-      }
+    return new Promise((resolve, reject) => {
+      if (!member._roles.includes(role.id)) return resolve(member);
 
       const listener = (oldMember, newMember) => {
         if (oldMember._roles.includes(role.id) && !newMember._roles.includes(role.id)) {
-          this.client.removeListener('guildMemberUpdate', listener);
+          this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener);
           resolve(newMember);
         }
       };
 
-      this.client.on('guildMemberUpdate', listener);
-      this.client.setTimeout(() => this.client.removeListener('guildMemberUpdate', listener), 10e3);
+      this.client.on(Constants.Events.GUILD_MEMBER_UPDATE, listener);
+      const timeout = this.client.setTimeout(() =>
+        this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener), 10e3);
 
-      this.rest.makeRequest('delete', Endpoints.Member(member).Role(role.id), true);
+      return this.rest.makeRequest('delete', Endpoints.Member(member).Role(role.id), true).catch(err => {
+        this.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
+        this.client.clearTimeout(timeout);
+        reject(err);
+      });
     });
   }
 
@@ -599,16 +591,8 @@ class RESTMethods {
     data.hoist = typeof _data.hoist !== 'undefined' ? _data.hoist : role.hoist;
     data.mentionable = typeof _data.mentionable !== 'undefined' ? _data.mentionable : role.mentionable;
 
-    if (_data.permissions) {
-      let perms = 0;
-      for (let perm of _data.permissions) {
-        if (typeof perm === 'string') perm = Permissions.FLAGS[perm];
-        perms |= perm;
-      }
-      data.permissions = perms;
-    } else {
-      data.permissions = role.permissions;
-    }
+    if (_data.permissions) data.permissions = Permissions.resolve(_data.permissions);
+    else data.permissions = role.permissions;
 
     return this.rest.makeRequest('patch', Endpoints.Guild(role.guild).Role(role.id), true, data).then(_role =>
       this.client.actions.GuildRoleUpdate.handle({
@@ -679,7 +663,7 @@ class RESTMethods {
     if (_data.name) data.name = _data.name;
     if (_data.roles) data.roles = _data.roles.map(r => r.id ? r.id : r);
     return this.rest.makeRequest('patch', Endpoints.Guild(emoji.guild).Emoji(emoji.id), true, data)
-        .then(newEmoji => this.client.actions.GuildEmojiUpdate.handle(emoji, newEmoji).emoji);
+      .then(newEmoji => this.client.actions.GuildEmojiUpdate.handle(emoji, newEmoji).emoji);
   }
 
   deleteEmoji(emoji) {
@@ -814,6 +798,15 @@ class RESTMethods {
     );
   }
 
+  setChannelPositions(guildID, channels) {
+    return this.rest.makeRequest('patch', Endpoints.Guild(guildID).channels, true, channels).then(() =>
+      this.client.actions.GuildChannelsPositionUpdate.handle({
+        guild_id: guildID,
+        channels,
+      }).guild
+    );
+  }
+
   addMessageReaction(message, emoji) {
     return this.rest.makeRequest(
       'put', Endpoints.Message(message).Reaction(emoji).User('@me'), true
@@ -824,11 +817,11 @@ class RESTMethods {
         emoji: Util.parseEmoji(emoji),
         channel_id: message.channel.id,
       }).reaction
-    );
+      );
   }
 
   removeMessageReaction(message, emoji, user) {
-    let endpoint = Endpoints.Message(message).Reaction(emoji).User(user === this.client.user.id ? '@me' : user.id);
+    const endpoint = Endpoints.Message(message).Reaction(emoji).User(user === this.client.user.id ? '@me' : user.id);
     return this.rest.makeRequest('delete', endpoint, true).then(() =>
       this.client.actions.MessageReactionRemove.handle({
         user_id: user,
@@ -856,7 +849,7 @@ class RESTMethods {
 
   resetApplication(id) {
     return this.rest.makeRequest('post', Endpoints.OAUTH2.Application(id).reset, true)
-    .then(app => new OAuth2Application(this.client, app));
+      .then(app => new OAuth2Application(this.client, app));
   }
 
   setNote(user, note) {
@@ -870,12 +863,12 @@ class RESTMethods {
         const handler = guild => {
           if (guild.id === res.id) {
             resolve(guild);
-            this.client.removeListener('guildCreate', handler);
+            this.client.removeListener(Constants.Events.GUILD_CREATE, handler);
           }
         };
-        this.client.on('guildCreate', handler);
+        this.client.on(Constants.Events.GUILD_CREATE, handler);
         this.client.setTimeout(() => {
-          this.client.removeListener('guildCreate', handler);
+          this.client.removeListener(Constants.Events.GUILD_CREATE, handler);
           reject(new Error('Accepting invite timed out'));
         }, 120e3);
       })

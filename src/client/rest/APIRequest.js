@@ -1,4 +1,4 @@
-const request = require('superagent');
+const snekfetch = require('snekfetch');
 const Constants = require('../../util/Constants');
 
 class APIRequest {
@@ -39,17 +39,16 @@ class APIRequest {
 
   gen() {
     const API = `${this.client.options.http.host}/api/v${this.client.options.http.version}`;
-    const apiRequest = request[this.method](`${API}${this.path}`);
-    if (this.auth) apiRequest.set('authorization', this.getAuth());
+    const request = snekfetch[this.method](`${API}${this.path}`);
+    if (this.auth) request.set('Authorization', this.getAuth());
+    if (!this.rest.client.browser) request.set('User-Agent', this.rest.userAgentManager.userAgent);
     if (this.files) {
-      for (const file of this.files) if (file && file.file) apiRequest.attach(file.name, file.file, file.name);
-      this.data = this.data || {};
-      apiRequest.field('payload_json', JSON.stringify(this.data));
+      for (const file of this.files) if (file && file.file) request.attach(file.name, file.file, file.name);
+      if (typeof this.data !== 'undefined') request.attach('payload_json', JSON.stringify(this.data));
     } else if (this.data) {
-      apiRequest.send(this.data);
+      request.send(this.data);
     }
-    if (!this.client.browser) apiRequest.set('User-Agent', this.rest.userAgentManager.userAgent);
-    return apiRequest;
+    return request;
   }
 }
 

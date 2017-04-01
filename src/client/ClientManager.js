@@ -49,6 +49,7 @@ class ClientManager {
 
   destroy() {
     this.client.ws.destroy();
+    if (!this.client.user) return Promise.resolve();
     if (this.client.user.bot) {
       this.client.token = null;
       return Promise.resolve();

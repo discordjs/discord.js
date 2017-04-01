@@ -1,3 +1,4 @@
+const Long = require('long');
 const User = require('./User');
 const Role = require('./Role');
 const Emoji = require('./Emoji');
@@ -253,7 +254,7 @@ class Guild {
    */
   get iconURL() {
     if (!this.icon) return null;
-    return Constants.Endpoints.guildIcon(this.id, this.icon);
+    return Constants.Endpoints.Guild(this).Icon(this.client.options.http.cdn, this.icon);
   }
 
   /**
@@ -263,7 +264,7 @@ class Guild {
    */
   get splashURL() {
     if (!this.splash) return null;
-    return Constants.Endpoints.guildSplash(this.id, this.splash);
+    return Constants.Endpoints.Guild(this).Splash(this.client.options.http.cdn, this.splash);
   }
 
   /**
@@ -301,6 +302,15 @@ class Guild {
    */
   get defaultRole() {
     return this.roles.get(this.id);
+  }
+
+  /**
+   * Fetches a collection of roles in the current guild sorted by position.
+   * @type {Collection<Snowflake, Role>}
+   * @readonly
+   */
+  get _sortedRoles() {
+    return this._sortPositionWithID(this.roles);
   }
 
   /**
@@ -696,31 +706,6 @@ class Guild {
   }
 
   /**
-   * Set the position of a role in this guild
-   * @param {Role|Snowflake} role the role to edit, can be a role object or a role ID.
-   * @param {number} position the new position of the role
-   * @param {boolean} [relative=false] Position moves the role relative to its current position
-   * @returns {Promise<Guild>}
-   */
-  setRolePosition(role, position, relative = false) {
-    if (typeof role === 'string') {
-      role = this.roles.get(role);
-      if (!role) return Promise.reject(new Error('Supplied role is not a role or string.'));
-    }
-
-    position = Number(position);
-    if (isNaN(position)) return Promise.reject(new Error('Supplied position is not a number.'));
-
-    let updatedRoles = Object.assign([], this.roles.array()
-      .sort((r1, r2) => r1.position !== r2.position ? r1.position - r2.position : r1.id - r2.id));
-
-    Util.moveElementInArray(updatedRoles, role, position, relative);
-
-    updatedRoles = updatedRoles.map((r, i) => ({ id: r.id, position: i }));
-    return this.client.rest.methods.setRolePositions(this.id, updatedRoles);
-  }
-
-  /**
    * Creates a new custom emoji in the guild.
    * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji.
    * @param {string} name The name for the emoji.
@@ -926,6 +911,81 @@ class Guild {
       return;
     }
     this.presences.set(id, new Presence(presence));
+  }
+
+  /**
+   * Set the position of a role in this guild
+   * @param {string|Role} role The role to edit, can be a role object or a role ID.
+   * @param {number} position The new position of the role
+   * @param {boolean} [relative=false] Position Moves the role relative to its current position
+   * @returns {Promise<Guild>}
+   */
+  setRolePosition(role, position, relative = false) {
+    if (typeof role === 'string') {
+      role = this.roles.get(role);
+      if (!role) return Promise.reject(new Error('Supplied role is not a role or snowflake.'));
+    }
+
+    position = Number(position);
+    if (isNaN(position)) return Promise.reject(new Error('Supplied position is not a number.'));
+
+    let updatedRoles = this._sortedRoles().array();
+
+    Util.moveElementInArray(updatedRoles, role, position, relative);
+
+    updatedRoles = updatedRoles.map((r, i) => ({ id: r.id, position: i }));
+    return this.client.rest.methods.setRolePositions(this.id, updatedRoles);
+  }
+
+  /**
+   * Set the position of a channel in this guild
+   * @param {string|GuildChannel} channel The channel to edit, can be a channel object or a channel ID.
+   * @param {number} position The new position of the channel
+   * @param {boolean} [relative=false] Position Moves the channel relative to its current position
+   * @returns {Promise<Guild>}
+   */
+  setChannelPosition(channel, position, relative = false) {
+    if (typeof channel === 'string') {
+      channel = this.channels.get(channel);
+      if (!channel) return Promise.reject(new Error('Supplied channel is not a channel or snowflake.'));
+    }
+
+    position = Number(position);
+    if (isNaN(position)) return Promise.reject(new Error('Supplied position is not a number.'));
+
+    let updatedChannels = this._sortedChannels(channel.type).array();
+
+    Util.moveElementInArray(updatedChannels, channel, position, relative);
+
+    updatedChannels = updatedChannels.map((r, i) => ({ id: r.id, position: i }));
+    return this.client.rest.methods.setChannelPositions(this.id, updatedChannels);
+  }
+
+  /**
+   * Fetches a collection of channels in the current guild sorted by position.
+   * @param {string} type Channel type
+   * @returns {Collection<Snowflake, GuildChannel>}
+   */
+  _sortedChannels(type) {
+    return this._sortPositionWithID(this.channels.filter(c => {
+      if (type === 'voice' && c.type === 'voice') return true;
+      else if (type !== 'voice' && c.type !== 'voice') return true;
+      else return type === c.type;
+    }));
+  }
+
+  /**
+   * Sorts a collection by object position or ID if the positions are equivalent.
+   * Intended to be identical to Discord's sorting method.
+   * @param {Collection} collection The collection to sort
+   * @returns {Collection}
+   */
+  _sortPositionWithID(collection) {
+    return collection.sort((a, b) =>
+      a.position !== b.position ?
+      a.position - b.position :
+      Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber()
+    );
   }
 }
 

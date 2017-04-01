@@ -109,7 +109,7 @@ class User {
    */
   get avatarURL() {
     if (!this.avatar) return null;
-    return Constants.Endpoints.avatar(this.id, this.avatar);
+    return Constants.Endpoints.User(this).Avatar(this.client.options.http.cdn, this.avatar);
   }
 
   /**
