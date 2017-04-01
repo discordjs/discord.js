@@ -1,85 +1,59 @@
-<div align="center">
-  <br />
-  <p>
-    <a href="https://discord.js.org"><img src="https://discord.js.org/static/logo.svg" width="546" alt="discord.js" /></a>
-  </p>
-  <br />
-  <p>
-    <a href="https://discord.gg/bRCvFy9"><img src="https://discordapp.com/api/guilds/222078108977594368/embed.png" alt="Discord server" /></a>
-    <a href="https://www.npmjs.com/package/discord.js"><img src="https://img.shields.io/npm/v/discord.js.svg?maxAge=3600" alt="NPM version" /></a>
-    <a href="https://www.npmjs.com/package/discord.js"><img src="https://img.shields.io/npm/dt/discord.js.svg?maxAge=3600" alt="NPM downloads" /></a>
-    <a href="https://travis-ci.org/hydrabolt/discord.js"><img src="https://travis-ci.org/hydrabolt/discord.js.svg" alt="Build status" /></a>
-    <a href="https://david-dm.org/hydrabolt/discord.js"><img src="https://img.shields.io/david/hydrabolt/discord.js.svg?maxAge=3600" alt="Dependencies" /></a>
-  </p>
-  <p>
-    <a href="https://nodei.co/npm/discord.js/"><img src="https://nodei.co/npm/discord.js.png?downloads=true&stars=true" alt="NPM info" /></a>
-  </p>
-</div>
+Eris [![NPM version](https://img.shields.io/npm/v/eris.svg?style=flat-square)](https://npmjs.com/package/eris) [![Dependency Status](https://img.shields.io/david/abalabahaha/eris.svg?style=flat-square)](https://david-dm.org/abalabahaha/eris)
+====
 
-## About
-discord.js is a powerful [node.js](https://nodejs.org) module that allows you to interact with the
-[Discord API](https://discordapp.com/developers/docs/intro) very easily.
+A NodeJS wrapper for interfacing with Discord.
 
-- Object-oriented
-- Predictable abstractions
-- Performant
-- 100% coverage of the Discord API
+Installing
+----------
 
-## Installation
-**Node.js 6.0.0 or newer is required.**  
-Ignore any warnings about unmet peer dependencies, as they're all optional.
+You will need NodeJS 4+. If you need voice support you will also need Python 2.7 and a C++ compiler. Refer to [the Getting Started section of the docs](https://abal.moe/Eris/docs.html) for more details.
 
-Without voice support: `npm install discord.js --save`  
-With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discord.js node-opus --save`  
-With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js opusscript --save`
-
-### Audio engines
-The preferred audio engine is node-opus, as it performs significantly better than opusscript. When both are available, discord.js will automatically choose node-opus.
-Using opusscript is only recommended for development environments where node-opus is tough to get working.
-For production bots, using node-opus should be considered a necessity, especially if they're going to be running on multiple servers.
-
-### Optional packages
-- [bufferutil](https://www.npmjs.com/package/bufferutil) to greatly speed up the WebSocket when *not* using uws (`npm install bufferutil --save`)
-- [erlpack](https://github.com/hammerandchisel/erlpack) for significantly faster WebSocket data (de)serialisation (`npm install hammerandchisel/erlpack --save`)
-- [sodium](https://www.npmjs.com/package/sodium) for faster voice packet encryption/decryption (`npm install sodium --save`)
-- [uws](https://www.npmjs.com/package/uws) for a much faster WebSocket connection (`npm install uws --save`)  
-  **Note:** This package does not handle disconnects entirely correctly, which causes automatic reconnection to Discord to not function.
-  If you use this package, it may be wise to destroy + recreate the client entirely or restart the process upon disconnect.
-
-## Example usage
-```js
-const Discord = require('discord.js');
-const client = new Discord.Client();
-
-client.on('ready', () => {
-  console.log('I am ready!');
-});
-
-client.on('message', message => {
-  if (message.content === 'ping') {
-    message.reply('pong');
-  }
-});
-
-client.login('your token');
+```
+npm install --no-optional eris
 ```
 
-A bot template using discord.js can be generated using [generator-discordbot](https://www.npmjs.com/package/generator-discordbot).
+If you need voice support, remove the `--no-optional`
 
-## Links
-* [Website](https://discord.js.org/) ([source](https://github.com/hydrabolt/discord.js-site))
-* [Documentation](https://discord.js.org/#/docs)
-* [Discord.js server](https://discord.gg/bRCvFy9)
-* [Discord API server](https://discord.gg/rV4BwdK)
-* [GitHub](https://github.com/hydrabolt/discord.js)
-* [NPM](https://www.npmjs.com/package/discord.js)
-* [Related libraries](https://discordapi.com/unofficial/libs.html) (see also [discord-rpc](https://www.npmjs.com/package/discord-rpc))
+Ping Pong Example
+-----------------
 
-## Contributing
-Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation](https://discord.js.org/#/docs).  
-See [the contribution guide](https://github.com/hydrabolt/discord.js/blob/master/CONTRIBUTING.md) if you'd like to submit a PR.
+```js
+const Eris = require("eris");
 
-## Help
-If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle
-nudge in the right direction, please don't hesitate to join our official [Discord.js Server](https://discord.gg/bRCvFy9).
+var bot = new Eris("BOT_TOKEN");
+// Replace BOT_TOKEN with your bot account's token
+
+bot.on("ready", () => { // When the bot is ready
+    console.log("Ready!"); // Log "Ready!"
+});
+
+bot.on("messageCreate", (msg) => { // When a message is created
+    if(msg.content === "!ping") { // If the message content is "!ping"
+        bot.createMessage(msg.channel.id, "Pong!");
+        // Send a message in the same channel with "Pong!"
+    } else if(msg.content === "!pong") { // Otherwise, if the message is "!pong"
+        bot.createMessage(msg.channel.id, "Ping!");
+        // Respond with "Ping!"
+    }
+});
+
+bot.connect(); // Get the bot to connect to Discord
+```
+
+More examples can be found in [the examples folder](https://github.com/abalabahaha/eris/tree/master/examples).
+
+Useful Links
+------------
+
+[The website](https://abal.moe/Eris) includes more detailed information on getting started, as well as documentation for the different components.
+
+[The Discord channel](https://discordapp.com/invite/n2g6BQP) is the best place to get support/contact me.
+
+[The GitHub repo](https://github.com/abalabahaha/eris) has the most updated code.
+
+[The NPM package](https://npmjs.com/package/eris)
+
+License
+-------
+
+Refer to the [LICENSE](LICENSE) file.

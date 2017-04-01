@@ -1,93 +1,46 @@
 {
-  "name": "discord.js",
-  "version": "11.0.0",
-  "description": "A powerful library for interacting with the Discord API",
-  "main": "./src/index",
-  "types": "./typings/index.d.ts",
+  "name": "eris",
+  "version": "0.6.0",
+  "description": "A NodeJS Discord library",
+  "main": "./index.js",
+  "engines": {
+    "node": ">=4.0.0"
+  },
   "scripts": {
-    "test": "npm run lint && npm run docs:test",
-    "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
-    "docs:test": "docgen --source src --custom docs/index.yml",
-    "lint": "eslint src",
-    "lint:fix": "eslint --fix src",
-    "webpack": "parallel-webpack"
+    "eslint": "eslint --fix lib index.js && echo \"\u001b[1m\u001b[32mOK\u001b[39m\u001b[22m\" || echo \"\u001b[1m\u001b[31mNot OK\u001b[39m\u001b[22m\""
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hydrabolt/discord.js.git"
+    "url": "git+https://github.com/abalabahaha/eris.git"
   },
   "keywords": [
-    "discord",
     "api",
-    "bot",
-    "client",
-    "node",
-    "discordapp"
+    "discord",
+    "discordapp",
+    "eris",
+    "wrapper"
   ],
-  "author": "Amish Shah <amishshah.2k@gmail.com>",
-  "license": "Apache-2.0",
+  "author": "abalabahaha",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/hydrabolt/discord.js/issues"
+    "url": "https://github.com/abalabahaha/eris/issues"
   },
-  "homepage": "https://github.com/hydrabolt/discord.js#readme",
-  "runkitExampleFilename": "./docs/examples/ping.js",
+  "homepage": "https://abal.moe/Eris/",
   "dependencies": {
-    "@types/node": "^7.0.0",
-    "long": "^3.2.0",
-    "pako": "^1.0.0",
-    "prism-media": "hydrabolt/prism-media",
-    "superagent": "^3.4.0",
-    "tweetnacl": "^0.14.0",
-    "ws": "^2.0.0"
+    "ws": "^2.1.0"
   },
-  "peerDependencies": {
-    "bufferutil": "^2.0.0",
-    "erlpack": "hammerandchisel/erlpack",
-    "node-opus": "^0.2.0",
+  "optionalDependencies": {
     "opusscript": "^0.0.2",
-    "sodium": "^2.0.1",
-    "uws": "^0.12.0"
-  },
-  "devDependencies": {
-    "discord.js-docgen": "hydrabolt/discord.js-docgen",
-    "eslint": "^3.13.0",
-    "parallel-webpack": "^1.6.0",
-    "uglify-js": "mishoo/UglifyJS2#harmony",
-    "webpack": "^2.2.0"
-  },
-  "engines": {
-    "node": ">=6.0.0"
+    "tweetnacl": "^1.0.0-rc.1"
   },
   "browser": {
-    "ws": false,
-    "uws": false,
-    "erlpack": false,
-    "prism-media": false,
-    "opusscript": false,
+    "child_process": false,
+    "dgram": false,
+    "dns": false,
+    "fs": false,
     "node-opus": false,
+    "tls": false,
     "tweetnacl": false,
-    "sodium": false,
-    "src/sharding/Shard.js": false,
-    "src/sharding/ShardClientUtil.js": false,
-    "src/sharding/ShardingManager.js": false,
-    "src/client/voice/dispatcher/StreamDispatcher.js": false,
-    "src/client/voice/opus/BaseOpusEngine.js": false,
-    "src/client/voice/opus/NodeOpusEngine.js": false,
-    "src/client/voice/opus/OpusEngineList.js": false,
-    "src/client/voice/opus/OpusScriptEngine.js": false,
-    "src/client/voice/pcm/ConverterEngine.js": false,
-    "src/client/voice/pcm/ConverterEngineList.js": false,
-    "src/client/voice/pcm/FfmpegConverterEngine.js": false,
-    "src/client/voice/player/AudioPlayer.js": false,
-    "src/client/voice/receiver/VoiceReadable.js": false,
-    "src/client/voice/receiver/VoiceReceiver.js": false,
-    "src/client/voice/util/Secretbox.js": false,
-    "src/client/voice/util/SecretKey.js": false,
-    "src/client/voice/util/VolumeInterface.js": false,
-    "src/client/voice/ClientVoiceManager.js": false,
-    "src/client/voice/VoiceBroadcast.js": false,
-    "src/client/voice/VoiceConnection.js": false,
-    "src/client/voice/VoiceUDPClient.js": false,
-    "src/client/voice/VoiceWebSocket.js": false
+    "ws": false
   }
 }
