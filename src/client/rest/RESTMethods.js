@@ -796,7 +796,7 @@ class RESTMethods {
   }
 
   setChannelPositions(guildID, channels) {
-    return this.rest.makeRequest('patch', Constants.Endpoints.guildChannels(guildID), true, channels).then(() =>
+    return this.rest.makeRequest('patch', Endpoints.Guild(guildID).channels, true, channels).then(() =>
       this.client.actions.GuildChannelsPositionUpdate.handle({
         guild_id: guildID,
         channels,
