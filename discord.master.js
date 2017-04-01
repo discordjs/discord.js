@@ -6057,6 +6057,12 @@ class Guild {
      */
     this.verificationLevel = data.verification_level;
 
+     /**
+     * The explicit content filter level of the guild.
+     * @type {number}
+     */
+    this.explicitContentFilter = data.explicit_content_filter;
+
     /**
      * The timestamp the client user joined the guild at
      * @type {number}
