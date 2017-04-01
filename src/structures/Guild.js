@@ -285,7 +285,7 @@ class Guild {
   get defaultChannel() {
     return this.channels.get(this.id);
   }
-  
+
   /**
    * Fetches a collection of roles in the current guild sorted by position.
    * @returns {Collection<Snowflake, Role>}
