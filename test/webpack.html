@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
 </head>
 <body>
-  <script type="text/javascript" src="../webpack/discord.10.0.1.js"></script>
+  <script type="text/javascript" src="../webpack/discord.js"></script>
   <script type="text/javascript" src="auth.js"></script>
   <script type="text/javascript">
     (() => {
@@ -23,7 +23,8 @@
         console.log(message.author.username, message.author.id, message.content);
       });
 
-      client.login(window.token || prompt('token pls', 'abcdef123456'));
+      client.login(localStorage.token || window.token || prompt('token pls', 'abcdef123456'))
+      .then((token) => localStorage.token = token);
     })();
   </script>
 </body>
