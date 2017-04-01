@@ -70,7 +70,7 @@
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {exports.Package = __webpack_require__(28);
+/* WEBPACK VAR INJECTION */(function(process) {exports.Package = __webpack_require__(29);
 
 /**
  * Options for a Client.
@@ -937,6 +937,18 @@ class Collection extends Map {
       return testVal !== value || (testVal === undefined && !collection.has(key));
     });
   }
+
+  /**
+   * The sort() method sorts the elements of a collection in place and returns the collection.
+   * The sort is not necessarily stable. The default sort order is according to string Unicode code points.
+   * @param {Function} [compareFunction] Specifies a function that defines the sort order.
+   * if omitted, the collection is sorted according to each character's Unicode code point value,
+   * according to the string conversion of each element.
+   * @returns {Collection}
+   */
+  sort(compareFunction = (x, y) => +(x > y) || +(x === y) - 1) {
+    return new Collection(Array.from(this.entries()).sort((a, b) => compareFunction(a[1], b[1], a[0], b[0])));
+  }
 }
 
 module.exports = Collection;
@@ -946,7 +958,7 @@ module.exports = Collection;
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const superagent = __webpack_require__(25);
+/* WEBPACK VAR INJECTION */(function(Buffer) {const superagent = __webpack_require__(26);
 const Constants = __webpack_require__(0);
 
 /**
@@ -1166,7 +1178,7 @@ module.exports = Util;
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Long = __webpack_require__(42);
+const Long = __webpack_require__(24);
 
 // Discord epoch (2015-01-01T00:00:00.000Z)
 const EPOCH = 1420070400000;
@@ -1673,9 +1685,9 @@ module.exports = Channel;
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Attachment = __webpack_require__(32);
-const Embed = __webpack_require__(34);
-const MessageReaction = __webpack_require__(35);
+const Attachment = __webpack_require__(33);
+const Embed = __webpack_require__(35);
+const MessageReaction = __webpack_require__(36);
 const Util = __webpack_require__(4);
 const Collection = __webpack_require__(3);
 const Constants = __webpack_require__(0);
@@ -2349,9 +2361,8 @@ class Role {
    * @type {number}
    */
   get calculatedPosition() {
-    const sorted = this.guild.roles.array()
-      .sort((r1, r2) => r1.position !== r2.position ? r1.position - r2.position : r1.id - r2.id);
-    return sorted.indexOf(sorted.find(r => r.id === this.id));
+    const sorted = this.guild._sortedRoles();
+    return sorted.array().indexOf(sorted.get(this.id));
   }
 
   /**
@@ -3563,9 +3574,9 @@ module.exports = GuildMember;
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const path = __webpack_require__(24);
+const path = __webpack_require__(25);
 const Message = __webpack_require__(9);
-const MessageCollector = __webpack_require__(33);
+const MessageCollector = __webpack_require__(34);
 const Collection = __webpack_require__(3);
 
 /**
@@ -4095,6 +4106,7 @@ exports.EOL = '\n';
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
+const Long = __webpack_require__(24);
 const User = __webpack_require__(11);
 const Role = __webpack_require__(10);
 const Emoji = __webpack_require__(12);
@@ -4390,6 +4402,15 @@ class Guild {
    */
   get defaultRole() {
     return this.roles.get(this.id);
+  }
+
+  /**
+   * Fetches a collection of roles in the current guild sorted by position.
+   * @type {Collection<Snowflake, Role>}
+   * @readonly
+   */
+  get _sortedRoles() {
+    return this._sortPositionWithID(this.roles);
   }
 
   /**
@@ -4785,31 +4806,6 @@ class Guild {
   }
 
   /**
-   * Set the position of a role in this guild
-   * @param {Role|Snowflake} role the role to edit, can be a role object or a role ID.
-   * @param {number} position the new position of the role
-   * @param {boolean} [relative=false] Position moves the role relative to its current position
-   * @returns {Promise<Guild>}
-   */
-  setRolePosition(role, position, relative = false) {
-    if (typeof role === 'string') {
-      role = this.roles.get(role);
-      if (!role) return Promise.reject(new Error('Supplied role is not a role or string.'));
-    }
-
-    position = Number(position);
-    if (isNaN(position)) return Promise.reject(new Error('Supplied position is not a number.'));
-
-    let updatedRoles = Object.assign([], this.roles.array()
-      .sort((r1, r2) => r1.position !== r2.position ? r1.position - r2.position : r1.id - r2.id));
-
-    Util.moveElementInArray(updatedRoles, role, position, relative);
-
-    updatedRoles = updatedRoles.map((r, i) => ({ id: r.id, position: i }));
-    return this.client.rest.methods.setRolePositions(this.id, updatedRoles);
-  }
-
-  /**
    * Creates a new custom emoji in the guild.
    * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji.
    * @param {string} name The name for the emoji.
@@ -5016,6 +5012,81 @@ class Guild {
     }
     this.presences.set(id, new Presence(presence));
   }
+
+  /**
+   * Set the position of a role in this guild
+   * @param {string|Role} role The role to edit, can be a role object or a role ID.
+   * @param {number} position The new position of the role
+   * @param {boolean} [relative=false] Position Moves the role relative to its current position
+   * @returns {Promise<Guild>}
+   */
+  setRolePosition(role, position, relative = false) {
+    if (typeof role === 'string') {
+      role = this.roles.get(role);
+      if (!role) return Promise.reject(new Error('Supplied role is not a role or snowflake.'));
+    }
+
+    position = Number(position);
+    if (isNaN(position)) return Promise.reject(new Error('Supplied position is not a number.'));
+
+    let updatedRoles = this._sortedRoles().array();
+
+    Util.moveElementInArray(updatedRoles, role, position, relative);
+
+    updatedRoles = updatedRoles.map((r, i) => ({ id: r.id, position: i }));
+    return this.client.rest.methods.setRolePositions(this.id, updatedRoles);
+  }
+
+  /**
+   * Set the position of a channel in this guild
+   * @param {string|GuildChannel} channel The channel to edit, can be a channel object or a channel ID.
+   * @param {number} position The new position of the channel
+   * @param {boolean} [relative=false] Position Moves the channel relative to its current position
+   * @returns {Promise<Guild>}
+   */
+  setChannelPosition(channel, position, relative = false) {
+    if (typeof channel === 'string') {
+      channel = this.channels.get(channel);
+      if (!channel) return Promise.reject(new Error('Supplied channel is not a channel or snowflake.'));
+    }
+
+    position = Number(position);
+    if (isNaN(position)) return Promise.reject(new Error('Supplied position is not a number.'));
+
+    let updatedChannels = this._sortedChannels(channel.type).array();
+
+    Util.moveElementInArray(updatedChannels, channel, position, relative);
+
+    updatedChannels = updatedChannels.map((r, i) => ({ id: r.id, position: i }));
+    return this.client.rest.methods.setChannelPositions(this.id, updatedChannels);
+  }
+
+  /**
+   * Fetches a collection of channels in the current guild sorted by position.
+   * @param {string} type Channel type
+   * @returns {Collection<Snowflake, GuildChannel>}
+   */
+  _sortedChannels(type) {
+    return this._sortPositionWithID(this.channels.filter(c => {
+      if (type === 'voice' && c.type === 'voice') return true;
+      else if (type !== 'voice' && c.type !== 'voice') return true;
+      else return type === c.type;
+    }));
+  }
+
+  /**
+   * Sorts a collection by object position or ID if the positions are equivalent.
+   * Intended to be identical to Discord's sorting method.
+   * @param {Collection} collection The collection to sort
+   * @returns {Collection}
+   */
+  _sortPositionWithID(collection) {
+    return collection.sort((a, b) =>
+      a.position !== b.position ?
+      a.position - b.position :
+      Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber()
+    );
+  }
 }
 
 module.exports = Guild;
@@ -5027,7 +5098,7 @@ module.exports = Guild;
 
 const Channel = __webpack_require__(8);
 const Role = __webpack_require__(10);
-const PermissionOverwrites = __webpack_require__(39);
+const PermissionOverwrites = __webpack_require__(40);
 const Permissions = __webpack_require__(6);
 const Collection = __webpack_require__(3);
 
@@ -5071,6 +5142,15 @@ class GuildChannel extends Channel {
         this.permissionOverwrites.set(overwrite.id, new PermissionOverwrites(this, overwrite));
       }
     }
+  }
+
+  /**
+   * The position of the channel
+   * @type {number}
+   */
+  get calculatedPosition() {
+    const sorted = this.guild._sortedChannels(this.type);
+    return sorted.array().indexOf(sorted.get(this.id));
   }
 
   /**
@@ -5247,6 +5327,7 @@ class GuildChannel extends Channel {
   /**
    * Set a new position for the guild channel
    * @param {number} position The new position for the guild channel
+   * @param {boolean} [relative=false] Move the position relative to its current value
    * @returns {Promise<GuildChannel>}
    * @example
    * // set a new channel position
@@ -5254,8 +5335,8 @@ class GuildChannel extends Channel {
    *  .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
    *  .catch(console.error);
    */
-  setPosition(position) {
-    return this.client.rest.methods.updateChannel(this, { position });
+  setPosition(position, relative) {
+    return this.guild.setChannelPosition(this, position, relative).then(() => this);
   }
 
   /**
@@ -5787,7 +5868,7 @@ module.exports = ReactionEmoji;
 /* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const path = __webpack_require__(24);
+const path = __webpack_require__(25);
 
 /**
  * Represents a webhook
@@ -8113,3451 +8194,6 @@ function isUndefined(arg) {
 /* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-// resolves . and .. elements in a path array with directory names there
-// must be no slashes, empty elements, or device names (c:\) in the array
-// (so also no leading and trailing slashes - it does not distinguish
-// relative and absolute paths)
-function normalizeArray(parts, allowAboveRoot) {
-  // if the path tries to go above the root, `up` ends up > 0
-  var up = 0;
-  for (var i = parts.length - 1; i >= 0; i--) {
-    var last = parts[i];
-    if (last === '.') {
-      parts.splice(i, 1);
-    } else if (last === '..') {
-      parts.splice(i, 1);
-      up++;
-    } else if (up) {
-      parts.splice(i, 1);
-      up--;
-    }
-  }
-
-  // if the path is allowed to go above the root, restore leading ..s
-  if (allowAboveRoot) {
-    for (; up--; up) {
-      parts.unshift('..');
-    }
-  }
-
-  return parts;
-}
-
-// Split a filename into [root, dir, basename, ext], unix version
-// 'root' is just a slash, or nothing.
-var splitPathRe =
-    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
-var splitPath = function(filename) {
-  return splitPathRe.exec(filename).slice(1);
-};
-
-// path.resolve([from ...], to)
-// posix version
-exports.resolve = function() {
-  var resolvedPath = '',
-      resolvedAbsolute = false;
-
-  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
-    var path = (i >= 0) ? arguments[i] : process.cwd();
-
-    // Skip empty and invalid entries
-    if (typeof path !== 'string') {
-      throw new TypeError('Arguments to path.resolve must be strings');
-    } else if (!path) {
-      continue;
-    }
-
-    resolvedPath = path + '/' + resolvedPath;
-    resolvedAbsolute = path.charAt(0) === '/';
-  }
-
-  // At this point the path should be resolved to a full absolute path, but
-  // handle relative paths to be safe (might happen when process.cwd() fails)
-
-  // Normalize the path
-  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
-    return !!p;
-  }), !resolvedAbsolute).join('/');
-
-  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
-};
-
-// path.normalize(path)
-// posix version
-exports.normalize = function(path) {
-  var isAbsolute = exports.isAbsolute(path),
-      trailingSlash = substr(path, -1) === '/';
-
-  // Normalize the path
-  path = normalizeArray(filter(path.split('/'), function(p) {
-    return !!p;
-  }), !isAbsolute).join('/');
-
-  if (!path && !isAbsolute) {
-    path = '.';
-  }
-  if (path && trailingSlash) {
-    path += '/';
-  }
-
-  return (isAbsolute ? '/' : '') + path;
-};
-
-// posix version
-exports.isAbsolute = function(path) {
-  return path.charAt(0) === '/';
-};
-
-// posix version
-exports.join = function() {
-  var paths = Array.prototype.slice.call(arguments, 0);
-  return exports.normalize(filter(paths, function(p, index) {
-    if (typeof p !== 'string') {
-      throw new TypeError('Arguments to path.join must be strings');
-    }
-    return p;
-  }).join('/'));
-};
-
-
-// path.relative(from, to)
-// posix version
-exports.relative = function(from, to) {
-  from = exports.resolve(from).substr(1);
-  to = exports.resolve(to).substr(1);
-
-  function trim(arr) {
-    var start = 0;
-    for (; start < arr.length; start++) {
-      if (arr[start] !== '') break;
-    }
-
-    var end = arr.length - 1;
-    for (; end >= 0; end--) {
-      if (arr[end] !== '') break;
-    }
-
-    if (start > end) return [];
-    return arr.slice(start, end - start + 1);
-  }
-
-  var fromParts = trim(from.split('/'));
-  var toParts = trim(to.split('/'));
-
-  var length = Math.min(fromParts.length, toParts.length);
-  var samePartsLength = length;
-  for (var i = 0; i < length; i++) {
-    if (fromParts[i] !== toParts[i]) {
-      samePartsLength = i;
-      break;
-    }
-  }
-
-  var outputParts = [];
-  for (var i = samePartsLength; i < fromParts.length; i++) {
-    outputParts.push('..');
-  }
-
-  outputParts = outputParts.concat(toParts.slice(samePartsLength));
-
-  return outputParts.join('/');
-};
-
-exports.sep = '/';
-exports.delimiter = ':';
-
-exports.dirname = function(path) {
-  var result = splitPath(path),
-      root = result[0],
-      dir = result[1];
-
-  if (!root && !dir) {
-    // No dirname whatsoever
-    return '.';
-  }
-
-  if (dir) {
-    // It has a dirname, strip trailing slash
-    dir = dir.substr(0, dir.length - 1);
-  }
-
-  return root + dir;
-};
-
-
-exports.basename = function(path, ext) {
-  var f = splitPath(path)[2];
-  // TODO: make this comparison case-insensitive on windows?
-  if (ext && f.substr(-1 * ext.length) === ext) {
-    f = f.substr(0, f.length - ext.length);
-  }
-  return f;
-};
-
-
-exports.extname = function(path) {
-  return splitPath(path)[3];
-};
-
-function filter (xs, f) {
-    if (xs.filter) return xs.filter(f);
-    var res = [];
-    for (var i = 0; i < xs.length; i++) {
-        if (f(xs[i], i, xs)) res.push(xs[i]);
-    }
-    return res;
-}
-
-// String.prototype.substr - negative index don't work in IE8
-var substr = 'ab'.substr(-1) === 'b'
-    ? function (str, start, len) { return str.substr(start, len) }
-    : function (str, start, len) {
-        if (start < 0) start = str.length + start;
-        return str.substr(start, len);
-    }
-;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
-
-/***/ }),
-/* 25 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/**
- * Root reference for iframes.
- */
-
-var root;
-if (typeof window !== 'undefined') { // Browser window
-  root = window;
-} else if (typeof self !== 'undefined') { // Web Worker
-  root = self;
-} else { // Other environments
-  console.warn("Using browser-only version of superagent in non-browser environment");
-  root = this;
-}
-
-var Emitter = __webpack_require__(53);
-var RequestBase = __webpack_require__(60);
-var isObject = __webpack_require__(26);
-var isFunction = __webpack_require__(59);
-var ResponseBase = __webpack_require__(61);
-var shouldRetry = __webpack_require__(62);
-
-/**
- * Noop.
- */
-
-function noop(){};
-
-/**
- * Expose `request`.
- */
-
-var request = exports = module.exports = function(method, url) {
-  // callback
-  if ('function' == typeof url) {
-    return new exports.Request('GET', method).end(url);
-  }
-
-  // url first
-  if (1 == arguments.length) {
-    return new exports.Request('GET', method);
-  }
-
-  return new exports.Request(method, url);
-}
-
-exports.Request = Request;
-
-/**
- * Determine XHR.
- */
-
-request.getXHR = function () {
-  if (root.XMLHttpRequest
-      && (!root.location || 'file:' != root.location.protocol
-          || !root.ActiveXObject)) {
-    return new XMLHttpRequest;
-  } else {
-    try { return new ActiveXObject('Microsoft.XMLHTTP'); } catch(e) {}
-    try { return new ActiveXObject('Msxml2.XMLHTTP.6.0'); } catch(e) {}
-    try { return new ActiveXObject('Msxml2.XMLHTTP.3.0'); } catch(e) {}
-    try { return new ActiveXObject('Msxml2.XMLHTTP'); } catch(e) {}
-  }
-  throw Error("Browser-only verison of superagent could not find XHR");
-};
-
-/**
- * Removes leading and trailing whitespace, added to support IE.
- *
- * @param {String} s
- * @return {String}
- * @api private
- */
-
-var trim = ''.trim
-  ? function(s) { return s.trim(); }
-  : function(s) { return s.replace(/(^\s*|\s*$)/g, ''); };
-
-/**
- * Serialize the given `obj`.
- *
- * @param {Object} obj
- * @return {String}
- * @api private
- */
-
-function serialize(obj) {
-  if (!isObject(obj)) return obj;
-  var pairs = [];
-  for (var key in obj) {
-    pushEncodedKeyValuePair(pairs, key, obj[key]);
-  }
-  return pairs.join('&');
-}
-
-/**
- * Helps 'serialize' with serializing arrays.
- * Mutates the pairs array.
- *
- * @param {Array} pairs
- * @param {String} key
- * @param {Mixed} val
- */
-
-function pushEncodedKeyValuePair(pairs, key, val) {
-  if (val != null) {
-    if (Array.isArray(val)) {
-      val.forEach(function(v) {
-        pushEncodedKeyValuePair(pairs, key, v);
-      });
-    } else if (isObject(val)) {
-      for(var subkey in val) {
-        pushEncodedKeyValuePair(pairs, key + '[' + subkey + ']', val[subkey]);
-      }
-    } else {
-      pairs.push(encodeURIComponent(key)
-        + '=' + encodeURIComponent(val));
-    }
-  } else if (val === null) {
-    pairs.push(encodeURIComponent(key));
-  }
-}
-
-/**
- * Expose serialization method.
- */
-
- request.serializeObject = serialize;
-
- /**
-  * Parse the given x-www-form-urlencoded `str`.
-  *
-  * @param {String} str
-  * @return {Object}
-  * @api private
-  */
-
-function parseString(str) {
-  var obj = {};
-  var pairs = str.split('&');
-  var pair;
-  var pos;
-
-  for (var i = 0, len = pairs.length; i < len; ++i) {
-    pair = pairs[i];
-    pos = pair.indexOf('=');
-    if (pos == -1) {
-      obj[decodeURIComponent(pair)] = '';
-    } else {
-      obj[decodeURIComponent(pair.slice(0, pos))] =
-        decodeURIComponent(pair.slice(pos + 1));
-    }
-  }
-
-  return obj;
-}
-
-/**
- * Expose parser.
- */
-
-request.parseString = parseString;
-
-/**
- * Default MIME type map.
- *
- *     superagent.types.xml = 'application/xml';
- *
- */
-
-request.types = {
-  html: 'text/html',
-  json: 'application/json',
-  xml: 'application/xml',
-  urlencoded: 'application/x-www-form-urlencoded',
-  'form': 'application/x-www-form-urlencoded',
-  'form-data': 'application/x-www-form-urlencoded'
-};
-
-/**
- * Default serialization map.
- *
- *     superagent.serialize['application/xml'] = function(obj){
- *       return 'generated xml here';
- *     };
- *
- */
-
- request.serialize = {
-   'application/x-www-form-urlencoded': serialize,
-   'application/json': JSON.stringify
- };
-
- /**
-  * Default parsers.
-  *
-  *     superagent.parse['application/xml'] = function(str){
-  *       return { object parsed from str };
-  *     };
-  *
-  */
-
-request.parse = {
-  'application/x-www-form-urlencoded': parseString,
-  'application/json': JSON.parse
-};
-
-/**
- * Parse the given header `str` into
- * an object containing the mapped fields.
- *
- * @param {String} str
- * @return {Object}
- * @api private
- */
-
-function parseHeader(str) {
-  var lines = str.split(/\r?\n/);
-  var fields = {};
-  var index;
-  var line;
-  var field;
-  var val;
-
-  lines.pop(); // trailing CRLF
-
-  for (var i = 0, len = lines.length; i < len; ++i) {
-    line = lines[i];
-    index = line.indexOf(':');
-    field = line.slice(0, index).toLowerCase();
-    val = trim(line.slice(index + 1));
-    fields[field] = val;
-  }
-
-  return fields;
-}
-
-/**
- * Check if `mime` is json or has +json structured syntax suffix.
- *
- * @param {String} mime
- * @return {Boolean}
- * @api private
- */
-
-function isJSON(mime) {
-  return /[\/+]json\b/.test(mime);
-}
-
-/**
- * Initialize a new `Response` with the given `xhr`.
- *
- *  - set flags (.ok, .error, etc)
- *  - parse header
- *
- * Examples:
- *
- *  Aliasing `superagent` as `request` is nice:
- *
- *      request = superagent;
- *
- *  We can use the promise-like API, or pass callbacks:
- *
- *      request.get('/').end(function(res){});
- *      request.get('/', function(res){});
- *
- *  Sending data can be chained:
- *
- *      request
- *        .post('/user')
- *        .send({ name: 'tj' })
- *        .end(function(res){});
- *
- *  Or passed to `.send()`:
- *
- *      request
- *        .post('/user')
- *        .send({ name: 'tj' }, function(res){});
- *
- *  Or passed to `.post()`:
- *
- *      request
- *        .post('/user', { name: 'tj' })
- *        .end(function(res){});
- *
- * Or further reduced to a single call for simple cases:
- *
- *      request
- *        .post('/user', { name: 'tj' }, function(res){});
- *
- * @param {XMLHTTPRequest} xhr
- * @param {Object} options
- * @api private
- */
-
-function Response(req) {
-  this.req = req;
-  this.xhr = this.req.xhr;
-  // responseText is accessible only if responseType is '' or 'text' and on older browsers
-  this.text = ((this.req.method !='HEAD' && (this.xhr.responseType === '' || this.xhr.responseType === 'text')) || typeof this.xhr.responseType === 'undefined')
-     ? this.xhr.responseText
-     : null;
-  this.statusText = this.req.xhr.statusText;
-  var status = this.xhr.status;
-  // handle IE9 bug: http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
-  if (status === 1223) {
-      status = 204;
-  }
-  this._setStatusProperties(status);
-  this.header = this.headers = parseHeader(this.xhr.getAllResponseHeaders());
-  // getAllResponseHeaders sometimes falsely returns "" for CORS requests, but
-  // getResponseHeader still works. so we get content-type even if getting
-  // other headers fails.
-  this.header['content-type'] = this.xhr.getResponseHeader('content-type');
-  this._setHeaderProperties(this.header);
-
-  if (null === this.text && req._responseType) {
-    this.body = this.xhr.response;
-  } else {
-    this.body = this.req.method != 'HEAD'
-      ? this._parseBody(this.text ? this.text : this.xhr.response)
-      : null;
-  }
-}
-
-ResponseBase(Response.prototype);
-
-/**
- * Parse the given body `str`.
- *
- * Used for auto-parsing of bodies. Parsers
- * are defined on the `superagent.parse` object.
- *
- * @param {String} str
- * @return {Mixed}
- * @api private
- */
-
-Response.prototype._parseBody = function(str){
-  var parse = request.parse[this.type];
-  if(this.req._parser) {
-    return this.req._parser(this, str);
-  }
-  if (!parse && isJSON(this.type)) {
-    parse = request.parse['application/json'];
-  }
-  return parse && str && (str.length || str instanceof Object)
-    ? parse(str)
-    : null;
-};
-
-/**
- * Return an `Error` representative of this response.
- *
- * @return {Error}
- * @api public
- */
-
-Response.prototype.toError = function(){
-  var req = this.req;
-  var method = req.method;
-  var url = req.url;
-
-  var msg = 'cannot ' + method + ' ' + url + ' (' + this.status + ')';
-  var err = new Error(msg);
-  err.status = this.status;
-  err.method = method;
-  err.url = url;
-
-  return err;
-};
-
-/**
- * Expose `Response`.
- */
-
-request.Response = Response;
-
-/**
- * Initialize a new `Request` with the given `method` and `url`.
- *
- * @param {String} method
- * @param {String} url
- * @api public
- */
-
-function Request(method, url) {
-  var self = this;
-  this._query = this._query || [];
-  this.method = method;
-  this.url = url;
-  this.header = {}; // preserves header name case
-  this._header = {}; // coerces header names to lowercase
-  this.on('end', function(){
-    var err = null;
-    var res = null;
-
-    try {
-      res = new Response(self);
-    } catch(e) {
-      err = new Error('Parser is unable to parse the response');
-      err.parse = true;
-      err.original = e;
-      // issue #675: return the raw response if the response parsing fails
-      if (self.xhr) {
-        // ie9 doesn't have 'response' property
-        err.rawResponse = typeof self.xhr.responseType == 'undefined' ? self.xhr.responseText : self.xhr.response;
-        // issue #876: return the http status code if the response parsing fails
-        err.status = self.xhr.status ? self.xhr.status : null;
-        err.statusCode = err.status; // backwards-compat only
-      } else {
-        err.rawResponse = null;
-        err.status = null;
-      }
-
-      return self.callback(err);
-    }
-
-    self.emit('response', res);
-
-    var new_err;
-    try {
-      if (!self._isResponseOK(res)) {
-        new_err = new Error(res.statusText || 'Unsuccessful HTTP response');
-        new_err.original = err;
-        new_err.response = res;
-        new_err.status = res.status;
-      }
-    } catch(e) {
-      new_err = e; // #985 touching res may cause INVALID_STATE_ERR on old Android
-    }
-
-    // #1000 don't catch errors from the callback to avoid double calling it
-    if (new_err) {
-      self.callback(new_err, res);
-    } else {
-      self.callback(null, res);
-    }
-  });
-}
-
-/**
- * Mixin `Emitter` and `RequestBase`.
- */
-
-Emitter(Request.prototype);
-RequestBase(Request.prototype);
-
-/**
- * Set Content-Type to `type`, mapping values from `request.types`.
- *
- * Examples:
- *
- *      superagent.types.xml = 'application/xml';
- *
- *      request.post('/')
- *        .type('xml')
- *        .send(xmlstring)
- *        .end(callback);
- *
- *      request.post('/')
- *        .type('application/xml')
- *        .send(xmlstring)
- *        .end(callback);
- *
- * @param {String} type
- * @return {Request} for chaining
- * @api public
- */
-
-Request.prototype.type = function(type){
-  this.set('Content-Type', request.types[type] || type);
-  return this;
-};
-
-/**
- * Set Accept to `type`, mapping values from `request.types`.
- *
- * Examples:
- *
- *      superagent.types.json = 'application/json';
- *
- *      request.get('/agent')
- *        .accept('json')
- *        .end(callback);
- *
- *      request.get('/agent')
- *        .accept('application/json')
- *        .end(callback);
- *
- * @param {String} accept
- * @return {Request} for chaining
- * @api public
- */
-
-Request.prototype.accept = function(type){
-  this.set('Accept', request.types[type] || type);
-  return this;
-};
-
-/**
- * Set Authorization field value with `user` and `pass`.
- *
- * @param {String} user
- * @param {String} pass
- * @param {Object} options with 'type' property 'auto' or 'basic' (default 'basic')
- * @return {Request} for chaining
- * @api public
- */
-
-Request.prototype.auth = function(user, pass, options){
-  if (!options) {
-    options = {
-      type: 'function' === typeof btoa ? 'basic' : 'auto',
-    }
-  }
-
-  switch (options.type) {
-    case 'basic':
-      this.set('Authorization', 'Basic ' + btoa(user + ':' + pass));
-    break;
-
-    case 'auto':
-      this.username = user;
-      this.password = pass;
-    break;
-  }
-  return this;
-};
-
-/**
- * Add query-string `val`.
- *
- * Examples:
- *
- *   request.get('/shoes')
- *     .query('size=10')
- *     .query({ color: 'blue' })
- *
- * @param {Object|String} val
- * @return {Request} for chaining
- * @api public
- */
-
-Request.prototype.query = function(val){
-  if ('string' != typeof val) val = serialize(val);
-  if (val) this._query.push(val);
-  return this;
-};
-
-/**
- * Queue the given `file` as an attachment to the specified `field`,
- * with optional `options` (or filename).
- *
- * ``` js
- * request.post('/upload')
- *   .attach('content', new Blob(['<a id="a"><b id="b">hey!</b></a>'], { type: "text/html"}))
- *   .end(callback);
- * ```
- *
- * @param {String} field
- * @param {Blob|File} file
- * @param {String|Object} options
- * @return {Request} for chaining
- * @api public
- */
-
-Request.prototype.attach = function(field, file, options){
-  if (this._data) {
-    throw Error("superagent can't mix .send() and .attach()");
-  }
-
-  this._getFormData().append(field, file, options || file.name);
-  return this;
-};
-
-Request.prototype._getFormData = function(){
-  if (!this._formData) {
-    this._formData = new root.FormData();
-  }
-  return this._formData;
-};
-
-/**
- * Invoke the callback with `err` and `res`
- * and handle arity check.
- *
- * @param {Error} err
- * @param {Response} res
- * @api private
- */
-
-Request.prototype.callback = function(err, res){
-  // console.log(this._retries, this._maxRetries)
-  if (this._maxRetries && this._retries++ < this._maxRetries && shouldRetry(err, res)) {
-    return this._retry();
-  }
-
-  var fn = this._callback;
-  this.clearTimeout();
-
-  if (err) {
-    if (this._maxRetries) err.retries = this._retries - 1;
-    this.emit('error', err);
-  }
-
-  fn(err, res);
-};
-
-/**
- * Invoke callback with x-domain error.
- *
- * @api private
- */
-
-Request.prototype.crossDomainError = function(){
-  var err = new Error('Request has been terminated\nPossible causes: the network is offline, Origin is not allowed by Access-Control-Allow-Origin, the page is being unloaded, etc.');
-  err.crossDomain = true;
-
-  err.status = this.status;
-  err.method = this.method;
-  err.url = this.url;
-
-  this.callback(err);
-};
-
-// This only warns, because the request is still likely to work
-Request.prototype.buffer = Request.prototype.ca = Request.prototype.agent = function(){
-  console.warn("This is not supported in browser version of superagent");
-  return this;
-};
-
-// This throws, because it can't send/receive data as expected
-Request.prototype.pipe = Request.prototype.write = function(){
-  throw Error("Streaming is not supported in browser version of superagent");
-};
-
-/**
- * Compose querystring to append to req.url
- *
- * @api private
- */
-
-Request.prototype._appendQueryString = function(){
-  var query = this._query.join('&');
-  if (query) {
-    this.url += (this.url.indexOf('?') >= 0 ? '&' : '?') + query;
-  }
-
-  if (this._sort) {
-    var index = this.url.indexOf('?');
-    if (index >= 0) {
-      var queryArr = this.url.substring(index + 1).split('&');
-      if (isFunction(this._sort)) {
-        queryArr.sort(this._sort);
-      } else {
-        queryArr.sort();
-      }
-      this.url = this.url.substring(0, index) + '?' + queryArr.join('&');
-    }
-  }
-};
-
-/**
- * Check if `obj` is a host object,
- * we don't want to serialize these :)
- *
- * @param {Object} obj
- * @return {Boolean}
- * @api private
- */
-Request.prototype._isHost = function _isHost(obj) {
-  // Native objects stringify to [object File], [object Blob], [object FormData], etc.
-  return obj && 'object' === typeof obj && !Array.isArray(obj) && Object.prototype.toString.call(obj) !== '[object Object]';
-}
-
-/**
- * Initiate request, invoking callback `fn(res)`
- * with an instanceof `Response`.
- *
- * @param {Function} fn
- * @return {Request} for chaining
- * @api public
- */
-
-Request.prototype.end = function(fn){
-  if (this._endCalled) {
-    console.warn("Warning: .end() was called twice. This is not supported in superagent");
-  }
-  this._endCalled = true;
-
-  // store callback
-  this._callback = fn || noop;
-
-  // querystring
-  this._appendQueryString();
-
-  return this._end();
-};
-
-Request.prototype._end = function() {
-  var self = this;
-  var xhr = this.xhr = request.getXHR();
-  var data = this._formData || this._data;
-
-  this._setTimeouts();
-
-  // state change
-  xhr.onreadystatechange = function(){
-    var readyState = xhr.readyState;
-    if (readyState >= 2 && self._responseTimeoutTimer) {
-      clearTimeout(self._responseTimeoutTimer);
-    }
-    if (4 != readyState) {
-      return;
-    }
-
-    // In IE9, reads to any property (e.g. status) off of an aborted XHR will
-    // result in the error "Could not complete the operation due to error c00c023f"
-    var status;
-    try { status = xhr.status } catch(e) { status = 0; }
-
-    if (!status) {
-      if (self.timedout || self._aborted) return;
-      return self.crossDomainError();
-    }
-    self.emit('end');
-  };
-
-  // progress
-  var handleProgress = function(direction, e) {
-    if (e.total > 0) {
-      e.percent = e.loaded / e.total * 100;
-    }
-    e.direction = direction;
-    self.emit('progress', e);
-  }
-  if (this.hasListeners('progress')) {
-    try {
-      xhr.onprogress = handleProgress.bind(null, 'download');
-      if (xhr.upload) {
-        xhr.upload.onprogress = handleProgress.bind(null, 'upload');
-      }
-    } catch(e) {
-      // Accessing xhr.upload fails in IE from a web worker, so just pretend it doesn't exist.
-      // Reported here:
-      // https://connect.microsoft.com/IE/feedback/details/837245/xmlhttprequest-upload-throws-invalid-argument-when-used-from-web-worker-context
-    }
-  }
-
-  // initiate request
-  try {
-    if (this.username && this.password) {
-      xhr.open(this.method, this.url, true, this.username, this.password);
-    } else {
-      xhr.open(this.method, this.url, true);
-    }
-  } catch (err) {
-    // see #1149
-    return this.callback(err);
-  }
-
-  // CORS
-  if (this._withCredentials) xhr.withCredentials = true;
-
-  // body
-  if (!this._formData && 'GET' != this.method && 'HEAD' != this.method && 'string' != typeof data && !this._isHost(data)) {
-    // serialize stuff
-    var contentType = this._header['content-type'];
-    var serialize = this._serializer || request.serialize[contentType ? contentType.split(';')[0] : ''];
-    if (!serialize && isJSON(contentType)) {
-      serialize = request.serialize['application/json'];
-    }
-    if (serialize) data = serialize(data);
-  }
-
-  // set header fields
-  for (var field in this.header) {
-    if (null == this.header[field]) continue;
-    xhr.setRequestHeader(field, this.header[field]);
-  }
-
-  if (this._responseType) {
-    xhr.responseType = this._responseType;
-  }
-
-  // send stuff
-  this.emit('request', this);
-
-  // IE11 xhr.send(undefined) sends 'undefined' string as POST payload (instead of nothing)
-  // We need null here if data is undefined
-  xhr.send(typeof data !== 'undefined' ? data : null);
-  return this;
-};
-
-/**
- * GET `url` with optional callback `fn(res)`.
- *
- * @param {String} url
- * @param {Mixed|Function} [data] or fn
- * @param {Function} [fn]
- * @return {Request}
- * @api public
- */
-
-request.get = function(url, data, fn){
-  var req = request('GET', url);
-  if ('function' == typeof data) fn = data, data = null;
-  if (data) req.query(data);
-  if (fn) req.end(fn);
-  return req;
-};
-
-/**
- * HEAD `url` with optional callback `fn(res)`.
- *
- * @param {String} url
- * @param {Mixed|Function} [data] or fn
- * @param {Function} [fn]
- * @return {Request}
- * @api public
- */
-
-request.head = function(url, data, fn){
-  var req = request('HEAD', url);
-  if ('function' == typeof data) fn = data, data = null;
-  if (data) req.send(data);
-  if (fn) req.end(fn);
-  return req;
-};
-
-/**
- * OPTIONS query to `url` with optional callback `fn(res)`.
- *
- * @param {String} url
- * @param {Mixed|Function} [data] or fn
- * @param {Function} [fn]
- * @return {Request}
- * @api public
- */
-
-request.options = function(url, data, fn){
-  var req = request('OPTIONS', url);
-  if ('function' == typeof data) fn = data, data = null;
-  if (data) req.send(data);
-  if (fn) req.end(fn);
-  return req;
-};
-
-/**
- * DELETE `url` with optional `data` and callback `fn(res)`.
- *
- * @param {String} url
- * @param {Mixed} [data]
- * @param {Function} [fn]
- * @return {Request}
- * @api public
- */
-
-function del(url, data, fn){
-  var req = request('DELETE', url);
-  if ('function' == typeof data) fn = data, data = null;
-  if (data) req.send(data);
-  if (fn) req.end(fn);
-  return req;
-};
-
-request['del'] = del;
-request['delete'] = del;
-
-/**
- * PATCH `url` with optional `data` and callback `fn(res)`.
- *
- * @param {String} url
- * @param {Mixed} [data]
- * @param {Function} [fn]
- * @return {Request}
- * @api public
- */
-
-request.patch = function(url, data, fn){
-  var req = request('PATCH', url);
-  if ('function' == typeof data) fn = data, data = null;
-  if (data) req.send(data);
-  if (fn) req.end(fn);
-  return req;
-};
-
-/**
- * POST `url` with optional `data` and callback `fn(res)`.
- *
- * @param {String} url
- * @param {Mixed} [data]
- * @param {Function} [fn]
- * @return {Request}
- * @api public
- */
-
-request.post = function(url, data, fn){
-  var req = request('POST', url);
-  if ('function' == typeof data) fn = data, data = null;
-  if (data) req.send(data);
-  if (fn) req.end(fn);
-  return req;
-};
-
-/**
- * PUT `url` with optional `data` and callback `fn(res)`.
- *
- * @param {String} url
- * @param {Mixed|Function} [data] or fn
- * @param {Function} [fn]
- * @return {Request}
- * @api public
- */
-
-request.put = function(url, data, fn){
-  var req = request('PUT', url);
-  if ('function' == typeof data) fn = data, data = null;
-  if (data) req.send(data);
-  if (fn) req.end(fn);
-  return req;
-};
-
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports) {
-
-/**
- * Check if `obj` is an object.
- *
- * @param {Object} obj
- * @return {Boolean}
- * @api private
- */
-
-function isObject(obj) {
-  return null !== obj && 'object' === typeof obj;
-}
-
-module.exports = isObject;
-
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(24);
-const fs = __webpack_require__(43);
-const request = __webpack_require__(25);
-
-const Constants = __webpack_require__(0);
-const convertToBuffer = __webpack_require__(4).convertToBuffer;
-const User = __webpack_require__(11);
-const Message = __webpack_require__(9);
-const Guild = __webpack_require__(16);
-const Channel = __webpack_require__(8);
-const GuildMember = __webpack_require__(13);
-const Emoji = __webpack_require__(12);
-const ReactionEmoji = __webpack_require__(20);
-
-/**
- * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
- * extracting a User from a Message object.
- * @private
- */
-class ClientDataResolver {
-  /**
-   * @param {Client} client The client the resolver is for
-   */
-  constructor(client) {
-    this.client = client;
-  }
-
-  /**
-   * Data that resolves to give a User object. This can be:
-   * * A User object
-   * * A user ID
-   * * A Message object (resolves to the message author)
-   * * A Guild object (owner of the guild)
-   * * A GuildMember object
-   * @typedef {User|Snowflake|Message|Guild|GuildMember} UserResolvable
-   */
-
-  /**
-   * Resolves a UserResolvable to a User object
-   * @param {UserResolvable} user The UserResolvable to identify
-   * @returns {?User}
-   */
-  resolveUser(user) {
-    if (user instanceof User) return user;
-    if (typeof user === 'string') return this.client.users.get(user) || null;
-    if (user instanceof GuildMember) return user.user;
-    if (user instanceof Message) return user.author;
-    if (user instanceof Guild) return user.owner;
-    return null;
-  }
-
-  /**
-   * Resolves a UserResolvable to a user ID string
-   * @param {UserResolvable} user The UserResolvable to identify
-   * @returns {?Snowflake}
-   */
-  resolveUserID(user) {
-    if (user instanceof User || user instanceof GuildMember) return user.id;
-    if (typeof user === 'string') return user || null;
-    if (user instanceof Message) return user.author.id;
-    if (user instanceof Guild) return user.ownerID;
-    return null;
-  }
-
-  /**
-   * Data that resolves to give a Guild object. This can be:
-   * * A Guild object
-   * * A Guild ID
-   * @typedef {Guild|Snowflake} GuildResolvable
-   */
-
-  /**
-   * Resolves a GuildResolvable to a Guild object
-   * @param {GuildResolvable} guild The GuildResolvable to identify
-   * @returns {?Guild}
-   */
-  resolveGuild(guild) {
-    if (guild instanceof Guild) return guild;
-    if (typeof guild === 'string') return this.client.guilds.get(guild) || null;
-    return null;
-  }
-
-  /**
-   * Data that resolves to give a GuildMember object. This can be:
-   * * A GuildMember object
-   * * A User object
-   * @typedef {Guild} GuildMemberResolvable
-   */
-
-  /**
-   * Resolves a GuildMemberResolvable to a GuildMember object
-   * @param {GuildResolvable} guild The guild that the member is part of
-   * @param {UserResolvable} user The user that is part of the guild
-   * @returns {?GuildMember}
-   */
-  resolveGuildMember(guild, user) {
-    if (user instanceof GuildMember) return user;
-    guild = this.resolveGuild(guild);
-    user = this.resolveUser(user);
-    if (!guild || !user) return null;
-    return guild.members.get(user.id) || null;
-  }
-
-  /**
-   * Data that can be resolved to give a Channel object. This can be:
-   * * A Channel object
-   * * A Message object (the channel the message was sent in)
-   * * A Guild object (the #general channel)
-   * * A channel ID
-   * @typedef {Channel|Guild|Message|Snowflake} ChannelResolvable
-   */
-
-  /**
-   * Resolves a ChannelResolvable to a Channel object
-   * @param {ChannelResolvable} channel The channel resolvable to resolve
-   * @returns {?Channel}
-   */
-  resolveChannel(channel) {
-    if (channel instanceof Channel) return channel;
-    if (typeof channel === 'string') return this.client.channels.get(channel) || null;
-    if (channel instanceof Message) return channel.channel;
-    if (channel instanceof Guild) return channel.channels.get(channel.id) || null;
-    return null;
-  }
-
-  /**
-   * Resolves a ChannelResolvable to a channel ID
-   * @param {ChannelResolvable} channel The channel resolvable to resolve
-   * @returns {?Snowflake}
-   */
-  resolveChannelID(channel) {
-    if (channel instanceof Channel) return channel.id;
-    if (typeof channel === 'string') return channel;
-    if (channel instanceof Message) return channel.channel.id;
-    if (channel instanceof Guild) return channel.defaultChannel.id;
-    return null;
-  }
-
-  /**
-   * Data that can be resolved to give an invite code. This can be:
-   * * An invite code
-   * * An invite URL
-   * @typedef {string} InviteResolvable
-   */
-
-  /**
-   * Resolves InviteResolvable to an invite code
-   * @param {InviteResolvable} data The invite resolvable to resolve
-   * @returns {string}
-   */
-  resolveInviteCode(data) {
-    const inviteRegex = /discord(?:app\.com\/invite|\.gg)\/([\w-]{2,255})/i;
-    const match = inviteRegex.exec(data);
-    if (match && match[1]) return match[1];
-    return data;
-  }
-
-  /**
-   * Data that can be resolved to give a string. This can be:
-   * * A string
-   * * An array (joined with a new line delimiter to give a string)
-   * * Any value
-   * @typedef {string|Array|*} StringResolvable
-   */
-
-  /**
-   * Resolves a StringResolvable to a string
-   * @param {StringResolvable} data The string resolvable to resolve
-   * @returns {string}
-   */
-  resolveString(data) {
-    if (typeof data === 'string') return data;
-    if (data instanceof Array) return data.join('\n');
-    return String(data);
-  }
-
-  /**
-   * Data that resolves to give a Base64 string, typically for image uploading. This can be:
-   * * A Buffer
-   * * A base64 string
-   * @typedef {Buffer|string} Base64Resolvable
-   */
-
-  /**
-   * Resolves a Base64Resolvable to a Base 64 image
-   * @param {Base64Resolvable} data The base 64 resolvable you want to resolve
-   * @returns {?string}
-   */
-  resolveBase64(data) {
-    if (data instanceof Buffer) return `data:image/jpg;base64,${data.toString('base64')}`;
-    return data;
-  }
-
-  /**
-   * Data that can be resolved to give a Buffer. This can be:
-   * * A Buffer
-   * * The path to a local file
-   * * A URL
-   * @typedef {string|Buffer} BufferResolvable
-   */
-
-  /**
-   * Resolves a BufferResolvable to a Buffer
-   * @param {BufferResolvable} resource The buffer resolvable to resolve
-   * @returns {Promise<Buffer>}
-   */
-  resolveBuffer(resource) {
-    if (resource instanceof Buffer) return Promise.resolve(resource);
-    if (this.client.browser && resource instanceof ArrayBuffer) return Promise.resolve(convertToBuffer(resource));
-
-    if (typeof resource === 'string') {
-      return new Promise((resolve, reject) => {
-        if (/^https?:\/\//.test(resource)) {
-          const req = request.get(resource).set('Content-Type', 'blob');
-          if (this.client.browser) req.responseType('arraybuffer');
-          req.end((err, res) => {
-            if (err) return reject(err);
-            if (this.client.browser) return resolve(convertToBuffer(res.xhr.response));
-            if (!(res.body instanceof Buffer)) return reject(new TypeError('The response body isn\'t a Buffer.'));
-            return resolve(res.body);
-          });
-        } else {
-          const file = path.resolve(resource);
-          fs.stat(file, (err, stats) => {
-            if (err) return reject(err);
-            if (!stats || !stats.isFile()) return reject(new Error(`The file could not be found: ${file}`));
-            fs.readFile(file, (err2, data) => {
-              if (err2) reject(err2); else resolve(data);
-            });
-            return null;
-          });
-        }
-      });
-    }
-
-    return Promise.reject(new TypeError('The resource must be a string or Buffer.'));
-  }
-
-  /**
-   * Data that can be resolved to give an emoji identifier. This can be:
-   * * A string
-   * * An Emoji
-   * * A ReactionEmoji
-   * @typedef {string|Emoji|ReactionEmoji} EmojiIdentifierResolvable
-   */
-
-  /**
-   * Resolves an EmojiResolvable to an emoji identifier
-   * @param {EmojiIdentifierResolvable} emoji The emoji resolvable to resolve
-   * @returns {string}
-   */
-  resolveEmojiIdentifier(emoji) {
-    if (emoji instanceof Emoji || emoji instanceof ReactionEmoji) return emoji.identifier;
-    if (typeof emoji === 'string') {
-      if (!emoji.includes('%')) return encodeURIComponent(emoji);
-    }
-    return null;
-  }
-
-  /**
-   * Can be a Hex Literal, Hex String, Number, RGB Array, or one of the following
-   * ```
-   * [
-   *   'DEFAULT',
-   *   'AQUA',
-   *   'GREEN',
-   *   'BLUE',
-   *   'PURPLE',
-   *   'GOLD',
-   *   'ORANGE',
-   *   'RED',
-   *   'GREY',
-   *   'DARKER_GREY',
-   *   'NAVY',
-   *   'DARK_AQUA',
-   *   'DARK_GREEN',
-   *   'DARK_BLUE',
-   *   'DARK_PURPLE',
-   *   'DARK_GOLD',
-   *   'DARK_ORANGE',
-   *   'DARK_RED',
-   *   'DARK_GREY',
-   *   'LIGHT_GREY',
-   *   'DARK_NAVY',
-   *   'RANDOM',
-   * ]
-   * ```
-   * or something like
-   * ```
-   * [255, 0, 255]
-   * ```
-   * for purple
-   * @typedef {String|number|Array} ColorResolvable
-   */
-
-  /**
-   * Resolves a ColorResolvable into a color number
-   * @param {ColorResolvable} color Color to resolve
-   * @returns {number} A color
-   */
-  static resolveColor(color) {
-    if (typeof color === 'string') {
-      if (color === 'RANDOM') return Math.floor(Math.random() * (0xFFFFFF + 1));
-      color = Constants.Colors[color] || parseInt(color.replace('#', ''), 16);
-    } else if (color instanceof Array) {
-      color = (color[0] << 16) + (color[1] << 8) + color[2];
-    }
-
-    if (color < 0 || color > 0xFFFFFF) {
-      throw new RangeError('Color must be within the range 0 - 16777215 (0xFFFFFF).');
-    } else if (color && isNaN(color)) {
-      throw new TypeError('Unable to convert color to a number.');
-    }
-
-    return color;
-  }
-
-  /**
-   * @param {ColorResolvable} color Color to resolve
-   * @returns {number} A color
-   */
-  resolveColor(color) {
-    return this.constructor.resolveColor(color);
-  }
-}
-
-module.exports = ClientDataResolver;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22).Buffer))
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports) {
-
-module.exports = {
-	"name": "discord.js",
-	"version": "11.0.0",
-	"description": "A powerful library for interacting with the Discord API",
-	"main": "./src/index",
-	"types": "./typings/index.d.ts",
-	"scripts": {
-		"test": "npm run lint && npm run docs:test",
-		"docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
-		"docs:test": "docgen --source src --custom docs/index.yml",
-		"lint": "eslint src",
-		"lint:fix": "eslint --fix src",
-		"webpack": "parallel-webpack"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/hydrabolt/discord.js.git"
-	},
-	"keywords": [
-		"discord",
-		"api",
-		"bot",
-		"client",
-		"node",
-		"discordapp"
-	],
-	"author": "Amish Shah <amishshah.2k@gmail.com>",
-	"license": "Apache-2.0",
-	"bugs": {
-		"url": "https://github.com/hydrabolt/discord.js/issues"
-	},
-	"homepage": "https://github.com/hydrabolt/discord.js#readme",
-	"runkitExampleFilename": "./docs/examples/ping.js",
-	"dependencies": {
-		"@types/node": "^7.0.0",
-		"long": "^3.2.0",
-		"prism-media": "hydrabolt/prism-media",
-		"superagent": "^3.4.0",
-		"tweetnacl": "^0.14.0",
-		"ws": "^2.0.0"
-	},
-	"peerDependencies": {
-		"bufferutil": "^2.0.0",
-		"erlpack": "hammerandchisel/erlpack",
-		"node-opus": "^0.2.0",
-		"opusscript": "^0.0.2",
-		"sodium": "^2.0.1",
-		"uws": "^0.14.1"
-	},
-	"devDependencies": {
-		"discord.js-docgen": "hydrabolt/discord.js-docgen",
-		"eslint": "^3.17.0",
-		"parallel-webpack": "^1.6.0",
-		"uglify-js": "mishoo/UglifyJS2#harmony",
-		"webpack": "^2.2.0"
-	},
-	"engines": {
-		"node": ">=6.0.0"
-	},
-	"browser": {
-		"ws": false,
-		"uws": false,
-		"erlpack": false,
-		"prism-media": false,
-		"opusscript": false,
-		"node-opus": false,
-		"tweetnacl": false,
-		"sodium": false,
-		"src/sharding/Shard.js": false,
-		"src/sharding/ShardClientUtil.js": false,
-		"src/sharding/ShardingManager.js": false,
-		"src/client/voice/dispatcher/StreamDispatcher.js": false,
-		"src/client/voice/opus/BaseOpusEngine.js": false,
-		"src/client/voice/opus/NodeOpusEngine.js": false,
-		"src/client/voice/opus/OpusEngineList.js": false,
-		"src/client/voice/opus/OpusScriptEngine.js": false,
-		"src/client/voice/pcm/ConverterEngine.js": false,
-		"src/client/voice/pcm/ConverterEngineList.js": false,
-		"src/client/voice/pcm/FfmpegConverterEngine.js": false,
-		"src/client/voice/player/AudioPlayer.js": false,
-		"src/client/voice/receiver/VoiceReadable.js": false,
-		"src/client/voice/receiver/VoiceReceiver.js": false,
-		"src/client/voice/util/Secretbox.js": false,
-		"src/client/voice/util/SecretKey.js": false,
-		"src/client/voice/util/VolumeInterface.js": false,
-		"src/client/voice/ClientVoiceManager.js": false,
-		"src/client/voice/VoiceBroadcast.js": false,
-		"src/client/voice/VoiceConnection.js": false,
-		"src/client/voice/VoiceUDPClient.js": false,
-		"src/client/voice/VoiceWebSocket.js": false
-	}
-};
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const User = __webpack_require__(11);
-const Collection = __webpack_require__(3);
-
-/**
- * Represents the logged in client's Discord user
- * @extends {User}
- */
-class ClientUser extends User {
-  setup(data) {
-    super.setup(data);
-
-    /**
-     * Whether or not this account has been verified
-     * @type {boolean}
-     */
-    this.verified = data.verified;
-
-    /**
-     * The email of this account
-     * @type {string}
-     */
-    this.email = data.email;
-    this.localPresence = {};
-    this._typing = new Map();
-
-    /**
-     * A Collection of friends for the logged in user.
-     * <warn>This is only filled when using a user account.</warn>
-     * @type {Collection<Snowflake, User>}
-     */
-    this.friends = new Collection();
-
-    /**
-     * A Collection of blocked users for the logged in user.
-     * <warn>This is only filled when using a user account.</warn>
-     * @type {Collection<Snowflake, User>}
-     */
-    this.blocked = new Collection();
-
-    /**
-     * A Collection of notes for the logged in user.
-     * <warn>This is only filled when using a user account.</warn>
-     * @type {Collection<Snowflake, string>}
-     */
-    this.notes = new Collection();
-
-    /**
-     * Discord client settings, such as guild positions
-     * <warn>This is only filled when using a user account.</warn>
-     * @type {Object}
-     */
-    this.settings = {};
-
-    /**
-     * If the user has discord premium (nitro)
-     * <warn>This is only filled when using a user account.</warn>
-     * @type {?boolean}
-     */
-    this.premium = typeof data.premium === 'boolean' ? data.premium : null;
-
-    /**
-     * If the user has MFA enabled on their account
-     * <warn>This is only filled when using a user account.</warn>
-     * @type {?boolean}
-     */
-    this.mfaEnabled = typeof data.mfa_enabled === 'boolean' ? data.mfa_enabled : null;
-
-    /**
-     * If the user has ever used a mobile device on discord
-     * <warn>This is only filled when using a user account.</warn>
-     * @type {?boolean}
-     */
-    this.mobile = typeof data.mobile === 'boolean' ? data.mobile : null;
-  }
-
-  edit(data) {
-    return this.client.rest.methods.updateCurrentUser(data);
-  }
-
-  /**
-   * Set the username of the logged in Client.
-   * <info>Changing usernames in Discord is heavily rate limited, with only 2 requests
-   * every hour. Use this sparingly!</info>
-   * @param {string} username The new username
-   * @param {string} [password] Current password (only for user accounts)
-   * @returns {Promise<ClientUser>}
-   * @example
-   * // set username
-   * client.user.setUsername('discordjs')
-   *  .then(user => console.log(`My new username is ${user.username}`))
-   *  .catch(console.error);
-   */
-  setUsername(username, password) {
-    return this.client.rest.methods.updateCurrentUser({ username }, password);
-  }
-
-  /**
-   * Changes the email for the client user's account.
-   * <warn>This is only available when using a user account.</warn>
-   * @param {string} email New email to change to
-   * @param {string} password Current password
-   * @returns {Promise<ClientUser>}
-   * @example
-   * // set email
-   * client.user.setEmail('bob@gmail.com', 'some amazing password 123')
-   *  .then(user => console.log(`My new email is ${user.email}`))
-   *  .catch(console.error);
-   */
-  setEmail(email, password) {
-    return this.client.rest.methods.updateCurrentUser({ email }, password);
-  }
-
-  /**
-   * Changes the password for the client user's account.
-   * <warn>This is only available when using a user account.</warn>
-   * @param {string} newPassword New password to change to
-   * @param {string} oldPassword Current password
-   * @returns {Promise<ClientUser>}
-   * @example
-   * // set password
-   * client.user.setPassword('some new amazing password 456', 'some amazing password 123')
-   *  .then(user => console.log('New password set!'))
-   *  .catch(console.error);
-   */
-  setPassword(newPassword, oldPassword) {
-    return this.client.rest.methods.updateCurrentUser({ password: newPassword }, oldPassword);
-  }
-
-  /**
-   * Set the avatar of the logged in Client.
-   * @param {BufferResolvable|Base64Resolvable} avatar The new avatar
-   * @returns {Promise<ClientUser>}
-   * @example
-   * // set avatar
-   * client.user.setAvatar('./avatar.png')
-   *  .then(user => console.log(`New avatar set!`))
-   *  .catch(console.error);
-   */
-  setAvatar(avatar) {
-    if (typeof avatar === 'string' && avatar.startsWith('data:')) {
-      return this.client.rest.methods.updateCurrentUser({ avatar });
-    } else {
-      return this.client.resolver.resolveBuffer(avatar).then(data =>
-        this.client.rest.methods.updateCurrentUser({ avatar: data })
-      );
-    }
-  }
-
-  /**
-   * Data resembling a raw Discord presence
-   * @typedef {Object} PresenceData
-   * @property {PresenceStatus} [status] Status of the user
-   * @property {boolean} [afk] Whether the user is AFK
-   * @property {Object} [game] Game the user is playing
-   * @property {string} [game.name] Name of the game
-   * @property {string} [game.url] Twitch stream URL
-   */
-
-  /**
-   * Sets the full presence of the client user.
-   * @param {PresenceData} data Data for the presence
-   * @returns {Promise<ClientUser>}
-   */
-  setPresence(data) {
-    // {"op":3,"d":{"status":"dnd","since":0,"game":null,"afk":false}}
-    return new Promise(resolve => {
-      let status = this.localPresence.status || this.presence.status;
-      let game = this.localPresence.game;
-      let afk = this.localPresence.afk || this.presence.afk;
-
-      if (!game && this.presence.game) {
-        game = {
-          name: this.presence.game.name,
-          type: this.presence.game.type,
-          url: this.presence.game.url,
-        };
-      }
-
-      if (data.status) {
-        if (typeof data.status !== 'string') throw new TypeError('Status must be a string');
-        status = data.status;
-      }
-
-      if (data.game) {
-        game = data.game;
-        if (game.url) game.type = 1;
-      }
-
-      if (data.game === null) game = null;
-
-      if (typeof data.afk !== 'undefined') afk = data.afk;
-      afk = Boolean(afk);
-
-      this.localPresence = { status, game, afk };
-      this.localPresence.since = 0;
-      this.localPresence.game = this.localPresence.game || null;
-
-      this.client.ws.send({
-        op: 3,
-        d: this.localPresence,
-      });
-
-      this.client._setPresence(this.id, this.localPresence);
-
-      resolve(this);
-    });
-  }
-
-  /**
-   * A user's status. Must be one of:
-   * - `online`
-   * - `idle`
-   * - `invisible`
-   * - `dnd` (do not disturb)
-   * @typedef {string} PresenceStatus
-   */
-
-  /**
-   * Sets the status of the client user.
-   * @param {PresenceStatus} status Status to change to
-   * @returns {Promise<ClientUser>}
-   */
-  setStatus(status) {
-    return this.setPresence({ status });
-  }
-
-  /**
-   * Sets the game the client user is playing.
-   * @param {?string} game Game being played
-   * @param {string} [streamingURL] Twitch stream URL
-   * @returns {Promise<ClientUser>}
-   */
-  setGame(game, streamingURL) {
-    if (game === null) return this.setPresence({ game });
-    return this.setPresence({ game: {
-      name: game,
-      url: streamingURL,
-    } });
-  }
-
-  /**
-   * Sets/removes the AFK flag for the client user.
-   * @param {boolean} afk Whether or not the user is AFK
-   * @returns {Promise<ClientUser>}
-   */
-  setAFK(afk) {
-    return this.setPresence({ afk });
-  }
-
-  /**
-   * Fetches messages that mentioned the client's user
-   * @param {Object} [options] Options for the fetch
-   * @param {number} [options.limit=25] Maximum number of mentions to retrieve
-   * @param {boolean} [options.roles=true] Whether to include role mentions
-   * @param {boolean} [options.everyone=true] Whether to include everyone/here mentions
-   * @param {Guild|Snowflake} [options.guild] Limit the search to a specific guild
-   * @returns {Promise<Message[]>}
-   */
-  fetchMentions(options = { limit: 25, roles: true, everyone: true, guild: null }) {
-    return this.client.rest.methods.fetchMentions(options);
-  }
-
-  /**
-   * Send a friend request
-   * <warn>This is only available when using a user account.</warn>
-   * @param {UserResolvable} user The user to send the friend request to.
-   * @returns {Promise<User>} The user the friend request was sent to.
-   */
-  addFriend(user) {
-    user = this.client.resolver.resolveUser(user);
-    return this.client.rest.methods.addFriend(user);
-  }
-
-  /**
-   * Remove a friend
-   * <warn>This is only available when using a user account.</warn>
-   * @param {UserResolvable} user The user to remove from your friends
-   * @returns {Promise<User>} The user that was removed
-   */
-  removeFriend(user) {
-    user = this.client.resolver.resolveUser(user);
-    return this.client.rest.methods.removeFriend(user);
-  }
-
-  /**
-   * Creates a guild
-   * <warn>This is only available when using a user account.</warn>
-   * @param {string} name The name of the guild
-   * @param {string} region The region for the server
-   * @param {BufferResolvable|Base64Resolvable} [icon=null] The icon for the guild
-   * @returns {Promise<Guild>} The guild that was created
-   */
-  createGuild(name, region, icon = null) {
-    if (!icon) return this.client.rest.methods.createGuild({ name, icon, region });
-    if (typeof icon === 'string' && icon.startsWith('data:')) {
-      return this.client.rest.methods.createGuild({ name, icon, region });
-    } else {
-      return this.client.resolver.resolveBuffer(icon).then(data =>
-        this.client.rest.methods.createGuild({ name, icon: data, region })
-      );
-    }
-  }
-
-  /**
-   * An object containing either a user or access token, and an optional nickname
-   * @typedef {Object} GroupDMRecipientOptions
-   * @property {UserResolvable|Snowflake} [user] User to add to the group DM
-   * (only available if a user is creating the DM)
-   * @property {string} [accessToken] Access token to use to add a user to the group DM
-   * (only available if a bot is creating the DM)
-   * @property {string} [nick] Permanent nickname (only available if a bot is creating the DM)
-   */
-
-  /**
-   * Creates a group DM
-   * @param {GroupDMRecipientOptions[]} recipients The recipients
-   * @returns {Promise<GroupDMChannel>}
-   */
-  createGroupDM(recipients) {
-    return this.client.rest.methods.createGroupDM({
-      recipients: recipients.map(u => this.client.resolver.resolveUserID(u.user)),
-      accessTokens: recipients.map(u => u.accessToken),
-      nicks: recipients.map(u => u.nick),
-    });
-  }
-
-  /**
-   * Accepts an invite to join a guild
-   * <warn>This is only available when using a user account.</warn>
-   * @param {Invite|string} invite Invite or code to accept
-   * @returns {Promise<Guild>} Joined guild
-   */
-  acceptInvite(invite) {
-    return this.client.rest.methods.acceptInvite(invite);
-  }
-}
-
-module.exports = ClientUser;
-
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Channel = __webpack_require__(8);
-const TextBasedChannel = __webpack_require__(14);
-const Collection = __webpack_require__(3);
-
-/**
- * Represents a direct message channel between two users.
- * @extends {Channel}
- * @implements {TextBasedChannel}
- */
-class DMChannel extends Channel {
-  constructor(client, data) {
-    super(client, data);
-    this.type = 'dm';
-    this.messages = new Collection();
-    this._typing = new Map();
-  }
-
-  setup(data) {
-    super.setup(data);
-
-    /**
-     * The recipient on the other end of the DM
-     * @type {User}
-     */
-    this.recipient = this.client.dataManager.newUser(data.recipients[0]);
-
-    this.lastMessageID = data.last_message_id;
-  }
-
-  /**
-   * When concatenated with a string, this automatically concatenates the recipient's mention instead of the
-   * DM channel object.
-   * @returns {string}
-   */
-  toString() {
-    return this.recipient.toString();
-  }
-
-  // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  /* eslint-disable no-empty-function */
-  send() {}
-  sendMessage() {}
-  sendEmbed() {}
-  sendFile() {}
-  sendFiles() {}
-  sendCode() {}
-  fetchMessage() {}
-  fetchMessages() {}
-  fetchPinnedMessages() {}
-  search() {}
-  startTyping() {}
-  stopTyping() {}
-  get typing() {}
-  get typingCount() {}
-  createCollector() {}
-  awaitMessages() {}
-  // Doesn't work on DM channels; bulkDelete() {}
-  acknowledge() {}
-  _cacheMessage() {}
-}
-
-TextBasedChannel.applyToClass(DMChannel, true, ['bulkDelete']);
-
-module.exports = DMChannel;
-
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const PartialGuild = __webpack_require__(37);
-const PartialGuildChannel = __webpack_require__(38);
-const Constants = __webpack_require__(0);
-
-/*
-{ max_age: 86400,
-  code: 'CG9A5',
-  guild:
-   { splash: null,
-     id: '123123123',
-     icon: '123123123',
-     name: 'name' },
-  created_at: '2016-08-28T19:07:04.763368+00:00',
-  temporary: false,
-  uses: 0,
-  max_uses: 0,
-  inviter:
-   { username: '123',
-     discriminator: '4204',
-     bot: true,
-     id: '123123123',
-     avatar: '123123123' },
-  channel: { type: 0, id: '123123', name: 'heavy-testing' } }
-*/
-
-/**
- * Represents an invitation to a guild channel.
- * <warn>The only guaranteed properties are `code`, `guild` and `channel`. Other properties can be missing.</warn>
- */
-class Invite {
-  constructor(client, data) {
-    /**
-     * The client that instantiated the invite
-     * @name Invite#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
-
-    this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The guild the invite is for. If this guild is already known, this will be a Guild object. If the guild is
-     * unknown, this will be a PartialGuild object.
-     * @type {Guild|PartialGuild}
-     */
-    this.guild = this.client.guilds.get(data.guild.id) || new PartialGuild(this.client, data.guild);
-
-    /**
-     * The code for this invite
-     * @type {string}
-     */
-    this.code = data.code;
-
-    /**
-     * Whether or not this invite is temporary
-     * @type {boolean}
-     */
-    this.temporary = data.temporary;
-
-    /**
-     * The maximum age of the invite, in seconds
-     * @type {?number}
-     */
-    this.maxAge = data.max_age;
-
-    /**
-     * How many times this invite has been used
-     * @type {number}
-     */
-    this.uses = data.uses;
-
-    /**
-     * The maximum uses of this invite
-     * @type {number}
-     */
-    this.maxUses = data.max_uses;
-
-    if (data.inviter) {
-      /**
-       * The user who created this invite
-       * @type {User}
-       */
-      this.inviter = this.client.dataManager.newUser(data.inviter);
-    }
-
-    /**
-     * The channel the invite is for. If this channel is already known, this will be a GuildChannel object.
-     * If the channel is unknown, this will be a PartialGuildChannel object.
-     * @type {GuildChannel|PartialGuildChannel}
-     */
-    this.channel = this.client.channels.get(data.channel.id) || new PartialGuildChannel(this.client, data.channel);
-
-    /**
-     * The timestamp the invite was created at
-     * @type {number}
-     */
-    this.createdTimestamp = new Date(data.created_at).getTime();
-  }
-
-  /**
-   * The time the invite was created
-   * @type {Date}
-   * @readonly
-   */
-  get createdAt() {
-    return new Date(this.createdTimestamp);
-  }
-
-  /**
-   * The timestamp the invite will expire at
-   * @type {number}
-   * @readonly
-   */
-  get expiresTimestamp() {
-    return this.createdTimestamp + (this.maxAge * 1000);
-  }
-
-  /**
-   * The time the invite will expire
-   * @type {Date}
-   * @readonly
-   */
-  get expiresAt() {
-    return new Date(this.expiresTimestamp);
-  }
-
-  /**
-   * The URL to the invite
-   * @type {string}
-   * @readonly
-   */
-  get url() {
-    return Constants.Endpoints.inviteLink(this.code);
-  }
-
-  /**
-   * Deletes this invite
-   * @returns {Promise<Invite>}
-   */
-  delete() {
-    return this.client.rest.methods.deleteInvite(this);
-  }
-
-  /**
-   * When concatenated with a string, this automatically concatenates the invite's URL instead of the object.
-   * @returns {string}
-   * @example
-   * // logs: Invite: https://discord.gg/A1b2C3
-   * console.log(`Invite: ${invite}`);
-   */
-  toString() {
-    return this.url;
-  }
-}
-
-module.exports = Invite;
-
-
-/***/ }),
-/* 32 */
-/***/ (function(module, exports) {
-
-/**
- * Represents an attachment in a message
- */
-class MessageAttachment {
-  constructor(message, data) {
-    /**
-     * The Client that instantiated this MessageAttachment.
-     * @name MessageAttachment#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: message.client });
-
-    /**
-     * The message this attachment is part of.
-     * @type {Message}
-     */
-    this.message = message;
-
-    this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The ID of this attachment
-     * @type {Snowflake}
-     */
-    this.id = data.id;
-
-    /**
-     * The file name of this attachment
-     * @type {string}
-     */
-    this.filename = data.filename;
-
-    /**
-     * The size of this attachment in bytes
-     * @type {number}
-     */
-    this.filesize = data.size;
-
-    /**
-     * The URL to this attachment
-     * @type {string}
-     */
-    this.url = data.url;
-
-    /**
-     * The Proxy URL to this attachment
-     * @type {string}
-     */
-    this.proxyURL = data.proxy_url;
-
-    /**
-     * The height of this attachment (if an image)
-     * @type {?number}
-     */
-    this.height = data.height;
-
-    /**
-     * The width of this attachment (if an image)
-     * @type {?number}
-     */
-    this.width = data.width;
-  }
-}
-
-module.exports = MessageAttachment;
-
-
-/***/ }),
-/* 33 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const EventEmitter = __webpack_require__(23).EventEmitter;
-const Collection = __webpack_require__(3);
-
-/**
- * Collects messages based on a specified filter, then emits them.
- * @extends {EventEmitter}
- */
-class MessageCollector extends EventEmitter {
-  /**
-   * A function that takes a Message object and a MessageCollector and returns a boolean.
-   * ```js
-   * function(message, collector) {
-   *  if (message.content.includes('discord')) {
-   *    return true; // passed the filter test
-   *  }
-   *  return false; // failed the filter test
-   * }
-   * ```
-   * @typedef {Function} CollectorFilterFunction
-   */
-
-  /**
-   * An object containing options used to configure a MessageCollector. All properties are optional.
-   * @typedef {Object} CollectorOptions
-   * @property {number} [time] Duration for the collector in milliseconds
-   * @property {number} [max] Maximum number of messages to handle
-   * @property {number} [maxMatches] Maximum number of successfully filtered messages to obtain
-   */
-
-  /**
-   * @param {Channel} channel The channel to collect messages in
-   * @param {CollectorFilterFunction} filter The filter function
-   * @param {CollectorOptions} [options] Options for the collector
-   */
-  constructor(channel, filter, options = {}) {
-    super();
-
-    /**
-     * The channel this collector is operating on
-     * @type {Channel}
-     */
-    this.channel = channel;
-
-    /**
-     * A function used to filter messages that the collector collects.
-     * @type {CollectorFilterFunction}
-     */
-    this.filter = filter;
-
-    /**
-     * Options for the collecor.
-     * @type {CollectorOptions}
-     */
-    this.options = options;
-
-    /**
-     * Whether this collector has stopped collecting messages.
-     * @type {boolean}
-     */
-    this.ended = false;
-
-    /**
-     * A collection of collected messages, mapped by message ID.
-     * @type {Collection<Snowflake, Message>}
-     */
-    this.collected = new Collection();
-
-    this.listener = message => this.verify(message);
-    this.channel.client.on('message', this.listener);
-    if (options.time) this.channel.client.setTimeout(() => this.stop('time'), options.time);
-  }
-
-  /**
-   * Verifies a message against the filter and options
-   * @private
-   * @param {Message} message The message
-   * @returns {boolean}
-   */
-  verify(message) {
-    if (this.channel ? this.channel.id !== message.channel.id : false) return false;
-    if (this.filter(message, this)) {
-      this.collected.set(message.id, message);
-      /**
-       * Emitted whenever the collector receives a message that passes the filter test.
-       * @param {Message} message The received message
-       * @param {MessageCollector} collector The collector the message passed through
-       * @event MessageCollector#message
-       */
-      this.emit('message', message, this);
-      if (this.collected.size >= this.options.maxMatches) this.stop('matchesLimit');
-      else if (this.options.max && this.collected.size === this.options.max) this.stop('limit');
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Returns a promise that resolves when a valid message is sent. Rejects
-   * with collected messages if the Collector ends before receiving a message.
-   * @type {Promise<Message>}
-   * @readonly
-   */
-  get next() {
-    return new Promise((resolve, reject) => {
-      if (this.ended) {
-        reject(this.collected);
-        return;
-      }
-
-      const cleanup = () => {
-        this.removeListener('message', onMessage);
-        this.removeListener('end', onEnd);
-      };
-
-      const onMessage = (...args) => {
-        cleanup();
-        resolve(...args);
-      };
-
-      const onEnd = (...args) => {
-        cleanup();
-        reject(...args); // eslint-disable-line prefer-promise-reject-errors
-      };
-
-      this.once('message', onMessage);
-      this.once('end', onEnd);
-    });
-  }
-
-  /**
-   * Stops the collector and emits `end`.
-   * @param {string} [reason='user'] An optional reason for stopping the collector
-   */
-  stop(reason = 'user') {
-    if (this.ended) return;
-    this.ended = true;
-    this.channel.client.removeListener('message', this.listener);
-    /**
-     * Emitted when the Collector stops collecting.
-     * @param {Collection<Snowflake, Message>} collection A collection of messages collected
-     * during the lifetime of the collector, mapped by the ID of the messages.
-     * @param {string} reason The reason for the end of the collector. If it ended because it reached the specified time
-     * limit, this would be `time`. If you invoke `.stop()` without specifying a reason, this would be `user`. If it
-     * ended because it reached its message limit, it will be `limit`.
-     * @event MessageCollector#end
-     */
-    this.emit('end', this.collected, reason);
-  }
-}
-
-module.exports = MessageCollector;
-
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports) {
-
-/**
- * Represents an embed in a message (image/video preview, rich embed, etc.)
- * <info>This class is only used for *recieved* embeds. If you wish to send one, use the {@link RichEmbed} class.</info>
- */
-class MessageEmbed {
-  constructor(message, data) {
-    /**
-     * The client that instantiated this embed
-     * @name MessageEmbed#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: message.client });
-
-    /**
-     * The message this embed is part of
-     * @type {Message}
-     */
-    this.message = message;
-
-    this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The type of this embed
-     * @type {string}
-     */
-    this.type = data.type;
-
-    /**
-     * The title of this embed, if there is one
-     * @type {?string}
-     */
-    this.title = data.title;
-
-    /**
-     * The description of this embed, if there is one
-     * @type {?string}
-     */
-    this.description = data.description;
-
-    /**
-     * The URL of this embed
-     * @type {string}
-     */
-    this.url = data.url;
-
-    /**
-     * The color of the embed
-     * @type {number}
-     */
-    this.color = data.color;
-
-    /**
-     * The fields of this embed
-     * @type {MessageEmbedField[]}
-     */
-    this.fields = [];
-    if (data.fields) for (const field of data.fields) this.fields.push(new MessageEmbedField(this, field));
-
-    /**
-     * The timestamp of this embed
-     * @type {number}
-     */
-    this.createdTimestamp = data.timestamp;
-
-    /**
-     * The thumbnail of this embed, if there is one
-     * @type {?MessageEmbedThumbnail}
-     */
-    this.thumbnail = data.thumbnail ? new MessageEmbedThumbnail(this, data.thumbnail) : null;
-
-    /**
-     * The image of this embed, if there is one
-     * @type {?MessageEmbedImage}
-     */
-    this.image = data.image ? new MessageEmbedImage(this, data.image) : null;
-
-    /**
-     * The video of this embed, if there is one
-     * @type {?MessageEmbedVideo}
-     */
-    this.video = data.video ? new MessageEmbedVideo(this, data.video) : null;
-
-    /**
-     * The author of this embed, if there is one
-     * @type {?MessageEmbedAuthor}
-     */
-    this.author = data.author ? new MessageEmbedAuthor(this, data.author) : null;
-
-    /**
-     * The provider of this embed, if there is one
-     * @type {?MessageEmbedProvider}
-     */
-    this.provider = data.provider ? new MessageEmbedProvider(this, data.provider) : null;
-
-    /**
-     * The footer of this embed
-     * @type {?MessageEmbedFooter}
-     */
-    this.footer = data.footer ? new MessageEmbedFooter(this, data.footer) : null;
-  }
-
-  /**
-   * The date this embed was created
-   * @type {Date}
-   */
-  get createdAt() {
-    return new Date(this.createdTimestamp);
-  }
-
-  /**
-   * The hexadecimal version of the embed color, with a leading hash.
-   * @type {string}
-   * @readonly
-   */
-  get hexColor() {
-    let col = this.color.toString(16);
-    while (col.length < 6) col = `0${col}`;
-    return `#${col}`;
-  }
-}
-
-/**
- * Represents a thumbnail for a message embed
- */
-class MessageEmbedThumbnail {
-  constructor(embed, data) {
-    /**
-     * The embed this thumbnail is part of
-     * @type {MessageEmbed}
-     */
-    this.embed = embed;
-
-    this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The URL for this thumbnail
-     * @type {string}
-     */
-    this.url = data.url;
-
-    /**
-     * The Proxy URL for this thumbnail
-     * @type {string}
-     */
-    this.proxyURL = data.proxy_url;
-
-    /**
-     * The height of the thumbnail
-     * @type {number}
-     */
-    this.height = data.height;
-
-    /**
-     * The width of the thumbnail
-     * @type {number}
-     */
-    this.width = data.width;
-  }
-}
-
-/**
- * Represents an image for a message embed
- */
-class MessageEmbedImage {
-  constructor(embed, data) {
-    /**
-     * The embed this image is part of
-     * @type {MessageEmbed}
-     */
-    this.embed = embed;
-
-    this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The URL for this image
-     * @type {string}
-     */
-    this.url = data.url;
-
-    /**
-     * The Proxy URL for this image
-     * @type {string}
-     */
-    this.proxyURL = data.proxy_url;
-
-    /**
-     * The height of the image
-     * @type {number}
-     */
-    this.height = data.height;
-
-    /**
-     * The width of the image
-     * @type {number}
-     */
-    this.width = data.width;
-  }
-}
-
-/**
- * Represents a video for a message embed
- */
-class MessageEmbedVideo {
-  constructor(embed, data) {
-    /**
-     * The embed this video is part of
-     * @type {MessageEmbed}
-     */
-    this.embed = embed;
-
-    this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The source URL for this video
-     * @type {string}
-     */
-    this.url = data.url;
-
-    /**
-     * The height of the video
-     * @type {number}
-     */
-    this.height = data.height;
-
-    /**
-     * The width of the video
-     * @type {number}
-     */
-    this.width = data.width;
-  }
-}
-
-/**
- * Represents a provider for a message embed
- */
-class MessageEmbedProvider {
-  constructor(embed, data) {
-    /**
-     * The embed this provider is part of
-     * @type {MessageEmbed}
-     */
-    this.embed = embed;
-
-    this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The name of this provider
-     * @type {string}
-     */
-    this.name = data.name;
-
-    /**
-     * The URL of this provider
-     * @type {string}
-     */
-    this.url = data.url;
-  }
-}
-
-/**
- * Represents an author for a message embed
- */
-class MessageEmbedAuthor {
-  constructor(embed, data) {
-    /**
-     * The embed this author is part of
-     * @type {MessageEmbed}
-     */
-    this.embed = embed;
-
-    this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The name of this author
-     * @type {string}
-     */
-    this.name = data.name;
-
-    /**
-     * The URL of this author
-     * @type {string}
-     */
-    this.url = data.url;
-
-    /**
-     * The icon URL of this author
-     * @type {string}
-     */
-    this.iconURL = data.icon_url;
-  }
-}
-
-/**
- * Represents a field for a message embed
- */
-class MessageEmbedField {
-  constructor(embed, data) {
-    /**
-     * The embed this footer is part of
-     * @type {MessageEmbed}
-     */
-    this.embed = embed;
-
-    this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The name of this field
-     * @type {string}
-     */
-    this.name = data.name;
-
-    /**
-     * The value of this field
-     * @type {string}
-     */
-    this.value = data.value;
-
-    /**
-     * If this field is displayed inline
-     * @type {boolean}
-     */
-    this.inline = data.inline;
-  }
-}
-
-/**
- * Represents the footer of a message embed
- */
-class MessageEmbedFooter {
-  constructor(embed, data) {
-    /**
-     * The embed this footer is part of
-     * @type {MessageEmbed}
-     */
-    this.embed = embed;
-
-    this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The text in this footer
-     * @type {string}
-     */
-    this.text = data.text;
-
-    /**
-     * The icon URL of this footer
-     * @type {string}
-     */
-    this.iconURL = data.icon_url;
-
-    /**
-     * The proxy icon URL of this footer
-     * @type {string}
-     */
-    this.proxyIconUrl = data.proxy_icon_url;
-  }
-}
-
-MessageEmbed.Thumbnail = MessageEmbedThumbnail;
-MessageEmbed.Image = MessageEmbedImage;
-MessageEmbed.Video = MessageEmbedVideo;
-MessageEmbed.Provider = MessageEmbedProvider;
-MessageEmbed.Author = MessageEmbedAuthor;
-MessageEmbed.Field = MessageEmbedField;
-MessageEmbed.Footer = MessageEmbedFooter;
-
-module.exports = MessageEmbed;
-
-
-/***/ }),
-/* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Collection = __webpack_require__(3);
-const Emoji = __webpack_require__(12);
-const ReactionEmoji = __webpack_require__(20);
-
-/**
- * Represents a reaction to a message
- */
-class MessageReaction {
-  constructor(message, emoji, count, me) {
-    /**
-     * The message that this reaction refers to
-     * @type {Message}
-     */
-    this.message = message;
-
-    /**
-     * Whether the client has given this reaction
-     * @type {boolean}
-     */
-    this.me = me;
-
-    /**
-     * The number of people that have given the same reaction.
-     * @type {number}
-     */
-    this.count = count || 0;
-
-    /**
-     * The users that have given this reaction, mapped by their ID.
-     * @type {Collection<Snowflake, User>}
-     */
-    this.users = new Collection();
-
-    this._emoji = new ReactionEmoji(this, emoji.name, emoji.id);
-  }
-
-  /**
-   * The emoji of this reaction, either an Emoji object for known custom emojis, or a ReactionEmoji
-   * object which has fewer properties. Whatever the prototype of the emoji, it will still have
-   * `name`, `id`, `identifier` and `toString()`
-   * @type {Emoji|ReactionEmoji}
-   */
-  get emoji() {
-    if (this._emoji instanceof Emoji) return this._emoji;
-    // Check to see if the emoji has become known to the client
-    if (this._emoji.id) {
-      const emojis = this.message.client.emojis;
-      if (emojis.has(this._emoji.id)) {
-        const emoji = emojis.get(this._emoji.id);
-        this._emoji = emoji;
-        return emoji;
-      }
-    }
-    return this._emoji;
-  }
-
-  /**
-   * Removes a user from this reaction.
-   * @param {UserResolvable} [user=this.message.client.user] User to remove the reaction of
-   * @returns {Promise<MessageReaction>}
-   */
-  remove(user = this.message.client.user) {
-    const message = this.message;
-    user = this.message.client.resolver.resolveUserID(user);
-    if (!user) return Promise.reject(new Error('Couldn\'t resolve the user ID to remove from the reaction.'));
-    return message.client.rest.methods.removeMessageReaction(
-      message, this.emoji.identifier, user
-    );
-  }
-
-  /**
-   * Fetch all the users that gave this reaction. Resolves with a collection of users, mapped by their IDs.
-   * @param {number} [limit=100] the maximum amount of users to fetch, defaults to 100
-   * @returns {Promise<Collection<Snowflake, User>>}
-   */
-  fetchUsers(limit = 100) {
-    const message = this.message;
-    return message.client.rest.methods.getMessageReactionUsers(
-      message, this.emoji.identifier, limit
-    ).then(users => {
-      this.users = new Collection();
-      for (const rawUser of users) {
-        const user = this.message.client.dataManager.newUser(rawUser);
-        this.users.set(user.id, user);
-      }
-      this.count = this.users.size;
-      return this.users;
-    });
-  }
-}
-
-module.exports = MessageReaction;
-
-
-/***/ }),
-/* 36 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Snowflake = __webpack_require__(5);
-
-/**
- * Represents an OAuth2 Application
- */
-class OAuth2Application {
-  constructor(client, data) {
-    /**
-     * The client that instantiated the application
-     * @name OAuth2Application#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
-
-    this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The ID of the app
-     * @type {Snowflake}
-     */
-    this.id = data.id;
-
-    /**
-     * The name of the app
-     * @type {string}
-     */
-    this.name = data.name;
-
-    /**
-     * The app's description
-     * @type {string}
-     */
-    this.description = data.description;
-
-    /**
-     * The app's icon hash
-     * @type {string}
-     */
-    this.icon = data.icon;
-
-    /**
-     * The app's icon URL
-     * @type {string}
-     */
-    this.iconURL = `https://cdn.discordapp.com/app-icons/${this.id}/${this.icon}.jpg`;
-
-    /**
-     * The app's RPC origins
-     * @type {?string[]}
-     */
-    this.rpcOrigins = data.rpc_origins;
-
-    /**
-     * The app's redirect URIs
-     * @type {string[]}
-     */
-    this.redirectURIs = data.redirect_uris;
-
-    /**
-     * If this app's bot requires a code grant when using the oauth2 flow
-     * @type {boolean}
-     */
-    this.botRequireCodeGrant = data.bot_require_code_grant;
-
-    /**
-     * If this app's bot is public
-     * @type {boolean}
-     */
-    this.botPublic = data.bot_public;
-
-    /**
-     * If this app can use rpc
-     * @type {boolean}
-     */
-    this.rpcApplicationState = data.rpc_application_state;
-
-    /**
-     * Object containing basic info about this app's bot
-     * @type {Object}
-     */
-    this.bot = data.bot;
-
-    /**
-     * Flags for the app
-     * @type {number}
-     */
-    this.flags = data.flags;
-
-    /**
-     * OAuth2 secret for the application
-     * @type {boolean}
-     */
-    this.secret = data.secret;
-  }
-
-  /**
-   * The timestamp the app was created at
-   * @type {number}
-   * @readonly
-   */
-  get createdTimestamp() {
-    return Snowflake.deconstruct(this.id).timestamp;
-  }
-
-  /**
-   * The time the app was created
-   * @type {Date}
-   * @readonly
-   */
-  get createdAt() {
-    return new Date(this.createdTimestamp);
-  }
-
-  /**
-   * Reset the app's secret and bot token
-   * @returns {OAuth2Application}
-   */
-  reset() {
-    return this.client.rest.methods.resetApplication(this.id);
-  }
-
-  /**
-   * When concatenated with a string, this automatically concatenates the app name rather than the app object.
-   * @returns {string}
-   */
-  toString() {
-    return this.name;
-  }
-}
-
-module.exports = OAuth2Application;
-
-
-/***/ }),
-/* 37 */
-/***/ (function(module, exports) {
-
-/*
-{ splash: null,
-     id: '123123123',
-     icon: '123123123',
-     name: 'name' }
-*/
-
-/**
- * Represents a guild that the client only has limited information for - e.g. from invites.
- */
-class PartialGuild {
-  constructor(client, data) {
-    /**
-     * The Client that instantiated this PartialGuild
-     * @name PartialGuild#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
-
-    this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The ID of this guild
-     * @type {Snowflake}
-     */
-    this.id = data.id;
-
-    /**
-     * The name of this guild
-     * @type {string}
-     */
-    this.name = data.name;
-
-    /**
-     * The hash of this guild's icon, or null if there is none.
-     * @type {?string}
-     */
-    this.icon = data.icon;
-
-    /**
-     * The hash of the guild splash image, or null if no splash (VIP only)
-     * @type {?string}
-     */
-    this.splash = data.splash;
-  }
-}
-
-module.exports = PartialGuild;
-
-
-/***/ }),
-/* 38 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Constants = __webpack_require__(0);
-
-/*
-{ type: 0, id: '123123', name: 'heavy-testing' } }
-*/
-
-/**
- * Represents a guild channel that the client only has limited information for - e.g. from invites.
- */
-class PartialGuildChannel {
-  constructor(client, data) {
-    /**
-     * The Client that instantiated this PartialGuildChannel
-     * @name PartialGuildChannel#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
-
-    this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The ID of this guild channel
-     * @type {Snowflake}
-     */
-    this.id = data.id;
-
-    /**
-     * The name of this guild channel
-     * @type {string}
-     */
-    this.name = data.name;
-
-    /**
-     * The type of this guild channel - `text` or `voice`
-     * @type {string}
-     */
-    this.type = Constants.ChannelTypes.TEXT === data.type ? 'text' : 'voice';
-  }
-}
-
-module.exports = PartialGuildChannel;
-
-
-/***/ }),
-/* 39 */
-/***/ (function(module, exports) {
-
-/**
- * Represents a permission overwrite for a role or member in a guild channel.
- */
-class PermissionOverwrites {
-  constructor(guildChannel, data) {
-    /**
-     * The GuildChannel this overwrite is for
-     * @name PermissionOverwrites#channel
-     * @type {GuildChannel}
-     * @readonly
-     */
-    Object.defineProperty(this, 'channel', { value: guildChannel });
-
-    if (data) this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The ID of this overwrite, either a user ID or a role ID
-     * @type {Snowflake}
-     */
-    this.id = data.id;
-
-    /**
-     * The type of this overwrite
-     * @type {string}
-     */
-    this.type = data.type;
-
-    this.deny = data.deny;
-    this.allow = data.allow;
-  }
-
-  /**
-   * Delete this Permission Overwrite.
-   * @returns {Promise<PermissionOverwrites>}
-   */
-  delete() {
-    return this.channel.client.rest.methods.deletePermissionOverwrites(this);
-  }
-}
-
-module.exports = PermissionOverwrites;
-
-
-/***/ }),
-/* 40 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const GuildChannel = __webpack_require__(17);
-const TextBasedChannel = __webpack_require__(14);
-const Collection = __webpack_require__(3);
-
-/**
- * Represents a guild text channel on Discord.
- * @extends {GuildChannel}
- * @implements {TextBasedChannel}
- */
-class TextChannel extends GuildChannel {
-  constructor(guild, data) {
-    super(guild, data);
-    this.type = 'text';
-    this.messages = new Collection();
-    this._typing = new Map();
-  }
-
-  setup(data) {
-    super.setup(data);
-
-    /**
-     * The topic of the text channel, if there is one.
-     * @type {?string}
-     */
-    this.topic = data.topic;
-
-    this.lastMessageID = data.last_message_id;
-  }
-
-  /**
-   * A collection of members that can see this channel, mapped by their ID.
-   * @type {Collection<Snowflake, GuildMember>}
-   * @readonly
-   */
-  get members() {
-    const members = new Collection();
-    for (const member of this.guild.members.values()) {
-      if (this.permissionsFor(member).hasPermission('READ_MESSAGES')) {
-        members.set(member.id, member);
-      }
-    }
-    return members;
-  }
-
-  /**
-   * Fetch all webhooks for the channel.
-   * @returns {Promise<Collection<Snowflake, Webhook>>}
-   */
-  fetchWebhooks() {
-    return this.client.rest.methods.getChannelWebhooks(this);
-  }
-
-  /**
-   * Create a webhook for the channel.
-   * @param {string} name The name of the webhook.
-   * @param {BufferResolvable|Base64Resolvable} avatar The avatar for the webhook.
-   * @returns {Promise<Webhook>} webhook The created webhook.
-   * @example
-   * channel.createWebhook('Snek', 'http://snek.s3.amazonaws.com/topSnek.png')
-   *  .then(webhook => console.log(`Created Webhook ${webhook}`))
-   *  .catch(console.error)
-   */
-  createWebhook(name, avatar) {
-    return new Promise(resolve => {
-      if (typeof avatar === 'string' && avatar.startsWith('data:')) {
-        resolve(this.client.rest.methods.createWebhook(this, name, avatar));
-      } else {
-        this.client.resolver.resolveBuffer(avatar).then(data =>
-           resolve(this.client.rest.methods.createWebhook(this, name, data))
-        );
-      }
-    });
-  }
-
-  // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  /* eslint-disable no-empty-function */
-  send() {}
-  sendMessage() {}
-  sendEmbed() {}
-  sendFile() {}
-  sendFiles() {}
-  sendCode() {}
-  fetchMessage() {}
-  fetchMessages() {}
-  fetchPinnedMessages() {}
-  search() {}
-  startTyping() {}
-  stopTyping() {}
-  get typing() {}
-  get typingCount() {}
-  createCollector() {}
-  awaitMessages() {}
-  bulkDelete() {}
-  acknowledge() {}
-  _cacheMessage() {}
-}
-
-TextBasedChannel.applyToClass(TextChannel, true);
-
-module.exports = TextChannel;
-
-
-/***/ }),
-/* 41 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const GuildChannel = __webpack_require__(17);
-const Collection = __webpack_require__(3);
-
-/**
- * Represents a guild voice channel on Discord.
- * @extends {GuildChannel}
- */
-class VoiceChannel extends GuildChannel {
-  constructor(guild, data) {
-    super(guild, data);
-
-    /**
-     * The members in this voice channel.
-     * @type {Collection<Snowflake, GuildMember>}
-     */
-    this.members = new Collection();
-
-    this.type = 'voice';
-  }
-
-  setup(data) {
-    super.setup(data);
-
-    /**
-     * The bitrate of this voice channel
-     * @type {number}
-     */
-    this.bitrate = data.bitrate;
-
-    /**
-     * The maximum amount of users allowed in this channel - 0 means unlimited.
-     * @type {number}
-     */
-    this.userLimit = data.user_limit;
-  }
-
-  /**
-   * The voice connection for this voice channel, if the client is connected
-   * @type {?VoiceConnection}
-   * @readonly
-   */
-  get connection() {
-    const connection = this.guild.voiceConnection;
-    if (connection && connection.channel.id === this.id) return connection;
-    return null;
-  }
-
-  /**
-   * Checks if the voice channel is full
-   * @type {boolean}
-   */
-  get full() {
-    return this.userLimit > 0 && this.members.size >= this.userLimit;
-  }
-
-  /**
-   * Checks if the client has permission join the voice channel
-   * @type {boolean}
-   */
-  get joinable() {
-    if (this.client.browser) return false;
-    if (!this.permissionsFor(this.client.user).hasPermission('CONNECT')) return false;
-    if (this.full && !this.permissionsFor(this.client.user).hasPermission('MOVE_MEMBERS')) return false;
-    return true;
-  }
-
-  /**
-   * Checks if the client has permission to send audio to the voice channel
-   * @type {boolean}
-   */
-  get speakable() {
-    return this.permissionsFor(this.client.user).hasPermission('SPEAK');
-  }
-
-  /**
-   * Sets the bitrate of the channel
-   * @param {number} bitrate The new bitrate
-   * @returns {Promise<VoiceChannel>}
-   * @example
-   * // set the bitrate of a voice channel
-   * voiceChannel.setBitrate(48000)
-   *  .then(vc => console.log(`Set bitrate to ${vc.bitrate} for ${vc.name}`))
-   *  .catch(console.error);
-   */
-  setBitrate(bitrate) {
-    return this.edit({ bitrate });
-  }
-
-  /**
-   * Sets the user limit of the channel
-   * @param {number} userLimit The new user limit
-   * @returns {Promise<VoiceChannel>}
-   * @example
-   * // set the user limit of a voice channel
-   * voiceChannel.setUserLimit(42)
-   *  .then(vc => console.log(`Set user limit to ${vc.userLimit} for ${vc.name}`))
-   *  .catch(console.error);
-   */
-  setUserLimit(userLimit) {
-    return this.edit({ userLimit });
-  }
-
-  /**
-   * Attempts to join this voice channel
-   * @returns {Promise<VoiceConnection>}
-   * @example
-   * // join a voice channel
-   * voiceChannel.join()
-   *  .then(connection => console.log('Connected!'))
-   *  .catch(console.error);
-   */
-  join() {
-    if (this.client.browser) return Promise.reject(new Error('Voice connections are not available in browsers.'));
-    return this.client.voice.joinChannel(this);
-  }
-
-  /**
-   * Leaves this voice channel
-   * @example
-   * // leave a voice channel
-   * voiceChannel.leave();
-   */
-  leave() {
-    if (this.client.browser) return;
-    const connection = this.client.voice.connections.get(this.guild.id);
-    if (connection && connection.channel.id === this.id) connection.disconnect();
-  }
-}
-
-module.exports = VoiceChannel;
-
-
-/***/ }),
-/* 42 */
-/***/ (function(module, exports, __webpack_require__) {
-
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
  Copyright 2013 Daniel Wirtz <dcode@dcode.io>
  Copyright 2009 The Closure Library Authors. All Rights Reserved.
@@ -12773,6 +9409,3451 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// resolves . and .. elements in a path array with directory names there
+// must be no slashes, empty elements, or device names (c:\) in the array
+// (so also no leading and trailing slashes - it does not distinguish
+// relative and absolute paths)
+function normalizeArray(parts, allowAboveRoot) {
+  // if the path tries to go above the root, `up` ends up > 0
+  var up = 0;
+  for (var i = parts.length - 1; i >= 0; i--) {
+    var last = parts[i];
+    if (last === '.') {
+      parts.splice(i, 1);
+    } else if (last === '..') {
+      parts.splice(i, 1);
+      up++;
+    } else if (up) {
+      parts.splice(i, 1);
+      up--;
+    }
+  }
+
+  // if the path is allowed to go above the root, restore leading ..s
+  if (allowAboveRoot) {
+    for (; up--; up) {
+      parts.unshift('..');
+    }
+  }
+
+  return parts;
+}
+
+// Split a filename into [root, dir, basename, ext], unix version
+// 'root' is just a slash, or nothing.
+var splitPathRe =
+    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+var splitPath = function(filename) {
+  return splitPathRe.exec(filename).slice(1);
+};
+
+// path.resolve([from ...], to)
+// posix version
+exports.resolve = function() {
+  var resolvedPath = '',
+      resolvedAbsolute = false;
+
+  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+    var path = (i >= 0) ? arguments[i] : process.cwd();
+
+    // Skip empty and invalid entries
+    if (typeof path !== 'string') {
+      throw new TypeError('Arguments to path.resolve must be strings');
+    } else if (!path) {
+      continue;
+    }
+
+    resolvedPath = path + '/' + resolvedPath;
+    resolvedAbsolute = path.charAt(0) === '/';
+  }
+
+  // At this point the path should be resolved to a full absolute path, but
+  // handle relative paths to be safe (might happen when process.cwd() fails)
+
+  // Normalize the path
+  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
+    return !!p;
+  }), !resolvedAbsolute).join('/');
+
+  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
+};
+
+// path.normalize(path)
+// posix version
+exports.normalize = function(path) {
+  var isAbsolute = exports.isAbsolute(path),
+      trailingSlash = substr(path, -1) === '/';
+
+  // Normalize the path
+  path = normalizeArray(filter(path.split('/'), function(p) {
+    return !!p;
+  }), !isAbsolute).join('/');
+
+  if (!path && !isAbsolute) {
+    path = '.';
+  }
+  if (path && trailingSlash) {
+    path += '/';
+  }
+
+  return (isAbsolute ? '/' : '') + path;
+};
+
+// posix version
+exports.isAbsolute = function(path) {
+  return path.charAt(0) === '/';
+};
+
+// posix version
+exports.join = function() {
+  var paths = Array.prototype.slice.call(arguments, 0);
+  return exports.normalize(filter(paths, function(p, index) {
+    if (typeof p !== 'string') {
+      throw new TypeError('Arguments to path.join must be strings');
+    }
+    return p;
+  }).join('/'));
+};
+
+
+// path.relative(from, to)
+// posix version
+exports.relative = function(from, to) {
+  from = exports.resolve(from).substr(1);
+  to = exports.resolve(to).substr(1);
+
+  function trim(arr) {
+    var start = 0;
+    for (; start < arr.length; start++) {
+      if (arr[start] !== '') break;
+    }
+
+    var end = arr.length - 1;
+    for (; end >= 0; end--) {
+      if (arr[end] !== '') break;
+    }
+
+    if (start > end) return [];
+    return arr.slice(start, end - start + 1);
+  }
+
+  var fromParts = trim(from.split('/'));
+  var toParts = trim(to.split('/'));
+
+  var length = Math.min(fromParts.length, toParts.length);
+  var samePartsLength = length;
+  for (var i = 0; i < length; i++) {
+    if (fromParts[i] !== toParts[i]) {
+      samePartsLength = i;
+      break;
+    }
+  }
+
+  var outputParts = [];
+  for (var i = samePartsLength; i < fromParts.length; i++) {
+    outputParts.push('..');
+  }
+
+  outputParts = outputParts.concat(toParts.slice(samePartsLength));
+
+  return outputParts.join('/');
+};
+
+exports.sep = '/';
+exports.delimiter = ':';
+
+exports.dirname = function(path) {
+  var result = splitPath(path),
+      root = result[0],
+      dir = result[1];
+
+  if (!root && !dir) {
+    // No dirname whatsoever
+    return '.';
+  }
+
+  if (dir) {
+    // It has a dirname, strip trailing slash
+    dir = dir.substr(0, dir.length - 1);
+  }
+
+  return root + dir;
+};
+
+
+exports.basename = function(path, ext) {
+  var f = splitPath(path)[2];
+  // TODO: make this comparison case-insensitive on windows?
+  if (ext && f.substr(-1 * ext.length) === ext) {
+    f = f.substr(0, f.length - ext.length);
+  }
+  return f;
+};
+
+
+exports.extname = function(path) {
+  return splitPath(path)[3];
+};
+
+function filter (xs, f) {
+    if (xs.filter) return xs.filter(f);
+    var res = [];
+    for (var i = 0; i < xs.length; i++) {
+        if (f(xs[i], i, xs)) res.push(xs[i]);
+    }
+    return res;
+}
+
+// String.prototype.substr - negative index don't work in IE8
+var substr = 'ab'.substr(-1) === 'b'
+    ? function (str, start, len) { return str.substr(start, len) }
+    : function (str, start, len) {
+        if (start < 0) start = str.length + start;
+        return str.substr(start, len);
+    }
+;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * Root reference for iframes.
+ */
+
+var root;
+if (typeof window !== 'undefined') { // Browser window
+  root = window;
+} else if (typeof self !== 'undefined') { // Web Worker
+  root = self;
+} else { // Other environments
+  console.warn("Using browser-only version of superagent in non-browser environment");
+  root = this;
+}
+
+var Emitter = __webpack_require__(53);
+var RequestBase = __webpack_require__(60);
+var isObject = __webpack_require__(27);
+var isFunction = __webpack_require__(59);
+var ResponseBase = __webpack_require__(61);
+var shouldRetry = __webpack_require__(62);
+
+/**
+ * Noop.
+ */
+
+function noop(){};
+
+/**
+ * Expose `request`.
+ */
+
+var request = exports = module.exports = function(method, url) {
+  // callback
+  if ('function' == typeof url) {
+    return new exports.Request('GET', method).end(url);
+  }
+
+  // url first
+  if (1 == arguments.length) {
+    return new exports.Request('GET', method);
+  }
+
+  return new exports.Request(method, url);
+}
+
+exports.Request = Request;
+
+/**
+ * Determine XHR.
+ */
+
+request.getXHR = function () {
+  if (root.XMLHttpRequest
+      && (!root.location || 'file:' != root.location.protocol
+          || !root.ActiveXObject)) {
+    return new XMLHttpRequest;
+  } else {
+    try { return new ActiveXObject('Microsoft.XMLHTTP'); } catch(e) {}
+    try { return new ActiveXObject('Msxml2.XMLHTTP.6.0'); } catch(e) {}
+    try { return new ActiveXObject('Msxml2.XMLHTTP.3.0'); } catch(e) {}
+    try { return new ActiveXObject('Msxml2.XMLHTTP'); } catch(e) {}
+  }
+  throw Error("Browser-only verison of superagent could not find XHR");
+};
+
+/**
+ * Removes leading and trailing whitespace, added to support IE.
+ *
+ * @param {String} s
+ * @return {String}
+ * @api private
+ */
+
+var trim = ''.trim
+  ? function(s) { return s.trim(); }
+  : function(s) { return s.replace(/(^\s*|\s*$)/g, ''); };
+
+/**
+ * Serialize the given `obj`.
+ *
+ * @param {Object} obj
+ * @return {String}
+ * @api private
+ */
+
+function serialize(obj) {
+  if (!isObject(obj)) return obj;
+  var pairs = [];
+  for (var key in obj) {
+    pushEncodedKeyValuePair(pairs, key, obj[key]);
+  }
+  return pairs.join('&');
+}
+
+/**
+ * Helps 'serialize' with serializing arrays.
+ * Mutates the pairs array.
+ *
+ * @param {Array} pairs
+ * @param {String} key
+ * @param {Mixed} val
+ */
+
+function pushEncodedKeyValuePair(pairs, key, val) {
+  if (val != null) {
+    if (Array.isArray(val)) {
+      val.forEach(function(v) {
+        pushEncodedKeyValuePair(pairs, key, v);
+      });
+    } else if (isObject(val)) {
+      for(var subkey in val) {
+        pushEncodedKeyValuePair(pairs, key + '[' + subkey + ']', val[subkey]);
+      }
+    } else {
+      pairs.push(encodeURIComponent(key)
+        + '=' + encodeURIComponent(val));
+    }
+  } else if (val === null) {
+    pairs.push(encodeURIComponent(key));
+  }
+}
+
+/**
+ * Expose serialization method.
+ */
+
+ request.serializeObject = serialize;
+
+ /**
+  * Parse the given x-www-form-urlencoded `str`.
+  *
+  * @param {String} str
+  * @return {Object}
+  * @api private
+  */
+
+function parseString(str) {
+  var obj = {};
+  var pairs = str.split('&');
+  var pair;
+  var pos;
+
+  for (var i = 0, len = pairs.length; i < len; ++i) {
+    pair = pairs[i];
+    pos = pair.indexOf('=');
+    if (pos == -1) {
+      obj[decodeURIComponent(pair)] = '';
+    } else {
+      obj[decodeURIComponent(pair.slice(0, pos))] =
+        decodeURIComponent(pair.slice(pos + 1));
+    }
+  }
+
+  return obj;
+}
+
+/**
+ * Expose parser.
+ */
+
+request.parseString = parseString;
+
+/**
+ * Default MIME type map.
+ *
+ *     superagent.types.xml = 'application/xml';
+ *
+ */
+
+request.types = {
+  html: 'text/html',
+  json: 'application/json',
+  xml: 'application/xml',
+  urlencoded: 'application/x-www-form-urlencoded',
+  'form': 'application/x-www-form-urlencoded',
+  'form-data': 'application/x-www-form-urlencoded'
+};
+
+/**
+ * Default serialization map.
+ *
+ *     superagent.serialize['application/xml'] = function(obj){
+ *       return 'generated xml here';
+ *     };
+ *
+ */
+
+ request.serialize = {
+   'application/x-www-form-urlencoded': serialize,
+   'application/json': JSON.stringify
+ };
+
+ /**
+  * Default parsers.
+  *
+  *     superagent.parse['application/xml'] = function(str){
+  *       return { object parsed from str };
+  *     };
+  *
+  */
+
+request.parse = {
+  'application/x-www-form-urlencoded': parseString,
+  'application/json': JSON.parse
+};
+
+/**
+ * Parse the given header `str` into
+ * an object containing the mapped fields.
+ *
+ * @param {String} str
+ * @return {Object}
+ * @api private
+ */
+
+function parseHeader(str) {
+  var lines = str.split(/\r?\n/);
+  var fields = {};
+  var index;
+  var line;
+  var field;
+  var val;
+
+  lines.pop(); // trailing CRLF
+
+  for (var i = 0, len = lines.length; i < len; ++i) {
+    line = lines[i];
+    index = line.indexOf(':');
+    field = line.slice(0, index).toLowerCase();
+    val = trim(line.slice(index + 1));
+    fields[field] = val;
+  }
+
+  return fields;
+}
+
+/**
+ * Check if `mime` is json or has +json structured syntax suffix.
+ *
+ * @param {String} mime
+ * @return {Boolean}
+ * @api private
+ */
+
+function isJSON(mime) {
+  return /[\/+]json\b/.test(mime);
+}
+
+/**
+ * Initialize a new `Response` with the given `xhr`.
+ *
+ *  - set flags (.ok, .error, etc)
+ *  - parse header
+ *
+ * Examples:
+ *
+ *  Aliasing `superagent` as `request` is nice:
+ *
+ *      request = superagent;
+ *
+ *  We can use the promise-like API, or pass callbacks:
+ *
+ *      request.get('/').end(function(res){});
+ *      request.get('/', function(res){});
+ *
+ *  Sending data can be chained:
+ *
+ *      request
+ *        .post('/user')
+ *        .send({ name: 'tj' })
+ *        .end(function(res){});
+ *
+ *  Or passed to `.send()`:
+ *
+ *      request
+ *        .post('/user')
+ *        .send({ name: 'tj' }, function(res){});
+ *
+ *  Or passed to `.post()`:
+ *
+ *      request
+ *        .post('/user', { name: 'tj' })
+ *        .end(function(res){});
+ *
+ * Or further reduced to a single call for simple cases:
+ *
+ *      request
+ *        .post('/user', { name: 'tj' }, function(res){});
+ *
+ * @param {XMLHTTPRequest} xhr
+ * @param {Object} options
+ * @api private
+ */
+
+function Response(req) {
+  this.req = req;
+  this.xhr = this.req.xhr;
+  // responseText is accessible only if responseType is '' or 'text' and on older browsers
+  this.text = ((this.req.method !='HEAD' && (this.xhr.responseType === '' || this.xhr.responseType === 'text')) || typeof this.xhr.responseType === 'undefined')
+     ? this.xhr.responseText
+     : null;
+  this.statusText = this.req.xhr.statusText;
+  var status = this.xhr.status;
+  // handle IE9 bug: http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
+  if (status === 1223) {
+      status = 204;
+  }
+  this._setStatusProperties(status);
+  this.header = this.headers = parseHeader(this.xhr.getAllResponseHeaders());
+  // getAllResponseHeaders sometimes falsely returns "" for CORS requests, but
+  // getResponseHeader still works. so we get content-type even if getting
+  // other headers fails.
+  this.header['content-type'] = this.xhr.getResponseHeader('content-type');
+  this._setHeaderProperties(this.header);
+
+  if (null === this.text && req._responseType) {
+    this.body = this.xhr.response;
+  } else {
+    this.body = this.req.method != 'HEAD'
+      ? this._parseBody(this.text ? this.text : this.xhr.response)
+      : null;
+  }
+}
+
+ResponseBase(Response.prototype);
+
+/**
+ * Parse the given body `str`.
+ *
+ * Used for auto-parsing of bodies. Parsers
+ * are defined on the `superagent.parse` object.
+ *
+ * @param {String} str
+ * @return {Mixed}
+ * @api private
+ */
+
+Response.prototype._parseBody = function(str){
+  var parse = request.parse[this.type];
+  if(this.req._parser) {
+    return this.req._parser(this, str);
+  }
+  if (!parse && isJSON(this.type)) {
+    parse = request.parse['application/json'];
+  }
+  return parse && str && (str.length || str instanceof Object)
+    ? parse(str)
+    : null;
+};
+
+/**
+ * Return an `Error` representative of this response.
+ *
+ * @return {Error}
+ * @api public
+ */
+
+Response.prototype.toError = function(){
+  var req = this.req;
+  var method = req.method;
+  var url = req.url;
+
+  var msg = 'cannot ' + method + ' ' + url + ' (' + this.status + ')';
+  var err = new Error(msg);
+  err.status = this.status;
+  err.method = method;
+  err.url = url;
+
+  return err;
+};
+
+/**
+ * Expose `Response`.
+ */
+
+request.Response = Response;
+
+/**
+ * Initialize a new `Request` with the given `method` and `url`.
+ *
+ * @param {String} method
+ * @param {String} url
+ * @api public
+ */
+
+function Request(method, url) {
+  var self = this;
+  this._query = this._query || [];
+  this.method = method;
+  this.url = url;
+  this.header = {}; // preserves header name case
+  this._header = {}; // coerces header names to lowercase
+  this.on('end', function(){
+    var err = null;
+    var res = null;
+
+    try {
+      res = new Response(self);
+    } catch(e) {
+      err = new Error('Parser is unable to parse the response');
+      err.parse = true;
+      err.original = e;
+      // issue #675: return the raw response if the response parsing fails
+      if (self.xhr) {
+        // ie9 doesn't have 'response' property
+        err.rawResponse = typeof self.xhr.responseType == 'undefined' ? self.xhr.responseText : self.xhr.response;
+        // issue #876: return the http status code if the response parsing fails
+        err.status = self.xhr.status ? self.xhr.status : null;
+        err.statusCode = err.status; // backwards-compat only
+      } else {
+        err.rawResponse = null;
+        err.status = null;
+      }
+
+      return self.callback(err);
+    }
+
+    self.emit('response', res);
+
+    var new_err;
+    try {
+      if (!self._isResponseOK(res)) {
+        new_err = new Error(res.statusText || 'Unsuccessful HTTP response');
+        new_err.original = err;
+        new_err.response = res;
+        new_err.status = res.status;
+      }
+    } catch(e) {
+      new_err = e; // #985 touching res may cause INVALID_STATE_ERR on old Android
+    }
+
+    // #1000 don't catch errors from the callback to avoid double calling it
+    if (new_err) {
+      self.callback(new_err, res);
+    } else {
+      self.callback(null, res);
+    }
+  });
+}
+
+/**
+ * Mixin `Emitter` and `RequestBase`.
+ */
+
+Emitter(Request.prototype);
+RequestBase(Request.prototype);
+
+/**
+ * Set Content-Type to `type`, mapping values from `request.types`.
+ *
+ * Examples:
+ *
+ *      superagent.types.xml = 'application/xml';
+ *
+ *      request.post('/')
+ *        .type('xml')
+ *        .send(xmlstring)
+ *        .end(callback);
+ *
+ *      request.post('/')
+ *        .type('application/xml')
+ *        .send(xmlstring)
+ *        .end(callback);
+ *
+ * @param {String} type
+ * @return {Request} for chaining
+ * @api public
+ */
+
+Request.prototype.type = function(type){
+  this.set('Content-Type', request.types[type] || type);
+  return this;
+};
+
+/**
+ * Set Accept to `type`, mapping values from `request.types`.
+ *
+ * Examples:
+ *
+ *      superagent.types.json = 'application/json';
+ *
+ *      request.get('/agent')
+ *        .accept('json')
+ *        .end(callback);
+ *
+ *      request.get('/agent')
+ *        .accept('application/json')
+ *        .end(callback);
+ *
+ * @param {String} accept
+ * @return {Request} for chaining
+ * @api public
+ */
+
+Request.prototype.accept = function(type){
+  this.set('Accept', request.types[type] || type);
+  return this;
+};
+
+/**
+ * Set Authorization field value with `user` and `pass`.
+ *
+ * @param {String} user
+ * @param {String} pass
+ * @param {Object} options with 'type' property 'auto' or 'basic' (default 'basic')
+ * @return {Request} for chaining
+ * @api public
+ */
+
+Request.prototype.auth = function(user, pass, options){
+  if (!options) {
+    options = {
+      type: 'function' === typeof btoa ? 'basic' : 'auto',
+    }
+  }
+
+  switch (options.type) {
+    case 'basic':
+      this.set('Authorization', 'Basic ' + btoa(user + ':' + pass));
+    break;
+
+    case 'auto':
+      this.username = user;
+      this.password = pass;
+    break;
+  }
+  return this;
+};
+
+/**
+ * Add query-string `val`.
+ *
+ * Examples:
+ *
+ *   request.get('/shoes')
+ *     .query('size=10')
+ *     .query({ color: 'blue' })
+ *
+ * @param {Object|String} val
+ * @return {Request} for chaining
+ * @api public
+ */
+
+Request.prototype.query = function(val){
+  if ('string' != typeof val) val = serialize(val);
+  if (val) this._query.push(val);
+  return this;
+};
+
+/**
+ * Queue the given `file` as an attachment to the specified `field`,
+ * with optional `options` (or filename).
+ *
+ * ``` js
+ * request.post('/upload')
+ *   .attach('content', new Blob(['<a id="a"><b id="b">hey!</b></a>'], { type: "text/html"}))
+ *   .end(callback);
+ * ```
+ *
+ * @param {String} field
+ * @param {Blob|File} file
+ * @param {String|Object} options
+ * @return {Request} for chaining
+ * @api public
+ */
+
+Request.prototype.attach = function(field, file, options){
+  if (this._data) {
+    throw Error("superagent can't mix .send() and .attach()");
+  }
+
+  this._getFormData().append(field, file, options || file.name);
+  return this;
+};
+
+Request.prototype._getFormData = function(){
+  if (!this._formData) {
+    this._formData = new root.FormData();
+  }
+  return this._formData;
+};
+
+/**
+ * Invoke the callback with `err` and `res`
+ * and handle arity check.
+ *
+ * @param {Error} err
+ * @param {Response} res
+ * @api private
+ */
+
+Request.prototype.callback = function(err, res){
+  // console.log(this._retries, this._maxRetries)
+  if (this._maxRetries && this._retries++ < this._maxRetries && shouldRetry(err, res)) {
+    return this._retry();
+  }
+
+  var fn = this._callback;
+  this.clearTimeout();
+
+  if (err) {
+    if (this._maxRetries) err.retries = this._retries - 1;
+    this.emit('error', err);
+  }
+
+  fn(err, res);
+};
+
+/**
+ * Invoke callback with x-domain error.
+ *
+ * @api private
+ */
+
+Request.prototype.crossDomainError = function(){
+  var err = new Error('Request has been terminated\nPossible causes: the network is offline, Origin is not allowed by Access-Control-Allow-Origin, the page is being unloaded, etc.');
+  err.crossDomain = true;
+
+  err.status = this.status;
+  err.method = this.method;
+  err.url = this.url;
+
+  this.callback(err);
+};
+
+// This only warns, because the request is still likely to work
+Request.prototype.buffer = Request.prototype.ca = Request.prototype.agent = function(){
+  console.warn("This is not supported in browser version of superagent");
+  return this;
+};
+
+// This throws, because it can't send/receive data as expected
+Request.prototype.pipe = Request.prototype.write = function(){
+  throw Error("Streaming is not supported in browser version of superagent");
+};
+
+/**
+ * Compose querystring to append to req.url
+ *
+ * @api private
+ */
+
+Request.prototype._appendQueryString = function(){
+  var query = this._query.join('&');
+  if (query) {
+    this.url += (this.url.indexOf('?') >= 0 ? '&' : '?') + query;
+  }
+
+  if (this._sort) {
+    var index = this.url.indexOf('?');
+    if (index >= 0) {
+      var queryArr = this.url.substring(index + 1).split('&');
+      if (isFunction(this._sort)) {
+        queryArr.sort(this._sort);
+      } else {
+        queryArr.sort();
+      }
+      this.url = this.url.substring(0, index) + '?' + queryArr.join('&');
+    }
+  }
+};
+
+/**
+ * Check if `obj` is a host object,
+ * we don't want to serialize these :)
+ *
+ * @param {Object} obj
+ * @return {Boolean}
+ * @api private
+ */
+Request.prototype._isHost = function _isHost(obj) {
+  // Native objects stringify to [object File], [object Blob], [object FormData], etc.
+  return obj && 'object' === typeof obj && !Array.isArray(obj) && Object.prototype.toString.call(obj) !== '[object Object]';
+}
+
+/**
+ * Initiate request, invoking callback `fn(res)`
+ * with an instanceof `Response`.
+ *
+ * @param {Function} fn
+ * @return {Request} for chaining
+ * @api public
+ */
+
+Request.prototype.end = function(fn){
+  if (this._endCalled) {
+    console.warn("Warning: .end() was called twice. This is not supported in superagent");
+  }
+  this._endCalled = true;
+
+  // store callback
+  this._callback = fn || noop;
+
+  // querystring
+  this._appendQueryString();
+
+  return this._end();
+};
+
+Request.prototype._end = function() {
+  var self = this;
+  var xhr = this.xhr = request.getXHR();
+  var data = this._formData || this._data;
+
+  this._setTimeouts();
+
+  // state change
+  xhr.onreadystatechange = function(){
+    var readyState = xhr.readyState;
+    if (readyState >= 2 && self._responseTimeoutTimer) {
+      clearTimeout(self._responseTimeoutTimer);
+    }
+    if (4 != readyState) {
+      return;
+    }
+
+    // In IE9, reads to any property (e.g. status) off of an aborted XHR will
+    // result in the error "Could not complete the operation due to error c00c023f"
+    var status;
+    try { status = xhr.status } catch(e) { status = 0; }
+
+    if (!status) {
+      if (self.timedout || self._aborted) return;
+      return self.crossDomainError();
+    }
+    self.emit('end');
+  };
+
+  // progress
+  var handleProgress = function(direction, e) {
+    if (e.total > 0) {
+      e.percent = e.loaded / e.total * 100;
+    }
+    e.direction = direction;
+    self.emit('progress', e);
+  }
+  if (this.hasListeners('progress')) {
+    try {
+      xhr.onprogress = handleProgress.bind(null, 'download');
+      if (xhr.upload) {
+        xhr.upload.onprogress = handleProgress.bind(null, 'upload');
+      }
+    } catch(e) {
+      // Accessing xhr.upload fails in IE from a web worker, so just pretend it doesn't exist.
+      // Reported here:
+      // https://connect.microsoft.com/IE/feedback/details/837245/xmlhttprequest-upload-throws-invalid-argument-when-used-from-web-worker-context
+    }
+  }
+
+  // initiate request
+  try {
+    if (this.username && this.password) {
+      xhr.open(this.method, this.url, true, this.username, this.password);
+    } else {
+      xhr.open(this.method, this.url, true);
+    }
+  } catch (err) {
+    // see #1149
+    return this.callback(err);
+  }
+
+  // CORS
+  if (this._withCredentials) xhr.withCredentials = true;
+
+  // body
+  if (!this._formData && 'GET' != this.method && 'HEAD' != this.method && 'string' != typeof data && !this._isHost(data)) {
+    // serialize stuff
+    var contentType = this._header['content-type'];
+    var serialize = this._serializer || request.serialize[contentType ? contentType.split(';')[0] : ''];
+    if (!serialize && isJSON(contentType)) {
+      serialize = request.serialize['application/json'];
+    }
+    if (serialize) data = serialize(data);
+  }
+
+  // set header fields
+  for (var field in this.header) {
+    if (null == this.header[field]) continue;
+    xhr.setRequestHeader(field, this.header[field]);
+  }
+
+  if (this._responseType) {
+    xhr.responseType = this._responseType;
+  }
+
+  // send stuff
+  this.emit('request', this);
+
+  // IE11 xhr.send(undefined) sends 'undefined' string as POST payload (instead of nothing)
+  // We need null here if data is undefined
+  xhr.send(typeof data !== 'undefined' ? data : null);
+  return this;
+};
+
+/**
+ * GET `url` with optional callback `fn(res)`.
+ *
+ * @param {String} url
+ * @param {Mixed|Function} [data] or fn
+ * @param {Function} [fn]
+ * @return {Request}
+ * @api public
+ */
+
+request.get = function(url, data, fn){
+  var req = request('GET', url);
+  if ('function' == typeof data) fn = data, data = null;
+  if (data) req.query(data);
+  if (fn) req.end(fn);
+  return req;
+};
+
+/**
+ * HEAD `url` with optional callback `fn(res)`.
+ *
+ * @param {String} url
+ * @param {Mixed|Function} [data] or fn
+ * @param {Function} [fn]
+ * @return {Request}
+ * @api public
+ */
+
+request.head = function(url, data, fn){
+  var req = request('HEAD', url);
+  if ('function' == typeof data) fn = data, data = null;
+  if (data) req.send(data);
+  if (fn) req.end(fn);
+  return req;
+};
+
+/**
+ * OPTIONS query to `url` with optional callback `fn(res)`.
+ *
+ * @param {String} url
+ * @param {Mixed|Function} [data] or fn
+ * @param {Function} [fn]
+ * @return {Request}
+ * @api public
+ */
+
+request.options = function(url, data, fn){
+  var req = request('OPTIONS', url);
+  if ('function' == typeof data) fn = data, data = null;
+  if (data) req.send(data);
+  if (fn) req.end(fn);
+  return req;
+};
+
+/**
+ * DELETE `url` with optional `data` and callback `fn(res)`.
+ *
+ * @param {String} url
+ * @param {Mixed} [data]
+ * @param {Function} [fn]
+ * @return {Request}
+ * @api public
+ */
+
+function del(url, data, fn){
+  var req = request('DELETE', url);
+  if ('function' == typeof data) fn = data, data = null;
+  if (data) req.send(data);
+  if (fn) req.end(fn);
+  return req;
+};
+
+request['del'] = del;
+request['delete'] = del;
+
+/**
+ * PATCH `url` with optional `data` and callback `fn(res)`.
+ *
+ * @param {String} url
+ * @param {Mixed} [data]
+ * @param {Function} [fn]
+ * @return {Request}
+ * @api public
+ */
+
+request.patch = function(url, data, fn){
+  var req = request('PATCH', url);
+  if ('function' == typeof data) fn = data, data = null;
+  if (data) req.send(data);
+  if (fn) req.end(fn);
+  return req;
+};
+
+/**
+ * POST `url` with optional `data` and callback `fn(res)`.
+ *
+ * @param {String} url
+ * @param {Mixed} [data]
+ * @param {Function} [fn]
+ * @return {Request}
+ * @api public
+ */
+
+request.post = function(url, data, fn){
+  var req = request('POST', url);
+  if ('function' == typeof data) fn = data, data = null;
+  if (data) req.send(data);
+  if (fn) req.end(fn);
+  return req;
+};
+
+/**
+ * PUT `url` with optional `data` and callback `fn(res)`.
+ *
+ * @param {String} url
+ * @param {Mixed|Function} [data] or fn
+ * @param {Function} [fn]
+ * @return {Request}
+ * @api public
+ */
+
+request.put = function(url, data, fn){
+  var req = request('PUT', url);
+  if ('function' == typeof data) fn = data, data = null;
+  if (data) req.send(data);
+  if (fn) req.end(fn);
+  return req;
+};
+
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports) {
+
+/**
+ * Check if `obj` is an object.
+ *
+ * @param {Object} obj
+ * @return {Boolean}
+ * @api private
+ */
+
+function isObject(obj) {
+  return null !== obj && 'object' === typeof obj;
+}
+
+module.exports = isObject;
+
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(25);
+const fs = __webpack_require__(43);
+const request = __webpack_require__(26);
+
+const Constants = __webpack_require__(0);
+const convertToBuffer = __webpack_require__(4).convertToBuffer;
+const User = __webpack_require__(11);
+const Message = __webpack_require__(9);
+const Guild = __webpack_require__(16);
+const Channel = __webpack_require__(8);
+const GuildMember = __webpack_require__(13);
+const Emoji = __webpack_require__(12);
+const ReactionEmoji = __webpack_require__(20);
+
+/**
+ * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
+ * extracting a User from a Message object.
+ * @private
+ */
+class ClientDataResolver {
+  /**
+   * @param {Client} client The client the resolver is for
+   */
+  constructor(client) {
+    this.client = client;
+  }
+
+  /**
+   * Data that resolves to give a User object. This can be:
+   * * A User object
+   * * A user ID
+   * * A Message object (resolves to the message author)
+   * * A Guild object (owner of the guild)
+   * * A GuildMember object
+   * @typedef {User|Snowflake|Message|Guild|GuildMember} UserResolvable
+   */
+
+  /**
+   * Resolves a UserResolvable to a User object
+   * @param {UserResolvable} user The UserResolvable to identify
+   * @returns {?User}
+   */
+  resolveUser(user) {
+    if (user instanceof User) return user;
+    if (typeof user === 'string') return this.client.users.get(user) || null;
+    if (user instanceof GuildMember) return user.user;
+    if (user instanceof Message) return user.author;
+    if (user instanceof Guild) return user.owner;
+    return null;
+  }
+
+  /**
+   * Resolves a UserResolvable to a user ID string
+   * @param {UserResolvable} user The UserResolvable to identify
+   * @returns {?Snowflake}
+   */
+  resolveUserID(user) {
+    if (user instanceof User || user instanceof GuildMember) return user.id;
+    if (typeof user === 'string') return user || null;
+    if (user instanceof Message) return user.author.id;
+    if (user instanceof Guild) return user.ownerID;
+    return null;
+  }
+
+  /**
+   * Data that resolves to give a Guild object. This can be:
+   * * A Guild object
+   * * A Guild ID
+   * @typedef {Guild|Snowflake} GuildResolvable
+   */
+
+  /**
+   * Resolves a GuildResolvable to a Guild object
+   * @param {GuildResolvable} guild The GuildResolvable to identify
+   * @returns {?Guild}
+   */
+  resolveGuild(guild) {
+    if (guild instanceof Guild) return guild;
+    if (typeof guild === 'string') return this.client.guilds.get(guild) || null;
+    return null;
+  }
+
+  /**
+   * Data that resolves to give a GuildMember object. This can be:
+   * * A GuildMember object
+   * * A User object
+   * @typedef {Guild} GuildMemberResolvable
+   */
+
+  /**
+   * Resolves a GuildMemberResolvable to a GuildMember object
+   * @param {GuildResolvable} guild The guild that the member is part of
+   * @param {UserResolvable} user The user that is part of the guild
+   * @returns {?GuildMember}
+   */
+  resolveGuildMember(guild, user) {
+    if (user instanceof GuildMember) return user;
+    guild = this.resolveGuild(guild);
+    user = this.resolveUser(user);
+    if (!guild || !user) return null;
+    return guild.members.get(user.id) || null;
+  }
+
+  /**
+   * Data that can be resolved to give a Channel object. This can be:
+   * * A Channel object
+   * * A Message object (the channel the message was sent in)
+   * * A Guild object (the #general channel)
+   * * A channel ID
+   * @typedef {Channel|Guild|Message|Snowflake} ChannelResolvable
+   */
+
+  /**
+   * Resolves a ChannelResolvable to a Channel object
+   * @param {ChannelResolvable} channel The channel resolvable to resolve
+   * @returns {?Channel}
+   */
+  resolveChannel(channel) {
+    if (channel instanceof Channel) return channel;
+    if (typeof channel === 'string') return this.client.channels.get(channel) || null;
+    if (channel instanceof Message) return channel.channel;
+    if (channel instanceof Guild) return channel.channels.get(channel.id) || null;
+    return null;
+  }
+
+  /**
+   * Resolves a ChannelResolvable to a channel ID
+   * @param {ChannelResolvable} channel The channel resolvable to resolve
+   * @returns {?Snowflake}
+   */
+  resolveChannelID(channel) {
+    if (channel instanceof Channel) return channel.id;
+    if (typeof channel === 'string') return channel;
+    if (channel instanceof Message) return channel.channel.id;
+    if (channel instanceof Guild) return channel.defaultChannel.id;
+    return null;
+  }
+
+  /**
+   * Data that can be resolved to give an invite code. This can be:
+   * * An invite code
+   * * An invite URL
+   * @typedef {string} InviteResolvable
+   */
+
+  /**
+   * Resolves InviteResolvable to an invite code
+   * @param {InviteResolvable} data The invite resolvable to resolve
+   * @returns {string}
+   */
+  resolveInviteCode(data) {
+    const inviteRegex = /discord(?:app\.com\/invite|\.gg)\/([\w-]{2,255})/i;
+    const match = inviteRegex.exec(data);
+    if (match && match[1]) return match[1];
+    return data;
+  }
+
+  /**
+   * Data that can be resolved to give a string. This can be:
+   * * A string
+   * * An array (joined with a new line delimiter to give a string)
+   * * Any value
+   * @typedef {string|Array|*} StringResolvable
+   */
+
+  /**
+   * Resolves a StringResolvable to a string
+   * @param {StringResolvable} data The string resolvable to resolve
+   * @returns {string}
+   */
+  resolveString(data) {
+    if (typeof data === 'string') return data;
+    if (data instanceof Array) return data.join('\n');
+    return String(data);
+  }
+
+  /**
+   * Data that resolves to give a Base64 string, typically for image uploading. This can be:
+   * * A Buffer
+   * * A base64 string
+   * @typedef {Buffer|string} Base64Resolvable
+   */
+
+  /**
+   * Resolves a Base64Resolvable to a Base 64 image
+   * @param {Base64Resolvable} data The base 64 resolvable you want to resolve
+   * @returns {?string}
+   */
+  resolveBase64(data) {
+    if (data instanceof Buffer) return `data:image/jpg;base64,${data.toString('base64')}`;
+    return data;
+  }
+
+  /**
+   * Data that can be resolved to give a Buffer. This can be:
+   * * A Buffer
+   * * The path to a local file
+   * * A URL
+   * @typedef {string|Buffer} BufferResolvable
+   */
+
+  /**
+   * Resolves a BufferResolvable to a Buffer
+   * @param {BufferResolvable} resource The buffer resolvable to resolve
+   * @returns {Promise<Buffer>}
+   */
+  resolveBuffer(resource) {
+    if (resource instanceof Buffer) return Promise.resolve(resource);
+    if (this.client.browser && resource instanceof ArrayBuffer) return Promise.resolve(convertToBuffer(resource));
+
+    if (typeof resource === 'string') {
+      return new Promise((resolve, reject) => {
+        if (/^https?:\/\//.test(resource)) {
+          const req = request.get(resource).set('Content-Type', 'blob');
+          if (this.client.browser) req.responseType('arraybuffer');
+          req.end((err, res) => {
+            if (err) return reject(err);
+            if (this.client.browser) return resolve(convertToBuffer(res.xhr.response));
+            if (!(res.body instanceof Buffer)) return reject(new TypeError('The response body isn\'t a Buffer.'));
+            return resolve(res.body);
+          });
+        } else {
+          const file = path.resolve(resource);
+          fs.stat(file, (err, stats) => {
+            if (err) return reject(err);
+            if (!stats || !stats.isFile()) return reject(new Error(`The file could not be found: ${file}`));
+            fs.readFile(file, (err2, data) => {
+              if (err2) reject(err2); else resolve(data);
+            });
+            return null;
+          });
+        }
+      });
+    }
+
+    return Promise.reject(new TypeError('The resource must be a string or Buffer.'));
+  }
+
+  /**
+   * Data that can be resolved to give an emoji identifier. This can be:
+   * * A string
+   * * An Emoji
+   * * A ReactionEmoji
+   * @typedef {string|Emoji|ReactionEmoji} EmojiIdentifierResolvable
+   */
+
+  /**
+   * Resolves an EmojiResolvable to an emoji identifier
+   * @param {EmojiIdentifierResolvable} emoji The emoji resolvable to resolve
+   * @returns {string}
+   */
+  resolveEmojiIdentifier(emoji) {
+    if (emoji instanceof Emoji || emoji instanceof ReactionEmoji) return emoji.identifier;
+    if (typeof emoji === 'string') {
+      if (!emoji.includes('%')) return encodeURIComponent(emoji);
+    }
+    return null;
+  }
+
+  /**
+   * Can be a Hex Literal, Hex String, Number, RGB Array, or one of the following
+   * ```
+   * [
+   *   'DEFAULT',
+   *   'AQUA',
+   *   'GREEN',
+   *   'BLUE',
+   *   'PURPLE',
+   *   'GOLD',
+   *   'ORANGE',
+   *   'RED',
+   *   'GREY',
+   *   'DARKER_GREY',
+   *   'NAVY',
+   *   'DARK_AQUA',
+   *   'DARK_GREEN',
+   *   'DARK_BLUE',
+   *   'DARK_PURPLE',
+   *   'DARK_GOLD',
+   *   'DARK_ORANGE',
+   *   'DARK_RED',
+   *   'DARK_GREY',
+   *   'LIGHT_GREY',
+   *   'DARK_NAVY',
+   *   'RANDOM',
+   * ]
+   * ```
+   * or something like
+   * ```
+   * [255, 0, 255]
+   * ```
+   * for purple
+   * @typedef {String|number|Array} ColorResolvable
+   */
+
+  /**
+   * Resolves a ColorResolvable into a color number
+   * @param {ColorResolvable} color Color to resolve
+   * @returns {number} A color
+   */
+  static resolveColor(color) {
+    if (typeof color === 'string') {
+      if (color === 'RANDOM') return Math.floor(Math.random() * (0xFFFFFF + 1));
+      color = Constants.Colors[color] || parseInt(color.replace('#', ''), 16);
+    } else if (color instanceof Array) {
+      color = (color[0] << 16) + (color[1] << 8) + color[2];
+    }
+
+    if (color < 0 || color > 0xFFFFFF) {
+      throw new RangeError('Color must be within the range 0 - 16777215 (0xFFFFFF).');
+    } else if (color && isNaN(color)) {
+      throw new TypeError('Unable to convert color to a number.');
+    }
+
+    return color;
+  }
+
+  /**
+   * @param {ColorResolvable} color Color to resolve
+   * @returns {number} A color
+   */
+  resolveColor(color) {
+    return this.constructor.resolveColor(color);
+  }
+}
+
+module.exports = ClientDataResolver;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22).Buffer))
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports) {
+
+module.exports = {
+	"name": "discord.js",
+	"version": "11.0.0",
+	"description": "A powerful library for interacting with the Discord API",
+	"main": "./src/index",
+	"types": "./typings/index.d.ts",
+	"scripts": {
+		"test": "npm run lint && npm run docs:test",
+		"docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
+		"docs:test": "docgen --source src --custom docs/index.yml",
+		"lint": "eslint src",
+		"lint:fix": "eslint --fix src",
+		"webpack": "parallel-webpack"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/hydrabolt/discord.js.git"
+	},
+	"keywords": [
+		"discord",
+		"api",
+		"bot",
+		"client",
+		"node",
+		"discordapp"
+	],
+	"author": "Amish Shah <amishshah.2k@gmail.com>",
+	"license": "Apache-2.0",
+	"bugs": {
+		"url": "https://github.com/hydrabolt/discord.js/issues"
+	},
+	"homepage": "https://github.com/hydrabolt/discord.js#readme",
+	"runkitExampleFilename": "./docs/examples/ping.js",
+	"dependencies": {
+		"@types/node": "^7.0.0",
+		"long": "^3.2.0",
+		"prism-media": "hydrabolt/prism-media",
+		"superagent": "^3.4.0",
+		"tweetnacl": "^0.14.0",
+		"ws": "^2.0.0"
+	},
+	"peerDependencies": {
+		"bufferutil": "^2.0.0",
+		"erlpack": "hammerandchisel/erlpack",
+		"node-opus": "^0.2.0",
+		"opusscript": "^0.0.2",
+		"sodium": "^2.0.1",
+		"uws": "^0.14.1"
+	},
+	"devDependencies": {
+		"discord.js-docgen": "hydrabolt/discord.js-docgen",
+		"eslint": "^3.17.0",
+		"parallel-webpack": "^1.6.0",
+		"uglify-js": "mishoo/UglifyJS2#harmony",
+		"webpack": "^2.2.0"
+	},
+	"engines": {
+		"node": ">=6.0.0"
+	},
+	"browser": {
+		"ws": false,
+		"uws": false,
+		"erlpack": false,
+		"prism-media": false,
+		"opusscript": false,
+		"node-opus": false,
+		"tweetnacl": false,
+		"sodium": false,
+		"src/sharding/Shard.js": false,
+		"src/sharding/ShardClientUtil.js": false,
+		"src/sharding/ShardingManager.js": false,
+		"src/client/voice/dispatcher/StreamDispatcher.js": false,
+		"src/client/voice/opus/BaseOpusEngine.js": false,
+		"src/client/voice/opus/NodeOpusEngine.js": false,
+		"src/client/voice/opus/OpusEngineList.js": false,
+		"src/client/voice/opus/OpusScriptEngine.js": false,
+		"src/client/voice/pcm/ConverterEngine.js": false,
+		"src/client/voice/pcm/ConverterEngineList.js": false,
+		"src/client/voice/pcm/FfmpegConverterEngine.js": false,
+		"src/client/voice/player/AudioPlayer.js": false,
+		"src/client/voice/receiver/VoiceReadable.js": false,
+		"src/client/voice/receiver/VoiceReceiver.js": false,
+		"src/client/voice/util/Secretbox.js": false,
+		"src/client/voice/util/SecretKey.js": false,
+		"src/client/voice/util/VolumeInterface.js": false,
+		"src/client/voice/ClientVoiceManager.js": false,
+		"src/client/voice/VoiceBroadcast.js": false,
+		"src/client/voice/VoiceConnection.js": false,
+		"src/client/voice/VoiceUDPClient.js": false,
+		"src/client/voice/VoiceWebSocket.js": false
+	}
+};
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const User = __webpack_require__(11);
+const Collection = __webpack_require__(3);
+
+/**
+ * Represents the logged in client's Discord user
+ * @extends {User}
+ */
+class ClientUser extends User {
+  setup(data) {
+    super.setup(data);
+
+    /**
+     * Whether or not this account has been verified
+     * @type {boolean}
+     */
+    this.verified = data.verified;
+
+    /**
+     * The email of this account
+     * @type {string}
+     */
+    this.email = data.email;
+    this.localPresence = {};
+    this._typing = new Map();
+
+    /**
+     * A Collection of friends for the logged in user.
+     * <warn>This is only filled when using a user account.</warn>
+     * @type {Collection<Snowflake, User>}
+     */
+    this.friends = new Collection();
+
+    /**
+     * A Collection of blocked users for the logged in user.
+     * <warn>This is only filled when using a user account.</warn>
+     * @type {Collection<Snowflake, User>}
+     */
+    this.blocked = new Collection();
+
+    /**
+     * A Collection of notes for the logged in user.
+     * <warn>This is only filled when using a user account.</warn>
+     * @type {Collection<Snowflake, string>}
+     */
+    this.notes = new Collection();
+
+    /**
+     * Discord client settings, such as guild positions
+     * <warn>This is only filled when using a user account.</warn>
+     * @type {Object}
+     */
+    this.settings = {};
+
+    /**
+     * If the user has discord premium (nitro)
+     * <warn>This is only filled when using a user account.</warn>
+     * @type {?boolean}
+     */
+    this.premium = typeof data.premium === 'boolean' ? data.premium : null;
+
+    /**
+     * If the user has MFA enabled on their account
+     * <warn>This is only filled when using a user account.</warn>
+     * @type {?boolean}
+     */
+    this.mfaEnabled = typeof data.mfa_enabled === 'boolean' ? data.mfa_enabled : null;
+
+    /**
+     * If the user has ever used a mobile device on discord
+     * <warn>This is only filled when using a user account.</warn>
+     * @type {?boolean}
+     */
+    this.mobile = typeof data.mobile === 'boolean' ? data.mobile : null;
+  }
+
+  edit(data) {
+    return this.client.rest.methods.updateCurrentUser(data);
+  }
+
+  /**
+   * Set the username of the logged in Client.
+   * <info>Changing usernames in Discord is heavily rate limited, with only 2 requests
+   * every hour. Use this sparingly!</info>
+   * @param {string} username The new username
+   * @param {string} [password] Current password (only for user accounts)
+   * @returns {Promise<ClientUser>}
+   * @example
+   * // set username
+   * client.user.setUsername('discordjs')
+   *  .then(user => console.log(`My new username is ${user.username}`))
+   *  .catch(console.error);
+   */
+  setUsername(username, password) {
+    return this.client.rest.methods.updateCurrentUser({ username }, password);
+  }
+
+  /**
+   * Changes the email for the client user's account.
+   * <warn>This is only available when using a user account.</warn>
+   * @param {string} email New email to change to
+   * @param {string} password Current password
+   * @returns {Promise<ClientUser>}
+   * @example
+   * // set email
+   * client.user.setEmail('bob@gmail.com', 'some amazing password 123')
+   *  .then(user => console.log(`My new email is ${user.email}`))
+   *  .catch(console.error);
+   */
+  setEmail(email, password) {
+    return this.client.rest.methods.updateCurrentUser({ email }, password);
+  }
+
+  /**
+   * Changes the password for the client user's account.
+   * <warn>This is only available when using a user account.</warn>
+   * @param {string} newPassword New password to change to
+   * @param {string} oldPassword Current password
+   * @returns {Promise<ClientUser>}
+   * @example
+   * // set password
+   * client.user.setPassword('some new amazing password 456', 'some amazing password 123')
+   *  .then(user => console.log('New password set!'))
+   *  .catch(console.error);
+   */
+  setPassword(newPassword, oldPassword) {
+    return this.client.rest.methods.updateCurrentUser({ password: newPassword }, oldPassword);
+  }
+
+  /**
+   * Set the avatar of the logged in Client.
+   * @param {BufferResolvable|Base64Resolvable} avatar The new avatar
+   * @returns {Promise<ClientUser>}
+   * @example
+   * // set avatar
+   * client.user.setAvatar('./avatar.png')
+   *  .then(user => console.log(`New avatar set!`))
+   *  .catch(console.error);
+   */
+  setAvatar(avatar) {
+    if (typeof avatar === 'string' && avatar.startsWith('data:')) {
+      return this.client.rest.methods.updateCurrentUser({ avatar });
+    } else {
+      return this.client.resolver.resolveBuffer(avatar).then(data =>
+        this.client.rest.methods.updateCurrentUser({ avatar: data })
+      );
+    }
+  }
+
+  /**
+   * Data resembling a raw Discord presence
+   * @typedef {Object} PresenceData
+   * @property {PresenceStatus} [status] Status of the user
+   * @property {boolean} [afk] Whether the user is AFK
+   * @property {Object} [game] Game the user is playing
+   * @property {string} [game.name] Name of the game
+   * @property {string} [game.url] Twitch stream URL
+   */
+
+  /**
+   * Sets the full presence of the client user.
+   * @param {PresenceData} data Data for the presence
+   * @returns {Promise<ClientUser>}
+   */
+  setPresence(data) {
+    // {"op":3,"d":{"status":"dnd","since":0,"game":null,"afk":false}}
+    return new Promise(resolve => {
+      let status = this.localPresence.status || this.presence.status;
+      let game = this.localPresence.game;
+      let afk = this.localPresence.afk || this.presence.afk;
+
+      if (!game && this.presence.game) {
+        game = {
+          name: this.presence.game.name,
+          type: this.presence.game.type,
+          url: this.presence.game.url,
+        };
+      }
+
+      if (data.status) {
+        if (typeof data.status !== 'string') throw new TypeError('Status must be a string');
+        status = data.status;
+      }
+
+      if (data.game) {
+        game = data.game;
+        if (game.url) game.type = 1;
+      }
+
+      if (data.game === null) game = null;
+
+      if (typeof data.afk !== 'undefined') afk = data.afk;
+      afk = Boolean(afk);
+
+      this.localPresence = { status, game, afk };
+      this.localPresence.since = 0;
+      this.localPresence.game = this.localPresence.game || null;
+
+      this.client.ws.send({
+        op: 3,
+        d: this.localPresence,
+      });
+
+      this.client._setPresence(this.id, this.localPresence);
+
+      resolve(this);
+    });
+  }
+
+  /**
+   * A user's status. Must be one of:
+   * - `online`
+   * - `idle`
+   * - `invisible`
+   * - `dnd` (do not disturb)
+   * @typedef {string} PresenceStatus
+   */
+
+  /**
+   * Sets the status of the client user.
+   * @param {PresenceStatus} status Status to change to
+   * @returns {Promise<ClientUser>}
+   */
+  setStatus(status) {
+    return this.setPresence({ status });
+  }
+
+  /**
+   * Sets the game the client user is playing.
+   * @param {?string} game Game being played
+   * @param {string} [streamingURL] Twitch stream URL
+   * @returns {Promise<ClientUser>}
+   */
+  setGame(game, streamingURL) {
+    if (game === null) return this.setPresence({ game });
+    return this.setPresence({ game: {
+      name: game,
+      url: streamingURL,
+    } });
+  }
+
+  /**
+   * Sets/removes the AFK flag for the client user.
+   * @param {boolean} afk Whether or not the user is AFK
+   * @returns {Promise<ClientUser>}
+   */
+  setAFK(afk) {
+    return this.setPresence({ afk });
+  }
+
+  /**
+   * Fetches messages that mentioned the client's user
+   * @param {Object} [options] Options for the fetch
+   * @param {number} [options.limit=25] Maximum number of mentions to retrieve
+   * @param {boolean} [options.roles=true] Whether to include role mentions
+   * @param {boolean} [options.everyone=true] Whether to include everyone/here mentions
+   * @param {Guild|Snowflake} [options.guild] Limit the search to a specific guild
+   * @returns {Promise<Message[]>}
+   */
+  fetchMentions(options = { limit: 25, roles: true, everyone: true, guild: null }) {
+    return this.client.rest.methods.fetchMentions(options);
+  }
+
+  /**
+   * Send a friend request
+   * <warn>This is only available when using a user account.</warn>
+   * @param {UserResolvable} user The user to send the friend request to.
+   * @returns {Promise<User>} The user the friend request was sent to.
+   */
+  addFriend(user) {
+    user = this.client.resolver.resolveUser(user);
+    return this.client.rest.methods.addFriend(user);
+  }
+
+  /**
+   * Remove a friend
+   * <warn>This is only available when using a user account.</warn>
+   * @param {UserResolvable} user The user to remove from your friends
+   * @returns {Promise<User>} The user that was removed
+   */
+  removeFriend(user) {
+    user = this.client.resolver.resolveUser(user);
+    return this.client.rest.methods.removeFriend(user);
+  }
+
+  /**
+   * Creates a guild
+   * <warn>This is only available when using a user account.</warn>
+   * @param {string} name The name of the guild
+   * @param {string} region The region for the server
+   * @param {BufferResolvable|Base64Resolvable} [icon=null] The icon for the guild
+   * @returns {Promise<Guild>} The guild that was created
+   */
+  createGuild(name, region, icon = null) {
+    if (!icon) return this.client.rest.methods.createGuild({ name, icon, region });
+    if (typeof icon === 'string' && icon.startsWith('data:')) {
+      return this.client.rest.methods.createGuild({ name, icon, region });
+    } else {
+      return this.client.resolver.resolveBuffer(icon).then(data =>
+        this.client.rest.methods.createGuild({ name, icon: data, region })
+      );
+    }
+  }
+
+  /**
+   * An object containing either a user or access token, and an optional nickname
+   * @typedef {Object} GroupDMRecipientOptions
+   * @property {UserResolvable|Snowflake} [user] User to add to the group DM
+   * (only available if a user is creating the DM)
+   * @property {string} [accessToken] Access token to use to add a user to the group DM
+   * (only available if a bot is creating the DM)
+   * @property {string} [nick] Permanent nickname (only available if a bot is creating the DM)
+   */
+
+  /**
+   * Creates a group DM
+   * @param {GroupDMRecipientOptions[]} recipients The recipients
+   * @returns {Promise<GroupDMChannel>}
+   */
+  createGroupDM(recipients) {
+    return this.client.rest.methods.createGroupDM({
+      recipients: recipients.map(u => this.client.resolver.resolveUserID(u.user)),
+      accessTokens: recipients.map(u => u.accessToken),
+      nicks: recipients.map(u => u.nick),
+    });
+  }
+
+  /**
+   * Accepts an invite to join a guild
+   * <warn>This is only available when using a user account.</warn>
+   * @param {Invite|string} invite Invite or code to accept
+   * @returns {Promise<Guild>} Joined guild
+   */
+  acceptInvite(invite) {
+    return this.client.rest.methods.acceptInvite(invite);
+  }
+}
+
+module.exports = ClientUser;
+
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Channel = __webpack_require__(8);
+const TextBasedChannel = __webpack_require__(14);
+const Collection = __webpack_require__(3);
+
+/**
+ * Represents a direct message channel between two users.
+ * @extends {Channel}
+ * @implements {TextBasedChannel}
+ */
+class DMChannel extends Channel {
+  constructor(client, data) {
+    super(client, data);
+    this.type = 'dm';
+    this.messages = new Collection();
+    this._typing = new Map();
+  }
+
+  setup(data) {
+    super.setup(data);
+
+    /**
+     * The recipient on the other end of the DM
+     * @type {User}
+     */
+    this.recipient = this.client.dataManager.newUser(data.recipients[0]);
+
+    this.lastMessageID = data.last_message_id;
+  }
+
+  /**
+   * When concatenated with a string, this automatically concatenates the recipient's mention instead of the
+   * DM channel object.
+   * @returns {string}
+   */
+  toString() {
+    return this.recipient.toString();
+  }
+
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  /* eslint-disable no-empty-function */
+  send() {}
+  sendMessage() {}
+  sendEmbed() {}
+  sendFile() {}
+  sendFiles() {}
+  sendCode() {}
+  fetchMessage() {}
+  fetchMessages() {}
+  fetchPinnedMessages() {}
+  search() {}
+  startTyping() {}
+  stopTyping() {}
+  get typing() {}
+  get typingCount() {}
+  createCollector() {}
+  awaitMessages() {}
+  // Doesn't work on DM channels; bulkDelete() {}
+  acknowledge() {}
+  _cacheMessage() {}
+}
+
+TextBasedChannel.applyToClass(DMChannel, true, ['bulkDelete']);
+
+module.exports = DMChannel;
+
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const PartialGuild = __webpack_require__(38);
+const PartialGuildChannel = __webpack_require__(39);
+const Constants = __webpack_require__(0);
+
+/*
+{ max_age: 86400,
+  code: 'CG9A5',
+  guild:
+   { splash: null,
+     id: '123123123',
+     icon: '123123123',
+     name: 'name' },
+  created_at: '2016-08-28T19:07:04.763368+00:00',
+  temporary: false,
+  uses: 0,
+  max_uses: 0,
+  inviter:
+   { username: '123',
+     discriminator: '4204',
+     bot: true,
+     id: '123123123',
+     avatar: '123123123' },
+  channel: { type: 0, id: '123123', name: 'heavy-testing' } }
+*/
+
+/**
+ * Represents an invitation to a guild channel.
+ * <warn>The only guaranteed properties are `code`, `guild` and `channel`. Other properties can be missing.</warn>
+ */
+class Invite {
+  constructor(client, data) {
+    /**
+     * The client that instantiated the invite
+     * @name Invite#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: client });
+
+    this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The guild the invite is for. If this guild is already known, this will be a Guild object. If the guild is
+     * unknown, this will be a PartialGuild object.
+     * @type {Guild|PartialGuild}
+     */
+    this.guild = this.client.guilds.get(data.guild.id) || new PartialGuild(this.client, data.guild);
+
+    /**
+     * The code for this invite
+     * @type {string}
+     */
+    this.code = data.code;
+
+    /**
+     * Whether or not this invite is temporary
+     * @type {boolean}
+     */
+    this.temporary = data.temporary;
+
+    /**
+     * The maximum age of the invite, in seconds
+     * @type {?number}
+     */
+    this.maxAge = data.max_age;
+
+    /**
+     * How many times this invite has been used
+     * @type {number}
+     */
+    this.uses = data.uses;
+
+    /**
+     * The maximum uses of this invite
+     * @type {number}
+     */
+    this.maxUses = data.max_uses;
+
+    if (data.inviter) {
+      /**
+       * The user who created this invite
+       * @type {User}
+       */
+      this.inviter = this.client.dataManager.newUser(data.inviter);
+    }
+
+    /**
+     * The channel the invite is for. If this channel is already known, this will be a GuildChannel object.
+     * If the channel is unknown, this will be a PartialGuildChannel object.
+     * @type {GuildChannel|PartialGuildChannel}
+     */
+    this.channel = this.client.channels.get(data.channel.id) || new PartialGuildChannel(this.client, data.channel);
+
+    /**
+     * The timestamp the invite was created at
+     * @type {number}
+     */
+    this.createdTimestamp = new Date(data.created_at).getTime();
+  }
+
+  /**
+   * The time the invite was created
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * The timestamp the invite will expire at
+   * @type {number}
+   * @readonly
+   */
+  get expiresTimestamp() {
+    return this.createdTimestamp + (this.maxAge * 1000);
+  }
+
+  /**
+   * The time the invite will expire
+   * @type {Date}
+   * @readonly
+   */
+  get expiresAt() {
+    return new Date(this.expiresTimestamp);
+  }
+
+  /**
+   * The URL to the invite
+   * @type {string}
+   * @readonly
+   */
+  get url() {
+    return Constants.Endpoints.inviteLink(this.code);
+  }
+
+  /**
+   * Deletes this invite
+   * @returns {Promise<Invite>}
+   */
+  delete() {
+    return this.client.rest.methods.deleteInvite(this);
+  }
+
+  /**
+   * When concatenated with a string, this automatically concatenates the invite's URL instead of the object.
+   * @returns {string}
+   * @example
+   * // logs: Invite: https://discord.gg/A1b2C3
+   * console.log(`Invite: ${invite}`);
+   */
+  toString() {
+    return this.url;
+  }
+}
+
+module.exports = Invite;
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports) {
+
+/**
+ * Represents an attachment in a message
+ */
+class MessageAttachment {
+  constructor(message, data) {
+    /**
+     * The Client that instantiated this MessageAttachment.
+     * @name MessageAttachment#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: message.client });
+
+    /**
+     * The message this attachment is part of.
+     * @type {Message}
+     */
+    this.message = message;
+
+    this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The ID of this attachment
+     * @type {Snowflake}
+     */
+    this.id = data.id;
+
+    /**
+     * The file name of this attachment
+     * @type {string}
+     */
+    this.filename = data.filename;
+
+    /**
+     * The size of this attachment in bytes
+     * @type {number}
+     */
+    this.filesize = data.size;
+
+    /**
+     * The URL to this attachment
+     * @type {string}
+     */
+    this.url = data.url;
+
+    /**
+     * The Proxy URL to this attachment
+     * @type {string}
+     */
+    this.proxyURL = data.proxy_url;
+
+    /**
+     * The height of this attachment (if an image)
+     * @type {?number}
+     */
+    this.height = data.height;
+
+    /**
+     * The width of this attachment (if an image)
+     * @type {?number}
+     */
+    this.width = data.width;
+  }
+}
+
+module.exports = MessageAttachment;
+
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const EventEmitter = __webpack_require__(23).EventEmitter;
+const Collection = __webpack_require__(3);
+
+/**
+ * Collects messages based on a specified filter, then emits them.
+ * @extends {EventEmitter}
+ */
+class MessageCollector extends EventEmitter {
+  /**
+   * A function that takes a Message object and a MessageCollector and returns a boolean.
+   * ```js
+   * function(message, collector) {
+   *  if (message.content.includes('discord')) {
+   *    return true; // passed the filter test
+   *  }
+   *  return false; // failed the filter test
+   * }
+   * ```
+   * @typedef {Function} CollectorFilterFunction
+   */
+
+  /**
+   * An object containing options used to configure a MessageCollector. All properties are optional.
+   * @typedef {Object} CollectorOptions
+   * @property {number} [time] Duration for the collector in milliseconds
+   * @property {number} [max] Maximum number of messages to handle
+   * @property {number} [maxMatches] Maximum number of successfully filtered messages to obtain
+   */
+
+  /**
+   * @param {Channel} channel The channel to collect messages in
+   * @param {CollectorFilterFunction} filter The filter function
+   * @param {CollectorOptions} [options] Options for the collector
+   */
+  constructor(channel, filter, options = {}) {
+    super();
+
+    /**
+     * The channel this collector is operating on
+     * @type {Channel}
+     */
+    this.channel = channel;
+
+    /**
+     * A function used to filter messages that the collector collects.
+     * @type {CollectorFilterFunction}
+     */
+    this.filter = filter;
+
+    /**
+     * Options for the collecor.
+     * @type {CollectorOptions}
+     */
+    this.options = options;
+
+    /**
+     * Whether this collector has stopped collecting messages.
+     * @type {boolean}
+     */
+    this.ended = false;
+
+    /**
+     * A collection of collected messages, mapped by message ID.
+     * @type {Collection<Snowflake, Message>}
+     */
+    this.collected = new Collection();
+
+    this.listener = message => this.verify(message);
+    this.channel.client.on('message', this.listener);
+    if (options.time) this.channel.client.setTimeout(() => this.stop('time'), options.time);
+  }
+
+  /**
+   * Verifies a message against the filter and options
+   * @private
+   * @param {Message} message The message
+   * @returns {boolean}
+   */
+  verify(message) {
+    if (this.channel ? this.channel.id !== message.channel.id : false) return false;
+    if (this.filter(message, this)) {
+      this.collected.set(message.id, message);
+      /**
+       * Emitted whenever the collector receives a message that passes the filter test.
+       * @param {Message} message The received message
+       * @param {MessageCollector} collector The collector the message passed through
+       * @event MessageCollector#message
+       */
+      this.emit('message', message, this);
+      if (this.collected.size >= this.options.maxMatches) this.stop('matchesLimit');
+      else if (this.options.max && this.collected.size === this.options.max) this.stop('limit');
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Returns a promise that resolves when a valid message is sent. Rejects
+   * with collected messages if the Collector ends before receiving a message.
+   * @type {Promise<Message>}
+   * @readonly
+   */
+  get next() {
+    return new Promise((resolve, reject) => {
+      if (this.ended) {
+        reject(this.collected);
+        return;
+      }
+
+      const cleanup = () => {
+        this.removeListener('message', onMessage);
+        this.removeListener('end', onEnd);
+      };
+
+      const onMessage = (...args) => {
+        cleanup();
+        resolve(...args);
+      };
+
+      const onEnd = (...args) => {
+        cleanup();
+        reject(...args); // eslint-disable-line prefer-promise-reject-errors
+      };
+
+      this.once('message', onMessage);
+      this.once('end', onEnd);
+    });
+  }
+
+  /**
+   * Stops the collector and emits `end`.
+   * @param {string} [reason='user'] An optional reason for stopping the collector
+   */
+  stop(reason = 'user') {
+    if (this.ended) return;
+    this.ended = true;
+    this.channel.client.removeListener('message', this.listener);
+    /**
+     * Emitted when the Collector stops collecting.
+     * @param {Collection<Snowflake, Message>} collection A collection of messages collected
+     * during the lifetime of the collector, mapped by the ID of the messages.
+     * @param {string} reason The reason for the end of the collector. If it ended because it reached the specified time
+     * limit, this would be `time`. If you invoke `.stop()` without specifying a reason, this would be `user`. If it
+     * ended because it reached its message limit, it will be `limit`.
+     * @event MessageCollector#end
+     */
+    this.emit('end', this.collected, reason);
+  }
+}
+
+module.exports = MessageCollector;
+
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports) {
+
+/**
+ * Represents an embed in a message (image/video preview, rich embed, etc.)
+ * <info>This class is only used for *recieved* embeds. If you wish to send one, use the {@link RichEmbed} class.</info>
+ */
+class MessageEmbed {
+  constructor(message, data) {
+    /**
+     * The client that instantiated this embed
+     * @name MessageEmbed#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: message.client });
+
+    /**
+     * The message this embed is part of
+     * @type {Message}
+     */
+    this.message = message;
+
+    this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The type of this embed
+     * @type {string}
+     */
+    this.type = data.type;
+
+    /**
+     * The title of this embed, if there is one
+     * @type {?string}
+     */
+    this.title = data.title;
+
+    /**
+     * The description of this embed, if there is one
+     * @type {?string}
+     */
+    this.description = data.description;
+
+    /**
+     * The URL of this embed
+     * @type {string}
+     */
+    this.url = data.url;
+
+    /**
+     * The color of the embed
+     * @type {number}
+     */
+    this.color = data.color;
+
+    /**
+     * The fields of this embed
+     * @type {MessageEmbedField[]}
+     */
+    this.fields = [];
+    if (data.fields) for (const field of data.fields) this.fields.push(new MessageEmbedField(this, field));
+
+    /**
+     * The timestamp of this embed
+     * @type {number}
+     */
+    this.createdTimestamp = data.timestamp;
+
+    /**
+     * The thumbnail of this embed, if there is one
+     * @type {?MessageEmbedThumbnail}
+     */
+    this.thumbnail = data.thumbnail ? new MessageEmbedThumbnail(this, data.thumbnail) : null;
+
+    /**
+     * The image of this embed, if there is one
+     * @type {?MessageEmbedImage}
+     */
+    this.image = data.image ? new MessageEmbedImage(this, data.image) : null;
+
+    /**
+     * The video of this embed, if there is one
+     * @type {?MessageEmbedVideo}
+     */
+    this.video = data.video ? new MessageEmbedVideo(this, data.video) : null;
+
+    /**
+     * The author of this embed, if there is one
+     * @type {?MessageEmbedAuthor}
+     */
+    this.author = data.author ? new MessageEmbedAuthor(this, data.author) : null;
+
+    /**
+     * The provider of this embed, if there is one
+     * @type {?MessageEmbedProvider}
+     */
+    this.provider = data.provider ? new MessageEmbedProvider(this, data.provider) : null;
+
+    /**
+     * The footer of this embed
+     * @type {?MessageEmbedFooter}
+     */
+    this.footer = data.footer ? new MessageEmbedFooter(this, data.footer) : null;
+  }
+
+  /**
+   * The date this embed was created
+   * @type {Date}
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * The hexadecimal version of the embed color, with a leading hash.
+   * @type {string}
+   * @readonly
+   */
+  get hexColor() {
+    let col = this.color.toString(16);
+    while (col.length < 6) col = `0${col}`;
+    return `#${col}`;
+  }
+}
+
+/**
+ * Represents a thumbnail for a message embed
+ */
+class MessageEmbedThumbnail {
+  constructor(embed, data) {
+    /**
+     * The embed this thumbnail is part of
+     * @type {MessageEmbed}
+     */
+    this.embed = embed;
+
+    this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The URL for this thumbnail
+     * @type {string}
+     */
+    this.url = data.url;
+
+    /**
+     * The Proxy URL for this thumbnail
+     * @type {string}
+     */
+    this.proxyURL = data.proxy_url;
+
+    /**
+     * The height of the thumbnail
+     * @type {number}
+     */
+    this.height = data.height;
+
+    /**
+     * The width of the thumbnail
+     * @type {number}
+     */
+    this.width = data.width;
+  }
+}
+
+/**
+ * Represents an image for a message embed
+ */
+class MessageEmbedImage {
+  constructor(embed, data) {
+    /**
+     * The embed this image is part of
+     * @type {MessageEmbed}
+     */
+    this.embed = embed;
+
+    this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The URL for this image
+     * @type {string}
+     */
+    this.url = data.url;
+
+    /**
+     * The Proxy URL for this image
+     * @type {string}
+     */
+    this.proxyURL = data.proxy_url;
+
+    /**
+     * The height of the image
+     * @type {number}
+     */
+    this.height = data.height;
+
+    /**
+     * The width of the image
+     * @type {number}
+     */
+    this.width = data.width;
+  }
+}
+
+/**
+ * Represents a video for a message embed
+ */
+class MessageEmbedVideo {
+  constructor(embed, data) {
+    /**
+     * The embed this video is part of
+     * @type {MessageEmbed}
+     */
+    this.embed = embed;
+
+    this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The source URL for this video
+     * @type {string}
+     */
+    this.url = data.url;
+
+    /**
+     * The height of the video
+     * @type {number}
+     */
+    this.height = data.height;
+
+    /**
+     * The width of the video
+     * @type {number}
+     */
+    this.width = data.width;
+  }
+}
+
+/**
+ * Represents a provider for a message embed
+ */
+class MessageEmbedProvider {
+  constructor(embed, data) {
+    /**
+     * The embed this provider is part of
+     * @type {MessageEmbed}
+     */
+    this.embed = embed;
+
+    this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The name of this provider
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * The URL of this provider
+     * @type {string}
+     */
+    this.url = data.url;
+  }
+}
+
+/**
+ * Represents an author for a message embed
+ */
+class MessageEmbedAuthor {
+  constructor(embed, data) {
+    /**
+     * The embed this author is part of
+     * @type {MessageEmbed}
+     */
+    this.embed = embed;
+
+    this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The name of this author
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * The URL of this author
+     * @type {string}
+     */
+    this.url = data.url;
+
+    /**
+     * The icon URL of this author
+     * @type {string}
+     */
+    this.iconURL = data.icon_url;
+  }
+}
+
+/**
+ * Represents a field for a message embed
+ */
+class MessageEmbedField {
+  constructor(embed, data) {
+    /**
+     * The embed this footer is part of
+     * @type {MessageEmbed}
+     */
+    this.embed = embed;
+
+    this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The name of this field
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * The value of this field
+     * @type {string}
+     */
+    this.value = data.value;
+
+    /**
+     * If this field is displayed inline
+     * @type {boolean}
+     */
+    this.inline = data.inline;
+  }
+}
+
+/**
+ * Represents the footer of a message embed
+ */
+class MessageEmbedFooter {
+  constructor(embed, data) {
+    /**
+     * The embed this footer is part of
+     * @type {MessageEmbed}
+     */
+    this.embed = embed;
+
+    this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The text in this footer
+     * @type {string}
+     */
+    this.text = data.text;
+
+    /**
+     * The icon URL of this footer
+     * @type {string}
+     */
+    this.iconURL = data.icon_url;
+
+    /**
+     * The proxy icon URL of this footer
+     * @type {string}
+     */
+    this.proxyIconUrl = data.proxy_icon_url;
+  }
+}
+
+MessageEmbed.Thumbnail = MessageEmbedThumbnail;
+MessageEmbed.Image = MessageEmbedImage;
+MessageEmbed.Video = MessageEmbedVideo;
+MessageEmbed.Provider = MessageEmbedProvider;
+MessageEmbed.Author = MessageEmbedAuthor;
+MessageEmbed.Field = MessageEmbedField;
+MessageEmbed.Footer = MessageEmbedFooter;
+
+module.exports = MessageEmbed;
+
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Collection = __webpack_require__(3);
+const Emoji = __webpack_require__(12);
+const ReactionEmoji = __webpack_require__(20);
+
+/**
+ * Represents a reaction to a message
+ */
+class MessageReaction {
+  constructor(message, emoji, count, me) {
+    /**
+     * The message that this reaction refers to
+     * @type {Message}
+     */
+    this.message = message;
+
+    /**
+     * Whether the client has given this reaction
+     * @type {boolean}
+     */
+    this.me = me;
+
+    /**
+     * The number of people that have given the same reaction.
+     * @type {number}
+     */
+    this.count = count || 0;
+
+    /**
+     * The users that have given this reaction, mapped by their ID.
+     * @type {Collection<Snowflake, User>}
+     */
+    this.users = new Collection();
+
+    this._emoji = new ReactionEmoji(this, emoji.name, emoji.id);
+  }
+
+  /**
+   * The emoji of this reaction, either an Emoji object for known custom emojis, or a ReactionEmoji
+   * object which has fewer properties. Whatever the prototype of the emoji, it will still have
+   * `name`, `id`, `identifier` and `toString()`
+   * @type {Emoji|ReactionEmoji}
+   */
+  get emoji() {
+    if (this._emoji instanceof Emoji) return this._emoji;
+    // Check to see if the emoji has become known to the client
+    if (this._emoji.id) {
+      const emojis = this.message.client.emojis;
+      if (emojis.has(this._emoji.id)) {
+        const emoji = emojis.get(this._emoji.id);
+        this._emoji = emoji;
+        return emoji;
+      }
+    }
+    return this._emoji;
+  }
+
+  /**
+   * Removes a user from this reaction.
+   * @param {UserResolvable} [user=this.message.client.user] User to remove the reaction of
+   * @returns {Promise<MessageReaction>}
+   */
+  remove(user = this.message.client.user) {
+    const message = this.message;
+    user = this.message.client.resolver.resolveUserID(user);
+    if (!user) return Promise.reject(new Error('Couldn\'t resolve the user ID to remove from the reaction.'));
+    return message.client.rest.methods.removeMessageReaction(
+      message, this.emoji.identifier, user
+    );
+  }
+
+  /**
+   * Fetch all the users that gave this reaction. Resolves with a collection of users, mapped by their IDs.
+   * @param {number} [limit=100] the maximum amount of users to fetch, defaults to 100
+   * @returns {Promise<Collection<Snowflake, User>>}
+   */
+  fetchUsers(limit = 100) {
+    const message = this.message;
+    return message.client.rest.methods.getMessageReactionUsers(
+      message, this.emoji.identifier, limit
+    ).then(users => {
+      this.users = new Collection();
+      for (const rawUser of users) {
+        const user = this.message.client.dataManager.newUser(rawUser);
+        this.users.set(user.id, user);
+      }
+      this.count = this.users.size;
+      return this.users;
+    });
+  }
+}
+
+module.exports = MessageReaction;
+
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Snowflake = __webpack_require__(5);
+
+/**
+ * Represents an OAuth2 Application
+ */
+class OAuth2Application {
+  constructor(client, data) {
+    /**
+     * The client that instantiated the application
+     * @name OAuth2Application#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: client });
+
+    this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The ID of the app
+     * @type {Snowflake}
+     */
+    this.id = data.id;
+
+    /**
+     * The name of the app
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * The app's description
+     * @type {string}
+     */
+    this.description = data.description;
+
+    /**
+     * The app's icon hash
+     * @type {string}
+     */
+    this.icon = data.icon;
+
+    /**
+     * The app's icon URL
+     * @type {string}
+     */
+    this.iconURL = `https://cdn.discordapp.com/app-icons/${this.id}/${this.icon}.jpg`;
+
+    /**
+     * The app's RPC origins
+     * @type {?string[]}
+     */
+    this.rpcOrigins = data.rpc_origins;
+
+    /**
+     * The app's redirect URIs
+     * @type {string[]}
+     */
+    this.redirectURIs = data.redirect_uris;
+
+    /**
+     * If this app's bot requires a code grant when using the oauth2 flow
+     * @type {boolean}
+     */
+    this.botRequireCodeGrant = data.bot_require_code_grant;
+
+    /**
+     * If this app's bot is public
+     * @type {boolean}
+     */
+    this.botPublic = data.bot_public;
+
+    /**
+     * If this app can use rpc
+     * @type {boolean}
+     */
+    this.rpcApplicationState = data.rpc_application_state;
+
+    /**
+     * Object containing basic info about this app's bot
+     * @type {Object}
+     */
+    this.bot = data.bot;
+
+    /**
+     * Flags for the app
+     * @type {number}
+     */
+    this.flags = data.flags;
+
+    /**
+     * OAuth2 secret for the application
+     * @type {boolean}
+     */
+    this.secret = data.secret;
+  }
+
+  /**
+   * The timestamp the app was created at
+   * @type {number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    return Snowflake.deconstruct(this.id).timestamp;
+  }
+
+  /**
+   * The time the app was created
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * Reset the app's secret and bot token
+   * @returns {OAuth2Application}
+   */
+  reset() {
+    return this.client.rest.methods.resetApplication(this.id);
+  }
+
+  /**
+   * When concatenated with a string, this automatically concatenates the app name rather than the app object.
+   * @returns {string}
+   */
+  toString() {
+    return this.name;
+  }
+}
+
+module.exports = OAuth2Application;
+
+
+/***/ }),
+/* 38 */
+/***/ (function(module, exports) {
+
+/*
+{ splash: null,
+     id: '123123123',
+     icon: '123123123',
+     name: 'name' }
+*/
+
+/**
+ * Represents a guild that the client only has limited information for - e.g. from invites.
+ */
+class PartialGuild {
+  constructor(client, data) {
+    /**
+     * The Client that instantiated this PartialGuild
+     * @name PartialGuild#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: client });
+
+    this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The ID of this guild
+     * @type {Snowflake}
+     */
+    this.id = data.id;
+
+    /**
+     * The name of this guild
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * The hash of this guild's icon, or null if there is none.
+     * @type {?string}
+     */
+    this.icon = data.icon;
+
+    /**
+     * The hash of the guild splash image, or null if no splash (VIP only)
+     * @type {?string}
+     */
+    this.splash = data.splash;
+  }
+}
+
+module.exports = PartialGuild;
+
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Constants = __webpack_require__(0);
+
+/*
+{ type: 0, id: '123123', name: 'heavy-testing' } }
+*/
+
+/**
+ * Represents a guild channel that the client only has limited information for - e.g. from invites.
+ */
+class PartialGuildChannel {
+  constructor(client, data) {
+    /**
+     * The Client that instantiated this PartialGuildChannel
+     * @name PartialGuildChannel#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: client });
+
+    this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The ID of this guild channel
+     * @type {Snowflake}
+     */
+    this.id = data.id;
+
+    /**
+     * The name of this guild channel
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * The type of this guild channel - `text` or `voice`
+     * @type {string}
+     */
+    this.type = Constants.ChannelTypes.TEXT === data.type ? 'text' : 'voice';
+  }
+}
+
+module.exports = PartialGuildChannel;
+
+
+/***/ }),
+/* 40 */
+/***/ (function(module, exports) {
+
+/**
+ * Represents a permission overwrite for a role or member in a guild channel.
+ */
+class PermissionOverwrites {
+  constructor(guildChannel, data) {
+    /**
+     * The GuildChannel this overwrite is for
+     * @name PermissionOverwrites#channel
+     * @type {GuildChannel}
+     * @readonly
+     */
+    Object.defineProperty(this, 'channel', { value: guildChannel });
+
+    if (data) this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The ID of this overwrite, either a user ID or a role ID
+     * @type {Snowflake}
+     */
+    this.id = data.id;
+
+    /**
+     * The type of this overwrite
+     * @type {string}
+     */
+    this.type = data.type;
+
+    this.deny = data.deny;
+    this.allow = data.allow;
+  }
+
+  /**
+   * Delete this Permission Overwrite.
+   * @returns {Promise<PermissionOverwrites>}
+   */
+  delete() {
+    return this.channel.client.rest.methods.deletePermissionOverwrites(this);
+  }
+}
+
+module.exports = PermissionOverwrites;
+
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const GuildChannel = __webpack_require__(17);
+const TextBasedChannel = __webpack_require__(14);
+const Collection = __webpack_require__(3);
+
+/**
+ * Represents a guild text channel on Discord.
+ * @extends {GuildChannel}
+ * @implements {TextBasedChannel}
+ */
+class TextChannel extends GuildChannel {
+  constructor(guild, data) {
+    super(guild, data);
+    this.type = 'text';
+    this.messages = new Collection();
+    this._typing = new Map();
+  }
+
+  setup(data) {
+    super.setup(data);
+
+    /**
+     * The topic of the text channel, if there is one.
+     * @type {?string}
+     */
+    this.topic = data.topic;
+
+    this.lastMessageID = data.last_message_id;
+  }
+
+  /**
+   * A collection of members that can see this channel, mapped by their ID.
+   * @type {Collection<Snowflake, GuildMember>}
+   * @readonly
+   */
+  get members() {
+    const members = new Collection();
+    for (const member of this.guild.members.values()) {
+      if (this.permissionsFor(member).hasPermission('READ_MESSAGES')) {
+        members.set(member.id, member);
+      }
+    }
+    return members;
+  }
+
+  /**
+   * Fetch all webhooks for the channel.
+   * @returns {Promise<Collection<Snowflake, Webhook>>}
+   */
+  fetchWebhooks() {
+    return this.client.rest.methods.getChannelWebhooks(this);
+  }
+
+  /**
+   * Create a webhook for the channel.
+   * @param {string} name The name of the webhook.
+   * @param {BufferResolvable|Base64Resolvable} avatar The avatar for the webhook.
+   * @returns {Promise<Webhook>} webhook The created webhook.
+   * @example
+   * channel.createWebhook('Snek', 'http://snek.s3.amazonaws.com/topSnek.png')
+   *  .then(webhook => console.log(`Created Webhook ${webhook}`))
+   *  .catch(console.error)
+   */
+  createWebhook(name, avatar) {
+    return new Promise(resolve => {
+      if (typeof avatar === 'string' && avatar.startsWith('data:')) {
+        resolve(this.client.rest.methods.createWebhook(this, name, avatar));
+      } else {
+        this.client.resolver.resolveBuffer(avatar).then(data =>
+           resolve(this.client.rest.methods.createWebhook(this, name, data))
+        );
+      }
+    });
+  }
+
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  /* eslint-disable no-empty-function */
+  send() {}
+  sendMessage() {}
+  sendEmbed() {}
+  sendFile() {}
+  sendFiles() {}
+  sendCode() {}
+  fetchMessage() {}
+  fetchMessages() {}
+  fetchPinnedMessages() {}
+  search() {}
+  startTyping() {}
+  stopTyping() {}
+  get typing() {}
+  get typingCount() {}
+  createCollector() {}
+  awaitMessages() {}
+  bulkDelete() {}
+  acknowledge() {}
+  _cacheMessage() {}
+}
+
+TextBasedChannel.applyToClass(TextChannel, true);
+
+module.exports = TextChannel;
+
+
+/***/ }),
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const GuildChannel = __webpack_require__(17);
+const Collection = __webpack_require__(3);
+
+/**
+ * Represents a guild voice channel on Discord.
+ * @extends {GuildChannel}
+ */
+class VoiceChannel extends GuildChannel {
+  constructor(guild, data) {
+    super(guild, data);
+
+    /**
+     * The members in this voice channel.
+     * @type {Collection<Snowflake, GuildMember>}
+     */
+    this.members = new Collection();
+
+    this.type = 'voice';
+  }
+
+  setup(data) {
+    super.setup(data);
+
+    /**
+     * The bitrate of this voice channel
+     * @type {number}
+     */
+    this.bitrate = data.bitrate;
+
+    /**
+     * The maximum amount of users allowed in this channel - 0 means unlimited.
+     * @type {number}
+     */
+    this.userLimit = data.user_limit;
+  }
+
+  /**
+   * The voice connection for this voice channel, if the client is connected
+   * @type {?VoiceConnection}
+   * @readonly
+   */
+  get connection() {
+    const connection = this.guild.voiceConnection;
+    if (connection && connection.channel.id === this.id) return connection;
+    return null;
+  }
+
+  /**
+   * Checks if the voice channel is full
+   * @type {boolean}
+   */
+  get full() {
+    return this.userLimit > 0 && this.members.size >= this.userLimit;
+  }
+
+  /**
+   * Checks if the client has permission join the voice channel
+   * @type {boolean}
+   */
+  get joinable() {
+    if (this.client.browser) return false;
+    if (!this.permissionsFor(this.client.user).hasPermission('CONNECT')) return false;
+    if (this.full && !this.permissionsFor(this.client.user).hasPermission('MOVE_MEMBERS')) return false;
+    return true;
+  }
+
+  /**
+   * Checks if the client has permission to send audio to the voice channel
+   * @type {boolean}
+   */
+  get speakable() {
+    return this.permissionsFor(this.client.user).hasPermission('SPEAK');
+  }
+
+  /**
+   * Sets the bitrate of the channel
+   * @param {number} bitrate The new bitrate
+   * @returns {Promise<VoiceChannel>}
+   * @example
+   * // set the bitrate of a voice channel
+   * voiceChannel.setBitrate(48000)
+   *  .then(vc => console.log(`Set bitrate to ${vc.bitrate} for ${vc.name}`))
+   *  .catch(console.error);
+   */
+  setBitrate(bitrate) {
+    return this.edit({ bitrate });
+  }
+
+  /**
+   * Sets the user limit of the channel
+   * @param {number} userLimit The new user limit
+   * @returns {Promise<VoiceChannel>}
+   * @example
+   * // set the user limit of a voice channel
+   * voiceChannel.setUserLimit(42)
+   *  .then(vc => console.log(`Set user limit to ${vc.userLimit} for ${vc.name}`))
+   *  .catch(console.error);
+   */
+  setUserLimit(userLimit) {
+    return this.edit({ userLimit });
+  }
+
+  /**
+   * Attempts to join this voice channel
+   * @returns {Promise<VoiceConnection>}
+   * @example
+   * // join a voice channel
+   * voiceChannel.join()
+   *  .then(connection => console.log('Connected!'))
+   *  .catch(console.error);
+   */
+  join() {
+    if (this.client.browser) return Promise.reject(new Error('Voice connections are not available in browsers.'));
+    return this.client.voice.joinChannel(this);
+  }
+
+  /**
+   * Leaves this voice channel
+   * @example
+   * // leave a voice channel
+   * voiceChannel.leave();
+   */
+  leave() {
+    if (this.client.browser) return;
+    const connection = this.client.voice.connections.get(this.guild.id);
+    if (connection && connection.channel.id === this.id) connection.disconnect();
+  }
+}
+
+module.exports = VoiceChannel;
+
+
+/***/ }),
 /* 43 */
 /***/ (function(module, exports) {
 
@@ -12902,7 +12983,7 @@ const Util = __webpack_require__(4);
 const RESTManager = __webpack_require__(44);
 const ClientDataManager = __webpack_require__(65);
 const ClientManager = __webpack_require__(66);
-const ClientDataResolver = __webpack_require__(27);
+const ClientDataResolver = __webpack_require__(28);
 const ClientVoiceManager = __webpack_require__(140);
 const WebSocketManager = __webpack_require__(100);
 const ActionsManager = __webpack_require__(67);
@@ -13448,7 +13529,7 @@ module.exports = Client;
 
 const Webhook = __webpack_require__(21);
 const RESTManager = __webpack_require__(44);
-const ClientDataResolver = __webpack_require__(27);
+const ClientDataResolver = __webpack_require__(28);
 const Constants = __webpack_require__(0);
 const Util = __webpack_require__(4);
 
@@ -13570,7 +13651,7 @@ module.exports = WebhookClient;
 /* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const ClientDataResolver = __webpack_require__(27);
+const ClientDataResolver = __webpack_require__(28);
 
 /**
  * A rich embed to be sent with a message with a fluent interface for creation
@@ -14408,7 +14489,7 @@ exports.encode = exports.stringify = __webpack_require__(57);
  * @return {Boolean}
  * @api private
  */
-var isObject = __webpack_require__(26);
+var isObject = __webpack_require__(27);
 
 function isFunction(fn) {
   var tag = isObject(fn) ? Object.prototype.toString.call(fn) : '';
@@ -14425,7 +14506,7 @@ module.exports = isFunction;
 /**
  * Module of mixed-in functions shared between node and client code
  */
-var isObject = __webpack_require__(26);
+var isObject = __webpack_require__(27);
 
 /**
  * Expose `RequestBase`.
@@ -15281,10 +15362,10 @@ const Constants = __webpack_require__(0);
 const Util = __webpack_require__(4);
 const Guild = __webpack_require__(16);
 const User = __webpack_require__(11);
-const DMChannel = __webpack_require__(30);
+const DMChannel = __webpack_require__(31);
 const Emoji = __webpack_require__(12);
-const TextChannel = __webpack_require__(40);
-const VoiceChannel = __webpack_require__(41);
+const TextChannel = __webpack_require__(41);
+const VoiceChannel = __webpack_require__(42);
 const GuildChannel = __webpack_require__(17);
 const GroupDMChannel = __webpack_require__(19);
 
@@ -15657,7 +15738,7 @@ class GuildChannelsPositionUpdate extends Action {
     const guild = client.guilds.get(data.guild_id);
     if (guild) {
       for (const partialChannel of data.channels) {
-        const channel = guild.roles.get(partialChannel.id);
+        const channel = guild.channels.get(partialChannel.id);
         if (channel) channel.position = partialChannel.position;
       }
     }
@@ -16029,9 +16110,7 @@ class GuildRolesPositionUpdate extends Action {
     if (guild) {
       for (const partialRole of data.roles) {
         const role = guild.roles.get(partialRole.id);
-        if (role) {
-          role.position = partialRole.position;
-        }
+        if (role) role.position = partialRole.position;
       }
     }
 
@@ -16556,7 +16635,7 @@ module.exports = UserUpdateAction;
 /* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const request = __webpack_require__(25);
+const request = __webpack_require__(26);
 const Constants = __webpack_require__(0);
 
 class APIRequest {
@@ -16614,7 +16693,7 @@ module.exports = APIRequest;
 /***/ (function(module, exports, __webpack_require__) {
 
 const querystring = __webpack_require__(58);
-const long = __webpack_require__(42);
+const long = __webpack_require__(24);
 const Permissions = __webpack_require__(6);
 const Constants = __webpack_require__(0);
 const Endpoints = Constants.Endpoints;
@@ -16626,10 +16705,10 @@ const User = __webpack_require__(11);
 const GuildMember = __webpack_require__(13);
 const Message = __webpack_require__(9);
 const Role = __webpack_require__(10);
-const Invite = __webpack_require__(31);
+const Invite = __webpack_require__(32);
 const Webhook = __webpack_require__(21);
 const UserProfile = __webpack_require__(137);
-const OAuth2Application = __webpack_require__(36);
+const OAuth2Application = __webpack_require__(37);
 const Channel = __webpack_require__(8);
 const GroupDMChannel = __webpack_require__(19);
 const Guild = __webpack_require__(16);
@@ -17416,6 +17495,15 @@ class RESTMethods {
       this.client.actions.GuildRolesPositionUpdate.handle({
         guild_id: guildID,
         roles,
+      }).guild
+    );
+  }
+
+  setChannelPositions(guildID, channels) {
+    return this.rest.makeRequest('patch', Endpoints.Guild(guildID).channels, true, channels).then(() =>
+      this.client.actions.GuildChannelsPositionUpdate.handle({
+        guild_id: guildID,
+        channels,
       }).guild
     );
   }
@@ -18874,7 +18962,7 @@ module.exports = PresenceUpdateHandler;
 
 const AbstractHandler = __webpack_require__(1);
 
-const ClientUser = __webpack_require__(29);
+const ClientUser = __webpack_require__(30);
 
 class ReadyHandler extends AbstractHandler {
   handle(packet) {
@@ -19420,7 +19508,7 @@ module.exports = {
   SnowflakeUtil: __webpack_require__(5),
   Util: Util,
   util: Util,
-  version: __webpack_require__(28).version,
+  version: __webpack_require__(29).version,
 
   // Shortcuts to Util methods
   escapeMarkdown: Util.escapeMarkdown,
@@ -19429,31 +19517,31 @@ module.exports = {
 
   // Structures
   Channel: __webpack_require__(8),
-  ClientUser: __webpack_require__(29),
-  DMChannel: __webpack_require__(30),
+  ClientUser: __webpack_require__(30),
+  DMChannel: __webpack_require__(31),
   Emoji: __webpack_require__(12),
   Game: __webpack_require__(7).Game,
   GroupDMChannel: __webpack_require__(19),
   Guild: __webpack_require__(16),
   GuildChannel: __webpack_require__(17),
   GuildMember: __webpack_require__(13),
-  Invite: __webpack_require__(31),
+  Invite: __webpack_require__(32),
   Message: __webpack_require__(9),
-  MessageAttachment: __webpack_require__(32),
-  MessageCollector: __webpack_require__(33),
-  MessageEmbed: __webpack_require__(34),
-  MessageReaction: __webpack_require__(35),
-  OAuth2Application: __webpack_require__(36),
-  PartialGuild: __webpack_require__(37),
-  PartialGuildChannel: __webpack_require__(38),
-  PermissionOverwrites: __webpack_require__(39),
+  MessageAttachment: __webpack_require__(33),
+  MessageCollector: __webpack_require__(34),
+  MessageEmbed: __webpack_require__(35),
+  MessageReaction: __webpack_require__(36),
+  OAuth2Application: __webpack_require__(37),
+  PartialGuild: __webpack_require__(38),
+  PartialGuildChannel: __webpack_require__(39),
+  PermissionOverwrites: __webpack_require__(40),
   Presence: __webpack_require__(7).Presence,
   ReactionEmoji: __webpack_require__(20),
   RichEmbed: __webpack_require__(48),
   Role: __webpack_require__(10),
-  TextChannel: __webpack_require__(40),
+  TextChannel: __webpack_require__(41),
   User: __webpack_require__(11),
-  VoiceChannel: __webpack_require__(41),
+  VoiceChannel: __webpack_require__(42),
   Webhook: __webpack_require__(21),
 };
 
