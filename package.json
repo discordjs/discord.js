@@ -42,8 +42,8 @@
   "peerDependencies": {
     "bufferutil": "^2.0.0",
     "erlpack": "hammerandchisel/erlpack",
-    "node-opus": "^0.2.0",
-    "opusscript": "^0.0.2",
+    "node-opus": "^0.2.5",
+    "opusscript": "^0.0.3",
     "sodium": "^2.0.1",
     "uws": "^0.14.1"
   },
