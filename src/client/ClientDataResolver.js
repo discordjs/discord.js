@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const request = require('superagent');
+const snekfetch = require('snekfetch');
 
 const Constants = require('../util/Constants');
 const convertToBuffer = require('../util/Util').convertToBuffer;
@@ -149,7 +149,7 @@ class ClientDataResolver {
    * @returns {string}
    */
   resolveInviteCode(data) {
-    const inviteRegex = /discord(?:app)?\.(?:gg|com\/invite)\/([a-z0-9]{5})/i;
+    const inviteRegex = /discord(?:app\.com\/invite|\.gg)\/([\w-]{2,255})/i;
     const match = inviteRegex.exec(data);
     if (match && match[1]) return match[1];
     return data;
@@ -211,11 +211,9 @@ class ClientDataResolver {
     if (typeof resource === 'string') {
       return new Promise((resolve, reject) => {
         if (/^https?:\/\//.test(resource)) {
-          const req = request.get(resource).set('Content-Type', 'blob');
-          if (this.client.browser) req.responseType('arraybuffer');
-          req.end((err, res) => {
+          snekfetch.get(resource)
+          .end((err, res) => {
             if (err) return reject(err);
-            if (this.client.browser) return resolve(convertToBuffer(res.xhr.response));
             if (!(res.body instanceof Buffer)) return reject(new TypeError('The response body isn\'t a Buffer.'));
             return resolve(res.body);
           });

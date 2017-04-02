@@ -34,9 +34,8 @@
   "dependencies": {
     "@types/node": "^7.0.0",
     "long": "^3.2.0",
-    "pako": "^1.0.0",
     "prism-media": "hydrabolt/prism-media",
-    "superagent": "^3.4.0",
+    "snekfetch": "github:guscaplan/snekfetch",
     "tweetnacl": "^0.14.0",
     "ws": "^2.0.0"
   },
@@ -46,11 +45,11 @@
     "node-opus": "^0.2.0",
     "opusscript": "^0.0.2",
     "sodium": "^2.0.1",
-    "uws": "^0.12.0"
+    "uws": "^0.14.1"
   },
   "devDependencies": {
     "discord.js-docgen": "hydrabolt/discord.js-docgen",
-    "eslint": "^3.13.0",
+    "eslint": "^3.17.0",
     "parallel-webpack": "^1.6.0",
     "uglify-js": "mishoo/UglifyJS2#harmony",
     "webpack": "^2.2.0"
@@ -67,6 +66,7 @@
     "node-opus": false,
     "tweetnacl": false,
     "sodium": false,
+    "node-fetch": false,
     "src/sharding/Shard.js": false,
     "src/sharding/ShardClientUtil.js": false,
     "src/sharding/ShardingManager.js": false,

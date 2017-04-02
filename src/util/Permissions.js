@@ -8,9 +8,11 @@ const Constants = require('../util/Constants');
 class Permissions {
   /**
    * @param {GuildMember} [member] Member the permissions are for **(deprecated)**
-   * @param {number} bitfield Permissions bitfield to read from
+   * @param {number|PermissionResolvable[]} permissions Permissions or bitfield to read from
    */
-  constructor(member, bitfield) {
+  constructor(member, permissions) {
+    permissions = typeof member === 'object' && !(member instanceof Array) ? permissions : member;
+
     /**
      * Member the permissions are for
      * @type {GuildMember}
@@ -22,7 +24,7 @@ class Permissions {
      * Bitfield of the packed permissions
      * @type {number}
      */
-    this.bitfield = typeof member === 'object' ? bitfield : member;
+    this.bitfield = typeof permissions === 'number' ? permissions : this.constructor.resolve(permissions);
   }
 
   /**
@@ -147,11 +149,11 @@ class Permissions {
 
   /**
    * Resolves permissions to their numeric form.
-   * @param {PermissionResolvable|Permissions[]} permission - Permission(s) to resolve
-   * @returns {number|number[]}
+   * @param {PermissionResolvable|PermissionResolvable[]} permission - Permission(s) to resolve
+   * @returns {number}
    */
   static resolve(permission) {
-    if (permission instanceof Array) return permission.map(p => this.resolve(p));
+    if (permission instanceof Array) return permission.map(p => this.resolve(p)).reduce((prev, p) => prev | p, 0);
     if (typeof permission === 'string') permission = this.FLAGS[permission];
     if (typeof permission !== 'number' || permission < 1) throw new RangeError(Constants.Errors.NOT_A_PERMISSION);
     return permission;

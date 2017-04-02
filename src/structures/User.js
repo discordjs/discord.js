@@ -115,7 +115,7 @@ class User {
       size = format;
       format = 'default';
     }
-    return Constants.Endpoints.avatar(this.id, this.avatar, format, size);
+    return Constants.Endpoints.User(this).Avatar(this.client.options.http.cdn, this.avatar, format, size);
   }
 
   /**
@@ -126,7 +126,7 @@ class User {
   get defaultAvatarURL() {
     const avatars = Object.keys(Constants.DefaultAvatars);
     const avatar = avatars[this.discriminator % avatars.length];
-    return Constants.Endpoints.assets(`${Constants.DefaultAvatars[avatar]}.png`);
+    return Constants.Endpoints.CDN(this.client.options.http.host).Asset(`${Constants.DefaultAvatars[avatar]}.png`);
   }
 
   /**
@@ -286,11 +286,12 @@ class User {
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  send() { return; }
-  sendMessage() { return; }
-  sendEmbed() { return; }
-  sendFile() { return; }
-  sendCode() { return; }
+  /* eslint-disable no-empty-function */
+  send() {}
+  sendMessage() {}
+  sendEmbed() {}
+  sendFile() {}
+  sendCode() {}
 }
 
 TextBasedChannel.applyToClass(User);

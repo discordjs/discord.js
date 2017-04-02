@@ -114,6 +114,8 @@ class Message {
      * An object containing a further users, roles or channels collections
      * @type {Object}
      * @property {Collection<Snowflake, User>} mentions.users Mentioned users, maps their ID to the user object.
+     * @property {Collection<Snowflake, GuildMember>} mentions.members Mentioned members, maps their ID
+     * to the member object.
      * @property {Collection<Snowflake, Role>} mentions.roles Mentioned roles, maps their ID to the role object.
      * @property {Collection<Snowflake, GuildChannel>} mentions.channels Mentioned channels,
      * maps their ID to the channel object.
@@ -126,16 +128,27 @@ class Message {
       everyone: data.mention_everyone,
     };
 
+    // Add user mentions
     for (const mention of data.mentions) {
       let user = this.client.users.get(mention.id);
-      if (user) {
-        this.mentions.users.set(user.id, user);
-      } else {
-        user = this.client.dataManager.newUser(mention);
-        this.mentions.users.set(user.id, user);
-      }
+      if (!user) user = this.client.dataManager.newUser(mention);
+      this.mentions.users.set(user.id, user);
     }
 
+    // Add getter for member mentions
+    Object.defineProperty(this.mentions, 'members', {
+      get: () => {
+        if (this.channel.type !== 'text') return null;
+        const members = new Collection();
+        this.mentions.users.forEach(user => {
+          const member = this.client.resolver.resolveGuildMember(this.channel.guild, user);
+          if (member) members.set(member.id, member);
+        });
+        return members;
+      },
+    });
+
+    // Add role mentions
     if (data.mention_roles) {
       for (const mention of data.mention_roles) {
         const role = this.channel.guild.roles.get(mention);
@@ -143,7 +156,8 @@ class Message {
       }
     }
 
-    if (this.channel.guild) {
+    // Add channel mentions
+    if (this.channel.type === 'text') {
       const channMentionsRaw = data.content.match(/<#([0-9]{14,20})>/g) || [];
       for (const raw of channMentionsRaw) {
         const chan = this.channel.guild.channels.get(raw.match(/([0-9]{14,20})/g)[0]);
@@ -177,69 +191,6 @@ class Message {
      * @type {?boolean}
      */
     this.hit = typeof data.hit === 'boolean' ? data.hit : null;
-  }
-
-  patch(data) { // eslint-disable-line complexity
-    if (data.author) {
-      this.author = this.client.users.get(data.author.id);
-      if (this.guild) this.member = this.guild.member(this.author);
-    }
-    if (data.content) this.content = data.content;
-    if (data.timestamp) this.createdTimestamp = new Date(data.timestamp).getTime();
-    if (data.edited_timestamp) {
-      this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
-    }
-    if ('tts' in data) this.tts = data.tts;
-    if ('mention_everyone' in data) this.mentions.everyone = data.mention_everyone;
-    if (data.nonce) this.nonce = data.nonce;
-    if (data.embeds) this.embeds = data.embeds.map(e => new Embed(this, e));
-    if (data.type > -1) {
-      this.system = false;
-      if (data.type === 6) this.system = true;
-    }
-    if (data.attachments) {
-      this.attachments.clear();
-      for (const attachment of data.attachments) {
-        this.attachments.set(attachment.id, new Attachment(this, attachment));
-      }
-    }
-    if (data.mentions) {
-      this.mentions.users.clear();
-      for (const mention of data.mentions) {
-        let user = this.client.users.get(mention.id);
-        if (user) {
-          this.mentions.users.set(user.id, user);
-        } else {
-          user = this.client.dataManager.newUser(mention);
-          this.mentions.users.set(user.id, user);
-        }
-      }
-    }
-    if (data.mention_roles) {
-      this.mentions.roles.clear();
-      for (const mention of data.mention_roles) {
-        const role = this.channel.guild.roles.get(mention);
-        if (role) this.mentions.roles.set(role.id, role);
-      }
-    }
-    if (data.id) this.id = data.id;
-    if (this.channel.guild && data.content) {
-      this.mentions.channels.clear();
-      const channMentionsRaw = data.content.match(/<#([0-9]{14,20})>/g) || [];
-      for (const raw of channMentionsRaw) {
-        const chan = this.channel.guild.channels.get(raw.match(/([0-9]{14,20})/g)[0]);
-        if (chan) this.mentions.channels.set(chan.id, chan);
-      }
-    }
-    if (data.reactions) {
-      this.reactions.clear();
-      if (data.reactions.length > 0) {
-        for (const reaction of data.reactions) {
-          const id = reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` : reaction.emoji.name;
-          this.reactions.set(id, new MessageReaction(this, reaction.emoji, reaction.count, reaction.me));
-        }
-      }
-    }
   }
 
   /**
@@ -491,6 +442,15 @@ class Message {
       options = {};
     }
     return this.channel.send(content, Object.assign(options, { reply: this.member || this.author }));
+  }
+
+  /**
+   * Marks the message as read
+   * <warn>This is only available when using a user account.</warn>
+   * @returns {Promise<Message>}
+   */
+  acknowledge() {
+    return this.client.rest.methods.ackMessage(this);
   }
 
   /**

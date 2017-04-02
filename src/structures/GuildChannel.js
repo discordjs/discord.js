@@ -47,6 +47,15 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * The position of the channel
+   * @type {number}
+   */
+  get calculatedPosition() {
+    const sorted = this.guild._sortedChannels(this.type);
+    return sorted.array().indexOf(sorted.get(this.id));
+  }
+
+  /**
    * Gets the overall set of permissions for a user in this channel, taking into account roles and permission
    * overwrites.
    * @param {GuildMemberResolvable} member The user that you want to obtain the overall permissions for
@@ -63,12 +72,23 @@ class GuildChannel extends Channel {
     for (const role of roles.values()) permissions |= role.permissions;
 
     const overwrites = this.overwritesFor(member, true, roles);
+
+    if (overwrites.everyone) {
+      permissions &= ~overwrites.everyone.deny;
+      permissions |= overwrites.everyone.allow;
+    }
+
     let allow = 0;
-    for (const overwrite of overwrites.role.concat(overwrites.member)) {
+    for (const overwrite of overwrites.roles) {
       permissions &= ~overwrite.deny;
       allow |= overwrite.allow;
     }
     permissions |= allow;
+
+    if (overwrites.member) {
+      permissions &= ~overwrites.member.deny;
+      permissions |= overwrites.member.allow;
+    }
 
     const admin = Boolean(permissions & Permissions.FLAGS.ADMINISTRATOR);
     if (admin) permissions = Permissions.ALL;
@@ -82,18 +102,22 @@ class GuildChannel extends Channel {
 
     roles = roles || member.roles;
     const roleOverwrites = [];
-    const memberOverwrites = [];
+    let memberOverwrites;
+    let everyoneOverwrites;
 
     for (const overwrite of this.permissionOverwrites.values()) {
-      if (overwrite.id === member.id) {
-        memberOverwrites.push(overwrite);
+      if (overwrite.id === this.guild.id) {
+        everyoneOverwrites = overwrite;
       } else if (roles.has(overwrite.id)) {
         roleOverwrites.push(overwrite);
+      } else if (overwrite.id === member.id) {
+        memberOverwrites = overwrite;
       }
     }
 
     return {
-      role: roleOverwrites,
+      everyone: everyoneOverwrites,
+      roles: roleOverwrites,
       member: memberOverwrites,
     };
   }
@@ -205,6 +229,7 @@ class GuildChannel extends Channel {
   /**
    * Set a new position for the guild channel
    * @param {number} position The new position for the guild channel
+   * @param {boolean} [relative=false] Move the position relative to its current value
    * @returns {Promise<GuildChannel>}
    * @example
    * // set a new channel position
@@ -212,8 +237,8 @@ class GuildChannel extends Channel {
    *  .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
    *  .catch(console.error);
    */
-  setPosition(position) {
-    return this.client.rest.methods.updateChannel(this, { position });
+  setPosition(position, relative) {
+    return this.guild.setChannelPosition(this, position, relative).then(() => this);
   }
 
   /**

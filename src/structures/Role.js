@@ -128,20 +128,19 @@ class Role {
    * @type {number}
    */
   get calculatedPosition() {
-    const sorted = this.guild.roles.array()
-      .sort((r1, r2) => r1.position !== r2.position ? r1.position - r2.position : r1.id - r2.id);
-    return sorted.indexOf(sorted.find(r => r.id === this.id));
+    const sorted = this.guild._sortedRoles;
+    return sorted.array().indexOf(sorted.get(this.id));
   }
 
   /**
    * Get an object mapping permission names to whether or not the role enables that permission
    * @returns {Object<string, boolean>}
    * @example
-   * // print the serialized role
+   * // print the serialized role permissions
    * console.log(role.serialize());
    */
   serialize() {
-    return this.client.resolver.serializePermissions(this.permissions);
+    return new Permissions(this.permissions).serialize();
   }
 
   /**

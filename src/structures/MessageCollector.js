@@ -119,7 +119,7 @@ class MessageCollector extends EventEmitter {
 
       const onEnd = (...args) => {
         cleanup();
-        reject(...args);
+        reject(...args); // eslint-disable-line prefer-promise-reject-errors
       };
 
       this.once('message', onMessage);

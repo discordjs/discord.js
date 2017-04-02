@@ -17,7 +17,7 @@ class VoiceStateUpdateHandler extends AbstractHandler {
           member.voiceChannel.members.delete(oldVoiceChannelMember.id);
         }
 
-        // if the member left the voice channel, unset their speaking property
+        // If the member left the voice channel, unset their speaking property
         if (!data.channel_id) member.speaking = null;
 
         if (member.user.id === client.user.id && data.channel_id) {
