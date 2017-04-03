@@ -1,5 +1,6 @@
 const snekfetch = require('snekfetch');
 const Constants = require('./Constants');
+const ConstantsHttp = Constants.DefaultOptions.http;
 
 /**
  * Contains various general-purpose utility methods. These functions are also available on the base `Discord` object.
@@ -54,7 +55,7 @@ class Util {
   static fetchRecommendedShards(token, guildsPerShard = 1000) {
     return new Promise((resolve, reject) => {
       if (!token) throw new Error('A token must be provided.');
-      snekfetch.get(`${Constants.DefaultOptions.http.host}/api/v${Constants.DefaultOptions.http.version}${Constants.Endpoints.gateway.bot}`)
+      snekfetch.get(`${ConstantsHttp.host}/api/v${ConstantsHttp.version}${Constants.Endpoints.gateway.bot}`)
         .set('Authorization', `Bot ${token.replace(/^Bot\s*/i, '')}`)
         .end((err, res) => {
           if (err) reject(err);
