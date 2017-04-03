@@ -175,6 +175,7 @@ class User {
   /**
    * The DM between the client's user and this user
    * @type {?DMChannel}
+   * @readonly
    */
   get dmChannel() {
     return this.client.channels.filter(c => c.type === 'dm').find(c => c.recipient.id === this.id);

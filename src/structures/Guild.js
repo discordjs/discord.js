@@ -306,6 +306,7 @@ class Guild {
    * Fetches a collection of roles in the current guild sorted by position.
    * @type {Collection<Snowflake, Role>}
    * @readonly
+   * @private
    */
   get _sortedRoles() {
     return this._sortPositionWithID(this.roles);
@@ -963,6 +964,7 @@ class Guild {
    * Fetches a collection of channels in the current guild sorted by position.
    * @param {string} type Channel type
    * @returns {Collection<Snowflake, GuildChannel>}
+   * @private
    */
   _sortedChannels(type) {
     return this._sortPositionWithID(this.channels.filter(c => {
@@ -977,6 +979,7 @@ class Guild {
    * Intended to be identical to Discord's sorting method.
    * @param {Collection} collection The collection to sort
    * @returns {Collection}
+   * @private
    */
   _sortPositionWithID(collection) {
     return collection.sort((a, b) =>

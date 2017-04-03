@@ -55,6 +55,7 @@ class StreamDispatcher extends VolumeInterface {
    * How many passes the dispatcher should take when sending packets to reduce packet loss. Values over 5
    * aren't recommended, as it means you are using 5x more bandwidth. You _can_ edit this at runtime.
    * @type {number}
+   * @readonly
    */
   get passes() {
     return this.streamOptions.passes || 1;
