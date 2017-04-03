@@ -126,6 +126,7 @@ class Role {
   /**
    * The position of the role in the role manager
    * @type {number}
+   * @readonly
    */
   get calculatedPosition() {
     const sorted = this.guild._sortedRoles;

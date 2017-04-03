@@ -23,6 +23,7 @@ class RequestHandler {
   /**
    * Whether or not the client is being rate limited on every endpoint.
    * @type {boolean}
+   * @readonly
    */
   get globalLimit() {
     return this.restManager.globallyRateLimited;

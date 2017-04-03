@@ -49,6 +49,7 @@ class GuildChannel extends Channel {
   /**
    * The position of the channel
    * @type {number}
+   * @readonly
    */
   get calculatedPosition() {
     const sorted = this.guild._sortedChannels(this.type);
