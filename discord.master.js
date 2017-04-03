@@ -1290,6 +1290,7 @@ class Permissions {
    * @type {number}
    * @see {@link Permissions#bitfield}
    * @deprecated
+   * @readonly
    */
   get raw() {
     return this.bitfield;
@@ -2360,6 +2361,7 @@ class Role {
   /**
    * The position of the role in the role manager
    * @type {number}
+   * @readonly
    */
   get calculatedPosition() {
     const sorted = this.guild._sortedRoles;
@@ -2767,6 +2769,7 @@ class User {
   /**
    * The DM between the client's user and this user
    * @type {?DMChannel}
+   * @readonly
    */
   get dmChannel() {
     return this.client.channels.filter(c => c.type === 'dm').find(c => c.recipient.id === this.id);
@@ -6212,6 +6215,7 @@ class Guild {
    * Fetches a collection of roles in the current guild sorted by position.
    * @type {Collection<Snowflake, Role>}
    * @readonly
+   * @private
    */
   get _sortedRoles() {
     return this._sortPositionWithID(this.roles);
@@ -6869,6 +6873,7 @@ class Guild {
    * Fetches a collection of channels in the current guild sorted by position.
    * @param {string} type Channel type
    * @returns {Collection<Snowflake, GuildChannel>}
+   * @private
    */
   _sortedChannels(type) {
     return this._sortPositionWithID(this.channels.filter(c => {
@@ -6883,6 +6888,7 @@ class Guild {
    * Intended to be identical to Discord's sorting method.
    * @param {Collection} collection The collection to sort
    * @returns {Collection}
+   * @private
    */
   _sortPositionWithID(collection) {
     return collection.sort((a, b) =>
@@ -6951,6 +6957,7 @@ class GuildChannel extends Channel {
   /**
    * The position of the channel
    * @type {number}
+   * @readonly
    */
   get calculatedPosition() {
     const sorted = this.guild._sortedChannels(this.type);
@@ -11145,6 +11152,7 @@ class MessageEmbed {
   /**
    * The date this embed was created
    * @type {Date}
+   * @readonly
    */
   get createdAt() {
     return new Date(this.createdTimestamp);
@@ -11469,6 +11477,7 @@ class MessageReaction {
    * object which has fewer properties. Whatever the prototype of the emoji, it will still have
    * `name`, `id`, `identifier` and `toString()`
    * @type {Emoji|ReactionEmoji}
+   * @readonly
    */
   get emoji() {
     if (this._emoji instanceof Emoji) return this._emoji;
@@ -11978,6 +11987,7 @@ class VoiceChannel extends GuildChannel {
   /**
    * Checks if the voice channel is full
    * @type {boolean}
+   * @readonly
    */
   get full() {
     return this.userLimit > 0 && this.members.size >= this.userLimit;
@@ -11986,6 +11996,7 @@ class VoiceChannel extends GuildChannel {
   /**
    * Checks if the client has permission join the voice channel
    * @type {boolean}
+   * @readonly
    */
   get joinable() {
     if (this.client.browser) return false;
@@ -11997,6 +12008,7 @@ class VoiceChannel extends GuildChannel {
   /**
    * Checks if the client has permission to send audio to the voice channel
    * @type {boolean}
+   * @readonly
    */
   get speakable() {
     return this.permissionsFor(this.client.user).hasPermission('SPEAK');
@@ -12152,6 +12164,7 @@ class RequestHandler {
   /**
    * Whether or not the client is being rate limited on every endpoint.
    * @type {boolean}
+   * @readonly
    */
   get globalLimit() {
     return this.restManager.globallyRateLimited;
