@@ -226,6 +226,7 @@ class RichEmbed {
         Object.entries(value).map(([key2, value2]) => {
           if (key2 === 'icon_url') key2 = 'iconURL';
           resultObj[key2] = value2;
+          return true;
         });
         result[key] = resultObj;
       } else {
