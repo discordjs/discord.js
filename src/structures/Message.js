@@ -266,7 +266,7 @@ class Message {
    * @returns {ReactionCollector}
    * @example
    * // create a reaction collector
-   * const collector = message.createCollector(
+   * const collector = message.createReactionCollector(
    *  (reaction, user) => reaction.emoji.id === '👌' && user.id === 'someID',
    *  { time: 15000 }
    * );
@@ -292,7 +292,7 @@ class Message {
    */
   awaitReactions(filter, options = {}) {
     return new Promise((resolve, reject) => {
-      const collector = this.createCollector(filter, options);
+      const collector = this.createReactionCollector(filter, options);
       collector.once('end', (reactions, reason) => {
         if (options.errors && options.errors.includes(reason)) reject(reactions);
         else resolve(reactions);

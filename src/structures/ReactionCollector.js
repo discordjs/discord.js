@@ -1,18 +1,44 @@
 const Collector = require('./interfaces/Collector');
 const Collection = require('../util/Collection');
 
+/**
+ * Collects reactions on messages.
+ * @implements {Collector}
+ */
 class ReactionCollector extends Collector {
+
+  /**
+   * @param {Message} message The message upon which to collect reactions.
+   * @param {CollectorFilter} filter The filter to apply to this collector.
+   * @param {CollectorOptions} [options={}] The options to apply to this collector.
+   */
   constructor(message, filter, options = {}) {
     super(message.client, filter, options);
+
+    /**
+     * @type {Message} message The message.
+     */
     this.message = message;
+
+    /**
+     * @type {Collection} users Users which have reacted.
+     */
     this.users = new Collection();
+
+    /**
+     * @type {number} total Total number of reactions collected.
+     */
     this.total = 0;
+
     this.client.on('messageReactionAdd', this.listener);
   }
 
   handle(reaction) {
     if (reaction.message.id !== this.message.id) return null;
-    return [reaction.emoji.id || reaction.emoji.name, reaction];
+    return {
+      key: reaction.emoji.id || reaction.emoji.name,
+      value: reaction,
+    };
   }
 
   postCheck(reaction, user) {
