@@ -221,10 +221,10 @@ class RichEmbed {
   get messageEmbed() {
     const result = {};
     const entries = object => Object.keys(object).map(key => [key, object[key]]);
-    entries(this).map(([key, value]) => {
+    entries(this).forEach(([key, value]) => {
       if (value && typeof value === 'object') {
         const resultObj = Object.create(value);
-        entries(value).map(([key2, value2]) => {
+        entries(value).forEach(([key2, value2]) => {
           if (key2 === 'icon_url') key2 = 'iconURL';
           resultObj[key2] = value2;
           return true;
