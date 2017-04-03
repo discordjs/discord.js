@@ -78,7 +78,7 @@ class Collector extends EventEmitter {
      * Emitted whenever an element is collected.
      * @event Collector#collect
      * @param {*} element The element that got collected.
-     * @param {Collector} this The message collector.
+     * @param {Collector} collector The message collector.
      */
     this.emit('collect', collect.value, this);
 
@@ -89,7 +89,8 @@ class Collector extends EventEmitter {
   /**
    * Return a promise that resolves with the next collected element;
    * rejects with collected elements if the collector finishes without receving a next element.
-   * @returns {Promise}
+   * @type {Promise}
+   * @readonly
    */
   get next() {
     return new Promise((resolve, reject) => {
