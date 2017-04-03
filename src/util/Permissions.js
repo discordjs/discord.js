@@ -32,6 +32,7 @@ class Permissions {
    * @type {number}
    * @see {@link Permissions#bitfield}
    * @deprecated
+   * @readonly
    */
   get raw() {
     return this.bitfield;

@@ -105,6 +105,7 @@ class MessageEmbed {
   /**
    * The date this embed was created
    * @type {Date}
+   * @readonly
    */
   get createdAt() {
     return new Date(this.createdTimestamp);
