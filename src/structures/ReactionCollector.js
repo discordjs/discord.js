@@ -2,6 +2,13 @@ const Collector = require('./interfaces/Collector');
 const Collection = require('../util/Collection');
 
 /**
+ * @typedef {CollectorOptions} ReactionCollectorOptions
+ * @property {number} max The maximum total amount of reactions to collect.
+ * @property {number} maxEmojis The maximum number of emojis to collect.
+ * @property {number} maxUsers The maximum number of users to react.
+ */
+
+/**
  * Collects reactions on messages.
  * @implements {Collector}
  */
@@ -10,7 +17,7 @@ class ReactionCollector extends Collector {
   /**
    * @param {Message} message The message upon which to collect reactions.
    * @param {CollectorFilter} filter The filter to apply to this collector.
-   * @param {CollectorOptions} [options={}] The options to apply to this collector.
+   * @param {ReactionCollectorOptions} [options={}] The options to apply to this collector.
    */
   constructor(message, filter, options = {}) {
     super(message.client, filter, options);

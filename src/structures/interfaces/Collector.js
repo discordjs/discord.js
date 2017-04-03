@@ -125,8 +125,8 @@ class Collector extends EventEmitter {
    */
   stop(reason = 'user') {
     if (this.ended) return;
-    if (this._timeout) this.client.clearTimeout(this._timeout);
 
+    if (this._timeout) this.client.clearTimeout(this._timeout);
     this.ended = true;
     this.cleanup();
 
@@ -142,7 +142,7 @@ class Collector extends EventEmitter {
   /* eslint-disable no-empty-function, valid-jsdoc */
   /**
    * @param {...*} args Any args the event listener emits.
-   * @returns {Array} First element will be inserted as key, second as value.
+   * @returns {?{key: string, value}} Data to insert into collection, if any.
    * @abstract
    * @private
    */

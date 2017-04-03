@@ -261,7 +261,7 @@ class Message {
 
   /**
    * Creates a reaction collector.
-   * @param {ReactionCollectorFilter} filter The filter to apply.
+   * @param {CollectorFilter} filter The filter to apply.
    * @param {ReactionCollectorOptions} [options={}] Options to send to the collector.
    * @returns {ReactionCollector}
    * @example
@@ -286,7 +286,7 @@ class Message {
   /**
    * Similar to createCollector but in promise form. Resolves with a collection of reactions that pass the specified
    * filter.
-   * @param {ReactionCollectorFilter} filter The filter function to use
+   * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
    * @returns {Promise<Collection<string, MessageReaction>>}
    */

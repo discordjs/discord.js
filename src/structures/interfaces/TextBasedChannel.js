@@ -367,7 +367,7 @@ class TextBasedChannel {
 
   /**
    * Creates a Message Collector
-   * @param {MessageCollectorFilter} filter The filter to create the collector with
+   * @param {CollectorFilter} filter The filter to create the collector with
    * @param {MessageCollectorOptions} [options={}] The options to pass to the collector
    * @returns {MessageCollector}
    * @example
@@ -392,7 +392,7 @@ class TextBasedChannel {
   /**
    * Similar to createCollector but in promise form. Resolves with a collection of messages that pass the specified
    * filter.
-   * @param {MessageCollectorFilter} filter The filter function to use
+   * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector
    * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
