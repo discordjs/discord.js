@@ -78,10 +78,10 @@ class ReactionCollector extends EventEmitter {
    * Filters and collects emojis.
    * @param {MessageReaction} reaction The reaction.
    * @param {User} user The user that reacted.
+   * @private
    */
   _verify(reaction, user) {
     if (this.message.id !== reaction.message.id || !this.filter(reaction, user, this)) return;
-
 
     this.collected.set(reaction.emoji.id || reaction.emoji.name, reaction);
     this.users.set(user.id, user);
@@ -131,6 +131,10 @@ class ReactionCollector extends EventEmitter {
     });
   }
 
+  /**
+   * Stop the reaction collector and emits `end`.
+   * @param {string} [reason='user'] Reason for ending the collector.  Passed to the `end` event.
+   */
   stop(reason = 'user') {
     if (this.ended) return;
     this.ended = true;
