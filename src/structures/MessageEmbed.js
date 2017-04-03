@@ -118,30 +118,29 @@ class MessageEmbed {
    */
   get richEmbed() {
     const result = {};
-    const entries = object => Object.keys(object).map(key => [key, object[key]]);
-    entries(this).forEach(([key, value]) => {
+    for (const key of Object.keys(this)) {
+      const value = this[key];
       if (value && typeof value === 'object') {
         const resultObj = value instanceof Array ? [] : {};
-        entries(value).forEach(([key2, value2]) => {
-          if (/^(?:embed|height|width|proxyURL|proxyIconUrl)$/i.test(key2)) return true;
+        for (const key2 of Object.keys(value)) {
+          const value2 = value[key2];
+          if (/^(?:embed|height|width|proxyURL|proxyIconUrl)$/i.test(key2)) continue;
           if (typeof value2 === 'object') {
             const resultObj2 = value2 instanceof Array ? [] : {};
-            entries(value2).forEach(([key3, value3]) => {
-              if (key3 !== 'embed') resultObj2[key3] = value3;
-              return true;
-            });
+            for (const key3 of Object.keys(value2)) { // eslint-disable-line max-depth
+              const value3 = value2[key3];
+              if (key3 !== 'embed') resultObj2[key3] = value3; // eslint-disable-line max-depth
+            }
             resultObj[key2] = resultObj2;
           } else {
             resultObj[key2] = value2;
           }
-          return true;
-        });
+        }
         result[key] = resultObj;
       } else {
         result[key] = value;
       }
-      return result;
-    });
+    }
     return new RichEmbed(result);
   }
 }
