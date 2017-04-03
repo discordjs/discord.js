@@ -219,23 +219,20 @@ class RichEmbed {
    * @readonly
    */
   get messageEmbed() {
-    const handler = {
-      set: (target, name, value) => {
-        if (typeof value === 'object') {
-          target[name] = new Proxy(value, {
-            set: (target2, name2, value2) => {
-              if (name2 === 'icon_url') name2 = 'iconURL';
-              target2[name2] = value2;
-              return true;
-            },
-          });
-        } else {
-          target[name] = value;
-        }
-        return true;
-      },
-    };
-    const result = new Proxy(this, handler);
+    const result = {};
+    Object.entries(this).map(([key, value]) => {
+      if (value && typeof value === 'object') {
+        const resultObj = Object.create(value);
+        Object.entries(value).map(([key2, value2]) => {
+          if (key2 === 'icon_url') key2 = 'iconURL';
+          resultObj[key2] = value2;
+        });
+        result[key] = resultObj;
+      } else {
+        result[key] = value;
+      }
+      return result;
+    });
     return new MessageEmbed({}, result);
   }
 }

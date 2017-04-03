@@ -117,33 +117,30 @@ class MessageEmbed {
    * @readonly
    */
   get richEmbed() {
-    const handler = {
-      set: (target, name, value) => {
-        if (typeof value === 'object') {
-          target[name] = new Proxy(value, {
-            set: (target2, name2, value2) => {
-              if (/^(?:embed|height|width|proxyURL|proxyIconUrl)$/i.test(name2)) return true;
-              if (typeof value2 === 'object') {
-                target2[name2] = new Proxy(value2, {
-                  set: (target3, name3, value3) => {
-                    if (name3 === 'embed') return true;
-                    target3[name3] = value3;
-                    return true;
-                  },
-                });
-              } else {
-                target2[name2] = value2;
-              }
+    const result = {};
+    Object.entries(this).map(([key, value]) => {
+      if (value && typeof value === 'object') {
+        const resultObj = value instanceof Array ? [] : {};
+        Object.entries(value).map(([key2, value2]) => {
+          if (/^(?:embed|height|width|proxyURL|proxyIconUrl)$/i.test(key2)) return true;
+          if (typeof value2 === 'object') {
+            const resultObj2 = value2 instanceof Array ? [] : {};
+            Object.entries(value2).map(([key3, value3]) => {
+              if (key3 !== 'embed') resultObj2[key3] = value3;
               return true;
-            },
-          });
-        } else {
-          target[name] = value;
-        }
-        return true;
-      },
-    };
-    const result = new Proxy(this, handler);
+            });
+            resultObj[key2] = resultObj2;
+          } else {
+            resultObj[key2] = value2;
+          }
+          return true;
+        });
+        result[key] = resultObj;
+      } else {
+        result[key] = value;
+      }
+      return result;
+    });
     return new RichEmbed(result);
   }
 }
