@@ -273,7 +273,7 @@ class Message {
    * collector.on('reaction', r => console.log(`Collected ${r.emoji.name}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
-  createCollector(filter, options = {}) {
+  createReactionCollector(filter, options = {}) {
     return new ReactionCollector(this, filter, options);
   }
 
