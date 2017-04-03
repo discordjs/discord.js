@@ -16,12 +16,12 @@ class MessageCollector extends EventEmitter {
    *  return false; // failed the filter test
    * }
    * ```
-   * @typedef {Function} CollectorFilterFunction
+   * @typedef {Function} MessageCollectorFilter
    */
 
   /**
    * An object containing options used to configure a MessageCollector. All properties are optional.
-   * @typedef {Object} CollectorOptions
+   * @typedef {Object} MessageCollectorOptions
    * @property {number} [time] Duration for the collector in milliseconds
    * @property {number} [max] Maximum number of messages to handle
    * @property {number} [maxMatches] Maximum number of successfully filtered messages to obtain
@@ -29,8 +29,8 @@ class MessageCollector extends EventEmitter {
 
   /**
    * @param {Channel} channel The channel to collect messages in
-   * @param {CollectorFilterFunction} filter The filter function
-   * @param {CollectorOptions} [options] Options for the collector
+   * @param {MessageCollectorFilter} filter The filter function
+   * @param {MessageCollectorOptions} [options] Options for the collector
    */
   constructor(channel, filter, options = {}) {
     super();
@@ -43,13 +43,13 @@ class MessageCollector extends EventEmitter {
 
     /**
      * A function used to filter messages that the collector collects.
-     * @type {CollectorFilterFunction}
+     * @type {MessageCollectorFilter}
      */
     this.filter = filter;
 
     /**
      * Options for the collecor.
-     * @type {CollectorOptions}
+     * @type {MessageCollectorOptions}
      */
     this.options = options;
 
