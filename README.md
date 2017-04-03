@@ -17,6 +17,8 @@
 </div>
 
 ## About
+[![API Testing](https://img.shields.io/badge/API%20Test-RapidAPI-blue.svg)](https://rapidapi.com/package/DiscordBot/functions?utm_source=DiscordBotGithub&utm_medium=button&utm_content=Vender_Github)
+
 discord.js is a powerful [node.js](https://nodejs.org) module that allows you to interact with the
 [Discord API](https://discordapp.com/developers/docs/intro) very easily.
 
