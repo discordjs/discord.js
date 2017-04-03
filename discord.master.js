@@ -960,6 +960,7 @@ module.exports = Collection;
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {const snekfetch = __webpack_require__(26);
 const Constants = __webpack_require__(0);
+const ConstantsHttp = Constants.DefaultOptions.http;
 
 /**
  * Contains various general-purpose utility methods. These functions are also available on the base `Discord` object.
@@ -1014,7 +1015,7 @@ class Util {
   static fetchRecommendedShards(token, guildsPerShard = 1000) {
     return new Promise((resolve, reject) => {
       if (!token) throw new Error('A token must be provided.');
-      snekfetch.get(Constants.Endpoints.gateway.bot)
+      snekfetch.get(`${ConstantsHttp.host}/api/v${ConstantsHttp.version}${Constants.Endpoints.gateway.bot}`)
         .set('Authorization', `Bot ${token.replace(/^Bot\s*/i, '')}`)
         .end((err, res) => {
           if (err) reject(err);
