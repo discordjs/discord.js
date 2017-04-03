@@ -13,8 +13,6 @@ class Collector extends EventEmitter {
 
     this.listener = this._handle.bind(this);
     if (options.time) this.timeout = this.client.setTimeout(() => this.stop('time'), options.time);
-
-    this.initialize();
   }
 
   _handle(...args) {
@@ -67,7 +65,6 @@ class Collector extends EventEmitter {
   /* eslint-disable no-empty-function */
   handle() {}
   postCheck() {}
-  initialize() {}
   cleanup() {}
   /* eslint-enable no-empty-function */
 }

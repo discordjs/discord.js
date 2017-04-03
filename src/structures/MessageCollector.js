@@ -4,13 +4,11 @@ class MessageCollector extends Collector {
   constructor(channel, filter, options = {}) {
     super(channel.client, filter, options);
     this.channel = channel;
-  }
 
-  initialize() {
     // For backwards compatibility
     this._reEmitter = message => this.emit('message', message);
-
     this.on('collect', this._reEmitter);
+
     this.client.on('message', this.listener);
   }
 

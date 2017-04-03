@@ -7,9 +7,6 @@ class ReactionCollector extends Collector {
     this.message = message;
     this.users = new Collection();
     this.total = 0;
-  }
-
-  initialize() {
     this.client.on('messageReactionAdd', this.listener);
   }
 
