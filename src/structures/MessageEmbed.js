@@ -118,14 +118,15 @@ class MessageEmbed {
    */
   get richEmbed() {
     const result = {};
-    Object.entries(this).map(([key, value]) => {
+    const entries = object => Object.keys(object).map(key => [key, object[key]]);
+    entries(this).map(([key, value]) => {
       if (value && typeof value === 'object') {
         const resultObj = value instanceof Array ? [] : {};
-        Object.entries(value).map(([key2, value2]) => {
+        entries(value).map(([key2, value2]) => {
           if (/^(?:embed|height|width|proxyURL|proxyIconUrl)$/i.test(key2)) return true;
           if (typeof value2 === 'object') {
             const resultObj2 = value2 instanceof Array ? [] : {};
-            Object.entries(value2).map(([key3, value3]) => {
+            entries(value2).map(([key3, value3]) => {
               if (key3 !== 'embed') resultObj2[key3] = value3;
               return true;
             });
