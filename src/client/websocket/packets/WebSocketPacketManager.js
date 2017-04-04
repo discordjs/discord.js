@@ -71,6 +71,16 @@ class WebSocketPacketManager {
   }
 
   handle(packet) {
+    if (packet.t === Constants.WSEvents.AUTH_SESSION_CHANGE) {
+      if (packet.d.new_token) {
+        this.client.token = packet.d.new_token;
+        this.ws._sendResume();
+      } else {
+        this.client.destroy();
+        return;
+      }
+    }
+
     if (packet.op === Constants.OPCodes.RECONNECT) {
       this.setSequence(packet.s);
       this.ws.tryReconnect();
