@@ -118,7 +118,7 @@ class MessageEmbed {
    */
   get richEmbed() {
     const result = {};
-    // circular dependency stuff
+    // Circular dependency stuff
     if (!RichEmbed) RichEmbed = require('./RichEmbed');
     for (const key of Object.keys(this)) {
       const value = this[key];

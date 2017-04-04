@@ -220,7 +220,7 @@ class RichEmbed {
    */
   get messageEmbed() {
     const result = {};
-    // no circular stuff this time
+    // No circular stuff this time
     if (!MessageEmbed) MessageEmbed = require('./MessageEmbed');
     for (const key of Object.keys(this)) {
       const value = this[key];
