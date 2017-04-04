@@ -77,7 +77,7 @@ class WebSocketPacketManager {
         this.ws._sendResume();
       } else {
         this.client.destroy();
-        return;
+        return false;
       }
     }
 
