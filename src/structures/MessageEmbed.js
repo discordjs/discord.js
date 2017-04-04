@@ -1,4 +1,4 @@
-const RichEmbed = require('./RichEmbed');
+let RichEmbed;
 
 /**
  * Represents an embed in a message (image/video preview, rich embed, etc.)
@@ -118,8 +118,11 @@ class MessageEmbed {
    */
   get richEmbed() {
     const result = {};
+    // circular dependency stuff
+    if (!RichEmbed) RichEmbed = require('./RichEmbed');
     for (const key of Object.keys(this)) {
       const value = this[key];
+      if (key === 'message') continue;
       if (value && typeof value === 'object') {
         const resultObj = value instanceof Array ? [] : {};
         for (const key2 of Object.keys(value)) {

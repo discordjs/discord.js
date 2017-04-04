@@ -1,5 +1,5 @@
 const ClientDataResolver = require('../client/ClientDataResolver');
-const MessageEmbed = require('./MessageEmbed');
+let MessageEmbed;
 
 /**
  * A rich embed to be sent with a message with a fluent interface for creation
@@ -220,6 +220,8 @@ class RichEmbed {
    */
   get messageEmbed() {
     const result = {};
+    // no circular stuff this time
+    if (!MessageEmbed) MessageEmbed = require('./MessageEmbed');
     for (const key of Object.keys(this)) {
       const value = this[key];
       if (value && typeof value === 'object') {
