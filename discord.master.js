@@ -16488,7 +16488,7 @@ class MessageReactionRemoveAll extends Action {
 /**
  * Emitted whenever all reactions are removed from a message.
  * @event Client#messageReactionRemoveAll
- * @param {MessageReaction} messageReaction The reaction object.
+ * @param {Message} message The message the reactions were removed from.
  */
 module.exports = MessageReactionRemoveAll;
 
@@ -17540,12 +17540,7 @@ class RESTMethods {
     return this.rest.makeRequest(
       'put', Endpoints.Message(message).Reaction(emoji).User('@me'), true
     ).then(() =>
-      this.client.actions.MessageReactionAdd.handle({
-        user_id: this.client.user.id,
-        message_id: message.id,
-        emoji: Util.parseEmoji(emoji),
-        channel_id: message.channel.id,
-      }).reaction
+      message._addReaction(Util.parseEmoji(emoji), message.client.user)
       );
   }
 
