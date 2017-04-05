@@ -122,13 +122,6 @@ class Guild {
     this.applicationID = data.application_id;
 
     /**
-     * A collection of emojis that are in this guild. The key is the emoji's ID, the value is the emoji.
-     * @type {Collection<Snowflake, Emoji>}
-     */
-    this.emojis = new Collection();
-    for (const emoji of data.emojis) this.emojis.set(emoji.id, new Emoji(this, emoji));
-
-    /**
      * The time in seconds before a user is counted as "away from keyboard".
      * @type {?number}
      */
@@ -215,6 +208,20 @@ class Guild {
           this.channels.get(voiceState.channel_id).members.set(member.user.id, member);
         }
       }
+    }
+
+    if (!this.emojis) {
+      /**
+       * A collection of emojis that are in this guild. The key is the emoji's ID, the value is the emoji.
+       * @type {Collection<Snowflake, Emoji>}
+       */
+      this.emojis = new Collection();
+      for (const emoji of data.emojis) this.emojis.set(emoji.id, new Emoji(this, emoji));
+    } else {
+      this.client.actions.GuildEmojisUpdate.handle({
+        guild_id: this.id,
+        emojis: data.emojis,
+      });
     }
   }
 
