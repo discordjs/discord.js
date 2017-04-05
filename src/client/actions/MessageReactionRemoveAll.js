@@ -20,6 +20,6 @@ class MessageReactionRemoveAll extends Action {
 /**
  * Emitted whenever all reactions are removed from a message.
  * @event Client#messageReactionRemoveAll
- * @param {MessageReaction} messageReaction The reaction object.
+ * @param {Message} message The message the reactions were removed from.
  */
 module.exports = MessageReactionRemoveAll;
