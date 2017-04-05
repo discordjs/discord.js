@@ -10181,7 +10181,7 @@ module.exports = {
 		"@types/node": "^7.0.0",
 		"long": "^3.2.0",
 		"prism-media": "hydrabolt/prism-media",
-		"snekfetch": "github:guscaplan/snekfetch",
+		"snekfetch": "guscaplan/snekfetch",
 		"tweetnacl": "^0.14.0",
 		"ws": "^2.0.0"
 	},
@@ -10212,7 +10212,6 @@ module.exports = {
 		"node-opus": false,
 		"tweetnacl": false,
 		"sodium": false,
-		"node-fetch": false,
 		"src/sharding/Shard.js": false,
 		"src/sharding/ShardClientUtil.js": false,
 		"src/sharding/ShardingManager.js": false,
