@@ -301,6 +301,17 @@ class Guild {
   }
 
   /**
+   * Get the position of this guild
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?number}
+   */
+  get position() {
+    if (this.client.user.bot) return null;
+    if (!this.client.user.settings.guildPositions) return null;
+    return this.client.user.settings.guildPositions.indexOf(this.id);
+  }
+
+  /*
    * The `@everyone` Role of the guild.
    * @type {Role}
    * @readonly
@@ -784,6 +795,29 @@ class Guild {
    */
   acknowledge() {
     return this.client.rest.methods.ackGuild(this);
+  }
+
+  /**
+   * @param {number} position Absolute or relative position
+   * @param {boolean} [relative=false] Whether to position relatively or absolutely
+   * @returns {Promise<Guild>}
+   */
+  setPosition(position, relative) {
+    if (this.client.user.bot) {
+      return Promise.reject(new Error('Setting guild position is only available for user accounts'));
+    }
+    return this.client.user.settings.setGuildPosition(this, position, relative);
+  }
+
+  /**
+   * Allow direct messages from guild members
+   * @param {boolean} allow Whether to allow direct messages
+   * @returns {Promise<Guild>}
+   */
+  allowDMs(allow) {
+    const settings = this.client.user.settings;
+    if (allow) return settings.removeRestrictedGuild(this);
+    else return settings.addRestrictedGuild(this);
   }
 
   /**

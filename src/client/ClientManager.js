@@ -49,7 +49,8 @@ class ClientManager {
    * @param {number} time The interval in milliseconds at which heartbeat packets should be sent
    */
   setupKeepAlive(time) {
-    this.heartbeatInterval = this.client.setInterval(() => this.client.ws.heartbeat(true), time);
+    this.heartbeatInterval = time;
+    this.client.setInterval(() => this.client.ws.heartbeat(true), time);
   }
 
   destroy() {
