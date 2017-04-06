@@ -430,7 +430,6 @@ exports.Events = {
  * - VOICE_SERVER_UPDATE
  * - RELATIONSHIP_ADD
  * - RELATIONSHIP_REMOVE
- * - AUTH_SESSION_CHANGE
  * @typedef {string} WSEventType
  */
 exports.WSEvents = {
@@ -469,7 +468,6 @@ exports.WSEvents = {
   VOICE_SERVER_UPDATE: 'VOICE_SERVER_UPDATE',
   RELATIONSHIP_ADD: 'RELATIONSHIP_ADD',
   RELATIONSHIP_REMOVE: 'RELATIONSHIP_REMOVE',
-  AUTH_SESSION_CHANGE: 'AUTH_SESSION_CHANGE',
 };
 
 exports.MessageTypes = [
@@ -657,7 +655,6 @@ exports.Colors = {
   DARK_BUT_NOT_BLACK: 0x2C2F33,
   NOT_QUITE_BLACK: 0x23272A,
 };
-
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20)))
 
@@ -18522,16 +18519,6 @@ class WebSocketPacketManager {
   }
 
   handle(packet) {
-    if (packet.t === Constants.WSEvents.AUTH_SESSION_CHANGE) {
-      if (packet.d.new_token) {
-        this.client.token = packet.d.new_token;
-        this.ws._sendResume();
-      } else {
-        this.client.destroy();
-        return false;
-      }
-    }
-
     if (packet.op === Constants.OPCodes.RECONNECT) {
       this.setSequence(packet.s);
       this.ws.tryReconnect();
