@@ -68,6 +68,9 @@ class WebSocketManager extends EventEmitter {
     this.first = true;
 
     this.lastHeartbeatAck = true;
+
+    this._trace = [];
+    this.resumeStart = -1;
   }
 
   /**
@@ -91,7 +94,8 @@ class WebSocketManager extends EventEmitter {
     }, 60e3);
   }
 
-  connect(gateway) {
+  connect(gateway = this.gateway) {
+    this.gateway = gateway;
     if (this.first) {
       this._connect(gateway);
       this.first = false;
@@ -102,7 +106,7 @@ class WebSocketManager extends EventEmitter {
 
   heartbeat(normal) {
     if (normal && !this.lastHeartbeatAck) {
-      this.ws.close(1007);
+      this.ws.close(1006);
       return;
     }
 
@@ -162,7 +166,7 @@ class WebSocketManager extends EventEmitter {
   eventOpen() {
     this.client.emit('debug', 'Connection to gateway opened');
     this.lastHeartbeatAck = true;
-    if (this.status === Constants.Status.RECONNECTING) this._sendResume();
+    if (this.sessionID) this._sendResume();
     else this._sendNewIdentify();
   }
 
@@ -175,6 +179,7 @@ class WebSocketManager extends EventEmitter {
       return;
     }
     this.client.emit('debug', 'Identifying as resumed session');
+    this.resumeStart = this.sequence;
     const payload = {
       token: this.client.token,
       session_id: this.sessionID,

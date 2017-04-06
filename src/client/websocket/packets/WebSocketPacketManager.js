@@ -16,6 +16,7 @@ class WebSocketPacketManager {
     this.queue = [];
 
     this.register(Constants.WSEvents.READY, require('./handlers/Ready'));
+    this.register(Constants.WSEvents.RESUMED, require('./handlers/Resumed'));
     this.register(Constants.WSEvents.GUILD_CREATE, require('./handlers/GuildCreate'));
     this.register(Constants.WSEvents.GUILD_DELETE, require('./handlers/GuildDelete'));
     this.register(Constants.WSEvents.GUILD_UPDATE, require('./handlers/GuildUpdate'));
@@ -79,6 +80,7 @@ class WebSocketPacketManager {
     }
 
     if (packet.op === Constants.OPCodes.INVALID_SESSION) {
+      this.client.emit('debug', `SESSION INVALID! Waiting to reconnect: ${packet.d}`);
       if (packet.d) {
         setTimeout(() => {
           this.ws._sendResume();

@@ -325,6 +325,7 @@ exports.Events = {
 /**
  * The type of a websocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
  * - READY
+ * - RESUMED
  * - GUILD_SYNC
  * - GUILD_CREATE
  * - GUILD_DELETE
@@ -362,6 +363,7 @@ exports.Events = {
  */
 exports.WSEvents = {
   READY: 'READY',
+  RESUMED: 'RESUMED',
   GUILD_SYNC: 'GUILD_SYNC',
   GUILD_CREATE: 'GUILD_CREATE',
   GUILD_DELETE: 'GUILD_DELETE',
