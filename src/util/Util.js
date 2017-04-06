@@ -197,7 +197,7 @@ class Util {
    * @param {*} element Element to move
    * @param {number} newIndex Index or offset to move the element to
    * @param {boolean} [offset=false] Move the element by an offset amount rather than to a set index
-   * @returns {Array<*>}
+   * @returns {number}
    * @private
    */
   static moveElementInArray(array, element, newIndex, offset = false) {
@@ -207,7 +207,7 @@ class Util {
       const removedElement = array.splice(index, 1)[0];
       array.splice(newIndex, 0, removedElement);
     }
-    return array;
+    return array.indexOf(element);
   }
 }
 
