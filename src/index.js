@@ -46,7 +46,7 @@ module.exports = {
   PermissionOverwrites: require('./structures/PermissionOverwrites'),
   Presence: require('./structures/Presence').Presence,
   ReactionEmoji: require('./structures/ReactionEmoji'),
-  RichEmbed: require('./structures/RichEmbed'),
+  RichEmbed: require('./structures/MessageEmbed'),
   Role: require('./structures/Role'),
   TextChannel: require('./structures/TextChannel'),
   User: require('./structures/User'),
