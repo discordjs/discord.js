@@ -19,6 +19,7 @@ const Channel = require('../../structures/Channel');
 const GroupDMChannel = require('../../structures/GroupDMChannel');
 const Guild = require('../../structures/Guild');
 const VoiceRegion = require('../../structures/VoiceRegion');
+const MessageEmbed = require('../../structures/MessageEmbed');
 
 class RESTMethods {
   constructor(restManager) {
@@ -64,6 +65,8 @@ class RESTMethods {
   sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code, reply } = {}, files = null) {
     return new Promise((resolve, reject) => { // eslint-disable-line complexity
       if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
+
+      if (typeof embed !== 'undefined') embed = new MessageEmbed(embed)._transformForDiscord();
 
       // The nonce has to be a uint64 :<
       if (typeof nonce !== 'undefined') {
