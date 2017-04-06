@@ -486,7 +486,6 @@ class RESTMethods {
 
   addMemberRole(member, role) {
     return new Promise((resolve, reject) => {
-      if (!role) return reject(new RangeError('role must be Role or Snowflake.'));
       if (member._roles.includes(role.id)) return resolve(member);
 
       const listener = (oldMember, newMember) => {
@@ -510,7 +509,6 @@ class RESTMethods {
 
   removeMemberRole(member, role) {
     return new Promise((resolve, reject) => {
-      if (!role) return reject(new RangeError('role must be Role or Snowflake.'));
       if (!member._roles.includes(role.id)) return resolve(member);
 
       const listener = (oldMember, newMember) => {
