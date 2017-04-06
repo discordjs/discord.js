@@ -31,7 +31,8 @@ class ClientManager {
     this.client.token = token;
     const timeout = this.client.setTimeout(() => reject(new Error(Constants.Errors.TOOK_TOO_LONG)), 1000 * 300);
     this.client.rest.methods.getGateway(this.client.options.shardCount === 'auto').then(res => {
-      const gateway = `${res.url}/?v=${Constants.PROTOCOL_VERSION}&encoding=${WebSocketConnection.ENCODING}`;
+      const protocolVersion = Constants.DefaultOptions.ws.version;
+      const gateway = `${res.url}/?v=${protocolVersion}&encoding=${WebSocketConnection.ENCODING}`;
       this.client.emit(Constants.Events.DEBUG, `Using gateway ${gateway}`);
       this.client.ws.connect(gateway);
       this.client.ws.once('close', event => {
