@@ -370,6 +370,17 @@ class TextBasedChannel {
    * @param {CollectorFilter} filter The filter to create the collector with
    * @param {MessageCollectorOptions} [options={}] The options to pass to the collector
    * @returns {MessageCollector}
+   * @deprecated use `createMessageCollector`.
+   */
+  createCollector(filter, options) {
+    return this.createMessageCollector(filter, options);
+  }
+
+  /**
+   * Creates a Message Collector
+   * @param {CollectorFilter} filter The filter to create the collector with
+   * @param {MessageCollectorOptions} [options={}] The options to pass to the collector
+   * @returns {MessageCollector}
    * @example
    * // create a message collector
    * const collector = channel.createCollector(
@@ -379,7 +390,7 @@ class TextBasedChannel {
    * collector.on('message', m => console.log(`Collected ${m.content}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
-  createCollector(filter, options = {}) {
+  createMessageCollector(filter, options = {}) {
     return new MessageCollector(this, filter, options);
   }
 

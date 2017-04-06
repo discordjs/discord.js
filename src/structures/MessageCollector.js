@@ -42,6 +42,7 @@ class MessageCollector extends Collector {
        * Emitted when the collector receives a message.
        * @event MessageCollector#message
        * @param {Message} message The message.
+       * @deprecated use `collect` event.
        */
       this.emit('message', message);
     };

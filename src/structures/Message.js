@@ -270,7 +270,7 @@ class Message {
    *  (reaction, user) => reaction.emoji.id === '👌' && user.id === 'someID',
    *  { time: 15000 }
    * );
-   * collector.on('reaction', r => console.log(`Collected ${r.emoji.name}`));
+   * collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
   createReactionCollector(filter, options = {}) {
