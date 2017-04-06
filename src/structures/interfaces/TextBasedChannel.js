@@ -370,7 +370,7 @@ class TextBasedChannel {
    * @param {CollectorFilter} filter The filter to create the collector with
    * @param {MessageCollectorOptions} [options={}] The options to pass to the collector
    * @returns {MessageCollector}
-   * @deprecated use `createMessageCollector`.
+   * @deprecated
    */
   createCollector(filter, options) {
     return this.createMessageCollector(filter, options);
