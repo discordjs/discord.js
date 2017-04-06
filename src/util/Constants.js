@@ -356,7 +356,6 @@ exports.Events = {
  * - VOICE_SERVER_UPDATE
  * - RELATIONSHIP_ADD
  * - RELATIONSHIP_REMOVE
- * - AUTH_SESSION_CHANGE
  * @typedef {string} WSEventType
  */
 exports.WSEvents = {
@@ -394,7 +393,6 @@ exports.WSEvents = {
   VOICE_SERVER_UPDATE: 'VOICE_SERVER_UPDATE',
   RELATIONSHIP_ADD: 'RELATIONSHIP_ADD',
   RELATIONSHIP_REMOVE: 'RELATIONSHIP_REMOVE',
-  AUTH_SESSION_CHANGE: 'AUTH_SESSION_CHANGE',
 };
 
 exports.MessageTypes = [
@@ -443,4 +441,3 @@ exports.Colors = {
   DARK_BUT_NOT_BLACK: 0x2C2F33,
   NOT_QUITE_BLACK: 0x23272A,
 };
-
