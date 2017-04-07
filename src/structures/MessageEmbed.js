@@ -66,16 +66,7 @@ class MessageEmbed {
      * @property {string} value Value of this field
      * @property {boolean} inline If this field will be displayed inline
      */
-    this.fields = [];
-    if (data.fields) {
-      for (const field of data.fields) {
-        this.fields.push({
-          name: field.name,
-          value: field.value,
-          inline: field.inline,
-        });
-      }
-    }
+    this.fields = data.fields;
 
     /**
      * The thumbnail of this embed, if there is one
