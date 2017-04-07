@@ -205,8 +205,8 @@ const Endpoints = exports.Endpoints = {
       },
       Icon: (guildID, hash, format, size) => {
         if (!format || format === 'default') format = 'webp';
-        if (!exports.AllowedImageFormats.includes(format)) throw new Error(`Invalid image format: ${format}`);
-        if (size && !exports.AllowedImageSizes.includes(size)) throw new RangeError(`Invalid size: ${size}`);
+        if (!AllowedImageFormats.includes(format)) throw new Error(`Invalid image format: ${format}`);
+        if (size && !AllowedImageSizes.includes(size)) throw new RangeError(`Invalid size: ${size}`);
         return `${root}/icons/${guildID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
       },
       Splash: (guildID, hash) => `${root}/splashes/${guildID}/${hash}.jpg`,
