@@ -313,6 +313,7 @@ class MessageEmbed {
   /**
    * Create an object that can be sent in a message to discord
    * @returns {Object}
+   * @private
    */
   _transformForDiscord() {
     return {
