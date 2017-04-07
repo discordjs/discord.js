@@ -249,7 +249,7 @@ class WebSocketManager extends EventEmitter {
      */
     if (!this.reconnecting) this.client.emit(Constants.Events.DISCONNECT, event);
     if ([4004, 4010, 4011].includes(event.code)) return;
-    if (!this.reconnecting && event.code !== 1000) this.tryReconnect();
+    if (!this.reconnecting && event.code !== 1000 && this.client.options.reconnect) this.tryReconnect();
   }
 
   /**
