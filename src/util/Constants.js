@@ -29,6 +29,7 @@ exports.Package = require('../../package.json');
  * 100% certain you don't need, as many are important, but not obviously so. The safest one to disable with the
  * most impact is typically `TYPING_START`.
  * @property {WebsocketOptions} [ws] Options for the websocket
+ * @property {boolean} [reconnect=true] Whether to reconnect after an abnormal disconnect
  */
 exports.DefaultOptions = {
   apiRequestMethod: 'sequential',
@@ -43,6 +44,7 @@ exports.DefaultOptions = {
   restWsBridgeTimeout: 5000,
   disabledEvents: [],
   restTimeOffset: 500,
+  reconnect: true,
 
   /**
    * Websocket options (these are left as snake_case to match the API)
