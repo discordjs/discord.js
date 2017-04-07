@@ -106,7 +106,7 @@ class WebSocketManager extends EventEmitter {
 
   heartbeat(normal) {
     if (normal && !this.lastHeartbeatAck) {
-      this.ws.close(1006);
+      this.tryReconnect();
       return;
     }
 
