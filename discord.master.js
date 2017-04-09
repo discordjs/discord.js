@@ -7792,7 +7792,7 @@ class Guild {
    * console.log(`Hello from ${guild}!`);
    * @example
    * // logs: Hello from My Guild!
-   * console.log(`Hello from ' + guild + '!');
+   * console.log('Hello from ' + guild + '!');
    */
   toString() {
     return this.name;
