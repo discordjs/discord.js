@@ -93,6 +93,7 @@ const Endpoints = exports.Endpoints = {
       channels: `${base}/channels`,
       profile: `${base}/profile`,
       relationships: `${base}/relationships`,
+      settings: `${base}/settings`,
       Relationship: uID => `${base}/relationships/${uID}`,
       Guild: guildID => `${base}/guilds/${guildID}`,
       Note: id => `${base}/notes/${id}`,
