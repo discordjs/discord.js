@@ -246,7 +246,7 @@ class ClientDataResolver {
   /**
    * Resolves an EmojiResolvable to an emoji identifier
    * @param {EmojiIdentifierResolvable} emoji The emoji resolvable to resolve
-   * @returns {string|null}
+   * @returns {?string}
    */
   resolveEmojiIdentifier(emoji) {
     if (emoji instanceof Emoji || emoji instanceof ReactionEmoji) return emoji.identifier;
