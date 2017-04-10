@@ -1,5 +1,9 @@
 const EventEmitter = require('events');
 
+/**
+ * An interface class for volume transformation.
+ * @extends {EventEmitter}
+ */
 class VolumeInterface extends EventEmitter {
   constructor({ volume = 0 } = {}) {
     super();
