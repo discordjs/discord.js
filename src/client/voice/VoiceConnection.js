@@ -122,7 +122,7 @@ class VoiceConnection extends EventEmitter {
    * @readonly
    */
   get dispatcher() {
-    return this.player.streams.size > 0 ? this.player.streams.last().dispatcher || null : null;
+    return this.player.currentDispatcher;
   }
 
   /**
