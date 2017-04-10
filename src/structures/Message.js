@@ -127,7 +127,7 @@ class Message {
      * All valid mentions that the message contains
      * @type {MessageMentions}
      */
-    this.mentions = new Mentions(this, data.mentions, data.mentions_roles, data.mention_everyone);
+    this.mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone);
 
     /**
      * ID of the webhook that sent the message, if applicable
