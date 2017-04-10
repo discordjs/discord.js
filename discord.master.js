@@ -5794,7 +5794,7 @@ class Message {
      * All valid mentions that the message contains
      * @type {MessageMentions}
      */
-    this.mentions = new Mentions(this, data.mentions, data.mentions_roles, data.mention_everyone);
+    this.mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone);
 
     /**
      * ID of the webhook that sent the message, if applicable
@@ -13134,7 +13134,7 @@ class MessageMentions {
    */
   get members() {
     if (this._members) return this._members;
-    if (!this.guild) return null;
+    if (!this._guild) return null;
     this._members = new Collection();
     this.users.forEach(user => {
       const member = this._guild.member(user);
@@ -13150,7 +13150,7 @@ class MessageMentions {
    */
   get channels() {
     if (this._channels) return this._channels;
-    if (!this.guild) return null;
+    if (!this._guild) return null;
     this._channels = new Collection();
     let matches;
     while ((matches = this.constructor.CHANNELS_PATTERN.exec(this._content)) !== null) {
