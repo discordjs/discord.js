@@ -236,21 +236,24 @@ class ClientDataResolver {
 
   /**
    * Data that can be resolved to give an emoji identifier. This can be:
-   * * A string
-   * * An Emoji
-   * * A ReactionEmoji
+   * * The unicode representation of an emoji
+   * * A custom emoji ID
+   * * An Emoji object
+   * * A ReactionEmoji object
    * @typedef {string|Emoji|ReactionEmoji} EmojiIdentifierResolvable
    */
 
   /**
    * Resolves an EmojiResolvable to an emoji identifier
    * @param {EmojiIdentifierResolvable} emoji The emoji resolvable to resolve
-   * @returns {string}
+   * @returns {string|null}
    */
   resolveEmojiIdentifier(emoji) {
     if (emoji instanceof Emoji || emoji instanceof ReactionEmoji) return emoji.identifier;
     if (typeof emoji === 'string') {
-      if (!emoji.includes('%')) return encodeURIComponent(emoji);
+      if (!isNaN(parseInt(emoji))) return this.client.emojis.get(emoji);
+      else if (!emoji.includes('%')) return encodeURIComponent(emoji);
+      else return emoji;
     }
     return null;
   }
