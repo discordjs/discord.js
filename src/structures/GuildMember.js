@@ -393,7 +393,7 @@ class GuildMember {
    */
   addRole(role) {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
-    if (!role) throw new RangeError('role must be Role or Snowflake.');
+    if (!role) throw new TypeError('Supplied parameter was neither a Role nor a Snowflake.');
     return this.client.rest.methods.addMemberRole(this, role);
   }
 
@@ -420,7 +420,7 @@ class GuildMember {
    */
   removeRole(role) {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
-    if (!role) throw new RangeError('role must be Role or Snowflake.');
+    if (!role) throw new TypeError('Supplied parameter was neither a Role nor a Snowflake.');
     return this.client.rest.methods.removeMemberRole(this, role);
   }
 
