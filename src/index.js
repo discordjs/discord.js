@@ -40,6 +40,7 @@ module.exports = {
   MessageAttachment: require('./structures/MessageAttachment'),
   MessageCollector: require('./structures/MessageCollector'),
   MessageEmbed: require('./structures/MessageEmbed'),
+  MessageMentions: require('./structures/MessageMentions'),
   MessageReaction: require('./structures/MessageReaction'),
   OAuth2Application: require('./structures/OAuth2Application'),
   PartialGuild: require('./structures/PartialGuild'),
