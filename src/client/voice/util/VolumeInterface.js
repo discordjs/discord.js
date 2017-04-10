@@ -63,16 +63,16 @@ class VolumeInterface extends EventEmitter {
   get volume() {
     return this._volume;
   }
-  
+
   /**
    * The current volume of the broadcast in decibels
    * @readonly
    * @type {number}
    */
   get volumeDecibels() {
-    return Math.log10(this._volume) * 20; 
+    return Math.log10(this._volume) * 20;
   }
-  
+
   /**
    * The current volume of the broadcast from a logarithmic scale
    * @readonly
