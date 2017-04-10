@@ -35,15 +35,15 @@
     "@types/node": "^7.0.0",
     "long": "^3.2.0",
     "prism-media": "hydrabolt/prism-media",
-    "snekfetch": "github:guscaplan/snekfetch",
+    "snekfetch": "^2.2.0",
     "tweetnacl": "^0.14.0",
     "ws": "^2.0.0"
   },
   "peerDependencies": {
     "bufferutil": "^2.0.0",
     "erlpack": "hammerandchisel/erlpack",
-    "node-opus": "^0.2.0",
-    "opusscript": "^0.0.2",
+    "node-opus": "^0.2.5",
+    "opusscript": "^0.0.3",
     "sodium": "^2.0.1",
     "uws": "^0.14.1"
   },
@@ -66,7 +66,6 @@
     "node-opus": false,
     "tweetnacl": false,
     "sodium": false,
-    "node-fetch": false,
     "src/sharding/Shard.js": false,
     "src/sharding/ShardClientUtil.js": false,
     "src/sharding/ShardingManager.js": false,

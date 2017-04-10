@@ -13,8 +13,9 @@ class ReadyHandler extends AbstractHandler {
 
     ws.heartbeat();
 
+    data.user.user_settings = data.user_settings;
+
     const clientUser = new ClientUser(client, data.user);
-    clientUser.settings = data.user_settings;
     client.user = clientUser;
     client.readyAt = new Date();
     client.users.set(clientUser.id, clientUser);

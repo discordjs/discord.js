@@ -39,6 +39,7 @@ class MessageReaction {
    * object which has fewer properties. Whatever the prototype of the emoji, it will still have
    * `name`, `id`, `identifier` and `toString()`
    * @type {Emoji|ReactionEmoji}
+   * @readonly
    */
   get emoji() {
     if (this._emoji instanceof Emoji) return this._emoji;

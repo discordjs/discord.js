@@ -42,6 +42,7 @@ class VoiceBroadcast extends VolumeInterface {
   /**
    * An array of subscribed dispatchers
    * @type {StreamDispatcher[]}
+   * @readonly
    */
   get dispatchers() {
     let d = [];

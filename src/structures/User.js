@@ -120,7 +120,7 @@ class User {
   get defaultAvatarURL() {
     const avatars = Object.keys(Constants.DefaultAvatars);
     const avatar = avatars[this.discriminator % avatars.length];
-    return Constants.Endpoints.assets(`${Constants.DefaultAvatars[avatar]}.png`);
+    return Constants.Endpoints.CDN(this.client.options.http.host).Asset(`${Constants.DefaultAvatars[avatar]}.png`);
   }
 
   /**
@@ -175,6 +175,7 @@ class User {
   /**
    * The DM between the client's user and this user
    * @type {?DMChannel}
+   * @readonly
    */
   get dmChannel() {
     return this.client.channels.filter(c => c.type === 'dm').find(c => c.recipient.id === this.id);

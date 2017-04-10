@@ -128,13 +128,6 @@ class Guild {
     this.applicationID = data.application_id;
 
     /**
-     * A collection of emojis that are in this guild. The key is the emoji's ID, the value is the emoji.
-     * @type {Collection<Snowflake, Emoji>}
-     */
-    this.emojis = new Collection();
-    for (const emoji of data.emojis) this.emojis.set(emoji.id, new Emoji(this, emoji));
-
-    /**
      * The time in seconds before a user is counted as "away from keyboard".
      * @type {?number}
      */
@@ -157,6 +150,12 @@ class Guild {
      * @type {number}
      */
     this.verificationLevel = data.verification_level;
+
+    /**
+     * The explicit content filter level of the guild.
+     * @type {number}
+     */
+    this.explicitContentFilter = data.explicit_content_filter;
 
     /**
      * The timestamp the client user joined the guild at
@@ -218,6 +217,20 @@ class Guild {
     }
 
     if (this.client.options.fetchAllMembers) this.fetchMembers();
+
+    if (!this.emojis) {
+      /**
+       * A collection of emojis that are in this guild. The key is the emoji's ID, the value is the emoji.
+       * @type {Collection<Snowflake, Emoji>}
+       */
+      this.emojis = new Collection();
+      for (const emoji of data.emojis) this.emojis.set(emoji.id, new Emoji(this, emoji));
+    } else {
+      this.client.actions.GuildEmojisUpdate.handle({
+        guild_id: this.id,
+        emojis: data.emojis,
+      });
+    }
   }
 
   /**
@@ -296,6 +309,17 @@ class Guild {
   }
 
   /**
+   * Get the position of this guild
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?number}
+   */
+  get position() {
+    if (this.client.user.bot) return null;
+    if (!this.client.user.settings.guildPositions) return null;
+    return this.client.user.settings.guildPositions.indexOf(this.id);
+  }
+
+  /*
    * The `@everyone` Role of the guild.
    * @type {Role}
    * @readonly
@@ -308,6 +332,7 @@ class Guild {
    * Fetches a collection of roles in the current guild sorted by position.
    * @type {Collection<Snowflake, Role>}
    * @readonly
+   * @private
    */
   get _sortedRoles() {
     return this._sortPositionWithID(this.roles);
@@ -781,6 +806,29 @@ class Guild {
   }
 
   /**
+   * @param {number} position Absolute or relative position
+   * @param {boolean} [relative=false] Whether to position relatively or absolutely
+   * @returns {Promise<Guild>}
+   */
+  setPosition(position, relative) {
+    if (this.client.user.bot) {
+      return Promise.reject(new Error('Setting guild position is only available for user accounts'));
+    }
+    return this.client.user.settings.setGuildPosition(this, position, relative);
+  }
+
+  /**
+   * Allow direct messages from guild members
+   * @param {boolean} allow Whether to allow direct messages
+   * @returns {Promise<Guild>}
+   */
+  allowDMs(allow) {
+    const settings = this.client.user.settings;
+    if (allow) return settings.removeRestrictedGuild(this);
+    else return settings.addRestrictedGuild(this);
+  }
+
+  /**
    * Whether this Guild equals another Guild. It compares all properties, so for most operations
    * it is advisable to just compare `guild.id === guild2.id` as it is much faster and is often
    * what most users need.
@@ -822,7 +870,7 @@ class Guild {
    * console.log(`Hello from ${guild}!`);
    * @example
    * // logs: Hello from My Guild!
-   * console.log(`Hello from ' + guild + '!');
+   * console.log('Hello from ' + guild + '!');
    */
   toString() {
     return this.name;
@@ -929,7 +977,7 @@ class Guild {
     position = Number(position);
     if (isNaN(position)) return Promise.reject(new Error('Supplied position is not a number.'));
 
-    let updatedRoles = this._sortedRoles().array();
+    let updatedRoles = this._sortedRoles.array();
 
     Util.moveElementInArray(updatedRoles, role, position, relative);
 
@@ -965,6 +1013,7 @@ class Guild {
    * Fetches a collection of channels in the current guild sorted by position.
    * @param {string} type Channel type
    * @returns {Collection<Snowflake, GuildChannel>}
+   * @private
    */
   _sortedChannels(type) {
     return this._sortPositionWithID(this.channels.filter(c => {
@@ -979,6 +1028,7 @@ class Guild {
    * Intended to be identical to Discord's sorting method.
    * @param {Collection} collection The collection to sort
    * @returns {Collection}
+   * @private
    */
   _sortPositionWithID(collection) {
     return collection.sort((a, b) =>
