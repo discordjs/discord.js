@@ -163,7 +163,7 @@ class Message {
     if ('pinned' in data) this.pinned = data.pinned;
     if ('tts' in data) this.tts = data.tts;
     if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(this, e));
-    else this.embeds = new Collection(this.embeds);
+    else this.embeds = this.embeds.slice();
 
     if ('attachments' in data) {
       this.attachments = new Collection();
