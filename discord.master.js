@@ -24594,13 +24594,6 @@ const Collection = __webpack_require__(3);
  * Keeps track of mentions in a {@link Message}
  */
 class MessageMentions {
-  /**
-   * @param {Message} message Message to read mentions from
-   * @param {?Array<Object>} users Raw user objects from Discord
-   * @param {?Array<Object>} roles Raw role objects from Discord
-   * @param {?boolean} everyone Whether `@everyone` or `@here` were mentioned
-   * @private
-   */
   constructor(message, users, roles, everyone) {
     /**
      * Whether `@everyone` or `@here` were mentioned
