@@ -7,5 +7,5 @@ If you still occur the bug with all requirements checked delete this template an
 
 Requirements checklist
 - [ ] Using node v6.x or newer
-- [ ] Using latest discord.js version (check package.json in #stable branch)
+- [ ] Using latest discord.js version (check [package.json](https://github.com/hydrabolt/discord.js/blob/stable/package.json#L3))
 - [ ] Try reproduce this with #master branch
