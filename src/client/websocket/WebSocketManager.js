@@ -1,28 +1,7 @@
-const browser = require('os').platform() === 'browser';
 const EventEmitter = require('events').EventEmitter;
 const Constants = require('../../util/Constants');
-const convertToBuffer = require('../../util/Util').convertToBuffer;
-const zlib = require('zlib');
 const PacketManager = require('./packets/WebSocketPacketManager');
-
-let WebSocket, erlpack;
-let serialize = JSON.stringify;
-if (browser) {
-  WebSocket = window.WebSocket; // eslint-disable-line no-undef
-} else {
-  try {
-    WebSocket = require('uws');
-  } catch (err) {
-    WebSocket = require('ws');
-  }
-
-  try {
-    erlpack = require('erlpack');
-    serialize = erlpack.pack;
-  } catch (err) {
-    erlpack = null;
-  }
-}
+const WebSocketConnection = require('./WebSocketConnection');
 
 /**
  * The WebSocket Manager of the Client
@@ -89,6 +68,9 @@ class WebSocketManager extends EventEmitter {
     this.first = true;
 
     this.lastHeartbeatAck = true;
+
+    this._trace = [];
+    this.resumeStart = -1;
   }
 
   /**
@@ -99,12 +81,11 @@ class WebSocketManager extends EventEmitter {
     this.client.emit('debug', `Connecting to gateway ${gateway}`);
     this.normalReady = false;
     if (this.status !== Constants.Status.RECONNECTING) this.status = Constants.Status.CONNECTING;
-    this.ws = new WebSocket(gateway);
-    if (browser) this.ws.binaryType = 'arraybuffer';
-    this.ws.onopen = this.eventOpen.bind(this);
-    this.ws.onmessage = this.eventMessage.bind(this);
-    this.ws.onclose = this.eventClose.bind(this);
-    this.ws.onerror = this.eventError.bind(this);
+    this.ws = new WebSocketConnection(gateway);
+    this.ws.e.on('open', this.eventOpen.bind(this));
+    this.ws.e.on('packet', this.eventPacket.bind(this));
+    this.ws.e.on('close', this.eventClose.bind(this));
+    this.ws.e.on('error', this.eventError.bind(this));
     this._queue = [];
     this._remaining = 120;
     this.client.setInterval(() => {
@@ -113,8 +94,8 @@ class WebSocketManager extends EventEmitter {
     }, 60e3);
   }
 
-  connect(gateway) {
-    gateway = `${gateway}&encoding=${erlpack ? 'etf' : 'json'}`;
+  connect(gateway = this.gateway) {
+    this.gateway = gateway;
     if (this.first) {
       this._connect(gateway);
       this.first = false;
@@ -125,7 +106,7 @@ class WebSocketManager extends EventEmitter {
 
   heartbeat(normal) {
     if (normal && !this.lastHeartbeatAck) {
-      this.ws.close(1007);
+      this.tryReconnect();
       return;
     }
 
@@ -146,10 +127,10 @@ class WebSocketManager extends EventEmitter {
    */
   send(data, force = false) {
     if (force) {
-      this._send(serialize(data));
+      this._send(data);
       return;
     }
-    this._queue.push(serialize(data));
+    this._queue.push(data);
     this.doQueue();
   }
 
@@ -160,7 +141,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   _send(data) {
-    if (this.ws.readyState === WebSocket.OPEN) {
+    if (this.ws.readyState === WebSocketConnection.OPEN) {
       this.emit('send', data);
       this.ws.send(data);
     }
@@ -168,7 +149,7 @@ class WebSocketManager extends EventEmitter {
 
   doQueue() {
     const item = this._queue[0];
-    if (!(this.ws.readyState === WebSocket.OPEN && item)) return;
+    if (!(this.ws.readyState === WebSocketConnection.OPEN && item)) return;
     if (this.remaining === 0) {
       this.client.setTimeout(this.doQueue.bind(this), Date.now() - this.remainingReset);
       return;
@@ -185,7 +166,7 @@ class WebSocketManager extends EventEmitter {
   eventOpen() {
     this.client.emit('debug', 'Connection to gateway opened');
     this.lastHeartbeatAck = true;
-    if (this.status === Constants.Status.RECONNECTING) this._sendResume();
+    if (this.sessionID) this._sendResume();
     else this._sendNewIdentify();
   }
 
@@ -198,6 +179,7 @@ class WebSocketManager extends EventEmitter {
       return;
     }
     this.client.emit('debug', 'Identifying as resumed session');
+    this.resumeStart = this.sequence;
     const payload = {
       token: this.client.token,
       session_id: this.sessionID,
@@ -255,11 +237,10 @@ class WebSocketManager extends EventEmitter {
   /**
    * Run whenever a message is received from the WebSocket. Returns `true` if the message
    * was handled properly.
-   * @param {Object} event The received websocket data
+   * @param {Object} data The received websocket data
    * @returns {boolean}
    */
-  eventMessage(event) {
-    const data = this.tryParseEventData(event.data);
+  eventPacket(data) {
     if (data === null) {
       this.eventError(new Error(Constants.Errors.BAD_WS_MESSAGE));
       return false;
@@ -269,34 +250,6 @@ class WebSocketManager extends EventEmitter {
 
     if (data.op === Constants.OPCodes.HELLO) this.client.manager.setupKeepAlive(data.d.heartbeat_interval);
     return this.packetManager.handle(data);
-  }
-
-  /**
-   * Parses the raw data from a websocket event, inflating it if necessary
-   * @param {*} data Event data
-   * @returns {Object}
-   */
-  parseEventData(data) {
-    if (erlpack) {
-      if (data instanceof ArrayBuffer) data = convertToBuffer(data);
-      return erlpack.unpack(data);
-    } else {
-      if (data instanceof Buffer || data instanceof ArrayBuffer) data = zlib.inflateSync(data).toString();
-      return JSON.parse(data);
-    }
-  }
-
-  /**
-   * Tries to call `parseEventData()` and return its result, or returns `null` upon thrown errors.
-   * @param {*} data Event data
-   * @returns {?Object}
-   */
-  tryParseEventData(data) {
-    try {
-      return this.parseEventData(data);
-    } catch (err) {
-      return null;
-    }
   }
 
   /**

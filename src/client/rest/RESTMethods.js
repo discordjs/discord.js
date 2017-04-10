@@ -39,15 +39,8 @@ class RESTMethods {
     return this.rest.makeRequest('post', Endpoints.logout, true, {});
   }
 
-  getGateway() {
-    return this.rest.makeRequest('get', Endpoints.gateway, true).then(res => {
-      this.client.ws.gateway = `${res.url}/?v=${this.client.options.ws.version}`;
-      return this.client.ws.gateway;
-    });
-  }
-
-  getBotGateway() {
-    return this.rest.makeRequest('get', Endpoints.gateway.bot, true);
+  getGateway(bot = false) {
+    return this.rest.makeRequest('get', bot ? Endpoints.gateway.bot : Endpoints.gateway, true);
   }
 
   fetchVoiceRegions(guildID) {
