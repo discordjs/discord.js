@@ -63,8 +63,12 @@ class ReadyHandler extends AbstractHandler {
       if (!client.ws.normalReady) client.ws._emitReady(false);
     }, 1200 * data.guilds.length);
 
-    this.packetManager.ws.sessionID = data.session_id;
-    this.packetManager.ws.checkIfReady();
+    const ws = this.packetManager.ws;
+
+    ws.sessionID = data.session_id;
+    ws._trace = data._trace;
+    client.emit('debug', `READY ${ws._trace.join(' -> ')} ${ws.sessionID}`);
+    ws.checkIfReady();
   }
 }
 

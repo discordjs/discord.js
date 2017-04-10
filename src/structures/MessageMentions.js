@@ -84,7 +84,7 @@ class MessageMentions {
    */
   get members() {
     if (this._members) return this._members;
-    if (!this.guild) return null;
+    if (!this._guild) return null;
     this._members = new Collection();
     this.users.forEach(user => {
       const member = this._guild.member(user);
@@ -100,7 +100,7 @@ class MessageMentions {
    */
   get channels() {
     if (this._channels) return this._channels;
-    if (!this.guild) return null;
+    if (!this._guild) return null;
     this._channels = new Collection();
     let matches;
     while ((matches = this.constructor.CHANNELS_PATTERN.exec(this._content)) !== null) {
