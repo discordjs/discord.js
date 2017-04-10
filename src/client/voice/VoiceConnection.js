@@ -115,7 +115,7 @@ class VoiceConnection extends EventEmitter {
 
     this.authenticate();
   }
-  
+
   /**
    * The current dispatcher
    * @type {?StreamDispatcher}
