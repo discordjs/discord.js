@@ -4752,6 +4752,15 @@ class User {
   }
 
   /**
+   * The discord "tag" for this user
+   * @type {string}
+   * @readonly
+   */
+  get tag() {
+    return `${this.username}#${this.discriminator}`;
+  }
+
+  /**
    * The note that is set for the user
    * <warn>This is only available when using a user account.</warn>
    * @type {?string}
