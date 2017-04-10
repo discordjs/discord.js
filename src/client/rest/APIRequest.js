@@ -2,7 +2,8 @@ const snekfetch = require('snekfetch');
 const Constants = require('../../util/Constants');
 
 class APIRequest {
-  constructor(rest, method, path, auth, data, files) {
+  constructor(rest, method, path, auth, data, files, forceBot = false) {
+    this.client = rest.client;
     this.rest = rest;
     this.client = rest.client;
     this.method = method;
@@ -11,6 +12,7 @@ class APIRequest {
     this.data = data;
     this.files = files;
     this.route = this.getRoute(this.path);
+    this.forceBot = forceBot;
   }
 
   getRoute(url) {
@@ -24,12 +26,15 @@ class APIRequest {
   }
 
   getAuth() {
-    if (this.client.token && this.client.user && this.client.user.bot) {
-      return `Bot ${this.client.token}`;
-    } else if (this.client.token) {
-      return this.client.token;
+    if (this.client.token) {
+      if ((this.client.user && this.client.user.bot) || this.forceBot) {
+        return `Bot ${this.client.token}`;
+      } else {
+        return this.client.token;
+      }
+    } else {
+      throw new Error(Constants.Errors.NO_TOKEN);
     }
-    throw new Error(Constants.Errors.NO_TOKEN);
   }
 
   gen() {

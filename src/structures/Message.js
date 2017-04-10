@@ -181,6 +181,14 @@ class Message {
   }
 
   /**
+   * The shard to which this message belongs
+   * @type {WebSocketShard}
+   */
+  get shard() {
+    return this.channel.guild ? this.channel.guild.shard : this.channel.shard;
+  }
+
+  /**
    * The time the message was sent
    * @type {Date}
    * @readonly

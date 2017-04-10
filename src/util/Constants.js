@@ -32,7 +32,7 @@ exports.Package = require('../../package.json');
  */
 exports.DefaultOptions = {
   apiRequestMethod: 'sequential',
-  shardId: 0,
+  shardID: 0,
   shardCount: 0,
   messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
@@ -70,7 +70,7 @@ exports.DefaultOptions = {
   },
 };
 
-exports.Errors = {
+const Errors = exports.Errors = {
   NO_TOKEN: 'Request to use token, but token was unavailable to the client.',
   NO_BOT_ACCOUNT: 'Only bot accounts are able to make use of this feature.',
   NO_USER_ACCOUNT: 'Only user accounts are able to make use of this feature.',
@@ -229,6 +229,12 @@ exports.Status = {
   DISCONNECTED: 5,
 };
 
+exports.ClosableCodes = {
+  4004: Errors.BAD_LOGIN,
+  4010: Errors.INVALID_SHARD,
+  4011: Errors.SHARDING_REQUIRED,
+};
+
 /**
  * The current status of a voice connection. Here are the available statuses:
  * - CONNECTED
@@ -257,7 +263,7 @@ exports.OPCodes = {
   DISPATCH: 0,
   HEARTBEAT: 1,
   IDENTIFY: 2,
-  STATUS_UPDATE: 3,
+  PRESENCE_UPDATE: 3,
   VOICE_STATE_UPDATE: 4,
   VOICE_GUILD_PING: 5,
   RESUME: 6,
@@ -279,6 +285,7 @@ exports.VoiceOPCodes = {
 
 exports.Events = {
   READY: 'ready',
+  SHARD_READY: 'shardReady',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',
   GUILD_UPDATE: 'guildUpdate',
@@ -363,6 +370,7 @@ exports.Events = {
  */
 exports.WSEvents = {
   READY: 'READY',
+  RESUMED: 'RESUMED',
   GUILD_SYNC: 'GUILD_SYNC',
   GUILD_CREATE: 'GUILD_CREATE',
   GUILD_DELETE: 'GUILD_DELETE',

@@ -1,4 +1,5 @@
 const Constants = require('../util/Constants');
+const WebSocketConnection = require('./websocket/WebSocketConnection');
 
 /**
  * Manages the State and Background Tasks of the Client
@@ -11,12 +12,6 @@ class ClientManager {
      * @type {Client}
      */
     this.client = client;
-
-    /**
-     * The heartbeat interval, null if not yet set
-     * @type {?number}
-     */
-    this.heartbeatInterval = null;
   }
 
   /**
@@ -28,29 +23,28 @@ class ClientManager {
   connectToWebSocket(token, resolve, reject) {
     this.client.emit(Constants.Events.DEBUG, `Authenticated using token ${token}`);
     this.client.token = token;
-    const timeout = this.client.setTimeout(() => reject(new Error(Constants.Errors.TOOK_TOO_LONG)), 1000 * 300);
-    this.client.rest.methods.getGateway().then(gateway => {
+    this.client.rest.methods.getGateway(this.client.options.shardCount === 'auto').then(res => {
+      const gateway = `${res.url}/?v=${Constants.PROTOCOL_VERSION}&encoding=${WebSocketConnection.ENCODING}`;
       this.client.emit(Constants.Events.DEBUG, `Using gateway ${gateway}`);
-      this.client.ws.connect(gateway);
+      if (res.shards) {
+        this.client.options.shardCount = res.shards;
+        this.client.emit(Constants.Events.DEBUG, `Using recommended shard count of ${res.shards}`);
+      }
+      const timeout = this.client.setTimeout(() => {
+        reject(new Error(Constants.Errors.TOOK_TOO_LONG));
+        this.client.ws.killAll();
+      }, Math.max(this.client.options.shardCount, 1) * 60000);
+      this.client.ws.connect(gateway, res.shards);
       this.client.ws.once('close', event => {
-        if (event.code === 4004) reject(new Error(Constants.Errors.BAD_LOGIN));
-        if (event.code === 4010) reject(new Error(Constants.Errors.INVALID_SHARD));
-        if (event.code === 4011) reject(new Error(Constants.Errors.SHARDING_REQUIRED));
+        if (!Object.keys(Constants.ClosableCodes).includes(event.code.toString())) return;
+        this.client.ws.killAll();
+        reject(Constants.ClosableCodes[event.code]);
       });
       this.client.once(Constants.Events.READY, () => {
         resolve(token);
         this.client.clearTimeout(timeout);
       });
     }, reject);
-  }
-
-  /**
-   * Sets up a keep-alive interval to keep the Client's connection valid
-   * @param {number} time The interval in milliseconds at which heartbeat packets should be sent
-   */
-  setupKeepAlive(time) {
-    this.heartbeatInterval = time;
-    this.client.setInterval(() => this.client.ws.heartbeat(true), time);
   }
 
   destroy() {

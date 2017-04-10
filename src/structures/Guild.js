@@ -48,6 +48,12 @@ class Guild {
      */
     this.presences = new Collection();
 
+    /**
+     * The shard to which this guilds belongs
+     * @type {WebSocketShard}
+     */
+    this.shard = data.shard;
+
     if (!data) return;
     if (data.unavailable) {
       /**
@@ -209,6 +215,8 @@ class Guild {
         }
       }
     }
+
+    if (this.client.options.fetchAllMembers) this.fetchMembers();
 
     if (!this.emojis) {
       /**
@@ -420,7 +428,7 @@ class Guild {
         resolve(this);
         return;
       }
-      this.client.ws.send({
+      this.shard.send({
         op: Constants.OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
           guild_id: this.id,
@@ -661,7 +669,7 @@ class Guild {
    * <warn>This is only available when using a user account.</warn>
    */
   sync() {
-    if (!this.client.user.bot) this.client.syncGuilds([this]);
+    if (!this.client.user.bot) this.shard.syncGuilds([this]);
   }
 
   /**

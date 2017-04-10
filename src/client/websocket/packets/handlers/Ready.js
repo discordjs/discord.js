@@ -1,13 +1,17 @@
 const AbstractHandler = require('./AbstractHandler');
 
 const ClientUser = require('../../../../structures/ClientUser');
+const Constants = require('../../../../util/Constants');
 
 class ReadyHandler extends AbstractHandler {
   handle(packet) {
     const client = this.packetManager.client;
     const data = packet.d;
+    const ws = packet.shard;
 
-    client.ws.heartbeat();
+    ws.emit('ready');
+
+    ws.heartbeat();
 
     data.user.user_settings = data.user_settings;
 
@@ -16,8 +20,15 @@ class ReadyHandler extends AbstractHandler {
     client.readyAt = new Date();
     client.users.set(clientUser.id, clientUser);
 
-    for (const guild of data.guilds) client.dataManager.newGuild(guild);
-    for (const privateDM of data.private_channels) client.dataManager.newChannel(privateDM);
+    for (const guild of data.guilds) {
+      guild.shard = packet.shard;
+      client.dataManager.newGuild(guild);
+    }
+
+    for (const privateDM of data.private_channels) {
+      privateDM.shard = data.shard;
+      client.dataManager.newChannel(privateDM);
+    }
 
     for (const relation of data.relationships) {
       const user = client.dataManager.newUser(relation.user);
@@ -43,8 +54,9 @@ class ReadyHandler extends AbstractHandler {
       }
     }
 
-    if (!client.user.bot && client.options.sync) client.setInterval(client.syncGuilds.bind(client), 30000);
-    client.once('ready', client.syncGuilds.bind(client));
+    if (!client.user.bot && client.options.sync) {
+      ws.syncInterval = client.setInterval(ws.syncGuilds.bind(ws), 30000);
+    }
 
     if (!client.users.has('1')) {
       client.dataManager.newUser({
@@ -60,11 +72,13 @@ class ReadyHandler extends AbstractHandler {
     }
 
     client.setTimeout(() => {
-      if (!client.ws.normalReady) client.ws._emitReady(false);
+      if (ws.status !== Constants.Status.READY) ws._emitReady();
     }, 1200 * data.guilds.length);
 
-    this.packetManager.ws.sessionID = data.session_id;
-    this.packetManager.ws.checkIfReady();
+    ws.sessionID = data.session_id;
+    ws._trace = data._trace;
+    ws.emit('debug', `READY ${ws._trace.join(' -> ')} ${ws.sessionID}`);
+    ws.checkIfReady();
   }
 }
 

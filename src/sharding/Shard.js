@@ -32,6 +32,8 @@ class Shard {
       SHARD_ID: this.id,
       SHARD_COUNT: this.manager.totalShards,
       CLIENT_TOKEN: this.manager.token,
+      SHARD_OFFSET: this.id * manager.shardsPerProcess,
+      SHARD_LIMIT: manager.shardsPerProcess,
     });
 
     /**
