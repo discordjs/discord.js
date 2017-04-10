@@ -15,7 +15,7 @@ nonce.fill(0);
  *   const dispatcher = connection.playFile('./file.mp3');
  * });
  * ```
- * @implements {VoiceInterface}
+ * @implements {VolumeInterface}
  */
 class StreamDispatcher extends VolumeInterface {
   constructor(player, stream, streamOptions) {
