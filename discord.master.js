@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 179);
+/******/ 	return __webpack_require__(__webpack_require__.s = 180);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -125,7 +125,7 @@ exports.DefaultOptions = {
    */
   ws: {
     large_threshold: 250,
-    compress: __webpack_require__(18).platform() !== 'browser',
+    compress: __webpack_require__(17).platform() !== 'browser',
     properties: {
       $os: process ? process.platform : 'discord.js',
       $browser: 'discord.js',
@@ -4258,552 +4258,6 @@ module.exports = Channel;
 /* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Attachment = __webpack_require__(44);
-const Embed = __webpack_require__(46);
-const MessageReaction = __webpack_require__(47);
-const Util = __webpack_require__(4);
-const Collection = __webpack_require__(3);
-const Constants = __webpack_require__(0);
-const Permissions = __webpack_require__(8);
-let GuildMember;
-
-/**
- * Represents a message on Discord
- */
-class Message {
-  constructor(channel, data, client) {
-    /**
-     * The Client that instantiated the Message
-     * @name Message#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
-
-    /**
-     * The channel that the message was sent in
-     * @type {TextChannel|DMChannel|GroupDMChannel}
-     */
-    this.channel = channel;
-
-    if (data) this.setup(data);
-  }
-
-  setup(data) { // eslint-disable-line complexity
-    /**
-     * The ID of the message (unique in the channel it was sent)
-     * @type {Snowflake}
-     */
-    this.id = data.id;
-
-    /**
-     * The type of the message
-     * @type {string}
-     */
-    this.type = Constants.MessageTypes[data.type];
-
-    /**
-     * The content of the message
-     * @type {string}
-     */
-    this.content = data.content;
-
-    /**
-     * The author of the message
-     * @type {User}
-     */
-    this.author = this.client.dataManager.newUser(data.author);
-
-    /**
-     * Represents the author of the message as a guild member. Only available if the message comes from a guild
-     * where the author is still a member.
-     * @type {?GuildMember}
-     */
-    this.member = this.guild ? this.guild.member(this.author) || null : null;
-
-    /**
-     * Whether or not this message is pinned
-     * @type {boolean}
-     */
-    this.pinned = data.pinned;
-
-    /**
-     * Whether or not the message was Text-To-Speech
-     * @type {boolean}
-     */
-    this.tts = data.tts;
-
-    /**
-     * A random number or string used for checking message delivery
-     * @type {string}
-     */
-    this.nonce = data.nonce;
-
-    /**
-     * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
-     * @type {boolean}
-     */
-    this.system = data.type === 6;
-
-    /**
-     * A list of embeds in the message - e.g. YouTube Player
-     * @type {MessageEmbed[]}
-     */
-    this.embeds = data.embeds.map(e => new Embed(this, e));
-
-    /**
-     * A collection of attachments in the message - e.g. Pictures - mapped by their ID.
-     * @type {Collection<Snowflake, MessageAttachment>}
-     */
-    this.attachments = new Collection();
-    for (const attachment of data.attachments) this.attachments.set(attachment.id, new Attachment(this, attachment));
-
-    /**
-     * The timestamp the message was sent at
-     * @type {number}
-     */
-    this.createdTimestamp = new Date(data.timestamp).getTime();
-
-    /**
-     * The timestamp the message was last edited at (if applicable)
-     * @type {?number}
-     */
-    this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
-
-    /**
-     * An object containing a further users, roles or channels collections
-     * @type {Object}
-     * @property {Collection<Snowflake, User>} mentions.users Mentioned users, maps their ID to the user object.
-     * @property {Collection<Snowflake, GuildMember>} mentions.members Mentioned members, maps their ID
-     * to the member object.
-     * @property {Collection<Snowflake, Role>} mentions.roles Mentioned roles, maps their ID to the role object.
-     * @property {Collection<Snowflake, GuildChannel>} mentions.channels Mentioned channels,
-     * maps their ID to the channel object.
-     * @property {boolean} mentions.everyone Whether or not @everyone was mentioned.
-     */
-    this.mentions = {
-      users: new Collection(),
-      roles: new Collection(),
-      channels: new Collection(),
-      everyone: data.mention_everyone,
-    };
-
-    // Add user mentions
-    for (const mention of data.mentions) {
-      let user = this.client.users.get(mention.id);
-      if (!user) user = this.client.dataManager.newUser(mention);
-      this.mentions.users.set(user.id, user);
-    }
-
-    // Add getter for member mentions
-    Object.defineProperty(this.mentions, 'members', {
-      get: () => {
-        if (this.channel.type !== 'text') return null;
-        const members = new Collection();
-        this.mentions.users.forEach(user => {
-          const member = this.client.resolver.resolveGuildMember(this.channel.guild, user);
-          if (member) members.set(member.id, member);
-        });
-        return members;
-      },
-    });
-
-    // Add role mentions
-    if (data.mention_roles) {
-      for (const mention of data.mention_roles) {
-        const role = this.channel.guild.roles.get(mention);
-        if (role) this.mentions.roles.set(role.id, role);
-      }
-    }
-
-    // Add channel mentions
-    if (this.channel.type === 'text') {
-      const channMentionsRaw = data.content.match(/<#([0-9]{14,20})>/g) || [];
-      for (const raw of channMentionsRaw) {
-        const chan = this.channel.guild.channels.get(raw.match(/([0-9]{14,20})/g)[0]);
-        if (chan) this.mentions.channels.set(chan.id, chan);
-      }
-    }
-
-    this._edits = [];
-
-    /**
-     * A collection of reactions to this message, mapped by the reaction "id".
-     * @type {Collection<Snowflake, MessageReaction>}
-     */
-    this.reactions = new Collection();
-
-    if (data.reactions && data.reactions.length > 0) {
-      for (const reaction of data.reactions) {
-        const id = reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` : reaction.emoji.name;
-        this.reactions.set(id, new MessageReaction(this, reaction.emoji, reaction.count, reaction.me));
-      }
-    }
-
-    /**
-     * ID of the webhook that sent the message, if applicable
-     * @type {?Snowflake}
-     */
-    this.webhookID = data.webhook_id || null;
-
-    /**
-     * Whether this message is a hit in a search
-     * @type {?boolean}
-     */
-    this.hit = typeof data.hit === 'boolean' ? data.hit : null;
-  }
-
-  /**
-   * The time the message was sent
-   * @type {Date}
-   * @readonly
-   */
-  get createdAt() {
-    return new Date(this.createdTimestamp);
-  }
-
-  /**
-   * The time the message was last edited at (if applicable)
-   * @type {?Date}
-   * @readonly
-   */
-  get editedAt() {
-    return this.editedTimestamp ? new Date(this.editedTimestamp) : null;
-  }
-
-  /**
-   * The guild the message was sent in (if in a guild channel)
-   * @type {?Guild}
-   * @readonly
-   */
-  get guild() {
-    return this.channel.guild || null;
-  }
-
-  /**
-   * The message contents with all mentions replaced by the equivalent text. If mentions cannot be resolved to a name,
-   * the relevant mention in the message content will not be converted.
-   * @type {string}
-   * @readonly
-   */
-  get cleanContent() {
-    return this.content
-      .replace(/@(everyone|here)/g, '@\u200b$1')
-      .replace(/<@!?[0-9]+>/g, input => {
-        const id = input.replace(/<|!|>|@/g, '');
-        if (this.channel.type === 'dm' || this.channel.type === 'group') {
-          return this.client.users.has(id) ? `@${this.client.users.get(id).username}` : input;
-        }
-
-        const member = this.channel.guild.members.get(id);
-        if (member) {
-          if (member.nickname) return `@${member.nickname}`;
-          return `@${member.user.username}`;
-        } else {
-          const user = this.client.users.get(id);
-          if (user) return `@${user.username}`;
-          return input;
-        }
-      })
-      .replace(/<#[0-9]+>/g, input => {
-        const channel = this.client.channels.get(input.replace(/<|#|>/g, ''));
-        if (channel) return `#${channel.name}`;
-        return input;
-      })
-      .replace(/<@&[0-9]+>/g, input => {
-        if (this.channel.type === 'dm' || this.channel.type === 'group') return input;
-        const role = this.guild.roles.get(input.replace(/<|@|>|&/g, ''));
-        if (role) return `@${role.name}`;
-        return input;
-      });
-  }
-
-  /**
-   * An array of cached versions of the message, including the current version.
-   * Sorted from latest (first) to oldest (last).
-   * @type {Message[]}
-   * @readonly
-   */
-  get edits() {
-    const copy = this._edits.slice();
-    copy.unshift(this);
-    return copy;
-  }
-
-  /**
-   * Whether the message is editable by the client user.
-   * @type {boolean}
-   * @readonly
-   */
-  get editable() {
-    return this.author.id === this.client.user.id;
-  }
-
-  /**
-   * Whether the message is deletable by the client user.
-   * @type {boolean}
-   * @readonly
-   */
-  get deletable() {
-    return this.author.id === this.client.user.id || (this.guild &&
-      this.channel.permissionsFor(this.client.user).hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)
-    );
-  }
-
-  /**
-   * Whether the message is pinnable by the client user.
-   * @type {boolean}
-   * @readonly
-   */
-  get pinnable() {
-    return !this.guild ||
-      this.channel.permissionsFor(this.client.user).hasPermission(Permissions.FLAGS.MANAGE_MESSAGES);
-  }
-
-  /**
-   * Whether or not a user, channel or role is mentioned in this message.
-   * @param {GuildChannel|User|Role|string} data either a guild channel, user or a role object, or a string representing
-   * the ID of any of these.
-   * @returns {boolean}
-   */
-  isMentioned(data) {
-    data = data && data.id ? data.id : data;
-    return this.mentions.users.has(data) || this.mentions.channels.has(data) || this.mentions.roles.has(data);
-  }
-
-  /**
-   * Whether or not a guild member is mentioned in this message. Takes into account
-   * user mentions, role mentions, and @everyone/@here mentions.
-   * @param {GuildMember|User} member Member/user to check for a mention of
-   * @returns {boolean}
-   */
-  isMemberMentioned(member) {
-    // Lazy-loading is used here to get around a circular dependency that breaks things
-    if (!GuildMember) GuildMember = __webpack_require__(20);
-    if (this.mentions.everyone) return true;
-    if (this.mentions.users.has(member.id)) return true;
-    if (member instanceof GuildMember && member.roles.some(r => this.mentions.roles.has(r.id))) return true;
-    return false;
-  }
-
-  /**
-   * Options that can be passed into editMessage
-   * @typedef {Object} MessageEditOptions
-   * @property {Object} [embed] An embed to be added/edited
-   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
-   */
-
-  /**
-   * Edit the content of the message
-   * @param {StringResolvable} [content] The new content for the message
-   * @param {MessageEditOptions} [options] The options to provide
-   * @returns {Promise<Message>}
-   * @example
-   * // update the content of a message
-   * message.edit('This is my new content!')
-   *  .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
-   *  .catch(console.error);
-   */
-  edit(content, options) {
-    if (!options && typeof content === 'object' && !(content instanceof Array)) {
-      options = content;
-      content = '';
-    } else if (!options) {
-      options = {};
-    }
-    return this.client.rest.methods.updateMessage(this, content, options);
-  }
-
-  /**
-   * Edit the content of the message, with a code block
-   * @param {string} lang Language for the code block
-   * @param {StringResolvable} content The new content for the message
-   * @returns {Promise<Message>}
-   */
-  editCode(lang, content) {
-    content = Util.escapeMarkdown(this.client.resolver.resolveString(content), true);
-    return this.edit(`\`\`\`${lang || ''}\n${content}\n\`\`\``);
-  }
-
-  /**
-   * Pins this message to the channel's pinned messages
-   * @returns {Promise<Message>}
-   */
-  pin() {
-    return this.client.rest.methods.pinMessage(this);
-  }
-
-  /**
-   * Unpins this message from the channel's pinned messages
-   * @returns {Promise<Message>}
-   */
-  unpin() {
-    return this.client.rest.methods.unpinMessage(this);
-  }
-
-  /**
-   * Add a reaction to the message
-   * @param {string|Emoji|ReactionEmoji} emoji Emoji to react with
-   * @returns {Promise<MessageReaction>}
-   */
-  react(emoji) {
-    emoji = this.client.resolver.resolveEmojiIdentifier(emoji);
-    if (!emoji) throw new TypeError('Emoji must be a string or Emoji/ReactionEmoji');
-
-    return this.client.rest.methods.addMessageReaction(this, emoji);
-  }
-
-  /**
-   * Remove all reactions from a message
-   * @returns {Promise<Message>}
-   */
-  clearReactions() {
-    return this.client.rest.methods.removeMessageReactions(this);
-  }
-
-  /**
-   * Deletes the message
-   * @param {number} [timeout=0] How long to wait to delete the message in milliseconds
-   * @returns {Promise<Message>}
-   * @example
-   * // delete a message
-   * message.delete()
-   *  .then(msg => console.log(`Deleted message from ${msg.author}`))
-   *  .catch(console.error);
-   */
-  delete(timeout = 0) {
-    if (timeout <= 0) {
-      return this.client.rest.methods.deleteMessage(this);
-    } else {
-      return new Promise(resolve => {
-        this.client.setTimeout(() => {
-          resolve(this.delete());
-        }, timeout);
-      });
-    }
-  }
-
-  /**
-   * Reply to the message
-   * @param {StringResolvable} [content] The content for the message
-   * @param {MessageOptions} [options] The options to provide
-   * @returns {Promise<Message|Message[]>}
-   * @example
-   * // reply to a message
-   * message.reply('Hey, I\'m a reply!')
-   *  .then(msg => console.log(`Sent a reply to ${msg.author}`))
-   *  .catch(console.error);
-   */
-  reply(content, options) {
-    if (!options && typeof content === 'object' && !(content instanceof Array)) {
-      options = content;
-      content = '';
-    } else if (!options) {
-      options = {};
-    }
-    return this.channel.send(content, Object.assign(options, { reply: this.member || this.author }));
-  }
-
-  /**
-   * Marks the message as read
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<Message>}
-   */
-  acknowledge() {
-    return this.client.rest.methods.ackMessage(this);
-  }
-
-  /**
-   * Fetches the webhook used to create this message.
-   * @returns {Promise<?Webhook>}
-   */
-  fetchWebhook() {
-    if (!this.webhookID) return Promise.reject(new Error('The message was not sent by a webhook.'));
-    return this.client.fetchWebhook(this.webhookID);
-  }
-
-  /**
-   * Used mainly internally. Whether two messages are identical in properties. If you want to compare messages
-   * without checking all the properties, use `message.id === message2.id`, which is much more efficient. This
-   * method allows you to see if there are differences in content, embeds, attachments, nonce and tts properties.
-   * @param {Message} message The message to compare it to
-   * @param {Object} rawData Raw data passed through the WebSocket about this message
-   * @returns {boolean}
-   */
-  equals(message, rawData) {
-    if (!message) return false;
-    const embedUpdate = !message.author && !message.attachments;
-    if (embedUpdate) return this.id === message.id && this.embeds.length === message.embeds.length;
-
-    let equal = this.id === message.id &&
-        this.author.id === message.author.id &&
-        this.content === message.content &&
-        this.tts === message.tts &&
-        this.nonce === message.nonce &&
-        this.embeds.length === message.embeds.length &&
-        this.attachments.length === message.attachments.length;
-
-    if (equal && rawData) {
-      equal = this.mentions.everyone === message.mentions.everyone &&
-        this.createdTimestamp === new Date(rawData.timestamp).getTime() &&
-        this.editedTimestamp === new Date(rawData.edited_timestamp).getTime();
-    }
-
-    return equal;
-  }
-
-  /**
-   * When concatenated with a string, this automatically concatenates the message's content instead of the object.
-   * @returns {string}
-   * @example
-   * // logs: Message: This is a message!
-   * console.log(`Message: ${message}`);
-   */
-  toString() {
-    return this.content;
-  }
-
-  _addReaction(emoji, user) {
-    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : encodeURIComponent(emoji.name);
-    let reaction;
-    if (this.reactions.has(emojiID)) {
-      reaction = this.reactions.get(emojiID);
-      if (!reaction.me) reaction.me = user.id === this.client.user.id;
-    } else {
-      reaction = new MessageReaction(this, emoji, 0, user.id === this.client.user.id);
-      this.reactions.set(emojiID, reaction);
-    }
-    if (!reaction.users.has(user.id)) reaction.users.set(user.id, user);
-    reaction.count++;
-    return reaction;
-  }
-
-  _removeReaction(emoji, user) {
-    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : encodeURIComponent(emoji.name);
-    if (this.reactions.has(emojiID)) {
-      const reaction = this.reactions.get(emojiID);
-      if (reaction.users.has(user.id)) {
-        reaction.users.delete(user.id);
-        reaction.count--;
-        if (user.id === this.client.user.id) reaction.me = false;
-        return reaction;
-      }
-    }
-    return null;
-  }
-
-  _clearReactions() {
-    this.reactions.clear();
-  }
-}
-
-module.exports = Message;
-
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
 const Snowflake = __webpack_require__(7);
 const Permissions = __webpack_require__(8);
 
@@ -5160,7 +4614,7 @@ module.exports = Role;
 
 
 /***/ }),
-/* 17 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const TextBasedChannel = __webpack_require__(23);
@@ -5460,7 +4914,7 @@ module.exports = User;
 
 
 /***/ }),
-/* 18 */
+/* 17 */
 /***/ (function(module, exports) {
 
 exports.endianness = function () { return 'LE' };
@@ -5511,7 +4965,7 @@ exports.EOL = '\n';
 
 
 /***/ }),
-/* 19 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -5677,11 +5131,11 @@ module.exports = Emoji;
 
 
 /***/ }),
-/* 20 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const TextBasedChannel = __webpack_require__(23);
-const Role = __webpack_require__(16);
+const Role = __webpack_require__(15);
 const Permissions = __webpack_require__(8);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(11).Presence;
@@ -6197,6 +5651,539 @@ module.exports = GuildMember;
 
 
 /***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Mentions = __webpack_require__(169);
+const Attachment = __webpack_require__(44);
+const Embed = __webpack_require__(46);
+const MessageReaction = __webpack_require__(47);
+const Util = __webpack_require__(4);
+const Collection = __webpack_require__(3);
+const Constants = __webpack_require__(0);
+const Permissions = __webpack_require__(8);
+let GuildMember;
+
+/**
+ * Represents a message on Discord
+ */
+class Message {
+  constructor(channel, data, client) {
+    /**
+     * The Client that instantiated the Message
+     * @name Message#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: client });
+
+    /**
+     * The channel that the message was sent in
+     * @type {TextChannel|DMChannel|GroupDMChannel}
+     */
+    this.channel = channel;
+
+    if (data) this.setup(data);
+  }
+
+  setup(data) { // eslint-disable-line complexity
+    /**
+     * The ID of the message (unique in the channel it was sent)
+     * @type {Snowflake}
+     */
+    this.id = data.id;
+
+    /**
+     * The type of the message
+     * @type {string}
+     */
+    this.type = Constants.MessageTypes[data.type];
+
+    /**
+     * The content of the message
+     * @type {string}
+     */
+    this.content = data.content;
+
+    /**
+     * The author of the message
+     * @type {User}
+     */
+    this.author = this.client.dataManager.newUser(data.author);
+
+    /**
+     * Represents the author of the message as a guild member. Only available if the message comes from a guild
+     * where the author is still a member.
+     * @type {?GuildMember}
+     */
+    this.member = this.guild ? this.guild.member(this.author) || null : null;
+
+    /**
+     * Whether or not this message is pinned
+     * @type {boolean}
+     */
+    this.pinned = data.pinned;
+
+    /**
+     * Whether or not the message was Text-To-Speech
+     * @type {boolean}
+     */
+    this.tts = data.tts;
+
+    /**
+     * A random number or string used for checking message delivery
+     * @type {string}
+     */
+    this.nonce = data.nonce;
+
+    /**
+     * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
+     * @type {boolean}
+     */
+    this.system = data.type === 6;
+
+    /**
+     * A list of embeds in the message - e.g. YouTube Player
+     * @type {MessageEmbed[]}
+     */
+    this.embeds = data.embeds.map(e => new Embed(this, e));
+
+    /**
+     * A collection of attachments in the message - e.g. Pictures - mapped by their ID.
+     * @type {Collection<Snowflake, MessageAttachment>}
+     */
+    this.attachments = new Collection();
+    for (const attachment of data.attachments) this.attachments.set(attachment.id, new Attachment(this, attachment));
+
+    /**
+     * The timestamp the message was sent at
+     * @type {number}
+     */
+    this.createdTimestamp = new Date(data.timestamp).getTime();
+
+    /**
+     * The timestamp the message was last edited at (if applicable)
+     * @type {?number}
+     */
+    this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
+
+    /**
+     * A collection of reactions to this message, mapped by the reaction "id".
+     * @type {Collection<Snowflake, MessageReaction>}
+     */
+    this.reactions = new Collection();
+    if (data.reactions && data.reactions.length > 0) {
+      for (const reaction of data.reactions) {
+        const id = reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` : reaction.emoji.name;
+        this.reactions.set(id, new MessageReaction(this, reaction.emoji, reaction.count, reaction.me));
+      }
+    }
+
+    /**
+     * All valid mentions that the message contains
+     * @type {MessageMentions}
+     */
+    this.mentions = new Mentions(this, data.mentions, data.mentions_roles, data.mention_everyone);
+
+    /**
+     * ID of the webhook that sent the message, if applicable
+     * @type {?Snowflake}
+     */
+    this.webhookID = data.webhook_id || null;
+
+    /**
+     * Whether this message is a hit in a search
+     * @type {?boolean}
+     */
+    this.hit = typeof data.hit === 'boolean' ? data.hit : null;
+
+    /**
+     * The previous versions of the message, sorted with the most recent first
+     * @type {Message[]}
+     * @private
+     */
+    this._edits = [];
+  }
+
+  /**
+   * Updates the message
+   * @param {Object} data Raw Discord message update data
+   * @private
+   */
+  patch(data) {
+    const clone = Util.cloneObject(this);
+    this._edits.unshift(clone);
+
+    this.editedTimestamp = data.edited_timestamp;
+    if ('content' in data) this.content = data.content;
+    if ('pinned' in data) this.pinned = data.pinned;
+    if ('tts' in data) this.tts = data.tts;
+    if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(this, e));
+    else this.embeds = new Collection(this.embeds);
+
+    if ('attachments' in data) {
+      this.attachments = new Collection();
+      for (const attachment of data.attachments) this.attachments.set(attachment.id, new Attachment(this, attachment));
+    } else {
+      this.attachments = new Collection(this.attachments);
+    }
+
+    this.mentions = new Mentions(
+      this,
+      'mentions' in data ? data.mentions : this.mentions.users,
+      'mentions_roles' in data ? data.mentions_roles : this.mentions.roles,
+      'mention_everyone' in data ? data.mention_everyone : this.mentions.everyone
+    );
+  }
+
+  /**
+   * The time the message was sent
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * The time the message was last edited at (if applicable)
+   * @type {?Date}
+   * @readonly
+   */
+  get editedAt() {
+    return this.editedTimestamp ? new Date(this.editedTimestamp) : null;
+  }
+
+  /**
+   * The guild the message was sent in (if in a guild channel)
+   * @type {?Guild}
+   * @readonly
+   */
+  get guild() {
+    return this.channel.guild || null;
+  }
+
+  /**
+   * The message contents with all mentions replaced by the equivalent text. If mentions cannot be resolved to a name,
+   * the relevant mention in the message content will not be converted.
+   * @type {string}
+   * @readonly
+   */
+  get cleanContent() {
+    return this.content
+      .replace(/@(everyone|here)/g, '@\u200b$1')
+      .replace(/<@!?[0-9]+>/g, input => {
+        const id = input.replace(/<|!|>|@/g, '');
+        if (this.channel.type === 'dm' || this.channel.type === 'group') {
+          return this.client.users.has(id) ? `@${this.client.users.get(id).username}` : input;
+        }
+
+        const member = this.channel.guild.members.get(id);
+        if (member) {
+          if (member.nickname) return `@${member.nickname}`;
+          return `@${member.user.username}`;
+        } else {
+          const user = this.client.users.get(id);
+          if (user) return `@${user.username}`;
+          return input;
+        }
+      })
+      .replace(/<#[0-9]+>/g, input => {
+        const channel = this.client.channels.get(input.replace(/<|#|>/g, ''));
+        if (channel) return `#${channel.name}`;
+        return input;
+      })
+      .replace(/<@&[0-9]+>/g, input => {
+        if (this.channel.type === 'dm' || this.channel.type === 'group') return input;
+        const role = this.guild.roles.get(input.replace(/<|@|>|&/g, ''));
+        if (role) return `@${role.name}`;
+        return input;
+      });
+  }
+
+  /**
+   * An array of cached versions of the message, including the current version.
+   * Sorted from latest (first) to oldest (last).
+   * @type {Message[]}
+   * @readonly
+   */
+  get edits() {
+    const copy = this._edits.slice();
+    copy.unshift(this);
+    return copy;
+  }
+
+  /**
+   * Whether the message is editable by the client user.
+   * @type {boolean}
+   * @readonly
+   */
+  get editable() {
+    return this.author.id === this.client.user.id;
+  }
+
+  /**
+   * Whether the message is deletable by the client user.
+   * @type {boolean}
+   * @readonly
+   */
+  get deletable() {
+    return this.author.id === this.client.user.id || (this.guild &&
+      this.channel.permissionsFor(this.client.user).hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)
+    );
+  }
+
+  /**
+   * Whether the message is pinnable by the client user.
+   * @type {boolean}
+   * @readonly
+   */
+  get pinnable() {
+    return !this.guild ||
+      this.channel.permissionsFor(this.client.user).hasPermission(Permissions.FLAGS.MANAGE_MESSAGES);
+  }
+
+  /**
+   * Whether or not a user, channel or role is mentioned in this message.
+   * @param {GuildChannel|User|Role|string} data either a guild channel, user or a role object, or a string representing
+   * the ID of any of these.
+   * @returns {boolean}
+   */
+  isMentioned(data) {
+    data = data && data.id ? data.id : data;
+    return this.mentions.users.has(data) || this.mentions.channels.has(data) || this.mentions.roles.has(data);
+  }
+
+  /**
+   * Whether or not a guild member is mentioned in this message. Takes into account
+   * user mentions, role mentions, and @everyone/@here mentions.
+   * @param {GuildMember|User} member Member/user to check for a mention of
+   * @returns {boolean}
+   */
+  isMemberMentioned(member) {
+    // Lazy-loading is used here to get around a circular dependency that breaks things
+    if (!GuildMember) GuildMember = __webpack_require__(19);
+    if (this.mentions.everyone) return true;
+    if (this.mentions.users.has(member.id)) return true;
+    if (member instanceof GuildMember && member.roles.some(r => this.mentions.roles.has(r.id))) return true;
+    return false;
+  }
+
+  /**
+   * Options that can be passed into editMessage
+   * @typedef {Object} MessageEditOptions
+   * @property {Object} [embed] An embed to be added/edited
+   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
+   */
+
+  /**
+   * Edit the content of the message
+   * @param {StringResolvable} [content] The new content for the message
+   * @param {MessageEditOptions} [options] The options to provide
+   * @returns {Promise<Message>}
+   * @example
+   * // update the content of a message
+   * message.edit('This is my new content!')
+   *  .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
+   *  .catch(console.error);
+   */
+  edit(content, options) {
+    if (!options && typeof content === 'object' && !(content instanceof Array)) {
+      options = content;
+      content = '';
+    } else if (!options) {
+      options = {};
+    }
+    return this.client.rest.methods.updateMessage(this, content, options);
+  }
+
+  /**
+   * Edit the content of the message, with a code block
+   * @param {string} lang Language for the code block
+   * @param {StringResolvable} content The new content for the message
+   * @returns {Promise<Message>}
+   */
+  editCode(lang, content) {
+    content = Util.escapeMarkdown(this.client.resolver.resolveString(content), true);
+    return this.edit(`\`\`\`${lang || ''}\n${content}\n\`\`\``);
+  }
+
+  /**
+   * Pins this message to the channel's pinned messages
+   * @returns {Promise<Message>}
+   */
+  pin() {
+    return this.client.rest.methods.pinMessage(this);
+  }
+
+  /**
+   * Unpins this message from the channel's pinned messages
+   * @returns {Promise<Message>}
+   */
+  unpin() {
+    return this.client.rest.methods.unpinMessage(this);
+  }
+
+  /**
+   * Add a reaction to the message
+   * @param {string|Emoji|ReactionEmoji} emoji Emoji to react with
+   * @returns {Promise<MessageReaction>}
+   */
+  react(emoji) {
+    emoji = this.client.resolver.resolveEmojiIdentifier(emoji);
+    if (!emoji) throw new TypeError('Emoji must be a string or Emoji/ReactionEmoji');
+
+    return this.client.rest.methods.addMessageReaction(this, emoji);
+  }
+
+  /**
+   * Remove all reactions from a message
+   * @returns {Promise<Message>}
+   */
+  clearReactions() {
+    return this.client.rest.methods.removeMessageReactions(this);
+  }
+
+  /**
+   * Deletes the message
+   * @param {number} [timeout=0] How long to wait to delete the message in milliseconds
+   * @returns {Promise<Message>}
+   * @example
+   * // delete a message
+   * message.delete()
+   *  .then(msg => console.log(`Deleted message from ${msg.author}`))
+   *  .catch(console.error);
+   */
+  delete(timeout = 0) {
+    if (timeout <= 0) {
+      return this.client.rest.methods.deleteMessage(this);
+    } else {
+      return new Promise(resolve => {
+        this.client.setTimeout(() => {
+          resolve(this.delete());
+        }, timeout);
+      });
+    }
+  }
+
+  /**
+   * Reply to the message
+   * @param {StringResolvable} [content] The content for the message
+   * @param {MessageOptions} [options] The options to provide
+   * @returns {Promise<Message|Message[]>}
+   * @example
+   * // reply to a message
+   * message.reply('Hey, I\'m a reply!')
+   *  .then(msg => console.log(`Sent a reply to ${msg.author}`))
+   *  .catch(console.error);
+   */
+  reply(content, options) {
+    if (!options && typeof content === 'object' && !(content instanceof Array)) {
+      options = content;
+      content = '';
+    } else if (!options) {
+      options = {};
+    }
+    return this.channel.send(content, Object.assign(options, { reply: this.member || this.author }));
+  }
+
+  /**
+   * Marks the message as read
+   * <warn>This is only available when using a user account.</warn>
+   * @returns {Promise<Message>}
+   */
+  acknowledge() {
+    return this.client.rest.methods.ackMessage(this);
+  }
+
+  /**
+   * Fetches the webhook used to create this message.
+   * @returns {Promise<?Webhook>}
+   */
+  fetchWebhook() {
+    if (!this.webhookID) return Promise.reject(new Error('The message was not sent by a webhook.'));
+    return this.client.fetchWebhook(this.webhookID);
+  }
+
+  /**
+   * Used mainly internally. Whether two messages are identical in properties. If you want to compare messages
+   * without checking all the properties, use `message.id === message2.id`, which is much more efficient. This
+   * method allows you to see if there are differences in content, embeds, attachments, nonce and tts properties.
+   * @param {Message} message The message to compare it to
+   * @param {Object} rawData Raw data passed through the WebSocket about this message
+   * @returns {boolean}
+   */
+  equals(message, rawData) {
+    if (!message) return false;
+    const embedUpdate = !message.author && !message.attachments;
+    if (embedUpdate) return this.id === message.id && this.embeds.length === message.embeds.length;
+
+    let equal = this.id === message.id &&
+        this.author.id === message.author.id &&
+        this.content === message.content &&
+        this.tts === message.tts &&
+        this.nonce === message.nonce &&
+        this.embeds.length === message.embeds.length &&
+        this.attachments.length === message.attachments.length;
+
+    if (equal && rawData) {
+      equal = this.mentions.everyone === message.mentions.everyone &&
+        this.createdTimestamp === new Date(rawData.timestamp).getTime() &&
+        this.editedTimestamp === new Date(rawData.edited_timestamp).getTime();
+    }
+
+    return equal;
+  }
+
+  /**
+   * When concatenated with a string, this automatically concatenates the message's content instead of the object.
+   * @returns {string}
+   * @example
+   * // logs: Message: This is a message!
+   * console.log(`Message: ${message}`);
+   */
+  toString() {
+    return this.content;
+  }
+
+  _addReaction(emoji, user) {
+    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : encodeURIComponent(emoji.name);
+    let reaction;
+    if (this.reactions.has(emojiID)) {
+      reaction = this.reactions.get(emojiID);
+      if (!reaction.me) reaction.me = user.id === this.client.user.id;
+    } else {
+      reaction = new MessageReaction(this, emoji, 0, user.id === this.client.user.id);
+      this.reactions.set(emojiID, reaction);
+    }
+    if (!reaction.users.has(user.id)) reaction.users.set(user.id, user);
+    reaction.count++;
+    return reaction;
+  }
+
+  _removeReaction(emoji, user) {
+    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : encodeURIComponent(emoji.name);
+    if (this.reactions.has(emojiID)) {
+      const reaction = this.reactions.get(emojiID);
+      if (reaction.users.has(user.id)) {
+        reaction.users.delete(user.id);
+        reaction.count--;
+        if (user.id === this.client.user.id) reaction.me = false;
+        return reaction;
+      }
+    }
+    return null;
+  }
+
+  _clearReactions() {
+    this.reactions.clear();
+  }
+}
+
+module.exports = Message;
+
+
+/***/ }),
 /* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -6448,7 +6435,7 @@ Stream.prototype.pipe = function(dest, options) {
 /***/ (function(module, exports, __webpack_require__) {
 
 const path = __webpack_require__(26);
-const Message = __webpack_require__(15);
+const Message = __webpack_require__(20);
 const MessageCollector = __webpack_require__(45);
 const Collection = __webpack_require__(3);
 
@@ -6929,11 +6916,11 @@ exports.applyToClass = (structure, full = false, ignore = []) => {
 /***/ (function(module, exports, __webpack_require__) {
 
 const Long = __webpack_require__(31);
-const User = __webpack_require__(17);
-const Role = __webpack_require__(16);
-const Emoji = __webpack_require__(19);
+const User = __webpack_require__(16);
+const Role = __webpack_require__(15);
+const Emoji = __webpack_require__(18);
 const Presence = __webpack_require__(11).Presence;
-const GuildMember = __webpack_require__(20);
+const GuildMember = __webpack_require__(19);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const Util = __webpack_require__(4);
@@ -7969,7 +7956,7 @@ module.exports = Guild;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Channel = __webpack_require__(14);
-const Role = __webpack_require__(16);
+const Role = __webpack_require__(15);
 const PermissionOverwrites = __webpack_require__(51);
 const Permissions = __webpack_require__(8);
 const Collection = __webpack_require__(3);
@@ -11168,7 +11155,7 @@ if (!process.browser && process.env.READABLE_STREAM === 'disable' && Stream) {
   // next-tick requiring stream so that by the time i actually need it webpack has processed the
   // Readable and PassThrough exports
   __webpack_require__(22);
-  const browser = __webpack_require__(18).platform() === 'browser';
+  const browser = __webpack_require__(17).platform() === 'browser';
   const http = __webpack_require__(58);
   const https = __webpack_require__(72);
   const URL = __webpack_require__(61);
@@ -11343,12 +11330,12 @@ const snekfetch = __webpack_require__(36);
 
 const Constants = __webpack_require__(0);
 const convertToBuffer = __webpack_require__(4).convertToBuffer;
-const User = __webpack_require__(17);
-const Message = __webpack_require__(15);
+const User = __webpack_require__(16);
+const Message = __webpack_require__(20);
 const Guild = __webpack_require__(24);
 const Channel = __webpack_require__(14);
-const GuildMember = __webpack_require__(20);
-const Emoji = __webpack_require__(19);
+const GuildMember = __webpack_require__(19);
+const Emoji = __webpack_require__(18);
 const ReactionEmoji = __webpack_require__(28);
 
 /**
@@ -11766,7 +11753,7 @@ module.exports = {
 /* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const User = __webpack_require__(17);
+const User = __webpack_require__(16);
 const Collection = __webpack_require__(3);
 const ClientUserSettings = __webpack_require__(41);
 /**
@@ -13051,7 +13038,7 @@ module.exports = MessageEmbed;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
-const Emoji = __webpack_require__(19);
+const Emoji = __webpack_require__(18);
 const ReactionEmoji = __webpack_require__(28);
 
 /**
@@ -13793,7 +13780,7 @@ util.inherits = __webpack_require__(10);
 /*</replacement>*/
 
 /*<replacement>*/
-var debugUtil = __webpack_require__(172);
+var debugUtil = __webpack_require__(173);
 var debug = void 0;
 if (debugUtil && debugUtil.debuglog) {
   debug = debugUtil.debuglog('stream');
@@ -15932,7 +15919,7 @@ module.exports = RequestHandler;
 /* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {const os = __webpack_require__(18);
+/* WEBPACK VAR INJECTION */(function(process) {const os = __webpack_require__(17);
 const EventEmitter = __webpack_require__(12).EventEmitter;
 const Constants = __webpack_require__(0);
 const Permissions = __webpack_require__(8);
@@ -15941,13 +15928,13 @@ const RESTManager = __webpack_require__(62);
 const ClientDataManager = __webpack_require__(96);
 const ClientManager = __webpack_require__(97);
 const ClientDataResolver = __webpack_require__(38);
-const ClientVoiceManager = __webpack_require__(174);
+const ClientVoiceManager = __webpack_require__(175);
 const WebSocketManager = __webpack_require__(132);
 const ActionsManager = __webpack_require__(98);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(11).Presence;
-const ShardClientUtil = __webpack_require__(173);
-const VoiceBroadcast = __webpack_require__(175);
+const ShardClientUtil = __webpack_require__(174);
+const VoiceBroadcast = __webpack_require__(176);
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -20673,9 +20660,9 @@ function extend() {
 const Constants = __webpack_require__(0);
 const Util = __webpack_require__(4);
 const Guild = __webpack_require__(24);
-const User = __webpack_require__(17);
+const User = __webpack_require__(16);
 const DMChannel = __webpack_require__(42);
-const Emoji = __webpack_require__(19);
+const Emoji = __webpack_require__(18);
 const TextChannel = __webpack_require__(52);
 const VoiceChannel = __webpack_require__(53);
 const GuildChannel = __webpack_require__(25);
@@ -21322,7 +21309,7 @@ module.exports = GuildMemberRemoveAction;
 
 const Action = __webpack_require__(2);
 const Constants = __webpack_require__(0);
-const Role = __webpack_require__(16);
+const Role = __webpack_require__(15);
 
 class GuildRoleCreate extends Action {
   handle(data) {
@@ -21561,7 +21548,7 @@ module.exports = GuildUpdateAction;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
-const Message = __webpack_require__(15);
+const Message = __webpack_require__(20);
 
 class MessageCreateAction extends Action {
   handle(data) {
@@ -21828,7 +21815,6 @@ module.exports = MessageReactionRemoveAll;
 
 const Action = __webpack_require__(2);
 const Constants = __webpack_require__(0);
-const Message = __webpack_require__(15);
 
 class MessageUpdateAction extends Action {
   handle(data) {
@@ -21838,14 +21824,11 @@ class MessageUpdateAction extends Action {
     if (channel) {
       const message = channel.messages.get(data.id);
       if (message) {
-        const newMessage = new Message(message.channel, this.patchDataPacket(data, message), client);
-        newMessage._edits.push(message, ...message._edits);
-        newMessage.reactions = message.reactions;
-        channel.messages.set(data.id, newMessage);
-        client.emit(Constants.Events.MESSAGE_UPDATE, message, newMessage);
+        message.patch(data);
+        client.emit(Constants.Events.MESSAGE_UPDATE, message._edits[0], message);
         return {
-          old: message,
-          updated: newMessage,
+          old: message._edits[0],
+          updated: message,
         };
       }
 
@@ -21860,29 +21843,6 @@ class MessageUpdateAction extends Action {
       updated: null,
     };
   }
-
-  patchDataPacket(data, message) {
-    data.type = 'type' in data ? data.type : Constants.MessageTypes.indexOf(message.type);
-    data.tts = 'tts' in data ? data.tts : message.tts;
-    data.timestamp = 'timestamp' in data ? data.timestamp : message.createdAt.toString();
-    data.pinned = 'pinned' in data ? data.pinned : message.pinned;
-    data.nonce = 'nonce' in data ? data.nonce : message.nonce;
-    data.mentions = 'mentions' in data ? data.mentions : message.mentions.users.keyArray();
-    data.mentions_roles = 'mentions_roles' in data ?
-			data.mentions_roles : message.mentions.roles.keyArray();
-    data.mention_everyone = 'mention_everyone' in data ? data.mention_everyone : message.mentions.everyone;
-    data.embeds = 'embeds' in data ? data.embeds : message.embeds;
-    data.content = 'content' in data ? data.content : message.content;
-    data.author = 'author' in data ? data.author : {
-      username: message.author.username,
-      id: message.author.id,
-      discriminator: message.author.discriminator,
-      avatar: message.author.avatar,
-    };
-    data.attachments = 'attachments' in data ? data.attachments : message.attachments.array();
-    return data;
-  }
-
 }
 
 /**
@@ -22058,18 +22018,18 @@ const Collection = __webpack_require__(3);
 const Snowflake = __webpack_require__(7);
 const Util = __webpack_require__(4);
 
-const User = __webpack_require__(17);
-const GuildMember = __webpack_require__(20);
-const Message = __webpack_require__(15);
-const Role = __webpack_require__(16);
+const User = __webpack_require__(16);
+const GuildMember = __webpack_require__(19);
+const Message = __webpack_require__(20);
+const Role = __webpack_require__(15);
 const Invite = __webpack_require__(43);
 const Webhook = __webpack_require__(29);
-const UserProfile = __webpack_require__(170);
+const UserProfile = __webpack_require__(171);
 const OAuth2Application = __webpack_require__(48);
 const Channel = __webpack_require__(14);
 const GroupDMChannel = __webpack_require__(27);
 const Guild = __webpack_require__(24);
-const VoiceRegion = __webpack_require__(171);
+const VoiceRegion = __webpack_require__(172);
 
 class RESTMethods {
   constructor(restManager) {
@@ -23138,7 +23098,7 @@ module.exports = UserAgentManager;
 /* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const browser = __webpack_require__(18).platform() === 'browser';
+/* WEBPACK VAR INJECTION */(function(Buffer) {const browser = __webpack_require__(17).platform() === 'browser';
 const EventEmitter = __webpack_require__(12).EventEmitter;
 const Constants = __webpack_require__(0);
 const convertToBuffer = __webpack_require__(4).convertToBuffer;
@@ -23151,13 +23111,13 @@ if (browser) {
   WebSocket = window.WebSocket; // eslint-disable-line no-undef
 } else {
   try {
-    WebSocket = __webpack_require__(177);
-  } catch (err) {
     WebSocket = __webpack_require__(178);
+  } catch (err) {
+    WebSocket = __webpack_require__(179);
   }
 
   try {
-    erlpack = __webpack_require__(176);
+    erlpack = __webpack_require__(177);
     serialize = erlpack.pack;
   } catch (err) {
     erlpack = null;
@@ -24626,6 +24586,157 @@ module.exports = VoiceStateUpdateHandler;
 
 /***/ }),
 /* 169 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Collection = __webpack_require__(3);
+
+/**
+ * Keeps track of mentions in a {@link Message}
+ */
+class MessageMentions {
+  /**
+   * @param {Message} message Message to read mentions from
+   * @param {?Array<Object>} users Raw user objects from Discord
+   * @param {?Array<Object>} roles Raw role objects from Discord
+   * @param {?boolean} everyone Whether @everyone or @here were mentioned
+   * @private
+   */
+  constructor(message, users, roles, everyone) {
+    /**
+     * Whether `@everyone` or ``@here` were mentioned
+     * @type {boolean}
+     */
+    this.everyone = Boolean(everyone);
+
+    if (users) {
+      if (users instanceof Collection) {
+        /**
+         * Any users that were mentioned
+         * @type {Collection<Snowflake, User>}
+         */
+        this.users = new Collection(users);
+      } else {
+        this.users = new Collection();
+        for (const mention of users) {
+          let user = message.client.users.get(mention.id);
+          if (!user) user = message.client.dataManager.newUser(mention);
+          this.users.set(user.id, user);
+        }
+      }
+    } else {
+      this.users = new Collection();
+    }
+
+    if (roles) {
+      if (roles instanceof Collection) {
+        /**
+         * Any roles that were mentioned
+         * @type {Collection<Snowflake, Role>}
+         */
+        this.roles = new Collection(roles);
+      } else {
+        this.roles = new Collection();
+        for (const mention of roles) {
+          const role = message.channel.guild.roles.get(mention);
+          if (role) this.roles.set(role.id, role);
+        }
+      }
+    } else {
+      this.roles = new Collection();
+    }
+
+    /**
+     * Content of the message
+     * @type {Message}
+     * @private
+     */
+    this._content = message.content;
+
+    /**
+     * Guild the message is in
+     * @type {?Guild}
+     * @private
+     */
+    this._guild = message.channel.guild;
+
+    /**
+     * Cached members for {@MessageMention#members}
+     * @type {?Collection<Snowflake, GuildMember>}
+     * @private
+     */
+    this._members = null;
+
+    /**
+     * Cached channels for {@MessageMention#channels}
+     * @type {?Collection<Snowflake, GuildChannel>}
+     * @private
+     */
+    this._channels = null;
+  }
+
+  /**
+   * Any members that were mentioned (only in {@link TextChannel}s)
+   * @type {?Collection<Snowflake, GuildMember>}
+   * @readonly
+   */
+  get members() {
+    if (this._members) return this._members;
+    if (!this.guild) return null;
+    this._members = new Collection();
+    this.users.forEach(user => {
+      const member = this._guild.member(user);
+      if (member) this._members.set(member.user.id, member);
+    });
+    return this._members;
+  }
+
+  /**
+   * Any channels that were mentioned (only in {@link TextChannel}s)
+   * @type {?Collection<Snowflake, GuildChannel>}
+   * @readonly
+   */
+  get channels() {
+    if (this._channels) return this._channels;
+    if (!this.guild) return null;
+    this._channels = new Collection();
+    let matches;
+    while ((matches = this.constructor.CHANNELS_PATTERN.exec(this._content)) !== null) {
+      const chan = this._guild.channels.get(matches[1]);
+      if (chan) this._channels.set(chan.id, chan);
+    }
+    return this._channels;
+  }
+}
+
+/**
+ * Regular expression that globally matches `@everyone` and `@here`
+ * @type {RegExp}
+ */
+MessageMentions.EVERYONE_PATTERN = /@(everyone|here)/g;
+
+/**
+ * Regular expression that globally matches user mentions like `<#81440962496172032>`
+ * @type {RegExp}
+ */
+MessageMentions.USERS_PATTERN = /<@!?[0-9]+>/g;
+
+/**
+ * Regular expression that globally matches role mentions like `<@&297577916114403338>`
+ * @type {RegExp}
+ */
+MessageMentions.ROLES_PATTERN = /<@&[0-9]+>/g;
+
+/**
+ * Regular expression that globally matches channel mentions like `<#222079895583457280>`
+ * @type {RegExp}
+ */
+MessageMentions.CHANNELS_PATTERN = /<#([0-9]+)>/g;
+
+module.exports = MessageMentions;
+
+
+/***/ }),
+/* 170 */
 /***/ (function(module, exports) {
 
 /**
@@ -24679,11 +24790,11 @@ module.exports = UserConnection;
 
 
 /***/ }),
-/* 170 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
-const UserConnection = __webpack_require__(169);
+const UserConnection = __webpack_require__(170);
 
 /**
  * Represents a user's profile on Discord.
@@ -24747,7 +24858,7 @@ module.exports = UserProfile;
 
 
 /***/ }),
-/* 171 */
+/* 172 */
 /***/ (function(module, exports) {
 
 /**
@@ -24803,12 +24914,6 @@ module.exports = VoiceRegion;
 
 
 /***/ }),
-/* 172 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
 /* 173 */
 /***/ (function(module, exports) {
 
@@ -24846,6 +24951,12 @@ module.exports = VoiceRegion;
 
 /***/ }),
 /* 179 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Util = __webpack_require__(4);
@@ -24879,14 +24990,14 @@ module.exports = {
   ClientUser: __webpack_require__(40),
   ClientUserSettings: __webpack_require__(41),
   DMChannel: __webpack_require__(42),
-  Emoji: __webpack_require__(19),
+  Emoji: __webpack_require__(18),
   Game: __webpack_require__(11).Game,
   GroupDMChannel: __webpack_require__(27),
   Guild: __webpack_require__(24),
   GuildChannel: __webpack_require__(25),
-  GuildMember: __webpack_require__(20),
+  GuildMember: __webpack_require__(19),
   Invite: __webpack_require__(43),
-  Message: __webpack_require__(15),
+  Message: __webpack_require__(20),
   MessageAttachment: __webpack_require__(44),
   MessageCollector: __webpack_require__(45),
   MessageEmbed: __webpack_require__(46),
@@ -24898,14 +25009,14 @@ module.exports = {
   Presence: __webpack_require__(11).Presence,
   ReactionEmoji: __webpack_require__(28),
   RichEmbed: __webpack_require__(66),
-  Role: __webpack_require__(16),
+  Role: __webpack_require__(15),
   TextChannel: __webpack_require__(52),
-  User: __webpack_require__(17),
+  User: __webpack_require__(16),
   VoiceChannel: __webpack_require__(53),
   Webhook: __webpack_require__(29),
 };
 
-if (__webpack_require__(18).platform() === 'browser') window.Discord = module.exports; // eslint-disable-line no-undef
+if (__webpack_require__(17).platform() === 'browser') window.Discord = module.exports; // eslint-disable-line no-undef
 
 
 /***/ })
