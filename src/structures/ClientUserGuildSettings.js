@@ -18,7 +18,7 @@ class ClientUserGuildSettings {
    */
   patch(data) {
     for (const key of Object.keys(Constants.UserGuildSettingsMap)) {
-      const value = Constants.UserSettingsMap[key];
+      const value = Constants.UserGuildSettingsMap[key];
       if (!data.hasOwnProperty(key)) continue;
       if (key === 'channel_overrides') {
         for (const channel of data[key]) {

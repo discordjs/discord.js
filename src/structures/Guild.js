@@ -311,6 +311,55 @@ class Guild {
     return this.client.user.settings.guildPositions.indexOf(this.id);
   }
 
+  /**
+   * Get whether the guild is muted
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?boolean}
+   */
+  get muted() {
+    if (this.client.user.bot) return null;
+    if (!this.client.user.guildSettings) return null;
+    if (!this.client.user.guildSettings.get(this.id)) return null;
+    return this.client.user.guildSettings.get(this.id).muted;
+  }
+
+  /**
+   * Get the type of message that should notify you
+   * one of `EVERYTHING`, `MENTIONS`, `NOTHING`
+   * <warn>This is only available when using a user account.</warn>
+   * @type {string}
+   */
+  get messageNotifications() {
+    if (this.client.user.bot) return null;
+    if (!this.client.user.guildSettings) return null;
+    if (!this.client.user.guildSettings.get(this.id)) return null;
+    return this.client.user.guildSettings.get(this.id).messageNotifications;
+  }
+
+  /**
+   * Get whether to receive mobile push notifications
+   * <warn>This is only available when using a user account.</warn>
+   * @type {boolean}
+   */
+  get mobilePush() {
+    if (this.client.user.bot) return null;
+    if (!this.client.user.guildSettings) return null;
+    if (!this.client.user.guildSettings.get(this.id)) return null;
+    return this.client.user.guildSettings.get(this.id).mobilePush;
+  }
+
+  /**
+   * Get whether to suppress everyone messages
+   * <warn>This is only available when using a user account.</warn>
+   * @type {boolean}
+   */
+  get suppressEveryone() {
+    if (this.client.user.bot) return null;
+    if (!this.client.user.guildSettings) return null;
+    if (!this.client.user.guildSettings.get(this.id)) return null;
+    return this.client.user.guildSettings.get(this.id).suppressEveryone;
+  }
+
   /*
    * The `@everyone` Role of the guild.
    * @type {Role}
@@ -1025,8 +1074,8 @@ class Guild {
   _sortPositionWithID(collection) {
     return collection.sort((a, b) =>
       a.position !== b.position ?
-      a.position - b.position :
-      Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber()
+        a.position - b.position :
+        Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber()
     );
   }
 }

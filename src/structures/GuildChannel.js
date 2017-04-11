@@ -323,6 +323,35 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * Get whether the channel is muted
+   * <warn>This is only available when using a user account.</warn>
+   * @type {boolean}
+   */
+  get muted() {
+    if (this.client.user.bot) return null;
+    if (!this.client.user.guildSettings) return null;
+    if (!this.client.user.guildSettings.get(this.guild.id)) return null;
+    if (!this.client.user.guildSettings.get(this.guild.id).channelOverrides) return null;
+    if (!this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id)) return null;
+    return this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id).muted;
+  }
+
+  /**
+   * Get the type of message that should notify you
+   * one of `EVERYTHING`, `MENTIONS`, `NOTHING`, `INHERIT`
+   * <warn>This is only available when using a user account.</warn>
+   * @type {string}
+   */
+  get messageNotifications() {
+    if (this.client.user.bot) return null;
+    if (!this.client.user.guildSettings) return null;
+    if (!this.client.user.guildSettings.get(this.guild.id)) return null;
+    if (!this.client.user.guildSettings.get(this.guild.id).channelOverrides) return null;
+    if (!this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id)) return null;
+    return this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id).messageNotifications;
+  }
+
+  /**
    * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
    * @returns {string}
    * @example

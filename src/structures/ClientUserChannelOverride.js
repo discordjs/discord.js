@@ -15,7 +15,7 @@ class ClientUserChannelOverride {
    */
   patch(data) {
     for (const key of Object.keys(Constants.UserChannelOverrideMap)) {
-      const value = Constants.UserSettingsMap[key];
+      const value = Constants.UserChannelOverrideMap[key];
       if (!data.hasOwnProperty(key)) continue;
       if (typeof value === 'function') {
         this[value.name] = value(data[key]);
