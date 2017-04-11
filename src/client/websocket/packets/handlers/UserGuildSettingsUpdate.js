@@ -4,8 +4,8 @@ const Constants = require('../../../../util/Constants');
 class UserGuildSettingsUpdateHandler extends AbstractHandler {
   handle(packet) {
     const client = this.packetManager.client;
-    client.user.guildSettings.patch(packet.d);
-    client.emit(Constants.Events.USER_GUILD_SETTINGS_UPDATE, client.user.guildSettings);
+    client.user.guildSettings.get(packet.d.guild_id).patch(packet.d);
+    client.emit(Constants.Events.USER_GUILD_SETTINGS_UPDATE, client.user.guildSettings.get(packet.d.guild_id));
   }
 }
 

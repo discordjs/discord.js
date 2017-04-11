@@ -3,6 +3,7 @@ const Role = require('./Role');
 const PermissionOverwrites = require('./PermissionOverwrites');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
+const Constants = require('../util/Constants');
 
 /**
  * Represents a guild channel (i.e. text channels and voice channels)
@@ -323,16 +324,16 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Get whether the channel is muted
-   * <warn>This is only available when using a user account.</warn>
-   * @type {boolean}
-   */
+ * Get whether the channel is muted
+ * <warn>This is only available when using a user account.</warn>
+ * @type {boolean}
+ */
   get muted() {
     if (this.client.user.bot) return null;
     if (!this.client.user.guildSettings) return null;
     if (!this.client.user.guildSettings.get(this.guild.id)) return null;
-    if (!this.client.user.guildSettings.get(this.guild.id).channelOverrides) return null;
-    if (!this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id)) return null;
+    if (!this.client.user.guildSettings.get(this.guild.id).channelOverrides) return false;
+    if (!this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id)) return false;
     return this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id).muted;
   }
 
@@ -346,8 +347,12 @@ class GuildChannel extends Channel {
     if (this.client.user.bot) return null;
     if (!this.client.user.guildSettings) return null;
     if (!this.client.user.guildSettings.get(this.guild.id)) return null;
-    if (!this.client.user.guildSettings.get(this.guild.id).channelOverrides) return null;
-    if (!this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id)) return null;
+    if (!this.client.user.guildSettings.get(this.guild.id).channelOverrides) {
+      return Constants.MessageNotificationTypes[3];
+    }
+    if (!this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id)) {
+      return Constants.MessageNotificationTypes[3];
+    }
     return this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id).messageNotifications;
   }
 
