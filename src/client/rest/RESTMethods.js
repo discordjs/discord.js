@@ -815,11 +815,11 @@ class RESTMethods {
       );
   }
 
-  removeMessageReaction(message, emoji, user) {
-    const endpoint = Endpoints.Message(message).Reaction(emoji).User(user === this.client.user.id ? '@me' : user.id);
+  removeMessageReaction(message, emoji, userID) {
+    const endpoint = Endpoints.Message(message).Reaction(emoji).User(userID === this.client.user.id ? '@me' : userID);
     return this.rest.makeRequest('delete', endpoint, true).then(() =>
       this.client.actions.MessageReactionRemove.handle({
-        user_id: user,
+        user_id: userID,
         message_id: message.id,
         emoji: Util.parseEmoji(emoji),
         channel_id: message.channel.id,
