@@ -16001,7 +16001,6 @@ class RESTManager {
 
   makeRequest(method, url, auth, data, file) {
     const apiRequest = new APIRequest(this, method, url, auth, data, file);
-
     if (!this.handlers[apiRequest.route]) {
       const RequestHandlerType = this.getRequestHandler();
       this.handlers[apiRequest.route] = new RequestHandlerType(this, apiRequest.route);
@@ -23262,6 +23261,12 @@ class SequentialRequestHandler extends RequestHandler {
      * @type {number}
      */
     this.timeDifference = 0;
+
+    /**
+     * Whether the queue is being processed or not
+     * @type {boolean}
+     */
+    this.busy = false;
   }
 
   push(request) {
@@ -23275,6 +23280,7 @@ class SequentialRequestHandler extends RequestHandler {
    * @returns {Promise<?Object|Error>}
    */
   execute(item) {
+    this.busy = true;
     return new Promise(resolve => {
       item.request.gen().end((err, res) => {
         if (res && res.headers) {
@@ -23317,8 +23323,11 @@ class SequentialRequestHandler extends RequestHandler {
 
   handle() {
     super.handle();
-    if (this.remaining === 0 || this.queue.length === 0 || this.globalLimit) return;
-    this.execute(this.queue.shift()).then(() => this.handle());
+    if (this.busy || this.remaining === 0 || this.queue.length === 0 || this.globalLimit) return;
+    this.execute(this.queue.shift()).then(() => {
+      this.busy = false;
+      this.handle();
+    });
   }
 }
 
