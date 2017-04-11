@@ -1,5 +1,5 @@
 const Constants = require('../util/Constants');
-const Collection = require('../util/Util/Collection');
+const Collection = require('../util/Collection');
 const ClientUserChannelOverride = require('./ClientUserChannelOverride');
 
 /**
