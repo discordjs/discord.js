@@ -23307,10 +23307,7 @@ class SequentialRequestHandler extends RequestHandler {
           item.resolve(data);
           if (this.requestRemaining === 0) {
             this.restManager.client.setTimeout(
-              () => {
-                this.waiting = false;
-                resolve(data);
-              },
+              () => resolve(data),
               this.requestResetTime - Date.now() + this.timeDifference + this.restManager.client.options.restTimeOffset
             );
           } else {
