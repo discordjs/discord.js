@@ -1,6 +1,7 @@
 const User = require('./User');
 const Collection = require('../util/Collection');
 const ClientUserSettings = require('./ClientUserSettings');
+const ClientUserGuildSettings = require('./ClientUserGuildSettings');
 /**
  * Represents the logged in client's Discord user
  * @extends {User}
@@ -71,6 +72,18 @@ class ClientUser extends User {
      * <warn>This is only filled when using a user account</warn>
      */
     if (data.user_settings) this.settings = new ClientUserSettings(this, data.user_settings);
+
+    /**
+     * All of the user's guild settings
+     * @type {Collection<ClientUserGuildSettings>}
+     * <warn>This is only filled when using a user account</warn>
+     */
+    if (data.user_guild_settings) {
+      this.guildSettings = new Collection();
+      for (const guild of data.user_guild_settings) {
+        this.guildSettings.set(guild.guild_id, new ClientUserGuildSettings(this, guild));
+      }
+    }
   }
 
   edit(data) {
@@ -232,10 +245,12 @@ class ClientUser extends User {
    */
   setGame(game, streamingURL) {
     if (game === null) return this.setPresence({ game });
-    return this.setPresence({ game: {
-      name: game,
-      url: streamingURL,
-    } });
+    return this.setPresence({
+      game: {
+        name: game,
+        url: streamingURL,
+      },
+    });
   }
 
   /**

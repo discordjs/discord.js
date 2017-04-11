@@ -312,6 +312,7 @@ exports.Events = {
   USER_UPDATE: 'userUpdate',
   USER_NOTE_UPDATE: 'userNoteUpdate',
   USER_SETTINGS_UPDATE: 'clientUserSettingsUpdate',
+  USER_GUILD_SETTINGS_UPDATE: 'clientUserGuildSettingsUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
   TYPING_START: 'typingStart',
@@ -424,6 +425,13 @@ exports.ExplicitContentFilterTypes = [
   'DISABLED',
   'NON_FRIENDS',
   'FRIENDS_AND_NON_FRIENDS',
+];
+
+exports.MessageNotificationTypes = [
+  'EVERYTHING',
+  'MENTIONS',
+  'NOTHING',
+  'INHERIT',
 ];
 
 exports.UserSettingsMap = {
@@ -557,6 +565,60 @@ exports.UserSettingsMap = {
       mutualFriends: flags.all ? true : flags.mutualFriends || false,
     };
   },
+};
+
+exports.UserGuildSettingsMap = {
+  message_notifications: function messageNotifications(type) { // eslint-disable-line func-name-matching
+    /**
+     * The type of message that should notify you
+     * one of `EVERYTHING`, `MENTIONS`, `NOTHING`
+     * @name ClientUserGuildSettings#messageNotifications
+     * @type {string}
+     */
+    return exports.MessageNotificationTypes[type];
+  },
+  /**
+   * Whether to receive mobile push notifications
+   * @name ClientUserGuildSettings#mobilePush
+   * @type {boolean}
+   */
+  mobile_push: 'mobilePush',
+  /**
+   * Whether the guild is muted or not
+   * @name ClientUserGuildSettings#muted
+   * @type {boolean}
+   */
+  muted: 'muted',
+  /**
+   * Whether to suppress everyone messages
+   * @name ClientUserGuildSettings#suppressEveryone
+   * @type {boolean}
+   */
+  suppress_everyone: 'suppressEveryone',
+  /**
+   * A collection containing all the channel overrides
+   * @name ClientUserGuildSettings#channelOverrides
+   * @type {Collection<ClientUserChannelOverride>}
+   */
+  channel_overrides: 'channelOverrides',
+};
+
+exports.UserChannelOverrideMap = {
+  message_notifications: function messageNotifications(type) { // eslint-disable-line func-name-matching
+    /**
+     * The type of message that should notify you
+     * one of `EVERYTHING`, `MENTIONS`, `NOTHING`, `INHERIT`
+     * @name ClientUserGuildSettings#messageNotifications
+     * @type {string}
+     */
+    return exports.MessageNotificationTypes[type];
+  },
+  /**
+   * Whether the guild is muted or not
+   * @name ClientUserGuildSettings#muted
+   * @type {boolean}
+   */
+  muted: 'muted',
 };
 
 exports.Colors = {
