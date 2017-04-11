@@ -324,7 +324,7 @@ class GuildChannel extends Channel {
   }
 
   /**
- * Get whether the channel is muted
+ * Whether the channel is muted
  * <warn>This is only available when using a user account.</warn>
  * @type {boolean}
  */
@@ -338,7 +338,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Get the type of message that should notify you
+   * The type of message that should notify you
    * one of `EVERYTHING`, `MENTIONS`, `NOTHING`, `INHERIT`
    * <warn>This is only available when using a user account.</warn>
    * @type {string}

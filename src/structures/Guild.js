@@ -312,7 +312,7 @@ class Guild {
   }
 
   /**
-   * Get whether the guild is muted
+   * Whether the guild is muted
    * <warn>This is only available when using a user account.</warn>
    * @type {?boolean}
    */
@@ -324,7 +324,7 @@ class Guild {
   }
 
   /**
-   * Get the type of message that should notify you
+   * The type of message that should notify you
    * one of `EVERYTHING`, `MENTIONS`, `NOTHING`
    * <warn>This is only available when using a user account.</warn>
    * @type {string}
@@ -337,7 +337,7 @@ class Guild {
   }
 
   /**
-   * Get whether to receive mobile push notifications
+   * Whether to receive mobile push notifications
    * <warn>This is only available when using a user account.</warn>
    * @type {boolean}
    */
@@ -349,7 +349,7 @@ class Guild {
   }
 
   /**
-   * Get whether to suppress everyone messages
+   * Whether to suppress everyone messages
    * <warn>This is only available when using a user account.</warn>
    * @type {boolean}
    */
