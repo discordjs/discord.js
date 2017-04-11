@@ -278,6 +278,7 @@ const Endpoints = exports.Endpoints = {
     bot: '/gateway/bot',
   },
   Invite: inviteID => `/invite/${inviteID}`,
+  inviteLink: id => `https://discord.gg/${id}`,
   Webhook: (webhookID, token) => `/webhooks/${webhookID}${token ? `/${token}` : ''}`,
 };
 
