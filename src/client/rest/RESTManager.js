@@ -38,7 +38,6 @@ class RESTManager {
 
   makeRequest(method, url, auth, data, file) {
     const apiRequest = new APIRequest(this, method, url, auth, data, file);
-
     if (!this.handlers[apiRequest.route]) {
       const RequestHandlerType = this.getRequestHandler();
       this.handlers[apiRequest.route] = new RequestHandlerType(this, apiRequest.route);
