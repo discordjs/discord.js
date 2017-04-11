@@ -62,10 +62,10 @@ class MessageReaction {
    */
   remove(user = this.message.client.user) {
     const message = this.message;
-    user = this.message.client.resolver.resolveUserID(user);
-    if (!user) return Promise.reject(new Error('Couldn\'t resolve the user ID to remove from the reaction.'));
+    const userID = this.message.client.resolver.resolveUserID(user);
+    if (!userID) return Promise.reject(new Error('Couldn\'t resolve the user ID to remove from the reaction.'));
     return message.client.rest.methods.removeMessageReaction(
-      message, this.emoji.identifier, user
+      message, this.emoji.identifier, userID
     );
   }
 
