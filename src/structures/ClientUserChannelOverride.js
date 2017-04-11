@@ -18,9 +18,9 @@ class ClientUserChannelOverride {
       const value = Constants.UserSettingsMap[key];
       if (!data.hasOwnProperty(key)) continue;
       if (typeof value === 'function') {
-        this.guilds[data.guild_id][value.name] = value(data[key]);
+        this[value.name] = value(data[key]);
       } else {
-        this.guilds[data.guild_id][value] = data[key];
+        this[value] = data[key];
       }
     }
   }
