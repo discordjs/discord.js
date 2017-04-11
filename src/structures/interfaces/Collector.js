@@ -16,8 +16,6 @@ const EventEmitter = require('events').EventEmitter;
 
 /**
  * Interface for defining a new Collector.
- * @fires Collector#collect
- * @fires Collector#end
  * @interface
  */
 class Collector extends EventEmitter {
@@ -66,6 +64,7 @@ class Collector extends EventEmitter {
 
   /**
    * @param {...*} args The arguments emitted by the listener.
+   * @emits Collector#collect
    * @private
    */
   _handle(...args) {
@@ -122,6 +121,7 @@ class Collector extends EventEmitter {
   /**
    * Stop this collector and emit the `end` event.
    * @param {string} [reason='user'] The reason this collector is ending.
+   * @emits Collector#end
    */
   stop(reason = 'user') {
     if (this.ended) return;
