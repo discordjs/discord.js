@@ -1,5 +1,5 @@
 const Constants = require('../util/Constants');
-const Util = require('../util/Util');
+const Collection = require('../util/Util/Collection');
 const ClientUserChannelOverride = require('./ClientUserChannelOverride');
 
 /**
@@ -8,7 +8,7 @@ const ClientUserChannelOverride = require('./ClientUserChannelOverride');
 class ClientUserGuildSettings {
   constructor(user, data) {
     this.user = user;
-    this.channelOverrides = new Util.Collection();
+    this.channelOverrides = new Collection();
     this.patch(data);
   }
 
