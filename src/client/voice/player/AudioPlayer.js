@@ -47,7 +47,12 @@ class AudioPlayer extends EventEmitter {
     this.voiceConnection.once('closing', () => this.destroyAllStreams());
   }
 
-  get currentTranscoder() {
+  /**
+   * The current transcoder
+   * @type {?Object}
+   * @readonly
+   */
+  get transcoder() {
     return this.currentStream.transcoder;
   }
 
@@ -56,7 +61,7 @@ class AudioPlayer extends EventEmitter {
    * @type {?StreamDispatcher}
    * @readonly
    */
-  get currentDispatcher() {
+  get dispatcher() {
     return this.currentStream.dispatcher;
   }
 
@@ -65,8 +70,8 @@ class AudioPlayer extends EventEmitter {
   }
 
   destroyCurrentStream() {
-    const transcoder = this.currentTranscoder;
-    const dispatcher = this.currentDispatcher;
+    const transcoder = this.transcoder;
+    const dispatcher = this.dispatcher;
     if (transcoder) transcoder.kill();
     if (dispatcher) dispatcher.destroy('end');
     this.currentStream = {};
