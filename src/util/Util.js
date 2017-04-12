@@ -87,11 +87,10 @@ class Util {
   }
 
   /**
-   * Does some weird shit to test the equality of two arrays' elements.
-   * <warn>Do not use. This will give your dog/cat severe untreatable cancer of the everything. RIP Fluffykins.</warn>
-   * @param {Array<*>} a ????
-   * @param {Array<*>} b ?????????
-   * @returns {boolean}
+   * Checks whether the arrays are equal, also removes duplicated entries from b.
+   * @param {Array<*>} a Array which will not be modified.
+   * @param {Array<*>} b Array to remove duplicated entries from.
+   * @returns {boolean} boolean Whether the arrays are equal.
    * @private
    */
   static arraysEqual(a, b) {
