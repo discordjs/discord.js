@@ -89,6 +89,7 @@ class TextChannel extends GuildChannel {
   get typing() {}
   get typingCount() {}
   createCollector() {}
+  createMessageCollector() {}
   awaitMessages() {}
   bulkDelete() {}
   acknowledge() {}
