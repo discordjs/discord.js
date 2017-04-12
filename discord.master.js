@@ -11589,7 +11589,7 @@ class ClientDataResolver {
   resolveEmojiIdentifier(emoji) {
     if (emoji instanceof Emoji || emoji instanceof ReactionEmoji) return emoji.identifier;
     if (typeof emoji === 'string') {
-      if (!isNaN(parseInt(emoji))) return this.client.emojis.get(emoji).identifier;
+      if (this.client.emojis.has(emoji)) return this.client.emojis.get(emoji).identifier;
       else if (!emoji.includes('%')) return encodeURIComponent(emoji);
       else return emoji;
     }
