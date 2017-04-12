@@ -476,6 +476,7 @@ exports.applyToClass = (structure, full = false, ignore = []) => {
       'typingCount',
       'fetchPinnedMessages',
       'createCollector',
+      'createMessageCollector',
       'awaitMessages'
     );
   }
