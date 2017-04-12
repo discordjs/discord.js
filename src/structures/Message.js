@@ -513,6 +513,7 @@ class Message {
         reaction.users.delete(user.id);
         reaction.count--;
         if (user.id === this.client.user.id) reaction.me = false;
+        if (reaction.count <= 0) this.reactions.delete(emojiID);
         return reaction;
       }
     }
