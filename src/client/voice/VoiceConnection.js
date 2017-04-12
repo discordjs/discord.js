@@ -117,6 +117,15 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
+   * The current stream dispatcher (if any)
+   * @type {?StreamDispatcher}
+   * @readonly
+   */
+  get dispatcher() {
+    return this.player.dispatcher;
+  }
+
+  /**
    * Sets whether the voice connection should display as "speaking" or not
    * @param {boolean} value whether or not to speak
    * @private
