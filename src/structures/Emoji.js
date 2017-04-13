@@ -120,7 +120,7 @@ class Emoji {
    *  .catch(console.error);
    */
   edit(data) {
-    return this.client.rest.methods.updateEmoji(this, data);
+    return this.client.rest.methods.updateEmoji(this, data); // 
   }
 
   /**
