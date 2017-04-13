@@ -120,7 +120,40 @@ class Emoji {
    *  .catch(console.error);
    */
   edit(data) {
-    return this.client.rest.methods.updateEmoji(this, data); // 
+    return this.client.rest.methods.updateEmoji(this, data);
+  }
+
+  /**
+   * Set the name of the emoji
+   * @param {string} name The new name for the emoji
+   * @returns {Promise<Emoji>}
+   */
+  setName(name) {
+    return this.edit({ name });
+  }
+
+  /**
+   * Add a role to the list of roles that can use this emoji
+   * @param {Role} role The role to add
+   * @returns {Promise<Emoji>}
+   */
+  addRestrictedRole(role) {
+    const newRoles = new Collection(this.roles);
+    newRoles.set(role.id, role);
+    return this.edit({ roles: newRoles });
+  }
+
+  /**
+   * Add multiple roles to the list of roles that can use this emoji
+   * @param {Array<Role>} roles Roles to add
+   * @returns {Promise<Emoji>}
+   */
+  addRestrictedRoles(roles) {
+    const newRoles = new Collection(this.roles);
+    for (const role of roles) {
+      if (this.guild.roles.has(role.id)) newRoles.set(role.id, role);
+    }
+    return this.edit({ roles: newRoles });
   }
 
   /**
