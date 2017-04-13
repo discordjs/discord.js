@@ -130,7 +130,7 @@ class AudioPlayer extends EventEmitter {
 
   playBroadcast(broadcast, { volume = 1, passes = 1 } = {}) {
     const options = { volume, passes };
-    this.destroyAllStreams();
+    this.destroyCurrentStream();
     const dispatcher = this.createDispatcher(broadcast, options);
     this.currentStream = {
       dispatcher,
