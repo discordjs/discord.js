@@ -120,7 +120,7 @@ class ShardClientUtil {
   _respond(type, message) {
     this.send(message).catch(err => {
       err.message = `Error when sending ${type} response to master process: ${err.message}`;
-      this.client.emit('error', err);
+      this.client.logger.error(err);
     });
   }
 

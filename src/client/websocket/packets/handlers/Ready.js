@@ -67,7 +67,7 @@ class ReadyHandler extends AbstractHandler {
 
     ws.sessionID = data.session_id;
     ws._trace = data._trace;
-    client.emit('debug', `READY ${ws._trace.join(' -> ')} ${ws.sessionID}`);
+    client.logger.debug(`READY ${ws._trace.join(' -> ')} ${ws.sessionID}`);
     ws.checkIfReady();
   }
 }

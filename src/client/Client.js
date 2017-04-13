@@ -1,5 +1,6 @@
 const os = require('os');
 const EventEmitter = require('events').EventEmitter;
+const Logger = require('../util/Logger');
 const Constants = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
@@ -25,6 +26,8 @@ class Client extends EventEmitter {
    */
   constructor(options = {}) {
     super();
+
+    this.logger = new Logger();
 
     // Obtain shard details from environment
     if (!options.shardId && 'SHARD_ID' in process.env) options.shardId = Number(process.env.SHARD_ID);
@@ -352,7 +355,7 @@ class Client extends EventEmitter {
   sweepMessages(lifetime = this.options.messageCacheLifetime) {
     if (typeof lifetime !== 'number' || isNaN(lifetime)) throw new TypeError('The lifetime must be a number.');
     if (lifetime <= 0) {
-      this.emit('debug', 'Didn\'t sweep messages - lifetime is unlimited');
+      this.logger.warn('Didn\'t sweep messages - lifetime is unlimited');
       return -1;
     }
 
@@ -373,7 +376,7 @@ class Client extends EventEmitter {
       }
     }
 
-    this.emit('debug', `Swept ${messages} messages older than ${lifetime} seconds in ${channels} text-based channels`);
+    this.logger.info(`Swept ${messages} messages older than ${lifetime} seconds in ${channels} text-based channels`);
     return messages;
   }
 

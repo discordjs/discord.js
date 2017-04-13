@@ -49,6 +49,8 @@ class StreamDispatcher extends VolumeInterface {
     this.destroyed = false;
 
     this._opus = streamOptions.opus;
+
+    this.client = this.player.voiceConnection.voiceManager.client;
   }
 
   /**
@@ -207,7 +209,7 @@ class StreamDispatcher extends VolumeInterface {
         // Old code?
         // data.timestamp = data.timestamp + 4294967295 ? data.timestamp + 960 : 0;
         data.pausedTime += data.length * 10;
-        this.player.voiceConnection.voiceManager.client.setTimeout(() => this.process(), data.length * 10);
+        this.client.setTimeout(() => this.process(), data.length * 10);
         return;
       }
 
@@ -217,7 +219,7 @@ class StreamDispatcher extends VolumeInterface {
       if (!buffer) {
         data.missed++;
         data.pausedTime += data.length * 10;
-        this.player.voiceConnection.voiceManager.client.setTimeout(() => this.process(), data.length * 10);
+        this.client.setTimeout(() => this.process(), data.length * 10);
         return;
       }
 
@@ -232,7 +234,7 @@ class StreamDispatcher extends VolumeInterface {
       }
 
       const nextTime = data.length + (data.startTime + data.pausedTime + (data.count * data.length) - Date.now());
-      this.player.voiceConnection.voiceManager.client.setTimeout(() => this.process(), nextTime);
+      this.client.setTimeout(() => this.process(), nextTime);
     } catch (e) {
       this.destroy('error', e);
     }
