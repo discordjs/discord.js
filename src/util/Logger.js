@@ -9,6 +9,10 @@ const LogLevels = [
   'ERROR',
 ];
 
+/**
+ * Logger for logging things
+ * @private
+ */
 class Logger extends EventEmitter {
   log(level, ...rest) {
     for (let i = LogLevels.indexOf(level.toUpperCase()); i >= 0; i--) {
