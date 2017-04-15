@@ -581,7 +581,7 @@ class Guild {
    * @returns {Promise<Guild>}
    * @example
    * // edit the guild owner
-   * guild.setOwner(guilds.members.first())
+   * guild.setOwner(guild.members.first())
    *  .then(updated => console.log(`Updated the guild owner to ${updated.owner.username}`))
    *  .catch(console.error);
    */
