@@ -11706,7 +11706,7 @@ module.exports = {
 	"dependencies": {
 		"@types/node": "^7.0.0",
 		"long": "^3.2.0",
-		"prism-media": "hydrabolt/prism-media",
+		"prism-media": "^0.0.1",
 		"snekfetch": "^2.2.0",
 		"tweetnacl": "^0.14.0",
 		"ws": "^2.0.0"
