@@ -64,7 +64,7 @@ exports.DefaultOptions = {
     version: 6,
   },
   http: {
-    version: 6,
+    version: 7,
     host: 'https://discordapp.com',
     cdn: 'https://cdn.discordapp.com',
   },
