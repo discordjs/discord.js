@@ -253,7 +253,7 @@ class Guild {
   }
 
   /**
-   * Gets the URL to this guild's icon (if it has one, otherwise it returns null)
+   * Gets the URL to this guild's icon (if it has one, otherwise it returns null.)
    * @type {?string}
    * @readonly
    */
@@ -263,7 +263,7 @@ class Guild {
   }
 
   /**
-   * Gets the URL to this guild's splash (if it has one, otherwise it returns null)
+   * Gets the URL to this guild's splash (if it has one, otherwise it returns null.)
    * @type {?string}
    * @readonly
    */
@@ -301,7 +301,7 @@ class Guild {
   }
 
   /**
-   * Get the position of this guild
+   * Get the position of this guild.
    * <warn>This is only available when using a user account.</warn>
    * @type {?number}
    */
@@ -312,12 +312,21 @@ class Guild {
   }
 
   /*
-   * The `@everyone` Role of the guild.
+   * The `@everyone` role of the guild.
    * @type {Role}
    * @readonly
    */
   get defaultRole() {
     return this.roles.get(this.id);
+  }
+
+  /**
+   * Gets the client user as a GuildMember of this guild.
+   * @type {GuildMember}
+   * @readonly
+   */
+  get me() {
+    return this.member(this.client.user);
   }
 
   /**
