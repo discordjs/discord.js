@@ -1,5 +1,4 @@
 const kCode = Symbol('code');
-const sCode = Symbol('stack');
 
 /**
  * Represents an error from Discord's HTTP Gateway
