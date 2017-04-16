@@ -326,7 +326,7 @@ class Guild {
    * @readonly
    */
   get me() {
-    return this.member(this.client.user);
+    return this.members.get(this.client.user.id);
   }
 
   /**
