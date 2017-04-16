@@ -7,14 +7,20 @@ class DiscordAPIError extends Error {
     const flattened = error.errors ? `\n${this.constructor.flattenErrors(error.errors).join('\n')}` : '';
     this.name = `DiscordAPIError ${this.code}`;
     this.message = `${error.message}${flattened}`;
-    
+
     /**
-     * The error code from Discord
+     * HTTP error code returned by Discord
      * @type {number}
      */
     this.code = error.code;
   }
-  
+
+  /**
+   * Flattens an errors object returned from the API into an array
+   * @param {Object} obj Discord errors object
+   * @param {string} [key] idklol
+   * @return {string[]}
+   */
   static flattenErrors(obj, key = '') {
     let messages = [];
     for (const k of Object.keys(obj)) {
