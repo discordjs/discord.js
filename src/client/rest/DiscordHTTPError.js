@@ -6,9 +6,9 @@ const sCode = Symbol('stack');
  */
 class DiscordHTTPError extends Error {
   constructor(error) {
-    super(error.message);
+    const flatErrors = error.errors ? makeFlatErrors(error.errors).map(x => x.join(': ')).join('\n') : '';
+    super(`${error.message}\n${flatErrors}`.trim());
     this[kCode] = error.code;
-    this[sCode] = error.errors;
   }
 
   /**
@@ -26,14 +26,21 @@ class DiscordHTTPError extends Error {
   get code() {
     return this[kCode];
   }
-
-  /**
-   * A trace
-   * @type {?Object}
-   */
-  get trace() {
-    return this[sCode];
-  }
 }
+
+function makeFlatErrors(obj, key = '') {
+  let messages = [];
+  for (const [k, v] of Object.entries(obj)) {
+    const newKey = key ? isNaN(parseInt(k)) ? `${key}.${k}` : `${key}[${k}]` : k;
+    if (v._errors) {
+      messages.push([newKey, v._errors.map(e => e.message).join(' ')]);
+    } else {
+      messages = messages.concat(makeFlatErrors(v, newKey));
+    }
+  }
+
+  return messages;
+}
+
 
 module.exports = DiscordHTTPError;
