@@ -5,7 +5,7 @@ const kCode = Symbol('code');
  */
 class DiscordHTTPError extends Error {
   constructor(error) {
-    const flatErrors = error.errors ? makeFlatErrors(error.errors).map(x => x.join(': ')).join('\n') : '';
+    const flatErrors = error.errors ? makeFlatErrors(error.errors).join('\n') : '';
     super(`${error.message}\n${flatErrors}`.trim());
     this[kCode] = error.code;
   }
@@ -32,7 +32,7 @@ function makeFlatErrors(obj, key = '') {
   for (const [k, v] of Object.entries(obj)) {
     const newKey = key ? isNaN(parseInt(k)) ? `${key}.${k}` : `${key}[${k}]` : k;
     if (v._errors) {
-      messages.push([newKey, v._errors.map(e => e.message).join(' ')]);
+      messages.push(`${newKey}: ${v._errors.map(e => e.message).join(' ')}`);
     } else {
       messages = messages.concat(makeFlatErrors(v, newKey));
     }
