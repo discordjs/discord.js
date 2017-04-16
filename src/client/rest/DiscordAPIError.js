@@ -1,11 +1,12 @@
 /**
- * Represents an error from Discord's HTTP Gateway
+ * Represents an error from the Discord API
  */
-class DiscordHTTPError extends Error {
+class DiscordAPIError extends Error {
   constructor(error) {
-    const flatErrors = error.errors ? this.constructor.flattenErrors(error.errors).join('\n') : '';
-    super(`${error.message}\n${flatErrors}`.trim());
-    this.name = `DiscordHTTPError ${this.code}`;
+    super();
+    const flattened = error.errors ? `\n${this.constructor.flattenErrors(error.errors).join('\n')}` : '';
+    this.name = `DiscordAPIError ${this.code}`;
+    this.message = `${error.message}${flattened}`;
     
     /**
      * The error code from Discord
@@ -29,4 +30,4 @@ class DiscordHTTPError extends Error {
   }
 }
 
-module.exports = DiscordHTTPError;
+module.exports = DiscordAPIError;
