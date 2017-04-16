@@ -1,5 +1,5 @@
 const RequestHandler = require('./RequestHandler');
-const DiscordHTTPError = require('../DiscordHTTPError');
+const DiscordAPIError = require('../DiscordAPIError');
 
 /**
  * Handles API Requests sequentially, i.e. we wait until the current request is finished before moving onto
@@ -65,7 +65,7 @@ class SequentialRequestHandler extends RequestHandler {
             }, Number(res.headers['retry-after']) + this.restManager.client.options.restTimeOffset);
             if (res.headers['x-ratelimit-global']) this.globalLimit = true;
           } else {
-            item.reject(err.status === 400 ? new DiscordHTTPError(res.body) : err);
+            item.reject(err.status === 400 ? new DiscordAPIError(res.body) : err);
             resolve(err);
           }
         } else {
