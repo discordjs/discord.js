@@ -11672,7 +11672,7 @@ module.exports = ClientDataResolver;
 
 module.exports = {
 	"name": "discord.js",
-	"version": "11.0.0",
+	"version": "11.1.0",
 	"description": "A powerful library for interacting with the Discord API",
 	"main": "./src/index",
 	"types": "./typings/index.d.ts",
