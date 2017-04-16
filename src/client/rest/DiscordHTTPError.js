@@ -29,7 +29,7 @@ class DiscordHTTPError extends Error {
 
 function makeFlatErrors(obj, key = '') {
   let messages = [];
-  for (const [k, v] of Object.entries(obj)) {
+  for (const [k, v] of Object.keys(obj).map(key => [key, obj[key]])) {
     const newKey = key ? isNaN(parseInt(k)) ? `${key}.${k}` : `${key}[${k}]` : k;
     if (v._errors) {
       messages.push(`${newKey}: ${v._errors.map(e => e.message).join(' ')}`);
