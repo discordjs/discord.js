@@ -16102,18 +16102,18 @@ const WebSocket = (function findWebSocket() {
  * Abstracts a WebSocket connection with decoding/encoding for the discord gateway
  * @private
  */
-class WebSocketConnection extends WebSocket {
+class WebSocketConnection extends EventEmitter {
   /**
    * @param {string} gateway Websocket gateway to connect to
    */
   constructor(gateway) {
     super(gateway);
-    this.e = new EventEmitter();
-    if (browser) this.binaryType = 'arraybuffer';
-    this.onmessage = this.eventMessage.bind(this);
-    this.onopen = this.e.emit.bind(this.e, 'open');
-    this.onclose = this.e.emit.bind(this.e, 'close');
-    this.onerror = this.e.emit.bind(this.e, 'error');
+    this.ws = new WebSocket(gateway);
+    if (browser) this.ws.binaryType = 'arraybuffer';
+    this.ws.onmessage = this.eventMessage.bind(this);
+    this.ws.onopen = this.emit.bind(this, 'open');
+    this.ws.onclose = this.emit.bind(this, 'close');
+    this.ws.onerror = this.emit.bind(this, 'error');
   }
 
   /**
@@ -16124,10 +16124,10 @@ class WebSocketConnection extends WebSocket {
   eventMessage(event) {
     try {
       const data = this.unpack(event.data);
-      this.e.emit('packet', data);
+      this.emit('packet', data);
       return true;
     } catch (err) {
-      if (this.e.listenerCount('decodeError')) this.e.emit('decodeError', err);
+      if (this.listenerCount('decodeError')) this.emit('decodeError', err);
       return false;
     }
   }
@@ -16137,7 +16137,7 @@ class WebSocketConnection extends WebSocket {
    * @param {string|Buffer} data Data to send
    */
   send(data) {
-    super.send(this.pack(data));
+    this.ws.send(this.pack(data));
   }
 
   /**
@@ -16172,6 +16172,24 @@ class WebSocketConnection extends WebSocket {
   inflate(data) {
     return erlpack ? data : zlib.inflateSync(data).toString();
   }
+
+  /**
+   * State of the WebSocket
+   * @type {number}
+   * @readonly
+   */
+  get readyState() {
+    return this.ws.readyState;
+  }
+
+  /**
+   * Close the WebSocket
+   * @param {number} code Close code
+   * @param {string} [reason] Close reason
+   */
+  close(code, reason) {
+    this.ws.close(code, reason);
+  }
 }
 
 /**
@@ -16179,6 +16197,7 @@ class WebSocketConnection extends WebSocket {
  * @type {string}
  */
 WebSocketConnection.ENCODING = erlpack ? 'etf' : 'json';
+WebSocketConnection.WebSocket = WebSocket;
 
 module.exports = WebSocketConnection;
 
@@ -23454,10 +23473,10 @@ class WebSocketManager extends EventEmitter {
     this.normalReady = false;
     if (this.status !== Constants.Status.RECONNECTING) this.status = Constants.Status.CONNECTING;
     this.ws = new WebSocketConnection(gateway);
-    this.ws.e.on('open', this.eventOpen.bind(this));
-    this.ws.e.on('packet', this.eventPacket.bind(this));
-    this.ws.e.on('close', this.eventClose.bind(this));
-    this.ws.e.on('error', this.eventError.bind(this));
+    this.ws.on('open', this.eventOpen.bind(this));
+    this.ws.on('packet', this.eventPacket.bind(this));
+    this.ws.on('close', this.eventClose.bind(this));
+    this.ws.on('error', this.eventError.bind(this));
     this._queue = [];
     this._remaining = 120;
     this.client.setInterval(() => {
@@ -23513,7 +23532,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   _send(data) {
-    if (this.ws.readyState === WebSocketConnection.OPEN) {
+    if (this.ws.readyState === WebSocketConnection.WebSocket.OPEN) {
       this.emit('send', data);
       this.ws.send(data);
     }
@@ -23521,7 +23540,7 @@ class WebSocketManager extends EventEmitter {
 
   doQueue() {
     const item = this._queue[0];
-    if (!(this.ws.readyState === WebSocketConnection.OPEN && item)) return;
+    if (!(this.ws.readyState === WebSocketConnection.WebSocket.OPEN && item)) return;
     if (this.remaining === 0) {
       this.client.setTimeout(this.doQueue.bind(this), Date.now() - this.remainingReset);
       return;
