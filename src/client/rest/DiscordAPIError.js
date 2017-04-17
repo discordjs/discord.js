@@ -24,7 +24,7 @@ class DiscordAPIError extends Error {
   static flattenErrors(obj, key = '') {
     let messages = [];
     for (const k of Object.keys(obj)) {
-      const newKey = key ? isNaN(parseInt(k)) ? `${key}.${k}` : `${key}[${k}]` : k;
+      const newKey = key ? isNaN(k) ? `${key}.${k}` : `${key}[${k}]` : k;
       if (obj[k]._errors) {
         messages.push(`${newKey}: ${obj[k]._errors.map(e => e.message).join(' ')}`);
       } else {
