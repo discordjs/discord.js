@@ -19,7 +19,7 @@ class DiscordAPIError extends Error {
    * Flattens an errors object returned from the API into an array
    * @param {Object} obj Discord errors object
    * @param {string} [key] idklol
-   * @return {string[]}
+   * @returns {string[]}
    */
   static flattenErrors(obj, key = '') {
     let messages = [];
