@@ -18,7 +18,5 @@ for (const libName of Object.keys(libs)) {
     const lib = require(libName);
     module.exports = libs[libName](lib);
     break;
-  } catch (err) {
-    //
-  }
+  } catch (err) {} // eslint-disable-line no-empty
 }
