@@ -43,7 +43,7 @@ For production bots, using node-opus should be considered a necessity, especiall
 - [erlpack](https://github.com/hammerandchisel/erlpack) for significantly faster WebSocket data (de)serialisation (`npm install hammerandchisel/erlpack --save`)
 - for faster voice packet encryption/decryption you can install one of the following:
     - [sodium](https://www.npmjs.com/package/sodium) (`npm install sodium --save`)
-    - [libsodium.js](https://github.com/jedisct1/libsodium.js) (`npm install libsodium-wrappers --save`)
+    - [libsodium.js](https://www.npmjs.com/package/libsodium-wrappers) (`npm install libsodium-wrappers --save`)
 - [uws](https://www.npmjs.com/package/uws) for a much faster WebSocket connection (`npm install uws --save`)  
   **Note:** This package does not handle disconnects entirely correctly, which causes automatic reconnection to Discord to not function.
   If you use this package, it may be wise to destroy + recreate the client entirely or restart the process upon disconnect.
