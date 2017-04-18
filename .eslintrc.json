@@ -36,6 +36,8 @@
       }
     }],
 
+    "linebreak-style": ["error", "unix"],
+
     "accessor-pairs": "warn",
     "array-callback-return": "error",
     "complexity": "warn",
