@@ -1,5 +1,5 @@
 const GuildChannel = require('./GuildChannel');
-const TextBasedChannel = require('./interface/TextBasedChannel');
+const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Collection = require('../util/Collection');
 
 /**
@@ -89,6 +89,7 @@ class TextChannel extends GuildChannel {
   get typing() {}
   get typingCount() {}
   createCollector() {}
+  createMessageCollector() {}
   awaitMessages() {}
   bulkDelete() {}
   acknowledge() {}
