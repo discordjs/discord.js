@@ -367,8 +367,19 @@ class TextBasedChannel {
 
   /**
    * Creates a Message Collector
-   * @param {CollectorFilterFunction} filter The filter to create the collector with
-   * @param {CollectorOptions} [options={}] The options to pass to the collector
+   * @param {CollectorFilter} filter The filter to create the collector with
+   * @param {MessageCollectorOptions} [options={}] The options to pass to the collector
+   * @returns {MessageCollector}
+   * @deprecated
+   */
+  createCollector(filter, options) {
+    return this.createMessageCollector(filter, options);
+  }
+
+  /**
+   * Creates a Message Collector
+   * @param {CollectorFilter} filter The filter to create the collector with
+   * @param {MessageCollectorOptions} [options={}] The options to pass to the collector
    * @returns {MessageCollector}
    * @example
    * // create a message collector
@@ -379,20 +390,20 @@ class TextBasedChannel {
    * collector.on('message', m => console.log(`Collected ${m.content}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
-  createCollector(filter, options = {}) {
+  createMessageCollector(filter, options = {}) {
     return new MessageCollector(this, filter, options);
   }
 
   /**
    * An object containing the same properties as CollectorOptions, but a few more:
-   * @typedef {CollectorOptions} AwaitMessagesOptions
+   * @typedef {MessageCollectorOptions} AwaitMessagesOptions
    * @property {string[]} [errors] Stop/end reasons that cause the promise to reject
    */
 
   /**
    * Similar to createCollector but in promise form. Resolves with a collection of messages that pass the specified
    * filter.
-   * @param {CollectorFilterFunction} filter The filter function to use
+   * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector
    * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
@@ -406,7 +417,7 @@ class TextBasedChannel {
   awaitMessages(filter, options = {}) {
     return new Promise((resolve, reject) => {
       const collector = this.createCollector(filter, options);
-      collector.on('end', (collection, reason) => {
+      collector.once('end', (collection, reason) => {
         if (options.errors && options.errors.includes(reason)) {
           reject(collection);
         } else {
@@ -465,6 +476,7 @@ exports.applyToClass = (structure, full = false, ignore = []) => {
       'typingCount',
       'fetchPinnedMessages',
       'createCollector',
+      'createMessageCollector',
       'awaitMessages'
     );
   }
