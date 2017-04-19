@@ -238,7 +238,7 @@ class RESTMethods {
     }
     return this.rest.makeRequest('get', `${endpoint}?${queryString}`, true).then(body => {
       const messages = body.messages.map(x =>
-        x.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client))
+        new Collection(x.map(m => [m.id, new Message(this.client.channels.get(m.channel_id), m, this.client)]))
       );
       return {
         totalResults: body.total_results,
