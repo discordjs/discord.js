@@ -194,8 +194,8 @@ class TextBasedChannel {
   fetchMessage(messageID) {
     if (!this.client.user.bot) {
       return this.fetchMessages({ limit: 1, around: messageID }).then(messages => {
-        const msg = messages.first();
-        if (msg.id !== messageID) throw new Error('Message not found.');
+        const msg = messages.get(messageID);
+        if (!msg) throw new Error('Message not found.');
         return msg;
       });
     }
