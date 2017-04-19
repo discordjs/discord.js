@@ -11615,7 +11615,8 @@ module.exports = {
 		"node-opus": "^0.2.5",
 		"opusscript": "^0.0.3",
 		"sodium": "^2.0.1",
-		"uws": "^0.14.1"
+		"uws": "^0.14.1",
+		"libsodium-wrappers": "^0.5.1"
 	},
 	"devDependencies": {
 		"discord.js-docgen": "hydrabolt/discord.js-docgen",
