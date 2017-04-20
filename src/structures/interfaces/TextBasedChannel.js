@@ -402,6 +402,7 @@ const Deprecated = {
    * @param {StringResolvable} [content] Text for the message
    * @param {MessageOptions} [options={}] Options for the message
    * @returns {Promise<Message|Message[]>}
+   * @deprecated
    * @example
    * // send a message
    * channel.sendMessage('hello!')
@@ -418,6 +419,7 @@ const Deprecated = {
    * @param {string} [content] Text for the message
    * @param {MessageOptions} [options] Options for the message
    * @returns {Promise<Message>}
+   * @deprecated
    */
   sendEmbed(embed, content, options) {
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
@@ -435,6 +437,7 @@ const Deprecated = {
    * @param {StringResolvable} [content] Text for the message
    * @param {MessageOptions} [options] Options for the message
    * @returns {Promise<Message>}
+   * @deprecated
    */
   sendFiles(files, content, options = {}) {
     return this.send(content, Object.assign(options, { files }));
@@ -447,6 +450,7 @@ const Deprecated = {
    * @param {StringResolvable} [content] Text for the message
    * @param {MessageOptions} [options] Options for the message
    * @returns {Promise<Message>}
+   * @deprecated
    */
   sendFile(attachment, name, content, options = {}) {
     return this.sendFiles([{ attachment, name }], content, options);
@@ -458,6 +462,7 @@ const Deprecated = {
    * @param {StringResolvable} content Content of the code block
    * @param {MessageOptions} [options] Options for the message
    * @returns {Promise<Message|Message[]>}
+   * @deprecated
    */
   sendCode(lang, content, options = {}) {
     return this.send(content, Object.assign(options, { code: lang }));
