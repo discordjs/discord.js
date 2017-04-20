@@ -8,7 +8,7 @@ const Collector = require('./interfaces/Collector');
 
 /**
  * Collects messages on a channel.
- * @implements {Collector}
+ * @extends {Collector}
  */
 class MessageCollector extends Collector {
 

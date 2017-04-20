@@ -10,7 +10,7 @@ const Collection = require('../util/Collection');
 
 /**
  * Collects reactions on messages.
- * @implements {Collector}
+ * @extends {Collector}
  */
 class ReactionCollector extends Collector {
 
