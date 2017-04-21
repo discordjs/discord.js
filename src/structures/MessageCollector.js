@@ -27,8 +27,9 @@ class MessageCollector extends Collector {
     this.channel = channel;
 
     /**
-     * @type {number} received Total number of messages that were received in the
+     * Total number of messages that were received in the
      * channel during message collection.
+     * @type {number}
      */
     this.received = 0;
 

@@ -23,39 +23,46 @@ class Collector extends EventEmitter {
     super();
 
     /**
-     * @type {Client} client The client.
+     * The client.
+     * @type {Client}
      */
     this.client = client;
 
     /**
-     * @type {CollectorFilter} filter The filter applied to this collector.
+     * The filter applied to this collector.
+     * @type {CollectorFilter}
      */
     this.filter = filter;
 
     /**
-     * @type {CollectorOptions} options The options of this collector.
+     * The options of this collector.
+     * @type {CollectorOptions}
      */
     this.options = options;
 
     /**
-     * @type {Collection} collected The items collected by this collector.
+     * The items collected by this collector.
+     * @type {Collection}
      */
     this.collected = new Collection();
 
     /**
-     * @type {boolean} ended Whether this collector has finished collecting.
+     * Whether this collector has finished collecting.
+     * @type {boolean}
      */
     this.ended = false;
 
     /**
-     * @type {?number} _timeout Timeout ID for cleanup.
+     * Timeout ID for cleanup.
+     * @type {?number}
      * @private
      */
     this._timeout = null;
 
     /**
-     * @type {Function} listener Call this to handle an event as a collectable element.
+     * Call this to handle an event as a collectable element.
      * Accepts any event data as parameters.
+     * @type {Function}
      * @private
      */
     this.listener = this._handle.bind(this);
@@ -77,7 +84,7 @@ class Collector extends EventEmitter {
      * Emitted whenever an element is collected.
      * @event Collector#collect
      * @param {*} element The element that got collected.
-     * @param {Collector} collector The message collector.
+     * @param {Collector} collector The collector.
      */
     this.emit('collect', collect.value, this);
 
