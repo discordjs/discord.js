@@ -396,10 +396,10 @@ class TextBasedChannel {
   }
 }
 
+/** @lends TextBasedChannel.prototype */
 const Deprecated = {
   /**
    * Send a message to this channel
-   * @name TextBasedChannel#sendMessage
    * @param {StringResolvable} [content] Text for the message
    * @param {MessageOptions} [options={}] Options for the message
    * @returns {Promise<Message|Message[]>}
@@ -416,7 +416,6 @@ const Deprecated = {
 
   /**
    * Send an embed to this channel
-   * @name TextBasedChannel#sendEmbed
    * @param {RichEmbed|Object} embed Embed for the message
    * @param {string} [content] Text for the message
    * @param {MessageOptions} [options] Options for the message
@@ -448,7 +447,6 @@ const Deprecated = {
 
   /**
    * Send a file to this channel
-   * @name TextBasedChannel#sendFile
    * @param {BufferResolvable} attachment File to send
    * @param {string} [name='file.jpg'] Name and extension of the file
    * @param {StringResolvable} [content] Text for the message
@@ -462,7 +460,6 @@ const Deprecated = {
 
   /**
    * Send a code block to this channel
-   * @name TextBasedChannel#sendCode
    * @param {string} lang Language for the code block
    * @param {StringResolvable} content Content of the code block
    * @param {MessageOptions} [options] Options for the message
