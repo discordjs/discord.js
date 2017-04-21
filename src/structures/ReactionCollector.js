@@ -23,17 +23,20 @@ class ReactionCollector extends Collector {
     super(message.client, filter, options);
 
     /**
-     * @type {Message} message The message.
+     * The message.
+     * @type {Message}
      */
     this.message = message;
 
     /**
-     * @type {Collection} users Users which have reacted.
+     * Users which have reacted.
+     * @type {Collection}
      */
     this.users = new Collection();
 
     /**
-     * @type {number} total Total number of reactions collected.
+     * Total number of reactions collected.
+     * @type {number}
      */
     this.total = 0;
 
