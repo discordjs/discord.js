@@ -15,8 +15,8 @@ const EventEmitter = require('events').EventEmitter;
  */
 
 /**
- * Interface for defining a new Collector.
- * @interface
+ * Abstract class for defining a new Collector.
+ * @abstract
  */
 class Collector extends EventEmitter {
   constructor(client, filter, options = {}) {
