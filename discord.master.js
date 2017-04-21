@@ -12468,12 +12468,12 @@ const Collector = __webpack_require__(66);
 
 /**
  * Collects messages on a channel.
- * @implements {Collector}
+ * @extends {Collector}
  */
 class MessageCollector extends Collector {
 
   /**
-   * @param {TextBasedChannel} channel The channel.
+   * @param {TextChannel|DMChannel|GroupDMChannel} channel The channel.
    * @param {CollectorFilter} filter The filter to be applied to this collector.
    * @param {MessageCollectorOptions} options The options to be applied to this collector.
    * @emits MessageCollector#message
@@ -16103,8 +16103,8 @@ const EventEmitter = __webpack_require__(10).EventEmitter;
  */
 
 /**
- * Interface for defining a new Collector.
- * @interface
+ * Abstract class for defining a new Collector.
+ * @abstract
  */
 class Collector extends EventEmitter {
   constructor(client, filter, options = {}) {
@@ -23451,7 +23451,7 @@ const Collection = __webpack_require__(3);
 
 /**
  * Collects reactions on messages.
- * @implements {Collector}
+ * @extends {Collector}
  */
 class ReactionCollector extends Collector {
 
