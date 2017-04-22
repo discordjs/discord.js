@@ -23839,7 +23839,7 @@ class WebSocketManager extends EventEmitter {
     const item = this._queue[0];
     if (!(this.ws.readyState === WebSocketConnection.WebSocket.OPEN && item)) return;
     if (this.remaining === 0) {
-      this.client.setTimeout(this.doQueue.bind(this), Date.now() + (this._remainingReset || 120e3));
+      this.client.setTimeout(this.doQueue.bind(this), Date.now() + (this._remainingReset || 60e3));
       return;
     }
     this._remaining--;
