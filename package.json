@@ -34,7 +34,7 @@
   "dependencies": {
     "long": "^3.2.0",
     "prism-media": "^0.0.1",
-    "snekfetch": "^3.0.0",
+    "snekfetch": "^3.1.0",
     "tweetnacl": "^0.14.0",
     "ws": "^2.0.0"
   },
