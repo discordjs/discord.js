@@ -99,10 +99,10 @@ class ShardingManager extends EventEmitter {
   /**
    * Spawns multiple shards.
    * @param {number} [amount=this.totalShards] Number of shards to spawn
-   * @param {number} [delay=5500] How long to wait in between spawning each shard (in milliseconds)
+   * @param {number} [delay=7500] How long to wait in between spawning each shard (in milliseconds)
    * @returns {Promise<Collection<number, Shard>>}
    */
-  spawn(amount = this.totalShards, delay = 5500) {
+  spawn(amount = this.totalShards, delay = 7500) {
     if (amount === 'auto') {
       return Util.fetchRecommendedShards(this.token).then(count => {
         this.totalShards = count;
