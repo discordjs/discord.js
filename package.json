@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "discord.js-docgen": "hydrabolt/discord.js-docgen",
-    "eslint": "^3.17.0",
+    "eslint": "^3.19.0",
     "parallel-webpack": "^1.6.0",
     "uglify-js": "mishoo/UglifyJS2#harmony",
     "webpack": "^2.2.0"
