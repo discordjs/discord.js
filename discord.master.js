@@ -11658,7 +11658,6 @@ module.exports = {
 	"homepage": "https://github.com/hydrabolt/discord.js#readme",
 	"runkitExampleFilename": "./docs/examples/ping.js",
 	"dependencies": {
-		"@types/node": "^7.0.0",
 		"long": "^3.2.0",
 		"prism-media": "^0.0.1",
 		"snekfetch": "^3.0.0",
@@ -11675,6 +11674,7 @@ module.exports = {
 		"libsodium-wrappers": "^0.5.1"
 	},
 	"devDependencies": {
+		"@types/node": "^7.0.0",
 		"discord.js-docgen": "hydrabolt/discord.js-docgen",
 		"eslint": "^3.19.0",
 		"parallel-webpack": "^1.6.0",
