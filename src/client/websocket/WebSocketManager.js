@@ -69,6 +69,8 @@ class WebSocketManager extends EventEmitter {
 
     this.lastHeartbeatAck = true;
 
+    this._remainingReset = 0;
+
     this._trace = [];
     this.resumeStart = -1;
   }
@@ -100,7 +102,7 @@ class WebSocketManager extends EventEmitter {
       this._connect(gateway);
       this.first = false;
     } else {
-      this.client.setTimeout(() => this._connect(gateway), 5500);
+      this.client.setTimeout(() => this._connect(gateway), 7500);
     }
   }
 
@@ -151,7 +153,7 @@ class WebSocketManager extends EventEmitter {
     const item = this._queue[0];
     if (!(this.ws.readyState === WebSocketConnection.WebSocket.OPEN && item)) return;
     if (this.remaining === 0) {
-      this.client.setTimeout(this.doQueue.bind(this), Date.now() - this.remainingReset);
+      this.client.setTimeout(this.doQueue.bind(this), Date.now() + (this._remainingReset || 120e3));
       return;
     }
     this._remaining--;
