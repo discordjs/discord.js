@@ -63,14 +63,14 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 181);
+/******/ 	return __webpack_require__(__webpack_require__.s = 185);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {exports.Package = __webpack_require__(39);
+/* WEBPACK VAR INJECTION */(function(process) {exports.Package = __webpack_require__(40);
 
 /**
  * Options for a Client.
@@ -1104,7 +1104,7 @@ module.exports = Collection;
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const snekfetch = __webpack_require__(37);
+/* WEBPACK VAR INJECTION */(function(Buffer) {const snekfetch = __webpack_require__(38);
 const Constants = __webpack_require__(0);
 const ConstantsHttp = Constants.DefaultOptions.http;
 
@@ -1336,7 +1336,7 @@ module.exports = Util;
 
 var base64 = __webpack_require__(73)
 var ieee754 = __webpack_require__(76)
-var isArray = __webpack_require__(55)
+var isArray = __webpack_require__(56)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -3306,7 +3306,7 @@ process.umask = function() { return 0; };
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Long = __webpack_require__(31);
+const Long = __webpack_require__(32);
 
 // Discord epoch (2015-01-01T00:00:00.000Z)
 const EPOCH = 1420070400000;
@@ -4133,7 +4133,7 @@ util.inherits = __webpack_require__(11);
 /*</replacement>*/
 
 var Readable = __webpack_require__(58);
-var Writable = __webpack_require__(35);
+var Writable = __webpack_require__(36);
 
 util.inherits(Duplex, Readable);
 
@@ -5615,11 +5615,11 @@ module.exports = GuildMember;
 /* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Mentions = __webpack_require__(47);
-const Attachment = __webpack_require__(44);
-const Embed = __webpack_require__(46);
-const MessageReaction = __webpack_require__(48);
-const ReactionCollector = __webpack_require__(170);
+const Mentions = __webpack_require__(48);
+const Attachment = __webpack_require__(45);
+const Embed = __webpack_require__(47);
+const MessageReaction = __webpack_require__(49);
+const ReactionCollector = __webpack_require__(174);
 const Util = __webpack_require__(4);
 const Collection = __webpack_require__(3);
 const Constants = __webpack_require__(0);
@@ -6332,7 +6332,7 @@ var EE = __webpack_require__(10).EventEmitter;
 var inherits = __webpack_require__(11);
 
 inherits(Stream, EE);
-Stream.Readable = __webpack_require__(36);
+Stream.Readable = __webpack_require__(37);
 Stream.Writable = __webpack_require__(84);
 Stream.Duplex = __webpack_require__(80);
 Stream.Transform = __webpack_require__(83);
@@ -6438,9 +6438,9 @@ Stream.prototype.pipe = function(dest, options) {
 /* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const path = __webpack_require__(32);
+const path = __webpack_require__(26);
 const Message = __webpack_require__(19);
-const MessageCollector = __webpack_require__(45);
+const MessageCollector = __webpack_require__(46);
 const Collection = __webpack_require__(3);
 
 /**
@@ -6982,7 +6982,7 @@ exports.EOL = '\n';
 /* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Long = __webpack_require__(31);
+const Long = __webpack_require__(32);
 const User = __webpack_require__(16);
 const Role = __webpack_require__(15);
 const Emoji = __webpack_require__(17);
@@ -8024,7 +8024,7 @@ module.exports = Guild;
 
 const Channel = __webpack_require__(14);
 const Role = __webpack_require__(15);
-const PermissionOverwrites = __webpack_require__(52);
+const PermissionOverwrites = __webpack_require__(53);
 const Permissions = __webpack_require__(8);
 const Collection = __webpack_require__(3);
 
@@ -8366,12 +8366,243 @@ module.exports = GuildChannel;
 
 /***/ }),
 /* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// resolves . and .. elements in a path array with directory names there
+// must be no slashes, empty elements, or device names (c:\) in the array
+// (so also no leading and trailing slashes - it does not distinguish
+// relative and absolute paths)
+function normalizeArray(parts, allowAboveRoot) {
+  // if the path tries to go above the root, `up` ends up > 0
+  var up = 0;
+  for (var i = parts.length - 1; i >= 0; i--) {
+    var last = parts[i];
+    if (last === '.') {
+      parts.splice(i, 1);
+    } else if (last === '..') {
+      parts.splice(i, 1);
+      up++;
+    } else if (up) {
+      parts.splice(i, 1);
+      up--;
+    }
+  }
+
+  // if the path is allowed to go above the root, restore leading ..s
+  if (allowAboveRoot) {
+    for (; up--; up) {
+      parts.unshift('..');
+    }
+  }
+
+  return parts;
+}
+
+// Split a filename into [root, dir, basename, ext], unix version
+// 'root' is just a slash, or nothing.
+var splitPathRe =
+    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+var splitPath = function(filename) {
+  return splitPathRe.exec(filename).slice(1);
+};
+
+// path.resolve([from ...], to)
+// posix version
+exports.resolve = function() {
+  var resolvedPath = '',
+      resolvedAbsolute = false;
+
+  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+    var path = (i >= 0) ? arguments[i] : process.cwd();
+
+    // Skip empty and invalid entries
+    if (typeof path !== 'string') {
+      throw new TypeError('Arguments to path.resolve must be strings');
+    } else if (!path) {
+      continue;
+    }
+
+    resolvedPath = path + '/' + resolvedPath;
+    resolvedAbsolute = path.charAt(0) === '/';
+  }
+
+  // At this point the path should be resolved to a full absolute path, but
+  // handle relative paths to be safe (might happen when process.cwd() fails)
+
+  // Normalize the path
+  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
+    return !!p;
+  }), !resolvedAbsolute).join('/');
+
+  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
+};
+
+// path.normalize(path)
+// posix version
+exports.normalize = function(path) {
+  var isAbsolute = exports.isAbsolute(path),
+      trailingSlash = substr(path, -1) === '/';
+
+  // Normalize the path
+  path = normalizeArray(filter(path.split('/'), function(p) {
+    return !!p;
+  }), !isAbsolute).join('/');
+
+  if (!path && !isAbsolute) {
+    path = '.';
+  }
+  if (path && trailingSlash) {
+    path += '/';
+  }
+
+  return (isAbsolute ? '/' : '') + path;
+};
+
+// posix version
+exports.isAbsolute = function(path) {
+  return path.charAt(0) === '/';
+};
+
+// posix version
+exports.join = function() {
+  var paths = Array.prototype.slice.call(arguments, 0);
+  return exports.normalize(filter(paths, function(p, index) {
+    if (typeof p !== 'string') {
+      throw new TypeError('Arguments to path.join must be strings');
+    }
+    return p;
+  }).join('/'));
+};
+
+
+// path.relative(from, to)
+// posix version
+exports.relative = function(from, to) {
+  from = exports.resolve(from).substr(1);
+  to = exports.resolve(to).substr(1);
+
+  function trim(arr) {
+    var start = 0;
+    for (; start < arr.length; start++) {
+      if (arr[start] !== '') break;
+    }
+
+    var end = arr.length - 1;
+    for (; end >= 0; end--) {
+      if (arr[end] !== '') break;
+    }
+
+    if (start > end) return [];
+    return arr.slice(start, end - start + 1);
+  }
+
+  var fromParts = trim(from.split('/'));
+  var toParts = trim(to.split('/'));
+
+  var length = Math.min(fromParts.length, toParts.length);
+  var samePartsLength = length;
+  for (var i = 0; i < length; i++) {
+    if (fromParts[i] !== toParts[i]) {
+      samePartsLength = i;
+      break;
+    }
+  }
+
+  var outputParts = [];
+  for (var i = samePartsLength; i < fromParts.length; i++) {
+    outputParts.push('..');
+  }
+
+  outputParts = outputParts.concat(toParts.slice(samePartsLength));
+
+  return outputParts.join('/');
+};
+
+exports.sep = '/';
+exports.delimiter = ':';
+
+exports.dirname = function(path) {
+  var result = splitPath(path),
+      root = result[0],
+      dir = result[1];
+
+  if (!root && !dir) {
+    // No dirname whatsoever
+    return '.';
+  }
+
+  if (dir) {
+    // It has a dirname, strip trailing slash
+    dir = dir.substr(0, dir.length - 1);
+  }
+
+  return root + dir;
+};
+
+
+exports.basename = function(path, ext) {
+  var f = splitPath(path)[2];
+  // TODO: make this comparison case-insensitive on windows?
+  if (ext && f.substr(-1 * ext.length) === ext) {
+    f = f.substr(0, f.length - ext.length);
+  }
+  return f;
+};
+
+
+exports.extname = function(path) {
+  return splitPath(path)[3];
+};
+
+function filter (xs, f) {
+    if (xs.filter) return xs.filter(f);
+    var res = [];
+    for (var i = 0; i < xs.length; i++) {
+        if (f(xs[i], i, xs)) res.push(xs[i]);
+    }
+    return res;
+}
+
+// String.prototype.substr - negative index don't work in IE8
+var substr = 'ab'.substr(-1) === 'b'
+    ? function (str, start, len) { return str.substr(start, len) }
+    : function (str, start, len) {
+        if (start < 0) start = str.length + start;
+        return str.substr(start, len);
+    }
+;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+
+/***/ }),
+/* 27 */
 /***/ (function(module, exports) {
 
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Channel = __webpack_require__(14);
@@ -8557,7 +8788,7 @@ module.exports = GroupDMChannel;
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports) {
 
 /**
@@ -8612,10 +8843,10 @@ module.exports = ReactionEmoji;
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const path = __webpack_require__(32);
+const path = __webpack_require__(26);
 
 /**
  * Represents a webhook
@@ -8833,7 +9064,7 @@ module.exports = Webhook;
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8949,7 +9180,7 @@ exports.allocUnsafeSlow = function allocUnsafeSlow(size) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -10167,237 +10398,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ }),
-/* 32 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-// resolves . and .. elements in a path array with directory names there
-// must be no slashes, empty elements, or device names (c:\) in the array
-// (so also no leading and trailing slashes - it does not distinguish
-// relative and absolute paths)
-function normalizeArray(parts, allowAboveRoot) {
-  // if the path tries to go above the root, `up` ends up > 0
-  var up = 0;
-  for (var i = parts.length - 1; i >= 0; i--) {
-    var last = parts[i];
-    if (last === '.') {
-      parts.splice(i, 1);
-    } else if (last === '..') {
-      parts.splice(i, 1);
-      up++;
-    } else if (up) {
-      parts.splice(i, 1);
-      up--;
-    }
-  }
-
-  // if the path is allowed to go above the root, restore leading ..s
-  if (allowAboveRoot) {
-    for (; up--; up) {
-      parts.unshift('..');
-    }
-  }
-
-  return parts;
-}
-
-// Split a filename into [root, dir, basename, ext], unix version
-// 'root' is just a slash, or nothing.
-var splitPathRe =
-    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
-var splitPath = function(filename) {
-  return splitPathRe.exec(filename).slice(1);
-};
-
-// path.resolve([from ...], to)
-// posix version
-exports.resolve = function() {
-  var resolvedPath = '',
-      resolvedAbsolute = false;
-
-  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
-    var path = (i >= 0) ? arguments[i] : process.cwd();
-
-    // Skip empty and invalid entries
-    if (typeof path !== 'string') {
-      throw new TypeError('Arguments to path.resolve must be strings');
-    } else if (!path) {
-      continue;
-    }
-
-    resolvedPath = path + '/' + resolvedPath;
-    resolvedAbsolute = path.charAt(0) === '/';
-  }
-
-  // At this point the path should be resolved to a full absolute path, but
-  // handle relative paths to be safe (might happen when process.cwd() fails)
-
-  // Normalize the path
-  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
-    return !!p;
-  }), !resolvedAbsolute).join('/');
-
-  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
-};
-
-// path.normalize(path)
-// posix version
-exports.normalize = function(path) {
-  var isAbsolute = exports.isAbsolute(path),
-      trailingSlash = substr(path, -1) === '/';
-
-  // Normalize the path
-  path = normalizeArray(filter(path.split('/'), function(p) {
-    return !!p;
-  }), !isAbsolute).join('/');
-
-  if (!path && !isAbsolute) {
-    path = '.';
-  }
-  if (path && trailingSlash) {
-    path += '/';
-  }
-
-  return (isAbsolute ? '/' : '') + path;
-};
-
-// posix version
-exports.isAbsolute = function(path) {
-  return path.charAt(0) === '/';
-};
-
-// posix version
-exports.join = function() {
-  var paths = Array.prototype.slice.call(arguments, 0);
-  return exports.normalize(filter(paths, function(p, index) {
-    if (typeof p !== 'string') {
-      throw new TypeError('Arguments to path.join must be strings');
-    }
-    return p;
-  }).join('/'));
-};
-
-
-// path.relative(from, to)
-// posix version
-exports.relative = function(from, to) {
-  from = exports.resolve(from).substr(1);
-  to = exports.resolve(to).substr(1);
-
-  function trim(arr) {
-    var start = 0;
-    for (; start < arr.length; start++) {
-      if (arr[start] !== '') break;
-    }
-
-    var end = arr.length - 1;
-    for (; end >= 0; end--) {
-      if (arr[end] !== '') break;
-    }
-
-    if (start > end) return [];
-    return arr.slice(start, end - start + 1);
-  }
-
-  var fromParts = trim(from.split('/'));
-  var toParts = trim(to.split('/'));
-
-  var length = Math.min(fromParts.length, toParts.length);
-  var samePartsLength = length;
-  for (var i = 0; i < length; i++) {
-    if (fromParts[i] !== toParts[i]) {
-      samePartsLength = i;
-      break;
-    }
-  }
-
-  var outputParts = [];
-  for (var i = samePartsLength; i < fromParts.length; i++) {
-    outputParts.push('..');
-  }
-
-  outputParts = outputParts.concat(toParts.slice(samePartsLength));
-
-  return outputParts.join('/');
-};
-
-exports.sep = '/';
-exports.delimiter = ':';
-
-exports.dirname = function(path) {
-  var result = splitPath(path),
-      root = result[0],
-      dir = result[1];
-
-  if (!root && !dir) {
-    // No dirname whatsoever
-    return '.';
-  }
-
-  if (dir) {
-    // It has a dirname, strip trailing slash
-    dir = dir.substr(0, dir.length - 1);
-  }
-
-  return root + dir;
-};
-
-
-exports.basename = function(path, ext) {
-  var f = splitPath(path)[2];
-  // TODO: make this comparison case-insensitive on windows?
-  if (ext && f.substr(-1 * ext.length) === ext) {
-    f = f.substr(0, f.length - ext.length);
-  }
-  return f;
-};
-
-
-exports.extname = function(path) {
-  return splitPath(path)[3];
-};
-
-function filter (xs, f) {
-    if (xs.filter) return xs.filter(f);
-    var res = [];
-    for (var i = 0; i < xs.length; i++) {
-        if (f(xs[i], i, xs)) res.push(xs[i]);
-    }
-    return res;
-}
-
-// String.prototype.substr - negative index don't work in IE8
-var substr = 'ab'.substr(-1) === 'b'
-    ? function (str, start, len) { return str.substr(start, len) }
-    : function (str, start, len) {
-        if (start < 0) start = str.length + start;
-        return str.substr(start, len);
-    }
-;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
-
-/***/ }),
 /* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10450,6 +10450,17 @@ function nextTick(fn, arg1, arg2, arg3) {
 
 /***/ }),
 /* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.decode = exports.parse = __webpack_require__(78);
+exports.encode = exports.stringify = __webpack_require__(79);
+
+
+/***/ }),
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10637,7 +10648,7 @@ function done(stream, er, data) {
 }
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10670,7 +10681,7 @@ util.inherits = __webpack_require__(11);
 
 /*<replacement>*/
 var internalUtil = {
-  deprecate: __webpack_require__(93)
+  deprecate: __webpack_require__(97)
 };
 /*</replacement>*/
 
@@ -10687,7 +10698,7 @@ var Stream;
 
 var Buffer = __webpack_require__(5).Buffer;
 /*<replacement>*/
-var bufferShim = __webpack_require__(30);
+var bufferShim = __webpack_require__(31);
 /*</replacement>*/
 
 util.inherits(Writable, Stream);
@@ -11195,10 +11206,10 @@ function CorkedRequest(state) {
     }
   };
 }
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(90).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(94).setImmediate))
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {var Stream = (function (){
@@ -11209,9 +11220,9 @@ function CorkedRequest(state) {
 exports = module.exports = __webpack_require__(58);
 exports.Stream = Stream || exports;
 exports.Readable = exports;
-exports.Writable = __webpack_require__(35);
+exports.Writable = __webpack_require__(36);
 exports.Duplex = __webpack_require__(13);
-exports.Transform = __webpack_require__(34);
+exports.Transform = __webpack_require__(35);
 exports.PassThrough = __webpack_require__(57);
 
 if (!process.browser && process.env.READABLE_STREAM === 'disable' && Stream) {
@@ -11221,10 +11232,10 @@ if (!process.browser && process.env.READABLE_STREAM === 'disable' && Stream) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(__dirname, Buffer, process) {const Snekfetch = __webpack_require__(87);
+/* WEBPACK VAR INJECTION */(function(__dirname, Buffer, process) {const Snekfetch = __webpack_require__(88);
 
 const ENV_VAR = '__SNEKFETCH_SYNC_REQUEST';
 let first = true;
@@ -11241,7 +11252,7 @@ for (let method of Snekfetch.METHODS) {
     }
     options.url = url;
     options.method = method;
-    const cp = __webpack_require__(26);
+    const cp = __webpack_require__(27);
     const result = JSON.parse(
       cp.execSync(`node ${__dirname}/index.js`, {
         env: { [ENV_VAR]: JSON.stringify(options) },
@@ -11277,6 +11288,8 @@ if (process.env[ENV_VAR]) {
       res.error = alt;
       res.error.__CONVERT_TO_ERROR = true;
     }
+    // circulars
+    res.request = null;
     process.stdout.write(JSON.stringify(res));
   });
 }
@@ -11286,12 +11299,12 @@ module.exports = Snekfetch;
 /* WEBPACK VAR INJECTION */}.call(exports, "node_modules/snekfetch", __webpack_require__(5).Buffer, __webpack_require__(6)))
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(32);
-const fs = __webpack_require__(26);
-const snekfetch = __webpack_require__(37);
+/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(26);
+const fs = __webpack_require__(27);
+const snekfetch = __webpack_require__(38);
 
 const Constants = __webpack_require__(0);
 const convertToBuffer = __webpack_require__(4).convertToBuffer;
@@ -11301,7 +11314,7 @@ const Guild = __webpack_require__(24);
 const Channel = __webpack_require__(14);
 const GuildMember = __webpack_require__(18);
 const Emoji = __webpack_require__(17);
-const ReactionEmoji = __webpack_require__(28);
+const ReactionEmoji = __webpack_require__(29);
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
@@ -11621,7 +11634,7 @@ module.exports = ClientDataResolver;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer))
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -11660,7 +11673,7 @@ module.exports = {
 	"dependencies": {
 		"long": "^3.2.0",
 		"prism-media": "^0.0.1",
-		"snekfetch": "^3.0.0",
+		"snekfetch": "^3.1.0",
 		"tweetnacl": "^0.14.0",
 		"ws": "^2.0.0"
 	},
@@ -11719,12 +11732,12 @@ module.exports = {
 };
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const User = __webpack_require__(16);
 const Collection = __webpack_require__(3);
-const ClientUserSettings = __webpack_require__(41);
+const ClientUserSettings = __webpack_require__(42);
 /**
  * Represents the logged in client's Discord user
  * @extends {User}
@@ -12063,7 +12076,7 @@ module.exports = ClientUser;
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -12146,7 +12159,7 @@ module.exports = ClientUserSettings;
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Channel = __webpack_require__(14);
@@ -12216,11 +12229,11 @@ module.exports = DMChannel;
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const PartialGuild = __webpack_require__(50);
-const PartialGuildChannel = __webpack_require__(51);
+const PartialGuild = __webpack_require__(51);
+const PartialGuildChannel = __webpack_require__(52);
 const Constants = __webpack_require__(0);
 
 /*
@@ -12381,7 +12394,7 @@ module.exports = Invite;
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports) {
 
 /**
@@ -12455,7 +12468,7 @@ module.exports = MessageAttachment;
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collector = __webpack_require__(66);
@@ -12536,7 +12549,7 @@ module.exports = MessageCollector;
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports) {
 
 /**
@@ -12927,7 +12940,7 @@ module.exports = MessageEmbed;
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
@@ -13071,12 +13084,12 @@ module.exports = MessageMentions;
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
 const Emoji = __webpack_require__(17);
-const ReactionEmoji = __webpack_require__(28);
+const ReactionEmoji = __webpack_require__(29);
 
 /**
  * Represents a reaction to a message
@@ -13170,7 +13183,7 @@ module.exports = MessageReaction;
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Snowflake = __webpack_require__(7);
@@ -13310,7 +13323,7 @@ module.exports = OAuth2Application;
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports) {
 
 /*
@@ -13367,7 +13380,7 @@ module.exports = PartialGuild;
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -13417,7 +13430,7 @@ module.exports = PartialGuildChannel;
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports) {
 
 /**
@@ -13466,7 +13479,7 @@ module.exports = PermissionOverwrites;
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const GuildChannel = __webpack_require__(25);
@@ -13573,7 +13586,7 @@ module.exports = TextChannel;
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const GuildChannel = __webpack_require__(25);
@@ -13712,7 +13725,7 @@ module.exports = VoiceChannel;
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -13720,17 +13733,6 @@ var toString = {}.toString;
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
-
-
-/***/ }),
-/* 56 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.decode = exports.parse = __webpack_require__(78);
-exports.encode = exports.stringify = __webpack_require__(79);
 
 
 /***/ }),
@@ -13746,7 +13748,7 @@ exports.encode = exports.stringify = __webpack_require__(79);
 
 module.exports = PassThrough;
 
-var Transform = __webpack_require__(34);
+var Transform = __webpack_require__(35);
 
 /*<replacement>*/
 var util = __webpack_require__(20);
@@ -13779,7 +13781,7 @@ var processNextTick = __webpack_require__(33);
 /*</replacement>*/
 
 /*<replacement>*/
-var isArray = __webpack_require__(55);
+var isArray = __webpack_require__(56);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -13809,7 +13811,7 @@ var Stream;
 
 var Buffer = __webpack_require__(5).Buffer;
 /*<replacement>*/
-var bufferShim = __webpack_require__(30);
+var bufferShim = __webpack_require__(31);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -13818,7 +13820,7 @@ util.inherits = __webpack_require__(11);
 /*</replacement>*/
 
 /*<replacement>*/
-var debugUtil = __webpack_require__(174);
+var debugUtil = __webpack_require__(178);
 var debug = void 0;
 if (debugUtil && debugUtil.debuglog) {
   debug = debugUtil.debuglog('stream');
@@ -14717,8 +14719,8 @@ function indexOf(xs, x) {
 /* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {var ClientRequest = __webpack_require__(88)
-var extend = __webpack_require__(95)
+/* WEBPACK VAR INJECTION */(function(global) {var ClientRequest = __webpack_require__(92)
+var extend = __webpack_require__(99)
 var statusCodes = __webpack_require__(74)
 var url = __webpack_require__(62)
 
@@ -15130,7 +15132,7 @@ function base64DetectIncompleteChar(buffer) {
 
 
 var punycode = __webpack_require__(77);
-var util = __webpack_require__(92);
+var util = __webpack_require__(96);
 
 exports.parse = urlParse;
 exports.resolve = urlResolve;
@@ -15205,7 +15207,7 @@ var protocolPattern = /^([a-z0-9.+-]+:)/i,
       'gopher:': true,
       'file:': true
     },
-    querystring = __webpack_require__(56);
+    querystring = __webpack_require__(34);
 
 function urlParse(url, parseQueryString, slashesDenoteHost) {
   if (url && util.isObject(url) && url instanceof Url) return url;
@@ -15844,11 +15846,11 @@ Url.prototype.parseHost = function() {
 /* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const UserAgentManager = __webpack_require__(131);
-const RESTMethods = __webpack_require__(128);
-const SequentialRequestHandler = __webpack_require__(130);
-const BurstRequestHandler = __webpack_require__(129);
-const APIRequest = __webpack_require__(127);
+const UserAgentManager = __webpack_require__(135);
+const RESTMethods = __webpack_require__(132);
+const SequentialRequestHandler = __webpack_require__(134);
+const BurstRequestHandler = __webpack_require__(133);
+const APIRequest = __webpack_require__(131);
 const Constants = __webpack_require__(0);
 
 class RESTManager {
@@ -15958,10 +15960,10 @@ module.exports = RequestHandler;
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {const browser = __webpack_require__(23).platform() === 'browser';
 const EventEmitter = __webpack_require__(10);
-const zlib = __webpack_require__(26);
+const zlib = __webpack_require__(27);
 const erlpack = (function findErlpack() {
   try {
-    const e = __webpack_require__(178);
+    const e = __webpack_require__(182);
     if (!e.pack) return null;
     return e;
   } catch (e) {
@@ -15972,9 +15974,9 @@ const erlpack = (function findErlpack() {
 const WebSocket = (function findWebSocket() {
   if (browser) return window.WebSocket; // eslint-disable-line no-undef
   try {
-    return __webpack_require__(179);
+    return __webpack_require__(183);
   } catch (e) {
-    return __webpack_require__(180);
+    return __webpack_require__(184);
   }
 }());
 
@@ -16274,16 +16276,16 @@ const Constants = __webpack_require__(0);
 const Permissions = __webpack_require__(8);
 const Util = __webpack_require__(4);
 const RESTManager = __webpack_require__(63);
-const ClientDataManager = __webpack_require__(96);
-const ClientManager = __webpack_require__(97);
-const ClientDataResolver = __webpack_require__(38);
-const ClientVoiceManager = __webpack_require__(176);
-const WebSocketManager = __webpack_require__(132);
-const ActionsManager = __webpack_require__(98);
+const ClientDataManager = __webpack_require__(100);
+const ClientManager = __webpack_require__(101);
+const ClientDataResolver = __webpack_require__(39);
+const ClientVoiceManager = __webpack_require__(180);
+const WebSocketManager = __webpack_require__(136);
+const ActionsManager = __webpack_require__(102);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(12).Presence;
-const ShardClientUtil = __webpack_require__(175);
-const VoiceBroadcast = __webpack_require__(177);
+const ShardClientUtil = __webpack_require__(179);
+const VoiceBroadcast = __webpack_require__(181);
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -16820,9 +16822,9 @@ module.exports = Client;
 /* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Webhook = __webpack_require__(29);
+const Webhook = __webpack_require__(30);
 const RESTManager = __webpack_require__(63);
-const ClientDataResolver = __webpack_require__(38);
+const ClientDataResolver = __webpack_require__(39);
 const Constants = __webpack_require__(0);
 const Util = __webpack_require__(4);
 
@@ -16944,7 +16946,7 @@ module.exports = WebhookClient;
 /* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const ClientDataResolver = __webpack_require__(38);
+const ClientDataResolver = __webpack_require__(39);
 
 /**
  * A rich embed to be sent with a message with a fluent interface for creation
@@ -18024,7 +18026,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 }(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(94)(module), __webpack_require__(9)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(98)(module), __webpack_require__(9)))
 
 /***/ }),
 /* 78 */
@@ -18225,7 +18227,7 @@ module.exports = __webpack_require__(13)
 
 var Buffer = __webpack_require__(5).Buffer;
 /*<replacement>*/
-var bufferShim = __webpack_require__(30);
+var bufferShim = __webpack_require__(31);
 /*</replacement>*/
 
 module.exports = BufferList;
@@ -18297,14 +18299,14 @@ module.exports = __webpack_require__(57)
 /* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(34)
+module.exports = __webpack_require__(35)
 
 
 /***/ }),
 /* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(35)
+module.exports = __webpack_require__(36)
 
 
 /***/ }),
@@ -18508,48 +18510,48 @@ module.exports = {
 	"_args": [
 		[
 			{
-				"raw": "snekfetch@^3.0.0",
+				"raw": "snekfetch@^3.1.0",
 				"scope": null,
 				"escapedName": "snekfetch",
 				"name": "snekfetch",
-				"rawSpec": "^3.0.0",
-				"spec": ">=3.0.0 <4.0.0",
+				"rawSpec": "^3.1.0",
+				"spec": ">=3.1.0 <4.0.0",
 				"type": "range"
 			},
 			"/home/travis/build/hydrabolt/discord.js"
 		]
 	],
-	"_from": "snekfetch@>=3.0.0 <4.0.0",
-	"_id": "snekfetch@3.0.1",
+	"_from": "snekfetch@>=3.1.0 <4.0.0",
+	"_id": "snekfetch@3.1.1",
 	"_inCache": true,
 	"_location": "/snekfetch",
 	"_nodeVersion": "7.9.0",
 	"_npmOperationalInternal": {
 		"host": "packages-12-west.internal.npmjs.com",
-		"tmp": "tmp/snekfetch-3.0.1.tgz_1492578957273_0.09287812723778188"
+		"tmp": "tmp/snekfetch-3.1.1.tgz_1492865526415_0.9978627415839583"
 	},
 	"_npmUser": {
-		"name": "snek",
-		"email": "me@gus.host"
+		"name": "crawl",
+		"email": "icrawltogo@gmail.com"
 	},
 	"_npmVersion": "4.2.0",
 	"_phantomChildren": {},
 	"_requested": {
-		"raw": "snekfetch@^3.0.0",
+		"raw": "snekfetch@^3.1.0",
 		"scope": null,
 		"escapedName": "snekfetch",
 		"name": "snekfetch",
-		"rawSpec": "^3.0.0",
-		"spec": ">=3.0.0 <4.0.0",
+		"rawSpec": "^3.1.0",
+		"spec": ">=3.1.0 <4.0.0",
 		"type": "range"
 	},
 	"_requiredBy": [
 		"/"
 	],
-	"_resolved": "https://registry.npmjs.org/snekfetch/-/snekfetch-3.0.1.tgz",
-	"_shasum": "745e62f545fd554feb194d5a18db1acb009e909d",
+	"_resolved": "https://registry.npmjs.org/snekfetch/-/snekfetch-3.1.1.tgz",
+	"_shasum": "dcfee0d0c64b193e8741db168d86bfb200bb8850",
 	"_shrinkwrap": null,
-	"_spec": "snekfetch@^3.0.0",
+	"_spec": "snekfetch@^3.1.0",
 	"_where": "/home/travis/build/hydrabolt/discord.js",
 	"author": {
 		"name": "Gus Caplan",
@@ -18563,14 +18565,18 @@ module.exports = {
 	"devDependencies": {},
 	"directories": {},
 	"dist": {
-		"shasum": "745e62f545fd554feb194d5a18db1acb009e909d",
-		"tarball": "https://registry.npmjs.org/snekfetch/-/snekfetch-3.0.1.tgz"
+		"shasum": "dcfee0d0c64b193e8741db168d86bfb200bb8850",
+		"tarball": "https://registry.npmjs.org/snekfetch/-/snekfetch-3.1.1.tgz"
 	},
-	"gitHead": "572e34c14bd1b78a6287091cfc54784d49a90dc9",
+	"gitHead": "8a8b2eba604450363bf80e8e0caac97157f15820",
 	"homepage": "https://github.com/GusCaplan/snekfetch#readme",
 	"license": "MIT",
 	"main": "index.js",
 	"maintainers": [
+		{
+			"name": "crawl",
+			"email": "icrawltogo@gmail.com"
+		},
 		{
 			"name": "snek",
 			"email": "me@gus.host"
@@ -18584,26 +18590,82 @@ module.exports = {
 		"url": "git+https://github.com/GusCaplan/snekfetch.git"
 	},
 	"scripts": {},
-	"version": "3.0.1"
+	"version": "3.1.1"
 };
 
 /***/ }),
 /* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
+/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(26);
+const mime = __webpack_require__(89);
+
+class FormData {
+  constructor() {
+    this.boundary = `--snekfetch--${Math.random().toString().slice(2, 7)}`;
+    this.buffer = new Buffer(0);
+  }
+
+  append(name, data, filename) {
+    if (typeof data === 'undefined') return;
+    let str = `\r\n--${this.boundary}\r\nContent-Disposition: form-data; name="${name}"`;
+    let mimetype = null;
+    if (filename) {
+      str += `; filename="${filename}"`;
+      mimetype = 'application/octet-stream';
+      const extname = path.extname(filename);
+      if (extname) mimetype = mime.lookup(extname);
+    }
+
+    if (data instanceof Buffer) {
+      mimetype = mime.buffer(data);
+    } else if (typeof data === 'object') {
+      mimetype = 'application/json';
+      data = Buffer.from(JSON.stringify(data));
+    } else {
+      data = Buffer.from(String(data));
+    }
+
+    if (mimetype) str += `\r\nContent-Type: ${mimetype}`;
+    this.buffer = Buffer.concat([
+      this.buffer,
+      Buffer.from(`${str}\r\n\r\n`),
+      data,
+    ]);
+  }
+
+  end() {
+    this.buffer = Buffer.concat([
+      this.buffer,
+      Buffer.from(`\r\n--${this.boundary}--`),
+    ]);
+    return this.buffer;
+  }
+}
+
+module.exports = FormData;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer))
+
+/***/ }),
+/* 88 */
+/***/ (function(module, exports, __webpack_require__) {
+
 /* WEBPACK VAR INJECTION */(function(Buffer) {__webpack_require__(21);
-const zlib = __webpack_require__(26);
+const zlib = __webpack_require__(27);
+const qs = __webpack_require__(34);
 const http = __webpack_require__(59);
 const https = __webpack_require__(75);
 const URL = __webpack_require__(62);
 const Package = __webpack_require__(86);
 const Stream = __webpack_require__(21);
+const FormData = __webpack_require__(87);
 
 class Snekfetch extends Stream.Readable {
   constructor(method, url, opts = { headers: {}, data: null }) {
     super();
 
-    const options = this.options = URL.parse(url);
+    const options = URL.parse(url);
     options.method = method.toUpperCase();
     options.headers = opts.headers;
     this.data = opts.data;
@@ -18611,18 +18673,29 @@ class Snekfetch extends Stream.Readable {
     this.request = (options.protocol === 'https:' ? https : http).request(options);
   }
 
+  query(name, value) {
+    if (this.request.res) throw new Error('Cannot modify query after being sent!');
+    if (!this.request.query) this.request.query = {};
+    if (name !== null && typeof name === 'object') {
+      this.request.query = Object.assign(this.request.query, name);
+    } else {
+      this.request.query[name] = value;
+    }
+    return this;
+  }
+
   set(name, value) {
+    if (this.request.res) throw new Error('Cannot modify headers after being sent!');
     if (name !== null && typeof name === 'object') {
       for (const key of Object.keys(name)) this.set(key, name[key]);
     } else {
-      // If your server can't handle header names being lowercase then like, fuck you.
-      this.request._headers[name.toLowerCase()] = value;
-      this.request._headerNames[name.toLowerCase()] = name;
+      this.request.setHeader(name, value);
     }
     return this;
   }
 
   attach(name, data, filename) {
+    if (this.request.res) throw new Error('Cannot modify data after being sent!');
     const form = this._getFormData();
     this.set('Content-Type', `multipart/form-data; boundary=${form.boundary}`);
     form.append(name, data, filename);
@@ -18631,9 +18704,18 @@ class Snekfetch extends Stream.Readable {
   }
 
   send(data) {
-    if (typeof data === 'object') {
-      this.set('Content-Type', 'application/json');
-      this.data = JSON.stringify(data);
+    if (this.request.res) throw new Error('Cannot modify data after being sent!');
+    if (data !== null && typeof data === 'object') {
+      const header = this.request.getHeader['content-type'];
+      let serialize;
+      if (header) {
+        if (header.includes('json')) serialize = JSON.stringify;
+        else if (header.includes('urlencoded')) serialize = qs.stringify;
+      } else {
+        this.set('Content-Type', 'application/json');
+        serialize = JSON.stringify;
+      }
+      this.data = serialize(data);
     } else {
       this.data = data;
     }
@@ -18644,11 +18726,11 @@ class Snekfetch extends Stream.Readable {
     return new Promise((resolve, reject) => {
       const request = this.request;
 
-      function handleError(err) {
+      const handleError = (err) => {
         if (!err) err = new Error('Unknown error occured');
         err.request = request;
         reject(err);
-      }
+      };
 
       request.on('abort', handleError);
       request.on('aborted', handleError);
@@ -18680,26 +18762,38 @@ class Snekfetch extends Stream.Readable {
             if ([301, 302].includes(response.statusCode)) {
               this.method = this.method === 'HEAD' ? 'HEAD' : 'GET';
               this.data = null;
+            } else if (response.statusCode === 303) {
+              this.method = 'GET';
             }
 
-            if (response.statusCode === 303) this.method = 'GET';
+            const headers = {};
+            if (this.request._headerNames) {
+              for (const name of Object.keys(this.request._headerNames)) {
+                headers[this.request._headerNames[name]] = this.request._headers[name];
+              }
+            } else {
+              for (const name of Object.keys(this.request._headers)) {
+                const header = this.request._headers[name];
+                headers[header.name] = header.value;
+              }
+            }
+
             resolve(new Snekfetch(
               this.method,
-              URL.resolve(this.options.href, response.headers.location)),
-              { data: this.data, headers: this.request.headers }
-            );
+              URL.resolve(makeURLFromRequest(request), response.headers.location),
+              { data: this.data, headers }
+            ));
             return;
           }
 
           const res = {
-            request: this.options,
+            request: this.request,
             body: concated,
             text: concated.toString(),
             ok: response.statusCode >= 200 && response.statusCode < 300,
             headers: response.headers,
             status: response.statusCode,
             statusText: response.statusText || http.STATUS_CODES[response.statusCode],
-            url: this.options.href,
           };
 
           const type = response.headers['content-type'];
@@ -18709,8 +18803,7 @@ class Snekfetch extends Stream.Readable {
                 res.body = JSON.parse(res.text);
               } catch (err) {} // eslint-disable-line no-empty
             } else if (type.includes('application/x-www-form-urlencoded')) {
-              res.body = {};
-              for (const [k, v] of res.text.split('&').map(q => q.split('='))) res.body[k] = v;
+              res.body = qs.parse(res.text);
             }
           }
 
@@ -18725,6 +18818,7 @@ class Snekfetch extends Stream.Readable {
       });
 
       this._addFinalHeaders();
+      if (this.request.query) this.request.path = `${this.request.path}?${qs.stringify(this.request.query)}`;
       request.end(this.data ? this.data.end ? this.data.end() : this.data : null);
     })
     .then(resolver, rejector);
@@ -18741,7 +18835,7 @@ class Snekfetch extends Stream.Readable {
     );
   }
 
-  _read() {
+  read() {
     this.resume();
     if (this.request.res) return;
     this.catch((err) => this.emit('error', err));
@@ -18763,8 +18857,8 @@ class Snekfetch extends Stream.Readable {
   }
 
   _addFinalHeaders() {
-    if (!this.request || !this.request._headers) return;
-    if (!this.request._headers['user-agent']) {
+    if (!this.request) return;
+    if (!this.request.getHeader['user-agent']) {
       this.set('User-Agent', `snekfetch/${Snekfetch.version} (${Package.repository.url.replace(/\.?git/, '')})`);
     }
     if (this.request.method !== 'HEAD') this.set('Accept-Encoding', 'gzip, deflate');
@@ -18781,17 +18875,1653 @@ for (const method of Snekfetch.METHODS) {
 if (true) module.exports = Snekfetch;
 else if (typeof window !== 'undefined') window.Snekfetch = Snekfetch;
 
+function makeURLFromRequest(request) {
+  return URL.format({
+    protocol: request.connection.encrypted ? 'https:' : 'http:',
+    hostname: request.getHeader('host'),
+    pathname: request.path.split('?')[0],
+    query: request.query,
+  });
+}
+
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer))
 
 /***/ }),
-/* 88 */
+/* 89 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const mimes = __webpack_require__(91);
+const mimeOfBuffer = __webpack_require__(90);
+
+function lookupMime(ext) {
+  return mimes[ext] || mimes.bin;
+}
+
+function lookupBuffer(buffer) {
+  return mimeOfBuffer(buffer) || mimes.bin;
+}
+
+module.exports = {
+  buffer: lookupBuffer,
+  lookup: lookupMime,
+};
+
+
+/***/ }),
+/* 90 */
+/***/ (function(module, exports) {
+
+/* eslint complexity: 0 */
+
+// from file-type by @sindresorhus under the MIT license
+// https://github.com/sindresorhus/file-type
+
+function mimeOfBuffer(input) {
+  const buf = new Uint8Array(input);
+
+  if (!(buf && buf.length > 1)) {
+    return null;
+  }
+
+  if (buf[0] === 0xFF && buf[1] === 0xD8 && buf[2] === 0xFF) {
+    return {
+      ext: 'jpg',
+      mime: 'image/jpeg',
+    };
+  }
+
+  if (buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4E && buf[3] === 0x47) {
+    return {
+      ext: 'png',
+      mime: 'image/png',
+    };
+  }
+
+  if (buf[0] === 0x47 && buf[1] === 0x49 && buf[2] === 0x46) {
+    return {
+      ext: 'gif',
+      mime: 'image/gif',
+    };
+  }
+
+  if (buf[8] === 0x57 && buf[9] === 0x45 && buf[10] === 0x42 && buf[11] === 0x50) {
+    return {
+      ext: 'webp',
+      mime: 'image/webp',
+    };
+  }
+
+  if (buf[0] === 0x46 && buf[1] === 0x4C && buf[2] === 0x49 && buf[3] === 0x46) {
+    return {
+      ext: 'flif',
+      mime: 'image/flif',
+    };
+  }
+
+	// needs to be before `tif` check
+  if (
+    ((buf[0] === 0x49 && buf[1] === 0x49 && buf[2] === 0x2A && buf[3] === 0x0) ||
+    (buf[0] === 0x4D && buf[1] === 0x4D && buf[2] === 0x0 && buf[3] === 0x2A)) && buf[8] === 0x43 && buf[9] === 0x52
+  ) {
+    return {
+      ext: 'cr2',
+      mime: 'image/x-canon-cr2',
+    };
+  }
+
+  if (
+    (buf[0] === 0x49 && buf[1] === 0x49 && buf[2] === 0x2A && buf[3] === 0x0) ||
+    (buf[0] === 0x4D && buf[1] === 0x4D && buf[2] === 0x0 && buf[3] === 0x2A)
+  ) {
+    return {
+      ext: 'tif',
+      mime: 'image/tiff',
+    };
+  }
+
+  if (buf[0] === 0x42 && buf[1] === 0x4D) {
+    return {
+      ext: 'bmp',
+      mime: 'image/bmp',
+    };
+  }
+
+  if (buf[0] === 0x49 && buf[1] === 0x49 && buf[2] === 0xBC) {
+    return {
+      ext: 'jxr',
+      mime: 'image/vnd.ms-photo',
+    };
+  }
+
+  if (buf[0] === 0x38 && buf[1] === 0x42 && buf[2] === 0x50 && buf[3] === 0x53) {
+    return {
+      ext: 'psd',
+      mime: 'image/vnd.adobe.photoshop',
+    };
+  }
+
+	// needs to be before `zip` check
+  if (
+    buf[0] === 0x50 && buf[1] === 0x4B && buf[2] === 0x3 && buf[3] === 0x4 && buf[30] === 0x6D && buf[31] === 0x69 &&
+    buf[32] === 0x6D && buf[33] === 0x65 && buf[34] === 0x74 && buf[35] === 0x79 && buf[36] === 0x70 &&
+    buf[37] === 0x65 && buf[38] === 0x61 && buf[39] === 0x70 && buf[40] === 0x70 && buf[41] === 0x6C &&
+    buf[42] === 0x69 && buf[43] === 0x63 && buf[44] === 0x61 && buf[45] === 0x74 && buf[46] === 0x69 &&
+    buf[47] === 0x6F && buf[48] === 0x6E && buf[49] === 0x2F && buf[50] === 0x65 && buf[51] === 0x70 &&
+    buf[52] === 0x75 && buf[53] === 0x62 && buf[54] === 0x2B && buf[55] === 0x7A && buf[56] === 0x69 &&
+    buf[57] === 0x70
+  ) {
+    return {
+      ext: 'epub',
+      mime: 'application/epub+zip',
+    };
+  }
+
+	// needs to be before `zip` check
+	// assumes signed .xpi from addons.mozilla.org
+  if (
+    buf[0] === 0x50 && buf[1] === 0x4B && buf[2] === 0x3 && buf[3] === 0x4 && buf[30] === 0x4D && buf[31] === 0x45 &&
+    buf[32] === 0x54 && buf[33] === 0x41 && buf[34] === 0x2D && buf[35] === 0x49 && buf[36] === 0x4E &&
+    buf[37] === 0x46 && buf[38] === 0x2F && buf[39] === 0x6D && buf[40] === 0x6F && buf[41] === 0x7A &&
+    buf[42] === 0x69 && buf[43] === 0x6C && buf[44] === 0x6C && buf[45] === 0x61 && buf[46] === 0x2E &&
+    buf[47] === 0x72 && buf[48] === 0x73 && buf[49] === 0x61
+  ) {
+    return {
+      ext: 'xpi',
+      mime: 'application/x-xpinstall',
+    };
+  }
+
+  if (
+    buf[0] === 0x50 && buf[1] === 0x4B && (buf[2] === 0x3 || buf[2] === 0x5 || buf[2] === 0x7) &&
+    (buf[3] === 0x4 || buf[3] === 0x6 || buf[3] === 0x8)
+  ) {
+    return {
+      ext: 'zip',
+      mime: 'application/zip',
+    };
+  }
+
+  if (buf[257] === 0x75 && buf[258] === 0x73 && buf[259] === 0x74 && buf[260] === 0x61 && buf[261] === 0x72) {
+    return {
+      ext: 'tar',
+      mime: 'application/x-tar',
+    };
+  }
+
+  if (
+    buf[0] === 0x52 && buf[1] === 0x61 && buf[2] === 0x72 && buf[3] === 0x21 && buf[4] === 0x1A && buf[5] === 0x7 &&
+    (buf[6] === 0x0 || buf[6] === 0x1)
+  ) {
+    return {
+      ext: 'rar',
+      mime: 'application/x-rar-compressed',
+    };
+  }
+
+  if (buf[0] === 0x1F && buf[1] === 0x8B && buf[2] === 0x8) {
+    return {
+      ext: 'gz',
+      mime: 'application/gzip',
+    };
+  }
+
+  if (buf[0] === 0x42 && buf[1] === 0x5A && buf[2] === 0x68) {
+    return {
+      ext: 'bz2',
+      mime: 'application/x-bzip2',
+    };
+  }
+
+  if (buf[0] === 0x37 && buf[1] === 0x7A && buf[2] === 0xBC && buf[3] === 0xAF && buf[4] === 0x27 && buf[5] === 0x1C) {
+    return {
+      ext: '7z',
+      mime: 'application/x-7z-compressed',
+    };
+  }
+
+  if (buf[0] === 0x78 && buf[1] === 0x01) {
+    return {
+      ext: 'dmg',
+      mime: 'application/x-apple-diskimage',
+    };
+  }
+
+  if (
+		(buf[0] === 0x0 && buf[1] === 0x0 && buf[2] === 0x0 && (buf[3] === 0x18 || buf[3] === 0x20) && buf[4] === 0x66 &&
+    buf[5] === 0x74 && buf[6] === 0x79 && buf[7] === 0x70) ||
+    (buf[0] === 0x33 && buf[1] === 0x67 && buf[2] === 0x70 && buf[3] === 0x35) ||
+		(buf[0] === 0x0 && buf[1] === 0x0 && buf[2] === 0x0 && buf[3] === 0x1C && buf[4] === 0x66 && buf[5] === 0x74 &&
+      buf[6] === 0x79 && buf[7] === 0x70 && buf[8] === 0x6D && buf[9] === 0x70 && buf[10] === 0x34 &&
+      buf[11] === 0x32 && buf[16] === 0x6D && buf[17] === 0x70 && buf[18] === 0x34 && buf[19] === 0x31 &&
+      buf[20] === 0x6D && buf[21] === 0x70 && buf[22] === 0x34 && buf[23] === 0x32 && buf[24] === 0x69 &&
+      buf[25] === 0x73 && buf[26] === 0x6F && buf[27] === 0x6D) ||
+		(buf[0] === 0x0 && buf[1] === 0x0 && buf[2] === 0x0 && buf[3] === 0x1C && buf[4] === 0x66 && buf[5] === 0x74 &&
+      buf[6] === 0x79 && buf[7] === 0x70 && buf[8] === 0x69 && buf[9] === 0x73 && buf[10] === 0x6F &&
+      buf[11] === 0x6D) ||
+		(buf[0] === 0x0 && buf[1] === 0x0 && buf[2] === 0x0 && buf[3] === 0x1c && buf[4] === 0x66 && buf[5] === 0x74 &&
+      buf[6] === 0x79 && buf[7] === 0x70 && buf[8] === 0x6D && buf[9] === 0x70 && buf[10] === 0x34 &&
+      buf[11] === 0x32 && buf[12] === 0x0 && buf[13] === 0x0 && buf[14] === 0x0 && buf[15] === 0x0)
+	) {
+    return {
+      ext: 'mp4',
+      mime: 'video/mp4',
+    };
+  }
+
+  if (
+    buf[0] === 0x0 && buf[1] === 0x0 && buf[2] === 0x0 && buf[3] === 0x1C && buf[4] === 0x66 &&
+    buf[5] === 0x74 && buf[6] === 0x79 && buf[7] === 0x70 && buf[8] === 0x4D && buf[9] === 0x34 && buf[10] === 0x56
+  ) {
+    return {
+      ext: 'm4v',
+      mime: 'video/x-m4v',
+    };
+  }
+
+  if (buf[0] === 0x4D && buf[1] === 0x54 && buf[2] === 0x68 && buf[3] === 0x64) {
+    return {
+      ext: 'mid',
+      mime: 'audio/midi',
+    };
+  }
+
+	// https://github.com/threatstack/libmagic/blob/master/magic/Magdir/matroska
+  if (buf[0] === 0x1A && buf[1] === 0x45 && buf[2] === 0xDF && buf[3] === 0xA3) {
+    const sliced = buf.subarray(4, 4 + 4096);
+    const idPos = sliced.findIndex((el, i, arr) => arr[i] === 0x42 && arr[i + 1] === 0x82);
+
+    if (idPos >= 0) {
+      const docTypePos = idPos + 3;
+      const findDocType = (type) => Array.from(type).every((c, i) => sliced[docTypePos + i] === c.charCodeAt(0));
+
+      if (findDocType('matroska')) {
+        return {
+          ext: 'mkv',
+          mime: 'video/x-matroska',
+        };
+      }
+      if (findDocType('webm')) {
+        return {
+          ext: 'webm',
+          mime: 'video/webm',
+        };
+      }
+    }
+  }
+
+  if (
+    buf[0] === 0x0 && buf[1] === 0x0 && buf[2] === 0x0 && buf[3] === 0x14 && buf[4] === 0x66 && buf[5] === 0x74 &&
+    buf[6] === 0x79 && buf[7] === 0x70
+  ) {
+    return {
+      ext: 'mov',
+      mime: 'video/quicktime',
+    };
+  }
+
+  if (
+    buf[0] === 0x52 && buf[1] === 0x49 && buf[2] === 0x46 && buf[3] === 0x46 && buf[8] === 0x41 && buf[9] === 0x56 &&
+    buf[10] === 0x49
+  ) {
+    return {
+      ext: 'avi',
+      mime: 'video/x-msvideo',
+    };
+  }
+
+  if (
+    buf[0] === 0x30 && buf[1] === 0x26 && buf[2] === 0xB2 && buf[3] === 0x75 && buf[4] === 0x8E && buf[5] === 0x66 &&
+    buf[6] === 0xCF && buf[7] === 0x11 && buf[8] === 0xA6 && buf[9] === 0xD9
+  ) {
+    return {
+      ext: 'wmv',
+      mime: 'video/x-ms-wmv',
+    };
+  }
+
+  if (buf[0] === 0x0 && buf[1] === 0x0 && buf[2] === 0x1 && buf[3].toString(16)[0] === 'b') {
+    return {
+      ext: 'mpg',
+      mime: 'video/mpeg',
+    };
+  }
+
+  if ((buf[0] === 0x49 && buf[1] === 0x44 && buf[2] === 0x33) || (buf[0] === 0xFF && buf[1] === 0xfb)) {
+    return {
+      ext: 'mp3',
+      mime: 'audio/mpeg',
+    };
+  }
+
+  if ((buf[4] === 0x66 && buf[5] === 0x74 && buf[6] === 0x79 && buf[7] === 0x70 && buf[8] === 0x4D &&
+    buf[9] === 0x34 && buf[10] === 0x41) || (buf[0] === 0x4D && buf[1] === 0x34 && buf[2] === 0x41 && buf[3] === 0x20)
+  ) {
+    return {
+      ext: 'm4a',
+      mime: 'audio/m4a',
+    };
+  }
+
+	// needs to be before `ogg` check
+  if (
+    buf[28] === 0x4F && buf[29] === 0x70 && buf[30] === 0x75 && buf[31] === 0x73 && buf[32] === 0x48 &&
+    buf[33] === 0x65 && buf[34] === 0x61 && buf[35] === 0x64
+  ) {
+    return {
+      ext: 'opus',
+      mime: 'audio/opus',
+    };
+  }
+
+  if (buf[0] === 0x4F && buf[1] === 0x67 && buf[2] === 0x67 && buf[3] === 0x53) {
+    return {
+      ext: 'ogg',
+      mime: 'audio/ogg',
+    };
+  }
+
+  if (buf[0] === 0x66 && buf[1] === 0x4C && buf[2] === 0x61 && buf[3] === 0x43) {
+    return {
+      ext: 'flac',
+      mime: 'audio/x-flac',
+    };
+  }
+
+  if (
+    buf[0] === 0x52 && buf[1] === 0x49 && buf[2] === 0x46 && buf[3] === 0x46 && buf[8] === 0x57 && buf[9] === 0x41 &&
+    buf[10] === 0x56 && buf[11] === 0x45
+  ) {
+    return {
+      ext: 'wav',
+      mime: 'audio/x-wav',
+    };
+  }
+
+  if (buf[0] === 0x23 && buf[1] === 0x21 && buf[2] === 0x41 && buf[3] === 0x4D && buf[4] === 0x52 && buf[5] === 0x0A) {
+    return {
+      ext: 'amr',
+      mime: 'audio/amr',
+    };
+  }
+
+  if (buf[0] === 0x25 && buf[1] === 0x50 && buf[2] === 0x44 && buf[3] === 0x46) {
+    return {
+      ext: 'pdf',
+      mime: 'application/pdf',
+    };
+  }
+
+  if (buf[0] === 0x4D && buf[1] === 0x5A) {
+    return {
+      ext: 'exe',
+      mime: 'application/x-msdownload',
+    };
+  }
+
+  if ((buf[0] === 0x43 || buf[0] === 0x46) && buf[1] === 0x57 && buf[2] === 0x53) {
+    return {
+      ext: 'swf',
+      mime: 'application/x-shockwave-flash',
+    };
+  }
+
+  if (buf[0] === 0x7B && buf[1] === 0x5C && buf[2] === 0x72 && buf[3] === 0x74 && buf[4] === 0x66) {
+    return {
+      ext: 'rtf',
+      mime: 'application/rtf',
+    };
+  }
+
+  if (
+		(buf[0] === 0x77 && buf[1] === 0x4F && buf[2] === 0x46 && buf[3] === 0x46) &&
+		(
+			(buf[4] === 0x00 && buf[5] === 0x01 && buf[6] === 0x00 && buf[7] === 0x00) ||
+			(buf[4] === 0x4F && buf[5] === 0x54 && buf[6] === 0x54 && buf[7] === 0x4F)
+		)
+	) {
+    return {
+      ext: 'woff',
+      mime: 'application/font-woff',
+    };
+  }
+
+  if (
+		(buf[0] === 0x77 && buf[1] === 0x4F && buf[2] === 0x46 && buf[3] === 0x32) &&
+		(
+			(buf[4] === 0x00 && buf[5] === 0x01 && buf[6] === 0x00 && buf[7] === 0x00) ||
+			(buf[4] === 0x4F && buf[5] === 0x54 && buf[6] === 0x54 && buf[7] === 0x4F)
+		)
+	) {
+    return {
+      ext: 'woff2',
+      mime: 'application/font-woff',
+    };
+  }
+
+  if (
+		(buf[34] === 0x4C && buf[35] === 0x50) &&
+		(
+			(buf[8] === 0x00 && buf[9] === 0x00 && buf[10] === 0x01) ||
+			(buf[8] === 0x01 && buf[9] === 0x00 && buf[10] === 0x02) ||
+			(buf[8] === 0x02 && buf[9] === 0x00 && buf[10] === 0x02)
+		)
+	) {
+    return {
+      ext: 'eot',
+      mime: 'application/octet-stream',
+    };
+  }
+
+  if (buf[0] === 0x00 && buf[1] === 0x01 && buf[2] === 0x00 && buf[3] === 0x00 && buf[4] === 0x00) {
+    return {
+      ext: 'ttf',
+      mime: 'application/font-sfnt',
+    };
+  }
+
+  if (buf[0] === 0x4F && buf[1] === 0x54 && buf[2] === 0x54 && buf[3] === 0x4F && buf[4] === 0x00) {
+    return {
+      ext: 'otf',
+      mime: 'application/font-sfnt',
+    };
+  }
+
+  if (buf[0] === 0x00 && buf[1] === 0x00 && buf[2] === 0x01 && buf[3] === 0x00) {
+    return {
+      ext: 'ico',
+      mime: 'image/x-icon',
+    };
+  }
+
+  if (buf[0] === 0x46 && buf[1] === 0x4C && buf[2] === 0x56 && buf[3] === 0x01) {
+    return {
+      ext: 'flv',
+      mime: 'video/x-flv',
+    };
+  }
+
+  if (buf[0] === 0x25 && buf[1] === 0x21) {
+    return {
+      ext: 'ps',
+      mime: 'application/postscript',
+    };
+  }
+
+  if (buf[0] === 0xFD && buf[1] === 0x37 && buf[2] === 0x7A && buf[3] === 0x58 && buf[4] === 0x5A && buf[5] === 0x00) {
+    return {
+      ext: 'xz',
+      mime: 'application/x-xz',
+    };
+  }
+
+  if (buf[0] === 0x53 && buf[1] === 0x51 && buf[2] === 0x4C && buf[3] === 0x69) {
+    return {
+      ext: 'sqlite',
+      mime: 'application/x-sqlite3',
+    };
+  }
+
+  if (buf[0] === 0x4E && buf[1] === 0x45 && buf[2] === 0x53 && buf[3] === 0x1A) {
+    return {
+      ext: 'nes',
+      mime: 'application/x-nintendo-nes-rom',
+    };
+  }
+
+  if (buf[0] === 0x43 && buf[1] === 0x72 && buf[2] === 0x32 && buf[3] === 0x34) {
+    return {
+      ext: 'crx',
+      mime: 'application/x-google-chrome-extension',
+    };
+  }
+
+  if (
+		(buf[0] === 0x4D && buf[1] === 0x53 && buf[2] === 0x43 && buf[3] === 0x46) ||
+		(buf[0] === 0x49 && buf[1] === 0x53 && buf[2] === 0x63 && buf[3] === 0x28)
+	) {
+    return {
+      ext: 'cab',
+      mime: 'application/vnd.ms-cab-compressed',
+    };
+  }
+
+	// needs to be before `ar` check
+  if (
+    buf[0] === 0x21 && buf[1] === 0x3C && buf[2] === 0x61 && buf[3] === 0x72 && buf[4] === 0x63 && buf[5] === 0x68 &&
+    buf[6] === 0x3E && buf[7] === 0x0A && buf[8] === 0x64 && buf[9] === 0x65 && buf[10] === 0x62 && buf[11] === 0x69 &&
+    buf[12] === 0x61 && buf[13] === 0x6E && buf[14] === 0x2D && buf[15] === 0x62 && buf[16] === 0x69 &&
+    buf[17] === 0x6E && buf[18] === 0x61 && buf[19] === 0x72 && buf[20] === 0x79
+  ) {
+    return {
+      ext: 'deb',
+      mime: 'application/x-deb',
+    };
+  }
+
+  if (
+    buf[0] === 0x21 && buf[1] === 0x3C && buf[2] === 0x61 && buf[3] === 0x72 && buf[4] === 0x63 && buf[5] === 0x68 &&
+    buf[6] === 0x3E
+  ) {
+    return {
+      ext: 'ar',
+      mime: 'application/x-unix-archive',
+    };
+  }
+
+  if (buf[0] === 0xED && buf[1] === 0xAB && buf[2] === 0xEE && buf[3] === 0xDB) {
+    return {
+      ext: 'rpm',
+      mime: 'application/x-rpm',
+    };
+  }
+
+  if (
+		(buf[0] === 0x1F && buf[1] === 0xA0) ||
+		(buf[0] === 0x1F && buf[1] === 0x9D)
+	) {
+    return {
+      ext: 'Z',
+      mime: 'application/x-compress',
+    };
+  }
+
+  if (buf[0] === 0x4C && buf[1] === 0x5A && buf[2] === 0x49 && buf[3] === 0x50) {
+    return {
+      ext: 'lz',
+      mime: 'application/x-lzip',
+    };
+  }
+
+  if (
+    buf[0] === 0xD0 && buf[1] === 0xCF && buf[2] === 0x11 && buf[3] === 0xE0 && buf[4] === 0xA1 && buf[5] === 0xB1 &&
+    buf[6] === 0x1A && buf[7] === 0xE1
+  ) {
+    return {
+      ext: 'msi',
+      mime: 'application/x-msi',
+    };
+  }
+
+  if (
+    buf[0] === 0x06 && buf[1] === 0x0E && buf[2] === 0x2B && buf[3] === 0x34 && buf[4] === 0x02 && buf[5] === 0x05 &&
+    buf[6] === 0x01 && buf[7] === 0x01 && buf[8] === 0x0D && buf[9] === 0x01 && buf[10] === 0x02 && buf[11] === 0x01 &&
+    buf[12] === 0x01 && buf[13] === 0x02
+  ) {
+    return {
+      ext: 'mxf',
+      mime: 'application/mxf',
+    };
+  }
+
+  return null;
+}
+
+module.exports = mimeOfBuffer;
+
+
+/***/ }),
+/* 91 */
+/***/ (function(module, exports) {
+
+module.exports = {
+	"123": "application/vnd.lotus-1-2-3",
+	"ez": "application/andrew-inset",
+	"aw": "application/applixware",
+	"atom": "application/atom+xml",
+	"atomcat": "application/atomcat+xml",
+	"atomsvc": "application/atomsvc+xml",
+	"bdoc": "application/x-bdoc",
+	"ccxml": "application/ccxml+xml",
+	"cdmia": "application/cdmi-capability",
+	"cdmic": "application/cdmi-container",
+	"cdmid": "application/cdmi-domain",
+	"cdmio": "application/cdmi-object",
+	"cdmiq": "application/cdmi-queue",
+	"cu": "application/cu-seeme",
+	"mpd": "application/dash+xml",
+	"davmount": "application/davmount+xml",
+	"dbk": "application/docbook+xml",
+	"dssc": "application/dssc+der",
+	"xdssc": "application/dssc+xml",
+	"ecma": "application/ecmascript",
+	"emma": "application/emma+xml",
+	"epub": "application/epub+zip",
+	"exi": "application/exi",
+	"pfr": "application/font-tdpfr",
+	"woff": "application/font-woff",
+	"woff2": "application/font-woff2",
+	"geojson": "application/geo+json",
+	"gml": "application/gml+xml",
+	"gpx": "application/gpx+xml",
+	"gxf": "application/gxf",
+	"stk": "application/hyperstudio",
+	"ink": "application/inkml+xml",
+	"inkml": "application/inkml+xml",
+	"ipfix": "application/ipfix",
+	"jar": "application/java-archive",
+	"war": "application/java-archive",
+	"ear": "application/java-archive",
+	"ser": "application/java-serialized-object",
+	"class": "application/java-vm",
+	"js": "application/javascript",
+	"json": "application/json",
+	"map": "application/json",
+	"json5": "application/json5",
+	"jsonml": "application/jsonml+json",
+	"jsonld": "application/ld+json",
+	"lostxml": "application/lost+xml",
+	"hqx": "application/mac-binhex40",
+	"cpt": "application/mac-compactpro",
+	"mads": "application/mads+xml",
+	"webmanifest": "application/manifest+json",
+	"mrc": "application/marc",
+	"mrcx": "application/marcxml+xml",
+	"ma": "application/mathematica",
+	"nb": "application/mathematica",
+	"mb": "application/mathematica",
+	"mathml": "application/mathml+xml",
+	"mbox": "application/mbox",
+	"mscml": "application/mediaservercontrol+xml",
+	"metalink": "application/metalink+xml",
+	"meta4": "application/metalink4+xml",
+	"mets": "application/mets+xml",
+	"mods": "application/mods+xml",
+	"m21": "application/mp21",
+	"mp21": "application/mp21",
+	"mp4s": "application/mp4",
+	"m4p": "application/mp4",
+	"doc": "application/msword",
+	"dot": "application/msword",
+	"mxf": "application/mxf",
+	"bin": "application/octet-stream",
+	"dms": "application/octet-stream",
+	"lrf": "application/octet-stream",
+	"mar": "application/octet-stream",
+	"so": "application/octet-stream",
+	"dist": "application/octet-stream",
+	"distz": "application/octet-stream",
+	"pkg": "application/octet-stream",
+	"bpk": "application/octet-stream",
+	"dump": "application/octet-stream",
+	"elc": "application/octet-stream",
+	"deploy": "application/octet-stream",
+	"exe": "application/x-msdownload",
+	"dll": "application/x-msdownload",
+	"deb": "application/x-debian-package",
+	"dmg": "application/x-apple-diskimage",
+	"iso": "application/x-iso9660-image",
+	"img": "application/octet-stream",
+	"msi": "application/x-msdownload",
+	"msp": "application/octet-stream",
+	"msm": "application/octet-stream",
+	"buffer": "application/octet-stream",
+	"oda": "application/oda",
+	"opf": "application/oebps-package+xml",
+	"ogx": "application/ogg",
+	"omdoc": "application/omdoc+xml",
+	"onetoc": "application/onenote",
+	"onetoc2": "application/onenote",
+	"onetmp": "application/onenote",
+	"onepkg": "application/onenote",
+	"oxps": "application/oxps",
+	"xer": "application/patch-ops-error+xml",
+	"pdf": "application/pdf",
+	"pgp": "application/pgp-encrypted",
+	"asc": "application/pgp-signature",
+	"sig": "application/pgp-signature",
+	"prf": "application/pics-rules",
+	"p10": "application/pkcs10",
+	"p7m": "application/pkcs7-mime",
+	"p7c": "application/pkcs7-mime",
+	"p7s": "application/pkcs7-signature",
+	"p8": "application/pkcs8",
+	"ac": "application/pkix-attr-cert",
+	"cer": "application/pkix-cert",
+	"crl": "application/pkix-crl",
+	"pkipath": "application/pkix-pkipath",
+	"pki": "application/pkixcmp",
+	"pls": "application/pls+xml",
+	"ai": "application/postscript",
+	"eps": "application/postscript",
+	"ps": "application/postscript",
+	"cww": "application/prs.cww",
+	"pskcxml": "application/pskc+xml",
+	"rdf": "application/rdf+xml",
+	"rif": "application/reginfo+xml",
+	"rnc": "application/relax-ng-compact-syntax",
+	"rl": "application/resource-lists+xml",
+	"rld": "application/resource-lists-diff+xml",
+	"rs": "application/rls-services+xml",
+	"gbr": "application/rpki-ghostbusters",
+	"mft": "application/rpki-manifest",
+	"roa": "application/rpki-roa",
+	"rsd": "application/rsd+xml",
+	"rss": "application/rss+xml",
+	"rtf": "text/rtf",
+	"sbml": "application/sbml+xml",
+	"scq": "application/scvp-cv-request",
+	"scs": "application/scvp-cv-response",
+	"spq": "application/scvp-vp-request",
+	"spp": "application/scvp-vp-response",
+	"sdp": "application/sdp",
+	"setpay": "application/set-payment-initiation",
+	"setreg": "application/set-registration-initiation",
+	"shf": "application/shf+xml",
+	"smi": "application/smil+xml",
+	"smil": "application/smil+xml",
+	"rq": "application/sparql-query",
+	"srx": "application/sparql-results+xml",
+	"gram": "application/srgs",
+	"grxml": "application/srgs+xml",
+	"sru": "application/sru+xml",
+	"ssdl": "application/ssdl+xml",
+	"ssml": "application/ssml+xml",
+	"tei": "application/tei+xml",
+	"teicorpus": "application/tei+xml",
+	"tfi": "application/thraud+xml",
+	"tsd": "application/timestamped-data",
+	"plb": "application/vnd.3gpp.pic-bw-large",
+	"psb": "application/vnd.3gpp.pic-bw-small",
+	"pvb": "application/vnd.3gpp.pic-bw-var",
+	"tcap": "application/vnd.3gpp2.tcap",
+	"pwn": "application/vnd.3m.post-it-notes",
+	"aso": "application/vnd.accpac.simply.aso",
+	"imp": "application/vnd.accpac.simply.imp",
+	"acu": "application/vnd.acucobol",
+	"atc": "application/vnd.acucorp",
+	"acutc": "application/vnd.acucorp",
+	"air": "application/vnd.adobe.air-application-installer-package+zip",
+	"fcdt": "application/vnd.adobe.formscentral.fcdt",
+	"fxp": "application/vnd.adobe.fxp",
+	"fxpl": "application/vnd.adobe.fxp",
+	"xdp": "application/vnd.adobe.xdp+xml",
+	"xfdf": "application/vnd.adobe.xfdf",
+	"ahead": "application/vnd.ahead.space",
+	"azf": "application/vnd.airzip.filesecure.azf",
+	"azs": "application/vnd.airzip.filesecure.azs",
+	"azw": "application/vnd.amazon.ebook",
+	"acc": "application/vnd.americandynamics.acc",
+	"ami": "application/vnd.amiga.ami",
+	"apk": "application/vnd.android.package-archive",
+	"cii": "application/vnd.anser-web-certificate-issue-initiation",
+	"fti": "application/vnd.anser-web-funds-transfer-initiation",
+	"atx": "application/vnd.antix.game-component",
+	"mpkg": "application/vnd.apple.installer+xml",
+	"m3u8": "application/vnd.apple.mpegurl",
+	"pkpass": "application/vnd.apple.pkpass",
+	"swi": "application/vnd.aristanetworks.swi",
+	"iota": "application/vnd.astraea-software.iota",
+	"aep": "application/vnd.audiograph",
+	"mpm": "application/vnd.blueice.multipass",
+	"bmi": "application/vnd.bmi",
+	"rep": "application/vnd.businessobjects",
+	"cdxml": "application/vnd.chemdraw+xml",
+	"mmd": "application/vnd.chipnuts.karaoke-mmd",
+	"cdy": "application/vnd.cinderella",
+	"cla": "application/vnd.claymore",
+	"rp9": "application/vnd.cloanto.rp9",
+	"c4g": "application/vnd.clonk.c4group",
+	"c4d": "application/vnd.clonk.c4group",
+	"c4f": "application/vnd.clonk.c4group",
+	"c4p": "application/vnd.clonk.c4group",
+	"c4u": "application/vnd.clonk.c4group",
+	"c11amc": "application/vnd.cluetrust.cartomobile-config",
+	"c11amz": "application/vnd.cluetrust.cartomobile-config-pkg",
+	"csp": "application/vnd.commonspace",
+	"cdbcmsg": "application/vnd.contact.cmsg",
+	"cmc": "application/vnd.cosmocaller",
+	"clkx": "application/vnd.crick.clicker",
+	"clkk": "application/vnd.crick.clicker.keyboard",
+	"clkp": "application/vnd.crick.clicker.palette",
+	"clkt": "application/vnd.crick.clicker.template",
+	"clkw": "application/vnd.crick.clicker.wordbank",
+	"wbs": "application/vnd.criticaltools.wbs+xml",
+	"pml": "application/vnd.ctc-posml",
+	"ppd": "application/vnd.cups-ppd",
+	"car": "application/vnd.curl.car",
+	"pcurl": "application/vnd.curl.pcurl",
+	"dart": "application/vnd.dart",
+	"rdz": "application/vnd.data-vision.rdz",
+	"uvf": "application/vnd.dece.data",
+	"uvvf": "application/vnd.dece.data",
+	"uvd": "application/vnd.dece.data",
+	"uvvd": "application/vnd.dece.data",
+	"uvt": "application/vnd.dece.ttml+xml",
+	"uvvt": "application/vnd.dece.ttml+xml",
+	"uvx": "application/vnd.dece.unspecified",
+	"uvvx": "application/vnd.dece.unspecified",
+	"uvz": "application/vnd.dece.zip",
+	"uvvz": "application/vnd.dece.zip",
+	"fe_launch": "application/vnd.denovo.fcselayout-link",
+	"dna": "application/vnd.dna",
+	"mlp": "application/vnd.dolby.mlp",
+	"dpg": "application/vnd.dpgraph",
+	"dfac": "application/vnd.dreamfactory",
+	"kpxx": "application/vnd.ds-keypoint",
+	"ait": "application/vnd.dvb.ait",
+	"svc": "application/vnd.dvb.service",
+	"geo": "application/vnd.dynageo",
+	"mag": "application/vnd.ecowin.chart",
+	"nml": "application/vnd.enliven",
+	"esf": "application/vnd.epson.esf",
+	"msf": "application/vnd.epson.msf",
+	"qam": "application/vnd.epson.quickanime",
+	"slt": "application/vnd.epson.salt",
+	"ssf": "application/vnd.epson.ssf",
+	"es3": "application/vnd.eszigno3+xml",
+	"et3": "application/vnd.eszigno3+xml",
+	"ez2": "application/vnd.ezpix-album",
+	"ez3": "application/vnd.ezpix-package",
+	"fdf": "application/vnd.fdf",
+	"mseed": "application/vnd.fdsn.mseed",
+	"seed": "application/vnd.fdsn.seed",
+	"dataless": "application/vnd.fdsn.seed",
+	"gph": "application/vnd.flographit",
+	"ftc": "application/vnd.fluxtime.clip",
+	"fm": "application/vnd.framemaker",
+	"frame": "application/vnd.framemaker",
+	"maker": "application/vnd.framemaker",
+	"book": "application/vnd.framemaker",
+	"fnc": "application/vnd.frogans.fnc",
+	"ltf": "application/vnd.frogans.ltf",
+	"fsc": "application/vnd.fsc.weblaunch",
+	"oas": "application/vnd.fujitsu.oasys",
+	"oa2": "application/vnd.fujitsu.oasys2",
+	"oa3": "application/vnd.fujitsu.oasys3",
+	"fg5": "application/vnd.fujitsu.oasysgp",
+	"bh2": "application/vnd.fujitsu.oasysprs",
+	"ddd": "application/vnd.fujixerox.ddd",
+	"xdw": "application/vnd.fujixerox.docuworks",
+	"xbd": "application/vnd.fujixerox.docuworks.binder",
+	"fzs": "application/vnd.fuzzysheet",
+	"txd": "application/vnd.genomatix.tuxedo",
+	"ggb": "application/vnd.geogebra.file",
+	"ggt": "application/vnd.geogebra.tool",
+	"gex": "application/vnd.geometry-explorer",
+	"gre": "application/vnd.geometry-explorer",
+	"gxt": "application/vnd.geonext",
+	"g2w": "application/vnd.geoplan",
+	"g3w": "application/vnd.geospace",
+	"gmx": "application/vnd.gmx",
+	"gdoc": "application/vnd.google-apps.document",
+	"gslides": "application/vnd.google-apps.presentation",
+	"gsheet": "application/vnd.google-apps.spreadsheet",
+	"kml": "application/vnd.google-earth.kml+xml",
+	"kmz": "application/vnd.google-earth.kmz",
+	"gqf": "application/vnd.grafeq",
+	"gqs": "application/vnd.grafeq",
+	"gac": "application/vnd.groove-account",
+	"ghf": "application/vnd.groove-help",
+	"gim": "application/vnd.groove-identity-message",
+	"grv": "application/vnd.groove-injector",
+	"gtm": "application/vnd.groove-tool-message",
+	"tpl": "application/vnd.groove-tool-template",
+	"vcg": "application/vnd.groove-vcard",
+	"hal": "application/vnd.hal+xml",
+	"zmm": "application/vnd.handheld-entertainment+xml",
+	"hbci": "application/vnd.hbci",
+	"les": "application/vnd.hhe.lesson-player",
+	"hpgl": "application/vnd.hp-hpgl",
+	"hpid": "application/vnd.hp-hpid",
+	"hps": "application/vnd.hp-hps",
+	"jlt": "application/vnd.hp-jlyt",
+	"pcl": "application/vnd.hp-pcl",
+	"pclxl": "application/vnd.hp-pclxl",
+	"sfd-hdstx": "application/vnd.hydrostatix.sof-data",
+	"mpy": "application/vnd.ibm.minipay",
+	"afp": "application/vnd.ibm.modcap",
+	"listafp": "application/vnd.ibm.modcap",
+	"list3820": "application/vnd.ibm.modcap",
+	"irm": "application/vnd.ibm.rights-management",
+	"sc": "application/vnd.ibm.secure-container",
+	"icc": "application/vnd.iccprofile",
+	"icm": "application/vnd.iccprofile",
+	"igl": "application/vnd.igloader",
+	"ivp": "application/vnd.immervision-ivp",
+	"ivu": "application/vnd.immervision-ivu",
+	"igm": "application/vnd.insors.igm",
+	"xpw": "application/vnd.intercon.formnet",
+	"xpx": "application/vnd.intercon.formnet",
+	"i2g": "application/vnd.intergeo",
+	"qbo": "application/vnd.intu.qbo",
+	"qfx": "application/vnd.intu.qfx",
+	"rcprofile": "application/vnd.ipunplugged.rcprofile",
+	"irp": "application/vnd.irepository.package+xml",
+	"xpr": "application/vnd.is-xpr",
+	"fcs": "application/vnd.isac.fcs",
+	"jam": "application/vnd.jam",
+	"rms": "application/vnd.jcp.javame.midlet-rms",
+	"jisp": "application/vnd.jisp",
+	"joda": "application/vnd.joost.joda-archive",
+	"ktz": "application/vnd.kahootz",
+	"ktr": "application/vnd.kahootz",
+	"karbon": "application/vnd.kde.karbon",
+	"chrt": "application/vnd.kde.kchart",
+	"kfo": "application/vnd.kde.kformula",
+	"flw": "application/vnd.kde.kivio",
+	"kon": "application/vnd.kde.kontour",
+	"kpr": "application/vnd.kde.kpresenter",
+	"kpt": "application/vnd.kde.kpresenter",
+	"ksp": "application/vnd.kde.kspread",
+	"kwd": "application/vnd.kde.kword",
+	"kwt": "application/vnd.kde.kword",
+	"htke": "application/vnd.kenameaapp",
+	"kia": "application/vnd.kidspiration",
+	"kne": "application/vnd.kinar",
+	"knp": "application/vnd.kinar",
+	"skp": "application/vnd.koan",
+	"skd": "application/vnd.koan",
+	"skt": "application/vnd.koan",
+	"skm": "application/vnd.koan",
+	"sse": "application/vnd.kodak-descriptor",
+	"lasxml": "application/vnd.las.las+xml",
+	"lbd": "application/vnd.llamagraphics.life-balance.desktop",
+	"lbe": "application/vnd.llamagraphics.life-balance.exchange+xml",
+	"apr": "application/vnd.lotus-approach",
+	"pre": "application/vnd.lotus-freelance",
+	"nsf": "application/vnd.lotus-notes",
+	"org": "application/vnd.lotus-organizer",
+	"scm": "application/vnd.lotus-screencam",
+	"lwp": "application/vnd.lotus-wordpro",
+	"portpkg": "application/vnd.macports.portpkg",
+	"mcd": "application/vnd.mcd",
+	"mc1": "application/vnd.medcalcdata",
+	"cdkey": "application/vnd.mediastation.cdkey",
+	"mwf": "application/vnd.mfer",
+	"mfm": "application/vnd.mfmp",
+	"flo": "application/vnd.micrografx.flo",
+	"igx": "application/vnd.micrografx.igx",
+	"mif": "application/vnd.mif",
+	"daf": "application/vnd.mobius.daf",
+	"dis": "application/vnd.mobius.dis",
+	"mbk": "application/vnd.mobius.mbk",
+	"mqy": "application/vnd.mobius.mqy",
+	"msl": "application/vnd.mobius.msl",
+	"plc": "application/vnd.mobius.plc",
+	"txf": "application/vnd.mobius.txf",
+	"mpn": "application/vnd.mophun.application",
+	"mpc": "application/vnd.mophun.certificate",
+	"xul": "application/vnd.mozilla.xul+xml",
+	"cil": "application/vnd.ms-artgalry",
+	"cab": "application/vnd.ms-cab-compressed",
+	"xls": "application/vnd.ms-excel",
+	"xlm": "application/vnd.ms-excel",
+	"xla": "application/vnd.ms-excel",
+	"xlc": "application/vnd.ms-excel",
+	"xlt": "application/vnd.ms-excel",
+	"xlw": "application/vnd.ms-excel",
+	"xlam": "application/vnd.ms-excel.addin.macroenabled.12",
+	"xlsb": "application/vnd.ms-excel.sheet.binary.macroenabled.12",
+	"xlsm": "application/vnd.ms-excel.sheet.macroenabled.12",
+	"xltm": "application/vnd.ms-excel.template.macroenabled.12",
+	"eot": "application/vnd.ms-fontobject",
+	"chm": "application/vnd.ms-htmlhelp",
+	"ims": "application/vnd.ms-ims",
+	"lrm": "application/vnd.ms-lrm",
+	"thmx": "application/vnd.ms-officetheme",
+	"cat": "application/vnd.ms-pki.seccat",
+	"stl": "application/vnd.ms-pki.stl",
+	"ppt": "application/vnd.ms-powerpoint",
+	"pps": "application/vnd.ms-powerpoint",
+	"pot": "application/vnd.ms-powerpoint",
+	"ppam": "application/vnd.ms-powerpoint.addin.macroenabled.12",
+	"pptm": "application/vnd.ms-powerpoint.presentation.macroenabled.12",
+	"sldm": "application/vnd.ms-powerpoint.slide.macroenabled.12",
+	"ppsm": "application/vnd.ms-powerpoint.slideshow.macroenabled.12",
+	"potm": "application/vnd.ms-powerpoint.template.macroenabled.12",
+	"mpp": "application/vnd.ms-project",
+	"mpt": "application/vnd.ms-project",
+	"docm": "application/vnd.ms-word.document.macroenabled.12",
+	"dotm": "application/vnd.ms-word.template.macroenabled.12",
+	"wps": "application/vnd.ms-works",
+	"wks": "application/vnd.ms-works",
+	"wcm": "application/vnd.ms-works",
+	"wdb": "application/vnd.ms-works",
+	"wpl": "application/vnd.ms-wpl",
+	"xps": "application/vnd.ms-xpsdocument",
+	"mseq": "application/vnd.mseq",
+	"mus": "application/vnd.musician",
+	"msty": "application/vnd.muvee.style",
+	"taglet": "application/vnd.mynfc",
+	"nlu": "application/vnd.neurolanguage.nlu",
+	"ntf": "application/vnd.nitf",
+	"nitf": "application/vnd.nitf",
+	"nnd": "application/vnd.noblenet-directory",
+	"nns": "application/vnd.noblenet-sealer",
+	"nnw": "application/vnd.noblenet-web",
+	"ngdat": "application/vnd.nokia.n-gage.data",
+	"n-gage": "application/vnd.nokia.n-gage.symbian.install",
+	"rpst": "application/vnd.nokia.radio-preset",
+	"rpss": "application/vnd.nokia.radio-presets",
+	"edm": "application/vnd.novadigm.edm",
+	"edx": "application/vnd.novadigm.edx",
+	"ext": "application/vnd.novadigm.ext",
+	"odc": "application/vnd.oasis.opendocument.chart",
+	"otc": "application/vnd.oasis.opendocument.chart-template",
+	"odb": "application/vnd.oasis.opendocument.database",
+	"odf": "application/vnd.oasis.opendocument.formula",
+	"odft": "application/vnd.oasis.opendocument.formula-template",
+	"odg": "application/vnd.oasis.opendocument.graphics",
+	"otg": "application/vnd.oasis.opendocument.graphics-template",
+	"odi": "application/vnd.oasis.opendocument.image",
+	"oti": "application/vnd.oasis.opendocument.image-template",
+	"odp": "application/vnd.oasis.opendocument.presentation",
+	"otp": "application/vnd.oasis.opendocument.presentation-template",
+	"ods": "application/vnd.oasis.opendocument.spreadsheet",
+	"ots": "application/vnd.oasis.opendocument.spreadsheet-template",
+	"odt": "application/vnd.oasis.opendocument.text",
+	"odm": "application/vnd.oasis.opendocument.text-master",
+	"ott": "application/vnd.oasis.opendocument.text-template",
+	"oth": "application/vnd.oasis.opendocument.text-web",
+	"xo": "application/vnd.olpc-sugar",
+	"dd2": "application/vnd.oma.dd2+xml",
+	"oxt": "application/vnd.openofficeorg.extension",
+	"pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+	"sldx": "application/vnd.openxmlformats-officedocument.presentationml.slide",
+	"ppsx": "application/vnd.openxmlformats-officedocument.presentationml.slideshow",
+	"potx": "application/vnd.openxmlformats-officedocument.presentationml.template",
+	"xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+	"xltx": "application/vnd.openxmlformats-officedocument.spreadsheetml.template",
+	"docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+	"dotx": "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
+	"mgp": "application/vnd.osgeo.mapguide.package",
+	"dp": "application/vnd.osgi.dp",
+	"esa": "application/vnd.osgi.subsystem",
+	"pdb": "application/x-pilot",
+	"pqa": "application/vnd.palm",
+	"oprc": "application/vnd.palm",
+	"paw": "application/vnd.pawaafile",
+	"str": "application/vnd.pg.format",
+	"ei6": "application/vnd.pg.osasli",
+	"efif": "application/vnd.picsel",
+	"wg": "application/vnd.pmi.widget",
+	"plf": "application/vnd.pocketlearn",
+	"pbd": "application/vnd.powerbuilder6",
+	"box": "application/vnd.previewsystems.box",
+	"mgz": "application/vnd.proteus.magazine",
+	"qps": "application/vnd.publishare-delta-tree",
+	"ptid": "application/vnd.pvi.ptid1",
+	"qxd": "application/vnd.quark.quarkxpress",
+	"qxt": "application/vnd.quark.quarkxpress",
+	"qwd": "application/vnd.quark.quarkxpress",
+	"qwt": "application/vnd.quark.quarkxpress",
+	"qxl": "application/vnd.quark.quarkxpress",
+	"qxb": "application/vnd.quark.quarkxpress",
+	"bed": "application/vnd.realvnc.bed",
+	"mxl": "application/vnd.recordare.musicxml",
+	"musicxml": "application/vnd.recordare.musicxml+xml",
+	"cryptonote": "application/vnd.rig.cryptonote",
+	"cod": "application/vnd.rim.cod",
+	"rm": "application/vnd.rn-realmedia",
+	"rmvb": "application/vnd.rn-realmedia-vbr",
+	"link66": "application/vnd.route66.link66+xml",
+	"st": "application/vnd.sailingtracker.track",
+	"see": "application/vnd.seemail",
+	"sema": "application/vnd.sema",
+	"semd": "application/vnd.semd",
+	"semf": "application/vnd.semf",
+	"ifm": "application/vnd.shana.informed.formdata",
+	"itp": "application/vnd.shana.informed.formtemplate",
+	"iif": "application/vnd.shana.informed.interchange",
+	"ipk": "application/vnd.shana.informed.package",
+	"twd": "application/vnd.simtech-mindmapper",
+	"twds": "application/vnd.simtech-mindmapper",
+	"mmf": "application/vnd.smaf",
+	"teacher": "application/vnd.smart.teacher",
+	"sdkm": "application/vnd.solent.sdkm+xml",
+	"sdkd": "application/vnd.solent.sdkm+xml",
+	"dxp": "application/vnd.spotfire.dxp",
+	"sfs": "application/vnd.spotfire.sfs",
+	"sdc": "application/vnd.stardivision.calc",
+	"sda": "application/vnd.stardivision.draw",
+	"sdd": "application/vnd.stardivision.impress",
+	"smf": "application/vnd.stardivision.math",
+	"sdw": "application/vnd.stardivision.writer",
+	"vor": "application/vnd.stardivision.writer",
+	"sgl": "application/vnd.stardivision.writer-global",
+	"smzip": "application/vnd.stepmania.package",
+	"sm": "application/vnd.stepmania.stepchart",
+	"sxc": "application/vnd.sun.xml.calc",
+	"stc": "application/vnd.sun.xml.calc.template",
+	"sxd": "application/vnd.sun.xml.draw",
+	"std": "application/vnd.sun.xml.draw.template",
+	"sxi": "application/vnd.sun.xml.impress",
+	"sti": "application/vnd.sun.xml.impress.template",
+	"sxm": "application/vnd.sun.xml.math",
+	"sxw": "application/vnd.sun.xml.writer",
+	"sxg": "application/vnd.sun.xml.writer.global",
+	"stw": "application/vnd.sun.xml.writer.template",
+	"sus": "application/vnd.sus-calendar",
+	"susp": "application/vnd.sus-calendar",
+	"svd": "application/vnd.svd",
+	"sis": "application/vnd.symbian.install",
+	"sisx": "application/vnd.symbian.install",
+	"xsm": "application/vnd.syncml+xml",
+	"bdm": "application/vnd.syncml.dm+wbxml",
+	"xdm": "application/vnd.syncml.dm+xml",
+	"tao": "application/vnd.tao.intent-module-archive",
+	"pcap": "application/vnd.tcpdump.pcap",
+	"cap": "application/vnd.tcpdump.pcap",
+	"dmp": "application/vnd.tcpdump.pcap",
+	"tmo": "application/vnd.tmobile-livetv",
+	"tpt": "application/vnd.trid.tpt",
+	"mxs": "application/vnd.triscape.mxs",
+	"tra": "application/vnd.trueapp",
+	"ufd": "application/vnd.ufdl",
+	"ufdl": "application/vnd.ufdl",
+	"utz": "application/vnd.uiq.theme",
+	"umj": "application/vnd.umajin",
+	"unityweb": "application/vnd.unity",
+	"uoml": "application/vnd.uoml+xml",
+	"vcx": "application/vnd.vcx",
+	"vsd": "application/vnd.visio",
+	"vst": "application/vnd.visio",
+	"vss": "application/vnd.visio",
+	"vsw": "application/vnd.visio",
+	"vis": "application/vnd.visionary",
+	"vsf": "application/vnd.vsf",
+	"wbxml": "application/vnd.wap.wbxml",
+	"wmlc": "application/vnd.wap.wmlc",
+	"wmlsc": "application/vnd.wap.wmlscriptc",
+	"wtb": "application/vnd.webturbo",
+	"nbp": "application/vnd.wolfram.player",
+	"wpd": "application/vnd.wordperfect",
+	"wqd": "application/vnd.wqd",
+	"stf": "application/vnd.wt.stf",
+	"xar": "application/vnd.xara",
+	"xfdl": "application/vnd.xfdl",
+	"hvd": "application/vnd.yamaha.hv-dic",
+	"hvs": "application/vnd.yamaha.hv-script",
+	"hvp": "application/vnd.yamaha.hv-voice",
+	"osf": "application/vnd.yamaha.openscoreformat",
+	"osfpvg": "application/vnd.yamaha.openscoreformat.osfpvg+xml",
+	"saf": "application/vnd.yamaha.smaf-audio",
+	"spf": "application/vnd.yamaha.smaf-phrase",
+	"cmp": "application/vnd.yellowriver-custom-menu",
+	"zir": "application/vnd.zul",
+	"zirz": "application/vnd.zul",
+	"zaz": "application/vnd.zzazz.deck+xml",
+	"vxml": "application/voicexml+xml",
+	"wgt": "application/widget",
+	"hlp": "application/winhlp",
+	"wsdl": "application/wsdl+xml",
+	"wspolicy": "application/wspolicy+xml",
+	"7z": "application/x-7z-compressed",
+	"abw": "application/x-abiword",
+	"ace": "application/x-ace-compressed",
+	"aab": "application/x-authorware-bin",
+	"x32": "application/x-authorware-bin",
+	"u32": "application/x-authorware-bin",
+	"vox": "application/x-authorware-bin",
+	"aam": "application/x-authorware-map",
+	"aas": "application/x-authorware-seg",
+	"bcpio": "application/x-bcpio",
+	"torrent": "application/x-bittorrent",
+	"blb": "application/x-blorb",
+	"blorb": "application/x-blorb",
+	"bz": "application/x-bzip",
+	"bz2": "application/x-bzip2",
+	"boz": "application/x-bzip2",
+	"cbr": "application/x-cbr",
+	"cba": "application/x-cbr",
+	"cbt": "application/x-cbr",
+	"cbz": "application/x-cbr",
+	"cb7": "application/x-cbr",
+	"vcd": "application/x-cdlink",
+	"cfs": "application/x-cfs-compressed",
+	"chat": "application/x-chat",
+	"pgn": "application/x-chess-pgn",
+	"crx": "application/x-chrome-extension",
+	"cco": "application/x-cocoa",
+	"nsc": "application/x-conference",
+	"cpio": "application/x-cpio",
+	"csh": "application/x-csh",
+	"udeb": "application/x-debian-package",
+	"dgc": "application/x-dgc-compressed",
+	"dir": "application/x-director",
+	"dcr": "application/x-director",
+	"dxr": "application/x-director",
+	"cst": "application/x-director",
+	"cct": "application/x-director",
+	"cxt": "application/x-director",
+	"w3d": "application/x-director",
+	"fgd": "application/x-director",
+	"swa": "application/x-director",
+	"wad": "application/x-doom",
+	"ncx": "application/x-dtbncx+xml",
+	"dtb": "application/x-dtbook+xml",
+	"res": "application/x-dtbresource+xml",
+	"dvi": "application/x-dvi",
+	"evy": "application/x-envoy",
+	"eva": "application/x-eva",
+	"bdf": "application/x-font-bdf",
+	"gsf": "application/x-font-ghostscript",
+	"psf": "application/x-font-linux-psf",
+	"otf": "font/opentype",
+	"pcf": "application/x-font-pcf",
+	"snf": "application/x-font-snf",
+	"ttf": "application/x-font-ttf",
+	"ttc": "application/x-font-ttf",
+	"pfa": "application/x-font-type1",
+	"pfb": "application/x-font-type1",
+	"pfm": "application/x-font-type1",
+	"afm": "application/x-font-type1",
+	"arc": "application/x-freearc",
+	"spl": "application/x-futuresplash",
+	"gca": "application/x-gca-compressed",
+	"ulx": "application/x-glulx",
+	"gnumeric": "application/x-gnumeric",
+	"gramps": "application/x-gramps-xml",
+	"gtar": "application/x-gtar",
+	"hdf": "application/x-hdf",
+	"php": "application/x-httpd-php",
+	"install": "application/x-install-instructions",
+	"jardiff": "application/x-java-archive-diff",
+	"jnlp": "application/x-java-jnlp-file",
+	"latex": "application/x-latex",
+	"luac": "application/x-lua-bytecode",
+	"lzh": "application/x-lzh-compressed",
+	"lha": "application/x-lzh-compressed",
+	"run": "application/x-makeself",
+	"mie": "application/x-mie",
+	"prc": "application/x-pilot",
+	"mobi": "application/x-mobipocket-ebook",
+	"application": "application/x-ms-application",
+	"lnk": "application/x-ms-shortcut",
+	"wmd": "application/x-ms-wmd",
+	"wmz": "application/x-msmetafile",
+	"xbap": "application/x-ms-xbap",
+	"mdb": "application/x-msaccess",
+	"obd": "application/x-msbinder",
+	"crd": "application/x-mscardfile",
+	"clp": "application/x-msclip",
+	"com": "application/x-msdownload",
+	"bat": "application/x-msdownload",
+	"mvb": "application/x-msmediaview",
+	"m13": "application/x-msmediaview",
+	"m14": "application/x-msmediaview",
+	"wmf": "application/x-msmetafile",
+	"emf": "application/x-msmetafile",
+	"emz": "application/x-msmetafile",
+	"mny": "application/x-msmoney",
+	"pub": "application/x-mspublisher",
+	"scd": "application/x-msschedule",
+	"trm": "application/x-msterminal",
+	"wri": "application/x-mswrite",
+	"nc": "application/x-netcdf",
+	"cdf": "application/x-netcdf",
+	"pac": "application/x-ns-proxy-autoconfig",
+	"nzb": "application/x-nzb",
+	"pl": "application/x-perl",
+	"pm": "application/x-perl",
+	"p12": "application/x-pkcs12",
+	"pfx": "application/x-pkcs12",
+	"p7b": "application/x-pkcs7-certificates",
+	"spc": "application/x-pkcs7-certificates",
+	"p7r": "application/x-pkcs7-certreqresp",
+	"rar": "application/x-rar-compressed",
+	"rpm": "application/x-redhat-package-manager",
+	"ris": "application/x-research-info-systems",
+	"sea": "application/x-sea",
+	"sh": "application/x-sh",
+	"shar": "application/x-shar",
+	"swf": "application/x-shockwave-flash",
+	"xap": "application/x-silverlight-app",
+	"sql": "application/x-sql",
+	"sit": "application/x-stuffit",
+	"sitx": "application/x-stuffitx",
+	"srt": "application/x-subrip",
+	"sv4cpio": "application/x-sv4cpio",
+	"sv4crc": "application/x-sv4crc",
+	"t3": "application/x-t3vm-image",
+	"gam": "application/x-tads",
+	"tar": "application/x-tar",
+	"tcl": "application/x-tcl",
+	"tk": "application/x-tcl",
+	"tex": "application/x-tex",
+	"tfm": "application/x-tex-tfm",
+	"texinfo": "application/x-texinfo",
+	"texi": "application/x-texinfo",
+	"obj": "application/x-tgif",
+	"ustar": "application/x-ustar",
+	"src": "application/x-wais-source",
+	"webapp": "application/x-web-app-manifest+json",
+	"der": "application/x-x509-ca-cert",
+	"crt": "application/x-x509-ca-cert",
+	"pem": "application/x-x509-ca-cert",
+	"fig": "application/x-xfig",
+	"xlf": "application/x-xliff+xml",
+	"xpi": "application/x-xpinstall",
+	"xz": "application/x-xz",
+	"z1": "application/x-zmachine",
+	"z2": "application/x-zmachine",
+	"z3": "application/x-zmachine",
+	"z4": "application/x-zmachine",
+	"z5": "application/x-zmachine",
+	"z6": "application/x-zmachine",
+	"z7": "application/x-zmachine",
+	"z8": "application/x-zmachine",
+	"xaml": "application/xaml+xml",
+	"xdf": "application/xcap-diff+xml",
+	"xenc": "application/xenc+xml",
+	"xhtml": "application/xhtml+xml",
+	"xht": "application/xhtml+xml",
+	"xml": "text/xml",
+	"xsl": "application/xml",
+	"xsd": "application/xml",
+	"rng": "application/xml",
+	"dtd": "application/xml-dtd",
+	"xop": "application/xop+xml",
+	"xpl": "application/xproc+xml",
+	"xslt": "application/xslt+xml",
+	"xspf": "application/xspf+xml",
+	"mxml": "application/xv+xml",
+	"xhvml": "application/xv+xml",
+	"xvml": "application/xv+xml",
+	"xvm": "application/xv+xml",
+	"yang": "application/yang",
+	"yin": "application/yin+xml",
+	"zip": "application/zip",
+	"3gpp": "video/3gpp",
+	"adp": "audio/adpcm",
+	"au": "audio/basic",
+	"snd": "audio/basic",
+	"mid": "audio/midi",
+	"midi": "audio/midi",
+	"kar": "audio/midi",
+	"rmi": "audio/midi",
+	"mp3": "audio/mpeg",
+	"m4a": "audio/x-m4a",
+	"mp4a": "audio/mp4",
+	"mpga": "audio/mpeg",
+	"mp2": "audio/mpeg",
+	"mp2a": "audio/mpeg",
+	"m2a": "audio/mpeg",
+	"m3a": "audio/mpeg",
+	"oga": "audio/ogg",
+	"ogg": "audio/ogg",
+	"spx": "audio/ogg",
+	"s3m": "audio/s3m",
+	"sil": "audio/silk",
+	"uva": "audio/vnd.dece.audio",
+	"uvva": "audio/vnd.dece.audio",
+	"eol": "audio/vnd.digital-winds",
+	"dra": "audio/vnd.dra",
+	"dts": "audio/vnd.dts",
+	"dtshd": "audio/vnd.dts.hd",
+	"lvp": "audio/vnd.lucent.voice",
+	"pya": "audio/vnd.ms-playready.media.pya",
+	"ecelp4800": "audio/vnd.nuera.ecelp4800",
+	"ecelp7470": "audio/vnd.nuera.ecelp7470",
+	"ecelp9600": "audio/vnd.nuera.ecelp9600",
+	"rip": "audio/vnd.rip",
+	"wav": "audio/x-wav",
+	"weba": "audio/webm",
+	"aac": "audio/x-aac",
+	"aif": "audio/x-aiff",
+	"aiff": "audio/x-aiff",
+	"aifc": "audio/x-aiff",
+	"caf": "audio/x-caf",
+	"flac": "audio/x-flac",
+	"mka": "audio/x-matroska",
+	"m3u": "audio/x-mpegurl",
+	"wax": "audio/x-ms-wax",
+	"wma": "audio/x-ms-wma",
+	"ram": "audio/x-pn-realaudio",
+	"ra": "audio/x-realaudio",
+	"rmp": "audio/x-pn-realaudio-plugin",
+	"xm": "audio/xm",
+	"cdx": "chemical/x-cdx",
+	"cif": "chemical/x-cif",
+	"cmdf": "chemical/x-cmdf",
+	"cml": "chemical/x-cml",
+	"csml": "chemical/x-csml",
+	"xyz": "chemical/x-xyz",
+	"bmp": "image/x-ms-bmp",
+	"cgm": "image/cgm",
+	"g3": "image/g3fax",
+	"gif": "image/gif",
+	"ief": "image/ief",
+	"jpeg": "image/jpeg",
+	"jpg": "image/jpeg",
+	"jpe": "image/jpeg",
+	"ktx": "image/ktx",
+	"png": "image/png",
+	"btif": "image/prs.btif",
+	"sgi": "image/sgi",
+	"svg": "image/svg+xml",
+	"svgz": "image/svg+xml",
+	"tiff": "image/tiff",
+	"tif": "image/tiff",
+	"psd": "image/vnd.adobe.photoshop",
+	"uvi": "image/vnd.dece.graphic",
+	"uvvi": "image/vnd.dece.graphic",
+	"uvg": "image/vnd.dece.graphic",
+	"uvvg": "image/vnd.dece.graphic",
+	"djvu": "image/vnd.djvu",
+	"djv": "image/vnd.djvu",
+	"sub": "text/vnd.dvb.subtitle",
+	"dwg": "image/vnd.dwg",
+	"dxf": "image/vnd.dxf",
+	"fbs": "image/vnd.fastbidsheet",
+	"fpx": "image/vnd.fpx",
+	"fst": "image/vnd.fst",
+	"mmr": "image/vnd.fujixerox.edmics-mmr",
+	"rlc": "image/vnd.fujixerox.edmics-rlc",
+	"mdi": "image/vnd.ms-modi",
+	"wdp": "image/vnd.ms-photo",
+	"npx": "image/vnd.net-fpx",
+	"wbmp": "image/vnd.wap.wbmp",
+	"xif": "image/vnd.xiff",
+	"webp": "image/webp",
+	"3ds": "image/x-3ds",
+	"ras": "image/x-cmu-raster",
+	"cmx": "image/x-cmx",
+	"fh": "image/x-freehand",
+	"fhc": "image/x-freehand",
+	"fh4": "image/x-freehand",
+	"fh5": "image/x-freehand",
+	"fh7": "image/x-freehand",
+	"ico": "image/x-icon",
+	"jng": "image/x-jng",
+	"sid": "image/x-mrsid-image",
+	"pcx": "image/x-pcx",
+	"pic": "image/x-pict",
+	"pct": "image/x-pict",
+	"pnm": "image/x-portable-anymap",
+	"pbm": "image/x-portable-bitmap",
+	"pgm": "image/x-portable-graymap",
+	"ppm": "image/x-portable-pixmap",
+	"rgb": "image/x-rgb",
+	"tga": "image/x-tga",
+	"xbm": "image/x-xbitmap",
+	"xpm": "image/x-xpixmap",
+	"xwd": "image/x-xwindowdump",
+	"eml": "message/rfc822",
+	"mime": "message/rfc822",
+	"igs": "model/iges",
+	"iges": "model/iges",
+	"msh": "model/mesh",
+	"mesh": "model/mesh",
+	"silo": "model/mesh",
+	"dae": "model/vnd.collada+xml",
+	"dwf": "model/vnd.dwf",
+	"gdl": "model/vnd.gdl",
+	"gtw": "model/vnd.gtw",
+	"mts": "model/vnd.mts",
+	"vtu": "model/vnd.vtu",
+	"wrl": "model/vrml",
+	"vrml": "model/vrml",
+	"x3db": "model/x3d+binary",
+	"x3dbz": "model/x3d+binary",
+	"x3dv": "model/x3d+vrml",
+	"x3dvz": "model/x3d+vrml",
+	"x3d": "model/x3d+xml",
+	"x3dz": "model/x3d+xml",
+	"appcache": "text/cache-manifest",
+	"manifest": "text/cache-manifest",
+	"ics": "text/calendar",
+	"ifb": "text/calendar",
+	"coffee": "text/coffeescript",
+	"litcoffee": "text/coffeescript",
+	"css": "text/css",
+	"csv": "text/csv",
+	"hjson": "text/hjson",
+	"html": "text/html",
+	"htm": "text/html",
+	"shtml": "text/html",
+	"jade": "text/jade",
+	"jsx": "text/jsx",
+	"less": "text/less",
+	"mml": "text/mathml",
+	"n3": "text/n3",
+	"txt": "text/plain",
+	"text": "text/plain",
+	"conf": "text/plain",
+	"def": "text/plain",
+	"list": "text/plain",
+	"log": "text/plain",
+	"in": "text/plain",
+	"ini": "text/plain",
+	"dsc": "text/prs.lines.tag",
+	"rtx": "text/richtext",
+	"sgml": "text/sgml",
+	"sgm": "text/sgml",
+	"slim": "text/slim",
+	"slm": "text/slim",
+	"stylus": "text/stylus",
+	"styl": "text/stylus",
+	"tsv": "text/tab-separated-values",
+	"t": "text/troff",
+	"tr": "text/troff",
+	"roff": "text/troff",
+	"man": "text/troff",
+	"me": "text/troff",
+	"ms": "text/troff",
+	"ttl": "text/turtle",
+	"uri": "text/uri-list",
+	"uris": "text/uri-list",
+	"urls": "text/uri-list",
+	"vcard": "text/vcard",
+	"curl": "text/vnd.curl",
+	"dcurl": "text/vnd.curl.dcurl",
+	"mcurl": "text/vnd.curl.mcurl",
+	"scurl": "text/vnd.curl.scurl",
+	"fly": "text/vnd.fly",
+	"flx": "text/vnd.fmi.flexstor",
+	"gv": "text/vnd.graphviz",
+	"3dml": "text/vnd.in3d.3dml",
+	"spot": "text/vnd.in3d.spot",
+	"jad": "text/vnd.sun.j2me.app-descriptor",
+	"wml": "text/vnd.wap.wml",
+	"wmls": "text/vnd.wap.wmlscript",
+	"vtt": "text/vtt",
+	"s": "text/x-asm",
+	"asm": "text/x-asm",
+	"c": "text/x-c",
+	"cc": "text/x-c",
+	"cxx": "text/x-c",
+	"cpp": "text/x-c",
+	"h": "text/x-c",
+	"hh": "text/x-c",
+	"dic": "text/x-c",
+	"htc": "text/x-component",
+	"f": "text/x-fortran",
+	"for": "text/x-fortran",
+	"f77": "text/x-fortran",
+	"f90": "text/x-fortran",
+	"hbs": "text/x-handlebars-template",
+	"java": "text/x-java-source",
+	"lua": "text/x-lua",
+	"markdown": "text/x-markdown",
+	"md": "text/x-markdown",
+	"mkd": "text/x-markdown",
+	"nfo": "text/x-nfo",
+	"opml": "text/x-opml",
+	"p": "text/x-pascal",
+	"pas": "text/x-pascal",
+	"pde": "text/x-processing",
+	"sass": "text/x-sass",
+	"scss": "text/x-scss",
+	"etx": "text/x-setext",
+	"sfv": "text/x-sfv",
+	"ymp": "text/x-suse-ymp",
+	"uu": "text/x-uuencode",
+	"vcs": "text/x-vcalendar",
+	"vcf": "text/x-vcard",
+	"yaml": "text/yaml",
+	"yml": "text/yaml",
+	"3gp": "video/3gpp",
+	"3g2": "video/3gpp2",
+	"h261": "video/h261",
+	"h263": "video/h263",
+	"h264": "video/h264",
+	"jpgv": "video/jpeg",
+	"jpm": "video/jpm",
+	"jpgm": "video/jpm",
+	"mj2": "video/mj2",
+	"mjp2": "video/mj2",
+	"ts": "video/mp2t",
+	"mp4": "video/mp4",
+	"mp4v": "video/mp4",
+	"mpg4": "video/mp4",
+	"mpeg": "video/mpeg",
+	"mpg": "video/mpeg",
+	"mpe": "video/mpeg",
+	"m1v": "video/mpeg",
+	"m2v": "video/mpeg",
+	"ogv": "video/ogg",
+	"qt": "video/quicktime",
+	"mov": "video/quicktime",
+	"uvh": "video/vnd.dece.hd",
+	"uvvh": "video/vnd.dece.hd",
+	"uvm": "video/vnd.dece.mobile",
+	"uvvm": "video/vnd.dece.mobile",
+	"uvp": "video/vnd.dece.pd",
+	"uvvp": "video/vnd.dece.pd",
+	"uvs": "video/vnd.dece.sd",
+	"uvvs": "video/vnd.dece.sd",
+	"uvv": "video/vnd.dece.video",
+	"uvvv": "video/vnd.dece.video",
+	"dvb": "video/vnd.dvb.file",
+	"fvt": "video/vnd.fvt",
+	"mxu": "video/vnd.mpegurl",
+	"m4u": "video/vnd.mpegurl",
+	"pyv": "video/vnd.ms-playready.media.pyv",
+	"uvu": "video/vnd.uvvu.mp4",
+	"uvvu": "video/vnd.uvvu.mp4",
+	"viv": "video/vnd.vivo",
+	"webm": "video/webm",
+	"f4v": "video/x-f4v",
+	"fli": "video/x-fli",
+	"flv": "video/x-flv",
+	"m4v": "video/x-m4v",
+	"mkv": "video/x-matroska",
+	"mk3d": "video/x-matroska",
+	"mks": "video/x-matroska",
+	"mng": "video/x-mng",
+	"asf": "video/x-ms-asf",
+	"asx": "video/x-ms-asf",
+	"vob": "video/x-ms-vob",
+	"wm": "video/x-ms-wm",
+	"wmv": "video/x-ms-wmv",
+	"wmx": "video/x-ms-wmx",
+	"wvx": "video/x-ms-wvx",
+	"avi": "video/x-msvideo",
+	"movie": "video/x-sgi-movie",
+	"smv": "video/x-smv",
+	"ice": "x-conference/x-cooltalk"
+};
+
+/***/ }),
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer, global, process) {var capability = __webpack_require__(60)
 var inherits = __webpack_require__(11)
-var response = __webpack_require__(89)
-var stream = __webpack_require__(36)
-var toArrayBuffer = __webpack_require__(91)
+var response = __webpack_require__(93)
+var stream = __webpack_require__(37)
+var toArrayBuffer = __webpack_require__(95)
 
 var IncomingMessage = response.IncomingMessage
 var rStates = response.readyStates
@@ -19085,12 +20815,12 @@ var unsafeHeaders = [
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer, __webpack_require__(9), __webpack_require__(6)))
 
 /***/ }),
-/* 89 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process, Buffer, global) {var capability = __webpack_require__(60)
 var inherits = __webpack_require__(11)
-var stream = __webpack_require__(36)
+var stream = __webpack_require__(37)
 
 var rStates = exports.readyStates = {
 	UNSENT: 0,
@@ -19274,7 +21004,7 @@ IncomingMessage.prototype._onXHRProgress = function () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(5).Buffer, __webpack_require__(9)))
 
 /***/ }),
-/* 90 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var apply = Function.prototype.apply;
@@ -19333,7 +21063,7 @@ exports.clearImmediate = clearImmediate;
 
 
 /***/ }),
-/* 91 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(5).Buffer
@@ -19366,7 +21096,7 @@ module.exports = function (buf) {
 
 
 /***/ }),
-/* 92 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19389,7 +21119,7 @@ module.exports = {
 
 
 /***/ }),
-/* 93 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -19463,7 +21193,7 @@ function config (name) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
-/* 94 */
+/* 98 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -19491,7 +21221,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 95 */
+/* 99 */
 /***/ (function(module, exports) {
 
 module.exports = extend
@@ -19516,19 +21246,19 @@ function extend() {
 
 
 /***/ }),
-/* 96 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
 const Util = __webpack_require__(4);
 const Guild = __webpack_require__(24);
 const User = __webpack_require__(16);
-const DMChannel = __webpack_require__(42);
+const DMChannel = __webpack_require__(43);
 const Emoji = __webpack_require__(17);
-const TextChannel = __webpack_require__(53);
-const VoiceChannel = __webpack_require__(54);
+const TextChannel = __webpack_require__(54);
+const VoiceChannel = __webpack_require__(55);
 const GuildChannel = __webpack_require__(25);
-const GroupDMChannel = __webpack_require__(27);
+const GroupDMChannel = __webpack_require__(28);
 
 class ClientDataManager {
   constructor(client) {
@@ -19652,7 +21382,7 @@ module.exports = ClientDataManager;
 
 
 /***/ }),
-/* 97 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -19731,41 +21461,41 @@ module.exports = ClientManager;
 
 
 /***/ }),
-/* 98 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 class ActionsManager {
   constructor(client) {
     this.client = client;
 
-    this.register(__webpack_require__(117));
-    this.register(__webpack_require__(118));
-    this.register(__webpack_require__(119));
-    this.register(__webpack_require__(123));
-    this.register(__webpack_require__(120));
     this.register(__webpack_require__(121));
     this.register(__webpack_require__(122));
-    this.register(__webpack_require__(99));
-    this.register(__webpack_require__(100));
-    this.register(__webpack_require__(101));
+    this.register(__webpack_require__(123));
+    this.register(__webpack_require__(127));
+    this.register(__webpack_require__(124));
+    this.register(__webpack_require__(125));
+    this.register(__webpack_require__(126));
+    this.register(__webpack_require__(103));
     this.register(__webpack_require__(104));
+    this.register(__webpack_require__(105));
+    this.register(__webpack_require__(108));
+    this.register(__webpack_require__(120));
+    this.register(__webpack_require__(113));
+    this.register(__webpack_require__(114));
+    this.register(__webpack_require__(106));
+    this.register(__webpack_require__(115));
     this.register(__webpack_require__(116));
+    this.register(__webpack_require__(117));
+    this.register(__webpack_require__(128));
+    this.register(__webpack_require__(130));
+    this.register(__webpack_require__(129));
+    this.register(__webpack_require__(119));
     this.register(__webpack_require__(109));
     this.register(__webpack_require__(110));
-    this.register(__webpack_require__(102));
     this.register(__webpack_require__(111));
     this.register(__webpack_require__(112));
-    this.register(__webpack_require__(113));
-    this.register(__webpack_require__(124));
-    this.register(__webpack_require__(126));
-    this.register(__webpack_require__(125));
-    this.register(__webpack_require__(115));
-    this.register(__webpack_require__(105));
-    this.register(__webpack_require__(106));
+    this.register(__webpack_require__(118));
     this.register(__webpack_require__(107));
-    this.register(__webpack_require__(108));
-    this.register(__webpack_require__(114));
-    this.register(__webpack_require__(103));
   }
 
   register(Action) {
@@ -19777,7 +21507,7 @@ module.exports = ActionsManager;
 
 
 /***/ }),
-/* 99 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19796,7 +21526,7 @@ module.exports = ChannelCreateAction;
 
 
 /***/ }),
-/* 100 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19833,7 +21563,7 @@ module.exports = ChannelDeleteAction;
 
 
 /***/ }),
-/* 101 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19873,7 +21603,7 @@ module.exports = ChannelUpdateAction;
 
 
 /***/ }),
-/* 102 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19892,7 +21622,7 @@ module.exports = GuildBanRemove;
 
 
 /***/ }),
-/* 103 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19919,7 +21649,7 @@ module.exports = GuildChannelsPositionUpdate;
 
 
 /***/ }),
-/* 104 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -19980,7 +21710,7 @@ module.exports = GuildDeleteAction;
 
 
 /***/ }),
-/* 105 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20004,7 +21734,7 @@ module.exports = GuildEmojiCreateAction;
 
 
 /***/ }),
-/* 106 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20028,7 +21758,7 @@ module.exports = GuildEmojiDeleteAction;
 
 
 /***/ }),
-/* 107 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20052,7 +21782,7 @@ module.exports = GuildEmojiUpdateAction;
 
 
 /***/ }),
-/* 108 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20096,7 +21826,7 @@ module.exports = GuildEmojisUpdateAction;
 
 
 /***/ }),
-/* 109 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20114,7 +21844,7 @@ module.exports = GuildMemberGetAction;
 
 
 /***/ }),
-/* 110 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20169,7 +21899,7 @@ module.exports = GuildMemberRemoveAction;
 
 
 /***/ }),
-/* 111 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20208,7 +21938,7 @@ module.exports = GuildRoleCreate;
 
 
 /***/ }),
-/* 112 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20260,7 +21990,7 @@ module.exports = GuildRoleDeleteAction;
 
 
 /***/ }),
-/* 113 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20307,7 +22037,7 @@ module.exports = GuildRoleUpdateAction;
 
 
 /***/ }),
-/* 114 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20334,7 +22064,7 @@ module.exports = GuildRolesPositionUpdate;
 
 
 /***/ }),
-/* 115 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20369,7 +22099,7 @@ module.exports = GuildSync;
 
 
 /***/ }),
-/* 116 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20409,7 +22139,7 @@ module.exports = GuildUpdateAction;
 
 
 /***/ }),
-/* 117 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20470,7 +22200,7 @@ module.exports = MessageCreateAction;
 
 
 /***/ }),
-/* 118 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20516,7 +22246,7 @@ module.exports = MessageDeleteAction;
 
 
 /***/ }),
-/* 119 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20546,7 +22276,7 @@ module.exports = MessageDeleteBulkAction;
 
 
 /***/ }),
-/* 120 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20595,7 +22325,7 @@ module.exports = MessageReactionAdd;
 
 
 /***/ }),
-/* 121 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20644,7 +22374,7 @@ module.exports = MessageReactionRemove;
 
 
 /***/ }),
-/* 122 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20675,7 +22405,7 @@ module.exports = MessageReactionRemoveAll;
 
 
 /***/ }),
-/* 123 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20721,7 +22451,7 @@ module.exports = MessageUpdateAction;
 
 
 /***/ }),
-/* 124 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20740,7 +22470,7 @@ module.exports = UserGetAction;
 
 
 /***/ }),
-/* 125 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20776,7 +22506,7 @@ module.exports = UserNoteUpdateAction;
 
 
 /***/ }),
-/* 126 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -20815,10 +22545,10 @@ module.exports = UserUpdateAction;
 
 
 /***/ }),
-/* 127 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const snekfetch = __webpack_require__(37);
+const snekfetch = __webpack_require__(38);
 const Constants = __webpack_require__(0);
 
 class APIRequest {
@@ -20871,11 +22601,11 @@ module.exports = APIRequest;
 
 
 /***/ }),
-/* 128 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const querystring = __webpack_require__(56);
-const long = __webpack_require__(31);
+const querystring = __webpack_require__(34);
+const long = __webpack_require__(32);
 const Permissions = __webpack_require__(8);
 const Constants = __webpack_require__(0);
 const Endpoints = Constants.Endpoints;
@@ -20887,14 +22617,14 @@ const User = __webpack_require__(16);
 const GuildMember = __webpack_require__(18);
 const Message = __webpack_require__(19);
 const Role = __webpack_require__(15);
-const Invite = __webpack_require__(43);
-const Webhook = __webpack_require__(29);
-const UserProfile = __webpack_require__(172);
-const OAuth2Application = __webpack_require__(49);
+const Invite = __webpack_require__(44);
+const Webhook = __webpack_require__(30);
+const UserProfile = __webpack_require__(176);
+const OAuth2Application = __webpack_require__(50);
 const Channel = __webpack_require__(14);
-const GroupDMChannel = __webpack_require__(27);
+const GroupDMChannel = __webpack_require__(28);
 const Guild = __webpack_require__(24);
-const VoiceRegion = __webpack_require__(173);
+const VoiceRegion = __webpack_require__(177);
 
 class RESTMethods {
   constructor(restManager) {
@@ -21755,7 +23485,7 @@ module.exports = RESTMethods;
 
 
 /***/ }),
-/* 129 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const RequestHandler = __webpack_require__(64);
@@ -21825,7 +23555,7 @@ module.exports = BurstRequestHandler;
 
 
 /***/ }),
-/* 130 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const RequestHandler = __webpack_require__(64);
@@ -21928,7 +23658,7 @@ module.exports = SequentialRequestHandler;
 
 
 /***/ }),
-/* 131 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {const Constants = __webpack_require__(0);
@@ -21960,12 +23690,12 @@ module.exports = UserAgentManager;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
-/* 132 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const EventEmitter = __webpack_require__(10).EventEmitter;
 const Constants = __webpack_require__(0);
-const PacketManager = __webpack_require__(133);
+const PacketManager = __webpack_require__(137);
 const WebSocketConnection = __webpack_require__(65);
 
 /**
@@ -22293,7 +24023,7 @@ module.exports = WebSocketManager;
 
 
 /***/ }),
-/* 133 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -22313,42 +24043,42 @@ class WebSocketPacketManager {
     this.handlers = {};
     this.queue = [];
 
-    this.register(Constants.WSEvents.READY, __webpack_require__(160));
-    this.register(Constants.WSEvents.RESUMED, __webpack_require__(163));
-    this.register(Constants.WSEvents.GUILD_CREATE, __webpack_require__(140));
-    this.register(Constants.WSEvents.GUILD_DELETE, __webpack_require__(141));
-    this.register(Constants.WSEvents.GUILD_UPDATE, __webpack_require__(151));
-    this.register(Constants.WSEvents.GUILD_BAN_ADD, __webpack_require__(138));
-    this.register(Constants.WSEvents.GUILD_BAN_REMOVE, __webpack_require__(139));
-    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, __webpack_require__(143));
-    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, __webpack_require__(144));
-    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, __webpack_require__(145));
-    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, __webpack_require__(147));
-    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, __webpack_require__(148));
-    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, __webpack_require__(149));
-    this.register(Constants.WSEvents.GUILD_EMOJIS_UPDATE, __webpack_require__(142));
-    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, __webpack_require__(146));
-    this.register(Constants.WSEvents.CHANNEL_CREATE, __webpack_require__(134));
-    this.register(Constants.WSEvents.CHANNEL_DELETE, __webpack_require__(135));
-    this.register(Constants.WSEvents.CHANNEL_UPDATE, __webpack_require__(137));
-    this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, __webpack_require__(136));
-    this.register(Constants.WSEvents.PRESENCE_UPDATE, __webpack_require__(159));
-    this.register(Constants.WSEvents.USER_UPDATE, __webpack_require__(167));
-    this.register(Constants.WSEvents.USER_NOTE_UPDATE, __webpack_require__(165));
-    this.register(Constants.WSEvents.USER_SETTINGS_UPDATE, __webpack_require__(166));
-    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, __webpack_require__(169));
-    this.register(Constants.WSEvents.TYPING_START, __webpack_require__(164));
-    this.register(Constants.WSEvents.MESSAGE_CREATE, __webpack_require__(152));
-    this.register(Constants.WSEvents.MESSAGE_DELETE, __webpack_require__(153));
-    this.register(Constants.WSEvents.MESSAGE_UPDATE, __webpack_require__(158));
-    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, __webpack_require__(154));
-    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, __webpack_require__(168));
-    this.register(Constants.WSEvents.GUILD_SYNC, __webpack_require__(150));
-    this.register(Constants.WSEvents.RELATIONSHIP_ADD, __webpack_require__(161));
-    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, __webpack_require__(162));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, __webpack_require__(155));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, __webpack_require__(156));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, __webpack_require__(157));
+    this.register(Constants.WSEvents.READY, __webpack_require__(164));
+    this.register(Constants.WSEvents.RESUMED, __webpack_require__(167));
+    this.register(Constants.WSEvents.GUILD_CREATE, __webpack_require__(144));
+    this.register(Constants.WSEvents.GUILD_DELETE, __webpack_require__(145));
+    this.register(Constants.WSEvents.GUILD_UPDATE, __webpack_require__(155));
+    this.register(Constants.WSEvents.GUILD_BAN_ADD, __webpack_require__(142));
+    this.register(Constants.WSEvents.GUILD_BAN_REMOVE, __webpack_require__(143));
+    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, __webpack_require__(147));
+    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, __webpack_require__(148));
+    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, __webpack_require__(149));
+    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, __webpack_require__(151));
+    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, __webpack_require__(152));
+    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, __webpack_require__(153));
+    this.register(Constants.WSEvents.GUILD_EMOJIS_UPDATE, __webpack_require__(146));
+    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, __webpack_require__(150));
+    this.register(Constants.WSEvents.CHANNEL_CREATE, __webpack_require__(138));
+    this.register(Constants.WSEvents.CHANNEL_DELETE, __webpack_require__(139));
+    this.register(Constants.WSEvents.CHANNEL_UPDATE, __webpack_require__(141));
+    this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, __webpack_require__(140));
+    this.register(Constants.WSEvents.PRESENCE_UPDATE, __webpack_require__(163));
+    this.register(Constants.WSEvents.USER_UPDATE, __webpack_require__(171));
+    this.register(Constants.WSEvents.USER_NOTE_UPDATE, __webpack_require__(169));
+    this.register(Constants.WSEvents.USER_SETTINGS_UPDATE, __webpack_require__(170));
+    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, __webpack_require__(173));
+    this.register(Constants.WSEvents.TYPING_START, __webpack_require__(168));
+    this.register(Constants.WSEvents.MESSAGE_CREATE, __webpack_require__(156));
+    this.register(Constants.WSEvents.MESSAGE_DELETE, __webpack_require__(157));
+    this.register(Constants.WSEvents.MESSAGE_UPDATE, __webpack_require__(162));
+    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, __webpack_require__(158));
+    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, __webpack_require__(172));
+    this.register(Constants.WSEvents.GUILD_SYNC, __webpack_require__(154));
+    this.register(Constants.WSEvents.RELATIONSHIP_ADD, __webpack_require__(165));
+    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, __webpack_require__(166));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, __webpack_require__(159));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, __webpack_require__(160));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, __webpack_require__(161));
   }
 
   get client() {
@@ -22427,7 +24157,7 @@ module.exports = WebSocketPacketManager;
 
 
 /***/ }),
-/* 134 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22450,7 +24180,7 @@ module.exports = ChannelCreateHandler;
 
 
 /***/ }),
-/* 135 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22476,7 +24206,7 @@ module.exports = ChannelDeleteHandler;
 
 
 /***/ }),
-/* 136 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22513,7 +24243,7 @@ module.exports = ChannelPinsUpdate;
 
 
 /***/ }),
-/* 137 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22530,7 +24260,7 @@ module.exports = ChannelUpdateHandler;
 
 
 /***/ }),
-/* 138 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -22559,7 +24289,7 @@ module.exports = GuildBanAddHandler;
 
 
 /***/ }),
-/* 139 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -22585,7 +24315,7 @@ module.exports = GuildBanRemoveHandler;
 
 
 /***/ }),
-/* 140 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22613,7 +24343,7 @@ module.exports = GuildCreateHandler;
 
 
 /***/ }),
-/* 141 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22638,7 +24368,7 @@ module.exports = GuildDeleteHandler;
 
 
 /***/ }),
-/* 142 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22655,7 +24385,7 @@ module.exports = GuildEmojisUpdate;
 
 
 /***/ }),
-/* 143 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -22678,7 +24408,7 @@ module.exports = GuildMemberAddHandler;
 
 
 /***/ }),
-/* 144 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -22697,7 +24427,7 @@ module.exports = GuildMemberRemoveHandler;
 
 
 /***/ }),
-/* 145 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -22721,7 +24451,7 @@ module.exports = GuildMemberUpdateHandler;
 
 
 /***/ }),
-/* 146 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22760,7 +24490,7 @@ module.exports = GuildMembersChunkHandler;
 
 
 /***/ }),
-/* 147 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22777,7 +24507,7 @@ module.exports = GuildRoleCreateHandler;
 
 
 /***/ }),
-/* 148 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22794,7 +24524,7 @@ module.exports = GuildRoleDeleteHandler;
 
 
 /***/ }),
-/* 149 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22811,7 +24541,7 @@ module.exports = GuildRoleUpdateHandler;
 
 
 /***/ }),
-/* 150 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22828,7 +24558,7 @@ module.exports = GuildSyncHandler;
 
 
 /***/ }),
-/* 151 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22845,7 +24575,7 @@ module.exports = GuildUpdateHandler;
 
 
 /***/ }),
-/* 152 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22870,7 +24600,7 @@ module.exports = MessageCreateHandler;
 
 
 /***/ }),
-/* 153 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22895,7 +24625,7 @@ module.exports = MessageDeleteHandler;
 
 
 /***/ }),
-/* 154 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22918,7 +24648,7 @@ module.exports = MessageDeleteBulkHandler;
 
 
 /***/ }),
-/* 155 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22935,7 +24665,7 @@ module.exports = MessageReactionAddHandler;
 
 
 /***/ }),
-/* 156 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22952,7 +24682,7 @@ module.exports = MessageReactionRemove;
 
 
 /***/ }),
-/* 157 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22969,7 +24699,7 @@ module.exports = MessageReactionRemoveAll;
 
 
 /***/ }),
-/* 158 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -22986,7 +24716,7 @@ module.exports = MessageUpdateHandler;
 
 
 /***/ }),
-/* 159 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23068,12 +24798,12 @@ module.exports = PresenceUpdateHandler;
 
 
 /***/ }),
-/* 160 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
 
-const ClientUser = __webpack_require__(40);
+const ClientUser = __webpack_require__(41);
 
 class ReadyHandler extends AbstractHandler {
   handle(packet) {
@@ -23149,7 +24879,7 @@ module.exports = ReadyHandler;
 
 
 /***/ }),
-/* 161 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23174,7 +24904,7 @@ module.exports = RelationshipAddHandler;
 
 
 /***/ }),
-/* 162 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23199,7 +24929,7 @@ module.exports = RelationshipRemoveHandler;
 
 
 /***/ }),
-/* 163 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23231,7 +24961,7 @@ module.exports = ResumedHandler;
 
 
 /***/ }),
-/* 164 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23305,7 +25035,7 @@ module.exports = TypingStartHandler;
 
 
 /***/ }),
-/* 165 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23323,7 +25053,7 @@ module.exports = UserNoteUpdateHandler;
 
 
 /***/ }),
-/* 166 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23347,7 +25077,7 @@ module.exports = UserSettingsUpdateHandler;
 
 
 /***/ }),
-/* 167 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23364,7 +25094,7 @@ module.exports = UserUpdateHandler;
 
 
 /***/ }),
-/* 168 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23389,7 +25119,7 @@ module.exports = VoiceServerUpdate;
 
 
 /***/ }),
-/* 169 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -23444,7 +25174,7 @@ module.exports = VoiceStateUpdateHandler;
 
 
 /***/ }),
-/* 170 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collector = __webpack_require__(66);
@@ -23517,7 +25247,7 @@ module.exports = ReactionCollector;
 
 
 /***/ }),
-/* 171 */
+/* 175 */
 /***/ (function(module, exports) {
 
 /**
@@ -23571,11 +25301,11 @@ module.exports = UserConnection;
 
 
 /***/ }),
-/* 172 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
-const UserConnection = __webpack_require__(171);
+const UserConnection = __webpack_require__(175);
 
 /**
  * Represents a user's profile on Discord.
@@ -23639,7 +25369,7 @@ module.exports = UserProfile;
 
 
 /***/ }),
-/* 173 */
+/* 177 */
 /***/ (function(module, exports) {
 
 /**
@@ -23695,30 +25425,6 @@ module.exports = VoiceRegion;
 
 
 /***/ }),
-/* 174 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
-/* 175 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
-/* 176 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
-/* 177 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
 /* 178 */
 /***/ (function(module, exports) {
 
@@ -23738,6 +25444,30 @@ module.exports = VoiceRegion;
 
 /***/ }),
 /* 181 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 182 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 183 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 184 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Util = __webpack_require__(4);
@@ -23759,7 +25489,7 @@ module.exports = {
   SnowflakeUtil: __webpack_require__(7),
   Util: Util,
   util: Util,
-  version: __webpack_require__(39).version,
+  version: __webpack_require__(40).version,
 
   // Shortcuts to Util methods
   escapeMarkdown: Util.escapeMarkdown,
@@ -23768,34 +25498,34 @@ module.exports = {
 
   // Structures
   Channel: __webpack_require__(14),
-  ClientUser: __webpack_require__(40),
-  ClientUserSettings: __webpack_require__(41),
-  DMChannel: __webpack_require__(42),
+  ClientUser: __webpack_require__(41),
+  ClientUserSettings: __webpack_require__(42),
+  DMChannel: __webpack_require__(43),
   Emoji: __webpack_require__(17),
   Game: __webpack_require__(12).Game,
-  GroupDMChannel: __webpack_require__(27),
+  GroupDMChannel: __webpack_require__(28),
   Guild: __webpack_require__(24),
   GuildChannel: __webpack_require__(25),
   GuildMember: __webpack_require__(18),
-  Invite: __webpack_require__(43),
+  Invite: __webpack_require__(44),
   Message: __webpack_require__(19),
-  MessageAttachment: __webpack_require__(44),
-  MessageCollector: __webpack_require__(45),
-  MessageEmbed: __webpack_require__(46),
-  MessageMentions: __webpack_require__(47),
-  MessageReaction: __webpack_require__(48),
-  OAuth2Application: __webpack_require__(49),
-  PartialGuild: __webpack_require__(50),
-  PartialGuildChannel: __webpack_require__(51),
-  PermissionOverwrites: __webpack_require__(52),
+  MessageAttachment: __webpack_require__(45),
+  MessageCollector: __webpack_require__(46),
+  MessageEmbed: __webpack_require__(47),
+  MessageMentions: __webpack_require__(48),
+  MessageReaction: __webpack_require__(49),
+  OAuth2Application: __webpack_require__(50),
+  PartialGuild: __webpack_require__(51),
+  PartialGuildChannel: __webpack_require__(52),
+  PermissionOverwrites: __webpack_require__(53),
   Presence: __webpack_require__(12).Presence,
-  ReactionEmoji: __webpack_require__(28),
+  ReactionEmoji: __webpack_require__(29),
   RichEmbed: __webpack_require__(69),
   Role: __webpack_require__(15),
-  TextChannel: __webpack_require__(53),
+  TextChannel: __webpack_require__(54),
   User: __webpack_require__(16),
-  VoiceChannel: __webpack_require__(54),
-  Webhook: __webpack_require__(29),
+  VoiceChannel: __webpack_require__(55),
+  Webhook: __webpack_require__(30),
 };
 
 if (__webpack_require__(23).platform() === 'browser') window.Discord = module.exports; // eslint-disable-line no-undef
