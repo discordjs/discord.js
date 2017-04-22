@@ -191,7 +191,7 @@ class RichEmbed {
    * @returns {RichEmbed} This embed
    */
   setField(index, name, value, inline) {
-    if (typeof index !== "number") throw new TypeError('Field index must be a number');
+    if (typeof index !== 'number') throw new TypeError('Field index must be a number');
     if (!this.fields[index]) throw new RangeError('No field exists at specified index');
     if (!name) name = this.fields[index].name;
     if (!value) value = this.fields[index].value;
