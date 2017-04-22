@@ -1,41 +1,41 @@
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-
+/******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
 /******/ 			l: false,
 /******/ 			exports: {}
 /******/ 		};
-
+/******/
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
+/******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
-
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-
-
+/******/
+/******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-
+/******/
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-
+/******/
 /******/ 	// identity function for calling harmony imports with the correct context
 /******/ 	__webpack_require__.i = function(value) { return value; };
-
+/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -46,7 +46,7 @@
 /******/ 			});
 /******/ 		}
 /******/ 	};
-
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -55,22 +55,22 @@
 /******/ 		__webpack_require__.d(getter, 'a', getter);
 /******/ 		return getter;
 /******/ 	};
-
+/******/
 /******/ 	// Object.prototype.hasOwnProperty.call
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-
+/******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 185);
+/******/ 	return __webpack_require__(__webpack_require__.s = 175);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {exports.Package = __webpack_require__(40);
+/* WEBPACK VAR INJECTION */(function(process) {exports.Package = __webpack_require__(38);
 
 /**
  * Options for a Client.
@@ -1104,7 +1104,7 @@ module.exports = Collection;
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const snekfetch = __webpack_require__(38);
+/* WEBPACK VAR INJECTION */(function(Buffer) {const snekfetch = __webpack_require__(36);
 const Constants = __webpack_require__(0);
 const ConstantsHttp = Constants.DefaultOptions.http;
 
@@ -1336,7 +1336,7 @@ module.exports = Util;
 
 var base64 = __webpack_require__(73)
 var ieee754 = __webpack_require__(76)
-var isArray = __webpack_require__(56)
+var isArray = __webpack_require__(54)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -3668,6 +3668,133 @@ module.exports = g;
 /* 10 */
 /***/ (function(module, exports) {
 
+if (typeof Object.create === 'function') {
+  // implementation from standard node.js 'util' module
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    ctor.prototype = Object.create(superCtor.prototype, {
+      constructor: {
+        value: ctor,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+  };
+} else {
+  // old school shim for old browsers
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    var TempCtor = function () {}
+    TempCtor.prototype = superCtor.prototype
+    ctor.prototype = new TempCtor()
+    ctor.prototype.constructor = ctor
+  }
+}
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+/**
+ * Represents a user's presence
+ */
+class Presence {
+  constructor(data = {}) {
+    /**
+     * The status of the presence:
+     *
+     * * **`online`** - user is online
+     * * **`offline`** - user is offline or invisible
+     * * **`idle`** - user is AFK
+     * * **`dnd`** - user is in Do not Disturb
+     * @type {string}
+     */
+    this.status = data.status || 'offline';
+
+    /**
+     * The game that the user is playing, `null` if they aren't playing a game.
+     * @type {?Game}
+     */
+    this.game = data.game ? new Game(data.game) : null;
+  }
+
+  update(data) {
+    this.status = data.status || this.status;
+    this.game = data.game ? new Game(data.game) : null;
+  }
+
+  /**
+   * Whether this presence is equal to another
+   * @param {Presence} presence Presence to compare with
+   * @returns {boolean}
+   */
+  equals(presence) {
+    return this === presence || (
+      presence &&
+      this.status === presence.status &&
+      this.game ? this.game.equals(presence.game) : !presence.game
+    );
+  }
+}
+
+/**
+ * Represents a game that is part of a user's presence.
+ */
+class Game {
+  constructor(data) {
+    /**
+     * The name of the game being played
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * The type of the game status
+     * @type {number}
+     */
+    this.type = data.type;
+
+    /**
+     * If the game is being streamed, a link to the stream
+     * @type {?string}
+     */
+    this.url = data.url || null;
+  }
+
+  /**
+   * Whether or not the game is being streamed
+   * @type {boolean}
+   * @readonly
+   */
+  get streaming() {
+    return this.type === 1;
+  }
+
+  /**
+   * Whether this game is equal to another game
+   * @param {Game} game Game to compare with
+   * @returns {boolean}
+   */
+  equals(game) {
+    return this === game || (
+      game &&
+      this.name === game.name &&
+      this.type === game.type &&
+      this.url === game.url
+    );
+  }
+}
+
+exports.Presence = Presence;
+exports.Game = Game;
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports) {
+
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3973,133 +4100,6 @@ function isUndefined(arg) {
 
 
 /***/ }),
-/* 11 */
-/***/ (function(module, exports) {
-
-if (typeof Object.create === 'function') {
-  // implementation from standard node.js 'util' module
-  module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor
-    ctor.prototype = Object.create(superCtor.prototype, {
-      constructor: {
-        value: ctor,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-  };
-} else {
-  // old school shim for old browsers
-  module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor
-    var TempCtor = function () {}
-    TempCtor.prototype = superCtor.prototype
-    ctor.prototype = new TempCtor()
-    ctor.prototype.constructor = ctor
-  }
-}
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports) {
-
-/**
- * Represents a user's presence
- */
-class Presence {
-  constructor(data = {}) {
-    /**
-     * The status of the presence:
-     *
-     * * **`online`** - user is online
-     * * **`offline`** - user is offline or invisible
-     * * **`idle`** - user is AFK
-     * * **`dnd`** - user is in Do not Disturb
-     * @type {string}
-     */
-    this.status = data.status || 'offline';
-
-    /**
-     * The game that the user is playing, `null` if they aren't playing a game.
-     * @type {?Game}
-     */
-    this.game = data.game ? new Game(data.game) : null;
-  }
-
-  update(data) {
-    this.status = data.status || this.status;
-    this.game = data.game ? new Game(data.game) : null;
-  }
-
-  /**
-   * Whether this presence is equal to another
-   * @param {Presence} presence Presence to compare with
-   * @returns {boolean}
-   */
-  equals(presence) {
-    return this === presence || (
-      presence &&
-      this.status === presence.status &&
-      this.game ? this.game.equals(presence.game) : !presence.game
-    );
-  }
-}
-
-/**
- * Represents a game that is part of a user's presence.
- */
-class Game {
-  constructor(data) {
-    /**
-     * The name of the game being played
-     * @type {string}
-     */
-    this.name = data.name;
-
-    /**
-     * The type of the game status
-     * @type {number}
-     */
-    this.type = data.type;
-
-    /**
-     * If the game is being streamed, a link to the stream
-     * @type {?string}
-     */
-    this.url = data.url || null;
-  }
-
-  /**
-   * Whether or not the game is being streamed
-   * @type {boolean}
-   * @readonly
-   */
-  get streaming() {
-    return this.type === 1;
-  }
-
-  /**
-   * Whether this game is equal to another game
-   * @param {Game} game Game to compare with
-   * @returns {boolean}
-   */
-  equals(game) {
-    return this === game || (
-      game &&
-      this.name === game.name &&
-      this.type === game.type &&
-      this.url === game.url
-    );
-  }
-}
-
-exports.Presence = Presence;
-exports.Game = Game;
-
-
-/***/ }),
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -4129,11 +4129,11 @@ var processNextTick = __webpack_require__(33);
 
 /*<replacement>*/
 var util = __webpack_require__(20);
-util.inherits = __webpack_require__(11);
+util.inherits = __webpack_require__(10);
 /*</replacement>*/
 
-var Readable = __webpack_require__(58);
-var Writable = __webpack_require__(36);
+var Readable = __webpack_require__(55);
+var Writable = __webpack_require__(35);
 
 util.inherits(Duplex, Readable);
 
@@ -4620,7 +4620,7 @@ module.exports = Role;
 
 const TextBasedChannel = __webpack_require__(22);
 const Constants = __webpack_require__(0);
-const Presence = __webpack_require__(12).Presence;
+const Presence = __webpack_require__(11).Presence;
 const Snowflake = __webpack_require__(7);
 
 /**
@@ -5097,7 +5097,7 @@ const TextBasedChannel = __webpack_require__(22);
 const Role = __webpack_require__(15);
 const Permissions = __webpack_require__(8);
 const Collection = __webpack_require__(3);
-const Presence = __webpack_require__(12).Presence;
+const Presence = __webpack_require__(11).Presence;
 
 /**
  * Represents a member of a guild on Discord
@@ -5615,11 +5615,11 @@ module.exports = GuildMember;
 /* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Mentions = __webpack_require__(48);
-const Attachment = __webpack_require__(45);
-const Embed = __webpack_require__(47);
-const MessageReaction = __webpack_require__(49);
-const ReactionCollector = __webpack_require__(174);
+const Mentions = __webpack_require__(46);
+const Attachment = __webpack_require__(43);
+const Embed = __webpack_require__(45);
+const MessageReaction = __webpack_require__(47);
+const ReactionCollector = __webpack_require__(176);
 const Util = __webpack_require__(4);
 const Collection = __webpack_require__(3);
 const Constants = __webpack_require__(0);
@@ -6305,133 +6305,13 @@ function objectToString(o) {
 /* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-module.exports = Stream;
-
-var EE = __webpack_require__(10).EventEmitter;
-var inherits = __webpack_require__(11);
-
-inherits(Stream, EE);
-Stream.Readable = __webpack_require__(37);
-Stream.Writable = __webpack_require__(84);
-Stream.Duplex = __webpack_require__(80);
-Stream.Transform = __webpack_require__(83);
-Stream.PassThrough = __webpack_require__(82);
-
-// Backwards-compat with node 0.4.x
-Stream.Stream = Stream;
-
-
-
-// old-style streams.  Note that the pipe method (the only relevant
-// part of this class) is overridden in the Readable class.
-
-function Stream() {
-  EE.call(this);
-}
-
-Stream.prototype.pipe = function(dest, options) {
-  var source = this;
-
-  function ondata(chunk) {
-    if (dest.writable) {
-      if (false === dest.write(chunk) && source.pause) {
-        source.pause();
-      }
-    }
-  }
-
-  source.on('data', ondata);
-
-  function ondrain() {
-    if (source.readable && source.resume) {
-      source.resume();
-    }
-  }
-
-  dest.on('drain', ondrain);
-
-  // If the 'end' option is not supplied, dest.end() will be called when
-  // source gets the 'end' or 'close' events.  Only dest.end() once.
-  if (!dest._isStdio && (!options || options.end !== false)) {
-    source.on('end', onend);
-    source.on('close', onclose);
-  }
-
-  var didOnEnd = false;
-  function onend() {
-    if (didOnEnd) return;
-    didOnEnd = true;
-
-    dest.end();
-  }
-
-
-  function onclose() {
-    if (didOnEnd) return;
-    didOnEnd = true;
-
-    if (typeof dest.destroy === 'function') dest.destroy();
-  }
-
-  // don't leave dangling pipes when there are errors.
-  function onerror(er) {
-    cleanup();
-    if (EE.listenerCount(this, 'error') === 0) {
-      throw er; // Unhandled stream error in pipe.
-    }
-  }
-
-  source.on('error', onerror);
-  dest.on('error', onerror);
-
-  // remove all the event listeners that were added.
-  function cleanup() {
-    source.removeListener('data', ondata);
-    dest.removeListener('drain', ondrain);
-
-    source.removeListener('end', onend);
-    source.removeListener('close', onclose);
-
-    source.removeListener('error', onerror);
-    dest.removeListener('error', onerror);
-
-    source.removeListener('end', cleanup);
-    source.removeListener('close', cleanup);
-
-    dest.removeListener('close', cleanup);
-  }
-
-  source.on('end', cleanup);
-  source.on('close', cleanup);
-
-  dest.on('close', cleanup);
-
-  dest.emit('pipe', source);
-
-  // Allow for unix-like usage: A.pipe(B).pipe(C)
-  return dest;
-};
+exports = module.exports = __webpack_require__(55);
+exports.Stream = exports;
+exports.Readable = exports;
+exports.Writable = __webpack_require__(35);
+exports.Duplex = __webpack_require__(13);
+exports.Transform = __webpack_require__(56);
+exports.PassThrough = __webpack_require__(81);
 
 
 /***/ }),
@@ -6440,7 +6320,7 @@ Stream.prototype.pipe = function(dest, options) {
 
 const path = __webpack_require__(26);
 const Message = __webpack_require__(19);
-const MessageCollector = __webpack_require__(46);
+const MessageCollector = __webpack_require__(44);
 const Collection = __webpack_require__(3);
 
 /**
@@ -6986,7 +6866,7 @@ const Long = __webpack_require__(32);
 const User = __webpack_require__(16);
 const Role = __webpack_require__(15);
 const Emoji = __webpack_require__(17);
-const Presence = __webpack_require__(12).Presence;
+const Presence = __webpack_require__(11).Presence;
 const GuildMember = __webpack_require__(18);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
@@ -8024,7 +7904,7 @@ module.exports = Guild;
 
 const Channel = __webpack_require__(14);
 const Role = __webpack_require__(15);
-const PermissionOverwrites = __webpack_require__(53);
+const PermissionOverwrites = __webpack_require__(51);
 const Permissions = __webpack_require__(8);
 const Collection = __webpack_require__(3);
 
@@ -10464,194 +10344,6 @@ exports.encode = exports.stringify = __webpack_require__(79);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-// a transform stream is a readable/writable stream where you do
-// something with the data.  Sometimes it's called a "filter",
-// but that's not a great name for it, since that implies a thing where
-// some bits pass through, and others are simply ignored.  (That would
-// be a valid example of a transform, of course.)
-//
-// While the output is causally related to the input, it's not a
-// necessarily symmetric or synchronous transformation.  For example,
-// a zlib stream might take multiple plain-text writes(), and then
-// emit a single compressed chunk some time in the future.
-//
-// Here's how this works:
-//
-// The Transform stream has all the aspects of the readable and writable
-// stream classes.  When you write(chunk), that calls _write(chunk,cb)
-// internally, and returns false if there's a lot of pending writes
-// buffered up.  When you call read(), that calls _read(n) until
-// there's enough pending readable data buffered up.
-//
-// In a transform stream, the written data is placed in a buffer.  When
-// _read(n) is called, it transforms the queued up data, calling the
-// buffered _write cb's as it consumes chunks.  If consuming a single
-// written chunk would result in multiple output chunks, then the first
-// outputted bit calls the readcb, and subsequent chunks just go into
-// the read buffer, and will cause it to emit 'readable' if necessary.
-//
-// This way, back-pressure is actually determined by the reading side,
-// since _read has to be called to start processing a new chunk.  However,
-// a pathological inflate type of transform can cause excessive buffering
-// here.  For example, imagine a stream where every byte of input is
-// interpreted as an integer from 0-255, and then results in that many
-// bytes of output.  Writing the 4 bytes {ff,ff,ff,ff} would result in
-// 1kb of data being output.  In this case, you could write a very small
-// amount of input, and end up with a very large amount of output.  In
-// such a pathological inflating mechanism, there'd be no way to tell
-// the system to stop doing the transform.  A single 4MB write could
-// cause the system to run out of memory.
-//
-// However, even in such a pathological case, only a single written chunk
-// would be consumed, and then the rest would wait (un-transformed) until
-// the results of the previous transformed chunk were consumed.
-
-
-
-module.exports = Transform;
-
-var Duplex = __webpack_require__(13);
-
-/*<replacement>*/
-var util = __webpack_require__(20);
-util.inherits = __webpack_require__(11);
-/*</replacement>*/
-
-util.inherits(Transform, Duplex);
-
-function TransformState(stream) {
-  this.afterTransform = function (er, data) {
-    return afterTransform(stream, er, data);
-  };
-
-  this.needTransform = false;
-  this.transforming = false;
-  this.writecb = null;
-  this.writechunk = null;
-  this.writeencoding = null;
-}
-
-function afterTransform(stream, er, data) {
-  var ts = stream._transformState;
-  ts.transforming = false;
-
-  var cb = ts.writecb;
-
-  if (!cb) return stream.emit('error', new Error('no writecb in Transform class'));
-
-  ts.writechunk = null;
-  ts.writecb = null;
-
-  if (data !== null && data !== undefined) stream.push(data);
-
-  cb(er);
-
-  var rs = stream._readableState;
-  rs.reading = false;
-  if (rs.needReadable || rs.length < rs.highWaterMark) {
-    stream._read(rs.highWaterMark);
-  }
-}
-
-function Transform(options) {
-  if (!(this instanceof Transform)) return new Transform(options);
-
-  Duplex.call(this, options);
-
-  this._transformState = new TransformState(this);
-
-  var stream = this;
-
-  // start out asking for a readable event once data is transformed.
-  this._readableState.needReadable = true;
-
-  // we have implemented the _read method, and done the other things
-  // that Readable wants before the first _read call, so unset the
-  // sync guard flag.
-  this._readableState.sync = false;
-
-  if (options) {
-    if (typeof options.transform === 'function') this._transform = options.transform;
-
-    if (typeof options.flush === 'function') this._flush = options.flush;
-  }
-
-  // When the writable side finishes, then flush out anything remaining.
-  this.once('prefinish', function () {
-    if (typeof this._flush === 'function') this._flush(function (er, data) {
-      done(stream, er, data);
-    });else done(stream);
-  });
-}
-
-Transform.prototype.push = function (chunk, encoding) {
-  this._transformState.needTransform = false;
-  return Duplex.prototype.push.call(this, chunk, encoding);
-};
-
-// This is the part where you do stuff!
-// override this function in implementation classes.
-// 'chunk' is an input chunk.
-//
-// Call `push(newChunk)` to pass along transformed output
-// to the readable side.  You may call 'push' zero or more times.
-//
-// Call `cb(err)` when you are done with this chunk.  If you pass
-// an error, then that'll put the hurt on the whole operation.  If you
-// never call cb(), then you'll never get another chunk.
-Transform.prototype._transform = function (chunk, encoding, cb) {
-  throw new Error('_transform() is not implemented');
-};
-
-Transform.prototype._write = function (chunk, encoding, cb) {
-  var ts = this._transformState;
-  ts.writecb = cb;
-  ts.writechunk = chunk;
-  ts.writeencoding = encoding;
-  if (!ts.transforming) {
-    var rs = this._readableState;
-    if (ts.needTransform || rs.needReadable || rs.length < rs.highWaterMark) this._read(rs.highWaterMark);
-  }
-};
-
-// Doesn't matter what the args are here.
-// _transform does all the work.
-// That we got here means that the readable side wants more data.
-Transform.prototype._read = function (n) {
-  var ts = this._transformState;
-
-  if (ts.writechunk !== null && ts.writecb && !ts.transforming) {
-    ts.transforming = true;
-    this._transform(ts.writechunk, ts.writeencoding, ts.afterTransform);
-  } else {
-    // mark that we need a transform, so that any data that comes in
-    // will get processed, now that we've asked for it.
-    ts.needTransform = true;
-  }
-};
-
-function done(stream, er, data) {
-  if (er) return stream.emit('error', er);
-
-  if (data !== null && data !== undefined) stream.push(data);
-
-  // if there's nothing in the write buffer, then that means
-  // that nothing more will ever be provided
-  var ws = stream._writableState;
-  var ts = stream._transformState;
-
-  if (ws.length) throw new Error('Calling transform done when ws.length != 0');
-
-  if (ts.transforming) throw new Error('Calling transform done when still transforming');
-
-  return stream.push(null);
-}
-
-/***/ }),
-/* 36 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
 /* WEBPACK VAR INJECTION */(function(process, setImmediate) {// A bit simpler than readable streams.
 // Implement an async ._write(chunk, encoding, cb), and it'll handle all
 // the drain event emission and buffering.
@@ -10676,24 +10368,17 @@ Writable.WritableState = WritableState;
 
 /*<replacement>*/
 var util = __webpack_require__(20);
-util.inherits = __webpack_require__(11);
+util.inherits = __webpack_require__(10);
 /*</replacement>*/
 
 /*<replacement>*/
 var internalUtil = {
-  deprecate: __webpack_require__(97)
+  deprecate: __webpack_require__(98)
 };
 /*</replacement>*/
 
 /*<replacement>*/
-var Stream;
-(function () {
-  try {
-    Stream = __webpack_require__(21);
-  } catch (_) {} finally {
-    if (!Stream) Stream = __webpack_require__(10).EventEmitter;
-  }
-})();
+var Stream = __webpack_require__(57);
 /*</replacement>*/
 
 var Buffer = __webpack_require__(5).Buffer;
@@ -10731,7 +10416,7 @@ function WritableState(options, stream) {
   this.highWaterMark = hwm || hwm === 0 ? hwm : defaultHwm;
 
   // cast to ints.
-  this.highWaterMark = ~ ~this.highWaterMark;
+  this.highWaterMark = ~~this.highWaterMark;
 
   // drain event flag.
   this.needDrain = false;
@@ -10886,20 +10571,16 @@ function writeAfterEnd(stream, cb) {
   processNextTick(cb, er);
 }
 
-// If we get something that is not a buffer, string, null, or undefined,
-// and we're not in objectMode, then that's an error.
-// Otherwise stream chunks are all considered to be of length=1, and the
-// watermarks determine how many objects to keep in the buffer, rather than
-// how many bytes or characters.
+// Checks that a user-supplied chunk is valid, especially for the particular
+// mode the stream is in. Currently this means that `null` is never accepted
+// and undefined/non-string values are only allowed in object mode.
 function validChunk(stream, state, chunk, cb) {
   var valid = true;
   var er = false;
-  // Always throw error if a null is written
-  // if we are not in object mode then throw
-  // if it is not a buffer, string, or undefined.
+
   if (chunk === null) {
     er = new TypeError('May not write null values to stream');
-  } else if (!Buffer.isBuffer(chunk) && typeof chunk !== 'string' && chunk !== undefined && !state.objectMode) {
+  } else if (typeof chunk !== 'string' && chunk !== undefined && !state.objectMode) {
     er = new TypeError('Invalid non-string/buffer chunk');
   }
   if (er) {
@@ -10913,19 +10594,20 @@ function validChunk(stream, state, chunk, cb) {
 Writable.prototype.write = function (chunk, encoding, cb) {
   var state = this._writableState;
   var ret = false;
+  var isBuf = Buffer.isBuffer(chunk);
 
   if (typeof encoding === 'function') {
     cb = encoding;
     encoding = null;
   }
 
-  if (Buffer.isBuffer(chunk)) encoding = 'buffer';else if (!encoding) encoding = state.defaultEncoding;
+  if (isBuf) encoding = 'buffer';else if (!encoding) encoding = state.defaultEncoding;
 
   if (typeof cb !== 'function') cb = nop;
 
-  if (state.ended) writeAfterEnd(this, cb);else if (validChunk(this, state, chunk, cb)) {
+  if (state.ended) writeAfterEnd(this, cb);else if (isBuf || validChunk(this, state, chunk, cb)) {
     state.pendingcb++;
-    ret = writeOrBuffer(this, state, chunk, encoding, cb);
+    ret = writeOrBuffer(this, state, isBuf, chunk, encoding, cb);
   }
 
   return ret;
@@ -10965,10 +10647,11 @@ function decodeChunk(state, chunk, encoding) {
 // if we're already writing something, then just put this
 // in the queue, and wait our turn.  Otherwise, call _write
 // If we return false, then we need a drain event, so set that flag.
-function writeOrBuffer(stream, state, chunk, encoding, cb) {
-  chunk = decodeChunk(state, chunk, encoding);
-
-  if (Buffer.isBuffer(chunk)) encoding = 'buffer';
+function writeOrBuffer(stream, state, isBuf, chunk, encoding, cb) {
+  if (!isBuf) {
+    chunk = decodeChunk(state, chunk, encoding);
+    if (Buffer.isBuffer(chunk)) encoding = 'buffer';
+  }
   var len = state.objectMode ? 1 : chunk.length;
 
   state.length += len;
@@ -11037,8 +10720,8 @@ function onwrite(stream, er) {
       asyncWrite(afterWrite, stream, state, finished, cb);
       /*</replacement>*/
     } else {
-        afterWrite(stream, state, finished, cb);
-      }
+      afterWrite(stream, state, finished, cb);
+    }
   }
 }
 
@@ -11189,7 +10872,6 @@ function CorkedRequest(state) {
 
   this.next = null;
   this.entry = null;
-
   this.finish = function (err) {
     var entry = _this.entry;
     _this.entry = null;
@@ -11206,36 +10888,13 @@ function CorkedRequest(state) {
     }
   };
 }
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(94).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(95).setImmediate))
 
 /***/ }),
-/* 37 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {var Stream = (function (){
-  try {
-    return __webpack_require__(21); // hack to fix a circular dependency issue when used with browserify
-  } catch(_){}
-}());
-exports = module.exports = __webpack_require__(58);
-exports.Stream = Stream || exports;
-exports.Readable = exports;
-exports.Writable = __webpack_require__(36);
-exports.Duplex = __webpack_require__(13);
-exports.Transform = __webpack_require__(35);
-exports.PassThrough = __webpack_require__(57);
-
-if (!process.browser && process.env.READABLE_STREAM === 'disable' && Stream) {
-  module.exports = Stream;
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
-
-/***/ }),
-/* 38 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(__dirname, Buffer, process) {const Snekfetch = __webpack_require__(88);
+/* WEBPACK VAR INJECTION */(function(__dirname, Buffer, process) {const Snekfetch = __webpack_require__(89);
 
 const ENV_VAR = '__SNEKFETCH_SYNC_REQUEST';
 let first = true;
@@ -11299,12 +10958,12 @@ module.exports = Snekfetch;
 /* WEBPACK VAR INJECTION */}.call(exports, "node_modules/snekfetch", __webpack_require__(5).Buffer, __webpack_require__(6)))
 
 /***/ }),
-/* 39 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(26);
 const fs = __webpack_require__(27);
-const snekfetch = __webpack_require__(38);
+const snekfetch = __webpack_require__(36);
 
 const Constants = __webpack_require__(0);
 const convertToBuffer = __webpack_require__(4).convertToBuffer;
@@ -11634,7 +11293,7 @@ module.exports = ClientDataResolver;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer))
 
 /***/ }),
-/* 40 */
+/* 38 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -11732,12 +11391,12 @@ module.exports = {
 };
 
 /***/ }),
-/* 41 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const User = __webpack_require__(16);
 const Collection = __webpack_require__(3);
-const ClientUserSettings = __webpack_require__(42);
+const ClientUserSettings = __webpack_require__(40);
 /**
  * Represents the logged in client's Discord user
  * @extends {User}
@@ -12076,7 +11735,7 @@ module.exports = ClientUser;
 
 
 /***/ }),
-/* 42 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -12159,7 +11818,7 @@ module.exports = ClientUserSettings;
 
 
 /***/ }),
-/* 43 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Channel = __webpack_require__(14);
@@ -12229,11 +11888,11 @@ module.exports = DMChannel;
 
 
 /***/ }),
-/* 44 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const PartialGuild = __webpack_require__(51);
-const PartialGuildChannel = __webpack_require__(52);
+const PartialGuild = __webpack_require__(49);
+const PartialGuildChannel = __webpack_require__(50);
 const Constants = __webpack_require__(0);
 
 /*
@@ -12394,7 +12053,7 @@ module.exports = Invite;
 
 
 /***/ }),
-/* 45 */
+/* 43 */
 /***/ (function(module, exports) {
 
 /**
@@ -12468,7 +12127,7 @@ module.exports = MessageAttachment;
 
 
 /***/ }),
-/* 46 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collector = __webpack_require__(66);
@@ -12549,7 +12208,7 @@ module.exports = MessageCollector;
 
 
 /***/ }),
-/* 47 */
+/* 45 */
 /***/ (function(module, exports) {
 
 /**
@@ -12940,7 +12599,7 @@ module.exports = MessageEmbed;
 
 
 /***/ }),
-/* 48 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
@@ -13084,7 +12743,7 @@ module.exports = MessageMentions;
 
 
 /***/ }),
-/* 49 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
@@ -13183,7 +12842,7 @@ module.exports = MessageReaction;
 
 
 /***/ }),
-/* 50 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Snowflake = __webpack_require__(7);
@@ -13323,7 +12982,7 @@ module.exports = OAuth2Application;
 
 
 /***/ }),
-/* 51 */
+/* 49 */
 /***/ (function(module, exports) {
 
 /*
@@ -13380,7 +13039,7 @@ module.exports = PartialGuild;
 
 
 /***/ }),
-/* 52 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -13430,7 +13089,7 @@ module.exports = PartialGuildChannel;
 
 
 /***/ }),
-/* 53 */
+/* 51 */
 /***/ (function(module, exports) {
 
 /**
@@ -13479,7 +13138,7 @@ module.exports = PermissionOverwrites;
 
 
 /***/ }),
-/* 54 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const GuildChannel = __webpack_require__(25);
@@ -13586,7 +13245,7 @@ module.exports = TextChannel;
 
 
 /***/ }),
-/* 55 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const GuildChannel = __webpack_require__(25);
@@ -13725,7 +13384,7 @@ module.exports = VoiceChannel;
 
 
 /***/ }),
-/* 56 */
+/* 54 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -13736,39 +13395,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 57 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-// a passthrough stream.
-// basically just the most minimal sort of Transform stream.
-// Every written chunk gets output as-is.
-
-
-
-module.exports = PassThrough;
-
-var Transform = __webpack_require__(35);
-
-/*<replacement>*/
-var util = __webpack_require__(20);
-util.inherits = __webpack_require__(11);
-/*</replacement>*/
-
-util.inherits(PassThrough, Transform);
-
-function PassThrough(options) {
-  if (!(this instanceof PassThrough)) return new PassThrough(options);
-
-  Transform.call(this, options);
-}
-
-PassThrough.prototype._transform = function (chunk, encoding, cb) {
-  cb(null, chunk);
-};
-
-/***/ }),
-/* 58 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13781,7 +13408,7 @@ var processNextTick = __webpack_require__(33);
 /*</replacement>*/
 
 /*<replacement>*/
-var isArray = __webpack_require__(56);
+var isArray = __webpack_require__(54);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -13791,7 +13418,7 @@ var Duplex;
 Readable.ReadableState = ReadableState;
 
 /*<replacement>*/
-var EE = __webpack_require__(10).EventEmitter;
+var EE = __webpack_require__(12).EventEmitter;
 
 var EElistenerCount = function (emitter, type) {
   return emitter.listeners(type).length;
@@ -13799,14 +13426,7 @@ var EElistenerCount = function (emitter, type) {
 /*</replacement>*/
 
 /*<replacement>*/
-var Stream;
-(function () {
-  try {
-    Stream = __webpack_require__(21);
-  } catch (_) {} finally {
-    if (!Stream) Stream = __webpack_require__(10).EventEmitter;
-  }
-})();
+var Stream = __webpack_require__(57);
 /*</replacement>*/
 
 var Buffer = __webpack_require__(5).Buffer;
@@ -13816,11 +13436,11 @@ var bufferShim = __webpack_require__(31);
 
 /*<replacement>*/
 var util = __webpack_require__(20);
-util.inherits = __webpack_require__(11);
+util.inherits = __webpack_require__(10);
 /*</replacement>*/
 
 /*<replacement>*/
-var debugUtil = __webpack_require__(178);
+var debugUtil = __webpack_require__(180);
 var debug = void 0;
 if (debugUtil && debugUtil.debuglog) {
   debug = debugUtil.debuglog('stream');
@@ -13829,10 +13449,12 @@ if (debugUtil && debugUtil.debuglog) {
 }
 /*</replacement>*/
 
-var BufferList = __webpack_require__(81);
+var BufferList = __webpack_require__(82);
 var StringDecoder;
 
 util.inherits(Readable, Stream);
+
+var kProxyEvents = ['error', 'close', 'destroy', 'pause', 'resume'];
 
 function prependListener(emitter, event, fn) {
   // Sadly this is not cacheable as some libraries bundle their own
@@ -13866,7 +13488,7 @@ function ReadableState(options, stream) {
   this.highWaterMark = hwm || hwm === 0 ? hwm : defaultHwm;
 
   // cast to ints.
-  this.highWaterMark = ~ ~this.highWaterMark;
+  this.highWaterMark = ~~this.highWaterMark;
 
   // A linked list is used to store data chunks instead of an array because the
   // linked list can remove elements from the beginning faster than
@@ -13911,7 +13533,7 @@ function ReadableState(options, stream) {
   this.decoder = null;
   this.encoding = null;
   if (options.encoding) {
-    if (!StringDecoder) StringDecoder = __webpack_require__(61).StringDecoder;
+    if (!StringDecoder) StringDecoder = __webpack_require__(62).StringDecoder;
     this.decoder = new StringDecoder(options.encoding);
     this.encoding = options.encoding;
   }
@@ -14021,7 +13643,7 @@ function needMoreData(state) {
 
 // backwards compatibility.
 Readable.prototype.setEncoding = function (enc) {
-  if (!StringDecoder) StringDecoder = __webpack_require__(61).StringDecoder;
+  if (!StringDecoder) StringDecoder = __webpack_require__(62).StringDecoder;
   this._readableState.decoder = new StringDecoder(enc);
   this._readableState.encoding = enc;
   return this;
@@ -14558,10 +14180,9 @@ Readable.prototype.wrap = function (stream) {
   }
 
   // proxy certain important events.
-  var events = ['error', 'close', 'destroy', 'pause', 'resume'];
-  forEach(events, function (ev) {
-    stream.on(ev, self.emit.bind(self, ev));
-  });
+  for (var n = 0; n < kProxyEvents.length; n++) {
+    stream.on(kProxyEvents[n], self.emit.bind(self, kProxyEvents[n]));
+  }
 
   // when we try to consume some more bytes, simply unpause the
   // underlying stream.
@@ -14716,13 +14337,341 @@ function indexOf(xs, x) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
+/* 56 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+// a transform stream is a readable/writable stream where you do
+// something with the data.  Sometimes it's called a "filter",
+// but that's not a great name for it, since that implies a thing where
+// some bits pass through, and others are simply ignored.  (That would
+// be a valid example of a transform, of course.)
+//
+// While the output is causally related to the input, it's not a
+// necessarily symmetric or synchronous transformation.  For example,
+// a zlib stream might take multiple plain-text writes(), and then
+// emit a single compressed chunk some time in the future.
+//
+// Here's how this works:
+//
+// The Transform stream has all the aspects of the readable and writable
+// stream classes.  When you write(chunk), that calls _write(chunk,cb)
+// internally, and returns false if there's a lot of pending writes
+// buffered up.  When you call read(), that calls _read(n) until
+// there's enough pending readable data buffered up.
+//
+// In a transform stream, the written data is placed in a buffer.  When
+// _read(n) is called, it transforms the queued up data, calling the
+// buffered _write cb's as it consumes chunks.  If consuming a single
+// written chunk would result in multiple output chunks, then the first
+// outputted bit calls the readcb, and subsequent chunks just go into
+// the read buffer, and will cause it to emit 'readable' if necessary.
+//
+// This way, back-pressure is actually determined by the reading side,
+// since _read has to be called to start processing a new chunk.  However,
+// a pathological inflate type of transform can cause excessive buffering
+// here.  For example, imagine a stream where every byte of input is
+// interpreted as an integer from 0-255, and then results in that many
+// bytes of output.  Writing the 4 bytes {ff,ff,ff,ff} would result in
+// 1kb of data being output.  In this case, you could write a very small
+// amount of input, and end up with a very large amount of output.  In
+// such a pathological inflating mechanism, there'd be no way to tell
+// the system to stop doing the transform.  A single 4MB write could
+// cause the system to run out of memory.
+//
+// However, even in such a pathological case, only a single written chunk
+// would be consumed, and then the rest would wait (un-transformed) until
+// the results of the previous transformed chunk were consumed.
+
+
+
+module.exports = Transform;
+
+var Duplex = __webpack_require__(13);
+
+/*<replacement>*/
+var util = __webpack_require__(20);
+util.inherits = __webpack_require__(10);
+/*</replacement>*/
+
+util.inherits(Transform, Duplex);
+
+function TransformState(stream) {
+  this.afterTransform = function (er, data) {
+    return afterTransform(stream, er, data);
+  };
+
+  this.needTransform = false;
+  this.transforming = false;
+  this.writecb = null;
+  this.writechunk = null;
+  this.writeencoding = null;
+}
+
+function afterTransform(stream, er, data) {
+  var ts = stream._transformState;
+  ts.transforming = false;
+
+  var cb = ts.writecb;
+
+  if (!cb) return stream.emit('error', new Error('no writecb in Transform class'));
+
+  ts.writechunk = null;
+  ts.writecb = null;
+
+  if (data !== null && data !== undefined) stream.push(data);
+
+  cb(er);
+
+  var rs = stream._readableState;
+  rs.reading = false;
+  if (rs.needReadable || rs.length < rs.highWaterMark) {
+    stream._read(rs.highWaterMark);
+  }
+}
+
+function Transform(options) {
+  if (!(this instanceof Transform)) return new Transform(options);
+
+  Duplex.call(this, options);
+
+  this._transformState = new TransformState(this);
+
+  var stream = this;
+
+  // start out asking for a readable event once data is transformed.
+  this._readableState.needReadable = true;
+
+  // we have implemented the _read method, and done the other things
+  // that Readable wants before the first _read call, so unset the
+  // sync guard flag.
+  this._readableState.sync = false;
+
+  if (options) {
+    if (typeof options.transform === 'function') this._transform = options.transform;
+
+    if (typeof options.flush === 'function') this._flush = options.flush;
+  }
+
+  // When the writable side finishes, then flush out anything remaining.
+  this.once('prefinish', function () {
+    if (typeof this._flush === 'function') this._flush(function (er, data) {
+      done(stream, er, data);
+    });else done(stream);
+  });
+}
+
+Transform.prototype.push = function (chunk, encoding) {
+  this._transformState.needTransform = false;
+  return Duplex.prototype.push.call(this, chunk, encoding);
+};
+
+// This is the part where you do stuff!
+// override this function in implementation classes.
+// 'chunk' is an input chunk.
+//
+// Call `push(newChunk)` to pass along transformed output
+// to the readable side.  You may call 'push' zero or more times.
+//
+// Call `cb(err)` when you are done with this chunk.  If you pass
+// an error, then that'll put the hurt on the whole operation.  If you
+// never call cb(), then you'll never get another chunk.
+Transform.prototype._transform = function (chunk, encoding, cb) {
+  throw new Error('_transform() is not implemented');
+};
+
+Transform.prototype._write = function (chunk, encoding, cb) {
+  var ts = this._transformState;
+  ts.writecb = cb;
+  ts.writechunk = chunk;
+  ts.writeencoding = encoding;
+  if (!ts.transforming) {
+    var rs = this._readableState;
+    if (ts.needTransform || rs.needReadable || rs.length < rs.highWaterMark) this._read(rs.highWaterMark);
+  }
+};
+
+// Doesn't matter what the args are here.
+// _transform does all the work.
+// That we got here means that the readable side wants more data.
+Transform.prototype._read = function (n) {
+  var ts = this._transformState;
+
+  if (ts.writechunk !== null && ts.writecb && !ts.transforming) {
+    ts.transforming = true;
+    this._transform(ts.writechunk, ts.writeencoding, ts.afterTransform);
+  } else {
+    // mark that we need a transform, so that any data that comes in
+    // will get processed, now that we've asked for it.
+    ts.needTransform = true;
+  }
+};
+
+function done(stream, er, data) {
+  if (er) return stream.emit('error', er);
+
+  if (data !== null && data !== undefined) stream.push(data);
+
+  // if there's nothing in the write buffer, then that means
+  // that nothing more will ever be provided
+  var ws = stream._writableState;
+  var ts = stream._transformState;
+
+  if (ws.length) throw new Error('Calling transform done when ws.length != 0');
+
+  if (ts.transforming) throw new Error('Calling transform done when still transforming');
+
+  return stream.push(null);
+}
+
+/***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(12).EventEmitter;
+
+
+/***/ }),
+/* 58 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+module.exports = Stream;
+
+var EE = __webpack_require__(12).EventEmitter;
+var inherits = __webpack_require__(10);
+
+inherits(Stream, EE);
+Stream.Readable = __webpack_require__(21);
+Stream.Writable = __webpack_require__(85);
+Stream.Duplex = __webpack_require__(80);
+Stream.Transform = __webpack_require__(84);
+Stream.PassThrough = __webpack_require__(83);
+
+// Backwards-compat with node 0.4.x
+Stream.Stream = Stream;
+
+
+
+// old-style streams.  Note that the pipe method (the only relevant
+// part of this class) is overridden in the Readable class.
+
+function Stream() {
+  EE.call(this);
+}
+
+Stream.prototype.pipe = function(dest, options) {
+  var source = this;
+
+  function ondata(chunk) {
+    if (dest.writable) {
+      if (false === dest.write(chunk) && source.pause) {
+        source.pause();
+      }
+    }
+  }
+
+  source.on('data', ondata);
+
+  function ondrain() {
+    if (source.readable && source.resume) {
+      source.resume();
+    }
+  }
+
+  dest.on('drain', ondrain);
+
+  // If the 'end' option is not supplied, dest.end() will be called when
+  // source gets the 'end' or 'close' events.  Only dest.end() once.
+  if (!dest._isStdio && (!options || options.end !== false)) {
+    source.on('end', onend);
+    source.on('close', onclose);
+  }
+
+  var didOnEnd = false;
+  function onend() {
+    if (didOnEnd) return;
+    didOnEnd = true;
+
+    dest.end();
+  }
+
+
+  function onclose() {
+    if (didOnEnd) return;
+    didOnEnd = true;
+
+    if (typeof dest.destroy === 'function') dest.destroy();
+  }
+
+  // don't leave dangling pipes when there are errors.
+  function onerror(er) {
+    cleanup();
+    if (EE.listenerCount(this, 'error') === 0) {
+      throw er; // Unhandled stream error in pipe.
+    }
+  }
+
+  source.on('error', onerror);
+  dest.on('error', onerror);
+
+  // remove all the event listeners that were added.
+  function cleanup() {
+    source.removeListener('data', ondata);
+    dest.removeListener('drain', ondrain);
+
+    source.removeListener('end', onend);
+    source.removeListener('close', onclose);
+
+    source.removeListener('error', onerror);
+    dest.removeListener('error', onerror);
+
+    source.removeListener('end', cleanup);
+    source.removeListener('close', cleanup);
+
+    dest.removeListener('close', cleanup);
+  }
+
+  source.on('end', cleanup);
+  source.on('close', cleanup);
+
+  dest.on('close', cleanup);
+
+  dest.emit('pipe', source);
+
+  // Allow for unix-like usage: A.pipe(B).pipe(C)
+  return dest;
+};
+
+
+/***/ }),
 /* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {var ClientRequest = __webpack_require__(92)
-var extend = __webpack_require__(99)
+/* WEBPACK VAR INJECTION */(function(global) {var ClientRequest = __webpack_require__(93)
+var extend = __webpack_require__(100)
 var statusCodes = __webpack_require__(74)
-var url = __webpack_require__(62)
+var url = __webpack_require__(61)
 
 var http = exports
 
@@ -14880,233 +14829,6 @@ xhr = null // Help gc
 /* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-var Buffer = __webpack_require__(5).Buffer;
-
-var isBufferEncoding = Buffer.isEncoding
-  || function(encoding) {
-       switch (encoding && encoding.toLowerCase()) {
-         case 'hex': case 'utf8': case 'utf-8': case 'ascii': case 'binary': case 'base64': case 'ucs2': case 'ucs-2': case 'utf16le': case 'utf-16le': case 'raw': return true;
-         default: return false;
-       }
-     }
-
-
-function assertEncoding(encoding) {
-  if (encoding && !isBufferEncoding(encoding)) {
-    throw new Error('Unknown encoding: ' + encoding);
-  }
-}
-
-// StringDecoder provides an interface for efficiently splitting a series of
-// buffers into a series of JS strings without breaking apart multi-byte
-// characters. CESU-8 is handled as part of the UTF-8 encoding.
-//
-// @TODO Handling all encodings inside a single object makes it very difficult
-// to reason about this code, so it should be split up in the future.
-// @TODO There should be a utf8-strict encoding that rejects invalid UTF-8 code
-// points as used by CESU-8.
-var StringDecoder = exports.StringDecoder = function(encoding) {
-  this.encoding = (encoding || 'utf8').toLowerCase().replace(/[-_]/, '');
-  assertEncoding(encoding);
-  switch (this.encoding) {
-    case 'utf8':
-      // CESU-8 represents each of Surrogate Pair by 3-bytes
-      this.surrogateSize = 3;
-      break;
-    case 'ucs2':
-    case 'utf16le':
-      // UTF-16 represents each of Surrogate Pair by 2-bytes
-      this.surrogateSize = 2;
-      this.detectIncompleteChar = utf16DetectIncompleteChar;
-      break;
-    case 'base64':
-      // Base-64 stores 3 bytes in 4 chars, and pads the remainder.
-      this.surrogateSize = 3;
-      this.detectIncompleteChar = base64DetectIncompleteChar;
-      break;
-    default:
-      this.write = passThroughWrite;
-      return;
-  }
-
-  // Enough space to store all bytes of a single character. UTF-8 needs 4
-  // bytes, but CESU-8 may require up to 6 (3 bytes per surrogate).
-  this.charBuffer = new Buffer(6);
-  // Number of bytes received for the current incomplete multi-byte character.
-  this.charReceived = 0;
-  // Number of bytes expected for the current incomplete multi-byte character.
-  this.charLength = 0;
-};
-
-
-// write decodes the given buffer and returns it as JS string that is
-// guaranteed to not contain any partial multi-byte characters. Any partial
-// character found at the end of the buffer is buffered up, and will be
-// returned when calling write again with the remaining bytes.
-//
-// Note: Converting a Buffer containing an orphan surrogate to a String
-// currently works, but converting a String to a Buffer (via `new Buffer`, or
-// Buffer#write) will replace incomplete surrogates with the unicode
-// replacement character. See https://codereview.chromium.org/121173009/ .
-StringDecoder.prototype.write = function(buffer) {
-  var charStr = '';
-  // if our last write ended with an incomplete multibyte character
-  while (this.charLength) {
-    // determine how many remaining bytes this buffer has to offer for this char
-    var available = (buffer.length >= this.charLength - this.charReceived) ?
-        this.charLength - this.charReceived :
-        buffer.length;
-
-    // add the new bytes to the char buffer
-    buffer.copy(this.charBuffer, this.charReceived, 0, available);
-    this.charReceived += available;
-
-    if (this.charReceived < this.charLength) {
-      // still not enough chars in this buffer? wait for more ...
-      return '';
-    }
-
-    // remove bytes belonging to the current character from the buffer
-    buffer = buffer.slice(available, buffer.length);
-
-    // get the character that was split
-    charStr = this.charBuffer.slice(0, this.charLength).toString(this.encoding);
-
-    // CESU-8: lead surrogate (D800-DBFF) is also the incomplete character
-    var charCode = charStr.charCodeAt(charStr.length - 1);
-    if (charCode >= 0xD800 && charCode <= 0xDBFF) {
-      this.charLength += this.surrogateSize;
-      charStr = '';
-      continue;
-    }
-    this.charReceived = this.charLength = 0;
-
-    // if there are no more bytes in this buffer, just emit our char
-    if (buffer.length === 0) {
-      return charStr;
-    }
-    break;
-  }
-
-  // determine and set charLength / charReceived
-  this.detectIncompleteChar(buffer);
-
-  var end = buffer.length;
-  if (this.charLength) {
-    // buffer the incomplete character bytes we got
-    buffer.copy(this.charBuffer, 0, buffer.length - this.charReceived, end);
-    end -= this.charReceived;
-  }
-
-  charStr += buffer.toString(this.encoding, 0, end);
-
-  var end = charStr.length - 1;
-  var charCode = charStr.charCodeAt(end);
-  // CESU-8: lead surrogate (D800-DBFF) is also the incomplete character
-  if (charCode >= 0xD800 && charCode <= 0xDBFF) {
-    var size = this.surrogateSize;
-    this.charLength += size;
-    this.charReceived += size;
-    this.charBuffer.copy(this.charBuffer, size, 0, size);
-    buffer.copy(this.charBuffer, 0, 0, size);
-    return charStr.substring(0, end);
-  }
-
-  // or just emit the charStr
-  return charStr;
-};
-
-// detectIncompleteChar determines if there is an incomplete UTF-8 character at
-// the end of the given buffer. If so, it sets this.charLength to the byte
-// length that character, and sets this.charReceived to the number of bytes
-// that are available for this character.
-StringDecoder.prototype.detectIncompleteChar = function(buffer) {
-  // determine how many bytes we have to check at the end of this buffer
-  var i = (buffer.length >= 3) ? 3 : buffer.length;
-
-  // Figure out if one of the last i bytes of our buffer announces an
-  // incomplete char.
-  for (; i > 0; i--) {
-    var c = buffer[buffer.length - i];
-
-    // See http://en.wikipedia.org/wiki/UTF-8#Description
-
-    // 110XXXXX
-    if (i == 1 && c >> 5 == 0x06) {
-      this.charLength = 2;
-      break;
-    }
-
-    // 1110XXXX
-    if (i <= 2 && c >> 4 == 0x0E) {
-      this.charLength = 3;
-      break;
-    }
-
-    // 11110XXX
-    if (i <= 3 && c >> 3 == 0x1E) {
-      this.charLength = 4;
-      break;
-    }
-  }
-  this.charReceived = i;
-};
-
-StringDecoder.prototype.end = function(buffer) {
-  var res = '';
-  if (buffer && buffer.length)
-    res = this.write(buffer);
-
-  if (this.charReceived) {
-    var cr = this.charReceived;
-    var buf = this.charBuffer;
-    var enc = this.encoding;
-    res += buf.slice(0, cr).toString(enc);
-  }
-
-  return res;
-};
-
-function passThroughWrite(buffer) {
-  return buffer.toString(this.encoding);
-}
-
-function utf16DetectIncompleteChar(buffer) {
-  this.charReceived = buffer.length % 2;
-  this.charLength = this.charReceived ? 2 : 0;
-}
-
-function base64DetectIncompleteChar(buffer) {
-  this.charReceived = buffer.length % 3;
-  this.charLength = this.charReceived ? 3 : 0;
-}
-
-
-/***/ }),
-/* 62 */
-/***/ (function(module, exports, __webpack_require__) {
-
 "use strict";
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -15132,7 +14854,7 @@ function base64DetectIncompleteChar(buffer) {
 
 
 var punycode = __webpack_require__(77);
-var util = __webpack_require__(96);
+var util = __webpack_require__(97);
 
 exports.parse = urlParse;
 exports.resolve = urlResolve;
@@ -15843,14 +15565,241 @@ Url.prototype.parseHost = function() {
 
 
 /***/ }),
+/* 62 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+var Buffer = __webpack_require__(5).Buffer;
+
+var isBufferEncoding = Buffer.isEncoding
+  || function(encoding) {
+       switch (encoding && encoding.toLowerCase()) {
+         case 'hex': case 'utf8': case 'utf-8': case 'ascii': case 'binary': case 'base64': case 'ucs2': case 'ucs-2': case 'utf16le': case 'utf-16le': case 'raw': return true;
+         default: return false;
+       }
+     }
+
+
+function assertEncoding(encoding) {
+  if (encoding && !isBufferEncoding(encoding)) {
+    throw new Error('Unknown encoding: ' + encoding);
+  }
+}
+
+// StringDecoder provides an interface for efficiently splitting a series of
+// buffers into a series of JS strings without breaking apart multi-byte
+// characters. CESU-8 is handled as part of the UTF-8 encoding.
+//
+// @TODO Handling all encodings inside a single object makes it very difficult
+// to reason about this code, so it should be split up in the future.
+// @TODO There should be a utf8-strict encoding that rejects invalid UTF-8 code
+// points as used by CESU-8.
+var StringDecoder = exports.StringDecoder = function(encoding) {
+  this.encoding = (encoding || 'utf8').toLowerCase().replace(/[-_]/, '');
+  assertEncoding(encoding);
+  switch (this.encoding) {
+    case 'utf8':
+      // CESU-8 represents each of Surrogate Pair by 3-bytes
+      this.surrogateSize = 3;
+      break;
+    case 'ucs2':
+    case 'utf16le':
+      // UTF-16 represents each of Surrogate Pair by 2-bytes
+      this.surrogateSize = 2;
+      this.detectIncompleteChar = utf16DetectIncompleteChar;
+      break;
+    case 'base64':
+      // Base-64 stores 3 bytes in 4 chars, and pads the remainder.
+      this.surrogateSize = 3;
+      this.detectIncompleteChar = base64DetectIncompleteChar;
+      break;
+    default:
+      this.write = passThroughWrite;
+      return;
+  }
+
+  // Enough space to store all bytes of a single character. UTF-8 needs 4
+  // bytes, but CESU-8 may require up to 6 (3 bytes per surrogate).
+  this.charBuffer = new Buffer(6);
+  // Number of bytes received for the current incomplete multi-byte character.
+  this.charReceived = 0;
+  // Number of bytes expected for the current incomplete multi-byte character.
+  this.charLength = 0;
+};
+
+
+// write decodes the given buffer and returns it as JS string that is
+// guaranteed to not contain any partial multi-byte characters. Any partial
+// character found at the end of the buffer is buffered up, and will be
+// returned when calling write again with the remaining bytes.
+//
+// Note: Converting a Buffer containing an orphan surrogate to a String
+// currently works, but converting a String to a Buffer (via `new Buffer`, or
+// Buffer#write) will replace incomplete surrogates with the unicode
+// replacement character. See https://codereview.chromium.org/121173009/ .
+StringDecoder.prototype.write = function(buffer) {
+  var charStr = '';
+  // if our last write ended with an incomplete multibyte character
+  while (this.charLength) {
+    // determine how many remaining bytes this buffer has to offer for this char
+    var available = (buffer.length >= this.charLength - this.charReceived) ?
+        this.charLength - this.charReceived :
+        buffer.length;
+
+    // add the new bytes to the char buffer
+    buffer.copy(this.charBuffer, this.charReceived, 0, available);
+    this.charReceived += available;
+
+    if (this.charReceived < this.charLength) {
+      // still not enough chars in this buffer? wait for more ...
+      return '';
+    }
+
+    // remove bytes belonging to the current character from the buffer
+    buffer = buffer.slice(available, buffer.length);
+
+    // get the character that was split
+    charStr = this.charBuffer.slice(0, this.charLength).toString(this.encoding);
+
+    // CESU-8: lead surrogate (D800-DBFF) is also the incomplete character
+    var charCode = charStr.charCodeAt(charStr.length - 1);
+    if (charCode >= 0xD800 && charCode <= 0xDBFF) {
+      this.charLength += this.surrogateSize;
+      charStr = '';
+      continue;
+    }
+    this.charReceived = this.charLength = 0;
+
+    // if there are no more bytes in this buffer, just emit our char
+    if (buffer.length === 0) {
+      return charStr;
+    }
+    break;
+  }
+
+  // determine and set charLength / charReceived
+  this.detectIncompleteChar(buffer);
+
+  var end = buffer.length;
+  if (this.charLength) {
+    // buffer the incomplete character bytes we got
+    buffer.copy(this.charBuffer, 0, buffer.length - this.charReceived, end);
+    end -= this.charReceived;
+  }
+
+  charStr += buffer.toString(this.encoding, 0, end);
+
+  var end = charStr.length - 1;
+  var charCode = charStr.charCodeAt(end);
+  // CESU-8: lead surrogate (D800-DBFF) is also the incomplete character
+  if (charCode >= 0xD800 && charCode <= 0xDBFF) {
+    var size = this.surrogateSize;
+    this.charLength += size;
+    this.charReceived += size;
+    this.charBuffer.copy(this.charBuffer, size, 0, size);
+    buffer.copy(this.charBuffer, 0, 0, size);
+    return charStr.substring(0, end);
+  }
+
+  // or just emit the charStr
+  return charStr;
+};
+
+// detectIncompleteChar determines if there is an incomplete UTF-8 character at
+// the end of the given buffer. If so, it sets this.charLength to the byte
+// length that character, and sets this.charReceived to the number of bytes
+// that are available for this character.
+StringDecoder.prototype.detectIncompleteChar = function(buffer) {
+  // determine how many bytes we have to check at the end of this buffer
+  var i = (buffer.length >= 3) ? 3 : buffer.length;
+
+  // Figure out if one of the last i bytes of our buffer announces an
+  // incomplete char.
+  for (; i > 0; i--) {
+    var c = buffer[buffer.length - i];
+
+    // See http://en.wikipedia.org/wiki/UTF-8#Description
+
+    // 110XXXXX
+    if (i == 1 && c >> 5 == 0x06) {
+      this.charLength = 2;
+      break;
+    }
+
+    // 1110XXXX
+    if (i <= 2 && c >> 4 == 0x0E) {
+      this.charLength = 3;
+      break;
+    }
+
+    // 11110XXX
+    if (i <= 3 && c >> 3 == 0x1E) {
+      this.charLength = 4;
+      break;
+    }
+  }
+  this.charReceived = i;
+};
+
+StringDecoder.prototype.end = function(buffer) {
+  var res = '';
+  if (buffer && buffer.length)
+    res = this.write(buffer);
+
+  if (this.charReceived) {
+    var cr = this.charReceived;
+    var buf = this.charBuffer;
+    var enc = this.encoding;
+    res += buf.slice(0, cr).toString(enc);
+  }
+
+  return res;
+};
+
+function passThroughWrite(buffer) {
+  return buffer.toString(this.encoding);
+}
+
+function utf16DetectIncompleteChar(buffer) {
+  this.charReceived = buffer.length % 2;
+  this.charLength = this.charReceived ? 2 : 0;
+}
+
+function base64DetectIncompleteChar(buffer) {
+  this.charReceived = buffer.length % 3;
+  this.charLength = this.charReceived ? 3 : 0;
+}
+
+
+/***/ }),
 /* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const UserAgentManager = __webpack_require__(135);
-const RESTMethods = __webpack_require__(132);
-const SequentialRequestHandler = __webpack_require__(134);
-const BurstRequestHandler = __webpack_require__(133);
-const APIRequest = __webpack_require__(131);
+const UserAgentManager = __webpack_require__(136);
+const RESTMethods = __webpack_require__(133);
+const SequentialRequestHandler = __webpack_require__(135);
+const BurstRequestHandler = __webpack_require__(134);
+const APIRequest = __webpack_require__(132);
 const Constants = __webpack_require__(0);
 
 class RESTManager {
@@ -15959,11 +15908,11 @@ module.exports = RequestHandler;
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {const browser = __webpack_require__(23).platform() === 'browser';
-const EventEmitter = __webpack_require__(10);
+const EventEmitter = __webpack_require__(12);
 const zlib = __webpack_require__(27);
 const erlpack = (function findErlpack() {
   try {
-    const e = __webpack_require__(182);
+    const e = __webpack_require__(184);
     if (!e.pack) return null;
     return e;
   } catch (e) {
@@ -15974,9 +15923,9 @@ const erlpack = (function findErlpack() {
 const WebSocket = (function findWebSocket() {
   if (browser) return window.WebSocket; // eslint-disable-line no-undef
   try {
-    return __webpack_require__(183);
+    return __webpack_require__(185);
   } catch (e) {
-    return __webpack_require__(184);
+    return __webpack_require__(186);
   }
 }());
 
@@ -16090,7 +16039,7 @@ module.exports = WebSocketConnection;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
-const EventEmitter = __webpack_require__(10).EventEmitter;
+const EventEmitter = __webpack_require__(12).EventEmitter;
 
 /**
  * Filter to be applied to the collector.
@@ -16271,21 +16220,21 @@ module.exports = Collector;
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {const os = __webpack_require__(23);
-const EventEmitter = __webpack_require__(10).EventEmitter;
+const EventEmitter = __webpack_require__(12).EventEmitter;
 const Constants = __webpack_require__(0);
 const Permissions = __webpack_require__(8);
 const Util = __webpack_require__(4);
 const RESTManager = __webpack_require__(63);
-const ClientDataManager = __webpack_require__(100);
-const ClientManager = __webpack_require__(101);
-const ClientDataResolver = __webpack_require__(39);
-const ClientVoiceManager = __webpack_require__(180);
-const WebSocketManager = __webpack_require__(136);
-const ActionsManager = __webpack_require__(102);
+const ClientDataManager = __webpack_require__(101);
+const ClientManager = __webpack_require__(102);
+const ClientDataResolver = __webpack_require__(37);
+const ClientVoiceManager = __webpack_require__(182);
+const WebSocketManager = __webpack_require__(137);
+const ActionsManager = __webpack_require__(103);
 const Collection = __webpack_require__(3);
-const Presence = __webpack_require__(12).Presence;
-const ShardClientUtil = __webpack_require__(179);
-const VoiceBroadcast = __webpack_require__(181);
+const Presence = __webpack_require__(11).Presence;
+const ShardClientUtil = __webpack_require__(181);
+const VoiceBroadcast = __webpack_require__(183);
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -16824,7 +16773,7 @@ module.exports = Client;
 
 const Webhook = __webpack_require__(30);
 const RESTManager = __webpack_require__(63);
-const ClientDataResolver = __webpack_require__(39);
+const ClientDataResolver = __webpack_require__(37);
 const Constants = __webpack_require__(0);
 const Util = __webpack_require__(4);
 
@@ -16946,7 +16895,7 @@ module.exports = WebhookClient;
 /* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const ClientDataResolver = __webpack_require__(39);
+const ClientDataResolver = __webpack_require__(37);
 
 /**
  * A rich embed to be sent with a message with a fluent interface for creation
@@ -18026,7 +17975,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 }(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(98)(module), __webpack_require__(9)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(99)(module), __webpack_require__(9)))
 
 /***/ }),
 /* 78 */
@@ -18215,11 +18164,43 @@ var objectKeys = Object.keys || function (obj) {
 /* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(13)
+module.exports = __webpack_require__(13);
 
 
 /***/ }),
 /* 81 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+// a passthrough stream.
+// basically just the most minimal sort of Transform stream.
+// Every written chunk gets output as-is.
+
+
+
+module.exports = PassThrough;
+
+var Transform = __webpack_require__(56);
+
+/*<replacement>*/
+var util = __webpack_require__(20);
+util.inherits = __webpack_require__(10);
+/*</replacement>*/
+
+util.inherits(PassThrough, Transform);
+
+function PassThrough(options) {
+  if (!(this instanceof PassThrough)) return new PassThrough(options);
+
+  Transform.call(this, options);
+}
+
+PassThrough.prototype._transform = function (chunk, encoding, cb) {
+  cb(null, chunk);
+};
+
+/***/ }),
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18289,28 +18270,28 @@ BufferList.prototype.concat = function (n) {
 };
 
 /***/ }),
-/* 82 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(57)
-
-
-/***/ }),
 /* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(35)
+module.exports = __webpack_require__(21).PassThrough
 
 
 /***/ }),
 /* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(36)
+module.exports = __webpack_require__(21).Transform
 
 
 /***/ }),
 /* 85 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(35);
+
+
+/***/ }),
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -18503,7 +18484,7 @@ module.exports = __webpack_require__(36)
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(6)))
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -18522,13 +18503,13 @@ module.exports = {
 		]
 	],
 	"_from": "snekfetch@>=3.1.0 <4.0.0",
-	"_id": "snekfetch@3.1.1",
+	"_id": "snekfetch@3.1.2",
 	"_inCache": true,
 	"_location": "/snekfetch",
 	"_nodeVersion": "7.9.0",
 	"_npmOperationalInternal": {
-		"host": "packages-12-west.internal.npmjs.com",
-		"tmp": "tmp/snekfetch-3.1.1.tgz_1492865526415_0.9978627415839583"
+		"host": "packages-18-east.internal.npmjs.com",
+		"tmp": "tmp/snekfetch-3.1.2.tgz_1492882967312_0.8088863184675574"
 	},
 	"_npmUser": {
 		"name": "crawl",
@@ -18548,8 +18529,8 @@ module.exports = {
 	"_requiredBy": [
 		"/"
 	],
-	"_resolved": "https://registry.npmjs.org/snekfetch/-/snekfetch-3.1.1.tgz",
-	"_shasum": "dcfee0d0c64b193e8741db168d86bfb200bb8850",
+	"_resolved": "https://registry.npmjs.org/snekfetch/-/snekfetch-3.1.2.tgz",
+	"_shasum": "3422a9191c1bb6610867db88e669db0b5adb7f42",
 	"_shrinkwrap": null,
 	"_spec": "snekfetch@^3.1.0",
 	"_where": "/home/travis/build/hydrabolt/discord.js",
@@ -18565,10 +18546,10 @@ module.exports = {
 	"devDependencies": {},
 	"directories": {},
 	"dist": {
-		"shasum": "dcfee0d0c64b193e8741db168d86bfb200bb8850",
-		"tarball": "https://registry.npmjs.org/snekfetch/-/snekfetch-3.1.1.tgz"
+		"shasum": "3422a9191c1bb6610867db88e669db0b5adb7f42",
+		"tarball": "https://registry.npmjs.org/snekfetch/-/snekfetch-3.1.2.tgz"
 	},
-	"gitHead": "8a8b2eba604450363bf80e8e0caac97157f15820",
+	"gitHead": "a79f6867d21ca58ffe6fc59eb77b06f257f8ad29",
 	"homepage": "https://github.com/GusCaplan/snekfetch#readme",
 	"license": "MIT",
 	"main": "index.js",
@@ -18590,15 +18571,15 @@ module.exports = {
 		"url": "git+https://github.com/GusCaplan/snekfetch.git"
 	},
 	"scripts": {},
-	"version": "3.1.1"
+	"version": "3.1.2"
 };
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(26);
-const mime = __webpack_require__(89);
+const mime = __webpack_require__(90);
 
 class FormData {
   constructor() {
@@ -18648,18 +18629,18 @@ module.exports = FormData;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer))
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {__webpack_require__(21);
+/* WEBPACK VAR INJECTION */(function(Buffer) {__webpack_require__(58);
 const zlib = __webpack_require__(27);
 const qs = __webpack_require__(34);
 const http = __webpack_require__(59);
 const https = __webpack_require__(75);
-const URL = __webpack_require__(62);
-const Package = __webpack_require__(86);
-const Stream = __webpack_require__(21);
-const FormData = __webpack_require__(87);
+const URL = __webpack_require__(61);
+const Package = __webpack_require__(87);
+const Stream = __webpack_require__(58);
+const FormData = __webpack_require__(88);
 
 class Snekfetch extends Stream.Readable {
   constructor(method, url, opts = { headers: {}, data: null }) {
@@ -18706,7 +18687,7 @@ class Snekfetch extends Stream.Readable {
   send(data) {
     if (this.request.res) throw new Error('Cannot modify data after being sent!');
     if (data !== null && typeof data === 'object') {
-      const header = this.request.getHeader['content-type'];
+      const header = this.request.getHeader('content-type');
       let serialize;
       if (header) {
         if (header.includes('json')) serialize = JSON.stringify;
@@ -18835,7 +18816,7 @@ class Snekfetch extends Stream.Readable {
     );
   }
 
-  read() {
+  _read() {
     this.resume();
     if (this.request.res) return;
     this.catch((err) => this.emit('error', err));
@@ -18858,7 +18839,7 @@ class Snekfetch extends Stream.Readable {
 
   _addFinalHeaders() {
     if (!this.request) return;
-    if (!this.request.getHeader['user-agent']) {
+    if (!this.request.getHeader('user-agent')) {
       this.set('User-Agent', `snekfetch/${Snekfetch.version} (${Package.repository.url.replace(/\.?git/, '')})`);
     }
     if (this.request.method !== 'HEAD') this.set('Accept-Encoding', 'gzip, deflate');
@@ -18887,11 +18868,11 @@ function makeURLFromRequest(request) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer))
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const mimes = __webpack_require__(91);
-const mimeOfBuffer = __webpack_require__(90);
+const mimes = __webpack_require__(92);
+const mimeOfBuffer = __webpack_require__(91);
 
 function lookupMime(ext) {
   return mimes[ext] || mimes.bin;
@@ -18908,7 +18889,7 @@ module.exports = {
 
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports) {
 
 /* eslint complexity: 0 */
@@ -19460,7 +19441,7 @@ module.exports = mimeOfBuffer;
 
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -20514,14 +20495,14 @@ module.exports = {
 };
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer, global, process) {var capability = __webpack_require__(60)
-var inherits = __webpack_require__(11)
-var response = __webpack_require__(93)
-var stream = __webpack_require__(37)
-var toArrayBuffer = __webpack_require__(95)
+var inherits = __webpack_require__(10)
+var response = __webpack_require__(94)
+var stream = __webpack_require__(21)
+var toArrayBuffer = __webpack_require__(96)
 
 var IncomingMessage = response.IncomingMessage
 var rStates = response.readyStates
@@ -20618,7 +20599,7 @@ ClientRequest.prototype._onFinish = function () {
 
 	var headersObj = self._headers
 	var body = null
-	if (opts.method === 'POST' || opts.method === 'PUT' || opts.method === 'PATCH' || opts.method === 'MERGE') {
+	if (opts.method !== 'GET' && opts.method !== 'HEAD') {
 		if (capability.blobConstructor) {
 			body = new global.Blob(self._body.map(function (buffer) {
 				return toArrayBuffer(buffer)
@@ -20631,14 +20612,24 @@ ClientRequest.prototype._onFinish = function () {
 		}
 	}
 
-	if (self._mode === 'fetch') {
-		var headers = Object.keys(headersObj).map(function (name) {
-			return [headersObj[name].name, headersObj[name].value]
-		})
+	// create flattened list of headers
+	var headersList = []
+	Object.keys(headersObj).forEach(function (keyName) {
+		var name = headersObj[keyName].name
+		var value = headersObj[keyName].value
+		if (Array.isArray(value)) {
+			value.forEach(function (v) {
+				headersList.push([name, v])
+			})
+		} else {
+			headersList.push([name, value])
+		}
+	})
 
+	if (self._mode === 'fetch') {
 		global.fetch(self._opts.url, {
 			method: self._opts.method,
-			headers: headers,
+			headers: headersList,
 			body: body || undefined,
 			mode: 'cors',
 			credentials: opts.withCredentials ? 'include' : 'same-origin'
@@ -20676,8 +20667,8 @@ ClientRequest.prototype._onFinish = function () {
 			}
 		}
 
-		Object.keys(headersObj).forEach(function (name) {
-			xhr.setRequestHeader(headersObj[name].name, headersObj[name].value)
+		headersList.forEach(function (header) {
+			xhr.setRequestHeader(header[0], header[1])
 		})
 
 		self._response = null
@@ -20815,12 +20806,12 @@ var unsafeHeaders = [
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer, __webpack_require__(9), __webpack_require__(6)))
 
 /***/ }),
-/* 93 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process, Buffer, global) {var capability = __webpack_require__(60)
-var inherits = __webpack_require__(11)
-var stream = __webpack_require__(37)
+var inherits = __webpack_require__(10)
+var stream = __webpack_require__(21)
 
 var rStates = exports.readyStates = {
 	UNSENT: 0,
@@ -21004,7 +20995,7 @@ IncomingMessage.prototype._onXHRProgress = function () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(5).Buffer, __webpack_require__(9)))
 
 /***/ }),
-/* 94 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var apply = Function.prototype.apply;
@@ -21057,13 +21048,13 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(85);
+__webpack_require__(86);
 exports.setImmediate = setImmediate;
 exports.clearImmediate = clearImmediate;
 
 
 /***/ }),
-/* 95 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(5).Buffer
@@ -21096,7 +21087,7 @@ module.exports = function (buf) {
 
 
 /***/ }),
-/* 96 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21119,7 +21110,7 @@ module.exports = {
 
 
 /***/ }),
-/* 97 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -21193,7 +21184,7 @@ function config (name) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
-/* 98 */
+/* 99 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -21221,7 +21212,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ (function(module, exports) {
 
 module.exports = extend
@@ -21246,17 +21237,17 @@ function extend() {
 
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
 const Util = __webpack_require__(4);
 const Guild = __webpack_require__(24);
 const User = __webpack_require__(16);
-const DMChannel = __webpack_require__(43);
+const DMChannel = __webpack_require__(41);
 const Emoji = __webpack_require__(17);
-const TextChannel = __webpack_require__(54);
-const VoiceChannel = __webpack_require__(55);
+const TextChannel = __webpack_require__(52);
+const VoiceChannel = __webpack_require__(53);
 const GuildChannel = __webpack_require__(25);
 const GroupDMChannel = __webpack_require__(28);
 
@@ -21382,7 +21373,7 @@ module.exports = ClientDataManager;
 
 
 /***/ }),
-/* 101 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -21461,41 +21452,41 @@ module.exports = ClientManager;
 
 
 /***/ }),
-/* 102 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 class ActionsManager {
   constructor(client) {
     this.client = client;
 
-    this.register(__webpack_require__(121));
     this.register(__webpack_require__(122));
     this.register(__webpack_require__(123));
-    this.register(__webpack_require__(127));
     this.register(__webpack_require__(124));
+    this.register(__webpack_require__(128));
     this.register(__webpack_require__(125));
     this.register(__webpack_require__(126));
-    this.register(__webpack_require__(103));
+    this.register(__webpack_require__(127));
     this.register(__webpack_require__(104));
     this.register(__webpack_require__(105));
-    this.register(__webpack_require__(108));
-    this.register(__webpack_require__(120));
-    this.register(__webpack_require__(113));
-    this.register(__webpack_require__(114));
     this.register(__webpack_require__(106));
+    this.register(__webpack_require__(109));
+    this.register(__webpack_require__(121));
+    this.register(__webpack_require__(114));
     this.register(__webpack_require__(115));
+    this.register(__webpack_require__(107));
     this.register(__webpack_require__(116));
     this.register(__webpack_require__(117));
-    this.register(__webpack_require__(128));
-    this.register(__webpack_require__(130));
+    this.register(__webpack_require__(118));
     this.register(__webpack_require__(129));
-    this.register(__webpack_require__(119));
-    this.register(__webpack_require__(109));
+    this.register(__webpack_require__(131));
+    this.register(__webpack_require__(130));
+    this.register(__webpack_require__(120));
     this.register(__webpack_require__(110));
     this.register(__webpack_require__(111));
     this.register(__webpack_require__(112));
-    this.register(__webpack_require__(118));
-    this.register(__webpack_require__(107));
+    this.register(__webpack_require__(113));
+    this.register(__webpack_require__(119));
+    this.register(__webpack_require__(108));
   }
 
   register(Action) {
@@ -21507,7 +21498,7 @@ module.exports = ActionsManager;
 
 
 /***/ }),
-/* 103 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21526,7 +21517,7 @@ module.exports = ChannelCreateAction;
 
 
 /***/ }),
-/* 104 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21563,7 +21554,7 @@ module.exports = ChannelDeleteAction;
 
 
 /***/ }),
-/* 105 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21603,7 +21594,7 @@ module.exports = ChannelUpdateAction;
 
 
 /***/ }),
-/* 106 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21622,7 +21613,7 @@ module.exports = GuildBanRemove;
 
 
 /***/ }),
-/* 107 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21649,7 +21640,7 @@ module.exports = GuildChannelsPositionUpdate;
 
 
 /***/ }),
-/* 108 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21710,7 +21701,7 @@ module.exports = GuildDeleteAction;
 
 
 /***/ }),
-/* 109 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21734,7 +21725,7 @@ module.exports = GuildEmojiCreateAction;
 
 
 /***/ }),
-/* 110 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21758,7 +21749,7 @@ module.exports = GuildEmojiDeleteAction;
 
 
 /***/ }),
-/* 111 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21782,7 +21773,7 @@ module.exports = GuildEmojiUpdateAction;
 
 
 /***/ }),
-/* 112 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21826,7 +21817,7 @@ module.exports = GuildEmojisUpdateAction;
 
 
 /***/ }),
-/* 113 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21844,7 +21835,7 @@ module.exports = GuildMemberGetAction;
 
 
 /***/ }),
-/* 114 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21899,7 +21890,7 @@ module.exports = GuildMemberRemoveAction;
 
 
 /***/ }),
-/* 115 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21938,7 +21929,7 @@ module.exports = GuildRoleCreate;
 
 
 /***/ }),
-/* 116 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -21990,7 +21981,7 @@ module.exports = GuildRoleDeleteAction;
 
 
 /***/ }),
-/* 117 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22037,7 +22028,7 @@ module.exports = GuildRoleUpdateAction;
 
 
 /***/ }),
-/* 118 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22064,7 +22055,7 @@ module.exports = GuildRolesPositionUpdate;
 
 
 /***/ }),
-/* 119 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22099,7 +22090,7 @@ module.exports = GuildSync;
 
 
 /***/ }),
-/* 120 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22139,7 +22130,7 @@ module.exports = GuildUpdateAction;
 
 
 /***/ }),
-/* 121 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22200,7 +22191,7 @@ module.exports = MessageCreateAction;
 
 
 /***/ }),
-/* 122 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22246,7 +22237,7 @@ module.exports = MessageDeleteAction;
 
 
 /***/ }),
-/* 123 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22276,7 +22267,7 @@ module.exports = MessageDeleteBulkAction;
 
 
 /***/ }),
-/* 124 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22325,7 +22316,7 @@ module.exports = MessageReactionAdd;
 
 
 /***/ }),
-/* 125 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22374,7 +22365,7 @@ module.exports = MessageReactionRemove;
 
 
 /***/ }),
-/* 126 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22405,7 +22396,7 @@ module.exports = MessageReactionRemoveAll;
 
 
 /***/ }),
-/* 127 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22451,7 +22442,7 @@ module.exports = MessageUpdateAction;
 
 
 /***/ }),
-/* 128 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22470,7 +22461,7 @@ module.exports = UserGetAction;
 
 
 /***/ }),
-/* 129 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22506,7 +22497,7 @@ module.exports = UserNoteUpdateAction;
 
 
 /***/ }),
-/* 130 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22545,10 +22536,10 @@ module.exports = UserUpdateAction;
 
 
 /***/ }),
-/* 131 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const snekfetch = __webpack_require__(38);
+const snekfetch = __webpack_require__(36);
 const Constants = __webpack_require__(0);
 
 class APIRequest {
@@ -22601,7 +22592,7 @@ module.exports = APIRequest;
 
 
 /***/ }),
-/* 132 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const querystring = __webpack_require__(34);
@@ -22617,14 +22608,14 @@ const User = __webpack_require__(16);
 const GuildMember = __webpack_require__(18);
 const Message = __webpack_require__(19);
 const Role = __webpack_require__(15);
-const Invite = __webpack_require__(44);
+const Invite = __webpack_require__(42);
 const Webhook = __webpack_require__(30);
-const UserProfile = __webpack_require__(176);
-const OAuth2Application = __webpack_require__(50);
+const UserProfile = __webpack_require__(178);
+const OAuth2Application = __webpack_require__(48);
 const Channel = __webpack_require__(14);
 const GroupDMChannel = __webpack_require__(28);
 const Guild = __webpack_require__(24);
-const VoiceRegion = __webpack_require__(177);
+const VoiceRegion = __webpack_require__(179);
 
 class RESTMethods {
   constructor(restManager) {
@@ -23485,7 +23476,7 @@ module.exports = RESTMethods;
 
 
 /***/ }),
-/* 133 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const RequestHandler = __webpack_require__(64);
@@ -23555,7 +23546,7 @@ module.exports = BurstRequestHandler;
 
 
 /***/ }),
-/* 134 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const RequestHandler = __webpack_require__(64);
@@ -23658,7 +23649,7 @@ module.exports = SequentialRequestHandler;
 
 
 /***/ }),
-/* 135 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {const Constants = __webpack_require__(0);
@@ -23690,12 +23681,12 @@ module.exports = UserAgentManager;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
-/* 136 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const EventEmitter = __webpack_require__(10).EventEmitter;
+const EventEmitter = __webpack_require__(12).EventEmitter;
 const Constants = __webpack_require__(0);
-const PacketManager = __webpack_require__(137);
+const PacketManager = __webpack_require__(138);
 const WebSocketConnection = __webpack_require__(65);
 
 /**
@@ -24023,7 +24014,7 @@ module.exports = WebSocketManager;
 
 
 /***/ }),
-/* 137 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -24043,42 +24034,42 @@ class WebSocketPacketManager {
     this.handlers = {};
     this.queue = [];
 
-    this.register(Constants.WSEvents.READY, __webpack_require__(164));
-    this.register(Constants.WSEvents.RESUMED, __webpack_require__(167));
-    this.register(Constants.WSEvents.GUILD_CREATE, __webpack_require__(144));
-    this.register(Constants.WSEvents.GUILD_DELETE, __webpack_require__(145));
-    this.register(Constants.WSEvents.GUILD_UPDATE, __webpack_require__(155));
-    this.register(Constants.WSEvents.GUILD_BAN_ADD, __webpack_require__(142));
-    this.register(Constants.WSEvents.GUILD_BAN_REMOVE, __webpack_require__(143));
-    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, __webpack_require__(147));
-    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, __webpack_require__(148));
-    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, __webpack_require__(149));
-    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, __webpack_require__(151));
-    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, __webpack_require__(152));
-    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, __webpack_require__(153));
-    this.register(Constants.WSEvents.GUILD_EMOJIS_UPDATE, __webpack_require__(146));
-    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, __webpack_require__(150));
-    this.register(Constants.WSEvents.CHANNEL_CREATE, __webpack_require__(138));
-    this.register(Constants.WSEvents.CHANNEL_DELETE, __webpack_require__(139));
-    this.register(Constants.WSEvents.CHANNEL_UPDATE, __webpack_require__(141));
-    this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, __webpack_require__(140));
-    this.register(Constants.WSEvents.PRESENCE_UPDATE, __webpack_require__(163));
-    this.register(Constants.WSEvents.USER_UPDATE, __webpack_require__(171));
-    this.register(Constants.WSEvents.USER_NOTE_UPDATE, __webpack_require__(169));
-    this.register(Constants.WSEvents.USER_SETTINGS_UPDATE, __webpack_require__(170));
-    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, __webpack_require__(173));
-    this.register(Constants.WSEvents.TYPING_START, __webpack_require__(168));
-    this.register(Constants.WSEvents.MESSAGE_CREATE, __webpack_require__(156));
-    this.register(Constants.WSEvents.MESSAGE_DELETE, __webpack_require__(157));
-    this.register(Constants.WSEvents.MESSAGE_UPDATE, __webpack_require__(162));
-    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, __webpack_require__(158));
-    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, __webpack_require__(172));
-    this.register(Constants.WSEvents.GUILD_SYNC, __webpack_require__(154));
-    this.register(Constants.WSEvents.RELATIONSHIP_ADD, __webpack_require__(165));
-    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, __webpack_require__(166));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, __webpack_require__(159));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, __webpack_require__(160));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, __webpack_require__(161));
+    this.register(Constants.WSEvents.READY, __webpack_require__(165));
+    this.register(Constants.WSEvents.RESUMED, __webpack_require__(168));
+    this.register(Constants.WSEvents.GUILD_CREATE, __webpack_require__(145));
+    this.register(Constants.WSEvents.GUILD_DELETE, __webpack_require__(146));
+    this.register(Constants.WSEvents.GUILD_UPDATE, __webpack_require__(156));
+    this.register(Constants.WSEvents.GUILD_BAN_ADD, __webpack_require__(143));
+    this.register(Constants.WSEvents.GUILD_BAN_REMOVE, __webpack_require__(144));
+    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, __webpack_require__(148));
+    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, __webpack_require__(149));
+    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, __webpack_require__(150));
+    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, __webpack_require__(152));
+    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, __webpack_require__(153));
+    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, __webpack_require__(154));
+    this.register(Constants.WSEvents.GUILD_EMOJIS_UPDATE, __webpack_require__(147));
+    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, __webpack_require__(151));
+    this.register(Constants.WSEvents.CHANNEL_CREATE, __webpack_require__(139));
+    this.register(Constants.WSEvents.CHANNEL_DELETE, __webpack_require__(140));
+    this.register(Constants.WSEvents.CHANNEL_UPDATE, __webpack_require__(142));
+    this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, __webpack_require__(141));
+    this.register(Constants.WSEvents.PRESENCE_UPDATE, __webpack_require__(164));
+    this.register(Constants.WSEvents.USER_UPDATE, __webpack_require__(172));
+    this.register(Constants.WSEvents.USER_NOTE_UPDATE, __webpack_require__(170));
+    this.register(Constants.WSEvents.USER_SETTINGS_UPDATE, __webpack_require__(171));
+    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, __webpack_require__(174));
+    this.register(Constants.WSEvents.TYPING_START, __webpack_require__(169));
+    this.register(Constants.WSEvents.MESSAGE_CREATE, __webpack_require__(157));
+    this.register(Constants.WSEvents.MESSAGE_DELETE, __webpack_require__(158));
+    this.register(Constants.WSEvents.MESSAGE_UPDATE, __webpack_require__(163));
+    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, __webpack_require__(159));
+    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, __webpack_require__(173));
+    this.register(Constants.WSEvents.GUILD_SYNC, __webpack_require__(155));
+    this.register(Constants.WSEvents.RELATIONSHIP_ADD, __webpack_require__(166));
+    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, __webpack_require__(167));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, __webpack_require__(160));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, __webpack_require__(161));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, __webpack_require__(162));
   }
 
   get client() {
@@ -24157,7 +24148,7 @@ module.exports = WebSocketPacketManager;
 
 
 /***/ }),
-/* 138 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24180,7 +24171,7 @@ module.exports = ChannelCreateHandler;
 
 
 /***/ }),
-/* 139 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24206,7 +24197,7 @@ module.exports = ChannelDeleteHandler;
 
 
 /***/ }),
-/* 140 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24243,7 +24234,7 @@ module.exports = ChannelPinsUpdate;
 
 
 /***/ }),
-/* 141 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24260,7 +24251,7 @@ module.exports = ChannelUpdateHandler;
 
 
 /***/ }),
-/* 142 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -24289,7 +24280,7 @@ module.exports = GuildBanAddHandler;
 
 
 /***/ }),
-/* 143 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -24315,7 +24306,7 @@ module.exports = GuildBanRemoveHandler;
 
 
 /***/ }),
-/* 144 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24343,7 +24334,7 @@ module.exports = GuildCreateHandler;
 
 
 /***/ }),
-/* 145 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24368,7 +24359,7 @@ module.exports = GuildDeleteHandler;
 
 
 /***/ }),
-/* 146 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24385,7 +24376,7 @@ module.exports = GuildEmojisUpdate;
 
 
 /***/ }),
-/* 147 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -24408,7 +24399,7 @@ module.exports = GuildMemberAddHandler;
 
 
 /***/ }),
-/* 148 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -24427,7 +24418,7 @@ module.exports = GuildMemberRemoveHandler;
 
 
 /***/ }),
-/* 149 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -24451,7 +24442,7 @@ module.exports = GuildMemberUpdateHandler;
 
 
 /***/ }),
-/* 150 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24490,7 +24481,7 @@ module.exports = GuildMembersChunkHandler;
 
 
 /***/ }),
-/* 151 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24507,7 +24498,7 @@ module.exports = GuildRoleCreateHandler;
 
 
 /***/ }),
-/* 152 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24524,7 +24515,7 @@ module.exports = GuildRoleDeleteHandler;
 
 
 /***/ }),
-/* 153 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24541,7 +24532,7 @@ module.exports = GuildRoleUpdateHandler;
 
 
 /***/ }),
-/* 154 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24558,7 +24549,7 @@ module.exports = GuildSyncHandler;
 
 
 /***/ }),
-/* 155 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24575,7 +24566,7 @@ module.exports = GuildUpdateHandler;
 
 
 /***/ }),
-/* 156 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24600,7 +24591,7 @@ module.exports = MessageCreateHandler;
 
 
 /***/ }),
-/* 157 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24625,7 +24616,7 @@ module.exports = MessageDeleteHandler;
 
 
 /***/ }),
-/* 158 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24648,7 +24639,7 @@ module.exports = MessageDeleteBulkHandler;
 
 
 /***/ }),
-/* 159 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24665,7 +24656,7 @@ module.exports = MessageReactionAddHandler;
 
 
 /***/ }),
-/* 160 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24682,7 +24673,7 @@ module.exports = MessageReactionRemove;
 
 
 /***/ }),
-/* 161 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24699,7 +24690,7 @@ module.exports = MessageReactionRemoveAll;
 
 
 /***/ }),
-/* 162 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24716,7 +24707,7 @@ module.exports = MessageUpdateHandler;
 
 
 /***/ }),
-/* 163 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24798,12 +24789,12 @@ module.exports = PresenceUpdateHandler;
 
 
 /***/ }),
-/* 164 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
 
-const ClientUser = __webpack_require__(41);
+const ClientUser = __webpack_require__(39);
 
 class ReadyHandler extends AbstractHandler {
   handle(packet) {
@@ -24879,7 +24870,7 @@ module.exports = ReadyHandler;
 
 
 /***/ }),
-/* 165 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24904,7 +24895,7 @@ module.exports = RelationshipAddHandler;
 
 
 /***/ }),
-/* 166 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24929,7 +24920,7 @@ module.exports = RelationshipRemoveHandler;
 
 
 /***/ }),
-/* 167 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24961,7 +24952,7 @@ module.exports = ResumedHandler;
 
 
 /***/ }),
-/* 168 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -25035,7 +25026,7 @@ module.exports = TypingStartHandler;
 
 
 /***/ }),
-/* 169 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -25053,7 +25044,7 @@ module.exports = UserNoteUpdateHandler;
 
 
 /***/ }),
-/* 170 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -25077,7 +25068,7 @@ module.exports = UserSettingsUpdateHandler;
 
 
 /***/ }),
-/* 171 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -25094,7 +25085,7 @@ module.exports = UserUpdateHandler;
 
 
 /***/ }),
-/* 172 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -25119,7 +25110,7 @@ module.exports = VoiceServerUpdate;
 
 
 /***/ }),
-/* 173 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -25174,7 +25165,72 @@ module.exports = VoiceStateUpdateHandler;
 
 
 /***/ }),
-/* 174 */
+/* 175 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Util = __webpack_require__(4);
+
+module.exports = {
+  // "Root" classes (starting points)
+  Client: __webpack_require__(67),
+  Shard: __webpack_require__(70),
+  ShardClientUtil: __webpack_require__(71),
+  ShardingManager: __webpack_require__(72),
+  WebhookClient: __webpack_require__(68),
+
+  // Utilities
+  Collection: __webpack_require__(3),
+  Constants: __webpack_require__(0),
+  EvaluatedPermissions: __webpack_require__(8),
+  Permissions: __webpack_require__(8),
+  Snowflake: __webpack_require__(7),
+  SnowflakeUtil: __webpack_require__(7),
+  Util: Util,
+  util: Util,
+  version: __webpack_require__(38).version,
+
+  // Shortcuts to Util methods
+  escapeMarkdown: Util.escapeMarkdown,
+  fetchRecommendedShards: Util.fetchRecommendedShards,
+  splitMessage: Util.splitMessage,
+
+  // Structures
+  Channel: __webpack_require__(14),
+  ClientUser: __webpack_require__(39),
+  ClientUserSettings: __webpack_require__(40),
+  DMChannel: __webpack_require__(41),
+  Emoji: __webpack_require__(17),
+  Game: __webpack_require__(11).Game,
+  GroupDMChannel: __webpack_require__(28),
+  Guild: __webpack_require__(24),
+  GuildChannel: __webpack_require__(25),
+  GuildMember: __webpack_require__(18),
+  Invite: __webpack_require__(42),
+  Message: __webpack_require__(19),
+  MessageAttachment: __webpack_require__(43),
+  MessageCollector: __webpack_require__(44),
+  MessageEmbed: __webpack_require__(45),
+  MessageMentions: __webpack_require__(46),
+  MessageReaction: __webpack_require__(47),
+  OAuth2Application: __webpack_require__(48),
+  PartialGuild: __webpack_require__(49),
+  PartialGuildChannel: __webpack_require__(50),
+  PermissionOverwrites: __webpack_require__(51),
+  Presence: __webpack_require__(11).Presence,
+  ReactionEmoji: __webpack_require__(29),
+  RichEmbed: __webpack_require__(69),
+  Role: __webpack_require__(15),
+  TextChannel: __webpack_require__(52),
+  User: __webpack_require__(16),
+  VoiceChannel: __webpack_require__(53),
+  Webhook: __webpack_require__(30),
+};
+
+if (__webpack_require__(23).platform() === 'browser') window.Discord = module.exports; // eslint-disable-line no-undef
+
+
+/***/ }),
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collector = __webpack_require__(66);
@@ -25247,7 +25303,7 @@ module.exports = ReactionCollector;
 
 
 /***/ }),
-/* 175 */
+/* 177 */
 /***/ (function(module, exports) {
 
 /**
@@ -25301,11 +25357,11 @@ module.exports = UserConnection;
 
 
 /***/ }),
-/* 176 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
-const UserConnection = __webpack_require__(175);
+const UserConnection = __webpack_require__(177);
 
 /**
  * Represents a user's profile on Discord.
@@ -25369,7 +25425,7 @@ module.exports = UserProfile;
 
 
 /***/ }),
-/* 177 */
+/* 179 */
 /***/ (function(module, exports) {
 
 /**
@@ -25425,18 +25481,6 @@ module.exports = VoiceRegion;
 
 
 /***/ }),
-/* 178 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
-/* 179 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
 /* 180 */
 /***/ (function(module, exports) {
 
@@ -25468,68 +25512,15 @@ module.exports = VoiceRegion;
 
 /***/ }),
 /* 185 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-const Util = __webpack_require__(4);
+/* (ignored) */
 
-module.exports = {
-  // "Root" classes (starting points)
-  Client: __webpack_require__(67),
-  Shard: __webpack_require__(70),
-  ShardClientUtil: __webpack_require__(71),
-  ShardingManager: __webpack_require__(72),
-  WebhookClient: __webpack_require__(68),
+/***/ }),
+/* 186 */
+/***/ (function(module, exports) {
 
-  // Utilities
-  Collection: __webpack_require__(3),
-  Constants: __webpack_require__(0),
-  EvaluatedPermissions: __webpack_require__(8),
-  Permissions: __webpack_require__(8),
-  Snowflake: __webpack_require__(7),
-  SnowflakeUtil: __webpack_require__(7),
-  Util: Util,
-  util: Util,
-  version: __webpack_require__(40).version,
-
-  // Shortcuts to Util methods
-  escapeMarkdown: Util.escapeMarkdown,
-  fetchRecommendedShards: Util.fetchRecommendedShards,
-  splitMessage: Util.splitMessage,
-
-  // Structures
-  Channel: __webpack_require__(14),
-  ClientUser: __webpack_require__(41),
-  ClientUserSettings: __webpack_require__(42),
-  DMChannel: __webpack_require__(43),
-  Emoji: __webpack_require__(17),
-  Game: __webpack_require__(12).Game,
-  GroupDMChannel: __webpack_require__(28),
-  Guild: __webpack_require__(24),
-  GuildChannel: __webpack_require__(25),
-  GuildMember: __webpack_require__(18),
-  Invite: __webpack_require__(44),
-  Message: __webpack_require__(19),
-  MessageAttachment: __webpack_require__(45),
-  MessageCollector: __webpack_require__(46),
-  MessageEmbed: __webpack_require__(47),
-  MessageMentions: __webpack_require__(48),
-  MessageReaction: __webpack_require__(49),
-  OAuth2Application: __webpack_require__(50),
-  PartialGuild: __webpack_require__(51),
-  PartialGuildChannel: __webpack_require__(52),
-  PermissionOverwrites: __webpack_require__(53),
-  Presence: __webpack_require__(12).Presence,
-  ReactionEmoji: __webpack_require__(29),
-  RichEmbed: __webpack_require__(69),
-  Role: __webpack_require__(15),
-  TextChannel: __webpack_require__(54),
-  User: __webpack_require__(16),
-  VoiceChannel: __webpack_require__(55),
-  Webhook: __webpack_require__(30),
-};
-
-if (__webpack_require__(23).platform() === 'browser') window.Discord = module.exports; // eslint-disable-line no-undef
-
+/* (ignored) */
 
 /***/ })
 /******/ ]);
