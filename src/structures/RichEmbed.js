@@ -196,6 +196,7 @@ class RichEmbed {
     if (!name) name = this.fields[index].name;
     if (!value) value = this.fields[index].value;
     if (typeof inline === 'undefined') inline = this.fields[index].inline;
+    this._isValidField(name, value, inline);
     this.fields[index] = { name, value, inline };
     return this;
   }
