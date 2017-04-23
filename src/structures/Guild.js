@@ -375,6 +375,14 @@ class Guild {
   }
 
   /**
+   * Fetch audit logs for this guild
+   * @returns {Promise<GuildAuditLogs>}
+   */
+  fetchAuditLogs() {
+    return this.client.rest.methods.fetchAuditLogs(this);
+  }
+
+  /**
    * Adds a user to the guild using OAuth2. Requires the `CREATE_INSTANT_INVITE` permission.
    * @param {UserResolvable} user User to add to the guild
    * @param {Object} options Options for the addition
