@@ -7175,7 +7175,7 @@ class Guild {
     return this.client.user.settings.guildPositions.indexOf(this.id);
   }
 
-  /*
+  /**
    * The `@everyone` Role of the guild.
    * @type {Role}
    * @readonly
