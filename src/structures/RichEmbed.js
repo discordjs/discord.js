@@ -171,7 +171,16 @@ class RichEmbed {
     this.fields.push({ name, value, inline });
     return this;
   }
-  
+
+  /**
+   * Convenience function for `<RichEmbed>.addField('\u200B', '\u200B', inline)`.
+   * @param {boolean} [inline=false] Set the field to display inline
+   * @returns {RichEmbed} This embed
+   */
+  addBlankField(inline = false) {
+    return this.addField('\u200B', '\u200B', inline);
+  }
+
   /**
    * Changes properties of a field at a specified index, parameters can be made
    * `null` or `undefined` to inherit properties of the field being changed
@@ -192,15 +201,6 @@ class RichEmbed {
     this._validateField({ name, value, inline });
     this.fields[index] = { name, value, inline };
     return this;
-  }
-
-  /**
-   * Convenience function for `<RichEmbed>.addField('\u200B', '\u200B', inline)`.
-   * @param {boolean} [inline=false] Set the field to display inline
-   * @returns {RichEmbed} This embed
-   */
-  addBlankField(inline = false) {
-    return this.addField('\u200B', '\u200B', inline);
   }
 
   /**
