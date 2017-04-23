@@ -140,6 +140,23 @@ class RichEmbed {
   }
 
   /**
+   * Validates a field before it is added
+   * @param {StringResolvable} name The name of the field
+   * @param {StringResolvable} value The value of the field
+   * @param {boolean} inline Set the field to display inline
+   * @returns {boolean} validity of the field
+   * @private
+   */
+  _validateField({ name, value, inline }) {
+    if (name.length > 256) throw new RangeError('RichEmbed field names may not exceed 256 characters.');
+    if (!/\S/.test(name)) throw new RangeError('RichEmbed field names may not be empty.');
+    if (value.length > 1024) throw new RangeError('RichEmbed field values may not exceed 1024 characters.');
+    if (!/\S/.test(value)) throw new RangeError('RichEmbed field values may not be empty.');
+    if (typeof inline !== 'boolean') throw new TypeError('Richembed field inline must be a boolean');
+    return true;
+  }
+
+  /**
    * Adds a field to the embed (max 25)
    * @param {StringResolvable} name The name of the field
    * @param {StringResolvable} value The value of the field
@@ -149,12 +166,31 @@ class RichEmbed {
   addField(name, value, inline = false) {
     if (this.fields.length >= 25) throw new RangeError('RichEmbeds may not exceed 25 fields.');
     name = resolveString(name);
-    if (name.length > 256) throw new RangeError('RichEmbed field names may not exceed 256 characters.');
-    if (!/\S/.test(name)) throw new RangeError('RichEmbed field names may not be empty.');
     value = resolveString(value);
-    if (value.length > 1024) throw new RangeError('RichEmbed field values may not exceed 1024 characters.');
-    if (!/\S/.test(value)) throw new RangeError('RichEmbed field values may not be empty.');
+    this._validateField({ name, value, inline });
     this.fields.push({ name, value, inline });
+    return this;
+  }
+  
+  /**
+   * Changes properties of a field at a specified index, parameters can be made
+   * `null` or `undefined` to inherit properties of the field being changed
+   * @param {number} index The index number of the field, starting from 0
+   * @param {string} name The new name of the field
+   * @param {string} value The new value of the field
+   * @param {boolean} inline The new inline value of the field
+   * @returns {RichEmbed} This embed
+   */
+  setField(index, name, value, inline) {
+    if (typeof index !== 'number') throw new TypeError('Field index must be a number');
+    if (!this.fields[index]) throw new RangeError('No field exists at specified index');
+    if (name == null) name = this.fields[index].name;
+    if (value == null) value = this.fields[index].value;
+    if (inline == null) inline = this.fields[index].inline;
+    name = resolveString(name);
+    value = resolveString(value);
+    this._validateField({ name, value, inline });
+    this.fields[index] = { name, value, inline };
     return this;
   }
 
