@@ -539,7 +539,7 @@ exports.UserSettingsMap = {
   /**
    * The theme of the client. Either `light` or `dark`
    * @name ClientUserSettings#theme
-   * @type {String}
+   * @type {string}
    */
   theme: 'theme',
 
