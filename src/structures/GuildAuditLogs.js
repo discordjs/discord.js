@@ -43,10 +43,20 @@ class GuildAuditLogs {
     if (data.channels) for (const channel of data.channels) this.guild.client.manager.newChannel(channel, guild);
 
     this.entries = [];
-    for (const entry of data.audit_log_entries) {
-      // AAA { target_id: Snowflake, user_id: ?Snowflake, channel_id: ?Snowflake, id: Snowflake, action_type: Int }
-      this.createEntry(entry);
-    }
+    for (const entry of data.audit_log_entries) this.createEntry(entry);
+  }
+
+  createEntry(entry) {
+    const type = this.constructor.rootType(entry.action_type);
+    const newEntry = {
+      type,
+      method: this.constructor.rootMethod(entry.action_type),
+      target: this.guild[`${type.toLowerCase()}s`].get(entry.target_id),
+      user: client.users.get(entry.user_id),
+      changes: entry.changes ? entry.changes.map(c => ({ name: c.key, old: c.old_value, ['new']: c.new_value })) : null,
+      id: entry.id,
+    };
+    this.entries.push(newEntry);
   }
 
   static rootType(type) {
