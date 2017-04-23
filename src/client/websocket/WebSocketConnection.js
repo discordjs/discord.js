@@ -42,6 +42,33 @@ class WebSocketConnection extends EventEmitter {
     this.connect(gateway);
   }
 
+  triggerReady() {
+    if (this.status === Constants.Status.READY) return this.debug('Tried to mark self as ready, but already ready');
+    this.status = Constants.Status.READY;
+    this.client.emit(Constants.Events.READY);
+    return this.packetManager.handleQueue();
+  }
+
+  checkIfReady() {
+    if (this.status === Constants.Status.READY || this.status === Constants.Status.NEARLY) return;
+    let unavailableGuilds = 0;
+    for (const guild of this.client.guilds.values()) {
+      unavailableGuilds += guild.available ? 0 : 1;
+    }
+    if (unavailableGuilds === 0) {
+      this.status = Constants.Status.NEARLY;
+      if (!this.client.options.fetchAllMembers) return this.triggerReady();
+      // Fetch all members before marking self as ready
+      const promises = this.client.guilds.map(g => g.fetchMembers());
+      Promise.all(promises)
+        .then(this.triggerReady.apply(this))
+        .catch(e => {
+          this.debug(`Failed to fetch all members before ready! ${e}`);
+          this.triggerReady();
+        });
+    }
+  }
+
   // Util
   debug(message) {
     if (message instanceof Error) message = message.stack;
@@ -130,11 +157,11 @@ class WebSocketConnection extends EventEmitter {
   }
 
   onError(error) {
-
+    this.debug(error);
   }
 
   onClose(event) {
-
+    this.debug(`Closed: ${event.code}`);
   }
 
   // Heartbeat
@@ -145,7 +172,7 @@ class WebSocketConnection extends EventEmitter {
         this.client.clearInterval(this.heartbeatInterval);
       } else {
         this.debug(`Setting a heartbeat interval for ${time}ms`);
-        this.heartbeatInterval = this.client.setInterval(this.heartbeat.apply(this), time);
+        this.heartbeatInterval = this.client.setInterval(() => this.heartbeat(), time);
       }
       return;
     }
