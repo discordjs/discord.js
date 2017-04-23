@@ -50,13 +50,14 @@ class GuildAuditLogs {
   }
 
   createEntry(entry) {
-    const type = this.constructor.rootType(entry.action_type);
+    const root = this.constructor.rootType(entry.action_type);
     const newEntry = {
-      type,
+      root,
+      type: Object.keys(Actions).find(k => Actions[k] === entry.action_type),
       method: this.constructor.rootMethod(entry.action_type),
-      target: type === 'USER' ?
+      target: root === 'USER' ?
         this.guild.client.users.get(entry.target_id) :
-        this.guild[`${type.toLowerCase()}s`].get(entry.target_id),
+        this.guild[`${root.toLowerCase()}s`].get(entry.target_id),
       user: this.guild.client.users.get(entry.user_id),
       changes: entry.changes ? entry.changes.map(c => ({ name: c.key, old: c.old_value, ['new']: c.new_value })) : null,
       id: entry.id,
