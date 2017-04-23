@@ -379,7 +379,7 @@ class Guild {
    * @returns {Promise<GuildAuditLogs>}
    */
   fetchAuditLogs() {
-    return this.client.rest.methods.fetchAuditLogs(this);
+    return this.client.rest.methods.getGuildAuditLogs(this);
   }
 
   /**

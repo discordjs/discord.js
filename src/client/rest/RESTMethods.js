@@ -19,6 +19,7 @@ const Channel = require('../../structures/Channel');
 const GroupDMChannel = require('../../structures/GroupDMChannel');
 const Guild = require('../../structures/Guild');
 const VoiceRegion = require('../../structures/VoiceRegion');
+const GuildAuditLogs = require('../../structures/GuildAuditLogs');
 
 class RESTMethods {
   constructor(restManager) {
@@ -669,6 +670,12 @@ class RESTMethods {
   deleteEmoji(emoji) {
     return this.rest.makeRequest('delete', Endpoints.Guild(emoji.guild).Emoji(emoji.id), true)
       .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);
+  }
+
+  getGuildAuditLogs(guild) {
+    return this.rest.makeRequest('get', Endpoints.Guild(guild).auditLogs, true).then(data =>
+      new GuildAuditLogs(guild, data)
+    );
   }
 
   getWebhook(id, token) {
