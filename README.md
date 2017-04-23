@@ -66,8 +66,6 @@ client.on('message', message => {
 client.login('your token');
 ```
 
-A bot template using discord.js can be generated using [generator-discordbot](https://www.npmjs.com/package/generator-discordbot).
-
 ## Links
 * [Website](https://discord.js.org/) ([source](https://github.com/hydrabolt/discord.js-site))
 * [Documentation](https://discord.js.org/#/docs)
