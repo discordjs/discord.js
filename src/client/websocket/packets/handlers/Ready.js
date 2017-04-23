@@ -59,9 +59,11 @@ class ReadyHandler extends AbstractHandler {
       });
     }
 
-    client.setTimeout(() => {
-      if (!client.ws.normalReady) client.ws._emitReady(false);
+    const t = client.setTimeout(() => {
+      client.ws.connection.triggerReady();
     }, 1200 * data.guilds.length);
+
+    client.once('ready', () => client.clearTimeout(t));
 
     const ws = this.packetManager.ws;
 
