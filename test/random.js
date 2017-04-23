@@ -18,6 +18,8 @@ client.on('userUpdate', (o, n) => {
   console.log(o.username, n.username);
 });
 
+client.on('debug', console.log);
+
 client.on('emojiCreate', e => console.log('create!!', e.name));
 client.on('emojiDelete', e => console.log('delete!!', e.name));
 client.on('emojiUpdate', (o, n) => console.log('update!!', o.name, n.name));

@@ -27,6 +27,39 @@ class WebSocketManager extends EventEmitter {
      * @type {number}
      */
     this.status = Constants.Status.IDLE;
+
+    /**
+     * The WebSocket connection of this manager
+     * @type {?WebSocketConnection}
+     */
+    this.connection = null;
+  }
+
+  heartbeat() {
+    if (!this.connection) return this.debug('No connection to heartbeat');
+    return this.connection.heartbeat();
+  }
+
+  debug(message) {
+    return this.client.emit('debug', `[ws] ${message}`);
+  }
+
+  connect(gateway) {
+    if (!this.connection) {
+      this.connection = new WebSocketConnection(this, gateway);
+      return true;
+    }
+    switch (this.connection.status) {
+      case Constants.Status.IDLE:
+        this.connection.connect(gateway, 5500);
+        return true;
+      case Constants.Status.DISCONNECTED:
+        this.connection.connect(gateway, 5500);
+        return true;
+      default:
+        this.debug(`Couldn't connect to ${gateway} as the websocket is at state ${this.connection.status}`);
+        return false;
+    }
   }
 }
 

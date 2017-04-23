@@ -10,8 +10,8 @@ const BeforeReadyWhitelist = [
 ];
 
 class WebSocketPacketManager {
-  constructor(websocketManager) {
-    this.ws = websocketManager;
+  constructor(connection) {
+    this.ws = connection;
     this.handlers = {};
     this.queue = [];
 
@@ -68,30 +68,7 @@ class WebSocketPacketManager {
     });
   }
 
-  setSequence(s) {
-    if (s && s > this.ws.sequence) this.ws.sequence = s;
-  }
-
   handle(packet) {
-    if (packet.op === Constants.OPCodes.RECONNECT) {
-      this.setSequence(packet.s);
-      this.ws.tryReconnect();
-      return false;
-    }
-
-    if (packet.op === Constants.OPCodes.INVALID_SESSION) {
-      this.client.emit('debug', `SESSION INVALID! Waiting to reconnect: ${packet.d}`);
-      if (packet.d) {
-        setTimeout(() => {
-          this.ws._sendResume();
-        }, 2500);
-      } else {
-        this.ws.sessionID = null;
-        this.ws._sendNewIdentify();
-      }
-      return false;
-    }
-
     if (packet.op === Constants.OPCodes.HEARTBEAT_ACK) {
       this.ws.client._pong(this.ws.client._pingTimestamp);
       this.ws.lastHeartbeatAck = true;
@@ -109,9 +86,9 @@ class WebSocketPacketManager {
       this.ws.checkIfReady();
     }
 
-    this.setSequence(packet.s);
+    this.ws.setSequence(packet.s);
 
-    if (this.ws.disabledEvents[packet.t] !== undefined) return false;
+    // #if (this.ws.disabledEvents[packet.t] !== undefined) return false;
 
     if (this.ws.status !== Constants.Status.READY) {
       if (BeforeReadyWhitelist.indexOf(packet.t) === -1) {

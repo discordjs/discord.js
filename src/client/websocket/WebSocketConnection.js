@@ -2,6 +2,7 @@ const browser = require('os').platform() === 'browser';
 const EventEmitter = require('events');
 const Constants = require('../../util/Constants');
 const zlib = require('zlib');
+const PacketManager = require('./packets/WebSocketPacketManager');
 const erlpack = (function findErlpack() {
   try {
     const e = require('erlpack');
@@ -35,10 +36,15 @@ class WebSocketConnection extends EventEmitter {
     this.manager = manager;
     this.client = manager.client;
     this.ws = null;
+    this.sequence = -1;
+    this.status = Constants.Status.IDLE;
+    this.packetManager = new PacketManager(this);
     this.connect(gateway);
   }
 
+  // Util
   debug(message) {
+    if (message instanceof Error) message = message.stack;
     return this.manager.debug(`[connection] ${message}`);
   }
 
@@ -47,16 +53,24 @@ class WebSocketConnection extends EventEmitter {
       if (data instanceof ArrayBuffer) data = Buffer.from(new Uint8Array(data));
       return erlpack.unpack(data);
     } else if (data instanceof ArrayBuffer || data instanceof Buffer) {
-      return zlib.inflateSync(data).toString();
+      data = zlib.inflateSync(data).toString();
     }
-    throw new Error('Failed to unpack');
+    return JSON.parse(data);
   }
 
   pack(data) {
     return erlpack ? erlpack.pack(data) : JSON.stringify(data);
   }
 
-  connect(gateway) {
+  send(data) {
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+      return this.debug(`Tried to send packet ${data} but no WebSocket is available!`);
+    }
+    return this.ws.send(this.pack(data));
+  }
+
+  connect(gateway, after = 0) {
+    if (after) return this.client.setTimeout(this.connect.apply(this, gateway), after); // eslint-disable-line
     if (this.ws) return this.debug('WebSocket connection already exists');
     if (typeof gateway !== 'string') return this.debug(`Tried to connect to an invalid gateway: ${gateway}`);
 
@@ -68,13 +82,13 @@ class WebSocketConnection extends EventEmitter {
     ws.onopen = this.onOpen.bind(this);
     ws.onerror = this.onError.bind(this);
     ws.onclose = this.onClose.bind(this);
-
+    this.status = Constants.Status.CONNECTING;
     return true;
   }
 
   onMessage(event) {
     try {
-      this.emit('packet', this.unpack(event.data));
+      this.onPacket(this.unpack(event.data));
       return true;
     } catch (err) {
       this.debug(err);
@@ -82,7 +96,35 @@ class WebSocketConnection extends EventEmitter {
     }
   }
 
+  setSequence(s) {
+    this.sequence = s > this.sequence ? s : this.sequence;
+  }
+
+  onPacket(packet) {
+    if (!packet) return this.debug('Received null packet');
+    this.client.emit('raw', packet);
+    switch (packet.op) {
+      case Constants.OPCodes.HELLO:
+        return this.heartbeat(packet.d.heartbeat_interval);
+      case Constants.OPCodes.RECONNECT:
+        return this.reconnect();
+      case Constants.OPCodes.INVALID_SESSION:
+        if (!packet.d) this.sessionID = null;
+        return this.identify(packet.d ? 2500 : 0);
+      case Constants.OPCodes.HEARTBEAT_ACK:
+        // Todo
+        break;
+      case Constants.OPCodes.HEARTBEAT:
+        // Todo
+        break;
+      default:
+        return this.packetManager.handle(packet);
+    }
+    return false;
+  }
+
   onOpen(event) {
+    this.gateway = event.target.url;
     this.debug(`Connected to gateway ${this.gateway}`);
     this.identify();
   }
@@ -95,8 +137,28 @@ class WebSocketConnection extends EventEmitter {
 
   }
 
+  // Heartbeat
+  heartbeat(time) {
+    if (!isNaN(time)) {
+      if (time === -1) {
+        this.debug('Clearing heartbeat interval');
+        this.client.clearInterval(this.heartbeatInterval);
+      } else {
+        this.debug(`Setting a heartbeat interval for ${time}ms`);
+        this.heartbeatInterval = this.client.setInterval(this.heartbeat.apply(this), time);
+      }
+      return;
+    }
+    this.debug('Sending a heartbeat');
+    this.send({
+      op: Constants.OPCodes.HEARTBEAT,
+      d: this.sequence,
+    });
+  }
+
   // Identification
-  identify() {
+  identify(after) {
+    if (after) return this.client.setTimeout(this.identify.apply(this), after);
     return this.sessionID ? this.identifyResume() : this.identifyNew();
   }
 
@@ -112,13 +174,13 @@ class WebSocketConnection extends EventEmitter {
     if (shardCount > 0) d.shard = [Number(shardId), Number(shardCount)];
 
     // Send the payload
-    this.client.emit('debug', 'Identifying as a new session');
+    this.debug('Identifying as a new session');
     return this.send({ op: Constants.OPCodes.IDENTIFY, d });
   }
 
   identifyResume() {
     if (!this.sessionID) {
-      this.debug('warning: wanted to resume but session ID not available; identifying as a new session instead');
+      this.debug('Warning: wanted to resume but session ID not available; identifying as a new session instead');
       return this.identifyNew();
     }
     this.debug(`Attempting to resume session ${this.sessionID}`);
