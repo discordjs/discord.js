@@ -41,8 +41,8 @@ class GuildAuditLogs {
     Object.defineProperty(this, 'guild', { value: guild });
 
     if (data.users) for (const user of data.users) this.guild.client.dataManager.newUser(user);
-    if (data.channels) for (const channel of data.channels) {
-      this.guild.client.dataManager.newChannel(channel, guild);
+    if (data.channels) {
+      for (const channel of data.channels) this.guild.client.dataManager.newChannel(channel, guild);
     }
 
     this.entries = [];
@@ -59,7 +59,7 @@ class GuildAuditLogs {
         this.guild.client.users.get(entry.target_id) :
         this.guild[`${root.toLowerCase()}s`].get(entry.target_id),
       executor: this.guild.client.users.get(entry.user_id),
-      changes: entry.changes ? entry.changes.map(c => ({ name: c.key, old: c.old_value, ['new']: c.new_value })) : null,
+      changes: entry.changes ? entry.changes.map(c => ({ name: c.key, old: c.old_value, new: c.new_value })) : null,
       id: entry.id,
     };
     this.entries.push(newEntry);
