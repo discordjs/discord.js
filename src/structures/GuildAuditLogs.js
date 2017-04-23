@@ -95,6 +95,7 @@ class GuildAuditLogs {
 }
 
 GuildAuditLogs.Actions = Actions;
+GuildAuditLogs.Targets = Targets;
 
 class GuildAuditLogsEntry {
   constructor(guild, data) {
@@ -109,7 +110,7 @@ class GuildAuditLogsEntry {
      * Specific action type of this entry
      * @type {string}
      */
-    this.type = Object.keys(Actions).find(k => Actions[k] === entry.action_type);
+    this.type = Object.keys(Actions).find(k => Actions[k] === data.action_type);
     
     /**
      * Method of this entry
@@ -122,28 +123,28 @@ class GuildAuditLogsEntry {
        * Target of this entry
        * @type {Guild|User|Role|Invite|Webhook|Emoji}
        */
-      this.target = guild.client[`${root.toLowerCase()}s`].get(entry.target_id);
+      this.target = guild.client[`${root.toLowerCase()}s`].get(data.target_id);
     } else {
-      this.target = guild[`${root.toLowerCase()}s`].get(entry.target_id);
+      this.target = guild[`${root.toLowerCase()}s`].get(data.target_id);
     }
     
     /**
      * User that executed this entry
      * @type {User}
      */
-    this.executor = guild.client.users.get(entry.user_id);
+    this.executor = guild.client.users.get(data.user_id);
     
     /**
      * Specific property changes
      * @type {Object[]}
      */
-    this.changes = entry.changes ? entry.changes.map(c => ({ name: c.key, old: c.old_value, new: c.new_value })) : null;
+    this.changes = data.changes ? data.changes.map(c => ({ name: c.key, old: c.old_value, new: c.new_value })) : null;
     
     /**
      * ID of this entry
      * @type {Snowflake}
      */
-    this.id = entry.id;
+    this.id = data.id;
   }
 }
 
