@@ -37,6 +37,17 @@ const Actions = {
 };
 
 class GuildAuditLogs {
+  constructor(guild, data) {
+    this.guild = data.guild;
+    if (data.users) for (const user of data.users) this.guild.client.manager.newUser(user);
+    if (data.channels) for (const channel of data.channels) this.guild.client.manager.newChannel(channel, guild);
+
+    for (const entry of data.audit_log_entries) {
+      // i dunno something
+      // { target_id: Snowflake, user_id: ?Snowflake, channel_id: ?Snowflake, id: Snowflake, action_type: Int }
+    }
+  }
+
   static rootType(type) {
     if (type < 10) return Targets.GUILD;
     if (type < 20) return Targets.CHANNEL;
@@ -48,7 +59,7 @@ class GuildAuditLogs {
     return null;
   }
 
-  static rootMethod(e) {
+  static rootMethod(method) {
     switch (method) {
       case Actions.CHANNEL_CREATE:
       case Actions.CHANNEL_OVERWRITE_CREATE:
