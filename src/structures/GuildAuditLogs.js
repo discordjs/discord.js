@@ -38,31 +38,13 @@ const Actions = {
 
 class GuildAuditLogs {
   constructor(guild, data) {
-    Object.defineProperty(this, 'guild', { value: guild });
-
-    if (data.users) for (const user of data.users) this.guild.client.dataManager.newUser(user);
+    if (data.users) for (const user of data.users) guild.client.dataManager.newUser(user);
     if (data.channels) {
-      for (const channel of data.channels) this.guild.client.dataManager.newChannel(channel, guild);
+      for (const channel of data.channels) guild.client.dataManager.newChannel(channel, guild);
     }
 
     this.entries = [];
-    for (const entry of data.audit_log_entries) this.createEntry(entry);
-  }
-
-  createEntry(entry) {
-    const root = this.constructor.rootType(entry.action_type);
-    const newEntry = {
-      root,
-      type: Object.keys(Actions).find(k => Actions[k] === entry.action_type),
-      method: this.constructor.rootMethod(entry.action_type),
-      target: root === 'USER' ?
-        this.guild.client.users.get(entry.target_id) :
-        this.guild[`${root.toLowerCase()}s`].get(entry.target_id),
-      executor: this.guild.client.users.get(entry.user_id),
-      changes: entry.changes ? entry.changes.map(c => ({ name: c.key, old: c.old_value, new: c.new_value })) : null,
-      id: entry.id,
-    };
-    this.entries.push(newEntry);
+    for (const entry of data.audit_log_entries) this.entries.push(new GuildAuditLogsEntry(guild, entry));
   }
 
   static rootType(type) {
@@ -113,5 +95,56 @@ class GuildAuditLogs {
 }
 
 GuildAuditLogs.Actions = Actions;
+
+class GuildAuditLogsEntry {
+  constructor(guild, data) {
+    const root = GuildAuditLogs.rootType(data.action_type);
+    /**
+     * Root action type of this entry
+     * @type {string}
+     */
+    this.root = root;
+    
+    /**
+     * Specific action type of this entry
+     * @type {string}
+     */
+    this.type = Object.keys(Actions).find(k => Actions[k] === entry.action_type);
+    
+    /**
+     * Method of this entry
+     * @type {string}
+     */
+    this.method = GuildAuditLogs.rootMethod(data.action_type);
+
+    if (['USER', 'GUILD'].includes(root)) {
+      /**
+       * Target of this entry
+       * @type {Guild|User|Role|Invite|Webhook|Emoji}
+       */
+      this.target = guild.client[`${root.toLowerCase()}s`].get(entry.target_id);
+    } else {
+      this.target = guild[`${root.toLowerCase()}s`].get(entry.target_id);
+    }
+    
+    /**
+     * User that executed this entry
+     * @type {User}
+     */
+    this.executor = guild.client.users.get(entry.user_id);
+    
+    /**
+     * Specific property changes
+     * @type {Object[]}
+     */
+    this.changes: entry.changes ? entry.changes.map(c => ({ name: c.key, old: c.old_value, new: c.new_value })) : null;
+    
+    /**
+     * ID of this entry
+     * @type {Snowflake}
+     */
+    this.id = entry.id;
+  }
+}
 
 module.exports = GuildAuditLogs;
