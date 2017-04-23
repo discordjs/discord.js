@@ -1,5 +1,6 @@
 const browser = require('os').platform() === 'browser';
 const EventEmitter = require('events');
+const Constants = require('../../util/Constants');
 const zlib = require('zlib');
 const erlpack = (function findErlpack() {
   try {
@@ -26,91 +27,112 @@ const WebSocket = (function findWebSocket() {
  */
 class WebSocketConnection extends EventEmitter {
   /**
+   * @param {WebSocketManager} manager the WebSocket manager
    * @param {string} gateway Websocket gateway to connect to
    */
-  constructor(gateway) {
-    super(gateway);
-    this.ws = new WebSocket(gateway);
-    if (browser) this.ws.binaryType = 'arraybuffer';
-    this.ws.onmessage = this.eventMessage.bind(this);
-    this.ws.onopen = this.emit.bind(this, 'open');
-    this.ws.onclose = this.emit.bind(this, 'close');
-    this.ws.onerror = this.emit.bind(this, 'error');
+  constructor(manager, gateway) {
+    super();
+    this.manager = manager;
+    this.client = manager.client;
+    this.ws = null;
+    this.connect(gateway);
   }
 
-  /**
-   * Called when the websocket gets a message
-   * @param {Object} event Close event object
-   * @returns {Promise<boolean>}
-   */
-  eventMessage(event) {
-    try {
-      const data = this.unpack(event.data);
-      this.emit('packet', data);
-      return true;
-    } catch (err) {
-      if (this.listenerCount('decodeError')) this.emit('decodeError', err);
-      return false;
-    }
+  debug(message) {
+    return this.manager.debug(`[connection] ${message}`);
   }
 
-  /**
-   * Send data over the websocket
-   * @param {string|Buffer} data Data to send
-   */
-  send(data) {
-    this.ws.send(this.pack(data));
-  }
-
-  /**
-   * Pack data using JSON or Erlpack
-   * @param {*} data Data to pack
-   * @returns {string|Buffer}
-   */
-  pack(data) {
-    return erlpack ? erlpack.pack(data) : JSON.stringify(data);
-  }
-
-  /**
-   * Unpack data using JSON or Erlpack
-   * @param {string|ArrayBuffer|Buffer} data Data to unpack
-   * @returns {string|Object}
-   */
   unpack(data) {
     if (erlpack && typeof data !== 'string') {
       if (data instanceof ArrayBuffer) data = Buffer.from(new Uint8Array(data));
       return erlpack.unpack(data);
-    } else {
-      if (data instanceof ArrayBuffer || data instanceof Buffer) data = this.inflate(data);
-      return JSON.parse(data);
+    } else if (data instanceof ArrayBuffer || data instanceof Buffer) {
+      return zlib.inflateSync(data).toString();
+    }
+    throw new Error('Failed to unpack');
+  }
+
+  pack(data) {
+    return erlpack ? erlpack.pack(data) : JSON.stringify(data);
+  }
+
+  connect(gateway) {
+    if (this.ws) return this.debug('WebSocket connection already exists');
+    if (typeof gateway !== 'string') return this.debug(`Tried to connect to an invalid gateway: ${gateway}`);
+
+    this.gateway = gateway;
+
+    const ws = this.ws = new WebSocket(gateway);
+    if (browser) ws.binaryType = 'arraybuffer';
+    ws.onmessage = this.onMessage.bind(this);
+    ws.onopen = this.onOpen.bind(this);
+    ws.onerror = this.onError.bind(this);
+    ws.onclose = this.onClose.bind(this);
+
+    return true;
+  }
+
+  onMessage(event) {
+    try {
+      this.emit('packet', this.unpack(event.data));
+      return true;
+    } catch (err) {
+      this.debug(err);
+      return false;
     }
   }
 
-  /**
-   * Zlib inflate data
-   * @param {string|Buffer} data Data to inflate
-   * @returns {string|Buffer}
-   */
-  inflate(data) {
-    return erlpack ? data : zlib.inflateSync(data).toString();
+  onOpen(event) {
+    this.debug(`Connected to gateway ${this.gateway}`);
+    this.identify();
   }
 
-  /**
-   * State of the WebSocket
-   * @type {number}
-   * @readonly
-   */
-  get readyState() {
-    return this.ws.readyState;
+  onError(error) {
+
   }
 
-  /**
-   * Close the WebSocket
-   * @param {number} code Close code
-   * @param {string} [reason] Close reason
-   */
-  close(code, reason) {
-    this.ws.close(code, reason);
+  onClose(event) {
+
+  }
+
+  // Identification
+  identify() {
+    return this.sessionID ? this.identifyResume() : this.identifyNew();
+  }
+
+  identifyNew() {
+    if (!this.client.token) {
+      return this.debug('No token available to identify a new session with');
+    }
+    // Clone the generic payload and assign the token
+    const d = Object.assign({ token: this.client.token }, this.client.options.ws);
+
+    // Sharding stuff
+    const { shardId, shardCount } = this.client.options;
+    if (shardCount > 0) d.shard = [Number(shardId), Number(shardCount)];
+
+    // Send the payload
+    this.client.emit('debug', 'Identifying as a new session');
+    return this.send({ op: Constants.OPCodes.IDENTIFY, d });
+  }
+
+  identifyResume() {
+    if (!this.sessionID) {
+      this.debug('warning: wanted to resume but session ID not available; identifying as a new session instead');
+      return this.identifyNew();
+    }
+    this.debug(`Attempting to resume session ${this.sessionID}`);
+
+    const d = {
+      token: this.client.token,
+      session_id: this.sessionID,
+      seq: this.sequence,
+    };
+
+    return this.send({
+      op: Constants.OPCodes.RESUME,
+      d,
+    });
   }
 }
 
