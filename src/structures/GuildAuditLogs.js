@@ -33,7 +33,7 @@ const Actions = {
   WEBHOOK_DELETE: 52,
   EMOJI_CREATE: 60,
   EMOJI_UPDATE: 61,
-  EMOJI_DELETE: 62
+  EMOJI_DELETE: 62,
 };
 
 class GuildAuditLogs {
@@ -42,9 +42,10 @@ class GuildAuditLogs {
     if (data.users) for (const user of data.users) this.guild.client.manager.newUser(user);
     if (data.channels) for (const channel of data.channels) this.guild.client.manager.newChannel(channel, guild);
 
+    this.entries = [];
     for (const entry of data.audit_log_entries) {
-      // i dunno something
-      // { target_id: Snowflake, user_id: ?Snowflake, channel_id: ?Snowflake, id: Snowflake, action_type: Int }
+      // AAA { target_id: Snowflake, user_id: ?Snowflake, channel_id: ?Snowflake, id: Snowflake, action_type: Int }
+      this.createEntry(entry);
     }
   }
 
@@ -92,7 +93,6 @@ class GuildAuditLogs {
       default:
         return 'UPDATE';
     }
-
   }
 }
 
