@@ -141,10 +141,10 @@ class RichEmbed {
 
   /**
    * Validates a field before it is added
-   * @param {StringResolvable} name The name of the field
-   * @param {StringResolvable} value The value of the field
+   * @param {string} name The name of the field
+   * @param {string} value The value of the field
    * @param {boolean} inline Set the field to display inline
-   * @returns {boolean} validity of the field
+   * @returns {boolean} Validity of the field
    * @private
    */
   _validateField({ name, value, inline }) {
@@ -185,8 +185,8 @@ class RichEmbed {
    * Changes properties of a field at a specified index, parameters can be made
    * `null` or `undefined` to inherit properties of the field being changed
    * @param {number} index The index number of the field, starting from 0
-   * @param {string} name The new name of the field
-   * @param {string} value The new value of the field
+   * @param {StringResolvable} name The new name of the field
+   * @param {StringResolvable} value The new value of the field
    * @param {boolean} inline The new inline value of the field
    * @returns {RichEmbed} This embed
    */
