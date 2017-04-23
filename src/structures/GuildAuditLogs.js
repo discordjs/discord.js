@@ -38,7 +38,7 @@ const Actions = {
 
 class GuildAuditLogs {
   constructor(guild, data) {
-    this.guild = data.guild;
+    this.guild = guild;
     if (data.users) for (const user of data.users) this.guild.client.manager.newUser(user);
     if (data.channels) for (const channel of data.channels) this.guild.client.manager.newChannel(channel, guild);
 
