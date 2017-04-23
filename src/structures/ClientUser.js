@@ -67,8 +67,8 @@ class ClientUser extends User {
 
     /**
      * Various settings for this user
-     * @type {?ClientUserSettings}
      * <warn>This is only filled when using a user account</warn>
+     * @type {?ClientUserSettings}
      */
     if (data.user_settings) this.settings = new ClientUserSettings(this, data.user_settings);
   }
