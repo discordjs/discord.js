@@ -193,9 +193,9 @@ class RichEmbed {
   setField(index, name, value, inline) {
     if (typeof index !== 'number') throw new TypeError('Field index must be a number');
     if (!this.fields[index]) throw new RangeError('No field exists at specified index');
-    if (name == null) name = this.fields[index].name;
-    if (value == null) value = this.fields[index].value;
-    if (inline == null) inline = this.fields[index].inline;
+    if (name === null || name === undefined) name = this.fields[index].name;
+    if (value === null || name === undefined) value = this.fields[index].value;
+    if (inline === null || name === undefined) inline = this.fields[index].inline;
     name = resolveString(name);
     value = resolveString(value);
     this._validateField({ name, value, inline });
