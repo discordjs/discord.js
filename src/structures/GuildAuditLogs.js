@@ -54,7 +54,7 @@ class GuildAuditLogs {
       type,
       method: this.constructor.rootMethod(entry.action_type),
       target: this.guild[`${type.toLowerCase()}s`].get(entry.target_id),
-      user: client.users.get(entry.user_id),
+      user: this.guild.client.users.get(entry.user_id),
       changes: entry.changes ? entry.changes.map(c => ({ name: c.key, old: c.old_value, ['new']: c.new_value })) : null,
       id: entry.id,
     };
