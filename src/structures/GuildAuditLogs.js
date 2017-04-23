@@ -37,19 +37,19 @@ const Actions = {
 };
 
 class GuildAuditLogs {
-  static rootType(e) {
-    if (e < 10) return Targets.GUILD;
-    if (e < 20) return Targets.CHANNEL;
-    if (e < 30) return Targets.USER;
-    if (e < 40) return Targets.ROLE;
-    if (e < 50) return Targets.INVITE;
-    if (e < 60) return Targets.WEBHOOK;
-    if (e < 70) return Targets.EMOJI;
+  static rootType(type) {
+    if (type < 10) return Targets.GUILD;
+    if (type < 20) return Targets.CHANNEL;
+    if (type < 30) return Targets.USER;
+    if (type < 40) return Targets.ROLE;
+    if (type < 50) return Targets.INVITE;
+    if (type < 60) return Targets.WEBHOOK;
+    if (type < 70) return Targets.EMOJI;
     return null;
   }
 
   static rootMethod(e) {
-    switch (e) {
+    switch (method) {
       case Actions.CHANNEL_CREATE:
       case Actions.CHANNEL_OVERWRITE_CREATE:
       case Actions.MEMBER_BAN_REMOVE:
