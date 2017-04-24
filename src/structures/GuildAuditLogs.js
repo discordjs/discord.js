@@ -43,6 +43,10 @@ class GuildAuditLogs {
       for (const channel of data.channels) guild.client.dataManager.newChannel(channel, guild);
     }
 
+    /**
+     * Entries for this Guild's audit logs
+     * @type {GuildAuditLogsEntry[]}
+     */
     this.entries = [];
     for (const entry of data.audit_log_entries) this.entries.push(new GuildAuditLogsEntry(guild, entry));
   }
