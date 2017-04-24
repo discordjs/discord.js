@@ -186,6 +186,7 @@ class RESTMethods {
   }
 
   search(target, options) {
+    if (typeof options === 'string') options = { content: options };
     if (options.before) {
       if (!(options.before instanceof Date)) options.before = new Date(options.before);
       options.maxID = long.fromNumber(options.before.getTime() - 14200704e5).shiftLeft(22).toString();
