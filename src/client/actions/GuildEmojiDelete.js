@@ -15,4 +15,5 @@ class GuildEmojiDeleteAction extends Action {
  * @event Client#emojiDelete
  * @param {Emoji} emoji The emoji that was deleted.
  */
+
 module.exports = GuildEmojiDeleteAction;

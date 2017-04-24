@@ -28,7 +28,7 @@ class UserProfile {
 
     /**
      * The user's connections
-     * @type {Collection<String, UserConnection>}
+     * @type {Collection<Snowflake, UserConnection>}
      */
     this.connections = new Collection();
 
