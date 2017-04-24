@@ -35,25 +35,48 @@ class WebSocketManager extends EventEmitter {
     this.connection = null;
   }
 
+  /**
+   * Sends a heartbeat on the available connection
+   * @returns {void}
+   */
   heartbeat() {
     if (!this.connection) return this.debug('No connection to heartbeat');
     return this.connection.heartbeat();
   }
 
+  /**
+   * Emits a debug event
+   * @param {string} message the debug message
+   * @returns {void}
+   */
   debug(message) {
     return this.client.emit('debug', `[ws] ${message}`);
   }
 
+  /**
+   * Destroy the client
+   * @returns {boolean} Whether or not destruction was successful
+   */
   destroy() {
     if (!this.connection) return this.debug('Attempted to destroy WebSocket but no connection exists!');
     return this.connection.destroy();
   }
 
+  /**
+   * Send a packet on the available WebSocket
+   * @param {Object} packet the packet to send
+   * @returns {void}
+   */
   send(packet) {
     if (!this.connection) return this.debug('No connection to websocket');
     return this.connection.send(packet);
   }
 
+  /**
+   * Connects the client to a gateway
+   * @param {string} gateway the gateway to connect to
+   * @returns {boolean}
+   */
   connect(gateway) {
     if (!this.connection) {
       this.connection = new WebSocketConnection(this, gateway);
