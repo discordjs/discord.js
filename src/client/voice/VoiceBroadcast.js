@@ -32,7 +32,7 @@ class VoiceBroadcast extends VolumeInterface {
     this.prism = new Prism();
     /**
      * The current audio transcoder that is being used
-     * @type {object}
+     * @type {Object}
      */
     this.currentTranscoder = null;
     this.tickInterval = null;
@@ -120,14 +120,14 @@ class VoiceBroadcast extends VolumeInterface {
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {VoiceBroadcast}
    * @example
-   * // play streams using ytdl-core
+   * // Play streams using ytdl-core
    * const ytdl = require('ytdl-core');
    * const streamOptions = { seek: 0, volume: 1 };
    * const broadcast = client.createVoiceBroadcast();
    *
    * voiceChannel.join()
    *  .then(connection => {
-   *    const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', {filter : 'audioonly'});
+   *    const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', { filter : 'audioonly' });
    *    broadcast.playStream(stream);
    *    const dispatcher = connection.playBroadcast(broadcast);
    *  })
@@ -144,7 +144,7 @@ class VoiceBroadcast extends VolumeInterface {
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
    * @example
-   * // play files natively
+   * // Play files natively
    * const broadcast = client.createVoiceBroadcast();
    *
    * voiceChannel.join()

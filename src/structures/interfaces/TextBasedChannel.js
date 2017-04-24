@@ -2,6 +2,7 @@ const path = require('path');
 const Message = require('../Message');
 const MessageCollector = require('../MessageCollector');
 const Collection = require('../../util/Collection');
+const util = require('util');
 
 /**
  * Interface for classes that have text-channel-like features
@@ -114,72 +115,6 @@ class TextBasedChannel {
   }
 
   /**
-   * Send a message to this channel
-   * @param {StringResolvable} [content] Text for the message
-   * @param {MessageOptions} [options={}] Options for the message
-   * @returns {Promise<Message|Message[]>}
-   * @example
-   * // send a message
-   * channel.sendMessage('hello!')
-   *  .then(message => console.log(`Sent message: ${message.content}`))
-   *  .catch(console.error);
-   */
-  sendMessage(content, options) {
-    return this.send(content, options);
-  }
-
-  /**
-   * Send an embed to this channel
-   * @param {RichEmbed|Object} embed Embed for the message
-   * @param {string} [content] Text for the message
-   * @param {MessageOptions} [options] Options for the message
-   * @returns {Promise<Message>}
-   */
-  sendEmbed(embed, content, options) {
-    if (!options && typeof content === 'object' && !(content instanceof Array)) {
-      options = content;
-      content = '';
-    } else if (!options) {
-      options = {};
-    }
-    return this.send(content, Object.assign(options, { embed }));
-  }
-
-  /**
-   * Send files to this channel
-   * @param {FileOptions[]|string[]} files Files to send with the message
-   * @param {StringResolvable} [content] Text for the message
-   * @param {MessageOptions} [options] Options for the message
-   * @returns {Promise<Message>}
-   */
-  sendFiles(files, content, options = {}) {
-    return this.send(content, Object.assign(options, { files }));
-  }
-
-  /**
-   * Send a file to this channel
-   * @param {BufferResolvable} attachment File to send
-   * @param {string} [name='file.jpg'] Name and extension of the file
-   * @param {StringResolvable} [content] Text for the message
-   * @param {MessageOptions} [options] Options for the message
-   * @returns {Promise<Message>}
-   */
-  sendFile(attachment, name, content, options = {}) {
-    return this.sendFiles([{ attachment, name }], content, options);
-  }
-
-  /**
-   * Send a code block to this channel
-   * @param {string} lang Language for the code block
-   * @param {StringResolvable} content Content of the code block
-   * @param {MessageOptions} [options] Options for the message
-   * @returns {Promise<Message|Message[]>}
-   */
-  sendCode(lang, content, options = {}) {
-    return this.send(content, Object.assign(options, { code: lang }));
-  }
-
-  /**
    * Gets a single message from this channel, regardless of it being cached or not. Since the single message fetching
    * endpoint is reserved for bot accounts, this abstracts the `fetchMessages` method to obtain the single message when
    * using a user account.
@@ -283,6 +218,7 @@ class TextBasedChannel {
 
   /**
    * Performs a search within the channel.
+   * <warn>This is only available when using a user account.</warn>
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
    * @returns {Promise<Array<Message[]>>}
    * An array containing arrays of messages. Each inner array is a search context cluster.
@@ -296,7 +232,7 @@ class TextBasedChannel {
    *   console.log(`I found: **${hit}**, total results: ${res.totalResults}`);
    * }).catch(console.error);
    */
-  search(options) {
+  search(options = {}) {
     return this.client.rest.methods.search(this, options);
   }
 
@@ -459,6 +395,84 @@ class TextBasedChannel {
     this.messages.set(message.id, message);
     return message;
   }
+}
+
+/** @lends TextBasedChannel.prototype */
+const Deprecated = {
+  /**
+   * Send a message to this channel
+   * @param {StringResolvable} [content] Text for the message
+   * @param {MessageOptions} [options={}] Options for the message
+   * @returns {Promise<Message|Message[]>}
+   * @deprecated
+   * @example
+   * // send a message
+   * channel.sendMessage('hello!')
+   *  .then(message => console.log(`Sent message: ${message.content}`))
+   *  .catch(console.error);
+   */
+  sendMessage(content, options) {
+    return this.send(content, options);
+  },
+
+  /**
+   * Send an embed to this channel
+   * @param {RichEmbed|Object} embed Embed for the message
+   * @param {string} [content] Text for the message
+   * @param {MessageOptions} [options] Options for the message
+   * @returns {Promise<Message>}
+   * @deprecated
+   */
+  sendEmbed(embed, content, options) {
+    if (!options && typeof content === 'object' && !(content instanceof Array)) {
+      options = content;
+      content = '';
+    } else if (!options) {
+      options = {};
+    }
+    return this.send(content, Object.assign(options, { embed }));
+  },
+
+  /**
+   * Send files to this channel
+   * @param {FileOptions[]|string[]} files Files to send with the message
+   * @param {StringResolvable} [content] Text for the message
+   * @param {MessageOptions} [options] Options for the message
+   * @returns {Promise<Message>}
+   * @deprecated
+   */
+  sendFiles(files, content, options = {}) {
+    return this.send(content, Object.assign(options, { files }));
+  },
+
+  /**
+   * Send a file to this channel
+   * @param {BufferResolvable} attachment File to send
+   * @param {string} [name='file.jpg'] Name and extension of the file
+   * @param {StringResolvable} [content] Text for the message
+   * @param {MessageOptions} [options] Options for the message
+   * @returns {Promise<Message>}
+   * @deprecated
+   */
+  sendFile(attachment, name, content, options = {}) {
+    return this.sendFiles([{ attachment, name }], content, options);
+  },
+
+  /**
+   * Send a code block to this channel
+   * @param {string} lang Language for the code block
+   * @param {StringResolvable} content Content of the code block
+   * @param {MessageOptions} [options] Options for the message
+   * @returns {Promise<Message|Message[]>}
+   * @deprecated
+   */
+  sendCode(lang, content, options = {}) {
+    return this.send(content, Object.assign(options, { code: lang }));
+  },
+};
+
+for (const key of Object.keys(Deprecated)) {
+  TextBasedChannel.prototype[key] = util.deprecate(Deprecated[key], `TextChannel#${key}: use TextChannel#send instead`);
 }
 
 exports.applyToClass = (structure, full = false, ignore = []) => {
