@@ -311,8 +311,8 @@ class Guild {
     return this.client.user.settings.guildPositions.indexOf(this.id);
   }
 
-  /*
-   * The `@everyone` role of the guild.
+  /**
+   * The `@everyone` Role of the guild.
    * @type {Role}
    * @readonly
    */

@@ -69,6 +69,8 @@ class WebSocketManager extends EventEmitter {
 
     this.lastHeartbeatAck = true;
 
+    this._remainingReset = 0;
+
     this._trace = [];
     this.resumeStart = -1;
   }
@@ -82,10 +84,10 @@ class WebSocketManager extends EventEmitter {
     this.normalReady = false;
     if (this.status !== Constants.Status.RECONNECTING) this.status = Constants.Status.CONNECTING;
     this.ws = new WebSocketConnection(gateway);
-    this.ws.e.on('open', this.eventOpen.bind(this));
-    this.ws.e.on('packet', this.eventPacket.bind(this));
-    this.ws.e.on('close', this.eventClose.bind(this));
-    this.ws.e.on('error', this.eventError.bind(this));
+    this.ws.on('open', this.eventOpen.bind(this));
+    this.ws.on('packet', this.eventPacket.bind(this));
+    this.ws.on('close', this.eventClose.bind(this));
+    this.ws.on('error', this.eventError.bind(this));
     this._queue = [];
     this._remaining = 120;
     this.client.setInterval(() => {
@@ -100,7 +102,7 @@ class WebSocketManager extends EventEmitter {
       this._connect(gateway);
       this.first = false;
     } else {
-      this.client.setTimeout(() => this._connect(gateway), 5500);
+      this.client.setTimeout(() => this._connect(gateway), 7500);
     }
   }
 
@@ -141,7 +143,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   _send(data) {
-    if (this.ws.readyState === WebSocketConnection.OPEN) {
+    if (this.ws.readyState === WebSocketConnection.WebSocket.OPEN) {
       this.emit('send', data);
       this.ws.send(data);
     }
@@ -149,9 +151,9 @@ class WebSocketManager extends EventEmitter {
 
   doQueue() {
     const item = this._queue[0];
-    if (!(this.ws.readyState === WebSocketConnection.OPEN && item)) return;
+    if (!(this.ws.readyState === WebSocketConnection.WebSocket.OPEN && item)) return;
     if (this.remaining === 0) {
-      this.client.setTimeout(this.doQueue.bind(this), Date.now() - this.remainingReset);
+      this.client.setTimeout(this.doQueue.bind(this), Date.now() + (this._remainingReset || 120e3));
       return;
     }
     this._remaining--;

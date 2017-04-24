@@ -1,4 +1,4 @@
-const TextBasedChannel = require('./interface/TextBasedChannel');
+const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Role = require('./Role');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
@@ -393,6 +393,7 @@ class GuildMember {
    */
   addRole(role) {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
+    if (!role) throw new TypeError('Supplied parameter was neither a Role nor a Snowflake.');
     return this.client.rest.methods.addMemberRole(this, role);
   }
 
@@ -419,6 +420,7 @@ class GuildMember {
    */
   removeRole(role) {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
+    if (!role) throw new TypeError('Supplied parameter was neither a Role nor a Snowflake.');
     return this.client.rest.methods.removeMemberRole(this, role);
   }
 

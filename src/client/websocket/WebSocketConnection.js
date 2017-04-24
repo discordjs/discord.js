@@ -24,18 +24,18 @@ const WebSocket = (function findWebSocket() {
  * Abstracts a WebSocket connection with decoding/encoding for the discord gateway
  * @private
  */
-class WebSocketConnection extends WebSocket {
+class WebSocketConnection extends EventEmitter {
   /**
    * @param {string} gateway Websocket gateway to connect to
    */
   constructor(gateway) {
     super(gateway);
-    this.e = new EventEmitter();
-    if (browser) this.binaryType = 'arraybuffer';
-    this.onmessage = this.eventMessage.bind(this);
-    this.onopen = this.e.emit.bind(this.e, 'open');
-    this.onclose = this.e.emit.bind(this.e, 'close');
-    this.onerror = this.e.emit.bind(this.e, 'error');
+    this.ws = new WebSocket(gateway);
+    if (browser) this.ws.binaryType = 'arraybuffer';
+    this.ws.onmessage = this.eventMessage.bind(this);
+    this.ws.onopen = this.emit.bind(this, 'open');
+    this.ws.onclose = this.emit.bind(this, 'close');
+    this.ws.onerror = this.emit.bind(this, 'error');
   }
 
   /**
@@ -46,10 +46,10 @@ class WebSocketConnection extends WebSocket {
   eventMessage(event) {
     try {
       const data = this.unpack(event.data);
-      this.e.emit('packet', data);
+      this.emit('packet', data);
       return true;
     } catch (err) {
-      if (this.e.listenerCount('decodeError')) this.e.emit('decodeError', err);
+      if (this.listenerCount('decodeError')) this.emit('decodeError', err);
       return false;
     }
   }
@@ -59,7 +59,7 @@ class WebSocketConnection extends WebSocket {
    * @param {string|Buffer} data Data to send
    */
   send(data) {
-    super.send(this.pack(data));
+    this.ws.send(this.pack(data));
   }
 
   /**
@@ -94,6 +94,24 @@ class WebSocketConnection extends WebSocket {
   inflate(data) {
     return erlpack ? data : zlib.inflateSync(data).toString();
   }
+
+  /**
+   * State of the WebSocket
+   * @type {number}
+   * @readonly
+   */
+  get readyState() {
+    return this.ws.readyState;
+  }
+
+  /**
+   * Close the WebSocket
+   * @param {number} code Close code
+   * @param {string} [reason] Close reason
+   */
+  close(code, reason) {
+    this.ws.close(code, reason);
+  }
 }
 
 /**
@@ -101,5 +119,6 @@ class WebSocketConnection extends WebSocket {
  * @type {string}
  */
 WebSocketConnection.ENCODING = erlpack ? 'etf' : 'json';
+WebSocketConnection.WebSocket = WebSocket;
 
 module.exports = WebSocketConnection;
