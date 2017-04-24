@@ -385,7 +385,7 @@ class TextBasedChannel {
    * @returns {Promise<TextChannel|GroupDMChannel|DMChannel>}
    */
   acknowledge() {
-    return this.client.rest.methods.ackTextMessage(this);
+    return this.client.rest.methods.ackTextChannel(this);
   }
 
   _cacheMessage(message) {
@@ -480,6 +480,7 @@ exports.applyToClass = (structure, full = false, ignore = []) => {
   if (full) {
     props.push(
       '_cacheMessage',
+      'acknowledge',
       'fetchMessages',
       'fetchMessage',
       'search',
