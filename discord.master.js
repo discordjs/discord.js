@@ -8574,7 +8574,7 @@ class GroupDMChannel extends Channel {
 
     /**
      * Nicknames for group members
-     * @type {?Collection<Snowflake, String>}
+     * @type {?Collection<Snowflake, string>}
      */
     if (data.nicks) this.nicks = new Collection(data.nicks.map(n => [n.id, n.nick]));
 
@@ -8628,7 +8628,7 @@ class GroupDMChannel extends Channel {
 
   /**
    * Add a user to the dm
-   * @param {UserResolvable|String} accessTokenOrID Access token or user resolvable
+   * @param {UserResolvable|string} accessTokenOrID Access token or user resolvable
    * @param {string} [nick] Permanent nickname to give the user (only available if a bot is creating the dm)
    */
 
@@ -11269,7 +11269,7 @@ class ClientDataResolver {
    * [255, 0, 255]
    * ```
    * for purple
-   * @typedef {String|number|Array} ColorResolvable
+   * @typedef {string|number|Array} ColorResolvable
    */
 
   /**
@@ -22368,6 +22368,7 @@ class GuildEmojiCreateAction extends Action {
  * @event Client#emojiCreate
  * @param {Emoji} emoji The emoji that was created.
  */
+
 module.exports = GuildEmojiCreateAction;
 
 
@@ -22392,6 +22393,7 @@ class GuildEmojiDeleteAction extends Action {
  * @event Client#emojiDelete
  * @param {Emoji} emoji The emoji that was deleted.
  */
+
 module.exports = GuildEmojiDeleteAction;
 
 
@@ -22416,6 +22418,7 @@ class GuildEmojiUpdateAction extends Action {
  * @param {Emoji} oldEmoji The old emoji
  * @param {Emoji} newEmoji The new emoji
  */
+
 module.exports = GuildEmojiUpdateAction;
 
 
@@ -22953,12 +22956,14 @@ class MessageReactionAdd extends Action {
     };
   }
 }
+
 /**
  * Emitted whenever a reaction is added to a message.
  * @event Client#messageReactionAdd
  * @param {MessageReaction} messageReaction The reaction object.
  * @param {User} user The user that applied the emoji or reaction emoji.
  */
+
 module.exports = MessageReactionAdd;
 
 
@@ -23002,12 +23007,14 @@ class MessageReactionRemove extends Action {
     };
   }
 }
+
 /**
  * Emitted whenever a reaction is removed from a message.
  * @event Client#messageReactionRemove
  * @param {MessageReaction} messageReaction The reaction object.
  * @param {User} user The user that removed the emoji or reaction emoji.
  */
+
 module.exports = MessageReactionRemove;
 
 
@@ -23034,11 +23041,13 @@ class MessageReactionRemoveAll extends Action {
     };
   }
 }
+
 /**
  * Emitted whenever all reactions are removed from a message.
  * @event Client#messageReactionRemoveAll
  * @param {Message} message The message the reactions were removed from.
  */
+
 module.exports = MessageReactionRemoveAll;
 
 
@@ -25594,7 +25603,7 @@ class ResumedHandler extends AbstractHandler {
 /**
  * Emitted whenever a websocket resumes
  * @event Client#resume
- * @param {Number} replayed Number of events that were replayed
+ * @param {number} replayed Number of events that were replayed
  */
 
 module.exports = ResumedHandler;
@@ -26039,7 +26048,7 @@ class UserProfile {
 
     /**
      * The user's connections
-     * @type {Collection<String, UserConnection>}
+     * @type {Collection<Snowflake, UserConnection>}
      */
     this.connections = new Collection();
 
