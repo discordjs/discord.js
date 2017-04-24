@@ -237,7 +237,7 @@ class WebSocketConnection extends EventEmitter {
   /**
    * Called whenever a message is received
    * @param {Event} event The event received
-   * @returns {boolean} 
+   * @returns {boolean}
    */
   onMessage(event) {
     try {
@@ -334,7 +334,8 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Sends a heartbeat or sets an interval for sending heartbeats.
-   * @param {number} [time] If -1, clears the interval, any other number sets an interval. No value will send a heartbeat instantly.
+   * @param {number} [time] If -1, clears the interval, any other number sets an interval.
+   * If no value is given, a heartbeat will be sent instantly.
    */
   heartbeat(time) {
     if (!isNaN(time)) {
