@@ -55,15 +55,6 @@ class ClientManager {
     }, reject);
   }
 
-  /**
-   * Sets up a keep-alive interval to keep the Client's connection valid
-   * @param {number} time The interval in milliseconds at which heartbeat packets should be sent
-   */
-  setupKeepAlive(time) {
-    this.heartbeatInterval = time;
-    this.client.setInterval(() => this.client.ws.heartbeat(true), time);
-  }
-
   destroy() {
     this.client.ws.destroy();
     this.client.rest.destroy();
