@@ -59,38 +59,38 @@ class GuildAuditLogs {
   }
 
   static rootMethod(method) {
-    switch (method) {
-      case Actions.CHANNEL_CREATE:
-      case Actions.CHANNEL_OVERWRITE_CREATE:
-      case Actions.MEMBER_BAN_REMOVE:
-      case Actions.ROLE_CREATE:
-      case Actions.INVITE_CREATE:
-      case Actions.WEBHOOK_CREATE:
-      case Actions.EMOJI_CREATE:
-        return 'CREATE';
+    if ([
+      Actions.CHANNEL_CREATE,
+      Actions.CHANNEL_OVERWRITE_CREATE,
+      Actions.MEMBER_BAN_REMOVE,
+      Actions.ROLE_CREATE,
+      Actions.INVITE_CREATE,
+      Actions.WEBHOOK_CREATE,
+      Actions.EMOJI_CREATE,
+    ].includes(method)) return 'CREATE';
 
-      case Actions.CHANNEL_DELETE:
-      case Actions.CHANNEL_OVERWRITE_DELETE:
-      case Actions.MEMBER_KICK:
-      case Actions.MEMBER_PRUNE:
-      case Actions.MEMBER_BAN_ADD:
-      case Actions.ROLE_DELETE:
-      case Actions.INVITE_DELETE:
-      case Actions.WEBHOOK_DELETE:
-      case Actions.EMOJI_DELETE:
-        return 'DELETE';
+    if ([
+      Actions.CHANNEL_DELETE,
+      Actions.CHANNEL_OVERWRITE_DELETE,
+      Actions.MEMBER_KICK,
+      Actions.MEMBER_PRUNE,
+      Actions.MEMBER_BAN_ADD,
+      Actions.ROLE_DELETE,
+      Actions.INVITE_DELETE,
+      Actions.WEBHOOK_DELETE,
+      Actions.EMOJI_DELETE,
+    ].includes(method)) return 'DELETE';
 
-      case Actions.GUILD_UPDATE:
-      case Actions.CHANNEL_UPDATE:
-      case Actions.CHANNEL_OVERWRITE_UPDATE:
-      case Actions.MEMBER_UPDATE:
-      case Actions.ROLE_UPDATE:
-      case Actions.INVITE_UPDATE:
-      case Actions.WEBHOOK_UPDATE:
-      case Actions.EMOJI_UPDATE:
-      default:
-        return 'UPDATE';
-    }
+    if ([
+      Actions.GUILD_UPDATE,
+      Actions.CHANNEL_UPDATE,
+      Actions.CHANNEL_OVERWRITE_UPDATE,
+      Actions.MEMBER_UPDATE,
+      Actions.ROLE_UPDATE,
+      Actions.INVITE_UPDATE,
+      Actions.WEBHOOK_UPDATE,
+      Actions.EMOJI_UPDATE,
+    ].includes(method)) return 'UPDATE';
   }
 }
 
