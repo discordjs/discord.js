@@ -34,37 +34,37 @@ class WebSocketConnection extends EventEmitter {
   constructor(manager, gateway) {
     super();
     /**
-     * The WebSocket Manager of this connection
+     * WebSocket Manager of this connection
      * @type {WebSocketManager}
      */
     this.manager = manager;
     /**
-     * The client this belongs to
+     * Client this belongs to
      * @type {Client}
      */
     this.client = manager.client;
     /**
-     * The WebSocket connection itself
+     * WebSocket connection itself
      * @type {WebSocket}
      */
     this.ws = null;
     /**
-     * The current sequence of the WebSocket
+     * Current sequence of the WebSocket
      * @type {number}
      */
     this.sequence = -1;
     /**
-     * The current status of the client
+     * Current status of the client
      * @type {number}
      */
     this.status = Constants.Status.IDLE;
     /**
-     * The packet manager of the connection
+     * Packet Manager of the connection
      * @type {WebSocketPacketManager}
      */
     this.packetManager = new PacketManager(this);
     /**
-     * The last time a ping was sent
+     * Last time a ping was sent (a timestamp)
      * @type {number}
      */
     this.pingSendTime = 0;
@@ -119,7 +119,7 @@ class WebSocketConnection extends EventEmitter {
   // Util
   /**
    * Emits a debug message
-   * @param {string} message the debug message
+   * @param {string} message Debug message
    * @returns {void}
    */
   debug(message) {
@@ -129,7 +129,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Attempts to serialise data from the WebSocket
-   * @param {string|Object} data the data to unpack
+   * @param {string|Object} data Data to unpack
    * @returns {Object}
    */
   unpack(data) {
@@ -144,7 +144,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Packs an object ready to be sent
-   * @param {Object} data the data to pack
+   * @param {Object} data Data to pack
    * @returns {string|Buffer}
    */
   pack(data) {
@@ -173,7 +173,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Sends data, bypassing the queue
-   * @param {Object} data The packet to send
+   * @param {Object} data Packet to send
    * @returns {void}
    */
   _send(data) {
@@ -185,7 +185,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Adds data to the queue to be sent
-   * @param {Object} data The packet to send
+   * @param {Object} data Packet to send
    * @returns {void}
    */
   send(data) {
@@ -198,7 +198,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Creates a connection to a gateway
-   * @param {string} gateway the gateway to connect to
+   * @param {string} gateway Gateway to connect to
    * @param {number} [after=0] How long to wait before connecting
    * @param {boolean} [force=false] Whether or not to force a new connection even if one already exists
    * @returns {boolean}
@@ -236,7 +236,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Called whenever a message is received
-   * @param {Event} event The event received
+   * @param {Event} event Event received
    * @returns {boolean}
    */
   onMessage(event) {
@@ -251,7 +251,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Sets the current sequence of the connection
-   * @param {number} s The new sequence
+   * @param {number} s New sequence
    */
   setSequence(s) {
     this.sequence = s > this.sequence ? s : this.sequence;
@@ -259,7 +259,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Called whenever a packet is received
-   * @param {Object} packet The received packet
+   * @param {Object} packet received packet
    * @returns {boolean}
    */
   onPacket(packet) {
@@ -287,7 +287,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Called whenever a connection is opened to the gateway
-   * @param {Event} event The received open event
+   * @param {Event} event Received open event
    */
   onOpen(event) {
     this.gateway = event.target.url;
@@ -304,7 +304,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Called whenever an error occurs with the WebSocket
-   * @param {Error} error The error
+   * @param {Error} error Error that occurred
    */
   onError(error) {
     this.debug(error);
@@ -312,7 +312,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Called whenever a connection to the gateway is closed
-   * @param {CloseEvent} event The close event
+   * @param {CloseEvent} event Close event that was received
    */
   onClose(event) {
     this.debug(`Closed: ${event.code}`);

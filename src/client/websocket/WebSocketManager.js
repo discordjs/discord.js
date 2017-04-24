@@ -4,14 +4,14 @@ const PacketManager = require('./packets/WebSocketPacketManager');
 const WebSocketConnection = require('./WebSocketConnection');
 
 /**
- * The WebSocket Manager of the Client
+ * WebSocket Manager of the Client
  * @private
  */
 class WebSocketManager extends EventEmitter {
   constructor(client) {
     super();
     /**
-     * The Client that instantiated this WebSocketManager
+     * Client that instantiated this WebSocketManager
      * @type {Client}
      */
     this.client = client;
@@ -23,13 +23,13 @@ class WebSocketManager extends EventEmitter {
     this.packetManager = new PacketManager(this);
 
     /**
-     * The status of the WebSocketManager, a type of Constants.Status. It defaults to IDLE.
+     * Status of the WebSocketManager, a type of Constants.Status. It defaults to IDLE.
      * @type {number}
      */
     this.status = Constants.Status.IDLE;
 
     /**
-     * The WebSocket connection of this manager
+     * WebSocket connection of this manager
      * @type {?WebSocketConnection}
      */
     this.connection = null;
@@ -46,7 +46,7 @@ class WebSocketManager extends EventEmitter {
 
   /**
    * Emits a debug event
-   * @param {string} message The debug message
+   * @param {string} message Debug message
    * @returns {void}
    */
   debug(message) {
@@ -64,7 +64,7 @@ class WebSocketManager extends EventEmitter {
 
   /**
    * Send a packet on the available WebSocket
-   * @param {Object} packet The packet to send
+   * @param {Object} packet Packet to send
    * @returns {void}
    */
   send(packet) {
@@ -74,7 +74,7 @@ class WebSocketManager extends EventEmitter {
 
   /**
    * Connects the client to a gateway
-   * @param {string} gateway The gateway to connect to
+   * @param {string} gateway Gateway to connect to
    * @returns {boolean}
    */
   connect(gateway) {
