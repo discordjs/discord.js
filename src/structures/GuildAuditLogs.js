@@ -105,13 +105,13 @@ class GuildAuditLogsEntry {
      * @type {string}
      */
     this.root = root;
-    
+
     /**
      * Specific action type of this entry
      * @type {string}
      */
     this.type = Object.keys(Actions).find(k => Actions[k] === data.action_type);
-    
+
     /**
      * Method of this entry
      * @type {string}
@@ -127,19 +127,19 @@ class GuildAuditLogsEntry {
     } else {
       this.target = guild[`${root.toLowerCase()}s`].get(data.target_id);
     }
-    
+
     /**
      * User that executed this entry
      * @type {User}
      */
     this.executor = guild.client.users.get(data.user_id);
-    
+
     /**
      * Specific property changes
      * @type {Object[]}
      */
     this.changes = data.changes ? data.changes.map(c => ({ name: c.key, old: c.old_value, new: c.new_value })) : null;
-    
+
     /**
      * ID of this entry
      * @type {Snowflake}
