@@ -21,6 +21,14 @@ class ClientManager {
   }
 
   /**
+   * The status of the client
+   * @type {number}
+   */
+  get status() {
+    return this.connection ? this.connection.status : Constants.Status.IDLE;
+  }
+
+  /**
    * Connects the Client to the WebSocket
    * @param {string} token The authorization token
    * @param {Function} resolve Function to run when connection is successful

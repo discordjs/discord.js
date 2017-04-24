@@ -33,13 +33,45 @@ class WebSocketConnection extends EventEmitter {
    */
   constructor(manager, gateway) {
     super();
+    /**
+     * The WebSocket Manager of this connection
+     * @type {WebSocketManager}
+     */
     this.manager = manager;
+    /**
+     * The client this belongs to
+     * @type {Client}
+     */
     this.client = manager.client;
+    /**
+     * The WebSocket connection itself
+     * @type {WebSocket}
+     */
     this.ws = null;
+    /**
+     * The current sequence of the WebSocket
+     * @type {number}
+     */
     this.sequence = -1;
+    /**
+     * The current status of the client
+     * @type {number}
+     */
     this.status = Constants.Status.IDLE;
+    /**
+     * The packet manager of the connection
+     * @type {WebSocketPacketManager}
+     */
     this.packetManager = new PacketManager(this);
+    /**
+     * The last time a ping was sent
+     * @type {number}
+     */
     this.pingSendTime = 0;
+    /**
+     * Contains the rate limit queue and metadata
+     * @type {Object}
+     */
     this.rateLimit = {
       queue: [],
       remaining: 120,
@@ -48,6 +80,10 @@ class WebSocketConnection extends EventEmitter {
     this.connect(gateway);
   }
 
+  /**
+   * Causes the client to be marked as ready and emits the ready event
+   * @returns {void}
+   */
   triggerReady() {
     if (this.status === Constants.Status.READY) return this.debug('Tried to mark self as ready, but already ready');
     this.status = Constants.Status.READY;
@@ -55,6 +91,10 @@ class WebSocketConnection extends EventEmitter {
     return this.packetManager.handleQueue();
   }
 
+  /**
+   * Checks whether the client is ready to be marked as ready
+   * @returns {void}
+   */
   checkIfReady() {
     if (this.status === Constants.Status.READY || this.status === Constants.Status.NEARLY) return false;
     let unavailableGuilds = 0;
@@ -77,11 +117,21 @@ class WebSocketConnection extends EventEmitter {
   }
 
   // Util
+  /**
+   * Emits a debug message
+   * @param {string} message the debug message
+   * @returns {void}
+   */
   debug(message) {
     if (message instanceof Error) message = message.stack;
     return this.manager.debug(`[connection] ${message}`);
   }
 
+  /**
+   * Attempts to serialise data from the WebSocket
+   * @param {string|Object} data the data to unpack
+   * @returns {Object}
+   */
   unpack(data) {
     if (erlpack && typeof data !== 'string') {
       if (data instanceof ArrayBuffer) data = Buffer.from(new Uint8Array(data));
@@ -92,10 +142,18 @@ class WebSocketConnection extends EventEmitter {
     return JSON.parse(data);
   }
 
+  /**
+   * Packs an object ready to be sent
+   * @param {Object} data the data to pack
+   * @returns {string|Buffer}
+   */
   pack(data) {
     return erlpack ? erlpack.pack(data) : JSON.stringify(data);
   }
 
+  /**
+   * Processes the current WebSocket queue
+   */
   processQueue() {
     if (this.rateLimit.remaining === 0) return;
     if (this.rateLimit.queue.length === 0) return;
@@ -113,6 +171,11 @@ class WebSocketConnection extends EventEmitter {
     }
   }
 
+  /**
+   * Sends data, bypassing the queue
+   * @param {Object} data The packet to send
+   * @returns {void}
+   */
   _send(data) {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
       return this.debug(`Tried to send packet ${data} but no WebSocket is available!`);
@@ -120,6 +183,11 @@ class WebSocketConnection extends EventEmitter {
     return this.ws.send(this.pack(data));
   }
 
+  /**
+   * Adds data to the queue to be sent
+   * @param {Object} data The packet to send
+   * @returns {void}
+   */
   send(data) {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
       return this.debug(`Tried to send packet ${data} but no WebSocket is available!`);
@@ -128,6 +196,13 @@ class WebSocketConnection extends EventEmitter {
     return this.processQueue();
   }
 
+  /**
+   * Creates a connection to a gateway
+   * @param {string} gateway the gateway to connect to
+   * @param {number} [after=0] How long to wait before connecting
+   * @param {boolean} [force=false] Whether or not to force a new connection even if one already exists
+   * @returns {boolean}
+   */
   connect(gateway = this.gateway, after = 0, force = false) {
     if (after) return this.client.setTimeout(() => this.connect(gateway, 0, force), after); // eslint-disable-line
     if (this.ws && !force) return this.debug('WebSocket connection already exists');
@@ -145,6 +220,10 @@ class WebSocketConnection extends EventEmitter {
     return true;
   }
 
+  /**
+   * Destroys the connection
+   * @returns {boolean}
+   */
   destroy() {
     const ws = this.ws;
     if (!ws) return this.debug('Attempted to destroy WebSocket but no connection exists!');
@@ -155,6 +234,11 @@ class WebSocketConnection extends EventEmitter {
     return true;
   }
 
+  /**
+   * Called whenever a message is received
+   * @param {Event} event The event received
+   * @returns {boolean} 
+   */
   onMessage(event) {
     try {
       this.onPacket(this.unpack(event.data));
@@ -165,10 +249,19 @@ class WebSocketConnection extends EventEmitter {
     }
   }
 
+  /**
+   * Sets the current sequence of the connection
+   * @param {number} s The new sequence
+   */
   setSequence(s) {
     this.sequence = s > this.sequence ? s : this.sequence;
   }
 
+  /**
+   * Called whenever a packet is received
+   * @param {Object} packet The received packet
+   * @returns {boolean}
+   */
   onPacket(packet) {
     if (!packet) return this.debug('Received null packet');
     this.client.emit('raw', packet);
@@ -192,20 +285,35 @@ class WebSocketConnection extends EventEmitter {
     return false;
   }
 
+  /**
+   * Called whenever a connection is opened to the gateway
+   * @param {Event} event The received open event
+   */
   onOpen(event) {
     this.gateway = event.target.url;
     this.debug(`Connected to gateway ${this.gateway}`);
     this.identify();
   }
 
+  /**
+   * Causes a reconnection to the gateway
+   */
   reconnect() {
     this.connect(this.gateway, 5500, true);
   }
 
+  /**
+   * Called whenever an error occurs with the WebSocket
+   * @param {Error} error The error
+   */
   onError(error) {
     this.debug(error);
   }
 
+  /**
+   * Called whenever a connection to the gateway is closed
+   * @param {CloseEvent} event The close event
+   */
   onClose(event) {
     this.debug(`Closed: ${event.code}`);
     // Reset the state before trying to fix anything
@@ -217,10 +325,17 @@ class WebSocketConnection extends EventEmitter {
   }
 
   // Heartbeat
+  /**
+   * Acknowledges a heartbeat
+   */
   ackHeartbeat() {
     this.client._pong(this.pingSendTime);
   }
 
+  /**
+   * Sends a heartbeat or sets an interval for sending heartbeats.
+   * @param {number} [time] If -1, clears the interval, any other number sets an interval. No value will send a heartbeat instantly.
+   */
   heartbeat(time) {
     if (!isNaN(time)) {
       if (time === -1) {
@@ -242,11 +357,20 @@ class WebSocketConnection extends EventEmitter {
   }
 
   // Identification
+  /**
+   * Identifies the client on a connection
+   * @param {number} [after] How long to wait before identifying
+   * @returns {void}
+   */
   identify(after) {
     if (after) return this.client.setTimeout(this.identify.apply(this), after);
     return this.sessionID ? this.identifyResume() : this.identifyNew();
   }
 
+  /**
+   * Identifies as a new connection on the gateway
+   * @returns {void}
+   */
   identifyNew() {
     if (!this.client.token) {
       return this.debug('No token available to identify a new session with');
@@ -263,6 +387,10 @@ class WebSocketConnection extends EventEmitter {
     return this.send({ op: Constants.OPCodes.IDENTIFY, d });
   }
 
+  /**
+   * Resumes a session on the gateway
+   * @returns {void}
+   */
   identifyResume() {
     if (!this.sessionID) {
       this.debug('Warning: wanted to resume but session ID not available; identifying as a new session instead');

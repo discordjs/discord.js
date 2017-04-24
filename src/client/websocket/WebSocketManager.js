@@ -46,7 +46,7 @@ class WebSocketManager extends EventEmitter {
 
   /**
    * Emits a debug event
-   * @param {string} message the debug message
+   * @param {string} message The debug message
    * @returns {void}
    */
   debug(message) {
@@ -64,7 +64,7 @@ class WebSocketManager extends EventEmitter {
 
   /**
    * Send a packet on the available WebSocket
-   * @param {Object} packet the packet to send
+   * @param {Object} packet The packet to send
    * @returns {void}
    */
   send(packet) {
@@ -74,7 +74,7 @@ class WebSocketManager extends EventEmitter {
 
   /**
    * Connects the client to a gateway
-   * @param {string} gateway the gateway to connect to
+   * @param {string} gateway The gateway to connect to
    * @returns {boolean}
    */
   connect(gateway) {
