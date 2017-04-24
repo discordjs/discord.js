@@ -13,6 +13,8 @@ class ResumedHandler extends AbstractHandler {
     client.emit('debug', `RESUMED ${ws._trace.join(' -> ')} | replayed ${replayed} events. `);
     client.emit('resume', replayed);
 
+    ws.connection.triggerReady();
+
     ws.heartbeat();
   }
 }

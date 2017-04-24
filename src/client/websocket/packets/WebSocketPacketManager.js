@@ -63,12 +63,12 @@ class WebSocketPacketManager {
 
   handleQueue() {
     this.queue.forEach((element, index) => {
-      this.handle(this.queue[index]);
+      this.handle(this.queue[index], true);
       this.queue.splice(index, 1);
     });
   }
 
-  handle(packet) {
+  handle(packet, queue = false) {
     if (packet.op === Constants.OPCodes.HEARTBEAT_ACK) {
       this.ws.client._pong(this.ws.client._pingTimestamp);
       this.ws.lastHeartbeatAck = true;
@@ -96,6 +96,8 @@ class WebSocketPacketManager {
         return false;
       }
     }
+
+    if (!queue && this.queue.length > 0) this.handleQueue();
 
     if (this.handlers[packet.t]) return this.handlers[packet.t].handle(packet);
     return false;
