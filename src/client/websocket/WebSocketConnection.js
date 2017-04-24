@@ -39,6 +39,7 @@ class WebSocketConnection extends EventEmitter {
     this.sequence = -1;
     this.status = Constants.Status.IDLE;
     this.packetManager = new PacketManager(this);
+    this.pingSendTime = 0;
     this.connect(gateway);
   }
 
@@ -130,7 +131,6 @@ class WebSocketConnection extends EventEmitter {
   onPacket(packet) {
     if (!packet) return this.debug('Received null packet');
     this.client.emit('raw', packet);
-    this.debug((packet.t ? packet.t : JSON.stringify(packet)) + " " + this.status);
     switch (packet.op) {
       case Constants.OPCodes.HELLO:
         return this.heartbeat(packet.d.heartbeat_interval);
@@ -140,10 +140,10 @@ class WebSocketConnection extends EventEmitter {
         if (!packet.d) this.sessionID = null;
         return this.identify(packet.d ? 2500 : 0);
       case Constants.OPCodes.HEARTBEAT_ACK:
-        // Todo
+        this.ackHeartbeat();
         break;
       case Constants.OPCodes.HEARTBEAT:
-        // Todo
+        this.heartbeat();
         break;
       default:
         return this.packetManager.handle(packet);
@@ -176,6 +176,10 @@ class WebSocketConnection extends EventEmitter {
   }
 
   // Heartbeat
+  ackHeartbeat() {
+    this.client._pong(this.pingSendTime);
+  }
+
   heartbeat(time) {
     if (!isNaN(time)) {
       if (time === -1 && this.heartbeatInterval) {
@@ -189,6 +193,7 @@ class WebSocketConnection extends EventEmitter {
       return;
     }
     this.debug('Sending a heartbeat');
+    this.pingSendTime = Date.now();
     this.send({
       op: Constants.OPCodes.HEARTBEAT,
       d: this.sequence,
