@@ -91,7 +91,7 @@ class GuildAuditLogs {
       Actions.WEBHOOK_UPDATE,
       Actions.EMOJI_UPDATE,
     ].includes(method)) return 'UPDATE';
-    
+
     // Discord client source suggests I should return 'UPDATE' if nothing else matches
     return 'UPDATE';
   }
