@@ -40,6 +40,11 @@ class WebSocketConnection extends EventEmitter {
     this.status = Constants.Status.IDLE;
     this.packetManager = new PacketManager(this);
     this.pingSendTime = 0;
+    this.rateLimit = {
+      queue: [],
+      remaining: 120,
+      resetTime: -1,
+    };
     this.connect(gateway);
   }
 
@@ -91,11 +96,36 @@ class WebSocketConnection extends EventEmitter {
     return erlpack ? erlpack.pack(data) : JSON.stringify(data);
   }
 
-  send(data) {
+  processQueue() {
+    if (this.rateLimit.remaining === 0) return;
+    if (this.rateLimit.queue.length === 0) return;
+    if (this.rateLimit.remaining === 120) {
+      this.rateLimit.resetTimer = setTimeout(() => {
+        this.rateLimit.remaining = 120;
+        this.processQueue();
+      }, 120e3); // eslint-disable-line
+    }
+    while (this.rateLimit.remaining > 0) {
+      const item = this.rateLimit.queue.shift();
+      if (!item) return;
+      this._send(item);
+      this.rateLimit.remaining--;
+    }
+  }
+
+  _send(data) {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
       return this.debug(`Tried to send packet ${data} but no WebSocket is available!`);
     }
     return this.ws.send(this.pack(data));
+  }
+
+  send(data) {
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+      return this.debug(`Tried to send packet ${data} but no WebSocket is available!`);
+    }
+    this.rateLimit.queue.push(data);
+    return this.processQueue();
   }
 
   connect(gateway = this.gateway, after = 0, force = false) {
