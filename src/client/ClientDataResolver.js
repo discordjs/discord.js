@@ -291,7 +291,7 @@ class ClientDataResolver {
    * [255, 0, 255]
    * ```
    * for purple
-   * @typedef {String|number|Array} ColorResolvable
+   * @typedef {string|number|Array} ColorResolvable
    */
 
   /**

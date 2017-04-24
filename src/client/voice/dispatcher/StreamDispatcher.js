@@ -9,9 +9,9 @@ nonce.fill(0);
 /**
  * The class that sends voice packet data to the voice connection.
  * ```js
- * // obtained using:
+ * // Obtained using:
  * voiceChannel.join().then(connection => {
- *   // you can play a file or a stream here:
+ *   // You can play a file or a stream here:
  *   const dispatcher = connection.playFile('./file.mp3');
  * });
  * ```
