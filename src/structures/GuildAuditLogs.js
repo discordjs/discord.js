@@ -47,18 +47,18 @@ class GuildAuditLogs {
     for (const entry of data.audit_log_entries) this.entries.push(new GuildAuditLogsEntry(guild, entry));
   }
 
-  static rootType(type) {
-    if (type < 10) return Targets.GUILD;
-    if (type < 20) return Targets.CHANNEL;
-    if (type < 30) return Targets.USER;
-    if (type < 40) return Targets.ROLE;
-    if (type < 50) return Targets.INVITE;
-    if (type < 60) return Targets.WEBHOOK;
-    if (type < 70) return Targets.EMOJI;
+  static rootTarget(target) {
+    if (target < 10) return Targets.GUILD;
+    if (target < 20) return Targets.CHANNEL;
+    if (target < 30) return Targets.USER;
+    if (target < 40) return Targets.ROLE;
+    if (target < 50) return Targets.INVITE;
+    if (target < 60) return Targets.WEBHOOK;
+    if (target < 70) return Targets.EMOJI;
     return null;
   }
 
-  static rootMethod(method) {
+  static rootAction(action) {
     if ([
       Actions.CHANNEL_CREATE,
       Actions.CHANNEL_OVERWRITE_CREATE,
@@ -67,7 +67,7 @@ class GuildAuditLogs {
       Actions.INVITE_CREATE,
       Actions.WEBHOOK_CREATE,
       Actions.EMOJI_CREATE,
-    ].includes(method)) return 'CREATE';
+    ].includes(action)) return 'CREATE';
 
     if ([
       Actions.CHANNEL_DELETE,
@@ -79,7 +79,7 @@ class GuildAuditLogs {
       Actions.INVITE_DELETE,
       Actions.WEBHOOK_DELETE,
       Actions.EMOJI_DELETE,
-    ].includes(method)) return 'DELETE';
+    ].includes(action)) return 'DELETE';
 
     if ([
       Actions.GUILD_UPDATE,
@@ -90,7 +90,7 @@ class GuildAuditLogs {
       Actions.INVITE_UPDATE,
       Actions.WEBHOOK_UPDATE,
       Actions.EMOJI_UPDATE,
-    ].includes(method)) return 'UPDATE';
+    ].includes(action)) return 'UPDATE';
 
     // Discord client source suggests I should return 'UPDATE' if nothing else matches
     return 'UPDATE';
@@ -102,7 +102,7 @@ GuildAuditLogs.Targets = Targets;
 
 class GuildAuditLogsEntry {
   constructor(guild, data) {
-    const root = GuildAuditLogs.rootType(data.action_type);
+    const root = GuildAuditLogs.rootTarget(data.action_type);
     /**
      * Root action type of this entry
      * @type {string}
@@ -110,16 +110,16 @@ class GuildAuditLogsEntry {
     this.root = root;
 
     /**
+     * Action type of this entry
+     * @type {string}
+     */
+    this.type = GuildAuditLogs.rootAction(data.action_type);
+
+    /**
      * Specific action type of this entry
      * @type {string}
      */
-    this.type = Object.keys(Actions).find(k => Actions[k] === data.action_type);
-
-    /**
-     * Method of this entry
-     * @type {string}
-     */
-    this.method = GuildAuditLogs.rootMethod(data.action_type);
+    this.action = Object.keys(Actions).find(k => Actions[k] === data.action_type);
 
     if (['USER', 'GUILD'].includes(root)) {
       /**
