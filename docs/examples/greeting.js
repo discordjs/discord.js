@@ -19,7 +19,7 @@ client.on('ready', () => {
 
 // Create an event listener for new guild members
 client.on('guildMemberAdd', member => {
-  // Send the message, mentioning the member
+  // Send the message, mentioning the member to the guilds default channel (usually #general)
   member.guild.defaultChannel.send(`Welcome to the server, ${member}!`);
 
   // If you want to send the message to a designated channel on a server instead
@@ -27,6 +27,7 @@ client.on('guildMemberAdd', member => {
   const channel = member.guild.channels.find('name', 'member-log');
   // Do nothing if the channel wasn't found on this server
   if (!channel) return;
+  // Send the message, mentioning the member
   channel.send(`Welcome to the server, ${member}`);
 });
 
