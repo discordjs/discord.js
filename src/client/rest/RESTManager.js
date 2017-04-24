@@ -15,6 +15,12 @@ class RESTManager {
     this.globallyRateLimited = false;
   }
 
+  destroy() {
+    for (const handlerID in this.handlers) {
+      this.handlers[handlerID].destroy();
+    }
+  }
+
   push(handler, apiRequest) {
     return new Promise((resolve, reject) => {
       handler.push({

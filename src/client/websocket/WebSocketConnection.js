@@ -51,7 +51,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   checkIfReady() {
-    if (this.status === Constants.Status.READY || this.status === Constants.Status.NEARLY) return;
+    if (this.status === Constants.Status.READY || this.status === Constants.Status.NEARLY) return false;
     let unavailableGuilds = 0;
     for (const guild of this.client.guilds.values()) {
       unavailableGuilds += guild.available ? 0 : 1;
@@ -68,6 +68,7 @@ class WebSocketConnection extends EventEmitter {
           this.triggerReady();
         });
     }
+    return true;
   }
 
   // Util
@@ -111,6 +112,16 @@ class WebSocketConnection extends EventEmitter {
     ws.onerror = this.onError.bind(this);
     ws.onclose = this.onClose.bind(this);
     this.status = Constants.Status.CONNECTING;
+    return true;
+  }
+
+  destroy() {
+    const ws = this.ws;
+    if (!ws) return this.debug('Attempted to destroy WebSocket but no connection exists!');
+    this.heartbeat(-1);
+    ws.close(1000);
+    this.packetManager.handleQueue();
+    this.ws = null;
     return true;
   }
 
@@ -173,6 +184,7 @@ class WebSocketConnection extends EventEmitter {
     // Should we reconnect?
     const shouldReconnect = ![1000, 4004, 4010, 4011].includes(event.code);
     if (shouldReconnect) this.reconnect();
+    else this.destroy();
   }
 
   // Heartbeat
@@ -182,7 +194,7 @@ class WebSocketConnection extends EventEmitter {
 
   heartbeat(time) {
     if (!isNaN(time)) {
-      if (time === -1 && this.heartbeatInterval) {
+      if (time === -1) {
         this.debug('Clearing heartbeat interval');
         this.client.clearInterval(this.heartbeatInterval);
         this.heartbeatInterval = null;

@@ -44,6 +44,11 @@ class WebSocketManager extends EventEmitter {
     return this.client.emit('debug', `[ws] ${message}`);
   }
 
+  destroy() {
+    if (!this.connection) return this.debug('Attempted to destroy WebSocket but no connection exists!');
+    return this.connection.destroy();
+  }
+
   connect(gateway) {
     if (!this.connection) {
       this.connection = new WebSocketConnection(this, gateway);
