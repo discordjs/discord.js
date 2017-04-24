@@ -311,6 +311,11 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
+   * @external CloseEvent
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent}
+   */
+
+  /**
    * Called whenever a connection to the gateway is closed
    * @param {CloseEvent} event Close event that was received
    */
