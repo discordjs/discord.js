@@ -434,7 +434,6 @@ const Deprecated = {
 
   /**
    * Send files to this channel
-   * @name TextBasedChannel#sendFiles
    * @param {FileOptions[]|string[]} files Files to send with the message
    * @param {StringResolvable} [content] Text for the message
    * @param {MessageOptions} [options] Options for the message
