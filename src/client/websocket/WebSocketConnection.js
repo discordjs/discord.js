@@ -96,13 +96,13 @@ class WebSocketConnection extends EventEmitter {
     return this.ws.send(this.pack(data));
   }
 
-  connect(gateway, after = 0) {
-    if (after) return this.client.setTimeout(this.connect.apply(this, gateway), after); // eslint-disable-line
-    if (this.ws) return this.debug('WebSocket connection already exists');
+  connect(gateway = this.gateway, after = 0, force = false) {
+    if (after) return this.client.setTimeout(() => this.connect(gateway, 0, force), after); // eslint-disable-line
+    if (this.ws && !force) return this.debug('WebSocket connection already exists');
     if (typeof gateway !== 'string') return this.debug(`Tried to connect to an invalid gateway: ${gateway}`);
 
     this.gateway = gateway;
-
+    this.debug(`Connecting to ${gateway}`);
     const ws = this.ws = new WebSocket(gateway);
     if (browser) ws.binaryType = 'arraybuffer';
     ws.onmessage = this.onMessage.bind(this);
@@ -130,6 +130,7 @@ class WebSocketConnection extends EventEmitter {
   onPacket(packet) {
     if (!packet) return this.debug('Received null packet');
     this.client.emit('raw', packet);
+    this.debug((packet.t ? packet.t : JSON.stringify(packet)) + " " + this.status);
     switch (packet.op) {
       case Constants.OPCodes.HELLO:
         return this.heartbeat(packet.d.heartbeat_interval);
@@ -156,20 +157,31 @@ class WebSocketConnection extends EventEmitter {
     this.identify();
   }
 
+  reconnect() {
+    this.connect(this.gateway, 5500, true);
+  }
+
   onError(error) {
     this.debug(error);
   }
 
   onClose(event) {
     this.debug(`Closed: ${event.code}`);
+    // Reset the state before trying to fix anything
+    this.emit('close', event);
+    this.heartbeat(-1);
+    // Should we reconnect?
+    const shouldReconnect = ![1000, 4004, 4010, 4011].includes(event.code);
+    if (shouldReconnect) this.reconnect();
   }
 
   // Heartbeat
   heartbeat(time) {
     if (!isNaN(time)) {
-      if (time === -1) {
+      if (time === -1 && this.heartbeatInterval) {
         this.debug('Clearing heartbeat interval');
         this.client.clearInterval(this.heartbeatInterval);
+        this.heartbeatInterval = null;
       } else {
         this.debug(`Setting a heartbeat interval for ${time}ms`);
         this.heartbeatInterval = this.client.setInterval(() => this.heartbeat(), time);
