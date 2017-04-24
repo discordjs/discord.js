@@ -16000,7 +16000,7 @@ class WebSocketConnection extends EventEmitter {
       // Fetch all members before marking self as ready
       const promises = this.client.guilds.map(g => g.fetchMembers());
       Promise.all(promises)
-        .then(this.triggerReady.apply(this))
+        .then(() => this.triggerReady())
         .catch(e => {
           this.debug(`Failed to fetch all members before ready! ${e}`);
           this.triggerReady();
