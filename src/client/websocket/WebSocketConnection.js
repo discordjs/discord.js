@@ -274,15 +274,12 @@ class WebSocketConnection extends EventEmitter {
         if (!packet.d) this.sessionID = null;
         return this.identify(packet.d ? 2500 : 0);
       case Constants.OPCodes.HEARTBEAT_ACK:
-        this.ackHeartbeat();
-        break;
+        return this.ackHeartbeat();
       case Constants.OPCodes.HEARTBEAT:
-        this.heartbeat();
-        break;
+        return this.heartbeat();
       default:
         return this.packetManager.handle(packet);
     }
-    return false;
   }
 
   /**
@@ -299,6 +296,7 @@ class WebSocketConnection extends EventEmitter {
    * Causes a reconnection to the gateway
    */
   reconnect() {
+    this.client.emit(Constants.Events.RECONNECTING);
     this.connect(this.gateway, 5500, true);
   }
 
