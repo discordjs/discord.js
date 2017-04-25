@@ -16367,6 +16367,7 @@ const Constants = __webpack_require__(0);
 
 const BeforeReadyWhitelist = [
   Constants.WSEvents.READY,
+  Constants.WSEvents.RESUMED,
   Constants.WSEvents.GUILD_CREATE,
   Constants.WSEvents.GUILD_DELETE,
   Constants.WSEvents.GUILD_MEMBERS_CHUNK,
