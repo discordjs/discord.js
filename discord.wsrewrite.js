@@ -16265,6 +16265,7 @@ class WebSocketConnection extends EventEmitter {
    * Acknowledges a heartbeat
    */
   ackHeartbeat() {
+    this.debug(`Heartbeat acknowledged, latency of ${Date.now() - this.pingSendTime}ms`);
     this.client._pong(this.pingSendTime);
   }
 
