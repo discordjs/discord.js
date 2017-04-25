@@ -138,9 +138,7 @@ class Emoji {
    * @returns {Promise<Emoji>}
    */
   addRestrictedRole(role) {
-    const newRoles = new Collection(this.roles);
-    newRoles.set(role.id, role);
-    return this.edit({ roles: newRoles });
+    return this.addRestrictedRoles([role]);
   }
 
   /**
@@ -154,6 +152,28 @@ class Emoji {
       if (this.guild.roles.has(role.id)) newRoles.set(role.id, role);
     }
     return this.edit({ roles: newRoles });
+  }
+
+  /**
+   * Remove a role from the list of roles that can use this emoji
+   * @param {Role} role The role to remove
+   * @returns {Promise<Emoji>}
+   */
+  removeRestrictedRole(role) {
+    return this.removeRestrictedRoles([role]);
+  }
+
+  /**
+   * Remove multiple roles from the list of roles that can use this emoji
+   * @param {Array<Role>} roles Roles to remove
+   * @returns {Promise<Emoji>}
+   */
+  removeRestrictedRoles(roles) {
+    const newRoles = new Collection(this.roles);
+    for (const role of roles) {
+      if (newRoles.has(role.id)) newRoles.delete(role.id);
+    }
+    return newRoles;
   }
 
   /**
