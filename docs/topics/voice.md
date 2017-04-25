@@ -12,7 +12,7 @@ To get started, make sure you have:
 
 ## Joining a voice channel
 The example below reacts to a message and joins the sender's voice channel, catching any errors. This is important
-as it allows us to obtain a `VoiceConnection` that we can start to stream audio with
+as it allows us to obtain a `VoiceConnection` that we can start to stream audio with.
 
 ```js
 const Discord = require('discord.js');
@@ -21,15 +21,15 @@ const client = new Discord.Client();
 client.login('token here');
 
 client.on('message', message => {
-  // voice only works in guilds, if the message does not come from a guild,
+  // Voice only works in guilds, if the message does not come from a guild,
   // we ignore it
   if (!message.guild) return;
 
   if (message.content === '/join') {
-    // only try to join the sender's voice channel if they are in one themselves
+    // Only try to join the sender's voice channel if they are in one themselves
     if (message.member.voiceChannel) {
       message.member.voiceChannel.join()
-        .then(connection => { // connection is an instance of VoiceConnection
+        .then(connection => { // Connection is an instance of VoiceConnection
           message.reply('I have successfully connected to the channel!');
         })
         .catch(console.log);
@@ -47,7 +47,7 @@ file:
 
 **Playing a file:**
 ```js
-// to play a file, we need to give an absolute path to it
+// To play a file, we need to give an absolute path to it
 const dispatcher = connection.playFile('C:/Users/Discord/Desktop/myfile.mp3');
 ```
 
@@ -58,23 +58,23 @@ channel. We can do many things with the dispatcher, such as finding out when the
 
 ```js
 dispatcher.on('end', () => {
-  // the song has finished
+  // The song has finished
 });
 
 dispatcher.on('error', e => {
-  // catch any errors that may arise
+  // Catch any errors that may arise
   console.log(e);
 });
 
-dispatcher.setVolume(0.5); // set the volume to 50%
-dispatcher.setVolume(1); // set the volume back to 100%
+dispatcher.setVolume(0.5); // Set the volume to 50%
+dispatcher.setVolume(1); // Set the volume back to 100%
 
-console.log(dispatcher.time); // the time in milliseconds that the stream dispatcher has been playing for
+console.log(dispatcher.time); // The time in milliseconds that the stream dispatcher has been playing for
 
-dispatcher.pause(); // pause the stream
-dispatcher.resume(); // carry on playing
+dispatcher.pause(); // Pause the stream
+dispatcher.resume(); // Carry on playing
 
-dispatcher.end(); // end the dispatcher, emits 'end' event
+dispatcher.end(); // End the dispatcher, emits 'end' event
 ```
 
 If you have an existing [ReadableStream](https://nodejs.org/api/stream.html#stream_readable_streams),
@@ -84,7 +84,7 @@ this can also be used:
 ```js
 connection.playStream(myReadableStream);
 
-// if you don't want to use absolute paths, you can use
+// If you don't want to use absolute paths, you can use
 // fs.createReadStream to circumvent it
 
 const fs = require('fs');
@@ -99,7 +99,7 @@ It's important to note that creating a readable stream to a file is less efficie
 For anything else, such as a URL to a file, you can use `connection.playArbitraryInput()`. You should consult the [ffmpeg protocol documentation](https://ffmpeg.org/ffmpeg-protocols.html) to see what you can use this for.
 
 ```js
-// play an mp3 from a URL
+// Play an mp3 from a URL
 connection.playArbitraryInput('http://mysite.com/sound.mp3');
 ```
 
