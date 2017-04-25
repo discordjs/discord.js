@@ -22,9 +22,9 @@ class Logger extends EventEmitter {
       this.emit(l, ...rest);
     }
   }
-  
+
   on(event, cb, strict = true) {
-    return super.on(strict ? `strict_${event}`: event, cb);
+    return super.on(strict ? `strict_${event}` : event, cb);
   }
 }
 
