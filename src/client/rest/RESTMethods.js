@@ -159,7 +159,7 @@ class RESTMethods {
   }
 
   ackTextChannel(channel) {
-    return this.rest.makeRequest('post', Endpoints.Channel(channel).Message(Snowflake.generate()).ack, true, {
+    return this.rest.makeRequest('post', Endpoints.Channel(channel).Message(channel.lastMessageID).ack, true, {
       token: this._ackToken,
     }).then(res => {
       if (res.token) this._ackToken = res.token;

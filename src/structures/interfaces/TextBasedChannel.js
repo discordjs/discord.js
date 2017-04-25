@@ -385,6 +385,7 @@ class TextBasedChannel {
    * @returns {Promise<TextChannel|GroupDMChannel|DMChannel>}
    */
   acknowledge() {
+    if (!this.lastMessageID) return Promise.resolve(this);
     return this.client.rest.methods.ackTextChannel(this);
   }
 
