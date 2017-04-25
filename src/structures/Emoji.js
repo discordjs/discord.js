@@ -173,7 +173,7 @@ class Emoji {
     for (const role of roles) {
       if (newRoles.has(role.id)) newRoles.delete(role.id);
     }
-    return newRoles;
+    return this.edit({ roles: newRoles });
   }
 
   /**
