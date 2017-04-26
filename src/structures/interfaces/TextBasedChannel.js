@@ -502,7 +502,7 @@ exports.applyToClass = (structure, full = false, ignore = []) => {
       'fetchPinnedMessages',
       'createCollector',
       'createMessageCollector',
-      'awaitMessages'
+      'awaitMessages',
       'nsfw',
     );
   }
