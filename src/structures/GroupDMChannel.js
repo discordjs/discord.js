@@ -172,7 +172,6 @@ class GroupDMChannel extends Channel {
   awaitMessages() {}
   // Doesn't work on group DMs; bulkDelete() {}
   acknowledge() {}
-  get nsfw() {}
   _cacheMessage() {}
 }
 
