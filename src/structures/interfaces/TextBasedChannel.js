@@ -486,7 +486,7 @@ for (const key of Object.keys(Deprecated)) {
 }
 
 exports.applyToClass = (structure, full = false, ignore = []) => {
-  const props = ['send', 'sendMessage', 'sendEmbed', 'sendFile', 'sendFiles', 'sendCode', 'nsfw'];
+  const props = ['send', 'sendMessage', 'sendEmbed', 'sendFile', 'sendFiles', 'sendCode'];
   if (full) {
     props.push(
       '_cacheMessage',
@@ -503,6 +503,7 @@ exports.applyToClass = (structure, full = false, ignore = []) => {
       'createCollector',
       'createMessageCollector',
       'awaitMessages'
+      'nsfw',
     );
   }
   for (const prop of props) {
