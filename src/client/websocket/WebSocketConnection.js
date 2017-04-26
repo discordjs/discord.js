@@ -299,6 +299,7 @@ class WebSocketConnection extends EventEmitter {
         return this.reconnect();
       case Constants.OPCodes.INVALID_SESSION:
         if (!packet.d) this.sessionID = null;
+        this.debug('Session invalidated -- will identify with a new session');
         return this.identify(packet.d ? 2500 : 0);
       case Constants.OPCodes.HEARTBEAT_ACK:
         return this.ackHeartbeat();
@@ -323,6 +324,7 @@ class WebSocketConnection extends EventEmitter {
    * Causes a reconnection to the gateway
    */
   reconnect() {
+    this.debug('Attemping to reconnect in 5500ms...');
     this.client.emit(Constants.Events.RECONNECTING);
     this.connect(this.gateway, 5500, true);
   }
