@@ -1333,8 +1333,8 @@ module.exports = Util;
 
 
 
-var base64 = __webpack_require__(74)
-var ieee754 = __webpack_require__(77)
+var base64 = __webpack_require__(73)
+var ieee754 = __webpack_require__(76)
 var isArray = __webpack_require__(54)
 
 exports.Buffer = Buffer
@@ -6314,7 +6314,7 @@ exports.Readable = exports;
 exports.Writable = __webpack_require__(35);
 exports.Duplex = __webpack_require__(13);
 exports.Transform = __webpack_require__(56);
-exports.PassThrough = __webpack_require__(82);
+exports.PassThrough = __webpack_require__(81);
 
 
 /***/ }),
@@ -6325,7 +6325,7 @@ const path = __webpack_require__(26);
 const Message = __webpack_require__(19);
 const MessageCollector = __webpack_require__(44);
 const Collection = __webpack_require__(3);
-const util = __webpack_require__(102);
+const util = __webpack_require__(101);
 
 /**
  * Interface for classes that have text-channel-like features
@@ -10355,8 +10355,8 @@ function nextTick(fn, arg1, arg2, arg3) {
 "use strict";
 
 
-exports.decode = exports.parse = __webpack_require__(79);
-exports.encode = exports.stringify = __webpack_require__(80);
+exports.decode = exports.parse = __webpack_require__(78);
+exports.encode = exports.stringify = __webpack_require__(79);
 
 
 /***/ }),
@@ -10393,7 +10393,7 @@ util.inherits = __webpack_require__(10);
 
 /*<replacement>*/
 var internalUtil = {
-  deprecate: __webpack_require__(99)
+  deprecate: __webpack_require__(98)
 };
 /*</replacement>*/
 
@@ -10908,13 +10908,13 @@ function CorkedRequest(state) {
     }
   };
 }
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(96).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(95).setImmediate))
 
 /***/ }),
 /* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(__dirname, Buffer, process) {const Snekfetch = __webpack_require__(90);
+/* WEBPACK VAR INJECTION */(function(__dirname, Buffer, process) {const Snekfetch = __webpack_require__(89);
 
 const ENV_VAR = '__SNEKFETCH_SYNC_REQUEST';
 let first = true;
@@ -12149,7 +12149,7 @@ module.exports = MessageAttachment;
 /* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Collector = __webpack_require__(67);
+const Collector = __webpack_require__(66);
 
 /**
  * @typedef {CollectorOptions} MessageCollectorOptions
@@ -13468,7 +13468,7 @@ if (debugUtil && debugUtil.debuglog) {
 }
 /*</replacement>*/
 
-var BufferList = __webpack_require__(83);
+var BufferList = __webpack_require__(82);
 var StringDecoder;
 
 util.inherits(Readable, Stream);
@@ -14582,10 +14582,10 @@ var inherits = __webpack_require__(10);
 
 inherits(Stream, EE);
 Stream.Readable = __webpack_require__(21);
-Stream.Writable = __webpack_require__(86);
-Stream.Duplex = __webpack_require__(81);
-Stream.Transform = __webpack_require__(85);
-Stream.PassThrough = __webpack_require__(84);
+Stream.Writable = __webpack_require__(85);
+Stream.Duplex = __webpack_require__(80);
+Stream.Transform = __webpack_require__(84);
+Stream.PassThrough = __webpack_require__(83);
 
 // Backwards-compat with node 0.4.x
 Stream.Stream = Stream;
@@ -14687,9 +14687,9 @@ Stream.prototype.pipe = function(dest, options) {
 /* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {var ClientRequest = __webpack_require__(94)
-var extend = __webpack_require__(104)
-var statusCodes = __webpack_require__(75)
+/* WEBPACK VAR INJECTION */(function(global) {var ClientRequest = __webpack_require__(93)
+var extend = __webpack_require__(103)
+var statusCodes = __webpack_require__(74)
 var url = __webpack_require__(61)
 
 var http = exports
@@ -14872,8 +14872,8 @@ xhr = null // Help gc
 
 
 
-var punycode = __webpack_require__(78);
-var util = __webpack_require__(98);
+var punycode = __webpack_require__(77);
+var util = __webpack_require__(97);
 
 exports.parse = urlParse;
 exports.resolve = urlResolve;
@@ -15814,11 +15814,11 @@ function base64DetectIncompleteChar(buffer) {
 /* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const UserAgentManager = __webpack_require__(140);
-const RESTMethods = __webpack_require__(137);
-const SequentialRequestHandler = __webpack_require__(139);
-const BurstRequestHandler = __webpack_require__(138);
-const APIRequest = __webpack_require__(136);
+const UserAgentManager = __webpack_require__(139);
+const RESTMethods = __webpack_require__(136);
+const SequentialRequestHandler = __webpack_require__(138);
+const BurstRequestHandler = __webpack_require__(137);
+const APIRequest = __webpack_require__(135);
 const Constants = __webpack_require__(0);
 
 class RESTManager {
@@ -15940,7 +15940,7 @@ module.exports = RequestHandler;
 const EventEmitter = __webpack_require__(12);
 const Constants = __webpack_require__(0);
 const zlib = __webpack_require__(27);
-const PacketManager = __webpack_require__(66);
+const PacketManager = __webpack_require__(141);
 const erlpack = (function findErlpack() {
   try {
     const e = __webpack_require__(187);
@@ -16005,17 +16005,28 @@ class WebSocketConnection extends EventEmitter {
      * Last time a ping was sent (a timestamp)
      * @type {number}
      */
-    this.pingSendTime = 0;
+    this.lastPingTimestamp = 0;
     /**
      * Contains the rate limit queue and metadata
      * @type {Object}
      */
-    this.rateLimit = {
+    this.ratelimit = {
       queue: [],
       remaining: 120,
       resetTime: -1,
     };
     this.connect(gateway);
+    /**
+     * Events that are disabled (will not be processed)
+     * @type {Object}
+     */
+    this.disabledEvents = {};
+    /**
+     * Sequence on WebSocket close
+     * @type {number}
+     */
+    this.closeSequence = 0;
+    for (const event of this.client.options.disabledEvents) this.disabledEvents[event] = true;
   }
 
   /**
@@ -16023,10 +16034,13 @@ class WebSocketConnection extends EventEmitter {
    * @returns {void}
    */
   triggerReady() {
-    if (this.status === Constants.Status.READY) return this.debug('Tried to mark self as ready, but already ready');
+    if (this.status === Constants.Status.READY) {
+      this.debug('Tried to mark self as ready, but already ready');
+      return;
+    }
     this.status = Constants.Status.READY;
     this.client.emit(Constants.Events.READY);
-    return this.packetManager.handleQueue();
+    this.packetManager.handleQueue();
   }
 
   /**
@@ -16037,7 +16051,7 @@ class WebSocketConnection extends EventEmitter {
     if (this.status === Constants.Status.READY || this.status === Constants.Status.NEARLY) return false;
     let unavailableGuilds = 0;
     for (const guild of this.client.guilds.values()) {
-      unavailableGuilds += guild.available ? 0 : 1;
+      if (!guild.available) unavailableGuilds++;
     }
     if (unavailableGuilds === 0) {
       this.status = Constants.Status.NEARLY;
@@ -16093,19 +16107,19 @@ class WebSocketConnection extends EventEmitter {
    * Processes the current WebSocket queue
    */
   processQueue() {
-    if (this.rateLimit.remaining === 0) return;
-    if (this.rateLimit.queue.length === 0) return;
-    if (this.rateLimit.remaining === 120) {
-      this.rateLimit.resetTimer = setTimeout(() => {
-        this.rateLimit.remaining = 120;
+    if (this.ratelimit.remaining === 0) return;
+    if (this.ratelimit.queue.length === 0) return;
+    if (this.ratelimit.remaining === 120) {
+      this.ratelimit.resetTimer = setTimeout(() => {
+        this.ratelimit.remaining = 120;
         this.processQueue();
       }, 120e3); // eslint-disable-line
     }
-    while (this.rateLimit.remaining > 0) {
-      const item = this.rateLimit.queue.shift();
+    while (this.ratelimit.remaining > 0) {
+      const item = this.ratelimit.queue.shift();
       if (!item) return;
       this._send(item);
-      this.rateLimit.remaining--;
+      this.ratelimit.remaining--;
     }
   }
 
@@ -16116,9 +16130,10 @@ class WebSocketConnection extends EventEmitter {
    */
   _send(data) {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
-      return this.debug(`Tried to send packet ${data} but no WebSocket is available!`);
+      this.debug(`Tried to send packet ${data} but no WebSocket is available!`);
+      return;
     }
-    return this.ws.send(this.pack(data));
+    this.ws.send(this.pack(data));
   }
 
   /**
@@ -16128,10 +16143,11 @@ class WebSocketConnection extends EventEmitter {
    */
   send(data) {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
-      return this.debug(`Tried to send packet ${data} but no WebSocket is available!`);
+      this.debug(`Tried to send packet ${data} but no WebSocket is available!`);
+      return;
     }
-    this.rateLimit.queue.push(data);
-    return this.processQueue();
+    this.ratelimit.queue.push(data);
+    this.processQueue();
   }
 
   /**
@@ -16143,9 +16159,13 @@ class WebSocketConnection extends EventEmitter {
    */
   connect(gateway = this.gateway, after = 0, force = false) {
     if (after) return this.client.setTimeout(() => this.connect(gateway, 0, force), after); // eslint-disable-line
-    if (this.ws && !force) return this.debug('WebSocket connection already exists');
-    if (typeof gateway !== 'string') return this.debug(`Tried to connect to an invalid gateway: ${gateway}`);
-
+    if (this.ws && !force) {
+      this.debug('WebSocket connection already exists');
+      return false;
+    } else if (typeof gateway !== 'string') {
+      this.debug(`Tried to connect to an invalid gateway: ${gateway}`);
+      return false;
+    }
     this.gateway = gateway;
     this.debug(`Connecting to ${gateway}`);
     const ws = this.ws = new WebSocket(gateway);
@@ -16164,11 +16184,15 @@ class WebSocketConnection extends EventEmitter {
    */
   destroy() {
     const ws = this.ws;
-    if (!ws) return this.debug('Attempted to destroy WebSocket but no connection exists!');
+    if (!ws) {
+      this.debug('Attempted to destroy WebSocket but no connection exists!');
+      return false;
+    }
     this.heartbeat(-1);
     ws.close(1000);
     this.packetManager.handleQueue();
     this.ws = null;
+    this.status = Constants.Status.DISCONNECTED;
     return true;
   }
 
@@ -16201,7 +16225,10 @@ class WebSocketConnection extends EventEmitter {
    * @returns {boolean}
    */
   onPacket(packet) {
-    if (!packet) return this.debug('Received null packet');
+    if (!packet) {
+      this.debug('Received null packet');
+      return false;
+    }
     this.client.emit('raw', packet);
     switch (packet.op) {
       case Constants.OPCodes.HELLO:
@@ -16243,7 +16270,7 @@ class WebSocketConnection extends EventEmitter {
    * @param {Error} error Error that occurred
    */
   onError(error) {
-    this.debug(error);
+    this.client.emit(Constants.Events.ERROR, error);
   }
 
   /**
@@ -16257,6 +16284,7 @@ class WebSocketConnection extends EventEmitter {
    */
   onClose(event) {
     this.debug(`Closed: ${event.code}`);
+    this.closeSequence = this.sequence;
     // Reset the state before trying to fix anything
     this.emit('close', event);
     this.heartbeat(-1);
@@ -16270,8 +16298,8 @@ class WebSocketConnection extends EventEmitter {
    * Acknowledges a heartbeat
    */
   ackHeartbeat() {
-    this.debug(`Heartbeat acknowledged, latency of ${Date.now() - this.pingSendTime}ms`);
-    this.client._pong(this.pingSendTime);
+    this.debug(`Heartbeat acknowledged, latency of ${Date.now() - this.lastPingTimestamp}ms`);
+    this.client._pong(this.lastPingTimestamp);
   }
 
   /**
@@ -16292,7 +16320,7 @@ class WebSocketConnection extends EventEmitter {
       return;
     }
     this.debug('Sending a heartbeat');
-    this.pingSendTime = Date.now();
+    this.lastPingTimestamp = Date.now();
     this.send({
       op: Constants.OPCodes.HEARTBEAT,
       d: this.sequence,
@@ -16316,7 +16344,8 @@ class WebSocketConnection extends EventEmitter {
    */
   identifyNew() {
     if (!this.client.token) {
-      return this.debug('No token available to identify a new session with');
+      this.debug('No token available to identify a new session with');
+      return;
     }
     // Clone the generic payload and assign the token
     const d = Object.assign({ token: this.client.token }, this.client.options.ws);
@@ -16327,7 +16356,7 @@ class WebSocketConnection extends EventEmitter {
 
     // Send the payload
     this.debug('Identifying as a new session');
-    return this.send({ op: Constants.OPCodes.IDENTIFY, d });
+    this.send({ op: Constants.OPCodes.IDENTIFY, d });
   }
 
   /**
@@ -16367,120 +16396,6 @@ module.exports = WebSocketConnection;
 
 /***/ }),
 /* 66 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Constants = __webpack_require__(0);
-
-const BeforeReadyWhitelist = [
-  Constants.WSEvents.READY,
-  Constants.WSEvents.RESUMED,
-  Constants.WSEvents.GUILD_CREATE,
-  Constants.WSEvents.GUILD_DELETE,
-  Constants.WSEvents.GUILD_MEMBERS_CHUNK,
-  Constants.WSEvents.GUILD_MEMBER_ADD,
-  Constants.WSEvents.GUILD_MEMBER_REMOVE,
-];
-
-class WebSocketPacketManager {
-  constructor(connection) {
-    this.ws = connection;
-    this.handlers = {};
-    this.queue = [];
-
-    this.register(Constants.WSEvents.READY, __webpack_require__(168));
-    this.register(Constants.WSEvents.RESUMED, __webpack_require__(171));
-    this.register(Constants.WSEvents.GUILD_CREATE, __webpack_require__(148));
-    this.register(Constants.WSEvents.GUILD_DELETE, __webpack_require__(149));
-    this.register(Constants.WSEvents.GUILD_UPDATE, __webpack_require__(159));
-    this.register(Constants.WSEvents.GUILD_BAN_ADD, __webpack_require__(146));
-    this.register(Constants.WSEvents.GUILD_BAN_REMOVE, __webpack_require__(147));
-    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, __webpack_require__(151));
-    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, __webpack_require__(152));
-    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, __webpack_require__(153));
-    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, __webpack_require__(155));
-    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, __webpack_require__(156));
-    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, __webpack_require__(157));
-    this.register(Constants.WSEvents.GUILD_EMOJIS_UPDATE, __webpack_require__(150));
-    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, __webpack_require__(154));
-    this.register(Constants.WSEvents.CHANNEL_CREATE, __webpack_require__(142));
-    this.register(Constants.WSEvents.CHANNEL_DELETE, __webpack_require__(143));
-    this.register(Constants.WSEvents.CHANNEL_UPDATE, __webpack_require__(145));
-    this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, __webpack_require__(144));
-    this.register(Constants.WSEvents.PRESENCE_UPDATE, __webpack_require__(167));
-    this.register(Constants.WSEvents.USER_UPDATE, __webpack_require__(175));
-    this.register(Constants.WSEvents.USER_NOTE_UPDATE, __webpack_require__(173));
-    this.register(Constants.WSEvents.USER_SETTINGS_UPDATE, __webpack_require__(174));
-    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, __webpack_require__(177));
-    this.register(Constants.WSEvents.TYPING_START, __webpack_require__(172));
-    this.register(Constants.WSEvents.MESSAGE_CREATE, __webpack_require__(160));
-    this.register(Constants.WSEvents.MESSAGE_DELETE, __webpack_require__(161));
-    this.register(Constants.WSEvents.MESSAGE_UPDATE, __webpack_require__(166));
-    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, __webpack_require__(162));
-    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, __webpack_require__(176));
-    this.register(Constants.WSEvents.GUILD_SYNC, __webpack_require__(158));
-    this.register(Constants.WSEvents.RELATIONSHIP_ADD, __webpack_require__(169));
-    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, __webpack_require__(170));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, __webpack_require__(163));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, __webpack_require__(164));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, __webpack_require__(165));
-  }
-
-  get client() {
-    return this.ws.client;
-  }
-
-  register(event, Handler) {
-    this.handlers[event] = new Handler(this);
-  }
-
-  handleQueue() {
-    this.queue.forEach((element, index) => {
-      this.handle(this.queue[index], true);
-      this.queue.splice(index, 1);
-    });
-  }
-
-  handle(packet, queue = false) {
-    if (packet.op === Constants.OPCodes.HEARTBEAT_ACK) {
-      this.ws.client._pong(this.ws.client._pingTimestamp);
-      this.ws.lastHeartbeatAck = true;
-      this.ws.client.emit('debug', 'Heartbeat acknowledged');
-    } else if (packet.op === Constants.OPCodes.HEARTBEAT) {
-      this.client.ws.send({
-        op: Constants.OPCodes.HEARTBEAT,
-        d: this.client.ws.sequence,
-      });
-      this.ws.client.emit('debug', 'Received gateway heartbeat');
-    }
-
-    if (this.ws.status === Constants.Status.RECONNECTING) {
-      this.ws.reconnecting = false;
-      this.ws.checkIfReady();
-    }
-
-    this.ws.setSequence(packet.s);
-
-    // #if (this.ws.disabledEvents[packet.t] !== undefined) return false;
-
-    if (this.ws.status !== Constants.Status.READY) {
-      if (BeforeReadyWhitelist.indexOf(packet.t) === -1) {
-        this.queue.push(packet);
-        return false;
-      }
-    }
-
-    if (!queue && this.queue.length > 0) this.handleQueue();
-
-    if (this.handlers[packet.t]) return this.handlers[packet.t].handle(packet);
-    return false;
-  }
-}
-
-module.exports = WebSocketPacketManager;
-
-
-/***/ }),
-/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
@@ -16661,7 +16576,7 @@ module.exports = Collector;
 
 
 /***/ }),
-/* 68 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {const os = __webpack_require__(23);
@@ -16670,12 +16585,12 @@ const Constants = __webpack_require__(0);
 const Permissions = __webpack_require__(9);
 const Util = __webpack_require__(4);
 const RESTManager = __webpack_require__(63);
-const ClientDataManager = __webpack_require__(105);
-const ClientManager = __webpack_require__(106);
+const ClientDataManager = __webpack_require__(104);
+const ClientManager = __webpack_require__(105);
 const ClientDataResolver = __webpack_require__(37);
 const ClientVoiceManager = __webpack_require__(185);
-const WebSocketManager = __webpack_require__(141);
-const ActionsManager = __webpack_require__(107);
+const WebSocketManager = __webpack_require__(140);
+const ActionsManager = __webpack_require__(106);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(11).Presence;
 const ShardClientUtil = __webpack_require__(184);
@@ -16847,7 +16762,7 @@ class Client extends EventEmitter {
    * @private
    */
   get _pingTimestamp() {
-    return this.ws.connection ? this.ws.connection.pingSendTime : 0;
+    return this.ws.connection ? this.ws.connection.lastPingTimestamp : 0;
   }
 
   /**
@@ -17215,7 +17130,7 @@ module.exports = Client;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
-/* 69 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Webhook = __webpack_require__(30);
@@ -17339,7 +17254,7 @@ module.exports = WebhookClient;
 
 
 /***/ }),
-/* 70 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const ClientDataResolver = __webpack_require__(37);
@@ -17567,6 +17482,12 @@ function resolveString(data) {
 
 
 /***/ }),
+/* 70 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
 /* 71 */
 /***/ (function(module, exports) {
 
@@ -17580,12 +17501,6 @@ function resolveString(data) {
 
 /***/ }),
 /* 73 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
-/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17706,7 +17621,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 75 */
+/* 74 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -17776,7 +17691,7 @@ module.exports = {
 
 
 /***/ }),
-/* 76 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var http = __webpack_require__(59);
@@ -17796,7 +17711,7 @@ https.request = function (params, cb) {
 
 
 /***/ }),
-/* 77 */
+/* 76 */
 /***/ (function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -17886,7 +17801,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 78 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! https://mths.be/punycode v1.4.1 by @mathias */
@@ -18422,10 +18337,10 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 }(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(103)(module), __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(102)(module), __webpack_require__(8)))
 
 /***/ }),
-/* 79 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18516,7 +18431,7 @@ var isArray = Array.isArray || function (xs) {
 
 
 /***/ }),
-/* 80 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18608,14 +18523,14 @@ var objectKeys = Object.keys || function (obj) {
 
 
 /***/ }),
-/* 81 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(13);
 
 
 /***/ }),
-/* 82 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18647,7 +18562,7 @@ PassThrough.prototype._transform = function (chunk, encoding, cb) {
 };
 
 /***/ }),
-/* 83 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18717,28 +18632,28 @@ BufferList.prototype.concat = function (n) {
 };
 
 /***/ }),
-/* 84 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(21).PassThrough
 
 
 /***/ }),
-/* 85 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(21).Transform
 
 
 /***/ }),
-/* 86 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(35);
 
 
 /***/ }),
-/* 87 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -18931,7 +18846,7 @@ module.exports = __webpack_require__(35);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(6)))
 
 /***/ }),
-/* 88 */
+/* 87 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -19022,11 +18937,11 @@ module.exports = {
 };
 
 /***/ }),
-/* 89 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(26);
-const mime = __webpack_require__(91);
+const mime = __webpack_require__(90);
 
 class FormData {
   constructor() {
@@ -19076,18 +18991,18 @@ module.exports = FormData;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer))
 
 /***/ }),
-/* 90 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {__webpack_require__(58);
 const zlib = __webpack_require__(27);
 const qs = __webpack_require__(34);
 const http = __webpack_require__(59);
-const https = __webpack_require__(76);
+const https = __webpack_require__(75);
 const URL = __webpack_require__(61);
-const Package = __webpack_require__(88);
+const Package = __webpack_require__(87);
 const Stream = __webpack_require__(58);
-const FormData = __webpack_require__(89);
+const FormData = __webpack_require__(88);
 
 class Snekfetch extends Stream.Readable {
   constructor(method, url, opts = { headers: {}, data: null }) {
@@ -19315,11 +19230,11 @@ function makeURLFromRequest(request) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer))
 
 /***/ }),
-/* 91 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const mimes = __webpack_require__(93);
-const mimeOfBuffer = __webpack_require__(92);
+const mimes = __webpack_require__(92);
+const mimeOfBuffer = __webpack_require__(91);
 
 function lookupMime(ext) {
   return mimes[ext] || mimes.bin;
@@ -19336,7 +19251,7 @@ module.exports = {
 
 
 /***/ }),
-/* 92 */
+/* 91 */
 /***/ (function(module, exports) {
 
 /* eslint complexity: 0 */
@@ -19888,7 +19803,7 @@ module.exports = mimeOfBuffer;
 
 
 /***/ }),
-/* 93 */
+/* 92 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -20942,14 +20857,14 @@ module.exports = {
 };
 
 /***/ }),
-/* 94 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer, global, process) {var capability = __webpack_require__(60)
 var inherits = __webpack_require__(10)
-var response = __webpack_require__(95)
+var response = __webpack_require__(94)
 var stream = __webpack_require__(21)
-var toArrayBuffer = __webpack_require__(97)
+var toArrayBuffer = __webpack_require__(96)
 
 var IncomingMessage = response.IncomingMessage
 var rStates = response.readyStates
@@ -21253,7 +21168,7 @@ var unsafeHeaders = [
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer, __webpack_require__(8), __webpack_require__(6)))
 
 /***/ }),
-/* 95 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process, Buffer, global) {var capability = __webpack_require__(60)
@@ -21442,7 +21357,7 @@ IncomingMessage.prototype._onXHRProgress = function () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(5).Buffer, __webpack_require__(8)))
 
 /***/ }),
-/* 96 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var apply = Function.prototype.apply;
@@ -21495,13 +21410,13 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(87);
+__webpack_require__(86);
 exports.setImmediate = setImmediate;
 exports.clearImmediate = clearImmediate;
 
 
 /***/ }),
-/* 97 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(5).Buffer
@@ -21534,7 +21449,7 @@ module.exports = function (buf) {
 
 
 /***/ }),
-/* 98 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21557,7 +21472,7 @@ module.exports = {
 
 
 /***/ }),
-/* 99 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -21631,7 +21546,7 @@ function config (name) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
-/* 100 */
+/* 99 */
 /***/ (function(module, exports) {
 
 if (typeof Object.create === 'function') {
@@ -21660,7 +21575,7 @@ if (typeof Object.create === 'function') {
 
 
 /***/ }),
-/* 101 */
+/* 100 */
 /***/ (function(module, exports) {
 
 module.exports = function isBuffer(arg) {
@@ -21671,7 +21586,7 @@ module.exports = function isBuffer(arg) {
 }
 
 /***/ }),
-/* 102 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -22199,7 +22114,7 @@ function isPrimitive(arg) {
 }
 exports.isPrimitive = isPrimitive;
 
-exports.isBuffer = __webpack_require__(101);
+exports.isBuffer = __webpack_require__(100);
 
 function objectToString(o) {
   return Object.prototype.toString.call(o);
@@ -22243,7 +22158,7 @@ exports.log = function() {
  *     prototype.
  * @param {function} superCtor Constructor function to inherit prototype from.
  */
-exports.inherits = __webpack_require__(100);
+exports.inherits = __webpack_require__(99);
 
 exports._extend = function(origin, add) {
   // Don't do anything if add isn't an object
@@ -22264,7 +22179,7 @@ function hasOwnProperty(obj, prop) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(6)))
 
 /***/ }),
-/* 103 */
+/* 102 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -22292,7 +22207,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 104 */
+/* 103 */
 /***/ (function(module, exports) {
 
 module.exports = extend
@@ -22317,7 +22232,7 @@ function extend() {
 
 
 /***/ }),
-/* 105 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -22453,7 +22368,7 @@ module.exports = ClientDataManager;
 
 
 /***/ }),
-/* 106 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -22532,41 +22447,41 @@ module.exports = ClientManager;
 
 
 /***/ }),
-/* 107 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 class ActionsManager {
   constructor(client) {
     this.client = client;
 
+    this.register(__webpack_require__(125));
     this.register(__webpack_require__(126));
     this.register(__webpack_require__(127));
+    this.register(__webpack_require__(131));
     this.register(__webpack_require__(128));
-    this.register(__webpack_require__(132));
     this.register(__webpack_require__(129));
     this.register(__webpack_require__(130));
-    this.register(__webpack_require__(131));
+    this.register(__webpack_require__(107));
     this.register(__webpack_require__(108));
     this.register(__webpack_require__(109));
-    this.register(__webpack_require__(110));
-    this.register(__webpack_require__(113));
-    this.register(__webpack_require__(125));
+    this.register(__webpack_require__(112));
+    this.register(__webpack_require__(124));
+    this.register(__webpack_require__(117));
     this.register(__webpack_require__(118));
+    this.register(__webpack_require__(110));
     this.register(__webpack_require__(119));
-    this.register(__webpack_require__(111));
     this.register(__webpack_require__(120));
     this.register(__webpack_require__(121));
-    this.register(__webpack_require__(122));
-    this.register(__webpack_require__(133));
-    this.register(__webpack_require__(135));
+    this.register(__webpack_require__(132));
     this.register(__webpack_require__(134));
-    this.register(__webpack_require__(124));
+    this.register(__webpack_require__(133));
+    this.register(__webpack_require__(123));
+    this.register(__webpack_require__(113));
     this.register(__webpack_require__(114));
     this.register(__webpack_require__(115));
     this.register(__webpack_require__(116));
-    this.register(__webpack_require__(117));
-    this.register(__webpack_require__(123));
-    this.register(__webpack_require__(112));
+    this.register(__webpack_require__(122));
+    this.register(__webpack_require__(111));
   }
 
   register(Action) {
@@ -22578,7 +22493,7 @@ module.exports = ActionsManager;
 
 
 /***/ }),
-/* 108 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22597,7 +22512,7 @@ module.exports = ChannelCreateAction;
 
 
 /***/ }),
-/* 109 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22634,7 +22549,7 @@ module.exports = ChannelDeleteAction;
 
 
 /***/ }),
-/* 110 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22674,7 +22589,7 @@ module.exports = ChannelUpdateAction;
 
 
 /***/ }),
-/* 111 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22693,7 +22608,7 @@ module.exports = GuildBanRemove;
 
 
 /***/ }),
-/* 112 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22720,7 +22635,7 @@ module.exports = GuildChannelsPositionUpdate;
 
 
 /***/ }),
-/* 113 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22781,7 +22696,7 @@ module.exports = GuildDeleteAction;
 
 
 /***/ }),
-/* 114 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22806,7 +22721,7 @@ module.exports = GuildEmojiCreateAction;
 
 
 /***/ }),
-/* 115 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22831,7 +22746,7 @@ module.exports = GuildEmojiDeleteAction;
 
 
 /***/ }),
-/* 116 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22856,7 +22771,7 @@ module.exports = GuildEmojiUpdateAction;
 
 
 /***/ }),
-/* 117 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22900,7 +22815,7 @@ module.exports = GuildEmojisUpdateAction;
 
 
 /***/ }),
-/* 118 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22918,7 +22833,7 @@ module.exports = GuildMemberGetAction;
 
 
 /***/ }),
-/* 119 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -22973,7 +22888,7 @@ module.exports = GuildMemberRemoveAction;
 
 
 /***/ }),
-/* 120 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -23012,7 +22927,7 @@ module.exports = GuildRoleCreate;
 
 
 /***/ }),
-/* 121 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -23064,7 +22979,7 @@ module.exports = GuildRoleDeleteAction;
 
 
 /***/ }),
-/* 122 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -23111,7 +23026,7 @@ module.exports = GuildRoleUpdateAction;
 
 
 /***/ }),
-/* 123 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -23138,7 +23053,7 @@ module.exports = GuildRolesPositionUpdate;
 
 
 /***/ }),
-/* 124 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -23173,7 +23088,7 @@ module.exports = GuildSync;
 
 
 /***/ }),
-/* 125 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -23213,7 +23128,7 @@ module.exports = GuildUpdateAction;
 
 
 /***/ }),
-/* 126 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -23274,7 +23189,7 @@ module.exports = MessageCreateAction;
 
 
 /***/ }),
-/* 127 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -23320,7 +23235,7 @@ module.exports = MessageDeleteAction;
 
 
 /***/ }),
-/* 128 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -23350,7 +23265,7 @@ module.exports = MessageDeleteBulkAction;
 
 
 /***/ }),
-/* 129 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -23401,7 +23316,7 @@ module.exports = MessageReactionAdd;
 
 
 /***/ }),
-/* 130 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -23452,7 +23367,7 @@ module.exports = MessageReactionRemove;
 
 
 /***/ }),
-/* 131 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -23485,7 +23400,7 @@ module.exports = MessageReactionRemoveAll;
 
 
 /***/ }),
-/* 132 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -23531,7 +23446,7 @@ module.exports = MessageUpdateAction;
 
 
 /***/ }),
-/* 133 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -23550,7 +23465,7 @@ module.exports = UserGetAction;
 
 
 /***/ }),
-/* 134 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -23586,7 +23501,7 @@ module.exports = UserNoteUpdateAction;
 
 
 /***/ }),
-/* 135 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -23625,7 +23540,7 @@ module.exports = UserUpdateAction;
 
 
 /***/ }),
-/* 136 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const snekfetch = __webpack_require__(36);
@@ -23681,7 +23596,7 @@ module.exports = APIRequest;
 
 
 /***/ }),
-/* 137 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const querystring = __webpack_require__(34);
@@ -24568,7 +24483,7 @@ module.exports = RESTMethods;
 
 
 /***/ }),
-/* 138 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const RequestHandler = __webpack_require__(64);
@@ -24638,7 +24553,7 @@ module.exports = BurstRequestHandler;
 
 
 /***/ }),
-/* 139 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const RequestHandler = __webpack_require__(64);
@@ -24744,7 +24659,7 @@ module.exports = SequentialRequestHandler;
 
 
 /***/ }),
-/* 140 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {const Constants = __webpack_require__(0);
@@ -24776,12 +24691,11 @@ module.exports = UserAgentManager;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
-/* 141 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const EventEmitter = __webpack_require__(12).EventEmitter;
 const Constants = __webpack_require__(0);
-const PacketManager = __webpack_require__(66);
 const WebSocketConnection = __webpack_require__(65);
 
 /**
@@ -24796,12 +24710,6 @@ class WebSocketManager extends EventEmitter {
      * @type {Client}
      */
     this.client = client;
-
-    /**
-     * A WebSocket Packet manager, it handles all the messages
-     * @type {PacketManager}
-     */
-    this.packetManager = new PacketManager(this);
 
     /**
      * Status of the WebSocketManager, a type of Constants.Status. It defaults to IDLE.
@@ -24865,8 +24773,6 @@ class WebSocketManager extends EventEmitter {
     }
     switch (this.connection.status) {
       case Constants.Status.IDLE:
-        this.connection.connect(gateway, 5500);
-        return true;
       case Constants.Status.DISCONNECTED:
         this.connection.connect(gateway, 5500);
         return true;
@@ -24878,6 +24784,120 @@ class WebSocketManager extends EventEmitter {
 }
 
 module.exports = WebSocketManager;
+
+
+/***/ }),
+/* 141 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Constants = __webpack_require__(0);
+
+const BeforeReadyWhitelist = [
+  Constants.WSEvents.READY,
+  Constants.WSEvents.RESUMED,
+  Constants.WSEvents.GUILD_CREATE,
+  Constants.WSEvents.GUILD_DELETE,
+  Constants.WSEvents.GUILD_MEMBERS_CHUNK,
+  Constants.WSEvents.GUILD_MEMBER_ADD,
+  Constants.WSEvents.GUILD_MEMBER_REMOVE,
+];
+
+class WebSocketPacketManager {
+  constructor(connection) {
+    this.ws = connection;
+    this.handlers = {};
+    this.queue = [];
+
+    this.register(Constants.WSEvents.READY, __webpack_require__(168));
+    this.register(Constants.WSEvents.RESUMED, __webpack_require__(171));
+    this.register(Constants.WSEvents.GUILD_CREATE, __webpack_require__(148));
+    this.register(Constants.WSEvents.GUILD_DELETE, __webpack_require__(149));
+    this.register(Constants.WSEvents.GUILD_UPDATE, __webpack_require__(159));
+    this.register(Constants.WSEvents.GUILD_BAN_ADD, __webpack_require__(146));
+    this.register(Constants.WSEvents.GUILD_BAN_REMOVE, __webpack_require__(147));
+    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, __webpack_require__(151));
+    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, __webpack_require__(152));
+    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, __webpack_require__(153));
+    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, __webpack_require__(155));
+    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, __webpack_require__(156));
+    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, __webpack_require__(157));
+    this.register(Constants.WSEvents.GUILD_EMOJIS_UPDATE, __webpack_require__(150));
+    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, __webpack_require__(154));
+    this.register(Constants.WSEvents.CHANNEL_CREATE, __webpack_require__(142));
+    this.register(Constants.WSEvents.CHANNEL_DELETE, __webpack_require__(143));
+    this.register(Constants.WSEvents.CHANNEL_UPDATE, __webpack_require__(145));
+    this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, __webpack_require__(144));
+    this.register(Constants.WSEvents.PRESENCE_UPDATE, __webpack_require__(167));
+    this.register(Constants.WSEvents.USER_UPDATE, __webpack_require__(175));
+    this.register(Constants.WSEvents.USER_NOTE_UPDATE, __webpack_require__(173));
+    this.register(Constants.WSEvents.USER_SETTINGS_UPDATE, __webpack_require__(174));
+    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, __webpack_require__(177));
+    this.register(Constants.WSEvents.TYPING_START, __webpack_require__(172));
+    this.register(Constants.WSEvents.MESSAGE_CREATE, __webpack_require__(160));
+    this.register(Constants.WSEvents.MESSAGE_DELETE, __webpack_require__(161));
+    this.register(Constants.WSEvents.MESSAGE_UPDATE, __webpack_require__(166));
+    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, __webpack_require__(162));
+    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, __webpack_require__(176));
+    this.register(Constants.WSEvents.GUILD_SYNC, __webpack_require__(158));
+    this.register(Constants.WSEvents.RELATIONSHIP_ADD, __webpack_require__(169));
+    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, __webpack_require__(170));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, __webpack_require__(163));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, __webpack_require__(164));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, __webpack_require__(165));
+  }
+
+  get client() {
+    return this.ws.client;
+  }
+
+  register(event, Handler) {
+    this.handlers[event] = new Handler(this);
+  }
+
+  handleQueue() {
+    this.queue.forEach((element, index) => {
+      this.handle(this.queue[index], true);
+      this.queue.splice(index, 1);
+    });
+  }
+
+  handle(packet, queue = false) {
+    if (packet.op === Constants.OPCodes.HEARTBEAT_ACK) {
+      this.ws.client._pong(this.ws.client._pingTimestamp);
+      this.ws.lastHeartbeatAck = true;
+      this.ws.client.emit('debug', 'Heartbeat acknowledged');
+    } else if (packet.op === Constants.OPCodes.HEARTBEAT) {
+      this.client.ws.send({
+        op: Constants.OPCodes.HEARTBEAT,
+        d: this.client.ws.sequence,
+      });
+      this.ws.client.emit('debug', 'Received gateway heartbeat');
+    }
+
+    if (this.ws.status === Constants.Status.RECONNECTING) {
+      this.ws.reconnecting = false;
+      this.ws.checkIfReady();
+    }
+
+    this.ws.setSequence(packet.s);
+
+    if (this.ws.disabledEvents[packet.t] !== undefined) return false;
+
+    if (this.ws.status !== Constants.Status.READY) {
+      if (BeforeReadyWhitelist.indexOf(packet.t) === -1) {
+        this.queue.push(packet);
+        return false;
+      }
+    }
+
+    if (!queue && this.queue.length > 0) this.handleQueue();
+
+    if (this.handlers[packet.t]) return this.handlers[packet.t].handle(packet);
+    return false;
+  }
+}
+
+module.exports = WebSocketPacketManager;
 
 
 /***/ }),
@@ -25659,22 +25679,22 @@ module.exports = RelationshipRemoveHandler;
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
+const Constants = __webpack_require__(0);
 
 class ResumedHandler extends AbstractHandler {
   handle(packet) {
     const client = this.packetManager.client;
-    const ws = client.ws;
+    const ws = client.ws.connection;
 
     ws._trace = packet.d._trace;
 
-    const replayed = ws.sequence - ws.resumeStart;
-    ws.resumeStart = -1;
+    ws.status = Constants.Status.READY;
+    this.packetManager.handleQueue();
+
+    const replayed = ws.sequence - ws.closeSequence;
 
     client.emit('debug', `RESUMED ${ws._trace.join(' -> ')} | replayed ${replayed} events. `);
     client.emit('resume', replayed);
-
-    ws.connection.triggerReady();
-
     ws.heartbeat();
   }
 }
@@ -25909,11 +25929,11 @@ const Util = __webpack_require__(4);
 
 module.exports = {
   // "Root" classes (starting points)
-  Client: __webpack_require__(68),
-  Shard: __webpack_require__(71),
-  ShardClientUtil: __webpack_require__(72),
-  ShardingManager: __webpack_require__(73),
-  WebhookClient: __webpack_require__(69),
+  Client: __webpack_require__(67),
+  Shard: __webpack_require__(70),
+  ShardClientUtil: __webpack_require__(71),
+  ShardingManager: __webpack_require__(72),
+  WebhookClient: __webpack_require__(68),
 
   // Utilities
   Collection: __webpack_require__(3),
@@ -25955,7 +25975,7 @@ module.exports = {
   PermissionOverwrites: __webpack_require__(51),
   Presence: __webpack_require__(11).Presence,
   ReactionEmoji: __webpack_require__(29),
-  RichEmbed: __webpack_require__(70),
+  RichEmbed: __webpack_require__(69),
   Role: __webpack_require__(15),
   TextChannel: __webpack_require__(52),
   User: __webpack_require__(16),
@@ -25970,7 +25990,7 @@ if (__webpack_require__(23).platform() === 'browser') window.Discord = module.ex
 /* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Collector = __webpack_require__(67);
+const Collector = __webpack_require__(66);
 const Collection = __webpack_require__(3);
 
 /**
