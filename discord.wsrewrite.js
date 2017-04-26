@@ -142,6 +142,13 @@ exports.DefaultOptions = {
   },
 };
 
+exports.WSCodes = {
+  1000: 'Connection gracefully closed',
+  4004: 'Tried to identify with an invalid token',
+  4010: 'Sharding data provided was invalid',
+  4011: 'Shard would be on too many guilds if connected',
+};
+
 exports.Errors = {
   NO_TOKEN: 'Request to use token, but token was unavailable to the client.',
   NO_BOT_ACCOUNT: 'Only bot accounts are able to make use of this feature.',
@@ -16289,8 +16296,12 @@ class WebSocketConnection extends EventEmitter {
     this.emit('close', event);
     this.heartbeat(-1);
     // Should we reconnect?
-    if (![1000, 4004, 4010, 4011].includes(event.code)) this.reconnect();
-    else this.destroy();
+    if (Constants.WSCodes[event.code]) {
+      this.debug(Constants.WSCodes[event.code]);
+      this.destroy();
+      return;
+    }
+    this.reconnect();
   }
 
   // Heartbeat
@@ -24744,10 +24755,13 @@ class WebSocketManager extends EventEmitter {
 
   /**
    * Destroy the client
-   * @returns {boolean} Whether or not destruction was successful
+   * @returns {void} Whether or not destruction was successful
    */
   destroy() {
-    if (!this.connection) return this.debug('Attempted to destroy WebSocket but no connection exists!');
+    if (!this.connection) {
+      this.debug('Attempted to destroy WebSocket but no connection exists!');
+      return false;
+    }
     return this.connection.destroy();
   }
 
@@ -24757,8 +24771,11 @@ class WebSocketManager extends EventEmitter {
    * @returns {void}
    */
   send(packet) {
-    if (!this.connection) return this.debug('No connection to websocket');
-    return this.connection.send(packet);
+    if (!this.connection) {
+      this.debug('No connection to websocket');
+      return;
+    }
+    this.connection.send(packet);
   }
 
   /**
