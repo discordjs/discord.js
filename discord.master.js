@@ -6712,15 +6712,6 @@ class TextBasedChannel {
     return this.client.rest.methods.ackTextChannel(this);
   }
 
-  /**
-   * If the Discord Client considers this channel NSFW
-   * @type {boolean}
-   * @readonly
-   */
-  get nsfw() {
-    return /^nsfw(-|$)/.test(this.name);
-  }
-
   _cacheMessage(message) {
     const maxSize = this.client.options.messageCacheMaxSize;
     if (maxSize === 0) return null;
@@ -6825,8 +6816,7 @@ exports.applyToClass = (structure, full = false, ignore = []) => {
       'fetchPinnedMessages',
       'createCollector',
       'createMessageCollector',
-      'awaitMessages',
-      'nsfw'
+      'awaitMessages'
     );
   }
   for (const prop of props) {
@@ -8689,7 +8679,6 @@ class GroupDMChannel extends Channel {
   awaitMessages() {}
   // Doesn't work on group DMs; bulkDelete() {}
   acknowledge() {}
-  get nsfw() {}
   _cacheMessage() {}
 }
 
@@ -13245,6 +13234,15 @@ class TextChannel extends GuildChannel {
     });
   }
 
+  /**
+   * If the Discord Client considers this channel NSFW
+   * @type {boolean}
+   * @readonly
+   */
+  get nsfw() {
+    return /^nsfw(-|$)/.test(this.name);
+  }
+
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   send() {}
@@ -13261,7 +13259,6 @@ class TextChannel extends GuildChannel {
   stopTyping() {}
   get typing() {}
   get typingCount() {}
-  get nsfw() {}
   createCollector() {}
   createMessageCollector() {}
   awaitMessages() {}
