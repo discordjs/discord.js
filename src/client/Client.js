@@ -181,7 +181,7 @@ class Client extends EventEmitter {
    * @private
    */
   get _pingTimestamp() {
-    return this.ws.connection ? this.ws.connection.pingSendTime : 0;
+    return this.ws.connection ? this.ws.connection.lastPingTimestamp : 0;
   }
 
   /**

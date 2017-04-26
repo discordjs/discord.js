@@ -67,17 +67,28 @@ class WebSocketConnection extends EventEmitter {
      * Last time a ping was sent (a timestamp)
      * @type {number}
      */
-    this.pingSendTime = 0;
+    this.lastPingTimestamp = 0;
     /**
      * Contains the rate limit queue and metadata
      * @type {Object}
      */
-    this.rateLimit = {
+    this.ratelimit = {
       queue: [],
       remaining: 120,
       resetTime: -1,
     };
     this.connect(gateway);
+    /**
+     * Events that are disabled (will not be processed)
+     * @type {Object}
+     */
+    this.disabledEvents = {};
+    /**
+     * Sequence on WebSocket close
+     * @type {number}
+     */
+    this.closeSequence = 0;
+    for (const event of this.client.options.disabledEvents) this.disabledEvents[event] = true;
   }
 
   /**
@@ -85,10 +96,13 @@ class WebSocketConnection extends EventEmitter {
    * @returns {void}
    */
   triggerReady() {
-    if (this.status === Constants.Status.READY) return this.debug('Tried to mark self as ready, but already ready');
+    if (this.status === Constants.Status.READY) {
+      this.debug('Tried to mark self as ready, but already ready');
+      return;
+    }
     this.status = Constants.Status.READY;
     this.client.emit(Constants.Events.READY);
-    return this.packetManager.handleQueue();
+    this.packetManager.handleQueue();
   }
 
   /**
@@ -99,7 +113,7 @@ class WebSocketConnection extends EventEmitter {
     if (this.status === Constants.Status.READY || this.status === Constants.Status.NEARLY) return false;
     let unavailableGuilds = 0;
     for (const guild of this.client.guilds.values()) {
-      unavailableGuilds += guild.available ? 0 : 1;
+      if (!guild.available) unavailableGuilds++;
     }
     if (unavailableGuilds === 0) {
       this.status = Constants.Status.NEARLY;
@@ -155,19 +169,19 @@ class WebSocketConnection extends EventEmitter {
    * Processes the current WebSocket queue
    */
   processQueue() {
-    if (this.rateLimit.remaining === 0) return;
-    if (this.rateLimit.queue.length === 0) return;
-    if (this.rateLimit.remaining === 120) {
-      this.rateLimit.resetTimer = setTimeout(() => {
-        this.rateLimit.remaining = 120;
+    if (this.ratelimit.remaining === 0) return;
+    if (this.ratelimit.queue.length === 0) return;
+    if (this.ratelimit.remaining === 120) {
+      this.ratelimit.resetTimer = setTimeout(() => {
+        this.ratelimit.remaining = 120;
         this.processQueue();
       }, 120e3); // eslint-disable-line
     }
-    while (this.rateLimit.remaining > 0) {
-      const item = this.rateLimit.queue.shift();
+    while (this.ratelimit.remaining > 0) {
+      const item = this.ratelimit.queue.shift();
       if (!item) return;
       this._send(item);
-      this.rateLimit.remaining--;
+      this.ratelimit.remaining--;
     }
   }
 
@@ -178,9 +192,10 @@ class WebSocketConnection extends EventEmitter {
    */
   _send(data) {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
-      return this.debug(`Tried to send packet ${data} but no WebSocket is available!`);
+      this.debug(`Tried to send packet ${data} but no WebSocket is available!`);
+      return;
     }
-    return this.ws.send(this.pack(data));
+    this.ws.send(this.pack(data));
   }
 
   /**
@@ -190,10 +205,11 @@ class WebSocketConnection extends EventEmitter {
    */
   send(data) {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
-      return this.debug(`Tried to send packet ${data} but no WebSocket is available!`);
+      this.debug(`Tried to send packet ${data} but no WebSocket is available!`);
+      return;
     }
-    this.rateLimit.queue.push(data);
-    return this.processQueue();
+    this.ratelimit.queue.push(data);
+    this.processQueue();
   }
 
   /**
@@ -205,9 +221,13 @@ class WebSocketConnection extends EventEmitter {
    */
   connect(gateway = this.gateway, after = 0, force = false) {
     if (after) return this.client.setTimeout(() => this.connect(gateway, 0, force), after); // eslint-disable-line
-    if (this.ws && !force) return this.debug('WebSocket connection already exists');
-    if (typeof gateway !== 'string') return this.debug(`Tried to connect to an invalid gateway: ${gateway}`);
-
+    if (this.ws && !force) {
+      this.debug('WebSocket connection already exists');
+      return false;
+    } else if (typeof gateway !== 'string') {
+      this.debug(`Tried to connect to an invalid gateway: ${gateway}`);
+      return false;
+    }
     this.gateway = gateway;
     this.debug(`Connecting to ${gateway}`);
     const ws = this.ws = new WebSocket(gateway);
@@ -226,11 +246,15 @@ class WebSocketConnection extends EventEmitter {
    */
   destroy() {
     const ws = this.ws;
-    if (!ws) return this.debug('Attempted to destroy WebSocket but no connection exists!');
+    if (!ws) {
+      this.debug('Attempted to destroy WebSocket but no connection exists!');
+      return false;
+    }
     this.heartbeat(-1);
     ws.close(1000);
     this.packetManager.handleQueue();
     this.ws = null;
+    this.status = Constants.Status.DISCONNECTED;
     return true;
   }
 
@@ -263,7 +287,10 @@ class WebSocketConnection extends EventEmitter {
    * @returns {boolean}
    */
   onPacket(packet) {
-    if (!packet) return this.debug('Received null packet');
+    if (!packet) {
+      this.debug('Received null packet');
+      return false;
+    }
     this.client.emit('raw', packet);
     switch (packet.op) {
       case Constants.OPCodes.HELLO:
@@ -305,7 +332,7 @@ class WebSocketConnection extends EventEmitter {
    * @param {Error} error Error that occurred
    */
   onError(error) {
-    this.debug(error);
+    this.client.emit(Constants.Events.ERROR, error);
   }
 
   /**
@@ -319,6 +346,7 @@ class WebSocketConnection extends EventEmitter {
    */
   onClose(event) {
     this.debug(`Closed: ${event.code}`);
+    this.closeSequence = this.sequence;
     // Reset the state before trying to fix anything
     this.emit('close', event);
     this.heartbeat(-1);
@@ -332,8 +360,8 @@ class WebSocketConnection extends EventEmitter {
    * Acknowledges a heartbeat
    */
   ackHeartbeat() {
-    this.debug(`Heartbeat acknowledged, latency of ${Date.now() - this.pingSendTime}ms`);
-    this.client._pong(this.pingSendTime);
+    this.debug(`Heartbeat acknowledged, latency of ${Date.now() - this.lastPingTimestamp}ms`);
+    this.client._pong(this.lastPingTimestamp);
   }
 
   /**
@@ -354,7 +382,7 @@ class WebSocketConnection extends EventEmitter {
       return;
     }
     this.debug('Sending a heartbeat');
-    this.pingSendTime = Date.now();
+    this.lastPingTimestamp = Date.now();
     this.send({
       op: Constants.OPCodes.HEARTBEAT,
       d: this.sequence,
@@ -378,7 +406,8 @@ class WebSocketConnection extends EventEmitter {
    */
   identifyNew() {
     if (!this.client.token) {
-      return this.debug('No token available to identify a new session with');
+      this.debug('No token available to identify a new session with');
+      return;
     }
     // Clone the generic payload and assign the token
     const d = Object.assign({ token: this.client.token }, this.client.options.ws);
@@ -389,7 +418,7 @@ class WebSocketConnection extends EventEmitter {
 
     // Send the payload
     this.debug('Identifying as a new session');
-    return this.send({ op: Constants.OPCodes.IDENTIFY, d });
+    this.send({ op: Constants.OPCodes.IDENTIFY, d });
   }
 
   /**

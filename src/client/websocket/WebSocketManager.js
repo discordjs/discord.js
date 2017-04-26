@@ -17,12 +17,6 @@ class WebSocketManager extends EventEmitter {
     this.client = client;
 
     /**
-     * A WebSocket Packet manager, it handles all the messages
-     * @type {PacketManager}
-     */
-    this.packetManager = new PacketManager(this);
-
-    /**
      * Status of the WebSocketManager, a type of Constants.Status. It defaults to IDLE.
      * @type {number}
      */
@@ -84,8 +78,6 @@ class WebSocketManager extends EventEmitter {
     }
     switch (this.connection.status) {
       case Constants.Status.IDLE:
-        this.connection.connect(gateway, 5500);
-        return true;
       case Constants.Status.DISCONNECTED:
         this.connection.connect(gateway, 5500);
         return true;
