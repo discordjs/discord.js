@@ -389,6 +389,15 @@ class TextBasedChannel {
     return this.client.rest.methods.ackTextChannel(this);
   }
 
+  /**
+   * If the Discord Client considers this channel NSFW
+   * @type {boolean}
+   * @readonly
+   */
+  get nsfw() {
+    return /^nsfw(-|$)/.test(this.name);
+  }
+
   _cacheMessage(message) {
     const maxSize = this.client.options.messageCacheMaxSize;
     if (maxSize === 0) return null;
@@ -477,7 +486,7 @@ for (const key of Object.keys(Deprecated)) {
 }
 
 exports.applyToClass = (structure, full = false, ignore = []) => {
-  const props = ['send', 'sendMessage', 'sendEmbed', 'sendFile', 'sendFiles', 'sendCode'];
+  const props = ['send', 'sendMessage', 'sendEmbed', 'sendFile', 'sendFiles', 'sendCode', 'nsfw'];
   if (full) {
     props.push(
       '_cacheMessage',
