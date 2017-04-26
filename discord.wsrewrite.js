@@ -227,7 +227,6 @@ const Endpoints = exports.Endpoints = {
       permissions: `${base}/permissions`,
       webhooks: `${base}/webhooks`,
       search: `${base}/messages/search`,
-      ack: `${base}/ack`,
       pins: `${base}/pins`,
       Pin: messageID => `${base}/pins/${messageID}`,
       Recipient: recipientID => `${base}/recipients/${recipientID}`,
@@ -3316,6 +3315,10 @@ let INCREMENT = 0;
  * A container for useful snowflake-related methods
  */
 class SnowflakeUtil {
+  constructor() {
+    throw new Error(`The ${this.constructor.name} class may not be instantiated.`);
+  }
+
   /**
    * A Twitter snowflake, except the epoch is 2015-01-01T00:00:00.000Z
    * ```
@@ -6705,7 +6708,8 @@ class TextBasedChannel {
    * @returns {Promise<TextChannel|GroupDMChannel|DMChannel>}
    */
   acknowledge() {
-    return this.client.rest.methods.ackTextMessage(this);
+    if (!this.lastMessageID) return Promise.resolve(this);
+    return this.client.rest.methods.ackTextChannel(this);
   }
 
   _cacheMessage(message) {
@@ -6800,6 +6804,7 @@ exports.applyToClass = (structure, full = false, ignore = []) => {
   if (full) {
     props.push(
       '_cacheMessage',
+      'acknowledge',
       'fetchMessages',
       'fetchMessage',
       'search',
@@ -23840,7 +23845,9 @@ class RESTMethods {
   }
 
   ackTextChannel(channel) {
-    return this.rest.makeRequest('post', Endpoints.Channel(channel).ack, true, { token: this._ackToken }).then(res => {
+    return this.rest.makeRequest('post', Endpoints.Channel(channel).Message(channel.lastMessageID).ack, true, {
+      token: this._ackToken,
+    }).then(res => {
       if (res.token) this._ackToken = res.token;
       return channel;
     });
