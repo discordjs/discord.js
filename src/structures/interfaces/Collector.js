@@ -53,8 +53,8 @@ class Collector extends EventEmitter {
     this.ended = false;
 
     /**
-     * Timeout ID for cleanup.
-     * @type {?number}
+     * Timeout for cleanup.
+     * @type {?Timeout}
      * @private
      */
     this._timeout = null;
@@ -151,7 +151,6 @@ class Collector extends EventEmitter {
    * @param {...*} args Any args the event listener emits.
    * @returns {?{key: string, value}} Data to insert into collection, if any.
    * @abstract
-   * @private
    */
   handle() {}
 
@@ -159,14 +158,12 @@ class Collector extends EventEmitter {
    * @param {...*} args Any args the event listener emits.
    * @returns {?string} Reason to end the collector, if any.
    * @abstract
-   * @private
    */
   postCheck() {}
 
   /**
    * Called when the collector is ending.
    * @abstract
-   * @private
    */
   cleanup() {}
   /* eslint-enable no-empty-function, valid-jsdoc */
