@@ -51,8 +51,11 @@ class WebSocketManager extends EventEmitter {
    * @returns {boolean} Whether or not destruction was successful
    */
   destroy() {
-    if (!this.connection) return this.debug('Attempted to destroy WebSocket but no connection exists!');
-    return this.connection.destroy();
+    if (!this.connection) {
+      this.debug('Attempted to destroy WebSocket but no connection exists!');
+      return;
+    }
+    this.connection.destroy();
   }
 
   /**
@@ -61,8 +64,11 @@ class WebSocketManager extends EventEmitter {
    * @returns {void}
    */
   send(packet) {
-    if (!this.connection) return this.debug('No connection to websocket');
-    return this.connection.send(packet);
+    if (!this.connection) {
+      this.debug('No connection to websocket');
+      return;
+    }
+    this.connection.send(packet);
   }
 
   /**
