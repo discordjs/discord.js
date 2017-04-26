@@ -74,9 +74,10 @@ class TextChannel extends GuildChannel {
 
   /**
    * If the Discord Client considers this channel NSFW
-   * @returns {boolean}
+   * @type {boolean}
+   * @readonly
    */
-  isNSFW() {
+  get nsfw() {
     return /^nsfw(-|$)/.test(this.name);
   }
 
