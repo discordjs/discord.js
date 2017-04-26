@@ -15,16 +15,19 @@ const LogLevels = [
  */
 class Logger extends EventEmitter {
   log(level, ...rest) {
-    this.emit(`strict_${level}`, ...rest);
-    for (let i = LogLevels.indexOf(level.toUpperCase()); i >= 0; i--) {
-      const l = LogLevels[i].toLowerCase();
-      if (!this.listenerCount(l)) continue;
-      this.emit(l, ...rest);
+    this.emit('trace', ...rest);
+    if (level !== 'trace') {
+      this.emit(level, ...rest);
+      for (let i = LogLevels.indexOf(level.toUpperCase()) - 1; i >= 1; i--) {
+        const l = LogLevels[i].toLowerCase();
+        if (!this.listenerCount(l)) continue;
+        this.emit(`c_${l}`, ...rest);
+      }
     }
   }
 
-  on(event, cb, strict = true) {
-    return super.on(strict ? `strict_${event}` : event, cb);
+  on(event, cb, cascading = false) {
+    return super.on(cascading ? `c_${event}` : event, cb);
   }
 }
 
