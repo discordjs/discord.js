@@ -503,7 +503,7 @@ exports.applyToClass = (structure, full = false, ignore = []) => {
       'createCollector',
       'createMessageCollector',
       'awaitMessages',
-      'nsfw',
+      'nsfw'
     );
   }
   for (const prop of props) {
