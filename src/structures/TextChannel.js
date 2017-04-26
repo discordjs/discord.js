@@ -88,6 +88,7 @@ class TextChannel extends GuildChannel {
   stopTyping() {}
   get typing() {}
   get typingCount() {}
+  get nsfw() {}
   createCollector() {}
   createMessageCollector() {}
   awaitMessages() {}
