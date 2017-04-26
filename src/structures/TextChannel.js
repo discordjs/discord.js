@@ -72,15 +72,6 @@ class TextChannel extends GuildChannel {
     });
   }
 
-  /**
-   * If the Discord Client considers this channel NSFW
-   * @type {boolean}
-   * @readonly
-   */
-  get nsfw() {
-    return /^nsfw(-|$)/.test(this.name);
-  }
-
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   send() {}
@@ -97,6 +88,7 @@ class TextChannel extends GuildChannel {
   stopTyping() {}
   get typing() {}
   get typingCount() {}
+  get nsfw() {}
   createCollector() {}
   createMessageCollector() {}
   awaitMessages() {}
