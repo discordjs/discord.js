@@ -155,7 +155,6 @@ const Endpoints = exports.Endpoints = {
       permissions: `${base}/permissions`,
       webhooks: `${base}/webhooks`,
       search: `${base}/messages/search`,
-      ack: `${base}/ack`,
       pins: `${base}/pins`,
       Pin: messageID => `${base}/pins/${messageID}`,
       Recipient: recipientID => `${base}/recipients/${recipientID}`,
