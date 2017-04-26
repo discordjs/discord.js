@@ -351,8 +351,12 @@ class WebSocketConnection extends EventEmitter {
     this.emit('close', event);
     this.heartbeat(-1);
     // Should we reconnect?
-    if (![1000, 4004, 4010, 4011].includes(event.code)) this.reconnect();
-    else this.destroy();
+    if (Constants.WSCodes[event.code]) {
+      this.debug(Constants.WSCodes[event.code]);
+      this.destroy();
+      return;
+    }
+    this.reconnect();
   }
 
   // Heartbeat

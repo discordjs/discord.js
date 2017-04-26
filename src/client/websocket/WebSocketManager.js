@@ -48,14 +48,14 @@ class WebSocketManager extends EventEmitter {
 
   /**
    * Destroy the client
-   * @returns {boolean} Whether or not destruction was successful
+   * @returns {void} Whether or not destruction was successful
    */
   destroy() {
     if (!this.connection) {
       this.debug('Attempted to destroy WebSocket but no connection exists!');
-      return;
+      return false;
     }
-    this.connection.destroy();
+    return this.connection.destroy();
   }
 
   /**
