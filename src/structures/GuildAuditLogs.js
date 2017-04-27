@@ -93,8 +93,7 @@ class GuildAuditLogs {
       Actions.EMOJI_UPDATE,
     ].includes(action)) return 'UPDATE';
 
-    // Discord client source suggests I should return 'UPDATE' if nothing else matches
-    return 'UPDATE';
+    return 'ALL';
   }
 }
 
