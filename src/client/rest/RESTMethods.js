@@ -384,8 +384,9 @@ class RESTMethods {
     );
   }
 
-  kickGuildMember(guild, member) {
-    return this.rest.makeRequest('delete', Endpoints.Guild(guild).Member(member), true).then(() =>
+  kickGuildMember(guild, member, reason) {
+    const url = `${Endpoints.Guild(guild).Member(member)}?reason=${reason}`;
+    return this.rest.makeRequest('delete', url, true, { reason }).then(() =>
       this.client.actions.GuildMemberRemove.handle({
         guild_id: guild.id,
         user: member.user,
@@ -528,14 +529,12 @@ class RESTMethods {
     return this.rest.makeRequest('post', Endpoints.Channel(channelID).typing, true);
   }
 
-  banGuildMember(guild, member, deleteDays = 0) {
+  banGuildMember(guild, member, options) {
     const id = this.client.resolver.resolveUserID(member);
     if (!id) return Promise.reject(new Error('Couldn\'t resolve the user ID to ban.'));
-    return this.rest.makeRequest(
-      'put', `${Endpoints.Guild(guild).bans}/${id}?delete-message-days=${deleteDays}`, true, {
-        'delete-message-days': deleteDays,
-      }
-    ).then(() => {
+
+    const url = `${Endpoints.Guild(guild).bans}/${id}?${querystring.stringify(options)}`;
+    return this.rest.makeRequest('put', url, true).then(() => {
       if (member instanceof GuildMember) return member;
       const user = this.client.resolver.resolveUser(id);
       if (user) {

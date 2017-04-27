@@ -472,23 +472,25 @@ class GuildMember {
 
   /**
    * Kick this member from the guild
+   * @param {string} [reason] Reason for kicking user
    * @returns {Promise<GuildMember>}
    */
-  kick() {
-    return this.client.rest.methods.kickGuildMember(this.guild, this);
+  kick(reason) {
+    return this.client.rest.methods.kickGuildMember(this.guild, this, reason);
   }
 
   /**
    * Ban this guild member
-   * @param {number} [deleteDays=0] The amount of days worth of messages from this member that should
-   * also be deleted. Between `0` and `7`.
+   * @param {Object} [options] Ban options.
+   * @param {number} [options.days=0] Number of days of messages to delete
+   * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember>}
    * @example
    * // ban a guild member
    * guildMember.ban(7);
    */
-  ban(deleteDays = 0) {
-    return this.client.rest.methods.banGuildMember(this.guild, this, deleteDays);
+  ban(options) {
+    return this.guild.ban(this, options);
   }
 
   /**

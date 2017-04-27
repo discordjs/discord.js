@@ -614,8 +614,9 @@ class Guild {
   /**
    * Bans a user from the guild.
    * @param {UserResolvable} user The user to ban
-   * @param {number} [deleteDays=0] The amount of days worth of messages from this user that should
-   * also be deleted. Between `0` and `7`.
+   * @param {Object} [options] Ban options.
+   * @param {number} [options.days=0] Number of days of messages to delete
+   * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember|User|string>} Result object will be resolved as specifically as possible.
    * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
    * be resolved, the user ID will be the result.
@@ -625,8 +626,13 @@ class Guild {
    *  .then(user => console.log(`Banned ${user.username || user.id || user} from ${guild.name}`))
    *  .catch(console.error);
    */
-  ban(user, deleteDays = 0) {
-    return this.client.rest.methods.banGuildMember(this, user, deleteDays);
+  ban(user, options = {}) {
+    if (typeof options === 'number') {
+      options = { reason: null, days: options };
+    } else if (typeof options === 'string') {
+      options = { reason: options, days: 0 };
+    }
+    return this.client.rest.methods.banGuildMember(this, user, options);
   }
 
   /**
