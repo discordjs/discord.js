@@ -380,12 +380,12 @@ class Guild {
    * @param {Snowflake|GuildAuditLogsEntry} [options.before] Limit to entries from before specified entry
    * @param {Snowflake|GuildAuditLogsEntry} [options.after] Limit to entries from after specified entry
    * @param {number} [options.limit] Limit number of entries
+   * @param {UserResolvable} [options.user] Only show entries involving this user
+   * @param {string|number} [options.type] Only show entries involving this action type
    * @returns {Promise<GuildAuditLogs>}
    */
   fetchAuditLogs(options) {
-    return this.client.rest.methods.getGuildAuditLogs(this, options).then(logs =>
-      Promise.all(logs.entries.map(e => e.target)).then(() => logs)
-    );
+    return this.client.rest.methods.getGuildAuditLogs(this, options);
   }
 
   /**

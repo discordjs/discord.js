@@ -674,8 +674,21 @@ class RESTMethods {
   getGuildAuditLogs(guild, options = {}) {
     if (options.before && options.before instanceof GuildAuditLogs.Entry) options.before = options.before.id;
     if (options.after && options.after instanceof GuildAuditLogs.Entry) options.after = options.after.id;
-    const url = `${Endpoints.Guild(guild).auditLogs}?${querystring.stringify(options)}`;
-    return this.rest.makeRequest('get', url, true).then(data => new GuildAuditLogs(guild, data));
+    if (typeof options.type === 'string') options.type = GuildAuditLogs.Actions[options.type];
+
+    const queryString = (querystring.stringify({
+      before: options.before,
+      after: options.after,
+      limit: options.limit,
+      user_id: this.client.resolver.resolveUserID(options.user),
+      action_type: options.type,
+    }).match(/[^=&?]+=[^=&?]+/g) || []).join('&');
+
+    return this.rest.makeRequest('get', `${Endpoints.Guild(guild).auditLogs}?${queryString}`, true)
+      .then(data => {
+        const logs = new GuildAuditLogs(guild, data);
+        return Promise.all(logs.entries.map(e => e.target)).then(() => logs);
+      });
   }
 
   getWebhook(id, token) {
