@@ -5,7 +5,7 @@ const Constants = require('../../util/Constants');
 const Endpoints = Constants.Endpoints;
 const Collection = require('../../util/Collection');
 const Snowflake = require('../../util/Snowflake');
-const Util = require('../../util/Util');
+const Util = require('../../util/Util');a
 
 const User = require('../../structures/User');
 const GuildMember = require('../../structures/GuildMember');
@@ -671,10 +671,11 @@ class RESTMethods {
       .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);
   }
 
-  getGuildAuditLogs(guild) {
-    return this.rest.makeRequest('get', Endpoints.Guild(guild).auditLogs, true).then(data =>
-      new GuildAuditLogs(guild, data)
-    );
+  getGuildAuditLogs(guild, options = {}) {
+    if (options.before && options.before instanceof GuildAuditLogs.Entry) options.before = options.before.id;
+    if (options.after && options.after instanceof GuildAuditLogs.Entry) options.after = options.after.id;
+    const url = `${Endpoints.Guild(guild).auditLogs}?${querystring.stringify(options)}`;
+    return this.rest.makeRequest('get', url, true).then(data => new GuildAuditLogs(guild, data));
   }
 
   getWebhook(id, token) {
