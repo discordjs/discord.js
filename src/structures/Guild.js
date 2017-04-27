@@ -376,10 +376,13 @@ class Guild {
 
   /**
    * Fetch audit logs for this guild
+   * @param {object} [options={}] Options for fetching audit logs
+   * @param {Snowflake|GuildAuditLogsEntry} [options.before] Pagination before
+   * @param {Snowflake|GuildAuditLogsEntry} [options.after] Pagination after
    * @returns {Promise<GuildAuditLogs>}
    */
-  fetchAuditLogs() {
-    return this.client.rest.methods.getGuildAuditLogs(this);
+  fetchAuditLogs(options) {
+    return this.client.rest.methods.getGuildAuditLogs(this, options);
   }
 
   /**
