@@ -122,6 +122,12 @@ class GuildAuditLogsEntry {
      */
     this.action = Object.keys(Actions).find(k => Actions[k] === data.action_type);
 
+    /**
+     * Reason of this entry
+     * @type {?string}
+     */
+    this.reason = data.reason;
+
     if (['USER', 'GUILD'].includes(root)) {
       /**
        * Target of this entry
