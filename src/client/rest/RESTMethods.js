@@ -5,7 +5,7 @@ const Constants = require('../../util/Constants');
 const Endpoints = Constants.Endpoints;
 const Collection = require('../../util/Collection');
 const Snowflake = require('../../util/Snowflake');
-const Util = require('../../util/Util');a
+const Util = require('../../util/Util');
 
 const User = require('../../structures/User');
 const GuildMember = require('../../structures/GuildMember');
