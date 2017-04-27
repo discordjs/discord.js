@@ -376,7 +376,7 @@ class Guild {
 
   /**
    * Fetch audit logs for this guild
-   * @param {object} [options={}] Options for fetching audit logs
+   * @param {Object} [options={}] Options for fetching audit logs
    * @param {Snowflake|GuildAuditLogsEntry} [options.before] Pagination before
    * @param {Snowflake|GuildAuditLogsEntry} [options.after] Pagination after
    * @returns {Promise<GuildAuditLogs>}
