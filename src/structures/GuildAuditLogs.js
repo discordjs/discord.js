@@ -97,9 +97,6 @@ class GuildAuditLogs {
   }
 }
 
-GuildAuditLogs.Actions = Actions;
-GuildAuditLogs.Targets = Targets;
-
 class GuildAuditLogsEntry {
   constructor(guild, data) {
     const root = GuildAuditLogs.rootTarget(data.action_type);
@@ -156,5 +153,9 @@ class GuildAuditLogsEntry {
     this.id = data.id;
   }
 }
+
+GuildAuditLogs.Actions = Actions;
+GuildAuditLogs.Targets = Targets;
+GuildAuditLogs.Entry = GuildAuditLogsEntry;
 
 module.exports = GuildAuditLogs;
