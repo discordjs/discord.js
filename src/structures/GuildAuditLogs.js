@@ -39,9 +39,6 @@ const Actions = {
 class GuildAuditLogs {
   constructor(guild, data) {
     if (data.users) for (const user of data.users) guild.client.dataManager.newUser(user);
-    if (data.channels) {
-      for (const channel of data.channels) guild.client.dataManager.newChannel(channel, guild);
-    }
 
     /**
      * Entries for this Guild's audit logs
