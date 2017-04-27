@@ -382,7 +382,9 @@ class Guild {
    * @returns {Promise<GuildAuditLogs>}
    */
   fetchAuditLogs(options) {
-    return this.client.rest.methods.getGuildAuditLogs(this, options);
+    return this.client.rest.methods.getGuildAuditLogs(this, options).then(logs =>
+      Promise.all(logs.entries.map(e => e.target)).then(() => logs)
+    );
   }
 
   /**

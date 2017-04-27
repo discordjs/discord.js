@@ -48,7 +48,7 @@ class GuildAuditLogs {
     for (const entry of data.audit_log_entries) this.entries.push(new GuildAuditLogsEntry(guild, entry));
   }
 
-  static rootTarget(target) {
+  static targetType(target) {
     if (target < 10) return Targets.GUILD;
     if (target < 20) return Targets.CHANNEL;
     if (target < 30) return Targets.USER;
@@ -59,7 +59,7 @@ class GuildAuditLogs {
     return null;
   }
 
-  static rootAction(action) {
+  static actionType(action) {
     if ([
       Actions.CHANNEL_CREATE,
       Actions.CHANNEL_OVERWRITE_CREATE,
@@ -99,18 +99,18 @@ class GuildAuditLogs {
 
 class GuildAuditLogsEntry {
   constructor(guild, data) {
-    const root = GuildAuditLogs.rootTarget(data.action_type);
+    const targetType = GuildAuditLogs.targetType(data.action_type);
     /**
-     * Root action type of this entry
+     * Target type of this entry
      * @type {string}
      */
-    this.root = root;
+    this.targetType = targetType;
 
     /**
      * Action type of this entry
      * @type {string}
      */
-    this.type = GuildAuditLogs.rootAction(data.action_type);
+    this.actionType = GuildAuditLogs.actionType(data.action_type);
 
     /**
      * Specific action type of this entry
@@ -122,17 +122,7 @@ class GuildAuditLogsEntry {
      * Reason of this entry
      * @type {?string}
      */
-    this.reason = data.reason;
-
-    if (['USER', 'GUILD'].includes(root)) {
-      /**
-       * Target of this entry
-       * @type {Guild|User|Role|Invite|Webhook|Emoji}
-       */
-      this.target = guild.client[`${root.toLowerCase()}s`].get(data.target_id);
-    } else {
-      this.target = guild[`${root.toLowerCase()}s`].get(data.target_id);
-    }
+    this.reason = data.reason || null;
 
     /**
      * User that executed this entry
@@ -151,6 +141,29 @@ class GuildAuditLogsEntry {
      * @type {Snowflake}
      */
     this.id = data.id;
+
+    if (['USER', 'GUILD'].includes(targetType)) {
+      /**
+       * Target of this entry
+       * @type {?Guild|User|Role|Emoji|Promise<Invite>|Promise<Webhook>}
+       */
+      this.target = guild.client[`${targetType.toLowerCase()}s`].get(data.target_id);
+    } else if (targetType === 'WEBHOOK') {
+      this.target = guild.fetchWebhooks()
+        .then(hooks => {
+          this.target = hooks.find(h => h.id === data.target_id);
+          return this.target;
+        });
+    } else if (targetType === 'INVITE') {
+      const change = this.changes.find(c => c.name === 'code');
+      this.target = guild.fetchInvites()
+        .then(invites => {
+          this.target = invites.find(i => i.code === (change.new || change.old));
+          return this.target;
+        });
+    } else {
+      this.target = guild[`${targetType.toLowerCase()}s`].get(data.target_id);
+    }
   }
 }
 
