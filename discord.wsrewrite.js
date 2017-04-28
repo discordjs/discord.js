@@ -22265,7 +22265,7 @@ class ClientDataManager {
   }
 
   get pastReady() {
-    return this.client.ws.status === Constants.Status.READY;
+    return this.client.ws.connection.status === Constants.Status.READY;
   }
 
   newGuild(data) {
@@ -24723,12 +24723,6 @@ class WebSocketManager extends EventEmitter {
      * @type {Client}
      */
     this.client = client;
-
-    /**
-     * Status of the WebSocketManager, a type of Constants.Status. It defaults to IDLE.
-     * @type {number}
-     */
-    this.status = Constants.Status.IDLE;
 
     /**
      * WebSocket connection of this manager
