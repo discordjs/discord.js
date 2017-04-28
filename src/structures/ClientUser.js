@@ -222,8 +222,8 @@ class ClientUser extends User {
    * @returns {Promise<ClientUser>}
    */
   setStatus(status) {
-    this.setPresence({ status });
     if (!this.bot) this.settings.update(Constants.UserSettingsMap.status, status);
+    return this.setPresence({ status });
   }
 
   /**
