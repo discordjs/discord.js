@@ -48,6 +48,10 @@ class GuildAuditLogs {
     for (const entry of data.audit_log_entries) this.entries.push(new GuildAuditLogsEntry(guild, entry));
   }
 
+  /**
+   * Handles possible promises for entry targets
+   * @returns {GuildAuditLogs}
+   */
   static build(...args) {
     return new Promise(resolve => {
       const logs = new GuildAuditLogs(...args);
@@ -55,6 +59,11 @@ class GuildAuditLogs {
     });
   }
 
+  /**
+   * Find target type from entry action
+   * @param {number} target Action target
+   * @returns {?string}
+   */
   static targetType(target) {
     if (target < 10) return Targets.GUILD;
     if (target < 20) return Targets.CHANNEL;
@@ -66,6 +75,12 @@ class GuildAuditLogs {
     return null;
   }
 
+
+  /**
+   * Find action type from entry action
+   * @param {string} action Action target
+   * @returns {string}
+   */
   static actionType(action) {
     if ([
       Actions.CHANNEL_CREATE,
