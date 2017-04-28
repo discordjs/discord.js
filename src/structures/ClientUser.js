@@ -1,6 +1,7 @@
 const User = require('./User');
 const Collection = require('../util/Collection');
 const ClientUserSettings = require('./ClientUserSettings');
+const Constants = require('../util/Constants');
 /**
  * Represents the logged in client's Discord user
  * @extends {User}
@@ -221,7 +222,11 @@ class ClientUser extends User {
    * @returns {Promise<ClientUser>}
    */
   setStatus(status) {
-    return this.setPresence({ status });
+    if (this.bot) {
+      return this.setPresence({ status });
+    } else {
+      return this.settings.update(Constants.UserSettingsMap.status, status);
+    }
   }
 
   /**
