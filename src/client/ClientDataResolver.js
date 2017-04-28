@@ -9,6 +9,7 @@ const Message = require('../structures/Message');
 const Guild = require('../structures/Guild');
 const Channel = require('../structures/Channel');
 const GuildMember = require('../structures/GuildMember');
+const Role = require('../structures/Role');
 const Emoji = require('../structures/Emoji');
 const ReactionEmoji = require('../structures/ReactionEmoji');
 
