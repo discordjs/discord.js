@@ -10,7 +10,7 @@ const Prism = require('prism-media');
 /**
  * Represents a connection to a voice channel in Discord.
  * ```js
- * // obtained using:
+ * // Obtained using:
  * voiceChannel.join().then(connection => {
  *
  * });
@@ -437,7 +437,7 @@ class VoiceConnection extends EventEmitter {
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
    * @example
-   * // play files natively
+   * // Play files natively
    * voiceChannel.join()
    *  .then(connection => {
    *    const dispatcher = connection.playFile('C:/Users/Discord/Desktop/music.mp3');
@@ -464,12 +464,12 @@ class VoiceConnection extends EventEmitter {
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
    * @example
-   * // play streams using ytdl-core
+   * // Play streams using ytdl-core
    * const ytdl = require('ytdl-core');
    * const streamOptions = { seek: 0, volume: 1 };
    * voiceChannel.join()
    *  .then(connection => {
-   *    const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', {filter : 'audioonly'});
+   *    const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', { filter : 'audioonly' });
    *    const dispatcher = connection.playStream(stream, streamOptions);
    *  })
    *  .catch(console.error);
@@ -504,7 +504,7 @@ class VoiceConnection extends EventEmitter {
    * @param {VoiceBroadcast} broadcast the broadcast to play
    * @returns {StreamDispatcher}
    * @example
-   * // play a broadcast
+   * // Play a broadcast
    * const broadcast = client
    *   .createVoiceBroadcast()
    *   .playFile('./test.mp3');

@@ -15,4 +15,5 @@ class GuildEmojiUpdateAction extends Action {
  * @param {Emoji} oldEmoji The old emoji
  * @param {Emoji} newEmoji The new emoji
  */
+
 module.exports = GuildEmojiUpdateAction;

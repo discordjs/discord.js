@@ -311,7 +311,7 @@ class Guild {
     return this.client.user.settings.guildPositions.indexOf(this.id);
   }
 
-  /*
+  /**
    * The `@everyone` Role of the guild.
    * @type {Role}
    * @readonly
@@ -464,6 +464,7 @@ class Guild {
 
   /**
    * Performs a search within the entire guild.
+   * <warn>This is only available when using a user account.</warn>
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
    * @returns {Promise<Array<Message[]>>}
    * An array containing arrays of messages. Each inner array is a search context cluster.
@@ -477,7 +478,7 @@ class Guild {
    *   console.log(`I found: **${hit}**, total results: ${res.totalResults}`);
    * }).catch(console.error);
    */
-  search(options) {
+  search(options = {}) {
     return this.client.rest.methods.search(this, options);
   }
 

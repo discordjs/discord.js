@@ -70,6 +70,13 @@ exports.DefaultOptions = {
   },
 };
 
+exports.WSCodes = {
+  1000: 'Connection gracefully closed',
+  4004: 'Tried to identify with an invalid token',
+  4010: 'Sharding data provided was invalid',
+  4011: 'Shard would be on too many guilds if connected',
+};
+
 exports.Errors = {
   NO_TOKEN: 'Request to use token, but token was unavailable to the client.',
   NO_BOT_ACCOUNT: 'Only bot accounts are able to make use of this feature.',
@@ -155,8 +162,7 @@ const Endpoints = exports.Endpoints = {
       typing: `${base}/typing`,
       permissions: `${base}/permissions`,
       webhooks: `${base}/webhooks`,
-      search: `${base}/search`,
-      ack: `${base}/ack`,
+      search: `${base}/messages/search`,
       pins: `${base}/pins`,
       Pin: messageID => `${base}/pins/${messageID}`,
       Recipient: recipientID => `${base}/recipients/${recipientID}`,
@@ -468,7 +474,7 @@ exports.UserSettingsMap = {
   /**
    * The theme of the client. Either `light` or `dark`
    * @name ClientUserSettings#theme
-   * @type {String}
+   * @type {string}
    */
   theme: 'theme',
 

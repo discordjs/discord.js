@@ -84,7 +84,7 @@ class VoiceConnectionUDPClient extends EventEmitter {
 
   /**
    * Send a packet to the UDP client
-   * @param {Object} packet the packet to send
+   * @param {Object} packet The packet to send
    * @returns {Promise<Object>}
    */
   send(packet) {
