@@ -48,6 +48,13 @@ class GuildAuditLogs {
     for (const entry of data.audit_log_entries) this.entries.push(new GuildAuditLogsEntry(guild, entry));
   }
 
+  static build(...args) {
+    return new Promise(resolve => {
+      const logs = new GuildAuditLogs(...args);
+      Promise.all(logs.entries.map(e => e.target)).then(() => resolve(logs));
+    });
+  }
+
   static targetType(target) {
     if (target < 10) return Targets.GUILD;
     if (target < 20) return Targets.CHANNEL;

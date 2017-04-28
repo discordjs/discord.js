@@ -685,10 +685,7 @@ class RESTMethods {
     }).match(/[^=&?]+=[^=&?]+/g) || []).join('&');
 
     return this.rest.makeRequest('get', `${Endpoints.Guild(guild).auditLogs}?${queryString}`, true)
-      .then(data => {
-        const logs = new GuildAuditLogs(guild, data);
-        return Promise.all(logs.entries.map(e => e.target)).then(() => logs);
-      });
+      .then(data => GuildAuditLogs.build(guild, data));
   }
 
   getWebhook(id, token) {
