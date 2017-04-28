@@ -2,6 +2,7 @@ const Constants = require('../../../util/Constants');
 
 const BeforeReadyWhitelist = [
   Constants.WSEvents.READY,
+  Constants.WSEvents.RESUMED,
   Constants.WSEvents.GUILD_CREATE,
   Constants.WSEvents.GUILD_DELETE,
   Constants.WSEvents.GUILD_MEMBERS_CHUNK,
@@ -10,8 +11,8 @@ const BeforeReadyWhitelist = [
 ];
 
 class WebSocketPacketManager {
-  constructor(websocketManager) {
-    this.ws = websocketManager;
+  constructor(connection) {
+    this.ws = connection;
     this.handlers = {};
     this.queue = [];
 
@@ -63,35 +64,12 @@ class WebSocketPacketManager {
 
   handleQueue() {
     this.queue.forEach((element, index) => {
-      this.handle(this.queue[index]);
+      this.handle(this.queue[index], true);
       this.queue.splice(index, 1);
     });
   }
 
-  setSequence(s) {
-    if (s && s > this.ws.sequence) this.ws.sequence = s;
-  }
-
-  handle(packet) {
-    if (packet.op === Constants.OPCodes.RECONNECT) {
-      this.setSequence(packet.s);
-      this.ws.tryReconnect();
-      return false;
-    }
-
-    if (packet.op === Constants.OPCodes.INVALID_SESSION) {
-      this.client.emit('debug', `SESSION INVALID! Waiting to reconnect: ${packet.d}`);
-      if (packet.d) {
-        setTimeout(() => {
-          this.ws._sendResume();
-        }, 2500);
-      } else {
-        this.ws.sessionID = null;
-        this.ws._sendNewIdentify();
-      }
-      return false;
-    }
-
+  handle(packet, queue = false) {
     if (packet.op === Constants.OPCodes.HEARTBEAT_ACK) {
       this.ws.client._pong(this.ws.client._pingTimestamp);
       this.ws.lastHeartbeatAck = true;
@@ -109,7 +87,7 @@ class WebSocketPacketManager {
       this.ws.checkIfReady();
     }
 
-    this.setSequence(packet.s);
+    this.ws.setSequence(packet.s);
 
     if (this.ws.disabledEvents[packet.t] !== undefined) return false;
 
@@ -119,6 +97,8 @@ class WebSocketPacketManager {
         return false;
       }
     }
+
+    if (!queue && this.queue.length > 0) this.handleQueue();
 
     if (this.handlers[packet.t]) return this.handlers[packet.t].handle(packet);
     return false;
