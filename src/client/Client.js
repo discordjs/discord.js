@@ -526,6 +526,9 @@ class Client extends EventEmitter {
     if (typeof options.restWsBridgeTimeout !== 'number' || isNaN(options.restWsBridgeTimeout)) {
       throw new TypeError('The restWsBridgeTimeout option must be a number.');
     }
+    if (typeof options.reconnect !== 'boolean') {
+      throw new TypeError('The reconnect option must be a boolean.');
+    }
     if (!(options.disabledEvents instanceof Array)) throw new TypeError('The disabledEvents option must be an Array.');
   }
 }
