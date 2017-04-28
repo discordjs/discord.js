@@ -89,7 +89,7 @@ class Emoji {
    * @readonly
    */
   get url() {
-    return Constants.Endpoints.CDN(this.client.options.http.host).Emoji(this.id);
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).Emoji(this.id);
   }
 
   /**

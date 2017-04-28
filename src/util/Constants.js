@@ -132,7 +132,7 @@ const Endpoints = exports.Endpoints = {
       webhooks: `${base}/webhooks`,
       ack: `${base}/ack`,
       settings: `${base}/settings`,
-      Emoji: emojiID => `${base}/emojis/${emojiID}`,
+      Emoji: hash => Endpoints.CDN(root).Emoji(hash),
       Icon: (root, hash) => Endpoints.CDN(root).Icon(guildID, hash),
       Splash: (root, hash) => Endpoints.CDN(root).Splash(guildID, hash),
       Role: roleID => `${base}/roles/${roleID}`,
@@ -187,7 +187,7 @@ const Endpoints = exports.Endpoints = {
   Member: m => exports.Endpoints.Guild(m.guild).Member(m),
   CDN(root) {
     return {
-      Emoji: emojiID => `${root}/emojis/${emojiID}.png`,
+      Emoji: hash => `${root}/emojis/${hash}.png`,
       Asset: name => `${root}/assets/${name}`,
       Avatar: (userID, hash) => `${root}/avatars/${userID}/${hash}.${hash.startsWith('a_') ? 'gif' : 'png'}?size=2048`,
       Icon: (guildID, hash) => `${root}/icons/${guildID}/${hash}.jpg`,
