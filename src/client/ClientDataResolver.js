@@ -138,6 +138,13 @@ class ClientDataResolver {
   }
 
   /**
+   * Data that resolves to give a Role object. This can be:
+   * * A Role object
+   * * A Role ID
+   * @typedef {Role|Snowflake} RoleResolvable
+   */
+
+  /**
    * Resolves a RoleResolvable to a role
    * @param {GuildResolvable} guild The guild that the role is part of
    * @param {RoleResolvable} role The role resolvable to resolve
