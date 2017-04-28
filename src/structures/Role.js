@@ -177,7 +177,6 @@ class Role {
     return new Permissions(this.permissions).has(permissions, !explicit);
   }
 
-
   /**
    * Returns `channel.permissionsFor(role)`. Returns permissions for a role in a guild channel,
    * taking into account all applicable permission overwrites.
