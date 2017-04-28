@@ -43,6 +43,12 @@ class ReactionCollector extends Collector {
     this.client.on('messageReactionAdd', this.listener);
   }
 
+  /**
+   * Handle an incoming reaction for possible collection.
+   * @param {MessageReaction} reaction The reaction to possibly collect.
+   * @returns {?{key: Snowflake, value: MessageReaction}} Reaction data to collect.
+   * @private
+   */
   handle(reaction) {
     if (reaction.message.id !== this.message.id) return null;
     return {
@@ -51,6 +57,13 @@ class ReactionCollector extends Collector {
     };
   }
 
+  /**
+   * Check after collection to see if the collector is done.
+   * @param {MessageReaction} reaction The reaction that was collected.
+   * @param {User} user The user that reacted.
+   * @returns {?string} Reason to end the collector, if any.
+   * @private
+   */
   postCheck(reaction, user) {
     this.users.set(user.id, user);
     if (this.options.max && ++this.total >= this.options.max) return 'limit';
@@ -59,6 +72,10 @@ class ReactionCollector extends Collector {
     return null;
   }
 
+  /**
+   * Remove event listeners.
+   * @private
+   */
   cleanup() {
     this.client.removeListener('messageReactionAdd', this.listener);
   }
