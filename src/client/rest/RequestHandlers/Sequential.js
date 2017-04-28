@@ -27,6 +27,12 @@ class SequentialRequestHandler extends RequestHandler {
      * @type {number}
      */
     this.timeDifference = 0;
+
+    /**
+     * Whether the queue is being processed or not
+     * @type {boolean}
+     */
+    this.busy = false;
   }
 
   push(request) {
@@ -40,50 +46,54 @@ class SequentialRequestHandler extends RequestHandler {
    * @returns {Promise<?Object|Error>}
    */
   execute(item) {
+    this.busy = true;
     return new Promise(resolve => {
-      item.request.gen().end((err, res) => {
-        if (res && res.headers) {
-          this.requestLimit = Number(res.headers['x-ratelimit-limit']);
-          this.requestResetTime = Number(res.headers['x-ratelimit-reset']) * 1000;
-          this.requestRemaining = Number(res.headers['x-ratelimit-remaining']);
-          this.timeDifference = Date.now() - new Date(res.headers.date).getTime();
-        }
-        if (err) {
-          if (err.status === 429) {
-            this.queue.unshift(item);
-            this.restManager.client.setTimeout(() => {
-              this.globalLimit = false;
-              resolve();
-            }, Number(res.headers['retry-after']) + this.restManager.client.options.restTimeOffset);
-            if (res.headers['x-ratelimit-global']) this.globalLimit = true;
-          } else {
-            item.reject(err);
-            resolve(err);
+      item.request
+        .gen()
+        .on('error', e => item.reject(e))
+        .end((err, res) => {
+          if (res && res.headers) {
+            this.requestLimit = Number(res.headers['x-ratelimit-limit']);
+            this.requestResetTime = Number(res.headers['x-ratelimit-reset']) * 1000;
+            this.requestRemaining = Number(res.headers['x-ratelimit-remaining']);
+            this.timeDifference = Date.now() - new Date(res.headers.date).getTime();
           }
-        } else {
-          this.globalLimit = false;
-          const data = res && res.body ? res.body : {};
-          item.resolve(data);
-          if (this.requestRemaining === 0) {
-            this.restManager.client.setTimeout(
-              () => {
-                this.waiting = false;
-                resolve(data);
-              },
+          if (err) {
+            if (err.status === 429) {
+              this.queue.unshift(item);
+              this.restManager.client.setTimeout(() => {
+                this.globalLimit = false;
+                resolve();
+              }, Number(res.headers['retry-after']) + this.restManager.client.options.restTimeOffset);
+              if (res.headers['x-ratelimit-global']) this.globalLimit = true;
+            } else {
+              item.reject(err);
+              resolve(err);
+            }
+          } else {
+            this.globalLimit = false;
+            const data = res && res.body ? res.body : {};
+            item.resolve(data);
+            if (this.requestRemaining === 0) {
+              this.restManager.client.setTimeout(
+              () => resolve(data),
               this.requestResetTime - Date.now() + this.timeDifference + this.restManager.client.options.restTimeOffset
             );
-          } else {
-            resolve(data);
+            } else {
+              resolve(data);
+            }
           }
-        }
-      });
+        });
     });
   }
 
   handle() {
     super.handle();
-    if (this.remaining === 0 || this.queue.length === 0 || this.globalLimit) return;
-    this.execute(this.queue.shift()).then(() => this.handle());
+    if (this.busy || this.remaining === 0 || this.queue.length === 0 || this.globalLimit) return;
+    this.execute(this.queue.shift()).then(() => {
+      this.busy = false;
+      this.handle();
+    });
   }
 }
 

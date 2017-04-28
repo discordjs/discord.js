@@ -70,6 +70,13 @@ exports.DefaultOptions = {
   },
 };
 
+exports.WSCodes = {
+  1000: 'Connection gracefully closed',
+  4004: 'Tried to identify with an invalid token',
+  4010: 'Sharding data provided was invalid',
+  4011: 'Shard would be on too many guilds if connected',
+};
+
 exports.Errors = {
   NO_TOKEN: 'Request to use token, but token was unavailable to the client.',
   NO_BOT_ACCOUNT: 'Only bot accounts are able to make use of this feature.',
@@ -125,7 +132,7 @@ const Endpoints = exports.Endpoints = {
       webhooks: `${base}/webhooks`,
       ack: `${base}/ack`,
       settings: `${base}/settings`,
-      Emoji: emojiID => `${base}/emojis/${emojiID}`,
+      Emoji: emojiID => Endpoints.CDN(root).Emoji(emojiID),
       Icon: (root, hash) => Endpoints.CDN(root).Icon(guildID, hash),
       Splash: (root, hash) => Endpoints.CDN(root).Splash(guildID, hash),
       Role: roleID => `${base}/roles/${roleID}`,
@@ -154,8 +161,7 @@ const Endpoints = exports.Endpoints = {
       typing: `${base}/typing`,
       permissions: `${base}/permissions`,
       webhooks: `${base}/webhooks`,
-      search: `${base}/search`,
-      ack: `${base}/ack`,
+      search: `${base}/messages/search`,
       pins: `${base}/pins`,
       Pin: messageID => `${base}/pins/${messageID}`,
       Recipient: recipientID => `${base}/recipients/${recipientID}`,
@@ -165,7 +171,7 @@ const Endpoints = exports.Endpoints = {
         return {
           toString: () => mbase,
           reactions: `${mbase}/reactions`,
-          ack: `${base}/ack`,
+          ack: `${mbase}/ack`,
           Reaction: (emoji, limit) => {
             const rbase = `${mbase}/reactions/${emoji}${limit ? `?limit=${limit}` : ''}`;
             return {
@@ -181,7 +187,7 @@ const Endpoints = exports.Endpoints = {
   Member: m => exports.Endpoints.Guild(m.guild).Member(m),
   CDN(root) {
     return {
-      Emoji: emojiID => `${root}/emojis/$${emojiID}.png`,
+      Emoji: emojiID => `${root}/emojis/${emojiID}.png`,
       Asset: name => `${root}/assets/${name}`,
       Avatar: (userID, hash) => `${root}/avatars/${userID}/${hash}.${hash.startsWith('a_') ? 'gif' : 'png'}?size=2048`,
       Icon: (guildID, hash) => `${root}/icons/${guildID}/${hash}.jpg`,
@@ -206,6 +212,7 @@ const Endpoints = exports.Endpoints = {
     bot: '/gateway/bot',
   },
   Invite: inviteID => `/invite/${inviteID}`,
+  inviteLink: id => `https://discord.gg/${id}`,
   Webhook: (webhookID, token) => `/webhooks/${webhookID}${token ? `/${token}` : ''}`,
 };
 
@@ -475,7 +482,7 @@ exports.UserSettingsMap = {
   /**
    * The theme of the client. Either `light` or `dark`
    * @name ClientUserSettings#theme
-   * @type {String}
+   * @type {string}
    */
   theme: 'theme',
 

@@ -87,21 +87,19 @@ class Util {
   }
 
   /**
-   * Does some weird shit to test the equality of two arrays' elements.
-   * <warn>Do not use. This will give your dog/cat severe untreatable cancer of the everything. RIP Fluffykins.</warn>
-   * @param {Array<*>} a ????
-   * @param {Array<*>} b ?????????
-   * @returns {boolean}
+   * Checks whether the arrays are equal, also removes duplicated entries from b.
+   * @param {Array<*>} a Array which will not be modified.
+   * @param {Array<*>} b Array to remove duplicated entries from.
+   * @returns {boolean} boolean Whether the arrays are equal.
    * @private
    */
   static arraysEqual(a, b) {
     if (a === b) return true;
     if (a.length !== b.length) return false;
 
-    for (const itemInd in a) {
-      const item = a[itemInd];
+    for (const item of a) {
       const ind = b.indexOf(item);
-      if (ind) b.splice(ind, 1);
+      if (ind !== -1) b.splice(ind, 1);
     }
 
     return b.length === 0;

@@ -68,8 +68,8 @@ class ClientUser extends User {
 
     /**
      * Various settings for this user
-     * @type {?ClientUserSettings}
      * <warn>This is only filled when using a user account</warn>
+     * @type {?ClientUserSettings}
      */
     if (data.user_settings) this.settings = new ClientUserSettings(this, data.user_settings);
 
@@ -197,9 +197,9 @@ class ClientUser extends User {
       if (data.game) {
         game = data.game;
         if (game.url) game.type = 1;
+      } else if (typeof data.game !== 'undefined') {
+        game = null;
       }
-
-      if (data.game === null) game = null;
 
       if (typeof data.afk !== 'undefined') afk = data.afk;
       afk = Boolean(afk);
@@ -244,13 +244,11 @@ class ClientUser extends User {
    * @returns {Promise<ClientUser>}
    */
   setGame(game, streamingURL) {
-    if (game === null) return this.setPresence({ game });
-    return this.setPresence({
-      game: {
-        name: game,
-        url: streamingURL,
-      },
-    });
+    if (!game) return this.setPresence({ game: null });
+    return this.setPresence({ game: {
+      name: game,
+      url: streamingURL,
+    } });
   }
 
   /**

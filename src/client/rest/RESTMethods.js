@@ -159,7 +159,9 @@ class RESTMethods {
   }
 
   ackTextChannel(channel) {
-    return this.rest.makeRequest('post', Endpoints.Channel(channel).ack, true, { token: this._ackToken }).then(res => {
+    return this.rest.makeRequest('post', Endpoints.Channel(channel).Message(channel.lastMessageID).ack, true, {
+      token: this._ackToken,
+    }).then(res => {
       if (res.token) this._ackToken = res.token;
       return channel;
     });
@@ -186,6 +188,7 @@ class RESTMethods {
   }
 
   search(target, options) {
+    if (typeof options === 'string') options = { content: options };
     if (options.before) {
       if (!(options.before instanceof Date)) options.before = new Date(options.before);
       options.maxID = long.fromNumber(options.before.getTime() - 14200704e5).shiftLeft(22).toString();
@@ -815,11 +818,11 @@ class RESTMethods {
       );
   }
 
-  removeMessageReaction(message, emoji, user) {
-    const endpoint = Endpoints.Message(message).Reaction(emoji).User(user === this.client.user.id ? '@me' : user.id);
+  removeMessageReaction(message, emoji, userID) {
+    const endpoint = Endpoints.Message(message).Reaction(emoji).User(userID === this.client.user.id ? '@me' : userID);
     return this.rest.makeRequest('delete', endpoint, true).then(() =>
       this.client.actions.MessageReactionRemove.handle({
-        user_id: user,
+        user_id: userID,
         message_id: message.id,
         emoji: Util.parseEmoji(emoji),
         channel_id: message.channel.id,
