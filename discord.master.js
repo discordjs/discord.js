@@ -12208,6 +12208,12 @@ class MessageCollector extends Collector {
     this.on('collect', this._reEmitter);
   }
 
+  /**
+   * Handle an incoming message for possible collection.
+   * @param {Message} message The message that could be collected.
+   * @returns {?{key: Snowflake, value: Message}} Message data to collect.
+   * @private
+   */
   handle(message) {
     if (message.channel.id !== this.channel.id) return null;
     this.received++;
@@ -12217,6 +12223,11 @@ class MessageCollector extends Collector {
     };
   }
 
+  /**
+   * Check after collection to see if the collector is done.
+   * @returns {?string} Reason to end the collector, if any.
+   * @private
+   */
   postCheck() {
     // Consider changing the end reasons for v12
     if (this.options.maxMatches && this.collected.size >= this.options.max) return 'matchesLimit';
@@ -12224,6 +12235,10 @@ class MessageCollector extends Collector {
     return null;
   }
 
+  /**
+   * Removes event listeners.
+   * @private
+   */
   cleanup() {
     this.removeListener('collect', this._reEmitter);
     this.client.removeListener('message', this.listener);
@@ -16446,9 +16461,11 @@ class Collector extends EventEmitter {
 
     /**
      * The client.
+     * @name Collector#client
      * @type {Client}
+     * @readonly
      */
-    this.client = client;
+    Object.defineProperty(this, 'client', { value: client });
 
     /**
      * The filter applied to this collector.
@@ -16475,8 +16492,8 @@ class Collector extends EventEmitter {
     this.ended = false;
 
     /**
-     * Timeout ID for cleanup.
-     * @type {?number}
+     * Timeout for cleanup.
+     * @type {?Timeout}
      * @private
      */
     this._timeout = null;
@@ -16570,25 +16587,26 @@ class Collector extends EventEmitter {
 
   /* eslint-disable no-empty-function, valid-jsdoc */
   /**
+   * Handles incoming events from the `listener` function.  Returns null if the
+   * event should not be collected, or returns an object describing the data that should be stored.
+   * @see Collector#listener
    * @param {...*} args Any args the event listener emits.
    * @returns {?{key: string, value}} Data to insert into collection, if any.
    * @abstract
-   * @private
    */
   handle() {}
 
   /**
+   * This method runs after collection to see if the collector should finish.
    * @param {...*} args Any args the event listener emits.
    * @returns {?string} Reason to end the collector, if any.
    * @abstract
-   * @private
    */
   postCheck() {}
 
   /**
    * Called when the collector is ending.
    * @abstract
-   * @private
    */
   cleanup() {}
   /* eslint-enable no-empty-function, valid-jsdoc */
@@ -26057,6 +26075,12 @@ class ReactionCollector extends Collector {
     this.client.on('messageReactionAdd', this.listener);
   }
 
+  /**
+   * Handle an incoming reaction for possible collection.
+   * @param {MessageReaction} reaction The reaction to possibly collect.
+   * @returns {?{key: Snowflake, value: MessageReaction}} Reaction data to collect.
+   * @private
+   */
   handle(reaction) {
     if (reaction.message.id !== this.message.id) return null;
     return {
@@ -26065,6 +26089,13 @@ class ReactionCollector extends Collector {
     };
   }
 
+  /**
+   * Check after collection to see if the collector is done.
+   * @param {MessageReaction} reaction The reaction that was collected.
+   * @param {User} user The user that reacted.
+   * @returns {?string} Reason to end the collector, if any.
+   * @private
+   */
   postCheck(reaction, user) {
     this.users.set(user.id, user);
     if (this.options.max && ++this.total >= this.options.max) return 'limit';
@@ -26073,6 +26104,10 @@ class ReactionCollector extends Collector {
     return null;
   }
 
+  /**
+   * Remove event listeners.
+   * @private
+   */
   cleanup() {
     this.client.removeListener('messageReactionAdd', this.listener);
   }
