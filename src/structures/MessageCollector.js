@@ -50,6 +50,12 @@ class MessageCollector extends Collector {
     this.on('collect', this._reEmitter);
   }
 
+  /**
+   * Handle an incoming message for possible collection.
+   * @param {Message} message The message that could be collected.
+   * @returns {?{key: Snowflake, value: Message}} Message data to collect.
+   * @private
+   */
   handle(message) {
     if (message.channel.id !== this.channel.id) return null;
     this.received++;
@@ -59,6 +65,11 @@ class MessageCollector extends Collector {
     };
   }
 
+  /**
+   * Check after collection to see if the collector is done.
+   * @returns {?string} Reason to end the collector, if any.
+   * @private
+   */
   postCheck() {
     // Consider changing the end reasons for v12
     if (this.options.maxMatches && this.collected.size >= this.options.max) return 'matchesLimit';
@@ -66,6 +77,10 @@ class MessageCollector extends Collector {
     return null;
   }
 
+  /**
+   * Removes event listeners.
+   * @private
+   */
   cleanup() {
     this.removeListener('collect', this._reEmitter);
     this.client.removeListener('message', this.listener);
