@@ -137,6 +137,19 @@ class ClientDataResolver {
   }
 
   /**
+   * Resolves a RoleResolvable to a role
+   * @param {GuildResolvable} guild The guild that the role is part of
+   * @param {RoleResolvable} role The role resolvable to resolve
+   * @returns {?Role}
+   */
+  resolveRole(guild, role) {
+    if (role instanceof Role) return role;
+    guild = this.resolveGuild(guild);
+    if (typeof role === 'string') return guild.roles.get(role) || null;
+    return null;
+  }
+
+  /**
    * Data that can be resolved to give an invite code. This can be:
    * * An invite code
    * * An invite URL
