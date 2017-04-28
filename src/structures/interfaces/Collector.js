@@ -24,9 +24,11 @@ class Collector extends EventEmitter {
 
     /**
      * The client.
+     * @name Collector#client
      * @type {Client}
+     * @readonly
      */
-    this.client = client;
+    Object.defineProperty(this, 'client', { value: client });
 
     /**
      * The filter applied to this collector.
@@ -63,7 +65,6 @@ class Collector extends EventEmitter {
      * Call this to handle an event as a collectable element.
      * Accepts any event data as parameters.
      * @type {Function}
-     * @private
      */
     this.listener = this._handle.bind(this);
     if (options.time) this._timeout = this.client.setTimeout(() => this.stop('time'), options.time);
@@ -148,25 +149,26 @@ class Collector extends EventEmitter {
 
   /* eslint-disable no-empty-function, valid-jsdoc */
   /**
-   * @param {...*} args Any args the event listener emits.
+   * Handles incoming events from the `listener` function.  Returns null if the
+   * event should not be collected, or returns an object describing the data that should be stored.
+   * @see Collector#listener
+   * @param {...*} args Any args the event listener receives.
    * @returns {?{key: string, value}} Data to insert into collection, if any.
    * @abstract
-   * @private
    */
   handle() {}
 
   /**
-   * @param {...*} args Any args the event listener emits.
+   * This method runs after collection to see if the collector should finish.
+   * @param {...*} args Any args the event listener receives.
    * @returns {?string} Reason to end the collector, if any.
    * @abstract
-   * @private
    */
   postCheck() {}
 
   /**
    * Called when the collector is ending.
    * @abstract
-   * @private
    */
   cleanup() {}
   /* eslint-enable no-empty-function, valid-jsdoc */
