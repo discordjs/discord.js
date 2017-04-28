@@ -7787,7 +7787,7 @@ class Guild {
      * @event Client#guildMemberAdd
      * @param {GuildMember} member The member that has joined a guild
      */
-    if (this.client.ws.status === Constants.Status.READY && emitEvent && !existing) {
+    if (this.client.ws.connection.status === Constants.Status.READY && emitEvent && !existing) {
       this.client.emit(Constants.Events.GUILD_MEMBER_ADD, member);
     }
 
@@ -7802,7 +7802,7 @@ class Guild {
 
     const notSame = member.nickname !== oldMember.nickname || !Util.arraysEqual(member._roles, oldMember._roles);
 
-    if (this.client.ws.status === Constants.Status.READY && notSame) {
+    if (this.client.ws.connection.status === Constants.Status.READY && notSame) {
       /**
        * Emitted whenever a guild member changes - i.e. new role, removed role, nickname
        * @event Client#guildMemberUpdate
@@ -16811,7 +16811,7 @@ class Client extends EventEmitter {
    * @readonly
    */
   get status() {
-    return this.ws.status;
+    return this.ws.connection.status;
   }
 
   /**
