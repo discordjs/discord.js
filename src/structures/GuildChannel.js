@@ -330,11 +330,11 @@ class GuildChannel extends Channel {
  */
   get muted() {
     if (this.client.user.bot) return null;
-    if (!this.client.user.guildSettings) return null;
-    if (!this.client.user.guildSettings.get(this.guild.id)) return null;
-    if (!this.client.user.guildSettings.get(this.guild.id).channelOverrides) return false;
-    if (!this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id)) return false;
-    return this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id).muted;
+    try {
+      return this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id).muted;
+    } catch (err) {
+      return false;
+    }
   }
 
   /**
@@ -345,15 +345,11 @@ class GuildChannel extends Channel {
    */
   get messageNotifications() {
     if (this.client.user.bot) return null;
-    if (!this.client.user.guildSettings) return null;
-    if (!this.client.user.guildSettings.get(this.guild.id)) return null;
-    if (!this.client.user.guildSettings.get(this.guild.id).channelOverrides) {
+    try {
+      return this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id).messageNotifications;
+    } catch (err) {
       return Constants.MessageNotificationTypes[3];
     }
-    if (!this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id)) {
-      return Constants.MessageNotificationTypes[3];
-    }
-    return this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id).messageNotifications;
   }
 
   /**

@@ -318,9 +318,11 @@ class Guild {
    */
   get muted() {
     if (this.client.user.bot) return null;
-    if (!this.client.user.guildSettings) return null;
-    if (!this.client.user.guildSettings.get(this.id)) return null;
-    return this.client.user.guildSettings.get(this.id).muted;
+    try {
+      return this.client.user.guildSettings.get(this.id).muted;
+    } catch (err) {
+      return false;
+    }
   }
 
   /**
@@ -331,9 +333,11 @@ class Guild {
    */
   get messageNotifications() {
     if (this.client.user.bot) return null;
-    if (!this.client.user.guildSettings) return null;
-    if (!this.client.user.guildSettings.get(this.id)) return null;
-    return this.client.user.guildSettings.get(this.id).messageNotifications;
+    try {
+      return this.client.user.guildSettings.get(this.id).messageNotifications;
+    } catch (err) {
+      return null;
+    }
   }
 
   /**
@@ -343,9 +347,11 @@ class Guild {
    */
   get mobilePush() {
     if (this.client.user.bot) return null;
-    if (!this.client.user.guildSettings) return null;
-    if (!this.client.user.guildSettings.get(this.id)) return null;
-    return this.client.user.guildSettings.get(this.id).mobilePush;
+    try {
+      return this.client.user.guildSettings.get(this.id).mobilePush;
+    } catch (err) {
+      return false;
+    }
   }
 
   /**
