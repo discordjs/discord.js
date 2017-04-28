@@ -392,7 +392,7 @@ class GuildMember {
    * @returns {Promise<GuildMember>}
    */
   addRole(role) {
-    if (!(role instanceof Role)) role = this.guild.roles.get(role);
+    role = this.client.resolver.resolveRole(this.guild, role);
     if (!role) throw new TypeError('Supplied parameter was neither a Role nor a Snowflake.');
     return this.client.rest.methods.addMemberRole(this, role);
   }
@@ -419,7 +419,7 @@ class GuildMember {
    * @returns {Promise<GuildMember>}
    */
   removeRole(role) {
-    if (!(role instanceof Role)) role = this.guild.roles.get(role);
+    role = this.client.resolver.resolveRole(this.guild, role);
     if (!role) throw new TypeError('Supplied parameter was neither a Role nor a Snowflake.');
     return this.client.rest.methods.removeMemberRole(this, role);
   }

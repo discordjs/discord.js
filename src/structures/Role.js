@@ -177,6 +177,19 @@ class Role {
     return new Permissions(this.permissions).has(permissions, !explicit);
   }
 
+
+  /**
+   * Returns `channel.permissionsFor(role)`. Returns permissions for a role in a guild channel,
+   * taking into account all applicable permission overwrites.
+   * @param {ChannelResolvable} channel Guild channel to use as context
+   * @returns {?Permissions}
+   */
+  permissionsIn(channel) {
+    channel = this.client.resolver.resolveChannel(channel);
+    if (!channel || !channel.guild) throw new Error('Could not resolve channel to a guild channel.');
+    return channel.permissionsFor(this);
+  }
+
   /**
    * Compares this role's position to another role's.
    * @param {Role} role Role to compare to this one
