@@ -80,7 +80,7 @@ class WebSocketManager extends EventEmitter {
    * @param {string} gateway The gateway to connect to
    */
   _connect(gateway) {
-    this.client.emit('debug', `Connecting to gateway ${gateway}`);
+    this.client.logger.info(`Connecting to gateway ${gateway}`);
     this.normalReady = false;
     if (this.status !== Constants.Status.RECONNECTING) this.status = Constants.Status.CONNECTING;
     this.ws = new WebSocketConnection(gateway);
@@ -112,7 +112,7 @@ class WebSocketManager extends EventEmitter {
       return;
     }
 
-    this.client.emit('debug', 'Sending heartbeat');
+    this.client.logger.trace('Sending heartbeat');
     this.client._pingTimestamp = Date.now();
     this.client.ws.send({
       op: Constants.OPCodes.HEARTBEAT,
@@ -166,7 +166,7 @@ class WebSocketManager extends EventEmitter {
    * Run whenever the gateway connections opens up
    */
   eventOpen() {
-    this.client.emit('debug', 'Connection to gateway opened');
+    this.client.logger.info('Connection to gateway opened');
     this.lastHeartbeatAck = true;
     if (this.sessionID) this._sendResume();
     else this._sendNewIdentify();
@@ -180,7 +180,7 @@ class WebSocketManager extends EventEmitter {
       this._sendNewIdentify();
       return;
     }
-    this.client.emit('debug', 'Identifying as resumed session');
+    this.client.logger.info('Identifying as resumed session');
     this.resumeStart = this.sequence;
     const payload = {
       token: this.client.token,
@@ -204,7 +204,7 @@ class WebSocketManager extends EventEmitter {
     if (this.client.options.shardCount > 0) {
       payload.shard = [Number(this.client.options.shardId), Number(this.client.options.shardCount)];
     }
-    this.client.emit('debug', 'Identifying as new session');
+    this.client.logger.info('Identifying as new session');
     this.send({
       op: Constants.OPCodes.IDENTIFY,
       d: payload,
@@ -264,7 +264,7 @@ class WebSocketManager extends EventEmitter {
      * @event Client#error
      * @param {Error} error The encountered error
      */
-    if (this.client.listenerCount('error') > 0) this.client.emit('error', err);
+    this.client.logger.error(err);
     this.tryReconnect();
   }
 
