@@ -347,7 +347,13 @@ class Guild {
    * @returns {Promise<Collection<Snowflake, User>>}
    */
   fetchBans() {
-    return this.client.rest.methods.getGuildBans(this);
+    return this.client.rest.methods.getGuildBans(this)
+      // This entire re-mapping can be removed in the next major release
+      .then(bans => {
+        const users = new Collection();
+        for (const ban of bans.values()) users.set(ban.user.id, ban.user);
+        return users;
+      });
   }
 
   /**

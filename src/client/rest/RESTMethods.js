@@ -573,14 +573,15 @@ class RESTMethods {
   }
 
   getGuildBans(guild) {
-    return this.rest.makeRequest('get', Endpoints.Guild(guild).bans, true).then(banItems => {
-      const bannedUsers = new Collection();
-      for (const banItem of banItems) {
-        const user = this.client.dataManager.newUser(banItem.user);
-        bannedUsers.set(user.id, user);
-      }
-      return bannedUsers;
-    });
+    return this.rest.makeRequest('get', Endpoints.Guild(guild).bans, true).then(bans =>
+      bans.reduce((collection, ban) => {
+        collection.set(ban.user.id, {
+          reason: ban.reason,
+          user: this.client.dataManager.newUser(ban.user),
+        });
+        return collection;
+      }, new Collection())
+    );
   }
 
   updateGuildRole(role, _data) {
