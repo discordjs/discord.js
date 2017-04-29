@@ -4,9 +4,7 @@ class GuildEmojiDeleteAction extends Action {
   handle(emoji) {
     const client = this.client;
     client.dataManager.killEmoji(emoji);
-    return {
-      emoji,
-    };
+    return { emoji };
   }
 }
 

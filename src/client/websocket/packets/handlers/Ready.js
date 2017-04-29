@@ -64,7 +64,12 @@ class ReadyHandler extends AbstractHandler {
       client.ws.connection.triggerReady();
     }, 1200 * data.guilds.length);
 
-    client.once('ready', () => client.clearTimeout(t));
+    client.setMaxListeners(data.guilds.length + 1);
+
+    client.once('ready', () => {
+      client.setMaxListeners(10);
+      client.clearTimeout(t);
+    });
 
     const ws = this.packetManager.ws;
 

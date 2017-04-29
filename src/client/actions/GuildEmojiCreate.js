@@ -4,9 +4,7 @@ class GuildEmojiCreateAction extends Action {
   handle(guild, createdEmoji) {
     const client = this.client;
     const emoji = client.dataManager.newEmoji(createdEmoji, guild);
-    return {
-      emoji,
-    };
+    return { emoji };
   }
 }
 

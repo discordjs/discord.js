@@ -17,21 +17,7 @@ client.on('ready', () => {
   console.timeEnd('magic');
 });
 
-client.on('userUpdate', (o, n) => {
-  console.log(o.username, n.username);
-});
-
 client.on('debug', console.log);
-
-client.on('emojiCreate', e => console.log('create!!', e.name));
-client.on('emojiDelete', e => console.log('delete!!', e.name));
-client.on('emojiUpdate', (o, n) => console.log('update!!', o.name, n.name));
-
-client.on('guildMemberAdd', m => console.log(`${m.user.username} joined ${m.guild.name}`));
-
-client.on('channelCreate', channel => {
-  console.log(`made ${channel.name}`);
-});
 
 client.on('error', m => console.log('debug', m));
 client.on('reconnecting', m => console.log('debug', m));

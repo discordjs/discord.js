@@ -36,9 +36,7 @@ class GuildDeleteAction extends Action {
       guild = this.deleted.get(data.id) || null;
     }
 
-    return {
-      guild,
-    };
+    return { guild };
   }
 
   scheduleForDeletion(id) {
