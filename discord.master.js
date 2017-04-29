@@ -22641,9 +22641,7 @@ class ChannelCreateAction extends Action {
   handle(data) {
     const client = this.client;
     const channel = client.dataManager.newChannel(data);
-    return {
-      channel,
-    };
+    return { channel };
   }
 }
 
@@ -22674,9 +22672,7 @@ class ChannelDeleteAction extends Action {
       channel = this.deleted.get(data.id) || null;
     }
 
-    return {
-      channel,
-    };
+    return { channel };
   }
 
   scheduleForDeletion(id) {
@@ -22764,9 +22760,7 @@ class GuildChannelsPositionUpdate extends Action {
       }
     }
 
-    return {
-      guild,
-    };
+    return { guild };
   }
 }
 
@@ -22815,9 +22809,7 @@ class GuildDeleteAction extends Action {
       guild = this.deleted.get(data.id) || null;
     }
 
-    return {
-      guild,
-    };
+    return { guild };
   }
 
   scheduleForDeletion(id) {
@@ -22844,9 +22836,7 @@ class GuildEmojiCreateAction extends Action {
   handle(guild, createdEmoji) {
     const client = this.client;
     const emoji = client.dataManager.newEmoji(createdEmoji, guild);
-    return {
-      emoji,
-    };
+    return { emoji };
   }
 }
 
@@ -22869,9 +22859,7 @@ class GuildEmojiDeleteAction extends Action {
   handle(emoji) {
     const client = this.client;
     client.dataManager.killEmoji(emoji);
-    return {
-      emoji,
-    };
+    return { emoji };
   }
 }
 
@@ -22893,9 +22881,7 @@ const Action = __webpack_require__(2);
 class GuildEmojiUpdateAction extends Action {
   handle(oldEmoji, newEmoji) {
     const emoji = this.client.dataManager.updateEmoji(oldEmoji, newEmoji);
-    return {
-      emoji,
-    };
+    return { emoji };
   }
 }
 
@@ -22962,9 +22948,7 @@ const Action = __webpack_require__(2);
 class GuildMemberGetAction extends Action {
   handle(guild, data) {
     const member = guild._addMember(data, false);
-    return {
-      member,
-    };
+    return { member };
   }
 }
 
@@ -22986,10 +22970,10 @@ class GuildMemberRemoveAction extends Action {
 
   handle(data) {
     const client = this.client;
-
     const guild = client.guilds.get(data.guild_id);
+    let member = null;
     if (guild) {
-      let member = guild.members.get(data.user.id);
+      member = guild.members.get(data.user.id);
       if (member) {
         guild.memberCount--;
         guild._removeMember(member);
@@ -22999,17 +22983,8 @@ class GuildMemberRemoveAction extends Action {
       } else {
         member = this.deleted.get(guild.id + data.user.id) || null;
       }
-
-      return {
-        guild,
-        member,
-      };
     }
-
-    return {
-      guild,
-      member: null,
-    };
+    return { guild, member };
   }
 
   scheduleForDeletion(guildID, userID) {
@@ -23037,22 +23012,15 @@ const Role = __webpack_require__(15);
 class GuildRoleCreate extends Action {
   handle(data) {
     const client = this.client;
-
     const guild = client.guilds.get(data.guild_id);
+    let role;
     if (guild) {
       const already = guild.roles.has(data.role.id);
-      const role = new Role(guild, data.role);
+      role = new Role(guild, data.role);
       guild.roles.set(role.id, role);
       if (!already) client.emit(Constants.Events.GUILD_ROLE_CREATE, role);
-
-      return {
-        role,
-      };
     }
-
-    return {
-      role: null,
-    };
+    return { role };
   }
 }
 
@@ -23080,10 +23048,11 @@ class GuildRoleDeleteAction extends Action {
 
   handle(data) {
     const client = this.client;
-
     const guild = client.guilds.get(data.guild_id);
+    let role;
+
     if (guild) {
-      let role = guild.roles.get(data.role_id);
+      role = guild.roles.get(data.role_id);
       if (role) {
         guild.roles.delete(data.role_id);
         this.deleted.set(guild.id + data.role_id, role);
@@ -23092,15 +23061,9 @@ class GuildRoleDeleteAction extends Action {
       } else {
         role = this.deleted.get(guild.id + data.role_id) || null;
       }
-
-      return {
-        role,
-      };
     }
 
-    return {
-      role: null,
-    };
+    return { role };
   }
 
   scheduleForDeletion(guildID, roleID) {
@@ -23128,8 +23091,8 @@ const Util = __webpack_require__(4);
 class GuildRoleUpdateAction extends Action {
   handle(data) {
     const client = this.client;
-
     const guild = client.guilds.get(data.guild_id);
+
     if (guild) {
       const roleData = data.role;
       let oldRole = null;
@@ -23182,9 +23145,7 @@ class GuildRolesPositionUpdate extends Action {
       }
     }
 
-    return {
-      guild,
-    };
+    return { guild };
   }
 }
 
@@ -23341,11 +23302,11 @@ class MessageDeleteAction extends Action {
 
   handle(data) {
     const client = this.client;
-
     const channel = client.channels.get(data.channel_id);
-    if (channel) {
-      let message = channel.messages.get(data.id);
+    let message;
 
+    if (channel) {
+      message = channel.messages.get(data.id);
       if (message) {
         channel.messages.delete(message.id);
         this.deleted.set(channel.id + message.id, message);
@@ -23353,15 +23314,9 @@ class MessageDeleteAction extends Action {
       } else {
         message = this.deleted.get(channel.id + data.id) || null;
       }
-
-      return {
-        message,
-      };
     }
 
-    return {
-      message: null,
-    };
+    return { message };
   }
 
   scheduleForDeletion(channelID, messageID) {
@@ -23394,9 +23349,7 @@ class MessageDeleteBulkAction extends Action {
     }
 
     if (messages.size > 0) client.emit(Constants.Events.MESSAGE_BULK_DELETE, messages);
-    return {
-      messages,
-    };
+    return { messages };
   }
 }
 
@@ -23421,26 +23374,18 @@ class MessageReactionAdd extends Action {
   handle(data) {
     const user = this.client.users.get(data.user_id);
     if (!user) return false;
-
+    // Verify channel
     const channel = this.client.channels.get(data.channel_id);
     if (!channel || channel.type === 'voice') return false;
-
+    // Verify message
     const message = channel.messages.get(data.message_id);
     if (!message) return false;
-
     if (!data.emoji) return false;
-
+    // Verify reaction
     const reaction = message._addReaction(data.emoji, user);
+    if (reaction) this.client.emit(Constants.Events.MESSAGE_REACTION_ADD, reaction, user);
 
-    if (reaction) {
-      this.client.emit(Constants.Events.MESSAGE_REACTION_ADD, reaction, user);
-    }
-
-    return {
-      message,
-      reaction,
-      user,
-    };
+    return { message, reaction, user };
   }
 }
 
@@ -23472,26 +23417,18 @@ class MessageReactionRemove extends Action {
   handle(data) {
     const user = this.client.users.get(data.user_id);
     if (!user) return false;
-
+    // Verify channel
     const channel = this.client.channels.get(data.channel_id);
     if (!channel || channel.type === 'voice') return false;
-
+    // Verify message
     const message = channel.messages.get(data.message_id);
     if (!message) return false;
-
     if (!data.emoji) return false;
-
+    // Verify reaction
     const reaction = message._removeReaction(data.emoji, user);
+    if (reaction) this.client.emit(Constants.Events.MESSAGE_REACTION_REMOVE, reaction, user);
 
-    if (reaction) {
-      this.client.emit(Constants.Events.MESSAGE_REACTION_REMOVE, reaction, user);
-    }
-
-    return {
-      message,
-      reaction,
-      user,
-    };
+    return { message, reaction, user };
   }
 }
 
@@ -23523,9 +23460,7 @@ class MessageReactionRemoveAll extends Action {
     message._clearReactions();
     this.client.emit(Constants.Events.MESSAGE_REACTION_REMOVE_ALL, message);
 
-    return {
-      message,
-    };
+    return { message };
   }
 }
 
@@ -23594,9 +23529,7 @@ class UserGetAction extends Action {
   handle(data) {
     const client = this.client;
     const user = client.dataManager.newUser(data);
-    return {
-      user,
-    };
+    return { user };
   }
 }
 
