@@ -1,4 +1,5 @@
 const Collector = require('./interfaces/Collector');
+const util = require('util');
 
 /**
  * @typedef {CollectorOptions} MessageCollectorOptions
@@ -48,6 +49,14 @@ class MessageCollector extends Collector {
       this.emit('message', message);
     };
     this.on('collect', this._reEmitter);
+  }
+
+  // TODO: Remove me in v12
+  on(eventName, listener) {
+    if (eventName === 'message') {
+      listener = util.deprecate(listener, 'MessageCollector will soon no longer emit "message", use "collect" instead');
+    }
+    super.on(eventName, listener);
   }
 
   /**
