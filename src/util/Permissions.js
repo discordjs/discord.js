@@ -203,6 +203,7 @@ Permissions.FLAGS = {
   MANAGE_CHANNELS: 1 << 4,
   MANAGE_GUILD: 1 << 5,
   ADD_REACTIONS: 1 << 6,
+  VIEW_AUDIT_LOG: 1 << 7,
 
   READ_MESSAGES: 1 << 10,
   SEND_MESSAGES: 1 << 11,
