@@ -389,7 +389,7 @@ class RESTMethods {
 
   kickGuildMember(guild, member, reason) {
     const url = `${Endpoints.Guild(guild).Member(member)}?reason=${reason}`;
-    return this.rest.makeRequest('delete', url, true, { reason }).then(() =>
+    return this.rest.makeRequest('delete', url, true).then(() =>
       this.client.actions.GuildMemberRemove.handle({
         guild_id: guild.id,
         user: member.user,
