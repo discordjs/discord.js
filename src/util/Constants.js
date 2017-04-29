@@ -132,6 +132,7 @@ const Endpoints = exports.Endpoints = {
       webhooks: `${base}/webhooks`,
       ack: `${base}/ack`,
       settings: `${base}/settings`,
+      auditLogs: `${base}/audit-logs`,
       Emoji: emojiID => Endpoints.CDN(root).Emoji(emojiID),
       Icon: (root, hash) => Endpoints.CDN(root).Icon(guildID, hash),
       Splash: (root, hash) => Endpoints.CDN(root).Splash(guildID, hash),
