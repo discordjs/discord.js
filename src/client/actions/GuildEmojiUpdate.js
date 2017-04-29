@@ -3,9 +3,7 @@ const Action = require('./Action');
 class GuildEmojiUpdateAction extends Action {
   handle(oldEmoji, newEmoji) {
     const emoji = this.client.dataManager.updateEmoji(oldEmoji, newEmoji);
-    return {
-      emoji,
-    };
+    return { emoji };
   }
 }
 
@@ -15,4 +13,5 @@ class GuildEmojiUpdateAction extends Action {
  * @param {Emoji} oldEmoji The old emoji
  * @param {Emoji} newEmoji The new emoji
  */
+
 module.exports = GuildEmojiUpdateAction;

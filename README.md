@@ -41,10 +41,9 @@ For production bots, using node-opus should be considered a necessity, especiall
 ### Optional packages
 - [bufferutil](https://www.npmjs.com/package/bufferutil) to greatly speed up the WebSocket when *not* using uws (`npm install bufferutil --save`)
 - [erlpack](https://github.com/hammerandchisel/erlpack) for significantly faster WebSocket data (de)serialisation (`npm install hammerandchisel/erlpack --save`)
-- [sodium](https://www.npmjs.com/package/sodium) for faster voice packet encryption/decryption (`npm install sodium --save`)
-- [uws](https://www.npmjs.com/package/uws) for a much faster WebSocket connection (`npm install uws --save`)  
-  **Note:** This package does not handle disconnects entirely correctly, which causes automatic reconnection to Discord to not function.
-  If you use this package, it may be wise to destroy + recreate the client entirely or restart the process upon disconnect.
+- One of the following packages can be installed for faster voice packet encryption and decryption:
+    - [sodium](https://www.npmjs.com/package/sodium) (`npm install sodium --save`)
+    - [libsodium.js](https://www.npmjs.com/package/libsodium-wrappers) (`npm install libsodium-wrappers --save`)
 
 ## Example usage
 ```js
@@ -64,8 +63,6 @@ client.on('message', message => {
 client.login('your token');
 ```
 
-A bot template using discord.js can be generated using [generator-discordbot](https://www.npmjs.com/package/generator-discordbot).
-
 ## Links
 * [Website](https://discord.js.org/) ([source](https://github.com/hydrabolt/discord.js-site))
 * [Documentation](https://discord.js.org/#/docs)
@@ -78,7 +75,7 @@ A bot template using discord.js can be generated using [generator-discordbot](ht
 ## Contributing
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
 [documentation](https://discord.js.org/#/docs).  
-See [the contribution guide](https://github.com/hydrabolt/discord.js/blob/master/CONTRIBUTING.md) if you'd like to submit a PR.
+See [the contribution guide](https://github.com/hydrabolt/discord.js/blob/master/.github/CONTRIBUTING.md) if you'd like to submit a PR.
 
 ## Help
 If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle

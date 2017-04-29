@@ -1,5 +1,7 @@
 const User = require('./User');
 const Collection = require('../util/Collection');
+const ClientUserSettings = require('./ClientUserSettings');
+const Constants = require('../util/Constants');
 
 /**
  * Represents the logged in client's Discord user
@@ -45,13 +47,6 @@ class ClientUser extends User {
     this.notes = new Collection();
 
     /**
-     * Discord client settings, such as guild positions
-     * <warn>This is only filled when using a user account.</warn>
-     * @type {Object}
-     */
-    this.settings = {};
-
-    /**
      * If the user has discord premium (nitro)
      * <warn>This is only filled when using a user account.</warn>
      * @type {?boolean}
@@ -71,6 +66,13 @@ class ClientUser extends User {
      * @type {?boolean}
      */
     this.mobile = typeof data.mobile === 'boolean' ? data.mobile : null;
+
+    /**
+     * Various settings for this user
+     * <warn>This is only filled when using a user account</warn>
+     * @type {?ClientUserSettings}
+     */
+    if (data.user_settings) this.settings = new ClientUserSettings(this, data.user_settings);
   }
 
   edit(data) {
@@ -178,15 +180,20 @@ class ClientUser extends User {
 
       if (data.status) {
         if (typeof data.status !== 'string') throw new TypeError('Status must be a string');
-        status = data.status;
+        if (this.bot) {
+          status = data.status;
+        } else {
+          this.settings.update(Constants.UserSettingsMap.status, data.status);
+          status = 'invisible';
+        }
       }
 
       if (data.game) {
         game = data.game;
         if (game.url) game.type = 1;
+      } else if (typeof data.game !== 'undefined') {
+        game = null;
       }
-
-      if (data.game === null) game = null;
 
       if (typeof data.afk !== 'undefined') afk = data.afk;
       afk = Boolean(afk);
@@ -231,11 +238,13 @@ class ClientUser extends User {
    * @returns {Promise<ClientUser>}
    */
   setGame(game, streamingURL) {
-    if (game === null) return this.setPresence({ game });
-    return this.setPresence({ game: {
-      name: game,
-      url: streamingURL,
-    } });
+    if (!game) return this.setPresence({ game: null });
+    return this.setPresence({
+      game: {
+        name: game,
+        url: streamingURL,
+      },
+    });
   }
 
   /**

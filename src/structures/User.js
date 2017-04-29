@@ -1,4 +1,4 @@
-const TextBasedChannel = require('./interface/TextBasedChannel');
+const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Constants = require('../util/Constants');
 const Presence = require('./Presence').Presence;
 const Snowflake = require('../util/Snowflake');
@@ -130,6 +130,15 @@ class User {
    */
   get displayAvatarURL() {
     return this.avatarURL || this.defaultAvatarURL;
+  }
+
+  /**
+   * The discord "tag" for this user
+   * @type {string}
+   * @readonly
+   */
+  get tag() {
+    return `${this.username}#${this.discriminator}`;
   }
 
   /**

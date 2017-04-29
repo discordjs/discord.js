@@ -45,6 +45,10 @@ class RequestHandler {
    * Attempts to get this RequestHandler to process its current queue
    */
   handle() {} // eslint-disable-line no-empty-function
+
+  destroy() {
+    this.queue = [];
+  }
 }
 
 module.exports = RequestHandler;

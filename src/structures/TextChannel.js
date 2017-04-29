@@ -1,5 +1,5 @@
 const GuildChannel = require('./GuildChannel');
-const TextBasedChannel = require('./interface/TextBasedChannel');
+const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Collection = require('../util/Collection');
 
 /**
@@ -72,6 +72,15 @@ class TextChannel extends GuildChannel {
     });
   }
 
+  /**
+   * If the Discord Client considers this channel NSFW
+   * @type {boolean}
+   * @readonly
+   */
+  get nsfw() {
+    return /^nsfw(-|$)/.test(this.name);
+  }
+
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   send() {}
@@ -89,6 +98,7 @@ class TextChannel extends GuildChannel {
   get typing() {}
   get typingCount() {}
   createCollector() {}
+  createMessageCollector() {}
   awaitMessages() {}
   bulkDelete() {}
   acknowledge() {}

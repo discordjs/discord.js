@@ -122,13 +122,6 @@ class Guild {
     this.applicationID = data.application_id;
 
     /**
-     * A collection of emojis that are in this guild. The key is the emoji's ID, the value is the emoji.
-     * @type {Collection<Snowflake, Emoji>}
-     */
-    this.emojis = new Collection();
-    for (const emoji of data.emojis) this.emojis.set(emoji.id, new Emoji(this, emoji));
-
-    /**
      * The time in seconds before a user is counted as "away from keyboard".
      * @type {?number}
      */
@@ -216,6 +209,20 @@ class Guild {
         }
       }
     }
+
+    if (!this.emojis) {
+      /**
+       * A collection of emojis that are in this guild. The key is the emoji's ID, the value is the emoji.
+       * @type {Collection<Snowflake, Emoji>}
+       */
+      this.emojis = new Collection();
+      for (const emoji of data.emojis) this.emojis.set(emoji.id, new Emoji(this, emoji));
+    } else {
+      this.client.actions.GuildEmojisUpdate.handle({
+        guild_id: this.id,
+        emojis: data.emojis,
+      });
+    }
   }
 
   /**
@@ -294,6 +301,17 @@ class Guild {
   }
 
   /**
+   * Get the position of this guild
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?number}
+   */
+  get position() {
+    if (this.client.user.bot) return null;
+    if (!this.client.user.settings.guildPositions) return null;
+    return this.client.user.settings.guildPositions.indexOf(this.id);
+  }
+
+  /**
    * The `@everyone` Role of the guild.
    * @type {Role}
    * @readonly
@@ -329,7 +347,13 @@ class Guild {
    * @returns {Promise<Collection<Snowflake, User>>}
    */
   fetchBans() {
-    return this.client.rest.methods.getGuildBans(this);
+    return this.client.rest.methods.getGuildBans(this)
+      // This entire re-mapping can be removed in the next major release
+      .then(bans => {
+        const users = new Collection();
+        for (const ban of bans.values()) users.set(ban.user.id, ban.user);
+        return users;
+      });
   }
 
   /**
@@ -354,6 +378,20 @@ class Guild {
    */
   fetchVoiceRegions() {
     return this.client.rest.methods.fetchVoiceRegions(this.id);
+  }
+
+  /**
+   * Fetch audit logs for this guild
+   * @param {Object} [options={}] Options for fetching audit logs
+   * @param {Snowflake|GuildAuditLogsEntry} [options.before] Limit to entries from before specified entry
+   * @param {Snowflake|GuildAuditLogsEntry} [options.after] Limit to entries from after specified entry
+   * @param {number} [options.limit] Limit number of entries
+   * @param {UserResolvable} [options.user] Only show entries involving this user
+   * @param {string|number} [options.type] Only show entries involving this action type
+   * @returns {Promise<GuildAuditLogs>}
+   */
+  fetchAuditLogs(options) {
+    return this.client.rest.methods.getGuildAuditLogs(this, options);
   }
 
   /**
@@ -426,6 +464,7 @@ class Guild {
 
   /**
    * Performs a search within the entire guild.
+   * <warn>This is only available when using a user account.</warn>
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
    * @returns {Promise<Array<Message[]>>}
    * An array containing arrays of messages. Each inner array is a search context cluster.
@@ -439,7 +478,7 @@ class Guild {
    *   console.log(`I found: **${hit}**, total results: ${res.totalResults}`);
    * }).catch(console.error);
    */
-  search(options) {
+  search(options = {}) {
     return this.client.rest.methods.search(this, options);
   }
 
@@ -563,7 +602,7 @@ class Guild {
    * @returns {Promise<Guild>}
    * @example
    * // edit the guild owner
-   * guild.setOwner(guilds.members[0])
+   * guild.setOwner(guild.members.first())
    *  .then(updated => console.log(`Updated the guild owner to ${updated.owner.username}`))
    *  .catch(console.error);
    */
@@ -588,8 +627,9 @@ class Guild {
   /**
    * Bans a user from the guild.
    * @param {UserResolvable} user The user to ban
-   * @param {number} [deleteDays=0] The amount of days worth of messages from this user that should
-   * also be deleted. Between `0` and `7`.
+   * @param {Object} [options] Ban options.
+   * @param {number} [options.days=0] Number of days of messages to delete
+   * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember|User|string>} Result object will be resolved as specifically as possible.
    * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
    * be resolved, the user ID will be the result.
@@ -599,8 +639,13 @@ class Guild {
    *  .then(user => console.log(`Banned ${user.username || user.id || user} from ${guild.name}`))
    *  .catch(console.error);
    */
-  ban(user, deleteDays = 0) {
-    return this.client.rest.methods.banGuildMember(this, user, deleteDays);
+  ban(user, options = {}) {
+    if (typeof options === 'number') {
+      options = { reason: null, days: options };
+    } else if (typeof options === 'string') {
+      options = { reason: options, days: 0 };
+    }
+    return this.client.rest.methods.banGuildMember(this, user, options);
   }
 
   /**
@@ -780,6 +825,29 @@ class Guild {
   }
 
   /**
+   * @param {number} position Absolute or relative position
+   * @param {boolean} [relative=false] Whether to position relatively or absolutely
+   * @returns {Promise<Guild>}
+   */
+  setPosition(position, relative) {
+    if (this.client.user.bot) {
+      return Promise.reject(new Error('Setting guild position is only available for user accounts'));
+    }
+    return this.client.user.settings.setGuildPosition(this, position, relative);
+  }
+
+  /**
+   * Allow direct messages from guild members
+   * @param {boolean} allow Whether to allow direct messages
+   * @returns {Promise<Guild>}
+   */
+  allowDMs(allow) {
+    const settings = this.client.user.settings;
+    if (allow) return settings.removeRestrictedGuild(this);
+    else return settings.addRestrictedGuild(this);
+  }
+
+  /**
    * Whether this Guild equals another Guild. It compares all properties, so for most operations
    * it is advisable to just compare `guild.id === guild2.id` as it is much faster and is often
    * what most users need.
@@ -821,7 +889,7 @@ class Guild {
    * console.log(`Hello from ${guild}!`);
    * @example
    * // logs: Hello from My Guild!
-   * console.log(`Hello from ' + guild + '!');
+   * console.log('Hello from ' + guild + '!');
    */
   toString() {
     return this.name;
@@ -855,7 +923,7 @@ class Guild {
      * @event Client#guildMemberAdd
      * @param {GuildMember} member The member that has joined a guild
      */
-    if (this.client.ws.status === Constants.Status.READY && emitEvent && !existing) {
+    if (this.client.ws.connection.status === Constants.Status.READY && emitEvent && !existing) {
       this.client.emit(Constants.Events.GUILD_MEMBER_ADD, member);
     }
 
@@ -870,7 +938,7 @@ class Guild {
 
     const notSame = member.nickname !== oldMember.nickname || !Util.arraysEqual(member._roles, oldMember._roles);
 
-    if (this.client.ws.status === Constants.Status.READY && notSame) {
+    if (this.client.ws.connection.status === Constants.Status.READY && notSame) {
       /**
        * Emitted whenever a guild member changes - i.e. new role, removed role, nickname
        * @event Client#guildMemberUpdate
