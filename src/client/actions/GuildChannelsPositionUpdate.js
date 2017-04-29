@@ -12,9 +12,7 @@ class GuildChannelsPositionUpdate extends Action {
       }
     }
 
-    return {
-      guild,
-    };
+    return { guild };
   }
 }
 
