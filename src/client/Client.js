@@ -190,7 +190,7 @@ class Client extends EventEmitter {
    * @readonly
    */
   get status() {
-    return this.ws.status;
+    return this.ws.connection.status;
   }
 
   /**
