@@ -347,7 +347,13 @@ class Guild {
    * @returns {Promise<Collection<Snowflake, User>>}
    */
   fetchBans() {
-    return this.client.rest.methods.getGuildBans(this);
+    return this.client.rest.methods.getGuildBans(this)
+      // This entire re-mapping can be removed in the next major release
+      .then(bans => {
+        const users = new Collection();
+        for (const ban of bans.values()) users.set(ban.user.id, ban.user);
+        return users;
+      });
   }
 
   /**
@@ -372,6 +378,20 @@ class Guild {
    */
   fetchVoiceRegions() {
     return this.client.rest.methods.fetchVoiceRegions(this.id);
+  }
+
+  /**
+   * Fetch audit logs for this guild
+   * @param {Object} [options={}] Options for fetching audit logs
+   * @param {Snowflake|GuildAuditLogsEntry} [options.before] Limit to entries from before specified entry
+   * @param {Snowflake|GuildAuditLogsEntry} [options.after] Limit to entries from after specified entry
+   * @param {number} [options.limit] Limit number of entries
+   * @param {UserResolvable} [options.user] Only show entries involving this user
+   * @param {string|number} [options.type] Only show entries involving this action type
+   * @returns {Promise<GuildAuditLogs>}
+   */
+  fetchAuditLogs(options) {
+    return this.client.rest.methods.getGuildAuditLogs(this, options);
   }
 
   /**
@@ -607,8 +627,9 @@ class Guild {
   /**
    * Bans a user from the guild.
    * @param {UserResolvable} user The user to ban
-   * @param {number} [deleteDays=0] The amount of days worth of messages from this user that should
-   * also be deleted. Between `0` and `7`.
+   * @param {Object} [options] Ban options.
+   * @param {number} [options.days=0] Number of days of messages to delete
+   * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember|User|string>} Result object will be resolved as specifically as possible.
    * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
    * be resolved, the user ID will be the result.
@@ -618,8 +639,13 @@ class Guild {
    *  .then(user => console.log(`Banned ${user.username || user.id || user} from ${guild.name}`))
    *  .catch(console.error);
    */
-  ban(user, deleteDays = 0) {
-    return this.client.rest.methods.banGuildMember(this, user, deleteDays);
+  ban(user, options = {}) {
+    if (typeof options === 'number') {
+      options = { reason: null, days: options };
+    } else if (typeof options === 'string') {
+      options = { reason: options, days: 0 };
+    }
+    return this.client.rest.methods.banGuildMember(this, user, options);
   }
 
   /**
