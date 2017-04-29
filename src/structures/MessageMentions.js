@@ -100,7 +100,10 @@ class MessageMentions {
    */
   get channels() {
     if (this._channels) return this._channels;
-    if (!this._guild) return null;
+    if (!this._guild) {
+      this._channels = new Collection();
+      return this._channels;
+    }
     this._channels = new Collection();
     let matches;
     while ((matches = this.constructor.CHANNELS_PATTERN.exec(this._content)) !== null) {
