@@ -12932,14 +12932,14 @@ class MessageMentions {
   }
 
   /**
-   * Any channels that were mentioned (only in {@link TextChannel}s)
-   * @type {?Collection<Snowflake, GuildChannel>}
+   * Any channels that were mentioned (only populated in {@link TextChannel}s)
+   * @type {Collection<Snowflake, GuildChannel>}
    * @readonly
    */
   get channels() {
     if (this._channels) return this._channels;
-    if (!this._guild) return null;
     this._channels = new Collection();
+    if (!this._guild) return this._channels;
     let matches;
     while ((matches = this.constructor.CHANNELS_PATTERN.exec(this._content)) !== null) {
       const chan = this._guild.channels.get(matches[1]);
