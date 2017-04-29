@@ -12,9 +12,7 @@ class MessageReactionRemoveAll extends Action {
     message._clearReactions();
     this.client.emit(Constants.Events.MESSAGE_REACTION_REMOVE_ALL, message);
 
-    return {
-      message,
-    };
+    return { message };
   }
 }
 

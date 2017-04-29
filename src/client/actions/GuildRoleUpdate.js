@@ -5,8 +5,8 @@ const Util = require('../../util/Util');
 class GuildRoleUpdateAction extends Action {
   handle(data) {
     const client = this.client;
-
     const guild = client.guilds.get(data.guild_id);
+    
     if (guild) {
       const roleData = data.role;
       let oldRole = null;
