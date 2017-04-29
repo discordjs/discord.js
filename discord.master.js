@@ -26366,19 +26366,19 @@ class GuildAuditLogsEntry {
      */
     this.id = data.id;
 
-    if (['USER', 'GUILD'].includes(targetType)) {
+    if ([Targets.USER, Targets.GUILD].includes(targetType)) {
       /**
        * Target of this entry
-       * @type {?Guild|User|Role|Emoji|Promise<Invite>|Promise<Webhook>}
+       * @type {?Guild|User|Role|Emoji|Invite|Webhook}
        */
       this.target = guild.client[`${targetType.toLowerCase()}s`].get(data.target_id);
-    } else if (targetType === 'WEBHOOK') {
+    } else if (targetType === Targets.WEBHOOK) {
       this.target = guild.fetchWebhooks()
         .then(hooks => {
           this.target = hooks.find(h => h.id === data.target_id);
           return this.target;
         });
-    } else if (targetType === 'INVITE') {
+    } else if (targetType === Targets.INVITE) {
       const change = this.changes.find(c => c.name === 'code');
       this.target = guild.fetchInvites()
         .then(invites => {
