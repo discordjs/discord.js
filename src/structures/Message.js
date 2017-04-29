@@ -1,6 +1,8 @@
+const Mentions = require('./MessageMentions');
 const Attachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
 const MessageReaction = require('./MessageReaction');
+const ReactionCollector = require('./ReactionCollector');
 const Util = require('../util/Util');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
@@ -111,74 +113,22 @@ class Message {
     this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
 
     /**
-     * An object containing a further users, roles or channels collections
-     * @type {Object}
-     * @property {Collection<Snowflake, User>} mentions.users Mentioned users, maps their ID to the user object.
-     * @property {Collection<Snowflake, GuildMember>} mentions.members Mentioned members, maps their ID
-     * to the member object.
-     * @property {Collection<Snowflake, Role>} mentions.roles Mentioned roles, maps their ID to the role object.
-     * @property {Collection<Snowflake, GuildChannel>} mentions.channels Mentioned channels,
-     * maps their ID to the channel object.
-     * @property {boolean} mentions.everyone Whether or not @everyone was mentioned.
-     */
-    this.mentions = {
-      users: new Collection(),
-      roles: new Collection(),
-      channels: new Collection(),
-      everyone: data.mention_everyone,
-    };
-
-    // Add user mentions
-    for (const mention of data.mentions) {
-      let user = this.client.users.get(mention.id);
-      if (!user) user = this.client.dataManager.newUser(mention);
-      this.mentions.users.set(user.id, user);
-    }
-
-    // Add getter for member mentions
-    Object.defineProperty(this.mentions, 'members', {
-      get: () => {
-        if (this.channel.type !== 'text') return null;
-        const members = new Collection();
-        this.mentions.users.forEach(user => {
-          const member = this.client.resolver.resolveGuildMember(this.channel.guild, user);
-          if (member) members.set(member.id, member);
-        });
-        return members;
-      },
-    });
-
-    // Add role mentions
-    if (data.mention_roles) {
-      for (const mention of data.mention_roles) {
-        const role = this.channel.guild.roles.get(mention);
-        if (role) this.mentions.roles.set(role.id, role);
-      }
-    }
-
-    // Add channel mentions
-    if (this.channel.type === 'text') {
-      const channMentionsRaw = data.content.match(/<#([0-9]{14,20})>/g) || [];
-      for (const raw of channMentionsRaw) {
-        const chan = this.channel.guild.channels.get(raw.match(/([0-9]{14,20})/g)[0]);
-        if (chan) this.mentions.channels.set(chan.id, chan);
-      }
-    }
-
-    this._edits = [];
-
-    /**
      * A collection of reactions to this message, mapped by the reaction "id".
      * @type {Collection<Snowflake, MessageReaction>}
      */
     this.reactions = new Collection();
-
     if (data.reactions && data.reactions.length > 0) {
       for (const reaction of data.reactions) {
         const id = reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` : reaction.emoji.name;
         this.reactions.set(id, new MessageReaction(this, reaction.emoji, reaction.count, reaction.me));
       }
     }
+
+    /**
+     * All valid mentions that the message contains
+     * @type {MessageMentions}
+     */
+    this.mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone);
 
     /**
      * ID of the webhook that sent the message, if applicable
@@ -191,6 +141,44 @@ class Message {
      * @type {?boolean}
      */
     this.hit = typeof data.hit === 'boolean' ? data.hit : null;
+
+    /**
+     * The previous versions of the message, sorted with the most recent first
+     * @type {Message[]}
+     * @private
+     */
+    this._edits = [];
+  }
+
+  /**
+   * Updates the message
+   * @param {Object} data Raw Discord message update data
+   * @private
+   */
+  patch(data) {
+    const clone = Util.cloneObject(this);
+    this._edits.unshift(clone);
+
+    this.editedTimestamp = new Date(data.edited_timestamp).getTime();
+    if ('content' in data) this.content = data.content;
+    if ('pinned' in data) this.pinned = data.pinned;
+    if ('tts' in data) this.tts = data.tts;
+    if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(this, e));
+    else this.embeds = this.embeds.slice();
+
+    if ('attachments' in data) {
+      this.attachments = new Collection();
+      for (const attachment of data.attachments) this.attachments.set(attachment.id, new Attachment(this, attachment));
+    } else {
+      this.attachments = new Collection(this.attachments);
+    }
+
+    this.mentions = new Mentions(
+      this,
+      'mentions' in data ? data.mentions : this.mentions.users,
+      'mentions_roles' in data ? data.mentions_roles : this.mentions.roles,
+      'mention_everyone' in data ? data.mention_everyone : this.mentions.everyone
+    );
   }
 
   /**
@@ -256,6 +244,47 @@ class Message {
         if (role) return `@${role.name}`;
         return input;
       });
+  }
+
+  /**
+   * Creates a reaction collector.
+   * @param {CollectorFilter} filter The filter to apply.
+   * @param {ReactionCollectorOptions} [options={}] Options to send to the collector.
+   * @returns {ReactionCollector}
+   * @example
+   * // create a reaction collector
+   * const collector = message.createReactionCollector(
+   *  (reaction, user) => reaction.emoji.id === '👌' && user.id === 'someID',
+   *  { time: 15000 }
+   * );
+   * collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
+   * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
+   */
+  createReactionCollector(filter, options = {}) {
+    return new ReactionCollector(this, filter, options);
+  }
+
+  /**
+   * An object containing the same properties as CollectorOptions, but a few more:
+   * @typedef {ReactionCollectorOptions} AwaitReactionsOptions
+   * @property {string[]} [errors] Stop/end reasons that cause the promise to reject
+   */
+
+  /**
+   * Similar to createCollector but in promise form. Resolves with a collection of reactions that pass the specified
+   * filter.
+   * @param {CollectorFilter} filter The filter function to use
+   * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
+   * @returns {Promise<Collection<string, MessageReaction>>}
+   */
+  awaitReactions(filter, options = {}) {
+    return new Promise((resolve, reject) => {
+      const collector = this.createReactionCollector(filter, options);
+      collector.once('end', (reactions, reason) => {
+        if (options.errors && options.errors.includes(reason)) reject(reactions);
+        else resolve(reactions);
+      });
+    });
   }
 
   /**
@@ -526,6 +555,7 @@ class Message {
         reaction.users.delete(user.id);
         reaction.count--;
         if (user.id === this.client.user.id) reaction.me = false;
+        if (reaction.count <= 0) this.reactions.delete(emojiID);
         return reaction;
       }
     }

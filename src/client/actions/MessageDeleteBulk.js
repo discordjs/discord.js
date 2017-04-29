@@ -15,9 +15,7 @@ class MessageDeleteBulkAction extends Action {
     }
 
     if (messages.size > 0) client.emit(Constants.Events.MESSAGE_BULK_DELETE, messages);
-    return {
-      messages,
-    };
+    return { messages };
   }
 }
 

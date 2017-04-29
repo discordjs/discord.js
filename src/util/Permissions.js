@@ -1,4 +1,5 @@
 const Constants = require('../util/Constants');
+const util = require('util');
 
 /**
  * Data structure that makes it easy to interact with a permission bitfield. All {@link GuildMember}s have a set of
@@ -18,7 +19,7 @@ class Permissions {
      * @type {GuildMember}
      * @deprecated
      */
-    this.member = typeof member === 'object' ? member : null;
+    this._member = typeof member === 'object' ? member : null;
 
     /**
      * Bitfield of the packed permissions
@@ -27,11 +28,20 @@ class Permissions {
     this.bitfield = typeof permissions === 'number' ? permissions : this.constructor.resolve(permissions);
   }
 
+  get member() {
+    return this._member;
+  }
+
+  set member(value) {
+    this._member = value;
+  }
+
   /**
    * Bitfield of the packed permissions
    * @type {number}
    * @see {@link Permissions#bitfield}
    * @deprecated
+   * @readonly
    */
   get raw() {
     return this.bitfield;
@@ -202,6 +212,7 @@ Permissions.FLAGS = {
   MANAGE_CHANNELS: 1 << 4,
   MANAGE_GUILD: 1 << 5,
   ADD_REACTIONS: 1 << 6,
+  VIEW_AUDIT_LOG: 1 << 7,
 
   READ_MESSAGES: 1 << 10,
   SEND_MESSAGES: 1 << 11,
@@ -247,5 +258,17 @@ Permissions.DEFAULT = 104324097;
  * @see {@link Permissions}
  * @deprecated
  */
+
+Permissions.prototype.hasPermission = util.deprecate(Permissions.prototype.hasPermission,
+  'EvaluatedPermissions#hasPermission is deprecated, use Permissions#has instead');
+Permissions.prototype.hasPermissions = util.deprecate(Permissions.prototype.hasPermissions,
+  'EvaluatedPermissions#hasPermissions is deprecated, use Permissions#has instead');
+Permissions.prototype.missingPermissions = util.deprecate(Permissions.prototype.missingPermissions,
+  'EvaluatedPermissions#missingPermissions is deprecated, use Permissions#missing instead');
+Object.defineProperty(Permissions.prototype, 'member', {
+  get: util
+        .deprecate(Object.getOwnPropertyDescriptor(Permissions.prototype, 'member').get,
+        'EvaluatedPermissions#member is deprecated'),
+});
 
 module.exports = Permissions;

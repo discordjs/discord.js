@@ -1,8 +1,9 @@
-const TextBasedChannel = require('./interface/TextBasedChannel');
+const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Role = require('./Role');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
 const Presence = require('./Presence').Presence;
+const util = require('util');
 
 /**
  * Represents a member of a guild on Discord
@@ -393,6 +394,7 @@ class GuildMember {
    */
   addRole(role) {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
+    if (!role) throw new TypeError('Supplied parameter was neither a Role nor a Snowflake.');
     return this.client.rest.methods.addMemberRole(this, role);
   }
 
@@ -419,6 +421,7 @@ class GuildMember {
    */
   removeRole(role) {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
+    if (!role) throw new TypeError('Supplied parameter was neither a Role nor a Snowflake.');
     return this.client.rest.methods.removeMemberRole(this, role);
   }
 
@@ -470,23 +473,25 @@ class GuildMember {
 
   /**
    * Kick this member from the guild
+   * @param {string} [reason] Reason for kicking user
    * @returns {Promise<GuildMember>}
    */
-  kick() {
-    return this.client.rest.methods.kickGuildMember(this.guild, this);
+  kick(reason) {
+    return this.client.rest.methods.kickGuildMember(this.guild, this, reason);
   }
 
   /**
    * Ban this guild member
-   * @param {number} [deleteDays=0] The amount of days worth of messages from this member that should
-   * also be deleted. Between `0` and `7`.
+   * @param {Object} [options] Ban options.
+   * @param {number} [options.days=0] Number of days of messages to delete
+   * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember>}
    * @example
    * // ban a guild member
    * guildMember.ban(7);
    */
-  ban(deleteDays = 0) {
-    return this.client.rest.methods.banGuildMember(this.guild, this, deleteDays);
+  ban(options) {
+    return this.guild.ban(this, options);
   }
 
   /**
@@ -510,5 +515,8 @@ class GuildMember {
 }
 
 TextBasedChannel.applyToClass(GuildMember);
+
+GuildMember.prototype.hasPermissions = util.deprecate(GuildMember.prototype.hasPermissions,
+  'GuildMember#hasPermissions is deprecated - use GuildMember#hasPermission, it now takes an array');
 
 module.exports = GuildMember;

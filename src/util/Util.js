@@ -1,5 +1,6 @@
 const snekfetch = require('snekfetch');
 const Constants = require('./Constants');
+const ConstantsHttp = Constants.DefaultOptions.http;
 
 /**
  * Contains various general-purpose utility methods. These functions are also available on the base `Discord` object.
@@ -54,7 +55,7 @@ class Util {
   static fetchRecommendedShards(token, guildsPerShard = 1000) {
     return new Promise((resolve, reject) => {
       if (!token) throw new Error('A token must be provided.');
-      snekfetch.get(Constants.Endpoints.gateway.bot)
+      snekfetch.get(`${ConstantsHttp.host}/api/v${ConstantsHttp.version}${Constants.Endpoints.gateway.bot}`)
         .set('Authorization', `Bot ${token.replace(/^Bot\s*/i, '')}`)
         .end((err, res) => {
           if (err) reject(err);
@@ -86,21 +87,19 @@ class Util {
   }
 
   /**
-   * Does some weird shit to test the equality of two arrays' elements.
-   * <warn>Do not use. This will give your dog/cat severe untreatable cancer of the everything. RIP Fluffykins.</warn>
-   * @param {Array<*>} a ????
-   * @param {Array<*>} b ?????????
-   * @returns {boolean}
+   * Checks whether the arrays are equal, also removes duplicated entries from b.
+   * @param {Array<*>} a Array which will not be modified.
+   * @param {Array<*>} b Array to remove duplicated entries from.
+   * @returns {boolean} boolean Whether the arrays are equal.
    * @private
    */
   static arraysEqual(a, b) {
     if (a === b) return true;
     if (a.length !== b.length) return false;
 
-    for (const itemInd in a) {
-      const item = a[itemInd];
+    for (const item of a) {
       const ind = b.indexOf(item);
-      if (ind) b.splice(ind, 1);
+      if (ind !== -1) b.splice(ind, 1);
     }
 
     return b.length === 0;
@@ -196,7 +195,7 @@ class Util {
    * @param {*} element Element to move
    * @param {number} newIndex Index or offset to move the element to
    * @param {boolean} [offset=false] Move the element by an offset amount rather than to a set index
-   * @returns {Array<*>}
+   * @returns {number}
    * @private
    */
   static moveElementInArray(array, element, newIndex, offset = false) {
@@ -206,7 +205,7 @@ class Util {
       const removedElement = array.splice(index, 1)[0];
       array.splice(newIndex, 0, removedElement);
     }
-    return array;
+    return array.indexOf(element);
   }
 }
 

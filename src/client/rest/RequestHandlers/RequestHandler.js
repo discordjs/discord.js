@@ -23,6 +23,7 @@ class RequestHandler {
   /**
    * Whether or not the client is being rate limited on every endpoint.
    * @type {boolean}
+   * @readonly
    */
   get globalLimit() {
     return this.restManager.globallyRateLimited;
@@ -44,6 +45,10 @@ class RequestHandler {
    * Attempts to get this RequestHandler to process its current queue
    */
   handle() {} // eslint-disable-line no-empty-function
+
+  destroy() {
+    this.queue = [];
+  }
 }
 
 module.exports = RequestHandler;

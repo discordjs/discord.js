@@ -153,7 +153,7 @@ class VoiceWebSocket extends EventEmitter {
 
   /**
    * Called whenever an error occurs with the WebSocket.
-   * @param {Error} error the error that occurred
+   * @param {Error} error The error that occurred
    */
   onError(error) {
     this.emit('error', error);
@@ -161,7 +161,7 @@ class VoiceWebSocket extends EventEmitter {
 
   /**
    * Called whenever a valid packet is received from the WebSocket
-   * @param {Object} packet the received packet
+   * @param {Object} packet The received packet
    */
   onPacket(packet) {
     switch (packet.op) {
@@ -169,7 +169,7 @@ class VoiceWebSocket extends EventEmitter {
         this.setHeartbeat(packet.d.heartbeat_interval);
         /**
          * Emitted once the voice websocket receives the ready packet
-         * @param {Object} packet the received packet
+         * @param {Object} packet The received packet
          * @event VoiceWebSocket#ready
          */
         this.emit('ready', packet.d);
@@ -177,8 +177,8 @@ class VoiceWebSocket extends EventEmitter {
       case Constants.VoiceOPCodes.SESSION_DESCRIPTION:
         /**
          * Emitted once the Voice Websocket receives a description of this voice session
-         * @param {string} encryptionMode the type of encryption being used
-         * @param {SecretKey} secretKey the secret key used for encryption
+         * @param {string} encryptionMode The type of encryption being used
+         * @param {SecretKey} secretKey The secret key used for encryption
          * @event VoiceWebSocket#sessionDescription
          */
         this.emit('sessionDescription', packet.d.mode, new SecretKey(packet.d.secret_key));
@@ -204,7 +204,7 @@ class VoiceWebSocket extends EventEmitter {
 
   /**
    * Sets an interval at which to send a heartbeat packet to the WebSocket
-   * @param {number} interval the interval at which to send a heartbeat packet
+   * @param {number} interval The interval at which to send a heartbeat packet
    */
   setHeartbeat(interval) {
     if (!interval || isNaN(interval)) {
@@ -214,7 +214,7 @@ class VoiceWebSocket extends EventEmitter {
     if (this.heartbeatInterval) {
       /**
        * Emitted whenver the voice websocket encounters a non-fatal error
-       * @param {string} warn the warning
+       * @param {string} warn The warning
        * @event VoiceWebSocket#warn
        */
       this.emit('warn', 'A voice heartbeat interval is being overwritten');

@@ -157,13 +157,6 @@ class Client extends EventEmitter {
     this.pings = [];
 
     /**
-     * Timestamp of the latest ping's start time
-     * @type {number}
-     * @private
-     */
-    this._pingTimestamp = 0;
-
-    /**
      * Timeouts set by {@link Client#setTimeout} that are still active
      * @type {Set<Timeout>}
      * @private
@@ -183,12 +176,21 @@ class Client extends EventEmitter {
   }
 
   /**
+   * Timestamp of the latest ping's start time
+   * @type {number}
+   * @private
+   */
+  get _pingTimestamp() {
+    return this.ws.connection ? this.ws.connection.lastPingTimestamp : 0;
+  }
+
+  /**
    * Current status of the client's connection to Discord
    * @type {?number}
    * @readonly
    */
   get status() {
-    return this.ws.status;
+    return this.ws.connection.status;
   }
 
   /**

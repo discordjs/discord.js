@@ -1,5 +1,6 @@
 const Snowflake = require('../util/Snowflake');
 const Permissions = require('../util/Permissions');
+const util = require('util');
 
 /**
  * Represents a role on Discord
@@ -126,6 +127,7 @@ class Role {
   /**
    * The position of the role in the role manager
    * @type {number}
+   * @readonly
    */
   get calculatedPosition() {
     const sorted = this.guild._sortedRoles;
@@ -348,5 +350,9 @@ class Role {
     return role1.position - role2.position;
   }
 }
+
+Role.prototype.hasPermissions = util
+  .deprecate(Role.prototype.hasPermissions,
+    'Role#hasPermissions is deprecated - use Role#hasPermission instead, it now takes an array');
 
 module.exports = Role;

@@ -36,6 +36,7 @@ class AudioPlayer extends EventEmitter {
      */
     this.opusEncoder = OpusEncoders.fetch();
     this.streams = new Collection();
+    this.currentStream = {};
     this.streamingData = {
       channels: 2,
       count: 0,
@@ -43,41 +44,43 @@ class AudioPlayer extends EventEmitter {
       timestamp: 0,
       pausedTime: 0,
     };
-    this.voiceConnection.once('closing', () => this.destroyAllStreams());
+    this.voiceConnection.once('closing', () => this.destroyCurrentStream());
   }
 
-  get currentTranscoder() {
-    return (this.streams.last() || {}).transcoder;
+  /**
+   * The current transcoder
+   * @type {?Object}
+   * @readonly
+   */
+  get transcoder() {
+    return this.currentStream.transcoder;
   }
 
   /**
    * The current dispatcher
    * @type {?StreamDispatcher}
+   * @readonly
    */
-  get currentDispatcher() {
-    return this.streams.size > 0 ? this.streams.last().dispatcher || null : null;
+  get dispatcher() {
+    return this.currentStream.dispatcher;
   }
 
   destroy() {
     if (this.opusEncoder) this.opusEncoder.destroy();
   }
 
-  destroyStream(stream) {
-    const data = this.streams.get(stream);
-    if (!data) return;
-    const transcoder = data.transcoder;
-    const dispatcher = data.dispatcher;
+  destroyCurrentStream() {
+    const transcoder = this.transcoder;
+    const dispatcher = this.dispatcher;
     if (transcoder) transcoder.kill();
-    if (dispatcher) dispatcher.destroy('end');
-    this.streams.delete(stream);
-  }
-
-  destroyAllStreams(except) {
-    for (const stream of this.streams.keys()) {
-      if (except === stream) continue;
-      if (except === true && this.streams.get(stream) === this.streams.last()) continue;
-      this.destroyStream(stream);
+    if (dispatcher) {
+      const end = dispatcher.listeners('end')[0];
+      const error = dispatcher.listeners('error')[0];
+      if (end) dispatcher.removeListener('end', end);
+      if (error) dispatcher.removeListener('error', error);
+      dispatcher.destroy('end');
     }
+    this.currentStream = {};
   }
 
   playUnknownStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
@@ -88,46 +91,67 @@ class AudioPlayer extends EventEmitter {
       media: stream,
       ffmpegArguments: ffmpegArguments.concat(['-ss', String(seek)]),
     });
-    this.streams.set(transcoder.output, { transcoder, input: stream });
+    this.destroyCurrentStream();
+    this.currentStream = {
+      transcoder: transcoder,
+      output: transcoder.output,
+      input: stream,
+    };
     transcoder.on('error', e => {
-      this.destroyStream(stream);
+      this.destroyCurrentStream();
       if (this.listenerCount('error') > 0) this.emit('error', e);
       this.emit('warn', `prism transcoder error - ${e}`);
     });
-    return this.playPCMStream(transcoder.output, options);
+    return this.playPCMStream(transcoder.output, options, true);
   }
 
-  playPCMStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
+  playPCMStream(stream, { seek = 0, volume = 1, passes = 1 } = {}, fromUnknown = false) {
     OpusEncoders.guaranteeOpusEngine();
     const options = { seek, volume, passes };
-    this.destroyAllStreams(stream);
     const dispatcher = this.createDispatcher(stream, options);
-    if (!this.streams.has(stream)) this.streams.set(stream, { dispatcher, input: stream });
-    this.streams.get(stream).dispatcher = dispatcher;
+    if (fromUnknown) {
+      this.currentStream.dispatcher = dispatcher;
+    } else {
+      this.destroyCurrentStream();
+      this.currentStream = {
+        dispatcher,
+        input: stream,
+        output: stream,
+      };
+    }
     return dispatcher;
   }
 
   playOpusStream(stream, { seek = 0, passes = 1 } = {}) {
     const options = { seek, passes, opus: true };
-    this.destroyAllStreams(stream);
+    this.destroyCurrentStream();
     const dispatcher = this.createDispatcher(stream, options);
-    this.streams.set(stream, { dispatcher, input: stream });
+    this.currentStream = {
+      dispatcher,
+      input: stream,
+      output: stream,
+    };
     return dispatcher;
   }
 
   playBroadcast(broadcast, { volume = 1, passes = 1 } = {}) {
     const options = { volume, passes };
-    this.destroyAllStreams();
+    this.destroyCurrentStream();
     const dispatcher = this.createDispatcher(broadcast, options);
-    this.streams.set(broadcast, { dispatcher, input: broadcast });
+    this.currentStream = {
+      dispatcher,
+      broadcast,
+      input: broadcast,
+      output: broadcast,
+    };
     broadcast.registerDispatcher(dispatcher);
     return dispatcher;
   }
 
   createDispatcher(stream, options) {
     const dispatcher = new StreamDispatcher(this, stream, options);
-    dispatcher.on('end', () => this.destroyStream(stream));
-    dispatcher.on('error', () => this.destroyStream(stream));
+    dispatcher.on('end', () => this.destroyCurrentStream());
+    dispatcher.on('error', () => this.destroyCurrentStream());
     dispatcher.on('speaking', value => this.voiceConnection.setSpeaking(value));
     return dispatcher;
   }

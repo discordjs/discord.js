@@ -39,6 +39,7 @@ class MessageReaction {
    * object which has fewer properties. Whatever the prototype of the emoji, it will still have
    * `name`, `id`, `identifier` and `toString()`
    * @type {Emoji|ReactionEmoji}
+   * @readonly
    */
   get emoji() {
     if (this._emoji instanceof Emoji) return this._emoji;
@@ -61,10 +62,10 @@ class MessageReaction {
    */
   remove(user = this.message.client.user) {
     const message = this.message;
-    user = this.message.client.resolver.resolveUserID(user);
-    if (!user) return Promise.reject(new Error('Couldn\'t resolve the user ID to remove from the reaction.'));
+    const userID = this.message.client.resolver.resolveUserID(user);
+    if (!userID) return Promise.reject(new Error('Couldn\'t resolve the user ID to remove from the reaction.'));
     return message.client.rest.methods.removeMessageReaction(
-      message, this.emoji.identifier, user
+      message, this.emoji.identifier, userID
     );
   }
 

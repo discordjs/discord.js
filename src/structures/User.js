@@ -1,4 +1,4 @@
-const TextBasedChannel = require('./interface/TextBasedChannel');
+const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Constants = require('../util/Constants');
 const Presence = require('./Presence').Presence;
 const Snowflake = require('../util/Snowflake');
@@ -139,6 +139,15 @@ class User {
   }
 
   /**
+   * The discord "tag" for this user
+   * @type {string}
+   * @readonly
+   */
+  get tag() {
+    return `${this.username}#${this.discriminator}`;
+  }
+
+  /**
    * The note that is set for the user
    * <warn>This is only available when using a user account.</warn>
    * @type {?string}
@@ -181,6 +190,7 @@ class User {
   /**
    * The DM between the client's user and this user
    * @type {?DMChannel}
+   * @readonly
    */
   get dmChannel() {
     return this.client.channels.filter(c => c.type === 'dm').find(c => c.recipient.id === this.id);

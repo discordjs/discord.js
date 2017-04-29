@@ -1,4 +1,5 @@
 const RequestHandler = require('./RequestHandler');
+const DiscordAPIError = require('../DiscordAPIError');
 
 class BurstRequestHandler extends RequestHandler {
   constructor(restManager, endpoint) {
@@ -40,7 +41,7 @@ class BurstRequestHandler extends RequestHandler {
             this.resetTimeout = null;
           }, Number(res.headers['retry-after']) + this.client.options.restTimeOffset);
         } else {
-          item.reject(err);
+          item.reject(err.status === 400 ? new DiscordAPIError(res.body) : err);
           this.handle();
         }
       } else {

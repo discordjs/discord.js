@@ -64,10 +64,17 @@ exports.DefaultOptions = {
     version: 6,
   },
   http: {
-    version: 6,
+    version: 7,
     host: 'https://discordapp.com',
     cdn: 'https://cdn.discordapp.com',
   },
+};
+
+exports.WSCodes = {
+  1000: 'Connection gracefully closed',
+  4004: 'Tried to identify with an invalid token',
+  4010: 'Sharding data provided was invalid',
+  4011: 'Shard would be on too many guilds if connected',
 };
 
 exports.Errors = {
@@ -108,6 +115,7 @@ const Endpoints = exports.Endpoints = {
       channels: `${base}/channels`,
       profile: `${base}/profile`,
       relationships: `${base}/relationships`,
+      settings: `${base}/settings`,
       Relationship: uID => `${base}/relationships/${uID}`,
       Guild: guildID => `${base}/guilds/${guildID}`,
       Note: id => `${base}/notes/${id}`,
@@ -139,7 +147,8 @@ const Endpoints = exports.Endpoints = {
       webhooks: `${base}/webhooks`,
       ack: `${base}/ack`,
       settings: `${base}/settings`,
-      Emoji: emojiID => `${base}/emojis/${emojiID}`,
+      auditLogs: `${base}/audit-logs`,
+      Emoji: emojiID => Endpoints.CDN(root).Emoji(emojiID),
       Icon: (root, hash, format, size) => Endpoints.CDN(root).Icon(guildID, hash, format, size),
       Splash: (root, hash) => Endpoints.CDN(root).Splash(guildID, hash),
       Role: roleID => `${base}/roles/${roleID}`,
@@ -168,8 +177,7 @@ const Endpoints = exports.Endpoints = {
       typing: `${base}/typing`,
       permissions: `${base}/permissions`,
       webhooks: `${base}/webhooks`,
-      search: `${base}/search`,
-      ack: `${base}/ack`,
+      search: `${base}/messages/search`,
       pins: `${base}/pins`,
       Pin: messageID => `${base}/pins/${messageID}`,
       Recipient: recipientID => `${base}/recipients/${recipientID}`,
@@ -179,7 +187,7 @@ const Endpoints = exports.Endpoints = {
         return {
           toString: () => mbase,
           reactions: `${mbase}/reactions`,
-          ack: `${base}/ack`,
+          ack: `${mbase}/ack`,
           Reaction: (emoji, limit) => {
             const rbase = `${mbase}/reactions/${emoji}${limit ? `?limit=${limit}` : ''}`;
             return {
@@ -195,7 +203,7 @@ const Endpoints = exports.Endpoints = {
   Member: m => exports.Endpoints.Guild(m.guild).Member(m),
   CDN(root) {
     return {
-      Emoji: emojiID => `${root}/emojis/$${emojiID}.png`,
+      Emoji: emojiID => `${root}/emojis/${emojiID}.png`,
       Asset: name => `${root}/assets/${name}`,
       Avatar: (userID, hash, format, size) => {
         if (!format || format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
@@ -230,6 +238,7 @@ const Endpoints = exports.Endpoints = {
     bot: '/gateway/bot',
   },
   Invite: inviteID => `/invite/${inviteID}`,
+  inviteLink: id => `https://discord.gg/${id}`,
   Webhook: (webhookID, token) => `/webhooks/${webhookID}${token ? `/${token}` : ''}`,
 };
 
@@ -335,6 +344,7 @@ exports.Events = {
   MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll',
   USER_UPDATE: 'userUpdate',
   USER_NOTE_UPDATE: 'userNoteUpdate',
+  USER_SETTINGS_UPDATE: 'clientUserSettingsUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
   TYPING_START: 'typingStart',
@@ -349,6 +359,7 @@ exports.Events = {
 /**
  * The type of a websocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
  * - READY
+ * - RESUMED
  * - GUILD_SYNC
  * - GUILD_CREATE
  * - GUILD_DELETE
@@ -375,6 +386,7 @@ exports.Events = {
  * - MESSAGE_REACTION_REMOVE_ALL
  * - USER_UPDATE
  * - USER_NOTE_UPDATE
+ * - USER_SETTINGS_UPDATE
  * - PRESENCE_UPDATE
  * - VOICE_STATE_UPDATE
  * - TYPING_START
@@ -385,6 +397,7 @@ exports.Events = {
  */
 exports.WSEvents = {
   READY: 'READY',
+  RESUMED: 'RESUMED',
   GUILD_SYNC: 'GUILD_SYNC',
   GUILD_CREATE: 'GUILD_CREATE',
   GUILD_DELETE: 'GUILD_DELETE',
@@ -412,6 +425,7 @@ exports.WSEvents = {
   MESSAGE_REACTION_REMOVE_ALL: 'MESSAGE_REACTION_REMOVE_ALL',
   USER_UPDATE: 'USER_UPDATE',
   USER_NOTE_UPDATE: 'USER_NOTE_UPDATE',
+  USER_SETTINGS_UPDATE: 'USER_SETTINGS_UPDATE',
   PRESENCE_UPDATE: 'PRESENCE_UPDATE',
   VOICE_STATE_UPDATE: 'VOICE_STATE_UPDATE',
   TYPING_START: 'TYPING_START',
@@ -437,6 +451,145 @@ exports.DefaultAvatars = {
   GREEN: 'dd4dbc0016779df1378e7812eabaa04d',
   ORANGE: '0e291f67c9274a1abdddeb3fd919cbaa',
   RED: '1cbd08c76f8af6dddce02c5138971129',
+};
+
+exports.ExplicitContentFilterTypes = [
+  'DISABLED',
+  'NON_FRIENDS',
+  'FRIENDS_AND_NON_FRIENDS',
+];
+
+exports.UserSettingsMap = {
+  /**
+   * Automatically convert emoticons in your messages to emoji.
+   * For example, when you type `:-)` Discord will convert it to 😃
+   * @name ClientUserSettings#convertEmoticons
+   * @type {boolean}
+   */
+  convert_emoticons: 'convertEmoticons',
+
+  /**
+   * If new guilds should automatically disable DMs between you and its members
+   * @name ClientUserSettings#defaultGuildsRestricted
+   * @type {boolean}
+   */
+  default_guilds_restricted: 'defaultGuildsRestricted',
+
+  /**
+   * Automatically detect accounts from services like Steam and Blizzard when you open the Discord client
+   * @name ClientUserSettings#detectPlatformAccounts
+   * @type {boolean}
+   */
+  detect_platform_accounts: 'detectPlatformAccounts',
+
+  /**
+   * Developer Mode exposes context menu items helpful for people writing bots using the Discord API
+   * @name ClientUserSettings#developerMode
+   * @type {boolean}
+   */
+  developer_mode: 'developerMode',
+
+  /**
+   * Allow playback and usage of the `/tts` command
+   * @name ClientUserSettings#enableTTSCommand
+   * @type {boolean}
+   */
+  enable_tts_command: 'enableTTSCommand',
+
+  /**
+   * The theme of the client. Either `light` or `dark`
+   * @name ClientUserSettings#theme
+   * @type {string}
+   */
+  theme: 'theme',
+
+  /**
+   * Last status set in the client
+   * @name ClientUserSettings#status
+   * @type {PresenceStatus}
+   */
+  status: 'status',
+
+  /**
+   * Display currently running game as status message
+   * @name ClientUserSettings#showCurrentGame
+   * @type {boolean}
+   */
+  show_current_game: 'showCurrentGame',
+
+  /**
+   * Display images, videos, and lolcats when uploaded directly to Discord
+   * @name ClientUserSettings#inlineAttachmentMedia
+   * @type {boolean}
+   */
+  inline_attachment_media: 'inlineAttachmentMedia',
+
+  /**
+   * Display images, videos, and lolcats when uploaded posted as links in chat
+   * @name ClientUserSettings#inlineEmbedMedia
+   * @type {boolean}
+   */
+  inline_embed_media: 'inlineEmbedMedia',
+
+  /**
+   * Language the Discord client will use, as an RFC 3066 language identifier
+   * @name ClientUserSettings#locale
+   * @type {string}
+   */
+  locale: 'locale',
+
+  /**
+   * Display messages in compact mode
+   * @name ClientUserSettings#messageDisplayCompact
+   * @type {boolean}
+   */
+  message_display_compact: 'messageDisplayCompact',
+
+  /**
+   * Show emoji reactions on messages
+   * @name ClientUserSettings#renderReactions
+   * @type {boolean}
+   */
+  render_reactions: 'renderReactions',
+
+  /**
+   * Array of snowflake IDs for guilds, in the order they appear in the Discord client
+   * @name ClientUserSettings#guildPositions
+   * @type {Snowflake[]}
+   */
+  guild_positions: 'guildPositions',
+
+  /**
+   * Array of snowflake IDs for guilds which you will not recieve DMs from
+   * @name ClientUserSettings#restrictedGuilds
+   * @type {Snowflake[]}
+   */
+  restricted_guilds: 'restrictedGuilds',
+
+  explicit_content_filter: function explicitContentFilter(type) { // eslint-disable-line func-name-matching
+    /**
+     * Safe direct messaging; force people's messages with images to be scanned before they are sent to you
+     * one of `DISABLED`, `NON_FRIENDS`, `FRIENDS_AND_NON_FRIENDS`
+     * @name ClientUserSettings#explicitContentFilter
+     * @type {string}
+     */
+    return exports.ExplicitContentFilterTypes[type];
+  },
+  friend_source_flags: function friendSources(flags) { // eslint-disable-line func-name-matching
+    /**
+     * Who can add you as a friend
+     * @name ClientUserSettings#friendSources
+     * @type {Object}
+     * @property {boolean} all Mutual friends and mutual guilds
+     * @property {boolean} mutualGuilds Only mutual guilds
+     * @property {boolean} mutualFriends Only mutual friends
+     */
+    return {
+      all: flags.all || false,
+      mutualGuilds: flags.all ? true : flags.mutual_guilds || false,
+      mutualFriends: flags.all ? true : flags.mutualFriends || false,
+    };
+  },
 };
 
 exports.Colors = {

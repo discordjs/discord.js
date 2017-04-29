@@ -48,6 +48,7 @@ class VoiceChannel extends GuildChannel {
   /**
    * Checks if the voice channel is full
    * @type {boolean}
+   * @readonly
    */
   get full() {
     return this.userLimit > 0 && this.members.size >= this.userLimit;
@@ -56,6 +57,7 @@ class VoiceChannel extends GuildChannel {
   /**
    * Checks if the client has permission join the voice channel
    * @type {boolean}
+   * @readonly
    */
   get joinable() {
     if (this.client.browser) return false;
@@ -67,6 +69,7 @@ class VoiceChannel extends GuildChannel {
   /**
    * Checks if the client has permission to send audio to the voice channel
    * @type {boolean}
+   * @readonly
    */
   get speakable() {
     return this.permissionsFor(this.client.user).hasPermission('SPEAK');

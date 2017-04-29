@@ -9,13 +9,13 @@ nonce.fill(0);
 /**
  * The class that sends voice packet data to the voice connection.
  * ```js
- * // obtained using:
+ * // Obtained using:
  * voiceChannel.join().then(connection => {
- *   // you can play a file or a stream here:
+ *   // You can play a file or a stream here:
  *   const dispatcher = connection.playFile('./file.mp3');
  * });
  * ```
- * @extends {EventEmitter}
+ * @implements {VolumeInterface}
  */
 class StreamDispatcher extends VolumeInterface {
   constructor(player, stream, streamOptions) {
@@ -55,6 +55,7 @@ class StreamDispatcher extends VolumeInterface {
    * How many passes the dispatcher should take when sending packets to reduce packet loss. Values over 5
    * aren't recommended, as it means you are using 5x more bandwidth. You _can_ edit this at runtime.
    * @type {number}
+   * @readonly
    */
   get passes() {
     return this.streamOptions.passes || 1;

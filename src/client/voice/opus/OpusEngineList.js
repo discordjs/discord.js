@@ -5,9 +5,9 @@ const list = [
 
 let opusEngineFound;
 
-function fetch(Encoder) {
+function fetch(Encoder, engineOptions) {
   try {
-    return new Encoder();
+    return new Encoder(engineOptions);
   } catch (err) {
     return null;
   }
@@ -17,9 +17,9 @@ exports.add = encoder => {
   list.push(encoder);
 };
 
-exports.fetch = () => {
+exports.fetch = engineOptions => {
   for (const encoder of list) {
-    const fetched = fetch(encoder);
+    const fetched = fetch(encoder, engineOptions);
     if (fetched) return fetched;
   }
   return null;

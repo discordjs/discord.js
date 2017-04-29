@@ -12,9 +12,7 @@ class GuildRolesPositionUpdate extends Action {
       }
     }
 
-    return {
-      guild,
-    };
+    return { guild };
   }
 }
 
