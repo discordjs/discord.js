@@ -1,6 +1,8 @@
 const User = require('./User');
 const Collection = require('../util/Collection');
 const ClientUserSettings = require('./ClientUserSettings');
+const Constants = require('../util/Constants');
+
 /**
  * Represents the logged in client's Discord user
  * @extends {User}
@@ -178,7 +180,12 @@ class ClientUser extends User {
 
       if (data.status) {
         if (typeof data.status !== 'string') throw new TypeError('Status must be a string');
-        status = data.status;
+        if (this.bot) {
+          status = data.status;
+        } else {
+          this.settings.update(Constants.UserSettingsMap.status, data.status);
+          status = 'invisible';
+        }
       }
 
       if (data.game) {
@@ -232,10 +239,12 @@ class ClientUser extends User {
    */
   setGame(game, streamingURL) {
     if (!game) return this.setPresence({ game: null });
-    return this.setPresence({ game: {
-      name: game,
-      url: streamingURL,
-    } });
+    return this.setPresence({
+      game: {
+        name: game,
+        url: streamingURL,
+      },
+    });
   }
 
   /**
