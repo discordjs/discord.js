@@ -204,6 +204,7 @@ const Endpoints = exports.Endpoints = {
       webhooks: `${base}/webhooks`,
       ack: `${base}/ack`,
       settings: `${base}/settings`,
+      auditLogs: `${base}/audit-logs`,
       Emoji: emojiID => Endpoints.CDN(root).Emoji(emojiID),
       Icon: (root, hash) => Endpoints.CDN(root).Icon(guildID, hash),
       Splash: (root, hash) => Endpoints.CDN(root).Splash(guildID, hash),
@@ -3625,6 +3626,7 @@ Permissions.FLAGS = {
   MANAGE_CHANNELS: 1 << 4,
   MANAGE_GUILD: 1 << 5,
   ADD_REACTIONS: 1 << 6,
+  VIEW_AUDIT_LOG: 1 << 7,
 
   READ_MESSAGES: 1 << 10,
   SEND_MESSAGES: 1 << 11,
@@ -5577,23 +5579,25 @@ class GuildMember {
 
   /**
    * Kick this member from the guild
+   * @param {string} [reason] Reason for kicking user
    * @returns {Promise<GuildMember>}
    */
-  kick() {
-    return this.client.rest.methods.kickGuildMember(this.guild, this);
+  kick(reason) {
+    return this.client.rest.methods.kickGuildMember(this.guild, this, reason);
   }
 
   /**
    * Ban this guild member
-   * @param {number} [deleteDays=0] The amount of days worth of messages from this member that should
-   * also be deleted. Between `0` and `7`.
+   * @param {Object} [options] Ban options.
+   * @param {number} [options.days=0] Number of days of messages to delete
+   * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember>}
    * @example
    * // ban a guild member
    * guildMember.ban(7);
    */
-  ban(deleteDays = 0) {
-    return this.client.rest.methods.banGuildMember(this.guild, this, deleteDays);
+  ban(options) {
+    return this.guild.ban(this, options);
   }
 
   /**
@@ -7237,7 +7241,13 @@ class Guild {
    * @returns {Promise<Collection<Snowflake, User>>}
    */
   fetchBans() {
-    return this.client.rest.methods.getGuildBans(this);
+    return this.client.rest.methods.getGuildBans(this)
+      // This entire re-mapping can be removed in the next major release
+      .then(bans => {
+        const users = new Collection();
+        for (const ban of bans.values()) users.set(ban.user.id, ban.user);
+        return users;
+      });
   }
 
   /**
@@ -7262,6 +7272,20 @@ class Guild {
    */
   fetchVoiceRegions() {
     return this.client.rest.methods.fetchVoiceRegions(this.id);
+  }
+
+  /**
+   * Fetch audit logs for this guild
+   * @param {Object} [options={}] Options for fetching audit logs
+   * @param {Snowflake|GuildAuditLogsEntry} [options.before] Limit to entries from before specified entry
+   * @param {Snowflake|GuildAuditLogsEntry} [options.after] Limit to entries from after specified entry
+   * @param {number} [options.limit] Limit number of entries
+   * @param {UserResolvable} [options.user] Only show entries involving this user
+   * @param {string|number} [options.type] Only show entries involving this action type
+   * @returns {Promise<GuildAuditLogs>}
+   */
+  fetchAuditLogs(options) {
+    return this.client.rest.methods.getGuildAuditLogs(this, options);
   }
 
   /**
@@ -7497,8 +7521,9 @@ class Guild {
   /**
    * Bans a user from the guild.
    * @param {UserResolvable} user The user to ban
-   * @param {number} [deleteDays=0] The amount of days worth of messages from this user that should
-   * also be deleted. Between `0` and `7`.
+   * @param {Object} [options] Ban options.
+   * @param {number} [options.days=0] Number of days of messages to delete
+   * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember|User|string>} Result object will be resolved as specifically as possible.
    * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
    * be resolved, the user ID will be the result.
@@ -7508,8 +7533,13 @@ class Guild {
    *  .then(user => console.log(`Banned ${user.username || user.id || user} from ${guild.name}`))
    *  .catch(console.error);
    */
-  ban(user, deleteDays = 0) {
-    return this.client.rest.methods.banGuildMember(this, user, deleteDays);
+  ban(user, options = {}) {
+    if (typeof options === 'number') {
+      options = { reason: null, days: options };
+    } else if (typeof options === 'string') {
+      options = { reason: options, days: 0 };
+    }
+    return this.client.rest.methods.banGuildMember(this, user, options);
   }
 
   /**
@@ -13773,7 +13803,7 @@ util.inherits = __webpack_require__(10);
 /*</replacement>*/
 
 /*<replacement>*/
-var debugUtil = __webpack_require__(184);
+var debugUtil = __webpack_require__(185);
 var debug = void 0;
 if (debugUtil && debugUtil.debuglog) {
   debug = debugUtil.debuglog('stream');
@@ -16302,7 +16332,7 @@ const zlib = __webpack_require__(27);
 const PacketManager = __webpack_require__(143);
 const erlpack = (function findErlpack() {
   try {
-    const e = __webpack_require__(188);
+    const e = __webpack_require__(189);
     if (!e.pack) return null;
     return e;
   } catch (e) {
@@ -16313,9 +16343,9 @@ const erlpack = (function findErlpack() {
 const WebSocket = (function findWebSocket() {
   if (browser) return window.WebSocket; // eslint-disable-line no-undef
   try {
-    return __webpack_require__(189);
-  } catch (e) {
     return __webpack_require__(190);
+  } catch (e) {
+    return __webpack_require__(191);
   }
 }());
 
@@ -16772,13 +16802,13 @@ const RESTManager = __webpack_require__(66);
 const ClientDataManager = __webpack_require__(106);
 const ClientManager = __webpack_require__(107);
 const ClientDataResolver = __webpack_require__(38);
-const ClientVoiceManager = __webpack_require__(186);
+const ClientVoiceManager = __webpack_require__(187);
 const WebSocketManager = __webpack_require__(142);
 const ActionsManager = __webpack_require__(108);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(11).Presence;
-const ShardClientUtil = __webpack_require__(185);
-const VoiceBroadcast = __webpack_require__(187);
+const ShardClientUtil = __webpack_require__(186);
+const VoiceBroadcast = __webpack_require__(188);
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -23731,12 +23761,13 @@ const Message = __webpack_require__(19);
 const Role = __webpack_require__(15);
 const Invite = __webpack_require__(43);
 const Webhook = __webpack_require__(30);
-const UserProfile = __webpack_require__(182);
+const UserProfile = __webpack_require__(183);
 const OAuth2Application = __webpack_require__(49);
 const Channel = __webpack_require__(14);
 const GroupDMChannel = __webpack_require__(28);
 const Guild = __webpack_require__(24);
-const VoiceRegion = __webpack_require__(183);
+const VoiceRegion = __webpack_require__(184);
+const GuildAuditLogs = __webpack_require__(181);
 
 class RESTMethods {
   constructor(restManager) {
@@ -24104,8 +24135,9 @@ class RESTMethods {
     );
   }
 
-  kickGuildMember(guild, member) {
-    return this.rest.makeRequest('delete', Endpoints.Guild(guild).Member(member), true).then(() =>
+  kickGuildMember(guild, member, reason) {
+    const url = `${Endpoints.Guild(guild).Member(member)}?reason=${reason}`;
+    return this.rest.makeRequest('delete', url, true).then(() =>
       this.client.actions.GuildMemberRemove.handle({
         guild_id: guild.id,
         user: member.user,
@@ -24248,14 +24280,12 @@ class RESTMethods {
     return this.rest.makeRequest('post', Endpoints.Channel(channelID).typing, true);
   }
 
-  banGuildMember(guild, member, deleteDays = 0) {
+  banGuildMember(guild, member, options) {
     const id = this.client.resolver.resolveUserID(member);
     if (!id) return Promise.reject(new Error('Couldn\'t resolve the user ID to ban.'));
-    return this.rest.makeRequest(
-      'put', `${Endpoints.Guild(guild).bans}/${id}?delete-message-days=${deleteDays}`, true, {
-        'delete-message-days': deleteDays,
-      }
-    ).then(() => {
+
+    const url = `${Endpoints.Guild(guild).bans}/${id}?${querystring.stringify(options)}`;
+    return this.rest.makeRequest('put', url, true).then(() => {
       if (member instanceof GuildMember) return member;
       const user = this.client.resolver.resolveUser(id);
       if (user) {
@@ -24294,14 +24324,15 @@ class RESTMethods {
   }
 
   getGuildBans(guild) {
-    return this.rest.makeRequest('get', Endpoints.Guild(guild).bans, true).then(banItems => {
-      const bannedUsers = new Collection();
-      for (const banItem of banItems) {
-        const user = this.client.dataManager.newUser(banItem.user);
-        bannedUsers.set(user.id, user);
-      }
-      return bannedUsers;
-    });
+    return this.rest.makeRequest('get', Endpoints.Guild(guild).bans, true).then(bans =>
+      bans.reduce((collection, ban) => {
+        collection.set(ban.user.id, {
+          reason: ban.reason,
+          user: this.client.dataManager.newUser(ban.user),
+        });
+        return collection;
+      }, new Collection())
+    );
   }
 
   updateGuildRole(role, _data) {
@@ -24390,6 +24421,23 @@ class RESTMethods {
   deleteEmoji(emoji) {
     return this.rest.makeRequest('delete', Endpoints.Guild(emoji.guild).Emoji(emoji.id), true)
       .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);
+  }
+
+  getGuildAuditLogs(guild, options = {}) {
+    if (options.before && options.before instanceof GuildAuditLogs.Entry) options.before = options.before.id;
+    if (options.after && options.after instanceof GuildAuditLogs.Entry) options.after = options.after.id;
+    if (typeof options.type === 'string') options.type = GuildAuditLogs.Actions[options.type];
+
+    const queryString = (querystring.stringify({
+      before: options.before,
+      after: options.after,
+      limit: options.limit,
+      user_id: this.client.resolver.resolveUserID(options.user),
+      action_type: options.type,
+    }).match(/[^=&?]+=[^=&?]+/g) || []).join('&');
+
+    return this.rest.makeRequest('get', `${Endpoints.Guild(guild).auditLogs}?${queryString}`, true)
+      .then(data => GuildAuditLogs.build(guild, data));
   }
 
   getWebhook(id, token) {
@@ -26113,6 +26161,208 @@ if (__webpack_require__(23).platform() === 'browser') window.Discord = module.ex
 /* 181 */
 /***/ (function(module, exports) {
 
+const Targets = {
+  GUILD: 'GUILD',
+  CHANNEL: 'CHANNEL',
+  USER: 'USER',
+  ROLE: 'ROLE',
+  INVITE: 'INVITE',
+  WEBHOOK: 'WEBHOOK',
+  EMOJI: 'EMOJI',
+};
+
+const Actions = {
+  GUILD_UPDATE: 1,
+  CHANNEL_CREATE: 10,
+  CHANNEL_UPDATE: 11,
+  CHANNEL_DELETE: 12,
+  CHANNEL_OVERWRITE_CREATE: 13,
+  CHANNEL_OVERWRITE_UPDATE: 14,
+  CHANNEL_OVERWRITE_DELETE: 15,
+  MEMBER_KICK: 20,
+  MEMBER_PRUNE: 21,
+  MEMBER_BAN_ADD: 22,
+  MEMBER_BAN_REMOVE: 23,
+  MEMBER_UPDATE: 24,
+  MEMBER_ROLE_UPDATE: 25,
+  ROLE_CREATE: 30,
+  ROLE_UPDATE: 31,
+  ROLE_DELETE: 32,
+  INVITE_CREATE: 40,
+  INVITE_UPDATE: 41,
+  INVITE_DELETE: 42,
+  WEBHOOK_CREATE: 50,
+  WEBHOOK_UPDATE: 51,
+  WEBHOOK_DELETE: 52,
+  EMOJI_CREATE: 60,
+  EMOJI_UPDATE: 61,
+  EMOJI_DELETE: 62,
+};
+
+class GuildAuditLogs {
+  constructor(guild, data) {
+    if (data.users) for (const user of data.users) guild.client.dataManager.newUser(user);
+
+    /**
+     * Entries for this Guild's audit logs
+     * @type {GuildAuditLogsEntry[]}
+     */
+    this.entries = [];
+    for (const entry of data.audit_log_entries) this.entries.push(new GuildAuditLogsEntry(guild, entry));
+  }
+
+  /**
+   * Handles possible promises for entry targets
+   * @returns {GuildAuditLogs}
+   */
+  static build(...args) {
+    return new Promise(resolve => {
+      const logs = new GuildAuditLogs(...args);
+      Promise.all(logs.entries.map(e => e.target)).then(() => resolve(logs));
+    });
+  }
+
+  /**
+   * Find target type from entry action
+   * @param {number} target Action target
+   * @returns {?string}
+   */
+  static targetType(target) {
+    if (target < 10) return Targets.GUILD;
+    if (target < 20) return Targets.CHANNEL;
+    if (target < 30) return Targets.USER;
+    if (target < 40) return Targets.ROLE;
+    if (target < 50) return Targets.INVITE;
+    if (target < 60) return Targets.WEBHOOK;
+    if (target < 70) return Targets.EMOJI;
+    return null;
+  }
+
+
+  /**
+   * Find action type from entry action
+   * @param {string} action Action target
+   * @returns {string}
+   */
+  static actionType(action) {
+    if ([
+      Actions.CHANNEL_CREATE,
+      Actions.CHANNEL_OVERWRITE_CREATE,
+      Actions.MEMBER_BAN_REMOVE,
+      Actions.ROLE_CREATE,
+      Actions.INVITE_CREATE,
+      Actions.WEBHOOK_CREATE,
+      Actions.EMOJI_CREATE,
+    ].includes(action)) return 'CREATE';
+
+    if ([
+      Actions.CHANNEL_DELETE,
+      Actions.CHANNEL_OVERWRITE_DELETE,
+      Actions.MEMBER_KICK,
+      Actions.MEMBER_PRUNE,
+      Actions.MEMBER_BAN_ADD,
+      Actions.ROLE_DELETE,
+      Actions.INVITE_DELETE,
+      Actions.WEBHOOK_DELETE,
+      Actions.EMOJI_DELETE,
+    ].includes(action)) return 'DELETE';
+
+    if ([
+      Actions.GUILD_UPDATE,
+      Actions.CHANNEL_UPDATE,
+      Actions.CHANNEL_OVERWRITE_UPDATE,
+      Actions.MEMBER_UPDATE,
+      Actions.ROLE_UPDATE,
+      Actions.INVITE_UPDATE,
+      Actions.WEBHOOK_UPDATE,
+      Actions.EMOJI_UPDATE,
+    ].includes(action)) return 'UPDATE';
+
+    return 'ALL';
+  }
+}
+
+class GuildAuditLogsEntry {
+  constructor(guild, data) {
+    const targetType = GuildAuditLogs.targetType(data.action_type);
+    /**
+     * Target type of this entry
+     * @type {string}
+     */
+    this.targetType = targetType;
+
+    /**
+     * Action type of this entry
+     * @type {string}
+     */
+    this.actionType = GuildAuditLogs.actionType(data.action_type);
+
+    /**
+     * Specific action type of this entry
+     * @type {string}
+     */
+    this.action = Object.keys(Actions).find(k => Actions[k] === data.action_type);
+
+    /**
+     * Reason of this entry
+     * @type {?string}
+     */
+    this.reason = data.reason || null;
+
+    /**
+     * User that executed this entry
+     * @type {User}
+     */
+    this.executor = guild.client.users.get(data.user_id);
+
+    /**
+     * Specific property changes
+     * @type {Object[]}
+     */
+    this.changes = data.changes ? data.changes.map(c => ({ name: c.key, old: c.old_value, new: c.new_value })) : null;
+
+    /**
+     * ID of this entry
+     * @type {Snowflake}
+     */
+    this.id = data.id;
+
+    if (['USER', 'GUILD'].includes(targetType)) {
+      /**
+       * Target of this entry
+       * @type {?Guild|User|Role|Emoji|Promise<Invite>|Promise<Webhook>}
+       */
+      this.target = guild.client[`${targetType.toLowerCase()}s`].get(data.target_id);
+    } else if (targetType === 'WEBHOOK') {
+      this.target = guild.fetchWebhooks()
+        .then(hooks => {
+          this.target = hooks.find(h => h.id === data.target_id);
+          return this.target;
+        });
+    } else if (targetType === 'INVITE') {
+      const change = this.changes.find(c => c.name === 'code');
+      this.target = guild.fetchInvites()
+        .then(invites => {
+          this.target = invites.find(i => i.code === (change.new || change.old));
+          return this.target;
+        });
+    } else {
+      this.target = guild[`${targetType.toLowerCase()}s`].get(data.target_id);
+    }
+  }
+}
+
+GuildAuditLogs.Actions = Actions;
+GuildAuditLogs.Targets = Targets;
+GuildAuditLogs.Entry = GuildAuditLogsEntry;
+
+module.exports = GuildAuditLogs;
+
+
+/***/ }),
+/* 182 */
+/***/ (function(module, exports) {
+
 /**
  * Represents a user connection (or "platform identity")
  */
@@ -26164,11 +26414,11 @@ module.exports = UserConnection;
 
 
 /***/ }),
-/* 182 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
-const UserConnection = __webpack_require__(181);
+const UserConnection = __webpack_require__(182);
 
 /**
  * Represents a user's profile on Discord.
@@ -26232,7 +26482,7 @@ module.exports = UserProfile;
 
 
 /***/ }),
-/* 183 */
+/* 184 */
 /***/ (function(module, exports) {
 
 /**
@@ -26288,12 +26538,6 @@ module.exports = VoiceRegion;
 
 
 /***/ }),
-/* 184 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
 /* 185 */
 /***/ (function(module, exports) {
 
@@ -26325,6 +26569,12 @@ module.exports = VoiceRegion;
 
 /***/ }),
 /* 190 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 191 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
