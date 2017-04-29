@@ -3,6 +3,7 @@ const Role = require('./Role');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
 const Presence = require('./Presence').Presence;
+const util = require('util');
 
 /**
  * Represents a member of a guild on Discord
@@ -512,5 +513,8 @@ class GuildMember {
 }
 
 TextBasedChannel.applyToClass(GuildMember);
+
+GuildMember.prototype.hasPermissions = util.deprecate(GuildMember.prototype.hasPermissions,
+  'GuildMember#hasPermissions is deprecated - use GuildMember#hasPermission, it now takes an array');
 
 module.exports = GuildMember;
