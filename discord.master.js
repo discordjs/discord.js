@@ -7882,12 +7882,21 @@ class Guild {
   }
 
   /**
-   * The `@everyone` Role of the guild
+   * The `@everyone` role of the guild
    * @type {Role}
    * @readonly
    */
   get defaultRole() {
     return this.roles.get(this.id);
+  }
+
+  /**
+   * The client user as a GuildMember of this guild
+   * @type {?GuildMember}
+   * @readonly
+   */
+  get me() {
+    return this.members.get(this.client.user.id);
   }
 
   /**
@@ -11964,7 +11973,7 @@ class ClientDataResolver {
    * Data that resolves to give a GuildMember object. This can be:
    * * A GuildMember object
    * * A User object
-   * @typedef {Guild} GuildMemberResolvable
+   * @typedef {GuildMember|User} GuildMemberResolvable
    */
 
   /**
