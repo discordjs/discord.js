@@ -2,6 +2,7 @@ const browser = require('os').platform() === 'browser';
 const EventEmitter = require('events');
 const Constants = require('../../util/Constants');
 const zlib = require('zlib');
+const util = require('util');
 const PacketManager = require('./packets/WebSocketPacketManager');
 const erlpack = (function findErlpack() {
   try {
@@ -13,10 +14,12 @@ const erlpack = (function findErlpack() {
   }
 }());
 
+const getUWS = util.deprecate(() => require('uws'), 'uws will soon no longer be supported, use ws instead');
+
 const WebSocket = (function findWebSocket() {
   if (browser) return window.WebSocket; // eslint-disable-line no-undef
   try {
-    return require('uws');
+    return getUWS();
   } catch (e) {
     return require('ws');
   }
@@ -159,7 +162,10 @@ class WebSocketConnection extends EventEmitter {
     if (erlpack && typeof data !== 'string') {
       if (data instanceof ArrayBuffer) data = Buffer.from(new Uint8Array(data));
       return erlpack.unpack(data);
-    } else if (data instanceof ArrayBuffer || data instanceof Buffer) {
+    } else if (data instanceof ArrayBuffer) {
+      data = Buffer.from(data);
+    }
+    if (data instanceof Buffer) {
       data = zlib.inflateSync(data).toString();
     }
     return JSON.parse(data);
@@ -324,7 +330,7 @@ class WebSocketConnection extends EventEmitter {
    * @param {Event} event Received open event
    */
   onOpen(event) {
-    this.gateway = event.target.url;
+    if (event && event.target && event.target.url) this.gateway = event.target.url;
     this.debug(`Connected to gateway ${this.gateway}`);
     this.identify();
   }
