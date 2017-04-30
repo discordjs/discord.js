@@ -133,7 +133,7 @@ class Emoji {
   }
 
   /**
-   * Add a role to the list of roles that can use this emoji
+   * Add a role to the list of roles that can use this emoji.
    * @param {Role} role The role to add
    * @returns {Promise<Emoji>}
    */
@@ -142,8 +142,8 @@ class Emoji {
   }
 
   /**
-   * Add multiple roles to the list of roles that can use this emoji
-   * @param {Array<Role>} roles Roles to add
+   * Add multiple roles to the list of roles that can use this emoji.
+   * @param {Role[]} roles Roles to add
    * @returns {Promise<Emoji>}
    */
   addRestrictedRoles(roles) {
@@ -155,7 +155,7 @@ class Emoji {
   }
 
   /**
-   * Remove a role from the list of roles that can use this emoji
+   * Remove a role from the list of roles that can use this emoji.
    * @param {Role} role The role to remove
    * @returns {Promise<Emoji>}
    */
@@ -164,8 +164,8 @@ class Emoji {
   }
 
   /**
-   * Remove multiple roles from the list of roles that can use this emoji
-   * @param {Array<Role>} roles Roles to remove
+   * Remove multiple roles from the list of roles that can use this emoji.
+   * @param {Role[]} roles Roles to remove
    * @returns {Promise<Emoji>}
    */
   removeRestrictedRoles(roles) {
