@@ -2,7 +2,6 @@ const browser = require('os').platform() === 'browser';
 const EventEmitter = require('events');
 const Constants = require('../../util/Constants');
 const zlib = require('zlib');
-const util = require('util');
 const PacketManager = require('./packets/WebSocketPacketManager');
 const erlpack = (function findErlpack() {
   try {
