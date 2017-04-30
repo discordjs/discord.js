@@ -94,6 +94,14 @@ class OAuth2Application {
      * @type {boolean}
      */
     this.secret = data.secret;
+
+    if (data.owner) {
+      /**
+       * The owner of this OAuth application
+       * @type {?User}
+       */
+      this.owner = this.client.dataManager.newUser(data.owner);
+    }
   }
 
   /**

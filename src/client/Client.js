@@ -382,7 +382,7 @@ class Client extends EventEmitter {
   /**
    * Obtains the OAuth Application of the bot from Discord.
    * @param {Snowflake} [id='@me'] ID of application to fetch
-   * @returns {Promise<ClientOAuth2Application>}
+   * @returns {Promise<OAuth2Application>}
    */
   fetchApplication(id = '@me') {
     return this.rest.methods.getApplication(id);
