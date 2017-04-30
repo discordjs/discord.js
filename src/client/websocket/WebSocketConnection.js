@@ -14,12 +14,10 @@ const erlpack = (function findErlpack() {
   }
 }());
 
-const getUWS = util.deprecate(() => require('uws'), 'uws will soon no longer be supported, use ws instead');
-
 const WebSocket = (function findWebSocket() {
   if (browser) return window.WebSocket; // eslint-disable-line no-undef
   try {
-    return getUWS();
+    return require('uws');
   } catch (e) {
     return require('ws');
   }
@@ -346,6 +344,7 @@ class WebSocketConnection extends EventEmitter {
    */
   onError(error) {
     this.client.emit(Constants.Events.ERROR, error);
+    if (error.message === 'uWs client connection error') this.reconnect();
   }
 
   /**
