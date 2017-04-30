@@ -52,25 +52,25 @@ class GuildMember {
      * Whether this member is deafened server-wide
      * @type {boolean}
      */
-    this.serverDeaf = data.deaf;
+    this.serverDeaf = Boolean(data.deaf);
 
     /**
      * Whether this member is muted server-wide
      * @type {boolean}
      */
-    this.serverMute = data.mute;
+    this.serverMute = Boolean(data.mute);
 
     /**
      * Whether this member is self-muted
      * @type {boolean}
      */
-    this.selfMute = data.self_mute;
+    this.selfMute = Boolean(data.self_mute);
 
     /**
      * Whether this member is self-deafened
      * @type {boolean}
      */
-    this.selfDeaf = data.self_deaf;
+    this.selfDeaf = Boolean(data.self_deaf);
 
     /**
      * The voice session ID of this member, if any
