@@ -157,13 +157,6 @@ class Client extends EventEmitter {
     this.pings = [];
 
     /**
-     * Timestamp of the latest ping's start time
-     * @type {number}
-     * @private
-     */
-    this._pingTimestamp = 0;
-
-    /**
      * Timeouts set by {@link Client#setTimeout} that are still active
      * @type {Set<Timeout>}
      * @private
@@ -183,12 +176,21 @@ class Client extends EventEmitter {
   }
 
   /**
+   * Timestamp of the latest ping's start time
+   * @type {number}
+   * @private
+   */
+  get _pingTimestamp() {
+    return this.ws.connection ? this.ws.connection.lastPingTimestamp : 0;
+  }
+
+  /**
    * Current status of the client's connection to Discord
    * @type {?number}
    * @readonly
    */
   get status() {
-    return this.ws.status;
+    return this.ws.connection.status;
   }
 
   /**
@@ -345,7 +347,7 @@ class Client extends EventEmitter {
    * Sweeps all text-based channels' messages and removes the ones older than the max message lifetime.
    * If the message has been edited, the time of the edit is used rather than the time of the original message.
    * @param {number} [lifetime=this.options.messageCacheLifetime] Messages that are older than this (in seconds)
-   * will be removed from the caches. The default is based on {@link ClientOptions#messageCacheLifetime}.
+   * will be removed from the caches. The default is based on {@link ClientOptions#messageCacheLifetime}
    * @returns {number} Amount of messages that were removed from the caches,
    * or -1 if the message cache lifetime is unlimited
    */
@@ -533,13 +535,13 @@ class Client extends EventEmitter {
 module.exports = Client;
 
 /**
- * Emitted for general warnings
+ * Emitted for general warnings.
  * @event Client#warn
  * @param {string} info The warning
  */
 
 /**
- * Emitted for general debugging information
+ * Emitted for general debugging information.
  * @event Client#debug
  * @param {string} info The debug information
  */

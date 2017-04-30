@@ -1,7 +1,7 @@
 exports.Package = require('../../package.json');
 
 /**
- * Options for a Client.
+ * Options for a client.
  * @typedef {Object} ClientOptions
  * @property {string} [apiRequestMethod='sequential'] One of `sequential` or `burst`. The sequential handler executes
  * all requests in the order they are triggered, whereas the burst handler runs multiple in parallel, and doesn't
@@ -28,7 +28,7 @@ exports.Package = require('../../package.json');
  * processed, potentially resulting in performance improvements for larger bots. Only disable events you are
  * 100% certain you don't need, as many are important, but not obviously so. The safest one to disable with the
  * most impact is typically `TYPING_START`.
- * @property {WebsocketOptions} [ws] Options for the websocket
+ * @property {WebsocketOptions} [ws] Options for the WebSocket
  */
 exports.DefaultOptions = {
   apiRequestMethod: 'sequential',
@@ -45,7 +45,7 @@ exports.DefaultOptions = {
   restTimeOffset: 500,
 
   /**
-   * Websocket options (these are left as snake_case to match the API)
+   * WebSocket options (these are left as snake_case to match the API)
    * @typedef {Object} WebsocketOptions
    * @property {number} [large_threshold=250] Number of members in a guild to be considered large
    * @property {boolean} [compress=true] Whether to compress data sent on the connection
@@ -64,10 +64,17 @@ exports.DefaultOptions = {
     version: 6,
   },
   http: {
-    version: 6,
+    version: 7,
     host: 'https://discordapp.com',
     cdn: 'https://cdn.discordapp.com',
   },
+};
+
+exports.WSCodes = {
+  1000: 'Connection gracefully closed',
+  4004: 'Tried to identify with an invalid token',
+  4010: 'Sharding data provided was invalid',
+  4011: 'Shard would be on too many guilds if connected',
 };
 
 exports.Errors = {
@@ -125,7 +132,8 @@ const Endpoints = exports.Endpoints = {
       webhooks: `${base}/webhooks`,
       ack: `${base}/ack`,
       settings: `${base}/settings`,
-      Emoji: emojiID => `${base}/emojis/${emojiID}`,
+      auditLogs: `${base}/audit-logs`,
+      Emoji: emojiID => Endpoints.CDN(root).Emoji(emojiID),
       Icon: (root, hash) => Endpoints.CDN(root).Icon(guildID, hash),
       Splash: (root, hash) => Endpoints.CDN(root).Splash(guildID, hash),
       Role: roleID => `${base}/roles/${roleID}`,
@@ -154,8 +162,7 @@ const Endpoints = exports.Endpoints = {
       typing: `${base}/typing`,
       permissions: `${base}/permissions`,
       webhooks: `${base}/webhooks`,
-      search: `${base}/search`,
-      ack: `${base}/ack`,
+      search: `${base}/messages/search`,
       pins: `${base}/pins`,
       Pin: messageID => `${base}/pins/${messageID}`,
       Recipient: recipientID => `${base}/recipients/${recipientID}`,
@@ -181,7 +188,7 @@ const Endpoints = exports.Endpoints = {
   Member: m => exports.Endpoints.Guild(m.guild).Member(m),
   CDN(root) {
     return {
-      Emoji: emojiID => `${root}/emojis/$${emojiID}.png`,
+      Emoji: emojiID => `${root}/emojis/${emojiID}.png`,
       Asset: name => `${root}/assets/${name}`,
       Avatar: (userID, hash) => `${root}/avatars/${userID}/${hash}.${hash.startsWith('a_') ? 'gif' : 'png'}?size=2048`,
       Icon: (guildID, hash) => `${root}/icons/${guildID}/${hash}.jpg`,
@@ -429,7 +436,7 @@ exports.ExplicitContentFilterTypes = [
 
 exports.UserSettingsMap = {
   /**
-   * Automatically convert emoticons in your messages to emoji.
+   * Automatically convert emoticons in your messages to emoji
    * For example, when you type `:-)` Discord will convert it to 😃
    * @name ClientUserSettings#convertEmoticons
    * @type {boolean}

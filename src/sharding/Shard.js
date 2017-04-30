@@ -65,8 +65,8 @@ class Shard {
   }
 
   /**
-   * Fetches a Client property value of the shard.
-   * @param {string} prop Name of the Client property to get, using periods for nesting
+   * Fetches a client property value of the shard.
+   * @param {string} prop Name of the client property to get, using periods for nesting
    * @returns {Promise<*>}
    * @example
    * shard.fetchClientValue('guilds.size').then(count => {
@@ -97,7 +97,7 @@ class Shard {
   }
 
   /**
-   * Evaluates a script on the shard, in the context of the Client.
+   * Evaluates a script on the shard, in the context of the client.
    * @param {string} script JavaScript to run on the shard
    * @returns {Promise<*>} Result of the script execution
    */
@@ -125,7 +125,7 @@ class Shard {
   }
 
   /**
-   * Handles an IPC message
+   * Handles an IPC message.
    * @param {*} message Message received
    * @private
    */
@@ -151,7 +151,7 @@ class Shard {
     }
 
     /**
-     * Emitted upon recieving a message from a shard
+     * Emitted upon recieving a message from a shard.
      * @event ShardingManager#message
      * @param {Shard} shard Shard that sent the message
      * @param {*} message Message that was received

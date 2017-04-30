@@ -2,7 +2,7 @@ const Collection = require('../../util/Collection');
 const VoiceConnection = require('./VoiceConnection');
 
 /**
- * Manages all the voice stuff for the Client
+ * Manages all the voice stuff for the client.
  * @private
  */
 class ClientVoiceManager {
@@ -37,7 +37,7 @@ class ClientVoiceManager {
   }
 
   /**
-   * Sets up a request to join a voice channel
+   * Sets up a request to join a voice channel.
    * @param {VoiceChannel} channel The voice channel to join
    * @returns {Promise<VoiceConnection>}
    */
