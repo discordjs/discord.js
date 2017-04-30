@@ -1,5 +1,3 @@
-const ClientDataResolver = require('../client/ClientDataResolver');
-
 /**
  * Represents an embed in a message (image/video preview, rich embed, etc.)
  */
@@ -22,7 +20,7 @@ class MessageEmbed {
     this.setup(data);
   }
 
-  setup(data) {
+  setup(data) { // eslint-disable-line complexity
     /**
      * The type of this embed
      * @type {string}
@@ -57,7 +55,7 @@ class MessageEmbed {
      * The timestamp of this embed
      * @type {number}
      */
-    this.createdTimestamp = data.timestamp;
+    this.timestamp = new Date(data.timestamp) || null;
 
     /**
      * The fields of this embed
@@ -66,7 +64,7 @@ class MessageEmbed {
      * @property {string} value Value of this field
      * @property {boolean} inline If this field will be displayed inline
      */
-    this.fields = data.fields;
+    this.fields = data.fields || null;
 
     /**
      * The thumbnail of this embed, if there is one
@@ -106,9 +104,9 @@ class MessageEmbed {
      * @property {number} width Width of this video
      */
     this.video = data.video ? {
-      url: this.video.url || null,
-      height: this.video.height,
-      width: this.video.width,
+      url: data.video.url || null,
+      height: data.video.height,
+      width: data.video.width,
     } : null;
 
     /**
@@ -120,10 +118,10 @@ class MessageEmbed {
      * @property {string} proxyIconURL Proxied URL of the icon for this author
      */
     this.author = data.author ? {
-      name: this.author.name || null,
-      url: this.author.url || null,
-      iconURL: this.author.icon_url || null,
-      proxyIconURL: this.author.proxy_icon_url,
+      name: data.author.name || null,
+      url: data.author.url || null,
+      iconURL: data.author.iconURL || data.author.icon_url || null,
+      proxyIconURL: data.author.proxyIconUrl || data.author.proxy_icon_url || null,
     } : null;
 
     /**
@@ -145,9 +143,9 @@ class MessageEmbed {
      * @property {string} proxyIconURL Proxied URL of the icon for this footer
      */
     this.footer = data.footer ? {
-      text: this.footer.text || null,
-      iconURL: this.footer.icon_url || null,
-      proxyIconURL: this.footer.proxy_icon_url,
+      text: data.footer.text || null,
+      iconURL: data.footer.iconURL || data.footer.icon_url || null,
+      proxyIconURL: data.footer.proxyIconURL || data.footer.proxy_icon_url || null,
     } : null;
   }
 
@@ -157,7 +155,7 @@ class MessageEmbed {
    * @readonly
    */
   get createdAt() {
-    return new Date(this.createdTimestamp);
+    return new Date(this.timestamp);
   }
 
   /**
@@ -220,7 +218,7 @@ class MessageEmbed {
    * @returns {MessageEmbed} This embed
    */
   setColor(color) {
-    this.color = ClientDataResolver.resolveColor(color);
+    this.color = this.client.resolver.resolveColor(color);
     return this;
   }
 
@@ -313,7 +311,8 @@ class MessageEmbed {
       description: this.description || null,
       url: this.url || null,
       color: this.color || null,
-      fields: this.fields.length ? this.fields : null,
+      fields: this.fields ? this.fields : null,
+      timestamp: this.timestamp || null,
       thumbnail: this.thumbnail ? { url: this.thumbnail.url || null } : null,
       image: this.image ? { url: this.image.url || null } : null,
       video: this.video ? { url: this.video.url || null } : null,
