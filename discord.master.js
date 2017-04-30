@@ -26283,7 +26283,9 @@ if (__webpack_require__(24).platform() === 'browser') window.Discord = module.ex
 
 /***/ }),
 /* 181 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+const Collection = __webpack_require__(3);
 
 const Targets = {
   GUILD: 'GUILD',
@@ -26329,10 +26331,13 @@ class GuildAuditLogs {
 
     /**
      * The entries for this guild's audit logs
-     * @type {GuildAuditLogsEntry[]}
+     * @type {Collection<Snowflake, GuildAuditLogsEntry>}
      */
-    this.entries = [];
-    for (const entry of data.audit_log_entries) this.entries.push(new GuildAuditLogsEntry(guild, entry));
+    this.entries = new Collection();
+    for (const item of data.audit_log_entries) {
+      const entry = new GuildAuditLogsEntry(guild, item);
+      this.entries.set(entry.id, entry);
+    }
   }
 
   /**
