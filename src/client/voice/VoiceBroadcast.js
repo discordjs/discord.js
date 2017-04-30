@@ -13,6 +13,16 @@ const ffmpegArguments = [
 
 /**
  * A voice broadcast can be played across multiple voice connections for improved shared-stream efficiency.
+ *
+ * Example usage:
+ * ```js
+ * const broadcast = client.createVoiceBroadcast();
+ * broadcast.playFile('./music.mp3');
+ * // play "music.mp3" in all voice connections that the client is in
+ * for (const connection of client.voiceConnections.values()) {
+ *   connection.playBroadcast(broadcast);
+ * }
+ * ```
  * @implements {VolumeInterface}
  */
 class VoiceBroadcast extends VolumeInterface {
