@@ -124,7 +124,7 @@ class Emoji {
   }
 
   /**
-   * Set the name of the emoji
+   * Set the name of the emoji.
    * @param {string} name The new name for the emoji
    * @returns {Promise<Emoji>}
    */
