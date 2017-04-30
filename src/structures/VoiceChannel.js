@@ -10,7 +10,7 @@ class VoiceChannel extends GuildChannel {
     super(guild, data);
 
     /**
-     * The members in this voice channel.
+     * The members in this voice channel
      * @type {Collection<Snowflake, GuildMember>}
      */
     this.members = new Collection();
@@ -76,11 +76,11 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * Sets the bitrate of the channel
+   * Sets the bitrate of the channel.
    * @param {number} bitrate The new bitrate
    * @returns {Promise<VoiceChannel>}
    * @example
-   * // set the bitrate of a voice channel
+   * // Set the bitrate of a voice channel
    * voiceChannel.setBitrate(48000)
    *  .then(vc => console.log(`Set bitrate to ${vc.bitrate} for ${vc.name}`))
    *  .catch(console.error);
@@ -90,11 +90,11 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * Sets the user limit of the channel
+   * Sets the user limit of the channel.
    * @param {number} userLimit The new user limit
    * @returns {Promise<VoiceChannel>}
    * @example
-   * // set the user limit of a voice channel
+   * // Set the user limit of a voice channel
    * voiceChannel.setUserLimit(42)
    *  .then(vc => console.log(`Set user limit to ${vc.userLimit} for ${vc.name}`))
    *  .catch(console.error);
@@ -104,10 +104,10 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * Attempts to join this voice channel
+   * Attempts to join this voice channel.
    * @returns {Promise<VoiceConnection>}
    * @example
-   * // join a voice channel
+   * // Join a voice channel
    * voiceChannel.join()
    *  .then(connection => console.log('Connected!'))
    *  .catch(console.error);
@@ -118,9 +118,9 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * Leaves this voice channel
+   * Leaves this voice channel.
    * @example
-   * // leave a voice channel
+   * // Leave a voice channel
    * voiceChannel.leave();
    */
   leave() {

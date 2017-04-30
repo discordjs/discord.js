@@ -1,7 +1,7 @@
 exports.Package = require('../../package.json');
 
 /**
- * Options for a Client.
+ * Options for a client.
  * @typedef {Object} ClientOptions
  * @property {string} [apiRequestMethod='sequential'] One of `sequential` or `burst`. The sequential handler executes
  * all requests in the order they are triggered, whereas the burst handler runs multiple in parallel, and doesn't
@@ -28,7 +28,7 @@ exports.Package = require('../../package.json');
  * processed, potentially resulting in performance improvements for larger bots. Only disable events you are
  * 100% certain you don't need, as many are important, but not obviously so. The safest one to disable with the
  * most impact is typically `TYPING_START`.
- * @property {WebsocketOptions} [ws] Options for the websocket
+ * @property {WebsocketOptions} [ws] Options for the WebSocket
  */
 exports.DefaultOptions = {
   apiRequestMethod: 'sequential',
@@ -45,7 +45,7 @@ exports.DefaultOptions = {
   restTimeOffset: 500,
 
   /**
-   * Websocket options (these are left as snake_case to match the API)
+   * WebSocket options (these are left as snake_case to match the API)
    * @typedef {Object} WebsocketOptions
    * @property {number} [large_threshold=250] Number of members in a guild to be considered large
    * @property {boolean} [compress=true] Whether to compress data sent on the connection
@@ -436,7 +436,7 @@ exports.ExplicitContentFilterTypes = [
 
 exports.UserSettingsMap = {
   /**
-   * Automatically convert emoticons in your messages to emoji.
+   * Automatically convert emoticons in your messages to emoji
    * For example, when you type `:-)` Discord will convert it to 😃
    * @name ClientUserSettings#convertEmoticons
    * @type {boolean}

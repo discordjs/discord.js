@@ -68,7 +68,7 @@ class PresenceUpdateHandler extends AbstractHandler {
  */
 
 /**
- * Emitted whenever a member becomes available in a large guild
+ * Emitted whenever a member becomes available in a large guild.
  * @event Client#guildMemberAvailable
  * @param {GuildMember} member The member that became available
  */

@@ -1,5 +1,5 @@
 /**
- * Represents a Secret Key used in encryption over voice
+ * Represents a Secret Key used in encryption over voice.
  * @private
  */
 class SecretKey {

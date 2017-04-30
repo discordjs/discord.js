@@ -29,13 +29,13 @@ class MessageEmbed {
     this.type = data.type;
 
     /**
-     * The title of this embed, if there is one
+     * The title of this embed
      * @type {?string}
      */
     this.title = data.title;
 
     /**
-     * The description of this embed, if there is one
+     * The description of this embed
      * @type {?string}
      */
     this.description = data.description;
@@ -66,31 +66,31 @@ class MessageEmbed {
     this.createdTimestamp = data.timestamp;
 
     /**
-     * The thumbnail of this embed, if there is one
+     * The thumbnail of this embed
      * @type {?MessageEmbedThumbnail}
      */
     this.thumbnail = data.thumbnail ? new MessageEmbedThumbnail(this, data.thumbnail) : null;
 
     /**
-     * The image of this embed, if there is one
+     * The image of this embed
      * @type {?MessageEmbedImage}
      */
     this.image = data.image ? new MessageEmbedImage(this, data.image) : null;
 
     /**
-     * The video of this embed, if there is one
+     * The video of this embed
      * @type {?MessageEmbedVideo}
      */
     this.video = data.video ? new MessageEmbedVideo(this, data.video) : null;
 
     /**
-     * The author of this embed, if there is one
+     * The author of this embed
      * @type {?MessageEmbedAuthor}
      */
     this.author = data.author ? new MessageEmbedAuthor(this, data.author) : null;
 
     /**
-     * The provider of this embed, if there is one
+     * The provider of this embed
      * @type {?MessageEmbedProvider}
      */
     this.provider = data.provider ? new MessageEmbedProvider(this, data.provider) : null;
@@ -112,7 +112,7 @@ class MessageEmbed {
   }
 
   /**
-   * The hexadecimal version of the embed color, with a leading hash.
+   * The hexadecimal version of the embed color, with a leading hash
    * @type {string}
    * @readonly
    */
@@ -124,7 +124,7 @@ class MessageEmbed {
 }
 
 /**
- * Represents a thumbnail for a message embed
+ * Represents a thumbnail for a message embed.
  */
 class MessageEmbedThumbnail {
   constructor(embed, data) {
@@ -165,7 +165,7 @@ class MessageEmbedThumbnail {
 }
 
 /**
- * Represents an image for a message embed
+ * Represents an image for a message embed.
  */
 class MessageEmbedImage {
   constructor(embed, data) {
@@ -206,7 +206,7 @@ class MessageEmbedImage {
 }
 
 /**
- * Represents a video for a message embed
+ * Represents a video for a message embed.
  */
 class MessageEmbedVideo {
   constructor(embed, data) {
@@ -241,7 +241,7 @@ class MessageEmbedVideo {
 }
 
 /**
- * Represents a provider for a message embed
+ * Represents a provider for a message embed.
  */
 class MessageEmbedProvider {
   constructor(embed, data) {
@@ -270,7 +270,7 @@ class MessageEmbedProvider {
 }
 
 /**
- * Represents an author for a message embed
+ * Represents an author for a message embed.
  */
 class MessageEmbedAuthor {
   constructor(embed, data) {
@@ -305,7 +305,7 @@ class MessageEmbedAuthor {
 }
 
 /**
- * Represents a field for a message embed
+ * Represents a field for a message embed.
  */
 class MessageEmbedField {
   constructor(embed, data) {
@@ -340,7 +340,7 @@ class MessageEmbedField {
 }
 
 /**
- * Represents the footer of a message embed
+ * Represents the footer of a message embed.
  */
 class MessageEmbedFooter {
   constructor(embed, data) {

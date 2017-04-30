@@ -53,7 +53,7 @@ class StreamDispatcher extends VolumeInterface {
 
   /**
    * How many passes the dispatcher should take when sending packets to reduce packet loss. Values over 5
-   * aren't recommended, as it means you are using 5x more bandwidth. You _can_ edit this at runtime.
+   * aren't recommended, as it means you are using 5x more bandwidth. You _can_ edit this at runtime
    * @type {number}
    * @readonly
    */
@@ -100,7 +100,7 @@ class StreamDispatcher extends VolumeInterface {
 
   /**
    * Stops the current stream permanently and emits an `end` event.
-   * @param {string} [reason='user'] An optional reason for stopping the dispatcher.
+   * @param {string} [reason='user'] An optional reason for stopping the dispatcher
    */
   end(reason = 'user') {
     this.destroy('end', reason);
@@ -110,7 +110,7 @@ class StreamDispatcher extends VolumeInterface {
     if (this.speaking === value) return;
     this.speaking = value;
     /**
-     * Emitted when the dispatcher starts/stops speaking
+     * Emitted when the dispatcher starts/stops speaking.
      * @event StreamDispatcher#speaking
      * @param {boolean} value Whether or not the dispatcher is speaking
      */
@@ -126,7 +126,7 @@ class StreamDispatcher extends VolumeInterface {
   sendPacket(packet) {
     let repeats = this.passes;
     /**
-     * Emitted whenever the dispatcher has debug information
+     * Emitted whenever the dispatcher has debug information.
      * @event StreamDispatcher#debug
      * @param {string} info the debug info
      */
@@ -260,7 +260,7 @@ class StreamDispatcher extends VolumeInterface {
 
     if (!data.startTime) {
       /**
-       * Emitted once the dispatcher starts streaming
+       * Emitted once the dispatcher starts streaming.
        * @event StreamDispatcher#start
        */
       this.emit('start');
@@ -281,7 +281,7 @@ class StreamDispatcher extends VolumeInterface {
     this.setSpeaking(false);
     this.emit(type, reason);
     /**
-     * Emitted once the dispatcher ends
+     * Emitted once the dispatcher ends.
      * @param {string} [reason] the reason the dispatcher ended
      * @event StreamDispatcher#end
      */
@@ -291,9 +291,9 @@ class StreamDispatcher extends VolumeInterface {
   startStreaming() {
     if (!this.stream) {
       /**
-       * Emitted if the dispatcher encounters an error
+       * Emitted if the dispatcher encounters an error.
        * @event StreamDispatcher#error
-       * @param {string} error the error message
+       * @param {string} error The error message
        */
       this.emit('error', 'No stream');
       return;

@@ -6,13 +6,13 @@ const Presence = require('./Presence').Presence;
 const util = require('util');
 
 /**
- * Represents a member of a guild on Discord
+ * Represents a member of a guild on Discord.
  * @implements {TextBasedChannel}
  */
 class GuildMember {
   constructor(guild, data) {
     /**
-     * The Client that instantiated this GuildMember
+     * The client that instantiated this GuildMember
      * @name GuildMember#client
      * @type {Client}
      * @readonly
@@ -35,13 +35,13 @@ class GuildMember {
     if (data) this.setup(data);
 
     /**
-     * The ID of the last message sent by the member in their guild, if one was sent.
+     * The ID of the last message sent by the member in their guild, if one was sent
      * @type {?Snowflake}
      */
     this.lastMessageID = null;
 
     /**
-     * The Message object of the last message sent by the member in their guild, if one was sent.
+     * The Message object of the last message sent by the member in their guild, if one was sent
      * @type {?Message}
      */
     this.lastMessage = null;
@@ -125,7 +125,7 @@ class GuildMember {
   }
 
   /**
-   * A list of roles that are applied to this GuildMember, mapped by the role ID.
+   * A list of roles that are applied to this GuildMember, mapped by the role ID
    * @type {Collection<Snowflake, Role>}
    * @readonly
    */
@@ -144,7 +144,7 @@ class GuildMember {
   }
 
   /**
-   * The role of the member with the highest position.
+   * The role of the member with the highest position
    * @type {Role}
    * @readonly
    */
@@ -153,7 +153,7 @@ class GuildMember {
   }
 
   /**
-   * The role of the member used to set their color.
+   * The role of the member used to set their color
    * @type {?Role}
    * @readonly
    */
@@ -164,7 +164,7 @@ class GuildMember {
   }
 
   /**
-   * The displayed color of the member in base 10.
+   * The displayed color of the member in base 10
    * @type {number}
    * @readonly
    */
@@ -174,7 +174,7 @@ class GuildMember {
   }
 
   /**
-   * The displayed color of the member in hexadecimal.
+   * The displayed color of the member in hexadecimal
    * @type {string}
    * @readonly
    */
@@ -184,7 +184,7 @@ class GuildMember {
   }
 
   /**
-   * The role of the member used to hoist them in a separate category in the users list.
+   * The role of the member used to hoist them in a separate category in the users list
    * @type {?Role}
    * @readonly
    */
@@ -255,7 +255,7 @@ class GuildMember {
   }
 
   /**
-   * Whether the member is kickable by the client user.
+   * Whether the member is kickable by the client user
    * @type {boolean}
    * @readonly
    */
@@ -268,7 +268,7 @@ class GuildMember {
   }
 
   /**
-   * Whether the member is bannable by the client user.
+   * Whether the member is bannable by the client user
    * @type {boolean}
    * @readonly
    */
@@ -283,7 +283,7 @@ class GuildMember {
   /**
    * Returns `channel.permissionsFor(guildMember)`. Returns permissions for a member in a guild channel,
    * taking into account roles and permission overwrites.
-   * @param {ChannelResolvable} channel Guild channel to use as context
+   * @param {ChannelResolvable} channel The guild channel to use as context
    * @returns {?Permissions}
    */
   permissionsIn(channel) {
@@ -333,7 +333,7 @@ class GuildMember {
   }
 
   /**
-   * The data for editing a guild member
+   * The data for editing a guild member.
    * @typedef {Object} GuildMemberEditData
    * @property {string} [nick] The nickname to set for the member
    * @property {Collection<Snowflake, Role>|Role[]|Snowflake[]} [roles] The roles or role IDs to apply
@@ -343,7 +343,7 @@ class GuildMember {
    */
 
   /**
-   * Edit a guild member
+   * Edit a guild member.
    * @param {GuildMemberEditData} data The data to edit the member with
    * @returns {Promise<GuildMember>}
    */
@@ -352,7 +352,7 @@ class GuildMember {
   }
 
   /**
-   * Mute/unmute a user
+   * Mute/unmute a user.
    * @param {boolean} mute Whether or not the member should be muted
    * @returns {Promise<GuildMember>}
    */
@@ -361,7 +361,7 @@ class GuildMember {
   }
 
   /**
-   * Deafen/undeafen a user
+   * Deafen/undeafen a user.
    * @param {boolean} deaf Whether or not the member should be deafened
    * @returns {Promise<GuildMember>}
    */
@@ -447,7 +447,7 @@ class GuildMember {
   }
 
   /**
-   * Set the nickname for the guild member
+   * Set the nickname for the guild member.
    * @param {string} nick The nickname for the guild member
    * @returns {Promise<GuildMember>}
    */
@@ -456,7 +456,7 @@ class GuildMember {
   }
 
   /**
-   * Creates a DM channel between the client and the member
+   * Creates a DM channel between the client and the member.
    * @returns {Promise<DMChannel>}
    */
   createDM() {
@@ -464,7 +464,7 @@ class GuildMember {
   }
 
   /**
-   * Deletes any DMs with this guild member
+   * Deletes any DMs with this guild member.
    * @returns {Promise<DMChannel>}
    */
   deleteDM() {
@@ -472,7 +472,7 @@ class GuildMember {
   }
 
   /**
-   * Kick this member from the guild
+   * Kick this member from the guild.
    * @param {string} [reason] Reason for kicking user
    * @returns {Promise<GuildMember>}
    */
@@ -498,7 +498,7 @@ class GuildMember {
    * When concatenated with a string, this automatically concatenates the user's mention instead of the Member object.
    * @returns {string}
    * @example
-   * // logs: Hello from <@123456789>!
+   * // Logs: Hello from <@123456789>!
    * console.log(`Hello from ${member}!`);
    */
   toString() {

@@ -1,5 +1,5 @@
 /**
- * Represents a user's presence
+ * Represents a user's presence.
  */
 class Presence {
   constructor(data = {}) {
@@ -15,7 +15,7 @@ class Presence {
     this.status = data.status || 'offline';
 
     /**
-     * The game that the user is playing, `null` if they aren't playing a game.
+     * The game that the user is playing
      * @type {?Game}
      */
     this.game = data.game ? new Game(data.game) : null;
@@ -28,7 +28,7 @@ class Presence {
 
   /**
    * Whether this presence is equal to another
-   * @param {Presence} presence Presence to compare with
+   * @param {Presence} presence The presence to compare with
    * @returns {boolean}
    */
   equals(presence) {
@@ -75,7 +75,7 @@ class Game {
 
   /**
    * Whether this game is equal to another game
-   * @param {Game} game Game to compare with
+   * @param {Game} game The game to compare with
    * @returns {boolean}
    */
   equals(game) {
