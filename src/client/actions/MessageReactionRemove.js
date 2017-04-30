@@ -30,8 +30,8 @@ class MessageReactionRemove extends Action {
 /**
  * Emitted whenever a reaction is removed from a message.
  * @event Client#messageReactionRemove
- * @param {MessageReaction} messageReaction The reaction object.
- * @param {User} user The user that removed the emoji or reaction emoji.
+ * @param {MessageReaction} messageReaction The reaction object
+ * @param {User} user The user that removed the emoji or reaction emoji
  */
 
 module.exports = MessageReactionRemove;

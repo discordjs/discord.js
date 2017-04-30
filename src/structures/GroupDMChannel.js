@@ -25,7 +25,7 @@ const Collection = require('../util/Collection');
 */
 
 /**
- * Represents a Group DM on Discord
+ * Represents a Group DM on Discord.
  * @extends {Channel}
  * @implements {TextBasedChannel}
  */
@@ -41,7 +41,7 @@ class GroupDMChannel extends Channel {
     super.setup(data);
 
     /**
-     * The name of this Group DM, can be null if one isn't set.
+     * The name of this Group DM, can be null if one isn't set
      * @type {string}
      */
     this.name = data.name;
@@ -53,19 +53,19 @@ class GroupDMChannel extends Channel {
     this.icon = data.icon;
 
     /**
-     * The user ID of this Group DM's owner.
+     * The user ID of this Group DM's owner
      * @type {string}
      */
     this.ownerID = data.owner_id;
 
     /**
-     * If the dm is managed by an application
+     * If the DM is managed by an application
      * @type {boolean}
      */
     this.managed = data.managed;
 
     /**
-     * Application ID of the application that made this group dm, if applicable
+     * Application ID of the application that made this Group DM, if applicable
      * @type {?string}
      */
     this.applicationID = data.application_id;
@@ -78,7 +78,7 @@ class GroupDMChannel extends Channel {
 
     if (!this.recipients) {
       /**
-       * A collection of the recipients of this DM, mapped by their ID.
+       * A collection of the recipients of this DM, mapped by their ID
        * @type {Collection<Snowflake, User>}
        */
       this.recipients = new Collection();
@@ -95,7 +95,7 @@ class GroupDMChannel extends Channel {
   }
 
   /**
-   * The owner of this Group DM.
+   * The owner of this Group DM
    * @type {User}
    * @readonly
    */
@@ -125,9 +125,9 @@ class GroupDMChannel extends Channel {
   }
 
   /**
-   * Add a user to the dm
+   * Add a user to the DM
    * @param {UserResolvable|string} accessTokenOrID Access token or user resolvable
-   * @param {string} [nick] Permanent nickname to give the user (only available if a bot is creating the dm)
+   * @param {string} [nick] Permanent nickname to give the user (only available if a bot is creating the DM)
    */
 
   addUser(accessTokenOrID, nick) {
@@ -142,10 +142,10 @@ class GroupDMChannel extends Channel {
    * When concatenated with a string, this automatically concatenates the channel's name instead of the Channel object.
    * @returns {string}
    * @example
-   * // logs: Hello from My Group DM!
+   * // Logs: Hello from My Group DM!
    * console.log(`Hello from ${channel}!`);
    * @example
-   * // logs: Hello from My Group DM!
+   * // Logs: Hello from My Group DM!
    * console.log(`Hello from ' + channel + '!');
    */
   toString() {
@@ -170,7 +170,7 @@ class GroupDMChannel extends Channel {
   get typingCount() {}
   createCollector() {}
   awaitMessages() {}
-  // Doesn't work on group DMs; bulkDelete() {}
+  // Doesn't work on Group DMs; bulkDelete() {}
   acknowledge() {}
   _cacheMessage() {}
 }

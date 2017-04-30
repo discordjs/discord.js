@@ -1,7 +1,7 @@
 const Collection = require('../util/Collection');
 
 /**
- * Keeps track of mentions in a {@link Message}
+ * Keeps track of mentions in a {@link Message}.
  */
 class MessageMentions {
   constructor(message, users, roles, everyone) {
@@ -56,7 +56,14 @@ class MessageMentions {
     this._content = message.content;
 
     /**
-     * Guild the message is in
+     * The client the message is from
+     * @type {Client}
+     * @private
+     */
+    this._client = message.client;
+
+    /**
+     * The guild the message is in
      * @type {?Guild}
      * @private
      */
@@ -94,17 +101,16 @@ class MessageMentions {
   }
 
   /**
-   * Any channels that were mentioned (only populated in {@link TextChannel}s)
-   * @type {Collection<Snowflake, GuildChannel>}
+   * Any channels that were mentioned
+   * @type {?Collection<Snowflake, GuildChannel>}
    * @readonly
    */
   get channels() {
     if (this._channels) return this._channels;
     this._channels = new Collection();
-    if (!this._guild) return this._channels;
     let matches;
     while ((matches = this.constructor.CHANNELS_PATTERN.exec(this._content)) !== null) {
-      const chan = this._guild.channels.get(matches[1]);
+      const chan = this._client.channels.get(matches[1]);
       if (chan) this._channels.set(chan.id, chan);
     }
     return this._channels;

@@ -35,7 +35,7 @@ class GuildRoleDeleteAction extends Action {
 /**
  * Emitted whenever a guild role is deleted.
  * @event Client#roleDelete
- * @param {Role} role The role that was deleted.
+ * @param {Role} role The role that was deleted
  */
 
 module.exports = GuildRoleDeleteAction;

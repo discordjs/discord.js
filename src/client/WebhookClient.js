@@ -5,7 +5,7 @@ const Constants = require('../util/Constants');
 const Util = require('../util/Util');
 
 /**
- * The Webhook Client
+ * The webhook client.
  * @extends {Webhook}
  */
 class WebhookClient extends Webhook {
@@ -14,7 +14,7 @@ class WebhookClient extends Webhook {
    * @param {string} token Token of the webhook
    * @param {ClientOptions} [options] Options for the client
    * @example
-   * // create a new webhook and send a message
+   * // Create a new webhook and send a message
    * const hook = new Discord.WebhookClient('1234', 'abcdef');
    * hook.sendMessage('This will send a message').catch(console.error);
    */
