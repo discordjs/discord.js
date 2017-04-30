@@ -253,7 +253,7 @@ class Guild {
   }
 
   /**
-   * Gets the URL to this guild's icon (if it has one, otherwise it returns null.)
+   * Gets the URL to this guild's icon
    * @type {?string}
    * @readonly
    */
@@ -263,7 +263,7 @@ class Guild {
   }
 
   /**
-   * Gets the URL to this guild's splash (if it has one, otherwise it returns null.)
+   * Gets the URL to this guild's splash
    * @type {?string}
    * @readonly
    */
@@ -301,7 +301,7 @@ class Guild {
   }
 
   /**
-   * Get the position of this guild.
+   * Get the position of this guild
    * <warn>This is only available when using a user account.</warn>
    * @type {?number}
    */
@@ -321,7 +321,7 @@ class Guild {
   }
 
   /**
-   * Gets the client user as a GuildMember of this guild.
+   * Gets the client user as a GuildMember of this guild
    * @type {GuildMember}
    * @readonly
    */
