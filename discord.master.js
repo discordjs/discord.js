@@ -13904,6 +13904,14 @@ class OAuth2Application {
      * @type {boolean}
      */
     this.secret = data.secret;
+
+    if (data.owner) {
+      /**
+       * The owner of this OAuth application
+       * @type {?User}
+       */
+      this.owner = this.client.dataManager.newUser(data.owner);
+    }
   }
 
   /**
@@ -17885,7 +17893,7 @@ class Client extends EventEmitter {
   /**
    * Obtains the OAuth Application of the bot from Discord.
    * @param {Snowflake} [id='@me'] ID of application to fetch
-   * @returns {Promise<ClientOAuth2Application>}
+   * @returns {Promise<OAuth2Application>}
    */
   fetchApplication(id = '@me') {
     return this.rest.methods.getApplication(id);
