@@ -187,6 +187,7 @@ class GuildAuditLogsEntry {
             break;
           default:
             break;
+        }
       }
     }
 
