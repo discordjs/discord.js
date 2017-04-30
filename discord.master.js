@@ -73,7 +73,7 @@
 /* WEBPACK VAR INJECTION */(function(process) {exports.Package = __webpack_require__(40);
 
 /**
- * Options for a Client.
+ * Options for a client.
  * @typedef {Object} ClientOptions
  * @property {string} [apiRequestMethod='sequential'] One of `sequential` or `burst`. The sequential handler executes
  * all requests in the order they are triggered, whereas the burst handler runs multiple in parallel, and doesn't
@@ -100,7 +100,7 @@
  * processed, potentially resulting in performance improvements for larger bots. Only disable events you are
  * 100% certain you don't need, as many are important, but not obviously so. The safest one to disable with the
  * most impact is typically `TYPING_START`.
- * @property {WebsocketOptions} [ws] Options for the websocket
+ * @property {WebsocketOptions} [ws] Options for the WebSocket
  */
 exports.DefaultOptions = {
   apiRequestMethod: 'sequential',
@@ -117,7 +117,7 @@ exports.DefaultOptions = {
   restTimeOffset: 500,
 
   /**
-   * Websocket options (these are left as snake_case to match the API)
+   * WebSocket options (these are left as snake_case to match the API)
    * @typedef {Object} WebsocketOptions
    * @property {number} [large_threshold=250] Number of members in a guild to be considered large
    * @property {boolean} [compress=true] Whether to compress data sent on the connection
@@ -508,7 +508,7 @@ exports.ExplicitContentFilterTypes = [
 
 exports.UserSettingsMap = {
   /**
-   * Automatically convert emoticons in your messages to emoji.
+   * Automatically convert emoticons in your messages to emoji
    * For example, when you type `:-)` Discord will convert it to 😃
    * @name ClientUserSettings#convertEmoticons
    * @type {boolean}
@@ -729,7 +729,7 @@ class Collection extends Map {
     super(iterable);
 
     /**
-     * Cached array for the `array()` method - will be reset to `null` whenever `set()` or `delete()` are called.
+     * Cached array for the `array()` method - will be reset to `null` whenever `set()` or `delete()` are called
      * @name Collection#_array
      * @type {?Array}
      * @private
@@ -737,7 +737,7 @@ class Collection extends Map {
     Object.defineProperty(this, '_array', { value: null, writable: true, configurable: true });
 
     /**
-     * Cached array for the `keyArray()` method - will be reset to `null` whenever `set()` or `delete()` are called.
+     * Cached array for the `keyArray()` method - will be reset to `null` whenever `set()` or `delete()` are called
      * @name Collection#_keyArray
      * @type {?Array}
      * @private
@@ -1163,7 +1163,7 @@ class Util {
    * Gets the recommended shard count from Discord.
    * @param {string} token Discord auth token
    * @param {number} [guildsPerShard=1000] Number of guilds per shard
-   * @returns {Promise<number>} the recommended number of shards
+   * @returns {Promise<number>} The recommended number of shards
    */
   static fetchRecommendedShards(token, guildsPerShard = 1000) {
     return new Promise((resolve, reject) => {
@@ -1203,7 +1203,7 @@ class Util {
    * Checks whether the arrays are equal, also removes duplicated entries from b.
    * @param {Array<*>} a Array which will not be modified.
    * @param {Array<*>} b Array to remove duplicated entries from.
-   * @returns {boolean} boolean Whether the arrays are equal.
+   * @returns {boolean} Whether the arrays are equal.
    * @private
    */
   static arraysEqual(a, b) {
@@ -1273,7 +1273,7 @@ class Util {
   }
 
   /**
-   * Makes an Error from a plain info object
+   * Makes an Error from a plain info object.
    * @param {Object} obj Error info
    * @param {string} obj.name Error type
    * @param {string} obj.message Message for the error
@@ -1289,7 +1289,7 @@ class Util {
   }
 
   /**
-   * Makes a plain error info object from an Error
+   * Makes a plain error info object from an Error.
    * @param {Error} err Error to get info from
    * @returns {Object}
    * @private
@@ -1303,7 +1303,7 @@ class Util {
   }
 
   /**
-   * Moves an element in an array *in place*
+   * Moves an element in an array *in place*.
    * @param {Array<*>} array Array to modify
    * @param {*} element Element to move
    * @param {number} newIndex Index or offset to move the element to
@@ -3320,7 +3320,7 @@ const EPOCH = 1420070400000;
 let INCREMENT = 0;
 
 /**
- * A container for useful snowflake-related methods
+ * A container for useful snowflake-related methods.
  */
 class SnowflakeUtil {
   constructor() {
@@ -3334,13 +3334,13 @@ class SnowflakeUtil {
    *
    * 64                                          22     17     12          0
    *  000000111011000111100001101001000101000000  00001  00000  000000000000
-   *       number of ms since discord epoch       worker  pid    increment
+   *       number of ms since Discord epoch       worker  pid    increment
    * ```
    * @typedef {string} Snowflake
    */
 
   /**
-   * Generates a Discord snowflake
+   * Generates a Discord snowflake.
    * <info>This hardcodes the worker ID as 1 and the process ID as 0.</info>
    * @returns {Snowflake} The generated snowflake
    */
@@ -3351,7 +3351,7 @@ class SnowflakeUtil {
   }
 
   /**
-   * A deconstructed snowflake
+   * A deconstructed snowflake.
    * @typedef {Object} DeconstructedSnowflake
    * @property {number} timestamp Timestamp the snowflake was created
    * @property {Date} date Date the snowflake was created
@@ -3362,7 +3362,7 @@ class SnowflakeUtil {
    */
 
   /**
-   * Deconstructs a Discord snowflake
+   * Deconstructs a Discord snowflake.
    * @param {Snowflake} snowflake Snowflake to deconstruct
    * @returns {DeconstructedSnowflake} Deconstructed snowflake
    */
@@ -3731,7 +3731,7 @@ if (typeof Object.create === 'function') {
 /***/ (function(module, exports) {
 
 /**
- * Represents a user's presence
+ * Represents a user's presence.
  */
 class Presence {
   constructor(data = {}) {
@@ -3747,7 +3747,7 @@ class Presence {
     this.status = data.status || 'offline';
 
     /**
-     * The game that the user is playing, `null` if they aren't playing a game.
+     * The game that the user is playing
      * @type {?Game}
      */
     this.game = data.game ? new Game(data.game) : null;
@@ -3760,7 +3760,7 @@ class Presence {
 
   /**
    * Whether this presence is equal to another
-   * @param {Presence} presence Presence to compare with
+   * @param {Presence} presence The presence to compare with
    * @returns {boolean}
    */
   equals(presence) {
@@ -3807,7 +3807,7 @@ class Game {
 
   /**
    * Whether this game is equal to another game
-   * @param {Game} game Game to compare with
+   * @param {Game} game The game to compare with
    * @returns {boolean}
    */
   equals(game) {
@@ -4220,7 +4220,7 @@ function forEach(xs, f) {
 const Snowflake = __webpack_require__(7);
 
 /**
- * Represents any channel on Discord
+ * Represents any channel on Discord.
  */
 class Channel {
   constructor(client, data) {
@@ -4272,13 +4272,13 @@ class Channel {
   }
 
   /**
-   * Deletes the channel
+   * Deletes the channel.
    * @returns {Promise<Channel>}
    * @example
-   * // delete the channel
+   * // Delete the channel
    * channel.delete()
-   *  .then() // success
-   *  .catch(console.error); // log error
+   *  .then() // Success
+   *  .catch(console.error); // Log error
    */
   delete() {
     return this.client.rest.methods.deleteChannel(this);
@@ -4297,7 +4297,7 @@ const Permissions = __webpack_require__(9);
 const util = __webpack_require__(22);
 
 /**
- * Represents a role on Discord
+ * Represents a role on Discord.
  */
 class Role {
   constructor(guild, data) {
@@ -4387,7 +4387,7 @@ class Role {
   }
 
   /**
-   * The hexadecimal version of the role color, with a leading hashtag.
+   * The hexadecimal version of the role color, with a leading hashtag
    * @type {string}
    * @readonly
    */
@@ -4398,7 +4398,7 @@ class Role {
   }
 
   /**
-   * The cached guild members that have this role.
+   * The cached guild members that have this role
    * @type {Collection<Snowflake, GuildMember>}
    * @readonly
    */
@@ -4407,7 +4407,7 @@ class Role {
   }
 
   /**
-   * Whether the role is editable by the client user.
+   * Whether the role is editable by the client user
    * @type {boolean}
    * @readonly
    */
@@ -4432,7 +4432,7 @@ class Role {
    * Get an object mapping permission names to whether or not the role enables that permission
    * @returns {Object<string, boolean>}
    * @example
-   * // print the serialized role permissions
+   * // Print the serialized role permissions
    * console.log(role.serialize());
    */
   serialize() {
@@ -4448,7 +4448,7 @@ class Role {
    * (takes priority over `explicit`)
    * @returns {boolean}
    * @example
-   * // see if a role can ban a member
+   * // See if a role can ban a member
    * if (role.hasPermission('BAN_MEMBERS')) {
    *   console.log('This role can ban members');
    * } else {
@@ -4483,7 +4483,7 @@ class Role {
   }
 
   /**
-   * The data for a role
+   * The data for a role.
    * @typedef {Object} RoleData
    * @property {string} [name] The name of the role
    * @property {ColorResolvable} [color] The color of the role, either a hex string or a base 10 number
@@ -4494,11 +4494,11 @@ class Role {
    */
 
   /**
-   * Edits the role
+   * Edits the role.
    * @param {RoleData} data The new data for the role
    * @returns {Promise<Role>}
    * @example
-   * // edit a role
+   * // Edit a role
    * role.edit({name: 'new role'})
    *  .then(r => console.log(`Edited role ${r}`))
    *  .catch(console.error);
@@ -4508,11 +4508,11 @@ class Role {
   }
 
   /**
-   * Set a new name for the role
+   * Set a new name for the role.
    * @param {string} name The new name of the role
    * @returns {Promise<Role>}
    * @example
-   * // set the name of the role
+   * // Set the name of the role
    * role.setName('new role')
    *  .then(r => console.log(`Edited name of role ${r}`))
    *  .catch(console.error);
@@ -4522,11 +4522,11 @@ class Role {
   }
 
   /**
-   * Set a new color for the role
+   * Set a new color for the role.
    * @param {ColorResolvable} color The color of the role
    * @returns {Promise<Role>}
    * @example
-   * // set the color of a role
+   * // Set the color of a role
    * role.setColor('#FF0000')
    *  .then(r => console.log(`Set color of role ${r}`))
    *  .catch(console.error);
@@ -4536,11 +4536,11 @@ class Role {
   }
 
   /**
-   * Set whether or not the role should be hoisted
+   * Set whether or not the role should be hoisted.
    * @param {boolean} hoist Whether or not to hoist the role
    * @returns {Promise<Role>}
    * @example
-   * // set the hoist of the role
+   * // Set the hoist of the role
    * role.setHoist(true)
    *  .then(r => console.log(`Role hoisted: ${r.hoist}`))
    *  .catch(console.error);
@@ -4550,12 +4550,12 @@ class Role {
   }
 
   /**
-   * Set the position of the role
+   * Set the position of the role.
    * @param {number} position The position of the role
    * @param {boolean} [relative=false] Move the position relative to its current value
    * @returns {Promise<Role>}
    * @example
-   * // set the position of the role
+   * // Set the position of the role
    * role.setPosition(1)
    *  .then(r => console.log(`Role position: ${r.position}`))
    *  .catch(console.error);
@@ -4565,11 +4565,11 @@ class Role {
   }
 
   /**
-   * Set the permissions of the role
+   * Set the permissions of the role.
    * @param {string[]} permissions The permissions of the role
    * @returns {Promise<Role>}
    * @example
-   * // set the permissions of the role
+   * // Set the permissions of the role
    * role.setPermissions(['KICK_MEMBERS', 'BAN_MEMBERS'])
    *  .then(r => console.log(`Role updated ${r}`))
    *  .catch(console.error);
@@ -4579,11 +4579,11 @@ class Role {
   }
 
   /**
-   * Set whether this role is mentionable
+   * Set whether this role is mentionable.
    * @param {boolean} mentionable Whether this role should be mentionable
    * @returns {Promise<Role>}
    * @example
-   * // make the role mentionable
+   * // Make the role mentionable
    * role.setMentionable(true)
    *  .then(r => console.log(`Role updated ${r}`))
    *  .catch(console.error);
@@ -4593,10 +4593,10 @@ class Role {
   }
 
   /**
-   * Deletes the role
+   * Deletes the role.
    * @returns {Promise<Role>}
    * @example
-   * // delete a role
+   * // Delete a role
    * role.delete()
    *  .then(r => console.log(`Deleted role ${r}`))
    *  .catch(console.error);
@@ -4668,9 +4668,9 @@ const Snowflake = __webpack_require__(7);
 class User {
   constructor(client, data) {
     /**
-     * The Client that created the instance of the the User.
+     * The client that created the instance of the the user
      * @name User#client
-     * @type {Client}
+     * @type {}
      * @readonly
      */
     Object.defineProperty(this, 'client', { value: client });
@@ -4704,19 +4704,19 @@ class User {
     this.avatar = data.avatar;
 
     /**
-     * Whether or not the user is a bot.
+     * Whether or not the user is a bot
      * @type {boolean}
      */
     this.bot = Boolean(data.bot);
 
     /**
-     * The ID of the last message sent by the user, if one was sent.
+     * The ID of the last message sent by the user, if one was sent
      * @type {?Snowflake}
      */
     this.lastMessageID = null;
 
     /**
-     * The Message object of the last message sent by the user, if one was sent.
+     * The Message object of the last message sent by the user, if one was sent
      * @type {?Message}
      */
     this.lastMessage = null;
@@ -4761,7 +4761,7 @@ class User {
   }
 
   /**
-   * A link to the user's avatar (if they have one, otherwise null)
+   * A link to the user's avatar
    * @type {?string}
    * @readonly
    */
@@ -4791,7 +4791,7 @@ class User {
   }
 
   /**
-   * The discord "tag" for this user
+   * The Discord "tag" for this user
    * @type {string}
    * @readonly
    */
@@ -4849,7 +4849,7 @@ class User {
   }
 
   /**
-   * Creates a DM channel between the client and the user
+   * Creates a DM channel between the client and the user.
    * @returns {Promise<DMChannel>}
    */
   createDM() {
@@ -4865,7 +4865,7 @@ class User {
   }
 
   /**
-   * Sends a friend request to the user
+   * Sends a friend request to the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
@@ -4874,7 +4874,7 @@ class User {
   }
 
   /**
-   * Removes the user from your friends
+   * Removes the user from your friends.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
@@ -4883,7 +4883,7 @@ class User {
   }
 
   /**
-   * Blocks the user
+   * Blocks the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
@@ -4892,7 +4892,7 @@ class User {
   }
 
   /**
-   * Unblocks the user
+   * Unblocks the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
@@ -4901,7 +4901,7 @@ class User {
   }
 
   /**
-   * Get the profile of the user
+   * Get the profile of the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<UserProfile>}
    */
@@ -4910,7 +4910,7 @@ class User {
   }
 
   /**
-   * Sets a note for the user
+   * Sets a note for the user.
    * <warn>This is only available when using a user account.</warn>
    * @param {string} note The note to set for the user
    * @returns {Promise<User>}
@@ -4970,12 +4970,12 @@ const Collection = __webpack_require__(3);
 const Snowflake = __webpack_require__(7);
 
 /**
- * Represents a custom emoji
+ * Represents a custom emoji.
  */
 class Emoji {
   constructor(guild, data) {
     /**
-     * The Client that instantiated this object
+     * The client that instantiated this object
      * @name Emoji#client
      * @type {Client}
      * @readonly
@@ -5038,7 +5038,7 @@ class Emoji {
   }
 
   /**
-   * A collection of roles this emoji is active for (empty if all), mapped by role ID.
+   * A collection of roles this emoji is active for (empty if all), mapped by role ID
    * @type {Collection<Snowflake, Role>}
    * @readonly
    */
@@ -5070,18 +5070,18 @@ class Emoji {
   }
 
   /**
-   * Data for editing an emoji
+   * Data for editing an emoji.
    * @typedef {Object} EmojiEditData
    * @property {string} [name] The name of the emoji
    * @property {Collection<Snowflake, Role>|Array<Snowflake|Role>} [roles] Roles to restrict emoji to
    */
 
   /**
-   * Edits the emoji
+   * Edits the emoji.
    * @param {EmojiEditData} data The new data for the emoji
    * @returns {Promise<Emoji>}
    * @example
-   * // edit a emoji
+   * // Edit a emoji
    * emoji.edit({name: 'newemoji'})
    *  .then(e => console.log(`Edited emoji ${e}`))
    *  .catch(console.error);
@@ -5094,7 +5094,7 @@ class Emoji {
    * When concatenated with a string, this automatically returns the emoji mention rather than the object.
    * @returns {string}
    * @example
-   * // send an emoji:
+   * // Send an emoji:
    * const emoji = guild.emojis.first();
    * msg.reply(`Hello! ${emoji}`);
    */
@@ -5103,9 +5103,9 @@ class Emoji {
   }
 
   /**
-   * Whether this emoji is the same as another one
-   * @param {Emoji|Object} other the emoji to compare it to
-   * @returns {boolean} whether the emoji is equal to the given emoji or not
+   * Whether this emoji is the same as another one.
+   * @param {Emoji|Object} other The emoji to compare it to
+   * @returns {boolean} Whether the emoji is equal to the given emoji or not
    */
   equals(other) {
     if (other instanceof Emoji) {
@@ -5139,13 +5139,13 @@ const Presence = __webpack_require__(11).Presence;
 const util = __webpack_require__(22);
 
 /**
- * Represents a member of a guild on Discord
+ * Represents a member of a guild on Discord.
  * @implements {TextBasedChannel}
  */
 class GuildMember {
   constructor(guild, data) {
     /**
-     * The Client that instantiated this GuildMember
+     * The client that instantiated this GuildMember
      * @name GuildMember#client
      * @type {Client}
      * @readonly
@@ -5168,13 +5168,13 @@ class GuildMember {
     if (data) this.setup(data);
 
     /**
-     * The ID of the last message sent by the member in their guild, if one was sent.
+     * The ID of the last message sent by the member in their guild, if one was sent
      * @type {?Snowflake}
      */
     this.lastMessageID = null;
 
     /**
-     * The Message object of the last message sent by the member in their guild, if one was sent.
+     * The Message object of the last message sent by the member in their guild, if one was sent
      * @type {?Message}
      */
     this.lastMessage = null;
@@ -5258,7 +5258,7 @@ class GuildMember {
   }
 
   /**
-   * A list of roles that are applied to this GuildMember, mapped by the role ID.
+   * A list of roles that are applied to this GuildMember, mapped by the role ID
    * @type {Collection<Snowflake, Role>}
    * @readonly
    */
@@ -5277,7 +5277,7 @@ class GuildMember {
   }
 
   /**
-   * The role of the member with the highest position.
+   * The role of the member with the highest position
    * @type {Role}
    * @readonly
    */
@@ -5286,7 +5286,7 @@ class GuildMember {
   }
 
   /**
-   * The role of the member used to set their color.
+   * The role of the member used to set their color
    * @type {?Role}
    * @readonly
    */
@@ -5297,7 +5297,7 @@ class GuildMember {
   }
 
   /**
-   * The displayed color of the member in base 10.
+   * The displayed color of the member in base 10
    * @type {number}
    * @readonly
    */
@@ -5307,7 +5307,7 @@ class GuildMember {
   }
 
   /**
-   * The displayed color of the member in hexadecimal.
+   * The displayed color of the member in hexadecimal
    * @type {string}
    * @readonly
    */
@@ -5317,7 +5317,7 @@ class GuildMember {
   }
 
   /**
-   * The role of the member used to hoist them in a separate category in the users list.
+   * The role of the member used to hoist them in a separate category in the users list
    * @type {?Role}
    * @readonly
    */
@@ -5388,7 +5388,7 @@ class GuildMember {
   }
 
   /**
-   * Whether the member is kickable by the client user.
+   * Whether the member is kickable by the client user
    * @type {boolean}
    * @readonly
    */
@@ -5401,7 +5401,7 @@ class GuildMember {
   }
 
   /**
-   * Whether the member is bannable by the client user.
+   * Whether the member is bannable by the client user
    * @type {boolean}
    * @readonly
    */
@@ -5416,7 +5416,7 @@ class GuildMember {
   /**
    * Returns `channel.permissionsFor(guildMember)`. Returns permissions for a member in a guild channel,
    * taking into account roles and permission overwrites.
-   * @param {ChannelResolvable} channel Guild channel to use as context
+   * @param {ChannelResolvable} channel The guild channel to use as context
    * @returns {?Permissions}
    */
   permissionsIn(channel) {
@@ -5466,7 +5466,7 @@ class GuildMember {
   }
 
   /**
-   * The data for editing a guild member
+   * The data for editing a guild member.
    * @typedef {Object} GuildMemberEditData
    * @property {string} [nick] The nickname to set for the member
    * @property {Collection<Snowflake, Role>|Role[]|Snowflake[]} [roles] The roles or role IDs to apply
@@ -5476,7 +5476,7 @@ class GuildMember {
    */
 
   /**
-   * Edit a guild member
+   * Edit a guild member.
    * @param {GuildMemberEditData} data The data to edit the member with
    * @returns {Promise<GuildMember>}
    */
@@ -5485,7 +5485,7 @@ class GuildMember {
   }
 
   /**
-   * Mute/unmute a user
+   * Mute/unmute a user.
    * @param {boolean} mute Whether or not the member should be muted
    * @returns {Promise<GuildMember>}
    */
@@ -5494,7 +5494,7 @@ class GuildMember {
   }
 
   /**
-   * Deafen/undeafen a user
+   * Deafen/undeafen a user.
    * @param {boolean} deaf Whether or not the member should be deafened
    * @returns {Promise<GuildMember>}
    */
@@ -5580,7 +5580,7 @@ class GuildMember {
   }
 
   /**
-   * Set the nickname for the guild member
+   * Set the nickname for the guild member.
    * @param {string} nick The nickname for the guild member
    * @returns {Promise<GuildMember>}
    */
@@ -5589,7 +5589,7 @@ class GuildMember {
   }
 
   /**
-   * Creates a DM channel between the client and the member
+   * Creates a DM channel between the client and the member.
    * @returns {Promise<DMChannel>}
    */
   createDM() {
@@ -5597,7 +5597,7 @@ class GuildMember {
   }
 
   /**
-   * Deletes any DMs with this guild member
+   * Deletes any DMs with this guild member.
    * @returns {Promise<DMChannel>}
    */
   deleteDM() {
@@ -5605,7 +5605,7 @@ class GuildMember {
   }
 
   /**
-   * Kick this member from the guild
+   * Kick this member from the guild.
    * @param {string} [reason] Reason for kicking user
    * @returns {Promise<GuildMember>}
    */
@@ -5631,7 +5631,7 @@ class GuildMember {
    * When concatenated with a string, this automatically concatenates the user's mention instead of the Member object.
    * @returns {string}
    * @example
-   * // logs: Hello from <@123456789>!
+   * // Logs: Hello from <@123456789>!
    * console.log(`Hello from ${member}!`);
    */
   toString() {
@@ -5671,12 +5671,12 @@ const Permissions = __webpack_require__(9);
 let GuildMember;
 
 /**
- * Represents a message on Discord
+ * Represents a message on Discord.
  */
 class Message {
   constructor(channel, data, client) {
     /**
-     * The Client that instantiated the Message
+     * The client that instantiated the Message
      * @name Message#client
      * @type {Client}
      * @readonly
@@ -5755,7 +5755,7 @@ class Message {
     this.embeds = data.embeds.map(e => new Embed(this, e));
 
     /**
-     * A collection of attachments in the message - e.g. Pictures - mapped by their ID.
+     * A collection of attachments in the message - e.g. Pictures - mapped by their ID
      * @type {Collection<Snowflake, MessageAttachment>}
      */
     this.attachments = new Collection();
@@ -5774,7 +5774,7 @@ class Message {
     this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
 
     /**
-     * A collection of reactions to this message, mapped by the reaction "id".
+     * A collection of reactions to this message, mapped by the reaction ID
      * @type {Collection<Snowflake, MessageReaction>}
      */
     this.reactions = new Collection();
@@ -5812,7 +5812,7 @@ class Message {
   }
 
   /**
-   * Updates the message
+   * Updates the message.
    * @param {Object} data Raw Discord message update data
    * @private
    */
@@ -5871,7 +5871,7 @@ class Message {
 
   /**
    * The message contents with all mentions replaced by the equivalent text. If mentions cannot be resolved to a name,
-   * the relevant mention in the message content will not be converted.
+   * the relevant mention in the message content will not be converted
    * @type {string}
    * @readonly
    */
@@ -5909,11 +5909,11 @@ class Message {
 
   /**
    * Creates a reaction collector.
-   * @param {CollectorFilter} filter The filter to apply.
-   * @param {ReactionCollectorOptions} [options={}] Options to send to the collector.
+   * @param {CollectorFilter} filter The filter to apply
+   * @param {ReactionCollectorOptions} [options={}] Options to send to the collector
    * @returns {ReactionCollector}
    * @example
-   * // create a reaction collector
+   * // Create a reaction collector
    * const collector = message.createReactionCollector(
    *  (reaction, user) => reaction.emoji.id === '👌' && user.id === 'someID',
    *  { time: 15000 }
@@ -5949,8 +5949,8 @@ class Message {
   }
 
   /**
-   * An array of cached versions of the message, including the current version.
-   * Sorted from latest (first) to oldest (last).
+   * An array of cached versions of the message, including the current version
+   * Sorted from latest (first) to oldest (last)
    * @type {Message[]}
    * @readonly
    */
@@ -5961,7 +5961,7 @@ class Message {
   }
 
   /**
-   * Whether the message is editable by the client user.
+   * Whether the message is editable by the client user
    * @type {boolean}
    * @readonly
    */
@@ -5970,7 +5970,7 @@ class Message {
   }
 
   /**
-   * Whether the message is deletable by the client user.
+   * Whether the message is deletable by the client user
    * @type {boolean}
    * @readonly
    */
@@ -5981,7 +5981,7 @@ class Message {
   }
 
   /**
-   * Whether the message is pinnable by the client user.
+   * Whether the message is pinnable by the client user
    * @type {boolean}
    * @readonly
    */
@@ -5992,8 +5992,8 @@ class Message {
 
   /**
    * Whether or not a user, channel or role is mentioned in this message.
-   * @param {GuildChannel|User|Role|string} data either a guild channel, user or a role object, or a string representing
-   * the ID of any of these.
+   * @param {GuildChannel|User|Role|string} data Either a guild channel, user or a role object, or a string representing
+   * the ID of any of these
    * @returns {boolean}
    */
   isMentioned(data) {
@@ -6004,7 +6004,7 @@ class Message {
   /**
    * Whether or not a guild member is mentioned in this message. Takes into account
    * user mentions, role mentions, and @everyone/@here mentions.
-   * @param {GuildMember|User} member Member/user to check for a mention of
+   * @param {GuildMember|User} member The member/user to check for a mention of
    * @returns {boolean}
    */
   isMemberMentioned(member) {
@@ -6017,19 +6017,19 @@ class Message {
   }
 
   /**
-   * Options that can be passed into editMessage
+   * Options that can be passed into editMessage.
    * @typedef {Object} MessageEditOptions
    * @property {Object} [embed] An embed to be added/edited
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    */
 
   /**
-   * Edit the content of the message
+   * Edit the content of the message.
    * @param {StringResolvable} [content] The new content for the message
    * @param {MessageEditOptions} [options] The options to provide
    * @returns {Promise<Message>}
    * @example
-   * // update the content of a message
+   * // Update the content of a message
    * message.edit('This is my new content!')
    *  .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
    *  .catch(console.error);
@@ -6045,8 +6045,8 @@ class Message {
   }
 
   /**
-   * Edit the content of the message, with a code block
-   * @param {string} lang Language for the code block
+   * Edit the content of the message, with a code block.
+   * @param {string} lang The language for the code block
    * @param {StringResolvable} content The new content for the message
    * @returns {Promise<Message>}
    */
@@ -6056,7 +6056,7 @@ class Message {
   }
 
   /**
-   * Pins this message to the channel's pinned messages
+   * Pins this message to the channel's pinned messages.
    * @returns {Promise<Message>}
    */
   pin() {
@@ -6064,7 +6064,7 @@ class Message {
   }
 
   /**
-   * Unpins this message from the channel's pinned messages
+   * Unpins this message from the channel's pinned messages.
    * @returns {Promise<Message>}
    */
   unpin() {
@@ -6072,8 +6072,8 @@ class Message {
   }
 
   /**
-   * Add a reaction to the message
-   * @param {string|Emoji|ReactionEmoji} emoji Emoji to react with
+   * Add a reaction to the message.
+   * @param {string|Emoji|ReactionEmoji} emoji The emoji to react with
    * @returns {Promise<MessageReaction>}
    */
   react(emoji) {
@@ -6084,7 +6084,7 @@ class Message {
   }
 
   /**
-   * Remove all reactions from a message
+   * Remove all reactions from a message.
    * @returns {Promise<Message>}
    */
   clearReactions() {
@@ -6092,11 +6092,11 @@ class Message {
   }
 
   /**
-   * Deletes the message
+   * Deletes the message.
    * @param {number} [timeout=0] How long to wait to delete the message in milliseconds
    * @returns {Promise<Message>}
    * @example
-   * // delete a message
+   * // Delete a message
    * message.delete()
    *  .then(msg => console.log(`Deleted message from ${msg.author}`))
    *  .catch(console.error);
@@ -6114,12 +6114,12 @@ class Message {
   }
 
   /**
-   * Reply to the message
+   * Reply to the message.
    * @param {StringResolvable} [content] The content for the message
    * @param {MessageOptions} [options] The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
-   * // reply to a message
+   * // Reply to a message
    * message.reply('Hey, I\'m a reply!')
    *  .then(msg => console.log(`Sent a reply to ${msg.author}`))
    *  .catch(console.error);
@@ -6135,7 +6135,7 @@ class Message {
   }
 
   /**
-   * Marks the message as read
+   * Marks the message as read.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<Message>}
    */
@@ -6186,7 +6186,7 @@ class Message {
    * When concatenated with a string, this automatically concatenates the message's content instead of the object.
    * @returns {string}
    * @example
-   * // logs: Message: This is a message!
+   * // Logs: Message: This is a message!
    * console.log(`Message: ${message}`);
    */
   toString() {
@@ -6962,32 +6962,32 @@ const Collection = __webpack_require__(3);
 const util = __webpack_require__(22);
 
 /**
- * Interface for classes that have text-channel-like features
+ * Interface for classes that have text-channel-like features.
  * @interface
  */
 class TextBasedChannel {
   constructor() {
     /**
-     * A collection containing the messages sent to this channel.
+     * A collection containing the messages sent to this channel
      * @type {Collection<Snowflake, Message>}
      */
     this.messages = new Collection();
 
     /**
-     * The ID of the last message in the channel, if one was sent.
+     * The ID of the last message in the channel, if one was sent
      * @type {?Snowflake}
      */
     this.lastMessageID = null;
 
     /**
-     * The Message object of the last message in the channel, if one was sent.
+     * The Message object of the last message in the channel, if one was sent
      * @type {?Message}
      */
     this.lastMessage = null;
   }
 
   /**
-   * Options provided when sending or editing a message
+   * Options provided when sending or editing a message.
    * @typedef {Object} MessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
@@ -6999,7 +6999,7 @@ class TextBasedChannel {
    * @property {FileOptions[]|string[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
-   * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
+   * it exceeds the character limit. If an object is provided, these are the options for splitting the message
    * @property {UserResolvable} [reply] User to reply to (prefixes the message with a mention, except in DMs)
    */
 
@@ -7010,7 +7010,7 @@ class TextBasedChannel {
    */
 
   /**
-   * Options for splitting a message
+   * Options for splitting a message.
    * @typedef {Object} SplitOptions
    * @property {number} [maxLength=1950] Maximum character length per message piece
    * @property {string} [char='\n'] Character to split the message with
@@ -7019,12 +7019,12 @@ class TextBasedChannel {
    */
 
   /**
-   * Send a message to this channel
+   * Send a message to this channel.
    * @param {StringResolvable} [content] Text for the message
    * @param {MessageOptions} [options={}] Options for the message
    * @returns {Promise<Message|Message[]>}
    * @example
-   * // send a message
+   * // Send a message
    * channel.send('hello!')
    *  .then(message => console.log(`Sent message: ${message.content}`))
    *  .catch(console.error);
@@ -7078,7 +7078,7 @@ class TextBasedChannel {
    * @param {Snowflake} messageID ID of the message to get
    * @returns {Promise<Message>}
    * @example
-   * // get message
+   * // Get message
    * channel.fetchMessage('99539446449315840')
    *   .then(message => console.log(message.content))
    *   .catch(console.error);
@@ -7113,7 +7113,7 @@ class TextBasedChannel {
    * @param {ChannelLogsQueryOptions} [options={}] Query parameters to pass in
    * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
-   * // get messages
+   * // Get messages
    * channel.fetchMessages({limit: 10})
    *  .then(messages => console.log(`Received ${messages.size} messages`))
    *  .catch(console.error);
@@ -7178,8 +7178,8 @@ class TextBasedChannel {
    * <warn>This is only available when using a user account.</warn>
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
    * @returns {Promise<Array<Message[]>>}
-   * An array containing arrays of messages. Each inner array is a search context cluster.
-   * The message which has triggered the result will have the `hit` property set to `true`.
+   * An array containing arrays of messages. Each inner array is a search context cluster
+   * The message which has triggered the result will have the `hit` property set to `true`
    * @example
    * channel.search({
    *   content: 'discord.js',
@@ -7197,7 +7197,7 @@ class TextBasedChannel {
    * Starts a typing indicator in the channel.
    * @param {number} [count] The number of times startTyping should be considered to have been called
    * @example
-   * // start typing in a channel
+   * // Start typing in a channel
    * channel.startTyping();
    */
   startTyping(count) {
@@ -7222,10 +7222,10 @@ class TextBasedChannel {
    * <info>It can take a few seconds for the client user to stop typing.</info>
    * @param {boolean} [force=false] Whether or not to reset the call count and force the indicator to stop
    * @example
-   * // stop typing in a channel
+   * // Stop typing in a channel
    * channel.stopTyping();
    * @example
-   * // force typing to fully stop in a channel
+   * // Force typing to fully stop in a channel
    * channel.stopTyping(true);
    */
   stopTyping(force = false) {
@@ -7240,7 +7240,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Whether or not the typing indicator is being shown in the channel.
+   * Whether or not the typing indicator is being shown in the channel
    * @type {boolean}
    * @readonly
    */
@@ -7249,7 +7249,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Number of times `startTyping` has been called.
+   * Number of times `startTyping` has been called
    * @type {number}
    * @readonly
    */
@@ -7270,12 +7270,12 @@ class TextBasedChannel {
   }
 
   /**
-   * Creates a Message Collector
+   * Creates a Message Collector.
    * @param {CollectorFilter} filter The filter to create the collector with
    * @param {MessageCollectorOptions} [options={}] The options to pass to the collector
    * @returns {MessageCollector}
    * @example
-   * // create a message collector
+   * // Create a message collector
    * const collector = channel.createCollector(
    *  m => m.content.includes('discord'),
    *  { time: 15000 }
@@ -7300,9 +7300,9 @@ class TextBasedChannel {
    * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector
    * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
-   * // await !vote messages
+   * // Await !vote messages
    * const filter = m => m.content.startsWith('!vote');
-   * // errors: ['time'] treats ending because of the time limit as an error
+   * // Errors: ['time'] treats ending because of the time limit as an error
    * channel.awaitMessages(filter, { max: 4, time: 60000, errors: ['time'] })
    *  .then(collected => console.log(collected.size))
    *  .catch(collected => console.log(`After a minute, only ${collected.size} out of 4 voted.`));
@@ -7321,7 +7321,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Bulk delete given messages that are newer than two weeks
+   * Bulk delete given messages that are newer than two weeks.
    * <warn>This is only available when using a bot account.</warn>
    * @param {Collection<Snowflake, Message>|Message[]|number} messages Messages or number of messages to delete
    * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
@@ -7337,7 +7337,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Marks all messages in this channel as read
+   * Marks all messages in this channel as read.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<TextChannel|GroupDMChannel|DMChannel>}
    */
@@ -7358,13 +7358,13 @@ class TextBasedChannel {
 /** @lends TextBasedChannel.prototype */
 const Deprecated = {
   /**
-   * Send a message to this channel
+   * Send a message to this channel.
    * @param {StringResolvable} [content] Text for the message
    * @param {MessageOptions} [options={}] Options for the message
    * @returns {Promise<Message|Message[]>}
    * @deprecated
    * @example
-   * // send a message
+   * // Send a message
    * channel.sendMessage('hello!')
    *  .then(message => console.log(`Sent message: ${message.content}`))
    *  .catch(console.error);
@@ -7374,7 +7374,7 @@ const Deprecated = {
   },
 
   /**
-   * Send an embed to this channel
+   * Send an embed to this channel.
    * @param {RichEmbed|Object} embed Embed for the message
    * @param {string} [content] Text for the message
    * @param {MessageOptions} [options] Options for the message
@@ -7392,7 +7392,7 @@ const Deprecated = {
   },
 
   /**
-   * Send files to this channel
+   * Send files to this channel.
    * @param {FileOptions[]|string[]} files Files to send with the message
    * @param {StringResolvable} [content] Text for the message
    * @param {MessageOptions} [options] Options for the message
@@ -7404,7 +7404,7 @@ const Deprecated = {
   },
 
   /**
-   * Send a file to this channel
+   * Send a file to this channel.
    * @param {BufferResolvable} attachment File to send
    * @param {string} [name='file.jpg'] Name and extension of the file
    * @param {StringResolvable} [content] Text for the message
@@ -7417,7 +7417,7 @@ const Deprecated = {
   },
 
   /**
-   * Send a code block to this channel
+   * Send a code block to this channel.
    * @param {string} lang Language for the code block
    * @param {StringResolvable} content Content of the code block
    * @param {MessageOptions} [options] Options for the message
@@ -7534,7 +7534,7 @@ const Snowflake = __webpack_require__(7);
 class Guild {
   constructor(client, data) {
     /**
-     * The Client that created the instance of the the Guild.
+     * The client that created the instance of the the guild
      * @name Guild#client
      * @type {Client}
      * @readonly
@@ -7542,19 +7542,19 @@ class Guild {
     Object.defineProperty(this, 'client', { value: client });
 
     /**
-     * A collection of members that are in this guild. The key is the member's ID, the value is the member.
+     * A collection of members that are in this guild. The key is the member's ID, the value is the member
      * @type {Collection<Snowflake, GuildMember>}
      */
     this.members = new Collection();
 
     /**
-     * A collection of channels that are in this guild. The key is the channel's ID, the value is the channel.
+     * A collection of channels that are in this guild. The key is the channel's ID, the value is the channel
      * @type {Collection<Snowflake, GuildChannel>}
      */
     this.channels = new Collection();
 
     /**
-     * A collection of roles that are in this guild. The key is the role's ID, the value is the role.
+     * A collection of roles that are in this guild. The key is the role's ID, the value is the role
      * @type {Collection<Snowflake, Role>}
      */
     this.roles = new Collection();
@@ -7568,13 +7568,13 @@ class Guild {
     if (!data) return;
     if (data.unavailable) {
       /**
-       * Whether the guild is available to access. If it is not available, it indicates a server outage.
+       * Whether the guild is available to access. If it is not available, it indicates a server outage
        * @type {boolean}
        */
       this.available = false;
 
       /**
-       * The Unique ID of the Guild, useful for comparisons.
+       * The Unique ID of the guild, useful for comparisons
        * @type {Snowflake}
        */
       this.id = data.id;
@@ -7585,7 +7585,7 @@ class Guild {
   }
 
   /**
-   * Sets up the Guild
+   * Sets up the guild.
    * @param {*} data The raw data of the guild
    * @private
    */
@@ -7597,13 +7597,13 @@ class Guild {
     this.name = data.name;
 
     /**
-     * The hash of the guild icon, or null if there is no icon.
+     * The hash of the guild icon
      * @type {?string}
      */
     this.icon = data.icon;
 
     /**
-     * The hash of the guild splash image, or null if no splash (VIP only)
+     * The hash of the guild splash image (VIP only)
      * @type {?string}
      */
     this.splash = data.splash;
@@ -7627,7 +7627,7 @@ class Guild {
     this.large = Boolean('large' in data ? data.large : this.large);
 
     /**
-     * An array of guild features.
+     * An array of guild features
      * @type {Object[]}
      */
     this.features = data.features;
@@ -7639,31 +7639,31 @@ class Guild {
     this.applicationID = data.application_id;
 
     /**
-     * The time in seconds before a user is counted as "away from keyboard".
+     * The time in seconds before a user is counted as "away from keyboard"
      * @type {?number}
      */
     this.afkTimeout = data.afk_timeout;
 
     /**
-     * The ID of the voice channel where AFK members are moved.
+     * The ID of the voice channel where AFK members are moved
      * @type {?string}
      */
     this.afkChannelID = data.afk_channel_id;
 
     /**
-     * Whether embedded images are enabled on this guild.
+     * Whether embedded images are enabled on this guild
      * @type {boolean}
      */
     this.embedEnabled = data.embed_enabled;
 
     /**
-     * The verification level of the guild.
+     * The verification level of the guild
      * @type {number}
      */
     this.verificationLevel = data.verification_level;
 
     /**
-     * The explicit content filter level of the guild.
+     * The explicit content filter level of the guild
      * @type {number}
      */
     this.explicitContentFilter = data.explicit_content_filter;
@@ -7685,7 +7685,7 @@ class Guild {
 
     if (data.owner_id) {
       /**
-       * The user ID of this guild's owner.
+       * The user ID of this guild's owner
        * @type {Snowflake}
        */
       this.ownerID = data.owner_id;
@@ -7770,7 +7770,7 @@ class Guild {
   }
 
   /**
-   * Gets the URL to this guild's icon (if it has one, otherwise it returns null)
+   * The URL to this guild's icon
    * @type {?string}
    * @readonly
    */
@@ -7780,7 +7780,7 @@ class Guild {
   }
 
   /**
-   * Gets the URL to this guild's splash (if it has one, otherwise it returns null)
+   * The URL to this guild's splash
    * @type {?string}
    * @readonly
    */
@@ -7799,7 +7799,7 @@ class Guild {
   }
 
   /**
-   * If the client is connected to any voice channel in this guild, this will be the relevant VoiceConnection.
+   * If the client is connected to any voice channel in this guild, this will be the relevant VoiceConnection
    * @type {?VoiceConnection}
    * @readonly
    */
@@ -7809,7 +7809,7 @@ class Guild {
   }
 
   /**
-   * The `#general` TextChannel of the guild.
+   * The `#general` TextChannel of the guild
    * @type {TextChannel}
    * @readonly
    */
@@ -7818,7 +7818,7 @@ class Guild {
   }
 
   /**
-   * Get the position of this guild
+   * The position of this guild
    * <warn>This is only available when using a user account.</warn>
    * @type {?number}
    */
@@ -7829,7 +7829,7 @@ class Guild {
   }
 
   /**
-   * The `@everyone` Role of the guild.
+   * The `@everyone` Role of the guild
    * @type {Role}
    * @readonly
    */
@@ -7838,7 +7838,7 @@ class Guild {
   }
 
   /**
-   * Fetches a collection of roles in the current guild sorted by position.
+   * Fetches a collection of roles in the current guild sorted by position
    * @type {Collection<Snowflake, Role>}
    * @readonly
    * @private
@@ -7852,7 +7852,7 @@ class Guild {
    * @param {UserResolvable} user The user that you want to obtain the GuildMember of
    * @returns {?GuildMember}
    * @example
-   * // get the guild member of a user
+   * // Get the guild member of a user
    * const member = guild.member(message.author);
    */
   member(user) {
@@ -7890,7 +7890,7 @@ class Guild {
   }
 
   /**
-   * Fetch available voice regions
+   * Fetch available voice regions.
    * @returns {Collection<string, VoiceRegion>}
    */
   fetchVoiceRegions() {
@@ -7898,7 +7898,7 @@ class Guild {
   }
 
   /**
-   * Fetch audit logs for this guild
+   * Fetch audit logs for this guild.
    * @param {Object} [options={}] Options for fetching audit logs
    * @param {Snowflake|GuildAuditLogsEntry} [options.before] Limit to entries from before specified entry
    * @param {Snowflake|GuildAuditLogsEntry} [options.after] Limit to entries from after specified entry
@@ -8000,7 +8000,7 @@ class Guild {
   }
 
   /**
-   * The data for editing a guild
+   * The data for editing a guild.
    * @typedef {Object} GuildEditData
    * @property {string} [name] The name of the guild
    * @property {string} [region] The region of the guild
@@ -8013,11 +8013,11 @@ class Guild {
    */
 
   /**
-   * Updates the Guild with new information - e.g. a new name.
+   * Updates the guild with new information - e.g. a new name.
    * @param {GuildEditData} data The data to update the guild with
    * @returns {Promise<Guild>}
    * @example
-   * // set the guild name and region
+   * // Set the guild name and region
    * guild.edit({
    *  name: 'Discord Guild',
    *  region: 'london',
@@ -8034,7 +8034,7 @@ class Guild {
    * @param {string} name The new name of the guild
    * @returns {Promise<Guild>}
    * @example
-   * // edit the guild name
+   * // Edit the guild name
    * guild.setName('Discord Guild')
    *  .then(updated => console.log(`Updated guild name to ${guild.name}`))
    *  .catch(console.error);
@@ -8045,10 +8045,10 @@ class Guild {
 
   /**
    * Edit the region of the guild.
-   * @param {string} region The new region of the guild.
+   * @param {string} region The new region of the guild
    * @returns {Promise<Guild>}
    * @example
-   * // edit the guild region
+   * // Edit the guild region
    * guild.setRegion('london')
    *  .then(updated => console.log(`Updated guild region to ${guild.region}`))
    *  .catch(console.error);
@@ -8062,7 +8062,7 @@ class Guild {
    * @param {number} verificationLevel The new verification level of the guild
    * @returns {Promise<Guild>}
    * @example
-   * // edit the guild verification level
+   * // Edit the guild verification level
    * guild.setVerificationLevel(1)
    *  .then(updated => console.log(`Updated guild verification level to ${guild.verificationLevel}`))
    *  .catch(console.error);
@@ -8076,7 +8076,7 @@ class Guild {
    * @param {ChannelResolvable} afkChannel The new AFK channel
    * @returns {Promise<Guild>}
    * @example
-   * // edit the guild AFK channel
+   * // Edit the guild AFK channel
    * guild.setAFKChannel(channel)
    *  .then(updated => console.log(`Updated guild AFK channel to ${guild.afkChannel}`))
    *  .catch(console.error);
@@ -8090,7 +8090,7 @@ class Guild {
    * @param {number} afkTimeout The time in seconds that a user must be idle to be considered AFK
    * @returns {Promise<Guild>}
    * @example
-   * // edit the guild AFK channel
+   * // Edit the guild AFK channel
    * guild.setAFKTimeout(60)
    *  .then(updated => console.log(`Updated guild AFK timeout to ${guild.afkTimeout}`))
    *  .catch(console.error);
@@ -8104,7 +8104,7 @@ class Guild {
    * @param {Base64Resolvable} icon The new icon of the guild
    * @returns {Promise<Guild>}
    * @example
-   * // edit the guild icon
+   * // Edit the guild icon
    * guild.setIcon(fs.readFileSync('./icon.png'))
    *  .then(updated => console.log('Updated the guild icon'))
    *  .catch(console.error);
@@ -8118,7 +8118,7 @@ class Guild {
    * @param {GuildMemberResolvable} owner The new owner of the guild
    * @returns {Promise<Guild>}
    * @example
-   * // edit the guild owner
+   * // Edit the guild owner
    * guild.setOwner(guild.members.first())
    *  .then(updated => console.log(`Updated the guild owner to ${updated.owner.username}`))
    *  .catch(console.error);
@@ -8132,7 +8132,7 @@ class Guild {
    * @param {Base64Resolvable} splash The new splash screen of the guild
    * @returns {Promise<Guild>}
    * @example
-   * // edit the guild splash
+   * // Edit the guild splash
    * guild.setIcon(fs.readFileSync('./splash.png'))
    *  .then(updated => console.log('Updated the guild splash'))
    *  .catch(console.error);
@@ -8154,16 +8154,16 @@ class Guild {
   }
 
   /**
-   * Marks all messages in this guild as read
+   * Marks all messages in this guild as read.
    * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<Guild>} this guild
+   * @returns {Promise<Guild>} This guild
    */
   acknowledge() {
     return this.client.rest.methods.ackGuild(this);
   }
 
   /**
-   * Allow direct messages from guild members
+   * Allow direct messages from guild members.
    * @param {boolean} allow Whether to allow direct messages
    * @returns {Promise<Guild>}
    */
@@ -8183,7 +8183,7 @@ class Guild {
    * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
    * be resolved, the user ID will be the result.
    * @example
-   * // ban a user by ID (or with a user/guild member object)
+   * // Ban a user by ID (or with a user/guild member object)
    * guild.ban('some user ID')
    *  .then(user => console.log(`Banned ${user.username || user.id || user} from ${guild.name}`))
    *  .catch(console.error);
@@ -8202,7 +8202,7 @@ class Guild {
    * @param {UserResolvable} user The user to unban
    * @returns {Promise<User>}
    * @example
-   * // unban a user by ID (or with a user/guild member object)
+   * // Unban a user by ID (or with a user/guild member object)
    * guild.unban('some user ID')
    *  .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
    *  .catch(console.error);
@@ -8217,12 +8217,12 @@ class Guild {
    * @param {boolean} [dry=false] If true, will return number of users that will be kicked, without actually doing it
    * @returns {Promise<number>} The number of members that were/will be kicked
    * @example
-   * // see how many members will be pruned
+   * // See how many members will be pruned
    * guild.pruneMembers(12, true)
    *   .then(pruned => console.log(`This will prune ${pruned} people!`))
    *   .catch(console.error);
    * @example
-   * // actually prune the members
+   * // Actually prune the members
    * guild.pruneMembers(12)
    *   .then(pruned => console.log(`I just pruned ${pruned} people!`))
    *   .catch(console.error);
@@ -8247,7 +8247,7 @@ class Guild {
    * @param {Array<PermissionOverwrites|Object>} overwrites Permission overwrites to apply to the new channel
    * @returns {Promise<TextChannel|VoiceChannel>}
    * @example
-   * // create a new text channel
+   * // Create a new text channel
    * guild.createChannel('new-general', 'text')
    *  .then(channel => console.log(`Created new channel ${channel}`))
    *  .catch(console.error);
@@ -8281,12 +8281,12 @@ class Guild {
    * @param {RoleData} [data] The data to update the role with
    * @returns {Promise<Role>}
    * @example
-   * // create a new role
+   * // Create a new role
    * guild.createRole()
    *  .then(role => console.log(`Created role ${role}`))
    *  .catch(console.error);
    * @example
-   * // create a new role with data
+   * // Create a new role with data
    * guild.createRole({
    *   name: 'Super Cool People',
    *   color: 'BLUE',
@@ -8300,17 +8300,17 @@ class Guild {
 
   /**
    * Creates a new custom emoji in the guild.
-   * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji.
-   * @param {string} name The name for the emoji.
+   * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji
+   * @param {string} name The name for the emoji
    * @param {Collection<Snowflake, Role>|Role[]} [roles] Roles to limit the emoji to
-   * @returns {Promise<Emoji>} The created emoji.
+   * @returns {Promise<Emoji>} The created emoji
    * @example
-   * // create a new emoji from a url
+   * // Create a new emoji from a url
    * guild.createEmoji('https://i.imgur.com/w3duR07.png', 'rip')
    *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
    *  .catch(console.error);
    * @example
-   * // create a new emoji from a file on your computer
+   * // Create a new emoji from a file on your computer
    * guild.createEmoji('./memes/banana.png', 'banana')
    *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
    *  .catch(console.error);
@@ -8330,7 +8330,7 @@ class Guild {
 
   /**
    * Delete an emoji.
-   * @param {Emoji|string} emoji The emoji to delete.
+   * @param {Emoji|string} emoji The emoji to delete
    * @returns {Promise}
    */
   deleteEmoji(emoji) {
@@ -8339,10 +8339,10 @@ class Guild {
   }
 
   /**
-   * Causes the Client to leave the guild.
+   * Causes the client to leave the guild.
    * @returns {Promise<Guild>}
    * @example
-   * // leave a guild
+   * // Leave a guild
    * guild.leave()
    *  .then(g => console.log(`Left the guild ${g}`))
    *  .catch(console.error);
@@ -8352,10 +8352,10 @@ class Guild {
   }
 
   /**
-   * Causes the Client to delete the guild.
+   * Causes the client to delete the guild.
    * @returns {Promise<Guild>}
    * @example
-   * // delete a guild
+   * // Delete a guild
    * guild.delete()
    *  .then(g => console.log(`Deleted the guild ${g}`))
    *  .catch(console.error);
@@ -8365,10 +8365,10 @@ class Guild {
   }
 
   /**
-   * Whether this Guild equals another Guild. It compares all properties, so for most operations
+   * Whether this guild equals another guild. It compares all properties, so for most operations
    * it is advisable to just compare `guild.id === guild2.id` as it is much faster and is often
    * what most users need.
-   * @param {Guild} guild Guild to compare with
+   * @param {Guild} guild The guild to compare with
    * @returns {boolean}
    */
   equals(guild) {
@@ -8399,13 +8399,13 @@ class Guild {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the guild's name instead of the Guild object.
+   * When concatenated with a string, this automatically concatenates the guild's name instead of the guild object.
    * @returns {string}
    * @example
-   * // logs: Hello from My Guild!
+   * // Logs: Hello from My Guild!
    * console.log(`Hello from ${guild}!`);
    * @example
-   * // logs: Hello from My Guild!
+   * // Logs: Hello from My Guild!
    * console.log('Hello from ' + guild + '!');
    */
   toString() {
@@ -8457,7 +8457,7 @@ class Guild {
 
     if (this.client.ws.connection.status === Constants.Status.READY && notSame) {
       /**
-       * Emitted whenever a guild member changes - i.e. new role, removed role, nickname
+       * Emitted whenever a guild member changes - i.e. new role, removed role, nickname.
        * @event Client#guildMemberUpdate
        * @param {GuildMember} oldMember The member before the update
        * @param {GuildMember} newMember The member after the update
@@ -8480,7 +8480,7 @@ class Guild {
     if (member && member.speaking !== speaking) {
       member.speaking = speaking;
       /**
-       * Emitted once a guild member starts/stops speaking
+       * Emitted once a guild member starts/stops speaking.
        * @event Client#guildMemberSpeaking
        * @param {GuildMember} member The member that started/stopped speaking
        * @param {boolean} speaking Whether or not the member is speaking
@@ -8498,8 +8498,8 @@ class Guild {
   }
 
   /**
-   * Set the position of a role in this guild
-   * @param {string|Role} role The role to edit, can be a role object or a role ID.
+   * Set the position of a role in this guild.
+   * @param {string|Role} role The role to edit, can be a role object or a role ID
    * @param {number} position The new position of the role
    * @param {boolean} [relative=false] Position Moves the role relative to its current position
    * @returns {Promise<Guild>}
@@ -8522,8 +8522,8 @@ class Guild {
   }
 
   /**
-   * Set the position of a channel in this guild
-   * @param {string|GuildChannel} channel The channel to edit, can be a channel object or a channel ID.
+   * Set the position of a channel in this guild.
+   * @param {string|GuildChannel} channel The channel to edit, can be a channel object or a channel ID
    * @param {number} position The new position of the channel
    * @param {boolean} [relative=false] Position Moves the channel relative to its current position
    * @returns {Promise<Guild>}
@@ -8547,7 +8547,7 @@ class Guild {
 
   /**
    * Fetches a collection of channels in the current guild sorted by position.
-   * @param {string} type Channel type
+   * @param {string} type The channel type
    * @returns {Collection<Snowflake, GuildChannel>}
    * @private
    */
@@ -8589,7 +8589,7 @@ const Permissions = __webpack_require__(9);
 const Collection = __webpack_require__(3);
 
 /**
- * Represents a guild channel (i.e. text channels and voice channels)
+ * Represents a guild channel (i.e. text channels and voice channels).
  * @extends {Channel}
  */
 class GuildChannel extends Channel {
@@ -8613,13 +8613,13 @@ class GuildChannel extends Channel {
     this.name = data.name;
 
     /**
-     * The position of the channel in the list.
+     * The position of the channel in the list
      * @type {number}
      */
     this.position = data.position;
 
     /**
-     * A map of permission overwrites in this channel for roles and users.
+     * A map of permission overwrites in this channel for roles and users
      * @type {Collection<Snowflake, PermissionOverwrites>}
      */
     this.permissionOverwrites = new Collection();
@@ -8708,7 +8708,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * An object mapping permission flags to `true` (enabled) or `false` (disabled)
+   * An object mapping permission flags to `true` (enabled) or `false` (disabled).
    * ```js
    * {
    *  'SEND_MESSAGES': true,
@@ -8724,7 +8724,7 @@ class GuildChannel extends Channel {
    * @param {PermissionOverwriteOptions} options The configuration for the update
    * @returns {Promise}
    * @example
-   * // overwrite permissions for a message author
+   * // Overwrite permissions for a message author
    * message.channel.overwritePermissions(message.author, {
    *  SEND_MESSAGES: false
    * })
@@ -8774,7 +8774,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * The data for a guild channel
+   * The data for a guild channel.
    * @typedef {Object} ChannelData
    * @property {string} [name] The name of the channel
    * @property {number} [position] The position of the channel
@@ -8784,11 +8784,11 @@ class GuildChannel extends Channel {
    */
 
   /**
-   * Edits the channel
+   * Edits the channel.
    * @param {ChannelData} data The new data for the channel
    * @returns {Promise<GuildChannel>}
    * @example
-   * // edit a channel
+   * // Edit a channel
    * channel.edit({name: 'new-channel'})
    *  .then(c => console.log(`Edited channel ${c}`))
    *  .catch(console.error);
@@ -8798,11 +8798,11 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Set a new name for the guild channel
+   * Set a new name for the guild channel.
    * @param {string} name The new name for the guild channel
    * @returns {Promise<GuildChannel>}
    * @example
-   * // set a new channel name
+   * // Set a new channel name
    * channel.setName('not_general')
    *  .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
    *  .catch(console.error);
@@ -8812,12 +8812,12 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Set a new position for the guild channel
+   * Set a new position for the guild channel.
    * @param {number} position The new position for the guild channel
    * @param {boolean} [relative=false] Move the position relative to its current value
    * @returns {Promise<GuildChannel>}
    * @example
-   * // set a new channel position
+   * // Set a new channel position
    * channel.setPosition(2)
    *  .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
    *  .catch(console.error);
@@ -8827,11 +8827,11 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Set a new topic for the guild channel
+   * Set a new topic for the guild channel.
    * @param {string} topic The new topic for the guild channel
    * @returns {Promise<GuildChannel>}
    * @example
-   * // set a new channel topic
+   * // Set a new channel topic
    * channel.setTopic('needs more rate limiting')
    *  .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
    *  .catch(console.error);
@@ -8841,13 +8841,13 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Options given when creating a guild channel invite
+   * Options given when creating a guild channel invite.
    * @typedef {Object} InviteOptions
 
    */
 
   /**
-   * Create an invite to this guild channel
+   * Create an invite to this guild channel.
    * @param {InviteOptions} [options={}] Options for the invite
    * @param {boolean} [options.temporary=false] Whether members that joined via the invite should be automatically
    * kicked after 24 hours if they have not yet received a role
@@ -8860,7 +8860,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Clone this channel
+   * Clone this channel.
    * @param {string} [name=this.name] Optional name for the new channel, otherwise it has the name of this channel
    * @param {boolean} [withPermissions=true] Whether to clone the channel with this channel's permission overwrites
    * @param {boolean} [withTopic=true] Whether to clone the channel with this channel's topic
@@ -8897,7 +8897,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Whether the channel is deletable by the client user.
+   * Whether the channel is deletable by the client user
    * @type {boolean}
    * @readonly
    */
@@ -9192,7 +9192,7 @@ const Collection = __webpack_require__(3);
 */
 
 /**
- * Represents a Group DM on Discord
+ * Represents a Group DM on Discord.
  * @extends {Channel}
  * @implements {TextBasedChannel}
  */
@@ -9208,7 +9208,7 @@ class GroupDMChannel extends Channel {
     super.setup(data);
 
     /**
-     * The name of this Group DM, can be null if one isn't set.
+     * The name of this Group DM, can be null if one isn't set
      * @type {string}
      */
     this.name = data.name;
@@ -9220,19 +9220,19 @@ class GroupDMChannel extends Channel {
     this.icon = data.icon;
 
     /**
-     * The user ID of this Group DM's owner.
+     * The user ID of this Group DM's owner
      * @type {string}
      */
     this.ownerID = data.owner_id;
 
     /**
-     * If the dm is managed by an application
+     * If the DM is managed by an application
      * @type {boolean}
      */
     this.managed = data.managed;
 
     /**
-     * Application ID of the application that made this group dm, if applicable
+     * Application ID of the application that made this Group DM, if applicable
      * @type {?string}
      */
     this.applicationID = data.application_id;
@@ -9245,7 +9245,7 @@ class GroupDMChannel extends Channel {
 
     if (!this.recipients) {
       /**
-       * A collection of the recipients of this DM, mapped by their ID.
+       * A collection of the recipients of this DM, mapped by their ID
        * @type {Collection<Snowflake, User>}
        */
       this.recipients = new Collection();
@@ -9262,7 +9262,7 @@ class GroupDMChannel extends Channel {
   }
 
   /**
-   * The owner of this Group DM.
+   * The owner of this Group DM
    * @type {User}
    * @readonly
    */
@@ -9292,9 +9292,9 @@ class GroupDMChannel extends Channel {
   }
 
   /**
-   * Add a user to the dm
+   * Add a user to the DM
    * @param {UserResolvable|string} accessTokenOrID Access token or user resolvable
-   * @param {string} [nick] Permanent nickname to give the user (only available if a bot is creating the dm)
+   * @param {string} [nick] Permanent nickname to give the user (only available if a bot is creating the DM)
    */
 
   addUser(accessTokenOrID, nick) {
@@ -9309,10 +9309,10 @@ class GroupDMChannel extends Channel {
    * When concatenated with a string, this automatically concatenates the channel's name instead of the Channel object.
    * @returns {string}
    * @example
-   * // logs: Hello from My Group DM!
+   * // Logs: Hello from My Group DM!
    * console.log(`Hello from ${channel}!`);
    * @example
-   * // logs: Hello from My Group DM!
+   * // Logs: Hello from My Group DM!
    * console.log(`Hello from ' + channel + '!');
    */
   toString() {
@@ -9337,7 +9337,7 @@ class GroupDMChannel extends Channel {
   get typingCount() {}
   createCollector() {}
   awaitMessages() {}
-  // Doesn't work on group DMs; bulkDelete() {}
+  // Doesn't work on Group DMs; bulkDelete() {}
   acknowledge() {}
   _cacheMessage() {}
 }
@@ -9365,13 +9365,13 @@ class ReactionEmoji {
     this.reaction = reaction;
 
     /**
-     * The name of this reaction emoji.
+     * The name of this reaction emoji
      * @type {string}
      */
     this.name = name;
 
     /**
-     * The ID of this reaction emoji.
+     * The ID of this reaction emoji
      * @type {?Snowflake}
      */
     this.id = id;
@@ -9390,7 +9390,7 @@ class ReactionEmoji {
   /**
    * Creates the text required to form a graphical emoji on Discord.
    * @example
-   * // send the emoji used in a reaction to the channel the reaction is part of
+   * // Send the emoji used in a reaction to the channel the reaction is part of
    * reaction.message.channel.sendMessage(`The emoji used is ${reaction.emoji}`);
    * @returns {string}
    */
@@ -9409,13 +9409,13 @@ module.exports = ReactionEmoji;
 const path = __webpack_require__(27);
 
 /**
- * Represents a webhook
+ * Represents a webhook.
  */
 class Webhook {
   constructor(client, dataOrID, token) {
     if (client) {
       /**
-       * The Client that instantiated the Webhook
+       * The client that instantiated the webhook
        * @name Webhook#client
        * @type {Client}
        * @readonly
@@ -9478,7 +9478,7 @@ class Webhook {
   }
 
   /**
-   * Options that can be passed into send, sendMessage, sendFile, sendEmbed, and sendCode
+   * Options that can be passed into send, sendMessage, sendFile, sendEmbed, and sendCode.
    * @typedef {Object} WebhookMessageOptions
    * @property {string} [username=this.name] Username override for the message
    * @property {string} [avatarURL] Avatar URL override for the message
@@ -9495,12 +9495,12 @@ class Webhook {
    */
 
   /**
-   * Send a message with this webhook
-   * @param {StringResolvable} content The content to send.
-   * @param {WebhookMessageOptions} [options={}] The options to provide.
+   * Send a message with this webhook.
+   * @param {StringResolvable} content The content to send
+   * @param {WebhookMessageOptions} [options={}] The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
-   * // send a message
+   * // Send a message
    * webhook.send('hello!')
    *  .then(message => console.log(`Sent message: ${message.content}`))
    *  .catch(console.error);
@@ -9535,11 +9535,11 @@ class Webhook {
 
   /**
    * Send a message with this webhook
-   * @param {StringResolvable} content The content to send.
-   * @param {WebhookMessageOptions} [options={}] The options to provide.
+   * @param {StringResolvable} content The content to send
+   * @param {WebhookMessageOptions} [options={}] The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
-   * // send a message
+   * // Send a message
    * webhook.sendMessage('hello!')
    *  .then(message => console.log(`Sent message: ${message.content}`))
    *  .catch(console.error);
@@ -9549,7 +9549,7 @@ class Webhook {
   }
 
   /**
-   * Send a file with this webhook
+   * Send a file with this webhook.
    * @param {BufferResolvable} attachment The file to send
    * @param {string} [name='file.jpg'] The name and extension of the file
    * @param {StringResolvable} [content] Text message to send with the attachment
@@ -9561,7 +9561,7 @@ class Webhook {
   }
 
   /**
-   * Send a code block with this webhook
+   * Send a code block with this webhook.
    * @param {string} lang Language for the code block
    * @param {StringResolvable} content Content of the code block
    * @param {WebhookMessageOptions} options The options to provide
@@ -9572,11 +9572,11 @@ class Webhook {
   }
 
   /**
-   * Send a raw slack message with this webhook
-   * @param {Object} body The raw body to send.
+   * Send a raw slack message with this webhook.
+   * @param {Object} body The raw body to send
    * @returns {Promise}
    * @example
-   * // send a slack message
+   * // Send a slack message
    * webhook.sendSlackMessage({
    *   'username': 'Wumpus',
    *   'attachments': [{
@@ -9594,8 +9594,8 @@ class Webhook {
 
   /**
    * Edit the webhook.
-   * @param {string} name The new name for the Webhook
-   * @param {BufferResolvable} avatar The new avatar for the Webhook.
+   * @param {string} name The new name for the webhook
+   * @param {BufferResolvable} avatar The new avatar for the webhook
    * @returns {Promise<Webhook>}
    */
   edit(name = this.name, avatar) {
@@ -9612,7 +9612,7 @@ class Webhook {
   }
 
   /**
-   * Delete the webhook
+   * Delete the webhook.
    * @returns {Promise}
    */
   delete() {
@@ -9633,14 +9633,14 @@ const EventEmitter = __webpack_require__(12).EventEmitter;
 /**
  * Filter to be applied to the collector.
  * @typedef {Function} CollectorFilter
- * @param {...*} args Any arguments received by the listener.
- * @returns {boolean} To collect or not collect.
+ * @param {...*} args Any arguments received by the listener
+ * @returns {boolean} To collect or not collect
  */
 
 /**
  * Options to be applied to the collector.
  * @typedef {Object} CollectorOptions
- * @property {number} [time] How long to run the collector for.
+ * @property {number} [time] How long to run the collector for
  */
 
 /**
@@ -9652,7 +9652,7 @@ class Collector extends EventEmitter {
     super();
 
     /**
-     * The client.
+     * The client
      * @name Collector#client
      * @type {Client}
      * @readonly
@@ -9660,39 +9660,39 @@ class Collector extends EventEmitter {
     Object.defineProperty(this, 'client', { value: client });
 
     /**
-     * The filter applied to this collector.
+     * The filter applied to this collector
      * @type {CollectorFilter}
      */
     this.filter = filter;
 
     /**
-     * The options of this collector.
+     * The options of this collector
      * @type {CollectorOptions}
      */
     this.options = options;
 
     /**
-     * The items collected by this collector.
+     * The items collected by this collector
      * @type {Collection}
      */
     this.collected = new Collection();
 
     /**
-     * Whether this collector has finished collecting.
+     * Whether this collector has finished collecting
      * @type {boolean}
      */
     this.ended = false;
 
     /**
-     * Timeout for cleanup.
+     * Timeout for cleanup
      * @type {?Timeout}
      * @private
      */
     this._timeout = null;
 
     /**
-     * Call this to handle an event as a collectable element.
-     * Accepts any event data as parameters.
+     * Call this to handle an event as a collectable element
+     * Accepts any event data as parameters
      * @type {Function}
      * @private
      */
@@ -9701,7 +9701,7 @@ class Collector extends EventEmitter {
   }
 
   /**
-   * @param {...*} args The arguments emitted by the listener.
+   * @param {...*} args The arguments emitted by the listener
    * @emits Collector#collect
    * @private
    */
@@ -9714,8 +9714,8 @@ class Collector extends EventEmitter {
     /**
      * Emitted whenever an element is collected.
      * @event Collector#collect
-     * @param {*} element The element that got collected.
-     * @param {Collector} collector The collector.
+     * @param {*} element The element that got collected
+     * @param {Collector} collector The collector
      */
     this.emit('collect', collect.value, this);
 
@@ -9725,7 +9725,7 @@ class Collector extends EventEmitter {
 
   /**
    * Return a promise that resolves with the next collected element;
-   * rejects with collected elements if the collector finishes without receving a next element.
+   * rejects with collected elements if the collector finishes without receving a next element
    * @type {Promise}
    * @readonly
    */
@@ -9758,7 +9758,7 @@ class Collector extends EventEmitter {
 
   /**
    * Stop this collector and emit the `end` event.
-   * @param {string} [reason='user'] The reason this collector is ending.
+   * @param {string} [reason='user'] The reason this collector is ending
    * @emits Collector#end
    */
   stop(reason = 'user') {
@@ -9771,27 +9771,27 @@ class Collector extends EventEmitter {
     /**
      * Emitted when the collector is finished collecting.
      * @event Collector#end
-     * @param {Collection} collected The elements collected by the collector.
-     * @param {string} reason The reason the collector ended.
+     * @param {Collection} collected The elements collected by the collector
+     * @param {string} reason The reason the collector ended
      */
     this.emit('end', this.collected, reason);
   }
 
   /* eslint-disable no-empty-function, valid-jsdoc */
   /**
-   * Handles incoming events from the `listener` function.  Returns null if the
-   * event should not be collected, or returns an object describing the data that should be stored.
+   * Handles incoming events from the `listener` function. Returns null if the event should not be collected,
+   * or returns an object describing the data that should be stored.
    * @see Collector#listener
-   * @param {...*} args Any args the event listener emits.
-   * @returns {?{key: string, value}} Data to insert into collection, if any.
+   * @param {...*} args Any args the event listener emits
+   * @returns {?{key: string, value}} Data to insert into collection, if any
    * @abstract
    */
   handle() {}
 
   /**
    * This method runs after collection to see if the collector should finish.
-   * @param {...*} args Any args the event listener emits.
-   * @returns {?string} Reason to end the collector, if any.
+   * @param {...*} args Any args the event listener emits
+   * @returns {?string} Reason to end the collector, if any
    * @abstract
    */
   postCheck() {}
@@ -11863,7 +11863,7 @@ class ClientDataResolver {
    */
 
   /**
-   * Resolves a UserResolvable to a User object
+   * Resolves a UserResolvable to a User object.
    * @param {UserResolvable} user The UserResolvable to identify
    * @returns {?User}
    */
@@ -11877,7 +11877,7 @@ class ClientDataResolver {
   }
 
   /**
-   * Resolves a UserResolvable to a user ID string
+   * Resolves a UserResolvable to a user ID string.
    * @param {UserResolvable} user The UserResolvable to identify
    * @returns {?Snowflake}
    */
@@ -11897,7 +11897,7 @@ class ClientDataResolver {
    */
 
   /**
-   * Resolves a GuildResolvable to a Guild object
+   * Resolves a GuildResolvable to a Guild object.
    * @param {GuildResolvable} guild The GuildResolvable to identify
    * @returns {?Guild}
    */
@@ -11915,7 +11915,7 @@ class ClientDataResolver {
    */
 
   /**
-   * Resolves a GuildMemberResolvable to a GuildMember object
+   * Resolves a GuildMemberResolvable to a GuildMember object.
    * @param {GuildResolvable} guild The guild that the member is part of
    * @param {UserResolvable} user The user that is part of the guild
    * @returns {?GuildMember}
@@ -11938,7 +11938,7 @@ class ClientDataResolver {
    */
 
   /**
-   * Resolves a ChannelResolvable to a Channel object
+   * Resolves a ChannelResolvable to a Channel object.
    * @param {ChannelResolvable} channel The channel resolvable to resolve
    * @returns {?Channel}
    */
@@ -11951,7 +11951,7 @@ class ClientDataResolver {
   }
 
   /**
-   * Resolves a ChannelResolvable to a channel ID
+   * Resolves a ChannelResolvable to a channel ID.
    * @param {ChannelResolvable} channel The channel resolvable to resolve
    * @returns {?Snowflake}
    */
@@ -11971,7 +11971,7 @@ class ClientDataResolver {
    */
 
   /**
-   * Resolves InviteResolvable to an invite code
+   * Resolves InviteResolvable to an invite code.
    * @param {InviteResolvable} data The invite resolvable to resolve
    * @returns {string}
    */
@@ -11991,7 +11991,7 @@ class ClientDataResolver {
    */
 
   /**
-   * Resolves a StringResolvable to a string
+   * Resolves a StringResolvable to a string.
    * @param {StringResolvable} data The string resolvable to resolve
    * @returns {string}
    */
@@ -12009,7 +12009,7 @@ class ClientDataResolver {
    */
 
   /**
-   * Resolves a Base64Resolvable to a Base 64 image
+   * Resolves a Base64Resolvable to a Base 64 image.
    * @param {Base64Resolvable} data The base 64 resolvable you want to resolve
    * @returns {?string}
    */
@@ -12027,7 +12027,7 @@ class ClientDataResolver {
    */
 
   /**
-   * Resolves a BufferResolvable to a Buffer
+   * Resolves a BufferResolvable to a Buffer.
    * @param {BufferResolvable} resource The buffer resolvable to resolve
    * @returns {Promise<Buffer>}
    */
@@ -12071,7 +12071,7 @@ class ClientDataResolver {
    */
 
   /**
-   * Resolves an EmojiResolvable to an emoji identifier
+   * Resolves an EmojiResolvable to an emoji identifier.
    * @param {EmojiIdentifierResolvable} emoji The emoji resolvable to resolve
    * @returns {?string}
    */
@@ -12122,7 +12122,7 @@ class ClientDataResolver {
    */
 
   /**
-   * Resolves a ColorResolvable into a color number
+   * Resolves a ColorResolvable into a color number.
    * @param {ColorResolvable} color Color to resolve
    * @returns {number} A color
    */
@@ -12263,7 +12263,7 @@ const ClientUserSettings = __webpack_require__(42);
 const Constants = __webpack_require__(0);
 
 /**
- * Represents the logged in client's Discord user
+ * Represents the logged in client's Discord user.
  * @extends {User}
  */
 class ClientUser extends User {
@@ -12285,28 +12285,28 @@ class ClientUser extends User {
     this._typing = new Map();
 
     /**
-     * A Collection of friends for the logged in user.
+     * A Collection of friends for the logged in user
      * <warn>This is only filled when using a user account.</warn>
      * @type {Collection<Snowflake, User>}
      */
     this.friends = new Collection();
 
     /**
-     * A Collection of blocked users for the logged in user.
+     * A Collection of blocked users for the logged in user
      * <warn>This is only filled when using a user account.</warn>
      * @type {Collection<Snowflake, User>}
      */
     this.blocked = new Collection();
 
     /**
-     * A Collection of notes for the logged in user.
+     * A Collection of notes for the logged in user
      * <warn>This is only filled when using a user account.</warn>
      * @type {Collection<Snowflake, string>}
      */
     this.notes = new Collection();
 
     /**
-     * If the user has discord premium (nitro)
+     * If the user has Discord premium (nitro)
      * <warn>This is only filled when using a user account.</warn>
      * @type {?boolean}
      */
@@ -12320,7 +12320,7 @@ class ClientUser extends User {
     this.mfaEnabled = typeof data.mfa_enabled === 'boolean' ? data.mfa_enabled : null;
 
     /**
-     * If the user has ever used a mobile device on discord
+     * If the user has ever used a mobile device on Discord
      * <warn>This is only filled when using a user account.</warn>
      * @type {?boolean}
      */
@@ -12328,7 +12328,7 @@ class ClientUser extends User {
 
     /**
      * Various settings for this user
-     * <warn>This is only filled when using a user account</warn>
+     * <warn>This is only filled when using a user account.</warn>
      * @type {?ClientUserSettings}
      */
     if (data.user_settings) this.settings = new ClientUserSettings(this, data.user_settings);
@@ -12339,14 +12339,14 @@ class ClientUser extends User {
   }
 
   /**
-   * Set the username of the logged in Client.
+   * Set the username of the logged in client.
    * <info>Changing usernames in Discord is heavily rate limited, with only 2 requests
    * every hour. Use this sparingly!</info>
    * @param {string} username The new username
    * @param {string} [password] Current password (only for user accounts)
    * @returns {Promise<ClientUser>}
    * @example
-   * // set username
+   * // Set username
    * client.user.setUsername('discordjs')
    *  .then(user => console.log(`My new username is ${user.username}`))
    *  .catch(console.error);
@@ -12362,7 +12362,7 @@ class ClientUser extends User {
    * @param {string} password Current password
    * @returns {Promise<ClientUser>}
    * @example
-   * // set email
+   * // Set email
    * client.user.setEmail('bob@gmail.com', 'some amazing password 123')
    *  .then(user => console.log(`My new email is ${user.email}`))
    *  .catch(console.error);
@@ -12378,7 +12378,7 @@ class ClientUser extends User {
    * @param {string} oldPassword Current password
    * @returns {Promise<ClientUser>}
    * @example
-   * // set password
+   * // Set password
    * client.user.setPassword('some new amazing password 456', 'some amazing password 123')
    *  .then(user => console.log('New password set!'))
    *  .catch(console.error);
@@ -12388,11 +12388,11 @@ class ClientUser extends User {
   }
 
   /**
-   * Set the avatar of the logged in Client.
+   * Set the avatar of the logged in client.
    * @param {BufferResolvable|Base64Resolvable} avatar The new avatar
    * @returns {Promise<ClientUser>}
    * @example
-   * // set avatar
+   * // Set avatar
    * client.user.setAvatar('./avatar.png')
    *  .then(user => console.log(`New avatar set!`))
    *  .catch(console.error);
@@ -12408,7 +12408,7 @@ class ClientUser extends User {
   }
 
   /**
-   * Data resembling a raw Discord presence
+   * Data resembling a raw Discord presence.
    * @typedef {Object} PresenceData
    * @property {PresenceStatus} [status] Status of the user
    * @property {boolean} [afk] Whether the user is AFK
@@ -12516,7 +12516,7 @@ class ClientUser extends User {
   }
 
   /**
-   * Fetches messages that mentioned the client's user
+   * Fetches messages that mentioned the client's user.
    * @param {Object} [options] Options for the fetch
    * @param {number} [options.limit=25] Maximum number of mentions to retrieve
    * @param {boolean} [options.roles=true] Whether to include role mentions
@@ -12529,10 +12529,10 @@ class ClientUser extends User {
   }
 
   /**
-   * Send a friend request
+   * Send a friend request.
    * <warn>This is only available when using a user account.</warn>
-   * @param {UserResolvable} user The user to send the friend request to.
-   * @returns {Promise<User>} The user the friend request was sent to.
+   * @param {UserResolvable} user The user to send the friend request to
+   * @returns {Promise<User>} The user the friend request was sent to
    */
   addFriend(user) {
     user = this.client.resolver.resolveUser(user);
@@ -12540,7 +12540,7 @@ class ClientUser extends User {
   }
 
   /**
-   * Remove a friend
+   * Remove a friend.
    * <warn>This is only available when using a user account.</warn>
    * @param {UserResolvable} user The user to remove from your friends
    * @returns {Promise<User>} The user that was removed
@@ -12551,7 +12551,7 @@ class ClientUser extends User {
   }
 
   /**
-   * Creates a guild
+   * Creates a guild.
    * <warn>This is only available when using a user account.</warn>
    * @param {string} name The name of the guild
    * @param {string} region The region for the server
@@ -12570,17 +12570,17 @@ class ClientUser extends User {
   }
 
   /**
-   * An object containing either a user or access token, and an optional nickname
+   * An object containing either a user or access token, and an optional nickname.
    * @typedef {Object} GroupDMRecipientOptions
-   * @property {UserResolvable|Snowflake} [user] User to add to the group DM
+   * @property {UserResolvable|Snowflake} [user] User to add to the Group DM
    * (only available if a user is creating the DM)
-   * @property {string} [accessToken] Access token to use to add a user to the group DM
+   * @property {string} [accessToken] Access token to use to add a user to the Group DM
    * (only available if a bot is creating the DM)
    * @property {string} [nick] Permanent nickname (only available if a bot is creating the DM)
    */
 
   /**
-   * Creates a group DM
+   * Creates a Group DM.
    * @param {GroupDMRecipientOptions[]} recipients The recipients
    * @returns {Promise<GroupDMChannel>}
    */
@@ -12593,7 +12593,7 @@ class ClientUser extends User {
   }
 
   /**
-   * Accepts an invite to join a guild
+   * Accepts an invite to join a guild.
    * <warn>This is only available when using a user account.</warn>
    * @param {Invite|string} invite Invite or code to accept
    * @returns {Promise<Guild>} Joined guild
@@ -12614,7 +12614,7 @@ const Constants = __webpack_require__(0);
 const Util = __webpack_require__(4);
 
 /**
- * A wrapper around the ClientUser's settings
+ * A wrapper around the ClientUser's settings.
  */
 class ClientUserSettings {
   constructor(user, data) {
@@ -12623,7 +12623,7 @@ class ClientUserSettings {
   }
 
   /**
-   * Patch the data contained in this class with new partial data
+   * Patch the data contained in this class with new partial data.
    * @param {Object} data Data to patch this with
    */
   patch(data) {
@@ -12639,7 +12639,7 @@ class ClientUserSettings {
   }
 
   /**
-   * Update a specific property of of user settings
+   * Update a specific property of of user settings.
    * @param {string} name Name of property
    * @param {value} value Value to patch
    * @returns {Promise<Object>}
@@ -12649,7 +12649,7 @@ class ClientUserSettings {
   }
 
   /**
-   * @param {Guild} guild Guild to move
+   * @param {Guild} guild The guild to move
    * @param {number} position Absolute or relative position
    * @param {boolean} [relative=false] Whether to position relatively or absolutely
    * @returns {Promise<Guild>}
@@ -12661,8 +12661,8 @@ class ClientUserSettings {
   }
 
   /**
-   * Add a guild to the list of restricted guilds
-   * @param {Guild} guild Guild to add
+   * Add a guild to the list of restricted guilds.
+   * @param {Guild} guild The guild to add
    * @returns {Promise<Guild>}
    */
   addRestrictedGuild(guild) {
@@ -12673,8 +12673,8 @@ class ClientUserSettings {
   }
 
   /**
-   * Remove a guild from the list of restricted guilds
-   * @param {Guild} guild Guild to remove
+   * Remove a guild from the list of restricted guilds.
+   * @param {Guild} guild The guild to remove
    * @returns {Promise<Guild>}
    */
   removeRestrictedGuild(guild) {
@@ -12807,8 +12807,8 @@ class Invite {
 
   setup(data) {
     /**
-     * The guild the invite is for. If this guild is already known, this will be a Guild object. If the guild is
-     * unknown, this will be a PartialGuild object.
+     * The guild the invite is for. If this guild is already known, this will be a guild object. If the guild is
+     * unknown, this will be a PartialGuild object
      * @type {Guild|PartialGuild}
      */
     this.guild = this.client.guilds.get(data.guild.id) || new PartialGuild(this.client, data.guild);
@@ -12902,7 +12902,7 @@ class Invite {
   }
 
   /**
-   * Deletes this invite
+   * Deletes this invite.
    * @returns {Promise<Invite>}
    */
   delete() {
@@ -12913,7 +12913,7 @@ class Invite {
    * When concatenated with a string, this automatically concatenates the invite's URL instead of the object.
    * @returns {string}
    * @example
-   * // logs: Invite: https://discord.gg/A1b2C3
+   * // Logs: Invite: https://discord.gg/A1b2C3
    * console.log(`Invite: ${invite}`);
    */
   toString() {
@@ -12929,12 +12929,12 @@ module.exports = Invite;
 /***/ (function(module, exports) {
 
 /**
- * Represents an attachment in a message
+ * Represents an attachment in a message.
  */
 class MessageAttachment {
   constructor(message, data) {
     /**
-     * The Client that instantiated this MessageAttachment.
+     * The client that instantiated this MessageAttachment
      * @name MessageAttachment#client
      * @type {Client}
      * @readonly
@@ -12942,7 +12942,7 @@ class MessageAttachment {
     Object.defineProperty(this, 'client', { value: message.client });
 
     /**
-     * The message this attachment is part of.
+     * The message this attachment is part of
      * @type {Message}
      */
     this.message = message;
@@ -13007,8 +13007,8 @@ const util = __webpack_require__(22);
 
 /**
  * @typedef {CollectorOptions} MessageCollectorOptions
- * @property {number} max The maximum amount of messages to process.
- * @property {number} maxMatches The maximum amount of messages to collect.
+ * @property {number} max The maximum amount of messages to process
+ * @property {number} maxMatches The maximum amount of messages to collect
  */
 
 /**
@@ -13018,36 +13018,35 @@ const util = __webpack_require__(22);
 class MessageCollector extends Collector {
 
   /**
-   * @param {TextChannel|DMChannel|GroupDMChannel} channel The channel.
-   * @param {CollectorFilter} filter The filter to be applied to this collector.
-   * @param {MessageCollectorOptions} options The options to be applied to this collector.
+   * @param {TextChannel|DMChannel|GroupDMChannel} channel The channel
+   * @param {CollectorFilter} filter The filter to be applied to this collector
+   * @param {MessageCollectorOptions} options The options to be applied to this collector
    * @emits MessageCollector#message
    */
   constructor(channel, filter, options = {}) {
     super(channel.client, filter, options);
 
     /**
-     * @type {TextBasedChannel} channel The channel.
+     * @type {TextBasedChannel} channel The channel
      */
     this.channel = channel;
 
     /**
-     * Total number of messages that were received in the
-     * channel during message collection.
+     * Total number of messages that were received in the channel during message collection
      * @type {number}
      */
     this.received = 0;
 
     this.client.on('message', this.listener);
 
-    // For backwards compatibility (remove in v12).
+    // For backwards compatibility (remove in v12)
     if (this.options.max) this.options.maxProcessed = this.options.max;
     if (this.options.maxMatches) this.options.max = this.options.maxMatches;
     this._reEmitter = message => {
       /**
        * Emitted when the collector receives a message.
        * @event MessageCollector#message
-       * @param {Message} message The message.
+       * @param {Message} message The message
        * @deprecated
        */
       this.emit('message', message);
@@ -13055,7 +13054,7 @@ class MessageCollector extends Collector {
     this.on('collect', this._reEmitter);
   }
 
-  // TODO: Remove me in v12
+  // Remove in v12
   on(eventName, listener) {
     if (eventName === 'message') {
       listener = util.deprecate(listener, 'MessageCollector will soon no longer emit "message", use "collect" instead');
@@ -13065,8 +13064,8 @@ class MessageCollector extends Collector {
 
   /**
    * Handle an incoming message for possible collection.
-   * @param {Message} message The message that could be collected.
-   * @returns {?{key: Snowflake, value: Message}} Message data to collect.
+   * @param {Message} message The message that could be collected
+   * @returns {?{key: Snowflake, value: Message}} Message data to collect
    * @private
    */
   handle(message) {
@@ -13080,7 +13079,7 @@ class MessageCollector extends Collector {
 
   /**
    * Check after collection to see if the collector is done.
-   * @returns {?string} Reason to end the collector, if any.
+   * @returns {?string} Reason to end the collector, if any
    * @private
    */
   postCheck() {
@@ -13138,13 +13137,13 @@ class MessageEmbed {
     this.type = data.type;
 
     /**
-     * The title of this embed, if there is one
+     * The title of this embed
      * @type {?string}
      */
     this.title = data.title;
 
     /**
-     * The description of this embed, if there is one
+     * The description of this embed
      * @type {?string}
      */
     this.description = data.description;
@@ -13175,31 +13174,31 @@ class MessageEmbed {
     this.createdTimestamp = data.timestamp;
 
     /**
-     * The thumbnail of this embed, if there is one
+     * The thumbnail of this embed
      * @type {?MessageEmbedThumbnail}
      */
     this.thumbnail = data.thumbnail ? new MessageEmbedThumbnail(this, data.thumbnail) : null;
 
     /**
-     * The image of this embed, if there is one
+     * The image of this embed
      * @type {?MessageEmbedImage}
      */
     this.image = data.image ? new MessageEmbedImage(this, data.image) : null;
 
     /**
-     * The video of this embed, if there is one
+     * The video of this embed
      * @type {?MessageEmbedVideo}
      */
     this.video = data.video ? new MessageEmbedVideo(this, data.video) : null;
 
     /**
-     * The author of this embed, if there is one
+     * The author of this embed
      * @type {?MessageEmbedAuthor}
      */
     this.author = data.author ? new MessageEmbedAuthor(this, data.author) : null;
 
     /**
-     * The provider of this embed, if there is one
+     * The provider of this embed
      * @type {?MessageEmbedProvider}
      */
     this.provider = data.provider ? new MessageEmbedProvider(this, data.provider) : null;
@@ -13221,7 +13220,7 @@ class MessageEmbed {
   }
 
   /**
-   * The hexadecimal version of the embed color, with a leading hash.
+   * The hexadecimal version of the embed color, with a leading hash
    * @type {string}
    * @readonly
    */
@@ -13233,7 +13232,7 @@ class MessageEmbed {
 }
 
 /**
- * Represents a thumbnail for a message embed
+ * Represents a thumbnail for a message embed.
  */
 class MessageEmbedThumbnail {
   constructor(embed, data) {
@@ -13274,7 +13273,7 @@ class MessageEmbedThumbnail {
 }
 
 /**
- * Represents an image for a message embed
+ * Represents an image for a message embed.
  */
 class MessageEmbedImage {
   constructor(embed, data) {
@@ -13315,7 +13314,7 @@ class MessageEmbedImage {
 }
 
 /**
- * Represents a video for a message embed
+ * Represents a video for a message embed.
  */
 class MessageEmbedVideo {
   constructor(embed, data) {
@@ -13350,7 +13349,7 @@ class MessageEmbedVideo {
 }
 
 /**
- * Represents a provider for a message embed
+ * Represents a provider for a message embed.
  */
 class MessageEmbedProvider {
   constructor(embed, data) {
@@ -13379,7 +13378,7 @@ class MessageEmbedProvider {
 }
 
 /**
- * Represents an author for a message embed
+ * Represents an author for a message embed.
  */
 class MessageEmbedAuthor {
   constructor(embed, data) {
@@ -13414,7 +13413,7 @@ class MessageEmbedAuthor {
 }
 
 /**
- * Represents a field for a message embed
+ * Represents a field for a message embed.
  */
 class MessageEmbedField {
   constructor(embed, data) {
@@ -13449,7 +13448,7 @@ class MessageEmbedField {
 }
 
 /**
- * Represents the footer of a message embed
+ * Represents the footer of a message embed.
  */
 class MessageEmbedFooter {
   constructor(embed, data) {
@@ -13501,7 +13500,7 @@ module.exports = MessageEmbed;
 const Collection = __webpack_require__(3);
 
 /**
- * Keeps track of mentions in a {@link Message}
+ * Keeps track of mentions in a {@link Message}.
  */
 class MessageMentions {
   constructor(message, users, roles, everyone) {
@@ -13556,14 +13555,14 @@ class MessageMentions {
     this._content = message.content;
 
     /**
-     * Client the message is from
+     * The client the message is from
      * @type {Client}
      * @private
      */
     this._client = message.client;
 
     /**
-     * Guild the message is in
+     * The guild the message is in
      * @type {?Guild}
      * @private
      */
@@ -13653,7 +13652,7 @@ const Emoji = __webpack_require__(17);
 const ReactionEmoji = __webpack_require__(30);
 
 /**
- * Represents a reaction to a message
+ * Represents a reaction to a message.
  */
 class MessageReaction {
   constructor(message, emoji, count, me) {
@@ -13670,13 +13669,13 @@ class MessageReaction {
     this.me = me;
 
     /**
-     * The number of people that have given the same reaction.
+     * The number of people that have given the same reaction
      * @type {number}
      */
     this.count = count || 0;
 
     /**
-     * The users that have given this reaction, mapped by their ID.
+     * The users that have given this reaction, mapped by their ID
      * @type {Collection<Snowflake, User>}
      */
     this.users = new Collection();
@@ -13707,7 +13706,7 @@ class MessageReaction {
 
   /**
    * Removes a user from this reaction.
-   * @param {UserResolvable} [user=this.message.client.user] User to remove the reaction of
+   * @param {UserResolvable} [user=this.message.client.user] The user to remove the reaction of
    * @returns {Promise<MessageReaction>}
    */
   remove(user = this.message.client.user) {
@@ -13721,7 +13720,7 @@ class MessageReaction {
 
   /**
    * Fetch all the users that gave this reaction. Resolves with a collection of users, mapped by their IDs.
-   * @param {number} [limit=100] the maximum amount of users to fetch, defaults to 100
+   * @param {number} [limit=100] The maximum amount of users to fetch, defaults to 100
    * @returns {Promise<Collection<Snowflake, User>>}
    */
   fetchUsers(limit = 100) {
@@ -13750,7 +13749,7 @@ module.exports = MessageReaction;
 const Snowflake = __webpack_require__(7);
 
 /**
- * Represents an OAuth2 Application
+ * Represents an OAuth2 Application.
  */
 class OAuth2Application {
   constructor(client, data) {
@@ -13809,7 +13808,7 @@ class OAuth2Application {
     this.redirectURIs = data.redirect_uris;
 
     /**
-     * If this app's bot requires a code grant when using the oauth2 flow
+     * If this app's bot requires a code grant when using the OAuth2 flow
      * @type {boolean}
      */
     this.botRequireCodeGrant = data.bot_require_code_grant;
@@ -13833,7 +13832,7 @@ class OAuth2Application {
     this.bot = data.bot;
 
     /**
-     * Flags for the app
+     * The flags for the app
      * @type {number}
      */
     this.flags = data.flags;
@@ -13864,7 +13863,7 @@ class OAuth2Application {
   }
 
   /**
-   * Reset the app's secret and bot token
+   * Reset the app's secret and bot token.
    * @returns {OAuth2Application}
    */
   reset() {
@@ -13900,7 +13899,7 @@ module.exports = OAuth2Application;
 class PartialGuild {
   constructor(client, data) {
     /**
-     * The Client that instantiated this PartialGuild
+     * The client that instantiated this PartialGuild
      * @name PartialGuild#client
      * @type {Client}
      * @readonly
@@ -13924,13 +13923,13 @@ class PartialGuild {
     this.name = data.name;
 
     /**
-     * The hash of this guild's icon, or null if there is none.
+     * The hash of this guild's icon
      * @type {?string}
      */
     this.icon = data.icon;
 
     /**
-     * The hash of the guild splash image, or null if no splash (VIP only)
+     * The hash of the guild splash image (VIP only)
      * @type {?string}
      */
     this.splash = data.splash;
@@ -13956,7 +13955,7 @@ const Constants = __webpack_require__(0);
 class PartialGuildChannel {
   constructor(client, data) {
     /**
-     * The Client that instantiated this PartialGuildChannel
+     * The client that instantiated this PartialGuildChannel
      * @name PartialGuildChannel#client
      * @type {Client}
      * @readonly
@@ -14048,9 +14047,9 @@ const Collection = __webpack_require__(3);
 
 /**
  * @typedef {CollectorOptions} ReactionCollectorOptions
- * @property {number} max The maximum total amount of reactions to collect.
- * @property {number} maxEmojis The maximum number of emojis to collect.
- * @property {number} maxUsers The maximum number of users to react.
+ * @property {number} max The maximum total amount of reactions to collect
+ * @property {number} maxEmojis The maximum number of emojis to collect
+ * @property {number} maxUsers The maximum number of users to react
  */
 
 /**
@@ -14060,27 +14059,27 @@ const Collection = __webpack_require__(3);
 class ReactionCollector extends Collector {
 
   /**
-   * @param {Message} message The message upon which to collect reactions.
-   * @param {CollectorFilter} filter The filter to apply to this collector.
-   * @param {ReactionCollectorOptions} [options={}] The options to apply to this collector.
+   * @param {Message} message The message upon which to collect reactions
+   * @param {CollectorFilter} filter The filter to apply to this collector
+   * @param {ReactionCollectorOptions} [options={}] The options to apply to this collector
    */
   constructor(message, filter, options = {}) {
     super(message.client, filter, options);
 
     /**
-     * The message.
+     * The message
      * @type {Message}
      */
     this.message = message;
 
     /**
-     * Users which have reacted.
+     * The users which have reacted
      * @type {Collection}
      */
     this.users = new Collection();
 
     /**
-     * Total number of reactions collected.
+     * The total number of reactions collected
      * @type {number}
      */
     this.total = 0;
@@ -14090,8 +14089,8 @@ class ReactionCollector extends Collector {
 
   /**
    * Handle an incoming reaction for possible collection.
-   * @param {MessageReaction} reaction The reaction to possibly collect.
-   * @returns {?{key: Snowflake, value: MessageReaction}} Reaction data to collect.
+   * @param {MessageReaction} reaction The reaction to possibly collect
+   * @returns {?{key: Snowflake, value: MessageReaction}} Reaction data to collect
    * @private
    */
   handle(reaction) {
@@ -14104,9 +14103,9 @@ class ReactionCollector extends Collector {
 
   /**
    * Check after collection to see if the collector is done.
-   * @param {MessageReaction} reaction The reaction that was collected.
-   * @param {User} user The user that reacted.
-   * @returns {?string} Reason to end the collector, if any.
+   * @param {MessageReaction} reaction The reaction that was collected
+   * @param {User} user The user that reacted
+   * @returns {?string} Reason to end the collector, if any
    * @private
    */
   postCheck(reaction, user) {
@@ -14154,7 +14153,7 @@ class TextChannel extends GuildChannel {
     super.setup(data);
 
     /**
-     * The topic of the text channel, if there is one.
+     * The topic of the text channel
      * @type {?string}
      */
     this.topic = data.topic;
@@ -14163,7 +14162,7 @@ class TextChannel extends GuildChannel {
   }
 
   /**
-   * A collection of members that can see this channel, mapped by their ID.
+   * A collection of members that can see this channel, mapped by their ID
    * @type {Collection<Snowflake, GuildMember>}
    * @readonly
    */
@@ -14178,6 +14177,15 @@ class TextChannel extends GuildChannel {
   }
 
   /**
+   * If the Discord considers this channel NSFW
+   * @type {boolean}
+   * @readonly
+   */
+  get nsfw() {
+    return /^nsfw(-|$)/.test(this.name);
+  }
+
+  /**
    * Fetch all webhooks for the channel.
    * @returns {Promise<Collection<Snowflake, Webhook>>}
    */
@@ -14187,12 +14195,12 @@ class TextChannel extends GuildChannel {
 
   /**
    * Create a webhook for the channel.
-   * @param {string} name The name of the webhook.
-   * @param {BufferResolvable|Base64Resolvable} avatar The avatar for the webhook.
-   * @returns {Promise<Webhook>} webhook The created webhook.
+   * @param {string} name The name of the webhook
+   * @param {BufferResolvable|Base64Resolvable} avatar The avatar for the webhook
+   * @returns {Promise<Webhook>} webhook The created webhook
    * @example
    * channel.createWebhook('Snek', 'http://snek.s3.amazonaws.com/topSnek.png')
-   *  .then(webhook => console.log(`Created Webhook ${webhook}`))
+   *  .then(webhook => console.log(`Created webhook ${webhook}`))
    *  .catch(console.error)
    */
   createWebhook(name, avatar) {
@@ -14205,15 +14213,6 @@ class TextChannel extends GuildChannel {
         );
       }
     });
-  }
-
-  /**
-   * If the Discord Client considers this channel NSFW
-   * @type {boolean}
-   * @readonly
-   */
-  get nsfw() {
-    return /^nsfw(-|$)/.test(this.name);
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
@@ -14261,7 +14260,7 @@ class VoiceChannel extends GuildChannel {
     super(guild, data);
 
     /**
-     * The members in this voice channel.
+     * The members in this voice channel
      * @type {Collection<Snowflake, GuildMember>}
      */
     this.members = new Collection();
@@ -14327,11 +14326,11 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * Sets the bitrate of the channel
+   * Sets the bitrate of the channel.
    * @param {number} bitrate The new bitrate
    * @returns {Promise<VoiceChannel>}
    * @example
-   * // set the bitrate of a voice channel
+   * // Set the bitrate of a voice channel
    * voiceChannel.setBitrate(48000)
    *  .then(vc => console.log(`Set bitrate to ${vc.bitrate} for ${vc.name}`))
    *  .catch(console.error);
@@ -14341,11 +14340,11 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * Sets the user limit of the channel
+   * Sets the user limit of the channel.
    * @param {number} userLimit The new user limit
    * @returns {Promise<VoiceChannel>}
    * @example
-   * // set the user limit of a voice channel
+   * // Set the user limit of a voice channel
    * voiceChannel.setUserLimit(42)
    *  .then(vc => console.log(`Set user limit to ${vc.userLimit} for ${vc.name}`))
    *  .catch(console.error);
@@ -14355,10 +14354,10 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * Attempts to join this voice channel
+   * Attempts to join this voice channel.
    * @returns {Promise<VoiceConnection>}
    * @example
-   * // join a voice channel
+   * // Join a voice channel
    * voiceChannel.join()
    *  .then(connection => console.log('Connected!'))
    *  .catch(console.error);
@@ -14369,9 +14368,9 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * Leaves this voice channel
+   * Leaves this voice channel.
    * @example
-   * // leave a voice channel
+   * // Leave a voice channel
    * voiceChannel.leave();
    */
   leave() {
@@ -16797,7 +16796,7 @@ function base64DetectIncompleteChar(buffer) {
 /***/ (function(module, exports) {
 
 /**
- * Represents an error from the Discord API
+ * Represents an error from the Discord API.
  */
 class DiscordAPIError extends Error {
   constructor(error) {
@@ -16814,7 +16813,7 @@ class DiscordAPIError extends Error {
   }
 
   /**
-   * Flattens an errors object returned from the API into an array
+   * Flattens an errors object returned from the API into an array.
    * @param {Object} obj Discord errors object
    * @param {string} [key] idklol
    * @returns {string[]}
@@ -16919,14 +16918,14 @@ class RequestHandler {
     this.restManager = restManager;
 
     /**
-     * A list of requests that have yet to be processed.
+     * A list of requests that have yet to be processed
      * @type {APIRequest[]}
      */
     this.queue = [];
   }
 
   /**
-   * Whether or not the client is being rate limited on every endpoint.
+   * Whether or not the client is being rate limited on every endpoint
    * @type {boolean}
    * @readonly
    */
@@ -16939,7 +16938,7 @@ class RequestHandler {
   }
 
   /**
-   * Push a new API request into this bucket
+   * Push a new API request into this bucket.
    * @param {APIRequest} request The new request to push into the queue
    */
   push(request) {
@@ -16947,7 +16946,7 @@ class RequestHandler {
   }
 
   /**
-   * Attempts to get this RequestHandler to process its current queue
+   * Attempts to get this RequestHandler to process its current queue.
    */
   handle() {} // eslint-disable-line no-empty-function
 
@@ -16988,13 +16987,13 @@ const WebSocket = (function findWebSocket() {
 }());
 
 /**
- * Abstracts a WebSocket connection with decoding/encoding for the discord gateway
+ * Abstracts a WebSocket connection with decoding/encoding for the Discord gateway.
  * @private
  */
 class WebSocketConnection extends EventEmitter {
   /**
-   * @param {WebSocketManager} manager the WebSocket manager
-   * @param {string} gateway Websocket gateway to connect to
+   * @param {WebSocketManager} manager The WebSocket manager
+   * @param {string} gateway WebSocket gateway to connect to
    */
   constructor(manager, gateway) {
     super();
@@ -17003,36 +17002,43 @@ class WebSocketConnection extends EventEmitter {
      * @type {WebSocketManager}
      */
     this.manager = manager;
+
     /**
-     * Client this belongs to
+     * The client this belongs to
      * @type {Client}
      */
     this.client = manager.client;
+
     /**
-     * WebSocket connection itself
+     * The WebSocket connection itself
      * @type {WebSocket}
      */
     this.ws = null;
+
     /**
-     * Current sequence of the WebSocket
+     * The current sequence of the WebSocket
      * @type {number}
      */
     this.sequence = -1;
+
     /**
-     * Current status of the client
+     * The current status of the client
      * @type {number}
      */
     this.status = Constants.Status.IDLE;
+
     /**
-     * Packet Manager of the connection
+     * The Packet Manager of the connection
      * @type {WebSocketPacketManager}
      */
     this.packetManager = new PacketManager(this);
+
     /**
-     * Last time a ping was sent (a timestamp)
+     * The last time a ping was sent (a timestamp)
      * @type {number}
      */
     this.lastPingTimestamp = 0;
+
     /**
      * Contains the rate limit queue and metadata
      * @type {Object}
@@ -17043,13 +17049,15 @@ class WebSocketConnection extends EventEmitter {
       resetTime: -1,
     };
     this.connect(gateway);
+
     /**
      * Events that are disabled (will not be processed)
      * @type {Object}
      */
     this.disabledEvents = {};
+
     /**
-     * Sequence on WebSocket close
+     * The sequence on WebSocket close
      * @type {number}
      */
     this.closeSequence = 0;
@@ -17057,7 +17065,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Causes the client to be marked as ready and emits the ready event
+   * Causes the client to be marked as ready and emits the ready event.
    * @returns {void}
    */
   triggerReady() {
@@ -17071,7 +17079,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Checks whether the client is ready to be marked as ready
+   * Checks whether the client is ready to be marked as ready.
    * @returns {void}
    */
   checkIfReady() {
@@ -17097,7 +17105,7 @@ class WebSocketConnection extends EventEmitter {
 
   // Util
   /**
-   * Emits a debug message
+   * Emits a debug message.
    * @param {string} message Debug message
    * @returns {void}
    */
@@ -17107,7 +17115,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Attempts to serialise data from the WebSocket
+   * Attempts to serialise data from the WebSocket.
    * @param {string|Object} data Data to unpack
    * @returns {Object}
    */
@@ -17122,7 +17130,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Packs an object ready to be sent
+   * Packs an object ready to be sent.
    * @param {Object} data Data to pack
    * @returns {string|Buffer}
    */
@@ -17131,7 +17139,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Processes the current WebSocket queue
+   * Processes the current WebSocket queue.
    */
   processQueue() {
     if (this.ratelimit.remaining === 0) return;
@@ -17151,7 +17159,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Sends data, bypassing the queue
+   * Sends data, bypassing the queue.
    * @param {Object} data Packet to send
    * @returns {void}
    */
@@ -17164,7 +17172,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Adds data to the queue to be sent
+   * Adds data to the queue to be sent.
    * @param {Object} data Packet to send
    * @returns {void}
    */
@@ -17178,7 +17186,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Creates a connection to a gateway
+   * Creates a connection to a gateway.
    * @param {string} gateway Gateway to connect to
    * @param {number} [after=0] How long to wait before connecting
    * @param {boolean} [force=false] Whether or not to force a new connection even if one already exists
@@ -17206,7 +17214,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Destroys the connection
+   * Destroys the connection.
    * @returns {boolean}
    */
   destroy() {
@@ -17224,7 +17232,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Called whenever a message is received
+   * Called whenever a message is received.
    * @param {Event} event Event received
    * @returns {boolean}
    */
@@ -17239,7 +17247,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Sets the current sequence of the connection
+   * Sets the current sequence of the connection.
    * @param {number} s New sequence
    */
   setSequence(s) {
@@ -17247,8 +17255,8 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Called whenever a packet is received
-   * @param {Object} packet received packet
+   * Called whenever a packet is received.
+   * @param {Object} packet Received packet
    * @returns {boolean}
    */
   onPacket(packet) {
@@ -17276,7 +17284,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Called whenever a connection is opened to the gateway
+   * Called whenever a connection is opened to the gateway.
    * @param {Event} event Received open event
    */
   onOpen(event) {
@@ -17286,7 +17294,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Causes a reconnection to the gateway
+   * Causes a reconnection to the gateway.
    */
   reconnect() {
     this.debug('Attemping to reconnect in 5500ms...');
@@ -17295,7 +17303,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Called whenever an error occurs with the WebSocket
+   * Called whenever an error occurs with the WebSocket.
    * @param {Error} error Error that occurred
    */
   onError(error) {
@@ -17308,7 +17316,7 @@ class WebSocketConnection extends EventEmitter {
    */
 
   /**
-   * Called whenever a connection to the gateway is closed
+   * Called whenever a connection to the gateway is closed.
    * @param {CloseEvent} event Close event that was received
    */
   onClose(event) {
@@ -17328,7 +17336,7 @@ class WebSocketConnection extends EventEmitter {
 
   // Heartbeat
   /**
-   * Acknowledges a heartbeat
+   * Acknowledges a heartbeat.
    */
   ackHeartbeat() {
     this.debug(`Heartbeat acknowledged, latency of ${Date.now() - this.lastPingTimestamp}ms`);
@@ -17337,8 +17345,8 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Sends a heartbeat or sets an interval for sending heartbeats.
-   * @param {number} [time] If -1, clears the interval, any other number sets an interval.
-   * If no value is given, a heartbeat will be sent instantly.
+   * @param {number} [time] If -1, clears the interval, any other number sets an interval
+   * If no value is given, a heartbeat will be sent instantly
    */
   heartbeat(time) {
     if (!isNaN(time)) {
@@ -17362,7 +17370,7 @@ class WebSocketConnection extends EventEmitter {
 
   // Identification
   /**
-   * Identifies the client on a connection
+   * Identifies the client on a connection.
    * @param {number} [after] How long to wait before identifying
    * @returns {void}
    */
@@ -17372,7 +17380,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Identifies as a new connection on the gateway
+   * Identifies as a new connection on the gateway.
    * @returns {void}
    */
   identifyNew() {
@@ -17393,7 +17401,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Resumes a session on the gateway
+   * Resumes a session on the gateway.
    * @returns {void}
    */
   identifyResume() {
@@ -17417,7 +17425,7 @@ class WebSocketConnection extends EventEmitter {
 }
 
 /**
- * Encoding the WebSocket connections will use
+ * Encoding the WebSocket connections will use.
  * @type {string}
  */
 WebSocketConnection.ENCODING = erlpack ? 'etf' : 'json';
@@ -17780,7 +17788,7 @@ class Client extends EventEmitter {
    * Sweeps all text-based channels' messages and removes the ones older than the max message lifetime.
    * If the message has been edited, the time of the edit is used rather than the time of the original message.
    * @param {number} [lifetime=this.options.messageCacheLifetime] Messages that are older than this (in seconds)
-   * will be removed from the caches. The default is based on {@link ClientOptions#messageCacheLifetime}.
+   * will be removed from the caches. The default is based on {@link ClientOptions#messageCacheLifetime}
    * @returns {number} Amount of messages that were removed from the caches,
    * or -1 if the message cache lifetime is unlimited
    */
@@ -17968,13 +17976,13 @@ class Client extends EventEmitter {
 module.exports = Client;
 
 /**
- * Emitted for general warnings
+ * Emitted for general warnings.
  * @event Client#warn
  * @param {string} info The warning
  */
 
 /**
- * Emitted for general debugging information
+ * Emitted for general debugging information.
  * @event Client#debug
  * @param {string} info The debug information
  */
@@ -17992,7 +18000,7 @@ const Constants = __webpack_require__(0);
 const Util = __webpack_require__(4);
 
 /**
- * The Webhook Client
+ * The webhook client.
  * @extends {Webhook}
  */
 class WebhookClient extends Webhook {
@@ -18001,7 +18009,7 @@ class WebhookClient extends Webhook {
    * @param {string} token Token of the webhook
    * @param {ClientOptions} [options] Options for the client
    * @example
-   * // create a new webhook and send a message
+   * // Create a new webhook and send a message
    * const hook = new Discord.WebhookClient('1234', 'abcdef');
    * hook.sendMessage('This will send a message').catch(console.error);
    */
@@ -18112,7 +18120,7 @@ module.exports = WebhookClient;
 const ClientDataResolver = __webpack_require__(39);
 
 /**
- * A rich embed to be sent with a message with a fluent interface for creation
+ * A rich embed to be sent with a message with a fluent interface for creation.
  * @param {Object} [data] Data to set in the rich embed
  */
 class RichEmbed {
@@ -18185,7 +18193,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the title of this embed
+   * Sets the title of this embed.
    * @param {StringResolvable} title The title
    * @returns {RichEmbed} This embed
    */
@@ -18197,7 +18205,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the description of this embed
+   * Sets the description of this embed.
    * @param {StringResolvable} description The description
    * @returns {RichEmbed} This embed
    */
@@ -18209,7 +18217,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the URL of this embed
+   * Sets the URL of this embed.
    * @param {string} url The URL
    * @returns {RichEmbed} This embed
    */
@@ -18219,7 +18227,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the color of this embed
+   * Sets the color of this embed.
    * @param {ColorResolvable} color The color of the embed
    * @returns {RichEmbed} This embed
    */
@@ -18229,7 +18237,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the author of this embed
+   * Sets the author of this embed.
    * @param {StringResolvable} name The name of the author
    * @param {string} [icon] The icon URL of the author
    * @param {string} [url] The URL of the author
@@ -18241,7 +18249,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the timestamp of this embed
+   * Sets the timestamp of this embed.
    * @param {Date} [timestamp=current date] The timestamp
    * @returns {RichEmbed} This embed
    */
@@ -18251,7 +18259,7 @@ class RichEmbed {
   }
 
   /**
-   * Adds a field to the embed (max 25)
+   * Adds a field to the embed (max 25).
    * @param {StringResolvable} name The name of the field
    * @param {StringResolvable} value The value of the field
    * @param {boolean} [inline=false] Set the field to display inline
@@ -18279,7 +18287,7 @@ class RichEmbed {
   }
 
   /**
-   * Set the thumbnail of this embed
+   * Set the thumbnail of this embed.
    * @param {string} url The URL of the thumbnail
    * @returns {RichEmbed} This embed
    */
@@ -18289,7 +18297,7 @@ class RichEmbed {
   }
 
   /**
-   * Set the image of this embed
+   * Set the image of this embed.
    * @param {string} url The URL of the image
    * @returns {RichEmbed} This embed
    */
@@ -18299,7 +18307,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the footer of this embed
+   * Sets the footer of this embed.
    * @param {StringResolvable} text The text of the footer
    * @param {string} [icon] The icon URL of the footer
    * @returns {RichEmbed} This embed
@@ -22634,19 +22642,19 @@ const Constants = __webpack_require__(0);
 const WebSocketConnection = __webpack_require__(69);
 
 /**
- * Manages the State and Background Tasks of the Client
+ * Manages the state and background tasks of the client.
  * @private
  */
 class ClientManager {
   constructor(client) {
     /**
-     * The Client that instantiated this Manager
+     * The client that instantiated this Manager
      * @type {Client}
      */
     this.client = client;
 
     /**
-     * The heartbeat interval, null if not yet set
+     * The heartbeat interval
      * @type {?number}
      */
     this.heartbeatInterval = null;
@@ -22661,7 +22669,7 @@ class ClientManager {
   }
 
   /**
-   * Connects the Client to the WebSocket
+   * Connects the client to the WebSocket.
    * @param {string} token The authorization token
    * @param {Function} resolve Function to run when connection is successful
    * @param {Function} reject Function to run when connection fails
@@ -22940,7 +22948,7 @@ class GuildDeleteAction extends Action {
 /**
  * Emitted whenever a guild becomes unavailable, likely due to a server outage.
  * @event Client#guildUnavailable
- * @param {Guild} guild The guild that has become unavailable.
+ * @param {Guild} guild The guild that has become unavailable
  */
 
 module.exports = GuildDeleteAction;
@@ -22961,9 +22969,9 @@ class GuildEmojiCreateAction extends Action {
 }
 
 /**
- * Emitted whenever a custom emoji is created in a guild
+ * Emitted whenever a custom emoji is created in a guild.
  * @event Client#emojiCreate
- * @param {Emoji} emoji The emoji that was created.
+ * @param {Emoji} emoji The emoji that was created
  */
 
 module.exports = GuildEmojiCreateAction;
@@ -22984,9 +22992,9 @@ class GuildEmojiDeleteAction extends Action {
 }
 
 /**
- * Emitted whenever a custom guild emoji is deleted
+ * Emitted whenever a custom guild emoji is deleted.
  * @event Client#emojiDelete
- * @param {Emoji} emoji The emoji that was deleted.
+ * @param {Emoji} emoji The emoji that was deleted
  */
 
 module.exports = GuildEmojiDeleteAction;
@@ -23006,7 +23014,7 @@ class GuildEmojiUpdateAction extends Action {
 }
 
 /**
- * Emitted whenever a custom guild emoji is updated
+ * Emitted whenever a custom guild emoji is updated.
  * @event Client#emojiUpdate
  * @param {Emoji} oldEmoji The old emoji
  * @param {Emoji} newEmoji The new emoji
@@ -23115,7 +23123,7 @@ class GuildMemberRemoveAction extends Action {
 /**
  * Emitted whenever a member leaves a guild, or is kicked.
  * @event Client#guildMemberRemove
- * @param {GuildMember} member The member that has left/been kicked from the guild.
+ * @param {GuildMember} member The member that has left/been kicked from the guild
  */
 
 module.exports = GuildMemberRemoveAction;
@@ -23147,7 +23155,7 @@ class GuildRoleCreate extends Action {
 /**
  * Emitted whenever a role is created.
  * @event Client#roleCreate
- * @param {Role} role The role that was created.
+ * @param {Role} role The role that was created
  */
 
 module.exports = GuildRoleCreate;
@@ -23194,7 +23202,7 @@ class GuildRoleDeleteAction extends Action {
 /**
  * Emitted whenever a guild role is deleted.
  * @event Client#roleDelete
- * @param {Role} role The role that was deleted.
+ * @param {Role} role The role that was deleted
  */
 
 module.exports = GuildRoleDeleteAction;
@@ -23240,8 +23248,8 @@ class GuildRoleUpdateAction extends Action {
 /**
  * Emitted whenever a guild role is updated.
  * @event Client#roleUpdate
- * @param {Role} oldRole The role before the update.
- * @param {Role} newRole The role after the update.
+ * @param {Role} oldRole The role before the update
+ * @param {Role} newRole The role after the update
  */
 
 module.exports = GuildRoleUpdateAction;
@@ -23340,8 +23348,8 @@ class GuildUpdateAction extends Action {
 /**
  * Emitted whenever a guild is updated - e.g. name change.
  * @event Client#guildUpdate
- * @param {Guild} oldGuild The guild before the update.
- * @param {Guild} newGuild The guild after the update.
+ * @param {Guild} oldGuild The guild before the update
+ * @param {Guild} newGuild The guild after the update
  */
 
 module.exports = GuildUpdateAction;
@@ -23512,8 +23520,8 @@ class MessageReactionAdd extends Action {
 /**
  * Emitted whenever a reaction is added to a message.
  * @event Client#messageReactionAdd
- * @param {MessageReaction} messageReaction The reaction object.
- * @param {User} user The user that applied the emoji or reaction emoji.
+ * @param {MessageReaction} messageReaction The reaction object
+ * @param {User} user The user that applied the emoji or reaction emoji
  */
 
 module.exports = MessageReactionAdd;
@@ -23555,8 +23563,8 @@ class MessageReactionRemove extends Action {
 /**
  * Emitted whenever a reaction is removed from a message.
  * @event Client#messageReactionRemove
- * @param {MessageReaction} messageReaction The reaction object.
- * @param {User} user The user that removed the emoji or reaction emoji.
+ * @param {MessageReaction} messageReaction The reaction object
+ * @param {User} user The user that removed the emoji or reaction emoji
  */
 
 module.exports = MessageReactionRemove;
@@ -23587,7 +23595,7 @@ class MessageReactionRemoveAll extends Action {
 /**
  * Emitted whenever all reactions are removed from a message.
  * @event Client#messageReactionRemoveAll
- * @param {Message} message The message the reactions were removed from.
+ * @param {Message} message The message the reactions were removed from
  */
 
 module.exports = MessageReactionRemoveAll;
@@ -23632,8 +23640,8 @@ class MessageUpdateAction extends Action {
 /**
  * Emitted whenever a message is updated - e.g. embed or content change.
  * @event Client#messageUpdate
- * @param {Message} oldMessage The message before the update.
- * @param {Message} newMessage The message after the update.
+ * @param {Message} oldMessage The message before the update
+ * @param {Message} newMessage The message after the update
  */
 
 module.exports = MessageUpdateAction;
@@ -24793,7 +24801,7 @@ class SequentialRequestHandler extends RequestHandler {
 
     /**
      * The time difference between Discord's Dates and the local computer's Dates. A positive number means the local
-     * computer's time is ahead of Discord's.
+     * computer's time is ahead of Discord's
      * @type {number}
      */
     this.timeDifference = 0;
@@ -24811,7 +24819,7 @@ class SequentialRequestHandler extends RequestHandler {
   }
 
   /**
-   * Performs a request then resolves a promise to indicate its readiness for a new request
+   * Performs a request then resolves a promise to indicate its readiness for a new request.
    * @param {APIRequest} item The item to execute
    * @returns {Promise<?Object|Error>}
    */
@@ -24908,20 +24916,20 @@ const Constants = __webpack_require__(0);
 const WebSocketConnection = __webpack_require__(69);
 
 /**
- * WebSocket Manager of the Client
+ * WebSocket Manager of the client
  * @private
  */
 class WebSocketManager extends EventEmitter {
   constructor(client) {
     super();
     /**
-     * Client that instantiated this WebSocketManager
+     * The client that instantiated this WebSocketManager
      * @type {Client}
      */
     this.client = client;
 
     /**
-     * WebSocket connection of this manager
+     * The WebSocket connection of this manager
      * @type {?WebSocketConnection}
      */
     this.connection = null;
@@ -24937,7 +24945,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   /**
-   * Emits a debug event
+   * Emits a debug event.
    * @param {string} message Debug message
    * @returns {void}
    */
@@ -24946,7 +24954,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   /**
-   * Destroy the client
+   * Destroy the client.
    * @returns {void} Whether or not destruction was successful
    */
   destroy() {
@@ -24958,7 +24966,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   /**
-   * Send a packet on the available WebSocket
+   * Send a packet on the available WebSocket.
    * @param {Object} packet Packet to send
    * @returns {void}
    */
@@ -24971,7 +24979,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   /**
-   * Connects the client to a gateway
+   * Connects the client to a gateway.
    * @param {string} gateway Gateway to connect to
    * @returns {boolean}
    */
@@ -25433,7 +25441,7 @@ class GuildMembersChunkHandler extends AbstractHandler {
 }
 
 /**
- * Emitted whenever a chunk of guild members is received (all members come from the same guild)
+ * Emitted whenever a chunk of guild members is received (all members come from the same guild).
  * @event Client#guildMembersChunk
  * @param {Collection<Snowflake, GuildMember>} members The members in the chunk
  * @param {Guild} guild The guild related to the member chunk
@@ -25544,7 +25552,7 @@ class MessageCreateHandler extends AbstractHandler {
 }
 
 /**
- * Emitted whenever a message is created
+ * Emitted whenever a message is created.
  * @event Client#message
  * @param {Message} message The created message
  */
@@ -25569,7 +25577,7 @@ class MessageDeleteHandler extends AbstractHandler {
 }
 
 /**
- * Emitted whenever a message is deleted
+ * Emitted whenever a message is deleted.
  * @event Client#messageDelete
  * @param {Message} message The deleted message
  */
@@ -25592,7 +25600,7 @@ class MessageDeleteBulkHandler extends AbstractHandler {
 }
 
 /**
- * Emitted whenever messages are deleted in bulk
+ * Emitted whenever messages are deleted in bulk.
  * @event Client#messageDeleteBulk
  * @param {Collection<Snowflake, Message>} messages The deleted messages, mapped by their ID
  */
@@ -25742,7 +25750,7 @@ class PresenceUpdateHandler extends AbstractHandler {
  */
 
 /**
- * Emitted whenever a member becomes available in a large guild
+ * Emitted whenever a member becomes available in a large guild.
  * @event Client#guildMemberAvailable
  * @param {GuildMember} member The member that became available
  */
@@ -25914,9 +25922,9 @@ class ResumedHandler extends AbstractHandler {
 }
 
 /**
- * Emitted whenever a websocket resumes
+ * Emitted whenever a WebSocket resumes.
  * @event Client#resume
- * @param {number} replayed Number of events that were replayed
+ * @param {number} replayed The number of events that were replayed
  */
 
 module.exports = ResumedHandler;
@@ -25980,14 +25988,14 @@ function tooLate(channel, user) {
 }
 
 /**
- * Emitted whenever a user starts typing in a channel
+ * Emitted whenever a user starts typing in a channel.
  * @event Client#typingStart
  * @param {Channel} channel The channel the user started typing in
  * @param {User} user The user that started typing
  */
 
 /**
- * Emitted whenever a user stops typing in a channel
+ * Emitted whenever a user stops typing in a channel.
  * @event Client#typingStop
  * @param {Channel} channel The channel the user stopped typing in
  * @param {User} user The user that stopped typing
@@ -26030,7 +26038,7 @@ class UserSettingsUpdateHandler extends AbstractHandler {
 }
 
 /**
- * Emitted when the client user's settings update
+ * Emitted when the client user's settings update.
  * @event Client#clientUserSettingsUpdate
  * @param {ClientUserSettings} clientUserSettings The new client user settings
  */
@@ -26249,7 +26257,7 @@ class GuildAuditLogs {
     if (data.users) for (const user of data.users) guild.client.dataManager.newUser(user);
 
     /**
-     * Entries for this Guild's audit logs
+     * The entries for this guild's audit logs
      * @type {GuildAuditLogsEntry[]}
      */
     this.entries = [];
@@ -26257,7 +26265,7 @@ class GuildAuditLogs {
   }
 
   /**
-   * Handles possible promises for entry targets
+   * Handles possible promises for entry targets.
    * @returns {GuildAuditLogs}
    */
   static build(...args) {
@@ -26268,8 +26276,8 @@ class GuildAuditLogs {
   }
 
   /**
-   * Find target type from entry action
-   * @param {number} target Action target
+   * Find target type from entry action.
+   * @param {number} target The action target
    * @returns {?string}
    */
   static targetType(target) {
@@ -26285,8 +26293,8 @@ class GuildAuditLogs {
 
 
   /**
-   * Find action type from entry action
-   * @param {string} action Action target
+   * Find action type from entry action.
+   * @param {string} action The action target
    * @returns {string}
    */
   static actionType(action) {
@@ -26331,13 +26339,13 @@ class GuildAuditLogsEntry {
   constructor(guild, data) {
     const targetType = GuildAuditLogs.targetType(data.action_type);
     /**
-     * Target type of this entry
+     * The target type of this entry
      * @type {string}
      */
     this.targetType = targetType;
 
     /**
-     * Action type of this entry
+     * The action type of this entry
      * @type {string}
      */
     this.actionType = GuildAuditLogs.actionType(data.action_type);
@@ -26349,13 +26357,13 @@ class GuildAuditLogsEntry {
     this.action = Object.keys(Actions).find(k => Actions[k] === data.action_type);
 
     /**
-     * Reason of this entry
+     * The reason of this entry
      * @type {?string}
      */
     this.reason = data.reason || null;
 
     /**
-     * User that executed this entry
+     * The user that executed this entry
      * @type {User}
      */
     this.executor = guild.client.users.get(data.user_id);
@@ -26367,14 +26375,14 @@ class GuildAuditLogsEntry {
     this.changes = data.changes ? data.changes.map(c => ({ name: c.key, old: c.old_value, new: c.new_value })) : null;
 
     /**
-     * ID of this entry
+     * The ID of this entry
      * @type {Snowflake}
      */
     this.id = data.id;
 
     if ([Targets.USER, Targets.GUILD].includes(targetType)) {
       /**
-       * Target of this entry
+       * The target of this entry
        * @type {?Guild|User|Role|Emoji|Invite|Webhook}
        */
       this.target = guild.client[`${targetType.toLowerCase()}s`].get(data.target_id);
@@ -26409,12 +26417,12 @@ module.exports = GuildAuditLogs;
 /***/ (function(module, exports) {
 
 /**
- * Represents a user connection (or "platform identity")
+ * Represents a user connection (or "platform identity").
  */
 class UserConnection {
   constructor(user, data) {
     /**
-     * The user that owns the Connection
+     * The user that owns the connection
      * @type {User}
      */
     this.user = user;
@@ -26424,7 +26432,7 @@ class UserConnection {
 
   setup(data) {
     /**
-     * The type of the Connection
+     * The type of the connection
      * @type {string}
      */
     this.type = data.type;
@@ -26477,7 +26485,7 @@ class UserProfile {
     this.user = user;
 
     /**
-     * The Client that created the instance of the the UserProfile.
+     * The client that created the instance of the the UserProfile.
      * @name UserProfile#client
      * @type {Client}
      * @readonly
@@ -26485,7 +26493,7 @@ class UserProfile {
     Object.defineProperty(this, 'client', { value: user.client });
 
     /**
-     * Guilds that the client user and the user share
+     * The guilds that the client user and the user share
      * @type {Collection<Snowflake, Guild>}
      */
     this.mutualGuilds = new Collection();
@@ -26531,12 +26539,12 @@ module.exports = UserProfile;
 /***/ (function(module, exports) {
 
 /**
- * Represents a Discord voice region for guilds
+ * Represents a Discord voice region for guilds.
  */
 class VoiceRegion {
   constructor(data) {
     /**
-     * ID of the region
+     * The ID of the region
      * @type {string}
      */
     this.id = data.id;
