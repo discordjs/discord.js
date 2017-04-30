@@ -740,7 +740,9 @@ class RESTMethods {
   sendWebhookMessage(webhook, content, { avatarURL, tts, disableEveryone, embeds, username } = {}, file = null) {
     username = username || webhook.name;
     if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
-    if (typeof embed !== 'undefined') embed = new MessageEmbed(content, embed)._transformForDiscord();
+    if (typeof embeds !== 'undefined') {
+      embeds = embeds.map(embed => new MessageEmbed(content, embed)._transformForDiscord());
+    }
 
     if (content) {
       if (disableEveryone || (typeof disableEveryone === 'undefined' && this.client.options.disableEveryone)) {
