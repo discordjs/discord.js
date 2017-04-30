@@ -50,7 +50,7 @@ class Util {
    * Gets the recommended shard count from Discord.
    * @param {string} token Discord auth token
    * @param {number} [guildsPerShard=1000] Number of guilds per shard
-   * @returns {Promise<number>} the recommended number of shards
+   * @returns {Promise<number>} The recommended number of shards
    */
   static fetchRecommendedShards(token, guildsPerShard = 1000) {
     return new Promise((resolve, reject) => {
@@ -90,7 +90,7 @@ class Util {
    * Checks whether the arrays are equal, also removes duplicated entries from b.
    * @param {Array<*>} a Array which will not be modified.
    * @param {Array<*>} b Array to remove duplicated entries from.
-   * @returns {boolean} boolean Whether the arrays are equal.
+   * @returns {boolean} Whether the arrays are equal.
    * @private
    */
   static arraysEqual(a, b) {
@@ -160,7 +160,7 @@ class Util {
   }
 
   /**
-   * Makes an Error from a plain info object
+   * Makes an Error from a plain info object.
    * @param {Object} obj Error info
    * @param {string} obj.name Error type
    * @param {string} obj.message Message for the error
@@ -176,7 +176,7 @@ class Util {
   }
 
   /**
-   * Makes a plain error info object from an Error
+   * Makes a plain error info object from an Error.
    * @param {Error} err Error to get info from
    * @returns {Object}
    * @private
@@ -190,7 +190,7 @@ class Util {
   }
 
   /**
-   * Moves an element in an array *in place*
+   * Moves an element in an array *in place*.
    * @param {Array<*>} array Array to modify
    * @param {*} element Element to move
    * @param {number} newIndex Index or offset to move the element to

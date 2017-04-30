@@ -347,7 +347,7 @@ class Client extends EventEmitter {
    * Sweeps all text-based channels' messages and removes the ones older than the max message lifetime.
    * If the message has been edited, the time of the edit is used rather than the time of the original message.
    * @param {number} [lifetime=this.options.messageCacheLifetime] Messages that are older than this (in seconds)
-   * will be removed from the caches. The default is based on {@link ClientOptions#messageCacheLifetime}.
+   * will be removed from the caches. The default is based on {@link ClientOptions#messageCacheLifetime}
    * @returns {number} Amount of messages that were removed from the caches,
    * or -1 if the message cache lifetime is unlimited
    */
@@ -535,13 +535,13 @@ class Client extends EventEmitter {
 module.exports = Client;
 
 /**
- * Emitted for general warnings
+ * Emitted for general warnings.
  * @event Client#warn
  * @param {string} info The warning
  */
 
 /**
- * Emitted for general debugging information
+ * Emitted for general debugging information.
  * @event Client#debug
  * @param {string} info The debug information
  */

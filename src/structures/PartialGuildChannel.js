@@ -10,7 +10,7 @@ const Constants = require('../util/Constants');
 class PartialGuildChannel {
   constructor(client, data) {
     /**
-     * The Client that instantiated this PartialGuildChannel
+     * The client that instantiated this PartialGuildChannel
      * @name PartialGuildChannel#client
      * @type {Client}
      * @readonly

@@ -19,7 +19,7 @@ class TextChannel extends GuildChannel {
     super.setup(data);
 
     /**
-     * The topic of the text channel, if there is one.
+     * The topic of the text channel
      * @type {?string}
      */
     this.topic = data.topic;
@@ -28,7 +28,7 @@ class TextChannel extends GuildChannel {
   }
 
   /**
-   * A collection of members that can see this channel, mapped by their ID.
+   * A collection of members that can see this channel, mapped by their ID
    * @type {Collection<Snowflake, GuildMember>}
    * @readonly
    */
@@ -43,6 +43,15 @@ class TextChannel extends GuildChannel {
   }
 
   /**
+   * If the Discord considers this channel NSFW
+   * @type {boolean}
+   * @readonly
+   */
+  get nsfw() {
+    return /^nsfw(-|$)/.test(this.name);
+  }
+
+  /**
    * Fetch all webhooks for the channel.
    * @returns {Promise<Collection<Snowflake, Webhook>>}
    */
@@ -52,12 +61,12 @@ class TextChannel extends GuildChannel {
 
   /**
    * Create a webhook for the channel.
-   * @param {string} name The name of the webhook.
-   * @param {BufferResolvable|Base64Resolvable} avatar The avatar for the webhook.
-   * @returns {Promise<Webhook>} webhook The created webhook.
+   * @param {string} name The name of the webhook
+   * @param {BufferResolvable|Base64Resolvable} avatar The avatar for the webhook
+   * @returns {Promise<Webhook>} webhook The created webhook
    * @example
    * channel.createWebhook('Snek', 'http://snek.s3.amazonaws.com/topSnek.png')
-   *  .then(webhook => console.log(`Created Webhook ${webhook}`))
+   *  .then(webhook => console.log(`Created webhook ${webhook}`))
    *  .catch(console.error)
    */
   createWebhook(name, avatar) {
@@ -70,15 +79,6 @@ class TextChannel extends GuildChannel {
         );
       }
     });
-  }
-
-  /**
-   * If the Discord Client considers this channel NSFW
-   * @type {boolean}
-   * @readonly
-   */
-  get nsfw() {
-    return /^nsfw(-|$)/.test(this.name);
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel

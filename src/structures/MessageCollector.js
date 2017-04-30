@@ -3,8 +3,8 @@ const util = require('util');
 
 /**
  * @typedef {CollectorOptions} MessageCollectorOptions
- * @property {number} max The maximum amount of messages to process.
- * @property {number} maxMatches The maximum amount of messages to collect.
+ * @property {number} max The maximum amount of messages to process
+ * @property {number} maxMatches The maximum amount of messages to collect
  */
 
 /**
@@ -14,36 +14,35 @@ const util = require('util');
 class MessageCollector extends Collector {
 
   /**
-   * @param {TextChannel|DMChannel|GroupDMChannel} channel The channel.
-   * @param {CollectorFilter} filter The filter to be applied to this collector.
-   * @param {MessageCollectorOptions} options The options to be applied to this collector.
+   * @param {TextChannel|DMChannel|GroupDMChannel} channel The channel
+   * @param {CollectorFilter} filter The filter to be applied to this collector
+   * @param {MessageCollectorOptions} options The options to be applied to this collector
    * @emits MessageCollector#message
    */
   constructor(channel, filter, options = {}) {
     super(channel.client, filter, options);
 
     /**
-     * @type {TextBasedChannel} channel The channel.
+     * @type {TextBasedChannel} channel The channel
      */
     this.channel = channel;
 
     /**
-     * Total number of messages that were received in the
-     * channel during message collection.
+     * Total number of messages that were received in the channel during message collection
      * @type {number}
      */
     this.received = 0;
 
     this.client.on('message', this.listener);
 
-    // For backwards compatibility (remove in v12).
+    // For backwards compatibility (remove in v12)
     if (this.options.max) this.options.maxProcessed = this.options.max;
     if (this.options.maxMatches) this.options.max = this.options.maxMatches;
     this._reEmitter = message => {
       /**
        * Emitted when the collector receives a message.
        * @event MessageCollector#message
-       * @param {Message} message The message.
+       * @param {Message} message The message
        * @deprecated
        */
       this.emit('message', message);
@@ -51,7 +50,7 @@ class MessageCollector extends Collector {
     this.on('collect', this._reEmitter);
   }
 
-  // TODO: Remove me in v12
+  // Remove in v12
   on(eventName, listener) {
     if (eventName === 'message') {
       listener = util.deprecate(listener, 'MessageCollector will soon no longer emit "message", use "collect" instead');
@@ -61,8 +60,8 @@ class MessageCollector extends Collector {
 
   /**
    * Handle an incoming message for possible collection.
-   * @param {Message} message The message that could be collected.
-   * @returns {?{key: Snowflake, value: Message}} Message data to collect.
+   * @param {Message} message The message that could be collected
+   * @returns {?{key: Snowflake, value: Message}} Message data to collect
    * @private
    */
   handle(message) {
@@ -76,7 +75,7 @@ class MessageCollector extends Collector {
 
   /**
    * Check after collection to see if the collector is done.
-   * @returns {?string} Reason to end the collector, if any.
+   * @returns {?string} Reason to end the collector, if any
    * @private
    */
   postCheck() {

@@ -11,7 +11,7 @@ class MessageCreateHandler extends AbstractHandler {
 }
 
 /**
- * Emitted whenever a message is created
+ * Emitted whenever a message is created.
  * @event Client#message
  * @param {Message} message The created message
  */
