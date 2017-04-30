@@ -312,7 +312,7 @@ class Guild {
   }
 
   /**
-   * The `@everyone` Role of the guild
+   * The `@everyone` role of the guild
    * @type {Role}
    * @readonly
    */
@@ -322,7 +322,7 @@ class Guild {
 
   /**
    * The client user as a GuildMember of this guild
-   * @type {GuildMember}
+   * @type {?GuildMember}
    * @readonly
    */
   get me() {
