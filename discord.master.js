@@ -17193,15 +17193,11 @@ class WebSocketConnection extends EventEmitter {
    * @returns {Object}
    */
   unpack(data) {
-    if (erlpack && typeof data !== 'string') {
-      if (data instanceof ArrayBuffer) data = Buffer.from(new Uint8Array(data));
-      return erlpack.unpack(data);
-    } else if (data instanceof ArrayBuffer) {
-      data = Buffer.from(data);
-    }
-    if (data instanceof Buffer) {
-      data = zlib.inflateSync(data).toString();
-    }
+    if (data instanceof ArrayBuffer) data = Buffer.from(new Uint8Array(data));
+
+    if (erlpack && typeof data !== 'string') return erlpack.unpack(data);
+    else if (data instanceof Buffer) data = zlib.inflateSync(data).toString();
+
     return JSON.parse(data);
   }
 
