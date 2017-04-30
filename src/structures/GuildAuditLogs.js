@@ -38,6 +38,10 @@ const Actions = {
   EMOJI_DELETE: 62,
 };
 
+
+/**
+ * Audit logs entries are held in this class
+ */
 class GuildAuditLogs {
   constructor(guild, data) {
     if (data.users) for (const user of data.users) guild.client.dataManager.newUser(user);
@@ -124,6 +128,9 @@ class GuildAuditLogs {
   }
 }
 
+/**
+ * Audit logs entry
+ */
 class GuildAuditLogsEntry {
   constructor(guild, data) {
     const targetType = GuildAuditLogs.targetType(data.action_type);
