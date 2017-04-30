@@ -48,6 +48,7 @@ For production bots, using node-opus should be considered a necessity, especiall
 - One of the following packages can be installed for faster voice packet encryption and decryption:
     - [sodium](https://www.npmjs.com/package/sodium) (`npm install sodium --save`)
     - [libsodium.js](https://www.npmjs.com/package/libsodium-wrappers) (`npm install libsodium-wrappers --save`)
+- [uws](https://www.npmjs.com/package/uws) for a much faster WebSocket connection (`npm install uws --save`)
 
 ## Example usage
 ```js
