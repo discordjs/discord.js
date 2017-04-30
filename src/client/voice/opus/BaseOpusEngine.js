@@ -1,5 +1,5 @@
 /**
- * The base opus encoding engine
+ * The base opus encoding engine.
  * @private
  */
 class BaseOpus {
