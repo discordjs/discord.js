@@ -176,10 +176,10 @@ class GuildAuditLogsEntry {
           days: data.options.delete_member_days,
         };
       } else {
-        switch (options.type) {
+        switch (data.options.type) {
           case 'member':
             this.extra = guild.members.get(this.options.id);
-            if (!this.extra) this.extra = { id: this.options.id }
+            if (!this.extra) this.extra = { id: this.options.id };
             break;
           case 'role':
             this.extra = guild.roles.get(this.options.id);
