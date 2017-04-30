@@ -12263,7 +12263,7 @@ module.exports = {
 		"ws": "^2.0.0"
 	},
 	"peerDependencies": {
-		"bufferutil": "^2.0.0",
+		"bufferutil": "^3.0.0",
 		"erlpack": "hammerandchisel/erlpack",
 		"node-opus": "^0.2.5",
 		"opusscript": "^0.0.3",
