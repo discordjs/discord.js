@@ -84,7 +84,7 @@ class ClientDataResolver {
    * Data that resolves to give a GuildMember object. This can be:
    * * A GuildMember object
    * * A User object
-   * @typedef {Guild} GuildMemberResolvable
+   * @typedef {GuildMember|User} GuildMemberResolvable
    */
 
   /**
