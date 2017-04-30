@@ -1,7 +1,7 @@
 const ClientDataResolver = require('../client/ClientDataResolver');
 
 /**
- * A rich embed to be sent with a message with a fluent interface for creation
+ * A rich embed to be sent with a message with a fluent interface for creation.
  * @param {Object} [data] Data to set in the rich embed
  */
 class RichEmbed {
@@ -74,7 +74,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the title of this embed
+   * Sets the title of this embed.
    * @param {StringResolvable} title The title
    * @returns {RichEmbed} This embed
    */
@@ -86,7 +86,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the description of this embed
+   * Sets the description of this embed.
    * @param {StringResolvable} description The description
    * @returns {RichEmbed} This embed
    */
@@ -98,7 +98,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the URL of this embed
+   * Sets the URL of this embed.
    * @param {string} url The URL
    * @returns {RichEmbed} This embed
    */
@@ -108,7 +108,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the color of this embed
+   * Sets the color of this embed.
    * @param {ColorResolvable} color The color of the embed
    * @returns {RichEmbed} This embed
    */
@@ -118,7 +118,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the author of this embed
+   * Sets the author of this embed.
    * @param {StringResolvable} name The name of the author
    * @param {string} [icon] The icon URL of the author
    * @param {string} [url] The URL of the author
@@ -130,7 +130,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the timestamp of this embed
+   * Sets the timestamp of this embed.
    * @param {Date} [timestamp=current date] The timestamp
    * @returns {RichEmbed} This embed
    */
@@ -140,7 +140,7 @@ class RichEmbed {
   }
 
   /**
-   * Adds a field to the embed (max 25)
+   * Adds a field to the embed (max 25).
    * @param {StringResolvable} name The name of the field
    * @param {StringResolvable} value The value of the field
    * @param {boolean} [inline=false] Set the field to display inline
@@ -166,7 +166,7 @@ class RichEmbed {
 
   /**
    * Changes properties of a field at a specified index, parameters can be made
-   * `null` or `undefined` to inherit properties of the field being changed
+   * `null` or `undefined` to inherit properties of the field being changed.
    * @param {number} index The index number of the field, starting from 0
    * @param {StringResolvable} name The new name of the field
    * @param {StringResolvable} value The new value of the field
@@ -187,7 +187,7 @@ class RichEmbed {
   }
 
   /**
-   * Set the thumbnail of this embed
+   * Set the thumbnail of this embed.
    * @param {string} url The URL of the thumbnail
    * @returns {RichEmbed} This embed
    */
@@ -197,7 +197,7 @@ class RichEmbed {
   }
 
   /**
-   * Set the image of this embed
+   * Set the image of this embed.
    * @param {string} url The URL of the image
    * @returns {RichEmbed} This embed
    */
@@ -207,7 +207,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the footer of this embed
+   * Sets the footer of this embed.
    * @param {StringResolvable} text The text of the footer
    * @param {string} [icon] The icon URL of the footer
    * @returns {RichEmbed} This embed

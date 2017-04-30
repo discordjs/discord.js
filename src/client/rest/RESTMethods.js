@@ -19,6 +19,7 @@ const Channel = require('../../structures/Channel');
 const GroupDMChannel = require('../../structures/GroupDMChannel');
 const Guild = require('../../structures/Guild');
 const VoiceRegion = require('../../structures/VoiceRegion');
+const GuildAuditLogs = require('../../structures/GuildAuditLogs');
 
 class RESTMethods {
   constructor(restManager) {
@@ -159,7 +160,9 @@ class RESTMethods {
   }
 
   ackTextChannel(channel) {
-    return this.rest.makeRequest('post', Endpoints.Channel(channel).ack, true, { token: this._ackToken }).then(res => {
+    return this.rest.makeRequest('post', Endpoints.Channel(channel).Message(channel.lastMessageID).ack, true, {
+      token: this._ackToken,
+    }).then(res => {
       if (res.token) this._ackToken = res.token;
       return channel;
     });
@@ -186,6 +189,7 @@ class RESTMethods {
   }
 
   search(target, options) {
+    if (typeof options === 'string') options = { content: options };
     if (options.before) {
       if (!(options.before instanceof Date)) options.before = new Date(options.before);
       options.maxID = long.fromNumber(options.before.getTime() - 14200704e5).shiftLeft(22).toString();
@@ -383,8 +387,9 @@ class RESTMethods {
     );
   }
 
-  kickGuildMember(guild, member) {
-    return this.rest.makeRequest('delete', Endpoints.Guild(guild).Member(member), true).then(() =>
+  kickGuildMember(guild, member, reason) {
+    const url = `${Endpoints.Guild(guild).Member(member)}?reason=${reason}`;
+    return this.rest.makeRequest('delete', url, true).then(() =>
       this.client.actions.GuildMemberRemove.handle({
         guild_id: guild.id,
         user: member.user,
@@ -527,14 +532,12 @@ class RESTMethods {
     return this.rest.makeRequest('post', Endpoints.Channel(channelID).typing, true);
   }
 
-  banGuildMember(guild, member, deleteDays = 0) {
+  banGuildMember(guild, member, options) {
     const id = this.client.resolver.resolveUserID(member);
     if (!id) return Promise.reject(new Error('Couldn\'t resolve the user ID to ban.'));
-    return this.rest.makeRequest(
-      'put', `${Endpoints.Guild(guild).bans}/${id}?delete-message-days=${deleteDays}`, true, {
-        'delete-message-days': deleteDays,
-      }
-    ).then(() => {
+
+    const url = `${Endpoints.Guild(guild).bans}/${id}?${querystring.stringify(options)}`;
+    return this.rest.makeRequest('put', url, true).then(() => {
       if (member instanceof GuildMember) return member;
       const user = this.client.resolver.resolveUser(id);
       if (user) {
@@ -573,14 +576,15 @@ class RESTMethods {
   }
 
   getGuildBans(guild) {
-    return this.rest.makeRequest('get', Endpoints.Guild(guild).bans, true).then(banItems => {
-      const bannedUsers = new Collection();
-      for (const banItem of banItems) {
-        const user = this.client.dataManager.newUser(banItem.user);
-        bannedUsers.set(user.id, user);
-      }
-      return bannedUsers;
-    });
+    return this.rest.makeRequest('get', Endpoints.Guild(guild).bans, true).then(bans =>
+      bans.reduce((collection, ban) => {
+        collection.set(ban.user.id, {
+          reason: ban.reason,
+          user: this.client.dataManager.newUser(ban.user),
+        });
+        return collection;
+      }, new Collection())
+    );
   }
 
   updateGuildRole(role, _data) {
@@ -669,6 +673,23 @@ class RESTMethods {
   deleteEmoji(emoji) {
     return this.rest.makeRequest('delete', Endpoints.Guild(emoji.guild).Emoji(emoji.id), true)
       .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);
+  }
+
+  getGuildAuditLogs(guild, options = {}) {
+    if (options.before && options.before instanceof GuildAuditLogs.Entry) options.before = options.before.id;
+    if (options.after && options.after instanceof GuildAuditLogs.Entry) options.after = options.after.id;
+    if (typeof options.type === 'string') options.type = GuildAuditLogs.Actions[options.type];
+
+    const queryString = (querystring.stringify({
+      before: options.before,
+      after: options.after,
+      limit: options.limit,
+      user_id: this.client.resolver.resolveUserID(options.user),
+      action_type: options.type,
+    }).match(/[^=&?]+=[^=&?]+/g) || []).join('&');
+
+    return this.rest.makeRequest('get', `${Endpoints.Guild(guild).auditLogs}?${queryString}`, true)
+      .then(data => GuildAuditLogs.build(guild, data));
   }
 
   getWebhook(id, token) {

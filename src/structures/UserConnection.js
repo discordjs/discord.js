@@ -1,10 +1,10 @@
 /**
- * Represents a user connection (or "platform identity")
+ * Represents a user connection (or "platform identity").
  */
 class UserConnection {
   constructor(user, data) {
     /**
-     * The user that owns the Connection
+     * The user that owns the connection
      * @type {User}
      */
     this.user = user;
@@ -14,7 +14,7 @@ class UserConnection {
 
   setup(data) {
     /**
-     * The type of the Connection
+     * The type of the connection
      * @type {string}
      */
     this.type = data.type;

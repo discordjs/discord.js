@@ -8,7 +8,7 @@ class Collection extends Map {
     super(iterable);
 
     /**
-     * Cached array for the `array()` method - will be reset to `null` whenever `set()` or `delete()` are called.
+     * Cached array for the `array()` method - will be reset to `null` whenever `set()` or `delete()` are called
      * @name Collection#_array
      * @type {?Array}
      * @private
@@ -16,7 +16,7 @@ class Collection extends Map {
     Object.defineProperty(this, '_array', { value: null, writable: true, configurable: true });
 
     /**
-     * Cached array for the `keyArray()` method - will be reset to `null` whenever `set()` or `delete()` are called.
+     * Cached array for the `keyArray()` method - will be reset to `null` whenever `set()` or `delete()` are called
      * @name Collection#_keyArray
      * @type {?Array}
      * @private
