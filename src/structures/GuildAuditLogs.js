@@ -176,6 +176,33 @@ class GuildAuditLogsEntry {
      */
     this.id = data.id;
 
+    /**
+     * Any extra data from the entry
+     * @type {?Object|Role|GuildMember}
+     */
+    this.extra = null;
+    if (data.options) {
+      if (data.action_type === Actions.MEMBER_PRUNE) {
+        this.extra = {
+          removed: data.options.members_removed,
+          days: data.options.delete_member_days,
+        };
+      } else {
+        switch (data.options.type) {
+          case 'member':
+            this.extra = guild.members.get(this.options.id);
+            if (!this.extra) this.extra = { id: this.options.id };
+            break;
+          case 'role':
+            this.extra = guild.roles.get(this.options.id);
+            if (!this.extra) this.extra = { id: this.options.id, name: this.options.role_name };
+            break;
+          default:
+            break;
+        }
+      }
+    }
+
     if ([Targets.USER, Targets.GUILD].includes(targetType)) {
       /**
        * The target of this entry
