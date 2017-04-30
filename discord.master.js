@@ -17369,6 +17369,10 @@ class WebSocketConnection extends EventEmitter {
    */
   reconnect() {
     this.debug('Attemping to reconnect in 5500ms...');
+    /**
+     * Emitted whenever the client tries to reconnect to the WebSocket.
+     * @event Client#reconnecting
+     */
     this.client.emit(Constants.Events.RECONNECTING);
     this.connect(this.gateway, 5500, true);
   }
@@ -17399,6 +17403,12 @@ class WebSocketConnection extends EventEmitter {
     this.heartbeat(-1);
     // Should we reconnect?
     if (Constants.WSCodes[event.code]) {
+      /**
+       * Emitted when the client's WebSocket disconnects and will no longer attempt to reconnect.
+       * @event Client#disconnect
+       * @param {CloseEvent} event The WebSocket close event
+       */
+      this.client.emit(Constants.Events.DISCONNECT, event);
       this.debug(Constants.WSCodes[event.code]);
       this.destroy();
       return;
