@@ -40,7 +40,7 @@ const Actions = {
 
 
 /**
- * Audit logs entries are held in this class
+ * Audit logs entries are held in this class.
  */
 class GuildAuditLogs {
   constructor(guild, data) {
@@ -129,7 +129,7 @@ class GuildAuditLogs {
 }
 
 /**
- * Audit logs entry
+ * Audit logs entry.
  */
 class GuildAuditLogsEntry {
   constructor(guild, data) {
