@@ -13556,6 +13556,13 @@ class MessageMentions {
     this._content = message.content;
 
     /**
+     * Client the message is from
+     * @type {Client}
+     * @private
+     */
+    this._client = message.client;
+
+    /**
      * Guild the message is in
      * @type {?Guild}
      * @private
@@ -13594,17 +13601,16 @@ class MessageMentions {
   }
 
   /**
-   * Any channels that were mentioned (only in {@link TextChannel}s)
+   * Any channels that were mentioned
    * @type {?Collection<Snowflake, GuildChannel>}
    * @readonly
    */
   get channels() {
     if (this._channels) return this._channels;
-    if (!this._guild) return null;
     this._channels = new Collection();
     let matches;
     while ((matches = this.constructor.CHANNELS_PATTERN.exec(this._content)) !== null) {
-      const chan = this._guild.channels.get(matches[1]);
+      const chan = this._client.channels.get(matches[1]);
       if (chan) this._channels.set(chan.id, chan);
     }
     return this._channels;
