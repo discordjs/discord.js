@@ -2,19 +2,19 @@ const Constants = require('../util/Constants');
 const WebSocketConnection = require('./websocket/WebSocketConnection');
 
 /**
- * Manages the State and Background Tasks of the Client
+ * Manages the state and background tasks of the client.
  * @private
  */
 class ClientManager {
   constructor(client) {
     /**
-     * The Client that instantiated this Manager
+     * The client that instantiated this Manager
      * @type {Client}
      */
     this.client = client;
 
     /**
-     * The heartbeat interval, null if not yet set
+     * The heartbeat interval
      * @type {?number}
      */
     this.heartbeatInterval = null;
@@ -29,7 +29,7 @@ class ClientManager {
   }
 
   /**
-   * Connects the Client to the WebSocket
+   * Connects the client to the WebSocket.
    * @param {string} token The authorization token
    * @param {Function} resolve Function to run when connection is successful
    * @param {Function} reject Function to run when connection fails

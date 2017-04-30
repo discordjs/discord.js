@@ -1,10 +1,10 @@
 /**
- * Represents a Discord voice region for guilds
+ * Represents a Discord voice region for guilds.
  */
 class VoiceRegion {
   constructor(data) {
     /**
-     * ID of the region
+     * The ID of the region
      * @type {string}
      */
     this.id = data.id;

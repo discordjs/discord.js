@@ -3,20 +3,20 @@ const Constants = require('../../util/Constants');
 const WebSocketConnection = require('./WebSocketConnection');
 
 /**
- * WebSocket Manager of the Client
+ * WebSocket Manager of the client
  * @private
  */
 class WebSocketManager extends EventEmitter {
   constructor(client) {
     super();
     /**
-     * Client that instantiated this WebSocketManager
+     * The client that instantiated this WebSocketManager
      * @type {Client}
      */
     this.client = client;
 
     /**
-     * WebSocket connection of this manager
+     * The WebSocket connection of this manager
      * @type {?WebSocketConnection}
      */
     this.connection = null;
@@ -32,7 +32,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   /**
-   * Emits a debug event
+   * Emits a debug event.
    * @param {string} message Debug message
    * @returns {void}
    */
@@ -41,7 +41,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   /**
-   * Destroy the client
+   * Destroy the client.
    * @returns {void} Whether or not destruction was successful
    */
   destroy() {
@@ -53,7 +53,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   /**
-   * Send a packet on the available WebSocket
+   * Send a packet on the available WebSocket.
    * @param {Object} packet Packet to send
    * @returns {void}
    */
@@ -66,7 +66,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   /**
-   * Connects the client to a gateway
+   * Connects the client to a gateway.
    * @param {string} gateway Gateway to connect to
    * @returns {boolean}
    */

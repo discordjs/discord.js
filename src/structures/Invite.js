@@ -42,8 +42,8 @@ class Invite {
 
   setup(data) {
     /**
-     * The guild the invite is for. If this guild is already known, this will be a Guild object. If the guild is
-     * unknown, this will be a PartialGuild object.
+     * The guild the invite is for. If this guild is already known, this will be a guild object. If the guild is
+     * unknown, this will be a PartialGuild object
      * @type {Guild|PartialGuild}
      */
     this.guild = this.client.guilds.get(data.guild.id) || new PartialGuild(this.client, data.guild);
@@ -137,7 +137,7 @@ class Invite {
   }
 
   /**
-   * Deletes this invite
+   * Deletes this invite.
    * @returns {Promise<Invite>}
    */
   delete() {
@@ -148,7 +148,7 @@ class Invite {
    * When concatenated with a string, this automatically concatenates the invite's URL instead of the object.
    * @returns {string}
    * @example
-   * // logs: Invite: https://discord.gg/A1b2C3
+   * // Logs: Invite: https://discord.gg/A1b2C3
    * console.log(`Invite: ${invite}`);
    */
   toString() {

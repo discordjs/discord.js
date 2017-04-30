@@ -1,5 +1,5 @@
 /**
- * Represents an error from the Discord API
+ * Represents an error from the Discord API.
  */
 class DiscordAPIError extends Error {
   constructor(error) {
@@ -16,7 +16,7 @@ class DiscordAPIError extends Error {
   }
 
   /**
-   * Flattens an errors object returned from the API into an array
+   * Flattens an errors object returned from the API into an array.
    * @param {Object} obj Discord errors object
    * @param {string} [key] idklol
    * @returns {string[]}

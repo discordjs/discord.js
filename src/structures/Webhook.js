@@ -1,13 +1,13 @@
 const path = require('path');
 
 /**
- * Represents a webhook
+ * Represents a webhook.
  */
 class Webhook {
   constructor(client, dataOrID, token) {
     if (client) {
       /**
-       * The Client that instantiated the Webhook
+       * The client that instantiated the webhook
        * @name Webhook#client
        * @type {Client}
        * @readonly
@@ -70,7 +70,7 @@ class Webhook {
   }
 
   /**
-   * Options that can be passed into send, sendMessage, sendFile, sendEmbed, and sendCode
+   * Options that can be passed into send, sendMessage, sendFile, sendEmbed, and sendCode.
    * @typedef {Object} WebhookMessageOptions
    * @property {string} [username=this.name] Username override for the message
    * @property {string} [avatarURL] Avatar URL override for the message
@@ -87,12 +87,12 @@ class Webhook {
    */
 
   /**
-   * Send a message with this webhook
-   * @param {StringResolvable} content The content to send.
-   * @param {WebhookMessageOptions} [options={}] The options to provide.
+   * Send a message with this webhook.
+   * @param {StringResolvable} content The content to send
+   * @param {WebhookMessageOptions} [options={}] The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
-   * // send a message
+   * // Send a message
    * webhook.send('hello!')
    *  .then(message => console.log(`Sent message: ${message.content}`))
    *  .catch(console.error);
@@ -127,11 +127,11 @@ class Webhook {
 
   /**
    * Send a message with this webhook
-   * @param {StringResolvable} content The content to send.
-   * @param {WebhookMessageOptions} [options={}] The options to provide.
+   * @param {StringResolvable} content The content to send
+   * @param {WebhookMessageOptions} [options={}] The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
-   * // send a message
+   * // Send a message
    * webhook.sendMessage('hello!')
    *  .then(message => console.log(`Sent message: ${message.content}`))
    *  .catch(console.error);
@@ -141,7 +141,7 @@ class Webhook {
   }
 
   /**
-   * Send a file with this webhook
+   * Send a file with this webhook.
    * @param {BufferResolvable} attachment The file to send
    * @param {string} [name='file.jpg'] The name and extension of the file
    * @param {StringResolvable} [content] Text message to send with the attachment
@@ -153,7 +153,7 @@ class Webhook {
   }
 
   /**
-   * Send a code block with this webhook
+   * Send a code block with this webhook.
    * @param {string} lang Language for the code block
    * @param {StringResolvable} content Content of the code block
    * @param {WebhookMessageOptions} options The options to provide
@@ -164,11 +164,11 @@ class Webhook {
   }
 
   /**
-   * Send a raw slack message with this webhook
-   * @param {Object} body The raw body to send.
+   * Send a raw slack message with this webhook.
+   * @param {Object} body The raw body to send
    * @returns {Promise}
    * @example
-   * // send a slack message
+   * // Send a slack message
    * webhook.sendSlackMessage({
    *   'username': 'Wumpus',
    *   'attachments': [{
@@ -186,8 +186,8 @@ class Webhook {
 
   /**
    * Edit the webhook.
-   * @param {string} name The new name for the Webhook
-   * @param {BufferResolvable} avatar The new avatar for the Webhook.
+   * @param {string} name The new name for the webhook
+   * @param {BufferResolvable} avatar The new avatar for the webhook
    * @returns {Promise<Webhook>}
    */
   edit(name = this.name, avatar) {
@@ -204,7 +204,7 @@ class Webhook {
   }
 
   /**
-   * Delete the webhook
+   * Delete the webhook.
    * @returns {Promise}
    */
   delete() {

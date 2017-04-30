@@ -17,7 +17,7 @@ const Snowflake = require('../util/Snowflake');
 class Guild {
   constructor(client, data) {
     /**
-     * The Client that created the instance of the the Guild.
+     * The client that created the instance of the the guild
      * @name Guild#client
      * @type {Client}
      * @readonly
@@ -25,19 +25,19 @@ class Guild {
     Object.defineProperty(this, 'client', { value: client });
 
     /**
-     * A collection of members that are in this guild. The key is the member's ID, the value is the member.
+     * A collection of members that are in this guild. The key is the member's ID, the value is the member
      * @type {Collection<Snowflake, GuildMember>}
      */
     this.members = new Collection();
 
     /**
-     * A collection of channels that are in this guild. The key is the channel's ID, the value is the channel.
+     * A collection of channels that are in this guild. The key is the channel's ID, the value is the channel
      * @type {Collection<Snowflake, GuildChannel>}
      */
     this.channels = new Collection();
 
     /**
-     * A collection of roles that are in this guild. The key is the role's ID, the value is the role.
+     * A collection of roles that are in this guild. The key is the role's ID, the value is the role
      * @type {Collection<Snowflake, Role>}
      */
     this.roles = new Collection();
@@ -51,13 +51,13 @@ class Guild {
     if (!data) return;
     if (data.unavailable) {
       /**
-       * Whether the guild is available to access. If it is not available, it indicates a server outage.
+       * Whether the guild is available to access. If it is not available, it indicates a server outage
        * @type {boolean}
        */
       this.available = false;
 
       /**
-       * The Unique ID of the Guild, useful for comparisons.
+       * The Unique ID of the guild, useful for comparisons
        * @type {Snowflake}
        */
       this.id = data.id;
@@ -68,7 +68,7 @@ class Guild {
   }
 
   /**
-   * Sets up the Guild
+   * Sets up the guild.
    * @param {*} data The raw data of the guild
    * @private
    */
@@ -80,13 +80,13 @@ class Guild {
     this.name = data.name;
 
     /**
-     * The hash of the guild icon, or null if there is no icon.
+     * The hash of the guild icon
      * @type {?string}
      */
     this.icon = data.icon;
 
     /**
-     * The hash of the guild splash image, or null if no splash (VIP only)
+     * The hash of the guild splash image (VIP only)
      * @type {?string}
      */
     this.splash = data.splash;
@@ -110,7 +110,7 @@ class Guild {
     this.large = Boolean('large' in data ? data.large : this.large);
 
     /**
-     * An array of guild features.
+     * An array of guild features
      * @type {Object[]}
      */
     this.features = data.features;
@@ -122,31 +122,31 @@ class Guild {
     this.applicationID = data.application_id;
 
     /**
-     * The time in seconds before a user is counted as "away from keyboard".
+     * The time in seconds before a user is counted as "away from keyboard"
      * @type {?number}
      */
     this.afkTimeout = data.afk_timeout;
 
     /**
-     * The ID of the voice channel where AFK members are moved.
+     * The ID of the voice channel where AFK members are moved
      * @type {?string}
      */
     this.afkChannelID = data.afk_channel_id;
 
     /**
-     * Whether embedded images are enabled on this guild.
+     * Whether embedded images are enabled on this guild
      * @type {boolean}
      */
     this.embedEnabled = data.embed_enabled;
 
     /**
-     * The verification level of the guild.
+     * The verification level of the guild
      * @type {number}
      */
     this.verificationLevel = data.verification_level;
 
     /**
-     * The explicit content filter level of the guild.
+     * The explicit content filter level of the guild
      * @type {number}
      */
     this.explicitContentFilter = data.explicit_content_filter;
@@ -168,7 +168,7 @@ class Guild {
 
     if (data.owner_id) {
       /**
-       * The user ID of this guild's owner.
+       * The user ID of this guild's owner
        * @type {Snowflake}
        */
       this.ownerID = data.owner_id;
@@ -253,7 +253,7 @@ class Guild {
   }
 
   /**
-   * Gets the URL to this guild's icon (if it has one, otherwise it returns null)
+   * The URL to this guild's icon
    * @type {?string}
    * @readonly
    */
@@ -263,7 +263,7 @@ class Guild {
   }
 
   /**
-   * Gets the URL to this guild's splash (if it has one, otherwise it returns null)
+   * The URL to this guild's splash
    * @type {?string}
    * @readonly
    */
@@ -282,7 +282,7 @@ class Guild {
   }
 
   /**
-   * If the client is connected to any voice channel in this guild, this will be the relevant VoiceConnection.
+   * If the client is connected to any voice channel in this guild, this will be the relevant VoiceConnection
    * @type {?VoiceConnection}
    * @readonly
    */
@@ -292,7 +292,7 @@ class Guild {
   }
 
   /**
-   * The `#general` TextChannel of the guild.
+   * The `#general` TextChannel of the guild
    * @type {TextChannel}
    * @readonly
    */
@@ -301,7 +301,7 @@ class Guild {
   }
 
   /**
-   * Get the position of this guild
+   * The position of this guild
    * <warn>This is only available when using a user account.</warn>
    * @type {?number}
    */
@@ -312,7 +312,7 @@ class Guild {
   }
 
   /**
-   * The `@everyone` Role of the guild.
+   * The `@everyone` role of the guild
    * @type {Role}
    * @readonly
    */
@@ -321,7 +321,16 @@ class Guild {
   }
 
   /**
-   * Fetches a collection of roles in the current guild sorted by position.
+   * The client user as a GuildMember of this guild
+   * @type {?GuildMember}
+   * @readonly
+   */
+  get me() {
+    return this.members.get(this.client.user.id);
+  }
+
+  /**
+   * Fetches a collection of roles in the current guild sorted by position
    * @type {Collection<Snowflake, Role>}
    * @readonly
    * @private
@@ -335,7 +344,7 @@ class Guild {
    * @param {UserResolvable} user The user that you want to obtain the GuildMember of
    * @returns {?GuildMember}
    * @example
-   * // get the guild member of a user
+   * // Get the guild member of a user
    * const member = guild.member(message.author);
    */
   member(user) {
@@ -373,7 +382,7 @@ class Guild {
   }
 
   /**
-   * Fetch available voice regions
+   * Fetch available voice regions.
    * @returns {Collection<string, VoiceRegion>}
    */
   fetchVoiceRegions() {
@@ -381,7 +390,7 @@ class Guild {
   }
 
   /**
-   * Fetch audit logs for this guild
+   * Fetch audit logs for this guild.
    * @param {Object} [options={}] Options for fetching audit logs
    * @param {Snowflake|GuildAuditLogsEntry} [options.before] Limit to entries from before specified entry
    * @param {Snowflake|GuildAuditLogsEntry} [options.after] Limit to entries from after specified entry
@@ -483,7 +492,7 @@ class Guild {
   }
 
   /**
-   * The data for editing a guild
+   * The data for editing a guild.
    * @typedef {Object} GuildEditData
    * @property {string} [name] The name of the guild
    * @property {string} [region] The region of the guild
@@ -496,11 +505,11 @@ class Guild {
    */
 
   /**
-   * Updates the Guild with new information - e.g. a new name.
+   * Updates the guild with new information - e.g. a new name.
    * @param {GuildEditData} data The data to update the guild with
    * @returns {Promise<Guild>}
    * @example
-   * // set the guild name and region
+   * // Set the guild name and region
    * guild.edit({
    *  name: 'Discord Guild',
    *  region: 'london',
@@ -517,7 +526,7 @@ class Guild {
    * @param {string} name The new name of the guild
    * @returns {Promise<Guild>}
    * @example
-   * // edit the guild name
+   * // Edit the guild name
    * guild.setName('Discord Guild')
    *  .then(updated => console.log(`Updated guild name to ${guild.name}`))
    *  .catch(console.error);
@@ -528,10 +537,10 @@ class Guild {
 
   /**
    * Edit the region of the guild.
-   * @param {string} region The new region of the guild.
+   * @param {string} region The new region of the guild
    * @returns {Promise<Guild>}
    * @example
-   * // edit the guild region
+   * // Edit the guild region
    * guild.setRegion('london')
    *  .then(updated => console.log(`Updated guild region to ${guild.region}`))
    *  .catch(console.error);
@@ -545,7 +554,7 @@ class Guild {
    * @param {number} verificationLevel The new verification level of the guild
    * @returns {Promise<Guild>}
    * @example
-   * // edit the guild verification level
+   * // Edit the guild verification level
    * guild.setVerificationLevel(1)
    *  .then(updated => console.log(`Updated guild verification level to ${guild.verificationLevel}`))
    *  .catch(console.error);
@@ -559,7 +568,7 @@ class Guild {
    * @param {ChannelResolvable} afkChannel The new AFK channel
    * @returns {Promise<Guild>}
    * @example
-   * // edit the guild AFK channel
+   * // Edit the guild AFK channel
    * guild.setAFKChannel(channel)
    *  .then(updated => console.log(`Updated guild AFK channel to ${guild.afkChannel}`))
    *  .catch(console.error);
@@ -573,7 +582,7 @@ class Guild {
    * @param {number} afkTimeout The time in seconds that a user must be idle to be considered AFK
    * @returns {Promise<Guild>}
    * @example
-   * // edit the guild AFK channel
+   * // Edit the guild AFK channel
    * guild.setAFKTimeout(60)
    *  .then(updated => console.log(`Updated guild AFK timeout to ${guild.afkTimeout}`))
    *  .catch(console.error);
@@ -587,7 +596,7 @@ class Guild {
    * @param {Base64Resolvable} icon The new icon of the guild
    * @returns {Promise<Guild>}
    * @example
-   * // edit the guild icon
+   * // Edit the guild icon
    * guild.setIcon(fs.readFileSync('./icon.png'))
    *  .then(updated => console.log('Updated the guild icon'))
    *  .catch(console.error);
@@ -601,7 +610,7 @@ class Guild {
    * @param {GuildMemberResolvable} owner The new owner of the guild
    * @returns {Promise<Guild>}
    * @example
-   * // edit the guild owner
+   * // Edit the guild owner
    * guild.setOwner(guild.members.first())
    *  .then(updated => console.log(`Updated the guild owner to ${updated.owner.username}`))
    *  .catch(console.error);
@@ -615,13 +624,45 @@ class Guild {
    * @param {Base64Resolvable} splash The new splash screen of the guild
    * @returns {Promise<Guild>}
    * @example
-   * // edit the guild splash
+   * // Edit the guild splash
    * guild.setIcon(fs.readFileSync('./splash.png'))
    *  .then(updated => console.log('Updated the guild splash'))
    *  .catch(console.error);
    */
   setSplash(splash) {
     return this.edit({ splash });
+  }
+
+  /**
+   * @param {number} position Absolute or relative position
+   * @param {boolean} [relative=false] Whether to position relatively or absolutely
+   * @returns {Promise<Guild>}
+   */
+  setPosition(position, relative) {
+    if (this.client.user.bot) {
+      return Promise.reject(new Error('Setting guild position is only available for user accounts'));
+    }
+    return this.client.user.settings.setGuildPosition(this, position, relative);
+  }
+
+  /**
+   * Marks all messages in this guild as read.
+   * <warn>This is only available when using a user account.</warn>
+   * @returns {Promise<Guild>} This guild
+   */
+  acknowledge() {
+    return this.client.rest.methods.ackGuild(this);
+  }
+
+  /**
+   * Allow direct messages from guild members.
+   * @param {boolean} allow Whether to allow direct messages
+   * @returns {Promise<Guild>}
+   */
+  allowDMs(allow) {
+    const settings = this.client.user.settings;
+    if (allow) return settings.removeRestrictedGuild(this);
+    else return settings.addRestrictedGuild(this);
   }
 
   /**
@@ -634,7 +675,7 @@ class Guild {
    * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
    * be resolved, the user ID will be the result.
    * @example
-   * // ban a user by ID (or with a user/guild member object)
+   * // Ban a user by ID (or with a user/guild member object)
    * guild.ban('some user ID')
    *  .then(user => console.log(`Banned ${user.username || user.id || user} from ${guild.name}`))
    *  .catch(console.error);
@@ -653,7 +694,7 @@ class Guild {
    * @param {UserResolvable} user The user to unban
    * @returns {Promise<User>}
    * @example
-   * // unban a user by ID (or with a user/guild member object)
+   * // Unban a user by ID (or with a user/guild member object)
    * guild.unban('some user ID')
    *  .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
    *  .catch(console.error);
@@ -668,12 +709,12 @@ class Guild {
    * @param {boolean} [dry=false] If true, will return number of users that will be kicked, without actually doing it
    * @returns {Promise<number>} The number of members that were/will be kicked
    * @example
-   * // see how many members will be pruned
+   * // See how many members will be pruned
    * guild.pruneMembers(12, true)
    *   .then(pruned => console.log(`This will prune ${pruned} people!`))
    *   .catch(console.error);
    * @example
-   * // actually prune the members
+   * // Actually prune the members
    * guild.pruneMembers(12)
    *   .then(pruned => console.log(`I just pruned ${pruned} people!`))
    *   .catch(console.error);
@@ -698,7 +739,7 @@ class Guild {
    * @param {Array<PermissionOverwrites|Object>} overwrites Permission overwrites to apply to the new channel
    * @returns {Promise<TextChannel|VoiceChannel>}
    * @example
-   * // create a new text channel
+   * // Create a new text channel
    * guild.createChannel('new-general', 'text')
    *  .then(channel => console.log(`Created new channel ${channel}`))
    *  .catch(console.error);
@@ -732,12 +773,12 @@ class Guild {
    * @param {RoleData} [data] The data to update the role with
    * @returns {Promise<Role>}
    * @example
-   * // create a new role
+   * // Create a new role
    * guild.createRole()
    *  .then(role => console.log(`Created role ${role}`))
    *  .catch(console.error);
    * @example
-   * // create a new role with data
+   * // Create a new role with data
    * guild.createRole({
    *   name: 'Super Cool People',
    *   color: 'BLUE',
@@ -751,17 +792,17 @@ class Guild {
 
   /**
    * Creates a new custom emoji in the guild.
-   * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji.
-   * @param {string} name The name for the emoji.
+   * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji
+   * @param {string} name The name for the emoji
    * @param {Collection<Snowflake, Role>|Role[]} [roles] Roles to limit the emoji to
-   * @returns {Promise<Emoji>} The created emoji.
+   * @returns {Promise<Emoji>} The created emoji
    * @example
-   * // create a new emoji from a url
+   * // Create a new emoji from a url
    * guild.createEmoji('https://i.imgur.com/w3duR07.png', 'rip')
    *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
    *  .catch(console.error);
    * @example
-   * // create a new emoji from a file on your computer
+   * // Create a new emoji from a file on your computer
    * guild.createEmoji('./memes/banana.png', 'banana')
    *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
    *  .catch(console.error);
@@ -781,7 +822,7 @@ class Guild {
 
   /**
    * Delete an emoji.
-   * @param {Emoji|string} emoji The emoji to delete.
+   * @param {Emoji|string} emoji The emoji to delete
    * @returns {Promise}
    */
   deleteEmoji(emoji) {
@@ -790,10 +831,10 @@ class Guild {
   }
 
   /**
-   * Causes the Client to leave the guild.
+   * Causes the client to leave the guild.
    * @returns {Promise<Guild>}
    * @example
-   * // leave a guild
+   * // Leave a guild
    * guild.leave()
    *  .then(g => console.log(`Left the guild ${g}`))
    *  .catch(console.error);
@@ -803,10 +844,10 @@ class Guild {
   }
 
   /**
-   * Causes the Client to delete the guild.
+   * Causes the client to delete the guild.
    * @returns {Promise<Guild>}
    * @example
-   * // delete a guild
+   * // Delete a guild
    * guild.delete()
    *  .then(g => console.log(`Deleted the guild ${g}`))
    *  .catch(console.error);
@@ -816,42 +857,10 @@ class Guild {
   }
 
   /**
-   * Marks all messages in this guild as read
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<Guild>} this guild
-   */
-  acknowledge() {
-    return this.client.rest.methods.ackGuild(this);
-  }
-
-  /**
-   * @param {number} position Absolute or relative position
-   * @param {boolean} [relative=false] Whether to position relatively or absolutely
-   * @returns {Promise<Guild>}
-   */
-  setPosition(position, relative) {
-    if (this.client.user.bot) {
-      return Promise.reject(new Error('Setting guild position is only available for user accounts'));
-    }
-    return this.client.user.settings.setGuildPosition(this, position, relative);
-  }
-
-  /**
-   * Allow direct messages from guild members
-   * @param {boolean} allow Whether to allow direct messages
-   * @returns {Promise<Guild>}
-   */
-  allowDMs(allow) {
-    const settings = this.client.user.settings;
-    if (allow) return settings.removeRestrictedGuild(this);
-    else return settings.addRestrictedGuild(this);
-  }
-
-  /**
-   * Whether this Guild equals another Guild. It compares all properties, so for most operations
+   * Whether this guild equals another guild. It compares all properties, so for most operations
    * it is advisable to just compare `guild.id === guild2.id` as it is much faster and is often
    * what most users need.
-   * @param {Guild} guild Guild to compare with
+   * @param {Guild} guild The guild to compare with
    * @returns {boolean}
    */
   equals(guild) {
@@ -882,13 +891,13 @@ class Guild {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the guild's name instead of the Guild object.
+   * When concatenated with a string, this automatically concatenates the guild's name instead of the guild object.
    * @returns {string}
    * @example
-   * // logs: Hello from My Guild!
+   * // Logs: Hello from My Guild!
    * console.log(`Hello from ${guild}!`);
    * @example
-   * // logs: Hello from My Guild!
+   * // Logs: Hello from My Guild!
    * console.log('Hello from ' + guild + '!');
    */
   toString() {
@@ -940,7 +949,7 @@ class Guild {
 
     if (this.client.ws.connection.status === Constants.Status.READY && notSame) {
       /**
-       * Emitted whenever a guild member changes - i.e. new role, removed role, nickname
+       * Emitted whenever a guild member changes - i.e. new role, removed role, nickname.
        * @event Client#guildMemberUpdate
        * @param {GuildMember} oldMember The member before the update
        * @param {GuildMember} newMember The member after the update
@@ -963,7 +972,7 @@ class Guild {
     if (member && member.speaking !== speaking) {
       member.speaking = speaking;
       /**
-       * Emitted once a guild member starts/stops speaking
+       * Emitted once a guild member starts/stops speaking.
        * @event Client#guildMemberSpeaking
        * @param {GuildMember} member The member that started/stopped speaking
        * @param {boolean} speaking Whether or not the member is speaking
@@ -981,8 +990,8 @@ class Guild {
   }
 
   /**
-   * Set the position of a role in this guild
-   * @param {string|Role} role The role to edit, can be a role object or a role ID.
+   * Set the position of a role in this guild.
+   * @param {string|Role} role The role to edit, can be a role object or a role ID
    * @param {number} position The new position of the role
    * @param {boolean} [relative=false] Position Moves the role relative to its current position
    * @returns {Promise<Guild>}
@@ -1005,8 +1014,8 @@ class Guild {
   }
 
   /**
-   * Set the position of a channel in this guild
-   * @param {string|GuildChannel} channel The channel to edit, can be a channel object or a channel ID.
+   * Set the position of a channel in this guild.
+   * @param {string|GuildChannel} channel The channel to edit, can be a channel object or a channel ID
    * @param {number} position The new position of the channel
    * @param {boolean} [relative=false] Position Moves the channel relative to its current position
    * @returns {Promise<Guild>}
@@ -1030,7 +1039,7 @@ class Guild {
 
   /**
    * Fetches a collection of channels in the current guild sorted by position.
-   * @param {string} type Channel type
+   * @param {string} type The channel type
    * @returns {Collection<Snowflake, GuildChannel>}
    * @private
    */

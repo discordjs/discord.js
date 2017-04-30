@@ -23,13 +23,13 @@ const WebSocket = (function findWebSocket() {
 }());
 
 /**
- * Abstracts a WebSocket connection with decoding/encoding for the discord gateway
+ * Abstracts a WebSocket connection with decoding/encoding for the Discord gateway.
  * @private
  */
 class WebSocketConnection extends EventEmitter {
   /**
-   * @param {WebSocketManager} manager the WebSocket manager
-   * @param {string} gateway Websocket gateway to connect to
+   * @param {WebSocketManager} manager The WebSocket manager
+   * @param {string} gateway WebSocket gateway to connect to
    */
   constructor(manager, gateway) {
     super();
@@ -38,36 +38,43 @@ class WebSocketConnection extends EventEmitter {
      * @type {WebSocketManager}
      */
     this.manager = manager;
+
     /**
-     * Client this belongs to
+     * The client this belongs to
      * @type {Client}
      */
     this.client = manager.client;
+
     /**
-     * WebSocket connection itself
+     * The WebSocket connection itself
      * @type {WebSocket}
      */
     this.ws = null;
+
     /**
-     * Current sequence of the WebSocket
+     * The current sequence of the WebSocket
      * @type {number}
      */
     this.sequence = -1;
+
     /**
-     * Current status of the client
+     * The current status of the client
      * @type {number}
      */
     this.status = Constants.Status.IDLE;
+
     /**
-     * Packet Manager of the connection
+     * The Packet Manager of the connection
      * @type {WebSocketPacketManager}
      */
     this.packetManager = new PacketManager(this);
+
     /**
-     * Last time a ping was sent (a timestamp)
+     * The last time a ping was sent (a timestamp)
      * @type {number}
      */
     this.lastPingTimestamp = 0;
+
     /**
      * Contains the rate limit queue and metadata
      * @type {Object}
@@ -78,13 +85,15 @@ class WebSocketConnection extends EventEmitter {
       resetTime: -1,
     };
     this.connect(gateway);
+
     /**
      * Events that are disabled (will not be processed)
      * @type {Object}
      */
     this.disabledEvents = {};
+
     /**
-     * Sequence on WebSocket close
+     * The sequence on WebSocket close
      * @type {number}
      */
     this.closeSequence = 0;
@@ -92,7 +101,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Causes the client to be marked as ready and emits the ready event
+   * Causes the client to be marked as ready and emits the ready event.
    * @returns {void}
    */
   triggerReady() {
@@ -106,7 +115,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Checks whether the client is ready to be marked as ready
+   * Checks whether the client is ready to be marked as ready.
    * @returns {void}
    */
   checkIfReady() {
@@ -132,7 +141,7 @@ class WebSocketConnection extends EventEmitter {
 
   // Util
   /**
-   * Emits a debug message
+   * Emits a debug message.
    * @param {string} message Debug message
    * @returns {void}
    */
@@ -142,22 +151,21 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Attempts to serialise data from the WebSocket
+   * Attempts to serialise data from the WebSocket.
    * @param {string|Object} data Data to unpack
    * @returns {Object}
    */
   unpack(data) {
-    if (erlpack && typeof data !== 'string') {
-      if (data instanceof ArrayBuffer) data = Buffer.from(new Uint8Array(data));
-      return erlpack.unpack(data);
-    } else if (data instanceof ArrayBuffer || data instanceof Buffer) {
-      data = zlib.inflateSync(data).toString();
-    }
+    if (data instanceof ArrayBuffer) data = Buffer.from(new Uint8Array(data));
+
+    if (erlpack && typeof data !== 'string') return erlpack.unpack(data);
+    else if (data instanceof Buffer) data = zlib.inflateSync(data).toString();
+
     return JSON.parse(data);
   }
 
   /**
-   * Packs an object ready to be sent
+   * Packs an object ready to be sent.
    * @param {Object} data Data to pack
    * @returns {string|Buffer}
    */
@@ -166,7 +174,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Processes the current WebSocket queue
+   * Processes the current WebSocket queue.
    */
   processQueue() {
     if (this.ratelimit.remaining === 0) return;
@@ -186,7 +194,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Sends data, bypassing the queue
+   * Sends data, bypassing the queue.
    * @param {Object} data Packet to send
    * @returns {void}
    */
@@ -199,7 +207,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Adds data to the queue to be sent
+   * Adds data to the queue to be sent.
    * @param {Object} data Packet to send
    * @returns {void}
    */
@@ -213,7 +221,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Creates a connection to a gateway
+   * Creates a connection to a gateway.
    * @param {string} gateway Gateway to connect to
    * @param {number} [after=0] How long to wait before connecting
    * @param {boolean} [force=false] Whether or not to force a new connection even if one already exists
@@ -241,7 +249,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Destroys the connection
+   * Destroys the connection.
    * @returns {boolean}
    */
   destroy() {
@@ -259,7 +267,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Called whenever a message is received
+   * Called whenever a message is received.
    * @param {Event} event Event received
    * @returns {boolean}
    */
@@ -274,7 +282,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Sets the current sequence of the connection
+   * Sets the current sequence of the connection.
    * @param {number} s New sequence
    */
   setSequence(s) {
@@ -282,8 +290,8 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Called whenever a packet is received
-   * @param {Object} packet received packet
+   * Called whenever a packet is received.
+   * @param {Object} packet Received packet
    * @returns {boolean}
    */
   onPacket(packet) {
@@ -299,6 +307,7 @@ class WebSocketConnection extends EventEmitter {
         return this.reconnect();
       case Constants.OPCodes.INVALID_SESSION:
         if (!packet.d) this.sessionID = null;
+        this.sequence = -1;
         this.debug('Session invalidated -- will identify with a new session');
         return this.identify(packet.d ? 2500 : 0);
       case Constants.OPCodes.HEARTBEAT_ACK:
@@ -311,17 +320,17 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Called whenever a connection is opened to the gateway
+   * Called whenever a connection is opened to the gateway.
    * @param {Event} event Received open event
    */
   onOpen(event) {
-    this.gateway = event.target.url;
+    if (event && event.target && event.target.url) this.gateway = event.target.url;
     this.debug(`Connected to gateway ${this.gateway}`);
     this.identify();
   }
 
   /**
-   * Causes a reconnection to the gateway
+   * Causes a reconnection to the gateway.
    */
   reconnect() {
     this.debug('Attemping to reconnect in 5500ms...');
@@ -330,11 +339,12 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Called whenever an error occurs with the WebSocket
+   * Called whenever an error occurs with the WebSocket.
    * @param {Error} error Error that occurred
    */
   onError(error) {
     this.client.emit(Constants.Events.ERROR, error);
+    if (error.message === 'uWs client connection error') this.reconnect();
   }
 
   /**
@@ -343,7 +353,7 @@ class WebSocketConnection extends EventEmitter {
    */
 
   /**
-   * Called whenever a connection to the gateway is closed
+   * Called whenever a connection to the gateway is closed.
    * @param {CloseEvent} event Close event that was received
    */
   onClose(event) {
@@ -363,7 +373,7 @@ class WebSocketConnection extends EventEmitter {
 
   // Heartbeat
   /**
-   * Acknowledges a heartbeat
+   * Acknowledges a heartbeat.
    */
   ackHeartbeat() {
     this.debug(`Heartbeat acknowledged, latency of ${Date.now() - this.lastPingTimestamp}ms`);
@@ -372,8 +382,8 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Sends a heartbeat or sets an interval for sending heartbeats.
-   * @param {number} [time] If -1, clears the interval, any other number sets an interval.
-   * If no value is given, a heartbeat will be sent instantly.
+   * @param {number} [time] If -1, clears the interval, any other number sets an interval
+   * If no value is given, a heartbeat will be sent instantly
    */
   heartbeat(time) {
     if (!isNaN(time)) {
@@ -397,7 +407,7 @@ class WebSocketConnection extends EventEmitter {
 
   // Identification
   /**
-   * Identifies the client on a connection
+   * Identifies the client on a connection.
    * @param {number} [after] How long to wait before identifying
    * @returns {void}
    */
@@ -407,7 +417,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Identifies as a new connection on the gateway
+   * Identifies as a new connection on the gateway.
    * @returns {void}
    */
   identifyNew() {
@@ -428,7 +438,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Resumes a session on the gateway
+   * Resumes a session on the gateway.
    * @returns {void}
    */
   identifyResume() {
@@ -452,7 +462,7 @@ class WebSocketConnection extends EventEmitter {
 }
 
 /**
- * Encoding the WebSocket connections will use
+ * Encoding the WebSocket connections will use.
  * @type {string}
  */
 WebSocketConnection.ENCODING = erlpack ? 'etf' : 'json';

@@ -30,8 +30,8 @@ class MessageReactionAdd extends Action {
 /**
  * Emitted whenever a reaction is added to a message.
  * @event Client#messageReactionAdd
- * @param {MessageReaction} messageReaction The reaction object.
- * @param {User} user The user that applied the emoji or reaction emoji.
+ * @param {MessageReaction} messageReaction The reaction object
+ * @param {User} user The user that applied the emoji or reaction emoji
  */
 
 module.exports = MessageReactionAdd;

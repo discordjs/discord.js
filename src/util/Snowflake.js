@@ -5,7 +5,7 @@ const EPOCH = 1420070400000;
 let INCREMENT = 0;
 
 /**
- * A container for useful snowflake-related methods
+ * A container for useful snowflake-related methods.
  */
 class SnowflakeUtil {
   constructor() {
@@ -19,13 +19,13 @@ class SnowflakeUtil {
    *
    * 64                                          22     17     12          0
    *  000000111011000111100001101001000101000000  00001  00000  000000000000
-   *       number of ms since discord epoch       worker  pid    increment
+   *       number of ms since Discord epoch       worker  pid    increment
    * ```
    * @typedef {string} Snowflake
    */
 
   /**
-   * Generates a Discord snowflake
+   * Generates a Discord snowflake.
    * <info>This hardcodes the worker ID as 1 and the process ID as 0.</info>
    * @returns {Snowflake} The generated snowflake
    */
@@ -36,7 +36,7 @@ class SnowflakeUtil {
   }
 
   /**
-   * A deconstructed snowflake
+   * A deconstructed snowflake.
    * @typedef {Object} DeconstructedSnowflake
    * @property {number} timestamp Timestamp the snowflake was created
    * @property {Date} date Date the snowflake was created
@@ -47,7 +47,7 @@ class SnowflakeUtil {
    */
 
   /**
-   * Deconstructs a Discord snowflake
+   * Deconstructs a Discord snowflake.
    * @param {Snowflake} snowflake Snowflake to deconstruct
    * @returns {DeconstructedSnowflake} Deconstructed snowflake
    */

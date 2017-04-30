@@ -1,3 +1,5 @@
+const Collection = require('../util/Collection');
+
 const Targets = {
   GUILD: 'GUILD',
   CHANNEL: 'CHANNEL',
@@ -41,15 +43,18 @@ class GuildAuditLogs {
     if (data.users) for (const user of data.users) guild.client.dataManager.newUser(user);
 
     /**
-     * Entries for this Guild's audit logs
-     * @type {GuildAuditLogsEntry[]}
+     * The entries for this guild's audit logs
+     * @type {Collection<Snowflake, GuildAuditLogsEntry>}
      */
-    this.entries = [];
-    for (const entry of data.audit_log_entries) this.entries.push(new GuildAuditLogsEntry(guild, entry));
+    this.entries = new Collection();
+    for (const item of data.audit_log_entries) {
+      const entry = new GuildAuditLogsEntry(guild, item);
+      this.entries.set(entry.id, entry);
+    }
   }
 
   /**
-   * Handles possible promises for entry targets
+   * Handles possible promises for entry targets.
    * @returns {GuildAuditLogs}
    */
   static build(...args) {
@@ -60,8 +65,8 @@ class GuildAuditLogs {
   }
 
   /**
-   * Find target type from entry action
-   * @param {number} target Action target
+   * Find target type from entry action.
+   * @param {number} target The action target
    * @returns {?string}
    */
   static targetType(target) {
@@ -77,8 +82,8 @@ class GuildAuditLogs {
 
 
   /**
-   * Find action type from entry action
-   * @param {string} action Action target
+   * Find action type from entry action.
+   * @param {string} action The action target
    * @returns {string}
    */
   static actionType(action) {
@@ -123,13 +128,13 @@ class GuildAuditLogsEntry {
   constructor(guild, data) {
     const targetType = GuildAuditLogs.targetType(data.action_type);
     /**
-     * Target type of this entry
+     * The target type of this entry
      * @type {string}
      */
     this.targetType = targetType;
 
     /**
-     * Action type of this entry
+     * The action type of this entry
      * @type {string}
      */
     this.actionType = GuildAuditLogs.actionType(data.action_type);
@@ -141,13 +146,13 @@ class GuildAuditLogsEntry {
     this.action = Object.keys(Actions).find(k => Actions[k] === data.action_type);
 
     /**
-     * Reason of this entry
+     * The reason of this entry
      * @type {?string}
      */
     this.reason = data.reason || null;
 
     /**
-     * User that executed this entry
+     * The user that executed this entry
      * @type {User}
      */
     this.executor = guild.client.users.get(data.user_id);
@@ -159,14 +164,14 @@ class GuildAuditLogsEntry {
     this.changes = data.changes ? data.changes.map(c => ({ name: c.key, old: c.old_value, new: c.new_value })) : null;
 
     /**
-     * ID of this entry
+     * The ID of this entry
      * @type {Snowflake}
      */
     this.id = data.id;
 
     if ([Targets.USER, Targets.GUILD].includes(targetType)) {
       /**
-       * Target of this entry
+       * The target of this entry
        * @type {?Guild|User|Role|Emoji|Invite|Webhook}
        */
       this.target = guild.client[`${targetType.toLowerCase()}s`].get(data.target_id);

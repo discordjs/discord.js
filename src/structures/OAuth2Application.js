@@ -1,7 +1,7 @@
 const Snowflake = require('../util/Snowflake');
 
 /**
- * Represents an OAuth2 Application
+ * Represents an OAuth2 Application.
  */
 class OAuth2Application {
   constructor(client, data) {
@@ -60,7 +60,7 @@ class OAuth2Application {
     this.redirectURIs = data.redirect_uris;
 
     /**
-     * If this app's bot requires a code grant when using the oauth2 flow
+     * If this app's bot requires a code grant when using the OAuth2 flow
      * @type {boolean}
      */
     this.botRequireCodeGrant = data.bot_require_code_grant;
@@ -84,7 +84,7 @@ class OAuth2Application {
     this.bot = data.bot;
 
     /**
-     * Flags for the app
+     * The flags for the app
      * @type {number}
      */
     this.flags = data.flags;
@@ -94,6 +94,14 @@ class OAuth2Application {
      * @type {boolean}
      */
     this.secret = data.secret;
+
+    if (data.owner) {
+      /**
+       * The owner of this OAuth application
+       * @type {?User}
+       */
+      this.owner = this.client.dataManager.newUser(data.owner);
+    }
   }
 
   /**
@@ -115,7 +123,7 @@ class OAuth2Application {
   }
 
   /**
-   * Reset the app's secret and bot token
+   * Reset the app's secret and bot token.
    * @returns {OAuth2Application}
    */
   reset() {

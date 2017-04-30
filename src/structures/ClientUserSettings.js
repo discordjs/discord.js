@@ -2,7 +2,7 @@ const Constants = require('../util/Constants');
 const Util = require('../util/Util');
 
 /**
- * A wrapper around the ClientUser's settings
+ * A wrapper around the ClientUser's settings.
  */
 class ClientUserSettings {
   constructor(user, data) {
@@ -11,7 +11,7 @@ class ClientUserSettings {
   }
 
   /**
-   * Patch the data contained in this class with new partial data
+   * Patch the data contained in this class with new partial data.
    * @param {Object} data Data to patch this with
    */
   patch(data) {
@@ -27,7 +27,7 @@ class ClientUserSettings {
   }
 
   /**
-   * Update a specific property of of user settings
+   * Update a specific property of of user settings.
    * @param {string} name Name of property
    * @param {value} value Value to patch
    * @returns {Promise<Object>}
@@ -37,7 +37,7 @@ class ClientUserSettings {
   }
 
   /**
-   * @param {Guild} guild Guild to move
+   * @param {Guild} guild The guild to move
    * @param {number} position Absolute or relative position
    * @param {boolean} [relative=false] Whether to position relatively or absolutely
    * @returns {Promise<Guild>}
@@ -49,8 +49,8 @@ class ClientUserSettings {
   }
 
   /**
-   * Add a guild to the list of restricted guilds
-   * @param {Guild} guild Guild to add
+   * Add a guild to the list of restricted guilds.
+   * @param {Guild} guild The guild to add
    * @returns {Promise<Guild>}
    */
   addRestrictedGuild(guild) {
@@ -61,8 +61,8 @@ class ClientUserSettings {
   }
 
   /**
-   * Remove a guild from the list of restricted guilds
-   * @param {Guild} guild Guild to remove
+   * Remove a guild from the list of restricted guilds.
+   * @param {Guild} guild The guild to remove
    * @returns {Promise<Guild>}
    */
   removeRestrictedGuild(guild) {

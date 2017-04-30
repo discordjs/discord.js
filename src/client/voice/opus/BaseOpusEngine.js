@@ -1,3 +1,7 @@
+/**
+ * The base opus encoding engine.
+ * @private
+ */
 class BaseOpus {
   /**
    * @param {Object} [options] The options to apply to the Opus engine

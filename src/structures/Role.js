@@ -3,7 +3,7 @@ const Permissions = require('../util/Permissions');
 const util = require('util');
 
 /**
- * Represents a role on Discord
+ * Represents a role on Discord.
  */
 class Role {
   constructor(guild, data) {
@@ -93,7 +93,7 @@ class Role {
   }
 
   /**
-   * The hexadecimal version of the role color, with a leading hashtag.
+   * The hexadecimal version of the role color, with a leading hashtag
    * @type {string}
    * @readonly
    */
@@ -104,7 +104,7 @@ class Role {
   }
 
   /**
-   * The cached guild members that have this role.
+   * The cached guild members that have this role
    * @type {Collection<Snowflake, GuildMember>}
    * @readonly
    */
@@ -113,7 +113,7 @@ class Role {
   }
 
   /**
-   * Whether the role is editable by the client user.
+   * Whether the role is editable by the client user
    * @type {boolean}
    * @readonly
    */
@@ -138,7 +138,7 @@ class Role {
    * Get an object mapping permission names to whether or not the role enables that permission
    * @returns {Object<string, boolean>}
    * @example
-   * // print the serialized role permissions
+   * // Print the serialized role permissions
    * console.log(role.serialize());
    */
   serialize() {
@@ -154,7 +154,7 @@ class Role {
    * (takes priority over `explicit`)
    * @returns {boolean}
    * @example
-   * // see if a role can ban a member
+   * // See if a role can ban a member
    * if (role.hasPermission('BAN_MEMBERS')) {
    *   console.log('This role can ban members');
    * } else {
@@ -189,7 +189,7 @@ class Role {
   }
 
   /**
-   * The data for a role
+   * The data for a role.
    * @typedef {Object} RoleData
    * @property {string} [name] The name of the role
    * @property {ColorResolvable} [color] The color of the role, either a hex string or a base 10 number
@@ -200,11 +200,11 @@ class Role {
    */
 
   /**
-   * Edits the role
+   * Edits the role.
    * @param {RoleData} data The new data for the role
    * @returns {Promise<Role>}
    * @example
-   * // edit a role
+   * // Edit a role
    * role.edit({name: 'new role'})
    *  .then(r => console.log(`Edited role ${r}`))
    *  .catch(console.error);
@@ -214,11 +214,11 @@ class Role {
   }
 
   /**
-   * Set a new name for the role
+   * Set a new name for the role.
    * @param {string} name The new name of the role
    * @returns {Promise<Role>}
    * @example
-   * // set the name of the role
+   * // Set the name of the role
    * role.setName('new role')
    *  .then(r => console.log(`Edited name of role ${r}`))
    *  .catch(console.error);
@@ -228,11 +228,11 @@ class Role {
   }
 
   /**
-   * Set a new color for the role
+   * Set a new color for the role.
    * @param {ColorResolvable} color The color of the role
    * @returns {Promise<Role>}
    * @example
-   * // set the color of a role
+   * // Set the color of a role
    * role.setColor('#FF0000')
    *  .then(r => console.log(`Set color of role ${r}`))
    *  .catch(console.error);
@@ -242,11 +242,11 @@ class Role {
   }
 
   /**
-   * Set whether or not the role should be hoisted
+   * Set whether or not the role should be hoisted.
    * @param {boolean} hoist Whether or not to hoist the role
    * @returns {Promise<Role>}
    * @example
-   * // set the hoist of the role
+   * // Set the hoist of the role
    * role.setHoist(true)
    *  .then(r => console.log(`Role hoisted: ${r.hoist}`))
    *  .catch(console.error);
@@ -256,12 +256,12 @@ class Role {
   }
 
   /**
-   * Set the position of the role
+   * Set the position of the role.
    * @param {number} position The position of the role
    * @param {boolean} [relative=false] Move the position relative to its current value
    * @returns {Promise<Role>}
    * @example
-   * // set the position of the role
+   * // Set the position of the role
    * role.setPosition(1)
    *  .then(r => console.log(`Role position: ${r.position}`))
    *  .catch(console.error);
@@ -271,11 +271,11 @@ class Role {
   }
 
   /**
-   * Set the permissions of the role
+   * Set the permissions of the role.
    * @param {string[]} permissions The permissions of the role
    * @returns {Promise<Role>}
    * @example
-   * // set the permissions of the role
+   * // Set the permissions of the role
    * role.setPermissions(['KICK_MEMBERS', 'BAN_MEMBERS'])
    *  .then(r => console.log(`Role updated ${r}`))
    *  .catch(console.error);
@@ -285,11 +285,11 @@ class Role {
   }
 
   /**
-   * Set whether this role is mentionable
+   * Set whether this role is mentionable.
    * @param {boolean} mentionable Whether this role should be mentionable
    * @returns {Promise<Role>}
    * @example
-   * // make the role mentionable
+   * // Make the role mentionable
    * role.setMentionable(true)
    *  .then(r => console.log(`Role updated ${r}`))
    *  .catch(console.error);
@@ -299,10 +299,10 @@ class Role {
   }
 
   /**
-   * Deletes the role
+   * Deletes the role.
    * @returns {Promise<Role>}
    * @example
-   * // delete a role
+   * // Delete a role
    * role.delete()
    *  .then(r => console.log(`Deleted role ${r}`))
    *  .catch(console.error);

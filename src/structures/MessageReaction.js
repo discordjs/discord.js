@@ -3,7 +3,7 @@ const Emoji = require('./Emoji');
 const ReactionEmoji = require('./ReactionEmoji');
 
 /**
- * Represents a reaction to a message
+ * Represents a reaction to a message.
  */
 class MessageReaction {
   constructor(message, emoji, count, me) {
@@ -20,13 +20,13 @@ class MessageReaction {
     this.me = me;
 
     /**
-     * The number of people that have given the same reaction.
+     * The number of people that have given the same reaction
      * @type {number}
      */
     this.count = count || 0;
 
     /**
-     * The users that have given this reaction, mapped by their ID.
+     * The users that have given this reaction, mapped by their ID
      * @type {Collection<Snowflake, User>}
      */
     this.users = new Collection();
@@ -57,7 +57,7 @@ class MessageReaction {
 
   /**
    * Removes a user from this reaction.
-   * @param {UserResolvable} [user=this.message.client.user] User to remove the reaction of
+   * @param {UserResolvable} [user=this.message.client.user] The user to remove the reaction of
    * @returns {Promise<MessageReaction>}
    */
   remove(user = this.message.client.user) {
@@ -71,7 +71,7 @@ class MessageReaction {
 
   /**
    * Fetch all the users that gave this reaction. Resolves with a collection of users, mapped by their IDs.
-   * @param {number} [limit=100] the maximum amount of users to fetch, defaults to 100
+   * @param {number} [limit=100] The maximum amount of users to fetch, defaults to 100
    * @returns {Promise<Collection<Snowflake, User>>}
    */
   fetchUsers(limit = 100) {

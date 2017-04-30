@@ -36,7 +36,7 @@ class ClientDataResolver {
    */
 
   /**
-   * Resolves a UserResolvable to a User object
+   * Resolves a UserResolvable to a User object.
    * @param {UserResolvable} user The UserResolvable to identify
    * @returns {?User}
    */
@@ -50,7 +50,7 @@ class ClientDataResolver {
   }
 
   /**
-   * Resolves a UserResolvable to a user ID string
+   * Resolves a UserResolvable to a user ID string.
    * @param {UserResolvable} user The UserResolvable to identify
    * @returns {?Snowflake}
    */
@@ -70,7 +70,7 @@ class ClientDataResolver {
    */
 
   /**
-   * Resolves a GuildResolvable to a Guild object
+   * Resolves a GuildResolvable to a Guild object.
    * @param {GuildResolvable} guild The GuildResolvable to identify
    * @returns {?Guild}
    */
@@ -84,11 +84,11 @@ class ClientDataResolver {
    * Data that resolves to give a GuildMember object. This can be:
    * * A GuildMember object
    * * A User object
-   * @typedef {Guild} GuildMemberResolvable
+   * @typedef {GuildMember|User} GuildMemberResolvable
    */
 
   /**
-   * Resolves a GuildMemberResolvable to a GuildMember object
+   * Resolves a GuildMemberResolvable to a GuildMember object.
    * @param {GuildResolvable} guild The guild that the member is part of
    * @param {UserResolvable} user The user that is part of the guild
    * @returns {?GuildMember}
@@ -111,7 +111,7 @@ class ClientDataResolver {
    */
 
   /**
-   * Resolves a ChannelResolvable to a Channel object
+   * Resolves a ChannelResolvable to a Channel object.
    * @param {ChannelResolvable} channel The channel resolvable to resolve
    * @returns {?Channel}
    */
@@ -124,7 +124,7 @@ class ClientDataResolver {
   }
 
   /**
-   * Resolves a ChannelResolvable to a channel ID
+   * Resolves a ChannelResolvable to a channel ID.
    * @param {ChannelResolvable} channel The channel resolvable to resolve
    * @returns {?Snowflake}
    */
@@ -144,7 +144,7 @@ class ClientDataResolver {
    */
 
   /**
-   * Resolves InviteResolvable to an invite code
+   * Resolves InviteResolvable to an invite code.
    * @param {InviteResolvable} data The invite resolvable to resolve
    * @returns {string}
    */
@@ -164,7 +164,7 @@ class ClientDataResolver {
    */
 
   /**
-   * Resolves a StringResolvable to a string
+   * Resolves a StringResolvable to a string.
    * @param {StringResolvable} data The string resolvable to resolve
    * @returns {string}
    */
@@ -182,7 +182,7 @@ class ClientDataResolver {
    */
 
   /**
-   * Resolves a Base64Resolvable to a Base 64 image
+   * Resolves a Base64Resolvable to a Base 64 image.
    * @param {Base64Resolvable} data The base 64 resolvable you want to resolve
    * @returns {?string}
    */
@@ -200,7 +200,7 @@ class ClientDataResolver {
    */
 
   /**
-   * Resolves a BufferResolvable to a Buffer
+   * Resolves a BufferResolvable to a Buffer.
    * @param {BufferResolvable} resource The buffer resolvable to resolve
    * @returns {Promise<Buffer>}
    */
@@ -244,7 +244,7 @@ class ClientDataResolver {
    */
 
   /**
-   * Resolves an EmojiResolvable to an emoji identifier
+   * Resolves an EmojiResolvable to an emoji identifier.
    * @param {EmojiIdentifierResolvable} emoji The emoji resolvable to resolve
    * @returns {?string}
    */
@@ -295,7 +295,7 @@ class ClientDataResolver {
    */
 
   /**
-   * Resolves a ColorResolvable into a color number
+   * Resolves a ColorResolvable into a color number.
    * @param {ColorResolvable} color Color to resolve
    * @returns {number} A color
    */

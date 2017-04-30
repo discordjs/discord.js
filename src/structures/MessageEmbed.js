@@ -28,40 +28,40 @@ class MessageEmbed {
     this.type = data.type;
 
     /**
-     * The title of this embed, if there is one
+     * The title of this embed
      * @type {?string}
      */
     this.title = data.title || null;
 
     /**
-     * The description of this embed, if there is one
+     * The description of this embed
      * @type {?string}
      */
     this.description = data.description || null;
 
     /**
      * The URL of this embed
-     * @type {string}
+     * @type {?string}
      */
     this.url = data.url || null;
 
     /**
      * The color of the embed
-     * @type {number}
+     * @type {?number}
      */
     this.color = data.color || null;
 
     /**
      * The timestamp of this embed
-     * @type {number}
+     * @type {?number}
      */
     this.timestamp = new Date(data.timestamp) || null;
 
     /**
      * The fields of this embed
-     * @type {Object[]}
-     * @property {string} name Name of this field
-     * @property {string} value Value of this field
+     * @type {?Object[]}
+     * @property {string} name The name of this field
+     * @property {string} value The value of this field
      * @property {boolean} inline If this field will be displayed inline
      */
     this.fields = data.fields || null;
@@ -112,7 +112,7 @@ class MessageEmbed {
     /**
      * The author of this embed, if there is one
      * @type {?Object}
-     * @property {string} name Name of this author
+     * @property {string} name The name of this author
      * @property {string} url URL of this author
      * @property {string} iconURL URL of the icon for this author
      * @property {string} proxyIconURL Proxied URL of the icon for this author
@@ -127,7 +127,7 @@ class MessageEmbed {
     /**
      * The provider of this embed, if there is one
      * @type {?Object}
-     * @property {string} name Name of this provider
+     * @property {string} name The name of this provider
      * @property {string} url URL of this provider
      */
     this.provider = data.provider ? {
@@ -138,7 +138,7 @@ class MessageEmbed {
     /**
      * The footer of this embed
      * @type {?Object}
-     * @property {string} text Text of this footer
+     * @property {string} text The text of this footer
      * @property {string} iconURL URL of the icon for this footer
      * @property {string} proxyIconURL Proxied URL of the icon for this footer
      */
@@ -159,7 +159,7 @@ class MessageEmbed {
   }
 
   /**
-   * The hexadecimal version of the embed color, with a leading hash.
+   * The hexadecimal version of the embed color, with a leading hash
    * @type {string}
    * @readonly
    */
@@ -170,7 +170,7 @@ class MessageEmbed {
   }
 
   /**
-   * Adds a field to the embed (max 25)
+   * Adds a field to the embed (max 25).
    * @param {StringResolvable} name The name of the field
    * @param {StringResolvable} value The value of the field
    * @param {boolean} [inline=false] Set the field to display inline
@@ -201,7 +201,7 @@ class MessageEmbed {
   }
 
   /**
-   * Sets the author of this embed
+   * Sets the author of this embed.
    * @param {StringResolvable} name The name of the author
    * @param {string} [iconURL] The icon URL of the author
    * @param {string} [url] The URL of the author
@@ -213,7 +213,7 @@ class MessageEmbed {
   }
 
   /**
-   * Sets the color of this embed
+   * Sets the color of this embed.
    * @param {ColorResolvable} color The color of the embed
    * @returns {MessageEmbed} This embed
    */
@@ -223,7 +223,7 @@ class MessageEmbed {
   }
 
   /**
-   * Sets the description of this embed
+   * Sets the description of this embed.
    * @param {StringResolvable} description The description
    * @returns {MessageEmbed} This embed
    */
@@ -235,7 +235,7 @@ class MessageEmbed {
   }
 
   /**
-   * Sets the footer of this embed
+   * Sets the footer of this embed.
    * @param {StringResolvable} text The text of the footer
    * @param {string} [iconURL] The icon URL of the footer
    * @returns {MessageEmbed} This embed
@@ -248,7 +248,7 @@ class MessageEmbed {
   }
 
   /**
-   * Set the image of this embed
+   * Set the image of this embed.
    * @param {string} url The URL of the image
    * @returns {MessageEmbed} This embed
    */
@@ -258,7 +258,7 @@ class MessageEmbed {
   }
 
   /**
-   * Set the thumbnail of this embed
+   * Set the thumbnail of this embed.
    * @param {string} url The URL of the thumbnail
    * @returns {MessageEmbed} This embed
    */
@@ -268,7 +268,7 @@ class MessageEmbed {
   }
 
   /**
-   * Sets the timestamp of this embed
+   * Sets the timestamp of this embed.
    * @param {Date} [timestamp=current date] The timestamp
    * @returns {MessageEmbed} This embed
    */
@@ -278,7 +278,7 @@ class MessageEmbed {
   }
 
   /**
-   * Sets the title of this embed
+   * Sets the title of this embed.
    * @param {StringResolvable} title The title
    * @returns {MessageEmbed} This embed
    */
@@ -290,7 +290,7 @@ class MessageEmbed {
   }
 
   /**
-   * Sets the URL of this embed
+   * Sets the URL of this embed.
    * @param {string} url The URL
    * @returns {MessageEmbed} This embed
    */
@@ -300,7 +300,7 @@ class MessageEmbed {
   }
 
   /**
-   * Create an object that can be sent in a message to discord
+   * Create an object that can be sent in a message to discord.
    * @returns {Object}
    * @private
    */

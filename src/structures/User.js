@@ -10,9 +10,9 @@ const Snowflake = require('../util/Snowflake');
 class User {
   constructor(client, data) {
     /**
-     * The Client that created the instance of the the User.
+     * The client that created the instance of the the user
      * @name User#client
-     * @type {Client}
+     * @type {}
      * @readonly
      */
     Object.defineProperty(this, 'client', { value: client });
@@ -46,19 +46,19 @@ class User {
     this.avatar = data.avatar;
 
     /**
-     * Whether or not the user is a bot.
+     * Whether or not the user is a bot
      * @type {boolean}
      */
     this.bot = Boolean(data.bot);
 
     /**
-     * The ID of the last message sent by the user, if one was sent.
+     * The ID of the last message sent by the user, if one was sent
      * @type {?Snowflake}
      */
     this.lastMessageID = null;
 
     /**
-     * The Message object of the last message sent by the user, if one was sent.
+     * The Message object of the last message sent by the user, if one was sent
      * @type {?Message}
      */
     this.lastMessage = null;
@@ -103,7 +103,7 @@ class User {
   }
 
   /**
-   * A link to the user's avatar (if they have one, otherwise null)
+   * A link to the user's avatar
    * @type {?string}
    * @readonly
    */
@@ -133,7 +133,7 @@ class User {
   }
 
   /**
-   * The discord "tag" for this user
+   * The Discord "tag" for this user
    * @type {string}
    * @readonly
    */
@@ -191,7 +191,7 @@ class User {
   }
 
   /**
-   * Creates a DM channel between the client and the user
+   * Creates a DM channel between the client and the user.
    * @returns {Promise<DMChannel>}
    */
   createDM() {
@@ -207,7 +207,7 @@ class User {
   }
 
   /**
-   * Sends a friend request to the user
+   * Sends a friend request to the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
@@ -216,7 +216,7 @@ class User {
   }
 
   /**
-   * Removes the user from your friends
+   * Removes the user from your friends.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
@@ -225,7 +225,7 @@ class User {
   }
 
   /**
-   * Blocks the user
+   * Blocks the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
@@ -234,7 +234,7 @@ class User {
   }
 
   /**
-   * Unblocks the user
+   * Unblocks the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
@@ -243,7 +243,7 @@ class User {
   }
 
   /**
-   * Get the profile of the user
+   * Get the profile of the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<UserProfile>}
    */
@@ -252,7 +252,7 @@ class User {
   }
 
   /**
-   * Sets a note for the user
+   * Sets a note for the user.
    * <warn>This is only available when using a user account.</warn>
    * @param {string} note The note to set for the user
    * @returns {Promise<User>}
