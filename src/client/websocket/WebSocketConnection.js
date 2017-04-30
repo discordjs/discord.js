@@ -307,6 +307,7 @@ class WebSocketConnection extends EventEmitter {
         return this.reconnect();
       case Constants.OPCodes.INVALID_SESSION:
         if (!packet.d) this.sessionID = null;
+        this.sequence = -1;
         this.debug('Session invalidated -- will identify with a new session');
         return this.identify(packet.d ? 2500 : 0);
       case Constants.OPCodes.HEARTBEAT_ACK:
