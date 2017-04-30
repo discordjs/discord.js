@@ -64,7 +64,7 @@ class VoiceBroadcast extends VolumeInterface {
     const volume = old || dispatcher.volume;
 
     /**
-     * Emitted whenever a stream dispatcher unsubscribes from the broadcast
+     * Emitted whenever a stream dispatcher unsubscribes from the broadcast.
      * @event VoiceBroadcast#unsubscribe
      * @param {StreamDispatcher} dispatcher The unsubscribed dispatcher
      */
@@ -98,7 +98,7 @@ class VoiceBroadcast extends VolumeInterface {
         this._dispatchers.get(n).add(dispatcher);
       });
       /**
-       * Emitted whenever a stream dispatcher subscribes to the broadcast
+       * Emitted whenever a stream dispatcher subscribes to the broadcast.
        * @event VoiceBroadcast#subscribe
        * @param {StreamDispatcher} dispatcher The subscribed dispatcher
        */
@@ -115,7 +115,7 @@ class VoiceBroadcast extends VolumeInterface {
   }
 
   /**
-   * Plays any audio stream across the broadcast
+   * Plays any audio stream across the broadcast.
    * @param {ReadableStream} stream The audio stream to play
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {VoiceBroadcast}
@@ -169,21 +169,21 @@ class VoiceBroadcast extends VolumeInterface {
       ffmpegArguments: ffmpegArguments.concat(['-ss', String(options.seek)]),
     });
     /**
-     * Emitted whenever an error occurs
+     * Emitted whenever an error occurs.
      * @event VoiceBroadcast#error
-     * @param {Error} error the error that occurred
+     * @param {Error} error The error that occurred
      */
     transcoder.once('error', e => {
       if (this.listenerCount('error') > 0) this.emit('error', e);
       /**
-       * Emitted whenever the VoiceBroadcast has any warnings
+       * Emitted whenever the VoiceBroadcast has any warnings.
        * @event VoiceBroadcast#warn
-       * @param {string|Error} warning the warning that was raised
+       * @param {string|Error} warning The warning that was raised
        */
       else this.emit('warn', e);
     });
     /**
-     * Emitted once the broadcast (the audio stream) ends
+     * Emitted once the broadcast (the audio stream) ends.
      * @event VoiceBroadcast#end
      */
     transcoder.once('end', () => this.killCurrentTranscoder());
@@ -197,7 +197,7 @@ class VoiceBroadcast extends VolumeInterface {
 
   /**
    * Plays a stream of 16-bit signed stereo PCM at 48KHz.
-   * @param {ReadableStream} stream The audio stream to play.
+   * @param {ReadableStream} stream The audio stream to play
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {VoiceBroadcast}
    */
@@ -227,7 +227,7 @@ class VoiceBroadcast extends VolumeInterface {
 
   /**
    * Play an arbitrary input that can be [handled by ffmpeg](https://ffmpeg.org/ffmpeg-protocols.html#Description)
-   * @param {string} input the arbitrary input
+   * @param {string} input The arbitrary input
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {VoiceBroadcast}
    */
@@ -239,7 +239,7 @@ class VoiceBroadcast extends VolumeInterface {
   }
 
   /**
-   * Pauses the entire broadcast - all dispatchers also pause
+   * Pauses the entire broadcast - all dispatchers also pause.
    */
   pause() {
     this.paused = true;
@@ -251,7 +251,7 @@ class VoiceBroadcast extends VolumeInterface {
   }
 
   /**
-   * Resumes the entire broadcast - all dispatchers also resume
+   * Resumes the entire broadcast - all dispatchers also resume.
    */
   resume() {
     this.paused = false;
@@ -351,7 +351,7 @@ class VoiceBroadcast extends VolumeInterface {
   }
 
   /**
-   * End the current broadcast, all subscribed dispatchers will also end
+   * End the current broadcast, all subscribed dispatchers will also end.
    */
   destroy() {
     this.end();

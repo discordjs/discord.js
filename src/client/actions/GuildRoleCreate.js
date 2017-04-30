@@ -20,7 +20,7 @@ class GuildRoleCreate extends Action {
 /**
  * Emitted whenever a role is created.
  * @event Client#roleCreate
- * @param {Role} role The role that was created.
+ * @param {Role} role The role that was created
  */
 
 module.exports = GuildRoleCreate;

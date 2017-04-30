@@ -4,7 +4,7 @@ const ClientUserSettings = require('./ClientUserSettings');
 const Constants = require('../util/Constants');
 
 /**
- * Represents the logged in client's Discord user
+ * Represents the logged in client's Discord user.
  * @extends {User}
  */
 class ClientUser extends User {
@@ -26,28 +26,28 @@ class ClientUser extends User {
     this._typing = new Map();
 
     /**
-     * A Collection of friends for the logged in user.
+     * A Collection of friends for the logged in user
      * <warn>This is only filled when using a user account.</warn>
      * @type {Collection<Snowflake, User>}
      */
     this.friends = new Collection();
 
     /**
-     * A Collection of blocked users for the logged in user.
+     * A Collection of blocked users for the logged in user
      * <warn>This is only filled when using a user account.</warn>
      * @type {Collection<Snowflake, User>}
      */
     this.blocked = new Collection();
 
     /**
-     * A Collection of notes for the logged in user.
+     * A Collection of notes for the logged in user
      * <warn>This is only filled when using a user account.</warn>
      * @type {Collection<Snowflake, string>}
      */
     this.notes = new Collection();
 
     /**
-     * If the user has discord premium (nitro)
+     * If the user has Discord premium (nitro)
      * <warn>This is only filled when using a user account.</warn>
      * @type {?boolean}
      */
@@ -61,7 +61,7 @@ class ClientUser extends User {
     this.mfaEnabled = typeof data.mfa_enabled === 'boolean' ? data.mfa_enabled : null;
 
     /**
-     * If the user has ever used a mobile device on discord
+     * If the user has ever used a mobile device on Discord
      * <warn>This is only filled when using a user account.</warn>
      * @type {?boolean}
      */
@@ -69,7 +69,7 @@ class ClientUser extends User {
 
     /**
      * Various settings for this user
-     * <warn>This is only filled when using a user account</warn>
+     * <warn>This is only filled when using a user account.</warn>
      * @type {?ClientUserSettings}
      */
     if (data.user_settings) this.settings = new ClientUserSettings(this, data.user_settings);
@@ -80,14 +80,14 @@ class ClientUser extends User {
   }
 
   /**
-   * Set the username of the logged in Client.
+   * Set the username of the logged in client.
    * <info>Changing usernames in Discord is heavily rate limited, with only 2 requests
    * every hour. Use this sparingly!</info>
    * @param {string} username The new username
    * @param {string} [password] Current password (only for user accounts)
    * @returns {Promise<ClientUser>}
    * @example
-   * // set username
+   * // Set username
    * client.user.setUsername('discordjs')
    *  .then(user => console.log(`My new username is ${user.username}`))
    *  .catch(console.error);
@@ -103,7 +103,7 @@ class ClientUser extends User {
    * @param {string} password Current password
    * @returns {Promise<ClientUser>}
    * @example
-   * // set email
+   * // Set email
    * client.user.setEmail('bob@gmail.com', 'some amazing password 123')
    *  .then(user => console.log(`My new email is ${user.email}`))
    *  .catch(console.error);
@@ -119,7 +119,7 @@ class ClientUser extends User {
    * @param {string} oldPassword Current password
    * @returns {Promise<ClientUser>}
    * @example
-   * // set password
+   * // Set password
    * client.user.setPassword('some new amazing password 456', 'some amazing password 123')
    *  .then(user => console.log('New password set!'))
    *  .catch(console.error);
@@ -129,11 +129,11 @@ class ClientUser extends User {
   }
 
   /**
-   * Set the avatar of the logged in Client.
+   * Set the avatar of the logged in client.
    * @param {BufferResolvable|Base64Resolvable} avatar The new avatar
    * @returns {Promise<ClientUser>}
    * @example
-   * // set avatar
+   * // Set avatar
    * client.user.setAvatar('./avatar.png')
    *  .then(user => console.log(`New avatar set!`))
    *  .catch(console.error);
@@ -149,7 +149,7 @@ class ClientUser extends User {
   }
 
   /**
-   * Data resembling a raw Discord presence
+   * Data resembling a raw Discord presence.
    * @typedef {Object} PresenceData
    * @property {PresenceStatus} [status] Status of the user
    * @property {boolean} [afk] Whether the user is AFK
@@ -257,7 +257,7 @@ class ClientUser extends User {
   }
 
   /**
-   * Fetches messages that mentioned the client's user
+   * Fetches messages that mentioned the client's user.
    * @param {Object} [options] Options for the fetch
    * @param {number} [options.limit=25] Maximum number of mentions to retrieve
    * @param {boolean} [options.roles=true] Whether to include role mentions
@@ -270,10 +270,10 @@ class ClientUser extends User {
   }
 
   /**
-   * Send a friend request
+   * Send a friend request.
    * <warn>This is only available when using a user account.</warn>
-   * @param {UserResolvable} user The user to send the friend request to.
-   * @returns {Promise<User>} The user the friend request was sent to.
+   * @param {UserResolvable} user The user to send the friend request to
+   * @returns {Promise<User>} The user the friend request was sent to
    */
   addFriend(user) {
     user = this.client.resolver.resolveUser(user);
@@ -281,7 +281,7 @@ class ClientUser extends User {
   }
 
   /**
-   * Remove a friend
+   * Remove a friend.
    * <warn>This is only available when using a user account.</warn>
    * @param {UserResolvable} user The user to remove from your friends
    * @returns {Promise<User>} The user that was removed
@@ -292,7 +292,7 @@ class ClientUser extends User {
   }
 
   /**
-   * Creates a guild
+   * Creates a guild.
    * <warn>This is only available when using a user account.</warn>
    * @param {string} name The name of the guild
    * @param {string} region The region for the server
@@ -311,17 +311,17 @@ class ClientUser extends User {
   }
 
   /**
-   * An object containing either a user or access token, and an optional nickname
+   * An object containing either a user or access token, and an optional nickname.
    * @typedef {Object} GroupDMRecipientOptions
-   * @property {UserResolvable|Snowflake} [user] User to add to the group DM
+   * @property {UserResolvable|Snowflake} [user] User to add to the Group DM
    * (only available if a user is creating the DM)
-   * @property {string} [accessToken] Access token to use to add a user to the group DM
+   * @property {string} [accessToken] Access token to use to add a user to the Group DM
    * (only available if a bot is creating the DM)
    * @property {string} [nick] Permanent nickname (only available if a bot is creating the DM)
    */
 
   /**
-   * Creates a group DM
+   * Creates a Group DM.
    * @param {GroupDMRecipientOptions[]} recipients The recipients
    * @returns {Promise<GroupDMChannel>}
    */
@@ -334,7 +334,7 @@ class ClientUser extends User {
   }
 
   /**
-   * Accepts an invite to join a guild
+   * Accepts an invite to join a guild.
    * <warn>This is only available when using a user account.</warn>
    * @param {Invite|string} invite Invite or code to accept
    * @returns {Promise<Guild>} Joined guild

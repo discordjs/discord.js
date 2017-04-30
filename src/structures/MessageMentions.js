@@ -1,7 +1,7 @@
 const Collection = require('../util/Collection');
 
 /**
- * Keeps track of mentions in a {@link Message}
+ * Keeps track of mentions in a {@link Message}.
  */
 class MessageMentions {
   constructor(message, users, roles, everyone) {
@@ -56,14 +56,14 @@ class MessageMentions {
     this._content = message.content;
 
     /**
-     * Client the message is from
+     * The client the message is from
      * @type {Client}
      * @private
      */
     this._client = message.client;
 
     /**
-     * Guild the message is in
+     * The guild the message is in
      * @type {?Guild}
      * @private
      */

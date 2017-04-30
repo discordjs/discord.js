@@ -83,18 +83,18 @@ class VoiceConnection extends EventEmitter {
 
     this.player.on('debug', m => {
       /**
-       * Debug info from the connection
+       * Debug info from the connection.
        * @event VoiceConnection#debug
-       * @param {string} message the debug message
+       * @param {string} message The debug message
        */
       this.emit('debug', `audio player - ${m}`);
     });
 
     this.player.on('error', e => {
       /**
-       * Warning info from the connection
+       * Warning info from the connection.
        * @event VoiceConnection#warn
-       * @param {string|Error} warning the warning
+       * @param {string|Error} warning The warning
        */
       this.emit('warn', e);
     });
@@ -126,8 +126,8 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Sets whether the voice connection should display as "speaking" or not
-   * @param {boolean} value whether or not to speak
+   * Sets whether the voice connection should display as "speaking" or not.
+   * @param {boolean} value Whether or not to speak
    * @private
    */
   setSpeaking(value) {
@@ -145,7 +145,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Sends a request to the main gateway to join a voice channel
+   * Sends a request to the main gateway to join a voice channel.
    * @param {Object} [options] The options to provide
    */
   sendVoiceStateUpdate(options = {}) {
@@ -163,7 +163,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Set the token and endpoint required to connect to the the voice servers
+   * Set the token and endpoint required to connect to the the voice servers.
    * @param {string} token The voice token
    * @param {string} endpoint The voice endpoint
    * @returns {void}
@@ -195,7 +195,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Sets the Session ID for the connection
+   * Sets the Session ID for the connection.
    * @param {string} sessionID The voice session ID
    */
   setSessionID(sessionID) {
@@ -210,7 +210,7 @@ class VoiceConnection extends EventEmitter {
     } else if (sessionID !== this.authentication.sessionID) {
       this.authentication.sessionID = sessionID;
       /**
-       * Emitted when a new session ID is received
+       * Emitted when a new session ID is received.
        * @event VoiceConnection#newSession
        * @private
        */
@@ -219,7 +219,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Checks whether the voice connection is authenticated
+   * Checks whether the voice connection is authenticated.
    * @private
    */
   checkAuthenticated() {
@@ -229,7 +229,7 @@ class VoiceConnection extends EventEmitter {
       clearTimeout(this.connectTimeout);
       this.status = Constants.VoiceStatus.CONNECTING;
       /**
-       * Emitted when we successfully initiate a voice connection
+       * Emitted when we successfully initiate a voice connection.
        * @event VoiceConnection#authenticated
        */
       this.emit('authenticated');
@@ -238,7 +238,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Invoked when we fail to initiate a voice connection
+   * Invoked when we fail to initiate a voice connection.
    * @param {string} reason The reason for failure
    * @private
    */
@@ -247,7 +247,7 @@ class VoiceConnection extends EventEmitter {
     this.status = Constants.VoiceStatus.DISCONNECTED;
     if (this.status === Constants.VoiceStatus.AUTHENTICATING) {
       /**
-       * Emitted when we fail to initiate a voice connection
+       * Emitted when we fail to initiate a voice connection.
        * @event VoiceConnection#failed
        * @param {Error} error The encountered error
        */
@@ -258,7 +258,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Move to a different voice channel in the same guild
+   * Move to a different voice channel in the same guild.
    * @param {VoiceChannel} channel The channel to move to
    * @private
    */
@@ -268,7 +268,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Attempts to authenticate to the voice server
+   * Attempts to authenticate to the voice server.
    * @private
    */
   authenticate() {
@@ -278,7 +278,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Attempts to reconnect to the voice server (typically after a region change)
+   * Attempts to reconnect to the voice server (typically after a region change).
    * @param {string} token The voice token
    * @param {string} endpoint The voice endpoint
    * @private
@@ -289,7 +289,7 @@ class VoiceConnection extends EventEmitter {
 
     this.status = Constants.VoiceStatus.RECONNECTING;
     /**
-     * Emitted when the voice connection is reconnecting (typically after a region change)
+     * Emitted when the voice connection is reconnecting (typically after a region change).
      * @event VoiceConnection#reconnecting
      */
     this.emit('reconnecting');
@@ -308,14 +308,14 @@ class VoiceConnection extends EventEmitter {
     this.cleanup();
     this.status = Constants.VoiceStatus.DISCONNECTED;
     /**
-     * Emitted when the voice connection disconnects
+     * Emitted when the voice connection disconnects.
      * @event VoiceConnection#disconnect
      */
     this.emit('disconnect');
   }
 
   /**
-   * Cleans up after disconnect
+   * Cleans up after disconnect.
    * @private
    */
   cleanup() {
@@ -335,7 +335,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Connect the voice connection
+   * Connect the voice connection.
    * @private
    */
   connect() {
@@ -360,7 +360,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Invoked when the voice websocket is ready
+   * Invoked when the voice websocket is ready.
    * @param {Object} data The received data
    * @private
    */
@@ -381,7 +381,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Invoked when a session description is received
+   * Invoked when a session description is received.
    * @param {string} mode The encryption mode
    * @param {string} secret The secret key
    * @private
@@ -400,7 +400,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Invoked when a speaking event is received
+   * Invoked when a speaking event is received.
    * @param {Object} data The received data
    * @private
    */
@@ -414,7 +414,7 @@ class VoiceConnection extends EventEmitter {
       }
     }
     /**
-     * Emitted whenever a user starts/stops speaking
+     * Emitted whenever a user starts/stops speaking.
      * @event VoiceConnection#speaking
      * @param {User} user The user that has started/stopped speaking
      * @param {boolean} speaking Whether or not the user is speaking
@@ -500,8 +500,8 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Plays a voice broadcast
-   * @param {VoiceBroadcast} broadcast the broadcast to play
+   * Plays a voice broadcast.
+   * @param {VoiceBroadcast} broadcast The broadcast to play
    * @returns {StreamDispatcher}
    * @example
    * // Play a broadcast

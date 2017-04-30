@@ -5,32 +5,32 @@ const Collection = require('../../util/Collection');
 const util = require('util');
 
 /**
- * Interface for classes that have text-channel-like features
+ * Interface for classes that have text-channel-like features.
  * @interface
  */
 class TextBasedChannel {
   constructor() {
     /**
-     * A collection containing the messages sent to this channel.
+     * A collection containing the messages sent to this channel
      * @type {Collection<Snowflake, Message>}
      */
     this.messages = new Collection();
 
     /**
-     * The ID of the last message in the channel, if one was sent.
+     * The ID of the last message in the channel, if one was sent
      * @type {?Snowflake}
      */
     this.lastMessageID = null;
 
     /**
-     * The Message object of the last message in the channel, if one was sent.
+     * The Message object of the last message in the channel, if one was sent
      * @type {?Message}
      */
     this.lastMessage = null;
   }
 
   /**
-   * Options provided when sending or editing a message
+   * Options provided when sending or editing a message.
    * @typedef {Object} MessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
@@ -42,7 +42,7 @@ class TextBasedChannel {
    * @property {FileOptions[]|string[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
-   * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
+   * it exceeds the character limit. If an object is provided, these are the options for splitting the message
    * @property {UserResolvable} [reply] User to reply to (prefixes the message with a mention, except in DMs)
    */
 
@@ -53,7 +53,7 @@ class TextBasedChannel {
    */
 
   /**
-   * Options for splitting a message
+   * Options for splitting a message.
    * @typedef {Object} SplitOptions
    * @property {number} [maxLength=1950] Maximum character length per message piece
    * @property {string} [char='\n'] Character to split the message with
@@ -62,12 +62,12 @@ class TextBasedChannel {
    */
 
   /**
-   * Send a message to this channel
+   * Send a message to this channel.
    * @param {StringResolvable} [content] Text for the message
    * @param {MessageOptions} [options={}] Options for the message
    * @returns {Promise<Message|Message[]>}
    * @example
-   * // send a message
+   * // Send a message
    * channel.send('hello!')
    *  .then(message => console.log(`Sent message: ${message.content}`))
    *  .catch(console.error);
@@ -121,7 +121,7 @@ class TextBasedChannel {
    * @param {Snowflake} messageID ID of the message to get
    * @returns {Promise<Message>}
    * @example
-   * // get message
+   * // Get message
    * channel.fetchMessage('99539446449315840')
    *   .then(message => console.log(message.content))
    *   .catch(console.error);
@@ -156,7 +156,7 @@ class TextBasedChannel {
    * @param {ChannelLogsQueryOptions} [options={}] Query parameters to pass in
    * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
-   * // get messages
+   * // Get messages
    * channel.fetchMessages({limit: 10})
    *  .then(messages => console.log(`Received ${messages.size} messages`))
    *  .catch(console.error);
@@ -221,8 +221,8 @@ class TextBasedChannel {
    * <warn>This is only available when using a user account.</warn>
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
    * @returns {Promise<Array<Message[]>>}
-   * An array containing arrays of messages. Each inner array is a search context cluster.
-   * The message which has triggered the result will have the `hit` property set to `true`.
+   * An array containing arrays of messages. Each inner array is a search context cluster
+   * The message which has triggered the result will have the `hit` property set to `true`
    * @example
    * channel.search({
    *   content: 'discord.js',
@@ -240,7 +240,7 @@ class TextBasedChannel {
    * Starts a typing indicator in the channel.
    * @param {number} [count] The number of times startTyping should be considered to have been called
    * @example
-   * // start typing in a channel
+   * // Start typing in a channel
    * channel.startTyping();
    */
   startTyping(count) {
@@ -265,10 +265,10 @@ class TextBasedChannel {
    * <info>It can take a few seconds for the client user to stop typing.</info>
    * @param {boolean} [force=false] Whether or not to reset the call count and force the indicator to stop
    * @example
-   * // stop typing in a channel
+   * // Stop typing in a channel
    * channel.stopTyping();
    * @example
-   * // force typing to fully stop in a channel
+   * // Force typing to fully stop in a channel
    * channel.stopTyping(true);
    */
   stopTyping(force = false) {
@@ -283,7 +283,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Whether or not the typing indicator is being shown in the channel.
+   * Whether or not the typing indicator is being shown in the channel
    * @type {boolean}
    * @readonly
    */
@@ -292,7 +292,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Number of times `startTyping` has been called.
+   * Number of times `startTyping` has been called
    * @type {number}
    * @readonly
    */
@@ -313,12 +313,12 @@ class TextBasedChannel {
   }
 
   /**
-   * Creates a Message Collector
+   * Creates a Message Collector.
    * @param {CollectorFilter} filter The filter to create the collector with
    * @param {MessageCollectorOptions} [options={}] The options to pass to the collector
    * @returns {MessageCollector}
    * @example
-   * // create a message collector
+   * // Create a message collector
    * const collector = channel.createCollector(
    *  m => m.content.includes('discord'),
    *  { time: 15000 }
@@ -343,9 +343,9 @@ class TextBasedChannel {
    * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector
    * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
-   * // await !vote messages
+   * // Await !vote messages
    * const filter = m => m.content.startsWith('!vote');
-   * // errors: ['time'] treats ending because of the time limit as an error
+   * // Errors: ['time'] treats ending because of the time limit as an error
    * channel.awaitMessages(filter, { max: 4, time: 60000, errors: ['time'] })
    *  .then(collected => console.log(collected.size))
    *  .catch(collected => console.log(`After a minute, only ${collected.size} out of 4 voted.`));
@@ -364,7 +364,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Bulk delete given messages that are newer than two weeks
+   * Bulk delete given messages that are newer than two weeks.
    * <warn>This is only available when using a bot account.</warn>
    * @param {Collection<Snowflake, Message>|Message[]|number} messages Messages or number of messages to delete
    * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
@@ -380,7 +380,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Marks all messages in this channel as read
+   * Marks all messages in this channel as read.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<TextChannel|GroupDMChannel|DMChannel>}
    */
@@ -401,13 +401,13 @@ class TextBasedChannel {
 /** @lends TextBasedChannel.prototype */
 const Deprecated = {
   /**
-   * Send a message to this channel
+   * Send a message to this channel.
    * @param {StringResolvable} [content] Text for the message
    * @param {MessageOptions} [options={}] Options for the message
    * @returns {Promise<Message|Message[]>}
    * @deprecated
    * @example
-   * // send a message
+   * // Send a message
    * channel.sendMessage('hello!')
    *  .then(message => console.log(`Sent message: ${message.content}`))
    *  .catch(console.error);
@@ -417,7 +417,7 @@ const Deprecated = {
   },
 
   /**
-   * Send an embed to this channel
+   * Send an embed to this channel.
    * @param {RichEmbed|Object} embed Embed for the message
    * @param {string} [content] Text for the message
    * @param {MessageOptions} [options] Options for the message
@@ -435,7 +435,7 @@ const Deprecated = {
   },
 
   /**
-   * Send files to this channel
+   * Send files to this channel.
    * @param {FileOptions[]|string[]} files Files to send with the message
    * @param {StringResolvable} [content] Text for the message
    * @param {MessageOptions} [options] Options for the message
@@ -447,7 +447,7 @@ const Deprecated = {
   },
 
   /**
-   * Send a file to this channel
+   * Send a file to this channel.
    * @param {BufferResolvable} attachment File to send
    * @param {string} [name='file.jpg'] Name and extension of the file
    * @param {StringResolvable} [content] Text for the message
@@ -460,7 +460,7 @@ const Deprecated = {
   },
 
   /**
-   * Send a code block to this channel
+   * Send a code block to this channel.
    * @param {string} lang Language for the code block
    * @param {StringResolvable} content Content of the code block
    * @param {MessageOptions} [options] Options for the message

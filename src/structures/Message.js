@@ -10,12 +10,12 @@ const Permissions = require('../util/Permissions');
 let GuildMember;
 
 /**
- * Represents a message on Discord
+ * Represents a message on Discord.
  */
 class Message {
   constructor(channel, data, client) {
     /**
-     * The Client that instantiated the Message
+     * The client that instantiated the Message
      * @name Message#client
      * @type {Client}
      * @readonly
@@ -94,7 +94,7 @@ class Message {
     this.embeds = data.embeds.map(e => new Embed(this, e));
 
     /**
-     * A collection of attachments in the message - e.g. Pictures - mapped by their ID.
+     * A collection of attachments in the message - e.g. Pictures - mapped by their ID
      * @type {Collection<Snowflake, MessageAttachment>}
      */
     this.attachments = new Collection();
@@ -113,7 +113,7 @@ class Message {
     this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
 
     /**
-     * A collection of reactions to this message, mapped by the reaction "id".
+     * A collection of reactions to this message, mapped by the reaction ID
      * @type {Collection<Snowflake, MessageReaction>}
      */
     this.reactions = new Collection();
@@ -151,7 +151,7 @@ class Message {
   }
 
   /**
-   * Updates the message
+   * Updates the message.
    * @param {Object} data Raw Discord message update data
    * @private
    */
@@ -210,7 +210,7 @@ class Message {
 
   /**
    * The message contents with all mentions replaced by the equivalent text. If mentions cannot be resolved to a name,
-   * the relevant mention in the message content will not be converted.
+   * the relevant mention in the message content will not be converted
    * @type {string}
    * @readonly
    */
@@ -248,11 +248,11 @@ class Message {
 
   /**
    * Creates a reaction collector.
-   * @param {CollectorFilter} filter The filter to apply.
-   * @param {ReactionCollectorOptions} [options={}] Options to send to the collector.
+   * @param {CollectorFilter} filter The filter to apply
+   * @param {ReactionCollectorOptions} [options={}] Options to send to the collector
    * @returns {ReactionCollector}
    * @example
-   * // create a reaction collector
+   * // Create a reaction collector
    * const collector = message.createReactionCollector(
    *  (reaction, user) => reaction.emoji.id === '👌' && user.id === 'someID',
    *  { time: 15000 }
@@ -288,8 +288,8 @@ class Message {
   }
 
   /**
-   * An array of cached versions of the message, including the current version.
-   * Sorted from latest (first) to oldest (last).
+   * An array of cached versions of the message, including the current version
+   * Sorted from latest (first) to oldest (last)
    * @type {Message[]}
    * @readonly
    */
@@ -300,7 +300,7 @@ class Message {
   }
 
   /**
-   * Whether the message is editable by the client user.
+   * Whether the message is editable by the client user
    * @type {boolean}
    * @readonly
    */
@@ -309,7 +309,7 @@ class Message {
   }
 
   /**
-   * Whether the message is deletable by the client user.
+   * Whether the message is deletable by the client user
    * @type {boolean}
    * @readonly
    */
@@ -320,7 +320,7 @@ class Message {
   }
 
   /**
-   * Whether the message is pinnable by the client user.
+   * Whether the message is pinnable by the client user
    * @type {boolean}
    * @readonly
    */
@@ -331,8 +331,8 @@ class Message {
 
   /**
    * Whether or not a user, channel or role is mentioned in this message.
-   * @param {GuildChannel|User|Role|string} data either a guild channel, user or a role object, or a string representing
-   * the ID of any of these.
+   * @param {GuildChannel|User|Role|string} data Either a guild channel, user or a role object, or a string representing
+   * the ID of any of these
    * @returns {boolean}
    */
   isMentioned(data) {
@@ -343,7 +343,7 @@ class Message {
   /**
    * Whether or not a guild member is mentioned in this message. Takes into account
    * user mentions, role mentions, and @everyone/@here mentions.
-   * @param {GuildMember|User} member Member/user to check for a mention of
+   * @param {GuildMember|User} member The member/user to check for a mention of
    * @returns {boolean}
    */
   isMemberMentioned(member) {
@@ -356,19 +356,19 @@ class Message {
   }
 
   /**
-   * Options that can be passed into editMessage
+   * Options that can be passed into editMessage.
    * @typedef {Object} MessageEditOptions
    * @property {Object} [embed] An embed to be added/edited
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    */
 
   /**
-   * Edit the content of the message
+   * Edit the content of the message.
    * @param {StringResolvable} [content] The new content for the message
    * @param {MessageEditOptions} [options] The options to provide
    * @returns {Promise<Message>}
    * @example
-   * // update the content of a message
+   * // Update the content of a message
    * message.edit('This is my new content!')
    *  .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
    *  .catch(console.error);
@@ -384,8 +384,8 @@ class Message {
   }
 
   /**
-   * Edit the content of the message, with a code block
-   * @param {string} lang Language for the code block
+   * Edit the content of the message, with a code block.
+   * @param {string} lang The language for the code block
    * @param {StringResolvable} content The new content for the message
    * @returns {Promise<Message>}
    */
@@ -395,7 +395,7 @@ class Message {
   }
 
   /**
-   * Pins this message to the channel's pinned messages
+   * Pins this message to the channel's pinned messages.
    * @returns {Promise<Message>}
    */
   pin() {
@@ -403,7 +403,7 @@ class Message {
   }
 
   /**
-   * Unpins this message from the channel's pinned messages
+   * Unpins this message from the channel's pinned messages.
    * @returns {Promise<Message>}
    */
   unpin() {
@@ -411,8 +411,8 @@ class Message {
   }
 
   /**
-   * Add a reaction to the message
-   * @param {string|Emoji|ReactionEmoji} emoji Emoji to react with
+   * Add a reaction to the message.
+   * @param {string|Emoji|ReactionEmoji} emoji The emoji to react with
    * @returns {Promise<MessageReaction>}
    */
   react(emoji) {
@@ -423,7 +423,7 @@ class Message {
   }
 
   /**
-   * Remove all reactions from a message
+   * Remove all reactions from a message.
    * @returns {Promise<Message>}
    */
   clearReactions() {
@@ -431,11 +431,11 @@ class Message {
   }
 
   /**
-   * Deletes the message
+   * Deletes the message.
    * @param {number} [timeout=0] How long to wait to delete the message in milliseconds
    * @returns {Promise<Message>}
    * @example
-   * // delete a message
+   * // Delete a message
    * message.delete()
    *  .then(msg => console.log(`Deleted message from ${msg.author}`))
    *  .catch(console.error);
@@ -453,12 +453,12 @@ class Message {
   }
 
   /**
-   * Reply to the message
+   * Reply to the message.
    * @param {StringResolvable} [content] The content for the message
    * @param {MessageOptions} [options] The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
-   * // reply to a message
+   * // Reply to a message
    * message.reply('Hey, I\'m a reply!')
    *  .then(msg => console.log(`Sent a reply to ${msg.author}`))
    *  .catch(console.error);
@@ -474,7 +474,7 @@ class Message {
   }
 
   /**
-   * Marks the message as read
+   * Marks the message as read.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<Message>}
    */
@@ -525,7 +525,7 @@ class Message {
    * When concatenated with a string, this automatically concatenates the message's content instead of the object.
    * @returns {string}
    * @example
-   * // logs: Message: This is a message!
+   * // Logs: Message: This is a message!
    * console.log(`Message: ${message}`);
    */
   toString() {
