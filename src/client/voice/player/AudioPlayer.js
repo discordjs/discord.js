@@ -30,11 +30,6 @@ class AudioPlayer extends EventEmitter {
      * @type {Prism}
      */
     this.prism = new Prism();
-    /**
-     * The opus encoder that the player uses
-     * @type {NodeOpusEngine|OpusScriptEngine}
-     */
-    this.opusEncoder = OpusEncoders.fetch();
     this.streams = new Collection();
     this.currentStream = {};
     this.streamingData = {
@@ -67,6 +62,7 @@ class AudioPlayer extends EventEmitter {
 
   destroy() {
     if (this.opusEncoder) this.opusEncoder.destroy();
+    this.opusEncoder = null;
   }
 
   destroyCurrentStream() {
@@ -83,13 +79,13 @@ class AudioPlayer extends EventEmitter {
     this.currentStream = {};
   }
 
-  playUnknownStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
-    OpusEncoders.guaranteeOpusEngine();
-    const options = { seek, volume, passes };
+  playUnknownStream(stream, options) {
+    this.destroy();
+    this.opusEncoder = OpusEncoders.fetch(options);
     const transcoder = this.prism.transcode({
       type: 'ffmpeg',
       media: stream,
-      ffmpegArguments: ffmpegArguments.concat(['-ss', String(seek)]),
+      ffmpegArguments: ffmpegArguments.concat(['-ss', String(options.seek || 0)]),
     });
     this.destroyCurrentStream();
     this.currentStream = {
@@ -105,9 +101,9 @@ class AudioPlayer extends EventEmitter {
     return this.playPCMStream(transcoder.output, options, true);
   }
 
-  playPCMStream(stream, { seek = 0, volume = 1, passes = 1 } = {}, fromUnknown = false) {
-    OpusEncoders.guaranteeOpusEngine();
-    const options = { seek, volume, passes };
+  playPCMStream(stream, options, fromUnknown = false) {
+    this.destroy();
+    this.opusEncoder = OpusEncoders.fetch(options);
     const dispatcher = this.createDispatcher(stream, options);
     if (fromUnknown) {
       this.currentStream.dispatcher = dispatcher;
@@ -122,8 +118,8 @@ class AudioPlayer extends EventEmitter {
     return dispatcher;
   }
 
-  playOpusStream(stream, { seek = 0, passes = 1 } = {}) {
-    const options = { seek, passes, opus: true };
+  playOpusStream(stream, options) {
+    options.opus = true;
     this.destroyCurrentStream();
     const dispatcher = this.createDispatcher(stream, options);
     this.currentStream = {
@@ -134,7 +130,7 @@ class AudioPlayer extends EventEmitter {
     return dispatcher;
   }
 
-  playBroadcast(broadcast, { volume = 1, passes = 1 } = {}) {
+  playBroadcast(broadcast, { volume = 1, passes = 1 }) {
     const options = { volume, passes };
     this.destroyCurrentStream();
     const dispatcher = this.createDispatcher(broadcast, options);
@@ -148,7 +144,10 @@ class AudioPlayer extends EventEmitter {
     return dispatcher;
   }
 
-  createDispatcher(stream, options) {
+  createDispatcher(stream, { seek = 0, volume = 1, passes = 1, bitrate = 48 } = {}) {
+    const options = { seek, volume, passes, bitrate };
+    if (bitrate === 'auto') options.bitrate = this.voiceConnection.channel.bitrate * 0.001;
+
     const dispatcher = new StreamDispatcher(this, stream, options);
     dispatcher.on('end', () => this.destroyCurrentStream());
     dispatcher.on('error', () => this.destroyCurrentStream());
