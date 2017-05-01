@@ -369,13 +369,13 @@ class WebSocketConnection extends EventEmitter {
    */
   onClose(event) {
     this.debug(`${this.expectingClose ? 'Server' : 'Client'} closed WebSocket connection: ${event.code}`);
-    this.expectingClose = false;
     this.closeSequence = this.sequence;
     // Reset the state before trying to fix anything
     this.emit('close', event);
     this.heartbeat(-1);
     // Should we reconnect?
-    if (Constants.WSCodes[event.code]) {
+    if (event.code === 1000 ? this.expectingClose : Constants.WSCodes[event.code]) {
+      this.expectingClose = false;
       /**
        * Emitted when the client's WebSocket disconnects and will no longer attempt to reconnect.
        * @event Client#disconnect
@@ -386,6 +386,7 @@ class WebSocketConnection extends EventEmitter {
       this.destroy();
       return;
     }
+    this.expectingClose = false;
     this.reconnect();
   }
 
