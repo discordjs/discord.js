@@ -13148,7 +13148,7 @@ class GuildAuditLogsEntry {
     /**
      * An entry in the audit log representing a specific change
      * @typedef {object} AuditLogChange
-     * @property {string} name The name of the change, e.g. `nick` for nickname changes
+     * @property {string} key The property that was changed, e.g. `nick` for nickname changes
      * @property {string|boolean|number} [old] The old value of the change, e.g. for nicknames, the old nickname
      * @property {string|boolean|number} new The new value of the change, e.g. for nicknames, the new nickname
      */
@@ -13157,7 +13157,7 @@ class GuildAuditLogsEntry {
      * Specific property changes
      * @type {AuditLogChange[]}
      */
-    this.changes = data.changes ? data.changes.map(c => ({ name: c.key, old: c.old_value, new: c.new_value })) : null;
+    this.changes = data.changes ? data.changes.map(c => ({ key: c.key, old: c.old_value, new: c.new_value })) : null;
 
     /**
      * The ID of this entry
