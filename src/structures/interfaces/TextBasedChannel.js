@@ -456,7 +456,7 @@ const Deprecated = {
    * @deprecated
    */
   sendFile(attachment, name, content, options = {}) {
-    return this.sendFiles([{ attachment, name }], content, options);
+    return this.send({ files: [{ attachment, name }], content, options });
   },
 
   /**
