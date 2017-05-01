@@ -104,7 +104,7 @@ class User {
 
   /**
    * A link to the user's avatar
-   * @param {string} [format] One of `webp`, `png`, `jpg`, `gif`. If no format is provided, it will be `gif`
+   * @param {string} [format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided, it will be `gif`
    * for animated avatars or otherwise `webp`
    * @param {number} [size=128] One of `128`, '256', `512`, `1024`, `2048`
    * @returns {?string} avatarURL

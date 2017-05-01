@@ -217,6 +217,12 @@ const Endpoints = exports.Endpoints = {
         if (size && !AllowedImageSizes.includes(size)) throw new RangeError(`Invalid size: ${size}`);
         return `${root}/icons/${guildID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
       },
+      AppIcon: (clientID, hash, format = 'default', size) => {
+        if (format === 'default') format = 'webp';
+        if (!AllowedImageFormats.includes(format)) throw new Error(`Invalid image format: ${format}`);
+        if (size && !AllowedImageSizes.includes(size)) throw new RangeError(`Invalid size: ${size}`);
+        return `${root}/app-icons/${clientID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
+      },
       Splash: (guildID, hash) => `${root}/splashes/${guildID}/${hash}.jpg`,
     };
   },

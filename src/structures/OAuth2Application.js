@@ -1,4 +1,5 @@
 const Snowflake = require('../util/Snowflake');
+const Constants = require('../util/Constants');
 
 /**
  * Represents an OAuth2 Application.
@@ -40,12 +41,6 @@ class OAuth2Application {
      * @type {string}
      */
     this.icon = data.icon;
-
-    /**
-     * The app's icon URL
-     * @type {string}
-     */
-    this.iconURL = `https://cdn.discordapp.com/app-icons/${this.id}/${this.icon}.jpg`;
 
     /**
      * The app's RPC origins
@@ -120,6 +115,21 @@ class OAuth2Application {
    */
   get createdAt() {
     return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * A link to the application's icon
+   * @param {string} [format='webp'] One of `webp`, `png`, `jpg`, `gif`.
+   * @param {number} [size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {?string} URL to the icon
+   */
+  iconURL(format, size) {
+    if (!this.icon) return null;
+    if (typeof format === 'number') {
+      size = format;
+      format = 'default';
+    }
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).AppIcon(this.id, this.icon, format, size);
   }
 
   /**
