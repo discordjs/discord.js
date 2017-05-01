@@ -34,6 +34,7 @@ module.exports = {
   Game: require('./structures/Presence').Game,
   GroupDMChannel: require('./structures/GroupDMChannel'),
   Guild: require('./structures/Guild'),
+  GuildAuditLogs: require('./structures/GuildAuditLogs'),
   GuildChannel: require('./structures/GuildChannel'),
   GuildMember: require('./structures/GuildMember'),
   Invite: require('./structures/Invite'),
