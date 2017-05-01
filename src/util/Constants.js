@@ -205,14 +205,14 @@ const Endpoints = exports.Endpoints = {
     return {
       Emoji: emojiID => `${root}/emojis/${emojiID}.png`,
       Asset: name => `${root}/assets/${name}`,
-      Avatar: (userID, hash, format, size) => {
-        if (!format || format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
+      Avatar: (userID, hash, format = 'default', size) => {
+        if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
         if (!AllowedImageFormats.includes(format)) throw new Error(`Invalid image format: ${format}`);
         if (size && !AllowedImageSizes.includes(size)) throw new RangeError(`Invalid size: ${size}`);
         return `${root}/avatars/${userID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
       },
-      Icon: (guildID, hash, format, size) => {
-        if (!format || format === 'default') format = 'webp';
+      Icon: (guildID, hash, format = 'default', size) => {
+        if (format === 'default') format = 'webp';
         if (!AllowedImageFormats.includes(format)) throw new Error(`Invalid image format: ${format}`);
         if (size && !AllowedImageSizes.includes(size)) throw new RangeError(`Invalid size: ${size}`);
         return `${root}/icons/${guildID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
