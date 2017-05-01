@@ -17,8 +17,8 @@
 </div>
 
 # Welcome!
-Welcome to the discord.js v11 documentation.
-v11 contains loads of new and improved features, optimisations, and bug fixes.
+Welcome to the discord.js v11.1.0 documentation.
+v11.1.0 features improved voice and gateway stability, as well as support for new features such as audit logs and searching for messages.
 
 ## About
 discord.js is a powerful [node.js](https://nodejs.org) module that allows you to interact with the
