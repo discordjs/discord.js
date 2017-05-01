@@ -169,19 +169,20 @@ class VoiceConnection extends EventEmitter {
    * @returns {void}
    */
   setTokenAndEndpoint(token, endpoint) {
-    if (!token) {
-      this.authenticateFailed('Token not provided from voice server packet.');
+    if (!endpoint) {
+      // Signifies awaiting endpoint stage
       return;
     }
-    if (!endpoint) {
-      this.authenticateFailed('Endpoint not provided from voice server packet.');
+
+    if (!token) {
+      this.authenticateFailed('Token not provided from voice server packet.');
       return;
     }
 
     endpoint = endpoint.match(/([^:]*)/)[0];
 
     if (!endpoint) {
-      this.authenticateFailed('Failed to find an endpoint.');
+      this.authenticateFailed('Invalid endpoint received.');
       return;
     }
 
