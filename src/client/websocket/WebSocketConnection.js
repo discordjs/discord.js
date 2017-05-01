@@ -97,6 +97,12 @@ class WebSocketConnection extends EventEmitter {
      * @type {number}
      */
     this.closeSequence = 0;
+
+    /**
+     * Whether or not the WebSocket is expecting to be closed
+     * @type {boolean}
+     */
+    this.expectingClose = false;
     for (const event of this.client.options.disabledEvents) this.disabledEvents[event] = true;
   }
 
@@ -236,6 +242,7 @@ class WebSocketConnection extends EventEmitter {
       this.debug(`Tried to connect to an invalid gateway: ${gateway}`);
       return false;
     }
+    this.expectingClose = false;
     this.gateway = gateway;
     this.debug(`Connecting to ${gateway}`);
     const ws = this.ws = new WebSocket(gateway);
@@ -259,6 +266,7 @@ class WebSocketConnection extends EventEmitter {
       return false;
     }
     this.heartbeat(-1);
+    this.expectingClose = true;
     ws.close(1000);
     this.packetManager.handleQueue();
     this.ws = null;
@@ -360,7 +368,8 @@ class WebSocketConnection extends EventEmitter {
    * @param {CloseEvent} event Close event that was received
    */
   onClose(event) {
-    this.debug(`Closed: ${event.code}`);
+    this.debug(`${this.expectingClose ? 'Server' : 'Client'} closed WebSocket connection: ${event.code}`);
+    this.expectingClose = false;
     this.closeSequence = this.sequence;
     // Reset the state before trying to fix anything
     this.emit('close', event);
