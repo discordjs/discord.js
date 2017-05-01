@@ -8257,6 +8257,7 @@ class Guild {
     } else if (typeof options === 'string') {
       options = { reason: options, 'delete-message-days': 0 };
     }
+    if (options.days) options['delete-message-days'] = options.days;
     return this.client.rest.methods.banGuildMember(this, user, options);
   }
 
