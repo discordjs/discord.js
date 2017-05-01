@@ -13207,8 +13207,16 @@ class GuildAuditLogsEntry {
     this.executor = guild.client.users.get(data.user_id);
 
     /**
+     * An entry in the audit log representing a specific change
+     * @typedef {object} AuditLogChange
+     * @property {string} name The name of the change, e.g. `nick` for nickname changes
+     * @property {string|boolean|number} [old] The old value of the change, e.g. for nicknames, the old nickname
+     * @property {string|boolean|number} new The new value of the change, e.g. for nicknames, the new nickname
+     */
+
+    /**
      * Specific property changes
-     * @type {Object[]}
+     * @type {AuditLogChange[]}
      */
     this.changes = data.changes ? data.changes.map(c => ({ name: c.key, old: c.old_value, new: c.new_value })) : null;
 
