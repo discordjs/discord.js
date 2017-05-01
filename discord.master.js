@@ -5669,7 +5669,8 @@ class GuildMember {
 
   /**
    * Ban this guild member
-   * @param {Object} [options] Ban options.
+   * @param {Object|number|string} [options] Ban options. If a number, the number of days to delete messages for, if a
+   * string, the ban reason. Supplying an object allows you to do both.
    * @param {number} [options.days=0] Number of days of messages to delete
    * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember>}
@@ -8239,7 +8240,8 @@ class Guild {
   /**
    * Bans a user from the guild.
    * @param {UserResolvable} user The user to ban
-   * @param {Object} [options] Ban options.
+   * @param {Object|number|string} [options] Ban options. If a number, the number of days to delete messages for, if a
+   * string, the ban reason. Supplying an object allows you to do both.
    * @param {number} [options.days=0] Number of days of messages to delete
    * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember|User|string>} Result object will be resolved as specifically as possible.
