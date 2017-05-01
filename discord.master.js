@@ -12979,6 +12979,7 @@ module.exports = DMChannel;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
+const Snowflake = __webpack_require__(7);
 
 const Targets = {
   GUILD: 'GUILD',
@@ -13205,6 +13206,24 @@ class GuildAuditLogsEntry {
     } else {
       this.target = guild[`${targetType.toLowerCase()}s`].get(data.target_id);
     }
+  }
+
+  /**
+   * The timestamp this entry was created at
+   * @type {number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    return Snowflake.deconstruct(this.id).timestamp;
+  }
+
+  /**
+   * The time this entry was created
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
   }
 }
 
