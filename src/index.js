@@ -45,6 +45,7 @@ module.exports = {
   MessageMentions: require('./structures/MessageMentions'),
   MessageReaction: require('./structures/MessageReaction'),
   OAuth2Application: require('./structures/OAuth2Application'),
+  ClientOAuth2Application: require('./structures/OAuth2Application'),
   PartialGuild: require('./structures/PartialGuild'),
   PartialGuildChannel: require('./structures/PartialGuildChannel'),
   PermissionOverwrites: require('./structures/PermissionOverwrites'),
