@@ -104,12 +104,18 @@ class User {
 
   /**
    * A link to the user's avatar
-   * @type {?string}
-   * @readonly
+   * @param {string} [format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided, it will be `gif`
+   * for animated avatars or otherwise `webp`
+   * @param {number} [size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {?string} avatarURL
    */
-  get avatarURL() {
+  avatarURL(format, size) {
     if (!this.avatar) return null;
-    return Constants.Endpoints.User(this).Avatar(this.client.options.http.cdn, this.avatar);
+    if (typeof format === 'number') {
+      size = format;
+      format = 'default';
+    }
+    return Constants.Endpoints.User(this).Avatar(this.client.options.http.cdn, this.avatar, format, size);
   }
 
   /**
@@ -129,7 +135,7 @@ class User {
    * @readonly
    */
   get displayAvatarURL() {
-    return this.avatarURL || this.defaultAvatarURL;
+    return this.avatarURL() || this.defaultAvatarURL;
   }
 
   /**
