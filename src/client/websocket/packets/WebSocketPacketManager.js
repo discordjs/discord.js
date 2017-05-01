@@ -99,11 +99,7 @@ class WebSocketPacketManager {
     }
 
     if (!queue && this.queue.length > 0) this.handleQueue();
-    try {
-      if (this.handlers[packet.t]) return this.handlers[packet.t].handle(packet);
-    } catch (error) {
-      this.client.emit(Constants.Events.ERROR, error);
-    }
+    if (this.handlers[packet.t]) return this.handlers[packet.t].handle(packet);
     return false;
   }
 }
