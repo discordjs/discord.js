@@ -289,7 +289,7 @@ class VoiceBroadcast extends VolumeInterface {
     const buffer = this.readStreamBuffer();
 
     if (!buffer) {
-      this._missed++; = {}
+      this._missed++;
       if (this._missed < 5) {
         this._pausedTime += 200;
         setTimeout(() => this.tick(), 200);
