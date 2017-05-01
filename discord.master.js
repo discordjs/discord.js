@@ -6030,7 +6030,7 @@ class Message {
    */
   get deletable() {
     return this.author.id === this.client.user.id || (this.guild &&
-      this.channel.permissionsFor(this.client.user).hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)
+      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES)
     );
   }
 
@@ -6041,7 +6041,7 @@ class Message {
    */
   get pinnable() {
     return !this.guild ||
-      this.channel.permissionsFor(this.client.user).hasPermission(Permissions.FLAGS.MANAGE_MESSAGES);
+      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES);
   }
 
   /**
@@ -8966,7 +8966,7 @@ class GuildChannel extends Channel {
    */
   get deletable() {
     return this.id !== this.guild.id &&
-      this.permissionsFor(this.client.user).hasPermission(Permissions.FLAGS.MANAGE_CHANNELS);
+      this.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS);
   }
 
   /**
@@ -14241,7 +14241,7 @@ class TextChannel extends GuildChannel {
   get members() {
     const members = new Collection();
     for (const member of this.guild.members.values()) {
-      if (this.permissionsFor(member).hasPermission('READ_MESSAGES')) {
+      if (this.permissionsFor(member).has('READ_MESSAGES')) {
         members.set(member.id, member);
       }
     }
@@ -14383,8 +14383,8 @@ class VoiceChannel extends GuildChannel {
    */
   get joinable() {
     if (this.client.browser) return false;
-    if (!this.permissionsFor(this.client.user).hasPermission('CONNECT')) return false;
-    if (this.full && !this.permissionsFor(this.client.user).hasPermission('MOVE_MEMBERS')) return false;
+    if (!this.permissionsFor(this.client.user).has('CONNECT')) return false;
+    if (this.full && !this.permissionsFor(this.client.user).has('MOVE_MEMBERS')) return false;
     return true;
   }
 
@@ -14394,7 +14394,7 @@ class VoiceChannel extends GuildChannel {
    * @readonly
    */
   get speakable() {
-    return this.permissionsFor(this.client.user).hasPermission('SPEAK');
+    return this.permissionsFor(this.client.user).has('SPEAK');
   }
 
   /**
