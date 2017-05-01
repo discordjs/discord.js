@@ -682,9 +682,11 @@ class Guild {
    */
   ban(user, options = {}) {
     if (typeof options === 'number') {
-      options = { reason: null, days: options };
+      options = { reason: null, 'delete-message-days': options };
     } else if (typeof options === 'string') {
-      options = { reason: options, days: 0 };
+      options = { reason: options, 'delete-message-days': 0 };
+    } else if ('days' in options && !('delete-message-days' in options)) {
+      options = { reason: options.reason, 'delete-message-days': options.days };
     }
     return this.client.rest.methods.banGuildMember(this, user, options);
   }
@@ -1061,8 +1063,8 @@ class Guild {
   _sortPositionWithID(collection) {
     return collection.sort((a, b) =>
       a.position !== b.position ?
-      a.position - b.position :
-      Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber()
+        a.position - b.position :
+        Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber()
     );
   }
 }
