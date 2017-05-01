@@ -163,6 +163,21 @@ exports.Errors = {
   INVALID_TOKEN: 'An invalid token was provided.',
 };
 
+const AllowedImageFormats = [
+  'webp',
+  'png',
+  'jpg',
+  'gif',
+];
+
+const AllowedImageSizes = [
+  128,
+  256,
+  512,
+  1024,
+  2048,
+];
+
 const Endpoints = exports.Endpoints = {
   User: userID => {
     if (userID.id) userID = userID.id;
@@ -178,9 +193,9 @@ const Endpoints = exports.Endpoints = {
       Note: id => `${base}/notes/${id}`,
       Mentions: (limit, roles, everyone, guildID) =>
         `${base}/mentions?limit=${limit}&roles=${roles}&everyone=${everyone}${guildID ? `&guild_id=${guildID}` : ''}`,
-      Avatar: (root, hash) => {
+      Avatar: (root, hash, format, size) => {
         if (userID === '1') return hash;
-        return Endpoints.CDN(root).Avatar(userID, hash);
+        return Endpoints.CDN(root).Avatar(userID, hash, format, size);
       },
     };
   },
@@ -206,7 +221,7 @@ const Endpoints = exports.Endpoints = {
       settings: `${base}/settings`,
       auditLogs: `${base}/audit-logs`,
       Emoji: emojiID => Endpoints.CDN(root).Emoji(emojiID),
-      Icon: (root, hash) => Endpoints.CDN(root).Icon(guildID, hash),
+      Icon: (root, hash, format, size) => Endpoints.CDN(root).Icon(guildID, hash, format, size),
       Splash: (root, hash) => Endpoints.CDN(root).Splash(guildID, hash),
       Role: roleID => `${base}/roles/${roleID}`,
       Member: memberID => {
@@ -262,8 +277,24 @@ const Endpoints = exports.Endpoints = {
     return {
       Emoji: emojiID => `${root}/emojis/${emojiID}.png`,
       Asset: name => `${root}/assets/${name}`,
-      Avatar: (userID, hash) => `${root}/avatars/${userID}/${hash}.${hash.startsWith('a_') ? 'gif' : 'png'}?size=2048`,
-      Icon: (guildID, hash) => `${root}/icons/${guildID}/${hash}.jpg`,
+      Avatar: (userID, hash, format = 'default', size) => {
+        if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
+        if (!AllowedImageFormats.includes(format)) throw new Error(`Invalid image format: ${format}`);
+        if (size && !AllowedImageSizes.includes(size)) throw new RangeError(`Invalid size: ${size}`);
+        return `${root}/avatars/${userID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
+      },
+      Icon: (guildID, hash, format = 'default', size) => {
+        if (format === 'default') format = 'webp';
+        if (!AllowedImageFormats.includes(format)) throw new Error(`Invalid image format: ${format}`);
+        if (size && !AllowedImageSizes.includes(size)) throw new RangeError(`Invalid size: ${size}`);
+        return `${root}/icons/${guildID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
+      },
+      AppIcon: (clientID, hash, format = 'default', size) => {
+        if (format === 'default') format = 'webp';
+        if (!AllowedImageFormats.includes(format)) throw new Error(`Invalid image format: ${format}`);
+        if (size && !AllowedImageSizes.includes(size)) throw new RangeError(`Invalid size: ${size}`);
+        return `${root}/app-icons/${clientID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
+      },
       Splash: (guildID, hash) => `${root}/splashes/${guildID}/${hash}.jpg`,
     };
   },
@@ -4763,12 +4794,18 @@ class User {
 
   /**
    * A link to the user's avatar
-   * @type {?string}
-   * @readonly
+   * @param {string} [format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided, it will be `gif`
+   * for animated avatars or otherwise `webp`
+   * @param {number} [size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {?string} avatarURL
    */
-  get avatarURL() {
+  avatarURL(format, size) {
     if (!this.avatar) return null;
-    return Constants.Endpoints.User(this).Avatar(this.client.options.http.cdn, this.avatar);
+    if (typeof format === 'number') {
+      size = format;
+      format = 'default';
+    }
+    return Constants.Endpoints.User(this).Avatar(this.client.options.http.cdn, this.avatar, format, size);
   }
 
   /**
@@ -4788,7 +4825,7 @@ class User {
    * @readonly
    */
   get displayAvatarURL() {
-    return this.avatarURL || this.defaultAvatarURL;
+    return this.avatarURL() || this.defaultAvatarURL;
   }
 
   /**
@@ -7825,13 +7862,27 @@ class Guild {
   }
 
   /**
-   * The URL to this guild's icon
-   * @type {?string}
+   * Gets the URL to this guild's icon
+   * @param {string} [format='webp'] One of `webp`, `png`, `jpg`, `gif`
+   * @param {number} [size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {?string}
+   */
+  iconURL(format, size) {
+    if (!this.icon) return null;
+    if (typeof format === 'number') {
+      size = format;
+      format = 'default';
+    }
+    return Constants.Endpoints.Guild(this).Icon(this.client.options.http.cdn, this.icon, format, size);
+  }
+
+  /**
+   * Gets the acronym that shows up in place of a guild icon
+   * @type {string}
    * @readonly
    */
-  get iconURL() {
-    if (!this.icon) return null;
-    return Constants.Endpoints.Guild(this).Icon(this.client.options.http.cdn, this.icon);
+  get nameAcronym() {
+    return this.name.replace(/\w+/g, name => name[0]).replace(/\s/g, '');
   }
 
   /**
@@ -8995,6 +9046,7 @@ module.exports = GuildChannel;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Snowflake = __webpack_require__(7);
+const Constants = __webpack_require__(0);
 
 /**
  * Represents an OAuth2 Application.
@@ -9036,12 +9088,6 @@ class OAuth2Application {
      * @type {string}
      */
     this.icon = data.icon;
-
-    /**
-     * The app's icon URL
-     * @type {string}
-     */
-    this.iconURL = `https://cdn.discordapp.com/app-icons/${this.id}/${this.icon}.jpg`;
 
     /**
      * The app's RPC origins
@@ -9116,6 +9162,21 @@ class OAuth2Application {
    */
   get createdAt() {
     return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * A link to the application's icon
+   * @param {string} [format='webp'] One of `webp`, `png`, `jpg`, `gif`.
+   * @param {number} [size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {?string} URL to the icon
+   */
+  iconURL(format, size) {
+    if (!this.icon) return null;
+    if (typeof format === 'number') {
+      size = format;
+      format = 'default';
+    }
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).AppIcon(this.id, this.icon, format, size);
   }
 
   /**
