@@ -143,7 +143,7 @@ class VoiceBroadcast extends VolumeInterface {
    *  })
    *  .catch(console.error);
    */
-  playStream(stream, options) {
+  playStream(stream, options = {}) {
     this.setVolume(options.volume || 1);
     return this._playTranscodable(stream, options);
   }
@@ -164,7 +164,7 @@ class VoiceBroadcast extends VolumeInterface {
    *  })
    *  .catch(console.error);
    */
-  playFile(file, options) {
+  playFile(file, options = {}) {
     this.setVolume(options.volume || 1);
     return this._playTranscodable(`file:${file}`, options);
   }
@@ -209,7 +209,7 @@ class VoiceBroadcast extends VolumeInterface {
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {VoiceBroadcast}
    */
-  playConvertedStream(stream, options) {
+  playConvertedStream(stream, options = {}) {
     this.killCurrentTranscoder();
     this.setVolume(options.volume || 1);
     this.currentTranscoder = { options: { stream } };
@@ -236,7 +236,7 @@ class VoiceBroadcast extends VolumeInterface {
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {VoiceBroadcast}
    */
-  playArbitraryInput(input, options) {
+  playArbitraryInput(input, options = {}) {
     this.setVolume(options.volume || 1);
     options.input = input;
     return this._playTranscodable(input, options);
@@ -289,7 +289,7 @@ class VoiceBroadcast extends VolumeInterface {
     const buffer = this.readStreamBuffer();
 
     if (!buffer) {
-      this._missed++;
+      this._missed++; = {}
       if (this._missed < 5) {
         this._pausedTime += 200;
         setTimeout(() => this.tick(), 200);

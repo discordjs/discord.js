@@ -79,7 +79,7 @@ class AudioPlayer extends EventEmitter {
     this.currentStream = {};
   }
 
-  playUnknownStream(stream, options) {
+  playUnknownStream(stream, options = {}) {
     this.destroy();
     this.opusEncoder = OpusEncoders.fetch(options);
     const transcoder = this.prism.transcode({
@@ -101,8 +101,9 @@ class AudioPlayer extends EventEmitter {
     return this.playPCMStream(transcoder.output, options, true);
   }
 
-  playPCMStream(stream, options, fromUnknown = false) {
+  playPCMStream(stream, options = {}, fromUnknown = false) {
     this.destroy();
+    if (options.bitrate === 'auto') options.bitrate = this.voiceConnection.channel.bitrate * 0.001;
     this.opusEncoder = OpusEncoders.fetch(options);
     const dispatcher = this.createDispatcher(stream, options);
     if (fromUnknown) {
@@ -118,7 +119,7 @@ class AudioPlayer extends EventEmitter {
     return dispatcher;
   }
 
-  playOpusStream(stream, options) {
+  playOpusStream(stream, options = {}) {
     options.opus = true;
     this.destroyCurrentStream();
     const dispatcher = this.createDispatcher(stream, options);
@@ -130,8 +131,7 @@ class AudioPlayer extends EventEmitter {
     return dispatcher;
   }
 
-  playBroadcast(broadcast, { volume = 1, passes = 1 }) {
-    const options = { volume, passes };
+  playBroadcast(broadcast, options) {
     this.destroyCurrentStream();
     const dispatcher = this.createDispatcher(broadcast, options);
     this.currentStream = {
@@ -144,9 +144,8 @@ class AudioPlayer extends EventEmitter {
     return dispatcher;
   }
 
-  createDispatcher(stream, { seek = 0, volume = 1, passes = 1, bitrate = 48 } = {}) {
-    const options = { seek, volume, passes, bitrate };
-    if (bitrate === 'auto') options.bitrate = this.voiceConnection.channel.bitrate * 0.001;
+  createDispatcher(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
+    const options = { seek, volume, passes };
 
     const dispatcher = new StreamDispatcher(this, stream, options);
     dispatcher.on('end', () => this.destroyCurrentStream());
