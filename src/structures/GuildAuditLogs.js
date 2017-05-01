@@ -170,7 +170,7 @@ class GuildAuditLogsEntry {
      * @typedef {object} AuditLogChange
      * @property {string} key The property that was changed, e.g. `nick` for nickname changes
      * @property {string|boolean|number} [old] The old value of the change, e.g. for nicknames, the old nickname
-     * @property {string|boolean|number} new The new value of the change, e.g. for nicknames, the new nickname
+     * @property {string|boolean|number} [new] The new value of the change, e.g. for nicknames, the new nickname
      */
 
     /**
