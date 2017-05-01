@@ -3,9 +3,11 @@ const list = [
   require('./OpusScriptEngine'),
 ];
 
-function fetch(Encoder) {
+let opusEngineFound;
+
+function fetch(Encoder, engineOptions) {
   try {
-    return new Encoder();
+    return new Encoder(engineOptions);
   } catch (err) {
     return null;
   }
@@ -15,10 +17,15 @@ exports.add = encoder => {
   list.push(encoder);
 };
 
-exports.fetch = () => {
+exports.fetch = engineOptions => {
   for (const encoder of list) {
-    const fetched = fetch(encoder);
+    const fetched = fetch(encoder, engineOptions);
     if (fetched) return fetched;
   }
-  throw new Error('Couldn\'t find an Opus engine.');
+  return null;
+};
+
+exports.guaranteeOpusEngine = () => {
+  if (typeof opusEngineFound === 'undefined') opusEngineFound = Boolean(exports.fetch());
+  if (!opusEngineFound) throw new Error('Couldn\'t find an Opus engine.');
 };

@@ -1,48 +1,49 @@
-const request = require('superagent');
+const snekfetch = require('snekfetch');
 const Constants = require('../../util/Constants');
 
-function getRoute(url) {
-  let route = url.split('?')[0];
-  if (route.includes('/channels/') || route.includes('/guilds/')) {
-    const startInd = route.includes('/channels/') ? route.indexOf('/channels/') : route.indexOf('/guilds/');
-    const majorID = route.substring(startInd).split('/')[2];
-    route = route.replace(/(\d{8,})/g, ':id').replace(':id', majorID);
-  }
-  return route;
-}
-
 class APIRequest {
-  constructor(rest, method, url, auth, data, file) {
+  constructor(rest, method, path, auth, data, files) {
     this.rest = rest;
+    this.client = rest.client;
     this.method = method;
-    this.url = url;
+    this.path = path.toString();
     this.auth = auth;
     this.data = data;
-    this.file = file;
-    this.route = getRoute(this.url);
+    this.files = files;
+    this.route = this.getRoute(this.path);
+  }
+
+  getRoute(url) {
+    let route = url.split('?')[0];
+    if (route.includes('/channels/') || route.includes('/guilds/')) {
+      const startInd = route.includes('/channels/') ? route.indexOf('/channels/') : route.indexOf('/guilds/');
+      const majorID = route.substring(startInd).split('/')[2];
+      route = route.replace(/(\d{8,})/g, ':id').replace(':id', majorID);
+    }
+    return route;
   }
 
   getAuth() {
-    if (this.rest.client.token && this.rest.client.user && this.rest.client.user.bot) {
-      return `Bot ${this.rest.client.token}`;
-    } else if (this.rest.client.token) {
-      return this.rest.client.token;
+    if (this.client.token && this.client.user && this.client.user.bot) {
+      return `Bot ${this.client.token}`;
+    } else if (this.client.token) {
+      return this.client.token;
     }
     throw new Error(Constants.Errors.NO_TOKEN);
   }
 
   gen() {
-    const apiRequest = request[this.method](this.url);
-    if (this.auth) apiRequest.set('authorization', this.getAuth());
-    if (this.file && this.file.file) {
-      apiRequest.attach('file', this.file.file, this.file.name);
-      this.data = this.data || {};
-      apiRequest.field('payload_json', JSON.stringify(this.data));
+    const API = `${this.client.options.http.host}/api/v${this.client.options.http.version}`;
+    const request = snekfetch[this.method](`${API}${this.path}`);
+    if (this.auth) request.set('Authorization', this.getAuth());
+    if (!this.rest.client.browser) request.set('User-Agent', this.rest.userAgentManager.userAgent);
+    if (this.files) {
+      for (const file of this.files) if (file && file.file) request.attach(file.name, file.file, file.name);
+      if (typeof this.data !== 'undefined') request.attach('payload_json', JSON.stringify(this.data));
     } else if (this.data) {
-      apiRequest.send(this.data);
+      request.send(this.data);
     }
-    if (!this.rest.client.browser) apiRequest.set('User-Agent', this.rest.userAgentManager.userAgent);
-    return apiRequest;
+    return request;
   }
 }
 

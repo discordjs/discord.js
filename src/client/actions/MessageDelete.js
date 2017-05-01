@@ -8,11 +8,11 @@ class MessageDeleteAction extends Action {
 
   handle(data) {
     const client = this.client;
-
     const channel = client.channels.get(data.channel_id);
-    if (channel) {
-      let message = channel.messages.get(data.id);
+    let message;
 
+    if (channel) {
+      message = channel.messages.get(data.id);
       if (message) {
         channel.messages.delete(message.id);
         this.deleted.set(channel.id + message.id, message);
@@ -20,15 +20,9 @@ class MessageDeleteAction extends Action {
       } else {
         message = this.deleted.get(channel.id + data.id) || null;
       }
-
-      return {
-        message,
-      };
     }
 
-    return {
-      message: null,
-    };
+    return { message };
   }
 
   scheduleForDeletion(channelID, messageID) {

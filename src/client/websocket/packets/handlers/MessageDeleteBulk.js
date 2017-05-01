@@ -9,9 +9,9 @@ class MessageDeleteBulkHandler extends AbstractHandler {
 }
 
 /**
- * Emitted whenever messages are deleted in bulk
+ * Emitted whenever messages are deleted in bulk.
  * @event Client#messageDeleteBulk
- * @param {Collection<string, Message>} messages The deleted messages, mapped by their ID
+ * @param {Collection<Snowflake, Message>} messages The deleted messages, mapped by their ID
  */
 
 module.exports = MessageDeleteBulkHandler;

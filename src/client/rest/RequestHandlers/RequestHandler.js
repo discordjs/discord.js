@@ -14,15 +14,16 @@ class RequestHandler {
     this.restManager = restManager;
 
     /**
-     * A list of requests that have yet to be processed.
+     * A list of requests that have yet to be processed
      * @type {APIRequest[]}
      */
     this.queue = [];
   }
 
   /**
-   * Whether or not the client is being rate limited on every endpoint.
+   * Whether or not the client is being rate limited on every endpoint
    * @type {boolean}
+   * @readonly
    */
   get globalLimit() {
     return this.restManager.globallyRateLimited;
@@ -33,7 +34,7 @@ class RequestHandler {
   }
 
   /**
-   * Push a new API request into this bucket
+   * Push a new API request into this bucket.
    * @param {APIRequest} request The new request to push into the queue
    */
   push(request) {
@@ -41,10 +42,12 @@ class RequestHandler {
   }
 
   /**
-   * Attempts to get this RequestHandler to process its current queue
+   * Attempts to get this RequestHandler to process its current queue.
    */
-  handle() {
-    return;
+  handle() {} // eslint-disable-line no-empty-function
+
+  destroy() {
+    this.queue = [];
   }
 }
 

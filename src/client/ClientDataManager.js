@@ -1,5 +1,5 @@
 const Constants = require('../util/Constants');
-const cloneObject = require('../util/CloneObject');
+const Util = require('../util/Util');
 const Guild = require('../structures/Guild');
 const User = require('../structures/User');
 const DMChannel = require('../structures/DMChannel');
@@ -15,7 +15,7 @@ class ClientDataManager {
   }
 
   get pastReady() {
-    return this.client.ws.status === Constants.Status.READY;
+    return this.client.ws.connection.status === Constants.Status.READY;
   }
 
   newGuild(data) {
@@ -50,15 +50,15 @@ class ClientDataManager {
     let channel;
     if (data.type === Constants.ChannelTypes.DM) {
       channel = new DMChannel(this.client, data);
-    } else if (data.type === Constants.ChannelTypes.groupDM) {
+    } else if (data.type === Constants.ChannelTypes.GROUP_DM) {
       channel = new GroupDMChannel(this.client, data);
     } else {
       guild = guild || this.client.guilds.get(data.guild_id);
       if (guild) {
-        if (data.type === Constants.ChannelTypes.text) {
+        if (data.type === Constants.ChannelTypes.TEXT) {
           channel = new TextChannel(guild, data);
           guild.channels.set(channel.id, channel);
-        } else if (data.type === Constants.ChannelTypes.voice) {
+        } else if (data.type === Constants.ChannelTypes.VOICE) {
           channel = new VoiceChannel(guild, data);
           guild.channels.set(channel.id, channel);
         }
@@ -110,7 +110,7 @@ class ClientDataManager {
   }
 
   updateGuild(currentGuild, newData) {
-    const oldGuild = cloneObject(currentGuild);
+    const oldGuild = Util.cloneObject(currentGuild);
     currentGuild.setup(newData);
     if (this.pastReady) this.client.emit(Constants.Events.GUILD_UPDATE, oldGuild, currentGuild);
   }
@@ -120,9 +120,10 @@ class ClientDataManager {
   }
 
   updateEmoji(currentEmoji, newData) {
-    const oldEmoji = cloneObject(currentEmoji);
+    const oldEmoji = Util.cloneObject(currentEmoji);
     currentEmoji.setup(newData);
     this.client.emit(Constants.Events.GUILD_EMOJI_UPDATE, oldEmoji, currentEmoji);
+    return currentEmoji;
   }
 }
 

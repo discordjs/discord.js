@@ -1,5 +1,7 @@
+const ClientDataResolver = require('../client/ClientDataResolver');
+
 /**
- * A rich embed to be sent with a message
+ * A rich embed to be sent with a message with a fluent interface for creation.
  * @param {Object} [data] Data to set in the rich embed
  */
 class RichEmbed {
@@ -63,10 +65,16 @@ class RichEmbed {
      * @type {Object}
      */
     this.footer = data.footer;
+
+    /**
+     * File to upload alongside this Embed
+     * @type {string}
+     */
+    this.file = data.file;
   }
 
   /**
-   * Sets the title of this embed
+   * Sets the title of this embed.
    * @param {StringResolvable} title The title
    * @returns {RichEmbed} This embed
    */
@@ -78,7 +86,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the description of this embed
+   * Sets the description of this embed.
    * @param {StringResolvable} description The description
    * @returns {RichEmbed} This embed
    */
@@ -90,7 +98,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the URL of this embed
+   * Sets the URL of this embed.
    * @param {string} url The URL
    * @returns {RichEmbed} This embed
    */
@@ -100,30 +108,17 @@ class RichEmbed {
   }
 
   /**
-   * Sets the color of this embed
-   * @param {string|number|number[]} color The color to set
+   * Sets the color of this embed.
+   * @param {ColorResolvable} color The color of the embed
    * @returns {RichEmbed} This embed
    */
   setColor(color) {
-    let radix = 10;
-    if (color instanceof Array) {
-      color = (color[0] << 16) + (color[1] << 8) + color[2];
-    } else if (typeof color === 'string' && color.startsWith('#')) {
-      radix = 16;
-      color = color.replace('#', '');
-    }
-    color = parseInt(color, radix);
-    if (color < 0 || color > 0xFFFFFF) {
-      throw new RangeError('RichEmbed color must be within the range 0 - 16777215 (0xFFFFFF).');
-    } else if (color && isNaN(color)) {
-      throw new TypeError('Unable to convert RichEmbed color to a number.');
-    }
-    this.color = color;
+    this.color = ClientDataResolver.resolveColor(color);
     return this;
   }
 
   /**
-   * Sets the author of this embed
+   * Sets the author of this embed.
    * @param {StringResolvable} name The name of the author
    * @param {string} [icon] The icon URL of the author
    * @param {string} [url] The URL of the author
@@ -135,7 +130,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the timestamp of this embed
+   * Sets the timestamp of this embed.
    * @param {Date} [timestamp=current date] The timestamp
    * @returns {RichEmbed} This embed
    */
@@ -145,7 +140,7 @@ class RichEmbed {
   }
 
   /**
-   * Adds a field to the embed (max 25)
+   * Adds a field to the embed (max 25).
    * @param {StringResolvable} name The name of the field
    * @param {StringResolvable} value The value of the field
    * @param {boolean} [inline=false] Set the field to display inline
@@ -155,14 +150,25 @@ class RichEmbed {
     if (this.fields.length >= 25) throw new RangeError('RichEmbeds may not exceed 25 fields.');
     name = resolveString(name);
     if (name.length > 256) throw new RangeError('RichEmbed field names may not exceed 256 characters.');
+    if (!/\S/.test(name)) throw new RangeError('RichEmbed field names may not be empty.');
     value = resolveString(value);
     if (value.length > 1024) throw new RangeError('RichEmbed field values may not exceed 1024 characters.');
-    this.fields.push({ name: String(name), value: value, inline });
+    if (!/\S/.test(value)) throw new RangeError('RichEmbed field values may not be empty.');
+    this.fields.push({ name, value, inline });
     return this;
   }
 
   /**
-   * Set the thumbnail of this embed
+   * Convenience function for `<RichEmbed>.addField('\u200B', '\u200B', inline)`.
+   * @param {boolean} [inline=false] Set the field to display inline
+   * @returns {RichEmbed} This embed
+   */
+  addBlankField(inline = false) {
+    return this.addField('\u200B', '\u200B', inline);
+  }
+
+  /**
+   * Set the thumbnail of this embed.
    * @param {string} url The URL of the thumbnail
    * @returns {RichEmbed} This embed
    */
@@ -172,8 +178,8 @@ class RichEmbed {
   }
 
   /**
-   * Set the image of this embed
-   * @param {string} url The URL of the thumbnail
+   * Set the image of this embed.
+   * @param {string} url The URL of the image
    * @returns {RichEmbed} This embed
    */
   setImage(url) {
@@ -182,7 +188,7 @@ class RichEmbed {
   }
 
   /**
-   * Sets the footer of this embed
+   * Sets the footer of this embed.
    * @param {StringResolvable} text The text of the footer
    * @param {string} [icon] The icon URL of the footer
    * @returns {RichEmbed} This embed
@@ -191,6 +197,18 @@ class RichEmbed {
     text = resolveString(text);
     if (text.length > 2048) throw new RangeError('RichEmbed footer text may not exceed 2048 characters.');
     this.footer = { text, icon_url: icon };
+    return this;
+  }
+
+  /**
+   * Sets the file to upload alongside the embed. This file can be accessed via `attachment://fileName.extension` when
+   * setting an embed image or author/footer icons. Only one file may be attached.
+   * @param {FileOptions|string} file Local path or URL to the file to attach, or valid FileOptions for a file to attach
+   * @returns {RichEmbed} This embed
+   */
+  attachFile(file) {
+    if (this.file) throw new RangeError('You may not upload more than one file at once.');
+    this.file = file;
     return this;
   }
 }

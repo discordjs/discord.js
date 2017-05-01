@@ -9,6 +9,8 @@ class ReadyHandler extends AbstractHandler {
 
     client.ws.heartbeat();
 
+    data.user.user_settings = data.user_settings;
+
     const clientUser = new ClientUser(client, data.user);
     client.user = clientUser;
     client.readyAt = new Date();
@@ -42,7 +44,6 @@ class ReadyHandler extends AbstractHandler {
     }
 
     if (!client.user.bot && client.options.sync) client.setInterval(client.syncGuilds.bind(client), 30000);
-    client.once('ready', client.syncGuilds.bind(client));
 
     if (!client.users.has('1')) {
       client.dataManager.newUser({
@@ -57,12 +58,24 @@ class ReadyHandler extends AbstractHandler {
       });
     }
 
-    client.setTimeout(() => {
-      if (!client.ws.normalReady) client.ws._emitReady(false);
+    const t = client.setTimeout(() => {
+      client.ws.connection.triggerReady();
     }, 1200 * data.guilds.length);
 
-    this.packetManager.ws.sessionID = data.session_id;
-    this.packetManager.ws.checkIfReady();
+    client.setMaxListeners(data.guilds.length + 10);
+
+    client.once('ready', () => {
+      client.syncGuilds();
+      client.setMaxListeners(10);
+      client.clearTimeout(t);
+    });
+
+    const ws = this.packetManager.ws;
+
+    ws.sessionID = data.session_id;
+    ws._trace = data._trace;
+    client.emit('debug', `READY ${ws._trace.join(' -> ')} ${ws.sessionID}`);
+    ws.checkIfReady();
   }
 }
 

@@ -2,11 +2,11 @@
   Send a message using a webhook
 */
 
-// import the discord.js module
+// Import the discord.js module
 const Discord = require('discord.js');
 
-// create a new webhook
+// Create a new webhook
 const hook = new Discord.WebhookClient('webhook id', 'webhook token');
 
-// send a message using the webhook
-hook.sendMessage('I am now alive!');
+// Send a message using the webhook
+hook.send('I am now alive!');

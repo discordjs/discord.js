@@ -1,6 +1,6 @@
 const Action = require('./Action');
 const Constants = require('../../util/Constants');
-const cloneObject = require('../../util/CloneObject');
+const Util = require('../../util/Util');
 
 class ChannelUpdateAction extends Action {
   handle(data) {
@@ -8,7 +8,7 @@ class ChannelUpdateAction extends Action {
 
     const channel = client.channels.get(data.id);
     if (channel) {
-      const oldChannel = cloneObject(channel);
+      const oldChannel = Util.cloneObject(channel);
       channel.setup(data);
       client.emit(Constants.Events.CHANNEL_UPDATE, oldChannel, channel);
       return {

@@ -1,6 +1,7 @@
-const TextBasedChannel = require('./interface/TextBasedChannel');
+const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Constants = require('../util/Constants');
 const Presence = require('./Presence').Presence;
+const Snowflake = require('../util/Snowflake');
 
 /**
  * Represents a user on Discord.
@@ -9,9 +10,9 @@ const Presence = require('./Presence').Presence;
 class User {
   constructor(client, data) {
     /**
-     * The Client that created the instance of the the User.
+     * The client that created the instance of the the user
      * @name User#client
-     * @type {Client}
+     * @type {}
      * @readonly
      */
     Object.defineProperty(this, 'client', { value: client });
@@ -22,7 +23,7 @@ class User {
   setup(data) {
     /**
      * The ID of the user
-     * @type {string}
+     * @type {Snowflake}
      */
     this.id = data.id;
 
@@ -45,16 +46,22 @@ class User {
     this.avatar = data.avatar;
 
     /**
-     * Whether or not the user is a bot.
+     * Whether or not the user is a bot
      * @type {boolean}
      */
     this.bot = Boolean(data.bot);
 
     /**
-     * The ID of the last message sent by the user, if one was sent.
-     * @type {?string}
+     * The ID of the last message sent by the user, if one was sent
+     * @type {?Snowflake}
      */
     this.lastMessageID = null;
+
+    /**
+     * The Message object of the last message sent by the user, if one was sent
+     * @type {?Message}
+     */
+    this.lastMessage = null;
   }
 
   patch(data) {
@@ -70,7 +77,7 @@ class User {
    * @readonly
    */
   get createdTimestamp() {
-    return (this.id / 4194304) + 1420070400000;
+    return Snowflake.deconstruct(this.id).timestamp;
   }
 
   /**
@@ -96,13 +103,13 @@ class User {
   }
 
   /**
-   * A link to the user's avatar (if they have one, otherwise null)
+   * A link to the user's avatar
    * @type {?string}
    * @readonly
    */
   get avatarURL() {
     if (!this.avatar) return null;
-    return Constants.Endpoints.avatar(this.id, this.avatar);
+    return Constants.Endpoints.User(this).Avatar(this.client.options.http.cdn, this.avatar);
   }
 
   /**
@@ -111,9 +118,9 @@ class User {
    * @readonly
    */
   get defaultAvatarURL() {
-    let defaultAvatars = Object.values(Constants.DefaultAvatars);
-    let defaultAvatar = this.discriminator % defaultAvatars.length;
-    return Constants.Endpoints.assets(`${defaultAvatars[defaultAvatar]}.png`);
+    const avatars = Object.keys(Constants.DefaultAvatars);
+    const avatar = avatars[this.discriminator % avatars.length];
+    return Constants.Endpoints.CDN(this.client.options.http.host).Asset(`${Constants.DefaultAvatars[avatar]}.png`);
   }
 
   /**
@@ -123,6 +130,15 @@ class User {
    */
   get displayAvatarURL() {
     return this.avatarURL || this.defaultAvatarURL;
+  }
+
+  /**
+   * The Discord "tag" for this user
+   * @type {string}
+   * @readonly
+   */
+  get tag() {
+    return `${this.username}#${this.discriminator}`;
   }
 
   /**
@@ -168,9 +184,18 @@ class User {
   /**
    * The DM between the client's user and this user
    * @type {?DMChannel}
+   * @readonly
    */
   get dmChannel() {
     return this.client.channels.filter(c => c.type === 'dm').find(c => c.recipient.id === this.id);
+  }
+
+  /**
+   * Creates a DM channel between the client and the user.
+   * @returns {Promise<DMChannel>}
+   */
+  createDM() {
+    return this.client.rest.methods.createDM(this);
   }
 
   /**
@@ -182,7 +207,7 @@ class User {
   }
 
   /**
-   * Sends a friend request to the user
+   * Sends a friend request to the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
@@ -191,7 +216,7 @@ class User {
   }
 
   /**
-   * Removes the user from your friends
+   * Removes the user from your friends.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
@@ -200,7 +225,7 @@ class User {
   }
 
   /**
-   * Blocks the user
+   * Blocks the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
@@ -209,7 +234,7 @@ class User {
   }
 
   /**
-   * Unblocks the user
+   * Unblocks the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
    */
@@ -218,7 +243,7 @@ class User {
   }
 
   /**
-   * Get the profile of the user
+   * Get the profile of the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<UserProfile>}
    */
@@ -227,7 +252,7 @@ class User {
   }
 
   /**
-   * Sets a note for the user
+   * Sets a note for the user.
    * <warn>This is only available when using a user account.</warn>
    * @param {string} note The note to set for the user
    * @returns {Promise<User>}
@@ -265,11 +290,12 @@ class User {
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  send() { return; }
-  sendMessage() { return; }
-  sendEmbed() { return; }
-  sendFile() { return; }
-  sendCode() { return; }
+  /* eslint-disable no-empty-function */
+  send() {}
+  sendMessage() {}
+  sendEmbed() {}
+  sendFile() {}
+  sendCode() {}
 }
 
 TextBasedChannel.applyToClass(User);

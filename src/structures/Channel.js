@@ -1,5 +1,7 @@
+const Snowflake = require('../util/Snowflake');
+
 /**
- * Represents any channel on Discord
+ * Represents any channel on Discord.
  */
 class Channel {
   constructor(client, data) {
@@ -27,7 +29,7 @@ class Channel {
   setup(data) {
     /**
      * The unique ID of the channel
-     * @type {string}
+     * @type {Snowflake}
      */
     this.id = data.id;
   }
@@ -38,7 +40,7 @@ class Channel {
    * @readonly
    */
   get createdTimestamp() {
-    return (this.id / 4194304) + 1420070400000;
+    return Snowflake.deconstruct(this.id).timestamp;
   }
 
   /**
@@ -51,13 +53,13 @@ class Channel {
   }
 
   /**
-   * Deletes the channel
+   * Deletes the channel.
    * @returns {Promise<Channel>}
    * @example
-   * // delete the channel
+   * // Delete the channel
    * channel.delete()
-   *  .then() // success
-   *  .catch(console.error); // log error
+   *  .then() // Success
+   *  .catch(console.error); // Log error
    */
   delete() {
     return this.client.rest.methods.deleteChannel(this);

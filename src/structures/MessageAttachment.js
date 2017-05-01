@@ -1,10 +1,10 @@
 /**
- * Represents an attachment in a message
+ * Represents an attachment in a message.
  */
 class MessageAttachment {
   constructor(message, data) {
     /**
-     * The Client that instantiated this MessageAttachment.
+     * The client that instantiated this MessageAttachment
      * @name MessageAttachment#client
      * @type {Client}
      * @readonly
@@ -12,7 +12,7 @@ class MessageAttachment {
     Object.defineProperty(this, 'client', { value: message.client });
 
     /**
-     * The message this attachment is part of.
+     * The message this attachment is part of
      * @type {Message}
      */
     this.message = message;
@@ -23,7 +23,7 @@ class MessageAttachment {
   setup(data) {
     /**
      * The ID of this attachment
-     * @type {string}
+     * @type {Snowflake}
      */
     this.id = data.id;
 

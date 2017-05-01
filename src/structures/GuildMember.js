@@ -1,18 +1,18 @@
-const TextBasedChannel = require('./interface/TextBasedChannel');
+const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Role = require('./Role');
-const EvaluatedPermissions = require('./EvaluatedPermissions');
-const Constants = require('../util/Constants');
+const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
 const Presence = require('./Presence').Presence;
+const util = require('util');
 
 /**
- * Represents a member of a guild on Discord
+ * Represents a member of a guild on Discord.
  * @implements {TextBasedChannel}
  */
 class GuildMember {
   constructor(guild, data) {
     /**
-     * The Client that instantiated this GuildMember
+     * The client that instantiated this GuildMember
      * @name GuildMember#client
      * @type {Client}
      * @readonly
@@ -35,10 +35,16 @@ class GuildMember {
     if (data) this.setup(data);
 
     /**
-     * The ID of the last message sent by the member in their guild, if one was sent.
-     * @type {?string}
+     * The ID of the last message sent by the member in their guild, if one was sent
+     * @type {?Snowflake}
      */
     this.lastMessageID = null;
+
+    /**
+     * The Message object of the last message sent by the member in their guild, if one was sent
+     * @type {?Message}
+     */
+    this.lastMessage = null;
   }
 
   setup(data) {
@@ -68,13 +74,13 @@ class GuildMember {
 
     /**
      * The voice session ID of this member, if any
-     * @type {?string}
+     * @type {?Snowflake}
      */
     this.voiceSessionID = data.session_id;
 
     /**
      * The voice channel ID of this member, if any
-     * @type {?string}
+     * @type {?Snowflake}
      */
     this.voiceChannelID = data.channel_id;
 
@@ -119,8 +125,8 @@ class GuildMember {
   }
 
   /**
-   * A list of roles that are applied to this GuildMember, mapped by the role ID.
-   * @type {Collection<string, Role>}
+   * A list of roles that are applied to this GuildMember, mapped by the role ID
+   * @type {Collection<Snowflake, Role>}
    * @readonly
    */
   get roles() {
@@ -138,12 +144,54 @@ class GuildMember {
   }
 
   /**
-   * The role of the member with the highest position.
+   * The role of the member with the highest position
    * @type {Role}
    * @readonly
    */
   get highestRole() {
     return this.roles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
+  }
+
+  /**
+   * The role of the member used to set their color
+   * @type {?Role}
+   * @readonly
+   */
+  get colorRole() {
+    const coloredRoles = this.roles.filter(role => role.color);
+    if (!coloredRoles.size) return null;
+    return coloredRoles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
+  }
+
+  /**
+   * The displayed color of the member in base 10
+   * @type {number}
+   * @readonly
+   */
+  get displayColor() {
+    const role = this.colorRole;
+    return (role && role.color) || 0;
+  }
+
+  /**
+   * The displayed color of the member in hexadecimal
+   * @type {string}
+   * @readonly
+   */
+  get displayHexColor() {
+    const role = this.colorRole;
+    return (role && role.hexColor) || '#000000';
+  }
+
+  /**
+   * The role of the member used to hoist them in a separate category in the users list
+   * @type {?Role}
+   * @readonly
+   */
+  get hoistRole() {
+    const hoistedRoles = this.roles.filter(role => role.hoist);
+    if (!hoistedRoles.size) return null;
+    return hoistedRoles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
   }
 
   /**
@@ -175,7 +223,7 @@ class GuildMember {
 
   /**
    * The ID of this user
-   * @type {string}
+   * @type {Snowflake}
    * @readonly
    */
   get id() {
@@ -193,24 +241,21 @@ class GuildMember {
 
   /**
    * The overall set of permissions for the guild member, taking only roles into account
-   * @type {EvaluatedPermissions}
+   * @type {Permissions}
    * @readonly
    */
   get permissions() {
-    if (this.user.id === this.guild.ownerID) return new EvaluatedPermissions(this, Constants.ALL_PERMISSIONS);
+    if (this.user.id === this.guild.ownerID) return new Permissions(this, Permissions.ALL);
 
     let permissions = 0;
     const roles = this.roles;
     for (const role of roles.values()) permissions |= role.permissions;
 
-    const admin = Boolean(permissions & Constants.PermissionFlags.ADMINISTRATOR);
-    if (admin) permissions = Constants.ALL_PERMISSIONS;
-
-    return new EvaluatedPermissions(this, permissions);
+    return new Permissions(this, permissions);
   }
 
   /**
-   * Whether the member is kickable by the client user.
+   * Whether the member is kickable by the client user
    * @type {boolean}
    * @readonly
    */
@@ -218,12 +263,12 @@ class GuildMember {
     if (this.user.id === this.guild.ownerID) return false;
     if (this.user.id === this.client.user.id) return false;
     const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.hasPermission(Constants.PermissionFlags.KICK_MEMBERS)) return false;
+    if (!clientMember.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) return false;
     return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
   }
 
   /**
-   * Whether the member is bannable by the client user.
+   * Whether the member is bannable by the client user
    * @type {boolean}
    * @readonly
    */
@@ -231,14 +276,15 @@ class GuildMember {
     if (this.user.id === this.guild.ownerID) return false;
     if (this.user.id === this.client.user.id) return false;
     const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.hasPermission(Constants.PermissionFlags.BAN_MEMBERS)) return false;
+    if (!clientMember.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return false;
     return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
   }
 
   /**
-   * Returns `channel.permissionsFor(guildMember)`. Returns evaluated permissions for a member in a guild channel.
-   * @param {ChannelResolvable} channel Guild channel to use as context
-   * @returns {?EvaluatedPermissions}
+   * Returns `channel.permissionsFor(guildMember)`. Returns permissions for a member in a guild channel,
+   * taking into account roles and permission overwrites.
+   * @param {ChannelResolvable} channel The guild channel to use as context
+   * @returns {?Permissions}
    */
   permissionsIn(channel) {
     channel = this.client.resolver.resolveChannel(channel);
@@ -248,13 +294,20 @@ class GuildMember {
 
   /**
    * Checks if any of the member's roles have a permission.
-   * @param {PermissionResolvable} permission The permission to check for
-   * @param {boolean} [explicit=false] Whether to require the roles to explicitly have the exact permission
+   * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
+   * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permission
+   * **(deprecated)**
+   * @param {boolean} [checkAdmin] Whether to allow the administrator permission to override
+   * (takes priority over `explicit`)
+   * @param {boolean} [checkOwner] Whether to allow being the guild's owner to override
+   * (takes priority over `explicit`)
    * @returns {boolean}
    */
-  hasPermission(permission, explicit = false) {
-    if (!explicit && this.user.id === this.guild.ownerID) return true;
-    return this.roles.some(r => r.hasPermission(permission, explicit));
+  hasPermission(permission, explicit = false, checkAdmin, checkOwner) {
+    if (typeof checkAdmin === 'undefined') checkAdmin = !explicit;
+    if (typeof checkOwner === 'undefined') checkOwner = !explicit;
+    if (checkOwner && this.user.id === this.guild.ownerID) return true;
+    return this.roles.some(r => r.hasPermission(permission, undefined, checkAdmin));
   }
 
   /**
@@ -262,10 +315,11 @@ class GuildMember {
    * @param {PermissionResolvable[]} permissions The permissions to check for
    * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
    * @returns {boolean}
+   * @deprecated
    */
   hasPermissions(permissions, explicit = false) {
     if (!explicit && this.user.id === this.guild.ownerID) return true;
-    return permissions.every(p => this.hasPermission(p, explicit));
+    return this.hasPermission(permissions, explicit);
   }
 
   /**
@@ -275,12 +329,22 @@ class GuildMember {
    * @returns {PermissionResolvable[]}
    */
   missingPermissions(permissions, explicit = false) {
-    return permissions.filter(p => !this.hasPermission(p, explicit));
+    return permissions.missing(permissions, explicit);
   }
 
   /**
-   * Edit a guild member
-   * @param {GuildmemberEditData} data The data to edit the member with
+   * The data for editing a guild member.
+   * @typedef {Object} GuildMemberEditData
+   * @property {string} [nick] The nickname to set for the member
+   * @property {Collection<Snowflake, Role>|Role[]|Snowflake[]} [roles] The roles or role IDs to apply
+   * @property {boolean} [mute] Whether or not the member should be muted
+   * @property {boolean} [deaf] Whether or not the member should be deafened
+   * @property {ChannelResolvable} [channel] Channel to move member to (if they are connected to voice)
+   */
+
+  /**
+   * Edit a guild member.
+   * @param {GuildMemberEditData} data The data to edit the member with
    * @returns {Promise<GuildMember>}
    */
   edit(data) {
@@ -288,7 +352,7 @@ class GuildMember {
   }
 
   /**
-   * Mute/unmute a user
+   * Mute/unmute a user.
    * @param {boolean} mute Whether or not the member should be muted
    * @returns {Promise<GuildMember>}
    */
@@ -297,7 +361,7 @@ class GuildMember {
   }
 
   /**
-   * Deafen/undeafen a user
+   * Deafen/undeafen a user.
    * @param {boolean} deaf Whether or not the member should be deafened
    * @returns {Promise<GuildMember>}
    */
@@ -316,7 +380,7 @@ class GuildMember {
 
   /**
    * Sets the roles applied to the member.
-   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to apply
+   * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to apply
    * @returns {Promise<GuildMember>}
    */
   setRoles(roles) {
@@ -325,17 +389,18 @@ class GuildMember {
 
   /**
    * Adds a single role to the member.
-   * @param {Role|string} role The role or ID of the role to add
+   * @param {Role|Snowflake} role The role or ID of the role to add
    * @returns {Promise<GuildMember>}
    */
   addRole(role) {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
+    if (!role) throw new TypeError('Supplied parameter was neither a Role nor a Snowflake.');
     return this.client.rest.methods.addMemberRole(this, role);
   }
 
   /**
    * Adds multiple roles to the member.
-   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to add
+   * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to add
    * @returns {Promise<GuildMember>}
    */
   addRoles(roles) {
@@ -351,17 +416,18 @@ class GuildMember {
 
   /**
    * Removes a single role from the member.
-   * @param {Role|string} role The role or ID of the role to remove
+   * @param {Role|Snowflake} role The role or ID of the role to remove
    * @returns {Promise<GuildMember>}
    */
   removeRole(role) {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
+    if (!role) throw new TypeError('Supplied parameter was neither a Role nor a Snowflake.');
     return this.client.rest.methods.removeMemberRole(this, role);
   }
 
   /**
    * Removes multiple roles from the member.
-   * @param {Collection<string, Role>|Role[]|string[]} roles The roles or role IDs to remove
+   * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to remove
    * @returns {Promise<GuildMember>}
    */
   removeRoles(roles) {
@@ -381,7 +447,7 @@ class GuildMember {
   }
 
   /**
-   * Set the nickname for the guild member
+   * Set the nickname for the guild member.
    * @param {string} nick The nickname for the guild member
    * @returns {Promise<GuildMember>}
    */
@@ -390,39 +456,50 @@ class GuildMember {
   }
 
   /**
-   * Deletes any DMs with this guild member
+   * Creates a DM channel between the client and the member.
    * @returns {Promise<DMChannel>}
    */
-  deleteDM() {
-    return this.client.rest.methods.deleteChannel(this);
+  createDM() {
+    return this.user.createDM();
   }
 
   /**
-   * Kick this member from the guild
+   * Deletes any DMs with this guild member.
+   * @returns {Promise<DMChannel>}
+   */
+  deleteDM() {
+    return this.user.deleteDM();
+  }
+
+  /**
+   * Kick this member from the guild.
+   * @param {string} [reason] Reason for kicking user
    * @returns {Promise<GuildMember>}
    */
-  kick() {
-    return this.client.rest.methods.kickGuildMember(this.guild, this);
+  kick(reason) {
+    return this.client.rest.methods.kickGuildMember(this.guild, this, reason);
   }
 
   /**
    * Ban this guild member
-   * @param {number} [deleteDays=0] The amount of days worth of messages from this member that should
-   * also be deleted. Between `0` and `7`.
+   * @param {Object|number|string} [options] Ban options. If a number, the number of days to delete messages for, if a
+   * string, the ban reason. Supplying an object allows you to do both.
+   * @param {number} [options.days=0] Number of days of messages to delete
+   * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember>}
    * @example
    * // ban a guild member
    * guildMember.ban(7);
    */
-  ban(deleteDays = 0) {
-    return this.client.rest.methods.banGuildMember(this.guild, this, deleteDays);
+  ban(options) {
+    return this.guild.ban(this, options);
   }
 
   /**
    * When concatenated with a string, this automatically concatenates the user's mention instead of the Member object.
    * @returns {string}
    * @example
-   * // logs: Hello from <@123456789>!
+   * // Logs: Hello from <@123456789>!
    * console.log(`Hello from ${member}!`);
    */
   toString() {
@@ -430,13 +507,17 @@ class GuildMember {
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  send() { return; }
-  sendMessage() { return; }
-  sendEmbed() { return; }
-  sendFile() { return; }
-  sendCode() { return; }
+  /* eslint-disable no-empty-function */
+  send() {}
+  sendMessage() {}
+  sendEmbed() {}
+  sendFile() {}
+  sendCode() {}
 }
 
 TextBasedChannel.applyToClass(GuildMember);
+
+GuildMember.prototype.hasPermissions = util.deprecate(GuildMember.prototype.hasPermissions,
+  'GuildMember#hasPermissions is deprecated - use GuildMember#hasPermission, it now takes an array');
 
 module.exports = GuildMember;

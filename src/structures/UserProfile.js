@@ -13,7 +13,7 @@ class UserProfile {
     this.user = user;
 
     /**
-     * The Client that created the instance of the the UserProfile.
+     * The client that created the instance of the the UserProfile.
      * @name UserProfile#client
      * @type {Client}
      * @readonly
@@ -21,14 +21,14 @@ class UserProfile {
     Object.defineProperty(this, 'client', { value: user.client });
 
     /**
-     * Guilds that the client user and the user share
-     * @type {Collection<Guild>}
+     * The guilds that the client user and the user share
+     * @type {Collection<Snowflake, Guild>}
      */
     this.mutualGuilds = new Collection();
 
     /**
      * The user's connections
-     * @type {Collection<UserConnection>}
+     * @type {Collection<Snowflake, UserConnection>}
      */
     this.connections = new Collection();
 
@@ -41,6 +41,12 @@ class UserProfile {
      * @type {boolean}
      */
     this.premium = data.premium;
+
+    /**
+     * The date since which the user has had Discord Premium
+     * @type {?Date}
+     */
+    this.premiumSince = data.premium_since ? new Date(data.premium_since) : null;
 
     for (const guild of data.mutual_guilds) {
       if (this.client.guilds.has(guild.id)) {

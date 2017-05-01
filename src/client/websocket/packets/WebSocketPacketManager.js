@@ -2,6 +2,7 @@ const Constants = require('../../../util/Constants');
 
 const BeforeReadyWhitelist = [
   Constants.WSEvents.READY,
+  Constants.WSEvents.RESUMED,
   Constants.WSEvents.GUILD_CREATE,
   Constants.WSEvents.GUILD_DELETE,
   Constants.WSEvents.GUILD_MEMBERS_CHUNK,
@@ -10,12 +11,13 @@ const BeforeReadyWhitelist = [
 ];
 
 class WebSocketPacketManager {
-  constructor(websocketManager) {
-    this.ws = websocketManager;
+  constructor(connection) {
+    this.ws = connection;
     this.handlers = {};
     this.queue = [];
 
     this.register(Constants.WSEvents.READY, require('./handlers/Ready'));
+    this.register(Constants.WSEvents.RESUMED, require('./handlers/Resumed'));
     this.register(Constants.WSEvents.GUILD_CREATE, require('./handlers/GuildCreate'));
     this.register(Constants.WSEvents.GUILD_DELETE, require('./handlers/GuildDelete'));
     this.register(Constants.WSEvents.GUILD_UPDATE, require('./handlers/GuildUpdate'));
@@ -36,6 +38,7 @@ class WebSocketPacketManager {
     this.register(Constants.WSEvents.PRESENCE_UPDATE, require('./handlers/PresenceUpdate'));
     this.register(Constants.WSEvents.USER_UPDATE, require('./handlers/UserUpdate'));
     this.register(Constants.WSEvents.USER_NOTE_UPDATE, require('./handlers/UserNoteUpdate'));
+    this.register(Constants.WSEvents.USER_SETTINGS_UPDATE, require('./handlers/UserSettingsUpdate'));
     this.register(Constants.WSEvents.VOICE_STATE_UPDATE, require('./handlers/VoiceStateUpdate'));
     this.register(Constants.WSEvents.TYPING_START, require('./handlers/TypingStart'));
     this.register(Constants.WSEvents.MESSAGE_CREATE, require('./handlers/MessageCreate'));
@@ -61,34 +64,12 @@ class WebSocketPacketManager {
 
   handleQueue() {
     this.queue.forEach((element, index) => {
-      this.handle(this.queue[index]);
+      this.handle(this.queue[index], true);
       this.queue.splice(index, 1);
     });
   }
 
-  setSequence(s) {
-    if (s && s > this.ws.sequence) this.ws.sequence = s;
-  }
-
-  handle(packet) {
-    if (packet.op === Constants.OPCodes.RECONNECT) {
-      this.setSequence(packet.s);
-      this.ws.tryReconnect();
-      return false;
-    }
-
-    if (packet.op === Constants.OPCodes.INVALID_SESSION) {
-      if (packet.d) {
-        setTimeout(() => {
-          this.ws._sendResume();
-        }, 2500);
-      } else {
-        this.ws.sessionID = null;
-        this.ws._sendNewIdentify();
-      }
-      return false;
-    }
-
+  handle(packet, queue = false) {
     if (packet.op === Constants.OPCodes.HEARTBEAT_ACK) {
       this.ws.client._pong(this.ws.client._pingTimestamp);
       this.ws.lastHeartbeatAck = true;
@@ -106,7 +87,7 @@ class WebSocketPacketManager {
       this.ws.checkIfReady();
     }
 
-    this.setSequence(packet.s);
+    this.ws.setSequence(packet.s);
 
     if (this.ws.disabledEvents[packet.t] !== undefined) return false;
 
@@ -117,6 +98,7 @@ class WebSocketPacketManager {
       }
     }
 
+    if (!queue && this.queue.length > 0) this.handleQueue();
     if (this.handlers[packet.t]) return this.handlers[packet.t].handle(packet);
     return false;
   }

@@ -1,7 +1,7 @@
 const AbstractHandler = require('./AbstractHandler');
 
 const Constants = require('../../../../util/Constants');
-const cloneObject = require('../../../../util/CloneObject');
+const Util = require('../../../../util/Util');
 
 class VoiceStateUpdateHandler extends AbstractHandler {
   handle(packet) {
@@ -12,12 +12,12 @@ class VoiceStateUpdateHandler extends AbstractHandler {
     if (guild) {
       const member = guild.members.get(data.user_id);
       if (member) {
-        const oldVoiceChannelMember = cloneObject(member);
+        const oldVoiceChannelMember = Util.cloneObject(member);
         if (member.voiceChannel && member.voiceChannel.id !== data.channel_id) {
           member.voiceChannel.members.delete(oldVoiceChannelMember.id);
         }
 
-        // if the member left the voice channel, unset their speaking property
+        // If the member left the voice channel, unset their speaking property
         if (!data.channel_id) member.speaking = null;
 
         if (member.user.id === client.user.id && data.channel_id) {

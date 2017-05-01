@@ -2,7 +2,7 @@ const OpusEngine = require('./BaseOpusEngine');
 
 let OpusScript;
 
-class NodeOpusEngine extends OpusEngine {
+class OpusScriptEngine extends OpusEngine {
   constructor(player) {
     super(player);
     try {
@@ -11,6 +11,15 @@ class NodeOpusEngine extends OpusEngine {
       throw err;
     }
     this.encoder = new OpusScript(48000, 2);
+    super.init();
+  }
+
+  setFEC(enabled) {
+    this.encoder.encoderCTL(this.ctl.FEC, enabled ? 1 : 0);
+  }
+
+  setPLP(percent) {
+    this.encoder.encoderCTL(this.ctl.PLP, Math.min(100, Math.max(0, percent * 100)));
   }
 
   encode(buffer) {
@@ -22,6 +31,11 @@ class NodeOpusEngine extends OpusEngine {
     super.decode(buffer);
     return this.encoder.decode(buffer);
   }
+
+  destroy() {
+    super.destroy();
+    this.encoder.delete();
+  }
 }
 
-module.exports = NodeOpusEngine;
+module.exports = OpusScriptEngine;

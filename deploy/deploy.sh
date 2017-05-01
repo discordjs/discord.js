@@ -3,37 +3,49 @@
 
 set -e
 
-function build {
-  # Build docs
-  npm run docs
-
-  # Build the webpack
-  VERSIONED=false npm run web-dist
+function tests {
+  npm run lint
+  npm run docs:test
+  VERSIONED=false npm run webpack
+  exit 0
 }
 
-# Ignore Travis checking PRs
+function build {
+  npm run lint
+  npm run docs
+  VERSIONED=false npm run webpack
+}
+
+# For revert branches, do nothing
+if [[ "$TRAVIS_BRANCH" == revert-* ]]; then
+  echo -e "\e[36m\e[1mBuild triggered for reversion branch \"${TRAVIS_BRANCH}\" - doing nothing."
+  exit 0
+fi
+
+# For PRs, only run tests
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  echo "deploy.sh: Ignoring PR build"
-  build
-  exit 0
+  echo -e "\e[36m\e[1mBuild triggered for PR #${TRAVIS_PULL_REQUEST} to branch \"${TRAVIS_BRANCH}\" - only running tests."
+  tests
 fi
 
-# Ignore travis checking other branches irrelevant to users
-# Apparently Travis considers tag builds as separate branches so we need to
-# check for that separately
-if [ "$TRAVIS_BRANCH" != "master" -a "$TRAVIS_BRANCH" != "indev" -a "$TRAVIS_BRANCH" != "$TRAVIS_TAG" ]; then
-  echo "deploy.sh: Ignoring push to another branch than master/indev"
-  build
-  exit 0
-fi
-
-SOURCE=$TRAVIS_BRANCH
-
-# Make sure tag pushes are handled
+# Figure out the source of the build
 if [ -n "$TRAVIS_TAG" ]; then
-  echo "deploy.sh: This is a tag build, proceeding accordingly"
+  echo -e "\e[36m\e[1mBuild triggered for tag \"${TRAVIS_TAG}\"."
   SOURCE=$TRAVIS_TAG
+  SOURCE_TYPE="tag"
+else
+  echo -e "\e[36m\e[1mBuild triggered for branch \"${TRAVIS_BRANCH}\"."
+  SOURCE=$TRAVIS_BRANCH
+  SOURCE_TYPE="branch"
 fi
+
+# For Node != 6, only run tests
+if [ "$TRAVIS_NODE_VERSION" != "6" ]; then
+  echo -e "\e[36m\e[1mBuild triggered with Node v${TRAVIS_NODE_VERSION} - only running tests."
+  tests
+fi
+
+build
 
 # Initialise some useful variables
 REPO=`git config remote.origin.url`
@@ -45,20 +57,16 @@ ENCRYPTED_KEY_VAR="encrypted_${ENCRYPTION_LABEL}_key"
 ENCRYPTED_IV_VAR="encrypted_${ENCRYPTION_LABEL}_iv"
 ENCRYPTED_KEY=${!ENCRYPTED_KEY_VAR}
 ENCRYPTED_IV=${!ENCRYPTED_IV_VAR}
-openssl aes-256-cbc -K $ENCRYPTED_KEY -iv $ENCRYPTED_IV -in deploy/deploy_key.enc -out deploy_key -d
-chmod 600 deploy_key
+openssl aes-256-cbc -K $ENCRYPTED_KEY -iv $ENCRYPTED_IV -in deploy/deploy-key.enc -out deploy-key -d
+chmod 600 deploy-key
 eval `ssh-agent -s`
-ssh-add deploy_key
-
-# Build everything
-build
+ssh-add deploy-key
 
 # Checkout the repo in the target branch so we can build docs and push to it
 TARGET_BRANCH="docs"
 git clone $REPO out -b $TARGET_BRANCH
 
-# Move the generated JSON file to the newly-checked-out repo, to be committed
-# and pushed
+# Move the generated JSON file to the newly-checked-out repo, to be committed and pushed
 mv docs/docs.json out/$SOURCE.json
 
 # Commit and push
@@ -66,7 +74,7 @@ cd out
 git add .
 git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
-git commit -m "Docs build: ${SHA}" || true
+git commit -m "Docs build for ${SOURCE_TYPE} ${SOURCE}: ${SHA}" || true
 git push $SSH_REPO $TARGET_BRANCH
 
 # Clean up...
@@ -86,5 +94,5 @@ cd out
 git add .
 git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
-git commit -m "Webpack build: ${SHA}" || true
+git commit -m "Webpack build for ${SOURCE_TYPE} ${SOURCE}: ${SHA}" || true
 git push $SSH_REPO $TARGET_BRANCH

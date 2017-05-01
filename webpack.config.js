@@ -1,5 +1,5 @@
 /*
-  ONLY RUN BUILDS WITH `npm run web-dist`!
+  ONLY RUN BUILDS WITH `npm run webpack`!
   DO NOT USE NORMAL WEBPACK! IT WILL NOT WORK!
 */
 
@@ -7,7 +7,7 @@ const webpack = require('webpack');
 const createVariants = require('parallel-webpack').createVariants;
 const version = require('./package.json').version;
 
-const createConfig = (options) => {
+const createConfig = options => {
   const plugins = [
     new webpack.DefinePlugin({ 'global.GENTLY': false }),
   ];

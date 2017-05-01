@@ -1,32 +1,34 @@
 exports.Package = require('../../package.json');
 
 /**
- * Options for a Client.
+ * Options for a client.
  * @typedef {Object} ClientOptions
- * @property {string} [apiRequestMethod='sequential'] 'sequential' or 'burst'. Sequential executes all requests in
- * the order they are triggered, whereas burst runs multiple at a time, and doesn't guarantee a particular order.
- * @property {number} [shardId=0] The ID of this shard
- * @property {number} [shardCount=0] The number of shards
+ * @property {string} [apiRequestMethod='sequential'] One of `sequential` or `burst`. The sequential handler executes
+ * all requests in the order they are triggered, whereas the burst handler runs multiple in parallel, and doesn't
+ * provide the guarantee of any particular order. Burst mode is more likely to hit a 429 ratelimit error by its nature,
+ * and is therefore slightly riskier to use.
+ * @property {number} [shardId=0] ID of the shard to run
+ * @property {number} [shardCount=0] Total number of shards
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
  * (-1 or Infinity for unlimited - don't do this without message sweeping, otherwise memory usage will climb
  * indefinitely)
- * @property {number} [messageCacheLifetime=0] How long until a message should be uncached by the message sweeping
- * (in seconds, 0 for forever)
+ * @property {number} [messageCacheLifetime=0] How long a message should stay in the cache until it is considered
+ * sweepable (in seconds, 0 for forever)
  * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
  * the message cache lifetime (in seconds, 0 for never)
  * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup, as well as
- * upon joining a guild
- * @property {boolean} [disableEveryone=false] Default value for MessageOptions.disableEveryone
- * @property {boolean} [sync=false] Whether to periodically sync guilds (for userbots)
+ * upon joining a guild (should be avoided whenever possible)
+ * @property {boolean} [disableEveryone=false] Default value for {@link MessageOptions#disableEveryone}
+ * @property {boolean} [sync=false] Whether to periodically sync guilds (for user accounts)
  * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
  * corresponding websocket events
- * @property {number} [restTimeOffset=500] The extra time in millseconds to wait before continuing to make REST
+ * @property {number} [restTimeOffset=500] Extra time in millseconds to wait before continuing to make REST
  * requests (higher values will reduce rate-limiting errors on bad connections)
  * @property {WSEventType[]} [disabledEvents] An array of disabled websocket events. Events in this array will not be
  * processed, potentially resulting in performance improvements for larger bots. Only disable events you are
  * 100% certain you don't need, as many are important, but not obviously so. The safest one to disable with the
  * most impact is typically `TYPING_START`.
- * @property {WebsocketOptions} [ws] Options for the websocket
+ * @property {WebsocketOptions} [ws] Options for the WebSocket
  */
 exports.DefaultOptions = {
   apiRequestMethod: 'sequential',
@@ -43,15 +45,15 @@ exports.DefaultOptions = {
   restTimeOffset: 500,
 
   /**
-   * Websocket options. These are left as snake_case to match the API.
+   * WebSocket options (these are left as snake_case to match the API)
    * @typedef {Object} WebsocketOptions
    * @property {number} [large_threshold=250] Number of members in a guild to be considered large
-   * @property {boolean} [compress=true] Whether to compress data sent on the connection.
-   * Defaults to `false` for browsers.
+   * @property {boolean} [compress=true] Whether to compress data sent on the connection
+   * (defaults to `false` for browsers)
    */
   ws: {
     large_threshold: 250,
-    compress: typeof window === 'undefined',
+    compress: require('os').platform() !== 'browser',
     properties: {
       $os: process ? process.platform : 'discord.js',
       $browser: 'discord.js',
@@ -59,7 +61,20 @@ exports.DefaultOptions = {
       $referrer: '',
       $referring_domain: '',
     },
+    version: 6,
   },
+  http: {
+    version: 7,
+    host: 'https://discordapp.com',
+    cdn: 'https://cdn.discordapp.com',
+  },
+};
+
+exports.WSCodes = {
+  1000: 'Connection gracefully closed',
+  4004: 'Tried to identify with an invalid token',
+  4010: 'Sharding data provided was invalid',
+  4011: 'Shard would be on too many guilds if connected',
 };
 
 exports.Errors = {
@@ -72,89 +87,147 @@ exports.Errors = {
   INVALID_RATE_LIMIT_METHOD: 'Unknown rate limiting method.',
   BAD_LOGIN: 'Incorrect login details were provided.',
   INVALID_SHARD: 'Invalid shard settings were provided.',
+  SHARDING_REQUIRED: 'This session would have handled too many guilds - Sharding is required.',
   INVALID_TOKEN: 'An invalid token was provided.',
 };
 
-const PROTOCOL_VERSION = exports.PROTOCOL_VERSION = 6;
-const HOST = exports.HOST = `https://discordapp.com`;
-const API = exports.API = `${HOST}/api/v${PROTOCOL_VERSION}`;
 const Endpoints = exports.Endpoints = {
-  // general
-  login: `${API}/auth/login`,
-  logout: `${API}/auth/logout`,
-  gateway: `${API}/gateway`,
-  botGateway: `${API}/gateway/bot`,
-  invite: (id) => `${API}/invite/${id}`,
-  inviteLink: (id) => `https://discord.gg/${id}`,
-  assets: (asset) => `${HOST}/assets/${asset}`,
-  CDN: 'https://cdn.discordapp.com',
-
-  // users
-  user: (userID) => `${API}/users/${userID}`,
-  userChannels: (userID) => `${Endpoints.user(userID)}/channels`,
-  userProfile: (userID) => `${Endpoints.user(userID)}/profile`,
-  avatar: (userID, avatar) => {
-    if (userID === '1') return avatar;
-    return `${Endpoints.CDN}/avatars/${userID}/${avatar}.${avatar.startsWith('a_') ? 'gif' : 'jpg'}?size=1024`;
+  User: userID => {
+    if (userID.id) userID = userID.id;
+    const base = `/users/${userID}`;
+    return {
+      toString: () => base,
+      channels: `${base}/channels`,
+      profile: `${base}/profile`,
+      relationships: `${base}/relationships`,
+      settings: `${base}/settings`,
+      Relationship: uID => `${base}/relationships/${uID}`,
+      Guild: guildID => `${base}/guilds/${guildID}`,
+      Note: id => `${base}/notes/${id}`,
+      Mentions: (limit, roles, everyone, guildID) =>
+        `${base}/mentions?limit=${limit}&roles=${roles}&everyone=${everyone}${guildID ? `&guild_id=${guildID}` : ''}`,
+      Avatar: (root, hash) => {
+        if (userID === '1') return hash;
+        return Endpoints.CDN(root).Avatar(userID, hash);
+      },
+    };
   },
-  me: `${API}/users/@me`,
-  meGuild: (guildID) => `${Endpoints.me}/guilds/${guildID}`,
-  meMentions: (limit, roles, everyone, guildID) =>
-    `users/@me/mentions?limit=${limit}&roles=${roles}&everyone=${everyone}${guildID ? `&guild_id=${guildID}` : ''}`,
-  relationships: (userID) => `${Endpoints.user(userID)}/relationships`,
-  note: (userID) => `${Endpoints.me}/notes/${userID}`,
-
-  // guilds
-  guilds: `${API}/guilds`,
-  guild: (guildID) => `${Endpoints.guilds}/${guildID}`,
-  guildIcon: (guildID, hash) => `${Endpoints.CDN}/icons/${guildID}/${hash}.jpg`,
-  guildSplash: (guildID, hash) => `${Endpoints.CDN}/splashes/${guildID}/${hash}.jpg`,
-  guildPrune: (guildID) => `${Endpoints.guild(guildID)}/prune`,
-  guildEmbed: (guildID) => `${Endpoints.guild(guildID)}/embed`,
-  guildInvites: (guildID) => `${Endpoints.guild(guildID)}/invites`,
-  guildRoles: (guildID) => `${Endpoints.guild(guildID)}/roles`,
-  guildRole: (guildID, roleID) => `${Endpoints.guildRoles(guildID)}/${roleID}`,
-  guildBans: (guildID) => `${Endpoints.guild(guildID)}/bans`,
-  guildIntegrations: (guildID) => `${Endpoints.guild(guildID)}/integrations`,
-  guildMembers: (guildID) => `${Endpoints.guild(guildID)}/members`,
-  guildMember: (guildID, memberID) => `${Endpoints.guildMembers(guildID)}/${memberID}`,
-  guildMemberRole: (guildID, memberID, roleID) => `${Endpoints.guildMember(guildID, memberID)}/roles/${roleID}`,
-  guildMemberNickname: (guildID) => `${Endpoints.guildMember(guildID, '@me')}/nick`,
-  guildChannels: (guildID) => `${Endpoints.guild(guildID)}/channels`,
-  guildEmojis: (guildID) => `${Endpoints.guild(guildID)}/emojis`,
-
-  // channels
-  channels: `${API}/channels`,
-  channel: (channelID) => `${Endpoints.channels}/${channelID}`,
-  channelMessages: (channelID) => `${Endpoints.channel(channelID)}/messages`,
-  channelInvites: (channelID) => `${Endpoints.channel(channelID)}/invites`,
-  channelTyping: (channelID) => `${Endpoints.channel(channelID)}/typing`,
-  channelPermissions: (channelID) => `${Endpoints.channel(channelID)}/permissions`,
-  channelMessage: (channelID, messageID) => `${Endpoints.channelMessages(channelID)}/${messageID}`,
-  channelWebhooks: (channelID) => `${Endpoints.channel(channelID)}/webhooks`,
-
-  // message reactions
-  messageReactions: (channelID, messageID) => `${Endpoints.channelMessage(channelID, messageID)}/reactions`,
-  messageReaction:
-    (channel, msg, emoji, limit) =>
-          `${Endpoints.messageReactions(channel, msg)}/${emoji}` +
-          `${limit ? `?limit=${limit}` : ''}`,
-  selfMessageReaction: (channel, msg, emoji, limit) =>
-          `${Endpoints.messageReaction(channel, msg, emoji, limit)}/@me`,
-  userMessageReaction: (channel, msg, emoji, limit, id) =>
-          `${Endpoints.messageReaction(channel, msg, emoji, limit)}/${id}`,
-
-  // webhooks
-  webhook: (webhookID, token) => `${API}/webhooks/${webhookID}${token ? `/${token}` : ''}`,
-
-  // oauth
-  myApplication: `${API}/oauth2/applications/@me`,
-  getApp: (id) => `${API}/oauth2/authorize?client_id=${id}`,
-
-  // emoji
-  emoji: (emojiID) => `${Endpoints.CDN}/emojis/${emojiID}.png`,
+  guilds: '/guilds',
+  Guild: guildID => {
+    if (guildID.id) guildID = guildID.id;
+    const base = `/guilds/${guildID}`;
+    return {
+      toString: () => base,
+      prune: `${base}/prune`,
+      embed: `${base}/embed`,
+      bans: `${base}/bans`,
+      integrations: `${base}/integrations`,
+      members: `${base}/members`,
+      channels: `${base}/channels`,
+      invites: `${base}/invites`,
+      roles: `${base}/roles`,
+      emojis: `${base}/emojis`,
+      search: `${base}/messages/search`,
+      voiceRegions: `${base}/regions`,
+      webhooks: `${base}/webhooks`,
+      ack: `${base}/ack`,
+      settings: `${base}/settings`,
+      auditLogs: `${base}/audit-logs`,
+      Emoji: emojiID => Endpoints.CDN(root).Emoji(emojiID),
+      Icon: (root, hash) => Endpoints.CDN(root).Icon(guildID, hash),
+      Splash: (root, hash) => Endpoints.CDN(root).Splash(guildID, hash),
+      Role: roleID => `${base}/roles/${roleID}`,
+      Member: memberID => {
+        if (memberID.id) memberID = memberID.id;
+        const mbase = `${base}/members/${memberID}`;
+        return {
+          toString: () => mbase,
+          Role: roleID => `${mbase}/roles/${roleID}`,
+          nickname: `${base}/members/@me/nick`,
+        };
+      },
+    };
+  },
+  channels: '/channels',
+  Channel: channelID => {
+    if (channelID.id) channelID = channelID.id;
+    const base = `/channels/${channelID}`;
+    return {
+      toString: () => base,
+      messages: {
+        toString: () => `${base}/messages`,
+        bulkDelete: `${base}/messages/bulk-delete`,
+      },
+      invites: `${base}/invites`,
+      typing: `${base}/typing`,
+      permissions: `${base}/permissions`,
+      webhooks: `${base}/webhooks`,
+      search: `${base}/messages/search`,
+      pins: `${base}/pins`,
+      Pin: messageID => `${base}/pins/${messageID}`,
+      Recipient: recipientID => `${base}/recipients/${recipientID}`,
+      Message: messageID => {
+        if (messageID.id) messageID = messageID.id;
+        const mbase = `${base}/messages/${messageID}`;
+        return {
+          toString: () => mbase,
+          reactions: `${mbase}/reactions`,
+          ack: `${mbase}/ack`,
+          Reaction: (emoji, limit) => {
+            const rbase = `${mbase}/reactions/${emoji}${limit ? `?limit=${limit}` : ''}`;
+            return {
+              toString: () => rbase,
+              User: userID => `${rbase}/${userID}`,
+            };
+          },
+        };
+      },
+    };
+  },
+  Message: m => exports.Endpoints.Channel(m.channel).Message(m),
+  Member: m => exports.Endpoints.Guild(m.guild).Member(m),
+  CDN(root) {
+    return {
+      Emoji: emojiID => `${root}/emojis/${emojiID}.png`,
+      Asset: name => `${root}/assets/${name}`,
+      Avatar: (userID, hash) => `${root}/avatars/${userID}/${hash}.${hash.startsWith('a_') ? 'gif' : 'png'}?size=2048`,
+      Icon: (guildID, hash) => `${root}/icons/${guildID}/${hash}.jpg`,
+      Splash: (guildID, hash) => `${root}/splashes/${guildID}/${hash}.jpg`,
+    };
+  },
+  OAUTH2: {
+    Application: appID => {
+      const base = `/oauth2/applications/${appID}`;
+      return {
+        toString: () => base,
+        reset: `${base}/reset`,
+      };
+    },
+    App: appID => `/oauth2/authorize?client_id=${appID}`,
+  },
+  login: '/auth/login',
+  logout: '/auth/logout',
+  voiceRegions: '/voice/regions',
+  gateway: {
+    toString: () => '/gateway',
+    bot: '/gateway/bot',
+  },
+  Invite: inviteID => `/invite/${inviteID}`,
+  inviteLink: id => `https://discord.gg/${id}`,
+  Webhook: (webhookID, token) => `/webhooks/${webhookID}${token ? `/${token}` : ''}`,
 };
 
+
+/**
+ * The current status of the client. Here are the available statuses:
+ * - READY
+ * - CONNECTING
+ * - RECONNECTING
+ * - IDLE
+ * - NEARLY
+ * - DISCONNECTED
+ * @typedef {number} Status
+ */
 exports.Status = {
   READY: 0,
   CONNECTING: 1,
@@ -164,11 +237,28 @@ exports.Status = {
   DISCONNECTED: 5,
 };
 
+/**
+ * The current status of a voice connection. Here are the available statuses:
+ * - CONNECTED
+ * - CONNECTING
+ * - AUTHENTICATING
+ * - RECONNECTING
+ * - DISCONNECTED
+ * @typedef {number} VoiceStatus
+ */
+exports.VoiceStatus = {
+  CONNECTED: 0,
+  CONNECTING: 1,
+  AUTHENTICATING: 2,
+  RECONNECTING: 3,
+  DISCONNECTED: 4,
+};
+
 exports.ChannelTypes = {
-  text: 0,
+  TEXT: 0,
   DM: 1,
-  voice: 2,
-  groupDM: 3,
+  VOICE: 2,
+  GROUP_DM: 3,
 };
 
 exports.OPCodes = {
@@ -229,6 +319,7 @@ exports.Events = {
   MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll',
   USER_UPDATE: 'userUpdate',
   USER_NOTE_UPDATE: 'userNoteUpdate',
+  USER_SETTINGS_UPDATE: 'clientUserSettingsUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
   TYPING_START: 'typingStart',
@@ -243,6 +334,7 @@ exports.Events = {
 /**
  * The type of a websocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
  * - READY
+ * - RESUMED
  * - GUILD_SYNC
  * - GUILD_CREATE
  * - GUILD_DELETE
@@ -269,6 +361,7 @@ exports.Events = {
  * - MESSAGE_REACTION_REMOVE_ALL
  * - USER_UPDATE
  * - USER_NOTE_UPDATE
+ * - USER_SETTINGS_UPDATE
  * - PRESENCE_UPDATE
  * - VOICE_STATE_UPDATE
  * - TYPING_START
@@ -279,6 +372,7 @@ exports.Events = {
  */
 exports.WSEvents = {
   READY: 'READY',
+  RESUMED: 'RESUMED',
   GUILD_SYNC: 'GUILD_SYNC',
   GUILD_CREATE: 'GUILD_CREATE',
   GUILD_DELETE: 'GUILD_DELETE',
@@ -306,6 +400,7 @@ exports.WSEvents = {
   MESSAGE_REACTION_REMOVE_ALL: 'MESSAGE_REACTION_REMOVE_ALL',
   USER_UPDATE: 'USER_UPDATE',
   USER_NOTE_UPDATE: 'USER_NOTE_UPDATE',
+  USER_SETTINGS_UPDATE: 'USER_SETTINGS_UPDATE',
   PRESENCE_UPDATE: 'PRESENCE_UPDATE',
   VOICE_STATE_UPDATE: 'VOICE_STATE_UPDATE',
   TYPING_START: 'TYPING_START',
@@ -314,15 +409,16 @@ exports.WSEvents = {
   RELATIONSHIP_REMOVE: 'RELATIONSHIP_REMOVE',
 };
 
-exports.MessageTypes = {
-  0: 'DEFAULT',
-  1: 'RECIPIENT_ADD',
-  2: 'RECIPIENT_REMOVE',
-  3: 'CALL',
-  4: 'CHANNEL_NAME_CHANGE',
-  5: 'CHANNEL_ICON_CHANGE',
-  6: 'PINS_ADD',
-};
+exports.MessageTypes = [
+  'DEFAULT',
+  'RECIPIENT_ADD',
+  'RECIPIENT_REMOVE',
+  'CALL',
+  'CHANNEL_NAME_CHANGE',
+  'CHANNEL_ICON_CHANGE',
+  'PINS_ADD',
+  'GUILD_MEMBER_JOIN',
+];
 
 exports.DefaultAvatars = {
   BLURPLE: '6debd47ed13483642cf09e832ed0bc1b',
@@ -332,40 +428,169 @@ exports.DefaultAvatars = {
   RED: '1cbd08c76f8af6dddce02c5138971129',
 };
 
-const PermissionFlags = exports.PermissionFlags = {
-  CREATE_INSTANT_INVITE: 1 << 0,
-  KICK_MEMBERS: 1 << 1,
-  BAN_MEMBERS: 1 << 2,
-  ADMINISTRATOR: 1 << 3,
-  MANAGE_CHANNELS: 1 << 4,
-  MANAGE_GUILD: 1 << 5,
-  ADD_REACTIONS: 1 << 6,
+exports.ExplicitContentFilterTypes = [
+  'DISABLED',
+  'NON_FRIENDS',
+  'FRIENDS_AND_NON_FRIENDS',
+];
 
-  READ_MESSAGES: 1 << 10,
-  SEND_MESSAGES: 1 << 11,
-  SEND_TTS_MESSAGES: 1 << 12,
-  MANAGE_MESSAGES: 1 << 13,
-  EMBED_LINKS: 1 << 14,
-  ATTACH_FILES: 1 << 15,
-  READ_MESSAGE_HISTORY: 1 << 16,
-  MENTION_EVERYONE: 1 << 17,
-  EXTERNAL_EMOJIS: 1 << 18,
+exports.UserSettingsMap = {
+  /**
+   * Automatically convert emoticons in your messages to emoji
+   * For example, when you type `:-)` Discord will convert it to 😃
+   * @name ClientUserSettings#convertEmoticons
+   * @type {boolean}
+   */
+  convert_emoticons: 'convertEmoticons',
 
-  CONNECT: 1 << 20,
-  SPEAK: 1 << 21,
-  MUTE_MEMBERS: 1 << 22,
-  DEAFEN_MEMBERS: 1 << 23,
-  MOVE_MEMBERS: 1 << 24,
-  USE_VAD: 1 << 25,
+  /**
+   * If new guilds should automatically disable DMs between you and its members
+   * @name ClientUserSettings#defaultGuildsRestricted
+   * @type {boolean}
+   */
+  default_guilds_restricted: 'defaultGuildsRestricted',
 
-  CHANGE_NICKNAME: 1 << 26,
-  MANAGE_NICKNAMES: 1 << 27,
-  MANAGE_ROLES_OR_PERMISSIONS: 1 << 28,
-  MANAGE_WEBHOOKS: 1 << 29,
-  MANAGE_EMOJIS: 1 << 30,
+  /**
+   * Automatically detect accounts from services like Steam and Blizzard when you open the Discord client
+   * @name ClientUserSettings#detectPlatformAccounts
+   * @type {boolean}
+   */
+  detect_platform_accounts: 'detectPlatformAccounts',
+
+  /**
+   * Developer Mode exposes context menu items helpful for people writing bots using the Discord API
+   * @name ClientUserSettings#developerMode
+   * @type {boolean}
+   */
+  developer_mode: 'developerMode',
+
+  /**
+   * Allow playback and usage of the `/tts` command
+   * @name ClientUserSettings#enableTTSCommand
+   * @type {boolean}
+   */
+  enable_tts_command: 'enableTTSCommand',
+
+  /**
+   * The theme of the client. Either `light` or `dark`
+   * @name ClientUserSettings#theme
+   * @type {string}
+   */
+  theme: 'theme',
+
+  /**
+   * Last status set in the client
+   * @name ClientUserSettings#status
+   * @type {PresenceStatus}
+   */
+  status: 'status',
+
+  /**
+   * Display currently running game as status message
+   * @name ClientUserSettings#showCurrentGame
+   * @type {boolean}
+   */
+  show_current_game: 'showCurrentGame',
+
+  /**
+   * Display images, videos, and lolcats when uploaded directly to Discord
+   * @name ClientUserSettings#inlineAttachmentMedia
+   * @type {boolean}
+   */
+  inline_attachment_media: 'inlineAttachmentMedia',
+
+  /**
+   * Display images, videos, and lolcats when uploaded posted as links in chat
+   * @name ClientUserSettings#inlineEmbedMedia
+   * @type {boolean}
+   */
+  inline_embed_media: 'inlineEmbedMedia',
+
+  /**
+   * Language the Discord client will use, as an RFC 3066 language identifier
+   * @name ClientUserSettings#locale
+   * @type {string}
+   */
+  locale: 'locale',
+
+  /**
+   * Display messages in compact mode
+   * @name ClientUserSettings#messageDisplayCompact
+   * @type {boolean}
+   */
+  message_display_compact: 'messageDisplayCompact',
+
+  /**
+   * Show emoji reactions on messages
+   * @name ClientUserSettings#renderReactions
+   * @type {boolean}
+   */
+  render_reactions: 'renderReactions',
+
+  /**
+   * Array of snowflake IDs for guilds, in the order they appear in the Discord client
+   * @name ClientUserSettings#guildPositions
+   * @type {Snowflake[]}
+   */
+  guild_positions: 'guildPositions',
+
+  /**
+   * Array of snowflake IDs for guilds which you will not recieve DMs from
+   * @name ClientUserSettings#restrictedGuilds
+   * @type {Snowflake[]}
+   */
+  restricted_guilds: 'restrictedGuilds',
+
+  explicit_content_filter: function explicitContentFilter(type) { // eslint-disable-line func-name-matching
+    /**
+     * Safe direct messaging; force people's messages with images to be scanned before they are sent to you
+     * one of `DISABLED`, `NON_FRIENDS`, `FRIENDS_AND_NON_FRIENDS`
+     * @name ClientUserSettings#explicitContentFilter
+     * @type {string}
+     */
+    return exports.ExplicitContentFilterTypes[type];
+  },
+  friend_source_flags: function friendSources(flags) { // eslint-disable-line func-name-matching
+    /**
+     * Who can add you as a friend
+     * @name ClientUserSettings#friendSources
+     * @type {Object}
+     * @property {boolean} all Mutual friends and mutual guilds
+     * @property {boolean} mutualGuilds Only mutual guilds
+     * @property {boolean} mutualFriends Only mutual friends
+     */
+    return {
+      all: flags.all || false,
+      mutualGuilds: flags.all ? true : flags.mutual_guilds || false,
+      mutualFriends: flags.all ? true : flags.mutualFriends || false,
+    };
+  },
 };
 
-let _ALL_PERMISSIONS = 0;
-for (const key in PermissionFlags) _ALL_PERMISSIONS |= PermissionFlags[key];
-exports.ALL_PERMISSIONS = _ALL_PERMISSIONS;
-exports.DEFAULT_PERMISSIONS = 104324097;
+exports.Colors = {
+  DEFAULT: 0x000000,
+  AQUA: 0x1ABC9C,
+  GREEN: 0x2ECC71,
+  BLUE: 0x3498DB,
+  PURPLE: 0x9B59B6,
+  GOLD: 0xF1C40F,
+  ORANGE: 0xE67E22,
+  RED: 0xE74C3C,
+  GREY: 0x95A5A6,
+  NAVY: 0x34495E,
+  DARK_AQUA: 0x11806A,
+  DARK_GREEN: 0x1F8B4C,
+  DARK_BLUE: 0x206694,
+  DARK_PURPLE: 0x71368A,
+  DARK_GOLD: 0xC27C0E,
+  DARK_ORANGE: 0xA84300,
+  DARK_RED: 0x992D22,
+  DARK_GREY: 0x979C9F,
+  DARKER_GREY: 0x7F8C8D,
+  LIGHT_GREY: 0xBCC0C0,
+  DARK_NAVY: 0x2C3E50,
+  BLURPLE: 0x7289DA,
+  GREYPLE: 0x99AAB5,
+  DARK_BUT_NOT_BLACK: 0x2C2F33,
+  NOT_QUITE_BLACK: 0x23272A,
+};

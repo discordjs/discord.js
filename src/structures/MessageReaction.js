@@ -3,7 +3,7 @@ const Emoji = require('./Emoji');
 const ReactionEmoji = require('./ReactionEmoji');
 
 /**
- * Represents a reaction to a message
+ * Represents a reaction to a message.
  */
 class MessageReaction {
   constructor(message, emoji, count, me) {
@@ -20,14 +20,14 @@ class MessageReaction {
     this.me = me;
 
     /**
-     * The number of people that have given the same reaction.
+     * The number of people that have given the same reaction
      * @type {number}
      */
     this.count = count || 0;
 
     /**
-     * The users that have given this reaction, mapped by their ID.
-     * @type {Collection<string, User>}
+     * The users that have given this reaction, mapped by their ID
+     * @type {Collection<Snowflake, User>}
      */
     this.users = new Collection();
 
@@ -39,10 +39,11 @@ class MessageReaction {
    * object which has fewer properties. Whatever the prototype of the emoji, it will still have
    * `name`, `id`, `identifier` and `toString()`
    * @type {Emoji|ReactionEmoji}
+   * @readonly
    */
   get emoji() {
     if (this._emoji instanceof Emoji) return this._emoji;
-    // check to see if the emoji has become known to the client
+    // Check to see if the emoji has become known to the client
     if (this._emoji.id) {
       const emojis = this.message.client.emojis;
       if (emojis.has(this._emoji.id)) {
@@ -56,22 +57,22 @@ class MessageReaction {
 
   /**
    * Removes a user from this reaction.
-   * @param {UserResolvable} [user=this.message.client.user] User to remove the reaction of
+   * @param {UserResolvable} [user=this.message.client.user] The user to remove the reaction of
    * @returns {Promise<MessageReaction>}
    */
   remove(user = this.message.client.user) {
     const message = this.message;
-    user = this.message.client.resolver.resolveUserID(user);
-    if (!user) return Promise.reject('Couldn\'t resolve the user ID to remove from the reaction.');
+    const userID = this.message.client.resolver.resolveUserID(user);
+    if (!userID) return Promise.reject(new Error('Couldn\'t resolve the user ID to remove from the reaction.'));
     return message.client.rest.methods.removeMessageReaction(
-      message, this.emoji.identifier, user
+      message, this.emoji.identifier, userID
     );
   }
 
   /**
    * Fetch all the users that gave this reaction. Resolves with a collection of users, mapped by their IDs.
-   * @param {number} [limit=100] the maximum amount of users to fetch, defaults to 100
-   * @returns {Promise<Collection<string, User>>}
+   * @param {number} [limit=100] The maximum amount of users to fetch, defaults to 100
+   * @returns {Promise<Collection<Snowflake, User>>}
    */
   fetchUsers(limit = 100) {
     const message = this.message;
@@ -84,7 +85,7 @@ class MessageReaction {
         this.users.set(user.id, user);
       }
       this.count = this.users.size;
-      return users;
+      return this.users;
     });
   }
 }

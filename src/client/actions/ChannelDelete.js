@@ -18,9 +18,7 @@ class ChannelDeleteAction extends Action {
       channel = this.deleted.get(data.id) || null;
     }
 
-    return {
-      channel,
-    };
+    return { channel };
   }
 
   scheduleForDeletion(id) {

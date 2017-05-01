@@ -1,21 +1,39 @@
-# Version 11
+# Version 11.1.0
+v11.1.0 features improved voice and gateway stability, as well as support for new features such as audit logs and searching for messages.
+See [the changelog](https://github.com/hydrabolt/discord.js/releases/tag/11.1.0) for a full list of changes, including
+information about deprecations.
 
-**Significant Additions (see the changelog for a full list):**
+# Version 11
+Version 11 contains loads of new and improved features, optimisations, and bug fixes.
+See [the changelog](https://github.com/hydrabolt/discord.js/releases/tag/11.0.0) for a full list of changes.
+
+## Significant additions
 * Message Reactions and Embeds (rich text)
 * Support for uws and erlpack for better performance
 * OAuthApplication support
+* Web distributions
 
-### 1) Client.login() no longer supports logging in with email + password
-Logging in with an email or password has been discouraged previously, mainly because of [this](https://github.com/hammerandchisel/discord-api-docs/issues/69#issuecomment-223886862), however we have made the decision to now remove all email and password logins in v11. Instead, you can use authentication tokens. You can find your token for a self-bot by entering `CTRL+SHIFT+I` in the Discord application, entering the console tab and executing `localStorage.token`. As always, you can get your token for real bot accounts [here.](https://discordapp.com/developers/applications/me)
+## Breaking changes
+### Client.login() no longer supports logging in with email + password
+Logging in with an email and password has always been heavily discouraged since the advent of proper token support, but in v11 we have made the decision to completely remove the functionality, since Hammer & Chisel have [officially stated](https://github.com/hammerandchisel/discord-api-docs/issues/69#issuecomment-223886862) it simply shouldn't be done.
 
-### 2) ClientUser.setEmail()/setPassword() now require the current password, as well as setUsername() on user accounts
-In order to change email, password or username on user accounts (self-bots), you need to now pass a password parameter to these methods (changes highlighted in documentation for ClientUser).
+User accounts can still log in with tokens just like bot accounts. To obtain the token for a user account, you can log in to Discord with that account, and use Ctrl + Shift + I to open the developer tools. In the console tab, evaluating `localStorage.token` will give you the token for that account.
 
-### 3) Removed TextBasedChannel.sendTTSMessage()
-This method was redundant and has been removed as the same results can be achieved using sendMessage()
+### ClientUser.setEmail()/setPassword() now require the current password, as well as setUsername() on user accounts
+Since you can no longer log in with email and password, you must provide the current account password to the `setEmail()`, `setPassword()`, and `setUsername()` methods for user accounts (self-bots).
 
-### 4) Using Collection.find()/exists() with IDs will throw an error
-To find something or check its existence using an ID, you should now use `.get()` and `.has()` which are part of a normal [Map.](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Map)
+### Removed TextBasedChannel.sendTTSMessage()
+This method was deemed to be an entirely pointless shortcut that virtually nobody even used.
+The same results can be achieved by passing options to `send()` or `sendMessage()`.
+
+Example:
+```js
+channel.send('Hi there', { tts: true });
+```
+
+### Using Collection.find()/exists() with IDs will throw an error
+This is simply to help prevent a common mistake that is made frequently.
+To find something or check its existence using an ID, you should use `.get()` and `.has()` which are part of the [ES6 Map class](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Map), which Collection is an extension of.
 
 # Version 10
 Version 10's non-BC changes focus on cleaning up some inconsistencies that exist in previous versions.

@@ -12,22 +12,22 @@ class ReactionEmoji {
     this.reaction = reaction;
 
     /**
-     * The name of this reaction emoji.
+     * The name of this reaction emoji
      * @type {string}
      */
     this.name = name;
 
     /**
-     * The ID of this reaction emoji.
-     * @type {string}
+     * The ID of this reaction emoji
+     * @type {?Snowflake}
      */
     this.id = id;
   }
 
   /**
    * The identifier of this emoji, used for message reactions
-   * @readonly
    * @type {string}
+   * @readonly
    */
   get identifier() {
     if (this.id) return `${this.name}:${this.id}`;
@@ -37,7 +37,7 @@ class ReactionEmoji {
   /**
    * Creates the text required to form a graphical emoji on Discord.
    * @example
-   * // send the emoji used in a reaction to the channel the reaction is part of
+   * // Send the emoji used in a reaction to the channel the reaction is part of
    * reaction.message.channel.sendMessage(`The emoji used is ${reaction.emoji}`);
    * @returns {string}
    */

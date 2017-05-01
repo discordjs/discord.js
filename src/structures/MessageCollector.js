@@ -1,150 +1,97 @@
-const EventEmitter = require('events').EventEmitter;
-const Collection = require('../util/Collection');
+const Collector = require('./interfaces/Collector');
+const util = require('util');
 
 /**
- * Collects messages based on a specified filter, then emits them.
- * @extends {EventEmitter}
+ * @typedef {CollectorOptions} MessageCollectorOptions
+ * @property {number} max The maximum amount of messages to process
+ * @property {number} maxMatches The maximum amount of messages to collect
  */
-class MessageCollector extends EventEmitter {
-  /**
-   * A function that takes a Message object and a MessageCollector and returns a boolean.
-   * ```js
-   * function(message, collector) {
-   *  if (message.content.includes('discord')) {
-   *    return true; // passed the filter test
-   *  }
-   *  return false; // failed the filter test
-   * }
-   * ```
-   * @typedef {Function} CollectorFilterFunction
-   */
+
+/**
+ * Collects messages on a channel.
+ * @extends {Collector}
+ */
+class MessageCollector extends Collector {
 
   /**
-   * An object containing options used to configure a MessageCollector. All properties are optional.
-   * @typedef {Object} CollectorOptions
-   * @property {number} [time] Duration for the collector in milliseconds
-   * @property {number} [max] Maximum number of messages to handle
-   * @property {number} [maxMatches] Maximum number of successfully filtered messages to obtain
-   */
-
-  /**
-   * @param {Channel} channel The channel to collect messages in
-   * @param {CollectorFilterFunction} filter The filter function
-   * @param {CollectorOptions} [options] Options for the collector
+   * @param {TextChannel|DMChannel|GroupDMChannel} channel The channel
+   * @param {CollectorFilter} filter The filter to be applied to this collector
+   * @param {MessageCollectorOptions} options The options to be applied to this collector
+   * @emits MessageCollector#message
    */
   constructor(channel, filter, options = {}) {
-    super();
+    super(channel.client, filter, options);
 
     /**
-     * The channel this collector is operating on
-     * @type {Channel}
+     * @type {TextBasedChannel} channel The channel
      */
     this.channel = channel;
 
     /**
-     * A function used to filter messages that the collector collects.
-     * @type {CollectorFilterFunction}
+     * Total number of messages that were received in the channel during message collection
+     * @type {number}
      */
-    this.filter = filter;
+    this.received = 0;
 
-    /**
-     * Options for the collecor.
-     * @type {CollectorOptions}
-     */
-    this.options = options;
+    this.client.on('message', this.listener);
 
-    /**
-     * Whether this collector has stopped collecting messages.
-     * @type {boolean}
-     */
-    this.ended = false;
-
-    /**
-     * A collection of collected messages, mapped by message ID.
-     * @type {Collection<string, Message>}
-     */
-    this.collected = new Collection();
-
-    this.listener = message => this.verify(message);
-    this.channel.client.on('message', this.listener);
-    if (options.time) this.channel.client.setTimeout(() => this.stop('time'), options.time);
-  }
-
-  /**
-   * Verifies a message against the filter and options
-   * @private
-   * @param {Message} message The message
-   * @returns {boolean}
-   */
-  verify(message) {
-    if (this.channel ? this.channel.id !== message.channel.id : false) return false;
-    if (this.filter(message, this)) {
-      this.collected.set(message.id, message);
+    // For backwards compatibility (remove in v12)
+    if (this.options.max) this.options.maxProcessed = this.options.max;
+    if (this.options.maxMatches) this.options.max = this.options.maxMatches;
+    this._reEmitter = message => {
       /**
-       * Emitted whenever the collector receives a message that passes the filter test.
-       * @param {Message} message The received message
-       * @param {MessageCollector} collector The collector the message passed through
+       * Emitted when the collector receives a message.
        * @event MessageCollector#message
+       * @param {Message} message The message
+       * @deprecated
        */
-      this.emit('message', message, this);
-      if (this.collected.size >= this.options.maxMatches) this.stop('matchesLimit');
-      else if (this.options.max && this.collected.size === this.options.max) this.stop('limit');
-      return true;
+      this.emit('message', message);
+    };
+    this.on('collect', this._reEmitter);
+  }
+
+  // Remove in v12
+  on(eventName, listener) {
+    if (eventName === 'message') {
+      listener = util.deprecate(listener, 'MessageCollector will soon no longer emit "message", use "collect" instead');
     }
-    return false;
+    super.on(eventName, listener);
   }
 
   /**
-   * Returns a promise that resolves when a valid message is sent. Rejects
-   * with collected messages if the Collector ends before receiving a message.
-   * @type {Promise<Message>}
-   * @readonly
+   * Handle an incoming message for possible collection.
+   * @param {Message} message The message that could be collected
+   * @returns {?{key: Snowflake, value: Message}} Message data to collect
+   * @private
    */
-  get next() {
-    return new Promise((resolve, reject) => {
-      if (this.ended) {
-        reject(this.collected);
-        return;
-      }
-
-      const cleanup = () => {
-        this.removeListener('message', onMessage);
-        this.removeListener('end', onEnd);
-      };
-
-      const onMessage = (...args) => {
-        cleanup();
-        resolve(...args);
-      };
-
-      const onEnd = (...args) => {
-        cleanup();
-        reject(...args);
-      };
-
-      this.once('message', onMessage);
-      this.once('end', onEnd);
-    });
+  handle(message) {
+    if (message.channel.id !== this.channel.id) return null;
+    this.received++;
+    return {
+      key: message.id,
+      value: message,
+    };
   }
 
   /**
-   * Stops the collector and emits `end`.
-   * @param {string} [reason='user'] An optional reason for stopping the collector
+   * Check after collection to see if the collector is done.
+   * @returns {?string} Reason to end the collector, if any
+   * @private
    */
-  stop(reason = 'user') {
-    if (this.ended) return;
-    this.ended = true;
-    this.channel.client.removeListener('message', this.listener);
-    /**
-     * Emitted when the Collector stops collecting.
-     * @param {Collection<string, Message>} collection A collection of messages collected
-     * during the lifetime of the collector, mapped by the ID of the messages.
-     * @param {string} reason The reason for the end of the collector. If it ended because it reached the specified time
-     * limit, this would be `time`. If you invoke `.stop()` without specifying a reason, this would be `user`. If it
-     * ended because it reached its message limit, it will be `limit`.
-     * @event MessageCollector#end
-     */
-    this.emit('end', this.collected, reason);
+  postCheck() {
+    // Consider changing the end reasons for v12
+    if (this.options.maxMatches && this.collected.size >= this.options.max) return 'matchesLimit';
+    if (this.options.max && this.received >= this.options.maxProcessed) return 'limit';
+    return null;
+  }
+
+  /**
+   * Removes event listeners.
+   * @private
+   */
+  cleanup() {
+    this.removeListener('collect', this._reEmitter);
+    this.client.removeListener('message', this.listener);
   }
 }
 

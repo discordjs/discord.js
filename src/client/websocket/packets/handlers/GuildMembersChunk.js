@@ -1,7 +1,7 @@
-// ##untested##
-
 const AbstractHandler = require('./AbstractHandler');
 const Constants = require('../../../../util/Constants');
+// Uncomment in v12
+// const Collection = require('../../../../util/Collection');
 
 class GuildMembersChunkHandler extends AbstractHandler {
   handle(packet) {
@@ -10,19 +10,24 @@ class GuildMembersChunkHandler extends AbstractHandler {
     const guild = client.guilds.get(data.guild_id);
     if (!guild) return;
 
+    // Uncomment in v12
+    // const members = new Collection();
+    //
+    // for (const member of data.members) members.set(member.id, guild._addMember(member, false));
+
     const members = data.members.map(member => guild._addMember(member, false));
 
-    guild._checkChunks();
-    client.emit(Constants.Events.GUILD_MEMBERS_CHUNK, members);
+    client.emit(Constants.Events.GUILD_MEMBERS_CHUNK, members, guild);
 
     client.ws.lastHeartbeatAck = true;
   }
 }
 
 /**
- * Emitted whenever a chunk of guild members is received (all members come from the same guild)
+ * Emitted whenever a chunk of guild members is received (all members come from the same guild).
  * @event Client#guildMembersChunk
- * @param {GuildMember[]} members The members in the chunk
+ * @param {Collection<Snowflake, GuildMember>} members The members in the chunk
+ * @param {Guild} guild The guild related to the member chunk
  */
 
 module.exports = GuildMembersChunkHandler;

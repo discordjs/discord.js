@@ -1,7 +1,6 @@
 const childProcess = require('child_process');
 const path = require('path');
-const makeError = require('../util/MakeError');
-const makePlainError = require('../util/MakePlainError');
+const Util = require('../util/Util');
 
 /**
  * Represents a Shard spawned by the ShardingManager.
@@ -66,8 +65,8 @@ class Shard {
   }
 
   /**
-   * Fetches a Client property value of the shard.
-   * @param {string} prop Name of the Client property to get, using periods for nesting
+   * Fetches a client property value of the shard.
+   * @param {string} prop Name of the client property to get, using periods for nesting
    * @returns {Promise<*>}
    * @example
    * shard.fetchClientValue('guilds.size').then(count => {
@@ -98,7 +97,7 @@ class Shard {
   }
 
   /**
-   * Evaluates a script on the shard, in the context of the Client.
+   * Evaluates a script on the shard, in the context of the client.
    * @param {string} script JavaScript to run on the shard
    * @returns {Promise<*>} Result of the script execution
    */
@@ -110,7 +109,7 @@ class Shard {
         if (!message || message._eval !== script) return;
         this.process.removeListener('message', listener);
         this._evals.delete(script);
-        if (!message._error) resolve(message._result); else reject(makeError(message._error));
+        if (!message._error) resolve(message._result); else reject(Util.makeError(message._error));
       };
       this.process.on('message', listener);
 
@@ -126,7 +125,7 @@ class Shard {
   }
 
   /**
-   * Handles an IPC message
+   * Handles an IPC message.
    * @param {*} message Message received
    * @private
    */
@@ -136,7 +135,7 @@ class Shard {
       if (message._sFetchProp) {
         this.manager.fetchClientValues(message._sFetchProp).then(
           results => this.send({ _sFetchProp: message._sFetchProp, _result: results }),
-          err => this.send({ _sFetchProp: message._sFetchProp, _error: makePlainError(err) })
+          err => this.send({ _sFetchProp: message._sFetchProp, _error: Util.makePlainError(err) })
         );
         return;
       }
@@ -145,14 +144,14 @@ class Shard {
       if (message._sEval) {
         this.manager.broadcastEval(message._sEval).then(
           results => this.send({ _sEval: message._sEval, _result: results }),
-          err => this.send({ _sEval: message._sEval, _error: makePlainError(err) })
+          err => this.send({ _sEval: message._sEval, _error: Util.makePlainError(err) })
         );
         return;
       }
     }
 
     /**
-     * Emitted upon recieving a message from a shard
+     * Emitted upon recieving a message from a shard.
      * @event ShardingManager#message
      * @param {Shard} shard Shard that sent the message
      * @param {*} message Message that was received
