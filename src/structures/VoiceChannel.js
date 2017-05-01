@@ -61,7 +61,7 @@ class VoiceChannel extends GuildChannel {
    */
   get joinable() {
     if (this.client.browser) return false;
-    if (!this.permissionsFor(this.client.user).permissions.has('CONNECT')) return false;
+    if (!this.permissionsFor(this.client.user).hasPermission('CONNECT')) return false;
     if (this.full && !this.permissionsFor(this.client.user).hasPermission('MOVE_MEMBERS')) return false;
     return true;
   }
