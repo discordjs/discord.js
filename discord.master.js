@@ -17308,12 +17308,11 @@ class WebSocketConnection extends EventEmitter {
    */
   onMessage(event) {
     try {
-      this.onPacket(this.unpack(event.data));
-      return true;
+      event.data = this.unpack(event.data);
     } catch (err) {
-      this.debug(err);
-      return false;
+      this.emit('debug', err);
     }
+    return this.onPacket(event.data);
   }
 
   /**
@@ -25190,11 +25189,7 @@ class WebSocketPacketManager {
     }
 
     if (!queue && this.queue.length > 0) this.handleQueue();
-    try {
-      if (this.handlers[packet.t]) return this.handlers[packet.t].handle(packet);
-    } catch (error) {
-      this.client.emit(Constants.Events.ERROR, error);
-    }
+    if (this.handlers[packet.t]) return this.handlers[packet.t].handle(packet);
     return false;
   }
 }
