@@ -1,4 +1,5 @@
 const Collection = require('../util/Collection');
+const Snowflake = require('../util/Snowflake');
 
 const Targets = {
   GUILD: 'GUILD',
