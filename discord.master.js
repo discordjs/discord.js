@@ -4414,7 +4414,7 @@ class Role {
   get editable() {
     if (this.managed) return false;
     const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.hasPermission(Permissions.FLAGS.MANAGE_ROLES_OR_PERMISSIONS)) return false;
+    if (!clientMember.permissions.has(Permissions.FLAGS.MANAGE_ROLES_OR_PERMISSIONS)) return false;
     return clientMember.highestRole.comparePositionTo(this) > 0;
   }
 
@@ -5449,7 +5449,7 @@ class GuildMember {
     if (this.user.id === this.guild.ownerID) return false;
     if (this.user.id === this.client.user.id) return false;
     const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.hasPermission(Permissions.FLAGS.KICK_MEMBERS)) return false;
+    if (!clientMember.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) return false;
     return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
   }
 
@@ -5462,7 +5462,7 @@ class GuildMember {
     if (this.user.id === this.guild.ownerID) return false;
     if (this.user.id === this.client.user.id) return false;
     const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.hasPermission(Permissions.FLAGS.BAN_MEMBERS)) return false;
+    if (!clientMember.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return false;
     return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
   }
 
@@ -5505,7 +5505,7 @@ class GuildMember {
    */
   hasPermissions(permissions, explicit = false) {
     if (!explicit && this.user.id === this.guild.ownerID) return true;
-    return permissions.every(p => this.hasPermission(p, explicit));
+    return this.hasPermission(permissions, explicit);
   }
 
   /**
@@ -5515,7 +5515,7 @@ class GuildMember {
    * @returns {PermissionResolvable[]}
    */
   missingPermissions(permissions, explicit = false) {
-    return permissions.filter(p => !this.hasPermission(p, explicit));
+    return permissions.missing(permissions, explicit);
   }
 
   /**
@@ -7466,7 +7466,7 @@ const Deprecated = {
    * @deprecated
    */
   sendFile(attachment, name, content, options = {}) {
-    return this.sendFiles([{ attachment, name }], content, options);
+    return this.send({ files: [{ attachment, name }], content, options });
   },
 
   /**
