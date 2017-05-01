@@ -70,7 +70,7 @@
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {exports.Package = __webpack_require__(40);
+/* WEBPACK VAR INJECTION */(function(process) {exports.Package = __webpack_require__(41);
 
 /**
  * Options for a client.
@@ -1111,7 +1111,7 @@ module.exports = Collection;
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const snekfetch = __webpack_require__(38);
+/* WEBPACK VAR INJECTION */(function(Buffer) {const snekfetch = __webpack_require__(39);
 const Constants = __webpack_require__(0);
 const ConstantsHttp = Constants.DefaultOptions.http;
 
@@ -3313,7 +3313,7 @@ process.umask = function() { return 0; };
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Long = __webpack_require__(34);
+const Long = __webpack_require__(35);
 
 // Discord epoch (2015-01-01T00:00:00.000Z)
 const EPOCH = 1420070400000;
@@ -4158,7 +4158,7 @@ var objectKeys = Object.keys || function (obj) {
 module.exports = Duplex;
 
 /*<replacement>*/
-var processNextTick = __webpack_require__(35);
+var processNextTick = __webpack_require__(36);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -4167,7 +4167,7 @@ util.inherits = __webpack_require__(10);
 /*</replacement>*/
 
 var Readable = __webpack_require__(59);
-var Writable = __webpack_require__(37);
+var Writable = __webpack_require__(38);
 
 util.inherits(Duplex, Readable);
 
@@ -5714,10 +5714,10 @@ module.exports = GuildMember;
 /* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Mentions = __webpack_require__(49);
-const Attachment = __webpack_require__(46);
-const Embed = __webpack_require__(48);
-const MessageReaction = __webpack_require__(50);
+const Mentions = __webpack_require__(50);
+const Attachment = __webpack_require__(47);
+const Embed = __webpack_require__(49);
+const MessageReaction = __webpack_require__(51);
 const ReactionCollector = __webpack_require__(55);
 const Util = __webpack_require__(4);
 const Collection = __webpack_require__(3);
@@ -6407,7 +6407,7 @@ function objectToString(o) {
 exports = module.exports = __webpack_require__(59);
 exports.Stream = exports;
 exports.Readable = exports;
-exports.Writable = __webpack_require__(37);
+exports.Writable = __webpack_require__(38);
 exports.Duplex = __webpack_require__(13);
 exports.Transform = __webpack_require__(60);
 exports.PassThrough = __webpack_require__(85);
@@ -7010,9 +7010,9 @@ function hasOwnProperty(obj, prop) {
 /* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const path = __webpack_require__(27);
+const path = __webpack_require__(28);
 const Message = __webpack_require__(19);
-const MessageCollector = __webpack_require__(47);
+const MessageCollector = __webpack_require__(48);
 const Collection = __webpack_require__(3);
 const util = __webpack_require__(22);
 
@@ -7570,7 +7570,7 @@ exports.EOL = '\n';
 /* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Long = __webpack_require__(34);
+const Long = __webpack_require__(35);
 const User = __webpack_require__(16);
 const Role = __webpack_require__(15);
 const Emoji = __webpack_require__(17);
@@ -8994,6 +8994,154 @@ module.exports = GuildChannel;
 /* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
+const Snowflake = __webpack_require__(7);
+
+/**
+ * Represents an OAuth2 Application.
+ */
+class OAuth2Application {
+  constructor(client, data) {
+    /**
+     * The client that instantiated the application
+     * @name OAuth2Application#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: client });
+
+    this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The ID of the app
+     * @type {Snowflake}
+     */
+    this.id = data.id;
+
+    /**
+     * The name of the app
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * The app's description
+     * @type {string}
+     */
+    this.description = data.description;
+
+    /**
+     * The app's icon hash
+     * @type {string}
+     */
+    this.icon = data.icon;
+
+    /**
+     * The app's icon URL
+     * @type {string}
+     */
+    this.iconURL = `https://cdn.discordapp.com/app-icons/${this.id}/${this.icon}.jpg`;
+
+    /**
+     * The app's RPC origins
+     * @type {?string[]}
+     */
+    this.rpcOrigins = data.rpc_origins;
+
+    /**
+     * The app's redirect URIs
+     * @type {string[]}
+     */
+    this.redirectURIs = data.redirect_uris;
+
+    /**
+     * If this app's bot requires a code grant when using the OAuth2 flow
+     * @type {boolean}
+     */
+    this.botRequireCodeGrant = data.bot_require_code_grant;
+
+    /**
+     * If this app's bot is public
+     * @type {boolean}
+     */
+    this.botPublic = data.bot_public;
+
+    /**
+     * If this app can use rpc
+     * @type {boolean}
+     */
+    this.rpcApplicationState = data.rpc_application_state;
+
+    /**
+     * Object containing basic info about this app's bot
+     * @type {Object}
+     */
+    this.bot = data.bot;
+
+    /**
+     * The flags for the app
+     * @type {number}
+     */
+    this.flags = data.flags;
+
+    /**
+     * OAuth2 secret for the application
+     * @type {boolean}
+     */
+    this.secret = data.secret;
+
+    if (data.owner) {
+      /**
+       * The owner of this OAuth application
+       * @type {?User}
+       */
+      this.owner = this.client.dataManager.newUser(data.owner);
+    }
+  }
+
+  /**
+   * The timestamp the app was created at
+   * @type {number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    return Snowflake.deconstruct(this.id).timestamp;
+  }
+
+  /**
+   * The time the app was created
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * Reset the app's secret and bot token.
+   * @returns {OAuth2Application}
+   */
+  reset() {
+    return this.client.rest.methods.resetApplication(this.id);
+  }
+
+  /**
+   * When concatenated with a string, this automatically concatenates the app name rather than the app object.
+   * @returns {string}
+   */
+  toString() {
+    return this.name;
+  }
+}
+
+module.exports = OAuth2Application;
+
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
 /* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -9222,13 +9370,13 @@ var substr = 'ab'.substr(-1) === 'b'
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports) {
 
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Channel = __webpack_require__(14);
@@ -9414,7 +9562,7 @@ module.exports = GroupDMChannel;
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports) {
 
 /**
@@ -9469,10 +9617,10 @@ module.exports = ReactionEmoji;
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const path = __webpack_require__(27);
+const path = __webpack_require__(28);
 
 /**
  * Represents a webhook.
@@ -9690,7 +9838,7 @@ module.exports = Webhook;
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
@@ -9874,7 +10022,7 @@ module.exports = Collector;
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9990,7 +10138,7 @@ exports.allocUnsafeSlow = function allocUnsafeSlow(size) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -11208,7 +11356,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11259,7 +11407,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11270,7 +11418,7 @@ exports.encode = exports.stringify = __webpack_require__(83);
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11283,7 +11431,7 @@ exports.encode = exports.stringify = __webpack_require__(83);
 module.exports = Writable;
 
 /*<replacement>*/
-var processNextTick = __webpack_require__(35);
+var processNextTick = __webpack_require__(36);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -11313,7 +11461,7 @@ var Stream = __webpack_require__(61);
 
 var Buffer = __webpack_require__(5).Buffer;
 /*<replacement>*/
-var bufferShim = __webpack_require__(33);
+var bufferShim = __webpack_require__(34);
 /*</replacement>*/
 
 util.inherits(Writable, Stream);
@@ -11821,7 +11969,7 @@ function CorkedRequest(state) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(99).setImmediate))
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(__dirname, Buffer, process) {const Snekfetch = __webpack_require__(93);
@@ -11841,7 +11989,7 @@ for (let method of Snekfetch.METHODS) {
     }
     options.url = url;
     options.method = method;
-    const cp = __webpack_require__(28);
+    const cp = __webpack_require__(29);
     const result = JSON.parse(
       cp.execSync(`node ${__dirname}/index.js`, {
         env: { [ENV_VAR]: JSON.stringify(options) },
@@ -11888,12 +12036,12 @@ module.exports = Snekfetch;
 /* WEBPACK VAR INJECTION */}.call(exports, "node_modules/snekfetch", __webpack_require__(5).Buffer, __webpack_require__(6)))
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(27);
-const fs = __webpack_require__(28);
-const snekfetch = __webpack_require__(38);
+/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(28);
+const fs = __webpack_require__(29);
+const snekfetch = __webpack_require__(39);
 
 const Constants = __webpack_require__(0);
 const convertToBuffer = __webpack_require__(4).convertToBuffer;
@@ -11903,7 +12051,7 @@ const Guild = __webpack_require__(25);
 const Channel = __webpack_require__(14);
 const GuildMember = __webpack_require__(18);
 const Emoji = __webpack_require__(17);
-const ReactionEmoji = __webpack_require__(30);
+const ReactionEmoji = __webpack_require__(31);
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
@@ -12223,7 +12371,7 @@ module.exports = ClientDataResolver;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer))
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -12321,12 +12469,12 @@ module.exports = {
 };
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const User = __webpack_require__(16);
 const Collection = __webpack_require__(3);
-const ClientUserSettings = __webpack_require__(42);
+const ClientUserSettings = __webpack_require__(43);
 const Constants = __webpack_require__(0);
 
 /**
@@ -12674,7 +12822,7 @@ module.exports = ClientUser;
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -12757,7 +12905,7 @@ module.exports = ClientUserSettings;
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Channel = __webpack_require__(14);
@@ -12827,7 +12975,7 @@ module.exports = DMChannel;
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
@@ -13068,7 +13216,7 @@ module.exports = GuildAuditLogs;
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const PartialGuild = __webpack_require__(52);
@@ -13233,7 +13381,7 @@ module.exports = Invite;
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports) {
 
 /**
@@ -13307,10 +13455,10 @@ module.exports = MessageAttachment;
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Collector = __webpack_require__(32);
+const Collector = __webpack_require__(33);
 const util = __webpack_require__(22);
 
 /**
@@ -13411,7 +13559,7 @@ module.exports = MessageCollector;
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports) {
 
 /**
@@ -13802,7 +13950,7 @@ module.exports = MessageEmbed;
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
@@ -13952,12 +14100,12 @@ module.exports = MessageMentions;
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
 const Emoji = __webpack_require__(17);
-const ReactionEmoji = __webpack_require__(30);
+const ReactionEmoji = __webpack_require__(31);
 
 /**
  * Represents a reaction to a message.
@@ -14048,154 +14196,6 @@ class MessageReaction {
 }
 
 module.exports = MessageReaction;
-
-
-/***/ }),
-/* 51 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Snowflake = __webpack_require__(7);
-
-/**
- * Represents an OAuth2 Application.
- */
-class OAuth2Application {
-  constructor(client, data) {
-    /**
-     * The client that instantiated the application
-     * @name OAuth2Application#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
-
-    this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The ID of the app
-     * @type {Snowflake}
-     */
-    this.id = data.id;
-
-    /**
-     * The name of the app
-     * @type {string}
-     */
-    this.name = data.name;
-
-    /**
-     * The app's description
-     * @type {string}
-     */
-    this.description = data.description;
-
-    /**
-     * The app's icon hash
-     * @type {string}
-     */
-    this.icon = data.icon;
-
-    /**
-     * The app's icon URL
-     * @type {string}
-     */
-    this.iconURL = `https://cdn.discordapp.com/app-icons/${this.id}/${this.icon}.jpg`;
-
-    /**
-     * The app's RPC origins
-     * @type {?string[]}
-     */
-    this.rpcOrigins = data.rpc_origins;
-
-    /**
-     * The app's redirect URIs
-     * @type {string[]}
-     */
-    this.redirectURIs = data.redirect_uris;
-
-    /**
-     * If this app's bot requires a code grant when using the OAuth2 flow
-     * @type {boolean}
-     */
-    this.botRequireCodeGrant = data.bot_require_code_grant;
-
-    /**
-     * If this app's bot is public
-     * @type {boolean}
-     */
-    this.botPublic = data.bot_public;
-
-    /**
-     * If this app can use rpc
-     * @type {boolean}
-     */
-    this.rpcApplicationState = data.rpc_application_state;
-
-    /**
-     * Object containing basic info about this app's bot
-     * @type {Object}
-     */
-    this.bot = data.bot;
-
-    /**
-     * The flags for the app
-     * @type {number}
-     */
-    this.flags = data.flags;
-
-    /**
-     * OAuth2 secret for the application
-     * @type {boolean}
-     */
-    this.secret = data.secret;
-
-    if (data.owner) {
-      /**
-       * The owner of this OAuth application
-       * @type {?User}
-       */
-      this.owner = this.client.dataManager.newUser(data.owner);
-    }
-  }
-
-  /**
-   * The timestamp the app was created at
-   * @type {number}
-   * @readonly
-   */
-  get createdTimestamp() {
-    return Snowflake.deconstruct(this.id).timestamp;
-  }
-
-  /**
-   * The time the app was created
-   * @type {Date}
-   * @readonly
-   */
-  get createdAt() {
-    return new Date(this.createdTimestamp);
-  }
-
-  /**
-   * Reset the app's secret and bot token.
-   * @returns {OAuth2Application}
-   */
-  reset() {
-    return this.client.rest.methods.resetApplication(this.id);
-  }
-
-  /**
-   * When concatenated with a string, this automatically concatenates the app name rather than the app object.
-   * @returns {string}
-   */
-  toString() {
-    return this.name;
-  }
-}
-
-module.exports = OAuth2Application;
 
 
 /***/ }),
@@ -14358,7 +14358,7 @@ module.exports = PermissionOverwrites;
 /* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Collector = __webpack_require__(32);
+const Collector = __webpack_require__(33);
 const Collection = __webpack_require__(3);
 
 /**
@@ -14720,7 +14720,7 @@ module.exports = Array.isArray || function (arr) {
 module.exports = Readable;
 
 /*<replacement>*/
-var processNextTick = __webpack_require__(35);
+var processNextTick = __webpack_require__(36);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -14747,7 +14747,7 @@ var Stream = __webpack_require__(61);
 
 var Buffer = __webpack_require__(5).Buffer;
 /*<replacement>*/
-var bufferShim = __webpack_require__(33);
+var bufferShim = __webpack_require__(34);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -16245,7 +16245,7 @@ var protocolPattern = /^([a-z0-9.+-]+:)/i,
       'gopher:': true,
       'file:': true
     },
-    querystring = __webpack_require__(36);
+    querystring = __webpack_require__(37);
 
 function urlParse(url, parseQueryString, slashesDenoteHost) {
   if (url && util.isObject(url) && url instanceof Url) return url;
@@ -17281,7 +17281,7 @@ module.exports = RequestHandler;
 /* WEBPACK VAR INJECTION */(function(Buffer) {const browser = __webpack_require__(24).platform() === 'browser';
 const EventEmitter = __webpack_require__(12);
 const Constants = __webpack_require__(0);
-const zlib = __webpack_require__(28);
+const zlib = __webpack_require__(29);
 const PacketManager = __webpack_require__(144);
 const erlpack = (function findErlpack() {
   try {
@@ -17782,7 +17782,7 @@ const Util = __webpack_require__(4);
 const RESTManager = __webpack_require__(68);
 const ClientDataManager = __webpack_require__(107);
 const ClientManager = __webpack_require__(108);
-const ClientDataResolver = __webpack_require__(39);
+const ClientDataResolver = __webpack_require__(40);
 const ClientVoiceManager = __webpack_require__(187);
 const WebSocketManager = __webpack_require__(143);
 const ActionsManager = __webpack_require__(109);
@@ -18328,9 +18328,9 @@ module.exports = Client;
 /* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Webhook = __webpack_require__(31);
+const Webhook = __webpack_require__(32);
 const RESTManager = __webpack_require__(68);
-const ClientDataResolver = __webpack_require__(39);
+const ClientDataResolver = __webpack_require__(40);
 const Constants = __webpack_require__(0);
 const Util = __webpack_require__(4);
 
@@ -18452,7 +18452,7 @@ module.exports = WebhookClient;
 /* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const ClientDataResolver = __webpack_require__(39);
+const ClientDataResolver = __webpack_require__(40);
 
 /**
  * A rich embed to be sent with a message with a fluent interface for creation.
@@ -19765,7 +19765,7 @@ PassThrough.prototype._transform = function (chunk, encoding, cb) {
 
 var Buffer = __webpack_require__(5).Buffer;
 /*<replacement>*/
-var bufferShim = __webpack_require__(33);
+var bufferShim = __webpack_require__(34);
 /*</replacement>*/
 
 module.exports = BufferList;
@@ -19844,7 +19844,7 @@ module.exports = __webpack_require__(21).Transform
 /* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(37);
+module.exports = __webpack_require__(38);
 
 
 /***/ }),
@@ -20135,7 +20135,7 @@ module.exports = {
 /* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(27);
+/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(28);
 const mime = __webpack_require__(94);
 
 class FormData {
@@ -20190,8 +20190,8 @@ module.exports = FormData;
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {__webpack_require__(62);
-const zlib = __webpack_require__(28);
-const qs = __webpack_require__(36);
+const zlib = __webpack_require__(29);
+const qs = __webpack_require__(37);
 const http = __webpack_require__(63);
 const https = __webpack_require__(79);
 const URL = __webpack_require__(65);
@@ -22841,12 +22841,12 @@ const Constants = __webpack_require__(0);
 const Util = __webpack_require__(4);
 const Guild = __webpack_require__(25);
 const User = __webpack_require__(16);
-const DMChannel = __webpack_require__(43);
+const DMChannel = __webpack_require__(44);
 const Emoji = __webpack_require__(17);
 const TextChannel = __webpack_require__(56);
 const VoiceChannel = __webpack_require__(57);
 const GuildChannel = __webpack_require__(26);
-const GroupDMChannel = __webpack_require__(29);
+const GroupDMChannel = __webpack_require__(30);
 
 class ClientDataManager {
   constructor(client) {
@@ -24078,7 +24078,7 @@ module.exports = UserUpdateAction;
 /* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const snekfetch = __webpack_require__(38);
+const snekfetch = __webpack_require__(39);
 const Constants = __webpack_require__(0);
 
 class APIRequest {
@@ -24134,8 +24134,8 @@ module.exports = APIRequest;
 /* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const querystring = __webpack_require__(36);
-const long = __webpack_require__(34);
+const querystring = __webpack_require__(37);
+const long = __webpack_require__(35);
 const Permissions = __webpack_require__(9);
 const Constants = __webpack_require__(0);
 const Endpoints = Constants.Endpoints;
@@ -24147,15 +24147,15 @@ const User = __webpack_require__(16);
 const GuildMember = __webpack_require__(18);
 const Message = __webpack_require__(19);
 const Role = __webpack_require__(15);
-const Invite = __webpack_require__(45);
-const Webhook = __webpack_require__(31);
+const Invite = __webpack_require__(46);
+const Webhook = __webpack_require__(32);
 const UserProfile = __webpack_require__(183);
-const OAuth2Application = __webpack_require__(51);
+const OAuth2Application = __webpack_require__(27);
 const Channel = __webpack_require__(14);
-const GroupDMChannel = __webpack_require__(29);
+const GroupDMChannel = __webpack_require__(30);
 const Guild = __webpack_require__(25);
 const VoiceRegion = __webpack_require__(184);
-const GuildAuditLogs = __webpack_require__(44);
+const GuildAuditLogs = __webpack_require__(45);
 
 class RESTMethods {
   constructor(restManager) {
@@ -26098,7 +26098,7 @@ module.exports = PresenceUpdateHandler;
 
 const AbstractHandler = __webpack_require__(1);
 
-const ClientUser = __webpack_require__(41);
+const ClientUser = __webpack_require__(42);
 
 class ReadyHandler extends AbstractHandler {
   handle(packet) {
@@ -26500,7 +26500,7 @@ module.exports = {
   SnowflakeUtil: __webpack_require__(7),
   Util: Util,
   util: Util,
-  version: __webpack_require__(40).version,
+  version: __webpack_require__(41).version,
 
   // Shortcuts to Util methods
   escapeMarkdown: Util.escapeMarkdown,
@@ -26509,37 +26509,38 @@ module.exports = {
 
   // Structures
   Channel: __webpack_require__(14),
-  ClientUser: __webpack_require__(41),
-  ClientUserSettings: __webpack_require__(42),
-  Collector: __webpack_require__(32),
-  DMChannel: __webpack_require__(43),
+  ClientUser: __webpack_require__(42),
+  ClientUserSettings: __webpack_require__(43),
+  Collector: __webpack_require__(33),
+  DMChannel: __webpack_require__(44),
   Emoji: __webpack_require__(17),
   Game: __webpack_require__(11).Game,
-  GroupDMChannel: __webpack_require__(29),
+  GroupDMChannel: __webpack_require__(30),
   Guild: __webpack_require__(25),
-  GuildAuditLogs: __webpack_require__(44),
+  GuildAuditLogs: __webpack_require__(45),
   GuildChannel: __webpack_require__(26),
   GuildMember: __webpack_require__(18),
-  Invite: __webpack_require__(45),
+  Invite: __webpack_require__(46),
   Message: __webpack_require__(19),
-  MessageAttachment: __webpack_require__(46),
-  MessageCollector: __webpack_require__(47),
-  MessageEmbed: __webpack_require__(48),
-  MessageMentions: __webpack_require__(49),
-  MessageReaction: __webpack_require__(50),
-  OAuth2Application: __webpack_require__(51),
+  MessageAttachment: __webpack_require__(47),
+  MessageCollector: __webpack_require__(48),
+  MessageEmbed: __webpack_require__(49),
+  MessageMentions: __webpack_require__(50),
+  MessageReaction: __webpack_require__(51),
+  OAuth2Application: __webpack_require__(27),
+  ClientOAuth2Application: __webpack_require__(27),
   PartialGuild: __webpack_require__(52),
   PartialGuildChannel: __webpack_require__(53),
   PermissionOverwrites: __webpack_require__(54),
   Presence: __webpack_require__(11).Presence,
-  ReactionEmoji: __webpack_require__(30),
+  ReactionEmoji: __webpack_require__(31),
   ReactionCollector: __webpack_require__(55),
   RichEmbed: __webpack_require__(73),
   Role: __webpack_require__(15),
   TextChannel: __webpack_require__(56),
   User: __webpack_require__(16),
   VoiceChannel: __webpack_require__(57),
-  Webhook: __webpack_require__(31),
+  Webhook: __webpack_require__(32),
 };
 
 if (__webpack_require__(24).platform() === 'browser') window.Discord = module.exports; // eslint-disable-line no-undef
