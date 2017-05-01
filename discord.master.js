@@ -8253,9 +8253,9 @@ class Guild {
    */
   ban(user, options = {}) {
     if (typeof options === 'number') {
-      options = { reason: null, days: options };
+      options = { reason: null, 'delete-message-days': options };
     } else if (typeof options === 'string') {
-      options = { reason: options, days: 0 };
+      options = { reason: options, 'delete-message-days': 0 };
     }
     return this.client.rest.methods.banGuildMember(this, user, options);
   }
