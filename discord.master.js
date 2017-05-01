@@ -17648,7 +17648,7 @@ class WebSocketConnection extends EventEmitter {
    * @param {CloseEvent} event Close event that was received
    */
   onClose(event) {
-    this.debug(`${this.expectingClose ? 'Server' : 'Client'} closed WebSocket connection: ${event.code}`);
+    this.debug(`${this.expectingClose ? 'Client' : 'Server'} closed the WebSocket connection: ${event.code}`);
     this.closeSequence = this.sequence;
     // Reset the state before trying to fix anything
     this.emit('close', event);
