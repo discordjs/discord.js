@@ -117,6 +117,16 @@ class StreamDispatcher extends VolumeInterface {
     this.emit('speaking', value);
   }
 
+
+  /**
+   * Set the bitrate of the current Opus encoder.
+   * @param {number} bitrate New bitrate, in kbps.
+   * If set to 'auto', the voice channel's bitrate will be used
+   */
+  setBitrate(bitrate) {
+    this.player.setBitrate(bitrate);
+  }
+
   sendBuffer(buffer, sequence, timestamp, opusPacket) {
     opusPacket = opusPacket || this.player.opusEncoder.encode(buffer);
     const packet = this.createPacket(sequence, timestamp, opusPacket);

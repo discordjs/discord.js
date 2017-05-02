@@ -79,6 +79,18 @@ class AudioPlayer extends EventEmitter {
     this.currentStream = {};
   }
 
+  /**
+   * Set the bitrate of the current Opus encoder.
+   * @param {number} value New bitrate, in kbps.
+   * If set to 'auto', the voice channel's bitrate will be used
+   */
+  setBitrate(value) {
+    if (!value) return;
+    if (!this.opusEncoder) return;
+    const bitrate = value === 'auto' ? this.voiceConnection.channel.bitrate : value;
+    this.opusEncoder.setBitrate(bitrate);
+  }
+
   playUnknownStream(stream, options = {}) {
     this.destroy();
     this.opusEncoder = OpusEncoders.fetch(options);
@@ -103,8 +115,8 @@ class AudioPlayer extends EventEmitter {
 
   playPCMStream(stream, options = {}, fromUnknown = false) {
     this.destroy();
-    if (options.bitrate === 'auto') options.bitrate = this.voiceConnection.channel.bitrate * 0.001;
     this.opusEncoder = OpusEncoders.fetch(options);
+    this.setBitrate(options.bitrate);
     const dispatcher = this.createDispatcher(stream, options);
     if (fromUnknown) {
       this.currentStream.dispatcher = dispatcher;
