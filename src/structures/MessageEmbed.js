@@ -1,22 +1,11 @@
+const ClientDataResolver = require('../client/ClientDataResolver');
+const resolveString = ClientDataResolver.prototype.resolveString;
+
 /**
  * Represents an embed in a message (image/video preview, rich embed, etc.)
  */
 class MessageEmbed {
   constructor(message, data) {
-    /**
-     * The client that instantiated this embed
-     * @name MessageEmbed#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: message.client });
-
-    /**
-     * The message this embed is part of
-     * @type {Message}
-     */
-    this.message = message;
-
     this.setup(data);
   }
 
@@ -218,7 +207,7 @@ class MessageEmbed {
    * @returns {MessageEmbed} This embed
    */
   setColor(color) {
-    this.color = this.client.resolver.resolveColor(color);
+    this.color = ClientDataResolver.resolveColor(color);
     return this;
   }
 
@@ -327,12 +316,6 @@ class MessageEmbed {
       } : null,
     };
   }
-}
-
-function resolveString(data) {
-  if (typeof data === 'string') return data;
-  if (data instanceof Array) return data.join('\n');
-  return String(data);
 }
 
 module.exports = MessageEmbed;
