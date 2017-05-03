@@ -253,13 +253,27 @@ class Guild {
   }
 
   /**
-   * The URL to this guild's icon
-   * @type {?string}
+   * Gets the URL to this guild's icon
+   * @param {string} [format='webp'] One of `webp`, `png`, `jpg`, `gif`
+   * @param {number} [size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {?string}
+   */
+  iconURL(format, size) {
+    if (!this.icon) return null;
+    if (typeof format === 'number') {
+      size = format;
+      format = 'default';
+    }
+    return Constants.Endpoints.Guild(this).Icon(this.client.options.http.cdn, this.icon, format, size);
+  }
+
+  /**
+   * Gets the acronym that shows up in place of a guild icon
+   * @type {string}
    * @readonly
    */
-  get iconURL() {
-    if (!this.icon) return null;
-    return Constants.Endpoints.Guild(this).Icon(this.client.options.http.cdn, this.icon);
+  get nameAcronym() {
+    return this.name.replace(/\w+/g, name => name[0]).replace(/\s/g, '');
   }
 
   /**
@@ -668,7 +682,8 @@ class Guild {
   /**
    * Bans a user from the guild.
    * @param {UserResolvable} user The user to ban
-   * @param {Object} [options] Ban options.
+   * @param {Object|number|string} [options] Ban options. If a number, the number of days to delete messages for, if a
+   * string, the ban reason. Supplying an object allows you to do both.
    * @param {number} [options.days=0] Number of days of messages to delete
    * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember|User|string>} Result object will be resolved as specifically as possible.
@@ -682,10 +697,11 @@ class Guild {
    */
   ban(user, options = {}) {
     if (typeof options === 'number') {
-      options = { reason: null, days: options };
+      options = { reason: null, 'delete-message-days': options };
     } else if (typeof options === 'string') {
-      options = { reason: options, days: 0 };
+      options = { reason: options, 'delete-message-days': 0 };
     }
+    if (options.days) options['delete-message-days'] = options.days;
     return this.client.rest.methods.banGuildMember(this, user, options);
   }
 

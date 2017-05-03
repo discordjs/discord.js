@@ -35,7 +35,7 @@ class TextChannel extends GuildChannel {
   get members() {
     const members = new Collection();
     for (const member of this.guild.members.values()) {
-      if (this.permissionsFor(member).hasPermission('READ_MESSAGES')) {
+      if (this.permissionsFor(member).has('READ_MESSAGES')) {
         members.set(member.id, member);
       }
     }

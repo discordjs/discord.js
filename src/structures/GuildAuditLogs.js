@@ -1,4 +1,5 @@
 const Collection = require('../util/Collection');
+const Snowflake = require('../util/Snowflake');
 
 const Targets = {
   GUILD: 'GUILD',
@@ -165,10 +166,18 @@ class GuildAuditLogsEntry {
     this.executor = guild.client.users.get(data.user_id);
 
     /**
-     * Specific property changes
-     * @type {Object[]}
+     * An entry in the audit log representing a specific change
+     * @typedef {object} AuditLogChange
+     * @property {string} key The property that was changed, e.g. `nick` for nickname changes
+     * @property {string|boolean|number} [old] The old value of the change, e.g. for nicknames, the old nickname
+     * @property {string|boolean|number} [new] The new value of the change, e.g. for nicknames, the new nickname
      */
-    this.changes = data.changes ? data.changes.map(c => ({ name: c.key, old: c.old_value, new: c.new_value })) : null;
+
+    /**
+     * Specific property changes
+     * @type {AuditLogChange[]}
+     */
+    this.changes = data.changes ? data.changes.map(c => ({ key: c.key, old: c.old_value, new: c.new_value })) : null;
 
     /**
      * The ID of this entry
@@ -225,6 +234,24 @@ class GuildAuditLogsEntry {
     } else {
       this.target = guild[`${targetType.toLowerCase()}s`].get(data.target_id);
     }
+  }
+
+  /**
+   * The timestamp this entry was created at
+   * @type {number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    return Snowflake.deconstruct(this.id).timestamp;
+  }
+
+  /**
+   * The time this entry was created
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
   }
 }
 

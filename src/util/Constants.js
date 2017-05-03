@@ -91,6 +91,21 @@ exports.Errors = {
   INVALID_TOKEN: 'An invalid token was provided.',
 };
 
+const AllowedImageFormats = [
+  'webp',
+  'png',
+  'jpg',
+  'gif',
+];
+
+const AllowedImageSizes = [
+  128,
+  256,
+  512,
+  1024,
+  2048,
+];
+
 const Endpoints = exports.Endpoints = {
   User: userID => {
     if (userID.id) userID = userID.id;
@@ -106,9 +121,9 @@ const Endpoints = exports.Endpoints = {
       Note: id => `${base}/notes/${id}`,
       Mentions: (limit, roles, everyone, guildID) =>
         `${base}/mentions?limit=${limit}&roles=${roles}&everyone=${everyone}${guildID ? `&guild_id=${guildID}` : ''}`,
-      Avatar: (root, hash) => {
+      Avatar: (root, hash, format, size) => {
         if (userID === '1') return hash;
-        return Endpoints.CDN(root).Avatar(userID, hash);
+        return Endpoints.CDN(root).Avatar(userID, hash, format, size);
       },
     };
   },
@@ -134,7 +149,7 @@ const Endpoints = exports.Endpoints = {
       settings: `${base}/settings`,
       auditLogs: `${base}/audit-logs`,
       Emoji: emojiID => Endpoints.CDN(root).Emoji(emojiID),
-      Icon: (root, hash) => Endpoints.CDN(root).Icon(guildID, hash),
+      Icon: (root, hash, format, size) => Endpoints.CDN(root).Icon(guildID, hash, format, size),
       Splash: (root, hash) => Endpoints.CDN(root).Splash(guildID, hash),
       Role: roleID => `${base}/roles/${roleID}`,
       Member: memberID => {
@@ -190,8 +205,24 @@ const Endpoints = exports.Endpoints = {
     return {
       Emoji: emojiID => `${root}/emojis/${emojiID}.png`,
       Asset: name => `${root}/assets/${name}`,
-      Avatar: (userID, hash) => `${root}/avatars/${userID}/${hash}.${hash.startsWith('a_') ? 'gif' : 'png'}?size=2048`,
-      Icon: (guildID, hash) => `${root}/icons/${guildID}/${hash}.jpg`,
+      Avatar: (userID, hash, format = 'default', size) => {
+        if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
+        if (!AllowedImageFormats.includes(format)) throw new Error(`Invalid image format: ${format}`);
+        if (size && !AllowedImageSizes.includes(size)) throw new RangeError(`Invalid size: ${size}`);
+        return `${root}/avatars/${userID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
+      },
+      Icon: (guildID, hash, format = 'default', size) => {
+        if (format === 'default') format = 'webp';
+        if (!AllowedImageFormats.includes(format)) throw new Error(`Invalid image format: ${format}`);
+        if (size && !AllowedImageSizes.includes(size)) throw new RangeError(`Invalid size: ${size}`);
+        return `${root}/icons/${guildID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
+      },
+      AppIcon: (clientID, hash, format = 'default', size) => {
+        if (format === 'default') format = 'webp';
+        if (!AllowedImageFormats.includes(format)) throw new Error(`Invalid image format: ${format}`);
+        if (size && !AllowedImageSizes.includes(size)) throw new RangeError(`Invalid size: ${size}`);
+        return `${root}/app-icons/${clientID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
+      },
       Splash: (guildID, hash) => `${root}/splashes/${guildID}/${hash}.jpg`,
     };
   },

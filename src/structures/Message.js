@@ -315,7 +315,7 @@ class Message {
    */
   get deletable() {
     return this.author.id === this.client.user.id || (this.guild &&
-      this.channel.permissionsFor(this.client.user).hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)
+      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES)
     );
   }
 
@@ -326,7 +326,7 @@ class Message {
    */
   get pinnable() {
     return !this.guild ||
-      this.channel.permissionsFor(this.client.user).hasPermission(Permissions.FLAGS.MANAGE_MESSAGES);
+      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES);
   }
 
   /**
