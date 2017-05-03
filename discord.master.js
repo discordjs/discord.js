@@ -25007,7 +25007,7 @@ class RESTMethods {
     if (options.guild) options.guild = options.guild.id ? options.guild.id : options.guild;
     return this.rest.makeRequest(
       'get',
-      Endpoints.User('@me').mentions(options.limit, options.roles, options.everyone, options.guild)
+      Endpoints.User('@me').Mentions(options.limit, options.roles, options.everyone, options.guild)
     ).then(res => res.body.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)));
   }
 
