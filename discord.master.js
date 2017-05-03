@@ -25003,7 +25003,7 @@ class RESTMethods {
     );
   }
 
-  fetchMeMentions(options) {
+  fetchMentions(options) {
     if (options.guild) options.guild = options.guild.id ? options.guild.id : options.guild;
     return this.rest.makeRequest(
       'get',
