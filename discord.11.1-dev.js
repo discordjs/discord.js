@@ -13017,6 +13017,7 @@ const Actions = {
   EMOJI_CREATE: 60,
   EMOJI_UPDATE: 61,
   EMOJI_DELETE: 62,
+  MESSAGE_DELETE: 72,
 };
 
 
@@ -13092,6 +13093,7 @@ class GuildAuditLogs {
       Actions.INVITE_DELETE,
       Actions.WEBHOOK_DELETE,
       Actions.EMOJI_DELETE,
+      Actions.MESSAGE_DELETE,
     ].includes(action)) return 'DELETE';
 
     if ([
