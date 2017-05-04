@@ -55,6 +55,12 @@ class Invite {
     this.code = data.code;
 
     /**
+     * The approximate number of online members of the guild this invite is for
+     * @type {number}
+     */
+    this.online = data.approximate_presence_count;
+
+    /**
      * Whether or not this invite is temporary
      * @type {boolean}
      */
@@ -65,6 +71,12 @@ class Invite {
      * @type {?number}
      */
     this.maxAge = data.max_age;
+
+    /**
+     * The approximate total number of members of the guild this invite is for
+     * @type {number}
+     */
+    this.memberCount = data.approximate_member_count;
 
     /**
      * How many times this invite has been used
