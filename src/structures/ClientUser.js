@@ -265,7 +265,7 @@ class ClientUser extends User {
    * @param {Guild|Snowflake} [options.guild] Limit the search to a specific guild
    * @returns {Promise<Message[]>}
    */
-  fetchMentions(options = { limit: 25, roles: true, everyone: true, guild: null }) {
+  fetchMentions(options = {}) {
     return this.client.rest.methods.fetchMentions(options);
   }
 

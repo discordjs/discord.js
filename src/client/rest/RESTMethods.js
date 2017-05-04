@@ -764,7 +764,7 @@ class RESTMethods {
   }
 
   fetchMentions(options) {
-    if (options.guild && options.guild.id) options.guild = options.guild.id;
+    if (options.guild instanceof Guild) options.guild = options.guild.id;
     Util.mergeDefault({ limit: 25, roles: true, everyone: true, guild: null }, options);
 
     return this.rest.makeRequest(
