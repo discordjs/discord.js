@@ -185,7 +185,7 @@ class RESTMethods {
         channel_id: channel.id,
         ids: messages,
       }).messages
-    );
+      );
   }
 
   search(target, options) {
@@ -764,10 +764,8 @@ class RESTMethods {
   }
 
   fetchMentions(options) {
-    if (typeof options.limit === 'undefined') options.limit = 25;
-    if (typeof options.roles === 'undefined') options.roles = true;
-    if (typeof options.everyone === 'undefined') options.everyone = true;
     if (options.guild && options.guild.id) options.guild = options.guild.id;
+    Util.mergeDefault({ limit: 25, roles: true, everyone: true, guild: null }, options);
 
     return this.rest.makeRequest(
       'get', Endpoints.User('@me').Mentions(options.limit, options.roles, options.everyone, options.guild), true
