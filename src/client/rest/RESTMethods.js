@@ -185,7 +185,7 @@ class RESTMethods {
         channel_id: channel.id,
         ids: messages,
       }).messages
-    );
+      );
   }
 
   search(target, options) {
@@ -764,11 +764,14 @@ class RESTMethods {
   }
 
   fetchMentions(options) {
-    if (options.guild) options.guild = options.guild.id ? options.guild.id : options.guild;
+    if (typeof options.limit === 'undefined') options.limit = 25;
+    if (typeof options.roles === 'undefined') options.roles = true;
+    if (typeof options.everyone === 'undefined') options.everyone = true;
+    if (options.guild && options.guild.id) options.guild = options.guild.id;
+
     return this.rest.makeRequest(
-      'get',
-      Endpoints.User('@me').Mentions(options.limit, options.roles, options.everyone, options.guild)
-    ).then(res => res.body.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)));
+      'get', Endpoints.User('@me').Mentions(options.limit, options.roles, options.everyone, options.guild), true
+    ).then(data => data.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)));
   }
 
   addFriend(user) {
