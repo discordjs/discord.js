@@ -38,8 +38,8 @@ class TextBasedChannel {
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
-   * @property {FileOptions|string} [file] A file to send with the message **(deprecated)**
-   * @property {FileOptions[]|string[]} [files] Files to send with the message
+   * @property {FileOptions|BufferResolvable} [file] A file to send with the message **(deprecated)**
+   * @property {FileOptions[]|BufferResolvable[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message
@@ -437,7 +437,7 @@ const Deprecated = {
 
   /**
    * Send files to this channel.
-   * @param {FileOptions[]|string[]} files Files to send with the message
+   * @param {FileOptions[]|BufferResolvable[]} files Files to send with the message
    * @param {StringResolvable} [content] Text for the message
    * @param {MessageOptions} [options] Options for the message
    * @returns {Promise<Message>}

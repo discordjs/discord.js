@@ -203,7 +203,8 @@ class RichEmbed {
   /**
    * Sets the file to upload alongside the embed. This file can be accessed via `attachment://fileName.extension` when
    * setting an embed image or author/footer icons. Only one file may be attached.
-   * @param {FileOptions|string} file Local path or URL to the file to attach, or valid FileOptions for a file to attach
+   * @param {FileOptions|BufferResolvable} file Local path or URL to the file to attach, or valid FileOptions for a file
+   * to attach
    * @returns {RichEmbed} This embed
    */
   attachFile(file) {
