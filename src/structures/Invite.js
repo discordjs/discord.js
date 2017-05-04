@@ -58,7 +58,7 @@ class Invite {
      * The approximate number of online members of the guild this invite is for
      * @type {number}
      */
-    this.online = data.approximate_presence_count;
+    this.presenceCount = data.approximate_presence_count;
 
     /**
      * Whether or not this invite is temporary
