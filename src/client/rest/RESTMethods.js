@@ -185,7 +185,7 @@ class RESTMethods {
         channel_id: channel.id,
         ids: messages,
       }).messages
-      );
+    );
   }
 
   search(target, options) {
