@@ -234,10 +234,10 @@ class GuildAuditLogsEntry {
           return this.target;
         });
     } else if (targetType === Targets.INVITE) {
-      const change = this.changes.find(c => c.name === 'code');
+      const change = this.changes.find(c => c.key === 'code');
       this.target = guild.fetchInvites()
         .then(invites => {
-          this.target = invites.find(i => i.code === (change.new || change.old));
+          this.target = invites.find(i => i.code === (change.new_value || change.old_value));
           return this.target;
         });
     } else if (targetType === Targets.MESSAGE) {
