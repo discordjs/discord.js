@@ -6141,6 +6141,7 @@ class Message {
    * @param {string} lang The language for the code block
    * @param {StringResolvable} content The new content for the message
    * @returns {Promise<Message>}
+   * @deprecated
    */
   editCode(lang, content) {
     content = Util.escapeMarkdown(this.client.resolver.resolveString(content), true);
@@ -9826,6 +9827,7 @@ class Webhook {
    * @param {StringResolvable} content The content to send
    * @param {WebhookMessageOptions} [options={}] The options to provide
    * @returns {Promise<Message|Message[]>}
+   * @deprecated
    * @example
    * // Send a message
    * webhook.sendMessage('hello!')
@@ -9843,6 +9845,7 @@ class Webhook {
    * @param {StringResolvable} [content] Text message to send with the attachment
    * @param {WebhookMessageOptions} [options] The options to provide
    * @returns {Promise<Message>}
+   * @deprecated
    */
   sendFile(attachment, name, content, options = {}) {
     return this.send(content, Object.assign(options, { file: { attachment, name } }));
@@ -9854,6 +9857,7 @@ class Webhook {
    * @param {StringResolvable} content Content of the code block
    * @param {WebhookMessageOptions} options The options to provide
    * @returns {Promise<Message|Message[]>}
+   * @deprecated
    */
   sendCode(lang, content, options = {}) {
     return this.send(content, Object.assign(options, { code: lang }));
