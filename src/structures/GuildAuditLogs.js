@@ -4,12 +4,12 @@ const Snowflake = require('../util/Snowflake');
 const Targets = {
   GUILD: 'GUILD',
   CHANNEL: 'CHANNEL',
-  MESSAGE: 'MESSAGE',
   USER: 'USER',
   ROLE: 'ROLE',
   INVITE: 'INVITE',
   WEBHOOK: 'WEBHOOK',
   EMOJI: 'EMOJI',
+  MESSAGE: 'MESSAGE',
 };
 
 const Actions = {
