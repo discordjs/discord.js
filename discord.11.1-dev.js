@@ -284,7 +284,7 @@ const Endpoints = exports.Endpoints = {
     toString: () => '/gateway',
     bot: '/gateway/bot',
   },
-  Invite: inviteID => `/invite/${inviteID}`,
+  Invite: inviteID => `/invite/${inviteID}?with_counts=true`,
   inviteLink: id => `https://discord.gg/${id}`,
   Webhook: (webhookID, token) => `/webhooks/${webhookID}${token ? `/${token}` : ''}`,
 };
@@ -13314,6 +13314,12 @@ class Invite {
     this.code = data.code;
 
     /**
+     * The approximate number of online members of the guild this invite is for
+     * @type {number}
+     */
+    this.presenceCount = data.approximate_presence_count;
+
+    /**
      * Whether or not this invite is temporary
      * @type {boolean}
      */
@@ -13324,6 +13330,12 @@ class Invite {
      * @type {?number}
      */
     this.maxAge = data.max_age;
+
+    /**
+     * The approximate total number of members of the guild this invite is for
+     * @type {number}
+     */
+    this.memberCount = data.approximate_member_count;
 
     /**
      * How many times this invite has been used
