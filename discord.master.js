@@ -12813,7 +12813,7 @@ class ClientUser extends User {
    * @param {Guild|Snowflake} [options.guild] Limit the search to a specific guild
    * @returns {Promise<Message[]>}
    */
-  fetchMentions(options = { limit: 25, roles: true, everyone: true, guild: null }) {
+  fetchMentions(options = {}) {
     return this.client.rest.methods.fetchMentions(options);
   }
 
@@ -25036,11 +25036,12 @@ class RESTMethods {
   }
 
   fetchMentions(options) {
-    if (options.guild) options.guild = options.guild.id ? options.guild.id : options.guild;
+    if (options.guild instanceof Guild) options.guild = options.guild.id;
+    Util.mergeDefault({ limit: 25, roles: true, everyone: true, guild: null }, options);
+
     return this.rest.makeRequest(
-      'get',
-      Endpoints.User('@me').Mentions(options.limit, options.roles, options.everyone, options.guild)
-    ).then(res => res.body.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)));
+      'get', Endpoints.User('@me').Mentions(options.limit, options.roles, options.everyone, options.guild), true
+    ).then(data => data.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)));
   }
 
   addFriend(user) {
