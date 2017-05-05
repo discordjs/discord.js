@@ -388,6 +388,7 @@ class Message {
    * @param {string} lang The language for the code block
    * @param {StringResolvable} content The new content for the message
    * @returns {Promise<Message>}
+   * @deprecated
    */
   editCode(lang, content) {
     content = Util.escapeMarkdown(this.client.resolver.resolveString(content), true);
