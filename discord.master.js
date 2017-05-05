@@ -17509,6 +17509,10 @@ class WebSocketConnection extends EventEmitter {
       this.debug('Tried to mark self as ready, but already ready');
       return;
     }
+    /**
+     * Emitted when the client becomes ready to start working.
+     * @event Client#ready
+     */
     this.status = Constants.Status.READY;
     this.client.emit(Constants.Events.READY);
     this.packetManager.handleQueue();
@@ -17748,6 +17752,11 @@ class WebSocketConnection extends EventEmitter {
    * @param {Error} error Error that occurred
    */
   onError(error) {
+    /**
+     * Emitted whenever the client's WebSocket encounters a connection error.
+     * @event Client#error
+     * @param {Error} error The encountered error
+     */
     this.client.emit(Constants.Events.ERROR, error);
     if (error.message === 'uWs client connection error') this.reconnect();
   }
