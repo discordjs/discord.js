@@ -54,6 +54,7 @@ class Channel {
 
   /**
    * Deletes the channel.
+   * @param {string} [reason] Reason for deleting this channel
    * @returns {Promise<Channel>}
    * @example
    * // Delete the channel
@@ -61,8 +62,8 @@ class Channel {
    *  .then() // Success
    *  .catch(console.error); // Log error
    */
-  delete() {
-    return this.client.rest.methods.deleteChannel(this);
+  delete(reason) {
+    return this.client.rest.methods.deleteChannel(this, reason);
   }
 }
 

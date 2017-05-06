@@ -44,9 +44,9 @@ class ClientManager {
       this.client.emit(Constants.Events.DEBUG, `Using gateway ${gateway}`);
       this.client.ws.connect(gateway);
       this.client.ws.once('close', event => {
-        if (event.code === 4004) reject(new Error(Constants.Errors.BAD_LOGIN));
-        if (event.code === 4010) reject(new Error(Constants.Errors.INVALID_SHARD));
-        if (event.code === 4011) reject(new Error(Constants.Errors.SHARDING_REQUIRED));
+        if (Object.keys(Constants.WSEvents).includes(event.code)) {
+          reject(new Error(Constants.WSEvents[event.code]));
+        }
       });
       this.client.once(Constants.Events.READY, () => {
         resolve(token);

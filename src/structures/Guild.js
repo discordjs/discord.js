@@ -521,6 +521,7 @@ class Guild {
   /**
    * Updates the guild with new information - e.g. a new name.
    * @param {GuildEditData} data The data to update the guild with
+   * @param {string} [reason] Reason for editing the guild
    * @returns {Promise<Guild>}
    * @example
    * // Set the guild name and region
@@ -531,8 +532,8 @@ class Guild {
    * .then(updated => console.log(`New guild name ${updated.name} in region ${updated.region}`))
    * .catch(console.error);
    */
-  edit(data) {
-    return this.client.rest.methods.updateGuild(this, data);
+  edit(data, reason) {
+    return this.client.rest.methods.updateGuild(this, data, reason);
   }
 
   /**
@@ -752,7 +753,9 @@ class Guild {
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
    * @param {string} type The type of the new channel, either `text` or `voice`
-   * @param {Array<PermissionOverwrites|Object>} overwrites Permission overwrites to apply to the new channel
+   * @param {Object} [options] Options
+   * @param {Array<PermissionOverwrites|Object>} [options.overwrites] Permission overwrites to apply to the new channel
+   * @param {string} [options.reason] Reason for creating this channel
    * @returns {Promise<TextChannel|VoiceChannel>}
    * @example
    * // Create a new text channel
@@ -760,8 +763,8 @@ class Guild {
    *  .then(channel => console.log(`Created new channel ${channel}`))
    *  .catch(console.error);
    */
-  createChannel(name, type, overwrites) {
-    return this.client.rest.methods.createChannel(this, name, type, overwrites);
+  createChannel(name, type, options) {
+    return this.client.rest.methods.createChannel(this, name, type, options);
   }
 
   /**
