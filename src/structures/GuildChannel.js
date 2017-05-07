@@ -96,6 +96,9 @@ class GuildChannel extends Channel {
       const roles = member.roles;
       for (const role of roles.values()) permissions |= role.permissions;
 
+      const admin = Boolean(permissions & Permissions.FLAGS.ADMINISTRATOR);
+      if (admin) return new Permissions(member, Permissions.ALL);
+
       const overwrites = this.overwritesFor(member, true, roles);
 
       if (overwrites.everyone) {
@@ -114,9 +117,6 @@ class GuildChannel extends Channel {
         permissions &= ~overwrites.member.deny;
         permissions |= overwrites.member.allow;
       }
-
-      const admin = Boolean(permissions & Permissions.FLAGS.ADMINISTRATOR);
-      if (admin) permissions = Permissions.ALL;
 
       return new Permissions(member, permissions);
     }
