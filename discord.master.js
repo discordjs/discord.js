@@ -13120,13 +13120,11 @@ class GuildAuditLogs {
 
   /**
    * Handles possible promises for entry targets.
-   * @returns {GuildAuditLogs}
+   * @returns {Promise<GuildAuditLogs>}
    */
   static build(...args) {
-    return new Promise(resolve => {
-      const logs = new GuildAuditLogs(...args);
-      Promise.all(logs.entries.map(e => e.target)).then(() => resolve(logs));
-    });
+    const logs = new GuildAuditLogs(...args);
+    return Promise.all(logs.entries.map(e => e.target)).then(() => logs);
   }
 
   /**
