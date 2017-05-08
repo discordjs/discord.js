@@ -62,15 +62,12 @@ class GuildAuditLogs {
 
   /**
    * Handles possible promises for entry targets.
-   * @returns {GuildAuditLogs}
+   * @returns {Promise<GuildAuditLogs>}
    */
   static build(...args) {
-    return new Promise(resolve => {
-      const logs = new GuildAuditLogs(...args);
-      resolve(Promise.all(logs.entries.map(e => e.target)).then(() => logs));
-    });
+    const logs = new GuildAuditLogs(...args);
+    return Promise.all(logs.entries.map(e => e.target)).then(() => logs);
   }
-
   /**
    * Find target type from entry action.
    * @param {number} target The action target
