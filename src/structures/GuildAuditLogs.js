@@ -67,7 +67,7 @@ class GuildAuditLogs {
   static build(...args) {
     return new Promise(resolve => {
       const logs = new GuildAuditLogs(...args);
-      Promise.all(logs.entries.map(e => e.target)).then(() => resolve(logs));
+      resolve(Promise.all(logs.entries.map(e => e.target)).then(() => logs));
     });
   }
 
