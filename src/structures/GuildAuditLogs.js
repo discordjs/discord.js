@@ -68,6 +68,7 @@ class GuildAuditLogs {
     const logs = new GuildAuditLogs(...args);
     return Promise.all(logs.entries.map(e => e.target)).then(() => logs);
   }
+
   /**
    * Find target type from entry action.
    * @param {number} target The action target
