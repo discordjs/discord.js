@@ -90,8 +90,7 @@ class TextBasedChannel {
     if (options.files) {
       for (const i in options.files) {
         let file = options.files[i];
-        if (typeof file === 'string') file = { attachment: file };
-        else if (Buffer.isBuffer(file)) file = { attachment: file };
+        if (typeof file === 'string' || Buffer.isBuffer(file)) file = { attachment: file };
         if (!file.name) {
           if (typeof file.attachment === 'string') {
             file.name = path.basename(file.attachment);
