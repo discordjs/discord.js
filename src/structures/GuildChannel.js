@@ -138,6 +138,7 @@ class GuildChannel extends Channel {
    * Overwrites the permissions for a user or role in this channel.
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The configuration for the update
+   * @param {string} [reason] Reason for updating the permissions
    * @returns {Promise}
    * @example
    * // Overwrite permissions for a message author
@@ -147,7 +148,7 @@ class GuildChannel extends Channel {
    * .then(() => console.log('Done!'))
    * .catch(console.error);
    */
-  overwritePermissions(userOrRole, options) {
+  overwritePermissions(userOrRole, options, reason) {
     const payload = {
       allow: 0,
       deny: 0,
@@ -186,7 +187,7 @@ class GuildChannel extends Channel {
       }
     }
 
-    return this.client.rest.methods.setChannelOverwrite(this, payload);
+    return this.client.rest.methods.setChannelOverwrite(this, payload, reason);
   }
 
   /**
@@ -202,6 +203,7 @@ class GuildChannel extends Channel {
   /**
    * Edits the channel.
    * @param {ChannelData} data The new data for the channel
+   * @param {string} [reason] Reason for editing this channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // Edit a channel
@@ -209,8 +211,8 @@ class GuildChannel extends Channel {
    *  .then(c => console.log(`Edited channel ${c}`))
    *  .catch(console.error);
    */
-  edit(data) {
-    return this.client.rest.methods.updateChannel(this, data);
+  edit(data, reason) {
+    return this.client.rest.methods.updateChannel(this, data, reason);
   }
 
   /**

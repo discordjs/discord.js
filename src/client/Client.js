@@ -274,7 +274,11 @@ class Client extends EventEmitter {
    * client.login('my token');
    */
   login(token) {
-    return this.rest.methods.login(token);
+    return new Promise((resolve, reject) => {
+      if (typeof token !== 'string') throw new Error(Constants.Errors.INVALID_TOKEN);
+      token = token.replace(/^Bot\s*/i, '');
+      this.manager.connectToWebSocket(token, resolve, reject);
+    });
   }
 
   /**

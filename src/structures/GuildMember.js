@@ -390,20 +390,22 @@ class GuildMember {
   /**
    * Adds a single role to the member.
    * @param {Role|Snowflake} role The role or ID of the role to add
+   * @param {string} [reason] Reason to add this role
    * @returns {Promise<GuildMember>}
    */
-  addRole(role) {
+  addRole(role, reason) {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
     if (!role) throw new TypeError('Supplied parameter was neither a Role nor a Snowflake.');
-    return this.client.rest.methods.addMemberRole(this, role);
+    return this.client.rest.methods.addMemberRole(this, role, reason);
   }
 
   /**
    * Adds multiple roles to the member.
    * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to add
+   * @param {string} [reason] Reason to add these roles
    * @returns {Promise<GuildMember>}
    */
-  addRoles(roles) {
+  addRoles(roles, reason) {
     let allRoles;
     if (roles instanceof Collection) {
       allRoles = this._roles.slice();
@@ -411,18 +413,19 @@ class GuildMember {
     } else {
       allRoles = this._roles.concat(roles);
     }
-    return this.edit({ roles: allRoles });
+    return this.edit({ roles: allRoles }, reason);
   }
 
   /**
    * Removes a single role from the member.
    * @param {Role|Snowflake} role The role or ID of the role to remove
+   * @param {string} [reason] Reason this role is being removed
    * @returns {Promise<GuildMember>}
    */
-  removeRole(role) {
+  removeRole(role, reason) {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
     if (!role) throw new TypeError('Supplied parameter was neither a Role nor a Snowflake.');
-    return this.client.rest.methods.removeMemberRole(this, role);
+    return this.client.rest.methods.removeMemberRole(this, role, reason);
   }
 
   /**

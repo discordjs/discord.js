@@ -1,4 +1,3 @@
-const UserAgentManager = require('./UserAgentManager');
 const RESTMethods = require('./RESTMethods');
 const SequentialRequestHandler = require('./RequestHandlers/Sequential');
 const BurstRequestHandler = require('./RequestHandlers/Burst');
@@ -9,10 +8,12 @@ class RESTManager {
   constructor(client) {
     this.client = client;
     this.handlers = {};
-    this.userAgentManager = new UserAgentManager(this);
     this.methods = new RESTMethods(this);
     this.rateLimitedEndpoints = {};
     this.globallyRateLimited = false;
+
+    const Package = Constants.Package;
+    this.userAgent = `DiscordBot (${Package.homepage.split('#')[0]}, ${Package.version}) Node.js/${process.version}`;
   }
 
   destroy() {
@@ -42,14 +43,14 @@ class RESTManager {
     }
   }
 
-  makeRequest(method, url, auth, data, file) {
-    const apiRequest = new APIRequest(this, method, url, auth, data, file);
-    if (!this.handlers[apiRequest.route]) {
+  request(method, url, options) {
+    const request = new APIRequest(this.client, method, url, options);
+    if (!this.handlers[request.route]) {
       const RequestHandlerType = this.getRequestHandler();
-      this.handlers[apiRequest.route] = new RequestHandlerType(this, apiRequest.route);
+      this.handlers[request.route] = new RequestHandlerType(this, request.route);
     }
 
-    return this.push(this.handlers[apiRequest.route], apiRequest);
+    return this.push(this.handlers[request.route], request);
   }
 }
 
