@@ -148,7 +148,7 @@ const Endpoints = exports.Endpoints = {
       ack: `${base}/ack`,
       settings: `${base}/settings`,
       auditLogs: `${base}/audit-logs`,
-      Emoji: emojiID => Endpoints.CDN(root).Emoji(emojiID),
+      Emoji: emojiID => `${base}/emojis/${emojiID}`,
       Icon: (root, hash, format, size) => Endpoints.CDN(root).Icon(guildID, hash, format, size),
       Splash: (root, hash) => Endpoints.CDN(root).Splash(guildID, hash),
       Role: roleID => `${base}/roles/${roleID}`,
@@ -243,7 +243,7 @@ const Endpoints = exports.Endpoints = {
     toString: () => '/gateway',
     bot: '/gateway/bot',
   },
-  Invite: inviteID => `/invite/${inviteID}`,
+  Invite: inviteID => `/invite/${inviteID}?with_counts=true`,
   inviteLink: id => `https://discord.gg/${id}`,
   Webhook: (webhookID, token) => `/webhooks/${webhookID}${token ? `/${token}` : ''}`,
 };

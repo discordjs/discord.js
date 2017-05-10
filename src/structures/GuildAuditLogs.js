@@ -9,6 +9,7 @@ const Targets = {
   INVITE: 'INVITE',
   WEBHOOK: 'WEBHOOK',
   EMOJI: 'EMOJI',
+  MESSAGE: 'MESSAGE',
 };
 
 const Actions = {
@@ -37,6 +38,7 @@ const Actions = {
   EMOJI_CREATE: 60,
   EMOJI_UPDATE: 61,
   EMOJI_DELETE: 62,
+  MESSAGE_DELETE: 72,
 };
 
 
@@ -60,13 +62,11 @@ class GuildAuditLogs {
 
   /**
    * Handles possible promises for entry targets.
-   * @returns {GuildAuditLogs}
+   * @returns {Promise<GuildAuditLogs>}
    */
   static build(...args) {
-    return new Promise(resolve => {
-      const logs = new GuildAuditLogs(...args);
-      Promise.all(logs.entries.map(e => e.target)).then(() => resolve(logs));
-    });
+    const logs = new GuildAuditLogs(...args);
+    return Promise.all(logs.entries.map(e => e.target)).then(() => logs);
   }
 
   /**
@@ -82,6 +82,7 @@ class GuildAuditLogs {
     if (target < 50) return Targets.INVITE;
     if (target < 60) return Targets.WEBHOOK;
     if (target < 70) return Targets.EMOJI;
+    if (target < 80) return Targets.MESSAGE;
     return null;
   }
 
@@ -112,6 +113,7 @@ class GuildAuditLogs {
       Actions.INVITE_DELETE,
       Actions.WEBHOOK_DELETE,
       Actions.EMOJI_DELETE,
+      Actions.MESSAGE_DELETE,
     ].includes(action)) return 'DELETE';
 
     if ([
@@ -196,15 +198,20 @@ class GuildAuditLogsEntry {
           removed: data.options.members_removed,
           days: data.options.delete_member_days,
         };
+      } else if (data.action_type === Actions.MESSAGE_DELETE) {
+        this.extra = {
+          count: data.options.count,
+          channel: guild.channels.get(data.options.channel_id),
+        };
       } else {
         switch (data.options.type) {
           case 'member':
-            this.extra = guild.members.get(this.options.id);
-            if (!this.extra) this.extra = { id: this.options.id };
+            this.extra = guild.members.get(data.options.id);
+            if (!this.extra) this.extra = { id: data.options.id };
             break;
           case 'role':
-            this.extra = guild.roles.get(this.options.id);
-            if (!this.extra) this.extra = { id: this.options.id, name: this.options.role_name };
+            this.extra = guild.roles.get(data.options.id);
+            if (!this.extra) this.extra = { id: data.options.id, name: data.options.role_name };
             break;
           default:
             break;
@@ -225,12 +232,14 @@ class GuildAuditLogsEntry {
           return this.target;
         });
     } else if (targetType === Targets.INVITE) {
-      const change = this.changes.find(c => c.name === 'code');
+      const change = this.changes.find(c => c.key === 'code');
       this.target = guild.fetchInvites()
         .then(invites => {
-          this.target = invites.find(i => i.code === (change.new || change.old));
+          this.target = invites.find(i => i.code === (change.new_value || change.old_value));
           return this.target;
         });
+    } else if (targetType === Targets.MESSAGE) {
+      this.target = guild.client.users.get(data.target_id);
     } else {
       this.target = guild[`${targetType.toLowerCase()}s`].get(data.target_id);
     }
