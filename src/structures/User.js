@@ -124,9 +124,7 @@ class User {
    * @readonly
    */
   get defaultAvatarURL() {
-    const avatars = Object.keys(Constants.DefaultAvatars);
-    const avatar = avatars[this.discriminator % avatars.length];
-    return Constants.Endpoints.CDN(this.client.options.http.host).Asset(`${Constants.DefaultAvatars[avatar]}.png`);
+    return Constants.Endpoints.CDN(this.client.options.http.host).DefaultAvatar(this.discriminator % 5);
   }
 
   /**
