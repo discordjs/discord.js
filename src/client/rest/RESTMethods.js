@@ -465,7 +465,10 @@ class RESTMethods {
   }
 
   updateGuildMember(member, data) {
-    if (data.channel) data.channel_id = this.client.resolver.resolveChannel(data.channel).id;
+    if (data.channel) {
+      data.channel_id = this.client.resolver.resolveChannel(data.channel).id;
+      data.channel = null;
+    }
     if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
 
     let endpoint = Endpoints.Member(member);
