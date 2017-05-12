@@ -6,7 +6,7 @@ const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 
 /**
- * This is a utility class that can be used to help you spawn shards of your Client. Each shard is completely separate
+ * This is a utility class that can be used to help you spawn shards of your client. Each shard is completely separate
  * from the other. The Shard Manager takes a path to a file and spawns it under the specified amount of shards safely.
  * If you do not select an amount of shards, the manager will automatically decide the best amount.
  * @extends {EventEmitter}
@@ -61,7 +61,7 @@ class ShardingManager extends EventEmitter {
     this.respawn = options.respawn;
 
     /**
-     * An array of arguments to pass to shards.
+     * An array of arguments to pass to shards
      * @type {string[]}
      */
     this.shardArgs = options.shardArgs;
@@ -81,14 +81,14 @@ class ShardingManager extends EventEmitter {
 
   /**
    * Spawns a single shard.
-   * @param {number} id The ID of the shard to spawn. **This is usually not necessary.**
+   * @param {number} id The ID of the shard to spawn. **This is usually not necessary**
    * @returns {Promise<Shard>}
    */
   createShard(id = this.shards.size) {
     const shard = new Shard(this, id, this.shardArgs);
     this.shards.set(id, shard);
     /**
-     * Emitted upon launching a shard
+     * Emitted upon launching a shard.
      * @event ShardingManager#launch
      * @param {Shard} shard Shard that was launched
      */
@@ -172,8 +172,8 @@ class ShardingManager extends EventEmitter {
   }
 
   /**
-   * Fetches a Client property value of each shard.
-   * @param {string} prop Name of the Client property to get, using periods for nesting
+   * Fetches a client property value of each shard.
+   * @param {string} prop Name of the client property to get, using periods for nesting
    * @returns {Promise<Array>}
    * @example
    * manager.fetchClientValues('guilds.size').then(results => {

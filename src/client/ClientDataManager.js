@@ -15,7 +15,7 @@ class ClientDataManager {
   }
 
   get pastReady() {
-    return this.client.ws.status === Constants.Status.READY;
+    return this.client.ws.connection.status === Constants.Status.READY;
   }
 
   newGuild(data) {

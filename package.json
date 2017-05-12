@@ -1,6 +1,6 @@
 {
   "name": "discord.js",
-  "version": "11.1.0",
+  "version": "12.0.0",
   "description": "A powerful library for interacting with the Discord API",
   "main": "./src/index",
   "types": "./typings/index.d.ts",
@@ -39,12 +39,13 @@
     "ws": "^2.0.0"
   },
   "peerDependencies": {
-    "bufferutil": "^2.0.0",
+    "bufferutil": "^3.0.0",
     "erlpack": "hammerandchisel/erlpack",
     "node-opus": "^0.2.5",
     "opusscript": "^0.0.3",
     "sodium": "^2.0.1",
-    "libsodium-wrappers": "^0.5.1"
+    "libsodium-wrappers": "^0.5.1",
+    "uws": "^0.14.1"
   },
   "devDependencies": {
     "@types/node": "^7.0.0",

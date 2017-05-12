@@ -1,7 +1,7 @@
 const Collection = require('../util/Collection');
 
 /**
- * Keeps track of mentions in a {@link Message}
+ * Keeps track of mentions in a {@link Message}.
  */
 class MessageMentions {
   constructor(message, users, roles, everyone) {
@@ -56,7 +56,14 @@ class MessageMentions {
     this._content = message.content;
 
     /**
-     * Guild the message is in
+     * The client the message is from
+     * @type {Client}
+     * @private
+     */
+    this._client = message.client;
+
+    /**
+     * The guild the message is in
      * @type {?Guild}
      * @private
      */
@@ -94,17 +101,16 @@ class MessageMentions {
   }
 
   /**
-   * Any channels that were mentioned (only in {@link TextChannel}s)
+   * Any channels that were mentioned
    * @type {?Collection<Snowflake, GuildChannel>}
    * @readonly
    */
   get channels() {
     if (this._channels) return this._channels;
-    if (!this._guild) return null;
     this._channels = new Collection();
     let matches;
     while ((matches = this.constructor.CHANNELS_PATTERN.exec(this._content)) !== null) {
-      const chan = this._guild.channels.get(matches[1]);
+      const chan = this._client.channels.get(matches[1]);
       if (chan) this._channels.set(chan.id, chan);
     }
     return this._channels;
@@ -118,7 +124,7 @@ class MessageMentions {
 MessageMentions.EVERYONE_PATTERN = /@(everyone|here)/g;
 
 /**
- * Regular expression that globally matches user mentions like `<#81440962496172032>`
+ * Regular expression that globally matches user mentions like `<@81440962496172032>`
  * @type {RegExp}
  */
 MessageMentions.USERS_PATTERN = /<@!?[0-9]+>/g;

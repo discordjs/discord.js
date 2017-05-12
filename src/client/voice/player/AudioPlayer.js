@@ -13,7 +13,7 @@ const ffmpegArguments = [
 ];
 
 /**
- * An Audio Player for a Voice Connection
+ * An Audio Player for a Voice Connection.
  * @private
  * @extends {EventEmitter}
  */
@@ -73,7 +73,13 @@ class AudioPlayer extends EventEmitter {
     const transcoder = this.transcoder;
     const dispatcher = this.dispatcher;
     if (transcoder) transcoder.kill();
-    if (dispatcher) dispatcher.destroy('end');
+    if (dispatcher) {
+      const end = dispatcher.listeners('end')[0];
+      const error = dispatcher.listeners('error')[0];
+      if (end) dispatcher.removeListener('end', end);
+      if (error) dispatcher.removeListener('error', error);
+      dispatcher.destroy('end');
+    }
     this.currentStream = {};
   }
 

@@ -13,7 +13,7 @@ class UserProfile {
     this.user = user;
 
     /**
-     * The Client that created the instance of the the UserProfile.
+     * The client that created the instance of the the UserProfile.
      * @name UserProfile#client
      * @type {Client}
      * @readonly
@@ -21,7 +21,7 @@ class UserProfile {
     Object.defineProperty(this, 'client', { value: user.client });
 
     /**
-     * Guilds that the client user and the user share
+     * The guilds that the client user and the user share
      * @type {Collection<Snowflake, Guild>}
      */
     this.mutualGuilds = new Collection();

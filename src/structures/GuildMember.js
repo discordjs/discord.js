@@ -3,15 +3,16 @@ const Role = require('./Role');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
 const Presence = require('./Presence').Presence;
+const util = require('util');
 
 /**
- * Represents a member of a guild on Discord
+ * Represents a member of a guild on Discord.
  * @implements {TextBasedChannel}
  */
 class GuildMember {
   constructor(guild, data) {
     /**
-     * The Client that instantiated this GuildMember
+     * The client that instantiated this GuildMember
      * @name GuildMember#client
      * @type {Client}
      * @readonly
@@ -34,13 +35,13 @@ class GuildMember {
     if (data) this.setup(data);
 
     /**
-     * The ID of the last message sent by the member in their guild, if one was sent.
+     * The ID of the last message sent by the member in their guild, if one was sent
      * @type {?Snowflake}
      */
     this.lastMessageID = null;
 
     /**
-     * The Message object of the last message sent by the member in their guild, if one was sent.
+     * The Message object of the last message sent by the member in their guild, if one was sent
      * @type {?Message}
      */
     this.lastMessage = null;
@@ -124,7 +125,7 @@ class GuildMember {
   }
 
   /**
-   * A list of roles that are applied to this GuildMember, mapped by the role ID.
+   * A list of roles that are applied to this GuildMember, mapped by the role ID
    * @type {Collection<Snowflake, Role>}
    * @readonly
    */
@@ -143,7 +144,7 @@ class GuildMember {
   }
 
   /**
-   * The role of the member with the highest position.
+   * The role of the member with the highest position
    * @type {Role}
    * @readonly
    */
@@ -152,7 +153,7 @@ class GuildMember {
   }
 
   /**
-   * The role of the member used to set their color.
+   * The role of the member used to set their color
    * @type {?Role}
    * @readonly
    */
@@ -163,7 +164,7 @@ class GuildMember {
   }
 
   /**
-   * The displayed color of the member in base 10.
+   * The displayed color of the member in base 10
    * @type {number}
    * @readonly
    */
@@ -173,7 +174,7 @@ class GuildMember {
   }
 
   /**
-   * The displayed color of the member in hexadecimal.
+   * The displayed color of the member in hexadecimal
    * @type {string}
    * @readonly
    */
@@ -183,7 +184,7 @@ class GuildMember {
   }
 
   /**
-   * The role of the member used to hoist them in a separate category in the users list.
+   * The role of the member used to hoist them in a separate category in the users list
    * @type {?Role}
    * @readonly
    */
@@ -254,7 +255,7 @@ class GuildMember {
   }
 
   /**
-   * Whether the member is kickable by the client user.
+   * Whether the member is kickable by the client user
    * @type {boolean}
    * @readonly
    */
@@ -262,12 +263,12 @@ class GuildMember {
     if (this.user.id === this.guild.ownerID) return false;
     if (this.user.id === this.client.user.id) return false;
     const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.hasPermission(Permissions.FLAGS.KICK_MEMBERS)) return false;
+    if (!clientMember.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) return false;
     return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
   }
 
   /**
-   * Whether the member is bannable by the client user.
+   * Whether the member is bannable by the client user
    * @type {boolean}
    * @readonly
    */
@@ -275,14 +276,14 @@ class GuildMember {
     if (this.user.id === this.guild.ownerID) return false;
     if (this.user.id === this.client.user.id) return false;
     const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.hasPermission(Permissions.FLAGS.BAN_MEMBERS)) return false;
+    if (!clientMember.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return false;
     return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
   }
 
   /**
    * Returns `channel.permissionsFor(guildMember)`. Returns permissions for a member in a guild channel,
    * taking into account roles and permission overwrites.
-   * @param {ChannelResolvable} channel Guild channel to use as context
+   * @param {ChannelResolvable} channel The guild channel to use as context
    * @returns {?Permissions}
    */
   permissionsIn(channel) {
@@ -318,7 +319,7 @@ class GuildMember {
    */
   hasPermissions(permissions, explicit = false) {
     if (!explicit && this.user.id === this.guild.ownerID) return true;
-    return permissions.every(p => this.hasPermission(p, explicit));
+    return this.hasPermission(permissions, explicit);
   }
 
   /**
@@ -328,11 +329,11 @@ class GuildMember {
    * @returns {PermissionResolvable[]}
    */
   missingPermissions(permissions, explicit = false) {
-    return permissions.filter(p => !this.hasPermission(p, explicit));
+    return permissions.missing(permissions, explicit);
   }
 
   /**
-   * The data for editing a guild member
+   * The data for editing a guild member.
    * @typedef {Object} GuildMemberEditData
    * @property {string} [nick] The nickname to set for the member
    * @property {Collection<Snowflake, Role>|Role[]|Snowflake[]} [roles] The roles or role IDs to apply
@@ -342,7 +343,7 @@ class GuildMember {
    */
 
   /**
-   * Edit a guild member
+   * Edit a guild member.
    * @param {GuildMemberEditData} data The data to edit the member with
    * @returns {Promise<GuildMember>}
    */
@@ -351,7 +352,7 @@ class GuildMember {
   }
 
   /**
-   * Mute/unmute a user
+   * Mute/unmute a user.
    * @param {boolean} mute Whether or not the member should be muted
    * @returns {Promise<GuildMember>}
    */
@@ -360,7 +361,7 @@ class GuildMember {
   }
 
   /**
-   * Deafen/undeafen a user
+   * Deafen/undeafen a user.
    * @param {boolean} deaf Whether or not the member should be deafened
    * @returns {Promise<GuildMember>}
    */
@@ -393,7 +394,7 @@ class GuildMember {
    */
   addRole(role) {
     role = this.client.resolver.resolveRole(this.guild, role);
-    if (!role) throw new TypeError('Supplied parameter was neither a Role nor a Snowflake.');
+    if (!role) return Promise.reject(new TypeError('Supplied parameter was neither a Role nor a Snowflake.'));
     return this.client.rest.methods.addMemberRole(this, role);
   }
 
@@ -420,7 +421,7 @@ class GuildMember {
    */
   removeRole(role) {
     role = this.client.resolver.resolveRole(this.guild, role);
-    if (!role) throw new TypeError('Supplied parameter was neither a Role nor a Snowflake.');
+    if (!role) return Promise.reject(new TypeError('Supplied parameter was neither a Role nor a Snowflake.'));
     return this.client.rest.methods.removeMemberRole(this, role);
   }
 
@@ -446,7 +447,7 @@ class GuildMember {
   }
 
   /**
-   * Set the nickname for the guild member
+   * Set the nickname for the guild member.
    * @param {string} nick The nickname for the guild member
    * @returns {Promise<GuildMember>}
    */
@@ -455,7 +456,7 @@ class GuildMember {
   }
 
   /**
-   * Creates a DM channel between the client and the member
+   * Creates a DM channel between the client and the member.
    * @returns {Promise<DMChannel>}
    */
   createDM() {
@@ -463,7 +464,7 @@ class GuildMember {
   }
 
   /**
-   * Deletes any DMs with this guild member
+   * Deletes any DMs with this guild member.
    * @returns {Promise<DMChannel>}
    */
   deleteDM() {
@@ -471,31 +472,34 @@ class GuildMember {
   }
 
   /**
-   * Kick this member from the guild
+   * Kick this member from the guild.
+   * @param {string} [reason] Reason for kicking user
    * @returns {Promise<GuildMember>}
    */
-  kick() {
-    return this.client.rest.methods.kickGuildMember(this.guild, this);
+  kick(reason) {
+    return this.client.rest.methods.kickGuildMember(this.guild, this, reason);
   }
 
   /**
    * Ban this guild member
-   * @param {number} [deleteDays=0] The amount of days worth of messages from this member that should
-   * also be deleted. Between `0` and `7`.
+   * @param {Object|number|string} [options] Ban options. If a number, the number of days to delete messages for, if a
+   * string, the ban reason. Supplying an object allows you to do both.
+   * @param {number} [options.days=0] Number of days of messages to delete
+   * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember>}
    * @example
    * // ban a guild member
    * guildMember.ban(7);
    */
-  ban(deleteDays = 0) {
-    return this.client.rest.methods.banGuildMember(this.guild, this, deleteDays);
+  ban(options) {
+    return this.guild.ban(this, options);
   }
 
   /**
    * When concatenated with a string, this automatically concatenates the user's mention instead of the Member object.
    * @returns {string}
    * @example
-   * // logs: Hello from <@123456789>!
+   * // Logs: Hello from <@123456789>!
    * console.log(`Hello from ${member}!`);
    */
   toString() {
@@ -512,5 +516,8 @@ class GuildMember {
 }
 
 TextBasedChannel.applyToClass(GuildMember);
+
+GuildMember.prototype.hasPermissions = util.deprecate(GuildMember.prototype.hasPermissions,
+  'GuildMember#hasPermissions is deprecated - use GuildMember#hasPermission, it now takes an array');
 
 module.exports = GuildMember;

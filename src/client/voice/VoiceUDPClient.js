@@ -4,7 +4,7 @@ const Constants = require('../../util/Constants');
 const EventEmitter = require('events').EventEmitter;
 
 /**
- * Represents a UDP Client for a Voice Connection
+ * Represents a UDP client for a Voice Connection.
  * @extends {EventEmitter}
  * @private
  */
@@ -25,7 +25,7 @@ class VoiceConnectionUDPClient extends EventEmitter {
     this.socket = null;
 
     /**
-     * The address of the discord voice server
+     * The address of the Discord voice server
      * @type {?string}
      */
     this.discordAddress = null;
@@ -57,7 +57,7 @@ class VoiceConnectionUDPClient extends EventEmitter {
   }
 
   /**
-   * The port of the discord voice server
+   * The port of the Discord voice server
    * @type {number}
    * @readonly
    */
@@ -66,7 +66,7 @@ class VoiceConnectionUDPClient extends EventEmitter {
   }
 
   /**
-   * Tries to resolve the voice server endpoint to an address
+   * Tries to resolve the voice server endpoint to an address.
    * @returns {Promise<string>}
    */
   findEndpointAddress() {
@@ -83,7 +83,7 @@ class VoiceConnectionUDPClient extends EventEmitter {
   }
 
   /**
-   * Send a packet to the UDP client
+   * Send a packet to the UDP client.
    * @param {Object} packet The packet to send
    * @returns {Promise<Object>}
    */

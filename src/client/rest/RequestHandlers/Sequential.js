@@ -1,4 +1,5 @@
 const RequestHandler = require('./RequestHandler');
+const DiscordAPIError = require('../DiscordAPIError');
 
 /**
  * Handles API Requests sequentially, i.e. we wait until the current request is finished before moving onto
@@ -23,7 +24,7 @@ class SequentialRequestHandler extends RequestHandler {
 
     /**
      * The time difference between Discord's Dates and the local computer's Dates. A positive number means the local
-     * computer's time is ahead of Discord's.
+     * computer's time is ahead of Discord's
      * @type {number}
      */
     this.timeDifference = 0;
@@ -41,7 +42,7 @@ class SequentialRequestHandler extends RequestHandler {
   }
 
   /**
-   * Performs a request then resolves a promise to indicate its readiness for a new request
+   * Performs a request then resolves a promise to indicate its readiness for a new request.
    * @param {APIRequest} item The item to execute
    * @returns {Promise<?Object|Error>}
    */
@@ -64,7 +65,7 @@ class SequentialRequestHandler extends RequestHandler {
             }, Number(res.headers['retry-after']) + this.restManager.client.options.restTimeOffset);
             if (res.headers['x-ratelimit-global']) this.globalLimit = true;
           } else {
-            item.reject(err);
+            item.reject(err.status >= 400 && err.status < 500 ? new DiscordAPIError(res.body) : err);
             resolve(err);
           }
         } else {

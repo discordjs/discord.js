@@ -44,7 +44,6 @@ class ReadyHandler extends AbstractHandler {
     }
 
     if (!client.user.bot && client.options.sync) client.setInterval(client.syncGuilds.bind(client), 30000);
-    client.once('ready', client.syncGuilds.bind(client));
 
     if (!client.users.has('1')) {
       client.dataManager.newUser({
@@ -59,9 +58,17 @@ class ReadyHandler extends AbstractHandler {
       });
     }
 
-    client.setTimeout(() => {
-      if (!client.ws.normalReady) client.ws._emitReady(false);
+    const t = client.setTimeout(() => {
+      client.ws.connection.triggerReady();
     }, 1200 * data.guilds.length);
+
+    client.setMaxListeners(data.guilds.length + 10);
+
+    client.once('ready', () => {
+      client.syncGuilds();
+      client.setMaxListeners(10);
+      client.clearTimeout(t);
+    });
 
     const ws = this.packetManager.ws;
 

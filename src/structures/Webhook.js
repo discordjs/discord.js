@@ -1,13 +1,13 @@
 const path = require('path');
 
 /**
- * Represents a webhook
+ * Represents a webhook.
  */
 class Webhook {
   constructor(client, dataOrID, token) {
     if (client) {
       /**
-       * The Client that instantiated the Webhook
+       * The client that instantiated the webhook
        * @name Webhook#client
        * @type {Client}
        * @readonly
@@ -70,7 +70,7 @@ class Webhook {
   }
 
   /**
-   * Options that can be passed into send, sendMessage, sendFile, sendEmbed, and sendCode
+   * Options that can be passed into send, sendMessage, sendFile, sendEmbed, and sendCode.
    * @typedef {Object} WebhookMessageOptions
    * @property {string} [username=this.name] Username override for the message
    * @property {string} [avatarURL] Avatar URL override for the message
@@ -81,18 +81,19 @@ class Webhook {
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
    * @property {FileOptions|string} [file] A file to send with the message
+   * @property {FileOptions[]|string[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
    */
 
   /**
-   * Send a message with this webhook
-   * @param {StringResolvable} content The content to send.
-   * @param {WebhookMessageOptions} [options={}] The options to provide.
+   * Send a message with this webhook.
+   * @param {StringResolvable} [content] The content to send
+   * @param {WebhookMessageOptions} [options={}] The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
-   * // send a message
+   * // Send a message
    * webhook.send('hello!')
    *  .then(message => console.log(`Sent message: ${message.content}`))
    *  .catch(console.error);
@@ -104,34 +105,47 @@ class Webhook {
     } else if (!options) {
       options = {};
     }
+
     if (options.file) {
-      if (typeof options.file === 'string') options.file = { attachment: options.file };
-      if (!options.file.name) {
-        if (typeof options.file.attachment === 'string') {
-          options.file.name = path.basename(options.file.attachment);
-        } else if (options.file.attachment && options.file.attachment.path) {
-          options.file.name = path.basename(options.file.attachment.path);
-        } else {
-          options.file.name = 'file.jpg';
-        }
-      }
-      return this.client.resolver.resolveBuffer(options.file.attachment).then(file =>
-        this.client.rest.methods.sendWebhookMessage(this, content, options, {
-          file,
-          name: options.file.name,
-        })
-      );
+      if (options.files) options.files.push(options.file);
+      else options.files = [options.file];
     }
+
+    if (options.files) {
+      for (let i = 0; i < options.files.length; i++) {
+        let file = options.files[i];
+        if (typeof file === 'string') file = { attachment: file };
+        if (!file.name) {
+          if (typeof file.attachment === 'string') {
+            file.name = path.basename(file.attachment);
+          } else if (file.attachment && file.attachment.path) {
+            file.name = path.basename(file.attachment.path);
+          } else {
+            file.name = 'file.jpg';
+          }
+        }
+        options.files[i] = file;
+      }
+
+      return Promise.all(options.files.map(file =>
+        this.client.resolver.resolveBuffer(file.attachment).then(buffer => {
+          file.file = buffer;
+          return file;
+        })
+      )).then(files => this.client.rest.methods.sendWebhookMessage(this, content, options, files));
+    }
+
     return this.client.rest.methods.sendWebhookMessage(this, content, options);
   }
 
   /**
    * Send a message with this webhook
-   * @param {StringResolvable} content The content to send.
-   * @param {WebhookMessageOptions} [options={}] The options to provide.
+   * @param {StringResolvable} content The content to send
+   * @param {WebhookMessageOptions} [options={}] The options to provide
    * @returns {Promise<Message|Message[]>}
+   * @deprecated
    * @example
-   * // send a message
+   * // Send a message
    * webhook.sendMessage('hello!')
    *  .then(message => console.log(`Sent message: ${message.content}`))
    *  .catch(console.error);
@@ -141,34 +155,36 @@ class Webhook {
   }
 
   /**
-   * Send a file with this webhook
+   * Send a file with this webhook.
    * @param {BufferResolvable} attachment The file to send
    * @param {string} [name='file.jpg'] The name and extension of the file
    * @param {StringResolvable} [content] Text message to send with the attachment
    * @param {WebhookMessageOptions} [options] The options to provide
    * @returns {Promise<Message>}
+   * @deprecated
    */
   sendFile(attachment, name, content, options = {}) {
     return this.send(content, Object.assign(options, { file: { attachment, name } }));
   }
 
   /**
-   * Send a code block with this webhook
+   * Send a code block with this webhook.
    * @param {string} lang Language for the code block
    * @param {StringResolvable} content Content of the code block
    * @param {WebhookMessageOptions} options The options to provide
    * @returns {Promise<Message|Message[]>}
+   * @deprecated
    */
   sendCode(lang, content, options = {}) {
     return this.send(content, Object.assign(options, { code: lang }));
   }
 
   /**
-   * Send a raw slack message with this webhook
-   * @param {Object} body The raw body to send.
+   * Send a raw slack message with this webhook.
+   * @param {Object} body The raw body to send
    * @returns {Promise}
    * @example
-   * // send a slack message
+   * // Send a slack message
    * webhook.sendSlackMessage({
    *   'username': 'Wumpus',
    *   'attachments': [{
@@ -186,8 +202,8 @@ class Webhook {
 
   /**
    * Edit the webhook.
-   * @param {string} name The new name for the Webhook
-   * @param {BufferResolvable} avatar The new avatar for the Webhook.
+   * @param {string} name The new name for the webhook
+   * @param {BufferResolvable} avatar The new avatar for the webhook
    * @returns {Promise<Webhook>}
    */
   edit(name = this.name, avatar) {
@@ -204,7 +220,7 @@ class Webhook {
   }
 
   /**
-   * Delete the webhook
+   * Delete the webhook.
    * @returns {Promise}
    */
   delete() {

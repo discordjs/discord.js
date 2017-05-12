@@ -1,7 +1,7 @@
 exports.Package = require('../../package.json');
 
 /**
- * Options for a Client.
+ * Options for a client.
  * @typedef {Object} ClientOptions
  * @property {string} [apiRequestMethod='sequential'] One of `sequential` or `burst`. The sequential handler executes
  * all requests in the order they are triggered, whereas the burst handler runs multiple in parallel, and doesn't
@@ -28,7 +28,7 @@ exports.Package = require('../../package.json');
  * processed, potentially resulting in performance improvements for larger bots. Only disable events you are
  * 100% certain you don't need, as many are important, but not obviously so. The safest one to disable with the
  * most impact is typically `TYPING_START`.
- * @property {WebsocketOptions} [ws] Options for the websocket
+ * @property {WebsocketOptions} [ws] Options for the WebSocket
  */
 exports.DefaultOptions = {
   apiRequestMethod: 'sequential',
@@ -45,7 +45,7 @@ exports.DefaultOptions = {
   restTimeOffset: 500,
 
   /**
-   * Websocket options (these are left as snake_case to match the API)
+   * WebSocket options (these are left as snake_case to match the API)
    * @typedef {Object} WebsocketOptions
    * @property {number} [large_threshold=250] Number of members in a guild to be considered large
    * @property {boolean} [compress=true] Whether to compress data sent on the connection
@@ -64,10 +64,17 @@ exports.DefaultOptions = {
     version: 6,
   },
   http: {
-    version: 6,
+    version: 7,
     host: 'https://discordapp.com',
     cdn: 'https://cdn.discordapp.com',
   },
+};
+
+exports.WSCodes = {
+  1000: 'Connection gracefully closed',
+  4004: 'Tried to identify with an invalid token',
+  4010: 'Sharding data provided was invalid',
+  4011: 'Shard would be on too many guilds if connected',
 };
 
 exports.Errors = {
@@ -84,6 +91,21 @@ exports.Errors = {
   INVALID_TOKEN: 'An invalid token was provided.',
 };
 
+const AllowedImageFormats = [
+  'webp',
+  'png',
+  'jpg',
+  'gif',
+];
+
+const AllowedImageSizes = [
+  128,
+  256,
+  512,
+  1024,
+  2048,
+];
+
 const Endpoints = exports.Endpoints = {
   User: userID => {
     if (userID.id) userID = userID.id;
@@ -99,9 +121,9 @@ const Endpoints = exports.Endpoints = {
       Note: id => `${base}/notes/${id}`,
       Mentions: (limit, roles, everyone, guildID) =>
         `${base}/mentions?limit=${limit}&roles=${roles}&everyone=${everyone}${guildID ? `&guild_id=${guildID}` : ''}`,
-      Avatar: (root, hash) => {
+      Avatar: (root, hash, format, size) => {
         if (userID === '1') return hash;
-        return Endpoints.CDN(root).Avatar(userID, hash);
+        return Endpoints.CDN(root).Avatar(userID, hash, format, size);
       },
     };
   },
@@ -125,8 +147,9 @@ const Endpoints = exports.Endpoints = {
       webhooks: `${base}/webhooks`,
       ack: `${base}/ack`,
       settings: `${base}/settings`,
+      auditLogs: `${base}/audit-logs`,
       Emoji: emojiID => `${base}/emojis/${emojiID}`,
-      Icon: (root, hash) => Endpoints.CDN(root).Icon(guildID, hash),
+      Icon: (root, hash, format, size) => Endpoints.CDN(root).Icon(guildID, hash, format, size),
       Splash: (root, hash) => Endpoints.CDN(root).Splash(guildID, hash),
       Role: roleID => `${base}/roles/${roleID}`,
       Member: memberID => {
@@ -180,10 +203,26 @@ const Endpoints = exports.Endpoints = {
   Member: m => exports.Endpoints.Guild(m.guild).Member(m),
   CDN(root) {
     return {
-      Emoji: emojiID => `${root}/emojis/$${emojiID}.png`,
+      Emoji: emojiID => `${root}/emojis/${emojiID}.png`,
       Asset: name => `${root}/assets/${name}`,
-      Avatar: (userID, hash) => `${root}/avatars/${userID}/${hash}.${hash.startsWith('a_') ? 'gif' : 'png'}?size=2048`,
-      Icon: (guildID, hash) => `${root}/icons/${guildID}/${hash}.jpg`,
+      Avatar: (userID, hash, format = 'default', size) => {
+        if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
+        if (!AllowedImageFormats.includes(format)) throw new Error(`Invalid image format: ${format}`);
+        if (size && !AllowedImageSizes.includes(size)) throw new RangeError(`Invalid size: ${size}`);
+        return `${root}/avatars/${userID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
+      },
+      Icon: (guildID, hash, format = 'default', size) => {
+        if (format === 'default') format = 'webp';
+        if (!AllowedImageFormats.includes(format)) throw new Error(`Invalid image format: ${format}`);
+        if (size && !AllowedImageSizes.includes(size)) throw new RangeError(`Invalid size: ${size}`);
+        return `${root}/icons/${guildID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
+      },
+      AppIcon: (clientID, hash, format = 'default', size) => {
+        if (format === 'default') format = 'webp';
+        if (!AllowedImageFormats.includes(format)) throw new Error(`Invalid image format: ${format}`);
+        if (size && !AllowedImageSizes.includes(size)) throw new RangeError(`Invalid size: ${size}`);
+        return `${root}/app-icons/${clientID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
+      },
       Splash: (guildID, hash) => `${root}/splashes/${guildID}/${hash}.jpg`,
     };
   },
@@ -204,7 +243,7 @@ const Endpoints = exports.Endpoints = {
     toString: () => '/gateway',
     bot: '/gateway/bot',
   },
-  Invite: inviteID => `/invite/${inviteID}`,
+  Invite: inviteID => `/invite/${inviteID}?with_counts=true`,
   inviteLink: id => `https://discord.gg/${id}`,
   Webhook: (webhookID, token) => `/webhooks/${webhookID}${token ? `/${token}` : ''}`,
 };
@@ -428,7 +467,7 @@ exports.ExplicitContentFilterTypes = [
 
 exports.UserSettingsMap = {
   /**
-   * Automatically convert emoticons in your messages to emoji.
+   * Automatically convert emoticons in your messages to emoji
    * For example, when you type `:-)` Discord will convert it to 😃
    * @name ClientUserSettings#convertEmoticons
    * @type {boolean}
