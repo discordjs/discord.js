@@ -205,7 +205,7 @@ const Endpoints = exports.Endpoints = {
     return {
       Emoji: emojiID => `${root}/emojis/${emojiID}.png`,
       Asset: name => `${root}/assets/${name}`,
-      DefaultAvatar: (number) => `${root}/embed/avatars/${number}.png`,
+      DefaultAvatar: number => `${root}/embed/avatars/${number}.png`,
       Avatar: (userID, hash, format = 'default', size) => {
         if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
         if (!AllowedImageFormats.includes(format)) throw new Error(`Invalid image format: ${format}`);
