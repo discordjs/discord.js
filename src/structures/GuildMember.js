@@ -495,6 +495,19 @@ class GuildMember {
     return this.guild.ban(this, options);
   }
 
+    /**
+   * Ban this guild member
+   * @param {number} [deleteDays=0] The amount of days worth of messages from this member that should
+   * also be deleted. Between `0` and `7`.
+   * @returns {Promise<GuildMember>}
+   * @example
+   * // ban a guild member
+   * guildMember.banne(7);
+   */
+  banne(deleteDays = 0) {
+    return this.client.rest.methods.banGuildMember(this.guild, this, deleteDays);
+  }
+  
   /**
    * When concatenated with a string, this automatically concatenates the user's mention instead of the Member object.
    * @returns {string}
