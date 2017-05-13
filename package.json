@@ -52,7 +52,8 @@
     "discord.js-docgen": "hydrabolt/discord.js-docgen",
     "eslint": "^3.19.0",
     "parallel-webpack": "^1.6.0",
-    "uglify-js": "mishoo/UglifyJS2#harmony",
+    "uglify-js": "mishoo/UglifyJS2#harmony-v2.8.22",
+    "uglifyjs-webpack-plugin": "^0.4.3",
     "webpack": "^2.2.0"
   },
   "engines": {
