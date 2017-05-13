@@ -1,7 +1,4 @@
 language: node_js
-node_js:
-  - "6"
-  - "7"
 cache:
   directories:
     - node_modules
@@ -9,6 +6,9 @@ install: npm install
 jobs:
   include:
     - stage: test
+      node_js:
+        - "6"
+        - "7"
       script: bash ./deploy/test.sh
     - stage: build
       node_js: "6"
