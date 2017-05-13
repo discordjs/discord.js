@@ -4,7 +4,6 @@
 set -e
 
 function build {
-  npm run lint
   npm run docs
   VERSIONED=false npm run webpack
 }
