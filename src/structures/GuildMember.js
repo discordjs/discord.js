@@ -340,7 +340,7 @@ class GuildMember {
       data.channel = null;
     }
     if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
-    let endpoint = this.client.rest.api.guilds(this.guild.id).members(this.id);
+    let endpoint = this.client.api.guilds(this.guild.id).members(this.id);
     if (this.user.id === this.client.user.id) {
       const keys = Object.keys(data);
       if (keys.length === 1 && keys[0] === 'nick') endpoint = endpoint.nickname;
@@ -393,7 +393,7 @@ class GuildMember {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
     if (!role) return Promise.reject(new TypeError('Supplied parameter was neither a Role nor a Snowflake.'));
     if (this._roles.includes(role.id)) return Promise.resolve(this);
-    return this.client.rest.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
+    return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
       .put()
       .then(() => this);
   }
@@ -422,7 +422,7 @@ class GuildMember {
   removeRole(role) {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
     if (!role) return Promise.reject(new TypeError('Supplied parameter was neither a Role nor a Snowflake.'));
-    return this.client.rest.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
+    return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
       .delete()
       .then(() => this);
   }
@@ -479,7 +479,7 @@ class GuildMember {
    * @returns {Promise<GuildMember>}
    */
   kick(reason) {
-    return this.client.rest.api.guilds(this.guild.id).members(this.user.id).delete({ reason })
+    return this.client.api.guilds(this.guild.id).members(this.user.id).delete({ reason })
     .then(() =>
       this.client.actions.GuildMemberRemove.handle({
         guild_id: this.guild.id,

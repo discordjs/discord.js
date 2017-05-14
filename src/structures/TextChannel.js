@@ -57,7 +57,7 @@ class TextChannel extends GuildChannel {
    * @returns {Promise<Collection<Snowflake, Webhook>>}
    */
   fetchWebhooks() {
-    return this.client.rest.api.channels(this.id).webhooks.get().then(data => {
+    return this.client.api.channels(this.id).webhooks.get().then(data => {
       const hooks = new Collection();
       for (const hook of data) hooks.set(hook.id, new Webhook(this.client, hook));
       return hooks;
@@ -76,7 +76,7 @@ class TextChannel extends GuildChannel {
    */
   createWebhook(name, avatar) {
     if (typeof avatar === 'string' && avatar.startsWith('data:')) {
-      return this.client.rest.api.channels(this.id).webhooks.post({ data: {
+      return this.client.api.channels(this.id).webhooks.post({ data: {
         name, avatar,
       } }).then(data => new Webhook(this.client, data));
     } else {

@@ -187,6 +187,15 @@ class Client extends EventEmitter {
   }
 
   /**
+   * API shortcut
+   * @type {Object}
+   * @private
+   */
+  get api() {
+    return this.rest.api;
+  }
+
+  /**
    * Current status of the client's connection to Discord
    * @type {?number}
    * @readonly

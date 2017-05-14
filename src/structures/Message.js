@@ -388,7 +388,7 @@ class Message {
    * @returns {Promise<Message>}
    */
   pin() {
-    return this.client.rest.api.channels(this.channel.id).pins(this.id).put()
+    return this.client.api.channels(this.channel.id).pins(this.id).put()
       .then(() => this);
   }
 
@@ -397,7 +397,7 @@ class Message {
    * @returns {Promise<Message>}
    */
   unpin() {
-    return this.client.rest.api.channels(this.channel.id).pins(this.id).delete()
+    return this.client.api.channels(this.channel.id).pins(this.id).delete()
       .then(() => this);
   }
 
@@ -410,7 +410,7 @@ class Message {
     emoji = this.client.resolver.resolveEmojiIdentifier(emoji);
     if (!emoji) throw new TypeError('Emoji must be a string or Emoji/ReactionEmoji');
 
-    return this.client.rest.api.channels(this.channel.id).messages(this.id).reactions(emoji)
+    return this.client.api.channels(this.channel.id).messages(this.id).reactions(emoji)
       .users('@me')
       .put()
       .then(() => this._addReaction(Util.parseEmoji(emoji), this.client.user));
@@ -421,7 +421,7 @@ class Message {
    * @returns {Promise<Message>}
    */
   clearReactions() {
-    return this.client.rest.api.channels(this.channel.id).messages(this.id).reactions.delete()
+    return this.client.api.channels(this.channel.id).messages(this.id).reactions.delete()
       .then(() => this);
   }
 
@@ -437,7 +437,7 @@ class Message {
    */
   delete(timeout = 0) {
     if (timeout <= 0) {
-      return this.client.rest.api.channels(this.channel.id).messages(this.id).delete()
+      return this.client.api.channels(this.channel.id).messages(this.id).delete()
         .then(() =>
           this.client.actions.MessageDelete.handle({
             id: this.id,
@@ -479,7 +479,7 @@ class Message {
    * @returns {Promise<Message>}
    */
   acknowledge() {
-    return this.client.rest.api.channels(this.channel.id).messages(this.message.id).ack
+    return this.client.api.channels(this.channel.id).messages(this.message.id).ack
       .post({ data: { token: this.client.rest._ackToken } })
       .then(res => {
         if (res.token) this.client.rest._ackToken = res.token;

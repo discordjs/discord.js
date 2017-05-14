@@ -201,7 +201,7 @@ class User {
    */
   createDM() {
     if (this.dmChannel) return Promise.resolve(this.dmChannel);
-    return this.client.rest.api.users(this.client.user.id).channels.post({ data: {
+    return this.client.api.users(this.client.user.id).channels.post({ data: {
       recipient_id: this.id,
     } })
     .then(data => this.client.actions.ChannelCreate.handle(data).channel);
@@ -213,7 +213,7 @@ class User {
    */
   deleteDM() {
     if (!this.dmChannel) return Promise.reject(new Error('No DM Channel exists!'));
-    return this.client.rest.api.channels(this.dmChannel.id).delete().then(data => {
+    return this.client.api.channels(this.dmChannel.id).delete().then(data => {
       data.id = this.dmChannel.id;
       return this.client.actions.ChannelDelete.handle(data).channel;
     });
@@ -225,7 +225,7 @@ class User {
    * @returns {Promise<UserProfile>}
    */
   fetchProfile() {
-    return this.client.rest.api.users(this.id).profile.get().then(data => new UserProfile(data));
+    return this.client.api.users(this.id).profile.get().then(data => new UserProfile(data));
   }
 
   /**
@@ -235,7 +235,7 @@ class User {
    * @returns {Promise<User>}
    */
   setNote(note) {
-    return this.client.rest.api.users(this.id).note.put({ data: { note } }).then(() => this);
+    return this.client.api.users(this.id).note.put({ data: { note } }).then(() => this);
   }
 
   /**

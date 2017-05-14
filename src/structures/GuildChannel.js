@@ -187,7 +187,7 @@ class GuildChannel extends Channel {
       }
     }
 
-    return this.client.rest.api.channels(this.id).permissions(payload.id).put({ data: payload })
+    return this.client.api.channels(this.id).permissions(payload.id).put({ data: payload })
       .then(() => this);
   }
 
@@ -212,7 +212,7 @@ class GuildChannel extends Channel {
    *  .catch(console.error);
    */
   edit(data) {
-    return this.client.rest.api.channels(this.id).patch({ data: {
+    return this.client.api.channels(this.id).patch({ data: {
       name: (data.name || this.name).trim(),
       topic: data.topic || this.topic,
       position: data.position || this.position,
@@ -280,7 +280,7 @@ class GuildChannel extends Channel {
    * @returns {Promise<Invite>}
    */
   createInvite(options = {}) {
-    return this.client.rest.api.channels(this.id).invites.post({ data: {
+    return this.client.api.channels(this.id).invites.post({ data: {
       temporary: options.temporary || false,
       max_age: options.maxAge || 86400,
       max_uses: options.maxUses || 0,

@@ -153,7 +153,7 @@ class Invite {
    * @returns {Promise<Invite>}
    */
   delete() {
-    return this.client.rest.api.invites(this.code).delete().then(() => this);
+    return this.client.api.invites(this.code).delete().then(() => this);
   }
 
   /**

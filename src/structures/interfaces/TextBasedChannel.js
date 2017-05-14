@@ -387,7 +387,7 @@ class TextBasedChannel {
    */
   acknowledge() {
     if (!this.lastMessageID) return Promise.resolve(this);
-    return this.client.rest.api.channels(this.id).messages(this.lastMessageID)
+    return this.client.api.channels(this.id).messages(this.lastMessageID)
       .post({ data: { token: this.client.rest._ackToken } })
       .then(res => {
         if (res.token) this.client.rest._ackToken = res.token;

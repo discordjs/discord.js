@@ -89,7 +89,7 @@ class ClientUser extends User {
       if (data.new_password) _data.new_password = data.newPassword;
     }
 
-    return this.client.rest.api.users('@me').patch({ data })
+    return this.client.api.users('@me').patch({ data })
     .then(newData => this.client.actions.UserUpdate.handle(newData).updated);
   }
 
@@ -282,7 +282,7 @@ class ClientUser extends User {
     if (options.guild instanceof Guild) options.guild = options.guild.id;
     Util.mergeDefault({ limit: 25, roles: true, everyone: true, guild: null }, options);
 
-    return this.client.rest.api.users('@me').mention({ query: options })
+    return this.client.api.users('@me').mention({ query: options })
     .then(data => data.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)));
   }
 
@@ -297,7 +297,7 @@ class ClientUser extends User {
   createGuild(name, region, icon = null) {
     if (!icon || (typeof icon === 'string' && icon.startsWith('data:'))) {
       icon = this.client.resolver.resolveBase64(icon) || null;
-      return this.client.rest.api.guilds.post({ data: { name, region, icon } })
+      return this.client.api.guilds.post({ data: { name, region, icon } })
       .then(() => {
         // I'll finish this later :^)
       });
