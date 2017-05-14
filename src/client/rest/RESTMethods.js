@@ -7,7 +7,6 @@ const Util = require('../../util/Util');
 
 const User = require('../../structures/User');
 const GuildMember = require('../../structures/GuildMember');
-const Invite = require('../../structures/Invite');
 const Webhook = require('../../structures/Webhook');
 const GuildAuditLogs = require('../../structures/GuildAuditLogs');
 
@@ -135,18 +134,6 @@ class RESTMethods {
     });
   }
 
-  updateChannel(channel, _data) {
-    const data = {};
-    data.name = (_data.name || channel.name).trim();
-    data.topic = _data.topic || channel.topic;
-    data.position = _data.position || channel.position;
-    data.bitrate = _data.bitrate || channel.bitrate;
-    data.user_limit = _data.userLimit || channel.userLimit;
-    return this.rest.request('patch', Endpoints.Channel(channel), true, data).then(newData =>
-      this.client.actions.ChannelUpdate.handle(newData).updated
-    );
-  }
-
   createGuild(options) {
     options.icon = this.client.resolver.resolveBase64(options.icon) || null;
     options.region = options.region || 'us-central';
@@ -186,16 +173,6 @@ class RESTMethods {
         role_id: role.id,
       }).role
     );
-  }
-
-  setChannelOverwrite(channel, payload) {
-    return this.rest.request('put', `${Endpoints.Channel(channel).permissions}/${payload.id}`, true, payload);
-  }
-
-  deletePermissionOverwrites(overwrite) {
-    return this.rest.request(
-      'delete', `${Endpoints.Channel(overwrite.channel).permissions}/${overwrite.id}`, true
-    ).then(() => overwrite);
   }
 
   getChannelMessages(channel, payload = {}) {
@@ -250,23 +227,8 @@ class RESTMethods {
     return this.rest.request('get', Endpoints.Channel(channel).pins, true);
   }
 
-  createChannelInvite(channel, options) {
-    const payload = {};
-    payload.temporary = options.temporary;
-    payload.max_age = options.maxAge;
-    payload.max_uses = options.maxUses;
-    return this.rest.request('post', Endpoints.Channel(channel).invites, true, payload)
-      .then(invite => new Invite(this.client, invite));
-  }
-
   deleteInvite(invite) {
     return this.rest.request('delete', Endpoints.Invite(invite.code), true).then(() => invite);
-  }
-
-  getInvite(code) {
-    return this.rest.request('get', Endpoints.Invite(code), true).then(invite =>
-      new Invite(this.client, invite)
-    );
   }
 
   updateEmoji(emoji, _data) {
@@ -306,19 +268,6 @@ class RESTMethods {
       for (const hook of data) hooks.set(hook.id, new Webhook(this.client, hook));
       return hooks;
     });
-  }
-
-  getChannelWebhooks(channel) {
-    return this.rest.request('get', Endpoints.Channel(channel).webhooks, true).then(data => {
-      const hooks = new Collection();
-      for (const hook of data) hooks.set(hook.id, new Webhook(this.client, hook));
-      return hooks;
-    });
-  }
-
-  createWebhook(channel, name, avatar) {
-    return this.rest.request('post', Endpoints.Channel(channel).webhooks, true, { name, avatar })
-      .then(data => new Webhook(this.client, data));
   }
 
   editWebhook(webhook, name, avatar) {

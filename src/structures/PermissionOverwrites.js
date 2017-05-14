@@ -36,7 +36,8 @@ class PermissionOverwrites {
    * @returns {Promise<PermissionOverwrites>}
    */
   delete() {
-    return this.channel.client.rest.methods.deletePermissionOverwrites(this);
+    return this.channel.client.rest.api.channels(this.channel.id).permissions(this.id).delete()
+      .then(() => this);
   }
 }
 

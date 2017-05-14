@@ -1,5 +1,6 @@
 const Channel = require('./Channel');
 const Role = require('./Role');
+const Invite = require('./Invite');
 const PermissionOverwrites = require('./PermissionOverwrites');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
@@ -138,7 +139,7 @@ class GuildChannel extends Channel {
    * Overwrites the permissions for a user or role in this channel.
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The configuration for the update
-   * @returns {Promise}
+   * @returns {Promise<GuildChannel>}
    * @example
    * // Overwrite permissions for a message author
    * message.channel.overwritePermissions(message.author, {
@@ -186,7 +187,8 @@ class GuildChannel extends Channel {
       }
     }
 
-    return this.client.rest.methods.setChannelOverwrite(this, payload);
+    return this.client.rest.api.channels(this.id).permissions(payload.id).put({ data: payload })
+      .then(() => this);
   }
 
   /**
@@ -210,7 +212,13 @@ class GuildChannel extends Channel {
    *  .catch(console.error);
    */
   edit(data) {
-    return this.client.rest.methods.updateChannel(this, data);
+    return this.client.rest.api.channels(this.id).patch({ data: {
+      name: (data.name || this.name).trim(),
+      topic: data.topic || this.topic,
+      position: data.position || this.position,
+      bitrate: data.bitrate || this.bitrate,
+      user_limit: data.userLimit || this.userLimit,
+    } }).then(newData => this.client.actions.ChannelUpdate.handle(newData).updated);
   }
 
   /**
@@ -253,7 +261,7 @@ class GuildChannel extends Channel {
    *  .catch(console.error);
    */
   setTopic(topic) {
-    return this.client.rest.methods.updateChannel(this, { topic });
+    return this.edit({ topic });
   }
 
   /**
@@ -272,7 +280,12 @@ class GuildChannel extends Channel {
    * @returns {Promise<Invite>}
    */
   createInvite(options = {}) {
-    return this.client.rest.methods.createChannelInvite(this, options);
+    return this.client.rest.api.channels(this.id).invites.post({ data: {
+      temporary: options.temporary || false,
+      max_age: options.maxAge || 86400,
+      max_uses: options.maxUses || 0,
+    } })
+    .then(invite => new Invite(this.client, invite));
   }
 
   /**
