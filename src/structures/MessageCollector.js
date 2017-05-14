@@ -1,5 +1,4 @@
 const Collector = require('./interfaces/Collector');
-const util = require('util');
 
 /**
  * @typedef {CollectorOptions} MessageCollectorOptions
@@ -35,27 +34,7 @@ class MessageCollector extends Collector {
 
     this.client.on('message', this.listener);
 
-    // For backwards compatibility (remove in v12)
-    if (this.options.max) this.options.maxProcessed = this.options.max;
-    if (this.options.maxMatches) this.options.max = this.options.maxMatches;
-    this._reEmitter = message => {
-      /**
-       * Emitted when the collector receives a message.
-       * @event MessageCollector#message
-       * @param {Message} message The message
-       * @deprecated
-       */
-      this.emit('message', message);
-    };
     this.on('collect', this._reEmitter);
-  }
-
-  // Remove in v12
-  on(eventName, listener) {
-    if (eventName === 'message') {
-      listener = util.deprecate(listener, 'MessageCollector will soon no longer emit "message", use "collect" instead');
-    }
-    super.on(eventName, listener);
   }
 
   /**
