@@ -384,18 +384,6 @@ class Message {
   }
 
   /**
-   * Edit the content of the message, with a code block.
-   * @param {string} lang The language for the code block
-   * @param {StringResolvable} content The new content for the message
-   * @returns {Promise<Message>}
-   * @deprecated
-   */
-  editCode(lang, content) {
-    content = Util.escapeMarkdown(this.client.resolver.resolveString(content), true);
-    return this.edit(`\`\`\`${lang || ''}\n${content}\n\`\`\``);
-  }
-
-  /**
    * Pins this message to the channel's pinned messages.
    * @returns {Promise<Message>}
    */

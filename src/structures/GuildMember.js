@@ -3,7 +3,6 @@ const Role = require('./Role');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
 const Presence = require('./Presence').Presence;
-const util = require('util');
 
 /**
  * Represents a member of a guild on Discord.
@@ -311,18 +310,6 @@ class GuildMember {
   }
 
   /**
-   * Checks whether the roles of the member allows them to perform specific actions.
-   * @param {PermissionResolvable[]} permissions The permissions to check for
-   * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
-   * @returns {boolean}
-   * @deprecated
-   */
-  hasPermissions(permissions, explicit = false) {
-    if (!explicit && this.user.id === this.guild.ownerID) return true;
-    return this.hasPermission(permissions, explicit);
-  }
-
-  /**
    * Checks whether the roles of the member allows them to perform specific actions, and lists any missing permissions.
    * @param {PermissionResolvable[]} permissions The permissions to check for
    * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
@@ -509,15 +496,8 @@ class GuildMember {
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   send() {}
-  sendMessage() {}
-  sendEmbed() {}
-  sendFile() {}
-  sendCode() {}
 }
 
 TextBasedChannel.applyToClass(GuildMember);
-
-GuildMember.prototype.hasPermissions = util.deprecate(GuildMember.prototype.hasPermissions,
-  'GuildMember#hasPermissions is deprecated - use GuildMember#hasPermission, it now takes an array');
 
 module.exports = GuildMember;
