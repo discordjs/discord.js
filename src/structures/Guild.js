@@ -4,6 +4,7 @@ const Role = require('./Role');
 const Emoji = require('./Emoji');
 const Presence = require('./Presence').Presence;
 const GuildMember = require('./GuildMember');
+const VoiceRegion = require('./VoiceRegion');
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
@@ -400,7 +401,11 @@ class Guild {
    * @returns {Collection<string, VoiceRegion>}
    */
   fetchVoiceRegions() {
-    return this.client.rest.methods.fetchVoiceRegions(this.id);
+    return this.client.rest.api.guilds(this.id).regions.get().then(res => {
+      const regions = new Collection();
+      for (const region of res) regions.set(region.id, new VoiceRegion(region));
+      return regions;
+    });
   }
 
   /**
@@ -502,7 +507,7 @@ class Guild {
    * }).catch(console.error);
    */
   search(options = {}) {
-    return this.client.rest.methods.search(this, options);
+    return Util.search(this, options);
   }
 
   /**
@@ -665,7 +670,12 @@ class Guild {
    * @returns {Promise<Guild>} This guild
    */
   acknowledge() {
-    return this.client.rest.methods.ackGuild(this);
+    return this.client.rest.api.guilds(this.id).ack
+    .post({ data: { token: this.client.rest._ackToken } })
+    .then(res => {
+      if (res.token) this.client.rest._ackToken = res.token;
+      return this;
+    });
   }
 
   /**

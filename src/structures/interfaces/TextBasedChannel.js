@@ -1,7 +1,9 @@
 const path = require('path');
 const Message = require('../Message');
 const MessageCollector = require('../MessageCollector');
+const Util = require('../../util/Util');
 const Collection = require('../../util/Collection');
+const Snowflake = require('../../util/Snowflake');
 const util = require('util');
 
 /**
@@ -233,7 +235,7 @@ class TextBasedChannel {
    * }).catch(console.error);
    */
   search(options = {}) {
-    return this.client.rest.methods.search(this, options);
+    return Util.search(this, options);
   }
 
   /**
@@ -373,8 +375,20 @@ class TextBasedChannel {
   bulkDelete(messages, filterOld = false) {
     if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs, filterOld));
     if (messages instanceof Array || messages instanceof Collection) {
-      const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
-      return this.client.rest.methods.bulkDeleteMessages(this, messageIDs, filterOld);
+      let messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
+      if (filterOld) {
+        messageIDs = messageIDs.filter(id =>
+          Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000
+        );
+      }
+      return this.rest.api.channels(this.id).messages['bulk-delete']
+      .post({ data: { messages: messageIDs } })
+      .then(() =>
+        this.client.actions.MessageDeleteBulk.handle({
+          channel_id: this.id,
+          ids: messageIDs,
+        }).messages
+      );
     }
     throw new TypeError('The messages must be an Array, Collection, or number.');
   }
@@ -386,7 +400,12 @@ class TextBasedChannel {
    */
   acknowledge() {
     if (!this.lastMessageID) return Promise.resolve(this);
-    return this.client.rest.methods.ackTextChannel(this);
+    return this.client.rest.api.channels(this.id).messages(this.lastMessageID)
+      .post({ data: { token: this.client.rest._ackToken } })
+      .then(res => {
+        if (res.token) this.client.rest._ackToken = res.token;
+        return this;
+      });
   }
 
   _cacheMessage(message) {

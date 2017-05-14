@@ -12,6 +12,7 @@ const WebSocketManager = require('./websocket/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
 const Presence = require('../structures/Presence').Presence;
+const VoiceRegion = require('../strictures/VoiceRegion');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
 const VoiceBroadcast = require('./voice/VoiceBroadcast');
 
@@ -340,7 +341,11 @@ class Client extends EventEmitter {
    * @returns {Collection<string, VoiceRegion>}
    */
   fetchVoiceRegions() {
-    return this.rest.methods.fetchVoiceRegions();
+    return this.rest.api.voice.regions.get().then(res => {
+      const regions = new Collection();
+      for (const region of res) regions.set(region.id, new VoiceRegion(region));
+      return regions;
+    });
   }
 
   /**

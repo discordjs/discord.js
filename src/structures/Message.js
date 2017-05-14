@@ -443,7 +443,12 @@ class Message {
    */
   delete(timeout = 0) {
     if (timeout <= 0) {
-      return this.client.rest.methods.deleteMessage(this);
+      return this.client.rest.api.channels(this.channel.id).messages(this.id).delete()
+        .then(() =>
+          this.client.actions.MessageDelete.handle({
+            id: this.id,
+            channel_id: this.channel.id,
+          }).message);
     } else {
       return new Promise(resolve => {
         this.client.setTimeout(() => {
@@ -480,7 +485,12 @@ class Message {
    * @returns {Promise<Message>}
    */
   acknowledge() {
-    return this.client.rest.methods.ackMessage(this);
+    return this.client.rest.api.channels(this.channel.id).messages(this.message.id).ack
+      .post({ data: { token: this.client.rest._ackToken } })
+      .then(res => {
+        if (res.token) this.client.rest._ackToken = res.token;
+        return this;
+      });
   }
 
   /**

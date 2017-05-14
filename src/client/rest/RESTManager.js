@@ -3,6 +3,7 @@ const RESTMethods = require('./RESTMethods');
 const SequentialRequestHandler = require('./RequestHandlers/Sequential');
 const BurstRequestHandler = require('./RequestHandlers/Burst');
 const APIRequest = require('./APIRequest');
+const mountApi = require('./APIRouter');
 const Constants = require('../../util/Constants');
 
 class RESTManager {
@@ -13,6 +14,8 @@ class RESTManager {
     this.methods = new RESTMethods(this);
     this.rateLimitedEndpoints = {};
     this.globallyRateLimited = false;
+
+    this.api = mountApi(this);
   }
 
   destroy() {
@@ -42,8 +45,8 @@ class RESTManager {
     }
   }
 
-  makeRequest(method, url, auth, data, file) {
-    const apiRequest = new APIRequest(this, method, url, auth, data, file);
+  request(method, url, options = {}) {
+    const apiRequest = new APIRequest(this, method, url, options);
     if (!this.handlers[apiRequest.route]) {
       const RequestHandlerType = this.getRequestHandler();
       this.handlers[apiRequest.route] = new RequestHandlerType(this, apiRequest.route);
