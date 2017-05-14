@@ -1,6 +1,7 @@
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Constants = require('../util/Constants');
 const Presence = require('./Presence').Presence;
+const UserProfile = require('./UserProfile');
 const Snowflake = require('../util/Snowflake');
 
 /**
@@ -199,7 +200,11 @@ class User {
    * @returns {Promise<DMChannel>}
    */
   createDM() {
-    return this.client.rest.methods.createDM(this);
+    if (this.dmChannel) return Promise.resolve(this.dmChannel);
+    return this.client.rest.api.users(this.client.user.id).channels.post({ data: {
+      recipient_id: this.id,
+    } })
+    .then(data => this.client.actions.ChannelCreate.handle(data).channel);
   }
 
   /**
@@ -207,43 +212,11 @@ class User {
    * @returns {Promise<DMChannel>}
    */
   deleteDM() {
-    return this.client.rest.methods.deleteChannel(this);
-  }
-
-  /**
-   * Sends a friend request to the user.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<User>}
-   */
-  addFriend() {
-    return this.client.rest.methods.addFriend(this);
-  }
-
-  /**
-   * Removes the user from your friends.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<User>}
-   */
-  removeFriend() {
-    return this.client.rest.methods.removeFriend(this);
-  }
-
-  /**
-   * Blocks the user.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<User>}
-   */
-  block() {
-    return this.client.rest.methods.blockUser(this);
-  }
-
-  /**
-   * Unblocks the user.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<User>}
-   */
-  unblock() {
-    return this.client.rest.methods.unblockUser(this);
+    if (!this.dmChannel) return Promise.reject(new Error('No DM Channel exists!'));
+    return this.client.rest.api.channels(this.dmChannel.id).delete().then(data => {
+      data.id = this.dmChannel.id;
+      return this.client.actions.ChannelDelete.handle(data).channel;
+    });
   }
 
   /**
@@ -252,7 +225,7 @@ class User {
    * @returns {Promise<UserProfile>}
    */
   fetchProfile() {
-    return this.client.rest.methods.fetchUserProfile(this);
+    return this.client.rest.api.users(this.id).profile.get().then(data => new UserProfile(data));
   }
 
   /**
@@ -262,7 +235,7 @@ class User {
    * @returns {Promise<User>}
    */
   setNote(note) {
-    return this.client.rest.methods.setNote(this, note);
+    return this.client.rest.api.users(this.id).note.put({ data: { note } }).then(() => this);
   }
 
   /**

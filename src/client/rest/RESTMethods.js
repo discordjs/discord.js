@@ -123,14 +123,6 @@ class RESTMethods {
     }).then(data => this.client.actions.MessageUpdate.handle(data).updated);
   }
 
-  createDM(recipient) {
-    const dmChannel = this.getExistingDM(recipient);
-    if (dmChannel) return Promise.resolve(dmChannel);
-    return this.rest.request('post', Endpoints.User(this.client.user).channels, true, {
-      recipient_id: recipient.id,
-    }).then(data => this.client.actions.ChannelCreate.handle(data).channel);
-  }
-
   createGroupDM(options) {
     const data = this.client.user.bot ?
       { access_tokens: options.accessTokens, nicks: options.nicks } :
@@ -147,14 +139,8 @@ class RESTMethods {
       .then(() => channel);
   }
 
-  getExistingDM(recipient) {
-    return this.client.channels.find(channel =>
-      channel.recipient && channel.recipient.id === recipient.id
-    );
-  }
-
   deleteChannel(channel) {
-    if (channel instanceof User || channel instanceof GuildMember) channel = this.getExistingDM(channel);
+    if (channel instanceof User || channel instanceof GuildMember) channel = channel.dmChannel;
     if (!channel) return Promise.reject(new Error('No channel to delete.'));
     return this.rest.request('delete', Endpoints.Channel(channel), true).then(data => {
       data.id = channel.id;
@@ -401,12 +387,6 @@ class RESTMethods {
     );
   }
 
-  fetchUserProfile(user) {
-    return this.rest.request('get', Endpoints.User(user).profile, true).then(data =>
-      new UserProfile(user, data)
-    );
-  }
-
   fetchMentions(options) {
     if (options.guild instanceof Guild) options.guild = options.guild.id;
     Util.mergeDefault({ limit: 25, roles: true, everyone: true, guild: null }, options);
@@ -449,10 +429,6 @@ class RESTMethods {
       .then(app => new OAuth2Application(this.client, app));
   }
 
-  setNote(user, note) {
-    return this.rest.request('put', Endpoints.User(user).note, true, { note }).then(() => user);
-  }
-
   acceptInvite(code) {
     if (code.id) code = code.id;
     return new Promise((resolve, reject) =>
@@ -470,10 +446,6 @@ class RESTMethods {
         }, 120e3);
       })
     );
-  }
-
-  patchUserSettings(data) {
-    return this.rest.request('patch', Constants.Endpoints.User('@me').settings, true, data);
   }
 }
 
