@@ -63,6 +63,7 @@ class GuildChannel extends Channel {
    * overall permissions for
    * @returns {?Permissions}
    */
+
   permissionsFor(memberOrRole) {
     const member = this.client.resolver.resolveGuildMember(this.guild, memberOrRole);
     if (!member) {
@@ -89,7 +90,7 @@ class GuildChannel extends Channel {
 
       return new Permissions(permissions);
     } else {
-      if (member.id === this.guild.ownerID) return new Permissions(member, Permissions.ALL);
+      if (member.id === this.guild.ownerID) return new Permissions(Permissions.ALL);
 
       let permissions = 0;
 
@@ -118,7 +119,7 @@ class GuildChannel extends Channel {
         permissions |= overwrites.member.allow;
       }
 
-      return new Permissions(member, permissions);
+      return new Permissions(permissions);
     }
   }
 

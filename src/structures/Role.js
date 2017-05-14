@@ -1,6 +1,5 @@
 const Snowflake = require('../util/Snowflake');
 const Permissions = require('../util/Permissions');
-const util = require('util');
 
 /**
  * Represents a role on Discord.
@@ -165,29 +164,6 @@ class Role {
     return new Permissions(this.permissions).has(
       permission, typeof checkAdmin !== 'undefined' ? checkAdmin : !explicit
     );
-  }
-
-  /**
-   * Checks if the role has all specified permissions.
-   * @param {PermissionResolvable[]} permissions The permissions to check for
-   * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permissions
-   * @returns {boolean}
-   * @deprecated
-   */
-  hasPermissions(permissions, explicit = false) {
-    return new Permissions(this.permissions).has(permissions, !explicit);
-  }
-
-  /**
-   * Returns `channel.permissionsFor(role)`. Returns permissions for a role in a guild channel,
-   * taking into account all applicable permission overwrites.
-   * @param {ChannelResolvable} channel Guild channel to use as context
-   * @returns {?Permissions}
-   */
-  permissionsIn(channel) {
-    channel = this.client.resolver.resolveChannel(channel);
-    if (!channel || !channel.guild) throw new Error('Could not resolve channel to a guild channel.');
-    return channel.permissionsFor(this);
   }
 
   /**
@@ -362,9 +338,5 @@ class Role {
     return role1.position - role2.position;
   }
 }
-
-Role.prototype.hasPermissions = util
-  .deprecate(Role.prototype.hasPermissions,
-    'Role#hasPermissions is deprecated - use Role#hasPermission instead, it now takes an array');
 
 module.exports = Role;

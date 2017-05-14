@@ -124,9 +124,7 @@ class User {
    * @readonly
    */
   get defaultAvatarURL() {
-    const avatars = Object.keys(Constants.DefaultAvatars);
-    const avatar = avatars[this.discriminator % avatars.length];
-    return Constants.Endpoints.CDN(this.client.options.http.host).Asset(`${Constants.DefaultAvatars[avatar]}.png`);
+    return Constants.Endpoints.CDN(this.client.options.http.host).DefaultAvatar(this.discriminator % 5);
   }
 
   /**
@@ -298,10 +296,6 @@ class User {
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   send() {}
-  sendMessage() {}
-  sendEmbed() {}
-  sendFile() {}
-  sendCode() {}
 }
 
 TextBasedChannel.applyToClass(User);

@@ -3,15 +3,7 @@
 
 set -e
 
-function tests {
-  npm run lint
-  npm run docs:test
-  VERSIONED=false npm run webpack
-  exit 0
-}
-
 function build {
-  npm run lint
   npm run docs
   VERSIONED=false npm run webpack
 }
@@ -22,10 +14,10 @@ if [[ "$TRAVIS_BRANCH" == revert-* ]]; then
   exit 0
 fi
 
-# For PRs, only run tests
+# For PRs, do nothing
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  echo -e "\e[36m\e[1mBuild triggered for PR #${TRAVIS_PULL_REQUEST} to branch \"${TRAVIS_BRANCH}\" - only running tests."
-  tests
+  echo -e "\e[36m\e[1mBuild triggered for PR #${TRAVIS_PULL_REQUEST} to branch \"${TRAVIS_BRANCH}\" - doing nothing."
+  exit 0
 fi
 
 # Figure out the source of the build
@@ -39,10 +31,10 @@ else
   SOURCE_TYPE="branch"
 fi
 
-# For Node != 6, only run tests
+# For Node != 6, do nothing
 if [ "$TRAVIS_NODE_VERSION" != "6" ]; then
-  echo -e "\e[36m\e[1mBuild triggered with Node v${TRAVIS_NODE_VERSION} - only running tests."
-  tests
+  echo -e "\e[36m\e[1mBuild triggered with Node v${TRAVIS_NODE_VERSION} - doing nothing."
+  exit 0
 fi
 
 build
