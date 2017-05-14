@@ -5,7 +5,7 @@ const Constants = require('../util/Constants');
 const Util = require('../util/Util');
 const Guild = require('./Guild');
 const Message = require('./Message');
-const GroupDMChannel = require('./GroupDMCHannel');
+const GroupDMChannel = require('./GroupDMChannel');
 
 /**
  * Represents the logged in client's Discord user.
