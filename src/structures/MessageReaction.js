@@ -61,12 +61,20 @@ class MessageReaction {
    * @returns {Promise<MessageReaction>}
    */
   remove(user = this.message.client.user) {
-    const message = this.message;
     const userID = this.message.client.resolver.resolveUserID(user);
     if (!userID) return Promise.reject(new Error('Couldn\'t resolve the user ID to remove from the reaction.'));
-    return message.client.rest.methods.removeMessageReaction(
-      message, this.emoji.identifier, userID
-    );
+    return this.client.rest.api.channels(this.message.channel.id).messages(this.message.id)
+      .reactions(this.emoji.identifier)
+      .users(userID === this.client.user.id ? '@me' : userID)
+      .delete()
+      .then(() =>
+        this.message.client.actions.MessageReactionRemove.handle({
+          user_id: userID,
+          message_id: this.message.id,
+          emoji: this.emoji,
+          channel_id: this.message.channel.id,
+        }).reaction
+      );
   }
 
   /**
@@ -76,17 +84,18 @@ class MessageReaction {
    */
   fetchUsers(limit = 100) {
     const message = this.message;
-    return message.client.rest.methods.getMessageReactionUsers(
-      message, this.emoji.identifier, limit
-    ).then(users => {
-      this.users = new Collection();
-      for (const rawUser of users) {
-        const user = this.message.client.dataManager.newUser(rawUser);
-        this.users.set(user.id, user);
-      }
-      this.count = this.users.size;
-      return this.users;
-    });
+    return message.client.rest.api.channels(message.channel.id).messages(message.id)
+      .reactions(this.emoji.identifier)
+      .get({ query: { limit } })
+      .then(users => {
+        this.users = new Collection();
+        for (const rawUser of users) {
+          const user = message.client.dataManager.newUser(rawUser);
+          this.users.set(user.id, user);
+        }
+        this.count = this.users.size;
+        return this.users;
+      });
   }
 }
 

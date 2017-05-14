@@ -400,7 +400,8 @@ class Message {
    * @returns {Promise<Message>}
    */
   pin() {
-    return this.client.rest.methods.pinMessage(this);
+    return this.client.rest.api.channels(this.channel.id).pins(this.id).put()
+      .then(() => this);
   }
 
   /**
@@ -408,7 +409,8 @@ class Message {
    * @returns {Promise<Message>}
    */
   unpin() {
-    return this.client.rest.methods.unpinMessage(this);
+    return this.client.rest.api.channels(this.channel.id).pins(this.id).delete()
+      .then(() => this);
   }
 
   /**
@@ -420,7 +422,10 @@ class Message {
     emoji = this.client.resolver.resolveEmojiIdentifier(emoji);
     if (!emoji) throw new TypeError('Emoji must be a string or Emoji/ReactionEmoji');
 
-    return this.client.rest.methods.addMessageReaction(this, emoji);
+    return this.client.rest.api.channels(this.channel.id).messages(this.id).reactions(emoji)
+      .users('@me')
+      .put()
+      .then(() => this._addReaction(Util.parseEmoji(emoji), this.client.user));
   }
 
   /**
@@ -428,7 +433,8 @@ class Message {
    * @returns {Promise<Message>}
    */
   clearReactions() {
-    return this.client.rest.methods.removeMessageReactions(this);
+    return this.client.rest.api.channels(this.channel.id).messages(this.id).reactions.delete()
+      .then(() => this);
   }
 
   /**

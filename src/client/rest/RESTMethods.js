@@ -366,16 +366,6 @@ class RESTMethods {
     );
   }
 
-  pinMessage(message) {
-    return this.rest.request('put', Endpoints.Channel(message.channel).Pin(message.id), true)
-      .then(() => message);
-  }
-
-  unpinMessage(message) {
-    return this.rest.request('delete', Endpoints.Channel(message.channel).Pin(message.id), true)
-      .then(() => message);
-  }
-
   getChannelPinnedMessages(channel) {
     return this.rest.request('get', Endpoints.Channel(channel).pins, true);
   }
@@ -524,35 +514,6 @@ class RESTMethods {
   unblockUser(user) {
     return this.rest.request('delete', Endpoints.User('@me').Relationship(user.id), true)
       .then(() => user);
-  }
-
-  addMessageReaction(message, emoji) {
-    return this.rest.request(
-      'put', Endpoints.Message(message).Reaction(emoji).User('@me'), true
-    ).then(() =>
-      message._addReaction(Util.parseEmoji(emoji), message.client.user)
-      );
-  }
-
-  removeMessageReaction(message, emoji, userID) {
-    const endpoint = Endpoints.Message(message).Reaction(emoji).User(userID === this.client.user.id ? '@me' : userID);
-    return this.rest.request('delete', endpoint, true).then(() =>
-      this.client.actions.MessageReactionRemove.handle({
-        user_id: userID,
-        message_id: message.id,
-        emoji: Util.parseEmoji(emoji),
-        channel_id: message.channel.id,
-      }).reaction
-    );
-  }
-
-  removeMessageReactions(message) {
-    return this.rest.request('delete', Endpoints.Message(message).reactions, true)
-      .then(() => message);
-  }
-
-  getMessageReactionUsers(message, emoji, limit = 100) {
-    return this.rest.request('get', Endpoints.Message(message).Reaction(emoji, limit), true);
   }
 
   getApplication(id) {
