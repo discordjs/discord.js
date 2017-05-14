@@ -95,7 +95,7 @@ class RESTMethods {
     }
 
     return this.rest.request('patch', Endpoints.Message(message), true, {
-      content, embed,
+      data: { content, embed },
     }).then(data => this.client.actions.MessageUpdate.handle(data).updated);
   }
 
