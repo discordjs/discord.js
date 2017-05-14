@@ -17206,6 +17206,8 @@ class DiscordAPIError extends Error {
 
       if (obj[k]._errors) {
         messages.push(`${newKey}: ${obj[k]._errors.map(e => e.message).join(' ')}`);
+      } else if (obj[k].code && obj[k].message) {
+        messages.push(`${obj[k].code}: ${obj[k].message}`);
       } else {
         messages = messages.concat(this.flattenErrors(obj[k], newKey));
       }
