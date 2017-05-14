@@ -78,27 +78,6 @@ class RESTMethods {
     });
   }
 
-  updateMessage(message, content, { embed, code, reply } = {}) {
-    if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
-
-    // Wrap everything in a code block
-    if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
-      content = Util.escapeMarkdown(this.client.resolver.resolveString(content), true);
-      content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
-    }
-
-    // Add the reply prefix
-    if (reply && message.channel.type !== 'dm') {
-      const id = this.client.resolver.resolveUserID(reply);
-      const mention = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
-      content = `${mention}${content ? `, ${content}` : ''}`;
-    }
-
-    return this.rest.request('patch', Endpoints.Message(message), true, {
-      content, embed,
-    }).then(data => this.client.actions.MessageUpdate.handle(data).updated);
-  }
-
   sendWebhookMessage(webhook, content, { avatarURL, tts, disableEveryone, embeds, username } = {}, file = null) {
     username = username || webhook.name;
     if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);

@@ -380,7 +380,27 @@ class Message {
     } else if (!options) {
       options = {};
     }
-    return this.client.rest.methods.updateMessage(this, content, options);
+
+    if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
+
+    const { embed, code, reply } = options;
+
+    // Wrap everything in a code block
+    if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
+      content = Util.escapeMarkdown(this.client.resolver.resolveString(content), true);
+      content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
+    }
+
+    // Add the reply prefix
+    if (reply && this.channel.type !== 'dm') {
+      const id = this.client.resolver.resolveUserID(reply);
+      const mention = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
+      content = `${mention}${content ? `, ${content}` : ''}`;
+    }
+
+    return this.client.api.channels(this.channel.id).messages(this.id)
+      .patch({ data: { content, embed } })
+      .then(data => this.client.actions.MessageUpdate.handle(data).updated);
   }
 
   /**
