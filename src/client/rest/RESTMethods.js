@@ -7,13 +7,8 @@ const Util = require('../../util/Util');
 
 const User = require('../../structures/User');
 const GuildMember = require('../../structures/GuildMember');
-const Message = require('../../structures/Message');
 const Invite = require('../../structures/Invite');
 const Webhook = require('../../structures/Webhook');
-const UserProfile = require('../../structures/UserProfile');
-const OAuth2Application = require('../../structures/OAuth2Application');
-const GroupDMChannel = require('../../structures/GroupDMChannel');
-const Guild = require('../../structures/Guild');
 const GuildAuditLogs = require('../../structures/GuildAuditLogs');
 
 class RESTMethods {
@@ -123,14 +118,6 @@ class RESTMethods {
     }).then(data => this.client.actions.MessageUpdate.handle(data).updated);
   }
 
-  createGroupDM(options) {
-    const data = this.client.user.bot ?
-      { access_tokens: options.accessTokens, nicks: options.nicks } :
-      { recipients: options.recipients };
-    return this.rest.request('post', Endpoints.User('@me').channels, true, data)
-      .then(res => new GroupDMChannel(this.client, res));
-  }
-
   addUserToGroupDM(channel, options) {
     const data = this.client.user.bot ?
       { nick: options.nick, access_token: options.accessToken } :
@@ -190,21 +177,6 @@ class RESTMethods {
       if (cache) return this.client.actions.UserGet.handle(data).user;
       else return new User(this.client, data);
     });
-  }
-
-  updateCurrentUser(_data, password) {
-    const user = this.client.user;
-    const data = {};
-    data.username = _data.username || user.username;
-    data.avatar = this.client.resolver.resolveBase64(_data.avatar) || user.avatar;
-    if (!user.bot) {
-      data.email = _data.email || user.email;
-      data.password = password;
-      if (_data.new_password) data.new_password = _data.newPassword;
-    }
-    return this.rest.request('patch', Endpoints.User('@me'), true, data).then(newData =>
-      this.client.actions.UserUpdate.handle(newData).updated
-    );
   }
 
   deleteGuildRole(role) {
@@ -384,67 +356,6 @@ class RESTMethods {
   sendSlackWebhookMessage(webhook, body) {
     return this.rest.request(
       'post', `${Endpoints.Webhook(webhook.id, webhook.token)}/slack?wait=true`, false, body
-    );
-  }
-
-  fetchMentions(options) {
-    if (options.guild instanceof Guild) options.guild = options.guild.id;
-    Util.mergeDefault({ limit: 25, roles: true, everyone: true, guild: null }, options);
-
-    return this.rest.request(
-      'get', Endpoints.User('@me').Mentions(options.limit, options.roles, options.everyone, options.guild), true
-    ).then(data => data.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)));
-  }
-
-  addFriend(user) {
-    return this.rest.request('post', Endpoints.User('@me'), true, {
-      username: user.username,
-      discriminator: user.discriminator,
-    }).then(() => user);
-  }
-
-  removeFriend(user) {
-    return this.rest.request('delete', Endpoints.User('@me').Relationship(user.id), true)
-      .then(() => user);
-  }
-
-  blockUser(user) {
-    return this.rest.request('put', Endpoints.User('@me').Relationship(user.id), true, { type: 2 })
-      .then(() => user);
-  }
-
-  unblockUser(user) {
-    return this.rest.request('delete', Endpoints.User('@me').Relationship(user.id), true)
-      .then(() => user);
-  }
-
-  getApplication(id) {
-    return this.rest.request('get', Endpoints.OAUTH2.Application(id), true).then(app =>
-      new OAuth2Application(this.client, app)
-    );
-  }
-
-  resetApplication(id) {
-    return this.rest.request('post', Endpoints.OAUTH2.Application(id).reset, true)
-      .then(app => new OAuth2Application(this.client, app));
-  }
-
-  acceptInvite(code) {
-    if (code.id) code = code.id;
-    return new Promise((resolve, reject) =>
-      this.rest.request('post', Endpoints.Invite(code), true).then(res => {
-        const handler = guild => {
-          if (guild.id === res.id) {
-            resolve(guild);
-            this.client.removeListener(Constants.Events.GUILD_CREATE, handler);
-          }
-        };
-        this.client.on(Constants.Events.GUILD_CREATE, handler);
-        this.client.setTimeout(() => {
-          this.client.removeListener(Constants.Events.GUILD_CREATE, handler);
-          reject(new Error('Accepting invite timed out'));
-        }, 120e3);
-      })
     );
   }
 }

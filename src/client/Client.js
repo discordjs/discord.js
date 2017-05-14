@@ -13,6 +13,7 @@ const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
 const Presence = require('../structures/Presence').Presence;
 const VoiceRegion = require('../structures/VoiceRegion');
+const OAuth2Application = require('../structures/OAuth2Application');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
 const VoiceBroadcast = require('./voice/VoiceBroadcast');
 
@@ -390,7 +391,8 @@ class Client extends EventEmitter {
    * @returns {Promise<OAuth2Application>}
    */
   fetchApplication(id = '@me') {
-    return this.rest.methods.getApplication(id);
+    return this.rest.api.oauth2.applications(id).get()
+    .then(app => new OAuth2Application(this.client, app));
   }
 
   /**
