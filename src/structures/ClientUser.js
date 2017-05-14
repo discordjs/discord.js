@@ -282,7 +282,7 @@ class ClientUser extends User {
     if (options.guild instanceof Guild) options.guild = options.guild.id;
     Util.mergeDefault({ limit: 25, roles: true, everyone: true, guild: null }, options);
 
-    return this.client.api.users('@me').mention({ query: options })
+    return this.client.api.users('@me').mentions({ query: options }).get()
     .then(data => data.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)));
   }
 
