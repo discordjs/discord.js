@@ -5,7 +5,7 @@ const methods = ['get', 'post', 'delete', 'patch', 'put'];
 const paramable = [
   'channels', 'users', 'guilds', 'members',
   'bans', 'emojis', 'pins', 'permissions',
-  'reactions', 'webhooks',
+  'reactions', 'webhooks', 'messages',
 ];
 const reflectors = ['toString', 'valueOf', 'inspect', Symbol.toPrimitive, util.inspect.custom];
 
@@ -15,8 +15,8 @@ module.exports = restManager => {
       if (reflectors.includes(name)) return () => list.join('/');
       if (paramable.includes(name)) {
         function toReturn(...args) { // eslint-disable-line no-inner-declarations
-          list = list.concat(name);
-          for (const arg of args) if (arg !== null && typeof arg !== 'undefined') list.concat(arg);
+          list.push(name);
+          for (const arg of args) if (arg !== null && typeof arg !== 'undefined') list.push(arg);
           return new Proxy(list, handler);
         }
         const directJoin = () => `${list.join('/')}/${name}`;
