@@ -1,7 +1,8 @@
 const util = require('util');
 const snekfetch = require('snekfetch');
 
-const paramable = ['channels', 'users', 'guilds', 'members'];
+// Paramable exists so we don't return a function unless we actually need one #savingmemory
+const paramable = ['channels', 'users', 'guilds', 'members', 'bans', 'emojis'];
 const reflectors = ['toString', 'valueOf', 'inspect', Symbol.toPrimitive, util.inspect.custom];
 
 module.exports = restManager => {

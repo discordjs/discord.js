@@ -1,5 +1,4 @@
 const long = require('long');
-const querystring = require('querystring');
 const snekfetch = require('snekfetch');
 const Constants = require('./Constants');
 const ConstantsHttp = Constants.DefaultOptions.http;
