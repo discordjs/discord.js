@@ -259,7 +259,7 @@ class Util {
       throw new TypeError('Target must be a TextChannel, DMChannel, GroupDMChannel, or Guild.');
     }
 
-    let endpoint = target.client.api[target instanceof Channel ? 'channels' : 'guilds'].messages.search;
+    let endpoint = target.client.api[target instanceof Channel ? 'channels' : 'guilds'](target.id).messages.search;
     return endpoint.get({ query: options }).then(body => {
       const messages = body.messages.map(x =>
         x.map(m => new Message(this.target.client.channels.get(m.channel_id), m, this.target.client))

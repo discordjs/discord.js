@@ -19,6 +19,8 @@ const commands = {
       res = eval(message.content);
       if (typeof res !== 'string') res = require('util').inspect(res);
     } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error(err.stack);
       res = err.message;
     }
     message.channel.send(res, { code: 'js' });
