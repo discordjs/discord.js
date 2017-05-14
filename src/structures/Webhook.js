@@ -161,29 +161,36 @@ class Webhook {
 
   /**
    * Edit the webhook.
-   * @param {string} name The new name for the webhook
-   * @param {BufferResolvable} avatar The new avatar for the webhook
+   * @param {Object} options Options
+   * @param {string} [options.name] New name for this webhook
+   * @param {BufferResolvable} [options.avatar] New avatar for this webhook
+   * @param {string} [reason] Reason for editing this webhook
    * @returns {Promise<Webhook>}
    */
-  edit(name = this.name, avatar) {
-    if (avatar) {
+  edit({ name = this.name, avatar }, reason) {
+    if (avatar && (typeof avatar === 'string' && !avatar.startsWith('data:'))) {
       return this.client.resolver.resolveBuffer(avatar).then(file => {
         const dataURI = this.client.resolver.resolveBase64(file);
-        return this.client.rest.methods.editWebhook(this, name, dataURI);
+        return this.edit({ name, avatar: dataURI }, reason);
       });
     }
-    return this.client.rest.methods.editWebhook(this, name).then(data => {
-      this.setup(data);
+    return this.client.api.webhooks(this.id, this.token).patch({
+      data: { name, avatar },
+      reason,
+    }).then(data => {
+      this.name = data.name;
+      this.avatar = data.avatar;
       return this;
     });
   }
 
   /**
    * Delete the webhook.
+   * @param {string} [reason] Reason for deleting this webhook
    * @returns {Promise}
    */
-  delete() {
-    return this.client.rest.methods.deleteWebhook(this);
+  delete(reason) {
+    return this.client.api.webhooks(this.id, this.token).delete({ reason });
   }
 }
 

@@ -285,7 +285,11 @@ class Client extends EventEmitter {
    * client.login('my token');
    */
   login(token) {
-    return this.rest.methods.login(token);
+    return new Promise((resolve, reject) => {
+      if (typeof token !== 'string') throw new Error(Constants.Errors.INVALID_TOKEN);
+      token = token.replace(/^Bot\s*/i, '');
+      this.manager.connectToWebSocket(token, resolve, reject);
+    });
   }
 
   /**
@@ -343,7 +347,7 @@ class Client extends EventEmitter {
    * @returns {Promise<Webhook>}
    */
   fetchWebhook(id, token) {
-    return this.rest.methods.getWebhook(id, token);
+    return this.api.webhooks(id, token).get().then(data => new Webhook(this.client, data));
   }
 
   /**

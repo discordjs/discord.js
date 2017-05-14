@@ -150,10 +150,11 @@ class Invite {
 
   /**
    * Deletes this invite.
+   * @param {string} [reason] Reason for deleting this invite
    * @returns {Promise<Invite>}
    */
-  delete() {
-    return this.client.api.invites(this.code).delete().then(() => this);
+  delete(reason) {
+    return this.client.api.invites(this.code).delete({ reason }).then(() => this);
   }
 
   /**

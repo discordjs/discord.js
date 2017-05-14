@@ -134,7 +134,7 @@ class TextBasedChannel {
         return msg;
       });
     }
-    return this.client.rest.methods.getChannelMessage(this, messageID).then(data => {
+    return this.client.api.channels(this.id).messages(messageID).then(data => {
       const msg = data instanceof Message ? data : new Message(this, data, this.client);
       this._cacheMessage(msg);
       return msg;
@@ -162,7 +162,8 @@ class TextBasedChannel {
    *  .catch(console.error);
    */
   fetchMessages(options = {}) {
-    return this.client.rest.methods.getChannelMessages(this, options).then(data => {
+    return this.client.api.channels(this.id).messages.get({ query: options })
+    .then(data => {
       const messages = new Collection();
       for (const message of data) {
         const msg = new Message(this, message, this.client);
@@ -178,7 +179,7 @@ class TextBasedChannel {
    * @returns {Promise<Collection<Snowflake, Message>>}
    */
   fetchPinnedMessages() {
-    return this.client.rest.methods.getChannelPinnedMessages(this).then(data => {
+    return this.client.api.channels(this.id).pins.get().then(data => {
       const messages = new Collection();
       for (const message of data) {
         const msg = new Message(this, message, this.client);
@@ -246,13 +247,14 @@ class TextBasedChannel {
   startTyping(count) {
     if (typeof count !== 'undefined' && count < 1) throw new RangeError('Count must be at least 1.');
     if (!this.client.user._typing.has(this.id)) {
+      const endpoint = this.client.api.channels(this.id).typing;
       this.client.user._typing.set(this.id, {
         count: count || 1,
         interval: this.client.setInterval(() => {
-          this.client.rest.methods.sendTyping(this.id);
+          endpoint.post();
         }, 9000),
       });
-      this.client.rest.methods.sendTyping(this.id);
+      endpoint.post();
     } else {
       const entry = this.client.user._typing.get(this.id);
       entry.count = count || entry.count + 1;

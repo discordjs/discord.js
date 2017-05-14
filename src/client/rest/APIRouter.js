@@ -14,9 +14,9 @@ module.exports = restManager => {
     get(list, name) {
       if (reflectors.includes(name)) return () => list.join('/');
       if (paramable.includes(name)) {
-        function toReturn(id) { // eslint-disable-line no-inner-declarations
+        function toReturn(...args) { // eslint-disable-line no-inner-declarations
           list = list.concat(name);
-          if (id) list = list.concat(id);
+          for (const arg of args) if (arg !== null && typeof arg !== 'undefined') list.concat(arg);
           return new Proxy(list, handler);
         }
         const directJoin = () => `${list.join('/')}/${name}`;

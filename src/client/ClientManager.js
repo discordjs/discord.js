@@ -63,7 +63,7 @@ class ClientManager {
       this.client.token = null;
       return Promise.resolve();
     } else {
-      return this.client.rest.methods.logout().then(() => {
+      return this.client.api.logout.post().then(() => {
         this.client.token = null;
       });
     }

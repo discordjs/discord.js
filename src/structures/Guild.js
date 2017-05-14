@@ -437,15 +437,17 @@ class Guild {
    * @returns {Promise<GuildAuditLogs>}
    */
   fetchAuditLogs(options) {
-    const _options = {
+    if (options.before && options.before instanceof GuildAuditLogs.Entry) options.before = options.before.id;
+    if (options.after && options.after instanceof GuildAuditLogs.Entry) options.after = options.after.id;
+    if (typeof options.type === 'string') options.type = GuildAuditLogs.Actions[options.type];
+
+    return this.client.api.guilds(this.id)['audit-logs'].get({ query: {
       before: options.before,
       after: options.after,
       limit: options.limit,
       user_id: this.client.resolver.resolveUserID(options.user),
       action_type: options.type,
-    };
-
-    return this.client.api.guilds(this.id)['audit-logs'].get({ query: _options })
+    } })
       .then(data => GuildAuditLogs.build(this, data));
   }
 
@@ -565,6 +567,7 @@ class Guild {
   /**
    * Updates the guild with new information - e.g. a new name.
    * @param {GuildEditData} data The data to update the guild with
+   * @param {string} [reason] Reason for editing this guild
    * @returns {Promise<Guild>}
    * @example
    * // Set the guild name and region
@@ -575,7 +578,7 @@ class Guild {
    * .then(updated => console.log(`New guild name ${updated.name} in region ${updated.region}`))
    * .catch(console.error);
    */
-  edit(data) {
+  edit(data, reason) {
     const _data = {};
     if (data.name) _data.name = data.name;
     if (data.region) _data.region = data.region;
@@ -585,7 +588,7 @@ class Guild {
     if (data.icon) _data.icon = this.client.resolver.resolveBase64(data.icon);
     if (data.owner) _data.owner_id = this.client.resolver.resolveUser(data.owner).id;
     if (data.splash) _data.splash = this.client.resolver.resolveBase64(data.splash);
-    return this.client.api.guilds(this.id).patch({ data: _data })
+    return this.client.api.guilds(this.id).patch({ data: _data, reason })
     .then(newData => this.client.actions.GuildUpdate.handle(newData).updated);
   }
 
@@ -791,23 +794,24 @@ class Guild {
 
   /**
    * Prunes members from the guild based on how long they have been inactive.
-   * @param {number} days Number of days of inactivity required to kick
-   * @param {boolean} [dry=false] If true, will return number of users that will be kicked, without actually doing it
+   * @param {number} [options.days=7] Number of days of inactivity required to kick
+   * @param {boolean} [options.dry=false] Get number of users that will be kicked, without actually kicking them
+   * @param {string} [options.reason] Reason for this prune
    * @returns {Promise<number>} The number of members that were/will be kicked
    * @example
    * // See how many members will be pruned
-   * guild.pruneMembers(12, true)
+   * guild.pruneMembers({ dry: true })
    *   .then(pruned => console.log(`This will prune ${pruned} people!`))
    *   .catch(console.error);
    * @example
    * // Actually prune the members
-   * guild.pruneMembers(12)
+   * guild.pruneMembers({ days: 1, reason: 'too many people!' })
    *   .then(pruned => console.log(`I just pruned ${pruned} people!`))
    *   .catch(console.error);
    */
-  pruneMembers(days, dry = false) {
+  pruneMembers({ days = 7, dry = false, reason }) {
     if (typeof days !== 'number') throw new TypeError('Days must be a number.');
-    return this.client.api.guilds(this.id).prune[dry ? 'get' : 'post']({ query: { days } })
+    return this.client.api.guilds(this.id).prune[dry ? 'get' : 'post']({ query: { days }, reason })
       .then(data => data.pruned);
   }
 
@@ -823,7 +827,9 @@ class Guild {
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
    * @param {string} type The type of the new channel, either `text` or `voice`
-   * @param {Array<PermissionOverwrites|Object>} overwrites Permission overwrites to apply to the new channel
+   * @param {Object} options Options
+   * @param {Array<PermissionOverwrites|Object>} [options.overwrites] Permission overwrites to apply to the new channel
+   * @param {string} [options.reason] Reason for creating this channel
    * @returns {Promise<TextChannel|VoiceChannel>}
    * @example
    * // Create a new text channel
@@ -831,11 +837,14 @@ class Guild {
    *  .then(channel => console.log(`Created new channel ${channel}`))
    *  .catch(console.error);
    */
-  createChannel(name, type, overwrites) {
+  createChannel(name, type, { overwrites, reason }) {
     if (overwrites instanceof Collection) overwrites = overwrites.array();
-    return this.client.api.guilds(this.id).channels.post({ data: {
-      name, type, permission_overwrites: overwrites,
-    } }).then(data => this.client.actions.ChannelCreate.handle(data).channel);
+    return this.client.api.guilds(this.id).channels.post({
+      data: {
+        name, type, permission_overwrites: overwrites,
+      },
+      reason,
+    }).then(data => this.client.actions.ChannelCreate.handle(data).channel);
   }
 
   /**
@@ -876,7 +885,9 @@ class Guild {
 
   /**
    * Creates a new role in the guild with given information
-   * @param {RoleData} [data] The data to update the role with
+   * @param {Object} [options] Options
+   * @param {RoleData} [options.data] The data to update the role with
+   * @param {string} [options.reason] Reason for creating this role
    * @returns {Promise<Role>}
    * @example
    * // Create a new role
@@ -884,19 +895,22 @@ class Guild {
    *  .then(role => console.log(`Created role ${role}`))
    *  .catch(console.error);
    * @example
-   * // Create a new role with data
+   * // Create a new role with data and a reason
    * guild.createRole({
-   *   name: 'Super Cool People',
-   *   color: 'BLUE',
+   *   data: {
+   *     name: 'Super Cool People',
+   *     color: 'BLUE',
+   *   },
+   *   reason: 'we needed a role for Super Cool People',
    * })
    * .then(role => console.log(`Created role ${role}`))
    * .catch(console.error)
    */
-  createRole(data = {}) {
+  createRole({ data = {}, reason }) {
     if (data.color) data.color = this.client.resolver.resolveColor(data.color);
     if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
 
-    return this.client.api.guilds(this.id).roles.post({ data }).then(role =>
+    return this.client.api.guilds(this.id).roles.post({ data, reason }).then(role =>
       this.client.actions.GuildRoleCreate.handle({
         guild_id: this.id,
         role,

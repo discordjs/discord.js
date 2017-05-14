@@ -204,6 +204,7 @@ class GuildChannel extends Channel {
   /**
    * Edits the channel.
    * @param {ChannelData} data The new data for the channel
+   * @param {string} [reason] Reason for editing this channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // Edit a channel
@@ -211,14 +212,17 @@ class GuildChannel extends Channel {
    *  .then(c => console.log(`Edited channel ${c}`))
    *  .catch(console.error);
    */
-  edit(data) {
-    return this.client.api.channels(this.id).patch({ data: {
-      name: (data.name || this.name).trim(),
-      topic: data.topic || this.topic,
-      position: data.position || this.position,
-      bitrate: data.bitrate || this.bitrate,
-      user_limit: data.userLimit || this.userLimit,
-    } }).then(newData => this.client.actions.ChannelUpdate.handle(newData).updated);
+  edit(data, reason) {
+    return this.client.api.channels(this.id).patch({
+      data: {
+        name: (data.name || this.name).trim(),
+        topic: data.topic || this.topic,
+        position: data.position || this.position,
+        bitrate: data.bitrate || this.bitrate,
+        user_limit: data.userLimit || this.userLimit,
+      },
+      reason,
+    }).then(newData => this.client.actions.ChannelUpdate.handle(newData).updated);
   }
 
   /**
@@ -277,14 +281,13 @@ class GuildChannel extends Channel {
    * kicked after 24 hours if they have not yet received a role
    * @param {number} [options.maxAge=86400] How long the invite should last (in seconds, 0 for forever)
    * @param {number} [options.maxUses=0] Maximum number of uses
+   * @param {string} [reason] Reason for creating this
    * @returns {Promise<Invite>}
    */
-  createInvite(options = {}) {
+  createInvite({ temporary = false, maxAge = 86400, maxUses = 0 }, reason) {
     return this.client.api.channels(this.id).invites.post({ data: {
-      temporary: options.temporary || false,
-      max_age: options.maxAge || 86400,
-      max_uses: options.maxUses || 0,
-    } })
+      temporary, max_age: maxAge, max_uses: maxUses,
+    }, reason })
     .then(invite => new Invite(this.client, invite));
   }
 
@@ -333,6 +336,20 @@ class GuildChannel extends Channel {
   get deletable() {
     return this.id !== this.guild.id &&
       this.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS);
+  }
+
+  /**
+   * Deletes this channel.
+   * @param {string} [reason] Reason for deleting this channel
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // Delete the channel
+   * channel.delete('making room for new channels')
+   *  .then() // Success
+   *  .catch(console.error); // Log error
+   */
+  delete(reason) {
+    return this.client.api.channels(this.id).delete({ reason }).then(() => this);
   }
 
   /**

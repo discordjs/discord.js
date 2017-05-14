@@ -332,9 +332,10 @@ class GuildMember {
   /**
    * Edit a guild member.
    * @param {GuildMemberEditData} data The data to edit the member with
+   * @param {string} [reason] Reason for editing this user
    * @returns {Promise<GuildMember>}
    */
-  edit(data) {
+  edit(data, reason) {
     if (data.channel) {
       data.channel_id = this.client.resolver.resolveChannel(data.channel).id;
       data.channel = null;
@@ -345,7 +346,7 @@ class GuildMember {
       const keys = Object.keys(data);
       if (keys.length === 1 && keys[0] === 'nick') endpoint = endpoint.nickname;
     }
-    return endpoint.patch({ data }).then(newData => this.guild._updateMember(this, newData).mem);
+    return endpoint.patch({ data, reason }).then(newData => this.guild._updateMember(this, newData).mem);
   }
 
   /**
