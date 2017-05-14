@@ -8,7 +8,6 @@ const Util = require('../../util/Util');
 const User = require('../../structures/User');
 const GuildMember = require('../../structures/GuildMember');
 const Message = require('../../structures/Message');
-const Role = require('../../structures/Role');
 const Invite = require('../../structures/Invite');
 const Webhook = require('../../structures/Webhook');
 const UserProfile = require('../../structures/UserProfile');
@@ -222,16 +221,6 @@ class RESTMethods {
     );
   }
 
-  kickGuildMember(guild, member, reason) {
-    const url = `${Endpoints.Guild(guild).Member(member)}?reason=${reason}`;
-    return this.rest.request('delete', url, true).then(() =>
-      this.client.actions.GuildMemberRemove.handle({
-        guild_id: guild.id,
-        user: member.user,
-      }).member
-    );
-  }
-
   deleteGuildRole(role) {
     return this.rest.request('delete', Endpoints.Guild(role.guild).Role(role.id), true).then(() =>
       this.client.actions.GuildRoleDelete.handle({
@@ -273,73 +262,6 @@ class RESTMethods {
     return this.rest.request('get', Endpoints.Guild(guild).Member(user.id), true).then(data => {
       if (cache) return this.client.actions.GuildMemberGet.handle(guild, data).member;
       else return new GuildMember(guild, data);
-    });
-  }
-
-  updateGuildMember(member, data) {
-    if (data.channel) {
-      data.channel_id = this.client.resolver.resolveChannel(data.channel).id;
-      data.channel = null;
-    }
-    if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
-
-    let endpoint = Endpoints.Member(member);
-    // Fix your endpoints, discord ;-;
-    if (member.id === this.client.user.id) {
-      const keys = Object.keys(data);
-      if (keys.length === 1 && keys[0] === 'nick') {
-        endpoint = Endpoints.Member(member).nickname;
-      }
-    }
-
-    return this.rest.request('patch', endpoint, true, data).then(newData =>
-      member.guild._updateMember(member, newData).mem
-    );
-  }
-
-  addMemberRole(member, role) {
-    return new Promise((resolve, reject) => {
-      if (member._roles.includes(role.id)) return resolve(member);
-
-      const listener = (oldMember, newMember) => {
-        if (!oldMember._roles.includes(role.id) && newMember._roles.includes(role.id)) {
-          this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener);
-          resolve(newMember);
-        }
-      };
-
-      this.client.on(Constants.Events.GUILD_MEMBER_UPDATE, listener);
-      const timeout = this.client.setTimeout(() =>
-        this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener), 10e3);
-
-      return this.rest.request('put', Endpoints.Member(member).Role(role.id), true).catch(err => {
-        this.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
-        this.client.clearTimeout(timeout);
-        reject(err);
-      });
-    });
-  }
-
-  removeMemberRole(member, role) {
-    return new Promise((resolve, reject) => {
-      if (!member._roles.includes(role.id)) return resolve(member);
-
-      const listener = (oldMember, newMember) => {
-        if (oldMember._roles.includes(role.id) && !newMember._roles.includes(role.id)) {
-          this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener);
-          resolve(newMember);
-        }
-      };
-
-      this.client.on(Constants.Events.GUILD_MEMBER_UPDATE, listener);
-      const timeout = this.client.setTimeout(() =>
-        this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener), 10e3);
-
-      return this.rest.request('delete', Endpoints.Member(member).Role(role.id), true).catch(err => {
-        this.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
-        this.client.clearTimeout(timeout);
-        reject(err);
-      });
     });
   }
 

@@ -12,7 +12,7 @@ const WebSocketManager = require('./websocket/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
 const Presence = require('../structures/Presence').Presence;
-const VoiceRegion = require('../strictures/VoiceRegion');
+const VoiceRegion = require('../structures/VoiceRegion');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
 const VoiceBroadcast = require('./voice/VoiceBroadcast');
 
