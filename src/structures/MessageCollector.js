@@ -33,8 +33,6 @@ class MessageCollector extends Collector {
     this.received = 0;
 
     this.client.on('message', this.listener);
-
-    this.on('collect', this._reEmitter);
   }
 
   /**
