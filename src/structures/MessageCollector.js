@@ -67,7 +67,6 @@ class MessageCollector extends Collector {
    * @private
    */
   cleanup() {
-    this.removeListener('collect', this._reEmitter);
     this.client.removeListener('message', this.listener);
   }
 }
