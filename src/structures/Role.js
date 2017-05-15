@@ -177,7 +177,7 @@ class Role {
     if (!channel || !channel.guild) throw new Error('Could not resolve channel to a guild channel.');
     return channel.permissionsFor(this);
   }
-  
+
   /**
    * Compares this role's position to another role's.
    * @param {Role} role Role to compare to this one
