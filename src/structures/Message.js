@@ -447,7 +447,9 @@ class Message {
 
   /**
    * Deletes the message.
-   * @param {number} [timeout=0] How long to wait to delete the message in milliseconds
+   * @param {Object} [options] Options
+   * @param {number} [options.timeout=0] How long to wait to delete the message in milliseconds
+   * @param {string} [options.reason] Reason for deleting this message, if it does not belong to the client user
    * @returns {Promise<Message>}
    * @example
    * // Delete a message
@@ -455,9 +457,10 @@ class Message {
    *  .then(msg => console.log(`Deleted message from ${msg.author}`))
    *  .catch(console.error);
    */
-  delete(timeout = 0) {
+  delete({ timeout = 0, reason }) {
     if (timeout <= 0) {
-      return this.client.api.channels(this.channel.id).messages(this.id).delete()
+      return this.client.api.channels(this.channel.id).messages(this.id)
+        .delete({ reason })
         .then(() =>
           this.client.actions.MessageDelete.handle({
             id: this.id,
@@ -466,7 +469,7 @@ class Message {
     } else {
       return new Promise(resolve => {
         this.client.setTimeout(() => {
-          resolve(this.delete());
+          resolve(this.delete({ reason }));
         }, timeout);
       });
     }
