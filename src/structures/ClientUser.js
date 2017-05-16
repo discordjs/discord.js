@@ -298,9 +298,7 @@ class ClientUser extends User {
     if (!icon || (typeof icon === 'string' && icon.startsWith('data:'))) {
       icon = this.client.resolver.resolveBase64(icon) || null;
       return this.client.api.guilds.post({ data: { name, region, icon } })
-      .then(() => {
-        // I'll finish this later :^)
-      });
+      .then((data) => this.client.guilds.get(data.id));
     } else {
       return this.client.resolver.resolveBuffer(icon)
         .then(data => this.createGuild(name, region, data));
