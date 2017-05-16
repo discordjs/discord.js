@@ -139,6 +139,7 @@ class GuildChannel extends Channel {
    * Overwrites the permissions for a user or role in this channel.
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The configuration for the update
+   * @param {string} [reason] Reason for creating/editing this overwrite
    * @returns {Promise<GuildChannel>}
    * @example
    * // Overwrite permissions for a message author
@@ -148,7 +149,7 @@ class GuildChannel extends Channel {
    * .then(() => console.log('Done!'))
    * .catch(console.error);
    */
-  overwritePermissions(userOrRole, options) {
+  overwritePermissions(userOrRole, options, reason) {
     const payload = {
       allow: 0,
       deny: 0,
@@ -187,7 +188,8 @@ class GuildChannel extends Channel {
       }
     }
 
-    return this.client.api.channels(this.id).permissions(payload.id).put({ data: payload })
+    return this.client.api.channels(this.id).permissions(payload.id)
+      .put({ data: payload, reason })
       .then(() => this);
   }
 

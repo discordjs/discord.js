@@ -137,7 +137,7 @@ class OAuth2Application {
    * @returns {OAuth2Application}
    */
   reset() {
-    return this.rest.api.oauth2.applications(this.id).reset.get()
+    return this.rest.api.oauth2.applications(this.id).reset.post()
       .then(app => new OAuth2Application(this.client, app));
   }
 

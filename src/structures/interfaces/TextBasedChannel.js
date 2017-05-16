@@ -133,13 +133,15 @@ class TextBasedChannel {
   fetchMessage(messageID) {
     const Message = require('../Message');
     if (!this.client.user.bot) {
-      return this.fetchMessages({ limit: 1, around: messageID }).then(messages => {
+      return this.fetchMessages({ limit: 1, around: messageID })
+      .then(messages => {
         const msg = messages.get(messageID);
         if (!msg) throw new Error('Message not found.');
         return msg;
       });
     }
-    return this.client.api.channels(this.id).messages(messageID).then(data => {
+    return this.client.api.channels(this.id).messages(messageID).get()
+    .then(data => {
       const msg = data instanceof Message ? data : new Message(this, data, this.client);
       this._cacheMessage(msg);
       return msg;
