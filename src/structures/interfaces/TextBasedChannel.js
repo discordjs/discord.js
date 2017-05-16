@@ -79,7 +79,7 @@ class TextBasedChannel {
       options = {};
     }
 
-    options.content = content;
+    if (!options.content) options.content = content;
 
     if (options.embed && options.embed.file) options.file = options.embed.file;
 

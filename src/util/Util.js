@@ -30,7 +30,7 @@ class Util {
       }
       messages[msg] += (messages[msg].length > 0 && messages[msg] !== prepend ? char : '') + splitText[i];
     }
-    return messages;
+    return messages.filter(m => m);
   }
 
   /**
