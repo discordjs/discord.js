@@ -7423,6 +7423,8 @@ class Guild {
   }
 
   /**
+   * Sets the position of the guild in the guild listing.
+   * <warn>This is only available when using a user account.</warn>
    * @param {number} position Absolute or relative position
    * @param {boolean} [relative=false] Whether to position relatively or absolutely
    * @returns {Promise<Guild>}
@@ -7437,7 +7439,7 @@ class Guild {
   /**
    * Marks all messages in this guild as read.
    * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<Guild>} This guild
+   * @returns {Promise<Guild>}
    */
   acknowledge() {
     return this.client.rest.methods.ackGuild(this);
