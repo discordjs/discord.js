@@ -33,7 +33,7 @@ module.exports = function sendMessage(channel, options) {
     content = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
   }
 
-  if (channel instanceof User) channel.createDM().then(dm => channel.send(dm, options));
+  if (channel instanceof User) return channel.createDM().then(dm => dm.send(content, options));
 
   return channel.client.api.channels(channel.id).messages.post({
     data: { content, tts, nonce, embed },
