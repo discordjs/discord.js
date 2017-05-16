@@ -12703,7 +12703,7 @@ const Collector = __webpack_require__(31);
 /**
  * @typedef {CollectorOptions} MessageCollectorOptions
  * @property {number} max The maximum amount of messages to process
- * @property {number} maxMatches The maximum amount of messages to collect
+ * @property {number} maxProcessed The maximum amount of messages to collect
  */
 
 /**
@@ -12756,9 +12756,8 @@ class MessageCollector extends Collector {
    * @private
    */
   postCheck() {
-    // Consider changing the end reasons for v12
-    if (this.options.maxMatches && this.collected.size >= this.options.max) return 'matchesLimit';
-    if (this.options.max && this.received >= this.options.maxProcessed) return 'limit';
+    if (this.collected.size >= this.options.max) return 'limit';
+    else if (this.options.maxProcessed && this.received === this.options.maxProcessed) return 'processedLimit';
     return null;
   }
 
