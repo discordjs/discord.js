@@ -50,6 +50,13 @@ class Client extends EventEmitter {
     this.rest = new RESTManager(this);
 
     /**
+     * API shortcut
+     * @type {Object}
+     * @private
+     */
+    this.api = this.rest.api;
+
+    /**
      * The data manager of the client
      * @type {ClientDataManager}
      * @private
@@ -187,15 +194,6 @@ class Client extends EventEmitter {
    */
   get _pingTimestamp() {
     return this.ws.connection ? this.ws.connection.lastPingTimestamp : 0;
-  }
-
-  /**
-   * API shortcut
-   * @type {Object}
-   * @private
-   */
-  get api() {
-    return this.rest.api;
   }
 
   /**
