@@ -342,7 +342,8 @@ class Client extends EventEmitter {
    */
   fetchInvite(invite) {
     const code = this.resolver.resolveInviteCode(invite);
-    return this.api.invites(code).get().then(data => new Invite(this, data));
+    return this.api.invites(code).get({ query: { with_counts: true } })
+      .then(data => new Invite(this, data));
   }
 
   /**
