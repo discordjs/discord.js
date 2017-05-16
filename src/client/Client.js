@@ -14,6 +14,8 @@ const Collection = require('../util/Collection');
 const Presence = require('../structures/Presence').Presence;
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
+const User = require('../structures/User');
+const Invite = require('../structures/Invite');
 const OAuth2Application = require('../structures/OAuth2Application');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
 const VoiceBroadcast = require('./voice/VoiceBroadcast');
@@ -328,7 +330,9 @@ class Client extends EventEmitter {
    */
   fetchUser(id, cache = true) {
     if (this.users.has(id)) return Promise.resolve(this.users.get(id));
-    return this.rest.methods.getUser(id, cache);
+    return this.api.users(id).get().then(data =>
+      cache ? this.dataManager.newUser(data) : new User(this, data)
+    );
   }
 
   /**
@@ -338,7 +342,7 @@ class Client extends EventEmitter {
    */
   fetchInvite(invite) {
     const code = this.resolver.resolveInviteCode(invite);
-    return this.rest.methods.getInvite(code);
+    return this.api.invites(code).get().then(data => new Invite(this, data));
   }
 
   /**

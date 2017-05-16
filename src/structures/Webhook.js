@@ -91,7 +91,7 @@ class Webhook {
    * Send a message with this webhook.
    * @param {StringResolvable} [content] The content to send
    * @param {WebhookMessageOptions} [options={}] The options to provide
-   * @returns {Promise<Message|Message[]>}
+   * @returns {Promise<Message|Object>}
    * @example
    * // Send a message
    * webhook.send('hello!')
@@ -135,13 +135,32 @@ class Webhook {
       )).then(files => this.client.rest.methods.sendWebhookMessage(this, content, options, files));
     }
 
-    return this.client.rest.methods.sendWebhookMessage(this, content, options);
+    if (!options.username) options.username = this.name;
+
+    if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
+    if (content) {
+      if (options.disableEveryone ||
+        (typeof options.disableEveryone === 'undefined' && this.client.options.disableEveryone)
+      ) {
+        content = content.replace(/@(everyone|here)/g, '@\u200b$1');
+      }
+    }
+
+    return this.client.api.webhooks(this.id, this.token).post({
+      data: options,
+      query: { wait: true },
+      auth: false,
+    }).then(data => {
+      if (!this.client.channels) return data;
+      const Message = require('./Message');
+      return new Message(this.client.channels.get(data.channel_id, data, this.client));
+    });
   }
 
   /**
    * Send a raw slack message with this webhook.
    * @param {Object} body The raw body to send
-   * @returns {Promise}
+   * @returns {Promise<Message|Object>}
    * @example
    * // Send a slack message
    * webhook.sendSlackMessage({
@@ -156,7 +175,15 @@ class Webhook {
    * }).catch(console.error);
    */
   sendSlackMessage(body) {
-    return this.client.rest.methods.sendSlackWebhookMessage(this, body);
+    return this.client.api.webhooks(this.id, this.token).slack.post({
+      query: { wait: true },
+      auth: false,
+      data: body,
+    }).then(data => {
+      if (!this.client.channels) return data;
+      const Message = require('./Message');
+      return new Message(this.client.channels.get(data.channel_id, data, this.client));
+    });
   }
 
   /**

@@ -109,7 +109,10 @@ class TextBasedChannel {
           file.file = buffer;
           return file;
         })
-      )).then(files => this.client.rest.methods.sendMessage(this, content, options, files));
+      )).then(files => {
+        options.files = files;
+        return Shared.sendMessage(this, options);
+      });
     }
 
     return Shared.sendMessage(this, options);

@@ -1,5 +1,4 @@
 const UserAgentManager = require('./UserAgentManager');
-const RESTMethods = require('./RESTMethods');
 const SequentialRequestHandler = require('./RequestHandlers/Sequential');
 const BurstRequestHandler = require('./RequestHandlers/Burst');
 const APIRequest = require('./APIRequest');
@@ -11,7 +10,6 @@ class RESTManager {
     this.client = client;
     this.handlers = {};
     this.userAgentManager = new UserAgentManager(this);
-    this.methods = new RESTMethods(this);
     this.rateLimitedEndpoints = {};
     this.globallyRateLimited = false;
 

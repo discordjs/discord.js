@@ -56,6 +56,10 @@ class WebhookClient extends Webhook {
     this._intervals = new Set();
   }
 
+  get api() {
+    return this.rest.api;
+  }
+
   /**
    * Sets a timeout that will be automatically cancelled if the client is destroyed.
    * @param {Function} fn Function to execute
