@@ -34,6 +34,8 @@ class WebhookClient extends Webhook {
      */
     this.rest = new RESTManager(this);
 
+    this.api = this.rest.api;
+
     /**
      * The data resolver of the client
      * @type {ClientDataResolver}
@@ -54,10 +56,6 @@ class WebhookClient extends Webhook {
      * @private
      */
     this._intervals = new Set();
-  }
-
-  get api() {
-    return this.rest.api;
   }
 
   /**
