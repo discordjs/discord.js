@@ -23,6 +23,9 @@ module.exports = restManager => {
         }
         const directJoin = () => `${list.join('/')}/${name}`;
         for (const r of reflectors) toReturn[r] = directJoin;
+        for (const method of methods) {
+          toReturn[method] = options => restManager.request(method, `${list.join('/')}/${name}`, options);
+        }
         return toReturn;
       }
       if (methods.includes(name)) return options => restManager.request(name, list.join('/'), options);

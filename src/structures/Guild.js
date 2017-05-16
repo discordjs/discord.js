@@ -13,6 +13,7 @@ const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const Snowflake = require('../util/Snowflake');
 const Permissions = require('../util/Permissions');
+const Shared = require('./shared');
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -548,7 +549,7 @@ class Guild {
    * }).catch(console.error);
    */
   search(options = {}) {
-    return Util.search(this, options);
+    return Shared.search(this, options);
   }
 
   /**

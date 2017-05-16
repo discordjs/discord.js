@@ -1,7 +1,6 @@
 const path = require('path');
-const Message = require('../Message');
 const MessageCollector = require('../MessageCollector');
-const Util = require('../../util/Util');
+const Shared = require('../shared');
 const Collection = require('../../util/Collection');
 const Snowflake = require('../../util/Snowflake');
 
@@ -80,6 +79,8 @@ class TextBasedChannel {
       options = {};
     }
 
+    options.content = content;
+
     if (options.embed && options.embed.file) options.file = options.embed.file;
 
     if (options.file) {
@@ -111,7 +112,7 @@ class TextBasedChannel {
       )).then(files => this.client.rest.methods.sendMessage(this, content, options, files));
     }
 
-    return this.client.rest.methods.sendMessage(this, content, options);
+    return Shared.sendMessage(this, options);
   }
 
   /**
@@ -127,6 +128,7 @@ class TextBasedChannel {
    *   .catch(console.error);
    */
   fetchMessage(messageID) {
+    const Message = require('../Message');
     if (!this.client.user.bot) {
       return this.fetchMessages({ limit: 1, around: messageID }).then(messages => {
         const msg = messages.get(messageID);
@@ -162,6 +164,7 @@ class TextBasedChannel {
    *  .catch(console.error);
    */
   fetchMessages(options = {}) {
+    const Message = require('../Message');
     return this.client.api.channels(this.id).messages.get({ query: options })
     .then(data => {
       const messages = new Collection();
@@ -179,6 +182,7 @@ class TextBasedChannel {
    * @returns {Promise<Collection<Snowflake, Message>>}
    */
   fetchPinnedMessages() {
+    const Message = require('../Message');
     return this.client.api.channels(this.id).pins.get().then(data => {
       const messages = new Collection();
       for (const message of data) {
@@ -234,7 +238,7 @@ class TextBasedChannel {
    * }).catch(console.error);
    */
   search(options = {}) {
-    return Util.search(this, options);
+    return Shared.search(this, options);
   }
 
   /**
