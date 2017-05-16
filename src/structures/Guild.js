@@ -638,7 +638,7 @@ class Guild {
    * <warn>This is only available when using a user account.</warn>
    * @param {number} position Absolute or relative position
    * @param {boolean} [relative=false] Whether to position relatively or absolutely
-   * @returns {Promise<Guild>} This guild
+   * @returns {Promise<Guild>}
    */
   setPosition(position, relative) {
     if (this.client.user.bot) {
@@ -650,7 +650,7 @@ class Guild {
   /**
    * Marks all messages in this guild as read.
    * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<Guild>} This guild
+   * @returns {Promise<Guild>}
    */
   acknowledge() {
     return this.client.rest.methods.ackGuild(this);
