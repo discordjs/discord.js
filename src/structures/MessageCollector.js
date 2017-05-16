@@ -56,8 +56,8 @@ class MessageCollector extends Collector {
    * @private
    */
   postCheck() {
-    if (this.collected.size >= this.options.max) return 'limit';
-    else if (this.options.maxProcessed && this.received === this.options.maxProcessed) return 'processedLimit';
+    if (this.options.max && this.collected.size >= this.options.max) return 'limit';
+    if (this.options.maxProcessed && this.received === this.options.maxProcessed) return 'processedLimit';
     return null;
   }
 
