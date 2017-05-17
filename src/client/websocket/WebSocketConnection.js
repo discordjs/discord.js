@@ -80,12 +80,6 @@ class WebSocketConnection extends EventEmitter {
     this.connect(gateway);
 
     /**
-     * Events that are disabled (will not be processed)
-     * @type {Object}
-     */
-    this.disabledEvents = {};
-
-    /**
      * The sequence on WebSocket close
      * @type {number}
      */
@@ -96,7 +90,6 @@ class WebSocketConnection extends EventEmitter {
      * @type {boolean}
      */
     this.expectingClose = false;
-    for (const event of this.client.options.disabledEvents) this.disabledEvents[event] = true;
   }
 
   /**

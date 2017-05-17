@@ -29,6 +29,7 @@ class WebSocketManager extends EventEmitter {
     this.connection = null;
 
     this.disabledEvents = {};
+    for (const event of this.client.options.disabledEvents) this.disabledEvents[event] = true;
   }
 
   /**
