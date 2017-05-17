@@ -291,7 +291,7 @@ class ClientUser extends User {
    * <warn>This is only available when using a user account.</warn>
    * @param {string} name The name of the guild
    * @param {Object} [options] Options for the creating
-   * @param {string} [options.region] The region for the server
+   * @param {string} [options.region] The region for the server, defaults to the closest one available
    * @param {BufferResolvable|Base64Resolvable} [options.icon=null] The icon for the guild
    * @returns {Promise<Guild>} The guild that was created
    */
