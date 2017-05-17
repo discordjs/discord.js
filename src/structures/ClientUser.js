@@ -283,7 +283,7 @@ class ClientUser extends User {
     Util.mergeDefault({ limit: 25, roles: true, everyone: true, guild: null }, options);
 
     return this.client.api.users('@me').mentions.get({ query: options })
-      .then(data => data.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)));
+    .then(data => data.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)));
   }
 
   /**
@@ -297,7 +297,7 @@ class ClientUser extends User {
   createGuild(name, region, icon = null) {
     if (!icon || (typeof icon === 'string' && icon.startsWith('data:'))) {
       return this.client.api.guilds.post({ data: { name, region, icon } })
-        .then(data => this.client.dataManager.newGuild(data));
+      .then(data => this.client.dataManager.newGuild(data));
     } else {
       return this.client.resolver.resolveBuffer(icon)
         .then(data => this.createGuild(name, region, this.client.resolver.resolveBase64(data) || null));
