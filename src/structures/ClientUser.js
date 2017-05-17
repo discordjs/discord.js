@@ -90,7 +90,7 @@ class ClientUser extends User {
     }
 
     return this.client.api.users('@me').patch({ data })
-    .then(newData => this.client.actions.UserUpdate.handle(newData).updated);
+      .then(newData => this.client.actions.UserUpdate.handle(newData).updated);
   }
 
   /**
@@ -283,21 +283,22 @@ class ClientUser extends User {
     Util.mergeDefault({ limit: 25, roles: true, everyone: true, guild: null }, options);
 
     return this.client.api.users('@me').mentions.get({ query: options })
-    .then(data => data.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)));
+      .then(data => data.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)));
   }
 
   /**
    * Creates a guild.
    * <warn>This is only available when using a user account.</warn>
    * @param {string} name The name of the guild
-   * @param {string} [region] The region for the server
-   * @param {BufferResolvable|Base64Resolvable} [icon=null] The icon for the guild
+   * @param {Object} [options] Options for the creating
+   * @param {string} [options.region] The region for the server
+   * @param {BufferResolvable|Base64Resolvable} [options.icon=null] The icon for the guild
    * @returns {Promise<Guild>} The guild that was created
    */
-  createGuild(name, region, icon = null) {
+  createGuild(name, { region, icon = null } = {}) {
     if (!icon || (typeof icon === 'string' && icon.startsWith('data:'))) {
       return this.client.api.guilds.post({ data: { name, region, icon } })
-      .then(data => this.client.dataManager.newGuild(data));
+        .then(data => this.client.dataManager.newGuild(data));
     } else {
       return this.client.resolver.resolveBuffer(icon)
         .then(data => this.createGuild(name, region, this.client.resolver.resolveBase64(data) || null));
