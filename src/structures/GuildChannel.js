@@ -66,7 +66,7 @@ class GuildChannel extends Channel {
   permissionsFor(member) {
     member = this.client.resolver.resolveGuildMember(this.guild, member);
     if (!member) return null;
-    if (member.id === this.guild.ownerID) return new Permissions(member, Permissions.ALL);
+    if (member.id === this.guild.ownerID) return new Permissions(Permissions.ALL);
 
     let permissions = 0;
 
@@ -95,7 +95,7 @@ class GuildChannel extends Channel {
     const admin = Boolean(permissions & Permissions.FLAGS.ADMINISTRATOR);
     if (admin) permissions = Permissions.ALL;
 
-    return new Permissions(member, permissions);
+    return new Permissions(permissions);
   }
 
   overwritesFor(member, verified = false, roles = null) {

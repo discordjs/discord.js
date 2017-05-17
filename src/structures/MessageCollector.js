@@ -3,7 +3,7 @@ const Collector = require('./interfaces/Collector');
 /**
  * @typedef {CollectorOptions} MessageCollectorOptions
  * @property {number} max The maximum amount of messages to process
- * @property {number} maxMatches The maximum amount of messages to collect
+ * @property {number} maxProcessed The maximum amount of messages to collect
  */
 
 /**
@@ -33,8 +33,6 @@ class MessageCollector extends Collector {
     this.received = 0;
 
     this.client.on('message', this.listener);
-
-    this.on('collect', this._reEmitter);
   }
 
   /**
@@ -58,9 +56,8 @@ class MessageCollector extends Collector {
    * @private
    */
   postCheck() {
-    // Consider changing the end reasons for v12
-    if (this.options.maxMatches && this.collected.size >= this.options.max) return 'matchesLimit';
-    if (this.options.max && this.received >= this.options.maxProcessed) return 'limit';
+    if (this.options.max && this.collected.size >= this.options.max) return 'limit';
+    if (this.options.maxProcessed && this.received === this.options.maxProcessed) return 'processedLimit';
     return null;
   }
 
@@ -69,7 +66,6 @@ class MessageCollector extends Collector {
    * @private
    */
   cleanup() {
-    this.removeListener('collect', this._reEmitter);
     this.client.removeListener('message', this.listener);
   }
 }
