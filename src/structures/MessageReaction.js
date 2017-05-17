@@ -63,9 +63,8 @@ class MessageReaction {
   remove(user = this.message.client.user) {
     const userID = this.message.client.resolver.resolveUserID(user);
     if (!userID) return Promise.reject(new Error('Couldn\'t resolve the user ID to remove from the reaction.'));
-    return this.client.api.channels(this.message.channel.id).messages(this.message.id)
-      .reactions(this.emoji.identifier)
-      .users(userID === this.client.user.id ? '@me' : userID)
+    return this.message.client.api.channels(this.message.channel.id).messages(this.message.id)
+      .reactions(this.emoji.identifier)[userID === this.message.client.user.id ? '@me' : userID]
       .delete()
       .then(() =>
         this.message.client.actions.MessageReactionRemove.handle({

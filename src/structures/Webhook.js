@@ -106,6 +106,23 @@ class Webhook {
       options = {};
     }
 
+    if (!options.username) options.username = this.name;
+
+    if (options.avatarURL) {
+      options.avatar_url = options.avatarURL;
+      options.avatarURL = null;
+    }
+
+    if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
+    if (content) {
+      if (options.disableEveryone ||
+        (typeof options.disableEveryone === 'undefined' && this.client.options.disableEveryone)
+      ) {
+        content = content.replace(/@(everyone|here)/g, '@\u200b$1');
+      }
+    }
+    options.content = content;
+
     if (options.file) {
       if (options.files) options.files.push(options.file);
       else options.files = [options.file];
@@ -132,18 +149,12 @@ class Webhook {
           file.file = buffer;
           return file;
         })
-      )).then(files => this.client.rest.methods.sendWebhookMessage(this, content, options, files));
-    }
-
-    if (!options.username) options.username = this.name;
-
-    if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
-    if (content) {
-      if (options.disableEveryone ||
-        (typeof options.disableEveryone === 'undefined' && this.client.options.disableEveryone)
-      ) {
-        content = content.replace(/@(everyone|here)/g, '@\u200b$1');
-      }
+      )).then(files => this.client.api.webhooks(this.id, this.token).post({
+        data: options,
+        query: { wait: true },
+        files,
+        auth: false,
+      }));
     }
 
     return this.client.api.webhooks(this.id, this.token).post({

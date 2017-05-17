@@ -116,7 +116,7 @@ class User {
       size = format;
       format = 'default';
     }
-    return Constants.Endpoints.User(this).Avatar(this.client.options.http.cdn, this.avatar, format, size);
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).Avatar(this.id, this.avatar, format, size);
   }
 
   /**
@@ -213,10 +213,9 @@ class User {
    */
   deleteDM() {
     if (!this.dmChannel) return Promise.reject(new Error('No DM Channel exists!'));
-    return this.client.api.channels(this.dmChannel.id).delete().then(data => {
-      data.id = this.dmChannel.id;
-      return this.client.actions.ChannelDelete.handle(data).channel;
-    });
+    return this.client.api.channels(this.dmChannel.id).delete().then(data =>
+       this.client.actions.ChannelDelete.handle(data).channel
+    );
   }
 
   /**
@@ -235,7 +234,8 @@ class User {
    * @returns {Promise<User>}
    */
   setNote(note) {
-    return this.client.api.users(this.id).note.put({ data: { note } }).then(() => this);
+    return this.client.api.users('@me').notes(this.id).put({ data: { note } })
+      .then(() => this);
   }
 
   /**

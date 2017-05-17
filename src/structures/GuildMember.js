@@ -341,10 +341,13 @@ class GuildMember {
       data.channel = null;
     }
     if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
-    let endpoint = this.client.api.guilds(this.guild.id).members(this.id);
+    let endpoint = this.client.api.guilds(this.guild.id);
     if (this.user.id === this.client.user.id) {
       const keys = Object.keys(data);
-      if (keys.length === 1 && keys[0] === 'nick') endpoint = endpoint.nickname;
+      if (keys.length === 1 && keys[0] === 'nick') endpoint = endpoint.members('@me').nick;
+      else endpoint = endpoint.members(this.id);
+    } else {
+      endpoint = endpoint.members(this.id);
     }
     return endpoint.patch({ data, reason }).then(newData => this.guild._updateMember(this, newData).mem);
   }

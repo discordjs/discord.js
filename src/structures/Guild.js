@@ -270,7 +270,7 @@ class Guild {
       size = format;
       format = 'default';
     }
-    return Constants.Endpoints.Guild(this).Icon(this.client.options.http.cdn, this.icon, format, size);
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).Icon(this.id, this.icon, format, size);
   }
 
   /**
@@ -289,7 +289,7 @@ class Guild {
    */
   get splashURL() {
     if (!this.splash) return null;
-    return Constants.Endpoints.Guild(this).Splash(this.client.options.http.cdn, this.splash);
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).Splash(this.id, this.splash);
   }
 
   /**
@@ -437,7 +437,7 @@ class Guild {
    * @param {string|number} [options.type] Only show entries involving this action type
    * @returns {Promise<GuildAuditLogs>}
    */
-  fetchAuditLogs(options) {
+  fetchAuditLogs(options = {}) {
     if (options.before && options.before instanceof GuildAuditLogs.Entry) options.before = options.before.id;
     if (options.after && options.after instanceof GuildAuditLogs.Entry) options.after = options.after.id;
     if (typeof options.type === 'string') options.type = GuildAuditLogs.Actions[options.type];
@@ -810,7 +810,7 @@ class Guild {
    *   .then(pruned => console.log(`I just pruned ${pruned} people!`))
    *   .catch(console.error);
    */
-  pruneMembers({ days = 7, dry = false, reason }) {
+  pruneMembers({ days = 7, dry = false, reason } = {}) {
     if (typeof days !== 'number') throw new TypeError('Days must be a number.');
     return this.client.api.guilds(this.id).prune[dry ? 'get' : 'post']({ query: { days }, reason })
       .then(data => data.pruned);
@@ -838,7 +838,7 @@ class Guild {
    *  .then(channel => console.log(`Created new channel ${channel}`))
    *  .catch(console.error);
    */
-  createChannel(name, type, { overwrites, reason }) {
+  createChannel(name, type, { overwrites, reason } = {}) {
     if (overwrites instanceof Collection) overwrites = overwrites.array();
     return this.client.api.guilds(this.id).channels.post({
       data: {
@@ -907,7 +907,7 @@ class Guild {
    * .then(role => console.log(`Created role ${role}`))
    * .catch(console.error)
    */
-  createRole({ data = {}, reason }) {
+  createRole({ data = {}, reason } = {}) {
     if (data.color) data.color = this.client.resolver.resolveColor(data.color);
     if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
 

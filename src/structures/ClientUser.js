@@ -157,7 +157,7 @@ class ClientUser extends User {
       return this.edit({ avatar });
     } else {
       return this.client.resolver.resolveBuffer(avatar)
-        .then(data => this.edit({ avatar: data }));
+        .then(data => this.edit({ avatar: this.client.resolver.resolveBase64(data) || null }));
     }
   }
 
@@ -282,33 +282,32 @@ class ClientUser extends User {
     if (options.guild instanceof Guild) options.guild = options.guild.id;
     Util.mergeDefault({ limit: 25, roles: true, everyone: true, guild: null }, options);
 
-    return this.client.api.users('@me').mentions({ query: options }).get()
-    .then(data => data.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)));
+    return this.client.api.users('@me').mentions.get({ query: options })
+      .then(data => data.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)));
   }
 
   /**
    * Creates a guild.
    * <warn>This is only available when using a user account.</warn>
    * @param {string} name The name of the guild
-   * @param {string} region The region for the server
+   * @param {string} [region] The region for the server
    * @param {BufferResolvable|Base64Resolvable} [icon=null] The icon for the guild
    * @returns {Promise<Guild>} The guild that was created
    */
   createGuild(name, region, icon = null) {
     if (!icon || (typeof icon === 'string' && icon.startsWith('data:'))) {
-      icon = this.client.resolver.resolveBase64(icon) || null;
       return this.client.api.guilds.post({ data: { name, region, icon } })
-      .then(data => this.client.dataManager.newGuild(data));
+        .then(data => this.client.dataManager.newGuild(data));
     } else {
       return this.client.resolver.resolveBuffer(icon)
-        .then(data => this.createGuild(name, region, data));
+        .then(data => this.createGuild(name, region, this.client.resolver.resolveBase64(data) || null));
     }
   }
 
   /**
    * An object containing either a user or access token, and an optional nickname.
    * @typedef {Object} GroupDMRecipientOptions
-   * @property {UserResolvable|Snowflake} [user] User to add to the Group DM
+   * @property {UserResolvable} [user] User to add to the Group DM
    * (only available if a user is creating the DM)
    * @property {string} [accessToken] Access token to use to add a user to the Group DM
    * (only available if a bot is creating the DM)
@@ -324,8 +323,8 @@ class ClientUser extends User {
     const data = this.bot ? {
       access_tokens: recipients.map(u => u.accessToken),
       nicks: recipients.map(u => u.nick),
-    } : { recipients: recipients.map(u => this.client.resolver.resolveUserID(u.user)) };
-    return this.client.api.post({ data })
+    } : { recipients: recipients.map(u => this.client.resolver.resolveUserID(u)) };
+    return this.client.api.users('@me').channels.post({ data })
       .then(res => new GroupDMChannel(this.client, res));
   }
 }

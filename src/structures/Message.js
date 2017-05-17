@@ -430,8 +430,7 @@ class Message {
     emoji = this.client.resolver.resolveEmojiIdentifier(emoji);
     if (!emoji) throw new TypeError('Emoji must be a string or Emoji/ReactionEmoji');
 
-    return this.client.api.channels(this.channel.id).messages(this.id).reactions(emoji)
-      .users('@me')
+    return this.client.api.channels(this.channel.id).messages(this.id).reactions(emoji)['@me']
       .put()
       .then(() => this._addReaction(Util.parseEmoji(emoji), this.client.user));
   }
@@ -457,7 +456,7 @@ class Message {
    *  .then(msg => console.log(`Deleted message from ${msg.author}`))
    *  .catch(console.error);
    */
-  delete({ timeout = 0, reason }) {
+  delete({ timeout = 0, reason } = {}) {
     if (timeout <= 0) {
       return this.client.api.channels(this.channel.id).messages(this.id)
         .delete({ reason })
@@ -502,7 +501,7 @@ class Message {
    * @returns {Promise<Message>}
    */
   acknowledge() {
-    return this.client.api.channels(this.channel.id).messages(this.message.id).ack
+    return this.client.api.channels(this.channel.id).messages(this.id).ack
       .post({ data: { token: this.client.rest._ackToken } })
       .then(res => {
         if (res.token) this.client.rest._ackToken = res.token;

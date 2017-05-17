@@ -16,9 +16,9 @@ module.exports = function search(target, options) {
     options.minID = long.fromNumber(t).shiftLeft(22).toString();
     options.maxID = long.fromNumber(t + 86400000).shiftLeft(22).toString();
   }
-  if (options.channel) options.channel = this.client.resolver.resolveChannelID(options.channel);
-  if (options.author) options.author = this.client.resolver.resolveUserID(options.author);
-  if (options.mentions) options.mentions = this.client.resolver.resolveUserID(options.options.mentions);
+  if (options.channel) options.channel = target.client.resolver.resolveChannelID(options.channel);
+  if (options.author) options.author = target.client.resolver.resolveUserID(options.author);
+  if (options.mentions) options.mentions = target.client.resolver.resolveUserID(options.options.mentions);
   options = {
     content: options.content,
     max_id: options.maxID,
@@ -42,18 +42,18 @@ module.exports = function search(target, options) {
   };
 
   // Lazy load these because some of them use util
-  const Channel = require('../structures/Channel');
-  const Guild = require('../structures/Guild');
-  const Message = require('../structures/Message');
+  const Channel = require('../Channel');
+  const Guild = require('../Guild');
+  const Message = require('../Message');
 
   if (!(target instanceof Channel || target instanceof Guild)) {
     throw new TypeError('Target must be a TextChannel, DMChannel, GroupDMChannel, or Guild.');
   }
 
-  let endpoint = target.client.api[target instanceof Channel ? 'channels' : 'guilds'](target.id).messages.search;
+  let endpoint = target.client.api[target instanceof Channel ? 'channels' : 'guilds'](target.id).messages().search;
   return endpoint.get({ query: options }).then(body => {
     const messages = body.messages.map(x =>
-      x.map(m => new Message(this.target.client.channels.get(m.channel_id), m, this.target.client))
+      x.map(m => new Message(target.client.channels.get(m.channel_id), m, target.client))
     );
     return {
       totalResults: body.total_results,
