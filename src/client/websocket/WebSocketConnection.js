@@ -2,7 +2,6 @@ const browser = require('os').platform() === 'browser';
 const EventEmitter = require('events');
 const Constants = require('../../util/Constants');
 const zlib = require('zlib');
-const PacketManager = require('./packets/WebSocketPacketManager');
 const erlpack = (function findErlpack() {
   try {
     const e = require('erlpack');
@@ -64,12 +63,6 @@ class WebSocketConnection extends EventEmitter {
     this.status = Constants.Status.IDLE;
 
     /**
-     * The Packet Manager of the connection
-     * @type {WebSocketPacketManager}
-     */
-    this.packetManager = new PacketManager(this);
-
-    /**
      * The last time a ping was sent (a timestamp)
      * @type {number}
      */
@@ -121,7 +114,7 @@ class WebSocketConnection extends EventEmitter {
      */
     this.status = Constants.Status.READY;
     this.client.emit(Constants.Events.READY);
-    this.packetManager.handleQueue();
+    this.manager.packetManager.handleQueue();
   }
 
   /**
@@ -272,7 +265,7 @@ class WebSocketConnection extends EventEmitter {
     this.heartbeat(-1);
     this.expectingClose = true;
     ws.close(1000);
-    this.packetManager.handleQueue();
+    this.manager.packetManager.handleQueue();
     this.ws = null;
     this.status = Constants.Status.DISCONNECTED;
     return true;
@@ -326,7 +319,8 @@ class WebSocketConnection extends EventEmitter {
       case Constants.OPCodes.HEARTBEAT:
         return this.heartbeat();
       default:
-        return this.packetManager.handle(packet);
+        packet.shard = this;
+        return this.manager.packetManager.handle(packet);
     }
   }
 
