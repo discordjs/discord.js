@@ -12695,8 +12695,8 @@ const Collector = __webpack_require__(31);
 
 /**
  * @typedef {CollectorOptions} MessageCollectorOptions
- * @property {number} max The maximum amount of messages to process
- * @property {number} maxProcessed The maximum amount of messages to collect
+ * @property {number} max The maximum amount of messages to collect
+ * @property {number} maxProcessed The maximum amount of messages to process
  */
 
 /**
