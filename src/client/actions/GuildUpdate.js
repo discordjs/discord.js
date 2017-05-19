@@ -1,6 +1,6 @@
 const Action = require('./Action');
 const Constants = require('../../util/Constants');
-const Util = require('../../util/Util');
+const Guild = require('../../structures/Guild');
 
 class GuildUpdateAction extends Action {
   handle(data) {
@@ -8,12 +8,12 @@ class GuildUpdateAction extends Action {
 
     const guild = client.guilds.get(data.id);
     if (guild) {
-      const oldGuild = Util.cloneObject(guild);
-      guild.setup(data);
-      client.emit(Constants.Events.GUILD_UPDATE, oldGuild, guild);
+      const newGuild = new Guild(client, data);
+      client.emit(Constants.Events.GUILD_UPDATE, guild, newGuild);
+      this.client.guilds.set(newGuild.id, newGuild);
       return {
-        old: oldGuild,
-        updated: guild,
+        old: guild,
+        updated: newGuild,
       };
     }
 
