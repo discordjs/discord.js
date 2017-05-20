@@ -313,6 +313,8 @@ class ClientUser extends User {
    * @property {string} [accessToken] Access token to use to add a user to the Group DM
    * (only available if a bot is creating the DM)
    * @property {string} [nick] Permanent nickname (only available if a bot is creating the DM)
+   * @property {string} [id] If no user resolveable is provided and you want to assign nicknames
+   * you must provide user ids instead
    */
 
   /**
@@ -323,7 +325,10 @@ class ClientUser extends User {
   createGroupDM(recipients) {
     const data = this.bot ? {
       access_tokens: recipients.map(u => u.accessToken),
-      nicks: recipients.map(u => u.nick),
+      nicks: recipients.reduce((o, r) => {
+        if (r.nick) o[r.user ? r.user.id : r.id] = r.nick;
+        return o;
+      }, {}),
     } : { recipients: recipients.map(u => this.client.resolver.resolveUserID(u)) };
     return this.client.api.users('@me').channels.post({ data })
       .then(res => new GroupDMChannel(this.client, res));
