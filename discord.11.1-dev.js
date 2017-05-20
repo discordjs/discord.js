@@ -3579,7 +3579,7 @@ class Permissions {
 
   /**
    * Data that can be resolved to give a permission number. This can be:
-   * - A string (see {@link Permissions.flags})
+   * - A string (see {@link Permissions.FLAGS})
    * - A permission number
    * @typedef {string|number} PermissionResolvable
    */
@@ -20131,13 +20131,13 @@ module.exports = {
 		]
 	],
 	"_from": "snekfetch@>=3.1.0 <4.0.0",
-	"_id": "snekfetch@3.1.6",
+	"_id": "snekfetch@3.1.7",
 	"_inCache": true,
 	"_location": "/snekfetch",
-	"_nodeVersion": "7.9.0",
+	"_nodeVersion": "8.0.0-rc.0",
 	"_npmOperationalInternal": {
 		"host": "packages-12-west.internal.npmjs.com",
-		"tmp": "tmp/snekfetch-3.1.6.tgz_1493569353717_0.8596337598282844"
+		"tmp": "tmp/snekfetch-3.1.7.tgz_1494815163487_0.09571001585572958"
 	},
 	"_npmUser": {
 		"name": "snek",
@@ -20157,8 +20157,8 @@ module.exports = {
 	"_requiredBy": [
 		"/"
 	],
-	"_resolved": "https://registry.npmjs.org/snekfetch/-/snekfetch-3.1.6.tgz",
-	"_shasum": "3090d5cd3f5bc1e456f8aafa5024f64b7ca5b1e0",
+	"_resolved": "https://registry.npmjs.org/snekfetch/-/snekfetch-3.1.7.tgz",
+	"_shasum": "5eb980d29c3b455bf0b13359647909b0737315e9",
 	"_shrinkwrap": null,
 	"_spec": "snekfetch@^3.1.0",
 	"_where": "/home/travis/build/hydrabolt/discord.js",
@@ -20167,18 +20167,18 @@ module.exports = {
 		"email": "me@gus.host"
 	},
 	"bugs": {
-		"url": "https://github.com/GusCaplan/snekfetch/issues"
+		"url": "https://github.com/devsnek/snekfetch/issues"
 	},
 	"dependencies": {},
 	"description": "Just do http requests without all that weird nastiness from other libs",
 	"devDependencies": {},
 	"directories": {},
 	"dist": {
-		"shasum": "3090d5cd3f5bc1e456f8aafa5024f64b7ca5b1e0",
-		"tarball": "https://registry.npmjs.org/snekfetch/-/snekfetch-3.1.6.tgz"
+		"shasum": "5eb980d29c3b455bf0b13359647909b0737315e9",
+		"tarball": "https://registry.npmjs.org/snekfetch/-/snekfetch-3.1.7.tgz"
 	},
-	"gitHead": "b03a6bb7d3b73ac3a4b27c7cfffcfbaa87d38700",
-	"homepage": "https://github.com/GusCaplan/snekfetch#readme",
+	"gitHead": "f47ae6179addc843c76041a5b0a1013c67759729",
+	"homepage": "https://github.com/devsnek/snekfetch#readme",
 	"license": "MIT",
 	"main": "index.js",
 	"maintainers": [
@@ -20200,10 +20200,10 @@ module.exports = {
 	"readme": "ERROR: No README data found!",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/GusCaplan/snekfetch.git"
+		"url": "git+https://github.com/devsnek/snekfetch.git"
 	},
 	"scripts": {},
-	"version": "3.1.6"
+	"version": "3.1.7"
 };
 
 /***/ }),
@@ -20372,30 +20372,32 @@ class Snekfetch extends Stream.Readable {
           const concated = Buffer.concat(body);
 
           if (this._shouldRedirect(response)) {
+            let method = this.request.method;
             if ([301, 302].includes(response.statusCode)) {
-              this.method = this.method === 'HEAD' ? 'HEAD' : 'GET';
+              if (method !== 'HEAD') method = 'GET';
               this.data = null;
             } else if (response.statusCode === 303) {
-              this.method = 'GET';
+              method = 'GET';
             }
 
             const headers = {};
             if (this.request._headerNames) {
               for (const name of Object.keys(this.request._headerNames)) {
+                if (name.toLowerCase() === 'host') continue;
                 headers[this.request._headerNames[name]] = this.request._headers[name];
               }
             } else {
               for (const name of Object.keys(this.request._headers)) {
+                if (name.toLowerCase() === 'host') continue;
                 const header = this.request._headers[name];
                 headers[header.name] = header.value;
               }
             }
 
-            resolve(new Snekfetch(
-              this.method,
-              URL.resolve(makeURLFromRequest(request), response.headers.location),
-              { data: this.data, headers }
-            ));
+            const newURL = /^https?:\/\//i.test(response.headers.location) ?
+              response.headers.location :
+              URL.resolve(makeURLFromRequest(request), response.headers.location);
+            resolve(new Snekfetch(method, newURL, { data: this.data, headers }));
             return;
           }
 
