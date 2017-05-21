@@ -351,7 +351,7 @@ class Client extends EventEmitter {
    * @returns {Promise<Webhook>}
    */
   fetchWebhook(id, token) {
-    return this.api.webhooks(id, token).get().then(data => new Webhook(this.client, data));
+    return this.api.webhooks(id, token).get().then(data => new Webhook(this, data));
   }
 
   /**
@@ -409,7 +409,7 @@ class Client extends EventEmitter {
    */
   fetchApplication(id = '@me') {
     return this.rest.api.oauth2.applications(id).get()
-    .then(app => new OAuth2Application(this.client, app));
+    .then(app => new OAuth2Application(this, app));
   }
 
   /**
