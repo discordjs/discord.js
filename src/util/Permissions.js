@@ -82,7 +82,7 @@ class Permissions {
 
   /**
    * Data that can be resolved to give a permission number. This can be:
-   * - A string (see {@link Permissions.flags})
+   * - A string (see {@link Permissions.FLAGS})
    * - A permission number
    * @typedef {string|number} PermissionResolvable
    */
