@@ -975,7 +975,7 @@ class Guild {
    */
   leave() {
     if (this.ownerID === this.client.user.id) return Promise.reject(new Error('Guild is owned by the client.'));
-    return this.rest.api.users('@me').guilds(this.id).delete()
+    return this.client.api.users('@me').guilds(this.id).delete()
     .then(() => this.client.actions.GuildDelete.handle({ id: this.id }).guild);
   }
 
