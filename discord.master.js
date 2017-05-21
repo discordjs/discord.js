@@ -16771,12 +16771,13 @@ class WebSocketConnection extends EventEmitter {
    * @returns {boolean}
    */
   onMessage(event) {
+    let data;
     try {
-      event.data = this.unpack(event.data);
+      data = this.unpack(event.data);
     } catch (err) {
       this.emit('debug', err);
     }
-    return this.onPacket(event.data);
+    return this.onPacket(data);
   }
 
   /**
