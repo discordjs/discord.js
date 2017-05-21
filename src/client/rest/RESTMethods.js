@@ -19,6 +19,7 @@ const Channel = require('../../structures/Channel');
 const GroupDMChannel = require('../../structures/GroupDMChannel');
 const Guild = require('../../structures/Guild');
 const VoiceRegion = require('../../structures/VoiceRegion');
+const MessageEmbed = require('../../structures/MessageEmbed');
 const GuildAuditLogs = require('../../structures/GuildAuditLogs');
 
 class RESTMethods {
@@ -58,6 +59,7 @@ class RESTMethods {
   sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code, reply } = {}, files = null) {
     return new Promise((resolve, reject) => { // eslint-disable-line complexity
       if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
+      if (typeof embed !== 'undefined') embed = new MessageEmbed({ client: this.client }, embed)._transformForDiscord();
 
       // The nonce has to be a uint64 :<
       if (typeof nonce !== 'undefined') {
@@ -123,6 +125,7 @@ class RESTMethods {
 
   updateMessage(message, content, { embed, code, reply } = {}) {
     if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
+    if (typeof embed !== 'undefined') embed = new MessageEmbed(message, embed)._transformForDiscord();
 
     // Wrap everything in a code block
     if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
@@ -740,6 +743,10 @@ class RESTMethods {
   sendWebhookMessage(webhook, content, { avatarURL, tts, disableEveryone, embeds, username } = {}, file = null) {
     username = username || webhook.name;
     if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
+    if (typeof embeds !== 'undefined') {
+      embeds = embeds.map(embed => new MessageEmbed(webhook, embed)._transformForDiscord());
+    }
+
     if (content) {
       if (disableEveryone || (typeof disableEveryone === 'undefined' && this.client.options.disableEveryone)) {
         content = content.replace(/@(everyone|here)/g, '@\u200b$1');
