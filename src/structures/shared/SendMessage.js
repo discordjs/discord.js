@@ -16,7 +16,7 @@ module.exports = function sendMessage(channel, options) {
     if (split && typeof split !== 'object') split = {};
     // Wrap everything in a code block
     if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
-      content = Util.escapeMarkdown(channel.client.resolver.resolveString(content), true);
+      content = Util.escapeMarkdown(content, true);
       content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
       if (split) {
         split.prepend = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n`;
