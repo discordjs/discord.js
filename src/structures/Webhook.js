@@ -1,4 +1,5 @@
 const path = require('path');
+const Util = require('../util/Util');
 
 /**
  * Represents a webhook.
@@ -113,7 +114,7 @@ class Webhook {
       options.avatarURL = null;
     }
 
-    if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
+    if (typeof content !== 'undefined') content = Util.resolveString(content);
     if (content) {
       if (options.disableEveryone ||
         (typeof options.disableEveryone === 'undefined' && this.client.options.disableEveryone)
