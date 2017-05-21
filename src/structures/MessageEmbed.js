@@ -1,3 +1,5 @@
+let RichEmbed;
+
 /**
  * Represents an embed in a message (image/video preview, rich embed, etc.)
  * <info>This class is only used for *recieved* embeds. If you wish to send one, use the {@link RichEmbed} class.</info>
@@ -120,6 +122,42 @@ class MessageEmbed {
     let col = this.color.toString(16);
     while (col.length < 6) col = `0${col}`;
     return `#${col}`;
+  }
+
+  /**
+   * The RichEmbed representation of this MessageEmbed.
+   * @type {RichEmbed}
+   * @readonly
+   */
+  get richEmbed() {
+    const result = {};
+    // Circular dependency stuff
+    if (!RichEmbed) RichEmbed = require('./RichEmbed');
+    for (const key of Object.keys(this)) {
+      const value = this[key];
+      if (key === 'message') continue;
+      if (value && typeof value === 'object') {
+        const resultObj = value instanceof Array ? [] : {};
+        for (const key2 of Object.keys(value)) {
+          const value2 = value[key2];
+          if (/^(?:embed|height|width|proxyURL|proxyIconUrl)$/i.test(key2)) continue;
+          if (typeof value2 === 'object') {
+            const resultObj2 = value2 instanceof Array ? [] : {};
+            for (const key3 of Object.keys(value2)) { // eslint-disable-line max-depth
+              const value3 = value2[key3];
+              if (key3 !== 'embed') resultObj2[key3] = value3; // eslint-disable-line max-depth
+            }
+            resultObj[key2] = resultObj2;
+          } else {
+            resultObj[key2] = value2;
+          }
+        }
+        result[key] = resultObj;
+      } else {
+        result[key] = value;
+      }
+    }
+    return new RichEmbed(result);
   }
 }
 

@@ -1,4 +1,5 @@
 const ClientDataResolver = require('../client/ClientDataResolver');
+let MessageEmbed;
 
 /**
  * A rich embed to be sent with a message with a fluent interface for creation.
@@ -210,6 +211,32 @@ class RichEmbed {
     if (this.file) throw new RangeError('You may not upload more than one file at once.');
     this.file = file;
     return this;
+  }
+
+  /**
+   * The MessageEmbed representation of this RichEmbed.
+   * @type {MessageEmbed}
+   * @readonly
+   */
+  get messageEmbed() {
+    const result = {};
+    // No circular stuff this time
+    if (!MessageEmbed) MessageEmbed = require('./MessageEmbed');
+    for (const key of Object.keys(this)) {
+      const value = this[key];
+      if (value && typeof value === 'object') {
+        const resultObj = Object.create(value);
+        for (let key2 of Object.keys(value)) {
+          const value2 = value[key2];
+          if (key2 === 'icon_url') key2 = 'iconURL';
+          resultObj[key2] = value2;
+        }
+        result[key] = resultObj;
+      } else {
+        result[key] = value;
+      }
+    }
+    return new MessageEmbed({}, result);
   }
 }
 
