@@ -5974,7 +5974,7 @@ class Message {
    * @example
    * // Create a reaction collector
    * const collector = message.createReactionCollector(
-   *  (reaction, user) => reaction.emoji.id === '👌' && user.id === 'someID',
+   *  (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID',
    *  { time: 15000 }
    * );
    * collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
