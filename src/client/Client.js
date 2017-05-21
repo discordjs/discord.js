@@ -359,7 +359,7 @@ class Client extends EventEmitter {
    * @returns {Collection<string, VoiceRegion>}
    */
   fetchVoiceRegions() {
-    return this.rest.api.voice.regions.get().then(res => {
+    return this.api.voice.regions.get().then(res => {
       const regions = new Collection();
       for (const region of res) regions.set(region.id, new VoiceRegion(region));
       return regions;

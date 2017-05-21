@@ -379,7 +379,7 @@ class TextBasedChannel {
           Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000
         );
       }
-      return this.rest.api.channels(this.id).messages['bulk-delete']
+      return this.client.api.channels(this.id).messages()['bulk-delete']
       .post({ data: { messages: messageIDs } })
       .then(() =>
         this.client.actions.MessageDeleteBulk.handle({
@@ -398,7 +398,7 @@ class TextBasedChannel {
    */
   acknowledge() {
     if (!this.lastMessageID) return Promise.resolve(this);
-    return this.client.api.channels(this.id).messages(this.lastMessageID)
+    return this.client.api.channels(this.id).messages(this.lastMessageID).ack
       .post({ data: { token: this.client.rest._ackToken } })
       .then(res => {
         if (res.token) this.client.rest._ackToken = res.token;
