@@ -2,6 +2,6 @@
 
 
 **Semantic versioning classification:**  
+- [ ] This PR includes breaking changes (methods removed or renamed, parameters moved or removed)
 - [ ] This PR changes the library's interface (methods or parameters added)
-  - [ ] This PR includes breaking changes (methods removed or renamed, parameters moved or removed)
-- [ ] This PR **only** includes non-code changes, like changes to documentation, README, etc.
+- [ ] This PR **only** includes minor changes, like bugfixes, changes to documentation, README, etc.
