@@ -10,6 +10,7 @@ const Targets = {
   WEBHOOK: 'WEBHOOK',
   EMOJI: 'EMOJI',
   MESSAGE: 'MESSAGE',
+  UNKNOWN: 'UNKNOWN',
 };
 
 const Actions = {
@@ -83,7 +84,7 @@ class GuildAuditLogs {
     if (target < 60) return Targets.WEBHOOK;
     if (target < 70) return Targets.EMOJI;
     if (target < 80) return Targets.MESSAGE;
-    return null;
+    return Targets.UNKNOWN;
   }
 
 
@@ -219,11 +220,14 @@ class GuildAuditLogsEntry {
       }
     }
 
-    if ([Targets.USER, Targets.GUILD].includes(targetType)) {
+
+    if (targetType === Targets.UNKNOWN) {
       /**
        * The target of this entry
-       * @type {?Guild|User|Role|Emoji|Invite|Webhook}
+       * @type {Snowflake|Guild|User|Role|Emoji|Invite|Webhook}
        */
+      this.target = data.target_id;
+    } else if ([Targets.USER, Targets.GUILD].includes(targetType)) {
       this.target = guild.client[`${targetType.toLowerCase()}s`].get(data.target_id);
     } else if (targetType === Targets.WEBHOOK) {
       this.target = guild.fetchWebhooks()

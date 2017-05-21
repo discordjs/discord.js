@@ -136,15 +136,16 @@ class Invite {
    * @readonly
    */
   get url() {
-    return Constants.Endpoints.inviteLink(this.code);
+    return Constants.Endpoints.invite(this.code);
   }
 
   /**
    * Deletes this invite.
+   * @param {string} [reason] Reason for deleting this invite
    * @returns {Promise<Invite>}
    */
-  delete() {
-    return this.client.rest.methods.deleteInvite(this);
+  delete(reason) {
+    return this.client.api.invites(this.code).delete({ reason }).then(() => this);
   }
 
   /**

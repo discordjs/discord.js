@@ -190,6 +190,7 @@ class Role {
   /**
    * Edits the role.
    * @param {RoleData} data The new data for the role
+   * @param {string} [reason] Reason for editing this role
    * @returns {Promise<Role>}
    * @example
    * // Edit a role
@@ -197,8 +198,20 @@ class Role {
    *  .then(r => console.log(`Edited role ${r}`))
    *  .catch(console.error);
    */
-  edit(data) {
-    return this.client.rest.methods.updateGuildRole(this, data);
+  edit(data, reason) {
+    if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
+    else data.permissions = this.permissions;
+    return this.client.api.guilds(this.guild.id).roles(this.id).patch({
+      data: {
+        name: data.name || this.name,
+        position: typeof data.position !== 'undefined' ? data.position : this.position,
+        color: this.client.resolver.resolveColor(data.color || this.color),
+        hoist: typeof data.hoist !== 'undefined' ? data.hoist : this.hoist,
+        mentionable: typeof data.mentionable !== 'undefined' ? data.mentionable : this.mentionable,
+      },
+      reason,
+    })
+    .then(role => this.client.actions.GuildRoleUpdate.handle({ role, guild_id: this.guild.id }).updated);
   }
 
   /**
@@ -288,6 +301,7 @@ class Role {
 
   /**
    * Deletes the role.
+   * @param {string} [reason] Reason for deleting this role
    * @returns {Promise<Role>}
    * @example
    * // Delete a role
@@ -295,8 +309,11 @@ class Role {
    *  .then(r => console.log(`Deleted role ${r}`))
    *  .catch(console.error);
    */
-  delete() {
-    return this.client.rest.methods.deleteGuildRole(this);
+  delete(reason) {
+    return this.client.api.guilds(this.guild.id).roles(this.id).delete({ reason })
+    .then(() =>
+      this.client.actions.GuildRoleDelete.handle({ guild_id: this.guild.id, role_id: this.id }).role
+    );
   }
 
   /**

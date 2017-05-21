@@ -106,101 +106,7 @@ const AllowedImageSizes = [
   2048,
 ];
 
-const Endpoints = exports.Endpoints = {
-  User: userID => {
-    if (userID.id) userID = userID.id;
-    const base = `/users/${userID}`;
-    return {
-      toString: () => base,
-      channels: `${base}/channels`,
-      profile: `${base}/profile`,
-      relationships: `${base}/relationships`,
-      settings: `${base}/settings`,
-      Relationship: uID => `${base}/relationships/${uID}`,
-      Guild: guildID => `${base}/guilds/${guildID}`,
-      Note: id => `${base}/notes/${id}`,
-      Mentions: (limit, roles, everyone, guildID) =>
-        `${base}/mentions?limit=${limit}&roles=${roles}&everyone=${everyone}${guildID ? `&guild_id=${guildID}` : ''}`,
-      Avatar: (root, hash, format, size) => {
-        if (userID === '1') return hash;
-        return Endpoints.CDN(root).Avatar(userID, hash, format, size);
-      },
-    };
-  },
-  guilds: '/guilds',
-  Guild: guildID => {
-    if (guildID.id) guildID = guildID.id;
-    const base = `/guilds/${guildID}`;
-    return {
-      toString: () => base,
-      prune: `${base}/prune`,
-      embed: `${base}/embed`,
-      bans: `${base}/bans`,
-      integrations: `${base}/integrations`,
-      members: `${base}/members`,
-      channels: `${base}/channels`,
-      invites: `${base}/invites`,
-      roles: `${base}/roles`,
-      emojis: `${base}/emojis`,
-      search: `${base}/messages/search`,
-      voiceRegions: `${base}/regions`,
-      webhooks: `${base}/webhooks`,
-      ack: `${base}/ack`,
-      settings: `${base}/settings`,
-      auditLogs: `${base}/audit-logs`,
-      Emoji: emojiID => `${base}/emojis/${emojiID}`,
-      Icon: (root, hash, format, size) => Endpoints.CDN(root).Icon(guildID, hash, format, size),
-      Splash: (root, hash) => Endpoints.CDN(root).Splash(guildID, hash),
-      Role: roleID => `${base}/roles/${roleID}`,
-      Member: memberID => {
-        if (memberID.id) memberID = memberID.id;
-        const mbase = `${base}/members/${memberID}`;
-        return {
-          toString: () => mbase,
-          Role: roleID => `${mbase}/roles/${roleID}`,
-          nickname: `${base}/members/@me/nick`,
-        };
-      },
-    };
-  },
-  channels: '/channels',
-  Channel: channelID => {
-    if (channelID.id) channelID = channelID.id;
-    const base = `/channels/${channelID}`;
-    return {
-      toString: () => base,
-      messages: {
-        toString: () => `${base}/messages`,
-        bulkDelete: `${base}/messages/bulk-delete`,
-      },
-      invites: `${base}/invites`,
-      typing: `${base}/typing`,
-      permissions: `${base}/permissions`,
-      webhooks: `${base}/webhooks`,
-      search: `${base}/messages/search`,
-      pins: `${base}/pins`,
-      Pin: messageID => `${base}/pins/${messageID}`,
-      Recipient: recipientID => `${base}/recipients/${recipientID}`,
-      Message: messageID => {
-        if (messageID.id) messageID = messageID.id;
-        const mbase = `${base}/messages/${messageID}`;
-        return {
-          toString: () => mbase,
-          reactions: `${mbase}/reactions`,
-          ack: `${mbase}/ack`,
-          Reaction: (emoji, limit) => {
-            const rbase = `${mbase}/reactions/${emoji}${limit ? `?limit=${limit}` : ''}`;
-            return {
-              toString: () => rbase,
-              User: userID => `${rbase}/${userID}`,
-            };
-          },
-        };
-      },
-    };
-  },
-  Message: m => exports.Endpoints.Channel(m.channel).Message(m),
-  Member: m => exports.Endpoints.Guild(m.guild).Member(m),
+exports.Endpoints = {
   CDN(root) {
     return {
       Emoji: emojiID => `${root}/emojis/${emojiID}.png`,
@@ -227,26 +133,7 @@ const Endpoints = exports.Endpoints = {
       Splash: (guildID, hash) => `${root}/splashes/${guildID}/${hash}.jpg`,
     };
   },
-  OAUTH2: {
-    Application: appID => {
-      const base = `/oauth2/applications/${appID}`;
-      return {
-        toString: () => base,
-        reset: `${base}/reset`,
-      };
-    },
-    App: appID => `/oauth2/authorize?client_id=${appID}`,
-  },
-  login: '/auth/login',
-  logout: '/auth/logout',
-  voiceRegions: '/voice/regions',
-  gateway: {
-    toString: () => '/gateway',
-    bot: '/gateway/bot',
-  },
-  Invite: inviteID => `/invite/${inviteID}?with_counts=true`,
-  inviteLink: id => `https://discord.gg/${id}`,
-  Webhook: (webhookID, token) => `/webhooks/${webhookID}${token ? `/${token}` : ''}`,
+  invite: code => `https://discord.gg/${code}`,
 };
 
 
