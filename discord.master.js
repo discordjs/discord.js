@@ -70,7 +70,7 @@
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {exports.Package = __webpack_require__(41);
+/* WEBPACK VAR INJECTION */(function(process) {exports.Package = __webpack_require__(40);
 
 /**
  * Options for a client.
@@ -1231,6 +1231,85 @@ class Util {
     }
     return array.indexOf(element);
   }
+
+  /**
+   * Data that can be resolved to give a string. This can be:
+   * * A string
+   * * An array (joined with a new line delimiter to give a string)
+   * * Any value
+   * @typedef {string|Array|*} StringResolvable
+   */
+
+  /**
+   * Resolves a StringResolvable to a string.
+   * @param {StringResolvable} data The string resolvable to resolve
+   * @returns {string}
+   */
+
+  static resolveString(data) {
+    if (typeof data === 'string') return data;
+    if (data instanceof Array) return data.join('\n');
+    return String(data);
+  }
+
+  /**
+   * Can be a Hex Literal, Hex String, Number, RGB Array, or one of the following
+   * ```
+   * [
+   *   'DEFAULT',
+   *   'AQUA',
+   *   'GREEN',
+   *   'BLUE',
+   *   'PURPLE',
+   *   'GOLD',
+   *   'ORANGE',
+   *   'RED',
+   *   'GREY',
+   *   'DARKER_GREY',
+   *   'NAVY',
+   *   'DARK_AQUA',
+   *   'DARK_GREEN',
+   *   'DARK_BLUE',
+   *   'DARK_PURPLE',
+   *   'DARK_GOLD',
+   *   'DARK_ORANGE',
+   *   'DARK_RED',
+   *   'DARK_GREY',
+   *   'LIGHT_GREY',
+   *   'DARK_NAVY',
+   *   'RANDOM',
+   * ]
+   * ```
+   * or something like
+   * ```
+   * [255, 0, 255]
+   * ```
+   * for purple
+   * @typedef {string|number|Array} ColorResolvable
+   */
+
+  /**
+   * Resolves a ColorResolvable into a color number.
+   * @param {ColorResolvable} color Color to resolve
+   * @returns {number} A color
+   */
+
+  static resolveColor(color) {
+    if (typeof color === 'string') {
+      if (color === 'RANDOM') return Math.floor(Math.random() * (0xFFFFFF + 1));
+      color = Constants.Colors[color] || parseInt(color.replace('#', ''), 16);
+    } else if (color instanceof Array) {
+      color = (color[0] << 16) + (color[1] << 8) + color[2];
+    }
+
+    if (color < 0 || color > 0xFFFFFF) {
+      throw new RangeError('Color must be within the range 0 - 16777215 (0xFFFFFF).');
+    } else if (color && isNaN(color)) {
+      throw new TypeError('Unable to convert color to a number.');
+    }
+
+    return color;
+  }
 }
 
 module.exports = Util;
@@ -1254,7 +1333,7 @@ module.exports = Util;
 
 var base64 = __webpack_require__(78)
 var ieee754 = __webpack_require__(81)
-var isArray = __webpack_require__(57)
+var isArray = __webpack_require__(56)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -3309,11 +3388,11 @@ process.umask = function() { return 0; };
 /* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Mentions = __webpack_require__(49);
-const Attachment = __webpack_require__(46);
-const Embed = __webpack_require__(48);
-const MessageReaction = __webpack_require__(50);
-const ReactionCollector = __webpack_require__(54);
+const Mentions = __webpack_require__(48);
+const Attachment = __webpack_require__(45);
+const Embed = __webpack_require__(47);
+const MessageReaction = __webpack_require__(49);
+const ReactionCollector = __webpack_require__(53);
 const Util = __webpack_require__(4);
 const Collection = __webpack_require__(3);
 const Constants = __webpack_require__(0);
@@ -3692,13 +3771,13 @@ class Message {
       options = {};
     }
 
-    if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
+    if (typeof content !== 'undefined') content = Util.resolveString(content);
 
     const { embed, code, reply } = options;
 
     // Wrap everything in a code block
     if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
-      content = Util.escapeMarkdown(this.client.resolver.resolveString(content), true);
+      content = Util.escapeMarkdown(Util.resolveString(content), true);
       content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
     }
 
@@ -4873,7 +4952,7 @@ var util = __webpack_require__(22);
 util.inherits = __webpack_require__(11);
 /*</replacement>*/
 
-var Readable = __webpack_require__(58);
+var Readable = __webpack_require__(57);
 var Writable = __webpack_require__(37);
 
 util.inherits(Duplex, Readable);
@@ -5230,7 +5309,7 @@ const User = __webpack_require__(12);
 const Role = __webpack_require__(20);
 const Emoji = __webpack_require__(17);
 const Invite = __webpack_require__(27);
-const GuildAuditLogs = __webpack_require__(45);
+const GuildAuditLogs = __webpack_require__(44);
 const Webhook = __webpack_require__(21);
 const Presence = __webpack_require__(13).Presence;
 const GuildMember = __webpack_require__(19);
@@ -6138,7 +6217,7 @@ class Guild {
    * .catch(console.error)
    */
   createRole({ data = {}, reason } = {}) {
-    if (data.color) data.color = this.client.resolver.resolveColor(data.color);
+    if (data.color) data.color = Util.resolveColor(data.color);
     if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
 
     return this.client.api.guilds(this.id).roles.post({ data, reason }).then(role =>
@@ -6987,6 +7066,7 @@ module.exports = GuildMember;
 
 const Snowflake = __webpack_require__(6);
 const Permissions = __webpack_require__(10);
+const Util = __webpack_require__(4);
 
 /**
  * Represents a role on Discord.
@@ -7192,7 +7272,7 @@ class Role {
       data: {
         name: data.name || this.name,
         position: typeof data.position !== 'undefined' ? data.position : this.position,
-        color: this.client.resolver.resolveColor(data.color || this.color),
+        color: Util.resolveColor(data.color || this.color),
         hoist: typeof data.hoist !== 'undefined' ? data.hoist : this.hoist,
         mentionable: typeof data.mentionable !== 'undefined' ? data.mentionable : this.mentionable,
       },
@@ -7351,6 +7431,7 @@ module.exports = Role;
 /***/ (function(module, exports, __webpack_require__) {
 
 const path = __webpack_require__(29);
+const Util = __webpack_require__(4);
 
 /**
  * Represents a webhook.
@@ -7465,7 +7546,7 @@ class Webhook {
       options.avatarURL = null;
     }
 
-    if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
+    if (typeof content !== 'undefined') content = Util.resolveString(content);
     if (content) {
       if (options.disableEveryone ||
         (typeof options.disableEveryone === 'undefined' && this.client.options.disableEveryone)
@@ -7705,12 +7786,12 @@ function objectToString(o) {
 /* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(58);
+exports = module.exports = __webpack_require__(57);
 exports.Stream = exports;
 exports.Readable = exports;
 exports.Writable = __webpack_require__(37);
 exports.Duplex = __webpack_require__(15);
-exports.Transform = __webpack_require__(59);
+exports.Transform = __webpack_require__(58);
 exports.PassThrough = __webpack_require__(86);
 
 
@@ -7719,7 +7800,7 @@ exports.PassThrough = __webpack_require__(86);
 /***/ (function(module, exports, __webpack_require__) {
 
 const path = __webpack_require__(29);
-const MessageCollector = __webpack_require__(47);
+const MessageCollector = __webpack_require__(46);
 const Shared = __webpack_require__(71);
 const Collection = __webpack_require__(3);
 const Snowflake = __webpack_require__(6);
@@ -8219,7 +8300,7 @@ exports.EOL = '\n';
 const Channel = __webpack_require__(16);
 const Role = __webpack_require__(20);
 const Invite = __webpack_require__(27);
-const PermissionOverwrites = __webpack_require__(53);
+const PermissionOverwrites = __webpack_require__(52);
 const Permissions = __webpack_require__(10);
 const Collection = __webpack_require__(3);
 
@@ -8594,8 +8675,8 @@ module.exports = GuildChannel;
 /* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const PartialGuild = __webpack_require__(51);
-const PartialGuildChannel = __webpack_require__(52);
+const PartialGuild = __webpack_require__(50);
+const PartialGuildChannel = __webpack_require__(51);
 const Constants = __webpack_require__(0);
 
 /**
@@ -11005,7 +11086,7 @@ var internalUtil = {
 /*</replacement>*/
 
 /*<replacement>*/
-var Stream = __webpack_require__(60);
+var Stream = __webpack_require__(59);
 /*</replacement>*/
 
 var Buffer = __webpack_require__(5).Buffer;
@@ -11591,341 +11672,6 @@ module.exports = Snekfetch;
 
 /***/ }),
 /* 40 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(29);
-const fs = __webpack_require__(39);
-const snekfetch = __webpack_require__(38);
-
-const Constants = __webpack_require__(0);
-const convertToBuffer = __webpack_require__(4).convertToBuffer;
-const User = __webpack_require__(12);
-const Message = __webpack_require__(8);
-const Guild = __webpack_require__(18);
-const Channel = __webpack_require__(16);
-const GuildMember = __webpack_require__(19);
-const Emoji = __webpack_require__(17);
-const ReactionEmoji = __webpack_require__(31);
-
-/**
- * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
- * extracting a User from a Message object.
- * @private
- */
-class ClientDataResolver {
-  /**
-   * @param {Client} client The client the resolver is for
-   */
-  constructor(client) {
-    this.client = client;
-  }
-
-  /**
-   * Data that resolves to give a User object. This can be:
-   * * A User object
-   * * A user ID
-   * * A Message object (resolves to the message author)
-   * * A Guild object (owner of the guild)
-   * * A GuildMember object
-   * @typedef {User|Snowflake|Message|Guild|GuildMember} UserResolvable
-   */
-
-  /**
-   * Resolves a UserResolvable to a User object.
-   * @param {UserResolvable} user The UserResolvable to identify
-   * @returns {?User}
-   */
-  resolveUser(user) {
-    if (user instanceof User) return user;
-    if (typeof user === 'string') return this.client.users.get(user) || null;
-    if (user instanceof GuildMember) return user.user;
-    if (user instanceof Message) return user.author;
-    if (user instanceof Guild) return user.owner;
-    return null;
-  }
-
-  /**
-   * Resolves a UserResolvable to a user ID string.
-   * @param {UserResolvable} user The UserResolvable to identify
-   * @returns {?Snowflake}
-   */
-  resolveUserID(user) {
-    if (user instanceof User || user instanceof GuildMember) return user.id;
-    if (typeof user === 'string') return user || null;
-    if (user instanceof Message) return user.author.id;
-    if (user instanceof Guild) return user.ownerID;
-    return null;
-  }
-
-  /**
-   * Data that resolves to give a Guild object. This can be:
-   * * A Guild object
-   * * A Guild ID
-   * @typedef {Guild|Snowflake} GuildResolvable
-   */
-
-  /**
-   * Resolves a GuildResolvable to a Guild object.
-   * @param {GuildResolvable} guild The GuildResolvable to identify
-   * @returns {?Guild}
-   */
-  resolveGuild(guild) {
-    if (guild instanceof Guild) return guild;
-    if (typeof guild === 'string') return this.client.guilds.get(guild) || null;
-    return null;
-  }
-
-  /**
-   * Data that resolves to give a GuildMember object. This can be:
-   * * A GuildMember object
-   * * A User object
-   * @typedef {GuildMember|User} GuildMemberResolvable
-   */
-
-  /**
-   * Resolves a GuildMemberResolvable to a GuildMember object.
-   * @param {GuildResolvable} guild The guild that the member is part of
-   * @param {UserResolvable} user The user that is part of the guild
-   * @returns {?GuildMember}
-   */
-  resolveGuildMember(guild, user) {
-    if (user instanceof GuildMember) return user;
-    guild = this.resolveGuild(guild);
-    user = this.resolveUser(user);
-    if (!guild || !user) return null;
-    return guild.members.get(user.id) || null;
-  }
-
-  /**
-   * Data that can be resolved to give a Channel object. This can be:
-   * * A Channel object
-   * * A Message object (the channel the message was sent in)
-   * * A Guild object (the #general channel)
-   * * A channel ID
-   * @typedef {Channel|Guild|Message|Snowflake} ChannelResolvable
-   */
-
-  /**
-   * Resolves a ChannelResolvable to a Channel object.
-   * @param {ChannelResolvable} channel The channel resolvable to resolve
-   * @returns {?Channel}
-   */
-  resolveChannel(channel) {
-    if (channel instanceof Channel) return channel;
-    if (typeof channel === 'string') return this.client.channels.get(channel) || null;
-    if (channel instanceof Message) return channel.channel;
-    if (channel instanceof Guild) return channel.channels.get(channel.id) || null;
-    return null;
-  }
-
-  /**
-   * Resolves a ChannelResolvable to a channel ID.
-   * @param {ChannelResolvable} channel The channel resolvable to resolve
-   * @returns {?Snowflake}
-   */
-  resolveChannelID(channel) {
-    if (channel instanceof Channel) return channel.id;
-    if (typeof channel === 'string') return channel;
-    if (channel instanceof Message) return channel.channel.id;
-    if (channel instanceof Guild) return channel.defaultChannel.id;
-    return null;
-  }
-
-  /**
-   * Data that can be resolved to give an invite code. This can be:
-   * * An invite code
-   * * An invite URL
-   * @typedef {string} InviteResolvable
-   */
-
-  /**
-   * Resolves InviteResolvable to an invite code.
-   * @param {InviteResolvable} data The invite resolvable to resolve
-   * @returns {string}
-   */
-  resolveInviteCode(data) {
-    const inviteRegex = /discord(?:app\.com\/invite|\.gg)\/([\w-]{2,255})/i;
-    const match = inviteRegex.exec(data);
-    if (match && match[1]) return match[1];
-    return data;
-  }
-
-  /**
-   * Data that can be resolved to give a string. This can be:
-   * * A string
-   * * An array (joined with a new line delimiter to give a string)
-   * * Any value
-   * @typedef {string|Array|*} StringResolvable
-   */
-
-  /**
-   * Resolves a StringResolvable to a string.
-   * @param {StringResolvable} data The string resolvable to resolve
-   * @returns {string}
-   */
-  resolveString(data) {
-    if (typeof data === 'string') return data;
-    if (data instanceof Array) return data.join('\n');
-    return String(data);
-  }
-
-  /**
-   * Data that resolves to give a Base64 string, typically for image uploading. This can be:
-   * * A Buffer
-   * * A base64 string
-   * @typedef {Buffer|string} Base64Resolvable
-   */
-
-  /**
-   * Resolves a Base64Resolvable to a Base 64 image.
-   * @param {Base64Resolvable} data The base 64 resolvable you want to resolve
-   * @returns {?string}
-   */
-  resolveBase64(data) {
-    if (data instanceof Buffer) return `data:image/jpg;base64,${data.toString('base64')}`;
-    return data;
-  }
-
-  /**
-   * Data that can be resolved to give a Buffer. This can be:
-   * * A Buffer
-   * * The path to a local file
-   * * A URL
-   * @typedef {string|Buffer} BufferResolvable
-   */
-
-  /**
-   * Resolves a BufferResolvable to a Buffer.
-   * @param {BufferResolvable} resource The buffer resolvable to resolve
-   * @returns {Promise<Buffer>}
-   */
-  resolveBuffer(resource) {
-    if (resource instanceof Buffer) return Promise.resolve(resource);
-    if (this.client.browser && resource instanceof ArrayBuffer) return Promise.resolve(convertToBuffer(resource));
-
-    if (typeof resource === 'string') {
-      return new Promise((resolve, reject) => {
-        if (/^https?:\/\//.test(resource)) {
-          snekfetch.get(resource)
-          .end((err, res) => {
-            if (err) return reject(err);
-            if (!(res.body instanceof Buffer)) return reject(new TypeError('The response body isn\'t a Buffer.'));
-            return resolve(res.body);
-          });
-        } else {
-          const file = path.resolve(resource);
-          fs.stat(file, (err, stats) => {
-            if (err) return reject(err);
-            if (!stats || !stats.isFile()) return reject(new Error(`The file could not be found: ${file}`));
-            fs.readFile(file, (err2, data) => {
-              if (err2) reject(err2); else resolve(data);
-            });
-            return null;
-          });
-        }
-      });
-    }
-
-    return Promise.reject(new TypeError('The resource must be a string or Buffer.'));
-  }
-
-  /**
-   * Data that can be resolved to give an emoji identifier. This can be:
-   * * The unicode representation of an emoji
-   * * A custom emoji ID
-   * * An Emoji object
-   * * A ReactionEmoji object
-   * @typedef {string|Emoji|ReactionEmoji} EmojiIdentifierResolvable
-   */
-
-  /**
-   * Resolves an EmojiResolvable to an emoji identifier.
-   * @param {EmojiIdentifierResolvable} emoji The emoji resolvable to resolve
-   * @returns {?string}
-   */
-  resolveEmojiIdentifier(emoji) {
-    if (emoji instanceof Emoji || emoji instanceof ReactionEmoji) return emoji.identifier;
-    if (typeof emoji === 'string') {
-      if (this.client.emojis.has(emoji)) return this.client.emojis.get(emoji).identifier;
-      else if (!emoji.includes('%')) return encodeURIComponent(emoji);
-      else return emoji;
-    }
-    return null;
-  }
-
-  /**
-   * Can be a Hex Literal, Hex String, Number, RGB Array, or one of the following
-   * ```
-   * [
-   *   'DEFAULT',
-   *   'AQUA',
-   *   'GREEN',
-   *   'BLUE',
-   *   'PURPLE',
-   *   'GOLD',
-   *   'ORANGE',
-   *   'RED',
-   *   'GREY',
-   *   'DARKER_GREY',
-   *   'NAVY',
-   *   'DARK_AQUA',
-   *   'DARK_GREEN',
-   *   'DARK_BLUE',
-   *   'DARK_PURPLE',
-   *   'DARK_GOLD',
-   *   'DARK_ORANGE',
-   *   'DARK_RED',
-   *   'DARK_GREY',
-   *   'LIGHT_GREY',
-   *   'DARK_NAVY',
-   *   'RANDOM',
-   * ]
-   * ```
-   * or something like
-   * ```
-   * [255, 0, 255]
-   * ```
-   * for purple
-   * @typedef {string|number|Array} ColorResolvable
-   */
-
-  /**
-   * Resolves a ColorResolvable into a color number.
-   * @param {ColorResolvable} color Color to resolve
-   * @returns {number} A color
-   */
-  static resolveColor(color) {
-    if (typeof color === 'string') {
-      if (color === 'RANDOM') return Math.floor(Math.random() * (0xFFFFFF + 1));
-      color = Constants.Colors[color] || parseInt(color.replace('#', ''), 16);
-    } else if (color instanceof Array) {
-      color = (color[0] << 16) + (color[1] << 8) + color[2];
-    }
-
-    if (color < 0 || color > 0xFFFFFF) {
-      throw new RangeError('Color must be within the range 0 - 16777215 (0xFFFFFF).');
-    } else if (color && isNaN(color)) {
-      throw new TypeError('Unable to convert color to a number.');
-    }
-
-    return color;
-  }
-
-  /**
-   * @param {ColorResolvable} color Color to resolve
-   * @returns {number} A color
-   */
-  resolveColor(color) {
-    return this.constructor.resolveColor(color);
-  }
-}
-
-module.exports = ClientDataResolver;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer))
-
-/***/ }),
-/* 41 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -12024,12 +11770,12 @@ module.exports = {
 };
 
 /***/ }),
-/* 42 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const User = __webpack_require__(12);
 const Collection = __webpack_require__(3);
-const ClientUserSettings = __webpack_require__(43);
+const ClientUserSettings = __webpack_require__(42);
 const Constants = __webpack_require__(0);
 const Util = __webpack_require__(4);
 const Guild = __webpack_require__(18);
@@ -12368,7 +12114,7 @@ module.exports = ClientUser;
 
 
 /***/ }),
-/* 43 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -12451,7 +12197,7 @@ module.exports = ClientUserSettings;
 
 
 /***/ }),
-/* 44 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Channel = __webpack_require__(16);
@@ -12516,7 +12262,7 @@ module.exports = DMChannel;
 
 
 /***/ }),
-/* 45 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
@@ -12797,7 +12543,7 @@ module.exports = GuildAuditLogs;
 
 
 /***/ }),
-/* 46 */
+/* 45 */
 /***/ (function(module, exports) {
 
 /**
@@ -12871,7 +12617,7 @@ module.exports = MessageAttachment;
 
 
 /***/ }),
-/* 47 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collector = __webpack_require__(32);
@@ -12950,7 +12696,7 @@ module.exports = MessageCollector;
 
 
 /***/ }),
-/* 48 */
+/* 47 */
 /***/ (function(module, exports) {
 
 /**
@@ -13341,7 +13087,7 @@ module.exports = MessageEmbed;
 
 
 /***/ }),
-/* 49 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
@@ -13491,7 +13237,7 @@ module.exports = MessageMentions;
 
 
 /***/ }),
-/* 50 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
@@ -13598,7 +13344,7 @@ module.exports = MessageReaction;
 
 
 /***/ }),
-/* 51 */
+/* 50 */
 /***/ (function(module, exports) {
 
 /*
@@ -13655,7 +13401,7 @@ module.exports = PartialGuild;
 
 
 /***/ }),
-/* 52 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -13705,7 +13451,7 @@ module.exports = PartialGuildChannel;
 
 
 /***/ }),
-/* 53 */
+/* 52 */
 /***/ (function(module, exports) {
 
 /**
@@ -13757,7 +13503,7 @@ module.exports = PermissionOverwrites;
 
 
 /***/ }),
-/* 54 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collector = __webpack_require__(32);
@@ -13847,7 +13593,7 @@ module.exports = ReactionCollector;
 
 
 /***/ }),
-/* 55 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const GuildChannel = __webpack_require__(26);
@@ -13962,7 +13708,7 @@ module.exports = TextChannel;
 
 
 /***/ }),
-/* 56 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const GuildChannel = __webpack_require__(26);
@@ -14101,7 +13847,7 @@ module.exports = VoiceChannel;
 
 
 /***/ }),
-/* 57 */
+/* 56 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -14112,7 +13858,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 58 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14125,7 +13871,7 @@ var processNextTick = __webpack_require__(35);
 /*</replacement>*/
 
 /*<replacement>*/
-var isArray = __webpack_require__(57);
+var isArray = __webpack_require__(56);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -14143,7 +13889,7 @@ var EElistenerCount = function (emitter, type) {
 /*</replacement>*/
 
 /*<replacement>*/
-var Stream = __webpack_require__(60);
+var Stream = __webpack_require__(59);
 /*</replacement>*/
 
 var Buffer = __webpack_require__(5).Buffer;
@@ -14250,7 +13996,7 @@ function ReadableState(options, stream) {
   this.decoder = null;
   this.encoding = null;
   if (options.encoding) {
-    if (!StringDecoder) StringDecoder = __webpack_require__(65).StringDecoder;
+    if (!StringDecoder) StringDecoder = __webpack_require__(64).StringDecoder;
     this.decoder = new StringDecoder(options.encoding);
     this.encoding = options.encoding;
   }
@@ -14360,7 +14106,7 @@ function needMoreData(state) {
 
 // backwards compatibility.
 Readable.prototype.setEncoding = function (enc) {
-  if (!StringDecoder) StringDecoder = __webpack_require__(65).StringDecoder;
+  if (!StringDecoder) StringDecoder = __webpack_require__(64).StringDecoder;
   this._readableState.decoder = new StringDecoder(enc);
   this._readableState.encoding = enc;
   return this;
@@ -15054,7 +14800,7 @@ function indexOf(xs, x) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ }),
-/* 59 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15242,14 +14988,14 @@ function done(stream, er, data) {
 }
 
 /***/ }),
-/* 60 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(14).EventEmitter;
 
 
 /***/ }),
-/* 61 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -15382,13 +15128,13 @@ Stream.prototype.pipe = function(dest, options) {
 
 
 /***/ }),
-/* 62 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var ClientRequest = __webpack_require__(98)
 var extend = __webpack_require__(108)
 var statusCodes = __webpack_require__(79)
-var url = __webpack_require__(64)
+var url = __webpack_require__(63)
 
 var http = exports
 
@@ -15467,7 +15213,7 @@ http.METHODS = [
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
-/* 63 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {exports.fetch = isFunction(global.fetch) && isFunction(global.ReadableStream)
@@ -15543,7 +15289,7 @@ xhr = null // Help gc
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
-/* 64 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16282,7 +16028,7 @@ Url.prototype.parseHost = function() {
 
 
 /***/ }),
-/* 65 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -16507,6 +16253,255 @@ function base64DetectIncompleteChar(buffer) {
   this.charLength = this.charReceived ? 3 : 0;
 }
 
+
+/***/ }),
+/* 65 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(29);
+const fs = __webpack_require__(39);
+const snekfetch = __webpack_require__(38);
+
+const Util = __webpack_require__(4);
+const User = __webpack_require__(12);
+const Message = __webpack_require__(8);
+const Guild = __webpack_require__(18);
+const Channel = __webpack_require__(16);
+const GuildMember = __webpack_require__(19);
+const Emoji = __webpack_require__(17);
+const ReactionEmoji = __webpack_require__(31);
+
+/**
+ * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
+ * extracting a User from a Message object.
+ * @private
+ */
+class ClientDataResolver {
+  /**
+   * @param {Client} client The client the resolver is for
+   */
+  constructor(client) {
+    this.client = client;
+  }
+
+  /**
+   * Data that resolves to give a User object. This can be:
+   * * A User object
+   * * A user ID
+   * * A Message object (resolves to the message author)
+   * * A Guild object (owner of the guild)
+   * * A GuildMember object
+   * @typedef {User|Snowflake|Message|Guild|GuildMember} UserResolvable
+   */
+
+  /**
+   * Resolves a UserResolvable to a User object.
+   * @param {UserResolvable} user The UserResolvable to identify
+   * @returns {?User}
+   */
+  resolveUser(user) {
+    if (user instanceof User) return user;
+    if (typeof user === 'string') return this.client.users.get(user) || null;
+    if (user instanceof GuildMember) return user.user;
+    if (user instanceof Message) return user.author;
+    if (user instanceof Guild) return user.owner;
+    return null;
+  }
+
+  /**
+   * Resolves a UserResolvable to a user ID string.
+   * @param {UserResolvable} user The UserResolvable to identify
+   * @returns {?Snowflake}
+   */
+  resolveUserID(user) {
+    if (user instanceof User || user instanceof GuildMember) return user.id;
+    if (typeof user === 'string') return user || null;
+    if (user instanceof Message) return user.author.id;
+    if (user instanceof Guild) return user.ownerID;
+    return null;
+  }
+
+  /**
+   * Data that resolves to give a Guild object. This can be:
+   * * A Guild object
+   * * A Guild ID
+   * @typedef {Guild|Snowflake} GuildResolvable
+   */
+
+  /**
+   * Resolves a GuildResolvable to a Guild object.
+   * @param {GuildResolvable} guild The GuildResolvable to identify
+   * @returns {?Guild}
+   */
+  resolveGuild(guild) {
+    if (guild instanceof Guild) return guild;
+    if (typeof guild === 'string') return this.client.guilds.get(guild) || null;
+    return null;
+  }
+
+  /**
+   * Data that resolves to give a GuildMember object. This can be:
+   * * A GuildMember object
+   * * A User object
+   * @typedef {GuildMember|User} GuildMemberResolvable
+   */
+
+  /**
+   * Resolves a GuildMemberResolvable to a GuildMember object.
+   * @param {GuildResolvable} guild The guild that the member is part of
+   * @param {UserResolvable} user The user that is part of the guild
+   * @returns {?GuildMember}
+   */
+  resolveGuildMember(guild, user) {
+    if (user instanceof GuildMember) return user;
+    guild = this.resolveGuild(guild);
+    user = this.resolveUser(user);
+    if (!guild || !user) return null;
+    return guild.members.get(user.id) || null;
+  }
+
+  /**
+   * Data that can be resolved to give a Channel object. This can be:
+   * * A Channel object
+   * * A Message object (the channel the message was sent in)
+   * * A Guild object (the #general channel)
+   * * A channel ID
+   * @typedef {Channel|Guild|Message|Snowflake} ChannelResolvable
+   */
+
+  /**
+   * Resolves a ChannelResolvable to a Channel object.
+   * @param {ChannelResolvable} channel The channel resolvable to resolve
+   * @returns {?Channel}
+   */
+  resolveChannel(channel) {
+    if (channel instanceof Channel) return channel;
+    if (typeof channel === 'string') return this.client.channels.get(channel) || null;
+    if (channel instanceof Message) return channel.channel;
+    if (channel instanceof Guild) return channel.channels.get(channel.id) || null;
+    return null;
+  }
+
+  /**
+   * Resolves a ChannelResolvable to a channel ID.
+   * @param {ChannelResolvable} channel The channel resolvable to resolve
+   * @returns {?Snowflake}
+   */
+  resolveChannelID(channel) {
+    if (channel instanceof Channel) return channel.id;
+    if (typeof channel === 'string') return channel;
+    if (channel instanceof Message) return channel.channel.id;
+    if (channel instanceof Guild) return channel.defaultChannel.id;
+    return null;
+  }
+
+  /**
+   * Data that can be resolved to give an invite code. This can be:
+   * * An invite code
+   * * An invite URL
+   * @typedef {string} InviteResolvable
+   */
+
+  /**
+   * Resolves InviteResolvable to an invite code.
+   * @param {InviteResolvable} data The invite resolvable to resolve
+   * @returns {string}
+   */
+  resolveInviteCode(data) {
+    const inviteRegex = /discord(?:app\.com\/invite|\.gg)\/([\w-]{2,255})/i;
+    const match = inviteRegex.exec(data);
+    if (match && match[1]) return match[1];
+    return data;
+  }
+
+  /**
+   * Data that resolves to give a Base64 string, typically for image uploading. This can be:
+   * * A Buffer
+   * * A base64 string
+   * @typedef {Buffer|string} Base64Resolvable
+   */
+
+  /**
+   * Resolves a Base64Resolvable to a Base 64 image.
+   * @param {Base64Resolvable} data The base 64 resolvable you want to resolve
+   * @returns {?string}
+   */
+  resolveBase64(data) {
+    if (data instanceof Buffer) return `data:image/jpg;base64,${data.toString('base64')}`;
+    return data;
+  }
+
+  /**
+   * Data that can be resolved to give a Buffer. This can be:
+   * * A Buffer
+   * * The path to a local file
+   * * A URL
+   * @typedef {string|Buffer} BufferResolvable
+   */
+
+  /**
+   * Resolves a BufferResolvable to a Buffer.
+   * @param {BufferResolvable} resource The buffer resolvable to resolve
+   * @returns {Promise<Buffer>}
+   */
+  resolveBuffer(resource) {
+    if (resource instanceof Buffer) return Promise.resolve(resource);
+    if (this.client.browser && resource instanceof ArrayBuffer) return Promise.resolve(Util.convertToBuffer(resource));
+
+    if (typeof resource === 'string') {
+      return new Promise((resolve, reject) => {
+        if (/^https?:\/\//.test(resource)) {
+          snekfetch.get(resource)
+          .end((err, res) => {
+            if (err) return reject(err);
+            if (!(res.body instanceof Buffer)) return reject(new TypeError('The response body isn\'t a Buffer.'));
+            return resolve(res.body);
+          });
+        } else {
+          const file = path.resolve(resource);
+          fs.stat(file, (err, stats) => {
+            if (err) return reject(err);
+            if (!stats || !stats.isFile()) return reject(new Error(`The file could not be found: ${file}`));
+            fs.readFile(file, (err2, data) => {
+              if (err2) reject(err2); else resolve(data);
+            });
+            return null;
+          });
+        }
+      });
+    }
+
+    return Promise.reject(new TypeError('The resource must be a string or Buffer.'));
+  }
+
+  /**
+   * Data that can be resolved to give an emoji identifier. This can be:
+   * * The unicode representation of an emoji
+   * * A custom emoji ID
+   * * An Emoji object
+   * * A ReactionEmoji object
+   * @typedef {string|Emoji|ReactionEmoji} EmojiIdentifierResolvable
+   */
+
+  /**
+   * Resolves an EmojiResolvable to an emoji identifier.
+   * @param {EmojiIdentifierResolvable} emoji The emoji resolvable to resolve
+   * @returns {?string}
+   */
+  resolveEmojiIdentifier(emoji) {
+    if (emoji instanceof Emoji || emoji instanceof ReactionEmoji) return emoji.identifier;
+    if (typeof emoji === 'string') {
+      if (this.client.emojis.has(emoji)) return this.client.emojis.get(emoji).identifier;
+      else if (!emoji.includes('%')) return encodeURIComponent(emoji);
+      else return emoji;
+    }
+    return null;
+  }
+}
+
+module.exports = ClientDataResolver;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer))
 
 /***/ }),
 /* 66 */
@@ -17265,7 +17260,7 @@ const Util = __webpack_require__(4);
 const RESTManager = __webpack_require__(67);
 const ClientDataManager = __webpack_require__(109);
 const ClientManager = __webpack_require__(110);
-const ClientDataResolver = __webpack_require__(40);
+const ClientDataResolver = __webpack_require__(65);
 const ClientVoiceManager = __webpack_require__(190);
 const WebSocketManager = __webpack_require__(145);
 const ActionsManager = __webpack_require__(111);
@@ -17837,7 +17832,7 @@ module.exports = Client;
 
 const Webhook = __webpack_require__(21);
 const RESTManager = __webpack_require__(67);
-const ClientDataResolver = __webpack_require__(40);
+const ClientDataResolver = __webpack_require__(65);
 const Constants = __webpack_require__(0);
 const Util = __webpack_require__(4);
 
@@ -17966,7 +17961,7 @@ module.exports = WebhookClient;
 /* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const ClientDataResolver = __webpack_require__(40);
+const Util = __webpack_require__(4);
 
 /**
  * A rich embed to be sent with a message with a fluent interface for creation.
@@ -18047,7 +18042,7 @@ class RichEmbed {
    * @returns {RichEmbed} This embed
    */
   setTitle(title) {
-    title = resolveString(title);
+    title = Util.resolveString(title);
     if (title.length > 256) throw new RangeError('RichEmbed titles may not exceed 256 characters.');
     this.title = title;
     return this;
@@ -18059,7 +18054,7 @@ class RichEmbed {
    * @returns {RichEmbed} This embed
    */
   setDescription(description) {
-    description = resolveString(description);
+    description = Util.resolveString(description);
     if (description.length > 2048) throw new RangeError('RichEmbed descriptions may not exceed 2048 characters.');
     this.description = description;
     return this;
@@ -18081,7 +18076,7 @@ class RichEmbed {
    * @returns {RichEmbed} This embed
    */
   setColor(color) {
-    this.color = ClientDataResolver.resolveColor(color);
+    this.color = Util.resolveColor(color);
     return this;
   }
 
@@ -18093,7 +18088,7 @@ class RichEmbed {
    * @returns {RichEmbed} This embed
    */
   setAuthor(name, icon, url) {
-    this.author = { name: resolveString(name), icon_url: icon, url };
+    this.author = { name: Util.resolveString(name), icon_url: icon, url };
     return this;
   }
 
@@ -18116,10 +18111,10 @@ class RichEmbed {
    */
   addField(name, value, inline = false) {
     if (this.fields.length >= 25) throw new RangeError('RichEmbeds may not exceed 25 fields.');
-    name = resolveString(name);
+    name = Util.resolveString(name);
     if (name.length > 256) throw new RangeError('RichEmbed field names may not exceed 256 characters.');
     if (!/\S/.test(name)) throw new RangeError('RichEmbed field names may not be empty.');
-    value = resolveString(value);
+    value = Util.resolveString(value);
     if (value.length > 1024) throw new RangeError('RichEmbed field values may not exceed 1024 characters.');
     if (!/\S/.test(value)) throw new RangeError('RichEmbed field values may not be empty.');
     this.fields.push({ name, value, inline });
@@ -18162,7 +18157,7 @@ class RichEmbed {
    * @returns {RichEmbed} This embed
    */
   setFooter(text, icon) {
-    text = resolveString(text);
+    text = Util.resolveString(text);
     if (text.length > 2048) throw new RangeError('RichEmbed footer text may not exceed 2048 characters.');
     this.footer = { text, icon_url: icon };
     return this;
@@ -18182,12 +18177,6 @@ class RichEmbed {
 }
 
 module.exports = RichEmbed;
-
-function resolveString(data) {
-  if (typeof data === 'string') return data;
-  if (data instanceof Array) return data.join('\n');
-  return String(data);
-}
 
 
 /***/ }),
@@ -18403,7 +18392,7 @@ module.exports = {
 /* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var http = __webpack_require__(62);
+var http = __webpack_require__(61);
 
 var https = module.exports;
 
@@ -19251,7 +19240,7 @@ module.exports = __webpack_require__(15);
 
 module.exports = PassThrough;
 
-var Transform = __webpack_require__(59);
+var Transform = __webpack_require__(58);
 
 /*<replacement>*/
 var util = __webpack_require__(22);
@@ -19707,14 +19696,14 @@ module.exports = FormData;
 /* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {__webpack_require__(61);
+/* WEBPACK VAR INJECTION */(function(Buffer) {__webpack_require__(60);
 const zlib = __webpack_require__(39);
 const qs = __webpack_require__(36);
-const http = __webpack_require__(62);
+const http = __webpack_require__(61);
 const https = __webpack_require__(80);
-const URL = __webpack_require__(64);
+const URL = __webpack_require__(63);
 const Package = __webpack_require__(92);
-const Stream = __webpack_require__(61);
+const Stream = __webpack_require__(60);
 const FormData = __webpack_require__(93);
 
 class Snekfetch extends Stream.Readable {
@@ -21588,7 +21577,7 @@ module.exports = {
 /* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer, global, process) {var capability = __webpack_require__(63)
+/* WEBPACK VAR INJECTION */(function(Buffer, global, process) {var capability = __webpack_require__(62)
 var inherits = __webpack_require__(11)
 var response = __webpack_require__(99)
 var stream = __webpack_require__(23)
@@ -21901,7 +21890,7 @@ var unsafeHeaders = [
 /* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process, Buffer, global) {var capability = __webpack_require__(63)
+/* WEBPACK VAR INJECTION */(function(process, Buffer, global) {var capability = __webpack_require__(62)
 var inherits = __webpack_require__(11)
 var stream = __webpack_require__(23)
 
@@ -22969,10 +22958,10 @@ const Constants = __webpack_require__(0);
 const Util = __webpack_require__(4);
 const Guild = __webpack_require__(18);
 const User = __webpack_require__(12);
-const DMChannel = __webpack_require__(44);
+const DMChannel = __webpack_require__(43);
 const Emoji = __webpack_require__(17);
-const TextChannel = __webpack_require__(55);
-const VoiceChannel = __webpack_require__(56);
+const TextChannel = __webpack_require__(54);
+const VoiceChannel = __webpack_require__(55);
 const GuildChannel = __webpack_require__(26);
 const GroupDMChannel = __webpack_require__(30);
 
@@ -25369,7 +25358,7 @@ module.exports = PresenceUpdateHandler;
 
 const AbstractHandler = __webpack_require__(1);
 
-const ClientUser = __webpack_require__(42);
+const ClientUser = __webpack_require__(41);
 
 class ReadyHandler extends AbstractHandler {
   handle(packet) {
@@ -25771,7 +25760,7 @@ module.exports = {
   SnowflakeUtil: __webpack_require__(6),
   Util: Util,
   util: Util,
-  version: __webpack_require__(41).version,
+  version: __webpack_require__(40).version,
 
   // Shortcuts to Util methods
   escapeMarkdown: Util.escapeMarkdown,
@@ -25780,37 +25769,37 @@ module.exports = {
 
   // Structures
   Channel: __webpack_require__(16),
-  ClientUser: __webpack_require__(42),
-  ClientUserSettings: __webpack_require__(43),
+  ClientUser: __webpack_require__(41),
+  ClientUserSettings: __webpack_require__(42),
   Collector: __webpack_require__(32),
-  DMChannel: __webpack_require__(44),
+  DMChannel: __webpack_require__(43),
   Emoji: __webpack_require__(17),
   Game: __webpack_require__(13).Game,
   GroupDMChannel: __webpack_require__(30),
   Guild: __webpack_require__(18),
-  GuildAuditLogs: __webpack_require__(45),
+  GuildAuditLogs: __webpack_require__(44),
   GuildChannel: __webpack_require__(26),
   GuildMember: __webpack_require__(19),
   Invite: __webpack_require__(27),
   Message: __webpack_require__(8),
-  MessageAttachment: __webpack_require__(46),
-  MessageCollector: __webpack_require__(47),
-  MessageEmbed: __webpack_require__(48),
-  MessageMentions: __webpack_require__(49),
-  MessageReaction: __webpack_require__(50),
+  MessageAttachment: __webpack_require__(45),
+  MessageCollector: __webpack_require__(46),
+  MessageEmbed: __webpack_require__(47),
+  MessageMentions: __webpack_require__(48),
+  MessageReaction: __webpack_require__(49),
   OAuth2Application: __webpack_require__(28),
   ClientOAuth2Application: __webpack_require__(28),
-  PartialGuild: __webpack_require__(51),
-  PartialGuildChannel: __webpack_require__(52),
-  PermissionOverwrites: __webpack_require__(53),
+  PartialGuild: __webpack_require__(50),
+  PartialGuildChannel: __webpack_require__(51),
+  PermissionOverwrites: __webpack_require__(52),
   Presence: __webpack_require__(13).Presence,
   ReactionEmoji: __webpack_require__(31),
-  ReactionCollector: __webpack_require__(54),
+  ReactionCollector: __webpack_require__(53),
   RichEmbed: __webpack_require__(74),
   Role: __webpack_require__(20),
-  TextChannel: __webpack_require__(55),
+  TextChannel: __webpack_require__(54),
   User: __webpack_require__(12),
-  VoiceChannel: __webpack_require__(56),
+  VoiceChannel: __webpack_require__(55),
   Webhook: __webpack_require__(21),
 };
 
@@ -26026,7 +26015,7 @@ module.exports = function sendMessage(channel, options) {
   }
 
   if (content) {
-    content = channel.client.resolver.resolveString(content);
+    content = Util.resolveString(content);
     if (split && typeof split !== 'object') split = {};
     // Wrap everything in a code block
     if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
