@@ -911,7 +911,7 @@ class Guild {
    * .catch(console.error)
    */
   createRole({ data = {}, reason } = {}) {
-    if (data.color) data.color = this.client.resolver.resolveColor(data.color);
+    if (data.color) data.color = Util.resolveColor(data.color);
     if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
 
     return this.client.api.guilds(this.id).roles.post({ data, reason }).then(role =>

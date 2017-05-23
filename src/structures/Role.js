@@ -1,5 +1,6 @@
 const Snowflake = require('../util/Snowflake');
 const Permissions = require('../util/Permissions');
+const Util = require('../util/Util');
 
 /**
  * Represents a role on Discord.
@@ -205,7 +206,7 @@ class Role {
       data: {
         name: data.name || this.name,
         position: typeof data.position !== 'undefined' ? data.position : this.position,
-        color: this.client.resolver.resolveColor(data.color || this.color),
+        color: Util.resolveColor(data.color || this.color),
         hoist: typeof data.hoist !== 'undefined' ? data.hoist : this.hoist,
         mentionable: typeof data.mentionable !== 'undefined' ? data.mentionable : this.mentionable,
       },

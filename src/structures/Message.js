@@ -381,13 +381,13 @@ class Message {
       options = {};
     }
 
-    if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
+    if (typeof content !== 'undefined') content = Util.resolveString(content);
 
     const { embed, code, reply } = options;
 
     // Wrap everything in a code block
     if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
-      content = Util.escapeMarkdown(this.client.resolver.resolveString(content), true);
+      content = Util.escapeMarkdown(Util.resolveString(content), true);
       content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
     }
 

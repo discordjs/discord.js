@@ -12,7 +12,7 @@ module.exports = function sendMessage(channel, options) {
   }
 
   if (content) {
-    content = channel.client.resolver.resolveString(content);
+    content = Util.resolveString(content);
     if (split && typeof split !== 'object') split = {};
     // Wrap everything in a code block
     if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
