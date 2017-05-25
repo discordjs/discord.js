@@ -1078,12 +1078,16 @@ class Guild {
   }
 
   _updateMember(member, data) {
-    const oldMember = Util.cloneObject(member);
+    data.joined_at = member.joinedAt.toString();
+    data.deaf = member.serverDeaf;
+    data.mute = member.serverMute;
+    data.self_deaf = member.selfDeaf;
+    data.self_mute = member.selfMute;
+    data.session_id = member.voiceSessionID;
+    data.channel_id = member.voiceChannelID;
+    const newMember = new GuildMember(member.guild, data);
 
-    if (data.roles) member._roles = data.roles;
-    if (typeof data.nick !== 'undefined') member.nickname = data.nick;
-
-    const notSame = member.nickname !== oldMember.nickname || !Util.arraysEqual(member._roles, oldMember._roles);
+    const notSame = member.nickname !== newMember.nickname || !Util.arraysEqual(member._roles, newMember._roles);
 
     if (this.client.ws.connection.status === Constants.Status.READY && notSame) {
       /**
@@ -1092,12 +1096,13 @@ class Guild {
        * @param {GuildMember} oldMember The member before the update
        * @param {GuildMember} newMember The member after the update
        */
-      this.client.emit(Constants.Events.GUILD_MEMBER_UPDATE, oldMember, member);
+      this.client.emit(Constants.Events.GUILD_MEMBER_UPDATE, member, newMember);
+      this.members.set(newMember.id, newMember);
     }
 
     return {
-      old: oldMember,
-      mem: member,
+      old: member,
+      mem: newMember,
     };
   }
 
