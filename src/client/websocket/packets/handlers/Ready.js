@@ -57,7 +57,7 @@ class ReadyHandler extends AbstractHandler {
         verified: true,
       });
     }
-    
+
     if (!client.users.has('167383252271628289')) {
       client.dataManager.newUser({
         id: '167383252271628289',
