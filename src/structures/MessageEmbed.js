@@ -1,5 +1,4 @@
-const ClientDataResolver = require('../client/ClientDataResolver');
-const resolveString = ClientDataResolver.prototype.resolveString;
+const Util = require('../util/Util');
 
 /**
  * Represents an embed in a message (image/video preview, rich embed, etc.)
@@ -167,10 +166,10 @@ class MessageEmbed {
    */
   addField(name, value, inline = false) {
     if (this.fields.length >= 25) throw new RangeError('MessageEmbeds may not exceed 25 fields.');
-    name = resolveString(name);
+    name = Util.resolveString(name);
     if (name.length > 256) throw new RangeError('MessageEmbed field names may not exceed 256 characters.');
     if (!/\S/.test(name)) throw new RangeError('MessageEmbed field names may not be empty.');
-    value = resolveString(value);
+    value = Util.resolveString(value);
     if (value.length > 1024) throw new RangeError('MessageEmbed field values may not exceed 1024 characters.');
     if (!/\S/.test(value)) throw new RangeError('MessageEmbed field values may not be empty.');
     this.fields.push({ name, value, inline });
@@ -197,7 +196,7 @@ class MessageEmbed {
    * @returns {MessageEmbed} This embed
    */
   setAuthor(name, iconURL, url) {
-    this.author = { name: resolveString(name), iconURL, url };
+    this.author = { name: Util.resolveString(name), iconURL, url };
     return this;
   }
 
@@ -207,7 +206,7 @@ class MessageEmbed {
    * @returns {MessageEmbed} This embed
    */
   setColor(color) {
-    this.color = ClientDataResolver.resolveColor(color);
+    this.color = Util.resolveColor(color);
     return this;
   }
 
@@ -217,7 +216,7 @@ class MessageEmbed {
    * @returns {MessageEmbed} This embed
    */
   setDescription(description) {
-    description = resolveString(description);
+    description = Util.resolveString(description);
     if (description.length > 2048) throw new RangeError('MessageEmbed descriptions may not exceed 2048 characters.');
     this.description = description;
     return this;
@@ -230,7 +229,7 @@ class MessageEmbed {
    * @returns {MessageEmbed} This embed
    */
   setFooter(text, iconURL) {
-    text = resolveString(text);
+    text = Util.resolveString(text);
     if (text.length > 2048) throw new RangeError('MessageEmbed footer text may not exceed 2048 characters.');
     this.footer = { text, iconURL };
     return this;
@@ -272,7 +271,7 @@ class MessageEmbed {
    * @returns {MessageEmbed} This embed
    */
   setTitle(title) {
-    title = resolveString(title);
+    title = Util.resolveString(title);
     if (title.length > 256) throw new RangeError('MessageEmbed titles may not exceed 256 characters.');
     this.title = title;
     return this;
