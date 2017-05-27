@@ -3,7 +3,6 @@ const Role = require('./Role');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
 const Presence = require('./Presence').Presence;
-const util = require('util');
 
 /**
  * Represents a member of a guild on Discord.
@@ -245,13 +244,13 @@ class GuildMember {
    * @readonly
    */
   get permissions() {
-    if (this.user.id === this.guild.ownerID) return new Permissions(this, Permissions.ALL);
+    if (this.user.id === this.guild.ownerID) return new Permissions(Permissions.ALL);
 
     let permissions = 0;
     const roles = this.roles;
     for (const role of roles.values()) permissions |= role.permissions;
 
-    return new Permissions(this, permissions);
+    return new Permissions(permissions);
   }
 
   /**
@@ -263,7 +262,7 @@ class GuildMember {
     if (this.user.id === this.guild.ownerID) return false;
     if (this.user.id === this.client.user.id) return false;
     const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.hasPermission(Permissions.FLAGS.KICK_MEMBERS)) return false;
+    if (!clientMember.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) return false;
     return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
   }
 
@@ -276,7 +275,7 @@ class GuildMember {
     if (this.user.id === this.guild.ownerID) return false;
     if (this.user.id === this.client.user.id) return false;
     const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.hasPermission(Permissions.FLAGS.BAN_MEMBERS)) return false;
+    if (!clientMember.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return false;
     return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
   }
 
@@ -311,25 +310,13 @@ class GuildMember {
   }
 
   /**
-   * Checks whether the roles of the member allows them to perform specific actions.
-   * @param {PermissionResolvable[]} permissions The permissions to check for
-   * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
-   * @returns {boolean}
-   * @deprecated
-   */
-  hasPermissions(permissions, explicit = false) {
-    if (!explicit && this.user.id === this.guild.ownerID) return true;
-    return permissions.every(p => this.hasPermission(p, explicit));
-  }
-
-  /**
    * Checks whether the roles of the member allows them to perform specific actions, and lists any missing permissions.
    * @param {PermissionResolvable[]} permissions The permissions to check for
    * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
    * @returns {PermissionResolvable[]}
    */
   missingPermissions(permissions, explicit = false) {
-    return permissions.filter(p => !this.hasPermission(p, explicit));
+    return permissions.missing(permissions, explicit);
   }
 
   /**
@@ -345,10 +332,24 @@ class GuildMember {
   /**
    * Edit a guild member.
    * @param {GuildMemberEditData} data The data to edit the member with
+   * @param {string} [reason] Reason for editing this user
    * @returns {Promise<GuildMember>}
    */
-  edit(data) {
-    return this.client.rest.methods.updateGuildMember(this, data);
+  edit(data, reason) {
+    if (data.channel) {
+      data.channel_id = this.client.resolver.resolveChannel(data.channel).id;
+      data.channel = null;
+    }
+    if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
+    let endpoint = this.client.api.guilds(this.guild.id);
+    if (this.user.id === this.client.user.id) {
+      const keys = Object.keys(data);
+      if (keys.length === 1 && keys[0] === 'nick') endpoint = endpoint.members('@me').nick;
+      else endpoint = endpoint.members(this.id);
+    } else {
+      endpoint = endpoint.members(this.id);
+    }
+    return endpoint.patch({ data, reason }).then(newData => this.guild._updateMember(this, newData).mem);
   }
 
   /**
@@ -394,8 +395,11 @@ class GuildMember {
    */
   addRole(role) {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
-    if (!role) throw new TypeError('Supplied parameter was neither a Role nor a Snowflake.');
-    return this.client.rest.methods.addMemberRole(this, role);
+    if (!role) return Promise.reject(new TypeError('Supplied parameter was neither a Role nor a Snowflake.'));
+    if (this._roles.includes(role.id)) return Promise.resolve(this);
+    return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
+      .put()
+      .then(() => this);
   }
 
   /**
@@ -407,9 +411,9 @@ class GuildMember {
     let allRoles;
     if (roles instanceof Collection) {
       allRoles = this._roles.slice();
-      for (const role of roles.values()) allRoles.push(role.id);
+      for (const role of roles.values()) allRoles.push(role.id ? role.id : role);
     } else {
-      allRoles = this._roles.concat(roles);
+      allRoles = this._roles.concat(roles.map(r => r.id ? r.id : r));
     }
     return this.edit({ roles: allRoles });
   }
@@ -421,8 +425,10 @@ class GuildMember {
    */
   removeRole(role) {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
-    if (!role) throw new TypeError('Supplied parameter was neither a Role nor a Snowflake.');
-    return this.client.rest.methods.removeMemberRole(this, role);
+    if (!role) return Promise.reject(new TypeError('Supplied parameter was neither a Role nor a Snowflake.'));
+    return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
+      .delete()
+      .then(() => this);
   }
 
   /**
@@ -477,12 +483,19 @@ class GuildMember {
    * @returns {Promise<GuildMember>}
    */
   kick(reason) {
-    return this.client.rest.methods.kickGuildMember(this.guild, this, reason);
+    return this.client.api.guilds(this.guild.id).members(this.user.id).delete({ reason })
+    .then(() =>
+      this.client.actions.GuildMemberRemove.handle({
+        guild_id: this.guild.id,
+        user: this.user,
+      }).member
+    );
   }
 
   /**
    * Ban this guild member
-   * @param {Object} [options] Ban options.
+   * @param {Object|number|string} [options] Ban options. If a number, the number of days to delete messages for, if a
+   * string, the ban reason. Supplying an object allows you to do both.
    * @param {number} [options.days=0] Number of days of messages to delete
    * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember>}
@@ -508,15 +521,8 @@ class GuildMember {
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   send() {}
-  sendMessage() {}
-  sendEmbed() {}
-  sendFile() {}
-  sendCode() {}
 }
 
 TextBasedChannel.applyToClass(GuildMember);
-
-GuildMember.prototype.hasPermissions = util.deprecate(GuildMember.prototype.hasPermissions,
-  'GuildMember#hasPermissions is deprecated - use GuildMember#hasPermission, it now takes an array');
 
 module.exports = GuildMember;

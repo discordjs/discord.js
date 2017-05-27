@@ -33,10 +33,13 @@ class PermissionOverwrites {
 
   /**
    * Delete this Permission Overwrite.
+   * @param {string} [reason] Reason for deleting this overwrite
    * @returns {Promise<PermissionOverwrites>}
    */
-  delete() {
-    return this.channel.client.rest.methods.deletePermissionOverwrites(this);
+  delete(reason) {
+    return this.channel.client.api.channels(this.channel.id).permissions(this.id)
+      .delete({ reason })
+      .then(() => this);
   }
 }
 

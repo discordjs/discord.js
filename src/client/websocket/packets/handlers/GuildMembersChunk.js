@@ -1,7 +1,6 @@
 const AbstractHandler = require('./AbstractHandler');
 const Constants = require('../../../../util/Constants');
-// Uncomment in v12
-// const Collection = require('../../../../util/Collection');
+const Collection = require('../../../../util/Collection');
 
 class GuildMembersChunkHandler extends AbstractHandler {
   handle(packet) {
@@ -9,13 +8,9 @@ class GuildMembersChunkHandler extends AbstractHandler {
     const data = packet.d;
     const guild = client.guilds.get(data.guild_id);
     if (!guild) return;
+    const members = new Collection();
 
-    // Uncomment in v12
-    // const members = new Collection();
-    //
-    // for (const member of data.members) members.set(member.id, guild._addMember(member, false));
-
-    const members = data.members.map(member => guild._addMember(member, false));
+    for (const member of data.members) members.set(member.id, guild._addMember(member, false));
 
     client.emit(Constants.Events.GUILD_MEMBERS_CHUNK, members, guild);
 

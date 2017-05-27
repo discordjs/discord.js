@@ -12,6 +12,11 @@ const WebSocketManager = require('./websocket/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
 const Presence = require('../structures/Presence').Presence;
+const VoiceRegion = require('../structures/VoiceRegion');
+const Webhook = require('../structures/Webhook');
+const User = require('../structures/User');
+const Invite = require('../structures/Invite');
+const OAuth2Application = require('../structures/OAuth2Application');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
 const VoiceBroadcast = require('./voice/VoiceBroadcast');
 
@@ -43,6 +48,13 @@ class Client extends EventEmitter {
      * @private
      */
     this.rest = new RESTManager(this);
+
+    /**
+     * API shortcut
+     * @type {Object}
+     * @private
+     */
+    this.api = this.rest.api;
 
     /**
      * The data manager of the client
@@ -274,7 +286,11 @@ class Client extends EventEmitter {
    * client.login('my token');
    */
   login(token) {
-    return this.rest.methods.login(token);
+    return new Promise((resolve, reject) => {
+      if (typeof token !== 'string') throw new Error(Constants.Errors.INVALID_TOKEN);
+      token = token.replace(/^Bot\s*/i, '');
+      this.manager.connectToWebSocket(token, resolve, reject);
+    });
   }
 
   /**
@@ -312,7 +328,9 @@ class Client extends EventEmitter {
    */
   fetchUser(id, cache = true) {
     if (this.users.has(id)) return Promise.resolve(this.users.get(id));
-    return this.rest.methods.getUser(id, cache);
+    return this.api.users(id).get().then(data =>
+      cache ? this.dataManager.newUser(data) : new User(this, data)
+    );
   }
 
   /**
@@ -322,7 +340,8 @@ class Client extends EventEmitter {
    */
   fetchInvite(invite) {
     const code = this.resolver.resolveInviteCode(invite);
-    return this.rest.methods.getInvite(code);
+    return this.api.invites(code).get({ query: { with_counts: true } })
+      .then(data => new Invite(this, data));
   }
 
   /**
@@ -332,7 +351,7 @@ class Client extends EventEmitter {
    * @returns {Promise<Webhook>}
    */
   fetchWebhook(id, token) {
-    return this.rest.methods.getWebhook(id, token);
+    return this.api.webhooks(id, token).get().then(data => new Webhook(this, data));
   }
 
   /**
@@ -340,7 +359,11 @@ class Client extends EventEmitter {
    * @returns {Collection<string, VoiceRegion>}
    */
   fetchVoiceRegions() {
-    return this.rest.methods.fetchVoiceRegions();
+    return this.api.voice.regions.get().then(res => {
+      const regions = new Collection();
+      for (const region of res) regions.set(region.id, new VoiceRegion(region));
+      return regions;
+    });
   }
 
   /**
@@ -385,7 +408,8 @@ class Client extends EventEmitter {
    * @returns {Promise<OAuth2Application>}
    */
   fetchApplication(id = '@me') {
-    return this.rest.methods.getApplication(id);
+    return this.rest.api.oauth2.applications(id).get()
+    .then(app => new OAuth2Application(this, app));
   }
 
   /**
