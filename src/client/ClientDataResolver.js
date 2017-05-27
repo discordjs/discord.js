@@ -4,6 +4,7 @@ const snekfetch = require('snekfetch');
 
 const Util = require('../util/Util');
 const User = require('../structures/User');
+const Message = require('../structures/Message');
 const Guild = require('../structures/Guild');
 const Channel = require('../structures/Channel');
 const GuildMember = require('../structures/GuildMember');
@@ -42,7 +43,7 @@ class ClientDataResolver {
     if (user instanceof User) return user;
     if (typeof user === 'string') return this.client.users.get(user) || null;
     if (user instanceof GuildMember) return user.user;
-    if (user instanceof require('../structures/Message')) return user.author;
+    if (user instanceof Message) return user.author;
     if (user instanceof Guild) return user.owner;
     return null;
   }
@@ -55,7 +56,7 @@ class ClientDataResolver {
   resolveUserID(user) {
     if (user instanceof User || user instanceof GuildMember) return user.id;
     if (typeof user === 'string') return user || null;
-    if (user instanceof require('../structures/Message')) return user.author.id;
+    if (user instanceof Message) return user.author.id;
     if (user instanceof Guild) return user.ownerID;
     return null;
   }
@@ -116,7 +117,7 @@ class ClientDataResolver {
   resolveChannel(channel) {
     if (channel instanceof Channel) return channel;
     if (typeof channel === 'string') return this.client.channels.get(channel) || null;
-    if (channel instanceof require('../structures/Message')) return channel.channel;
+    if (channel instanceof Message) return channel.channel;
     if (channel instanceof Guild) return channel.channels.get(channel.id) || null;
     return null;
   }
@@ -129,7 +130,7 @@ class ClientDataResolver {
   resolveChannelID(channel) {
     if (channel instanceof Channel) return channel.id;
     if (typeof channel === 'string') return channel;
-    if (channel instanceof require('../structures/Message')) return channel.channel.id;
+    if (channel instanceof Message) return channel.channel.id;
     if (channel instanceof Guild) return channel.defaultChannel.id;
     return null;
   }
