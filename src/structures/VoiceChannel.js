@@ -61,8 +61,8 @@ class VoiceChannel extends GuildChannel {
    */
   get joinable() {
     if (this.client.browser) return false;
-    if (!this.permissionsFor(this.client.user).hasPermission('CONNECT')) return false;
-    if (this.full && !this.permissionsFor(this.client.user).hasPermission('MOVE_MEMBERS')) return false;
+    if (!this.permissionsFor(this.client.user).has('CONNECT')) return false;
+    if (this.full && !this.permissionsFor(this.client.user).has('MOVE_MEMBERS')) return false;
     return true;
   }
 
@@ -72,7 +72,7 @@ class VoiceChannel extends GuildChannel {
    * @readonly
    */
   get speakable() {
-    return this.permissionsFor(this.client.user).hasPermission('SPEAK');
+    return this.permissionsFor(this.client.user).has('SPEAK');
   }
 
   /**

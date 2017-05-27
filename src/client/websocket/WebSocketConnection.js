@@ -97,6 +97,12 @@ class WebSocketConnection extends EventEmitter {
      * @type {number}
      */
     this.closeSequence = 0;
+
+    /**
+     * Whether or not the WebSocket is expecting to be closed
+     * @type {boolean}
+     */
+    this.expectingClose = false;
     for (const event of this.client.options.disabledEvents) this.disabledEvents[event] = true;
   }
 
@@ -109,6 +115,10 @@ class WebSocketConnection extends EventEmitter {
       this.debug('Tried to mark self as ready, but already ready');
       return;
     }
+    /**
+     * Emitted when the client becomes ready to start working.
+     * @event Client#ready
+     */
     this.status = Constants.Status.READY;
     this.client.emit(Constants.Events.READY);
     this.packetManager.handleQueue();
@@ -156,12 +166,11 @@ class WebSocketConnection extends EventEmitter {
    * @returns {Object}
    */
   unpack(data) {
-    if (erlpack && typeof data !== 'string') {
-      if (data instanceof ArrayBuffer) data = Buffer.from(new Uint8Array(data));
-      return erlpack.unpack(data);
-    } else if (data instanceof ArrayBuffer || data instanceof Buffer) {
-      data = zlib.inflateSync(data).toString();
-    }
+    if (data instanceof ArrayBuffer) data = Buffer.from(new Uint8Array(data));
+
+    if (erlpack && typeof data !== 'string') return erlpack.unpack(data);
+    else if (data instanceof Buffer) data = zlib.inflateSync(data).toString();
+
     return JSON.parse(data);
   }
 
@@ -237,6 +246,7 @@ class WebSocketConnection extends EventEmitter {
       this.debug(`Tried to connect to an invalid gateway: ${gateway}`);
       return false;
     }
+    this.expectingClose = false;
     this.gateway = gateway;
     this.debug(`Connecting to ${gateway}`);
     const ws = this.ws = new WebSocket(gateway);
@@ -260,6 +270,7 @@ class WebSocketConnection extends EventEmitter {
       return false;
     }
     this.heartbeat(-1);
+    this.expectingClose = true;
     ws.close(1000);
     this.packetManager.handleQueue();
     this.ws = null;
@@ -273,13 +284,13 @@ class WebSocketConnection extends EventEmitter {
    * @returns {boolean}
    */
   onMessage(event) {
+    let data;
     try {
-      this.onPacket(this.unpack(event.data));
-      return true;
+      data = this.unpack(event.data);
     } catch (err) {
-      this.debug(err);
-      return false;
+      this.emit('debug', err);
     }
+    return this.onPacket(data);
   }
 
   /**
@@ -308,6 +319,7 @@ class WebSocketConnection extends EventEmitter {
         return this.reconnect();
       case Constants.OPCodes.INVALID_SESSION:
         if (!packet.d) this.sessionID = null;
+        this.sequence = -1;
         this.debug('Session invalidated -- will identify with a new session');
         return this.identify(packet.d ? 2500 : 0);
       case Constants.OPCodes.HEARTBEAT_ACK:
@@ -324,7 +336,7 @@ class WebSocketConnection extends EventEmitter {
    * @param {Event} event Received open event
    */
   onOpen(event) {
-    this.gateway = event.target.url;
+    if (event && event.target && event.target.url) this.gateway = event.target.url;
     this.debug(`Connected to gateway ${this.gateway}`);
     this.identify();
   }
@@ -334,6 +346,10 @@ class WebSocketConnection extends EventEmitter {
    */
   reconnect() {
     this.debug('Attemping to reconnect in 5500ms...');
+    /**
+     * Emitted whenever the client tries to reconnect to the WebSocket.
+     * @event Client#reconnecting
+     */
     this.client.emit(Constants.Events.RECONNECTING);
     this.connect(this.gateway, 5500, true);
   }
@@ -343,6 +359,15 @@ class WebSocketConnection extends EventEmitter {
    * @param {Error} error Error that occurred
    */
   onError(error) {
+    if (error && error.message === 'uWs client connection error') {
+      this.reconnect();
+      return;
+    }
+    /**
+     * Emitted whenever the client's WebSocket encounters a connection error.
+     * @event Client#error
+     * @param {Error} error The encountered error
+     */
     this.client.emit(Constants.Events.ERROR, error);
   }
 
@@ -356,17 +381,25 @@ class WebSocketConnection extends EventEmitter {
    * @param {CloseEvent} event Close event that was received
    */
   onClose(event) {
-    this.debug(`Closed: ${event.code}`);
+    this.debug(`${this.expectingClose ? 'Client' : 'Server'} closed the WebSocket connection: ${event.code}`);
     this.closeSequence = this.sequence;
     // Reset the state before trying to fix anything
     this.emit('close', event);
     this.heartbeat(-1);
     // Should we reconnect?
-    if (Constants.WSCodes[event.code]) {
+    if (event.code === 1000 ? this.expectingClose : Constants.WSCodes[event.code]) {
+      this.expectingClose = false;
+      /**
+       * Emitted when the client's WebSocket disconnects and will no longer attempt to reconnect.
+       * @event Client#disconnect
+       * @param {CloseEvent} event The WebSocket close event
+       */
+      this.client.emit(Constants.Events.DISCONNECT, event);
       this.debug(Constants.WSCodes[event.code]);
       this.destroy();
       return;
     }
+    this.expectingClose = false;
     this.reconnect();
   }
 

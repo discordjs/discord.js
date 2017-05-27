@@ -126,16 +126,17 @@ class GroupDMChannel extends Channel {
 
   /**
    * Add a user to the DM
-   * @param {UserResolvable|string} accessTokenOrID Access token or user resolvable
+   * @param {UserResolvable|string} accessTokenOrUser Access token or user resolvable
    * @param {string} [nick] Permanent nickname to give the user (only available if a bot is creating the DM)
+   * @returns {Promise<GroupDMChannel>}
    */
-
-  addUser(accessTokenOrID, nick) {
-    return this.client.rest.methods.addUserToGroupDM(this, {
-      nick,
-      id: this.client.resolver.resolveUserID(accessTokenOrID),
-      accessToken: accessTokenOrID,
-    });
+  addUser(accessTokenOrUser, nick) {
+    const id = this.client.resolver.resolveUserID(accessTokenOrUser);
+    const data = this.client.user.bot ?
+      { nick, access_token: accessTokenOrUser } :
+      { recipient: id };
+    return this.client.api.channels(this.id).recipients(id).put({ data })
+    .then(() => this);
   }
 
   /**
@@ -155,11 +156,6 @@ class GroupDMChannel extends Channel {
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   send() {}
-  sendMessage() {}
-  sendEmbed() {}
-  sendFile() {}
-  sendFiles() {}
-  sendCode() {}
   fetchMessage() {}
   fetchMessages() {}
   fetchPinnedMessages() {}

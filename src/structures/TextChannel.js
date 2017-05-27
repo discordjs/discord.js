@@ -1,4 +1,5 @@
 const GuildChannel = require('./GuildChannel');
+const Webhook = require('./Webhook');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Collection = require('../util/Collection');
 
@@ -35,7 +36,7 @@ class TextChannel extends GuildChannel {
   get members() {
     const members = new Collection();
     for (const member of this.guild.members.values()) {
-      if (this.permissionsFor(member).hasPermission('READ_MESSAGES')) {
+      if (this.permissionsFor(member).has('READ_MESSAGES')) {
         members.set(member.id, member);
       }
     }
@@ -56,7 +57,11 @@ class TextChannel extends GuildChannel {
    * @returns {Promise<Collection<Snowflake, Webhook>>}
    */
   fetchWebhooks() {
-    return this.client.rest.methods.getChannelWebhooks(this);
+    return this.client.api.channels(this.id).webhooks.get().then(data => {
+      const hooks = new Collection();
+      for (const hook of data) hooks.set(hook.id, new Webhook(this.client, hook));
+      return hooks;
+    });
   }
 
   /**
@@ -70,25 +75,19 @@ class TextChannel extends GuildChannel {
    *  .catch(console.error)
    */
   createWebhook(name, avatar) {
-    return new Promise(resolve => {
-      if (typeof avatar === 'string' && avatar.startsWith('data:')) {
-        resolve(this.client.rest.methods.createWebhook(this, name, avatar));
-      } else {
-        this.client.resolver.resolveBuffer(avatar).then(data =>
-           resolve(this.client.rest.methods.createWebhook(this, name, data))
-        );
-      }
-    });
+    if (typeof avatar === 'string' && avatar.startsWith('data:')) {
+      return this.client.api.channels(this.id).webhooks.post({ data: {
+        name, avatar,
+      } }).then(data => new Webhook(this.client, data));
+    } else {
+      return this.client.resolver.resolveBuffer(avatar).then(data =>
+        this.createWebhook(name, this.client.resolver.resolveBase64(data) || null));
+    }
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   send() {}
-  sendMessage() {}
-  sendEmbed() {}
-  sendFile() {}
-  sendFiles() {}
-  sendCode() {}
   fetchMessage() {}
   fetchMessages() {}
   fetchPinnedMessages() {}
