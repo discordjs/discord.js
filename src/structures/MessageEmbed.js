@@ -4,20 +4,6 @@
  */
 class MessageEmbed {
   constructor(message, data) {
-    /**
-     * The client that instantiated this embed
-     * @name MessageEmbed#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: message.client });
-
-    /**
-     * The message this embed is part of
-     * @type {Message}
-     */
-    this.message = message;
-
     this.setup(data);
   }
 
