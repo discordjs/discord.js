@@ -17700,13 +17700,16 @@ class WebSocketConnection extends EventEmitter {
    * @param {Error} error Error that occurred
    */
   onError(error) {
+    if (error && error.message === 'uWs client connection error') {
+      this.reconnect();
+      return;
+    }
     /**
      * Emitted whenever the client's WebSocket encounters a connection error.
      * @event Client#error
      * @param {Error} error The encountered error
      */
     this.client.emit(Constants.Events.ERROR, error);
-    if (error.message === 'uWs client connection error') this.reconnect();
   }
 
   /**
