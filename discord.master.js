@@ -4362,7 +4362,7 @@ class User {
    * @readonly
    */
   get defaultAvatarURL() {
-    return Constants.Endpoints.CDN(this.client.options.http.host).DefaultAvatar(this.discriminator % 5);
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).DefaultAvatar(this.discriminator % 5);
   }
 
   /**
