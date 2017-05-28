@@ -134,7 +134,7 @@ exports.Endpoints = {
     };
   },
   invite: code => `https://discord.gg/${code}`,
-  botGateway: '/gateway/bot'
+  botGateway: '/gateway/bot',
 };
 
 
