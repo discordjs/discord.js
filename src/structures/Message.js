@@ -91,7 +91,7 @@ class Message {
      * A list of embeds in the message - e.g. YouTube Player
      * @type {MessageEmbed[]}
      */
-    this.embeds = data.embeds.map(e => new Embed(this, e));
+    this.embeds = data.embeds.map(e => new Embed(e));
 
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID
@@ -163,7 +163,7 @@ class Message {
     if ('content' in data) this.content = data.content;
     if ('pinned' in data) this.pinned = data.pinned;
     if ('tts' in data) this.tts = data.tts;
-    if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(this, e));
+    if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(e));
     else this.embeds = this.embeds.slice();
 
     if ('attachments' in data) {
