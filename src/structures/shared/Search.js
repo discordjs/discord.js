@@ -39,6 +39,7 @@ module.exports = function search(target, options) {
     embed_type: options.embedType,
     attachment_filename: options.attachmentFilename,
     attachment_extension: options.attachmentExtension,
+    include_nsfw: options.nsfw,
   };
 
   // Lazy load these because some of them use util
