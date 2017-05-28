@@ -287,34 +287,6 @@ class MessageEmbed {
     return this;
   }
 
-  /**
-   * Create an object that can be sent in a message to discord.
-   * @returns {Object}
-   * @private
-   */
-  _transformForDiscord() {
-    return {
-      type: 'rich',
-      title: this.title || null,
-      description: this.description || null,
-      url: this.url || null,
-      color: this.color || null,
-      fields: this.fields ? this.fields : null,
-      timestamp: this.timestamp || null,
-      thumbnail: this.thumbnail ? { url: this.thumbnail.url || null } : null,
-      image: this.image ? { url: this.image.url || null } : null,
-      video: this.video ? { url: this.video.url || null } : null,
-      author: this.author ? {
-        name: this.author.name || null,
-        url: this.author.url || null,
-        icon_url: this.author.iconURL || null,
-      } : null,
-      footer: this.footer ? {
-        text: this.footer.text || null,
-        icon_url: this.footer.iconURL || null,
-      } : null,
-    };
-  }
 }
 
 module.exports = MessageEmbed;
