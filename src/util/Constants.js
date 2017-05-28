@@ -135,8 +135,8 @@ exports.Endpoints = {
   },
   invite: code => `https://discord.gg/${code}`,
   gateway: {
-      toString: () => '/gateway',
-      bot: '/gateway/bot',
+    toString: () => '/gateway',
+    bot: '/gateway/bot',
   },
 };
 
