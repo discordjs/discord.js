@@ -2,8 +2,8 @@ const Util = require('../../util/Util');
 
 module.exports = function sendMessage(channel, options) {
   const User = require('../User');
-  if (channel instanceof User) return channel.createDM().then(dm => dm.send(options));
   const GuildMember = require('../GuildMember');
+  if (channel instanceof User || channel instanceof GuildMember) return channel.createDM().then(dm => dm.send(options));
   let { content, nonce, reply, code, disableEveryone, tts, embed, files, split } = options;
 
   if (typeof nonce !== 'undefined') {
