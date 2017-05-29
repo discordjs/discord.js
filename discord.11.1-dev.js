@@ -7231,6 +7231,7 @@ class TextBasedChannel {
    * @property {Date} [before] Date to find messages before
    * @property {Date} [after] Date to find messages before
    * @property {Date} [during] Date to find messages during (range of date to date + 24 hours)
+   * @property {boolean} [nsfw=false] Include results from NSFW channels
    */
 
   /**
@@ -24459,6 +24460,7 @@ class RESTMethods {
       embed_type: options.embedType,
       attachment_filename: options.attachmentFilename,
       attachment_extension: options.attachmentExtension,
+      include_nsfw: options.nsfw,
     };
 
     for (const key in options) if (options[key] === undefined) delete options[key];
