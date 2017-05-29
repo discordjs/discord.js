@@ -68,7 +68,7 @@ class Guild {
        */
       this.id = data.id;
     } else {
-      this.available = true;
+      if (data.channels.length) this.available = true;
       this.setup(data);
     }
   }
