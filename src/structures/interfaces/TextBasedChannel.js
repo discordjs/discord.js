@@ -214,6 +214,7 @@ class TextBasedChannel {
    * @property {Date} [before] Date to find messages before
    * @property {Date} [after] Date to find messages before
    * @property {Date} [during] Date to find messages during (range of date to date + 24 hours)
+   * @property {boolean} [nsfw=false] Include results from NSFW channels
    */
 
   /**
