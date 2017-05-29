@@ -25918,8 +25918,8 @@ const Util = __webpack_require__(4);
 
 module.exports = function sendMessage(channel, options) {
   const User = __webpack_require__(12);
-  if (channel instanceof User) return channel.createDM().then(dm => dm.send(options));
   const GuildMember = __webpack_require__(19);
+  if (channel instanceof User || channel instanceof GuildMember) return channel.createDM().then(dm => dm.send(options));
   let { content, nonce, reply, code, disableEveryone, tts, embed, files, split } = options;
 
   if (typeof nonce !== 'undefined') {
