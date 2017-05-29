@@ -227,6 +227,7 @@ class RESTMethods {
       embed_type: options.embedType,
       attachment_filename: options.attachmentFilename,
       attachment_extension: options.attachmentExtension,
+      include_nsfw: options.nsfw,
     };
 
     for (const key in options) if (options[key] === undefined) delete options[key];
