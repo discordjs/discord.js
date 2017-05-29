@@ -121,6 +121,7 @@ class GuildAuditLogs {
       Actions.CHANNEL_UPDATE,
       Actions.CHANNEL_OVERWRITE_UPDATE,
       Actions.MEMBER_UPDATE,
+      Actions.MEMBER_ROLE_UPDATE,
       Actions.ROLE_UPDATE,
       Actions.INVITE_UPDATE,
       Actions.WEBHOOK_UPDATE,
