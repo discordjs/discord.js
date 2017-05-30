@@ -8,7 +8,7 @@ const EventEmitter = require('events').EventEmitter;
 const Prism = require('prism-media');
 
 /**
- * Represents a connection to a voice channel in Discord.
+ * Represents a connection a guild's voice server.
  * ```js
  * // Obtained using:
  * voiceChannel.join().then(connection => {
