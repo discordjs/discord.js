@@ -11685,8 +11685,8 @@ module.exports = {
 		"long": "^3.2.0",
 		"prism-media": "^0.0.1",
 		"snekfetch": "^3.1.0",
-		"tweetnacl": "^0.14.0",
-		"ws": "^2.0.0"
+		"tweetnacl": "^1.0.0",
+		"ws": "^3.0.0"
 	},
 	"peerDependencies": {
 		"bufferutil": "^3.0.0",
