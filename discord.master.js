@@ -5680,7 +5680,8 @@ class Guild {
 
   /**
    * Fetch a collection of banned users in this guild.
-   * @returns {Promise<Collection<Snowflake, User>>}
+   * The returned collection contains user objects keyed under `user` and reasons keyed under `reason`.
+   * @returns {Promise<Collection<Snowflake, Object>>}
    */
   fetchBans() {
     return this.client.api.guilds(this.id).bans.get().then(bans =>
