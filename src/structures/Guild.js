@@ -68,7 +68,6 @@ class Guild {
        */
       this.id = data.id;
     } else {
-      if (data.channels.length) this.available = true;
       this.setup(data);
     }
   }
@@ -164,7 +163,7 @@ class Guild {
     this.joinedTimestamp = data.joined_at ? new Date(data.joined_at).getTime() : this.joinedTimestamp;
 
     this.id = data.id;
-    if (data.channels.length) this.available = !data.unavailable;
+    this.available = data.channels.length ? !data.unavailable : false;
     this.features = data.features || this.features || [];
 
     if (data.members) {
