@@ -35,6 +35,13 @@ class WebhookClient extends Webhook {
     this.rest = new RESTManager(this);
 
     /**
+     * API shortcut
+     * @type {Object}
+     * @private
+     */
+    this.api = this.rest.api;
+
+    /**
      * The data resolver of the client
      * @type {ClientDataResolver}
      * @private
