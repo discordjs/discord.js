@@ -313,7 +313,7 @@ class ClientUser extends User {
 
             const timeout = this.client.setTimeout(() => {
               this.client.removeListener(Constants.Events.GUILD_CREATE, handleGuild);
-              reject(new Error(Constants.Errors.TOOK_TOO_LONG));
+              resolve(this.client.dataManager.newGuild(data));
             }, 10000);
             return undefined;
           }, reject)
