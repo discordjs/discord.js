@@ -17,8 +17,7 @@
 </div>
 
 # Welcome!
-Welcome to the discord.js v11.1.0 documentation.
-v11.1.0 features improved voice and gateway stability, as well as support for new features such as audit logs and searching for messages.
+Welcome to the discord.js v12.0.0 documentation.
 
 ## About
 discord.js is a powerful [node.js](https://nodejs.org) module that allows you to interact with the
@@ -30,7 +29,7 @@ discord.js is a powerful [node.js](https://nodejs.org) module that allows you to
 - 100% coverage of the Discord API
 
 ## Installation
-**Node.js 6.0.0 or newer is required.**  
+**Node.js 8.0.0 or newer is required.**  
 Ignore any warnings about unmet peer dependencies, as they're all optional.
 
 Without voice support: `npm install discord.js --save`  
