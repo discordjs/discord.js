@@ -62,7 +62,7 @@ class Collection extends Map {
    * Obtains the first item in this collection.
    * @param {Integer} [count] Number of values to return. If omited, returns a single values.
    * If present, returns an array of values.
-   * @returns {*}
+   * @returns {*|Array}
    */
   first(count) {
     if (!count) return this.values().next().value;
@@ -79,7 +79,7 @@ class Collection extends Map {
    * Obtains the first key in this collection.
    * @param {Integer} [count] Number of keys to return. If omited, returns a single key.
    * If present, returns an array of keys.
-   * @returns {*}
+   * @returns {*|Array}
    */
   firstKey(count) {
     if (!count) return this.keys().next().value;
@@ -97,7 +97,7 @@ class Collection extends Map {
    * applies here as well.
    * @param {Integer} [count] Number of values to return. If omited, returns a single values.
    * If present, returns an array of values.
-   * @returns {*}
+   * @returns {*|Array}
    */
   last(count) {
     const arr = this.array();
@@ -116,7 +116,7 @@ class Collection extends Map {
    * applies here as well.
    * @param {Integer} [count] Number of keys to return. If omited, returns a single key.
    * If present, returns an array of keys.
-   * @returns {*}
+   * @returns {*|Array}
    */
   lastKey(count) {
     const arr = this.keyArray();
@@ -133,7 +133,9 @@ class Collection extends Map {
   /**
    * Obtains a random item from this collection. This relies on the `array()` method, and thus the caching mechanism
    * applies here as well.
-   * @returns {*}
+   * @param {Integer} [count] Number of values to return. If omited, returns a single values.
+   * If present, returns an array of values.
+   * @returns {*|Array}
    */
   random(count) {
     const arr = this.array();
@@ -149,7 +151,9 @@ class Collection extends Map {
   /**
    * Obtains a random key from this collection. This relies on the `keyArray()` method, and thus the caching mechanism
    * applies here as well.
-   * @returns {*}
+   * @param {Integer} [count] Number of keys to return. If omited, returns a single key.
+   * If present, returns an array of keys.
+   * @returns {*|Array}
    */
   randomKey(count) {
     const arr = this.keyArray();
