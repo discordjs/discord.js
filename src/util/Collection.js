@@ -1,10 +1,6 @@
 /**
- * This file has been extracted from the Discord.js source code
- * Original URL: https://github.com/hydrabolt/discord.js/blob/master/src/util/Collection.js
- * Credits to Amish Shah (hydrabolt) and other Discord.js contributors
-
-/**
- * A Map with additional utility methods.
+ * A Map with additional utility methods. This is used throughout discord.js rather than Arrays for anything that has
+ * an ID, for significantly improved performance and ease-of-use.
  * @extends {Map}
  */
 class Collection extends Map {
