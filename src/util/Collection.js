@@ -1,6 +1,10 @@
 /**
- * A Map with additional utility methods. This is used throughout discord.js rather than Arrays for anything that has
- * an ID, for significantly improved performance and ease-of-use.
+ * This file has been extracted from the Discord.js source code
+ * Original URL: https://github.com/hydrabolt/discord.js/blob/master/src/util/Collection.js
+ * Credits to Amish Shah (hydrabolt) and other Discord.js contributors
+
+/**
+ * A Map with additional utility methods.
  * @extends {Map}
  */
 class Collection extends Map {
@@ -69,6 +73,7 @@ class Collection extends Map {
     if (!Number.isInteger(count)) throw new TypeError('Count must be an integer');
     const values = this.values();
     const retArr = [];
+    count = Math.min(this.size, count);
     for (let i = 0; i < count; i++) {
       retArr[i] = values.next().value;
     }
@@ -86,6 +91,7 @@ class Collection extends Map {
     if (!Number.isInteger(count)) throw new TypeError('Count must be an integer');
     const keys = this.keys();
     const retArr = [];
+    count = Math.min(this.size, count);
     for (let i = 0; i < count; i++) {
       retArr[i] = keys.next().value;
     }
@@ -105,6 +111,7 @@ class Collection extends Map {
     if (!Number.isInteger(count)) throw new TypeError('Count must be an integer');
     const retArr = [];
     const arrLen = arr.length;
+    count = Math.min(this.size, count);
     for (let i = 0; i < count; i++) {
       retArr[i] = arr[arrLen - (i + 1)];
     }
@@ -124,6 +131,7 @@ class Collection extends Map {
     if (!Number.isInteger(count)) throw new TypeError('Count must be an integer');
     const retArr = [];
     const arrLen = arr.length;
+    count = Math.min(this.size, count);
     for (let i = 0; i < count; i++) {
       retArr[i] = arr[arrLen - (i + 1)];
     }
@@ -142,8 +150,10 @@ class Collection extends Map {
     if (!count) return arr[Math.floor(Math.random() * arr.length)];
     if (!Number.isInteger(count)) throw new TypeError('Count must be an integer');
     const retArr = [];
-    for (let i = 0; i < count; i++) {
-      retArr[i] = arr[Math.floor(Math.random() * arr.length)];
+    while (retArr.length < count && arr.length > 0) {
+      const i = Math.floor(Math.random() * arr.length);
+      retArr.push(arr[i]);
+      arr.splice(i, 1);
     }
     return retArr;
   }
@@ -160,8 +170,10 @@ class Collection extends Map {
     if (!count) return arr[Math.floor(Math.random() * arr.length)];
     if (!Number.isInteger(count)) throw new TypeError('Count must be an integer');
     const retArr = [];
-    for (let i = 0; i < count; i++) {
-      retArr[i] = arr[Math.floor(Math.random() * arr.length)];
+    while (retArr.length < count && arr.length > 0) {
+      const i = Math.floor(Math.random() * arr.length);
+      retArr.push(arr[i]);
+      arr.splice(i, 1);
     }
     return retArr;
   }
