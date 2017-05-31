@@ -60,58 +60,104 @@ class Collection extends Map {
 
   /**
    * Obtains the first item in this collection.
+   * @param {Integer} [count] Number of values to return. If omited, returns a single values. If present, returns an array of values.
    * @returns {*}
    */
-  first() {
-    return this.values().next().value;
+  first(count) {
+    if(!count) return this.values().next().value;
+    if (!Number.isInteger(count)) throw new TypeError('Count must be an integer');
+    const values = this.values();
+    const retArr = [];
+    for(let i=0;i<count;i++) {
+      retArr[i] = values.next().value;
+    }
+    return retArr;
   }
 
   /**
    * Obtains the first key in this collection.
+   * @param {Integer} [count] Number of keys to return. If omited, returns a single key. If present, returns an array of keys.
    * @returns {*}
    */
-  firstKey() {
-    return this.keys().next().value;
+  firstKey(count) {
+    if(!count) return this.keys().next().value;
+    if (!Number.isInteger(count)) throw new TypeError('Count must be an integer');
+    const keys = this.keys();
+    const retArr = [];
+    for(let i=0;i<count;i++) {
+      retArr[i] = keys.next().value;
+    }
+    return retArr;
   }
 
   /**
    * Obtains the last item in this collection. This relies on the `array()` method, and thus the caching mechanism
    * applies here as well.
+   * @param {Integer} [count] Number of values to return. If omited, returns a single values. If present, returns an array of values.
    * @returns {*}
    */
-  last() {
+  last(count) {
     const arr = this.array();
-    return arr[arr.length - 1];
+    if(!count) return arr[arr.length - 1];
+    if (!Number.isInteger(count)) throw new TypeError('Count must be an integer');
+    const retArr = [];
+    const arrLen = arr.length;
+    for(let i=0;i<count;i++) {
+      retArr[i] = arr[arrLen - (i+1)];
+    }
+    return retArr;
   }
 
   /**
    * Obtains the last key in this collection. This relies on the `keyArray()` method, and thus the caching mechanism
    * applies here as well.
+   * @param {Integer} [count] Number of keys to return. If omited, returns a single key. If present, returns an array of keys.
    * @returns {*}
    */
-  lastKey() {
+  lastKey(count) {
     const arr = this.keyArray();
-    return arr[arr.length - 1];
+    if(!count) return arr[arr.length - 1];
+    if (!Number.isInteger(count)) throw new TypeError('Count must be an integer');
+    const retArr = [];
+    const arrLen = arr.length;
+    for(let i=0;i<count;i++) {
+      retArr[i] = arr[arrLen - (i+1)];
+    }
+    return retArr;
   }
 
   /**
    * Obtains a random item from this collection. This relies on the `array()` method, and thus the caching mechanism
    * applies here as well.
+   * @param {Integer} [count] Number of values to return. If omited, returns a single values. If present, returns an array of values.
    * @returns {*}
    */
-  random() {
+  random(count) {
     const arr = this.array();
-    return arr[Math.floor(Math.random() * arr.length)];
+    if(!count) return arr[Math.floor(Math.random() * arr.length)];
+    if (!Number.isInteger(count)) throw new TypeError('Count must be an integer');
+    const retArr = [];
+    for(let i=0;i<count;i++) {
+      retArr[i] = arr[Math.floor(Math.random() * arr.length)];
+    }
+    return retArr;
   }
 
   /**
    * Obtains a random key from this collection. This relies on the `keyArray()` method, and thus the caching mechanism
    * applies here as well.
+   * @param {Integer} [count] Number of keys to return. If omited, returns a single key. If present, returns an array of keys.
    * @returns {*}
    */
-  randomKey() {
+  randomKey(count) {
     const arr = this.keyArray();
-    return arr[Math.floor(Math.random() * arr.length)];
+    if(!count) return arr[Math.floor(Math.random() * arr.length)];
+    if (!Number.isInteger(count)) throw new TypeError('Count must be an integer');
+    const retArr = [];
+    for(let i=0;i<count;i++) {
+      retArr[i] = arr[Math.floor(Math.random() * arr.length)];
+    }
+    return retArr;
   }
 
   /**
