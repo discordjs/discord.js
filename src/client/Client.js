@@ -482,6 +482,23 @@ class Client extends EventEmitter {
   }
 
   /**
+   * Makes the client leave guilds.
+   * @param {Snowflake[]} guildIDs IDs of guilds to leave
+   * @returns {Promise<Guild[]>}
+   */
+  leave(guildIDs) {
+    const guildPromises = [];
+    if (!guildIDs || !guildIDs.length) return Promise.reject(new Error('An array of guild IDs must be provided.'));
+    for (const id of guildIDs) {
+      const guild = this.guilds.get(id);
+      if (guild) guildPromises.push(guild.leave());
+      else guildPromises.push(Promise.reject(new Error(`Guild with ID ${id} not found.`)));
+    }
+
+    return Promise.all(guildPromises);
+  }
+
+  /**
    * Adds a ping to {@link Client#pings}.
    * @param {number} startTime Starting time of the ping
    * @private
