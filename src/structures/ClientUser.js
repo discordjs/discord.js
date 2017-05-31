@@ -82,12 +82,8 @@ class ClientUser extends User {
   edit(data, password) {
     const _data = {};
     _data.username = data.username || this.username;
+    _data.avatar = this.client.resolver.resolveBase64(data.avatar);
 
-    if (data.avatar) {
-      _data.avatar = this.client.resolver.resolveBase64(data.avatar) || this.avatar;
-    } else if (typeof data.avatar !== 'undefined') {
-      _data.avatar = '';
-    }
 
     if (!this.bot) {
       _data.email = data.email || this.email;
@@ -159,11 +155,10 @@ class ClientUser extends User {
    *  .catch(console.error);
    */
   setAvatar(avatar) {
-    if (!avatar) return this.edit({ avatar: '' });
     if (typeof avatar === 'string' && avatar.startsWith('data:')) {
       return this.edit({ avatar });
     } else {
-      return this.client.resolver.resolveBuffer(avatar)
+      return this.client.resolver.resolveBuffer(avatar || Buffer.alloc(0))
         .then(data => this.edit({ avatar: this.client.resolver.resolveBase64(data) || null }));
     }
   }
