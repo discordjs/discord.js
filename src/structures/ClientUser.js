@@ -84,7 +84,6 @@ class ClientUser extends User {
     _data.username = data.username || this.username;
     _data.avatar = this.client.resolver.resolveBase64(data.avatar);
 
-
     if (!this.bot) {
       _data.email = data.email || this.email;
       _data.password = password;
