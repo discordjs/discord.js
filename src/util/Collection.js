@@ -60,13 +60,13 @@ class Collection extends Map {
 
   /**
    * Obtains the first item in this collection.
-   * @param {number} [count] Number of values to return. If omited, returns a single values.
+   * @param {number} [count] Number of values to return. If omited, returns a single value.
    * If present, returns an array of values.
    * @returns {*|Array}
    */
   first(count) {
     if (!count) return this.values().next().value;
-    if (!Number.isInteger(count)) throw new TypeError('Count must be an integer');
+    if (!Number.isInteger(count) || count < 1) throw new TypeError('Count must be a positive integer');
     const values = this.values();
     const retArr = [];
     count = Math.min(this.size, count);
@@ -84,7 +84,7 @@ class Collection extends Map {
    */
   firstKey(count) {
     if (!count) return this.keys().next().value;
-    if (!Number.isInteger(count)) throw new TypeError('Count must be an integer');
+    if (!Number.isInteger(count) || count < 1) throw new TypeError('Count must be a positive integer');
     const keys = this.keys();
     const retArr = [];
     count = Math.min(this.size, count);
@@ -97,14 +97,14 @@ class Collection extends Map {
   /**
    * Obtains the last item in this collection. This relies on the `array()` method, and thus the caching mechanism
    * applies here as well.
-   * @param {number} [count] Number of values to return. If omited, returns a single values.
+   * @param {number} [count] Number of values to return. If omited, returns a single value.
    * If present, returns an array of values.
    * @returns {*|Array}
    */
   last(count) {
     const arr = this.array();
     if (!count) return arr[arr.length - 1];
-    if (!Number.isInteger(count)) throw new TypeError('Count must be an integer');
+    if (!Number.isInteger(count) || count < 1) throw new TypeError('Count must be a positive integer');
     const retArr = [];
     const arrLen = arr.length;
     count = Math.min(this.size, count);
@@ -124,7 +124,7 @@ class Collection extends Map {
   lastKey(count) {
     const arr = this.keyArray();
     if (!count) return arr[arr.length - 1];
-    if (!Number.isInteger(count)) throw new TypeError('Count must be an integer');
+    if (!Number.isInteger(count) || count < 1) throw new TypeError('Count must be a positive integer');
     const retArr = [];
     const arrLen = arr.length;
     count = Math.min(this.size, count);
@@ -137,14 +137,14 @@ class Collection extends Map {
   /**
    * Obtains a random item from this collection. This relies on the `array()` method, and thus the caching mechanism
    * applies here as well.
-   * @param {number} [count] Number of values to return. If omited, returns a single values.
+   * @param {number} [count] Number of values to return. If omited, returns a single value.
    * If present, returns an array of values.
    * @returns {*|Array}
    */
   random(count) {
     const arr = this.array();
     if (!count) return arr[Math.floor(Math.random() * arr.length)];
-    if (!Number.isInteger(count)) throw new TypeError('Count must be an integer');
+    if (!Number.isInteger(count) || count < 1) throw new TypeError('Count must be a positive integer');
     const retArr = [];
     while (retArr.length < count && arr.length > 0) {
       const i = Math.floor(Math.random() * arr.length);
@@ -164,7 +164,7 @@ class Collection extends Map {
   randomKey(count) {
     const arr = this.keyArray();
     if (!count) return arr[Math.floor(Math.random() * arr.length)];
-    if (!Number.isInteger(count)) throw new TypeError('Count must be an integer');
+    if (!Number.isInteger(count) || count < 1) throw new TypeError('Count must be a positive integer');
     const retArr = [];
     while (retArr.length < count && arr.length > 0) {
       const i = Math.floor(Math.random() * arr.length);
