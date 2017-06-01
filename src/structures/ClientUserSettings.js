@@ -15,8 +15,7 @@ class ClientUserSettings {
    * @param {Object} data Data to patch this with
    */
   patch(data) {
-    for (const key of Object.keys(Constants.UserSettingsMap)) {
-      const value = Constants.UserSettingsMap[key];
+    for (const [key, value] of Object.entries(Constants.UserSettingsMap)) {
       if (!data.hasOwnProperty(key)) continue;
       if (typeof value === 'function') {
         this[value.name] = value(data[key]);
