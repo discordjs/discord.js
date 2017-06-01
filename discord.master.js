@@ -11708,7 +11708,7 @@ module.exports = {
 		"webpack": "^2.2.0"
 	},
 	"engines": {
-		"node": ">=6.0.0"
+		"node": ">=8.0.0"
 	},
 	"browser": {
 		"ws": false,
