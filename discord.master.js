@@ -11748,7 +11748,7 @@ module.exports = {
 /* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const User = __webpack_require__(12);
+/* WEBPACK VAR INJECTION */(function(Buffer) {const User = __webpack_require__(12);
 const Collection = __webpack_require__(3);
 const ClientUserSettings = __webpack_require__(42);
 const Constants = __webpack_require__(0);
@@ -11832,7 +11832,8 @@ class ClientUser extends User {
   edit(data, password) {
     const _data = {};
     _data.username = data.username || this.username;
-    _data.avatar = this.client.resolver.resolveBase64(data.avatar) || this.avatar;
+    _data.avatar = this.client.resolver.resolveBase64(data.avatar);
+
     if (!this.bot) {
       _data.email = data.email || this.email;
       _data.password = password;
@@ -11906,7 +11907,7 @@ class ClientUser extends User {
     if (typeof avatar === 'string' && avatar.startsWith('data:')) {
       return this.edit({ avatar });
     } else {
-      return this.client.resolver.resolveBuffer(avatar)
+      return this.client.resolver.resolveBuffer(avatar || Buffer.alloc(0))
         .then(data => this.edit({ avatar: this.client.resolver.resolveBase64(data) || null }));
     }
   }
@@ -12087,6 +12088,7 @@ class ClientUser extends User {
 
 module.exports = ClientUser;
 
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer))
 
 /***/ }),
 /* 42 */
