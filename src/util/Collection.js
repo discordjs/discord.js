@@ -60,7 +60,7 @@ class Collection extends Map {
 
   /**
    * Obtains the first item in this collection.
-   * @param {number} [count] Number of values to return. If omited, returns a single value.
+   * @param {number} [count] Number of values to return. If omitted, returns a single value.
    * If present, returns an array of values.
    * @returns {*|Array}
    */
@@ -78,7 +78,7 @@ class Collection extends Map {
 
   /**
    * Obtains the first key in this collection.
-   * @param {number} [count] Number of keys to return. If omited, returns a single key.
+   * @param {number} [count] Number of keys to return. If omitted, returns a single key.
    * If present, returns an array of keys.
    * @returns {*|Array}
    */
@@ -97,7 +97,7 @@ class Collection extends Map {
   /**
    * Obtains the last item in this collection. This relies on the `array()` method, and thus the caching mechanism
    * applies here as well.
-   * @param {number} [count] Number of values to return. If omited, returns a single value.
+   * @param {number} [count] Number of values to return. If omitted, returns a single value.
    * If present, returns an array of values.
    * @returns {*|Array}
    */
@@ -117,7 +117,7 @@ class Collection extends Map {
   /**
    * Obtains the last key in this collection. This relies on the `keyArray()` method, and thus the caching mechanism
    * applies here as well.
-   * @param {number} [count] Number of keys to return. If omited, returns a single key.
+   * @param {number} [count] Number of keys to return. If omitted, returns a single key.
    * If present, returns an array of keys.
    * @returns {*|Array}
    */
@@ -137,7 +137,7 @@ class Collection extends Map {
   /**
    * Obtains a random item from this collection. This relies on the `array()` method, and thus the caching mechanism
    * applies here as well.
-   * @param {number} [count] Number of values to return. If omited, returns a single value.
+   * @param {number} [count] Number of values to return. If omitted, returns a single value.
    * If present, returns an array of values.
    * @returns {*|Array}
    */
@@ -157,7 +157,7 @@ class Collection extends Map {
   /**
    * Obtains a random key from this collection. This relies on the `keyArray()` method, and thus the caching mechanism
    * applies here as well.
-   * @param {number} [count] Number of keys to return. If omited, returns a single key.
+   * @param {number} [count] Number of keys to return. If omitted, returns a single key.
    * If present, returns an array of keys.
    * @returns {*|Array}
    */
