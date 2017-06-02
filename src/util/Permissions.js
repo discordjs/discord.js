@@ -171,7 +171,7 @@ Permissions.FLAGS = {
  * Bitfield representing every permission combined
  * @type {number}
  */
-Permissions.ALL = Object.keys(Permissions.FLAGS).reduce((all, p) => all | Permissions.FLAGS[p], 0);
+Permissions.ALL = Object.values(Permissions.FLAGS).reduce((all, p) => all | p, 0);
 
 /**
  * Bitfield representing the default permissions for users
