@@ -19435,50 +19435,27 @@ module.exports = __webpack_require__(37);
 /***/ (function(module, exports) {
 
 module.exports = {
-	"_args": [
-		[
-			{
-				"raw": "snekfetch@^3.1.0",
-				"scope": null,
-				"escapedName": "snekfetch",
-				"name": "snekfetch",
-				"rawSpec": "^3.1.0",
-				"spec": ">=3.1.0 <4.0.0",
-				"type": "range"
-			},
-			"/home/travis/build/hydrabolt/discord.js"
-		]
-	],
-	"_from": "snekfetch@>=3.1.0 <4.0.0",
-	"_id": "snekfetch@3.1.7",
-	"_inCache": true,
+	"_from": "snekfetch@^3.1.0",
+	"_id": "snekfetch@3.1.8",
+	"_inBundle": false,
+	"_integrity": "sha512-hRXeasaRhCNxgtEbrRN6F7MvyvtdaJ6yHI37TkjXJIwMcFOaeK2LQxzfPHTqhyOYL+ZIyq49/Hdxo4SXfmkbPg==",
 	"_location": "/snekfetch",
-	"_nodeVersion": "8.0.0-rc.0",
-	"_npmOperationalInternal": {
-		"host": "packages-12-west.internal.npmjs.com",
-		"tmp": "tmp/snekfetch-3.1.7.tgz_1494815163487_0.09571001585572958"
-	},
-	"_npmUser": {
-		"name": "snek",
-		"email": "me@gus.host"
-	},
-	"_npmVersion": "4.5.0",
 	"_phantomChildren": {},
 	"_requested": {
+		"type": "range",
+		"registry": true,
 		"raw": "snekfetch@^3.1.0",
-		"scope": null,
-		"escapedName": "snekfetch",
 		"name": "snekfetch",
+		"escapedName": "snekfetch",
 		"rawSpec": "^3.1.0",
-		"spec": ">=3.1.0 <4.0.0",
-		"type": "range"
+		"saveSpec": null,
+		"fetchSpec": "^3.1.0"
 	},
 	"_requiredBy": [
 		"/"
 	],
-	"_resolved": "https://registry.npmjs.org/snekfetch/-/snekfetch-3.1.7.tgz",
-	"_shasum": "5eb980d29c3b455bf0b13359647909b0737315e9",
-	"_shrinkwrap": null,
+	"_resolved": "https://registry.npmjs.org/snekfetch/-/snekfetch-3.1.8.tgz",
+	"_shasum": "a871a6208f9ec6ec72e2c61416f40880ee1aea92",
 	"_spec": "snekfetch@^3.1.0",
 	"_where": "/home/travis/build/hydrabolt/discord.js",
 	"author": {
@@ -19488,41 +19465,20 @@ module.exports = {
 	"bugs": {
 		"url": "https://github.com/devsnek/snekfetch/issues"
 	},
+	"bundleDependencies": false,
 	"dependencies": {},
+	"deprecated": false,
 	"description": "Just do http requests without all that weird nastiness from other libs",
 	"devDependencies": {},
-	"directories": {},
-	"dist": {
-		"shasum": "5eb980d29c3b455bf0b13359647909b0737315e9",
-		"tarball": "https://registry.npmjs.org/snekfetch/-/snekfetch-3.1.7.tgz"
-	},
-	"gitHead": "f47ae6179addc843c76041a5b0a1013c67759729",
 	"homepage": "https://github.com/devsnek/snekfetch#readme",
 	"license": "MIT",
 	"main": "index.js",
-	"maintainers": [
-		{
-			"name": "crawl",
-			"email": "icrawltogo@gmail.com"
-		},
-		{
-			"name": "hydrabolt",
-			"email": "amishshah.2k@gmail.com"
-		},
-		{
-			"name": "snek",
-			"email": "me@gus.host"
-		}
-	],
 	"name": "snekfetch",
-	"optionalDependencies": {},
-	"readme": "ERROR: No README data found!",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/devsnek/snekfetch.git"
 	},
-	"scripts": {},
-	"version": "3.1.7"
+	"version": "3.1.8"
 };
 
 /***/ }),
@@ -19606,7 +19562,7 @@ class Snekfetch extends Stream.Readable {
   }
 
   query(name, value) {
-    if (this.request.res) throw new Error('Cannot modify query after being sent!');
+    if (this._response) throw new Error('Cannot modify query after being sent!');
     if (!this.request.query) this.request.query = {};
     if (name !== null && typeof name === 'object') {
       this.request.query = Object.assign(this.request.query, name);
@@ -19617,7 +19573,7 @@ class Snekfetch extends Stream.Readable {
   }
 
   set(name, value) {
-    if (this.request.res) throw new Error('Cannot modify headers after being sent!');
+    if (this._response) throw new Error('Cannot modify headers after being sent!');
     if (name !== null && typeof name === 'object') {
       for (const key of Object.keys(name)) this.set(key, name[key]);
     } else {
@@ -19627,7 +19583,7 @@ class Snekfetch extends Stream.Readable {
   }
 
   attach(name, data, filename) {
-    if (this.request.res) throw new Error('Cannot modify data after being sent!');
+    if (this._response) throw new Error('Cannot modify data after being sent!');
     const form = this._getFormData();
     this.set('Content-Type', `multipart/form-data; boundary=${form.boundary}`);
     form.append(name, data, filename);
@@ -19636,7 +19592,7 @@ class Snekfetch extends Stream.Readable {
   }
 
   send(data) {
-    if (this.request.res) throw new Error('Cannot modify data after being sent!');
+    if (this._response) throw new Error('Cannot modify data after being sent!');
     if (data !== null && typeof data === 'object') {
       const header = this._getHeader('content-type');
       let serialize;
@@ -19771,7 +19727,7 @@ class Snekfetch extends Stream.Readable {
 
   _read() {
     this.resume();
-    if (this.response) return;
+    if (this._response) return;
     this.catch((err) => this.emit('error', err));
   }
 
@@ -19798,7 +19754,7 @@ class Snekfetch extends Stream.Readable {
     if (this.request.method !== 'HEAD') this.set('Accept-Encoding', 'gzip, deflate');
   }
 
-  get response() {
+  get _response() {
     return this.request.res || this.request._response || null;
   }
 
