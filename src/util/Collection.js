@@ -91,8 +91,8 @@ class Collection extends Map {
   }
 
   /**
-   * Obtains the last value(s) in this collection. This relies on {@link Collection#array}, and thus the caching mechanism
-   * applies here as well.
+   * Obtains the last value(s) in this collection. This relies on {@link Collection#array}, and thus the caching
+   * mechanism applies here as well.
    * @param {number} [count] Number of values to obtain from the end
    * @returns {*|Array<*>} The single value if `count` is undefined, or an array of values of `count` length
    */
@@ -105,8 +105,8 @@ class Collection extends Map {
   }
 
   /**
-   * Obtains the last key(s) in this collection. This relies on {@link Collection#keyArray}, and thus the caching mechanism
-   * applies here as well.
+   * Obtains the last key(s) in this collection. This relies on {@link Collection#keyArray}, and thus the caching
+   * mechanism applies here as well.
    * @param {number} [count] Number of keys to obtain from the end
    * @returns {*|Array<*>} The single key if `count` is undefined, or an array of keys of `count` length
    */
@@ -119,38 +119,38 @@ class Collection extends Map {
   }
 
   /**
-   * Obtains random value(s) from this collection. This relies on {@link Collection#array}, and thus the caching mechanism
-   * applies here as well.
+   * Obtains random value(s) from this collection. This relies on {@link Collection#array}, and thus the caching
+   * mechanism applies here as well.
    * @param {number} [count] Number of values to obtain randomly
    * @returns {*|Array<*>} The single value if `count` is undefined, or an array of values of `count` length
    */
   random(count) {
-    const arr = this.array();
+    let arr = this.array();
     if (count === undefined) return arr[Math.floor(Math.random() * arr.length)];
     if (typeof count !== 'number') throw new TypeError('The count must be a number.');
     if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
     if (arr.length === 0) return [];
     const rand = new Array(count);
     arr = arr.slice();
-    for (let r = 0; r < count; r++) rand[i] = arr.splice(Math.floor(Math.random() * arr.length), 1)[0];
+    for (let i = 0; i < count; i++) rand[i] = arr.splice(Math.floor(Math.random() * arr.length), 1)[0];
     return rand;
   }
 
   /**
-   * Obtains random key(s) from this collection. This relies on {@link Collection#keyArray}, and thus the caching mechanism
-   * applies here as well.
+   * Obtains random key(s) from this collection. This relies on {@link Collection#keyArray}, and thus the caching
+   * mechanism applies here as well.
    * @param {number} [count] Number of keys to obtain randomly
    * @returns {*|Array<*>} The single key if `count` is undefined, or an array of keys of `count` length
    */
   randomKey(count) {
-    const arr = this.keyArray();
+    let arr = this.keyArray();
     if (count === undefined) return arr[Math.floor(Math.random() * arr.length)];
     if (typeof count !== 'number') throw new TypeError('The count must be a number.');
     if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
     if (arr.length === 0) return [];
     const rand = new Array(count);
     arr = arr.slice();
-    for (let r = 0; r < count; r++) rand[i] = arr.splice(Math.floor(Math.random() * arr.length), 1)[0];
+    for (let i = 0; i < count; i++) rand[i] = arr.splice(Math.floor(Math.random() * arr.length), 1)[0];
     return rand;
   }
 
