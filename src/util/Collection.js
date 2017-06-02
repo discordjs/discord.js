@@ -60,7 +60,7 @@ class Collection extends Map {
 
   /**
    * Obtains the first value(s) in this collection.
-   * @param {number} [count=1] Number of values to obtain from the beginning
+   * @param {number} [count] Number of values to obtain from the beginning
    * @returns {*|Array<*>} The single value if `count` is undefined, or an array of values of `count` length
    */
   first(count) {
