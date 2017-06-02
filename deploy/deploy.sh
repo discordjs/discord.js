@@ -3,11 +3,6 @@
 
 set -e
 
-function build {
-  npm run docs
-  VERSIONED=false npm run webpack
-}
-
 # For revert branches, do nothing
 if [[ "$TRAVIS_BRANCH" == revert-* ]]; then
   echo -e "\e[36m\e[1mBuild triggered for reversion branch \"${TRAVIS_BRANCH}\" - doing nothing."
@@ -31,13 +26,16 @@ else
   SOURCE_TYPE="branch"
 fi
 
-# For Node != 6, do nothing
-if [ "$TRAVIS_NODE_VERSION" != "6" ]; then
+# For Node != 8, do nothing
+if [ "$TRAVIS_NODE_VERSION" != "8" ]; then
   echo -e "\e[36m\e[1mBuild triggered with Node v${TRAVIS_NODE_VERSION} - doing nothing."
   exit 0
 fi
 
-build
+# Run the build
+npm run docs
+VERSIONED=false npm run webpack
+
 
 # Initialise some useful variables
 REPO=`git config remote.origin.url`
