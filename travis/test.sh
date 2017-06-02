@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -e
 
 # For revert branches, do nothing
