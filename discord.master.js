@@ -11651,7 +11651,7 @@ module.exports = Snekfetch;
 
 module.exports = {
 	"name": "discord.js",
-	"version": "12.0.0",
+	"version": "12.0.0-dev",
 	"description": "A powerful library for interacting with the Discord API",
 	"main": "./src/index",
 	"types": "./typings/index.d.ts",
