@@ -85,7 +85,7 @@ nudge in the right direction, please don't hesitate to join our official [Discor
 
 ## Backers
 
-Support us with a monthly donation and help us continue our activities. [[Become a backer](https://opencollective.com/discord.js#backer)]
+Support us with a monthly donation and help us continue our activities. [[Become a backer](https://opencollective.com/discordjs#backer)]
 
 <a href="https://opencollective.com/discordjs/backer/0/website" target="_blank"><img src="https://opencollective.com/discordjs/backer/0/avatar.svg"></a>
 <a href="https://opencollective.com/discordjs/backer/1/website" target="_blank"><img src="https://opencollective.com/discordjs/backer/1/avatar.svg"></a>
@@ -121,7 +121,7 @@ Support us with a monthly donation and help us continue our activities. [[Become
 
 ## Sponsors
 
-Become a sponsor and get your logo on our README on Github with a link to your site. [[Become a sponsor](https://opencollective.com/discord.js#sponsor)]
+Become a sponsor and get your logo on our README on Github with a link to your site. [[Become a sponsor](https://opencollective.com/discordjs#sponsor)]
 
 <a href="https://opencollective.com/discordjs/sponsor/0/website" target="_blank"><img src="https://opencollective.com/discordjs/sponsor/0/avatar.svg"></a>
 <a href="https://opencollective.com/discordjs/sponsor/1/website" target="_blank"><img src="https://opencollective.com/discordjs/sponsor/1/avatar.svg"></a>
