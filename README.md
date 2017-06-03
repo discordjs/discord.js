@@ -6,7 +6,7 @@
   <br />
   <p>
     <a href="https://discord.gg/bRCvFy9"><img src="https://discordapp.com/api/guilds/222078108977594368/embed.png" alt="Discord server" /></a>
-    <a href="https://www.npmjs.com/package/discord.js"><img src="https://img.shields.io/npm/v/discord.js.svg?maxAge=3600" alt="NPM version" /></a>
+    <a href="https://www.npmjs.com/package/discord.js"><a href="#backers" alt="sponsors on Open Collective"><img src="https://opencollective.com/discord.js/backers/badge.svg" /></a> <a href="#sponsors" alt="Sponsors on Open Collective"><img src="https://opencollective.com/discord.js/sponsors/badge.svg" /></a> <img src="https://img.shields.io/npm/v/discord.js.svg?maxAge=3600" alt="NPM version" /></a>
     <a href="https://www.npmjs.com/package/discord.js"><img src="https://img.shields.io/npm/dt/discord.js.svg?maxAge=3600" alt="NPM downloads" /></a>
     <a href="https://travis-ci.org/hydrabolt/discord.js"><img src="https://travis-ci.org/hydrabolt/discord.js.svg" alt="Build status" /></a>
     <a href="https://david-dm.org/hydrabolt/discord.js"><img src="https://img.shields.io/david/hydrabolt/discord.js.svg?maxAge=3600" alt="Dependencies" /></a>
@@ -81,3 +81,57 @@ See [the contribution guide](https://github.com/hydrabolt/discord.js/blob/master
 ## Help
 If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle
 nudge in the right direction, please don't hesitate to join our official [Discord.js Server](https://discord.gg/bRCvFy9).
+
+
+## Backers
+
+Support us with a monthly donation and help us continue our activities. [[Become a backer](https://opencollective.com/discord.js#backer)]
+
+<a href="https://opencollective.com/discord.js/backer/0/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/0/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/1/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/1/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/2/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/2/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/3/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/3/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/4/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/4/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/5/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/5/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/6/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/6/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/7/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/7/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/8/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/8/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/9/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/9/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/10/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/10/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/11/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/11/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/12/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/12/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/13/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/13/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/14/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/14/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/15/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/15/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/16/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/16/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/17/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/17/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/18/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/18/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/19/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/19/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/20/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/20/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/21/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/21/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/22/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/22/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/23/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/23/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/24/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/24/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/25/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/25/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/26/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/26/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/27/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/27/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/28/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/28/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/backer/29/website" target="_blank"><img src="https://opencollective.com/discord.js/backer/29/avatar.svg"></a>
+
+
+## Sponsors
+
+Become a sponsor and get your logo on our README on Github with a link to your site. [[Become a sponsor](https://opencollective.com/discord.js#sponsor)]
+
+<a href="https://opencollective.com/discord.js/sponsor/0/website" target="_blank"><img src="https://opencollective.com/discord.js/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/sponsor/1/website" target="_blank"><img src="https://opencollective.com/discord.js/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/sponsor/2/website" target="_blank"><img src="https://opencollective.com/discord.js/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/sponsor/3/website" target="_blank"><img src="https://opencollective.com/discord.js/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/sponsor/4/website" target="_blank"><img src="https://opencollective.com/discord.js/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/sponsor/5/website" target="_blank"><img src="https://opencollective.com/discord.js/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/sponsor/6/website" target="_blank"><img src="https://opencollective.com/discord.js/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/sponsor/7/website" target="_blank"><img src="https://opencollective.com/discord.js/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/sponsor/8/website" target="_blank"><img src="https://opencollective.com/discord.js/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/discord.js/sponsor/9/website" target="_blank"><img src="https://opencollective.com/discord.js/sponsor/9/avatar.svg"></a>
+
+
