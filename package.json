@@ -10,7 +10,8 @@
     "docs:test": "docgen --source src --custom docs/index.yml",
     "lint": "eslint src",
     "lint:fix": "eslint --fix src",
-    "webpack": "parallel-webpack"
+    "webpack": "parallel-webpack",
+    "postinstall": "opencollective postinstall"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,7 @@
   "runkitExampleFilename": "./docs/examples/ping.js",
   "dependencies": {
     "long": "^3.2.0",
+    "opencollective": "^1.0.3",
     "prism-media": "^0.0.1",
     "snekfetch": "^3.1.0",
     "tweetnacl": "^1.0.0",
@@ -90,5 +92,10 @@
     "src/client/voice/VoiceConnection.js": false,
     "src/client/voice/VoiceUDPClient.js": false,
     "src/client/voice/VoiceWebSocket.js": false
+  },
+  "collective": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/discord.js",
+    "logo": "https://opencollective.com/opencollective/logo.txt"
   }
 }
