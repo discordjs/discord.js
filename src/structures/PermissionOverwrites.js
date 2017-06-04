@@ -32,7 +32,7 @@ class PermissionOverwrites {
      * @type {PermissionResolvable}
      */
     this.deny = data.deny;
-    
+
     /**
      * The allowed permissions.
      * @type {PermissionResolvable}
