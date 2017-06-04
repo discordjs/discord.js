@@ -37,7 +37,7 @@ class PermissionOverwrites {
      * @type {Permissions}
      */
     this.deniedPermissions = new Permissions(this.deny);
-    
+
     /**
      * The permissions that are allowed for the user or role.
      * @type {Permissions}
