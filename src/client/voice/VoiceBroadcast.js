@@ -242,8 +242,6 @@ class VoiceBroadcast extends VolumeInterface {
    * @returns {VoiceBroadcast}
    */
   playArbitraryInput(input, { seek = 0, volume = 1, passes = 1 } = {}) {
-    this.guaranteeOpusEngine();
-
     const options = { seek, volume, passes, input };
     return this._playTranscodable(input, options);
   }
@@ -270,10 +268,6 @@ class VoiceBroadcast extends VolumeInterface {
         dispatcher.resume();
       }
     }
-  }
-
-  guaranteeOpusEngine() {
-    if (!this.opusEncoder) throw new Error('Couldn\'t find an Opus engine.');
   }
 
   _startPlaying() {
