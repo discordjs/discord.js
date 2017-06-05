@@ -1324,10 +1324,91 @@ class Util {
 
 module.exports = Util;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6).Buffer))
 
 /***/ }),
 /* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Long = __webpack_require__(33);
+
+// Discord epoch (2015-01-01T00:00:00.000Z)
+const EPOCH = 1420070400000;
+let INCREMENT = 0;
+
+/**
+ * A container for useful snowflake-related methods.
+ */
+class SnowflakeUtil {
+  constructor() {
+    throw new Error(`The ${this.constructor.name} class may not be instantiated.`);
+  }
+
+  /**
+   * A Twitter snowflake, except the epoch is 2015-01-01T00:00:00.000Z
+   * ```
+   * If we have a snowflake '266241948824764416' we can represent it as binary:
+   *
+   * 64                                          22     17     12          0
+   *  000000111011000111100001101001000101000000  00001  00000  000000000000
+   *       number of ms since Discord epoch       worker  pid    increment
+   * ```
+   * @typedef {string} Snowflake
+   */
+
+  /**
+   * Generates a Discord snowflake.
+   * <info>This hardcodes the worker ID as 1 and the process ID as 0.</info>
+   * @returns {Snowflake} The generated snowflake
+   */
+  static generate() {
+    if (INCREMENT >= 4095) INCREMENT = 0;
+    const BINARY = `${pad((Date.now() - EPOCH).toString(2), 42)}0000100000${pad((INCREMENT++).toString(2), 12)}`;
+    return Long.fromString(BINARY, 2).toString();
+  }
+
+  /**
+   * A deconstructed snowflake.
+   * @typedef {Object} DeconstructedSnowflake
+   * @property {number} timestamp Timestamp the snowflake was created
+   * @property {Date} date Date the snowflake was created
+   * @property {number} workerID Worker ID in the snowflake
+   * @property {number} processID Process ID in the snowflake
+   * @property {number} increment Increment in the snowflake
+   * @property {string} binary Binary representation of the snowflake
+   */
+
+  /**
+   * Deconstructs a Discord snowflake.
+   * @param {Snowflake} snowflake Snowflake to deconstruct
+   * @returns {DeconstructedSnowflake} Deconstructed snowflake
+   */
+  static deconstruct(snowflake) {
+    const BINARY = pad(Long.fromString(snowflake).toString(2), 64);
+    const res = {
+      timestamp: parseInt(BINARY.substring(0, 42), 2) + EPOCH,
+      workerID: parseInt(BINARY.substring(42, 47), 2),
+      processID: parseInt(BINARY.substring(47, 52), 2),
+      increment: parseInt(BINARY.substring(52, 64), 2),
+      binary: BINARY,
+    };
+    Object.defineProperty(res, 'date', {
+      get: function get() { return new Date(this.timestamp); },
+      enumerable: true,
+    });
+    return res;
+  }
+}
+
+function pad(v, n, c = '0') {
+  return String(v).length >= n ? String(v) : (String(c).repeat(n) + v).slice(-n);
+}
+
+module.exports = SnowflakeUtil;
+
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3121,88 +3202,7 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Long = __webpack_require__(34);
-
-// Discord epoch (2015-01-01T00:00:00.000Z)
-const EPOCH = 1420070400000;
-let INCREMENT = 0;
-
-/**
- * A container for useful snowflake-related methods.
- */
-class SnowflakeUtil {
-  constructor() {
-    throw new Error(`The ${this.constructor.name} class may not be instantiated.`);
-  }
-
-  /**
-   * A Twitter snowflake, except the epoch is 2015-01-01T00:00:00.000Z
-   * ```
-   * If we have a snowflake '266241948824764416' we can represent it as binary:
-   *
-   * 64                                          22     17     12          0
-   *  000000111011000111100001101001000101000000  00001  00000  000000000000
-   *       number of ms since Discord epoch       worker  pid    increment
-   * ```
-   * @typedef {string} Snowflake
-   */
-
-  /**
-   * Generates a Discord snowflake.
-   * <info>This hardcodes the worker ID as 1 and the process ID as 0.</info>
-   * @returns {Snowflake} The generated snowflake
-   */
-  static generate() {
-    if (INCREMENT >= 4095) INCREMENT = 0;
-    const BINARY = `${pad((Date.now() - EPOCH).toString(2), 42)}0000100000${pad((INCREMENT++).toString(2), 12)}`;
-    return Long.fromString(BINARY, 2).toString();
-  }
-
-  /**
-   * A deconstructed snowflake.
-   * @typedef {Object} DeconstructedSnowflake
-   * @property {number} timestamp Timestamp the snowflake was created
-   * @property {Date} date Date the snowflake was created
-   * @property {number} workerID Worker ID in the snowflake
-   * @property {number} processID Process ID in the snowflake
-   * @property {number} increment Increment in the snowflake
-   * @property {string} binary Binary representation of the snowflake
-   */
-
-  /**
-   * Deconstructs a Discord snowflake.
-   * @param {Snowflake} snowflake Snowflake to deconstruct
-   * @returns {DeconstructedSnowflake} Deconstructed snowflake
-   */
-  static deconstruct(snowflake) {
-    const BINARY = pad(Long.fromString(snowflake).toString(2), 64);
-    const res = {
-      timestamp: parseInt(BINARY.substring(0, 42), 2) + EPOCH,
-      workerID: parseInt(BINARY.substring(42, 47), 2),
-      processID: parseInt(BINARY.substring(47, 52), 2),
-      increment: parseInt(BINARY.substring(52, 64), 2),
-      binary: BINARY,
-    };
-    Object.defineProperty(res, 'date', {
-      get: function get() { return new Date(this.timestamp); },
-      enumerable: true,
-    });
-    return res;
-  }
-}
-
-function pad(v, n, c = '0') {
-  return String(v).length >= n ? String(v) : (String(c).repeat(n) + v).slice(-n);
-}
-
-module.exports = SnowflakeUtil;
-
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
 /* 7 */
@@ -3396,33 +3396,6 @@ process.umask = function() { return 0; };
 
 /***/ }),
 /* 8 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -3700,6 +3673,33 @@ Object.defineProperty(Permissions.prototype, 'member', {
 });
 
 module.exports = Permissions;
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
 
 
 /***/ }),
@@ -4162,7 +4162,7 @@ var objectKeys = Object.keys || function (obj) {
 module.exports = Duplex;
 
 /*<replacement>*/
-var processNextTick = __webpack_require__(35);
+var processNextTick = __webpack_require__(34);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -4171,7 +4171,7 @@ util.inherits = __webpack_require__(10);
 /*</replacement>*/
 
 var Readable = __webpack_require__(59);
-var Writable = __webpack_require__(37);
+var Writable = __webpack_require__(36);
 
 util.inherits(Duplex, Readable);
 
@@ -4222,7 +4222,7 @@ function forEach(xs, f) {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Snowflake = __webpack_require__(6);
+const Snowflake = __webpack_require__(5);
 
 /**
  * Represents any channel on Discord.
@@ -4297,8 +4297,8 @@ module.exports = Channel;
 /* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Snowflake = __webpack_require__(6);
-const Permissions = __webpack_require__(9);
+const Snowflake = __webpack_require__(5);
+const Permissions = __webpack_require__(8);
 const util = __webpack_require__(22);
 
 /**
@@ -4664,7 +4664,7 @@ module.exports = Role;
 const TextBasedChannel = __webpack_require__(23);
 const Constants = __webpack_require__(0);
 const Presence = __webpack_require__(11).Presence;
-const Snowflake = __webpack_require__(6);
+const Snowflake = __webpack_require__(5);
 
 /**
  * Represents a user on Discord.
@@ -4972,7 +4972,7 @@ module.exports = User;
 
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
-const Snowflake = __webpack_require__(6);
+const Snowflake = __webpack_require__(5);
 
 /**
  * Represents a custom emoji.
@@ -5191,7 +5191,7 @@ module.exports = Emoji;
 
 const TextBasedChannel = __webpack_require__(23);
 const Role = __webpack_require__(15);
-const Permissions = __webpack_require__(9);
+const Permissions = __webpack_require__(8);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(11).Presence;
 const util = __webpack_require__(22);
@@ -5726,7 +5726,7 @@ const ReactionCollector = __webpack_require__(55);
 const Util = __webpack_require__(4);
 const Collection = __webpack_require__(3);
 const Constants = __webpack_require__(0);
-const Permissions = __webpack_require__(9);
+const Permissions = __webpack_require__(8);
 let GuildMember;
 
 /**
@@ -6403,7 +6403,7 @@ function objectToString(o) {
   return Object.prototype.toString.call(o);
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6).Buffer))
 
 /***/ }),
 /* 21 */
@@ -6412,7 +6412,7 @@ function objectToString(o) {
 exports = module.exports = __webpack_require__(59);
 exports.Stream = exports;
 exports.Readable = exports;
-exports.Writable = __webpack_require__(37);
+exports.Writable = __webpack_require__(36);
 exports.Duplex = __webpack_require__(13);
 exports.Transform = __webpack_require__(60);
 exports.PassThrough = __webpack_require__(85);
@@ -7009,7 +7009,7 @@ function hasOwnProperty(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(7)))
 
 /***/ }),
 /* 23 */
@@ -7576,7 +7576,7 @@ exports.EOL = '\n';
 /* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Long = __webpack_require__(34);
+const Long = __webpack_require__(33);
 const User = __webpack_require__(16);
 const Role = __webpack_require__(15);
 const Emoji = __webpack_require__(17);
@@ -7585,7 +7585,7 @@ const GuildMember = __webpack_require__(18);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const Util = __webpack_require__(4);
-const Snowflake = __webpack_require__(6);
+const Snowflake = __webpack_require__(5);
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -8659,7 +8659,7 @@ module.exports = Guild;
 const Channel = __webpack_require__(14);
 const Role = __webpack_require__(15);
 const PermissionOverwrites = __webpack_require__(54);
-const Permissions = __webpack_require__(9);
+const Permissions = __webpack_require__(8);
 const Collection = __webpack_require__(3);
 
 /**
@@ -9002,7 +9002,7 @@ module.exports = GuildChannel;
 /* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Snowflake = __webpack_require__(6);
+const Snowflake = __webpack_require__(5);
 
 /**
  * Represents an OAuth2 Application.
@@ -10036,122 +10036,6 @@ module.exports = Collector;
 
 /***/ }),
 /* 33 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(global) {
-
-var buffer = __webpack_require__(5);
-var Buffer = buffer.Buffer;
-var SlowBuffer = buffer.SlowBuffer;
-var MAX_LEN = buffer.kMaxLength || 2147483647;
-exports.alloc = function alloc(size, fill, encoding) {
-  if (typeof Buffer.alloc === 'function') {
-    return Buffer.alloc(size, fill, encoding);
-  }
-  if (typeof encoding === 'number') {
-    throw new TypeError('encoding must not be number');
-  }
-  if (typeof size !== 'number') {
-    throw new TypeError('size must be a number');
-  }
-  if (size > MAX_LEN) {
-    throw new RangeError('size is too large');
-  }
-  var enc = encoding;
-  var _fill = fill;
-  if (_fill === undefined) {
-    enc = undefined;
-    _fill = 0;
-  }
-  var buf = new Buffer(size);
-  if (typeof _fill === 'string') {
-    var fillBuf = new Buffer(_fill, enc);
-    var flen = fillBuf.length;
-    var i = -1;
-    while (++i < size) {
-      buf[i] = fillBuf[i % flen];
-    }
-  } else {
-    buf.fill(_fill);
-  }
-  return buf;
-}
-exports.allocUnsafe = function allocUnsafe(size) {
-  if (typeof Buffer.allocUnsafe === 'function') {
-    return Buffer.allocUnsafe(size);
-  }
-  if (typeof size !== 'number') {
-    throw new TypeError('size must be a number');
-  }
-  if (size > MAX_LEN) {
-    throw new RangeError('size is too large');
-  }
-  return new Buffer(size);
-}
-exports.from = function from(value, encodingOrOffset, length) {
-  if (typeof Buffer.from === 'function' && (!global.Uint8Array || Uint8Array.from !== Buffer.from)) {
-    return Buffer.from(value, encodingOrOffset, length);
-  }
-  if (typeof value === 'number') {
-    throw new TypeError('"value" argument must not be a number');
-  }
-  if (typeof value === 'string') {
-    return new Buffer(value, encodingOrOffset);
-  }
-  if (typeof ArrayBuffer !== 'undefined' && value instanceof ArrayBuffer) {
-    var offset = encodingOrOffset;
-    if (arguments.length === 1) {
-      return new Buffer(value);
-    }
-    if (typeof offset === 'undefined') {
-      offset = 0;
-    }
-    var len = length;
-    if (typeof len === 'undefined') {
-      len = value.byteLength - offset;
-    }
-    if (offset >= value.byteLength) {
-      throw new RangeError('\'offset\' is out of bounds');
-    }
-    if (len > value.byteLength - offset) {
-      throw new RangeError('\'length\' is out of bounds');
-    }
-    return new Buffer(value.slice(offset, offset + len));
-  }
-  if (Buffer.isBuffer(value)) {
-    var out = new Buffer(value.length);
-    value.copy(out, 0, 0, value.length);
-    return out;
-  }
-  if (value) {
-    if (Array.isArray(value) || (typeof ArrayBuffer !== 'undefined' && value.buffer instanceof ArrayBuffer) || 'length' in value) {
-      return new Buffer(value);
-    }
-    if (value.type === 'Buffer' && Array.isArray(value.data)) {
-      return new Buffer(value.data);
-    }
-  }
-
-  throw new TypeError('First argument must be a string, Buffer, ' + 'ArrayBuffer, Array, or array-like object.');
-}
-exports.allocUnsafeSlow = function allocUnsafeSlow(size) {
-  if (typeof Buffer.allocUnsafeSlow === 'function') {
-    return Buffer.allocUnsafeSlow(size);
-  }
-  if (typeof size !== 'number') {
-    throw new TypeError('size must be a number');
-  }
-  if (size >= MAX_LEN) {
-    throw new RangeError('size is too large');
-  }
-  return new SlowBuffer(size);
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
-
-/***/ }),
-/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -11369,7 +11253,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ }),
-/* 35 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11420,7 +11304,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ }),
-/* 36 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11431,7 +11315,7 @@ exports.encode = exports.stringify = __webpack_require__(83);
 
 
 /***/ }),
-/* 37 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11444,7 +11328,7 @@ exports.encode = exports.stringify = __webpack_require__(83);
 module.exports = Writable;
 
 /*<replacement>*/
-var processNextTick = __webpack_require__(35);
+var processNextTick = __webpack_require__(34);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -11472,9 +11356,8 @@ var internalUtil = {
 var Stream = __webpack_require__(61);
 /*</replacement>*/
 
-var Buffer = __webpack_require__(5).Buffer;
 /*<replacement>*/
-var bufferShim = __webpack_require__(33);
+var Buffer = __webpack_require__(37).Buffer;
 /*</replacement>*/
 
 util.inherits(Writable, Stream);
@@ -11730,7 +11613,7 @@ Writable.prototype.setDefaultEncoding = function setDefaultEncoding(encoding) {
 
 function decodeChunk(state, chunk, encoding) {
   if (!state.objectMode && state.decodeStrings !== false && typeof chunk === 'string') {
-    chunk = bufferShim.from(chunk, encoding);
+    chunk = Buffer.from(chunk, encoding);
   }
   return chunk;
 }
@@ -11980,6 +11863,13 @@ function CorkedRequest(state) {
   };
 }
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(99).setImmediate))
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(6)
+
 
 /***/ }),
 /* 38 */
@@ -12386,7 +12276,7 @@ class ClientDataResolver {
 
 module.exports = ClientDataResolver;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6).Buffer))
 
 /***/ }),
 /* 41 */
@@ -12998,7 +12888,7 @@ module.exports = DMChannel;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
-const Snowflake = __webpack_require__(6);
+const Snowflake = __webpack_require__(5);
 
 const Targets = {
   GUILD: 'GUILD',
@@ -14779,7 +14669,7 @@ module.exports = Array.isArray || function (arr) {
 module.exports = Readable;
 
 /*<replacement>*/
-var processNextTick = __webpack_require__(35);
+var processNextTick = __webpack_require__(34);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -14804,9 +14694,8 @@ var EElistenerCount = function (emitter, type) {
 var Stream = __webpack_require__(61);
 /*</replacement>*/
 
-var Buffer = __webpack_require__(5).Buffer;
 /*<replacement>*/
-var bufferShim = __webpack_require__(33);
+var Buffer = __webpack_require__(37).Buffer;
 /*</replacement>*/
 
 /*<replacement>*/
@@ -14939,7 +14828,7 @@ Readable.prototype.push = function (chunk, encoding) {
   if (!state.objectMode && typeof chunk === 'string') {
     encoding = encoding || state.defaultEncoding;
     if (encoding !== state.encoding) {
-      chunk = bufferShim.from(chunk, encoding);
+      chunk = Buffer.from(chunk, encoding);
       encoding = '';
     }
   }
@@ -15259,7 +15148,7 @@ Readable.prototype.pipe = function (dest, pipeOpts) {
 
   var doEnd = (!pipeOpts || pipeOpts.end !== false) && dest !== process.stdout && dest !== process.stderr;
 
-  var endFn = doEnd ? onend : cleanup;
+  var endFn = doEnd ? onend : unpipe;
   if (state.endEmitted) processNextTick(endFn);else src.once('end', endFn);
 
   dest.on('unpipe', onunpipe);
@@ -15292,7 +15181,7 @@ Readable.prototype.pipe = function (dest, pipeOpts) {
     dest.removeListener('error', onerror);
     dest.removeListener('unpipe', onunpipe);
     src.removeListener('end', onend);
-    src.removeListener('end', cleanup);
+    src.removeListener('end', unpipe);
     src.removeListener('data', ondata);
 
     cleanedUp = true;
@@ -15649,7 +15538,7 @@ function copyFromBufferString(n, list) {
 // This function is designed to be inlinable, so please take care when making
 // changes to the function body.
 function copyFromBuffer(n, list) {
-  var ret = bufferShim.allocUnsafe(n);
+  var ret = Buffer.allocUnsafe(n);
   var p = list.head;
   var c = 1;
   p.data.copy(ret);
@@ -16122,7 +16011,7 @@ http.METHODS = [
 	'UNLOCK',
 	'UNSUBSCRIBE'
 ]
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
 /* 64 */
@@ -16198,7 +16087,7 @@ function isFunction (value) {
 
 xhr = null // Help gc
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
 /* 65 */
@@ -16304,7 +16193,7 @@ var protocolPattern = /^([a-z0-9.+-]+:)/i,
       'gopher:': true,
       'file:': true
     },
-    querystring = __webpack_require__(36);
+    querystring = __webpack_require__(35);
 
 function urlParse(url, parseQueryString, slashesDenoteHost) {
   if (url && util.isObject(url) && url instanceof Url) return url;
@@ -16964,7 +16853,7 @@ Url.prototype.parseHost = function() {
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-var Buffer = __webpack_require__(5).Buffer;
+var Buffer = __webpack_require__(6).Buffer;
 
 var isBufferEncoding = Buffer.isEncoding
   || function(encoding) {
@@ -17845,7 +17734,7 @@ WebSocketConnection.WebSocket = WebSocket;
 
 module.exports = WebSocketConnection;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6).Buffer))
 
 /***/ }),
 /* 71 */
@@ -17854,7 +17743,7 @@ module.exports = WebSocketConnection;
 /* WEBPACK VAR INJECTION */(function(process) {const os = __webpack_require__(24);
 const EventEmitter = __webpack_require__(12).EventEmitter;
 const Constants = __webpack_require__(0);
-const Permissions = __webpack_require__(9);
+const Permissions = __webpack_require__(8);
 const Util = __webpack_require__(4);
 const RESTManager = __webpack_require__(68);
 const ClientDataManager = __webpack_require__(107);
@@ -19609,7 +19498,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 }(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(105)(module), __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(105)(module), __webpack_require__(9)))
 
 /***/ }),
 /* 82 */
@@ -19840,9 +19729,9 @@ PassThrough.prototype._transform = function (chunk, encoding, cb) {
 "use strict";
 
 
-var Buffer = __webpack_require__(5).Buffer;
 /*<replacement>*/
-var bufferShim = __webpack_require__(33);
+
+var Buffer = __webpack_require__(37).Buffer;
 /*</replacement>*/
 
 module.exports = BufferList;
@@ -19890,9 +19779,9 @@ BufferList.prototype.join = function (s) {
 };
 
 BufferList.prototype.concat = function (n) {
-  if (this.length === 0) return bufferShim.alloc(0);
+  if (this.length === 0) return Buffer.alloc(0);
   if (this.length === 1) return this.head.data;
-  var ret = bufferShim.allocUnsafe(n >>> 0);
+  var ret = Buffer.allocUnsafe(n >>> 0);
   var p = this.head;
   var i = 0;
   while (p) {
@@ -19921,7 +19810,7 @@ module.exports = __webpack_require__(21).Transform
 /* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(37);
+module.exports = __webpack_require__(36);
 
 
 /***/ }),
@@ -20115,7 +20004,7 @@ module.exports = __webpack_require__(37);
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(7)))
 
 /***/ }),
 /* 91 */
@@ -20137,19 +20026,19 @@ module.exports = {
 		]
 	],
 	"_from": "snekfetch@>=3.1.0 <4.0.0",
-	"_id": "snekfetch@3.1.7",
+	"_id": "snekfetch@3.1.8",
 	"_inCache": true,
 	"_location": "/snekfetch",
-	"_nodeVersion": "8.0.0-rc.0",
+	"_nodeVersion": "7.10.0",
 	"_npmOperationalInternal": {
-		"host": "packages-12-west.internal.npmjs.com",
-		"tmp": "tmp/snekfetch-3.1.7.tgz_1494815163487_0.09571001585572958"
+		"host": "s3://npm-registry-packages",
+		"tmp": "tmp/snekfetch-3.1.8.tgz_1495884974189_0.5351158070843667"
 	},
 	"_npmUser": {
 		"name": "snek",
 		"email": "me@gus.host"
 	},
-	"_npmVersion": "4.5.0",
+	"_npmVersion": "5.0.0",
 	"_phantomChildren": {},
 	"_requested": {
 		"raw": "snekfetch@^3.1.0",
@@ -20163,8 +20052,8 @@ module.exports = {
 	"_requiredBy": [
 		"/"
 	],
-	"_resolved": "https://registry.npmjs.org/snekfetch/-/snekfetch-3.1.7.tgz",
-	"_shasum": "5eb980d29c3b455bf0b13359647909b0737315e9",
+	"_resolved": "https://registry.npmjs.org/snekfetch/-/snekfetch-3.1.8.tgz",
+	"_shasum": "a871a6208f9ec6ec72e2c61416f40880ee1aea92",
 	"_shrinkwrap": null,
 	"_spec": "snekfetch@^3.1.0",
 	"_where": "/home/travis/build/hydrabolt/discord.js",
@@ -20180,10 +20069,11 @@ module.exports = {
 	"devDependencies": {},
 	"directories": {},
 	"dist": {
-		"shasum": "5eb980d29c3b455bf0b13359647909b0737315e9",
-		"tarball": "https://registry.npmjs.org/snekfetch/-/snekfetch-3.1.7.tgz"
+		"integrity": "sha512-hRXeasaRhCNxgtEbrRN6F7MvyvtdaJ6yHI37TkjXJIwMcFOaeK2LQxzfPHTqhyOYL+ZIyq49/Hdxo4SXfmkbPg==",
+		"shasum": "a871a6208f9ec6ec72e2c61416f40880ee1aea92",
+		"tarball": "https://registry.npmjs.org/snekfetch/-/snekfetch-3.1.8.tgz"
 	},
-	"gitHead": "f47ae6179addc843c76041a5b0a1013c67759729",
+	"gitHead": "c5e03b1b0cf1c4434e82c3205f70ca24c26b5144",
 	"homepage": "https://github.com/devsnek/snekfetch#readme",
 	"license": "MIT",
 	"main": "index.js",
@@ -20208,8 +20098,7 @@ module.exports = {
 		"type": "git",
 		"url": "git+https://github.com/devsnek/snekfetch.git"
 	},
-	"scripts": {},
-	"version": "3.1.7"
+	"version": "3.1.8"
 };
 
 /***/ }),
@@ -20264,7 +20153,7 @@ class FormData {
 
 module.exports = FormData;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6).Buffer))
 
 /***/ }),
 /* 93 */
@@ -20272,7 +20161,7 @@ module.exports = FormData;
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {__webpack_require__(62);
 const zlib = __webpack_require__(39);
-const qs = __webpack_require__(36);
+const qs = __webpack_require__(35);
 const http = __webpack_require__(63);
 const https = __webpack_require__(79);
 const URL = __webpack_require__(65);
@@ -20293,7 +20182,7 @@ class Snekfetch extends Stream.Readable {
   }
 
   query(name, value) {
-    if (this.request.res) throw new Error('Cannot modify query after being sent!');
+    if (this._response) throw new Error('Cannot modify query after being sent!');
     if (!this.request.query) this.request.query = {};
     if (name !== null && typeof name === 'object') {
       this.request.query = Object.assign(this.request.query, name);
@@ -20304,7 +20193,7 @@ class Snekfetch extends Stream.Readable {
   }
 
   set(name, value) {
-    if (this.request.res) throw new Error('Cannot modify headers after being sent!');
+    if (this._response) throw new Error('Cannot modify headers after being sent!');
     if (name !== null && typeof name === 'object') {
       for (const key of Object.keys(name)) this.set(key, name[key]);
     } else {
@@ -20314,7 +20203,7 @@ class Snekfetch extends Stream.Readable {
   }
 
   attach(name, data, filename) {
-    if (this.request.res) throw new Error('Cannot modify data after being sent!');
+    if (this._response) throw new Error('Cannot modify data after being sent!');
     const form = this._getFormData();
     this.set('Content-Type', `multipart/form-data; boundary=${form.boundary}`);
     form.append(name, data, filename);
@@ -20323,7 +20212,7 @@ class Snekfetch extends Stream.Readable {
   }
 
   send(data) {
-    if (this.request.res) throw new Error('Cannot modify data after being sent!');
+    if (this._response) throw new Error('Cannot modify data after being sent!');
     if (data !== null && typeof data === 'object') {
       const header = this._getHeader('content-type');
       let serialize;
@@ -20458,7 +20347,7 @@ class Snekfetch extends Stream.Readable {
 
   _read() {
     this.resume();
-    if (this.response) return;
+    if (this._response) return;
     this.catch((err) => this.emit('error', err));
   }
 
@@ -20485,7 +20374,7 @@ class Snekfetch extends Stream.Readable {
     if (this.request.method !== 'HEAD') this.set('Accept-Encoding', 'gzip, deflate');
   }
 
-  get response() {
+  get _response() {
     return this.request.res || this.request._response || null;
   }
 
@@ -20518,7 +20407,7 @@ function makeURLFromRequest(request) {
   });
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6).Buffer))
 
 /***/ }),
 /* 94 */
@@ -22458,7 +22347,7 @@ var unsafeHeaders = [
 	'via'
 ]
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer, __webpack_require__(8), __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6).Buffer, __webpack_require__(9), __webpack_require__(7)))
 
 /***/ }),
 /* 98 */
@@ -22647,7 +22536,7 @@ IncomingMessage.prototype._onXHRProgress = function () {
 	}
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(5).Buffer, __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(6).Buffer, __webpack_require__(9)))
 
 /***/ }),
 /* 99 */
@@ -22712,7 +22601,7 @@ exports.clearImmediate = clearImmediate;
 /* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Buffer = __webpack_require__(5).Buffer
+var Buffer = __webpack_require__(6).Buffer
 
 module.exports = function (buf) {
 	// If the buffer is backed by a Uint8Array, a faster version will work
@@ -22836,7 +22725,7 @@ function config (name) {
   return String(val).toLowerCase() === 'true';
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
 /* 103 */
@@ -24232,13 +24121,13 @@ module.exports = APIRequest;
 /* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const querystring = __webpack_require__(36);
-const long = __webpack_require__(34);
-const Permissions = __webpack_require__(9);
+const querystring = __webpack_require__(35);
+const long = __webpack_require__(33);
+const Permissions = __webpack_require__(8);
 const Constants = __webpack_require__(0);
 const Endpoints = Constants.Endpoints;
 const Collection = __webpack_require__(3);
-const Snowflake = __webpack_require__(6);
+const Snowflake = __webpack_require__(5);
 const Util = __webpack_require__(4);
 
 const User = __webpack_require__(16);
@@ -26597,10 +26486,10 @@ module.exports = {
   // Utilities
   Collection: __webpack_require__(3),
   Constants: __webpack_require__(0),
-  EvaluatedPermissions: __webpack_require__(9),
-  Permissions: __webpack_require__(9),
-  Snowflake: __webpack_require__(6),
-  SnowflakeUtil: __webpack_require__(6),
+  EvaluatedPermissions: __webpack_require__(8),
+  Permissions: __webpack_require__(8),
+  Snowflake: __webpack_require__(5),
+  SnowflakeUtil: __webpack_require__(5),
   Util: Util,
   util: Util,
   version: __webpack_require__(41).version,
