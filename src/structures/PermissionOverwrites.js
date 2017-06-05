@@ -27,7 +27,18 @@ class PermissionOverwrites {
      */
     this.type = data.type;
 
+    /**
+     * The denied permissions.
+     * @type {PermissionResolvable}
+     * @private
+     */
     this.deny = data.deny;
+
+    /**
+     * The allowed permissions.
+     * @type {PermissionResolvable}
+     * @private
+     */
     this.allow = data.allow;
   }
 
