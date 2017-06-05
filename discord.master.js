@@ -3112,13 +3112,13 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ }),
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Long = __webpack_require__(34);
+const Long = __webpack_require__(33);
 
 // Discord epoch (2015-01-01T00:00:00.000Z)
 const EPOCH = 1420070400000;
@@ -3397,7 +3397,7 @@ const ReactionCollector = __webpack_require__(53);
 const Util = __webpack_require__(4);
 const Collection = __webpack_require__(3);
 const Constants = __webpack_require__(0);
-const Permissions = __webpack_require__(10);
+const Permissions = __webpack_require__(9);
 let GuildMember;
 
 /**
@@ -3990,33 +3990,6 @@ module.exports = Message;
 
 /***/ }),
 /* 9 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
@@ -4201,6 +4174,33 @@ Permissions.ALL = Object.values(Permissions.FLAGS).reduce((all, p) => all | p, 0
 Permissions.DEFAULT = 104324097;
 
 module.exports = Permissions;
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
 
 
 /***/ }),
@@ -4945,7 +4945,7 @@ var objectKeys = Object.keys || function (obj) {
 module.exports = Duplex;
 
 /*<replacement>*/
-var processNextTick = __webpack_require__(35);
+var processNextTick = __webpack_require__(34);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -4954,7 +4954,7 @@ util.inherits = __webpack_require__(11);
 /*</replacement>*/
 
 var Readable = __webpack_require__(57);
-var Writable = __webpack_require__(37);
+var Writable = __webpack_require__(36);
 
 util.inherits(Duplex, Readable);
 
@@ -5305,7 +5305,7 @@ module.exports = Emoji;
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Long = __webpack_require__(34);
+const Long = __webpack_require__(33);
 const User = __webpack_require__(12);
 const Role = __webpack_require__(20);
 const Emoji = __webpack_require__(17);
@@ -5319,7 +5319,7 @@ const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
 const Util = __webpack_require__(4);
 const Snowflake = __webpack_require__(6);
-const Permissions = __webpack_require__(10);
+const Permissions = __webpack_require__(9);
 const Shared = __webpack_require__(71);
 
 /**
@@ -6534,7 +6534,7 @@ module.exports = Guild;
 
 const TextBasedChannel = __webpack_require__(24);
 const Role = __webpack_require__(20);
-const Permissions = __webpack_require__(10);
+const Permissions = __webpack_require__(9);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(13).Presence;
 
@@ -7067,7 +7067,7 @@ module.exports = GuildMember;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Snowflake = __webpack_require__(6);
-const Permissions = __webpack_require__(10);
+const Permissions = __webpack_require__(9);
 const Util = __webpack_require__(4);
 
 /**
@@ -7791,7 +7791,7 @@ function objectToString(o) {
 exports = module.exports = __webpack_require__(57);
 exports.Stream = exports;
 exports.Readable = exports;
-exports.Writable = __webpack_require__(37);
+exports.Writable = __webpack_require__(36);
 exports.Duplex = __webpack_require__(15);
 exports.Transform = __webpack_require__(58);
 exports.PassThrough = __webpack_require__(86);
@@ -8276,7 +8276,7 @@ const Channel = __webpack_require__(16);
 const Role = __webpack_require__(20);
 const Invite = __webpack_require__(27);
 const PermissionOverwrites = __webpack_require__(52);
-const Permissions = __webpack_require__(10);
+const Permissions = __webpack_require__(9);
 const Collection = __webpack_require__(3);
 
 /**
@@ -9630,122 +9630,6 @@ module.exports = Collector;
 /* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-/* WEBPACK VAR INJECTION */(function(global) {
-
-var buffer = __webpack_require__(5);
-var Buffer = buffer.Buffer;
-var SlowBuffer = buffer.SlowBuffer;
-var MAX_LEN = buffer.kMaxLength || 2147483647;
-exports.alloc = function alloc(size, fill, encoding) {
-  if (typeof Buffer.alloc === 'function') {
-    return Buffer.alloc(size, fill, encoding);
-  }
-  if (typeof encoding === 'number') {
-    throw new TypeError('encoding must not be number');
-  }
-  if (typeof size !== 'number') {
-    throw new TypeError('size must be a number');
-  }
-  if (size > MAX_LEN) {
-    throw new RangeError('size is too large');
-  }
-  var enc = encoding;
-  var _fill = fill;
-  if (_fill === undefined) {
-    enc = undefined;
-    _fill = 0;
-  }
-  var buf = new Buffer(size);
-  if (typeof _fill === 'string') {
-    var fillBuf = new Buffer(_fill, enc);
-    var flen = fillBuf.length;
-    var i = -1;
-    while (++i < size) {
-      buf[i] = fillBuf[i % flen];
-    }
-  } else {
-    buf.fill(_fill);
-  }
-  return buf;
-}
-exports.allocUnsafe = function allocUnsafe(size) {
-  if (typeof Buffer.allocUnsafe === 'function') {
-    return Buffer.allocUnsafe(size);
-  }
-  if (typeof size !== 'number') {
-    throw new TypeError('size must be a number');
-  }
-  if (size > MAX_LEN) {
-    throw new RangeError('size is too large');
-  }
-  return new Buffer(size);
-}
-exports.from = function from(value, encodingOrOffset, length) {
-  if (typeof Buffer.from === 'function' && (!global.Uint8Array || Uint8Array.from !== Buffer.from)) {
-    return Buffer.from(value, encodingOrOffset, length);
-  }
-  if (typeof value === 'number') {
-    throw new TypeError('"value" argument must not be a number');
-  }
-  if (typeof value === 'string') {
-    return new Buffer(value, encodingOrOffset);
-  }
-  if (typeof ArrayBuffer !== 'undefined' && value instanceof ArrayBuffer) {
-    var offset = encodingOrOffset;
-    if (arguments.length === 1) {
-      return new Buffer(value);
-    }
-    if (typeof offset === 'undefined') {
-      offset = 0;
-    }
-    var len = length;
-    if (typeof len === 'undefined') {
-      len = value.byteLength - offset;
-    }
-    if (offset >= value.byteLength) {
-      throw new RangeError('\'offset\' is out of bounds');
-    }
-    if (len > value.byteLength - offset) {
-      throw new RangeError('\'length\' is out of bounds');
-    }
-    return new Buffer(value.slice(offset, offset + len));
-  }
-  if (Buffer.isBuffer(value)) {
-    var out = new Buffer(value.length);
-    value.copy(out, 0, 0, value.length);
-    return out;
-  }
-  if (value) {
-    if (Array.isArray(value) || (typeof ArrayBuffer !== 'undefined' && value.buffer instanceof ArrayBuffer) || 'length' in value) {
-      return new Buffer(value);
-    }
-    if (value.type === 'Buffer' && Array.isArray(value.data)) {
-      return new Buffer(value.data);
-    }
-  }
-
-  throw new TypeError('First argument must be a string, Buffer, ' + 'ArrayBuffer, Array, or array-like object.');
-}
-exports.allocUnsafeSlow = function allocUnsafeSlow(size) {
-  if (typeof Buffer.allocUnsafeSlow === 'function') {
-    return Buffer.allocUnsafeSlow(size);
-  }
-  if (typeof size !== 'number') {
-    throw new TypeError('size must be a number');
-  }
-  if (size >= MAX_LEN) {
-    throw new RangeError('size is too large');
-  }
-  return new SlowBuffer(size);
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports, __webpack_require__) {
-
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
  Copyright 2013 Daniel Wirtz <dcode@dcode.io>
  Copyright 2009 The Closure Library Authors. All Rights Reserved.
@@ -10961,7 +10845,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ }),
-/* 35 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11012,7 +10896,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ }),
-/* 36 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11023,7 +10907,7 @@ exports.encode = exports.stringify = __webpack_require__(84);
 
 
 /***/ }),
-/* 37 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11036,7 +10920,7 @@ exports.encode = exports.stringify = __webpack_require__(84);
 module.exports = Writable;
 
 /*<replacement>*/
-var processNextTick = __webpack_require__(35);
+var processNextTick = __webpack_require__(34);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -11064,9 +10948,8 @@ var internalUtil = {
 var Stream = __webpack_require__(59);
 /*</replacement>*/
 
-var Buffer = __webpack_require__(5).Buffer;
 /*<replacement>*/
-var bufferShim = __webpack_require__(33);
+var Buffer = __webpack_require__(37).Buffer;
 /*</replacement>*/
 
 util.inherits(Writable, Stream);
@@ -11322,7 +11205,7 @@ Writable.prototype.setDefaultEncoding = function setDefaultEncoding(encoding) {
 
 function decodeChunk(state, chunk, encoding) {
   if (!state.objectMode && state.decodeStrings !== false && typeof chunk === 'string') {
-    chunk = bufferShim.from(chunk, encoding);
+    chunk = Buffer.from(chunk, encoding);
   }
   return chunk;
 }
@@ -11572,6 +11455,13 @@ function CorkedRequest(state) {
   };
 }
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(100).setImmediate))
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(5)
+
 
 /***/ }),
 /* 38 */
@@ -13751,7 +13641,7 @@ module.exports = Array.isArray || function (arr) {
 module.exports = Readable;
 
 /*<replacement>*/
-var processNextTick = __webpack_require__(35);
+var processNextTick = __webpack_require__(34);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -13776,9 +13666,8 @@ var EElistenerCount = function (emitter, type) {
 var Stream = __webpack_require__(59);
 /*</replacement>*/
 
-var Buffer = __webpack_require__(5).Buffer;
 /*<replacement>*/
-var bufferShim = __webpack_require__(33);
+var Buffer = __webpack_require__(37).Buffer;
 /*</replacement>*/
 
 /*<replacement>*/
@@ -13911,7 +13800,7 @@ Readable.prototype.push = function (chunk, encoding) {
   if (!state.objectMode && typeof chunk === 'string') {
     encoding = encoding || state.defaultEncoding;
     if (encoding !== state.encoding) {
-      chunk = bufferShim.from(chunk, encoding);
+      chunk = Buffer.from(chunk, encoding);
       encoding = '';
     }
   }
@@ -14231,7 +14120,7 @@ Readable.prototype.pipe = function (dest, pipeOpts) {
 
   var doEnd = (!pipeOpts || pipeOpts.end !== false) && dest !== process.stdout && dest !== process.stderr;
 
-  var endFn = doEnd ? onend : cleanup;
+  var endFn = doEnd ? onend : unpipe;
   if (state.endEmitted) processNextTick(endFn);else src.once('end', endFn);
 
   dest.on('unpipe', onunpipe);
@@ -14264,7 +14153,7 @@ Readable.prototype.pipe = function (dest, pipeOpts) {
     dest.removeListener('error', onerror);
     dest.removeListener('unpipe', onunpipe);
     src.removeListener('end', onend);
-    src.removeListener('end', cleanup);
+    src.removeListener('end', unpipe);
     src.removeListener('data', ondata);
 
     cleanedUp = true;
@@ -14621,7 +14510,7 @@ function copyFromBufferString(n, list) {
 // This function is designed to be inlinable, so please take care when making
 // changes to the function body.
 function copyFromBuffer(n, list) {
-  var ret = bufferShim.allocUnsafe(n);
+  var ret = Buffer.allocUnsafe(n);
   var p = list.head;
   var c = 1;
   p.data.copy(ret);
@@ -15094,7 +14983,7 @@ http.METHODS = [
 	'UNLOCK',
 	'UNSUBSCRIBE'
 ]
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ }),
 /* 62 */
@@ -15170,7 +15059,7 @@ function isFunction (value) {
 
 xhr = null // Help gc
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ }),
 /* 63 */
@@ -15276,7 +15165,7 @@ var protocolPattern = /^([a-z0-9.+-]+:)/i,
       'gopher:': true,
       'file:': true
     },
-    querystring = __webpack_require__(36);
+    querystring = __webpack_require__(35);
 
 function urlParse(url, parseQueryString, slashesDenoteHost) {
   if (url && util.isObject(url) && url instanceof Url) return url;
@@ -17142,7 +17031,7 @@ module.exports = {
 /* WEBPACK VAR INJECTION */(function(process) {const os = __webpack_require__(25);
 const EventEmitter = __webpack_require__(14).EventEmitter;
 const Constants = __webpack_require__(0);
-const Permissions = __webpack_require__(10);
+const Permissions = __webpack_require__(9);
 const Util = __webpack_require__(4);
 const RESTManager = __webpack_require__(67);
 const ClientDataManager = __webpack_require__(109);
@@ -18922,7 +18811,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 }(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(107)(module), __webpack_require__(9)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(107)(module), __webpack_require__(10)))
 
 /***/ }),
 /* 83 */
@@ -19153,9 +19042,9 @@ PassThrough.prototype._transform = function (chunk, encoding, cb) {
 "use strict";
 
 
-var Buffer = __webpack_require__(5).Buffer;
 /*<replacement>*/
-var bufferShim = __webpack_require__(33);
+
+var Buffer = __webpack_require__(37).Buffer;
 /*</replacement>*/
 
 module.exports = BufferList;
@@ -19203,9 +19092,9 @@ BufferList.prototype.join = function (s) {
 };
 
 BufferList.prototype.concat = function (n) {
-  if (this.length === 0) return bufferShim.alloc(0);
+  if (this.length === 0) return Buffer.alloc(0);
   if (this.length === 1) return this.head.data;
-  var ret = bufferShim.allocUnsafe(n >>> 0);
+  var ret = Buffer.allocUnsafe(n >>> 0);
   var p = this.head;
   var i = 0;
   while (p) {
@@ -19234,7 +19123,7 @@ module.exports = __webpack_require__(23).Transform
 /* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(37);
+module.exports = __webpack_require__(36);
 
 
 /***/ }),
@@ -19428,7 +19317,7 @@ module.exports = __webpack_require__(37);
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10), __webpack_require__(7)))
 
 /***/ }),
 /* 92 */
@@ -19541,7 +19430,7 @@ module.exports = FormData;
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {__webpack_require__(60);
 const zlib = __webpack_require__(39);
-const qs = __webpack_require__(36);
+const qs = __webpack_require__(35);
 const http = __webpack_require__(61);
 const https = __webpack_require__(80);
 const URL = __webpack_require__(63);
@@ -21727,7 +21616,7 @@ var unsafeHeaders = [
 	'via'
 ]
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer, __webpack_require__(9), __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer, __webpack_require__(10), __webpack_require__(7)))
 
 /***/ }),
 /* 99 */
@@ -21916,7 +21805,7 @@ IncomingMessage.prototype._onXHRProgress = function () {
 	}
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(5).Buffer, __webpack_require__(9)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(5).Buffer, __webpack_require__(10)))
 
 /***/ }),
 /* 100 */
@@ -22105,7 +21994,7 @@ function config (name) {
   return String(val).toLowerCase() === 'true';
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ }),
 /* 104 */
@@ -22738,7 +22627,7 @@ function hasOwnProperty(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10), __webpack_require__(7)))
 
 /***/ }),
 /* 107 */
@@ -24038,7 +23927,7 @@ module.exports = UserUpdateAction;
 /* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const querystring = __webpack_require__(36);
+const querystring = __webpack_require__(35);
 const snekfetch = __webpack_require__(38);
 const Constants = __webpack_require__(0);
 
@@ -25597,8 +25486,8 @@ module.exports = {
   // Utilities
   Collection: __webpack_require__(3),
   Constants: __webpack_require__(0),
-  EvaluatedPermissions: __webpack_require__(10),
-  Permissions: __webpack_require__(10),
+  EvaluatedPermissions: __webpack_require__(9),
+  Permissions: __webpack_require__(9),
   Snowflake: __webpack_require__(6),
   SnowflakeUtil: __webpack_require__(6),
   Util: Util,
@@ -25775,7 +25664,7 @@ module.exports = UserProfile;
 /* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const long = __webpack_require__(34);
+const long = __webpack_require__(33);
 
 /**
  * @typedef {Object} MessageSearchOptions
