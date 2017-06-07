@@ -105,12 +105,13 @@ class User {
 
   /**
    * A link to the user's avatar
-   * @param {string} [format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided, it will be `gif`
-   * for animated avatars or otherwise `webp`
-   * @param {number} [size=128] One of `128`, '256', `512`, `1024`, `2048`
-   * @returns {?string} avatarURL
+   * @param {Object} [options={}] Options for the avatar url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
+   * it will be `gif` for animated avatars or otherwise `webp`
+   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {?string}
    */
-  avatarURL(format, size) {
+  avatarURL({ format, size } = {}) {
     if (!this.avatar) return null;
     if (typeof format === 'number') {
       size = format;
@@ -130,13 +131,14 @@ class User {
 
   /**
    * A link to the user's avatar if they have one. Otherwise a link to their default avatar will be returned
-   * @param {string} [format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided, it will be `gif`
-   * for animated avatars or otherwise `webp`
-   * @param {number} [size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @param {Object} [options={}] Options for the avatar url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
+   * it will be `gif` for animated avatars or otherwise `webp`
+   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
    * @returns {string}
    */
-  displayAvatarURL(format, size) {
-    return this.avatarURL(format, size) || this.defaultAvatarURL;
+  displayAvatarURL(options) {
+    return this.avatarURL(options) || this.defaultAvatarURL;
   }
 
   /**
