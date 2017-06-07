@@ -843,10 +843,10 @@ class Guild {
    *  .catch(console.error);
    */
   createChannel(name, type, { overwrites, reason } = {}) {
-    if (overwrites instanceof Collection) {
+    if (overwrites instanceof Collection || overwrites instanceof Array) {
       overwrites = overwrites.map(overwrite => ({
-        allow: overwrite._allowed,
-        deny: overwrite._denied,
+        allow: overwrite.allow || overwrite._allowed,
+        deny: overwrite.deny || overwrite._denied,
         type: overwrite.type,
         id: overwrite.id,
       }));
