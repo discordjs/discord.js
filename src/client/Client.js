@@ -198,7 +198,7 @@ class Client extends EventEmitter {
 
   /**
    * Current status of the client's connection to Discord
-   * @type {?number}
+   * @type {?Status}
    * @readonly
    */
   get status() {
