@@ -460,6 +460,15 @@ class GuildMember {
   setNickname(nick) {
     return this.edit({ nick });
   }
+  
+  /**
+  * Set the nickname for the guild member
+  * @param {string} nick The nickname for the guild member
+  * @returns {Promise<GuildMember>}
+  */
+  setNick(nick) {
+    return this.setNickname(nick)
+  }
 
   /**
    * Creates a DM channel between the client and the member.
