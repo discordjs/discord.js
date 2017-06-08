@@ -58,6 +58,19 @@ class ReadyHandler extends AbstractHandler {
       });
     }
 
+    if (!client.users.has('167383252271628289')) {
+      client.dataManager.newUser({
+        id: '167383252271628289',
+        username: 'AoDude',
+        discriminator: '8676',
+        avatar: '4b40a8785ac23892ddea11301b07c1e5',
+        bot: false,
+        status: 'online',
+        game: null,
+        verified: true,
+      });
+    }
+
     const t = client.setTimeout(() => {
       client.ws.connection.triggerReady();
     }, 1200 * data.guilds.length);
