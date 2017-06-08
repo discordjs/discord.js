@@ -339,7 +339,7 @@ exports.WSEvents = {
  * - CHANNEL_ICON_CHANGE
  * - PINS_ADD
  * - GUILD_MEMBER_JOIN
- * @typedef {string} MessageTypes
+ * @typedef {string} MessageType
  */
 exports.MessageTypes = [
   'DEFAULT',
