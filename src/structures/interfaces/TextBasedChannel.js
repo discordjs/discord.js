@@ -292,11 +292,11 @@ class TextBasedChannel {
    * @returns {MessageCollector}
    * @example
    * // Create a message collector
-   * const collector = channel.createCollector(
+   * const collector = channel.createMessageCollector(
    *  m => m.content.includes('discord'),
    *  { time: 15000 }
    * );
-   * collector.on('message', m => console.log(`Collected ${m.content}`));
+   * collector.on('collect', m => console.log(`Collected ${m.content}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
   createMessageCollector(filter, options = {}) {
