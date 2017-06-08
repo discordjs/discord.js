@@ -30,7 +30,7 @@ The usage of the API isn't any different from using it in Node.js.
   client.on('message', msg => {
     const guildTag = msg.channel.type === 'text' ? `[${msg.guild.name}]` : '[DM]';
     const channelTag = msg.channel.type === 'text' ? `[#${msg.channel.name}]` : '';
-    console.log(`${guildTag}${channelTag} ${msg.author.username}#${msg.author.discriminator}: ${msg.content}`);
+    console.log(`${guildTag}${channelTag} ${msg.author.tag}: ${msg.content}`);
   });
 
   client.login('some crazy token');
