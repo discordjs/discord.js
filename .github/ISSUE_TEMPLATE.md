@@ -2,6 +2,9 @@
 If you need help with discord.js installation or usage, please go to the discord.js Discord server instead:
   https://discord.gg/bRCvFy9
 This issue tracker is only for bug reports and enhancement suggestions. You won't receive any basic help here.
+
+Love discord.js? Please consider supporting our collective:
+👉  https://opencollective.com/discordjs/donate
 -->
 
 **Please describe the problem you are having in as much detail as possible:**
