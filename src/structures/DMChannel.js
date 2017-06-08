@@ -47,7 +47,7 @@ class DMChannel extends Channel {
   stopTyping() {}
   get typing() {}
   get typingCount() {}
-  createCollector() {}
+  createMessageCollector() {}
   awaitMessages() {}
   // Doesn't work on DM channels; bulkDelete() {}
   acknowledge() {}

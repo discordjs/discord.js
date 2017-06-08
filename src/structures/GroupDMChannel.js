@@ -164,7 +164,7 @@ class GroupDMChannel extends Channel {
   stopTyping() {}
   get typing() {}
   get typingCount() {}
-  createCollector() {}
+  createMessageCollector() {}
   awaitMessages() {}
   // Doesn't work on Group DMs; bulkDelete() {}
   acknowledge() {}
