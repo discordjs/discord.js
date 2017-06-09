@@ -1,5 +1,4 @@
 const EventEmitter = require('events').EventEmitter;
-const Constants = require('../../util/Constants');
 const Collection = require('../../util/Collection');
 const WebSocketConnection = require('./WebSocketConnection');
 const PacketManager = require('./packets/WebSocketPacketManager');
@@ -30,6 +29,12 @@ class WebSocketManager extends EventEmitter {
     this.packetManager = new PacketManager(this);
 
     /**
+     * A cached gateway url
+     * @type {string}
+     */
+    this.cachedGateway = null;
+
+    /**
      * Events that are disabled (will not be processed)
      * @type {Object}
      */
@@ -42,8 +47,8 @@ class WebSocketManager extends EventEmitter {
    * @param {string} message Debug message
    * @returns {void}
    */
-  debug(message) {
-    return this.client.emit('debug', `[ws] ${message}`);
+  debug(...args) {
+    return this.client.emit('debug', `[ws] ${args.join(' ')}`);
   }
 
   /**
@@ -64,9 +69,24 @@ class WebSocketManager extends EventEmitter {
    * @param {string} gateway Gateway to connect to
    */
   connect(gateway) {
-    for (let i = 0; i < this.client.options.shardCount; i++) {
-      this.shards.set(i, new WebSocketConnection(this, i, gateway));
-    }
+    this.cachedGateway = gateway;
+    this.spawnShards();
+  }
+
+  spawnShards() {
+    (function spawnLoop(id) {
+      if (id >= this.client.options.shardCount) return;
+      this.debug('Spawning shard', id);
+      this.spawnShard(id, this.cachedGateway).once('ready', () => {
+        this.client.setTimeout(spawnLoop, 5500, ++id);
+      });
+    }.bind(this)(0));
+  }
+
+  spawnShard(id, gateway) {
+    const shard = new WebSocketConnection(this, id, gateway);
+    // Handlers for disconnect and such go here
+    return shard;
   }
 }
 
