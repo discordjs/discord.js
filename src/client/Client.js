@@ -40,7 +40,7 @@ class Client extends EventEmitter {
      * @type {ClientOptions}
      */
     this.options = Util.mergeDefault(Constants.DefaultOptions, options);
-    options.shardCount = Math.max(options.shardCount, 1);
+    if (options.shardCount !== 'auto') options.shardCount = Math.max(options.shardCount, 1);
     this._validateOptions();
 
     /**
@@ -270,8 +270,15 @@ class Client extends EventEmitter {
       token = token.replace(/^Bot\s*/i, '');
       this.token = token;
       const timeout = this.setTimeout(() => reject(new Error(Constants.Errors.TOOK_TOO_LONG)), 1000 * 300);
-      this.api.gateway.get().then(res => {
+      let endpoint = this.api.gateway;
+      const forceBot = this.options.shardCount === 'auto';
+      if (forceBot) endpoint = endpoint.bot;
+      endpoint.get({ forceBot }).then(res => {
         this.emit(Constants.Events.DEBUG, `Authenticated using token ${token}`);
+        if (res.shards) {
+          this.emit(Constants.Events.DEBUG, `Using recommended shard count: ${res.shards}`);
+          this.options.shardCount = res.shards;
+        }
         const protocolVersion = Constants.DefaultOptions.ws.version;
         const gateway = `${res.url}/?v=${protocolVersion}&encoding=${WebSocketConnection.ENCODING}`;
         this.emit(Constants.Events.DEBUG, `Using gateway ${gateway}`);
@@ -517,16 +524,16 @@ class Client extends EventEmitter {
    * @private
    */
   _validateOptions(options = this.options) {
-    if (typeof options.shardCount !== 'number' || isNaN(options.shardCount)) {
-      throw new TypeError('The shardCount option must be a number.');
+    if (options.shardCount !== 'auto' && isNaN(options.shardCount)) {
+      throw new TypeError('The shardCount option must be a number or "auto".');
     }
     if (typeof options.shardID !== 'number' || isNaN(options.shardID)) {
-      throw new TypeError('The shardId option must be a number.');
+      throw new TypeError('The shardID option must be a number.');
     }
     if (options.shardCount < 0) throw new RangeError('The shardCount option must be at least 0.');
     if (options.shardID < 0) throw new RangeError('The shardID option must be at least 0.');
     if (options.shardID !== 0 && options.shardID >= options.shardCount) {
-      throw new RangeError('The shardId option must be less than shardCount.');
+      throw new RangeError('The shardID option must be less than shardCount.');
     }
     if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
       throw new TypeError('The messageCacheMaxSize option must be a number.');

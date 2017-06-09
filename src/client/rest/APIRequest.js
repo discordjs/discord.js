@@ -23,7 +23,7 @@ class APIRequest {
   }
 
   getAuth() {
-    if (this.client.token && this.client.user && this.client.user.bot) {
+    if (this.client.token && ((this.client.user && this.client.user.bot) || this.options.forceBot)) {
       return `Bot ${this.client.token}`;
     } else if (this.client.token) {
       return this.client.token;
