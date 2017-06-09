@@ -276,9 +276,8 @@ class Client extends EventEmitter {
         this.emit(Constants.Events.DEBUG, `Using gateway ${gateway}`);
         this.ws.connect(gateway);
         this.ws.once('close', event => {
-          if (event.code === 4004) reject(new Error(Constants.Errors.BAD_LOGIN));
-          if (event.code === 4010) reject(new Error(Constants.Errors.INVALID_SHARD));
-          if (event.code === 4011) reject(new Error(Constants.Errors.SHARDING_REQUIRED));
+          if (!Object.keys(Constants.WSCodes).includes(event.code)) return;
+          reject(new Error(Constants.WSCodes[event.code]));
         });
         this.once(Constants.Events.READY, () => {
           resolve(token);
