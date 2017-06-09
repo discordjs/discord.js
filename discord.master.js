@@ -401,6 +401,18 @@ exports.WSEvents = {
   RELATIONSHIP_REMOVE: 'RELATIONSHIP_REMOVE',
 };
 
+/**
+ * The type of a message, e.g. `DEFAULT`. Here are the available types:
+ * - DEFAULT
+ * - RECIPIENT_ADD
+ * - RECIPIENT_REMOVE
+ * - CALL
+ * - CHANNEL_NAME_CHANGE
+ * - CHANNEL_ICON_CHANGE
+ * - PINS_ADD
+ * - GUILD_MEMBER_JOIN
+ * @typedef {string} MessageType
+ */
 exports.MessageTypes = [
   'DEFAULT',
   'RECIPIENT_ADD',
@@ -3471,7 +3483,7 @@ class Message {
 
     /**
      * The type of the message
-     * @type {string}
+     * @type {MessageType}
      */
     this.type = Constants.MessageTypes[data.type];
 
@@ -17285,7 +17297,7 @@ class Client extends EventEmitter {
 
   /**
    * Current status of the client's connection to Discord
-   * @type {?number}
+   * @type {?Status}
    * @readonly
    */
   get status() {
