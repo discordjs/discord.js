@@ -13,8 +13,6 @@ class GuildMembersChunkHandler extends AbstractHandler {
     for (const member of data.members) members.set(member.id, guild._addMember(member, false));
 
     client.emit(Constants.Events.GUILD_MEMBERS_CHUNK, members, guild);
-
-    client.ws.lastHeartbeatAck = true;
   }
 }
 

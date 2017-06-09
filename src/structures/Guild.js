@@ -54,6 +54,12 @@ class Guild {
      */
     this.presences = new Collection();
 
+    /**
+     * Shard for this guild
+     * @type {WebSocketConnection}
+     */
+    this.shard = data.shard;
+
     if (!data) return;
     if (data.unavailable) {
       /**
@@ -1071,7 +1077,7 @@ class Guild {
      * @event Client#guildMemberAdd
      * @param {GuildMember} member The member that has joined a guild
      */
-    if (this.client.ws.connection.status === Constants.Status.READY && emitEvent && !existing) {
+    if (this.client.ws.status === Constants.Status.READY && emitEvent && !existing) {
       this.client.emit(Constants.Events.GUILD_MEMBER_ADD, member);
     }
 

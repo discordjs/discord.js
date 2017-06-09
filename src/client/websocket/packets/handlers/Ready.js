@@ -7,7 +7,7 @@ class ReadyHandler extends AbstractHandler {
     const client = this.packetManager.client;
     const data = packet.d;
 
-    client.ws.heartbeat();
+    packet.shard.heartbeat();
 
     data.user.user_settings = data.user_settings;
 
@@ -59,7 +59,7 @@ class ReadyHandler extends AbstractHandler {
     }
 
     const t = client.setTimeout(() => {
-      client.ws.connection.triggerReady();
+      packet.shard.triggerReady();
     }, 1200 * data.guilds.length);
 
     client.setMaxListeners(data.guilds.length + 10);
@@ -70,12 +70,11 @@ class ReadyHandler extends AbstractHandler {
       client.clearTimeout(t);
     });
 
-    const ws = this.packetManager.ws;
-
-    ws.sessionID = data.session_id;
-    ws._trace = data._trace;
-    client.emit('debug', `READY ${ws._trace.join(' -> ')} ${ws.sessionID}`);
-    ws.checkIfReady();
+    const shard = packet.shard;
+    shard.sessionID = data.session_id;
+    shard._trace = data._trace;
+    client.emit('debug', `SHARD ${shard.id} READY ${shard._trace.join(' -> ')} ${shard.sessionID}`);
+    shard.checkIfReady();
   }
 }
 
