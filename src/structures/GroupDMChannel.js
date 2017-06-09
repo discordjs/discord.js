@@ -178,14 +178,6 @@ class GroupDMChannel extends Channel {
   }
 
   /**
-   * Deletes this channel.
-   * @returns {Promise<GroupDMChannel>}
-   */
-  delete() {
-    return this.client.api.channels(this.id).delete().then(() => this);
-  }
-
-  /**
    * When concatenated with a string, this automatically concatenates the channel's name instead of the Channel object.
    * @returns {string}
    * @example
