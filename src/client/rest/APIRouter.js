@@ -7,7 +7,7 @@ const paramable = [
   'bans', 'emojis', 'pins', 'permissions',
   'reactions', 'webhooks', 'messages',
   'notes', 'roles', 'applications',
-  'invites',
+  'invites', 'recipients',
 ];
 const reflectors = ['toString', 'valueOf', 'inspect', Symbol.toPrimitive, util.inspect.custom];
 
