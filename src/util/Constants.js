@@ -32,8 +32,8 @@ exports.Package = require('../../package.json');
  */
 exports.DefaultOptions = {
   apiRequestMethod: 'sequential',
-  shardId: 0,
-  shardCount: 0,
+  shardID: 0,
+  shardCount: 1,
   messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,

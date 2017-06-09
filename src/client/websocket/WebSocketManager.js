@@ -62,23 +62,11 @@ class WebSocketManager extends EventEmitter {
   /**
    * Connects the client to a gateway.
    * @param {string} gateway Gateway to connect to
-   * @returns {boolean}
    */
   connect(gateway) {
-    this.shards.set(0, new WebSocketConnection(this, 0, gateway));
-    // if (!this.connection) {
-    //   this.connection = new WebSocketConnection(this, gateway);
-    //   return true;
-    // }
-    // switch (this.connection.status) {
-    //   case Constants.Status.IDLE:
-    //   case Constants.Status.DISCONNECTED:
-    //     this.connection.connect(gateway, 5500);
-    //     return true;
-    //   default:
-    //     this.debug(`Couldn't connect to ${gateway} as the websocket is at state ${this.connection.status}`);
-    //     return false;
-    // }
+    for (let i = 0; i < this.client.options.shardCount; i++) {
+      this.shards.set(i, new WebSocketConnection(this, i, gateway));
+    }
   }
 }
 

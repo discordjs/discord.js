@@ -32,7 +32,7 @@ class Client extends EventEmitter {
     super();
 
     // Obtain shard details from environment
-    if (!options.shardId && 'SHARD_ID' in process.env) options.shardId = Number(process.env.SHARD_ID);
+    if (!options.shardID && 'SHARD_ID' in process.env) options.shardID = Number(process.env.SHARD_ID);
     if (!options.shardCount && 'SHARD_COUNT' in process.env) options.shardCount = Number(process.env.SHARD_COUNT);
 
     /**
@@ -40,6 +40,7 @@ class Client extends EventEmitter {
      * @type {ClientOptions}
      */
     this.options = Util.mergeDefault(Constants.DefaultOptions, options);
+    options.shardCount = Math.max(options.shardCount, 1);
     this._validateOptions();
 
     /**
@@ -519,12 +520,12 @@ class Client extends EventEmitter {
     if (typeof options.shardCount !== 'number' || isNaN(options.shardCount)) {
       throw new TypeError('The shardCount option must be a number.');
     }
-    if (typeof options.shardId !== 'number' || isNaN(options.shardId)) {
+    if (typeof options.shardID !== 'number' || isNaN(options.shardID)) {
       throw new TypeError('The shardId option must be a number.');
     }
     if (options.shardCount < 0) throw new RangeError('The shardCount option must be at least 0.');
-    if (options.shardId < 0) throw new RangeError('The shardId option must be at least 0.');
-    if (options.shardId !== 0 && options.shardId >= options.shardCount) {
+    if (options.shardID < 0) throw new RangeError('The shardID option must be at least 0.');
+    if (options.shardID !== 0 && options.shardID >= options.shardCount) {
       throw new RangeError('The shardId option must be less than shardCount.');
     }
     if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
