@@ -2,11 +2,17 @@
  * Represents an error from the Discord API.
  */
 class DiscordAPIError extends Error {
-  constructor(error) {
+  constructor(path, error) {
     super();
     const flattened = error.errors ? `\n${this.constructor.flattenErrors(error.errors).join('\n')}` : '';
     this.name = 'DiscordAPIError';
     this.message = `${error.message}${flattened}`;
+
+    /**
+     * The path of the request relative to the HTTP endpoint
+     * @type {string}
+     */
+    this.path = path;
 
     /**
      * HTTP error code returned by Discord

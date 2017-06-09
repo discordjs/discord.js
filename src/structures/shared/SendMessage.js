@@ -54,7 +54,7 @@ module.exports = function sendMessage(channel, options) {
     });
   }
 
-  return channel.client.api.channels(channel.id).messages.post({
+  return channel.client.api.channels[channel.id].messages.post({
     data: { content, tts, nonce, embed },
     files,
   }).then(data => channel.client.actions.MessageCreate.handle(data).message);

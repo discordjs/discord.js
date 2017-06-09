@@ -135,7 +135,7 @@ class GroupDMChannel extends Channel {
     const data = this.client.user.bot ?
       { nick, access_token: accessTokenOrUser } :
       { recipient: id };
-    return this.client.api.channels(this.id).recipients(id).put({ data })
+    return this.client.api.channels[this.id].recipients[id].put({ data })
     .then(() => this);
   }
 
