@@ -125,18 +125,31 @@ class GroupDMChannel extends Channel {
   }
 
   /**
-   * Set a new name for this Group DM.
-   * @param {string} name New name for this Group DM
+   * Edits this Group DM.
+   * @param {Object} data New data for this Group DM
+   * @param {string} [reason] Reason for editing this Group DM
    * @returns {Promise<GroupDMChannel>}
    */
-  setName(name) {
+  edit(data, reason) {
     return this.client.api.channels(this.id).patch({
-      data: { name: name.trim() },
+      data: {
+        name: (data.name || this.name).trim(),
+      },
+      reason,
     }).then(() => this);
   }
 
   /**
-   * Add an user to this Group DM.
+   * Sets a new name for this Group DM.
+   * @param {string} name New name for this Group DM
+   * @returns {Promise<GroupDMChannel>}
+   */
+  setName(name) {
+    return this.edit({ name });
+  }
+
+  /**
+   * Adds an user to this Group DM.
    * @param {Object} options Options for this method
    * @param {UserResolveable} options.user User to add to this Group DM
    * @param {string} [options.accessToken] Access token to use to add the user to this Group DM
