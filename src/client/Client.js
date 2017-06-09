@@ -5,10 +5,10 @@ const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
 const RESTManager = require('./rest/RESTManager');
 const ClientDataManager = require('./ClientDataManager');
-const ClientManager = require('./ClientManager');
 const ClientDataResolver = require('./ClientDataResolver');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
+const WebSocketConnection = require('./websocket/WebSocketConnection');
 const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
 const Presence = require('../structures/Presence').Presence;
@@ -62,13 +62,6 @@ class Client extends EventEmitter {
      * @private
      */
     this.dataManager = new ClientDataManager(this);
-
-    /**
-     * The manager of the client
-     * @type {ClientManager}
-     * @private
-     */
-    this.manager = new ClientManager(this);
 
     /**
      * The WebSocket manager of the client
@@ -274,7 +267,24 @@ class Client extends EventEmitter {
     return new Promise((resolve, reject) => {
       if (typeof token !== 'string') throw new Error(Constants.Errors.INVALID_TOKEN);
       token = token.replace(/^Bot\s*/i, '');
-      this.manager.connectToWebSocket(token, resolve, reject);
+      this.token = token;
+      const timeout = this.setTimeout(() => reject(new Error(Constants.Errors.TOOK_TOO_LONG)), 1000 * 300);
+      this.api.gateway.get().then(res => {
+        this.emit(Constants.Events.DEBUG, `Authenticated using token ${token}`);
+        const protocolVersion = Constants.DefaultOptions.ws.version;
+        const gateway = `${res.url}/?v=${protocolVersion}&encoding=${WebSocketConnection.ENCODING}`;
+        this.emit(Constants.Events.DEBUG, `Using gateway ${gateway}`);
+        this.ws.connect(gateway);
+        this.ws.once('close', event => {
+          if (event.code === 4004) reject(new Error(Constants.Errors.BAD_LOGIN));
+          if (event.code === 4010) reject(new Error(Constants.Errors.INVALID_SHARD));
+          if (event.code === 4011) reject(new Error(Constants.Errors.SHARDING_REQUIRED));
+        });
+        this.once(Constants.Events.READY, () => {
+          resolve(token);
+          this.clearTimeout(timeout);
+        });
+      }, reject);
     });
   }
 
@@ -287,7 +297,17 @@ class Client extends EventEmitter {
     for (const i of this._intervals) clearInterval(i);
     this._timeouts.clear();
     this._intervals.clear();
-    return this.manager.destroy();
+    this.ws.destroy();
+    this.rest.destroy();
+    if (!this.user) return Promise.resolve();
+    if (this.user.bot) {
+      this.token = null;
+      return Promise.resolve();
+    } else {
+      return this.api.logout.post().then(() => {
+        this.token = null;
+      });
+    }
   }
 
   /**
