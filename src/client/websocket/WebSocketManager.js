@@ -86,6 +86,7 @@ class WebSocketManager extends EventEmitter {
   spawnShard(id, gateway) {
     const shard = new WebSocketConnection(this, id, gateway);
     // Handlers for disconnect and such go here
+    this.shards.set(id, shard);
     return shard;
   }
 }
