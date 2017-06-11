@@ -114,7 +114,7 @@ class MessageEmbed {
      * @property {string} name The name of this provider
      * @property {string} url URL of this provider
      */
-    this.provder = data.provider;
+    this.provider = data.provider;
 
     /**
      * The footer of this embed
