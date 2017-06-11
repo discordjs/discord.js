@@ -106,6 +106,7 @@ exports.DefaultOptions = {
   apiRequestMethod: 'sequential',
   shardId: 0,
   shardCount: 0,
+  internalSharding: false,
   messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,
@@ -17650,6 +17651,12 @@ class Client extends EventEmitter {
     }
     if (typeof options.restWsBridgeTimeout !== 'number' || isNaN(options.restWsBridgeTimeout)) {
       throw new TypeError('The restWsBridgeTimeout option must be a number.');
+    }
+    if (typeof options.internalSharding !== 'boolean') {
+      throw new TypeError('The internalSharding option must be a boolean.');
+    }
+    if (options.internalSharding && ('shardCount' in options || 'shardId' in options)) {
+      throw new TypeError('You cannot specify shardCount/shardId if you are using internal sharding.');
     }
     if (!(options.disabledEvents instanceof Array)) throw new TypeError('The disabledEvents option must be an Array.');
   }
