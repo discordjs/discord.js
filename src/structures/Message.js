@@ -383,7 +383,9 @@ class Message {
 
     if (typeof content !== 'undefined') content = Util.resolveString(content);
 
-    const { embed, code, reply } = options;
+    let { embed, code, reply } = options;
+
+    if (embed) embed = new Embed(embed)._apiTransform();
 
     // Wrap everything in a code block
     if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
