@@ -941,7 +941,7 @@ class Guild {
    *  .catch(console.error);
    */
   createEmoji(attachment, name, roles) {
-    if (typeof attahment === 'string' && attachment.startsWith('data:')) {
+    if (typeof attachment === 'string' && attachment.startsWith('data:')) {
       const data = { image: attachment, name };
       if (roles) data.roles = roles.map(r => r.id ? r.id : r);
       return this.client.api.guilds(this.id).emojis.post({ data })
