@@ -6,6 +6,7 @@ const AudioPlayer = require('./player/AudioPlayer');
 const VoiceReceiver = require('./receiver/VoiceReceiver');
 const EventEmitter = require('events').EventEmitter;
 const Prism = require('prism-media');
+const { Error } = require('../../errors');
 
 /**
  * Represents a connection to a guild's voice server.
@@ -341,8 +342,8 @@ class VoiceConnection extends EventEmitter {
    */
   connect() {
     if (this.status !== Constants.VoiceStatus.RECONNECTING) {
-      if (this.sockets.ws) throw new Error('There is already an existing WebSocket connection.');
-      if (this.sockets.udp) throw new Error('There is already an existing UDP connection.');
+      if (this.sockets.ws) throw new Error('WS_CONNECTION_EXISTS');
+      if (this.sockets.udp) throw new Error('UDP_CONNECTION_EXISTS');
     }
 
     if (this.sockets.ws) this.sockets.ws.shutdown();

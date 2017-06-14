@@ -1,4 +1,5 @@
 const Util = require('../util/Util');
+const { Error } = require('../errors');
 
 /**
  * Helper class for sharded clients spawned as a child process, such as from a ShardingManager.
@@ -40,7 +41,7 @@ class ShardClientUtil {
       const sent = process.send(message, err => {
         if (err) reject(err); else resolve();
       });
-      if (!sent) throw new Error('Failed to send message to master process.');
+      if (!sent) throw new Error('SHARDING_PARENT_CONNECTION');
     });
   }
 
