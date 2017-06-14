@@ -60,6 +60,12 @@ const Messages = {
   IMAGE_FORMAT: format => `Invalid image format: ${format}`,
   IMAGE_SIZE: size => `Invalid image size: ${size}`,
 
+  MESSAGE_MISSING: 'Message not found',
+  MESSAGE_BULK_DELETE_TYPE: 'The messages must be an Array, Collection, or number.',
+  MESSAGE_NONCE_TYPE: 'Message nonce must fit in an unsigned 64-bit integer.',
+
+  TYPING_COUNT: 'Count must be at least 1',
+
   SPLIT_MAX_LEN: 'Message exceeds the max length and contains no split characters.',
 
   BAN_RESOLVE_ID: 'Couldn\'t resolve the user ID to unban.',
@@ -69,6 +75,10 @@ const Messages = {
   SEARCH_CHANNEL_TYPE: 'Target must be a TextChannel, DMChannel, GroupDMChannel, or Guild.',
 
   MESSAGE_SPLIT_MISSING: 'Message exceeds the max length and contains no split characters.',
+
+  GUILD_CHANNEL_RESOLVE: 'Could not resolve channel to a guild channel.',
+
+  EMOJI_TYPE: 'Emoji must be a string or Emoji/ReactionEmoji',
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);

@@ -1,4 +1,5 @@
 const Util = require('../../util/Util');
+const { RangeError } = require('../../errors');
 
 module.exports = function sendMessage(channel, options) {
   const User = require('../User');
@@ -8,7 +9,7 @@ module.exports = function sendMessage(channel, options) {
 
   if (typeof nonce !== 'undefined') {
     nonce = parseInt(nonce);
-    if (isNaN(nonce) || nonce < 0) throw new RangeError('Message nonce must fit in an unsigned 64-bit integer.');
+    if (isNaN(nonce) || nonce < 0) throw new RangeError('MESSAGE_NONCE_TYPE');
   }
 
   if (content) {

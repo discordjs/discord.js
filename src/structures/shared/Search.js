@@ -1,4 +1,5 @@
 const long = require('long');
+const { TypeError } = require('../../errors');
 
 /**
  * @typedef {Object} MessageSearchOptions
@@ -75,9 +76,7 @@ module.exports = function search(target, options) {
   const Guild = require('../Guild');
   const Message = require('../Message');
 
-  if (!(target instanceof Channel || target instanceof Guild)) {
-    throw new TypeError('Target must be a TextChannel, DMChannel, GroupDMChannel, or Guild.');
-  }
+  if (!(target instanceof Channel || target instanceof Guild)) throw new TypeError('SEARCH_CHANNEL_TYPE');
 
   let endpoint = target.client.api[target instanceof Channel ? 'channels' : 'guilds'](target.id).messages().search;
   return endpoint.get({ query: options }).then(body => {
