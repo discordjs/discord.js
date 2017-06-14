@@ -3,7 +3,6 @@ const SequentialRequestHandler = require('./RequestHandlers/Sequential');
 const BurstRequestHandler = require('./RequestHandlers/Burst');
 const APIRequest = require('./APIRequest');
 const mountApi = require('./APIRouter');
-const Constants = require('../../util/Constants');
 const { Error } = require('../../errors');
 
 class RESTManager {

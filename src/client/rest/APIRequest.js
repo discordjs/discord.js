@@ -1,6 +1,5 @@
 const querystring = require('querystring');
 const snekfetch = require('snekfetch');
-const Constants = require('../../util/Constants');
 const { Error } = require('../../errors');
 
 class APIRequest {
