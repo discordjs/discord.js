@@ -13,8 +13,8 @@ const Messages = {
   WS_CONNECTION_EXISTS: 'There is already an existing WebSocket connection.',
   WS_NOT_OPEN: (data = 'data') => `Websocket not open to send ${data}`,
 
-  NOT_A_PERMISSION: 'Invalid permission string or number.',
-  NOT_A_BITFIELD_FLAG: 'Invalid bitfield flag string or number',
+  PERMISSIONS_INVALID: 'Invalid permission string or number.',
+  PERMISSIONS_INVALID_FLAG: 'Invalid bitfield flag string or number',
 
   RATELIMIT_INVALID_METHOD: 'Unknown rate limiting method.',
 
@@ -39,10 +39,6 @@ const Messages = {
 
   FILE_NOT_FOUND: file => `File could not be found: ${file}`,
 
-  SEARCH_CHANNEL_TYPE: 'Target must be a TextChannel, DMChannel, GroupDMChannel, or Guild.',
-
-  MESSAGE_SPLIT_MISSING: 'Message exceeds the max length and contains no split characters.',
-
   USER_STATUS: 'User status must be a string',
   SHARD_MESSAGE_FAILED: 'Failed to send message to master process.',
 
@@ -58,12 +54,21 @@ const Messages = {
   UDP_ADDRESS_MALFORMED: 'Malformed UDP address or port.',
   UDP_CONNECTION_EXISTS: 'There is already an existing UDP connection.',
 
+  REQ_BODY_TYPE: 'The response body isn\'t a Buffer.',
+  REQ_RESOURCE_TYPE: 'The resource must be a string or Buffer.',
+
+  IMAGE_FORMAT: format => `Invalid image format: ${format}`,
+  IMAGE_SIZE: size => `Invalid image size: ${size}`,
+
+  SPLIT_MAX_LEN: 'Message exceeds the max length and contains no split characters.',
+
   BAN_RESOLVE_ID: 'Couldn\'t resolve the user ID to unban.',
 
   PRUNE_DAYS_TYPE: 'Days must be a number',
 
-  REQ_BODY_TYPE: 'The response body isn\'t a Buffer.',
-  REQ_RESOURCE_TYPE: 'The resource must be a string or Buffer.',
+  SEARCH_CHANNEL_TYPE: 'Target must be a TextChannel, DMChannel, GroupDMChannel, or Guild.',
+
+  MESSAGE_SPLIT_MISSING: 'Message exceeds the max length and contains no split characters.',
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);
