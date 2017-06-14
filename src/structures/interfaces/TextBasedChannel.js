@@ -203,7 +203,7 @@ class TextBasedChannel {
    * Performs a search within the channel.
    * <warn>This is only available when using a user account.</warn>
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
-   * @returns {MessageSearchResult}
+   * @returns {Promise<MessageSearchResult>}
    * An array containing arrays of messages. Each inner array is a search context cluster
    * The message which has triggered the result will have the `hit` property set to `true`
    * @example
