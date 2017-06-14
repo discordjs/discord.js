@@ -54,7 +54,7 @@ module.exports = function search(target, options) {
   if (options.author) options.author = target.client.resolver.resolveUserID(options.author);
   if (options.mentions) options.mentions = target.client.resolver.resolveUserID(options.options.mentions);
   if (options.sortOrder) {
-    options.sortOrder = ({ ascending: 'asc', descending: 'desc' })[options.sortOrder] || options.sortOrder;
+    options.sortOrder = { ascending: 'asc', descending: 'desc' }[options.sortOrder] || options.sortOrder;
   }
   options = {
     content: options.content,
