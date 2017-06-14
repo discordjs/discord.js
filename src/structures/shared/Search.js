@@ -28,6 +28,12 @@ const long = require('long');
  * @property {boolean} [nsfw=false] Include results from NSFW channels
  */
 
+/**
+ * @typedef {Object} MessageSearchResult
+ * @type {number} total Total result count
+ * @type {Array<Message[]>} results Array of message results
+ */
+
 module.exports = function search(target, options) {
   if (typeof options === 'string') options = { content: options };
   if (options.before) {
