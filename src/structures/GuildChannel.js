@@ -77,7 +77,7 @@ class GuildChannel extends Channel {
 
     if (overwrites.everyone) {
       permissions &= ~overwrites.everyone._denied;
-      permissions |= overwrites.everyone._alloweded;
+      permissions |= overwrites.everyone._allowed;
     }
 
     let allow = 0;
