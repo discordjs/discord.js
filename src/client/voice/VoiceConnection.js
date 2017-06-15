@@ -253,8 +253,6 @@ class VoiceConnection extends EventEmitter {
        * @param {Error} error The encountered error
        */
       this.emit('failed', new Error(reason));
-    } else {
-      this.emit('error', new Error(reason));
     }
   }
 
