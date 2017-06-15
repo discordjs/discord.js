@@ -73,7 +73,7 @@ class ClientVoiceManager {
         this.connections.delete(channel.guild.id);
         reject(reason);
       });
-
+      
       connection.once('authenticated', () => {
         connection.once('ready', () => resolve(connection));
         connection.once('error', reject);
