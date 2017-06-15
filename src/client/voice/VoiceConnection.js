@@ -8,7 +8,7 @@ const EventEmitter = require('events').EventEmitter;
 const Prism = require('prism-media');
 
 /**
- * Represents a connection to a voice channel in Discord.
+ * Represents a connection to a guild's voice server.
  * ```js
  * // Obtained using:
  * voiceChannel.join().then(connection => {
@@ -52,7 +52,7 @@ class VoiceConnection extends EventEmitter {
 
     /**
      * The current status of the voice connection
-     * @type {number}
+     * @type {VoiceStatus}
      */
     this.status = Constants.VoiceStatus.AUTHENTICATING;
 
@@ -169,19 +169,20 @@ class VoiceConnection extends EventEmitter {
    * @returns {void}
    */
   setTokenAndEndpoint(token, endpoint) {
-    if (!token) {
-      this.authenticateFailed('Token not provided from voice server packet.');
+    if (!endpoint) {
+      // Signifies awaiting endpoint stage
       return;
     }
-    if (!endpoint) {
-      this.authenticateFailed('Endpoint not provided from voice server packet.');
+
+    if (!token) {
+      this.authenticateFailed('Token not provided from voice server packet.');
       return;
     }
 
     endpoint = endpoint.match(/([^:]*)/)[0];
 
     if (!endpoint) {
-      this.authenticateFailed('Failed to find an endpoint.');
+      this.authenticateFailed('Invalid endpoint received.');
       return;
     }
 

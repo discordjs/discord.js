@@ -7,7 +7,10 @@ function fetch(Encoder, engineOptions) {
   try {
     return new Encoder(engineOptions);
   } catch (err) {
-    return null;
+    if (err.code === 'MODULE_NOT_FOUND') return null;
+
+    // The Opus engine exists, but another error occurred.
+    throw err;
   }
 }
 

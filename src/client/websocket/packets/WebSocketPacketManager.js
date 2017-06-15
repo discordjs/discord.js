@@ -99,7 +99,6 @@ class WebSocketPacketManager {
     }
 
     if (!queue && this.queue.length > 0) this.handleQueue();
-
     if (this.handlers[packet.t]) return this.handlers[packet.t].handle(packet);
     return false;
   }

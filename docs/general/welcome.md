@@ -17,8 +17,7 @@
 </div>
 
 # Welcome!
-Welcome to the discord.js v11 documentation.
-v11 contains loads of new and improved features, optimisations, and bug fixes.
+Welcome to the discord.js v12.0.0 documentation.
 
 ## About
 discord.js is a powerful [node.js](https://nodejs.org) module that allows you to interact with the
@@ -30,7 +29,7 @@ discord.js is a powerful [node.js](https://nodejs.org) module that allows you to
 - 100% coverage of the Discord API
 
 ## Installation
-**Node.js 6.0.0 or newer is required.**  
+**Node.js 8.0.0 or newer is required.**  
 Ignore any warnings about unmet peer dependencies, as they're all optional.
 
 Without voice support: `npm install discord.js --save`  
@@ -80,7 +79,7 @@ client.login('your token');
 ## Contributing
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
 [documentation](https://discord.js.org/#/docs).  
-See [the contribution guide](https://github.com/hydrabolt/discord.js/blob/master/CONTRIBUTING.md) if you'd like to submit a PR.
+See [the contribution guide](https://github.com/hydrabolt/discord.js/blob/master/.github/CONTRIBUTING.md) if you'd like to submit a PR.
 
 ## Help
 If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle

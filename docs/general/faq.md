@@ -4,7 +4,7 @@ If you have issues not listed here, please ask in the [official Discord server](
 Always make sure to read the documentation.
 
 ## No matter what, I get `SyntaxError: Block-scoped declarations (let, const, function, class) not yet supported outside strict mode`‽
-Update to Node.js 6.0.0 or newer.
+Update to Node.js 8.0.0 or newer.
 
 ## How do I get voice working?
 - Install FFMPEG.
