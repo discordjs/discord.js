@@ -843,7 +843,14 @@ class Guild {
    *  .catch(console.error);
    */
   createChannel(name, type, { overwrites, reason } = {}) {
-    if (overwrites instanceof Collection) overwrites = overwrites.array();
+    if (overwrites instanceof Collection || overwrites instanceof Array) {
+      overwrites = overwrites.map(overwrite => ({
+        allow: overwrite.allow || overwrite._allowed,
+        deny: overwrite.deny || overwrite._denied,
+        type: overwrite.type,
+        id: overwrite.id,
+      }));
+    }
     return this.client.api.guilds(this.id).channels.post({
       data: {
         name, type, permission_overwrites: overwrites,
