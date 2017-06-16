@@ -80,7 +80,7 @@ class WebSocketManager extends EventEmitter {
       this.debug(`Spawning shard ${id}`);
       this.spawnShard(id, this.cachedGateway)
       .once('ready', () => {
-        this.client.setTimeout(spawnLoop.bind(this, ++id), 5500);
+        this.client.setTimeout(spawnLoop.bind(this, id + 1), 5500);
         /**
          * Emitted when a shard becomes ready to start working.
          * @event Client#shardReady
