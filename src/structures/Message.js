@@ -592,6 +592,30 @@ class Message {
   _clearReactions() {
     this.reactions.clear();
   }
+
+  toJSON() {
+    return {
+      id: this.id,
+      type: this.type,
+      content: this.content,
+      cleanContent: this.cleanContent,
+      author: this.author,
+      pinned: this.pinned,
+      tts: this.tts,
+      nonce: this.nonce,
+      system: this.system,
+      createdTimestamp: this.createdTimestamp,
+      editedTimestamp: this.editedTimestamp,
+      createdAt: this.createdAt,
+      editedAt: this.editedAt,
+      embeds: this.embeds,
+      attachments: this.attachments,
+      mentions: this.mentions,
+      channel: this.channel.id,
+      guildID: this.guild ? this.guild.id : null,
+      reactions: this.reactions.values(),
+    };
+  }
 }
 
 module.exports = Message;

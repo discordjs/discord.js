@@ -115,6 +115,15 @@ class MessageMentions {
     }
     return this._channels;
   }
+
+  toJSON() {
+    return {
+      everyone: this.everyone,
+      users: this.users.values(),
+      roles: this.roles.values(),
+      channels: this.channels.values(),
+    };
+  }
 }
 
 /**
