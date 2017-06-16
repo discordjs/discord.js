@@ -245,7 +245,6 @@ class VoiceConnection extends EventEmitter {
    */
   authenticateFailed(reason) {
     clearTimeout(this.connectTimeout);
-    this.status = Constants.VoiceStatus.DISCONNECTED;
     if (this.status === Constants.VoiceStatus.AUTHENTICATING) {
       /**
        * Emitted when we fail to initiate a voice connection.
@@ -256,6 +255,7 @@ class VoiceConnection extends EventEmitter {
     } else {
       this.emit('error', new Error(reason));
     }
+    this.status = Constants.VoiceStatus.DISCONNECTED;
   }
 
   /**
