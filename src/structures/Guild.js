@@ -518,7 +518,7 @@ class Guild {
         resolve(new Collection());
         return;
       }
-      this.client.ws.send({
+      this.shard.send({
         op: Constants.OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
           guild_id: this.id,

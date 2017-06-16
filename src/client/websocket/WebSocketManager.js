@@ -103,6 +103,10 @@ class WebSocketManager extends EventEmitter {
     this.shards.set(id, shard);
     return shard;
   }
+
+  send(data) {
+    for (const shard of this.shards.values()) shard.send(data);
+  }
 }
 
 module.exports = WebSocketManager;
