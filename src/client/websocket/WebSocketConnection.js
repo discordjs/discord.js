@@ -103,7 +103,15 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Causes the client to be marked as ready and emits the ready event.
+   * Guilds belonging to this shard
+   * @type {Collection<Snowflake, Guild>}
+   */
+  get guilds() {
+    return this.client.guilds.filter(g => g.shard === this);
+  }
+
+  /**
+   * Causes this connection to be marked as ready and emits the ready event.
    * @returns {void}
    */
   triggerReady() {
@@ -111,12 +119,8 @@ class WebSocketConnection extends EventEmitter {
       this.debug('Tried to mark self as ready, but already ready');
       return;
     }
-    /**
-     * Emitted when the client becomes ready to start working.
-     * @event Client#ready
-     */
     this.status = Constants.Status.READY;
-    this.client.emit(Constants.Events.READY);
+    this.emit(Constants.Events.READY);
   }
 
   /**
@@ -126,14 +130,14 @@ class WebSocketConnection extends EventEmitter {
   checkIfReady() {
     if (this.status === Constants.Status.READY || this.status === Constants.Status.NEARLY) return false;
     let unavailableGuilds = 0;
-    for (const guild of this.client.guilds.values()) {
+    for (const guild of this.guilds.values()) {
       if (!guild.available) unavailableGuilds++;
     }
     if (unavailableGuilds === 0) {
       this.status = Constants.Status.NEARLY;
       if (!this.client.options.fetchAllMembers) return this.triggerReady();
       // Fetch all members before marking self as ready
-      const promises = this.client.guilds.map(g => g.fetchMembers());
+      const promises = this.guilds.map(g => g.fetchMembers());
       Promise.all(promises)
         .then(() => this.triggerReady())
         .catch(e => {

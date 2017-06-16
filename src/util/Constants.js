@@ -207,6 +207,7 @@ exports.VoiceOPCodes = {
 
 exports.Events = {
   READY: 'ready',
+  SHARD_READY: 'shardReady',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',
   GUILD_UPDATE: 'guildUpdate',

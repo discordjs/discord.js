@@ -22,13 +22,22 @@ const Shared = require('./shared');
  */
 class Guild {
   constructor(client, data) {
-    /**
-     * The client that created the instance of the the guild
-     * @name Guild#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
+    Object.defineProperties(this, {
+      /**
+       * The client that created the instance of the the guild
+       * @name Guild#client
+       * @type {Client}
+       * @readonly
+       */
+      client: { value: client },
+      /**
+       * The shard this guild belongs to
+       * @name Guild#shard
+       * @type {WebSocketConnection}
+       * @readonly
+       */
+      shard: { value: data.shard },
+    });
 
     /**
      * A collection of members that are in this guild. The key is the member's ID, the value is the member
@@ -53,12 +62,6 @@ class Guild {
      * @type {Collection<Snowflake, Presence>}
      */
     this.presences = new Collection();
-
-    /**
-     * Shard for this guild
-     * @type {WebSocketConnection}
-     */
-    this.shard = data.shard;
 
     if (!data) return;
     if (data.unavailable) {

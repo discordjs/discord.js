@@ -5,7 +5,7 @@ const { token, prefix, owner } = require('./auth.js');
 const log = (...args) => console.log(process.uptime().toFixed(3), ...args);
 
 const client = new Discord.Client({
-  shardCount: 'auto',
+  shardCount: 2,
 });
 
 client.on('debug', log);

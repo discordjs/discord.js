@@ -2,6 +2,7 @@ const EventEmitter = require('events').EventEmitter;
 const Collection = require('../../util/Collection');
 const WebSocketConnection = require('./WebSocketConnection');
 const PacketManager = require('./packets/WebSocketPacketManager');
+const Constants = require('../../util/Constants');
 
 /**
  * WebSocket Manager of the client
@@ -76,9 +77,22 @@ class WebSocketManager extends EventEmitter {
   spawnShards() {
     (function spawnLoop(id) {
       if (id >= this.client.options.shardCount) return;
-      this.debug('Spawning shard', id);
-      this.spawnShard(id, this.cachedGateway).once('ready', () => {
-        this.client.setTimeout(spawnLoop, 5500, ++id);
+      this.debug(`Spawning shard ${id}`);
+      this.spawnShard(id, this.cachedGateway)
+      .once('ready', () => {
+        this.client.setTimeout(spawnLoop.bind(this, ++id), 5500);
+        /**
+         * Emitted when a shard becomes ready to start working.
+         * @event Client#shardReady
+         */
+        this.client.emit(Constants.Events.SHARD_READY, id);
+        if (id === this.client.options.shardCount) {
+          /**
+           * Emitted when the client becomes ready to start working.
+           * @event Client#ready
+           */
+          this.client.emit(Constants.Events.READY);
+        }
       });
     }.bind(this)(0));
   }
