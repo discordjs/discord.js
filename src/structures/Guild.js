@@ -852,7 +852,14 @@ class Guild {
    *  .catch(console.error);
    */
   createChannel(name, type, { overwrites, reason } = {}) {
-    if (overwrites instanceof Collection) overwrites = overwrites.array();
+    if (overwrites instanceof Collection || overwrites instanceof Array) {
+      overwrites = overwrites.map(overwrite => ({
+        allow: overwrite.allow || overwrite._allowed,
+        deny: overwrite.deny || overwrite._denied,
+        type: overwrite.type,
+        id: overwrite.id,
+      }));
+    }
     return this.client.api.guilds(this.id).channels.post({
       data: {
         name, type, permission_overwrites: overwrites,
@@ -950,7 +957,7 @@ class Guild {
    *  .catch(console.error);
    */
   createEmoji(attachment, name, roles) {
-    if (typeof attahment === 'string' && attachment.startsWith('data:')) {
+    if (typeof attachment === 'string' && attachment.startsWith('data:')) {
       const data = { image: attachment, name };
       if (roles) data.roles = roles.map(r => r.id ? r.id : r);
       return this.client.api.guilds(this.id).emojis.post({ data })
