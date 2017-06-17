@@ -34,6 +34,7 @@ exports.DefaultOptions = {
   apiRequestMethod: 'sequential',
   shardId: 0,
   shardCount: 0,
+  internalSharding: false,
   messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,
@@ -329,6 +330,18 @@ exports.WSEvents = {
   RELATIONSHIP_REMOVE: 'RELATIONSHIP_REMOVE',
 };
 
+/**
+ * The type of a message, e.g. `DEFAULT`. Here are the available types:
+ * - DEFAULT
+ * - RECIPIENT_ADD
+ * - RECIPIENT_REMOVE
+ * - CALL
+ * - CHANNEL_NAME_CHANGE
+ * - CHANNEL_ICON_CHANGE
+ * - PINS_ADD
+ * - GUILD_MEMBER_JOIN
+ * @typedef {string} MessageType
+ */
 exports.MessageTypes = [
   'DEFAULT',
   'RECIPIENT_ADD',

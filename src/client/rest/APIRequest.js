@@ -42,7 +42,7 @@ class APIRequest {
     const request = snekfetch[this.method](`${API}${this.path}`);
 
     if (this.options.auth !== false) request.set('Authorization', this.getAuth());
-    if (this.options.reason) request.set('X-Audit-Log-Reason', this.options.reason);
+    if (this.options.reason) request.set('X-Audit-Log-Reason', encodeURIComponent(this.options.reason));
     if (!this.rest.client.browser) request.set('User-Agent', this.rest.userAgentManager.userAgent);
 
     if (this.options.files) {
