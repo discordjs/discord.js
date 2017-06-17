@@ -108,7 +108,7 @@ const AllowedImageSizes = [
 ];
 
 function checkImage({ size, format }) {
-  if (!AllowedImageFormats.includes(format)) throw new Error(`Invalid image format: ${format}`);
+  if (format && !AllowedImageFormats.includes(format)) throw new Error(`Invalid image format: ${format}`);
   if (size && !AllowedImageSizes.includes(size)) throw new RangeError(`Invalid size: ${size}`);
 }
 
