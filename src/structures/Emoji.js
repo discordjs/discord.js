@@ -112,6 +112,7 @@ class Emoji {
   /**
    * Edits the emoji.
    * @param {EmojiEditData} data The new data for the emoji
+   * @param {string} [reason] Reason for editing this emoji
    * @returns {Promise<Emoji>}
    * @example
    * // Edit a emoji
@@ -119,8 +120,13 @@ class Emoji {
    *  .then(e => console.log(`Edited emoji ${e}`))
    *  .catch(console.error);
    */
-  edit(data) {
-    return this.client.rest.methods.updateEmoji(this, data);
+  edit(data, reason) {
+    return this.client.api.guilds(this.guild.id).emojis(this.id)
+      .patch({ data: {
+        name: data.name,
+        roles: data.roles ? data.roles.map(r => r.id ? r.id : r) : [],
+      }, reason })
+      .then(() => this);
   }
 
   /**

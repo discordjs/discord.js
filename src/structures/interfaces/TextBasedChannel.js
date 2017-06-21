@@ -1,7 +1,8 @@
 const path = require('path');
-const Message = require('../Message');
 const MessageCollector = require('../MessageCollector');
+const Shared = require('../shared');
 const Collection = require('../../util/Collection');
+const Snowflake = require('../../util/Snowflake');
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -78,6 +79,8 @@ class TextBasedChannel {
       options = {};
     }
 
+    if (!options.content) options.content = content;
+
     if (options.embed && options.embed.file) options.file = options.embed.file;
 
     if (options.file) {
@@ -106,10 +109,13 @@ class TextBasedChannel {
           file.file = buffer;
           return file;
         })
-      )).then(files => this.client.rest.methods.sendMessage(this, content, options, files));
+      )).then(files => {
+        options.files = files;
+        return Shared.sendMessage(this, options);
+      });
     }
 
-    return this.client.rest.methods.sendMessage(this, content, options);
+    return Shared.sendMessage(this, options);
   }
 
   /**
@@ -125,14 +131,17 @@ class TextBasedChannel {
    *   .catch(console.error);
    */
   fetchMessage(messageID) {
+    const Message = require('../Message');
     if (!this.client.user.bot) {
-      return this.fetchMessages({ limit: 1, around: messageID }).then(messages => {
+      return this.fetchMessages({ limit: 1, around: messageID })
+      .then(messages => {
         const msg = messages.get(messageID);
         if (!msg) throw new Error('Message not found.');
         return msg;
       });
     }
-    return this.client.rest.methods.getChannelMessage(this, messageID).then(data => {
+    return this.client.api.channels(this.id).messages(messageID).get()
+    .then(data => {
       const msg = data instanceof Message ? data : new Message(this, data, this.client);
       this._cacheMessage(msg);
       return msg;
@@ -160,7 +169,9 @@ class TextBasedChannel {
    *  .catch(console.error);
    */
   fetchMessages(options = {}) {
-    return this.client.rest.methods.getChannelMessages(this, options).then(data => {
+    const Message = require('../Message');
+    return this.client.api.channels(this.id).messages.get({ query: options })
+    .then(data => {
       const messages = new Collection();
       for (const message of data) {
         const msg = new Message(this, message, this.client);
@@ -176,7 +187,8 @@ class TextBasedChannel {
    * @returns {Promise<Collection<Snowflake, Message>>}
    */
   fetchPinnedMessages() {
-    return this.client.rest.methods.getChannelPinnedMessages(this).then(data => {
+    const Message = require('../Message');
+    return this.client.api.channels(this.id).pins.get().then(data => {
       const messages = new Collection();
       for (const message of data) {
         const msg = new Message(this, message, this.client);
@@ -186,33 +198,6 @@ class TextBasedChannel {
       return messages;
     });
   }
-
-  /**
-   * @typedef {Object} MessageSearchOptions
-   * @property {string} [content] Message content
-   * @property {Snowflake} [maxID] Maximum ID for the filter
-   * @property {Snowflake} [minID] Minimum ID for the filter
-   * @property {string} [has] One of `link`, `embed`, `file`, `video`, `image`, or `sound`,
-   * or add `-` to negate (e.g. `-file`)
-   * @property {ChannelResolvable} [channel] Channel to limit search to (only for guild search endpoint)
-   * @property {UserResolvable} [author] Author to limit search
-   * @property {string} [authorType] One of `user`, `bot`, `webhook`, or add `-` to negate (e.g. `-webhook`)
-   * @property {string} [sortBy='recent'] `recent` or `relevant`
-   * @property {string} [sortOrder='desc'] `asc` or `desc`
-   * @property {number} [contextSize=2] How many messages to get around the matched message (0 to 2)
-   * @property {number} [limit=25] Maximum number of results to get (1 to 25)
-   * @property {number} [offset=0] Offset the "pages" of results (since you can only see 25 at a time)
-   * @property {UserResolvable} [mentions] Mentioned user filter
-   * @property {boolean} [mentionsEveryone] If everyone is mentioned
-   * @property {string} [linkHostname] Filter links by hostname
-   * @property {string} [embedProvider] The name of an embed provider
-   * @property {string} [embedType] one of `image`, `video`, `url`, `rich`
-   * @property {string} [attachmentFilename] The name of an attachment
-   * @property {string} [attachmentExtension] The extension of an attachment
-   * @property {Date} [before] Date to find messages before
-   * @property {Date} [after] Date to find messages before
-   * @property {Date} [during] Date to find messages during (range of date to date + 24 hours)
-   */
 
   /**
    * Performs a search within the channel.
@@ -231,7 +216,7 @@ class TextBasedChannel {
    * }).catch(console.error);
    */
   search(options = {}) {
-    return this.client.rest.methods.search(this, options);
+    return Shared.search(this, options);
   }
 
   /**
@@ -244,13 +229,14 @@ class TextBasedChannel {
   startTyping(count) {
     if (typeof count !== 'undefined' && count < 1) throw new RangeError('Count must be at least 1.');
     if (!this.client.user._typing.has(this.id)) {
+      const endpoint = this.client.api.channels(this.id).typing;
       this.client.user._typing.set(this.id, {
         count: count || 1,
         interval: this.client.setInterval(() => {
-          this.client.rest.methods.sendTyping(this.id);
+          endpoint.post();
         }, 9000),
       });
-      this.client.rest.methods.sendTyping(this.id);
+      endpoint.post();
     } else {
       const entry = this.client.user._typing.get(this.id);
       entry.count = count || entry.count + 1;
@@ -306,11 +292,11 @@ class TextBasedChannel {
    * @returns {MessageCollector}
    * @example
    * // Create a message collector
-   * const collector = channel.createCollector(
+   * const collector = channel.createMessageCollector(
    *  m => m.content.includes('discord'),
    *  { time: 15000 }
    * );
-   * collector.on('message', m => console.log(`Collected ${m.content}`));
+   * collector.on('collect', m => console.log(`Collected ${m.content}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
   createMessageCollector(filter, options = {}) {
@@ -339,7 +325,7 @@ class TextBasedChannel {
    */
   awaitMessages(filter, options = {}) {
     return new Promise((resolve, reject) => {
-      const collector = this.createCollector(filter, options);
+      const collector = this.createMessageCollector(filter, options);
       collector.once('end', (collection, reason) => {
         if (options.errors && options.errors.includes(reason)) {
           reject(collection);
@@ -360,8 +346,20 @@ class TextBasedChannel {
   bulkDelete(messages, filterOld = false) {
     if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs, filterOld));
     if (messages instanceof Array || messages instanceof Collection) {
-      const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
-      return this.client.rest.methods.bulkDeleteMessages(this, messageIDs, filterOld);
+      let messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
+      if (filterOld) {
+        messageIDs = messageIDs.filter(id =>
+          Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000
+        );
+      }
+      return this.client.api.channels(this.id).messages()['bulk-delete']
+      .post({ data: { messages: messageIDs } })
+      .then(() =>
+        this.client.actions.MessageDeleteBulk.handle({
+          channel_id: this.id,
+          ids: messageIDs,
+        }).messages
+      );
     }
     throw new TypeError('The messages must be an Array, Collection, or number.');
   }
@@ -373,7 +371,12 @@ class TextBasedChannel {
    */
   acknowledge() {
     if (!this.lastMessageID) return Promise.resolve(this);
-    return this.client.rest.methods.ackTextChannel(this);
+    return this.client.api.channels(this.id).messages(this.lastMessageID).ack
+      .post({ data: { token: this.client.rest._ackToken } })
+      .then(res => {
+        if (res.token) this.client.rest._ackToken = res.token;
+        return this;
+      });
   }
 
   _cacheMessage(message) {

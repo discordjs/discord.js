@@ -15,8 +15,7 @@ class ClientUserSettings {
    * @param {Object} data Data to patch this with
    */
   patch(data) {
-    for (const key of Object.keys(Constants.UserSettingsMap)) {
-      const value = Constants.UserSettingsMap[key];
+    for (const [key, value] of Object.entries(Constants.UserSettingsMap)) {
       if (!data.hasOwnProperty(key)) continue;
       if (typeof value === 'function') {
         this[value.name] = value(data[key]);
@@ -33,7 +32,7 @@ class ClientUserSettings {
    * @returns {Promise<Object>}
    */
   update(name, value) {
-    return this.user.client.rest.methods.patchUserSettings({ [name]: value });
+    return this.user.client.api.users('@me').settings.patch({ data: { [name]: value } });
   }
 
   /**

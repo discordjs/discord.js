@@ -284,12 +284,13 @@ class WebSocketConnection extends EventEmitter {
    * @returns {boolean}
    */
   onMessage(event) {
+    let data;
     try {
-      event.data = this.unpack(event.data);
+      data = this.unpack(event.data);
     } catch (err) {
       this.emit('debug', err);
     }
-    return this.onPacket(event.data);
+    return this.onPacket(data);
   }
 
   /**
@@ -358,13 +359,16 @@ class WebSocketConnection extends EventEmitter {
    * @param {Error} error Error that occurred
    */
   onError(error) {
+    if (error && error.message === 'uWs client connection error') {
+      this.reconnect();
+      return;
+    }
     /**
      * Emitted whenever the client's WebSocket encounters a connection error.
      * @event Client#error
      * @param {Error} error The encountered error
      */
     this.client.emit(Constants.Events.ERROR, error);
-    if (error.message === 'uWs client connection error') this.reconnect();
   }
 
   /**

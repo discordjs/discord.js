@@ -38,7 +38,7 @@ class ClientManager {
     this.client.emit(Constants.Events.DEBUG, `Authenticated using token ${token}`);
     this.client.token = token;
     const timeout = this.client.setTimeout(() => reject(new Error(Constants.Errors.TOOK_TOO_LONG)), 1000 * 300);
-    this.client.rest.methods.getGateway().then(res => {
+    this.client.api.gateway.get().then(res => {
       const protocolVersion = Constants.DefaultOptions.ws.version;
       const gateway = `${res.url}/?v=${protocolVersion}&encoding=${WebSocketConnection.ENCODING}`;
       this.client.emit(Constants.Events.DEBUG, `Using gateway ${gateway}`);
@@ -63,7 +63,7 @@ class ClientManager {
       this.client.token = null;
       return Promise.resolve();
     } else {
-      return this.client.rest.methods.logout().then(() => {
+      return this.client.api.logout.post().then(() => {
         this.client.token = null;
       });
     }

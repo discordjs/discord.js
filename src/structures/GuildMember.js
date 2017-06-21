@@ -332,10 +332,24 @@ class GuildMember {
   /**
    * Edit a guild member.
    * @param {GuildMemberEditData} data The data to edit the member with
+   * @param {string} [reason] Reason for editing this user
    * @returns {Promise<GuildMember>}
    */
-  edit(data) {
-    return this.client.rest.methods.updateGuildMember(this, data);
+  edit(data, reason) {
+    if (data.channel) {
+      data.channel_id = this.client.resolver.resolveChannel(data.channel).id;
+      data.channel = null;
+    }
+    if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
+    let endpoint = this.client.api.guilds(this.guild.id);
+    if (this.user.id === this.client.user.id) {
+      const keys = Object.keys(data);
+      if (keys.length === 1 && keys[0] === 'nick') endpoint = endpoint.members('@me').nick;
+      else endpoint = endpoint.members(this.id);
+    } else {
+      endpoint = endpoint.members(this.id);
+    }
+    return endpoint.patch({ data, reason }).then(newData => this.guild._updateMember(this, newData).mem);
   }
 
   /**
@@ -382,7 +396,10 @@ class GuildMember {
   addRole(role) {
     role = this.client.resolver.resolveRole(this.guild, role);
     if (!role) return Promise.reject(new TypeError('Supplied parameter was neither a Role nor a Snowflake.'));
-    return this.client.rest.methods.addMemberRole(this, role);
+    if (this._roles.includes(role.id)) return Promise.resolve(this);
+    return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
+      .put()
+      .then(() => this);
   }
 
   /**
@@ -394,9 +411,9 @@ class GuildMember {
     let allRoles;
     if (roles instanceof Collection) {
       allRoles = this._roles.slice();
-      for (const role of roles.values()) allRoles.push(role.id);
+      for (const role of roles.values()) allRoles.push(role.id ? role.id : role);
     } else {
-      allRoles = this._roles.concat(roles);
+      allRoles = this._roles.concat(roles.map(r => r.id ? r.id : r));
     }
     return this.edit({ roles: allRoles });
   }
@@ -409,7 +426,9 @@ class GuildMember {
   removeRole(role) {
     role = this.client.resolver.resolveRole(this.guild, role);
     if (!role) return Promise.reject(new TypeError('Supplied parameter was neither a Role nor a Snowflake.'));
-    return this.client.rest.methods.removeMemberRole(this, role);
+    return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
+      .delete()
+      .then(() => this);
   }
 
   /**
@@ -464,7 +483,13 @@ class GuildMember {
    * @returns {Promise<GuildMember>}
    */
   kick(reason) {
-    return this.client.rest.methods.kickGuildMember(this.guild, this, reason);
+    return this.client.api.guilds(this.guild.id).members(this.user.id).delete({ reason })
+    .then(() =>
+      this.client.actions.GuildMemberRemove.handle({
+        guild_id: this.guild.id,
+        user: this.user,
+      }).member
+    );
   }
 
   /**

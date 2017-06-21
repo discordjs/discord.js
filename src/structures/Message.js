@@ -40,7 +40,7 @@ class Message {
 
     /**
      * The type of the message
-     * @type {string}
+     * @type {MessageType}
      */
     this.type = Constants.MessageTypes[data.type];
 
@@ -91,7 +91,7 @@ class Message {
      * A list of embeds in the message - e.g. YouTube Player
      * @type {MessageEmbed[]}
      */
-    this.embeds = data.embeds.map(e => new Embed(this, e));
+    this.embeds = data.embeds.map(e => new Embed(e));
 
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID
@@ -163,7 +163,7 @@ class Message {
     if ('content' in data) this.content = data.content;
     if ('pinned' in data) this.pinned = data.pinned;
     if ('tts' in data) this.tts = data.tts;
-    if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(this, e));
+    if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(e));
     else this.embeds = this.embeds.slice();
 
     if ('attachments' in data) {
@@ -254,7 +254,7 @@ class Message {
    * @example
    * // Create a reaction collector
    * const collector = message.createReactionCollector(
-   *  (reaction, user) => reaction.emoji.id === '👌' && user.id === 'someID',
+   *  (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID',
    *  { time: 15000 }
    * );
    * collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
@@ -380,7 +380,27 @@ class Message {
     } else if (!options) {
       options = {};
     }
-    return this.client.rest.methods.updateMessage(this, content, options);
+
+    if (typeof content !== 'undefined') content = Util.resolveString(content);
+
+    const { embed, code, reply } = options;
+
+    // Wrap everything in a code block
+    if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
+      content = Util.escapeMarkdown(Util.resolveString(content), true);
+      content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
+    }
+
+    // Add the reply prefix
+    if (reply && this.channel.type !== 'dm') {
+      const id = this.client.resolver.resolveUserID(reply);
+      const mention = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
+      content = `${mention}${content ? `, ${content}` : ''}`;
+    }
+
+    return this.client.api.channels(this.channel.id).messages(this.id)
+      .patch({ data: { content, embed } })
+      .then(data => this.client.actions.MessageUpdate.handle(data).updated);
   }
 
   /**
@@ -388,7 +408,8 @@ class Message {
    * @returns {Promise<Message>}
    */
   pin() {
-    return this.client.rest.methods.pinMessage(this);
+    return this.client.api.channels(this.channel.id).pins(this.id).put()
+      .then(() => this);
   }
 
   /**
@@ -396,7 +417,8 @@ class Message {
    * @returns {Promise<Message>}
    */
   unpin() {
-    return this.client.rest.methods.unpinMessage(this);
+    return this.client.api.channels(this.channel.id).pins(this.id).delete()
+      .then(() => this);
   }
 
   /**
@@ -408,7 +430,9 @@ class Message {
     emoji = this.client.resolver.resolveEmojiIdentifier(emoji);
     if (!emoji) throw new TypeError('Emoji must be a string or Emoji/ReactionEmoji');
 
-    return this.client.rest.methods.addMessageReaction(this, emoji);
+    return this.client.api.channels(this.channel.id).messages(this.id).reactions(emoji)['@me']
+      .put()
+      .then(() => this._addReaction(Util.parseEmoji(emoji), this.client.user));
   }
 
   /**
@@ -416,12 +440,15 @@ class Message {
    * @returns {Promise<Message>}
    */
   clearReactions() {
-    return this.client.rest.methods.removeMessageReactions(this);
+    return this.client.api.channels(this.channel.id).messages(this.id).reactions.delete()
+      .then(() => this);
   }
 
   /**
    * Deletes the message.
-   * @param {number} [timeout=0] How long to wait to delete the message in milliseconds
+   * @param {Object} [options] Options
+   * @param {number} [options.timeout=0] How long to wait to delete the message in milliseconds
+   * @param {string} [options.reason] Reason for deleting this message, if it does not belong to the client user
    * @returns {Promise<Message>}
    * @example
    * // Delete a message
@@ -429,13 +456,19 @@ class Message {
    *  .then(msg => console.log(`Deleted message from ${msg.author}`))
    *  .catch(console.error);
    */
-  delete(timeout = 0) {
+  delete({ timeout = 0, reason } = {}) {
     if (timeout <= 0) {
-      return this.client.rest.methods.deleteMessage(this);
+      return this.client.api.channels(this.channel.id).messages(this.id)
+        .delete({ reason })
+        .then(() =>
+          this.client.actions.MessageDelete.handle({
+            id: this.id,
+            channel_id: this.channel.id,
+          }).message);
     } else {
       return new Promise(resolve => {
         this.client.setTimeout(() => {
-          resolve(this.delete());
+          resolve(this.delete({ reason }));
         }, timeout);
       });
     }
@@ -468,7 +501,12 @@ class Message {
    * @returns {Promise<Message>}
    */
   acknowledge() {
-    return this.client.rest.methods.ackMessage(this);
+    return this.client.api.channels(this.channel.id).messages(this.id).ack
+      .post({ data: { token: this.client.rest._ackToken } })
+      .then(res => {
+        if (res.token) this.client.rest._ackToken = res.token;
+        return this;
+      });
   }
 
   /**

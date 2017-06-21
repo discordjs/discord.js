@@ -1,4 +1,5 @@
 const path = require('path');
+const Util = require('../util/Util');
 
 /**
  * Represents a webhook.
@@ -91,7 +92,7 @@ class Webhook {
    * Send a message with this webhook.
    * @param {StringResolvable} [content] The content to send
    * @param {WebhookMessageOptions} [options={}] The options to provide
-   * @returns {Promise<Message|Message[]>}
+   * @returns {Promise<Message|Object>}
    * @example
    * // Send a message
    * webhook.send('hello!')
@@ -105,6 +106,23 @@ class Webhook {
     } else if (!options) {
       options = {};
     }
+
+    if (!options.username) options.username = this.name;
+
+    if (options.avatarURL) {
+      options.avatar_url = options.avatarURL;
+      options.avatarURL = null;
+    }
+
+    if (typeof content !== 'undefined') content = Util.resolveString(content);
+    if (content) {
+      if (options.disableEveryone ||
+        (typeof options.disableEveryone === 'undefined' && this.client.options.disableEveryone)
+      ) {
+        content = content.replace(/@(everyone|here)/g, '@\u200b$1');
+      }
+    }
+    options.content = content;
 
     if (options.file) {
       if (options.files) options.files.push(options.file);
@@ -132,16 +150,29 @@ class Webhook {
           file.file = buffer;
           return file;
         })
-      )).then(files => this.client.rest.methods.sendWebhookMessage(this, content, options, files));
+      )).then(files => this.client.api.webhooks(this.id, this.token).post({
+        data: options,
+        query: { wait: true },
+        files,
+        auth: false,
+      }));
     }
 
-    return this.client.rest.methods.sendWebhookMessage(this, content, options);
+    return this.client.api.webhooks(this.id, this.token).post({
+      data: options,
+      query: { wait: true },
+      auth: false,
+    }).then(data => {
+      if (!this.client.channels) return data;
+      const Message = require('./Message');
+      return new Message(this.client.channels.get(data.channel_id, data, this.client));
+    });
   }
 
   /**
    * Send a raw slack message with this webhook.
    * @param {Object} body The raw body to send
-   * @returns {Promise}
+   * @returns {Promise<Message|Object>}
    * @example
    * // Send a slack message
    * webhook.sendSlackMessage({
@@ -156,34 +187,49 @@ class Webhook {
    * }).catch(console.error);
    */
   sendSlackMessage(body) {
-    return this.client.rest.methods.sendSlackWebhookMessage(this, body);
+    return this.client.api.webhooks(this.id, this.token).slack.post({
+      query: { wait: true },
+      auth: false,
+      data: body,
+    }).then(data => {
+      if (!this.client.channels) return data;
+      const Message = require('./Message');
+      return new Message(this.client.channels.get(data.channel_id, data, this.client));
+    });
   }
 
   /**
    * Edit the webhook.
-   * @param {string} name The new name for the webhook
-   * @param {BufferResolvable} avatar The new avatar for the webhook
+   * @param {Object} options Options
+   * @param {string} [options.name] New name for this webhook
+   * @param {BufferResolvable} [options.avatar] New avatar for this webhook
+   * @param {string} [reason] Reason for editing this webhook
    * @returns {Promise<Webhook>}
    */
-  edit(name = this.name, avatar) {
-    if (avatar) {
+  edit({ name = this.name, avatar }, reason) {
+    if (avatar && (typeof avatar === 'string' && !avatar.startsWith('data:'))) {
       return this.client.resolver.resolveBuffer(avatar).then(file => {
         const dataURI = this.client.resolver.resolveBase64(file);
-        return this.client.rest.methods.editWebhook(this, name, dataURI);
+        return this.edit({ name, avatar: dataURI }, reason);
       });
     }
-    return this.client.rest.methods.editWebhook(this, name).then(data => {
-      this.setup(data);
+    return this.client.api.webhooks(this.id, this.token).patch({
+      data: { name, avatar },
+      reason,
+    }).then(data => {
+      this.name = data.name;
+      this.avatar = data.avatar;
       return this;
     });
   }
 
   /**
    * Delete the webhook.
+   * @param {string} [reason] Reason for deleting this webhook
    * @returns {Promise}
    */
-  delete() {
-    return this.client.rest.methods.deleteWebhook(this);
+  delete(reason) {
+    return this.client.api.webhooks(this.id, this.token).delete({ reason });
   }
 }
 

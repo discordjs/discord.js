@@ -53,7 +53,7 @@ class Channel {
   }
 
   /**
-   * Deletes the channel.
+   * Deletes this channel.
    * @returns {Promise<Channel>}
    * @example
    * // Delete the channel
@@ -62,7 +62,7 @@ class Channel {
    *  .catch(console.error); // Log error
    */
   delete() {
-    return this.client.rest.methods.deleteChannel(this);
+    return this.client.api.channels(this.id).delete().then(() => this);
   }
 }
 
