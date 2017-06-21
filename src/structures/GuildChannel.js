@@ -76,7 +76,6 @@ class GuildChannel extends Channel {
       const admin = Boolean(permissions & Permissions.FLAGS.ADMINISTRATOR);
       if (admin) return new Permissions(Permissions.ALL);
 
-
       const everyoneOverwrites = this.permissionOverwrites.get(this.guild.id);
       const roleOverwrites = this.permissionOverwrites.get(role.id);
 
