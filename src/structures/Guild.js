@@ -560,6 +560,7 @@ class Guild {
    * @property {string} [name] The name of the guild
    * @property {string} [region] The region of the guild
    * @property {number} [verificationLevel] The verification level of the guild
+   * @property {number} [explicitContentFilter] The level of the explicit content filter
    * @property {ChannelResolvable} [afkChannel] The AFK channel of the guild
    * @property {number} [afkTimeout] The AFK timeout of the guild
    * @property {Base64Resolvable} [icon] The icon of the guild
@@ -585,14 +586,26 @@ class Guild {
     const _data = {};
     if (data.name) _data.name = data.name;
     if (data.region) _data.region = data.region;
-    if (data.verificationLevel) _data.verification_level = Number(data.verificationLevel);
+    if (typeof data.verificationLevel !== 'undefined') _data.verification_level = Number(data.verificationLevel);
     if (data.afkChannel) _data.afk_channel_id = this.client.resolver.resolveChannel(data.afkChannel).id;
     if (data.afkTimeout) _data.afk_timeout = Number(data.afkTimeout);
     if (data.icon) _data.icon = this.client.resolver.resolveBase64(data.icon);
     if (data.owner) _data.owner_id = this.client.resolver.resolveUser(data.owner).id;
     if (data.splash) _data.splash = this.client.resolver.resolveBase64(data.splash);
+    if (typeof data.explicitContentFilter !== 'undefined') {
+      _data.explicit_content_filter = Number(data.explicitContentFilter);
+    }
     return this.client.api.guilds(this.id).patch({ data: _data, reason })
     .then(newData => this.client.actions.GuildUpdate.handle(newData).updated);
+  }
+
+  /**
+   * Edit the level of the explicit content filter.
+   * @param {number} explicitContentFilter The new level of the explicit content filter
+   * @returns {Promise<Guild>}
+   */
+  setExplicitContentFilter(explicitContentFilter) {
+    return this.edit({ explicitContentFilter });
   }
 
   /**
