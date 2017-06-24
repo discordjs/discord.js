@@ -66,7 +66,7 @@ class ReactionCollector extends Collector {
    * @returns {?Snowflake|string} The reaction key
    */
   shouldUncollect(reaction) {
-    return reaction.messge.id === this.message.id ? ReactionCollector.key(reaction) : null;
+    return reaction.message.id === this.message.id ? ReactionCollector.key(reaction) : null;
   }
 
   /**
@@ -85,6 +85,7 @@ class ReactionCollector extends Collector {
    * @param {User} user The user that reacted
    */
   postCollect(reaction, user) {
+    this.total++;
     this.users.set(user.id, user);
   }
 
@@ -94,11 +95,12 @@ class ReactionCollector extends Collector {
    * @param {User} user The user that removed their reaction
    */
   postUncollect(reaction, user) {
+    this.total--;
     if (!this.collected.some(r => r.users.has(user.id))) this.users.delete(user.id);
   }
 
   shouldEnd() {
-    if (this.options.max && ++this.total >= this.options.max) return 'limit';
+    if (this.options.max && this.total >= this.options.max) return 'limit';
     if (this.options.maxEmojis && this.collected.size >= this.options.maxEmojis) return 'emojiLimit';
     if (this.options.maxUsers && this.users.size >= this.options.maxUsers) return 'userLimit';
     return null;
@@ -109,9 +111,9 @@ class ReactionCollector extends Collector {
    * @private
    */
   cleanup() {
-    this.client.removeListener('messageReactionAdd', this.listener);
+    this.client.removeListener('messageReactionAdd', this.collect);
     this.client.removeListener('messageReactionRemove', this.uncollect);
-    this.client.removeListener('messageReactionRemoveAll', this.clear);
+    this.client.removeListener('messageReactionRemoveAll', this.empty);
   }
 
   /**
