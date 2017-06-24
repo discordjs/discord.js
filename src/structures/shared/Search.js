@@ -12,7 +12,7 @@ const { TypeError } = require('../../errors');
  * @property {UserResolvable} [author] Author to limit search
  * @property {string} [authorType] One of `user`, `bot`, `webhook`, or add `-` to negate (e.g. `-webhook`)
  * @property {string} [sortBy='recent'] `recent` or `relevant`
- * @property {string} [sortOrder='desc'] `asc` or `desc`
+ * @property {string} [sortOrder='descending'] `ascending` or `descending`
  * @property {number} [contextSize=2] How many messages to get around the matched message (0 to 2)
  * @property {number} [limit=25] Maximum number of results to get (1 to 25)
  * @property {number} [offset=0] Offset the "pages" of results (since you can only see 25 at a time)
@@ -20,13 +20,19 @@ const { TypeError } = require('../../errors');
  * @property {boolean} [mentionsEveryone] If everyone is mentioned
  * @property {string} [linkHostname] Filter links by hostname
  * @property {string} [embedProvider] The name of an embed provider
- * @property {string} [embedType] one of `image`, `video`, `url`, `rich`
+ * @property {string} [embedType] one of `image`, `video`, `url`, `rich`, or add `-` to negate (e.g. `-image`)
  * @property {string} [attachmentFilename] The name of an attachment
  * @property {string} [attachmentExtension] The extension of an attachment
  * @property {Date} [before] Date to find messages before
  * @property {Date} [after] Date to find messages before
  * @property {Date} [during] Date to find messages during (range of date to date + 24 hours)
  * @property {boolean} [nsfw=false] Include results from NSFW channels
+ */
+
+/**
+ * @typedef {Object} MessageSearchResult
+ * @type {number} total Total result count
+ * @type {Array<Message[]>} results Array of message results
  */
 
 module.exports = function search(target, options) {
@@ -43,11 +49,14 @@ module.exports = function search(target, options) {
     if (!(options.during instanceof Date)) options.during = new Date(options.during);
     const t = options.during.getTime() - 14200704e5;
     options.minID = long.fromNumber(t).shiftLeft(22).toString();
-    options.maxID = long.fromNumber(t + 86400000).shiftLeft(22).toString();
+    options.maxID = long.fromNumber(t + 864e5).shiftLeft(22).toString();
   }
   if (options.channel) options.channel = target.client.resolver.resolveChannelID(options.channel);
   if (options.author) options.author = target.client.resolver.resolveUserID(options.author);
   if (options.mentions) options.mentions = target.client.resolver.resolveUserID(options.options.mentions);
+  if (options.sortOrder) {
+    options.sortOrder = { ascending: 'asc', descending: 'desc' }[options.sortOrder] || options.sortOrder;
+  }
   options = {
     content: options.content,
     max_id: options.maxID,
@@ -80,12 +89,12 @@ module.exports = function search(target, options) {
 
   let endpoint = target.client.api[target instanceof Channel ? 'channels' : 'guilds'](target.id).messages().search;
   return endpoint.get({ query: options }).then(body => {
-    const messages = body.messages.map(x =>
+    const results = body.messages.map(x =>
       x.map(m => new Message(target.client.channels.get(m.channel_id), m, target.client))
     );
     return {
-      totalResults: body.total_results,
-      messages,
+      total: body.total_results,
+      results,
     };
   });
 };

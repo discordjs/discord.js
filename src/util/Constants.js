@@ -94,6 +94,11 @@ const AllowedImageSizes = [
   2048,
 ];
 
+function checkImage({ size, format }) {
+  if (format && !AllowedImageFormats.includes(format)) throw new Error('IMAGE_FORMAT', format);
+  if (size && !AllowedImageSizes.includes(size)) throw new RangeError('IMAGE_SIZE', size);
+}
+
 exports.Endpoints = {
   CDN(root) {
     return {
@@ -102,29 +107,26 @@ exports.Endpoints = {
       DefaultAvatar: number => `${root}/embed/avatars/${number}.png`,
       Avatar: (userID, hash, format = 'default', size) => {
         if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
-        if (!AllowedImageFormats.includes(format)) throw new Error('IMAGE_FORMAT', format);
-        if (size && !AllowedImageSizes.includes(size)) throw new RangeError('IMAGE_SIZE', size);
+        checkImage({ size, format });
         return `${root}/avatars/${userID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
       },
-      Icon: (guildID, hash, format = 'default', size) => {
-        if (format === 'default') format = 'webp';
-        if (!AllowedImageFormats.includes(format)) throw new Error('IMAGE_FORMAT', format);
-        if (size && !AllowedImageSizes.includes(size)) throw new RangeError('IMAGE_SIZE', size);
+      Icon: (guildID, hash, format = 'webp', size) => {
+        checkImage({ size, format });
         return `${root}/icons/${guildID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
       },
-      AppIcon: (clientID, hash, format = 'default', size) => {
-        if (format === 'default') format = 'webp';
-        if (!AllowedImageFormats.includes(format)) throw new Error('IMAGE_FORMAT', format);
-        if (size && !AllowedImageSizes.includes(size)) throw new RangeError('IMAGE_SIZE', size);
+      AppIcon: (clientID, hash, format = 'webp', size) => {
+        checkImage({ size, format });
         return `${root}/app-icons/${clientID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
       },
-      Splash: (guildID, hash) => `${root}/splashes/${guildID}/${hash}.jpg`,
+      Splash: (guildID, hash, format = 'webp', size) => {
+        checkImage({ size, format });
+        return `${root}/splashes/${guildID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
+      },
     };
   },
   invite: code => `https://discord.gg/${code}`,
   botGateway: '/gateway/bot',
 };
-
 
 /**
  * The current status of the client. Here are the available statuses:
