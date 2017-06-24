@@ -538,7 +538,7 @@ class Guild {
    * Performs a search within the entire guild.
    * <warn>This is only available when using a user account.</warn>
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
-   * @returns {Promise<Array<Message[]>>}
+   * @returns {Promise<MessageSearchResult>}
    * An array containing arrays of messages. Each inner array is a search context cluster.
    * The message which has triggered the result will have the `hit` property set to `true`.
    * @example
@@ -546,8 +546,8 @@ class Guild {
    *   content: 'discord.js',
    *   before: '2016-11-17'
    * }).then(res => {
-   *   const hit = res.messages[0].find(m => m.hit).content;
-   *   console.log(`I found: **${hit}**, total results: ${res.totalResults}`);
+   *   const hit = res.results[0].find(m => m.hit).content;
+   *   console.log(`I found: **${hit}**, total results: ${res.total}`);
    * }).catch(console.error);
    */
   search(options = {}) {
