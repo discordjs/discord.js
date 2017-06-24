@@ -9031,12 +9031,23 @@ class OAuth2Application {
   }
 
   /**
-   * Reset the app's secret and bot token.
+   * Reset the app's secret.
+   * <warn>This is only available when using a user account.</warn>
    * @returns {OAuth2Application}
    */
-  reset() {
-    return this.rest.api.oauth2.applications(this.id).reset.post()
+  resetSecret() {
+    return this.client.api.oauth2.applications(this.id).reset.post()
       .then(app => new OAuth2Application(this.client, app));
+  }
+
+  /**
+   * Reset the app's bot token.
+   * <warn>This is only available when using a user account.</warn>
+   * @returns {OAuth2Application}
+   */
+  resetToken() {
+    return this.client.api.oauth2.applications(this.id).bot().reset.post()
+      .then(app => new OAuth2Application(this.client, Object.assign({}, this, { bot: app })));
   }
 
   /**
@@ -17547,7 +17558,7 @@ class Client extends EventEmitter {
    * @returns {Promise<OAuth2Application>}
    */
   fetchApplication(id = '@me') {
-    return this.rest.api.oauth2.applications(id).get()
+    return this.api.oauth2.applications(id).get()
     .then(app => new OAuth2Application(this, app));
   }
 
@@ -24115,7 +24126,7 @@ const paramable = [
   'bans', 'emojis', 'pins', 'permissions',
   'reactions', 'webhooks', 'messages',
   'notes', 'roles', 'applications',
-  'invites',
+  'invites', 'bot',
 ];
 const reflectors = ['toString', 'valueOf', 'inspect', Symbol.toPrimitive, util.inspect.custom];
 
