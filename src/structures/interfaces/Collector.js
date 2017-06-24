@@ -12,6 +12,7 @@ const EventEmitter = require('events').EventEmitter;
  * Options to be applied to the collector.
  * @typedef {Object} CollectorOptions
  * @property {number} [time] How long to run the collector for
+ * @property {boolean} [uncollect=false] Whether to uncollect data when it's deleted
  */
 
 /**
@@ -61,23 +62,19 @@ class Collector extends EventEmitter {
      */
     this._timeout = null;
 
-    /**
-     * Call this to handle an event as a collectable element
-     * Accepts any event data as parameters
-     * @type {Function}
-     * @private
-     */
-    this.listener = this._handle.bind(this);
+    this.collect = this.collect.bind(this);
+    this.uncollect = this.uncollect.bind(this);
+
     if (options.time) this._timeout = this.client.setTimeout(() => this.stop('time'), options.time);
   }
 
   /**
+   * Call this to handle an event as a collectable element. Accepts any event data as parameters.
    * @param {...*} args The arguments emitted by the listener
    * @emits Collector#collect
-   * @private
    */
-  _handle(...args) {
-    const collect = this.handle(...args);
+  collect(...args) {
+    const collect = this.shouldCollect(...args);
     if (!collect || !this.filter(...args)) return;
 
     this.collected.set(collect.key, collect.value);
@@ -90,8 +87,34 @@ class Collector extends EventEmitter {
      */
     this.emit('collect', collect.value, this);
 
-    const post = this.postCheck(...args);
-    if (post) this.stop(post);
+    if (this.postCollect) this.postCollect(...args);
+    this.checkShouldEnd();
+  }
+
+  /**
+   * Call this to remove an element from the collection. Accepts any event data as parameters.
+   * @param {...*} args The arguments emitted by the listener
+   * @emits Collector#uncollect
+   */
+  uncollect(...args) {
+    if (!this.options.uncollect) return;
+
+    const uncollect = this.shouldUncollect(...args);
+    if (!uncollect || !this.filter(...args) || !this.collected.has(uncollect)) return;
+
+    const value = this.collected.get(uncollect);
+    this.collected.delete(uncollect);
+
+    /**
+     * Emitted whenever an element has been uncollected.
+     * @event Collector#uncollect
+     * @param {*} element The element that was uncollected
+     * @param {Collector} collector The collector
+     */
+    this.emit('uncollect', value, this);
+
+    if (this.postUncollect) this.postUncollect(...args);
+    this.checkShouldEnd();
   }
 
   /**
@@ -148,24 +171,55 @@ class Collector extends EventEmitter {
     this.emit('end', this.collected, reason);
   }
 
+  /**
+   * Check whether the collector should end, and if so, end it.
+   */
+  checkShouldEnd() {
+    const reason = this.shouldEnd();
+    if (reason) this.stop(reason);
+  }
+
   /* eslint-disable no-empty-function, valid-jsdoc */
   /**
-   * Handles incoming events from the `listener` function. Returns null if the event should not be collected,
-   * or returns an object describing the data that should be stored.
-   * @see Collector#listener
+   * Handles incoming events from the `collect` function. Returns null if the event should not
+   * be collected, or returns an object describing the data that should be stored.
+   * @see Collector#collect
    * @param {...*} args Any args the event listener emits
-   * @returns {?{key: string, value}} Data to insert into collection, if any
+   * @returns {?{key, value}} Data to insert into collection, if any
    * @abstract
    */
-  handle() {}
+  shouldCollect() {}
 
   /**
-   * This method runs after collection to see if the collector should finish.
+   * Handles incoming events from the the `uncollect`. Returns null if the event should not
+   * be uncollected, or returns the key that should be removed.
+   * @see Collector#uncollect
    * @param {...*} args Any args the event listener emits
+   * @returns {?*} Key to remove from the collection, if any
+   * @abstract
+   */
+  shouldUncollect() {}
+
+  /**
+   * Gets called after collection has finished. Does not have to be implemented.
+   * @param {...*} args Any args the event listener emits
+   * @abstract
+   */
+  postCollect() {}
+
+  /**
+   * Gets called after uncollection has finished. Does not have to be implemented.
+   * @param {...*} args Any args the event listener emits
+   * @abstract
+   */
+  postUncollect() {}
+
+  /**
+   * Runs after collection to see if the collector should finish.
    * @returns {?string} Reason to end the collector, if any
    * @abstract
    */
-  postCheck() {}
+  shouldEnd() {}
 
   /**
    * Called when the collector is ending.
