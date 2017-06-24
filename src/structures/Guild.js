@@ -164,7 +164,7 @@ class Guild {
     this.joinedTimestamp = data.joined_at ? new Date(data.joined_at).getTime() : this.joinedTimestamp;
 
     this.id = data.id;
-    this.available = !data.unavailable;
+    this.available = data.channels.length ? !data.unavailable : false;
     this.features = data.features || this.features || [];
 
     if (data.members) {
