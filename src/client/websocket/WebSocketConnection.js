@@ -2,7 +2,6 @@ const browser = require('os').platform() === 'browser';
 const EventEmitter = require('events');
 const Constants = require('../../util/Constants');
 const zlib = require('zlib');
-const PacketManager = require('./packets/WebSocketPacketManager');
 const erlpack = (function findErlpack() {
   try {
     const e = require('erlpack');
@@ -29,15 +28,18 @@ const WebSocket = (function findWebSocket() {
 class WebSocketConnection extends EventEmitter {
   /**
    * @param {WebSocketManager} manager The WebSocket manager
-   * @param {string} gateway WebSocket gateway to connect to
+   * @param {number} id shard ID
+   * @param {string} [gateway] WebSocket gateway to connect to
    */
-  constructor(manager, gateway) {
+  constructor(manager, id, gateway) {
     super();
     /**
      * WebSocket Manager of this connection
      * @type {WebSocketManager}
      */
     this.manager = manager;
+
+    this.id = id;
 
     /**
      * The client this belongs to
@@ -64,12 +66,6 @@ class WebSocketConnection extends EventEmitter {
     this.status = Constants.Status.IDLE;
 
     /**
-     * The Packet Manager of the connection
-     * @type {WebSocketPacketManager}
-     */
-    this.packetManager = new PacketManager(this);
-
-    /**
      * The last time a ping was sent (a timestamp)
      * @type {number}
      */
@@ -84,13 +80,8 @@ class WebSocketConnection extends EventEmitter {
       remaining: 120,
       resetTime: -1,
     };
-    this.connect(gateway);
 
-    /**
-     * Events that are disabled (will not be processed)
-     * @type {Object}
-     */
-    this.disabledEvents = {};
+    if (gateway) this.connect(gateway);
 
     /**
      * The sequence on WebSocket close
@@ -103,11 +94,24 @@ class WebSocketConnection extends EventEmitter {
      * @type {boolean}
      */
     this.expectingClose = false;
-    for (const event of this.client.options.disabledEvents) this.disabledEvents[event] = true;
+
+    /**
+     * Previous heartbeat pings of the websocket (most recent first, limited to three elements)
+     * @type {number[]}
+     */
+    this.pings = [];
   }
 
   /**
-   * Causes the client to be marked as ready and emits the ready event.
+   * Guilds belonging to this shard
+   * @type {Collection<Snowflake, Guild>}
+   */
+  get guilds() {
+    return this.client.guilds.filter(g => g.shard === this);
+  }
+
+  /**
+   * Causes this connection to be marked as ready and emits the ready event.
    * @returns {void}
    */
   triggerReady() {
@@ -115,13 +119,8 @@ class WebSocketConnection extends EventEmitter {
       this.debug('Tried to mark self as ready, but already ready');
       return;
     }
-    /**
-     * Emitted when the client becomes ready to start working.
-     * @event Client#ready
-     */
     this.status = Constants.Status.READY;
-    this.client.emit(Constants.Events.READY);
-    this.packetManager.handleQueue();
+    this.emit(Constants.Events.READY);
   }
 
   /**
@@ -131,14 +130,14 @@ class WebSocketConnection extends EventEmitter {
   checkIfReady() {
     if (this.status === Constants.Status.READY || this.status === Constants.Status.NEARLY) return false;
     let unavailableGuilds = 0;
-    for (const guild of this.client.guilds.values()) {
+    for (const guild of this.guilds.values()) {
       if (!guild.available) unavailableGuilds++;
     }
     if (unavailableGuilds === 0) {
       this.status = Constants.Status.NEARLY;
       if (!this.client.options.fetchAllMembers) return this.triggerReady();
       // Fetch all members before marking self as ready
-      const promises = this.client.guilds.map(g => g.fetchMembers());
+      const promises = this.guilds.map(g => g.fetchMembers());
       Promise.all(promises)
         .then(() => this.triggerReady())
         .catch(e => {
@@ -272,7 +271,6 @@ class WebSocketConnection extends EventEmitter {
     this.heartbeat(-1);
     this.expectingClose = true;
     ws.close(1000);
-    this.packetManager.handleQueue();
     this.ws = null;
     this.status = Constants.Status.DISCONNECTED;
     return true;
@@ -327,7 +325,8 @@ class WebSocketConnection extends EventEmitter {
       case Constants.OPCodes.HEARTBEAT:
         return this.heartbeat();
       default:
-        return this.packetManager.handle(packet);
+        packet.shard = this;
+        return this.manager.packetManager.handle(packet);
     }
   }
 
@@ -409,7 +408,8 @@ class WebSocketConnection extends EventEmitter {
    */
   ackHeartbeat() {
     this.debug(`Heartbeat acknowledged, latency of ${Date.now() - this.lastPingTimestamp}ms`);
-    this.client._pong(this.lastPingTimestamp);
+    this.pings.unshift(Date.now() - this.lastPingTimestamp);
+    if (this.pings.length > 3) this.pings.length = 3;
   }
 
   /**
@@ -437,6 +437,15 @@ class WebSocketConnection extends EventEmitter {
     });
   }
 
+  /**
+   * Average heartbeat ping of the websocket, obtained by averaging the {@link WebSocketConnection#pings} property
+   * @type {number}
+   * @readonly
+   */
+  get ping() {
+    return this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length;
+  }
+
   // Identification
   /**
    * Identifies the client on a connection.
@@ -461,8 +470,8 @@ class WebSocketConnection extends EventEmitter {
     const d = Object.assign({ token: this.client.token }, this.client.options.ws);
 
     // Sharding stuff
-    const { shardId, shardCount } = this.client.options;
-    if (shardCount > 0) d.shard = [Number(shardId), Number(shardCount)];
+    const { shardCount } = this.client.options;
+    if (shardCount > 0) d.shard = [this.id, Number(shardCount)];
 
     // Send the payload
     this.debug('Identifying as a new session');

@@ -5,10 +5,10 @@ const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
 const RESTManager = require('./rest/RESTManager');
 const ClientDataManager = require('./ClientDataManager');
-const ClientManager = require('./ClientManager');
 const ClientDataResolver = require('./ClientDataResolver');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
+const WebSocketConnection = require('./websocket/WebSocketConnection');
 const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
 const Presence = require('../structures/Presence').Presence;
@@ -32,7 +32,7 @@ class Client extends EventEmitter {
     super();
 
     // Obtain shard details from environment
-    if (!options.shardId && 'SHARD_ID' in process.env) options.shardId = Number(process.env.SHARD_ID);
+    if (!options.shardID && 'SHARD_ID' in process.env) options.shardID = Number(process.env.SHARD_ID);
     if (!options.shardCount && 'SHARD_COUNT' in process.env) options.shardCount = Number(process.env.SHARD_COUNT);
 
     /**
@@ -40,6 +40,7 @@ class Client extends EventEmitter {
      * @type {ClientOptions}
      */
     this.options = Util.mergeDefault(Constants.DefaultOptions, options);
+    if (options.shardCount !== 'auto') options.shardCount = Math.max(options.shardCount, 1);
     this._validateOptions();
 
     /**
@@ -62,13 +63,6 @@ class Client extends EventEmitter {
      * @private
      */
     this.dataManager = new ClientDataManager(this);
-
-    /**
-     * The manager of the client
-     * @type {ClientManager}
-     * @private
-     */
-    this.manager = new ClientManager(this);
 
     /**
      * The WebSocket manager of the client
@@ -163,12 +157,6 @@ class Client extends EventEmitter {
     this.broadcasts = [];
 
     /**
-     * Previous heartbeat pings of the websocket (most recent first, limited to three elements)
-     * @type {number[]}
-     */
-    this.pings = [];
-
-    /**
      * Timeouts set by {@link Client#setTimeout} that are still active
      * @type {Set<Timeout>}
      * @private
@@ -215,15 +203,6 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Average heartbeat ping of the websocket, obtained by averaging the {@link Client#pings} property
-   * @type {number}
-   * @readonly
-   */
-  get ping() {
-    return this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length;
-  }
-
-  /**
    * All active voice connections that have been established, mapped by channel ID
    * @type {Collection<Snowflake, VoiceConnection>}
    * @readonly
@@ -241,6 +220,7 @@ class Client extends EventEmitter {
   get emojis() {
     const emojis = new Collection();
     for (const guild of this.guilds.values()) {
+      if (!guild.available) continue;
       for (const emoji of guild.emojis.values()) emojis.set(emoji.id, emoji);
     }
     return emojis;
@@ -289,7 +269,30 @@ class Client extends EventEmitter {
     return new Promise((resolve, reject) => {
       if (typeof token !== 'string') throw new Error(Constants.Errors.INVALID_TOKEN);
       token = token.replace(/^Bot\s*/i, '');
-      this.manager.connectToWebSocket(token, resolve, reject);
+      this.token = token;
+      const timeout = this.setTimeout(() => reject(new Error(Constants.Errors.TOOK_TOO_LONG)), 1000 * 300);
+      let endpoint = this.api.gateway;
+      const forceBot = this.options.shardCount === 'auto';
+      if (forceBot) endpoint = endpoint.bot;
+      endpoint.get({ forceBot }).then(res => {
+        this.emit(Constants.Events.DEBUG, `Authenticated using token ${token}`);
+        if (res.shards) {
+          this.emit(Constants.Events.DEBUG, `Using recommended shard count: ${res.shards}`);
+          this.options.shardCount = res.shards;
+        }
+        const protocolVersion = Constants.DefaultOptions.ws.version;
+        const gateway = `${res.url}/?v=${protocolVersion}&encoding=${WebSocketConnection.ENCODING}`;
+        this.emit(Constants.Events.DEBUG, `Using gateway ${gateway}`);
+        this.ws.connect(gateway);
+        this.ws.once('close', event => {
+          if (!Object.keys(Constants.WSCodes).includes(event.code)) return;
+          reject(new Error(Constants.WSCodes[event.code]));
+        });
+        this.once(Constants.Events.READY, () => {
+          resolve(token);
+          this.clearTimeout(timeout);
+        });
+      }, reject);
     });
   }
 
@@ -302,7 +305,17 @@ class Client extends EventEmitter {
     for (const i of this._intervals) clearInterval(i);
     this._timeouts.clear();
     this._intervals.clear();
-    return this.manager.destroy();
+    this.ws.destroy();
+    this.rest.destroy();
+    if (!this.user) return Promise.resolve();
+    if (this.user.bot) {
+      this.token = null;
+      return Promise.resolve();
+    } else {
+      return this.api.logout.post().then(() => {
+        this.token = null;
+      });
+    }
   }
 
   /**
@@ -482,17 +495,6 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Adds a ping to {@link Client#pings}.
-   * @param {number} startTime Starting time of the ping
-   * @private
-   */
-  _pong(startTime) {
-    this.pings.unshift(Date.now() - startTime);
-    if (this.pings.length > 3) this.pings.length = 3;
-    this.ws.lastHeartbeatAck = true;
-  }
-
-  /**
    * Adds/updates a friend's presence in {@link Client#presences}.
    * @param {Snowflake} id ID of the user
    * @param {Object} presence Raw presence object from Discord
@@ -523,16 +525,16 @@ class Client extends EventEmitter {
    * @private
    */
   _validateOptions(options = this.options) {
-    if (typeof options.shardCount !== 'number' || isNaN(options.shardCount)) {
-      throw new TypeError('The shardCount option must be a number.');
+    if (options.shardCount !== 'auto' && isNaN(options.shardCount)) {
+      throw new TypeError('The shardCount option must be a number or "auto".');
     }
-    if (typeof options.shardId !== 'number' || isNaN(options.shardId)) {
-      throw new TypeError('The shardId option must be a number.');
+    if (typeof options.shardID !== 'number' || isNaN(options.shardID)) {
+      throw new TypeError('The shardID option must be a number.');
     }
     if (options.shardCount < 0) throw new RangeError('The shardCount option must be at least 0.');
-    if (options.shardId < 0) throw new RangeError('The shardId option must be at least 0.');
-    if (options.shardId !== 0 && options.shardId >= options.shardCount) {
-      throw new RangeError('The shardId option must be less than shardCount.');
+    if (options.shardID < 0) throw new RangeError('The shardID option must be at least 0.');
+    if (options.shardID !== 0 && options.shardID >= options.shardCount) {
+      throw new RangeError('The shardID option must be less than shardCount.');
     }
     if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
       throw new TypeError('The messageCacheMaxSize option must be a number.');

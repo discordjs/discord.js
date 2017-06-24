@@ -4,7 +4,9 @@ const { token, prefix, owner } = require('./auth.js');
 // eslint-disable-next-line no-console
 const log = (...args) => console.log(process.uptime().toFixed(3), ...args);
 
-const client = new Discord.Client();
+const client = new Discord.Client({
+  shardCount: 2,
+});
 
 client.on('debug', log);
 client.on('ready', () => {

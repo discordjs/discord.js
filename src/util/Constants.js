@@ -32,9 +32,8 @@ exports.Package = require('../../package.json');
  */
 exports.DefaultOptions = {
   apiRequestMethod: 'sequential',
-  shardId: 0,
+  shardID: 0,
   shardCount: 0,
-  internalSharding: false,
   messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,
@@ -210,6 +209,7 @@ exports.VoiceOPCodes = {
 
 exports.Events = {
   READY: 'ready',
+  SHARD_READY: 'shardReady',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',
   GUILD_UPDATE: 'guildUpdate',

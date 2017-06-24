@@ -1,6 +1,8 @@
 const EventEmitter = require('events').EventEmitter;
-const Constants = require('../../util/Constants');
+const Collection = require('../../util/Collection');
 const WebSocketConnection = require('./WebSocketConnection');
+const PacketManager = require('./packets/WebSocketPacketManager');
+const Constants = require('../../util/Constants');
 
 /**
  * WebSocket Manager of the client
@@ -19,16 +21,26 @@ class WebSocketManager extends EventEmitter {
      * The WebSocket connection of this manager
      * @type {?WebSocketConnection}
      */
-    this.connection = null;
-  }
+    this.shards = new Collection();
 
-  /**
-   * Sends a heartbeat on the available connection
-   * @returns {void}
-   */
-  heartbeat() {
-    if (!this.connection) return this.debug('No connection to heartbeat');
-    return this.connection.heartbeat();
+    /**
+     * The Packet Manager of the connection
+     * @type {WebSocketPacketManager}
+     */
+    this.packetManager = new PacketManager(this);
+
+    /**
+     * A cached gateway url
+     * @type {string}
+     */
+    this.cachedGateway = null;
+
+    /**
+     * Events that are disabled (will not be processed)
+     * @type {Object}
+     */
+    this.disabledEvents = {};
+    for (const event of this.client.options.disabledEvents) this.disabledEvents[event] = true;
   }
 
   /**
@@ -36,54 +48,64 @@ class WebSocketManager extends EventEmitter {
    * @param {string} message Debug message
    * @returns {void}
    */
-  debug(message) {
-    return this.client.emit('debug', `[ws] ${message}`);
+  debug(...args) {
+    return this.client.emit('debug', `[ws] ${args.join(' ')}`);
   }
 
   /**
    * Destroy the client.
-   * @returns {void} Whether or not destruction was successful
+   * @returns {boolean} Whether or not destruction was successful
    */
   destroy() {
-    if (!this.connection) {
-      this.debug('Attempted to destroy WebSocket but no connection exists!');
+    if (!this.shards.size) {
+      this.debug('Attempted to destroy WebSocket but no connections exist!');
       return false;
     }
-    return this.connection.destroy();
-  }
-
-  /**
-   * Send a packet on the available WebSocket.
-   * @param {Object} packet Packet to send
-   * @returns {void}
-   */
-  send(packet) {
-    if (!this.connection) {
-      this.debug('No connection to websocket');
-      return;
-    }
-    this.connection.send(packet);
+    // TODO: iterate and destroy
+    return true;
   }
 
   /**
    * Connects the client to a gateway.
    * @param {string} gateway Gateway to connect to
-   * @returns {boolean}
    */
   connect(gateway) {
-    if (!this.connection) {
-      this.connection = new WebSocketConnection(this, gateway);
-      return true;
-    }
-    switch (this.connection.status) {
-      case Constants.Status.IDLE:
-      case Constants.Status.DISCONNECTED:
-        this.connection.connect(gateway, 5500);
-        return true;
-      default:
-        this.debug(`Couldn't connect to ${gateway} as the websocket is at state ${this.connection.status}`);
-        return false;
-    }
+    this.cachedGateway = gateway;
+    this.spawnShards();
+  }
+
+  spawnShards() {
+    (function spawnLoop(id) {
+      if (id >= this.client.options.shardCount) return;
+      this.debug(`Spawning shard ${id}`);
+      this.spawnShard(id, this.cachedGateway)
+      .once('ready', () => {
+        this.client.setTimeout(spawnLoop.bind(this, id + 1), 5500);
+        /**
+         * Emitted when a shard becomes ready to start working.
+         * @event Client#shardReady
+         */
+        this.client.emit(Constants.Events.SHARD_READY, id);
+        if (id === this.client.options.shardCount) {
+          /**
+           * Emitted when the client becomes ready to start working.
+           * @event Client#ready
+           */
+          this.client.emit(Constants.Events.READY);
+        }
+      });
+    }.bind(this)(0));
+  }
+
+  spawnShard(id, gateway) {
+    const shard = new WebSocketConnection(this, id, gateway);
+    // Handlers for disconnect and such go here
+    this.shards.set(id, shard);
+    return shard;
+  }
+
+  send(data) {
+    for (const shard of this.shards.values()) shard.send(data);
   }
 }
 

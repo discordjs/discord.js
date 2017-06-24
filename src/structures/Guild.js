@@ -22,13 +22,22 @@ const Shared = require('./shared');
  */
 class Guild {
   constructor(client, data) {
-    /**
-     * The client that created the instance of the the guild
-     * @name Guild#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
+    Object.defineProperties(this, {
+      /**
+       * The client that created the instance of the the guild
+       * @name Guild#client
+       * @type {Client}
+       * @readonly
+       */
+      client: { value: client },
+      /**
+       * The shard this guild belongs to
+       * @name Guild#shard
+       * @type {WebSocketConnection}
+       * @readonly
+       */
+      shard: { value: data.shard },
+    });
 
     /**
      * A collection of members that are in this guild. The key is the member's ID, the value is the member
@@ -509,7 +518,7 @@ class Guild {
         resolve(new Collection());
         return;
       }
-      this.client.ws.send({
+      this.shard.send({
         op: Constants.OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
           guild_id: this.id,
@@ -1091,7 +1100,7 @@ class Guild {
      * @event Client#guildMemberAdd
      * @param {GuildMember} member The member that has joined a guild
      */
-    if (this.client.ws.connection.status === Constants.Status.READY && emitEvent && !existing) {
+    if (this.client.ws.status === Constants.Status.READY && emitEvent && !existing) {
       this.client.emit(Constants.Events.GUILD_MEMBER_ADD, member);
     }
 
