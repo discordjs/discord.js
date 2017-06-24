@@ -16404,6 +16404,7 @@ module.exports = ClientDataResolver;
 
 /**
  * Represents an error from the Discord API.
+ * @extends Error
  */
 class DiscordAPIError extends Error {
   constructor(error) {
@@ -16424,6 +16425,7 @@ class DiscordAPIError extends Error {
    * @param {Object} obj Discord errors object
    * @param {string} [key] Used internally to determine key names of nested fields
    * @returns {string[]}
+   * @private
    */
   static flattenErrors(obj, key = '') {
     let messages = [];
