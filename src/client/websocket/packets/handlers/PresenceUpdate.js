@@ -12,7 +12,7 @@ class PresenceUpdateHandler extends AbstractHandler {
     // Step 1
     if (!user) {
       if (data.user.username) {
-        user = client.dataManager.newUser(data.user);
+        user = client.users.create(data.user);
       } else {
         return;
       }

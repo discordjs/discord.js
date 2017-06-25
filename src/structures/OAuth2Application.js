@@ -95,7 +95,7 @@ class OAuth2Application {
        * The owner of this OAuth application
        * @type {?User}
        */
-      this.owner = this.client.dataManager.newUser(data.owner);
+      this.owner = this.client.users.create(data.owner);
     }
   }
 

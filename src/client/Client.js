@@ -19,6 +19,7 @@ const Invite = require('../structures/Invite');
 const OAuth2Application = require('../structures/OAuth2Application');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
 const VoiceBroadcast = require('./voice/VoiceBroadcast');
+const UserStore = require('../stores/UserStore');
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -107,9 +108,9 @@ class Client extends EventEmitter {
 
     /**
      * All of the {@link User} objects that have been cached at any point, mapped by their IDs
-     * @type {Collection<Snowflake, User>}
+     * @type {UserStore<Snowflake, User>}
      */
-    this.users = new Collection();
+    this.users = new UserStore(this);
 
     /**
      * All of the guilds the client is currently handling, mapped by their IDs -
@@ -329,7 +330,7 @@ class Client extends EventEmitter {
   fetchUser(id, cache = true) {
     if (this.users.has(id)) return Promise.resolve(this.users.get(id));
     return this.api.users(id).get().then(data =>
-      cache ? this.dataManager.newUser(data) : new User(this, data)
+      cache ? this.users.create(data) : new User(this, data)
     );
   }
 

@@ -21,8 +21,7 @@ class MessageMentions {
       } else {
         this.users = new Collection();
         for (const mention of users) {
-          let user = message.client.users.get(mention.id);
-          if (!user) user = message.client.dataManager.newUser(mention);
+          let user = message.client.users.create(mention);
           this.users.set(user.id, user);
         }
       }

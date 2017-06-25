@@ -38,13 +38,6 @@ class ClientDataManager {
     return guild;
   }
 
-  newUser(data) {
-    if (this.client.users.has(data.id)) return this.client.users.get(data.id);
-    const user = new User(this.client, data);
-    this.client.users.set(user.id, user);
-    return user;
-  }
-
   newChannel(data, guild) {
     const already = this.client.channels.has(data.id);
     let channel;
@@ -98,10 +91,6 @@ class ClientDataManager {
     const already = this.client.guilds.has(guild.id);
     this.client.guilds.delete(guild.id);
     if (already && this.pastReady) this.client.emit(Constants.Events.GUILD_DELETE, guild);
-  }
-
-  killUser(user) {
-    this.client.users.delete(user.id);
   }
 
   killChannel(channel) {

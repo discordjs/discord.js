@@ -20,7 +20,7 @@ class ReadyHandler extends AbstractHandler {
     for (const privateDM of data.private_channels) client.dataManager.newChannel(privateDM);
 
     for (const relation of data.relationships) {
-      const user = client.dataManager.newUser(relation.user);
+      const user = client.users.create(relation.user);
       if (relation.type === 1) {
         client.user.friends.set(user.id, user);
       } else if (relation.type === 2) {
@@ -30,7 +30,7 @@ class ReadyHandler extends AbstractHandler {
 
     data.presences = data.presences || [];
     for (const presence of data.presences) {
-      client.dataManager.newUser(presence.user);
+      client.users.create(presence.user);
       client._setPresence(presence.user.id, presence);
     }
 
@@ -46,7 +46,7 @@ class ReadyHandler extends AbstractHandler {
     if (!client.user.bot && client.options.sync) client.setInterval(client.syncGuilds.bind(client), 30000);
 
     if (!client.users.has('1')) {
-      client.dataManager.newUser({
+      client.users.create({
         id: '1',
         username: 'Clyde',
         discriminator: '0000',

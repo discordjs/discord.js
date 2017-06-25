@@ -89,7 +89,7 @@ class MessageReaction {
       .then(users => {
         this.users = new Collection();
         for (const rawUser of users) {
-          const user = message.client.dataManager.newUser(rawUser);
+          const user = message.client.users.create(rawUser);
           this.users.set(user.id, user);
         }
         this.count = this.users.size;

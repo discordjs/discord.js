@@ -381,7 +381,7 @@ class Guild {
       bans.reduce((collection, ban) => {
         collection.set(ban.user.id, {
           reason: ban.reason,
-          user: this.client.dataManager.newUser(ban.user),
+          user: this.client.users.create(ban.user),
         });
         return collection;
       }, new Collection())
@@ -1065,7 +1065,7 @@ class Guild {
 
   _addMember(guildUser, emitEvent = true) {
     const existing = this.members.has(guildUser.user.id);
-    if (!(guildUser.user instanceof User)) guildUser.user = this.client.dataManager.newUser(guildUser.user);
+    if (!(guildUser.user instanceof User)) guildUser.user = this.client.users.create(guildUser.user);
 
     guildUser.joined_at = guildUser.joined_at || 0;
     const member = new GuildMember(this, guildUser);

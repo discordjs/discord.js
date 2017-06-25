@@ -86,7 +86,7 @@ class Invite {
        * The user who created this invite
        * @type {User}
        */
-      this.inviter = this.client.dataManager.newUser(data.inviter);
+      this.inviter = this.client.users.create(data.inviter);
     }
 
     /**
