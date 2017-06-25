@@ -1,20 +1,15 @@
 const PartialGuild = require('./PartialGuild');
 const PartialGuildChannel = require('./PartialGuildChannel');
 const Constants = require('../util/Constants');
+const Base = require('./Base');
 
 /**
  * Represents an invitation to a guild channel.
  * <warn>The only guaranteed properties are `code`, `guild` and `channel`. Other properties can be missing.</warn>
  */
-class Invite {
+class Invite extends Base {
   constructor(client, data) {
-    /**
-     * The client that instantiated the invite
-     * @name Invite#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
+    super(client);
 
     this.setup(data);
   }

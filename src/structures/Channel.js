@@ -1,17 +1,12 @@
 const Snowflake = require('../util/Snowflake');
+const Base = require('./Base');
 
 /**
  * Represents any channel on Discord.
  */
-class Channel {
+class Channel extends Base {
   constructor(client, data) {
-    /**
-     * The client that instantiated the Channel
-     * @name Channel#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
+    super(client);
 
     /**
      * The type of the channel, either:

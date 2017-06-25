@@ -3,20 +3,15 @@ const Constants = require('../util/Constants');
 const Presence = require('./Presence').Presence;
 const UserProfile = require('./UserProfile');
 const Snowflake = require('../util/Snowflake');
+const Base = require('./Base');
 
 /**
  * Represents a user on Discord.
  * @implements {TextBasedChannel}
  */
-class User {
+class User extends Base {
   constructor(client, data) {
-    /**
-     * The client that created the instance of the the user
-     * @name User#client
-     * @type {}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
+    super(client);
 
     if (data) this.setup(data);
   }

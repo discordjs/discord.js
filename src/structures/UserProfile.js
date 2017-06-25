@@ -1,24 +1,19 @@
 const Collection = require('../util/Collection');
 const UserConnection = require('./UserConnection');
+const Base = require('./Base');
 
 /**
  * Represents a user's profile on Discord.
  */
-class UserProfile {
+class UserProfile extends Base {
   constructor(user, data) {
+    super(user.client);
+
     /**
      * The owner of the profile
      * @type {User}
      */
     this.user = user;
-
-    /**
-     * The client that created the instance of the the UserProfile.
-     * @name UserProfile#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: user.client });
 
     /**
      * The guilds that the client user and the user share

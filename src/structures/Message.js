@@ -7,20 +7,15 @@ const Util = require('../util/Util');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
 const Permissions = require('../util/Permissions');
+const Base = require('./Base');
 let GuildMember;
 
 /**
  * Represents a message on Discord.
  */
-class Message {
+class Message extends Base {
   constructor(channel, data, client) {
-    /**
-     * The client that instantiated the Message
-     * @name Message#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
+    super(client);
 
     /**
      * The channel that the message was sent in

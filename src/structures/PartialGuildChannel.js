@@ -1,4 +1,5 @@
 const Constants = require('../util/Constants');
+const Base = require('./Base');
 
 /*
 { type: 0, id: '123123', name: 'heavy-testing' } }
@@ -7,15 +8,9 @@ const Constants = require('../util/Constants');
 /**
  * Represents a guild channel that the client only has limited information for - e.g. from invites.
  */
-class PartialGuildChannel {
+class PartialGuildChannel extends Base {
   constructor(client, data) {
-    /**
-     * The client that instantiated this PartialGuildChannel
-     * @name PartialGuildChannel#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
+    super(client);
 
     this.setup(data);
   }

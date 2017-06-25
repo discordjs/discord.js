@@ -1,19 +1,14 @@
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Snowflake = require('../util/Snowflake');
+const Base = require('./Base');
 
 /**
  * Represents a custom emoji.
  */
-class Emoji {
+class Emoji extends Base {
   constructor(guild, data) {
-    /**
-     * The client that instantiated this object
-     * @name Emoji#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: guild.client });
+    super(guild.client);
 
     /**
      * The guild this emoji is part of

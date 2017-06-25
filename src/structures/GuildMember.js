@@ -3,20 +3,15 @@ const Role = require('./Role');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
 const Presence = require('./Presence').Presence;
+const Base = require('./Base');
 
 /**
  * Represents a member of a guild on Discord.
  * @implements {TextBasedChannel}
  */
-class GuildMember {
+class GuildMember extends Base {
   constructor(guild, data) {
-    /**
-     * The client that instantiated this GuildMember
-     * @name GuildMember#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: guild.client });
+    super(guild.client);
 
     /**
      * The guild that this member is part of

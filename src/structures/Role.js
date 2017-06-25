@@ -1,19 +1,14 @@
 const Snowflake = require('../util/Snowflake');
 const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
+const Base = require('./Base');
 
 /**
  * Represents a role on Discord.
  */
-class Role {
+class Role extends Base {
   constructor(guild, data) {
-    /**
-     * The client that instantiated the role
-     * @name Role#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: guild.client });
+    super(guild.client);
 
     /**
      * The guild that the role belongs to

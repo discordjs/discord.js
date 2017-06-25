@@ -1,3 +1,5 @@
+const Base = require('./Base');
+
 /*
 { splash: null,
      id: '123123123',
@@ -8,15 +10,9 @@
 /**
  * Represents a guild that the client only has limited information for - e.g. from invites.
  */
-class PartialGuild {
+class PartialGuild extends Base {
   constructor(client, data) {
-    /**
-     * The client that instantiated this PartialGuild
-     * @name PartialGuild#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
+    super(client);
 
     this.setup(data);
   }

@@ -15,21 +15,16 @@ const Snowflake = require('../util/Snowflake');
 const Permissions = require('../util/Permissions');
 const Shared = require('./shared');
 const EmojiStore = require('../stores/EmojiStore');
+const Base = require('./Base');
 
 /**
  * Represents a guild (or a server) on Discord.
  * <info>It's recommended to see if a guild is available before performing operations or reading data from it. You can
  * check this with `guild.available`.</info>
  */
-class Guild {
+class Guild extends Base {
   constructor(client, data) {
-    /**
-     * The client that created the instance of the the guild
-     * @name Guild#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
+    super(client);
 
     /**
      * A collection of members that are in this guild. The key is the member's ID, the value is the member

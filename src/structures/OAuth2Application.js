@@ -1,18 +1,13 @@
 const Snowflake = require('../util/Snowflake');
 const Constants = require('../util/Constants');
+const Base = require('./Base');
 
 /**
  * Represents an OAuth2 Application.
  */
-class OAuth2Application {
+class OAuth2Application extends Base {
   constructor(client, data) {
-    /**
-     * The client that instantiated the application
-     * @name OAuth2Application#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
+    super(client);
 
     this.setup(data);
   }
