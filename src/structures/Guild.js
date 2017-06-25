@@ -14,6 +14,7 @@ const Util = require('../util/Util');
 const Snowflake = require('../util/Snowflake');
 const Permissions = require('../util/Permissions');
 const Shared = require('./shared');
+const EmojiStore = require('../stores/EmojiStore');
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -221,10 +222,10 @@ class Guild {
     if (!this.emojis) {
       /**
        * A collection of emojis that are in this guild. The key is the emoji's ID, the value is the emoji.
-       * @type {Collection<Snowflake, Emoji>}
+       * @type {EmojiStore<Snowflake, Emoji>}
        */
-      this.emojis = new Collection();
-      for (const emoji of data.emojis) this.emojis.set(emoji.id, new Emoji(this, emoji));
+      this.emojis = new EmojiStore(this);
+      for (const emoji of data.emojis) this.emojis.create(emoji);
     } else {
       this.client.actions.GuildEmojisUpdate.handle({
         guild_id: this.id,

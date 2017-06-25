@@ -1,13 +1,5 @@
 const Constants = require('../util/Constants');
 const Util = require('../util/Util');
-const Guild = require('../structures/Guild');
-const User = require('../structures/User');
-const DMChannel = require('../structures/DMChannel');
-const Emoji = require('../structures/Emoji');
-const TextChannel = require('../structures/TextChannel');
-const VoiceChannel = require('../structures/VoiceChannel');
-const GuildChannel = require('../structures/GuildChannel');
-const GroupDMChannel = require('../structures/GroupDMChannel');
 
 class ClientDataManager {
   constructor(client) {
@@ -16,26 +8,6 @@ class ClientDataManager {
 
   get pastReady() {
     return this.client.ws.connection.status === Constants.Status.READY;
-  }
-
-  newEmoji(data, guild) {
-    const already = guild.emojis.has(data.id);
-    if (data && !already) {
-      let emoji = new Emoji(guild, data);
-      this.client.emit(Constants.Events.GUILD_EMOJI_CREATE, emoji);
-      guild.emojis.set(emoji.id, emoji);
-      return emoji;
-    } else if (already) {
-      return guild.emojis.get(data.id);
-    }
-
-    return null;
-  }
-
-  killEmoji(emoji) {
-    if (!(emoji instanceof Emoji && emoji.guild)) return;
-    this.client.emit(Constants.Events.GUILD_EMOJI_DELETE, emoji);
-    emoji.guild.emojis.delete(emoji.id);
   }
 
   updateGuild(currentGuild, newData) {

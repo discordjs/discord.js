@@ -2,8 +2,7 @@ const Action = require('./Action');
 
 class GuildEmojiDeleteAction extends Action {
   handle(emoji) {
-    const client = this.client;
-    client.dataManager.killEmoji(emoji);
+    emoji.guild.emojis.remove(emoji.id);
     return { emoji };
   }
 }
