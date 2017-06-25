@@ -37,6 +37,18 @@ class Collection extends Map {
   }
 
   /**
+   * Returns the specified item from the collection.
+   * If it doesn't exist, it will return the defaultValue instead
+   * @param {string} key The key of the item to return
+   * @param {*} [defaultValue] The value to return if the collection doesn't have the requested item
+   * @returns {*} The requested item
+   */
+  get(key, defaultValue) {
+    const item = super.get(key);
+    return item === undefined ? defaultValue : item;
+  }
+
+  /**
    * Creates an ordered array of the values of this collection, and caches it internally. The array will only be
    * reconstructed if an item is added to or removed from the collection, or if you change the length of the array
    * itself. If you don't want this caching behaviour, use `Array.from(collection.values())` instead.
