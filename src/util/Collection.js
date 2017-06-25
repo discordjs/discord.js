@@ -35,7 +35,7 @@ class Collection extends Map {
     this._keyArray = null;
     return super.delete(key);
   }
- 
+
   /**
    * Returns the specified item from the collection.
    * If it doesn't exist, it will return the defaultValue instead
@@ -44,8 +44,8 @@ class Collection extends Map {
    * @returns {*} The requested item
    */
   get(key, defaultValue) {
-	if (super.has(key)) return super.get(key);
-	return defaultValue;
+    if (super.has(key)) return super.get(key);
+    return defaultValue;
   }
 
   /**
