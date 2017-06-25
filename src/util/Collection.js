@@ -44,8 +44,8 @@ class Collection extends Map {
    * @returns {*} The requested item
    */
   get(key, defaultValue) {
-    if (super.has(key)) return super.get(key);
-    return defaultValue;
+    const item = super.get(key);
+    return item === undefined ? defaultValue : item;
   }
 
   /**
