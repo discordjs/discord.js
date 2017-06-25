@@ -20,6 +20,7 @@ const OAuth2Application = require('../structures/OAuth2Application');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
 const VoiceBroadcast = require('./voice/VoiceBroadcast');
 const UserStore = require('../stores/UserStore');
+const ChannelStore = require('../stores/ChannelStore');
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -122,9 +123,9 @@ class Client extends EventEmitter {
     /**
      * All of the {@link Channel}s that the client is currently handling, mapped by their IDs -
      * as long as sharding isn't being used, this will be *every* channel in *every* guild, and all DM channels
-     * @type {Collection<Snowflake, Channel>}
+     * @type {ChannelStore<Snowflake, Channel>}
      */
-    this.channels = new Collection();
+    this.channels = new ChannelStore(this);
 
     /**
      * Presences that have been received for the client user's friends, mapped by user IDs

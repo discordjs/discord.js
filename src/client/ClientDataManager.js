@@ -38,35 +38,6 @@ class ClientDataManager {
     return guild;
   }
 
-  newChannel(data, guild) {
-    const already = this.client.channels.has(data.id);
-    let channel;
-    if (data.type === Constants.ChannelTypes.DM) {
-      channel = new DMChannel(this.client, data);
-    } else if (data.type === Constants.ChannelTypes.GROUP_DM) {
-      channel = new GroupDMChannel(this.client, data);
-    } else {
-      guild = guild || this.client.guilds.get(data.guild_id);
-      if (guild) {
-        if (data.type === Constants.ChannelTypes.TEXT) {
-          channel = new TextChannel(guild, data);
-          guild.channels.set(channel.id, channel);
-        } else if (data.type === Constants.ChannelTypes.VOICE) {
-          channel = new VoiceChannel(guild, data);
-          guild.channels.set(channel.id, channel);
-        }
-      }
-    }
-
-    if (channel) {
-      if (this.pastReady && !already) this.client.emit(Constants.Events.CHANNEL_CREATE, channel);
-      this.client.channels.set(channel.id, channel);
-      return channel;
-    }
-
-    return null;
-  }
-
   newEmoji(data, guild) {
     const already = guild.emojis.has(data.id);
     if (data && !already) {
@@ -91,11 +62,6 @@ class ClientDataManager {
     const already = this.client.guilds.has(guild.id);
     this.client.guilds.delete(guild.id);
     if (already && this.pastReady) this.client.emit(Constants.Events.GUILD_DELETE, guild);
-  }
-
-  killChannel(channel) {
-    this.client.channels.delete(channel.id);
-    if (channel instanceof GuildChannel) channel.guild.channels.delete(channel.id);
   }
 
   updateGuild(currentGuild, newData) {

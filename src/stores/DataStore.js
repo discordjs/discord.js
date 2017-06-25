@@ -1,5 +1,10 @@
 const Collection = require('../util/Collection');
 
+/**
+ * A data store what else????
+ * @class DataStore
+ * @extends {Collection}
+ */
 class DataStore extends Collection {
   constructor(client, iterable) {
     super(iterable);

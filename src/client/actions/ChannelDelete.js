@@ -11,7 +11,7 @@ class ChannelDeleteAction extends Action {
 
     let channel = client.channels.get(data.id);
     if (channel) {
-      client.dataManager.killChannel(channel);
+      client.channels.remove(channel.id);
       this.deleted.set(channel.id, channel);
       this.scheduleForDeletion(channel.id);
     } else {

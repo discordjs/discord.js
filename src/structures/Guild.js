@@ -182,7 +182,9 @@ class Guild {
 
     if (data.channels) {
       this.channels.clear();
-      for (const channel of data.channels) this.client.dataManager.newChannel(channel, this);
+      for (const rawChannel of data.channels) {
+        this.client.channels.create(Object.assign(rawChannel, { guild_id: this.id }), this);
+      }
     }
 
     if (data.roles) {
