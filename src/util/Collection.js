@@ -35,6 +35,18 @@ class Collection extends Map {
     this._keyArray = null;
     return super.delete(key);
   }
+  
+  /**
+   * Returns the specified item from the collection.
+   * If it doesn't exist, it will return the defaultValue instead
+   * @param {string} key The key of the item to return
+   * @param {*} [defaultValue] The value to return if the collection doesn't have the requested item
+   * @returns {*} The requested item
+   */
+  get(key, defaultValue) {
+	  if(super.has(key)) return super.get(key);
+	  return defaultValue;
+  }
 
   /**
    * Creates an ordered array of the values of this collection, and caches it internally. The array will only be
