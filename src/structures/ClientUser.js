@@ -6,6 +6,7 @@ const Util = require('../util/Util');
 const Guild = require('./Guild');
 const Message = require('./Message');
 const GroupDMChannel = require('./GroupDMChannel');
+const { TypeError } = require('../errors');
 
 /**
  * Represents the logged in client's Discord user.
@@ -193,7 +194,7 @@ class ClientUser extends User {
       }
 
       if (data.status) {
-        if (typeof data.status !== 'string') throw new TypeError('Status must be a string');
+        if (typeof data.status !== 'string') throw new TypeError('STATUS_TYPE');
         if (this.bot) {
           status = data.status;
         } else {

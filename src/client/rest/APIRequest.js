@@ -1,6 +1,6 @@
 const querystring = require('querystring');
 const snekfetch = require('snekfetch');
-const Constants = require('../../util/Constants');
+const { Error } = require('../../errors');
 
 class APIRequest {
   constructor(rest, method, path, options) {
@@ -28,7 +28,7 @@ class APIRequest {
     } else if (this.client.token) {
       return this.client.token;
     }
-    throw new Error(Constants.Errors.NO_TOKEN);
+    throw new Error('TOKEN_MISSING');
   }
 
   gen() {
