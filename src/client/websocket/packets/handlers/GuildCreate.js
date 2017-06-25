@@ -14,7 +14,7 @@ class GuildCreateHandler extends AbstractHandler {
       }
     } else {
       // A new guild
-      client.dataManager.newGuild(data);
+      client.guilds.create(data);
     }
   }
 }

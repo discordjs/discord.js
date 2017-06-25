@@ -21,6 +21,7 @@ const ShardClientUtil = require('../sharding/ShardClientUtil');
 const VoiceBroadcast = require('./voice/VoiceBroadcast');
 const UserStore = require('../stores/UserStore');
 const ChannelStore = require('../stores/ChannelStore');
+const GuildStore = require('../stores/GuildStore');
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -116,9 +117,9 @@ class Client extends EventEmitter {
     /**
      * All of the guilds the client is currently handling, mapped by their IDs -
      * as long as sharding isn't being used, this will be *every* guild the bot is a member of
-     * @type {Collection<Snowflake, Guild>}
+     * @type {GuildStore<Snowflake, Guild>}
      */
-    this.guilds = new Collection();
+    this.guilds = new GuildStore(this);
 
     /**
      * All of the {@link Channel}s that the client is currently handling, mapped by their IDs -

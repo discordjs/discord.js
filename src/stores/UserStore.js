@@ -10,6 +10,7 @@ class UserStore extends DataStore {
   }
 
   remove(id) {
+    super.remove();
     this.delete(id);
   }
 }

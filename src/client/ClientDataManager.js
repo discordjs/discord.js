@@ -18,26 +18,6 @@ class ClientDataManager {
     return this.client.ws.connection.status === Constants.Status.READY;
   }
 
-  newGuild(data) {
-    const already = this.client.guilds.has(data.id);
-    const guild = new Guild(this.client, data);
-    this.client.guilds.set(guild.id, guild);
-    if (this.pastReady && !already) {
-      /**
-       * Emitted whenever the client joins a guild.
-       * @event Client#guildCreate
-       * @param {Guild} guild The created guild
-       */
-      if (this.client.options.fetchAllMembers) {
-        guild.fetchMembers().then(() => { this.client.emit(Constants.Events.GUILD_CREATE, guild); });
-      } else {
-        this.client.emit(Constants.Events.GUILD_CREATE, guild);
-      }
-    }
-
-    return guild;
-  }
-
   newEmoji(data, guild) {
     const already = guild.emojis.has(data.id);
     if (data && !already) {
@@ -56,12 +36,6 @@ class ClientDataManager {
     if (!(emoji instanceof Emoji && emoji.guild)) return;
     this.client.emit(Constants.Events.GUILD_EMOJI_DELETE, emoji);
     emoji.guild.emojis.delete(emoji.id);
-  }
-
-  killGuild(guild) {
-    const already = this.client.guilds.has(guild.id);
-    this.client.guilds.delete(guild.id);
-    if (already && this.pastReady) this.client.emit(Constants.Events.GUILD_DELETE, guild);
   }
 
   updateGuild(currentGuild, newData) {

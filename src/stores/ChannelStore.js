@@ -62,6 +62,7 @@ class UserStore extends DataStore {
   }
 
   remove(id) {
+    super.remove();
     const channel = this.get(id);
     if (channel.guild) {
       channel.guild.channels.delete(id);
