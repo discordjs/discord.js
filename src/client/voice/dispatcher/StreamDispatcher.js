@@ -100,7 +100,7 @@ class StreamDispatcher extends VolumeInterface {
 
   /**
    * Stops the current stream permanently and emits an `end` event.
-   * @param {string} [reason='user'] An optional reason for stopping the dispatcher
+   * @param {string} [reason='user'] An optional reason for stopping the dispatcher.
    */
   end(reason = 'user') {
     this.destroy('end', reason);
@@ -112,7 +112,7 @@ class StreamDispatcher extends VolumeInterface {
     /**
      * Emitted when the dispatcher starts/stops speaking.
      * @event StreamDispatcher#speaking
-     * @param {boolean} value Whether or not the dispatcher is speaking
+     * @param {boolean} value Whether or not the dispatcher is speaking.
      */
     this.emit('speaking', value);
   }
@@ -128,7 +128,7 @@ class StreamDispatcher extends VolumeInterface {
     /**
      * Emitted whenever the dispatcher has debug information.
      * @event StreamDispatcher#debug
-     * @param {string} info the debug info
+     * @param {string} info the debug info.
      */
     this.setSpeaking(true);
     while (repeats--) {
@@ -282,7 +282,7 @@ class StreamDispatcher extends VolumeInterface {
     this.emit(type, reason);
     /**
      * Emitted once the dispatcher ends.
-     * @param {string} [reason] the reason the dispatcher ended
+     * @param {string} [reason] the reason the dispatcher ended.
      * @event StreamDispatcher#end
      */
     if (type !== 'end') this.emit('end', `destroyed due to ${type} - ${reason}`);
@@ -293,7 +293,7 @@ class StreamDispatcher extends VolumeInterface {
       /**
        * Emitted if the dispatcher encounters an error.
        * @event StreamDispatcher#error
-       * @param {string} error The error message
+       * @param {string} error The error message.
        */
       this.emit('error', 'No stream');
       return;

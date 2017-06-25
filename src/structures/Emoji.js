@@ -105,17 +105,17 @@ class Emoji {
   /**
    * Data for editing an emoji.
    * @typedef {Object} EmojiEditData
-   * @property {string} [name] The name of the emoji
-   * @property {Collection<Snowflake, Role>|Array<Snowflake|Role>} [roles] Roles to restrict emoji to
+   * @property {string} [name] The name of the emoji.
+   * @property {Collection<Snowflake, Role>|Array<Snowflake|Role>} [roles] Roles to restrict emoji to.
    */
 
   /**
    * Edits the emoji.
-   * @param {EmojiEditData} data The new data for the emoji
-   * @param {string} [reason] Reason for editing this emoji
+   * @param {EmojiEditData} data The new data for the emoji.
+   * @param {string} [reason] Reason for editing this emoji.
    * @returns {Promise<Emoji>}
    * @example
-   * // Edit a emoji
+   * // Edit a emoji.
    * emoji.edit({name: 'newemoji'})
    *  .then(e => console.log(`Edited emoji ${e}`))
    *  .catch(console.error);
@@ -131,7 +131,7 @@ class Emoji {
 
   /**
    * Set the name of the emoji.
-   * @param {string} name The new name for the emoji
+   * @param {string} name The new name for the emoji.
    * @returns {Promise<Emoji>}
    */
   setName(name) {
@@ -140,7 +140,7 @@ class Emoji {
 
   /**
    * Add a role to the list of roles that can use this emoji.
-   * @param {Role} role The role to add
+   * @param {Role} role The role to add.
    * @returns {Promise<Emoji>}
    */
   addRestrictedRole(role) {
@@ -149,7 +149,7 @@ class Emoji {
 
   /**
    * Add multiple roles to the list of roles that can use this emoji.
-   * @param {Role[]} roles Roles to add
+   * @param {Role[]} roles Roles to add.
    * @returns {Promise<Emoji>}
    */
   addRestrictedRoles(roles) {
@@ -162,7 +162,7 @@ class Emoji {
 
   /**
    * Remove a role from the list of roles that can use this emoji.
-   * @param {Role} role The role to remove
+   * @param {Role} role The role to remove.
    * @returns {Promise<Emoji>}
    */
   removeRestrictedRole(role) {
@@ -171,7 +171,7 @@ class Emoji {
 
   /**
    * Remove multiple roles from the list of roles that can use this emoji.
-   * @param {Role[]} roles Roles to remove
+   * @param {Role[]} roles Roles to remove.
    * @returns {Promise<Emoji>}
    */
   removeRestrictedRoles(roles) {
@@ -186,7 +186,7 @@ class Emoji {
    * When concatenated with a string, this automatically returns the emoji mention rather than the object.
    * @returns {string}
    * @example
-   * // Send an emoji:
+   * // Send an emoji.
    * const emoji = guild.emojis.first();
    * msg.reply(`Hello! ${emoji}`);
    */
@@ -196,8 +196,8 @@ class Emoji {
 
   /**
    * Whether this emoji is the same as another one.
-   * @param {Emoji|Object} other The emoji to compare it to
-   * @returns {boolean} Whether the emoji is equal to the given emoji or not
+   * @param {Emoji|Object} other The emoji to compare it to.
+   * @returns {boolean} Whether the emoji is equal to the given emoji or not.
    */
   equals(other) {
     if (other instanceof Emoji) {

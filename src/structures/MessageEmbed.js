@@ -49,19 +49,19 @@ class MessageEmbed {
     /**
      * The fields of this embed
      * @type {?Object[]}
-     * @property {string} name The name of this field
-     * @property {string} value The value of this field
-     * @property {boolean} inline If this field will be displayed inline
+     * @property {string} name The name of this field.
+     * @property {string} value The value of this field.
+     * @property {boolean} inline If this field will be displayed inline.
      */
     this.fields = data.fields || null;
 
     /**
      * The thumbnail of this embed, if there is one
      * @type {?Object}
-     * @property {string} url URL for this thumbnail
-     * @property {string} proxyURL ProxyURL for this thumbnail
-     * @property {number} height Height of this thumbnail
-     * @property {number} width Width of this thumbnail
+     * @property {string} url URL for this thumbnail.
+     * @property {string} proxyURL ProxyURL for this thumbnail.
+     * @property {number} height Height of this thumbnail.
+     * @property {number} width Width of this thumbnail.
      */
     this.thumbnail = data.thumbnail ? {
       url: data.thumbnail.url || null,
@@ -73,10 +73,10 @@ class MessageEmbed {
     /**
      * The image of this embed, if there is one
      * @type {?Object}
-     * @property {string} url URL for this image
-     * @property {string} proxyURL ProxyURL for this image
-     * @property {number} height Height of this image
-     * @property {number} width Width of this image
+     * @property {string} url URL for this image.
+     * @property {string} proxyURL ProxyURL for this image.
+     * @property {number} height Height of this image.
+     * @property {number} width Width of this image.
      */
     this.image = data.image ? {
       url: data.image.url || null,
@@ -88,9 +88,9 @@ class MessageEmbed {
     /**
      * The video of this embed, if there is one
      * @type {?Object}
-     * @property {string} url URL of this video
-     * @property {number} height Height of this video
-     * @property {number} width Width of this video
+     * @property {string} url URL of this video.
+     * @property {number} height Height of this video.
+     * @property {number} width Width of this video.
      */
     this.video = data.video ? {
       url: data.video.url || null,
@@ -101,10 +101,10 @@ class MessageEmbed {
     /**
      * The author of this embed, if there is one
      * @type {?Object}
-     * @property {string} name The name of this author
-     * @property {string} url URL of this author
-     * @property {string} iconURL URL of the icon for this author
-     * @property {string} proxyIconURL Proxied URL of the icon for this author
+     * @property {string} name The name of this author.
+     * @property {string} url URL of this author.
+     * @property {string} iconURL URL of the icon for this author.
+     * @property {string} proxyIconURL Proxied URL of the icon for this author.
      */
     this.author = data.author ? {
       name: data.author.name || null,
@@ -116,8 +116,8 @@ class MessageEmbed {
     /**
      * The provider of this embed, if there is one
      * @type {?Object}
-     * @property {string} name The name of this provider
-     * @property {string} url URL of this provider
+     * @property {string} name The name of this provider.
+     * @property {string} url URL of this provider.
      */
     this.provider = data.provider ? {
       name: data.provider.name,
@@ -127,9 +127,9 @@ class MessageEmbed {
     /**
      * The footer of this embed
      * @type {?Object}
-     * @property {string} text The text of this footer
-     * @property {string} iconURL URL of the icon for this footer
-     * @property {string} proxyIconURL Proxied URL of the icon for this footer
+     * @property {string} text The text of this footer.
+     * @property {string} iconURL URL of the icon for this footer.
+     * @property {string} proxyIconURL Proxied URL of the icon for this footer.
      */
     this.footer = data.footer ? {
       text: data.footer.text || null,
@@ -160,10 +160,10 @@ class MessageEmbed {
 
   /**
    * Adds a field to the embed (max 25).
-   * @param {StringResolvable} name The name of the field
-   * @param {StringResolvable} value The value of the field
-   * @param {boolean} [inline=false] Set the field to display inline
-   * @returns {MessageEmbed} This embed
+   * @param {StringResolvable} name The name of the field.
+   * @param {StringResolvable} value The value of the field.
+   * @param {boolean} [inline=false] Set the field to display inline.
+   * @returns {MessageEmbed} This embed.
    */
   addField(name, value, inline = false) {
     if (this.fields.length >= 25) throw new RangeError('EMBED_FIELD_COUNT');
@@ -178,8 +178,8 @@ class MessageEmbed {
   /**
    * Sets the file to upload alongside the embed. This file can be accessed via `attachment://fileName.extension` when
    * setting an embed image or author/footer icons. Only one file may be attached.
-   * @param {FileOptions|string} file Local path or URL to the file to attach, or valid FileOptions for a file to attach
-   * @returns {MessageEmbed} This embed
+   * @param {FileOptions|string} file Local path or URL to the file to attach, or valid FileOptions for a file to attach.
+   * @returns {MessageEmbed} This embed.
    */
   attachFile(file) {
     if (this.file) throw new RangeError('EMBED_FILE_LIMIT');
@@ -189,10 +189,10 @@ class MessageEmbed {
 
   /**
    * Sets the author of this embed.
-   * @param {StringResolvable} name The name of the author
-   * @param {string} [iconURL] The icon URL of the author
-   * @param {string} [url] The URL of the author
-   * @returns {MessageEmbed} This embed
+   * @param {StringResolvable} name The name of the author.
+   * @param {string} [iconURL] The icon URL of the author.
+   * @param {string} [url] The URL of the author.
+   * @returns {MessageEmbed} This embed.
    */
   setAuthor(name, iconURL, url) {
     this.author = { name: Util.resolveString(name), iconURL, url };
@@ -201,8 +201,8 @@ class MessageEmbed {
 
   /**
    * Sets the color of this embed.
-   * @param {ColorResolvable} color The color of the embed
-   * @returns {MessageEmbed} This embed
+   * @param {ColorResolvable} color The color of the embed.
+   * @returns {MessageEmbed} This embed.
    */
   setColor(color) {
     this.color = Util.resolveColor(color);
@@ -211,8 +211,8 @@ class MessageEmbed {
 
   /**
    * Sets the description of this embed.
-   * @param {StringResolvable} description The description
-   * @returns {MessageEmbed} This embed
+   * @param {StringResolvable} description The description.
+   * @returns {MessageEmbed} This embed.
    */
   setDescription(description) {
     description = Util.resolveString(description);
@@ -223,9 +223,9 @@ class MessageEmbed {
 
   /**
    * Sets the footer of this embed.
-   * @param {StringResolvable} text The text of the footer
-   * @param {string} [iconURL] The icon URL of the footer
-   * @returns {MessageEmbed} This embed
+   * @param {StringResolvable} text The text of the footer.
+   * @param {string} [iconURL] The icon URL of the footer.
+   * @returns {MessageEmbed} This embed.
    */
   setFooter(text, iconURL) {
     text = Util.resolveString(text);
@@ -236,8 +236,8 @@ class MessageEmbed {
 
   /**
    * Set the image of this embed.
-   * @param {string} url The URL of the image
-   * @returns {MessageEmbed} This embed
+   * @param {string} url The URL of the image.
+   * @returns {MessageEmbed} This embed.
    */
   setImage(url) {
     this.image = { url };
@@ -246,8 +246,8 @@ class MessageEmbed {
 
   /**
    * Set the thumbnail of this embed.
-   * @param {string} url The URL of the thumbnail
-   * @returns {MessageEmbed} This embed
+   * @param {string} url The URL of the thumbnail.
+   * @returns {MessageEmbed} This embed.
    */
   setThumbnail(url) {
     this.thumbnail = { url };
@@ -256,8 +256,8 @@ class MessageEmbed {
 
   /**
    * Sets the timestamp of this embed.
-   * @param {Date} [timestamp=current date] The timestamp
-   * @returns {MessageEmbed} This embed
+   * @param {Date} [timestamp=current date] The timestamp.
+   * @returns {MessageEmbed} This embed.
    */
   setTimestamp(timestamp = new Date()) {
     this.timestamp = timestamp;
@@ -266,8 +266,8 @@ class MessageEmbed {
 
   /**
    * Sets the title of this embed.
-   * @param {StringResolvable} title The title
-   * @returns {MessageEmbed} This embed
+   * @param {StringResolvable} title The title.
+   * @returns {MessageEmbed} This embed.
    */
   setTitle(title) {
     title = Util.resolveString(title);
@@ -278,8 +278,8 @@ class MessageEmbed {
 
   /**
    * Sets the URL of this embed.
-   * @param {string} url The URL
-   * @returns {MessageEmbed} This embed
+   * @param {string} url The URL.
+   * @returns {MessageEmbed} This embed.
    */
   setURL(url) {
     this.url = url;

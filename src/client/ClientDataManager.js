@@ -26,7 +26,7 @@ class ClientDataManager {
       /**
        * Emitted whenever the client joins a guild.
        * @event Client#guildCreate
-       * @param {Guild} guild The created guild
+       * @param {Guild} guild The created guild.
        */
       if (this.client.options.fetchAllMembers) {
         guild.fetchMembers().then(() => { this.client.emit(Constants.Events.GUILD_CREATE, guild); });

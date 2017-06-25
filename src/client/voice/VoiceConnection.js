@@ -86,7 +86,7 @@ class VoiceConnection extends EventEmitter {
       /**
        * Debug info from the connection.
        * @event VoiceConnection#debug
-       * @param {string} message The debug message
+       * @param {string} message The debug message.
        */
       this.emit('debug', `audio player - ${m}`);
     });
@@ -95,7 +95,7 @@ class VoiceConnection extends EventEmitter {
       /**
        * Warning info from the connection.
        * @event VoiceConnection#warn
-       * @param {string|Error} warning The warning
+       * @param {string|Error} warning The warning.
        */
       this.emit('warn', e);
     });
@@ -128,7 +128,7 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Sets whether the voice connection should display as "speaking" or not.
-   * @param {boolean} value Whether or not to speak
+   * @param {boolean} value Whether or not to speak.
    * @private
    */
   setSpeaking(value) {
@@ -147,7 +147,7 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Sends a request to the main gateway to join a voice channel.
-   * @param {Object} [options] The options to provide
+   * @param {Object} [options] The options to provide.
    */
   sendVoiceStateUpdate(options = {}) {
     options = Util.mergeDefault({
@@ -165,8 +165,8 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Set the token and endpoint required to connect to the the voice servers.
-   * @param {string} token The voice token
-   * @param {string} endpoint The voice endpoint
+   * @param {string} token The voice token.
+   * @param {string} endpoint The voice endpoint.
    * @returns {void}
    */
   setTokenAndEndpoint(token, endpoint) {
@@ -198,7 +198,7 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Sets the Session ID for the connection.
-   * @param {string} sessionID The voice session ID
+   * @param {string} sessionID The voice session ID.
    */
   setSessionID(sessionID) {
     if (!sessionID) {
@@ -241,7 +241,7 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Invoked when we fail to initiate a voice connection.
-   * @param {string} reason The reason for failure
+   * @param {string} reason The reason for failure.
    * @private
    */
   authenticateFailed(reason) {
@@ -250,7 +250,7 @@ class VoiceConnection extends EventEmitter {
       /**
        * Emitted when we fail to initiate a voice connection.
        * @event VoiceConnection#failed
-       * @param {Error} error The encountered error
+       * @param {Error} error The encountered error.
        */
       this.emit('failed', new Error(reason));
     } else {
@@ -261,7 +261,7 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Move to a different voice channel in the same guild.
-   * @param {VoiceChannel} channel The channel to move to
+   * @param {VoiceChannel} channel The channel to move to.
    * @private
    */
   updateChannel(channel) {
@@ -281,8 +281,8 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Attempts to reconnect to the voice server (typically after a region change).
-   * @param {string} token The voice token
-   * @param {string} endpoint The voice endpoint
+   * @param {string} token The voice token.
+   * @param {string} endpoint The voice endpoint.
    * @private
    */
   reconnect(token, endpoint) {
@@ -363,7 +363,7 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Invoked when the voice websocket is ready.
-   * @param {Object} data The received data
+   * @param {Object} data The received data.
    * @private
    */
   onReady({ port, ssrc }) {
@@ -374,7 +374,7 @@ class VoiceConnection extends EventEmitter {
     /**
      * Emitted whenever the connection encounters an error.
      * @event VoiceConnection#error
-     * @param {Error} error The encountered error
+     * @param {Error} error The encountered error.
      */
     udp.findEndpointAddress()
       .then(address => {
@@ -384,8 +384,8 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Invoked when a session description is received.
-   * @param {string} mode The encryption mode
-   * @param {string} secret The secret key
+   * @param {string} mode The encryption mode.
+   * @param {string} secret The secret key.
    * @private
    */
   onSessionDescription(mode, secret) {
@@ -403,7 +403,7 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Invoked when a speaking event is received.
-   * @param {Object} data The received data
+   * @param {Object} data The received data.
    * @private
    */
   onSpeaking({ user_id, ssrc, speaking }) {
@@ -418,8 +418,8 @@ class VoiceConnection extends EventEmitter {
     /**
      * Emitted whenever a user starts/stops speaking.
      * @event VoiceConnection#speaking
-     * @param {User} user The user that has started/stopped speaking
-     * @param {boolean} speaking Whether or not the user is speaking
+     * @param {User} user The user that has started/stopped speaking.
+     * @param {boolean} speaking Whether or not the user is speaking.
      */
     if (this.status === Constants.VoiceStatus.CONNECTED) this.emit('speaking', user, speaking);
     guild._memberSpeakUpdate(user_id, speaking);
@@ -435,8 +435,8 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Play the given file in the voice connection.
-   * @param {string} file The absolute path to the file
-   * @param {StreamOptions} [options] Options for playing the stream
+   * @param {string} file The absolute path to the file.
+   * @param {StreamOptions} [options] Options for playing the stream.
    * @returns {StreamDispatcher}
    * @example
    * // Play files natively
@@ -452,8 +452,8 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Play an arbitrary input that can be [handled by ffmpeg](https://ffmpeg.org/ffmpeg-protocols.html#Description)
-   * @param {string} input the arbitrary input
-   * @param {StreamOptions} [options] Options for playing the stream
+   * @param {string} input the arbitrary input.
+   * @param {StreamOptions} [options] Options for playing the stream.
    * @returns {StreamDispatcher}
    */
   playArbitraryInput(input, options) {
@@ -462,8 +462,8 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Plays and converts an audio stream in the voice connection.
-   * @param {ReadableStream} stream The audio stream to play
-   * @param {StreamOptions} [options] Options for playing the stream
+   * @param {ReadableStream} stream The audio stream to play.
+   * @param {StreamOptions} [options] Options for playing the stream.
    * @returns {StreamDispatcher}
    * @example
    * // Play streams using ytdl-core
@@ -482,8 +482,8 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Plays a stream of 16-bit signed stereo PCM at 48KHz.
-   * @param {ReadableStream} stream The audio stream to play
-   * @param {StreamOptions} [options] Options for playing the stream
+   * @param {ReadableStream} stream The audio stream to play.
+   * @param {StreamOptions} [options] Options for playing the stream.
    * @returns {StreamDispatcher}
    */
   playConvertedStream(stream, options) {
@@ -493,8 +493,8 @@ class VoiceConnection extends EventEmitter {
   /**
    * Plays an Opus encoded stream at 48KHz.
    * <warn>Note that inline volume is not compatible with this method.</warn>
-   * @param {ReadableStream} stream The Opus audio stream to play
-   * @param {StreamOptions} [options] Options for playing the stream
+   * @param {ReadableStream} stream The Opus audio stream to play.
+   * @param {StreamOptions} [options] Options for playing the stream.
    * @returns {StreamDispatcher}
    */
   playOpusStream(stream, options) {
@@ -503,7 +503,7 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Plays a voice broadcast.
-   * @param {VoiceBroadcast} broadcast The broadcast to play
+   * @param {VoiceBroadcast} broadcast The broadcast to play.
    * @returns {StreamDispatcher}
    * @example
    * // Play a broadcast

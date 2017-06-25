@@ -66,8 +66,8 @@ class TextChannel extends GuildChannel {
 
   /**
    * Create a webhook for the channel.
-   * @param {string} name The name of the webhook
-   * @param {BufferResolvable|Base64Resolvable} avatar The avatar for the webhook
+   * @param {string} name The name of the webhook.
+   * @param {BufferResolvable|Base64Resolvable} avatar The avatar for the webhook.
    * @returns {Promise<Webhook>} webhook The created webhook
    * @example
    * channel.createWebhook('Snek', 'http://snek.s3.amazonaws.com/topSnek.png')

@@ -8,9 +8,9 @@ const { Error } = require('../errors');
  */
 class Shard {
   /**
-   * @param {ShardingManager} manager The sharding manager
-   * @param {number} id The ID of this shard
-   * @param {Array} [args=[]] Command line arguments to pass to the script
+   * @param {ShardingManager} manager The sharding manager.
+   * @param {number} id The ID of this shard.
+   * @param {Array} [args=[]] Command line arguments to pass to the script.
    */
   constructor(manager, id, args = []) {
     /**
@@ -53,7 +53,7 @@ class Shard {
 
   /**
    * Sends a message to the shard's process.
-   * @param {*} message Message to send to the shard
+   * @param {*} message Message to send to the shard.
    * @returns {Promise<Shard>}
    */
   send(message) {
@@ -67,7 +67,7 @@ class Shard {
 
   /**
    * Fetches a client property value of the shard.
-   * @param {string} prop Name of the client property to get, using periods for nesting
+   * @param {string} prop Name of the client property to get, using periods for nesting.
    * @returns {Promise<*>}
    * @example
    * shard.fetchClientValue('guilds.size').then(count => {
@@ -99,7 +99,7 @@ class Shard {
 
   /**
    * Evaluates a script on the shard, in the context of the client.
-   * @param {string} script JavaScript to run on the shard
+   * @param {string} script JavaScript to run on the shard.
    * @returns {Promise<*>} Result of the script execution
    */
   eval(script) {
@@ -127,7 +127,7 @@ class Shard {
 
   /**
    * Handles an IPC message.
-   * @param {*} message Message received
+   * @param {*} message Message received.
    * @private
    */
   _handleMessage(message) {
@@ -154,8 +154,8 @@ class Shard {
     /**
      * Emitted upon recieving a message from a shard.
      * @event ShardingManager#message
-     * @param {Shard} shard Shard that sent the message
-     * @param {*} message Message that was received
+     * @param {Shard} shard Shard that sent the message.
+     * @param {*} message Message that was received.
      */
     this.manager.emit('message', this, message);
   }

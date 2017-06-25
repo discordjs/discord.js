@@ -99,8 +99,8 @@ class ClientUser extends User {
    * Set the username of the logged in client.
    * <info>Changing usernames in Discord is heavily rate limited, with only 2 requests
    * every hour. Use this sparingly!</info>
-   * @param {string} username The new username
-   * @param {string} [password] Current password (only for user accounts)
+   * @param {string} username The new username.
+   * @param {string} [password] Current password (only for user accounts).
    * @returns {Promise<ClientUser>}
    * @example
    * // Set username
@@ -115,8 +115,8 @@ class ClientUser extends User {
   /**
    * Changes the email for the client user's account.
    * <warn>This is only available when using a user account.</warn>
-   * @param {string} email New email to change to
-   * @param {string} password Current password
+   * @param {string} email New email to change to.
+   * @param {string} password Current password.
    * @returns {Promise<ClientUser>}
    * @example
    * // Set email
@@ -131,8 +131,8 @@ class ClientUser extends User {
   /**
    * Changes the password for the client user's account.
    * <warn>This is only available when using a user account.</warn>
-   * @param {string} newPassword New password to change to
-   * @param {string} oldPassword Current password
+   * @param {string} newPassword New password to change to.
+   * @param {string} oldPassword Current password.
    * @returns {Promise<ClientUser>}
    * @example
    * // Set password
@@ -146,7 +146,7 @@ class ClientUser extends User {
 
   /**
    * Set the avatar of the logged in client.
-   * @param {BufferResolvable|Base64Resolvable} avatar The new avatar
+   * @param {BufferResolvable|Base64Resolvable} avatar The new avatar.
    * @returns {Promise<ClientUser>}
    * @example
    * // Set avatar
@@ -166,16 +166,16 @@ class ClientUser extends User {
   /**
    * Data resembling a raw Discord presence.
    * @typedef {Object} PresenceData
-   * @property {PresenceStatus} [status] Status of the user
-   * @property {boolean} [afk] Whether the user is AFK
-   * @property {Object} [game] Game the user is playing
+   * @property {PresenceStatus} [status] Status of the user.
+   * @property {boolean} [afk] Whether the user is AFK.
+   * @property {Object} [game] Game the user is playing.
    * @property {string} [game.name] Name of the game
    * @property {string} [game.url] Twitch stream URL
    */
 
   /**
    * Sets the full presence of the client user.
-   * @param {PresenceData} data Data for the presence
+   * @param {PresenceData} data Data for the presence.
    * @returns {Promise<ClientUser>}
    */
   setPresence(data) {
@@ -239,7 +239,7 @@ class ClientUser extends User {
 
   /**
    * Sets the status of the client user.
-   * @param {PresenceStatus} status Status to change to
+   * @param {PresenceStatus} status Status to change to.
    * @returns {Promise<ClientUser>}
    */
   setStatus(status) {
@@ -248,8 +248,8 @@ class ClientUser extends User {
 
   /**
    * Sets the game the client user is playing.
-   * @param {?string} game Game being played
-   * @param {string} [streamingURL] Twitch stream URL
+   * @param {?string} game Game being played.
+   * @param {string} [streamingURL] Twitch stream URL.
    * @returns {Promise<ClientUser>}
    */
   setGame(game, streamingURL) {
@@ -264,7 +264,7 @@ class ClientUser extends User {
 
   /**
    * Sets/removes the AFK flag for the client user.
-   * @param {boolean} afk Whether or not the user is AFK
+   * @param {boolean} afk Whether or not the user is AFK.
    * @returns {Promise<ClientUser>}
    */
   setAFK(afk) {
@@ -273,7 +273,7 @@ class ClientUser extends User {
 
   /**
    * Fetches messages that mentioned the client's user.
-   * @param {Object} [options] Options for the fetch
+   * @param {Object} [options] Options for the fetch.
    * @param {number} [options.limit=25] Maximum number of mentions to retrieve
    * @param {boolean} [options.roles=true] Whether to include role mentions
    * @param {boolean} [options.everyone=true] Whether to include everyone/here mentions
@@ -291,8 +291,8 @@ class ClientUser extends User {
   /**
    * Creates a guild.
    * <warn>This is only available when using a user account.</warn>
-   * @param {string} name The name of the guild
-   * @param {Object} [options] Options for the creating
+   * @param {string} name The name of the guild.
+   * @param {Object} [options] Options for the creating.
    * @param {string} [options.region] The region for the server, defaults to the closest one available
    * @param {BufferResolvable|Base64Resolvable} [options.icon=null] The icon for the guild
    * @returns {Promise<Guild>} The guild that was created
@@ -330,17 +330,17 @@ class ClientUser extends User {
    * An object containing either a user or access token, and an optional nickname.
    * @typedef {Object} GroupDMRecipientOptions
    * @property {UserResolvable} [user] User to add to the Group DM
-   * (only available if a user is creating the DM)
+   * (only available if a user is creating the DM).
    * @property {string} [accessToken] Access token to use to add a user to the Group DM
-   * (only available if a bot is creating the DM)
-   * @property {string} [nick] Permanent nickname (only available if a bot is creating the DM)
-   * @property {string} [id] If no user resolveable is provided and you want to assign nicknames
+   * (only available if a bot is creating the DM).
+   * @property {string} [nick] Permanent nickname (only available if a bot is creating the DM).
+   * @property {string} [id] If no user resolveable is provided and you want to assign nicknames.
    * you must provide user ids instead
    */
 
   /**
    * Creates a Group DM.
-   * @param {GroupDMRecipientOptions[]} recipients The recipients
+   * @param {GroupDMRecipientOptions[]} recipients The recipients.
    * @returns {Promise<GroupDMChannel>}
    */
   createGroupDM(recipients) {

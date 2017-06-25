@@ -60,7 +60,7 @@ class GuildChannel extends Channel {
   /**
    * Gets the overall set of permissions for a user in this channel, taking into account roles and permission
    * overwrites.
-   * @param {GuildMemberResolvable} member The user that you want to obtain the overall permissions for
+   * @param {GuildMemberResolvable} member The user that you want to obtain the overall permissions for.
    * @returns {?Permissions}
    */
   permissionsFor(member) {
@@ -137,12 +137,12 @@ class GuildChannel extends Channel {
 
   /**
    * Overwrites the permissions for a user or role in this channel.
-   * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
-   * @param {PermissionOverwriteOptions} options The configuration for the update
-   * @param {string} [reason] Reason for creating/editing this overwrite
+   * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update.
+   * @param {PermissionOverwriteOptions} options The configuration for the update.
+   * @param {string} [reason] Reason for creating/editing this overwrite.
    * @returns {Promise<GuildChannel>}
    * @example
-   * // Overwrite permissions for a message author
+   * // Overwrite permissions for a message author.
    * message.channel.overwritePermissions(message.author, {
    *  SEND_MESSAGES: false
    * })
@@ -196,20 +196,20 @@ class GuildChannel extends Channel {
   /**
    * The data for a guild channel.
    * @typedef {Object} ChannelData
-   * @property {string} [name] The name of the channel
-   * @property {number} [position] The position of the channel
-   * @property {string} [topic] The topic of the text channel
-   * @property {number} [bitrate] The bitrate of the voice channel
-   * @property {number} [userLimit] The user limit of the channel
+   * @property {string} [name] The name of the channel.
+   * @property {number} [position] The position of the channel.
+   * @property {string} [topic] The topic of the text channel.
+   * @property {number} [bitrate] The bitrate of the voice channel.
+   * @property {number} [userLimit] The user limit of the channel.
    */
 
   /**
    * Edits the channel.
-   * @param {ChannelData} data The new data for the channel
-   * @param {string} [reason] Reason for editing this channel
+   * @param {ChannelData} data The new data for the channel.
+   * @param {string} [reason] Reason for editing this channel.
    * @returns {Promise<GuildChannel>}
    * @example
-   * // Edit a channel
+   * // Edit a channel.
    * channel.edit({name: 'new-channel'})
    *  .then(c => console.log(`Edited channel ${c}`))
    *  .catch(console.error);
@@ -229,10 +229,10 @@ class GuildChannel extends Channel {
 
   /**
    * Set a new name for the guild channel.
-   * @param {string} name The new name for the guild channel
+   * @param {string} name The new name for the guild channel.
    * @returns {Promise<GuildChannel>}
    * @example
-   * // Set a new channel name
+   * // Set a new channel name.
    * channel.setName('not_general')
    *  .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
    *  .catch(console.error);
@@ -243,11 +243,11 @@ class GuildChannel extends Channel {
 
   /**
    * Set a new position for the guild channel.
-   * @param {number} position The new position for the guild channel
-   * @param {boolean} [relative=false] Move the position relative to its current value
+   * @param {number} position The new position for the guild channel.
+   * @param {boolean} [relative=false] Move the position relative to its current value.
    * @returns {Promise<GuildChannel>}
    * @example
-   * // Set a new channel position
+   * // Set a new channel position.
    * channel.setPosition(2)
    *  .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
    *  .catch(console.error);
@@ -258,10 +258,10 @@ class GuildChannel extends Channel {
 
   /**
    * Set a new topic for the guild channel.
-   * @param {string} topic The new topic for the guild channel
+   * @param {string} topic The new topic for the guild channel.
    * @returns {Promise<GuildChannel>}
    * @example
-   * // Set a new channel topic
+   * // Set a new channel topic.
    * channel.setTopic('needs more rate limiting')
    *  .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
    *  .catch(console.error);
@@ -278,12 +278,12 @@ class GuildChannel extends Channel {
 
   /**
    * Create an invite to this guild channel.
-   * @param {InviteOptions} [options={}] Options for the invite
+   * @param {InviteOptions} [options={}] Options for the invite.
    * @param {boolean} [options.temporary=false] Whether members that joined via the invite should be automatically
-   * kicked after 24 hours if they have not yet received a role
-   * @param {number} [options.maxAge=86400] How long the invite should last (in seconds, 0 for forever)
-   * @param {number} [options.maxUses=0] Maximum number of uses
-   * @param {string} [options.reason] Reason for creating this
+   * kicked after 24 hours if they have not yet received a role.
+   * @param {number} [options.maxAge=86400] How long the invite should last (in seconds, 0 for forever).
+   * @param {number} [options.maxUses=0] Maximum number of uses.
+   * @param {string} [options.reason] Reason for creating this.
    * @returns {Promise<Invite>}
    */
   createInvite({ temporary = false, maxAge = 86400, maxUses = 0, reason } = {}) {
@@ -296,8 +296,8 @@ class GuildChannel extends Channel {
   /**
    * Clone this channel.
    * @param {string} [name=this.name] Optional name for the new channel, otherwise it has the name of this channel
-   * @param {boolean} [withPermissions=true] Whether to clone the channel with this channel's permission overwrites
-   * @param {boolean} [withTopic=true] Whether to clone the channel with this channel's topic
+   * @param {boolean} [withPermissions=true] Whether to clone the channel with this channel's permission overwrites.
+   * @param {boolean} [withTopic=true] Whether to clone the channel with this channel's topic.
    * @returns {Promise<GuildChannel>}
    */
   clone(name = this.name, withPermissions = true, withTopic = true) {
@@ -308,7 +308,7 @@ class GuildChannel extends Channel {
   /**
    * Checks if this channel has the same type, topic, position, name, overwrites and ID as another channel.
    * In most cases, a simple `channel.id === channel2.id` will do, and is much faster too.
-   * @param {GuildChannel} channel Channel to compare with
+   * @param {GuildChannel} channel Channel to compare with.
    * @returns {boolean}
    */
   equals(channel) {
@@ -342,10 +342,10 @@ class GuildChannel extends Channel {
 
   /**
    * Deletes this channel.
-   * @param {string} [reason] Reason for deleting this channel
+   * @param {string} [reason] Reason for deleting this channel.
    * @returns {Promise<GuildChannel>}
    * @example
-   * // Delete the channel
+   * // Delete the channel.
    * channel.delete('making room for new channels')
    *  .then() // Success
    *  .catch(console.error); // Log error
@@ -358,7 +358,7 @@ class GuildChannel extends Channel {
    * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
    * @returns {string}
    * @example
-   * // Outputs: Hello from #general
+   * // Outputs: Hello from #general.
    * console.log(`Hello from ${channel}`);
    * @example
    * // Outputs: Hello from #general

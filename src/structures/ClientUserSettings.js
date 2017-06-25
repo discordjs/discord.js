@@ -12,7 +12,7 @@ class ClientUserSettings {
 
   /**
    * Patch the data contained in this class with new partial data.
-   * @param {Object} data Data to patch this with
+   * @param {Object} data Data to patch this with.
    */
   patch(data) {
     for (const [key, value] of Object.entries(Constants.UserSettingsMap)) {
@@ -27,8 +27,8 @@ class ClientUserSettings {
 
   /**
    * Update a specific property of of user settings.
-   * @param {string} name Name of property
-   * @param {value} value Value to patch
+   * @param {string} name Name of property.
+   * @param {value} value Value to patch.
    * @returns {Promise<Object>}
    */
   update(name, value) {
@@ -36,9 +36,9 @@ class ClientUserSettings {
   }
 
   /**
-   * @param {Guild} guild The guild to move
-   * @param {number} position Absolute or relative position
-   * @param {boolean} [relative=false] Whether to position relatively or absolutely
+   * @param {Guild} guild The guild to move.
+   * @param {number} position Absolute or relative position.
+   * @param {boolean} [relative=false] Whether to position relatively or absolutely.
    * @returns {Promise<Guild>}
    */
   setGuildPosition(guild, position, relative) {
@@ -49,7 +49,7 @@ class ClientUserSettings {
 
   /**
    * Add a guild to the list of restricted guilds.
-   * @param {Guild} guild The guild to add
+   * @param {Guild} guild The guild to add.
    * @returns {Promise<Guild>}
    */
   addRestrictedGuild(guild) {
@@ -61,7 +61,7 @@ class ClientUserSettings {
 
   /**
    * Remove a guild from the list of restricted guilds.
-   * @param {Guild} guild The guild to remove
+   * @param {Guild} guild The guild to remove.
    * @returns {Promise<Guild>}
    */
   removeRestrictedGuild(guild) {

@@ -19,7 +19,7 @@ const { Error, TypeError } = require('../errors');
  */
 class ClientDataResolver {
   /**
-   * @param {Client} client The client the resolver is for
+   * @param {Client} client The client the resolver is for.
    */
   constructor(client) {
     this.client = client;
@@ -37,7 +37,7 @@ class ClientDataResolver {
 
   /**
    * Resolves a UserResolvable to a User object.
-   * @param {UserResolvable} user The UserResolvable to identify
+   * @param {UserResolvable} user The UserResolvable to identify.
    * @returns {?User}
    */
   resolveUser(user) {
@@ -51,7 +51,7 @@ class ClientDataResolver {
 
   /**
    * Resolves a UserResolvable to a user ID string.
-   * @param {UserResolvable} user The UserResolvable to identify
+   * @param {UserResolvable} user The UserResolvable to identify.
    * @returns {?Snowflake}
    */
   resolveUserID(user) {
@@ -71,7 +71,7 @@ class ClientDataResolver {
 
   /**
    * Resolves a GuildResolvable to a Guild object.
-   * @param {GuildResolvable} guild The GuildResolvable to identify
+   * @param {GuildResolvable} guild The GuildResolvable to identify.
    * @returns {?Guild}
    */
   resolveGuild(guild) {
@@ -89,8 +89,8 @@ class ClientDataResolver {
 
   /**
    * Resolves a GuildMemberResolvable to a GuildMember object.
-   * @param {GuildResolvable} guild The guild that the member is part of
-   * @param {UserResolvable} user The user that is part of the guild
+   * @param {GuildResolvable} guild The guild that the member is part of.
+   * @param {UserResolvable} user The user that is part of the guild.
    * @returns {?GuildMember}
    */
   resolveGuildMember(guild, user) {
@@ -112,7 +112,7 @@ class ClientDataResolver {
 
   /**
    * Resolves a ChannelResolvable to a Channel object.
-   * @param {ChannelResolvable} channel The channel resolvable to resolve
+   * @param {ChannelResolvable} channel The channel resolvable to resolve.
    * @returns {?Channel}
    */
   resolveChannel(channel) {
@@ -125,7 +125,7 @@ class ClientDataResolver {
 
   /**
    * Resolves a ChannelResolvable to a channel ID.
-   * @param {ChannelResolvable} channel The channel resolvable to resolve
+   * @param {ChannelResolvable} channel The channel resolvable to resolve.
    * @returns {?Snowflake}
    */
   resolveChannelID(channel) {
@@ -145,7 +145,7 @@ class ClientDataResolver {
 
   /**
    * Resolves InviteResolvable to an invite code.
-   * @param {InviteResolvable} data The invite resolvable to resolve
+   * @param {InviteResolvable} data The invite resolvable to resolve.
    * @returns {string}
    */
   resolveInviteCode(data) {
@@ -164,7 +164,7 @@ class ClientDataResolver {
 
   /**
    * Resolves a Base64Resolvable to a Base 64 image.
-   * @param {Base64Resolvable} data The base 64 resolvable you want to resolve
+   * @param {Base64Resolvable} data The base 64 resolvable you want to resolve.
    * @returns {?string}
    */
   resolveBase64(data) {
@@ -182,7 +182,7 @@ class ClientDataResolver {
 
   /**
    * Resolves a BufferResolvable to a Buffer.
-   * @param {BufferResolvable} resource The buffer resolvable to resolve
+   * @param {BufferResolvable} resource The buffer resolvable to resolve.
    * @returns {Promise<Buffer>}
    */
   resolveBuffer(resource) {
@@ -226,7 +226,7 @@ class ClientDataResolver {
 
   /**
    * Resolves an EmojiResolvable to an emoji identifier.
-   * @param {EmojiIdentifierResolvable} emoji The emoji resolvable to resolve
+   * @param {EmojiIdentifierResolvable} emoji The emoji resolvable to resolve.
    * @returns {?string}
    */
   resolveEmojiIdentifier(emoji) {

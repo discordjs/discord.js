@@ -4,9 +4,9 @@
  */
 class BaseOpus {
   /**
-   * @param {Object} [options] The options to apply to the Opus engine
-   * @param {boolean} [options.fec] Whether to enable forward error correction (defaults to false)
-   * @param {number} [options.plp] The expected packet loss percentage (0-1 inclusive, defaults to 0)
+   * @param {Object} [options] The options to apply to the Opus engine.
+   * @param {boolean} [options.fec] Whether to enable forward error correction (defaults to false).
+   * @param {number} [options.plp] The expected packet loss percentage (0-1 inclusive, defaults to 0).
    */
   constructor(options = {}) {
     this.ctl = {

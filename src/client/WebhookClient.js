@@ -10,9 +10,9 @@ const Util = require('../util/Util');
  */
 class WebhookClient extends Webhook {
   /**
-   * @param {Snowflake} id ID of the webhook
-   * @param {string} token Token of the webhook
-   * @param {ClientOptions} [options] Options for the client
+   * @param {Snowflake} id ID of the webhook.
+   * @param {string} token Token of the webhook.
+   * @param {ClientOptions} [options] Options for the client.
    * @example
    * // Create a new webhook and send a message
    * const hook = new Discord.WebhookClient('1234', 'abcdef');
@@ -65,9 +65,9 @@ class WebhookClient extends Webhook {
 
   /**
    * Sets a timeout that will be automatically cancelled if the client is destroyed.
-   * @param {Function} fn Function to execute
-   * @param {number} delay Time to wait before executing (in milliseconds)
-   * @param {...*} args Arguments for the function
+   * @param {Function} fn Function to execute.
+   * @param {number} delay Time to wait before executing (in milliseconds).
+   * @param {...*} args Arguments for the function.
    * @returns {Timeout}
    */
   setTimeout(fn, delay, ...args) {
@@ -81,7 +81,7 @@ class WebhookClient extends Webhook {
 
   /**
    * Clears a timeout.
-   * @param {Timeout} timeout Timeout to cancel
+   * @param {Timeout} timeout Timeout to cancel.
    */
   clearTimeout(timeout) {
     clearTimeout(timeout);
@@ -90,9 +90,9 @@ class WebhookClient extends Webhook {
 
   /**
    * Sets an interval that will be automatically cancelled if the client is destroyed.
-   * @param {Function} fn Function to execute
-   * @param {number} delay Time to wait before executing (in milliseconds)
-   * @param {...*} args Arguments for the function
+   * @param {Function} fn Function to execute.
+   * @param {number} delay Time to wait before executing (in milliseconds).
+   * @param {...*} args Arguments for the function.
    * @returns {Timeout}
    */
   setInterval(fn, delay, ...args) {
@@ -103,7 +103,7 @@ class WebhookClient extends Webhook {
 
   /**
    * Clears an interval.
-   * @param {Timeout} interval Interval to cancel
+   * @param {Timeout} interval Interval to cancel.
    */
   clearInterval(interval) {
     clearInterval(interval);

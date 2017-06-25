@@ -27,7 +27,7 @@ const { Error, TypeError, RangeError } = require('../errors');
  */
 class Client extends EventEmitter {
   /**
-   * @param {ClientOptions} [options] Options for the client
+   * @param {ClientOptions} [options] Options for the client.
    */
   constructor(options = {}) {
     super();
@@ -282,7 +282,7 @@ class Client extends EventEmitter {
    * possible. User accounts are subject to harsher ratelimits and other restrictions that don't apply to bot accounts.
    * Bot accounts also have access to many features that user accounts cannot utilise. User accounts that are found to
    * be abusing/overusing the API will be banned, locking you out of Discord entirely.</info>
-   * @param {string} token Token of the account to log in with
+   * @param {string} token Token of the account to log in with.
    * @returns {Promise<string>} Token of the account used
    * @example
    * client.login('my token');
@@ -311,7 +311,7 @@ class Client extends EventEmitter {
    * Requests a sync of guild data with Discord.
    * <info>This can be done automatically every 30 seconds by enabling {@link ClientOptions#sync}.</info>
    * <warn>This is only available when using a user account.</warn>
-   * @param {Guild[]|Collection<Snowflake, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
+   * @param {Guild[]|Collection<Snowflake, Guild>} [guilds=this.guilds] An array or collection of guilds to sync.
    */
   syncGuilds(guilds = this.guilds) {
     if (this.user.bot) return;
@@ -324,8 +324,8 @@ class Client extends EventEmitter {
   /**
    * Obtains a user from Discord, or the user cache if it's already available.
    * <warn>This is only available when using a bot account.</warn>
-   * @param {Snowflake} id ID of the user
-   * @param {boolean} [cache=true] Whether to cache the new user object if it isn't already
+   * @param {Snowflake} id ID of the user.
+   * @param {boolean} [cache=true] Whether to cache the new user object if it isn't already.
    * @returns {Promise<User>}
    */
   fetchUser(id, cache = true) {
@@ -337,7 +337,7 @@ class Client extends EventEmitter {
 
   /**
    * Obtains an invite from Discord.
-   * @param {InviteResolvable} invite Invite code or URL
+   * @param {InviteResolvable} invite Invite code or URL.
    * @returns {Promise<Invite>}
    */
   fetchInvite(invite) {
@@ -348,8 +348,8 @@ class Client extends EventEmitter {
 
   /**
    * Obtains a webhook from Discord.
-   * @param {Snowflake} id ID of the webhook
-   * @param {string} [token] Token for the webhook
+   * @param {Snowflake} id ID of the webhook.
+   * @param {string} [token] Token for the webhook.
    * @returns {Promise<Webhook>}
    */
   fetchWebhook(id, token) {
@@ -372,7 +372,7 @@ class Client extends EventEmitter {
    * Sweeps all text-based channels' messages and removes the ones older than the max message lifetime.
    * If the message has been edited, the time of the edit is used rather than the time of the original message.
    * @param {number} [lifetime=this.options.messageCacheLifetime] Messages that are older than this (in seconds)
-   * will be removed from the caches. The default is based on {@link ClientOptions#messageCacheLifetime}
+   * will be removed from the caches. The default is based on {@link ClientOptions#messageCacheLifetime}.
    * @returns {number} Amount of messages that were removed from the caches,
    * or -1 if the message cache lifetime is unlimited
    */
@@ -408,7 +408,7 @@ class Client extends EventEmitter {
 
   /**
    * Obtains the OAuth Application of the bot from Discord.
-   * @param {Snowflake} [id='@me'] ID of application to fetch
+   * @param {Snowflake} [id='@me'] ID of application to fetch.
    * @returns {Promise<OAuth2Application>}
    */
   fetchApplication(id = '@me') {
@@ -419,7 +419,7 @@ class Client extends EventEmitter {
   /**
    * Generates a link that can be used to invite the bot to a guild.
    * <warn>This is only available when using a bot account.</warn>
-   * @param {PermissionResolvable[]|number} [permissions] Permissions to request
+   * @param {PermissionResolvable[]|number} [permissions] Permissions to request.
    * @returns {Promise<string>}
    * @example
    * client.generateInvite(['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'])
@@ -440,9 +440,9 @@ class Client extends EventEmitter {
 
   /**
    * Sets a timeout that will be automatically cancelled if the client is destroyed.
-   * @param {Function} fn Function to execute
-   * @param {number} delay Time to wait before executing (in milliseconds)
-   * @param {...*} args Arguments for the function
+   * @param {Function} fn Function to execute.
+   * @param {number} delay Time to wait before executing (in milliseconds).
+   * @param {...*} args Arguments for the function.
    * @returns {Timeout}
    */
   setTimeout(fn, delay, ...args) {
@@ -456,7 +456,7 @@ class Client extends EventEmitter {
 
   /**
    * Clears a timeout.
-   * @param {Timeout} timeout Timeout to cancel
+   * @param {Timeout} timeout Timeout to cancel.
    */
   clearTimeout(timeout) {
     clearTimeout(timeout);
@@ -465,9 +465,9 @@ class Client extends EventEmitter {
 
   /**
    * Sets an interval that will be automatically cancelled if the client is destroyed.
-   * @param {Function} fn Function to execute
-   * @param {number} delay Time to wait before executing (in milliseconds)
-   * @param {...*} args Arguments for the function
+   * @param {Function} fn Function to execute.
+   * @param {number} delay Time to wait before executing (in milliseconds).
+   * @param {...*} args Arguments for the function.
    * @returns {Timeout}
    */
   setInterval(fn, delay, ...args) {
@@ -478,7 +478,7 @@ class Client extends EventEmitter {
 
   /**
    * Clears an interval.
-   * @param {Timeout} interval Interval to cancel
+   * @param {Timeout} interval Interval to cancel.s
    */
   clearInterval(interval) {
     clearInterval(interval);
@@ -487,7 +487,7 @@ class Client extends EventEmitter {
 
   /**
    * Adds a ping to {@link Client#pings}.
-   * @param {number} startTime Starting time of the ping
+   * @param {number} startTime Starting time of the ping.
    * @private
    */
   _pong(startTime) {
@@ -498,8 +498,8 @@ class Client extends EventEmitter {
 
   /**
    * Adds/updates a friend's presence in {@link Client#presences}.
-   * @param {Snowflake} id ID of the user
-   * @param {Object} presence Raw presence object from Discord
+   * @param {Snowflake} id ID of the user.
+   * @param {Object} presence Raw presence object from Discord.
    * @private
    */
   _setPresence(id, presence) {
@@ -513,7 +513,7 @@ class Client extends EventEmitter {
   /**
    * Calls {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval} on a script
    * with the client as `this`.
-   * @param {string} script Script to eval
+   * @param {string} script Script to eval.
    * @returns {*}
    * @private
    */
@@ -523,7 +523,7 @@ class Client extends EventEmitter {
 
   /**
    * Validates the client options.
-   * @param {ClientOptions} [options=this.options] Options to validate
+   * @param {ClientOptions} [options=this.options] Options to validate.
    * @private
    */
   _validateOptions(options = this.options) {
@@ -570,11 +570,11 @@ module.exports = Client;
 /**
  * Emitted for general warnings.
  * @event Client#warn
- * @param {string} info The warning
+ * @param {string} info The warning.
  */
 
 /**
  * Emitted for general debugging information.
  * @event Client#debug
- * @param {string} info The debug information
+ * @param {string} info The debug information.
  */

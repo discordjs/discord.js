@@ -107,7 +107,7 @@ class GroupDMChannel extends Channel {
    * Whether this channel equals another channel. It compares all properties, so for most operations
    * it is advisable to just compare `channel.id === channel2.id` as it is much faster and is often
    * what most users need.
-   * @param {GroupDMChannel} channel Channel to compare with
+   * @param {GroupDMChannel} channel Channel to compare with.
    * @returns {boolean}
    */
   equals(channel) {
@@ -126,8 +126,8 @@ class GroupDMChannel extends Channel {
 
   /**
    * Add a user to the DM
-   * @param {UserResolvable|string} accessTokenOrUser Access token or user resolvable
-   * @param {string} [nick] Permanent nickname to give the user (only available if a bot is creating the DM)
+   * @param {UserResolvable|string} accessTokenOrUser Access token or user resolvable.
+   * @param {string} [nick] Permanent nickname to give the user (only available if a bot is creating the DM).
    * @returns {Promise<GroupDMChannel>}
    */
   addUser(accessTokenOrUser, nick) {
@@ -143,11 +143,11 @@ class GroupDMChannel extends Channel {
    * When concatenated with a string, this automatically concatenates the channel's name instead of the Channel object.
    * @returns {string}
    * @example
-   * // Logs: Hello from My Group DM!
-   * console.log(`Hello from ${channel}!`);
+   * // Logs: Hello from My Group DM.
+   * console.log(`Hello from ${channel}.`);
    * @example
-   * // Logs: Hello from My Group DM!
-   * console.log(`Hello from ' + channel + '!');
+   * // Logs: Hello from My Group DM.
+   * console.log(`Hello from ' + channel + '.');
    */
   toString() {
     return this.name;

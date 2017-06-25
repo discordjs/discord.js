@@ -141,7 +141,7 @@ class Invite {
 
   /**
    * Deletes this invite.
-   * @param {string} [reason] Reason for deleting this invite
+   * @param {string} [reason] Reason for deleting this invite.
    * @returns {Promise<Invite>}
    */
   delete(reason) {
@@ -152,7 +152,7 @@ class Invite {
    * When concatenated with a string, this automatically concatenates the invite's URL instead of the object.
    * @returns {string}
    * @example
-   * // Logs: Invite: https://discord.gg/A1b2C3
+   * // Logs: Invite: https://discord.gg/A1b2C3.
    * console.log(`Invite: ${invite}`);
    */
   toString() {

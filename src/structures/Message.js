@@ -153,7 +153,7 @@ class Message {
 
   /**
    * Updates the message.
-   * @param {Object} data Raw Discord message update data
+   * @param {Object} data Raw Discord message update data.
    * @private
    */
   patch(data) {
@@ -249,8 +249,8 @@ class Message {
 
   /**
    * Creates a reaction collector.
-   * @param {CollectorFilter} filter The filter to apply
-   * @param {ReactionCollectorOptions} [options={}] Options to send to the collector
+   * @param {CollectorFilter} filter The filter to apply.
+   * @param {ReactionCollectorOptions} [options={}] Options to send to the collector.
    * @returns {ReactionCollector}
    * @example
    * // Create a reaction collector
@@ -268,14 +268,14 @@ class Message {
   /**
    * An object containing the same properties as CollectorOptions, but a few more:
    * @typedef {ReactionCollectorOptions} AwaitReactionsOptions
-   * @property {string[]} [errors] Stop/end reasons that cause the promise to reject
+   * @property {string[]} [errors] Stop/end reasons that cause the promise to reject.
    */
 
   /**
    * Similar to createCollector but in promise form. Resolves with a collection of reactions that pass the specified
    * filter.
-   * @param {CollectorFilter} filter The filter function to use
-   * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
+   * @param {CollectorFilter} filter The filter function to use.
+   * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector.
    * @returns {Promise<Collection<string, MessageReaction>>}
    */
   awaitReactions(filter, options = {}) {
@@ -332,7 +332,7 @@ class Message {
 
   /**
    * Whether or not a user, channel or role is mentioned in this message.
-   * @param {GuildChannel|User|Role|string} data Either a guild channel, user or a role object, or a string representing
+   * @param {GuildChannel|User|Role|string} data Either a guild channel, user or a role object, or a string representing.
    * the ID of any of these
    * @returns {boolean}
    */
@@ -344,7 +344,7 @@ class Message {
   /**
    * Whether or not a guild member is mentioned in this message. Takes into account
    * user mentions, role mentions, and @everyone/@here mentions.
-   * @param {GuildMember|User} member The member/user to check for a mention of
+   * @param {GuildMember|User} member The member/user to check for a mention of.
    * @returns {boolean}
    */
   isMemberMentioned(member) {
@@ -359,17 +359,17 @@ class Message {
   /**
    * Options that can be passed into editMessage.
    * @typedef {Object} MessageEditOptions
-   * @property {Object} [embed] An embed to be added/edited
-   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
+   * @property {Object} [embed] An embed to be added/edited.
+   * @property {string|boolean} [code] Language for optional codeblock formatting to apply.
    */
 
   /**
    * Edit the content of the message.
-   * @param {StringResolvable} [content] The new content for the message
-   * @param {MessageEditOptions} [options] The options to provide
+   * @param {StringResolvable} [content] The new content for the message.
+   * @param {MessageEditOptions} [options] The options to provide.
    * @returns {Promise<Message>}
    * @example
-   * // Update the content of a message
+   * // Update the content of a message.
    * message.edit('This is my new content!')
    *  .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
    *  .catch(console.error);
@@ -424,7 +424,7 @@ class Message {
 
   /**
    * Add a reaction to the message.
-   * @param {string|Emoji|ReactionEmoji} emoji The emoji to react with
+   * @param {string|Emoji|ReactionEmoji} emoji The emoji to react with.
    * @returns {Promise<MessageReaction>}
    */
   react(emoji) {
@@ -447,12 +447,12 @@ class Message {
 
   /**
    * Deletes the message.
-   * @param {Object} [options] Options
+   * @param {Object} [options] Options.
    * @param {number} [options.timeout=0] How long to wait to delete the message in milliseconds
    * @param {string} [options.reason] Reason for deleting this message, if it does not belong to the client user
    * @returns {Promise<Message>}
    * @example
-   * // Delete a message
+   * // Delete a message.
    * message.delete()
    *  .then(msg => console.log(`Deleted message from ${msg.author}`))
    *  .catch(console.error);
@@ -477,11 +477,11 @@ class Message {
 
   /**
    * Reply to the message.
-   * @param {StringResolvable} [content] The content for the message
-   * @param {MessageOptions} [options] The options to provide
+   * @param {StringResolvable} [content] The content for the message.
+   * @param {MessageOptions} [options] The options to provide.
    * @returns {Promise<Message|Message[]>}
    * @example
-   * // Reply to a message
+   * // Reply to a message.
    * message.reply('Hey, I\'m a reply!')
    *  .then(msg => console.log(`Sent a reply to ${msg.author}`))
    *  .catch(console.error);
@@ -523,8 +523,8 @@ class Message {
    * Used mainly internally. Whether two messages are identical in properties. If you want to compare messages
    * without checking all the properties, use `message.id === message2.id`, which is much more efficient. This
    * method allows you to see if there are differences in content, embeds, attachments, nonce and tts properties.
-   * @param {Message} message The message to compare it to
-   * @param {Object} rawData Raw data passed through the WebSocket about this message
+   * @param {Message} message The message to compare it to.
+   * @param {Object} rawData Raw data passed through the WebSocket about this message.
    * @returns {boolean}
    */
   equals(message, rawData) {
@@ -553,7 +553,7 @@ class Message {
    * When concatenated with a string, this automatically concatenates the message's content instead of the object.
    * @returns {string}
    * @example
-   * // Logs: Message: This is a message!
+   * // Logs: Message: This is a message!.
    * console.log(`Message: ${message}`);
    */
   toString() {

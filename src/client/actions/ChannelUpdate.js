@@ -27,8 +27,8 @@ class ChannelUpdateAction extends Action {
 /**
  * Emitted whenever a channel is updated - e.g. name change, topic change.
  * @event Client#channelUpdate
- * @param {Channel} oldChannel The channel before the update
- * @param {Channel} newChannel The channel after the update
+ * @param {Channel} oldChannel The channel before the update.
+ * @param {Channel} newChannel The channel after the update.
  */
 
 module.exports = ChannelUpdateAction;

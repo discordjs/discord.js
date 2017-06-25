@@ -13,7 +13,7 @@ class GuildDeleteHandler extends AbstractHandler {
 /**
  * Emitted whenever a guild is deleted/left.
  * @event Client#guildDelete
- * @param {Guild} guild The guild that was deleted
+ * @param {Guild} guild The guild that was deleted.
  */
 
 module.exports = GuildDeleteHandler;

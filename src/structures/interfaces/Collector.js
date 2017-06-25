@@ -11,7 +11,7 @@ const EventEmitter = require('events').EventEmitter;
 /**
  * Options to be applied to the collector.
  * @typedef {Object} CollectorOptions
- * @property {number} [time] How long to run the collector for
+ * @property {number} [time] How long to run the collector for.
  */
 
 /**
@@ -85,8 +85,8 @@ class Collector extends EventEmitter {
     /**
      * Emitted whenever an element is collected.
      * @event Collector#collect
-     * @param {*} element The element that got collected
-     * @param {Collector} collector The collector
+     * @param {*} element The element that got collected.
+     * @param {Collector} collector The collector.
      */
     this.emit('collect', collect.value, this);
 
@@ -129,7 +129,7 @@ class Collector extends EventEmitter {
 
   /**
    * Stop this collector and emit the `end` event.
-   * @param {string} [reason='user'] The reason this collector is ending
+   * @param {string} [reason='user'] The reason this collector is ending.
    * @emits Collector#end
    */
   stop(reason = 'user') {
@@ -142,8 +142,8 @@ class Collector extends EventEmitter {
     /**
      * Emitted when the collector is finished collecting.
      * @event Collector#end
-     * @param {Collection} collected The elements collected by the collector
-     * @param {string} reason The reason the collector ended
+     * @param {Collection} collected The elements collected by the collector.
+     * @param {string} reason The reason the collector ended.
      */
     this.emit('end', this.collected, reason);
   }

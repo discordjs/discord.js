@@ -6,7 +6,7 @@ const { Error } = require('../errors');
  */
 class ShardClientUtil {
   /**
-   * @param {Client} client The client of the current shard
+   * @param {Client} client The client of the current shard.
    */
   constructor(client) {
     this.client = client;
@@ -33,7 +33,7 @@ class ShardClientUtil {
 
   /**
    * Sends a message to the master process.
-   * @param {*} message Message to send
+   * @param {*} message Message to send.
    * @returns {Promise<void>}
    */
   send(message) {
@@ -47,7 +47,7 @@ class ShardClientUtil {
 
   /**
    * Fetches a client property value of each shard.
-   * @param {string} prop Name of the client property to get, using periods for nesting
+   * @param {string} prop Name of the client property to get, using periods for nesting.
    * @returns {Promise<Array>}
    * @example
    * client.shard.fetchClientValues('guilds.size').then(results => {
@@ -72,7 +72,7 @@ class ShardClientUtil {
 
   /**
    * Evaluates a script on all shards, in the context of the Clients.
-   * @param {string} script JavaScript to run on each shard
+   * @param {string} script JavaScript to run on each shard.
    * @returns {Promise<Array>} Results of the script execution
    */
   broadcastEval(script) {
@@ -93,7 +93,7 @@ class ShardClientUtil {
 
   /**
    * Handles an IPC message.
-   * @param {*} message Message received
+   * @param {*} message Message received.
    * @private
    */
   _handleMessage(message) {
@@ -114,8 +114,8 @@ class ShardClientUtil {
 
   /**
    * Sends a message to the master process, emitting an error from the client upon failure.
-   * @param {string} type Type of response to send
-   * @param {*} message Message to send
+   * @param {string} type Type of response to send.
+   * @param {*} message Message to send.
    * @private
    */
   _respond(type, message) {
@@ -127,7 +127,7 @@ class ShardClientUtil {
 
   /**
    * Creates/gets the singleton of this class.
-   * @param {Client} client The client to use
+   * @param {Client} client The client to use.
    * @returns {ShardClientUtil}
    */
   static singleton(client) {

@@ -93,7 +93,7 @@ class VoiceReceiver extends EventEmitter {
 
   /**
    * Invoked when a user stops speaking.
-   * @param {User} user The user that stopped speaking
+   * @param {User} user The user that stopped speaking.
    * @private
    */
   stoppedSpeaking(user) {
@@ -118,7 +118,7 @@ class VoiceReceiver extends EventEmitter {
   /**
    * Creates a readable stream for a user that provides opus data while the user is speaking. When the user
    * stops speaking, the stream is destroyed.
-   * @param {UserResolvable} user The user to create the stream for
+   * @param {UserResolvable} user The user to create the stream for.
    * @returns {ReadableStream}
    */
   createOpusStream(user) {
@@ -133,7 +133,7 @@ class VoiceReceiver extends EventEmitter {
   /**
    * Creates a readable stream for a user that provides PCM data while the user is speaking. When the user
    * stops speaking, the stream is destroyed. The stream is 32-bit signed stereo PCM at 48KHz.
-   * @param {UserResolvable} user The user to create the stream for
+   * @param {UserResolvable} user The user to create the stream for.
    * @returns {ReadableStream}
    */
   createPCMStream(user) {
@@ -154,8 +154,8 @@ class VoiceReceiver extends EventEmitter {
        * @event VoiceReceiver#warn
        * @param {string} reason The reason for the warning. If it happened because the voice packet could not be
        * decrypted, this would be `decrypt`. If it happened because the voice packet could not be decoded into
-       * PCM, this would be `decode`
-       * @param {string} message The warning message
+       * PCM, this would be `decode`.
+       * @param {string} message The warning message.
        */
       this.emit('warn', 'decrypt', 'Failed to decrypt voice packet');
       return;
@@ -165,8 +165,8 @@ class VoiceReceiver extends EventEmitter {
     /**
      * Emitted whenever voice data is received from the voice connection. This is _always_ emitted (unlike PCM).
      * @event VoiceReceiver#opus
-     * @param {User} user The user that is sending the buffer (is speaking)
-     * @param {Buffer} buffer The opus buffer
+     * @param {User} user The user that is sending the buffer (is speaking).s
+     * @param {Buffer} buffer The opus buffer.
      */
     this.emit('opus', user, data);
     if (this.listenerCount('pcm') > 0 || this.pcmStreams.size > 0) {
@@ -181,8 +181,8 @@ class VoiceReceiver extends EventEmitter {
        * Emits decoded voice data when it's received. For performance reasons, the decoding will only
        * happen if there is at least one `pcm` listener on this receiver.
        * @event VoiceReceiver#pcm
-       * @param {User} user The user that is sending the buffer (is speaking)
-       * @param {Buffer} buffer The decoded buffer
+       * @param {User} user The user that is sending the buffer (is speaking).
+       * @param {Buffer} buffer The decoded buffer.
        */
       this.emit('pcm', user, pcm);
     }
