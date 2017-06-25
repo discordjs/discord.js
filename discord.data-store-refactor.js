@@ -25583,36 +25583,9 @@ const TextChannel = __webpack_require__(56);
 const VoiceChannel = __webpack_require__(57);
 const Constants = __webpack_require__(0);
 
-class UserStore extends DataStore {
+class ChannelStore extends DataStore {
   create(data, emitEvent = true) {
     super.create();
-		/* A
-    const already = this.client.channels.has(data.id);
-    let channel;
-    if (data.type === Constants.ChannelTypes.DM) {
-      channel = new DMChannel(this.client, data);
-    } else if (data.type === Constants.ChannelTypes.GROUP_DM) {
-      channel = new GroupDMChannel(this.client, data);
-    } else {
-      guild = guild || this.client.guilds.get(data.guild_id);
-      if (guild) {
-        if (data.type === Constants.ChannelTypes.TEXT) {
-          channel = new TextChannel(guild, data);
-          guild.channels.set(channel.id, channel);
-        } else if (data.type === Constants.ChannelTypes.VOICE) {
-          channel = new VoiceChannel(guild, data);
-          guild.channels.set(channel.id, channel);
-        }
-      }
-    }
-
-    if (channel) {
-      if (this.pastReady && !already) this.client.emit(Constants.Events.CHANNEL_CREATE, channel);
-      this.client.channels.set(channel.id, channel);
-      return channel;
-    }
-		*/
-
     if (this.has(data.id)) return this.get(data.id);
     let channel;
     switch (data.type) {
@@ -25632,9 +25605,7 @@ class UserStore extends DataStore {
 
     this.set(channel.id, channel);
 
-    if (channel && emitEvent) {
-      this.client.emit(Constants.Events.CHANNEL_CREATE, channel);
-    }
+    if (channel && emitEvent) this.client.emit(Constants.Events.CHANNEL_CREATE, channel);
 
     return channel;
   }
@@ -25649,7 +25620,7 @@ class UserStore extends DataStore {
   }
 }
 
-module.exports = UserStore;
+module.exports = ChannelStore;
 
 
 /***/ }),
