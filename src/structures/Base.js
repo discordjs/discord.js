@@ -12,6 +12,10 @@ class Base {
       writable: false,
     });
   }
+
+  _clone() {
+    return Object.assign(Object.create(this), this);
+  }
 }
 
 module.exports = Base;
