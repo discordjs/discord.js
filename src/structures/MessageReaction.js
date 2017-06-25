@@ -78,7 +78,7 @@ class MessageReaction {
 
   /**
    * Fetch all the users that gave this reaction. Resolves with a collection of users, mapped by their IDs.
-   * @param {number} [limit=100] The maximum amount of users to fetch, defaults to 100
+   * @param {number} [limit=100] The maximum amount of users to fetch, defaults to 100.
    * @returns {Promise<Collection<Snowflake, User>>}
    */
   fetchUsers(limit = 100) {

@@ -60,8 +60,8 @@ class Collection extends Map {
 
   /**
    * Obtains the first value(s) in this collection.
-   * @param {number} [count] Number of values to obtain from the beginning
-   * @returns {*|Array<*>} The single value if `count` is undefined, or an array of values of `count` length
+   * @param {number} [count] Number of values to obtain from the beginning.
+   * @returns {*|Array<*>} The single value if `count` is undefined, or an array of values of `count` length.
    */
   first(count) {
     if (count === undefined) return this.values().next().value;
@@ -76,8 +76,8 @@ class Collection extends Map {
 
   /**
    * Obtains the first key(s) in this collection.
-   * @param {number} [count] Number of keys to obtain from the beginning
-   * @returns {*|Array<*>} The single key if `count` is undefined, or an array of keys of `count` length
+   * @param {number} [count] Number of keys to obtain from the beginning.
+   * @returns {*|Array<*>} The single key if `count` is undefined, or an array of keys of `count` length.
    */
   firstKey(count) {
     if (count === undefined) return this.keys().next().value;
@@ -93,8 +93,8 @@ class Collection extends Map {
   /**
    * Obtains the last value(s) in this collection. This relies on {@link Collection#array}, and thus the caching
    * mechanism applies here as well.
-   * @param {number} [count] Number of values to obtain from the end
-   * @returns {*|Array<*>} The single value if `count` is undefined, or an array of values of `count` length
+   * @param {number} [count] Number of values to obtain from the end.
+   * @returns {*|Array<*>} The single value if `count` is undefined, or an array of values of `count` length.
    */
   last(count) {
     const arr = this.array();
@@ -107,8 +107,8 @@ class Collection extends Map {
   /**
    * Obtains the last key(s) in this collection. This relies on {@link Collection#keyArray}, and thus the caching
    * mechanism applies here as well.
-   * @param {number} [count] Number of keys to obtain from the end
-   * @returns {*|Array<*>} The single key if `count` is undefined, or an array of keys of `count` length
+   * @param {number} [count] Number of keys to obtain from the end.
+   * @returns {*|Array<*>} The single key if `count` is undefined, or an array of keys of `count` length.
    */
   lastKey(count) {
     const arr = this.keyArray();
@@ -121,8 +121,8 @@ class Collection extends Map {
   /**
    * Obtains random value(s) from this collection. This relies on {@link Collection#array}, and thus the caching
    * mechanism applies here as well.
-   * @param {number} [count] Number of values to obtain randomly
-   * @returns {*|Array<*>} The single value if `count` is undefined, or an array of values of `count` length
+   * @param {number} [count] Number of values to obtain randomly.
+   * @returns {*|Array<*>} The single value if `count` is undefined, or an array of values of `count` length.
    */
   random(count) {
     let arr = this.array();
@@ -139,8 +139,8 @@ class Collection extends Map {
   /**
    * Obtains random key(s) from this collection. This relies on {@link Collection#keyArray}, and thus the caching
    * mechanism applies here as well.
-   * @param {number} [count] Number of keys to obtain randomly
-   * @returns {*|Array<*>} The single key if `count` is undefined, or an array of keys of `count` length
+   * @param {number} [count] Number of keys to obtain randomly.
+   * @returns {*|Array<*>} The single key if `count` is undefined, or an array of keys of `count` length.
    */
   randomKey(count) {
     let arr = this.keyArray();
@@ -157,8 +157,8 @@ class Collection extends Map {
   /**
    * Searches for all items where their specified property's value is identical to the given value
    * (`item[prop] === value`).
-   * @param {string} prop The property to test against
-   * @param {*} value The expected value
+   * @param {string} prop The property to test against.
+   * @param {*} value The expected value.
    * @returns {Array}
    * @example
    * collection.findAll('username', 'Bob');
@@ -180,8 +180,8 @@ class Collection extends Map {
    * <warn>All collections used in Discord.js are mapped using their `id` property, and if you want to find by id you
    * should use the `get` method. See
    * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get) for details.</warn>
-   * @param {string|Function} propOrFn The property to test against, or the function to test with
-   * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
+   * @param {string|Function} propOrFn The property to test against, or the function to test with.
+   * @param {*} [value] The expected value - only applicable and required if using a property for the first argument.
    * @returns {*}
    * @example
    * collection.find('username', 'Bob');
@@ -210,8 +210,8 @@ class Collection extends Map {
    * Searches for the key of a single item where its specified property's value is identical to the given value
    * (`item[prop] === value`), or the given function returns a truthy value. In the latter case, this is identical to
    * [Array.findIndex()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex).
-   * @param {string|Function} propOrFn The property to test against, or the function to test with
-   * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
+   * @param {string|Function} propOrFn The property to test against, or the function to test with.
+   * @param {*} [value] The expected value - only applicable and required if using a property for the first argument.
    * @returns {*}
    * @example
    * collection.findKey('username', 'Bob');
@@ -241,8 +241,8 @@ class Collection extends Map {
    * (`item[prop] === value`).
    * <warn>Do not use this to check for an item by its ID. Instead, use `collection.has(id)`. See
    * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/has) for details.</warn>
-   * @param {string} prop The property to test against
-   * @param {*} value The expected value
+   * @param {string} prop The property to test against.
+   * @param {*} value The expected value.
    * @returns {boolean}
    * @example
    * if (collection.exists('username', 'Bob')) {
@@ -257,8 +257,8 @@ class Collection extends Map {
    * Identical to
    * [Array.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter),
    * but returns a Collection instead of an Array.
-   * @param {Function} fn Function used to test (should return a boolean)
-   * @param {Object} [thisArg] Value to use as `this` when executing function
+   * @param {Function} fn Function used to test (should return a boolean).
+   * @param {Object} [thisArg] Value to use as `this` when executing function.
    * @returns {Collection}
    */
   filter(fn, thisArg) {
@@ -273,8 +273,8 @@ class Collection extends Map {
   /**
    * Identical to
    * [Array.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter).
-   * @param {Function} fn Function used to test (should return a boolean)
-   * @param {Object} [thisArg] Value to use as `this` when executing function
+   * @param {Function} fn Function used to test (should return a boolean).
+   * @param {Object} [thisArg] Value to use as `this` when executing function.
    * @returns {Array}
    */
   filterArray(fn, thisArg) {
@@ -289,8 +289,8 @@ class Collection extends Map {
   /**
    * Identical to
    * [Array.map()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map).
-   * @param {Function} fn Function that produces an element of the new array, taking three arguments
-   * @param {*} [thisArg] Value to use as `this` when executing function
+   * @param {Function} fn Function that produces an element of the new array, taking three arguments.
+   * @param {*} [thisArg] Value to use as `this` when executing function.
    * @returns {Array}
    */
   map(fn, thisArg) {
@@ -304,8 +304,8 @@ class Collection extends Map {
   /**
    * Identical to
    * [Array.some()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
-   * @param {Function} fn Function used to test (should return a boolean)
-   * @param {Object} [thisArg] Value to use as `this` when executing function
+   * @param {Function} fn Function used to test (should return a boolean).
+   * @param {Object} [thisArg] Value to use as `this` when executing function.
    * @returns {boolean}
    */
   some(fn, thisArg) {
@@ -319,8 +319,8 @@ class Collection extends Map {
   /**
    * Identical to
    * [Array.every()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every).
-   * @param {Function} fn Function used to test (should return a boolean)
-   * @param {Object} [thisArg] Value to use as `this` when executing function
+   * @param {Function} fn Function used to test (should return a boolean).
+   * @param {Object} [thisArg] Value to use as `this` when executing function.
    * @returns {boolean}
    */
   every(fn, thisArg) {
@@ -335,8 +335,8 @@ class Collection extends Map {
    * Identical to
    * [Array.reduce()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce).
    * @param {Function} fn Function used to reduce, taking four arguments; `accumulator`, `currentValue`, `currentKey`,
-   * and `collection`
-   * @param {*} [initialValue] Starting value for the accumulator
+   * and `collection`.
+   * @param {*} [initialValue] Starting value for the accumulator.
    * @returns {*}
    */
   reduce(fn, initialValue) {
@@ -397,8 +397,8 @@ class Collection extends Map {
    * Checks if this collection shares identical key-value pairings with another.
    * This is different to checking for equality using equal-signs, because
    * the collections may be different objects, but contain the same data.
-   * @param {Collection} collection Collection to compare with
-   * @returns {boolean} Whether the collections have identical contents
+   * @param {Collection} collection Collection to compare with.
+   * @returns {boolean} Whether the collections have identical contents.
    */
   equals(collection) {
     if (!collection) return false;

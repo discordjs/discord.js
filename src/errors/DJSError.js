@@ -7,7 +7,7 @@ const util = require('util');
 
 /**
  * Extend an error of some sort into a DiscordjsError
- * @param {Error} Base Base error to extend
+ * @param {Error} Base Base error to extend.
  * @returns {DiscordjsError}
  */
 function makeDiscordjsError(Base) {
@@ -30,8 +30,8 @@ function makeDiscordjsError(Base) {
 
 /**
  * Format the message for an error
- * @param {string} key Error key
- * @param {Array<*>} args Arguments to pass for util format or as function args
+ * @param {string} key Error key.
+ * @param {Array<*>} args Arguments to pass for util format or as function args.
  * @returns {string} Formatted string
  */
 function message(key, args) {
@@ -50,8 +50,8 @@ function message(key, args) {
 
 /**
  * Register an error code and message
- * @param {string} sym Unique name for the error
- * @param {*} val Value of the error
+ * @param {string} sym Unique name for the error.
+ * @param {*} val Value of the error.
  */
 function register(sym, val) {
   messages.set(sym, typeof val === 'function' ? val : String(val));

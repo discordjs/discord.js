@@ -84,7 +84,7 @@ class VoiceWebSocket extends EventEmitter {
 
   /**
    * Sends data to the WebSocket if it is open.
-   * @param {string} data The data to send to the WebSocket
+   * @param {string} data The data to send to the WebSocket.
    * @returns {Promise<string>}
    */
   send(data) {
@@ -98,7 +98,7 @@ class VoiceWebSocket extends EventEmitter {
 
   /**
    * JSON.stringify's a packet and then sends it to the WebSocket Server.
-   * @param {Object} packet The packet to send
+   * @param {Object} packet The packet to send.
    * @returns {Promise<string>}
    */
   sendPacket(packet) {
@@ -129,7 +129,7 @@ class VoiceWebSocket extends EventEmitter {
 
   /**
    * Called whenever a message is received from the WebSocket.
-   * @param {MessageEvent} event The message event that was received
+   * @param {MessageEvent} event The message event that was received.
    * @returns {void}
    */
   onMessage(event) {
@@ -149,7 +149,7 @@ class VoiceWebSocket extends EventEmitter {
 
   /**
    * Called whenever an error occurs with the WebSocket.
-   * @param {Error} error The error that occurred
+   * @param {Error} error The error that occurred.
    */
   onError(error) {
     this.emit('error', error);
@@ -157,7 +157,7 @@ class VoiceWebSocket extends EventEmitter {
 
   /**
    * Called whenever a valid packet is received from the WebSocket.
-   * @param {Object} packet The received packet
+   * @param {Object} packet The received packet.
    */
   onPacket(packet) {
     switch (packet.op) {
@@ -165,7 +165,7 @@ class VoiceWebSocket extends EventEmitter {
         this.setHeartbeat(packet.d.heartbeat_interval);
         /**
          * Emitted once the voice WebSocket receives the ready packet.
-         * @param {Object} packet The received packet
+         * @param {Object} packet The received packet.
          * @event VoiceWebSocket#ready
          */
         this.emit('ready', packet.d);
@@ -173,8 +173,8 @@ class VoiceWebSocket extends EventEmitter {
       case Constants.VoiceOPCodes.SESSION_DESCRIPTION:
         /**
          * Emitted once the Voice Websocket receives a description of this voice session.
-         * @param {string} encryptionMode The type of encryption being used
-         * @param {SecretKey} secretKey The secret key used for encryption
+         * @param {string} encryptionMode The type of encryption being used.
+         * @param {SecretKey} secretKey The secret key used for encryption.
          * @event VoiceWebSocket#sessionDescription
          */
         this.emit('sessionDescription', packet.d.mode, new SecretKey(packet.d.secret_key));
@@ -200,7 +200,7 @@ class VoiceWebSocket extends EventEmitter {
 
   /**
    * Sets an interval at which to send a heartbeat packet to the WebSocket.
-   * @param {number} interval The interval at which to send a heartbeat packet
+   * @param {number} interval The interval at which to send a heartbeat packet.
    */
   setHeartbeat(interval) {
     if (!interval || isNaN(interval)) {
@@ -210,7 +210,7 @@ class VoiceWebSocket extends EventEmitter {
     if (this.heartbeatInterval) {
       /**
        * Emitted whenver the voice WebSocket encounters a non-fatal error.
-       * @param {string} warn The warning
+       * @param {string} warn The warning.
        * @event VoiceWebSocket#warn
        */
       this.emit('warn', 'A voice heartbeat interval is being overwritten');

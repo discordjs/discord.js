@@ -14,12 +14,12 @@ const { Error, TypeError, RangeError } = require('../errors');
  */
 class ShardingManager extends EventEmitter {
   /**
-   * @param {string} file Path to your shard script file
-   * @param {Object} [options] Options for the sharding manager
-   * @param {number|string} [options.totalShards='auto'] Number of shards to spawn, or "auto"
-   * @param {boolean} [options.respawn=true] Whether shards should automatically respawn upon exiting
-   * @param {string[]} [options.shardArgs=[]] Arguments to pass to the shard script when spawning
-   * @param {string} [options.token] Token to use for automatic shard count and passing to shards
+   * @param {string} file Path to your shard script file.
+   * @param {Object} [options] Options for the sharding manager.
+   * @param {number|string} [options.totalShards='auto'] Number of shards to spawn, or "auto".
+   * @param {boolean} [options.respawn=true] Whether shards should automatically respawn upon exiting.
+   * @param {string[]} [options.shardArgs=[]] Arguments to pass to the shard script when spawning.
+   * @param {string} [options.token] Token to use for automatic shard count and passing to shards.
    */
   constructor(file, options = {}) {
     super();
@@ -82,7 +82,7 @@ class ShardingManager extends EventEmitter {
 
   /**
    * Spawns a single shard.
-   * @param {number} id The ID of the shard to spawn. **This is usually not necessary**
+   * @param {number} id The ID of the shard to spawn. **This is usually not necessary**.
    * @returns {Promise<Shard>}
    */
   createShard(id = this.shards.size) {
@@ -99,8 +99,8 @@ class ShardingManager extends EventEmitter {
 
   /**
    * Spawns multiple shards.
-   * @param {number} [amount=this.totalShards] Number of shards to spawn
-   * @param {number} [delay=7500] How long to wait in between spawning each shard (in milliseconds)
+   * @param {number} [amount=this.totalShards] Number of shards to spawn.
+   * @param {number} [delay=7500] How long to wait in between spawning each shard (in milliseconds).
    * @returns {Promise<Collection<number, Shard>>}
    */
   spawn(amount = this.totalShards, delay = 7500) {
@@ -123,8 +123,8 @@ class ShardingManager extends EventEmitter {
 
   /**
    * Actually spawns shards, unlike that poser above >:(
-   * @param {number} amount Number of shards to spawn
-   * @param {number} delay How long to wait in between spawning each shard (in milliseconds)
+   * @param {number} amount Number of shards to spawn.
+   * @param {number} delay How long to wait in between spawning each shard (in milliseconds).
    * @returns {Promise<Collection<number, Shard>>}
    * @private
    */
@@ -156,7 +156,7 @@ class ShardingManager extends EventEmitter {
 
   /**
    * Send a message to all shards.
-   * @param {*} message Message to be sent to the shards
+   * @param {*} message Message to be sent to the shards.
    * @returns {Promise<Shard[]>}
    */
   broadcast(message) {
@@ -167,7 +167,7 @@ class ShardingManager extends EventEmitter {
 
   /**
    * Evaluates a script on all shards, in the context of the Clients.
-   * @param {string} script JavaScript to run on each shard
+   * @param {string} script JavaScript to run on each shard.
    * @returns {Promise<Array>} Results of the script execution
    */
   broadcastEval(script) {
@@ -178,7 +178,7 @@ class ShardingManager extends EventEmitter {
 
   /**
    * Fetches a client property value of each shard.
-   * @param {string} prop Name of the client property to get, using periods for nesting
+   * @param {string} prop Name of the client property to get, using periods for nesting.
    * @returns {Promise<Array>}
    * @example
    * manager.fetchClientValues('guilds.size').then(results => {

@@ -28,8 +28,8 @@ const WebSocket = (function findWebSocket() {
  */
 class WebSocketConnection extends EventEmitter {
   /**
-   * @param {WebSocketManager} manager The WebSocket manager
-   * @param {string} gateway WebSocket gateway to connect to
+   * @param {WebSocketManager} manager The WebSocket manager.
+   * @param {string} gateway WebSocket gateway to connect to.
    */
   constructor(manager, gateway) {
     super();
@@ -152,7 +152,7 @@ class WebSocketConnection extends EventEmitter {
   // Util
   /**
    * Emits a debug message.
-   * @param {string} message Debug message
+   * @param {string} message Debug message.
    * @returns {void}
    */
   debug(message) {
@@ -162,7 +162,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Attempts to serialise data from the WebSocket.
-   * @param {string|Object} data Data to unpack
+   * @param {string|Object} data Data to unpack.
    * @returns {Object}
    */
   unpack(data) {
@@ -176,7 +176,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Packs an object ready to be sent.
-   * @param {Object} data Data to pack
+   * @param {Object} data Data to pack.
    * @returns {string|Buffer}
    */
   pack(data) {
@@ -205,7 +205,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Sends data, bypassing the queue.
-   * @param {Object} data Packet to send
+   * @param {Object} data Packet to send.
    * @returns {void}
    */
   _send(data) {
@@ -218,7 +218,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Adds data to the queue to be sent.
-   * @param {Object} data Packet to send
+   * @param {Object} data Packet to send.
    * @returns {void}
    */
   send(data) {
@@ -232,9 +232,9 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Creates a connection to a gateway.
-   * @param {string} gateway Gateway to connect to
-   * @param {number} [after=0] How long to wait before connecting
-   * @param {boolean} [force=false] Whether or not to force a new connection even if one already exists
+   * @param {string} gateway Gateway to connect to.
+   * @param {number} [after=0] How long to wait before connecting.
+   * @param {boolean} [force=false] Whether or not to force a new connection even if one already exists.
    * @returns {boolean}
    */
   connect(gateway = this.gateway, after = 0, force = false) {
@@ -280,7 +280,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Called whenever a message is received.
-   * @param {Event} event Event received
+   * @param {Event} event Event received.
    * @returns {boolean}
    */
   onMessage(event) {
@@ -295,7 +295,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Sets the current sequence of the connection.
-   * @param {number} s New sequence
+   * @param {number} s New sequence.
    */
   setSequence(s) {
     this.sequence = s > this.sequence ? s : this.sequence;
@@ -303,7 +303,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Called whenever a packet is received.
-   * @param {Object} packet Received packet
+   * @param {Object} packet Received packet.
    * @returns {boolean}
    */
   onPacket(packet) {
@@ -333,7 +333,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Called whenever a connection is opened to the gateway.
-   * @param {Event} event Received open event
+   * @param {Event} event Received open event.
    */
   onOpen(event) {
     if (event && event.target && event.target.url) this.gateway = event.target.url;
@@ -356,7 +356,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Called whenever an error occurs with the WebSocket.
-   * @param {Error} error Error that occurred
+   * @param {Error} error Error that occurred.
    */
   onError(error) {
     if (error && error.message === 'uWs client connection error') {
@@ -366,7 +366,7 @@ class WebSocketConnection extends EventEmitter {
     /**
      * Emitted whenever the client's WebSocket encounters a connection error.
      * @event Client#error
-     * @param {Error} error The encountered error
+     * @param {Error} error The encountered error.
      */
     this.client.emit(Constants.Events.ERROR, error);
   }
@@ -378,7 +378,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Called whenever a connection to the gateway is closed.
-   * @param {CloseEvent} event Close event that was received
+   * @param {CloseEvent} event Close event that was received.
    */
   onClose(event) {
     this.debug(`${this.expectingClose ? 'Client' : 'Server'} closed the WebSocket connection: ${event.code}`);
@@ -392,7 +392,7 @@ class WebSocketConnection extends EventEmitter {
       /**
        * Emitted when the client's WebSocket disconnects and will no longer attempt to reconnect.
        * @event Client#disconnect
-       * @param {CloseEvent} event The WebSocket close event
+       * @param {CloseEvent} event The WebSocket close event.
        */
       this.client.emit(Constants.Events.DISCONNECT, event);
       this.debug(Constants.WSCodes[event.code]);
@@ -414,7 +414,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Sends a heartbeat or sets an interval for sending heartbeats.
-   * @param {number} [time] If -1, clears the interval, any other number sets an interval
+   * @param {number} [time] If -1, clears the interval, any other number sets an interval.
    * If no value is given, a heartbeat will be sent instantly
    */
   heartbeat(time) {
@@ -440,7 +440,7 @@ class WebSocketConnection extends EventEmitter {
   // Identification
   /**
    * Identifies the client on a connection.
-   * @param {number} [after] How long to wait before identifying
+   * @param {number} [after] How long to wait before identifying.
    * @returns {void}
    */
   identify(after) {

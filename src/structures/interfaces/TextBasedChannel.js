@@ -33,38 +33,38 @@ class TextBasedChannel {
   /**
    * Options provided when sending or editing a message.
    * @typedef {Object} MessageOptions
-   * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
-   * @property {string} [nonce=''] The nonce for the message
-   * @property {RichEmbed|Object} [embed] An embed for the message
+   * @property {boolean} [tts=false] Whether or not the message should be spoken aloud.
+   * @property {string} [nonce=''] The nonce for the message.
+   * @property {RichEmbed|Object} [embed] An embed for the message.
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
-   * @property {FileOptions[]|string[]} [files] Files to send with the message
-   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
-   * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
+   * @property {FileOptions[]|string[]} [files] Files to send with the message.
+   * @property {string|boolean} [code] Language for optional codeblock formatting to apply.
+   * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if.
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message
-   * @property {UserResolvable} [reply] User to reply to (prefixes the message with a mention, except in DMs)
+   * @property {UserResolvable} [reply] User to reply to (prefixes the message with a mention, except in DMs).
    */
 
   /**
    * @typedef {Object} FileOptions
-   * @property {BufferResolvable} attachment File to attach
+   * @property {BufferResolvable} attachment File to attach.
    * @property {string} [name='file.jpg'] Filename of the attachment
    */
 
   /**
    * Options for splitting a message.
    * @typedef {Object} SplitOptions
-   * @property {number} [maxLength=1950] Maximum character length per message piece
-   * @property {string} [char='\n'] Character to split the message with
-   * @property {string} [prepend=''] Text to prepend to every piece except the first
-   * @property {string} [append=''] Text to append to every piece except the last
+   * @property {number} [maxLength=1950] Maximum character length per message piece.
+   * @property {string} [char='\n'] Character to split the message with.
+   * @property {string} [prepend=''] Text to prepend to every piece except the first.
+   * @property {string} [append=''] Text to append to every piece except the last.
    */
 
   /**
    * Send a message to this channel.
-   * @param {StringResolvable} [content] Text for the message
-   * @param {MessageOptions} [options={}] Options for the message
+   * @param {StringResolvable} [content] Text for the message.
+   * @param {MessageOptions} [options={}] Options for the message.
    * @returns {Promise<Message|Message[]>}
    * @example
    * // Send a message
@@ -123,7 +123,7 @@ class TextBasedChannel {
    * Gets a single message from this channel, regardless of it being cached or not. Since the single message fetching
    * endpoint is reserved for bot accounts, this abstracts the `fetchMessages` method to obtain the single message when
    * using a user account.
-   * @param {Snowflake} messageID ID of the message to get
+   * @param {Snowflake} messageID ID of the message to get.
    * @returns {Promise<Message>}
    * @example
    * // Get message
@@ -153,15 +153,15 @@ class TextBasedChannel {
    * The parameters to pass in when requesting previous messages from a channel. `around`, `before` and
    * `after` are mutually exclusive. All the parameters are optional.
    * @typedef {Object} ChannelLogsQueryOptions
-   * @property {number} [limit=50] Number of messages to acquire
-   * @property {Snowflake} [before] ID of a message to get the messages that were posted before it
-   * @property {Snowflake} [after] ID of a message to get the messages that were posted after it
-   * @property {Snowflake} [around] ID of a message to get the messages that were posted around it
+   * @property {number} [limit=50] Number of messages to acquire.
+   * @property {Snowflake} [before] ID of a message to get the messages that were posted before it.
+   * @property {Snowflake} [after] ID of a message to get the messages that were posted after it.
+   * @property {Snowflake} [around] ID of a message to get the messages that were posted around it.
    */
 
   /**
    * Gets the past messages sent in this channel. Resolves with a collection mapping message ID's to Message objects.
-   * @param {ChannelLogsQueryOptions} [options={}] Query parameters to pass in
+   * @param {ChannelLogsQueryOptions} [options={}] Query parameters to pass in.
    * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
    * // Get messages
@@ -203,7 +203,7 @@ class TextBasedChannel {
   /**
    * Performs a search within the channel.
    * <warn>This is only available when using a user account.</warn>
-   * @param {MessageSearchOptions} [options={}] Options to pass to the search
+   * @param {MessageSearchOptions} [options={}] Options to pass to the search.
    * @returns {Promise<MessageSearchResult>}
    * An array containing arrays of messages. Each inner array is a search context cluster
    * The message which has triggered the result will have the `hit` property set to `true`
@@ -222,7 +222,7 @@ class TextBasedChannel {
 
   /**
    * Starts a typing indicator in the channel.
-   * @param {number} [count] The number of times startTyping should be considered to have been called
+   * @param {number} [count] The number of times startTyping should be considered to have been called.
    * @example
    * // Start typing in a channel
    * channel.startTyping();
@@ -248,7 +248,7 @@ class TextBasedChannel {
    * Stops the typing indicator in the channel.
    * The indicator will only stop if this is called as many times as startTyping().
    * <info>It can take a few seconds for the client user to stop typing.</info>
-   * @param {boolean} [force=false] Whether or not to reset the call count and force the indicator to stop
+   * @param {boolean} [force=false] Whether or not to reset the call count and force the indicator to stop.
    * @example
    * // Stop typing in a channel
    * channel.stopTyping();
@@ -288,8 +288,8 @@ class TextBasedChannel {
 
   /**
    * Creates a Message Collector.
-   * @param {CollectorFilter} filter The filter to create the collector with
-   * @param {MessageCollectorOptions} [options={}] The options to pass to the collector
+   * @param {CollectorFilter} filter The filter to create the collector with.
+   * @param {MessageCollectorOptions} [options={}] The options to pass to the collector.
    * @returns {MessageCollector}
    * @example
    * // Create a message collector
@@ -307,14 +307,14 @@ class TextBasedChannel {
   /**
    * An object containing the same properties as CollectorOptions, but a few more:
    * @typedef {MessageCollectorOptions} AwaitMessagesOptions
-   * @property {string[]} [errors] Stop/end reasons that cause the promise to reject
+   * @property {string[]} [errors] Stop/end reasons that cause the promise to reject.
    */
 
   /**
    * Similar to createCollector but in promise form. Resolves with a collection of messages that pass the specified
    * filter.
-   * @param {CollectorFilter} filter The filter function to use
-   * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector
+   * @param {CollectorFilter} filter The filter function to use.
+   * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector..
    * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
    * // Await !vote messages
@@ -340,8 +340,8 @@ class TextBasedChannel {
   /**
    * Bulk delete given messages that are newer than two weeks.
    * <warn>This is only available when using a bot account.</warn>
-   * @param {Collection<Snowflake, Message>|Message[]|number} messages Messages or number of messages to delete
-   * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
+   * @param {Collection<Snowflake, Message>|Message[]|number} messages Messages or number of messages to delete.
+   * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically.
    * @returns {Promise<Collection<Snowflake, Message>>} Deleted messages
    */
   bulkDelete(messages, filterOld = false) {

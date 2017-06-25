@@ -59,8 +59,8 @@ class VolumeInterface extends EventEmitter {
     /**
      * Emitted when the volume of this interface changes.
      * @event VolumeInterface#volumeChange
-     * @param {number} oldVolume The old volume of this interface
-     * @param {number} newVolume The new volume of this interface
+     * @param {number} oldVolume The old volume of this interface.
+     * @param {number} newVolume The new volume of this interface.
      */
     this.emit('volumeChange', this._volume, volume);
     this._volume = volume;
@@ -68,7 +68,7 @@ class VolumeInterface extends EventEmitter {
 
   /**
    * Set the volume in decibels.
-   * @param {number} db The decibels
+   * @param {number} db The decibels.
    */
   setVolumeDecibels(db) {
     this.setVolume(Math.pow(10, db / 20));
@@ -76,7 +76,7 @@ class VolumeInterface extends EventEmitter {
 
   /**
    * Set the volume so that a perceived value of 0.5 is half the perceived volume etc.
-   * @param {number} value The value for the volume
+   * @param {number} value The value for the volume.
    */
   setVolumeLogarithmic(value) {
     this.setVolume(Math.pow(value, 1.660964));

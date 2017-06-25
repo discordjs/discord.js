@@ -77,7 +77,7 @@ class VoiceChannel extends GuildChannel {
 
   /**
    * Sets the bitrate of the channel.
-   * @param {number} bitrate The new bitrate
+   * @param {number} bitrate The new bitrate.
    * @returns {Promise<VoiceChannel>}
    * @example
    * // Set the bitrate of a voice channel
@@ -91,7 +91,7 @@ class VoiceChannel extends GuildChannel {
 
   /**
    * Sets the user limit of the channel.
-   * @param {number} userLimit The new user limit
+   * @param {number} userLimit The new user limit.
    * @returns {Promise<VoiceChannel>}
    * @example
    * // Set the user limit of a voice channel

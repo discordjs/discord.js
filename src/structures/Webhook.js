@@ -74,24 +74,24 @@ class Webhook {
    * Options that can be passed into send.
    * @typedef {Object} WebhookMessageOptions
    * @property {string} [username=this.name] Username override for the message
-   * @property {string} [avatarURL] Avatar URL override for the message
-   * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
-   * @property {string} [nonce=''] The nonce for the message
-   * @property {Object[]} [embeds] An array of embeds for the message
+   * @property {string} [avatarURL] Avatar URL override for the message.
+   * @property {boolean} [tts=false] Whether or not the message should be spoken aloud.
+   * @property {string} [nonce=''] The nonce for the message.
+   * @property {Object[]} [embeds] An array of embeds for the message.
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
-   * @property {FileOptions|string} [file] A file to send with the message
-   * @property {FileOptions[]|string[]} [files] Files to send with the message
-   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
+   * @property {FileOptions|string} [file] A file to send with the message.
+   * @property {FileOptions[]|string[]} [files] Files to send with the message.
+   * @property {string|boolean} [code] Language for optional codeblock formatting to apply.
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
-   * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
+   * it exceeds the character limit. If an object is provided, these are the options for splitting the message.s
    */
 
   /**
    * Send a message with this webhook.
-   * @param {StringResolvable} [content] The content to send
-   * @param {WebhookMessageOptions} [options={}] The options to provide
+   * @param {StringResolvable} [content] The content to send.
+   * @param {WebhookMessageOptions} [options={}] The options to provide.
    * @returns {Promise<Message|Object>}
    * @example
    * // Send a message
@@ -171,7 +171,7 @@ class Webhook {
 
   /**
    * Send a raw slack message with this webhook.
-   * @param {Object} body The raw body to send
+   * @param {Object} body The raw body to send.
    * @returns {Promise<Message|Object>}
    * @example
    * // Send a slack message
@@ -200,10 +200,10 @@ class Webhook {
 
   /**
    * Edit the webhook.
-   * @param {Object} options Options
+   * @param {Object} options Options.
    * @param {string} [options.name] New name for this webhook
    * @param {BufferResolvable} [options.avatar] New avatar for this webhook
-   * @param {string} [reason] Reason for editing this webhook
+   * @param {string} [reason] Reason for editing this webhook.
    * @returns {Promise<Webhook>}
    */
   edit({ name = this.name, avatar }, reason) {
@@ -225,7 +225,7 @@ class Webhook {
 
   /**
    * Delete the webhook.
-   * @param {string} [reason] Reason for deleting this webhook
+   * @param {string} [reason] Reason for deleting this webhook.
    * @returns {Promise}
    */
   delete(reason) {

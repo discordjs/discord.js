@@ -76,7 +76,7 @@ class VoiceBroadcast extends VolumeInterface {
     /**
      * Emitted whenever a stream dispatcher unsubscribes from the broadcast.
      * @event VoiceBroadcast#unsubscribe
-     * @param {StreamDispatcher} dispatcher The unsubscribed dispatcher
+     * @param {StreamDispatcher} dispatcher The unsubscribed dispatcher.
      */
     this.emit('unsubscribe', dispatcher);
     for (const container of this._dispatchers.values()) {
@@ -110,7 +110,7 @@ class VoiceBroadcast extends VolumeInterface {
       /**
        * Emitted whenever a stream dispatcher subscribes to the broadcast.
        * @event VoiceBroadcast#subscribe
-       * @param {StreamDispatcher} dispatcher The subscribed dispatcher
+       * @param {StreamDispatcher} dispatcher The subscribed dispatcher.
        */
       this.emit('subscribe', dispatcher);
     }
@@ -126,8 +126,8 @@ class VoiceBroadcast extends VolumeInterface {
 
   /**
    * Plays any audio stream across the broadcast.
-   * @param {ReadableStream} stream The audio stream to play
-   * @param {StreamOptions} [options] Options for playing the stream
+   * @param {ReadableStream} stream The audio stream to play.
+   * @param {StreamOptions} [options] Options for playing the stream.
    * @returns {VoiceBroadcast}
    * @example
    * // Play streams using ytdl-core
@@ -150,8 +150,8 @@ class VoiceBroadcast extends VolumeInterface {
 
   /**
    * Play the given file in the voice connection.
-   * @param {string} file The absolute path to the file
-   * @param {StreamOptions} [options] Options for playing the stream
+   * @param {string} file The absolute path to the file.
+   * @param {StreamOptions} [options] Options for playing the stream.
    * @returns {StreamDispatcher}
    * @example
    * // Play files natively
@@ -181,14 +181,14 @@ class VoiceBroadcast extends VolumeInterface {
     /**
      * Emitted whenever an error occurs.
      * @event VoiceBroadcast#error
-     * @param {Error} error The error that occurred
+     * @param {Error} error The error that occurred.
      */
     transcoder.once('error', e => {
       if (this.listenerCount('error') > 0) this.emit('error', e);
       /**
        * Emitted whenever the VoiceBroadcast has any warnings.
        * @event VoiceBroadcast#warn
-       * @param {string|Error} warning The warning that was raised
+       * @param {string|Error} warning The warning that was raised.
        */
       else this.emit('warn', e);
     });
@@ -207,8 +207,8 @@ class VoiceBroadcast extends VolumeInterface {
 
   /**
    * Plays a stream of 16-bit signed stereo PCM at 48KHz.
-   * @param {ReadableStream} stream The audio stream to play
-   * @param {StreamOptions} [options] Options for playing the stream
+   * @param {ReadableStream} stream The audio stream to play.
+   * @param {StreamOptions} [options] Options for playing the stream.
    * @returns {VoiceBroadcast}
    */
   playConvertedStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
@@ -224,8 +224,8 @@ class VoiceBroadcast extends VolumeInterface {
   /**
    * Plays an Opus encoded stream at 48KHz.
    * <warn>Note that inline volume is not compatible with this method.</warn>
-   * @param {ReadableStream} stream The Opus audio stream to play
-   * @param {StreamOptions} [options] Options for playing the stream
+   * @param {ReadableStream} stream The Opus audio stream to play.
+   * @param {StreamOptions} [options] Options for playing the stream.
    * @returns {StreamDispatcher}
    */
   playOpusStream(stream, { seek = 0, passes = 1 } = {}) {
@@ -237,8 +237,8 @@ class VoiceBroadcast extends VolumeInterface {
 
   /**
    * Play an arbitrary input that can be [handled by ffmpeg](https://ffmpeg.org/ffmpeg-protocols.html#Description)
-   * @param {string} input The arbitrary input
-   * @param {StreamOptions} [options] Options for playing the stream
+   * @param {string} input The arbitrary input.
+   * @param {StreamOptions} [options] Options for playing the stream.
    * @returns {VoiceBroadcast}
    */
   playArbitraryInput(input, { seek = 0, volume = 1, passes = 1 } = {}) {

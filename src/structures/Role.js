@@ -147,11 +147,11 @@ class Role {
 
   /**
    * Checks if the role has a permission.
-   * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
+   * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for.
    * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permission
-   * **(deprecated)**
+   * **(deprecated)**.
    * @param {boolean} [checkAdmin] Whether to allow the administrator permission to override
-   * (takes priority over `explicit`)
+   * (takes priority over `explicit`).
    * @returns {boolean}
    * @example
    * // See if a role can ban a member
@@ -169,7 +169,7 @@ class Role {
 
   /**
    * Compares this role's position to another role's.
-   * @param {Role} role Role to compare to this one
+   * @param {Role} role Role to compare to this one.
    * @returns {number} Negative number if the this role's position is lower (other role's is higher),
    * positive number if the this one is higher (other's is lower), 0 if equal
    */
@@ -180,18 +180,18 @@ class Role {
   /**
    * The data for a role.
    * @typedef {Object} RoleData
-   * @property {string} [name] The name of the role
-   * @property {ColorResolvable} [color] The color of the role, either a hex string or a base 10 number
-   * @property {boolean} [hoist] Whether or not the role should be hoisted
-   * @property {number} [position] The position of the role
-   * @property {string[]} [permissions] The permissions of the role
-   * @property {boolean} [mentionable] Whether or not the role should be mentionable
+   * @property {string} [name] The name of the role.
+   * @property {ColorResolvable} [color] The color of the role, either a hex string or a base 10 number.
+   * @property {boolean} [hoist] Whether or not the role should be hoisted.
+   * @property {number} [position] The position of the role.
+   * @property {string[]} [permissions] The permissions of the role.
+   * @property {boolean} [mentionable] Whether or not the role should be mentionable.
    */
 
   /**
    * Edits the role.
-   * @param {RoleData} data The new data for the role
-   * @param {string} [reason] Reason for editing this role
+   * @param {RoleData} data The new data for the role.
+   * @param {string} [reason] Reason for editing this role.
    * @returns {Promise<Role>}
    * @example
    * // Edit a role
@@ -217,7 +217,7 @@ class Role {
 
   /**
    * Set a new name for the role.
-   * @param {string} name The new name of the role
+   * @param {string} name The new name of the role.
    * @returns {Promise<Role>}
    * @example
    * // Set the name of the role
@@ -231,7 +231,7 @@ class Role {
 
   /**
    * Set a new color for the role.
-   * @param {ColorResolvable} color The color of the role
+   * @param {ColorResolvable} color The color of the role.
    * @returns {Promise<Role>}
    * @example
    * // Set the color of a role
@@ -245,7 +245,7 @@ class Role {
 
   /**
    * Set whether or not the role should be hoisted.
-   * @param {boolean} hoist Whether or not to hoist the role
+   * @param {boolean} hoist Whether or not to hoist the role.
    * @returns {Promise<Role>}
    * @example
    * // Set the hoist of the role
@@ -259,8 +259,8 @@ class Role {
 
   /**
    * Set the position of the role.
-   * @param {number} position The position of the role
-   * @param {boolean} [relative=false] Move the position relative to its current value
+   * @param {number} position The position of the role.
+   * @param {boolean} [relative=false] Move the position relative to its current value.
    * @returns {Promise<Role>}
    * @example
    * // Set the position of the role
@@ -274,7 +274,7 @@ class Role {
 
   /**
    * Set the permissions of the role.
-   * @param {string[]} permissions The permissions of the role
+   * @param {string[]} permissions The permissions of the role.
    * @returns {Promise<Role>}
    * @example
    * // Set the permissions of the role
@@ -288,7 +288,7 @@ class Role {
 
   /**
    * Set whether this role is mentionable.
-   * @param {boolean} mentionable Whether this role should be mentionable
+   * @param {boolean} mentionable Whether this role should be mentionable.
    * @returns {Promise<Role>}
    * @example
    * // Make the role mentionable
@@ -302,7 +302,7 @@ class Role {
 
   /**
    * Deletes the role.
-   * @param {string} [reason] Reason for deleting this role
+   * @param {string} [reason] Reason for deleting this role.
    * @returns {Promise<Role>}
    * @example
    * // Delete a role
@@ -321,7 +321,7 @@ class Role {
    * Whether this role equals another role. It compares all properties, so for most operations
    * it is advisable to just compare `role.id === role2.id` as it is much faster and is often
    * what most users need.
-   * @param {Role} role Role to compare with
+   * @param {Role} role Role to compare with.
    * @returns {boolean}
    */
   equals(role) {
@@ -346,8 +346,8 @@ class Role {
 
   /**
    * Compares the positions of two roles.
-   * @param {Role} role1 First role to compare
-   * @param {Role} role2 Second role to compare
+   * @param {Role} role1 First role to compare.
+   * @param {Role} role2 Second role to compare.
    * @returns {number} Negative number if the first role's position is lower (second role's is higher),
    * positive number if the first's is higher (second's is lower), 0 if equal
    */

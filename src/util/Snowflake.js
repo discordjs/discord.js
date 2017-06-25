@@ -27,7 +27,7 @@ class SnowflakeUtil {
   /**
    * Generates a Discord snowflake.
    * <info>This hardcodes the worker ID as 1 and the process ID as 0.</info>
-   * @returns {Snowflake} The generated snowflake
+   * @returns {Snowflake} The generated snowflake.
    */
   static generate() {
     if (INCREMENT >= 4095) INCREMENT = 0;
@@ -38,18 +38,18 @@ class SnowflakeUtil {
   /**
    * A deconstructed snowflake.
    * @typedef {Object} DeconstructedSnowflake
-   * @property {number} timestamp Timestamp the snowflake was created
-   * @property {Date} date Date the snowflake was created
-   * @property {number} workerID Worker ID in the snowflake
-   * @property {number} processID Process ID in the snowflake
-   * @property {number} increment Increment in the snowflake
-   * @property {string} binary Binary representation of the snowflake
+   * @property {number} timestamp Timestamp the snowflake was created.
+   * @property {Date} date Date the snowflake was created.
+   * @property {number} workerID Worker ID in the snowflake.
+   * @property {number} processID Process ID in the snowflake.
+   * @property {number} increment Increment in the snowflake.
+   * @property {string} binary Binary representation of the snowflake.
    */
 
   /**
    * Deconstructs a Discord snowflake.
-   * @param {Snowflake} snowflake Snowflake to deconstruct
-   * @returns {DeconstructedSnowflake} Deconstructed snowflake
+   * @param {Snowflake} snowflake Snowflake to deconstruct.
+   * @returns {DeconstructedSnowflake} Deconstructed snowflake.
    */
   static deconstruct(snowflake) {
     const BINARY = pad(Long.fromString(snowflake).toString(2), 64);

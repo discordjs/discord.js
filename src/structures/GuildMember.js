@@ -283,7 +283,7 @@ class GuildMember {
   /**
    * Returns `channel.permissionsFor(guildMember)`. Returns permissions for a member in a guild channel,
    * taking into account roles and permission overwrites.
-   * @param {ChannelResolvable} channel The guild channel to use as context
+   * @param {ChannelResolvable} channel The guild channel to use as context.
    * @returns {?Permissions}
    */
   permissionsIn(channel) {
@@ -294,12 +294,12 @@ class GuildMember {
 
   /**
    * Checks if any of the member's roles have a permission.
-   * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
+   * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for.
    * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permission
-   * **(deprecated)**
-   * @param {boolean} [checkAdmin] Whether to allow the administrator permission to override
+   * **(deprecated)**.
+   * @param {boolean} [checkAdmin] Whether to allow the administrator permission to override.
    * (takes priority over `explicit`)
-   * @param {boolean} [checkOwner] Whether to allow being the guild's owner to override
+   * @param {boolean} [checkOwner] Whether to allow being the guild's owner to override.
    * (takes priority over `explicit`)
    * @returns {boolean}
    */
@@ -312,8 +312,8 @@ class GuildMember {
 
   /**
    * Checks whether the roles of the member allows them to perform specific actions, and lists any missing permissions.
-   * @param {PermissionResolvable[]} permissions The permissions to check for
-   * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
+   * @param {PermissionResolvable[]} permissions The permissions to check for.
+   * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions.
    * @returns {PermissionResolvable[]}
    */
   missingPermissions(permissions, explicit = false) {
@@ -323,17 +323,17 @@ class GuildMember {
   /**
    * The data for editing a guild member.
    * @typedef {Object} GuildMemberEditData
-   * @property {string} [nick] The nickname to set for the member
-   * @property {Collection<Snowflake, Role>|Role[]|Snowflake[]} [roles] The roles or role IDs to apply
-   * @property {boolean} [mute] Whether or not the member should be muted
-   * @property {boolean} [deaf] Whether or not the member should be deafened
-   * @property {ChannelResolvable} [channel] Channel to move member to (if they are connected to voice)
+   * @property {string} [nick] The nickname to set for the member.
+   * @property {Collection<Snowflake, Role>|Role[]|Snowflake[]} [roles] The roles or role IDs to apply.
+   * @property {boolean} [mute] Whether or not the member should be muted.
+   * @property {boolean} [deaf] Whether or not the member should be deafened.
+   * @property {ChannelResolvable} [channel] Channel to move member to (if they are connected to voice).
    */
 
   /**
    * Edit a guild member.
-   * @param {GuildMemberEditData} data The data to edit the member with
-   * @param {string} [reason] Reason for editing this user
+   * @param {GuildMemberEditData} data The data to edit the member with.
+   * @param {string} [reason] Reason for editing this user.
    * @returns {Promise<GuildMember>}
    */
   edit(data, reason) {
@@ -355,7 +355,7 @@ class GuildMember {
 
   /**
    * Mute/unmute a user.
-   * @param {boolean} mute Whether or not the member should be muted
+   * @param {boolean} mute Whether or not the member should be muted.
    * @returns {Promise<GuildMember>}
    */
   setMute(mute) {
@@ -364,7 +364,7 @@ class GuildMember {
 
   /**
    * Deafen/undeafen a user.
-   * @param {boolean} deaf Whether or not the member should be deafened
+   * @param {boolean} deaf Whether or not the member should be deafened.
    * @returns {Promise<GuildMember>}
    */
   setDeaf(deaf) {
@@ -373,7 +373,7 @@ class GuildMember {
 
   /**
    * Moves the guild member to the given channel.
-   * @param {ChannelResolvable} channel The channel to move the member to
+   * @param {ChannelResolvable} channel The channel to move the member to.
    * @returns {Promise<GuildMember>}
    */
   setVoiceChannel(channel) {
@@ -382,7 +382,7 @@ class GuildMember {
 
   /**
    * Sets the roles applied to the member.
-   * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to apply
+   * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to apply.
    * @returns {Promise<GuildMember>}
    */
   setRoles(roles) {
@@ -391,7 +391,7 @@ class GuildMember {
 
   /**
    * Adds a single role to the member.
-   * @param {Role|Snowflake} role The role or ID of the role to add
+   * @param {Role|Snowflake} role The role or ID of the role to add.
    * @returns {Promise<GuildMember>}
    */
   addRole(role) {
@@ -405,7 +405,7 @@ class GuildMember {
 
   /**
    * Adds multiple roles to the member.
-   * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to add
+   * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to add.
    * @returns {Promise<GuildMember>}
    */
   addRoles(roles) {
@@ -421,7 +421,7 @@ class GuildMember {
 
   /**
    * Removes a single role from the member.
-   * @param {Role|Snowflake} role The role or ID of the role to remove
+   * @param {Role|Snowflake} role The role or ID of the role to remove.
    * @returns {Promise<GuildMember>}
    */
   removeRole(role) {
@@ -434,7 +434,7 @@ class GuildMember {
 
   /**
    * Removes multiple roles from the member.
-   * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to remove
+   * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to remove.
    * @returns {Promise<GuildMember>}
    */
   removeRoles(roles) {
@@ -455,7 +455,7 @@ class GuildMember {
 
   /**
    * Set the nickname for the guild member.
-   * @param {string} nick The nickname for the guild member
+   * @param {string} nick The nickname for the guild member.
    * @returns {Promise<GuildMember>}
    */
   setNickname(nick) {
@@ -480,7 +480,7 @@ class GuildMember {
 
   /**
    * Kick this member from the guild.
-   * @param {string} [reason] Reason for kicking user
+   * @param {string} [reason] Reason for kicking user.
    * @returns {Promise<GuildMember>}
    */
   kick(reason) {
@@ -501,7 +501,7 @@ class GuildMember {
    * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember>}
    * @example
-   * // ban a guild member
+   * // ban a guild member.
    * guildMember.ban(7);
    */
   ban(options) {
@@ -512,7 +512,7 @@ class GuildMember {
    * When concatenated with a string, this automatically concatenates the user's mention instead of the Member object.
    * @returns {string}
    * @example
-   * // Logs: Hello from <@123456789>!
+   * // Logs: Hello from <@123456789>!.
    * console.log(`Hello from ${member}!`);
    */
   toString() {

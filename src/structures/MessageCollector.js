@@ -2,8 +2,8 @@ const Collector = require('./interfaces/Collector');
 
 /**
  * @typedef {CollectorOptions} MessageCollectorOptions
- * @property {number} max The maximum amount of messages to collect
- * @property {number} maxProcessed The maximum amount of messages to process
+ * @property {number} max The maximum amount of messages to collect.
+ * @property {number} maxProcessed The maximum amount of messages to process.
  */
 
 /**
@@ -13,9 +13,9 @@ const Collector = require('./interfaces/Collector');
 class MessageCollector extends Collector {
 
   /**
-   * @param {TextChannel|DMChannel|GroupDMChannel} channel The channel
-   * @param {CollectorFilter} filter The filter to be applied to this collector
-   * @param {MessageCollectorOptions} options The options to be applied to this collector
+   * @param {TextChannel|DMChannel|GroupDMChannel} channel The channel.
+   * @param {CollectorFilter} filter The filter to be applied to this collector.
+   * @param {MessageCollectorOptions} options The options to be applied to this collector.
    * @emits MessageCollector#message
    */
   constructor(channel, filter, options = {}) {
@@ -37,8 +37,8 @@ class MessageCollector extends Collector {
 
   /**
    * Handle an incoming message for possible collection.
-   * @param {Message} message The message that could be collected
-   * @returns {?{key: Snowflake, value: Message}} Message data to collect
+   * @param {Message} message The message that could be collected.
+   * @returns {?{key: Snowflake, value: Message}} Message data to collect.
    * @private
    */
   handle(message) {
@@ -52,7 +52,7 @@ class MessageCollector extends Collector {
 
   /**
    * Check after collection to see if the collector is done.
-   * @returns {?string} Reason to end the collector, if any
+   * @returns {?string} Reason to end the collector, if any.
    * @private
    */
   postCheck() {

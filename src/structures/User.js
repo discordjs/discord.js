@@ -105,7 +105,7 @@ class User {
 
   /**
    * A link to the user's avatar
-   * @param {Object} [options={}] Options for the avatar url
+   * @param {Object} [options={}] Options for the avatar url.
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
    * it will be `gif` for animated avatars or otherwise `webp`
    * @param {number} [options.size=128] One of `128`, `256`, `512`, `1024`, `2048`
@@ -131,7 +131,7 @@ class User {
 
   /**
    * A link to the user's avatar if they have one. Otherwise a link to their default avatar will be returned
-   * @param {Object} [options={}] Options for the avatar url
+   * @param {Object} [options={}] Options for the avatar url.
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
    * it will be `gif` for animated avatars or otherwise `webp`
    * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
@@ -162,7 +162,7 @@ class User {
 
   /**
    * Check whether the user is typing in a channel.
-   * @param {ChannelResolvable} channel The channel to check in
+   * @param {ChannelResolvable} channel The channel to check in.
    * @returns {boolean}
    */
   typingIn(channel) {
@@ -172,7 +172,7 @@ class User {
 
   /**
    * Get the time that the user started typing.
-   * @param {ChannelResolvable} channel The channel to get the time in
+   * @param {ChannelResolvable} channel The channel to get the time in.
    * @returns {?Date}
    */
   typingSinceIn(channel) {
@@ -182,7 +182,7 @@ class User {
 
   /**
    * Get the amount of time the user has been typing in a channel for (in milliseconds), or -1 if they're not typing.
-   * @param {ChannelResolvable} channel The channel to get the time in
+   * @param {ChannelResolvable} channel The channel to get the time in.
    * @returns {number}
    */
   typingDurationIn(channel) {
@@ -234,7 +234,7 @@ class User {
   /**
    * Sets a note for the user.
    * <warn>This is only available when using a user account.</warn>
-   * @param {string} note The note to set for the user
+   * @param {string} note The note to set for the user.
    * @returns {Promise<User>}
    */
   setNote(note) {
@@ -245,7 +245,7 @@ class User {
   /**
    * Checks if the user is equal to another. It compares ID, username, discriminator, avatar, and bot flags.
    * It is recommended to compare equality by using `user.id === user2.id` unless you want to compare all properties.
-   * @param {User} user User to compare with
+   * @param {User} user User to compare with.
    * @returns {boolean}
    */
   equals(user) {

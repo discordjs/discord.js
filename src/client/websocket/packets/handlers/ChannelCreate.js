@@ -11,7 +11,7 @@ class ChannelCreateHandler extends AbstractHandler {
 /**
  * Emitted whenever a channel is created.
  * @event Client#channelCreate
- * @param {Channel} channel The channel that was created
+ * @param {Channel} channel The channel that was created.
  */
 
 module.exports = ChannelCreateHandler;

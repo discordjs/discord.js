@@ -35,7 +35,7 @@ class RequestHandler {
 
   /**
    * Push a new API request into this bucket.
-   * @param {APIRequest} request The new request to push into the queue
+   * @param {APIRequest} request The new request to push into the queue.
    */
   push(request) {
     this.queue.push(request);

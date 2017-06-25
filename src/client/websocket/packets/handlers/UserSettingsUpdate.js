@@ -12,7 +12,7 @@ class UserSettingsUpdateHandler extends AbstractHandler {
 /**
  * Emitted when the client user's settings update.
  * @event Client#clientUserSettingsUpdate
- * @param {ClientUserSettings} clientUserSettings The new client user settings
+ * @param {ClientUserSettings} clientUserSettings The new client user settings.
  */
 
 module.exports = UserSettingsUpdateHandler;

@@ -31,9 +31,9 @@ class ClientManager {
 
   /**
    * Connects the client to the WebSocket.
-   * @param {string} token The authorization token
-   * @param {Function} resolve Function to run when connection is successful
-   * @param {Function} reject Function to run when connection fails
+   * @param {string} token The authorization token.
+   * @param {Function} resolve Function to run when connection is successful.
+   * @param {Function} reject Function to run when connection fails.
    */
   connectToWebSocket(token, resolve, reject) {
     this.client.emit(Constants.Events.DEBUG, `Authenticated using token ${token}`);

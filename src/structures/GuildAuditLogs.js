@@ -72,7 +72,7 @@ class GuildAuditLogs {
 
   /**
    * Find target type from entry action.
-   * @param {number} target The action target
+   * @param {number} target The action target.
    * @returns {?string}
    */
   static targetType(target) {
@@ -90,7 +90,7 @@ class GuildAuditLogs {
 
   /**
    * Find action type from entry action.
-   * @param {string} action The action target
+   * @param {string} action The action target.
    * @returns {string}
    */
   static actionType(action) {

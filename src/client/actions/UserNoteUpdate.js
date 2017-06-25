@@ -22,9 +22,9 @@ class UserNoteUpdateAction extends Action {
 /**
  * Emitted whenever a note is updated.
  * @event Client#userNoteUpdate
- * @param {User} user The user the note belongs to
- * @param {string} oldNote The note content before the update
- * @param {string} newNote The note content after the update
+ * @param {User} user The user the note belongs to.
+ * @param {string} oldNote The note content before the update.
+ * @param {string} newNote The note content after the update.
  */
 
 module.exports = UserNoteUpdateAction;

@@ -2,7 +2,7 @@ const Util = require('../util/Util');
 
 /**
  * A rich embed to be sent with a message with a fluent interface for creation.
- * @param {Object} [data] Data to set in the rich embed
+ * @param {Object} [data] Data to set in the rich embed.
  */
 class RichEmbed {
   constructor(data = {}) {
@@ -75,7 +75,7 @@ class RichEmbed {
 
   /**
    * Sets the title of this embed.
-   * @param {StringResolvable} title The title
+   * @param {StringResolvable} title The title.
    * @returns {RichEmbed} This embed
    */
   setTitle(title) {
@@ -87,7 +87,7 @@ class RichEmbed {
 
   /**
    * Sets the description of this embed.
-   * @param {StringResolvable} description The description
+   * @param {StringResolvable} description The description.
    * @returns {RichEmbed} This embed
    */
   setDescription(description) {
@@ -99,7 +99,7 @@ class RichEmbed {
 
   /**
    * Sets the URL of this embed.
-   * @param {string} url The URL
+   * @param {string} url The URL.
    * @returns {RichEmbed} This embed
    */
   setURL(url) {
@@ -109,7 +109,7 @@ class RichEmbed {
 
   /**
    * Sets the color of this embed.
-   * @param {ColorResolvable} color The color of the embed
+   * @param {ColorResolvable} color The color of the embed.
    * @returns {RichEmbed} This embed
    */
   setColor(color) {
@@ -119,9 +119,9 @@ class RichEmbed {
 
   /**
    * Sets the author of this embed.
-   * @param {StringResolvable} name The name of the author
-   * @param {string} [icon] The icon URL of the author
-   * @param {string} [url] The URL of the author
+   * @param {StringResolvable} name The name of the author.
+   * @param {string} [icon] The icon URL of the author.
+   * @param {string} [url] The URL of the author.
    * @returns {RichEmbed} This embed
    */
   setAuthor(name, icon, url) {
@@ -131,7 +131,7 @@ class RichEmbed {
 
   /**
    * Sets the timestamp of this embed.
-   * @param {Date} [timestamp=current date] The timestamp
+   * @param {Date} [timestamp=current date] The timestamp.
    * @returns {RichEmbed} This embed
    */
   setTimestamp(timestamp = new Date()) {
@@ -141,9 +141,9 @@ class RichEmbed {
 
   /**
    * Adds a field to the embed (max 25).
-   * @param {StringResolvable} name The name of the field
-   * @param {StringResolvable} value The value of the field
-   * @param {boolean} [inline=false] Set the field to display inline
+   * @param {StringResolvable} name The name of the field.
+   * @param {StringResolvable} value The value of the field.
+   * @param {boolean} [inline=false] Set the field to display inline.
    * @returns {RichEmbed} This embed
    */
   addField(name, value, inline = false) {
@@ -160,7 +160,7 @@ class RichEmbed {
 
   /**
    * Convenience function for `<RichEmbed>.addField('\u200B', '\u200B', inline)`.
-   * @param {boolean} [inline=false] Set the field to display inline
+   * @param {boolean} [inline=false] Set the field to display inline.
    * @returns {RichEmbed} This embed
    */
   addBlankField(inline = false) {
@@ -169,7 +169,7 @@ class RichEmbed {
 
   /**
    * Set the thumbnail of this embed.
-   * @param {string} url The URL of the thumbnail
+   * @param {string} url The URL of the thumbnail.
    * @returns {RichEmbed} This embed
    */
   setThumbnail(url) {
@@ -179,7 +179,7 @@ class RichEmbed {
 
   /**
    * Set the image of this embed.
-   * @param {string} url The URL of the image
+   * @param {string} url The URL of the image.
    * @returns {RichEmbed} This embed
    */
   setImage(url) {
@@ -189,8 +189,8 @@ class RichEmbed {
 
   /**
    * Sets the footer of this embed.
-   * @param {StringResolvable} text The text of the footer
-   * @param {string} [icon] The icon URL of the footer
+   * @param {StringResolvable} text The text of the footer.
+   * @param {string} [icon] The icon URL of the footer.
    * @returns {RichEmbed} This embed
    */
   setFooter(text, icon) {
@@ -203,7 +203,7 @@ class RichEmbed {
   /**
    * Sets the file to upload alongside the embed. This file can be accessed via `attachment://fileName.extension` when
    * setting an embed image or author/footer icons. Only one file may be attached.
-   * @param {FileOptions|string} file Local path or URL to the file to attach, or valid FileOptions for a file to attach
+   * @param {FileOptions|string} file Local path or URL to the file to attach, or valid FileOptions for a file to attach.
    * @returns {RichEmbed} This embed
    */
   attachFile(file) {

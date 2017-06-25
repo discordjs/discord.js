@@ -13,8 +13,8 @@ class Util {
 
   /**
    * Splits a string into multiple chunks at a designated character that do not exceed a specific length.
-   * @param {string} text Content to split
-   * @param {SplitOptions} [options] Options controlling the behaviour of the split
+   * @param {string} text Content to split.
+   * @param {SplitOptions} [options] Options controlling the behaviour of the split.
    * @returns {string|string[]}
    */
   static splitMessage(text, { maxLength = 1950, char = '\n', prepend = '', append = '' } = {}) {
@@ -38,8 +38,8 @@ class Util {
 
   /**
    * Escapes any Discord-flavour markdown in a string.
-   * @param {string} text Content to escape
-   * @param {boolean} [onlyCodeBlock=false] Whether to only escape codeblocks (takes priority)
+   * @param {string} text Content to escape.
+   * @param {boolean} [onlyCodeBlock=false] Whether to only escape codeblocks (takes priority).
    * @param {boolean} [onlyInlineCode=false] Whether to only escape inline code
    * @returns {string}
    */
@@ -51,8 +51,8 @@ class Util {
 
   /**
    * Gets the recommended shard count from Discord.
-   * @param {string} token Discord auth token
-   * @param {number} [guildsPerShard=1000] Number of guilds per shard
+   * @param {string} token Discord auth token.
+   * @param {number} [guildsPerShard=1000] Number of guilds per shard.
    * @returns {Promise<number>} The recommended number of shards
    */
   static fetchRecommendedShards(token, guildsPerShard = 1000) {
@@ -72,8 +72,8 @@ class Util {
    * - A UTF-8 emoji (no ID)
    * - A URL-encoded UTF-8 emoji (no ID)
    * - A Discord custom emoji (`<:name:id>`)
-   * @param {string} text Emoji string to parse
-   * @returns {Object} Object with `name` and `id` properties
+   * @param {string} text Emoji string to parse.
+   * @returns {Object} Object with `name` and `id` properties.
    * @private
    */
   static parseEmoji(text) {
@@ -110,7 +110,7 @@ class Util {
 
   /**
    * Shallow-copies an object with its class/prototype intact.
-   * @param {Object} obj Object to clone
+   * @param {Object} obj Object to clone.
    * @returns {Object}
    * @private
    */
@@ -120,8 +120,8 @@ class Util {
 
   /**
    * Sets default properties on an object that aren't already specified.
-   * @param {Object} def Default properties
-   * @param {Object} given Object to assign defaults to
+   * @param {Object} def Default properties.
+   * @param {Object} given Object to assign defaults to.
    * @returns {Object}
    * @private
    */
@@ -140,7 +140,7 @@ class Util {
 
   /**
    * Converts an ArrayBuffer or string to a Buffer.
-   * @param {ArrayBuffer|string} ab ArrayBuffer to convert
+   * @param {ArrayBuffer|string} ab ArrayBuffer to convert.
    * @returns {Buffer}
    * @private
    */
@@ -151,7 +151,7 @@ class Util {
 
   /**
    * Converts a string to an ArrayBuffer.
-   * @param {string} str String to convert
+   * @param {string} str String to convert.
    * @returns {ArrayBuffer}
    * @private
    */
@@ -164,7 +164,7 @@ class Util {
 
   /**
    * Makes an Error from a plain info object.
-   * @param {Object} obj Error info
+   * @param {Object} obj Error info.
    * @param {string} obj.name Error type
    * @param {string} obj.message Message for the error
    * @param {string} obj.stack Stack for the error
@@ -180,7 +180,7 @@ class Util {
 
   /**
    * Makes a plain error info object from an Error.
-   * @param {Error} err Error to get info from
+   * @param {Error} err Error to get info from.
    * @returns {Object}
    * @private
    */
@@ -194,10 +194,10 @@ class Util {
 
   /**
    * Moves an element in an array *in place*.
-   * @param {Array<*>} array Array to modify
-   * @param {*} element Element to move
-   * @param {number} newIndex Index or offset to move the element to
-   * @param {boolean} [offset=false] Move the element by an offset amount rather than to a set index
+   * @param {Array<*>} array Array to modify.
+   * @param {*} element Element to move.
+   * @param {number} newIndex Index or offset to move the element to.
+   * @param {boolean} [offset=false] Move the element by an offset amount rather than to a set index.
    * @returns {number}
    * @private
    */
@@ -221,7 +221,7 @@ class Util {
 
   /**
    * Resolves a StringResolvable to a string.
-   * @param {StringResolvable} data The string resolvable to resolve
+   * @param {StringResolvable} data The string resolvable to resolve.
    * @returns {string}
    */
 
@@ -269,8 +269,8 @@ class Util {
 
   /**
    * Resolves a ColorResolvable into a color number.
-   * @param {ColorResolvable} color Color to resolve
-   * @returns {number} A color
+   * @param {ColorResolvable} color Color to resolve.
+   * @returns {number} A color.
    */
 
   static resolveColor(color) {

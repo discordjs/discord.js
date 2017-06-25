@@ -7,7 +7,7 @@ const { RangeError } = require('../errors');
  */
 class Permissions {
   /**
-   * @param {number|PermissionResolvable[]} permissions Permissions or bitfield to read from
+   * @param {number|PermissionResolvable[]} permissions Permissions or bitfield to read from.
    */
   constructor(permissions) {
     /**
@@ -19,8 +19,8 @@ class Permissions {
 
   /**
    * Checks whether the bitfield has a permission, or multiple permissions.
-   * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
-   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
+   * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for.
+   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override.
    * @returns {boolean}
    */
   has(permission, checkAdmin = true) {
@@ -32,8 +32,8 @@ class Permissions {
 
   /**
    * Gets all given permissions that are missing from the bitfield.
-   * @param {PermissionResolvable[]} permissions Permissions to check for
-   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
+   * @param {PermissionResolvable[]} permissions Permissions to check for.
+   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override.
    * @returns {PermissionResolvable[]}
    */
   missing(permissions, checkAdmin = true) {
@@ -71,7 +71,7 @@ class Permissions {
   /**
    * Gets an object mapping permission name (like `READ_MESSAGES`) to a {@link boolean} indicating whether the
    * permission is available.
-   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
+   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override.
    * @returns {Object}
    */
   serialize(checkAdmin = true) {
@@ -89,7 +89,7 @@ class Permissions {
 
   /**
    * Resolves permissions to their numeric form.
-   * @param {PermissionResolvable|PermissionResolvable[]} permission - Permission(s) to resolve
+   * @param {PermissionResolvable|PermissionResolvable[]} permission - Permission(s) to resolve.
    * @returns {number}
    */
   static resolve(permission) {
