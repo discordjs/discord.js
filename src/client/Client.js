@@ -120,6 +120,7 @@ class Client extends EventEmitter {
      */
     this.presences = new Collection();
 
+    Object.defineProperty(this, 'token', { writable: true });
     if (!this.token && 'CLIENT_TOKEN' in process.env) {
       /**
        * Authorization token for the logged in user/bot
