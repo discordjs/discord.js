@@ -4321,288 +4321,6 @@ if (typeof Object.create === 'function') {
 
 /***/ }),
 /* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const TextBasedChannel = __webpack_require__(26);
-const Constants = __webpack_require__(0);
-const Presence = __webpack_require__(15).Presence;
-const UserProfile = __webpack_require__(195);
-const Snowflake = __webpack_require__(8);
-const Base = __webpack_require__(7);
-
-/**
- * Represents a user on Discord.
- * @implements {TextBasedChannel}
- */
-class User extends Base {
-
-  constructor(client, data) {
-    super(client);
-    this._patch(data);
-  }
-
-  _patch(data) {
-    super._patch();
-    /**
-     * The ID of the user
-     * @type {Snowflake}
-     */
-    this.id = data.id;
-
-    /**
-     * The username of the user
-     * @type {string}
-     */
-    this.username = data.username;
-
-    /**
-     * A discriminator based on username for the user
-     * @type {string}
-     */
-    this.discriminator = data.discriminator;
-
-    /**
-     * The ID of the user's avatar
-     * @type {string}
-     */
-    this.avatar = data.avatar;
-
-    /**
-     * Whether or not the user is a bot
-     * @type {boolean}
-     */
-    this.bot = Boolean(data.bot);
-
-    /**
-     * The ID of the last message sent by the user, if one was sent
-     * @type {?Snowflake}
-     */
-    this.lastMessageID = null;
-
-    /**
-     * The Message object of the last message sent by the user, if one was sent
-     * @type {?Message}
-     */
-    this.lastMessage = null;
-  }
-
-  patch(data) {
-    for (const prop of ['id', 'username', 'discriminator', 'avatar', 'bot']) {
-      if (typeof data[prop] !== 'undefined') this[prop] = data[prop];
-    }
-    if (data.token) this.client.token = data.token;
-  }
-
-  /**
-   * The timestamp the user was created at
-   * @type {number}
-   * @readonly
-   */
-  get createdTimestamp() {
-    return Snowflake.deconstruct(this.id).timestamp;
-  }
-
-  /**
-   * The time the user was created
-   * @type {Date}
-   * @readonly
-   */
-  get createdAt() {
-    return new Date(this.createdTimestamp);
-  }
-
-  /**
-   * The presence of this user
-   * @type {Presence}
-   * @readonly
-   */
-  get presence() {
-    if (this.client.presences.has(this.id)) return this.client.presences.get(this.id);
-    for (const guild of this.client.guilds.values()) {
-      if (guild.presences.has(this.id)) return guild.presences.get(this.id);
-    }
-    return new Presence();
-  }
-
-  /**
-   * A link to the user's avatar
-   * @param {Object} [options={}] Options for the avatar url
-   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
-   * it will be `gif` for animated avatars or otherwise `webp`
-   * @param {number} [options.size=128] One of `128`, `256`, `512`, `1024`, `2048`
-   * @returns {?string}
-   */
-  avatarURL({ format, size } = {}) {
-    if (!this.avatar) return null;
-    if (typeof format === 'number') {
-      size = format;
-      format = 'default';
-    }
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).Avatar(this.id, this.avatar, format, size);
-  }
-
-  /**
-   * A link to the user's default avatar
-   * @type {string}
-   * @readonly
-   */
-  get defaultAvatarURL() {
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).DefaultAvatar(this.discriminator % 5);
-  }
-
-  /**
-   * A link to the user's avatar if they have one. Otherwise a link to their default avatar will be returned
-   * @param {Object} [options={}] Options for the avatar url
-   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
-   * it will be `gif` for animated avatars or otherwise `webp`
-   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
-   * @returns {string}
-   */
-  displayAvatarURL(options) {
-    return this.avatarURL(options) || this.defaultAvatarURL;
-  }
-
-  /**
-   * The Discord "tag" for this user
-   * @type {string}
-   * @readonly
-   */
-  get tag() {
-    return `${this.username}#${this.discriminator}`;
-  }
-
-  /**
-   * The note that is set for the user
-   * <warn>This is only available when using a user account.</warn>
-   * @type {?string}
-   * @readonly
-   */
-  get note() {
-    return this.client.user.notes.get(this.id) || null;
-  }
-
-  /**
-   * Check whether the user is typing in a channel.
-   * @param {ChannelResolvable} channel The channel to check in
-   * @returns {boolean}
-   */
-  typingIn(channel) {
-    channel = this.client.resolver.resolveChannel(channel);
-    return channel._typing.has(this.id);
-  }
-
-  /**
-   * Get the time that the user started typing.
-   * @param {ChannelResolvable} channel The channel to get the time in
-   * @returns {?Date}
-   */
-  typingSinceIn(channel) {
-    channel = this.client.resolver.resolveChannel(channel);
-    return channel._typing.has(this.id) ? new Date(channel._typing.get(this.id).since) : null;
-  }
-
-  /**
-   * Get the amount of time the user has been typing in a channel for (in milliseconds), or -1 if they're not typing.
-   * @param {ChannelResolvable} channel The channel to get the time in
-   * @returns {number}
-   */
-  typingDurationIn(channel) {
-    channel = this.client.resolver.resolveChannel(channel);
-    return channel._typing.has(this.id) ? channel._typing.get(this.id).elapsedTime : -1;
-  }
-
-  /**
-   * The DM between the client's user and this user
-   * @type {?DMChannel}
-   * @readonly
-   */
-  get dmChannel() {
-    return this.client.channels.filter(c => c.type === 'dm').find(c => c.recipient.id === this.id);
-  }
-
-  /**
-   * Creates a DM channel between the client and the user.
-   * @returns {Promise<DMChannel>}
-   */
-  createDM() {
-    if (this.dmChannel) return Promise.resolve(this.dmChannel);
-    return this.client.api.users(this.client.user.id).channels.post({ data: {
-      recipient_id: this.id,
-    } })
-    .then(data => this.client.actions.ChannelCreate.handle(data).channel);
-  }
-
-  /**
-   * Deletes a DM channel (if one exists) between the client and the user. Resolves with the channel if successful.
-   * @returns {Promise<DMChannel>}
-   */
-  deleteDM() {
-    if (!this.dmChannel) return Promise.reject(new Error('No DM Channel exists!'));
-    return this.client.api.channels(this.dmChannel.id).delete().then(data =>
-       this.client.actions.ChannelDelete.handle(data).channel
-    );
-  }
-
-  /**
-   * Get the profile of the user.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<UserProfile>}
-   */
-  fetchProfile() {
-    return this.client.api.users(this.id).profile.get().then(data => new UserProfile(data));
-  }
-
-  /**
-   * Sets a note for the user.
-   * <warn>This is only available when using a user account.</warn>
-   * @param {string} note The note to set for the user
-   * @returns {Promise<User>}
-   */
-  setNote(note) {
-    return this.client.api.users('@me').notes(this.id).put({ data: { note } })
-      .then(() => this);
-  }
-
-  /**
-   * Checks if the user is equal to another. It compares ID, username, discriminator, avatar, and bot flags.
-   * It is recommended to compare equality by using `user.id === user2.id` unless you want to compare all properties.
-   * @param {User} user User to compare with
-   * @returns {boolean}
-   */
-  equals(user) {
-    let equal = user &&
-      this.id === user.id &&
-      this.username === user.username &&
-      this.discriminator === user.discriminator &&
-      this.avatar === user.avatar &&
-      this.bot === Boolean(user.bot);
-
-    return equal;
-  }
-
-  /**
-   * When concatenated with a string, this automatically concatenates the user's mention instead of the User object.
-   * @returns {string}
-   * @example
-   * // logs: Hello from <@123456789>!
-   * console.log(`Hello from ${user}!`);
-   */
-  toString() {
-    return `<@${this.id}>`;
-  }
-
-  // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  /* eslint-disable no-empty-function */
-  send() {}
-}
-
-TextBasedChannel.applyToClass(User);
-
-module.exports = User;
-
-
-/***/ }),
-/* 15 */
 /***/ (function(module, exports) {
 
 /**
@@ -4700,7 +4418,7 @@ exports.Game = Game;
 
 
 /***/ }),
-/* 16 */
+/* 15 */
 /***/ (function(module, exports) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -5008,7 +4726,7 @@ function isUndefined(arg) {
 
 
 /***/ }),
-/* 17 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5089,7 +4807,7 @@ function forEach(xs, f) {
 }
 
 /***/ }),
-/* 18 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Snowflake = __webpack_require__(8);
@@ -5156,6 +4874,288 @@ class Channel extends Base {
 }
 
 module.exports = Channel;
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const TextBasedChannel = __webpack_require__(26);
+const Constants = __webpack_require__(0);
+const Presence = __webpack_require__(14).Presence;
+const UserProfile = __webpack_require__(195);
+const Snowflake = __webpack_require__(8);
+const Base = __webpack_require__(7);
+
+/**
+ * Represents a user on Discord.
+ * @implements {TextBasedChannel}
+ */
+class User extends Base {
+
+  constructor(client, data) {
+    super(client);
+    this._patch(data);
+  }
+
+  _patch(data) {
+    super._patch();
+    /**
+     * The ID of the user
+     * @type {Snowflake}
+     */
+    this.id = data.id;
+
+    /**
+     * The username of the user
+     * @type {string}
+     */
+    this.username = data.username;
+
+    /**
+     * A discriminator based on username for the user
+     * @type {string}
+     */
+    this.discriminator = data.discriminator;
+
+    /**
+     * The ID of the user's avatar
+     * @type {string}
+     */
+    this.avatar = data.avatar;
+
+    /**
+     * Whether or not the user is a bot
+     * @type {boolean}
+     */
+    this.bot = Boolean(data.bot);
+
+    /**
+     * The ID of the last message sent by the user, if one was sent
+     * @type {?Snowflake}
+     */
+    this.lastMessageID = null;
+
+    /**
+     * The Message object of the last message sent by the user, if one was sent
+     * @type {?Message}
+     */
+    this.lastMessage = null;
+  }
+
+  patch(data) {
+    for (const prop of ['id', 'username', 'discriminator', 'avatar', 'bot']) {
+      if (typeof data[prop] !== 'undefined') this[prop] = data[prop];
+    }
+    if (data.token) this.client.token = data.token;
+  }
+
+  /**
+   * The timestamp the user was created at
+   * @type {number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    return Snowflake.deconstruct(this.id).timestamp;
+  }
+
+  /**
+   * The time the user was created
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * The presence of this user
+   * @type {Presence}
+   * @readonly
+   */
+  get presence() {
+    if (this.client.presences.has(this.id)) return this.client.presences.get(this.id);
+    for (const guild of this.client.guilds.values()) {
+      if (guild.presences.has(this.id)) return guild.presences.get(this.id);
+    }
+    return new Presence();
+  }
+
+  /**
+   * A link to the user's avatar
+   * @param {Object} [options={}] Options for the avatar url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
+   * it will be `gif` for animated avatars or otherwise `webp`
+   * @param {number} [options.size=128] One of `128`, `256`, `512`, `1024`, `2048`
+   * @returns {?string}
+   */
+  avatarURL({ format, size } = {}) {
+    if (!this.avatar) return null;
+    if (typeof format === 'number') {
+      size = format;
+      format = 'default';
+    }
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).Avatar(this.id, this.avatar, format, size);
+  }
+
+  /**
+   * A link to the user's default avatar
+   * @type {string}
+   * @readonly
+   */
+  get defaultAvatarURL() {
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).DefaultAvatar(this.discriminator % 5);
+  }
+
+  /**
+   * A link to the user's avatar if they have one. Otherwise a link to their default avatar will be returned
+   * @param {Object} [options={}] Options for the avatar url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
+   * it will be `gif` for animated avatars or otherwise `webp`
+   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {string}
+   */
+  displayAvatarURL(options) {
+    return this.avatarURL(options) || this.defaultAvatarURL;
+  }
+
+  /**
+   * The Discord "tag" for this user
+   * @type {string}
+   * @readonly
+   */
+  get tag() {
+    return `${this.username}#${this.discriminator}`;
+  }
+
+  /**
+   * The note that is set for the user
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?string}
+   * @readonly
+   */
+  get note() {
+    return this.client.user.notes.get(this.id) || null;
+  }
+
+  /**
+   * Check whether the user is typing in a channel.
+   * @param {ChannelResolvable} channel The channel to check in
+   * @returns {boolean}
+   */
+  typingIn(channel) {
+    channel = this.client.resolver.resolveChannel(channel);
+    return channel._typing.has(this.id);
+  }
+
+  /**
+   * Get the time that the user started typing.
+   * @param {ChannelResolvable} channel The channel to get the time in
+   * @returns {?Date}
+   */
+  typingSinceIn(channel) {
+    channel = this.client.resolver.resolveChannel(channel);
+    return channel._typing.has(this.id) ? new Date(channel._typing.get(this.id).since) : null;
+  }
+
+  /**
+   * Get the amount of time the user has been typing in a channel for (in milliseconds), or -1 if they're not typing.
+   * @param {ChannelResolvable} channel The channel to get the time in
+   * @returns {number}
+   */
+  typingDurationIn(channel) {
+    channel = this.client.resolver.resolveChannel(channel);
+    return channel._typing.has(this.id) ? channel._typing.get(this.id).elapsedTime : -1;
+  }
+
+  /**
+   * The DM between the client's user and this user
+   * @type {?DMChannel}
+   * @readonly
+   */
+  get dmChannel() {
+    return this.client.channels.filter(c => c.type === 'dm').find(c => c.recipient.id === this.id);
+  }
+
+  /**
+   * Creates a DM channel between the client and the user.
+   * @returns {Promise<DMChannel>}
+   */
+  createDM() {
+    if (this.dmChannel) return Promise.resolve(this.dmChannel);
+    return this.client.api.users(this.client.user.id).channels.post({ data: {
+      recipient_id: this.id,
+    } })
+    .then(data => this.client.actions.ChannelCreate.handle(data).channel);
+  }
+
+  /**
+   * Deletes a DM channel (if one exists) between the client and the user. Resolves with the channel if successful.
+   * @returns {Promise<DMChannel>}
+   */
+  deleteDM() {
+    if (!this.dmChannel) return Promise.reject(new Error('No DM Channel exists!'));
+    return this.client.api.channels(this.dmChannel.id).delete().then(data =>
+       this.client.actions.ChannelDelete.handle(data).channel
+    );
+  }
+
+  /**
+   * Get the profile of the user.
+   * <warn>This is only available when using a user account.</warn>
+   * @returns {Promise<UserProfile>}
+   */
+  fetchProfile() {
+    return this.client.api.users(this.id).profile.get().then(data => new UserProfile(data));
+  }
+
+  /**
+   * Sets a note for the user.
+   * <warn>This is only available when using a user account.</warn>
+   * @param {string} note The note to set for the user
+   * @returns {Promise<User>}
+   */
+  setNote(note) {
+    return this.client.api.users('@me').notes(this.id).put({ data: { note } })
+      .then(() => this);
+  }
+
+  /**
+   * Checks if the user is equal to another. It compares ID, username, discriminator, avatar, and bot flags.
+   * It is recommended to compare equality by using `user.id === user2.id` unless you want to compare all properties.
+   * @param {User} user User to compare with
+   * @returns {boolean}
+   */
+  equals(user) {
+    let equal = user &&
+      this.id === user.id &&
+      this.username === user.username &&
+      this.discriminator === user.discriminator &&
+      this.avatar === user.avatar &&
+      this.bot === Boolean(user.bot);
+
+    return equal;
+  }
+
+  /**
+   * When concatenated with a string, this automatically concatenates the user's mention instead of the User object.
+   * @returns {string}
+   * @example
+   * // logs: Hello from <@123456789>!
+   * console.log(`Hello from ${user}!`);
+   */
+  toString() {
+    return `<@${this.id}>`;
+  }
+
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  /* eslint-disable no-empty-function */
+  send() {}
+}
+
+TextBasedChannel.applyToClass(User);
+
+module.exports = User;
 
 
 /***/ }),
@@ -5384,13 +5384,13 @@ module.exports = Emoji;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Long = __webpack_require__(36);
-const User = __webpack_require__(14);
+const User = __webpack_require__(18);
 const Role = __webpack_require__(22);
 const Emoji = __webpack_require__(19);
 const Invite = __webpack_require__(28);
 const GuildAuditLogs = __webpack_require__(48);
 const Webhook = __webpack_require__(23);
-const Presence = __webpack_require__(15).Presence;
+const Presence = __webpack_require__(14).Presence;
 const GuildMember = __webpack_require__(21);
 const VoiceRegion = __webpack_require__(75);
 const Constants = __webpack_require__(0);
@@ -5914,7 +5914,7 @@ class Guild extends Base {
       this.client.on(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
       this.client.setTimeout(() => {
         this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
-        reject(new Error('Members didn\'t arrive in time.'));
+        reject(new Error('GUILD_MEMBERS_NOT_RECEIVED'));
       }, 120 * 1000);
     });
   }
@@ -6633,7 +6633,7 @@ const TextBasedChannel = __webpack_require__(26);
 const Role = __webpack_require__(22);
 const Permissions = __webpack_require__(11);
 const Collection = __webpack_require__(3);
-const Presence = __webpack_require__(15).Presence;
+const Presence = __webpack_require__(14).Presence;
 const Base = __webpack_require__(7);
 const { Error } = __webpack_require__(5);
 
@@ -7882,7 +7882,7 @@ exports = module.exports = __webpack_require__(61);
 exports.Stream = exports;
 exports.Readable = exports;
 exports.Writable = __webpack_require__(39);
-exports.Duplex = __webpack_require__(17);
+exports.Duplex = __webpack_require__(16);
 exports.Transform = __webpack_require__(62);
 exports.PassThrough = __webpack_require__(92);
 
@@ -8954,7 +8954,7 @@ module.exports = DataStore;
 /* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Channel = __webpack_require__(18);
+const Channel = __webpack_require__(17);
 const TextBasedChannel = __webpack_require__(26);
 const Collection = __webpack_require__(3);
 
@@ -9136,7 +9136,7 @@ module.exports = GroupDMChannel;
 /* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Channel = __webpack_require__(18);
+const Channel = __webpack_require__(17);
 const Role = __webpack_require__(22);
 const Invite = __webpack_require__(28);
 const PermissionOverwrites = __webpack_require__(56);
@@ -9570,7 +9570,7 @@ module.exports = ReactionEmoji;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
-const EventEmitter = __webpack_require__(16).EventEmitter;
+const EventEmitter = __webpack_require__(15).EventEmitter;
 
 /**
  * Filter to be applied to the collector.
@@ -11087,7 +11087,7 @@ function WriteReq(chunk, encoding, cb) {
 }
 
 function WritableState(options, stream) {
-  Duplex = Duplex || __webpack_require__(17);
+  Duplex = Duplex || __webpack_require__(16);
 
   options = options || {};
 
@@ -11221,7 +11221,7 @@ if (typeof Symbol === 'function' && Symbol.hasInstance && typeof Function.protot
 }
 
 function Writable(options) {
-  Duplex = Duplex || __webpack_require__(17);
+  Duplex = Duplex || __webpack_require__(16);
 
   // Writable ctor is applied to Duplexes, too.
   // `realHasInstance` is necessary because using plain `instanceof`
@@ -12354,7 +12354,7 @@ module.exports = {
 /* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const User = __webpack_require__(14);
+/* WEBPACK VAR INJECTION */(function(Buffer) {const User = __webpack_require__(18);
 const Collection = __webpack_require__(3);
 const ClientUserSettings = __webpack_require__(46);
 const Constants = __webpack_require__(0);
@@ -12802,7 +12802,7 @@ module.exports = ClientUserSettings;
 /* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Channel = __webpack_require__(18);
+const Channel = __webpack_require__(17);
 const TextBasedChannel = __webpack_require__(26);
 const Collection = __webpack_require__(3);
 
@@ -14393,7 +14393,7 @@ var Duplex;
 Readable.ReadableState = ReadableState;
 
 /*<replacement>*/
-var EE = __webpack_require__(16).EventEmitter;
+var EE = __webpack_require__(15).EventEmitter;
 
 var EElistenerCount = function (emitter, type) {
   return emitter.listeners(type).length;
@@ -14445,7 +14445,7 @@ function prependListener(emitter, event, fn) {
 }
 
 function ReadableState(options, stream) {
-  Duplex = Duplex || __webpack_require__(17);
+  Duplex = Duplex || __webpack_require__(16);
 
   options = options || {};
 
@@ -14514,7 +14514,7 @@ function ReadableState(options, stream) {
 }
 
 function Readable(options) {
-  Duplex = Duplex || __webpack_require__(17);
+  Duplex = Duplex || __webpack_require__(16);
 
   if (!(this instanceof Readable)) return new Readable(options);
 
@@ -15361,7 +15361,7 @@ function indexOf(xs, x) {
 
 module.exports = Transform;
 
-var Duplex = __webpack_require__(17);
+var Duplex = __webpack_require__(16);
 
 /*<replacement>*/
 var util = __webpack_require__(24);
@@ -15502,7 +15502,7 @@ function done(stream, er, data) {
 /* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(16).EventEmitter;
+module.exports = __webpack_require__(15).EventEmitter;
 
 
 /***/ }),
@@ -15532,7 +15532,7 @@ module.exports = __webpack_require__(16).EventEmitter;
 
 module.exports = Stream;
 
-var EE = __webpack_require__(16).EventEmitter;
+var EE = __webpack_require__(15).EventEmitter;
 var inherits = __webpack_require__(13);
 
 inherits(Stream, EE);
@@ -16774,10 +16774,10 @@ const fs = __webpack_require__(43);
 const snekfetch = __webpack_require__(41);
 
 const Util = __webpack_require__(4);
-const User = __webpack_require__(14);
+const User = __webpack_require__(18);
 const Message = __webpack_require__(10);
 const Guild = __webpack_require__(20);
-const Channel = __webpack_require__(18);
+const Channel = __webpack_require__(17);
 const GuildMember = __webpack_require__(21);
 const Emoji = __webpack_require__(19);
 const ReactionEmoji = __webpack_require__(34);
@@ -17194,7 +17194,7 @@ module.exports = RequestHandler;
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {const browser = __webpack_require__(27).platform() === 'browser';
-const EventEmitter = __webpack_require__(16);
+const EventEmitter = __webpack_require__(15);
 const Constants = __webpack_require__(0);
 const zlib = __webpack_require__(43);
 const PacketManager = __webpack_require__(151);
@@ -17841,7 +17841,7 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {const os = __webpack_require__(27);
-const EventEmitter = __webpack_require__(16).EventEmitter;
+const EventEmitter = __webpack_require__(15).EventEmitter;
 const Constants = __webpack_require__(0);
 const Permissions = __webpack_require__(11);
 const Util = __webpack_require__(4);
@@ -17853,10 +17853,9 @@ const ClientVoiceManager = __webpack_require__(200);
 const WebSocketManager = __webpack_require__(150);
 const ActionsManager = __webpack_require__(116);
 const Collection = __webpack_require__(3);
-const Presence = __webpack_require__(15).Presence;
+const Presence = __webpack_require__(14).Presence;
 const VoiceRegion = __webpack_require__(75);
 const Webhook = __webpack_require__(23);
-const User = __webpack_require__(14);
 const Invite = __webpack_require__(28);
 const OAuth2Application = __webpack_require__(29);
 const ShardClientUtil = __webpack_require__(199);
@@ -18164,20 +18163,6 @@ class Client extends EventEmitter {
       op: 12,
       d: guilds instanceof Collection ? guilds.keyArray() : guilds.map(g => g.id),
     });
-  }
-
-  /**
-   * Obtains a user from Discord, or the user cache if it's already available.
-   * <warn>This is only available when using a bot account.</warn>
-   * @param {Snowflake} id ID of the user
-   * @param {boolean} [cache=true] Whether to cache the new user object if it isn't already
-   * @returns {Promise<User>}
-   */
-  fetchUser(id, cache = true) {
-    if (this.users.has(id)) return Promise.resolve(this.users.get(id));
-    return this.api.users(id).get().then(data =>
-      cache ? this.users.create(data) : new User(this, data)
-    );
   }
 
   /**
@@ -20322,7 +20307,7 @@ var objectKeys = Object.keys || function (obj) {
 /* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(17);
+module.exports = __webpack_require__(16);
 
 
 /***/ }),
@@ -24852,7 +24837,7 @@ module.exports = UserAgentManager;
 /* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const EventEmitter = __webpack_require__(16).EventEmitter;
+const EventEmitter = __webpack_require__(15).EventEmitter;
 const Constants = __webpack_require__(0);
 const WebSocketConnection = __webpack_require__(73);
 
@@ -26161,6 +26146,7 @@ const Messages = {
   MESSAGE_SPLIT_MISSING: 'Message exceeds the max length and contains no split characters.',
 
   GUILD_CHANNEL_RESOLVE: 'Could not resolve channel to a guild channel.',
+  GUILD_MEMBERS_NOT_RECEIVED: 'Members didn\'t arrive in time.',
 
   EMOJI_TYPE: 'Emoji must be a string or Emoji/ReactionEmoji',
 };
@@ -26199,13 +26185,13 @@ module.exports = {
   splitMessage: Util.splitMessage,
 
   // Structures
-  Channel: __webpack_require__(18),
+  Channel: __webpack_require__(17),
   ClientUser: __webpack_require__(45),
   ClientUserSettings: __webpack_require__(46),
   Collector: __webpack_require__(35),
   DMChannel: __webpack_require__(47),
   Emoji: __webpack_require__(19),
-  Game: __webpack_require__(15).Game,
+  Game: __webpack_require__(14).Game,
   GroupDMChannel: __webpack_require__(32),
   Guild: __webpack_require__(20),
   GuildAuditLogs: __webpack_require__(48),
@@ -26223,13 +26209,13 @@ module.exports = {
   PartialGuild: __webpack_require__(54),
   PartialGuildChannel: __webpack_require__(55),
   PermissionOverwrites: __webpack_require__(56),
-  Presence: __webpack_require__(15).Presence,
+  Presence: __webpack_require__(14).Presence,
   ReactionEmoji: __webpack_require__(34),
   ReactionCollector: __webpack_require__(57),
   RichEmbed: __webpack_require__(79),
   Role: __webpack_require__(22),
   TextChannel: __webpack_require__(58),
-  User: __webpack_require__(14),
+  User: __webpack_require__(18),
   VoiceChannel: __webpack_require__(59),
   Webhook: __webpack_require__(23),
 };
@@ -26251,7 +26237,10 @@ const Constants = __webpack_require__(0);
 class ChannelStore extends DataStore {
   create(data, emitEvent = true) {
     super.create();
-    if (this.has(data.id)) return this.get(data.id);
+
+    const existing = this.get(data.id);
+    if (existing) return existing;
+
     let channel;
     switch (data.type) {
       case Constants.ChannelTypes.DM:
@@ -26306,7 +26295,9 @@ class EmojiStore extends DataStore {
     super.create();
     const guild = this.guild;
 
-    if (guild.emojis.has(data.id)) return guild.emojis.get(data.id);
+    const existing = guild.emojis.get(data.id);
+    if (existing) return existing;
+
     const emoji = new Emoji(guild, data);
     guild.emojis.set(emoji.id, emoji);
 
@@ -26340,9 +26331,11 @@ const Constants = __webpack_require__(0);
 class GuildStore extends DataStore {
   create(data, emitEvent) {
     super.create();
-    if (typeof emitEvent === 'undefined') emitEvent = this.client.ws.connection.status === Constants.Status.READY;
-    if (this.has(data.id)) return this.get(data.id);
 
+    const existing = this.get(data.id);
+    if (existing) return existing;
+
+    if (typeof emitEvent === 'undefined') emitEvent = this.client.ws.connection.status === Constants.Status.READY;
     const guild = new Guild(this.client, data);
     this.set(guild.id, guild);
 
@@ -26381,12 +26374,15 @@ module.exports = GuildStore;
 /***/ (function(module, exports, __webpack_require__) {
 
 const DataStore = __webpack_require__(31);
-const User = __webpack_require__(14);
+const User = __webpack_require__(18);
 
 class UserStore extends DataStore {
   create(data) {
     super.create();
-    if (this.has(data.id)) return this.get(data.id);
+
+    const existing = this.get(data.id);
+    if (existing) return existing;
+
     const user = new User(this.client, data);
     this.set(user.id, user);
     return user;
@@ -26395,6 +26391,22 @@ class UserStore extends DataStore {
   remove(id) {
     super.remove();
     this.delete(id);
+  }
+
+  /**
+   * Obtains a user from Discord, or the user cache if it's already available.
+   * <warn>This is only available when using a bot account.</warn>
+   * @param {Snowflake} id ID of the user
+   * @param {boolean} [cache=true] Whether to cache the new user object if it isn't already
+   * @returns {Promise<User>}
+   */
+  fetch(id, cache = true) {
+    const existing = this.get(id);
+    if (existing) return Promise.resolve(existing);
+
+    return this.client.api.users(id).get().then(data =>
+      cache ? this.create(data) : new User(this.client, data)
+    );
   }
 }
 
@@ -26607,7 +26619,7 @@ module.exports = function search(target, options) {
   };
 
   // Lazy load these because some of them use util
-  const Channel = __webpack_require__(18);
+  const Channel = __webpack_require__(17);
   const Guild = __webpack_require__(20);
   const Message = __webpack_require__(10);
 
@@ -26634,7 +26646,7 @@ const Util = __webpack_require__(4);
 const { RangeError } = __webpack_require__(5);
 
 module.exports = function sendMessage(channel, options) {
-  const User = __webpack_require__(14);
+  const User = __webpack_require__(18);
   const GuildMember = __webpack_require__(21);
   if (channel instanceof User || channel instanceof GuildMember) return channel.createDM().then(dm => dm.send(options));
   let { content, nonce, reply, code, disableEveryone, tts, embed, files, split } = options;
