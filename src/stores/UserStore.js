@@ -14,6 +14,20 @@ class UserStore extends DataStore {
     super.remove();
     this.delete(id);
   }
+
+  /**
+   * Obtains a user from Discord, or the user cache if it's already available.
+   * <warn>This is only available when using a bot account.</warn>
+   * @param {Snowflake} id ID of the user
+   * @param {boolean} [cache=true] Whether to cache the new user object if it isn't already
+   * @returns {Promise<User>}
+   */
+  fetch(id, cache = true) {
+    if (this.has(id)) return Promise.resolve(this.get(id));
+    return this.client.api.users(id).get().then(data =>
+      cache ? this.create(data) : new User(this.client, data)
+    );
+  }
 }
 
 module.exports = UserStore;

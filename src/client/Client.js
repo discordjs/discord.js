@@ -325,20 +325,6 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Obtains a user from Discord, or the user cache if it's already available.
-   * <warn>This is only available when using a bot account.</warn>
-   * @param {Snowflake} id ID of the user
-   * @param {boolean} [cache=true] Whether to cache the new user object if it isn't already
-   * @returns {Promise<User>}
-   */
-  fetchUser(id, cache = true) {
-    if (this.users.has(id)) return Promise.resolve(this.users.get(id));
-    return this.api.users(id).get().then(data =>
-      cache ? this.users.create(data) : new User(this, data)
-    );
-  }
-
-  /**
    * Obtains an invite from Discord.
    * @param {InviteResolvable} invite Invite code or URL
    * @returns {Promise<Invite>}
