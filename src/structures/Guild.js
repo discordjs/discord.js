@@ -529,7 +529,7 @@ class Guild extends Base {
       this.client.on(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
       this.client.setTimeout(() => {
         this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
-        reject(new Error('Members didn\'t arrive in time.'));
+        reject(new Error('GUILD_MEMBERS_NOT_RECEIVED'));
       }, 120 * 1000);
     });
   }

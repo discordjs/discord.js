@@ -77,6 +77,7 @@ const Messages = {
   MESSAGE_SPLIT_MISSING: 'Message exceeds the max length and contains no split characters.',
 
   GUILD_CHANNEL_RESOLVE: 'Could not resolve channel to a guild channel.',
+  GUILD_MEMBERS_NOT_RECEIVED: 'Members didn\'t arrive in time.',
 
   EMOJI_TYPE: 'Emoji must be a string or Emoji/ReactionEmoji',
 };
