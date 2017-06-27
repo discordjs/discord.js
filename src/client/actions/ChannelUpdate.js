@@ -8,11 +8,10 @@ class ChannelUpdateAction extends Action {
 
     const channel = client.channels.get(data.id);
     if (channel) {
-      const oldChannel = Util.cloneObject(channel);
-      channel.setup(data);
-      client.emit(Constants.Events.CHANNEL_UPDATE, oldChannel, channel);
+      const old = channel._update(data);
+      client.emit(Constants.Events.CHANNEL_UPDATE, old, channel);
       return {
-        old: oldChannel,
+        old,
         updated: channel,
       };
     }

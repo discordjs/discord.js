@@ -6,6 +6,7 @@ class UserStore extends DataStore {
     super.create();
     if (this.has(data.id)) return this.get(data.id);
     const user = new User(this.client, data);
+    this.set(user.id, user);
     return user;
   }
 

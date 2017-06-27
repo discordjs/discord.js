@@ -20,8 +20,8 @@ class GuildChannel extends Channel {
     this.guild = guild;
   }
 
-  setup(data) {
-    super.setup(data);
+  _patch(data) {
+    super._patch(data);
 
     /**
      * The name of the guild channel

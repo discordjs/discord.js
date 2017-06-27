@@ -8,13 +8,13 @@ const Base = require('./Base');
  * <warn>The only guaranteed properties are `code`, `guild` and `channel`. Other properties can be missing.</warn>
  */
 class Invite extends Base {
+
   constructor(client, data) {
     super(client);
-
-    this.setup(data);
+    this._patch(data);
   }
 
-  setup(data) {
+  _patch(data) {
     /**
      * The guild the invite is for. If this guild is already known, this will be a guild object. If the guild is
      * unknown, this will be a PartialGuild object

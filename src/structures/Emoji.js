@@ -16,10 +16,11 @@ class Emoji extends Base {
      */
     this.guild = guild;
 
-    this.setup(data);
+    this._patch(data);
   }
 
-  setup(data) {
+  _patch(data) {
+    super._patch(data);
     /**
      * The ID of the emoji
      * @type {Snowflake}

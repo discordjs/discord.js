@@ -27,10 +27,11 @@ class UserProfile extends Base {
      */
     this.connections = new Collection();
 
-    this.setup(data);
+    this._patch(data);
   }
 
   setup(data) {
+    super._patch(data);
     /**
      * If the user has Discord Premium
      * @type {boolean}

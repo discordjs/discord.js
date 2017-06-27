@@ -18,8 +18,8 @@ class VoiceChannel extends GuildChannel {
     this.type = 'voice';
   }
 
-  setup(data) {
-    super.setup(data);
+  _patch(data) {
+    super._patch(data);
 
     /**
      * The bitrate of this voice channel

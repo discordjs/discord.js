@@ -18,10 +18,10 @@ class Channel extends Base {
      */
     this.type = null;
 
-    if (data) this.setup(data);
+    if (data) this._patch(data);
   }
 
-  setup(data) {
+  _patch(data) {
     /**
      * The unique ID of the channel
      * @type {Snowflake}

@@ -12,8 +12,8 @@ const GroupDMChannel = require('./GroupDMChannel');
  * @extends {User}
  */
 class ClientUser extends User {
-  setup(data) {
-    super.setup(data);
+  _patch(data) {
+    super._patch(data);
 
     /**
      * Whether or not this account has been verified

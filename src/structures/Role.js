@@ -16,10 +16,11 @@ class Role extends Base {
      */
     this.guild = guild;
 
-    if (data) this.setup(data);
+    if (data) this._patch(data);
   }
 
-  setup(data) {
+  _patch(data) {
+    super._patch(data);
     /**
      * The ID of the role (unique to the guild it is part of)
      * @type {Snowflake}

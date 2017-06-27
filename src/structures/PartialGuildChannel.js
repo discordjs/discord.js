@@ -11,11 +11,11 @@ const Base = require('./Base');
 class PartialGuildChannel extends Base {
   constructor(client, data) {
     super(client);
-
-    this.setup(data);
+    this._patch(data);
   }
 
-  setup(data) {
+  _patch(data) {
+    super._patch(data);
     /**
      * The ID of this guild channel
      * @type {Snowflake}

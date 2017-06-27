@@ -15,8 +15,8 @@ class DMChannel extends Channel {
     this._typing = new Map();
   }
 
-  setup(data) {
-    super.setup(data);
+  _patch(data) {
+    super._patch(data);
 
     /**
      * The recipient on the other end of the DM

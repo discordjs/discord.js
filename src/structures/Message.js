@@ -23,10 +23,10 @@ class Message extends Base {
      */
     this.channel = channel;
 
-    if (data) this.setup(data);
+    if (data) this._patch(data);
   }
 
-  setup(data) { // eslint-disable-line complexity
+  _patch(data) { // eslint-disable-line complexity
     /**
      * The ID of the message
      * @type {Snowflake}

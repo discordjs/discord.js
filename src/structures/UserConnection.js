@@ -9,10 +9,11 @@ class UserConnection {
      */
     this.user = user;
 
-    this.setup(data);
+    this._patch(data);
   }
 
-  setup(data) {
+  _patch(data) {
+    super._patch(data);
     /**
      * The type of the connection
      * @type {string}

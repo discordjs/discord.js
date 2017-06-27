@@ -16,8 +16,8 @@ class TextChannel extends GuildChannel {
     this._typing = new Map();
   }
 
-  setup(data) {
-    super.setup(data);
+  _patch(data) {
+    super._patch(data);
 
     /**
      * The topic of the text channel

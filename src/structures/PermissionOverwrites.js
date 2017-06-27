@@ -13,10 +13,10 @@ class PermissionOverwrites {
      */
     Object.defineProperty(this, 'channel', { value: guildChannel });
 
-    if (data) this.setup(data);
+    if (data) this._patch(data);
   }
 
-  setup(data) {
+  _patch(data) {
     /**
      * The ID of this overwrite, either a user ID or a role ID
      * @type {Snowflake}

@@ -26,7 +26,7 @@ class GuildMember extends Base {
     this.user = {};
 
     this._roles = [];
-    if (data) this.setup(data);
+    if (data) this._patch(data);
 
     /**
      * The ID of the last message sent by the member in their guild, if one was sent
@@ -41,7 +41,8 @@ class GuildMember extends Base {
     this.lastMessage = null;
   }
 
-  setup(data) {
+  _patch(data) {
+    super._patch(data);
     /**
      * Whether this member is deafened server-wide
      * @type {boolean}

@@ -10,13 +10,14 @@ const Base = require('./Base');
  * @implements {TextBasedChannel}
  */
 class User extends Base {
+
   constructor(client, data) {
     super(client);
-
-    if (data) this.setup(data);
+    this._patch(data);
   }
 
-  setup(data) {
+  _patch(data) {
+    super._patch();
     /**
      * The ID of the user
      * @type {Snowflake}

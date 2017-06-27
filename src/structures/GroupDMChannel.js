@@ -37,8 +37,8 @@ class GroupDMChannel extends Channel {
     this._typing = new Map();
   }
 
-  setup(data) {
-    super.setup(data);
+  _patch(data) {
+    super._patch(data);
 
     /**
      * The name of this Group DM, can be null if one isn't set

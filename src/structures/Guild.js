@@ -64,7 +64,7 @@ class Guild extends Base {
        */
       this.id = data.id;
     } else {
-      this.setup(data);
+      this._patch(data);
       if (!data.channels) this.available = false;
     }
   }
@@ -74,7 +74,8 @@ class Guild extends Base {
    * @param {*} data The raw data of the guild
    * @private
    */
-  setup(data) {
+  _patch(data) {
+    super._patch(data);
     /**
      * The name of the guild
      * @type {string}
