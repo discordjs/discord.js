@@ -1,6 +1,7 @@
 const browser = require('os').platform() === 'browser';
 const EventEmitter = require('events');
 const Constants = require('../../util/Constants');
+const state = require('../../state');
 const zlib = require('zlib');
 const PacketManager = require('./packets/WebSocketPacketManager');
 const erlpack = (function findErlpack() {
@@ -453,12 +454,13 @@ class WebSocketConnection extends EventEmitter {
    * @returns {void}
    */
   identifyNew() {
-    if (!this.client.token) {
+    const token = state.stores(this.client).token;
+    if (!token) {
       this.debug('No token available to identify a new session with');
       return;
     }
     // Clone the generic payload and assign the token
-    const d = Object.assign({ token: this.client.token }, this.client.options.ws);
+    const d = Object.assign({ token }, this.client.options.ws);
 
     // Sharding stuff
     const { shardId, shardCount } = this.client.options;

@@ -20,6 +20,7 @@ const OAuth2Application = require('../structures/OAuth2Application');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
 const VoiceBroadcast = require('./voice/VoiceBroadcast');
 const { Error, TypeError, RangeError } = require('../errors');
+const state = require('../state');
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -32,15 +33,13 @@ class Client extends EventEmitter {
   constructor(options = {}) {
     super();
 
+    state.mount(this);
+
     // Obtain shard details from environment
     if (!options.shardId && 'SHARD_ID' in process.env) options.shardId = Number(process.env.SHARD_ID);
     if (!options.shardCount && 'SHARD_COUNT' in process.env) options.shardCount = Number(process.env.SHARD_COUNT);
 
-    /**
-     * The options the client was instantiated with
-     * @type {ClientOptions}
-     */
-    this.options = Util.mergeDefault(Constants.DefaultOptions, options);
+    state.stores(this).options = Util.mergeDefault(Constants.DefaultOptions, options);
     this._validateOptions();
 
     /**
@@ -107,43 +106,13 @@ class Client extends EventEmitter {
     this.shard = process.send ? ShardClientUtil.singleton(this) : null;
 
     /**
-     * All of the {@link User} objects that have been cached at any point, mapped by their IDs
-     * @type {Collection<Snowflake, User>}
-     */
-    this.users = new Collection();
-
-    /**
-     * All of the guilds the client is currently handling, mapped by their IDs -
-     * as long as sharding isn't being used, this will be *every* guild the bot is a member of
-     * @type {Collection<Snowflake, Guild>}
-     */
-    this.guilds = new Collection();
-
-    /**
-     * All of the {@link Channel}s that the client is currently handling, mapped by their IDs -
-     * as long as sharding isn't being used, this will be *every* channel in *every* guild, and all DM channels
-     * @type {Collection<Snowflake, Channel>}
-     */
-    this.channels = new Collection();
-
-    /**
      * Presences that have been received for the client user's friends, mapped by user IDs
      * <warn>This is only filled when using a user account.</warn>
      * @type {Collection<Snowflake, Presence>}
      */
     this.presences = new Collection();
 
-    Object.defineProperty(this, 'token', { writable: true });
-    if (!this.token && 'CLIENT_TOKEN' in process.env) {
-      /**
-       * Authorization token for the logged in user/bot
-       * <warn>This should be kept private at all times.</warn>
-       * @type {?string}
-       */
-      this.token = process.env.CLIENT_TOKEN;
-    } else {
-      this.token = null;
-    }
+    if ('CLIENT_TOKEN' in process.env) state.stores(this).token = process.env.CLIENT_TOKEN;
 
     /**
      * User that the client is logged in as
@@ -187,6 +156,40 @@ class Client extends EventEmitter {
     if (this.options.messageSweepInterval > 0) {
       this.setInterval(this.sweepMessages.bind(this), this.options.messageSweepInterval * 1000);
     }
+  }
+
+  /**
+   * The options the client was instantiated with
+   * @type {ClientOptions}
+   */
+  get options() {
+    return state.stores(this).options;
+  }
+
+  /**
+   * All of the {@link User} objects that have been cached at any point, mapped by their IDs
+   * @type {Collection<Snowflake, User>}
+   */
+  get users() {
+    return state.stores(this).users;
+  }
+
+  /**
+   * All of the guilds the client is currently handling, mapped by their IDs -
+   * as long as sharding isn't being used, this will be *every* guild the bot is a member of
+   * @type {Collection<Snowflake, Guild>}
+   */
+  get guilds() {
+    return state.stores(this).guilds;
+  }
+
+  /**
+   * All of the {@link Channel}s that the client is currently handling, mapped by their IDs -
+   * as long as sharding isn't being used, this will be *every* channel in *every* guild, and all DM channels
+   * @type {Collection<Snowflake, Channel>}
+   */
+  get channels() {
+    return state.stores(this).channels;
   }
 
   /**

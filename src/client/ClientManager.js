@@ -1,6 +1,7 @@
 const Constants = require('../util/Constants');
 const WebSocketConnection = require('./websocket/WebSocketConnection');
 const { Error } = require('../errors');
+const state = require('../state');
 
 /**
  * Manages the state and background tasks of the client.
@@ -37,9 +38,9 @@ class ClientManager {
    */
   connectToWebSocket(token, resolve, reject) {
     this.client.emit(Constants.Events.DEBUG, `Authenticated using token ${token}`);
-    this.client.token = token;
+    state.stores(this.client).token = token;
     const timeout = this.client.setTimeout(() => reject(new Error('INVALID_TOKEN')), 1000 * 300);
-    this.client.api.gateway.get().then(res => {
+    this.client.api.gateway.get({ auth: false }).then(res => {
       const protocolVersion = Constants.DefaultOptions.ws.version;
       const gateway = `${res.url}/?v=${protocolVersion}&encoding=${WebSocketConnection.ENCODING}`;
       this.client.emit(Constants.Events.DEBUG, `Using gateway ${gateway}`);
@@ -61,11 +62,11 @@ class ClientManager {
     this.client.rest.destroy();
     if (!this.client.user) return Promise.resolve();
     if (this.client.user.bot) {
-      this.client.token = null;
+      state.stores(this.client).token = null;
       return Promise.resolve();
     } else {
       return this.client.api.logout.post().then(() => {
-        this.client.token = null;
+        state.stores(this.client).token = null;
       });
     }
   }
