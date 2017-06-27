@@ -14,7 +14,6 @@ const Collection = require('../util/Collection');
 const Presence = require('../structures/Presence').Presence;
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
-const User = require('../structures/User');
 const Invite = require('../structures/Invite');
 const OAuth2Application = require('../structures/OAuth2Application');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
