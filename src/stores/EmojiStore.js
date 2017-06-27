@@ -12,7 +12,9 @@ class EmojiStore extends DataStore {
     super.create();
     const guild = this.guild;
 
-    if (guild.emojis.has(data.id)) return guild.emojis.get(data.id);
+    const existing = guild.emojis.get(data.id);
+    if (existing) return existing;
+
     const emoji = new Emoji(guild, data);
     guild.emojis.set(emoji.id, emoji);
 

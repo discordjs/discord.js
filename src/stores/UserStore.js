@@ -4,7 +4,10 @@ const User = require('../structures/User');
 class UserStore extends DataStore {
   create(data) {
     super.create();
-    if (this.has(data.id)) return this.get(data.id);
+
+    const existing = this.get(data.id);
+    if (existing) return existing;
+
     const user = new User(this.client, data);
     this.set(user.id, user);
     return user;
@@ -23,7 +26,9 @@ class UserStore extends DataStore {
    * @returns {Promise<User>}
    */
   fetch(id, cache = true) {
-    if (this.has(id)) return Promise.resolve(this.get(id));
+    const existing = this.get(id);
+    if (existing) return Promise.resolve(existing);
+
     return this.client.api.users(id).get().then(data =>
       cache ? this.create(data) : new User(this.client, data)
     );

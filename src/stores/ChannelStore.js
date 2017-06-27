@@ -8,7 +8,10 @@ const Constants = require('../util/Constants');
 class ChannelStore extends DataStore {
   create(data, emitEvent = true) {
     super.create();
-    if (this.has(data.id)) return this.get(data.id);
+
+    const existing = this.get(data.id);
+    if (existing) return existing;
+
     let channel;
     switch (data.type) {
       case Constants.ChannelTypes.DM:

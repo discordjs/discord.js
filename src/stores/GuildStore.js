@@ -5,9 +5,11 @@ const Constants = require('../util/Constants');
 class GuildStore extends DataStore {
   create(data, emitEvent) {
     super.create();
-    if (typeof emitEvent === 'undefined') emitEvent = this.client.ws.connection.status === Constants.Status.READY;
-    if (this.has(data.id)) return this.get(data.id);
 
+    const existing = this.get(data.id);
+    if (existing) return existing;
+
+    if (typeof emitEvent === 'undefined') emitEvent = this.client.ws.connection.status === Constants.Status.READY;
     const guild = new Guild(this.client, data);
     this.set(guild.id, guild);
 
