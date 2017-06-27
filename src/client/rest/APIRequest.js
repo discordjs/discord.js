@@ -1,6 +1,7 @@
 const querystring = require('querystring');
 const snekfetch = require('snekfetch');
 const { Error } = require('../../errors');
+const state = require('../../state');
 
 class APIRequest {
   constructor(rest, method, path, options) {
@@ -23,10 +24,11 @@ class APIRequest {
   }
 
   getAuth() {
-    if (this.client.token && this.client.user && this.client.user.bot) {
-      return `Bot ${this.client.token}`;
+    const token = state.stores(this.client).token;
+    if (token && this.client.user && this.client.user.bot) {
+      return `Bot ${token}`;
     } else if (this.client.token) {
-      return this.client.token;
+      return token;
     }
     throw new Error('TOKEN_MISSING');
   }
