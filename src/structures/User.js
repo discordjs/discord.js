@@ -228,7 +228,7 @@ class User {
    * @returns {Promise<UserProfile>}
    */
   fetchProfile() {
-    return this.client.api.users(this.id).profile.get().then(data => new UserProfile(data));
+    return this.client.api.users(this.id).profile.get().then(data => new UserProfile(this, data));
   }
 
   /**

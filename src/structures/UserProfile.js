@@ -40,7 +40,13 @@ class UserProfile {
      * If the user has Discord Premium
      * @type {boolean}
      */
-    this.premium = data.premium;
+    this.premium = Boolean(data.premium_since);
+
+    /**
+     * The Bitfield of the users' flags
+     * @type {number}
+     */
+    this.flags = data.user.flags;
 
     /**
      * The date since which the user has had Discord Premium
