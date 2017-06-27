@@ -1,4 +1,5 @@
 exports.Package = require('../../package.json');
+const { Error, RangeError } = require('../errors');
 
 /**
  * Options for a client.
@@ -78,20 +79,6 @@ exports.WSCodes = {
   4011: 'Shard would be on too many guilds if connected',
 };
 
-exports.Errors = {
-  NO_TOKEN: 'Request to use token, but token was unavailable to the client.',
-  NO_BOT_ACCOUNT: 'Only bot accounts are able to make use of this feature.',
-  NO_USER_ACCOUNT: 'Only user accounts are able to make use of this feature.',
-  BAD_WS_MESSAGE: 'A bad message was received from the websocket; either bad compression, or not JSON.',
-  TOOK_TOO_LONG: 'Something took too long to do.',
-  NOT_A_PERMISSION: 'Invalid permission string or number.',
-  INVALID_RATE_LIMIT_METHOD: 'Unknown rate limiting method.',
-  BAD_LOGIN: 'Incorrect login details were provided.',
-  INVALID_SHARD: 'Invalid shard settings were provided.',
-  SHARDING_REQUIRED: 'This session would have handled too many guilds - Sharding is required.',
-  INVALID_TOKEN: 'An invalid token was provided.',
-};
-
 const AllowedImageFormats = [
   'webp',
   'png',
@@ -108,8 +95,8 @@ const AllowedImageSizes = [
 ];
 
 function checkImage({ size, format }) {
-  if (format && !AllowedImageFormats.includes(format)) throw new Error(`Invalid image format: ${format}`);
-  if (size && !AllowedImageSizes.includes(size)) throw new RangeError(`Invalid size: ${size}`);
+  if (format && !AllowedImageFormats.includes(format)) throw new Error('IMAGE_FORMAT', format);
+  if (size && !AllowedImageSizes.includes(size)) throw new RangeError('IMAGE_SIZE', size);
 }
 
 exports.Endpoints = {

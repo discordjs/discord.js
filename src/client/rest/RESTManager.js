@@ -3,7 +3,7 @@ const SequentialRequestHandler = require('./RequestHandlers/Sequential');
 const BurstRequestHandler = require('./RequestHandlers/Burst');
 const APIRequest = require('./APIRequest');
 const mountApi = require('./APIRouter');
-const Constants = require('../../util/Constants');
+const { Error } = require('../../errors');
 
 class RESTManager {
   constructor(client) {
@@ -39,7 +39,7 @@ class RESTManager {
       case 'burst':
         return BurstRequestHandler;
       default:
-        throw new Error(Constants.Errors.INVALID_RATE_LIMIT_METHOD);
+        throw new Error('RATELIMIT_INVALID_METHOD');
     }
   }
 

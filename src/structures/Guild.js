@@ -16,6 +16,7 @@ const Permissions = require('../util/Permissions');
 const Shared = require('./shared');
 const EmojiStore = require('../stores/EmojiStore');
 const Base = require('./Base');
+const { Error, TypeError } = require('../errors');
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -803,8 +804,7 @@ class Guild extends Base {
    */
   unban(user, reason) {
     const id = this.client.resolver.resolveUserID(user);
-    if (!id) throw new Error('Couldn\'t resolve the user ID to unban.');
-
+    if (!id) throw new Error('BAN_RESOLVE_ID');
     return this.client.api.guilds(this.id).bans(id).delete({ reason })
       .then(() => user);
   }
@@ -827,7 +827,7 @@ class Guild extends Base {
    *   .catch(console.error);
    */
   pruneMembers({ days = 7, dry = false, reason } = {}) {
-    if (typeof days !== 'number') throw new TypeError('Days must be a number.');
+    if (typeof days !== 'number') throw new TypeError('PRUNE_DAYS_TYPE');
     return this.client.api.guilds(this.id).prune[dry ? 'get' : 'post']({ query: { days }, reason })
       .then(data => data.pruned);
   }

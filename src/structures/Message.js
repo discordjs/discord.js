@@ -8,6 +8,7 @@ const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const Base = require('./Base');
+const { TypeError } = require('../errors');
 let GuildMember;
 
 /**
@@ -423,7 +424,7 @@ class Message extends Base {
    */
   react(emoji) {
     emoji = this.client.resolver.resolveEmojiIdentifier(emoji);
-    if (!emoji) throw new TypeError('Emoji must be a string or Emoji/ReactionEmoji');
+    if (!emoji) throw new TypeError('EMOJI_TYPE');
 
     return this.client.api.channels(this.channel.id).messages(this.id).reactions(emoji)['@me']
       .put()

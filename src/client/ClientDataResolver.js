@@ -10,6 +10,7 @@ const Channel = require('../structures/Channel');
 const GuildMember = require('../structures/GuildMember');
 const Emoji = require('../structures/Emoji');
 const ReactionEmoji = require('../structures/ReactionEmoji');
+const { Error, TypeError } = require('../errors');
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
@@ -194,14 +195,14 @@ class ClientDataResolver {
           snekfetch.get(resource)
           .end((err, res) => {
             if (err) return reject(err);
-            if (!(res.body instanceof Buffer)) return reject(new TypeError('The response body isn\'t a Buffer.'));
+            if (!(res.body instanceof Buffer)) return reject(new TypeError('REQ_BODY_TYPE'));
             return resolve(res.body);
           });
         } else {
           const file = path.resolve(resource);
           fs.stat(file, (err, stats) => {
             if (err) return reject(err);
-            if (!stats || !stats.isFile()) return reject(new Error(`The file could not be found: ${file}`));
+            if (!stats || !stats.isFile()) return reject(new Error('FILE_NOT_FOUND', file));
             fs.readFile(file, (err2, data) => {
               if (err2) reject(err2); else resolve(data);
             });
@@ -211,7 +212,7 @@ class ClientDataResolver {
       });
     }
 
-    return Promise.reject(new TypeError('The resource must be a string or Buffer.'));
+    return Promise.reject(new TypeError('REQ_RESOURCE_TYPE'));
   }
 
   /**

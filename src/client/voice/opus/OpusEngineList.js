@@ -1,3 +1,5 @@
+const { Error } = require('../../../errors');
+
 const list = [
   require('./NodeOpusEngine'),
   require('./OpusScriptEngine'),
@@ -30,5 +32,5 @@ exports.fetch = engineOptions => {
 
 exports.guaranteeOpusEngine = () => {
   if (typeof opusEngineFound === 'undefined') opusEngineFound = Boolean(exports.fetch());
-  if (!opusEngineFound) throw new Error('Couldn\'t find an Opus engine.');
+  if (!opusEngineFound) throw new Error('OPUS_ENGINE_MISSING');
 };

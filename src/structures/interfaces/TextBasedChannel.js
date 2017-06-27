@@ -3,6 +3,7 @@ const MessageCollector = require('../MessageCollector');
 const Shared = require('../shared');
 const Collection = require('../../util/Collection');
 const Snowflake = require('../../util/Snowflake');
+const { Error, RangeError, TypeError } = require('../../errors');
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -136,7 +137,7 @@ class TextBasedChannel {
       return this.fetchMessages({ limit: 1, around: messageID })
       .then(messages => {
         const msg = messages.get(messageID);
-        if (!msg) throw new Error('Message not found.');
+        if (!msg) throw new Error('MESSAGE_MISSING');
         return msg;
       });
     }
@@ -227,7 +228,7 @@ class TextBasedChannel {
    * channel.startTyping();
    */
   startTyping(count) {
-    if (typeof count !== 'undefined' && count < 1) throw new RangeError('Count must be at least 1.');
+    if (typeof count !== 'undefined' && count < 1) throw new RangeError('TYPING_COUNT');
     if (!this.client.user._typing.has(this.id)) {
       const endpoint = this.client.api.channels(this.id).typing;
       this.client.user._typing.set(this.id, {
@@ -361,7 +362,7 @@ class TextBasedChannel {
         }).messages
       );
     }
-    throw new TypeError('The messages must be an Array, Collection, or number.');
+    throw new TypeError('MESSAGE_BULK_DELETE_TYPE');
   }
 
   /**
