@@ -2,7 +2,7 @@
  * Represents a data model that is identifiable by a Snowflake (i.e. Discord API data models)
  */
 class Base {
-  constructor(client, data) {
+  constructor(client) {
     /**
      * The client that instantiated this
      * @name Base#client
