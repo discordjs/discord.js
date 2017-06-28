@@ -24,7 +24,7 @@ class ChannelStore extends DataStore {
         const ChannelModel = data.type === Constants.ChannelTypes.TEXT ? TextChannel : VoiceChannel;
         const guild = this.client.guilds.get(data.guild_id);
         channel = new ChannelModel(guild, data);
-        guild.channels.set(channel.id, guild);
+        guild.channels.set(channel.id, channel);
         break;
     }
 
