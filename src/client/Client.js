@@ -4,7 +4,6 @@ const Constants = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
 const RESTManager = require('./rest/RESTManager');
-const ClientDataManager = require('./ClientDataManager');
 const ClientManager = require('./ClientManager');
 const ClientDataResolver = require('./ClientDataResolver');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
@@ -58,13 +57,6 @@ class Client extends EventEmitter {
      * @private
      */
     this.api = this.rest.api;
-
-    /**
-     * The data manager of the client
-     * @type {ClientDataManager}
-     * @private
-     */
-    this.dataManager = new ClientDataManager(this);
 
     /**
      * The manager of the client

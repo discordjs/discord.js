@@ -1,9 +1,11 @@
 const Action = require('./Action');
+const Constants = require('../../util/Constants');
 
 class GuildEmojiUpdateAction extends Action {
-  handle(oldEmoji, newEmoji) {
-    const emoji = this.client.dataManager.updateEmoji(oldEmoji, newEmoji);
-    return { emoji };
+  handle(current, data) {
+    const old = current._update(data);
+    this.client.emit(Constants.Events.GUILD_EMOJI_UPDATE, old, current);
+    return { emoji: current };
   }
 }
 
