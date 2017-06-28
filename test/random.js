@@ -10,7 +10,7 @@ const client = new Discord.Client({ fetchAllMembers: true, apiRequestMethod: 'se
 
 const { email, password, token, usertoken, song } = require('./auth.json');
 
-client.login(token).then(atoken => console.log('logged in')).catch(console.error);
+client.login(usertoken).then(atoken => console.log('logged in')).catch(console.error);
 
 client.on('ready', () => {
   console.log(`ready with ${client.users.size} users`);

@@ -6,7 +6,7 @@ const VoiceChannel = require('../structures/VoiceChannel');
 const Constants = require('../util/Constants');
 
 class ChannelStore extends DataStore {
-  create(data, emitEvent = true) {
+  create(data, guild, emitEvent = true) {
     super.create();
 
     const existing = this.get(data.id);
@@ -22,7 +22,11 @@ class ChannelStore extends DataStore {
         break;
       default: // eslint-disable-line no-case-declarations
         const ChannelModel = data.type === Constants.ChannelTypes.TEXT ? TextChannel : VoiceChannel;
-        const guild = this.client.guilds.get(data.guild_id);
+        guild = guild || this.client.guilds.get(data.guild_id);
+        if (!guild) {
+          this.client.emit('debug', `Failed to find guild for channel ${data.id}`);
+          return null;
+        }
         channel = new ChannelModel(guild, data);
         guild.channels.set(channel.id, channel);
         break;

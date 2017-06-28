@@ -181,7 +181,7 @@ class Guild extends Base {
     if (data.channels) {
       this.channels.clear();
       for (const rawChannel of data.channels) {
-        this.client.channels.create(Object.assign(rawChannel, { guild_id: this.id }), this);
+        this.client.channels.create(rawChannel, this);
       }
     }
 
