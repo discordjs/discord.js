@@ -18,8 +18,7 @@ class PresenceUpdateHandler extends AbstractHandler {
       }
     }
 
-    const oldUser = Util.cloneObject(user);
-    user.patch(data.user);
+    const oldUser = user._update(data.user);
     if (!user.equals(oldUser)) {
       client.emit(Constants.Events.USER_UPDATE, oldUser, user);
     }
@@ -40,7 +39,7 @@ class PresenceUpdateHandler extends AbstractHandler {
           guild._setPresence(user.id, data);
           return;
         }
-        const oldMember = Util.cloneObject(member);
+        const oldMember = member._clone();
         if (member.presence) {
           oldMember.frozenPresence = Util.cloneObject(member.presence);
         }

@@ -1099,7 +1099,7 @@ class Guild extends Base {
   }
 
   _updateMember(member, data) {
-    const oldMember = Util.cloneObject(member);
+    const oldMember = member._clone();
 
     if (data.roles) member._roles = data.roles;
     if (typeof data.nick !== 'undefined') member.nickname = data.nick;

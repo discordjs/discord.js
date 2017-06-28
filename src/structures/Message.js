@@ -152,7 +152,7 @@ class Message extends Base {
    * @private
    */
   patch(data) {
-    const clone = Util.cloneObject(this);
+    const clone = this._clone();
     this._edits.unshift(clone);
 
     this.editedTimestamp = new Date(data.edited_timestamp).getTime();
