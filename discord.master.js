@@ -12839,6 +12839,7 @@ const Collection = __webpack_require__(3);
 const Snowflake = __webpack_require__(7);
 
 const Targets = {
+  ALL: 'ALL',
   GUILD: 'GUILD',
   CHANNEL: 'CHANNEL',
   USER: 'USER',
@@ -12851,6 +12852,7 @@ const Targets = {
 };
 
 const Actions = {
+  ALL: null,
   GUILD_UPDATE: 1,
   CHANNEL_CREATE: 10,
   CHANNEL_UPDATE: 11,
