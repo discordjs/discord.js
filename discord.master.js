@@ -6347,7 +6347,7 @@ class Guild {
    */
   deleteEmoji(emoji) {
     if (!(emoji instanceof Emoji)) emoji = this.emojis.get(emoji);
-    return this.client.api.guilds(this.id).emojis(this.id).delete()
+    return this.client.api.guilds(this.id).emojis(emoji.id).delete()
     .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);
   }
 
