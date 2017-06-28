@@ -71,7 +71,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {exports.Package = __webpack_require__(44);
-const { Error, RangeError } = __webpack_require__(5);
+const { Error, RangeError } = __webpack_require__(4);
 
 /**
  * Options for a client.
@@ -1065,10 +1065,18 @@ module.exports = Collection;
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = __webpack_require__(74);
+module.exports.Messages = __webpack_require__(187);
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
 /* WEBPACK VAR INJECTION */(function(Buffer) {const snekfetch = __webpack_require__(41);
 const Constants = __webpack_require__(0);
 const ConstantsHttp = Constants.DefaultOptions.http;
-const { RangeError, TypeError } = __webpack_require__(5);
+const { RangeError, TypeError } = __webpack_require__(4);
 
 /**
  * Contains various general-purpose utility methods. These functions are also available on the base `Discord` object.
@@ -1361,14 +1369,6 @@ class Util {
 module.exports = Util;
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6).Buffer))
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(74);
-module.exports.Messages = __webpack_require__(187);
-
 
 /***/ }),
 /* 6 */
@@ -3485,12 +3485,12 @@ const Attachment = __webpack_require__(49);
 const Embed = __webpack_require__(51);
 const MessageReaction = __webpack_require__(53);
 const ReactionCollector = __webpack_require__(57);
-const Util = __webpack_require__(4);
+const Util = __webpack_require__(5);
 const Collection = __webpack_require__(3);
 const Constants = __webpack_require__(0);
 const Permissions = __webpack_require__(11);
 const Base = __webpack_require__(7);
-const { TypeError } = __webpack_require__(5);
+const { TypeError } = __webpack_require__(4);
 let GuildMember;
 
 /**
@@ -3634,7 +3634,7 @@ class Message extends Base {
    * @private
    */
   patch(data) {
-    const clone = Util.cloneObject(this);
+    const clone = this._clone();
     this._edits.unshift(clone);
 
     this.editedTimestamp = new Date(data.edited_timestamp).getTime();
@@ -4079,7 +4079,7 @@ module.exports = Message;
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const { RangeError } = __webpack_require__(5);
+const { RangeError } = __webpack_require__(4);
 
 /**
  * Data structure that makes it easy to interact with a permission bitfield. All {@link GuildMember}s have a set of
@@ -5395,14 +5395,14 @@ const GuildMember = __webpack_require__(21);
 const VoiceRegion = __webpack_require__(75);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
-const Util = __webpack_require__(4);
+const Util = __webpack_require__(5);
 const Snowflake = __webpack_require__(8);
 const Permissions = __webpack_require__(11);
 const Shared = __webpack_require__(76);
 const EmojiStore = __webpack_require__(190);
 const GuildChannelStore = __webpack_require__(191);
 const Base = __webpack_require__(7);
-const { Error, TypeError } = __webpack_require__(5);
+const { Error, TypeError } = __webpack_require__(4);
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -6484,7 +6484,7 @@ class Guild extends Base {
   }
 
   _updateMember(member, data) {
-    const oldMember = Util.cloneObject(member);
+    const oldMember = member._clone();
 
     if (data.roles) member._roles = data.roles;
     if (typeof data.nick !== 'undefined') member.nickname = data.nick;
@@ -6636,7 +6636,7 @@ const Permissions = __webpack_require__(11);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(14).Presence;
 const Base = __webpack_require__(7);
-const { Error } = __webpack_require__(5);
+const { Error } = __webpack_require__(4);
 
 /**
  * Represents a member of a guild on Discord.
@@ -7163,7 +7163,7 @@ module.exports = GuildMember;
 
 const Snowflake = __webpack_require__(8);
 const Permissions = __webpack_require__(11);
-const Util = __webpack_require__(4);
+const Util = __webpack_require__(5);
 const Base = __webpack_require__(7);
 
 /**
@@ -7524,7 +7524,7 @@ module.exports = Role;
 /***/ (function(module, exports, __webpack_require__) {
 
 const path = __webpack_require__(31);
-const Util = __webpack_require__(4);
+const Util = __webpack_require__(5);
 
 /**
  * Represents a webhook.
@@ -7927,7 +7927,7 @@ const MessageCollector = __webpack_require__(50);
 const Shared = __webpack_require__(76);
 const Collection = __webpack_require__(3);
 const Snowflake = __webpack_require__(8);
-const { Error, RangeError, TypeError } = __webpack_require__(5);
+const { Error, RangeError, TypeError } = __webpack_require__(4);
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -12359,11 +12359,11 @@ module.exports = {
 const Collection = __webpack_require__(3);
 const ClientUserSettings = __webpack_require__(46);
 const Constants = __webpack_require__(0);
-const Util = __webpack_require__(4);
+const Util = __webpack_require__(5);
 const Guild = __webpack_require__(20);
 const Message = __webpack_require__(10);
 const GroupDMChannel = __webpack_require__(32);
-const { TypeError } = __webpack_require__(5);
+const { TypeError } = __webpack_require__(4);
 
 /**
  * Represents the logged in client's Discord user.
@@ -12722,7 +12722,7 @@ module.exports = ClientUser;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Constants = __webpack_require__(0);
-const Util = __webpack_require__(4);
+const Util = __webpack_require__(5);
 
 /**
  * A wrapper around the ClientUser's settings.
@@ -13303,8 +13303,8 @@ module.exports = MessageCollector;
 /* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Util = __webpack_require__(4);
-const { RangeError } = __webpack_require__(5);
+const Util = __webpack_require__(5);
+const { RangeError } = __webpack_require__(4);
 
 /**
  * Represents an embed in a message (image/video preview, rich embed, etc.)
@@ -16774,7 +16774,7 @@ function base64DetectIncompleteChar(buffer) {
 const fs = __webpack_require__(43);
 const snekfetch = __webpack_require__(41);
 
-const Util = __webpack_require__(4);
+const Util = __webpack_require__(5);
 const User = __webpack_require__(18);
 const Message = __webpack_require__(10);
 const Guild = __webpack_require__(20);
@@ -16782,7 +16782,7 @@ const Channel = __webpack_require__(17);
 const GuildMember = __webpack_require__(21);
 const Emoji = __webpack_require__(19);
 const ReactionEmoji = __webpack_require__(34);
-const { Error, TypeError } = __webpack_require__(5);
+const { Error, TypeError } = __webpack_require__(4);
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them, e.g.
@@ -17076,7 +17076,7 @@ const SequentialRequestHandler = __webpack_require__(147);
 const BurstRequestHandler = __webpack_require__(146);
 const APIRequest = __webpack_require__(144);
 const mountApi = __webpack_require__(145);
-const { Error } = __webpack_require__(5);
+const { Error } = __webpack_require__(4);
 
 class RESTManager {
   constructor(client) {
@@ -17845,7 +17845,7 @@ module.exports = {
 const EventEmitter = __webpack_require__(15).EventEmitter;
 const Constants = __webpack_require__(0);
 const Permissions = __webpack_require__(11);
-const Util = __webpack_require__(4);
+const Util = __webpack_require__(5);
 const RESTManager = __webpack_require__(71);
 const ClientManager = __webpack_require__(114);
 const ClientDataResolver = __webpack_require__(69);
@@ -17863,7 +17863,7 @@ const VoiceBroadcast = __webpack_require__(201);
 const UserStore = __webpack_require__(193);
 const ChannelStore = __webpack_require__(189);
 const GuildStore = __webpack_require__(192);
-const { Error, TypeError, RangeError } = __webpack_require__(5);
+const { Error, TypeError, RangeError } = __webpack_require__(4);
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -18412,7 +18412,7 @@ const Webhook = __webpack_require__(23);
 const RESTManager = __webpack_require__(71);
 const ClientDataResolver = __webpack_require__(69);
 const Constants = __webpack_require__(0);
-const Util = __webpack_require__(4);
+const Util = __webpack_require__(5);
 
 /**
  * The webhook client.
@@ -18539,7 +18539,7 @@ module.exports = WebhookClient;
 /* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Util = __webpack_require__(4);
+const Util = __webpack_require__(5);
 
 /**
  * A rich embed to be sent with a message with a fluent interface for creation.
@@ -23395,7 +23395,7 @@ function extend() {
 
 const Constants = __webpack_require__(0);
 const WebSocketConnection = __webpack_require__(73);
-const { Error } = __webpack_require__(5);
+const { Error } = __webpack_require__(4);
 
 /**
  * Manages the state and background tasks of the client.
@@ -24454,7 +24454,6 @@ module.exports = UserNoteUpdateAction;
 
 const Action = __webpack_require__(2);
 const Constants = __webpack_require__(0);
-const Util = __webpack_require__(4);
 
 class UserUpdateAction extends Action {
   handle(data) {
@@ -24468,8 +24467,7 @@ class UserUpdateAction extends Action {
         };
       }
 
-      const oldUser = Util.cloneObject(client.user);
-      client.user.patch(data);
+      const oldUser = client.user._update(data);
       client.emit(Constants.Events.USER_UPDATE, oldUser, client.user);
       return {
         old: oldUser,
@@ -24493,7 +24491,7 @@ module.exports = UserUpdateAction;
 
 const querystring = __webpack_require__(38);
 const snekfetch = __webpack_require__(41);
-const { Error } = __webpack_require__(5);
+const { Error } = __webpack_require__(4);
 
 class APIRequest {
   constructor(rest, method, path, options) {
@@ -25572,7 +25570,7 @@ module.exports = MessageUpdateHandler;
 
 const AbstractHandler = __webpack_require__(1);
 const Constants = __webpack_require__(0);
-const Util = __webpack_require__(4);
+const Util = __webpack_require__(5);
 
 class PresenceUpdateHandler extends AbstractHandler {
   handle(packet) {
@@ -25590,8 +25588,7 @@ class PresenceUpdateHandler extends AbstractHandler {
       }
     }
 
-    const oldUser = Util.cloneObject(user);
-    user.patch(data.user);
+    const oldUser = user._update(data.user);
     if (!user.equals(oldUser)) {
       client.emit(Constants.Events.USER_UPDATE, oldUser, user);
     }
@@ -25612,7 +25609,7 @@ class PresenceUpdateHandler extends AbstractHandler {
           guild._setPresence(user.id, data);
           return;
         }
-        const oldMember = Util.cloneObject(member);
+        const oldMember = member._clone();
         if (member.presence) {
           oldMember.frozenPresence = Util.cloneObject(member.presence);
         }
@@ -25985,7 +25982,6 @@ module.exports = VoiceServerUpdate;
 const AbstractHandler = __webpack_require__(1);
 
 const Constants = __webpack_require__(0);
-const Util = __webpack_require__(4);
 
 class VoiceStateUpdateHandler extends AbstractHandler {
   handle(packet) {
@@ -25996,7 +25992,7 @@ class VoiceStateUpdateHandler extends AbstractHandler {
     if (guild) {
       const member = guild.members.get(data.user_id);
       if (member) {
-        const oldVoiceChannelMember = Util.cloneObject(member);
+        const oldVoiceChannelMember = member._clone();
         if (member.voiceChannel && member.voiceChannel.id !== data.channel_id) {
           member.voiceChannel.members.delete(oldVoiceChannelMember.id);
         }
@@ -26128,7 +26124,7 @@ for (const [name, message] of Object.entries(Messages)) register(name, message);
 /* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Util = __webpack_require__(4);
+const Util = __webpack_require__(5);
 
 module.exports = {
   // "Root" classes (starting points)
@@ -26542,7 +26538,7 @@ module.exports = UserProfile;
 /***/ (function(module, exports, __webpack_require__) {
 
 const long = __webpack_require__(36);
-const { TypeError } = __webpack_require__(5);
+const { TypeError } = __webpack_require__(4);
 
 /**
  * @typedef {Object} MessageSearchOptions
@@ -26647,8 +26643,8 @@ module.exports = function search(target, options) {
 /* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Util = __webpack_require__(4);
-const { RangeError } = __webpack_require__(5);
+const Util = __webpack_require__(5);
+const { RangeError } = __webpack_require__(4);
 
 module.exports = function sendMessage(channel, options) {
   const User = __webpack_require__(18);
