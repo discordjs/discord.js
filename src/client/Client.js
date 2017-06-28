@@ -1,5 +1,5 @@
 const os = require('os');
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
 const Constants = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
@@ -11,7 +11,7 @@ const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
-const Presence = require('../structures/Presence').Presence;
+const { Presence } = require('../structures/Presence');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const User = require('../structures/User');
