@@ -127,7 +127,7 @@ exports.DefaultOptions = {
    */
   ws: {
     large_threshold: 250,
-    compress: __webpack_require__(27).platform() !== 'browser',
+    compress: __webpack_require__(28).platform() !== 'browser',
     properties: {
       $os: process ? process.platform : 'discord.js',
       $browser: 'discord.js',
@@ -4880,10 +4880,10 @@ module.exports = Channel;
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const TextBasedChannel = __webpack_require__(26);
+const TextBasedChannel = __webpack_require__(27);
 const Constants = __webpack_require__(0);
 const Presence = __webpack_require__(14).Presence;
-const UserProfile = __webpack_require__(194);
+const UserProfile = __webpack_require__(195);
 const Snowflake = __webpack_require__(8);
 const Base = __webpack_require__(7);
 
@@ -5387,7 +5387,7 @@ const Long = __webpack_require__(36);
 const User = __webpack_require__(18);
 const Role = __webpack_require__(22);
 const Emoji = __webpack_require__(19);
-const Invite = __webpack_require__(28);
+const Invite = __webpack_require__(29);
 const GuildAuditLogs = __webpack_require__(48);
 const Webhook = __webpack_require__(23);
 const Presence = __webpack_require__(14).Presence;
@@ -5400,6 +5400,7 @@ const Snowflake = __webpack_require__(8);
 const Permissions = __webpack_require__(11);
 const Shared = __webpack_require__(76);
 const EmojiStore = __webpack_require__(190);
+const GuildChannelStore = __webpack_require__(191);
 const Base = __webpack_require__(7);
 const { Error, TypeError } = __webpack_require__(5);
 
@@ -5422,7 +5423,7 @@ class Guild extends Base {
      * A collection of channels that are in this guild. The key is the channel's ID, the value is the channel
      * @type {Collection<Snowflake, GuildChannel>}
      */
-    this.channels = new Collection();
+    this.channels = new GuildChannelStore(this);
 
     /**
      * A collection of roles that are in this guild. The key is the role's ID, the value is the role
@@ -6629,7 +6630,7 @@ module.exports = Guild;
 /* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const TextBasedChannel = __webpack_require__(26);
+const TextBasedChannel = __webpack_require__(27);
 const Role = __webpack_require__(22);
 const Permissions = __webpack_require__(11);
 const Collection = __webpack_require__(3);
@@ -7522,7 +7523,7 @@ module.exports = Role;
 /* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const path = __webpack_require__(30);
+const path = __webpack_require__(31);
 const Util = __webpack_require__(4);
 
 /**
@@ -7891,7 +7892,37 @@ exports.PassThrough = __webpack_require__(92);
 /* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const path = __webpack_require__(30);
+const Collection = __webpack_require__(3);
+
+/**
+ * A data store what else????
+ * @class DataStore
+ * @extends {Collection}
+ */
+class DataStore extends Collection {
+  constructor(client, iterable) {
+    super(iterable);
+
+    Object.defineProperty(this, 'client', {
+      value: client,
+      enumerable: false,
+      writable: false,
+    });
+  }
+
+  // Stubs
+  create() { return undefined; }
+  remove() { return undefined; }
+}
+
+module.exports = DataStore;
+
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const path = __webpack_require__(31);
 const MessageCollector = __webpack_require__(50);
 const Shared = __webpack_require__(76);
 const Collection = __webpack_require__(3);
@@ -8309,7 +8340,7 @@ exports.applyToClass = (structure, full = false, ignore = []) => {
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports) {
 
 exports.endianness = function () { return 'LE' };
@@ -8360,7 +8391,7 @@ exports.EOL = '\n';
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const PartialGuild = __webpack_require__(54);
@@ -8524,7 +8555,7 @@ module.exports = Invite;
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Snowflake = __webpack_require__(8);
@@ -8690,7 +8721,7 @@ module.exports = OAuth2Application;
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -8921,41 +8952,11 @@ var substr = 'ab'.substr(-1) === 'b'
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
-/* 31 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Collection = __webpack_require__(3);
-
-/**
- * A data store what else????
- * @class DataStore
- * @extends {Collection}
- */
-class DataStore extends Collection {
-  constructor(client, iterable) {
-    super(iterable);
-
-    Object.defineProperty(this, 'client', {
-      value: client,
-      enumerable: false,
-      writable: false,
-    });
-  }
-
-  // Stubs
-  create() { return undefined; }
-  remove() { return undefined; }
-}
-
-module.exports = DataStore;
-
-
-/***/ }),
 /* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Channel = __webpack_require__(17);
-const TextBasedChannel = __webpack_require__(26);
+const TextBasedChannel = __webpack_require__(27);
 const Collection = __webpack_require__(3);
 
 /*
@@ -9138,7 +9139,7 @@ module.exports = GroupDMChannel;
 
 const Channel = __webpack_require__(17);
 const Role = __webpack_require__(22);
-const Invite = __webpack_require__(28);
+const Invite = __webpack_require__(29);
 const PermissionOverwrites = __webpack_require__(56);
 const Permissions = __webpack_require__(11);
 const Collection = __webpack_require__(3);
@@ -12803,7 +12804,7 @@ module.exports = ClientUserSettings;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Channel = __webpack_require__(17);
-const TextBasedChannel = __webpack_require__(26);
+const TextBasedChannel = __webpack_require__(27);
 const Collection = __webpack_require__(3);
 
 /**
@@ -14111,7 +14112,7 @@ module.exports = ReactionCollector;
 
 const GuildChannel = __webpack_require__(33);
 const Webhook = __webpack_require__(23);
-const TextBasedChannel = __webpack_require__(26);
+const TextBasedChannel = __webpack_require__(27);
 const Collection = __webpack_require__(3);
 
 /**
@@ -14414,7 +14415,7 @@ util.inherits = __webpack_require__(13);
 /*</replacement>*/
 
 /*<replacement>*/
-var debugUtil = __webpack_require__(197);
+var debugUtil = __webpack_require__(198);
 var debug = void 0;
 if (debugUtil && debugUtil.debuglog) {
   debug = debugUtil.debuglog('stream');
@@ -16769,7 +16770,7 @@ function base64DetectIncompleteChar(buffer) {
 /* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(30);
+/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(31);
 const fs = __webpack_require__(43);
 const snekfetch = __webpack_require__(41);
 
@@ -17193,14 +17194,14 @@ module.exports = RequestHandler;
 /* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const browser = __webpack_require__(27).platform() === 'browser';
+/* WEBPACK VAR INJECTION */(function(Buffer) {const browser = __webpack_require__(28).platform() === 'browser';
 const EventEmitter = __webpack_require__(15);
 const Constants = __webpack_require__(0);
 const zlib = __webpack_require__(43);
 const PacketManager = __webpack_require__(150);
 const erlpack = (function findErlpack() {
   try {
-    const e = __webpack_require__(201);
+    const e = __webpack_require__(202);
     if (!e.pack) return null;
     return e;
   } catch (e) {
@@ -17211,9 +17212,9 @@ const erlpack = (function findErlpack() {
 const WebSocket = (function findWebSocket() {
   if (browser) return window.WebSocket; // eslint-disable-line no-undef
   try {
-    return __webpack_require__(202);
-  } catch (e) {
     return __webpack_require__(203);
+  } catch (e) {
+    return __webpack_require__(204);
   }
 }());
 
@@ -17831,8 +17832,8 @@ module.exports = VoiceRegion;
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = {
-  search: __webpack_require__(195),
-  sendMessage: __webpack_require__(196),
+  search: __webpack_require__(196),
+  sendMessage: __webpack_require__(197),
 };
 
 
@@ -17840,7 +17841,7 @@ module.exports = {
 /* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {const os = __webpack_require__(27);
+/* WEBPACK VAR INJECTION */(function(process) {const os = __webpack_require__(28);
 const EventEmitter = __webpack_require__(15).EventEmitter;
 const Constants = __webpack_require__(0);
 const Permissions = __webpack_require__(11);
@@ -17848,20 +17849,20 @@ const Util = __webpack_require__(4);
 const RESTManager = __webpack_require__(71);
 const ClientManager = __webpack_require__(114);
 const ClientDataResolver = __webpack_require__(69);
-const ClientVoiceManager = __webpack_require__(199);
+const ClientVoiceManager = __webpack_require__(200);
 const WebSocketManager = __webpack_require__(149);
 const ActionsManager = __webpack_require__(115);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(14).Presence;
 const VoiceRegion = __webpack_require__(75);
 const Webhook = __webpack_require__(23);
-const Invite = __webpack_require__(28);
-const OAuth2Application = __webpack_require__(29);
-const ShardClientUtil = __webpack_require__(198);
-const VoiceBroadcast = __webpack_require__(200);
-const UserStore = __webpack_require__(192);
+const Invite = __webpack_require__(29);
+const OAuth2Application = __webpack_require__(30);
+const ShardClientUtil = __webpack_require__(199);
+const VoiceBroadcast = __webpack_require__(201);
+const UserStore = __webpack_require__(193);
 const ChannelStore = __webpack_require__(189);
-const GuildStore = __webpack_require__(191);
+const GuildStore = __webpack_require__(192);
 const { Error, TypeError, RangeError } = __webpack_require__(5);
 
 /**
@@ -20673,7 +20674,7 @@ module.exports = {
 /* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(30);
+/* WEBPACK VAR INJECTION */(function(Buffer) {const path = __webpack_require__(31);
 const mime = __webpack_require__(101);
 
 class FormData {
@@ -26166,15 +26167,15 @@ module.exports = {
   GuildAuditLogs: __webpack_require__(48),
   GuildChannel: __webpack_require__(33),
   GuildMember: __webpack_require__(21),
-  Invite: __webpack_require__(28),
+  Invite: __webpack_require__(29),
   Message: __webpack_require__(10),
   MessageAttachment: __webpack_require__(49),
   MessageCollector: __webpack_require__(50),
   MessageEmbed: __webpack_require__(51),
   MessageMentions: __webpack_require__(52),
   MessageReaction: __webpack_require__(53),
-  OAuth2Application: __webpack_require__(29),
-  ClientOAuth2Application: __webpack_require__(29),
+  OAuth2Application: __webpack_require__(30),
+  ClientOAuth2Application: __webpack_require__(30),
   PartialGuild: __webpack_require__(54),
   PartialGuildChannel: __webpack_require__(55),
   PermissionOverwrites: __webpack_require__(56),
@@ -26189,18 +26190,16 @@ module.exports = {
   Webhook: __webpack_require__(23),
 };
 
-if (__webpack_require__(27).platform() === 'browser') window.Discord = module.exports; // eslint-disable-line no-undef
+if (__webpack_require__(28).platform() === 'browser') window.Discord = module.exports; // eslint-disable-line no-undef
 
 
 /***/ }),
 /* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const DataStore = __webpack_require__(31);
+const DataStore = __webpack_require__(26);
 const DMChannel = __webpack_require__(47);
 const GroupDMChannel = __webpack_require__(32);
-const TextChannel = __webpack_require__(58);
-const VoiceChannel = __webpack_require__(59);
 const Constants = __webpack_require__(0);
 
 class ChannelStore extends DataStore {
@@ -26219,14 +26218,12 @@ class ChannelStore extends DataStore {
         channel = new GroupDMChannel(this.client, data);
         break;
       default: // eslint-disable-line no-case-declarations
-        const ChannelModel = data.type === Constants.ChannelTypes.TEXT ? TextChannel : VoiceChannel;
         guild = guild || this.client.guilds.get(data.guild_id);
         if (!guild) {
           this.client.emit('debug', `Failed to find guild for channel ${data.id}`);
           return null;
         }
-        channel = new ChannelModel(guild, data);
-        guild.channels.set(channel.id, channel);
+        channel = guild.channels.create(data);
         break;
     }
 
@@ -26240,9 +26237,7 @@ class ChannelStore extends DataStore {
   remove(id) {
     super.remove();
     const channel = this.get(id);
-    if (channel.guild) {
-      channel.guild.channels.delete(id);
-    }
+    if (channel.guild) channel.guild.channels.remove(id);
     this.delete(id);
   }
 }
@@ -26254,7 +26249,7 @@ module.exports = ChannelStore;
 /* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const DataStore = __webpack_require__(31);
+const DataStore = __webpack_require__(26);
 const Emoji = __webpack_require__(19);
 const Constants = __webpack_require__(0);
 
@@ -26297,7 +26292,44 @@ module.exports = EmojiStore;
 /* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const DataStore = __webpack_require__(31);
+const DataStore = __webpack_require__(26);
+const TextChannel = __webpack_require__(58);
+const VoiceChannel = __webpack_require__(59);
+const Constants = __webpack_require__(0);
+
+class GuildChannelStore extends DataStore {
+  constructor(guild, iterable) {
+    super(guild.client, iterable);
+    this.guild = guild;
+  }
+
+  create(data) {
+    super.create();
+
+    const existing = this.get(data.id);
+    if (existing) return existing;
+
+    const ChannelModel = data.type === Constants.ChannelTypes.TEXT ? TextChannel : VoiceChannel;
+    const channel = new ChannelModel(this.guild, data);
+    this.set(channel.id, channel);
+
+    return channel;
+  }
+
+  remove(id) {
+    super.remove();
+    this.delete(id);
+  }
+}
+
+module.exports = GuildChannelStore;
+
+
+/***/ }),
+/* 192 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const DataStore = __webpack_require__(26);
 const Guild = __webpack_require__(20);
 const Constants = __webpack_require__(0);
 
@@ -26343,10 +26375,10 @@ module.exports = GuildStore;
 
 
 /***/ }),
-/* 192 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const DataStore = __webpack_require__(31);
+const DataStore = __webpack_require__(26);
 const User = __webpack_require__(18);
 
 class UserStore extends DataStore {
@@ -26387,7 +26419,7 @@ module.exports = UserStore;
 
 
 /***/ }),
-/* 193 */
+/* 194 */
 /***/ (function(module, exports) {
 
 /**
@@ -26442,11 +26474,11 @@ module.exports = UserConnection;
 
 
 /***/ }),
-/* 194 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
-const UserConnection = __webpack_require__(193);
+const UserConnection = __webpack_require__(194);
 const Base = __webpack_require__(7);
 
 /**
@@ -26506,7 +26538,7 @@ module.exports = UserProfile;
 
 
 /***/ }),
-/* 195 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const long = __webpack_require__(36);
@@ -26612,7 +26644,7 @@ module.exports = function search(target, options) {
 
 
 /***/ }),
-/* 196 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Util = __webpack_require__(4);
@@ -26680,12 +26712,6 @@ module.exports = function sendMessage(channel, options) {
 
 
 /***/ }),
-/* 197 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
 /* 198 */
 /***/ (function(module, exports) {
 
@@ -26717,6 +26743,12 @@ module.exports = function sendMessage(channel, options) {
 
 /***/ }),
 /* 203 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 204 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
