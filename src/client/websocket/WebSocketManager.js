@@ -1,4 +1,4 @@
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
 const Constants = require('../../util/Constants');
 const WebSocketConnection = require('./WebSocketConnection');
 

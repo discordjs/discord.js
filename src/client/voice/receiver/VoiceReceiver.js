@@ -1,4 +1,4 @@
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
 const secretbox = require('../util/Secretbox');
 const Readable = require('./VoiceReadable');
 const OpusEncoders = require('../opus/OpusEngineList');

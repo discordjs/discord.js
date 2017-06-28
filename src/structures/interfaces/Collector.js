@@ -1,5 +1,5 @@
 const Collection = require('../../util/Collection');
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
 
 /**
  * Filter to be applied to the collector.
