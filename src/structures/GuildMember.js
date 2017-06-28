@@ -2,7 +2,8 @@ const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Role = require('./Role');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
-const Presence = require('./Presence').Presence;
+const { Presence } = require('./Presence');
+const { Error } = require('../errors');
 
 /**
  * Represents a member of a guild on Discord.
@@ -287,7 +288,7 @@ class GuildMember {
    */
   permissionsIn(channel) {
     channel = this.client.resolver.resolveChannel(channel);
-    if (!channel || !channel.guild) throw new Error('Could not resolve channel to a guild channel.');
+    if (!channel || !channel.guild) throw new Error('GUILD_CHANNEL_RESOLVE');
     return channel.permissionsFor(this);
   }
 
