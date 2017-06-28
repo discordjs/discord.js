@@ -15,6 +15,7 @@ const Snowflake = require('../util/Snowflake');
 const Permissions = require('../util/Permissions');
 const Shared = require('./shared');
 const EmojiStore = require('../stores/EmojiStore');
+const GuildChannelStore = require('../stores/GuildChannelStore');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
 
@@ -37,7 +38,7 @@ class Guild extends Base {
      * A collection of channels that are in this guild. The key is the channel's ID, the value is the channel
      * @type {Collection<Snowflake, GuildChannel>}
      */
-    this.channels = new Collection();
+    this.channels = new GuildChannelStore(this);
 
     /**
      * A collection of roles that are in this guild. The key is the role's ID, the value is the role
