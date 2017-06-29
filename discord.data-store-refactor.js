@@ -4882,7 +4882,7 @@ module.exports = Channel;
 
 const TextBasedChannel = __webpack_require__(27);
 const Constants = __webpack_require__(0);
-const Presence = __webpack_require__(14).Presence;
+const { Presence } = __webpack_require__(14);
 const UserProfile = __webpack_require__(195);
 const Snowflake = __webpack_require__(8);
 const Base = __webpack_require__(7);
@@ -5390,7 +5390,7 @@ const Emoji = __webpack_require__(19);
 const Invite = __webpack_require__(29);
 const GuildAuditLogs = __webpack_require__(48);
 const Webhook = __webpack_require__(23);
-const Presence = __webpack_require__(14).Presence;
+const { Presence } = __webpack_require__(14);
 const GuildMember = __webpack_require__(21);
 const VoiceRegion = __webpack_require__(75);
 const Constants = __webpack_require__(0);
@@ -6367,7 +6367,7 @@ class Guild extends Base {
    */
   deleteEmoji(emoji) {
     if (!(emoji instanceof Emoji)) emoji = this.emojis.get(emoji);
-    return this.client.api.guilds(this.id).emojis(this.id).delete()
+    return this.client.api.guilds(this.id).emojis(emoji.id).delete()
     .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);
   }
 
@@ -6634,8 +6634,8 @@ const TextBasedChannel = __webpack_require__(27);
 const Role = __webpack_require__(22);
 const Permissions = __webpack_require__(11);
 const Collection = __webpack_require__(3);
-const Presence = __webpack_require__(14).Presence;
 const Base = __webpack_require__(7);
+const { Presence } = __webpack_require__(14);
 const { Error } = __webpack_require__(4);
 
 /**
@@ -9571,7 +9571,7 @@ module.exports = ReactionEmoji;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
-const EventEmitter = __webpack_require__(15).EventEmitter;
+const EventEmitter = __webpack_require__(15);
 
 /**
  * Filter to be applied to the collector.
@@ -12872,6 +12872,7 @@ const Collection = __webpack_require__(3);
 const Snowflake = __webpack_require__(8);
 
 const Targets = {
+  ALL: 'ALL',
   GUILD: 'GUILD',
   CHANNEL: 'CHANNEL',
   USER: 'USER',
@@ -12884,6 +12885,7 @@ const Targets = {
 };
 
 const Actions = {
+  ALL: null,
   GUILD_UPDATE: 1,
   CHANNEL_CREATE: 10,
   CHANNEL_UPDATE: 11,
@@ -17842,7 +17844,7 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {const os = __webpack_require__(28);
-const EventEmitter = __webpack_require__(15).EventEmitter;
+const EventEmitter = __webpack_require__(15);
 const Constants = __webpack_require__(0);
 const Permissions = __webpack_require__(11);
 const Util = __webpack_require__(5);
@@ -17853,7 +17855,7 @@ const ClientVoiceManager = __webpack_require__(200);
 const WebSocketManager = __webpack_require__(149);
 const ActionsManager = __webpack_require__(115);
 const Collection = __webpack_require__(3);
-const Presence = __webpack_require__(14).Presence;
+const { Presence } = __webpack_require__(14);
 const VoiceRegion = __webpack_require__(75);
 const Webhook = __webpack_require__(23);
 const Invite = __webpack_require__(29);
@@ -24805,7 +24807,7 @@ module.exports = UserAgentManager;
 /* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const EventEmitter = __webpack_require__(15).EventEmitter;
+const EventEmitter = __webpack_require__(15);
 const Constants = __webpack_require__(0);
 const WebSocketConnection = __webpack_require__(73);
 
