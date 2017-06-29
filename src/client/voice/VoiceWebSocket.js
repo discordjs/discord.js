@@ -1,6 +1,6 @@
 const Constants = require('../../util/Constants');
 const SecretKey = require('./util/SecretKey');
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
 const { Error } = require('../../errors');
 
 let WebSocket;

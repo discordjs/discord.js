@@ -5,7 +5,7 @@ const Emoji = require('./Emoji');
 const Invite = require('./Invite');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
-const Presence = require('./Presence').Presence;
+const { Presence } = require('./Presence');
 const GuildMember = require('./GuildMember');
 const VoiceRegion = require('./VoiceRegion');
 const Constants = require('../util/Constants');
@@ -982,7 +982,7 @@ class Guild extends Base {
    */
   deleteEmoji(emoji) {
     if (!(emoji instanceof Emoji)) emoji = this.emojis.get(emoji);
-    return this.client.api.guilds(this.id).emojis(this.id).delete()
+    return this.client.api.guilds(this.id).emojis(emoji.id).delete()
     .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);
   }
 

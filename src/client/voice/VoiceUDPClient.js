@@ -1,7 +1,7 @@
 const udp = require('dgram');
 const dns = require('dns');
 const Constants = require('../../util/Constants');
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
 const { Error } = require('../../errors');
 
 /**

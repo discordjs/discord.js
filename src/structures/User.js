@@ -1,6 +1,6 @@
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Constants = require('../util/Constants');
-const Presence = require('./Presence').Presence;
+const { Presence } = require('./Presence');
 const UserProfile = require('./UserProfile');
 const Snowflake = require('../util/Snowflake');
 const Base = require('./Base');
