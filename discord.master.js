@@ -3843,7 +3843,7 @@ class Message {
       content = `${mention}${content ? `, ${content}` : ''}`;
     }
 
-    return this.client.api.channels(this.channel.id).messages(this.id)
+    return this.client.api.channels[this.channel.id].messages[this.id]
       .patch({ data: { content, embed } })
       .then(data => this.client.actions.MessageUpdate.handle(data).updated);
   }
@@ -3853,7 +3853,7 @@ class Message {
    * @returns {Promise<Message>}
    */
   pin() {
-    return this.client.api.channels(this.channel.id).pins(this.id).put()
+    return this.client.api.channels[this.channel.id].pins[this.id].put()
       .then(() => this);
   }
 
@@ -3862,7 +3862,7 @@ class Message {
    * @returns {Promise<Message>}
    */
   unpin() {
-    return this.client.api.channels(this.channel.id).pins(this.id).delete()
+    return this.client.api.channels[this.channel.id].pins[this.id].delete()
       .then(() => this);
   }
 
@@ -3875,7 +3875,7 @@ class Message {
     emoji = this.client.resolver.resolveEmojiIdentifier(emoji);
     if (!emoji) throw new TypeError('EMOJI_TYPE');
 
-    return this.client.api.channels(this.channel.id).messages(this.id).reactions(emoji)['@me']
+    return this.client.api.channels[this.channel.id].messages[this.id].reactions[emoji]['@me']
       .put()
       .then(() => this._addReaction(Util.parseEmoji(emoji), this.client.user));
   }
@@ -3885,7 +3885,7 @@ class Message {
    * @returns {Promise<Message>}
    */
   clearReactions() {
-    return this.client.api.channels(this.channel.id).messages(this.id).reactions.delete()
+    return this.client.api.channels[this.channel.id].messages[this.id].reactions.delete()
       .then(() => this);
   }
 
@@ -3903,7 +3903,7 @@ class Message {
    */
   delete({ timeout = 0, reason } = {}) {
     if (timeout <= 0) {
-      return this.client.api.channels(this.channel.id).messages(this.id)
+      return this.client.api.channels[this.channel.id].messages[this.id]
         .delete({ reason })
         .then(() =>
           this.client.actions.MessageDelete.handle({
@@ -3946,7 +3946,7 @@ class Message {
    * @returns {Promise<Message>}
    */
   acknowledge() {
-    return this.client.api.channels(this.channel.id).messages(this.id).ack
+    return this.client.api.channels[this.channel.id].messages[this.id].ack
       .post({ data: { token: this.client.rest._ackToken } })
       .then(res => {
         if (res.token) this.client.rest._ackToken = res.token;
@@ -4497,7 +4497,7 @@ class User {
    */
   createDM() {
     if (this.dmChannel) return Promise.resolve(this.dmChannel);
-    return this.client.api.users(this.client.user.id).channels.post({ data: {
+    return this.client.api.users[this.client.user.id].channels.post({ data: {
       recipient_id: this.id,
     } })
     .then(data => this.client.actions.ChannelCreate.handle(data).channel);
@@ -4509,7 +4509,7 @@ class User {
    */
   deleteDM() {
     if (!this.dmChannel) return Promise.reject(new Error('No DM Channel exists!'));
-    return this.client.api.channels(this.dmChannel.id).delete().then(data =>
+    return this.client.api.channels[this.dmChannel.id].delete().then(data =>
        this.client.actions.ChannelDelete.handle(data).channel
     );
   }
@@ -4520,7 +4520,7 @@ class User {
    * @returns {Promise<UserProfile>}
    */
   fetchProfile() {
-    return this.client.api.users(this.id).profile.get().then(data => new UserProfile(data));
+    return this.client.api.users[this.id].profile.get().then(data => new UserProfile(data));
   }
 
   /**
@@ -4530,7 +4530,7 @@ class User {
    * @returns {Promise<User>}
    */
   setNote(note) {
-    return this.client.api.users('@me').notes(this.id).put({ data: { note } })
+    return this.client.api.users['@me'].notes[this.id].put({ data: { note } })
       .then(() => this);
   }
 
@@ -5127,7 +5127,7 @@ class Channel {
    *  .catch(console.error); // Log error
    */
   delete() {
-    return this.client.api.channels(this.id).delete().then(() => this);
+    return this.client.api.channels[this.id].delete().then(() => this);
   }
 }
 
@@ -5261,7 +5261,7 @@ class Emoji {
    *  .catch(console.error);
    */
   edit(data, reason) {
-    return this.client.api.guilds(this.guild.id).emojis(this.id)
+    return this.client.api.guilds[this.guild.id].emojis(this.id)
       .patch({ data: {
         name: data.name,
         roles: data.roles ? data.roles.map(r => r.id ? r.id : r) : [],
@@ -5743,7 +5743,7 @@ class Guild {
    * @returns {Promise<Collection<Snowflake, Object>>}
    */
   fetchBans() {
-    return this.client.api.guilds(this.id).bans.get().then(bans =>
+    return this.client.api.guilds[this.id].bans.get().then(bans =>
       bans.reduce((collection, ban) => {
         collection.set(ban.user.id, {
           reason: ban.reason,
@@ -5759,7 +5759,7 @@ class Guild {
    * @returns {Promise<Collection<string, Invite>>}
    */
   fetchInvites() {
-    return this.client.api.guilds(this.id).invites.get()
+    return this.client.api.guilds[this.id].invites.get()
     .then(inviteItems => {
       const invites = new Collection();
       for (const inviteItem of inviteItems) {
@@ -5775,7 +5775,7 @@ class Guild {
    * @returns {Collection<Snowflake, Webhook>}
    */
   fetchWebhooks() {
-    return this.client.api.guilds(this.id).webhooks.get().then(data => {
+    return this.client.api.guilds[this.id].webhooks.get().then(data => {
       const hooks = new Collection();
       for (const hook of data) hooks.set(hook.id, new Webhook(this.client, hook));
       return hooks;
@@ -5787,7 +5787,7 @@ class Guild {
    * @returns {Collection<string, VoiceRegion>}
    */
   fetchVoiceRegions() {
-    return this.client.api.guilds(this.id).regions.get().then(res => {
+    return this.client.api.guilds[this.id].regions.get().then(res => {
       const regions = new Collection();
       for (const region of res) regions.set(region.id, new VoiceRegion(region));
       return regions;
@@ -5809,7 +5809,7 @@ class Guild {
     if (options.after && options.after instanceof GuildAuditLogs.Entry) options.after = options.after.id;
     if (typeof options.type === 'string') options.type = GuildAuditLogs.Actions[options.type];
 
-    return this.client.api.guilds(this.id)['audit-logs'].get({ query: {
+    return this.client.api.guilds[this.id]['audit-logs'].get({ query: {
       before: options.before,
       after: options.after,
       limit: options.limit,
@@ -5841,7 +5841,7 @@ class Guild {
         options.roles = roles.map(role => role.id);
       }
     }
-    return this.client.api.guilds(this.id).members(user.id).put({ data: options })
+    return this.client.api.guilds[this.id].members[user.id].put({ data: options })
       .then(data => this.client.actions.GuildMemberGet.handle(this, data).member);
   }
 
@@ -5855,7 +5855,7 @@ class Guild {
     user = this.client.resolver.resolveUser(user);
     if (!user) return Promise.reject(new Error('User is not cached. Use Client.fetchUser first.'));
     if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
-    return this.client.api.guilds(this.id).members(user.id).get()
+    return this.client.api.guilds[this.id].members[user.id].get()
     .then(data => {
       if (cache) return this.client.actions.GuildMemberGet.handle(this, data).member;
       else return new GuildMember(this, data);
@@ -5961,7 +5961,7 @@ class Guild {
     if (typeof data.explicitContentFilter !== 'undefined') {
       _data.explicit_content_filter = Number(data.explicitContentFilter);
     }
-    return this.client.api.guilds(this.id).patch({ data: _data, reason })
+    return this.client.api.guilds[this.id].patch({ data: _data, reason })
     .then(newData => this.client.actions.GuildUpdate.handle(newData).updated);
   }
 
@@ -6106,7 +6106,7 @@ class Guild {
    * @returns {Promise<Guild>}
    */
   acknowledge() {
-    return this.client.api.guilds(this.id).ack
+    return this.client.api.guilds[this.id].ack
     .post({ data: { token: this.client.rest._ackToken } })
     .then(res => {
       if (res.token) this.client.rest._ackToken = res.token;
@@ -6145,7 +6145,7 @@ class Guild {
     if (options.days) options['delete-message-days'] = options.days;
     const id = this.client.resolver.resolveUserID(user);
     if (!id) return Promise.reject(new Error('Couldn\'t resolve the user ID to ban.'));
-    return this.client.api.guilds(this.id).bans(id).put({ query: options })
+    return this.client.api.guilds[this.id].bans[id].put({ query: options })
     .then(() => {
       if (user instanceof GuildMember) return user;
       const _user = this.client.resolver.resolveUser(id);
@@ -6171,7 +6171,7 @@ class Guild {
   unban(user, reason) {
     const id = this.client.resolver.resolveUserID(user);
     if (!id) throw new Error('BAN_RESOLVE_ID');
-    return this.client.api.guilds(this.id).bans(id).delete({ reason })
+    return this.client.api.guilds(this.id).bans[id].delete({ reason })
       .then(() => user);
   }
 
@@ -6194,7 +6194,7 @@ class Guild {
    */
   pruneMembers({ days = 7, dry = false, reason } = {}) {
     if (typeof days !== 'number') throw new TypeError('PRUNE_DAYS_TYPE');
-    return this.client.api.guilds(this.id).prune[dry ? 'get' : 'post']({ query: { days }, reason })
+    return this.client.api.guilds[this.id].prune[dry ? 'get' : 'post']({ query: { days }, reason })
       .then(data => data.pruned);
   }
 
@@ -6229,7 +6229,7 @@ class Guild {
         id: overwrite.id,
       }));
     }
-    return this.client.api.guilds(this.id).channels.post({
+    return this.client.api.guilds[this.id].channels.post({
       data: {
         name, type, permission_overwrites: overwrites,
       },
@@ -6262,7 +6262,7 @@ class Guild {
       };
     }
 
-    return this.client.api.guilds(this.id).channels.patch({ data: {
+    return this.client.api.guilds[this.id].channels.patch({ data: {
       guild_id: this.id,
       channels: channelPositions,
     } }).then(() =>
@@ -6300,7 +6300,7 @@ class Guild {
     if (data.color) data.color = Util.resolveColor(data.color);
     if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
 
-    return this.client.api.guilds(this.id).roles.post({ data, reason }).then(role =>
+    return this.client.api.guilds[this.id].roles.post({ data, reason }).then(role =>
       this.client.actions.GuildRoleCreate.handle({
         guild_id: this.id,
         role,
@@ -6329,7 +6329,7 @@ class Guild {
     if (typeof attachment === 'string' && attachment.startsWith('data:')) {
       const data = { image: attachment, name };
       if (roles) data.roles = roles.map(r => r.id ? r.id : r);
-      return this.client.api.guilds(this.id).emojis.post({ data })
+      return this.client.api.guilds[this.id].emojis.post({ data })
         .then(emoji => this.client.actions.GuildEmojiCreate.handle(this, emoji).emoji);
     } else {
       return this.client.resolver.resolveBuffer(attachment)
@@ -6347,7 +6347,7 @@ class Guild {
    */
   deleteEmoji(emoji) {
     if (!(emoji instanceof Emoji)) emoji = this.emojis.get(emoji);
-    return this.client.api.guilds(this.id).emojis(emoji.id).delete()
+    return this.client.api.guilds(this.id).emojis[emoji.id].delete()
     .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);
   }
 
@@ -6362,7 +6362,7 @@ class Guild {
    */
   leave() {
     if (this.ownerID === this.client.user.id) return Promise.reject(new Error('Guild is owned by the client.'));
-    return this.client.api.users('@me').guilds(this.id).delete()
+    return this.client.api.users['@me'].guilds[this.id].delete()
     .then(() => this.client.actions.GuildDelete.handle({ id: this.id }).guild);
   }
 
@@ -6376,7 +6376,7 @@ class Guild {
    *  .catch(console.error);
    */
   delete() {
-    return this.client.api.guilds(this.id).delete()
+    return this.client.api.guilds[this.id].delete()
     .then(() => this.client.actions.GuildDelete.handle({ id: this.id }).guild);
   }
 
@@ -6534,7 +6534,7 @@ class Guild {
     Util.moveElementInArray(updatedRoles, role, position, relative);
 
     updatedRoles = updatedRoles.map((r, i) => ({ id: r.id, position: i }));
-    return this.client.api.guilds(this.id).roles.patch({ data: updatedRoles })
+    return this.client.api.guilds[this.id].roles.patch({ data: updatedRoles })
     .then(() =>
       this.client.actions.GuildRolesPositionUpdate.handle({
         guild_id: this.id,
@@ -6564,7 +6564,7 @@ class Guild {
     Util.moveElementInArray(updatedChannels, channel, position, relative);
 
     updatedChannels = updatedChannels.map((r, i) => ({ id: r.id, position: i }));
-    return this.client.api.guilds(this.id).channels.patch({ data: updatedChannels })
+    return this.client.api.guilds[this.id].channels.patch({ data: updatedChannels })
     .then(() =>
       this.client.actions.GuildChannelsPositionUpdate.handle({
         guild_id: this.id,
@@ -6954,13 +6954,13 @@ class GuildMember {
       data.channel = null;
     }
     if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
-    let endpoint = this.client.api.guilds(this.guild.id);
+    let endpoint = this.client.api.guilds[this.guild.id];
     if (this.user.id === this.client.user.id) {
       const keys = Object.keys(data);
-      if (keys.length === 1 && keys[0] === 'nick') endpoint = endpoint.members('@me').nick;
-      else endpoint = endpoint.members(this.id);
+      if (keys.length === 1 && keys[0] === 'nick') endpoint = endpoint.members['@me'].nick;
+      else endpoint = endpoint.members[this.id];
     } else {
-      endpoint = endpoint.members(this.id);
+      endpoint = endpoint.members[this.id];
     }
     return endpoint.patch({ data, reason }).then(newData => this.guild._updateMember(this, newData).mem);
   }
@@ -7010,7 +7010,7 @@ class GuildMember {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
     if (!role) return Promise.reject(new TypeError('Supplied parameter was neither a Role nor a Snowflake.'));
     if (this._roles.includes(role.id)) return Promise.resolve(this);
-    return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
+    return this.client.api.guilds[this.guild.id].members[this.user.id].roles[role.id]
       .put()
       .then(() => this);
   }
@@ -7039,7 +7039,7 @@ class GuildMember {
   removeRole(role) {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
     if (!role) return Promise.reject(new TypeError('Supplied parameter was neither a Role nor a Snowflake.'));
-    return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
+    return this.client.api.guilds[this.guild.id].members[this.user.id].roles[role.id]
       .delete()
       .then(() => this);
   }
@@ -7096,7 +7096,7 @@ class GuildMember {
    * @returns {Promise<GuildMember>}
    */
   kick(reason) {
-    return this.client.api.guilds(this.guild.id).members(this.user.id).delete({ reason })
+    return this.client.api.guilds[this.guild.id].members[this.user.id].delete({ reason })
     .then(() =>
       this.client.actions.GuildMemberRemove.handle({
         guild_id: this.guild.id,
@@ -7349,7 +7349,7 @@ class Role {
   edit(data, reason) {
     if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
     else data.permissions = this.permissions;
-    return this.client.api.guilds(this.guild.id).roles(this.id).patch({
+    return this.client.api.guilds[this.guild.id].roles[this.id].patch({
       data: {
         name: data.name || this.name,
         position: typeof data.position !== 'undefined' ? data.position : this.position,
@@ -7458,7 +7458,7 @@ class Role {
    *  .catch(console.error);
    */
   delete(reason) {
-    return this.client.api.guilds(this.guild.id).roles(this.id).delete({ reason })
+    return this.client.api.guilds[this.guild.id].roles[this.id].delete({ reason })
     .then(() =>
       this.client.actions.GuildRoleDelete.handle({ guild_id: this.guild.id, role_id: this.id }).role
     );
@@ -7663,7 +7663,7 @@ class Webhook {
           file.file = buffer;
           return file;
         })
-      )).then(files => this.client.api.webhooks(this.id, this.token).post({
+      )).then(files => this.client.api.webhooks.opts(this.id, this.token).post({
         data: options,
         query: { wait: true },
         files,
@@ -7671,7 +7671,7 @@ class Webhook {
       }));
     }
 
-    return this.client.api.webhooks(this.id, this.token).post({
+    return this.client.api.webhooks.opts(this.id, this.token).post({
       data: options,
       query: { wait: true },
       auth: false,
@@ -7700,7 +7700,7 @@ class Webhook {
    * }).catch(console.error);
    */
   sendSlackMessage(body) {
-    return this.client.api.webhooks(this.id, this.token).slack.post({
+    return this.client.api.webhooks.opts(this.id, this.token).slack.post({
       query: { wait: true },
       auth: false,
       data: body,
@@ -7726,7 +7726,7 @@ class Webhook {
         return this.edit({ name, avatar: dataURI }, reason);
       });
     }
-    return this.client.api.webhooks(this.id, this.token).patch({
+    return this.client.api.webhooks.opts(this.id, this.token).patch({
       data: { name, avatar },
       reason,
     }).then(data => {
@@ -7742,7 +7742,7 @@ class Webhook {
    * @returns {Promise}
    */
   delete(reason) {
-    return this.client.api.webhooks(this.id, this.token).delete({ reason });
+    return this.client.api.webhooks.opts(this.id, this.token).delete({ reason });
   }
 }
 
@@ -8023,7 +8023,7 @@ class TextBasedChannel {
         return msg;
       });
     }
-    return this.client.api.channels(this.id).messages(messageID).get()
+    return this.client.api.channels[this.id].messages[messageID].get()
     .then(data => {
       const msg = data instanceof Message ? data : new Message(this, data, this.client);
       this._cacheMessage(msg);
@@ -8053,7 +8053,7 @@ class TextBasedChannel {
    */
   fetchMessages(options = {}) {
     const Message = __webpack_require__(9);
-    return this.client.api.channels(this.id).messages.get({ query: options })
+    return this.client.api.channels[this.id].messages.get({ query: options })
     .then(data => {
       const messages = new Collection();
       for (const message of data) {
@@ -8071,7 +8071,7 @@ class TextBasedChannel {
    */
   fetchPinnedMessages() {
     const Message = __webpack_require__(9);
-    return this.client.api.channels(this.id).pins.get().then(data => {
+    return this.client.api.channels[this.id].pins.get().then(data => {
       const messages = new Collection();
       for (const message of data) {
         const msg = new Message(this, message, this.client);
@@ -8112,7 +8112,7 @@ class TextBasedChannel {
   startTyping(count) {
     if (typeof count !== 'undefined' && count < 1) throw new RangeError('TYPING_COUNT');
     if (!this.client.user._typing.has(this.id)) {
-      const endpoint = this.client.api.channels(this.id).typing;
+      const endpoint = this.client.api.channels[this.id].typing;
       this.client.user._typing.set(this.id, {
         count: count || 1,
         interval: this.client.setInterval(() => {
@@ -8235,7 +8235,7 @@ class TextBasedChannel {
           Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000
         );
       }
-      return this.client.api.channels(this.id).messages()['bulk-delete']
+      return this.client.api.channels[this.id].messages['bulk-delete']
       .post({ data: { messages: messageIDs } })
       .then(() =>
         this.client.actions.MessageDeleteBulk.handle({
@@ -8254,7 +8254,7 @@ class TextBasedChannel {
    */
   acknowledge() {
     if (!this.lastMessageID) return Promise.resolve(this);
-    return this.client.api.channels(this.id).messages(this.lastMessageID).ack
+    return this.client.api.channels[this.id].messages[this.lastMessageID].ack
       .post({ data: { token: this.client.rest._ackToken } })
       .then(res => {
         if (res.token) this.client.rest._ackToken = res.token;
@@ -8542,7 +8542,7 @@ class GuildChannel extends Channel {
       }
     }
 
-    return this.client.api.channels(this.id).permissions(payload.id)
+    return this.client.api.channels[this.id].permissions(payload.id)
       .put({ data: payload, reason })
       .then(() => this);
   }
@@ -8569,7 +8569,7 @@ class GuildChannel extends Channel {
    *  .catch(console.error);
    */
   edit(data, reason) {
-    return this.client.api.channels(this.id).patch({
+    return this.client.api.channels[this.id].patch({
       data: {
         name: (data.name || this.name).trim(),
         topic: data.topic || this.topic,
@@ -8641,7 +8641,7 @@ class GuildChannel extends Channel {
    * @returns {Promise<Invite>}
    */
   createInvite({ temporary = false, maxAge = 86400, maxUses = 0, reason } = {}) {
-    return this.client.api.channels(this.id).invites.post({ data: {
+    return this.client.api.channels[this.id].invites.post({ data: {
       temporary, max_age: maxAge, max_uses: maxUses,
     }, reason })
       .then(invite => new Invite(this.client, invite));
@@ -8705,7 +8705,7 @@ class GuildChannel extends Channel {
    *  .catch(console.error); // Log error
    */
   delete(reason) {
-    return this.client.api.channels(this.id).delete({ reason }).then(() => this);
+    return this.client.api.channels[this.id].delete({ reason }).then(() => this);
   }
 
   /**
@@ -8877,7 +8877,7 @@ class Invite {
    * @returns {Promise<Invite>}
    */
   delete(reason) {
-    return this.client.api.invites(this.code).delete({ reason }).then(() => this);
+    return this.client.api.invites[this.code].delete({ reason }).then(() => this);
   }
 
   /**
@@ -9437,7 +9437,7 @@ class GroupDMChannel extends Channel {
     const data = this.client.user.bot ?
       { nick, access_token: accessTokenOrUser } :
       { recipient: id };
-    return this.client.api.channels(this.id).recipients(id).put({ data })
+    return this.client.api.channels[this.id].recipients[id].put({ data })
     .then(() => this);
   }
 
@@ -12415,7 +12415,7 @@ class ClientUser extends User {
       if (data.new_password) _data.new_password = data.newPassword;
     }
 
-    return this.client.api.users('@me').patch({ data })
+    return this.client.api.users['@me'].patch({ data })
       .then(newData => this.client.actions.UserUpdate.handle(newData).updated);
   }
 
@@ -12608,7 +12608,7 @@ class ClientUser extends User {
     if (options.guild instanceof Guild) options.guild = options.guild.id;
     Util.mergeDefault({ limit: 25, roles: true, everyone: true, guild: null }, options);
 
-    return this.client.api.users('@me').mentions.get({ query: options })
+    return this.client.api.users['@me'].mentions.get({ query: options })
       .then(data => data.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)));
   }
 
@@ -12675,7 +12675,7 @@ class ClientUser extends User {
         return o;
       }, {}),
     } : { recipients: recipients.map(u => this.client.resolver.resolveUserID(u)) };
-    return this.client.api.users('@me').channels.post({ data })
+    return this.client.api.users['@me'].channels.post({ data })
       .then(res => new GroupDMChannel(this.client, res));
   }
 }
@@ -12722,7 +12722,7 @@ class ClientUserSettings {
    * @returns {Promise<Object>}
    */
   update(name, value) {
-    return this.user.client.api.users('@me').settings.patch({ data: { [name]: value } });
+    return this.user.client.api.users['@me'].settings.patch({ data: { [name]: value } });
   }
 
   /**
@@ -13784,8 +13784,8 @@ class MessageReaction {
   remove(user = this.message.client.user) {
     const userID = this.message.client.resolver.resolveUserID(user);
     if (!userID) return Promise.reject(new Error('Couldn\'t resolve the user ID to remove from the reaction.'));
-    return this.message.client.api.channels(this.message.channel.id).messages(this.message.id)
-      .reactions(this.emoji.identifier)[userID === this.message.client.user.id ? '@me' : userID]
+    return this.message.client.api.channels[this.message.channel.id].messages[this.message.id]
+      .reactions[this.emoji.identifier][userID === this.message.client.user.id ? '@me' : userID]
       .delete()
       .then(() =>
         this.message.client.actions.MessageReactionRemove.handle({
@@ -13804,8 +13804,8 @@ class MessageReaction {
    */
   fetchUsers(limit = 100) {
     const message = this.message;
-    return message.client.api.channels(message.channel.id).messages(message.id)
-      .reactions(this.emoji.identifier)
+    return message.client.api.channels[message.channel.id].messages[message.id]
+      .reactions[this.emoji.identifier]
       .get({ query: { limit } })
       .then(users => {
         this.users = new Collection();
@@ -13986,7 +13986,7 @@ class PermissionOverwrites {
    * @returns {Promise<PermissionOverwrites>}
    */
   delete(reason) {
-    return this.channel.client.api.channels(this.channel.id).permissions(this.id)
+    return this.channel.client.api.channels[this.channel.id].permissions[this.id]
       .delete({ reason })
       .then(() => this);
   }
@@ -14148,7 +14148,7 @@ class TextChannel extends GuildChannel {
    * @returns {Promise<Collection<Snowflake, Webhook>>}
    */
   fetchWebhooks() {
-    return this.client.api.channels(this.id).webhooks.get().then(data => {
+    return this.client.api.channels[this.id].webhooks.get().then(data => {
       const hooks = new Collection();
       for (const hook of data) hooks.set(hook.id, new Webhook(this.client, hook));
       return hooks;
@@ -14167,7 +14167,7 @@ class TextChannel extends GuildChannel {
    */
   createWebhook(name, avatar) {
     if (typeof avatar === 'string' && avatar.startsWith('data:')) {
-      return this.client.api.channels(this.id).webhooks.post({ data: {
+      return this.client.api.channels[this.id].webhooks.post({ data: {
         name, avatar,
       } }).then(data => new Webhook(this.client, data));
     } else {
@@ -17004,11 +17004,17 @@ module.exports = ClientDataResolver;
  * @extends Error
  */
 class DiscordAPIError extends Error {
-  constructor(error) {
+  constructor(path, error) {
     super();
     const flattened = error.errors ? `\n${this.constructor.flattenErrors(error.errors).join('\n')}` : '';
     this.name = 'DiscordAPIError';
     this.message = `${error.message}${flattened}`;
+
+    /**
+     * The path of the request relative to the HTTP endpoint
+     * @type {string}
+     */
+    this.path = path;
 
     /**
      * HTTP error code returned by Discord
@@ -17064,8 +17070,10 @@ class RESTManager {
     this.userAgentManager = new UserAgentManager(this);
     this.rateLimitedEndpoints = {};
     this.globallyRateLimited = false;
+  }
 
-    this.api = mountApi(this);
+  get api() {
+    return mountApi(this);
   }
 
   destroy() {
@@ -17873,13 +17881,6 @@ class Client extends EventEmitter {
     this.rest = new RESTManager(this);
 
     /**
-     * API shortcut
-     * @type {Object}
-     * @private
-     */
-    this.api = this.rest.api;
-
-    /**
      * The data manager of the client
      * @type {ClientDataManager}
      * @private
@@ -18021,6 +18022,15 @@ class Client extends EventEmitter {
   }
 
   /**
+   * API shortcut
+   * @type {Object}
+   * @private
+   */
+  get api() {
+    return this.rest.api;
+  }
+
+  /**
    * Current status of the client's connection to Discord
    * @type {?Status}
    * @readonly
@@ -18152,7 +18162,7 @@ class Client extends EventEmitter {
    */
   fetchUser(id, cache = true) {
     if (this.users.has(id)) return Promise.resolve(this.users.get(id));
-    return this.api.users(id).get().then(data =>
+    return this.api.users[id].get().then(data =>
       cache ? this.dataManager.newUser(data) : new User(this, data)
     );
   }
@@ -18164,7 +18174,7 @@ class Client extends EventEmitter {
    */
   fetchInvite(invite) {
     const code = this.resolver.resolveInviteCode(invite);
-    return this.api.invites(code).get({ query: { with_counts: true } })
+    return this.api.invites[code].get({ query: { with_counts: true } })
       .then(data => new Invite(this, data));
   }
 
@@ -18175,7 +18185,7 @@ class Client extends EventEmitter {
    * @returns {Promise<Webhook>}
    */
   fetchWebhook(id, token) {
-    return this.api.webhooks(id, token).get().then(data => new Webhook(this, data));
+    return this.api.webhooks.opts(id, token).get().then(data => new Webhook(this, data));
   }
 
   /**
@@ -18444,13 +18454,6 @@ class WebhookClient extends Webhook {
     this.rest = new RESTManager(this);
 
     /**
-     * API shortcut
-     * @type {Object}
-     * @private
-     */
-    this.api = this.rest.api;
-
-    /**
      * The data resolver of the client
      * @type {ClientDataResolver}
      * @private
@@ -18470,6 +18473,15 @@ class WebhookClient extends Webhook {
      * @private
      */
     this._intervals = new Set();
+  }
+
+  /**
+   * API shortcut
+   * @type {Object}
+   * @private
+   */
+  get api() {
+    return this.rest.api;
   }
 
   /**
@@ -24701,37 +24713,30 @@ module.exports = APIRequest;
 const util = __webpack_require__(40);
 
 const methods = ['get', 'post', 'delete', 'patch', 'put'];
-// Paramable exists so we don't return a function unless we actually need one #savingmemory
-const paramable = [
-  'channels', 'users', 'guilds', 'members',
-  'bans', 'emojis', 'pins', 'permissions',
-  'reactions', 'webhooks', 'messages',
-  'notes', 'roles', 'applications',
-  'invites', 'bot',
+const reflectors = [
+  'toString', 'valueOf', 'inspect', 'constructor',
+  Symbol.toPrimitive, util.inspect.custom,
 ];
-const reflectors = ['toString', 'valueOf', 'inspect', Symbol.toPrimitive, util.inspect.custom];
 
 module.exports = restManager => {
   const handler = {
     get(list, name) {
-      if (reflectors.includes(name)) return () => list.join('/');
-      if (paramable.includes(name)) {
+      if (name === 'opts') {
         function toReturn(...args) { // eslint-disable-line no-inner-declarations
-          list = list.concat(name);
-          for (const arg of args) {
-            if (arg !== null && typeof arg !== 'undefined') list = list.concat(arg);
-          }
+          list.push(...args.filter(x => x !== null && typeof x !== 'undefined'));
           return new Proxy(list, handler);
         }
         const directJoin = () => `${list.join('/')}/${name}`;
         for (const r of reflectors) toReturn[r] = directJoin;
         for (const method of methods) {
-          toReturn[method] = options => restManager.request(method, `${list.join('/')}/${name}`, options);
+          toReturn[method] = options => restManager.request(method, directJoin(), options);
         }
         return toReturn;
       }
+      if (reflectors.includes(name)) return () => list.join('/');
       if (methods.includes(name)) return options => restManager.request(name, list.join('/'), options);
-      return new Proxy(list.concat(name), handler);
+      list.push(name);
+      return new Proxy(list, handler);
     },
   };
 
@@ -24786,7 +24791,7 @@ class BurstRequestHandler extends RequestHandler {
             this.resetTimeout = null;
           }, Number(res.headers['retry-after']) + this.client.options.restTimeOffset);
         } else {
-          item.reject(err.status === 400 ? new DiscordAPIError(res.body) : err);
+          item.reject(err.status === 400 ? new DiscordAPIError(res.request.path, res.body) : err);
           this.handle();
         }
       } else {
@@ -24881,7 +24886,7 @@ class SequentialRequestHandler extends RequestHandler {
             }, Number(res.headers['retry-after']) + this.restManager.client.options.restTimeOffset);
             if (res.headers['x-ratelimit-global']) this.globalLimit = true;
           } else {
-            item.reject(err.status >= 400 && err.status < 500 ? new DiscordAPIError(res.body) : err);
+            item.reject(err.status >= 400 && err.status < 500 ? new DiscordAPIError(res.request.path, res.body) : err);
             resolve(err);
           }
         } else {
@@ -26624,7 +26629,7 @@ module.exports = function sendMessage(channel, options) {
     });
   }
 
-  return channel.client.api.channels(channel.id).messages.post({
+  return channel.client.api.channels[channel.id].messages.post({
     data: { content, tts, nonce, embed },
     files,
   }).then(data => channel.client.actions.MessageCreate.handle(data).message);
