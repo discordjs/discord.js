@@ -51,7 +51,7 @@ class PermissionOverwrites {
    * @returns {Promise<PermissionOverwrites>}
    */
   delete(reason) {
-    return this.channel.client.api.channels(this.channel.id).permissions(this.id)
+    return this.channel.client.api.channels[this.channel.id].permissions[this.id]
       .delete({ reason })
       .then(() => this);
   }

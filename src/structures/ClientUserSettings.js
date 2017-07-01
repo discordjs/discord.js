@@ -32,7 +32,7 @@ class ClientUserSettings {
    * @returns {Promise<Object>}
    */
   update(name, value) {
-    return this.user.client.api.users('@me').settings.patch({ data: { [name]: value } });
+    return this.user.client.api.users['@me'].settings.patch({ data: { [name]: value } });
   }
 
   /**
