@@ -1,5 +1,6 @@
 const Constants = require('../util/Constants');
 const WebSocketConnection = require('./websocket/WebSocketConnection');
+const { Error } = require('../errors');
 
 /**
  * Manages the state and background tasks of the client.
@@ -37,16 +38,16 @@ class ClientManager {
   connectToWebSocket(token, resolve, reject) {
     this.client.emit(Constants.Events.DEBUG, `Authenticated using token ${token}`);
     this.client.token = token;
-    const timeout = this.client.setTimeout(() => reject(new Error(Constants.Errors.TOOK_TOO_LONG)), 1000 * 300);
+    const timeout = this.client.setTimeout(() => reject(new Error('INVALID_TOKEN')), 1000 * 300);
     this.client.api.gateway.get().then(res => {
       const protocolVersion = Constants.DefaultOptions.ws.version;
       const gateway = `${res.url}/?v=${protocolVersion}&encoding=${WebSocketConnection.ENCODING}`;
       this.client.emit(Constants.Events.DEBUG, `Using gateway ${gateway}`);
       this.client.ws.connect(gateway);
       this.client.ws.connection.once('close', event => {
-        if (event.code === 4004) reject(new Error(Constants.Errors.BAD_LOGIN));
-        if (event.code === 4010) reject(new Error(Constants.Errors.INVALID_SHARD));
-        if (event.code === 4011) reject(new Error(Constants.Errors.SHARDING_REQUIRED));
+        if (event.code === 4004) reject(new Error('TOKEN_INVALID'));
+        if (event.code === 4010) reject(new Error('SHARDING_INVALID'));
+        if (event.code === 4011) reject(new Error('SHARDING_REQUIRED'));
       });
       this.client.once(Constants.Events.READY, () => {
         resolve(token);

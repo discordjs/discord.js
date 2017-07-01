@@ -1,6 +1,7 @@
 const childProcess = require('child_process');
 const path = require('path');
 const Util = require('../util/Util');
+const { Error } = require('../errors');
 
 /**
  * Represents a Shard spawned by the ShardingManager.
@@ -60,7 +61,7 @@ class Shard {
       const sent = this.process.send(message, err => {
         if (err) reject(err); else resolve(this);
       });
-      if (!sent) throw new Error('Failed to send message to shard\'s process.');
+      if (!sent) throw new Error('SHARDING_CHILD_CONNECTION');
     });
   }
 

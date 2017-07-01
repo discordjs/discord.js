@@ -7,6 +7,7 @@ const Util = require('../util/Util');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
 const Permissions = require('../util/Permissions');
+const { TypeError } = require('../errors');
 let GuildMember;
 
 /**
@@ -33,7 +34,7 @@ class Message {
 
   setup(data) { // eslint-disable-line complexity
     /**
-     * The ID of the message (unique in the channel it was sent)
+     * The ID of the message
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -428,7 +429,7 @@ class Message {
    */
   react(emoji) {
     emoji = this.client.resolver.resolveEmojiIdentifier(emoji);
-    if (!emoji) throw new TypeError('Emoji must be a string or Emoji/ReactionEmoji');
+    if (!emoji) throw new TypeError('EMOJI_TYPE');
 
     return this.client.api.channels[this.channel.id].messages[this.id].reactions[emoji]['@me']
       .put()
