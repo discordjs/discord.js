@@ -1,11 +1,21 @@
 {
-  "ecmaVersion": 6,
+  "ecmaVersion": 7,
   "libs": [],
+  "loadEagerly": [
+    "./src/*.js"
+  ],
+  "dontLoad": [
+    "node_modules/**"
+  ],
   "plugins": {
-    "node": {
-      "dontLoad": "node_modules/**",
-      "load": "",
-      "modules": ""
+    "es_modules": {},
+    "node": {},
+    "doc_comment": {
+      "fullDocs": true,
+      "strong": true
+    },
+    "webpack": {
+      "configPath": "./webpack.config.js",
     }
   }
 }

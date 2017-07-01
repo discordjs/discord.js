@@ -1,12 +1,19 @@
 /**
  * Represents an error from the Discord API.
+ * @extends Error
  */
 class DiscordAPIError extends Error {
-  constructor(error) {
+  constructor(path, error) {
     super();
     const flattened = error.errors ? `\n${this.constructor.flattenErrors(error.errors).join('\n')}` : '';
     this.name = 'DiscordAPIError';
     this.message = `${error.message}${flattened}`;
+
+    /**
+     * The path of the request relative to the HTTP endpoint
+     * @type {string}
+     */
+    this.path = path;
 
     /**
      * HTTP error code returned by Discord
@@ -20,6 +27,7 @@ class DiscordAPIError extends Error {
    * @param {Object} obj Discord errors object
    * @param {string} [key] Used internally to determine key names of nested fields
    * @returns {string[]}
+   * @private
    */
   static flattenErrors(obj, key = '') {
     let messages = [];
