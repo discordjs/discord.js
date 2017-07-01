@@ -246,12 +246,7 @@ class GuildMember {
    */
   get permissions() {
     if (this.user.id === this.guild.ownerID) return new Permissions(Permissions.ALL);
-
-    let permissions = 0;
-    const roles = this.roles;
-    for (const role of roles.values()) permissions |= role.permissions;
-
-    return new Permissions(permissions);
+    return new Permissions(this.roles.map(role => role.permissions));
   }
 
   /**
@@ -317,7 +312,7 @@ class GuildMember {
    * @returns {PermissionResolvable[]}
    */
   missingPermissions(permissions, explicit = false) {
-    return permissions.missing(permissions, explicit);
+    return this.permissions.missing(permissions, explicit);
   }
 
   /**

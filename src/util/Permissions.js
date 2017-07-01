@@ -46,7 +46,7 @@ class Permissions {
    * @returns {Permissions} This permissions
    */
   add(...permissions) {
-    for (let p = permissions.length -1; p >= 0; p--) {
+    for (let p = permissions.length - 1; p >= 0; p--) {
       const perm = this.constructor.resolve(permissions[p]);
       if ((this.bitfield & perm) !== perm) this.bitfield |= perm;
     }
@@ -59,7 +59,7 @@ class Permissions {
    * @returns {Permissions} This permissions
    */
   remove(...permissions) {
-    for (let p = permissions.length -1; p >= 0; p--) {
+    for (let p = permissions.length - 1; p >= 0; p--) {
       const perm = this.constructor.resolve(permissions[p]);
       if ((this.bitfield & perm) === perm) this.bitfield &= ~perm;
     }
@@ -91,7 +91,7 @@ class Permissions {
    * @returns {number}
    */
   static resolve(permission) {
-    if (typeof permission === 'number' && permission > 0) return permission;
+    if (typeof permission === 'number' && permission >= 0) return permission;
     if (permission instanceof Array) return permission.map(p => this.resolve(p)).reduce((prev, p) => prev | p, 0);
     if (typeof permission === 'string') return this.FLAGS[permission];
     throw new RangeError('PERMISSION_INVALID');

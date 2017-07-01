@@ -68,34 +68,20 @@ class GuildChannel extends Channel {
     if (!member) return null;
     if (member.id === this.guild.ownerID) return new Permissions(Permissions.ALL);
 
-    let permissions = 0;
-
     const roles = member.roles;
-    for (const role of roles.values()) permissions |= role.permissions;
+    const permissions = new Permissions(roles.map(role => role.permissions));
+
+    if (permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return new Permissions(Permissions.ALL);
 
     const overwrites = this.overwritesFor(member, true, roles);
 
-    if (overwrites.everyone) {
-      permissions &= ~overwrites.everyone._denied;
-      permissions |= overwrites.everyone._allowed;
-    }
-
-    let allow = 0;
-    for (const overwrite of overwrites.roles) {
-      permissions &= ~overwrite._denied;
-      allow |= overwrite._allowed;
-    }
-    permissions |= allow;
-
-    if (overwrites.member) {
-      permissions &= ~overwrites.member._denied;
-      permissions |= overwrites.member._allowed;
-    }
-
-    const admin = Boolean(permissions & Permissions.FLAGS.ADMINISTRATOR);
-    if (admin) permissions = Permissions.ALL;
-
-    return new Permissions(permissions);
+    return permissions
+      .remove(overwrites.everyone ? overwrites.everyone.denied.bitfield : 0)
+      .add(overwrites.everyone ? overwrites.everyone.allowed.bitfield : 0)
+      .remove(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.denied.bitfield) : 0)
+      .add(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.allowed.bitfield) : 0)
+      .remove(overwrites.member ? overwrites.member.denied.bitfield : 0)
+      .add(overwrites.member ? overwrites.member.allowed.bitfield : 0);
   }
 
   overwritesFor(member, verified = false, roles = null) {
@@ -150,46 +136,43 @@ class GuildChannel extends Channel {
    * .catch(console.error);
    */
   overwritePermissions(userOrRole, options, reason) {
-    const payload = {
-      allow: 0,
-      deny: 0,
-    };
+    const allow = new Permissions(0);
+    const deny = new Permissions(0);
+    let type;
 
     if (userOrRole instanceof Role) {
-      payload.type = 'role';
+      type = 'role';
     } else if (this.guild.roles.has(userOrRole)) {
       userOrRole = this.guild.roles.get(userOrRole);
-      payload.type = 'role';
+      type = 'role';
     } else {
       userOrRole = this.client.resolver.resolveUser(userOrRole);
-      payload.type = 'member';
+      type = 'member';
       if (!userOrRole) return Promise.reject(new TypeError('Supplied parameter was neither a User nor a Role.'));
     }
-
-    payload.id = userOrRole.id;
 
     const prevOverwrite = this.permissionOverwrites.get(userOrRole.id);
 
     if (prevOverwrite) {
-      payload.allow = prevOverwrite._allowed;
-      payload.deny = prevOverwrite._denied;
+      allow.add(prevOverwrite.allowed.bitfield);
+      deny.add(prevOverwrite.denied.bitfield);
     }
 
     for (const perm in options) {
       if (options[perm] === true) {
-        payload.allow |= Permissions.FLAGS[perm] || 0;
-        payload.deny &= ~(Permissions.FLAGS[perm] || 0);
+        allow.add(Permissions.FLAGS[perm] || 0);
+        deny.remove(Permissions.FLAGS[perm] || 0);
       } else if (options[perm] === false) {
-        payload.allow &= ~(Permissions.FLAGS[perm] || 0);
-        payload.deny |= Permissions.FLAGS[perm] || 0;
+        allow.remove(Permissions.FLAGS[perm] || 0);
+        deny.add(Permissions.FLAGS[perm] || 0);
       } else if (options[perm] === null) {
-        payload.allow &= ~(Permissions.FLAGS[perm] || 0);
-        payload.deny &= ~(Permissions.FLAGS[perm] || 0);
+        allow.remove(Permissions.FLAGS[perm] || 0);
+        deny.remove(Permissions.FLAGS[perm] || 0);
       }
     }
 
-    return this.client.api.channels[this.id].permissions(payload.id)
-      .put({ data: payload, reason })
+    return this.client.api.channels[this.id].permissions(userOrRole.id)
+      .put({ data: { id: userOrRole.id, type, allow: allow.bitfield, deny: deny.bitfield }, reason })
       .then(() => this);
   }
 
