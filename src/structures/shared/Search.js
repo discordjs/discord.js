@@ -31,8 +31,9 @@ const { TypeError } = require('../../errors');
 
 /**
  * @typedef {Object} MessageSearchResult
- * @type {number} total Total result count
- * @type {Array<Message[]>} results Array of message results
+ * @property {number} total Total result count
+ * @property {Array<Message[]>} results Array of message results
+ * The message which has triggered the result will have the `hit` property set to `true`
  */
 
 module.exports = function search(target, options) {
