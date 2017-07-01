@@ -858,8 +858,8 @@ class Guild {
   createChannel(name, type, { overwrites, reason } = {}) {
     if (overwrites instanceof Collection || overwrites instanceof Array) {
       overwrites = overwrites.map(overwrite => ({
-        allow: overwrite.allowed.bitfield,
-        deny: overwrite.denied.bitfield,
+        allow: overwrite.allow || overwrite.allowed.bitfield,
+        deny: overwrite.deny || overwrite.denied.bitfield,
         type: overwrite.type,
         id: overwrite.id,
       }));
