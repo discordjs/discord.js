@@ -132,6 +132,7 @@ class VoiceConnection extends EventEmitter {
    */
   setSpeaking(value) {
     if (this.speaking === value) return;
+    if (this.status !== Constants.VoiceStatus.CONNECTED) return;
     this.speaking = value;
     this.sockets.ws.sendPacket({
       op: Constants.VoiceOPCodes.SPEAKING,
