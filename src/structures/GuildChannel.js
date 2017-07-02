@@ -66,12 +66,12 @@ class GuildChannel extends Channel {
   permissionsFor(member) {
     member = this.client.resolver.resolveGuildMember(this.guild, member);
     if (!member) return null;
-    if (member.id === this.guild.ownerID) return new Permissions(Permissions.ALL);
+    if (member.id === this.guild.ownerID) return new Permissions(Permissions.ALL).freeze();
 
     const roles = member.roles;
     const permissions = new Permissions(roles.map(role => role.permissions));
 
-    if (permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return new Permissions(Permissions.ALL);
+    if (permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return new Permissions(Permissions.ALL).freeze();
 
     const overwrites = this.overwritesFor(member, true, roles);
 
@@ -81,7 +81,8 @@ class GuildChannel extends Channel {
       .remove(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.denied.bitfield) : 0)
       .add(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.allowed.bitfield) : 0)
       .remove(overwrites.member ? overwrites.member.denied.bitfield : 0)
-      .add(overwrites.member ? overwrites.member.allowed.bitfield : 0);
+      .add(overwrites.member ? overwrites.member.allowed.bitfield : 0)
+      .freeze();
   }
 
   overwritesFor(member, verified = false, roles = null) {

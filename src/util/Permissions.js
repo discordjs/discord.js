@@ -41,6 +41,14 @@ class Permissions {
   }
 
   /**
+   * Freezes the permission making it immutable.
+   * @returns {Permissions} This permissions
+   */
+  freeze() {
+    return Object.freeze(this);
+  }
+
+  /**
    * Adds permissions to this one.
    * @param {...PermissionResolvable} permissions Permissions to add
    * @returns {Permissions} This permissions
