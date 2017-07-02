@@ -121,7 +121,7 @@ class Emoji {
    *  .catch(console.error);
    */
   edit(data, reason) {
-    return this.client.api.guilds[this.guild.id].emojis(this.id)
+    return this.client.api.guilds[this.guild.id].emojis[this.id]
       .patch({ data: {
         name: data.name,
         roles: data.roles ? data.roles.map(r => r.id ? r.id : r) : [],
