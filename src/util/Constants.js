@@ -482,7 +482,7 @@ exports.UserSettingsMap = {
 };
 
 /**
- * All Flags users can have:
+ * All flags users can have:
  * - STAFF
  * - PARTNER
  * - HYPESQUAD
